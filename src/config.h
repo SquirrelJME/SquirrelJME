@@ -9,7 +9,7 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * Configuration file which is based on preprocessor macros.
+ * Configuration file which is based on pre-processor macros.
  *
  * @since 2016/02/26
  */
@@ -32,7 +32,7 @@ extern "C"
 
 /** List of targets (not necessarily supported ones). */
 #define SJME_TARGET_UNKNOWN		0
-#define SJME_TARGET_UNKNOWN		1
+#define SJME_TARGET_RESERVED	1
 #define SJME_TARGET_AMIGAOS4	2
 #define SJME_TARGET_AMIGAOSC	3
 #define SJME_TARGET_ARDUINO		4
@@ -52,7 +52,7 @@ extern "C"
 #define SJME_TARGET_GNUHURD		18
 #define SJME_TARGET_HAIKU		19
 #define SJME_TARGET_HPUX		20
-#define SJME_TARGET_HWX86BIOS	21
+#define SJME_TARGET_X86BIOS		21
 #define SJME_TARGET_IEEE1275	22
 #define SJME_TARGET_IMGTECCI20	23
 #define SJME_TARGET_IMGTECCI40	24
@@ -69,7 +69,7 @@ extern "C"
 #define SJME_TARGET_NGC			35
 #define SJME_TARGET_NINTENDO64	36
 #define SJME_TARGET_NWII		37
-#define SJME_TARGTE_NWIIU		38
+#define SJME_TARGET_NWIIU		38
 #define SJME_TARGET_OS2			39
 #define SJME_TARGET_PALMOS		40
 #define SJME_TARGET_PALMOSCBLT	41
@@ -96,7 +96,7 @@ extern "C"
 #define SJME_TARGET_WINCE		62
 #define SJME_TARGET_WINNT		63
 #define SJME_TARGET_WRT54G		64
-#define SJME_TARGET_X86EFI		65
+#define SJME_TARGET_UEFI		65
 #define SJME_TARGET_XBOX		66
 #define SJME_TARGET_XBOX360		67
 #define SJME_TARGET_XBOXONE		68
@@ -297,26 +297,146 @@ extern "C"
 #endif
 
 /** Include system specific header. */
-#if SJME_TARGET == SJME_TARGET_CSTANDARD
-	#include "scc.h"
+#if SJME_TARGET == SJME_TARGET_AMIGAOS4
+	#include "sys_aos4.h"
+#elif SJME_TARGET == SJME_TARGET_AMIGAOSC
+	#include "sys_aosc.h"
+#elif SJME_TARGET == SJME_TARGET_ARDUINO
+	#include "sys_ardu.h"
+#elif SJME_TARGET == SJME_TARGET_ARDUINOMEG
+	#include "sys_ardm.h"
+#elif SJME_TARGET == SJME_TARGET_ATARI
+	#include "sys_atri.h"
+#elif SJME_TARGET == SJME_TARGET_BEOS
+	#include "sys_beos.h"
+#elif SJME_TARGET == SJME_TARGET_BGLBNBLACK
+	#include "sys_bbbl.h"
+#elif SJME_TARGET == SJME_TARGET_BREWMP
+	#include "sys_brwm.h"
+#elif SJME_TARGET == SJME_TARGET_BSD
+	#include "sys_xbsd.h"
+#elif SJME_TARGET == SJME_TARGET_COMMDR128
+	#include "sys_c128.h"
+#elif SJME_TARGET == SJME_TARGET_COMMDR64
+	#include "sys_co64.h"
+#elif SJME_TARGET == SJME_TARGET_CSTANDARD
+	#include "sys_stdc.h"
 #elif SJME_TARGET == SJME_TARGET_DOS
-	#include "sdo.h"
+	#include "sys_xdos.h"
+#elif SJME_TARGET == SJME_TARGET_DREAMCAST
+	#include "sys_drmc.h"
+#elif SJME_TARGET == SJME_TARGET_DREAMCASTK
+	#include "sys_dcko.h"
+#elif SJME_TARGET == SJME_TARGET_GIMMIX
+	#include "sys_gimx.h"
+#elif SJME_TARGET == SJME_TARGET_GNUHURD
+	#include "sys_hurd.h"
+#elif SJME_TARGET == SJME_TARGET_HAIKU
+	#include "sys_haik.h"
+#elif SJME_TARGET == SJME_TARGET_HPUX
+	#include "sys_hpux.h"
+#elif SJME_TARGET == SJME_TARGET_X86BIOS
+	#include "sys_x86b.h"
+#elif SJME_TARGET == SJME_TARGET_IEEE1275
+	#include "sys_ofwr.h"
+#elif SJME_TARGET == SJME_TARGET_IMGTECCI20
+	#include "sys_ci20.h"
+#elif SJME_TARGET == SJME_TARGET_IMGTECCI40
+	#include "sys_ci40.h"
+#elif SJME_TARGET == SJME_TARGET_JAVAVM
+	#include "sys_java.h"
 #elif SJME_TARGET == SJME_TARGET_LINUX
-	#include "sli.h"
+	#include "sys_lnux.h"
 #elif SJME_TARGET == SJME_TARGET_MACOSC
-	#include "smc.h"
+	#include "sys_macc.h"
 #elif SJME_TARGET == SJME_TARGET_MACOSX
-	#include "smx.h"
+	#include "sys_macx.h"
+#elif SJME_TARGET == SJME_TARGET_MINIX
+	#include "sys_mnix.h"
+#elif SJME_TARGET == SJME_TARGET_N3DS
+	#include "sys_n3ds.h"
+#elif SJME_TARGET == SJME_TARGET_NDS
+	#include "sys_nids.h"
+#elif SJME_TARGET == SJME_TARGET_NES
+	#include "sys_nnes.h"
+#elif SJME_TARGET == SJME_TARGET_NGB
+	#include "sys_ngmb.h"
+#elif SJME_TARGET == SJME_TARGET_NGBA
+	#include "sys_ngba.h"
+#elif SJME_TARGET == SJME_TARGET_NGC
+	#include "sys_ngcu.h"
+#elif SJME_TARGET == SJME_TARGET_NINTENDO64
+	#include "sys_nn64.h"
+#elif SJME_TARGET == SJME_TARGET_NWII
+	#include "sys_nwii.h"
+#elif SJME_TARGET == SJME_TARGET_NWIIU
+	#include "sys_nwiu.h"
+#elif SJME_TARGET == SJME_TARGET_OS2
+	#include "sys_os2x.h"
 #elif SJME_TARGET == SJME_TARGET_PALMOS
-	#include "spl.h"
+	#include "sys_palm.h"
+#elif SJME_TARGET == SJME_TARGET_PALMOSCBLT
+	#include "sys_plmc.h"
+#elif SJME_TARGET == SJME_TARGET_PLAN9
+	#include "sys_pln9.h"
 #elif SJME_TARGET == SJME_TARGET_POSIX
-	#include "spx.h"
-#elif SJME_TARGET == SJME_TARGET_WIN32
-	#include "swi.h"
+	#include "sys_posx.h"
+#elif SJME_TARGET == SJME_TARGET_RBPI
+	#include "sys_rbpi.h"
+#elif SJME_TARGET == SJME_TARGET_RBPI2
+	#include "sys_rbp2.h""
+#elif SJME_TARGET == SJME_TARGET_RBPIZERO
+	#include "sys_rbpz.h"
+#elif SJME_TARGET == SJME_TARGET_SEGACD
+	#include "sys_sgcd.h"
+#elif SJME_TARGET == SJME_TARGET_SEGAGEN
+	#include "sys_sgge.h"
+#elif SJME_TARGET == SJME_TARGET_SEGAGGEAR
+	#include "sys_sggg.h"
+#elif SJME_TARGET == SJME_TARGET_SEGASAT
+	#include "sys_sgsa.h"
+#elif SJME_TARGET == SJME_TARGET_SNES
+	#include "sys_snes.h"
+#elif SJME_TARGET == SJME_TARGET_SOLARIS
+	#include "sys_sola.h"
+#elif SJME_TARGET == SJME_TARGET_SONYPS
+	#include "sys_sps1.h"
+#elif SJME_TARGET == SJME_TARGET_SONYPS2
+	#include "sys_sps2.h"
+#elif SJME_TARGET == SJME_TARGET_SONYPS3
+	#include "sys_sps3.h"
+#elif SJME_TARGET == SJME_TARGET_SONYPS4
+	#include "sys_sps4.h"
+#elif SJME_TARGET == SJME_TARGET_TI83
+	#include "sys_ti83.h"
+#elif SJME_TARGET == SJME_TARGET_UNIX
+	#include "sys_unix.h"
+#elif SJME_TARGET == SJME_TARGET_VOCORE
+	#include "sys_vocr.h"
+#elif SJME_TARGET == SJME_TARGET_WIN31
+	#include "sys_wi31.h"
+#elif SJME_TARGET == SJME_TARGET_WIN9X
+	#include "sys_wi9x.h"
 #elif SJME_TARGET == SJME_TARGET_WINCE
-	#include "swc.h"
+	#include "sys_wice.h"
+#elif SJME_TARGET == SJME_TARGET_WINNT
+	#include "sys_wint.h"
+#elif SJME_TARGET == SJME_TARGET_WRT54G
+	#include "sys_wrt5.h"
+#elif SJME_TARGET == SJME_TARGET_UEFI
+	#include "sys_uefi.h"
+#elif SJME_TARGET == SJME_TARGET_XBOX
+	#include "sys_xbox.h"
+#elif SJME_TARGET == SJME_TARGET_XBOX360
+	#include "sys_xbx3.h"
+#elif SJME_TARGET == SJME_TARGET_XBOXONE
+	#include "sys_xbx1.h"
+#elif SJME_TARGET == SJME_TARGET_XEN
+	#include "sys_lxen.h"
+#elif SJME_TARGET == SJME_TARGET_Z8F642001
+	#include "sys_z8f6.h"
 #else
-	#error Do not know which system header to include.
+	#error Do not know which target header to include.
 #endif
 
 /****************************************************************************/
