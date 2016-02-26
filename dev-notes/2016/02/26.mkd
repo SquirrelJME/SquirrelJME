@@ -1,0 +1,7 @@
+# 2016/02/26
+
+## 10:18
+
+This is my start of SquirrelJME which is similar to SquirrnixME except it is
+under the AGPLv3+ and has pretty much the same intended goals.
+

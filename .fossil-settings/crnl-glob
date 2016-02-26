@@ -1,0 +1,10 @@
+*.bat
+hairball.bat
+hairball.cmd
+/hairball.bat
+/hairball.cmd
+*.op
+l_gplv3.txt
+l_ccbysa.txt
+license.txt
+
