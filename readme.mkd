@@ -1,0 +1,27 @@
+# Multi-Phasic Applications: SquirrelJME
+
+  * Copyright (C) 2013-2016 Steven Gawroriski
+    <steven@multiphasicapps.net>
+  * Copyright (C) 2013-2016 Multi-Phasic Applications
+    <http://multiphasicapps.net>
+
+SquirrelJME is intended to be a JavaME 8 compatible environment for strange and
+many other devices.
+
+Licenses:
+
+  * [GNU Affero General Public License, Version 3 or later](license.mkd)
+
+Links:
+
+  * [Online repository](http://multiphasicapps.net:8080/squirreljme)
+
+You may donate to SquirrelJME to help keep the author alive:
+
+  * BitCoin (**BTC/XBT**): [`1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M`](
+    bitcoin:1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M)
+  * LiteCoin (**LTC**): [`LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi`](
+    litecoin:LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi)
+  * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
+    dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
+
