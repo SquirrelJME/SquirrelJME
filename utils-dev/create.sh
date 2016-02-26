@@ -98,7 +98,7 @@ __findpkname()
 		if [ "$__want" -eq "0" ]
 		then
 			# Has repository file right above this path
-			if [ -f "$__indir/front.wiki" ] || [ -f "$__indir/../HALT" ]
+			if [ -f "$__indir/../license.mkd" ] || [ -f "$__indir/../HALT" ]
 			then
 				__pkout="$__chop"
 				break
@@ -107,14 +107,8 @@ __findpkname()
 		# Want name of project this is
 		elif [ "$__want" -eq "1" ]
 		then
-			# pk: unknown.package; ch: ; in: /home/steven/k8/vmjar/kernel-asm
-			# pk: unknown.package; ch: kernel-asm; in: /home/steven/k8/vmjar
-			# pk: unknown.package; ch: vmjar.kernel-asm; in: /home/steven/k8
-			# pk: unknown.package; ch: k8.vmjar.kernel-asm; in: /home/steven
-			# pk: unknown.package; ch: steven.k8.vmjar.kernel-asm; in: /home
-			
 			# If repository file in same dir
-			if [ -f "$__indir/front.wiki" ] || [ -f "$__indir/HALT" ]
+			if [ -f "$__indir/license.mkd" ] || [ -f "$__indir/HALT" ]
 			then
 				echo "$__chop" | \
 					sed 's/^\([a-zA-Z0-9-]\{1,\}\)[^a-zA-Z0-9-]*.*/\1/'
