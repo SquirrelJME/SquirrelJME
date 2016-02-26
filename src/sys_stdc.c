@@ -9,10 +9,33 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * DESCRIBE THIS.
+ * Standard C code.
  *
- * @since ZZZSINCEZZZ
+ * @since 2016/02/26
  */
 
-#include "ZZZCHEADERNAMEZZZ"
+#include "sys_stdc.h"
+
+/** Specific System Only. */
+#if SJME_TARGET == SJME_TARGET_CSTANDARD
+
+/****************************************************************************/
+
+/**
+ * Main C entry point.
+ *
+ * @param argc Argument count.
+ * @param argv Arguments.
+ * @return Exit status.
+ * @since 2016/02/26
+ */
+int main(int argc, char** argv)
+{
+	return EXIT_SUCCESS;
+}
+
+/****************************************************************************/
+
+/** End. */
+#endif
 

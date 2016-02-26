@@ -5,3 +5,10 @@
 This is my start of SquirrelJME which is similar to SquirrnixME except it is
 under the AGPLv3+ and has pretty much the same intended goals.
 
+## 13:39
+
+For specific systems I am going to need to use `near`, `far`, and such. For
+example the Zilog Z80 compiler uses `near`, `far`, and `rom`. `rom` addresses
+the built in memory since normally the hardware does not have a unified address
+space for accessing read-only data and in memory data.
+

@@ -5,7 +5,7 @@
 //     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU Affero General Public License v3+, or later.
-// For more information see license.txt.
+// For more information see license.mkd.
 // --------------------------------------------------------------------------*/
 
 /**
@@ -130,6 +130,7 @@ extern "C"
 #define SJME_CPU_SH4			18
 #define SJME_CPU_SPARC			19
 #define SJME_CPU_Z80			20
+#define SJME_CPU_EZ8			21
 
 /** Auto-detect target? */
 #if !defined(SJME_TARGET) || \
@@ -432,11 +433,32 @@ extern "C"
 #elif SJME_TARGET == SJME_TARGET_XBOXONE
 	#include "sys_xbx1.h"
 #elif SJME_TARGET == SJME_TARGET_XEN
-	#include "sys_lxen.h"
+	#include "sys_xxen.h"
 #elif SJME_TARGET == SJME_TARGET_Z8F642001
 	#include "sys_z8f6.h"
 #else
 	#error Do not know which target header to include.
+#endif
+
+/** Memory space keywords. */
+#if !defined(sjme_code)
+	#error Must define sjme_code address space.
+#endif
+#if !defined(sjme_mem)
+	#error Must define sjme_mem address space.
+#endif
+
+/** Constant. */
+#if !defined(sjme_const)
+	#error Must define sjme_const keyword.
+#endif
+
+/** String specials. */
+#if !defined(sjme_codestr)
+	#error Must define sjme_codestr string modifier.
+#endif
+#if !defined(sjme_memstr)
+	#error Must define sjme_memstr string modifier.
 #endif
 
 /****************************************************************************/

@@ -9,38 +9,47 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * DESCRIBE THIS.
+ * Standard C Header.
  *
- * @since ZZZSINCEZZZ
+ * @since 2016/02/26
  */
 
 /** Header guard. */
-#ifndef ZZZCHEADERGUARDZZZ
-#define ZZZCHEADERGUARDZZZ
+#ifndef SJME_hGSYS_STDCH
+#define SJME_hGSYS_STDCH
 
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define ZZZCXXISBADZZZ
+#define SJME_cXSYS_STDCH
 extern "C"
 {
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
 #endif /** #ifdef __cplusplus */
 
+/** Configuration Header. */
+#include "config.h"
+
+/** Specific System Only. */
+#if SJME_TARGET == SJME_TARGET_CSTANDARD
+
 /****************************************************************************/
 
 /****************************************************************************/
+
+/** End. */
+#endif
 
 /** Anti-C++. */
 #ifdef __cplusplus
-#ifdef ZZZCXXISBADZZZ
+#ifdef SJME_cXSYS_STDCH
 }
-#undef ZZZCXXISBADZZZ
+#undef SJME_cXSYS_STDCH
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef ZZZCXXISBADZZZ */
+#endif /** #ifdef SJME_cXSYS_STDCH */
 #endif /** #ifdef __cplusplus */
 
 /** Header guard. */
-#endif /* #ifndef ZZZCHEADERGUARDZZZ */
+#endif /* #ifndef SJME_hGSYS_STDCH */
 
