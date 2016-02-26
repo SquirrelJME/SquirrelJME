@@ -9,65 +9,42 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * Standard C Header.
+ * Standard UNIX Header.
  *
  * @since 2016/02/26
  */
 
 /** Header guard. */
-#ifndef SJME_hGSYS_STDCH
-#define SJME_hGSYS_STDCH
+#ifndef SJME_hGSYS_UNIXH
+#define SJME_hGSYS_UNIXH
 
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_cXSYS_STDCH
+#define SJME_cXSYS_UNIXH
 extern "C"
 {
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
 #endif /** #ifdef __cplusplus */
 
-/** Configuration Header. */
-#include "config.h"
-
-/** Standard C systems only. */
-#if SJME_TARGET == SJME_TARGET_CSTANDARD || defined(SJME_STANDARD_C)
+/** Specific System Only. */
+#if SJME_TARGET == SJME_TARGET_UNIX || defined(SJME_STANDARD_UNIX)
 
 /****************************************************************************/
 
-/** Define standard C just in case. */
+/** Enable standard C. */
 #ifndef SJME_STANDARD_C
 	#define SJME_STANDARD_C
 #endif
 
-/** Include standard library stuff. */
-#include "stdlib.h"
-
-/** Where code is placed. */
-#ifndef sjme_code
-	#define sjme_code
+/** Force UNIX. */
+#ifndef SJME_STANDARD_UNIX
+	#define SJME_STANDARD_UNIX
 #endif
 
-/** Where normal memory is used. */
-#ifndef sjme_mem
-	#define sjme_mem
-#endif
-
-/** Strings in the code area. */
-#ifndef sjme_codestr
-	#define sjme_codestr(v) v
-#endif
-
-/** Strings in the memory area. */
-#ifndef sjme_memstr
-	#define sjme_memstr(v) v
-#endif
-
-/** Do not modify variables. */
-#ifndef sjme_const
-	#define sjme_const const
-#endif
+/** Force standard C inclusion. */
+#include "sys_stdc.h"
 
 /****************************************************************************/
 
@@ -76,13 +53,13 @@ extern "C"
 
 /** Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_cXSYS_STDCH
+#ifdef SJME_cXSYS_UNIXH
 }
-#undef SJME_cXSYS_STDCH
+#undef SJME_cXSYS_UNIXH
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_cXSYS_STDCH */
+#endif /** #ifdef SJME_cXSYS_UNIXH */
 #endif /** #ifdef __cplusplus */
 
 /** Header guard. */
-#endif /* #ifndef SJME_hGSYS_STDCH */
+#endif /* #ifndef SJME_hGSYS_UNIXH */
 

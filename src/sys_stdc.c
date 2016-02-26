@@ -14,10 +14,11 @@
  * @since 2016/02/26
  */
 
+#include "config.h"
 #include "sys_stdc.h"
 
 /** Specific System Only. */
-#if SJME_TARGET == SJME_TARGET_CSTANDARD
+#ifdef SJME_STANDARD_C
 
 /****************************************************************************/
 
@@ -31,7 +32,7 @@
  */
 int main(int argc, char** argv)
 {
-	return EXIT_SUCCESS;
+	return EXIT_FAILURE;
 }
 
 /****************************************************************************/

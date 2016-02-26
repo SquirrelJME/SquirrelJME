@@ -385,7 +385,7 @@ extern "C"
 #elif SJME_TARGET == SJME_TARGET_RBPI
 	#include "sys_rbpi.h"
 #elif SJME_TARGET == SJME_TARGET_RBPI2
-	#include "sys_rbp2.h""
+	#include "sys_rbp2.h"
 #elif SJME_TARGET == SJME_TARGET_RBPIZERO
 	#include "sys_rbpz.h"
 #elif SJME_TARGET == SJME_TARGET_SEGACD

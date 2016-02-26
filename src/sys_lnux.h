@@ -9,20 +9,20 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * Standard C Header.
+ * Linux header.
  *
  * @since 2016/02/26
  */
 
 /** Header guard. */
-#ifndef SJME_hGSYS_STDCH
-#define SJME_hGSYS_STDCH
+#ifndef SJME_hGSYS_LNUXH
+#define SJME_hGSYS_LNUXH
 
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_cXSYS_STDCH
+#define SJME_cXSYS_LNUXH
 extern "C"
 {
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
@@ -31,43 +31,18 @@ extern "C"
 /** Configuration Header. */
 #include "config.h"
 
-/** Standard C systems only. */
-#if SJME_TARGET == SJME_TARGET_CSTANDARD || defined(SJME_STANDARD_C)
+/** Specific System Only. */
+#if SJME_TARGET == SJME_TARGET_LINUX
 
 /****************************************************************************/
 
-/** Define standard C just in case. */
-#ifndef SJME_STANDARD_C
-	#define SJME_STANDARD_C
+/** Force POSIX. */
+#ifndef SJME_STANDARD_POSIX
+	#define SJME_STANDARD_POSIX
 #endif
 
-/** Include standard library stuff. */
-#include "stdlib.h"
-
-/** Where code is placed. */
-#ifndef sjme_code
-	#define sjme_code
-#endif
-
-/** Where normal memory is used. */
-#ifndef sjme_mem
-	#define sjme_mem
-#endif
-
-/** Strings in the code area. */
-#ifndef sjme_codestr
-	#define sjme_codestr(v) v
-#endif
-
-/** Strings in the memory area. */
-#ifndef sjme_memstr
-	#define sjme_memstr(v) v
-#endif
-
-/** Do not modify variables. */
-#ifndef sjme_const
-	#define sjme_const const
-#endif
+/** Force POSIX inclusion. */
+#include "sys_posx.h"
 
 /****************************************************************************/
 
@@ -76,13 +51,13 @@ extern "C"
 
 /** Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_cXSYS_STDCH
+#ifdef SJME_cXSYS_LNUXH
 }
-#undef SJME_cXSYS_STDCH
+#undef SJME_cXSYS_LNUXH
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_cXSYS_STDCH */
+#endif /** #ifdef SJME_cXSYS_LNUXH */
 #endif /** #ifdef __cplusplus */
 
 /** Header guard. */
-#endif /* #ifndef SJME_hGSYS_STDCH */
+#endif /* #ifndef SJME_hGSYS_LNUXH */
 
