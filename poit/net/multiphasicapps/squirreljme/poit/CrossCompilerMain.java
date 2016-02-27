@@ -27,6 +27,14 @@ public class CrossCompilerMain
 	 */
 	public static void main(String... __args)
 	{
+		// Force arguments to exist
+		if (__args == null)
+			__args = new String[0];
+		
+		// Not enough arguments?
+		if (__args.length <= 2)
+			throw new IllegalArgumentException("Usage: (os) (arch) (JARs...)");
+		
 		throw new Error("TODO");
 	}
 }

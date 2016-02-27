@@ -82,9 +82,14 @@
 				<arg value="@{os}" />
 				<arg value="@{arch}" />
 				
+				<!-- Always include this -->
+				<arg value="${sjme.jp}cldc.jar" />
+				
+				<!-- Classpath needed for compilation. -->
 				<classpath>
 					<pathelement location="${sjme.jp}cldc.jar" />
 					<pathelement location="${sjme.jp}poit.jar" />
+					<pathelement location="${sjme.jp}zips.jar" />
 				</classpath>
 			</java>
 		</sequential>
