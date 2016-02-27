@@ -441,11 +441,11 @@ extern "C"
 #endif
 
 /** Memory space keywords. */
-#if !defined(sjme_code)
-	#error Must define sjme_code address space.
+#if !defined(sjme_addr_code)
+	#error Must define sjme_addr_code address space.
 #endif
-#if !defined(sjme_mem)
-	#error Must define sjme_mem address space.
+#if !defined(sjme_addr_mem)
+	#error Must define sjme_addr_mem address space.
 #endif
 
 /** Constant. */
@@ -454,11 +454,11 @@ extern "C"
 #endif
 
 /** String specials. */
-#if !defined(sjme_codestr)
-	#error Must define sjme_codestr string modifier.
+#if !defined(sjme_addr_codestr)
+	#error Must define sjme_addr_codestr string modifier.
 #endif
-#if !defined(sjme_memstr)
-	#error Must define sjme_memstr string modifier.
+#if !defined(sjme_addr_memstr)
+	#error Must define sjme_addr_memstr string modifier.
 #endif
 
 /****************************************************************************/
