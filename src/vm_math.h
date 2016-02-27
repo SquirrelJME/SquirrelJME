@@ -9,7 +9,7 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * DESCRIBE THIS.
+ * Java Virtual Machine Numerical Math.
  *
  * @since 2016/02/26
  */
@@ -28,7 +28,79 @@ extern "C"
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
 #endif /** #ifdef __cplusplus */
 
+#include "config.h"
+
 /****************************************************************************/
+
+/** Java boolean. */
+typedef struct jboolean
+{
+	uint8_t v;
+} jboolean;
+
+/** Java byte. */
+typedef struct jbyte
+{
+	int8_t v;
+} jbyte;
+
+/** Java short. */
+typedef struct jshort
+{
+	int16_t v;
+} jshort;
+
+/** Java char. */
+typedef struct jchar
+{
+	uint16_t v;
+} jchar;
+
+/** Java int. */
+typedef struct jint
+{
+	int32_t v;
+} jint;
+
+/** Java long. */
+typedef struct jlong
+{
+	/* 64-bit math might not be supported by the compiler. */
+	#if !defined(UINT64_MAX)
+		int32_t v[2];
+	
+	/* Should be supported. */
+	#else
+		int64_t v;
+	#endif
+} jlong;
+
+/** Java float (32-bit). */
+typedef struct jfloat
+{
+	jint v;
+} jfloat;
+
+/** Java double (64-bit). */
+typedef struct jdouble
+{
+	jlong v;
+} jdouble;
+
+/** Long endianess order. */
+#if SJME_ENDIAN == SJME_ENDIAN_BIG
+	#define SJME_JLONG_HI 0
+	#define SJME_JLONG_LO 1
+#elif SJME_ENDIAN == SJME_ENDIAN_LITTLE
+	#define SJME_JLONG_HI 1
+	#define SJME_JLONG_LO 0
+#else
+	#error Unknown endianess for jlong.
+#endif
+
+/** Double uses the same endiannes as long. */
+#define SJME_JDOUBLE_HI SJME_JLONG_HI
+#define SJME_JDOUBLE_LO SJME_JDOUBLE_LO
 
 /****************************************************************************/
 
