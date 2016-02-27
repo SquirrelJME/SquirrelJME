@@ -42,3 +42,16 @@ general I can run the code on the host virtual machine provided I am careful
 of the APIs I choose (Java ME has a few extra methods that Java SE does not
 have).
 
+## 21:00
+
+Another advantage of being in pure Java would be that I would not need a C
+compiler at all for various systems. However, if a system cannot run any Java
+virtual machine at all, then a cross compiler with itself would be built. I
+suppose this would be kind of similar to Free Pascal except all targets could
+be supported and included. One thing I do not have to worry about is standard
+system libraries, I can use what I need instead of bringing in massive APIs
+and such. Then whatever I learn from this (because it will be much lighter and
+such) I can bring to Squirrnix and continue that compilation system. So
+effectively Squirrnix will be partly based on this environment. I suppose for
+starts I should start small doing this.
+

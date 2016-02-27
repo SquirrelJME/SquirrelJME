@@ -25,25 +25,3 @@ You may donate to SquirrelJME to help keep the author alive:
   * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
     dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
 
-# Programming Guidelines
-
-## Code and Memory Addresses
-
-There are important macros which are to be used when referring to variables and
-data structures which may be in different memory domains. The primary variables
-are `sjme_addr_code` for instructions and `sjme_addr_ram` for random access
-memory.
-
-Extra macros may exist such as `sjme_addr_package` and `sjme_addr_class` for
-package definitions and class definitions respectively.
-
-## Do Not Compare Pointers By Pointer Value
-
-Comparing pointer values for equality will not work for every system. For
-example, some architecture may have similar sized address spaces except
-pointers reference different memory regions. Such devices usually have code
-which is executed by the processor, while also having a separated RAM region
-which contains variable information. Thus this means that if two pointers in
-two different regions have the same address, then comparing them for equality
-will result in `true`.
-
