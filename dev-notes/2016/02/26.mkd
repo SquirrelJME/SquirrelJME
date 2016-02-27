@@ -55,3 +55,12 @@ such) I can bring to Squirrnix and continue that compilation system. So
 effectively Squirrnix will be partly based on this environment. I suppose for
 starts I should start small doing this.
 
+## 23:33
+
+Actually, what I will need is ZIP file handling and decompression support.
+Otherwise without this, I cannot read JARs. However since I do not need
+compatibility with the standard library, I do not need to go crazy over
+compatibility for it. I suppose that virtualized access to memory is done by
+a `SeekableByteStream` for example. This way if a JAR is in a `FileChannel` or
+is in the ROM it can be used regardless of its location.
+

@@ -18,6 +18,12 @@
 	<!-- Current Working Directory -->
 	<property name="sjme.pwd" value="${user.dir}" />
 	
+	<!-- Path separator. -->
+	<property name="sjme.ps" value="${path.separator}" />
+	
+	<!-- JAR prefix. -->
+	<property name="sjme.jp" value="${sjme.pwd}/sjme" />
+	
 	<!-- Main Target -->
 	<target name="main">
 		<fail message="You must specify (os)-(arch) when calling this." />
@@ -51,7 +57,7 @@
 		<attribute name="library" />
 		
 		<sequential>
-			<jar destfile="${sjme.pwd}/sjme@{library}.jar"
+			<jar destfile="${sjme.jp}@{library}.jar"
 				manifest="${sjme.root}/@{library}/META-INF/MANIFEST.MF"
 				filesetmanifest="merge"
 				indexMetaInf="true"
@@ -76,8 +82,8 @@
 				<arg value="@{arch}" />
 				
 				<classpath>
-					<pathelement location="${sjme.pwd}/sjmecldc.jar" />
-					<pathelement location="${sjme.pwd}/sjmepoit.jar" />
+					<pathelement location="${sjme.jp}cldc.jar" />
+					<pathelement location="${sjme.jp}poit.jar" />
 				</classpath>
 			</java>
 		</sequential>
@@ -108,14 +114,25 @@
 	</target>
 	
 	<!-- POIT: Compile -->
-	<target name="poit-compile" depends="cldc-jar">
+	<target name="poit-compile" depends="cldc-jar,zips-jar">
 		<sjme-group-compile library="poit"
-			runpath="${sjme.pwd}/sjmecldc.jar" />
+			runpath="${sjme.jp}cldc.jar${sjme.ps}${sjme.jp}zips.jar" />
 	</target>
 	
 	<!-- POIT: JAR -->
 	<target name="poit-jar" depends="poit-compile">
 		<sjme-group-jar library="poit" />
+	</target>
+	
+	<!-- ZIPS: Compile -->
+	<target name="zips-compile" depends="cldc-jar">
+		<sjme-group-compile library="zips"
+			runpath="${sjme.jp}cldc.jar" />
+	</target>
+	
+	<!-- ZIPS: JAR -->
+	<target name="zips-jar" depends="zips-compile">
+		<sjme-group-jar library="zips" />
 	</target>
 </project>
 
