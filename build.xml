@@ -1,4 +1,117 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<!--
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
+//     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// SquirrelJME is under the GNU Affero General Public License v3+, or later.
+// For more information see license.mkd.
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
 <project name="SquirrelJME" basedir="." default="main">
+	
+	<!-- Project Root Directory -->
+	<property name="sjme.root" value="${basedir}" />
+	
+	<!-- Current Working Directory -->
+	<property name="sjme.pwd" value="${user.dir}" />
+	
+	<!-- Main Target -->
+	<target name="main">
+		<fail message="You must specify (os)-(arch) when calling this." />
+	</target>
+	<!-- *********************************************************************
+	********************************** META **********************************
+	********************************************************************** -->
+	
+	<!-- Compile a code group. -->
+	<macrodef name="sjme-group-compile">
+		<attribute name="library" />
+		<attribute name="runpath" />
+		
+		<sequential>
+			<mkdir dir="${sjme.pwd}/_@{library}" />
+			<javac srcdir="${sjme.root}/@{library}"
+				destdir="${sjme.pwd}/_@{library}"
+				includeantruntime="false"
+				bootclasspath="@{runpath}"
+				classpath="@{runpath}">
+			</javac>
+		</sequential>
+	</macrodef>
+	
+	<!-- Package a code group. -->
+	<macrodef name="sjme-group-jar">
+		<attribute name="library" />
+		
+		<sequential>
+			<jar destfile="${sjme.pwd}/sjme@{library}.jar"
+				manifest="${sjme.root}/@{library}/META-INF/MANIFEST.MF"
+				filesetmanifest="merge"
+				indexMetaInf="true"
+				level="9">
+				<fileset dir="${sjme.pwd}/_@{library}" />
+				<fileset dir="${sjme.root}/@{library}">
+					<exclude name="**/*.java" />
+				</fileset>
+			</jar>
+		</sequential>
+	</macrodef>
+	
+	<!-- Operating System Build. -->
+	<macrodef name="sjme-target">
+		<attribute name="os" />
+		<attribute name="arch" />
+		
+		<sequential>
+			<java classname="net.multiphasicapps.poit.CrossCompilerMain"
+				failonerror="true">
+				<arg value="@{os}" />
+				<arg value="@{arch}" />
+				
+				<classpath>
+					<pathelement location="${sjme.pwd}/sjmecldc.jar" />
+					<pathelement location="${sjme.pwd}/sjmepoit.jar" />
+				</classpath>
+			</java>
+		</sequential>
+	</macrodef>
+	
+	<!-- *********************************************************************
+	******************************** TARGETS *********************************
+	********************************************************************** -->
+	
+	<!-- Linux PowerPC -->
+	<target name="linux-powerpc" depends="poit-jar">
+		<sjme-target os="linux" arch="powerpc" />
+	</target>
+	
+	<!-- *********************************************************************
+	******************************* LIBRARIES ********************************
+	********************************************************************** -->
+	
+	<!-- CLDC: Compile -->
+	<target name="cldc-compile">
+		<sjme-group-compile library="cldc"
+			runpath="${sjme.root}/cldc" />
+	</target>
+	
+	<!-- CLDC: JAR -->
+	<target name="cldc-jar" depends="cldc-compile">
+		<sjme-group-jar library="cldc" />
+	</target>
+	
+	<!-- POIT: Compile -->
+	<target name="poit-compile" depends="cldc-jar">
+		<sjme-group-compile library="poit"
+			runpath="${sjme.pwd}/sjmecldc.jar" />
+	</target>
+	
+	<!-- POIT: JAR -->
+	<target name="poit-jar" depends="poit-compile">
+		<sjme-group-jar library="poit" />
+	</target>
 </project>
 
