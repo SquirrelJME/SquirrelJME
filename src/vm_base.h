@@ -9,20 +9,20 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * DOS Header.
+ * Base virtual machine definitions.
  *
  * @since 2016/02/26
  */
 
 /** Header guard. */
-#ifndef SJME_hGSYS_XDOSH
-#define SJME_hGSYS_XDOSH
+#ifndef SJME_hGVM_BASEH
+#define SJME_hGVM_BASEH
 
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_cXSYS_XDOSH
+#define SJME_cXVM_BASEH
 extern "C"
 {
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
@@ -31,33 +31,37 @@ extern "C"
 /* Configuration. */
 #include "config.h"
 
-/** Specific System Only. */
-#if SJME_TARGET == SJME_TARGET_DOS
-
 /****************************************************************************/
 
-/** Force Standard C. */
-#ifndef SJME_STANDARD_C
-	#define SJME_STANDARD_C
-#endif
+/** Reference to parent is in code. */
+#define SJME_IN_CODE	1
 
-/** Force C inclusion. */
-#include "sys_stdc.h"
+/** Reference to parent is in memory. */
+#define SJME_IN_MEM		2
+
+/** Objects. */
+typedef struct jobject jobject;
+
+/** Classes. */
+typedef struct jclass jclass;
+
+/** Packages. */
+typedef struct jpackage jpackage;
+
+/** String. */
+typedef struct jstring jstring;
 
 /****************************************************************************/
-
-/** End. */
-#endif
 
 /** Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_cXSYS_XDOSH
+#ifdef SJME_cXVM_BASEH
 }
-#undef SJME_cXSYS_XDOSH
+#undef SJME_cXVM_BASEH
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_cXSYS_XDOSH */
+#endif /** #ifdef SJME_cXVM_BASEH */
 #endif /** #ifdef __cplusplus */
 
 /** Header guard. */
-#endif /* #ifndef SJME_hGSYS_XDOSH */
+#endif /* #ifndef SJME_hGVM_BASEH */
 

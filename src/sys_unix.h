@@ -28,6 +28,9 @@ extern "C"
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
 #endif /** #ifdef __cplusplus */
 
+/* Configuration. */
+#include "config.h"
+
 /** Specific System Only. */
 #if SJME_TARGET == SJME_TARGET_UNIX || defined(SJME_STANDARD_UNIX)
 

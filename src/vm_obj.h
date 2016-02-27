@@ -9,20 +9,20 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * DOS Header.
+ * Java Virtual Machine Objects.
  *
  * @since 2016/02/26
  */
 
 /** Header guard. */
-#ifndef SJME_hGSYS_XDOSH
-#define SJME_hGSYS_XDOSH
+#ifndef SJME_hGVM_OBJH
+#define SJME_hGVM_OBJH
 
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_cXSYS_XDOSH
+#define SJME_cXVM_OBJH
 extern "C"
 {
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
@@ -31,33 +31,39 @@ extern "C"
 /* Configuration. */
 #include "config.h"
 
-/** Specific System Only. */
-#if SJME_TARGET == SJME_TARGET_DOS
-
 /****************************************************************************/
 
-/** Force Standard C. */
-#ifndef SJME_STANDARD_C
-	#define SJME_STANDARD_C
-#endif
+/** Include the Java base. */
+#include "vm_base.h"
 
-/** Force C inclusion. */
-#include "sys_stdc.h"
+/** Java object. */
+struct jobject
+{
+	/** Class address area. */
+	int addrclass;	
+	
+	/** The class that this object is owned by, if NULL then is a class. */
+	union
+	{
+		sjme_addr_code jclass* code;
+		sjme_addr_mem jclass* mem;
+	} class;
+	
+	/** The identity hash code of this object. */
+	jint idhashcode;
+};
 
 /****************************************************************************/
-
-/** End. */
-#endif
 
 /** Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_cXSYS_XDOSH
+#ifdef SJME_cXVM_OBJH
 }
-#undef SJME_cXSYS_XDOSH
+#undef SJME_cXVM_OBJH
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_cXSYS_XDOSH */
+#endif /** #ifdef SJME_cXVM_OBJH */
 #endif /** #ifdef __cplusplus */
 
 /** Header guard. */
-#endif /* #ifndef SJME_hGSYS_XDOSH */
+#endif /* #ifndef SJME_hGVM_OBJH */
 

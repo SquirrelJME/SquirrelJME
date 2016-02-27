@@ -44,7 +44,6 @@ extern "C"
 /** Include standard library stuff. */
 #include "stdlib.h"
 
-
 /** If C99 or better, use stdint. */
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) || \
 	(defined(_MSC_VER) && _MSC_VER >= 1600) || \

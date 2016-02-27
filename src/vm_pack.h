@@ -9,20 +9,20 @@
 // --------------------------------------------------------------------------*/
 
 /**
- * DOS Header.
+ * Virtual machine package support.
  *
  * @since 2016/02/26
  */
 
 /** Header guard. */
-#ifndef SJME_hGSYS_XDOSH
-#define SJME_hGSYS_XDOSH
+#ifndef SJME_hGVM_PACKH
+#define SJME_hGVM_PACKH
 
 /** Anti-C++. */
 #ifdef _cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_cXSYS_XDOSH
+#define SJME_cXVM_PACKH
 extern "C"
 {
 #endif /** #ifdef SJME_CXX_IS_EXTERNED */
@@ -31,33 +31,27 @@ extern "C"
 /* Configuration. */
 #include "config.h"
 
-/** Specific System Only. */
-#if SJME_TARGET == SJME_TARGET_DOS
-
 /****************************************************************************/
 
-/** Force Standard C. */
-#ifndef SJME_STANDARD_C
-	#define SJME_STANDARD_C
-#endif
+/** Include the Java base. */
+#include "vm_base.h"
 
-/** Force C inclusion. */
-#include "sys_stdc.h"
+/** Package. */
+struct jpackage
+{
+};
 
 /****************************************************************************/
-
-/** End. */
-#endif
 
 /** Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_cXSYS_XDOSH
+#ifdef SJME_cXVM_PACKH
 }
-#undef SJME_cXSYS_XDOSH
+#undef SJME_cXVM_PACKH
 #undef SJME_CXX_IS_EXTERNED
-#endif /** #ifdef SJME_cXSYS_XDOSH */
+#endif /** #ifdef SJME_cXVM_PACKH */
 #endif /** #ifdef __cplusplus */
 
 /** Header guard. */
-#endif /* #ifndef SJME_hGSYS_XDOSH */
+#endif /* #ifndef SJME_hGVM_PACKH */
 
