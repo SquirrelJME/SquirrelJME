@@ -38,6 +38,10 @@
 				includeantruntime="false"
 				bootclasspath="@{runpath}"
 				classpath="@{runpath}">
+				<compilerarg value="-source" />
+				<compilerarg value="1.7" />
+				<compilerarg value="-target" />
+				<compilerarg value="1.7" />
 			</javac>
 		</sequential>
 	</macrodef>
