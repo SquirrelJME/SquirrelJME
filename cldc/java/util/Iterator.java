@@ -10,11 +10,11 @@
 
 package java.util;
 
-public interface Comparator<T>
+public interface Iterator<E>
 {
-	public abstract int compare(T __a, T __b);
+	public abstract boolean hasNext();
 	
-	@Override
-	public abstract boolean equals(Object __a);
+	public abstract E next();
+	
+	public abstract void remove();
 }
-

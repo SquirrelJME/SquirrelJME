@@ -8,13 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package java.util;
+package java.lang;
 
-public interface Comparator<T>
+import java.util.Iterator;
+
+public interface Iterable<T>
 {
-	public abstract int compare(T __a, T __b);
-	
-	@Override
-	public abstract boolean equals(Object __a);
+	public abstract Iterator<T> iterator();
 }
 

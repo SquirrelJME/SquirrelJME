@@ -45,7 +45,7 @@ public class Object
 	 * @return {@code true} if the two objects are equal.
 	 * @since 2016/02/08
 	 */
-	protected boolean equals(Object __o)
+	public boolean equals(Object __o)
 	{
 		throw new Error("TODO");
 	}

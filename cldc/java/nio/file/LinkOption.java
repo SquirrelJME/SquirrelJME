@@ -8,35 +8,18 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.poit;
+package java.nio.file;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import net.multiphasicapps.squirreljme.zips.ZIPFile;
-
-/**
- * Main entry point for the cross compiler using a real host virtual machine.
- *
- * @since 2016/02/26
- */
-public class CrossCompilerMain
+public enum LinkOption
+	implements OpenOption, CopyOption
 {
-	/**
-	 * Main entry point.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2016/02/26
-	 */
-	public static void main(String... __args)
+	NOFOLLOW_LINKS(),
+	
+	/** End. */
+	;
+	
+	private LinkOption()
 	{
-		// Force arguments to exist
-		if (__args == null)
-			__args = new String[0];
-		
-		// Not enough arguments?
-		if (__args.length <= 2)
-			throw new IllegalArgumentException("Usage: (os) (arch) (JARs...)");
-		
 		throw new Error("TODO");
 	}
 }

@@ -8,13 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package java.util;
+package java.nio.file;
 
-public interface Comparator<T>
+public interface CopyOption
 {
-	public abstract int compare(T __a, T __b);
-	
-	@Override
-	public abstract boolean equals(Object __a);
 }
 
