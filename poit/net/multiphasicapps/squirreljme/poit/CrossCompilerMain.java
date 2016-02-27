@@ -8,7 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.poit;
+package net.multiphasicapps.squirreljme.poit;
+
+import net.multiphasicapps.squirreljme.zips.ZIPFile;
 
 /**
  * Main entry point for the cross compiler using a real host virtual machine.

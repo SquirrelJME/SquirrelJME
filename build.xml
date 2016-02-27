@@ -76,7 +76,8 @@
 		<attribute name="arch" />
 		
 		<sequential>
-			<java classname="net.multiphasicapps.poit.CrossCompilerMain"
+			<java classname=
+					"net.multiphasicapps.squirreljme.poit.CrossCompilerMain"
 				failonerror="true">
 				<arg value="@{os}" />
 				<arg value="@{arch}" />
