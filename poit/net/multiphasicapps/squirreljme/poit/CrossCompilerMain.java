@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.poit;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.zips.ZIPFile;
 
 /**
@@ -36,6 +37,12 @@ public class CrossCompilerMain
 		// Not enough arguments?
 		if (__args.length <= 2)
 			throw new IllegalArgumentException("Usage: (os) (arch) (JARs...)");
+		
+		// Get OS and the architecture
+		String tos = Objects.requireNonNull(__args[0],
+			"No operating system was specified.");
+		String tarch = Objects.requireNonNull(__args[1],
+			"No architecture was specified.");
 		
 		throw new Error("TODO");
 	}

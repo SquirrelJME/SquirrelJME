@@ -13,14 +13,19 @@ package java.util;
 public interface Set<E>
 	extends Collection<E>
 {
+	@Override
 	public abstract boolean add(E __a);
 	
+	@Override
 	public abstract boolean addAll(Collection<? extends E> __a);
 	
+	@Override
 	public abstract void clear();
 	
+	@Override
 	public abstract boolean contains(Object __a);
 	
+	@Override
 	public abstract boolean containsAll(Collection<?> __a);
 	
 	@Override
@@ -29,20 +34,28 @@ public interface Set<E>
 	@Override
 	public abstract int hashCode();
 	
+	@Override
 	public abstract boolean isEmpty();
 	
+	@Override
 	public abstract Iterator<E> iterator();
 	
+	@Override
 	public abstract boolean remove(Object __a);
 	
+	@Override
 	public abstract boolean removeAll(Collection<?> __a);
 	
+	@Override
 	public abstract boolean retainAll(Collection<?> __a);
 	
+	@Override
 	public abstract int size();
 	
+	@Override
 	public abstract Object[] toArray();
 	
+	@Override
 	public abstract <T> T[] toArray(T[] __a);
 }
 
