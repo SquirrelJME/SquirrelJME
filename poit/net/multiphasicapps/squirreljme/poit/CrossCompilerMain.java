@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.squirreljme.poit;
 
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.zips.ZIPFile;
 
@@ -43,6 +46,29 @@ public class CrossCompilerMain
 			"No operating system was specified.");
 		String tarch = Objects.requireNonNull(__args[1],
 			"No architecture was specified.");
+		
+		// Go through all input JAR files to recompile as a group
+		for (int i = 2; i < __args.length; i++)
+		{
+			// Try opening it
+			try (FileChannel fc = FileChannel.open(Paths.get(__args[i]),
+				StandardOpenOption.READ))
+			{
+				// Open zip file
+				ZIPFile zip = new ZIPFile(fc);
+				
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Failed to read/write
+			catch (IOException ioe)
+			{
+				throw new RuntimeException(ioe);
+			}
+			
+			throw new Error("TODO");
+		}
 		
 		throw new Error("TODO");
 	}
