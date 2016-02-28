@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.zips.ZIPFile;
+import net.multiphasicapps.squirreljme.zips.StandardZIPFile;
 
 /**
  * Main entry point for the cross compiler using a real host virtual machine.
@@ -55,7 +55,7 @@ public class CrossCompilerMain
 				StandardOpenOption.READ))
 			{
 				// Open zip file
-				ZIPFile zip = new ZIPFile(fc);
+				StandardZIPFile zip = new StandardZIPFile(fc);
 				
 				if (true)
 					throw new Error("TODO");

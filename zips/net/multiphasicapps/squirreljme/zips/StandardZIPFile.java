@@ -17,7 +17,7 @@ import java.nio.channels.SeekableByteChannel;
  *
  * @since 2016/02/26
  */
-public class ZIPFile
+public class StandardZIPFile
 {
 	/** The base channel to read from. */
 	protected final SeekableByteChannel channel;
@@ -30,7 +30,7 @@ public class ZIPFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/02/26
 	 */
-	public ZIPFile(SeekableByteChannel __sbc)
+	public StandardZIPFile(SeekableByteChannel __sbc)
 		throws NullPointerException
 	{
 		// Check
