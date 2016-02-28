@@ -22,15 +22,30 @@
 	<property name="sjme.ps" value="${path.separator}" />
 	
 	<!-- JAR prefix. -->
-	<property name="sjme.jp" value="${sjme.pwd}/sjme" />
+	<property name="sjme.jp" value="${sjme.pwd}/sq" />
 	
 	<!-- Main Target -->
 	<target name="main">
 		<fail message="You must specify (os)-(arch) when calling this." />
 	</target>
+	
+	<!-- Clean -->
+	<target name="clean"
+		depends="cldc-clean,zips-clean,poit-clean,poit-jar-clean">
+	</target>
+	
 	<!-- *********************************************************************
 	********************************** META **********************************
 	********************************************************************** -->
+	
+	<!-- Clean a code group -->
+	<macrodef name="sjme-group-clean">
+		<attribute name="library" />
+	
+		<sequential>
+			<delete file="${sjme.jp}@{library}.jar" />
+		</sequential>
+	</macrodef>
 	
 	<!-- Compile a code group. -->
 	<macrodef name="sjme-group-compile">
@@ -67,6 +82,9 @@
 					<exclude name="**/*.java" />
 				</fileset>
 			</jar>
+			
+			<!-- Clean up after self -->
+			<delete dir="${sjme.pwd}/_@{library}" />
 		</sequential>
 	</macrodef>
 	
@@ -77,7 +95,7 @@
 		
 		<sequential>
 			<java classname=
-					"net.multiphasicapps.squirreljme.poit.CrossCompilerMain"
+				"net.multiphasicapps.squirreljme.poit.jar.CrossCompilerMain"
 				failonerror="true">
 				<arg value="@{os}" />
 				<arg value="@{arch}" />
@@ -89,6 +107,7 @@
 				<classpath>
 					<pathelement location="${sjme.jp}cldc.jar" />
 					<pathelement location="${sjme.jp}poit.jar" />
+					<pathelement location="${sjme.jp}poit-jar.jar" />
 					<pathelement location="${sjme.jp}zips.jar" />
 				</classpath>
 			</java>
@@ -100,13 +119,18 @@
 	********************************************************************** -->
 	
 	<!-- Linux PowerPC -->
-	<target name="linux-powerpc" depends="poit-jar">
+	<target name="linux-powerpc" depends="clean,poit-jar-jar">
 		<sjme-target os="linux" arch="powerpc" />
 	</target>
 	
 	<!-- *********************************************************************
 	******************************* LIBRARIES ********************************
 	********************************************************************** -->
+	
+	<!-- CLDC: Clean -->
+	<target name="cldc-clean">
+		<sjme-group-clean library="cldc" />
+	</target>
 	
 	<!-- CLDC: Compile -->
 	<target name="cldc-compile">
@@ -119,15 +143,45 @@
 		<sjme-group-jar library="cldc" />
 	</target>
 	
+	<!-- POIT: Clean -->
+	<target name="poit-clean">
+		<sjme-group-clean library="poit" />
+	</target>
+	
 	<!-- POIT: Compile -->
+	<property name="sjme.poit.cp"
+		value="${sjme.jp}cldc.jar${sjme.ps}${sjme.jp}zips.jar" />
 	<target name="poit-compile" depends="cldc-jar,zips-jar">
 		<sjme-group-compile library="poit"
-			runpath="${sjme.jp}cldc.jar${sjme.ps}${sjme.jp}zips.jar" />
+			runpath="${sjme.poit.cp}" />
 	</target>
 	
 	<!-- POIT: JAR -->
 	<target name="poit-jar" depends="poit-compile">
 		<sjme-group-jar library="poit" />
+	</target>
+	
+	<!-- POIT (JAR): Clean -->
+	<target name="poit-jar-clean">
+		<sjme-group-clean library="poit-jar" />
+	</target>
+	
+	<!-- POIT (JAR): Compile -->
+	<property name="sjme.poit-jar.cp"
+		value="${sjme.poit.cp}${sjme.ps}${sjme.jp}poit-jar.jar" />
+	<target name="poit-jar-compile" depends="poit-jar">
+		<sjme-group-compile library="poit-jar"
+			runpath="${sjme.poit-jar.cp}" />
+	</target>
+	
+	<!-- POIT (JAR): JAR -->
+	<target name="poit-jar-jar" depends="poit-jar-compile">
+		<sjme-group-jar library="poit-jar" />
+	</target>
+	
+	<!-- ZIPS: Clean -->
+	<target name="zips-clean">
+		<sjme-group-clean library="zips" />
 	</target>
 	
 	<!-- ZIPS: Compile -->

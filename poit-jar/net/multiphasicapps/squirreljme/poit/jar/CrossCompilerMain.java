@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.poit;
+package net.multiphasicapps.squirreljme.poit.jar;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
