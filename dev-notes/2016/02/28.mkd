@@ -10,3 +10,10 @@ that is very light for this to work.
 What I really need though is a generator for build.xmls which I can recurse
 into when compling things potentially.
 
+## 11:57
+
+I believe I am going to use a shell script instead, this would be limited to
+building on UNIX like systems only however. But on non-UNIX systems this would
+prove a bit more difficult. I can do something similar to Squirrnix and have
+a compilation of a basic system which builds things.
+

@@ -29,31 +29,24 @@
 		<fail message="You must specify (os)-(arch) when calling this." />
 	</target>
 	
-	<!-- Clean -->
-	<target name="clean"
-		depends="cldc-clean,zips-clean,poit-clean,poit-jar-clean">
-	</target>
-	
 	<!-- *********************************************************************
 	********************************** META **********************************
 	********************************************************************** -->
 	
-	<!-- Clean a code group -->
-	<macrodef name="sjme-group-clean">
-		<attribute name="library" />
-	
-		<sequential>
-			<delete file="${sjme.jp}@{library}.jar" />
-		</sequential>
-	</macrodef>
-	
-	<!-- Compile a code group. -->
-	<macrodef name="sjme-group-compile">
+	<!-- Clean, compile, and JAR -->
+	<macrodef name="sjme-group">
 		<attribute name="library" />
 		<attribute name="runpath" />
 		
 		<sequential>
+			<!-- Cleanup before compile -->
+			<delete file="${sjme.jp}@{library}.jar" />
+			<delete dir="${sjme.pwd}/_@{library}" />
+			
+			<!-- Make temporary build dir -->
 			<mkdir dir="${sjme.pwd}/_@{library}" />
+			
+			<!-- Compile code -->
 			<javac srcdir="${sjme.root}/@{library}"
 				destdir="${sjme.pwd}/_@{library}"
 				includeantruntime="false"
@@ -64,14 +57,8 @@
 				<compilerarg value="-target" />
 				<compilerarg value="1.7" />
 			</javac>
-		</sequential>
-	</macrodef>
-	
-	<!-- Package a code group. -->
-	<macrodef name="sjme-group-jar">
-		<attribute name="library" />
-		
-		<sequential>
+			
+			<!-- Package JAR -->
 			<jar destfile="${sjme.jp}@{library}.jar"
 				manifest="${sjme.root}/@{library}/META-INF/MANIFEST.MF"
 				filesetmanifest="merge"
@@ -83,7 +70,7 @@
 				</fileset>
 			</jar>
 			
-			<!-- Clean up after self -->
+			<!-- Clean up after build -->
 			<delete dir="${sjme.pwd}/_@{library}" />
 		</sequential>
 	</macrodef>
@@ -119,7 +106,7 @@
 	********************************************************************** -->
 	
 	<!-- Linux PowerPC -->
-	<target name="linux-powerpc" depends="clean,poit-jar-jar">
+	<target name="linux-powerpc" depends="poit-jar">
 		<sjme-target os="linux" arch="powerpc" />
 	</target>
 	
@@ -127,72 +114,32 @@
 	******************************* LIBRARIES ********************************
 	********************************************************************** -->
 	
-	<!-- CLDC: Clean -->
-	<target name="cldc-clean">
-		<sjme-group-clean library="cldc" />
-	</target>
-	
-	<!-- CLDC: Compile -->
-	<target name="cldc-compile">
-		<sjme-group-compile library="cldc"
+	<!-- CLDC -->
+	<target name="cldc">
+		<sjme-group library="cldc"
 			runpath="${sjme.root}/cldc" />
 	</target>
 	
-	<!-- CLDC: JAR -->
-	<target name="cldc-jar" depends="cldc-compile">
-		<sjme-group-jar library="cldc" />
-	</target>
-	
-	<!-- POIT: Clean -->
-	<target name="poit-clean">
-		<sjme-group-clean library="poit" />
-	</target>
-	
-	<!-- POIT: Compile -->
+	<!-- POIT -->
 	<property name="sjme.poit.cp"
 		value="${sjme.jp}cldc.jar${sjme.ps}${sjme.jp}zips.jar" />
-	<target name="poit-compile" depends="cldc-jar,zips-jar">
-		<sjme-group-compile library="poit"
+	<target name="poit" depends="cldc,zips">
+		<sjme-group library="poit"
 			runpath="${sjme.poit.cp}" />
 	</target>
 	
-	<!-- POIT: JAR -->
-	<target name="poit-jar" depends="poit-compile">
-		<sjme-group-jar library="poit" />
-	</target>
-	
-	<!-- POIT (JAR): Clean -->
-	<target name="poit-jar-clean">
-		<sjme-group-clean library="poit-jar" />
-	</target>
-	
-	<!-- POIT (JAR): Compile -->
+	<!-- POIT (JAR) -->
 	<property name="sjme.poit-jar.cp"
 		value="${sjme.poit.cp}${sjme.ps}${sjme.jp}poit-jar.jar" />
-	<target name="poit-jar-compile" depends="poit-jar">
-		<sjme-group-compile library="poit-jar"
+	<target name="poit-jar" depends="poit">
+		<sjme-group library="poit-jar"
 			runpath="${sjme.poit-jar.cp}" />
 	</target>
 	
-	<!-- POIT (JAR): JAR -->
-	<target name="poit-jar-jar" depends="poit-jar-compile">
-		<sjme-group-jar library="poit-jar" />
-	</target>
-	
-	<!-- ZIPS: Clean -->
-	<target name="zips-clean">
-		<sjme-group-clean library="zips" />
-	</target>
-	
-	<!-- ZIPS: Compile -->
-	<target name="zips-compile" depends="cldc-jar">
-		<sjme-group-compile library="zips"
+	<!-- ZIPS -->
+	<target name="zips" depends="cldc">
+		<sjme-group library="zips"
 			runpath="${sjme.jp}cldc.jar" />
-	</target>
-	
-	<!-- ZIPS: JAR -->
-	<target name="zips-jar" depends="zips-compile">
-		<sjme-group-jar library="zips" />
 	</target>
 </project>
 
