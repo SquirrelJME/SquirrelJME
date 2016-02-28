@@ -1,0 +1,12 @@
+# 2016/02/28
+
+## 00:35
+
+Ant is going to get a bit complex, so I suppose I need a kind of mini hairball
+that is very light for this to work.
+
+## 09:53
+
+What I really need though is a generator for build.xmls which I can recurse
+into when compling things potentially.
+
