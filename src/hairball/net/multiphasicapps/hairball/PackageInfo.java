@@ -149,11 +149,36 @@ public class PackageInfo
 						
 						// Dependency on another package
 					case "hairball-depends":
-						throw new Error("TODO");
+						// Dependencies are split by spaces
+						int sn = val.length();
+						for (int q = 0; q <= sn; q++)
+						{
+							// Get character here
+							char c = (q < sn ? val.charAt(q) : ' ');
+							
+							// Ignore starting spaces
+							if (c <= ' ')
+								continue;
+							
+							// Otherwise read until the next space
+							int start = q;
+							for (; q < sn; q++)
+							{
+								// Get character
+								c = val.charAt(q);
+								
+								// Is a space? Stop
+								if (c <= ' ')
+									break;
+							}
+							
+							// Add dependency
+							deps.add(val.substring(start, q));
+						}
+						break;
 					
 						// Unknown
 					default:
-						System.err.println("Bad key " + key);
 						break;
 				}
 			}
