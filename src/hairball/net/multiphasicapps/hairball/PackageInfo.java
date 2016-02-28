@@ -10,9 +10,13 @@
 
 package net.multiphasicapps.hairball;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
+import java.nio.file.StandardOpenOption;
 
 /**
  * This contains package information.
@@ -21,16 +25,11 @@ import java.util.jar.Manifest;
  */
 public class PackageInfo
 {
-	/** Is a package manifest? */
-	public static final Attributes.Name HAIRBALL_IS_PACKAGE =
-		new Attributes.Name("Hairball-Is-Package");
-	
-	/** Dependencies? */
-	public static final Attributes.Name HAIRBALL_DEPENDS =
-		new Attributes.Name("Hairball-Depends");
-	
 	/** The package root. */
-	protected final Path root;	
+	protected final Path root;
+	
+	/** Is this package valid? */
+	protected final boolean valid;
 	
 	/**
 	 * The path to the package root.
@@ -48,6 +47,40 @@ public class PackageInfo
 		
 		// Set
 		root = __p;
+		
+		// Guessed manifest location
+		Path mfp = root.resolve("META-INF").resolve("MANIFEST.MF");
+		
+		// Read the manifest
+		boolean iv = false;
+		try (FileChannel fc = FileChannel.open(mfp, StandardOpenOption.READ);
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+				Channels.newInputStream(fc), "utf-8")))
+		{
+			// Read line by line
+			for (;;)
+			{
+				// Read
+				String ln = br.readLine();
+				
+				// EOF?
+				if (ln == null)
+					break;
+				
+				// 
+			}
+			
+			// Is valid
+			iv = true;
+		}
+		
+		// Failed to read
+		catch (IOException ioe)
+		{
+		}
+		
+		// Set validity
+		valid = iv;
 	}
 	
 	/**
@@ -58,7 +91,7 @@ public class PackageInfo
 	 */
 	public boolean isValid()
 	{
-		throw new Error("TODO");
+		return valid;
 	}
 	
 	/**
@@ -69,6 +102,40 @@ public class PackageInfo
 	public String toString()
 	{
 		return root.getFileName().toString();
+	}
+	
+	/**
+	 * Performs an ASCII lowercase on the given string.
+	 *
+	 * @param __in Input string to lowercase.
+	 * @return The lowercased string using only ASCII data.
+	 * @since 2016/02/28
+	 */
+	private static final String __asciiLowerCase(String __in)
+		throws NullPointerException
+	{
+		// Check
+		if (__in == null)
+			throw new NullPointerException();
+		
+		// Output
+		StringBuilder sb = new StringBuilder();
+		
+		// Go through input string and lowercase
+		int n = __in.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __in.charAt(i);
+			
+			// Lower it
+			if (c >= 'A' && c <= 'Z')
+				c = (char)('a' + (c - 'A'));
+			
+			sb.append(c);
+		}
+		
+		// Build it
+		return sb.toString();
 	}
 }
 
