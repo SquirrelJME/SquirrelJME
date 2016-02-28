@@ -38,6 +38,8 @@
 				<pathelement location="${user.dir}${ds}hairball.jar" />
 				<pathelement location="${user.dir}${ds}collections.jar" />
 				<pathelement location="${user.dir}${ds}interpreter.jar" />
+				<pathelement
+					location="${user.dir}${ds}compression-library.jar" />
 			</classpath>
 			<arg value="${sjme.pwd}" />
 			<arg value="${sjme.src}" />
@@ -45,7 +47,8 @@
 	</target>
 	
 	<!-- Compile hairball -->
-	<target name="compile" depends="jar-collections,jar-interpreter">
+	<target name="compile"
+		depends="jar-collections,jar-interpreter,jar-compression-library">
 		<delete dir="${sjme.pwd}${ds}_hairball" />
 		<mkdir dir="${sjme.pwd}${ds}_hairball" />
 		<javac srcdir="${sjme.src}${ds}hairball"
@@ -55,6 +58,8 @@
 			<classpath>
 				<pathelement location="${user.dir}${ds}collections.jar" />
 				<pathelement location="${user.dir}${ds}interpreter.jar" />
+				<pathelement
+					location="${user.dir}${ds}compression-library.jar" />
 			</classpath>
 			<compilerarg value="-source" />
 			<compilerarg value="1.7" />
@@ -157,6 +162,43 @@
 	<target name="clean-interpreter">
 		<delete file="${user.dir}${ds}interpreter.jar" />
 		<delete dir="${sjme.pwd}${ds}_interpreter" />
+	</target>
+	
+	<!-- Compile Compression Library -->
+	<target name="compile-compression-library">
+		<delete dir="${sjme.pwd}${ds}_compression-library" />
+		<mkdir dir="${sjme.pwd}${ds}_compression-library" />
+		<javac srcdir="${sjme.src}${ds}compression-library"
+			destdir="${sjme.pwd}${ds}_compression-library"
+			includeantruntime="false"
+			debug="true">
+			<compilerarg value="-source" />
+			<compilerarg value="1.7" />
+			<compilerarg value="-target" />
+			<compilerarg value="1.7" />
+			<compilerarg value="-g" />
+		</javac>
+	</target>
+	
+	<!-- Package Compression Library -->
+	<target name="jar-compression-library"
+		depends="compile-compression-library">
+		<jar destfile="${user.dir}${ds}compression-library.jar"
+	manifest="${sjme.src}${ds}compression-library${ds}META-INF${ds}MANIFEST.MF"
+			filesetmanifest="merge"
+			indexMetaInf="true"
+			level="9">
+			<fileset dir="${sjme.pwd}${ds}_compression-library" />
+			<fileset dir="${sjme.src}${ds}compression-library">
+				<exclude name="**/*.java" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<!-- Clean Compression Library -->
+	<target name="clean-compression-library">
+		<delete file="${user.dir}${ds}compression-library.jar" />
+		<delete dir="${sjme.pwd}${ds}_compression-library" />
 	</target>
 </project>
 
