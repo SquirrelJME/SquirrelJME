@@ -11,6 +11,8 @@
 package net.multiphasicapps.hairball;
 
 import java.nio.file.Path;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 /**
  * This contains package information.
@@ -19,6 +21,14 @@ import java.nio.file.Path;
  */
 public class PackageInfo
 {
+	/** Is a package manifest? */
+	public static final Attributes.Name HAIRBALL_IS_PACKAGE =
+		new Attributes.Name("Hairball-Is-Package");
+	
+	/** Dependencies? */
+	public static final Attributes.Name HAIRBALL_DEPENDS =
+		new Attributes.Name("Hairball-Depends");
+	
 	/** The package root. */
 	protected final Path root;	
 	
