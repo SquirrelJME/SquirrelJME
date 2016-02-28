@@ -15,11 +15,17 @@
 	<!-- Project Root Directory -->
 	<property name="sjme.root" value="${basedir}" />
 	
+	<!-- Path separator. -->
+	<property name="ps" value="${path.separator}" />
+	
+	<!-- Dir separator. -->
+	<property name="ds" value="${file.separator}" />
+	
+	<!-- Sources -->
+	<property name="sjme.src" value="${sjme.root}${ds}src" />
+	
 	<!-- Current Working Directory -->
 	<property name="sjme.pwd" value="${user.dir}" />
-	
-	<!-- Path separator. -->
-	<property name="sjme.ps" value="${path.separator}" />
 	
 	<!-- Default main -->
 	<target name="main" depends="clean,jar,run">
@@ -27,17 +33,18 @@
 	
 	<!-- Run -->
 	<target name="run" depends="jar">
-		<java jar="hairball.jar" fork="true" />
+		<java jar="hairball.jar" fork="true">
+			<arg value="${sjme.pwd}" />
+			<arg value="${sjme.src}" />
+		</java>
 	</target>
 	
 	<!-- Compile hairball -->
 	<target name="compile">
-		<mkdir dir="${sjme.pwd}/_hairball" />
-		<javac srcdir="${sjme.root}/src/hairball"
-			destdir="${sjme.pwd}/_hairball"
-			includeantruntime="false"
-			bootclasspath="@{runpath}"
-			classpath="@{runpath}">
+		<mkdir dir="${sjme.pwd}${ds}_hairball" />
+		<javac srcdir="${sjme.src}${ds}hairball"
+			destdir="${sjme.pwd}${ds}_hairball"
+			includeantruntime="false">
 			<compilerarg value="-source" />
 			<compilerarg value="1.7" />
 			<compilerarg value="-target" />
@@ -48,12 +55,12 @@
 	<!-- Package hairball -->
 	<target name="jar" depends="compile">
 		<jar destfile="hairball.jar"
-			manifest="${sjme.root}/src/hairball/META-INF/MANIFEST.MF"
+			manifest="${sjme.src}${ds}hairball${ds}META-INF${ds}MANIFEST.MF"
 			filesetmanifest="merge"
 			indexMetaInf="true"
 			level="9">
-			<fileset dir="${sjme.pwd}/_hairball" />
-			<fileset dir="${sjme.root}/src/hairball">
+			<fileset dir="${sjme.pwd}${ds}_hairball" />
+			<fileset dir="${sjme.src}${ds}hairball">
 				<exclude name="**/*.java" />
 			</fileset>
 		</jar>
@@ -62,7 +69,7 @@
 	<!-- Clean hairball -->
 	<target name="clean">
 		<delete file="hairball.jar" />
-		<delete dir="${sjme.pwd}/_hairball" />
+		<delete dir="${sjme.pwd}${ds}_hairball" />
 	</target>
 </project>
 
