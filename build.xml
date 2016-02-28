@@ -50,7 +50,8 @@
 		<javac srcdir="${sjme.src}${ds}hairball"
 			destdir="${sjme.pwd}${ds}_hairball"
 			includeantruntime="false"
-			classpath="${user.dir}${ds}collections.jar">
+			classpath="${user.dir}${ds}collections.jar"
+			debug="true">
 			<compilerarg value="-source" />
 			<compilerarg value="1.7" />
 			<compilerarg value="-target" />
@@ -85,7 +86,8 @@
 		<mkdir dir="${sjme.pwd}${ds}_collections" />
 		<javac srcdir="${sjme.src}${ds}collections"
 			destdir="${sjme.pwd}${ds}_collections"
-			includeantruntime="false">
+			includeantruntime="false"
+			debug="true">
 			<compilerarg value="-source" />
 			<compilerarg value="1.7" />
 			<compilerarg value="-target" />
