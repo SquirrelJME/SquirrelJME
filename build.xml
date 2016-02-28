@@ -33,7 +33,7 @@
 	
 	<!-- Run -->
 	<target name="run" depends="jar">
-		<java jar="hairball.jar" fork="true">
+		<java jar="${user.dir}${ds}hairball.jar" fork="true">
 			<arg value="${sjme.pwd}" />
 			<arg value="${sjme.src}" />
 		</java>
@@ -54,7 +54,7 @@
 	
 	<!-- Package hairball -->
 	<target name="jar" depends="compile">
-		<jar destfile="hairball.jar"
+		<jar destfile="${user.dir}${ds}hairball.jar"
 			manifest="${sjme.src}${ds}hairball${ds}META-INF${ds}MANIFEST.MF"
 			filesetmanifest="merge"
 			indexMetaInf="true"
@@ -68,7 +68,7 @@
 	
 	<!-- Clean hairball -->
 	<target name="clean">
-		<delete file="hairball.jar" />
+		<delete file="${user.dir}${ds}hairball.jar" />
 		<delete dir="${sjme.pwd}${ds}_hairball" />
 	</target>
 </project>

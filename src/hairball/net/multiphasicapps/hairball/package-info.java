@@ -8,24 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.hairball;
-
 /**
- * Main entry point for hairball.
+ * This contains a variant (re-written) version of the hairball system which
+ * is lighter.
  *
  * @since 2016/02/28
  */
-public class Main
-{
-	/**
-	 * Main entry point.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2016/02/28
-	 */
-	public static void main(String... __args)
-	{
-		throw new Error("TODO");
-	}
-}
+
+package net.multiphasicapps.hairball;
 
