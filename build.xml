@@ -21,125 +21,48 @@
 	<!-- Path separator. -->
 	<property name="sjme.ps" value="${path.separator}" />
 	
-	<!-- JAR prefix. -->
-	<property name="sjme.jp" value="${sjme.pwd}/sq" />
-	
-	<!-- Main Target -->
-	<target name="main">
-		<fail message="You must specify (os)-(arch) when calling this." />
+	<!-- Default main -->
+	<target name="main" depends="clean,jar,run">
 	</target>
 	
-	<!-- *********************************************************************
-	********************************** META **********************************
-	********************************************************************** -->
-	
-	<!-- Clean, compile, and JAR -->
-	<macrodef name="sjme-group">
-		<attribute name="library" />
-		<attribute name="runpath" />
-		
-		<sequential>
-			<!-- Cleanup before compile -->
-			<delete file="${sjme.jp}@{library}.jar" />
-			<delete dir="${sjme.pwd}/_@{library}" />
-			
-			<!-- Make temporary build dir -->
-			<mkdir dir="${sjme.pwd}/_@{library}" />
-			
-			<!-- Compile code -->
-			<javac srcdir="${sjme.root}/@{library}"
-				destdir="${sjme.pwd}/_@{library}"
-				includeantruntime="false"
-				bootclasspath="@{runpath}"
-				classpath="@{runpath}">
-				<compilerarg value="-source" />
-				<compilerarg value="1.7" />
-				<compilerarg value="-target" />
-				<compilerarg value="1.7" />
-			</javac>
-			
-			<!-- Package JAR -->
-			<jar destfile="${sjme.jp}@{library}.jar"
-				manifest="${sjme.root}/@{library}/META-INF/MANIFEST.MF"
-				filesetmanifest="merge"
-				indexMetaInf="true"
-				level="9">
-				<fileset dir="${sjme.pwd}/_@{library}" />
-				<fileset dir="${sjme.root}/@{library}">
-					<exclude name="**/*.java" />
-				</fileset>
-			</jar>
-			
-			<!-- Clean up after build -->
-			<delete dir="${sjme.pwd}/_@{library}" />
-		</sequential>
-	</macrodef>
-	
-	<!-- Operating System Build. -->
-	<macrodef name="sjme-target">
-		<attribute name="os" />
-		<attribute name="arch" />
-		
-		<sequential>
-			<java classname=
-				"net.multiphasicapps.squirreljme.poit.jar.CrossCompilerMain"
-				failonerror="true">
-				<arg value="@{os}" />
-				<arg value="@{arch}" />
-				
-				<!-- Always include this -->
-				<arg value="${sjme.jp}cldc.jar" />
-				
-				<!-- Classpath needed for compilation. -->
-				<classpath>
-					<pathelement location="${sjme.jp}cldc.jar" />
-					<pathelement location="${sjme.jp}poit.jar" />
-					<pathelement location="${sjme.jp}poit-jar.jar" />
-					<pathelement location="${sjme.jp}zips.jar" />
-				</classpath>
-			</java>
-		</sequential>
-	</macrodef>
-	
-	<!-- *********************************************************************
-	******************************** TARGETS *********************************
-	********************************************************************** -->
-	
-	<!-- Linux PowerPC -->
-	<target name="linux-powerpc" depends="poit-jar">
-		<sjme-target os="linux" arch="powerpc" />
+	<!-- Run -->
+	<target name="run" depends="jar">
+		<java jar="hairball.jar" fork="true" />
 	</target>
 	
-	<!-- *********************************************************************
-	******************************* LIBRARIES ********************************
-	********************************************************************** -->
-	
-	<!-- CLDC -->
-	<target name="cldc">
-		<sjme-group library="cldc"
-			runpath="${sjme.root}/cldc" />
+	<!-- Compile hairball -->
+	<target name="compile">
+		<mkdir dir="${sjme.pwd}/_hairball" />
+		<javac srcdir="${sjme.root}/src/hairball"
+			destdir="${sjme.pwd}/_hairball"
+			includeantruntime="false"
+			bootclasspath="@{runpath}"
+			classpath="@{runpath}">
+			<compilerarg value="-source" />
+			<compilerarg value="1.7" />
+			<compilerarg value="-target" />
+			<compilerarg value="1.7" />
+		</javac>
 	</target>
 	
-	<!-- POIT -->
-	<property name="sjme.poit.cp"
-		value="${sjme.jp}cldc.jar${sjme.ps}${sjme.jp}zips.jar" />
-	<target name="poit" depends="cldc,zips">
-		<sjme-group library="poit"
-			runpath="${sjme.poit.cp}" />
+	<!-- Package hairball -->
+	<target name="jar" depends="compile">
+		<jar destfile="hairball.jar"
+			manifest="${sjme.root}/src/hairball/META-INF/MANIFEST.MF"
+			filesetmanifest="merge"
+			indexMetaInf="true"
+			level="9">
+			<fileset dir="${sjme.pwd}/_hairball" />
+			<fileset dir="${sjme.root}/src/hairball">
+				<exclude name="**/*.java" />
+			</fileset>
+		</jar>
 	</target>
 	
-	<!-- POIT (JAR) -->
-	<property name="sjme.poit-jar.cp"
-		value="${sjme.poit.cp}${sjme.ps}${sjme.jp}poit-jar.jar" />
-	<target name="poit-jar" depends="poit">
-		<sjme-group library="poit-jar"
-			runpath="${sjme.poit-jar.cp}" />
-	</target>
-	
-	<!-- ZIPS -->
-	<target name="zips" depends="cldc">
-		<sjme-group library="zips"
-			runpath="${sjme.jp}cldc.jar" />
+	<!-- Clean hairball -->
+	<target name="clean">
+		<delete file="hairball.jar" />
+		<delete dir="${sjme.pwd}/_hairball" />
 	</target>
 </project>
 
