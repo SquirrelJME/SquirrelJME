@@ -49,6 +49,7 @@
 			<compilerarg value="1.7" />
 			<compilerarg value="-target" />
 			<compilerarg value="1.7" />
+			<compilerarg value="-g" />
 		</javac>
 	</target>
 	
