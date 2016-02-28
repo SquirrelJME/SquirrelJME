@@ -4,3 +4,9 @@
 
 Java ME 8 would probably have better been called Java ME 7.
 
+## 19:18
+
+Well JSR216 has a ZIPFile. However JSR216, also called the Personal Profile
+contains a large chunk of Java which includes AWT. Would rather use JavaFX for
+JavaME if such a thing exists.
+
