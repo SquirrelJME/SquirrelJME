@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Hairball-Package: collections
+Hairball-Depends: javame-cldc
+Implementation-Title: Extra Collections
+Implementation-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
+Implementation-Version: 1.8.0.20160228
+

@@ -18,10 +18,13 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 
 /**
  * This contains package information.
@@ -38,6 +41,9 @@ public class PackageInfo
 	
 	/** The name of this package. */
 	protected final String name;
+	
+	/** Dependencies of this package. */
+	protected final Set<String> depends;
 	
 	/**
 	 * The path to the package root.
@@ -61,6 +67,9 @@ public class PackageInfo
 		
 		// Is hairball?
 		boolean ishb = false;
+		
+		// Dependencies?
+		Set<String> deps = new HashSet<>();
 		
 		// Read the manifest
 		boolean iv = false;
@@ -135,9 +144,10 @@ public class PackageInfo
 				{
 						// Is this a hairball package?
 					case "hairball-package":
-						throw new Error("TODO");
+						// This just is indicative that it is one.
+						break;
 						
-						// Dependency
+						// Dependency on another package
 					case "hairball-depends":
 						throw new Error("TODO");
 					
@@ -166,6 +176,9 @@ public class PackageInfo
 		
 		// Set validity
 		valid = iv;
+		
+		// Lock in dependencies
+		depends = MissingCollections.<String>unmodifiableSet(deps);
 		
 		// Set name
 		name = __asciiLowerCase(root.getFileName().toString());
