@@ -17,3 +17,7 @@ building on UNIX like systems only however. But on non-UNIX systems this would
 prove a bit more difficult. I can do something similar to Squirrnix and have
 a compilation of a basic system which builds things.
 
+## 16:45
+
+I never realized that `LinkedList` was a `Deque`, that is pretty nice.
+

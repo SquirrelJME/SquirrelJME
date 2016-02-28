@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Main-Class: net.multiphasicapps.hairball.Main
+Hairball-Package: hairball
 Implementation-Title: Hairball
 Implementation-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
-Implementation-Version: 1.7
+Implementation-Version: 1.8.0.20160228
 

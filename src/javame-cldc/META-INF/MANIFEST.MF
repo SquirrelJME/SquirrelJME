@@ -1,2 +1,7 @@
 Manifest-Version: 1.0
+Hairball-Package: javame-cldc
+Hairball-Depends:
+Implementation-Title: Java 8 Connection Limited Device Configuration
+Implementation-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
+Implementation-Version: 1.8.0.20160228
 
