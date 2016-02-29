@@ -19,6 +19,12 @@ __exedir="$(dirname -- "$0")"
 # If no arguments, then assume hairball
 if [ "$#" -le "0" ]
 then
+	"$0" "target"
+	exit $?
+
+# Target a specific OS/Arch
+elif [ "$1" = "target" ]
+then
 	# Build hairball
 	if ! "$0" "build" "hairball"
 	then
@@ -27,12 +33,11 @@ then
 	fi
 	
 	# Launch hairball
-	"$0" "launch" "hairball"
+	"$0" "launch" "hairball" "." "$__exedir/src" "$2" "$3"
 	exit $?
-fi
 
-# Launch hairball
-if [ "$1" = "launch" ]
+# Launch a package
+elif [ "$1" = "launch" ]
 then
 	# Need arguments?
 	if [ "$#" -le "1" ]
@@ -43,6 +48,9 @@ then
 	
 	# The package to launch
 	__pack="$2"
+	
+	# Shift down two so "launch foo" are not included
+	shift 2
 	
 	# Launch the given command
 	java -cp "$("$0" "launchclasspath" "$__pack")" \

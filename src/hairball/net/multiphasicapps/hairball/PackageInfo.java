@@ -75,6 +75,9 @@ public class PackageInfo
 		// Dependencies?
 		Set<String> deps = new HashSet<>();
 		
+		// Set name
+		name = __asciiLowerCase(root.getFileName().toString());
+		
 		// Read the manifest
 		boolean iv = false;
 		try (FileChannel fc = FileChannel.open(mfp, StandardOpenOption.READ);
@@ -197,8 +200,8 @@ public class PackageInfo
 			// Only log it if this is not a package
 			if (!(ioe instanceof __NotAPackageException__))
 			{
-				System.err.printf("Could not read package: %s%n",
-					ioe.getCause());
+				System.err.printf("Could not read package '%s' because: %s.%n",
+					name, ioe.getMessage());
 				ioe.printStackTrace(System.err);
 			}
 		}
@@ -208,9 +211,6 @@ public class PackageInfo
 		
 		// Lock in dependencies
 		depends = MissingCollections.<String>unmodifiableSet(deps);
-		
-		// Set name
-		name = __asciiLowerCase(root.getFileName().toString());
 		
 		// Output JAR File
 		outjar = __outdir.resolve(name + ".jar");
@@ -255,7 +255,7 @@ public class PackageInfo
 	 * @return The lowercased string using only ASCII data.
 	 * @since 2016/02/28
 	 */
-	private static final String __asciiLowerCase(String __in)
+	static final String __asciiLowerCase(String __in)
 		throws NullPointerException
 	{
 		// Check
