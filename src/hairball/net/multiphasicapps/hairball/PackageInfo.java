@@ -150,12 +150,13 @@ public class PackageInfo
 				switch (key)
 				{
 						// Is this a hairball package?
-					case "hairball-package":
+					case "x-hairball-name":
 						// This just is indicative that it is one.
+						ishb = true;
 						break;
 						
 						// Dependency on another package
-					case "hairball-depends":
+					case "x-hairball-depends":
 						// Dependencies are split by spaces
 						int sn = val.length();
 						for (int q = 0; q <= sn; q++)
