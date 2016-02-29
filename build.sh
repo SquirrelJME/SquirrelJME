@@ -26,7 +26,9 @@ then
 		exit 1
 	fi
 	
-	exit 0
+	# Launch hairball
+	"$0" "launch" "$*"
+	exit $?
 fi
 
 # Building a package
