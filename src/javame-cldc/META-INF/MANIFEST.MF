@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: javame-cldc
 X-Hairball-Depends:
-LIBlet-Title: Java 8 CLDC
+LIBlet-Title: JavaME 8 CLDC
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228
 LIBlet-Description: This is the standard JavaME 8 Connection Limited Device
