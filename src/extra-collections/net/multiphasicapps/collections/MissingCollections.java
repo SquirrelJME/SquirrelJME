@@ -41,7 +41,12 @@ public class MissingCollections
 	 */
 	public static <K, V> Map<K, V> unmodifiableMap(Map<K, V> __m)
 	{
-		throw new Error("TODO");
+		// If already one, return it
+		if (__m instanceof __UnmodifiableMap__)
+			return __m;
+		
+		// Wrap
+		return new __UnmodifiableMap__<K, V>(__m);
 	}
 	
 	/**
