@@ -32,3 +32,7 @@ Looks like JavaME has something called liblets now, this means that there is
 no longer a need to cram entire libraries into a single JAR and now it can just
 reuse pre-existing ones.
 
+## 20:18
+
+Actually, I believe I am feature creeping again.
+
