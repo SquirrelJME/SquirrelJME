@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Hairball-Package: javac
+Hairball-Depends: javame-cldc collections compression-library
+Implementation-Title: Java 8 Compiler
+Implementation-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
+Implementation-Version: 1.8.0.20160228
+

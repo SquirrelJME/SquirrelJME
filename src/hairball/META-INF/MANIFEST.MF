@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Main-Class: net.multiphasicapps.hairball.Main
 Hairball-Package: hairball
 Hairball-Depends: javame-cldc collections compression-library interpreter
+  java-compiler
 Implementation-Title: Hairball
 Implementation-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
 Implementation-Version: 1.8.0.20160228

@@ -36,6 +36,9 @@ public class PackageInfo
 	/** The package root. */
 	protected final Path root;
 	
+	/** Output JAR file. */
+	protected final Path outjar;
+	
 	/** Is this package valid? */
 	protected final boolean valid;
 	
@@ -48,15 +51,16 @@ public class PackageInfo
 	/**
 	 * The path to the package root.
 	 *
+	 * @param __outdir Output directory.
 	 * @param __p Package root.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/02/28
 	 */
-	public PackageInfo(Path __p)
+	public PackageInfo(Path __outdir, Path __p)
 		throws NullPointerException
 	{
 		// Check
-		if (__p == null)
+		if (__outdir == null || __p == null)
 			throw new NullPointerException();
 		
 		// Set
@@ -207,6 +211,9 @@ public class PackageInfo
 		
 		// Set name
 		name = __asciiLowerCase(root.getFileName().toString());
+		
+		// Output JAR File
+		outjar = __outdir.resolve(name + ".jar");
 	}
 	
 	/**
@@ -218,6 +225,17 @@ public class PackageInfo
 	public boolean isValid()
 	{
 		return valid;
+	}
+	
+	/**
+	 * Returns the output JAR file.
+	 *
+	 * @return The output JAR file.
+	 * @since 2016/02/28
+	 */
+	public Path outputJar()
+	{
+		return outjar;
 	}
 	
 	/**

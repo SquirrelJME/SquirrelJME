@@ -81,7 +81,7 @@ public class PackageList
 					continue;
 				
 				// Setup package
-				PackageInfo pi = new PackageInfo(file);
+				PackageInfo pi = new PackageInfo(outdir, file);
 				
 				// Add it but only if valid
 				if (pi.isValid())

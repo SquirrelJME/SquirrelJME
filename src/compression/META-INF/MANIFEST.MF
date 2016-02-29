@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Hairball-Package: compression-library
+Hairball-Package: compression
 Hairball-Depends: javame-cldc
 Implementation-Title: Deflate/GZip Compression and ZIP/JAR Support
 Implementation-Vendor: Steven Gawroriski <steven@multiphasicapps.net>

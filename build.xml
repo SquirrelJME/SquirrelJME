@@ -39,7 +39,9 @@
 				<pathelement location="${user.dir}${ds}collections.jar" />
 				<pathelement location="${user.dir}${ds}interpreter.jar" />
 				<pathelement
-					location="${user.dir}${ds}compression-library.jar" />
+					location="${user.dir}${ds}compression.jar" />
+				<pathelement
+					location="${user.dir}${ds}javac.jar" />
 			</classpath>
 			<arg value="${sjme.pwd}" />
 			<arg value="${sjme.src}" />
@@ -48,7 +50,7 @@
 	
 	<!-- Compile hairball -->
 	<target name="compile"
-		depends="jar-collections,jar-interpreter,jar-compression-library">
+		depends="jar-collections,jar-interpreter,jar-compression,jar-javac">
 		<delete dir="${sjme.pwd}${ds}_hairball" />
 		<mkdir dir="${sjme.pwd}${ds}_hairball" />
 		<javac srcdir="${sjme.src}${ds}hairball"
@@ -59,7 +61,7 @@
 				<pathelement location="${user.dir}${ds}collections.jar" />
 				<pathelement location="${user.dir}${ds}interpreter.jar" />
 				<pathelement
-					location="${user.dir}${ds}compression-library.jar" />
+					location="${user.dir}${ds}compression.jar" />
 			</classpath>
 			<compilerarg value="-source" />
 			<compilerarg value="1.7" />
@@ -165,11 +167,11 @@
 	</target>
 	
 	<!-- Compile Compression Library -->
-	<target name="compile-compression-library">
-		<delete dir="${sjme.pwd}${ds}_compression-library" />
-		<mkdir dir="${sjme.pwd}${ds}_compression-library" />
-		<javac srcdir="${sjme.src}${ds}compression-library"
-			destdir="${sjme.pwd}${ds}_compression-library"
+	<target name="compile-compression">
+		<delete dir="${sjme.pwd}${ds}_compression" />
+		<mkdir dir="${sjme.pwd}${ds}_compression" />
+		<javac srcdir="${sjme.src}${ds}compression"
+			destdir="${sjme.pwd}${ds}_compression"
 			includeantruntime="false"
 			debug="true">
 			<compilerarg value="-source" />
@@ -181,24 +183,61 @@
 	</target>
 	
 	<!-- Package Compression Library -->
-	<target name="jar-compression-library"
-		depends="compile-compression-library">
-		<jar destfile="${user.dir}${ds}compression-library.jar"
-	manifest="${sjme.src}${ds}compression-library${ds}META-INF${ds}MANIFEST.MF"
+	<target name="jar-compression"
+		depends="compile-compression">
+		<jar destfile="${user.dir}${ds}compression.jar"
+	manifest="${sjme.src}${ds}compression${ds}META-INF${ds}MANIFEST.MF"
 			filesetmanifest="merge"
 			indexMetaInf="true"
 			level="9">
-			<fileset dir="${sjme.pwd}${ds}_compression-library" />
-			<fileset dir="${sjme.src}${ds}compression-library">
+			<fileset dir="${sjme.pwd}${ds}_compression" />
+			<fileset dir="${sjme.src}${ds}compression">
 				<exclude name="**/*.java" />
 			</fileset>
 		</jar>
 	</target>
 	
 	<!-- Clean Compression Library -->
-	<target name="clean-compression-library">
-		<delete file="${user.dir}${ds}compression-library.jar" />
-		<delete dir="${sjme.pwd}${ds}_compression-library" />
+	<target name="clean-javac">
+		<delete file="${user.dir}${ds}javac.jar" />
+		<delete dir="${sjme.pwd}${ds}_javac" />
+	</target>
+	
+	<!-- Compile Java Compiler -->
+	<target name="compile-javac">
+		<delete dir="${sjme.pwd}${ds}_javac" />
+		<mkdir dir="${sjme.pwd}${ds}_javac" />
+		<javac srcdir="${sjme.src}${ds}javac"
+			destdir="${sjme.pwd}${ds}_javac"
+			includeantruntime="false"
+			debug="true">
+			<compilerarg value="-source" />
+			<compilerarg value="1.7" />
+			<compilerarg value="-target" />
+			<compilerarg value="1.7" />
+			<compilerarg value="-g" />
+		</javac>
+	</target>
+	
+	<!-- Package Java Compiler -->
+	<target name="jar-javac"
+		depends="compile-javac">
+		<jar destfile="${user.dir}${ds}javac.jar"
+	manifest="${sjme.src}${ds}javac${ds}META-INF${ds}MANIFEST.MF"
+			filesetmanifest="merge"
+			indexMetaInf="true"
+			level="9">
+			<fileset dir="${sjme.pwd}${ds}_javac" />
+			<fileset dir="${sjme.src}${ds}javac">
+				<exclude name="**/*.java" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<!-- Clean Java Compiler -->
+	<target name="clean-javac">
+		<delete file="${user.dir}${ds}javac.jar" />
+		<delete dir="${sjme.pwd}${ds}_javac" />
 	</target>
 </project>
 
