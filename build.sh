@@ -27,12 +27,20 @@ then
 	fi
 	
 	# Launch hairball
-	"$0" "launch" "$*"
+	"$0" "launch" $*
 	exit $?
 fi
 
+# Launch hairball
+if [ "$1" = "launch" ]
+then
+	java -cp "$(__i=0; for __file in *.jar; do if [ "$__i" -ne "0" ];
+		then echo -n ":"; fi; __i=$(($__i + 1)); echo -n $__file; done)" \
+		net.multiphasicapps.hairball.Main $*
+	exit $?
+
 # Building a package
-if [ "$1" = "build" ]
+elif [ "$1" = "build" ]
 then
 	# Need arguments?
 	if [ "$#" -le "1" ]
