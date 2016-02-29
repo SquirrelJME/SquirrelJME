@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.collections;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,7 +31,21 @@ public class MissingCollections
 	}
 	
 	/**
-	 * This creates a set which cannot be modified using the returned set.
+	 * This creates a view of the specified map which cannot be modified.
+	 *
+	 * @param <K> The map key.
+	 * @param <V> The map value.
+	 * @param __m The map to wrap.
+	 * @return An unmodifiable view of the map.
+	 * @since 2016/02/28
+	 */
+	public static <K, V> Map<K, V> unmodifiableMap(Map<K, V> __m)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * This creates a view of the specified set which cannot be modified.
 	 *
 	 * @param <T> The type of value the set stores.
 	 * @param __s The set to wrap to disable modifications of.

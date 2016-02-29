@@ -18,6 +18,7 @@ public class Collections
 		throw new Error("TODO");
 	}
 	
+	@SuppressWarnings({"unchecked"})
 	public static <T> boolean addAll(Collection<? super T> __a, T... __b)
 	{
 		throw new Error("TODO");
