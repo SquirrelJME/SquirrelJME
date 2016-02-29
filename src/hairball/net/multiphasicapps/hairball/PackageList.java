@@ -20,6 +20,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 
 /**
  * This contains the list of packages which are available for compilation and
@@ -90,7 +91,7 @@ public class PackageList
 		}
 		
 		// Lock
-		packages = Collections.<String, PackageInfo>unmodifiableMap(to);
+		packages = MissingCollections.<String, PackageInfo>unmodifiableMap(to);
 	}
 	
 	/**
