@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Hairball-Package: compression
-Hairball-Depends: javame-cldc
-LIBlet-Title: Deflate/GZip Compression and ZIP/JAR Support
-LIBlet-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
-LIBlet-Version: 1.8.0.20160228
-

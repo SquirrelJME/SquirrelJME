@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Hairball-Package: compiler-jar-support
-Hairball-Depends: compiler compression-library
-LIBlet-Title: POIT Compiler JAR Support
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160228
-

@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+X-Hairball-Name: extra-collections
+LIBlet-Title: Extra Collections
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160228
+LIBlet-Description: This contains extra collections which appear in the Java
+ Standard Edition yet do not appear in the Java Micro Edition.
+

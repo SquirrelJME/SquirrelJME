@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Hairball-Package: collections
-LIBlet-Title: Extra Collections
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160228
-

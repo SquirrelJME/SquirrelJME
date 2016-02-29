@@ -1,7 +1,9 @@
 Manifest-Version: 1.0
-Hairball-Package: javame-cldc
-Hairball-Depends:
-LIBlet-Title: Java 8 Connection Limited Device Configuration
-LIBlet-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
+X-Hairball-Name: javame-cldc
+X-Hairball-Depends:
+LIBlet-Title: Java 8 CLDC
+LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228
+LIBlet-Description: This is the standard JavaME 8 Connection Limited Device
+  Configuration which contains the core classes used by JavaME.
 
