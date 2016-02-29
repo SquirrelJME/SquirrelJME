@@ -5,3 +5,14 @@
 Today is a leap year, so it will not be until another 4 years or so until I can
 write a blog post on this day.
 
+## 15:17
+
+My TI89 Titanium has a decent amount of ROM space and memory, it also has a
+m68k CPU. So if I could use similar code generators for Palm OS 68k and the
+TI89.
+
+## 15:21
+
+What I need to do is make it so that any dependencies that are used to launch
+are program are loaded properly.
+

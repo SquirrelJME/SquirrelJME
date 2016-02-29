@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-Hairball-Name: native-compiler-all
+X-Hairball-Depends: native-compiler-os-linux
+  native-compiler-cpu-powerpc
+LIBlet-Title: POIT Compiler All
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160229
+LIBlet-Description: This is a meta-package which depends on all CPUs and
+  Operating System native compilers.
+LIBlet-Dependency-1: liblet;required;POIT OS Linux;Steven Gawroriski;1.8+
+LIBlet-Dependency-2: liblet;required;POIT CPU PowerPC;Steven Gawroriski;1.8+
+
