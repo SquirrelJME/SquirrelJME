@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Hairball-Package: compiler
-Hairball-Depends: javame-cldc
-Implementation-Title: POIT Compiler
-Implementation-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
-Implementation-Version: 1.8.0.20160228
-

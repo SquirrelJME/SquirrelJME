@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Hairball-Package: interpreter
 Hairball-Depends: javame-cldc collections
-Implementation-Title: JavaME 8 Intepreter Engine
-Implementation-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
-Implementation-Version: 1.8.0.20160228
+LIBlet-Title: JavaME 8 Intepreter Engine
+LIBlet-Vendor: Steven Gawroriski <steven@multiphasicapps.net>
+LIBlet-Version: 1.8.0.20160228
 

@@ -26,3 +26,9 @@ I never realized that `LinkedList` was a `Deque`, that is pretty nice.
 The one thing I am missing though is the lack of unmodifiable collections. I
 will need to duplicate that for certain cases.
 
+## 19:32
+
+Looks like JavaME has something called liblets now, this means that there is
+no longer a need to cram entire libraries into a single JAR and now it can just
+reuse pre-existing ones.
+
