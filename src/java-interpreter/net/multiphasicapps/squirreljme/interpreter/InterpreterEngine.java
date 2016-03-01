@@ -32,5 +32,18 @@ public abstract class InterpreterEngine
 	public InterpreterEngine()
 	{
 	}
+	
+	/**
+	 * Returns {@code true} if the intepreter has no threads remaining which
+	 * are alive and executing (they have all exited).
+	 *
+	 * @return {@code true} if no living threads remain, otherwise
+	 * {@code false}.
+	 * @since 2016/03/01
+	 */
+	public final boolean isTerminated()
+	{
+		throw new Error("TODO");
+	}
 }
 
