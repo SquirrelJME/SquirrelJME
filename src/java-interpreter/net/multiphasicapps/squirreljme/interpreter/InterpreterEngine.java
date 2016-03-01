@@ -52,13 +52,21 @@ public abstract class InterpreterEngine
 	/**
 	 * Creates a new a thread.
 	 *
+	 * @param __meth The method to start execution at.
+	 * @param __args Thread arguments, these take either boxed types or
+	 * {@code InterpreterObject}, all other classes are illegal.
 	 * @return The newly created thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public final InterpreterThread createThread()
+	public final InterpreterThread createThread(InterpreterMethod __meth,
+		Object... __args)
 		throws NullPointerException
 	{
+		// Check
+		if (__meth == null)
+			throw new NullPointerException();
+		
 		throw new Error("TODO");
 	}
 	
@@ -119,6 +127,25 @@ public abstract class InterpreterEngine
 			// Return the read class
 			return rv;
 		}
+	}
+	
+	/**
+	 * Creates a string array with the given strings.
+	 *
+	 * @param __strings Strings to place in the array.
+	 * @return The string array as seen by the program running in the
+	 * interpreter.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/01
+	 */
+	public final InterpreterObject spawnStringArray(String... __strings)
+		throws NullPointerException
+	{
+		// Check
+		if (__strings == null)
+			throw new NullPointerException();
+		
+		throw new Error("TODO");
 	}
 }
 

@@ -11,52 +11,30 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 /**
- * This represents an interpreted method within a class.
+ * This represents an object within the interpreter.
  *
  * @since 2016/03/01
  */
-public class InterpreterMethod
+public class InterpreterObject
 {
-	/** The class this method is in. */
-	protected final InterpreterClass inclass;	
+	/** The class this object is. */
+	protected final InterpreterClass classtype;
 	
 	/**
-	 * Initializes the interpreted method.
+	 * Initializes the object.
 	 *
+	 * @param __type This type of class this object is.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	InterpreterMethod(InterpreterClass __owner)
-		throws NullPointerException
+	public InterpreterObject(InterpreterClass __type)
 	{
 		// Check
-		if (__owner == null)
+		if (__type == null)
 			throw new NullPointerException();
 		
 		// Set
-		inclass = __owner;
-	}
-	
-	/**
-	 * Is this method public?
-	 *
-	 * @return {@code true} if this method is public.
-	 * @since 2016/03/01
-	 */
-	public boolean isPublic()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Is this method static?
-	 *
-	 * @return {@code true} if this method is static.
-	 * @since 2016/03/01
-	 */
-	public boolean isStatic()
-	{
-		throw new Error("TODO");
+		classtype = __type;
 	}
 }
 

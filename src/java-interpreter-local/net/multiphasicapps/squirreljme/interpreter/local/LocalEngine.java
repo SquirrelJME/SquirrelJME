@@ -19,6 +19,9 @@ import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.squirreljme.interpreter.InterpreterClass;
 import net.multiphasicapps.squirreljme.interpreter.InterpreterEngine;
+import net.multiphasicapps.squirreljme.interpreter.InterpreterMethod;
+import net.multiphasicapps.squirreljme.interpreter.InterpreterObject;
+import net.multiphasicapps.squirreljme.interpreter.InterpreterThread;
 import net.multiphasicapps.squirreljme.zips.StandardZIPFile;
 
 /**
@@ -75,7 +78,20 @@ public class LocalEngine
 			throw new IllegalArgumentException(String.format("The class " +
 				"'%s' does not exist.", __main));
 		
-		throw new Error("TODO");
+		// Find the main method
+		InterpreterMethod mainmethod = mainclass.getMethod("main",
+			"([Ljava/lang/String;)V");
+		if (mainmethod == null || !mainmethod.isStatic() ||
+			!mainmethod.isPublic())
+			throw new IllegalArgumentException(String.format("The class " +
+				"'%s' does not have method " +
+				"'public static void main(String... foo)'."));
+		
+		// Create arguments for the main thread
+		InterpreterObject pargs = spawnStringArray(__args);
+		
+		// Create main thread
+		InterpreterThread mthread = createThread(mainmethod, pargs);
 	}
 }
 
