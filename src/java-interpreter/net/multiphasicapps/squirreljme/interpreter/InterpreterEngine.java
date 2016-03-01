@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * This class acts as the interpreter engine.
  *
@@ -24,6 +27,10 @@ package net.multiphasicapps.squirreljme.interpreter;
  */
 public abstract class InterpreterEngine
 {
+	/** The threads the interpreter owns. */
+	protected final Set<InterpreterThread> threads =
+		new HashSet<>();
+	
 	/**
 	 * Initializes the base engine.
 	 *
@@ -31,6 +38,19 @@ public abstract class InterpreterEngine
 	 */
 	public InterpreterEngine()
 	{
+	}
+	
+	/**
+	 * Creates a new a thread.
+	 *
+	 * @return The newly created thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/01
+	 */
+	public final InterpreterThread createThread()
+		throws NullPointerException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -43,7 +63,12 @@ public abstract class InterpreterEngine
 	 */
 	public final boolean isTerminated()
 	{
-		throw new Error("TODO");
+		// Lock on threads
+		synchronized (threads)
+		{
+			// Only if no threads remain
+			return threads.isEmpty();
+		}
 	}
 }
 

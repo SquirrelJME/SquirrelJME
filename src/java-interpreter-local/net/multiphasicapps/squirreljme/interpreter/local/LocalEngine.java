@@ -10,11 +10,15 @@
 
 package net.multiphasicapps.squirreljme.interpreter.local;
 
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.squirreljme.interpreter.InterpreterEngine;
+import net.multiphasicapps.squirreljme.zips.StandardZIPFile;
 
 /**
  * This is an extension of the interpreter engine which provides access to
