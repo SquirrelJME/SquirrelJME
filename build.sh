@@ -36,6 +36,20 @@ then
 	"$0" "launch" "hairball" "." "$__exedir/src" "$2" "$3"
 	exit $?
 
+# Interpreter test variant of target
+elif [ "$1" = "interpreter-target" ]
+then
+	# Build hairball
+	if ! "$0" "build" "hairball"
+	then
+		echo "Failed to build hairball." 2>&1
+		exit 1
+	fi
+	
+	# Launch hairball
+	"$0" "interpreter-launch" "hairball" "." "$__exedir/src" "$2" "$3"
+	exit $?
+
 # Launch a package
 elif [ "$1" = "launch" ]
 then
@@ -53,12 +67,42 @@ then
 	shift 2
 	
 	# Launch the given command
-	java -cp "$("$0" "launchclasspath" "$__pack")" \
-		net.multiphasicapps.hairball.Main $*
+	java -cp "$("$0" "launch-classpath" "$__pack")" \
+		"$("$0" "main-class" "$__pack")" $*
+	exit $?
+
+# Launch a package (using the interpreter, for testing)
+elif [ "$1" = "interpreter-launch" ]
+then
+	# Need arguments?
+	if [ "$#" -le "1" ]
+	then
+		echo "Usage: $0 $1 (package)" 2>&1
+		exit 1
+	fi
+	
+	# Build the local interpreter
+	if ! "$0" "build" "java-interpreter-local"
+	then
+		echo "Failed to build the local intepreter." 2>&1
+		exit 1
+	fi
+	
+	# The package to launch
+	__pack="$2"
+	
+	# Shift down two so "launch foo" are not included
+	shift 2
+	
+	# Launch the given command
+	java -cp "$("$0" "launch-classpath" "java-interpreter-local")" \
+		"$("$0" "main-class" "java-interpreter-local")" \
+		-cp "$("$0" "launch-classpath" "$__pack")" \
+		"$("$0" "main-class" "$__pack")" $*
 	exit $?
 
 # Calculate dependenices for a package to launch it
-elif [ "$1" = "launchclasspath" ]
+elif [ "$1" = "launch-classpath" ]
 then
 	# Need arguments?
 	if [ "$#" -le "1" ]
@@ -71,7 +115,7 @@ then
 	__pack="$2"
 	
 	# Get the dependent class path
-	__dcp="$("$0" dependsclasspath "$__pack")"
+	__dcp="$("$0" depends-classpath "$__pack")"
 	
 	# If there are none, then just print this package
 	if [ -z "$__dcp" ]
@@ -83,8 +127,33 @@ then
 		echo "$__dcp:$__pack.jar"
 	fi
 
+# Prints the main class (if any) for a package
+elif [ "$1" = "main-class" ]
+then
+	# Need arguments?
+	if [ "$#" -le "1" ]
+	then
+		echo "Usage: $0 $1 (package)" 2>&1
+		exit 1
+	fi
+	
+	# The package to get dependencies for
+	__pack="$2"
+	
+	# Needs a manifest
+	__manf="$__exedir/src/$__pack/META-INF/MANIFEST.MF"
+	if [ ! -f "$__manf" ]
+	then
+		echo "The package $__pack does not have a manifest." 2>&1
+		exit 1
+	fi
+	
+	# Get the main class
+	tr '\n' '\v' < $__manf | sed 's/\v //g' | tr '\v' '\n' |
+		grep '^Main-Class[ \t]*:' | sed 's/^[^:]*:[ \t]*//g'
+
 # Calculate the dependent classpath for a specific package
-elif [ "$1" = "dependsclasspath" ]
+elif [ "$1" = "depends-classpath" ]
 then
 	# Need arguments?
 	if [ "$#" -le "1" ]
@@ -136,7 +205,7 @@ then
 	
 	# Echo them out
 	(for __dep in $(tr '\n' '\v' < $__manf | sed 's/\v //g' | tr '\v' '\n' |
-		grep '^X-Hairball-Depends[ \t]*:' | sed 's/^[^:]*://g')
+		grep '^X-Hairball-Depends[ \t]*:' | sed 's/^[^:]*:[ \t]*//g')
 	do
 		# Print this dependency
 		echo "$__dep"
@@ -259,7 +328,7 @@ then
 		echo "*** Compiling $__pack ***" 2>&1
 		
 		# Calculate stuff to run it with
-		__cp="$("$0" "dependsclasspath" "$__pack")"
+		__cp="$("$0" "depends-classpath" "$__pack")"
 		
 		# Compile code but only if there is source code to actually compile
 		if [ -s "/tmp/$$" ]

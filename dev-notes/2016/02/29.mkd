@@ -24,3 +24,11 @@ Interesting, if `java.lang.Byte` does not exist then the compiler crashes.
 
 JavaME lacks `Void`, I hope the compiler does not need it.
 
+## 21:31
+
+I suppose the first thing to do is to write the interpreter engine so that I
+can check to see if it works. Then I can reuse the interpreter bits for the
+native compiler since they have to decode the same instructional details
+anyway. The interpreter will be pure with no optimizations at all, that is
+up to the native compiler.
+
