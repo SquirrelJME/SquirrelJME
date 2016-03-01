@@ -29,3 +29,34 @@ devices and such. However the standard API lacks memory mapped I/O support and
 the standard Java library has the Buffer classes package private. Also on a
 side note, my build system is not cleaning temp files.
 
+## 10:35
+
+Ok, so `Buffer` has no constructor. Also none of the others buffers that extend
+off it have constructors. This is from the CLDC library however, which
+basically just returns `null` and `0` everywhere however. Looking at other
+code, it does not appear there are any specified constructors at all. Class
+lacks one, but it is final. I must search elsewhere to determine how such
+things would work. So I suppose the only way to be sure would be to just
+install the ME environment onto a Raspberry Pi (the only available choice) and
+see if my code can just extend it (if it cannot it would toss an Error about
+an incompatible class). However, I need a 4GiB SD Card, which I do have to
+install Raspbian onto. Since I lack a TCK and this is the only other device
+I actually have (the other is some other developer board.
+
+## 10:46
+
+Well actually there should be an emulator, however I need a x86 system to use
+it and I just have PowerPC. So the only choice to use it would be to install it
+on my router/file server.
+
+## 11:54
+
+Well lets see, the buffer classes magically have no constructors, so I cannot
+even compile them with the SDK, I have to use one of the wrappers. So I do
+wonder how the device IO APIs work when they use ByteBuffers.
+
+## 11:58
+
+So this means for that, I will need magically classes and such to provide
+`ByteBuffers` which are mapped to specific memory addresses. Will be fun.
+
