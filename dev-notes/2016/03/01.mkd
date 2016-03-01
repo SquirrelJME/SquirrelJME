@@ -142,3 +142,9 @@ classes they support.
 
 So the first part of the interpreter which must be written is the class loader.
 
+## 17:01
+
+I would say that for cooperatively tasked systems, running threads will have to
+call `Thread.yield()`, call `Thread.sleep()`, block on a lock, or block on IO
+if they want another thread to start running.
+

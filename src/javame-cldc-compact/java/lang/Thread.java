@@ -176,9 +176,7 @@ public class Thread
 	public static void sleep(long __a)
 		throws InterruptedException
 	{
-		if (false)
-			throw new InterruptedException();
-		throw new Error("TODO");
+		sleep(__a, 0);
 	}
 	
 	public static void sleep(long __a, int __b)

@@ -176,9 +176,13 @@ __outer_loop:
 		LocalEngine le = new LocalEngine(bootclasspath, classpath, mainclass,
 			hargs.<String>toArray(new String[hargs.size()]));
 		
-		// Run while it has not terminated
+		// Run while it has not terminated, but always yield this thread
+		// Although they say yield is not recommended, the virtual machine
+		// could be cooperatively threaded which means the loop will never
+		// terminate. Thus this yield will force the other interpreter threads
+		// which are running to actually run.
 		while (!le.isTerminated())
-			throw new Error("TODO");
+			Thread.yield();
 	}
 }
 
