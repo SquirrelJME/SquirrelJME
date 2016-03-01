@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
+import net.multiphasicapps.squirreljme.interpreter.InterpreterClass;
 import net.multiphasicapps.squirreljme.interpreter.InterpreterEngine;
 import net.multiphasicapps.squirreljme.zips.StandardZIPFile;
 
@@ -67,6 +68,12 @@ public class LocalEngine
 		// Need bootstrap classes
 		if (bootclasspath.isEmpty())
 			throw new IllegalArgumentException("No bootstrap classes.");
+		
+		// Find the main class
+		InterpreterClass mainclass = loadClass(__main.replace('.', '/'));
+		if (mainclass == null)
+			throw new IllegalArgumentException(String.format("The class " +
+				"'%s' does not exist.", __main));
 		
 		throw new Error("TODO");
 	}
