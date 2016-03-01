@@ -10,6 +10,14 @@
 
 package net.multiphasicapps.squirreljme.interpreter.local;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.StringTokenizer;
+
 /**
  * Main entry point for the local interpreter.
  *
@@ -17,6 +25,33 @@ package net.multiphasicapps.squirreljme.interpreter.local;
  */
 public class Main
 {
+	/** The separator for paths. */
+	public static final String PATH_SEPARATOR;
+	
+	/**
+	 * Determines some details.
+	 *
+	 * @since 2016/02/29
+	 */
+	static
+	{
+		// Get system property
+		String spps = System.getProperty("path.separator");
+		
+		// If available, use it
+		if (spps != null)
+			PATH_SEPARATOR = spps;
+		
+		// Otherwise, assume UNIX
+		else
+			PATH_SEPARATOR = ":";
+		
+		// Big problems if it is multiple characters long
+		if (PATH_SEPARATOR.length() != 1)
+			throw new RuntimeException("Cannot handle a path separator that " +
+				"is multiple characters long.");
+	}
+	
 	/**
 	 * Main entry point.
 	 *
@@ -25,6 +60,106 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
+		// Force arguments to exist
+		if (__args == null)
+			__args = new String[0];
+		
+		// Pipe arguments to be handled
+		Deque<String> hargs = new LinkedList<>();
+		for (int i = 0; i < __args.length; i++)
+			hargs.offerLast(__args[i]);
+		
+		// Class path
+		boolean didcp = false;
+		boolean didjar = false;
+		Set<Path> classpath = new LinkedHashSet<>();
+		
+		// Go through and handle arguments
+__outer_loop:
+		while (!hargs.isEmpty())
+		{
+			// Get current
+			String cur = hargs.peekFirst();
+			
+			// Depends on what it is
+			switch (cur)
+			{
+					// Class Path
+				case "-cp":
+					// Only once
+					if (didcp || didjar)
+						throw new IllegalArgumentException("The switch " +
+							"-cp or -jar has already been specified.");
+					
+					// Eat
+					hargs.pollFirst();
+					
+					// Get next
+					String cparg = hargs.pollFirst();
+					if (cparg == null)
+						throw new IllegalArgumentException("");
+					
+					// Split and get paths from them
+					StringTokenizer st = new StringTokenizer(cparg,
+						PATH_SEPARATOR);
+					while (st.hasMoreTokens())
+						classpath.add(Paths.get(st.nextToken()));
+					
+					// Mark
+					didcp = true;
+					break;
+					
+					// JAR
+				case "-jar":
+					// Only once
+					if (didcp || didjar)
+						throw new IllegalArgumentException("The switch " +
+							"-cp or -jar has already been specified.");
+					
+					// Eat
+					hargs.pollFirst();
+					
+					// Get next
+					String jarf = hargs.pollFirst();
+					if (jarf == null)
+						throw new IllegalArgumentException("Expected a " +
+							"JAR path following -jar.");
+					
+					// Single JAR only
+					classpath.add(Paths.get(jarf));	
+					
+					// Mark
+					didjar = true;
+					break;
+				
+					// Unknown
+				default:
+					if (cur.startsWith("-"))
+						throw new IllegalArgumentException(String.format(
+							"Unknown command line switch: %s", cur));
+					
+					// Stop processing because these are normal commands now
+					break __outer_loop;
+			}
+		}
+		
+		// Determine the main class to use
+		String mainclass;
+		if (didjar)
+			throw new Error("TODO");
+		
+		// Otherwise it is specified on the command line
+		else
+			mainclass = hargs.pollFirst();
+		
+		// If not specified, fail
+		if (mainclass == null)
+			throw new IllegalArgumentException("Main class not specified or " +
+				"is missing in the JAR manifest.");
+		
+		System.err.println(hargs);
+		System.err.println(classpath);
+		
 		throw new Error("TODO");
 	}
 }
