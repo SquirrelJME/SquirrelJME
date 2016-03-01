@@ -149,7 +149,8 @@ __outer_loop:
 		}
 		
 		// Add the CLDC to the boot classpath always
-		bootclasspath.add(Paths.get("javame-cldc.jar"));
+		bootclasspath.add(Paths.get("javame-cldc-compact.jar"));
+		bootclasspath.add(Paths.get("javame-cldc-full.jar"));
 		
 		// Always add the current directory to the class path so that random
 		// class files which are lying around work
