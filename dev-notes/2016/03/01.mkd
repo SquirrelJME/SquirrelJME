@@ -108,3 +108,20 @@ As stated in the documentation:
 So I basically need to split off all of the NIO stuff and logging, then I have
 a truly compact API.
 
+## 13:43
+
+That is 88 classes. Also the original count for CLDC is incorrect because the
+JAR is missing logging.
+
+## 13:45
+
+Ok, so the true base library fully contains 216 classes. Removing the stuff to
+make it compact turns it into 158 classes.
+
+## 13:51
+
+However, the very small number of Java ME classes will definitely be better on
+my sanity and time compared to implementing the entire Java library from
+scratch. Plus this ME environment will be more interesting for me since I could
+try and cram it into small devices where the only use it could have is for fun.
+
