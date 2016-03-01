@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.StringTokenizer;
 import net.multiphasicapps.collections.MissingCollections;
 
 /**
@@ -158,31 +159,9 @@ public class PackageInfo
 						// Dependency on another package
 					case "x-hairball-depends":
 						// Dependencies are split by spaces
-						int sn = val.length();
-						for (int q = 0; q <= sn; q++)
-						{
-							// Get character here
-							char c = (q < sn ? val.charAt(q) : ' ');
-							
-							// Ignore starting spaces
-							if (c <= ' ')
-								continue;
-							
-							// Otherwise read until the next space
-							int start = q;
-							for (; q < sn; q++)
-							{
-								// Get character
-								c = val.charAt(q);
-								
-								// Is a space? Stop
-								if (c <= ' ')
-									break;
-							}
-							
-							// Add dependency
-							deps.add(val.substring(start, q));
-						}
+						StringTokenizer st = new StringTokenizer(val);
+						while (st.hasMoreTokens())
+							deps.add(st.nextToken());
 						break;
 					
 						// Unknown
