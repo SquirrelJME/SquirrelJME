@@ -9,3 +9,23 @@ from a `SeekableByteChannel` would be to lock it, perform the read, then unlock
 at a slight speed reduction. I cannot extend `FileChannel` because that would
 end up with an incompatible class.
 
+## 10:22
+
+The DIO API does not support block devices. It does however have memory mapped
+IO, so perhaps I can use that to simulate block devices. For example say if
+one wants direct access to the bytes contains within the VMU of a Dreamcast,
+I can provide a block based interface for that.
+
+## 10:25
+
+Actually, it might just be useable under `GenericBufferIODevice`. That allows
+reading and writing and also has optional buffer operations.
+
+## 10:29
+
+I should actually see if the buffer classes in this library are package private
+or not. The device IO API has its own buffer stuff which may be mapped by
+devices and such. However the standard API lacks memory mapped I/O support and
+the standard Java library has the Buffer classes package private. Also on a
+side note, my build system is not cleaning temp files.
+

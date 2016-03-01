@@ -306,11 +306,13 @@ then
 	# Out of date?
 	if [ -f /tmp/$$ ]
 	then
-		rm -f /tmp/$$
 		__ood=1
 	else
 		__ood=0
 	fi
+	
+	# Always delete it, otherwise /tmp will be full of very small files
+	rm -f /tmp/$$
 
 	# Perform a rebuild?
 	if [ "$__ood" -ne "0" ]
@@ -341,6 +343,7 @@ then
 			
 				# Delete temporaries
 				rm -rf "/tmp/$$.$__pack"
+				rm -f /tmp/$$
 			
 				# Failed
 				exit 1
@@ -355,6 +358,7 @@ then
 			
 			# Delete
 			rm -rf "/tmp/$$.$__pack"
+			rm -f /tmp/$$
 			
 			# Failed
 			exit 1
@@ -362,6 +366,7 @@ then
 		
 		# Cleanup
 		rm -rf "/tmp/$$.$__pack"
+		rm -f /tmp/$$
 	fi
 
 # Unknown command
