@@ -54,7 +54,7 @@ public class Main
 		{
 			// Build package list
 			PackageList pl = new PackageList(outdir, srcdir);
-			System.out.println(pl);
+			System.out.printf("%d packages are available.%n", pl.size());
 			
 			throw new Error("TODO");
 		}
