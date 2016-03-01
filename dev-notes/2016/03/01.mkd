@@ -125,3 +125,16 @@ my sanity and time compared to implementing the entire Java library from
 scratch. Plus this ME environment will be more interesting for me since I could
 try and cram it into small devices where the only use it could have is for fun.
 
+## 14:04
+
+Ok so now the entire library is split, which was quite simple to perform.
+Although right now I do not see how it will end up working for smaller
+platforms. Possibly when it comes to native compilation I will have a stripped
+minimal set for binary creation. That is, compile a single application for a
+specific target if it for example has no real purpose executing in a full
+virtual machine state. Essentially, this could allow binaries to be compiled
+for very limited platforms such as a Z8F6421 or a Dreamcast VMU. In both of
+these cases, I could not see a filesystem with an actual interpreter being
+used. So essentially such systems would be AOT only and are fixed to which
+classes they support.
+
