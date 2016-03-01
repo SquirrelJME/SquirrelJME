@@ -10,29 +10,29 @@
 
 package java.lang;
 
-public final class Integer
+public final class Byte
 	extends Number
-	implements Comparable<Integer>
+	implements Comparable<Byte>
 {
-	public static final int MAX_VALUE =
-		2147483647;
+	public static final byte MAX_VALUE =
+		127;
 	
-	public static final int MIN_VALUE =
-		-2147483648;
+	public static final byte MIN_VALUE =
+		-128;
 	
 	public static final int SIZE =
-		32;
+		8;
 	
-	public static final Class<Integer> TYPE =
-		int.class;
+	public static final Class<Byte> TYPE =
+		byte.class;
 	
-	public Integer(int __a)
+	public Byte(byte __a)
 	{
 		super();
 		throw new Error("TODO");
 	}
 	
-	public Integer(String __a)
+	public Byte(String __a)
 		throws NumberFormatException
 	{
 		super();
@@ -47,7 +47,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public int compareTo(Integer __a)
+	public int compareTo(Byte __a)
 	{
 		throw new Error("TODO");
 	}
@@ -99,12 +99,12 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int bitCount(int __a)
+	public static int compare(byte __a, byte __b)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static Integer decode(String __a)
+	public static Byte decode(String __a)
 		throws NumberFormatException
 	{
 		if (false)
@@ -112,42 +112,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static Integer getInteger(String __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static Integer getInteger(String __a, int __b)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static Integer getInteger(String __a, Integer __b)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int highestOneBit(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int lowestOneBit(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int numberOfLeadingZeros(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int numberOfTrailingZeros(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int parseInt(String __a, int __b)
+	public static byte parseByte(String __a, int __b)
 		throws NumberFormatException
 	{
 		if (false)
@@ -155,7 +120,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int parseInt(String __a)
+	public static byte parseByte(String __a)
 		throws NumberFormatException
 	{
 		if (false)
@@ -163,37 +128,17 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int signum(int __a)
+	public static String toString(byte __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toBinaryString(int __a)
+	public static Byte valueOf(byte __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toHexString(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static String toOctalString(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static String toString(int __a, int __b)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static String toString(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static Integer valueOf(String __a, int __b)
+	public static Byte valueOf(String __a, int __b)
 		throws NumberFormatException
 	{
 		if (false)
@@ -201,16 +146,11 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static Integer valueOf(String __a)
+	public static Byte valueOf(String __a)
 		throws NumberFormatException
 	{
 		if (false)
 			throw new NumberFormatException();
-		throw new Error("TODO");
-	}
-	
-	public static Integer valueOf(int __a)
-	{
 		throw new Error("TODO");
 	}
 }

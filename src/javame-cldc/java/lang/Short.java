@@ -10,29 +10,29 @@
 
 package java.lang;
 
-public final class Integer
+public final class Short
 	extends Number
-	implements Comparable<Integer>
+	implements Comparable<Short>
 {
-	public static final int MAX_VALUE =
-		2147483647;
+	public static final short MAX_VALUE =
+		32767;
 	
-	public static final int MIN_VALUE =
-		-2147483648;
+	public static final short MIN_VALUE =
+		-32768;
 	
 	public static final int SIZE =
-		32;
+		16;
 	
-	public static final Class<Integer> TYPE =
-		int.class;
+	public static final Class<Short> TYPE =
+		short.class;
 	
-	public Integer(int __a)
+	public Short(short __a)
 	{
 		super();
 		throw new Error("TODO");
 	}
 	
-	public Integer(String __a)
+	public Short(String __a)
 		throws NumberFormatException
 	{
 		super();
@@ -47,7 +47,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public int compareTo(Integer __a)
+	public int compareTo(Short __a)
 	{
 		throw new Error("TODO");
 	}
@@ -99,12 +99,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int bitCount(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static Integer decode(String __a)
+	public static Short decode(String __a)
 		throws NumberFormatException
 	{
 		if (false)
@@ -112,42 +107,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static Integer getInteger(String __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static Integer getInteger(String __a, int __b)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static Integer getInteger(String __a, Integer __b)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int highestOneBit(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int lowestOneBit(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int numberOfLeadingZeros(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int numberOfTrailingZeros(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static int parseInt(String __a, int __b)
+	public static short parseShort(String __a, int __b)
 		throws NumberFormatException
 	{
 		if (false)
@@ -155,7 +115,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int parseInt(String __a)
+	public static short parseShort(String __a)
 		throws NumberFormatException
 	{
 		if (false)
@@ -163,37 +123,17 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int signum(int __a)
+	public static short reverseBytes(short __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toBinaryString(int __a)
+	public static String toString(short __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toHexString(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static String toOctalString(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static String toString(int __a, int __b)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static String toString(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public static Integer valueOf(String __a, int __b)
+	public static Short valueOf(String __a, int __b)
 		throws NumberFormatException
 	{
 		if (false)
@@ -201,7 +141,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static Integer valueOf(String __a)
+	public static Short valueOf(String __a)
 		throws NumberFormatException
 	{
 		if (false)
@@ -209,7 +149,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static Integer valueOf(int __a)
+	public static Short valueOf(short __a)
 	{
 		throw new Error("TODO");
 	}

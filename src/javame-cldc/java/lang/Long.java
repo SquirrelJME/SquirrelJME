@@ -10,29 +10,29 @@
 
 package java.lang;
 
-public final class Integer
+public final class Long
 	extends Number
-	implements Comparable<Integer>
+	implements Comparable<Long>
 {
-	public static final int MAX_VALUE =
-		2147483647;
+	public static final long MAX_VALUE =
+		9223372036854775807L;
 	
-	public static final int MIN_VALUE =
-		-2147483648;
+	public static final long MIN_VALUE =
+		-9223372036854775808L;
 	
 	public static final int SIZE =
-		32;
+		64;
 	
-	public static final Class<Integer> TYPE =
-		int.class;
+	public static final Class<Long> TYPE =
+		long.class;
 	
-	public Integer(int __a)
+	public Long(long __a)
 	{
 		super();
 		throw new Error("TODO");
 	}
 	
-	public Integer(String __a)
+	public Long(String __a)
 		throws NumberFormatException
 	{
 		super();
@@ -47,7 +47,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public int compareTo(Integer __a)
+	public int compareTo(Long __a)
 	{
 		throw new Error("TODO");
 	}
@@ -99,12 +99,12 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int bitCount(int __a)
+	public static int bitCount(long __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static Integer decode(String __a)
+	public static Long decode(String __a)
 		throws NumberFormatException
 	{
 		if (false)
@@ -112,42 +112,42 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static Integer getInteger(String __a)
+	public static Long getLong(String __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static Integer getInteger(String __a, int __b)
+	public static Long getLong(String __a, long __b)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static Integer getInteger(String __a, Integer __b)
+	public static Long getLong(String __a, Long __b)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static int highestOneBit(int __a)
+	public static long highestOneBit(long __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static int lowestOneBit(int __a)
+	public static long lowestOneBit(long __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static int numberOfLeadingZeros(int __a)
+	public static int numberOfLeadingZeros(long __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static int numberOfTrailingZeros(int __a)
+	public static int numberOfTrailingZeros(long __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static int parseInt(String __a, int __b)
+	public static long parseLong(String __a, int __b)
 		throws NumberFormatException
 	{
 		if (false)
@@ -155,7 +155,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int parseInt(String __a)
+	public static long parseLong(String __a)
 		throws NumberFormatException
 	{
 		if (false)
@@ -163,37 +163,62 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static int signum(int __a)
+	public static long reverse(long __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toBinaryString(int __a)
+	public static long reverseBytes(long __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toHexString(int __a)
+	public static long rotateLeft(long __a, int __b)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toOctalString(int __a)
+	public static long rotateRight(long __a, int __b)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toString(int __a, int __b)
+	public static int signum(long __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static String toString(int __a)
+	public static long sum(long __a, long __b)
 	{
 		throw new Error("TODO");
 	}
 	
-	public static Integer valueOf(String __a, int __b)
+	public static String toBinaryString(long __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static String toHexString(long __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static String toOctalString(long __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static String toString(long __a, int __b)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static String toString(long __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static Long valueOf(String __a, int __b)
 		throws NumberFormatException
 	{
 		if (false)
@@ -201,7 +226,7 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static Integer valueOf(String __a)
+	public static Long valueOf(String __a)
 		throws NumberFormatException
 	{
 		if (false)
@@ -209,9 +234,10 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
-	public static Integer valueOf(int __a)
+	public static Long valueOf(long __a)
 	{
 		throw new Error("TODO");
 	}
 }
+
 

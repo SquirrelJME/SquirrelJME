@@ -16,3 +16,11 @@ TI89.
 What I need to do is make it so that any dependencies that are used to launch
 are program are loaded properly.
 
+## 20:56
+
+Interesting, if `java.lang.Byte` does not exist then the compiler crashes.
+
+## 21:12
+
+JavaME lacks `Void`, I hope the compiler does not need it.
+
