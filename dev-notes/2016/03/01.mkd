@@ -1,0 +1,11 @@
+# 2016/03/01
+
+## 08:45
+
+Actually, I need to use `FileChannel` because I need random access to the class
+files and such. However JavaME's `FileChannel` is rather light. I however can
+just make a wrapper interface of sorts though. Or the alternative when reading
+from a `SeekableByteChannel` would be to lock it, perform the read, then unlock
+at a slight speed reduction. I cannot extend `FileChannel` because that would
+end up with an incompatible class.
+

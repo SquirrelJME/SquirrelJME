@@ -171,10 +171,13 @@ __outer_loop:
 			throw new IllegalArgumentException("Main class not specified or " +
 				"is missing in the JAR manifest.");
 		
-		System.err.println(hargs);
-		System.err.println(classpath);
+		// Setup the local interpreter engine
+		LocalEngine le = new LocalEngine(bootclasspath, classpath, mainclass,
+			hargs.<String>toArray(new String[hargs.size()]));
 		
-		throw new Error("TODO");
+		// Run while it has not terminated
+		while (!le.isTerminated())
+			throw new Error("TODO");
 	}
 }
 
