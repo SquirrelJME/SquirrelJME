@@ -69,6 +69,10 @@ public class Main
 		for (int i = 0; i < __args.length; i++)
 			hargs.offerLast(__args[i]);
 		
+		// Bootstrap class path
+		boolean didbcp = false;
+		Set<Path> bootclasspath = new LinkedHashSet<>();
+		
 		// Class path
 		boolean didcp = false;
 		boolean didjar = false;
@@ -86,6 +90,7 @@ __outer_loop:
 			{
 					// Class Path
 				case "-cp":
+				case "-classpath":
 					// Only once
 					if (didcp || didjar)
 						throw new IllegalArgumentException("The switch " +
@@ -142,6 +147,15 @@ __outer_loop:
 					break __outer_loop;
 			}
 		}
+		
+		// Add the CLDC to the boot classpath always
+		bootclasspath.add(Paths.get("javame-cldc.jar"));
+		
+		// Always add the current directory to the class path so that random
+		// class files which are lying around work
+		String pwd = System.getProperty("user.dir");
+		if (pwd != null)
+			classpath.add(Paths.get(pwd));
 		
 		// Determine the main class to use
 		String mainclass;
