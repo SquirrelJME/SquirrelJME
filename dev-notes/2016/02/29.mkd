@@ -32,3 +32,15 @@ native compiler since they have to decode the same instructional details
 anyway. The interpreter will be pure with no optimizations at all, that is
 up to the native compiler.
 
+## 21:49
+
+And that interpreter engine will have to handle things such as GPIOs, class
+loading, JAR files, file system access. It would have to do it in a way so
+that whatever is running on it feels like a real system when it really is not.
+Also, when the compiler is written and code is generatable and ran, the local
+interpreter could be used internally as a kind of test so to speak. So
+basically the interpreter will be a natively compiled application. It would
+however still require JARs of the standard library to exist however. However
+in general it will allow me to write a nicely magical standard library that
+does not rely on native methods to exist at all.
+
