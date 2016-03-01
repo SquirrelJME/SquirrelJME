@@ -60,3 +60,51 @@ wonder how the device IO APIs work when they use ByteBuffers.
 So this means for that, I will need magically classes and such to provide
 `ByteBuffers` which are mapped to specific memory addresses. Will be fun.
 
+## 13:09
+
+Ok so here are the numbers:
+
+ * CLDC 1.8: 111 classes
+ * MEEP 8  :  62 classes
+ * GCF     :  41 classes
+
+This means for an absolute minimum required stuff I need to write a maximum of
+214 class. More stuff is optional in this, but having all of it would be the
+most useful. However, I will probably force CLDC 1.8 to be maximum while MEEP
+and GCF can be split off into sub-packages. This way not everything is needed.
+There are also the device IO APIs which can be split also.
+
+ * DIO 1.1 : 125 classes
+ 
+## 13:37
+
+I should probably split the CLDC and keep it modular so that I can actually
+have optional bits to it. That is I have the very core of it and then I have
+stuff added on top of it.
+
+As stated in the documentation:
+
+ * CLDC Full APIs:
+   * Java runtime classes (java.lang)
+   * annotations (java.lang.annotation)
+   * weak references (java.lang.ref)
+   * collections, service loader, and utility classes (java.util)
+   * Security (java.security)
+   * I/O Streams and Readers (java.io)
+   * Network exceptions (java.net)
+   * NIO Buffers (java.nio)
+   * NIO Channels (java.nio.channels)
+   * NIO Files (java.nio.file and java.nio.file.attribute)
+   * and Logging (java.util.logging) 
+ * CLDC Compact APIs:
+   * Java runtime classes (java.lang)
+   * annotations (java.lang.annotation)
+   * weak references (java.lang.ref)
+   * collections, service loader, and utility classes (java.util)
+   * Security (java.security)
+   * I/O Streams and Readers (java.io)
+   * and Network exceptions (java.net)
+
+So I basically need to split off all of the NIO stuff and logging, then I have
+a truly compact API.
+
