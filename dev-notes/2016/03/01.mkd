@@ -138,3 +138,7 @@ these cases, I could not see a filesystem with an actual interpreter being
 used. So essentially such systems would be AOT only and are fixed to which
 classes they support.
 
+## 14:38
+
+So the first part of the interpreter which must be written is the class loader.
+

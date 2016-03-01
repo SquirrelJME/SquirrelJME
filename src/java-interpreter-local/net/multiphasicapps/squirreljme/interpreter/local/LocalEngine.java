@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.interpreter.local;
 
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.squirreljme.interpreter.InterpreterEngine;
 
 /**
@@ -23,6 +25,12 @@ import net.multiphasicapps.squirreljme.interpreter.InterpreterEngine;
 public class LocalEngine
 	extends InterpreterEngine
 {
+	/** The bootstrap class path. */
+	protected final Set<Path> bootclasspath;
+	
+	/** The standard class path. */
+	protected final Set<Path> classpath;
+	
 	/**
 	 * This initializes the local interpreter engine.
 	 *
@@ -30,11 +38,13 @@ public class LocalEngine
 	 * @param __cp The standard class path.
 	 * @param __main The main entry class.
 	 * @param __args Program arguments to pass to main.
+	 * @throws IllegalArgumentException If there are no bootstrap classpath
+	 * paths available.
 	 * @since 2016/03/01
 	 */
 	public LocalEngine(Set<Path> __bcp, Set<Path> __cp, String __main,
 		String... __args)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__bcp == null || __cp == null || __main == null)
@@ -43,6 +53,16 @@ public class LocalEngine
 		// Force arguments to exist
 		if (__args == null)
 			__args = new String[0];
+		
+		// Copy classpaths
+		bootclasspath = MissingCollections.<Path>unmodifiableSet(
+			new LinkedHashSet<>(__bcp));
+		classpath = MissingCollections.<Path>unmodifiableSet(
+			new LinkedHashSet<>(__cp));
+		
+		// Need bootstrap classes
+		if (bootclasspath.isEmpty())
+			throw new IllegalArgumentException("No bootstrap classes.");
 		
 		throw new Error("TODO");
 	}
