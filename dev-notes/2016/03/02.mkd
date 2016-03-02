@@ -1,0 +1,7 @@
+# 2016/03/02
+
+## 11:53
+
+Going to need magical stuff in the compact profile which the interpreter will
+have to use.
+

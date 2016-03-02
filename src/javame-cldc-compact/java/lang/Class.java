@@ -11,6 +11,7 @@
 package java.lang;
 
 import java.io.InputStream;
+import net.multiphasicapps.squirreljme.magic.Magic;
 
 public final class Class<T>
 {
@@ -40,11 +41,23 @@ public final class Class<T>
 	}
 	
 	/**
-	 * Obtains a resource 
+	 * Obtains a resource from the classpath which exists within a JAR file,
+	 * inside of a directory, or in a prepacked resource.
+	 *
+	 * Relative names are based on the method which called this method.
+	 *
+	 * In the Java ME environment, one should not rely on getting resources
+	 * which are executable class files (files ending in .class). These class
+	 * files may be deleted during native compilation. This however should not
+	 * be relied upon.
+	 *
+	 * Using this method on the classes for primitive types ({@code int.class})
+	 * and using a relative name will always result in the path being treated
+	 * as absolute.
 	 *
 	 * @param __name The name of the resource to find, if this starts with a
 	 * forward slash {@code '/'} then it is treated as an absolute path.
-	 * Otherwise a resource will be derived from the current class.
+	 * Otherwise a resource will be derived from the calling class.
 	 * @return A stream to the given resource or {@code null} if one was not
 	 * found.
 	 * @throws NullPointerException On null arguments.
@@ -58,7 +71,7 @@ public final class Class<T>
 			throw new NullPointerException();
 		
 		// Get the real component type of this class
-		Class<?> real = __guessComponentType();
+		Class<?> real = Magic.componentType(this);
 		
 		// If not absolute, make it absolute
 		if (!__name.startsWith("/"))
@@ -66,6 +79,8 @@ public final class Class<T>
 			// If this class represents a primitive type, then primitive types
 			// are considered to be in the default package. In this case, a
 			// slash is just prepended to it.
+			// This is from observed behavior from OpenJDK on the desktop,
+			// which is the reference implementation.
 			if (real == boolean.class ||
 				real == byte.class ||
 				real == short.class ||
@@ -76,24 +91,13 @@ public final class Class<T>
 				real == double.class)
 				__name = '/' + __name;
 			
-			// Otherwise the package this class is in must be derived.
+			// Otherwise base the resource based on the class this code is
+			// being called from (the method directly above this one).
+			// So if a called was made from the package "foo.bar" and a
+			// resource called "orange/lime.lemon" was requested, the full path
+			// will be "/foo/bar/orange/lime.lemon".
 			else
-			{
-				// Get name of the current class, which needs to be translated
-				// in order to get the right resource
-				String namethis = real.getName().replace('.', '/');
-			
-				// Get the last slash to chop it off
-				int ls = namethis.lastIndexOf('/');
-			
-				// Does not have a slash to cut, assume default namespace
-				if (ls < 0)
-					__name = '/' + __name;
-				
-				// Otherwise clip it and add in
-				else
-					__name = '/' + namethis.substring(0, ls) + __name;
-			}
+				throw Error("TODO");
 		}
 		
 		// Sanity check
@@ -129,96 +133,6 @@ public final class Class<T>
 	public String toString()
 	{
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Guesses the component type of this class if it is an array, otherwise
-	 * this returns {@code this}.
-	 *
-	 * @return The true component type of this class or {@code this} if not
-	 * an array.
-	 * @since 2016/03/01
-	 */
-	private final Class<?> __guessComponentType()
-	{
-		// If not an array, return self
-		if (!isArray())
-			return this;
-		
-		// Otherwise get the name of this
-		String name = getName();
-		
-		// Go through and decode the descriptor type
-		int n = name.length();
-		for (int i = 0; i < n; i++)
-		{
-			// Get character here
-			char c = name.charAt(i);
-			
-			// Ignore array brackets
-			if (c == '[')
-				continue;
-			
-			// The class here depends on the character code used
-			switch (c)
-			{
-					// Standard letters
-				case 'Z': return boolean.class;
-				case 'B': return byte.class;
-				case 'C': return char.class;
-				case 'D': return double.class;
-				case 'F': return float.class;
-				case 'I': return int.class;
-				case 'J': return long.class;
-				case 'S': return short.class;
-				
-					// A class name
-				case 'L':
-					// Make sure the last is a semicolon
-					c = name.charAt(n - 1);
-					
-					// Not one?
-					if (c == ';')
-						throw new ClassFormatError("Class '" + name + "' " +
-							"is a reference type, but it does not end in a " +
-							"semi-colon.");
-					
-					// Get the given class in the bracket area
-					String used = name.substring(i + 1, n - 1);
-					
-					// Before translation into dot form, the name cannot
-					// contain internal VM characters such as '.', '[', or ';'.
-					if (used.indexOf('.') >= 0 || used.indexOf('[') >= 0 ||
-						used.indexOf(';') >= 0)
-						throw new ClassFormatError("Class '" + name + "' " +
-							"is not a valid class name as it contains " +
-							"reserved characters.");
-					
-					// Otherwise find the class with the given name, which may
-					// fail
-					try
-					{
-						return Class.forName(used.replace('/', '.'));
-					}
-					
-					// Does not exist?
-					catch (ClassNotFoundException nsce)
-					{
-						throw new AssertionError("Could not find the class " +
-							"'" + used + "' which belongs to the array of " +
-							"class '" + name + "'.");
-					}
-				
-					// Unknown, this is bad
-				default:
-					throw new ClassFormatError("Class '" + name + "' has an " +
-						"illegal array type of '" + c + "'.");
-			}
-		}
-		
-		// Failure
-		throw new AssertionError("Could not guess the component type of " +
-			"class '" + name + "'.");
 	}
 	
 	/**
