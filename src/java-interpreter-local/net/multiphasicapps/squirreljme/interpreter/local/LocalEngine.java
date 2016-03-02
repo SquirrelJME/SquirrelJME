@@ -167,7 +167,7 @@ public class LocalEngine
 				fc = FileChannel.open(__p, StandardOpenOption.READ);
 				
 				// Otherwise try to load one
-				StandardZIPFile szf = new StandardZIPFile(fc);
+				StandardZIPFile szf = StandardZIPFile.open(fc);
 				
 				// It worked, so put it in and return it
 				_zips.put(__p, szf);
