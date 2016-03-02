@@ -11,10 +11,15 @@
 package net.multiphasicapps.squirreljme.zips;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 
 /**
  * This provides abstract access to a ZIP file.
+ *
+ * The used {@link SeekableByteChannel} is not sharable and reads lock on it
+ * to prevent other threads from changing the position during a read.
  *
  * @since 2016/02/26
  */
@@ -22,6 +27,10 @@ public abstract class StandardZIPFile
 {
 	/** The base channel to read from. */
 	protected final SeekableByteChannel channel;
+	
+	/** Read buffer to prevent a thousand allocations at the cost of speed. */
+	protected final ByteBuffer readbuffer =
+		ByteBuffer.allocateDirect(8);
 	
 	/**
 	 * Initializes the zip file using the given byte channel which contains
@@ -42,6 +51,99 @@ public abstract class StandardZIPFile
 		
 		// Set
 		channel = __sbc;
+	}
+	
+	/**
+	 * Reads a little endian integer at the given position.
+	 *
+	 * @param __pos Position to read from.
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/02
+	 */
+	protected final int readInt(long __pos)
+		throws IOException
+	{
+		synchronized (readbuffer)
+		{
+			return readRaw(__pos, 4).getInt();
+		}
+	}
+	
+	/**
+	 * Reads a little endian long value at the given position.
+	 *
+	 * @param __pos Position to read from.
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/02
+	 */
+	protected final long readLong(long __pos)
+		throws IOException
+	{
+		synchronized (readbuffer)
+		{
+			// ByteBuffer does not support reading long values sadly
+			ByteBuffer val = readRaw(__pos, 8);
+			
+			// Build values
+			int lo = val.getInt();
+			return ((long)lo) | (((long)val.getInt()) << 32L);
+		}
+	}
+	
+	/**
+	 * Reads raw data from the ZIP.
+	 *
+	 * @param __pos The position to read from.
+	 * @param __len The number of bytes to read.
+	 * @return The field {@code readbuffer} automatically position to the
+	 * started and limited to the length.
+	 * @throws IllegalArgumentException If the length exceeds the read buffer
+	 * size, or the read length is zero or negative.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/02
+	 */
+	protected final ByteBuffer readRaw(long __pos, int __len)
+		throws IllegalArgumentException, IOException
+	{
+		// Check
+		if (__len <= 0)
+			throw new IllegalArgumentException("The read length is zero " +
+				"or negative.");
+		if (__len > readbuffer.capacity())
+			throw new IllegalArgumentException("Read of " +
+				"length " + __len + " exceeds the buffer size " +
+				readbuffer.capacity() + ".");
+		
+		// Lock on the read buffer
+		synchronized (readbuffer)
+		{
+			// Setup buffer for read
+			ByteBuffer rv = readbuffer;
+			rv.order(ByteOrder.LITTLE_ENDIAN);
+			rv.clear();
+			rv.limit(__len);
+		
+			// Lock on the channel
+			synchronized (channel)
+			{
+				// Seek
+				channel.position(__pos);
+			
+				// Perform the read
+				int rc = channel.read(rv);
+				if (rc < __len)
+					throw new IOException("Short read, expected " + __len +
+						" bytes but read " + Math.max(rc, 0) + " bytes.");
+			}
+		
+			// Flip the buffer
+			rv.flip();
+		
+			// Return the input buffer
+			return rv;
+		}
 	}
 	
 	/**

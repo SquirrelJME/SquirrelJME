@@ -67,6 +67,7 @@ then
 	shift 2
 	
 	# Launch the given command
+	echo "*** Launch $__pack ***" 1>&2
 	java -cp "$("$0" "launch-classpath" "$__pack")" \
 		"$("$0" "main-class" "$__pack")" $*
 	exit $?
@@ -95,6 +96,7 @@ then
 	shift 2
 	
 	# Launch the given command
+	echo "*** Interpreted Launch $__pack ***" 1>&2
 	java -cp "$("$0" "launch-classpath" "java-interpreter-local")" \
 		"$("$0" "main-class" "java-interpreter-local")" \
 		-cp "$("$0" "launch-classpath" "$__pack")" \
@@ -260,7 +262,7 @@ then
 	fi
 
 	# Build package dependencies
-	"$0" "dependsnorecurse" "$__pack" | while read __dep
+	if !("$0" "dependsnorecurse" "$__pack" | while read __dep
 	do
 		# Build dependency
 		if ! "$0" "build" "$__dep"
@@ -268,7 +270,10 @@ then
 			echo "Failed to build dependency $__dep for $__pack." 2>&1
 			exit 1
 		fi
-	done
+	done)
+	then
+		exit 1
+	fi
 
 	# Get the output JAR and source locations
 	__ojar="$__pack.jar"
