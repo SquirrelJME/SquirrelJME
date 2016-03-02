@@ -10,3 +10,12 @@ have to use.
 Going to need a `InterpreterClassFormatError` to tell the difference between
 the two forms of classes.
 
+## 16:20
+
+I have written many class file parsers in my other big project which I have
+stopped working on for this smaller, lighter, and faster environment. Thinking
+about it, I wonder if I could make a desktop environment of sorts. Say perhaps
+that a system is very capable (such as a desktop), instead of having a micro
+sized environment being displayed, I could have one that fits desktops more.
+I do wonder though how well that will work.
+

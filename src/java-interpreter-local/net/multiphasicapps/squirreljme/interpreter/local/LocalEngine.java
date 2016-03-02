@@ -12,8 +12,11 @@ package net.multiphasicapps.squirreljme.interpreter.local;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -40,6 +43,10 @@ public class LocalEngine
 	
 	/** The standard class path. */
 	protected final Set<Path> classpath;
+	
+	/** The mapping of ZIP files. */
+	private final Map<Path, StandardZIPFile> _zips =
+		new HashMap<>();
 	
 	/**
 	 * This initializes the local interpreter engine.
@@ -103,7 +110,95 @@ public class LocalEngine
 	@Override
 	public InputStream getResourceAsStream(String __res)
 	{
-		throw new Error("TODO");
+		// Go through the classpaths to find the given resource
+		for (int i = 0; i < 2; i++)
+			for (Path base : (i == 0 ? bootclasspath : classpath))
+			{
+				// Get ZIP file
+				StandardZIPFile szf = __getZip(base);
+				
+				// If not a ZIP then treat the file as a directory
+				if (szf == null)
+				{
+					// If it is not a directory then it cannot be treated as
+					// one
+					if (!Files.isDirectory(base))
+						return null;
+					
+					throw new Error("TODO");
+				}
+				
+				// Otherwise read from the ZIP itself
+				else
+					throw new Error("TODO");
+			}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Attempts to open and cache the given path as a ZIP file.
+	 *
+	 * @param __p The path to open as a ZIP file.
+	 * @return The ZIP file or {@code null} if it could not be opened as one.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/02
+	 */
+	private StandardZIPFile __getZip(Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException();
+		
+		// Lock on the ZIP map
+		synchronized (_zips)
+		{
+			// Is a ZIP already open for this?
+			if (_zips.containsKey(__p))
+				return _zips.get(__p);
+			
+			// Open file
+			FileChannel fc = null;
+			try
+			{
+				// Open file first
+				fc = FileChannel.open(__p, StandardOpenOption.READ);
+				
+				// Otherwise try to load one
+				StandardZIPFile szf = new StandardZIPFile(fc);
+				
+				// It worked, so put it in and return it
+				_zips.put(__p, szf);
+				return szf;
+			}
+			
+			// Failed to open
+			catch (IOException ioe)
+			{
+				// Either does not exist or is not a (valid) ZIP
+				_zips.put(__p, null);
+				
+				// Close the channel
+				if (fc != null)
+					try
+					{
+						fc.close();
+					}
+					
+					// Failed to close
+					catch (IOException ioeb)
+					{
+						RuntimeException toss = new RuntimeException(ioeb);
+						toss.addSuppressed(ioe);
+						throw toss;
+					}
+				
+				// Nothing read
+				return null;
+			}
+		}
 	}
 }
 
