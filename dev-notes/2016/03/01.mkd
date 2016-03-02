@@ -148,3 +148,9 @@ I would say that for cooperatively tasked systems, running threads will have to
 call `Thread.yield()`, call `Thread.sleep()`, block on a lock, or block on IO
 if they want another thread to start running.
 
+## 22:54
+
+According to the running of the run-time, primitive types are considered to be
+in the default nameless package. Arrays are in the package of their component
+type.
+

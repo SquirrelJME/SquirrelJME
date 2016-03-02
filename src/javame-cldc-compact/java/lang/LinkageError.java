@@ -10,35 +10,18 @@
 
 package java.lang;
 
-public class ClassNotFoundException
-	extends Exception
+public class LinkageError
+	extends Error
 {
-	public ClassNotFoundException()
+	public LinkageError()
 	{
 		super();
 		throw new Error("TODO");
 	}
 	
-	public ClassNotFoundException(String __a)
+	public LinkageError(String __a)
 	{
 		super();
-		throw new Error("TODO");
-	}
-	
-	public ClassNotFoundException(String __a, Throwable __b)
-	{
-		super();
-		throw new Error("TODO");
-	}
-	
-	@Override
-	public Throwable getCause()
-	{
-		throw new Error("TODO");
-	}
-	
-	public Throwable getException()
-	{
 		throw new Error("TODO");
 	}
 }

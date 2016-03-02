@@ -10,35 +10,54 @@
 
 package java.lang;
 
-public class ClassNotFoundException
-	extends Exception
+public class AssertionError
+	extends Error
 {
-	public ClassNotFoundException()
+	public AssertionError()
 	{
 		super();
 		throw new Error("TODO");
 	}
 	
-	public ClassNotFoundException(String __a)
+	public AssertionError(Object __a)
 	{
 		super();
 		throw new Error("TODO");
 	}
 	
-	public ClassNotFoundException(String __a, Throwable __b)
+	public AssertionError(boolean __a)
 	{
 		super();
 		throw new Error("TODO");
 	}
 	
-	@Override
-	public Throwable getCause()
+	public AssertionError(char __a)
 	{
+		super();
 		throw new Error("TODO");
 	}
 	
-	public Throwable getException()
+	public AssertionError(int __a)
 	{
+		super();
+		throw new Error("TODO");
+	}
+	
+	public AssertionError(long __a)
+	{
+		super();
+		throw new Error("TODO");
+	}
+	
+	public AssertionError(float __a)
+	{
+		super();
+		throw new Error("TODO");
+	}
+	
+	public AssertionError(double __a)
+	{
+		super();
 		throw new Error("TODO");
 	}
 }
