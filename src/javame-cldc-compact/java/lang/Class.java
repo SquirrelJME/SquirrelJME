@@ -97,7 +97,7 @@ public final class Class<T>
 			// resource called "orange/lime.lemon" was requested, the full path
 			// will be "/foo/bar/orange/lime.lemon".
 			else
-				throw Error("TODO");
+				throw new Error("TODO");
 		}
 		
 		// Sanity check

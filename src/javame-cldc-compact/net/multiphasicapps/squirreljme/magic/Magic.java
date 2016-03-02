@@ -36,7 +36,7 @@ public abstract class Magic
 	 * @return The package which called the method calling this.
 	 * @since 2016/03/02
 	 */
-	public String callingPackage()
+	public static String callingPackage()
 	{
 		throw new Error("Magic is forbidden.");
 	}
@@ -51,7 +51,7 @@ public abstract class Magic
 	 * one.
 	 * @since 2016/03/02
 	 */
-	public Class<?> componentType(Class<C> __ct)
+	public static Class<?> componentType(Class<?> __ct)
 	{
 		throw new Error("Magic is forbidden.");
 	}
