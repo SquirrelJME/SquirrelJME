@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -33,11 +35,12 @@ public class InterpreterClass
 	 *
 	 * @param __owner The owning interpreter engine.
 	 * @param __cdata Class data for parsing.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	InterpreterClass(InterpreterEngine __owner, SeekableByteChannel __cdata)
-		throws NullPointerException
+	InterpreterClass(InterpreterEngine __owner, InputStream __cdata)
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__owner == null || __cdata == null)
@@ -66,6 +69,17 @@ public class InterpreterClass
 		if (__name == null || __desc == null)
 			throw new NullPointerException();
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the name of this class as returned by {@link Class#getName()}.
+	 *
+	 * @return The name of this class.
+	 * @since 2016/03/02
+	 */
+	public String getName()
+	{
 		throw new Error("TODO");
 	}
 }

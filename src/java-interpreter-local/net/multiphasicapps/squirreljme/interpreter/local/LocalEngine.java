@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.interpreter.local;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -73,7 +75,7 @@ public class LocalEngine
 			throw new IllegalArgumentException("No bootstrap classes.");
 		
 		// Find the main class
-		InterpreterClass mainclass = loadClass(__main.replace('.', '/'));
+		InterpreterClass mainclass = loadClass(__main);
 		if (mainclass == null)
 			throw new IllegalArgumentException(String.format("The class " +
 				"'%s' does not exist.", __main));
@@ -92,6 +94,16 @@ public class LocalEngine
 		
 		// Create main thread
 		InterpreterThread mthread = createThread(mainmethod, pargs);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/02
+	 */
+	@Override
+	public InputStream getResourceAsStream(String __res)
+	{
+		throw new Error("TODO");
 	}
 }
 

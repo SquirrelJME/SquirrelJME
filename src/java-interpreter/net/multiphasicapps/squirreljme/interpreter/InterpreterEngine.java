@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -48,6 +50,17 @@ public abstract class InterpreterEngine
 	public InterpreterEngine()
 	{
 	}
+	
+	/**
+	 * Finds a resource using the given name as if it were requested from a
+	 * {@link ClassLoader}.
+	 *
+	 * @param __res The resource to find.
+	 * @return The input stream of the given resource or {@code null} if not
+	 * found.
+	 * @since 2016/03/02
+	 */
+	public abstract InputStream getResourceAsStream(String __res);
 	
 	/**
 	 * Creates a new a thread.
@@ -89,19 +102,40 @@ public abstract class InterpreterEngine
 	}
 	
 	/**
-	 * Attempts to load a class with the given binary name.
+	 * Attempts to load a class with the given binary name, the input class
+	 * may also be an array for which one will be generated.
 	 *
 	 * @param __bn The name of the class to load.
 	 * @return The loaded class or {@code null} if no such class exists.
+	 * @throws IllegalArgumentException If the given name is not a valid class
+	 * name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
 	public final InterpreterClass loadClass(String __bn)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__bn == null)
 			throw new NullPointerException();
+		
+		// Requesting an array class?
+		int dims;
+		if (__bn.startsWith("["))
+			throw new Error("TODO");
+		
+		// A normal class
+		else
+		{
+			// Not an array
+			dims = 0;
+			
+			// The name cannot contain /, ;, or [
+			if (__bn.indexOf('/') >= 0 || __bn.indexOf(';') >= 0 ||
+				__bn.indexOf('[') >= 0)
+				throw new IllegalArgumentException("The class '" + __bn +
+					"' is not a valid class name.");
+		}
 		
 		// Lock on the class map
 		synchronized (classes)
@@ -117,8 +151,37 @@ public abstract class InterpreterEngine
 			// Class needs to be read in
 			if (rv == null)
 			{
-				if (true)
+				// Requesting an array?
+				if (dims != 0)
 					throw new Error("TODO");
+				
+				// Load of a normal class
+				else
+				{
+					// Load resource
+					try (InputStream is = getResourceAsStream(
+						__bn.replace('.', '/') + ".class"))
+					{
+						// No class found
+						if (is == null)
+							return null;
+						
+						// Create class data
+						rv = new InterpreterClass(this, is);
+						
+						// Wrong class? Ignore it
+						if (!rv.getName().equals(__bn))
+							throw new InterpreterClassFormatError(
+								"Expected class '" + __bn +
+								"' however '" + rv.getName() + "' was read.");
+					}
+					
+					// Failed to load class, ignore
+					catch (IOException e)
+					{
+						throw new InterpreterClassFormatError("Read error", e);
+					}
+				}
 				
 				// Cache the class
 				classes.put(__bn, new WeakReference<>(rv));

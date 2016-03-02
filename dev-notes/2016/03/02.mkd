@@ -5,3 +5,8 @@
 Going to need magical stuff in the compact profile which the interpreter will
 have to use.
 
+## 14:34
+
+Going to need a `InterpreterClassFormatError` to tell the difference between
+the two forms of classes.
+
