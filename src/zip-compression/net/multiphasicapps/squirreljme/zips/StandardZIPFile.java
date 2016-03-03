@@ -19,8 +19,10 @@ import java.nio.channels.SeekableByteChannel;
 /**
  * This provides abstract access to a ZIP file.
  *
- * The used {@link SeekableByteChannel} is not sharable and reads lock on it
- * to prevent other threads from changing the position during a read.
+ * If the used {@link SeekableByteChannel} is to be used by other threads which
+ * are not treating it as a ZIP file then locking must be performed on it,
+ * otherwise the position may get invalidated and undefined behavior shall
+ * occur.
  *
  * @since 2016/02/26
  */
@@ -100,6 +102,23 @@ public abstract class StandardZIPFile
 			// Build values
 			int lo = val.getInt();
 			return ((long)lo) | (((long)val.getInt()) << 32L);
+		}
+	}
+	
+	/**
+	 * Reads a little endian short value at the given position.
+	 *
+	 * @param __pos Position to read from.
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/02
+	 */
+	protected final short readShort(long __pos)
+		throws IOException
+	{
+		synchronized (readbuffer)
+		{
+			return readRaw(__pos, 4).getShort();
 		}
 	}
 	
