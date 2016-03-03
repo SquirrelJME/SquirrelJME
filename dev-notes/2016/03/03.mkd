@@ -19,3 +19,8 @@ off. I suppose I can figure something out how to handle the offset. The main
 confusion is the central directory and file headers. I suppose the central
 directory points to file headers based on reading the specification.
 
+## 12:48
+
+I should allow delegation for the Main-Class so that if a package lacks it but
+a dependency has a main, then that can be used instead.
+

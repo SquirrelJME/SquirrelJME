@@ -22,6 +22,34 @@ then
 	"$0" "target"
 	exit $?
 
+# Run tests on the host
+elif [ "$1" = "host-tests" ]
+then
+	# Build all tests
+	if ! "$0" "build" "test-all"
+	then
+		echo "Failed to build all tests." 2>&1
+		exit 1
+	fi
+	
+	# Launch the tests
+	"$0" "launch" "test-all"
+	exit $?
+
+# Run tests on the interpreter
+elif [ "$1" = "interpreter-tests" ]
+then
+	# Build all tests
+	if ! "$0" "build" "test-all"
+	then
+		echo "Failed to build all tests." 2>&1
+		exit 1
+	fi
+	
+	# Launch the tests
+	"$0" "interpreter-launch" "test-all"
+	exit $?
+
 # Target a specific OS/Arch
 elif [ "$1" = "target" ]
 then
@@ -151,8 +179,32 @@ then
 	fi
 	
 	# Get the main class
-	tr '\n' '\v' < $__manf | sed 's/\v //g' | tr '\v' '\n' |
-		grep '^Main-Class[ \t]*:' | sed 's/^[^:]*:[ \t]*//g'
+	__usemain="$(tr '\n' '\v' < $__manf | sed 's/\v //g' | tr '\v' '\n' |
+		grep '^Main-Class[ \t]*:' | sed 's/^[^:]*:[ \t]*//g')"
+	
+	# If a main is missing, find it in a dependency
+	if [ -z "$__usemain" ]
+	then
+		if !("$0" "dependsnorecurse" "$__pack" | while read __dep
+		do
+			# Get it
+			__maybemain="$("$0" "main-class" "$__dep")"
+			
+			# If found print it out and stop
+			if [ -n "$__maybemain" ]
+			then
+				echo "$__maybemain"
+				exit 0
+			fi
+		done)
+		then
+			exit 1
+		fi
+	
+	# Otherwise print it
+	else
+		echo "$__usemain"
+	fi
 
 # Calculate the dependent classpath for a specific package
 elif [ "$1" = "depends-classpath" ]
