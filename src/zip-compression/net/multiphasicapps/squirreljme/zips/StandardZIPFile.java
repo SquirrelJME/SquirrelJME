@@ -189,6 +189,34 @@ public abstract class StandardZIPFile
 	}
 	
 	/**
+	 * Reads an int value as an unsigned value.
+	 *
+	 * @param __pos The position to read from.
+	 * @return The unsigned integer value as a long.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/03
+	 */
+	protected final long readUnsignedInt(long __pos)
+		throws IOException
+	{
+		return (long)readInt(__pos) & 0xFFFF_FFFFL;
+	}
+	
+	/**
+	 * Reads a short value as an unsigned value.
+	 *
+	 * @param __pos The position to read from.
+	 * @return The unsigned short as an int.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/03
+	 */
+	protected final int readUnsignedShort(long __pos)
+		throws IOException
+	{
+		return (int)readShort(__pos) & 0xFFFF;
+	}
+	
+	/**
 	 * Attempts to open this ZIP file using ZIP64 extensions first, then if
 	 * that fails it will fall back to using ZIP32.
 	 *

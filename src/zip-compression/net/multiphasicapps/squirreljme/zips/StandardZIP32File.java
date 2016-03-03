@@ -118,13 +118,12 @@ public class StandardZIP32File
 		
 		// Read the disk number and the disk containing the root of the central
 		// directory
-		int thisdisk = (int)readShort(idi + EDO_DISK_NUMBER) & 0xFFFF;
-		int diskstar = (int)readShort(idi + EDO_DISK_START) & 0xFFFF;
-		int diskents = (int)readShort(idi + EDO_DISK_ENTRY_COUNT) & 0xFFFF;
-		int totlents = (int)readShort(idi + EDO_ALL_ENTRY_COUNT) & 0xFFFF;
-		long dirsize = (long)readInt(idi + EDO_CENTRAL_DIR_SIZE) &
-			0xFFFF_FFFFL;
-		long diroffs = readInt(idi + EDO_CENTRAL_DIR_OFFSET);
+		int thisdisk = readUnsignedShort(idi + EDO_DISK_NUMBER);
+		int diskstar = readUnsignedShort(idi + EDO_DISK_START);
+		int diskents = readUnsignedShort(idi + EDO_DISK_ENTRY_COUNT);
+		int totlents = readUnsignedShort(idi + EDO_ALL_ENTRY_COUNT);
+		long dirsize = readUnsignedInt(idi + EDO_CENTRAL_DIR_SIZE);
+		long diroffs = readUnsignedInt(idi + EDO_CENTRAL_DIR_OFFSET);
 		
 
 		throw new Error("TODO");
