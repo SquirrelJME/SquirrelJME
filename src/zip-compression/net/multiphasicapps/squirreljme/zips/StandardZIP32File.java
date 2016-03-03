@@ -19,11 +19,41 @@ import java.nio.channels.SeekableByteChannel;
  * 32-bit ZIPs may only have 65k entries max and are limited to 4GiB in size,
  * individual files with their header information cannot exceed 4GiB also.
  *
+ * ZIP Structure:
+ * {@code
+ * end of central dir signature    4 bytes  (0x06054b50) [22]
+ * number of this disk             2 bytes [18]
+ * number of the disk with the
+ * start of the central directory  2 bytes [16]
+ * total number of entries in the
+ * central directory on this disk  2 bytes [14]
+ * total number of entries in
+ * the central directory           2 bytes [12]
+ * size of the central directory   4 bytes [10]
+ * offset of start of central
+ * directory with respect to
+ * the starting disk number        4 bytes [6]
+ * .ZIP file comment length        2 bytes [2]
+ * .ZIP file comment       (variable size)
+ * }
+ *
  * @since 2016/03/02
  */
 public class StandardZIP32File
 	extends StandardZIPFile
 {
+	/** This is the size of the basic end directory of a ZIP file. */
+	protected static final long BASE_END_DIRECTORY_SIZE =
+		22;
+	
+	/** The maximum end directory size (includes comment). */
+	protected static final long MAX_END_DIRECTORY_SIZE =
+		BASE_END_DIRECTORY_SIZE + 65535L;
+	
+	/** The magic number of the end directory. */
+	protected static final int END_DIRECTORY_MAGIC =
+		0x06054B50;
+	
 	/**
 	 * Initializes a 32-bit ZIP file.
 	 *
@@ -36,6 +66,27 @@ public class StandardZIP32File
 		throws IOException, ZIPFormatException
 	{
 		super(__sbc);
+		
+		// Try to locate the end of the central index
+		long idi = Long.MIN_VALUE;
+		long maxsearch = Math.max(0L, channel.size() - MAX_END_DIRECTORY_SIZE);
+		for (long i = channel.size() - BASE_END_DIRECTORY_SIZE; i >= 0; i--)
+		{
+			// Read magic number here
+			int maybe = readInt(i);
+			
+			// If this is the magic, then stop
+			if (maybe == END_DIRECTORY_MAGIC)
+			{
+				idi = i;
+				break;
+			}
+		}
+		
+		// Not a 32-bit ZIP?
+		if (idi < 0L)
+			throw new ZIPFormatException("Could not find a the end " +
+				"directory of a 32-bit ZIP file.");
 		
 		throw new Error("TODO");
 	}

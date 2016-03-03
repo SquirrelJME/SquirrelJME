@@ -36,7 +36,7 @@ public class StandardZIP64File
 	{
 		super(__sbc);
 		
-		throw new Error("TODO");
+		throw new ZIPFormatException("TODO");
 	}
 }
 
