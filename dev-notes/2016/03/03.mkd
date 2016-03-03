@@ -24,3 +24,11 @@ directory points to file headers based on reading the specification.
 I should allow delegation for the Main-Class so that if a package lacks it but
 a dependency has a main, then that can be used instead.
 
+## 13:55
+
+And with these tests that I have, it should be far easier to determine if my
+interpreter is working correctly by having actual tests instead of just running
+hairball as the interpreter test. In the future, these tests can be used to
+make sure that the target compiled code works correctly. Then in another
+future it can be used to test if the Java compiler generates code correctly.
+

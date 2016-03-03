@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.test;
 
+import java.io.PrintStream;
 import java.util.Objects;
 
 /**
@@ -129,10 +130,23 @@ public class TestChecker
 		if (__name == null)
 			throw new NullPointerException();
 		
+		// Get the output stream
+		PrintStream ps = caller.printStream();
+		
 		// Print it
-		caller.printStream().printf("%4s %s: %s %s%n",
-			(__pass ? "PASS" : "FAIL"), __name,
-			__escape(__exp), __escape(__was));
+		ps.print((__pass ? "PASS" : "FAIL"));
+		ps.print(' ');
+		ps.print(invoker.invokerName());
+		ps.print('@');
+		ps.println(__name);
+		
+		// The expected result
+		ps.print('\t');
+		ps.println(__escape(__exp));
+		
+		// The actual result
+		ps.print('\t');
+		ps.println(__escape(__was));
 	}
 }
 
