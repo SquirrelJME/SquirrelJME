@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.collections;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +29,23 @@ public class MissingCollections
 	 */
 	private MissingCollections()
 	{
+	}
+	
+	/**
+	 * This creates a view of the specified list which cannot be modified.
+	 *
+	 * @param <V> The type of value stored in the list.
+	 * @return An unmodifiable view of the list.
+	 * @since 2016/03/03
+	 */
+	public static <V> List<V> unmodifiableList(List<V> __l)
+	{
+		// If already one, return it
+		if (__l instanceof __UnmodifiableList__)
+			return __l;
+		
+		// Wrap
+		return new __UnmodifiableList__<V>(__l);
 	}
 	
 	/**

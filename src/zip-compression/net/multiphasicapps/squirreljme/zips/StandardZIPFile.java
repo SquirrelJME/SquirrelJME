@@ -256,5 +256,14 @@ public abstract class StandardZIPFile
 			}
 		}
 	}
+	
+	/**
+	 * This represents an entry within a standard ZIP file.
+	 *
+	 * @since 2016/02/03
+	 */
+	public abstract class Entry
+	{
+	}
 }
 

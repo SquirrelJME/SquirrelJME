@@ -32,3 +32,10 @@ hairball as the interpreter test. In the future, these tests can be used to
 make sure that the target compiled code works correctly. Then in another
 future it can be used to test if the Java compiler generates code correctly.
 
+## 17:19
+
+I suppose for a graphical GUI a PalmOS like interface could work out well. One
+that is a mix of PalmOS and Mac OS. The list of applications could essentially
+just be a set of icons that could be launched for example in the virtual
+machine.
+

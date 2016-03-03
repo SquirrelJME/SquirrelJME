@@ -168,6 +168,7 @@ public class LocalEngine
 				
 				// Otherwise try to load one
 				StandardZIPFile szf = StandardZIPFile.open(fc);
+				System.err.println(szf);
 				
 				// It worked, so put it in and return it
 				_zips.put(__p, szf);

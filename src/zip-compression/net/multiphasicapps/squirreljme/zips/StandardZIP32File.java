@@ -12,6 +12,10 @@ package net.multiphasicapps.squirreljme.zips;
 
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import net.multiphasicapps.collections.MissingCollections;
 
 /**
  * This represents a standard ZIP file.
@@ -68,6 +72,9 @@ public class StandardZIP32File
 	protected static final int END_DIRECTORY_MAGIC =
 		0x06054B50;
 	
+	/** The central ZIP directory. */
+	protected final List<Entry> entrytable;
+	
 	/**
 	 * Initializes a 32-bit ZIP file.
 	 *
@@ -119,15 +126,62 @@ public class StandardZIP32File
 		long dirsize = readUnsignedInt(idi + EDO_CENTRAL_DIR_SIZE);
 		long diroffs = readUnsignedInt(idi + EDO_CENTRAL_DIR_OFFSET);
 		
+		// Directory data
+		List<Entry> lem = Arrays.<Entry>asList(new Entry[diskents]);
+		
 		// Read the central directory
 		long xpos = (idi) - dirsize;
 		for (int en = 0; en < diskents; en++)
 		{
-			System.err.printf("%08x%n", readInt(xpos));
-			xpos += 4;
+			// Setup entry here
+			Entry32 ent = new Entry32(xpos);
+			
+			// Set to the list
+			lem.set(en, ent);
+			
+			// Skip to the position where the next entry is located
+			xpos += ent.__skipBytes();
 		}
-
-		throw new Error("TODO");
+		
+		// Set the directory table
+		entrytable = MissingCollections.<Entry>unmodifiableList(lem);
+	}
+	
+	/**
+	 * This represents a 32-bit ZIP entry.
+	 *
+	 * @since 2016/03/03
+	 */
+	public class Entry32
+		extends Entry
+	{
+		/** The position of the entry in the central directory. */
+		protected final long cdirpos;
+		
+		/**
+		 * Initializes the 32-bit ZIP entry.
+		 *
+		 * @param __cdfh The position of the data in the central index.
+		 * @throws ZIPFormatException If the header is not valid.
+		 * @since 2016/03/03
+		 */
+		private Entry32(long __cdfh)
+			throws ZIPFormatException
+		{
+			cdirpos = __cdfh;
+		}
+		
+		/**
+		 * The number of bytes to skip to reach the next entry.
+		 *
+		 * @return The number of bytes to skip to start a read of the following
+		 * entry.
+		 * @since 2016/03/03
+		 */
+		private long __skipBytes()
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
