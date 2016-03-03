@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: test-base
 X-Hairball-Depends: javame-cldc-compact
-LIBlet-Title: Test Framework
+LIBlet-Title: Test Base
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160303
 LIBlet-Description: This is the base interface for a test framework which is

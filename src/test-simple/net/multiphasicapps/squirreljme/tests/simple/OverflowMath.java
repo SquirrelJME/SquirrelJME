@@ -8,32 +8,35 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test;
+package net.multiphasicapps.squirreljme.tests.simple;
+
+import net.multiphasicapps.squirreljme.test.TestChecker;
+import net.multiphasicapps.squirreljme.test.TestInvoker;
 
 /**
- * This is an interface which is given so that all tests may be ran.
- *
- * This class is used with the {@link ServiceLoader} to locate tests that
- * should be run in a system.
+ * DESCRIBE THIS.
  *
  * @since 2016/03/03
  */
-public interface TestInvoker
+public class OverflowMath
+	implements TestInvoker
 {
 	/**
-	 * Returns the name of this test collection.
-	 *
-	 * @return The test collection name.
+	 * {@inheritDoc}
 	 * @since 2016/03/03
 	 */
-	public abstract String invokerName();
+	public String invokerName()
+	{
+		return "simple.overflowmath";
+	}
 	
 	/**
-	 * This runs tests.
-	 *
-	 * @param __tc The checker to interface with when running tests.
+	 * {@inheritDoc}
 	 * @since 2016/03/03
 	 */
-	public abstract void runTests(TestChecker __tc);
+	public void runTests(TestChecker __tc)
+	{
+		throw new Error("TODO");
+	}
 }
 

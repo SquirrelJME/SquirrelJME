@@ -407,6 +407,33 @@ then
 			fi
 		fi
 		
+		# Copy non-sources from the source tree to the output tree
+		if ! (cd "$__isrc"; find . -type f | grep -v '\.java$' | while read __f
+		do
+			# Make output directory
+			if ! mkdir -p "/tmp/$$.$__pack/$(dirname "$__f")"
+			then
+				exit 1
+			fi
+			
+			# Copy file
+			if ! cp "$__f" "/tmp/$$.$__pack/$__f"
+			then
+				exit 1
+			fi
+		done)
+		then
+			# Note
+			echo "Failed to copy non-sources for $__pack." 2>&1
+			
+			# Delete
+			rm -rf "/tmp/$$.$__pack"
+			rm -f /tmp/$$
+			
+			# Failed
+			exit 1
+		fi
+		
 		# Package it up
 		if ! jar cf "$__ojar" -C "/tmp/$$.$__pack" .
 		then

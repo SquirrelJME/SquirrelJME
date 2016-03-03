@@ -55,14 +55,24 @@ public class TestCaller
 	 */
 	public void runTests()
 	{
+		// Start
+		System.err.println("---- tests.start");
+		
 		// Go through all test services
 		for (TestInvoker ti : serviceloader)
 		{
-			// Get the name of this test
-			String tin = ti.invokerName();
+			// Non-important status output
+			System.err.printf("---- %s%n", ti.invokerName());
 			
-			throw new Error("TODO");
+			// Setup the checker
+			TestChecker tc = new TestChecker(this, ti);
+			
+			// Run all the tests
+			ti.runTests(tc);
 		}
+		
+		// End
+		System.err.println("---- tests.end");
 	}
 	
 	/**

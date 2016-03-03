@@ -18,5 +18,30 @@ package net.multiphasicapps.squirreljme.test;
  */
 public class TestChecker
 {
+	/** The test caller. */
+	protected final TestCaller caller;
+	
+	/** The test being invoked. */
+	protected final TestInvoker invoker;	
+	
+	/**
+	 * This initializes the test checker.
+	 *
+	 * @param __tc The test caller.
+	 * @param __ti The test invoker.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/03
+	 */
+	public TestChecker(TestCaller __tc, TestInvoker __ti)
+		throws NullPointerException
+	{
+		// Check
+		if (__tc == null || __ti == null)
+			throw new NullPointerException();
+		
+		// Set
+		caller = __tc;
+		invoker = __ti;
+	}
 }
 
