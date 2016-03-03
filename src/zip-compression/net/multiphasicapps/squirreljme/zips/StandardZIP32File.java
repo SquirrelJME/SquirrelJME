@@ -138,7 +138,7 @@ public class StandardZIP32File
 		long diroffs = readUnsignedInt(idi + EDO_CENTRAL_DIR_OFFSET);
 		
 		// Read the central directory
-		long xpos = (csz) - dirsize;
+		long xpos = (idi) - dirsize;
 		for (int en = 0; en < diskents; en++)
 		{
 			System.err.printf("%08x%n", readInt(xpos));
