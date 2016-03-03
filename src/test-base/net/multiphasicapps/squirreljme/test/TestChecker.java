@@ -76,9 +76,23 @@ public class TestChecker
 		// Get as a string
 		String str = __v.toString();
 		
+		// Scan the string first to see if it needs escaping
+		int n = str.length();
+		boolean needsescape = false;
+		for (int i = 0; i < n && !needsescape; i++)
+		{
+			char c = str.charAt(i);
+			
+			// Needs escaping?
+			needsescape |= !(c >= 0x21 && c <= 0x7F);
+		}
+		
+		// If it does not need escaping, do nothing with it
+		if (!needsescape)
+			return str;
+		
 		// Build escaped form
 		StringBuilder sb = new StringBuilder();
-		int n = str.length();
 		for (int i = 0; i < n; i++)
 		{
 			// Get character here
