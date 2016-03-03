@@ -23,24 +23,6 @@ import java.nio.channels.SeekableByteChannel;
  * entries which are split between archives will result in
  * {@link IOExceptions}.
  *
- * ZIP Structure:
- * {@code
- * end of central dir signature    4 bytes  (0x06054b50) [22]
- * number of this disk             2 bytes [18]
- * number of the disk with the
- * start of the central directory  2 bytes [16]
- * total number of entries in the
- * central directory on this disk  2 bytes [14]
- * total number of entries in
- * the central directory           2 bytes [12]
- * size of the central directory   4 bytes [10]
- * offset of start of central
- * directory with respect to
- * the starting disk number        4 bytes [6]
- * .ZIP file comment length        2 bytes [2]
- * .ZIP file comment       (variable size)
- * }
- *
  * @since 2016/03/02
  */
 public class StandardZIP32File
