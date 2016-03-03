@@ -118,7 +118,7 @@ public abstract class StandardZIPFile
 	{
 		synchronized (readbuffer)
 		{
-			return readRaw(__pos, 4).getShort();
+			return readRaw(__pos, 2).getShort();
 		}
 	}
 	

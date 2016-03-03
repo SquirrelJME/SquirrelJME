@@ -195,6 +195,11 @@ public class LocalEngine
 						throw toss;
 					}
 				
+				// Print trace
+				System.err.println("Failed to read the ZIP:");
+				System.err.println(ioe);
+				ioe.printStackTrace(System.err);
+				
 				// Nothing read
 				return null;
 			}

@@ -78,6 +78,10 @@ public class StandardZIP32File
 	protected static final long EDO_CENTRAL_DIR_OFFSET =
 		16;
 	
+	/** The offset to the comment size. */
+	protected static final long EDO_COMMENT_LENGTH =
+		20;
+	
 	/** The magic number of the end directory. */
 	protected static final int END_DIRECTORY_MAGIC =
 		0x06054B50;
@@ -97,17 +101,25 @@ public class StandardZIP32File
 		
 		// Try to locate the end of the central index
 		long idi = Long.MIN_VALUE;
-		long maxsearch = Math.max(0L, channel.size() - MAX_END_DIRECTORY_SIZE);
-		for (long i = channel.size() - BASE_END_DIRECTORY_SIZE; i >= 0; i--)
+		long csz = channel.size();
+		long maxsearch = Math.max(0L, csz - MAX_END_DIRECTORY_SIZE);
+		for (long i = csz - BASE_END_DIRECTORY_SIZE; i >= 0; i--)
 		{
 			// Read magic number here
 			int maybe = readInt(i);
 			
-			// If this is the magic, then stop
+			// If this is the magic, then check the comment length
 			if (maybe == END_DIRECTORY_MAGIC)
 			{
-				idi = i;
-				break;
+				// Read length
+				int comlen = readUnsignedShort(i + EDO_COMMENT_LENGTH);
+				
+				// The comment must end at the the end of the ZIP
+				if ((i + BASE_END_DIRECTORY_SIZE + comlen) == csz)
+				{
+					idi = i;
+					break;
+				}
 			}
 		}
 		
@@ -125,6 +137,13 @@ public class StandardZIP32File
 		long dirsize = readUnsignedInt(idi + EDO_CENTRAL_DIR_SIZE);
 		long diroffs = readUnsignedInt(idi + EDO_CENTRAL_DIR_OFFSET);
 		
+		// Read the central directory
+		long xpos = (csz) - dirsize;
+		for (int en = 0; en < diskents; en++)
+		{
+			System.err.printf("%08x%n", readInt(xpos));
+			xpos += 4;
+		}
 
 		throw new Error("TODO");
 	}

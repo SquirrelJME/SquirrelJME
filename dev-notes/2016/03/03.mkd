@@ -1,2 +1,21 @@
 # 2016/03/03
 
+## 00:04
+
+This will be rather exciting when I do get to native code generation. I can
+potentially target this TI89 Titanium I have, which I obtained for 20 USD from
+a garage sale. It has a m68k processor, so that means I can easily target
+older m68k Palm PDAs along with this calculator and have similar code
+generation. I could also potentially target m68k Macs, although I am not too
+sure of that one since I do not have such devices. There are also Amiga based
+m68k systems too, which I also do not have. There are however emulators for
+such systems however, so I suppose that will have to be good enough.
+
+## 00:18
+
+Ok, so the main thing I must figure out is how to actually read ZIP files.
+There is an offset to the start of the central directory, however it is a bit
+off. I suppose I can figure something out how to handle the offset. The main
+confusion is the central directory and file headers. I suppose the central
+directory points to file headers based on reading the specification.
+
