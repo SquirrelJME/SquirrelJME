@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.zips;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
 
 /**
@@ -27,6 +28,9 @@ public abstract class StandardZIPFile
 {
 	/** The base channel to read from. */
 	protected final SeekableByteChannel channel;
+	
+	/** File channel if this is one. */
+	protected final FileChannel filechannel;
 	
 	/** Read buffer to prevent a thousand allocations at the cost of speed. */
 	protected final ByteBuffer readbuffer =
@@ -51,6 +55,13 @@ public abstract class StandardZIPFile
 		
 		// Set
 		channel = __sbc;
+		
+		// If a file channel, some speed could be gained by not requiring a
+		// channel lock
+		if (channel instanceof FileChannel)
+			filechannel = (FileChannel)channel;
+		else
+			filechannel = null;
 	}
 	
 	/**
@@ -124,19 +135,31 @@ public abstract class StandardZIPFile
 			rv.order(ByteOrder.LITTLE_ENDIAN);
 			rv.clear();
 			rv.limit(__len);
-		
-			// Lock on the channel
-			synchronized (channel)
-			{
-				// Seek
-				channel.position(__pos);
 			
-				// Perform the read
-				int rc = channel.read(rv);
-				if (rc < __len)
-					throw new IOException("Short read, expected " + __len +
-						" bytes but read " + Math.max(rc, 0) + " bytes.");
-			}
+			// Read count
+			int rc;
+			
+			// FileChannel has its own internal locking so it can be directly
+			// read.
+			if (filechannel != null)
+				rc = filechannel.read(rv, __pos);
+			
+			// Otherwise lock on the channel since it may be used elsewhere or
+			// shared between multiple ZIPs and threads potentially
+			else
+				synchronized (channel)
+				{
+					// Seek
+					channel.position(__pos);
+			
+					// Perform the read
+					rc = channel.read(rv);
+				}
+			
+			// Check to make sure all the data was read
+			if (rc < __len)
+				throw new IOException("Short read, expected " + __len +
+					" bytes but read " + Math.max(rc, 0) + " bytes.");
 		
 			// Flip the buffer
 			rv.flip();
