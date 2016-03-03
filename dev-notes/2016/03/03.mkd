@@ -39,3 +39,11 @@ that is a mix of PalmOS and Mac OS. The list of applications could essentially
 just be a set of icons that could be launched for example in the virtual
 machine.
 
+## 17:44
+
+I suppose for ZIP files since I currently see that I am going to rather
+duplicated code between the 32-bit and 64-bit format. I would like it so that
+I can completely drop the directory table when it is not used (i.e. a weak
+reference) and then initialize it again as required. And one thing I just
+noticed is that Java ME has `WeakHashMap`.
+
