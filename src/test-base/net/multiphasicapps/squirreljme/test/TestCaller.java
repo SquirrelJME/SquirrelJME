@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.test;
 
 import java.io.PrintStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -49,30 +51,74 @@ public class TestCaller
 	}
 	
 	/**
+	 * Returns the target print stream.
+	 *
+	 * @return The target print stream.
+	 * @since 2016/03/03
+	 */
+	public PrintStream printStream()
+	{
+		return output;
+	}
+	
+	/**
 	 * Runs available tests.
 	 *
 	 * @since 2016/03/03
 	 */
 	public void runTests()
 	{
+		// Find all tests first
+		output.println("---- tests.find");
+		List<TestInvoker> alltests = new LinkedList<>();
+		for (TestInvoker ti : serviceloader)
+			alltests.add(ti);
+		
+		// Sort all of them
+		output.println("---- tests.sort");
+		Collections.<TestInvoker>sort(alltests, new Comparator<TestInvoker>()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/03
+				 */
+				@Override
+				public int compare(TestInvoker __a, TestInvoker __b)
+				{
+					return __a.invokerName().compareToIgnoreCase(
+						__b.invokerName());
+				}
+			});
+		
 		// Start
-		System.err.println("---- tests.start");
+		output.println("---- tests.start");
 		
 		// Go through all test services
-		for (TestInvoker ti : serviceloader)
+		for (TestInvoker ti : alltests)
 		{
 			// Non-important status output
-			System.err.printf("---- %s%n", ti.invokerName());
+			String name;
+			output.printf("---- %s%n", (name = ti.invokerName()));
 			
-			// Setup the checker
-			TestChecker tc = new TestChecker(this, ti);
+			// Make sure a crashing test does not take out other tests
+			try
+			{
+				// Setup the checker
+				TestChecker tc = new TestChecker(this, ti);
 			
-			// Run all the tests
-			ti.runTests(tc);
+				// Run all the tests
+				ti.runTests(tc);
+			}
+			
+			// Caught some exception
+			catch (Throwable t)
+			{
+				output.printf("TOSS %s %s%n", name, t.getClass().getName());
+			}
 		}
 		
 		// End
-		System.err.println("---- tests.end");
+		output.println("---- tests.end");
 	}
 	
 	/**
