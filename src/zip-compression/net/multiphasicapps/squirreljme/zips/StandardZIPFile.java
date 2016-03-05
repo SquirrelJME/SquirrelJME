@@ -19,6 +19,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -336,6 +337,9 @@ public abstract class StandardZIPFile
 	protected abstract class Directory
 		extends AbstractSet<Map.Entry<String, FileEntry>>
 	{
+		/** The offsets of all the entry directories. */
+		protected final long offsets[];
+		
 		/**
 		 * Initializes the directory.
 		 *
@@ -349,6 +353,10 @@ public abstract class StandardZIPFile
 			// Check
 			if (__ne < 0)
 				throw new ZIPFormatException.NegativeEntryCount(__ne);
+			
+			// Initialize offset table
+			offsets = new long[__ne];
+			Arrays.fill(offsets, -1L);
 		}
 		
 		/**
@@ -358,7 +366,7 @@ public abstract class StandardZIPFile
 		@Override
 		public final Iterator<Map.Entry<String, FileEntry>> iterator()
 		{
-			throw new Error("TODO");
+			return new __Iterator__();
 		}
 		
 		/**
@@ -370,6 +378,51 @@ public abstract class StandardZIPFile
 		{
 			throw new Error("TODO");
 		}
+		
+		/**
+		 * This is the iterator over entries.
+		 *
+		 * @since 2016/03/05
+		 */
+		private final class __Iterator__
+			implements Iterator<Map.Entry<String, FileEntry>>
+		{
+			/** The current index. */
+			private volatile int _dx =
+				0;
+			
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/03/05
+			 */
+			@Override
+			public boolean hasNext()
+			{
+				return _dx < offsets.length;
+			}
+			
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/03/05
+			 */
+			@Override
+			public Map.Entry<String, FileEntry> next()
+			{
+				return new FileEntry()
+					{
+					};
+			}
+			
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/03/05
+			 */
+			@Override
+			public void remove()
+			{
+				throw new UnsupportedOperationException();
+			}
+		}
 	}
 	
 	/**
@@ -380,6 +433,83 @@ public abstract class StandardZIPFile
 	public abstract class FileEntry
 		implements Map.Entry<String, FileEntry>
 	{
+		/**
+		 * Initializes the file entry.
+		 *
+		 * @since 2016/03/05
+		 */
+		protected FileEntry()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/05
+		 */
+		@Override
+		public final boolean equals(Object __o)
+		{
+			// Must be this
+			if (!(__o instanceof FileEntry))
+				return false;
+			
+			// Due to the infinite recursion potential, it is only equal if
+			// this is equal
+			return __o == this;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/05
+		 */
+		@Override
+		public final String getKey()
+		{
+			return this.toString();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/05
+		 */
+		@Override
+		public final FileEntry getValue()
+		{
+			return this;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/05
+		 */
+		@Override
+		public final int hashCode()
+		{
+			// This violates the map hash code because this recursively uses
+			// itself
+			return getKey().hashCode();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/05
+		 */
+		@Override
+		public final FileEntry setValue(FileEntry __v)
+		{
+			// Cannot modify entries at all
+			throw new UnsupportedOperationException();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/05
+		 */
+		@Override
+		public String toString()
+		{
+			return "TODO";
+		}
 	}
 }
 
