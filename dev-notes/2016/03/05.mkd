@@ -1,0 +1,9 @@
+# 2016/03/05
+
+## 01:57
+
+Appears the Arduino has had a troubling history associated with it. In other
+parts, today I have to perform my refactoring of the ZIP code so I can share it
+more between the 32-bit and 64-bit variants and have less code. Currently as
+it stands it is a bit ugly.
+
