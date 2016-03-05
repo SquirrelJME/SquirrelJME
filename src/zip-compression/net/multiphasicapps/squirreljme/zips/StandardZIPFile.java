@@ -11,10 +11,18 @@
 package net.multiphasicapps.squirreljme.zips;
 
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This provides abstract access to a ZIP file.
@@ -27,7 +35,12 @@ import java.nio.channels.SeekableByteChannel;
  * @since 2016/02/26
  */
 public abstract class StandardZIPFile
+	extends AbstractMap<String, StandardZIPFile.FileEntry>
 {
+	/** Internal lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The base channel to read from. */
 	protected final SeekableByteChannel channel;
 	
@@ -37,6 +50,9 @@ public abstract class StandardZIPFile
 	/** Read buffer to prevent a thousand allocations at the cost of speed. */
 	protected final ByteBuffer readbuffer =
 		ByteBuffer.allocateDirect(8);
+	
+	/** The directory cache. */
+	private volatile Reference<Directory> _directory;
 	
 	/**
 	 * Initializes the zip file using the given byte channel which contains
@@ -53,7 +69,7 @@ public abstract class StandardZIPFile
 	{
 		// Check
 		if (__sbc == null)
-			throw new NullPointerException();
+			throw new NullPointerException("Null arguments.");
 		
 		// Set
 		channel = __sbc;
@@ -64,6 +80,59 @@ public abstract class StandardZIPFile
 			filechannel = (FileChannel)channel;
 		else
 			filechannel = null;
+	}
+	
+	/**
+	 * Reads the directory of the ZIP file.
+	 *
+	 * @return The ZIP directory.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/05
+	 */
+	protected abstract Directory readDirectory()
+		throws IOException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws IllegalStateException If the directory could not be read.
+	 * @since 2016/03/05
+	 */
+	@Override
+	public Set<Map.Entry<String, FileEntry>> entrySet()
+		throws IllegalStateException
+	{
+		// Lock so that if multiple threads are accessing the ZIP file they do
+		// not have to both create a directory when only one is needed at a
+		// time.
+		synchronized (lock)
+		{
+			// Check cache
+			Reference<Directory> ref = _directory;
+			Directory rv = null;
+		
+			// In the reference?
+			if (ref != null)
+				rv = ref.get();
+			
+			// Cache it
+			if (rv == null)
+				try
+				{
+					_directory = new WeakReference<>(
+						Objects.<Directory>requireNonNull((
+						rv = readDirectory()), "No ZIP directory read."));
+				}
+				
+				// Could not read the directory
+				catch (IOException ioe)
+				{
+					throw new IllegalStateException(
+						"Failed to read the ZIP directory.", ioe);
+				}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
@@ -258,11 +327,50 @@ public abstract class StandardZIPFile
 	}
 	
 	/**
+	 * This provides a cached directory of the ZIP file contents.
+	 *
+	 * @since 2016/03/05
+	 */
+	protected abstract class Directory
+		extends AbstractSet<Map.Entry<String, FileEntry>>
+	{
+		/**
+		 * Initializes the directory.
+		 *
+		 * @since 2016/03/05
+		 */
+		protected Directory()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/05
+		 */
+		@Override
+		public final Iterator<Map.Entry<String, FileEntry>> iterator()
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/05
+		 */
+		@Override
+		public final int size()
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * This represents an entry within a standard ZIP file.
 	 *
 	 * @since 2016/02/03
 	 */
-	public abstract class Entry
+	public abstract class FileEntry
+		implements Map.Entry<String, FileEntry>
 	{
 	}
 }

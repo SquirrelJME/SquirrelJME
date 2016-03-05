@@ -7,3 +7,15 @@ parts, today I have to perform my refactoring of the ZIP code so I can share it
 more between the 32-bit and 64-bit variants and have less code. Currently as
 it stands it is a bit ugly.
 
+## 13:02
+
+I should probably be more descriptive in my exceptions even though they would
+be english only for the most part.
+
+## 14:54
+
+My directory entries could just be map entries, that would simplify some things
+a bit. I can also have directory initialization based on the position of the
+table, so basically entries in the ZIP are a table of long values. Searching
+for specific entries would require linear traversal over the map however.
+

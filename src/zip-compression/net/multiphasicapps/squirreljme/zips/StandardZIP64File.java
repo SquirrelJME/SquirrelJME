@@ -38,5 +38,16 @@ public class StandardZIP64File
 		
 		throw new ZIPFormatException("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/05
+	 */
+	@Override
+	protected Directory readDirectory()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
 }
 

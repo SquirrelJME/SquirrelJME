@@ -130,6 +130,9 @@ public class StandardZIP32File
 		List<Entry> lem = Arrays.<Entry>asList(new Entry[diskents]);
 		
 		// Read the central directory
+		if (true)
+			throw new Error("TODO");
+		/*
 		long xpos = (idi) - dirsize;
 		for (int en = 0; en < diskents; en++)
 		{
@@ -143,45 +146,19 @@ public class StandardZIP32File
 			xpos += ent.__skipBytes();
 		}
 		
-		// Set the directory table
+		// Set the directory table*/
 		entrytable = MissingCollections.<Entry>unmodifiableList(lem);
 	}
 	
 	/**
-	 * This represents a 32-bit ZIP entry.
-	 *
-	 * @since 2016/03/03
+	 * {@inheritDoc}
+	 * @since 2016/03/05
 	 */
-	public class Entry32
-		extends Entry
+	@Override
+	protected Directory readDirectory()
+		throws IOException
 	{
-		/** The position of the entry in the central directory. */
-		protected final long cdirpos;
-		
-		/**
-		 * Initializes the 32-bit ZIP entry.
-		 *
-		 * @param __cdfh The position of the data in the central index.
-		 * @throws ZIPFormatException If the header is not valid.
-		 * @since 2016/03/03
-		 */
-		private Entry32(long __cdfh)
-			throws ZIPFormatException
-		{
-			cdirpos = __cdfh;
-		}
-		
-		/**
-		 * The number of bytes to skip to reach the next entry.
-		 *
-		 * @return The number of bytes to skip to start a read of the following
-		 * entry.
-		 * @since 2016/03/03
-		 */
-		private long __skipBytes()
-		{
-			throw new Error("TODO");
-		}
+		throw new Error("TODO");
 	}
 }
 
