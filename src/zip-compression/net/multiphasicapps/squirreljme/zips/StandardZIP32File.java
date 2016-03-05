@@ -72,8 +72,11 @@ public class StandardZIP32File
 	protected static final int END_DIRECTORY_MAGIC =
 		0x06054B50;
 	
-	/** The central ZIP directory. */
-	protected final List<Entry> entrytable;
+	/** The byte offset of the central directory. */
+	protected final long cdirbase;
+	
+	/** The number of entries in this ZIP. */
+	protected final int numentries;
 	
 	/**
 	 * Initializes a 32-bit ZIP file.
@@ -114,40 +117,14 @@ public class StandardZIP32File
 		
 		// Not a 32-bit ZIP?
 		if (idi < 0L)
-			throw new ZIPFormatException("Could not find a the end " +
-				"directory of a 32-bit ZIP file.");
+			throw new ZIPFormatException.NoCentralDirectory();
 		
-		// Read the disk number and the disk containing the root of the central
-		// directory
-		int thisdisk = readUnsignedShort(idi + EDO_DISK_NUMBER);
-		int diskstar = readUnsignedShort(idi + EDO_DISK_START);
-		int diskents = readUnsignedShort(idi + EDO_DISK_ENTRY_COUNT);
-		int totlents = readUnsignedShort(idi + EDO_ALL_ENTRY_COUNT);
+		// The number of entries in this ZIP
+		numentries = readUnsignedShort(idi + EDO_DISK_ENTRY_COUNT);
 		long dirsize = readUnsignedInt(idi + EDO_CENTRAL_DIR_SIZE);
-		long diroffs = readUnsignedInt(idi + EDO_CENTRAL_DIR_OFFSET);
 		
-		// Directory data
-		List<Entry> lem = Arrays.<Entry>asList(new Entry[diskents]);
-		
-		// Read the central directory
-		if (true)
-			throw new Error("TODO");
-		/*
-		long xpos = (idi) - dirsize;
-		for (int en = 0; en < diskents; en++)
-		{
-			// Setup entry here
-			Entry32 ent = new Entry32(xpos);
-			
-			// Set to the list
-			lem.set(en, ent);
-			
-			// Skip to the position where the next entry is located
-			xpos += ent.__skipBytes();
-		}
-		
-		// Set the directory table*/
-		entrytable = MissingCollections.<Entry>unmodifiableList(lem);
+		// Set the position to read the central directory from
+		cdirbase = (idi) - dirsize;
 	}
 	
 	/**
@@ -158,7 +135,38 @@ public class StandardZIP32File
 	protected Directory readDirectory()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return new Directory32();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/05
+	 */
+	@Override
+	public int size()
+	{
+		return numentries;
+	}
+	
+	/**
+	 * This represents the 32-bit ZIP directory.
+	 *
+	 * @since 2016/03/05
+	 */
+	protected class Directory32
+		extends Directory
+	{
+		/**
+		 * Initializes the 32-bit directory.
+		 *
+		 * @throws IOException On read/write errors.
+		 * @since 2016/03/05
+		 */
+		protected Directory32()
+			throws IOException
+		{
+			super(numentries);
+		}
 	}
 }
 

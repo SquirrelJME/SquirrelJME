@@ -19,3 +19,10 @@ a bit. I can also have directory initialization based on the position of the
 table, so basically entries in the ZIP are a table of long values. Searching
 for specific entries would require linear traversal over the map however.
 
+## 14:57
+
+I could actually sub-class exceptions. Instead of a message saying whatever,
+I can instead just have a sub-class extension. So if a ZIP directory was not
+found then the exception is called with the reason. This means that I can go
+easier on strings a bit at the cost of adding classes.
+

@@ -49,5 +49,15 @@ public class StandardZIP64File
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/05
+	 */
+	@Override
+	public int size()
+	{
+		throw new Error("TODO");
+	}
 }
 

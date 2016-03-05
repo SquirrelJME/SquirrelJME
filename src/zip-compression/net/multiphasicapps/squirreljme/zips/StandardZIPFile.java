@@ -69,7 +69,7 @@ public abstract class StandardZIPFile
 	{
 		// Check
 		if (__sbc == null)
-			throw new NullPointerException("Null arguments.");
+			throw new NullPointerException();
 		
 		// Set
 		channel = __sbc;
@@ -91,6 +91,14 @@ public abstract class StandardZIPFile
 	 */
 	protected abstract Directory readDirectory()
 		throws IOException;
+	
+	/**
+	 * Returns the number of entries in this ZIP file.
+	 *
+	 * @return The ZIP entry count.
+	 * @since 2016/03/05
+	 */
+	public abstract int size();
 	
 	/**
 	 * {@inheritDoc}
@@ -120,14 +128,13 @@ public abstract class StandardZIPFile
 				{
 					_directory = new WeakReference<>(
 						Objects.<Directory>requireNonNull((
-						rv = readDirectory()), "No ZIP directory read."));
+						rv = readDirectory())));
 				}
 				
 				// Could not read the directory
 				catch (IOException ioe)
 				{
-					throw new IllegalStateException(
-						"Failed to read the ZIP directory.", ioe);
+					throw new IllegalStateException(ioe);
 				}
 			
 			// Return it
@@ -200,20 +207,16 @@ public abstract class StandardZIPFile
 	 * started and limited to the length.
 	 * @throws IllegalArgumentException If the length exceeds the read buffer
 	 * size, or the read length is zero or negative.
-	 * @throws IOException On read errors.
+	 * @throws IOException On read errors or if the input buffer was not
+	 * correctly handled.
 	 * @since 2016/03/02
 	 */
 	protected final ByteBuffer readRaw(long __pos, int __len)
-		throws IllegalArgumentException, IOException
+		throws IOException
 	{
 		// Check
-		if (__len <= 0)
-			throw new IllegalArgumentException("The read length is zero " +
-				"or negative.");
-		if (__len > readbuffer.capacity())
-			throw new IllegalArgumentException("Read of " +
-				"length " + __len + " exceeds the buffer size " +
-				readbuffer.capacity() + ".");
+		if (__len <= 0 || __len > readbuffer.capacity())
+			throw new IllegalArgumentException();
 		
 		// Lock on the read buffer
 		synchronized (readbuffer)
@@ -246,8 +249,7 @@ public abstract class StandardZIPFile
 			
 			// Check to make sure all the data was read
 			if (rc < __len)
-				throw new IOException("Short read, expected " + __len +
-					" bytes but read " + Math.max(rc, 0) + " bytes.");
+				throw new ZIPFormatException.ShortRead(__len, rc);
 		
 			// Flip the buffer
 			rv.flip();
@@ -337,10 +339,16 @@ public abstract class StandardZIPFile
 		/**
 		 * Initializes the directory.
 		 *
+		 * @param __ne The number of entries in the ZIP.
+		 * @throws IOException On I/O errors.
 		 * @since 2016/03/05
 		 */
-		protected Directory()
+		protected Directory(int __ne)
+			throws IOException
 		{
+			// Check
+			if (__ne < 0)
+				throw new ZIPFormatException.NegativeEntryCount(__ne);
 		}
 		
 		/**
