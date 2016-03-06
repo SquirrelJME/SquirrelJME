@@ -22,6 +22,7 @@ import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ import java.util.Set;
  * @since 2016/02/26
  */
 public abstract class StandardZIPFile
-	extends AbstractMap<String, StandardZIPFile.FileEntry>
+	implements Iterable<StandardZIPFile.FileEntry>
 {
 	/** Internal lock. */
 	protected final Object lock =
@@ -94,20 +95,53 @@ public abstract class StandardZIPFile
 		throws IOException;
 	
 	/**
-	 * Returns the number of entries in this ZIP file.
+	 * Obtains an entry by its name.
 	 *
-	 * @return The ZIP entry count.
+	 * @param __n The name of the entry to get.
+	 * @return The entry by the given name or {@code null} if it does not
+	 * exist in the ZIP.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/05
 	 */
-	public abstract int size();
+	public final FileEntry get(String __n)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException();
+		
+		// Use the directory
+		return getDirectory().get(__n);
+	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Obtains the entry at the given index.
+	 *
+	 * @param __dx The entry to get the index at.
+	 * @return The index at this entry or {@code null} if it is not a valid
+	 * index.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/05
+	 */
+	public final FileEntry get(int __dx)
+		throws IOException
+	{
+		// Negative is always null
+		if (__dx < 0)
+			return null;
+		
+		// Use the directory
+		return getDirectory().get(__dx);
+	}
+	
+	/**
+	 * Obtains the directory which is potentially cached.
+	 *
 	 * @throws IllegalStateException If the directory could not be read.
 	 * @since 2016/03/05
 	 */
-	@Override
-	public Set<Map.Entry<String, FileEntry>> entrySet()
+	public final Directory getDirectory()
 		throws IllegalStateException
 	{
 		// Lock so that if multiple threads are accessing the ZIP file they do
@@ -141,6 +175,18 @@ public abstract class StandardZIPFile
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws IllegalStateException If the directory could not be read.
+	 * @since 2016/03/05
+	 */
+	@Override
+	public final Iterator<FileEntry> iterator()
+		throws IllegalStateException
+	{
+		return getDirectory().iterator();
 	}
 	
 	/**
@@ -289,6 +335,18 @@ public abstract class StandardZIPFile
 	}
 	
 	/**
+	 * Returns the number of entries in this ZIP file.
+	 *
+	 * @return The number of entries in the ZIP.
+	 * @since 2016/03/05
+	 */
+	public final int size()
+		throws IOException
+	{
+		return getDirectory().size();
+	}
+	
+	/**
 	 * Attempts to open this ZIP file using ZIP64 extensions first, then if
 	 * that fails it will fall back to using ZIP32.
 	 *
@@ -335,7 +393,7 @@ public abstract class StandardZIPFile
 	 * @since 2016/03/05
 	 */
 	protected abstract class Directory
-		extends AbstractSet<Map.Entry<String, FileEntry>>
+		implements Iterable<FileEntry>
 	{
 		/** The offsets of all the entry directories. */
 		protected final long offsets[];
@@ -360,13 +418,43 @@ public abstract class StandardZIPFile
 		}
 		
 		/**
-		 * {@inheritDoc}
+		 * Obtains the entry with the given name.
+		 *
+		 * @param __n The entry to get which has this name.
+		 * @return The entry with the given name or {@code null} if not found.
 		 * @since 2016/03/05
 		 */
-		@Override
-		public final Iterator<Map.Entry<String, FileEntry>> iterator()
+		public final FileEntry get(String __n)
+			throws IOException, NullPointerException
 		{
-			return new __Iterator__();
+			// Check
+			if (__n == null)
+				throw new NullPointerException();
+			
+			// Go through self
+			for (FileEntry fe : this)
+				if (__n.equals(fe.toString()))
+					return fe;
+			
+			// Not found
+			return null;
+		}
+		
+		/**
+		 * Obtains the entry at this given position.
+		 *
+		 * @param __i The index to get the entry at.
+		 * @return The entry at the given index.
+		 * @since 2016/03/05
+		 */
+		public final FileEntry get(int __i)
+			throws IOException
+		{
+			// If out of bounds, always null
+			if (__i < 0 || __i >= offsets.length)
+				return null;
+			
+			throw new Error("TODO");
 		}
 		
 		/**
@@ -374,9 +462,20 @@ public abstract class StandardZIPFile
 		 * @since 2016/03/05
 		 */
 		@Override
+		public final Iterator<FileEntry> iterator()
+		{
+			return new __Iterator__();
+		}
+		
+		/**
+		 * Returns the number of entries in the directory.
+		 *
+		 * @return The number of entries in the directory.
+		 * @since 2016/03/05
+		 */
 		public final int size()
 		{
-			throw new Error("TODO");
+			return offsets.length;
 		}
 		
 		/**
@@ -385,11 +484,20 @@ public abstract class StandardZIPFile
 		 * @since 2016/03/05
 		 */
 		private final class __Iterator__
-			implements Iterator<Map.Entry<String, FileEntry>>
+			implements Iterator<FileEntry>
 		{
 			/** The current index. */
 			private volatile int _dx =
 				0;
+			
+			/**
+			 * Initializes the iterator.
+			 *
+			 * @since 2016/03/05
+			 */
+			private __Iterator__()
+			{
+			}
 			
 			/**
 			 * {@inheritDoc}
@@ -406,11 +514,23 @@ public abstract class StandardZIPFile
 			 * @since 2016/03/05
 			 */
 			@Override
-			public Map.Entry<String, FileEntry> next()
+			public FileEntry next()
 			{
-				return new FileEntry()
-					{
-					};
+				// Ran out?
+				if (!hasNext())
+					throw new NoSuchElementException();
+				
+				// Might not be able to read it
+				try
+				{
+					return get(_dx++);
+				}
+				
+				// Failed to read
+				catch (IOException ioe)
+				{
+					throw new IllegalStateException(ioe);
+				}
 			}
 			
 			/**
@@ -431,7 +551,6 @@ public abstract class StandardZIPFile
 	 * @since 2016/02/03
 	 */
 	public abstract class FileEntry
-		implements Map.Entry<String, FileEntry>
 	{
 		/**
 		 * Initializes the file entry.
@@ -447,68 +566,9 @@ public abstract class StandardZIPFile
 		 * @since 2016/03/05
 		 */
 		@Override
-		public final boolean equals(Object __o)
-		{
-			// Must be this
-			if (!(__o instanceof FileEntry))
-				return false;
-			
-			// Due to the infinite recursion potential, it is only equal if
-			// this is equal
-			return __o == this;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/05
-		 */
-		@Override
-		public final String getKey()
-		{
-			return this.toString();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/05
-		 */
-		@Override
-		public final FileEntry getValue()
-		{
-			return this;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/05
-		 */
-		@Override
-		public final int hashCode()
-		{
-			// This violates the map hash code because this recursively uses
-			// itself
-			return getKey().hashCode();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/05
-		 */
-		@Override
-		public final FileEntry setValue(FileEntry __v)
-		{
-			// Cannot modify entries at all
-			throw new UnsupportedOperationException();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/05
-		 */
-		@Override
 		public String toString()
 		{
-			return "TODO";
+			throw new Error("TODO");
 		}
 	}
 }

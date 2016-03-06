@@ -139,16 +139,6 @@ public class StandardZIP32File
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/05
-	 */
-	@Override
-	public int size()
-	{
-		return numentries;
-	}
-	
-	/**
 	 * This represents the 32-bit ZIP directory.
 	 *
 	 * @since 2016/03/05
