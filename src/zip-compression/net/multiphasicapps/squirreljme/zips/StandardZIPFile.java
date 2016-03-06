@@ -389,6 +389,19 @@ public abstract class StandardZIPFile
 	}
 	
 	/**
+	 * Makes the reference array.
+	 *
+	 * @param __ne Number of elements,
+	 * @return The file entry reference array
+	 * @since 2016/03/06
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static final Reference<FileEntry>[] __makeRefArray(int __ne)
+	{
+		return (Reference<FileEntry>[])new Reference[__ne];
+	}
+	
+	/**
 	 * This provides a cached directory of the ZIP file contents.
 	 *
 	 * @since 2016/03/05
@@ -398,6 +411,9 @@ public abstract class StandardZIPFile
 	{
 		/** The offsets of all the entry directories. */
 		protected final long offsets[];
+		
+		/** The cache of entries. */
+		private final Reference<FileEntry> _entrycache[];
 		
 		/**
 		 * Initializes the directory.
@@ -416,6 +432,9 @@ public abstract class StandardZIPFile
 			// Initialize offset table
 			offsets = new long[__ne];
 			Arrays.fill(offsets, -1L);
+			
+			// Entry cache
+			_entrycache = __makeRefArray(__ne);
 		}
 		
 		/**
