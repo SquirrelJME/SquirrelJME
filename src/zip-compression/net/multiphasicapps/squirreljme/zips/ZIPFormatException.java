@@ -103,7 +103,7 @@ public class ZIPFormatException
 		 */
 		public ShortRead(int __a, int __b)
 		{
-			super("Expected " + Math.max(__a, __b) + ", read " +
+			super("Expected to read " + Math.max(__a, __b) + ", read " +
 				Math.min(__a, __b) + ".");
 		}
 	}

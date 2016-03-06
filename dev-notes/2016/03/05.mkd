@@ -31,3 +31,21 @@ easier on strings a bit at the cost of adding classes.
 Well my current recursive map ZIP format is a bit insane, so I need to fix that
 up a bit.
 
+## 19:39
+
+Ok, what I actually need next is a kind of class path element that is common
+to the interpreter. So essentially the interpreter engine knows about there
+being a class path, but internal details are a bit hidden away. Classes which
+extend it could use it and such. I also have to have it abstract enough so that
+a compiler system could be written using the pre-existing interpreter parsing
+of sorts.
+
+## 19:50
+
+This would also be helpful with the compiler so it can determine where packages
+are and such also.
+
+## 19:58
+
+I should add that this is the native compiler.
+

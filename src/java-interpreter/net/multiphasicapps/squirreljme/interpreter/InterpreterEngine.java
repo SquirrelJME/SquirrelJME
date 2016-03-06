@@ -16,6 +16,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
@@ -34,13 +36,21 @@ import net.multiphasicapps.collections.MissingCollections;
  */
 public abstract class InterpreterEngine
 {
+	/** The maximum number of dimensions an array may have. */
+	public static final int MAX_ARRAY_DIMENSIONS =
+		255;
+	
 	/** The threads the interpreter owns (lock on this). */
 	protected final Set<InterpreterThread> threads =
-		new HashSet<>();
+		new LinkedHashSet<>();
 	
 	/** Active loaded classes (lock on this). */
 	protected final Map<String, Reference<InterpreterClass>> classes =
-		new HashMap<>();
+		new LinkedHashMap<>();
+	
+	/** Classpaths for the interpreter (how it finds classes). */
+	protected final Set<InterpreterClassPath> classpaths =
+		new LinkedHashSet<>();
 	
 	/**
 	 * Initializes the base engine.
@@ -52,15 +62,35 @@ public abstract class InterpreterEngine
 	}
 	
 	/**
-	 * Finds a resource using the given name as if it were requested from a
-	 * {@link ClassLoader}.
 	 *
-	 * @param __res The resource to find.
-	 * @return The input stream of the given resource or {@code null} if not
-	 * found.
-	 * @since 2016/03/02
+	 *
+	 * @param __icp The class path to add.
+	 * @return {@code this}.
+	 * @throws MismatchedEngineException If another engine owns this.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/05
 	 */
-	public abstract InputStream getResourceAsStream(String __res);
+	protected final InterpreterEngine addClassPath(InterpreterClassPath __icp)
+		throws MismatchedEngineException, NullPointerException
+	{
+		// Check
+		if (__icp == null)
+			throw new NullPointerException();
+		
+		// Differing owner?
+		if (__icp.engine() != this)
+			throw new MismatchedEngineException();
+		
+		// Lock on the class paths
+		synchronized (classpaths)
+		{
+			// Add it
+			classpaths.add(__icp);
+		}
+		
+		// Self
+		return this;
+	}
 	
 	/**
 	 * Creates a new a thread.
@@ -150,42 +180,8 @@ public abstract class InterpreterEngine
 			
 			// Class needs to be read in
 			if (rv == null)
-			{
-				// Requesting an array?
-				if (dims != 0)
-					throw new Error("TODO");
-				
-				// Load of a normal class
-				else
-				{
-					// Load resource
-					try (InputStream is = getResourceAsStream(
-						__bn.replace('.', '/') + ".class"))
-					{
-						// No class found
-						if (is == null)
-							return null;
-						
-						// Create class data
-						rv = new InterpreterClass(this, is);
-						
-						// Wrong class? Ignore it
-						if (!rv.getName().equals(__bn))
-							throw new InterpreterClassFormatError(
-								"Expected class '" + __bn +
-								"' however '" + rv.getName() + "' was read.");
-					}
-					
-					// Failed to load class, ignore
-					catch (IOException e)
-					{
-						throw new InterpreterClassFormatError("Read error", e);
-					}
-				}
-				
-				// Cache the class
-				classes.put(__bn, new WeakReference<>(rv));
-			}
+				classes.put(__bn, new WeakReference<>((rv =
+					__internalLoadClass(__bn, dims))));
 			
 			// Return the read class
 			return rv;
@@ -209,6 +205,83 @@ public abstract class InterpreterEngine
 			throw new NullPointerException();
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * This creates an array of the given type of the specified dimensional
+	 * count.
+	 *
+	 * @param __bn The binary name of the array type.
+	 * @param __dims The number of dimensions in the array.
+	 * @throws IllegalArrayDimensionsException
+	 */
+	private final InterpreterClass __internalLoadArray(String __bn, int __dims)
+		throws IllegalArrayDimensionsException, NullPointerException
+	{
+		// Check
+		if (__bn == null)
+			throw new NullPointerException();
+		if (__dims <= 0 || __dims >= MAX_ARRAY_DIMENSIONS)
+			throw new IllegalArrayDimensionsException(__dims);
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * This is the internal class loading logic.
+	 *
+	 * @param __bn The binary name of the class.
+	 * @param __dims The number of dimensions in the array.
+	 * @return The loaded class or {@code null} if it does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/05
+	 */
+	private final InterpreterClass __internalLoadClass(String __bn, int __dims)
+		throws NullPointerException
+	{
+		// Check
+		if (__bn == null)
+			throw new NullPointerException();
+		
+		// Array?
+		if (__dims != 0)
+			return __internalLoadArray(__bn, __dims);
+		
+		// Lock on the classpath
+		synchronized (classpaths)
+		{
+			// Go through all classpaths
+			for (InterpreterClassPath icp : classpaths)
+				try (InputStream is = icp.getResourceAsStream(
+						__bn.replace('.', '/') + ".class"))
+					{
+						// No class found
+						if (is == null)
+							continue;
+						
+						// Create class data
+						InterpreterClass rv = new InterpreterClass(this, is);
+						
+						// Wrong class? Ignore it
+						if (!rv.getName().equals(__bn))
+							throw new InterpreterClassFormatError(
+								"Expected class '" + __bn +
+								"' however '" + rv.getName() + "' was read.");
+						
+						// Return it
+						return rv;
+					}
+					
+					// Failed to load class, ignore
+					catch (IOException e)
+					{
+						throw new InterpreterClassFormatError("Read error.",
+							e);
+					}
+		}
+		
+		// A class was not loaded
+		return null;
 	}
 }
 

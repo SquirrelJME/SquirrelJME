@@ -11,21 +11,31 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 /**
- * This is thrown when the interpreter reads a class which is not formatted
- * correctly.
+ * This is the base class for exceptions which are thrown by the interoreter to
+ * indicate that it has an incorrect state or there is a problem with it.
  *
- * @since 2016/03/02
+ * @since 2016/03/05
  */
-public class InterpreterClassFormatError
-	extends InterpreterFailureException
+public class InterpreterFailureException
+	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message.
+	 *
+	 * @since 2016/03/05
+	 */
+	public InterpreterFailureException()
+	{
+		super();
+	}
+	
 	/**
 	 * Initializes exception with the given message.
 	 *
 	 * @param __msg The exception message.
 	 * @since 2016/03/02
 	 */
-	public InterpreterClassFormatError(String __msg)
+	public InterpreterFailureException(String __msg)
 	{
 		super(__msg);
 	}
@@ -37,7 +47,7 @@ public class InterpreterClassFormatError
 	 * @param __c The cause.
 	 * @since 2016/03/02
 	 */
-	public InterpreterClassFormatError(String __msg, Throwable __c)
+	public InterpreterFailureException(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}

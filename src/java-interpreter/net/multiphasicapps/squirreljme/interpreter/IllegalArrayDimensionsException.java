@@ -11,35 +11,23 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 /**
- * This is thrown when the interpreter reads a class which is not formatted
- * correctly.
+ * This is thrown when an attempt is made to create an array which has an\
+ * illegal number of dimensions.
  *
- * @since 2016/03/02
+ * @since 2016/03/05
  */
-public class InterpreterClassFormatError
+public class IllegalArrayDimensionsException
 	extends InterpreterFailureException
 {
 	/**
-	 * Initializes exception with the given message.
+	 * Initializes the exception with the given dimensional count.
 	 *
-	 * @param __msg The exception message.
-	 * @since 2016/03/02
+	 * @param __dims The dimensions to use.
+	 * @since 2016/03/05
 	 */
-	public InterpreterClassFormatError(String __msg)
+	public IllegalArrayDimensionsException(int __dims)
 	{
-		super(__msg);
-	}
-	
-	/**
-	 * Initializes exception with the given message and cause.
-	 *
-	 * @param __msg The exception message.
-	 * @param __c The cause.
-	 * @since 2016/03/02
-	 */
-	public InterpreterClassFormatError(String __msg, Throwable __c)
-	{
-		super(__msg, __c);
+		super("Illegal array dimensions: " + __dims + ".");
 	}
 }
 

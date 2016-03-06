@@ -11,35 +11,22 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 /**
- * This is thrown when the interpreter reads a class which is not formatted
- * correctly.
+ * This is thrown when interpreter classes which belong to different engines
+ * are mismatced, classes are to be used only to their specific engine.
  *
- * @since 2016/03/02
+ * @since 2016/03/05
  */
-public class InterpreterClassFormatError
+public class MismatchedEngineException
 	extends InterpreterFailureException
 {
 	/**
-	 * Initializes exception with the given message.
+	 * Initializes exception with no message.
 	 *
-	 * @param __msg The exception message.
-	 * @since 2016/03/02
+	 * @since 2016/03/05
 	 */
-	public InterpreterClassFormatError(String __msg)
+	public MismatchedEngineException()
 	{
-		super(__msg);
-	}
-	
-	/**
-	 * Initializes exception with the given message and cause.
-	 *
-	 * @param __msg The exception message.
-	 * @param __c The cause.
-	 * @since 2016/03/02
-	 */
-	public InterpreterClassFormatError(String __msg, Throwable __c)
-	{
-		super(__msg, __c);
+		super();
 	}
 }
 
