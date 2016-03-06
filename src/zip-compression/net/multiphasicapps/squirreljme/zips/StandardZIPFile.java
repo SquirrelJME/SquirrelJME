@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.zips;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -562,13 +563,43 @@ public abstract class StandardZIPFile
 		}
 		
 		/**
+		 * Opens an input stream of the ZIP file data.
+		 *
+		 * @return A stream which reads the deflated or stored data.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/06
+		 */
+		public abstract InputStream open()
+			throws IOException;
+		
+		/**
+		 * Returns the name of the file.
+		 *
+		 * @return The file name.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/06
+		 */
+		public abstract String name()
+			throws IOException;
+		
+		/**
 		 * {@inheritDoc}
-		 * @since 2016/03/05
+		 * @since 2016/03/06
 		 */
 		@Override
-		public String toString()
+		public final String toString()
 		{
-			throw new Error("TODO");
+			// Possible that the name could not be read
+			try
+			{
+				return name();
+			}
+			
+			// Could not read the name
+			catch (IOException ioe)
+			{
+				return "<IOException>";
+			}
 		}
 	}
 }
