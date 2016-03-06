@@ -12,3 +12,9 @@ Well, the new class path splitting is much more concise.
 
 Appears my ZIP file reading is not correct somehow.
 
+## 07:41
+
+Actually it is failing because you can open a directory in a `FileChannel`. At
+least on Linux. So when running on Linux there would just be an extra exception
+that prints because of this.
+

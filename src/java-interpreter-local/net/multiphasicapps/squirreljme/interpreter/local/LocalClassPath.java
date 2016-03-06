@@ -64,7 +64,7 @@ public class LocalClassPath
 		try
 		{
 			// Open file first
-			fc = FileChannel.open(__p, StandardOpenOption.READ);
+			fc = FileChannel.open(path, StandardOpenOption.READ);
 			
 			// Otherwise try to load one
 			zippy = StandardZIPFile.open(fc);
@@ -87,8 +87,8 @@ public class LocalClassPath
 				}
 			
 			// Print trace
-			System.err.println("Failed to read the ZIP:");
 			ioe.printStackTrace(System.err);
+			System.err.println("Failed to read the ZIP '" + path + "'.");
 		}
 		
 		// Set ZIP
