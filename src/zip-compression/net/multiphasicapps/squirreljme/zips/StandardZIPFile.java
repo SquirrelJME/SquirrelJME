@@ -51,7 +51,7 @@ public abstract class StandardZIPFile
 	protected final FileChannel filechannel;
 	
 	/** Read buffer to prevent a thousand allocations at the cost of speed. */
-	protected final ByteBuffer readbuffer =
+	private final ByteBuffer _readbuffer =
 		ByteBuffer.allocateDirect(8);
 	
 	/** The directory cache. */
@@ -201,7 +201,7 @@ public abstract class StandardZIPFile
 	protected final int readInt(long __pos)
 		throws IOException
 	{
-		synchronized (readbuffer)
+		synchronized (_readbuffer)
 		{
 			return readRaw(__pos, 4).getInt();
 		}
@@ -218,7 +218,7 @@ public abstract class StandardZIPFile
 	protected final long readLong(long __pos)
 		throws IOException
 	{
-		synchronized (readbuffer)
+		synchronized (_readbuffer)
 		{
 			// ByteBuffer does not support reading long values sadly
 			ByteBuffer val = readRaw(__pos, 8);
@@ -240,7 +240,7 @@ public abstract class StandardZIPFile
 	protected final short readShort(long __pos)
 		throws IOException
 	{
-		synchronized (readbuffer)
+		synchronized (_readbuffer)
 		{
 			return readRaw(__pos, 2).getShort();
 		}
@@ -251,7 +251,7 @@ public abstract class StandardZIPFile
 	 *
 	 * @param __pos The position to read from.
 	 * @param __len The number of bytes to read.
-	 * @return The field {@code readbuffer} automatically position to the
+	 * @return The field {@code _readbuffer} automatically position to the
 	 * started and limited to the length.
 	 * @throws IllegalArgumentException If the length exceeds the read buffer
 	 * size, or the read length is zero or negative.
@@ -260,17 +260,17 @@ public abstract class StandardZIPFile
 	 * @since 2016/03/02
 	 */
 	protected final ByteBuffer readRaw(long __pos, int __len)
-		throws IOException
+		throws IllegalArgumentException, IOException
 	{
 		// Check
-		if (__len <= 0 || __len > readbuffer.capacity())
+		if (__len <= 0 || __len > _readbuffer.capacity())
 			throw new IllegalArgumentException();
 		
 		// Lock on the read buffer
-		synchronized (readbuffer)
+		synchronized (_readbuffer)
 		{
 			// Setup buffer for read
-			ByteBuffer rv = readbuffer;
+			ByteBuffer rv = _readbuffer;
 			rv.order(ByteOrder.LITTLE_ENDIAN);
 			rv.clear();
 			rv.limit(__len);

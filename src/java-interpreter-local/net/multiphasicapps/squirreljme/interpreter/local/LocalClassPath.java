@@ -83,14 +83,11 @@ public class LocalClassPath
 				// Failed to close
 				catch (IOException ioeb)
 				{
-					RuntimeException toss = new RuntimeException(ioeb);
-					toss.addSuppressed(ioe);
-					throw toss;
+					ioe.addSuppressed(ioeb);
 				}
 			
 			// Print trace
 			System.err.println("Failed to read the ZIP:");
-			System.err.println(ioe);
 			ioe.printStackTrace(System.err);
 		}
 		

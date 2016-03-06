@@ -4,3 +4,11 @@
 
 Up early today.
 
+## 07:27
+
+Well, the new class path splitting is much more concise.
+
+## 07:33
+
+Appears my ZIP file reading is not correct somehow.
+
