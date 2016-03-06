@@ -18,3 +18,8 @@ Actually it is failing because you can open a directory in a `FileChannel`. At
 least on Linux. So when running on Linux there would just be an extra exception
 that prints because of this.
 
+## 07:57
+
+It is undocumented and opening directories fails on other operating systems, so
+I am not going to duplicate it even on Linux.
+
