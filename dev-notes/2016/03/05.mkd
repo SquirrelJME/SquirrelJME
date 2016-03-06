@@ -49,3 +49,17 @@ are and such also.
 
 I should add that this is the native compiler.
 
+## 20:25
+
+So far, I like the split off classpath stuff as it makes the code just nicer.
+Then for `LocalEngine` I can have the ZIP handling stuff actually separate and
+not a part of a giant mess. This also solves the problem of handling
+`ServiceLoader` since that will have to manager JARs and such.
+
+## 21:44
+
+So that is what `ReferenceQueue` is used for, removing all the useless junk. I
+can use that in my interpreter and such to handle cleaning up when things are
+clear. That will be a must since once the value is gone the key is not needed
+at all.
+
