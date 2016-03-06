@@ -86,6 +86,26 @@ public class ZIPFormatException
 	}
 	
 	/**
+	 * An entry in the ZIP file had no offset specified.
+	 *
+	 * @since 2016/03/06
+	 */
+	public static class NoOffsetSpecified
+		extends ZIPFormatException
+	{
+		/**
+		 * Initializes the exception with the given index.
+		 *
+		 * @param __dx The index that is missing the offset.
+		 * @since 2016/03/06
+		 */
+		public NoOffsetSpecified(int __dx)
+		{
+			super("The entry " + __dx + " has no offset.");
+		}
+	}
+	
+	/**
 	 * This is thrown when the ZIP channel was not fully read.
 	 *
 	 * @since 2016/02/05

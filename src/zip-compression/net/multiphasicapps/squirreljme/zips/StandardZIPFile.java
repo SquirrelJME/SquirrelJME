@@ -438,6 +438,18 @@ public abstract class StandardZIPFile
 		}
 		
 		/**
+		 * Reads an entry in the directory.
+		 *
+		 * @param __dx The entry to read.
+		 * @param __off The offset of the entry data in the central index.
+		 * @return The read entry.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/06
+		 */
+		protected abstract FileEntry readEntry(int __dx, long __off)
+			throws IOException;
+		
+		/**
 		 * Obtains the entry with the given name.
 		 *
 		 * @param __n The entry to get which has this name.
@@ -474,7 +486,32 @@ public abstract class StandardZIPFile
 			if (__i < 0 || __i >= offsets.length)
 				return null;
 			
-			throw new Error("TODO");
+			// Get the directory offset for this entry
+			long off = offsets[__i];
+			
+			// If the offset is invalid then the entry cannot be determined
+			// for this.
+			if (off < 0L)
+				throw new ZIPFormatException.NoOffsetSpecified(__i);
+			
+			// Lock on the entry cache so it is a sort of volatile
+			synchronized (_entrycache)
+			{
+				// Get reference here, which might not exist
+				Reference<FileEntry> ref = _entrycache[__i];
+				FileEntry rv = null;
+				
+				// In reference?
+				if (ref != null)
+					rv = ref.get();
+				
+				// Needs creation?
+				if (rv == null)
+					ref = new WeakReference<>((rv = readEntry(__i, off)));
+				
+				// Return it
+				return Objects.<FileEntry>requireNonNull(rv);
+			}
 		}
 		
 		/**

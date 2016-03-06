@@ -23,3 +23,19 @@ that prints because of this.
 It is undocumented and opening directories fails on other operating systems, so
 I am not going to duplicate it even on Linux.
 
+## 15:39
+
+I am currently away and have no internet connection and I am using another
+computer. However I might not have the APPNOTE.TXT file which contains the
+ZIP specification.
+
+## 15:45
+
+So I cannot implement ZIP files right now since I lack the details.
+
+## 15:50
+
+The good thing about fossil however is that it is a DVCS so I have all the
+revisions and I can commit locally. With SVN I would need the internet to do
+any real work.
+

@@ -15,6 +15,7 @@ import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import net.multiphasicapps.collections.MissingCollections;
 
 /**
@@ -156,6 +157,17 @@ public class StandardZIP32File
 			throws IOException
 		{
 			super(numentries);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/06
+		 */
+		@Override
+		protected FileEntry readEntry(int __dx, long __off)
+			throws IOException
+		{
+			throw new Error("TODO");
 		}
 	}
 }
