@@ -191,6 +191,71 @@ public abstract class StandardZIPFile
 	}
 	
 	/**
+	 * Reads a byte value at the given position.
+	 *
+	 * @param __pos Position to read the byte from.
+	 * @return The read byte value.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/07
+	 */
+	protected final byte readByte(long __pos)
+		throws IOException
+	{
+		synchronized (_readbuffer)
+		{
+			return readRaw(__pos, 1).get();
+		}
+	}
+	
+	/**
+	 * Reads a range of bytes into the given byte array.
+	 *
+	 * @param __pos Position to read values from.
+	 * @param __arr The array to write into.
+	 * @param __off The starting offset in the array.
+	 * @param __len The length of the array.
+	 * @return The input array.
+	 * @throws IllegalArgumentException If the offset or length are negative,
+	 * or the offset and the length exceeds the array size.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/07
+	 */
+	protected final byte[] readByteArray(long __pos, byte[] __arr,
+		int __off, int __len)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		// Check
+		if (__arr == null)
+			throw new NullPointerException();
+		if (__off < 0 || __len < 0 || (__off + __len) < 0 ||
+			(__off + __len) > __arr.length)
+			throw new IllegalArgumentException();
+		
+		// If not reading any bytes, ignore
+		if (__len <= 0)
+			return __arr;
+		
+		// Lock on read
+		synchronized (_readbuffer)
+		{
+			// Get the read buffer capacity, that is the amount of bytes to
+			// read at once
+			int cap = _readbuffer.capacity();
+			
+			// Read in capacity sized blocks
+			for (int i = 0, left = __len; i < __len; i += cap, left -= cap)
+			{
+				int want = Math.min(left, cap);
+				readRaw(__pos + (long)i, want).get(__arr, __off + i, want);
+			}
+		}
+		
+		// Return the array
+		return __arr;
+	}
+	
+	/**
 	 * Reads a little endian integer at the given position.
 	 *
 	 * @param __pos Position to read from.

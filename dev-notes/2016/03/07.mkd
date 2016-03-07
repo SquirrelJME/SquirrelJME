@@ -1,0 +1,6 @@
+# 2016/03/07
+
+## 13:05
+
+Must handle reading the file name of ZIP entries.
+

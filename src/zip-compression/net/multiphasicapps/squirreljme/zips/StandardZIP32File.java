@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.zips;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
 import java.util.List;
@@ -153,6 +155,10 @@ public class StandardZIP32File
 	/** The file directory magic number. */
 	protected static final int CENTRAL_DIRECTORY_MAGIC =
 		0x02014B50;
+	
+	/** General purpose flag: Is UTF-8 encoded filename/comment? */
+	protected static final int GPF_ENCODING_UTF8 =
+		(1 << 11);
 	
 	/** The byte offset of the central directory. */
 	protected final long cdirbase;
@@ -299,6 +305,9 @@ public class StandardZIP32File
 		/** Central directory position. */
 		protected final long centraldirpos;
 		
+		/** Name cache. */
+		private volatile Reference<String> _name;
+		
 		/**
 		 * Initializes the file entry.
 		 *
@@ -342,7 +351,61 @@ public class StandardZIP32File
 		public String name()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Get reference
+			Reference<String> ref = _name;
+			String rv = null;
+			
+			// In reference?
+			if (ref != null)
+				rv = ref.get();
+			
+			// Needs decoding
+			if (rv == null)
+			{
+				// Get length of file name
+				int flen = readUnsignedShort(centraldirpos +
+					CDO_FILE_NAME_LENGTH);
+				
+				// Read the input byte array
+				byte barr[] = new byte[flen];
+				readByteArray(centraldirpos + BASE_CENTRAL_DIRECTORY_SIZE,
+					barr, 0, flen);
+				
+				// If UTF-8 then use internal handling
+				if (isLanguageUTF8())
+					rv = new String(barr, 0, flen, "utf-8");
+				
+				// Otherwise use codepage handling, Java ME only has two
+				// character sets available
+				else
+					rv = IBM437CodePage.toString(barr, 0, flen);
+				
+				// Cache it
+				_name = new WeakReference<>(rv);
+			}
+			
+			// Return it
+			return rv;
+		}
+		
+		/**
+		 * Is the language that is used for the file name (and comment) UTF-8
+		 * encoded?
+		 *
+		 * @throws IOException On read errors.
+		 * @return {@code true} if the file name and comment are encoded using
+		 * UTF-8.
+		 * @since 2016/03/07
+		 */
+		protected boolean isLanguageUTF8()
+			throws IOException
+		{
+			// Read data
+			int bits = readUnsignedShort(centraldirpos +
+				CDO_GENERAL_PURPOSE_FLAGS);
+			
+			// Is the bit set?
+			return 0 != (bits & GPF_ENCODING_UTF8);
 		}
 	}
 }
