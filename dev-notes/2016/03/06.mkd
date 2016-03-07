@@ -64,3 +64,9 @@ the base stuff is done. For Squirrel Quarrel I could have it actually use the
 line based interface although it may end up beign rather horrible due to the
 abundance of ASCII. However it could work out despite being a bit limited.
 
+## 20:57
+
+When I get to compression algorithms I am going to have deflate and gzip be
+in separate packages from the ZIP code. I may put them together or I might
+just split them apart. I also need a CRC stream too.
+

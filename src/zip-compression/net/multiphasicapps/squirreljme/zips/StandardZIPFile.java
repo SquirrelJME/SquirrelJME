@@ -619,6 +619,14 @@ public abstract class StandardZIPFile
 		}
 		
 		/**
+		 * Returns the index of this entry.
+		 *
+		 * @return The ZIP file entry index.
+		 * @since 2016/03/06
+		 */
+		public abstract int index();
+		
+		/**
 		 * Opens an input stream of the ZIP file data.
 		 *
 		 * @return A stream which reads the deflated or stored data.

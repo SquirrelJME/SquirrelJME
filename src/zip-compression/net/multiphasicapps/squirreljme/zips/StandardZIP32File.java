@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.zips;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
@@ -278,6 +279,67 @@ public class StandardZIP32File
 		 */
 		@Override
 		protected FileEntry readEntry(int __dx, long __off)
+			throws IOException
+		{
+			return new FileEntry32(__dx, __off);
+		}
+	}
+	
+	/**
+	 * This represents a 32-bit ZIP file entry.
+	 *
+	 * @since 2016/03/06
+	 */
+	protected class FileEntry32
+		extends FileEntry
+	{
+		/** Index. */
+		protected final int index;
+		
+		/** Central directory position. */
+		protected final long centraldirpos;
+		
+		/**
+		 * Initializes the file entry.
+		 *
+		 * @param __dx Index of this entry.
+		 * @param __off The central directory offset of this entry.
+		 * @since 2016/03/06
+		 */
+		protected FileEntry32(int __dx, long __off)
+		{
+			// Set
+			index = __dx;
+			centraldirpos = __off;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/06
+		 */
+		@Override
+		public int index()
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/06
+		 */
+		@Override
+		public InputStream open()
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/06
+		 */
+		@Override
+		public String name()
 			throws IOException
 		{
 			throw new Error("TODO");
