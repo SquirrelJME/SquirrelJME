@@ -33,48 +33,131 @@ import net.multiphasicapps.collections.MissingCollections;
 public class StandardZIP32File
 	extends StandardZIPFile
 {
+	/** Magic number offset. */
+	protected static final long EDO_MAGIC_NUMBER =
+		0;
+	
+	/** Offset to the disk number in the end directory. */
+	protected static final long EDO_DISK_NUMBER =
+		EDO_MAGIC_NUMBER + 4;
+	
+	/** Offset to the disk containing the start of the directory. */
+	protected static final long EDO_DISK_START =
+		EDO_DISK_NUMBER + 2;
+	
+	/** Offset to the total number of entries in this disk. */
+	protected static final long EDO_DISK_ENTRY_COUNT =
+		EDO_DISK_START + 2;
+	
+	/** Offset to the total number of entries in the entire disk collection. */
+	protected static final long EDO_ALL_ENTRY_COUNT =
+		EDO_DISK_ENTRY_COUNT + 2;
+	
+	/** The size of the central directory. */
+	protected static final long EDO_CENTRAL_DIR_SIZE =
+		EDO_ALL_ENTRY_COUNT + 2;
+	
+	/** The offset to the start of the central directory. */
+	protected static final long EDO_CENTRAL_DIR_OFFSET =
+		EDO_CENTRAL_DIR_SIZE + 4;
+	
+	/** The offset to the comment size. */
+	protected static final long EDO_COMMENT_LENGTH =
+		EDO_CENTRAL_DIR_OFFSET + 4;
+		
 	/** This is the size of the basic end directory of a ZIP file. */
 	protected static final long BASE_END_DIRECTORY_SIZE =
-		22;
+		EDO_COMMENT_LENGTH + 2;
 	
 	/** The maximum end directory size (includes comment). */
 	protected static final long MAX_END_DIRECTORY_SIZE =
 		BASE_END_DIRECTORY_SIZE + 65535L;
 	
-	/** Offset to the disk number in the end directory. */
-	protected static final long EDO_DISK_NUMBER =
-		4;
-	
-	/** Offset to the disk containing the start of the directory. */
-	protected static final long EDO_DISK_START =
-		6;
-	
-	/** Offset to the total number of entries in this disk. */
-	protected static final long EDO_DISK_ENTRY_COUNT =
-		8;
-	
-	/** Offset to the total number of entries in the entire disk collection. */
-	protected static final long EDO_ALL_ENTRY_COUNT =
-		10;
-	
-	/** The size of the central directory. */
-	protected static final long EDO_CENTRAL_DIR_SIZE =
-		12;
-	
-	/** The offset to the start of the central directory. */
-	protected static final long EDO_CENTRAL_DIR_OFFSET =
-		16;
-	
-	/** The offset to the comment size. */
-	protected static final long EDO_COMMENT_LENGTH =
-		20;
-	
 	/** The magic number of the end directory. */
 	protected static final int END_DIRECTORY_MAGIC =
 		0x06054B50;
 	
+	/** Offset to central directory magic number. */
+	protected static final long CDO_MAGIC_NUMBER =
+		0;
+	
+	/** Version the entry was made by. */
+	protected static final long CDO_BY_VERSION =
+		CDO_MAGIC_NUMBER + 4;
+	
+	/** Version needed to extract. */
+	protected static final long CDO_EXTRACT_VERSION =
+		CDO_BY_VERSION + 2;
+	
+	/** General purpose bit flag. */
+	protected static final long CDO_GENERAL_PURPOSE_FLAGS =
+		CDO_EXTRACT_VERSION + 2;
+	
+	/** Compression Method. */
+	protected static final long CDO_COMPRESSION_METHOD =
+		CDO_GENERAL_PURPOSE_FLAGS + 2;
+	
+	/** Last modification time. */
+	protected static final long CDO_LAST_MODIFIED_TIME =
+		CDO_COMPRESSION_METHOD + 2;
+	
+	/** Last modification date. */
+	protected static final long CDO_LAST_MODIFIED_DATE =
+		CDO_LAST_MODIFIED_TIME + 2;
+	
+	/** CRC-32. */
+	protected static final long CDO_CRC =
+		CDO_LAST_MODIFIED_DATE + 2;
+	
+	/** Compressed Size. */
+	protected static final long CDO_COMPRESSED_SIZE =
+		CDO_CRC + 4;
+	
+	/** Uncompressed size. */
+	protected static final long CDO_UNCOMPRESSED_SIZE =
+		CDO_COMPRESSED_SIZE + 4;
+	
+	/** File name length. */
+	protected static final long CDO_FILE_NAME_LENGTH =
+		CDO_UNCOMPRESSED_SIZE + 4;
+	
+	/** Extra field length. */
+	protected static final long CDO_EXTRA_FIELD_LENGTH =
+		CDO_FILE_NAME_LENGTH + 2;
+	
+	/** Comment Length. */
+	protected static final long CDO_COMMENT_LENGTH =
+		CDO_EXTRA_FIELD_LENGTH + 2;
+	
+	/** Disk number start. */
+	protected static final long CDO_DISK_NUMBER_START =
+		CDO_COMMENT_LENGTH + 2;
+	
+	/** Internal file attributes. */
+	protected static final long CDO_INTERNAL_ATTRIBUTES =
+		CDO_DISK_NUMBER_START + 2;
+	
+	/** External file attributes. */
+	protected static final long CDO_EXTERNAL_ATTRIBUTES =
+		CDO_INTERNAL_ATTRIBUTES + 2;
+	
+	/** Relative offset to local header. */
+	protected static final long CDO_LOCAL_HEADER_OFFSET =
+		CDO_EXTERNAL_ATTRIBUTES + 4;
+	
+	/** The base size of the central directory. */
+	protected static final long BASE_CENTRAL_DIRECTORY_SIZE =
+		CDO_LOCAL_HEADER_OFFSET + 4;
+	
+	/** The file directory magic number. */
+	protected static final int CENTRAL_DIRECTORY_MAGIC =
+		0x02014B50;
+	
 	/** The byte offset of the central directory. */
 	protected final long cdirbase;
+	
+	/** The size of the central directory. */
+	protected final long cdirsize;
 	
 	/** The number of entries in this ZIP. */
 	protected final int numentries;
@@ -99,7 +182,7 @@ public class StandardZIP32File
 		for (long i = csz - BASE_END_DIRECTORY_SIZE; i >= 0; i--)
 		{
 			// Read magic number here
-			int maybe = readInt(i);
+			int maybe = readInt(i + EDO_MAGIC_NUMBER);
 			
 			// If this is the magic, then check the comment length
 			if (maybe == END_DIRECTORY_MAGIC)
@@ -122,10 +205,10 @@ public class StandardZIP32File
 		
 		// The number of entries in this ZIP
 		numentries = readUnsignedShort(idi + EDO_DISK_ENTRY_COUNT);
-		long dirsize = readUnsignedInt(idi + EDO_CENTRAL_DIR_SIZE);
+		cdirsize = readUnsignedInt(idi + EDO_CENTRAL_DIR_SIZE);
 		
 		// Set the position to read the central directory from
-		cdirbase = (idi) - dirsize;
+		cdirbase = idi - cdirsize;
 	}
 	
 	/**
@@ -157,6 +240,36 @@ public class StandardZIP32File
 			throws IOException
 		{
 			super(numentries);
+			
+			// Read the directory
+			long end = cdirbase + cdirsize;
+			int readcount = 0;
+			for (long p = cdirbase; p < end; readcount++)
+			{
+				// Read magic number
+				int cdmag = readInt(p);
+				
+				// Bad magic?
+				if (cdmag != CENTRAL_DIRECTORY_MAGIC)
+					throw new ZIPFormatException.IllegalMagic(cdmag,
+						CENTRAL_DIRECTORY_MAGIC);
+				
+				// Set offset
+				offsets[readcount] = p;
+				
+				// Read variable length attributes
+				long varfn = readUnsignedShort(p + CDO_FILE_NAME_LENGTH);
+				long varef = readUnsignedShort(p + CDO_EXTRA_FIELD_LENGTH);
+				long varcm = readUnsignedShort(p + CDO_COMMENT_LENGTH);
+				
+				// Skip ahead
+				p += BASE_CENTRAL_DIRECTORY_SIZE + varfn + varef + varcm;
+			}
+			
+			// Short read?
+			if (readcount != numentries)
+				throw new ZIPFormatException.EntryMiscount(readcount,
+					numentries);
 		}
 		
 		/**

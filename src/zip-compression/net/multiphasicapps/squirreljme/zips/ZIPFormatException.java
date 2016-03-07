@@ -55,6 +55,51 @@ public class ZIPFormatException
 	}
 	
 	/**
+	 * This is thrown when the number of entries in the index has been
+	 * miscounted.
+	 *
+	 * @since 2016/03/06
+	 */
+	public static class EntryMiscount
+		extends ZIPFormatException
+	{
+		/**
+		 * Initializes the exception with the given and desired entry amounts.
+		 *
+		 * @param __was The number of entries read.
+		 * @param __want The number of desired entries.
+		 * @since 2016/03/06
+		 */
+		public EntryMiscount(int __was, int __want)
+		{
+			super("Expected " + __want + " entries, however only " + __was +
+				" were read.");
+		}
+	}
+	
+	/**
+	 * This is thrown when a magic number in the ZIP is not valid.
+	 *
+	 * @since 2016/03/06
+	 */
+	public static class IllegalMagic
+		extends ZIPFormatException
+	{
+		/**
+		 * Initializes the exception for the given magic values.
+		 *
+		 * @param __was What the magic number was.
+		 * @param __want What the magic number was supposed to be.
+		 * @since 2016/03/08
+		 */
+		public IllegalMagic(int __was, int __want)
+		{
+			super(String.format("Expected magic number %08x, however it was " +
+				"%08x", __want, __was));
+		}
+	}
+	
+	/**
 	 * This is thrown when the ZIP contains a negative entry count.
 	 *
 	 * @since 2016/03/05
