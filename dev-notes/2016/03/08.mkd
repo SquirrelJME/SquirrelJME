@@ -18,3 +18,23 @@ That would be easier to debug because I could just read and print them without
 giant print statements with constants. It would also probably be less prone to
 bugs because then the field being requested would be known.
 
+## 11:20
+
+Actually realization, I suppose a stressful day yesterday was messing with my
+thinking. Anyway, I can determine the size of the zip by using the local file
+offsets. Note that these can appear in any order, so I get them all first and
+have it so I know which values belong to what. I then sort all of them to
+determine their logical placement in the file. Then using that I can determine
+how large the actual ZIP is. One thing I would have to handle though is
+polyglots and situations where local file indexes are in the contents of
+stored entries. So also with this I am going to go into the structured enum
+form so I do not have to rely on adding with constants. Then I am going to fix
+my code around that, then perform the required calculation to determine the
+actual ZIP size. The good thing with the ZIP format is that there is the offset
+to the start of the central directory start which will be useful. Also
+currently I use the central directory size to determine where it starts from
+the end. So doing both of these will end up with clean code and should result
+in working ZIP code. I have been working on this ZIP code for 6 days, and
+hopefully after this I just need to get the decompression algorithms
+implemented and then I can continue with loading classes.
+
