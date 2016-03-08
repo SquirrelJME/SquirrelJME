@@ -36,6 +36,10 @@ import net.multiphasicapps.collections.MissingCollections;
 public class StandardZIP32File
 	extends StandardZIPFile
 {
+	/** Maximum version. */
+	protected static final int MAX_CENTRAL_DIR_VERSION =
+		20;
+	
 	/** Magic number offset. */
 	protected static final long EDO_MAGIC_NUMBER =
 		0;
@@ -152,9 +156,81 @@ public class StandardZIP32File
 	protected static final long BASE_CENTRAL_DIRECTORY_SIZE =
 		CDO_LOCAL_HEADER_OFFSET + 4;
 	
+	/** Local file header magic number. */
+	protected static final long LFO_MAGIC_NUMBER =
+		0;
+	
+	/** Version needed to extract. */
+	protected static final long LFO_EXTRACT_VERSION =
+		LFO_MAGIC_NUMBER + 4;
+	
+	/** General purpose flags. */
+	protected static final long LFO_GENERAL_PURPOSE_FLAGS =
+		LFO_EXTRACT_VERSION + 2;
+	
+	/** Compression method. */
+	protected static final long LFO_COMPRESSION_METHOD =
+		LFO_GENERAL_PURPOSE_FLAGS + 2;
+	
+	/** Last modification time. */
+	protected static final long LFO_LAST_MODIFIED_TIME =
+		LFO_COMPRESSION_METHOD + 2;
+	
+	/** Last modification date. */
+	protected static final long LFO_LAST_MODIFIED_DATE =
+		LFO_LAST_MODIFIED_TIME + 2;
+	
+	/** CRC-32. */
+	protected static final long LFO_CRC32 =
+		LFO_LAST_MODIFIED_DATE + 2;
+	
+	/** Compressed size. */
+	protected static final long LFO_COMPRESSED_SIZE =
+		LFO_CRC32 + 4;
+	
+	/** Uncompressed size. */
+	protected static final long LFO_UNCOMPRESSED_SIZE =
+		LFO_COMPRESSED_SIZE + 4;
+	
+	/** File name length. */
+	protected static final long LFO_FILE_NAME_LENGTH =
+		LFO_UNCOMPRESSED_SIZE + 4;
+	
+	/** Extra field length. */
+	protected static final long LFO_EXTRA_FIELD_LENGTH =
+		LFO_FILE_NAME_LENGTH + 2;
+	
+	/** File header magic number. */
+	protected static final long FILE_HEADER_MAGIC =
+		0x04034B50;
+	
+	/** The size of the local file header. */
+	protected static final long BASE_FILE_HEADER_SIZE =
+		LFO_EXTRA_FIELD_LENGTH + 2;
+	
+	/** Descriptor CRC32. */
+	protected static final long DEO_CRC32 =
+		0;
+	
+	/** Descriptor compressed size. */
+	protected static final long DEO_COMPRESSED_SIZE =
+		DEO_CRC32 + 4;
+	
+	/** Descriptor uncompressed size. */
+	protected static final long DEO_UNCOMPRESSED_SIZE =
+		DEO_COMPRESSED_SIZE + 4;
+	
+	/** Descriptor size. */
+	protected static final long BASE_DESCRIPTOR_SIZE =
+		DEO_UNCOMPRESSED_SIZE + 4;
+	
 	/** The file directory magic number. */
 	protected static final int CENTRAL_DIRECTORY_MAGIC =
 		0x02014B50;
+	
+	/** General purpose flag: File size in the data descriptor. */
+	protected static final int GPF_SIZE_IN_DATA_DESCRIPTOR =
+		(1 << 3);
 	
 	/** General purpose flag: Is UTF-8 encoded filename/comment? */
 	protected static final int GPF_ENCODING_UTF8 =
@@ -165,6 +241,9 @@ public class StandardZIP32File
 	
 	/** The size of the central directory. */
 	protected final long cdirsize;
+	
+	/** End of central direction position. */
+	protected final long enddirpos;
 	
 	/** The number of entries in this ZIP. */
 	protected final int numentries;
@@ -216,6 +295,7 @@ public class StandardZIP32File
 		
 		// Set the position to read the central directory from
 		cdirbase = idi - cdirsize;
+		enddirpos = idi;
 	}
 	
 	/**
@@ -237,6 +317,9 @@ public class StandardZIP32File
 	protected class Directory32
 		extends Directory
 	{
+		/** The size of the ZIP file. */
+		protected final long zipsize;
+		
 		/**
 		 * Initializes the 32-bit directory.
 		 *
@@ -251,6 +334,7 @@ public class StandardZIP32File
 			// Read the directory
 			long end = cdirbase + cdirsize;
 			int readcount = 0;
+			long totalsz = 0;
 			for (long p = cdirbase; p < end; readcount++)
 			{
 				// Read magic number
@@ -264,14 +348,44 @@ public class StandardZIP32File
 				// Set offset
 				offsets[readcount] = p;
 				
+				// Check version
+				int ver = readUnsignedShort(p + CDO_EXTRACT_VERSION);
+				System.err.println(ver);
+				if (ver > MAX_CENTRAL_DIR_VERSION)
+					throw new ZIPFormatException.TooNew(ver,
+						MAX_CENTRAL_DIR_VERSION);
+				
+				// Flags
+				int flags = readUnsignedShort(p + CDO_GENERAL_PURPOSE_FLAGS);
+				
 				// Read variable length attributes
 				long varfn = readUnsignedShort(p + CDO_FILE_NAME_LENGTH);
 				long varef = readUnsignedShort(p + CDO_EXTRA_FIELD_LENGTH);
 				long varcm = readUnsignedShort(p + CDO_COMMENT_LENGTH);
 				
+				// Get the compressed size
+				long compsz = readUnsignedInt(p + CDO_COMPRESSED_SIZE);
+				
+				// Increase ZIP size
+				totalsz += BASE_FILE_HEADER_SIZE + varfn + varef +
+					varcm + compsz;
+				
+				// Data descriptor?
+				if ((flags & GPF_SIZE_IN_DATA_DESCRIPTOR) != 0)
+					totalsz += BASE_DESCRIPTOR_SIZE;
+				
 				// Skip ahead
 				p += BASE_CENTRAL_DIRECTORY_SIZE + varfn + varef + varcm;
 			}
+			
+			// Add the central directory size and the comment length (if one
+			// is even used).
+			totalsz += cdirsize + readUnsignedShort(
+				enddirpos + EDO_COMMENT_LENGTH);
+			
+			// Set
+			zipsize = totalsz;
+			System.err.println(zipsize + " <zip - chan> " + channel.size());
 			
 			// Short read?
 			if (readcount != numentries)
@@ -287,7 +401,7 @@ public class StandardZIP32File
 		protected FileEntry readEntry(int __dx, long __off)
 			throws IOException
 		{
-			return new FileEntry32(__dx, __off);
+			return new FileEntry32(this, __dx, __off);
 		}
 	}
 	
@@ -299,6 +413,9 @@ public class StandardZIP32File
 	protected class FileEntry32
 		extends FileEntry
 	{
+		/** The owning central directory. */
+		protected final Directory32 directory;
+		
 		/** Index. */
 		protected final int index;
 		
@@ -311,13 +428,20 @@ public class StandardZIP32File
 		/**
 		 * Initializes the file entry.
 		 *
+		 * @param __dir The central directory.
 		 * @param __dx Index of this entry.
 		 * @param __off The central directory offset of this entry.
 		 * @since 2016/03/06
 		 */
-		protected FileEntry32(int __dx, long __off)
+		protected FileEntry32(Directory32 __dir, int __dx, long __off)
+			throws NullPointerException
 		{
+			// Check
+			if (__dir == null)
+				throw new NullPointerException();
+			
 			// Set
+			directory = __dir;
 			index = __dx;
 			centraldirpos = __off;
 		}
@@ -329,7 +453,7 @@ public class StandardZIP32File
 		@Override
 		public int index()
 		{
-			throw new Error("TODO");
+			return index;
 		}
 		
 		/**
@@ -340,6 +464,14 @@ public class StandardZIP32File
 		public InputStream open()
 			throws IOException
 		{
+			// Get the offset of the local file header and calculate its
+			// position.
+			long locfoff = (channel.size() - directory.zipsize) +
+				readUnsignedInt(centraldirpos + CDO_LOCAL_HEADER_OFFSET);
+			System.err.println(">> " + locfoff + " " +
+				Long.toString(readUnsignedInt(locfoff), 16) + " " +
+				Long.toString(FILE_HEADER_MAGIC, 16));
+			
 			throw new Error("TODO");
 		}
 		

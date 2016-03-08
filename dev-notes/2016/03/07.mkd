@@ -4,3 +4,22 @@
 
 Must handle reading the file name of ZIP entries.
 
+## 15:41
+
+Currently the relative offset of ZIP files are confusing.
+
+## 19:38
+
+I believe I need to know the ZIP of the ZIP file to figure out where things go
+and such. I suppose what I would need to do is count up all the ZIP data which
+is earlier, that way I can determine the true start of where the data is
+placed.
+
+## 21:11
+
+Ok so my sizes are a bit too small.
+
+## 22:08
+
+ZIP is a confusing format.
+

@@ -172,5 +172,47 @@ public class ZIPFormatException
 				Math.min(__a, __b) + ".");
 		}
 	}
+	
+	/**
+	 * This is thrown when a file inside of the ZIP is using a too new of a
+	 * version.
+	 *
+	 * @since 2016/03/07
+	 */
+	public static class TooNew
+		extends ZIPFormatException
+	{
+		/**
+		 * Initializes the exception with the given version numbers.
+		 *
+		 * @param __a Version A.
+		 * @param __b Version B.
+		 * @since 2016/03/07
+		 */
+		public TooNew(int __a, int __b)
+		{
+			super("ZIP version " + __stringy(true, __a, __b) + " is newer " +
+				"than " + __stringy(false, __a, __b) + ".");
+		}
+		
+		/**
+		 * Converts version values to a string.
+		 *
+		 * @param __max If {@code true} then the max version is used, otherwise
+		 * the minimum will be used.
+		 * @param __a Version A.
+		 * @param __b Version B.
+		 * @return A string representing the version.
+		 * @since 2016/03/07
+		 */
+		private static String __stringy(boolean __max, int __a, int __b)
+		{
+			// Use the highest or smallest
+			int use = (__max ? Math.max(__a, __b) : Math.min(__a, __b));
+			
+			// Perform simple division
+			return (use / 10) + "." + (use % 10);
+		}
+	}
 }
 
