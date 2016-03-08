@@ -200,13 +200,13 @@ public class StandardZIP32File
 	protected static final long LFO_EXTRA_FIELD_LENGTH =
 		LFO_FILE_NAME_LENGTH + 2;
 	
-	/** File header magic number. */
-	protected static final long FILE_HEADER_MAGIC =
-		0x04034B50;
-	
 	/** The size of the local file header. */
 	protected static final long BASE_FILE_HEADER_SIZE =
 		LFO_EXTRA_FIELD_LENGTH + 2;
+	
+	/** File header magic number. */
+	protected static final long FILE_HEADER_MAGIC =
+		0x04034B50;
 	
 	/** Descriptor CRC32. */
 	protected static final long DEO_CRC32 =
@@ -368,11 +368,14 @@ public class StandardZIP32File
 				boolean isdir = (readUnsignedByte(p +
 					BASE_CENTRAL_DIRECTORY_SIZE + (varfn - 1)) == '/');
 				
+				// Is the size in the data descriptor?
+				boolean hasddd = ((flags & GPF_SIZE_IN_DATA_DESCRIPTOR) != 0);
+				
 				// Get the compressed size
 				long compsz = readUnsignedInt(p + CDO_COMPRESSED_SIZE);
 				
-				System.err.printf("At %d: %08x (%08x) %s%n", readcount, totalsz,
-					offsets[readcount], isdir);
+				System.err.printf("At %d: %08x (%08x) %s gpf=%s%n", readcount, totalsz,
+					offsets[readcount], isdir, hasddd);
 				
 				// Calculate the base ZIP size
 				totalsz += BASE_FILE_HEADER_SIZE + varfn + varef;
@@ -380,7 +383,14 @@ public class StandardZIP32File
 				// Also include
 				// the descriptor magic number 0x08074B50 in the calculation
 				/*if (!isdir)*/
-					totalsz += compsz + BASE_DESCRIPTOR_SIZE + 4;
+				
+				// If the version number is greater than
+				if (hasddd)
+					totalsz += BASE_DESCRIPTOR_SIZE + 4;
+				
+				// Add compressed size
+				if (!isdir)
+					totalsz += compsz;
 				
 				// Data descriptor?
 				/*if ((flags & GPF_SIZE_IN_DATA_DESCRIPTOR) != 0)
