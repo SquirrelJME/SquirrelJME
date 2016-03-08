@@ -68,6 +68,9 @@ public class LocalClassPath
 			
 			// Otherwise try to load one
 			zippy = StandardZIPFile.open(fc);
+			
+			// Note it
+			System.err.println("Opened ZIP '" + path + "' (" + zippy + ").");
 		}
 		
 		// Failed to open

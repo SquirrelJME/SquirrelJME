@@ -373,6 +373,20 @@ public abstract class StandardZIPFile
 	}
 	
 	/**
+	 * Reads a byte value as an unsigned value.
+	 *
+	 * @param __pos Position to read from.
+	 * @return The read unsigned byte value.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/07
+	 */
+	protected final int readUnsignedByte(long __pos)
+		throws IOException
+	{
+		return (int)readByte(__pos) & 0xFF;
+	}
+	
+	/**
 	 * Reads an int value as an unsigned value.
 	 *
 	 * @param __pos The position to read from.
@@ -677,9 +691,11 @@ public abstract class StandardZIPFile
 		/**
 		 * Initializes the file entry.
 		 *
+		 * @throws IOException On read errors.
 		 * @since 2016/03/05
 		 */
 		protected FileEntry()
+			throws IOException
 		{
 		}
 		

@@ -331,6 +331,8 @@ public class StandardZIP32File
 		{
 			super(numentries);
 			
+			System.err.println("REQUEST " + StandardZIP32File.this.toString());
+			
 			// Read the directory
 			long end = cdirbase + cdirsize;
 			int readcount = 0;
@@ -350,7 +352,6 @@ public class StandardZIP32File
 				
 				// Check version
 				int ver = readUnsignedShort(p + CDO_EXTRACT_VERSION);
-				System.err.println(ver);
 				if (ver > MAX_CENTRAL_DIR_VERSION)
 					throw new ZIPFormatException.TooNew(ver,
 						MAX_CENTRAL_DIR_VERSION);
@@ -363,12 +364,23 @@ public class StandardZIP32File
 				long varef = readUnsignedShort(p + CDO_EXTRA_FIELD_LENGTH);
 				long varcm = readUnsignedShort(p + CDO_COMMENT_LENGTH);
 				
+				// Is a directory?
+				boolean isdir = (readUnsignedByte(p +
+					BASE_CENTRAL_DIRECTORY_SIZE + (varfn - 1)) == '/');
+				
 				// Get the compressed size
 				long compsz = readUnsignedInt(p + CDO_COMPRESSED_SIZE);
 				
-				// Increase ZIP size
-				totalsz += BASE_FILE_HEADER_SIZE + varfn + varef +
-					varcm + compsz;
+				System.err.printf("At %d: %08x (%08x) %s%n", readcount, totalsz,
+					offsets[readcount], isdir);
+				
+				// Calculate the base ZIP size
+				totalsz += BASE_FILE_HEADER_SIZE + varfn + varef;
+				
+				// If not a directory, files will consume space. Also include
+				// the descriptor magic number 0x08074B50 in the calculation
+				if (!isdir)
+					totalsz += compsz + 4;
 				
 				// Data descriptor?
 				if ((flags & GPF_SIZE_IN_DATA_DESCRIPTOR) != 0)
@@ -391,6 +403,10 @@ public class StandardZIP32File
 			if (readcount != numentries)
 				throw new ZIPFormatException.EntryMiscount(readcount,
 					numentries);
+			
+			System.err.println("Entries: " + numentries);
+			for (int i = 0; i < numentries; i++)
+				super.get(i);
 		}
 		
 		/**
@@ -422,6 +438,9 @@ public class StandardZIP32File
 		/** Central directory position. */
 		protected final long centraldirpos;
 		
+		/** Local file header position. */
+		protected final long localheaderpos;
+		
 		/** Name cache. */
 		private volatile Reference<String> _name;
 		
@@ -431,10 +450,11 @@ public class StandardZIP32File
 		 * @param __dir The central directory.
 		 * @param __dx Index of this entry.
 		 * @param __off The central directory offset of this entry.
+		 * @throws IOException On read errors.
 		 * @since 2016/03/06
 		 */
 		protected FileEntry32(Directory32 __dir, int __dx, long __off)
-			throws NullPointerException
+			throws IOException, NullPointerException
 		{
 			// Check
 			if (__dir == null)
@@ -444,6 +464,14 @@ public class StandardZIP32File
 			directory = __dir;
 			index = __dx;
 			centraldirpos = __off;
+			
+			long locfoff = (channel.size() - directory.zipsize) +
+				readUnsignedInt(centraldirpos + CDO_LOCAL_HEADER_OFFSET);
+			System.err.println(">> locfoff=" + locfoff + " maghere=" +
+				Long.toString(readUnsignedInt(locfoff), 16) + " want=" +
+				Long.toString(FILE_HEADER_MAGIC, 16) + " hoff=" +
+				readUnsignedInt(centraldirpos + CDO_LOCAL_HEADER_OFFSET));
+			localheaderpos = locfoff;
 		}
 		
 		/**
@@ -466,11 +494,7 @@ public class StandardZIP32File
 		{
 			// Get the offset of the local file header and calculate its
 			// position.
-			long locfoff = (channel.size() - directory.zipsize) +
-				readUnsignedInt(centraldirpos + CDO_LOCAL_HEADER_OFFSET);
-			System.err.println(">> " + locfoff + " " +
-				Long.toString(readUnsignedInt(locfoff), 16) + " " +
-				Long.toString(FILE_HEADER_MAGIC, 16));
+			long locfoff = localheaderpos;
 			
 			throw new Error("TODO");
 		}
