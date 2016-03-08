@@ -7,3 +7,14 @@ do is just do a massive dump of the central directory tables to attempt to see
 if there is any sane way to determine how large a local file is along with its
 header.
 
+## 11:09
+
+Perhaps what I can do to limit the massive number of constants that I have in
+the ZIP code for all of the offsets, I can do a typesafe kind of enumeration
+structure reference based on an input pointer. Doing it this way I can then
+have all the fields defined in an enumeration which can handle the type. Then
+I could perform a read on those fields and use long/int/short/byte as required.
+That would be easier to debug because I could just read and print them without
+giant print statements with constants. It would also probably be less prone to
+bugs because then the field being requested would be known.
+

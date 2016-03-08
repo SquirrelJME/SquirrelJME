@@ -377,6 +377,41 @@ public class StandardZIP32File
 				System.err.printf("At %d: %08x (%08x) %s gpf=%s%n", readcount, totalsz,
 					offsets[readcount], isdir, hasddd);
 				
+				System.err.printf("CDO_MAGIC_NUMBER: %08x%n",
+					readUnsignedInt(p + CDO_MAGIC_NUMBER));
+				System.err.printf("CDO_BY_VERSION: %08x%n",
+					readUnsignedShort(CDO_BY_VERSION));
+				System.err.printf("CDO_EXTRACT_VERSION: %08x%n",
+					readUnsignedShort(CDO_EXTRACT_VERSION));
+				System.err.printf("CDO_GENERAL_PURPOSE_FLAGS: %08x%n",
+					readUnsignedShort(CDO_GENERAL_PURPOSE_FLAGS));
+				System.err.printf("CDO_COMPRESSION_METHOD: %08x%n",
+					readUnsignedShort(CDO_COMPRESSION_METHOD));
+				System.err.printf("CDO_LAST_MODIFIED_TIME: %08x%n",
+					readUnsignedShort(CDO_LAST_MODIFIED_TIME));
+				System.err.printf("CDO_LAST_MODIFIED_DATE: %08x%n",
+					readUnsignedShort(CDO_LAST_MODIFIED_DATE));
+				System.err.printf("CDO_CRC: %08x%n",
+					readUnsignedShort(CDO_CRC));
+				System.err.printf("CDO_COMPRESSED_SIZE: %08x%n",
+					readUnsignedInt(p + CDO_COMPRESSED_SIZE));
+				System.err.printf("CDO_UNCOMPRESSED_SIZE: %08x%n",
+					readUnsignedInt(p + CDO_UNCOMPRESSED_SIZE));
+				System.err.printf("CDO_FILE_NAME_LENGTH: %08x%n",
+					readUnsignedShort(CDO_FILE_NAME_LENGTH));
+				System.err.printf("CDO_EXTRA_FIELD_LENGTH: %08x%n",
+					readUnsignedShort(CDO_EXTRA_FIELD_LENGTH));
+				System.err.printf("CDO_COMMENT_LENGTH: %08x%n",
+					readUnsignedShort(CDO_COMMENT_LENGTH));
+				System.err.printf("CDO_DISK_NUMBER_START: %08x%n",
+					readUnsignedShort(CDO_DISK_NUMBER_START));
+				System.err.printf("CDO_INTERNAL_ATTRIBUTES: %08x%n",
+					readUnsignedShort(CDO_INTERNAL_ATTRIBUTES));
+				System.err.printf("CDO_EXTERNAL_ATTRIBUTES: %08x%n",
+					readUnsignedInt(p + CDO_EXTERNAL_ATTRIBUTES));
+				System.err.printf("CDO_LOCAL_HEADER_OFFSET: %08x%n",
+					readUnsignedInt(p + CDO_LOCAL_HEADER_OFFSET));
+				
 				// Calculate the base ZIP size
 				totalsz += BASE_FILE_HEADER_SIZE + varfn + varef;
 				
