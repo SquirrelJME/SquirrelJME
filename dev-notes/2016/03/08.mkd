@@ -1,0 +1,9 @@
+# 2016/03/08
+
+## 00:14
+
+Perhaps later today I can figure out ZIP files. I suppose the next thing I will
+do is just do a massive dump of the central directory tables to attempt to see
+if there is any sane way to determine how large a local file is along with its
+header.
+
