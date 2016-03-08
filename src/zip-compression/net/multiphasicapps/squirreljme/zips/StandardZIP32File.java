@@ -377,14 +377,14 @@ public class StandardZIP32File
 				// Calculate the base ZIP size
 				totalsz += BASE_FILE_HEADER_SIZE + varfn + varef;
 				
-				// If not a directory, files will consume space. Also include
+				// Also include
 				// the descriptor magic number 0x08074B50 in the calculation
-				if (!isdir)
-					totalsz += compsz + 4;
+				/*if (!isdir)*/
+					totalsz += compsz + BASE_DESCRIPTOR_SIZE + 4;
 				
 				// Data descriptor?
-				if ((flags & GPF_SIZE_IN_DATA_DESCRIPTOR) != 0)
-					totalsz += BASE_DESCRIPTOR_SIZE;
+				/*if ((flags & GPF_SIZE_IN_DATA_DESCRIPTOR) != 0)
+					totalsz += BASE_DESCRIPTOR_SIZE;*/
 				
 				// Skip ahead
 				p += BASE_CENTRAL_DIRECTORY_SIZE + varfn + varef + varcm;

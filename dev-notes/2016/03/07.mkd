@@ -23,3 +23,9 @@ Ok so my sizes are a bit too small.
 
 ZIP is a confusing format.
 
+## 23:22
+
+Everything starts to fail on an entry whos version I believe is 10, while most
+others are 20. So perhaps the descriptor stuff (has the CRC and sizes) appears
+to be missing on this entry with 10.
+
