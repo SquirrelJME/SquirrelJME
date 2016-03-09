@@ -41,74 +41,6 @@ public class StandardZIP32File
 	protected static final int MAX_CENTRAL_DIR_VERSION =
 		20;
 	
-	/** Local file header magic number. */
-	protected static final long LFO_MAGIC_NUMBER =
-		0;
-	
-	/** Version needed to extract. */
-	protected static final long LFO_EXTRACT_VERSION =
-		LFO_MAGIC_NUMBER + 4;
-	
-	/** General purpose flags. */
-	protected static final long LFO_GENERAL_PURPOSE_FLAGS =
-		LFO_EXTRACT_VERSION + 2;
-	
-	/** Compression method. */
-	protected static final long LFO_COMPRESSION_METHOD =
-		LFO_GENERAL_PURPOSE_FLAGS + 2;
-	
-	/** Last modification time. */
-	protected static final long LFO_LAST_MODIFIED_TIME =
-		LFO_COMPRESSION_METHOD + 2;
-	
-	/** Last modification date. */
-	protected static final long LFO_LAST_MODIFIED_DATE =
-		LFO_LAST_MODIFIED_TIME + 2;
-	
-	/** CRC-32. */
-	protected static final long LFO_CRC32 =
-		LFO_LAST_MODIFIED_DATE + 2;
-	
-	/** Compressed size. */
-	protected static final long LFO_COMPRESSED_SIZE =
-		LFO_CRC32 + 4;
-	
-	/** Uncompressed size. */
-	protected static final long LFO_UNCOMPRESSED_SIZE =
-		LFO_COMPRESSED_SIZE + 4;
-	
-	/** File name length. */
-	protected static final long LFO_FILE_NAME_LENGTH =
-		LFO_UNCOMPRESSED_SIZE + 4;
-	
-	/** Extra field length. */
-	protected static final long LFO_EXTRA_FIELD_LENGTH =
-		LFO_FILE_NAME_LENGTH + 2;
-	
-	/** The size of the local file header. */
-	protected static final long BASE_FILE_HEADER_SIZE =
-		LFO_EXTRA_FIELD_LENGTH + 2;
-	
-	/** File header magic number. */
-	protected static final int FILE_HEADER_MAGIC =
-		0x04034B50;
-	
-	/** Descriptor CRC32. */
-	protected static final long DEO_CRC32 =
-		0;
-	
-	/** Descriptor compressed size. */
-	protected static final long DEO_COMPRESSED_SIZE =
-		DEO_CRC32 + 4;
-	
-	/** Descriptor uncompressed size. */
-	protected static final long DEO_UNCOMPRESSED_SIZE =
-		DEO_COMPRESSED_SIZE + 4;
-	
-	/** Descriptor size. */
-	protected static final long BASE_DESCRIPTOR_SIZE =
-		DEO_UNCOMPRESSED_SIZE + 4;
-	
 	/** General purpose flag: File size in the data descriptor. */
 	protected static final int GPF_SIZE_IN_DATA_DESCRIPTOR =
 		(1 << 3);
@@ -333,10 +265,11 @@ public class StandardZIP32File
 				ZIP32CentralDirectory.LOCAL_HEADER_OFFSET);
 			
 			// Make sure the magic is valid
-			int lhm = readInt(localheaderpos);
-			if (lhm != FILE_HEADER_MAGIC)
+			int lhm = (int)readStruct(localheaderpos,
+				ZIP32LocalFile.MAGIC_NUMBER);
+			if (lhm != ZIP32LocalFile.MAGIC_NUMBER_VALUE)
 				throw new ZIPFormatException.IllegalMagic(lhm,
-					FILE_HEADER_MAGIC);
+					ZIP32LocalFile.MAGIC_NUMBER_VALUE);
 		}
 		
 		/**
@@ -357,10 +290,6 @@ public class StandardZIP32File
 		public InputStream open()
 			throws IOException
 		{
-			// Get the offset of the local file header and calculate its
-			// position.
-			long locfoff = localheaderpos;
-			
 			throw new Error("TODO");
 		}
 		
@@ -383,16 +312,14 @@ public class StandardZIP32File
 			// Needs decoding
 			if (rv == null)
 			{
-				throw new Error("TODO");
-				/*
 				// Get length of file name
-				int flen = readUnsignedShort(centraldirpos +
-					CDO_FILE_NAME_LENGTH);
+				int flen = (int)readStruct(localheaderpos,
+					ZIP32LocalFile.FILE_NAME_LENGTH);
 				
 				// Read the input byte array
 				byte barr[] = new byte[flen];
-				readByteArray(centraldirpos + BASE_CENTRAL_DIRECTORY_SIZE,
-					barr, 0, flen);
+				readByteArray(centraldirpos +
+					ZIP32LocalFile.FILE_NAME.offset(), barr, 0, flen);
 				
 				// If UTF-8 then use internal handling
 				if (isLanguageUTF8())
@@ -404,7 +331,8 @@ public class StandardZIP32File
 					rv = IBM437CodePage.toString(barr, 0, flen);
 				
 				// Cache it
-				_name = new WeakReference<>(rv);*/
+				System.err.println(rv);
+				_name = new WeakReference<>(rv);
 			}
 			
 			// Return it
