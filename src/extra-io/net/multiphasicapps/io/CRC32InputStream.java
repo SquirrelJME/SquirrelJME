@@ -39,6 +39,12 @@ public class CRC32InputStream
 	/** The input CRC to match at the end of the stream. */
 	protected final int wantcrc;
 	
+	/** Magic number. */
+	protected final int magic;
+	
+	/** Working value. */
+	private volatile int _work;
+	
 	/**
 	 * Initializes a CRC32 input stream which just calculates the CRC32.
 	 *
@@ -97,8 +103,10 @@ public class CRC32InputStream
 		wrapped = __w;
 		match = __check;
 		wantcrc = __sum;
+		magic = __mag;
 		
-		throw new Error("TODO");
+		// Initialize value is the precondition
+		_work = __pre;
 	}
 	
 	/**

@@ -419,7 +419,23 @@ public class StandardZIP32File
 			
 			// Use the data descriptor?
 			if (isUseDataDescriptor())
-				throw new Error("TODO");
+			{
+				// The first 4 bytes may potentially be a magic number field
+				// for a descriptor
+				int potmag = (int)readStruct(startpos, ZIP32Decriptor.CRC);
+				
+				// If it is the magic number, then increase it by 4
+				if (potmag == ZIP32Decriptor.MAGIC_NUMBER_VALUE)
+					startpos += 4;
+				
+				// Read fields
+				crc = (int)readStruct(startpos, ZIP32Decriptor.CRC);
+				usz = readStruct(startpos, ZIP32Decriptor.UNCOMPRESSED_SIZE);
+				csz = readStruct(startpos, ZIP32Decriptor.COMPRESSED_SIZE);
+				
+				// Skip the structure size
+				startpos += ZIP32Decriptor.BASE_SIZE;
+			}
 			
 			// Otherwise this data is in the header
 			else
