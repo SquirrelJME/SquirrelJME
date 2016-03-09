@@ -32,7 +32,7 @@ do
 	fi
 	
 	# Grep it
-	if grep -E '[^\x20-\x7E\t\r\n]' < "$__file" > /dev/null
+	if grep -E '[^\x0A\x20-\x7E\t\r]' < "$__file" > /dev/null
 	then
 		echo "$__file"
 	fi
