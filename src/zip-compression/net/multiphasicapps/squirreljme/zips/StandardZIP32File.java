@@ -108,10 +108,6 @@ public class StandardZIP32File
 	protected static final long BASE_DESCRIPTOR_SIZE =
 		DEO_UNCOMPRESSED_SIZE + 4;
 	
-	/** The file directory magic number. */
-	protected static final int CENTRAL_DIRECTORY_MAGIC =
-		0x02014B50;
-	
 	/** General purpose flag: File size in the data descriptor. */
 	protected static final int GPF_SIZE_IN_DATA_DESCRIPTOR =
 		(1 << 3);

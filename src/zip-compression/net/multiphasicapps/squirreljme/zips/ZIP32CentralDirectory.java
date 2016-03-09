@@ -48,7 +48,7 @@ public class ZIP32CentralDirectory
 	
 	/** CRC-32. */
 	public static final ZIP32CentralDirectory CRC =
-		new ZIP32CentralDirectory(LAST_MODIFIED_DAT, Type.UINT32, null);
+		new ZIP32CentralDirectory(LAST_MODIFIED_DATE, Type.UINT32, null);
 	
 	/** Compressed Size. */
 	public static final ZIP32CentralDirectory COMPRESSED_SIZE =
@@ -91,10 +91,10 @@ public class ZIP32CentralDirectory
 		new ZIP32CentralDirectory(LOCAL_HEADER_OFFSET, Type.UINT8,
 		FILE_NAME_LENGTH);
 	
-	/** Extra field. */
-	public static final ZIP32CentralDirectory EXTRA_FIELD =
+	/** Extra data field. */
+	public static final ZIP32CentralDirectory EXTRA_DATA =
 		new ZIP32CentralDirectory(FILE_NAME, Type.UINT8,
-		EXTRA_FIELD_LENGTH);
+		EXTRA_DATA_LENGTH);
 	
 	/** Comment. */
 	public static final ZIP32CentralDirectory COMMENT =
