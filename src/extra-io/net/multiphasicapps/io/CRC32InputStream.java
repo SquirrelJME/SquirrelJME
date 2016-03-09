@@ -43,20 +43,15 @@ public class CRC32InputStream
 	 * Initializes a CRC32 input stream which just calculates the CRC32.
 	 *
 	 * @param __w The stream to wrap.
+	 * @param __mag Magic number.
+	 * @param __pre Precondition.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/09
 	 */
-	public CRC32InputStream(InputStream __w)	
+	public CRC32InputStream(InputStream __w, int __mag, int __pre)	
 		throws NullPointerException
 	{
-		// Check
-		if (__w == null)
-			throw new NullPointerException();
-		
-		// Set
-		wrapped = __w;
-		match = false;
-		wantcrc = 0;
+		this(__w, __mag, __pre, false, 0);
 	}
 	
 	/**
@@ -65,11 +60,33 @@ public class CRC32InputStream
 	 * valid.
 	 *
 	 * @param __w The stream to wrap.
+	 * @param __mag Magic number.
+	 * @param __pre Precondition.
 	 * @param __sum The checksum that the input stream must calculate to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/09
 	 */
-	public CRC32InputStream(InputStream __w, int __sum)
+	public CRC32InputStream(InputStream __w, int __mag, int __pre, int __sum)
+		throws NullPointerException
+	{
+		this(__w, __mag, __pre, true, __sum);
+	}
+	
+	/**
+	 * Initializes a CRC32 input stream which calculates the CRC32 and
+	 * optionally checks it.
+	 *
+	 * @param __w The stream to wrap.
+	 * @param __mag Magic number.
+	 * @param __pre Precondition.
+	 * @param __check If {@code true} then the CRC is checked at the close
+	 * or end of the stream.
+	 * @param __sum The checksum that the input stream must calculate to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/09
+	 */
+	public CRC32InputStream(InputStream __w, int __mag, int __pre,
+		boolean __check, int __sum)
 		throws NullPointerException
 	{
 		// Check
@@ -78,8 +95,10 @@ public class CRC32InputStream
 		
 		// Set
 		wrapped = __w;
-		match = true;
+		match = __check;
 		wantcrc = __sum;
+		
+		throw new Error("TODO");
 	}
 	
 	/**

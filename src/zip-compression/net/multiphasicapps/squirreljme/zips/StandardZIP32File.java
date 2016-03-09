@@ -60,6 +60,14 @@ public class StandardZIP32File
 	protected static final int METHOD_DEFLATED =
 		8;
 	
+	/** The CRC magic number. */
+	protected static final int CRC_MAGIC_NUMBER =
+		0xDEBB20E3;
+	
+	/** The CRC precondition. */
+	protected static final int CRC_PRECONDITION =
+		0xFFFFFFFF;
+	
 	/** The byte offset of the central directory. */
 	protected final long cdirbase;
 	
@@ -394,10 +402,20 @@ public class StandardZIP32File
 			int method = (int)readStruct(localheaderpos,
 				ZIP32LocalFile.COMPRESSION_METHOD);
 			
+			// Unknown compression method?
+			if (method != METHOD_STORED && method != METHOD_DEFLATED)
+				throw new ZIPFormatException.UnknownCompressionMethod(n,
+					method);
+			
 			// CRC and data sizes
 			int crc;
 			long usz;
 			long csz;
+			
+			// Input data position is after all structure data
+			long startpos = localheaderpos + ZIP32LocalFile.BASE_SIZE +
+				readStruct(localheaderpos, ZIP32LocalFile.FILE_NAME_LENGTH) +
+				readStruct(localheaderpos, ZIP32LocalFile.EXTRA_DATA_LENGTH);
 			
 			// Use the data descriptor?
 			if (isUseDataDescriptor())
@@ -406,6 +424,7 @@ public class StandardZIP32File
 			// Otherwise this data is in the header
 			else
 			{
+				// In the file header
 				crc = (int)readStruct(localheaderpos, ZIP32LocalFile.CRC);
 				usz = readStruct(localheaderpos,
 					ZIP32LocalFile.UNCOMPRESSED_SIZE);
@@ -413,13 +432,21 @@ public class StandardZIP32File
 					ZIP32LocalFile.COMPRESSED_SIZE);
 			}
 			
+			// Open raw data stream
+			InputStream rawsource = new DataStream(startpos, startpos + csz);
+			
+			// Caluclate the CRC also
+			rawsource = new CRC32InputStream(rawsource, CRC_MAGIC_NUMBER,
+				CRC_PRECONDITION, crc);
+			
 			// Stored
 			if (method == METHOD_STORED)
-				throw new Error("TODO");
+				return rawsource;
 			
 			// Deflated
 			else if (method == METHOD_DEFLATED)
-				throw new Error("TODO");
+				return new SizeLimitedInputStream(
+					new InflaterInputStream(rawsource), usz, true);
 			
 			// Unknown
 			else

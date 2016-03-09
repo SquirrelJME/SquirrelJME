@@ -611,6 +611,21 @@ public abstract class StandardZIPFile
 		 * @since 2016/03/09
 		 */
 		@Override
+		public int available()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				return (int)Math.min(Integer.MAX_VALUE,
+					Math.max(end - _at, 0L));
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/09
+		 */
+		@Override
 		public int read()
 			throws IOException
 		{
