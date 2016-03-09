@@ -61,3 +61,9 @@ finished.
 I can also have bounds checking on the read also to make sure things are
 working properly also.
 
+## 20:52
+
+Well moving part of my code to the structured system was quite easy and was no
+trouble at all. If in the future I may need it again I could always put it in
+its own package and use it as such.
+
