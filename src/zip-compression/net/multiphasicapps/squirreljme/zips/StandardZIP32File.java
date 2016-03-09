@@ -40,50 +40,6 @@ public class StandardZIP32File
 	protected static final int MAX_CENTRAL_DIR_VERSION =
 		20;
 	
-	/** Magic number offset. */
-	protected static final long EDO_MAGIC_NUMBER =
-		0;
-	
-	/** Offset to the disk number in the end directory. */
-	protected static final long EDO_DISK_NUMBER =
-		EDO_MAGIC_NUMBER + 4;
-	
-	/** Offset to the disk containing the start of the directory. */
-	protected static final long EDO_DISK_START =
-		EDO_DISK_NUMBER + 2;
-	
-	/** Offset to the total number of entries in this disk. */
-	protected static final long EDO_DISK_ENTRY_COUNT =
-		EDO_DISK_START + 2;
-	
-	/** Offset to the total number of entries in the entire disk collection. */
-	protected static final long EDO_ALL_ENTRY_COUNT =
-		EDO_DISK_ENTRY_COUNT + 2;
-	
-	/** The size of the central directory. */
-	protected static final long EDO_CENTRAL_DIR_SIZE =
-		EDO_ALL_ENTRY_COUNT + 2;
-	
-	/** The offset to the start of the central directory. */
-	protected static final long EDO_CENTRAL_DIR_OFFSET =
-		EDO_CENTRAL_DIR_SIZE + 4;
-	
-	/** The offset to the comment size. */
-	protected static final long EDO_COMMENT_LENGTH =
-		EDO_CENTRAL_DIR_OFFSET + 4;
-		
-	/** This is the size of the basic end directory of a ZIP file. */
-	protected static final long BASE_END_DIRECTORY_SIZE =
-		EDO_COMMENT_LENGTH + 2;
-	
-	/** The maximum end directory size (includes comment). */
-	protected static final long MAX_END_DIRECTORY_SIZE =
-		BASE_END_DIRECTORY_SIZE + 65535L;
-	
-	/** The magic number of the end directory. */
-	protected static final int END_DIRECTORY_MAGIC =
-		0x06054B50;
-	
 	/** Offset to central directory magic number. */
 	protected static final long CDO_MAGIC_NUMBER =
 		0;
@@ -264,20 +220,22 @@ public class StandardZIP32File
 		// Try to locate the end of the central index
 		long idi = Long.MIN_VALUE;
 		long csz = channel.size();
-		long maxsearch = Math.max(0L, csz - MAX_END_DIRECTORY_SIZE);
-		for (long i = csz - BASE_END_DIRECTORY_SIZE; i >= 0; i--)
+		long maxsearch = Math.max(0L, csz - ZIP32EndDirectory.MAX_SIZE);
+		for (long i = csz - ZIP32EndDirectory.BASE_SIZE; i >= 0; i--)
 		{
 			// Read magic number here
-			int maybe = readInt(i + EDO_MAGIC_NUMBER);
+			int maybe = (int)readStruct(i,
+				ZIP32EndDirectory.MAGIC_NUMBER);
 			
 			// If this is the magic, then check the comment length
-			if (maybe == END_DIRECTORY_MAGIC)
+			if (maybe == ZIP32EndDirectory.MAGIC_NUMBER_VALUE)
 			{
 				// Read length
-				int comlen = readUnsignedShort(i + EDO_COMMENT_LENGTH);
+				int comlen = (int)readStruct(i,
+					ZIP32EndDirectory.COMMENT_LENGTH);
 				
 				// The comment must end at the the end of the ZIP
-				if ((i + BASE_END_DIRECTORY_SIZE + comlen) == csz)
+				if ((i + ZIP32EndDirectory.BASE_SIZE + comlen) == csz)
 				{
 					idi = i;
 					break;
@@ -289,13 +247,20 @@ public class StandardZIP32File
 		if (idi < 0L)
 			throw new ZIPFormatException.NoCentralDirectory();
 		
-		// The number of entries in this ZIP
-		numentries = readUnsignedShort(idi + EDO_DISK_ENTRY_COUNT);
-		cdirsize = readUnsignedInt(idi + EDO_CENTRAL_DIR_SIZE);
-		
-		// Set the position to read the central directory from
-		cdirbase = idi - cdirsize;
+		// Position is here
 		enddirpos = idi;
+		
+		// The number of entries in this ZIP
+		numentries = (int)readStruct(enddirpos,
+			ZIP32EndDirectory.DISK_ENTRY_COUNT);
+		
+		// The size of the central directory
+		cdirsize = readStruct(enddirpos,
+			ZIP32EndDirectory.CENTRAL_DIR_SIZE);
+		
+		// The central directory starts the size count of bytes before the
+		// start of end directory
+		cdirbase = enddirpos - cdirsize;
 	}
 	
 	/**
@@ -438,8 +403,8 @@ public class StandardZIP32File
 			
 			// Add the central directory size and the comment length (if one
 			// is even used).
-			totalsz += cdirsize + readUnsignedShort(
-				enddirpos + EDO_COMMENT_LENGTH);
+			totalsz += cdirsize/* + readUnsignedShort(
+				enddirpos + EDO_COMMENT_LENGTH)*/;
 			
 			// Set
 			zipsize = totalsz;

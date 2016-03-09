@@ -321,7 +321,7 @@ public abstract class StandardZIPFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/08
 	 */
-	protected final long readStruct(long __pos, ZIPStructuredElement __se)
+	protected final long readStruct(long __pos, ZIPStructureElement __se)
 		throws IOException, NullPointerException
 	{
 		return readStruct(__pos, __se, 0);
@@ -339,12 +339,12 @@ public abstract class StandardZIPFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/08
 	 */
-	protected final long readStruct(long __pos, ZIPStructuredElement __se,
+	protected final long readStruct(long __pos, ZIPStructureElement __se,
 		int __ai)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__pos == null)
+		if (__se == null)
 			throw new NullPointerException();
 		
 		// Lock on the read buffer
