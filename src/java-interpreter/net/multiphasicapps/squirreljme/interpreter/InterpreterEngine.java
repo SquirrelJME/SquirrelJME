@@ -254,30 +254,30 @@ public abstract class InterpreterEngine
 			for (InterpreterClassPath icp : classpaths)
 				try (InputStream is = icp.getResourceAsStream(
 						__bn.replace('.', '/') + ".class"))
-					{
-						// No class found
-						if (is == null)
-							continue;
-						
-						// Create class data
-						InterpreterClass rv = new InterpreterClass(this, is);
-						
-						// Wrong class? Ignore it
-						if (!rv.getName().equals(__bn))
-							throw new InterpreterClassFormatError(
-								"Expected class '" + __bn +
-								"' however '" + rv.getName() + "' was read.");
-						
-						// Return it
-						return rv;
-					}
+				{
+					// No class found
+					if (is == null)
+						continue;
 					
-					// Failed to load class, ignore
-					catch (IOException e)
-					{
-						throw new InterpreterClassFormatError("Read error.",
-							e);
-					}
+					// Create class data
+					InterpreterClass rv = new InterpreterClass(this, is);
+					
+					// Wrong class? Ignore it
+					if (!rv.getName().equals(__bn))
+						throw new InterpreterClassFormatError(
+							"Expected class '" + __bn +
+							"' however '" + rv.getName() + "' was read.");
+					
+					// Return it
+					return rv;
+				}
+				
+				// Failed to load class, ignore
+				catch (IOException e)
+				{
+					throw new InterpreterClassFormatError("Read error.",
+						e);
+				}
 		}
 		
 		// A class was not loaded

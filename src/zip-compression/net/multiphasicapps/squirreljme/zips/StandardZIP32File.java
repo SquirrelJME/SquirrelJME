@@ -318,7 +318,7 @@ public class StandardZIP32File
 				
 				// Read the input byte array
 				byte barr[] = new byte[flen];
-				readByteArray(centraldirpos +
+				readByteArray(localheaderpos +
 					ZIP32LocalFile.FILE_NAME.offset(), barr, 0, flen);
 				
 				// If UTF-8 then use internal handling
@@ -331,7 +331,6 @@ public class StandardZIP32File
 					rv = IBM437CodePage.toString(barr, 0, flen);
 				
 				// Cache it
-				System.err.println(rv);
 				_name = new WeakReference<>(rv);
 			}
 			
