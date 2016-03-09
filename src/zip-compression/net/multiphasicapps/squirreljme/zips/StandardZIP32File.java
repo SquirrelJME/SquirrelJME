@@ -197,7 +197,6 @@ public class StandardZIP32File
 		
 		// The ZIP starts
 		zipstart = csz - (cdiroff + cdirsize + (csz - enddirpos));
-		System.err.println(zipstart);
 	}
 	
 	/**
@@ -229,8 +228,6 @@ public class StandardZIP32File
 			throws IOException
 		{
 			super(numentries);
-			
-			System.err.println("REQUEST " + StandardZIP32File.this.toString());
 			
 			// Read the directory
 			long end = cdirbase + cdirsize;
@@ -273,10 +270,6 @@ public class StandardZIP32File
 			if (readcount != numentries)
 				throw new ZIPFormatException.EntryMiscount(readcount,
 					numentries);
-			
-			System.err.println("Entries: " + numentries);
-			for (int i = 0; i < numentries; i++)
-				super.get(i);
 		}
 		
 		/**
