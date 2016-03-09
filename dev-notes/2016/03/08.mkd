@@ -121,3 +121,9 @@ And that was simple, I just need to make sure it works with a bunch of
 arbitrary data placed before the ZIP. It says it starts at 2097152 and I did
 `dd if=/dev/urandom bs=1048576 count=2`. So yes that works.
 
+## 23:56
+
+Ok so the next thing to do tomorrow when I awaken is to start reading actual
+entries and implementing inflation and the CRC32 calculator to determine if
+data is valid or not.
+
