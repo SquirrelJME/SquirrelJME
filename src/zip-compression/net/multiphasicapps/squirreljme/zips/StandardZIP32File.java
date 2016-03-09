@@ -90,7 +90,7 @@ public class StandardZIP32File
 		LFO_EXTRA_FIELD_LENGTH + 2;
 	
 	/** File header magic number. */
-	protected static final long FILE_HEADER_MAGIC =
+	protected static final int FILE_HEADER_MAGIC =
 		0x04034B50;
 	
 	/** Descriptor CRC32. */
@@ -125,6 +125,9 @@ public class StandardZIP32File
 	
 	/** End of central direction position. */
 	protected final long enddirpos;
+	
+	/** The address where the ZIP starts. */
+	protected final long zipstart;
 	
 	/** The number of entries in this ZIP. */
 	protected final int numentries;
@@ -186,6 +189,15 @@ public class StandardZIP32File
 		// The central directory starts the size count of bytes before the
 		// start of end directory
 		cdirbase = enddirpos - cdirsize;
+		
+		// The offset to the central directory will be used along with its
+		// size to determine the size of the ZIP file
+		long cdiroff = readStruct(enddirpos,
+			ZIP32EndDirectory.CENTRAL_DIR_OFFSET);
+		
+		// The ZIP starts
+		zipstart = csz - (cdiroff + cdirsize + (csz - enddirpos));
+		System.err.println(zipstart);
 	}
 	
 	/**
@@ -207,9 +219,6 @@ public class StandardZIP32File
 	protected class Directory32
 		extends Directory
 	{
-		/** The size of the ZIP file. */
-		protected final long zipsize;
-		
 		/**
 		 * Initializes the 32-bit directory.
 		 *
@@ -220,39 +229,6 @@ public class StandardZIP32File
 			throws IOException
 		{
 			super(numentries);
-			
-			// This class is used for the calculation of where the local files
-			// are and the size of the ZIP based on all of the offsets from
-			// the base.
-			class Index
-			{
-				/** The central directory index. */
-				protected final int index;
-				
-				/** The local file offset of the index. */
-				protected final long lfo;
-				
-				/**
-				 * Initializes the index.
-				 *
-				 * @param __cd The central directory index.
-				 * @param __lfo The local file offset.
-				 * @since 2016/03/08
-				 */
-				private Index(int __cd, long __lfo)
-				{
-					index = __cd;
-					lfo = __lfo;
-				}
-			}
-			
-			// This is used later to determine
-			Index dexes[] = new Index[numentries + 1];
-			
-			// The last entry is the actual start of the central directory
-			long cdiroff = readStruct(enddirpos,
-				ZIP32EndDirectory.CENTRAL_DIR_OFFSET);
-			dexes[numentries] = new Index(numentries, cdiroff);
 			
 			System.err.println("REQUEST " + StandardZIP32File.this.toString());
 			
@@ -289,13 +265,6 @@ public class StandardZIP32File
 				long varcm = readStruct(p,
 					ZIP32CentralDirectory.COMMENT_LENGTH);
 				
-				// The position of the local header
-				long localheader = readStruct(p,
-					ZIP32CentralDirectory.LOCAL_HEADER_OFFSET);
-				
-				// Add to the index list to determine the size of the ZIP
-				dexes[readcount] = new Index(readcount, localheader);
-				
 				// Skip ahead
 				p += ZIP32CentralDirectory.BASE_SIZE + varfn + varef + varcm;
 			}
@@ -304,38 +273,6 @@ public class StandardZIP32File
 			if (readcount != numentries)
 				throw new ZIPFormatException.EntryMiscount(readcount,
 					numentries);
-			
-			// Sort the indexes by the local headers because the order in which
-			// these appear are not always in the order of the central
-			// directory. It is also possible that local headers exist in each
-			// other (polyglots?).
-			Arrays.<Index>sort(dexes, new Comparator<Index>()
-				{
-					/**
-					 * {@inheritDoc}
-					 * @since 2016/03/08
-					 */
-					@Override
-					public int compare(Index __a, Index __b)
-					{
-						if (__a.lfo < __b.lfo)
-							return -1;
-						else if (__a.lfo > __b.lfo)
-							return 1;
-						else
-							return 0;
-					}
-				});
-			
-			// Get the lowest and the highest index (highest would be the
-			// central directory offset)
-			Index lo = dexes[0];
-			Index hi = dexes[numentries];
-			
-			// Determine the size of the ZIP
-			zipsize = -1L;
-			if (true)
-				throw new Error("TODO");
 			
 			System.err.println("Entries: " + numentries);
 			for (int i = 0; i < numentries; i++)
@@ -398,9 +335,15 @@ public class StandardZIP32File
 			index = __dx;
 			centraldirpos = __off;
 			
-			// Read the local header position
-			localheaderpos = readStruct(centraldirpos,
+			// Determine the local header position
+			localheaderpos = zipstart + readStruct(centraldirpos,
 				ZIP32CentralDirectory.LOCAL_HEADER_OFFSET);
+			
+			// Make sure the magic is valid
+			int lhm = readInt(localheaderpos);
+			if (lhm != FILE_HEADER_MAGIC)
+				throw new ZIPFormatException.IllegalMagic(lhm,
+					FILE_HEADER_MAGIC);
 		}
 		
 		/**
