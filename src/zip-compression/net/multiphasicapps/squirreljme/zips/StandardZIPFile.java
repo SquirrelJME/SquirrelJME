@@ -312,6 +312,49 @@ public abstract class StandardZIPFile
 	}
 	
 	/**
+	 * Reads structured information at the given position.
+	 *
+	 * @param __pos Position to read from.
+	 * @param __se The structure element to read data for.
+	 * @return The data at this location.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/08
+	 */
+	protected final long readStruct(long __pos, ZIPStructuredElement __se)
+		throws IOException, NullPointerException
+	{
+		return readStruct(__pos, __se, 0);
+	}
+	
+	/**
+	 * Reads structured information at the given position.
+	 *
+	 * @param __pos Position to read from.
+	 * @param __se The structure element to read data for.
+	 * @param __ai The array index if this is either variable or a fixed size
+	 * array, if this is neither then this must be zero.
+	 * @return The data at this location.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/08
+	 */
+	protected final long readStruct(long __pos, ZIPStructuredElement __se,
+		int __ai)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__pos == null)
+			throw new NullPointerException();
+		
+		// Lock on the read buffer
+		synchronized (_readbuffer)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Reads raw data from the ZIP.
 	 *
 	 * @param __pos The position to read from.

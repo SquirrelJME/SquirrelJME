@@ -374,9 +374,10 @@ public class StandardZIP32File
 				// Get the compressed size
 				long compsz = readUnsignedInt(p + CDO_COMPRESSED_SIZE);
 				
-				System.err.printf("At %d: %08x (%08x) %s gpf=%s%n", readcount, totalsz,
+				System.err.printf("At %d: %08x (%08x) %s gpf=%s%n", readcount,
+					totalsz,
 					offsets[readcount], isdir, hasddd);
-				
+				/*
 				System.err.printf("CDO_MAGIC_NUMBER: %08x%n",
 					readUnsignedInt(p + CDO_MAGIC_NUMBER));
 				System.err.printf("CDO_BY_VERSION: %08x%n",
@@ -410,7 +411,7 @@ public class StandardZIP32File
 				System.err.printf("CDO_EXTERNAL_ATTRIBUTES: %08x%n",
 					readUnsignedInt(p + CDO_EXTERNAL_ATTRIBUTES));
 				System.err.printf("CDO_LOCAL_HEADER_OFFSET: %08x%n",
-					readUnsignedInt(p + CDO_LOCAL_HEADER_OFFSET));
+					readUnsignedInt(p + CDO_LOCAL_HEADER_OFFSET));*/
 				
 				// Calculate the base ZIP size
 				totalsz += BASE_FILE_HEADER_SIZE + varfn + varef;

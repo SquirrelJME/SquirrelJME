@@ -44,3 +44,9 @@ Was a busy outside real life day today. However I do know what I want to do.
 First I will write the structure code so I can have a safer way to access the
 raw ZIP data without potentially falling into bugs and such.
 
+## 19:35
+
+I can also throw the magic number information in the structure data also. I
+suppose due to the way it works, using an enumeration would be a bit silly so
+I really could just use a base class to do these things.
+

@@ -23,6 +23,15 @@ import java.nio.ByteBuffer;
 public interface ZIPStructureElement
 {
 	/**
+	 * Returns the element which is before this one as this may be an element
+	 * which is after a variable field.
+	 *
+	 * @return The element before this or {@code null} if this is the first.
+	 * @sine 2016/03/08
+	 */
+	public abstract ZIPStructureElement before();
+	
+	/**
 	 * Returns the offset to the data.
 	 *
 	 * @return The offset.
