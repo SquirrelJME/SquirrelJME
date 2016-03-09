@@ -22,3 +22,8 @@ the inner classes residing in it.
 I could use the extra IO stuff in another project. Then I can use that for
 example with CRC32 or a size limited input stream.
 
+## 15:29
+
+Looks like for the defalte algorithm I am going to need a bit based input
+stream which can read values of arbitrary bit size.
+
