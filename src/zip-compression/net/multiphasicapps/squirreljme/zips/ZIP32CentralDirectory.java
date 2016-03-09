@@ -80,7 +80,7 @@ public class ZIP32CentralDirectory
 	
 	/** External attributes. */
 	public static final ZIP32CentralDirectory EXTERNAL_ATTRIBUTES =
-		new ZIP32CentralDirectory(INTERNAL_ATTRIBUTES, Type.UINT16, null);
+		new ZIP32CentralDirectory(INTERNAL_ATTRIBUTES, Type.UINT32, null);
 	
 	/** Local header offset from the start of the ZIP. */
 	public static final ZIP32CentralDirectory LOCAL_HEADER_OFFSET =
@@ -98,7 +98,7 @@ public class ZIP32CentralDirectory
 	
 	/** Comment. */
 	public static final ZIP32CentralDirectory COMMENT =
-		new ZIP32CentralDirectory(EXTRA_FIELD, Type.UINT8,
+		new ZIP32CentralDirectory(EXTRA_DATA, Type.UINT8,
 		COMMENT_LENGTH);
 	
 	/** Base size of the central directory. */

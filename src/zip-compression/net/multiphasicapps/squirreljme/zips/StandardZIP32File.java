@@ -16,6 +16,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -220,6 +221,39 @@ public class StandardZIP32File
 		{
 			super(numentries);
 			
+			// This class is used for the calculation of where the local files
+			// are and the size of the ZIP based on all of the offsets from
+			// the base.
+			class Index
+			{
+				/** The central directory index. */
+				protected final int index;
+				
+				/** The local file offset of the index. */
+				protected final long lfo;
+				
+				/**
+				 * Initializes the index.
+				 *
+				 * @param __cd The central directory index.
+				 * @param __lfo The local file offset.
+				 * @since 2016/03/08
+				 */
+				private Index(int __cd, long __lfo)
+				{
+					index = __cd;
+					lfo = __lfo;
+				}
+			}
+			
+			// This is used later to determine
+			Index dexes[] = new Index[numentries + 1];
+			
+			// The last entry is the actual start of the central directory
+			long cdiroff = readStruct(enddirpos,
+				ZIP32EndDirectory.CENTRAL_DIR_OFFSET);
+			dexes[numentries] = new Index(numentries, cdiroff);
+			
 			System.err.println("REQUEST " + StandardZIP32File.this.toString());
 			
 			// Read the directory
@@ -229,115 +263,79 @@ public class StandardZIP32File
 			for (long p = cdirbase; p < end; readcount++)
 			{
 				// Read magic number
-				int cdmag = readInt(p);
+				int cdmag = (int)readStruct(p,
+					ZIP32CentralDirectory.MAGIC_NUMBER);
 				
 				// Bad magic?
-				if (cdmag != CENTRAL_DIRECTORY_MAGIC)
+				if (cdmag != ZIP32CentralDirectory.MAGIC_NUMBER_VALUE)
 					throw new ZIPFormatException.IllegalMagic(cdmag,
-						CENTRAL_DIRECTORY_MAGIC);
+						ZIP32CentralDirectory.MAGIC_NUMBER_VALUE);
 				
 				// Set offset
 				offsets[readcount] = p;
 				
 				// Check version
-				int ver = readUnsignedShort(p + CDO_EXTRACT_VERSION);
+				int ver = (int)readStruct(p,
+					ZIP32CentralDirectory.EXTRACT_VERSION);
 				if (ver > MAX_CENTRAL_DIR_VERSION)
 					throw new ZIPFormatException.TooNew(ver,
 						MAX_CENTRAL_DIR_VERSION);
 				
-				// Flags
-				int flags = readUnsignedShort(p + CDO_GENERAL_PURPOSE_FLAGS);
-				
 				// Read variable length attributes
-				long varfn = readUnsignedShort(p + CDO_FILE_NAME_LENGTH);
-				long varef = readUnsignedShort(p + CDO_EXTRA_FIELD_LENGTH);
-				long varcm = readUnsignedShort(p + CDO_COMMENT_LENGTH);
+				long varfn = readStruct(p,
+					ZIP32CentralDirectory.FILE_NAME_LENGTH);
+				long varef = readStruct(p,
+					ZIP32CentralDirectory.EXTRA_DATA_LENGTH);
+				long varcm = readStruct(p,
+					ZIP32CentralDirectory.COMMENT_LENGTH);
 				
-				// Is a directory?
-				boolean isdir = (readUnsignedByte(p +
-					BASE_CENTRAL_DIRECTORY_SIZE + (varfn - 1)) == '/');
+				// The position of the local header
+				long localheader = readStruct(p,
+					ZIP32CentralDirectory.LOCAL_HEADER_OFFSET);
 				
-				// Is the size in the data descriptor?
-				boolean hasddd = ((flags & GPF_SIZE_IN_DATA_DESCRIPTOR) != 0);
-				
-				// Get the compressed size
-				long compsz = readUnsignedInt(p + CDO_COMPRESSED_SIZE);
-				
-				System.err.printf("At %d: %08x (%08x) %s gpf=%s%n", readcount,
-					totalsz,
-					offsets[readcount], isdir, hasddd);
-				/*
-				System.err.printf("CDO_MAGIC_NUMBER: %08x%n",
-					readUnsignedInt(p + CDO_MAGIC_NUMBER));
-				System.err.printf("CDO_BY_VERSION: %08x%n",
-					readUnsignedShort(CDO_BY_VERSION));
-				System.err.printf("CDO_EXTRACT_VERSION: %08x%n",
-					readUnsignedShort(CDO_EXTRACT_VERSION));
-				System.err.printf("CDO_GENERAL_PURPOSE_FLAGS: %08x%n",
-					readUnsignedShort(CDO_GENERAL_PURPOSE_FLAGS));
-				System.err.printf("CDO_COMPRESSION_METHOD: %08x%n",
-					readUnsignedShort(CDO_COMPRESSION_METHOD));
-				System.err.printf("CDO_LAST_MODIFIED_TIME: %08x%n",
-					readUnsignedShort(CDO_LAST_MODIFIED_TIME));
-				System.err.printf("CDO_LAST_MODIFIED_DATE: %08x%n",
-					readUnsignedShort(CDO_LAST_MODIFIED_DATE));
-				System.err.printf("CDO_CRC: %08x%n",
-					readUnsignedShort(CDO_CRC));
-				System.err.printf("CDO_COMPRESSED_SIZE: %08x%n",
-					readUnsignedInt(p + CDO_COMPRESSED_SIZE));
-				System.err.printf("CDO_UNCOMPRESSED_SIZE: %08x%n",
-					readUnsignedInt(p + CDO_UNCOMPRESSED_SIZE));
-				System.err.printf("CDO_FILE_NAME_LENGTH: %08x%n",
-					readUnsignedShort(CDO_FILE_NAME_LENGTH));
-				System.err.printf("CDO_EXTRA_FIELD_LENGTH: %08x%n",
-					readUnsignedShort(CDO_EXTRA_FIELD_LENGTH));
-				System.err.printf("CDO_COMMENT_LENGTH: %08x%n",
-					readUnsignedShort(CDO_COMMENT_LENGTH));
-				System.err.printf("CDO_DISK_NUMBER_START: %08x%n",
-					readUnsignedShort(CDO_DISK_NUMBER_START));
-				System.err.printf("CDO_INTERNAL_ATTRIBUTES: %08x%n",
-					readUnsignedShort(CDO_INTERNAL_ATTRIBUTES));
-				System.err.printf("CDO_EXTERNAL_ATTRIBUTES: %08x%n",
-					readUnsignedInt(p + CDO_EXTERNAL_ATTRIBUTES));
-				System.err.printf("CDO_LOCAL_HEADER_OFFSET: %08x%n",
-					readUnsignedInt(p + CDO_LOCAL_HEADER_OFFSET));*/
-				
-				// Calculate the base ZIP size
-				totalsz += BASE_FILE_HEADER_SIZE + varfn + varef;
-				
-				// Also include
-				// the descriptor magic number 0x08074B50 in the calculation
-				/*if (!isdir)*/
-				
-				// If the version number is greater than
-				if (hasddd)
-					totalsz += BASE_DESCRIPTOR_SIZE + 4;
-				
-				// Add compressed size
-				if (!isdir)
-					totalsz += compsz;
-				
-				// Data descriptor?
-				/*if ((flags & GPF_SIZE_IN_DATA_DESCRIPTOR) != 0)
-					totalsz += BASE_DESCRIPTOR_SIZE;*/
+				// Add to the index list to determine the size of the ZIP
+				dexes[readcount] = new Index(readcount, localheader);
 				
 				// Skip ahead
-				p += BASE_CENTRAL_DIRECTORY_SIZE + varfn + varef + varcm;
+				p += ZIP32CentralDirectory.BASE_SIZE + varfn + varef + varcm;
 			}
-			
-			// Add the central directory size and the comment length (if one
-			// is even used).
-			totalsz += cdirsize/* + readUnsignedShort(
-				enddirpos + EDO_COMMENT_LENGTH)*/;
-			
-			// Set
-			zipsize = totalsz;
-			System.err.println(zipsize + " <zip - chan> " + channel.size());
 			
 			// Short read?
 			if (readcount != numentries)
 				throw new ZIPFormatException.EntryMiscount(readcount,
 					numentries);
+			
+			// Sort the indexes by the local headers because the order in which
+			// these appear are not always in the order of the central
+			// directory. It is also possible that local headers exist in each
+			// other (polyglots?).
+			Arrays.<Index>sort(dexes, new Comparator<Index>()
+				{
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/03/08
+					 */
+					@Override
+					public int compare(Index __a, Index __b)
+					{
+						if (__a.lfo < __b.lfo)
+							return -1;
+						else if (__a.lfo > __b.lfo)
+							return 1;
+						else
+							return 0;
+					}
+				});
+			
+			// Get the lowest and the highest index (highest would be the
+			// central directory offset)
+			Index lo = dexes[0];
+			Index hi = dexes[numentries];
+			
+			// Determine the size of the ZIP
+			zipsize = -1L;
+			if (true)
+				throw new Error("TODO");
 			
 			System.err.println("Entries: " + numentries);
 			for (int i = 0; i < numentries; i++)
@@ -400,13 +398,9 @@ public class StandardZIP32File
 			index = __dx;
 			centraldirpos = __off;
 			
-			long locfoff = (channel.size() - directory.zipsize) +
-				readUnsignedInt(centraldirpos + CDO_LOCAL_HEADER_OFFSET);
-			System.err.println(">> locfoff=" + locfoff + " maghere=" +
-				Long.toString(readUnsignedInt(locfoff), 16) + " want=" +
-				Long.toString(FILE_HEADER_MAGIC, 16) + " hoff=" +
-				readUnsignedInt(centraldirpos + CDO_LOCAL_HEADER_OFFSET));
-			localheaderpos = locfoff;
+			// Read the local header position
+			localheaderpos = readStruct(centraldirpos,
+				ZIP32CentralDirectory.LOCAL_HEADER_OFFSET);
 		}
 		
 		/**
@@ -453,6 +447,8 @@ public class StandardZIP32File
 			// Needs decoding
 			if (rv == null)
 			{
+				throw new Error("TODO");
+				/*
 				// Get length of file name
 				int flen = readUnsignedShort(centraldirpos +
 					CDO_FILE_NAME_LENGTH);
@@ -472,7 +468,7 @@ public class StandardZIP32File
 					rv = IBM437CodePage.toString(barr, 0, flen);
 				
 				// Cache it
-				_name = new WeakReference<>(rv);
+				_name = new WeakReference<>(rv);*/
 			}
 			
 			// Return it
@@ -492,8 +488,8 @@ public class StandardZIP32File
 			throws IOException
 		{
 			// Read data
-			int bits = readUnsignedShort(centraldirpos +
-				CDO_GENERAL_PURPOSE_FLAGS);
+			int bits = (int)readStruct(centraldirpos,
+				ZIP32CentralDirectory.GENERAL_PURPOSE_FLAGS);
 			
 			// Is the bit set?
 			return 0 != (bits & GPF_ENCODING_UTF8);
