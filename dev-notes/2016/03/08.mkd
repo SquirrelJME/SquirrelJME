@@ -38,3 +38,9 @@ in working ZIP code. I have been working on this ZIP code for 6 days, and
 hopefully after this I just need to get the decompression algorithms
 implemented and then I can continue with loading classes.
 
+## 19:17
+
+Was a busy outside real life day today. However I do know what I want to do.
+First I will write the structure code so I can have a safer way to access the
+raw ZIP data without potentially falling into bugs and such.
+
