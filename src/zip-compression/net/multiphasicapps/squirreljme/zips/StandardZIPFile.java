@@ -568,6 +568,75 @@ public abstract class StandardZIPFile
 	}
 	
 	/**
+	 * This is a stream which provides an input stream over the contents of
+	 * a portion of the ZIP file.
+	 *
+	 * @since 2016/03/09
+	 */
+	protected final class DataStream
+		extends InputStream
+	{
+		/** Stream lock. */
+		protected final Object lock =
+			new Object();
+		
+		/** Start position. */
+		protected final long start;
+		
+		/** End position. */
+		protected final long end;
+		
+		/** Current position. */
+		private volatile long _at;
+		
+		/**
+		 * Initializes the data stream.
+		 *
+		 * @param __start The inclusive start position.
+		 * @param __end The exclusive end position.
+		 * @since 2016/03/09
+		 */
+		protected DataStream(long __start, long __end)
+		{
+			// Set
+			start = __start;
+			end = __end;
+			
+			// Start at the start
+			_at = start;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/09
+		 */
+		@Override
+		public int read()
+			throws IOException
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get current position
+				long now = _at;
+				
+				// EOF?
+				if (now >= end)
+					return -1;
+				
+				// Otherwise read character here
+				int rv = readUnsignedByte(now);
+				
+				// Increment position
+				_at = now + 1L;
+				
+				// Return it
+				return rv;
+			}
+		}
+	}
+	
+	/**
 	 * This provides a cached directory of the ZIP file contents.
 	 *
 	 * @since 2016/03/05

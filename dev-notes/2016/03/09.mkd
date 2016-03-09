@@ -1,0 +1,10 @@
+# 2016/03/09
+
+## 11:31
+
+Today is also going to be a busy real life day. So what I need to work on next
+is figuring out decompression and such. So what I first need is an input stream
+that can be used in any position in the ZIP. So the base class works. This
+would then be used for the stored stream or passed into the soon to be
+deflator.
+
