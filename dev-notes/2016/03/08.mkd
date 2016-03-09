@@ -67,3 +67,36 @@ Well moving part of my code to the structured system was quite easy and was no
 trouble at all. If in the future I may need it again I could always put it in
 its own package and use it as such.
 
+## 22:30
+
+All of these structure stuff can use up a bunch of memory, however I will
+likely have an aggressive garbage collector which can collect entire classes
+if they all objects are not externally references. So even if a public static
+final of an object of a class exists, if nothing points to any instance of the
+given object for a class and say the objects all reference themselves. Then
+that means the class and all of its finals can be removed. So say there is not
+much memory and a ZIP file is being read. Say for example the system runs out
+of memory reading the central directory. If say for example the end directory
+structure class is no longer referenced except by itself, then it can be
+collected and the static finals collected. Then if the ZIP loading code hits
+the class again, it will load it again. Although this would reduce speed,
+memory is very important. However if a class is statically compiled into the
+ROM then it may be possible for ROM based instances to exist. For example if
+all code paths for a static final are well known, then the object would always
+exist and be within the ROM data. I can do this and get away with it because
+there is no reflection and no way to access fields using reflection. So if and
+when Java ME adds reflection, that will be the day it will no longer have the
+potential for optimization on size and memory.
+
+## 22:39
+
+So this means that my static compiler and the class compiler can use the
+interpreter and such to determine if a prebuilt static final is constant
+viable. Of course I would need to remove this optimization in the run-time
+system when loading JARs because otherwise I would need to keep the JAR and
+byte code around. Writing a disassembler to evaluate would be a large mess.
+However, I could still include it potentially if desired. Everything would be
+ahead of time and cached before being used. So for example if I were to target
+the Nintendo 64 with a flash cart, I could keep the byte code in the ROM to
+allow for static optimization.
+
