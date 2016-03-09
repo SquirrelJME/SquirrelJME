@@ -17,6 +17,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.StringTokenizer;
 import net.multiphasicapps.squirreljme.interpreter.InterpreterClassPath;
 import net.multiphasicapps.squirreljme.zips.StandardZIPFile;
 
@@ -112,11 +113,31 @@ public class LocalClassPath
 			if (zip == null)
 			{
 				// If it is not a directory then it cannot be treated as
-				// one
+				// one.
 				if (!Files.isDirectory(path))
 					return null;
 				
-				throw new Error("TODO");
+				// Tokenize the input path resource
+				Path at = path;
+				StringTokenizer st = new StringTokenizer(__res, "/");
+				while (st.hasMoreTokens())
+				{
+					// Resolve new path on this
+					Path next = at.resolve(st.nextToken());
+					
+					// Get the parent of the new path, if it is not set or it
+					// is not at, then the input path is not valid.
+					Path par = next.getParent();
+					if (par == null || !at.equals(par))
+						return null;
+					
+					// Set new location
+					at = next;
+				}
+				
+				// Try opening a resource
+				return Channels.newInputStream(FileChannel.open(
+					at, StandardOpenOption.READ));
 			}
 			
 			// Otherwise read from the ZIP file
