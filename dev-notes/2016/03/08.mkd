@@ -100,3 +100,12 @@ ahead of time and cached before being used. So for example if I were to target
 the Nintendo 64 with a flash cart, I could keep the byte code in the ROM to
 allow for static optimization.
 
+## 22:43
+
+The only problem with this is that it would violate how Java would see things
+so I would need to have a defer for it to work properly. Normally, when
+initializing a static final, all other fields following it will not be
+initialized at all. So when the fields are being initialized I will have to
+have a pointer of sorts. Essentially, the constructor will just set the pointer
+of the field to the precomposed object that already exists.
+
