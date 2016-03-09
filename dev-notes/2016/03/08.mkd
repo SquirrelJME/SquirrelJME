@@ -109,3 +109,9 @@ initialized at all. So when the fields are being initialized I will have to
 have a pointer of sorts. Essentially, the constructor will just set the pointer
 of the field to the precomposed object that already exists.
 
+## 23:10
+
+Actually, determining the size of the ZIP is quite simple. All I need to do is
+determine the size of the end central directory, use the provided offset to the
+start of the central directory and its size. Then that is the size of the ZIP.
+
