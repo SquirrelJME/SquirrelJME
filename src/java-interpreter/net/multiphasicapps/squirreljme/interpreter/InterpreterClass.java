@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
@@ -24,6 +25,10 @@ import net.multiphasicapps.collections.MissingCollections;
  */
 public class InterpreterClass
 {
+	/** The class file magic number. */
+	public static final int MAGIC_NUMBER =
+		0xCAFEBABE;
+	
 	/** The interpreter engine which owns this class. */
 	protected final InterpreterEngine engine;
 	
@@ -35,12 +40,14 @@ public class InterpreterClass
 	 *
 	 * @param __owner The owning interpreter engine.
 	 * @param __cdata Class data for parsing.
+	 * @throws InterpreterClassFormatError If the input class data is not
+	 * correct.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
 	InterpreterClass(InterpreterEngine __owner, InputStream __cdata)
-		throws IOException, NullPointerException
+		throws InterpreterClassFormatError, IOException, NullPointerException
 	{
 		// Check
 		if (__owner == null || __cdata == null)
@@ -48,6 +55,15 @@ public class InterpreterClass
 		
 		// Set
 		engine = __owner;
+		
+		// Read the input class data
+		DataInputStream das = new DataInputStream(__cdata);
+		
+		// Check the magic number
+		int clmagic;
+		if (MAGIC_NUMBER != (clmagic = das.readInt()))
+			throw new InterpreterClassFormatError(String.format("Expected " +
+				"magic number %08x, not %08x", MAGIC_NUMBER, clmagic));
 		
 		throw new Error("TODO");
 	}
