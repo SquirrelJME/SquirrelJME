@@ -26,7 +26,7 @@ do
 	__name="$(basename -- "$__file")"	
 	
 	# Ignore the fossil file
-	if [ "$__name" = "_FOSSIL_" ]
+	if [ "$__name" = "_FOSSIL_" ] || [ "$__name" = ".fslckout" ]
 	then
 		continue
 	fi
