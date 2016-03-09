@@ -124,6 +124,28 @@ public class ZIPFormatException
 	}
 	
 	/**
+	 * This is thrown when an attempt is made to open a directory as an input
+	 * stream.
+	 *
+	 * @since 2016/03/09
+	 */
+	public static class IsADirectory
+		extends ZIPFormatException
+	{
+		/**
+		 * Initializes the exception with the given directory path.
+		 *
+		 * @param __n The directory which was attempted to be opened as a
+		 * stream.
+		 * @since 2016/03/09
+		 */
+		public IsADirectory(String __n)
+		{
+			super("The entry '" + __n + "' is a directory.");
+		}
+	}
+	
+	/**
 	 * This is thrown when the ZIP contains a negative entry count.
 	 *
 	 * @since 2016/03/05
@@ -247,6 +269,28 @@ public class ZIPFormatException
 			
 			// Perform simple division
 			return (use / 10) + "." + (use % 10);
+		}
+	}
+	
+	/**
+	 * This is thrown when an entry is compressed with an unknown method.
+	 *
+	 * @since 2016/03/09
+	 */
+	public static class UnknownCompressionMethod
+		extends ZIPFormatException
+	{
+		/**
+		 * Initializes the exception with the given name and the method id.
+		 *
+		 * @param __n The entry where a read was attempted.
+		 * @param __meth The compression method used.
+		 * @since 2016/03/09
+		 */
+		public UnknownCompressionMethod(String __n, int __meth)
+		{
+			super("The entry '" + __n + "' is compressed with an unknown " +
+				"compression method with identifier " + __meth + ".");
 		}
 	}
 }

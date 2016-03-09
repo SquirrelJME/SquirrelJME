@@ -41,13 +41,21 @@ public class StandardZIP32File
 	protected static final int MAX_CENTRAL_DIR_VERSION =
 		20;
 	
-	/** General purpose flag: File size in the data descriptor. */
-	protected static final int GPF_SIZE_IN_DATA_DESCRIPTOR =
+	/** General purpose flag: CRC and sizes in the data descriptor. */
+	protected static final int GPF_USE_DATA_DESCRIPTOR =
 		(1 << 3);
 	
 	/** General purpose flag: Is UTF-8 encoded filename/comment? */
 	protected static final int GPF_ENCODING_UTF8 =
 		(1 << 11);
+	
+	/** Stored compression method. */
+	protected static final int METHOD_STORED =
+		0;
+	
+	/** Deflated compression method. */
+	protected static final int METHOD_DEFLATED =
+		8;
 	
 	/** The byte offset of the central directory. */
 	protected final long cdirbase;
@@ -273,24 +281,42 @@ public class StandardZIP32File
 		}
 		
 		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/06
+		 * Is the language that is used for the file name (and comment) UTF-8
+		 * encoded?
+		 *
+		 * @return {@code true} if the file name and comment are encoded using
+		 * UTF-8.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/07
 		 */
-		@Override
-		public int index()
+		protected boolean isLanguageUTF8()
+			throws IOException
 		{
-			return index;
+			// Read data
+			int bits = (int)readStruct(localheaderpos,
+				ZIP32LocalFile.GENERAL_PURPOSE_FLAGS);
+			
+			// Is the bit set?
+			return 0 != (bits & GPF_ENCODING_UTF8);
 		}
 		
 		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/06
+		 * Is the data descriptor to be used to determine the checksum and
+		 * size of the input data?
+		 *
+		 * @return {@code true} if the data descriptor is to be used.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/09
 		 */
-		@Override
-		public InputStream open()
+		protected boolean isUseDataDescriptor()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Get flags
+			int bits = (int)readStruct(localheaderpos,
+				ZIP32LocalFile.GENERAL_PURPOSE_FLAGS);
+			
+			// Is it set?
+			return 0 != (bits & GPF_USE_DATA_DESCRIPTOR);
 		}
 		
 		/**
@@ -339,23 +365,63 @@ public class StandardZIP32File
 		}
 		
 		/**
-		 * Is the language that is used for the file name (and comment) UTF-8
-		 * encoded?
-		 *
-		 * @throws IOException On read errors.
-		 * @return {@code true} if the file name and comment are encoded using
-		 * UTF-8.
-		 * @since 2016/03/07
+		 * {@inheritDoc}
+		 * @since 2016/03/06
 		 */
-		protected boolean isLanguageUTF8()
+		@Override
+		public int index()
+		{
+			return index;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/06
+		 */
+		@Override
+		public InputStream open()
 			throws IOException
 		{
-			// Read data
-			int bits = (int)readStruct(centraldirpos,
-				ZIP32CentralDirectory.GENERAL_PURPOSE_FLAGS);
+			// Cannot be a directory
+			String n = name();
+			if (n.endsWith("/"))
+				throw new ZIPFormatException.IsADirectory(n);
 			
-			// Is the bit set?
-			return 0 != (bits & GPF_ENCODING_UTF8);
+			// Obtain the compression method
+			int method = (int)readStruct(localheaderpos,
+				ZIP32LocalFile.COMPRESSION_METHOD);
+			
+			// CRC and data sizes
+			int crc;
+			long usz;
+			long csz;
+			
+			// Use the data descriptor?
+			if (isUseDataDescriptor())
+				throw new Error("TODO");
+			
+			// Otherwise this data is in the header
+			else
+			{
+				crc = (int)readStruct(localheaderpos, ZIP32LocalFile.CRC);
+				usz = readStruct(localheaderpos,
+					ZIP32LocalFile.UNCOMPRESSED_SIZE);
+				csz = readStruct(localheaderpos,
+					ZIP32LocalFile.COMPRESSED_SIZE);
+			}
+			
+			// Stored
+			if (method == METHOD_STORED)
+				throw new Error("TODO");
+			
+			// Deflated
+			else if (method == METHOD_DEFLATED)
+				throw new Error("TODO");
+			
+			// Unknown
+			else
+				throw new ZIPFormatException.UnknownCompressionMethod(n,
+					method);
 		}
 	}
 }

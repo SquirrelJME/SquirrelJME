@@ -8,3 +8,17 @@ that can be used in any position in the ZIP. So the base class works. This
 would then be used for the stored stream or passed into the soon to be
 deflator.
 
+## 12:43
+
+Would be the inflator.
+
+## 12:44
+
+`ZipFormatException` has to be renamed to something more generic with all of
+the inner classes residing in it.
+
+## 13:09
+
+I could use the extra IO stuff in another project. Then I can use that for
+example with CRC32 or a size limited input stream.
+
