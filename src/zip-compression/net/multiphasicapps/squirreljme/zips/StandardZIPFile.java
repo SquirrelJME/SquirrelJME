@@ -350,7 +350,51 @@ public abstract class StandardZIPFile
 		// Lock on the read buffer
 		synchronized (_readbuffer)
 		{
-			throw new Error("TODO");
+			// Get the type that the element is
+			ZIPStructureElement.Type type = __se.type();
+			
+			// Get the variable field info
+			ZIPStructureElement varf = __se.variableField();
+			if (__ai != 0 && varf == null)
+				throw new ZIPFormatException.NonZeroArrayRead();
+			
+			// Otherwise check the bounds of the read
+			else if (varf != null)
+			{
+				// Read the count
+				long ec = readStruct(__pos, varf);
+				
+				// Out of bounds?
+				if (__ai < 0 || (long)__ai >= ec)
+					throw new ZIPFormatException.ArrayOutOfBounds(__ai, ec);
+			}
+			
+			// Calculate the type based relative size based on the array index
+			long relpos = type.size() * (long)__ai;
+			
+			// Add the offset to the current element
+			relpos += __se.offset();
+			
+			// Go through all entries before this to determine if any more
+			// variable offsets are needed.
+			for (ZIPStructureElement b = __se.before(); b != null;
+				b = b.before())
+			{
+				// If this is not variable then stop
+				ZIPStructureElement bvf = b.variableField();
+				if (bvf == null)
+					break;
+				
+				// Read the variable field specified
+				long numelems = readStruct(__pos, b);
+				
+				// Get the type and add the element count along with the size
+				ZIPStructureElement.Type bt = b.type();
+				relpos += numelems * (long)bt.size();
+			}
+			
+			// Read the data at the given position
+			return type.read(readRaw(__pos + relpos, type.size()));
 		}
 	}
 	

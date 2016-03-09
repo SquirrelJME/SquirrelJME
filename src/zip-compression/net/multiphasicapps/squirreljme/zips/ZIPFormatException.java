@@ -55,6 +55,30 @@ public class ZIPFormatException
 	}
 	
 	/**
+	 * This is thrown when an attempt is made to read from a variable field
+	 * with an array element that is not within the range of the specified
+	 * length.
+	 *
+	 * @since 2016/03/08
+	 */
+	public static class ArrayOutOfBounds
+		extends ZIPFormatException
+	{
+		/**
+		 * Initializes the exception with the given range.
+		 *
+		 * @param __dx The element being read.
+		 * @param __end The end range of the array.
+		 * @since 2016/03/08
+		 */
+		public ArrayOutOfBounds(long __dx, long __end)
+		{
+			super("Read of element " + __dx + " not within bounds of [0, " +
+				__end + "].");
+		}
+	}
+	
+	/**
 	 * This is thrown when the number of entries in the index has been
 	 * miscounted.
 	 *
@@ -126,6 +150,17 @@ public class ZIPFormatException
 	 * @since 2016/02/05
 	 */
 	public static class NoCentralDirectory
+		extends ZIPFormatException
+	{
+	}
+	
+	/**
+	 * This is thrown when the requested element to read is not zero and the
+	 * structured type is not variable.
+	 *
+	 * @since 2016/02/08
+	 */
+	public static class NonZeroArrayRead
 		extends ZIPFormatException
 	{
 	}
