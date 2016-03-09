@@ -95,4 +95,11 @@ There are also disadvantages however:
      and `Class.newInstance()`, plugins using a common interface can be
      initialized when they are not directly known.
 
+# Programming Considerations
+
+## Do Not Use Static Modifiable/Mutable Globals In Standalone Classes
+
+The garbage collector upon determining that a class (which may contain static
+variables treated as globals) is no longer referenced, it may be garbage
+collected.
 
