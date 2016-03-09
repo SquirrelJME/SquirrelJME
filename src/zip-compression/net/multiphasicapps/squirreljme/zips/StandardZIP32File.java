@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import net.multiphasicapps.collections.MissingCollections;
+import net.multiphasicapps.io.CRC32InputStream;
+import net.multiphasicapps.io.InflaterInputStream;
+import net.multiphasicapps.io.SizeLimitedInputStream;
 
 /**
  * This represents a standard ZIP file.
