@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.collections.HuffmanTree;
 
 /**
  * This input stream reads deflated input (using the deflate algorithm) and
@@ -47,7 +48,7 @@ public class InflaterInputStream
 		0b11;
 	
 	/** Global static huffman tree cache. */
-	private static volatile Reference<HuffmanTree> _GLOBAL_TREE;
+	private static volatile Reference<HuffmanTree<Integer>> _GLOBAL_TREE;
 	
 	/** Lock on the global tree. */
 	private static final Object _GLOBAL_TREE_LOCK =
@@ -137,7 +138,7 @@ public class InflaterInputStream
 					type == TYPE_DYNAMIC_HUFFMAN)
 				{
 					// The tree to use for the data
-					HuffmanTree ht;
+					HuffmanTree<Integer> ht;
 					
 					// Load in dynamic huffman table?
 					if (type == TYPE_DYNAMIC_HUFFMAN)
@@ -164,14 +165,14 @@ public class InflaterInputStream
 	 *
 	 * @since 2016/03/10
 	 */
-	private static final HuffmanTree __fixedTree()
+	private static final HuffmanTree<Integer> __fixedTree()
 	{
 		// Lock on the global tree
 		synchronized (_GLOBAL_TREE_LOCK)
 		{
 			// Get reference
-			Reference<HuffmanTree> ref = _GLOBAL_TREE;
-			HuffmanTree rv = null;
+			Reference<HuffmanTree<Integer>> ref = _GLOBAL_TREE;
+			HuffmanTree<Integer> rv = null;
 			
 			// Cached already?
 			if (ref != null)
@@ -181,7 +182,7 @@ public class InflaterInputStream
 			if (rv == null)
 			{
 				// Create a new one
-				rv = new HuffmanTree();
+				rv = new HuffmanTree<Integer>();
 				
 				// 0 - 143, 8 bits
 				for (int i = 0; i <= 143; i++)

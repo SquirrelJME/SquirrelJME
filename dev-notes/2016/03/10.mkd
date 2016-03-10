@@ -59,3 +59,33 @@ if 2 bits there are four entries. So basically there is an entry for each
 binary bit. Just the one thing that has to be done is that the tree has to be
 recreated if a new depth is discovered.
 
+## 17:20
+
+I could actually use `Number` and have a special number. For example normal
+values will appear as integers. There will be a special number which is of a
+single instance which would be called a deferred value (which cannot have its
+value taken) and is used to indicate that the end of the tree has not yet been
+reached.
+
+## 17:26
+
+Actually it might be better to have a general purpose huffman tree which can
+work with any kind of object. That would be the most effective.
+
+## 17:32
+
+The huffman tree could also extend `Map` and use `Integer` as its key, sort of.
+However, in this case I would only support read-only access to the map because
+putting in a key would not make sense because a bit length is required. Also,
+the key might not even make sense because there would be upper regions of
+zeroes that must be included also. Well, based on my own thinking, there will
+always be unique tree nodes for each key, so that will work out. However the
+iterator will not be able to give an exact path to use it when decoding. So
+I would just make it iteration only so I could for example print the
+representation of the tree using the basic map structure for example.
+
+## 17:36
+
+Also it probably does not make sense to have a `HuffmanTree` in *extra-io*, it
+should probably instead be with the collections.
+
