@@ -25,3 +25,14 @@ binary.
 
 I am going to probably need JSR 177 for `MessageDigest` and such.
 
+## 13:15
+
+I believe I need a tester for the inflate algorithm with known input for
+example, this way I know what to expect.
+
+## 14:31
+
+The internal `__escape` method in the test would probably be better if it did
+not rely on `StringBuilder` as I am removing it right now. This way there is
+no intermediary string to work with for example.
+

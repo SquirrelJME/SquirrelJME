@@ -101,11 +101,9 @@ public class TestCaller
 			output.printf("---- %s%n", (name = ti.invokerName()));
 			
 			// Make sure a crashing test does not take out other tests
+			TestChecker tc = new TestChecker(this, ti);
 			try
 			{
-				// Setup the checker
-				TestChecker tc = new TestChecker(this, ti);
-			
 				// Run all the tests
 				ti.runTests(tc);
 			}
@@ -113,7 +111,7 @@ public class TestCaller
 			// Caught some exception
 			catch (Throwable t)
 			{
-				output.printf("TOSS %s %s%n", name, t.getClass().getName());
+				tc.exception("", t);
 			}
 		}
 		
