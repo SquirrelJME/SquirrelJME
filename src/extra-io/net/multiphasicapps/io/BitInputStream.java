@@ -127,5 +127,53 @@ public class BitInputStream
 			return rv;
 		}
 	}
+	
+	/**
+	 * Reads the specified number of bits and returns the value.
+	 *
+	 * @param __bc The number of bits to read.
+	 * @return The read bit value.
+	 * @throws EOFException If no more bits are left.
+	 * @throws IllegalArgumentException If the bit count is not within the
+	 * range of a long or is zero.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/09
+	 */
+	public long readBits(int __bc)
+		throws EOFException, IllegalArgumentException, IOException
+	{
+		// Check
+		if (__bc <= 0 || __bc > 64)
+			throw new IllegalArgumentException();
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Output value
+			long rv = 0L;
+			
+			// Read input bits
+			for (int i = 0; i < __bc; i++)
+				if (read())
+					rv |= (1L << (long)i);
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * Reads a byte.
+	 *
+	 * @return The read byte value.
+	 * @throws EOFException If no more bits are left.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/09
+	 */
+	public byte readByte()
+		throws EOFException, IOException
+	{
+		return (byte)readBits(8);
+	}
 }
 

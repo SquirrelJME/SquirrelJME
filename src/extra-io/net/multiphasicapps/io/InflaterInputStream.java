@@ -12,6 +12,7 @@ package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * This input stream reads deflated input (using the deflate algorithm) and
@@ -27,7 +28,10 @@ public class InflaterInputStream
 		new Object();
 	
 	/** The wrapped bit stream. */
-	protected final BitInputStream wrapped;
+	protected final BitInputStream in;
+	
+	/** Pending bytes. */
+	private volatile ByteBuffer _pending;
 	
 	/**
 	 * This initializes the input stream which is used to inflate deflated
@@ -45,7 +49,7 @@ public class InflaterInputStream
 			throw new NullPointerException();
 		
 		// Set
-		wrapped = new BitInputStream(__w, true);
+		in = new BitInputStream(__w, true);
 	}
 	
 	/**
@@ -67,7 +71,15 @@ public class InflaterInputStream
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			System.err.printf("Finish: %s%n", in.read());
+			System.err.printf("Type  : %s%n", in.readBits(2));
+			
+			
+			throw new Error("TODO");
+		}
 	}
 }
 

@@ -452,8 +452,8 @@ public class StandardZIP32File
 			InputStream rawsource = new DataStream(startpos, startpos + csz);
 			
 			// Caluclate the CRC also
-			rawsource = new CRC32InputStream(rawsource, CRC_MAGIC_NUMBER,
-				CRC_PRECONDITION, crc);
+			/*rawsource = new CRC32InputStream(rawsource, CRC_MAGIC_NUMBER,
+				CRC_PRECONDITION, crc);*/
 			
 			// Stored
 			if (method == METHOD_STORED)
