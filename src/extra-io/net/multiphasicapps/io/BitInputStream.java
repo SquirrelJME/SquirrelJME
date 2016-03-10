@@ -129,9 +129,12 @@ public class BitInputStream
 	}
 	
 	/**
-	 * Reads the specified number of bits and returns the value.
+	 * Reads the specified number of bits and returns the value. The read bits
+	 * are reversed so that the most significant bit of a read value is on the
+	 * left in a memory space going from lower addresses to higher addresses in
+	 * the right direction.
 	 *
-	 * @param __bc The number of bits to read.
+	 * @param __c The number of bits to read.
 	 * @return The read bit value.
 	 * @throws EOFException If no more bits are left.
 	 * @throws IllegalArgumentException If the bit count is not within the
@@ -139,11 +142,29 @@ public class BitInputStream
 	 * @throws IOException On read errors.
 	 * @since 2016/03/09
 	 */
-	public long readBits(int __bc)
+	public long readBits(int __c)
+		throws EOFException, IllegalArgumentException, IOException
+	{
+		return readBits(__c, true);
+	}
+	
+	/**
+	 * Reads the specified number of bits and returns the value.
+	 *
+	 * @param __c The number of bits to read.
+	 * @param __rev Reverse all read bits.
+	 * @return The read bit value.
+	 * @throws EOFException If no more bits are left.
+	 * @throws IllegalArgumentException If the bit count is not within the
+	 * range of a long or is zero.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/09
+	 */
+	public long readBits(int __c, boolean __rev)
 		throws EOFException, IllegalArgumentException, IOException
 	{
 		// Check
-		if (__bc <= 0 || __bc > 64)
+		if (__c <= 0 || __c > 64)
 			throw new IllegalArgumentException();
 		
 		// Lock
@@ -153,10 +174,10 @@ public class BitInputStream
 			long rv = 0L;
 			
 			// Read input bits
-			int hi = __bc - 1;
-			for (int i = 0; i < __bc; i++)
+			int an = (__rev ? -1 : 1);
+			for (int i = 0, at = (__rev ? __c - 1 : 0); i < __c; i++, at += an)
 				if (read())
-					rv |= (1L << (long)(hi - i));
+					rv |= (1L << (long)(at));
 			
 			// Return it
 			return rv;
