@@ -46,5 +46,6 @@ make sure that the mask is always of the lowest mask value.
 I can keep the huffman tree internally a secret so that in the future if I find
 a better algorithm I can change to it without having to worry too much any code
 uses it. Right now I suppose I will use objects and such and have a node
-structure.
+structure. The tree-like structure would be the easiest initially to implement
+although it would use a bunch of memory.
 
