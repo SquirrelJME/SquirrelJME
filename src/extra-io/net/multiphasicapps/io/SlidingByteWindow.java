@@ -17,6 +17,10 @@ package net.multiphasicapps.io;
  */
 public class SlidingByteWindow
 {
+	/** The standard estimated fragment size. */
+	public static final int DEFAULT_FRAGMENT_SIZE =
+		512;
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -24,22 +28,33 @@ public class SlidingByteWindow
 	/** The window size. */
 	protected final int windowsize;
 	
+	/** The size of fragments. */
+	protected final int fragmentsize;
+	
+	/** The number of fragments. */
+	protected final int numfragments;
+	
 	/**
 	 * This initializes the sliding byte window.
 	 *
 	 * @param __wsz The size of the sliding window.
-	 * @throws IllegalArgumentException If the window size is zero or negative.
+	 * @throws IllegalArgumentException If the window size is zero or negative
+	 * or is not a power of 2.
 	 * @since 2016/03/10
 	 */
 	public SlidingByteWindow(int __wsz)
 		throws IllegalArgumentException
 	{
 		// Check
-		if (__wsz <= 0)
+		if (__wsz <= 0 || Integer.bitCount(__wsz) != 1)
 			throw new IllegalArgumentException();
 		
 		// Set
 		windowsize = __wsz;
+		
+		// Determine the best fragment size
+		fragmentsize = Math.min(windowsize, DEFAULT_FRAGMENT_SIZE);
+		numfragments = windowsize / fragmentsize;
 	}
 	
 	/**
@@ -101,7 +116,7 @@ public class SlidingByteWindow
 		// Check
 		if (__b == null)
 			throw new NullPointerException();
-		if (__o < 0 || __l < o || (__o + __l > __b.length))
+		if (__o < 0 || __l < __o || (__o + __l > __b.length))
 			throw new IllegalArgumentException();
 		
 		// Lock

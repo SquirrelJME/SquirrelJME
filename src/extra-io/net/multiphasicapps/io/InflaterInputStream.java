@@ -12,7 +12,6 @@ package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 /**
  * This input stream reads deflated input (using the deflate algorithm) and
@@ -29,9 +28,6 @@ public class InflaterInputStream
 	
 	/** The wrapped bit stream. */
 	protected final BitInputStream in;
-	
-	/** Pending bytes. */
-	private volatile ByteBuffer _pending;
 	
 	/**
 	 * This initializes the input stream which is used to inflate deflated
