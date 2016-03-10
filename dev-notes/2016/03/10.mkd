@@ -36,3 +36,8 @@ The internal `__escape` method in the test would probably be better if it did
 not rely on `StringBuilder` as I am removing it right now. This way there is
 no intermediary string to work with for example.
 
+## 15:27
+
+Never actually used huffman before. My literal representation check works to
+make sure that the mask is always of the lowest mask value.
+

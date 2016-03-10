@@ -12,6 +12,8 @@ package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This input stream reads deflated input (using the deflate algorithm) and
@@ -43,6 +45,13 @@ public class InflaterInputStream
 	/** An error. */
 	protected static final int TYPE_ERROR =
 		0b11;
+	
+	/** Global static huffman tree cache. */
+	private static volatile Reference<HuffmanTree> _GLOBAL_TREE;
+	
+	/** Lock on the global tree. */
+	private static final Object _GLOBAL_TREE_LOCK =
+		new Object();
 	
 	/** Lock. */
 	protected final Object lock =
@@ -114,6 +123,10 @@ public class InflaterInputStream
 			
 				// Read the compression type
 				int type = (int)in.readBits(2);
+				
+				// DEBUG
+				System.err.printf("DEBUG -- Finl: %s%n", isfinal);
+				System.err.printf("DEBUG -- Type: %d%n", type);
 			
 				// No compression
 				if (type == TYPE_NO_COMPRESSION)
@@ -123,19 +136,76 @@ public class InflaterInputStream
 				else if (type == TYPE_FIXED_HUFFMAN ||
 					type == TYPE_DYNAMIC_HUFFMAN)
 				{
+					// The tree to use for the data
+					HuffmanTree ht;
+					
 					// Load in dynamic huffman table?
 					if (type == TYPE_DYNAMIC_HUFFMAN)
 						throw new Error("TODO");
 				
 					// Use the fixed one
 					else
-						throw new Error("TODO");
+						ht = __fixedTree();
+					
+					throw new Error("TODO");
 				}
 			
 				// Unknown or error
 				else
 					throw new InflaterException.HeaderErrorTypeException();
 			}
+		}
+	}
+	
+	/**
+	 * This returns the potentially cached fixed huffman tree which is used
+	 * as input for dynamic huffman trees and the fixed huffman tree for
+	 * potentially small data sources.
+	 *
+	 * @since 2016/03/10
+	 */
+	private static final HuffmanTree __fixedTree()
+	{
+		// Lock on the global tree
+		synchronized (_GLOBAL_TREE_LOCK)
+		{
+			// Get reference
+			Reference<HuffmanTree> ref = _GLOBAL_TREE;
+			HuffmanTree rv = null;
+			
+			// Cached already?
+			if (ref != null)
+				rv = ref.get();
+			
+			// Needs creation?
+			if (rv == null)
+			{
+				// Create a new one
+				rv = new HuffmanTree();
+				
+				// 0 - 143, 8 bits
+				for (int i = 0; i <= 143; i++)
+					rv.addLiteralRepresentation(0b00110000 + i, 0b11111111, i);
+				
+				// 144 - 255, 9 bits
+				for (int i = 144, j = 0; i <= 255; i++, j++)
+					rv.addLiteralRepresentation(0b110010000 + j, 0b111111111,
+						i);
+				
+				// 256 - 279, 7 bits
+				for (int i = 256, j = 0; i <= 279; i++, j++)
+					rv.addLiteralRepresentation(0b0000000 + j, 0b1111111, i);
+				
+				// 280 - 287, 8 bits
+				for (int i = 280, j = 0; i <= 287; i++, j++)
+					rv.addLiteralRepresentation(0b11000000 + j, 0b11111111, i);
+				
+				// Cache it
+				_GLOBAL_TREE = new WeakReference<>(rv);
+			}
+			
+			// Return it
+			return rv;
 		}
 	}
 }
