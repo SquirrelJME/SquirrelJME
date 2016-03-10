@@ -9,3 +9,19 @@ Up early.
 Only about a month left for that Creator CI40 KickStarter, it will be pretty
 nice to obtain those boards as I can do development on them.
 
+## 08:21
+
+I believe in my implementation of the JVM I am going to limit the maximum
+number of loaded classes to 65,536. Basically classes would be referenced by
+a two byte index. I could also reduce the class count and use the upper bits
+for some special details potentially. I will probably need a flag to indicate
+if something is a ROM class or a RAM class, so I suppose the upper bit would
+work. So that means 32,768 built-in classes and 32,768 loadable classes. Since
+Java ME only has a single class path, every built-in class will already be
+loaded so to speak. That is the CLDC and everything else will be part of the
+binary.
+
+## 08:26
+
+I am going to probably need JSR 177 for `MessageDigest` and such.
+

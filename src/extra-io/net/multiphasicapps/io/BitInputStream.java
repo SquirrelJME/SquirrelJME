@@ -153,9 +153,10 @@ public class BitInputStream
 			long rv = 0L;
 			
 			// Read input bits
+			int hi = __bc - 1;
 			for (int i = 0; i < __bc; i++)
 				if (read())
-					rv |= (1L << (long)i);
+					rv |= (1L << (long)(hi - i));
 			
 			// Return it
 			return rv;
