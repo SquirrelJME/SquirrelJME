@@ -49,3 +49,13 @@ uses it. Right now I suppose I will use objects and such and have a node
 structure. The tree-like structure would be the easiest initially to implement
 although it would use a bunch of memory.
 
+## 17:16
+
+I could store the tree in an actual array and just use `ArrayList` to simplify
+implementation of it. The tree would always be some kind of multiple. It would
+be treated as a binary tree with value nodes (`Integer`) or `null` if there is
+no value at said position. So for a single bit there are two entries. However
+if 2 bits there are four entries. So basically there is an entry for each
+binary bit. Just the one thing that has to be done is that the tree has to be
+recreated if a new depth is discovered.
+
