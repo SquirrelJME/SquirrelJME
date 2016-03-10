@@ -130,9 +130,7 @@ public class BitInputStream
 	
 	/**
 	 * Reads the specified number of bits and returns the value. The read bits
-	 * are reversed so that the most significant bit of a read value is on the
-	 * left in a memory space going from lower addresses to higher addresses in
-	 * the right direction.
+	 * are not reversed by default.
 	 *
 	 * @param __c The number of bits to read.
 	 * @return The read bit value.
@@ -145,14 +143,19 @@ public class BitInputStream
 	public long readBits(int __c)
 		throws EOFException, IllegalArgumentException, IOException
 	{
-		return readBits(__c, true);
+		return readBits(__c, false);
 	}
 	
 	/**
 	 * Reads the specified number of bits and returns the value.
 	 *
+	 * Given an example byte value as done by {@link #read()}: {@code 0 1}.
+	 * If {@code __rev} is {@code false} then the read value is {@code 0b10}.
+	 * If {@code __rev} is {@code true} then the read value is {@code 0b01}.
+	 *
 	 * @param __c The number of bits to read.
-	 * @param __rev Reverse all read bits.
+	 * @param __rev Reverse all read bits, if {@code true} then the higher bits
+	 * are written to first otherwise lower bits are written to first.
 	 * @return The read bit value.
 	 * @throws EOFException If no more bits are left.
 	 * @throws IllegalArgumentException If the bit count is not within the
