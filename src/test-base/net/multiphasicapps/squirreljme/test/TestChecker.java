@@ -149,7 +149,7 @@ public class TestChecker
 					
 					// Escape print it
 					ps.print('\t');
-					__escape(ps, ln);
+					__escape(ps, ln.trim());
 					ps.println();
 				}
 			}
