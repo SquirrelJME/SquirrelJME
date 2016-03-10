@@ -26,8 +26,8 @@ public class InflaterInputStream
 	protected final Object lock =
 		new Object();
 	
-	/** The wrapped stream. */
-	protected final InputStream wrapped;
+	/** The wrapped bit stream. */
+	protected final BitInputStream wrapped;
 	
 	/**
 	 * This initializes the input stream which is used to inflate deflated
@@ -45,7 +45,7 @@ public class InflaterInputStream
 			throw new NullPointerException();
 		
 		// Set
-		wrapped = __w;
+		wrapped = new BitInputStream(__w, true);
 	}
 	
 	/**
