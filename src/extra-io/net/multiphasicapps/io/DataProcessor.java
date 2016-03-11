@@ -56,11 +56,15 @@ public abstract class DataProcessor
 	/**
 	 * Processes some data.
 	 *
+	 * This method called from the {@link DataProcessor} class will be done
+	 * during a lock.
+	 *
 	 * @throws IOException On processing errors.
+	 * @throws WaitingException When not enough input is available.
 	 * @since 2016/03/11
 	 */
 	protected abstract void process()
-		throws IOException;
+		throws IOException, WaitingException;
 	
 	/**
 	 * Sets the waiting state (if the processor is waiting for more bytes as

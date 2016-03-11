@@ -81,3 +81,14 @@ handy because in the future I am going to need a cleaner way to handle GZip
 and ZLib streams which use Deflate without creating a bunch of wrapped input
 streams and such.
 
+## 17:31
+
+I believe having a given byte buffer backing for the `CircularBitBuffer`
+would complicate the implementation.
+
+## 17:43
+
+I could just use a boolean array, a smart JVM will just use a compact form of
+it anyway so I really do not need to worry about space efficiency because it
+is hidden away.
+

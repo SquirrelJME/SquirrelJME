@@ -22,11 +22,23 @@ public class DeflateDataProcessor
 {
 	/** Input bits. */
 	protected final CircularBitBuffer inputbits =
-		new CircularBitBuffer(input);
+		new CircularBitBuffer();
 	
-	/** Output bits. */
-	protected final CircularBitBuffer outputbits =
-		new CircularBitBuffer(output);
+	/** The bit compactor for queing added bits. */
+	protected final BitCompactor compactor =
+		new BitCompactor(new BitCompactor.Callback()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/11
+				 */
+				@Override
+				public void ready(byte __v)
+				{
+					// Give it to the output data
+					output.offerLast(__v);
+				}
+			});
 	
 	/**
 	 * {@inheritDoc}
@@ -36,6 +48,11 @@ public class DeflateDataProcessor
 	protected void process()
 		throws IOException
 	{
+		// Take all bytes which are available to the input and add them to the
+		// input bit buffer
+		while (input.hasAvailable())
+			inputbits.offerLastInt(input.removeFirst(), 0xFF);
+		
 		throw new Error("TODO");
 	}
 }

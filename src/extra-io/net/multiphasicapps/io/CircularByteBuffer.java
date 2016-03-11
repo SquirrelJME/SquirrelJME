@@ -94,6 +94,17 @@ public class CircularByteBuffer
 	}
 	
 	/**
+	 * Returns {@code true} if bytes are available.
+	 *
+	 * @return {@code true} if bytes are available.
+	 * @since 2016/03/11
+	 */
+	public boolean hasAvailable()
+	{
+		return available() > 0;
+	}
+	
+	/**
 	 * Offers a single byte and adds it to the start of the queue.
 	 *
 	 * @param __b The byte to offer.

@@ -27,10 +27,23 @@ import java.util.NoSuchElementException;
 public class CircularBitBuffer
 {
 	/** Lock. */
-	protected final Object lock;
+	protected final Object lock =
+		new Object();
 	
 	/** The backing circular byte buffer. */
-	protected final CircularByteBuffer backing;
+	protected final CircularByteBuffer backing =
+		new CircularByteBuffer(lock);
+	
+	/** The internal buffer. */
+	private volatile boolean[] _buffer;
+	
+	/** Head of the buffer. */
+	private volatile int _head =
+		-1;
+	
+	/** Tail of the buffer. */
+	private volatile int _tail =
+		-1;
 	
 	/**
 	 * Initializes a circular bit buffer.
@@ -39,39 +52,34 @@ public class CircularBitBuffer
 	 */
 	public CircularBitBuffer()
 	{
-		this(new CircularByteBuffer());
 	}
 	
 	/**
-	 * Initializes a circular bit buffer which uses the given circular byte
-	 * buffer as a backing storage area for complete bytes.
+	 * Returns the number of available bits in the buffer.
 	 *
-	 * @param __w The circular byte buffer to use as storage.
-	 * @throws NullPointerException On null arguments.
+	 * @return The bit availability count.
 	 * @since 2016/03/11
 	 */
-	public CircularBitBuffer(CircularByteBuffer __w)
-		throws NullPointerException
+	public int available()
 	{
-		// Check
-		if (__w == null)
-			throw new NullPointerException();
-		
-		// Set
-		backing = __w;
-		lock = backing._lock;
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
-	 * Returns the backing circular byte buffer.
+	 * Returns {@code true} if bits are available.
 	 *
-	 * @return The circular byte buffer which backs this.
+	 * @return {@code true} if bits are available.
 	 * @since 2016/03/11
 	 */
-	public final CircularByteBuffer backing()
+	public boolean hasAvailable()
 	{
-		return backing;
+		return available() > 0;
 	}
+	
 	/**
 	 * Offers a single bit and adds it to the start of the queue.
 	 *
@@ -192,6 +200,60 @@ public class CircularBitBuffer
 		{
 			for (int i = 0; i < __l; i++)
 				offerLast(__b[__o + i]);
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Adds an integer value to the end of the buffer.
+	 *
+	 * @param __val Value to add.
+	 * @param __mask The mask of the value.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If any bit is set that is not within
+	 * the mask, or the mask has a zero gap in it.
+	 * @since 2016/03/11
+	 */
+	public final CircularBitBuffer offerLastInt(int __val, int __mask)
+		throws IllegalArgumentException
+	{
+		return offerLastInt(__val, __mask, false);
+	}
+	
+	/**
+	 * Adds an integer value to the end of the buffer.
+	 *
+	 * @param __val Value to add.
+	 * @param __mask The mask of the value.
+	 * @param __msb If {@code true} then the bits are added from the higher
+	 * shift then to the lower shift.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If any bit is set that is not within
+	 * the mask, or the mask has a zero gap in it.
+	 * @since 2016/03/11
+	 */
+	public final CircularBitBuffer offerLastInt(int __val, int __mask,
+		boolean __msb)
+		throws IllegalArgumentException
+	{
+		// Number of bits in the mask
+		int ibm = Integer.bitCount(__mask);
+		
+		// Check to make sure the input is valid
+		if ((__val & (~__mask)) != 0)
+			throw new IllegalArgumentException();
+		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
+			(__mask & 1) == 0)
+			throw new IllegalArgumentException();
+		
+		// Lock
+		synchronized (lock)
+		{
+			int an = (__msb ? -1 : 1);
+			for (int at = (__msb ? ibm - 1 : 0); at >= 0 && at < ibm; at += an)
+				offerLast(0 != (__val & (1 << at)));
 		}
 		
 		// Self
