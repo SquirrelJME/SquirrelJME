@@ -15,7 +15,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.io.InflaterInputStream;
+import net.multiphasicapps.io.DataProcessorInputStream;
+import net.multiphasicapps.io.DeflateDataProcessor;
 import net.multiphasicapps.squirreljme.test.TestChecker;
 import net.multiphasicapps.squirreljme.test.TestInvoker;
 
@@ -79,8 +80,8 @@ public class TestInflater
 			throw new NullPointerException();
 		
 		// Open the input
-		try (InputStream in = new InflaterInputStream(
-			new ByteArrayInputStream(__in));
+		try (InputStream in = new DataProcessorInputStream(
+			new ByteArrayInputStream(__in), new DeflateDataProcessor());
 			ByteArrayOutputStream out = new ByteArrayOutputStream())
 		{
 			// Read input to the output
