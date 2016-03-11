@@ -52,6 +52,10 @@ public class InflaterInputStream
 	protected static final int TYPE_ERROR =
 		0b11;
 	
+	/** Special huffman code which is used to indicate stopping. */
+	protected static final int END_VALUE =
+		256;
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -262,7 +266,7 @@ public class InflaterInputStream
 				{
 					// Loop until the end is reached
 					int val;
-					while ((val = DeflateFixedHuffman.read(in)) != 256)
+					while ((val = DeflateFixedHuffman.read(in)) != END_VALUE)
 						__handleValue(val);
 				}
 				
@@ -276,63 +280,58 @@ public class InflaterInputStream
 					if (true)
 						throw new Error("TODO");
 					
-					// Start at the root of the tree
-					HuffmanTree<Integer>.Traverse rover = ht.root();
-					
-					// Loop until the end of the block is reached
-					for (;;)
-					{
-						// Read bit value here
-						int bit = (int)in.readBits(1);
-						System.err.println("Read bit " + bit);
-						
-						// Get node for this side
-						HuffmanTree<Integer>.Node node = rover.get(bit);
-						
-						// If a value, stop
-						if (node.isLeaf())
-						{
-							// Read value
-							Integer value = node.asLeaf().get();
-							
-							// Illegal?
-							if (value == null)
-								throw new InflaterException.NoValueForBits();
-							
-							// Normal value
-							if (value < 256)
-								compactor.add(value, 0xFF);
-							
-							// Stop parsing?
-							else if (value == 256)
-								break;
-							
-							// Access the window
-							else if (value >= 257 && value <= 285)
-								throw new Error("TODO");
-							
-							// Illegal value
-							else
-								throw new InflaterException.IllegalSequence();
-							
-							// Go back to the root node to read the next value
-							rover = ht.root();
-						}
-						
-						// Go into it if a traverse
-						else if (node.isTraverse())
-							rover = node.asTraverse();
-						
-						// Otherwise not part of the tree
-						else
-							throw new InflaterException.NoValueForBits();
-					}
+					// Loop until the end is reached
+					int val;
+					while ((val = __findLeaf(in, ht.root())) != END_VALUE)
+						__handleValue(val);
 				}
 			
 				// Unknown or error
 				else
 					throw new InflaterException.HeaderErrorTypeException();
 			}
+		}
+	}
+	
+	/**
+	 * Reads an input bit and traverses the huffman tree until a leaf with the
+	 * given value is found.
+	 *
+	 * @param __in Input bits to source from.
+	 * @param __t Traverser.
+	 * @return The value for the given input.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/11
+	 */
+	private int __findLeaf(BitInputStream __in,
+		HuffmanTree<Integer>.Traverse __t)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__in == null || __t == null)
+			throw new NullPointerException();
+		
+		// Loop until a leaf is found
+		for (;;)
+		{
+			// Read input bit
+			int bit = (int)in.readBits(1);
+			
+			// Get node for this side
+			HuffmanTree<Integer>.Node node = __t.get(bit);
+			
+			// If a leaf return its value
+			if (node.isLeaf())
+				return node.asLeaf().get();
+			
+			// Go into it if a traverse
+			else if (node.isTraverse())
+				__t = node.asTraverse();
+			
+			// Otherwise not part of the tree
+			else
+				throw new InflaterException.NoValueForBits();
 		}
 	}
 	
