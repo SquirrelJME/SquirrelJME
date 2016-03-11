@@ -89,3 +89,10 @@ representation of the tree using the basic map structure for example.
 Also it probably does not make sense to have a `HuffmanTree` in *extra-io*, it
 should probably instead be with the collections.
 
+## 18:59
+
+I could use an array, however say if I do not use all of the entries in it,
+most would end up being wasted. Usually this is a problem with higher bit
+counts. In general the huffman tree is rather lopsided. Using a bunch of nodes
+would be simpler though and would increase the object count a bit though.
+

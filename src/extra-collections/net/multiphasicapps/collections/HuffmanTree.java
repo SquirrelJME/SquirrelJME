@@ -18,6 +18,8 @@ import java.util.Set;
 /**
  * This represents a mutable huffman tree.
  *
+ * Note that very large bit numbers will use more memory.
+ *
  * @param <T> The type of values to store in the tree.
  * @since 2016/03/10
  */
@@ -41,6 +43,9 @@ public class HuffmanTree<T>
 	/** Lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** The huffman value tree. */
+	private volatile Object[] _values;
 	
 	/**
 	 * Initializes a basic blank huffman tree.
@@ -97,17 +102,27 @@ public class HuffmanTree<T>
 	 *
 	 * @param __b The number of bits to hold values for.
 	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the number of bits is zero,
+	 (negative, or
+	 * higher than 32.
 	 * @since 2016/03/10
 	 */
 	public HuffmanTree ensureBits(int __b)
+		throws IllegalArgumentException
 	{
-		// If negative or zero do nothing
-		if (__b <= 0)
-			return this;
+		// Check
+		if (__b <= 0 || __b > 32)
+			throw new IllegalArgumentException();
 		
 		// Lock
 		synchronized (lock)
 		{
+			// Get the old one
+			Object[] old = _values;
+			
+			// If null, just create an array
+			
+			
 			if (true)
 				throw new Error("TODO");
 		}
