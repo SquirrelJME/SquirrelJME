@@ -112,6 +112,8 @@ public class InflaterInputStream
 			// There might not be enough data for an output read to occur.
 			for (;;)
 			{
+				// Are there bytes waiting to be given out?
+				
 				// If finished, then stop
 				if (_finished)
 					return -1;
@@ -148,7 +150,49 @@ public class InflaterInputStream
 					else
 						ht = __fixedTree();
 					
-					throw new Error("TODO");
+					// Start at the root of the tree
+					HuffmanTree<Integer>.Traverse rover = ht.root();
+					
+					// Loop until the end of the block is reached
+					for (;;)
+					{
+						// Read bit value here
+						int bit = (int)in.readBits(1);
+						
+						// Get node for this side
+						HuffmanTree<Integer>.Node node = rover.get(bit);
+						
+						// If a value, stop
+						if (node.isLeaf())
+						{
+							// Read value
+							Integer value = node.asLeaf().get();
+							
+							// Illegal?
+							if (value == null)
+								throw new InflaterException.NoValueForBits();
+							
+							// Stop bit?
+							if (value == 256)
+								break;
+							
+							// Inject bits to the output
+							System.err.println(value);
+							if (true)
+								throw new IOException("TODO");
+							
+							// Go back to the root node to read the next value
+							rover = ht.root();
+						}
+						
+						// Go into it if a traverse
+						else if (node.isTraverse())
+							rover = node.asTraverse();
+						
+						// Otherwise not part of the tree
+						else
+							throw new InflaterException.NoValueForBits();
+					}
 				}
 			
 				// Unknown or error
@@ -201,7 +245,6 @@ public class InflaterInputStream
 				for (int i = 280, j = 0; i <= 287; i++, j++)
 					rv.setLiteralRepresentation(0b11000000 + j, 0b11111111, i);
 				
-				System.err.println(rv);
 				// Cache it
 				_GLOBAL_TREE = new WeakReference<>(rv);
 			}

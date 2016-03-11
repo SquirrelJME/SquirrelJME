@@ -30,5 +30,15 @@ public class InflaterException
 		extends InflaterException
 	{
 	}
+	
+	/**
+	 * This is thrown when there is no value for the given bits.
+	 *
+	 * @since 2016/03/10
+	 */
+	public static class NoValueForBits
+		extends InflaterException
+	{
+	}
 }
 
