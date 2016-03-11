@@ -20,6 +20,13 @@ import java.io.IOException;
 public class DeflateDataProcessor
 	extends DataProcessor
 {
+	/**
+	 * Required non-finished bits in the queue, this is for optimal processing
+	 * so that partial states are simpler.
+	 */
+	protected static final int REQUIRED_BITS =
+		48;
+	
 	/** Input bits. */
 	protected final CircularBitBuffer inputbits =
 		new CircularBitBuffer();
@@ -46,12 +53,16 @@ public class DeflateDataProcessor
 	 */
 	@Override
 	protected void process()
-		throws IOException
+		throws IOException, WaitingException
 	{
 		// Take all bytes which are available to the input and add them to the
 		// input bit buffer
 		while (input.hasAvailable())
 			inputbits.offerLastInt(input.removeFirst(), 0xFF);
+		
+		// Require more available bytes if not finished
+		if (!isFinished() && inputbits.available() < REQUIRED_BITS)
+			throw new WaitingException();
 		
 		throw new Error("TODO");
 	}
