@@ -186,21 +186,22 @@ public class InflaterInputStream
 				
 				// 0 - 143, 8 bits
 				for (int i = 0; i <= 143; i++)
-					rv.addLiteralRepresentation(0b00110000 + i, 0b11111111, i);
+					rv.setLiteralRepresentation(0b00110000 + i, 0b11111111, i);
 				
 				// 144 - 255, 9 bits
 				for (int i = 144, j = 0; i <= 255; i++, j++)
-					rv.addLiteralRepresentation(0b110010000 + j, 0b111111111,
+					rv.setLiteralRepresentation(0b110010000 + j, 0b111111111,
 						i);
 				
 				// 256 - 279, 7 bits
 				for (int i = 256, j = 0; i <= 279; i++, j++)
-					rv.addLiteralRepresentation(0b0000000 + j, 0b1111111, i);
+					rv.setLiteralRepresentation(0b0000000 + j, 0b1111111, i);
 				
 				// 280 - 287, 8 bits
 				for (int i = 280, j = 0; i <= 287; i++, j++)
-					rv.addLiteralRepresentation(0b11000000 + j, 0b11111111, i);
+					rv.setLiteralRepresentation(0b11000000 + j, 0b11111111, i);
 				
+				System.err.println(rv);
 				// Cache it
 				_GLOBAL_TREE = new WeakReference<>(rv);
 			}

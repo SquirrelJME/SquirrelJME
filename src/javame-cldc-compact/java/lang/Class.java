@@ -123,6 +123,11 @@ public final class Class<T>
 		throw new Error("TODO");
 	}
 	
+	public boolean isInstance(Object __o)
+	{
+		throw new Error("TODO");
+	}
+	
 	public T newInstance()
 		throws InstantiationException, IllegalAccessException
 	{

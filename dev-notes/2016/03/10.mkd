@@ -96,3 +96,7 @@ most would end up being wasted. Usually this is a problem with higher bit
 counts. In general the huffman tree is rather lopsided. Using a bunch of nodes
 would be simpler though and would increase the object count a bit though.
 
+## 20:30
+
+Looks like I was missing `isInstance()` in `Class`.
+

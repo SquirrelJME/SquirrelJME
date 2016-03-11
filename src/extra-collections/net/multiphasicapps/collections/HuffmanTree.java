@@ -43,7 +43,7 @@ public class HuffmanTree<T>
 	
 	/** This is the root traversal node. */
 	protected final Traverse root =
-		new Traverse();
+		new Traverse(null);
 	
 	/**
 	 * Initializes a basic blank huffman tree.
@@ -55,9 +55,31 @@ public class HuffmanTree<T>
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/10
+	 */
+	@Override
+	public Set<Map.Entry<Integer, T>> entrySet()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the root node.
+	 *
+	 * @return The root node.
+	 * @since 2016/03/10
+	 */
+	public Traverse root()
+	{
+		return root;
+	}
+	
+	/**
 	 * Adds a literal value representation to the tree.
 	 *
-	 * The representation is traversed from the lower shifts to higher shifts.
+	 * Traversal through the huffman tree is done from the higher shift values
+	 * to the lower shift values.
 	 *
 	 * @param __rep The representation of the value.
 	 * @param __bit The mask to use in the literal representation.
@@ -68,7 +90,7 @@ public class HuffmanTree<T>
 	 * masked.
 	 * @since 2016/03/10
 	 */
-	public HuffmanTree addLiteralRepresentation(int __rep, int __repmask,
+	public HuffmanTree setLiteralRepresentation(int __rep, int __repmask,
 		T __lit)
 		throws IllegalArgumentException
 	{
@@ -81,21 +103,24 @@ public class HuffmanTree<T>
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__repmask)))
 			throw new IllegalArgumentException();
 		
-		if (true)
-			throw new Error("TODO");
+		// Start from higher shifts to lower shifts
+		Traverse rover = root;
+		for (int i = ibm - 1; i >= 0; i--)
+		{
+			// Get zero or one
+			int code = (__rep >>> i) & 1;
+			
+			// Last shift? Set the value
+			if (i == 0)
+				rover.setupLeaf(code).set(__lit);
+			
+			// Add traverser
+			else
+				rover = rover.setupTraverse(code);
+		}
 		
 		// Self
 		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/10
-	 */
-	@Override
-	public Set<Map.Entry<Integer, T>> entrySet()
-	{
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -135,6 +160,28 @@ public class HuffmanTree<T>
 		{
 			return (Traverse)this;
 		}
+		
+		/**
+		 * Returns {@code true} if this is a leaf.
+		 *
+		 * @return {@code true} if this is a leaf.
+		 * @since 2016/03/10
+		 */
+		public boolean isLeaf()
+		{
+			return Leaf.class.isInstance(this);
+		}
+		
+		/**
+		 * Returns {@code true} if this is a traverse.
+		 *
+		 * @return {@code true} if this is a traverse.
+		 * @since 2016/03/10
+		 */
+		public boolean isTraverse()
+		{
+			return Traverse.class.isInstance(this);
+		}
 	}
 	
 	/**
@@ -161,10 +208,26 @@ public class HuffmanTree<T>
 		 * Initializes this leaf with an initial value.
 		 *
 		 * @param __v The initial value of the leaf.
+		 * @since 2016/03/10
 		 */
 		protected Leaf(T __v)
 		{
 			set(__v);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/10
+		 */
+		@Override
+		public boolean equals(Object __o)
+		{
+			// Not a leaf?
+			if (!Leaf.class.isInstance(__o))
+				return false;
+			
+			// Same value?
+			return Objects.equals(_value, Leaf.class.cast(__o)._value);
 		}
 		
 		/**
@@ -176,6 +239,16 @@ public class HuffmanTree<T>
 		public T get()
 		{
 			return _value;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/10
+		 */
+		@Override
+		public int hashCode()
+		{
+			return Objects.hashCode(_value);
 		}
 		
 		/**
@@ -211,6 +284,9 @@ public class HuffmanTree<T>
 	public class Traverse
 		extends Node
 	{
+		/** The parent of this traverse. */
+		protected final Traverse parent;
+		
 		/** The zero side of the tree. */
 		private volatile Node _zero;
 		
@@ -220,10 +296,13 @@ public class HuffmanTree<T>
 		/**
 		 * Initializes the traversal node.
 		 *
+		 * @param __p The parent node.
 		 * @since 2016/03/10
 		 */
-		protected Traverse()
+		protected Traverse(Traverse __p)
 		{
+			// Set
+			parent = __p;
 		}
 		
 		/**
@@ -256,6 +335,17 @@ public class HuffmanTree<T>
 		}
 		
 		/**
+		 * Returns the parent traverse node.
+		 *
+		 * @return The parent traverse node.
+		 * @since 2016/03/10
+		 */
+		public Traverse getParent()
+		{
+			return parent;
+		}
+		
+		/**
 		 * Returns the zero node of the tree.
 		 *
 		 * @return The zero node.
@@ -264,6 +354,80 @@ public class HuffmanTree<T>
 		public Node getZero()
 		{
 			return _zero;
+		}
+		
+		/**
+		 * Sets the given side to a traverse, if there is a leaf here already
+		 * then it is removed.
+		 *
+		 * @param __s The side to use as a traverse if it is not one.
+		 * @return The traverse of the given side.
+		 * @throws IllegalArgumentException If {@code __s} is not zero or
+		 * one.
+		 * @since 2016/03/10
+		 */
+		public Traverse setupTraverse(int __s)
+			throws IllegalArgumentException
+		{
+			// Must be zero or one
+			if (__s != 0 && __s != 1)
+				throw new IllegalArgumentException();
+			
+			// Get node on this side
+			Node n = get(__s);
+			
+			// If null or not a traverse, create new one
+			if (n == null || !n.isTraverse())
+			{
+				// Create
+				n = new Traverse(this);
+				
+				// Replace
+				if (__s == 0)
+					_zero = n;
+				else
+					_one = n;
+			}
+			
+			// Return the traverse
+			return (Traverse)n;
+		}
+		
+		/**
+		 * Sets the given side to a leaf and returns it, if a traverse on this
+		 * side then it is removed.
+		 *
+		 * @param __s The side to use as aleaf.
+		 * @return The leaf of the given side.
+		 * @throws IllegalArgumentException If {@code __s} is not zero or
+		 * one.
+		 * @since 2016/03/10
+		 */
+		public Leaf setupLeaf(int __s)
+			throws IllegalArgumentException
+		{
+			// Must be zero or one
+			if (__s != 0 && __s != 1)
+				throw new IllegalArgumentException();
+			
+			// Get node on this side
+			Node n = get(__s);
+			
+			// If null or not a leaf, create new one
+			if (n == null || !n.isLeaf())
+			{
+				// Create
+				n = new Leaf();
+				
+				// Replace
+				if (__s == 0)
+					_zero = n;
+				else
+					_one = n;
+			}
+			
+			// Return the leaf
+			return (Leaf)n;
 		}
 		
 		/**
