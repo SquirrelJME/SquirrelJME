@@ -45,13 +45,13 @@ public class BitInputStream
 	 * Initializes the bit view of the given input stream.
 	 *
 	 * @param __w The input stream to provide a byte interface over.
-	 * @param __lsb Least significant bit first? If {@code true} then the bit
-	 * that is at the lowest shift of a byte will appear first, otherwise if
-	 * {@code false} then the highest shift will appear first.
+	 * @param __msb Most significant bit first? If {@code true} then the bit
+	 * that is at the highest shift of a byte will appear first, otherwise if
+	 * {@code false} then the lowest shift will appear first.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/09
 	 */
-	public BitInputStream(InputStream __w, boolean __lsb)
+	public BitInputStream(InputStream __w, boolean __msb)
 		throws NullPointerException
 	{
 		// Check
@@ -60,7 +60,7 @@ public class BitInputStream
 		
 		// Set
 		wrapped = __w;
-		lsb = __lsb;
+		lsb = !__msb;
 	}
 	
 	/**
@@ -71,7 +71,8 @@ public class BitInputStream
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Close the wrapped stream
+		wrapped.close();
 	}
 	
 	/**

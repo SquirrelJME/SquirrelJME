@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.io;
 
+import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -27,8 +28,12 @@ import net.multiphasicapps.collections.HuffmanTree;
 public class InflaterInputStream
 	extends InputStream
 {
+	/** The initial ring buffer size. */
+	protected static final int INITIAL_RING_BUFFER_SIZE =
+		8;
+	
 	/** The size of the sliding window. */
-	public static final int SLIDING_WINDOW_SIZE =
+	protected static final int SLIDING_WINDOW_SIZE =
 		32768;
 	
 	/** No compression. */
@@ -66,11 +71,21 @@ public class InflaterInputStream
 		new SlidingByteWindow(SLIDING_WINDOW_SIZE);
 	
 	/** The bit compactor for queing added bits. */
-	protected final BitCompactor 
-	compactor;
+	protected final BitCompactor compactor;
 	
 	/** Finished reading? */
 	private volatile boolean _finished;
+	
+	/** Ring buffer read/write queue (must be power of 2). */
+	private volatile byte[] _ring;
+	
+	/** The read index in the queue. */
+	private volatile int _read =
+		-1;
+	
+	/** The write index in the queue. */
+	private volatile int _write =
+		-1;
 	
 	/**
 	 * This initializes the input stream which is used to inflate deflated
@@ -88,7 +103,7 @@ public class InflaterInputStream
 			throw new NullPointerException();
 		
 		// Set
-		in = new BitInputStream(__w, true);
+		in = new BitInputStream(__w, false);
 		
 		// Setup compactor
 		compactor = new BitCompactor(new BitCompactor.Callback()
@@ -100,8 +115,75 @@ public class InflaterInputStream
 				@Override
 				public void ready(byte __v)
 				{
-					System.err.println(__v);
-					throw new Error("TODO");
+					System.err.println("Ready: " + Integer.toHexString(__v));
+					// Lock
+					synchronized (lock)
+					{
+						// Get the ring buffer
+						byte[] ring = _ring;
+						
+						// Needs creation?
+						if (ring == null)
+						{
+							_ring = ring = new byte[INITIAL_RING_BUFFER_SIZE];
+							_read = _write = 0;
+						}
+						
+						// Ring buffer length
+						int len = ring.length;
+						
+						// Get the read and write position
+						int r = _read;
+						int w = _write;
+						
+						// The next write position
+						int nw = (w + 1) & (len - 1);
+						
+						// Would overflow? Need to increase the buffer size
+						// since the code using the inflater class is not
+						// pulling enough bytes out
+						if (nw == r)
+						{
+							// The queue has just collected a large number
+							// of bytes which were never collected.
+							if (len >= 0x4000_0000)
+								throw new IllegalStateException();
+							
+							// Create new buffer
+							byte[] creat = new byte[len << 1];
+							int clen = creat.length;
+							
+							// The new read/write position
+							int xr = 0;
+							int xw = 0;
+							
+							// Copy the old ring to the new one
+							int or = r;
+							while (or != w)
+							{
+								// Write here
+								creat[xw] = ring[or];
+								
+								// Move position up
+								or = (or + 1) & (len - 1);
+								xw = (xw + 1) & (clen - 1);
+							}
+							
+							// Set new ring buffer data
+							r = xr;
+							w = xw;
+							len = creat.length;
+							nw = (w + 1) & (clen - 1);
+							_ring = ring = creat;
+						}
+						
+						// Write into it
+						ring[nw] = __v;
+						
+						// Set new positions
+						_read = r;
+						_write = nw;
+					}
 				}
 			});
 	}
@@ -114,7 +196,8 @@ public class InflaterInputStream
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Close the wrapped stream
+		in.close();
 	}
 	
 	/**
@@ -132,6 +215,25 @@ public class InflaterInputStream
 			for (;;)
 			{
 				// Are there bytes waiting to be given out?
+				if (_ring != null)
+				{
+					// Get positions
+					int r = _read;
+					int w = _write;
+					
+					// Not at the end?
+					if (r != w)
+					{
+						// Get byte here
+						int rv = _ring[r++];
+						
+						// Cap to buffer size
+						_read = r & (_ring.length - 1);
+						
+						// Return it
+						return rv;
+					}
+				}
 				
 				// If finished, then stop
 				if (_finished)
@@ -149,6 +251,7 @@ public class InflaterInputStream
 				// DEBUG
 				System.err.printf("DEBUG -- Finl: %s%n", isfinal);
 				System.err.printf("DEBUG -- Type: %d%n", type);
+				System.err.flush();
 			
 				// No compression
 				if (type == TYPE_NO_COMPRESSION)
@@ -177,6 +280,7 @@ public class InflaterInputStream
 					{
 						// Read bit value here
 						int bit = (int)in.readBits(1);
+						System.err.println("Read bit " + bit);
 						
 						// Get node for this side
 						HuffmanTree<Integer>.Node node = rover.get(bit);
