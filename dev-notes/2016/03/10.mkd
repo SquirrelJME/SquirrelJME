@@ -128,3 +128,8 @@ I am getting there:
 
 Need to get read of that leading zero.
 
+## 22:43
+
+Actually my distances are miscalculated, I am treating values above 256 as
+values to be added to the output when that should not be the case.
+

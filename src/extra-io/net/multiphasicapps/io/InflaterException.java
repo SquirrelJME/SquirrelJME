@@ -32,6 +32,16 @@ public class InflaterException
 	}
 	
 	/**
+	 * This is thrown when a sequence of bits is not legal.
+	 *
+	 * @since 2016/03/10
+	 */
+	public static class IllegalSequence
+		extends InflaterException
+	{
+	}
+	
+	/**
 	 * This is thrown when there is no value for the given bits.
 	 *
 	 * @since 2016/03/10

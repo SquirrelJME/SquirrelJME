@@ -302,20 +302,21 @@ public class InflaterInputStream
 							if (value == null)
 								throw new InflaterException.NoValueForBits();
 							
-							// Stop bit?
-							if (value == 256)
-							{
-								System.err.println("end");
-								break;
-							}
-							else
-								System.err.println("read " + value);
-							
-							// Inject bits to the output
+							// Normal value
 							if (value < 256)
 								compactor.add(value, 0xFF);
+							
+							// Stop parsing?
+							else if (value == 256)
+								break;
+							
+							// Access the window
+							else if (value >= 257 && value <= 285)
+								throw new Error("TODO");
+							
+							// Illegal value
 							else
-								compactor.add(value, 0x1FF);
+								throw new InflaterException.IllegalSequence();
 							
 							// Go back to the root node to read the next value
 							rover = ht.root();
