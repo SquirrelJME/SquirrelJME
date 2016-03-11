@@ -39,3 +39,18 @@ And having it invoke a method is 3038 bytes of byte code.
 I can also compact the giant method a bit by removing some of the leaves since
 now I notice a pattern to the bits.
 
+## 09:47
+
+The byte code count really goes down when I compact a large portion of the
+tree into a single addition.
+
+## 09:50
+
+For now.
+
+	2824  2016-03-11 09:46   net/multiphasicapps/io/DeflateFixedHuffman.class
+
+Then removing some very large branches
+
+	1360  2016-03-11 09:50   net/multiphasicapps/io/DeflateFixedHuffman.class
+
