@@ -54,3 +54,20 @@ Then removing some very large branches
 
 	1360  2016-03-11 09:50   net/multiphasicapps/io/DeflateFixedHuffman.class
 
+## 09:53
+
+Then a final compaction brings me to:
+
+	932  2016-03-11 09:53   net/multiphasicapps/io/DeflateFixedHuffman.class
+
+So initially it was 3887 reading a field, then 3038 when not reading it. Now
+with the maximum compaction of the tree it is 156 byte codes long. So this is
+rather very nice. So what I have now is about 5% original size. So now after
+having a built-in fixed tree, there is no more need for a global and such. The
+only thing I require generation for is the dynamic huffman tree.
+
+## 09:59
+
+It also just takes up 28 lines of code, which is quite simple. This is compared
+to the previous 500 or so lines.
+

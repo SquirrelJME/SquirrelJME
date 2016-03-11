@@ -31,7 +31,10 @@ public class DeflateFixedHuffman
 	/**
 	 * Reads a fixed huffman code for use by the {@code TYPE_FIXED_HUFFMAN}
 	 * state. This method does not traverse a huffman tree so to speak, but it
-	 * instead uses many if statements
+	 * instead uses many if statements. Initially every consideration was made
+	 * but now instead it uses ranges once it keeps deep enough into the tree.
+	 * This method is faster and provides a built-in huffman tree while not
+	 * taking up too many bytes in the byte code.
 	 *
 	 * @return The read value.
 	 * @throws IOException On read errors.
@@ -68,75 +71,9 @@ public class DeflateFixedHuffman
 					if (__in.read())
 						return 0 + __in.readBitsInt(4);
 					else
-						if (__in.read())
-							if (__in.read())
-								if (__in.read())
-									return 279;
-								else
-									return 278;
-							else
-								if (__in.read())
-									return 277;
-								else
-									return 276;
-						else
-							if (__in.read())
-								if (__in.read())
-									return 275;
-								else
-									return 274;
-							else
-								if (__in.read())
-									return 273;
-								else
-									return 272;
+						return 272 + __in.readBitsInt(3);
 				else
-					if (__in.read())
-						if (__in.read())
-							if (__in.read())
-								if (__in.read())
-									return 271;
-								else
-									return 270;
-							else
-								if (__in.read())
-									return 269;
-								else
-									return 268;
-						else
-							if (__in.read())
-								if (__in.read())
-									return 267;
-								else
-									return 266;
-							else
-								if (__in.read())
-									return 265;
-								else
-									return 264;
-					else
-						if (__in.read())
-							if (__in.read())
-								if (__in.read())
-									return 263;
-								else
-									return 262;
-							else
-								if (__in.read())
-									return 261;
-								else
-									return 260;
-						else
-							if (__in.read())
-								if (__in.read())
-									return 259;
-								else
-									return 258;
-							else
-								if (__in.read())
-									return 257;
-								else
-									return 256;
+					return 256 + __in.readBitsInt(4);
 	}
 }
 
