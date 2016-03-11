@@ -133,3 +133,24 @@ Need to get read of that leading zero.
 Actually my distances are miscalculated, I am treating values above 256 as
 values to be added to the output when that should not be the case.
 
+## 23:34
+
+Even getting 84 in there is complex. Using the mask will not work because the
+values are off so to speak.
+
+## 23:39
+
+The problem is that the 144-255 variant has all of the bits set which makes
+masking troublesome because in all situations it is always true.
+
+## 23:41
+
+I would guess that I would use addition or subtraction on my input and figure
+it out that way.
+
+## 23:57
+
+I just have to go through the process of elimitation. I already elimited D for
+the initial value, I just need to eliminate the other 3.
+
+

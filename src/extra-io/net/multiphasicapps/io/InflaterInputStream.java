@@ -263,10 +263,38 @@ public class InflaterInputStream
 				// No compression
 				if (type == TYPE_NO_COMPRESSION)
 					throw new Error("TODO");
-			
-				// Huffman compressed
-				else if (type == TYPE_FIXED_HUFFMAN ||
-					type == TYPE_DYNAMIC_HUFFMAN)
+				
+				// Huffman compressed (static tree)
+				else if (type == TYPE_FIXED_HUFFMAN)
+				{
+					// Loop until the end is reached
+					for (;;)
+					{
+						// Read fixed code
+						int val = __readFixed();
+						
+						System.err.println("read fixed " + val);
+						
+						// Literal value?
+						if (val < 256)
+							compactor.add(val, 0xFF);
+						
+						// Stop?
+						else if (val == 256)
+							break;
+						
+						// Use window value
+						else if (val >= 257 && val <= 285)
+							throw new Error("TODO");
+						
+						// Illegal value
+						else
+							throw new InflaterException.IllegalSequence();
+					}
+				}
+				
+				// Huffman compressed (dynamic)
+				else if (type == TYPE_DYNAMIC_HUFFMAN)
 				{
 					// The tree to use for the data
 					HuffmanTree<Integer> ht;
@@ -337,6 +365,78 @@ public class InflaterInputStream
 					throw new InflaterException.HeaderErrorTypeException();
 			}
 		}
+	}
+	
+	/**
+	 * Reads a fixed huffman code for use by the {@code TYPE_FIXED_HUFFMAN}
+	 * state. This method does not use a built huffman tree and instead
+	 * determines the desired value to place depending on the used initial
+	 * bits. The decoding is similar to UTF-8 in a way as the table of input
+	 * values is mostly linear of a fixed size. Note that this will potentially
+	 * return windows and stop values.
+	 *
+	 * @return The read value.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/10
+	 */
+	private final int __readFixed()
+		throws IOException
+	{
+		// The minimum set of fixed sized bits is 7, thus read the 7 bits first
+		// It should be noted that the returned bits are on the RIGHT side as
+		// those specified in the RFC 1951 (3.2.6).
+		//   frm to  low       hi        ><& ><~&
+		//   --- --- --+++++++ --+++++++ --- ----
+		// A   0 143  00110000  10111111 F   F
+		// B 144 255 110010000 111111111 T   T
+		// C 256 279   0000000   0101111 F   T
+		// D 280 287  11000000  11000111 F   F
+		//   --- --- --+++++++ --+++++++ --- ----
+		//    84      01010100  01010100
+		//   ~84      10101011  10101011
+		int bits = (int)in.readBits(7);
+		boolean lka = true, lkb = true, lkc = true, lkd = true;
+		
+		// If bit 7 is set then it will never be C
+		if (0 != (bits & 0b1000000))
+			lkc = false;
+		
+		// If bits 3-6 are set then it will never be D
+		if (0 != (bits & 0b0111000))
+			lkd = false;
+		
+		// It will never be B if the mask is < 0b10000
+		if (bits < 0b0010000)
+			lkb = false;
+		
+		System.err.printf("%s %s %s %s : %s%n", lka, lkb, lkc, lkd,
+			Integer.toString(bits, 2));
+		
+		
+		// It is possible that extra bits need to be read depending on the
+		// value prefix. There also needs to be the primary return value number
+		// base along with the bit base.
+		int extrabits;
+		int nbase;
+		int bbase;
+		
+		if (true)
+			throw new Error("TODO");
+		// 7-bit
+		if (bits >= 0b0000000 && bits <= 0b0010111)
+		{
+			extrabits = 0;
+			nbase = 256;
+			bbase = 0b0000000;
+		}
+		
+		// The lower 8-bit range (output data)
+		else if (bits >= 0b0011000 && bits <= 0b1011111)
+		{
+			extrabits = 1;
+		}
+		
+		throw new Error("TODO");
 	}
 	
 	/**
