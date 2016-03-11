@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.io;
 
+import java.io.IOException;
+
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
  *
@@ -18,5 +20,23 @@ package net.multiphasicapps.io;
 public class DeflateDataProcessor
 	extends DataProcessor
 {
+	/** Input bits. */
+	protected final CircularBitBuffer inputbits =
+		new CircularBitBuffer(input);
+	
+	/** Output bits. */
+	protected final CircularBitBuffer outputbits =
+		new CircularBitBuffer(output);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/11
+	 */
+	@Override
+	protected void process()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
 }
 

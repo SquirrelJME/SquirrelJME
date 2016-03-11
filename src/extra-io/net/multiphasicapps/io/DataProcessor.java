@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.io;
 
+import java.io.IOException;
+import java.util.NoSuchElementException;
+
 /**
  * This is a data processor which is given input bytes and performs
  * transformation of the input and provides an output.
@@ -17,6 +20,8 @@ package net.multiphasicapps.io;
  * Data processors must be able to handle situations where partial information
  * and state is available, that is if there is not enough input available it
  * can continue when there is input.
+ *
+ * All data processors are initialized in the waiting state.
  *
  * @since 2016/03/11
  */
@@ -34,18 +39,132 @@ public abstract class DataProcessor
 	protected final CircularByteBuffer output =
 		new CircularByteBuffer(lock);
 	
+	/** Visible lock. */
+	final Object _lock =
+		lock;
+	
 	/**
-	 * Offers a single byte to the processor input.
+	 * Is this finished? If so then no more input is accepted and the output
+	 * must be processed.
+	 */
+	private volatile boolean _isfinished;
+	
+	/** Is this waiting? */
+	private volatile boolean _iswaiting =
+		true;
+	
+	/**
+	 * Processes some data.
 	 *
-	 * @param __b The byte to offer.
+	 * @throws IOException On processing errors.
+	 * @since 2016/03/11
+	 */
+	protected abstract void process()
+		throws IOException;
+	
+	/**
+	 * Sets the waiting state (if the processor is waiting for more bytes as
+	 * input).
+	 *
+	 * @param __w If {@code true} then the waiting state is set, otherwise
+	 * it is clearaed.
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
-	public final DataProcessor offer(byte __b)
+	protected final DataProcessor setWaiting(boolean __w)
 	{
 		// Lock
 		synchronized (lock)
 		{
+			_iswaiting = __w;
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Signals that the end of the input has been reached and that processing
+	 * should do as much as it can or fail, no more input is permitted after
+	 * this.
+	 *
+	 * @return {@code this}.
+	 * @throws IOException On processing errors.
+	 * @since 2016/03/11
+	 */
+	public final DataProcessor finish()
+		throws IOException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// if already finished, ignore
+			if (_isfinished)
+				return this;
+			
+			// Set
+			_isfinished = true;
+			
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Returns {@code true} if this processor is in the finished state.
+	 *
+	 * @return {@code true} if in the finished state.
+	 * @since 2016/03/11
+	 */
+	public final boolean isFinished()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _isfinished;
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if this processor is in the waiting for more data
+	 * state.
+	 *
+	 * @return {@code true} if it is waiting for more data.
+	 * @since 2016/03/11
+	 */
+	public final boolean isWaiting()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _iswaiting;
+		}
+	}
+	
+	/**
+	 * Offers a single byte to the processor input at the end of its internal
+	 * buffer.
+	 *
+	 * @param __b The byte to offer.
+	 * @return {@code this}.
+	 * @throws IllegalStateException If the processor is in the finish state.
+	 * @throws IOException On processing errors.
+	 * @since 2016/03/11
+	 */
+	public final DataProcessor offer(byte __b)
+		throws IllegalStateException, IOException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Cannot offer if finished
+			if (_isfinished)
+				throw new IllegalStateException();
+			
+			// Add byte to the input
 			input.offerLast(__b);
 		}
 		
@@ -58,11 +177,13 @@ public abstract class DataProcessor
 	 *
 	 * @param __b The buffer to add to the queue.
 	 * @return {@code this}.
+	 * @throws IllegalStateException If the processor is in the finish state.
+	 * @throws IOException On processing errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
 	public final DataProcessor offer(byte... __b)
-		throws NullPointerException
+		throws IllegalStateException, IOException, NullPointerException
 	{
 		return offer(__b, 0, __b.length);
 	}
@@ -75,13 +196,16 @@ public abstract class DataProcessor
 	 * @param __o The offset to within the buffer.
 	 * @param __l The number of bytes to offer.
 	 * @return {@code this}.
+	 * @throws IllegalStateException If the processor is in the finish state.
 	 * @throws IndexOutOfBoundsException If the offset or length are negative,
 	 * or the offset and the length exceeds the array size.
+	 * @throws IOException On processing errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
 	public final DataProcessor offer(byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, NullPointerException
+		throws IllegalStateException, IndexOutOfBoundsException, IOException,
+			NullPointerException
 	{
 		// Check
 		if (__b == null)
@@ -92,12 +216,138 @@ public abstract class DataProcessor
 		// Lock
 		synchronized (lock)
 		{
-			for (int i = __l - 1; i >= 0; i--)
+			for (int i = 0; i < __l; i++)
 				offer(__b[__o + i]);
 		}
 		
 		// Self
 		return this;
+	}
+	
+	
+	/**
+	 * Reads and removes the first available byte, if one is not available
+	 * then an exception is thrown.
+	 *
+	 * @return The next value.
+	 * @throws IOException On processing errors.
+	 * @throws NoSuchElementException If no values are available.
+	 * @since 2016/03/11
+	 */
+	public final byte remove()
+		throws IOException, NoSuchElementException
+	{
+		synchronized (lock)
+		{
+			for (boolean fail = false;;)
+			{
+				// Try reading some output
+				try
+				{
+					// Return an output byte
+					return output.removeFirst();
+				}
+			
+				// No data is available
+				catch (NoSuchElementException nsee)
+				{
+					// Happened twice, toss it
+					if (fail)
+						throw nsee;
+					
+					// Fail if this happens again
+					fail = true;
+					
+					// Process some data
+					try
+					{
+						process();
+					}
+					
+					// If waiting just fail here
+					catch (WaitingException we)
+					{
+						throw nsee;
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Reads and removes any available bytes and places them within the
+	 * given array.
+	 *
+	 * @param __b The array to write byte values into.
+	 * @return The number of bytes which were removed.
+	 * @throws IOException On processing errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/11
+	 */
+	public final int remove(byte[] __b)
+		throws IOException, NullPointerException
+	{
+		return remove(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Reads and removes multiple bytes waiting for output up to the
+	 * length and places them into the given array.
+	 *
+	 * @param __b The array to write byte values into.
+	 * @param __o The offset into the array to start writing at.
+	 * @param __l The maximum number of bytes to remove.
+	 * @return The number of removed bytes.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative,
+	 * or the offset and the length exceeds the array size.
+	 * @throws IOException On processing errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/11
+	 */
+	public final int remove(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException();
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException();
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Total
+			int rc = 0;
+			
+			// Remove bytes
+			for (int i = 0; i < __l; i++)
+				try
+				{
+					__b[__o + i] = remove();
+					rc++;
+				}
+				
+				// Return the number of read bytes
+				catch (NoSuchElementException nsee)
+				{
+					return rc;
+				}
+			
+			// Return the read count
+			return rc;	
+		}
+	}
+	
+	/**
+	 * This is thrown when during the middle of processing there is not
+	 * enough data to continue, that is there is not enough input for output
+	 * to be written to.
+	 *
+	 * @since 2016/03/11
+	 */
+	public static final class WaitingException
+		extends RuntimeException
+	{
 	}
 }
 

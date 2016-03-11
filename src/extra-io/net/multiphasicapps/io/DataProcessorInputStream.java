@@ -12,6 +12,7 @@ package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 /**
  * This is {@link InputStream} which uses a given {@link DataProcessor} with
@@ -60,8 +61,12 @@ public class DataProcessorInputStream
 	public void close()
 		throws IOException
 	{
-		// Close the wrapped stream
-		in.close();
+		// Lock
+		synchronized (lock)
+		{
+			// Close the wrapped stream
+			in.close();
+		}
 	}
 	
 	/**
@@ -72,7 +77,47 @@ public class DataProcessorInputStream
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Also lock on the processor lock also to prevent from using the
+			// processor while this input stream is running.
+			synchronized (processor._lock)
+			{
+				for (;;)
+				{
+					// Attempt to grab bytes from the output
+					try
+					{
+						// Try to grab a byte from the output
+						byte rv = processor.remove();
+					
+						// If one was grabbed then return it
+						return ((int)rv) & 0xFF;
+					}
+				
+					// There are no bytes waiting
+					catch (NoSuchElementException nsee)
+					{
+					}
+				
+					// If the processor is waiting then give it some bytes
+					if (processor.isWaiting())
+					{
+						// Read input byte
+						int val = in.read();
+						
+						// EOF? then finish
+						if (val < 0)
+							processor.finish();
+						
+						// Otherwise offer it
+						else
+							processor.offer((byte)val);
+					}
+				}
+			}
+		}
 	}
 }
 
