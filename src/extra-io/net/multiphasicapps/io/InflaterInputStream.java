@@ -261,29 +261,9 @@ public class InflaterInputStream
 				else if (type == TYPE_FIXED_HUFFMAN)
 				{
 					// Loop until the end is reached
-					for (;;)
-					{
-						// Read fixed code
-						int val = DeflateFixedHuffman.read(in);
-						
-						System.err.println("read fixed " + val);
-						
-						// Literal value?
-						if (val < 256)
-							compactor.add(val, 0xFF);
-						
-						// Stop?
-						else if (val == 256)
-							break;
-						
-						// Use window value
-						else if (val >= 257 && val <= 285)
-							throw new Error("TODO");
-						
-						// Illegal value
-						else
-							throw new InflaterException.IllegalSequence();
-					}
+					int val;
+					while ((val = DeflateFixedHuffman.read(in)) != 256)
+						__handleValue(val);
 				}
 				
 				// Huffman compressed (dynamic)
@@ -354,6 +334,29 @@ public class InflaterInputStream
 					throw new InflaterException.HeaderErrorTypeException();
 			}
 		}
+	}
+	
+	/**
+	 * Handles a huffman value.
+	 *
+	 * @param __val The value to handle.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/11
+	 */
+	private void __handleValue(int __val)
+		throws IOException
+	{
+		// Literal value
+		if (__val < 256)
+			compactor.add(__val, 0xFF);
+		
+		// Read from the window
+		else if (__val >= 257 && __val <= 285)
+			throw new Error("TODO");
+		
+		// Illegal value
+		else
+			throw new InflaterException.IllegalSequence();
 	}
 }
 
