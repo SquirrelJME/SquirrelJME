@@ -22,11 +22,26 @@ import java.util.NoSuchElementException;
  */
 public class CircularByteBuffer
 {
+	/** Initial buffer size. */
+	protected static final int INITIAL_SIZE =
+		8;	
+	
 	/** Lock. */
 	protected final Object lock;
 	
 	/** Visible lock to the bit buffer. */
 	final Object _lock;
+	
+	/** The internal buffer. */
+	private volatile byte[] _buffer;
+	
+	/** Head of the buffer. */
+	private volatile int _head =
+		-1;
+	
+	/** Tail of the buffer. */
+	private volatile int _tail =
+		-1;
 	
 	/**
 	 * Initializes a circular byte buffer.
@@ -47,6 +62,35 @@ public class CircularByteBuffer
 	public CircularByteBuffer(Object __lock)
 	{
 		_lock = lock = (__lock != null ? __lock : new Object());
+	}
+	
+	/**
+	 * Returns the number of bytes available in the queue.
+	 *
+	 * @return The available bytes.
+	 * @since 2016/03/11
+	 */
+	public int available()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// If no buffer, will always be empty
+			byte[] buf = _buffer;
+			if (_buffer == null)
+				return 0;
+			
+			// Get head and tail positions
+			long head = _head;
+			long tail = _tail;
+			
+			// If the tail is less than the head, add buffer size
+			if (tail < head)
+				tail += buf.length;
+			
+			// Return the byte location difference
+			return (int)(tail - head);
+		}
 	}
 	
 	/**
@@ -188,7 +232,30 @@ public class CircularByteBuffer
 	{
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// If not buffer, then there is nothing to remove
+			byte[] buf = _buffer;
+			if (buf == null)
+				throw new NoSuchElementException();
+			
+			// Get head and tail position
+			int head = _head;
+			int tail = _tail;
+			
+			// If the head is at the tail, cannot get
+			if (head == tail)
+				throw new NoSuchElementException();
+			
+			// Get value here
+			byte rv = buf[head];
+			
+			// Clear it to invalidate it (just in case)
+			buf[head] = 0;
+			
+			// Increment head position
+			_head = (head + 1) & (buf.length - 1);
+			
+			// Return it
+			return rv;
 		}
 	}
 	
@@ -267,7 +334,31 @@ public class CircularByteBuffer
 	{
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// If not buffer, then there is nothing to remove
+			byte[] buf = _buffer;
+			if (buf == null)
+				throw new NoSuchElementException();
+			
+			// Get head and tail position
+			int head = _head;
+			int tail = _tail;
+			
+			// If the tail is at the head, cannot get
+			if (head == tail)
+				throw new NoSuchElementException();
+			
+			// Get value here
+			int from = tail - 1;
+			byte rv = buf[from];
+			
+			// Clear it to invalidate it (just in case)
+			buf[from] = 0;
+			
+			// Decrement tail position
+			_tail = (from) & (buf.length - 1);
+			
+			// Return it
+			return rv;
 		}
 	}
 	
