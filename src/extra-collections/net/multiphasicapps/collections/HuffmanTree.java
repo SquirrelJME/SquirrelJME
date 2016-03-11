@@ -92,7 +92,8 @@ public class HuffmanTree<T>
 		// Check mask and representation
 		if ((__rep & (~__repmask)) != 0)
 			throw new IllegalArgumentException();
-		if (ibm != (32 - Integer.numberOfLeadingZeros(__repmask)))
+		if (ibm != (32 - Integer.numberOfLeadingZeros(__repmask)) ||
+			(__repmask & 1) == 0)
 			throw new IllegalArgumentException();
 		
 		// Start from higher shifts to lower shifts

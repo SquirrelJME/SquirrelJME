@@ -106,3 +106,16 @@ Thinking about it, I can just use a `HashMap` and use that instead of the
 huffman tree. A red-black tree would also suffice too. Actually no, due to the
 variable size nature of the bits.
 
+## 20:59
+
+So the first letter I decoded in the test that I found on the internet gives
+me my first letter, which is 'T'. I need a bit queue which can fill an internal
+queue when enough bits were put in.
+
+## 21:56
+
+Most likely for the fixed huffman table, I do not need to calculate the table
+at all because I can use if statements and such to determine what the actual
+value is. It would be very similar to UTF-8 handling. That would save on
+speed because most of the values are very linear.
+

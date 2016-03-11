@@ -65,6 +65,10 @@ public class InflaterInputStream
 	protected final SlidingByteWindow slidingwindow =
 		new SlidingByteWindow(SLIDING_WINDOW_SIZE);
 	
+	/** The bit compactor for queing added bits. */
+	protected final BitCompactor 
+	compactor;
+	
 	/** Finished reading? */
 	private volatile boolean _finished;
 	
@@ -85,6 +89,21 @@ public class InflaterInputStream
 		
 		// Set
 		in = new BitInputStream(__w, true);
+		
+		// Setup compactor
+		compactor = new BitCompactor(new BitCompactor.Callback()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/10
+				 */
+				@Override
+				public void ready(byte __v)
+				{
+					System.err.println(__v);
+					throw new Error("TODO");
+				}
+			});
 	}
 	
 	/**
@@ -177,9 +196,10 @@ public class InflaterInputStream
 								break;
 							
 							// Inject bits to the output
-							System.err.println(value);
-							if (true)
-								throw new IOException("TODO");
+							if (value < 256)
+								compactor.add(value, 0xFF);
+							else
+								compactor.add(value, 0x1FF);
 							
 							// Go back to the root node to read the next value
 							rover = ht.root();

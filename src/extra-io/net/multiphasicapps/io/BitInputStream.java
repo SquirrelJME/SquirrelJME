@@ -150,11 +150,11 @@ public class BitInputStream
 	 * Reads the specified number of bits and returns the value.
 	 *
 	 * Given an example byte value as done by {@link #read()}: {@code 0 1}.
-	 * If {@code __rev} is {@code false} then the read value is {@code 0b10}.
-	 * If {@code __rev} is {@code true} then the read value is {@code 0b01}.
+	 * If {@code __msb} is {@code false} then the read value is {@code 0b10}.
+	 * If {@code __msb} is {@code true} then the read value is {@code 0b01}.
 	 *
 	 * @param __c The number of bits to read.
-	 * @param __rev Reverse all read bits, if {@code true} then the higher bits
+	 * @param __msb Reverse all read bits, if {@code true} then the higher bits
 	 * are written to first otherwise lower bits are written to first.
 	 * @return The read bit value.
 	 * @throws EOFException If no more bits are left.
@@ -163,7 +163,7 @@ public class BitInputStream
 	 * @throws IOException On read errors.
 	 * @since 2016/03/09
 	 */
-	public long readBits(int __c, boolean __rev)
+	public long readBits(int __c, boolean __msb)
 		throws EOFException, IllegalArgumentException, IOException
 	{
 		// Check
@@ -177,8 +177,9 @@ public class BitInputStream
 			long rv = 0L;
 			
 			// Read input bits
-			int an = (__rev ? -1 : 1);
-			for (int i = 0, at = (__rev ? __c - 1 : 0); i < __c; i++, at += an)
+			int an = (__msb ? -1 : 1);
+			for (int i = 0, at = (__msb ? __c - 1 : 0); i >= 0 && i < __c;
+				i++, at += an)
 				if (read())
 					rv |= (1L << (long)(at));
 			
