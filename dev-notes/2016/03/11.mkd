@@ -34,3 +34,8 @@ I can just pass it to the method instead.
 
 And having it invoke a method is 3038 bytes of byte code.
 
+## 09:24
+
+I can also compact the giant method a bit by removing some of the leaves since
+now I notice a pattern to the bits.
+

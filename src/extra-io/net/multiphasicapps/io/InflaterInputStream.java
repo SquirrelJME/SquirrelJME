@@ -52,13 +52,6 @@ public class InflaterInputStream
 	protected static final int TYPE_ERROR =
 		0b11;
 	
-	/** Global static huffman tree cache. */
-	private static volatile Reference<HuffmanTree<Integer>> _GLOBAL_TREE;
-	
-	/** Lock on the global tree. */
-	private static final Object _GLOBAL_TREE_LOCK =
-		new Object();
-	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -193,9 +186,6 @@ public class InflaterInputStream
 					}
 				}
 			});
-		
-		// Dump the tree
-		__dumpTree();
 	}
 	
 	/**
@@ -274,7 +264,7 @@ public class InflaterInputStream
 					for (;;)
 					{
 						// Read fixed code
-						int val = __readFixed(in);
+						int val = DeflateFixedHuffman.read(in);
 						
 						System.err.println("read fixed " + val);
 						
@@ -302,13 +292,9 @@ public class InflaterInputStream
 					// The tree to use for the data
 					HuffmanTree<Integer> ht;
 					
-					// Load in dynamic huffman table?
-					if (type == TYPE_DYNAMIC_HUFFMAN)
+					// Load in dynamic huffman table
+					if (true)
 						throw new Error("TODO");
-				
-					// Use the fixed one
-					else
-						ht = __fixedTree();
 					
 					// Start at the root of the tree
 					HuffmanTree<Integer>.Traverse rover = ht.root();
@@ -367,147 +353,6 @@ public class InflaterInputStream
 				else
 					throw new InflaterException.HeaderErrorTypeException();
 			}
-		}
-	}
-	
-	/**
-	 * Creates Java source code from the given huffman tree.
-	 *
-	 * @since 2016/03/11
-	 */
-	private static final void __dumpTree()
-	{
-		// Get the fixed tree
-		HuffmanTree<Integer> ht = __fixedTree();
-		
-		// Start at the root node
-		HuffmanTree<Integer>.Traverse rover = ht.root();
-		
-		System.out.println(__dumpTreeT(rover, 0));
-		try
-		{
-			System.out.flush();
-		}
-		catch (Throwable t)
-		{
-		}
-	}
-	
-	/**
-	 * Dumps a segment of the tree.
-	 *
-	 * @param __t Traverser.
-	 * @param __tab Tab depth.
-	 * @return The string of both sides.
-	 * @since 2016/03/11
-	 */
-	private static final String __dumpTreeT(HuffmanTree<Integer>.Traverse __t,
-		int __tab)
-	{
-		StringBuilder sb = new StringBuilder();
-		
-		// Get Zero and One State
-		HuffmanTree<Integer>.Node zero = __t.get(0);
-		HuffmanTree<Integer>.Node one = __t.get(1);
-		
-		// Starting if statement
-		sb.append("if (in.read())\n");
-		
-		// One?
-		sb.append(__dumpTreeS(one, __tab + 1));
-		
-		// Else part of the tree
-		sb.append('\n');
-		for (int i = 0; i < __tab; i++)
-			sb.append('\t');
-		sb.append("else\n");
-		
-		// Zero?
-		sb.append(__dumpTreeS(zero, __tab + 1));
-		
-		// Return it
-		return sb.toString();
-	}
-	
-	private static final String __dumpTreeS(HuffmanTree<Integer>.Node __n,
-		int __tab)
-	{
-		StringBuilder sb = new StringBuilder();
-		
-		// Tabs
-		for (int i = 0; i < __tab; i++)
-			sb.append('\t');
-		
-		// If null, then an error
-		if (__n == null)
-			sb.append("throw new InflaterException.IllegalSequence();");
-		
-		// If a travere, traverse it
-		else if (__n.isTraverse())
-			sb.append(__dumpTreeT(__n.asTraverse(), __tab));
-		
-		// Value
-		else
-		{
-			sb.append("return ");
-			sb.append(__n.asLeaf().get());;
-			sb.append(';');
-		}
-		sb.append('\n');
-		
-		// Return it
-		return sb.toString();
-	}
-	
-	/**
-	 * This returns the potentially cached fixed huffman tree which is used
-	 * as input for dynamic huffman trees and the fixed huffman tree for
-	 * potentially small data sources.
-	 *
-	 * @since 2016/03/10
-	 */
-	private static final HuffmanTree<Integer> __fixedTree()
-	{
-		// Lock on the global tree
-		synchronized (_GLOBAL_TREE_LOCK)
-		{
-			// Get reference
-			Reference<HuffmanTree<Integer>> ref = _GLOBAL_TREE;
-			HuffmanTree<Integer> rv = null;
-			
-			// Cached already?
-			if (ref != null)
-				rv = ref.get();
-			
-			// Needs creation?
-			if (rv == null)
-			{
-				// Create a new one
-				rv = new HuffmanTree<Integer>();
-				
-				// 0 - 143, 8 bits
-				for (int i = 0; i <= 143; i++)
-					rv.setLiteralRepresentation(0b00110000 + i, 0b11111111, i);
-				
-				// 144 - 255, 9 bits
-				for (int i = 144, j = 0; i <= 255; i++, j++)
-					rv.setLiteralRepresentation(0b110010000 + j, 0b111111111,
-						i);
-				
-				// 256 - 279, 7 bits
-				for (int i = 256, j = 0; i <= 279; i++, j++)
-					rv.setLiteralRepresentation(0b0000000 + j, 0b1111111, i);
-				
-				// 280 - 287, 8 bits
-				for (int i = 280, j = 0; i <= 287; i++, j++)
-					rv.setLiteralRepresentation(0b11000000 + j, 0b11111111, i);
-				
-				// Cache it
-				_GLOBAL_TREE = new WeakReference<>(rv);
-			}
-			
-			// Return it
-			return rv;
 		}
 	}
 }

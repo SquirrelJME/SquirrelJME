@@ -38,7 +38,7 @@ public class DeflateFixedHuffman
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public static int readFixed(BitInputStream __in)
+	public static int read(BitInputStream __in)
 		throws IOException, NullPointerException
 	{
 		// Check
