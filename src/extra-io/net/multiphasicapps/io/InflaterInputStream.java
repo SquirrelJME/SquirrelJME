@@ -397,17 +397,28 @@ public class InflaterInputStream
 		int bits = (int)in.readBits(7);
 		boolean lka = true, lkb = true, lkc = true, lkd = true;
 		
-		// If bit 7 is set then it will never be C
-		if (0 != (bits & 0b1000000))
-			lkc = false;
+		// Never A?
+		if (false)
+			lka = false;
 		
-		// If bits 3-6 are set then it will never be D
-		if (0 != (bits & 0b0111000))
-			lkd = false;
-		
+		// Never B?
 		// It will never be B if the mask is < 0b10000
 		if (bits < 0b0010000)
 			lkb = false;
+		
+		// Never C?
+		// If bit 7 is set
+		// The mask is greater than the high C value
+		if ((0 != (bits & 0b1000000)) ||
+			(bits > 0b0101111))
+			lkc = false;
+		
+		// Never D?
+		// If bits 3-6 are set then it will never be D
+		// If bit 7 is not set
+		if ((0 != (bits & 0b0111000)) ||
+			(0 == (bits & 0b1000000)))
+			lkd = false;
 		
 		System.err.printf("%s %s %s %s : %s%n", lka, lkb, lkc, lkd,
 			Integer.toString(bits, 2));
