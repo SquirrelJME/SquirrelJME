@@ -13,12 +13,13 @@ package net.multiphasicapps.collections;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * This represents a mutable huffman tree.
- *
- * Note that very large bit numbers will use more memory.
+ * 
+ * This class is not thread safe.
  *
  * @param <T> The type of values to store in the tree.
  * @since 2016/03/10
@@ -40,12 +41,9 @@ public class HuffmanTree<T>
 	protected static final Object NOT_FILLED =
 		new Object();
 	
-	/** Lock. */
-	protected final Object lock =
-		new Object();
-	
-	/** The huffman value tree. */
-	private volatile Object[] _values;
+	/** This is the root traversal node. */
+	protected final Traverse root =
+		new Traverse();
 	
 	/**
 	 * Initializes a basic blank huffman tree.
@@ -58,6 +56,8 @@ public class HuffmanTree<T>
 	
 	/**
 	 * Adds a literal value representation to the tree.
+	 *
+	 * The representation is traversed from the lower shifts to higher shifts.
 	 *
 	 * @param __rep The representation of the value.
 	 * @param __bit The mask to use in the literal representation.
@@ -81,51 +81,8 @@ public class HuffmanTree<T>
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__repmask)))
 			throw new IllegalArgumentException();
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Ensure that the internal array tree is capable of storing keys
-			// which can take up the given number of bits.
-			ensureBits(ibm);
-			
-			if (true)
-				throw new Error("TODO");
-		}
-		
-		// Self
-		return this;
-	}
-	
-	/**
-	 * This ensures that the internal representation of values can represent
-	 * the given number of bits.
-	 *
-	 * @param __b The number of bits to hold values for.
-	 * @return {@code this}.
-	 * @throws IllegalArgumentException If the number of bits is zero,
-	 (negative, or
-	 * higher than 32.
-	 * @since 2016/03/10
-	 */
-	public HuffmanTree ensureBits(int __b)
-		throws IllegalArgumentException
-	{
-		// Check
-		if (__b <= 0 || __b > 32)
-			throw new IllegalArgumentException();
-		
-		// Lock
-		synchronized (lock)
-		{
-			// Get the old one
-			Object[] old = _values;
-			
-			// If null, just create an array
-			
-			
-			if (true)
-				throw new Error("TODO");
-		}
+		if (true)
+			throw new Error("TODO");
 		
 		// Self
 		return this;
@@ -139,6 +96,186 @@ public class HuffmanTree<T>
 	public Set<Map.Entry<Integer, T>> entrySet()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * This represents a single huffman node.
+	 *
+	 * @since 2016/03/10
+	 */
+	public abstract class Node
+	{
+		/**
+		 * Initializes the base node.
+		 *
+		 * @since 2016/03/10
+		 */
+		private Node()
+		{
+		}
+		
+		/**
+		 * Returns this node as a leaf.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/10
+		 */
+		public final Leaf asLeaf()
+		{
+			return (Leaf)this;
+		}
+		
+		/**
+		 * Returns this node as a traverse.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/10
+		 */
+		public final Traverse asTraverse()
+		{
+			return (Traverse)this;
+		}
+	}
+	
+	/**
+	 * This is a leaf of the tree which contains a value.
+	 *
+	 * @since 2016/03/10
+	 */
+	public class Leaf
+		extends Node
+	{
+		/** The value of this leaf. */
+		private volatile T _value;
+		
+		/**
+		 * Initializes this leaf.
+		 *
+		 * @since 2016/03/10
+		 */
+		protected Leaf()
+		{
+		}
+		
+		/**
+		 * Initializes this leaf with an initial value.
+		 *
+		 * @param __v The initial value of the leaf.
+		 */
+		protected Leaf(T __v)
+		{
+			set(__v);
+		}
+		
+		/**
+		 * Returns the value of this leaf.
+		 *
+		 * @return The leaf value.
+		 * @since 2016/03/10
+		 */
+		public T get()
+		{
+			return _value;
+		}
+		
+		/**
+		 * Sets the value of this leaf.
+		 *
+		 * @param __v The value to set.
+		 * @return The old value.
+		 * @since 2016/03/10
+		 */
+		public T set(T __v)
+		{
+			T old = _value;
+			_value = __v;
+			return old;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/10
+		 */
+		@Override
+		public String toString()
+		{
+			return Objects.toString(get());
+		}
+	}
+	
+	/**
+	 * This is a traversal node.
+	 *
+	 * @since 2016/03/10
+	 */
+	public class Traverse
+		extends Node
+	{
+		/** The zero side of the tree. */
+		private volatile Node _zero;
+		
+		/** The one side of the tree. */
+		private volatile Node _one;
+		
+		/**
+		 * Initializes the traversal node.
+		 *
+		 * @since 2016/03/10
+		 */
+		protected Traverse()
+		{
+		}
+		
+		/**
+		 * Gets the node which is either zero or one.
+		 *
+		 * @param __n {@code 0} or {@code 1}.
+		 * @return That node or {@code null} if it is not set.
+		 * @throws IllegalArgumentException If {@code null} is not zero or one.
+		 * @since 2016/03/10
+		 */
+		public Node get(int __n)
+			throws IllegalArgumentException
+		{
+			if (__n == 0)
+				return _zero;
+			else if (__n == 1)
+				return _one;
+			throw new IllegalArgumentException();
+		}
+		
+		/**
+		 * Returns the one node of the tree.
+		 *
+		 * @return The one node.
+		 * @since 2016/03/10
+		 */
+		public Node getOne()
+		{
+			return _one;
+		}
+		
+		/**
+		 * Returns the zero node of the tree.
+		 *
+		 * @return The zero node.
+		 * @since 2016/03/10
+		 */ 
+		public Node getZero()
+		{
+			return _zero;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/10
+		 */
+		@Override
+		public String toString()
+		{
+			return "[0=" + Objects.toString(getZero()) + ", 1=" +
+				Objects.toString(getOne()) + "]";
+		}
 	}
 }
 
