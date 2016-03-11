@@ -12,6 +12,9 @@ package net.multiphasicapps.collections;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -25,7 +28,6 @@ import java.util.Set;
  * @since 2016/03/10
  */
 public class HuffmanTree<T>
-	extends AbstractMap<Integer, T>
 {
 	/**
 	 * This is a special object that is represented in the array which
@@ -52,16 +54,6 @@ public class HuffmanTree<T>
 	 */
 	public HuffmanTree()
 	{
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/10
-	 */
-	@Override
-	public Set<Map.Entry<Integer, T>> entrySet()
-	{
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -121,6 +113,16 @@ public class HuffmanTree<T>
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/10
+	 */
+	@Override
+	public String toString()
+	{
+		return root.toString();
 	}
 	
 	/**

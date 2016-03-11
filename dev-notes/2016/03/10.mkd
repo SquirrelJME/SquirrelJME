@@ -100,3 +100,9 @@ would be simpler though and would increase the object count a bit though.
 
 Looks like I was missing `isInstance()` in `Class`.
 
+## 20:42
+
+Thinking about it, I can just use a `HashMap` and use that instead of the
+huffman tree. A red-black tree would also suffice too. Actually no, due to the
+variable size nature of the bits.
+
