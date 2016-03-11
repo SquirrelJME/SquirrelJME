@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.io;
 
+import java.util.NoSuchElementException;
+
 /**
  * This is a circular buffer which provides bits for input and output as a kind
  * of queue.
@@ -25,8 +27,7 @@ package net.multiphasicapps.io;
 public class CircularBitBuffer
 {
 	/** Lock. */
-	protected final Object lock =
-		new Object();
+	protected final Object lock;
 	
 	/** The backing circular byte buffer. */
 	protected final CircularByteBuffer backing;
@@ -58,6 +59,7 @@ public class CircularBitBuffer
 		
 		// Set
 		backing = __w;
+		lock = backing._lock;
 	}
 	
 	/**
@@ -79,7 +81,10 @@ public class CircularBitBuffer
 	 */
 	public CircularBitBuffer offerFirst(boolean __b)
 	{
-		throw new Error("TODO");
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -139,7 +144,10 @@ public class CircularBitBuffer
 	 */
 	public CircularBitBuffer offerLast(boolean __b)
 	{
-		throw new Error("TODO");
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -188,6 +196,164 @@ public class CircularBitBuffer
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Reads and removes the first available bit, if one is not available
+	 * then an exception is thrown.
+	 *
+	 * @return The next value.
+	 * @throws NoSuchElementException If no values are available.
+	 * @since 2016/03/11
+	 */
+	public boolean removeFirst()
+		throws NoSuchElementException
+	{
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Reads and removes the first available bits and places them within the
+	 * given array.
+	 *
+	 * @param __b The array to write bit values into.
+	 * @return The number of bits which were removed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/11
+	 */
+	public int removeFirst(boolean[] __b)
+		throws NullPointerException
+	{
+		return removeFirst(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Reads and removes multiple bits at the start of the queue up to the
+	 * length and places them into the given array.
+	 *
+	 * @param __b The array to write bit values into.
+	 * @param __o The offset into the array to start writing at.
+	 * @param __l The maximum number of bits to remove.
+	 * @return The number of removed bits.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative,
+	 * or the offset and the length exceeds the array size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/11
+	 */
+	public int removeFirst(boolean[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException();
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException();
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Total
+			int rc = 0;
+			
+			// Remove bits
+			for (int i = 0; i < __l; i++)
+				try
+				{
+					__b[__o + i] = removeFirst();
+					rc++;
+				}
+				
+				// Return the number of read bits
+				catch (NoSuchElementException nsee)
+				{
+					return rc;
+				}
+			
+			// Return the read count
+			return rc;	
+		}
+	}
+	
+	/**
+	 * Reads and removes the last available bit, if one is not available
+	 * then an exception is thrown.
+	 *
+	 * @return The next value.
+	 * @throws NoSuchElementException If no values are available.
+	 * @since 2016/03/11
+	 */
+	public boolean removeLast()
+		throws NoSuchElementException
+	{
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Reads and removes the last available bits and places them within the
+	 * given array.
+	 *
+	 * @param __b The array to write bit values into.
+	 * @return The number of bits which were removed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/11
+	 */
+	public int removeLast(boolean[] __b)
+		throws NullPointerException
+	{
+		return removeLast(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Reads and removes multiple bits at the end of the queue up to the
+	 * length and places them into the given array.
+	 *
+	 * @param __b The array to write bit values into.
+	 * @param __o The offset into the array to start writing at.
+	 * @param __l The maximum number of bits to remove.
+	 * @return The number of removed bits.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative,
+	 * or the offset and the length exceeds the array size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/11
+	 */
+	public int removeLast(boolean[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException();
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException();
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Total
+			int rc = 0;
+			
+			// Remove bits
+			for (int i = __l - 1; i >= 0; i--)
+				try
+				{
+					__b[__o + i] = removeLast();
+					rc++;
+				}
+				
+				// Return the number of read bits
+				catch (NoSuchElementException nsee)
+				{
+					return rc;
+				}
+			
+			// Return the read count
+			return rc;	
+		}
 	}
 }
 
