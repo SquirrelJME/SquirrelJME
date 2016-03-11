@@ -274,7 +274,7 @@ public class InflaterInputStream
 					for (;;)
 					{
 						// Read fixed code
-						int val = __readFixed();
+						int val = __readFixed(in);
 						
 						System.err.println("read fixed " + val);
 						
@@ -368,89 +368,6 @@ public class InflaterInputStream
 					throw new InflaterException.HeaderErrorTypeException();
 			}
 		}
-	}
-	
-	/**
-	 * Reads a fixed huffman code for use by the {@code TYPE_FIXED_HUFFMAN}
-	 * state. This method does not use a built huffman tree and instead
-	 * determines the desired value to place depending on the used initial
-	 * bits. The decoding is similar to UTF-8 in a way as the table of input
-	 * values is mostly linear of a fixed size. Note that this will potentially
-	 * return windows and stop values.
-	 *
-	 * @return The read value.
-	 * @throws IOException On read errors.
-	 * @since 2016/03/10
-	 */
-	private final int __readFixed()
-		throws IOException
-	{
-		// The minimum set of fixed sized bits is 7, thus read the 7 bits first
-		// It should be noted that the returned bits are on the RIGHT side as
-		// those specified in the RFC 1951 (3.2.6).
-		//   frm to  low       hi       
-		//   --- --- --+++++++ --+++++++
-		// A   0 143  00110000  10111111
-		// B 144 255 110010000 111111111
-		// C 256 279   0000000   0101111
-		// D 280 287  11000000  11000111
-		//   --- --- --+++++++ --+++++++
-		//  L 84      10000100  10000100
-		int bits = (int)in.readBits(7);
-		boolean lka = true, lkb = true, lkc = true, lkd = true;
-		
-		// Never A?
-		if (false)
-			lka = false;
-		
-		// Never B?
-		// It will never be B if the mask is < 0b10000
-		if (bits < 0b0010000)
-			lkb = false;
-		
-		// Never C?
-		// If bit 7 is set
-		// The mask is greater than the high C value
-		// Bit 
-		if ((0 != (bits & 0b1000000)) ||
-			(bits > 0b0101111))
-			lkc = false;
-		
-		// Never D?
-		// If bits 3-6 are set then it will never be D
-		// If bit 7 is not set
-		if ((0 != (bits & 0b0111000)) ||
-			(0 == (bits & 0b1000000)))
-			lkd = false;
-		
-		System.err.printf("%s %s %s %s : %s%n", lka, lkb, lkc, lkd,
-			Integer.toString(bits, 2));
-		
-		
-		// It is possible that extra bits need to be read depending on the
-		// value prefix. There also needs to be the primary return value number
-		// base along with the bit base.
-		int extrabits;
-		int nbase;
-		int bbase;
-		
-		if (true)
-			throw new Error("TODO");
-		// 7-bit
-		if (bits >= 0b0000000 && bits <= 0b0010111)
-		{
-			extrabits = 0;
-			nbase = 256;
-			bbase = 0b0000000;
-		}
-		
-		// The lower 8-bit range (output data)
-		else if (bits >= 0b0011000 && bits <= 0b1011111)
-		{
-			extrabits = 1;
-		}
-		
-		throw new Error("TODO");
 	}
 	
 	/**
