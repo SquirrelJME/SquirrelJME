@@ -71,3 +71,13 @@ only thing I require generation for is the dynamic huffman tree.
 It also just takes up 28 lines of code, which is quite simple. This is compared
 to the previous 500 or so lines.
 
+## 11:46
+
+I am going to need a generic inflation or deflation routine which is then put
+through a processor. So instead of `InflaterInputStream` there is some kind of
+chunked stream instead which is initialized with a processor. The input/output
+stream variants of it would in general just process the bytes. This would be
+handy because in the future I am going to need a cleaner way to handle GZip
+and ZLib streams which use Deflate without creating a bunch of wrapped input
+streams and such.
+
