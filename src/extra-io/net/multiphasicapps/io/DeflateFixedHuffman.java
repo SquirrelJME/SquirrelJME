@@ -68,51 +68,9 @@ public class DeflateFixedHuffman
 								return 208 + __in.readBitsInt(3);
 						else
 							if (__in.read())
-								if (__in.read())
-									if (__in.read())
-										if (__in.read())
-											return 207;
-										else
-											return 206;
-									else
-										if (__in.read())
-											return 205;
-										else
-											return 204;
-								else
-									if (__in.read())
-										if (__in.read())
-											return 203;
-										else
-											return 202;
-									else
-										if (__in.read())
-											return 201;
-										else
-											return 200;
+								return 200 + __in.readBitsInt(3);
 							else
-								if (__in.read())
-									if (__in.read())
-										if (__in.read())
-											return 199;
-										else
-											return 198;
-									else
-										if (__in.read())
-											return 197;
-										else
-											return 196;
-								else
-									if (__in.read())
-										if (__in.read())
-											return 195;
-										else
-											return 194;
-									else
-										if (__in.read())
-											return 193;
-										else
-											return 192;
+								return 192 + __in.readBitsInt(3);
 				else
 					if (__in.read())
 						if (__in.read())
