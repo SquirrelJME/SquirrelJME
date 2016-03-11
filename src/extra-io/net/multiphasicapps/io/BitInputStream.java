@@ -148,10 +148,26 @@ public class BitInputStream
 	}
 	
 	/**
+	 * Invokes {@code readBitsInt(__c, false)}.
+	 *
+	 * @param __c As forwarded.
+	 * @return The integer value of the read bits.
+	 * @throws IllegalArgumentException If the number of bits is not between
+	 * 1 and 32.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/11
+	 */
+	public int readBitsInt(int __c)
+		throws IllegalArgumentException, IOException
+	{
+		return readBitsInt(__c, false);
+	}
+	
+	/**
 	 * Invokes {@code (int)readBits(__c, __msb)}.
 	 *
 	 * @param __c As forwarded.
-	 * @param __c As forwarded.
+	 * @param __msb As forwarded.
 	 * @return The integer value of the read bits.
 	 * @throws IllegalArgumentException If the number of bits is not between
 	 * 1 and 32.

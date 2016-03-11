@@ -52,146 +52,20 @@ public class DeflateFixedHuffman
 					if (__in.read())
 						if (__in.read())
 							if (__in.read())
-								if (__in.read())
-									if (__in.read())
-										if (__in.read())
-											return 255;
-										else
-											return 254;
-									else
-										if (__in.read())
-											return 253;
-										else
-											return 252;
-								else
-									if (__in.read())
-										if (__in.read())
-											return 251;
-										else
-											return 250;
-									else
-										if (__in.read())
-											return 249;
-										else
-											return 248;
+								return 248 + __in.readBitsInt(3);
 							else
-								if (__in.read())
-									if (__in.read())
-										if (__in.read())
-											return 247;
-										else
-											return 246;
-									else
-										if (__in.read())
-											return 245;
-										else
-											return 244;
-								else
-									if (__in.read())
-										if (__in.read())
-											return 243;
-										else
-											return 242;
-									else
-										if (__in.read())
-											return 241;
-										else
-											return 240;
+								return 240 + __in.readBitsInt(3);
 						else
 							if (__in.read())
-								if (__in.read())
-									if (__in.read())
-										if (__in.read())
-											return 239;
-										else
-											return 238;
-									else
-										if (__in.read())
-											return 237;
-										else
-											return 236;
-								else
-									if (__in.read())
-										if (__in.read())
-											return 235;
-										else
-											return 234;
-									else
-										if (__in.read())
-											return 233;
-										else
-											return 232;
+								return 232 + __in.readBitsInt(3);
 							else
-								if (__in.read())
-									if (__in.read())
-										if (__in.read())
-											return 231;
-										else
-											return 230;
-									else
-										if (__in.read())
-											return 229;
-										else
-											return 228;
-								else
-									if (__in.read())
-										if (__in.read())
-											return 227;
-										else
-											return 226;
-									else
-										if (__in.read())
-											return 225;
-										else
-											return 224;
+								return 224 + __in.readBitsInt(3);
 					else
 						if (__in.read())
 							if (__in.read())
-								if (__in.read())
-									if (__in.read())
-										if (__in.read())
-											return 223;
-										else
-											return 222;
-									else
-										if (__in.read())
-											return 221;
-										else
-											return 220;
-								else
-									if (__in.read())
-										if (__in.read())
-											return 219;
-										else
-											return 218;
-									else
-										if (__in.read())
-											return 217;
-										else
-											return 216;
+								return 216 + __in.readBitsInt(3);
 							else
-								if (__in.read())
-									if (__in.read())
-										if (__in.read())
-											return 215;
-										else
-											return 214;
-									else
-										if (__in.read())
-											return 213;
-										else
-											return 212;
-								else
-									if (__in.read())
-										if (__in.read())
-											return 211;
-										else
-											return 210;
-									else
-										if (__in.read())
-											return 209;
-										else
-											return 208;
+								return 208 + __in.readBitsInt(3);
 						else
 							if (__in.read())
 								if (__in.read())
