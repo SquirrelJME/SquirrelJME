@@ -385,15 +385,14 @@ public class InflaterInputStream
 		// The minimum set of fixed sized bits is 7, thus read the 7 bits first
 		// It should be noted that the returned bits are on the RIGHT side as
 		// those specified in the RFC 1951 (3.2.6).
-		//   frm to  low       hi        ><& ><~&
-		//   --- --- --+++++++ --+++++++ --- ----
-		// A   0 143  00110000  10111111 F   F
-		// B 144 255 110010000 111111111 T   T
-		// C 256 279   0000000   0101111 F   T
-		// D 280 287  11000000  11000111 F   F
-		//   --- --- --+++++++ --+++++++ --- ----
-		//    84      01010100  01010100
-		//   ~84      10101011  10101011
+		//   frm to  low       hi       
+		//   --- --- --+++++++ --+++++++
+		// A   0 143  00110000  10111111
+		// B 144 255 110010000 111111111
+		// C 256 279   0000000   0101111
+		// D 280 287  11000000  11000111
+		//   --- --- --+++++++ --+++++++
+		//  L 84      10000100  10000100
 		int bits = (int)in.readBits(7);
 		boolean lka = true, lkb = true, lkc = true, lkd = true;
 		
@@ -409,6 +408,7 @@ public class InflaterInputStream
 		// Never C?
 		// If bit 7 is set
 		// The mask is greater than the high C value
+		// Bit 
 		if ((0 != (bits & 0b1000000)) ||
 			(bits > 0b0101111))
 			lkc = false;

@@ -4,3 +4,15 @@
 
 Brute force can work.
 
+## 00:13
+
+This initial value I have is rather difficult when it comes to elimination.
+
+## 00:16
+
+Actually, I could use what I have now as a kind of heuristic and have a spliced
+off huffman tree which is in four parts. That would reduce the runtime memory
+requirement so to speak. I would need to be in all active trees at the same
+time however. If a rover falls off the tree then it is not that route. If I
+were to visuallize the entire huffman tree and its routes.
+

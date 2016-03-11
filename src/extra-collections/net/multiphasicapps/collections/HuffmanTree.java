@@ -29,20 +29,6 @@ import java.util.Set;
  */
 public class HuffmanTree<T>
 {
-	/**
-	 * This is a special object that is represented in the array which
-	 * indicates that this is not a leaf node.
-	 */
-	protected static final Object DEFER =
-		new Object();
-	
-	/**
-	 * This is a special object which is used to indicate that the given
-	 * position in the tree is not filled.
-	 */
-	protected static final Object NOT_FILLED =
-		new Object();
-	
 	/** This is the root traversal node. */
 	protected final Traverse root =
 		new Traverse(null);
