@@ -193,6 +193,9 @@ public class InflaterInputStream
 					}
 				}
 			});
+		
+		// Dump the tree
+		__dumpTree();
 	}
 	
 	/**
@@ -448,6 +451,95 @@ public class InflaterInputStream
 		}
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Creates Java source code from the given huffman tree.
+	 *
+	 * @since 2016/03/11
+	 */
+	private static final void __dumpTree()
+	{
+		// Get the fixed tree
+		HuffmanTree<Integer> ht = __fixedTree();
+		
+		// Start at the root node
+		HuffmanTree<Integer>.Traverse rover = ht.root();
+		
+		System.out.println(__dumpTreeT(rover, 0));
+		try
+		{
+			System.out.flush();
+		}
+		catch (Throwable t)
+		{
+		}
+	}
+	
+	/**
+	 * Dumps a segment of the tree.
+	 *
+	 * @param __t Traverser.
+	 * @param __tab Tab depth.
+	 * @return The string of both sides.
+	 * @since 2016/03/11
+	 */
+	private static final String __dumpTreeT(HuffmanTree<Integer>.Traverse __t,
+		int __tab)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		// Get Zero and One State
+		HuffmanTree<Integer>.Node zero = __t.get(0);
+		HuffmanTree<Integer>.Node one = __t.get(1);
+		
+		// Starting if statement
+		sb.append("if (in.read())\n");
+		
+		// One?
+		sb.append(__dumpTreeS(one, __tab + 1));
+		
+		// Else part of the tree
+		sb.append('\n');
+		for (int i = 0; i < __tab; i++)
+			sb.append('\t');
+		sb.append("else\n");
+		
+		// Zero?
+		sb.append(__dumpTreeS(zero, __tab + 1));
+		
+		// Return it
+		return sb.toString();
+	}
+	
+	private static final String __dumpTreeS(HuffmanTree<Integer>.Node __n,
+		int __tab)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		// Tabs
+		for (int i = 0; i < __tab; i++)
+			sb.append('\t');
+		
+		// If null, then an error
+		if (__n == null)
+			sb.append("throw new InflaterException.IllegalSequence();");
+		
+		// If a travere, traverse it
+		else if (__n.isTraverse())
+			sb.append(__dumpTreeT(__n.asTraverse(), __tab));
+		
+		// Value
+		else
+		{
+			sb.append("return ");
+			sb.append(__n.asLeaf().get());;
+			sb.append(';');
+		}
+		sb.append('\n');
+		
+		// Return it
+		return sb.toString();
 	}
 	
 	/**

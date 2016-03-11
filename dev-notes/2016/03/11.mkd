@@ -16,3 +16,10 @@ requirement so to speak. I would need to be in all active trees at the same
 time however. If a rover falls off the tree then it is not that route. If I
 were to visuallize the entire huffman tree and its routes.
 
+## 08:48
+
+I would not need a tree if I made a gigantic method which does comparisons on
+all of the tree values. So basically it would just consist of branches. Then
+it could exist in the ROM. I do wonder how big such a method would be though
+since there are byte code limitations.
+
