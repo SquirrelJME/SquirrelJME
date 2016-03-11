@@ -25,15 +25,8 @@ import java.util.NoSuchElementException;
  * @since 2016/03/11
  */
 public class CircularBitBuffer
+	extends CircularGenericBuffer<boolean[], Boolean>
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();
-	
-	/** The backing circular byte buffer. */
-	protected final CircularByteBuffer backing =
-		new CircularByteBuffer(lock);
-	
 	/** The internal buffer. */
 	private volatile boolean[] _buffer;
 	
@@ -52,6 +45,18 @@ public class CircularBitBuffer
 	 */
 	public CircularBitBuffer()
 	{
+		super();
+	}
+	
+	/**
+	 * Initializes a circular bit buffer with the given lock.
+	 *
+	 * @param __lock The lock to use.
+	 * @since 2016/03/11
+	 */
+	public CircularBitBuffer()
+	{
+		super(__lock);
 	}
 	
 	/**
@@ -65,7 +70,21 @@ public class CircularBitBuffer
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// If no buffer, will always be empty
+			boolean[] buf = _buffer;
+			if (_buffer == null)
+				return 0;
+			
+			// Get head and tail positions
+			long head = _head;
+			long tail = _tail;
+			
+			// If the tail is less than the head, add buffer size
+			if (tail < head)
+				tail += buf.length;
+			
+			// Return the byte location difference
+			return (int)(tail - head);
 		}
 	}
 	

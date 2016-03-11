@@ -21,28 +21,8 @@ import java.util.NoSuchElementException;
  * @since 2016/03/11
  */
 public class CircularByteBuffer
+	extends CircularGenericBuffer<byte[], Byte>
 {
-	/** Initial buffer size. */
-	protected static final int INITIAL_SIZE =
-		8;	
-	
-	/** Lock. */
-	protected final Object lock;
-	
-	/** Visible lock to the bit buffer. */
-	final Object _lock;
-	
-	/** The internal buffer. */
-	private volatile byte[] _buffer;
-	
-	/** Head of the buffer. */
-	private volatile int _head =
-		-1;
-	
-	/** Tail of the buffer. */
-	private volatile int _tail =
-		-1;
-	
 	/**
 	 * Initializes a circular byte buffer.
 	 *
@@ -50,7 +30,7 @@ public class CircularByteBuffer
 	 */
 	public CircularByteBuffer()
 	{
-		this(new Object());
+		super();
 	}
 	
 	/**
@@ -61,7 +41,7 @@ public class CircularByteBuffer
 	 */
 	public CircularByteBuffer(Object __lock)
 	{
-		_lock = lock = (__lock != null ? __lock : new Object());
+		super(__lock);
 	}
 	
 	/**

@@ -92,3 +92,15 @@ I could just use a boolean array, a smart JVM will just use a compact form of
 it anyway so I really do not need to worry about space efficiency because it
 is hidden away.
 
+## 17:49
+
+And forcing a minimum number of bits would be easier implementing a
+decompressor because then I would need to handle partial bit states and such.
+It would just be easier because I can read a bunch of bits without worrying
+about running out (during say a fixed huffman read).
+
+## 17:57
+
+I can also use a base class for the buffers since right now they have a bunch
+of duplicate code.
+
