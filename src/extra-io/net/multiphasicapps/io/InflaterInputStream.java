@@ -143,7 +143,7 @@ public class InflaterInputStream
 						// since the code using the inflater class is not
 						// pulling enough bytes out
 						if (nw == r)
-						{
+						{System.err.println("Collided " + nw + " " + r);
 							// The queue has just collected a large number
 							// of bytes which were never collected.
 							if (len >= 0x4000_0000)
@@ -169,6 +169,13 @@ public class InflaterInputStream
 								xw = (xw + 1) & (clen - 1);
 							}
 							
+							for (int i = 0; i < ring.length; i++)
+								System.err.printf("%02x", ring[i]);
+							System.err.println();
+							for (int i = 0; i < creat.length; i++)
+								System.err.printf("%02x", creat[i]);
+							System.err.println();
+							
 							// Set new ring buffer data
 							r = xr;
 							w = xw;
@@ -177,8 +184,8 @@ public class InflaterInputStream
 							_ring = ring = creat;
 						}
 						
-						// Write into it
-						ring[nw] = __v;
+						// Write into it (at the current write position)
+						ring[w] = __v;
 						
 						// Set new positions
 						_read = r;
@@ -297,7 +304,12 @@ public class InflaterInputStream
 							
 							// Stop bit?
 							if (value == 256)
+							{
+								System.err.println("end");
 								break;
+							}
+							else
+								System.err.println("read " + value);
 							
 							// Inject bits to the output
 							if (value < 256)

@@ -119,3 +119,12 @@ at all because I can use if statements and such to determine what the actual
 value is. It would be very similar to UTF-8 handling. That would save on
 speed because most of the values are very linear.
 
+## 22:36
+
+I am getting there:
+
+	54657374696e6754657374696e67
+	0054657374696e005404
+
+Need to get read of that leading zero.
+
