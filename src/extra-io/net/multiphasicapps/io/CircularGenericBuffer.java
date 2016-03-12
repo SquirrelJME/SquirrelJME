@@ -467,6 +467,7 @@ public abstract class CircularGenericBuffer<T, E>
 			T creat = arrayNew(clen);
 			
 			// Copy old values over
+			System.err.printf("%d %d %d%n", os, oe, clen);
 			int nx = 0;
 			while (os != oe)
 			{
@@ -477,6 +478,16 @@ public abstract class CircularGenericBuffer<T, E>
 				os = (os + 1) & (len - 1);
 				nx = (nx + 1) & (clen - 1);
 			}
+			
+			System.err.printf("%d %d %d %d%n", os, oe, nx, clen);
+			System.err.print("O: ");
+			for (int i = 0; i < len; i++)
+				System.err.print(arrayRead(ring, i));
+			System.err.println();
+			System.err.print("N: ");
+			for (int i = 0; i < clen; i++)
+				System.err.print(arrayRead(creat, i));
+			System.err.println();
 			
 			// Set the new positions
 			_buffer = creat;
