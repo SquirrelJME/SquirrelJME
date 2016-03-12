@@ -85,7 +85,7 @@ public class InflateDataProcessor
 		// input bit buffer
 		while (input.hasAvailable())
 			inputbits.offerLastInt(((int)input.removeFirst()) & 0xFF, 0xFF,
-				true);
+				false);
 		
 		// Processing loop
 		for (;;)
@@ -143,10 +143,15 @@ public class InflateDataProcessor
 			// Read single code
 			int code = DeflateFixedHuffman.read(inputbits);
 			
-			System.err.println("c " + code);
+			System.err.println("c " + code + " " + (char)code);
 			System.err.flush();
 			
-			throw new Error("TODO");
+			compactor.add(code, 0xFF);
+			
+			if (false)
+				throw new Error("TODO");
+			if (false)
+				break;
 		}
 	}
 	
@@ -172,6 +177,10 @@ public class InflateDataProcessor
 		
 		// Read type
 		int type = inputbits.removeFirstInt(2);
+		
+		// Debug
+		System.err.printf("DEBUG -- fn: %s%n", _finalhit);
+		System.err.printf("DEBUG -- ty: %d%n", type);
 		
 		// Depends on the type to read
 		switch (type)

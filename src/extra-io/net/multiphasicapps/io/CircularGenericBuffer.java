@@ -285,6 +285,7 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Increment head position
 			_head = (head + 1) & (len - 1);
+			System.err.println("RF " + rv);
 			
 			// Return it
 			return rv;

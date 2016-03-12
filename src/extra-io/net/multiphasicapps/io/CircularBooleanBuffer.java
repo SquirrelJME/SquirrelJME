@@ -223,7 +223,7 @@ public class CircularBooleanBuffer
 			int an = (__msb ? -1 : 1);
 			for (int i = 0, at = (__msb ? __c - 1 : 0); i >= 0 && i < __c;
 				i++, at += an)
-				if (removeFirst())
+				if (removeFirstPrimitive())
 					rv |= (1L << at);
 			
 			// Return it
