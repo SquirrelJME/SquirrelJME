@@ -4,3 +4,7 @@
 
 I get it, I am only checking one side in grow, I need to handle more of it.
 
+## 00:29
+
+This time I get 'X' (88) instead of 'T'.
+
