@@ -19,7 +19,7 @@ public class SlidingByteWindow
 {
 	/** The standard estimated fragment size. */
 	public static final int DEFAULT_FRAGMENT_SIZE =
-		512;
+		128;
 	
 	/** Lock. */
 	protected final Object lock =
@@ -235,13 +235,17 @@ public class SlidingByteWindow
 			throw new NullPointerException();
 		if (__o < 0 || __l < __o || (__o + __l > __b.length))
 			throw new IllegalArgumentException();
-		if (__ago <= 0 || (__ago - __l) < 0 || __ago > windowsize ||
-			__ago > ((fragmentsize * _fragments.length) + _current))
-			throw new IndexOutOfBoundsException();
 		
 		// Lock
 		synchronized (lock)
 		{
+			// Cannot exceed the viewable window area
+			if (__ago <= 0 || (__ago - __l) < 0 || __ago > windowsize ||
+				__ago > ((fragmentsize * _fragments.length) + _current))
+				throw new IndexOutOfBoundsException();
+			
+			// 
+			
 			if (true)
 				throw new Error("TODO");
 		}
