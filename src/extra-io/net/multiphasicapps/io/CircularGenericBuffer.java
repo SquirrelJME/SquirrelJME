@@ -213,6 +213,7 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Increment
 			_tail = (end + 1) & (arrayLength(buf) - 1);
+			System.err.printf("%d T %d -> %d%n", buf.hashCode(), end, _tail);
 		}
 		
 		// Self
@@ -472,7 +473,9 @@ public abstract class CircularGenericBuffer<T, E>
 			while (os != oe)
 			{
 				// Copy values
-				arrayWrite(creat, nx, arrayRead(ring, os));
+				E v;
+				arrayWrite(creat, nx, (v = arrayRead(ring, os)));
+				System.err.printf("? %s (%d, %d)%n", v, os, nx);
 				
 				// Wrap?
 				os = (os + 1) & (len - 1);
