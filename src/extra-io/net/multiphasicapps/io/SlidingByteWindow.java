@@ -17,9 +17,9 @@ package net.multiphasicapps.io;
  */
 public class SlidingByteWindow
 {
-	/** The standard estimated fragment size. */
+	/** The standard estimated fragment size (must be power of two). */
 	public static final int DEFAULT_FRAGMENT_SIZE =
-		128;
+		64;
 	
 	/** Lock. */
 	protected final Object lock =
@@ -47,6 +47,18 @@ public class SlidingByteWindow
 	private volatile int _current;
 	
 	/**
+	 * Sanity check.
+	 *
+	 * @since 2016/03/12
+	 */
+	static
+	{
+		// Must be a power of two
+		if (Integer.bitCount(DEFAULT_FRAGMENT_SIZE) != 1)
+			throw new RuntimeException();
+	}
+	
+	/**
 	 * This initializes the sliding byte window.
 	 *
 	 * @param __wsz The size of the sliding window.
@@ -65,8 +77,13 @@ public class SlidingByteWindow
 		windowsize = __wsz;
 		
 		// Determine the best fragment size
-		fragmentsize = Math.min(windowsize, DEFAULT_FRAGMENT_SIZE);
+		fragmentsize = Math.max(1, Math.min(
+			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE));
 		numfragments = windowsize / fragmentsize;
+		
+		// Not power of two? fail
+		if (Integer.bitCount(fragmentsize) != 1)
+			throw new RuntimeException();
 		
 		// Start in the active fragment
 		_fragments = new byte[0][];
@@ -241,13 +258,46 @@ public class SlidingByteWindow
 		{
 			// Cannot exceed the viewable window area
 			if (__ago <= 0 || (__ago - __l) < 0 || __ago > windowsize ||
-				__ago > ((fragmentsize * _fragments.length) + _current))
+				__ago > ((fragmentsize * _fragments.length) + _total))
 				throw new IndexOutOfBoundsException();
 			
-			// 
-			
-			if (true)
-				throw new Error("TODO");
+			// Write into the buffer
+			for (int i = 0; i < __l; i++)
+			{
+				// Determine the far back distance used
+				int backdx = __ago - i;
+				
+				// The window to read from
+				byte[] source;
+				int rat;
+				
+				// Is this close?
+				int nowcur = _current;
+				if (backdx < nowcur)
+				{
+					source = _active;
+					rat = (nowcur - 1) - backdx;
+				}
+				
+				// Otherwise in another fragment
+				else
+				{
+					// The logical back index from the current
+					int logbdx = backdx - nowcur;
+					
+					// Determine the fragment index from the end to visit
+					byte[][] all = _fragments;
+					int endfrag = (all.length - 1) - (logbdx / fragmentsize);
+					
+					// Source is from the end
+					source = all[endfrag];
+					rat = (fragmentsize - (logbdx % fragmentsize)) - 1;
+				}
+				
+				// Copy
+				__b[__o + i] = source[rat];
+				System.err.printf("DEBUG -- Ch %c%n", (char)__b[__o + i]);
+			}
 		}
 		
 		// Self

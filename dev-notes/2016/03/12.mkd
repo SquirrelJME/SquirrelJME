@@ -87,3 +87,8 @@ This graphing calculator I have is very handy during programming.
 And the distance and length handling was actually quite simple. What I need to
 do now is have the actual sliding window implemented.
 
+## 14:09
+
+The distance starts at the furthest byte back, because otherwise it would not
+make sense.
+

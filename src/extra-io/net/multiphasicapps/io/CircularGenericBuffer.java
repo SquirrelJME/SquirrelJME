@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
  */
 public abstract class CircularGenericBuffer<T, E>
 {
-	/** Initial buffer size. */
+	/** Initial buffer size (power of two). */
 	protected static final int INITIAL_SIZE =
 		8;	
 	
@@ -39,6 +39,18 @@ public abstract class CircularGenericBuffer<T, E>
 	/** Tail of the buffer. */
 	private volatile int _tail =
 		-1;
+	
+	/**
+	 * Sanity check.
+	 *
+	 * @since 2016/03/12
+	 */
+	static
+	{
+		// Check power of two
+		if (Integer.bitCount(INITIAL_SIZE) != 1)
+			throw new RuntimeException();
+	}
 	
 	/**
 	 * Initializes the base generic buffer.
