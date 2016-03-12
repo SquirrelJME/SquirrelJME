@@ -203,7 +203,7 @@ public abstract class CircularGenericBuffer<T, E>
 		synchronized (lock)
 		{
 			// Get target buffer
-			T buf = __grow();
+			T buf = __grow(0, 1);
 			
 			// End position
 			int end = _tail;
@@ -433,19 +433,21 @@ public abstract class CircularGenericBuffer<T, E>
 	/**
 	 * Potentially grows the buffer.
 	 *
+	 * @param __ha Head addition.
+	 * @param __ta tail addition.
 	 * @return The new buffer.
 	 * @since 2016/03/11
 	 */
-	private final T __grow()
+	private final T __grow(int __ha, int __ta)
 	{
 		// Lock
 		synchronized (lock)
 		{
 			// Get old buffer
-			T ring = _buffer;
+			T obuf = _buffer;
 			
 			// No array? Then allocate 
-			if (ring == null)
+			if (obuf == null)
 			{
 				_head = 0;
 				_tail = 0;
@@ -453,55 +455,63 @@ public abstract class CircularGenericBuffer<T, E>
 			}
 			
 			// Get the old start and end positions
-			int len = arrayLength(ring);
-			int os = _head;
-			int oe = _tail;
+			int olen = arrayLength(obuf);
+			int omask = olen - 1;
+			int ooh = _head;
+			int oot = _tail;
 			
-			// Would not collide?
-			if (((os + 1) & (len - 1)) != oe)
-				return ring;
+			// If there is no chance of collision, then do not grow it
+			int pph = (ooh + __ha) & omask;
+			int ppt = (oot + __ta) & omask;
+			if (pph != ppt)
+				return obuf;
 			
 			// The queue has just collected a large number
 			// of bytes which were never collected.
-			if (len >= 0x4000_0000)
+			if (olen >= 0x4000_0000)
 				throw new IllegalStateException();
 			
-			// Create new buffer
-			int clen = len << 1;
-			T creat = arrayNew(clen);
+			// Calculate the new length
+			int nlen = olen << 1;
+			int nmask = nlen - 1;
 			
-			// Copy old values over
-			System.err.printf("%d %d %d%n", os, oe, clen);
-			int nx = 0;
-			while (os != oe)
-			{
-				// Copy values
-				E v;
-				arrayWrite(creat, nx, (v = arrayRead(ring, os)));
-				System.err.printf("? %s (%d, %d)%n", v, os, nx);
+			// Setup new buffer
+			T nbuf = arrayNew(nlen);
+			
+			// Start at zero positions
+			int nnh = 0;
+			int nnt = 0;
+			
+			// Copy from the old buffer to the new one
+			while (ooh != oot)
+			{System.err.printf("%d %d%n", ooh, nnt);
+				// Copy data
+				E v = arrayRead(obuf, ooh);
+				arrayWrite(nbuf, nnt, v);
 				
-				// Wrap?
-				os = (os + 1) & (len - 1);
-				nx = (nx + 1) & (clen - 1);
+				// Increase the old read head
+				ooh = (ooh + 1) & omask;
+				
+				// Increase the new write tail
+				nnt = (nnt + 1) & nmask;
 			}
 			
-			System.err.printf("%d %d %d %d%n", os, oe, nx, clen);
+			// Use new details instead
+			_buffer = nbuf;
+			_head = nnh;
+			_tail = nnt;
+			
 			System.err.print("O: ");
-			for (int i = 0; i < len; i++)
-				System.err.print(arrayRead(ring, i));
+			for (int i = 0; i < olen; i++)
+				System.err.print(arrayRead(obuf, i));
 			System.err.println();
 			System.err.print("N: ");
-			for (int i = 0; i < clen; i++)
-				System.err.print(arrayRead(creat, i));
+			for (int i = 0; i < nlen; i++)
+				System.err.print(arrayRead(nbuf, i));
 			System.err.println();
 			
-			// Set the new positions
-			_buffer = creat;
-			_head = 0;
-			_tail = nx;
-			
 			// Return the new buffer
-			return creat;
+			return nbuf;
 		}
 	}
 }

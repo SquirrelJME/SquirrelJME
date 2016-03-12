@@ -82,7 +82,7 @@ public class CircularByteBuffer
 	protected CircularGenericBuffer arrayWrite(byte[] __arr, int __dx,
 		Byte __v)
 	{
-		__arr[__dx] = __v;
+		__arr[__dx] = __v.byteValue();
 		return this;
 	}
 	

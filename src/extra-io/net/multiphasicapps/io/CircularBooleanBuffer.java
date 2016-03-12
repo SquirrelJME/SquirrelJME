@@ -93,7 +93,7 @@ public class CircularBooleanBuffer
 	protected CircularGenericBuffer arrayWrite(boolean[] __arr, int __dx,
 		Boolean __v)
 	{
-		__arr[__dx] = __v;
+		__arr[__dx] = __v.booleanValue();
 		return this;
 	}
 	
