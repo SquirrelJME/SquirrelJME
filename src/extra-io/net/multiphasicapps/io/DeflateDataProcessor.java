@@ -11,6 +11,7 @@
 package net.multiphasicapps.io;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
@@ -47,6 +48,13 @@ public class DeflateDataProcessor
 				}
 			});
 	
+	/** Current decoding task. */
+	private volatile Task _task =
+		Task.READ_HEADER;
+	
+	/** Was the final block hit? */
+	private volatile boolean _finalhit;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/11
@@ -60,11 +68,68 @@ public class DeflateDataProcessor
 		while (input.hasAvailable())
 			inputbits.offerLastInt(((int)input.removeFirst()) & 0xFF, 0xFF);
 		
-		// Require more available bytes if not finished
-		if (!isFinished() && inputbits.available() < REQUIRED_BITS)
-			throw new WaitingException();
+		// Processing loop
+		for (;;)
+		{
+			// Require more available bytes if not finished
+			if (!isFinished() && inputbits.available() < REQUIRED_BITS)
+				throw new WaitingException();
+		
+			// Perform work
+			try
+			{
+				// Depends on the action
+				switch (_task)
+				{
+						// Read the deflate header
+					case READ_HEADER:
+						__readHeader();
+						break;
+					
+						// Unknown
+					default:
+						throw new IllegalStateException(_task.name());
+				}
+			}
+		
+			// Short read
+			catch (NoSuchElementException nsee)
+			{
+				throw new IOException(nsee);
+			}
+		}
+	}
+	
+	/**
+	 * Reads the deflate header.
+	 *
+	 * @throws IOException On null arguments.
+	 * @since 2016/03/11
+	 */
+	private void __readHeader()
+		throws IOException
+	{
+		// Read final bit
+		_finalhit |= inputbits.removeFirst();
+		
+		// Read type
+		int type = inputbits.removeFirstInt(2);
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The current task to perform when decoding input code.
+	 *
+	 * @since 2016/03/11
+	 */
+	private static enum Task
+	{
+		/** Read the deflate header. */
+		READ_HEADER,
+		
+		/** End. */
+		;
 	}
 }
 

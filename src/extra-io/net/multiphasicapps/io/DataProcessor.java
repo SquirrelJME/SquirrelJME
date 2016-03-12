@@ -70,8 +70,11 @@ public abstract class DataProcessor
 	 * Sets the waiting state (if the processor is waiting for more bytes as
 	 * input).
 	 *
+	 * If the waiting state is {@code false} and there no output data then
+	 * {@code -1} will be returned from the read.
+	 *
 	 * @param __w If {@code true} then the waiting state is set, otherwise
-	 * it is clearaed.
+	 * it is cleared.
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
@@ -108,13 +111,25 @@ public abstract class DataProcessor
 			
 			// Set
 			_isfinished = true;
-			
-			if (true)
-				throw new Error("TODO");
 		}
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Returns {@code true} if the output buffer has bytes in it.
+	 *
+	 * @return {@code true} if output bytes still remain.
+	 * @since 2016/03/11
+	 */
+	public final boolean hasRemainingOutput()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return output.hasAvailable();
+		}
 	}
 	
 	/**

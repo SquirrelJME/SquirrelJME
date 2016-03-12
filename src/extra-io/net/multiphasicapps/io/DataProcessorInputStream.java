@@ -115,6 +115,11 @@ public class DataProcessorInputStream
 						else
 							processor.offer((byte)val);
 					}
+					
+					// Otherwise if no more output bytes are available, then
+					// end it
+					else if (!processor.hasRemainingOutput())
+						return -1;
 				}
 			}
 		}

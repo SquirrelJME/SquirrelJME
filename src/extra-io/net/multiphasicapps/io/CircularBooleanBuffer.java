@@ -176,6 +176,62 @@ public class CircularBooleanBuffer
 	}
 	
 	/**
+	 * Removes the first integer value with the given number of bits.
+	 *
+	 * @param __bits The number of bits to read.
+	 * @return The read integer value with the given bit count.
+	 * @throws IllegalArgumentException If bits is zero or higher than 32.
+	 * @throws NoSuchElementException If not enough bits are available.
+	 * @since 2016/03/11
+	 */
+	public int removeFirstInt(int __bits)
+		throws IllegalArgumentException, NoSuchElementException
+	{
+		return removeFirstInt(__bits, false);
+	}
+	
+	/**
+	 * Removes the first integer value with the given number of bits.
+	 *
+	 * @param __bits The number of bits to read.
+	 * @param __msb If {@code true} then the returned value is written to
+	 * with higher shifts first.
+	 * @return The read integer value with the given bit count.
+	 * @throws IllegalArgumentException If bits is zero, negative, or higher
+	 * than 32.
+	 * @throws NoSuchElementException If not enough bits are available.
+	 * @since 2016/03/11
+	 */
+	public int removeFirstInt(int __c, boolean __msb)
+		throws IllegalArgumentException, NoSuchElementException
+	{
+		// Check
+		if (__c <= 0 || __c > 32)
+			throw new IllegalArgumentException();
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Not enough bits
+			if (available() < __c)
+				throw new NoSuchElementException();
+			
+			// Return value
+			int rv = 0;
+			
+			// Read input bits
+			int an = (__msb ? -1 : 1);
+			for (int i = 0, at = (__msb ? __c - 1 : 0); i >= 0 && i < __c;
+				i++, at += an)
+				if (removeFirst())
+					rv |= (1L << at);
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Removes the first element, but returns a primitive type.
 	 *
 	 * @return The next primitive value.
