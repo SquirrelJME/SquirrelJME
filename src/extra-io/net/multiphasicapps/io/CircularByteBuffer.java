@@ -43,5 +43,37 @@ public class CircularByteBuffer
 	{
 		super(__lock);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/11
+	 */
+	@Override
+	protected int arrayLength(byte[] __arr)
+	{
+		return __arr.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/11
+	 */
+	@Override
+	protected Byte arrayRead(byte[] __arr, int __dx)
+	{
+		return __arr[__dx];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/11
+	 */
+	@Override
+	protected CircularGenericBuffer arrayWrite(byte[] __arr, int __dx,
+		Byte __v)
+	{
+		__arr[__dx] = __v;
+		return this;
+	}
 }
 

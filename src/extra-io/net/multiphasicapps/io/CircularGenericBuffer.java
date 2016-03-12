@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.io;
 
+import java.util.NoSuchElementException;
+
 /**
  * This provide a base circular buffer class which is extended by subclasses
  * which handle the given types as required.
@@ -18,7 +20,7 @@ package net.multiphasicapps.io;
  * @param <E> The erased type.
  * @since 2016/03/11
  */
-public abstract class CircularGenericBuffer<T, E>
+public abstract class CircularGenericBuffer<T extends Object[], E>
 {
 	/** Initial buffer size. */
 	protected static final int INITIAL_SIZE =
@@ -67,7 +69,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return The array length.
 	 * @since 2016/03/11
 	 */
-	protected abstract int arrayLenght(T __arr);
+	protected abstract int arrayLength(T __arr);
 	
 	/**
 	 * Read the array at the given position.
@@ -113,7 +115,7 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// If the tail is less than the head, add buffer size
 			if (tail < head)
-				tail += buf.length;
+				tail += arrayLength(buf);
 			
 			// Return the value location difference
 			return (int)(tail - head);
@@ -138,7 +140,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
-	public CircularGenericBuffer offerFirst(byte __b)
+	public CircularGenericBuffer offerFirst(E __b)
 	{
 		synchronized (lock)
 		{
@@ -187,7 +189,7 @@ public abstract class CircularGenericBuffer<T, E>
 		synchronized (lock)
 		{
 			for (int i = __l - 1; i >= 0; i--)
-				offerFirst(__b[__o + i]);
+				offerFirst(arrayRead(__b, __o + i));
 		}
 		
 		// Self
@@ -201,7 +203,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
-	public CircularGenericBuffer offerLast(byte __b)
+	public CircularGenericBuffer offerLast(E __b)
 	{
 		synchronized (lock)
 		{
@@ -250,7 +252,7 @@ public abstract class CircularGenericBuffer<T, E>
 		synchronized (lock)
 		{
 			for (int i = 0; i < __l; i++)
-				offerLast(__b[__o + i]);
+				offerLast(arrayRead(__b, __o + i));
 		}
 		
 		// Self
@@ -276,6 +278,7 @@ public abstract class CircularGenericBuffer<T, E>
 				throw new NoSuchElementException();
 			
 			// Get head and tail position
+			int len = arrayLength(buf);
 			int head = _head;
 			int tail = _tail;
 			
@@ -284,13 +287,10 @@ public abstract class CircularGenericBuffer<T, E>
 				throw new NoSuchElementException();
 			
 			// Get value here
-			byte rv = buf[head];
-			
-			// Clear it to invalidate it (just in case)
-			buf[head] = 0;
+			byte rv = arrayRead(buf, head);
 			
 			// Increment head position
-			_head = (head + 1) & (buf.length - 1);
+			_head = (head + 1) & (len - 1);
 			
 			// Return it
 			return rv;
