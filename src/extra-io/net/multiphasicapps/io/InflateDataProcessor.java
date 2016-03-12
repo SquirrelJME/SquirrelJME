@@ -105,6 +105,11 @@ public class InflateDataProcessor
 						if (!__readHeader())
 							return;
 						break;
+						
+						// Read fixed huffman table
+					case FIXED_HUFFMAN:
+						__readFixedHuffman();
+						break;
 					
 						// Unknown
 					default:
@@ -121,9 +126,22 @@ public class InflateDataProcessor
 	}
 	
 	/**
+	 * Reads the fixed huffman based input.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/11
+	 */
+	private void __readFixedHuffman()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Reads the deflate header.
 	 *
-	 * @throws IOException On null arguments.
+	 * @return {@code true} if the calling loop should terminate.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/03/11
 	 */
 	private boolean __readHeader()
@@ -153,8 +171,7 @@ public class InflateDataProcessor
 				
 				// Fixed huffman
 			case TYPE_FIXED_HUFFMAN:
-				if (true)
-					throw new Error("TODO");
+				_task = Task.FIXED_HUFFMAN;
 				break;
 				
 				// Dynamic huffman
@@ -182,6 +199,9 @@ public class InflateDataProcessor
 	{
 		/** Read the deflate header. */
 		READ_HEADER,
+		
+		/** Read fixed huffman table. */
+		FIXED_HUFFMAN,
 		
 		/** End. */
 		;
