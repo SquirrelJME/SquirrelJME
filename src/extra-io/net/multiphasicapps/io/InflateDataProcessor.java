@@ -59,8 +59,6 @@ public class InflateDataProcessor
 				@Override
 				public void ready(byte __v)
 				{
-					System.err.printf(">> %02x%n", __v);
-					
 					// Give it to the output data
 					output.offerLast(__v);
 				}
@@ -125,6 +123,41 @@ public class InflateDataProcessor
 	}
 	
 	/**
+	 * Handles a single huffman code.
+	 *
+	 * @param __c The input code.
+	 * @throws IOException On read/write error.s
+	 * @since 2016/03/12
+	 */
+	private void __handleCode(int __c)
+		throws IOException
+	{
+		// Debug
+		System.err.println("DEBUG -- c " + __c + " " + (char)__c);
+		System.err.flush();
+		
+		// Literal byte value
+		if (__c >= 0 && __c <= 256)
+			compactor.add(__c & 0xFF, 0xFF);
+		
+		// Stop processing, use the waiting exception to break out of the state
+		// and go back to the header handler
+		else if (__c == 256)
+		{
+			_task = Task.READ_HEADER;
+			throw new WaitingException();
+		}
+		
+		// Window based result
+		else if (__c >= 257 && __c <= 285)
+			throw new Error("TODO");
+		
+		// Error
+		else
+			throw new InflaterException.IllegalSequence();
+	}
+	
+	/**
 	 * Reads the fixed huffman based input.
 	 *
 	 * @throws IOException On read/write errors.
@@ -142,15 +175,8 @@ public class InflateDataProcessor
 			// Read single code
 			int code = DeflateFixedHuffman.read(inputbits);
 			
-			System.err.println("c " + code + " " + (char)code);
-			System.err.flush();
-			
-			compactor.add(code, 0xFF);
-			
-			if (false)
-				throw new Error("TODO");
-			if (false)
-				break;
+			// Handle the code
+			__handleCode(code);
 		}
 	}
 	
