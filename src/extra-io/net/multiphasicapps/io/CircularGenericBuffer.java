@@ -367,11 +367,11 @@ public abstract class CircularGenericBuffer<T, E>
 				throw new NoSuchElementException();
 			
 			// Get value here
-			int from = tail - 1;
+			int from = (tail - 1) & (len - 1);
 			E rv = arrayRead(buf, from);
 			
 			// Decrement tail position
-			_tail = (from) & (len - 1);
+			_tail = from;
 			
 			// Return it
 			return rv;
