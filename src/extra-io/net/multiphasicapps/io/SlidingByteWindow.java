@@ -34,6 +34,18 @@ public class SlidingByteWindow
 	/** The number of fragments. */
 	protected final int numfragments;
 	
+	/** The set of fragments. */
+	private volatile byte[][] _fragments;
+	
+	/** The active fragment. */
+	private volatile byte[] _active;
+	
+	/** The total number of available bytes. */
+	private volatile int _total;
+	
+	/** The current active fragment write position. */
+	private volatile int _current;
+	
 	/**
 	 * This initializes the sliding byte window.
 	 *
@@ -55,6 +67,10 @@ public class SlidingByteWindow
 		// Determine the best fragment size
 		fragmentsize = Math.min(windowsize, DEFAULT_FRAGMENT_SIZE);
 		numfragments = windowsize / fragmentsize;
+		
+		// Start in the active fragment
+		_fragments = new byte[0][];
+		_active = new byte[fragmentsize];
 	}
 	
 	/**
@@ -66,7 +82,70 @@ public class SlidingByteWindow
 	 */
 	public SlidingByteWindow append(byte __b)
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Get the active window
+			byte[] act = _active;
+			
+			// Write at the current position
+			int write = _current;
+			act[write++] = __b;
+			
+			// Cap total
+			int total = _total + 1;
+			_total = Math.max(total, windowsize);
+			
+			// Current active window is full?
+			if (write == fragmentsize)
+			{
+				// Get all fragments
+				byte[][] all = _fragments;
+				
+				// Still too little?
+				int olen = all.length;
+				if (olen < numfragments)
+				{
+					// Setup new target
+					int nlen = olen + 1;
+					byte[][] vex = new byte[nlen][];
+					
+					// Copy originals
+					for (int i = 0; i < olen; i++)
+						vex[i] = all[i];
+					
+					// Set new one at the end
+					vex[olen] = act;
+					
+					// Set it
+					_fragments = all = vex;
+				}
+				
+				// Move everything down and add at the end
+				else
+				{
+					// Move down
+					for (int i = 0; i < olen - 1; i++)
+						all[i] = all[i + 1];
+					
+					// Set current at the end
+					all[olen - 1] = act;
+				}
+				
+				// Clear it for next run
+				_current = 0;
+				
+				// Setup new buffer
+				_active = new byte[fragmentsize];
+			}
+			
+			// Otherwise set the current
+			else
+				_current = write;
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -105,19 +184,19 @@ public class SlidingByteWindow
 	 * @param __o Offset into the byte array.
 	 * @param __l The number of bytes to add.
 	 * @return {@code this}.
-	 * @throws IllegalArgumentException If the offset or length are negative or
-	 * the offset and the length exceeds the array bounds.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or the offset and the length exceeds the array bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
 	public SlidingByteWindow append(byte __b[], int __o, int __l)
-		throws IllegalArgumentException, NullPointerException
+		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
 		if (__b == null)
 			throw new NullPointerException();
 		if (__o < 0 || __l < __o || (__o + __l > __b.length))
-			throw new IllegalArgumentException();
+			throw new IndexOutOfBoundsException();
 		
 		// Lock
 		synchronized (lock)
@@ -126,6 +205,45 @@ public class SlidingByteWindow
 			int n = __o + __l;
 			for (int i = __o; i < n; i++)
 				append(__b[i]);
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * This reads bytes 
+	 *
+	 * @param __ago How many bytes in the past to read.
+	 * @param __b The output array of bytes to write.
+	 * @param __o The offset into the array where to start writing bytes to.
+	 * @param __l The number of bytes to read from history to write into the
+	 * array.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or the offset and the length exceeds the array bounds; {@code __ago}
+	 * is zero or negative; the distance back and the length exceeds the
+	 * amount of available history; the distance back exceeds the maximum
+	 * window size; or the distance back exceeds the total amount of history.
+	 * @throws NullPointerException On null arguments.
+	 * @ince 2016/03/13
+	 */
+	public SlidingByteWindow get(int __ago, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException();
+		if (__o < 0 || __l < __o || (__o + __l > __b.length))
+			throw new IllegalArgumentException();
+		if (__ago <= 0 || (__ago - __l) < 0 || __ago > windowsize ||
+			__ago > ((fragmentsize * _fragments.length) + _current))
+			throw new IndexOutOfBoundsException();
+		
+		// Lock
+		synchronized (lock)
+		{
+			if (true)
+				throw new Error("TODO");
 		}
 		
 		// Self

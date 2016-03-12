@@ -28,6 +28,10 @@ public class InflateDataProcessor
 	protected static final int REQUIRED_BITS =
 		48;
 	
+	/** The size of the sliding window. */
+	protected static final int SLIDING_WINDOW_SIZE =
+		32768;
+	
 	/** No compression. */
 	protected static final int TYPE_NO_COMPRESSION =
 		0b00;
@@ -48,6 +52,10 @@ public class InflateDataProcessor
 	protected final CircularBooleanBuffer inputbits =
 		new CircularBooleanBuffer();
 	
+	/** The sliding byte window. */
+	protected final SlidingByteWindow window =
+		new SlidingByteWindow(SLIDING_WINDOW_SIZE);
+	
 	/** The bit compactor for queing added bits. */
 	protected final BitCompactor compactor =
 		new BitCompactor(new BitCompactor.Callback()
@@ -61,6 +69,9 @@ public class InflateDataProcessor
 				{
 					// Give it to the output data
 					output.offerLast(__v);
+					
+					// Also give it to the sliding window
+					window.append(__v);
 				}
 			});
 	
@@ -159,7 +170,22 @@ public class InflateDataProcessor
 			int lent = __handleLength();
 			System.err.printf("DEBUG -- Length %d%n", lent);
 			
-			throw new Error("TODO");
+			// Create a byte array from the sliding window data
+			byte[] winb = new byte[lent];
+			try
+			{
+				window.get(dist, winb, 0, lent);
+			}
+			
+			// Bad window read
+			catch (IndexOutOfBoundsException ioobe)
+			{
+				throw new InflaterException(ioobe);
+			}
+			
+			// Add those bytes to the output
+			for (int i = 0; i < lent; i++)
+				compactor.add(winb[i] & 0xFF, 0xFF);
 		}
 		
 		// Error

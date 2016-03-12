@@ -22,6 +22,26 @@ public class InflaterException
 	extends IOException
 {
 	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2016/03/12
+	 */
+	public InflaterException()
+	{
+	}
+	
+	/**
+	 * Initializes the exception with the given cause.
+	 *
+	 * @param __t The cause of this exception.
+	 * @since 2016/03/12
+	 */
+	public InflaterException(Throwable __t)
+	{
+		super(__t);
+	}
+	
+	/**
 	 * This is thrown when the header of the type error is read.
 	 *
 	 * @since 2016/03/10
