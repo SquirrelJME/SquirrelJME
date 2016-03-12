@@ -25,6 +25,7 @@ import net.multiphasicapps.collections.HuffmanTree;
  *
  * @since 2016/03/09
  */
+@Deprecated
 public class InflaterInputStream
 	extends InputStream
 {

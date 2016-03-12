@@ -134,7 +134,20 @@ public class InflateDataProcessor
 	private void __readFixedHuffman()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// If there are at least 9 available bits for input, read them.
+		// Alternatively if this is the final block allow 7 because this
+		// could be the final stop code.
+		while (inputbits.available() >= 9 ||
+			(_finalhit && inputbits.available() >= 7))
+		{
+			// Read single code
+			int code = DeflateFixedHuffman.read(inputbits);
+			
+			System.err.println("c " + code);
+			System.err.flush();
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
