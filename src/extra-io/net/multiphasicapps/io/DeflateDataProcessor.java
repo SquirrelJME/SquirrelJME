@@ -58,7 +58,7 @@ public class DeflateDataProcessor
 		// Take all bytes which are available to the input and add them to the
 		// input bit buffer
 		while (input.hasAvailable())
-			inputbits.offerLastInt(input.removeFirst(), 0xFF);
+			inputbits.offerLastInt(((int)input.removeFirst()) & 0xFF, 0xFF);
 		
 		// Require more available bytes if not finished
 		if (!isFinished() && inputbits.available() < REQUIRED_BITS)

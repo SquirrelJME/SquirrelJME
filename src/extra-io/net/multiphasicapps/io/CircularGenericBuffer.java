@@ -202,8 +202,21 @@ public abstract class CircularGenericBuffer<T, E>
 	{
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Get target buffer
+			T buf = __grow();
+			
+			// End position
+			int end = _tail;
+			
+			// Write at the end
+			arrayWrite(buf, end, __b);
+			
+			// Increment
+			_tail = (end + 1) & (arrayLength(buf) - 1);
 		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -410,6 +423,68 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Return the read count
 			return rc;	
+		}
+	}
+	
+	/**
+	 * Potentially grows the buffer.
+	 *
+	 * @return The new buffer.
+	 * @since 2016/03/11
+	 */
+	private final T __grow()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get old buffer
+			T ring = _buffer;
+			
+			// No array? Then allocate 
+			if (ring == null)
+			{
+				_head = 0;
+				_tail = 0;
+				return (_buffer = arrayNew(INITIAL_SIZE));
+			}
+			
+			// Get the old start and end positions
+			int len = arrayLength(ring);
+			int os = _head;
+			int oe = _tail;
+			
+			// Would not collide?
+			if (((os + 1) & (len - 1)) != oe)
+				return ring;
+			
+			// The queue has just collected a large number
+			// of bytes which were never collected.
+			if (len >= 0x4000_0000)
+				throw new IllegalStateException();
+			
+			// Create new buffer
+			int clen = len << 1;
+			T creat = arrayNew(clen);
+			
+			// Copy old values over
+			int nx = 0;
+			while (os != oe)
+			{
+				// Copy values
+				arrayWrite(creat, nx, arrayRead(ring, os));
+				
+				// Wrap?
+				os = (os + 1) & (len - 1);
+				nx = (nx + 1) & (clen - 1);
+			}
+			
+			// Set the new positions
+			_buffer = creat;
+			_head = 0;
+			_tail = nx;
+			
+			// Return the new buffer
+			return creat;
 		}
 	}
 }
