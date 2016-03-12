@@ -73,7 +73,9 @@ public class InflateDataProcessor
 					// Also give it to the sliding window
 					window.append(__v);
 					
-					System.err.printf(">> %02x %c%n", __v & 0xFF, (char)__v);
+					// DEBUG
+					System.err.printf("DEBUG -- W %02x %c%n", __v & 0xFF,
+						(char)__v);
 				}
 			});
 	
