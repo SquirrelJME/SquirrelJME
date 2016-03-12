@@ -59,6 +59,16 @@ public class CircularByteBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	protected byte[] arrayNew(int __len)
+	{
+		return new byte[__len];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/11
+	 */
+	@Override
 	protected Byte arrayRead(byte[] __arr, int __dx)
 	{
 		return __arr[__dx];
@@ -74,6 +84,56 @@ public class CircularByteBuffer
 	{
 		__arr[__dx] = __v;
 		return this;
+	}
+	
+	/**
+	 * Offers a primitive value to the start of the queue.
+	 *
+	 * @param __b Value to add.
+	 * @return {@code this}.
+	 * @since 2016/03/11
+	 */
+	public CircularByteBuffer offerFirst(byte __b)
+	{
+		return (CircularByteBuffer)super.offerFirst(Byte.valueOf(__b));
+	}
+	
+	/**
+	 * Offers a primitive value to the end of the queue.
+	 *
+	 * @param __b Value to add.
+	 * @return {@code this}.
+	 * @since 2016/03/11
+	 */
+	public CircularByteBuffer offerLast(byte __b)
+	{
+		return (CircularByteBuffer)super.offerLast(Byte.valueOf(__b));
+	}
+	
+	/**
+	 * Removes the first element, but returns a primitive type.
+	 *
+	 * @return The next primitive value.
+	 * @throws NoSuchElementException If no elements remain.
+	 * @since 2016/03/11
+	 */
+	public byte removeFirstPrimitive()
+		throws NoSuchElementException
+	{
+		return super.removeFirst().byteValue();
+	}
+	
+	/**
+	 * Removes the first element, but returns a primitive type.
+	 *
+	 * @return The next primitive value.
+	 * @throws NoSuchElementException If no elements remain.
+	 * @since 2016/03/11
+	 */
+	public byte removeLastPrimitive()
+		throws NoSuchElementException
+	{
+		return super.removeLast().byteValue();
 	}
 }
 

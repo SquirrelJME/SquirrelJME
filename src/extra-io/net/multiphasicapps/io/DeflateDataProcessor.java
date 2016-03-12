@@ -28,8 +28,8 @@ public class DeflateDataProcessor
 		48;
 	
 	/** Input bits. */
-	protected final CircularBitBuffer inputbits =
-		new CircularBitBuffer();
+	protected final CircularBooleanBuffer inputbits =
+		new CircularBooleanBuffer();
 	
 	/** The bit compactor for queing added bits. */
 	protected final BitCompactor compactor =

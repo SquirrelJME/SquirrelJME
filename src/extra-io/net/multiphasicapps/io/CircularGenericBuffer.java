@@ -72,6 +72,15 @@ public abstract class CircularGenericBuffer<T, E>
 	protected abstract int arrayLength(T __arr);
 	
 	/**
+	 * Allocates a new array of the given length.
+	 *
+	 * @param __len The length of the new array.
+	 * @return The new array.
+	 * @since 2016/03/11
+	 */
+	protected abstract T arrayNew(int __len);
+	
+	/**
 	 * Read the array at the given position.
 	 *
 	 * @param __arr The array to read from.

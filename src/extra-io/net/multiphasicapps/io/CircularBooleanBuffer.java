@@ -18,13 +18,9 @@ import java.util.NoSuchElementException;
  *
  * If the queue reaches full capacity then it is increased in size.
  *
- * Note that this buffer is backed by a {@link CircularByteBuffer}, however
- * any currently active bits for writing are not inside of the backed circular
- * byte buffer.
- *
  * @since 2016/03/11
  */
-public class CircularBitBuffer
+public class CircularBooleanBuffer
 	extends CircularGenericBuffer<boolean[], Boolean>
 {
 	/** The internal buffer. */
@@ -43,7 +39,7 @@ public class CircularBitBuffer
 	 *
 	 * @since 2016/03/11
 	 */
-	public CircularBitBuffer()
+	public CircularBooleanBuffer()
 	{
 		super();
 	}
@@ -54,7 +50,7 @@ public class CircularBitBuffer
 	 * @param __lock The lock to use.
 	 * @since 2016/03/11
 	 */
-	public CircularBitBuffer(Object __lock)
+	public CircularBooleanBuffer(Object __lock)
 	{
 		super(__lock);
 	}
@@ -67,6 +63,16 @@ public class CircularBitBuffer
 	protected int arrayLength(boolean[] __arr)
 	{
 		return __arr.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/11
+	 */
+	@Override
+	protected boolean[] arrayNew(int __len)
+	{
+		return new boolean[__len];
 	}
 	
 	/**
@@ -92,6 +98,30 @@ public class CircularBitBuffer
 	}
 	
 	/**
+	 * Offers a primitive value to the start of the queue.
+	 *
+	 * @param __b Value to add.
+	 * @return {@code this}.
+	 * @since 2016/03/11
+	 */
+	public CircularBooleanBuffer offerFirst(boolean __b)
+	{
+		return (CircularBooleanBuffer)super.offerFirst(Boolean.valueOf(__b));
+	}
+	
+	/**
+	 * Offers a primitive value to the end of the queue.
+	 *
+	 * @param __b Value to add.
+	 * @return {@code this}.
+	 * @since 2016/03/11
+	 */
+	public CircularBooleanBuffer offerLast(boolean __b)
+	{
+		return (CircularBooleanBuffer)super.offerLast(Boolean.valueOf(__b));
+	}
+	
+	/**
 	 * Adds an integer value to the end of the buffer.
 	 *
 	 * @param __val Value to add.
@@ -101,7 +131,7 @@ public class CircularBitBuffer
 	 * the mask, or the mask has a zero gap in it.
 	 * @since 2016/03/11
 	 */
-	public final CircularBitBuffer offerLastInt(int __val, int __mask)
+	public final CircularBooleanBuffer offerLastInt(int __val, int __mask)
 		throws IllegalArgumentException
 	{
 		return offerLastInt(__val, __mask, false);
@@ -119,7 +149,7 @@ public class CircularBitBuffer
 	 * the mask, or the mask has a zero gap in it.
 	 * @since 2016/03/11
 	 */
-	public final CircularBitBuffer offerLastInt(int __val, int __mask,
+	public final CircularBooleanBuffer offerLastInt(int __val, int __mask,
 		boolean __msb)
 		throws IllegalArgumentException
 	{
@@ -143,6 +173,32 @@ public class CircularBitBuffer
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Removes the first element, but returns a primitive type.
+	 *
+	 * @return The next primitive value.
+	 * @throws NoSuchElementException If no elements remain.
+	 * @since 2016/03/11
+	 */
+	public boolean removeFirstPrimitive()
+		throws NoSuchElementException
+	{
+		return super.removeFirst().booleanValue();
+	}
+	
+	/**
+	 * Removes the first element, but returns a primitive type.
+	 *
+	 * @return The next primitive value.
+	 * @throws NoSuchElementException If no elements remain.
+	 * @since 2016/03/11
+	 */
+	public boolean removeLastPrimitive()
+		throws NoSuchElementException
+	{
+		return super.removeLast().booleanValue();
 	}
 }
 

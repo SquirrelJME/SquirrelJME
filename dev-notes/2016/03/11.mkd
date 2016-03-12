@@ -104,3 +104,8 @@ about running out (during say a fixed huffman read).
 I can also use a base class for the buffers since right now they have a bunch
 of duplicate code.
 
+## 19:38
+
+I cannot use single arrays with the generics though since the types clash
+with the primitive type and I cannot specify an array of a primitive type.
+
