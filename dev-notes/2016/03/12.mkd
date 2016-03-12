@@ -65,4 +65,20 @@ Thinking about it: 0b0010000 from lowest order. This is 16.
 
 Just going to go with reading it as MSB since it works.
 
+## 12:47
+
+Must create the sliding window code and put bytes in there, also need to
+figure out how the sliding window reading works also.
+
+## 12:52
+
+For reading the distance, I can use an algorithm for that. Each distance group
+appears in sets of 4 extra bits, the first 8 values have zero extra bits and
+represent single directories. So essentially instead of a lookup table I can
+use a linear sequence calculator to determine the distance to use. Then if
+there are any extra bits then they can be read.
+
+## 13:02
+
+This graphing calculator I have is very handy during programming.
 

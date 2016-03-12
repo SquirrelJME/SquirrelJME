@@ -150,11 +150,56 @@ public class InflateDataProcessor
 		
 		// Window based result
 		else if (__c >= 257 && __c <= 285)
+		{
+			// Read the distance
+			int dist = __handleDistance(__c);
+			System.err.printf("DEBUG -- Distance %d%n", dist);
+			
 			throw new Error("TODO");
+		}
 		
 		// Error
 		else
 			throw new InflaterException.IllegalSequence();
+	}
+	
+	/**
+	 * Handles distance codes.
+	 *
+	 * @param __c The distance code.
+	 * @return The distance to actually use
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/12
+	 */
+	private int __handleDistance(int __c)
+		throws IOException
+	{
+		// If the code is 285 then the distance will be that
+		if (__c == 285)
+			return 285;
+		
+		// Get the base code
+		int base = __c - 257;
+		
+		// Calculate the required distance to use
+		int rv = 3;
+		for (int i = 0; i < base; i++)
+		{
+			// Determine how many groups of 4 the code is away. Since zero
+			// appears as items then subtract 1 to make it longer. However
+			// after the first 8 it goes up in a standard pattern.
+			rv += (1 << Math.max(0, (i / 4) - 1));
+		}
+		
+		// Calculate the number of extra bits to read
+		int extrabits = Math.max(0, (base / 4) - 1);
+		
+		// Read in those bits, if applicable
+		if (extrabits > 0)
+			rv += inputbits.removeFirstInt(extrabits, true);
+		
+		// Return the distance
+		return rv;
 	}
 	
 	/**
