@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/03/11
  */
-public class DeflateDataProcessor
+public class InflateDataProcessor
 	extends DataProcessor
 {
 	/**
