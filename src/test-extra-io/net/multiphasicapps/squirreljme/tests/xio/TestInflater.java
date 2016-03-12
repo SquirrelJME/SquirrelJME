@@ -48,6 +48,15 @@ public class TestInflater
 		new byte[]{-22, -56, 49, -93, 26, -1, 121, 107, 71, 39, -29, 2, 101,
 		82, 7, -26, -41, 7, -5, -19, -7, 123, 43, 97, 7, 45, -72, -8, 111, 73};
 	
+	/** Compressed "Hello World" using no compression. */
+	private static final byte[] SAMPLE_C_IN =
+		new byte[]{1, 11, 0, -12, -1, 72, 101, 108, 108, 111, 32, 87, 111, 114,
+		108, 100};
+	
+	/** Uncompressed "Hello World" using no compression. */
+	private static final byte[] SAMPLE_C_OUT =
+		new byte[]{72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100};
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/03
@@ -71,6 +80,7 @@ public class TestInflater
 		// Run checks on samples
 		__check(__tc, "a", SAMPLE_A_IN, SAMPLE_A_OUT);
 		__check(__tc, "b", SAMPLE_B_IN, SAMPLE_B_OUT);
+		__check(__tc, "c", SAMPLE_C_IN, SAMPLE_C_OUT);
 	}
 	
 	/**
