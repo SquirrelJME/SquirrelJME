@@ -213,7 +213,8 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Increment
 			_tail = (end + 1) & (arrayLength(buf) - 1);
-			System.err.printf("%d T %d -> %d%n", buf.hashCode(), end, _tail);
+			System.err.printf("%d T [%d] %d -> %d (%s)%n", this.hashCode(),
+				_head, end, _tail, __b);
 		}
 		
 		// Self
@@ -286,6 +287,8 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Increment head position
 			_head = (head + 1) & (len - 1);
+			System.err.printf("%d F [%d] %d -> %d (%s)%n", this.hashCode(),
+				_tail, head, _head, rv);
 			
 			// Return it
 			return rv;
