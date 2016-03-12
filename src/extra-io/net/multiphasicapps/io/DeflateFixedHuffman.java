@@ -92,12 +92,11 @@ public class DeflateFixedHuffman
 	 *
 	 * @param __in The circular boolean buffer to get bits from.
 	 * @return The read value.
-	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
 	public static int read(CircularBooleanBuffer __in)
-		throws IOException, NullPointerException
+		throws NullPointerException
 	{
 		// Check
 		if (__in == null)
@@ -107,28 +106,28 @@ public class DeflateFixedHuffman
 		if (__in.removeFirstPrimitive())
 			if (__in.removeFirstPrimitive())
 				if (__in.removeFirstPrimitive())
-					return 192 + __in.removeFirstInt(6);
+					return 192 + __in.removeFirstInt(6, true);
 				else
 					if (__in.removeFirstPrimitive())
-						return 160 + __in.removeFirstInt(5);
+						return 160 + __in.removeFirstInt(5, true);
 					else
 						if (__in.removeFirstPrimitive())
-							return 144 + __in.removeFirstInt(4);
+							return 144 + __in.removeFirstInt(4, true);
 						else
-							return 280 + __in.removeFirstInt(3);
+							return 280 + __in.removeFirstInt(3, true);
 			else
-				return 80 + __in.removeFirstInt(6);
+				return 80 + __in.removeFirstInt(6, true);
 		else
 			if (__in.removeFirstPrimitive())
-				return 16 + __in.removeFirstInt(6);
+				return 16 + __in.removeFirstInt(6, true);
 			else
 				if (__in.removeFirstPrimitive())
 					if (__in.removeFirstPrimitive())
-						return 0 + __in.removeFirstInt(4);
+						return 0 + __in.removeFirstInt(4, true);
 					else
-						return 272 + __in.removeFirstInt(3);
+						return 272 + __in.removeFirstInt(3, true);
 				else
-					return 256 + __in.removeFirstInt(4);
+					return 256 + __in.removeFirstInt(4, true);
 	}
 }
 

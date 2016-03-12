@@ -220,12 +220,15 @@ public class CircularBooleanBuffer
 			int rv = 0;
 			
 			// Read input bits
+			System.err.println(">>>I");
 			int an = (__msb ? -1 : 1);
-			for (int i = 0, at = (__msb ? __c - 1 : 0); i >= 0 && i < __c;
-				i++, at += an)
+			for (int i = 0, at = (__msb ? __c - 1 : 0); i < __c; i++, at += an)
+			{
 				if (removeFirstPrimitive())
-					rv |= (1L << at);
-			
+					rv |= (1 << at);
+				System.err.printf("at %d %s%n", at, Integer.toString(rv, 2));
+			}
+			System.err.println("<I: " + rv + " " + Integer.toString(rv, 2));
 			// Return it
 			return rv;
 		}

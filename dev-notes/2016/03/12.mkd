@@ -8,3 +8,61 @@ I get it, I am only checking one side in grow, I need to handle more of it.
 
 This time I get 'X' (88) instead of 'T'.
 
+## 10:56
+
+T is 0h54 or 0b1010100. And X is 0b10110000 or 0h58. So I am pretty much a bit
+off by a single bit being in the wrong location. These are huffman codes so
+what I want is 0b10000100. What is something though is that I get that
+desired value when it is being read.
+
+## 11:02
+
+So it appears my read value from readFirstInt is shifted too high it seems.
+Since I read 0b100 which is 4, but I instead return 8 from it.
+
+## 11:08
+
+Changing the read to MSB fixes the issue. Normally I should not need to do it
+such as that, so the int conversion is lost somewhere.
+
+## 11:12
+
+Actually I get it. I offer integers with LSB so they get added in that order,
+although when I get those integers they are read in the same order.
+
+## 11:15
+
+When placing the lowest values are pushed in...
+
+	0011001001111
+	     ^^^^^^^^  -- 0b11110010
+
+Then when reading the same order is used.
+
+11 (0b1011) is added to become
+
+	11010000
+
+Then 73 (0b1001001) is added
+
+	11010000 10010010
+
+Then it is read as
+
+	11010000 10010010
+	F
+	 TT
+	   HHhhh hhh
+
+Reading first values results in 0b00100001, which is 33. However the lowest
+six bits get chopped off so it is instead read as: 0b0000100. This is 4.
+
+## 11:25
+
+Thinking about it: 0b0010000 from lowest order. This is 16.
+
+## 11:31
+
+Just going to go with reading it as MSB since it works.
+
+
