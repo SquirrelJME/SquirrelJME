@@ -37,6 +37,17 @@ public class TestInflater
 		new byte[]{84, 101, 115, 116, 105, 110, 103, 84, 101, 115, 116, 105,
 		110, 103};
 	
+	/** Compressed random data. */
+	private static final byte[] SAMPLE_B_IN =
+		new byte[]{123, 117, -62, 112, -79, -44, -1, -54, 108, 119, -11, -57,
+		76, -87, 65, -20, -49, -82, -77, -1, 126, -5, -77, 90, 59, -111, 93,
+		119, -57, -113, 124, 79, 0};
+	
+	/** Uncompressed random data. */
+	private static final byte[] SAMPLE_B_OUT =
+		new byte[]{-22, -56, 49, -93, 26, -1, 121, 107, 71, 39, -29, 2, 101,
+		82, 7, -26, -41, 7, -5, -19, -7, 123, 43, 97, 7, 45, -72, -8, 111, 73};
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/03
@@ -59,6 +70,7 @@ public class TestInflater
 		
 		// Run checks on samples
 		__check(__tc, "a", SAMPLE_A_IN, SAMPLE_A_OUT);
+		__check(__tc, "b", SAMPLE_B_IN, SAMPLE_B_OUT);
 	}
 	
 	/**

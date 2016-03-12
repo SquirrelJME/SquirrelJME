@@ -104,3 +104,8 @@ now the inflation algorithm passes and the resulting bytes are given. Now I
 need longer sequences that do other things. One thing I will need is random
 unique bytes that have nothing in common.
 
+## 14:46
+
+Ok so I have a random data input which is completely terrible at compressing
+as it ends up being larger.
+
