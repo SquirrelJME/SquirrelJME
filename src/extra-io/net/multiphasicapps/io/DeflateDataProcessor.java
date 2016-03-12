@@ -28,6 +28,22 @@ public class DeflateDataProcessor
 	protected static final int REQUIRED_BITS =
 		48;
 	
+	/** No compression. */
+	protected static final int TYPE_NO_COMPRESSION =
+		0b00;
+	
+	/** Fixed huffman table compression. */
+	protected static final int TYPE_FIXED_HUFFMAN =
+		0b01;
+	
+	/** Dynamic huffman table compression. */
+	protected static final int TYPE_DYNAMIC_HUFFMAN =
+		0b10;
+	
+	/** An error. */
+	protected static final int TYPE_ERROR =
+		0b11;
+	
 	/** Input bits. */
 	protected final CircularBooleanBuffer inputbits =
 		new CircularBooleanBuffer();
@@ -43,6 +59,8 @@ public class DeflateDataProcessor
 				@Override
 				public void ready(byte __v)
 				{
+					System.err.printf(">> %02x%n", __v);
+					
 					// Give it to the output data
 					output.offerLast(__v);
 				}
@@ -66,7 +84,8 @@ public class DeflateDataProcessor
 		// Take all bytes which are available to the input and add them to the
 		// input bit buffer
 		while (input.hasAvailable())
-			inputbits.offerLastInt(((int)input.removeFirst()) & 0xFF, 0xFF);
+			inputbits.offerLastInt(((int)input.removeFirst()) & 0xFF, 0xFF,
+				true);
 		
 		// Processing loop
 		for (;;)
@@ -83,7 +102,8 @@ public class DeflateDataProcessor
 				{
 						// Read the deflate header
 					case READ_HEADER:
-						__readHeader();
+						if (!__readHeader())
+							return;
 						break;
 					
 						// Unknown
@@ -106,16 +126,51 @@ public class DeflateDataProcessor
 	 * @throws IOException On null arguments.
 	 * @since 2016/03/11
 	 */
-	private void __readHeader()
+	private boolean __readHeader()
 		throws IOException
 	{
+		// If the final block was hit then just stop
+		if (_finalhit)
+		{
+			setWaiting(false);
+			return false;
+		}
+		
 		// Read final bit
 		_finalhit |= inputbits.removeFirst();
 		
 		// Read type
 		int type = inputbits.removeFirstInt(2);
 		
-		throw new Error("TODO");
+		// Depends on the type to read
+		switch (type)
+		{
+				// None
+			case TYPE_NO_COMPRESSION:
+				if (true)
+					throw new Error("TODO");
+				break;
+				
+				// Fixed huffman
+			case TYPE_FIXED_HUFFMAN:
+				if (true)
+					throw new Error("TODO");
+				break;
+				
+				// Dynamic huffman
+			case TYPE_DYNAMIC_HUFFMAN:
+				if (true)
+					throw new Error("TODO");
+				break;
+			
+				// Error or unknown
+			case TYPE_ERROR:
+			default:
+				throw new InflaterException.HeaderErrorTypeException();
+		}
+		
+		// Continue
+		return true;
 	}
 	
 	/**
