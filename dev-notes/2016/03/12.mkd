@@ -92,3 +92,8 @@ do now is have the actual sliding window implemented.
 The distance starts at the furthest byte back, because otherwise it would not
 make sense.
 
+## 14:25
+
+So now I have a working sliding window. I just need to figure out where an
+infinite loop occurs now, most likely at the end of the read.
+
