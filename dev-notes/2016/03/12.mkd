@@ -82,3 +82,8 @@ there are any extra bits then they can be read.
 
 This graphing calculator I have is very handy during programming.
 
+## 13:19
+
+And the distance and length handling was actually quite simple. What I need to
+do now is have the actual sliding window implemented.
+

@@ -155,6 +155,10 @@ public class InflateDataProcessor
 			int dist = __handleDistance(__c);
 			System.err.printf("DEBUG -- Distance %d%n", dist);
 			
+			// Read the length
+			int lent = __handleLength();
+			System.err.printf("DEBUG -- Length %d%n", lent);
+			
 			throw new Error("TODO");
 		}
 		
@@ -199,6 +203,42 @@ public class InflateDataProcessor
 			rv += inputbits.removeFirstInt(extrabits, true);
 		
 		// Return the distance
+		return rv;
+	}
+	
+	/**
+	 * Reads length codes from the input.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/12
+	 */
+	private int __handleLength()
+		throws IOException
+	{
+		// Read 5 bits of length input
+		int code = inputbits.removeFirstInt(5, true);
+		
+		// Error if above 29
+		if (code > 29)
+			throw new InflaterException.IllegalSequence();
+		
+		// Calculate the required length to use
+		int rv = 0;
+		for (int i = 0; i < code; i++)
+		{
+			// This uses a similar pattern to the distance code, however the
+			// division is half the size (so there are groups of 2 now).
+			rv += (1 << Math.max(0, (i / 2) - 1));
+		}
+		
+		// Determine the number of extra bits
+		int extrabits = Math.max(0, (code / 2) - 1);
+		
+		// If there are bits to read then read them in
+		if (extrabits > 0)
+			rv += inputbits.removeFirstInt(extrabits, true);
+		
+		// Return it
 		return rv;
 	}
 	
