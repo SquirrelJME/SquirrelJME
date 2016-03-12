@@ -36,7 +36,7 @@ public class DeflateFixedHuffman
 	 * This method is faster and provides a built-in huffman tree while not
 	 * taking up too many bytes in the byte code.
 	 *
-	 * This is fore the deprecated {@link InflaterInputStream}.
+	 * This is for the deprecated {@link InflaterInputStream}.
 	 *
 	 * @param __in The input stream to source bytes from.
 	 * @return The read value.
@@ -44,7 +44,6 @@ public class DeflateFixedHuffman
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	@Deprecated
 	public static int read(BitInputStream __in)
 		throws IOException, NullPointerException
 	{
