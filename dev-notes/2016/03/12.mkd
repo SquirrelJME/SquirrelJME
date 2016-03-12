@@ -97,3 +97,10 @@ make sense.
 So now I have a working sliding window. I just need to figure out where an
 infinite loop occurs now, most likely at the end of the read.
 
+## 14:39
+
+Was actually caused by the stop value being treated as an output byte value. So
+now the inflation algorithm passes and the resulting bytes are given. Now I
+need longer sequences that do other things. One thing I will need is random
+unique bytes that have nothing in common.
+

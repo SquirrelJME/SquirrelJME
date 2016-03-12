@@ -36,6 +36,9 @@ public class DataProcessorInputStream
 	/** Threw some kind of exception? */
 	private volatile boolean _threwexception;
 	
+	/** Closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes the pipe from the given input stream to the given processor.
 	 *
@@ -67,6 +70,9 @@ public class DataProcessorInputStream
 		// Lock
 		synchronized (lock)
 		{
+			// Set closed
+			_closed = true;
+			
 			// Close the wrapped stream
 			in.close();
 		}
@@ -86,6 +92,10 @@ public class DataProcessorInputStream
 			// Failed so just stop
 			if (_threwexception)
 				throw new IOException();
+			
+			// If closed then read nothing
+			if (_closed)
+				return -1;
 			
 			// Also lock on the processor lock also to prevent from using the
 			// processor while this input stream is running.

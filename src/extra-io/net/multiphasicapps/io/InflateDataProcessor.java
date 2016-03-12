@@ -72,6 +72,8 @@ public class InflateDataProcessor
 					
 					// Also give it to the sliding window
 					window.append(__v);
+					
+					System.err.printf(">> %02x %c%n", __v & 0xFF, (char)__v);
 				}
 			});
 	
@@ -82,6 +84,9 @@ public class InflateDataProcessor
 	/** Was the final block hit? */
 	private volatile boolean _finalhit;
 	
+	/** Nothing is left? */
+	private volatile boolean _nothingleft;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/11
@@ -90,14 +95,18 @@ public class InflateDataProcessor
 	protected void process()
 		throws IOException, WaitingException
 	{
+		// Nothing left? Stop
+		if (_nothingleft)
+			return;
+		
 		// Take all bytes which are available to the input and add them to the
 		// input bit buffer
 		while (input.hasAvailable())
 			inputbits.offerLastInt(((int)input.removeFirst()) & 0xFF, 0xFF);
 		
 		// Processing loop
-		for (;;)
-		{
+		while (!_nothingleft)
+		{//System.err.printf("DEBUG -- Loopy %s %s %s %d %s%n", _finalhit, _nothingleft, isFinished(), inputbits.available(), _task);
 			// Require more available bytes if not finished
 			if (!isFinished() && inputbits.available() < REQUIRED_BITS)
 				throw new WaitingException();
@@ -121,7 +130,7 @@ public class InflateDataProcessor
 					
 						// Unknown
 					default:
-						throw new IllegalStateException(_task.name());
+						throw new IOException(_task.name());
 				}
 			}
 		
@@ -148,13 +157,14 @@ public class InflateDataProcessor
 		System.err.flush();
 		
 		// Literal byte value
-		if (__c >= 0 && __c <= 256)
+		if (__c >= 0 && __c <= 255)
 			compactor.add(__c & 0xFF, 0xFF);
 		
 		// Stop processing, use the waiting exception to break out of the state
 		// and go back to the header handler
 		else if (__c == 256)
 		{
+			System.err.println("DEBUG -- STOPPED");
 			_task = Task.READ_HEADER;
 			throw new WaitingException();
 		}
@@ -300,10 +310,11 @@ public class InflateDataProcessor
 	 */
 	private boolean __readHeader()
 		throws IOException
-	{
+	{System.err.println("DEBUG -- ReadHeader");
 		// If the final block was hit then just stop
 		if (_finalhit)
 		{
+			_nothingleft = true;
 			setWaiting(false);
 			return false;
 		}
