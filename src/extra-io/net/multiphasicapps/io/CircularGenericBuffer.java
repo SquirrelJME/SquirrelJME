@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
  * @param <E> The erased type.
  * @since 2016/03/11
  */
-public abstract class CircularGenericBuffer<T extends Object[], E>
+public abstract class CircularGenericBuffer<T, E>
 {
 	/** Initial buffer size. */
 	protected static final int INITIAL_SIZE =
@@ -149,21 +149,6 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 	}
 	
 	/**
-	 * Offers the given value array and adds the values to the start of the
-	 * queue.
-	 *
-	 * @param __b The buffer to add to the queue.
-	 * @return {@code this}.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/11
-	 */
-	public CircularGenericBuffer offerFirst(T __b)
-		throws NullPointerException
-	{
-		return offerFirst(__b, 0, __b.length);
-	}
-	
-	/**
 	 * Offers multiple values within the given offset and length and adds them
 	 * to the start of the queue.
 	 *
@@ -182,7 +167,8 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 		// Check
 		if (__b == null)
 			throw new NullPointerException();
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		int len = arrayLength(__b);
+		if (__o < 0 || __l < 0 || (__o + __l) > len)
 			throw new IndexOutOfBoundsException();
 		
 		// Lock
@@ -212,21 +198,6 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 	}
 	
 	/**
-	 * Offers the given value array and adds the values to the end of the
-	 * queue.
-	 *
-	 * @param __b The buffer to add to the queue.
-	 * @return {@code this}.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/11
-	 */
-	public CircularGenericBuffer offerLast(T __b)
-		throws NullPointerException
-	{
-		return offerLast(__b, 0, __b.length);
-	}
-	
-	/**
 	 * Offers multiple values within the given offset and length and adds them
 	 * to the end of the queue.
 	 *
@@ -245,7 +216,8 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 		// Check
 		if (__b == null)
 			throw new NullPointerException();
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		int len = arrayLength(__b);
+		if (__o < 0 || __l < 0 || (__o + __l) > len)
 			throw new IndexOutOfBoundsException();
 		
 		// Lock
@@ -267,7 +239,7 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 	 * @throws NoSuchElementException If no values are available.
 	 * @since 2016/03/11
 	 */
-	public byte removeFirst()
+	public E removeFirst()
 		throws NoSuchElementException
 	{
 		synchronized (lock)
@@ -287,7 +259,7 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 				throw new NoSuchElementException();
 			
 			// Get value here
-			byte rv = arrayRead(buf, head);
+			E rv = arrayRead(buf, head);
 			
 			// Increment head position
 			_head = (head + 1) & (len - 1);
@@ -295,21 +267,6 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 			// Return it
 			return rv;
 		}
-	}
-	
-	/**
-	 * Reads and removes the first available values and places them within the
-	 * given array.
-	 *
-	 * @param __b The array to write value values into.
-	 * @return The number of values which were removed.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/11
-	 */
-	public int removeFirst(T __b)
-		throws NullPointerException
-	{
-		return removeFirst(__b, 0, __b.length);
 	}
 	
 	/**
@@ -331,7 +288,8 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 		// Check
 		if (__b == null)
 			throw new NullPointerException();
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		int len = arrayLength(__b);
+		if (__o < 0 || __l < 0 || (__o + __l) > len)
 			throw new IndexOutOfBoundsException();
 		
 		// Lock
@@ -344,7 +302,7 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 			for (int i = 0; i < __l; i++)
 				try
 				{
-					__b[__o + i] = removeFirst();
+					arrayWrite(__b, __o + i, removeFirst());
 					rc++;
 				}
 				
@@ -367,7 +325,7 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 	 * @throws NoSuchElementException If no values are available.
 	 * @since 2016/03/11
 	 */
-	public byte removeLast()
+	public E removeLast()
 		throws NoSuchElementException
 	{
 		synchronized (lock)
@@ -378,6 +336,7 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 				throw new NoSuchElementException();
 			
 			// Get head and tail position
+			int len = arrayLength(buf);
 			int head = _head;
 			int tail = _tail;
 			
@@ -387,32 +346,14 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 			
 			// Get value here
 			int from = tail - 1;
-			byte rv = buf[from];
-			
-			// Clear it to invalidate it (just in case)
-			buf[from] = 0;
+			E rv = arrayRead(buf, from);
 			
 			// Decrement tail position
-			_tail = (from) & (buf.length - 1);
+			_tail = (from) & (len - 1);
 			
 			// Return it
 			return rv;
 		}
-	}
-	
-	/**
-	 * Reads and removes the last available values and places them within the
-	 * given array.
-	 *
-	 * @param __b The array to write value values into.
-	 * @return The number of values which were removed.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/11
-	 */
-	public int removeLast(T __b)
-		throws NullPointerException
-	{
-		return removeLast(__b, 0, __b.length);
 	}
 	
 	/**
@@ -434,7 +375,8 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 		// Check
 		if (__b == null)
 			throw new NullPointerException();
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		int len = arrayLength(__b);
+		if (__o < 0 || __l < 0 || (__o + __l) > len)
 			throw new IndexOutOfBoundsException();
 		
 		// Lock
@@ -447,7 +389,7 @@ public abstract class CircularGenericBuffer<T extends Object[], E>
 			for (int i = __l - 1; i >= 0; i--)
 				try
 				{
-					__b[__o + i] = removeLast();
+					arrayWrite(__b, __o + i, removeLast());
 					rc++;
 				}
 				
