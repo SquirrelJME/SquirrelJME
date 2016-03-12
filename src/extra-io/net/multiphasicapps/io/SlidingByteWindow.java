@@ -296,7 +296,6 @@ public class SlidingByteWindow
 				
 				// Copy
 				__b[__o + i] = source[rat];
-				System.err.printf("DEBUG -- Ch %c%n", (char)__b[__o + i]);
 			}
 		}
 		
