@@ -213,8 +213,6 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Increment
 			_tail = (end + 1) & (arrayLength(buf) - 1);
-			System.err.printf("%d T [%d] %d -> %d (%s)%n", this.hashCode(),
-				_head, end, _tail, __b);
 		}
 		
 		// Self
@@ -287,8 +285,6 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Increment head position
 			_head = (head + 1) & (len - 1);
-			System.err.printf("%d F [%d] %d -> %d (%s)%n", this.hashCode(),
-				_tail, head, _head, rv);
 			
 			// Return it
 			return rv;
@@ -484,7 +480,7 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Copy from the old buffer to the new one
 			while (ooh != oot)
-			{System.err.printf("%d %d%n", ooh, nnt);
+			{
 				// Copy data
 				E v = arrayRead(obuf, ooh);
 				arrayWrite(nbuf, nnt, v);
@@ -500,15 +496,6 @@ public abstract class CircularGenericBuffer<T, E>
 			_buffer = nbuf;
 			_head = nnh;
 			_tail = nnt;
-			
-			System.err.print("O: ");
-			for (int i = 0; i < olen; i++)
-				System.err.print(arrayRead(obuf, i));
-			System.err.println();
-			System.err.print("N: ");
-			for (int i = 0; i < nlen; i++)
-				System.err.print(arrayRead(nbuf, i));
-			System.err.println();
 			
 			// Return the new buffer
 			return nbuf;
