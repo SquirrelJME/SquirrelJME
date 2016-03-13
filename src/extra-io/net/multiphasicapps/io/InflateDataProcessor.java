@@ -393,14 +393,18 @@ public class InflateDataProcessor
 			
 			// Align to byte boundary
 			while ((inputbits.headPosition() & 7) != 0)
+			{
+				System.err.printf("DEBUG -- hp %d%n",
+					inputbits.headPosition());
 				inputbits.removeFirst();
+			}
 			
 			// Read length and the one's complement of it
 			int len = inputbits.removeFirstInt(16);
 			int com = inputbits.removeFirstInt(16);
 			
 			// The complemented length must be equal to the complement
-			System.err.printf("DEBUG -- NL %04x %04x", len, com);
+			System.err.printf("DEBUG -- NL %04x %04x%n", len, com);
 			if ((len ^ 0xFFFF) != com)
 				throw new InflaterException.NoCompressLengthError();
 			
