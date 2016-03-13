@@ -6,7 +6,7 @@
     <http://multiphasicapps.net>
 
 **SquirrelJME** is intended to be a Java ME 8 compatible environment for
-strange and many other devices.
+strange and many other devices. The source is written in pure Java.
 
 ## Licenses
 
@@ -27,10 +27,18 @@ strange and many other devices.
    interpreter.
  * _To be compatible_ - So that existing Java ME 8 applications can run on this
    virtual machine.
+ * _To compile once and run anywhere_ - Current and up to date Java
+   implementations are limited only to a few select systems (_Solaris_,
+   _Linux_, _BSD_, _Mac OS X_, and _Windows_). Java ME 8 as of this writing
+   only supports the *FRDM-K64F* and the *Raspberry Pi*. There are multitudes
+   of devices that support **J2ME**, however that is horribly out of date when
+   compared with the Java that is used today (**J2ME** is equal to Java 1.4
+   which was released in _2002_).
 
 ## Donations
 
-You may donate to SquirrelJME to help keep the author alive:
+You may donate to SquirrelJME to help keep the author alive and to possibly
+help the purchase of various hardware:
 
   * BitCoin (**BTC/XBT**): [`1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M`](
     bitcoin:1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M)
@@ -38,6 +46,20 @@ You may donate to SquirrelJME to help keep the author alive:
     litecoin:LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi)
   * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
     dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
+
+# Important Statements
+
+***THIS SOFTWARE IS INCOMPLETE AND IN ITS CURRENT STATE IS NOT CURRENTLY
+100% COMPATIBLE WITH JAVA ME 8. THERE ARE CURRENTLY NO RELEASED VERSIONS OF
+THIS SOFTWARE. AS SUCH THE FIRST RELEASE WILL BE WHEN IT IS COMPATIBLE SO AS TO
+NOT VIOLATE POTENTIAL LICENSES, AND IF POSSIBLE BE VERIFIED WITH ANY
+APPLICABLE TCKS (SO IT WOULD BE AN "OFFICIAL" IMPLEMENTATION).***
+
+***JAVA AND ALL OTHER RELATED TRADEMARKS AND COPYRIGHTS ARE OWNED BY ORACLE
+CORPORATION <http://www.oracle.com/>. THE IMPLEMENTATIONS OF THE JAVA ME 8
+APIS AND ASSOCIATED JSRS/JEPS IS CONSIDERED BY MYSELF TO BE IN THE FAIR USE
+(AND IT ALSO HELPS THE JAVA ECOSYSTEM BY PERMITTING IT TO RUN IN MORE PLACES
+WHERE IT IS NOT SUPPORTED BY ORACLE).***
 
 # Supported Operating Systems and Freestanding Hardware
 
@@ -95,11 +117,22 @@ There are also disadvantages however:
      and `Class.newInstance()`, plugins using a common interface can be
      initialized when they are not directly known.
 
+# Limitations
+
+These are planned limitations:
+
+ * Only _4,096_ classes may be used at any one time, provided there is enough
+   memory to load all of them. Note that in standard desktop Java, this would
+   mean that almost the entire standard class library has been loaded.
+
 # Programming Considerations
 
 ## Do Not Use Static Modifiable/Mutable Globals In Standalone Classes
 
 The garbage collector upon determining that a class (which may contain static
 variables treated as globals) is no longer referenced, it may be garbage
-collected.
+collected. This means that if you set a global in a class such as that and
+then reference it later, it may be reset to its default value. This is more
+likely to happen on lower memory systems where the garbage collector will act
+more aggressively.
 
