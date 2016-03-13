@@ -42,6 +42,17 @@ public class InflaterException
 	}
 	
 	/**
+	 * This is thrown when the dynamic huffman alphabet mixing shift is out
+	 * of range.
+	 *
+	 * @since 2016/03/13
+	 */
+	public static class AlphaShiftOutOfRange
+		extends InflaterException
+	{
+	}
+	
+	/**
 	 * This is thrown when the header of the type error is read.
 	 *
 	 * @since 2016/03/10

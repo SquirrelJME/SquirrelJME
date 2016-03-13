@@ -157,9 +157,19 @@ public class InflateDataProcessor
 						__readDynamicHuffmanHeader();
 						break;
 						
-						// Read dynamic huffman alphabet
-					case DYNAMIC_HUFFMAN_ALPHABET:
-						__readDynamicHuffmanAlphabet();
+						// Read dynamic huffman alphabet (CLEN)
+					case DYNAMIC_HUFFMAN_ALPHABET_CLEN:
+						__readDynamicHuffmanAlphabetCLEN();
+						break;
+						
+						// Read dynamic huffman alphabet (LIT)
+					case DYNAMIC_HUFFMAN_ALPHABET_LIT:
+						__readDynamicHuffmanAlphabetLIT();
+						break;
+						
+						// Read dynamic huffman alphabet (DIST)
+					case DYNAMIC_HUFFMAN_ALPHABET_DIST:
+						__readDynamicHuffmanAlphabetDIST();
 						break;
 						
 						// Read dynamic huffman compressed data
@@ -178,6 +188,59 @@ public class InflateDataProcessor
 			{
 				throw new IOException(nsee);
 			}
+		}
+	}
+	
+	/**
+	 * Calculates the value to shift into when using the dynamic huffman table
+	 * where codes are written in this mixed format.
+	 *
+	 * @param __c The bit number currently being read, this is the read order
+	 * as it appears in the data and not in the mixed order. Thus if the
+	 * value is {@code 0} then shift 16 is used.
+	 * @param __val Is the current bit set?
+	 * @return The shift value to OR into.
+	 * @throws IOException If the shift is out of range.
+	 * @since 2016/03/13
+	 */
+	private int __alphaShift(int __c, boolean __val)
+		throws IOException
+	{
+		// Check
+		if (__c < 0 || __c >= 19)
+			throw new InflaterException.AlphaShiftOutOfRange();
+		
+		// If not set, nothing is returned
+		if (!__val)
+			return 0;
+		
+		// Depends on the input value
+		switch (__c)
+		{
+				// The read order is a bit shuffled
+			case 0: return (1 << 16);
+			case 1: return (1 << 17);
+			case 2: return (1 << 18);
+			case 3: return (1 << 0);
+			case 4: return (1 << 8);
+			case 5: return (1 << 7); 
+			case 6: return (1 << 9);
+			case 7: return (1 << 6);
+			case 8: return (1 << 10);
+			case 9: return (1 << 5);
+			case 10: return (1 << 11);
+			case 11: return (1 << 4);
+			case 12: return (1 << 12);
+			case 13: return (1 << 3);
+			case 14: return (1 << 13);
+			case 15: return (1 << 2);
+			case 16: return (1 << 14);
+			case 17: return (1 << 1);
+			case 18: return (1 << 15);
+				
+				// Unknown
+			default:
+				throw new InflaterException.AlphaShiftOutOfRange();
 		}
 	}
 	
@@ -318,15 +381,49 @@ public class InflateDataProcessor
 	}
 	
 	/**
-	 * Reads the dynamic alphabet which might be used to determine the values
-	 * that codes use.
+	 * Reads the code lengths for the code lengths alphabet.
 	 *
-	 * This is second.
+	 * This is second (part A).
 	 *
 	 * @throws IOException On read/write errors.
 	 * @since 2016/03/13
 	 */
-	private void __readDynamicHuffmanAlphabet()
+	private void __readDynamicHuffmanAlphabetCLEN()
+		throws IOException
+	{
+		// Current code length
+		int clen = _dhclen;
+		
+		// Need quite a number of bits for this to be used
+		if (!isFinished() && inputbits.available() < (clen * 3))
+			throw new WaitingException();
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads code lengths for the distance alphabet.
+	 *
+	 * This is second (part C).
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/13
+	 */
+	private void __readDynamicHuffmanAlphabetDIST()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads code lengths for the literal alphabet (0-255 values).
+	 *
+	 * This is second (part B).
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/13
+	 */
+	private void __readDynamicHuffmanAlphabetLIT()
 		throws IOException
 	{
 		throw new Error("TODO");
@@ -374,7 +471,7 @@ public class InflateDataProcessor
 			_dhclen);
 		
 		// Need to read the alphabet
-		_task = Task.DYNAMIC_HUFFMAN_ALPHABET;
+		_task = Task.DYNAMIC_HUFFMAN_ALPHABET_CLEN;
 	}					
 	
 	/**
@@ -552,8 +649,14 @@ public class InflateDataProcessor
 		/** Read dynamic huffman header. */
 		DYNAMIC_HUFFMAN_HEAD,
 		
-		/** Read dynamic huffman alphabet. */
-		DYNAMIC_HUFFMAN_ALPHABET,
+		/** Read dynamic huffman alphabet (code lengths). */
+		DYNAMIC_HUFFMAN_ALPHABET_CLEN,
+		
+		/** Read dynamic huffman alphabet (literals). */
+		DYNAMIC_HUFFMAN_ALPHABET_LIT,
+		
+		/** Read dynamic huffman alphabet (distances). */
+		DYNAMIC_HUFFMAN_ALPHABET_DIST,
 		
 		/** Read dynamic huffman compressed data. */
 		DYNAMIC_HUFFMAN_COMPRESSED,
