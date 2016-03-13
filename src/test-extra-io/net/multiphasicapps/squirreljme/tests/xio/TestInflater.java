@@ -13,8 +13,10 @@ package net.multiphasicapps.squirreljme.tests.xio;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Reader;
 import net.multiphasicapps.io.DataProcessorInputStream;
 import net.multiphasicapps.io.InflateDataProcessor;
 import net.multiphasicapps.squirreljme.test.TestChecker;
@@ -28,35 +30,6 @@ import net.multiphasicapps.squirreljme.test.TestInvoker;
 public class TestInflater
 	implements TestInvoker
 {
-	/** Compressed "TestingTesting". */
-	private static final byte[] SAMPLE_A_IN =
-		new byte[]{11, 73, 45, 46, -55, -52, 75, 15, -127, 80, 0};
-	
-	/** Uncompressed "TestingTesting". */
-	private static final byte[] SAMPLE_A_OUT =
-		new byte[]{84, 101, 115, 116, 105, 110, 103, 84, 101, 115, 116, 105,
-		110, 103};
-	
-	/** Compressed random data. */
-	private static final byte[] SAMPLE_B_IN =
-		new byte[]{123, 117, -62, 112, -79, -44, -1, -54, 108, 119, -11, -57,
-		76, -87, 65, -20, -49, -82, -77, -1, 126, -5, -77, 90, 59, -111, 93,
-		119, -57, -113, 124, 79, 0};
-	
-	/** Uncompressed random data. */
-	private static final byte[] SAMPLE_B_OUT =
-		new byte[]{-22, -56, 49, -93, 26, -1, 121, 107, 71, 39, -29, 2, 101,
-		82, 7, -26, -41, 7, -5, -19, -7, 123, 43, 97, 7, 45, -72, -8, 111, 73};
-	
-	/** Compressed "Hello World" using no compression. */
-	private static final byte[] SAMPLE_C_IN =
-		new byte[]{1, 11, 0, -12, -1, 72, 101, 108, 108, 111, 32, 87, 111, 114,
-		108, 100};
-	
-	/** Uncompressed "Hello World" using no compression. */
-	private static final byte[] SAMPLE_C_OUT =
-		new byte[]{72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100};
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/03
@@ -77,10 +50,35 @@ public class TestInflater
 		if (__tc == null)
 			throw new NullPointerException();
 		
-		// Run checks on samples
-		__check(__tc, "a", SAMPLE_A_IN, SAMPLE_A_OUT);
-		__check(__tc, "b", SAMPLE_B_IN, SAMPLE_B_OUT);
-		__check(__tc, "c", SAMPLE_C_IN, SAMPLE_C_OUT);
+		// Go through samples, which are resources
+		for (char c = 'a'; c <= 'z'; c++)
+		{
+			// Sample names
+			String in = "test-" + c + ".in";
+			String on = "test-" + c + ".out";
+			
+			// Try opening resources for them
+			try (InputStream ii = getClass().getResourceAsStream(in);
+				InputStream oo = getClass().getResourceAsStream(on))
+			{
+				// Ends
+				if (ii == null || oo == null)
+					break;
+				
+				// Read in both files to arrays
+				byte[] xi = __readToArray(new InputStreamReader(ii, "utf-8"));
+				byte[] xo = __readToArray(new InputStreamReader(oo, "utf-8"));
+				
+				// Call checker
+				__check(__tc, Character.toString(c), xi, xo);
+			}
+			
+			// Problem
+			catch (IOException ioe)
+			{
+				__tc.exception(Character.toString(c), ioe);
+			}
+		}
 	}
 	
 	/**
@@ -128,6 +126,68 @@ public class TestInflater
 		catch (IOException ioe)
 		{
 			__tc.exception(__id, ioe);
+		}
+	}
+	
+	/**
+	 * Reads input hex data to a byte array.
+	 *
+	 * @param __is The stream to read hex characters from.
+	 * @return The read byte array data.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/11
+	 */
+	private byte[] __readToArray(Reader __r)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException();
+		
+		// Open output array target
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// Read input constantly
+			byte b = 0;
+			for (boolean hi = true;;)
+			{
+				// Read
+				int v = __r.read();
+				
+				// EOF?
+				if (v < 0)
+					break;
+				
+				// Read a hex digit
+				int digit = Character.digit((char)v, 16);
+				
+				// Not a valid digit?
+				if (digit < 0)
+					continue;
+				
+				// Write high?
+				if (hi)
+					b |= (byte)((digit & 0xF) << 4);
+				
+				// Write low
+				else
+				{
+					b |= (byte)(digit & 0xF);
+					
+					// Give to output also
+					baos.write(b);
+					
+					// Clear
+					b = 0;
+				}
+				
+				// Invert
+				hi = !hi;
+			}
+			
+			// Return the array
+			return baos.toByteArray();
 		}
 	}
 }
