@@ -81,8 +81,8 @@ public class InflateDataProcessor
 			});
 	
 	/** Current decoding task. */
-	private volatile Task _task =
-		Task.READ_HEADER;
+	private volatile __Task__ _task =
+		__Task__.READ_HEADER;
 	
 	/** Was the final block hit? */
 	private volatile boolean _finalhit;
@@ -297,7 +297,7 @@ public class InflateDataProcessor
 		else if (__c == 256)
 		{
 			System.err.println("DEBUG -- STOPPED");
-			_task = Task.READ_HEADER;
+			_task = __Task__.READ_HEADER;
 			throw new WaitingException();
 		}
 		
@@ -439,11 +439,15 @@ public class InflateDataProcessor
 			if (next == clen)
 			{
 				// Read the literal table
-				_task = Task.DYNAMIC_HUFFMAN_ALPHABET_LIT;
+				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LIT;
 				
 				// Setup the huffman tree
 				HuffmanTree<Integer> clt = new HuffmanTree<>();
 				_clentree = clt;
+				
+				// Debug
+				for (int i = 0; i < cll.length; i++)
+					System.err.printf("DEBUG -- CLL %d: %d%n", i, cll[i]);
 				
 				if (true)
 					throw new Error("TODO");
@@ -548,7 +552,7 @@ public class InflateDataProcessor
 		_readclnext = 0;
 		
 		// Need to read the alphabet
-		_task = Task.DYNAMIC_HUFFMAN_ALPHABET_CLEN;
+		_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_CLEN;
 	}					
 	
 	/**
@@ -611,12 +615,12 @@ public class InflateDataProcessor
 				_nocomplen = -1;
 				
 				// Enter task
-				_task = Task.NO_COMPRESSION;
+				_task = __Task__.NO_COMPRESSION;
 				break;
 				
 				// Fixed huffman
 			case TYPE_FIXED_HUFFMAN:
-				_task = Task.FIXED_HUFFMAN;
+				_task = __Task__.FIXED_HUFFMAN;
 				break;
 				
 				// Dynamic huffman
@@ -627,7 +631,7 @@ public class InflateDataProcessor
 				_dhclen = -1;
 				
 				// Start with the header
-				_task = Task.DYNAMIC_HUFFMAN_HEAD;
+				_task = __Task__.DYNAMIC_HUFFMAN_HEAD;
 				break;
 			
 				// Error or unknown
@@ -701,7 +705,7 @@ public class InflateDataProcessor
 				// End of sequence
 				if (curlen == 0)
 				{
-					_task = Task.READ_HEADER;
+					_task = __Task__.READ_HEADER;
 					return;
 				}
 			}
@@ -712,7 +716,7 @@ public class InflateDataProcessor
 	 *
 	 * @since 2016/03/11
 	 */
-	private static enum Task
+	private static enum __Task__
 	{
 		/** Read the deflate header. */
 		READ_HEADER,
