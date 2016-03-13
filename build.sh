@@ -16,6 +16,18 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# No compression JARs?
+if [ -z "$__jzero" ]
+then
+	if [ "$#" -ge "0" ] && [ "$1" = "-0" ]
+	then
+		export __jzero=0
+		shift
+	else
+		__jzero=
+	fi
+fi
+
 # If no arguments, then assume hairball
 if [ "$#" -le "0" ]
 then
@@ -435,7 +447,7 @@ then
 		fi
 		
 		# Package it up
-		if ! jar cf "$__ojar" -C "/tmp/$$.$__pack" .
+		if ! jar cf$__jzero "$__ojar" -C "/tmp/$$.$__pack" .
 		then
 			# Note
 			echo "Failed to package $__pack." 2>&1
