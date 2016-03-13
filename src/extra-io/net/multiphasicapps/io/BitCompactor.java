@@ -180,6 +180,46 @@ public class BitCompactor
 	}
 	
 	/**
+	 * Returns the next bit to write.
+	 *
+	 * @return The next bit to be written.
+	 * @since 2016/03/12
+	 */
+	public int nextBit()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _at;
+		}
+	}
+	
+	/**
+	 * If there is at least 1 bit written of a byte (and not zero), then the
+	 * remaining byte will be filled with zeros then passed to the output.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/03/12
+	 */
+	public BitCompactor zeroRemainder()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// If at the start, do not bother
+			if (_at == 0)
+				return this;
+			
+			// Otherwise add until zero
+			while (_at != 0)
+				add(false);
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
 	 * This interface is used in the compactor as the callback for when a byte
 	 * is ready for output.
 	 *
