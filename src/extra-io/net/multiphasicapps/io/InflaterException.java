@@ -73,6 +73,17 @@ public class InflaterException
 	}
 	
 	/**
+	 * Too many code lengths exist, there are more than 19 of them in the
+	 * dynamic huffman table.
+	 *
+	 * @since 2016/03/13
+	 */
+	public static class TooManyCodeLengths
+		extends InflaterException
+	{
+	}
+	
+	/**
 	 * This is thrown when the no compression type has an invalid length, one
 	 * where the complement does not match the normal value.
 	 *

@@ -28,3 +28,13 @@ So what is next is reading the dynamic huffman table, will be interesting. I
 suppose my huffman class will have to be clearable so a single instance can be
 reused and such.
 
+## 15:56
+
+The dynamic huffman table is the most complex part of this.
+
+## 16:35
+
+I believe I get the code lengths part. Basically it is the number of code
+lengths that exist for a given length. I suppose that it is used to determine
+how many bits a specific value uses or similar.
+

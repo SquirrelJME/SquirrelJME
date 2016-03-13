@@ -12,6 +12,7 @@ package net.multiphasicapps.io;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import net.multiphasicapps.collections.HuffmanTree;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
@@ -100,6 +101,12 @@ public class InflateDataProcessor
 	
 	/** Dynamic number of code length codes. */
 	private volatile int _dhclen;
+	
+	/** Raw code lengths. */
+	private volatile int[] _rawcodelens;
+	
+	/** The next code length to read. */
+	private volatile int _readclnext;
 	
 	/**
 	 * {@inheritDoc}
@@ -214,29 +221,49 @@ public class InflateDataProcessor
 		if (!__val)
 			return 0;
 		
+		// Shift it
+		return (1 << __alphaSwap(__c));
+	}
+	
+	/**
+	 * Code lengths are in swapped positions so that certain orders appear
+	 * before other ones.
+	 *
+	 * @param __c The current index to write
+	 * @return The actual position in the raw code length array to write to.
+	 * @throws IOException If the read position is out of range.
+	 * @since 2016/03/13
+	 */
+	private int __alphaSwap(int __c)
+		throws IOException
+	{
+		// Check
+		if (__c < 0 || __c >= 19)
+			throw new InflaterException.AlphaShiftOutOfRange();
+		
 		// Depends on the input value
 		switch (__c)
 		{
-				// The read order is a bit shuffled
-			case 0: return (1 << 16);
-			case 1: return (1 << 17);
-			case 2: return (1 << 18);
-			case 3: return (1 << 0);
-			case 4: return (1 << 8);
-			case 5: return (1 << 7); 
-			case 6: return (1 << 9);
-			case 7: return (1 << 6);
-			case 8: return (1 << 10);
-			case 9: return (1 << 5);
-			case 10: return (1 << 11);
-			case 11: return (1 << 4);
-			case 12: return (1 << 12);
-			case 13: return (1 << 3);
-			case 14: return (1 << 13);
-			case 15: return (1 << 2);
-			case 16: return (1 << 14);
-			case 17: return (1 << 1);
-			case 18: return (1 << 15);
+				// The read order is shuffled a bit
+			case 0: return (16);
+			case 1: return (17);
+			case 2: return (18);
+			case 3: return (0);
+			case 4: return (8);
+			case 5: return (7); 
+			case 6: return (9);
+			case 7: return (6);
+			case 8: return (10);
+			case 9: return (5);
+			case 10: return (11);
+			case 11: return (4);
+			case 12: return (12);
+			case 13: return (3);
+			case 14: return (13);
+			case 15: return (2);
+			case 16: return (14);
+			case 17: return (1);
+			case 18: return (15);
 				
 				// Unknown
 			default:
@@ -394,11 +421,41 @@ public class InflateDataProcessor
 		// Current code length
 		int clen = _dhclen;
 		
-		// Need quite a number of bits for this to be used
-		if (!isFinished() && inputbits.available() < (clen * 3))
-			throw new WaitingException();
+		// Need to allocate the array?
+		int[] cll = _rawcodelens;
+		if (cll == null)
+			_rawcodelens = cll = new int[19];
 		
-		throw new Error("TODO");
+		// Read code lengths
+		for (;;)
+		{
+			// Next length to read
+			int next = _readclnext;
+			
+			// Read them all?
+			if (next == clen)
+			{
+				// Read the literal table
+				_task = Task.DYNAMIC_HUFFMAN_ALPHABET_LIT;
+				
+				// Done
+				return;
+			}
+			
+			// Not enough bits to read code lengths
+			if (!isFinished() && inputbits.available() < 3)
+				throw new WaitingException();
+			
+			// Read three bits
+			cll[__alphaSwap(next)] = inputbits.removeFirstInt(3);
+			
+			// Debug
+			System.err.printf("DEBUG -- CLEN %d (%d) %d%n", next,
+				__alphaSwap(next), cll[__alphaSwap(next)]);
+			
+			// Go to the next one
+			_readclnext = (next + 1);
+		}
 	}
 	
 	/**
@@ -462,13 +519,22 @@ public class InflateDataProcessor
 			throw new WaitingException();
 		
 		// Read the bits
+		int cll;
 		_dhlit = inputbits.removeFirstInt(5) + 257;
 		_dhdist = inputbits.removeFirstInt(5) + 1;
-		_dhclen = inputbits.removeFirstInt(4) + 4;
+		_dhclen = cll = inputbits.removeFirstInt(4) + 4;
 		
 		// DEBUG
 		System.err.printf("DEBUG -- DHH %d %d %d %n", _dhlit, _dhdist,
 			_dhclen);
+		
+		// Code lengths cannot be higher than 19
+		if (cll > 19)
+			throw new InflaterException.TooManyCodeLengths();
+		
+		// Initialize
+		_rawcodelens = null;
+		_readclnext = 0;
 		
 		// Need to read the alphabet
 		_task = Task.DYNAMIC_HUFFMAN_ALPHABET_CLEN;

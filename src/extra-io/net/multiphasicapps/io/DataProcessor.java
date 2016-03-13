@@ -53,6 +53,9 @@ public abstract class DataProcessor
 	private volatile boolean _iswaiting =
 		true;
 	
+	/** Threw IOException during process. */
+	private volatile boolean _threwioe;
+	
 	/**
 	 * Processes some data.
 	 *
@@ -258,6 +261,11 @@ public abstract class DataProcessor
 	{
 		synchronized (lock)
 		{
+			// Previous read threw an exception
+			if (_threwioe)
+				throw new IOException();
+			
+			// Read until failure or a value is returned
 			for (boolean fail = false;;)
 			{
 				// Try reading some output
@@ -281,6 +289,17 @@ public abstract class DataProcessor
 					try
 					{
 						process();
+					}
+					
+					// Caught exception
+					catch (IOException ioe)
+					{
+						// Mark it as failed so that a broken state is not
+						// used
+						_threwioe = true;
+						
+						// Rethrow it
+						throw ioe;
 					}
 					
 					// If waiting just fail here
