@@ -3,7 +3,7 @@
   * Copyright (C) 2013-2016 Steven Gawroriski
     <steven@multiphasicapps.net>
   * Copyright (C) 2013-2016 Multi-Phasic Applications
-    <http://multiphasicapps.net>
+    <http://multiphasicapps.net/>
 
 **SquirrelJME** is intended to be a Java ME 8 compatible environment for
 strange and many other devices. The source is written in pure Java.
