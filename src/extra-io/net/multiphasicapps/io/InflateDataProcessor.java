@@ -107,7 +107,12 @@ public class InflateDataProcessor
 		// Take all bytes which are available to the input and add them to the
 		// input bit buffer
 		while (input.hasAvailable())
-			inputbits.offerLastInt(((int)input.removeFirst()) & 0xFF, 0xFF);
+		{
+			int v;
+			inputbits.offerLastInt((v = ((int)input.removeFirst()) & 0xFF),
+				0xFF);
+			System.err.printf("DEBUG -- in %02x%n", v);
+		}
 		
 		// Processing loop
 		while (!_nothingleft)

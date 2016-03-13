@@ -423,19 +423,19 @@ public class StandardZIP32File
 			{
 				// The first 4 bytes may potentially be a magic number field
 				// for a descriptor
-				int potmag = (int)readStruct(startpos, ZIP32Decriptor.CRC);
+				int potmag = (int)readStruct(startpos, ZIP32Descriptor.CRC);
 				
 				// If it is the magic number, then increase it by 4
-				if (potmag == ZIP32Decriptor.MAGIC_NUMBER_VALUE)
+				if (potmag == ZIP32Descriptor.MAGIC_NUMBER_VALUE)
 					startpos += 4;
 				
 				// Read fields
-				crc = (int)readStruct(startpos, ZIP32Decriptor.CRC);
-				usz = readStruct(startpos, ZIP32Decriptor.UNCOMPRESSED_SIZE);
-				csz = readStruct(startpos, ZIP32Decriptor.COMPRESSED_SIZE);
+				crc = (int)readStruct(startpos, ZIP32Descriptor.CRC);
+				usz = readStruct(startpos, ZIP32Descriptor.UNCOMPRESSED_SIZE);
+				csz = readStruct(startpos, ZIP32Descriptor.COMPRESSED_SIZE);
 				
 				// Skip the structure size
-				startpos += ZIP32Decriptor.BASE_SIZE;
+				startpos += ZIP32Descriptor.BASE_SIZE;
 			}
 			
 			// Otherwise this data is in the header
@@ -448,6 +448,8 @@ public class StandardZIP32File
 				csz = readStruct(localheaderpos,
 					ZIP32LocalFile.COMPRESSED_SIZE);
 			}
+			
+			System.err.printf("DEBUG -- ZIP Start %d%n", startpos);
 			
 			// Open raw data stream
 			InputStream rawsource = new DataStream(startpos, startpos + csz);

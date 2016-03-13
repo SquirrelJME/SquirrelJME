@@ -15,20 +15,20 @@ package net.multiphasicapps.squirreljme.zips;
  *
  * @since 2016/03/09
  */
-public class ZIP32Decriptor
-	extends AbstractZIPStructureElement<ZIP32Decriptor>
+public class ZIP32Descriptor
+	extends AbstractZIPStructureElement<ZIP32Descriptor>
 {
 	/** The CRC. */
-	public static final ZIP32Decriptor CRC =
-		new ZIP32Decriptor(null, Type.UINT32, null);
+	public static final ZIP32Descriptor CRC =
+		new ZIP32Descriptor(null, Type.UINT32, null);
 	
 	/** Compressed size. */
-	public static final ZIP32Decriptor COMPRESSED_SIZE =
-		new ZIP32Decriptor(CRC, Type.UINT32, null);
+	public static final ZIP32Descriptor COMPRESSED_SIZE =
+		new ZIP32Descriptor(CRC, Type.UINT32, null);
 	
 	/** Uncompressed size. */
-	public static final ZIP32Decriptor UNCOMPRESSED_SIZE =
-		new ZIP32Decriptor(COMPRESSED_SIZE, Type.UINT32, null);
+	public static final ZIP32Descriptor UNCOMPRESSED_SIZE =
+		new ZIP32Descriptor(COMPRESSED_SIZE, Type.UINT32, null);
 	
 	/** The size of this structure. */
 	public static final long BASE_SIZE =
@@ -47,8 +47,8 @@ public class ZIP32Decriptor
 	 * @throws NullPointerException If no type was specified.
 	 * @since 2016/03/09
 	 */
-	protected ZIP32Decriptor(ZIP32Decriptor __bef,
-		Type __t, ZIP32Decriptor __var)
+	protected ZIP32Descriptor(ZIP32Descriptor __bef,
+		Type __t, ZIP32Descriptor __var)
 	{
 		super(__bef, __t, __var);
 	}

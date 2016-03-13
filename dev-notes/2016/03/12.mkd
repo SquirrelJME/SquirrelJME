@@ -113,3 +113,7 @@ as it ends up being larger.
 
 Was doing lots of outside work before, rather tired.
 
+## 22:47
+
+I believe the ZIP is reading data from the incorrect location.
+
