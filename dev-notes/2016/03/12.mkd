@@ -109,3 +109,7 @@ unique bytes that have nothing in common.
 Ok so I have a random data input which is completely terrible at compressing
 as it ends up being larger.
 
+## 21:12
+
+Was doing lots of outside work before, rather tired.
+

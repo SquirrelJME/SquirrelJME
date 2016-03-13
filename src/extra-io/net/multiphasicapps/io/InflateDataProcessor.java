@@ -89,6 +89,9 @@ public class InflateDataProcessor
 	/** Nothing is left? */
 	private volatile boolean _nothingleft;
 	
+	/** No compression length. */
+	private volatile int _nocomplen;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/11
@@ -108,7 +111,7 @@ public class InflateDataProcessor
 		
 		// Processing loop
 		while (!_nothingleft)
-		{//System.err.printf("DEBUG -- Loopy %s %s %s %d %s%n", _finalhit, _nothingleft, isFinished(), inputbits.available(), _task);
+		{
 			// Require more available bytes if not finished
 			if (!isFinished() && inputbits.available() < REQUIRED_BITS)
 				throw new WaitingException();
@@ -123,6 +126,11 @@ public class InflateDataProcessor
 					case READ_HEADER:
 						if (!__readHeader())
 							return;
+						break;
+						
+						// No compression
+					case NO_COMPRESSION:
+						__readNoCompression();
 						break;
 						
 						// Read fixed huffman table
@@ -336,8 +344,11 @@ public class InflateDataProcessor
 		{
 				// None
 			case TYPE_NO_COMPRESSION:
-				if (true)
-					throw new Error("TODO");
+				// Setup intial state
+				_nocomplen = -1;
+				
+				// Enter task
+				_task = Task.NO_COMPRESSION;
 				break;
 				
 				// Fixed huffman
@@ -362,6 +373,69 @@ public class InflateDataProcessor
 	}
 	
 	/**
+	 * Reads the no compression block.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/12
+	 */
+	private void __readNoCompression()
+		throws IOException
+	{
+		// Get the current length
+		int curlen = _nocomplen;
+		
+		// If not yet initialized, set it up
+		if (curlen < 0)
+		{
+			// Need four bytes of input, along with potential alignment bits
+			if (!isFinished() && inputbits.available() < 39)
+				throw new WaitingException();
+			
+			// Align to byte boundary
+			while ((inputbits.headPosition() & 7) != 0)
+				inputbits.removeFirst();
+			
+			// Read length and the one's complement of it
+			int len = inputbits.removeFirstInt(16);
+			int com = inputbits.removeFirstInt(16);
+			
+			// The complemented length must be equal to the complement
+			System.err.printf("DEBUG -- NL %04x %04x", len, com);
+			if ((len ^ 0xFFFF) != com)
+				throw new InflaterException.NoCompressLengthError();
+			
+			// Set it
+			_nocomplen = len;
+		}
+		
+		// Otherwise read values
+		else
+			while (curlen > 0)
+			{
+				// Need at least a byte of input
+				if (!isFinished() && inputbits.available() < 8)
+					throw new WaitingException();
+				
+				// Read byte
+				int val = inputbits.removeFirstInt(8);
+				
+				// Add to output
+				compactor.add(val, 0xFF);
+				
+				// Decrement
+				curlen--;
+				_nocomplen = curlen;
+				
+				// End of sequence
+				if (curlen == 0)
+				{
+					_task = Task.READ_HEADER;
+					return;
+				}
+			}
+	}
+	
+	/**
 	 * The current task to perform when decoding input code.
 	 *
 	 * @since 2016/03/11
@@ -373,6 +447,9 @@ public class InflateDataProcessor
 		
 		/** Read fixed huffman table. */
 		FIXED_HUFFMAN,
+		
+		/** Read no compressed area. */
+		NO_COMPRESSION,
 		
 		/** End. */
 		;

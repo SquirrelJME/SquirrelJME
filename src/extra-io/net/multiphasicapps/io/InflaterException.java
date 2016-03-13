@@ -62,6 +62,17 @@ public class InflaterException
 	}
 	
 	/**
+	 * This is thrown when the no compression type has an invalid length, one
+	 * where the complement does not match the normal value.
+	 *
+	 * @since 2016/03/12
+	 */
+	public static class NoCompressLengthError
+		extends InflaterException
+	{
+	}
+	
+	/**
 	 * This is thrown when there is no value for the given bits.
 	 *
 	 * @since 2016/03/10

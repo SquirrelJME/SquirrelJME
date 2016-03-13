@@ -155,6 +155,21 @@ public abstract class CircularGenericBuffer<T, E>
 	}
 	
 	/**
+	 * Returns the head position.
+	 *
+	 * @return The head position.
+	 * @since 2016/03/12
+	 */
+	public int headPosition()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _head;
+		}
+	}
+	
+	/**
 	 * Offers a single value and adds it to the start of the queue.
 	 *
 	 * @param __b The value to offer.
@@ -435,6 +450,21 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// Return the read count
 			return rc;	
+		}
+	}
+	
+	/**
+	 * Returns the tail position.
+	 *
+	 * @return The tail position.
+	 * @since 2016/03/12
+	 */
+	public int tailPosition()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _tail;
 		}
 	}
 	
