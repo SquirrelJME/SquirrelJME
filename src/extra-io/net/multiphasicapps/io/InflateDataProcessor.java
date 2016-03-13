@@ -108,6 +108,9 @@ public class InflateDataProcessor
 	/** The next code length to read. */
 	private volatile int _readclnext;
 	
+	/** The code length huffman tree. */
+	private volatile HuffmanTree<Integer> _clentree;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/11
@@ -438,6 +441,13 @@ public class InflateDataProcessor
 				// Read the literal table
 				_task = Task.DYNAMIC_HUFFMAN_ALPHABET_LIT;
 				
+				// Setup the huffman tree
+				HuffmanTree<Integer> clt = new HuffmanTree<>();
+				_clentree = clt;
+				
+				if (true)
+					throw new Error("TODO");
+				
 				// Done
 				return;
 			}
@@ -534,6 +544,7 @@ public class InflateDataProcessor
 		
 		// Initialize
 		_rawcodelens = null;
+		_clentree = null;
 		_readclnext = 0;
 		
 		// Need to read the alphabet

@@ -38,3 +38,8 @@ I believe I get the code lengths part. Basically it is the number of code
 lengths that exist for a given length. I suppose that it is used to determine
 how many bits a specific value uses or similar.
 
+## 16:50
+
+The one thing though is figuring out how the huffman table is generated from
+the length codes, which are used for further processing.
+
