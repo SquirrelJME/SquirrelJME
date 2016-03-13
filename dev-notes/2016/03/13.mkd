@@ -7,3 +7,9 @@ during streams. It is also placed after the compressed data. This means I need
 a reference to the directory offset that a file belongs to for the obtaining
 of the size.
 
+## 00:12
+
+It is also really only used for streaming deflate compression since writing
+and seeking back may be impossible, so the checksum and the actual sizes of
+the data is not known at all. This makes perfect sense.
+

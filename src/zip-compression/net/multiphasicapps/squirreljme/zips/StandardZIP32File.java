@@ -418,27 +418,23 @@ public class StandardZIP32File
 				readStruct(localheaderpos, ZIP32LocalFile.FILE_NAME_LENGTH) +
 				readStruct(localheaderpos, ZIP32LocalFile.EXTRA_DATA_LENGTH);
 			
-			// Use the data descriptor?
+			// Use the data descriptor? If this is set then it is plausable
+			// that the ZIP was streamed without knowing the actual compressed
+			// and uncompressed data sizes. So in this case, just use the
+			// local directory data.
 			if (isUseDataDescriptor())
 			{
-				// The first 4 bytes may potentially be a magic number field
-				// for a descriptor
-				int potmag = (int)readStruct(startpos, ZIP32Descriptor.CRC);
-				
-				// If it is the magic number, then increase it by 4
-				if (potmag == ZIP32Descriptor.MAGIC_NUMBER_VALUE)
-					startpos += 4;
-				
 				// Read fields
-				crc = (int)readStruct(startpos, ZIP32Descriptor.CRC);
-				usz = readStruct(startpos, ZIP32Descriptor.UNCOMPRESSED_SIZE);
-				csz = readStruct(startpos, ZIP32Descriptor.COMPRESSED_SIZE);
-				
-				// Skip the structure size
-				startpos += ZIP32Descriptor.BASE_SIZE;
+				crc = (int)readStruct(centraldirpos,
+					ZIP32CentralDirectory.CRC);
+				usz = readStruct(centraldirpos,
+					ZIP32CentralDirectory.UNCOMPRESSED_SIZE);
+				csz = readStruct(centraldirpos,
+					ZIP32CentralDirectory.COMPRESSED_SIZE);
 			}
 			
-			// Otherwise this data is in the header
+			// Otherwise this data is in the header (it was at least known
+			// before generation time).
 			else
 			{
 				// In the file header
@@ -449,12 +445,10 @@ public class StandardZIP32File
 					ZIP32LocalFile.COMPRESSED_SIZE);
 			}
 			
-			System.err.printf("DEBUG -- ZIP Start %d%n", startpos);
-			
 			// Open raw data stream
 			InputStream rawsource = new DataStream(startpos, startpos + csz);
 			
-			// Caluclate the CRC also
+			// Calculate the CRC also
 			/*rawsource = new CRC32InputStream(rawsource, CRC_MAGIC_NUMBER,
 				CRC_PRECONDITION, crc);*/
 			
