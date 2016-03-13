@@ -19,7 +19,7 @@ strange and many other devices. The source is written in pure Java.
 ## Goals
 
  * _To be self-hosting_ - it can build itself while running on itself, provided
-   there is a filesystem.
+   there is a filesystem and enough memory.
  * _To be small_ - Smaller programs are easier to maintain and are usually
    simpler.
  * _To be fast_ - With the potential of AOT/JIT, systems that do not normally

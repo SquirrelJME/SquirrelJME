@@ -13,6 +13,12 @@ package net.multiphasicapps.io;
 /**
  * This represents a sliding byte window.
  *
+ * It is allocated in chunks of a given fragment size so that the entire window
+ * is not allocated in its entirety until it is actually used.
+ *
+ * In the future this class may support a kind of compression so that older
+ * bytes in the sliding window may be compacted when they are not used.
+ *
  * @since 2016/03/10
  */
 public class SlidingByteWindow
@@ -229,7 +235,8 @@ public class SlidingByteWindow
 	}
 	
 	/**
-	 * This reads bytes 
+	 * This reads bytes from the sliding window at a given historical index
+	 * and writes them to the input array.
 	 *
 	 * @param __ago How many bytes in the past to read.
 	 * @param __b The output array of bytes to write.
