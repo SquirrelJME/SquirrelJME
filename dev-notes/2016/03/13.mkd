@@ -43,3 +43,10 @@ how many bits a specific value uses or similar.
 The one thing though is figuring out how the huffman table is generated from
 the length codes, which are used for further processing.
 
+## 19:18
+
+Going to take a break from deflate and work on class loading (which I have done
+before). A `-0` flag in the build script will be handy for skipping
+compression, since I should not just be working on the decompression library
+although it is an important part of it.
+
