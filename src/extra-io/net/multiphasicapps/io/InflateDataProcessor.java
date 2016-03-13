@@ -92,6 +92,15 @@ public class InflateDataProcessor
 	/** No compression length. */
 	private volatile int _nocomplen;
 	
+	/** Dynamic number of literal length codes. */
+	private volatile int _dhlit;
+	
+	/** Dynamic number of distance codes. */
+	private volatile int _dhdist;
+	
+	/** Dynamic number of code length codes. */
+	private volatile int _dhclen;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/11
@@ -142,7 +151,22 @@ public class InflateDataProcessor
 					case FIXED_HUFFMAN:
 						__readFixedHuffman();
 						break;
-					
+						
+						// Read dynamic huffman heder
+					case DYNAMIC_HUFFMAN_HEAD:
+						__readDynamicHuffmanHeader();
+						break;
+						
+						// Read dynamic huffman alphabet
+					case DYNAMIC_HUFFMAN_ALPHABET:
+						__readDynamicHuffmanAlphabet();
+						break;
+						
+						// Read dynamic huffman compressed data
+					case DYNAMIC_HUFFMAN_COMPRESSED:
+						__readDynamicHuffmanCompressed();
+						break;
+						
 						// Unknown
 					default:
 						throw new IOException(_task.name());
@@ -294,6 +318,66 @@ public class InflateDataProcessor
 	}
 	
 	/**
+	 * Reads the dynamic alphabet which might be used to determine the values
+	 * that codes use.
+	 *
+	 * This is second.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/13
+	 */
+	private void __readDynamicHuffmanAlphabet()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads the dynamic huffman actually compressed data using the
+	 * pre-existing dynamic data. This is done until the stop code is reached.
+	 *
+	 * This is third and last.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/13
+	 */
+	private void __readDynamicHuffmanCompressed()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads the dynamic huffman table header.
+	 *
+	 * This is the very start of the huffman data.
+	 *
+	 * This is first.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/13
+	 */
+	private void __readDynamicHuffmanHeader()
+		throws IOException
+	{
+		// The header consists of 14 bits: HLIT (5), HDIST (5), HCLEN (4)
+		if (!isFinished() && inputbits.available() < 14)
+			throw new WaitingException();
+		
+		// Read the bits
+		_dhlit = inputbits.removeFirstInt(5) + 257;
+		_dhdist = inputbits.removeFirstInt(5) + 1;
+		_dhclen = inputbits.removeFirstInt(4) + 4;
+		
+		// DEBUG
+		System.err.printf("DEBUG -- DHH %d %d %d %n", _dhlit, _dhdist,
+			_dhclen);
+		
+		// Need to read the alphabet
+		_task = Task.DYNAMIC_HUFFMAN_ALPHABET;
+	}					
+	
+	/**
 	 * Reads the fixed huffman based input.
 	 *
 	 * @throws IOException On read/write errors.
@@ -363,8 +447,13 @@ public class InflateDataProcessor
 				
 				// Dynamic huffman
 			case TYPE_DYNAMIC_HUFFMAN:
-				if (true)
-					throw new Error("TODO");
+				// Initialize state
+				_dhlit = -1;
+				_dhdist = -1;
+				_dhclen = -1;
+				
+				// Start with the header
+				_task = Task.DYNAMIC_HUFFMAN_HEAD;
 				break;
 			
 				// Error or unknown
@@ -459,6 +548,15 @@ public class InflateDataProcessor
 		
 		/** Read no compressed area. */
 		NO_COMPRESSION,
+		
+		/** Read dynamic huffman header. */
+		DYNAMIC_HUFFMAN_HEAD,
+		
+		/** Read dynamic huffman alphabet. */
+		DYNAMIC_HUFFMAN_ALPHABET,
+		
+		/** Read dynamic huffman compressed data. */
+		DYNAMIC_HUFFMAN_COMPRESSED,
 		
 		/** End. */
 		;
