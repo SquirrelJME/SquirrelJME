@@ -36,21 +36,34 @@ public final class IdentifierSymbol
 	{
 		super(__s);
 		
-		// Check characters
+		// Cannot be blank
 		int n = length();
+		if (n <= 0)
+			throw new IllegalSymbolException(toString());
+		
+		
+		// Check characters
 		boolean gtlt = false;
 		for (int i = 0; i < n; i++)
-		{
-			// Get
-			char c = charAt(i);
-			
-			// Cannot contain these characters
-			if (c == '.' || c == ';' || c == '[' || c == '/')
-				throw new IllegalSymbolException(toString());
-			
-			// Methods cannot have these, unless init
-			gtlt |= (c == '<' || c == '>');
-		}
+			switch (charAt(i))
+			{
+					// These are illegal
+				case '.':
+				case ';':
+				case '[':
+				case '/':
+					throw new IllegalSymbolException(toString());
+				
+					// Flag these
+				case '<':
+				case '>':
+					gtlt = true;
+					break;
+				
+					// Fine
+				default:
+					break;
+			}
 		
 		// Valid method?
 		validmethod = (!gtlt || toString().equals("<init>") ||

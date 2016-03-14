@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
 
 /**
  * This represents the constant pool which exists within a class.
@@ -95,7 +96,9 @@ public class InterpreterClassPool
 		// Check
 		if (__cl == null || __is == null)
 			throw new NullPointerException();
-		
+		System.err.println(new BinaryNameSymbol("java"));
+		System.err.println(new BinaryNameSymbol("java/lang"));
+		System.err.println(new BinaryNameSymbol("java/lang/Object"));
 		// Set
 		owner = __cl;
 		
