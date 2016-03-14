@@ -26,6 +26,9 @@ public class InterpreterClassPool
 	/** The class which owns the constant pool. */
 	protected final InterpreterClass owner;	
 	
+	/** Number of entries in the pool. */
+	protected final int numentries;
+	
 	/**
 	 * Initializes and interprets the constant pool of a class.
 	 *
@@ -44,6 +47,11 @@ public class InterpreterClassPool
 		
 		// Set
 		owner = __cl;
+		
+		// Read entry count, a class cannot have zero entries in it
+		numentries = __is.readUnsignedShort();
+		if (numentries <= 0)
+			throw new InterpreterClassFormatError("Empty constant pool.");
 		
 		throw new Error("TODO");
 	}
