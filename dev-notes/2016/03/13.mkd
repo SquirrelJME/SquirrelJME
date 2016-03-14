@@ -50,3 +50,9 @@ before). A `-0` flag in the build script will be handy for skipping
 compression, since I should not just be working on the decompression library
 although it is an important part of it.
 
+## 21:07
+
+Looks like the earliest version of CLDC (J2ME) does not support floating type
+math. Also, the subroutine instructions are not supported at all it seems in
+all versions, so implementing and verification should be much easier.
+

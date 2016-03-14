@@ -29,10 +29,6 @@ public class InterpreterClass
 	public static final int MAGIC_NUMBER =
 		0xCAFEBABE;
 	
-	/** The maximum supported version number (Java 8). */
-	public static final int MAX_VERSION =
-		52 << 16;
-	
 	/** The interpreter engine which owns this class. */
 	protected final InterpreterEngine engine;
 	
@@ -40,7 +36,10 @@ public class InterpreterClass
 	protected final Set<InterpreterClass> superclasses;
 	
 	/** The version of this class file. */
-	protected final int version;
+	protected final InterpreterClassVersion version;
+	
+	/** The class constant pool. */
+	protected final InterpreterClassPool constantpool;
 	
 	/**
 	 * Initializes the class data.
@@ -75,11 +74,15 @@ public class InterpreterClass
 		// Read the class version number, this modifies if certain
 		// instructions are handled and how they are verified (StackMap vs
 		// StackMapTable)
-		int version = das.readUnsignedShort() |
-			(das.readUnsignedShort() << 16);
-		if (version > MAX_VERSION)
+		version = InterpreterClassVersion.findVersion(
+			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
+		if (version.compareTo(InterpreterClassVersion.MAX_VERSION) > 0)
 			throw new InterpreterClassVersionError(String.format("Class " +
-				"version newer than Java 8."));
+				"version " + version + " is newer than " +
+				InterpreterClassVersion.MAX_VERSION + "."));
+		
+		// Initialize the constant pool
+		constantpool = new InterpreterClassPool(this, das);
 		
 		throw new Error("TODO");
 	}
@@ -113,6 +116,18 @@ public class InterpreterClass
 	public String getName()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the version of the class file which determines if specific
+	 * features are supported or not.
+	 *
+	 * @return The class version number.
+	 * @since 2016/03/13
+	 */
+	public InterpreterClassVersion version()
+	{
+		return version;
 	}
 }
 
