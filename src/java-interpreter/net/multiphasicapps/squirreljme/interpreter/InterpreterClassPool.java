@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.interpreter;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.AbstractList;
 
 /**
  * This represents the constant pool which exists within a class.
@@ -22,10 +23,51 @@ import java.io.IOException;
  * @since 2016/03/13
  */
 public class InterpreterClassPool
+	extends AbstractList<InterpreterClassPool.Entry>
 {
 	/** The UTF constant tag. */
 	protected static final int TAG_UTF8 =
-		1;	
+		1;
+	
+	/** Integer constant. */
+	protected static final int TAG_INTEGER =
+		3;
+	
+	/** Float constant. */
+	protected static final int TAG_FLOAT =
+		4;
+	
+	/** Long constant. */
+	protected static final int TAG_LONG =
+		5;
+	
+	/** Double constant. */
+	protected static final int TAG_DOUBLE =
+		6;
+	
+	/** Reference to another class. */
+	protected static final int TAG_CLASS =
+		7;
+	
+	/** String constant. */
+	protected static final int TAG_STRING =
+		8;
+	
+	/** Field reference. */
+	protected static final int TAG_FIELDREF =
+		9;
+	
+	/** Method reference. */
+	protected static final int TAG_METHODREF =
+		10;
+	
+	/** Interface method reference. */
+	protected static final int TAG_INTERFACEMETHODREF =
+		11;
+	
+	/** Name and type. */
+	protected static final int TAG_NAMEANDTYPE =
+		12;
 	
 	/** The class which owns the constant pool. */
 	protected final InterpreterClass owner;	
@@ -77,11 +119,41 @@ public class InterpreterClassPool
 					break;
 					
 					// Unknown
+				case TAG_INTEGER:
+				case TAG_FLOAT:
+				case TAG_LONG:
+				case TAG_DOUBLE:
+				case TAG_CLASS:
+				case TAG_STRING:
+				case TAG_FIELDREF:
+				case TAG_METHODREF:
+				case TAG_INTERFACEMETHODREF:
+				case TAG_NAMEANDTYPE:
 				default:
 					throw new InterpreterClassFormatError("Unsupported " +
 						"constant pool tag " + tag + ".");
 			}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/13
+	 */
+	@Override
+	public InterpreterClassPool.Entry get(int __i)
+	{
+		return _entries[__i];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/13
+	 */
+	@Override
+	public int size()
+	{
+		return numentries;
 	}
 	
 	/**
