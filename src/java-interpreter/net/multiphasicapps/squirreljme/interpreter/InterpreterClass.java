@@ -78,7 +78,7 @@ public class InterpreterClass
 		int version = das.readUnsignedShort() |
 			(das.readUnsignedShort() << 16);
 		if (version > MAX_VERSION)
-			throw new InterpreterClassFormatError(String.format("Class " +
+			throw new InterpreterClassVersionError(String.format("Class " +
 				"version newer than Java 8."));
 		
 		throw new Error("TODO");
