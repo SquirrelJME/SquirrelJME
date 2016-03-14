@@ -29,11 +29,18 @@ public class InterpreterClass
 	public static final int MAGIC_NUMBER =
 		0xCAFEBABE;
 	
+	/** The maximum supported version number (Java 8). */
+	public static final int MAX_VERSION =
+		52 << 16;
+	
 	/** The interpreter engine which owns this class. */
 	protected final InterpreterEngine engine;
 	
 	/** Super classes and interfaces implemented in this class. */
 	protected final Set<InterpreterClass> superclasses;
+	
+	/** The version of this class file. */
+	protected final int version;
 	
 	/**
 	 * Initializes the class data.
@@ -64,6 +71,15 @@ public class InterpreterClass
 		if (MAGIC_NUMBER != (clmagic = das.readInt()))
 			throw new InterpreterClassFormatError(String.format("Expected " +
 				"magic number %08x, not %08x", MAGIC_NUMBER, clmagic));
+		
+		// Read the class version number, this modifies if certain
+		// instructions are handled and how they are verified (StackMap vs
+		// StackMapTable)
+		int version = das.readUnsignedShort() |
+			(das.readUnsignedShort() << 16);
+		if (version > MAX_VERSION)
+			throw new InterpreterClassFormatError(String.format("Class " +
+				"version newer than Java 8."));
 		
 		throw new Error("TODO");
 	}
