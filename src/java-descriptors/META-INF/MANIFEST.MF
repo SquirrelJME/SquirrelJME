@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-Hairball-Name: java-descriptors
+X-Hairball-Depends: javame-cldc-compact
+LIBlet-Title: Java Descriptors
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160314
+LIBlet-Description: This contains parsers and handlers which are able to read,
+  provide, and construct information that is related to binary names,
+  identifiers, method descriptors, and field descriptors.
+

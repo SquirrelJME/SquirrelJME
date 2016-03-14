@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.interpreter;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 
 /**
