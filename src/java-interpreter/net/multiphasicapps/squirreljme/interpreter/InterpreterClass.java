@@ -29,6 +29,11 @@ public class InterpreterClass
 	public static final int MAGIC_NUMBER =
 		0xCAFEBABE;
 	
+	/** Is invokedynamic supported anyway even thougn it is illegal? */
+	static final boolean SUPPORT_INVOKEDYNAMIC_ANYWAY =
+		Boolean.valueOf(System.getProperty(
+			InterpreterClass.class.getName() + ".invokedynamic"));
+	
 	/** The interpreter engine which owns this class. */
 	protected final InterpreterEngine engine;
 	

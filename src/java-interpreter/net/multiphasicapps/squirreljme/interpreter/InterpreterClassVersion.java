@@ -19,23 +19,23 @@ public enum InterpreterClassVersion
 {
 	/** Probably invalid or ancient Java. */
 	INVALID(Integer.MIN_VALUE,
-		true, false),	
+		true, false, false),	
 	
 	/** CLDC 1.0 (JSR 30). */
 	CLDC_1((45 << 16) + 3,
-		false, false),
+		false, false, false),
 	
 	/** CLDC 1.1 (JSR 139). */
 	CLDC_1_1((47 << 16),
-		false, true),
+		false, true, false),
 	
 	/** CLDC 8 (aka Java 7). */
 	CLDC_8((51 << 16),
-		false, true),
+		false, true, false),
 	
 	/** Future CLDC version. */
 	FUTURE((52 << 16) + 1,
-		true, false),
+		true, false, false),
 	
 	/** End. */
 	;
@@ -53,21 +53,26 @@ public enum InterpreterClassVersion
 	/** Has floating point support? */
 	protected final boolean hasfloat;
 	
+	/** Supports invokedynamic? */
+	protected final boolean hasinvokedynamic;
+	
 	/**
 	 * Initializes the version data.
 	 *
 	 * @param __vid The version ID.
 	 * @param __undef Is this version information undefined?
 	 * @param __float Is floating point supported?
+	 * @param __hasid Has invoke dynamic support?
 	 * @since 2016/03/13
 	 */
 	private InterpreterClassVersion(int __vid, boolean __undef,
-		boolean __float)
+		boolean __float, boolean __hasid)
 	{
 		// Set
 		version = __vid;
 		undefined = __undef;
 		hasfloat = __float;
+		hasinvokedynamic = __hasid;
 	}
 	
 	/**
@@ -85,6 +90,23 @@ public enum InterpreterClassVersion
 		if (undefined)
 			throw new IllegalStateException();
 		return hasfloat;
+	}
+	
+	/**
+	 * Returns {@code true} if invokedynamic is supported by the virtual
+	 * machine.
+	 *
+	 * @return {@code true} if it is.
+	 * @throws IllegalStateException If the information this supplies is not
+	 * defined.
+	 * @since 2016/03/15
+	 */
+	public boolean hasInvokeDynamic()
+		throws IllegalStateException
+	{
+		if (undefined)
+			throw new IllegalStateException();
+		return hasinvokedynamic;
 	}
 	
 	/**

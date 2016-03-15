@@ -31,6 +31,10 @@ import net.multiphasicapps.descriptors.IllegalSymbolException;
 public class InterpreterClassPool
 	extends AbstractList<InterpreterClassPool.Entry>
 {
+	/** Is invokedynamic supported anyway? */
+	static final boolean SUPPORT_INVOKEDYNAMIC_ANYWAY =
+		InterpreterClass.SUPPORT_INVOKEDYNAMIC_ANYWAY;	
+	
 	/** The UTF constant tag. */
 	protected static final int TAG_UTF8 =
 		1;
@@ -146,7 +150,10 @@ public class InterpreterClassPool
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
 				case TAG_INVOKEDYNAMIC:
-					throw new NoInvokeDynamicException();
+					if (!SUPPORT_INVOKEDYNAMIC_ANYWAY &&
+						!owner.version().hasInvokeDynamic())
+						throw new NoInvokeDynamicException();
+					throw new Error("INVOKEDYNAMIC -- Constant pool.");
 					
 					// Unknown
 				case TAG_INTEGER:
