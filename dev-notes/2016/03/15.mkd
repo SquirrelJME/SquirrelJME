@@ -20,3 +20,7 @@ access and such would not be available. If I were to write a web browser for
 Java ME, I would likely only support WebAssembly since Javascript is a giant
 mess. A third-party Javascript library could be used instead to support that.
 
+## 17:16
+
+Constants would be best in their own class.
+
