@@ -15,10 +15,10 @@ package net.multiphasicapps.squirreljme.interpreter;
  *
  * @since 2016/03/01
  */
-public class InterpreterObject
+public class JVMObject
 {
 	/** The class this object is. */
-	protected final InterpreterClass classtype;
+	protected final JVMClass classtype;
 	
 	/**
 	 * Initializes the object.
@@ -27,7 +27,7 @@ public class InterpreterObject
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public InterpreterObject(InterpreterClass __type)
+	public JVMObject(JVMClass __type)
 	{
 		// Check
 		if (__type == null)

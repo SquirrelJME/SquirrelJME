@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.interpreter;
  *
  * @since 2016/03/13
  */
-public class InterpreterClassVersionError
-	extends InterpreterClassFormatError
+public class JVMClassVersionError
+	extends JVMClassFormatError
 {
 	/**
 	 * Initializes exception with the given message.
@@ -24,7 +24,7 @@ public class InterpreterClassVersionError
 	 * @param __msg The exception message.
 	 * @since 2016/03/13
 	 */
-	public InterpreterClassVersionError(String __msg)
+	public JVMClassVersionError(String __msg)
 	{
 		super(__msg);
 	}
@@ -36,7 +36,7 @@ public class InterpreterClassVersionError
 	 * @param __c The cause.
 	 * @since 2016/03/13
 	 */
-	public InterpreterClassVersionError(String __msg, Throwable __c)
+	public JVMClassVersionError(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}

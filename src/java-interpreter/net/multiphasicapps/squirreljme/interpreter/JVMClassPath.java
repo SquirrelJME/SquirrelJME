@@ -19,10 +19,10 @@ import java.util.LinkedHashMap;
  *
  * @since 2016/03/05
  */
-public abstract class InterpreterClassPath
+public abstract class JVMClassPath
 {
 	/** The owning interpreter engine. */
-	protected final InterpreterEngine engine;	
+	protected final JVMEngine engine;	
 	
 	/**
 	 * Initializes the classpath which is part of an interpreter.
@@ -31,7 +31,7 @@ public abstract class InterpreterClassPath
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/05
 	 */
-	public InterpreterClassPath(InterpreterEngine __eng)
+	public JVMClassPath(JVMEngine __eng)
 		throws NullPointerException
 	{
 		// Check
@@ -48,7 +48,7 @@ public abstract class InterpreterClassPath
 	 * @return The owning engine.
 	 * @since 2016/03/05
 	 */
-	public final InterpreterEngine engine()
+	public final JVMEngine engine()
 	{
 		return engine;
 	}

@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.interpreter;
  *
  * @since 2016/03/13
  */
-public enum InterpreterClassVersion
+public enum JVMClassVersion
 {
 	/** Probably invalid or ancient Java. */
 	INVALID(Integer.MIN_VALUE,
@@ -41,7 +41,7 @@ public enum InterpreterClassVersion
 	;
 	
 	/** The maximum supported version. */
-	public static final InterpreterClassVersion MAX_VERSION =
+	public static final JVMClassVersion MAX_VERSION =
 		CLDC_8;
 	
 	/** The version ID. */
@@ -65,7 +65,7 @@ public enum InterpreterClassVersion
 	 * @param __hasid Has invoke dynamic support?
 	 * @since 2016/03/13
 	 */
-	private InterpreterClassVersion(int __vid, boolean __undef,
+	private JVMClassVersion(int __vid, boolean __undef,
 		boolean __float, boolean __hasid)
 	{
 		// Set
@@ -116,17 +116,17 @@ public enum InterpreterClassVersion
 	 * @return The closest matching version number.
 	 * @since 2016/03/13
 	 */
-	public static InterpreterClassVersion findVersion(int __vid)
+	public static JVMClassVersion findVersion(int __vid)
 	{
 		// Go through all values from last to first
-		InterpreterClassVersion[] vers = values();
+		JVMClassVersion[] vers = values();
 		int n = vers.length;
 		for (int i = n - 1; i >= 0; i--)
 			if (__vid >= vers[i].version)
 				return vers[i];
 		
 		// This really should not occur, but in case it does
-		return InterpreterClassVersion.INVALID;
+		return JVMClassVersion.INVALID;
 	}
 }
 

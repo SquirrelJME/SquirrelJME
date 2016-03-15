@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.interpreter;
  *
  * @since 2016/03/05
  */
-public class InterpreterFailureException
+public class JVMEngineException
 	extends RuntimeException
 {
 	/**
@@ -24,7 +24,7 @@ public class InterpreterFailureException
 	 *
 	 * @since 2016/03/05
 	 */
-	public InterpreterFailureException()
+	public JVMEngineException()
 	{
 		super();
 	}
@@ -35,7 +35,7 @@ public class InterpreterFailureException
 	 * @param __msg The exception message.
 	 * @since 2016/03/02
 	 */
-	public InterpreterFailureException(String __msg)
+	public JVMEngineException(String __msg)
 	{
 		super(__msg);
 	}
@@ -47,7 +47,7 @@ public class InterpreterFailureException
 	 * @param __c The cause.
 	 * @since 2016/03/02
 	 */
-	public InterpreterFailureException(String __msg, Throwable __c)
+	public JVMEngineException(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}
@@ -58,7 +58,7 @@ public class InterpreterFailureException
 	 * @param __c The cause of the exception.
 	 * @since 2016/03/15
 	 */
-	public InterpreterFailureException(Throwable __c)
+	public JVMEngineException(Throwable __c)
 	{
 		super(__c);
 	}

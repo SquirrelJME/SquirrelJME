@@ -18,7 +18,7 @@ package net.multiphasicapps.squirreljme.interpreter;
  *
  * @since 2016/03/15
  */
-public enum VMClassFlags
+public enum JVMClassFlags
 {
 	/** End. */
 	;

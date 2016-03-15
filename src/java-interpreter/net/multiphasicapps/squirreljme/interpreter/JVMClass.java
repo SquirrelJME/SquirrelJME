@@ -23,7 +23,7 @@ import net.multiphasicapps.collections.MissingCollections;
  *
  * @since 2016/03/01
  */
-public class InterpreterClass
+public class JVMClass
 {
 	/** The class file magic number. */
 	public static final int MAGIC_NUMBER =
@@ -32,19 +32,19 @@ public class InterpreterClass
 	/** Is invokedynamic supported anyway even thougn it is illegal? */
 	static final boolean SUPPORT_INVOKEDYNAMIC_ANYWAY =
 		Boolean.valueOf(System.getProperty(
-			InterpreterClass.class.getName() + ".invokedynamic"));
+			JVMClass.class.getName() + ".invokedynamic"));
 	
 	/** The interpreter engine which owns this class. */
-	protected final InterpreterEngine engine;
+	protected final JVMEngine engine;
 	
 	/** Super classes and interfaces implemented in this class. */
-	protected final Set<InterpreterClass> superclasses;
+	protected final Set<JVMClass> superclasses;
 	
 	/** The version of this class file. */
-	protected final InterpreterClassVersion version;
+	protected final JVMClassVersion version;
 	
 	/** The class constant pool. */
-	protected final InterpreterClassPool constantpool;
+	protected final JVMConstantPool constantpool;
 	
 	/** Class access flags. */
 	protected final int flags;
@@ -54,14 +54,14 @@ public class InterpreterClass
 	 *
 	 * @param __owner The owning interpreter engine.
 	 * @param __cdata Class data for parsing.
-	 * @throws InterpreterClassFormatError If the input class data is not
+	 * @throws JVMClassFormatError If the input class data is not
 	 * correct.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	InterpreterClass(InterpreterEngine __owner, InputStream __cdata)
-		throws InterpreterClassFormatError, IOException, NullPointerException
+	JVMClass(JVMEngine __owner, InputStream __cdata)
+		throws JVMClassFormatError, IOException, NullPointerException
 	{
 		// Check
 		if (__owner == null || __cdata == null)
@@ -76,21 +76,21 @@ public class InterpreterClass
 		// Check the magic number
 		int clmagic;
 		if (MAGIC_NUMBER != (clmagic = das.readInt()))
-			throw new InterpreterClassFormatError(String.format("Expected " +
+			throw new JVMClassFormatError(String.format("Expected " +
 				"magic number %08x, not %08x", MAGIC_NUMBER, clmagic));
 		
 		// Read the class version number, this modifies if certain
 		// instructions are handled and how they are verified (StackMap vs
 		// StackMapTable)
-		version = InterpreterClassVersion.findVersion(
+		version = JVMClassVersion.findVersion(
 			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
-		if (version.compareTo(InterpreterClassVersion.MAX_VERSION) > 0)
-			throw new InterpreterClassVersionError(String.format("Class " +
+		if (version.compareTo(JVMClassVersion.MAX_VERSION) > 0)
+			throw new JVMClassVersionError(String.format("Class " +
 				"version " + version + " is newer than " +
-				InterpreterClassVersion.MAX_VERSION + "."));
+				JVMClassVersion.MAX_VERSION + "."));
 		
 		// Initialize the constant pool
-		constantpool = new InterpreterClassPool(this, das);
+		constantpool = new JVMConstantPool(this, das);
 		
 		// Read flags
 		flags = das.readUnsignedShort();
@@ -108,7 +108,7 @@ public class InterpreterClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public InterpreterMethod getMethod(String __name, String __desc)
+	public JVMMethod getMethod(String __name, String __desc)
 		throws NullPointerException
 	{
 		// Check
@@ -136,7 +136,7 @@ public class InterpreterClass
 	 * @return The class version number.
 	 * @since 2016/03/13
 	 */
-	public InterpreterClassVersion version()
+	public JVMClassVersion version()
 	{
 		return version;
 	}

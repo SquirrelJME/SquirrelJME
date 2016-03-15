@@ -28,10 +28,10 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/15
  */
-public abstract class InterpreterPoolEntry
+public abstract class JVMConstantEntry
 {
 	/** The owning pool. */
-	protected final InterpreterClassPool pool;
+	protected final JVMConstantPool pool;
 	
 	/**
 	 * Initializes the base of an entry.
@@ -40,7 +40,7 @@ public abstract class InterpreterPoolEntry
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/15
 	 */
-	private InterpreterPoolEntry(InterpreterClassPool __icp)
+	private JVMConstantEntry(JVMConstantPool __icp)
 		throws NullPointerException
 	{
 		// Check
@@ -57,15 +57,15 @@ public abstract class InterpreterPoolEntry
 	 *
 	 * @param __v The index to check the range for.
 	 * @return {@code __v} if the range is valid.
-	 * @throws InterpreterClassFormatError If the range is not valid.
+	 * @throws JVMClassFormatError If the range is not valid.
 	 * @since 2016/03/15
 	 */
 	int __rangeCheck(int __v)
-		throws InterpreterClassFormatError
+		throws JVMClassFormatError
 	{
 		if (__v > 0 && __v < pool.size())
 			return __v;
-		throw new InterpreterClassFormatError("Reference index " + __v +
+		throw new JVMClassFormatError("Reference index " + __v +
 			"is not within with the constant pool bounds.");
 	}
 	
@@ -76,7 +76,7 @@ public abstract class InterpreterPoolEntry
 	 * @since 2016/03/15
 	 */
 	public static abstract class ConstantValue<C>
-		extends InterpreterPoolEntry
+		extends JVMConstantEntry
 	{
 		/** The type of value to store. */
 		protected final Class<C> castas;
@@ -89,7 +89,7 @@ public abstract class InterpreterPoolEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		ConstantValue(InterpreterClassPool __icp, Class<C> __cl)
+		ConstantValue(JVMConstantPool __icp, Class<C> __cl)
 		{
 			super(__icp);
 			
@@ -127,7 +127,7 @@ public abstract class InterpreterPoolEntry
 	 * @since 2016/03/15
 	 */
 	public static abstract class MemberReference<V extends MemberTypeSymbol>
-		extends InterpreterPoolEntry
+		extends JVMConstantEntry
 	{
 		/** The type to cast the type as. */
 		protected final Class<V> castas;
@@ -148,7 +148,7 @@ public abstract class InterpreterPoolEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		MemberReference(InterpreterClassPool __icp,
+		MemberReference(JVMConstantPool __icp,
 			DataInputStream __dis, Class<V> __cl)
 			throws IOException, NullPointerException
 		{
@@ -185,7 +185,7 @@ public abstract class InterpreterPoolEntry
 	 * @since 2016/03/15
 	 */
 	public static final class ClassName
-		extends InterpreterPoolEntry
+		extends JVMConstantEntry
 	{
 		/** The class name index. */
 		protected final int index;
@@ -198,14 +198,14 @@ public abstract class InterpreterPoolEntry
 		 *
 		 * @param __icp The owning constant pool.
 		 * @param __dis Input stream to read data from.
-		 * @throws InterpreterClassFormatError If the class name is not
+		 * @throws JVMClassFormatError If the class name is not
 		 * valid.
 		 * @throws IOException On read errors.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		ClassName(InterpreterClassPool __icp, DataInputStream __dis)
-			throws InterpreterClassFormatError, IOException,
+		ClassName(JVMConstantPool __icp, DataInputStream __dis)
+			throws JVMClassFormatError, IOException,
 				NullPointerException
 		{
 			super(__icp);
@@ -222,12 +222,12 @@ public abstract class InterpreterPoolEntry
 		 * Returns the symbol associated with this class.
 		 *
 		 * @return The class name symbol.
-		 * @throws InterpreterClassFormatError If the class name symbol is
+		 * @throws JVMClassFormatError If the class name symbol is
 		 * invalid.
 		 * @since 2016/03/15
 		 */
 		public ClassNameSymbol symbol()
-			throws InterpreterClassFormatError
+			throws JVMClassFormatError
 		{
 			// Get reference
 			Reference<ClassNameSymbol> ref = _cname;
@@ -248,7 +248,7 @@ public abstract class InterpreterPoolEntry
 				// Bad symbol
 				catch (IllegalSymbolException ise)
 				{
-					throw new InterpreterClassFormatError(ise);
+					throw new JVMClassFormatError(ise);
 				}
 			
 			// Return it
@@ -277,7 +277,7 @@ public abstract class InterpreterPoolEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		ConstantString(InterpreterClassPool __icp,
+		ConstantString(JVMConstantPool __icp,
 			DataInputStream __dis)
 			throws IOException, NullPointerException
 		{
@@ -348,7 +348,7 @@ public abstract class InterpreterPoolEntry
 		 * @throws IOException On read errors.
 		 * @since 2016/03/15
 		 */
-		FieldReference(InterpreterClassPool __icp,
+		FieldReference(JVMConstantPool __icp,
 			DataInputStream __dis)
 			throws IOException
 		{
@@ -372,7 +372,7 @@ public abstract class InterpreterPoolEntry
 		 * @throws IOException On read errors.
 		 * @since 2016/03/15
 		 */
-		InterfaceMethodReference(InterpreterClassPool __icp,
+		InterfaceMethodReference(JVMConstantPool __icp,
 			DataInputStream __dis)
 			throws IOException
 		{
@@ -396,7 +396,7 @@ public abstract class InterpreterPoolEntry
 		 * @throws IOException On read errors.
 		 * @since 2016/03/15
 		 */
-		MethodReference(InterpreterClassPool __icp,
+		MethodReference(JVMConstantPool __icp,
 			DataInputStream __dis)
 			throws IOException
 		{
@@ -410,7 +410,7 @@ public abstract class InterpreterPoolEntry
 	 * @since 2016/03/15
 	 */
 	public static final class NameAndType
-		extends InterpreterPoolEntry
+		extends JVMConstantEntry
 	{
 		/** Name index. */
 		protected final int namedx;
@@ -427,7 +427,7 @@ public abstract class InterpreterPoolEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		NameAndType(InterpreterClassPool __icp, DataInputStream __dis)
+		NameAndType(JVMConstantPool __icp, DataInputStream __dis)
 			throws IOException, NullPointerException
 		{
 			super(__icp);
@@ -448,7 +448,7 @@ public abstract class InterpreterPoolEntry
 	 * @since 2016/03/13
 	 */
 	public static final class UTF8
-		extends InterpreterPoolEntry
+		extends JVMConstantEntry
 		implements CharSequence
 	{
 		/** Internally read string. */
@@ -459,14 +459,14 @@ public abstract class InterpreterPoolEntry
 		 *
 		 * @param __icp The owning constant pool.
 		 * @param __is Data input source.
-		 * @throws InterpreterClassFormatError If the modfied UTF string is
+		 * @throws JVMClassFormatError If the modfied UTF string is
 		 * malformed.
 		 * @throws IOException On read errors.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/13
 		 */
-		UTF8(InterpreterClassPool __icp, DataInputStream __dis)
-			throws InterpreterClassFormatError, IOException,
+		UTF8(JVMConstantPool __icp, DataInputStream __dis)
+			throws JVMClassFormatError, IOException,
 				NullPointerException
 		{
 			super(__icp);
@@ -484,7 +484,7 @@ public abstract class InterpreterPoolEntry
 			// Malformed sequence
 			catch (UTFDataFormatException utfdfe)
 			{
-				throw new InterpreterClassFormatError(utfdfe);
+				throw new JVMClassFormatError(utfdfe);
 			}
 		}
 		

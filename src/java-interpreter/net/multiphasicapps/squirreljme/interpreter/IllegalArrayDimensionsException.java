@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.interpreter;
  * @since 2016/03/05
  */
 public class IllegalArrayDimensionsException
-	extends InterpreterFailureException
+	extends JVMEngineException
 {
 	/**
 	 * Initializes the exception with the given dimensional count.

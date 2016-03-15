@@ -24,12 +24,12 @@ import java.util.AbstractList;
  *
  * @since 2016/03/13
  */
-public class InterpreterClassPool
-	extends AbstractList<InterpreterPoolEntry>
+public class JVMConstantPool
+	extends AbstractList<JVMConstantEntry>
 {
 	/** Is invokedynamic supported anyway? */
 	static final boolean SUPPORT_INVOKEDYNAMIC_ANYWAY =
-		InterpreterClass.SUPPORT_INVOKEDYNAMIC_ANYWAY;	
+		JVMClass.SUPPORT_INVOKEDYNAMIC_ANYWAY;	
 	
 	/** The UTF constant tag. */
 	protected static final int TAG_UTF8 =
@@ -88,13 +88,13 @@ public class InterpreterClassPool
 		18;
 	
 	/** The class which owns the constant pool. */
-	protected final InterpreterClass owner;	
+	protected final JVMClass owner;	
 	
 	/** Number of entries in the pool. */
 	protected final int numentries;
 	
 	/** Internal constant pool entries. */
-	private final InterpreterPoolEntry[] _entries;
+	private final JVMConstantEntry[] _entries;
 	
 	/**
 	 * Initializes and interprets the constant pool of a class.
@@ -105,8 +105,8 @@ public class InterpreterClassPool
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/13
 	 */
-	InterpreterClassPool(InterpreterClass __cl, DataInputStream __is)
-		throws InterpreterClassFormatError, IOException, NullPointerException
+	JVMConstantPool(JVMClass __cl, DataInputStream __is)
+		throws JVMClassFormatError, IOException, NullPointerException
 	{
 		// Check
 		if (__cl == null || __is == null)
@@ -118,54 +118,54 @@ public class InterpreterClassPool
 		// Read entry count, a class cannot have zero entries in it
 		numentries = __is.readUnsignedShort();
 		if (numentries <= 0)
-			throw new InterpreterClassFormatError("Empty constant pool.");
+			throw new JVMClassFormatError("Empty constant pool.");
 		
 		// Read them all
-		InterpreterPoolEntry[] ents;
-		_entries = ents = new InterpreterPoolEntry[numentries];
+		JVMConstantEntry[] ents;
+		_entries = ents = new JVMConstantEntry[numentries];
 		for (int i = 1; i < numentries; i++)
 		{
 			// Read the tag
 			int tag = __is.readUnsignedByte();
 			
 			// Depends on the tag
-			InterpreterPoolEntry en;
+			JVMConstantEntry en;
 			switch (tag)
 			{
 					// UTF-8 Constant
 				case TAG_UTF8:
-					en = new InterpreterPoolEntry.UTF8(this, __is);
+					en = new JVMConstantEntry.UTF8(this, __is);
 					break;
 					
 					// The name of a class
 				case TAG_CLASS:
-					en = new InterpreterPoolEntry.ClassName(this, __is);
+					en = new JVMConstantEntry.ClassName(this, __is);
 					break;
 					
 					// A reference to a field
 				case TAG_FIELDREF:
-					en = new InterpreterPoolEntry.FieldReference(this, __is);
+					en = new JVMConstantEntry.FieldReference(this, __is);
 					break;
 					
 					// A reference to a method
 				case TAG_METHODREF:
-					en = new InterpreterPoolEntry.MethodReference(this, __is);
+					en = new JVMConstantEntry.MethodReference(this, __is);
 					break;
 					
 					// A reference to an interface method
 				case TAG_INTERFACEMETHODREF:
-					en = new InterpreterPoolEntry.InterfaceMethodReference(
+					en = new JVMConstantEntry.InterfaceMethodReference(
 						this, __is);
 					break;
 					
 					// String constant
 				case TAG_STRING:
-					en = new InterpreterPoolEntry.ConstantString(this, __is);
+					en = new JVMConstantEntry.ConstantString(this, __is);
 					break;
 					
 					// Name and type information
 				case TAG_NAMEANDTYPE:
-					en = new InterpreterPoolEntry.NameAndType(this, __is);
+					en = new JVMConstantEntry.NameAndType(this, __is);
 					break;
 					
 					// invokedynamic is not supported!
@@ -183,7 +183,7 @@ public class InterpreterClassPool
 				case TAG_LONG:
 				case TAG_DOUBLE:
 				default:
-					throw new InterpreterClassFormatError("Unsupported " +
+					throw new JVMClassFormatError("Unsupported " +
 						"constant pool tag " + tag + ".");
 			}
 			
@@ -197,7 +197,7 @@ public class InterpreterClassPool
 	 * @since 2016/03/13
 	 */
 	@Override
-	public InterpreterPoolEntry get(int __i)
+	public JVMConstantEntry get(int __i)
 	{
 		return _entries[__i];
 	}
@@ -208,12 +208,12 @@ public class InterpreterClassPool
 	 * @param <Q> The type of entry to return.
 	 * @param __i The index of the entry.
 	 * @param __cl The class type to cast to.
-	 * @throws InterpreterClassFormatError If the type at this position is not
+	 * @throws JVMClassFormatError If the type at this position is not
 	 * of the given class.
 	 * @since 2016/03/15
 	 */
-	public <Q extends InterpreterPoolEntry> Q getAs(int __i, Class<Q> __cl)
-		throws InterpreterClassFormatError, NullPointerException
+	public <Q extends JVMConstantEntry> Q getAs(int __i, Class<Q> __cl)
+		throws JVMClassFormatError, NullPointerException
 	{
 		// Check
 		if (__cl == null)
@@ -228,7 +228,7 @@ public class InterpreterClassPool
 		// Could not cast
 		catch (ClassCastException cce)
 		{
-			throw new InterpreterClassFormatError(cce);
+			throw new JVMClassFormatError(cce);
 		}
 	}
 	

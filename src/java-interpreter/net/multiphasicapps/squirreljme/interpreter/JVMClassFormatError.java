@@ -16,15 +16,15 @@ package net.multiphasicapps.squirreljme.interpreter;
  *
  * @since 2016/03/02
  */
-public class InterpreterClassFormatError
-	extends InterpreterFailureException
+public class JVMClassFormatError
+	extends JVMEngineException
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
 	 * @since 2016/03/15
 	 */
-	public InterpreterClassFormatError()
+	public JVMClassFormatError()
 	{
 	}
 	
@@ -34,7 +34,7 @@ public class InterpreterClassFormatError
 	 * @param __msg The exception message.
 	 * @since 2016/03/02
 	 */
-	public InterpreterClassFormatError(String __msg)
+	public JVMClassFormatError(String __msg)
 	{
 		super(__msg);
 	}
@@ -46,7 +46,7 @@ public class InterpreterClassFormatError
 	 * @param __c The cause.
 	 * @since 2016/03/02
 	 */
-	public InterpreterClassFormatError(String __msg, Throwable __c)
+	public JVMClassFormatError(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}
@@ -57,7 +57,7 @@ public class InterpreterClassFormatError
 	 * @param __c The cause of the exception.
 	 * @since 2016/03/15
 	 */
-	public InterpreterClassFormatError(Throwable __c)
+	public JVMClassFormatError(Throwable __c)
 	{
 		super(__c);
 	}

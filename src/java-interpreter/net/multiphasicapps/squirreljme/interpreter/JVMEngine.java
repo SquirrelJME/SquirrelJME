@@ -34,22 +34,22 @@ import net.multiphasicapps.collections.MissingCollections;
  *
  * @since 2016/03/01
  */
-public abstract class InterpreterEngine
+public abstract class JVMEngine
 {
 	/** The maximum number of dimensions an array may have. */
 	public static final int MAX_ARRAY_DIMENSIONS =
 		255;
 	
 	/** The threads the interpreter owns (lock on this). */
-	protected final Set<InterpreterThread> threads =
+	protected final Set<JVMThread> threads =
 		new LinkedHashSet<>();
 	
 	/** Active loaded classes (lock on this). */
-	protected final Map<String, Reference<InterpreterClass>> classes =
+	protected final Map<String, Reference<JVMClass>> classes =
 		new LinkedHashMap<>();
 	
 	/** Classpaths for the interpreter (how it finds classes). */
-	protected final Set<InterpreterClassPath> classpaths =
+	protected final Set<JVMClassPath> classpaths =
 		new LinkedHashSet<>();
 	
 	/**
@@ -57,7 +57,7 @@ public abstract class InterpreterEngine
 	 *
 	 * @since 2016/02/01
 	 */
-	public InterpreterEngine()
+	public JVMEngine()
 	{
 	}
 	
@@ -70,7 +70,7 @@ public abstract class InterpreterEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/05
 	 */
-	protected final InterpreterEngine addClassPath(InterpreterClassPath __icp)
+	protected final JVMEngine addClassPath(JVMClassPath __icp)
 		throws MismatchedEngineException, NullPointerException
 	{
 		// Check
@@ -97,12 +97,12 @@ public abstract class InterpreterEngine
 	 *
 	 * @param __meth The method to start execution at.
 	 * @param __args Thread arguments, these take either boxed types or
-	 * {@code InterpreterObject}, all other classes are illegal.
+	 * {@code JVMObject}, all other classes are illegal.
 	 * @return The newly created thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public final InterpreterThread createThread(InterpreterMethod __meth,
+	public final JVMThread createThread(JVMMethod __meth,
 		Object... __args)
 		throws NullPointerException
 	{
@@ -142,7 +142,7 @@ public abstract class InterpreterEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public final InterpreterClass loadClass(String __bn)
+	public final JVMClass loadClass(String __bn)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -171,8 +171,8 @@ public abstract class InterpreterEngine
 		synchronized (classes)
 		{
 			// See if an existing reference exists
-			Reference<InterpreterClass> ref = classes.get(__bn);
-			InterpreterClass rv = null;
+			Reference<JVMClass> ref = classes.get(__bn);
+			JVMClass rv = null;
 			
 			// Reference is still valid?
 			if (ref != null)
@@ -197,7 +197,7 @@ public abstract class InterpreterEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public final InterpreterObject spawnStringArray(String... __strings)
+	public final JVMObject spawnStringArray(String... __strings)
 		throws NullPointerException
 	{
 		// Check
@@ -215,7 +215,7 @@ public abstract class InterpreterEngine
 	 * @param __dims The number of dimensions in the array.
 	 * @throws IllegalArrayDimensionsException
 	 */
-	private final InterpreterClass __internalLoadArray(String __bn, int __dims)
+	private final JVMClass __internalLoadArray(String __bn, int __dims)
 		throws IllegalArrayDimensionsException, NullPointerException
 	{
 		// Check
@@ -236,7 +236,7 @@ public abstract class InterpreterEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/05
 	 */
-	private final InterpreterClass __internalLoadClass(String __bn, int __dims)
+	private final JVMClass __internalLoadClass(String __bn, int __dims)
 		throws NullPointerException
 	{
 		// Check
@@ -251,7 +251,7 @@ public abstract class InterpreterEngine
 		synchronized (classpaths)
 		{
 			// Go through all classpaths
-			for (InterpreterClassPath icp : classpaths)
+			for (JVMClassPath icp : classpaths)
 				try (InputStream is = icp.getResourceAsStream(
 						__bn.replace('.', '/') + ".class"))
 				{
@@ -260,11 +260,11 @@ public abstract class InterpreterEngine
 						continue;
 					
 					// Create class data
-					InterpreterClass rv = new InterpreterClass(this, is);
+					JVMClass rv = new JVMClass(this, is);
 					
 					// Wrong class? Ignore it
 					if (!rv.getName().equals(__bn))
-						throw new InterpreterClassFormatError(
+						throw new JVMClassFormatError(
 							"Expected class '" + __bn +
 							"' however '" + rv.getName() + "' was read.");
 					
@@ -275,7 +275,7 @@ public abstract class InterpreterEngine
 				// Failed to load class, ignore
 				catch (IOException e)
 				{
-					throw new InterpreterClassFormatError("Read error.",
+					throw new JVMClassFormatError("Read error.",
 						e);
 				}
 		}

@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.interpreter;
  * @since 2016/03/15
  */
 public class NoInvokeDynamicException
-	extends InterpreterClassFormatError
+	extends JVMClassFormatError
 {
 	/**
 	 * Initializes the exception with a built-in message.

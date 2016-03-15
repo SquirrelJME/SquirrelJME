@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.interpreter;
  * @since 2016/03/05
  */
 public class MismatchedEngineException
-	extends InterpreterFailureException
+	extends JVMEngineException
 {
 	/**
 	 * Initializes exception with no message.

@@ -15,14 +15,14 @@ package net.multiphasicapps.squirreljme.interpreter;
  *
  * @since 2016/03/01
  */
-public class InterpreterThread
+public class JVMThread
 	implements Runnable
 {
 	/** The real thread of the interpreter. */
 	protected final Thread realthread;	
 	
 	/** The engine which owns this thread. */
-	protected final InterpreterEngine engine;
+	protected final JVMEngine engine;
 	
 	/**
 	 * Initializes the thread.
@@ -31,7 +31,7 @@ public class InterpreterThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	InterpreterThread(InterpreterEngine __owner)
+	JVMThread(JVMEngine __owner)
 		throws NullPointerException
 	{
 		// Check

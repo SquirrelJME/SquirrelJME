@@ -15,10 +15,10 @@ package net.multiphasicapps.squirreljme.interpreter;
  *
  * @since 2016/03/01
  */
-public class InterpreterMethod
+public class JVMMethod
 {
 	/** The class this method is in. */
-	protected final InterpreterClass inclass;	
+	protected final JVMClass inclass;	
 	
 	/**
 	 * Initializes the interpreted method.
@@ -26,7 +26,7 @@ public class InterpreterMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	InterpreterMethod(InterpreterClass __owner)
+	JVMMethod(JVMClass __owner)
 		throws NullPointerException
 	{
 		// Check
