@@ -63,12 +63,8 @@ public final class BinaryNameSymbol
 	{
 		super(__s);
 		
-		// Cannot be blank
-		int n = length();
-		if (n <= 0)
-			throw new IllegalSymbolException(toString());
-		
 		// Check characters
+		int n = length();
 		int cc = 0;
 		for (int i = 0; i < n; i++)
 			switch (charAt(i))

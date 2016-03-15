@@ -16,7 +16,7 @@ package net.multiphasicapps.descriptors;
  * @since 2016/03/14
  */
 public final class FieldSymbol
-	extends __BaseSymbol__
+	extends MemberTypeSymbol
 {
 	/** Component type of the array if it is one. */
 	protected final FieldSymbol componenttype;
@@ -36,11 +36,6 @@ public final class FieldSymbol
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
-		
-		// Cannot be blank
-		int n = length();
-		if (n <= 0)
-			throw new IllegalSymbolException(toString());
 		
 		// Is an array?
 		if (charAt(0) == '[')

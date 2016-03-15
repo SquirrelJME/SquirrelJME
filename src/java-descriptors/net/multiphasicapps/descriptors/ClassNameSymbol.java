@@ -44,11 +44,6 @@ public final class ClassNameSymbol
 	{
 		super(__s);
 		
-		// Cannot be blank
-		int n = length();
-		if (n <= 0)
-			throw new IllegalSymbolException(toString());
-		
 		// Is an array?
 		isarray = charAt(0) == '[';
 		

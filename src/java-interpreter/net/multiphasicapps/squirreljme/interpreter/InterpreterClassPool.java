@@ -19,7 +19,10 @@ import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
+import net.multiphasicapps.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This represents the constant pool which exists within a class.
@@ -146,6 +149,21 @@ public class InterpreterClassPool
 					en = new ClassName(__is);
 					break;
 					
+					// A reference to a field
+				case TAG_FIELDREF:
+					en = new FieldReference(__is);
+					break;
+					
+					// A reference to a method
+				case TAG_METHODREF:
+					en = new MethodReference(__is);
+					break;
+					
+					// A reference to an interface method
+				case TAG_INTERFACEMETHODREF:
+					en = new InterfaceMethodReference(__is);
+					break;
+					
 					// invokedynamic is not supported!
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
@@ -161,9 +179,6 @@ public class InterpreterClassPool
 				case TAG_LONG:
 				case TAG_DOUBLE:
 				case TAG_STRING:
-				case TAG_FIELDREF:
-				case TAG_METHODREF:
-				case TAG_INTERFACEMETHODREF:
 				case TAG_NAMEANDTYPE:
 				default:
 					throw new InterpreterClassFormatError("Unsupported " +
@@ -261,6 +276,61 @@ public class InterpreterClassPool
 	}
 	
 	/**
+	 * This represents a reference type.
+	 *
+	 * @param V The symbol
+	 * @since 2016/03/15
+	 */
+	public abstract class MemberReference<V extends MemberTypeSymbol>
+		extends Entry
+	{
+		/** The type to cast the type as. */
+		protected final Class<V> castas;
+		
+		/** The class index. */
+		protected final int classdx;
+		
+		/** The name and type index. */
+		protected final int natdx;
+		
+		/**
+		 * This initializes
+		 *
+		 * @param __dis The constant data to load in.
+		 * @param __cl The class to cast the type to.
+		 * @throws IOException On read errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/15
+		 */
+		private MemberReference(DataInputStream __dis, Class<V> __cl)
+			throws IOException, NullPointerException
+		{
+			// Check
+			if (__dis == null || __cl == null)
+				throw new NullPointerException();
+			
+			// Set
+			castas = __cl;
+			
+			// Read in
+			classdx = __rangeCheck(__dis.readUnsignedShort());
+			natdx = __rangeCheck(__dis.readUnsignedShort());
+		}
+		
+		/**
+		 * Returns the utilized class name.
+		 *
+		 * @return The class name for the member reference.
+		 * @since 2016/03/15
+		 */
+		public final ClassName className()
+		{
+			return InterpreterClassPool.this.<ClassName>getAs(ClassName.class,
+				classdx);
+		}
+	}
+	
+	/**
 	 * This represents the name of a class.
 	 *
 	 * @since 2016/03/15
@@ -332,6 +402,72 @@ public class InterpreterClassPool
 			
 			// Return it
 			return rv;
+		}
+	}
+	
+	/**
+	 * This represents a field reference.
+	 *
+	 * @since 2016/03/15
+	 */
+	public final class FieldReference
+		extends MemberReference<FieldSymbol>
+	{
+		/**
+		 * Initializes the field reference.
+		 *
+		 * @param __dis Data source.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/15
+		 */
+		private FieldReference(DataInputStream __dis)
+			throws IOException
+		{
+			super(__dis, FieldSymbol.class);
+		}
+	}
+	
+	/**
+	 * This implements a interface method reference.
+	 *
+	 * @since 2016/03/15
+	 */
+	public final class InterfaceMethodReference
+		extends MemberReference<MethodSymbol>
+	{
+		/**
+		 * Initializes the interface method reference.
+		 *
+		 * @param __dis Data source.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/15
+		 */
+		private InterfaceMethodReference(DataInputStream __dis)
+			throws IOException
+		{
+			super(__dis, MethodSymbol.class);
+		}
+	}
+	
+	/**
+	 * This implements a method reference.
+	 *
+	 * @since 2016/03/15
+	 */
+	public final class MethodReference
+		extends MemberReference<MethodSymbol>
+	{
+		/**
+		 * Initializes the method reference.
+		 *
+		 * @param __dis Data source.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/15
+		 */
+		private MethodReference(DataInputStream __dis)
+			throws IOException
+		{
+			super(__dis, MethodSymbol.class);
 		}
 	}
 	
