@@ -7,3 +7,16 @@ handling it. However, it is possible that a newer version of JavaME might
 support `invokedynamic` (since lambdas are useful and Java ME 8 is essentially
 7). Therefor, I should take this into consideration.
 
+## 15:57
+
+Implementing it without actually needing it could end up being a waste
+however. So I will consider having room for it to be supported in the future
+but not actually implement it. However, not considering it at all would be
+simpler. On another note, I could support virtual environments such as
+Java and WebAssembly. So basically SquirrelJME could run on older Java VMs
+or in web browsers. Having it run on web browser would make demoing a bit
+easier without requiring users to download it, although local filesystem
+access and such would not be available. If I were to write a web browser for
+Java ME, I would likely only support WebAssembly since Javascript is a giant
+mess. A third-party Javascript library could be used instead to support that.
+
