@@ -51,5 +51,16 @@ public class InterpreterFailureException
 	{
 		super(__msg, __c);
 	}
+	
+	/**
+	 * Initializes the exception with the given cause and no message.
+	 *
+	 * @param __c The cause of the exception.
+	 * @since 2016/03/15
+	 */
+	public InterpreterFailureException(Throwable __c)
+	{
+		super(__c);
+	}
 }
 

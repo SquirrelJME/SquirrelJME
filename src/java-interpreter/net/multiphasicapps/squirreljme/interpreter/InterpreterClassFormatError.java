@@ -20,7 +20,16 @@ public class InterpreterClassFormatError
 	extends InterpreterFailureException
 {
 	/**
-	 * Initializes exception with the given message.
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2016/03/15
+	 */
+	public InterpreterClassFormatError()
+	{
+	}
+	
+	/**
+	 * Initializes the exception with the given message.
 	 *
 	 * @param __msg The exception message.
 	 * @since 2016/03/02
@@ -31,7 +40,7 @@ public class InterpreterClassFormatError
 	}
 	
 	/**
-	 * Initializes exception with the given message and cause.
+	 * Initializes the exception with the given message and cause.
 	 *
 	 * @param __msg The exception message.
 	 * @param __c The cause.
@@ -40,6 +49,17 @@ public class InterpreterClassFormatError
 	public InterpreterClassFormatError(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
+	}
+	
+	/**
+	 * Initializes the exception with the given cause and no message.
+	 *
+	 * @param __c The cause of the exception.
+	 * @since 2016/03/15
+	 */
+	public InterpreterClassFormatError(Throwable __c)
+	{
+		super(__c);
 	}
 }
 

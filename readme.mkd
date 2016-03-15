@@ -136,3 +136,12 @@ then reference it later, it may be reset to its default value. This is more
 likely to happen on lower memory systems where the garbage collector will act
 more aggressively.
 
+# Style Requirements
+
+## Always Surround Ternary Operators With Parenthesis
+
+When using ternary operators, you must always surround them in parenthesis even
+if they are obvious. That is they must appear in the form of
+`(condition ? true : false)`.
+
+

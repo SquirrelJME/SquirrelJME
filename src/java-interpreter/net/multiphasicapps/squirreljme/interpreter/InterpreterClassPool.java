@@ -13,10 +13,13 @@ package net.multiphasicapps.squirreljme.interpreter;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.UTFDataFormatException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IllegalSymbolException;
 
 /**
  * This represents the constant pool which exists within a class.
@@ -72,6 +75,18 @@ public class InterpreterClassPool
 	protected static final int TAG_NAMEANDTYPE =
 		12;
 	
+	/** Method handle (illegal). */
+	protected static final int TAG_METHODHANDLE =
+		15;
+	
+	/** Method type (illegal). */
+	protected static final int TAG_METHODTYPE =
+		16;
+	
+	/** Invoke dynamic call site (illegal). */
+	protected static final int TAG_INVOKEDYNAMIC =
+		18;
+	
 	/** The class which owns the constant pool. */
 	protected final InterpreterClass owner;	
 	
@@ -91,7 +106,7 @@ public class InterpreterClassPool
 	 * @since 2016/03/13
 	 */
 	InterpreterClassPool(InterpreterClass __cl, DataInputStream __is)
-		throws IOException, NullPointerException
+		throws InterpreterClassFormatError, IOException, NullPointerException
 	{
 		// Check
 		if (__cl == null || __is == null)
@@ -114,19 +129,30 @@ public class InterpreterClassPool
 			int tag = __is.readUnsignedByte();
 			
 			// Depends on the tag
+			Entry en;
 			switch (tag)
 			{
 					// UTF-8 Constant
 				case TAG_UTF8:
-					ents[i] = new UTF8(__is);
+					en = new UTF8(__is);
 					break;
+					
+					// The name of a class
+				case TAG_CLASS:
+					en = new ClassName(__is);
+					break;
+					
+					// invokedynamic is not supported!
+				case TAG_METHODHANDLE:
+				case TAG_METHODTYPE:
+				case TAG_INVOKEDYNAMIC:
+					throw new NoInvokeDynamicException();
 					
 					// Unknown
 				case TAG_INTEGER:
 				case TAG_FLOAT:
 				case TAG_LONG:
 				case TAG_DOUBLE:
-				case TAG_CLASS:
 				case TAG_STRING:
 				case TAG_FIELDREF:
 				case TAG_METHODREF:
@@ -136,6 +162,9 @@ public class InterpreterClassPool
 					throw new InterpreterClassFormatError("Unsupported " +
 						"constant pool tag " + tag + ".");
 			}
+			
+			// Set
+			ents[i] = en;
 		}
 	}
 	
@@ -150,6 +179,36 @@ public class InterpreterClassPool
 	}
 	
 	/**
+	 * Obtains an entry from the constant pool as a specific class type.
+	 *
+	 * @param <Q> The type of entry to return.
+	 * @param __cl The class type to cast to.
+	 * @param __i The index of the entry.
+	 * @throws InterpreterClassFormatError If the type at this position is not
+	 * of the given class.
+	 * @since 2016/03/15
+	 */
+	public <Q extends Entry> Q getAs(Class<Q> __cl, int __i)
+		throws InterpreterClassFormatError, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException();
+		
+		// Cast it
+		try
+		{
+			return __cl.cast(get(__i));
+		}
+		
+		// Could not cast
+		catch (ClassCastException cce)
+		{
+			throw new InterpreterClassFormatError(cce);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/13
 	 */
@@ -157,6 +216,24 @@ public class InterpreterClassPool
 	public int size()
 	{
 		return numentries;
+	}
+	
+	/**
+	 * Checks the range of a reference to make sure it is within bounds of
+	 * an existing entry.
+	 *
+	 * @param __v The index to check the range for.
+	 * @return {@code __v} if the range is valid.
+	 * @throws InterpreterClassFormatError If the range is not valid.
+	 * @since 2016/03/15
+	 */
+	private int __rangeCheck(int __v)
+		throws InterpreterClassFormatError
+	{
+		if (__v > 0 && __v < numentries)
+			return __v;
+		throw new InterpreterClassFormatError("Reference index " + __v +
+			"is nothing with the constant pool bounds.");
 	}
 	
 	/**
@@ -177,11 +254,86 @@ public class InterpreterClassPool
 	}
 	
 	/**
+	 * This represents the name of a class.
+	 *
+	 * @since 2016/03/15
+	 */
+	public final class ClassName
+		extends Entry
+	{
+		/** The class name index. */
+		protected final int index;
+		
+		/** The actual class symbol. */
+		private volatile Reference<ClassNameSymbol> _cname;
+		
+		/**
+		 * Initializes the class name.
+		 *
+		 * @param __dis Input stream to read data from.
+		 * @throws InterpreterClassFormatError If the class name is not
+		 * valid.
+		 * @throws IOException On read errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/15
+		 */
+		private ClassName(DataInputStream __dis)
+			throws InterpreterClassFormatError, IOException,
+				NullPointerException
+		{
+			// Check
+			if (__dis == null)
+				throw new NullPointerException();
+			
+			// Get id
+			index = __rangeCheck(__dis.readUnsignedShort());
+		}
+		
+		/**
+		 * Returns the symbol associated with this class.
+		 *
+		 * @return The class name symbol.
+		 * @throws InterpreterClassFormatError If the class name symbol is
+		 * invalid.
+		 * @since 2016/03/15
+		 */
+		public ClassNameSymbol symbol()
+			throws InterpreterClassFormatError
+		{
+			// Get reference
+			Reference<ClassNameSymbol> ref = _cname;
+			ClassNameSymbol rv = null;
+			
+			// In reference?
+			if (ref != null)
+				rv = ref.get();
+			
+			// Needs initialization
+			if (rv == null)
+				try
+				{
+					_cname = new WeakReference<>((rv = new ClassNameSymbol(
+						InterpreterClassPool.this.<UTF8>getAs(
+							UTF8.class, index).toString())));
+				}
+				
+				// Bad symbol
+				catch (IllegalSymbolException ise)
+				{
+					throw new InterpreterClassFormatError(ise);
+				}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * This is a UTF-8 string constant.
 	 *
 	 * @since 2016/03/13
 	 */
-	public class UTF8
+	public final class UTF8
 		extends Entry
 		implements CharSequence
 	{
@@ -192,19 +344,31 @@ public class InterpreterClassPool
 		 * Initializes the constant value.
 		 *
 		 * @param __is Data input source.
+		 * @throws InterpreterClassFormatError If the modfied UTF string is
+		 * malformed.
 		 * @throws IOException On read errors.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/13
 		 */
 		private UTF8(DataInputStream __dis)
-			throws IOException, NullPointerException
+			throws InterpreterClassFormatError, IOException,
+				NullPointerException
 		{
 			// Check
 			if (__dis == null)
 				throw new NullPointerException();
 			
 			// Read
-			string = __dis.readUTF();
+			try
+			{
+				string = __dis.readUTF();
+			}
+			
+			// Malformed sequence
+			catch (UTFDataFormatException utfdfe)
+			{
+				throw new InterpreterClassFormatError(utfdfe);
+			}
 		}
 		
 		/**
