@@ -24,3 +24,21 @@ mess. A third-party Javascript library could be used instead to support that.
 
 Constants would be best in their own class.
 
+## 18:29
+
+Since Java ME lacks EnumMap, I am going to have to roll my own.
+
+## 18:31
+
+However since I cannot reflect enumeration values, I essentially will just have
+to pass a list of entries. However that will require either a shared global or
+copes of much data. So I just need a kind of bitsit where I can check ordinals
+on, or just use a integer field then just have a manual flag bit check in
+there.
+
+## 18:35
+
+I should probably shorten all of the interpreter stuff to instead be for
+example _JVM_. That would be more compact and I would not need to type
+_Interpreter_. It would also likely look nicer too.
+

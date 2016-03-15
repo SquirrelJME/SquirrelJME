@@ -46,6 +46,9 @@ public class InterpreterClass
 	/** The class constant pool. */
 	protected final InterpreterClassPool constantpool;
 	
+	/** Class access flags. */
+	protected final int flags;
+	
 	/**
 	 * Initializes the class data.
 	 *
@@ -88,6 +91,9 @@ public class InterpreterClass
 		
 		// Initialize the constant pool
 		constantpool = new InterpreterClassPool(this, das);
+		
+		// Read flags
+		flags = das.readUnsignedShort();
 		
 		throw new Error("TODO");
 	}
