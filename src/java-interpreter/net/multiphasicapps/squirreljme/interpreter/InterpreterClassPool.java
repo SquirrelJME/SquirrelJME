@@ -96,9 +96,7 @@ public class InterpreterClassPool
 		// Check
 		if (__cl == null || __is == null)
 			throw new NullPointerException();
-		System.err.println(new BinaryNameSymbol("java"));
-		System.err.println(new BinaryNameSymbol("java/lang"));
-		System.err.println(new BinaryNameSymbol("java/lang/Object"));
+		
 		// Set
 		owner = __cl;
 		

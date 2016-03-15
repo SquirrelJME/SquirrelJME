@@ -12,9 +12,10 @@ package net.multiphasicapps.descriptors;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.AbstractSequentialList;
+import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -42,6 +43,12 @@ public final class BinaryNameSymbol
 	
 	/** Identifier base lengths. */
 	private final int[] _baselens;
+	
+	/** Identifier symbol cache. */
+	private volatile Reference<IdentifierSymbol>[] _idents;
+	
+	/** As a list? */
+	private volatile Reference<List<IdentifierSymbol>> _aslist;
 	
 	/**
 	 * Initializes the binary name symbol.
@@ -97,6 +104,9 @@ public final class BinaryNameSymbol
 		for (int i = 0; i < count; i++)
 			_baselens[i] = ((i < count - 1 ? _baseoffs[i + 1] : n + 1) -
 				_baseoffs[i]) - 1;
+		
+		// Initialize array
+		_idents = __makeIDRefArray(count);
 	}
 	
 	/**
@@ -115,13 +125,189 @@ public final class BinaryNameSymbol
 	}
 	
 	/**
+	 * Exposes the list of identifiers as a list.
+	 *
+	 * @return The view of the identifiers as a list.
+	 * @since 2016/03/14
+	 */
+	public List<IdentifierSymbol> asList()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<List<IdentifierSymbol>> ref = _aslist;
+			List<IdentifierSymbol> rv = null;
+			
+			// In a reference?
+			if (ref != null)
+				rv = ref.get();
+			
+			// Needs initialization?
+			if (rv == null)
+				_aslist = new WeakReference<>(
+					(rv = new AbstractList<IdentifierSymbol>()
+					{
+						/**
+						 * {@inheritDoc}
+						 * @since 2106/03/14
+						 */
+						@Override
+						public IdentifierSymbol get(int __i)
+						{
+							return BinaryNameSymbol.this.get(__i);
+						}
+						
+						/**
+						 * {@inheritDoc}
+						 * @since 2106/03/14
+						 */
+						@Override
+						public int size()
+						{
+							return count;
+						}
+					}));
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * Gets the identifier symbol at the given index.
+	 *
+	 * @param __i The index to get the symbol at.
+	 * @return The identifier at the given index.
+	 * @throws IndexOutOfBoundsException If the index is negative or exceeds
+	 * the number of identifiers.
+	 * @since 2016/03/14
+	 */
+	public IdentifierSymbol get(int __i)
+		throws IndexOutOfBoundsException
+	{
+		// Check
+		if (__i < 0 || __i >= count)
+			throw new IndexOutOfBoundsException();
+		
+		// Lock on the array
+		Reference<IdentifierSymbol>[] ids = _idents;
+		synchronized (ids)
+		{
+			// Get reference at index
+			Reference<IdentifierSymbol> ref = ids[__i];
+			IdentifierSymbol rv = null;
+			
+			// Already cached?
+			if (ref != null)
+				rv = ref.get();
+			
+			// Cache it
+			if (rv == null)
+			{
+				// base offset
+				int bo = _baseoffs[__i];
+				
+				// Generate it
+				ids[__i] = new WeakReference<>((rv =
+					new IdentifierSymbol(subSequence(bo, bo + _baselens[__i]).
+						toString())));
+			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/14
 	 */
 	@Override
 	public Iterator<IdentifierSymbol> iterator()
 	{
-		throw new Error("TODO");
+		return new Iterator<IdentifierSymbol>()
+			{
+				/** The current index. */
+				private volatile int _dx;
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/14
+				 */
+				@Override
+				public boolean hasNext()
+				{
+					return _dx < count;
+				}
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/14
+				 */
+				@Override
+				public IdentifierSymbol next()
+				{
+					// There is a next?
+					int next = _dx;
+					if (next >= count)
+						throw new NoSuchElementException();
+					
+					// Get it
+					IdentifierSymbol rv = get(next);
+					
+					// Set next next
+					_dx = next + 1;
+					
+					// Return it
+					return rv;
+				}
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/14
+				 */
+				@Override
+				public void remove()
+				{
+					throw new UnsupportedOperationException();
+				}
+			};
+	}
+	
+	/**
+	 * Returns the last identifier symbol.
+	 *
+	 * @return The last identifier.
+	 * @since 2016/03/14
+	 */
+	public IdentifierSymbol last()
+	{
+		return get(size() - 1);
+	}
+	
+	/**
+	 * Returns the number of identifiers.
+	 *
+	 * @return The identifier count.
+	 * @since 2016/03/14
+	 */
+	public int size()
+	{
+		return count;
+	}
+	
+	/**
+	 * Used to prevent {@link SuppressWarnings} where it is not needed.
+	 *
+	 * @param __n The number of elements in the array.
+	 * @return The generic array.
+	 * @since 2016/03/14
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static Reference<IdentifierSymbol>[] __makeIDRefArray(int __n)
+	{
+		return ((Reference<IdentifierSymbol>[])((Object)new Reference[__n]));
 	}
 	
 	/**
