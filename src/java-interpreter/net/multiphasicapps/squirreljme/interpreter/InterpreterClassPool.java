@@ -163,6 +163,11 @@ public class InterpreterClassPool
 					en = new InterpreterPoolEntry.ConstantString(this, __is);
 					break;
 					
+					// Name and type information
+				case TAG_NAMEANDTYPE:
+					en = new InterpreterPoolEntry.NameAndType(this, __is);
+					break;
+					
 					// invokedynamic is not supported!
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
@@ -177,7 +182,6 @@ public class InterpreterClassPool
 				case TAG_FLOAT:
 				case TAG_LONG:
 				case TAG_DOUBLE:
-				case TAG_NAMEANDTYPE:
 				default:
 					throw new InterpreterClassFormatError("Unsupported " +
 						"constant pool tag " + tag + ".");

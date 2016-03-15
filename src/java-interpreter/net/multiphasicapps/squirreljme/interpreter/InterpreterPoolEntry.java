@@ -405,6 +405,44 @@ public abstract class InterpreterPoolEntry
 	}
 	
 	/**
+	 * This represents name and type information.
+	 *
+	 * @since 2016/03/15
+	 */
+	public static final class NameAndType
+		extends InterpreterPoolEntry
+	{
+		/** Name index. */
+		protected final int namedx;
+		
+		/** Type index. */
+		protected final int typedx;
+		
+		/**
+		 * Initializes name and type information.
+		 *
+		 * @param __icp The owning constant pool.
+		 * @param __dis Data source.
+		 * @throws IOException On read errors.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/15
+		 */
+		NameAndType(InterpreterClassPool __icp, DataInputStream __dis)
+			throws IOException, NullPointerException
+		{
+			super(__icp);
+			
+			// Check
+			if (__dis == null)
+				throw new NullPointerException();
+			
+			// Read values
+			namedx = __rangeCheck(__dis.readUnsignedShort());
+			typedx = __rangeCheck(__dis.readUnsignedShort());
+		}
+	}
+	
+	/**
 	 * This is a UTF-8 string constant.
 	 *
 	 * @since 2016/03/13
