@@ -18,11 +18,11 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
-import net.multiphasicapps.squirreljme.interpreter.InterpreterClass;
-import net.multiphasicapps.squirreljme.interpreter.InterpreterEngine;
-import net.multiphasicapps.squirreljme.interpreter.InterpreterMethod;
-import net.multiphasicapps.squirreljme.interpreter.InterpreterObject;
-import net.multiphasicapps.squirreljme.interpreter.InterpreterThread;
+import net.multiphasicapps.squirreljme.interpreter.JVMClass;
+import net.multiphasicapps.squirreljme.interpreter.JVMEngine;
+import net.multiphasicapps.squirreljme.interpreter.JVMMethod;
+import net.multiphasicapps.squirreljme.interpreter.JVMObject;
+import net.multiphasicapps.squirreljme.interpreter.JVMThread;
 
 /**
  * This is an extension of the interpreter engine which provides access to
@@ -31,7 +31,7 @@ import net.multiphasicapps.squirreljme.interpreter.InterpreterThread;
  * @since 2016/03/01
  */
 public class LocalEngine
-	extends InterpreterEngine
+	extends JVMEngine
 {
 	/** The bootstrap class path. */
 	protected final Set<Path> bootclasspath;
@@ -80,13 +80,13 @@ public class LocalEngine
 				addClassPath(new LocalClassPath(this, p));
 		
 		// Find the main class
-		InterpreterClass mainclass = loadClass(__main);
+		JVMClass mainclass = loadClass(__main);
 		if (mainclass == null)
 			throw new IllegalArgumentException(String.format("The class " +
 				"'%s' does not exist.", __main));
 		
 		// Find the main method
-		InterpreterMethod mainmethod = mainclass.getMethod("main",
+		JVMMethod mainmethod = mainclass.getMethod("main",
 			"([Ljava/lang/String;)V");
 		if (mainmethod == null || !mainmethod.isStatic() ||
 			!mainmethod.isPublic())
@@ -95,10 +95,10 @@ public class LocalEngine
 				"'public static void main(String... foo)'."));
 		
 		// Create arguments for the main thread
-		InterpreterObject pargs = spawnStringArray(__args);
+		JVMObject pargs = spawnStringArray(__args);
 		
 		// Create main thread
-		InterpreterThread mthread = createThread(mainmethod, pargs);
+		JVMThread mthread = createThread(mainmethod, pargs);
 	}
 }
 

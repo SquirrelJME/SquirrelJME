@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.StringTokenizer;
-import net.multiphasicapps.squirreljme.interpreter.InterpreterClassPath;
+import net.multiphasicapps.squirreljme.interpreter.JVMClassPath;
 import net.multiphasicapps.squirreljme.zips.StandardZIPFile;
 
 /**
@@ -27,7 +27,7 @@ import net.multiphasicapps.squirreljme.zips.StandardZIPFile;
  * @since 2016/03/06
  */
 public class LocalClassPath
-	extends InterpreterClassPath
+	extends JVMClassPath
 {
 	/** The local engine used. */
 	protected final LocalEngine localengine;
