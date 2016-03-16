@@ -1,0 +1,8 @@
+# 2016/03/16
+
+## 00:22
+
+I am actually going to need to be able to synthesize classes `JVMClass` for
+arrays, so the classes will need to be split into a base class and then have
+file based classes along with arrays.
+

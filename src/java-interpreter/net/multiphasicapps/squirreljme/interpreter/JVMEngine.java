@@ -259,14 +259,15 @@ public abstract class JVMEngine
 					if (is == null)
 						continue;
 					
-					// Create class data
-					JVMClass rv = new JVMClass(this, is);
+					// Create class data (from files)
+					JVMClass rv = new JVMClassFile(this, is);
 					
 					// Wrong class? Ignore it
-					if (!rv.getName().equals(__bn))
+					String xn;
+					if (!__bn.equals((xn = rv.getClassLoaderName())))
 						throw new JVMClassFormatError(
 							"Expected class '" + __bn +
-							"' however '" + rv.getName() + "' was read.");
+							"' however '" + xn + "' was read.");
 					
 					// Return it
 					return rv;
