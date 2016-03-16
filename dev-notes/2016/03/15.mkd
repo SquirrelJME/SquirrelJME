@@ -42,3 +42,13 @@ I should probably shorten all of the interpreter stuff to instead be for
 example _JVM_. That would be more compact and I would not need to type
 _Interpreter_. It would also likely look nicer too.
 
+## 18:49
+
+I do wonder though if the interpreted environment should match the one that
+would be compiled. That is, have an actual memory space as I would for a normal
+virtual machine compilation and actually use pointers to modify objects and
+such. That would make the compilation part a bit easier becuase I could use the
+native magic stuff for that. However, the magical stuff would be a bit
+abstracted so VM wise there would not be direct memory access from any of the
+core classes (at least there should not be any).
+
