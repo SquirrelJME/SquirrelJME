@@ -1,0 +1,88 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
+//     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU Affero General Public License v3+, or later.
+// For more information see license.mkd.
+// ---------------------------------------------------------------------------
+
+package net.multiphasicapps.squirreljme.interpreter;
+
+import java.util.Arrays;
+import java.util.List;
+import net.multiphasicapps.collections.MissingCollections;
+
+/**
+ * Class flags.
+ *
+ * @since 2016/03/15
+ */
+public enum JVMClassFlag
+	implements JVMBitFlag
+{
+	/** Public access. */
+	PUBLIC(0x0001),
+	
+	/** Final. */
+	FINAL(0x0010),
+	
+	/** Super. */
+	SUPER(0x0020),
+	
+	/** Interface. */
+	INTERFACE(0x0200),
+	
+	/** Abstract. */
+	ABSTRACT(0x0400),
+	
+	/** Synthetic. */
+	SYNTHETIC(0x1000),
+	
+	/** Annotation. */
+	ANNOTATION(0x2000),
+	
+	/** Enumeration. */
+	ENUM(0x4000),
+	
+	/** End. */
+	;
+	
+	/** All available flags. */
+	public static final List<JVMClassFlag> FLAGS =
+		MissingCollections.<JVMClassFlag>unmodifiableList(
+		Arrays.<JVMClassFlag>asList(values()));
+	
+	/** The flag mask. */
+	protected final int mask;
+	
+	/**
+	 * Initializes the flag.
+	 *
+	 * @param __m The used mask.
+	 * @throws IllegalArgumentException If not exactly a single bit is set.
+	 * @since 2016/03/15
+	 */
+	private JVMClassFlag(int __m)
+		throws IllegalArgumentException
+	{
+		// Check
+		if (Integer.bitCount(__m) != 1)
+			throw new IllegalArgumentException();
+		
+		// Set
+		mask = __m;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/15
+	 */
+	@Override
+	public final int mask()
+	{
+		return mask;
+	}
+}
+

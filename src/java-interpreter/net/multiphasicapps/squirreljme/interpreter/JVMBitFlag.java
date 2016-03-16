@@ -11,16 +11,18 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 /**
- * Class flags.
- *
- * These must be sorted correctly as their ordinal is used as the shift to
- * obtain values.
+ * This interface is used for flags to represent that bits are used.
  *
  * @since 2016/03/15
  */
-public enum JVMClassFlags
+public interface JVMBitFlag
 {
-	/** End. */
-	;
+	/**
+	 * Returns the mask of the flag.
+	 *
+	 * @return The flag's mask.
+	 * @since 2016/03/15
+	 */
+	public abstract int mask();
 }
 

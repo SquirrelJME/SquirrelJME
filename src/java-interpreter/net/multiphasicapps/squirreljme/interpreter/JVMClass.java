@@ -14,7 +14,9 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 
@@ -47,7 +49,7 @@ public class JVMClass
 	protected final JVMConstantPool constantpool;
 	
 	/** Class access flags. */
-	protected final int flags;
+	protected final Set<JVMClassFlag> flags;
 	
 	/**
 	 * Initializes the class data.
@@ -93,7 +95,27 @@ public class JVMClass
 		constantpool = new JVMConstantPool(this, das);
 		
 		// Read flags
-		flags = das.readUnsignedShort();
+		flags = JVMClass.<JVMClassFlag>__parseFlags(JVMClassFlag.FLAGS,
+			das.readUnsignedShort());
+		
+		// Interface?
+		if (isInterface())
+		{
+			// Must be abstract, cannot have some flags set
+			if ((!isAbstract()) ||
+				(isFinal() || isSpecialInvokeSpecial() || isEnum()))
+				throw new JVMClassFormatError(flags.toString());
+		}
+		
+		// Normal class
+		else
+		{
+			// Cannot be an annotation
+			// Cannot be abstract and final
+			if (isAnnotation() ||
+				(isAbstract() && isFinal()))
+				throw new JVMClassFormatError(flags.toString());
+		}
 		
 		throw new Error("TODO");
 	}
@@ -130,6 +152,110 @@ public class JVMClass
 	}
 	
 	/**
+	 * Is a specific flag set?
+	 *
+	 * @param __jcf The flag to check if it is set.
+	 * @return {@code true} if the flag is set or {@code false} if it is not.
+	 * @throws NullPointerException On null arguments.
+	 */
+	public boolean hasFlag(JVMClassFlag __jcf)
+	{
+		// Check
+		if (__jcf == null)
+			throw new NullPointerException();
+		
+		return flags.contains(__jcf);
+	}
+	
+	/**
+	 * Is this class abstract?
+	 *
+	 * @return {@code true} if it is abstract.
+	 * @since 2016/03/15
+	 */
+	public boolean isAbstract()
+	{
+		return flags.contains(JVMClassFlag.ABSTRACT);
+	}
+	
+	/**
+	 * Is this an annotation?
+	 *
+	 * @return {@code true} if it is an annotation.
+	 * @since 2016/03/15
+	 */
+	public boolean isAnnotation()
+	{
+		return flags.contains(JVMClassFlag.ANNOTATION);
+	}
+	
+	/**
+	 * Is this an enumeration?
+	 *
+	 * @return {@code true} if it is an enumeration.
+	 * @since 2016/03/15
+	 */
+	public boolean isEnum()
+	{
+		return flags.contains(JVMClassFlag.ENUM);
+	}
+	
+	/**
+	 * Is this class final?
+	 *
+	 * @return {@code true} if it is final.
+	 * @since 2016/03/15
+	 */
+	public boolean isFinal()
+	{
+		return flags.contains(JVMClassFlag.FINAL);
+	}
+	
+	/**
+	 * Is this an interface?
+	 *
+	 * @return {@code true} if an interface.
+	 * @since 2016/03/15
+	 */
+	public boolean isInterface()
+	{
+		return flags.contains(JVMClassFlag.INTERFACE);
+	}
+	
+	/**
+	 * Is this class package private?
+	 *
+	 * @return {@code true} if it is package private.
+	 * @since 2016/03/15
+	 */
+	public boolean isPackagePrivate()
+	{
+		return !isPublic();
+	}
+	
+	/**
+	 * Is this class public?
+	 *
+	 * @return {@code true} if it is public.
+	 * @since 2016/03/15
+	 */
+	public boolean isPublic()
+	{
+		return flags.contains(JVMClassFlag.PUBLIC);
+	}
+	
+	/**
+	 * Is there special handling for super-class method calls?
+	 *
+	 * @return {@code true} if the super-class invocation special flag is set.
+	 * @since 2016/03/15
+	 */
+	public boolean isSpecialInvokeSpecial()
+	{
+		return flags.contains(JVMClassFlag.SUPER);
+	}
+	
+	/**
 	 * Returns the version of the class file which determines if specific
 	 * features are supported or not.
 	 *
@@ -139,6 +265,54 @@ public class JVMClass
 	public JVMClassVersion version()
 	{
 		return version;
+	}
+	
+	/**
+	 * Parses input flags and returns an unmodifiable set view of them.
+	 *
+	 * @param <B> The flag type.
+	 * @param __ll The input flags which are available.
+	 * @param __in The input flag value.
+	 * @return The set of flags, it is not modifiable.
+	 * @throws JVMClassFormatError If illegal flags are specified.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/15
+	 */
+	static <B extends JVMBitFlag> Set<B> __parseFlags(List<B> __ll, int __in)
+		throws JVMClassFormatError, NullPointerException
+	{
+		// Check
+		if (__ll == null)
+			throw new NullPointerException();
+		
+		// Target set
+		Set<B> rv = new HashSet<>();
+		
+		// Parse flags
+		int rem = __in;
+		for (B b : __ll)
+		{
+			// Get the mask
+			int mm = b.mask();
+			
+			// If it is set, clear it and add it
+			if (0 != (rem & mm))
+			{
+				// Set
+				rv.add(b);
+				
+				// Clear
+				rem &= ~mm;
+			}
+		}
+		
+		// If non-zero then extra illegal flags remain
+		if (rem != 0)
+			throw new JVMClassFormatError("Extra flags " +
+				Integer.toHexString(rem) + ".");
+		
+		// Lock it in
+		return MissingCollections.<B>unmodifiableSet(rv);
 	}
 }
 
