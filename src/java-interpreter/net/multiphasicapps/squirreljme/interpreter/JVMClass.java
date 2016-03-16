@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 import java.util.Set;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
  * This is the base class for all class related information.
@@ -60,6 +61,22 @@ public abstract class JVMClass
 	 * @since 2016/03/16
 	 */
 	public abstract Set<JVMClassFlag> flags();
+	
+	/**
+	 * Returns the name of the super class.
+	 *
+	 * @return The super class name.
+	 * @since 2016/03/16
+	 */
+	public abstract ClassNameSymbol superName();
+	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The name of this class.
+	 * @since 2016/03/16
+	 */
+	public abstract ClassNameSymbol thisName();
 	
 	/**
 	 * Returns the version of the class file which determines if specific

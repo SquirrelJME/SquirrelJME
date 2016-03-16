@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
  * This represents a single class loaded by the interpreter which is derived
@@ -45,6 +46,12 @@ public class JVMClassFile
 	
 	/** Class access flags. */
 	protected final Set<JVMClassFlag> flags;
+	
+	/** The current class name. */
+	protected final ClassNameSymbol thisname;
+	
+	/** The super class name. */
+	protected final ClassNameSymbol supername;
 	
 	/**
 	 * Initializes the class data.
@@ -111,8 +118,38 @@ public class JVMClassFile
 				throw new JVMClassFormatError(flags.toString());
 		}
 		
-		// Read the current class name
+		// Read the class name data
+		try
+		{
+			// Get current class name
+			thisname = constantpool.<JVMConstantEntry.ClassName>getAs(
+				das.readUnsignedShort(), JVMConstantEntry.ClassName.class).
+				symbol();
+			
+			// Super class name might be null
+			int sid = das.readUnsignedShort();
+			boolean isobj = "java/lang/Object".equals(thisname.toString());
+			
+			// Object never has a super class, however all other objects do
+			if ((sid != 0 && isobj) || (sid == 0 && !isobj))
+				throw new JVMClassFormatError("'" + thisname + "' has no " +
+					"superclass.");
+			
+			// Lacks one
+			else if (sid == 0)
+				supername = null;
+			
+			// Has one
+			else
+				supername = constantpool.<JVMConstantEntry.ClassName>getAs(
+					sid, JVMConstantEntry.ClassName.class).symbol();
+		}
 		
+		// Bad index somewhere
+		catch (IndexOutOfBoundsException|NullPointerException e)
+		{
+			throw new JVMClassFormatError(e);
+		}
 		
 		throw new Error("TODO");
 	}
@@ -135,6 +172,26 @@ public class JVMClassFile
 	public Set<JVMClassFlag> flags()
 	{
 		return flags;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/16
+	 */
+	@Override
+	public ClassNameSymbol superName()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/16
+	 */
+	@Override
+	public ClassNameSymbol thisName()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
