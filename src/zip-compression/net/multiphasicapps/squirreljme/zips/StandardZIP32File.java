@@ -290,7 +290,7 @@ public class StandardZIP32File
 				ZIP32LocalFile.MAGIC_NUMBER);
 			if (lhm != ZIP32LocalFile.MAGIC_NUMBER_VALUE)
 				throw new ZIPFormatException(String.format("ZP07 %08x %08x",
-					lhm, ZIP32LocalFile.MAGIC_NUMBER_VALUE);
+					lhm, ZIP32LocalFile.MAGIC_NUMBER_VALUE));
 		}
 		
 		/**
