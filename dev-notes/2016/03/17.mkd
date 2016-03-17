@@ -76,3 +76,10 @@ will just not have a flag for `invokedynamic` override.
 
 I do wonder how I can have a rather light decoding of fields and methods.
 
+## 16:17
+
+I suppose to reduce the static consant requirements and such, I will have
+error codes for exceptions rather than having english derived messages. If you
+have a small amount of storage space, then you might not want to waste it on
+descriptive exception messages.
+
