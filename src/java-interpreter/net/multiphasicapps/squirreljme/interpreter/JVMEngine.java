@@ -62,7 +62,7 @@ public abstract class JVMEngine
 	}
 	
 	/**
-	 *
+	 * Adds a class path to the engine.
 	 *
 	 * @param __icp The class path to add.
 	 * @return {@code this}.
