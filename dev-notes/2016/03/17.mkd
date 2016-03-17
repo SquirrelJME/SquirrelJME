@@ -1,0 +1,63 @@
+# 2016/03/17
+
+## 11:20
+
+The attributes which are not included in Java ME are:
+
+	The Synthetic attribute (JVMS ??4.7.8) 
+	The Signature attribute (JVMS ??4.7.9) 
+	The SourceFile attribute (JVMS ??4.7.10) 
+	The SourceDebugExtension attribute (JVMS ??4.7.11) 
+	The LineNumberTable attribute (JVMS ??4.7.12) 
+	The LocalVariableTable attribute (JVMS ??4.7.13) 
+	The LocalVariableTypeTable attribute (JVMS ??4.7.14) 
+	The Deprecated attribute (JVMS ??4.7.15) 
+	The RuntimeVisibleAnnotations attribute (JVMS ??4.7.16) 
+	The RuntimeInvisibleAnnotations attribute (JVMS ??4.7.17) 
+	The RuntimeVisibleParameterAnnotations attribute (JVMS ??4.7.18) 
+	The RuntimeInvisibleParameterAnnotations attribute (JVMS ??4.7.19) 
+	The AnnotationDefault attribute (JVMS ??4.7.20) 
+	The BootstrapMethod attribute (JVMS ??4.7.21)
+
+And this is a list of every attribute, with ones not cared about marked:
+
+	--- Listed above.
+	+++ Not listed above, but should be gone due to lack of reflection.
+	*** Not needed at the VM level, but needed by Java compilers.
+	
+	SourceFile---***
+	InnerClasses+++***
+	EnclosingMethod+++***
+	SourceDebugExtension---
+	BootstrapMethods---
+	ConstantValue
+	Code
+	Exceptions***
+	RuntimeVisibleParameterAnnotations---***
+	RuntimeInvisibleParameterAnnotations---***
+	AnnotationDefault---
+	MethodParameters+++***
+	Synthetic---
+	Deprecated---***
+	Signature---***
+	RuntimeVisibleAnnotations---***
+	RuntimeInvisibleAnnotations---***
+	LineNumberTable---
+	LocalVariableTable---
+	LocalVariableTypeTable---
+	StackMapTable
+	RuntimeVisibleTypeAnnotations+++***
+	RuntimeInvisibleTypeAnnotations+++***
+
+So with all of the removals I only need to consider the following:
+
+	ConstantValue
+	Code
+	StackMapTable
+	StackMap (for older J2ME code, similar to StackMapTable)
+
+Which simplifies things greatly. I should however include some kind of debug
+information with the line number table at least, so if exceptions are thrown
+it can be determined where they are. The line number table would probably be
+in an external map file if it is not feasible to include it.
+
