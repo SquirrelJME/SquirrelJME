@@ -61,3 +61,9 @@ information with the line number table at least, so if exceptions are thrown
 it can be determined where they are. The line number table would probably be
 in an external map file if it is not feasible to include it.
 
+## 11:35
+
+I should also note that these 4 annotations, 1 is for fields, 1 is for methods,
+and 2 are for codes. This means I can pretty much just completely skip parsing
+annotations in class files because they are just pointless.
+
