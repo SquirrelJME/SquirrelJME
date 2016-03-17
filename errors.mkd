@@ -146,6 +146,26 @@ These codes do not have a index meaning and are meant to be short.
    * The number of bytes which were requested.
    * The actual number of bytes in the window.
 
+# `net.multiphasicapps.squirreljme.interpreter.local`
+
+ * `LI01` -- No bootstrap classpaths were specified.
+ * `LI02` -- The main class does not exist.
+   * The class which is missing.
+ * `LI03` -- The main class was found, however it lacks the main entry point or
+   it is not public or static.
+   * The class which lacks `public static void main(String...)`.
+ * `LI04` -- The path separator does not constist of a single character (it is
+   either blank or is two or more characters).
+   * The input separator.
+   * The specified property.
+ * `LI05` -- Cannot specify `-jar` or `-classpath` multiple times.
+ * `LI06` -- `-classpath` is missing an argument.
+ * `LI07` -- `-jar` is missing an argument.
+ * `LI08` -- Unknown command line switch.
+   * The command line switch which was specified.
+ * `LI09` -- Main class not specified on the command line.
+ * `LI0a` -- The JAR manifest does not have the `Main-Class` attribute.
+
 # `net.multiphasicapps.squirreljme.zips`
 
  * `ZP01` -- Attempted to read an array index from a structured type, however

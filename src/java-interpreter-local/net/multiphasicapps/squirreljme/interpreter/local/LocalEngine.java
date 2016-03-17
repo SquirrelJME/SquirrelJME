@@ -56,7 +56,7 @@ public class LocalEngine
 	{
 		// Check
 		if (__bcp == null || __cp == null || __main == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Force arguments to exist
 		if (__args == null)
@@ -70,7 +70,7 @@ public class LocalEngine
 		
 		// Need bootstrap classes
 		if (bootclasspath.isEmpty())
-			throw new IllegalArgumentException("No bootstrap classes.");
+			throw new IllegalArgumentException("LI01");
 		
 		// Setup classpath
 		for (Path p : bootclasspath)
@@ -82,17 +82,16 @@ public class LocalEngine
 		// Find the main class
 		JVMClass mainclass = loadClass(__main);
 		if (mainclass == null)
-			throw new IllegalArgumentException(String.format("The class " +
-				"'%s' does not exist.", __main));
+			throw new IllegalArgumentException(String.format(
+				"LI02 %s", __main));
 		
 		// Find the main method
 		JVMMethod mainmethod = mainclass.getMethod("main",
 			"([Ljava/lang/String;)V");
 		if (mainmethod == null || !mainmethod.isStatic() ||
 			!mainmethod.isPublic())
-			throw new IllegalArgumentException(String.format("The class " +
-				"'%s' does not have method " +
-				"'public static void main(String... foo)'."));
+			throw new IllegalArgumentException(String.format(
+				"LI03 %s", __main));
 		
 		// Create arguments for the main thread
 		JVMObject pargs = spawnStringArray(__args);

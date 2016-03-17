@@ -53,7 +53,7 @@ public class LocalClassPath
 		
 		// Check
 		if (__le == null || __p == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		localengine = __le;
@@ -71,7 +71,8 @@ public class LocalClassPath
 			zippy = StandardZIPFile.open(fc);
 			
 			// Note it
-			System.err.println("Opened ZIP '" + path + "' (" + zippy + ").");
+			System.err.println("DEBUG -- Opened ZIP '" + path +
+				"' (" + zippy + ").");
 		}
 		
 		// Failed to open

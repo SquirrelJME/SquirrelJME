@@ -25,6 +25,10 @@ import java.util.StringTokenizer;
  */
 public class Main
 {
+	/** The property to use for the path separator. */
+	public static final String PATH_SEPARATOR_PROPERTY =
+		"path.separator";
+	
 	/** The separator for paths. */
 	public static final String PATH_SEPARATOR;
 	
@@ -36,7 +40,7 @@ public class Main
 	static
 	{
 		// Get system property
-		String spps = System.getProperty("path.separator");
+		String spps = System.getProperty(PATH_SEPARATOR_PROPERTY);
 		
 		// If available, use it
 		if (spps != null)
@@ -48,8 +52,8 @@ public class Main
 		
 		// Big problems if it is multiple characters long
 		if (PATH_SEPARATOR.length() != 1)
-			throw new RuntimeException("Cannot handle a path separator that " +
-				"is multiple characters long.");
+			throw new RuntimeException(String.format("LI04 %s %s",
+				PATH_SEPARATOR, PATH_SEPARATOR_PROPERTY));
 	}
 	
 	/**
@@ -93,8 +97,7 @@ __outer_loop:
 				case "-classpath":
 					// Only once
 					if (didcp || didjar)
-						throw new IllegalArgumentException("The switch " +
-							"-cp or -jar has already been specified.");
+						throw new IllegalArgumentException("LI05");
 					
 					// Eat
 					hargs.pollFirst();
@@ -102,7 +105,7 @@ __outer_loop:
 					// Get next
 					String cparg = hargs.pollFirst();
 					if (cparg == null)
-						throw new IllegalArgumentException("");
+						throw new IllegalArgumentException("LI06");
 					
 					// Split and get paths from them
 					StringTokenizer st = new StringTokenizer(cparg,
@@ -118,8 +121,7 @@ __outer_loop:
 				case "-jar":
 					// Only once
 					if (didcp || didjar)
-						throw new IllegalArgumentException("The switch " +
-							"-cp or -jar has already been specified.");
+						throw new IllegalArgumentException("LI05");
 					
 					// Eat
 					hargs.pollFirst();
@@ -127,8 +129,7 @@ __outer_loop:
 					// Get next
 					String jarf = hargs.pollFirst();
 					if (jarf == null)
-						throw new IllegalArgumentException("Expected a " +
-							"JAR path following -jar.");
+						throw new IllegalArgumentException("LI07");
 					
 					// Single JAR only
 					classpath.add(Paths.get(jarf));	
@@ -141,7 +142,7 @@ __outer_loop:
 				default:
 					if (cur.startsWith("-"))
 						throw new IllegalArgumentException(String.format(
-							"Unknown command line switch: %s", cur));
+							"LI08 %s", cur));
 					
 					// Stop processing because these are normal commands now
 					break __outer_loop;
@@ -169,8 +170,7 @@ __outer_loop:
 		
 		// If not specified, fail
 		if (mainclass == null)
-			throw new IllegalArgumentException("Main class not specified or " +
-				"is missing in the JAR manifest.");
+			throw new IllegalArgumentException((didjar ? "LI0a" : "LI09"));
 		
 		// Setup the local interpreter engine
 		LocalEngine le = new LocalEngine(bootclasspath, classpath, mainclass,
