@@ -47,7 +47,7 @@ final class __UnmodifiableMap__<K, V>
 	{
 		// Check
 		if (__w == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		wrapped = __w;
@@ -162,7 +162,7 @@ final class __UnmodifiableMap__<K, V>
 		@Override
 		public void remove()
 		{
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("RORO");
 		}
 	}
 	
@@ -229,7 +229,7 @@ final class __UnmodifiableMap__<K, V>
 		{
 			// Check
 			if (__e == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Set
 			base = __e;
@@ -282,7 +282,7 @@ final class __UnmodifiableMap__<K, V>
 		@Override
 		public V setValue(V __a)
 		{
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("RORO");
 		}
 	}
 }

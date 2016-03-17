@@ -28,6 +28,19 @@ These codes do not have a index meaning and are meant to be short.
    indicate that a bug exists, that the virtual machine is in a potentially
    damaged state, or there is memory corruption.
 
+# `net.multiphasicapps.collections`
+
+ * `XC01` -- Adding a value to the huffman tree has a value which sets bits
+   which were not specified in the mask.
+   * The input value.
+   * The mask being used.
+ * `XC02` -- Adding a value to the huffman tree has a mask which does not start
+   at shift zero and has a zero gap (`0b1111011` is not a valid mask).
+   * The input value.
+   * The mask being used.
+ * `XC03` -- Expected a zero or a one.
+   * The input value.
+
 # `net.multiphasicapps.squirreljme.zips`
 
  * `ZP01` -- Attempted to read an array index from a structured type, however

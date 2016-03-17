@@ -38,7 +38,7 @@ final class __UnmodifiableSet__<T>
 	{
 		// Check
 		if (__w == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Wrap it
 		wrapped = __w;
@@ -94,7 +94,7 @@ final class __UnmodifiableSet__<T>
 				@Override
 				public void remove()
 				{
-					throw new UnsupportedOperationException();
+					throw new UnsupportedOperationException("RORO");
 				}
 			};
 	}

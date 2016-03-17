@@ -77,10 +77,12 @@ public class HuffmanTree<T>
 		
 		// Check mask and representation
 		if ((__rep & (~__repmask)) != 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XC01 %x %x",
+				__rep, __repmask));
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__repmask)) ||
 			(__repmask & 1) == 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XC02 %x %x",
+				__rep, __repmask));
 		
 		// Start from higher shifts to lower shifts
 		Traverse rover = root;
@@ -309,7 +311,7 @@ public class HuffmanTree<T>
 				return _zero;
 			else if (__n == 1)
 				return _one;
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XC03 %d", __n));
 		}
 		
 		/**
@@ -360,7 +362,8 @@ public class HuffmanTree<T>
 		{
 			// Must be zero or one
 			if (__s != 0 && __s != 1)
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException(
+					String.format("XC03 %d", __n));
 			
 			// Get node on this side
 			Node n = get(__s);
@@ -397,7 +400,8 @@ public class HuffmanTree<T>
 		{
 			// Must be zero or one
 			if (__s != 0 && __s != 1)
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException(
+					String.format("XC03 %d", __n));
 			
 			// Get node on this side
 			Node n = get(__s);

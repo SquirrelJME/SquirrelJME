@@ -37,7 +37,7 @@ class __UnmodifiableList__<V>
 	{
 		// Check
 		if (__l == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		wrapped = __l;
