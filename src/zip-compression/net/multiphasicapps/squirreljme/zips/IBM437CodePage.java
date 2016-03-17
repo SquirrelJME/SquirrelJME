@@ -53,7 +53,7 @@ public final class IBM437CodePage
 	{
 		// Check
 		if (__b < 0 || __b > 255)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("ZP0e %d", __b));
 		
 		// Lower ASCII is the same
 		if (__b <= 127)
@@ -193,7 +193,7 @@ public final class IBM437CodePage
 			
 				// Should not occur but in case it does
 			default:
-				throw new RuntimeException();
+				throw new RuntimeException("WTFX");
 		}
 	}
 	
@@ -213,10 +213,10 @@ public final class IBM437CodePage
 	{
 		// Check
 		if (__arr == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		if (__off < 0 || __len < 0 || (__off + __len) < 0 ||
 			(__off + __len) > __arr.length)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("BAOB");
 		
 		// Result is of the same size
 		char rv[] = new char[__len];

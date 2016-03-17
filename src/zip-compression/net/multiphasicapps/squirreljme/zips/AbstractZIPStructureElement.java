@@ -48,7 +48,7 @@ public abstract class AbstractZIPStructureElement
 	{
 		// Check
 		if (__t == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		before = __bef;

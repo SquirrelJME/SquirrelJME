@@ -5,10 +5,70 @@ first two characters are the prefix, followed by a base-36 index starting from
 `00` and ending at `zz` indicating the sub-type of the message. The first two
 characters should be uppercase while the index should be lowercase.
 
+The layout is as follows:
+
+ * `CODE` -- The major description error code.
+   * Any optional arguments which are supplied with the code to give some
+     extra detail.
+
 # General Codes
 
 These codes do not have a index meaning and are meant to be short.
 
+ * `BAOB` -- Byte array values out of bounds.
+ * `IOOB` -- Index out of bounds.
+ * `NARG` -- Null arguments passed to method. This is specified and is used
+   to differentiate from `NullPointerException` which might not appear in
+   normal code.
+ * `NSEE` -- No more elements remain in the iteration, stack, or queue.
+ * `RORO` -- Attempted to write a read-only iteration, collection, or other
+   type of storage.
  * `TODO` -- Incomplete code.
- * `NARG` -- Null arguments passed to method.
+ * `WTFX` -- Code that should not be executed has been executed. This may
+   indicate that a bug exists, that the virtual machine is in a potentially
+   damaged state, or there is memory corruption.
+
+# `net.multiphasicapps.squirreljme.zips`
+
+ * `ZP01` -- Attempted to read an array index from a structured type, however
+   the element being read is not an array.
+   * The index which was attempted to be read.
+ * `ZP02` -- Attempted to read an array index from a structured type, however
+   it is an array except the index is out of bounds.
+   * The index which was attempted to be read.
+   * The array length.
+ * `ZP03` -- Short read, expected a given number of bytes except only a given
+   number were actually read.
+   * The number of expected bytes (the higher value) and the bytes actually
+     read (the lower value).
+ * `ZP04` -- The ZIP file contain a negative number of entries.
+   * The negative value which was read, indicating the total entries within a
+     ZIP file.
+ * `ZP05` -- Attempted to read the file entry of a given directory entry in a
+   ZIP, however it does not have an offset set (it starts at an unknown
+   position).
+   * The position it appears to be located at, may be an invalid value.
+ * `ZP06` -- The ZIP file has no central directory or it could not be found.
+ * `ZP07` -- Magic number mismatch,
+   * Two values, where either one is the expected magic number and the other is
+     the read magic number.
+ * `ZP08` -- The ZIP file is too new and is not supported by this library.
+   * The version of the ZIP (the higher value) and the maximum supported
+     version which can be read (the lower value).
+ * `ZP09` -- Expected to read a given number of entries, however a different
+   number of entries were read.
+   * Two values, where one is the number of expected entries while the other is
+     the actual number of read entries.
+ * `ZP0a` -- Attempted to open a directory as a file.
+   * The directory which was attempted to be read as a file.
+ * `ZP0b` -- Attempted to read file data which has an unknown compression
+   algorithm.
+   * The file which was attempted to be read.
+   * The ZIP internal compression method.
+ * `ZP0c` -- Read error reading central directory data.
+ * `ZP0d` -- Could not read the ZIP file header table data.
+ * `ZP0e` -- The IBM 437 byte to translate to UTF-16 is outside of range.
+   * The byte to be translated.
+
+# End of errors
 

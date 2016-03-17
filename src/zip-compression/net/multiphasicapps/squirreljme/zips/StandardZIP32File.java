@@ -125,7 +125,7 @@ public class StandardZIP32File
 		
 		// Not a 32-bit ZIP?
 		if (idi < 0L)
-			throw new ZIPFormatException.NoCentralDirectory();
+			throw new ZIPFormatException("ZP06");
 		
 		// Position is here
 		enddirpos = idi;
@@ -193,8 +193,9 @@ public class StandardZIP32File
 				
 				// Bad magic?
 				if (cdmag != ZIP32CentralDirectory.MAGIC_NUMBER_VALUE)
-					throw new ZIPFormatException.IllegalMagic(cdmag,
-						ZIP32CentralDirectory.MAGIC_NUMBER_VALUE);
+					throw new ZIPFormatException(
+						String.format("ZP07 %08x %08x",
+						cdmag, ZIP32CentralDirectory.MAGIC_NUMBER_VALUE));
 				
 				// Set offset
 				offsets[readcount] = p;
@@ -203,8 +204,8 @@ public class StandardZIP32File
 				int ver = (int)readStruct(p,
 					ZIP32CentralDirectory.EXTRACT_VERSION);
 				if (ver > MAX_CENTRAL_DIR_VERSION)
-					throw new ZIPFormatException.TooNew(ver,
-						MAX_CENTRAL_DIR_VERSION);
+					throw new ZIPFormatException(String.format("ZP08 %d %d",
+						ver, MAX_CENTRAL_DIR_VERSION));
 				
 				// Read variable length attributes
 				long varfn = readStruct(p,
@@ -220,8 +221,8 @@ public class StandardZIP32File
 			
 			// Short read?
 			if (readcount != numentries)
-				throw new ZIPFormatException.EntryMiscount(readcount,
-					numentries);
+				throw new ZIPFormatException(String.format("ZP09 %d %d",
+					readcount, numentries));
 		}
 		
 		/**
@@ -273,7 +274,7 @@ public class StandardZIP32File
 		{
 			// Check
 			if (__dir == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Set
 			directory = __dir;
@@ -288,8 +289,8 @@ public class StandardZIP32File
 			int lhm = (int)readStruct(localheaderpos,
 				ZIP32LocalFile.MAGIC_NUMBER);
 			if (lhm != ZIP32LocalFile.MAGIC_NUMBER_VALUE)
-				throw new ZIPFormatException.IllegalMagic(lhm,
-					ZIP32LocalFile.MAGIC_NUMBER_VALUE);
+				throw new ZIPFormatException(String.format("ZP07 %08x %08x",
+					lhm, ZIP32LocalFile.MAGIC_NUMBER_VALUE);
 		}
 		
 		/**
@@ -397,7 +398,7 @@ public class StandardZIP32File
 			// Cannot be a directory
 			String n = name();
 			if (n.endsWith("/"))
-				throw new ZIPFormatException.IsADirectory(n);
+				throw new ZIPFormatException(String.format("ZP0a %s", n));
 			
 			// Obtain the compression method
 			int method = (int)readStruct(localheaderpos,
@@ -405,8 +406,8 @@ public class StandardZIP32File
 			
 			// Unknown compression method?
 			if (method != METHOD_STORED && method != METHOD_DEFLATED)
-				throw new ZIPFormatException.UnknownCompressionMethod(n,
-					method);
+				throw new ZIPFormatException(String.format("ZP0b %s %d", n,
+					method));
 			
 			// CRC and data sizes
 			int crc;
@@ -464,8 +465,8 @@ public class StandardZIP32File
 			
 			// Unknown
 			else
-				throw new ZIPFormatException.UnknownCompressionMethod(n,
-					method);
+				throw new ZIPFormatException(String.format("ZP0b %s %d", n,
+					method));
 		}
 	}
 }

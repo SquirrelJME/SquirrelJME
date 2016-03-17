@@ -72,7 +72,7 @@ public abstract class StandardZIPFile
 	{
 		// Check
 		if (__sbc == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		channel = __sbc;
@@ -110,7 +110,7 @@ public abstract class StandardZIPFile
 	{
 		// Check
 		if (__n == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Use the directory
 		return getDirectory().get(__n);
@@ -170,7 +170,7 @@ public abstract class StandardZIPFile
 				// Could not read the directory
 				catch (IOException ioe)
 				{
-					throw new IllegalStateException(ioe);
+					throw new IllegalStateException("ZP0c", ioe);
 				}
 			
 			// Return it
@@ -227,10 +227,10 @@ public abstract class StandardZIPFile
 	{
 		// Check
 		if (__arr == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		if (__off < 0 || __len < 0 || (__off + __len) < 0 ||
 			(__off + __len) > __arr.length)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("BAOB");
 		
 		// If not reading any bytes, ignore
 		if (__len <= 0)
@@ -345,7 +345,7 @@ public abstract class StandardZIPFile
 	{
 		// Check
 		if (__se == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Lock on the read buffer
 		synchronized (_readbuffer)
@@ -356,7 +356,7 @@ public abstract class StandardZIPFile
 			// Get the variable field info
 			ZIPStructureElement varf = __se.variableField();
 			if (__ai != 0 && varf == null)
-				throw new ZIPFormatException.NonZeroArrayRead();
+				throw new ZIPFormatException(String.format("ZP01 %d", __ai));
 			
 			// Otherwise check the bounds of the read
 			else if (varf != null)
@@ -366,7 +366,8 @@ public abstract class StandardZIPFile
 				
 				// Out of bounds?
 				if (__ai < 0 || (long)__ai >= ec)
-					throw new ZIPFormatException.ArrayOutOfBounds(__ai, ec);
+					throw new ZIPFormatException(String.format("ZP02 %d %d",
+						__ai, ec));
 			}
 			
 			// Calculate the type based relative size based on the array index
@@ -405,18 +406,18 @@ public abstract class StandardZIPFile
 	 * @param __len The number of bytes to read.
 	 * @return The field {@code _readbuffer} automatically position to the
 	 * started and limited to the length.
-	 * @throws IllegalArgumentException If the length exceeds the read buffer
+	 * @throws IndexOutOfBoundsException If the length exceeds the read buffer
 	 * size, or the read length is zero or negative.
 	 * @throws IOException On read errors or if the input buffer was not
 	 * correctly handled.
 	 * @since 2016/03/02
 	 */
 	protected final ByteBuffer readRaw(long __pos, int __len)
-		throws IllegalArgumentException, IOException
+		throws IndexOutOfBoundsException, IOException
 	{
 		// Check
 		if (__len <= 0 || __len > _readbuffer.capacity())
-			throw new IllegalArgumentException();
+			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Lock on the read buffer
 		synchronized (_readbuffer)
@@ -449,7 +450,8 @@ public abstract class StandardZIPFile
 			
 			// Check to make sure all the data was read
 			if (rc < __len)
-				throw new ZIPFormatException.ShortRead(__len, rc);
+				throw new ZIPFormatException(String.format("ZP03 %d %d",
+					__len, rc));
 		
 			// Flip the buffer
 			rv.flip();
@@ -528,7 +530,7 @@ public abstract class StandardZIPFile
 	{
 		// Check
 		if (__sbc == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Try opening as a 64-bit ZIP
 		try
@@ -677,7 +679,7 @@ public abstract class StandardZIPFile
 		{
 			// Check
 			if (__ne < 0)
-				throw new ZIPFormatException.NegativeEntryCount(__ne);
+				throw new ZIPFormatException(String.format("ZP04 %d", __ne));
 			
 			// Initialize offset table
 			offsets = new long[__ne];
@@ -711,7 +713,7 @@ public abstract class StandardZIPFile
 		{
 			// Check
 			if (__n == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Go through self
 			for (FileEntry fe : this)
@@ -742,7 +744,7 @@ public abstract class StandardZIPFile
 			// If the offset is invalid then the entry cannot be determined
 			// for this.
 			if (off < 0L)
-				throw new ZIPFormatException.NoOffsetSpecified(__i);
+				throw new ZIPFormatException(String.format("ZP05 %d", __i));
 			
 			// Lock on the entry cache so it is a sort of volatile
 			synchronized (_entrycache)
@@ -825,7 +827,7 @@ public abstract class StandardZIPFile
 			{
 				// Ran out?
 				if (!hasNext())
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("NSEE");
 				
 				// Might not be able to read it
 				try
@@ -836,7 +838,7 @@ public abstract class StandardZIPFile
 				// Failed to read
 				catch (IOException ioe)
 				{
-					throw new IllegalStateException(ioe);
+					throw new IllegalStateException("ZP0d", ioe);
 				}
 			}
 			
@@ -847,7 +849,7 @@ public abstract class StandardZIPFile
 			@Override
 			public void remove()
 			{
-				throw new UnsupportedOperationException();
+				throw new UnsupportedOperationException("RORO");
 			}
 		}
 	}
