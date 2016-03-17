@@ -10,23 +10,20 @@
 
 package java.lang;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.security.Permission;
+import net.multiphasicapps.squirreljme.magic.Magic;
 
 public final class System
 {
 	/** Standard error stream (stderr). */
 	public static final PrintStream err =
-		null;
+		new __CanSetPrintStream__(new PrintStream(Magic.stdErr()));
 	
 	/** Standard output stream (stdout). */
 	public static final PrintStream out =
-		null;
-	
-	static
-	{
-		if (true)
-			throw new Error("TODO");
-	}
+		new __CanSetPrintStream__(new PrintStream(Magic.stdOut()));
 	
 	private System()
 	{
@@ -96,16 +93,56 @@ public final class System
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Sets the new destination for standard error.
+	 *
+	 * Note that the {@link System#err} field is not changed, a wrapper class
+	 * is used to prevent reflective abuse.
+	 *
+	 * @param __a The new stream to use when outputting values.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the current program lacks the given
+	 * permission to set the stream.
+	 * @since 2016/03/17
+	 */
 	public static void setErr(PrintStream __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException();
+		
+		// Not allowed to do this?
+		getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		
 		// Use a wrapped class to prevent final abuse.
-		throw new Error("TODO");
+		((__CanSetPrintStream__)err).__set(__a);
 	}
 	
+	/**
+	 * Sets the new destination for standard output.
+	 *
+	 * Note that the {@link System#out} field is not changed, a wrapper class
+	 * is used to prevent reflective abuse.
+	 *
+	 * @param __a The new stream to use when outputting values.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the current program lacks the given
+	 * permission to set the stream.
+	 * @since 2016/03/17
+	 */
 	public static void setOut(PrintStream __a)
+		throws NullPointerException
 	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException();
+		
+		// Not allowed to do this?
+		getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		
 		// Use a wrapped class to prevent final abuse.
-		throw new Error("TODO");
+		((__CanSetPrintStream__)out).__set(__a);
 	}
 }
 

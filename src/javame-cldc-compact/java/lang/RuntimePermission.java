@@ -8,26 +8,23 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.magic;
+package java.lang;
 
-/**
- * This is thrown when magic is called when it is forbidden to use it.
- *
- * There is no {@code sun.misc.Unsafe} exploitation here.
- *
- * @since 2016/03/17
- */
-public final class ForbbidenMagicError
-	extends Error
+import java.security.BasicPermission;
+
+public final class RuntimePermission
+	extends BasicPermission
 {
-	/**
-	 * Initializes the exception with a hidden message.
-	 *
-	 * @since 2016/03/17
-	 */
-	public ForbbidenMagicError()
+	public RuntimePermission(String __a)
 	{
-		super("The message `uaoxoedo0ve9ouaxx` reveals it twice.");
+		super((String)null);
+		throw new Error("TODO");
+	}
+	
+	public RuntimePermission(String __a, String __b)
+	{
+		super((String)null);
+		throw new Error("TODO");
 	}
 }
 

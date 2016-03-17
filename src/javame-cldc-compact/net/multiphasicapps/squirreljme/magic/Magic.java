@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.magic;
 
+import java.io.OutputStream;
+
 /**
  * This class contains methods which are internal to the virtual machine and
  * is used by the interpreter and the native compiler to perform work that Java
@@ -38,7 +40,7 @@ public abstract class Magic
 	 */
 	public static String callingPackage()
 	{
-		throw new ForbbidenMagicError();
+		throw new ForbiddenMagicError();
 	}
 	
 	/**
@@ -53,7 +55,29 @@ public abstract class Magic
 	 */
 	public static Class<?> componentType(Class<?> __ct)
 	{
-		throw new ForbbidenMagicError();
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns a raw output stream which is attached to standard error.
+	 *
+	 * @return The stream attached to standard error.
+	 * @since 2016/03/17
+	 */
+	public static OutputStream stdErr()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns a raw output stream which is attached to standard output.
+	 *
+	 * @return The stream attached to standard output.
+	 * @since 2016/03/17
+	 */
+	public static OutputStream stdOut()
+	{
+		throw new ForbiddenMagicError();
 	}
 }
 
