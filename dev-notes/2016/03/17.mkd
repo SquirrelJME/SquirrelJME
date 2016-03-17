@@ -67,3 +67,12 @@ I should also note that these 4 annotations, 1 is for fields, 1 is for methods,
 and 2 are for codes. This means I can pretty much just completely skip parsing
 annotations in class files because they are just pointless.
 
+## 14:39
+
+Need to keep an eye out for signature polymorphic signatures. I also believe I
+will just not have a flag for `invokedynamic` override.
+
+## 14:50
+
+I do wonder how I can have a rather light decoding of fields and methods.
+

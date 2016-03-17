@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
@@ -34,9 +35,6 @@ public class JVMClassFile
 	/** The class file magic number. */
 	public static final int MAGIC_NUMBER =
 		0xCAFEBABE;
-	
-	/** Super classes and interfaces implemented in this class. */
-	protected final Set<JVMClassFile> superclasses;
 	
 	/** The version of this class file. */
 	protected final JVMClassVersion version;
@@ -121,7 +119,7 @@ public class JVMClassFile
 				throw new JVMClassFormatError(flags.toString());
 		}
 		
-		// Read the class name data
+		// Read the class name data, fields, and methods
 		try
 		{
 			// Get current class name
@@ -156,6 +154,31 @@ public class JVMClassFile
 					symbol());
 			interfacenames = MissingCollections.<ClassNameSymbol>
 				unmodifiableSet(it);
+			
+			// Read fields and methods
+			for (int ism = 0; ism <= 1; ism++)
+			{
+				// Is field? Is method?
+				boolean isfield = (ism == 0);
+				boolean ismethod = !isfield;
+				
+				throw new Error("TODO");
+			}
+			
+			// Completeley ignore attributes, they are pointless here
+			int numcan = das.readUnsignedShort();
+			for (int i = 0; i < numcan; i++)
+			{
+				// Ignore the name index
+				das.readUnsignedShort();
+				
+				// Ignore the length also, but fail if EOF is reached
+				int alen = das.readUnsignedShort();
+				for (int w = 0; w < alen; w++)
+					if (das.read() < 0)
+						throw new EOFException("EOF reached while skipping " +
+							"annotation.");
+			}
 		}
 		
 		// Bad index somewhere
@@ -164,7 +187,9 @@ public class JVMClassFile
 			throw new JVMClassFormatError(e);
 		}
 		
-		throw new Error("TODO");
+		// If this is not EOF, then the class has extra junk following it
+		if (das.read() >= 0)
+			throw new JVMClassFormatError("Junk following class data.");
 	}
 	
 	/**

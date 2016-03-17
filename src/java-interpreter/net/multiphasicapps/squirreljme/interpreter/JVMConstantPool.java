@@ -175,7 +175,7 @@ public class JVMConstantPool
 					if (!SUPPORT_INVOKEDYNAMIC_ANYWAY &&
 						!owner.version().hasInvokeDynamic())
 						throw new NoInvokeDynamicException();
-					throw new Error("INVOKEDYNAMIC -- Constant pool.");
+					throw new NoInvokeDynamicException();
 					
 					// Unknown
 				case TAG_INTEGER:
