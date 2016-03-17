@@ -38,7 +38,7 @@ public abstract class Magic
 	 */
 	public static String callingPackage()
 	{
-		throw new Error("Magic is forbidden.");
+		throw new ForbbidenMagicError();
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public abstract class Magic
 	 */
 	public static Class<?> componentType(Class<?> __ct)
 	{
-		throw new Error("Magic is forbidden.");
+		throw new ForbbidenMagicError();
 	}
 }
 
