@@ -83,3 +83,7 @@ error codes for exceptions rather than having english derived messages. If you
 have a small amount of storage space, then you might not want to waste it on
 descriptive exception messages.
 
+## 18:29
+
+And I finished translating all the errors, that took about 2 hours to do.
+

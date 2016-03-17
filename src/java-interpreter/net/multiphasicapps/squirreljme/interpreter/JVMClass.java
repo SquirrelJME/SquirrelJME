@@ -20,11 +20,6 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  */
 public abstract class JVMClass
 {
-	/** Is invokedynamic supported anyway even thougn it is illegal? */
-	static final boolean SUPPORT_INVOKEDYNAMIC_ANYWAY =
-		Boolean.valueOf(System.getProperty(
-			JVMClass.class.getName() + ".invokedynamic"));
-	
 	/** The interpreter engine which owns this class. */
 	protected final JVMEngine engine;
 	

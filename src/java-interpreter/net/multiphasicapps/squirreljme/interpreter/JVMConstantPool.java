@@ -28,10 +28,6 @@ import java.util.Objects;
 public class JVMConstantPool
 	extends AbstractList<JVMConstantEntry>
 {
-	/** Is invokedynamic supported anyway? */
-	static final boolean SUPPORT_INVOKEDYNAMIC_ANYWAY =
-		JVMClass.SUPPORT_INVOKEDYNAMIC_ANYWAY;	
-	
 	/** The UTF constant tag. */
 	protected static final int TAG_UTF8 =
 		1;
@@ -173,10 +169,7 @@ public class JVMConstantPool
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
 				case TAG_INVOKEDYNAMIC:
-					if (!SUPPORT_INVOKEDYNAMIC_ANYWAY &&
-						!owner.version().hasInvokeDynamic())
-						throw new JVMClassFormatError("IN0h");
-					throw new JVMClassFormatError("TODO");
+					throw new JVMClassFormatError("IN0h");
 					
 					// Unknown
 				case TAG_INTEGER:
