@@ -63,9 +63,13 @@ WHERE IT IS NOT SUPPORTED BY ORACLE).***
 
 # Supported Operating Systems and Freestanding Hardware
 
+_% -- Only tested on emulators, not real hardware._
+
 ## Hosted
 
 ## Freestanding
+
+## Virtual
 
 # Differences Between Java SE and Java ME
 
