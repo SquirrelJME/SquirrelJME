@@ -45,7 +45,7 @@ public abstract class JVMConstantEntry
 	{
 		// Check
 		if (__icp == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		pool = __icp;
@@ -65,8 +65,8 @@ public abstract class JVMConstantEntry
 	{
 		if (__v > 0 && __v < pool.size())
 			return __v;
-		throw new JVMClassFormatError("Reference index " + __v +
-			"is not within with the constant pool bounds.");
+		throw new JVMClassFormatError(String.format("IN0d %d %d", __v,
+			pool.size()));
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public abstract class JVMConstantEntry
 			
 			// Check
 			if (__cl == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Set
 			castas = __cl;
@@ -156,7 +156,7 @@ public abstract class JVMConstantEntry
 			
 			// Check
 			if (__dis == null || __cl == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Set
 			castas = __cl;
@@ -212,7 +212,7 @@ public abstract class JVMConstantEntry
 			
 			// Check
 			if (__dis == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Get id
 			index = __rangeCheck(__dis.readUnsignedShort());
@@ -248,7 +248,7 @@ public abstract class JVMConstantEntry
 				// Bad symbol
 				catch (IllegalSymbolException ise)
 				{
-					throw new JVMClassFormatError(ise);
+					throw new JVMClassFormatError("IN0e", ise);
 				}
 			
 			// Return it
@@ -285,7 +285,7 @@ public abstract class JVMConstantEntry
 			
 			// Check
 			if (__dis == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Read the string index
 			index = __dis.readUnsignedShort();
@@ -434,7 +434,7 @@ public abstract class JVMConstantEntry
 			
 			// Check
 			if (__dis == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Read values
 			namedx = __rangeCheck(__dis.readUnsignedShort());
@@ -473,7 +473,7 @@ public abstract class JVMConstantEntry
 			
 			// Check
 			if (__dis == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Read
 			try
@@ -484,7 +484,7 @@ public abstract class JVMConstantEntry
 			// Malformed sequence
 			catch (UTFDataFormatException utfdfe)
 			{
-				throw new JVMClassFormatError(utfdfe);
+				throw new JVMClassFormatError("IN0f", utfdfe);
 			}
 		}
 		

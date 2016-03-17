@@ -66,20 +66,20 @@ public abstract class JVMEngine
 	 *
 	 * @param __icp The class path to add.
 	 * @return {@code this}.
-	 * @throws MismatchedEngineException If another engine owns this.
+	 * @throws IllegalArgumentExcepton If another engine owns this.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/05
 	 */
 	protected final JVMEngine addClassPath(JVMClassPath __icp)
-		throws MismatchedEngineException, NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__icp == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Differing owner?
 		if (__icp.engine() != this)
-			throw new MismatchedEngineException();
+			throw new IllegalArgumentException("IN0k");
 		
 		// Lock on the class paths
 		synchronized (classpaths)
@@ -108,7 +108,7 @@ public abstract class JVMEngine
 	{
 		// Check
 		if (__meth == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
 	}
@@ -147,7 +147,7 @@ public abstract class JVMEngine
 	{
 		// Check
 		if (__bn == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Requesting an array class?
 		int dims;
@@ -163,8 +163,8 @@ public abstract class JVMEngine
 			// The name cannot contain /, ;, or [
 			if (__bn.indexOf('/') >= 0 || __bn.indexOf(';') >= 0 ||
 				__bn.indexOf('[') >= 0)
-				throw new IllegalArgumentException("The class '" + __bn +
-					"' is not a valid class name.");
+				throw new IllegalArgumentException(String.format("IN0l %s",
+					__bn));
 		}
 		
 		// Lock on the class map
@@ -202,7 +202,7 @@ public abstract class JVMEngine
 	{
 		// Check
 		if (__strings == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
 	}
@@ -213,16 +213,18 @@ public abstract class JVMEngine
 	 *
 	 * @param __bn The binary name of the array type.
 	 * @param __dims The number of dimensions in the array.
-	 * @throws IllegalArrayDimensionsException
+	 * @throws JVMEngineException If the number of dimensions is not legal.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/05
 	 */
 	private final JVMClass __internalLoadArray(String __bn, int __dims)
-		throws IllegalArrayDimensionsException, NullPointerException
+		throws JVMEngineException, NullPointerException
 	{
 		// Check
 		if (__bn == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		if (__dims <= 0 || __dims >= MAX_ARRAY_DIMENSIONS)
-			throw new IllegalArrayDimensionsException(__dims);
+			throw new JVMEngineException(String.format("IN0m %d", __dims));
 		
 		throw new Error("TODO");
 	}
@@ -241,7 +243,7 @@ public abstract class JVMEngine
 	{
 		// Check
 		if (__bn == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Array?
 		if (__dims != 0)
@@ -265,9 +267,8 @@ public abstract class JVMEngine
 					// Wrong class? Ignore it
 					String xn;
 					if (!__bn.equals((xn = rv.getClassLoaderName())))
-						throw new JVMClassFormatError(
-							"Expected class '" + __bn +
-							"' however '" + xn + "' was read.");
+						throw new JVMClassFormatError(String.format(
+							"IN0n %s %s", __bn, xn));
 					
 					// Return it
 					return rv;
@@ -276,8 +277,8 @@ public abstract class JVMEngine
 				// Failed to load class, ignore
 				catch (IOException e)
 				{
-					throw new JVMClassFormatError("Read error.",
-						e);
+					throw new JVMClassFormatError(String.format("IN0o %s",
+						__bn), e);
 				}
 		}
 		

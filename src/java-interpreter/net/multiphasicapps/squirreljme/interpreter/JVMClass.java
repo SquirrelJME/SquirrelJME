@@ -40,7 +40,7 @@ public abstract class JVMClass
 	{
 		// Check
 		if (__eng == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		engine = __eng;
@@ -132,7 +132,7 @@ public abstract class JVMClass
 	{
 		// Check
 		if (__name == null || __desc == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
 	}
@@ -148,7 +148,7 @@ public abstract class JVMClass
 	{
 		// Check
 		if (__jcf == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		return flags().contains(__jcf);
 	}

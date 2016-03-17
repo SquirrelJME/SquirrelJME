@@ -146,6 +146,57 @@ These codes do not have a index meaning and are meant to be short.
    * The number of bytes which were requested.
    * The actual number of bytes in the window.
 
+# `net.multiphasicapps.squirreljme.interpreter`
+
+ * `IN01` -- The class magic number is not valid.
+   * The read magic number.
+   * The number it is supposed to be.
+ * `IN02` -- The class file is too new.
+   * The class version.
+   * The highest version it can be.
+ * `IN03` -- Interfaces must be abstract.
+ * `IN04` -- Interfaces cannot be super, final, or enums.
+ * `IN05` -- Non-interface must not be an annotation.
+ * `IN06` -- A class cannot be both final and abstract.
+ * `IN07` -- A class which is not `java.lang.Object` has no superclass.
+   * The current class.
+ * `IN08` -- Expected the end of stream while reading the class file, however
+   more data is available.
+ * `IN09` -- While skipping class attributes, the end of the stream was
+   reached.
+ * `IN0a` -- Extra illegal flags are specified in the flag mask.
+   * The input flags.
+   * The flags which were not handled.
+ * `IN0b` -- Flag mask does not contain a single bit.
+   * The flag mask.
+ * `IN0c` -- The property of a class version is not defined.
+ * `IN0d` -- A reference to a constant pool entry is not within bounds when
+   being referred to by another constant.
+   * The referenced pool entry.
+   * The number of elements in the constant pool.
+ * `IN0e` -- The class name is not a valid symbol.
+ * `IN0f` -- The UTF-8 constant entry in the constant pool of the class is not
+   in the correct format.
+ * `IN0g` -- The constant pool is empty.
+ * `IN0h` -- `invokedynamic` is not supported.
+ * `IN0i` -- The given constant pool tag is not valid.
+   * The constant pool tag.
+ * `IN0j` -- The entry at the given position in the constant pool was not of
+   the expected class.
+   * The index.
+   * The expected class.
+ * `IN0k` -- A mismatched engine was specified.
+ * `IN0l` -- Expected a class by a name which is not legal.
+   * The class which has an illegal name which was requested.
+ * `IN0m` -- Requested an array with an illegal number of dimensions.
+   * The requested array dimension count.
+ * `IN0n` -- Read a class which has a different name than the one which was
+   requested.
+   * The expected class name to be loading.
+   * The name of the class which was actually read.
+ * `IN0o` -- Could not read the class.
+   * The class attempted to be read.
+
 # `net.multiphasicapps.squirreljme.interpreter.local`
 
  * `LI01` -- No bootstrap classpaths were specified.

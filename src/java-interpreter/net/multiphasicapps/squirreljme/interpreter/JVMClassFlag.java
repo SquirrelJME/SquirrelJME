@@ -69,7 +69,7 @@ public enum JVMClassFlag
 	{
 		// Check
 		if (Integer.bitCount(__m) != 1)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("IN0b %d", __m));
 		
 		// Set
 		mask = __m;

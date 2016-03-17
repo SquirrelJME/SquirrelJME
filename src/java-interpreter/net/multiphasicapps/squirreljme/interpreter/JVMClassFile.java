@@ -80,8 +80,8 @@ public class JVMClassFile
 		// Check the magic number
 		int clmagic;
 		if (MAGIC_NUMBER != (clmagic = das.readInt()))
-			throw new JVMClassFormatError(String.format("Expected " +
-				"magic number %08x, not %08x", MAGIC_NUMBER, clmagic));
+			throw new JVMClassFormatError(String.format("IN01 %08x %08x",
+				clmagic, MAGIC_NUMBER));
 		
 		// Read the class version number, this modifies if certain
 		// instructions are handled and how they are verified (StackMap vs
@@ -89,9 +89,8 @@ public class JVMClassFile
 		version = JVMClassVersion.findVersion(
 			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
 		if (version.compareTo(JVMClassVersion.MAX_VERSION) > 0)
-			throw new JVMClassVersionError(String.format("Class " +
-				"version " + version + " is newer than " +
-				JVMClassVersion.MAX_VERSION + "."));
+			throw new JVMClassVersionError(String.format("IN02 %s %s",
+				 version, JVMClassVersion.MAX_VERSION));
 		
 		// Initialize the constant pool
 		constantpool = new JVMConstantPool(this, das);
@@ -103,20 +102,25 @@ public class JVMClassFile
 		// Interface?
 		if (isInterface())
 		{
-			// Must be abstract, cannot have some flags set
-			if ((!isAbstract()) ||
-				(isFinal() || isSpecialInvokeSpecial() || isEnum()))
-				throw new JVMClassFormatError(flags.toString());
+			// Must be abstract
+			if (!isAbstract())
+				throw new JVMClassFormatError("IN03");
+			
+			// cannot have some flags set
+			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
+				throw new JVMClassFormatError("IN04");
 		}
 		
 		// Normal class
 		else
 		{
 			// Cannot be an annotation
+			if (isAnnotation())
+				throw new JVMClassFormatError("IN05");
+				
 			// Cannot be abstract and final
-			if (isAnnotation() ||
-				(isAbstract() && isFinal()))
-				throw new JVMClassFormatError(flags.toString());
+			if (isAbstract() && isFinal())
+				throw new JVMClassFormatError("IN06");
 		}
 		
 		// Read the class name data, fields, and methods
@@ -133,8 +137,8 @@ public class JVMClassFile
 			
 			// Object never has a super class, however all other objects do
 			if ((sid != 0 && isobj) || (sid == 0 && !isobj))
-				throw new JVMClassFormatError("'" + thisname + "' has no " +
-					"superclass.");
+				throw new JVMClassFormatError(String.format("IN07 %s",
+					thisname));
 			
 			// Lacks one
 			else if (sid == 0)
@@ -176,8 +180,7 @@ public class JVMClassFile
 				int alen = das.readUnsignedShort();
 				for (int w = 0; w < alen; w++)
 					if (das.read() < 0)
-						throw new EOFException("EOF reached while skipping " +
-							"annotation.");
+						throw new EOFException("IN09");
 			}
 		}
 		
@@ -189,7 +192,7 @@ public class JVMClassFile
 		
 		// If this is not EOF, then the class has extra junk following it
 		if (das.read() >= 0)
-			throw new JVMClassFormatError("Junk following class data.");
+			throw new JVMClassFormatError("IN08");
 	}
 	
 	/**
@@ -293,8 +296,8 @@ public class JVMClassFile
 		
 		// If non-zero then extra illegal flags remain
 		if (rem != 0)
-			throw new JVMClassFormatError("Extra flags " +
-				Integer.toHexString(rem) + ".");
+			throw new JVMClassFormatError(String.format("IN0a %x %x", __in,
+				rem));
 		
 		// Lock it in
 		return MissingCollections.<B>unmodifiableSet(rv);

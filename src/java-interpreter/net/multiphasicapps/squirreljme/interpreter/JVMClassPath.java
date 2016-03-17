@@ -36,7 +36,7 @@ public abstract class JVMClassPath
 	{
 		// Check
 		if (__eng == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		engine = __eng;

@@ -88,7 +88,7 @@ public enum JVMClassVersion
 		throws IllegalStateException
 	{
 		if (undefined)
-			throw new IllegalStateException();
+			throw new IllegalStateException("IN0c");
 		return hasfloat;
 	}
 	
@@ -105,7 +105,7 @@ public enum JVMClassVersion
 		throws IllegalStateException
 	{
 		if (undefined)
-			throw new IllegalStateException();
+			throw new IllegalStateException("IN0c");
 		return hasinvokedynamic;
 	}
 	

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import java.util.Objects;
 
 /**
  * This represents the constant pool which exists within a class.
@@ -110,7 +111,7 @@ public class JVMConstantPool
 	{
 		// Check
 		if (__cl == null || __is == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		owner = __cl;
@@ -118,7 +119,7 @@ public class JVMConstantPool
 		// Read entry count, a class cannot have zero entries in it
 		numentries = __is.readUnsignedShort();
 		if (numentries <= 0)
-			throw new JVMClassFormatError("Empty constant pool.");
+			throw new JVMClassFormatError("IN0g");
 		
 		// Read them all
 		JVMConstantEntry[] ents;
@@ -174,8 +175,8 @@ public class JVMConstantPool
 				case TAG_INVOKEDYNAMIC:
 					if (!SUPPORT_INVOKEDYNAMIC_ANYWAY &&
 						!owner.version().hasInvokeDynamic())
-						throw new NoInvokeDynamicException();
-					throw new NoInvokeDynamicException();
+						throw new JVMClassFormatError("IN0h");
+					throw new JVMClassFormatError("TODO");
 					
 					// Unknown
 				case TAG_INTEGER:
@@ -183,8 +184,7 @@ public class JVMConstantPool
 				case TAG_LONG:
 				case TAG_DOUBLE:
 				default:
-					throw new JVMClassFormatError("Unsupported " +
-						"constant pool tag " + tag + ".");
+					throw new JVMClassFormatError(String.format("IN0i", tag));
 			}
 			
 			// Set
@@ -217,18 +217,19 @@ public class JVMConstantPool
 	{
 		// Check
 		if (__cl == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Cast it
 		try
 		{
-			return __cl.cast(get(__i));
+			return __cl.cast(Objects.requireNonNull(get(__i)));
 		}
 		
 		// Could not cast
-		catch (ClassCastException cce)
+		catch (ClassCastException|NullPointerException e)
 		{
-			throw new JVMClassFormatError(cce);
+			throw new JVMClassFormatError(String.format("IN0j %d %s", __i,
+				__cl), e);
 		}
 	}
 	
