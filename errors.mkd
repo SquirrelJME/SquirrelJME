@@ -42,6 +42,11 @@ These codes do not have a index meaning and are meant to be short.
  * `XC03` -- Expected a zero or a one.
    * The input value.
 
+# `net.multiphasicapps.hairball`
+
+ * `HB01` -- A package has an illegal manifest.
+   * The manifest which is not legal.
+
 # `net.multiphasicapps.io`
 
  * `XI01` -- Adding a value to the bit compactor has a value which sets bits

@@ -54,7 +54,7 @@ public class PackageList
 	{
 		// Check
 		if (__out == null || __src == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		outdir = __out;

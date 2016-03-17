@@ -62,7 +62,7 @@ public class PackageInfo
 	{
 		// Check
 		if (__outdir == null || __p == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		root = __p;
@@ -123,7 +123,7 @@ public class PackageInfo
 					// Bad manifest format
 					catch (NoSuchElementException nsee)
 					{
-						throw new IOException("Malformed manifest file.",
+						throw new IOException(String.format("HB01 %s", mfp),
 							nsee);
 					}
 				}
@@ -240,7 +240,7 @@ public class PackageInfo
 	{
 		// Check
 		if (__in == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Output
 		StringBuilder sb = new StringBuilder();
