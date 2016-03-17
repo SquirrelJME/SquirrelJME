@@ -10,15 +10,15 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
-import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
 
 /**
- * This represents an interpreted method within a class.
+ * This represents a field which is defined in a class.
  *
- * @since 2016/03/01
+ * @since 2016/03/17
  */
-public class JVMMethod
-	extends JVMMember<MethodSymbol>
+public class JVMField
+	extends JVMMember<FieldSymbol>
 {
 	/**
 	 * Initializes the interpreted method.
@@ -27,32 +27,10 @@ public class JVMMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	JVMMethod(JVMClass __owner)
+	JVMField(JVMClass __owner)
 		throws NullPointerException
 	{
-		super(__owner, MethodSymbol.class);
-	}
-	
-	/**
-	 * Is this method public?
-	 *
-	 * @return {@code true} if this method is public.
-	 * @since 2016/03/01
-	 */
-	public boolean isPublic()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Is this method static?
-	 *
-	 * @return {@code true} if this method is static.
-	 * @since 2016/03/01
-	 */
-	public boolean isStatic()
-	{
-		throw new Error("TODO");
+		super(__owner, FieldSymbol.class);
 	}
 }
 
