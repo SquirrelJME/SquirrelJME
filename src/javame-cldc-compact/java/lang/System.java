@@ -27,8 +27,7 @@ public final class System
 	
 	private System()
 	{
-		super();
-		throw new Error("TODO");
+		throw new Error();
 	}
 	
 	public static void arraycopy(Object __a, int __b, Object __c, int __d,
