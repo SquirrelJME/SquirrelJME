@@ -136,6 +136,16 @@ then reference it later, it may be reset to its default value. This is more
 likely to happen on lower memory systems where the garbage collector will act
 more aggressively.
 
+## Use Error Codes
+
+Error codes are located in [errors.mkd](errors.mkd).
+
+Although descriptive details of why an exception is thrown is a nice thing, it
+can waste much space on the static constant data and some extra time building
+the messages. In general cases, exceptions that require detailed messages
+might not always occur while in the case where they are needed the details
+are important.
+
 # Style Requirements
 
 ## Always Surround Ternary Operators With Parenthesis
