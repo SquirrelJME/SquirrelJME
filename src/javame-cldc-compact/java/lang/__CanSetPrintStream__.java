@@ -47,7 +47,7 @@ final class __CanSetPrintStream__
 		
 		// Check
 		if (__def == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		_target = __def;
@@ -471,7 +471,7 @@ final class __CanSetPrintStream__
 	{
 		// Check
 		if (__ps == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Lock
 		synchronized (lock)

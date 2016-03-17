@@ -82,7 +82,7 @@ public final class System
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
 	}
@@ -109,7 +109,7 @@ public final class System
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
 		getSecurityManager().checkPermission(new RuntimePermission("setIO"));
@@ -135,7 +135,7 @@ public final class System
 	{
 		// Check
 		if (__a == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
 		getSecurityManager().checkPermission(new RuntimePermission("setIO"));

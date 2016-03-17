@@ -46,7 +46,7 @@ public class TestChecker
 	{
 		// Check
 		if (__tc == null || __ti == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		caller = __tc;
@@ -101,7 +101,7 @@ public class TestChecker
 	{
 		// Check
 		if (__name == null || __t == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Get the output stream
 		PrintStream ps = caller.printStream();
@@ -175,7 +175,7 @@ public class TestChecker
 	{
 		// Check
 		if (__ps == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Null is always null
 		if (__v == null)
@@ -251,7 +251,7 @@ public class TestChecker
 	{
 		// Check
 		if (__name == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Get the output stream
 		PrintStream ps = caller.printStream();

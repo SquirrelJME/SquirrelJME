@@ -44,7 +44,7 @@ public class TestCaller
 	{
 		// Check
 		if (__ps == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		output = __ps;
