@@ -63,6 +63,14 @@ public abstract class JVMClass
 	public abstract Set<JVMClassFlag> flags();
 	
 	/**
+	 * Returns the name of interfaces this implements.
+	 *
+	 * @return The set of interface names.
+	 * @since 2016/03/16
+	 */
+	public abstract Set<ClassNameSymbol> interfaceNames();
+	
+	/**
 	 * Returns the name of the super class.
 	 *
 	 * @return The super class name.

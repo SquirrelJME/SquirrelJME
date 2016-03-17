@@ -53,6 +53,9 @@ public class JVMClassFile
 	/** The super class name. */
 	protected final ClassNameSymbol supername;
 	
+	/** Interfaces. */
+	protected final Set<ClassNameSymbol> interfacenames;
+	
 	/**
 	 * Initializes the class data.
 	 *
@@ -143,6 +146,16 @@ public class JVMClassFile
 			else
 				supername = constantpool.<JVMConstantEntry.ClassName>getAs(
 					sid, JVMConstantEntry.ClassName.class).symbol();
+			
+			// Interfaces
+			int numi = das.readUnsignedShort();
+			Set<ClassNameSymbol> it = new LinkedHashSet<>();
+			for (int i = 0; i < numi; i++)
+				it.add(constantpool.<JVMConstantEntry.ClassName>getAs(
+					das.readUnsignedShort(), JVMConstantEntry.ClassName.class).
+					symbol());
+			interfacenames = MissingCollections.<ClassNameSymbol>
+				unmodifiableSet(it);
 		}
 		
 		// Bad index somewhere
@@ -172,6 +185,16 @@ public class JVMClassFile
 	public Set<JVMClassFlag> flags()
 	{
 		return flags;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/16
+	 */
+	@Override
+	public Set<ClassNameSymbol> interfaceNames()
+	{
+		return interfacenames;
 	}
 	
 	/**
