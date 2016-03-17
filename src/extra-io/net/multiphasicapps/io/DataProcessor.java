@@ -184,7 +184,7 @@ public abstract class DataProcessor
 		{
 			// Cannot offer if finished
 			if (_isfinished)
-				throw new IllegalStateException();
+				throw new IllegalStateException("XI0c");
 			
 			// Add byte to the input
 			input.offerLast(__b);
@@ -231,9 +231,9 @@ public abstract class DataProcessor
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (lock)
@@ -263,7 +263,7 @@ public abstract class DataProcessor
 		{
 			// Previous read threw an exception
 			if (_threwioe)
-				throw new IOException();
+				throw new IOException("XI0d");
 			
 			// Read until failure or a value is returned
 			for (boolean fail = false;;)
@@ -347,9 +347,9 @@ public abstract class DataProcessor
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (lock)
@@ -386,6 +386,25 @@ public abstract class DataProcessor
 	public static final class WaitingException
 		extends RuntimeException
 	{
+		/**
+		 * Initializes the waiting exception with no message.
+		 *
+		 * @since 2016/03/17
+		 */
+		public WaitingException()
+		{
+		}
+		
+		/**
+		 * Initializes the waiting exception with the given message.
+		 *
+		 * @param __m The message to use.
+		 * @since 2016/03/17
+		 */
+		public WaitingException(String __m)
+		{
+			super(__m);
+		}
 	}
 }
 

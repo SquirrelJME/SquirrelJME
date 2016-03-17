@@ -16,6 +16,7 @@ The layout is as follows:
 These codes do not have a index meaning and are meant to be short.
 
  * `BAOB` -- Byte array values out of bounds.
+ * `FEOF` -- End of file reached.
  * `IOOB` -- Index out of bounds.
  * `NARG` -- Null arguments passed to method. This is specified and is used
    to differentiate from `NullPointerException` which might not appear in
@@ -40,6 +41,90 @@ These codes do not have a index meaning and are meant to be short.
    * The mask being used.
  * `XC03` -- Expected a zero or a one.
    * The input value.
+
+# `net.multiphasicapps.io`
+
+ * `XI01` -- Adding a value to the bit compactor has a value which sets bits
+   which were not specified in the mask.
+   * The input value.
+   * The mask being used.
+ * `XI02` -- Adding a value to the bit compactor has a mask which does not
+   start at shift zero and has a zero gap (`0b1111011` is not a valid mask).
+   * The input value.
+   * The mask being used.
+ * `XI03` -- End of file reached reading input bytes for input bits.
+ * `XI04` -- Reading of a value with a negative number of bits or one that
+   exceeds the size of a 32-bit integer.
+   * The number of bits requested for read.
+ * `XI05` -- Reading of a value with a negative number of bits or one that
+   exceeds the size of a 64-bit integer.
+   * The number of bits requested for read.
+ * `XI06` -- Adding a value to the bit circular buffer has a value which sets
+   bits which were not specified in the mask.
+   * The input value.
+   * The mask being used.
+ * `XI07` -- Adding a value to the bit circular buffer has a mask which does
+   not start at shift zero and has a zero gap (`0b1111011` is not a valid
+   mask).
+   * The input value.
+   * The mask being used.
+ * `XI08` -- Not enough bits are available to read a value of a given bit
+   size.
+   * The number of requested bits (the higher value).
+   * The number bits actually available (the lower value).
+ * `XI09` -- Cannot increase the circular buffer queue size because it would
+   overflow an integer (negative array sizes are illegal).
+   * The current size of the queue.
+ * `XI0a` -- The default circular buffer size was changed and it is not a power
+   of two.
+   * The specified default size.
+ * `XI0b` -- Nothing is in the queue for reading.
+ * `XI0c` -- Cannot add more bytes to the processor because it is currently in
+   a finished state (there is no more input data).
+ * `XI0d` -- Cannot remove a byte from the processor because it had previously
+   failed.
+ * `XI0e` -- The inflater is waiting for more data to be input before it will
+   continue.
+ * `XI0f` -- An unknown task was attempted to be executed by the inflater,
+   which means there is an internal state failure.
+ * `XI0g` -- Not enough bits were read by the inflater when there should have
+   been bits.
+ * `XI0h` -- A code length index (for swapping) is out of range of the maximum
+   size that the code length table would be.
+ * `XI0i` -- Normal inflater waiting for continue, this is not an error.
+ * `XI0j` -- The inflater could not read from the byte window.
+   * The distance into the past to start reading from.
+   * The number of bytes to read.
+ * `XI0k` -- Could not handle a deflation code because it is not valid.
+   * The code attempted to be handled.
+ * `XI0l` -- Illegal length code in inflate length sequence.
+   * The length code which was read.
+ * `XI0m` -- The dynamic huffman table contains too many code lengths.
+   * The number of code lengths specified in the table.
+ * `XI0n` -- Read the illegal header sequence from the deflate stream.
+ * `XI0o` -- The compression length and its complement do not complement each
+   other.
+   * The length.
+   * The complement of the length.
+ * `XI0p` -- Cannot limit a stream to a negative number of bytes.
+   * The negative length.
+ * `XI0q` -- Expected to least a specific number of bytes in the input stream,
+   however only an amount lower than that were actually read.
+   * The minimum number of bytes to read.
+   * The number of actual bytes in the stream.
+ * `XI0r` -- The default sliding window size was changed and is no longer a
+   power of two.
+   * The non-power of two value.
+ * `XI0s` -- The input sliding window size is negative or is not a power of
+   two.
+   * The non-power of two or negative value.
+ * `XI0t` -- The calculated sliding window fragment size is not a poer of two.
+   * The non-power of two value.
+ * `XI0u` -- Cannot read from the sliding window because the read would
+   exceed a bound of the sliding window.
+   * The distance back to start from.
+   * The number of bytes which were requested.
+   * The actual number of bytes in the window.
 
 # `net.multiphasicapps.squirreljme.zips`
 

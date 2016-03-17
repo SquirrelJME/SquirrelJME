@@ -49,7 +49,7 @@ public class DeflateFixedHuffman
 	{
 		// Check
 		if (__in == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// The long if statement block
 		if (__in.read())
@@ -99,7 +99,7 @@ public class DeflateFixedHuffman
 	{
 		// Check
 		if (__in == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// The long if statement block
 		if (__in.removeFirstPrimitive())

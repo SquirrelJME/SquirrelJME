@@ -70,9 +70,9 @@ public class SizeLimitedInputStream
 	{
 		// Check
 		if (__is == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		if (__li < 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI0p %d", __li));
 		
 		// Set
 		wrapped = __is;
@@ -139,8 +139,8 @@ public class SizeLimitedInputStream
 			{
 				// No short read?
 				if (exact && cur != limit)
-					throw new IOException("Expected " + limit + " bytes, " +
-						"however only " + cur + " were read.");
+					throw new IOException(String.format("XI0q %d %d",
+						limit, cur));
 				
 				// Return original negative
 				return next;

@@ -52,7 +52,7 @@ public class DataProcessorInputStream
 	{
 		// Check
 		if (__in == null || __dp == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		in = __in;
@@ -91,7 +91,7 @@ public class DataProcessorInputStream
 		{
 			// Failed so just stop
 			if (_threwexception)
-				throw new IOException();
+				throw new IOException("XI0d");
 			
 			// If closed then read nothing
 			if (_closed)

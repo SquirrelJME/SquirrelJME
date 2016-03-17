@@ -363,7 +363,7 @@ public class HuffmanTree<T>
 			// Must be zero or one
 			if (__s != 0 && __s != 1)
 				throw new IllegalArgumentException(
-					String.format("XC03 %d", __n));
+					String.format("XC03 %d", __s));
 			
 			// Get node on this side
 			Node n = get(__s);
@@ -401,7 +401,7 @@ public class HuffmanTree<T>
 			// Must be zero or one
 			if (__s != 0 && __s != 1)
 				throw new IllegalArgumentException(
-					String.format("XC03 %d", __n));
+					String.format("XC03 %d", __s));
 			
 			// Get node on this side
 			Node n = get(__s);

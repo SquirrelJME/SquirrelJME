@@ -138,7 +138,7 @@ public class InflateDataProcessor
 		{
 			// Require more available bytes if not finished
 			if (!isFinished() && inputbits.available() < REQUIRED_BITS)
-				throw new WaitingException();
+				throw new WaitingException("XI0e");
 		
 			// Perform work
 			try
@@ -189,14 +189,15 @@ public class InflateDataProcessor
 						
 						// Unknown
 					default:
-						throw new IOException(_task.name());
+						throw new IOException(String.format("XI0f",
+							_task.name()));
 				}
 			}
 		
 			// Short read
 			catch (NoSuchElementException nsee)
 			{
-				throw new IOException(nsee);
+				throw new IOException("XI0g", nsee);
 			}
 		}
 	}
@@ -218,7 +219,7 @@ public class InflateDataProcessor
 	{
 		// Check
 		if (__c < 0 || __c >= 19)
-			throw new InflaterException.AlphaShiftOutOfRange();
+			throw new InflaterException(String.format("XI0h %d", __c));
 		
 		// If not set, nothing is returned
 		if (!__val)
@@ -242,7 +243,7 @@ public class InflateDataProcessor
 	{
 		// Check
 		if (__c < 0 || __c >= 19)
-			throw new InflaterException.AlphaShiftOutOfRange();
+			throw new InflaterException(String.format("XI0h %d", __c));
 		
 		// Depends on the input value
 		switch (__c)
@@ -270,7 +271,7 @@ public class InflateDataProcessor
 				
 				// Unknown
 			default:
-				throw new InflaterException.AlphaShiftOutOfRange();
+				throw new InflaterException("WTFX");
 		}
 	}
 	
@@ -298,7 +299,7 @@ public class InflateDataProcessor
 		{
 			System.err.println("DEBUG -- STOPPED");
 			_task = __Task__.READ_HEADER;
-			throw new WaitingException();
+			throw new WaitingException("XI0i");
 		}
 		
 		// Window based result
@@ -322,7 +323,8 @@ public class InflateDataProcessor
 			// Bad window read
 			catch (IndexOutOfBoundsException ioobe)
 			{
-				throw new InflaterException(ioobe);
+				throw new InflaterException(String.format(
+					"XI0j %d %d", dist, lent), ioobe);
 			}
 			
 			// Add those bytes to the output
@@ -332,7 +334,7 @@ public class InflateDataProcessor
 		
 		// Error
 		else
-			throw new InflaterException.IllegalSequence();
+			throw new InflaterException(String.format("XI0k %d", __c));
 	}
 	
 	/**
@@ -388,7 +390,7 @@ public class InflateDataProcessor
 		
 		// Error if above 29
 		if (code > 29)
-			throw new InflaterException.IllegalSequence();
+			throw new InflaterException(String.format("XI0l %d", code));
 		
 		// Calculate the required length to use
 		int rv = 0;
@@ -458,7 +460,7 @@ public class InflateDataProcessor
 			
 			// Not enough bits to read code lengths
 			if (!isFinished() && inputbits.available() < 3)
-				throw new WaitingException();
+				throw new WaitingException("XI0i");
 			
 			// Read three bits
 			cll[__alphaSwap(next)] = inputbits.removeFirstInt(3);
@@ -530,7 +532,7 @@ public class InflateDataProcessor
 	{
 		// The header consists of 14 bits: HLIT (5), HDIST (5), HCLEN (4)
 		if (!isFinished() && inputbits.available() < 14)
-			throw new WaitingException();
+			throw new WaitingException("XI0i");
 		
 		// Read the bits
 		int cll;
@@ -544,7 +546,7 @@ public class InflateDataProcessor
 		
 		// Code lengths cannot be higher than 19
 		if (cll > 19)
-			throw new InflaterException.TooManyCodeLengths();
+			throw new InflaterException(String.format("XI0m %d", cll));
 		
 		// Initialize
 		_rawcodelens = null;
@@ -637,7 +639,7 @@ public class InflateDataProcessor
 				// Error or unknown
 			case TYPE_ERROR:
 			default:
-				throw new InflaterException.HeaderErrorTypeException();
+				throw new InflaterException("XI0n");
 		}
 		
 		// Continue
@@ -661,7 +663,7 @@ public class InflateDataProcessor
 		{
 			// Need four bytes of input, along with potential alignment bits
 			if (!isFinished() && inputbits.available() < 39)
-				throw new WaitingException();
+				throw new WaitingException("XI0i");
 			
 			// Align to byte boundary
 			while ((inputbits.headPosition() & 7) != 0)
@@ -678,7 +680,8 @@ public class InflateDataProcessor
 			// The complemented length must be equal to the complement
 			System.err.printf("DEBUG -- NL %04x %04x%n", len, com);
 			if ((len ^ 0xFFFF) != com)
-				throw new InflaterException.NoCompressLengthError();
+				throw new InflaterException(String.format("XI0o %x %x",
+					len, com));
 			
 			// Set it
 			_nocomplen = len;
@@ -690,7 +693,7 @@ public class InflateDataProcessor
 			{
 				// Need at least a byte of input
 				if (!isFinished() && inputbits.available() < 8)
-					throw new WaitingException();
+					throw new WaitingException("XI0i");
 				
 				// Read byte
 				int val = inputbits.removeFirstInt(8);

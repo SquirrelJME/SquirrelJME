@@ -56,7 +56,7 @@ public class BitInputStream
 	{
 		// Check
 		if (__w == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		wrapped = __w;
@@ -100,7 +100,7 @@ public class BitInputStream
 				
 				// EOF?
 				if (val < 0)
-					throw new EOFException();
+					throw new EOFException("XI03");
 				
 				// Set active byte
 				_byte = (byte)val;
@@ -179,7 +179,7 @@ public class BitInputStream
 	{
 		// Check
 		if (__c <= 0 || __c > 32)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI04 %d", __c));
 		
 		// Call other
 		return (int)readBits(__c, __msb);
@@ -207,7 +207,7 @@ public class BitInputStream
 	{
 		// Check
 		if (__c <= 0 || __c > 64)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI05 %d", __c));
 		
 		// Lock
 		synchronized (lock)

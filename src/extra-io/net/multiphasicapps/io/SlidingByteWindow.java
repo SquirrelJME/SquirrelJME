@@ -61,7 +61,8 @@ public class SlidingByteWindow
 	{
 		// Must be a power of two
 		if (Integer.bitCount(DEFAULT_FRAGMENT_SIZE) != 1)
-			throw new RuntimeException();
+			throw new RuntimeException(String.format("XI0r %d",
+				DEFAULT_FRAGMENT_SIZE));
 	}
 	
 	/**
@@ -77,7 +78,8 @@ public class SlidingByteWindow
 	{
 		// Check
 		if (__wsz <= 0 || Integer.bitCount(__wsz) != 1)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI0s %d",
+				__wsz));
 		
 		// Set
 		windowsize = __wsz;
@@ -89,7 +91,7 @@ public class SlidingByteWindow
 		
 		// Not power of two? fail
 		if (Integer.bitCount(fragmentsize) != 1)
-			throw new RuntimeException();
+			throw new RuntimeException(String.format("XI0t %d", fragmentsize));
 		
 		// Start in the active fragment
 		_fragments = new byte[0][];
@@ -184,7 +186,7 @@ public class SlidingByteWindow
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Lock to make semi-atomic
 		synchronized (lock)
@@ -217,9 +219,9 @@ public class SlidingByteWindow
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < __o || (__o + __l > __b.length))
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (lock)
@@ -256,9 +258,9 @@ public class SlidingByteWindow
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < __o || (__o + __l > __b.length))
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("BAOB");
 		
 		// Lock
 		synchronized (lock)
@@ -266,7 +268,8 @@ public class SlidingByteWindow
 			// Cannot exceed the viewable window area
 			if (__ago <= 0 || (__ago - __l) < 0 || __ago > windowsize ||
 				__ago > ((fragmentsize * _fragments.length) + _total))
-				throw new IndexOutOfBoundsException();
+				throw new IndexOutOfBoundsException(String.format(
+					"XI0u %d %d %d", __ago, __l, _total));
 			
 			// Write into the buffer
 			for (int i = 0; i < __l; i++)

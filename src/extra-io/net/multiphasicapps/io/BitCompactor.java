@@ -43,7 +43,7 @@ public class BitCompactor
 	{
 		// Check
 		if (__cb == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		callback = __cb;
@@ -108,7 +108,7 @@ public class BitCompactor
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Lock
 		synchronized (lock)
@@ -162,10 +162,12 @@ public class BitCompactor
 		
 		// Check to make sure the input is valid
 		if ((__val & (~__mask)) != 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI01 %x %x",
+				__val, __mask));
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
 			(__mask & 1) == 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI02 %x %x",
+				__val, __mask));
 		
 		// Lock
 		synchronized (lock)

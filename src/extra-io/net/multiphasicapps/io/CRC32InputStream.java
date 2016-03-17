@@ -97,7 +97,7 @@ public class CRC32InputStream
 	{
 		// Check
 		if (__w == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		wrapped = __w;

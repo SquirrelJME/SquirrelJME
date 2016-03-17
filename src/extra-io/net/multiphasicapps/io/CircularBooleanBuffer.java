@@ -158,10 +158,12 @@ public class CircularBooleanBuffer
 		
 		// Check to make sure the input is valid
 		if ((__val & (~__mask)) != 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI06 %x %x",
+				__val, __mask));
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
 			(__mask & 1) == 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI07 %x %x",
+				__val, __mask));
 		
 		// Lock
 		synchronized (lock)
@@ -207,14 +209,16 @@ public class CircularBooleanBuffer
 	{
 		// Check
 		if (__c <= 0 || __c > 32)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("XI04 %d", __c));
 		
 		// Lock
 		synchronized (lock)
 		{
 			// Not enough bits
-			if (available() < __c)
-				throw new NoSuchElementException();
+			int av;
+			if ((av = available()) < __c)
+				throw new NoSuchElementException(
+					String.format("XI08 %d %d", __c, av));
 			
 			// Return value
 			int rv = 0;

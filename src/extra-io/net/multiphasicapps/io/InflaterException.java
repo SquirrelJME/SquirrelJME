@@ -31,6 +31,29 @@ public class InflaterException
 	}
 	
 	/**
+	 * Initializes the exception with the given message.
+	 *
+	 * @param __m The message to use.
+	 * @since 2016/03/12
+	 */
+	public InflaterException(String __m)
+	{
+		super(__m);
+	}
+	
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message to use.
+	 * @param __t The cause of this exception.
+	 * @since 2016/03/17
+	 */
+	public InflaterException(String __m, Throwable __t)
+	{
+		super(__m, __t);
+	}
+	
+	/**
 	 * Initializes the exception with the given cause.
 	 *
 	 * @param __t The cause of this exception.
@@ -39,69 +62,6 @@ public class InflaterException
 	public InflaterException(Throwable __t)
 	{
 		super(__t);
-	}
-	
-	/**
-	 * This is thrown when the dynamic huffman alphabet mixing shift is out
-	 * of range.
-	 *
-	 * @since 2016/03/13
-	 */
-	public static class AlphaShiftOutOfRange
-		extends InflaterException
-	{
-	}
-	
-	/**
-	 * This is thrown when the header of the type error is read.
-	 *
-	 * @since 2016/03/10
-	 */
-	public static class HeaderErrorTypeException
-		extends InflaterException
-	{
-	}
-	
-	/**
-	 * This is thrown when a sequence of bits is not legal.
-	 *
-	 * @since 2016/03/10
-	 */
-	public static class IllegalSequence
-		extends InflaterException
-	{
-	}
-	
-	/**
-	 * Too many code lengths exist, there are more than 19 of them in the
-	 * dynamic huffman table.
-	 *
-	 * @since 2016/03/13
-	 */
-	public static class TooManyCodeLengths
-		extends InflaterException
-	{
-	}
-	
-	/**
-	 * This is thrown when the no compression type has an invalid length, one
-	 * where the complement does not match the normal value.
-	 *
-	 * @since 2016/03/12
-	 */
-	public static class NoCompressLengthError
-		extends InflaterException
-	{
-	}
-	
-	/**
-	 * This is thrown when there is no value for the given bits.
-	 *
-	 * @since 2016/03/10
-	 */
-	public static class NoValueForBits
-		extends InflaterException
-	{
 	}
 }
 

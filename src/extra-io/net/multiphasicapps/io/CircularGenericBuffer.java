@@ -49,7 +49,7 @@ public abstract class CircularGenericBuffer<T, E>
 	{
 		// Check power of two
 		if (Integer.bitCount(INITIAL_SIZE) != 1)
-			throw new RuntimeException();
+			throw new RuntimeException(String.format("XI0a %d", INITIAL_SIZE));
 	}
 	
 	/**
@@ -202,10 +202,10 @@ public abstract class CircularGenericBuffer<T, E>
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		int len = arrayLength(__b);
 		if (__o < 0 || __l < 0 || (__o + __l) > len)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (lock)
@@ -264,10 +264,10 @@ public abstract class CircularGenericBuffer<T, E>
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		int len = arrayLength(__b);
 		if (__o < 0 || __l < 0 || (__o + __l) > len)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (lock)
@@ -293,10 +293,10 @@ public abstract class CircularGenericBuffer<T, E>
 	{
 		synchronized (lock)
 		{
-			// If not buffer, then there is nothing to remove
+			// If there is no buffer, then there is nothing to remove
 			T buf = _buffer;
 			if (buf == null)
-				throw new NoSuchElementException();
+				throw new NoSuchElementException("XI0b");
 			
 			// Get head and tail position
 			int len = arrayLength(buf);
@@ -305,7 +305,7 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// If the head is at the tail, cannot get
 			if (head == tail)
-				throw new NoSuchElementException();
+				throw new NoSuchElementException("XI0b");
 			
 			// Get value here
 			E rv = arrayRead(buf, head);
@@ -336,10 +336,10 @@ public abstract class CircularGenericBuffer<T, E>
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		int len = arrayLength(__b);
 		if (__o < 0 || __l < 0 || (__o + __l) > len)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (lock)
@@ -382,7 +382,7 @@ public abstract class CircularGenericBuffer<T, E>
 			// If not buffer, then there is nothing to remove
 			T buf = _buffer;
 			if (buf == null)
-				throw new NoSuchElementException();
+				throw new NoSuchElementException("XI0b");
 			
 			// Get head and tail position
 			int len = arrayLength(buf);
@@ -391,7 +391,7 @@ public abstract class CircularGenericBuffer<T, E>
 			
 			// If the tail is at the head, cannot get
 			if (head == tail)
-				throw new NoSuchElementException();
+				throw new NoSuchElementException("XI0b");
 			
 			// Get value here
 			int from = (tail - 1) & (len - 1);
@@ -423,10 +423,10 @@ public abstract class CircularGenericBuffer<T, E>
 	{
 		// Check
 		if (__b == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		int len = arrayLength(__b);
 		if (__o < 0 || __l < 0 || (__o + __l) > len)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (lock)
@@ -507,7 +507,8 @@ public abstract class CircularGenericBuffer<T, E>
 			// The queue has just collected a large number
 			// of bytes which were never collected.
 			if (olen >= 0x4000_0000)
-				throw new IllegalStateException();
+				throw new IllegalStateException(
+					String.format("XI09 %d", olen));
 			
 			// Calculate the new length
 			int nlen = olen << 1;
