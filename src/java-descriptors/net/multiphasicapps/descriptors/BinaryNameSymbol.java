@@ -73,7 +73,8 @@ public final class BinaryNameSymbol
 				case '.':
 				case ';':
 				case '[':
-					throw new IllegalSymbolException(toString());
+					throw new IllegalSymbolException(String.format(
+						"DS02 %s %d %c", this, i, charAt(i)));
 					
 					// Count slashes
 				case '/':
@@ -184,7 +185,8 @@ public final class BinaryNameSymbol
 	{
 		// Check
 		if (__i < 0 || __i >= count)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException(String.format("DS03 %d",
+				__i, count));
 		
 		// Lock on the array
 		Reference<IdentifierSymbol>[] ids = _idents;
@@ -247,7 +249,7 @@ public final class BinaryNameSymbol
 					// There is a next?
 					int next = _dx;
 					if (next >= count)
-						throw new NoSuchElementException();
+						throw new NoSuchElementException("NSEE");
 					
 					// Get it
 					IdentifierSymbol rv = get(next);
@@ -266,7 +268,7 @@ public final class BinaryNameSymbol
 				@Override
 				public void remove()
 				{
-					throw new UnsupportedOperationException();
+					throw new UnsupportedOperationException("RORO");
 				}
 			};
 	}

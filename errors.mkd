@@ -42,6 +42,21 @@ These codes do not have a index meaning and are meant to be short.
  * `XC03` -- Expected a zero or a one.
    * The input value.
 
+# `net.multiphasicapps.descriptors`
+
+ * `DS01` -- The input descriptor is blank.
+ * `DS02` -- The input descriptor contains an illegal character.
+   * The input descriptor.
+   * The index of the illegal character.
+   * The character which is not legal.
+ * `DS03` -- Cannot get an identifier element from the binary name because it
+   is not a valid index.
+   * The index being obtained.
+   * The number of elements.
+ * `DS04` -- The class name cannot be represented as a binary name because
+   it is an array.
+   * The descriptor.
+
 # `net.multiphasicapps.hairball`
 
  * `HB01` -- A package has an illegal manifest.

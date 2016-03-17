@@ -33,7 +33,7 @@ abstract class __BaseSymbol__
 	{
 		// Check
 		if (__s == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Set
 		string = __s;
@@ -41,7 +41,7 @@ abstract class __BaseSymbol__
 		// Cannot be blank
 		int n = length();
 		if (n <= 0)
-			throw new IllegalSymbolException(string);
+			throw new IllegalSymbolException("DS01");
 	}
 	
 	/**

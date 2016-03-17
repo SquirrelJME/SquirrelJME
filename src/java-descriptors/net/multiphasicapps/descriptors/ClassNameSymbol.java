@@ -66,7 +66,8 @@ public final class ClassNameSymbol
 	{
 		// Arrays will never be compatible
 		if (isarray)
-			throw new IllegalSymbolException(toString());
+			throw new IllegalSymbolException(String.format("DS04 %s",
+				toString()));
 		
 		// Get reference
 		Reference<BinaryNameSymbol> ref = _asbinary;

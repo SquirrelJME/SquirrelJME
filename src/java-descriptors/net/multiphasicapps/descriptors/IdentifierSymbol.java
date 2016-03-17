@@ -47,7 +47,8 @@ public final class IdentifierSymbol
 				case ';':
 				case '[':
 				case '/':
-					throw new IllegalSymbolException(toString());
+					throw new IllegalSymbolException(String.format(
+						"DS02 %s %d %c", this, i, charAt(i)));
 				
 					// Flag these
 				case '<':
