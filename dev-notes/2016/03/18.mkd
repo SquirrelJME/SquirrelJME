@@ -46,3 +46,17 @@ copy could be removed.
 Dictionaries can also be shared between strings, so if one string has a subset
 dictionary of another, they can share it.
 
+## 16:51
+
+Some constructor issues, `UnsupportedEncodingException` is a checked exception
+while some methods which use the default character set do not throw this
+exception at all (since the default is always valid anyway). I would suppose to
+avert this I could call a wrapper constructor of sorts which can magically
+initialize a string internally.
+
+## 16:53
+
+Also, I should probably clear out the `squirreljme` sub-package of stuff that
+does not need to be there. I am going to declare that said package should only
+contain stuff needed by the class library similar to `com.sun` and such.
+
