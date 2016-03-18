@@ -56,14 +56,14 @@ public final class String
 		this(__a, 0, __a.length, __e);
 	}
 	
-	public String(byte[] __a, __o, int __l)
+	public String(byte[] __a, int __o, int __l)
 	{
-		this(__a, __o, __l, System.getProperty("microedition.encoding"));
+		throw new Error("TODO");
 	}
 	
 	public String(byte[] __a)
 	{
-		this(__a, 0, __a.length, System.getProperty("microedition.encoding"));
+		throw new Error("TODO");
 	}
 	
 	public String(StringBuffer __a)
@@ -170,7 +170,17 @@ public final class String
 	
 	public byte[] getBytes()
 	{
-		return getBytes(System.getProperty("microedition.encoding"));
+		// Wrap it
+		try
+		{
+			return getBytes(System.getProperty("microedition.encoding"));
+		}
+		
+		// Should not occur
+		catch (UnsupportedEncodingException uee)
+		{
+			throw new RuntimeException("WTFX", uee);
+		}
 	}
 	
 	public void getChars(int __a, int __b, char[] __c, int __d)
