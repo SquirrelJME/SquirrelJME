@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains simple tests.
+ * This is the base class for the testing framework.
  *
  * @since 2016/03/03
  */
 
-package net.multiphasicapps.squirreljme.tests.simple;
+package net.multiphasicapps.tests;
 

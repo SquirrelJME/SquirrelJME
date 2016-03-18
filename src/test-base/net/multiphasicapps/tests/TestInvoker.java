@@ -8,11 +8,32 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.tests;
+
 /**
- * This is the base class for the testing framework.
+ * This is an interface which is given so that all tests may be ran.
+ *
+ * This class is used with the {@link ServiceLoader} to locate tests that
+ * should be run in a system.
  *
  * @since 2016/03/03
  */
-
-package net.multiphasicapps.squirreljme.test;
+public interface TestInvoker
+{
+	/**
+	 * Returns the name of this test collection.
+	 *
+	 * @return The test collection name.
+	 * @since 2016/03/03
+	 */
+	public abstract String invokerName();
+	
+	/**
+	 * This runs tests.
+	 *
+	 * @param __tc The checker to interface with when running tests.
+	 * @since 2016/03/03
+	 */
+	public abstract void runTests(TestChecker __tc);
+}
 

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test;
+package net.multiphasicapps.tests;
 
 import java.io.PrintStream;
 import java.util.Collections;

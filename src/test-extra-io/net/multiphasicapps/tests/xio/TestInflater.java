@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.tests.xio;
+package net.multiphasicapps.tests.xio;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,8 +19,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 import net.multiphasicapps.io.DataProcessorInputStream;
 import net.multiphasicapps.io.InflateDataProcessor;
-import net.multiphasicapps.squirreljme.test.TestChecker;
-import net.multiphasicapps.squirreljme.test.TestInvoker;
+import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestInvoker;
 
 /**
  * This contains tests for the extra IO inflate decompression algorithm.

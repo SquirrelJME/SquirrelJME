@@ -8,10 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.tests.simple;
+package net.multiphasicapps.tests.simple;
 
-import net.multiphasicapps.squirreljme.test.TestChecker;
-import net.multiphasicapps.squirreljme.test.TestInvoker;
+import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestInvoker;
 
 /**
  * This tests for some overflowing operations.
