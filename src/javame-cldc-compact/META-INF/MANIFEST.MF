@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 X-Hairball-Name: javame-cldc-compact
-X-Hairball-Depends:
 LIBlet-Title: CLDC 8 Compact
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160301

@@ -449,7 +449,8 @@ then
 		fi
 		
 		# Package it up
-		if ! jar cf$__jzero "$__ojar" -C "/tmp/$$.$__pack" .
+		if ! jar cfm$__jzero "$__ojar" "$__isrc/META-INF/MANIFEST.MF" \
+			-C "/tmp/$$.$__pack" .
 		then
 			# Note
 			echo "Failed to package $__pack." 2>&1
