@@ -159,6 +159,8 @@ public class JVMClassFile
 			interfacenames = MissingCollections.<ClassNameSymbol>
 				unmodifiableSet(it);
 			
+			// Target sets for members
+			
 			// Read fields and methods
 			for (int ism = 0; ism <= 1; ism++)
 			{
@@ -166,7 +168,10 @@ public class JVMClassFile
 				boolean isfield = (ism == 0);
 				boolean ismethod = !isfield;
 				
-				throw new Error("TODO");
+				// Read in members
+				int mn = das.readUnsignedShort();
+				for (int i = 0; i < mn; i++)
+					throw new Error("TODO");
 			}
 			
 			// Completeley ignore attributes, they are pointless here

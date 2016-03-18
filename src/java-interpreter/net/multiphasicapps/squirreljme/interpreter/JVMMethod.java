@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
@@ -24,13 +25,15 @@ public class JVMMethod
 	 * Initializes the interpreted method.
 	 *
 	 * @param __owner The class which owns this method.
+	 * @param __name The name of the method.
+	 * @param __type The type of the method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	JVMMethod(JVMClass __owner)
+	JVMMethod(JVMClass __owner, IdentifierSymbol __name, MethodSymbol __type)
 		throws NullPointerException
 	{
-		super(__owner, MethodSymbol.class);
+		super(__owner, MethodSymbol.class, __name, __type);
 	}
 	
 	/**

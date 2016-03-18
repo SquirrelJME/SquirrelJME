@@ -15,10 +15,12 @@ import java.io.IOException;
 import java.io.UTFDataFormatException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Map;
 import java.util.Objects;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -411,12 +413,23 @@ public abstract class JVMConstantEntry
 	 */
 	public static final class NameAndType
 		extends JVMConstantEntry
+		implements Map.Entry<IdentifierSymbol, MemberTypeSymbol>
 	{
+		/** Lock. */
+		protected final Object lock =
+			new Object();
+		
 		/** Name index. */
 		protected final int namedx;
 		
 		/** Type index. */
 		protected final int typedx;
+		
+		/** The name as a symbol. */
+		private volatile Reference<IdentifierSymbol> _name;
+		
+		/** The descriptor as a symbol. */
+		private volatile Reference<MemberTypeSymbol> _type;
 		
 		/**
 		 * Initializes name and type information.
@@ -439,6 +452,197 @@ public abstract class JVMConstantEntry
 			// Read values
 			namedx = __rangeCheck(__dis.readUnsignedShort());
 			typedx = __rangeCheck(__dis.readUnsignedShort());
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/17
+		 */
+		@Override
+		public boolean equals(Object __o)
+		{
+			// If not a NAT, do not bother
+			if (!(__o instanceof NameAndType))
+				return false;
+			
+			// Cast
+			NameAndType o = (NameAndType)__o;
+			
+			// The symbols in either one of them could be illegal;
+			try
+			{
+				return Objects.equals(getKey(), o.getKey()) &&
+					Objects.equals(getValue(), o.getValue());
+			}
+			
+			// One has an illegal set of symbols.
+			catch (JVMClassFormatError jvmcfe)
+			{
+				// Do not match
+				return false;
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/17
+		 */
+		@Override
+		public IdentifierSymbol getKey()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get reference
+				Reference<IdentifierSymbol> ref = _name;
+				IdentifierSymbol rv = null;
+				
+				// In reference?
+				if (ref != null)
+					rv = ref.get();
+				
+				// Needs caching
+				if (rv == null)
+					try
+					{
+						_name = new WeakReference<>((rv = new IdentifierSymbol(
+							pool.<UTF8>getAs(namedx, UTF8.class).toString())));
+					}
+					
+					// Bad identifier
+					catch (IllegalSymbolException ise)
+					{
+						throw new JVMClassFormatError("IN0s", ise);
+					}
+				
+				// Return it
+				return rv;
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/17
+		 */
+		@Override
+		public MemberTypeSymbol getValue()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get reference
+				Reference<MemberTypeSymbol> ref = _type;
+				MemberTypeSymbol rv = null;
+				
+				// In reference?
+				if (ref != null)
+					rv = ref.get();
+				
+				// Needs caching
+				if (rv == null)
+					try
+					{
+						// Types are either fields or methods
+						String str = pool.<UTF8>getAs(typedx, UTF8.class).
+							toString();
+					
+						// If it starts with a ( it is a method
+						if (str.startsWith("("))
+							rv = new MethodSymbol(str);
+						
+						// Otherwise a field
+						else
+							rv = new FieldSymbol(str);
+					
+						// Cache it
+						_type = new WeakReference<>(rv);
+					}
+					
+					// Not a valid symbol
+					catch (IllegalSymbolException ise)
+					{
+						throw new JVMClassFormatError(String.format("IN0r"),
+							ise);
+					}
+				
+				// Return it
+				return rv;
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/17
+		 */
+		@Override
+		public int hashCode()
+		{
+			// Could fail
+			try
+			{
+				return Objects.hashCode(getKey()) ^
+					Objects.hashCode(getValue());
+			}
+			
+			// Badly formed symbol
+			catch (JVMClassFormatError jvmcfe)
+			{
+				return 0xDEADBEEF;
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/17
+		 */
+		@Override
+		public MemberTypeSymbol setValue(MemberTypeSymbol __v)
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
+		
+		/**
+		 * Returns the represented symbol as a field symbol.
+		 *
+		 * @return The type as a field symbol.
+		 * @throws JVMClassFormatError If the type is not a field symbol.
+		 * @since 2016/03/17
+		 */
+		public FieldSymbol typeAsField()
+			throws JVMClassFormatError
+		{
+			try
+			{
+				return getValue().asFieldSymbol();
+			}
+			
+			// Is not one
+			catch (ClassCastException cce)
+			{
+				throw new JVMClassFormatError("IN0p", cce);
+			}
+		}
+		
+		/**
+		 * Returns the represented symbol as a method symbol.
+		 *
+		 * @return The type as a method symbol.
+		 * @throws JVMClassFormatError If the type is not a method symbol.
+		 * @since 2016/03/17
+		 */
+		public MethodSymbol typeAsMethod()
+			throws JVMClassFormatError
+		{
+			try
+			{
+				return getValue().asMethodSymbol();
+			}
+			
+			// Is not one
+			catch (ClassCastException cce)
+			{
+				throw new JVMClassFormatError("IN0q", cce);
+			}
 		}
 	}
 	

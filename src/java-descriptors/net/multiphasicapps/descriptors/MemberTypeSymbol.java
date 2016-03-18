@@ -27,5 +27,31 @@ public abstract class MemberTypeSymbol
 	{
 		super(__s);
 	}
+	
+	/**
+	 * Returns this member type symbol as a field symbol.
+	 *
+	 * @return This as a field symbol.
+	 * @throws ClassCastException If this is not a field symbol.
+	 * @since 2016/03/17
+	 */
+	public final FieldSymbol asFieldSymbol()
+		throws ClassCastException
+	{
+		return (FieldSymbol)this;
+	}
+	
+	/**
+	 * Returns this member type symbol as a method symbol.
+	 *
+	 * @return This as a method symbol.
+	 * @throws ClassCastException If this is not a method symbol.
+	 * @since 2016/03/17
+	 */
+	public final MethodSymbol asMethodSymbol()
+		throws ClassCastException
+	{
+		return (MethodSymbol)this;
+	}
 }
 

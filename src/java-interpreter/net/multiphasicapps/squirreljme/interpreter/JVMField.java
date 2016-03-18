@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.interpreter;
 
 import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 
 /**
  * This represents a field which is defined in a class.
@@ -24,13 +25,15 @@ public class JVMField
 	 * Initializes the interpreted method.
 	 *
 	 * @param __owner The class which owns this method.
+	 * @param __name The name of the field.
+	 * @param __type The type of the field.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	JVMField(JVMClass __owner)
+	JVMField(JVMClass __owner, IdentifierSymbol __name, FieldSymbol __type)
 		throws NullPointerException
 	{
-		super(__owner, FieldSymbol.class);
+		super(__owner, FieldSymbol.class, __name, __type);
 	}
 }
 

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
 /**
@@ -26,24 +27,38 @@ public abstract class JVMMember<S extends MemberTypeSymbol>
 	/** The type of symbol to use as the descriptor. */
 	protected final Class<S> symboltype;
 	
+	/** The member name. */
+	protected final IdentifierSymbol name;
+	
+	/** The type of the member. */
+	protected final S type;
+	
 	/**
 	 * Initializes the interpreted member.
 	 *
 	 * @param __owner The class which owns this.
 	 * @param __st The descriptor symbol type.
+	 * @param __name The name of the member.
+	 * @param __type The type of the member.
+	 * @throws ClassCastException If the {@code __type} is not a sub-class of
+	 * {@code __st}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/17
 	 */
-	JVMMember(JVMClass __owner, Class<S> __st)
-		throws NullPointerException
+	JVMMember(JVMClass __owner, Class<S> __st, IdentifierSymbol __name,
+		S __type)
+		throws ClassCastException, NullPointerException
 	{
 		// Check
-		if (__owner == null || __st == null)
-			throw new NullPointerException();
+		if (__owner == null || __st == null || __name == null ||
+			__type == null)
+			throw new NullPointerException("NARG");
 		
 		// Set
 		inclass = __owner;
 		symboltype = __st;
+		name = __name;
+		type = symboltype.cast(__type);
 	}
 }
 

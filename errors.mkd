@@ -196,6 +196,11 @@ These codes do not have a index meaning and are meant to be short.
    * The name of the class which was actually read.
  * `IN0o` -- Could not read the class.
    * The class attempted to be read.
+ * `IN0p` -- The type from a name and type entry is not a field.
+ * `IN0q` -- The type from a name and type entry is not a method.
+ * `IN0r` -- The type from a name and type entry is not a valid field or method
+   symbol.
+ * `IN0s` -- The name from a name and type entry is not a valid identifier.
 
 # `net.multiphasicapps.squirreljme.interpreter.local`
 
