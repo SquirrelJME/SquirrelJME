@@ -87,3 +87,9 @@ descriptive exception messages.
 
 And I finished translating all the errors, that took about 2 hours to do.
 
+## 21:02
+
+Made a sub-reddit for this: <https://www.reddit.com/r/SquirrelJME/>. This
+will be useful for technical support and feature requests and would be a bit
+more public compared to e-mail.
+

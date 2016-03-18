@@ -15,6 +15,7 @@ strange and many other devices. The source is written in pure Java.
 ## Links
 
   * [Online repository](http://multiphasicapps.net:8080/squirreljme)
+  * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
 
 ## Goals
 
