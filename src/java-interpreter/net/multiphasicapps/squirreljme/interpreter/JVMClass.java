@@ -10,8 +10,14 @@
 
 package net.multiphasicapps.squirreljme.interpreter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This is the base class for all class related information.
@@ -22,6 +28,14 @@ public abstract class JVMClass
 {
 	/** The interpreter engine which owns this class. */
 	protected final JVMEngine engine;
+	
+	/** Fields which exist in this class, lock on this. */
+	protected final Map<JVMMemberKey<FieldSymbol>, JVMField> fields =
+		new HashMap<>();
+	
+	/** Methods which exist in this class, lock on this. */
+	protected final Map<JVMMemberKey<MethodSymbol>, JVMMethod> methods =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the base class information.
@@ -113,23 +127,42 @@ public abstract class JVMClass
 	}
 	
 	/**
+	 * Locates a field in the class by the given identifier anme and field
+	 * descriptor.
+	 *
+	 * @param __name The name of the field.
+	 * @param __desc The field descriptor.
+	 * @param __super Look in super classes for the field?
+	 * @return The field matching the name and descriptor or {@code null} if
+	 * none was found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/17
+	 */
+	public final JVMField getField(IdentifierSymbol __name, FieldSymbol __desc,
+		boolean __super)
+	{
+		return this.<JVMField, FieldSymbol>__getMember(fields, __name, __desc,
+			__super);
+	}
+	
+	/**
 	 * Locates a method in the class by the given identifier name and method
 	 * descriptor.
 	 *
 	 * @param __name The name of the method.
 	 * @param __desc The method descriptor.
-	 * @return The method matching the name and descriptor.
+	 * @param __super Look in super classes for the method?
+	 * @return The method matching the name and descriptor or {@code null}
+	 * if none was found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public final JVMMethod getMethod(String __name, String __desc)
+	public final JVMMethod getMethod(IdentifierSymbol __name,
+		MethodSymbol __desc, boolean __super)
 		throws NullPointerException
 	{
-		// Check
-		if (__name == null || __desc == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
+		return this.<JVMMethod, MethodSymbol>__getMember(methods, __name,
+			__desc, __super);
 	}
 	
 	/**
@@ -234,6 +267,70 @@ public abstract class JVMClass
 	public final boolean isSpecialInvokeSpecial()
 	{
 		return flags().contains(JVMClassFlag.SUPER);
+	}
+	
+	/**
+	 * Locates a member by the given name and type.
+	 *
+	 * @param <V> The type of member to find.
+	 * @param <S> The symbol type it uses as a descriptor.
+	 * @param __lookin The map to look inside for members.
+	 * @param __name The name of the member.
+	 * @param __type The type of the member.
+	 * @param __super If not found in this class, should superclasses be
+	 * searched?
+	 * @return The member with the given name and type, or {@code null} if
+	 * not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016//03/17
+	 */
+	private <V extends JVMMember, S extends MemberTypeSymbol> V __getMember(
+		Map<JVMMemberKey<S>, V> __lookin, IdentifierSymbol __name, S __type,
+		boolean __super)
+		throws NullPointerException
+	{
+		return this.<V, S>__getMember(__lookin, new JVMMemberKey<>(__name,
+			__type), __super);
+	}
+	
+	/**
+	 * Locates a member by the given name and type.
+	 *
+	 * @param <V> The type of member to find.
+	 * @param <S> The symbol type it uses as a descriptor.
+	 * @param __lookin The map to look inside for members.
+	 * @param __key The member key to use during the search
+	 * @param __super If not found in this class, should superclasses be
+	 * searched?
+	 * @return The member with the given name and type, or {@code null} if
+	 * not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016//03/17
+	 */
+	private <V extends JVMMember, S extends MemberTypeSymbol> V __getMember(
+		Map<JVMMemberKey<S>, V> __lookin, JVMMemberKey<S> __key,
+		boolean __super)
+		throws NullPointerException
+	{
+		// Check
+		if (__lookin == null || __key == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (__lookin)
+		{
+			// Go through the map, if it is found then use it
+			V rv = __lookin.get(__key);
+			if (rv != null)
+				return rv;
+			
+			// Look in super class?
+			if (__super)
+				throw new Error("TODO");
+			
+			// Not found
+			return null;
+		}
 	}
 }
 

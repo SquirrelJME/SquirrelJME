@@ -18,8 +18,11 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.squirreljme.interpreter.JVMClass;
 import net.multiphasicapps.squirreljme.interpreter.JVMEngine;
+import net.multiphasicapps.squirreljme.interpreter.JVMMemberKey;
 import net.multiphasicapps.squirreljme.interpreter.JVMMethod;
 import net.multiphasicapps.squirreljme.interpreter.JVMObject;
 import net.multiphasicapps.squirreljme.interpreter.JVMThread;
@@ -86,8 +89,9 @@ public class LocalEngine
 				"LI02 %s", __main));
 		
 		// Find the main method
-		JVMMethod mainmethod = mainclass.getMethod("main",
-			"([Ljava/lang/String;)V");
+		JVMMethod mainmethod = mainclass.getMethod(
+			new IdentifierSymbol("main"),
+			new MethodSymbol("([Ljava/lang/String;)V"), false);
 		if (mainmethod == null || !mainmethod.isStatic() ||
 			!mainmethod.isPublic())
 			throw new IllegalArgumentException(String.format(
