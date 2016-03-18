@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter.local;
+package net.multiphasicapps.interpreter.local;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

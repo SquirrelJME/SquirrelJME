@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter.local;
+package net.multiphasicapps.interpreter.local;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -18,8 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.StringTokenizer;
-import net.multiphasicapps.squirreljme.interpreter.JVMClassPath;
-import net.multiphasicapps.squirreljme.zips.StandardZIPFile;
+import net.multiphasicapps.interpreter.JVMClassPath;
+import net.multiphasicapps.zips.StandardZIPFile;
 
 /**
  * This is a single local class path element.
