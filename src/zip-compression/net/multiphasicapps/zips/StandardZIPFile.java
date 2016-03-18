@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.zips;
+package net.multiphasicapps.zips;
 
 import java.io.InputStream;
 import java.io.IOException;

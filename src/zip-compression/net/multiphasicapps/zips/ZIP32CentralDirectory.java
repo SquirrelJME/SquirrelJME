@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.zips;
+package net.multiphasicapps.zips;
 
 /**
  * This provides structural details for the central directory of a ZIP file.

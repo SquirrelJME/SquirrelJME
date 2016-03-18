@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.zips;
+package net.multiphasicapps.zips;
 
 /**
  * This implements the interface for ZIP structure data and provides a class

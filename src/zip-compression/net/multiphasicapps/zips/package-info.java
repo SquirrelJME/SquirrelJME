@@ -14,5 +14,5 @@
  * @since 2016/02/26
  */
 
-package net.multiphasicapps.squirreljme.zips;
+package net.multiphasicapps.zips;
 

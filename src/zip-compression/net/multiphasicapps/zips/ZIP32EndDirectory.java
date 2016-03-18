@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.zips;
+package net.multiphasicapps.zips;
 
 /**
  * This provides public fields which represent the structure of the central
