@@ -60,5 +60,38 @@ public abstract class JVMMember<S extends MemberTypeSymbol>
 		name = __name;
 		type = symboltype.cast(__type);
 	}
+	
+	/**
+	 * Returns the name of this member.
+	 *
+	 * @return The member name.
+	 * @since 2016/03/17
+	 */
+	public final IdentifierSymbol name()
+	{
+		return name;
+	}
+	
+	/**
+	 * Returns the owning class.
+	 *
+	 * @return The class which owns this.
+	 * @since 2016/03/17
+	 */
+	public final JVMClass outerClass()
+	{
+		return inclass;
+	}
+	
+	/**
+	 * Returns the type of this member.
+	 *
+	 * @return The member type.
+	 * @since 2016/03/17
+	 */
+	public final S type()
+	{
+		return type;
+	}
 }
 

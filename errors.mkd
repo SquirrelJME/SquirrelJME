@@ -201,6 +201,8 @@ These codes do not have a index meaning and are meant to be short.
  * `IN0r` -- The type from a name and type entry is not a valid field or method
    symbol.
  * `IN0s` -- The name from a name and type entry is not a valid identifier.
+ * `IN0t` -- Adding a field or method which belong to another class.
+ * `IN0u` -- Adding of a member which is not a field or a method.
 
 # `net.multiphasicapps.squirreljme.interpreter.local`
 

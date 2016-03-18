@@ -30,7 +30,8 @@ public class JVMMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	JVMMethod(JVMClass __owner, IdentifierSymbol __name, MethodSymbol __type)
+	public JVMMethod(JVMClass __owner, IdentifierSymbol __name,
+		MethodSymbol __type)
 		throws NullPointerException
 	{
 		super(__owner, MethodSymbol.class, __name, __type);

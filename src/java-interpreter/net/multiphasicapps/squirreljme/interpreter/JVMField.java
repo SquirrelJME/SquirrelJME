@@ -30,7 +30,8 @@ public class JVMField
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	JVMField(JVMClass __owner, IdentifierSymbol __name, FieldSymbol __type)
+	public JVMField(JVMClass __owner, IdentifierSymbol __name,
+		FieldSymbol __type)
 		throws NullPointerException
 	{
 		super(__owner, FieldSymbol.class, __name, __type);

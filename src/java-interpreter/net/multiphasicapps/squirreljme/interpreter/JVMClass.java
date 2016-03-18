@@ -270,6 +270,51 @@ public abstract class JVMClass
 	}
 	
 	/**
+	 * Registers a field or a method with this class.
+	 *
+	 * @param __m The member to register to this class.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the member is owned by another
+	 * class, or it is of an unknown type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/17
+	 */
+	protected final JVMClass registerMember(JVMMember<?> __m)
+		throws IllegalArgumentException, NullPointerException
+	{	
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Wrong class?
+		if (__m.outerClass() != this)
+			throw new IllegalArgumentException("IN0t");
+		
+		// A field?
+		if (__m instanceof JVMField)
+			synchronized (fields)
+			{
+				fields.put(new JVMMemberKey<>(__m.name(),
+					__m.type().asFieldSymbol()), (JVMField)__m);
+			}
+		
+		// A method
+		else if (__m instanceof JVMMethod)
+			synchronized (methods)
+			{
+				methods.put(new JVMMemberKey<>(__m.name(),
+					__m.type().asMethodSymbol()), (JVMMethod)__m);
+			}
+		
+		// Unknown
+		else
+			throw new IllegalArgumentException("IN0u");
+		
+		// Self
+		return this;
+	}
+	
+	/**
 	 * Locates a member by the given name and type.
 	 *
 	 * @param <V> The type of member to find.
