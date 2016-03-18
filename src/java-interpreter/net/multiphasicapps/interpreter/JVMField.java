@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package net.multiphasicapps.interpreter;
 
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;

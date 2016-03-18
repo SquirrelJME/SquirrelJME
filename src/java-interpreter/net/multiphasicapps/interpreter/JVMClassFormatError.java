@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package net.multiphasicapps.interpreter;
 
 /**
  * This is thrown when the interpreter reads a class which is not formatted

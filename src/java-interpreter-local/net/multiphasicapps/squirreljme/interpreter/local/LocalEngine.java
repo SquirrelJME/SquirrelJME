@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter.local;
+package net.multiphasicapps.interpreter.local;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -20,12 +20,12 @@ import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.squirreljme.interpreter.JVMClass;
-import net.multiphasicapps.squirreljme.interpreter.JVMEngine;
-import net.multiphasicapps.squirreljme.interpreter.JVMMemberKey;
-import net.multiphasicapps.squirreljme.interpreter.JVMMethod;
-import net.multiphasicapps.squirreljme.interpreter.JVMObject;
-import net.multiphasicapps.squirreljme.interpreter.JVMThread;
+import net.multiphasicapps.interpreter.JVMClass;
+import net.multiphasicapps.interpreter.JVMEngine;
+import net.multiphasicapps.interpreter.JVMMemberKey;
+import net.multiphasicapps.interpreter.JVMMethod;
+import net.multiphasicapps.interpreter.JVMObject;
+import net.multiphasicapps.interpreter.JVMThread;
 
 /**
  * This is an extension of the interpreter engine which provides access to

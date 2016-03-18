@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package net.multiphasicapps.interpreter;
 
 /**
  * This is the base class for exceptions which are thrown by the interoreter to

@@ -8,21 +8,25 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package net.multiphasicapps.interpreter;
 
 /**
- * This interface is used for flags to represent that bits are used.
+ * This is thrown when interpreter classes which belong to different engines
+ * are mismatced, classes are to be used only to their specific engine.
  *
- * @since 2016/03/15
+ * @since 2016/03/05
  */
-public interface JVMBitFlag
+public class MismatchedEngineException
+	extends JVMEngineException
 {
 	/**
-	 * Returns the mask of the flag.
+	 * Initializes exception with no message.
 	 *
-	 * @return The flag's mask.
-	 * @since 2016/03/15
+	 * @since 2016/03/05
 	 */
-	public abstract int mask();
+	public MismatchedEngineException()
+	{
+		super();
+	}
 }
 

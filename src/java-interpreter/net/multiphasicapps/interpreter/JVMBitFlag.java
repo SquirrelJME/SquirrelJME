@@ -8,37 +8,21 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package net.multiphasicapps.interpreter;
 
 /**
- * This class is thrown when the version of the class is too new or too old.
+ * This interface is used for flags to represent that bits are used.
  *
- * @since 2016/03/13
+ * @since 2016/03/15
  */
-public class JVMClassVersionError
-	extends JVMClassFormatError
+public interface JVMBitFlag
 {
 	/**
-	 * Initializes exception with the given message.
+	 * Returns the mask of the flag.
 	 *
-	 * @param __msg The exception message.
-	 * @since 2016/03/13
+	 * @return The flag's mask.
+	 * @since 2016/03/15
 	 */
-	public JVMClassVersionError(String __msg)
-	{
-		super(__msg);
-	}
-	
-	/**
-	 * Initializes exception with the given message and cause.
-	 *
-	 * @param __msg The exception message.
-	 * @param __c The cause.
-	 * @since 2016/03/13
-	 */
-	public JVMClassVersionError(String __msg, Throwable __c)
-	{
-		super(__msg, __c);
-	}
+	public abstract int mask();
 }
 

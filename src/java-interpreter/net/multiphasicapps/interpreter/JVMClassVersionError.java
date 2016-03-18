@@ -8,33 +8,37 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package net.multiphasicapps.interpreter;
 
 /**
- * This represents an object within the interpreter.
+ * This class is thrown when the version of the class is too new or too old.
  *
- * @since 2016/03/01
+ * @since 2016/03/13
  */
-public class JVMObject
+public class JVMClassVersionError
+	extends JVMClassFormatError
 {
-	/** The class this object is. */
-	protected final JVMClass classtype;
+	/**
+	 * Initializes exception with the given message.
+	 *
+	 * @param __msg The exception message.
+	 * @since 2016/03/13
+	 */
+	public JVMClassVersionError(String __msg)
+	{
+		super(__msg);
+	}
 	
 	/**
-	 * Initializes the object.
+	 * Initializes exception with the given message and cause.
 	 *
-	 * @param __type This type of class this object is.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/01
+	 * @param __msg The exception message.
+	 * @param __c The cause.
+	 * @since 2016/03/13
 	 */
-	public JVMObject(JVMClass __type)
+	public JVMClassVersionError(String __msg, Throwable __c)
 	{
-		// Check
-		if (__type == null)
-			throw new NullPointerException();
-		
-		// Set
-		classtype = __type;
+		super(__msg, __c);
 	}
 }
 

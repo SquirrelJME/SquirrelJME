@@ -8,25 +8,33 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package net.multiphasicapps.interpreter;
 
 /**
- * This is thrown when interpreter classes which belong to different engines
- * are mismatced, classes are to be used only to their specific engine.
+ * This represents an object within the interpreter.
  *
- * @since 2016/03/05
+ * @since 2016/03/01
  */
-public class MismatchedEngineException
-	extends JVMEngineException
+public class JVMObject
 {
+	/** The class this object is. */
+	protected final JVMClass classtype;
+	
 	/**
-	 * Initializes exception with no message.
+	 * Initializes the object.
 	 *
-	 * @since 2016/03/05
+	 * @param __type This type of class this object is.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/01
 	 */
-	public MismatchedEngineException()
+	public JVMObject(JVMClass __type)
 	{
-		super();
+		// Check
+		if (__type == null)
+			throw new NullPointerException();
+		
+		// Set
+		classtype = __type;
 	}
 }
 

@@ -15,5 +15,5 @@
  * @since 2016/02/28
  */
 
-package net.multiphasicapps.squirreljme.interpreter;
+package net.multiphasicapps.interpreter;
 
