@@ -1,0 +1,48 @@
+# 2016/03/18
+
+## 16:02
+
+Partially busy and distracting day today. For `String` compaction, I know of a
+way where I can have a compact form of `String`s. Normally in ROM strings could
+be be referenced by a byte array of sorts for standard ASCII characters. I
+should note that some of these trade speed for memory and vice versa, however
+for lower memory usage the slight speed cost could be a nice gain.
+
+## 16:02
+
+There would be a mix of standard representation and dictionary types. The
+dictionary can be ASCII (if all 8-bit values are used) or UTF-16 (if there are
+these characters). The following types of string storage would be as follows:
+
+ * Standard 16-bit `char`.
+   * The normal Java representation, this will be the last resort posibility.
+ * Standard 8-bit.
+   * For values between 0 and 255 which are mapped directly to their unicode
+     values.
+ * Standard 7-bit with dictionary.
+   * Where strings that have mostly ASCII characters but need a few out of
+     0 to 255 range.
+ * Dictionary 8-bit.
+   * All characters are dictionary characters, so every entry references a
+     character in the index.
+   * This is used for strings where there are at most 256 distinct codepoints.
+ * Dictionary 4-bit.
+   * This is a string which takes up half of its space where there are 16
+     distinct codepoints which belong in a dictionary.
+   * This choice can always be followed if there are at most 16 characters in a
+     string.
+     * Problem with this however is that it might end up using more space if
+       a unique dictionary is required.
+ * Dictionary 2-bit.
+   * There are 4 characters to a byte.
+   * Also means that there is a limit of only 4 characters possible in a
+     string.
+
+Also when strings are initialized and copied for example from `byte[]` or
+`char[]`, I can scan the string to see if it is possible to construct any of
+the above types. Although this would reduce speed, the input array and its
+copy could be removed.
+
+Dictionaries can also be shared between strings, so if one string has a subset
+dictionary of another, they can share it.
+
