@@ -161,6 +161,16 @@ are important.
 
 # Style Requirements
 
+## Always Tab With Size 4
+
+Indentation is not done with spaces at all, it is pure tab. The tab size used
+is 4 spaces.
+
+## Never Exceed 79 Characters Per Column
+
+There is a maxiumum limit of 79 characters per line of source code and in
+other files also.
+
 ## Always Surround Ternary Operators With Parenthesis
 
 When using ternary operators, you must always surround them in parenthesis even

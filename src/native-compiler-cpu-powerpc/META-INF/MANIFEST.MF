@@ -7,5 +7,6 @@ LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160229
 LIBlet-Description: This supports the generation of code for the Linux
   operating system.
-LIBlet-Dependency-1: liblet;required;POIT Compiler;Steven Gawroriski;1.8+
+LIBlet-Dependency-1: liblet;required;
+ POIT Compiler;Steven Gawroriski;1.8+
 

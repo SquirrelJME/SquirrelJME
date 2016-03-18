@@ -5,7 +5,8 @@ Class-Path: extra-collections.jar
 LIBlet-Title: Extra IO
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160309
-LIBlet-Description: This contains extra IO related classes and interfaces which
-  may be used elsewhere.
-LIBlet-Dependency-1: liblet;required;Extra Collections;Steven Gawroriski;1.8+
+LIBlet-Description: This contains extra IO related classes and
+ interfaces which may be used elsewhere.
+LIBlet-Dependency-1: liblet;required;
+ Extra Collections;Steven Gawroriski;1.8+
 

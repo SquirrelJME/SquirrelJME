@@ -5,8 +5,11 @@ Class-Path: extra-collections.jar zip-compression.jar
 LIBlet-Title: Java Compiler
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228
-LIBlet-Description: This is a standard Java 8 compiler which is available in
-  SquirrelJME to allow for self hosting (and GPL compliance).
-LIBlet-Dependency-1: liblet;required;Extra Collections;Steven Gawroriski;1.8+
-LIBlet-Dependency-2: liblet;required;ZIP Compression;Steven Gawroriski;1.8+
+LIBlet-Description: This is a standard Java 8 compiler which is
+ available in SquirrelJME to allow for self hosting (and GPL
+ compliance).
+LIBlet-Dependency-1: liblet;required;
+ Extra Collections;Steven Gawroriski;1.8+
+LIBlet-Dependency-2: liblet;required;
+ ZIP Compression;Steven Gawroriski;1.8+
 

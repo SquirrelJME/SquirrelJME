@@ -5,8 +5,11 @@ Class-Path: extra-collections.jar extra-io.jar
 LIBlet-Title: ZIP Compression
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228
-LIBlet-Description: This contains support for ZIP and JAR files due to the fact
-  that JavaME lacks support for these in the form of a standard interface.
-LIBlet-Dependency-1: liblet;required;Extra Collections;Steven Gawroriski;1.8+
-LIBlet-Dependency-1: liblet;required;Extra IO;Steven Gawroriski;1.8+
+LIBlet-Description: This contains support for ZIP and JAR files due to
+ the fact that JavaME lacks support for these in the form of a
+ standard interface.
+LIBlet-Dependency-1: liblet;required;
+ Extra Collections;Steven Gawroriski;1.8+
+LIBlet-Dependency-2: liblet;required;
+ Extra IO;Steven Gawroriski;1.8+
 

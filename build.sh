@@ -191,7 +191,8 @@ then
 	fi
 	
 	# Get the main class
-	__usemain="$(tr '\n' '\v' < $__manf | sed 's/\v //g' | tr '\v' '\n' |
+	__usemain="$(tr '\n' '\v' < $__manf | sed 's/\v / /g' | \
+		tr '\v' '\n' | \
 		grep '^Main-Class[ \t]*:' | sed 's/^[^:]*:[ \t]*//g')"
 	
 	# If a main is missing, find it in a dependency
@@ -270,7 +271,8 @@ then
 	fi
 	
 	# Echo them out
-	(for __dep in $(tr '\n' '\v' < $__manf | sed 's/\v //g' | tr '\v' '\n' |
+	(for __dep in $(tr '\n' '\v' < $__manf | sed 's/\v / /g' | \
+		tr '\v' '\n' | \
 		grep '^X-Hairball-Depends[ \t]*:' | sed 's/^[^:]*:[ \t]*//g')
 	do
 		# Print this dependency

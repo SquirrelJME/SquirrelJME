@@ -4,6 +4,6 @@ X-Hairball-Depends:
 LIBlet-Title: CLDC 8 Compact
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160301
-LIBlet-Description: This is the standard JavaME 8 Connection Limited Device
-  Configuration which contains the core classes used by JavaME.
+LIBlet-Description: This is the standard JavaME 8 Connection Limited
+ Device Configuration which contains the core classes used by JavaME.
 

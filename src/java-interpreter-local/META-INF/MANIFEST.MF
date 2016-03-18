@@ -6,11 +6,14 @@ Class-Path: java-interpreter.jar zip-compression.jar
 LIBlet-Title: Local Interpreter
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160229
-LIBlet-Description: This extends the base interpreter so it can handle
-  class path, main class, and JAR files. The primary intention of this class
-  is to enable testing of the internal interpreter engine and having a required
-  base for the compiler. Hypothetically, this interpreter could be used to run
-  code on a host Java environment at a cost of speed.
-LIBlet-Dependency-1: liblet;required;Java Interpreter;Steven Gawroriski;1.8+
-LIBlet-Dependency-2: liblet;required;ZIP Compression;Steven Gawroriski;1.8+
+LIBlet-Description: This extends the base interpreter so it can
+ handle class path, main class, and JAR files. The primary
+ intention of this class is to enable testing of the internal
+ interpreter engine and having a required base for the compiler.
+ Hypothetically, this interpreter could be used to run code on a
+ host Java environment at a cost of speed.
+LIBlet-Dependency-1: liblet;required;
+ Java Interpreter;Steven Gawroriski;1.8+
+LIBlet-Dependency-2: liblet;required;
+ ZIP Compression;Steven Gawroriski;1.8+
 
