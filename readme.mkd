@@ -130,6 +130,14 @@ These are planned limitations:
    memory to load all of them. Note that in standard desktop Java, this would
    mean that almost the entire standard class library has been loaded.
 
+## Supported Character Encodings
+
+Only two character encodings are supported:
+
+ * ISO-8859-1
+   * This is essentially the first 256 unicode characters.
+ * UTF-8
+
 # Programming Considerations
 
 ## Do Not Use Static Modifiable/Mutable Globals In Standalone Classes
@@ -159,4 +167,11 @@ When using ternary operators, you must always surround them in parenthesis even
 if they are obvious. That is they must appear in the form of
 `(condition ? true : false)`.
 
+# Consistency Requirements
+
+## Unknown Characters Representation
+
+When the target is UTF-8 the unknown character will become `0xFFFD`.
+
+When the target is ISO-8859-1 the unknown character will become `?`.
 

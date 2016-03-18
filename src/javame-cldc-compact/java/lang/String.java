@@ -16,6 +16,14 @@ import java.util.Comparator;
 public final class String
 	implements Comparable<String>, CharSequence
 {
+	/** The ISO encoding. */
+	private static final String _ENCODING_ISO =
+		"iso-8859-1";
+	
+	/** The UTF-8 encoding. */
+	private static final String _ENCODING_UTF =
+		"utf-8";
+	
 	public String()
 	{
 		throw new Error("TODO");
@@ -31,41 +39,43 @@ public final class String
 		throw new Error("TODO");
 	}
 	
-	public String(char[] __a, int __b, int __c)
+	public String(char[] __a, int __o, int __l)
 	{
 		throw new Error("TODO");
 	}
 	
-	public String(byte[] __a, int __b, int __c, String __d)
-		throws UnsupportedEncodingException
+	public String(byte[] __a, int __o, int __l, String __e)
+		throws NullPointerException, UnsupportedEncodingException
 	{
 		throw new Error("TODO");
 	}
 	
-	public String(byte[] __a, String __b)
-		throws UnsupportedEncodingException
+	public String(byte[] __a, String __e)
+		throws NullPointerException, UnsupportedEncodingException
 	{
-		throw new Error("TODO");
+		this(__a, 0, __a.length, __e);
 	}
 	
-	public String(byte[] __a, int __b, int __c)
+	public String(byte[] __a, __o, int __l)
 	{
-		throw new Error("TODO");
+		this(__a, __o, __l, System.getProperty("microedition.encoding"));
 	}
 	
 	public String(byte[] __a)
 	{
-		throw new Error("TODO");
+		this(__a, 0, __a.length, System.getProperty("microedition.encoding"));
 	}
 	
 	public String(StringBuffer __a)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		this(__a.toString());
 	}
 	
 	public String(StringBuilder __a)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		this(__a.toString());
 	}
 	
 	public char charAt(int __a)
@@ -109,8 +119,27 @@ public final class String
 	}
 	
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
+		// Short circuit match, the same string object is always equals
+		if (this == __o)
+			return true;
+		
+		// If not a string, fail
+		if (!(__o instanceof String))
+			return false;
+		
+		// Cast
+		String o = (String)__o;
+		
+		// Get length of both strings
+		int mlen = length();
+		int olen = o.length();
+		
+		// If the length differs, they are not equal
+		if (mlen != olen)
+			return false;
+		
 		throw new Error("TODO");
 	}
 	
@@ -119,15 +148,29 @@ public final class String
 		throw new Error("TODO");
 	}
 	
-	public byte[] getBytes(String __a)
-		throws UnsupportedEncodingException
+	/**
+	 * Translates this string using into a byte array using the specified
+	 * character encoding.
+	 *
+	 * @param __enc The character encoding to use.
+	 * @return A byte array with the characters of this string converted to
+	 * bytes.
+	 * @throws NullPointerException If no encoding was specified.
+	 * @throws UnsupportedEncodingException 
+	 */
+	public byte[] getBytes(String __enc)
+		throws NullPointerException, UnsupportedEncodingException
 	{
+		// Check
+		if (__enc == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
 	public byte[] getBytes()
 	{
-		throw new Error("TODO");
+		return getBytes(System.getProperty("microedition.encoding"));
 	}
 	
 	public void getChars(int __a, int __b, char[] __c, int __d)
