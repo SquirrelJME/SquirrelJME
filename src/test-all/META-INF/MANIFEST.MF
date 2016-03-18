@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: test-all
 X-Hairball-Depends: test-base test-simple test-extra-io
+Class-Path: test-base.jar test-simple.jar test-extra-io.jar
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160303

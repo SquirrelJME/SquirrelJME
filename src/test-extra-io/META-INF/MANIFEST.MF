@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: test-extra-io
 X-Hairball-Depends: test-base extra-io
+Class-Path: test-base.jar extra-io.jar
 LIBlet-Title: Extra IO Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160310

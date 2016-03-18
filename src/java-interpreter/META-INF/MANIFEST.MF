@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-interpreter
 X-Hairball-Depends: javame-cldc-full extra-collections java-descriptors
+Class-Path: extra-collections.jar java-descriptors.jar
 LIBlet-Title: Java Interpreter
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228

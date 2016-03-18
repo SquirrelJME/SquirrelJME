@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: zip-compression
 X-Hairball-Depends: javame-cldc-full extra-collections extra-io
+Class-Path: extra-collections.jar extra-io.jar
 LIBlet-Title: ZIP Compression
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228

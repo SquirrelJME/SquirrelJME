@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-compiler
 X-Hairball-Depends: javame-cldc-full extra-collections zip-compression
+Class-Path: extra-collections.jar zip-compression.jar
 LIBlet-Title: Java Compiler
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228

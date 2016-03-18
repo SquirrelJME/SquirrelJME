@@ -146,7 +146,7 @@ These codes do not have a index meaning and are meant to be short.
    * The number of bytes which were requested.
    * The actual number of bytes in the window.
 
-# `net.multiphasicapps.squirreljme.interpreter`
+# `net.multiphasicapps.interpreter`
 
  * `IN01` -- The class magic number is not valid.
    * The read magic number.
@@ -204,7 +204,7 @@ These codes do not have a index meaning and are meant to be short.
  * `IN0t` -- Adding a field or method which belong to another class.
  * `IN0u` -- Adding of a member which is not a field or a method.
 
-# `net.multiphasicapps.squirreljme.interpreter.local`
+# `net.multiphasicapps.interpreter.local`
 
  * `LI01` -- No bootstrap classpaths were specified.
  * `LI02` -- The main class does not exist.
@@ -224,7 +224,7 @@ These codes do not have a index meaning and are meant to be short.
  * `LI09` -- Main class not specified on the command line.
  * `LI0a` -- The JAR manifest does not have the `Main-Class` attribute.
 
-# `net.multiphasicapps.squirreljme.zips`
+# `net.multiphasicapps.zips`
 
  * `ZP01` -- Attempted to read an array index from a structured type, however
    the element being read is not an array.

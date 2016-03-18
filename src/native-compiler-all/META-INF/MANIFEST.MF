@@ -2,6 +2,8 @@ Manifest-Version: 1.0
 X-Hairball-Name: native-compiler-all
 X-Hairball-Depends: native-compiler-os-linux
   native-compiler-cpu-powerpc
+Class-Path: native-compiler-os-linux.jar
+  native-compiler-cpu-powerpc.jar
 LIBlet-Title: POIT Compiler All
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160229
