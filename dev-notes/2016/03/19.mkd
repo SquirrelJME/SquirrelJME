@@ -86,3 +86,8 @@ The problem with this though is I need to have publically visible instantiators
 for this to work. To avoid this I would have too allocate a class for this. So
 then it would just be an anonymous class which gets initialized as needed.
 
+## 18:05
+
+Actually the cache stuff needlessly complicates things, so I am going to just
+not use it.
+
