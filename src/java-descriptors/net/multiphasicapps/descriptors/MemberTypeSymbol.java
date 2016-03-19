@@ -53,5 +53,29 @@ public abstract class MemberTypeSymbol
 	{
 		return (MethodSymbol)this;
 	}
+	
+	/**
+	 * Creates a new symbol from the specified string.
+	 *
+	 * @param __sym The symbol to decode.
+	 * @return The member type symbol.
+	 * @throws IllegalSymbolException If the symbol is not valid for members.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/18
+	 */
+	public static MemberTypeSymbol create(String __sym)
+		throws IllegalSymbolException, NullPointerException
+	{
+		// Check
+		if (__sym == null)
+			throw new NullPointerException("NARG");
+		
+		// If it starts with (, it is a method
+		if (__sym.startsWith("("))
+			return new MethodSymbol(__sym);
+		
+		// Otherwise a field
+		return new FieldSymbol(__sym);
+	}
 }
 

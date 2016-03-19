@@ -542,20 +542,9 @@ public abstract class JVMConstantEntry
 				if (rv == null)
 					try
 					{
-						// Types are either fields or methods
-						String str = pool.<UTF8>getAs(typedx, UTF8.class).
-							toString();
-					
-						// If it starts with a ( it is a method
-						if (str.startsWith("("))
-							rv = new MethodSymbol(str);
-						
-						// Otherwise a field
-						else
-							rv = new FieldSymbol(str);
-					
-						// Cache it
-						_type = new WeakReference<>(rv);
+						_type = new WeakReference<>((rv = MemberTypeSymbol.
+							create(pool.<UTF8>getAs(typedx, UTF8.class).
+								toString())));
 					}
 					
 					// Not a valid symbol

@@ -22,6 +22,8 @@ import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
 /**
  * This represents a single class loaded by the interpreter which is derived
@@ -159,8 +161,6 @@ public class JVMClassFile
 			interfacenames = MissingCollections.<ClassNameSymbol>
 				unmodifiableSet(it);
 			
-			// Target sets for members
-			
 			// Read fields and methods
 			for (int ism = 0; ism <= 1; ism++)
 			{
@@ -171,7 +171,24 @@ public class JVMClassFile
 				// Read in members
 				int mn = das.readUnsignedShort();
 				for (int i = 0; i < mn; i++)
+				{
+					// Read flags
+					int mflags = das.readUnsignedShort();
+					
+					// Read the name
+					IdentifierSymbol mname = new IdentifierSymbol(
+						constantpool.<JVMConstantEntry.UTF8>getAs(
+						das.readUnsignedShort(), JVMConstantEntry.UTF8.class).
+							toString());
+					
+					// Read the type
+					MemberTypeSymbol desc = MemberTypeSymbol.create(
+						constantpool.<JVMConstantEntry.UTF8>getAs(
+						das.readUnsignedShort(), JVMConstantEntry.UTF8.class).
+							toString());
+					
 					throw new Error("TODO");
+				}
 			}
 			
 			// Completeley ignore attributes, they are pointless here
