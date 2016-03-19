@@ -23,3 +23,12 @@ this can be seen as premature optimization.
 
 Would be premature, the optimizer when generating code can handle such details.
 
+## 12:19
+
+I should make an interpreter which can be used as a re-compilation pass to
+native code (as I am doing already) but have it in a pass form. Basically it
+treats the class as in input stream, picks out any needed data, and then is
+done with it. Loading and byte code verification could be done in a single pass
+and be translated to register form. Then the interpreter would be a bit faster
+and it would be ready for native code compilation.
+
