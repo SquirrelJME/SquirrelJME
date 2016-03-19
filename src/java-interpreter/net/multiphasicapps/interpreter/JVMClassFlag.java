@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.MissingCollections;
@@ -50,9 +52,7 @@ public enum JVMClassFlag
 	;
 	
 	/** All available flags. */
-	public static final List<JVMClassFlag> FLAGS =
-		MissingCollections.<JVMClassFlag>unmodifiableList(
-		Arrays.<JVMClassFlag>asList(values()));
+	private static volatile Reference<List<JVMClassFlag>> _FLAGS;
 	
 	/** The flag mask. */
 	public final int mask;
@@ -83,6 +83,26 @@ public enum JVMClassFlag
 	public final int mask()
 	{
 		return mask;
+	}
+	
+	public static List<JVMClassFlag> allFlags()
+	{
+		// Get reference
+		Reference<List<JVMClassFlag>> ref = _FLAGS;	
+		List<JVMClassFlag> rv = null;
+		
+		// In reference?
+		if (ref != null)
+			rv = ref.get();
+		
+		// Generate it
+		if (rv == null)
+			_FLAGS = new WeakReference<>((rv =
+				MissingCollections.<JVMClassFlag>unmodifiableList(
+					Arrays.<JVMClassFlag>asList(values()))));
+		
+		// Return it
+		return rv;
 	}
 }
 

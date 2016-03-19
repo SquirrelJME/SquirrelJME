@@ -61,13 +61,8 @@ public enum JVMMethodFlag
 	/** End. */
 	;
 	
-	/** All available flags. */
-	public static final List<JVMMethodFlag> FLAGS =
-		MissingCollections.<JVMMethodFlag>unmodifiableList(
-		Arrays.<JVMMethodFlag>asList(values()));
-	
 	/** The flag mask. */
-	public final int mask;
+	protected final int mask;
 	
 	/**
 	 * Initializes the flag.

@@ -38,3 +38,39 @@ I could also modify the descriptors to be more cachable and be able to use
 CharSequence to reference the descriptor data. Then there would not be a need
 to duplicate strings, because the descriptor could already be a string.
 
+## 16:33
+
+Ok, so a linear loading class format should be a bit more inline. So
+essentially that would mean a mutable `JVMClass`.
+
+## 16:44
+
+I can actually create a cache manager which does not use reflection. However
+it would require that said `Reference` objects always exist, so there would
+be an extra object. There would also need to be an existing class or an extra
+class in memory (so it can get `newInstance()`ed). So although a bunch of the
+cache code is duplicated from each other, that is actually more minimal.
+Although, I could perform a kind of trick pertaining to it. Essentially I
+would do the call such as:
+
+    ref = Cache.<Foo<V>>cache(this, ref, Instantiator.class);
+
+Then the Instantiator class would be capable of creating a new of this object.
+If the instantiator is not loaded (it would be in a WeakHashMap) then it would
+be constructed and initialized (and stored into the map). Then if the class is
+collected, then its instantiator goes away. However, the value can also be
+a `WeakReference`, so it would essentially be
+`WeakHashMap<Class<?>, WeakReference<?>>`. This way the instantiator can be
+collected when not used, yet reused multiple times if it does need to be used.
+The class type would be a weak key, so if the instantiator is never referenced
+again it goes away.
+
+## 16:53
+
+It would probably be a `Instantiable` interface used by a `CacheInstantiator`.
+The only issue is returning the value given by the cache. I would likely need
+to allocate an array for output. This would be needed because otherwise a
+garbage collection cycle can during the return of the method, which will cause
+the freshly cached object to be collected. Then ref would just return `null`
+which would be an error.
+

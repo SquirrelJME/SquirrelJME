@@ -52,13 +52,8 @@ public enum JVMFieldFlag
 	/** End. */
 	;
 	
-	/** All available flags. */
-	public static final List<JVMFieldFlag> FLAGS =
-		MissingCollections.<JVMFieldFlag>unmodifiableList(
-		Arrays.<JVMFieldFlag>asList(values()));
-	
 	/** The flag mask. */
-	public final int mask;
+	protected final int mask;
 	
 	/**
 	 * Initializes the flag.
