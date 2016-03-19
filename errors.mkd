@@ -65,6 +65,8 @@ These codes do not have a index meaning and are meant to be short.
    is a maximum limit to the dimension count.
    * The descriptor.
    * The read number of dimensions.
+ * `DS08` -- Field symbol does not have a length of 1.
+   * The input field symbol.
 
 # `net.multiphasicapps.hairball`
 

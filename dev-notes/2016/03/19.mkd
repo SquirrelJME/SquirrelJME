@@ -1,0 +1,21 @@
+# 2016/03/19
+
+## 10:34
+
+Need to increase some efficiencies in certain aspects.
+
+## 10:38
+
+Usually when it comes to immutable classes, I just have `protected final` and
+then have getters. Using `public final` fields could cause lockin (but if
+people use it, they may be forced to change). However methods may be added
+and such. It would be cleaner so to speak, despite being a bit against the
+existing Java mantra. There are no beans, no method handles, no lambdas. Using
+fields with lambdas is interesting though (requires the `() ->`), however there
+is none of that here. Also, less methods would be smaller and faster to
+translate. Having getters would include the method and the field itself. So
+I suppose for immutable I will use public final fields if applicable, then
+otherwise if it is insane to use that, then getters will be used. However
+stuff which is cached, would be behind getters still. Alternatively though,
+this can be seen as premature optimization.
+

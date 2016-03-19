@@ -28,6 +28,12 @@ public final class FieldSymbol
 	/** Array dimensions. */
 	protected final int dimensions;
 	
+	/** Primitive type? */
+	protected final PrimitiveType primitive;
+	
+	/** Class type? */
+	protected final BinaryNameSymbol classtype;
+	
 	/**
 	 * Initializes the field symbol which represents the type of a field.
 	 *
@@ -64,6 +70,10 @@ public final class FieldSymbol
 			
 			// Decode field for it
 			componenttype = new FieldSymbol(toString().substring(i));
+			
+			// These are not used here
+			primitive = null;
+			classtype = null;
 		}
 		
 		// Not an array
@@ -75,10 +85,30 @@ public final class FieldSymbol
 			
 			// Depends on what the specifier character is
 			char spec = charAt(0);
-			switch (spec)
+			
+			// Is a class?
+			if (spec == 'L')
 			{
-					// Unknown
-				default:
+				// Will never be primitive
+				primitive = null;
+				
+				throw new Error("TODO");
+			}
+			
+			// Primitive
+			else
+			{
+				// Must have length of 1
+				if (length() != 1)
+					throw new IllegalSymbolException(String.format("DS08 %s",
+						this));
+				
+				// Will never be a class
+				classtype = null;
+				
+				// Get primitive
+				primitive = PrimitiveType.byCode(spec);
+				if (primitive == null)
 					throw new IllegalSymbolException(String.format("DS06 %s",
 						this));
 			}
@@ -97,6 +127,18 @@ public final class FieldSymbol
 	}
 	
 	/**
+	 * Returns the binary name of the field.
+	 *
+	 * @return The binary name of the field or {@code null} if it does not
+	 * represent a class type.
+	 * @since 2016/03/19
+	 */
+	public BinaryNameSymbol binaryName()
+	{
+		return classtype;
+	}
+	
+	/**
 	 * Returns the component of the array.
 	 *
 	 * @return The component type of the array or {@code null} if not an
@@ -106,6 +148,17 @@ public final class FieldSymbol
 	public FieldSymbol componentType()
 	{
 		return componenttype;
+	}
+	
+	/**
+	 * Returns the primitive type of the field.
+	 *
+	 * @return The primitive type or {@code null} if not one.
+	 * @since 2016/03/19
+	 */
+	public PrimitiveType primitiveType()
+	{
+		return primitive;
 	}
 }
 
