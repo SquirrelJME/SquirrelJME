@@ -18,6 +18,10 @@ package net.multiphasicapps.descriptors;
 public final class FieldSymbol
 	extends MemberTypeSymbol
 {
+	/** Maximum array size. */
+	public static final int MAX_ARRAY_DIMENSIONS =
+		255;
+	
 	/** Component type of the array if it is one. */
 	protected final FieldSymbol componenttype;
 	
@@ -38,8 +42,29 @@ public final class FieldSymbol
 		super(__s);
 		
 		// Is an array?
+		int n = length();
 		if (charAt(0) == '[')
-			throw new Error("TODO");
+		{
+			// Read the dimensions
+			int i;
+			for (i = 0;	i < n; i++)
+				if (charAt(i) != '[')
+					break;
+			
+			// Just arrays?
+			if (i >= n)
+				throw new IllegalSymbolException(String.format("DS05 %s",
+					this));
+			
+			// Set
+			dimensions = i;
+			if (dimensions < 0 || dimensions > MAX_ARRAY_DIMENSIONS)
+				throw new IllegalSymbolException(String.format("DS07 %s %d",
+					this, dimensions));
+			
+			// Decode field for it
+			componenttype = new FieldSymbol(toString().substring(i));
+		}
 		
 		// Not an array
 		else
@@ -48,7 +73,15 @@ public final class FieldSymbol
 			dimensions = 0;
 			componenttype = null;
 			
-			throw new Error("TODO");
+			// Depends on what the specifier character is
+			char spec = charAt(0);
+			switch (spec)
+			{
+					// Unknown
+				default:
+					throw new IllegalSymbolException(String.format("DS06 %s",
+						this));
+			}
 		}
 	}
 	

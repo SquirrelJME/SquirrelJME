@@ -56,6 +56,15 @@ These codes do not have a index meaning and are meant to be short.
  * `DS04` -- The class name cannot be represented as a binary name because
    it is an array.
    * The descriptor.
+ * `DS05` -- The field symbol only contains array dimensions and no component
+   type.
+   * The descriptor.
+ * `DS06` -- Unknown field symbol type specified.
+   * The descriptor.
+ * `DS07` -- Maximum array dimension size exceeded in field descriptor, there
+   is a maximum limit to the dimension count.
+   * The descriptor.
+   * The read number of dimensions.
 
 # `net.multiphasicapps.hairball`
 
