@@ -65,7 +65,8 @@ These codes do not have a index meaning and are meant to be short.
    is a maximum limit to the dimension count.
    * The descriptor.
    * The read number of dimensions.
- * `DS08` -- Field symbol does not have a length of 1.
+ * `DS08` -- Field symbol does not have a length of 1 for non-class based
+   fields.
    * The input field symbol.
  * `DS09` -- The field descriptor which describes a class must end with a `;`.
    * The input field descriptor.

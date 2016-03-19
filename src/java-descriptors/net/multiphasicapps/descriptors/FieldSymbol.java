@@ -80,13 +80,63 @@ public final class FieldSymbol
 	 * This returns the base type that the field is.
 	 *
 	 * @return The base type of the field or {@code null} if it is an array.
+	 * @throws IllegalSymbolException If the symbol is not valid.
 	 * @since 2016/03/19
 	 */
 	public FieldBaseTypeSymbol baseType()
+		throws IllegalSymbolException
 	{
 		// Not valid if an array
 		if (dimensions != 0)
 			return null;
+		
+		// Get reference
+		Reference<FieldBaseTypeSymbol> ref = _basetype;
+		FieldBaseTypeSymbol rv = null;
+		
+		// In reference?
+		if (ref != null)
+			rv = ref.get();
+		
+		// Needs caching?
+		if (rv == null)
+		{
+			// Get first character, because this determines what this is
+			char fc = charAt(0);
+			int n = length();
+			
+			// Is a class name?
+			if (fc == 'L')
+			{
+				// Last must be a ';'
+				if (';' != charAt(n - 1))
+					throw new IllegalSymbolException(String.format("DS09 %s",
+						this));
+				
+				// Get it
+				rv = new BinaryNameSymbol(toString().substring(1, n - 1));
+			}
+			
+			// Primitive type
+			else
+			{
+				// Must consist of a single character
+				if (n != 1)
+					throw new IllegalSymbolException(String.format("DS08 %s",
+						this));
+				
+				// Find matching primitive
+				rv = PrimitiveSymbol.byCode(fc);
+				
+				// If not found, then it is invalid
+				if (rv == null)
+					throw new IllegalSymbolException(String.format("DS06 %s",
+						this));
+			}
+			
+			// Cache it
+			_basetype = new WeakReference<>(rv);
+		}
 		
 		throw new Error("TODO");
 	}
@@ -112,15 +162,31 @@ public final class FieldSymbol
 	 *
 	 * @return The component type of the array or {@code null} if not an
 	 * array.
+	 * @throws IllegalSymbolException If the symbol is not valid.
 	 * @since 2016/03/14
 	 */
 	public FieldSymbol componentType()
+		throws IllegalSymbolException
 	{
 		// Not valid if not an array
 		if (dimensions != 0)
 			return null;
 		
-		throw new Error("TODO");
+		// Get reference
+		Reference<FieldSymbol> ref = _componenttype;
+		FieldSymbol rv = null;
+		
+		// In reference?
+		if (ref != null)
+			rv = ref.get();
+		
+		// Need caching?
+		if (rv == null)	
+			_componenttype = new WeakReference<>((rv = new FieldSymbol(
+				toString().substring(dimensions))));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
