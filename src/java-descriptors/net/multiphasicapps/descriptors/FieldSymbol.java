@@ -138,7 +138,8 @@ public final class FieldSymbol
 			_basetype = new WeakReference<>(rv);
 		}
 		
-		throw new Error("TODO");
+		// Return it
+		return rv;
 	}
 	
 	/**
