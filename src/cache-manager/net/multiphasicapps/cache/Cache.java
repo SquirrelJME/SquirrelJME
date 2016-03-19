@@ -65,7 +65,7 @@ public final class Cache
 	 */
 	@SuppressWarnings({"unchecked"})
 	public static <O, Z> Reference<Z> cache(O __own, Reference<Z> __ref,
-		Z[] __out, Class<Instantiable<O, Z>> __init)
+		Object[] __out, Class<? extends Instantiable<O, Z>> __init)
 		throws IllegalInstantiableException, NullPointerException
 	{
 		// Check
@@ -156,25 +156,25 @@ public final class Cache
 	 * initializer was not specified.
 	 * @since 2016/03/19
 	 */
-	public static <Z> Reference<Z> cacheStatic(Reference<Z> __ref, Z[] __out,
-		Class<Instantiable<Object, Z>> __init)
+	public static <Z> Reference<Z> cacheStatic(Reference<Z> __ref,
+		Object[] __out, Class<? extends Instantiable<Object, Z>> __init)
 		throws IllegalInstantiableException, NullPointerException
 	{
 		return Cache.<Object, Z>cache(null, __ref, __out, __init);
 	}
 	
 	/**
-	 * This creates a suitable array which is used for output by the cache
-	 * manager.
+	 * This returns the output from the given array.
 	 *
-	 * @param <Z> The type of object to store in the array.
-	 * @return The array where the cached result is stored.
+	 * @param <Z> The type of object to read from the array.
+	 * @param __a The array where the cached result is stored.
+	 * @return The value in the array cast to the specified type.
 	 * @since 2016/03/19
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static <Z> Z[] output()
+	public static <Z> Z output(Object[] __a)
 	{
-		return (Z[])(new Object[1]);
+		return (Z)__a[0];
 	}
 }
 

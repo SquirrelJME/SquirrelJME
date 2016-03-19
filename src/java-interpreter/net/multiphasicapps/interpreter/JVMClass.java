@@ -24,7 +24,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/16
  */
-public final class JVMClass
+public abstract class JVMClass
 {
 	/** The interpreter engine which owns this class. */
 	protected final JVMEngine engine;

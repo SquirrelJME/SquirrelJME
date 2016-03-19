@@ -98,8 +98,8 @@ public class JVMClassFile
 		constantpool = new JVMConstantPool(this, das);
 		
 		// Read flags
-		flags = JVMClassFile.<JVMClassFlag>__parseFlags(JVMClassFlag.FLAGS,
-			das.readUnsignedShort());
+		flags = JVMClassFile.<JVMClassFlag>__parseFlags(
+			JVMClassFlag.allFlags(), das.readUnsignedShort());
 		
 		// Interface?
 		if (isInterface())

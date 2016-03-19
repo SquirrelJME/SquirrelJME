@@ -12,6 +12,8 @@ package net.multiphasicapps.interpreter;
 
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.cache.Cache;
+import net.multiphasicapps.cache.Instantiable;
 import net.multiphasicapps.collections.MissingCollections;
 
 /**
@@ -61,8 +63,13 @@ public enum JVMMethodFlag
 	/** End. */
 	;
 	
+	/** All available flags. */
+	public static final List<JVMMethodFlag> FLAGS =
+		MissingCollections.<JVMMethodFlag>unmodifiableList(
+		Arrays.<JVMMethodFlag>asList(values()));
+	
 	/** The flag mask. */
-	protected final int mask;
+	public final int mask;
 	
 	/**
 	 * Initializes the flag.

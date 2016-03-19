@@ -14,6 +14,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.cache.Cache;
+import net.multiphasicapps.cache.Instantiable;
 import net.multiphasicapps.collections.MissingCollections;
 
 /**
@@ -85,24 +87,39 @@ public enum JVMClassFlag
 		return mask;
 	}
 	
+	/**
+	 * Returns all available class flags.
+	 *
+	 * @return The available class flags.
+	 * @since 2016/03/19
+	 */
 	public static List<JVMClassFlag> allFlags()
 	{
-		// Get reference
-		Reference<List<JVMClassFlag>> ref = _FLAGS;	
-		List<JVMClassFlag> rv = null;
-		
-		// In reference?
-		if (ref != null)
-			rv = ref.get();
-		
-		// Generate it
-		if (rv == null)
-			_FLAGS = new WeakReference<>((rv =
-				MissingCollections.<JVMClassFlag>unmodifiableList(
-					Arrays.<JVMClassFlag>asList(values()))));
-		
-		// Return it
-		return rv;
+		// Cache it
+		Object rv[] = new Object[1];
+		_FLAGS = Cache.<List<JVMClassFlag>>cacheStatic(_FLAGS, rv,
+			__InitFlags__.class);
+		return Cache.<List<JVMClassFlag>>output(rv);
+	}
+	
+	/**
+	 * Initializes flags.
+	 *
+	 * @since 2016/03/19
+	 */
+	public static final class __InitFlags__
+		implements Instantiable<Object, List<JVMClassFlag>>
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/19
+		 */
+		@Override
+		public List<JVMClassFlag> instantiate(Object __o)
+		{
+			return MissingCollections.<JVMClassFlag>unmodifiableList(
+				Arrays.<JVMClassFlag>asList(values()));
+		}
 	}
 }
 

@@ -261,9 +261,6 @@ public abstract class JVMEngine
 					if (is == null)
 						continue;
 					
-					// The target class
-					JVMClass rv = new JVMClass(this);
-					
 					// Create class data (from files)
 					JVMClass rv = new JVMClassFile(this, is);
 					
