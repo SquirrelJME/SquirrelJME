@@ -80,3 +80,9 @@ Also, the `Cache` class can be garbage collected too when it is not needed. So
 although there is a slight increase in memory requirements, overall execution
 may see less objects in memory because these can be freely collected as such.
 
+## 17:49
+
+The problem with this though is I need to have publically visible instantiators
+for this to work. To avoid this I would have too allocate a class for this. So
+then it would just be an anonymous class which gets initialized as needed.
+
