@@ -24,7 +24,7 @@ public final class ClassNameSymbol
 	extends __BaseSymbol__
 {
 	/** Is this an array? */
-	public final boolean isarray;
+	protected final boolean isarray;
 	
 	/** As a field symbol. */
 	private volatile Reference<FieldSymbol> _asfield;
@@ -112,6 +112,17 @@ public final class ClassNameSymbol
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Is this an array?
+	 *
+	 * @return {@code true} if it is an array.
+	 * @since 2016/03/15
+	 */
+	public boolean isArray()
+	{
+		return isarray;
 	}
 }
 

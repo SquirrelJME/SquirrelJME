@@ -20,7 +20,7 @@ public final class IdentifierSymbol
 	extends __BaseSymbol__
 {
 	/** Is this a valid method name? */
-	public final boolean validmethod;
+	protected final boolean validmethod;
 	
 	/**
 	 * Initializes an identifier symbol.
@@ -64,6 +64,17 @@ public final class IdentifierSymbol
 		// Valid method?
 		validmethod = (!gtlt || toString().equals("<init>") ||
 			toString().equals("<clinit>"));
+	}
+	
+	/**
+	 * Returns {@code true} if this is a valid name for a method.
+	 *
+	 * @return {@code true} if a valid name for a method.
+	 * @since 2016/03/14
+	 */
+	public boolean isValidMethod()
+	{
+		return validmethod;
 	}
 }
 
