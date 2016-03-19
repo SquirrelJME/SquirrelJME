@@ -25,7 +25,7 @@ public final class FieldSymbol
 	/** Component type of the array if it is one. */
 	protected final FieldSymbol componenttype;
 	
-	/** Array dimensions. */
+	/** Array dimensions, will be zero if not an array. */
 	protected final int dimensions;
 	
 	/** Primitive type? */
@@ -118,7 +118,7 @@ public final class FieldSymbol
 	/**
 	 * Returns the number of dimensions in the array.
 	 *
-	 * @return The dimensions in the array.
+	 * @return The dimensions in the array, or {@code 0} if not an array.
 	 * @since 2016/03/14
 	 */
 	public int arrayDimensions()

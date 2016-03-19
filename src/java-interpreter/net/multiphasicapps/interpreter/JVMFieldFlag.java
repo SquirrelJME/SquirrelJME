@@ -58,7 +58,7 @@ public enum JVMFieldFlag
 		Arrays.<JVMFieldFlag>asList(values()));
 	
 	/** The flag mask. */
-	protected final int mask;
+	public final int mask;
 	
 	/**
 	 * Initializes the flag.

@@ -55,7 +55,7 @@ public enum JVMClassFlag
 		Arrays.<JVMClassFlag>asList(values()));
 	
 	/** The flag mask. */
-	protected final int mask;
+	public final int mask;
 	
 	/**
 	 * Initializes the flag.

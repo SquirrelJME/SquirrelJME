@@ -67,7 +67,7 @@ public enum JVMMethodFlag
 		Arrays.<JVMMethodFlag>asList(values()));
 	
 	/** The flag mask. */
-	protected final int mask;
+	public final int mask;
 	
 	/**
 	 * Initializes the flag.
