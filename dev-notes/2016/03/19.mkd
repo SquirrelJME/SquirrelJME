@@ -74,3 +74,9 @@ garbage collection cycle can during the return of the method, which will cause
 the freshly cached object to be collected. Then ref would just return `null`
 which would be an error.
 
+## 17:05
+
+Also, the `Cache` class can be garbage collected too when it is not needed. So
+although there is a slight increase in memory requirements, overall execution
+may see less objects in memory because these can be freely collected as such.
+

@@ -29,6 +29,13 @@ These codes do not have a index meaning and are meant to be short.
    indicate that a bug exists, that the virtual machine is in a potentially
    damaged state, or there is memory corruption.
 
+# `net.multiphasicapps.cache`
+
+ * `CH01` -- Could not initialize the `Instantiable` because it has no nullary
+   constructor, is abstract, an enumeration, an array, or has a inaccessible
+   nullary constructor.
+ * `CH02` -- The input class is not a `Instantiable`.
+
 # `net.multiphasicapps.collections`
 
  * `XC01` -- Adding a value to the huffman tree has a value which sets bits

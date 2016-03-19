@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-Hairball-Name: cache-manager
+X-Hairball-Depends: javame-cldc-compact
+LIBlet-Title: Cache Manager
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160319
+LIBlet-Description: This provides a way to have common cache
+ initialization without requiring lambdas or reflection.
+
