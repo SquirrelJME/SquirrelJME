@@ -92,7 +92,14 @@ public final class FieldSymbol
 				// Will never be primitive
 				primitive = null;
 				
-				throw new Error("TODO");
+				// The last character must be a ;
+				if (charAt(length() - 1) != ';')
+					throw new IllegalSymbolException(String.format("DS09 %s",
+						this));
+				
+				// Set it up
+				classtype = new BinaryNameSymbol(toString().substring(1,
+					length() - 1));
 			}
 			
 			// Primitive
