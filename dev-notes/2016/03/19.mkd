@@ -19,3 +19,7 @@ otherwise if it is insane to use that, then getters will be used. However
 stuff which is cached, would be behind getters still. Alternatively though,
 this can be seen as premature optimization.
 
+## 11:14
+
+Would be premature, the optimizer when generating code can handle such details.
+
