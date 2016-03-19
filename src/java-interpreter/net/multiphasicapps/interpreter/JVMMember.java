@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.HashSet;
+import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
@@ -33,6 +36,9 @@ public abstract class JVMMember<S extends MemberTypeSymbol>
 	/** The type of the member. */
 	protected final S type;
 	
+	/** The flags used for this member. */
+	protected final Set<? extends JVMMemberFlag> flags;
+	
 	/**
 	 * Initializes the interpreted member.
 	 *
@@ -46,12 +52,12 @@ public abstract class JVMMember<S extends MemberTypeSymbol>
 	 * @since 2016/03/17
 	 */
 	JVMMember(JVMClass __owner, Class<S> __st, IdentifierSymbol __name,
-		S __type)
+		S __type, Set<? extends JVMMemberFlag> __fl)
 		throws ClassCastException, NullPointerException
 	{
 		// Check
 		if (__owner == null || __st == null || __name == null ||
-			__type == null)
+			__type == null || __fl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -59,6 +65,35 @@ public abstract class JVMMember<S extends MemberTypeSymbol>
 		symboltype = __st;
 		name = __name;
 		type = symboltype.cast(__type);
+		flags = MissingCollections.<JVMMemberFlag>unmodifiableSet(
+			new HashSet<>(__fl));
+	}
+	
+	/**
+	 * Returns the flags for this member.
+	 *
+	 * @return The member flags.
+	 * @since 2016/03/19
+	 */
+	public abstract Set<? extends JVMMemberFlag> flags();
+	
+	/**
+	 * Is a specific flag set?
+	 *
+	 * @param __fl The flag to check.
+	 * @return {@code true} if the given flag is set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/19
+	 */
+	public boolean hasFlag(JVMMemberFlag __fl)
+		throws NullPointerException
+	{
+		// Check
+		if (__fl == null)
+			throw new NullPointerException("NARG");
+		
+		// Check it
+		return flags.contains(__fl);
 	}
 	
 	/**

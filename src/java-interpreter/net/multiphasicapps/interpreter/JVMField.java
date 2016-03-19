@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.Set;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 
@@ -27,14 +28,26 @@ public class JVMField
 	 * @param __owner The class which owns this method.
 	 * @param __name The name of the field.
 	 * @param __type The type of the field.
+	 * @param __fl The flags this field uses.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
 	public JVMField(JVMClass __owner, IdentifierSymbol __name,
-		FieldSymbol __type)
+		FieldSymbol __type, Set<JVMFieldFlag> __fl)
 		throws NullPointerException
 	{
-		super(__owner, FieldSymbol.class, __name, __type);
+		super(__owner, FieldSymbol.class, __name, __type, __fl);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/19
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public Set<JVMFieldFlag> flags()
+	{
+		return (Set<JVMFieldFlag>)flags;
 	}
 }
 

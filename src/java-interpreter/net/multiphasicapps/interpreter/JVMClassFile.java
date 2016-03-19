@@ -187,6 +187,26 @@ public class JVMClassFile
 						das.readUnsignedShort(), JVMConstantEntry.UTF8.class).
 							toString());
 					
+					// Generate field
+					JVMMember<?> mem;
+					if (isfield)
+						mem = new JVMField(this, mname, desc.asFieldSymbol(),
+							JVMClassFile.<JVMFieldFlag>__parseFlags(
+								JVMFieldFlag.FLAGS, mflags));
+					
+					// Generate method
+					else if (ismethod)
+						mem = new JVMMethod(this, mname, desc.asMethodSymbol(),
+							JVMClassFile.<JVMMethodFlag>__parseFlags(
+								JVMMethodFlag.FLAGS, mflags));
+					
+					// Unknown?
+					else
+						throw new RuntimeException("WTFX");
+					
+					// Register it
+					registerMember(mem);
+					
 					throw new Error("TODO");
 				}
 			}

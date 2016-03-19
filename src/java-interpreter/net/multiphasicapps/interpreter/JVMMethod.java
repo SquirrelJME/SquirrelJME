@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.Set;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
@@ -27,14 +28,26 @@ public class JVMMethod
 	 * @param __owner The class which owns this method.
 	 * @param __name The name of the method.
 	 * @param __type The type of the method.
+	 * @param __fl The flags this method uses.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
 	public JVMMethod(JVMClass __owner, IdentifierSymbol __name,
-		MethodSymbol __type)
+		MethodSymbol __type, Set<JVMMethodFlag> __fl)
 		throws NullPointerException
 	{
-		super(__owner, MethodSymbol.class, __name, __type);
+		super(__owner, MethodSymbol.class, __name, __type, __fl);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/19
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public Set<JVMMethodFlag> flags()
+	{
+		return (Set<JVMMethodFlag>)flags;
 	}
 	
 	/**
