@@ -32,3 +32,9 @@ done with it. Loading and byte code verification could be done in a single pass
 and be translated to register form. Then the interpreter would be a bit faster
 and it would be ready for native code compilation.
 
+## 12:22
+
+I could also modify the descriptors to be more cachable and be able to use
+CharSequence to reference the descriptor data. Then there would not be a need
+to duplicate strings, because the descriptor could already be a string.
+
