@@ -12,8 +12,6 @@ package net.multiphasicapps.interpreter;
 
 import java.util.Arrays;
 import java.util.List;
-import net.multiphasicapps.cache.Cache;
-import net.multiphasicapps.cache.Instantiable;
 import net.multiphasicapps.collections.MissingCollections;
 
 /**
