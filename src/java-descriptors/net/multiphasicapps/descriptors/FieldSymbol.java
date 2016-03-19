@@ -23,16 +23,16 @@ public final class FieldSymbol
 		255;
 	
 	/** Component type of the array if it is one. */
-	protected final FieldSymbol componenttype;
+	public final FieldSymbol componenttype;
 	
 	/** Array dimensions, will be zero if not an array. */
-	protected final int dimensions;
+	public final int dimensions;
 	
 	/** Primitive type? */
-	protected final PrimitiveType primitive;
+	public final PrimitiveType primitive;
 	
 	/** Class type? */
-	protected final BinaryNameSymbol classtype;
+	public final BinaryNameSymbol classtype;
 	
 	/**
 	 * Initializes the field symbol which represents the type of a field.
@@ -120,52 +120,6 @@ public final class FieldSymbol
 						this));
 			}
 		}
-	}
-	
-	/**
-	 * Returns the number of dimensions in the array.
-	 *
-	 * @return The dimensions in the array, or {@code 0} if not an array.
-	 * @since 2016/03/14
-	 */
-	public int arrayDimensions()
-	{
-		return dimensions;
-	}
-	
-	/**
-	 * Returns the binary name of the field.
-	 *
-	 * @return The binary name of the field or {@code null} if it does not
-	 * represent a class type.
-	 * @since 2016/03/19
-	 */
-	public BinaryNameSymbol binaryName()
-	{
-		return classtype;
-	}
-	
-	/**
-	 * Returns the component of the array.
-	 *
-	 * @return The component type of the array or {@code null} if not an
-	 * array.
-	 * @since 2016/03/14
-	 */
-	public FieldSymbol componentType()
-	{
-		return componenttype;
-	}
-	
-	/**
-	 * Returns the primitive type of the field.
-	 *
-	 * @return The primitive type or {@code null} if not one.
-	 * @since 2016/03/19
-	 */
-	public PrimitiveType primitiveType()
-	{
-		return primitive;
 	}
 }
 

@@ -36,7 +36,7 @@ public final class BinaryNameSymbol
 		new Object();
 	
 	/** Identifier count. */
-	protected final int count;
+	public final int count;
 	
 	/** Identifier base offsets. */
 	private final int[] _baseoffs;
