@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.descriptors;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents a field descriptor.
  *
@@ -21,18 +24,14 @@ public final class FieldSymbol
 	/** Maximum array size. */
 	public static final int MAX_ARRAY_DIMENSIONS =
 		255;
-	
-	/** Component type of the array if it is one. */
-	protected final FieldSymbol componenttype;
-	
 	/** Array dimensions, will be zero if not an array. */
 	protected final int dimensions;
 	
-	/** Primitive type? */
-	protected final PrimitiveType primitive;
+	/** Component type of the array if it is one. */
+	private volatile Reference<FieldSymbol> _componenttype;
 	
-	/** Class type? */
-	protected final BinaryNameSymbol classtype;
+	/** Base type for the field? */
+	private volatile Reference<FieldBaseTypeSymbol> _basetype;
 	
 	/**
 	 * Initializes the field symbol which represents the type of a field.
@@ -47,79 +46,23 @@ public final class FieldSymbol
 	{
 		super(__s);
 		
-		// Is an array?
+		// Read the number of dimensions this has, this modifies how the symbol
+		// is handled.
 		int n = length();
-		if (charAt(0) == '[')
-		{
-			// Read the dimensions
-			int i;
-			for (i = 0;	i < n; i++)
-				if (charAt(i) != '[')
-					break;
-			
-			// Just arrays?
-			if (i >= n)
-				throw new IllegalSymbolException(String.format("DS05 %s",
-					this));
-			
-			// Set
-			dimensions = i;
-			if (dimensions < 0 || dimensions > MAX_ARRAY_DIMENSIONS)
-				throw new IllegalSymbolException(String.format("DS07 %s %d",
-					this, dimensions));
-			
-			// Decode field for it
-			componenttype = new FieldSymbol(toString().substring(i));
-			
-			// These are not used here
-			primitive = null;
-			classtype = null;
-		}
+		int i;
+		for (i = 0;	i < n; i++)
+			if (charAt(i) != '[')
+				break;
 		
-		// Not an array
-		else
-		{
-			// Not used
-			dimensions = 0;
-			componenttype = null;
-			
-			// Depends on what the specifier character is
-			char spec = charAt(0);
-			
-			// Is a class?
-			if (spec == 'L')
-			{
-				// Will never be primitive
-				primitive = null;
-				
-				// The last character must be a ;
-				if (charAt(length() - 1) != ';')
-					throw new IllegalSymbolException(String.format("DS09 %s",
-						this));
-				
-				// Set it up
-				classtype = new BinaryNameSymbol(toString().substring(1,
-					length() - 1));
-			}
-			
-			// Primitive
-			else
-			{
-				// Must have length of 1
-				if (length() != 1)
-					throw new IllegalSymbolException(String.format("DS08 %s",
-						this));
-				
-				// Will never be a class
-				classtype = null;
-				
-				// Get primitive
-				primitive = PrimitiveType.byCode(spec);
-				if (primitive == null)
-					throw new IllegalSymbolException(String.format("DS06 %s",
-						this));
-			}
-		}
+		// Set
+		dimensions = i;
+		if (dimensions < 0 || dimensions > MAX_ARRAY_DIMENSIONS)
+			throw new IllegalSymbolException(String.format("DS07 %s %d",
+				this, dimensions));
+		
+		// Just cache all of them to check for symbol validity
+		binaryName();
+		baseType();
 	}
 	
 	/**
@@ -134,6 +77,21 @@ public final class FieldSymbol
 	}
 	
 	/**
+	 * This returns the base type that the field is.
+	 *
+	 * @return The base type of the field or {@code null} if it is an array.
+	 * @since 2016/03/19
+	 */
+	public FieldBaseTypeSymbol baseType()
+	{
+		// Not valid if an array
+		if (dimensions != 0)
+			return null;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the binary name of the field.
 	 *
 	 * @return The binary name of the field or {@code null} if it does not
@@ -142,7 +100,11 @@ public final class FieldSymbol
 	 */
 	public BinaryNameSymbol binaryName()
 	{
-		return classtype;
+		// If the base type is a binary name then use it
+		FieldBaseTypeSymbol rv = baseType();
+		if (rv instanceof BinaryNameSymbol)
+			return (BinaryNameSymbol)rv;
+		return null;
 	}
 	
 	/**
@@ -154,7 +116,11 @@ public final class FieldSymbol
 	 */
 	public FieldSymbol componentType()
 	{
-		return componenttype;
+		// Not valid if not an array
+		if (dimensions != 0)
+			return null;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -163,9 +129,13 @@ public final class FieldSymbol
 	 * @return The primitive type or {@code null} if not one.
 	 * @since 2016/03/19
 	 */
-	public PrimitiveType primitiveType()
+	public PrimitiveSymbol primitiveType()
 	{
-		return primitive;
+		// If the base type is a primitive type then use it
+		FieldBaseTypeSymbol rv = baseType();
+		if (rv instanceof PrimitiveSymbol)
+			return (PrimitiveSymbol)rv;
+		return null;
 	}
 }
 

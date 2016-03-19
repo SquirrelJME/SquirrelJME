@@ -15,7 +15,8 @@ package net.multiphasicapps.descriptors;
  *
  * @since 2016/03/19
  */
-public enum PrimitiveType
+public enum PrimitiveSymbol
+	implements FieldBaseTypeSymbol
 {
 	/** Byte. */
 	BYTE('B', Byte.TYPE, Byte.class),
@@ -62,7 +63,7 @@ public enum PrimitiveType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	private PrimitiveType(char __c, Class<?> __ncl, Class<?> __bcl)
+	private PrimitiveSymbol(char __c, Class<?> __ncl, Class<?> __bcl)
 		throws NullPointerException
 	{
 		// Check
@@ -82,10 +83,10 @@ public enum PrimitiveType
 	 * @return The discovered code or {@code null} if not found.
 	 * @since 2016/03/19
 	 */
-	public static PrimitiveType byCode(char __c)
+	public static PrimitiveSymbol byCode(char __c)
 	{
 		// Find matching code
-		for (PrimitiveType v : values())
+		for (PrimitiveSymbol v : values())
 			if (v.code == __c)
 				return v;
 		

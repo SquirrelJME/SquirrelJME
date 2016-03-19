@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public final class BinaryNameSymbol
 	extends __BaseSymbol__
-	implements Iterable<IdentifierSymbol>
+	implements Iterable<IdentifierSymbol>, FieldBaseTypeSymbol
 {
 	/** Lock. */
 	protected final Object lock =
