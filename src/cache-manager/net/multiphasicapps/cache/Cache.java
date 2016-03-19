@@ -114,7 +114,26 @@ public final class Cache
 			ivx = (Instantiable<O, Z>)pin;
 		}
 		
-		throw new Error("TODO");
+		// In reference?
+		Z rv = null;
+		if (__ref != null)
+			rv = __ref.get();
+		
+		// Needs initialization?
+		if (rv == null)
+		{
+			// Create it
+			rv = ivx.instantiate(__own);
+			
+			// Store it
+			__ref = new WeakReference<>(rv);
+		}
+		
+		// Store into the output
+		__out[0] = rv;
+		
+		// Return the reference
+		return __ref;
 	}
 	
 	/**

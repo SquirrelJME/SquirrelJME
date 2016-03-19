@@ -33,6 +33,6 @@ public interface Instantiable<O, Z>
 	 * @return The value it should create.
 	 * @since 2016/03/19
 	 */
-	public abstract Z initialize(O __o);
+	public abstract Z instantiate(O __o);
 }
 
