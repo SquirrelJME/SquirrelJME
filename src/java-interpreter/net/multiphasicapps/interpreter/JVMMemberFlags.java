@@ -27,11 +27,21 @@ public abstract class JVMMemberFlags<F extends JVMMemberFlag>
 	 * @param __b The input bits.
 	 * @param __type The flag type.
 	 * @param __all All available flags.
+	 * @throws JVMClassFormatError If a member has multiple access flags
+	 * specified.
 	 * @since 2016/03/19
 	 */
 	public JVMMemberFlags(int __b, Class<F> __type, List<F> __all)
+		throws JVMClassFormatError
 	{
 		super(__b, __type, __all);
+		
+		// Cannot have multiple modifiers attached
+		int q = (isPublic() ? 1 : 0);
+		q += (isProtected() ? 1 : 0);
+		q += (isPrivate() ? 1 : 0);
+		if (q > 1)
+			throw new JVMClassFormatError(String.format("IN15 %s", this));
 	}
 	
 	/**
@@ -73,6 +83,14 @@ public abstract class JVMMemberFlags<F extends JVMMemberFlag>
 	 * @since 2016/03/20
 	 */
 	public abstract boolean isStatic();
+	
+	/**
+	 * Returns {@code true} if this is synthetic.
+	 *
+	 * @return {@code true} if synthetic.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isSynthetic();
 	
 	/**
 	 * Returns {@code true} if this is package private.

@@ -245,6 +245,14 @@ These codes do not have a index meaning and are meant to be short.
    * The attempted super class to use.
  * `IN13` -- Cannot implement Object.
  * `IN14` -- Member flags not set.
+ * `IN15` -- Member has multiple access flags (public, protected,
+   and/or private) set.
+   * The input flags.
+ * `IN16` -- If a field is both final and volatile.
+   * The input flags.
+ * `IN17` -- If a method is abstract, it cannot have specific flags set.
+   * The input flags.
+ * `IN18` -- Native methods are not supported by this virtual machine.
 
 # `net.multiphasicapps.interpreter.local`
 

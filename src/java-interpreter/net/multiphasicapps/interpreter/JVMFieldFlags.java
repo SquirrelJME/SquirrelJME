@@ -22,11 +22,28 @@ public final class JVMFieldFlags
 	 * Initializes the field flags.
 	 *
 	 * @param __b The bits used for the field.
+	 * @throws JVMClassFormatError If the flag combination is not valid.
 	 * @since 2016/03/19
 	 */
 	public JVMFieldFlags(int __b)
+		throws JVMClassFormatError
 	{
 		super(__b, JVMFieldFlag.class, JVMFieldFlag.allFlags());
+		
+		// Cannot be final and volatile
+		if (isFinal() && isVolatile())
+			throw new JVMClassFormatError(String.format("IN16 %s", this));
+	}
+	
+	/**
+	 * Returns {@code true} if this is an enumeration.
+	 *
+	 * @return {@code true} if an enumeration.
+	 * @since 2016/03/20
+	 */
+	public boolean isEnum()
+	{
+		return contains(JVMFieldFlag.ENUM);
 	}
 	
 	/**
@@ -77,6 +94,38 @@ public final class JVMFieldFlags
 	public boolean isStatic()
 	{
 		return contains(JVMFieldFlag.STATIC);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isSynthetic()
+	{
+		return contains(JVMFieldFlag.SYNTHETIC);
+	}
+	
+	/**
+	 * Returns {@code true} if this is transient.
+	 *
+	 * @return {@code true} if transient.
+	 * @since 2016/03/20
+	 */
+	public boolean isTransient()
+	{
+		return contains(JVMFieldFlag.TRANSIENT);
+	}
+	
+	/**
+	 * Returns {@code true} if this is volatile.
+	 *
+	 * @return {@code true} if volatile.
+	 * @since 2016/03/20
+	 */
+	public boolean isVolatile()
+	{
+		return contains(JVMFieldFlag.VOLATILE);
 	}
 }
 
