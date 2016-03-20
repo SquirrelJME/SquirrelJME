@@ -176,9 +176,13 @@ These codes do not have a index meaning and are meant to be short.
    * The class version.
    * The highest version it can be.
  * `IN03` -- Interfaces must be abstract.
+   * The input flags.
  * `IN04` -- Interfaces cannot be super, final, or enums.
+   * The input flags.
  * `IN05` -- Non-interface must not be an annotation.
+   * The input flags.
  * `IN06` -- A class cannot be both final and abstract.
+   * The input flags.
  * `IN07` -- A super class is not valid for this class.
    * The current class.
    * The super class.
@@ -229,6 +233,14 @@ These codes do not have a index meaning and are meant to be short.
  * `IN0w` -- A class file was already parsed by this loader.
  * `IN0x` -- The class name not set.
  * `IN0y` -- The super class name was not set.
+ * `IN0z` -- The super class cannot be an array.
+   * The attempted super class to set.
+ * `IN10` -- Cannot implement an interface which is an array.
+   * The attempted interface name to implement.
+ * `IN11` -- While parsing the class file a duplicate implemented interface
+   was specified.
+   * The current set of interfaces.
+   * The interface attempted to be inserted.
 
 # `net.multiphasicapps.interpreter.local`
 

@@ -35,11 +35,13 @@ public class JVMClassFlags
 		{
 			// Must be abstract
 			if (!isAbstract())
-				throw new JVMClassFormatError("IN03");
+				throw new JVMClassFormatError(String.format("IN03 %s",
+					toString()));
 			
 			// cannot have some flags set
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new JVMClassFormatError("IN04");
+				throw new JVMClassFormatError(String.format("IN04 %s",
+					toString()));
 		}
 		
 		// Normal class
@@ -47,11 +49,13 @@ public class JVMClassFlags
 		{
 			// Cannot be an annotation
 			if (isAnnotation())
-				throw new JVMClassFormatError("IN05");
+				throw new JVMClassFormatError(String.format("IN05 %s",
+					toString()));
 				
 			// Cannot be abstract and final
 			if (isAbstract() && isFinal())
-				throw new JVMClassFormatError("IN06");
+				throw new JVMClassFormatError(String.format("IN06 %s",
+					toString()));
 		}
 	}
 	

@@ -29,11 +29,15 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 public class JVMClass
 {
 	/** Internal lock. */
-	protected Object lock =
+	Object lock =
 		new Object();	
 	
 	/** The interpreter engine which owns this class. */
 	protected final JVMEngine engine;
+	
+	/** Class interfaces. */
+	protected final JVMClassInterfaces interfaces =
+		new JVMClassInterfaces(this);
 	
 	/** The current class flags. */
 	private volatile JVMClassFlags _flags;
@@ -154,6 +158,17 @@ public class JVMClass
 			// Return them
 			return rv; 
 		}
+	}
+	
+	/**
+	 * Returns the set of interfaces which may be implemented by the class.
+	 *
+	 * @return The class interface set.
+	 * @since 2016/03/19
+	 */
+	public final JVMClassInterfaces getInterfaces()
+	{
+		return interfaces;
 	}
 	
 	/**
@@ -306,6 +321,10 @@ public class JVMClass
 	public final JVMClass setSuperName(ClassNameSymbol __n)
 		throws IllegalStateException, JVMClassFormatError
 	{
+		// Cannot be an array
+		if (__n != null && __n.isArray())
+			throw new JVMClassFormatError(String.format("IN0z %s", __n));
+		
 		// Lock
 		synchronized (lock)
 		{

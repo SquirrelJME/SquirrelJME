@@ -100,7 +100,7 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 			throw new NullPointerException("NARG");
 		
 		// Go through it
-		for (F f : __fs)
+		for (JVMBitFlag f : __fs)
 		{
 			// Crash on null
 			if (f == null)

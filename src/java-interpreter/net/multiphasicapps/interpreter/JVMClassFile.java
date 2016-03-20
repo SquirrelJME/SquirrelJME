@@ -120,7 +120,7 @@ public class JVMClassFile
 			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
 		if (version.compareTo(JVMClassVersion.MAX_VERSION) > 0)
 			throw new JVMClassVersionError(String.format("IN02 %s %s",
-				 version, JVMClassVersion.MAX_VERSION));
+				version, JVMClassVersion.MAX_VERSION));
 		
 		// Initialize the constant pool
 		JVMConstantPool constantpool;
@@ -141,6 +141,16 @@ public class JVMClassFile
 				sid, JVMConstantEntry.ClassName.class).symbol());
 		else
 			target.setSuperName(null);
+		
+		// Read interface count
+		int nints = das.readUnsignedShort();
+		JVMClassInterfaces ints = target.getInterfaces();
+		ClassNameSymbol ix;
+		for (int i = 0; i < nints; i++)
+			if (!ints.add((ix = constantpool.<JVMConstantEntry.ClassName>getAs(
+				sid, JVMConstantEntry.ClassName.class).symbol())))
+				throw new JVMClassVersionError(String.format("IN11 %s %s",
+					ints, ix));
 		
 		if (true)
 			throw new Error("TODO");

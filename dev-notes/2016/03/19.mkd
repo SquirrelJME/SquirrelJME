@@ -113,3 +113,8 @@ mess.
 And the flag handling is much simpler too, no more is it a complex mess. I
 will have to do the same things for members also.
 
+## 23:24
+
+And interfaces are in their own `JVMClassInterfaces` which simplifies having
+a bunch of them and making sure they are correct.
+
