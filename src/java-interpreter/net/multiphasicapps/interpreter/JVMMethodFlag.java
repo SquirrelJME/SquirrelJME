@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.collections.MissingCollections;
@@ -62,12 +64,10 @@ public enum JVMMethodFlag
 	;
 	
 	/** All available flags. */
-	public static final List<JVMMethodFlag> FLAGS =
-		MissingCollections.<JVMMethodFlag>unmodifiableList(
-		Arrays.<JVMMethodFlag>asList(values()));
+	private static volatile Reference<List<JVMMethodFlag>> _FLAGS;
 	
 	/** The flag mask. */
-	public final int mask;
+	protected final int mask;
 	
 	/**
 	 * Initializes the flag.
@@ -95,6 +95,28 @@ public enum JVMMethodFlag
 	public final int mask()
 	{
 		return mask;
+	}
+	
+	/**
+	 * Returns all available method flags.
+	 *
+	 * @return The available method flags.
+	 * @since 2016/03/19
+	 */
+	public static List<JVMMethodFlag> allFlags()
+	{
+		// Get reference
+		Reference<List<JVMMethodFlag>> ref = _FLAGS;
+		List<JVMMethodFlag> rv;
+		
+		// Check it
+		if (ref == null || null == (rv = ref.get()))
+			_FLAGS = new WeakReference<>((rv = MissingCollections.
+				<JVMMethodFlag>unmodifiableList(
+					Arrays.<JVMMethodFlag>asList(values()))));
+		
+		// Return it
+		return rv;
 	}
 }
 

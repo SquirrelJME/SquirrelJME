@@ -21,6 +21,7 @@ import java.util.Set;
  * This is the base class for a bit representation of flags which are used
  * by classes and members.
  *
+ * @param <F> The type of flags to use.
  * @since 2016/03/19
  */
 public abstract class JVMFlags<F extends JVMBitFlag>

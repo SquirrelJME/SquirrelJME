@@ -15,7 +15,7 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/19
  */
-public class JVMClassFlags
+public final class JVMClassFlags
 	extends JVMFlags<JVMClassFlag>
 {
 	/**
