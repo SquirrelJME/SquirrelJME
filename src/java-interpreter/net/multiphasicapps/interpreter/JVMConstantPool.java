@@ -85,7 +85,7 @@ public class JVMConstantPool
 		18;
 	
 	/** The class which owns the constant pool. */
-	protected final JVMClass owner;	
+	protected final JVMClassFile owner;	
 	
 	/** Number of entries in the pool. */
 	protected final int numentries;
@@ -96,13 +96,13 @@ public class JVMConstantPool
 	/**
 	 * Initializes and interprets the constant pool of a class.
 	 *
-	 * @param __cl The class owning the pool.
+	 * @param __cl The class parser owning the pool.
 	 * @param __is The input data for the constant pool.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/13
 	 */
-	JVMConstantPool(JVMClass __cl, DataInputStream __is)
+	JVMConstantPool(JVMClassFile __cl, DataInputStream __is)
 		throws JVMClassFormatError, IOException, NullPointerException
 	{
 		// Check

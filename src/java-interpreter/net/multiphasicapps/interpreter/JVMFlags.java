@@ -84,6 +84,42 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 	}
 	
 	/**
+	 * Checks whether all of the given flags are set.
+	 *
+	 * @param __fs The flags to check.
+	 * @return {@code true} if all are set.
+	 * @throws NullPointerException On null arguments or if any array element
+	 * is null.
+	 * @since 2016/03/19
+	 */
+	public boolean containsAll(F... __fs)
+		throws NullPointerException
+	{
+		// Check
+		if (__fs == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through it
+		for (F f : __fs)
+		{
+			// Crash on null
+			if (f == null)
+				throw new NullPointerException("NARG");
+			
+			// Must be instance
+			if (!type.isInstance(f))
+				return false;
+			
+			// If not set, then it is missing
+			if (0 == (bits & f.mask()))
+				return false;
+		}
+		
+		// Ok
+		return true;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/19
 	 */

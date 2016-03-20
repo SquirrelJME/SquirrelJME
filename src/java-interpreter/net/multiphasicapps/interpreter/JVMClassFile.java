@@ -37,11 +37,24 @@ public class JVMClassFile
 	public static final int MAGIC_NUMBER =
 		0xCAFEBABE;
 	
+	/** Internal lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The owning engine. */
 	protected final JVMEngine engine;
 	
 	/** The target class. */
 	protected final JVMClass target;
+	
+	/** The version of this class file. */
+	private volatile JVMClassVersion _version;
+	
+	/** The class constant pool. */
+	private volatile JVMConstantPool _constantpool;
+	
+	/** Did this already? */
+	private volatile boolean _did;
 	
 	/**
 	 * Initializes the class loader.
@@ -79,9 +92,12 @@ public class JVMClassFile
 			NullPointerException
 	{
 		// Already done?
-		if (_did)
-			throw new IllegalStateException("IN0w");
-		_did = true;
+		synchronized (lock)
+		{
+			if (_did)
+				throw new IllegalStateException("IN0w");
+			_did = true;
+		}
 		
 		// Check
 		if (__is == null)
@@ -90,30 +106,35 @@ public class JVMClassFile
 		// Setup an input stream for parsing the data
 		DataInputStream das = new DataInputStream(__is);
 		
+		// Check the magic number
+		int clmagic;
+		if (MAGIC_NUMBER != (clmagic = das.readInt()))
+			throw new JVMClassFormatError(String.format("IN01 %08x %08x",
+				clmagic, MAGIC_NUMBER));
+		
+		// Read the class version number, this modifies if certain
+		// instructions are handled and how they are verified (StackMap vs
+		// StackMapTable)
+		JVMClassVersion version;
+		_version = version = JVMClassVersion.findVersion(
+			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
+		if (version.compareTo(JVMClassVersion.MAX_VERSION) > 0)
+			throw new JVMClassVersionError(String.format("IN02 %s %s",
+				 version, JVMClassVersion.MAX_VERSION));
+		
+		// Initialize the constant pool
+		JVMConstantPool constantpool;
+		_constantpool = constantpool = new JVMConstantPool(this, das);
+		
+		// Read class access flags
+		target.setFlags(new JVMClassFlags(das.readUnsignedShort()));
+		
 		if (true)
 			throw new Error("TODO");
 		
 		// Self
 		return this;
 	}
-	
-	/** The version of this class file. */
-	protected final JVMClassVersion version;
-	
-	/** The class constant pool. */
-	protected final JVMConstantPool constantpool;
-	
-	/** Class access flags. */
-	protected final Set<JVMClassFlag> flags;
-	
-	/** The current class name. */
-	protected final ClassNameSymbol thisname;
-	
-	/** The super class name. */
-	protected final ClassNameSymbol supername;
-	
-	/** Interfaces. */
-	protected final Set<ClassNameSymbol> interfacenames;
 	
 	/**
 	 * Initializes the class data.
@@ -126,7 +147,7 @@ public class JVMClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	JVMClassFile(JVMEngine __owner, InputStream __cdata)
+	/*JVMClassFile(JVMEngine __owner, InputStream __cdata)
 		throws JVMClassFormatError, IOException, NullPointerException
 	{
 		super(__owner);
@@ -134,30 +155,6 @@ public class JVMClassFile
 		// Check
 		if (__cdata == null)
 			throw new NullPointerException();
-		
-		// Read the input class data
-		DataInputStream das = new DataInputStream(__cdata);
-		
-		// Check the magic number
-		int clmagic;
-		if (MAGIC_NUMBER != (clmagic = das.readInt()))
-			throw new JVMClassFormatError(String.format("IN01 %08x %08x",
-				clmagic, MAGIC_NUMBER));
-		
-		// Read the class version number, this modifies if certain
-		// instructions are handled and how they are verified (StackMap vs
-		// StackMapTable)
-		version = JVMClassVersion.findVersion(
-			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
-		if (version.compareTo(JVMClassVersion.MAX_VERSION) > 0)
-			throw new JVMClassVersionError(String.format("IN02 %s %s",
-				 version, JVMClassVersion.MAX_VERSION));
-		
-		// Initialize the constant pool
-		constantpool = new JVMConstantPool(this, das);
-		
-		// Read flags
-		setFlags(new JVMClassFlags(das.readUnsignedShort()));
 		
 		// Read the class name data, fields, and methods
 		try
@@ -269,114 +266,6 @@ public class JVMClassFile
 		// If this is not EOF, then the class has extra junk following it
 		if (das.read() >= 0)
 			throw new JVMClassFormatError("IN08");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/16
-	 */
-	@Override
-	public JVMConstantPool constantPool()
-	{
-		return constantpool;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/16
-	 */
-	@Override
-	public Set<JVMClassFlag> flags()
-	{
-		return flags;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/16
-	 */
-	@Override
-	public Set<ClassNameSymbol> interfaceNames()
-	{
-		return interfacenames;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/16
-	 */
-	@Override
-	public ClassNameSymbol superName()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/16
-	 */
-	@Override
-	public ClassNameSymbol thisName()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/13
-	 */
-	@Override
-	public JVMClassVersion version()
-	{
-		return version;
-	}
-	
-	/**
-	 * Parses input flags and returns an unmodifiable set view of them.
-	 *
-	 * @param <B> The flag type.
-	 * @param __ll The input flags which are available.
-	 * @param __in The input flag value.
-	 * @return The set of flags, it is not modifiable.
-	 * @throws JVMClassFormatError If illegal flags are specified.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/15
-	 */
-	static <B extends JVMBitFlag> Set<B> __parseFlags(List<B> __ll, int __in)
-		throws JVMClassFormatError, NullPointerException
-	{
-		// Check
-		if (__ll == null)
-			throw new NullPointerException();
-		
-		// Target set
-		Set<B> rv = new HashSet<>();
-		
-		// Parse flags
-		int rem = __in;
-		for (B b : __ll)
-		{
-			// Get the mask
-			int mm = b.mask();
-			
-			// If it is set, clear it and add it
-			if (0 != (rem & mm))
-			{
-				// Set
-				rv.add(b);
-				
-				// Clear
-				rem &= ~mm;
-			}
-		}
-		
-		// If non-zero then extra illegal flags remain
-		if (rem != 0)
-			throw new JVMClassFormatError(String.format("IN0a %x %x", __in,
-				rem));
-		
-		// Lock it in
-		return MissingCollections.<B>unmodifiableSet(rv);
-	}
+	}*/
 }
 
