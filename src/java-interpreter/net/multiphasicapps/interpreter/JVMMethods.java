@@ -29,7 +29,7 @@ public class JVMMethods
 	 */
 	public JVMMethods(JVMClass __own)
 	{
-		super(__own, JVMField.class);
+		super(__own, JVMMethod.class);
 	}
 }
 
