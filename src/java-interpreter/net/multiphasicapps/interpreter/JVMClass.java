@@ -24,16 +24,25 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/16
  */
-public abstract class JVMClass
+public class JVMClass
 {
+	/** Internal lock. */
+	protected Object lock =
+		new Object();	
+	
 	/** The interpreter engine which owns this class. */
 	protected final JVMEngine engine;
 	
+	/** The current class flags. */
+	private volatile JVMClassFlags _flags;
+	
 	/** Fields which exist in this class, lock on this. */
+	@Deprecated
 	protected final Map<JVMMemberKey<FieldSymbol>, JVMField> fields =
 		new HashMap<>();
 	
 	/** Methods which exist in this class, lock on this. */
+	@Deprecated
 	protected final Map<JVMMemberKey<MethodSymbol>, JVMMethod> methods =
 		new HashMap<>();
 	
@@ -61,15 +70,8 @@ public abstract class JVMClass
 	 * @return The class constant pool.
 	 * @since 2016/03/16
 	 */
+	@Deprecated
 	public abstract JVMConstantPool constantPool();
-	
-	/**
-	 * Returns the flags which are specified by this class.
-	 *
-	 * @return The used class flags.
-	 * @since 2016/03/16
-	 */
-	public abstract Set<JVMClassFlag> flags();
 	
 	/**
 	 * Returns the name of interfaces this implements.
@@ -146,6 +148,29 @@ public abstract class JVMClass
 	}
 	
 	/**
+	 * Returns the flags which are specified by this class.
+	 *
+	 * @return The used class flags.
+	 * @throws IllegalStateException If flags are not set.
+	 * @since 2016/03/16
+	 */
+	public final JVMClassFlags getFlags()
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Not set?
+			JVMClassFlags rv = _flags;
+			if (rv == null)
+				throw new IllegalStateException("IN0v");
+			
+			// Return them
+			return rv; 
+		}
+	}
+	
+	/**
 	 * Locates a method in the class by the given identifier name and method
 	 * descriptor.
 	 *
@@ -163,110 +188,6 @@ public abstract class JVMClass
 	{
 		return this.<JVMMethod, MethodSymbol>__getMember(methods, __name,
 			__desc, __super);
-	}
-	
-	/**
-	 * Is a specific flag set?
-	 *
-	 * @param __jcf The flag to check if it is set.
-	 * @return {@code true} if the flag is set or {@code false} if it is not.
-	 * @throws NullPointerException On null arguments.
-	 */
-	public final boolean hasFlag(JVMClassFlag __jcf)
-	{
-		// Check
-		if (__jcf == null)
-			throw new NullPointerException("NARG");
-		
-		return flags().contains(__jcf);
-	}
-	
-	/**
-	 * Is this class abstract?
-	 *
-	 * @return {@code true} if it is abstract.
-	 * @since 2016/03/15
-	 */
-	public final boolean isAbstract()
-	{
-		return flags().contains(JVMClassFlag.ABSTRACT);
-	}
-	
-	/**
-	 * Is this an annotation?
-	 *
-	 * @return {@code true} if it is an annotation.
-	 * @since 2016/03/15
-	 */
-	public final boolean isAnnotation()
-	{
-		return flags().contains(JVMClassFlag.ANNOTATION);
-	}
-	
-	/**
-	 * Is this an enumeration?
-	 *
-	 * @return {@code true} if it is an enumeration.
-	 * @since 2016/03/15
-	 */
-	public final boolean isEnum()
-	{
-		return flags().contains(JVMClassFlag.ENUM);
-	}
-	
-	/**
-	 * Is this class final?
-	 *
-	 * @return {@code true} if it is final.
-	 * @since 2016/03/15
-	 */
-	public final boolean isFinal()
-	{
-		return flags().contains(JVMClassFlag.FINAL);
-	}
-	
-	/**
-	 * Is this an interface?
-	 *
-	 * @return {@code true} if an interface.
-	 * @since 2016/03/15
-	 */
-	public final boolean isInterface()
-	{
-		return flags().contains(JVMClassFlag.INTERFACE);
-	}
-	
-	/**
-	 * Is this class package private?
-	 *
-	 * @return {@code true} if it is package private.
-	 * @since 2016/03/15
-	 */
-	public final boolean isPackagePrivate()
-	{
-		return !isPublic();
-	}
-	
-	/**
-	 * Is this class public?
-	 *
-	 * @return {@code true} if it is public.
-	 * @since 2016/03/15
-	 */
-	public final boolean isPublic()
-	{
-		return flags().contains(JVMClassFlag.PUBLIC);
-	}
-	
-	/**
-	 * Is there special handling for super-class method calls?
-	 *
-	 * @return {@code true} if the super-class invocation special flag is set.
-	 * @since 2016/03/15
-	 */
-	public final boolean isSpecialInvokeSpecial()
-	{
-		return flags().contains(JVMClassFlag.SUPER);
 	}
 	
 	/**
@@ -309,6 +230,32 @@ public abstract class JVMClass
 		// Unknown
 		else
 			throw new IllegalArgumentException("IN0u");
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Sets the flags used by this class.
+	 *
+	 * @param __fl The class flags.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/19
+	 */
+	public JVMClass setFlags(JVMClassFlags __fl)
+		throws NullPointerException
+	{
+		// Check
+		if (__fl == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Set
+			_flags = __fl;
+		}
 		
 		// Self
 		return this;
