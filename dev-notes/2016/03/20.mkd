@@ -33,3 +33,13 @@ cachable because identifiers can contain `(` and `)`. They are also not in
 fixed positions. So I suppose what I will do then is have a fixed offset and
 length similar to the binary name, then substring as required.
 
+## 18:49
+
+`sloccount` gives me `java: 13646 (100.00%)`. Also, the parsing of the block
+of code will be inline so no byte arrays have to be filled by the attribute
+and then parsed that way. Thus, the class parsing code will remain light and
+not require too heavy allocations beyond the normal allocations. During my
+pass, I can also use what is used by the method and ignore stuff that is not
+used. Since the constant pool is shared with everything, some stuff might not
+be needed at all for specific methods.
+
