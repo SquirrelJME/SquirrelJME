@@ -311,6 +311,8 @@ public class JVMClass
 	 * Sets the name of the super class, the current class name must be set
 	 * before this is called.
 	 *
+	 * The set class name is removed from the list of implemented interfaces.
+	 *
 	 * @param __n The name to set.
 	 * @return {@code this}.
 	 * @throws IllegalStateException Of the current class name is not set.
@@ -331,6 +333,10 @@ public class JVMClass
 			// Get current class name
 			ClassNameSymbol self = getThisName();
 			
+			// Cannot be this
+			if (__n != null && self.equals(__n))
+				throw new JVMClassFormatError(String.format("IN12 %s", __n));
+			
 			// If it is object then super-class is not valid, or if this is
 			// not object then it must be set
 			boolean isobj = self.equals("java/lang/Object");
@@ -341,6 +347,9 @@ public class JVMClass
 			// Set
 			_super = __n;
 			_superset = true;
+			
+			// Remove from interfaces
+			getInterfaces().remove(__n);
 		}
 		
 		// Self
@@ -352,6 +361,8 @@ public class JVMClass
 	 *
 	 * If the super class was already specified, then the super class may
 	 * be adjusted accordingly when moving to or from {@link Object}.
+	 *
+	 * The implemented interface list is cleared of the input class.
 	 *
 	 * @param __n The name of the class.
 	 * @return {@code this}.
@@ -377,14 +388,17 @@ public class JVMClass
 			// Get super class
 			ClassNameSymbol sup = _super;
 			
-			// Not set?
+			// If not set or this is the super class, then correct to Object
 			boolean tio = __n.equals("java/lang/Object");
-			if (sup == null && !tio)
+			if ((sup == null && !tio) || (sup != null && sup.equals(__n)))
 				_super = new ClassNameSymbol("java/lang/Object");
 			
-			// Is set?
+			// Otherwise clear if not already set
 			else if (sup != null && tio)
 				_super = null;
+			
+			// Remove interface
+			getInterfaces().remove(__n);
 		}
 		
 		// Self

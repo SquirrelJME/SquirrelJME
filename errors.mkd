@@ -241,6 +241,9 @@ These codes do not have a index meaning and are meant to be short.
    was specified.
    * The current set of interfaces.
    * The interface attempted to be inserted.
+ * `IN12` -- The super class of a class cannot be itself.
+   * The attempted super class to use.
+ * `IN13` -- Cannot implement Object.
 
 # `net.multiphasicapps.interpreter.local`
 

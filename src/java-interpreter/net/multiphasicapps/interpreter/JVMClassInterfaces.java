@@ -73,6 +73,10 @@ public class JVMClassInterfaces
 		if (__e.isArray())
 			throw new JVMClassFormatError(String.format("IN10 %s", __e));
 		
+		// Cannot be Object
+		if (__e.equals("java/lang/Object"))
+			throw new JVMClassFormatError("IN13");
+		
 		// Lock
 		synchronized (lock)
 		{
