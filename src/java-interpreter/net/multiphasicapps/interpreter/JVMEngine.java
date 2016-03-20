@@ -262,7 +262,10 @@ public abstract class JVMEngine
 						continue;
 					
 					// Create class data (from files)
-					JVMClass rv = new JVMClassFile(this, is);
+					JVMClass rv = new JVMClass();
+					
+					// Load in class data
+					new JVMClassFile(this, rv).parse(is);
 					
 					// Wrong class? Ignore it
 					String xn;

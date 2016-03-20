@@ -225,6 +225,7 @@ These codes do not have a index meaning and are meant to be short.
  * `IN0t` -- Adding a field or method which belong to another class.
  * `IN0u` -- Adding of a member which is not a field or a method.
  * `IN0v` -- Class flags not set.
+ * `IN0w` -- A class file was already parsed by this loader.
 
 # `net.multiphasicapps.interpreter.local`
 

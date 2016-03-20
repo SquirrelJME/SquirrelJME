@@ -97,3 +97,9 @@ I am going to make `JVMClass` mutable and patchable so that it may be used
 by a compiler in the future and it would be easier to potentially mutate state
 to fit the run-time if needed.
 
+## 22:14
+
+With `JVMClassFile` becoming a parser, it can read a bunch of data and then
+just throw out what it not needed by the interpreter. This simplifies things
+and makes it so only the required detail is included.
+

@@ -32,11 +32,70 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * @since 2016/03/01
  */
 public class JVMClassFile
-	extends JVMClass
 {
 	/** The class file magic number. */
 	public static final int MAGIC_NUMBER =
 		0xCAFEBABE;
+	
+	/** The owning engine. */
+	protected final JVMEngine engine;
+	
+	/** The target class. */
+	protected final JVMClass target;
+	
+	/**
+	 * Initializes the class loader.
+	 *
+	 * @param __eng The engine which is loading this class.
+	 * @param __targ The target class to write data into, it is undefined
+	 * behavior if it already has details set.
+	 * @throws NUllPointerException On null arguments.
+	 * @since 2016/03/19
+	 */
+	public JVMClassFile(JVMEngine __eng, JVMClass __targ)
+		throws NullPointerException
+	{
+		// Check
+		if (__eng == null || __targ == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		engine = __eng;
+		target = __targ;
+	}
+	
+	/**
+	 * Parses the class file and loads the information into the target class.
+	 *
+	 * @param __is The input stream to read class data from.
+	 * @return {@code this}.
+	 * @throws IOException On read errors.
+	 * @throws JVMClassFormatError If the class is badly formatted.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/19
+	 */
+	public JVMClassFile parse(InputStream __is)
+		throws IllegalStateException, IOException, JVMClassFormatError,
+			NullPointerException
+	{
+		// Already done?
+		if (_did)
+			throw new IllegalStateException("IN0w");
+		_did = true;
+		
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup an input stream for parsing the data
+		DataInputStream das = new DataInputStream(__is);
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Self
+		return this;
+	}
 	
 	/** The version of this class file. */
 	protected final JVMClassVersion version;
