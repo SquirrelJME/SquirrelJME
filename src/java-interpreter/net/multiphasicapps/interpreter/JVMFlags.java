@@ -92,7 +92,7 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 	 * is null.
 	 * @since 2016/03/19
 	 */
-	public boolean containsAll(F... __fs)
+	public boolean containsAll(JVMBitFlag... __fs)
 		throws NullPointerException
 	{
 		// Check
