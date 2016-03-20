@@ -188,28 +188,21 @@ public class JVMClassFile
 	}
 	
 	/**
-	 * Reads the attribute length and then skips it
+	 * Parses the code attribute of a method.
 	 *
-	 * @param __das Data source.
+	 * @param __meth The method which owns the code attribute.
+	 * @param __das The source of bytes to read from.
 	 * @throws IOException On read errors.
-	 * @throws JVMClassFormatError If EOF was reached.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/20
 	 */
-	private void __skipAttribute(DataInputStream __das)
-		throws IOException, JVMClassFormatError, NullPointerException
+	private void __parseCode(JVMMethod __meth, DataInputStream __das)
+		throws IOException, NullPointerException
 	{
 		// Check
-		if (__das == null)
+		if (__meth == null || __das == null)
 			throw new NullPointerException("NARG");
 		
-		// Ignore the length, but fail if EOF is reached
-		// Using != instead of < makes it so that attributes that are larger
-		// than 2GiB can be properly skipped (although unlikely)
-		int alen = __das.readInt();
-		for (int w = 0; w != alen; w++)
-			if (__das.read() < 0)
-				throw new JVMClassFormatError("IN09");
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -324,7 +317,13 @@ public class JVMClassFile
 			{
 					// Only care about code
 				case "Code":
-					throw new Error("TODO");
+					try (DataInputStream cdis = new DataInputStream(
+						new __ChunkedInputStream__(__das,
+							(((long)__das.readInt()) & 0xFFFFFFFFL))))
+					{
+						__parseCode(rv, cdis);
+					}
+					break;
 					
 					// Ignored
 				default:
@@ -368,6 +367,31 @@ public class JVMClassFile
 		
 		// Construct key
 		return new JVMMemberKey<>(name, type);
+	}
+	
+	/**
+	 * Reads the attribute length and then skips it
+	 *
+	 * @param __das Data source.
+	 * @throws IOException On read errors.
+	 * @throws JVMClassFormatError If EOF was reached.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/20
+	 */
+	private void __skipAttribute(DataInputStream __das)
+		throws IOException, JVMClassFormatError, NullPointerException
+	{
+		// Check
+		if (__das == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore the length, but fail if EOF is reached
+		// Using != instead of < makes it so that attributes that are larger
+		// than 2GiB can be properly skipped (although unlikely)
+		int alen = __das.readInt();
+		for (int w = 0; w != alen; w++)
+			if (__das.read() < 0)
+				throw new JVMClassFormatError("IN09");
 	}
 }
 

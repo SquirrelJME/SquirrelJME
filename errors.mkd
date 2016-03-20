@@ -280,6 +280,8 @@ These codes do not have a index meaning and are meant to be short.
    not the same.
    * The key identifying the entry.
    * The key of the member.
+ * `IN1e` -- Reached end of stream reading a chunked stream before the limit
+   was reached.
 
 # `net.multiphasicapps.interpreter.local`
 
