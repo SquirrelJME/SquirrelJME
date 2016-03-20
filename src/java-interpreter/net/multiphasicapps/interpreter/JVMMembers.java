@@ -82,5 +82,25 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Adds the given member to the mapping.
+	 *
+	 * @param __e The member to add to the mapping.
+	 * @return The old member this replaced, will be {@code null} if nothing
+	 * was replaced.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/20
+	 */
+	public final E put(E __e)
+		throws NullPointerException
+	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		// Place it in
+		return put(__e.nameAndType(), __e);
+	}
 }
 

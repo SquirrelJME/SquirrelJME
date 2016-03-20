@@ -22,8 +22,10 @@ import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This represents a single class loaded by the interpreter which is derived
@@ -152,141 +154,144 @@ public class JVMClassFile
 				throw new JVMClassVersionError(String.format("IN11 %s %s",
 					ints, ix));
 		
-		if (true)
-			throw new Error("TODO");
+		// Read fields
+		int nf = das.readUnsignedShort();
+		JVMFields flds = target.getFields();
+		for (int i = 0; i < nf; i++)
+			flds.put(__readField(das));
+		
+		// Read methods
+		int nm = das.readUnsignedShort();
+		JVMMethods mths = target.getMethods();
+		for (int i = 0; i < nm; i++)
+			mths.put(__readMethod(das));
+		
+		// No class attributes are used by the Java ME VM, thus they can
+		// completely be ignored as if they did not exist.
+		int numcan = das.readUnsignedShort();
+		for (int i = 0; i < numcan; i++)
+		{
+			// Ignore the name index
+			das.readUnsignedShort();
+			
+			// Ignore the length also, but fail if EOF is reached
+			int alen = das.readUnsignedShort();
+			for (int w = 0; w < alen; w++)
+				if (das.read() < 0)
+					throw new EOFException("IN09");
+		}
+		
+		// If this is not EOF, then the class has extra junk following it
+		if (das.read() >= 0)
+			throw new JVMClassFormatError("IN08");
 		
 		// Self
 		return this;
 	}
 	
 	/**
-	 * Initializes the class data.
+	 * Reads a single field.
 	 *
-	 * @param __owner The owning interpreter engine.
-	 * @param __cdata Class data for parsing.
-	 * @throws JVMClassFormatError If the input class data is not
-	 * correct.
+	 * @param __das Data source.
+	 * @return The read field.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/01
+	 * @since 2016/03/20
 	 */
-	/*JVMClassFile(JVMEngine __owner, InputStream __cdata)
-		throws JVMClassFormatError, IOException, NullPointerException
+	private JVMField __readField(DataInputStream __das)
+		throws IOException, NullPointerException
 	{
-		super(__owner);
-		
 		// Check
-		if (__cdata == null)
-			throw new NullPointerException();
+		if (__das == null)
+			throw new NullPointerException("NARG");
 		
-		// Read the class name data, fields, and methods
-		try
-		{
-			// Get current class name
-			thisname = ;
-			
-			// Super class name might be null
-			int sid = das.readUnsignedShort();
-			boolean isobj = "java/lang/Object".equals(thisname.toString());
-			
-			// Object never has a super class, however all other objects do
-			if ((sid != 0 && isobj) || (sid == 0 && !isobj))
-				throw new JVMClassFormatError(String.format("IN07 %s",
-					thisname));
-			
-			// Lacks one
-			else if (sid == 0)
-				supername = null;
-			
-			// Has one
-			else
-				supername = constantpool.<JVMConstantEntry.ClassName>getAs(
-					sid, JVMConstantEntry.ClassName.class).symbol();
-			
-			// Interfaces
-			int numi = das.readUnsignedShort();
-			Set<ClassNameSymbol> it = new LinkedHashSet<>();
-			for (int i = 0; i < numi; i++)
-				it.add(constantpool.<JVMConstantEntry.ClassName>getAs(
-					das.readUnsignedShort(), JVMConstantEntry.ClassName.class).
-					symbol());
-			interfacenames = MissingCollections.<ClassNameSymbol>
-				unmodifiableSet(it);
-			
-			// Read fields and methods
-			for (int ism = 0; ism <= 1; ism++)
-			{
-				// Is field? Is method?
-				boolean isfield = (ism == 0);
-				boolean ismethod = !isfield;
-				
-				// Read in members
-				int mn = das.readUnsignedShort();
-				for (int i = 0; i < mn; i++)
-				{
-					// Read flags
-					int mflags = das.readUnsignedShort();
-					
-					// Read the name
-					IdentifierSymbol mname = new IdentifierSymbol(
-						constantpool.<JVMConstantEntry.UTF8>getAs(
-						das.readUnsignedShort(), JVMConstantEntry.UTF8.class).
-							toString());
-					
-					// Read the type
-					MemberTypeSymbol desc = MemberTypeSymbol.create(
-						constantpool.<JVMConstantEntry.UTF8>getAs(
-						das.readUnsignedShort(), JVMConstantEntry.UTF8.class).
-							toString());
-					
-					// Generate field
-					JVMMember<?> mem;
-					if (isfield)
-						mem = new JVMField(this, mname, desc.asFieldSymbol(),
-							JVMClassFile.<JVMFieldFlag>__parseFlags(
-								JVMFieldFlag.FLAGS, mflags));
-					
-					// Generate method
-					else if (ismethod)
-						mem = new JVMMethod(this, mname, desc.asMethodSymbol(),
-							JVMClassFile.<JVMMethodFlag>__parseFlags(
-								JVMMethodFlag.FLAGS, mflags));
-					
-					// Unknown?
-					else
-						throw new RuntimeException("WTFX");
-					
-					// Register it
-					registerMember(mem);
-					
-					throw new Error("TODO");
-				}
-			}
-			
-			// Completeley ignore attributes, they are pointless here
-			int numcan = das.readUnsignedShort();
-			for (int i = 0; i < numcan; i++)
-			{
-				// Ignore the name index
-				das.readUnsignedShort();
-				
-				// Ignore the length also, but fail if EOF is reached
-				int alen = das.readUnsignedShort();
-				for (int w = 0; w < alen; w++)
-					if (das.read() < 0)
-						throw new EOFException("IN09");
-			}
-		}
+		// Read flags
+		JVMFieldFlags flags = new JVMFieldFlags(__das.readUnsignedShort());
 		
-		// Bad index somewhere
-		catch (IndexOutOfBoundsException|NullPointerException e)
-		{
-			throw new JVMClassFormatError(e);
-		}
+		// Read name and type key
+		JVMMemberKey<FieldSymbol> key = this.<FieldSymbol>__readNAT(__das,
+			FieldSymbol.class);
 		
-		// If this is not EOF, then the class has extra junk following it
-		if (das.read() >= 0)
-			throw new JVMClassFormatError("IN08");
-	}*/
+		// Setup
+		JVMField rv = new JVMField(target, key);
+		rv.setFlags(flags);
+		
+		// Read in attributes?
+		int nas = __das.readUnsignedShort();
+		for (int i = 0; i < nas; i++)
+			throw new Error("TODO");
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Reads a single method.
+	 *
+	 * @param __das Data source.
+	 * @return The read method.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/20
+	 */
+	private JVMMethod __readMethod(DataInputStream __das)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__das == null)
+			throw new NullPointerException("NARG");
+		
+		// Read flags
+		JVMMethodFlags flags = new JVMMethodFlags(__das.readUnsignedShort());
+		
+		// Read name and type key
+		JVMMemberKey<MethodSymbol> key = this.<MethodSymbol>__readNAT(__das,
+			MethodSymbol.class);
+		
+		// Setup
+		JVMMethod rv = new JVMMethod(target, key);
+		rv.setFlags(flags);
+		
+		// Read in attributes?
+		int nas = __das.readUnsignedShort();
+		for (int i = 0; i < nas; i++)
+			throw new Error("TODO");
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Reads the name and type information which a field uses.
+	 *
+	 * @param <S> The type of symbol to read.
+	 * @param __das The input data source.
+	 * @param __cl The class that the type is.
+	 * @return The read type.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/20
+	 */
+	private <S extends MemberTypeSymbol> JVMMemberKey<S> __readNAT(
+		DataInputStream __d, Class<S> __cl)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__d == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Read name
+		IdentifierSymbol name = new IdentifierSymbol(
+			_constantpool.<JVMConstantEntry.UTF8>getAs(__d.readUnsignedShort(),
+				JVMConstantEntry.UTF8.class).toString());
+		
+		// Read type
+		S type = __cl.cast(MemberTypeSymbol.create(
+			_constantpool.<JVMConstantEntry.UTF8>getAs(__d.readUnsignedShort(),
+				JVMConstantEntry.UTF8.class).toString()));
+		
+		// Construct key
+		return new JVMMemberKey<>(name, type);
+	}
 }
 
