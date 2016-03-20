@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +37,18 @@ public class JVMClass
 	
 	/** The current class flags. */
 	private volatile JVMClassFlags _flags;
+	
+	/** The name of the current class. */
+	private volatile ClassNameSymbol _this;
+	
+	/** The name of the super class. */
+	private volatile ClassNameSymbol _super;
+	
+	/** Was the super-class name set? */
+	private volatile boolean _superset;
+	
+	/** Class loader formatted binary name cache. */
+	private volatile Reference<String> _clbname;
 	
 	/** Fields which exist in this class, lock on this. */
 	@Deprecated
@@ -65,48 +79,6 @@ public class JVMClass
 	}
 	
 	/**
-	 * Returns the constant pool of the class.
-	 *
-	 * @return The class constant pool.
-	 * @since 2016/03/16
-	 */
-	@Deprecated
-	public abstract JVMConstantPool constantPool();
-	
-	/**
-	 * Returns the name of interfaces this implements.
-	 *
-	 * @return The set of interface names.
-	 * @since 2016/03/16
-	 */
-	public abstract Set<ClassNameSymbol> interfaceNames();
-	
-	/**
-	 * Returns the name of the super class.
-	 *
-	 * @return The super class name.
-	 * @since 2016/03/16
-	 */
-	public abstract ClassNameSymbol superName();
-	
-	/**
-	 * Returns the name of this class.
-	 *
-	 * @return The name of this class.
-	 * @since 2016/03/16
-	 */
-	public abstract ClassNameSymbol thisName();
-	
-	/**
-	 * Returns the version of the class file which determines if specific
-	 * features are supported or not.
-	 *
-	 * @return The class version number.
-	 * @since 2016/03/13
-	 */
-	public abstract JVMClassVersion version();
-	
-	/**
 	 * Returns the engine which initialized this class.
 	 *
 	 * @return The owning engine
@@ -125,7 +97,21 @@ public class JVMClass
 	 */
 	public final String getClassLoaderName()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<String> ref = _clbname;
+			String rv;
+			
+			// Needs to be cached?
+			if (ref == null || null == (rv = ref.get()))
+				_clbname = new WeakReference<>((rv =
+					getThisName().toString().replace('/', '.')));
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
@@ -191,6 +177,51 @@ public class JVMClass
 	}
 	
 	/**
+	 * Returns the super class name of this class.
+	 *
+	 * @return The super class this extends.
+	 * @throws IllegalStateException If the super class name was not set.
+	 * @since 2016/03/19
+	 */
+	public final ClassNameSymbol getSuperName()
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// not set?
+			if (!_superset)
+				throw new IllegalStateException("IN0y");
+			
+			// Return it
+			return _super;
+		}
+	}
+	
+	/**
+	 * Returns the name of the current class.
+	 *
+	 * @return The current class name.
+	 * @throws IllegalStateException On null arguments.
+	 * @since 2016/03/19
+	 */
+	public final ClassNameSymbol getThisName()
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Must be set
+			ClassNameSymbol rv = _this;
+			if (rv == null)
+				throw new IllegalStateException("IN0x");
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Registers a field or a method with this class.
 	 *
 	 * @param __m The member to register to this class.
@@ -243,7 +274,7 @@ public class JVMClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	public JVMClass setFlags(JVMClassFlags __fl)
+	public final JVMClass setFlags(JVMClassFlags __fl)
 		throws NullPointerException
 	{
 		// Check
@@ -255,6 +286,86 @@ public class JVMClass
 		{
 			// Set
 			_flags = __fl;
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Sets the name of the super class, the current class name must be set
+	 * before this is called.
+	 *
+	 * @param __n The name to set.
+	 * @return {@code this}.
+	 * @throws IllegalStateException Of the current class name is not set.
+	 * @throws JVMClassFormatError If this class name is {@link Object} and
+	 * a super class was attempted to be set.
+	 * @since 2016/03/19
+	 */
+	public final JVMClass setSuperName(ClassNameSymbol __n)
+		throws IllegalStateException, JVMClassFormatError
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get current class name
+			ClassNameSymbol self = getThisName();
+			
+			// If it is object then super-class is not valid, or if this is
+			// not object then it must be set
+			boolean isobj = self.equals("java/lang/Object");
+			if ((__n != null && isobj) || (__n == null && !isobj))
+				throw new JVMClassFormatError(String.format("IN07 %s %s",
+					self, __n));
+			
+			// Set
+			_super = __n;
+			_superset = true;
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Sets the name of the current class.
+	 *
+	 * If the super class was already specified, then the super class may
+	 * be adjusted accordingly when moving to or from {@link Object}.
+	 *
+	 * @param __n The name of the class.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/19
+	 */
+	public final JVMClass setThisName(ClassNameSymbol __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Set
+			_this = __n;
+			
+			// Invalidate cache
+			_clbname = null;
+			
+			// Get super class
+			ClassNameSymbol sup = _super;
+			
+			// Not set?
+			boolean tio = __n.equals("java/lang/Object");
+			if (sup == null && !tio)
+				_super = new ClassNameSymbol("java/lang/Object");
+			
+			// Is set?
+			else if (sup != null && tio)
+				_super = null;
 		}
 		
 		// Self

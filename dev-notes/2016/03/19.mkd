@@ -103,3 +103,13 @@ With `JVMClassFile` becoming a parser, it can read a bunch of data and then
 just throw out what it not needed by the interpreter. This simplifies things
 and makes it so only the required detail is included.
 
+## 22:22
+
+So far, I like how the class is now parsed. It is much simpler and not a giant
+mess.
+
+## 22:37
+
+And the flag handling is much simpler too, no more is it a complex mess. I
+will have to do the same things for members also.
+

@@ -407,7 +407,7 @@ then
 		if [ -s "/tmp/$$" ]
 		then
 			if ! javac -d "/tmp/$$.$__pack" -source 1.7 -target 1.7 -g \
-				-bootclasspath "$__cp" @/tmp/$$
+				-Xlint:unchecked -bootclasspath "$__cp" @/tmp/$$
 			then
 				# Note
 				echo "Failed to compile $__pack." 2>&1

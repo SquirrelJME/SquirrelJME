@@ -129,6 +129,19 @@ public class JVMClassFile
 		// Read class access flags
 		target.setFlags(new JVMClassFlags(das.readUnsignedShort()));
 		
+		// Set current class name
+		target.setThisName(constantpool.<JVMConstantEntry.ClassName>getAs(
+			das.readUnsignedShort(), JVMConstantEntry.ClassName.class).
+			symbol());
+		
+		// Set super class name
+		int sid = das.readUnsignedShort();
+		if (sid != 0)
+			target.setSuperName(constantpool.<JVMConstantEntry.ClassName>getAs(
+				sid, JVMConstantEntry.ClassName.class).symbol());
+		else
+			target.setSuperName(null);
+		
 		if (true)
 			throw new Error("TODO");
 		
@@ -160,9 +173,7 @@ public class JVMClassFile
 		try
 		{
 			// Get current class name
-			thisname = constantpool.<JVMConstantEntry.ClassName>getAs(
-				das.readUnsignedShort(), JVMConstantEntry.ClassName.class).
-				symbol();
+			thisname = ;
 			
 			// Super class name might be null
 			int sid = das.readUnsignedShort();

@@ -179,8 +179,9 @@ These codes do not have a index meaning and are meant to be short.
  * `IN04` -- Interfaces cannot be super, final, or enums.
  * `IN05` -- Non-interface must not be an annotation.
  * `IN06` -- A class cannot be both final and abstract.
- * `IN07` -- A class which is not `java.lang.Object` has no superclass.
+ * `IN07` -- A super class is not valid for this class.
    * The current class.
+   * The super class.
  * `IN08` -- Expected the end of stream while reading the class file, however
    more data is available.
  * `IN09` -- While skipping class attributes, the end of the stream was
@@ -226,6 +227,8 @@ These codes do not have a index meaning and are meant to be short.
  * `IN0u` -- Adding of a member which is not a field or a method.
  * `IN0v` -- Class flags not set.
  * `IN0w` -- A class file was already parsed by this loader.
+ * `IN0x` -- The class name not set.
+ * `IN0y` -- The super class name was not set.
 
 # `net.multiphasicapps.interpreter.local`
 
