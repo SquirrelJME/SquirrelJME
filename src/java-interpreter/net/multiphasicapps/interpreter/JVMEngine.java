@@ -21,6 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
+import net.multiphasicapps.descriptors.IllegalSymbolException;
 
 /**
  * This class acts as the interpreter engine.
@@ -278,7 +279,8 @@ public abstract class JVMEngine
 				}
 				
 				// Failed to load class, ignore
-				catch (IOException e)
+				catch (IOException|IllegalSymbolException|
+					JVMClassFormatError e)
 				{
 					throw new JVMClassFormatError(String.format("IN0o %s",
 						__bn), e);

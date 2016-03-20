@@ -204,10 +204,12 @@ public class JVMClassFile
 			throw new NullPointerException("NARG");
 		
 		// Ignore the length, but fail if EOF is reached
-		int alen = __das.readUnsignedShort();
-		for (int w = 0; w < alen; w++)
+		// Using != instead of < makes it so that attributes that are larger
+		// than 2GiB can be properly skipped (although unlikely)
+		int alen = __das.readInt();
+		for (int w = 0; w != alen; w++)
 			if (__das.read() < 0)
-				throw new EOFException("IN09");
+				throw new JVMClassFormatError("IN09");
 	}
 	
 	/**

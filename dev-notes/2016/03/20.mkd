@@ -12,3 +12,17 @@ First day of spring also.
 
 This refactored code is much simpler now and likely much faster too.
 
+## 15:57
+
+I believe I have a short or too long of a read somewhere.
+
+## 16:04
+
+Based on the dump and the values I am seeing, I am short two bytes.
+
+## 16:07
+
+And looking at the hex dump of the class, those missing two bytes are for
+the ignored attribute, since the length is an integer and not an unsigned
+short.
+
