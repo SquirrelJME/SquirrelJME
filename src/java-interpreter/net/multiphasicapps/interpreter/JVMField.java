@@ -37,5 +37,35 @@ public class JVMField
 	{
 		super(__owner, FieldSymbol.class, __name, __type, JVMFieldFlags.class);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public JVMField setFlags(JVMFieldFlags __fl)
+		throws JVMClassFormatError, NullPointerException
+	{
+		// Check
+		if (__fl == null)
+			throw new NullPointerException("NARG");
+		
+		// Get class flags
+		JVMClassFlags cl = inclass.getFlags();
+		
+		// If an interface
+		if (cl.isInterface())
+		{
+			// Must have these flags set and some not set
+			if ((!__fl.isPublic() || !__fl.isStatic() || !__fl.isFinal()) ||
+				__fl.isProtected() || __fl.isPrivate() || __fl.isVolatile() ||
+				__fl.isTransient() || __fl.isEnum())
+				throw new JVMClassFormatError(String.format("IN1c %s %s",
+						__fl, cl));
+		}
+		
+		// Continue with super call
+		return (JVMField)super.setFlags(__fl);
+	}
 }
 

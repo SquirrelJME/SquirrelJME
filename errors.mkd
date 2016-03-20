@@ -262,6 +262,9 @@ These codes do not have a index meaning and are meant to be short.
  * `IN1b` -- Illegal combination of method flags, regardless of the current
    class.
    * The method flags.
+ * `IN1c` -- Fields in interfaces must be `public static final`.
+   * The field flags.
+   * The class flags.
 
 # `net.multiphasicapps.interpreter.local`
 
