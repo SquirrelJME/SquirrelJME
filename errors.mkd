@@ -18,6 +18,7 @@ These codes do not have a index meaning and are meant to be short.
  * `BAOB` -- Byte array values out of bounds.
  * `FEOF` -- End of file reached.
  * `IOOB` -- Index out of bounds.
+   * Optional index.
  * `NARG` -- Null arguments passed to method. This is specified and is used
    to differentiate from `NullPointerException` which might not appear in
    normal code.
@@ -77,6 +78,16 @@ These codes do not have a index meaning and are meant to be short.
    * The input field symbol.
  * `DS09` -- The field descriptor which describes a class must end with a `;`.
    * The input field descriptor.
+ * `DS0a` -- The method descriptor does not contain a return type.
+   * The input method descriptor.
+ * `DS0b` -- The method descriptor does not have a closing `)` followed by a
+   return type.
+   * The input method descriptor.
+ * `DS0c` -- The method descriptor does not start with `(`.
+   * The input method descriptor.
+ * `DS0d` -- Method descriptors cannot contain an argument which would
+   evaluate to `void`.
+   * The input method descriptor.
 
 # `net.multiphasicapps.hairball`
 
