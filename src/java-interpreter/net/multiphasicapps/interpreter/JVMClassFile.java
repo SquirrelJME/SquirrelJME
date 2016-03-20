@@ -150,7 +150,8 @@ public class JVMClassFile
 		ClassNameSymbol ix;
 		for (int i = 0; i < nints; i++)
 			if (!ints.add((ix = constantpool.<JVMConstantEntry.ClassName>getAs(
-				sid, JVMConstantEntry.ClassName.class).symbol())))
+				das.readUnsignedShort(), JVMConstantEntry.ClassName.class).
+					symbol())))
 				throw new JVMClassVersionError(String.format("IN11 %s %s",
 					ints, ix));
 		
