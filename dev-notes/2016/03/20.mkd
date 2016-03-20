@@ -8,3 +8,7 @@ Refactor is going well, things are much nicer now.
 
 First day of spring also.
 
+## 15:21
+
+This refactored code is much simpler now and likely much faster too.
+

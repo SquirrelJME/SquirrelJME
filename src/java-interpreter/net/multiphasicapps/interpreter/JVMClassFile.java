@@ -174,11 +174,8 @@ public class JVMClassFile
 			// Ignore the name index
 			das.readUnsignedShort();
 			
-			// Ignore the length also, but fail if EOF is reached
-			int alen = das.readUnsignedShort();
-			for (int w = 0; w < alen; w++)
-				if (das.read() < 0)
-					throw new EOFException("IN09");
+			// Skip the length
+			__skipAttribute(das);
 		}
 		
 		// If this is not EOF, then the class has extra junk following it
@@ -187,6 +184,50 @@ public class JVMClassFile
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Reads the attribute length and then skips it
+	 *
+	 * @param __das Data source.
+	 * @throws IOException On read errors.
+	 * @throws JVMClassFormatError If EOF was reached.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/20
+	 */
+	private void __skipAttribute(DataInputStream __das)
+		throws IOException, JVMClassFormatError, NullPointerException
+	{
+		// Check
+		if (__das == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore the length, but fail if EOF is reached
+		int alen = __das.readUnsignedShort();
+		for (int w = 0; w < alen; w++)
+			if (__das.read() < 0)
+				throw new EOFException("IN09");
+	}
+	
+	/**
+	 * Reads the name of the attribute.
+	 *
+	 * @param __das The data source.
+	 * @return The current attribute to be read.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/20
+	 */
+	private String __readAttributeName(DataInputStream __das)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__das == null)
+			throw new NullPointerException("NARG");
+		
+		// Read it in
+		return _constantpool.<JVMConstantEntry.UTF8>getAs(
+			__das.readUnsignedShort(), JVMConstantEntry.UTF8.class).toString();
 	}
 	
 	/**
@@ -219,7 +260,23 @@ public class JVMClassFile
 		// Read in attributes?
 		int nas = __das.readUnsignedShort();
 		for (int i = 0; i < nas; i++)
-			throw new Error("TODO");
+		{
+			// Read attribute name
+			String an = __readAttributeName(__das);
+			
+			// Depends on the name
+			switch (an)
+			{
+					// Only care about constants
+				case "ConstantValue":
+					throw new Error("TODO");
+				
+					// Ignored
+				default:
+					__skipAttribute(__das);
+					break;
+			}
+		}
 		
 		// Return it
 		return rv;
@@ -255,7 +312,23 @@ public class JVMClassFile
 		// Read in attributes?
 		int nas = __das.readUnsignedShort();
 		for (int i = 0; i < nas; i++)
-			throw new Error("TODO");
+		{
+			// Read attribute name
+			String an = __readAttributeName(__das);
+			
+			// Depends on the name
+			switch (an)
+			{
+					// Only care about code
+				case "Code":
+					throw new Error("TODO");
+					
+					// Ignored
+				default:
+					__skipAttribute(__das);
+					break;
+			}
+		}
 		
 		// Return it
 		return rv;
