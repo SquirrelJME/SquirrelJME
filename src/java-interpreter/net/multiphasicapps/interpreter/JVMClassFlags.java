@@ -29,6 +29,30 @@ public class JVMClassFlags
 		throws JVMClassFormatError
 	{
 		super(__fl, JVMClassFlag.class, JVMClassFlag.allFlags());
+		
+		// Interface?
+		if (isInterface())
+		{
+			// Must be abstract
+			if (!isAbstract())
+				throw new JVMClassFormatError("IN03");
+			
+			// cannot have some flags set
+			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
+				throw new JVMClassFormatError("IN04");
+		}
+		
+		// Normal class
+		else
+		{
+			// Cannot be an annotation
+			if (isAnnotation())
+				throw new JVMClassFormatError("IN05");
+				
+			// Cannot be abstract and final
+			if (isAbstract() && isFinal())
+				throw new JVMClassFormatError("IN06");
+		}
 	}
 	
 	/**

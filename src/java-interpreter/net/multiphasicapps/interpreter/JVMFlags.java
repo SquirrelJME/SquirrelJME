@@ -14,6 +14,7 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -95,6 +96,9 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 				protected final ListIterator<F> it =
 					all.listIterator();
 				
+				/** The next bit to use. */
+				private volatile F _key;
+				
 				/**
 				 * {@inheritDoc}
 				 * @since 2016/03/19
@@ -102,11 +106,27 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 				@Override
 				public boolean hasNext()
 				{
-					// No flags left to check?
-					if (!it.hasNext())
-						return false;
+					for (;;)
+					{
+						// No flags left to check?
+						if (!it.hasNext())
+							return false;
 					
-					throw new Error("TODO");
+						// Already know the key?
+						F key = _key;
+						if (key != null)
+							return true;
+						
+						// Get the next entry in the iteration sequence
+						key = it.next();
+						
+						// If the bit is set, use it
+						if (0 != (bits & key.mask()))
+						{
+							_key = key;
+							return true;
+						}
+					}
 				}
 				
 				/**
@@ -116,7 +136,16 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 				@Override
 				public F next()
 				{
-					throw new Error("TODO");
+					// Fail if no next
+					if (!hasNext())
+						throw new NoSuchElementException("NSEE");
+					
+					// Geta and clear the key
+					F key = _key;
+					_key = null;
+					
+					// Return the key
+					return key;
 				}
 				
 				/**

@@ -91,3 +91,9 @@ then it would just be an anonymous class which gets initialized as needed.
 Actually the cache stuff needlessly complicates things, so I am going to just
 not use it.
 
+## 22:02
+
+I am going to make `JVMClass` mutable and patchable so that it may be used
+by a compiler in the future and it would be easier to potentially mutate state
+to fit the run-time if needed.
+
