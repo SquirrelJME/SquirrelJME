@@ -32,21 +32,18 @@ public class JVMMethod
 	 * Initializes the interpreted method.
 	 *
 	 * @param __owner The class which owns this method.
-	 * @param __name The name of the method.
-	 * @param __type The type of the method.
+	 * @param __nat The name and type of the field.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public JVMMethod(JVMClass __owner, IdentifierSymbol __name,
-		MethodSymbol __type)
+	public JVMMethod(JVMClass __owner, JVMMemberKey<MethodSymbol> __nat)
 		throws NullPointerException
 	{
-		super(__owner, MethodSymbol.class, __name, __type,
-			JVMMethodFlags.class);
+		super(__owner, MethodSymbol.class, __nat, JVMMethodFlags.class);
 		
 		// Is this a constructor?
-		isconstructor = name.equals("<init>");
-		isclassinit = name.equals("<clinit>");
+		isconstructor = name().equals("<init>");
+		isclassinit = name().equals("<clinit>");
 	}
 	
 	/**

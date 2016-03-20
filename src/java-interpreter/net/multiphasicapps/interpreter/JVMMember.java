@@ -32,14 +32,11 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	/** The class this member is in. */
 	protected final JVMClass inclass;
 	
-	/** The type of symbol to use as the descriptor. */
+	/** Member name and type. */
+	protected final JVMMemberKey<S> nameandtype;
+	
+	/** The type that the symbol must be. */
 	protected final Class<S> symboltype;
-	
-	/** The member name. */
-	protected final IdentifierSymbol name;
-	
-	/** The type of the member. */
-	protected final S type;
 	
 	/** The class which flags must be. */
 	protected final Class<F> flagcast;
@@ -52,29 +49,28 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 *
 	 * @param __owner The class which owns this.
 	 * @param __st The descriptor symbol type.
-	 * @param __name The name of the member.
-	 * @param __type The type of the member.
+	 * @param __nat The name and type of the member.
 	 * @param __fcl The type of class flags must be.
 	 * @throws ClassCastException If the {@code __type} is not a sub-class of
 	 * {@code __st}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/17
 	 */
-	JVMMember(JVMClass __owner, Class<S> __st, IdentifierSymbol __name,
-		S __type, Class<F> __fcl)
+	JVMMember(JVMClass __owner, Class<S> __st, JVMMemberKey<S> __nat,
+		Class<F> __fcl)
 		throws ClassCastException, NullPointerException
 	{
 		// Check
-		if (__owner == null || __st == null || __name == null ||
-			__type == null)
+		if (__owner == null || __st == null || __nat == null ||
+			__fcl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		inclass = __owner;
 		lock = inclass.lock;
 		symboltype = __st;
-		name = __name;
-		type = symboltype.cast(__type);
+		nameandtype = __nat;
+		symboltype.cast(nameandtype.getValue());
 		flagcast = __fcl;
 	}
 	
@@ -109,7 +105,18 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 */
 	public final IdentifierSymbol name()
 	{
-		return name;
+		return nameandtype.getKey();
+	}
+	
+	/**
+	 * Returns the name and type of this member.
+	 *
+	 * @return The member name and type.
+	 * @since 2016/03/20
+	 */
+	public final JVMMemberKey<S> nameAndType()
+	{
+		return nameandtype;
 	}
 	
 	/**
@@ -157,7 +164,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 */
 	public final S type()
 	{
-		return type;
+		return nameandtype.getValue();
 	}
 }
 

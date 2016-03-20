@@ -26,16 +26,14 @@ public class JVMField
 	 * Initializes the interpreted method.
 	 *
 	 * @param __owner The class which owns this method.
-	 * @param __name The name of the field.
-	 * @param __type The type of the field.
+	 * @param __nat The name and type of the field.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public JVMField(JVMClass __owner, IdentifierSymbol __name,
-		FieldSymbol __type)
+	public JVMField(JVMClass __owner, JVMMemberKey<FieldSymbol> __nat)
 		throws NullPointerException
 	{
-		super(__owner, FieldSymbol.class, __name, __type, JVMFieldFlags.class);
+		super(__owner, FieldSymbol.class, __nat, JVMFieldFlags.class);
 	}
 	
 	/**
