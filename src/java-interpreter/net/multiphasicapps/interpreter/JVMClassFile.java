@@ -98,32 +98,7 @@ public class JVMClassFile
 		constantpool = new JVMConstantPool(this, das);
 		
 		// Read flags
-		flags = JVMClassFile.<JVMClassFlag>__parseFlags(
-			JVMClassFlag.allFlags(), das.readUnsignedShort());
-		
-		// Interface?
-		if (isInterface())
-		{
-			// Must be abstract
-			if (!isAbstract())
-				throw new JVMClassFormatError("IN03");
-			
-			// cannot have some flags set
-			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new JVMClassFormatError("IN04");
-		}
-		
-		// Normal class
-		else
-		{
-			// Cannot be an annotation
-			if (isAnnotation())
-				throw new JVMClassFormatError("IN05");
-				
-			// Cannot be abstract and final
-			if (isAbstract() && isFinal())
-				throw new JVMClassFormatError("IN06");
-		}
+		setFlags(new JVMClassFlags(das.readUnsignedShort()));
 		
 		// Read the class name data, fields, and methods
 		try
