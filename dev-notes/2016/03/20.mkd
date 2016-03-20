@@ -43,3 +43,21 @@ pass, I can also use what is used by the method and ignore stuff that is not
 used. Since the constant pool is shared with everything, some stuff might not
 be needed at all for specific methods.
 
+## 19:01
+
+The good thing is that the subroutine byte codes are completely unsupported,
+which means that parsing classes is simpler and I less likely have to worry
+about recursive states where a byte code can have a few thousand different
+states.
+
+## 19:05
+
+Looks like `StackMap` is a bit less compact version of the `StackMapTable`.
+That is, the information appears to be similar so far, except that it is
+simpler to parse. Basically think of if everything in the `StackMapTable`
+were entire frames. I see the very familiar `verification_type_info`. And
+reading the specification, the type information is exactly the same. So when
+writing the checker, I can combine and check for both states accordingly. This
+means that `StackMap` and `StackMapTable` will be folded into entire full
+states which are then checked on input instructions.
+

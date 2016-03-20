@@ -19,23 +19,23 @@ public enum JVMClassVersion
 {
 	/** Probably invalid or ancient Java. */
 	INVALID(Integer.MIN_VALUE,
-		true, false, false),	
+		true, false, false, false),	
 	
 	/** CLDC 1.0 (JSR 30). */
 	CLDC_1((45 << 16) + 3,
-		false, false, false),
+		false, false, false, false),
 	
 	/** CLDC 1.1 (JSR 139). */
 	CLDC_1_1((47 << 16),
-		false, true, false),
+		false, true, false, false),
 	
 	/** CLDC 8 (aka Java 7). */
 	CLDC_8((51 << 16),
-		false, true, false),
+		false, true, false, true),
 	
 	/** Future CLDC version. */
 	FUTURE((52 << 16) + 1,
-		true, false, false),
+		true, false, false, false),
 	
 	/** End. */
 	;
@@ -56,6 +56,9 @@ public enum JVMClassVersion
 	/** Supports invokedynamic? */
 	protected final boolean hasinvokedynamic;
 	
+	/** Use StackMapTable? */
+	protected final boolean usestackmaptable;
+	
 	/**
 	 * Initializes the version data.
 	 *
@@ -63,16 +66,18 @@ public enum JVMClassVersion
 	 * @param __undef Is this version information undefined?
 	 * @param __float Is floating point supported?
 	 * @param __hasid Has invoke dynamic support?
+	 * @param __usesmt Should the StackMapTable attribute be used?
 	 * @since 2016/03/13
 	 */
 	private JVMClassVersion(int __vid, boolean __undef,
-		boolean __float, boolean __hasid)
+		boolean __float, boolean __hasid, boolean __usesmt)
 	{
 		// Set
 		version = __vid;
 		undefined = __undef;
 		hasfloat = __float;
 		hasinvokedynamic = __hasid;
+		usestackmaptable = __usesmt;
 	}
 	
 	/**
@@ -107,6 +112,23 @@ public enum JVMClassVersion
 		if (undefined)
 			throw new IllegalStateException("IN0c");
 		return hasinvokedynamic;
+	}
+	
+	/**
+	 * Should the new StackMapTable attribute be used when veryifying the byte
+	 * code of a class?
+	 *
+	 * @return {@code true} if the StackMapTable attribute should be parsed.
+	 * @throws IllegalStateException If the information this supplies is not
+	 * defined.
+	 * @since 2016/03/20
+	 */
+	public boolean useStackMapTable()
+		throws IllegalStateException
+	{
+		if (undefined)
+			throw new IllegalStateException("IN0c");
+		return usestackmaptable;
 	}
 	
 	/**

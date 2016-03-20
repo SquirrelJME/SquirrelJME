@@ -202,7 +202,48 @@ public class JVMClassFile
 		if (__meth == null || __das == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		if (true)
+			throw new Error("TODO");
+		
+		// Handle attributes, only two are cared about
+		int nas = __das.readUnsignedShort();
+		for (int i = 0; i < nas; i++)
+		{
+			// Read attribute name
+			String an = __readAttributeName(__das);
+			
+			// Depends on the name
+			switch (an)
+			{
+					// Java 6+ StackMapTable
+				case "StackMapTable":
+					// Not parsing?
+					if (!_version.useStackMapTable())
+					{
+						__skipAttribute(__das);
+						break;
+					}
+					
+					throw new Error("TODO");
+					
+					// Ancient J2ME StackMap
+				case "StackMap":
+					// CLDC 8 no longer uses this attribute and instead uses
+					// the standard Java ones.
+					if (_version.useStackMapTable())
+					{
+						__skipAttribute(__das);
+						break;
+					}
+					
+					throw new Error("TODO");
+				
+					// Ignored
+				default:
+					__skipAttribute(__das);
+					break;
+			}
+		}
 	}
 	
 	/**
