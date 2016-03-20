@@ -37,55 +37,5 @@ public class JVMField
 	{
 		super(__owner, FieldSymbol.class, __name, __type, JVMFieldFlags.class);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isFinal()
-	{
-		return getFlags().contains(JVMFieldFlag.FINAL);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isPrivate()
-	{
-		return getFlags().contains(JVMFieldFlag.PRIVATE);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isProtected()
-	{
-		return getFlags().contains(JVMFieldFlag.PROTECTED);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isPublic()
-	{
-		return getFlags().contains(JVMFieldFlag.PUBLIC);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isStatic()
-	{
-		return getFlags().contains(JVMFieldFlag.STATIC);
-	}
 }
 

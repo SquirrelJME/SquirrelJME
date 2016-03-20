@@ -33,5 +33,56 @@ public abstract class JVMMemberFlags<F extends JVMMemberFlag>
 	{
 		super(__b, __type, __all);
 	}
+	
+	/**
+	 * Returns {@code true} if this is final.
+	 *
+	 * @return {@code true} if final.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isFinal();
+	
+	/**
+	 * Returns {@code true} if this is private.
+	 *
+	 * @return {@code true} if private.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isPrivate();
+	
+	/**
+	 * Returns {@code true} if this is protected.
+	 *
+	 * @return {@code true} if protected.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isProtected();
+	
+	/**
+	 * Returns {@code true} if this is public.
+	 *
+	 * @return {@code true} if public.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isPublic();
+	
+	/**
+	 * Returns {@code true} if this is static.
+	 *
+	 * @return {@code true} if static.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isStatic();
+	
+	/**
+	 * Returns {@code true} if this is package private.
+	 *
+	 * @return {@code true} if package private.
+	 * @since 2016/03/20
+	 */
+	public final boolean isPackagePrivate()
+	{
+		return !isPublic() && !isProtected() && !isPrivate();
+	}
 }
 

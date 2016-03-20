@@ -38,55 +38,5 @@ public class JVMMethod
 		super(__owner, MethodSymbol.class, __name, __type,
 			JVMMethodFlags.class);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isFinal()
-	{
-		return getFlags().contains(JVMMethodFlag.FINAL);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isPrivate()
-	{
-		return getFlags().contains(JVMMethodFlag.PRIVATE);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isProtected()
-	{
-		return getFlags().contains(JVMMethodFlag.PROTECTED);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isPublic()
-	{
-		return getFlags().contains(JVMMethodFlag.PUBLIC);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public boolean isStatic()
-	{
-		return getFlags().contains(JVMMethodFlag.STATIC);
-	}
 }
 

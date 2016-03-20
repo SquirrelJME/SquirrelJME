@@ -28,5 +28,55 @@ public final class JVMFieldFlags
 	{
 		super(__b, JVMFieldFlag.class, JVMFieldFlag.allFlags());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isFinal()
+	{
+		return contains(JVMFieldFlag.FINAL);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isPrivate()
+	{
+		return contains(JVMFieldFlag.PRIVATE);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isProtected()
+	{
+		return contains(JVMFieldFlag.PROTECTED);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isPublic()
+	{
+		return contains(JVMFieldFlag.PUBLIC);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isStatic()
+	{
+		return contains(JVMFieldFlag.STATIC);
+	}
 }
 

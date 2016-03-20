@@ -28,5 +28,55 @@ public final class JVMMethodFlags
 	{
 		super(__b, JVMMethodFlag.class, JVMMethodFlag.allFlags());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isFinal()
+	{
+		return contains(JVMMethodFlag.FINAL);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isPrivate()
+	{
+		return contains(JVMMethodFlag.PRIVATE);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isProtected()
+	{
+		return contains(JVMMethodFlag.PROTECTED);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isPublic()
+	{
+		return contains(JVMMethodFlag.PUBLIC);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isStatic()
+	{
+		return contains(JVMMethodFlag.STATIC);
+	}
 }
 

@@ -92,8 +92,8 @@ public class LocalEngine
 		JVMMethod mainmethod = mainclass.getMethods().get(
 			new IdentifierSymbol("main"),
 			new MethodSymbol("([Ljava/lang/String;)V"));
-		if (mainmethod == null || !mainmethod.isStatic() ||
-			!mainmethod.isPublic())
+		if (mainmethod == null || !mainmethod.getFlags().isStatic() ||
+			!mainmethod.getFlags().isPublic())
 			throw new IllegalArgumentException(String.format(
 				"LI03 %s", __main));
 		
