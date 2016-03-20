@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.descriptors;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.AbstractList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * This symbol describes the arguments and the return value which a method
  * consumes and provides.

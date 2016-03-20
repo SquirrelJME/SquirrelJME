@@ -26,3 +26,10 @@ And looking at the hex dump of the class, those missing two bytes are for
 the ignored attribute, since the length is an integer and not an unsigned
 short.
 
+## 16:15
+
+Method handles will require slightly more complex work to make them
+cachable because identifiers can contain `(` and `)`. They are also not in
+fixed positions. So I suppose what I will do then is have a fixed offset and
+length similar to the binary name, then substring as required.
+
