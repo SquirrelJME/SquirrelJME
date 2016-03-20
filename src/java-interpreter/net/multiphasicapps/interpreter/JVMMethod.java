@@ -22,6 +22,12 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 public class JVMMethod
 	extends JVMMember<MethodSymbol, JVMMethodFlags>
 {
+	/** Is this a constructor? */
+	protected final boolean isconstructor;	
+	
+	/** Is this a class initialization method? */
+	protected final boolean isclassinit;
+	
 	/**
 	 * Initializes the interpreted method.
 	 *
@@ -37,6 +43,78 @@ public class JVMMethod
 	{
 		super(__owner, MethodSymbol.class, __name, __type,
 			JVMMethodFlags.class);
+		
+		// Is this a constructor?
+		isconstructor = name.equals("<init>");
+		isclassinit = name.equals("<clinit>");
+	}
+	
+	/**
+	 * Is this method a class initializer?
+	 *
+	 * @return {@code true} if a class initializer.
+	 * @since 2016/03/20
+	 */
+	public boolean isClassInitializer()
+	{
+		return isclassinit;
+	}
+	
+	/**
+	 * Is this method a constructor?
+	 *
+	 * @return {@code true} if a constructor.
+	 * @since 2016/03/20
+	 */
+	public boolean isConstructor()
+	{
+		return isconstructor;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public JVMMethod setFlags(JVMMethodFlags __fl)
+		throws JVMClassFormatError, NullPointerException
+	{
+		// Check
+		if (__fl == null)
+			throw new NullPointerException("NARG");
+		
+		// Get class flags
+		JVMClassFlags cl = inclass.getFlags();
+		
+		// Class initializer flags are ignored for the most part
+		if (!isClassInitializer())
+		{
+			// If the class is an interface...
+			if (cl.isInterface())
+			{
+				// Default methods are not supported
+				if (__fl.isPrivate() || !__fl.isAbstract())
+					throw new JVMClassFormatError(String.format("IN19 %s",
+						__fl));
+				
+				// Cannot have these flags
+				if (__fl.isProtected() || __fl.isFinal() ||
+					__fl.isSynchronized() || __fl.isNative())
+					throw new JVMClassFormatError(String.format("IN1a %s %s",
+						__fl, cl));
+			}
+			
+			// If abstract, cannot have these flags
+			if (__fl.isAbstract())
+				if (__fl.isPrivate() || __fl.isStatic() || __fl.isFinal() ||
+					__fl.isSynchronized() || __fl.isNative() ||
+					__fl.isStrict())
+					throw new JVMClassFormatError(String.format("IN1b %s",
+						__fl));
+		}
+		
+		// Perform super work
+		return (JVMMethod)super.setFlags(__fl);
 	}
 }
 

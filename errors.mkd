@@ -253,6 +253,15 @@ These codes do not have a index meaning and are meant to be short.
  * `IN17` -- If a method is abstract, it cannot have specific flags set.
    * The input flags.
  * `IN18` -- Native methods are not supported by this virtual machine.
+ * `IN19` -- Private and default methods are not supported in interfaces due
+   to CLDC 8 requiring a Java 7 virtual machine.
+   * The method flags.
+ * `IN1a` -- Illegal combination of method flags for the current class.
+   * The method flags.
+   * The class flags.
+ * `IN1b` -- Illegal combination of method flags, regardless of the current
+   class.
+   * The method flags.
 
 # `net.multiphasicapps.interpreter.local`
 

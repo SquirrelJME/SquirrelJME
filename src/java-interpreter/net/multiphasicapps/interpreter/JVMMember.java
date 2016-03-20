@@ -132,7 +132,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	public final JVMMember<S, F> setFlags(F __fl)
+	public JVMMember<S, F> setFlags(F __fl)
 		throws ClassCastException, NullPointerException
 	{
 		// Check

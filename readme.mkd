@@ -8,6 +8,8 @@
 **SquirrelJME** is intended to be a Java ME 8 compatible environment for
 strange and many other devices. The source is written in pure Java.
 
+Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
+
 ## Licenses
 
   * [GNU Affero General Public License, Version 3 or later](license.mkd)
@@ -139,6 +141,10 @@ Only two character encodings are supported:
  * UTF-8
 
 # Programming Considerations
+
+## Do Not Use Default Methods
+
+Default methods in interfaces are not supported.
 
 ## Do Not Use Static Modifiable/Mutable Globals In Standalone Classes
 
