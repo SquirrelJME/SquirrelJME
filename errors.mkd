@@ -244,6 +244,7 @@ These codes do not have a index meaning and are meant to be short.
  * `IN12` -- The super class of a class cannot be itself.
    * The attempted super class to use.
  * `IN13` -- Cannot implement Object.
+ * `IN14` -- Member flags not set.
 
 # `net.multiphasicapps.interpreter.local`
 

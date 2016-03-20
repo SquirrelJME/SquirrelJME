@@ -89,9 +89,9 @@ public class LocalEngine
 				"LI02 %s", __main));
 		
 		// Find the main method
-		JVMMethod mainmethod = mainclass.getMethod(
+		JVMMethod mainmethod = mainclass.getMethods().get(
 			new IdentifierSymbol("main"),
-			new MethodSymbol("([Ljava/lang/String;)V"), false);
+			new MethodSymbol("([Ljava/lang/String;)V"));
 		if (mainmethod == null || !mainmethod.isStatic() ||
 			!mainmethod.isPublic())
 			throw new IllegalArgumentException(String.format(

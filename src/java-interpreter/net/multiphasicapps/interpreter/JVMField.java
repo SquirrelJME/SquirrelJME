@@ -20,7 +20,7 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
  * @since 2016/03/17
  */
 public class JVMField
-	extends JVMMember<FieldSymbol>
+	extends JVMMember<FieldSymbol, JVMFieldFlags>
 {
 	/**
 	 * Initializes the interpreted method.
@@ -28,26 +28,64 @@ public class JVMField
 	 * @param __owner The class which owns this method.
 	 * @param __name The name of the field.
 	 * @param __type The type of the field.
-	 * @param __fl The flags this field uses.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
 	public JVMField(JVMClass __owner, IdentifierSymbol __name,
-		FieldSymbol __type, Set<JVMFieldFlag> __fl)
+		FieldSymbol __type)
 		throws NullPointerException
 	{
-		super(__owner, FieldSymbol.class, __name, __type, __fl);
+		super(__owner, FieldSymbol.class, __name, __type, JVMFieldFlags.class);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/03/19
+	 * @since 2016/03/20
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
-	public Set<JVMFieldFlag> flags()
+	public boolean isFinal()
 	{
-		return (Set<JVMFieldFlag>)flags;
+		return getFlags().contains(JVMFieldFlag.FINAL);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isPrivate()
+	{
+		return getFlags().contains(JVMFieldFlag.PRIVATE);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isProtected()
+	{
+		return getFlags().contains(JVMFieldFlag.PROTECTED);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isPublic()
+	{
+		return getFlags().contains(JVMFieldFlag.PUBLIC);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isStatic()
+	{
+		return getFlags().contains(JVMFieldFlag.STATIC);
 	}
 }
 

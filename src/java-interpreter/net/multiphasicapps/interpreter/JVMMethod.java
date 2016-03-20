@@ -20,7 +20,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  * @since 2016/03/01
  */
 public class JVMMethod
-	extends JVMMember<MethodSymbol>
+	extends JVMMember<MethodSymbol, JVMMethodFlags>
 {
 	/**
 	 * Initializes the interpreted method.
@@ -28,48 +28,65 @@ public class JVMMethod
 	 * @param __owner The class which owns this method.
 	 * @param __name The name of the method.
 	 * @param __type The type of the method.
-	 * @param __fl The flags this method uses.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
 	public JVMMethod(JVMClass __owner, IdentifierSymbol __name,
-		MethodSymbol __type, Set<JVMMethodFlag> __fl)
+		MethodSymbol __type)
 		throws NullPointerException
 	{
-		super(__owner, MethodSymbol.class, __name, __type, __fl);
+		super(__owner, MethodSymbol.class, __name, __type,
+			JVMMethodFlags.class);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/03/19
+	 * @since 2016/03/20
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
-	public Set<JVMMethodFlag> flags()
+	public boolean isFinal()
 	{
-		return (Set<JVMMethodFlag>)flags;
+		return getFlags().contains(JVMMethodFlag.FINAL);
 	}
 	
 	/**
-	 * Is this method public?
-	 *
-	 * @return {@code true} if this method is public.
-	 * @since 2016/03/01
+	 * {@inheritDoc}
+	 * @since 2016/03/20
 	 */
+	@Override
+	public boolean isPrivate()
+	{
+		return getFlags().contains(JVMMethodFlag.PRIVATE);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
+	public boolean isProtected()
+	{
+		return getFlags().contains(JVMMethodFlag.PROTECTED);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/20
+	 */
+	@Override
 	public boolean isPublic()
 	{
-		throw new Error("TODO");
+		return getFlags().contains(JVMMethodFlag.PUBLIC);
 	}
 	
 	/**
-	 * Is this method static?
-	 *
-	 * @return {@code true} if this method is static.
-	 * @since 2016/03/01
+	 * {@inheritDoc}
+	 * @since 2016/03/20
 	 */
+	@Override
 	public boolean isStatic()
 	{
-		throw new Error("TODO");
+		return getFlags().contains(JVMMethodFlag.STATIC);
 	}
 }
 

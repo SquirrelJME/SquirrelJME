@@ -20,10 +20,15 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * The base class represents members which exist in classes.
  *
  * @param <S> The type of symbol used for the descriptor.
+ * @param <F> The flag type.
  * @since 2016/03/17
  */
-public abstract class JVMMember<S extends MemberTypeSymbol>
+public abstract class JVMMember<S extends MemberTypeSymbol,
+	F extends JVMMemberFlags>
 {
+	/** Internal lock. */
+	Object lock;	
+	
 	/** The class this member is in. */
 	protected final JVMClass inclass;
 	
@@ -36,8 +41,11 @@ public abstract class JVMMember<S extends MemberTypeSymbol>
 	/** The type of the member. */
 	protected final S type;
 	
-	/** The flags used for this member. */
-	protected final Set<? extends JVMMemberFlag> flags;
+	/** The class which flags must be. */
+	protected final Class<F> flagcast;
+	
+	/** Flags used for the member. */
+	private volatile F _flags;
 	
 	/**
 	 * Initializes the interpreted member.
@@ -46,54 +54,102 @@ public abstract class JVMMember<S extends MemberTypeSymbol>
 	 * @param __st The descriptor symbol type.
 	 * @param __name The name of the member.
 	 * @param __type The type of the member.
+	 * @param __fcl The type of class flags must be.
 	 * @throws ClassCastException If the {@code __type} is not a sub-class of
 	 * {@code __st}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/17
 	 */
 	JVMMember(JVMClass __owner, Class<S> __st, IdentifierSymbol __name,
-		S __type, Set<? extends JVMMemberFlag> __fl)
+		S __type, Class<F> __fcl)
 		throws ClassCastException, NullPointerException
 	{
 		// Check
 		if (__owner == null || __st == null || __name == null ||
-			__type == null || __fl == null)
+			__type == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		inclass = __owner;
+		lock = inclass.lock;
 		symboltype = __st;
 		name = __name;
 		type = symboltype.cast(__type);
-		flags = MissingCollections.<JVMMemberFlag>unmodifiableSet(
-			new HashSet<>(__fl));
+		flagcast = __fcl;
 	}
 	
 	/**
-	 * Returns the flags for this member.
+	 * Returns {@code true} if this is final.
 	 *
-	 * @return The member flags.
-	 * @since 2016/03/19
+	 * @return {@code true} if final.
+	 * @since 2016/03/20
 	 */
-	public abstract Set<? extends JVMMemberFlag> flags();
+	public abstract boolean isFinal();
 	
 	/**
-	 * Is a specific flag set?
+	 * Returns {@code true} if this is private.
 	 *
-	 * @param __fl The flag to check.
-	 * @return {@code true} if the given flag is set.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/19
+	 * @return {@code true} if private.
+	 * @since 2016/03/20
 	 */
-	public boolean hasFlag(JVMMemberFlag __fl)
-		throws NullPointerException
+	public abstract boolean isPrivate();
+	
+	/**
+	 * Returns {@code true} if this is protected.
+	 *
+	 * @return {@code true} if protected.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isProtected();
+	
+	/**
+	 * Returns {@code true} if this is public.
+	 *
+	 * @return {@code true} if public.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isPublic();
+	
+	/**
+	 * Returns {@code true} if this is static.
+	 *
+	 * @return {@code true} if static.
+	 * @since 2016/03/20
+	 */
+	public abstract boolean isStatic();
+	
+	/**
+	 * Returns the flag set.
+	 *
+	 * @return The flag set.
+	 * @throws IllegalStateException If no flags were set.
+	 * @since 2016/03/20
+	 */
+	public final F getFlags()
+		throws IllegalStateException
 	{
-		// Check
-		if (__fl == null)
-			throw new NullPointerException("NARG");
-		
-		// Check it
-		return flags.contains(__fl);
+		// Lock
+		synchronized (lock)
+		{
+			// If not set, that is bad
+			F rv = _flags;
+			if (rv == null)
+				throw new IllegalStateException("IN14");
+			
+			// Return them
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if this is package private.
+	 *
+	 * @return {@code true} if package private.
+	 * @since 2016/03/20
+	 */
+	public final boolean isPackagePrivate()
+	{
+		return !isPublic() && !isProtected() && !isPrivate();
 	}
 	
 	/**
@@ -116,6 +172,32 @@ public abstract class JVMMember<S extends MemberTypeSymbol>
 	public final JVMClass outerClass()
 	{
 		return inclass;
+	}
+	
+	/**
+	 * Sets the flags for this member.
+	 *
+	 * @param __fl The flags to set.
+	 * @return {@code this}.
+	 * @throws ClassCastException If the input flags are of the wrong type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/20
+	 */
+	public final JVMMember<S, F> setFlags(F __fl)
+		throws ClassCastException, NullPointerException
+	{
+		// Check
+		if (__fl == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (lock)
+		{
+			_flags = flagcast.cast(__fl);
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**

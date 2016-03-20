@@ -39,6 +39,14 @@ public class JVMClass
 	protected final JVMClassInterfaces interfaces =
 		new JVMClassInterfaces(this);
 	
+	/** Class fields. */
+	protected final JVMFields fields =
+		new JVMFields(this);
+	
+	/** Class methods. */
+	protected final JVMMethods methods =
+		new JVMMethods(this);
+	
 	/** The current class flags. */
 	private volatile JVMClassFlags _flags;
 	
@@ -53,16 +61,6 @@ public class JVMClass
 	
 	/** Class loader formatted binary name cache. */
 	private volatile Reference<String> _clbname;
-	
-	/** Fields which exist in this class, lock on this. */
-	@Deprecated
-	protected final Map<JVMMemberKey<FieldSymbol>, JVMField> fields =
-		new HashMap<>();
-	
-	/** Methods which exist in this class, lock on this. */
-	@Deprecated
-	protected final Map<JVMMemberKey<MethodSymbol>, JVMMethod> methods =
-		new HashMap<>();
 	
 	/**
 	 * Initializes the base class information.
@@ -119,22 +117,14 @@ public class JVMClass
 	}
 	
 	/**
-	 * Locates a field in the class by the given identifier anme and field
-	 * descriptor.
+	 * Returns the fields which are mapped to this class.
 	 *
-	 * @param __name The name of the field.
-	 * @param __desc The field descriptor.
-	 * @param __super Look in super classes for the field?
-	 * @return The field matching the name and descriptor or {@code null} if
-	 * none was found.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/17
+	 * @return The field mappings.
+	 * @since 2016/03/20
 	 */
-	public final JVMField getField(IdentifierSymbol __name, FieldSymbol __desc,
-		boolean __super)
+	public final JVMFields getFields()
 	{
-		return this.<JVMField, FieldSymbol>__getMember(fields, __name, __desc,
-			__super);
+		return fields;
 	}
 	
 	/**
@@ -172,23 +162,14 @@ public class JVMClass
 	}
 	
 	/**
-	 * Locates a method in the class by the given identifier name and method
-	 * descriptor.
+	 * Returns the methods which are mapped to this class.
 	 *
-	 * @param __name The name of the method.
-	 * @param __desc The method descriptor.
-	 * @param __super Look in super classes for the method?
-	 * @return The method matching the name and descriptor or {@code null}
-	 * if none was found.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/01
+	 * @return The method mappings.
+	 * @since 2016/03/20
 	 */
-	public final JVMMethod getMethod(IdentifierSymbol __name,
-		MethodSymbol __desc, boolean __super)
-		throws NullPointerException
+	public final JVMMethods getMethods()
 	{
-		return this.<JVMMethod, MethodSymbol>__getMember(methods, __name,
-			__desc, __super);
+		return methods;
 	}
 	
 	/**
@@ -234,51 +215,6 @@ public class JVMClass
 			// Return it
 			return rv;
 		}
-	}
-	
-	/**
-	 * Registers a field or a method with this class.
-	 *
-	 * @param __m The member to register to this class.
-	 * @return {@code this}.
-	 * @throws IllegalArgumentException If the member is owned by another
-	 * class, or it is of an unknown type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/17
-	 */
-	protected final JVMClass registerMember(JVMMember<?> __m)
-		throws IllegalArgumentException, NullPointerException
-	{	
-		// Check
-		if (__m == null)
-			throw new NullPointerException("NARG");
-		
-		// Wrong class?
-		if (__m.outerClass() != this)
-			throw new IllegalArgumentException("IN0t");
-		
-		// A field?
-		if (__m instanceof JVMField)
-			synchronized (fields)
-			{
-				fields.put(new JVMMemberKey<>(__m.name(),
-					__m.type().asFieldSymbol()), (JVMField)__m);
-			}
-		
-		// A method
-		else if (__m instanceof JVMMethod)
-			synchronized (methods)
-			{
-				methods.put(new JVMMemberKey<>(__m.name(),
-					__m.type().asMethodSymbol()), (JVMMethod)__m);
-			}
-		
-		// Unknown
-		else
-			throw new IllegalArgumentException("IN0u");
-		
-		// Self
-		return this;
 	}
 	
 	/**
@@ -403,70 +339,6 @@ public class JVMClass
 		
 		// Self
 		return this;
-	}
-	
-	/**
-	 * Locates a member by the given name and type.
-	 *
-	 * @param <V> The type of member to find.
-	 * @param <S> The symbol type it uses as a descriptor.
-	 * @param __lookin The map to look inside for members.
-	 * @param __name The name of the member.
-	 * @param __type The type of the member.
-	 * @param __super If not found in this class, should superclasses be
-	 * searched?
-	 * @return The member with the given name and type, or {@code null} if
-	 * not found.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016//03/17
-	 */
-	private <V extends JVMMember, S extends MemberTypeSymbol> V __getMember(
-		Map<JVMMemberKey<S>, V> __lookin, IdentifierSymbol __name, S __type,
-		boolean __super)
-		throws NullPointerException
-	{
-		return this.<V, S>__getMember(__lookin, new JVMMemberKey<>(__name,
-			__type), __super);
-	}
-	
-	/**
-	 * Locates a member by the given name and type.
-	 *
-	 * @param <V> The type of member to find.
-	 * @param <S> The symbol type it uses as a descriptor.
-	 * @param __lookin The map to look inside for members.
-	 * @param __key The member key to use during the search
-	 * @param __super If not found in this class, should superclasses be
-	 * searched?
-	 * @return The member with the given name and type, or {@code null} if
-	 * not found.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016//03/17
-	 */
-	private <V extends JVMMember, S extends MemberTypeSymbol> V __getMember(
-		Map<JVMMemberKey<S>, V> __lookin, JVMMemberKey<S> __key,
-		boolean __super)
-		throws NullPointerException
-	{
-		// Check
-		if (__lookin == null || __key == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (__lookin)
-		{
-			// Go through the map, if it is found then use it
-			V rv = __lookin.get(__key);
-			if (rv != null)
-				return rv;
-			
-			// Look in super class?
-			if (__super)
-				throw new Error("TODO");
-			
-			// Not found
-			return null;
-		}
 	}
 }
 
