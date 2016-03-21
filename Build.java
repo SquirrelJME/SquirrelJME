@@ -8,6 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -332,6 +333,15 @@ public class Build
 		// Call
 		main(use);
 	}
+	
+	public static void scanTree(Path __root,
+		throws IOException
+	{
+		scanTree
+	}
+	
+	public static void scanTree
+		throws IOException
 	
 	/**
 	 * Scans files in a directory and adds them to a map and/or an optional

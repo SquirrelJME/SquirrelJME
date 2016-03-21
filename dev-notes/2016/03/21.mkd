@@ -37,3 +37,12 @@ I currently just have this information duplicated but it could be handled by
 the build system. I also have enough of a layout where I can build a simple
 build system in Java and then use `build.sh` as a bootstrap to it.
 
+## 16:41
+
+Actually the build system is just going to have some duplicate code, so I
+should fix that case.
+
+## 17:31
+
+`DirectoryStream` is not recursive, that explains a few things.
+
