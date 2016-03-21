@@ -202,6 +202,10 @@ public class JVMClassFile
 		if (__meth == null || __das == null)
 			throw new NullPointerException("NARG");
 		
+		// Max stack and local entries
+		int maxstack = __das.readUnsignedShort();
+		int maxlocal = __das.readUnsignedShort();
+		
 		if (true)
 			throw new Error("TODO");
 		
@@ -213,31 +217,15 @@ public class JVMClassFile
 			String an = __readAttributeName(__das);
 			
 			// Depends on the name
+			// StackMapTable and StackMap are just ignored, this will assume
+			// that the compiler actually generates sane code (the stack map
+			// just verifies information that can be obtained wnile parsing
+			// and is essentially a "At this point, these must be on the stack"
+			// kind of deal). Note that the code must conform to the assumption
+			// that it would be under if it were actually handled (each
+			// operation MUST have only one explicit state, so to speak).
 			switch (an)
 			{
-					// Java 6+ StackMapTable
-				case "StackMapTable":
-					// Not parsing?
-					if (!_version.useStackMapTable())
-					{
-						__skipAttribute(__das);
-						break;
-					}
-					
-					throw new Error("TODO");
-					
-					// Ancient J2ME StackMap
-				case "StackMap":
-					// CLDC 8 no longer uses this attribute and instead uses
-					// the standard Java ones.
-					if (_version.useStackMapTable())
-					{
-						__skipAttribute(__das);
-						break;
-					}
-					
-					throw new Error("TODO");
-				
 					// Ignored
 				default:
 					__skipAttribute(__das);

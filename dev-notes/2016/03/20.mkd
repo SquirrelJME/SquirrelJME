@@ -61,3 +61,20 @@ writing the checker, I can combine and check for both states accordingly. This
 means that `StackMap` and `StackMapTable` will be folded into entire full
 states which are then checked on input instructions.
 
+## 21:34
+
+Thinking about it, the `StackMapTable` might not even be needed. I could
+technically skip it if I force the requirements as if `StackMapTable` were
+there. The way Java byte code runs on moderm VMs is that each address in the
+byte code operations must have only a single valid state. The Java compiler
+enforces this. However, I would have to check if older J2ME classes also share
+this property. Ignoring the stack map table would simplify things greatly
+because I would not need to parse it at all. So there would quite literally
+only be two attributes. However, if a `StackMapTable` is illegal then the
+normal VM would fail. However, the table does help in cases where exceptions
+are handled to know if local variables and such are filled or not. As for
+the byte code, I am going to transform it to a kind of register based format
+which will be used by the interpreter and in the future the native recompiler.
+Ignoring the table would be faster and would produce code faster. It is kind
+of redundent, although skipping it would violate the specification.
+
