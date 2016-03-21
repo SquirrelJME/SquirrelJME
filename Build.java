@@ -8,6 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +18,8 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.Map;
 import java.util.Objects;
 import javax.lang.model.SourceVersion;
@@ -30,6 +35,10 @@ public class Build
 {
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
+	
+	/** This is a cached set of known projects. */
+	protected static final Map<String, Project> projects =
+		new HashMap<>();
 	
 	/** Build JARs with no compression? */
 	private static volatile boolean _nocompression;
@@ -72,6 +81,9 @@ public class Build
 			throw new IllegalStateException("You have a Java compiler " +
 				"available in your run-time, however it does not support " +
 				"Java 7.");
+		
+		// Get the project to target
+		Project proj = project(__p);
 		
 		throw new Error("TODO");
 	}
@@ -189,6 +201,33 @@ public class Build
 	}
 	
 	/**
+	 * Obtains a project.
+	 *
+	 * @param __n The name of the project to return.
+	 * @return The project by the given name.
+	 * @throws IllegalArgumentException If a project
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	public static Project project(String __n)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException();
+		
+		// Already known?
+		Project rv = projects.get(__n);
+		if (rv != null)
+			return rv;
+		
+		// Setup new project
+		projects.put(__n, (rv = new Project(PROJECT_ROOT.resolve("src").
+			resolve(__n))));
+		return rv;
+	}
+	
+	/**
 	 * Recurse into main.
 	 *
 	 * @param __first First argument.
@@ -229,6 +268,58 @@ public class Build
 		
 		// Call
 		main(use);
+	}
+	
+	/**
+	 * Contains project details.
+	 *
+	 * @since 2016/03/21
+	 */
+	public static class Project
+	{
+		/** The project root directory. */
+		public final Path root;
+		
+		/** Manifest attributes, if needed. */
+		public final Attributes attr;
+		
+		/**
+		 * Initializes the project details.
+		 *
+		 * @param __dir The directory where the project lies.
+		 * @throws IllegalArgumentException If the project is not valid.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/21
+		 */
+		public Project(Path __dir)
+			throws IllegalArgumentException, NullPointerException
+		{
+			// Check
+			if (__dir == null)
+				throw new NullPointerException();
+			
+			// Set
+			root = __dir;
+			
+			// Load manifest
+			Manifest man;
+			try (InputStream is = new FileInputStream(__dir.
+				resolve("META-INF").resolve("MANIFEST.MF").toFile()))
+			{
+				man = new Manifest(is);
+			}
+			
+			// Failed to read
+			catch (IOException ioe)
+			{
+				throw new IllegalArgumentException(ioe);
+			}
+			
+			// Get main attributes
+			attr = man.getMainAttributes();
+			
+			throw new Error("TODO");
+		}
 	}
 }
 
