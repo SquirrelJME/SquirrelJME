@@ -162,3 +162,9 @@ are used to represent operations. I suppose what I should do is write a
 documentation for the intermediate language format. That would keep the
 details together and allow for any future work around it.
 
+## 23:26
+
+I should perhaps make a poll as to how many registers are truly needed. I also
+need to consider floating point too.
+
+

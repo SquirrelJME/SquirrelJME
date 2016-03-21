@@ -1,0 +1,128 @@
+# Nutty And Realistic Form
+
+This document specified the intermediate language which SquirrelJME uses
+internally to represent code during transcompilation. Due to the use of
+potentially very memory constrained systems it is designed to be small and
+compact, yet potentially wide enough to make parsing slightly easier.
+
+It is not SSA or CPS.
+
+The following are design goals:
+
+ * Compact, it must not use all the memory available to a system if for example
+   it only has 48KiB of available RAM. Being compact would for the most part
+   add potential for there to be a JIT on such limited systems.
+ * Mostly extendable for general programs.
+ * Should cover almost all programs for embedded environments which use
+   Java ME. Gigantic methods, libraries, and such will generally not fit on
+   devices which run Java ME.
+
+# A RISC-ish/CISC-ish Architectures
+
+Instructions are variable sized and operate purely using registers (except
+for loads and stores).
+
+There are 127 registers, half are floating point and the other half are
+integral registers.
+
+ * Register 0 and 64 are always zero and any values written to it are dropped.
+ * Registers 0-63 are 64-bit integer registers.
+ * Registers 64-127 are 64-bit floating point registers.
+
+There are two register selection slots: A and B. When slot bits are 
+
+# Instruction Format
+
+All instructions start with a instruction specifier:
+
+    76543210
+    ========
+    fOOOOOab
+
+ * **f** -- For operations, this is always zero.
+ * **O** -- The operation to perform.
+ * **a** -- If set, then a byte follows specifying the A register used.
+ * **b** -- If set, then a byte follows specifying the B register used, if the
+   A register is not implicit then this follows that byte.
+
+This means that instructions at most take up 3 bytes.
+
+# Explicit Register Format
+
+If the explicit slot for a register is set, then the following form is used.
+
+    76543210
+    ========
+    tRRRRRRR
+
+ * **t** -- For explicit register sets, this is always one.
+ * **R** -- The register to use for data access.
+
+# Operations which are available
+
+There is a very limit set which specifies the operation count
+
+## Op _0b00000 (0)_ - UNUSED
+
+## Op _0b00001 (1)_ - UNUSED
+
+## Op _0b00010 (2)_ - UNUSED
+
+## Op _0b00011 (3)_ - UNUSED
+
+## Op _0b00100 (4)_ - UNUSED
+
+## Op _0b00101 (5)_ - UNUSED
+
+## Op _0b00110 (6)_ - UNUSED
+
+## Op _0b00111 (7)_ - UNUSED
+
+## Op _0b01000 (8)_ - UNUSED
+
+## Op _0b01001 (9)_ - UNUSED
+
+## Op _0b01010 (10)_ - UNUSED
+
+## Op _0b01011 (11)_ - UNUSED
+
+## Op _0b01100 (12)_ - UNUSED
+
+## Op _0b01101 (13)_ - UNUSED
+
+## Op _0b01110 (14)_ - UNUSED
+
+## Op _0b01111 (15)_ - UNUSED
+
+## Op _0b10000 (16)_ - UNUSED
+
+## Op _0b10001 (17)_ - UNUSED
+
+## Op _0b10010 (18)_ - UNUSED
+
+## Op _0b10011 (19)_ - UNUSED
+
+## Op _0b10100 (20)_ - UNUSED
+
+## Op _0b10101 (21)_ - UNUSED
+
+## Op _0b10110 (22)_ - UNUSED
+
+## Op _0b10111 (23)_ - UNUSED
+
+## Op _0b11000 (24)_ - UNUSED
+
+## Op _0b11001 (25)_ - UNUSED
+
+## Op _0b11010 (26)_ - UNUSED
+
+## Op _0b11011 (27)_ - UNUSED
+
+## Op _0b11100 (28)_ - UNUSED
+
+## Op _0b11101 (29)_ - UNUSED
+
+## Op _0b11110 (30)_ - UNUSED
+
+## Op _0b11111 (31)_ - UNUSED
+
