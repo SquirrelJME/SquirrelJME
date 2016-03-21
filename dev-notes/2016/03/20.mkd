@@ -88,3 +88,62 @@ is fun). There would be basic operations, where then certain operations are
 instead just compacted (`push 2 r2`, `push 2 r3`, followed by `add`) into a
 single form (`add r2 r3 r4`).
 
+## 22:12
+
+So I will need a kind of linear program editor which can act on a bunch of
+buffers to store the register based code. I am not going to use a large number
+of classes to represent single operations. Essentially it would be like a
+`ListIterator` where there is a current instruction pointer which points to
+register instruction code. I do however have to have a compact operation form
+however to not waste space and such. RISC would be likely the best choice. I
+should also probably have a fixed instruction size for simplicity where they
+all share the same form. This would be something similar to for example MMIX.
+Alternatively, I could just use MMIX operations to represent my programs and
+then use that as a IL. MMIX is a 64-bit instruction set however. MMIX is
+however big endian. It also implements IEEE 754 which should match Java.
+
+## 22:19
+
+However MMIX is really for a real CPU, while I just need an intermediate
+language which is speedy and compact. It needs to be compact because there
+may be a JIT which is running on systems with only for example 64KiB of memory
+available. With SquirrelJME in memory there might only be 32KiB. So the code
+would have to be compiled to native code very compactly.
+
+## 22:22
+
+Time to do some thinking.
+
+    111111100 00000000
+    654321098 76543210
+    ========= ========
+    ooooodddd ddssssss
+
+If I have 5-bits for opcodes then I can have 32 instructions, which is quite
+small. Then with 6-bit operands I have 64 registers. Using a source and
+destination would be compact. Thus add would be `d = s + d` for example. I
+should however have an "infinite" number of registers to choose from however.
+
+## 22:42
+
+I suppose I can design something novel then as an intermediate code. I can use
+a prefix so to speak as a kind of huffman kind of detail. However, if I were
+to use 3-byte operations, things might get simpler.
+
+## 23:07
+
+Here is an idea. It would register based, but a CISC (for compactness).
+Basically all operations would start at a single byte. 6-bits are used for the
+operand (add, subtract, etc.) while 2 bits are used for flags which specify
+registers to use. There are two register slots, A and B. When a flag is set
+in a register then another byte is expected which is used to set the new A or
+B register. The next operation which lacks the bits will use the register set
+by the previous operation. Operations such as new, anewarray, multianewarray,
+and a few others will just be method calls (since that is sane) or traps. I
+would limit the number of active registers to around 256 though. However if
+methods are that complex that they use so many registers then they would have
+to fail due to the exceeded limitations. This would mean that methods which
+are gigantic and extremely complex (probably horrible code) would not work.
+However, this environment is made for embedded systems so it would be insane
+to have code such as that.
+
