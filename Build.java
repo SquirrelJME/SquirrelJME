@@ -207,6 +207,17 @@ public class Build
 		if (__p == null)
 			throw new NullPointerException();
 		
+		// Build dependencies first!
+		for (Project dep : __p.depends)
+			__build(dep);
+		
+		// If the project is not out of date then do not build it
+		if (!__p.isOutOfDate())
+			return;
+		
+		// Note it
+		System.err.printf("*** Building %s...%n", __p.name);
+		
 		throw new Error("TODO");
 	}
 	
@@ -250,6 +261,31 @@ public class Build
 	}
 	
 	/**
+	 * Returns the date of the given path.
+	 *
+	 * @param __p Path to get the date of.
+	 * @return The date of the path.
+	 * @since 2016/03/21
+	 */
+	public static long dateOf(Path __p)
+	{
+		// Get the date of the last change
+		try
+		{
+			FileTime ft = Files.getLastModifiedTime(__p);
+			if (ft == null)
+				return Long.MIN_VALUE;
+			return ft.toMillis();
+		}
+		
+		// Failed to read the date
+		catch (IOException ioe)
+		{
+			return Long.MIN_VALUE;
+		}
+	}
+	
+	/**
 	 * Main entry point.
 	 *
 	 * @param __args Program arguments.
@@ -278,6 +314,47 @@ public class Build
 		b.invoke(args);
 	}
 	
+	/**
+	 * Walks a directory and runs a processor on the paths.
+	 *
+	 * @param __dir The directory to walk over.
+	 * @param __proc The processor for path elements.
+	 * @return {@code true} if processing continues, otherwise {@code false}
+	 * will stop the walk.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	public static boolean walk(Path __dir, Processor<Path> __proc)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dir == null || __proc == null)
+			throw new NullPointerException();
+		
+		// Open the stream
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__dir))
+		{
+			// Go through individual files
+			for (Path p : ds)
+			{
+				// Recurse into directories
+				if (Files.isDirectory(p))
+				{
+					if (!walk(p, __proc))
+						return false;
+					continue;
+				}
+				
+				// Work on the file
+				if (!__proc.process(p))
+					return false;
+			}
+		}
+		
+		// Done
+		return true;
+	}
 	
 	/**
 	 * This represents a project which may be built.
@@ -309,6 +386,10 @@ public class Build
 		
 		/** The library version. */
 		protected final String libversion;
+		
+		/** Source code date. */
+		private volatile long _sourcedate =
+			Long.MIN_VALUE;
 		
 		/**
 		 * Initializes the project.
@@ -367,6 +448,85 @@ public class Build
 			// Determine JAR name
 			jarname = Paths.get(name + ".jar");
 		}
+		
+		/**
+		 * Checks if this project is out of date.
+		 *
+		 * @return {@code true} if it is out of date.
+		 * @since 2016/03/21
+		 */
+		public boolean isOutOfDate()
+		{
+			// Check some things.
+			try
+			{
+				// If the JAR is missing then it is out of date
+				if (!Files.exists(jarname))
+					return true;
+				
+				// Get time of the JAR file
+				long jartime = dateOf(jarname);
+				
+				// Check if a dependency is newer than this JAR
+				for (Project dep : depends)
+					if (dateOf(dep.jarname) > jartime)
+						return true;
+				
+				// Cached source code time?
+				long srct = _sourcedate;
+				if (srct != Long.MIN_VALUE)
+					return (srct > jartime);
+				
+				// Get the oldest file in the source tree
+				walk(root, new Processor<Path>()
+					{
+						/**
+						 * {@inheritDoc}
+						 * @since 2016/03/21
+						 */
+						@Override
+						public boolean process(Path __p)
+						{
+							// Get file date
+							long ftime = dateOf(__p);
+							
+							// If newer, use that
+							if (ftime > _sourcedate)
+								_sourcedate = ftime;
+							
+							// Keep going
+							return true;
+						}
+					});
+				
+				// A source is newer than the JAR?
+				return (_sourcedate > jartime);
+			}
+			
+			// Failed read
+			catch (IOException ioe)
+			{
+				throw new RuntimeException(ioe);
+			}
+		}
+	}
+	
+	/**
+	 * This is a processor callback.
+	 *
+	 * @since 2016/03/21
+	 */
+	public static interface Processor<X>
+	{
+		/**
+		 * Processes the given item.
+		 *
+		 * @param __p The item to process.
+		 * @return If {@code true} then processing continues, otherwise it
+		 * stops.
+		 * @since 2016/03/21
+		 */
+		public abstract boolean process(X __p);
 	}
 }
 
