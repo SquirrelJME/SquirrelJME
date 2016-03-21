@@ -16,6 +16,32 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Default compilers and run-times
+: ${JAVA:=java}
+: ${JAVAC:=javac}
+
+# The build class is missing or out of date?
+if [ ! -f "Build.class" ] || [ "$__exedir/Build.java" -nt "Build.class" ]
+then
+	# Clear potential old stuff
+	rm -f "Build.class" "Build\$*.class"
+	
+	# Build it
+	echo "Building the build system..." 1>&2
+	if ! "$JAVAC" -source 1.7 -target 1.7 -d . "$__exedir/Build.java"
+	then
+		echo "Failed to build the build system." 1>&2
+		exit 1
+	fi
+fi
+
+# Run it
+"$JAVA" "-Dproject.root=$__exedir" "Build" $*
+exit $?
+
+###### OLD SCRIPT BELOW ###############
+exit 0
+
 # No compression JARs?
 if [ -z "$__jzero" ]
 then
