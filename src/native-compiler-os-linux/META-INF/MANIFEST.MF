@@ -1,12 +1,9 @@
 Manifest-Version: 1.0
 X-Hairball-Name: native-compiler-cpu-powerpc
 X-Hairball-Depends: native-compiler
-Class-Path: native-compiler.jar
 LIBlet-Title: POIT CPU PowerPC
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160229
 LIBlet-Description: This supports the generation of code for the
  PowerPC CPU.
-LIBlet-Dependency-1: liblet;required;
- POIT Compiler;Steven Gawroriski;1.8+
 

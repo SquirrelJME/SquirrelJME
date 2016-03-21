@@ -3,22 +3,10 @@ X-Hairball-Name: hairball
 X-Hairball-Depends: javame-cldc-full extra-collections zip-compression 
   java-compiler java-interpreter native-compiler-all
 Main-Class: net.multiphasicapps.hairball.Main
-Class-Path: extra-collections.jar zip-compression.jar
-  java-compiler.jar java-interpreter.jar native-compiler-all.jar
 LIBlet-Title: Hairball
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228
 LIBlet-Description: This is the micro version of the Hairball Build
  system which can compile and build SquirrelJME (so that it is self
  hosting).
-LIBlet-Dependency-1: liblet;required;
- Extra Collections;Steven Gawroriski;1.8+
-LIBlet-Dependency-2: liblet;required;
- ZIP Compression;Steven Gawroriski;1.8+
-LIBlet-Dependency-3: liblet;required;
- Java Compiler;Steven Gawroriski;1.8+
-LIBlet-Dependency-4: liblet;required;
- Java Interpreter;Steven Gawroriski;1.8+
-LIBlet-Dependency-5: liblet;required;
- POIT Compiler All;Steven Gawroriski;1.8+
 
