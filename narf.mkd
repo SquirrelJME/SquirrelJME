@@ -1,4 +1,4 @@
-# Nutty And Realistic Form
+# Nutty And Retro Form
 
 This document specified the intermediate language which SquirrelJME uses
 internally to represent code during transcompilation. Due to the use of
@@ -25,13 +25,14 @@ for loads and stores).
 There are 127 registers, half are floating point and the other half are
 integral registers.
 
- * Register 0 and 64 are always zero and any values written to it are dropped.
  * Registers 0-63 are 64-bit integer registers.
  * Registers 64-127 are 64-bit floating point registers.
 
 There are two register selection slots: A and B. When slot bits are 
 
 # Instruction Format
+
+## Specifier
 
 All instructions start with a instruction specifier:
 
@@ -47,42 +48,74 @@ All instructions start with a instruction specifier:
 
 This means that instructions at most take up 3 bytes.
 
-# Explicit Register Format
+## Explicit register
 
 If the explicit slot for a register is set, then the following form is used.
 
     76543210
     ========
-    tRRRRRRR
+    tFRRRRRR
 
  * **t** -- For explicit register sets, this is always one.
+ * **F** -- If set then the register is treated as floating point.
  * **R** -- The register to use for data access.
 
-# Operations which are available
+## Constant/Jump specifier
+
+If a constant value needs to be specified or a jump is to be performed then
+a variable length byte based encoding is used following the explicit registers.
+Similarly to the explicit register, the uppermost bit is always set and the
+lowest bits are used for the value. Values start at the lowest and increase in
+shift. If there are no more constants to load then the remaining upper bits
+are set to the highest specified bit in the constant.
+
+# Operations
 
 There is a very limit set which specifies the operation count
 
-## Op _0b00000 (0)_ - UNUSED
+## Op _0b00000 (0)_ - ADD
 
-## Op _0b00001 (1)_ - UNUSED
+`A = (A + B)`.
 
-## Op _0b00010 (2)_ - UNUSED
+## Op _0b00001 (1)_ - SUBTRACT
 
-## Op _0b00011 (3)_ - UNUSED
+`A = (A - B)`.
 
-## Op _0b00100 (4)_ - UNUSED
+## Op _0b00010 (2)_ - MULTIPLY
 
-## Op _0b00101 (5)_ - UNUSED
+`A = (A * B)`.
 
-## Op _0b00110 (6)_ - UNUSED
+## Op _0b00011 (3)_ - DIVIDE
 
-## Op _0b00111 (7)_ - UNUSED
+`A = (A / B)`.
 
-## Op _0b01000 (8)_ - UNUSED
+## Op _0b00100 (4)_ - REMAINDER
 
-## Op _0b01001 (9)_ - UNUSED
+`A = (A % B)`.
 
-## Op _0b01010 (10)_ - UNUSED
+## Op _0b00101 (5)_ - AND
+
+`A = (A & B)`.
+
+## Op _0b00110 (6)_ - OR
+
+`A = (A | B)`.
+
+## Op _0b00111 (7)_ - XOR
+
+`A = (A ^ B)`.
+
+## Op _0b01000 (8)_ - LOGICAL_SHIFT
+
+`A = (A << B)` (_B_ is positive) or `A = (A >>> B)` (_B_ is negative).
+
+## Op _0b01001 (9)_ - ARITHMETIC_SHIFT
+
+`A = (A << B)` (_B_ is positive) or `A = (A >> B)` (_B_ is negative).
+
+## Op _0b01010 (10)_ - NEGATE
+
+`A = -A`.
 
 ## Op _0b01011 (11)_ - UNUSED
 
@@ -122,7 +155,21 @@ There is a very limit set which specifies the operation count
 
 ## Op _0b11101 (29)_ - UNUSED
 
-## Op _0b11110 (30)_ - UNUSED
+## Op _0b11110 (30)_ - CHANGE_A (Constant/Jump)
 
-## Op _0b11111 (31)_ - UNUSED
+`A = Constant`.
+
+If a constant value is not specified (an instruction byte follows) then the
+explicit is changed and no slots are changed. Otherwise, the slot specified
+by the register is set to the given value.
+
+Both registers may be explicit, however any read constant is placed into A.
+
+## Op _0b11111 (31)_ - CHANGE_B (Constant/Jump)
+
+`B = Constant`.
+
+Similar operation as **CONSTANT A**.
+
+Both registers may be explicit, however any read constant is placed into B.
 
