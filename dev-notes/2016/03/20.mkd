@@ -147,3 +147,18 @@ are gigantic and extremely complex (probably horrible code) would not work.
 However, this environment is made for embedded systems so it would be insane
 to have code such as that.
 
+## 23:13
+
+One problem though are branches going back and forward. The implied register
+may vary between calls, so I suppose the thing to do would be to instead have
+a linear fallback to find the next implicative register. However, seeking
+backwards will be complicated because it might not be known if an instruction
+is a register specification or not. So I suppose to fix that, I would then
+limit the instruction ID to 5-bits and registers to 127. If the uppermost bit
+is set then it specifies an instruction, otherwise it is a register
+implication. This could also be used for consistency checking to make sure
+instructions are valid. The next thing to consider is which 32 instructions
+are used to represent operations. I suppose what I should do is write a
+documentation for the intermediate language format. That would keep the
+details together and allow for any future work around it.
+
