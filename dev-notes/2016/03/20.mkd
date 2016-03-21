@@ -78,3 +78,13 @@ which will be used by the interpreter and in the future the native recompiler.
 Ignoring the table would be faster and would produce code faster. It is kind
 of redundent, although skipping it would violate the specification.
 
+## 22:07
+
+So the thing to do would be to generate a variant of the Java byte code which
+uses virtual registers instead of a stack. With registers, it simplifies the
+operation of execution and translation to generally register based machines.
+For speed and simplicity I would likely not choose SSA form (register coloring
+is fun). There would be basic operations, where then certain operations are
+instead just compacted (`push 2 r2`, `push 2 r3`, followed by `add`) into a
+single form (`add r2 r3 r4`).
+
