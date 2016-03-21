@@ -13,3 +13,7 @@ Java purposed instruction set so to speak. I can have 5 types of registers:
  * double
  * reference
 
+## 00:06
+
+Then this way I will have a better means and will not be exactly locked into
+how registers are used.
