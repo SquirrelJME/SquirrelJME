@@ -15,9 +15,11 @@ import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.Map;
@@ -224,6 +226,13 @@ public class Build
 		// Setup new project
 		projects.put(__n, (rv = new Project(PROJECT_ROOT.resolve("src").
 			resolve(__n))));
+		
+		// Change names?
+		if (!__n.equals(rv.name))
+			throw new IllegalArgumentException(String.format(
+				"Project `%s` changed name to `%s`.", __n, rv.name));
+		
+		// Return it
 		return rv;
 	}
 	
@@ -283,6 +292,15 @@ public class Build
 		/** Manifest attributes, if needed. */
 		public final Attributes attr;
 		
+		/** The name of this project. */
+		public final String name;
+		
+		/** Project dependencies. */
+		public final Set<String> depends;
+		
+		/** Library Title, vendor, and version. */
+		public final String libtitle, libvendor, libversion;
+		
 		/**
 		 * Initializes the project details.
 		 *
@@ -318,7 +336,21 @@ public class Build
 			// Get main attributes
 			attr = man.getMainAttributes();
 			
-			throw new Error("TODO");
+			// Get project name
+			name = attr.getValue("X-Hairball-Name");
+			
+			// Optional dependencies
+			Set<String> xdeps = new HashSet<>();
+			String odeps = attr.getValue("X-Hairball-Depends");
+			if (odeps != null)
+				for (String s : odeps.split("[ \\t\\r\\n]"))
+					xdeps.add(s.trim());
+			depends = Collections.<String>unmodifiableSet(xdeps);
+			
+			// These must exist for all projects
+			libtitle = attr.getValue("LIBlet-Title");
+			libvendor = attr.getValue("LIBlet-Vendor");
+			libversion = attr.getValue("LIBlet-Version");
 		}
 	}
 }
