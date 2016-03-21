@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-Hairball-Name: hairball
-X-Hairball-Depends: javame-cldc-full extra-collections zip-compression 
-  java-compiler java-interpreter native-compiler-all
+X-Hairball-Depends: javame-cldc-full, extra-collections, 
+ zip-compression, java-compiler, java-interpreter,
+ native-compiler-all
 Main-Class: net.multiphasicapps.hairball.Main
 LIBlet-Title: Hairball
 LIBlet-Vendor: Steven Gawroriski

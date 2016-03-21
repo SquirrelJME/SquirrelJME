@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-interpreter-local
-X-Hairball-Depends: java-interpreter zip-compression
+X-Hairball-Depends: java-interpreter, zip-compression
 Main-Class: net.multiphasicapps.interpreter.local.Main
 LIBlet-Title: Local Interpreter
 LIBlet-Vendor: Steven Gawroriski

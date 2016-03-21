@@ -28,6 +28,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.TreeMap;
 import javax.lang.model.SourceVersion;
@@ -44,12 +45,12 @@ public class Build
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
 	
-	/** This is a cached set of known projects. */
-	protected static final Map<String, Project> projects =
-		new HashMap<>();
-	
 	/** Build JARs with no compression? */
 	private static volatile boolean _nocompression;
+	
+	/** This is a cached set of known projects. */
+	protected final Map<String, Project> projects =
+		new HashMap<>();
 	
 	/**
 	 * Obtain the project root.
@@ -65,109 +66,186 @@ public class Build
 	}
 	
 	/**
-	 * Builds the given program.
+	 * Initializes the builder.
 	 *
-	 * @param __p The program to build.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/21
 	 */
-	public static void build(String __p)
-		throws NullPointerException
+	public Build()
 	{
-		// Check
-		if (__p == null)
-			throw new NullPointerException("No program specified for build.");
-		
-		// Use the system's Java compiler
-		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
-		if (javac == null)
-			throw new NullPointerException("Your run-time does not have a " +
-				"Java compiler available.");
-		
-		// Must support Java 7
-		if (!javac.getSourceVersions().contains(SourceVersion.RELEASE_7))
-			throw new IllegalStateException("You have a Java compiler " +
-				"available in your run-time, however it does not support " +
-				"Java 7.");
-		
-		// Get the project to target
-		Project proj = project(__p);
-		
-		// If not out of date, then ignore
-		if (!proj.outOfDate())
-			return;
-		
-		// Files to go inside of the JAR
-		Map<String, Path> tojar = new TreeMap<>();
-		Set<Path> compiles = new HashSet<>();
-		
-		// Go through all file files in the source directory and add them to
-		// the JAR or for compilation
-		scanFiles(proj.root, tojar, compiles);
-		
-		// Ignore the manifest
-		tojar.remove("META-INF/MANIFEST.MF");
-		
-		System.err.println(tojar);
-		System.err.println(compiles);
-		
-		throw new Error("TODO");
 	}
 	
 	/**
-	 * Reports the date of the given path.
+	 * Obtains the given project.
 	 *
-	 * @param __p The path to get the date for.
-	 * @return The date of the file in milliseconds.
-	 * @throws NullPointerException On null arguments.
+	 * @param __n The name of the project to get.
+	 * @return The project description.
+	 * @throws IllegalStateException If no project exists with that name or
+	 * it is an invalid project.
 	 * @since 2016/03/21
 	 */
-	public static long dateOf(Path __p)
-		throws NullPointerException
+	public Project getProject(String __n)
+		throws IllegalStateException, NullPointerException
 	{
 		// Check
-		if (__p == null)
+		if (__n == null)
 			throw new NullPointerException();
 		
-		// Get the date of the file.
+		// Already known?
+		Project rv = projects.get(__n);
+		if (rv != null)
+			return rv;
+		
+		// Setup new project
 		try
 		{
-			FileTime ft = Files.getLastModifiedTime(__p);
-			if (ft == null)
-				return Long.MIN_VALUE;
-			return ft.toMillis();
+			projects.put(__n, (rv = new Project(PROJECT_ROOT.resolve("src").
+				resolve(__n))));
 		}
 		
-		// Failed
-		catch (IOException ioe)
+		// Report a bad project
+		catch (RuntimeException|Error e)
 		{
-			return -1L;
+			// Report it
+			System.err.printf("Illegal Project: %s%n", __n);
+			
+			// Toss it
+			throw e;
 		}
+		
+		// Change names?
+		if (!__n.equals(rv.name))
+			throw new IllegalArgumentException(String.format(
+				"Project `%s` changed name to `%s`.", __n, rv.name));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
-	 * Launches the given program.
+	 * Invokes the build system.
 	 *
-	 * @param __args The program to launch and its arguments.
+	 * @param __args Argument queue.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/21
 	 */
-	public static void launch(Deque<String> __args)
+	public void invoke(Deque<String> __args)
 		throws NullPointerException
 	{
 		// Check
 		if (__args == null)
 			throw new NullPointerException();
 		
-		// Get the project to launch
-		String project = __args.pollFirst();
-		if (project == null)
-			throw new NullPointerException("No project specified.");
+		// Get the command to use
+		String command = __args.pollFirst();
+		if (command == null)
+			command = "target";
 		
-		// Build it
-		main("build", project);
+		// Depends on the command
+		Project pp;
+		switch (command)
+		{
+				// Run tests on the host
+			case "host-tests":
+				__launch(false, getProject("test-all"));
+				break;
+			
+				// Run tests on the interpreter
+			case "interpreter-tests":
+				__launch(true, getProject("test-all"));
+				break;
+				
+				// Target a specific system
+			case "target":
+				// Build hairball
+				__build((pp = getProject("hairball")));
+				
+				// Launch it
+				__launch(false, pp, __args);
+				break;
+				
+				// Use the interpreter too compile to the target
+			case "interpreter-target":
+				// Build hairball
+				__build((pp = getProject("hairball")));
+				
+				// Launch it
+				__launch(true, pp, __args);
+				break;
+			
+				// Launch a program
+			case "launch":
+				__launch(false, getProject(__args.removeFirst()), __args);
+				break;
+			
+				// Use the interpreter to launch a program
+			case "interpreter-launch":
+				__launch(true, getProject(__args.removeFirst()), __args);
+				break;
+			
+				// Build a project
+			case "build":
+				__build(getProject(__args.removeFirst()));
+				break;
+			
+				// Unknown
+			default:
+				throw new IllegalArgumentException("command");
+		}
+	}
+	
+	/**
+	 * Builds the given project.
+	 *
+	 * @param __p The project to build.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	private void __build(Project __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException();
 		
-		// Setup for launching
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Launches the given project.
+	 *
+	 * @param __interp Run this project using the internal interpreter?
+	 * @param __p The project to launch.
+	 * @param __args The program arguments
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	private void __launch(boolean __interp, Project __p, String... __args)
+		throws NullPointerException
+	{
+		__launch(__interp, __p,
+			new LinkedList<>(Arrays.<String>asList(__args)));
+	}
+	
+	/**
+	 * Launches the given project.
+	 *
+	 * @param __interp Run this project using the internal interpreter?
+	 * @param __p The project to launch.
+	 * @param __args The program arguments
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	private void __launch(boolean __interp, Project __p, Deque<String> __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null || __args == null)
+			throw new NullPointerException();
+		
+		// If using the interpreter, build it
+		if (__interp)
+			__build(getProject("java-interpreter-local"));
+		
 		throw new Error("TODO");
 	}
 	
@@ -193,286 +271,65 @@ public class Build
 			_nocompression |= true;
 		}
 		
-		// Get the command to use
-		String command = args.pollFirst();
-		if (command == null)
-			command = "target";
+		// Setup builder
+		Build b = new Build();
 		
-		// Depends on the command
-		switch (command)
-		{
-				// Run tests on the host
-			case "host-tests":
-				main("launch", "test-all");
-				break;
-			
-				// Run tests on the interpreter
-			case "interpreter-tests":
-				main("interpreter-launch", "test-all");
-				break;
-				
-				// Target a specific system
-			case "target":
-				// Build hairball
-				main("build", "hairball");
-				
-				// Launch it
-				recurse("launch", "hairball",
-					args.<String>toArray(new String[args.size()]));
-				break;
-				
-				// Use the interpreter too compile to the target
-			case "interpreter-target":
-				// Build hairball
-				main("build", "hairball");
-				
-				// Launch it
-				recurse("interpreter-launch", "hairball",
-					args.<String>toArray(new String[args.size()]));
-				break;
-			
-				// Launch a program
-			case "launch":
-				launch(args);
-				break;
-			
-				// Use the interpreter to launch a program
-			case "interpreter-launch":
-				// Build the interpreter first
-				main("build", "java-interpreter-local");
-				
-				// Launch it
-				recurse("launch", "java-interpreter-local",
-					args.<String>toArray(new String[args.size()]));
-				break;
-			
-				// Build a project
-			case "build":
-				build(args.pollFirst());
-				break;
-			
-				// Unknown
-			default:
-				throw new IllegalArgumentException("command");
-		}
+		// Send arguments to the builder
+		b.invoke(args);
 	}
+	
 	
 	/**
-	 * Obtains a project.
-	 *
-	 * @param __n The name of the project to return.
-	 * @return The project by the given name.
-	 * @throws IllegalArgumentException If a project
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/21
-	 */
-	public static Project project(String __n)
-		throws IllegalArgumentException, NullPointerException
-	{
-		// Check
-		if (__n == null)
-			throw new NullPointerException();
-		
-		// Already known?
-		Project rv = projects.get(__n);
-		if (rv != null)
-			return rv;
-		
-		// Setup new project
-		projects.put(__n, (rv = new Project(PROJECT_ROOT.resolve("src").
-			resolve(__n))));
-		
-		// Change names?
-		if (!__n.equals(rv.name))
-			throw new IllegalArgumentException(String.format(
-				"Project `%s` changed name to `%s`.", __n, rv.name));
-		
-		// Return it
-		return rv;
-	}
-	
-	/**
-	 * Recurse into main.
-	 *
-	 * @param __first First argument.
-	 * @param __rest The remaining arguments.
-	 * @since 2016/03/21
-	 */
-	public static void recurse(String __first, String... __rest)
-	{
-		// Slice in
-		int n = __rest.length;
-		String[] use = new String[1 + n];
-		use[0] = __first;
-		for (int i = 0; i < n; i++)
-			use[1 + i] = __rest[i];
-		
-		// Call
-		main(use);
-	}
-	
-	/**
-	 * Recurse into main.
-	 *
-	 * @param __first First argument.
-	 * @param __second Second argument.
-	 * @param __rest The remaining arguments.
-	 * @since 2016/03/21
-	 */
-	public static void recurse(String __first, String __second,
-		String... __rest)
-	{
-		// Slice in
-		int n = __rest.length;
-		String[] use = new String[2 + n];
-		use[0] = __first;
-		use[1] = __second;
-		for (int i = 0; i < n; i++)
-			use[2 + i] = __rest[i];
-		
-		// Call
-		main(use);
-	}
-	
-	public static void scanTree(Path __root,
-		throws IOException
-	{
-		scanTree
-	}
-	
-	public static void scanTree
-		throws IOException
-	
-	/**
-	 * Scans files in a directory and adds them to a map and/or an optional
-	 * set.
-	 *
-	 * @param __root The root directory to scan.
-	 * @param __tj The map which contains files to be placed into the JAR.
-	 * @param __cc Optional
-	 * @throws NullPointerException If no root or JAR mapping was specified.
-	 * @since 2016/03/21
-	 */
-	public static void scanFiles(Path __root, Map<String, Path> __tj,
-		Set<Path> __cc)
-		throws NullPointerException
-	{
-		// Check
-		if (__root == null || __tj == null)
-			throw new NullPointerException();
-		
-		// Go through all file files in the source directory and add them to
-		// the JAR or for compilation
-		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__root))
-		{
-			// Go through them
-			for (Path p : ds)
-			{
-				// If a directory, ignore
-				if (Files.isDirectory(p))
-					continue;
-				
-				// Get the ZIP name form
-				String zipname = zipName(__root, p);
-				
-				// If it ends in java, compile it
-				if (zipname.endsWith(".java"))
-				{
-					if (__cc != null)
-						__cc.add(p);
-				}
-				
-				// Otherwise include it in the JAR
-				else
-					__tj.put(zipname, p);
-			}
-		}
-		
-		// Read error
-		catch (IOException ioe)
-		{
-			throw new RuntimeException(ioe);
-		}
-	}
-	
-	/**
-	 * Calculates the name of a file as it would appear in the ZIP file.
-	 *
-	 * @param __r Root directory.
-	 * @param __p File based off the root.
-	 * @return The name as it would appear for a ZIP file.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/21
-	 */
-	public static String zipName(Path __r, Path __p)
-		throws NullPointerException
-	{
-		// Check
-		if (__r == null || __p == null)
-			throw new NullPointerException();
-		
-		// Relative from the root
-		Path rel = __r.toAbsolutePath().relativize(__p.toAbsolutePath());
-		
-		// Build string form
-		StringBuilder sb = new StringBuilder();
-		for (Path x : rel)
-		{
-			if (sb.length() > 0)
-				sb.append('/');
-			sb.append(x.toString());
-		}
-		
-		// Return it
-		return sb.toString();
-	}
-	
-	/**
-	 * Contains project details.
+	 * This represents a project which may be built.
 	 *
 	 * @since 2016/03/21
 	 */
-	public static class Project
+	public class Project
 	{
-		/** The project root directory. */
-		public final Path root;
+		/** The root directory of the project. */
+		protected final Path root;
 		
-		/** Manifest attributes, if needed. */
-		public final Attributes attr;
+		/** Manifest attributes. */
+		protected final Attributes attr;
 		
-		/** The name of this project. */
-		public final String name;
+		/** Project name. */
+		protected final String name;
 		
-		/** Project dependencies. */
-		public final Set<String> depends;
+		/** Dependencies. */
+		protected final Set<Project> depends;
 		
-		/** Library Title, vendor, and version. */
-		public final String libtitle, libvendor, libversion;
+		/** The name of the output JAR file. */
+		protected final Path jarname;
 		
-		/** The name of the JAR file. */
-		public final Path jarname;
+		/** The library title. */
+		protected final String libtitle;
+		
+		/** The library vendor. */
+		protected final String libvendor;
+		
+		/** The library version. */
+		protected final String libversion;
 		
 		/**
-		 * Initializes the project details.
+		 * Initializes the project.
 		 *
-		 * @param __dir The directory where the project lies.
-		 * @throws IllegalArgumentException If the project is not valid.
+		 * @param __root The root directory of the project.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/21
 		 */
-		public Project(Path __dir)
-			throws IllegalArgumentException, NullPointerException
+		private Project(Path __root)
+			throws NullPointerException
 		{
 			// Check
-			if (__dir == null)
+			if (__root == null)
 				throw new NullPointerException();
 			
 			// Set
-			root = __dir;
+			root = __root;
 			
 			// Load manifest
 			Manifest man;
-			try (InputStream is = new FileInputStream(__dir.
+			try (InputStream is = new FileInputStream(root.
 				resolve("META-INF").resolve("MANIFEST.MF").toFile()))
 			{
 				man = new Manifest(is);
@@ -488,67 +345,27 @@ public class Build
 			attr = man.getMainAttributes();
 			
 			// Get project name
-			name = attr.getValue("X-Hairball-Name");
+			name = Objects.<String>requireNonNull(
+				attr.getValue("X-Hairball-Name"), "Missing package name.");
 			
 			// Optional dependencies
-			Set<String> xdeps = new HashSet<>();
+			Set<Project> xdeps = new HashSet<>();
 			String odeps = attr.getValue("X-Hairball-Depends");
 			if (odeps != null)
-				for (String s : odeps.split("[ \\t\\r\\n]"))
-					xdeps.add(s.trim());
-			depends = Collections.<String>unmodifiableSet(xdeps);
+				for (String s : odeps.split(Pattern.quote(",")))
+					xdeps.add(getProject(s.trim()));
+			depends = Collections.<Project>unmodifiableSet(xdeps);
 			
 			// These must exist for all projects
-			libtitle = attr.getValue("LIBlet-Title");
-			libvendor = attr.getValue("LIBlet-Vendor");
-			libversion = attr.getValue("LIBlet-Version");
+			libtitle = Objects.<String>requireNonNull(attr.getValue(
+				"LIBlet-Title"), "Missing library title.");
+			libvendor = Objects.<String>requireNonNull(attr.getValue(
+				"LIBlet-Vendor"), "Missing library title.");
+			libversion = Objects.<String>requireNonNull(attr.getValue(
+				"LIBlet-Version"), "Missing library title.");
 			
 			// Determine JAR name
 			jarname = Paths.get(name + ".jar");
-		}
-		
-		/**
-		 * Is this project out of date?
-		 *
-		 * @return {@code true} if it is out of date.
-		 * @since 2016/03/21
-		 */
-		public boolean outOfDate()
-		{
-			// JAR is missing?
-			if (!Files.exists(jarname))
-				return true;
-			
-			// Get the JAR date
-			long jd = dateOf(root);
-			
-			// Go through the source code to see if it has changed
-			try (DirectoryStream<Path> ds = Files.newDirectoryStream(root))
-			{
-				// Go through them
-				for (Path p : ds)
-				{
-					// If a directory, ignore
-					if (Files.isDirectory(p))
-						continue;
-					
-					// Newer?
-					if (dateOf(p) > jd)
-						return true;
-				}
-			}
-		
-			// Read error
-			catch (IOException ioe)
-			{
-				throw new RuntimeException(ioe);
-			}
-			
-			if (true)
-				throw new Error("TODO");
-			
-			// Not out of date
-			return false;
 		}
 	}
 }
