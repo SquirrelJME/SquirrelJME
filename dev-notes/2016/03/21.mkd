@@ -23,3 +23,9 @@ how registers are used.
 The interpreter due to the refactor no longer needs the full CLDC and now just
 relies on the compact one.
 
+## 10:58
+
+Hopefully this intermediate language works out and stays compact. I suppose
+as a first step, the byte code is translated literally to NARF and then
+following that it is compacted and such.
+

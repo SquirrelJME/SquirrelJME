@@ -303,6 +303,17 @@ These codes do not have a index meaning and are meant to be short.
  * `LI09` -- Main class not specified on the command line.
  * `LI0a` -- The JAR manifest does not have the `Main-Class` attribute.
 
+# `net.multiphasicapps.narf`
+
+ * `NF01` -- If the input operation specified (opcode) is not within the value
+   mask for operations.
+   * The input bits.
+ * `NF02` -- Unknown slot.
+   * The unknown slot.
+ * `NF03` -- The validity masks have unknown bits set.
+   * The slot A validity mask.
+   * The slot B validity mask.
+
 # `net.multiphasicapps.zips`
 
  * `ZP01` -- Attempted to read an array index from a structured type, however
