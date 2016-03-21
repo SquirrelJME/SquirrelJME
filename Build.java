@@ -9,6 +9,7 @@
 // ---------------------------------------------------------------------------
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -33,6 +34,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import javax.lang.model.SourceVersion;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
 /**
@@ -200,7 +204,7 @@ public class Build
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/21
 	 */
-	private void __build(Project __p)
+	private void __build(final Project __p)
 		throws NullPointerException
 	{
 		// Check
@@ -214,11 +218,181 @@ public class Build
 		// If the project is not out of date then do not build it
 		if (!__p.isOutOfDate())
 			return;
-		
+			
+		// Use the system's Java compiler
+		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+		if (javac == null)
+			throw new NullPointerException("Your run-time does not have a " +
+				"Java compiler available.");
+
+		// Must support Java 7
+		if (!javac.getSourceVersions().contains(SourceVersion.RELEASE_7))
+			throw new IllegalStateException("You have a Java compiler " +
+				"available in your run-time, however it does not support " +
+				"Java 7.");
+          
 		// Note it
 		System.err.printf("*** Building %s...%n", __p.name);
 		
-		throw new Error("TODO");
+		// File manager
+		final StandardJavaFileManager jfm = javac.getStandardFileManager(null,
+			null, null);
+		
+		// Go through the source tree and determine files to compile and ones
+		// to add to the JAR
+		Path tempdir = null;
+		try
+		{
+			// Create temporary directory where compiled code goes for a bit
+			tempdir = Files.createTempDirectory(
+				"squirreljme-build-" + __p.name);
+			Iterable<File> tdfi = Collections.<File>singleton(
+				tempdir.toFile());
+			
+			// Add source tree to the file root
+			jfm.setLocation(StandardLocation.SOURCE_PATH,
+				Collections.<File>singleton(__p.root.toFile()));
+			
+			// Output everything here
+			jfm.setLocation(StandardLocation.SOURCE_OUTPUT, tdfi);
+			jfm.setLocation(StandardLocation.CLASS_OUTPUT, tdfi);
+			
+			// The class path is that of the dependencies
+			Set<File> ccpath = new HashSet<>();
+			__p.classPath(ccpath);
+			jfm.setLocation(StandardLocation.CLASS_PATH, ccpath);
+			jfm.setLocation(StandardLocation.PLATFORM_CLASS_PATH, ccpath);
+			
+			// Files to compile
+			final Set<JavaFileObject> compile = new HashSet<>();
+			
+			// Files to go in the ZIP
+			final Map<String, Path> zipup = new TreeMap<>();
+			
+			// Walk the source tree
+			walk(__p.root, new Processor<Path>()
+				{
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/03/21
+					 */
+					@Override
+					public boolean process(Path __q)
+					{
+						// Ignore directories
+						if (Files.isDirectory(__q))
+							return true;
+						
+						// Get the file name
+						String fname = __q.getFileName().toString();
+						
+						// Ignore manifests
+						if (fname.equals("MANIFEST.MF"))
+							return true;
+						
+						// If it ends in Java, compile it
+						else if (fname.endsWith(".java"))
+							for (JavaFileObject f : jfm.getJavaFileObjects(
+								__q.toFile()))
+								compile.add(f);
+						
+						// Otherwise add it to the JAR
+						else
+							zipup.put(zipName(__p.root, __q), __q);
+						
+						// Keep going
+						return true;
+					}
+				});
+			
+			// Only compile if there are files
+			if (!compile.isEmpty())
+			{
+				// Setup Java Compiler
+				JavaCompiler.CompilationTask task = javac.getTask(null,
+					jfm, null, Arrays.<String>asList("-source", "1.7",
+						"-target", "1.7", "-g"), null, compile);
+				
+				// Execute
+				if (!task.call())
+					throw new RuntimeException("Compilation failed!");
+			}
+			
+			// Walk the temporary directory to get the compile classes
+			final Path tdx = tempdir;
+			walk(tdx, new Processor<Path>()
+				{
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/03/21
+					 */
+					@Override
+					public boolean process(Path __q)
+					{
+						// Ignore directories
+						if (Files.isDirectory(__q))
+							return true;
+						
+						// Add to the JAR
+						zipup.put(zipName(tdx, __q), __q);
+						
+						// Keep going
+						return true;
+					}
+				});
+			
+			System.err.println(zipup);
+			
+			throw new Error("TODO");
+		}
+		
+		// Failed read/write
+		catch (IOException ioe)
+		{
+			throw new RuntimeException(ioe);
+		}
+		
+		// Delete temporary directory always
+		finally
+		{
+			// Delete it
+			if (tempdir != null)
+				try
+				{
+					walk(tempdir, new Processor<Path>()
+						{
+							/**
+							 * {@inheritDoc}
+							 * @since 2016/03/21
+							 */
+							@Override
+							public boolean process(Path __q)
+							{
+								// Delete it
+								try
+								{
+									// Delete it
+									Files.delete(__q);
+								}
+								
+								// Failed to delete
+								catch (IOException ioe)
+								{
+									ioe.printStackTrace();
+								}
+								
+								// Keep going
+								return true;
+							}
+						});
+				}
+				
+				// Ignore
+				catch (IOException ioe)
+				{
+					ioe.printStackTrace();
+				}
+		}
 	}
 	
 	/**
@@ -338,13 +512,10 @@ public class Build
 			// Go through individual files
 			for (Path p : ds)
 			{
-				// Recurse into directories
+				// Recurse into directories first (depth first)
 				if (Files.isDirectory(p))
-				{
 					if (!walk(p, __proc))
 						return false;
-					continue;
-				}
 				
 				// Work on the file
 				if (!__proc.process(p))
@@ -354,6 +525,41 @@ public class Build
 		
 		// Done
 		return true;
+	}
+	
+	/**
+	 * Calculates the name that a file would appear as inside of a ZIP file.
+	 *
+	 * @param __root The root path.
+	 * @param __p The file to add.
+	 * @return The ZIP compatible name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/21
+	 */
+	public static String zipName(Path __root, Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__root == null || __p == null)
+			throw new NullPointerException();
+		
+		// Calculate relative name
+		Path rel = __root.toAbsolutePath().relativize(__p.toAbsolutePath());
+		
+		// Build name
+		StringBuilder sb = new StringBuilder();
+		for (Path comp : rel)
+		{
+			// Prefix slash
+			if (sb.length() > 0)
+				sb.append('/');
+			
+			// Add component
+			sb.append(comp);
+		}
+		
+		// Return it
+		return sb.toString();
 	}
 	
 	/**
@@ -450,6 +656,31 @@ public class Build
 		}
 		
 		/**
+		 * Calculates the classpath used for compilation.
+		 *
+		 * @param __cp The classpath to use for compilation.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/21
+		 */
+		public void classPath(Set<File> __cp)
+			throws NullPointerException
+		{
+			// Check
+			if (__cp == null)
+				throw new NullPointerException();
+			
+			// Add dependencies
+			for (Project dep : depends)
+			{
+				// Add dependency JAR
+				__cp.add(dep.jarname.toFile());
+				
+				// Recurse
+				dep.classPath(__cp);
+			}
+		}
+		
+		/**
 		 * Checks if this project is out of date.
 		 *
 		 * @return {@code true} if it is out of date.
@@ -487,6 +718,10 @@ public class Build
 						@Override
 						public boolean process(Path __p)
 						{
+							// Ignore directories
+							if (Files.isDirectory(__p))
+								return true;
+							
 							// Get file date
 							long ftime = dateOf(__p);
 							
