@@ -1,5 +1,7 @@
 # Nutty And Retro Form
 
+__THIS DOCUMENT IS INCOMPLETE AND MAY BE REMOVED IN THE FUTURE.__
+
 This document specified the intermediate language which SquirrelJME uses
 internally to represent code during transcompilation. Due to the use of
 potentially very memory constrained systems it is designed to be small and

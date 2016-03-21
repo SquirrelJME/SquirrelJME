@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-Hairball-Name: narf
+X-Hairball-Depends: javame-cldc-compact
+LIBlet-Title: NARF
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160321
+LIBlet-Description: This is a compact intermediate language which
+ is used in binary form to represent translated Java byte code
+ for transformation intom native machine code.
+ NARF stands for "Nutty And Retro Form".
+

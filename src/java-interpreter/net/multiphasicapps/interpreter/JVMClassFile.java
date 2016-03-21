@@ -14,7 +14,6 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
-import java.nio.channels.SeekableByteChannel;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;

@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-interpreter
-X-Hairball-Depends: javame-cldc-full extra-collections
- java-descriptors
-Class-Path: extra-collections.jar java-descriptors.jar
+X-Hairball-Depends: javame-cldc-compact extra-collections
+ java-descriptors narf
+Class-Path: extra-collections.jar java-descriptors.jar narf.jar
 LIBlet-Title: Java Interpreter
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228
@@ -12,4 +12,6 @@ LIBlet-Dependency-1: liblet;required;
  Extra Collections;Steven Gawroriski;1.8+
 LIBlet-Dependency-2: liblet;required;
  Java Descriptors;Steven Gawroriski;1.8+
+LIBlet-Dependency-3: liblet;required;
+ NARF;Steven Gawroriski;1.8+
 

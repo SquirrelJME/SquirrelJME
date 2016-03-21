@@ -76,6 +76,13 @@ public final class Boolean
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Boxes the given boolean value.
+	 *
+	 * @param __a The boolean to box.
+	 * @return Either {@link #TRUE} or {@link #FALSE}.
+	 * @since 2016/03/21
+	 */
 	public static Boolean valueOf(boolean __a)
 	{
 		if (__a)

@@ -17,3 +17,9 @@ Java purposed instruction set so to speak. I can have 5 types of registers:
 
 Then this way I will have a better means and will not be exactly locked into
 how registers are used.
+
+## 10:23
+
+The interpreter due to the refactor no longer needs the full CLDC and now just
+relies on the compact one.
+
