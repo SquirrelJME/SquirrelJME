@@ -17,12 +17,18 @@ The following are design goals:
    Java ME. Gigantic methods, libraries, and such will generally not fit on
    devices which run Java ME.
 
-# A RISC-ish/CISC-ish Architectures
+# A CISC-ish Architectures
 
 Instructions are variable sized and operate purely using registers (except
 for loads and stores).
 
-There are 127 registers. Each register may be assigned a special purpose
+There are 127 registers. Each register is assigned a fixed type that it may be:
+
+ * int
+ * long
+ * float
+ * double
+ * reference
 
 There are two register selection slots: A and B. When slot bits are explicitely
 specified then they are changed, otherwise the slot of the previous (linear)
@@ -105,7 +111,7 @@ for specific instructions.
 
 #### Op _0b00110 (6)_ - OR
 
-`A = (A | B)`.
+`A = (A \| B)`.
 
 #### Op _0b00111 (7)_ - XOR
 
@@ -172,6 +178,8 @@ for specific instructions.
 ### Op _0b10000 (16)_ - SET
 
 `A = B`.
+
+A and B must be compatible value types.
 
 ### Op _0b10001 (17)_ - UNUSED
 
