@@ -29,3 +29,11 @@ Hopefully this intermediate language works out and stays compact. I suppose
 as a first step, the byte code is translated literally to NARF and then
 following that it is compacted and such.
 
+## 13:29
+
+I need to simplify the build manifests and generate them as required for
+dependencies to fill out the `Class-Path` and the LIBlet/MIDlet dependencies.
+I currently just have this information duplicated but it could be handled by
+the build system. I also have enough of a layout where I can build a simple
+build system in Java and then use `build.sh` as a bootstrap to it.
+
