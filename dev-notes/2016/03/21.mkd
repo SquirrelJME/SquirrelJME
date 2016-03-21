@@ -1,0 +1,15 @@
+# 2016/03/21
+
+## 00:03
+
+Actually, when it comes to what a specific kind of register is I can have it
+variable as needed. For example, I might not need 64 integer registers, but
+I might need 72 floating point registers. Then at least I will have a more
+Java purposed instruction set so to speak. I can have 5 types of registers:
+
+ * int
+ * long
+ * float
+ * double
+ * reference
+

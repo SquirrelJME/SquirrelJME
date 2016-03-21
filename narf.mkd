@@ -54,10 +54,9 @@ If the explicit slot for a register is set, then the following form is used.
 
     76543210
     ========
-    tFRRRRRR
+    tRRRRRRR
 
  * **t** -- For explicit register sets, this is always one.
- * **F** -- If set then the register is treated as floating point.
  * **R** -- The register to use for data access.
 
 ## Constant/Jump specifier
@@ -117,7 +116,9 @@ There is a very limit set which specifies the operation count
 
 `A = -A`.
 
-## Op _0b01011 (11)_ - UNUSED
+## Op _0b01011 (11)_ - SET
+
+`A = B`.
 
 ## Op _0b01100 (12)_ - UNUSED
 
