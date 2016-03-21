@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import javax.lang.model.SourceVersion;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
@@ -59,6 +60,18 @@ public class Build
 		// Check
 		if (__p == null)
 			throw new NullPointerException("No program specified for build.");
+		
+		// Use the system's Java compiler
+		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+		if (javac == null)
+			throw new NullPointerException("Your run-time does not have a " +
+				"Java compiler available.");
+		
+		// Must support Java 7
+		if (!javac.getSourceVersions().contains(SourceVersion.RELEASE_7))
+			throw new IllegalStateException("You have a Java compiler " +
+				"available in your run-time, however it does not support " +
+				"Java 7.");
 		
 		throw new Error("TODO");
 	}
