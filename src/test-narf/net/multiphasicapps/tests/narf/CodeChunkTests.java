@@ -73,11 +73,11 @@ public class CodeChunkTests
 		{
 			// Get the position to add or set byte
 			int pos = (i == 0 ? 0 : Math.max(0, rand.nextInt(i)));
-			int act = (i == 0 ? 0 : rand.nextInt(7));
+			int act = (i == 0 ? 0 : rand.nextInt(5));
 			byte val = (byte)rand.nextInt();
 			
 			// Removing data?
-			if (act == 6)
+			if (act == 4)
 			{
 				// Count OK removals
 				if (snail.remove(pos) == bunny.remove(pos))

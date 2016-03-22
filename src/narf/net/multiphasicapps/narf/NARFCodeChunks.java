@@ -62,8 +62,7 @@ public class NARFCodeChunks
 		chunksize = __cs;
 		
 		// Setup initial chunk
-		_chunks = new __Chunk__[1];
-		_chunks[0] = new __Chunk__();
+		clear();
 	}
 	
 	/**
@@ -101,8 +100,7 @@ public class NARFCodeChunks
 		chunksize = __cs;
 		
 		// Setup initial chunk
-		_chunks = new __Chunk__[1];
-		_chunks[0] = new __Chunk__();
+		clear();
 		
 		// Lock the other and copy the data
 		synchronized (__from.lock)
@@ -148,6 +146,28 @@ public class NARFCodeChunks
 		synchronized (lock)
 		{
 			chunkForPos(__i).add(__i, __v);
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Clears the code chunk and removes all bytes from it and sets the size
+	 * to zero.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/03/22
+	 */
+	public NARFCodeChunks clear()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Just initialize new chunk buffers
+			__Chunk__[] ch;
+			_chunks = ch = new __Chunk__[1];
+			ch[0] = new __Chunk__();
 		}
 		
 		// Self
@@ -545,6 +565,10 @@ public class NARFCodeChunks
 				// Set new size
 				_count = len - 1;
 				
+				// If the chunk is drained, remove it
+				if (len == 1)
+					__bye();
+				
 				// Correct
 				__correct();
 				
@@ -584,6 +608,53 @@ public class NARFCodeChunks
 				ddx[logpos] = __v;
 				return rv;
 			}
+		}
+		
+		/**
+		 * Removes this chunk from the chunk list.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/22
+		 */
+		private __Chunk__ __bye()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get the chunk list
+				__Chunk__[] was = _chunks;
+				int wasl = was.length;
+				
+				// If this is the only chunk, ignore
+				if (wasl <= 1)
+					return this;
+				
+				// Allocate new array
+				int nowl = wasl - 1;
+				__Chunk__[] now = new __Chunk__[nowl];
+				
+				// Copy all the chunks before this one
+				int mydx = _index;
+				for (int i = 0; i < mydx; i++)
+					now[i] = was[i];
+				
+				// Copy all chunks following this, with new positional data
+				for (int i = mydx + 1; i < wasl; i++)
+				{
+					// Move over
+					__Chunk__ shove;
+					now[i - 1] = shove = was[i];
+					
+					// Increase its index
+					shove._index = i - 1;
+				}
+				
+				// Use new array
+				_chunks = now;
+			}
+			
+			// Self
+			return this;
 		}
 		
 		/**
