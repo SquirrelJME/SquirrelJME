@@ -174,26 +174,42 @@ public class NARFCodeChunks
 	}
 	
 	/**
-	 * Sets the byte at the given position.
+	 * Removes a byte at the given index.
 	 *
-	 * @param __i The index to write the byte at.
-	 * @param __v The byte to write.
-	 * @return {@code this}.
+	 * @param __i The index which contains the byte to remove.
+	 * @return The value which was at this position.
 	 * @throws IndexOutOfBoundsException If the address is not within the
 	 * chunk bounds.
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks set(int __i, byte __v)
+	public byte remove(int __i)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
 		synchronized (lock)
 		{
-			chunkForPos(__i).set(__i, __v);
+			return chunkForPos(__i).remove(__i);
 		}
-		
-		// Self
-		return this;
+	}
+	
+	/**
+	 * Sets the byte at the given position.
+	 *
+	 * @param __i The index to write the byte at.
+	 * @param __v The byte to write.
+	 * @return The old value.
+	 * @throws IndexOutOfBoundsException If the address is not within the
+	 * chunk bounds.
+	 * @since 2016/03/22
+	 */
+	public byte set(int __i, byte __v)
+		throws IndexOutOfBoundsException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return chunkForPos(__i).set(__i, __v);
+		}
 	}
 	
 	/**
@@ -494,7 +510,7 @@ public class NARFCodeChunks
 		}
 		
 		/**
-		 * Sets a byte within the buffer to a specific value.
+		 * Remove a byte within the buffer and returns it.
 		 *
 		 * @param __i The real position to set.
 		 * @param __v The The value to write.
@@ -503,7 +519,7 @@ public class NARFCodeChunks
 		 * does not belong in this chunk.
 		 * @since 2016/03/22
 		 */
-		public __Chunk__ set(int __i, byte __v)
+		public byte remove(int __i)
 			throws IndexOutOfBoundsException
 		{
 			// Lock
@@ -512,16 +528,62 @@ public class NARFCodeChunks
 				// Obtain the logical add position
 				int logpos = __i - _position;
 				int len = _count;
-				if (logpos < 0 || logpos > len)
+				if (logpos < 0 || logpos >= len)
 					throw new IndexOutOfBoundsException(
 						String.format("NF07 %d %d %d", __i, logpos, len));
 				
-				// Write byte here
-				data[logpos] = __v;
+				// Get data buffer
+				byte[] ddx = data;
+				
+				// The value to return
+				byte rv = ddx[logpos];
+				
+				// Move bytes down
+				for (int i = logpos + 1; i < len; i++)
+					ddx[i - 1] = ddx[i];
+				
+				// Set new size
+				_count = len - 1;
+				
+				// Correct
+				__correct();
+				
+				// Return it
+				return rv;
 			}
-			
-			// Self
-			return this;
+		}
+		
+		/**
+		 * Sets a byte within the buffer to a specific value.
+		 *
+		 * @param __i The real position to set.
+		 * @param __v The The value to write.
+		 * @return The old value.
+		 * @throws IndexOutOfBoundsException If the computed logical position
+		 * does not belong in this chunk.
+		 * @since 2016/03/22
+		 */
+		public byte set(int __i, byte __v)
+			throws IndexOutOfBoundsException
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Obtain the logical add position
+				int logpos = __i - _position;
+				int len = _count;
+				if (logpos < 0 || logpos >= len)
+					throw new IndexOutOfBoundsException(
+						String.format("NF07 %d %d %d", __i, logpos, len));
+				
+				// Get data buffer
+				byte[] ddx = data;
+				
+				// Write byte here and return the old value
+				byte rv = ddx[logpos];
+				ddx[logpos] = __v;
+				return rv;
+			}
 		}
 		
 		/**

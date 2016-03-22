@@ -67,33 +67,62 @@ public class CodeChunkTests
 		
 		// Go through 
 		int n = TEST_BUFFER_SIZE;
+		int trem = 0, krem = 0;
+		int tset = 0, kset = 0;
 		for (int i = 0; i < n;)
 		{
 			// Get the position to add or set byte
 			int pos = (i == 0 ? 0 : Math.max(0, rand.nextInt(i)));
-			boolean add = (i == 0 ? true : rand.nextBoolean());
+			int act = (i == 0 ? 0 : rand.nextInt(7));
 			byte val = (byte)rand.nextInt();
 			
-			// Adding byte?
-			if (add)
+			// Removing data?
+			if (act == 6)
 			{
-				snail.add(pos, val);
-				bunny.add(pos, val);
+				// Count OK removals
+				if (snail.remove(pos) == bunny.remove(pos))
+					krem++;
 				
-				// Increase program size now
-				i++;
+				// Remove count
+				i--;
+				
+				// More removals were done
+				trem++;
 			}
 			
-			// Just setting it
+			// Add or set
 			else
 			{
-				snail.set(pos, val);
-				bunny.set(pos, val);
+				// Adding byte?
+				if ((act & 1) == 0)
+				{
+					snail.add(pos, val);
+					bunny.add(pos, val);
+				
+					// Increase program size now
+					i++;
+				}
+			
+				// Just setting it
+				else
+				{
+					if (snail.set(pos, val) == bunny.set(pos, val))
+						kset++;
+				
+					// Total set count
+					tset++;
+				}
 			}
 		}
 		
 		// Check for size equality
 		__tc.checkEquals("snailbunny.size", snail.size(), bunny.size());
+		
+		// Check that sets changed the same values
+		__tc.checkEquals("snailbunny.sets", tset, kset);
+		
+		// Check that removals removed the same values
+		__tc.checkEquals("snailbunny.removals", trem, krem);
 		
 		// Create byte arrays for both sets of code
 		byte[] slow = new byte[n];
