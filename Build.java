@@ -11,6 +11,7 @@
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URLClassLoader;
@@ -19,6 +20,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
@@ -26,12 +28,14 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.jar.Attributes;
+import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
 import javax.lang.model.SourceVersion;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -41,6 +45,23 @@ import javax.tools.ToolProvider;
 
 /**
  * This is a simple and basic build system.
+ *
+ * The system property "project.root" defines the root directory where
+ * SquirrelJME's code exists. Projects and such are searched and compiled
+ * from the "src" directory from the given root.
+ *
+ * Each project requires a manifest (META-INF/MANIFEST.MF) file. The manifest
+ * must contain the following attributes:
+ *
+ * X-Hairball-Name    -- The name of the project.
+ * LIBlet-Title       -- The title of the project (a short nice name).
+ * LIBlet-Vendor      -- The creator of the project.
+ * LIBlet-Version     -- The version of the project.
+ *
+ * The following attributes are optional.
+ *
+ * X-Hairball-Depends -- Other packages (separated by comma) which this project
+ *                       depends on for compilation.
  *
  * @since 2016/03/21
  */
@@ -341,9 +362,89 @@ public class Build
 					}
 				});
 			
-			System.err.println(zipup);
+			// Create manifest and use the existing attributes
+			Manifest jman = new Manifest();
+			Attributes jattr = jman.getMainAttributes();
+			jattr.putAll(__p.attr);
 			
-			throw new Error("TODO");
+			// Make sure manifest version is specified
+			jattr.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+			
+			// Walk through dependencies
+			StringBuilder jcp = new StringBuilder();
+			int libnum = 1;
+			for (Project dep : __p.depends)
+			{
+				// Add liblet dependency
+				jattr.putValue(String.format("LIBlet-Dependency-%d", libnum),
+					String.format("liblet;required;%s;%s;%s+",
+						dep.libtitle, dep.libvendor, dep.libversion));
+				
+				// Add to the classpath
+				jcp.append(' ');
+				jcp.append(dep.name + ".jar");
+				
+				// Increase library number
+				libnum++;
+			}
+			
+			// Set class path
+			jattr.put(Attributes.Name.CLASS_PATH, jcp.toString());
+			
+			// If ZIP creation or move fails, then delete it.
+			final Path tempzip = Files.createTempFile(
+				"squirreljme-build-" + __p.name, ".jar");
+			try
+			{
+				// Write JAR file
+				try (JarOutputStream jos = new JarOutputStream(
+					new FileOutputStream(tempzip.toFile()), jman))
+				{
+					// Set some details
+					jos.setLevel((_nocompression ? 0 : 5));
+				
+					// Go through all files to add
+					for (Map.Entry<String, Path> e : zipup.entrySet())
+					{
+						// Make entry for it
+						ZipEntry ze = new ZipEntry(e.getKey());
+						jos.putNextEntry(ze);
+					
+						// Copy file to the stream
+						Files.copy(e.getValue(), jos);
+					
+						// End entry
+						jos.closeEntry();
+					}
+				
+					// Finish
+					jos.finish();
+					jos.flush();
+				}
+			
+				// Move to the real JAR location
+				Files.move(tempzip, __p.jarname,
+					StandardCopyOption.REPLACE_EXISTING);
+			}
+			
+			// Could not write it out
+			catch (IOException|RuntimeException|Error e)
+			{
+				// Delete temporary JAR
+				try
+				{
+					Files.delete(tempzip);
+				}
+				
+				// On read/write errors
+				catch (IOException xioe)
+				{
+					xioe.printStackTrace();
+				}
+				
+				// Toss it again
+				throw e;
+			}
 		}
 		
 		// Failed read/write
