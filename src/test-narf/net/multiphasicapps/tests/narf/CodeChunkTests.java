@@ -34,6 +34,10 @@ public class CodeChunkTests
 	public static final int TEST_BUFFER_SIZE =
 		512;
 	
+	/** Mass removal buffer size. */
+	public static final int LOWER_LIMIT =
+		4;
+	
 	/** The seed to use for the random data. */
 	public static final long INITIAL_SEED =
 		0xBEEF_C0FFEE_CAFEL;
@@ -137,6 +141,57 @@ public class CodeChunkTests
 		
 		// Check equality between them
 		__tc.checkEquals("snailbunny.data", slow, fast);
+		__tc.checkEquals("snailbunny.data.actual", bunny.actualSize(),
+			bunny.actualSize());
+		
+		// Now remove alot of random bytes from the stuff
+		for (int i = TEST_BUFFER_SIZE; i >= LOWER_LIMIT; i--)
+		{
+			// Get position to remove
+			int pos = rand.nextInt(i);
+				
+			// Count OK removals
+			if (snail.remove(pos) == bunny.remove(pos))
+				krem++;
+			
+			// Remove count
+			i--;
+			
+			// More removals were done
+			trem++;
+		}
+		
+		// Check that removals removed the same values
+		__tc.checkEquals("snailbunny.pruneremovals", trem, krem);
+		
+		// Create byte arrays for both sets of code
+		n = LOWER_LIMIT;
+		slow = new byte[n];
+		fast = new byte[n];
+		
+		// Load data into those
+		for (int i = 0; i < n; i++)
+		{
+			slow[i] = snail.get(i);
+			fast[i] = bunny.get(i);
+		}
+		
+		// Check equality between them
+		__tc.checkEquals("snailbunny.prunedata", slow, fast);
+		__tc.checkEquals("snailbunny.prunedata.actual", bunny.actualSize(),
+			bunny.actualSize());
+		
+		// Perform quick compaction
+		bunny.quickCompact();
+		
+		// Load data into those
+		for (int i = 0; i < n; i++)
+			fast[i] = bunny.get(i);
+		
+		// Check equality between them
+		__tc.checkEquals("snailbunny.cprunedata", slow, fast);
+		__tc.checkEquals("snailbunny.cprunedata.actual", bunny.actualSize(),
+			bunny.actualSize());
 	}
 }
 

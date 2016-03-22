@@ -113,6 +113,22 @@ public class NARFCodeChunks
 	}
 	
 	/**
+	 * Returns the actual code chunk size.
+	 *
+	 * @return The actual bytes used to hold the code chunk data.
+	 * @since 2016/03/22
+	 */
+	public int actualSize()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return (int)Math.min(Integer.MAX_VALUE,
+				(long)chunksize * (long)_chunks.length);
+		}
+	}
+	
+	/**
 	 * Adds a byte to the end of the chunk.
 	 *
 	 * @param __v The value to add.
@@ -145,7 +161,7 @@ public class NARFCodeChunks
 		// Lock
 		synchronized (lock)
 		{
-			chunkForPos(__i).add(__i, __v);
+			__chunkForPos(__i).add(__i, __v);
 		}
 		
 		// Self
@@ -189,8 +205,39 @@ public class NARFCodeChunks
 		// Lock
 		synchronized (lock)
 		{
-			return chunkForPos(__i).get(__i);
+			return __chunkForPos(__i).get(__i);
 		}
+	}
+	
+	/**
+	 * Performs a quick compaction of all chunks to potentially reduce wasted
+	 * allocation space.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/03/22
+	 */
+	public NARFCodeChunks quickCompact()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			int oldlen = _chunks.length;
+			for (int i = 0; i < _chunks.length;)
+			{
+				// Perform compaction
+				_chunks[i].__compact();
+				
+				// If it did not happen, then increment
+				int newlen = _chunks.length;
+				if (oldlen == newlen)
+					i++;
+				else
+					oldlen = newlen;
+			}
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -208,7 +255,7 @@ public class NARFCodeChunks
 		// Lock
 		synchronized (lock)
 		{
-			return chunkForPos(__i).remove(__i);
+			return __chunkForPos(__i).remove(__i);
 		}
 	}
 	
@@ -228,7 +275,7 @@ public class NARFCodeChunks
 		// Lock
 		synchronized (lock)
 		{
-			return chunkForPos(__i).set(__i, __v);
+			return __chunkForPos(__i).set(__i, __v);
 		}
 	}
 	
@@ -264,7 +311,7 @@ public class NARFCodeChunks
 	 * chunk table.
 	 * @since 2016/03/22
 	 */
-	private __Chunk__ chunkForPos(int __i)
+	private __Chunk__ __chunkForPos(int __i)
 		throws IndexOutOfBoundsException
 	{
 		// Must be within bounds
@@ -565,9 +612,8 @@ public class NARFCodeChunks
 				// Set new size
 				_count = len - 1;
 				
-				// If the chunk is drained, remove it
-				if (len == 1)
-					__bye();
+				// Potentially compact chunks
+				__compact();
 				
 				// Correct
 				__correct();
@@ -655,6 +701,71 @@ public class NARFCodeChunks
 			
 			// Self
 			return this;
+		}
+		
+		/**
+		 * Compacts this chunk into nearby chunks.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/22
+		 */
+		private __Chunk__ __compact()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				for (;;)
+				{
+					// Get the chunk table
+					int mydx = _index;
+					__Chunk__[] was = _chunks;
+					int wasl = was.length;
+				
+					// This is the last chunk? Ignore
+					if (mydx == wasl - 1)
+						return this;
+					
+					// Get the next chunk and its details
+					__Chunk__ next = was[mydx + 1];
+					int nextc = next._count;
+					
+					// This and the next is small enough to fit in a chunk?
+					int myc = _count;
+					if ((myc + nextc) > chunksize)
+						return this;
+					
+					// Add those bits to ours
+					byte[] ddx = data;
+					byte[] oox = next.data;
+					for (int i = 0; i < nextc; i++)
+						ddx[myc + i] = oox[i];
+					
+					// Set new size of this chunk
+					_count = myc + nextc;
+					
+					// Remove the next chunk from the table
+					int nowl = wasl - 1;
+					__Chunk__[] now = new __Chunk__[nowl];
+					
+					// Copy all the chunks until this one
+					for (int i = 0; i <= mydx; i++)
+						now[i] = was[i];
+					
+					// Copy all chunks following this, with new positional data
+					for (int i = mydx + 2; i < wasl; i++)
+					{
+						// Move over
+						__Chunk__ shove;
+						now[i - 1] = shove = was[i];
+					
+						// Increase its index
+						shove._index = i - 1;
+					}
+					
+					// Set new buffer data
+					_chunks = now;
+				}
+			}
 		}
 		
 		/**
