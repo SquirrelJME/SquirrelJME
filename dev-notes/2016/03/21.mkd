@@ -46,3 +46,8 @@ should fix that case.
 
 `DirectoryStream` is not recursive, that explains a few things.
 
+## 23:57
+
+Refactored build system is nice, and perhaps tommorrow I shall get support for
+building on Windows, which should be very simple.
+
