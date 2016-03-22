@@ -39,7 +39,9 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.lang.model.SourceVersion;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -409,22 +411,56 @@ public class Build
 				"squirreljme-build-" + __p.name, ".jar");
 			try
 			{
+				// Calculate the CRC
+				CRC32 crc = new CRC32();
+				
 				// Write JAR file
+				boolean nocomp = _nocompression;
 				try (JarOutputStream jos = new JarOutputStream(
 					new FileOutputStream(tempzip.toFile()), jman))
 				{
-					// Set some details
-					jos.setLevel((_nocompression ? 0 : 5));
+					// Compression method
+					jos.setMethod((nocomp ? JarOutputStream.STORED :
+						JarOutputStream.DEFLATED));
 				
 					// Go through all files to add
 					for (Map.Entry<String, Path> e : zipup.entrySet())
 					{
 						// Make entry for it
 						ZipEntry ze = new ZipEntry(e.getKey());
-						jos.putNextEntry(ze);
+						
+						// When using STORED, some details about the file
+						// needs to be set
+						if (nocomp)
+						{
+							// Load all file bytes
+							byte data[] = Files.readAllBytes(e.getValue());
+							
+							// Calculate the CRC
+							crc.reset();
+							crc.update(data);
+							
+							// Set the sizes
+							ze.setSize(data.length);
+							ze.setCompressedSize(data.length);
+							ze.setCrc(crc.getValue());
+							
+							// Put it
+							jos.putNextEntry(ze);
+							
+							// Write the data
+							jos.write(data, 0, data.length);
+						}
+						
+						// Using compression
+						else
+						{
+							// Put it
+							jos.putNextEntry(ze);
 					
-						// Copy file to the stream
-						Files.copy(e.getValue(), jos);
+							// Copy file to the stream
+							Files.copy(e.getValue(), jos);
+						}
 					
 						// End entry
 						jos.closeEntry();
@@ -544,6 +580,9 @@ public class Build
 		// If using the interpreter, build it
 		if (__interp)
 			__build(getProject("java-interpreter-local"));
+		
+		// Build the target to be ran
+		__build(__p);
 		
 		// Calculate all dependencies which are needed for execution
 		Set<Path> classpath = new LinkedHashSet<>();
