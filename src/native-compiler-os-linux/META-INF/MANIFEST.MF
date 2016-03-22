@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
-X-Hairball-Name: native-compiler-cpu-powerpc
+X-Hairball-Name: native-compiler-os-linux
 X-Hairball-Depends: native-compiler
-LIBlet-Title: POIT CPU PowerPC
+LIBlet-Title: POIT OS Linux
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160229
-LIBlet-Description: This supports the generation of code for the
- PowerPC CPU.
+LIBlet-Description: This supports the generation of code for the Linux
+  operating system.
 
