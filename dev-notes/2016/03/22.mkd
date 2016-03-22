@@ -1,0 +1,11 @@
+# 2016/03/22
+
+## 00:43
+
+And the build system is complete. I will have to get it running on Windows and
+write a batch script for that either before I sleep or after I awaken.
+
+## 00:48
+
+And I wrote up a shell script, do not know if it works however.
+
