@@ -9,3 +9,8 @@ write a batch script for that either before I sleep or after I awaken.
 
 And I wrote up a shell script, do not know if it works however.
 
+## 00:53
+
+And the script works in Wine, I lack a real Windows system however so I cannot
+truly see if it works in Windows. However Wine generally is good enough.
+
