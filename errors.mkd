@@ -314,6 +314,17 @@ These codes do not have a index meaning and are meant to be short.
    * The slot A validity mask.
    * The slot B validity mask.
  * `NF04` -- Chunk size is zero or negative.
+   * The requested chunk size.
+ * `NF05` -- Requested position is negative.
+   * The requested position.
+ * `NF06` -- Requested position exceeds the end of the buffer and is not the
+   last byte.
+   * The requested position.
+   * The number of bytes in the entire buffer.
+ * `NF07` -- The computed logical position in a chunk is outside of bounds.
+   * Physical position.
+   * Logical position.
+   * Bytes in the chunk.
 
 # `net.multiphasicapps.zips`
 

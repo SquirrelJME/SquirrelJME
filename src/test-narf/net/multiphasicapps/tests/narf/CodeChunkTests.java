@@ -92,6 +92,9 @@ public class CodeChunkTests
 			}
 		}
 		
+		// Check for size equality
+		__tc.checkEquals("snailbunny.size", snail.size(), bunny.size());
+		
 		// Create byte arrays for both sets of code
 		byte[] slow = new byte[n];
 		byte[] fast = new byte[n];
@@ -104,7 +107,7 @@ public class CodeChunkTests
 		}
 		
 		// Check equality between them
-		__tc.checkEquals("snailbunny", slow, fast);
+		__tc.checkEquals("snailbunny.data", slow, fast);
 	}
 }
 
