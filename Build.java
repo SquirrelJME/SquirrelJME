@@ -14,6 +14,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
@@ -24,6 +27,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,6 +74,9 @@ public class Build
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
 	
+	/** Path separator. */
+	public static final String PATH_SEPARATOR;
+	
 	/** Build JARs with no compression? */
 	private static volatile boolean _nocompression;
 	
@@ -88,6 +95,9 @@ public class Build
 		PROJECT_ROOT = Paths.get(Objects.<String>requireNonNull(
 			System.getProperty("project.root"),
 			"The system property `project.root` was not specified."));
+		
+		// Path separator
+		PATH_SEPARATOR = File.pathSeparator;
 	}
 	
 	/**
@@ -214,7 +224,7 @@ public class Build
 			
 				// Unknown
 			default:
-				throw new IllegalArgumentException("command");
+				throw new IllegalArgumentException(command);
 		}
 	}
 	
@@ -231,6 +241,9 @@ public class Build
 		// Check
 		if (__p == null)
 			throw new NullPointerException();
+		
+		// Notice
+		System.err.printf("*** Evaluating %s...%n", __p.name);
 		
 		// Build dependencies first!
 		for (Project dep : __p.depends)
@@ -280,7 +293,7 @@ public class Build
 			
 			// The class path is that of the dependencies
 			Set<File> ccpath = new HashSet<>();
-			__p.classPath(ccpath);
+			__p.classPathFile(ccpath);
 			jfm.setLocation(StandardLocation.CLASS_PATH, ccpath);
 			jfm.setLocation(StandardLocation.PLATFORM_CLASS_PATH, ccpath);
 			
@@ -532,7 +545,84 @@ public class Build
 		if (__interp)
 			__build(getProject("java-interpreter-local"));
 		
-		throw new Error("TODO");
+		// Calculate all dependencies which are needed for execution
+		Set<Path> classpath = new LinkedHashSet<>();
+		__p.classPath(classpath);
+		
+		// Determine the main class used for execution
+		String mainclass = __p.mainClass();
+		if (mainclass == null)
+			throw new IllegalArgumentException("Could not find Main-Class " +
+				"attribute in the JAR or in any of its dependencies.");
+		
+		// If interpreted, forward to normal code
+		if (__interp)
+		{
+			// Build new argument set
+			Deque<String> newargs = new LinkedList<>();
+			
+			// The classpath is special
+			StringBuilder sb = new StringBuilder();
+			for (Path p : classpath)
+			{
+				// Append separator?
+				if (sb.length() > 0)
+					sb.append(PATH_SEPARATOR);
+				
+				// Add path
+				sb.append(p);
+			}
+			
+			// Set the classpath
+			newargs.offerLast("-classpath");
+			newargs.offerLast(sb.toString());
+			
+			// Main class
+			newargs.offerLast(mainclass);
+			
+			// Normal arguments
+			while (!__args.isEmpty())
+				newargs.offerLast(__args.pollFirst());
+			
+			// Call non-interpreted version
+			__launch(false, getProject("java-interpreter-local"), newargs);
+		}
+		
+		// Otherwise, run it native
+		else
+			try
+			{
+				// Setup URLs
+				URL[] urls = new URL[classpath.size()];
+				int u = 0;
+				for (Path p : classpath)
+					urls[u++] = p.toUri().toURL();
+			
+				// Setup class loader
+				URLClassLoader ucl = new URLClassLoader(urls);
+				
+				// Set the context class loader which is used by ServiceLoader,
+				// otherwise services will not be found
+				Thread.currentThread().setContextClassLoader(ucl);
+			
+				// Find the main class
+				Class<?> startclass = Class.forName(mainclass, false, ucl);
+				
+				// Find the main method
+				Method themain = startclass.getDeclaredMethod("main",
+					String[].class);
+				
+				// Execute it
+				String[] xargs = __args.<String>toArray(
+					new String[__args.size()]);
+				themain.invoke(null, (Object)xargs);
+			}
+			
+			// Could not execute the main class
+			catch (MalformedURLException|ReflectiveOperationException e)
+			{
+				throw new RuntimeException(e);
+			}
 	}
 	
 	/**
@@ -757,13 +847,41 @@ public class Build
 		}
 		
 		/**
+		 * Calculates the classpath used for execution.
+		 *
+		 * @param __cp The classpath to use for execution.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/21
+		 */
+		public void classPath(Set<Path> __cp)
+			throws NullPointerException
+		{
+			// Check
+			if (__cp == null)
+				throw new NullPointerException();
+			
+			// Add dependencies
+			for (Project dep : depends)
+			{
+				// Add dependency JAR
+				__cp.add(dep.jarname);
+				
+				// Recurse
+				dep.classPath(__cp);
+			}
+			
+			// Add self
+			__cp.add(jarname);
+		}
+		
+		/**
 		 * Calculates the classpath used for compilation.
 		 *
 		 * @param __cp The classpath to use for compilation.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/21
 		 */
-		public void classPath(Set<File> __cp)
+		public void classPathFile(Set<File> __cp)
 			throws NullPointerException
 		{
 			// Check
@@ -777,7 +895,7 @@ public class Build
 				__cp.add(dep.jarname.toFile());
 				
 				// Recurse
-				dep.classPath(__cp);
+				dep.classPathFile(__cp);
 			}
 		}
 		
@@ -844,6 +962,32 @@ public class Build
 			{
 				throw new RuntimeException(ioe);
 			}
+		}
+		
+		/**
+		 * Returns the class which execution starts at.
+		 *
+		 * @return The starting class or {@code null} if there is none.
+		 * @since 2016/03/21
+		 */
+		public String mainClass()
+		{
+			// Does the attribute have it?
+			String main = attr.getValue("Main-Class");
+			if (main != null)
+				return main;
+			
+			// Otherwise look in depedencides
+			for (Project dep : depends)
+			{
+				// Does it have it?
+				main = dep.mainClass();
+				if (main != null)
+					return main;
+			}
+			
+			// Not found
+			return null;
 		}
 	}
 	
