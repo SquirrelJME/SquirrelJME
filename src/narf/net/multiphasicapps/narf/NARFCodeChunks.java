@@ -145,8 +145,15 @@ public class NARFCodeChunks
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Get chunk for the given position
+			__Chunk__ cur = chunkForPos(__i);
+			
+			// Set byte
+			cur.set(__i, __v);
 		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -361,6 +368,40 @@ public class NARFCodeChunks
 			{
 				return _count;
 			}
+		}
+		
+		/**
+		 * Sets a byte within the buffer to a specific value.
+		 *
+		 * @param __i The real position to set.
+		 * @param __v The The value to write.
+		 * @return {@code this}.
+		 * @throws IndexOutOfBoundsException If the computed logical position
+		 * does not belong in this chunk.
+		 * @since 2016/03/22
+		 */
+		public __Chunk__ set(int __i, byte __v)
+			throws IndexOutOfBoundsException
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Obtain the logical add position
+				int logpos = __i - _position;
+				int len = _count;
+				if (logpos < 0 || logpos > len)
+					throw new IndexOutOfBoundsException(
+						String.format("NF07 %d %d %d", __i, logpos, len));
+				
+				// Get data buffer
+				byte[] ddx = data;
+				
+				// Write byte here
+				ddx[logpos] = __v;
+			}
+			
+			// Self
+			return this;
 		}
 	}
 }
