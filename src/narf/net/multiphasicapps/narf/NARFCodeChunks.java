@@ -310,26 +310,74 @@ public class NARFCodeChunks
 				// At the end of the chunk
 				if (len == chunksize)
 				{
+					// Insert new chunk following this one.
+					__Chunk__ newbie = __insertAfter();
+					
 					// Writing at the end of the chunk, make a new chunk
 					// following this and place the data in that instead
 					if (logpos == len)
-						throw new Error("TODO");
+					{
+						if (true)
+							throw new Error("TODO");
+					}
 					
 					// Writing in the middle, split it instead down the middle
 					// because more bytes could be added between the two.
 					else
-						throw new Error("TODO");
+					{
+						// New length is half the chunk length
+						int nxlen = chunksize >>> 1;
+						newbie._count = nxlen;
+						
+						// Direct buffer copy to theirs
+						byte[] rembuf = newbie.data;
+						for (int i = 0; i < nxlen; i++)
+							rembuf[i] = ddx[i + nxlen];
+						
+						// Drop our count down
+						_count = nxlen;
+						
+						// Writing on our side?
+						byte[] splice;
+						int spliceat;
+						if (logpos < nxlen)
+						{
+							splice = ddx;
+							spliceat = logpos;
+						}
+						
+						// Writing on the other side
+						else
+						{
+							splice = rembuf;
+							spliceat = logpos - nxlen;
+						}
+						
+						// Move byte over to make room for this byte
+						for (int i = nxlen - 1; i > spliceat; i--)
+							splice[i + 1] = splice[i];
+			
+						// Write byte here
+						splice[spliceat] = __v;
+					}
 				}
 				
-				// Move byte over to make room for this byte, if possible
-				for (int i = len - 1; i > logpos; i--)
-					ddx[i] = ddx[i - 1];
+				// No need to splice chunks
+				else
+				{
+					// Move byte over to make room for this byte
+					for (int i = len - 1; i > logpos; i--)
+						ddx[i + 1] = ddx[i];
 				
-				// Write byte here
-				ddx[logpos] = __v;
+					// Write byte here
+					ddx[logpos] = __v;
+					
+					// More bytes are available
+					_count = len + 1;
+				}
 				
-				// More bytes are available
-				_count = len + 1;
+				// Correct positions and lengths
+				__correct();
 			}
 			
 			// Self
@@ -402,6 +450,102 @@ public class NARFCodeChunks
 			
 			// Self
 			return this;
+		}
+		
+		/**
+		 * Corrects the positions of all the chunks following this one.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/22
+		 */
+		private __Chunk__ __correct()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get our index to start at
+				int mydx = _index;
+				
+				// Start position of next block;
+				int pos = _position + _count;
+				
+				// Get the chunk list
+				__Chunk__[] list = _chunks;
+				int len = list.length;
+				
+				// Does not need correction if this is the last one
+				if (mydx == len - 1)
+					return this;
+				
+				// Correct positions
+				for (int i = mydx + 1; i < len; i++)
+				{
+					// Get
+					__Chunk__ at = list[i];
+					
+					// Set position
+					at._position = pos;
+					pos += at._count;
+				}
+				
+				System.err.printf("DEBUG ------------------%n");
+				for (int i = 0; i < len; i++)
+					System.err.printf("DEBUG -- %d/%d: %d + %d%n", i, len,
+						list[i]._position, list[i]._count);
+			}
+			
+			// Self
+			return this;
+		}
+		
+		/**
+		 * Inserts a chunk right after this one.
+		 *
+		 * @return The newly created chunk.
+		 * @since 2016/03/22
+		 */
+		private __Chunk__ __insertAfter()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get old chunk array and the count
+				__Chunk__[] was = _chunks;
+				int wasl = was.length;
+				
+				// Setup new chunk array
+				int nowl = wasl + 1;
+				__Chunk__[] now = new __Chunk__[nowl];
+				
+				// Copy all the chunks up to this one
+				int mydx = _index;
+				for (int i = 0; i <= mydx; i++)
+					now[i] = was[i];
+				
+				// Copy all chunks following this, with new positional data
+				for (int i = mydx + 1; i < wasl; i++)
+				{
+					// Move over
+					__Chunk__ shove;
+					now[i + 1] = shove = was[i];
+					
+					// Increase its index
+					shove._index = i + 1;
+				}
+				
+				// Create new next chunk
+				__Chunk__ next = new __Chunk__();
+				now[mydx + 1] = next;
+				
+				// Index follows this one
+				next._index = mydx + 1;
+				
+				// Use new array
+				_chunks = now;
+				
+				// Return it
+				return next;
+			}
 		}
 	}
 }
