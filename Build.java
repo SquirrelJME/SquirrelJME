@@ -501,6 +501,7 @@ public class Build
 			if (tempdir != null)
 				try
 				{
+					// Delete all files
 					walk(tempdir, new Processor<Path>()
 						{
 							/**
@@ -527,6 +528,9 @@ public class Build
 								return true;
 							}
 						});
+					
+					// Delete the temporary directory
+					Files.delete(tempdir);
 				}
 				
 				// Ignore
