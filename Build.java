@@ -179,46 +179,38 @@ public class Build
 		
 		// Depends on the command
 		Project pp;
+		boolean terptarget = false;
 		switch (command)
 		{
-				// Run tests on the host
-			case "host-tests":
-				__launch(false, getProject("test-all"));
-				break;
-			
-				// Run tests on the interpreter
+				// Run tests on the host or interpreter
 			case "interpreter-tests":
-				__launch(true, getProject("test-all"));
+				terptarget = true;
+			case "host-tests":
+				__launch(terptarget, getProject("test-all"));
 				break;
 				
-				// Target a specific system
+				// Target a specific system (with optional interpreter)
+			case "interpreter-target":
+				terptarget = true;
 			case "target":
 				// Build hairball
 				__build((pp = getProject("hairball")));
 				
-				// Launch it
-				__launch(false, pp, __args);
-				break;
-				
-				// Use the interpreter too compile to the target
-			case "interpreter-target":
-				// Build hairball
-				__build((pp = getProject("hairball")));
+				// Add output and source directories
+				__args.offerFirst(PROJECT_ROOT.resolve("src").toString());
+				__args.offerFirst(System.getProperty("user.dir"));
 				
 				// Launch it
-				__launch(true, pp, __args);
+				__launch(terptarget, pp, __args);
 				break;
 			
 				// Launch a program
-			case "launch":
-				__launch(false, getProject(__args.removeFirst()), __args);
-				break;
-			
-				// Use the interpreter to launch a program
 			case "interpreter-launch":
-				__launch(true, getProject(__args.removeFirst()), __args);
+				terptarget = true;
+			case "launch":
+				__launch(terptarget, getProject(__args.removeFirst()), __args);
 				break;
-			
+				
 				// Build a project
 			case "build":
 				__build(getProject(__args.removeFirst()));
