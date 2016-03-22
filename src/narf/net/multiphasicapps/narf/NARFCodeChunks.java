@@ -99,11 +99,7 @@ public class NARFCodeChunks
 		// Lock
 		synchronized (lock)
 		{
-			// Get chunk for the given position
-			__Chunk__ cur = chunkForPos(__i);
-			
-			// Add byte
-			cur.add(__i, __v);
+			chunkForPos(__i).add(__i, __v);
 		}
 		
 		// Self
@@ -125,7 +121,7 @@ public class NARFCodeChunks
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return chunkForPos(__i).get(__i);
 		}
 	}
 	
@@ -145,11 +141,7 @@ public class NARFCodeChunks
 		// Lock
 		synchronized (lock)
 		{
-			// Get chunk for the given position
-			__Chunk__ cur = chunkForPos(__i);
-			
-			// Set byte
-			cur.set(__i, __v);
+			chunkForPos(__i).set(__i, __v);
 		}
 		
 		// Self
@@ -404,6 +396,34 @@ public class NARFCodeChunks
 		}
 		
 		/**
+		 * Gets the byte at the given position.
+		 *
+		 * @param __i The real position to set.
+		 * @param __v The The value to write.
+		 * @return {@code this}.
+		 * @throws IndexOutOfBoundsException If the computed logical position
+		 * does not belong in this chunk.
+		 * @since 2016/03/22
+		 */
+		public byte get(int __i)
+			throws IndexOutOfBoundsException
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Obtain the logical add position
+				int logpos = __i - _position;
+				int len = _count;
+				if (logpos < 0 || logpos > len)
+					throw new IndexOutOfBoundsException(
+						String.format("NF07 %d %d %d", __i, logpos, len));
+				
+				// Read byte here
+				return data[logpos];
+			}
+		}
+		
+		/**
 		 * Returns the length of this chunk.
 		 *
 		 * @return The chunk length.
@@ -441,11 +461,8 @@ public class NARFCodeChunks
 					throw new IndexOutOfBoundsException(
 						String.format("NF07 %d %d %d", __i, logpos, len));
 				
-				// Get data buffer
-				byte[] ddx = data;
-				
 				// Write byte here
-				ddx[logpos] = __v;
+				data[logpos] = __v;
 			}
 			
 			// Self
@@ -487,11 +504,6 @@ public class NARFCodeChunks
 					at._position = pos;
 					pos += at._count;
 				}
-				
-				System.err.printf("DEBUG ------------------%n");
-				for (int i = 0; i < len; i++)
-					System.err.printf("DEBUG -- %d/%d: %d + %d%n", i, len,
-						list[i]._position, list[i]._count);
 			}
 			
 			// Self

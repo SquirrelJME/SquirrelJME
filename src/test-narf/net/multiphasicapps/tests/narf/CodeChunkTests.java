@@ -70,7 +70,7 @@ public class CodeChunkTests
 		for (int i = 0; i < n;)
 		{
 			// Get the position to add or set byte
-			int pos = (i == 0 ? 0 : Math.max(0, rand.nextInt(bunny.size())));
+			int pos = (i == 0 ? 0 : Math.max(0, rand.nextInt(i)));
 			boolean add = (i == 0 ? true : rand.nextBoolean());
 			byte val = (byte)rand.nextInt();
 			
