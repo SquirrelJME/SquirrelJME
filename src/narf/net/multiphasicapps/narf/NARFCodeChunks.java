@@ -350,7 +350,7 @@ public class NARFCodeChunks
 						}
 						
 						// Move byte over to make room for this byte
-						for (int i = nxlen - 1; i > spliceat; i--)
+						for (int i = nxlen - 1; i >= spliceat; i--)
 							splice[i + 1] = splice[i];
 			
 						// Write byte here
@@ -362,7 +362,7 @@ public class NARFCodeChunks
 				else
 				{
 					// Move byte over to make room for this byte
-					for (int i = len - 1; i > logpos; i--)
+					for (int i = len - 1; i >= logpos; i--)
 						ddx[i + 1] = ddx[i];
 				
 					// Write byte here
