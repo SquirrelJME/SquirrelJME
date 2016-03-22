@@ -657,53 +657,6 @@ public class NARFCodeChunks
 		}
 		
 		/**
-		 * Removes this chunk from the chunk list.
-		 *
-		 * @return {@code this}.
-		 * @since 2016/03/22
-		 */
-		private __Chunk__ __bye()
-		{
-			// Lock
-			synchronized (lock)
-			{
-				// Get the chunk list
-				__Chunk__[] was = _chunks;
-				int wasl = was.length;
-				
-				// If this is the only chunk, ignore
-				if (wasl <= 1)
-					return this;
-				
-				// Allocate new array
-				int nowl = wasl - 1;
-				__Chunk__[] now = new __Chunk__[nowl];
-				
-				// Copy all the chunks before this one
-				int mydx = _index;
-				for (int i = 0; i < mydx; i++)
-					now[i] = was[i];
-				
-				// Copy all chunks following this, with new positional data
-				for (int i = mydx + 1; i < wasl; i++)
-				{
-					// Move over
-					__Chunk__ shove;
-					now[i - 1] = shove = was[i];
-					
-					// Increase its index
-					shove._index = i - 1;
-				}
-				
-				// Use new array
-				_chunks = now;
-			}
-			
-			// Self
-			return this;
-		}
-		
-		/**
 		 * Compacts this chunk into nearby chunks.
 		 *
 		 * @return {@code this}.
