@@ -309,8 +309,11 @@ public class NARFCodeChunks
 					// following this and place the data in that instead
 					if (logpos == len)
 					{
-						if (true)
-							throw new Error("TODO");
+						// Only a single byte here
+						newbie._count = 1;
+						
+						// And it has that specific value too
+						newbie.data[0] = __v;
 					}
 					
 					// Writing in the middle, split it instead down the middle
