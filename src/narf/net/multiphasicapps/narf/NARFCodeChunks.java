@@ -319,15 +319,11 @@ public class NARFCodeChunks
 					{
 						// New length is half the chunk length
 						int nxlen = chunksize >>> 1;
-						newbie._count = nxlen;
 						
 						// Direct buffer copy to theirs
 						byte[] rembuf = newbie.data;
 						for (int i = 0; i < nxlen; i++)
 							rembuf[i] = ddx[i + nxlen];
-						
-						// Drop our count down
-						_count = nxlen;
 						
 						// Writing on our side?
 						byte[] splice;
@@ -336,6 +332,10 @@ public class NARFCodeChunks
 						{
 							splice = ddx;
 							spliceat = logpos;
+							
+							// Corrected lengths
+							newbie._count = nxlen;
+							_count = nxlen + 1;
 						}
 						
 						// Writing on the other side
@@ -343,6 +343,10 @@ public class NARFCodeChunks
 						{
 							splice = rembuf;
 							spliceat = logpos - nxlen;
+							
+							// Corrected lengths
+							newbie._count = nxlen + 1;
+							_count = nxlen;
 						}
 						
 						// Move byte over to make room for this byte
