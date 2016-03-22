@@ -67,6 +67,54 @@ public class NARFCodeChunks
 	}
 	
 	/**
+	 * Initializes a new code chunk buffer from the given buffer.
+	 *
+	 * @param __from The data to copy data from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/22
+	 */
+	public NARFCodeChunks(NARFCodeChunks __from)
+		throws NullPointerException
+	{
+		this(DEFAULT_CHUNK_SIZE, __from);
+	}
+	
+	/**
+	 * Initializes a new code chunk buffer from the given buffer.
+	 *
+	 * @param __cs The chunk size to use for chunks.
+	 * @param __from The data to copy data from.
+	 * @throws IllegalArgumentException If the chunk size is zero or negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/22
+	 */
+	public NARFCodeChunks(int __cs, NARFCodeChunks __from)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__from == null)
+			throw new NullPointerException("NARG");
+		if (__cs <= 0)
+			throw new IllegalArgumentException(String.format("NF04 %d", __cs));
+		
+		// Set
+		chunksize = __cs;
+		
+		// Setup initial chunk
+		_chunks = new __Chunk__[1];
+		_chunks[0] = new __Chunk__();
+		
+		// Lock the other and copy the data
+		synchronized (__from.lock)
+		{
+			// Long copy operation
+			int fl = __from.size();
+			for (int i = 0; i < fl; i++)
+				add(i, __from.get(i));
+		}
+	}
+	
+	/**
 	 * Adds a byte to the end of the chunk.
 	 *
 	 * @param __v The value to add.
