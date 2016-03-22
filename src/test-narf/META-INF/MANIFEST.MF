@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+X-Hairball-Name: test-narf
+X-Hairball-Depends: test-base, narf
+LIBlet-Title: NARF Tests
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160322
+LIBlet-Description: This contains tests for the NARF intermediate
+  language code and any of its dependent classes.

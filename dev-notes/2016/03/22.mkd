@@ -14,3 +14,35 @@ And I wrote up a shell script, do not know if it works however.
 And the script works in Wine, I lack a real Windows system however so I cannot
 truly see if it works in Windows. However Wine generally is good enough.
 
+## 13:04
+
+Now that a new build system is in place and it works in Linux and Windows, I
+can continue with writing NARF the compact intermediate language code.
+
+## 13:10
+
+For feasability and speed, programs will be split into chunks. Essentially
+if instructions are to be removed from a program, it would be a bit costly to
+move all the data down, especially if you have for example a 10MHz computer
+running the VM. So basically, programs will be split into chunks. So for
+example when deleting instructions (bytes) instead of shifting everything
+following down a byte, only the stuff in the current chunk has to be shifted
+down. Insertion is the same way. When inserting bytes, if there is room in
+the chunk then bytes are moved up and the bytes placed. However say in the
+middle of a program a byte must be inserted. Normally everything would have to
+be moved over. However with chunking, the chunk can be split in half, with
+the bytes following to be placed in a new chunk. If a write is at the barrier
+of a chunk and insertion is performed, then a new chunk can just be written.
+So in short, this is a buffer of bytes which is dynamically sized and is able
+to efficiently for the most part delete and remove bytes. This is needed
+because when optimizations are perform, single bytes may be inserted and
+removed and in large program and slow systems, moving all those bytes will be
+very costly.
+
+## 13:22
+
+For address lookup, I need to keep a sorted list and tree list structure. So
+if one wants to read byte 42 then it would check the current buffer size, then
+go down a sorted list as if it were a binary tree. If the buffer is not of a
+power of two size, then I can just split down the middle and such.
+

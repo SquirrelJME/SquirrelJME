@@ -313,6 +313,7 @@ These codes do not have a index meaning and are meant to be short.
  * `NF03` -- The validity masks have unknown bits set.
    * The slot A validity mask.
    * The slot B validity mask.
+ * `NF04` -- Chunk size is zero or negative.
 
 # `net.multiphasicapps.zips`
 
