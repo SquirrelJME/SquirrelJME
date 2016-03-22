@@ -116,7 +116,7 @@ public class NARFCodeChunks
 	}
 	
 	/**
-	 * Sets the byte at the given postion.
+	 * Sets the byte at the given position.
 	 *
 	 * @param __i The index to write the byte at.
 	 * @param __v The byte to write.
@@ -157,8 +157,26 @@ public class NARFCodeChunks
 	 *
 	 * @since 2016/03/22
 	 */
-	protected final class Chunk
+	private final class __Chunk__
 	{
+		/** Chunk data. */
+		protected final byte[] data =
+			new byte[chunksize];
+		
+		/** Head position. */
+		private volatile int _head;
+		
+		/** Tail position. */
+		private volatile int _tail;
+		
+		/**
+		 * Initializes the chunk.
+		 *
+		 * @since 2016/03/22
+		 */
+		private __Chunk__()
+		{
+		}
 	}
 }
 
