@@ -303,6 +303,40 @@ public class NARFCodeChunks
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/22
+	 */
+	@Override
+	public String toString()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Create builder
+			StringBuilder sb = new StringBuilder();
+			sb.append('{');
+		
+			// Build string
+			__Chunk__ cx[] = _chunks;
+			int n = cx.length;
+			for (int i = 0; i < n; i++)
+			{
+				// Comma?
+				if (i > 0)
+					sb.append(", ");
+			
+				sb.append(i);
+				sb.append('=');
+				sb.append(cx[i]);
+			}
+		
+			// Return the string
+			sb.append('}');
+			return sb.toString();
+		}
+	}
+	
+	/**
 	 * Returns the chunk for the given position.
 	 *
 	 * @param __i The position to get the chunk for.
@@ -653,6 +687,20 @@ public class NARFCodeChunks
 				byte rv = ddx[logpos];
 				ddx[logpos] = __v;
 				return rv;
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/22
+		 */
+		@Override
+		public String toString()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				return String.format("[pos=%d, len=%d]", _position, _count);
 			}
 		}
 		

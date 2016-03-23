@@ -145,7 +145,7 @@ public class CodeChunkTests
 			bunny.actualSize());
 		
 		// Now remove alot of random bytes from the stuff
-		for (int i = TEST_BUFFER_SIZE; i >= LOWER_LIMIT; i--)
+		for (int i = TEST_BUFFER_SIZE; i >= LOWER_LIMIT;)
 		{
 			// Get position to remove
 			int pos = rand.nextInt(i);
@@ -161,11 +161,14 @@ public class CodeChunkTests
 			trem++;
 		}
 		
+		// Check for size equality
+		__tc.checkEquals("snailbunny.prunesize", snail.size(), bunny.size());
+		
 		// Check that removals removed the same values
 		__tc.checkEquals("snailbunny.pruneremovals", trem, krem);
 		
 		// Create byte arrays for both sets of code
-		n = LOWER_LIMIT;
+		n = Math.min(snail.size(), bunny.size());
 		slow = new byte[n];
 		fast = new byte[n];
 		
@@ -189,6 +192,7 @@ public class CodeChunkTests
 			fast[i] = bunny.get(i);
 		
 		// Check equality between them
+		__tc.checkEquals("snailbunny.cprunesize", snail.size(), bunny.size());
 		__tc.checkEquals("snailbunny.cprunedata", slow, fast);
 		__tc.checkEquals("snailbunny.cprunedata.actual", bunny.actualSize(),
 			bunny.actualSize());
