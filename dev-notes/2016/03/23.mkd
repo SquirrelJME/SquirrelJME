@@ -24,5 +24,6 @@ case of it not being so would be if a goto were just tossed to a future
 address, which then jumps back to the given point. So for unknown states I
 will have to allocate some buffers to store byte code temporarily and defer it
 to until the exception handler table is read. If a method is very simple then
-this will never occur.
+this will never occur. Unknown states would only be for code outside the
+starting program flow.
 
