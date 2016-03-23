@@ -57,6 +57,8 @@ public class LocalEngine
 		String... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
+		super(new LocalProgramOutput.LocalFactory());
+	
 		// Check
 		if (__bcp == null || __cp == null || __main == null)
 			throw new NullPointerException("NARG");
