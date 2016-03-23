@@ -284,6 +284,7 @@ These codes do not have a index meaning and are meant to be short.
    was reached.
  * `IN1f` -- Illegal code length in method.
    * The code length.
+ * `IN1g` -- Byte code translation already performed.
 
 # `net.multiphasicapps.interpreter.local`
 

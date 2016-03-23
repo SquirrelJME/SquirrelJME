@@ -24,7 +24,11 @@ public class JVMCodeParser
 {
 	/** The maximum size method code may be. */
 	public static final int MAX_CODE_SIZE =
-		65535;	
+		65535;
+	
+	/** Lock. */
+	protected final Object lock =
+		new Object();
 	
 	/** Owning method. */
 	protected final JVMMethod method;
@@ -38,6 +42,9 @@ public class JVMCodeParser
 	/** Target program to write into. */
 	protected final NARFProgram program =
 		new NARFProgram();
+	
+	/** Did this already? */
+	private volatile boolean _did;
 	
 	/**
 	 * Initializes the code parser.
@@ -72,11 +79,20 @@ public class JVMCodeParser
 	 * @since 2016/03/22
 	 */
 	public JVMCodeParser parse(DataInputStream __das)
-		throws IOException, JVMClassFormatError, NullPointerException
+		throws IllegalStateException, IOException, JVMClassFormatError,
+			NullPointerException
 	{
 		// Check
 		if (__das == null)
 			throw new NullPointerException("NARG");
+		
+		// Only one
+		synchronized (lock)
+		{
+			if (_did)
+				throw new IllegalStateException("IN1g");
+			_did = true;
+		}
 		
 		// Max stack and local entries
 		int maxstack = __das.readUnsignedShort();
@@ -89,7 +105,7 @@ public class JVMCodeParser
 		
 		// Parse code data
 		for (int i = 0; i < codelen; i++)
-			throw new Error("TODO");
+			__handleOp(__das);
 		
 		if (true)
 			throw new Error("TODO");
@@ -120,6 +136,24 @@ public class JVMCodeParser
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Handles an input operation.
+	 *
+	 * @param __das The data input stream source.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/23
+	 */
+	private void __handleOp(DataInputStream __das)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__das == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
