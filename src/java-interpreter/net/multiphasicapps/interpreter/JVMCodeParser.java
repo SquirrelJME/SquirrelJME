@@ -127,15 +127,20 @@ public class JVMCodeParser
 		{
 			// Set the code source
 			_source = csource;
-		
-			// Parse code data
-			while (clis.hasRemaining())
+			
+			// The code handlers could do something evil and try to use
+			// multi-threaded code generation.
+			synchronized (lock)
 			{
-				// Set current address
-				_pcaddr = (int)clis.count();
+				// Parse code data
+				while (clis.hasRemaining())
+				{
+					// Set current address
+					_pcaddr = (int)clis.count();
 				
-				// Handle it
-				__handleOp();
+					// Handle it
+					__handleOp();
+				}
 			}
 		
 			if (true)
@@ -268,10 +273,36 @@ public class JVMCodeParser
 		}
 	}
 	
+	/**
+	 * This is a bridge which is used to interact with the code parser because
+	 * the operation handlers are for the most part statically used.
+	 *
+	 * @since 2016/03/23
+	 */
 	public class HandlerBridge
 	{
+		/**
+		 * Internally initialized only.
+		 *
+		 * @since 2016/03/23
+		 */
 		private HandlerBridge()
 		{
+		}
+		
+		/**
+		 * Returns the address of the current instruction.
+		 *
+		 * @return The current instruction address.
+		 * @since 2016/03/23
+		 */
+		public int pcAddress()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				return _pcaddr;
+			}
 		}
 	}
 	
