@@ -304,6 +304,21 @@ public class JVMCodeParser
 				return _pcaddr;
 			}
 		}
+		
+		/**
+		 * Returns the stream to read bytes from.
+		 *
+		 * @return The stream to read bytes from
+		 * @since 2016/03/23
+		 */
+		public DataInputStream source()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				return _source;
+			}
+		}
 	}
 	
 	/**
@@ -322,7 +337,7 @@ public class JVMCodeParser
 		 * @throws IOException On read errors.
 		 * @since 2016/03/23
 		 */
-		public abstract void handle(HandlerBridge __br)
+		public abstract void handle(JVMCodeParser.HandlerBridge __br)
 			throws IOException;
 	}
 }
