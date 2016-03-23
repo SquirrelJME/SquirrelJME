@@ -59,6 +59,9 @@ public class JVMCodeParser
 	/** Did this already? */
 	private volatile boolean _did;
 	
+	/** The current address of the current operation. */
+	private volatile int _pcaddr;
+	
 	/**
 	 * Initializes the code parser.
 	 *
@@ -116,15 +119,28 @@ public class JVMCodeParser
 		if (codelen <= 0 || codelen >= MAX_CODE_SIZE)
 			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
 		
-		// Set the code source
-		_source = __das;
+		// Need to count the input bytes and also make sure that if code is
+		// skipped that the entire chunk is ignored.
+		try (JVMCountLimitInputStream clis = new JVMCountLimitInputStream(
+			__das, ((long)codelen) & 0xFFFF_FFFFL);
+			DataInputStream csource = new DataInputStream(clis))
+		{
+			// Set the code source
+			_source = csource;
 		
-		// Parse code data
-		for (int i = 0; i < codelen; i++)
-			__handleOp();
+			// Parse code data
+			while (clis.hasRemaining())
+			{
+				// Set current address
+				_pcaddr = (int)clis.count();
+				
+				// Handle it
+				__handleOp();
+			}
 		
-		if (true)
-			throw new Error("TODO");
+			if (true)
+				throw new Error("TODO");
+		}
 		
 		// Handle attributes, only two are cared about
 		int nas = __das.readUnsignedShort();

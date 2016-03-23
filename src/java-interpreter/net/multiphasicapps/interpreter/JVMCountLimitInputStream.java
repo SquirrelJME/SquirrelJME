@@ -22,7 +22,7 @@ import java.io.IOException;
  *
  * @since 2016/03/20
  */
-class __ChunkedInputStream__
+public class JVMCountLimitInputStream
 	extends InputStream
 {
 	/** Lock. */
@@ -38,16 +38,45 @@ class __ChunkedInputStream__
 	/** Current read count. */
 	private volatile long _count;
 	
-	__ChunkedInputStream__(InputStream __w, long __lim)
+	/**
+	 * Initializes the counter and limiter of an input stream which is used to
+	 * splice a portion of a stream.
+	 *
+	 * @param __w The base stream to wrap.
+	 * @param __lim The number of bytes to limit the stream to.
+	 * @throws IllegalArgumentException If the limit is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/20
+	 */
+	public JVMCountLimitInputStream(InputStream __w, long __lim)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__w == null)
 			throw new NullPointerException("NARG");
+		if (__lim < 0L)
+			throw new IllegalArgumentException(String.format("IN1i %d",
+				__lim));
 		
 		// Set
 		in = __w;
 		limit = __lim;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/23
+	 */
+	@Override
+	public int available()
+		throws IOException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return (int)Math.min((long)Integer.MAX_VALUE, Math.max(0L,
+				Math.min(remaining(), in.available())));
+		}
 	}
 	
 	/**
@@ -81,6 +110,35 @@ class __ChunkedInputStream__
 		}
 	}
 	
+	/**
+	 * Returns the number of bytes which were read by this stream.
+	 *
+	 * @return The number of read bytes.
+	 * @since 2016/03/23
+	 */
+	public long count()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _count;
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if the limit has not been reached yet.
+	 *
+	 * @return {@code true} if the limit was not reached.
+	 * @since 2016/03/23
+	 */
+	public boolean hasRemaining()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return remaining() > 0L;
+		}
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -112,6 +170,21 @@ class __ChunkedInputStream__
 			
 			// Return it
 			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the number of bytes remaining in the stream.
+	 *
+	 * @return The remaining byte count.
+	 * @since 2016/03/23
+	 */
+	public long remaining()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return limit - _count;
 		}
 	}
 }

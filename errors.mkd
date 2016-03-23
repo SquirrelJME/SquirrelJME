@@ -287,6 +287,8 @@ These codes do not have a index meaning and are meant to be short.
  * `IN1g` -- Byte code translation already performed.
  * `IN1h` -- Illegal opcode.
    * The opcode.
+ * `IN1i` -- Count-limited input stream cannot have a negative limit.
+   * The negative limit which was requsted.
 
 # `net.multiphasicapps.interpreter.local`
 

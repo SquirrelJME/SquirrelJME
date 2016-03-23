@@ -299,7 +299,7 @@ public class JVMClassFile
 					// Only care about code
 				case "Code":
 					try (DataInputStream cdis = new DataInputStream(
-						new __ChunkedInputStream__(__das,
+						new JVMCountLimitInputStream(__das,
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
 						// Setup code parse
