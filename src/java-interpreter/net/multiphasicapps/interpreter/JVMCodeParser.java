@@ -49,6 +49,10 @@ public class JVMCodeParser
 	protected final NARFProgram program =
 		new NARFProgram();
 	
+	/** The program bridge. */
+	protected final HandlerBridge bridge =
+		new HandlerBridge();
+	
 	/** Current active code source, may change in special circumstances. */
 	private volatile DataInputStream _source;
 	
@@ -173,7 +177,8 @@ public class JVMCodeParser
 		// Get operation handler
 		ByteOpHandler handler = __obtainByteOpHandler(code);
 		
-		throw new Error("TODO");
+		// Call it
+		handler.handle(bridge);
 	}
 	
 	/**
@@ -247,6 +252,13 @@ public class JVMCodeParser
 		}
 	}
 	
+	public class HandlerBridge
+	{
+		private HandlerBridge()
+		{
+		}
+	}
+	
 	/**
 	 * This class contains the base for a byte operation handler, when an
 	 * operation needs to be handled, it is searched for in a lookup table.
@@ -256,6 +268,15 @@ public class JVMCodeParser
 	 */
 	public static interface ByteOpHandler
 	{
+		/**
+		 * Handles the given operation.
+		 *
+		 * @param __br The bridge which interfaces with this code parser.
+		 * @throws IOException On read errors.
+		 * @since 2016/03/23
+		 */
+		public abstract void handle(HandlerBridge __br)
+			throws IOException;
 	}
 }
 
