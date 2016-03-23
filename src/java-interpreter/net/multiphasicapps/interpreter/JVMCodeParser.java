@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.narf.NARFProgram;
@@ -25,6 +27,10 @@ public class JVMCodeParser
 	/** The maximum size method code may be. */
 	public static final int MAX_CODE_SIZE =
 		65535;
+	
+	/** Handlers for operations. */
+	private static final Reference<ByteOpHandler>[] _HANDLERS =
+		__makeByteOpRefArray();
 	
 	/** Lock. */
 	protected final Object lock =
@@ -42,6 +48,9 @@ public class JVMCodeParser
 	/** Target program to write into. */
 	protected final NARFProgram program =
 		new NARFProgram();
+	
+	/** Current active code source, may change in special circumstances. */
+	private volatile DataInputStream _source;
 	
 	/** Did this already? */
 	private volatile boolean _did;
@@ -103,9 +112,12 @@ public class JVMCodeParser
 		if (codelen <= 0 || codelen >= MAX_CODE_SIZE)
 			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
 		
+		// Set the code source
+		_source = __das;
+		
 		// Parse code data
 		for (int i = 0; i < codelen; i++)
-			__handleOp(__das);
+			__handleOp();
 		
 		if (true)
 			throw new Error("TODO");
@@ -141,19 +153,109 @@ public class JVMCodeParser
 	/**
 	 * Handles an input operation.
 	 *
-	 * @param __das The data input stream source.
 	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/23
 	 */
-	private void __handleOp(DataInputStream __das)
-		throws IOException, NullPointerException
+	private void __handleOp()
+		throws IOException
 	{
-		// Check
-		if (__das == null)
-			throw new NullPointerException("NARG");
+		// Get the code source
+		DataInputStream source = _source;
+		
+		// Read in a single byte
+		int code = source.readUnsignedByte();
+		
+		// If it is the wide specifier, read another byte and use a special
+		// code for it
+		if (code == 0xC4)
+			code = 0x100 | source.readUnsignedByte();
+		
+		// Get operation handler
+		ByteOpHandler handler = __obtainByteOpHandler(code);
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * This creates the byte operation handler reference array.
+	 *
+	 * @return The handler cache array.
+	 * @since 2016/03/23
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static Reference<ByteOpHandler>[] __makeByteOpRefArray()
+	{
+		return (Reference<ByteOpHandler>[])((Object)new Reference[512]);
+	}
+	
+	/**
+	 * Obtains from the cache or caches a class which is used for the handling
+	 * of byte code operations. This is to prevent this file from being a
+	 * massive 5000 line file.
+	 *
+	 * @param __code The opcode, if the value is >= 0x100 then.
+	 * @return The handler for the given operation.
+	 * @throws IndexOutOfBoundsException If the code is not within the bounds
+	 * of the cache table.
+	 * @throws JVMClassFormatError If the opcode is not valid.
+	 * @since 2016/03/23
+	 */
+	private static ByteOpHandler __obtainByteOpHandler(int __code)
+		throws IndexOutOfBoundsException, JVMClassFormatError
+	{
+		// Get the handler array and check bounds
+		Reference<ByteOpHandler>[] refs = _HANDLERS;
+		if (__code < 0 || __code >= refs.length)
+			throw new IndexOutOfBoundsException(String.format("IOOB %d",
+				__code));
+		
+		// Lock on the handlers
+		synchronized (refs)
+		{
+			// Get reference
+			Reference<ByteOpHandler> ref = refs[__code];
+			ByteOpHandler rv;
+			
+			// Needs caching?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Can fail
+				try
+				{
+					// Find class first
+					Class<?> ohcl = Class.forName("net.multiphasicapps." +
+						"interpreter.jvmops.JVMOpHandler" + __code);
+					
+					// Create instance of it
+					rv = ByteOpHandler.class.cast(ohcl.newInstance());
+				}
+				
+				// Could not find, create, or cast.
+				catch (InstantiationException|IllegalAccessException|
+					ClassNotFoundException|ClassCastException e)
+				{
+					throw new JVMClassFormatError(
+						String.format("IN1h %d", __code), e);
+				}
+				
+				// Cache it
+				refs[__code] = new WeakReference<>(rv);
+			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * This class contains the base for a byte operation handler, when an
+	 * operation needs to be handled, it is searched for in a lookup table.
+	 * If it is not there, then it is created and cached.
+	 *
+	 * @since 2016/03/23
+	 */
+	public static interface ByteOpHandler
+	{
 	}
 }
 

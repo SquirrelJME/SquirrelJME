@@ -85,3 +85,9 @@ needing the constant pool to work correctly. So the interpreter engine should
 be the core of the code generation engine since it already has all of the code
 and logic to do such things.
 
+## 14:33
+
+Considering that the code parser if it gets all the methods, the file will
+essentially be probably a 5000 line behemoth. So I suppose the seprated class
+would be a good thing because all that code would be elsewhere instead.
+
