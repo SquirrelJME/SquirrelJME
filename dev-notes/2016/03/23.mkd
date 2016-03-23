@@ -105,3 +105,31 @@ that). The more advanced requirement for any optimization is I need to know
 how new or stale a value is, or if it gets mutated. Basically after a value is
 set, how many times has it been updated before it was erased.
 
+## 18:34
+
+If I use the register types, I only need a single bit that I can use for
+something else. That is if I keep the alignment of types at 4 bits. From the
+looks of it the NARF package is going to go away and will likely be merged
+into the interpreter code.
+
+## 18:37
+
+One thing I can actually do for low memory systems is have hollow arrays. So
+for example if you only have 32KiB of RAM and you allocate an integer array
+with 2 billion elements, the allocation will succeed. Once you start writing
+enough into it (where you cannot fit any more) there will be an out of memory
+error thrown during the write. This does have a speed cost though, so it should
+only be used when it is needed. There can also be a cost of extra memory
+also. But the complexity cost of it might not be worth it. I am definitely
+going to use handles so that I can perform compaction (move everything down)
+without worrying too much about pointer reassignment. With any classes and
+their data structures in memory, I will need to be efficient with the stuff
+which I use in the heap. One idea I can do is actual merging of values. For
+example if a class defines 8 non-final boolean fields, they can be combined
+into a single byte. However if one is volatile then they all become volatile.
+This would work, however there would need to be some kind of lock because if
+multiple threads are changing the values then other booleans could lose their
+state. So if an architecture has an atomic clear and set of a bit it could
+be used. Otherwise I would fall back to wasting 7-bits. However, I can perform
+this optimization on final fields no problem.
+

@@ -8,12 +8,41 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.narf;
+
 /**
- * This package contains the code which is used to interact with and modify
- * programs which use the Nutty And Retro Intermediate Language.
+ * This represents the type of value which is stored in a variable that is
+ * in a local variable is on the stack.
  *
  * @since 2016/03/21
  */
-
-package net.multiphasicapps.narf;
+public enum JVMVariableType
+{
+	/** Integer. */
+	INTEGER,
+	
+	/** Long. */
+	LONG,
+	
+	/** Float. */
+	FLOAT,
+	
+	/** Double. */
+	DOUBLE,
+	
+	/** Objects. */
+	OBJECT,
+	
+	/** End. */
+	;
+	
+	/**
+	 * Initializes the variable type.
+	 *
+	 * @since 2016/03/21
+	 */
+	private JVMVariableType()
+	{
+	}
+}
 
