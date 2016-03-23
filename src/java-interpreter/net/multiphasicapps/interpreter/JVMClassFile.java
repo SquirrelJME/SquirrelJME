@@ -187,53 +187,6 @@ public class JVMClassFile
 	}
 	
 	/**
-	 * Parses the code attribute of a method.
-	 *
-	 * @param __meth The method which owns the code attribute.
-	 * @param __das The source of bytes to read from.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 */
-	private void __parseCode(JVMMethod __meth, DataInputStream __das)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__meth == null || __das == null)
-			throw new NullPointerException("NARG");
-		
-		// Max stack and local entries
-		int maxstack = __das.readUnsignedShort();
-		int maxlocal = __das.readUnsignedShort();
-		
-		if (true)
-			throw new Error("TODO");
-		
-		// Handle attributes, only two are cared about
-		int nas = __das.readUnsignedShort();
-		for (int i = 0; i < nas; i++)
-		{
-			// Read attribute name
-			String an = __readAttributeName(__das);
-			
-			// Depends on the name
-			// StackMapTable and StackMap are just ignored, this will assume
-			// that the compiler actually generates sane code (the stack map
-			// just verifies information that can be obtained wnile parsing
-			// and is essentially a "At this point, these must be on the stack"
-			// kind of deal). Note that the code must conform to the assumption
-			// that it would be under if it were actually handled (each
-			// operation MUST have only one explicit state, so to speak).
-			switch (an)
-			{
-					// Ignored
-				default:
-					__skipAttribute(__das);
-					break;
-			}
-		}
-	}
-	
-	/**
 	 * Reads the name of the attribute.
 	 *
 	 * @param __das The data source.
@@ -242,7 +195,7 @@ public class JVMClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	private String __readAttributeName(DataInputStream __das)
+	String __readAttributeName(DataInputStream __das)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -349,7 +302,12 @@ public class JVMClassFile
 						new __ChunkedInputStream__(__das,
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
-						__parseCode(rv, cdis);
+						// Setup code parse
+						JVMCodeParser parser = new JVMCodeParser(this, rv,
+							_constantpool);
+						
+						// Parse it
+						parser.parse(cdis);
 					}
 					break;
 					
@@ -406,7 +364,7 @@ public class JVMClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	private void __skipAttribute(DataInputStream __das)
+	void __skipAttribute(DataInputStream __das)
 		throws IOException, JVMClassFormatError, NullPointerException
 	{
 		// Check

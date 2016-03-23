@@ -36,7 +36,7 @@ public class CodeChunkTests
 	
 	/** Mass removal buffer size. */
 	public static final int LOWER_LIMIT =
-		4;
+		64;
 	
 	/** The seed to use for the random data. */
 	public static final long INITIAL_SEED =

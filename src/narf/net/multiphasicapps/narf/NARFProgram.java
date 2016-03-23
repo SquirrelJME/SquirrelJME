@@ -20,5 +20,21 @@ package net.multiphasicapps.narf;
  */
 public class NARFProgram
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
+	/** Code chunk containing the byte instructions. */
+	protected final NARFCodeChunks chunks =
+		new NARFCodeChunks();
+	
+	/**
+	 * Initializes the program.
+	 *
+	 * @since 2016/03/22
+	 */
+	public NARFProgram()
+	{
+	}
 }
 
