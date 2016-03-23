@@ -236,9 +236,6 @@ public class Build
 		if (__p == null)
 			throw new NullPointerException();
 		
-		// Notice
-		System.err.printf("*** Evaluating %s...%n", __p.name);
-		
 		// Build dependencies first!
 		for (Project dep : __p.depends)
 			__build(dep);
