@@ -14,7 +14,7 @@ import java.io.IOException;
 import net.multiphasicapps.interpreter.JVMCodeParser;
 
 /**
- * Handle opcode 42: aload_0.
+ * Handles opcode 42: aload_0.
  *
  * @since 2016/03/23
  */

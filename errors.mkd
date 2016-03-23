@@ -289,6 +289,8 @@ These codes do not have a index meaning and are meant to be short.
    * The opcode.
  * `IN1i` -- Count-limited input stream cannot have a negative limit.
    * The negative limit which was requsted.
+ * `IN1j` -- Method has a negative stack size or local variable count.
+   * The negative count.
 
 # `net.multiphasicapps.interpreter.local`
 

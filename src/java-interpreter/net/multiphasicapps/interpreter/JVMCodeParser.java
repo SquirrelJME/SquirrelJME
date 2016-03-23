@@ -119,6 +119,9 @@ public class JVMCodeParser
 		if (codelen <= 0 || codelen >= MAX_CODE_SIZE)
 			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
 		
+		// Setup initial stack state
+		JVMOpState initstate = new JVMOpState(maxlocal, maxstack);
+		
 		// Need to count the input bytes and also make sure that if code is
 		// skipped that the entire chunk is ignored.
 		try (JVMCountLimitInputStream clis = new JVMCountLimitInputStream(

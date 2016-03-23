@@ -97,3 +97,11 @@ would be a good thing because all that code would be elsewhere instead.
 be used for the code parser to determine the address of the current operation
 being handled.
 
+## 18:17
+
+I need a class which can handle the state that things are on the locals and
+stack. The basic requirement is that the types exist (can use bit fields for
+that). The more advanced requirement for any optimization is I need to know
+how new or stale a value is, or if it gets mutated. Basically after a value is
+set, how many times has it been updated before it was erased.
+
