@@ -27,3 +27,20 @@ to until the exception handler table is read. If a method is very simple then
 this will never occur. Unknown states would only be for code outside the
 starting program flow.
 
+## 10:54
+
+Ok, so the goal with byte code parsing is that it needs to be light and simple.
+There are many operations and a large number of them are calculated similarly
+such as when stack operations are performed. So what I am thinking of is having
+the operations stored in a simple text file with their stack opertions and
+such. However, alternatively I could just make a gigantic switch statement.
+The switch would be more inline so to speak. I could use reflection and cache
+the classes, then each byte code operation would be in its own class and such.
+I can do this because I can call `Class.forName()` and call `newInstance()`.
+However, they would need to be interfaces and I would also need a bridging
+object. The opcode handlers would be single instance, however they would also
+be a lookup table that can be static so to speak. Doing it that way I do not
+have to clutter the class with details, or have gigantic enumerations which
+are pre-exist in memory. The only time I need an operation is when I am
+handling it.
+
