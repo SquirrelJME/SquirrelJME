@@ -91,3 +91,9 @@ Considering that the code parser if it gets all the methods, the file will
 essentially be probably a 5000 line behemoth. So I suppose the seprated class
 would be a good thing because all that code would be elsewhere instead.
 
+## 15:40
+
+`__ChunkedInputStream__` must change to provide byte offsets and then it can
+be used for the code parser to determine the address of the current operation
+being handled.
+
