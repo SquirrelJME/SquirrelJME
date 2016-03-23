@@ -282,6 +282,8 @@ These codes do not have a index meaning and are meant to be short.
    * The key of the member.
  * `IN1e` -- Reached end of stream reading a chunked stream before the limit
    was reached.
+ * `IN1f` -- Illegal code length in method.
+   * The code length.
 
 # `net.multiphasicapps.interpreter.local`
 

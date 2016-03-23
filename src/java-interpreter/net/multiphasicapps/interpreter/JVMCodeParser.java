@@ -22,6 +22,10 @@ import net.multiphasicapps.narf.NARFProgram;
  */
 public class JVMCodeParser
 {
+	/** The maximum size method code may be. */
+	public static final int MAX_CODE_SIZE =
+		65535;	
+	
 	/** Owning method. */
 	protected final JVMMethod method;
 	
@@ -30,6 +34,10 @@ public class JVMCodeParser
 	
 	/** The class file parser. */
 	protected final JVMClassFile classfile;
+	
+	/** Target program to write into. */
+	protected final NARFProgram program =
+		new NARFProgram();
 	
 	/**
 	 * Initializes the code parser.
@@ -59,11 +67,12 @@ public class JVMCodeParser
 	 * @param __das The code attribute data.
 	 * @return {@code this}.
 	 * @throws IOException On read errors.
+	 * @throws JVMClassFormatError If the code is malformed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/22
 	 */
 	public JVMCodeParser parse(DataInputStream __das)
-		throws IOException, NullPointerException
+		throws IOException, JVMClassFormatError, NullPointerException
 	{
 		// Check
 		if (__das == null)
@@ -72,6 +81,15 @@ public class JVMCodeParser
 		// Max stack and local entries
 		int maxstack = __das.readUnsignedShort();
 		int maxlocal = __das.readUnsignedShort();
+		
+		// Read code length
+		int codelen = __das.readInt();
+		if (codelen <= 0 || codelen >= MAX_CODE_SIZE)
+			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
+		
+		// Parse code data
+		for (int i = 0; i < codelen; i++)
+			throw new Error("TODO");
 		
 		if (true)
 			throw new Error("TODO");

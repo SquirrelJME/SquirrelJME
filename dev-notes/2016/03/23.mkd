@@ -1,0 +1,28 @@
+# 2016/03/23
+
+## 00:03
+
+For a single pass system with no allocations for temporary byte code that is
+read, one problem I will encounter during translation is exceptions. One thing
+I do know about exceptions though, is that the stack is wiped away yet the
+locals are kept the same. The exception handler can never be the first
+operation. On entry of the method, there are just the locals and no stack.
+Exception handlers get a single stack element containing the exception which
+was thrown. Also, each instruction can only have a single stack state also.
+Thus if some byte code starts modifying an object on the stack, then it is
+likely an exception handler. The only thing to determine though are future
+`goto` operations going to these locations with matching stacks.
+
+## 00:09
+
+So with the first instruction never being an exception is a rule. I would
+just flow normally after that and make sure elements are valid and such. There
+can also be a heuristic to guess code which is likely an exception handler.
+If it is alone for example. If code is reached which is never reachable by
+normal flow of execution then it is likely an exception handler. The only
+case of it not being so would be if a goto were just tossed to a future
+address, which then jumps back to the given point. So for unknown states I
+will have to allocate some buffers to store byte code temporarily and defer it
+to until the exception handler table is read. If a method is very simple then
+this will never occur.
+
