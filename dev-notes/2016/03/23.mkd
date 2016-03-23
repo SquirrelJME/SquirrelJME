@@ -52,3 +52,36 @@ can determine this and this is likely a micro premature optmization. On
 second thought, in my code generation if a local or stack element ever stops
 being a references, I can just null it in the code.
 
+## 13:11
+
+However, thinking about it, having 255 classes would be a bit messy, I could
+just instead have 255 methods instead. However, since I cannot have function
+pointers essentially with method handles, I need a giant switch statement.
+The `tableswitch` instruction can be turned into a binary tree since it is
+sorted. That would reduce the total number of comparisons needed. That however
+is if code cannot internally use a table. If the target architecture can for
+example use pointers, then it just essentially would become a local table
+lookup followed by a jump based on an offset. Thinking about it however, the
+NARF code would complicate handling of `tableswitch` due to how the
+instructions are laid out. So perhaps instead I should have a linear generation
+pass directly to native code. Essentially it would be close to the Java byte
+code except be in native form. It would not have the best optimization
+however due to translation between a stack machine and a register one. However
+for that I would need to load in the byte code, read the exception table, and
+then verify stack map locations. But using the known rules I know about earlier
+I could ignore some things. I could do a basic linear parsing, with notes so
+to speak.
+
+## 13:24
+
+So what the engine needs is a way to be told if it is interpreting or if it is
+performing native compilation. Basically a code operation handler of sorts.
+
+## 13:26
+
+Well, I would want an interpreter which is optimized as interpreting Java
+byte code can be really slow due to potentially wasted stack operations and
+needing the constant pool to work correctly. So the interpreter engine should
+be the core of the code generation engine since it already has all of the code
+and logic to do such things.
+
