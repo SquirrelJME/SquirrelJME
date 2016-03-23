@@ -8,14 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
-
 /**
- * This represents a byte code operation.
+ * This package contains all of the opcodes which exist in the virtual machine.
  *
  * @since 2016/03/23
  */
-public interface JVMByteCodeOp
-{
-}
+
+package net.multiphasicapps.interpreter.jvmops;
 

@@ -44,3 +44,11 @@ have to clutter the class with details, or have gigantic enumerations which
 are pre-exist in memory. The only time I need an operation is when I am
 handling it.
 
+## 12:52
+
+I should set references to `null` when I am done with them to indicate that I
+no longer care for them and they can be freed as such. Although the compiler
+can determine this and this is likely a micro premature optmization. On
+second thought, in my code generation if a local or stack element ever stops
+being a references, I can just null it in the code.
+
