@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+X-Hairball-Name: test-extra-buffers
+X-Hairball-Depends: test-base, extra-buffers
+LIBlet-Title: Extra Buffer Tests
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160322
+LIBlet-Description: This contains tests for the extra buffer code.

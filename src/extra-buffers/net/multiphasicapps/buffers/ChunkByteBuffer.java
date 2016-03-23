@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf;
+package net.multiphasicapps.buffers;
 
 /**
  * This class provides a dynamically sized array of bytes for efficient
@@ -18,7 +18,7 @@ package net.multiphasicapps.narf;
  *
  * @since 2016/03/22
  */
-public class NARFCodeChunks
+public class ChunkByteBuffer
 {
 	/** The default individual chunk size. */
 	public static final int DEFAULT_CHUNK_SIZE =
@@ -39,7 +39,7 @@ public class NARFCodeChunks
 	 *
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks()
+	public ChunkByteBuffer()
 	{
 		this(DEFAULT_CHUNK_SIZE);
 	}
@@ -51,7 +51,7 @@ public class NARFCodeChunks
 	 * @throws IllegalArgumentException If the chunk size is zero or negative.
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks(int __cs)
+	public ChunkByteBuffer(int __cs)
 		throws IllegalArgumentException
 	{
 		// Check
@@ -72,7 +72,7 @@ public class NARFCodeChunks
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks(NARFCodeChunks __from)
+	public ChunkByteBuffer(ChunkByteBuffer __from)
 		throws NullPointerException
 	{
 		this(DEFAULT_CHUNK_SIZE, __from);
@@ -87,7 +87,7 @@ public class NARFCodeChunks
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks(int __cs, NARFCodeChunks __from)
+	public ChunkByteBuffer(int __cs, ChunkByteBuffer __from)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -135,7 +135,7 @@ public class NARFCodeChunks
 	 * @return {@code this}.
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks add(byte __v)
+	public ChunkByteBuffer add(byte __v)
 	{
 		// Lock
 		synchronized (lock)
@@ -155,7 +155,7 @@ public class NARFCodeChunks
 	 * chunk bounds.
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks add(int __i, byte __v)
+	public ChunkByteBuffer add(int __i, byte __v)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
@@ -175,7 +175,7 @@ public class NARFCodeChunks
 	 * @return {@code this}.
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks clear()
+	public ChunkByteBuffer clear()
 	{
 		// Lock
 		synchronized (lock)
@@ -216,7 +216,7 @@ public class NARFCodeChunks
 	 * @return {@code this}.
 	 * @since 2016/03/22
 	 */
-	public NARFCodeChunks quickCompact()
+	public ChunkByteBuffer quickCompact()
 	{
 		// Lock
 		synchronized (lock)

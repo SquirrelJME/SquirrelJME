@@ -8,12 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tests.narf;
+package net.multiphasicapps.tests.buffers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import net.multiphasicapps.narf.NARFCodeChunks;
+import net.multiphasicapps.buffers.ChunkByteBuffer;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 
@@ -21,13 +21,13 @@ import net.multiphasicapps.tests.TestInvoker;
  * This class tests that the code chunk setup works correctly.
  *
  * This contains two uses of the same algorithm, one which uses an
- * {@link ArrayList} and one which uses the {@link NARFCodeChunks}. Both
+ * {@link ArrayList} and one which uses the {@link ChunkByteBuffer}. Both
  * should compute the same (although the {@link ArrayList} is slower and uses
  * much more memory).
  *
  * @since 2016/03/22
  */
-public class CodeChunkTests
+public class ChunkByteBufferTests
 	implements TestInvoker
 {
 	/** This is the size of the test buffer. */
@@ -48,7 +48,7 @@ public class CodeChunkTests
 	 */
 	public String invokerName()
 	{
-		return "narf.codechunks";
+		return "xbufs.codechunks";
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class CodeChunkTests
 		
 		// A list containing bytes of stuff being added, along with the chunks
 		List<Byte> snail = new ArrayList<>();
-		NARFCodeChunks bunny = new NARFCodeChunks();
+		ChunkByteBuffer bunny = new ChunkByteBuffer();
 		
 		// Initialize PRNG
 		Random rand = new Random(INITIAL_SEED);

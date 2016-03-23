@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-interpreter
-X-Hairball-Depends: javame-cldc-compact, extra-collections,
- java-descriptors, narf
+X-Hairball-Depends: javame-cldc-compact, extra-collections, 
+ java-descriptors, extra-buffers
 LIBlet-Title: Java Interpreter
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228

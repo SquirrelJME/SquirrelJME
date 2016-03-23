@@ -14,7 +14,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.io.DataInputStream;
 import java.io.IOException;
-import net.multiphasicapps.narf.NARFProgram;
 
 /**
  * This parses the code block of a method and translates the byte code into
@@ -44,10 +43,6 @@ public class JVMCodeParser
 	
 	/** The class file parser. */
 	protected final JVMClassFile classfile;
-	
-	/** Target program to write into. */
-	protected final NARFProgram program =
-		new NARFProgram();
 	
 	/** The program bridge. */
 	protected final HandlerBridge bridge =
