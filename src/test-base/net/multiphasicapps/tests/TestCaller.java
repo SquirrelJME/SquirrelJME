@@ -13,9 +13,11 @@ package net.multiphasicapps.tests;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * This calls all tests which are known about which are listed as a service
