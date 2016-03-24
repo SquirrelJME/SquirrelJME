@@ -297,6 +297,14 @@ These codes do not have a index meaning and are meant to be short.
    match.
    * The size of this state.
    * The size of the state that wants to be copied.
+ * `IN1m` -- Sub-routine operations are not supported by any CLDC version,
+   code compiled for JVMs before Java 6 require translation and inlining
+   of their sub-routines by the J2ME post processor.
+   * The used op-code.
+ * `IN1n` -- The `invokedynamic` instruction is not supported. This means
+   that lambdas and method handles are not supported. It is recommended to
+   compile code for Java 7 instead of Java 8.
+   * The used op-code.
 
 # `net.multiphasicapps.interpreter.local`
 

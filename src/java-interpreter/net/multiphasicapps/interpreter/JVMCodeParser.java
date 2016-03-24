@@ -188,10 +188,10 @@ public class JVMCodeParser
 					__handleOp();
 				}
 			}
-		
-			if (true)
-				throw new Error("TODO");
 		}
+		
+		if (true)
+			throw new Error("TODO");
 		
 		// Handle attributes, only two are cared about
 		int nas = __das.readUnsignedShort();
@@ -240,6 +240,14 @@ public class JVMCodeParser
 		// code for it
 		if (code == 0xC4)
 			code = 0x100 | source.readUnsignedByte();
+		
+		// Subroutines not supported)
+		if (code == 0xA8 || code == 0xC9 || code == 0xA9 || code == 0xC4A9)
+			throw new JVMClassFormatError(String.format("IN1m %d", code));
+		
+		// Nor is invokedynamic
+		if (code == 0xBA)
+			throw new JVMClassFormatError(String.format("IN1n %d", code));
 		
 		// Get operation handler
 		ByteOpHandler handler = __obtainByteOpHandler(code);
