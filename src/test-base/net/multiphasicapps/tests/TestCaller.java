@@ -32,14 +32,24 @@ public class TestCaller
 	/** Test results output. */
 	protected final PrintStream output;
 	
+	/** Ignoring passing tests? */
+	protected final boolean ignorepass;
+	
+	/** Ignoring failing tests? */
+	protected final boolean ignorefail;
+	
+	/** Ignoring tossed exceptions? */
+	protected final boolean ignoretoss;
+	
 	/**
 	 * Initializes the test caller.
 	 *
 	 * @param __ps The output where test results are placed.
+	 * @param __args Program arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/03
 	 */
-	public TestCaller(PrintStream __ps)
+	public TestCaller(PrintStream __ps, String... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -48,6 +58,42 @@ public class TestCaller
 		
 		// Set
 		output = __ps;
+		
+		// Handle some arguments?
+		boolean ignpass = false;
+		boolean ignfail = false;
+		boolean igntoss = false;
+		if (__args != null)
+			for (String arg : __args)
+				if (arg != null)
+					switch (arg)
+					{
+							// Ignore passes
+						case "-ip":
+							ignpass = true;
+							break;
+							
+							// Ignore failures
+						case "-if":
+							ignfail = true;
+							break;
+							
+							// Ignore tossed exceptions
+						case "-ie":
+						case "-it":
+						case "-ix":
+							igntoss = true;
+							break;
+						
+							// Unknown
+						default:
+							break;
+					}
+		
+		// Set
+		ignorepass = ignpass;
+		ignorefail = ignfail;
+		ignoretoss = igntoss;
 	}
 	
 	/**
@@ -100,8 +146,13 @@ public class TestCaller
 			String name;
 			output.printf("---- %s%n", (name = ti.invokerName()));
 			
-			// Make sure a crashing test does not take out other tests
+			// Initialize a new test checker with an initial state
 			TestChecker tc = new TestChecker(this, ti);
+			tc.setIgnorePass(ignorepass);
+			tc.setIgnoreFail(ignorefail);
+			tc.setIgnoreException(ignoretoss);
+			
+			// Make sure a crashing test does not take out other tests
 			try
 			{
 				// Run all the tests
@@ -128,7 +179,7 @@ public class TestCaller
 	public static void main(String... __args)
 	{
 		// Create a new test caller
-		TestCaller tc = new TestCaller(System.out);
+		TestCaller tc = new TestCaller(System.out, __args);
 		
 		// Run tests
 		tc.runTests();

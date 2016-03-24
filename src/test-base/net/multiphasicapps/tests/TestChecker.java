@@ -31,7 +31,16 @@ public class TestChecker
 	protected final TestCaller caller;
 	
 	/** The test being invoked. */
-	protected final TestInvoker invoker;	
+	protected final TestInvoker invoker;
+	
+	/** Ignoring passing tests? */
+	protected volatile boolean _ignorepass;
+	
+	/** Ignoring failing tests? */
+	protected volatile boolean _ignorefail;
+	
+	/** Ignoring tossed exceptions? */
+	protected volatile boolean _ignoretoss;
 	
 	/**
 	 * This initializes the test checker.
@@ -103,6 +112,10 @@ public class TestChecker
 		if (__name == null || __t == null)
 			throw new NullPointerException("NARG");
 		
+		// Ignoring?
+		if (_ignoretoss)
+			return;		
+		
 		// Get the output stream
 		PrintStream ps = caller.printStream();
 		
@@ -160,6 +173,45 @@ public class TestChecker
 		{
 			ps.println("\t IOE-DURING-TRACE-PRINT");
 		}
+	}
+	
+	/**
+	 * Sets whether exceptions are ignored or not.
+	 *
+	 * @param __v If {@code true} then exceptions are ignored.
+	 * @return {@code this}.
+	 * @since 2016/03/23
+	 */
+	public TestChecker setIgnoreException(boolean __v)
+	{
+		_ignoretoss = __v;
+		return this;
+	}
+	
+	/**
+	 * Sets whether failing tests are ignored or not.
+	 *
+	 * @param __v If {@code true} then exceptions are ignored.
+	 * @return {@code this}.
+	 * @since 2016/03/23
+	 */
+	public TestChecker setIgnoreFail(boolean __v)
+	{
+		_ignorefail = __v;
+		return this;
+	}
+	
+	/**
+	 * Sets whether passing tests are ignored or not.
+	 *
+	 * @param __v If {@code true} then exceptions are ignored.
+	 * @return {@code this}.
+	 * @since 2016/03/23
+	 */
+	public TestChecker setIgnorePass(boolean __v)
+	{
+		_ignorepass = __v;
+		return this;
 	}
 	
 	/**
@@ -252,6 +304,10 @@ public class TestChecker
 		// Check
 		if (__name == null)
 			throw new NullPointerException("NARG");
+		
+		// Ignoring?
+		if ((_ignorepass && __pass) || (_ignorefail && !__pass))
+			return;
 		
 		// Get the output stream
 		PrintStream ps = caller.printStream();

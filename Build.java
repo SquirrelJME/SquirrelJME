@@ -186,7 +186,7 @@ public class Build
 			case "interpreter-tests":
 				terptarget = true;
 			case "host-tests":
-				__launch(terptarget, getProject("test-all"));
+				__launch(terptarget, getProject("test-all"), __args);
 				break;
 				
 				// Target a specific system (with optional interpreter)
