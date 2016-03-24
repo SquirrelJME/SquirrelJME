@@ -59,9 +59,9 @@ public class JVMCodeParser
 	protected final HandlerBridge bridge =
 		new HandlerBridge();
 	
-	/** Operation states, this is used for verification. */
-	protected final Map<Integer, JVMOpState> opstates =
-		new HashMap<>();
+	/** Program state. */
+	protected final JVMProgramState state =
+		new JVMProgramState();
 	
 	/** Program output. */
 	protected final JVMProgramOutput programoutput;
@@ -137,6 +137,10 @@ public class JVMCodeParser
 		
 		// Setup initial stack state
 		{
+			if (true)
+				throw new Error("TODO");
+			
+			/*
 			// Create
 			JVMOpState initstate = new JVMOpState(maxlocal, maxstack);
 			
@@ -167,6 +171,7 @@ public class JVMCodeParser
 			
 			// Set initial state
 			opstates.put(0, initstate);
+			*/
 		}
 		
 		// Need to count the input bytes and also make sure that if code is
@@ -354,22 +359,6 @@ public class JVMCodeParser
 		}
 		
 		/**
-		 * Returns the operation state for the given address.
-		 *
-		 * @param __pc The byte code address to get the operation for.
-		 * @return The state for this operation or {@code null} if not found.
-		 * @since 2016/03/23
-		 */
-		public JVMOpState operationState(int __pc)
-		{
-			// Lock
-			synchronized (lock)
-			{
-				return opstates.get(__pc);
-			}
-		}
-		
-		/**
 		 * Returns the address of the current instruction.
 		 *
 		 * @return The current instruction address.
@@ -382,6 +371,17 @@ public class JVMCodeParser
 			{
 				return _pcaddr;
 			}
+		}
+		
+		/**
+		 * Returns the program state.
+		 *
+		 * @return The program state.
+		 * @since 2016/03/24
+		 */
+		public JVMProgramState programState()
+		{
+			return state;
 		}
 		
 		/**
