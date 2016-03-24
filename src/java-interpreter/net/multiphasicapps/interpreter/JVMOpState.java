@@ -90,6 +90,52 @@ public class JVMOpState
 	}
 	
 	/**
+	 * Sets this virtual operational state to another operational state.
+	 *
+	 * This may deadlock if two states attempt to set each other at the same
+	 * time.
+	 *
+	 * @param __v The other operation state to copy.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/23
+	 */
+	public JVMOpState set(JVMOpState __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// If this, then this is pointless
+		if (__v == this)
+			return this;
+		
+		// Lock on all of the states because they are very intertwined
+		// with each other.
+		synchronized (__v.locals.lock)
+		{
+			synchronized (locals.lock)
+			{
+				synchronized (__v.stack.lock)
+				{
+					synchronized (stack.lock)
+					{
+						// Copy the local variable state
+						locals.set(__v.locals);
+						
+						// Copy the stack variable state
+						stack.set(__v.stack);
+					}
+				}
+			}
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/23
 	 */

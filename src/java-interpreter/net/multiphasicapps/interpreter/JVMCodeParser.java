@@ -329,6 +329,22 @@ public class JVMCodeParser
 		}
 		
 		/**
+		 * Returns the operation state for the given address.
+		 *
+		 * @param __pc The byte code address to get the operation for.
+		 * @return The state for this operation or {@code null} if not found.
+		 * @since 2016/03/23
+		 */
+		public JVMOpState operationState(int __pc)
+		{
+			// Lock
+			synchronized (lock)
+			{
+				return opstates.get(__pc);
+			}
+		}
+		
+		/**
 		 * Returns the address of the current instruction.
 		 *
 		 * @return The current instruction address.

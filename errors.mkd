@@ -293,6 +293,10 @@ These codes do not have a index meaning and are meant to be short.
    * The negative count.
  * `IN1k` -- Unknown variable type index or field symbol.
    * The unknown type index or field symbol.
+ * `IN1l` -- Cannot copy another state into this one if the size does not
+   match.
+   * The size of this state.
+   * The size of the state that wants to be copied.
 
 # `net.multiphasicapps.interpreter.local`
 

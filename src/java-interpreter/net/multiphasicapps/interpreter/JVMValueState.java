@@ -25,6 +25,10 @@ import java.util.AbstractList;
 public class JVMValueState
 	extends AbstractList<JVMVariableType>
 {
+	/** Internal lock. */
+	final Object lock =
+		new Object();	
+	
 	/** Is this used as a stack? */
 	protected final boolean dostack;
 	
@@ -69,7 +73,7 @@ public class JVMValueState
 		
 		// Lock
 		byte val;
-		synchronized (state)
+		synchronized (lock)
 		{
 			// Get the actual value
 			val = state[tdx];
@@ -79,6 +83,52 @@ public class JVMValueState
 		if (hi)
 			return JVMVariableType.byIndex(val >>>= 4);
 		return JVMVariableType.byIndex(val &= 0xF);
+	}
+	
+	/**
+	 * Sets this state to be a copy of another one.
+	 *
+	 * This may deadlock if two states attempt to set each other at the same
+	 * time.
+	 *
+	 * @param __v The state to copy.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the size of the other state does
+	 * not match this one.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/23
+	 */
+	public JVMValueState set(JVMValueState __v)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Pointless operation
+		if (__v == this)
+			return this;
+		
+		// Lock on both of these
+		synchronized (__v.lock)
+		{
+			synchronized (lock)
+			{
+				// Sizes must match
+				int n = size();
+				int on = __v.size();
+				if (n != on)
+					throw new IllegalArgumentException(
+						String.format("IN1l %d %d", n, on));
+			
+				// Copy
+				for (int i = 0; i < n; i++)
+					set(i, __v.get(i));
+			}
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -101,7 +151,7 @@ public class JVMValueState
 		
 		// Lock
 		JVMVariableType old;
-		synchronized (state)
+		synchronized (lock)
 		{
 			// Get the actual value
 			byte val = state[tdx];
