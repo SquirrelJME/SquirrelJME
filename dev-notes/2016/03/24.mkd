@@ -100,3 +100,12 @@ all of the variables added also. Usually only a single instruction will
 change values, so I would not need to for example have all these copies of
 the same operator chain.
 
+## 13:14
+
+Another thing to consider with operator chains would be to instead of having
+it such as `a = 2 + x + y + z`, it is instead `a = 2 + x`, `b = a + y`, and
+`c = b + z`. This way previous operator chains could be changed while still
+having the same value at the very end. When a calculation is performed and a
+value is written then the operator chain would drop down and potentially be
+replaced. So they must be mutable for those given operations.
+
