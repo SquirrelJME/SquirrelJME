@@ -58,6 +58,28 @@ public class JVMOpState
 	}
 	
 	/**
+	 * Returns the local variable state.
+	 *
+	 * @return The local variables state.
+	 * @since 2016/03/23
+	 */
+	public JVMValueState getLocals()
+	{
+		return locals;
+	}
+	
+	/**
+	 * Returns the stack variable state.
+	 *
+	 * @return The stack variables state.
+	 * @since 2016/03/23
+	 */
+	public JVMValueState getStack()
+	{
+		return stack;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/23
 	 */

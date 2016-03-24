@@ -291,8 +291,8 @@ These codes do not have a index meaning and are meant to be short.
    * The negative limit which was requsted.
  * `IN1j` -- Method has a negative stack size or local variable count.
    * The negative count.
- * `IN1k` -- Unknown variable type index.
-   * The unknown type index.
+ * `IN1k` -- Unknown variable type index or field symbol.
+   * The unknown type index or field symbol.
 
 # `net.multiphasicapps.interpreter.local`
 

@@ -68,16 +68,17 @@ public class JVMValueState
 		int tdx = __i >>> 1;
 		
 		// Lock
+		byte val;
 		synchronized (state)
 		{
 			// Get the actual value
-			byte val = state[tdx];
-			
-			// Use special calculation
-			if (hi)
-				return JVMVariableType.byIndex(val >>>= 4);
-			return JVMVariableType.byIndex(val &= 0xF);
+			val = state[tdx];
 		}
+		
+		// Use special calculation
+		if (hi)
+			return JVMVariableType.byIndex(val >>>= 4);
+		return JVMVariableType.byIndex(val &= 0xF);
 	}
 	
 	/**
@@ -99,13 +100,13 @@ public class JVMValueState
 		int tdx = __i >>> 1;
 		
 		// Lock
+		JVMVariableType old;
 		synchronized (state)
 		{
 			// Get the actual value
 			byte val = state[tdx];
 			
 			// Determine the old value
-			JVMVariableType old;
 			if (hi)
 				old = JVMVariableType.byIndex(val >>>= 4);
 			else
@@ -119,10 +120,10 @@ public class JVMValueState
 			
 			// Place it
 			state[tdx] = val;
-			
-			// Return the old
-			return old;
 		}
+		
+		// Return the old
+		return old;
 	}
 	
 	/**

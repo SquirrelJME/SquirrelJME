@@ -14,6 +14,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This parses the code block of a method and translates the byte code into
@@ -48,6 +51,10 @@ public class JVMCodeParser
 	protected final HandlerBridge bridge =
 		new HandlerBridge();
 	
+	/** Operation states, this is used for verification. */
+	protected final Map<Integer, JVMOpState> opstates =
+		new HashMap<>();
+	
 	/** Current active code source, may change in special circumstances. */
 	private volatile DataInputStream _source;
 	
@@ -56,6 +63,8 @@ public class JVMCodeParser
 	
 	/** The current address of the current operation. */
 	private volatile int _pcaddr;
+	
+	/** Operation state mappings 
 	
 	/**
 	 * Initializes the code parser.
@@ -115,7 +124,38 @@ public class JVMCodeParser
 			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
 		
 		// Setup initial stack state
-		JVMOpState initstate = new JVMOpState(maxlocal, maxstack);
+		{
+			// Create
+			JVMOpState initstate = new JVMOpState(maxlocal, maxstack);
+			
+			// Get locals since they need to be filled with the arguments of
+			// the method
+			JVMValueState locals = initstate.getLocals();
+			
+			// If an instance method, the first local variable is this.
+			int lx = 0;
+			if (!method.getFlags().isStatic())
+				locals.set(lx++, JVMVariableType.OBJECT);
+			
+			// Handle method arguments otherwise
+			MethodSymbol sym = method.type();
+			int nargs = sym.argumentCount();
+			for (int i = 0; i < nargs; i++)
+			{
+				// Get the one to add
+				JVMVariableType addme = JVMVariableType.bySymbol(sym.get(i));
+				
+				// Place
+				locals.set(lx++, addme);
+				
+				// If wide, follow with a top argument
+				if (addme.isWide())
+					locals.set(lx++, JVMVariableType.TOP);
+			}
+			
+			// Set initial state
+			opstates.put(0, initstate);
+		}
 		
 		// Need to count the input bytes and also make sure that if code is
 		// skipped that the entire chunk is ignored.

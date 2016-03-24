@@ -191,6 +191,17 @@ public final class FieldSymbol
 	}
 	
 	/**
+	 * Is this an array type?
+	 *
+	 * @return {@code true} if it is an array.
+	 * @since 2016/03/23
+	 */
+	public boolean isArray()
+	{
+		return dimensions != 0;
+	}
+	
+	/**
 	 * Returns the primitive type of the field.
 	 *
 	 * @return The primitive type or {@code null} if not one.
