@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.AbstractList;
+
 /**
  * This stores information either for the state of locals or the state of the
  * stack.
@@ -21,9 +23,13 @@ package net.multiphasicapps.interpreter;
  * @since 2016/03/23
  */
 public class JVMValueState
+	extends AbstractList<JVMVariableType>
 {
 	/** Is this used as a stack? */
 	protected final boolean dostack;
+	
+	/** Internal stack state. */
+	protected final byte[] state;
 	
 	/**
 	 * Initializes the value states with the specified limitations.
@@ -43,7 +49,7 @@ public class JVMValueState
 		
 		// Set
 		dostack = __stack;
-		throw new Error("TODO");
+		state = new byte[__count >>> 1];
 	}
 	
 	/**
@@ -51,9 +57,27 @@ public class JVMValueState
 	 * @since 2016/03/23
 	 */
 	@Override
-	public boolean equals(Object __o)
+	public JVMVariableType get(int __i)
 	{
-		throw new Error("TODO");
+		// Out of bounds?
+		if (__i < 0 || __i >= size())
+			throw new IndexOutOfBoundsException("IOOB");	
+		
+		// Get access details
+		boolean hi = ((__i & 1) != 0);
+		int tdx = __i >>> 1;
+		
+		// Lock
+		synchronized (state)
+		{
+			// Get the actual value
+			byte val = state[tdx];
+			
+			// Use special calculation
+			if (hi)
+				return JVMVariableType.byIndex(val >>>= 4);
+			return JVMVariableType.byIndex(val &= 0xF);
+		}
 	}
 	
 	/**
@@ -61,9 +85,44 @@ public class JVMValueState
 	 * @since 2016/03/23
 	 */
 	@Override
-	public int hashCode()
+	public JVMVariableType set(int __i, JVMVariableType __v)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		if (__i < 0 || __i >= size())
+			throw new IndexOutOfBoundsException("IOOB");	
+		
+		// Get access details
+		boolean hi = ((__i & 1) != 0);
+		int tdx = __i >>> 1;
+		
+		// Lock
+		synchronized (state)
+		{
+			// Get the actual value
+			byte val = state[tdx];
+			
+			// Determine the old value
+			JVMVariableType old;
+			if (hi)
+				old = JVMVariableType.byIndex(val >>>= 4);
+			else
+				old = JVMVariableType.byIndex(val &= 0xF);
+			
+			// Set the new value
+			if (hi)
+				val = (byte)((val & 0x0F) | (__v.ordinal() << 4));
+			else
+				val = (byte)((val & 0xF0) | __v.ordinal());
+			
+			// Place it
+			state[tdx] = val;
+			
+			// Return the old
+			return old;
+		}
 	}
 	
 	/**
@@ -71,9 +130,9 @@ public class JVMValueState
 	 * @since 2016/03/23
 	 */
 	@Override
-	public String toString()
+	public int size()
 	{
-		throw new Error("TODO");
+		return state.length * 2;
 	}
 }
 
