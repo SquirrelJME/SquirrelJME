@@ -114,16 +114,22 @@ public class JVMValueState
 		{
 			synchronized (lock)
 			{
+				// Cached array access
+				byte[] mine = state;
+				byte[] notm = __v.state;
+				
 				// Sizes must match
 				int n = size();
 				int on = __v.size();
 				if (n != on)
 					throw new IllegalArgumentException(
-						String.format("IN1l %d %d", n, on));
-			
+						String.format("IN1l %d %d", size(), __v.size()));
+				
+				
 				// Copy
-				for (int i = 0; i < n; i++)
-					set(i, __v.get(i));
+				int xx = mine.length;
+				for (int i = 0; i < xx; i++)
+					mine[i] = notm[i];
 			}
 		}
 		
