@@ -18,6 +18,38 @@ package net.multiphasicapps.interpreter;
  */
 public abstract class JVMProgramOutput
 {
+	/** Native register setup. */
+	protected final JVMNativeRegisters nativeregs;
+	
+	/**
+	 * Initializes the program outputter.
+	 *
+	 * @param __nr The mappings of native registers.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/24
+	 */
+	public JVMProgramOutput(JVMNativeRegisters __nr)
+		throws NullPointerException
+	{
+		// Check
+		if (__nr == null)
+			throw new NullPointerException();
+		
+		// Set
+		nativeregs = __nr;
+	}
+	
+	/**
+	 * Returns the native register setup.
+	 *
+	 * @return The native registers.
+	 * @since 2016/03/24
+	 */
+	public final JVMNativeRegisters nativeRegisters()
+	{
+		return nativeregs;
+	}
+	
 	/**
 	 * This is a factory which creates output programs.
 	 *
@@ -25,6 +57,13 @@ public abstract class JVMProgramOutput
 	 */
 	public static abstract class Factory
 	{
+		/**
+		 * Creates a program output.
+		 *
+		 * @return Program output.
+		 * @since 2016/03/24
+		 */
+		public abstract JVMProgramOutput create();
 	}
 }
 

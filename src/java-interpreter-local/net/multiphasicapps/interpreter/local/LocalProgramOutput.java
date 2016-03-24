@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.interpreter.local;
 
+import net.multiphasicapps.interpreter.JVMNativeRegisters;
 import net.multiphasicapps.interpreter.JVMProgramOutput;
 
 /**
@@ -22,6 +23,17 @@ public class LocalProgramOutput
 	extends JVMProgramOutput
 {
 	/**
+	 * Creates the local program output.
+	 *
+	 * @since 2016/03/24
+	 */
+	private LocalProgramOutput()
+	{
+		super(new JVMNativeRegisters(Integer.MAX_VALUE, 64,
+			Integer.MAX_VALUE, 64));
+	}	
+	
+	/**
 	 * This is the factory which creates local program outputs.
 	 *
 	 * @since 2016/03/23
@@ -29,6 +41,15 @@ public class LocalProgramOutput
 	public static class LocalFactory
 		extends JVMProgramOutput.Factory
 	{
+		/**
+		 * {@inheritDoc)
+		 * @since 2016/03/24
+		 */
+		@Override
+		public JVMProgramOutput create()
+		{
+			return new LocalProgramOutput();
+		}
 	}
 }
 

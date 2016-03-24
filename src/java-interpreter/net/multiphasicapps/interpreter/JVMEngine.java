@@ -54,7 +54,7 @@ public abstract class JVMEngine
 		new LinkedHashSet<>();
 	
 	/** Program generation factory. */
-	protected final JVMProgramOutput.Factory programfactory;
+	final JVMProgramOutput.Factory programfactory;
 	
 	/**
 	 * Initializes the base engine.

@@ -305,6 +305,16 @@ These codes do not have a index meaning and are meant to be short.
    that lambdas and method handles are not supported. It is recommended to
    compile code for Java 7 instead of Java 8.
    * The used op-code.
+ * `IN1o` -- Illegal native register counts, int must be `> 0` and float must
+   be `>= 0`.
+   * Integer register count.
+   * Floating point register count.
+ * `IN1p` -- Illegal native register size, they must both be multiples of 8.
+   * Integer register size.
+   * Floating point register size.
+ * `IN1q` -- Zero or negative register sizes.
+   * Integer register size.
+   * Floating point register size.
 
 # `net.multiphasicapps.interpreter.local`
 

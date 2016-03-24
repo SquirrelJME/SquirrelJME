@@ -15,3 +15,9 @@ smaller too (which can be a good thing). There would also be less potentially
 stale reference objects in memory also. So if I set the shift to say 4, then
 I only need 32 elements.
 
+## 10:02
+
+I do not actually need unique IDs for basic optimizations. I can just have an
+active stack slot so to speak which points to preallocated registers and such.
+So I will need a list of native registers and such.
+

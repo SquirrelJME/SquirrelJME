@@ -63,6 +63,12 @@ public class JVMCodeParser
 	protected final Map<Integer, JVMOpState> opstates =
 		new HashMap<>();
 	
+	/** Program output. */
+	protected final JVMProgramOutput programoutput;
+	
+	/** Native register manager and allocator. */
+	protected final JVMNativeRegisters nativeregs;
+	
 	/** Current active code source, may change in special circumstances. */
 	private volatile DataInputStream _source;
 	
@@ -94,6 +100,10 @@ public class JVMCodeParser
 		method = __method;
 		constantpool = __pool;
 		classfile = __cfp;
+		
+		// Allocate native register mappings
+		programoutput = method.outerClass().engine().programfactory.create();
+		nativeregs = programoutput.nativeRegisters();
 	}
 	
 	/**
