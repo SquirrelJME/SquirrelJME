@@ -133,3 +133,12 @@ state. So if an architecture has an atomic clear and set of a bit it could
 be used. Otherwise I would fall back to wasting 7-bits. However, I can perform
 this optimization on final fields no problem.
 
+## 23:22
+
+Something I can have in the stack data, would be to have a unique value of
+sorts. That unique value can be synced between the local variables and the
+stack and could be used for optimization and such. So if I load a local
+variable onto the stack, they both have the same unique ID. That ID though
+will just have to be managed by the program so things are not out of sync
+when lots of code changes them.
+
