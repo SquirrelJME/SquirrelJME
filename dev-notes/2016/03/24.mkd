@@ -82,3 +82,21 @@ a mistake before the operator chains.
 
 Ok, so `JVMNativeRegister` goes by for now.
 
+## 13:06
+
+What I need to determine next is the best way to store the operation chains.
+I also need a way to minimal represent the entire state of the program with
+reduced memory usage. Currently I was planning to use a map which stored a
+value for each logical operation and its entire state. However, some states
+do not really differ from other operations. For example, if I just add value
+to the stack, there is only a single change which is that added value. So what
+I currently have would essentially copy the entire state when a small
+difference could be done instead. Although there would be a slight speed
+penalty, there would at least be less memory usage. It would be a very small
+amount of memory saving, but it could be just enough for it to be worth it. It
+also would not require massive redundent copies of everything also. Then with
+this state class for all the operations I can have the operator chains for
+all of the variables added also. Usually only a single instruction will
+change values, so I would not need to for example have all these copies of
+the same operator chain.
+
