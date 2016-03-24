@@ -78,3 +78,7 @@ supported at all.
 So implementing `JVMNativeRegisters` and the related stuff to it right now is
 a mistake before the operator chains.
 
+## 12:55
+
+Ok, so `JVMNativeRegister` goes by for now.
+

@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.interpreter.local;
 
-import net.multiphasicapps.interpreter.JVMNativeRegisters;
 import net.multiphasicapps.interpreter.JVMProgramOutput;
 
 /**
@@ -29,8 +28,7 @@ public class LocalProgramOutput
 	 */
 	private LocalProgramOutput()
 	{
-		super(new JVMNativeRegisters(Integer.MAX_VALUE, 64,
-			Integer.MAX_VALUE, 64));
+		super();
 	}	
 	
 	/**

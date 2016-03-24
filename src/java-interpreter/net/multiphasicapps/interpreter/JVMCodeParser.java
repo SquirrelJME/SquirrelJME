@@ -66,9 +66,6 @@ public class JVMCodeParser
 	/** Program output. */
 	protected final JVMProgramOutput programoutput;
 	
-	/** Native register manager and allocator. */
-	protected final JVMNativeRegisters nativeregs;
-	
 	/** Current active code source, may change in special circumstances. */
 	private volatile DataInputStream _source;
 	
@@ -77,8 +74,6 @@ public class JVMCodeParser
 	
 	/** The current address of the current operation. */
 	private volatile int _pcaddr;
-	
-	/** Operation state mappings 
 	
 	/**
 	 * Initializes the code parser.
@@ -101,9 +96,8 @@ public class JVMCodeParser
 		constantpool = __pool;
 		classfile = __cfp;
 		
-		// Allocate native register mappings
+		// Setup program output generator
 		programoutput = method.outerClass().engine().programfactory.create();
-		nativeregs = programoutput.nativeRegisters();
 	}
 	
 	/**
