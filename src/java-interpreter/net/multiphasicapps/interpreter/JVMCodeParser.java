@@ -30,6 +30,14 @@ public class JVMCodeParser
 	public static final int MAX_CODE_SIZE =
 		65535;
 	
+	/** Handler shift count. */
+	private static final int _HANDLER_SHIFT =
+		4;
+	
+	/** Handler shift mask. */
+	private static final int _HANDLER_MASK =
+		(1 << _HANDLER_SHIFT) - 1;
+	
 	/** Handlers for operations. */
 	private static final Reference<ByteOpHandler>[] _HANDLERS =
 		__makeByteOpRefArray();
@@ -237,7 +245,7 @@ public class JVMCodeParser
 		ByteOpHandler handler = __obtainByteOpHandler(code);
 		
 		// Call it
-		handler.handle(bridge);
+		handler.handle(code, bridge);
 	}
 	
 	/**
@@ -249,7 +257,8 @@ public class JVMCodeParser
 	@SuppressWarnings({"unchecked"})
 	private static Reference<ByteOpHandler>[] __makeByteOpRefArray()
 	{
-		return (Reference<ByteOpHandler>[])((Object)new Reference[512]);
+		return (Reference<ByteOpHandler>[])
+			((Object)new Reference[512 >>> _HANDLER_SHIFT]);
 	}
 	
 	/**
@@ -267,17 +276,19 @@ public class JVMCodeParser
 	private static ByteOpHandler __obtainByteOpHandler(int __code)
 		throws IndexOutOfBoundsException, JVMClassFormatError
 	{
+		// Major shift
+		int major = __code >>> _HANDLER_SHIFT;
+		
 		// Get the handler array and check bounds
 		Reference<ByteOpHandler>[] refs = _HANDLERS;
-		if (__code < 0 || __code >= refs.length)
-			throw new IndexOutOfBoundsException(String.format("IOOB %d",
-				__code));
+		if (major < 0 || major >= refs.length)
+			throw new JVMClassFormatError(String.format("IN1h %d", __code));
 		
 		// Lock on the handlers
 		synchronized (refs)
 		{
 			// Get reference
-			Reference<ByteOpHandler> ref = refs[__code];
+			Reference<ByteOpHandler> ref = refs[major];
 			ByteOpHandler rv;
 			
 			// Needs caching?
@@ -288,7 +299,9 @@ public class JVMCodeParser
 				{
 					// Find class first
 					Class<?> ohcl = Class.forName("net.multiphasicapps." +
-						"interpreter.jvmops.JVMOpHandler" + __code);
+						"interpreter.jvmops.JVMOpHandler" +
+						(__code & ~_HANDLER_MASK) + "To" +
+						(__code | _HANDLER_MASK));
 					
 					// Create instance of it
 					rv = ByteOpHandler.class.cast(ohcl.newInstance());
@@ -303,7 +316,7 @@ public class JVMCodeParser
 				}
 				
 				// Cache it
-				refs[__code] = new WeakReference<>(rv);
+				refs[major] = new WeakReference<>(rv);
 			}
 			
 			// Return it
@@ -387,11 +400,12 @@ public class JVMCodeParser
 		/**
 		 * Handles the given operation.
 		 *
+		 * @param __op The opcode which is requested to be handled.
 		 * @param __br The bridge which interfaces with this code parser.
 		 * @throws IOException On read errors.
 		 * @since 2016/03/23
 		 */
-		public abstract void handle(JVMCodeParser.HandlerBridge __br)
+		public abstract void handle(int __op, JVMCodeParser.HandlerBridge __br)
 			throws IOException;
 	}
 }

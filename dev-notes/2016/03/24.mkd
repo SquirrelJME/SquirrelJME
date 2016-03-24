@@ -1,0 +1,17 @@
+# 2016/03/24
+
+## 00:35
+
+Instead of having a single class per instruction, I can always split it up
+into groups. Then this way I do not need to worry much about having tons of
+classes. However some operations may be more difficult to find. However, I
+would say that having less classes with more meat would be the better
+alternative than very slim classes. It would require switch statements in the
+classes though. Those 256 classes would count twords the total class limit I
+will be imposing on the VM. Right now I have 250 classes total in all of my
+sources (well, 250 .java files). Plus some nearby operations have similar
+function and such. It would also mean that the cache reference array is a bit
+smaller too (which can be a good thing). There would also be less potentially
+stale reference objects in memory also. So if I set the shift to say 4, then
+I only need 32 elements.
+

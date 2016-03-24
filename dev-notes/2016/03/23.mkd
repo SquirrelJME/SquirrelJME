@@ -142,3 +142,10 @@ variable onto the stack, they both have the same unique ID. That ID though
 will just have to be managed by the program so things are not out of sync
 when lots of code changes them.
 
+## 23:27
+
+I can also use a kind of directly loaded setup and register allocation kind of
+thing too. For example instead of generating code for a push to the stack from
+a local, I can have an alias which is indicated to by the unique ID and
+another marker that says that it is currently allocated to a given register.
+

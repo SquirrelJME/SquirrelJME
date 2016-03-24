@@ -11,14 +11,15 @@
 package net.multiphasicapps.interpreter.jvmops;
 
 import java.io.IOException;
+import net.multiphasicapps.interpreter.JVMClassFormatError;
 import net.multiphasicapps.interpreter.JVMCodeParser;
 
 /**
- * Handles opcode 42: aload_0.
+ * Handles opcodes 32 to 47.
  *
  * @since 2016/03/23
  */
-public class JVMOpHandler42
+public class JVMOpHandler32To47
 	implements JVMCodeParser.ByteOpHandler
 {
 	/**
@@ -26,10 +27,16 @@ public class JVMOpHandler42
 	 * @since 2016/03/23
 	 */
 	@Override
-	public void handle(JVMCodeParser.HandlerBridge __br)
+	public void handle(int __op, JVMCodeParser.HandlerBridge __br)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Depends on the operation
+		switch (__op)
+		{
+			default:
+				throw new JVMClassFormatError(
+					String.format("IN1h %d", __op));
+		}
 	}
 }
 
