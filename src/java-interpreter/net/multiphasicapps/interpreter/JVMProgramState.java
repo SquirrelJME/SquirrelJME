@@ -205,8 +205,8 @@ public class JVMProgramState
 			pcaddr = __pc;
 			
 			// Setup state
-			locals = new Variables(false);
-			stack = new Variables(true);
+			locals = new Variables(this, false);
+			stack = new Variables(this, true);
 		}
 		
 		/**
@@ -290,58 +290,69 @@ public class JVMProgramState
 			sb.append('}');
 			return sb.toString();
 		}
+	}
+	
+	/**
+	 * This represents the state of variables within an atom.
+	 *
+	 * @since 2016/03/25
+	 */
+	public class Variables
+	{
+		/** The owning atom. */
+		protected final Atom atom;
+		
+		/** Is this the stack? */
+		protected final boolean isstack;
 		
 		/**
-		 * This represents the state of variables within an atom.
+		 * Initializes the local variable state.
+		 *
+		 * @param __a The owning atom.
+		 * @param __stack Is this the stack?
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/24
+		 */
+		private Variables(Atom __a, boolean __stack)
+			throws NullPointerException
+		{
+			// Check
+			if (__a == null)
+				throw new NullPointerException("NARG");
+			
+			atom = __a;
+			isstack = __stack;
+		}
+		
+		/**
+		 * Does this represent the stack?
 		 *
 		 * @since 2016/03/25
 		 */
-		public class Variables
+		public boolean isStack()
 		{
-			/** Is this the stack? */
-			protected final boolean isstack;
-			
-			/**
-			 * Initializes the local variable state.
-			 *
-			 * @param __stack Is this the stack?
-			 * @since 2016/03/24
-			 */
-			private Variables(boolean __stack)
-			{
-				isstack = __stack;
-			}
-			
-			/**
-			 * Does this represent the stack?
-			 *
-			 * @since 2016/03/25
-			 */
-			public boolean isStack()
-			{
-				return isstack;
-			}
-			
-			/**
-			 * Returns the number of elements in this variable table.
-			 *
-			 * @return The variable table size.
-			 * @since 2016/03/25
-			 */
-			public int size()
-			{
-				return (isstack ? maxstack : maxlocal);
-			}
-			
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/03/25
-			 */
-			@Override
-			public String toString()
-			{
-				throw new Error("TODO");
-			}
+			return isstack;
+		}
+		
+		/**
+		 * Returns the number of elements in this variable table.
+		 *
+		 * @return The variable table size.
+		 * @since 2016/03/25
+		 */
+		public int size()
+		{
+			return (isstack ? maxstack : maxlocal);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/25
+		 */
+		@Override
+		public String toString()
+		{
+			throw new Error("TODO");
 		}
 	}
 }
