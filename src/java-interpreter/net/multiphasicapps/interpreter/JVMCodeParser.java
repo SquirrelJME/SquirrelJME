@@ -137,6 +137,9 @@ public class JVMCodeParser
 		
 		// Setup initial stack state
 		{
+			// Get atom for the first state
+			JVMProgramState.Atom entryatom = state.get(0, true);
+			
 			if (true)
 				throw new Error("TODO");
 			

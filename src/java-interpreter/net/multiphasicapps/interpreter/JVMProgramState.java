@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +28,34 @@ import java.util.Map;
  * @since 2016/03/24
  */
 public class JVMProgramState
+	extends AbstractList<JVMProgramState.Atom>
 {
+	/** The comparator used for the binary sort to find atoms by address. */
+	private static final Comparator<Object> _SEARCH_COMPARATOR =
+		new Comparator<Object>()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/24
+				 */
+				@Override
+				public int compare(Object __a, Object __b)
+				{
+					// Get the address of both items
+					int a = ((__a instanceof Atom) ? ((Atom)__a).pcaddr :
+						((Number)__a).intValue());
+					int b = ((__b instanceof Atom) ? ((Atom)__b).pcaddr :
+						((Number)__b).intValue());
+					
+					// Compare the addresses
+					if (a < b)
+						return -1;
+					else if (a > b)
+						return 1;
+					return 0;
+				}
+			};
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -44,15 +74,10 @@ public class JVMProgramState
 	}
 	
 	/**
-	 * Gets the atom for the given address, if it does not exist then
-	 * {@code null} is returned..
-	 *
-	 * @param __i The PC address to get the atom for.
-	 * @return The atom for the given address, {@code null} if it does not
-	 * exist.
-	 * @throws IndexOutOfBoundsException If the index is negative.
+	 * {@inheritDoc}
 	 * @since 2016/03/24
 	 */
+	@Override
 	public Atom get(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -85,8 +110,52 @@ public class JVMProgramState
 			List<Atom> ll = _atoms;
 			
 			// Perform a binary search through the list
+			int dx = Collections.<Object>binarySearch(ll, __i,
+				_SEARCH_COMPARATOR);
 			
-			throw new Error("TODO");
+			// Does not exist
+			if (dx < 0)
+			{
+				// Do not create?
+				if (!__create)
+					return null;
+				
+				// Create new
+				Atom rv = new Atom(__i);
+				
+				// Insert it
+				ll.add((-dx) - 1, rv);
+				
+				// Return it
+				return rv;
+			}
+			
+			// Use it
+			else
+				return ll.get(dx);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/24
+	 */
+	@Override
+	public int size()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get the atom list
+			List<Atom> ll = _atoms;
+			
+			// If empty, return nothing
+			int sz = ll.size();
+			if (sz <= 0)
+				return 0;
+			
+			// Otherwise return the highest address
+			return ll.get(sz - 1).pcaddr + 1;
 		}
 	}
 	
@@ -97,6 +166,7 @@ public class JVMProgramState
 	 * @since 2016/03/24
 	 */
 	public class Atom
+		implements Comparable<Atom>
 	{
 		/** The address of this operation. */
 		protected final int pcaddr;
@@ -113,6 +183,27 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/24
+		 */
+		@Override
+		public int compareTo(Atom __b)
+			throws NullPointerException
+		{
+			// Check
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			
+			// Check addresses
+			int bpc = __b.pcaddr;
+			if (pcaddr < bpc)
+				return -1;
+			else if (pcaddr > bpc)
+				return 1;
+			return 0;
+		}
+		
+		/**
 		 * Returns the address associated with this atom.
 		 *
 		 * @return The PC address.
@@ -121,6 +212,26 @@ public class JVMProgramState
 		public int getAddress()
 		{
 			return pcaddr;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/24
+		 */
+		@Override
+		public String toString()
+		{
+			// Build up
+			StringBuilder sb = new StringBuilder();
+			sb.append('{');
+			
+			// Add address
+			sb.append("pc=");
+			sb.append(pcaddr);
+			
+			// Finish it
+			sb.append('}');
+			return sb.toString();
 		}
 	}
 }
