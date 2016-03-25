@@ -143,6 +143,8 @@ public class JVMCodeParser
 			// Get atom for the first state
 			JVMProgramState.Atom entryatom = _state.get(0, true);
 			
+			System.err.printf("DEBUG -- %s%n", entryatom);
+			
 			if (true)
 				throw new Error("TODO");
 			

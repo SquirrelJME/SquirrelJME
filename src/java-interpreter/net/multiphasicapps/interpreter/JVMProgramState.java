@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * This represents the state of a program through all of its operations and
@@ -30,8 +33,8 @@ import java.util.Map;
 public class JVMProgramState
 	extends AbstractList<JVMProgramState.Atom>
 {
-	/** The comparator used for the binary sort to find atoms by address. */
-	private static final Comparator<Object> _SEARCH_COMPARATOR =
+	/** The comparator used for the binary search to find atoms by address. */
+	private static final Comparator<Object> _ATOM_COMPARATOR =
 		new Comparator<Object>()
 			{
 				/**
@@ -45,6 +48,32 @@ public class JVMProgramState
 					int a = ((__a instanceof Atom) ? ((Atom)__a).pcaddr :
 						((Number)__a).intValue());
 					int b = ((__b instanceof Atom) ? ((Atom)__b).pcaddr :
+						((Number)__b).intValue());
+					
+					// Compare the addresses
+					if (a < b)
+						return -1;
+					else if (a > b)
+						return 1;
+					return 0;
+				}
+			};
+	
+	/** The comparator used for the binary search to find slots by index. */
+	private static final Comparator<Object> _SLOT_COMPARATOR =
+		new Comparator<Object>()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/24
+				 */
+				@Override
+				public int compare(Object __a, Object __b)
+				{
+					// Get the address of both items
+					int a = ((__a instanceof Slot) ? ((Slot)__a).position :
+						((Number)__a).intValue());
+					int b = ((__b instanceof Slot) ? ((Slot)__b).position :
 						((Number)__b).intValue());
 					
 					// Compare the addresses
@@ -127,7 +156,7 @@ public class JVMProgramState
 			
 			// Perform a binary search through the list
 			int dx = Collections.<Object>binarySearch(ll, __i,
-				_SEARCH_COMPARATOR);
+				_ATOM_COMPARATOR);
 			
 			// Does not exist
 			if (dx < 0)
@@ -348,17 +377,119 @@ public class JVMProgramState
 	}
 	
 	/**
+	 * This represents a local variable slot which is assigned to a specific
+	 * location and may optionally change the pre-existing value.
+	 *
+	 * Slots are either purely virtual or actually exist.
+	 *
+	 * Slots may be used as keys within a map provide there are also not
+	 * {@link Integer} keys, which would lead to undefined results. These slots
+	 * compare to {@link Integer} except {@link Integer} does not compare to
+	 * slots.
+	 *
+	 * @since 2016/03/25
+	 */
+	public class Slot
+	{
+		/** Owning variables for value diffing. */
+		protected final Variables vars;
+		
+		/** The virtual position of this slot. */
+		protected final int position;
+		
+		/** The logical position of this slot (if it is not virtual). */
+		private volatile int _logpos =
+			-1;
+		
+		/**
+		 * Initializes the slot.
+		 *
+		 * @param __v The owning variables.
+		 * @param __pos The position of this slot.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/25
+		 */
+		private Slot(Variables __v, int __pos)
+			throws NullPointerException
+		{
+			// Check
+			if (__v == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			vars = __v;
+			position = __pos;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/25
+		 */
+		@Override
+		public boolean equals(Object __o)
+		{
+			// If comparing against an integer, check the position to make sure
+			// that it matches
+			if (__o instanceof Integer)
+				return position == ((Integer)__o).intValue();
+			
+			// Otherwise must be this only
+			return __o == this;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/25
+		 */
+		@Override
+		public int hashCode()
+		{
+			// To make map finding easier and allowing slots to be used as keys
+			// if needed, the position is used.
+			return position;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/25
+		 */
+		@Override
+		public String toString()
+		{
+			// Build string
+			StringBuilder sb = new StringBuilder();
+			sb.append('{');
+			
+			// Add position
+			sb.append(position);
+			
+			// Finish
+			sb.append('}');
+			return sb.toString();
+		}
+	}
+	
+	/**
 	 * This represents the state of variables within an atom.
 	 *
 	 * @since 2016/03/25
 	 */
 	public class Variables
+		extends AbstractList<Slot>
 	{
 		/** The owning atom. */
 		protected final Atom atom;
 		
 		/** Is this the stack? */
 		protected final boolean isstack;
+		
+		/** The currently active and defined slots with differences. */
+		private final List<Slot> _dslots =
+			new ArrayList<>();
+		
+		/** The slot cache, if applicable. */
+		private final Map<Slot, Reference<Slot>> _vslots =
+			new WeakHashMap<>();
 		
 		/**
 		 * Initializes the local variable state.
@@ -380,6 +511,56 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/25
+		 */
+		@Override
+		public Slot get(int __i)
+		{
+			// Check
+			if (__i < 0 || __i >= size())
+				throw new IndexOutOfBoundsException(String.format("IOOB %d",
+					__i));
+			
+			// Lock
+			synchronized (lock)
+			{
+				// Get slots and such
+				List<Slot> act = _dslots;
+				Map<Slot, Reference<Slot>> map = _vslots;
+				
+				// Could be an actual slot?
+				Integer prei = Integer.valueOf(__i);
+				if (act != null)
+				{
+					// Search for the slot for the given position
+					int pos = Collections.<Object>binarySearch(act, prei,
+						_SLOT_COMPARATOR);
+					
+					// Found?
+					if (pos >= 0)
+						return act.get(pos);
+				}
+				
+				// Check to see if a virtual slot exists for it
+				Reference<Slot> ref = map.get(prei);
+				Slot rv;
+				
+				// Needs to be cached?
+				if (ref == null || null == (rv = ref.get()))
+				{
+					rv = new Slot(this, __i);
+					
+					// Cache it
+					map.put(rv, new WeakReference<>(rv));
+				}
+				
+				// Return it
+				return rv;
+			}
+		}
+		
+		/**
 		 * Does this represent the stack?
 		 *
 		 * @since 2016/03/25
@@ -390,24 +571,13 @@ public class JVMProgramState
 		}
 		
 		/**
-		 * Returns the number of elements in this variable table.
-		 *
-		 * @return The variable table size.
-		 * @since 2016/03/25
-		 */
-		public int size()
-		{
-			return (isstack ? maxstack : maxlocal);
-		}
-		
-		/**
 		 * {@inheritDoc}
 		 * @since 2016/03/25
 		 */
 		@Override
-		public String toString()
+		public int size()
 		{
-			throw new Error("TODO");
+			return (isstack ? maxstack : maxlocal);
 		}
 	}
 }
