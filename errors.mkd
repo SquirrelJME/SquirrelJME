@@ -289,8 +289,10 @@ These codes do not have a index meaning and are meant to be short.
    * The opcode.
  * `IN1i` -- Count-limited input stream cannot have a negative limit.
    * The negative limit which was requsted.
- * `IN1j` -- Method has a negative stack size or local variable count.
-   * The negative count.
+ * `IN1j` -- Method has a negative or zero stack size or a negative
+   * local variable count.
+   * The number of locals.
+   * The number of stack elements.
  * `IN1k` -- Unknown variable type index or field symbol.
    * The unknown type index or field symbol.
  * `IN1l` -- Cannot copy another state into this one if the size does not

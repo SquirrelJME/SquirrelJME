@@ -12,6 +12,7 @@ package net.multiphasicapps.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -59,12 +60,11 @@ public class JVMCodeParser
 	protected final HandlerBridge bridge =
 		new HandlerBridge();
 	
-	/** Program state. */
-	protected final JVMProgramState state =
-		new JVMProgramState();
-	
 	/** Program output. */
 	protected final JVMProgramOutput programoutput;
+	
+	/** Program state. */
+	private volatile JVMProgramState _state;
 	
 	/** Current active code source, may change in special circumstances. */
 	private volatile DataInputStream _source;
@@ -135,10 +135,13 @@ public class JVMCodeParser
 		if (codelen <= 0 || codelen >= MAX_CODE_SIZE)
 			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
 		
+		// Setup state
+		_state = new JVMProgramState(maxlocal, maxstack);
+		
 		// Setup initial stack state
 		{
 			// Get atom for the first state
-			JVMProgramState.Atom entryatom = state.get(0, true);
+			JVMProgramState.Atom entryatom = _state.get(0, true);
 			
 			if (true)
 				throw new Error("TODO");
@@ -183,13 +186,13 @@ public class JVMCodeParser
 			__das, ((long)codelen) & 0xFFFF_FFFFL);
 			DataInputStream csource = new DataInputStream(clis))
 		{
-			// Set the code source
-			_source = csource;
-			
 			// The code handlers could do something evil and try to use
 			// multi-threaded code generation.
 			synchronized (lock)
 			{
+				// Set the code source
+				_source = csource;
+				
 				// Parse code data
 				while (clis.hasRemaining())
 				{
@@ -384,7 +387,11 @@ public class JVMCodeParser
 		 */
 		public JVMProgramState programState()
 		{
-			return state;
+			// Lock
+			synchronized (lock)
+			{
+				return _state;
+			}
 		}
 		
 		/**

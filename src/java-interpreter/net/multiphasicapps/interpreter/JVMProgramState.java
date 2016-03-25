@@ -60,6 +60,12 @@ public class JVMProgramState
 	protected final Object lock =
 		new Object();
 	
+	/** Maximum locals. */
+	protected final int maxlocal;
+	
+	/** Maximum stack. */
+	protected final int maxstack;
+	
 	/** Program atoms, one for each operation in the program. */
 	private final List<Atom> _atoms =
 		new ArrayList<>();
@@ -67,10 +73,20 @@ public class JVMProgramState
 	/**
 	 * Initializes the program state.
 	 *
+	 * @param __ml Max local values.
+	 * @param __ms Max stack values.
 	 * @since 2016/03/24
 	 */
-	public JVMProgramState()
+	public JVMProgramState(int __ml, int __ms)
 	{
+		// Check
+		if (__ml < 0 || __ms <= 0)
+			throw new IllegalArgumentException(String.format("IN1j %d %d",
+				__ml, __ms));
+		
+		// Set
+		maxlocal = __ml;
+		maxstack = __ms;
 	}
 	
 	/**
@@ -171,6 +187,12 @@ public class JVMProgramState
 		/** The address of this operation. */
 		protected final int pcaddr;
 		
+		/** Locals. */
+		protected final Variables locals;
+		
+		/** Stack. */
+		protected final Variables stack;
+		
 		/**
 		 * Initializes the base of the atom.
 		 *
@@ -179,7 +201,12 @@ public class JVMProgramState
 		 */
 		private Atom(int __pc)
 		{
+			// Set address
 			pcaddr = __pc;
+			
+			// Setup state
+			locals = new Variables(false);
+			stack = new Variables(true);
 		}
 		
 		/**
@@ -215,6 +242,28 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Returns the local variables state.
+		 *
+		 * @return The state of local variables.
+		 * @since 2016/03/25
+		 */
+		public Variables locals()
+		{
+			return locals;
+		}
+		
+		/**
+		 * Returns the stack variables state.
+		 *
+		 * @rteurn The state of stack variables.
+		 * @since 2016/03/25
+		 */
+		public Variables stack()
+		{
+			return stack;
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2016/03/24
 		 */
@@ -229,9 +278,70 @@ public class JVMProgramState
 			sb.append("pc=");
 			sb.append(pcaddr);
 			
+			// Locals
+			sb.append(", locals=");
+			sb.append(locals);
+			
+			// Stack
+			sb.append(", stack=");
+			sb.append(stack);
+			
 			// Finish it
 			sb.append('}');
 			return sb.toString();
+		}
+		
+		/**
+		 * This represents the state of variables within an atom.
+		 *
+		 * @since 2016/03/25
+		 */
+		public class Variables
+		{
+			/** Is this the stack? */
+			protected final boolean isstack;
+			
+			/**
+			 * Initializes the local variable state.
+			 *
+			 * @param __stack Is this the stack?
+			 * @since 2016/03/24
+			 */
+			private Variables(boolean __stack)
+			{
+				isstack = __stack;
+			}
+			
+			/**
+			 * Does this represent the stack?
+			 *
+			 * @since 2016/03/25
+			 */
+			public boolean isStack()
+			{
+				return isstack;
+			}
+			
+			/**
+			 * Returns the number of elements in this variable table.
+			 *
+			 * @return The variable table size.
+			 * @since 2016/03/25
+			 */
+			public int size()
+			{
+				return (isstack ? maxstack : maxlocal);
+			}
+			
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/03/25
+			 */
+			@Override
+			public String toString()
+			{
+				throw new Error("TODO");
+			}
 		}
 	}
 }
