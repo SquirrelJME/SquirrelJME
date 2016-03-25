@@ -21,7 +21,7 @@ import net.multiphasicapps.descriptors.FieldSymbol;
 public enum JVMVariableType
 {
 	/** Nothing. */
-	NULL(false),
+	NOTHING(false),
 	
 	/** Integer. */
 	INTEGER(false),
