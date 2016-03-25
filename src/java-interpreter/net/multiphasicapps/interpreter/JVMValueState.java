@@ -125,7 +125,6 @@ public class JVMValueState
 					throw new IllegalArgumentException(
 						String.format("IN1l %d %d", size(), __v.size()));
 				
-				
 				// Copy
 				int xx = mine.length;
 				for (int i = 0; i < xx; i++)

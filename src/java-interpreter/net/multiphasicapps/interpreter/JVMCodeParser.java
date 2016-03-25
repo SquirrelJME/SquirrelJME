@@ -143,23 +143,14 @@ public class JVMCodeParser
 			// Get atom for the first state
 			JVMProgramState.Atom entryatom = _state.get(0, true);
 			
-			System.err.printf("DEBUG -- %s%n", entryatom);
-			
-			if (true)
-				throw new Error("TODO");
-			
-			/*
-			// Create
-			JVMOpState initstate = new JVMOpState(maxlocal, maxstack);
-			
 			// Get locals since they need to be filled with the arguments of
 			// the method
-			JVMValueState locals = initstate.getLocals();
+			JVMProgramState.Variables locals = entryatom.locals();
 			
 			// If an instance method, the first local variable is this.
 			int lx = 0;
 			if (!method.getFlags().isStatic())
-				locals.set(lx++, JVMVariableType.OBJECT);
+				locals.get(lx++).setType(JVMVariableType.OBJECT);
 			
 			// Handle method arguments otherwise
 			MethodSymbol sym = method.type();
@@ -170,16 +161,14 @@ public class JVMCodeParser
 				JVMVariableType addme = JVMVariableType.bySymbol(sym.get(i));
 				
 				// Place
-				locals.set(lx++, addme);
+				locals.get(lx++).setType(addme);
 				
 				// If wide, follow with a top argument
 				if (addme.isWide())
-					locals.set(lx++, JVMVariableType.TOP);
+					locals.get(lx++).setType(JVMVariableType.TOP);
 			}
 			
-			// Set initial state
-			opstates.put(0, initstate);
-			*/
+			System.err.printf("DEBUG -- %s%n", _state);
 		}
 		
 		// Need to count the input bytes and also make sure that if code is

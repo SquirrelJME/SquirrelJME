@@ -77,6 +77,7 @@ public enum JVMVariableType
 	 * @throws IllegalArgumentException If the type is not known.
 	 * @since 2016/03/23
 	 */
+	@Deprecated
 	public static JVMVariableType byIndex(int __i)
 		throws IllegalArgumentException
 	{
@@ -84,7 +85,7 @@ public enum JVMVariableType
 		JVMVariableType rv;
 		switch (__i)
 		{
-			case 0: rv = NULL; break;
+			case 0: rv = NOTHING; break;
 			case 1: rv = INTEGER; break;
 			case 2: rv = LONG; break;
 			case 3: rv = FLOAT; break;

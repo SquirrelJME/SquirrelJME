@@ -392,7 +392,7 @@ public class JVMProgramState
 	public class Slot
 	{
 		/** Owning variables for value diffing. */
-		protected final Variables vars;
+		protected final Variables variables;
 		
 		/** The virtual position of this slot. */
 		protected final int position;
@@ -417,7 +417,7 @@ public class JVMProgramState
 				throw new NullPointerException("NARG");
 			
 			// Set
-			vars = __v;
+			variables = __v;
 			position = __pos;
 		}
 		
@@ -450,6 +450,35 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Sets the type of variable this local or stack variable uses.
+		 *
+		 * @param __vt The variable type to set.
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/25
+		 */
+		public Slot setType(JVMVariableType __vt)
+			throws NullPointerException
+		{
+			// Check
+			if (__vt == null)
+				throw new NullPointerException("NARG");
+			
+			// Lock
+			synchronized (lock)
+			{
+				// The slot becomes very real now
+				__makeLogical();
+				
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Self
+			return this;
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2016/03/25
 		 */
@@ -466,6 +495,36 @@ public class JVMProgramState
 			// Finish
 			sb.append('}');
 			return sb.toString();
+		}
+		
+		/**
+		 * Makes this slot logical and places it into the list of slots used
+		 * by the owning variables. This means that it will not go away and is
+		 * no longer a virtually cached slot.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/25
+		 */
+		private Slot __makeLogical()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// If already logical, ignore
+				if (_logpos >= 0)
+					return this;
+				
+				Variables vars = variables;
+				
+				if (true)
+					throw new Error("TODO");
+					
+				// Destroy the reference because it is no longer needed
+				vars._vslots.remove(this);
+			}
+			
+			// Self
+			return this;
 		}
 	}
 	
