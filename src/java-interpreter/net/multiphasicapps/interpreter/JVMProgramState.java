@@ -140,7 +140,13 @@ public class JVMProgramState
 				Atom rv = new Atom(__i);
 				
 				// Insert it
-				ll.add((-dx) - 1, rv);
+				int at = (-dx) - 1;
+				ll.add(at, rv);
+				
+				// Set and fix indexes
+				int n = ll.size();
+				for (int i = at; i < n; i++)
+					ll.get(i)._index = i;
 				
 				// Return it
 				return rv;
@@ -192,6 +198,9 @@ public class JVMProgramState
 		
 		/** Stack. */
 		protected final Variables stack;
+		
+		/** The current array index. */
+		private volatile int _index;
 		
 		/**
 		 * Initializes the base of the atom.
@@ -250,6 +259,52 @@ public class JVMProgramState
 		public Variables locals()
 		{
 			return locals;
+		}
+		
+		/**
+		 * Returns the atom which follows this one.
+		 *
+		 * @return The atom after this one or {@code null} if this is the last
+		 * one.
+		 * @since 2016/03/25
+		 */
+		public Atom next()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get atoms
+				List<Atom> ll = _atoms;
+				int udx = _index + 1;
+				
+				// Must be within bounds
+				if (udx >= ll.size())
+					return null;
+				return ll.get(udx);
+			}
+		}
+		
+		/**
+		 * Returns the atom which this one follows.
+		 *
+		 * @return The atom before this one or {@code null} if this is the
+		 * first one.
+		 * @since 2016/03/25
+		 */
+		public Atom previous()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get atoms
+				List<Atom> ll = _atoms;
+				int udx = _index - 1;
+				
+				// Must be within bounds
+				if (udx < 0)
+					return null;
+				return ll.get(udx);
+			}
 		}
 		
 		/**
