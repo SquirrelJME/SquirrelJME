@@ -26,28 +26,9 @@ public class LocalProgramOutput
 	 *
 	 * @since 2016/03/24
 	 */
-	private LocalProgramOutput()
+	LocalProgramOutput()
 	{
 		super();
-	}	
-	
-	/**
-	 * This is the factory which creates local program outputs.
-	 *
-	 * @since 2016/03/23
-	 */
-	public static class LocalFactory
-		extends JVMProgramOutput.Factory
-	{
-		/**
-		 * {@inheritDoc)
-		 * @since 2016/03/24
-		 */
-		@Override
-		public JVMProgramOutput create()
-		{
-			return new LocalProgramOutput();
-		}
 	}
 }
 

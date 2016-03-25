@@ -26,21 +26,5 @@ public abstract class JVMProgramOutput
 	public JVMProgramOutput()
 	{
 	}
-	
-	/**
-	 * This is a factory which creates output programs.
-	 *
-	 * @since 2016/03/23
-	 */
-	public static interface Factory
-	{
-		/**
-		 * Creates a program output.
-		 *
-		 * @return Program output.
-		 * @since 2016/03/24
-		 */
-		public abstract JVMProgramOutput create();
-	}
 }
 

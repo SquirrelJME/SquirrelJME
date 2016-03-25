@@ -53,27 +53,23 @@ public abstract class JVMEngine
 	protected final Set<JVMClassPath> classpaths =
 		new LinkedHashSet<>();
 	
-	/** Program generation factory. */
-	final JVMProgramOutput.Factory programfactory;
-	
 	/**
 	 * Initializes the base engine.
 	 *
-	 * @param __jpof The factory to use when generating code for compilation
-	 * or interpretation.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/02/01
 	 */
-	public JVMEngine(JVMProgramOutput.Factory __jpof)
-		throws NullPointerException
+	public JVMEngine()
 	{
-		// Check
-		if (__jpof == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		programfactory = __jpof;
 	}
+	
+	/**
+	 * This creates a program output which is used to store generated machine
+	 * code for interpretation, execution, or compilation.
+	 *
+	 * @return The program output.
+	 * @since 2016/03/24
+	 */
+	protected abstract JVMProgramOutput createProgramOutput();
 	
 	/**
 	 * Adds a class path to the engine.
@@ -219,6 +215,17 @@ public abstract class JVMEngine
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Provides access to create outputs for {@link JVMCodeParser}.
+	 *
+	 * @return The created program output.
+	 * @since 2016/03/24
+	 */
+	final JVMProgramOutput __createProgramOutput()
+	{
+		return createProgramOutput();
 	}
 	
 	/**

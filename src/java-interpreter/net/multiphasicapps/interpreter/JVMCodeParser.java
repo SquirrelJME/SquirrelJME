@@ -97,7 +97,7 @@ public class JVMCodeParser
 		classfile = __cfp;
 		
 		// Setup program output generator
-		programoutput = method.outerClass().engine().programfactory.create();
+		programoutput = method.outerClass().engine().__createProgramOutput();
 	}
 	
 	/**
