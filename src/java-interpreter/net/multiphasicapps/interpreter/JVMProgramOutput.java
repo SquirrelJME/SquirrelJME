@@ -32,7 +32,7 @@ public abstract class JVMProgramOutput
 	 *
 	 * @since 2016/03/23
 	 */
-	public static abstract class Factory
+	public static interface Factory
 	{
 		/**
 		 * Creates a program output.

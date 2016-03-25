@@ -114,3 +114,8 @@ replaced. So they must be mutable for those given operations.
 Yknow, `Arrays` and `Collections` have binary search algorithms, I should just
 use that to find things instead of inventing my own stuff.
 
+## 20:05
+
+Actually I could do a form of SSA with `JVMProgramState` with the operator
+chains.
+
