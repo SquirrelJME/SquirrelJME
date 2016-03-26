@@ -621,6 +621,9 @@ public class JVMProgramState
 		private final Map<Slot, Reference<Slot>> _vslots =
 			new WeakHashMap<>();
 		
+		/** The top of the stack, if a stack. */
+		private volatile int _stacktop;
+		
 		/**
 		 * Initializes the local variable state.
 		 *
@@ -691,6 +694,27 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Obtains the top of the stack.
+		 *
+		 * @return The top of the stack.
+		 * @throws IllegalStateException If this is not a stack.
+		 * @since 2016/03/26
+		 */
+		public int getStackTop()
+			throws IllegalStateException
+		{
+			// If not a stack, fail
+			if (!isstack)
+				throw new IllegalStateException("IN1s");
+			
+			// Lock
+			synchronized (lock)
+			{
+				return _stacktop;
+			}
+		}
+		
+		/**
 		 * Does this represent the stack?
 		 *
 		 * @since 2016/03/25
@@ -698,6 +722,38 @@ public class JVMProgramState
 		public boolean isStack()
 		{
 			return isstack;
+		}
+		
+		/**
+		 * Sets the top of the stack.
+		 *
+		 * @param __s The new stack top to use.
+		 * @return {@code this}.
+		 * @throws IllegalStateException If this is not a stack.
+		 * @throws IndexOutOfBoundsException If the top of the stack entry is
+		 * not within bounds.
+		 * @since 2016/03/26
+		 */
+		public Variables setStackTop(int __s)
+			throws IllegalStateException, IndexOutOfBoundsException
+		{
+			// If not a stack, fail
+			if (!isstack)
+				throw new IllegalStateException("IN1s");
+			
+			// Must be in bounds
+			if (__s < 0 || __s > size())
+				throw new IndexOutOfBoundsException(String.format("IOOB %d",
+					__s));
+			
+			// Lock
+			synchronized (lock)
+			{
+				_stacktop = __s;
+			}
+			
+			// Self
+			return this;
 		}
 		
 		/**

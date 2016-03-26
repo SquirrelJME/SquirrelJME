@@ -320,6 +320,9 @@ These codes do not have a index meaning and are meant to be short.
  * `IN1r` -- End of stream reached reading the byte code of a class.
    * The number of bytes read.
    * The number of expected bytes.
+ * `IN1s` -- Variable state list is not a stack.
+ * `IN1t` -- Unknown StackMap/StackMapTable verification type.
+   * The verification type ID.
 
 # `net.multiphasicapps.interpreter.local`
 
