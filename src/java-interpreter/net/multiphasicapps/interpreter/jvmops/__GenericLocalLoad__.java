@@ -58,6 +58,13 @@ class __GenericLocalLoad__
 		JVMProgramState.Atom cur = __br.currentAtom();
 		JVMProgramState.Atom fol = __br.followingAtom();
 		
+		// Get the current local type and check the type
+		JVMProgramState.Slot cls = cur.locals().get(__local);
+		JVMVariableType clt = cls.getType();
+		if (!__type.equals(clt))
+			throw new JVMClassFormatError(String.format("IN %s %s",
+				__local, __type, clt));
+		
 		throw new Error("TODO");
 	}
 }

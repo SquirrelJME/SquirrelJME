@@ -22,3 +22,24 @@ I would have to catch the `JVMClassFormat` error and then just default to the
 put in a list of failed classes which are not in the classpath at all. That
 way they are never retried over and over again.
 
+## 19:02
+
+One thing though is that there has to be checking whether the operations
+flow correctly when they go from one set to another. I could actually be
+smart about it and put the code in the program state atoms and such. Doing it
+that way would also mean I can easily handle the metadata also without having
+the metadata handling code everywhere. So I would essentially perform a virtual
+not yet done push to the stack of the current atom to affect the next atom.
+If the next atom has state set for it and has variables then it is made sure
+that the given state would still be valid. So essentially, do a virtual pop of
+of the stack (does not actually change the state), then perform the operation
+of it where the result is stored in the target atom. If the target atom has
+state then it must match (except for the operator links). This I suppose would
+be the cleanest way to handle the operator links, since having that code in
+all of the byte code handlers would be very messy and error prone.
+
+## 19:10
+
+Actually looking at my code, the previous slot for the previous operation
+is incorrect.
+

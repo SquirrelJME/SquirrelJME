@@ -334,6 +334,11 @@ These codes do not have a index meaning and are meant to be short.
    * The following atom position which was attempted to be read.
  * `IN1x` -- Attempted to load a wide variable in the method to load a narrow
    one.
+ * `IN1y` -- Expected the local variable at a given position for loading onto
+   the stack to be a specific type, but it was a different one.
+   * The position of the local.
+   * The expected type.
+   * The type it really was.
 
 # `net.multiphasicapps.interpreter.local`
 

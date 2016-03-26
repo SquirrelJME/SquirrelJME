@@ -460,7 +460,7 @@ public class JVMProgramState
 				int ipos = position;
 				
 				// Loop until the start
-				for (Slot s = this; s != null; s = s.previous())
+				for (Slot s = this; s != null; s = s.previousPC())
 				{
 					// When getting types, the top of the stack must be
 					// handled because when a get is at or exceeds the top
@@ -505,17 +505,24 @@ public class JVMProgramState
 		 * @return The previous slot or {@code null} if this is the first.
 		 * @since 2016/03/25
 		 */
-		public Slot previous()
+		public Slot previousPC()
 		{
-			// Calculate previous position
-			int prev = position - 1;
+			// Calculate previous PC address
+			int prev = variables.atom.pcaddr - 1;
 			
 			// If out of bounds, stop
 			if (prev < 0)
 				return null;
 			
-			// Otherwise get the slot before this one
-			return variables.get(prev);
+			// Get the previous atom
+			Atom patom = JVMProgramState.this.get(prev);
+			
+			// Find the variable type to use
+			Variables pvars = (variables.isstack ? patom.stack() :
+				patom.locals());
+			
+			// Get the slot here
+			return pvars.get(position);
 		}
 		
 		/**
