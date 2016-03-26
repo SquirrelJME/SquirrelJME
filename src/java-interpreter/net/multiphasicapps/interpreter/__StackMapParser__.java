@@ -102,18 +102,37 @@ class __StackMapParser__
 	 * Calculates the next atom to use.
 	 *
 	 * @param __au The address offset.
+	 * @param __abs Absolute position?
 	 * @return The atom for the next address.
 	 * @since 2016/03/26
 	 */
-	private JVMProgramState.Atom __calculateAtom(int __au)
+	private JVMProgramState.Atom __calculateAtom(int __au, boolean __abs)
 	{
 		// Get the current atom
-		JVMProgramState.Atom now = _last;
+		JVMProgramState.Atom now = _last, was = now;
 		int naddr = now.getAddress();
 		
 		// Get the next atom to use
-		now = state.get(naddr + (__au + (naddr == 0 ? 0 : 1)), true);
+		now = state.get((__abs ? __au :
+			naddr + (__au + (naddr == 0 ? 0 : 1))), true);
 		_last = now;
+		
+		// Copy local states
+		JVMProgramState.Variables al = now.locals(),
+			bl = was.locals();
+		int n = al.size();
+		for (int i = 0; i < n; i ++)
+			al.get(i).setType(bl.get(i).getType());
+		
+		// Copy stack states
+		JVMProgramState.Variables as = now.stack(),
+			bs = was.stack();
+		n = as.size();
+		for (int i = 0; i < n; i ++)
+			as.get(i).setType(bs.get(i).getType());
+		as.setStackTop(bs.getStackTop());
+		
+		// Return it
 		return now;
 	}
 	
@@ -128,7 +147,8 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort());
+		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+			false);
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
@@ -213,8 +233,8 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramState.Atom atom = state.get(das.readUnsignedShort(), true);
-		_last = atom;
+		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+			true);
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
