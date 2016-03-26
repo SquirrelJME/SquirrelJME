@@ -5,3 +5,20 @@
 For stack entries, I need to actually hide when the stack grows a bit too
 small, since currently they are treated like locals.
 
+## 16:12
+
+Was mowing about 2 acres of grass. Anyway, I have an idea for semi-whole
+program optimization when it comes to fields. When I load a class I need to
+have it so that partially loaded classes can be read. Then if global
+field optimization is enabled, I look in the partially loaded set of classes
+to see if one matches the field the class is in. If it is found, then the
+flags and potential constant value of the class determine if the value is
+treated as constant or not. By default if it is not enabled then fields in
+other classes would be treated as always volatile, while fields in the current
+class are treated with their respective flags and values. I have to watch when
+loading classes though, that I do not fail if the dependent class is malformed.
+I would have to catch the `JVMClassFormat` error and then just default to the
+`volatile` state. Also, to prevent failing classes from loading again I can
+put in a list of failed classes which are not in the classpath at all. That
+way they are never retried over and over again.
+
