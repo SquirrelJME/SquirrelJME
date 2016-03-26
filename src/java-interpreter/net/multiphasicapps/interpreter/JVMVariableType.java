@@ -70,44 +70,6 @@ public enum JVMVariableType
 	}
 	
 	/**
-	 * Returns the type index 
-	 *
-	 * @param __i The index to get the type of.
-	 * @return The type which belongs to this index.
-	 * @throws IllegalArgumentException If the type is not known.
-	 * @since 2016/03/23
-	 */
-	@Deprecated
-	public static JVMVariableType byIndex(int __i)
-		throws IllegalArgumentException
-	{
-		// Determine which one to use
-		JVMVariableType rv;
-		switch (__i)
-		{
-			case 0: rv = NOTHING; break;
-			case 1: rv = INTEGER; break;
-			case 2: rv = LONG; break;
-			case 3: rv = FLOAT; break;
-			case 4: rv = DOUBLE; break;
-			case 5: rv = OBJECT; break;
-			case 6: rv = TOP; break;
-				
-				// Unknown
-			default:
-				throw new IllegalArgumentException(String.format(
-					"IN1k %d", __i));
-		}
-		
-		// Sanity check
-		if (rv.ordinal() != __i)
-			throw new RuntimeException("WTFX");
-		
-		// All is fine
-		return rv;
-	}
-	
-	/**
 	 * Obtains the type of variable to use by its symbol.
 	 *
 	 * @param __sym The symbol to use for the variable.
