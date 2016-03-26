@@ -136,12 +136,13 @@ public class JVMCodeParser
 			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
 		
 		// Setup state
-		_state = new JVMProgramState(maxlocal, maxstack);
+		JVMProgramState prgstate;
+		_state = prgstate = new JVMProgramState(maxlocal, maxstack);
 		
 		// Setup initial stack state
 		{
 			// Get atom for the first state
-			JVMProgramState.Atom entryatom = _state.get(0, true);
+			JVMProgramState.Atom entryatom = prgstate.get(0, true);
 			
 			// Get locals since they need to be filled with the arguments of
 			// the method
@@ -187,9 +188,11 @@ public class JVMCodeParser
 		}
 		
 		// Read the exception table
-		int numex = __das.readUnsignedShort();
-		for (int i = 0; i < numex; i++)
-			throw new Error("TODO");
+		{
+			int numex = __das.readUnsignedShort();
+			for (int i = 0; i < numex; i++)
+				throw new Error("TODO");
+		}
 		
 		// Handle attributes, only two are cared about
 		int nas = __das.readUnsignedShort();
@@ -199,30 +202,37 @@ public class JVMCodeParser
 			String an = classfile.__readAttributeName(__das);
 			
 			// Depends on the name
+			boolean newstack = false;
 			switch (an)
 			{
-					// Stack map for Java 6 and up
+					// There are two attributes which represent stack maps
+					// which are used for verification (and in my case it also
+					// include optimization). StackMap existed since CLDC 1.0
+					// and at the basic level is the same as StackMapTable
+					// which was introduced in Java 6. The newer version
+					// (StackMapTable) is just more compact, but they
+					// essentially provide the same data.
 				case "StackMapTable":
-					// For older classes do not use this at all
-					if (!classfile.version().useStackMapTable())
-					{
-						classfile.__skipAttribute(__das);
-						break;
-					}
-						
-					throw new Error("TODO");
-					
-					// Ancient J2ME stack mappings
+					newstack = true;
 				case "StackMap":
-					// Do not use this for newer classes
-					if (classfile.version().useStackMapTable())
+					// For older classes do not use this at all
+					if (newstack != classfile.version().useStackMapTable())
 					{
 						classfile.__skipAttribute(__das);
 						break;
 					}
 					
-					throw new Error("TODO");
-				
+					// Read in and parse the stack map table
+					try (DataInputStream smdi = new DataInputStream(
+						new JVMCountLimitInputStream(__das,
+							(((long)__das.readInt()) & 0xFFFFFFFFL))))
+					{
+						new __StackMapParser__(newstack, smdi, prgstate);
+					}
+					
+					// Done
+					break;
+					
 					// Ignored
 				default:
 					classfile.__skipAttribute(__das);
