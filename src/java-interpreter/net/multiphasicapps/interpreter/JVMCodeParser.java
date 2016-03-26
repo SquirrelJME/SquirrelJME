@@ -75,6 +75,9 @@ public class JVMCodeParser
 	/** The current address of the current operation. */
 	private volatile int _pcaddr;
 	
+	/** The limit stream used for counting the "next" operation. */
+	private volatile JVMCountLimitInputStream _counter;
+	
 	/**
 	 * Initializes the code parser.
 	 *
@@ -255,6 +258,9 @@ public class JVMCodeParser
 				// Set the code source
 				_source = csource;
 				
+				// Set the counter used for the following instruction
+				_counter = clis;
+				
 				// Parse code data
 				while (clis.hasRemaining())
 				{
@@ -266,6 +272,9 @@ public class JVMCodeParser
 				}
 			}
 		}
+		
+		// Clear the counter
+		_counter = null;
 		
 		// Self
 		return this;
@@ -397,6 +406,44 @@ public class JVMCodeParser
 		 */
 		private HandlerBridge()
 		{
+		}
+		
+		/**
+		 * Returns the atom for the current instruction.
+		 *
+		 * @return The current instruction atom.
+		 * @since 2016/03/26
+		 */
+		public JVMProgramState.Atom currentAtom()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				return programState().get(pcAddress(), true);
+			}
+		}
+		
+		/**
+		 * Returns the atom which would be returned 
+		 *
+		 * @return The atom for the current program position.
+		 * @since 2016/03/26
+		 */
+		public JVMProgramState.Atom followingAtom()
+		{
+			synchronized (lock)
+			{
+				// Get the counter count
+				int cc = (int)_counter.count();
+				
+				// If it exceeds the program size, then fail
+				if (cc >= _counter.limit())
+					throw new IllegalStateException(String.format("XXXX %d",
+						cc));
+				
+				// Get it
+				return programState().get(cc, true);
+			}
 		}
 		
 		/**

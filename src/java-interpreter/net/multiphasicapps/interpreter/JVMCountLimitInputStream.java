@@ -141,6 +141,17 @@ public class JVMCountLimitInputStream
 	}
 	
 	/**
+	 * Returns the limit of the number of bytes to read.
+	 *
+	 * @return The read limit.
+	 * @since 2016/03/26
+	 */
+	public long limit()
+	{
+		return limit;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/20
 	 */

@@ -329,6 +329,11 @@ These codes do not have a index meaning and are meant to be short.
  * `IN1v` -- Appending local variables, however not all of them could be
    appended.
    * The number of locals to be appended remaining.
+ * `IN1w` -- Attempted to get the atom of the following instruction, however
+   it would exceed the size of the program.
+   * The following atom position which was attempted to be read.
+ * `IN1x` -- Attempted to load a wide variable in the method to load a narrow
+   one.
 
 # `net.multiphasicapps.interpreter.local`
 
