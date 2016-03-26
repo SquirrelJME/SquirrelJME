@@ -323,6 +323,9 @@ These codes do not have a index meaning and are meant to be short.
  * `IN1s` -- Variable state list is not a stack.
  * `IN1t` -- Unknown StackMap/StackMapTable verification type.
    * The verification type ID.
+ * `IN1u` -- Stack map table has chopped locals but there are not enough
+   locals to chop.
+   * The number of frames remaining.
 
 # `net.multiphasicapps.interpreter.local`
 

@@ -90,8 +90,25 @@ class __StackMapParser__
 				if (type == 255)
 					__fullFrame();
 				
+				// Same frame?
+				else if (type >= 0 && type <= 63)
+					__sameFrame(type);
+				
+				// Same locals but a single stack item
+				else if (type >= 64 && type <= 127)
+					__sameLocalsSingleStack(type - 64);
+				
+				// Same locals, single stack item, explicit delta
+				else if (type == 247)
+					__sameLocalsSingleStackExplicit();
+				
+				// Chopped frame
+				else if (type >= 248 && type <= 250)
+					__choppedFrame(251 - type);
+				
 				else
-					throw new Error("TODO");
+					throw new JVMClassFormatError(
+						String.format("WTFX %d", type));
 				
 				System.err.printf("DEBUG -- %s%n", state);
 			}
@@ -134,6 +151,46 @@ class __StackMapParser__
 		
 		// Return it
 		return now;
+	}
+	
+	/**
+	 * Similar frame with no stack and the top few locals removed.
+	 *
+	 * @param __chops The number of variables which get chopped.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private void __choppedFrame(int __chops)
+		throws IOException
+	{
+		// Get the atom to use
+		DataInputStream das = in;
+		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+			false);
+		
+		// No stack
+		atom.stack().setStackTop(0);
+		
+		// Chop off some locals
+		JVMProgramState.Variables locals = atom.locals();
+		int i, n = locals.size();
+		for (i = n - 1; __chops > 0 && i >= 0; i--)
+		{
+			// Get slot here
+			JVMProgramState.Slot s = locals.get(i);
+			
+			// If it is empty, ignore it
+			if (s.getType() == JVMVariableType.NOTHING)
+				continue;
+			
+			// Clear it
+			s.setType(JVMVariableType.NOTHING);
+			__chops--;
+		}
+		
+		// Still chops left?
+		if (__chops != 0)
+			throw new JVMClassFormatError(String.format("IN1u %d", __chops));
 	}
 	
 	/**
@@ -248,6 +305,58 @@ class __StackMapParser__
 		for (int i = 0; i < ns; i++)
 			stack.get(i).setType(__loadInfo());
 		stack.setStackTop(ns);
+	}
+	
+	/**
+	 * The same frame is used with no changes.
+	 *
+	 * @param __delta The offset from the earlier offset.
+	 * @since 2016/03/26
+	 */
+	private void __sameFrame(int __delta)
+	{
+		JVMProgramState.Atom atom = __calculateAtom(__delta, false);
+	}
+	
+	/**
+	 * Same locals but the stack has only a single entry.
+	 *
+	 * @param __delta The delta offset.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private void __sameLocalsSingleStack(int __delta)
+		throws IOException
+	{
+		// Get the atom to use
+		DataInputStream das = in;
+		JVMProgramState.Atom atom = __calculateAtom(__delta, false);
+		
+		// Set the single stack
+		JVMProgramState.Variables stack = atom.stack();
+		stack.get(0).setType(__loadInfo());
+		stack.setStackTop(1);
+	}
+	
+	/**
+	 * Same locals but the stack has only a single entry.
+	 *
+	 * @param __delta The delta offset.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private void __sameLocalsSingleStackExplicit()
+		throws IOException
+	{
+		// Get the atom to use
+		DataInputStream das = in;
+		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+			false);
+		
+		// Set the single stack
+		JVMProgramState.Variables stack = atom.stack();
+		stack.get(0).setType(__loadInfo());
+		stack.setStackTop(1);
 	}
 }
 
