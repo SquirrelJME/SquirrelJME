@@ -167,16 +167,76 @@ public class JVMCodeParser
 				if (addme.isWide())
 					locals.get(lx++).setType(JVMVariableType.TOP);
 			}
-			
-			System.err.printf("DEBUG -- %s%n", _state);
 		}
 		
-		// Need to count the input bytes and also make sure that if code is
-		// skipped that the entire chunk is ignored.
+		// Read in the code array so it can be parsed later after the
+		// exceptions and the (optional) StackMap/StackMapTable are parsed.
+		byte rawcode[] = new byte[codelen];
+		for (int rx = 0; rx < codelen;)
+		{
+			// Read data
+			int rc = __das.read(rawcode, rx, codelen - rx);
+			
+			// EOF is bad
+			if (rc < 0)
+				throw new JVMClassFormatError(String.format("IN1r %d %d",
+					rx, codelen));
+			
+			// Add into it
+			rx += rc;
+		}
+		
+		// Read the exception table
+		if (true)
+			throw new Error("TODO");
+		
+		// Handle attributes, only two are cared about
+		int nas = __das.readUnsignedShort();
+		for (int i = 0; i < nas; i++)
+		{
+			// Read attribute name
+			String an = classfile.__readAttributeName(__das);
+			
+			// Depends on the name
+			switch (an)
+			{
+					// Stack map for Java 6 and up
+				case "StackMapTable":
+					// For older classes do not use this at all
+					if (!classfile.version().useStackMapTable())
+					{
+						classfile.__skipAttribute(__das);
+						break;
+					}
+						
+					throw new Error("TODO");
+					
+					// Ancient J2ME stack mappings
+				case "StackMap":
+					// Do not use this for newer classes
+					if (classfile.version().useStackMapTable())
+					{
+						classfile.__skipAttribute(__das);
+						break;
+					}
+					
+					throw new Error("TODO");
+				
+					// Ignored
+				default:
+					classfile.__skipAttribute(__das);
+					break;
+			}
+		}
+		
+		// Handle the input byte code now
 		try (JVMCountLimitInputStream clis = new JVMCountLimitInputStream(
-			__das, ((long)codelen) & 0xFFFF_FFFFL);
+			new ByteArrayInputStream(rawcode), ((long)codelen) & 0xFFFF_FFFFL);
 			DataInputStream csource = new DataInputStream(clis))
 		{
+			// Raw code not needed, may be collected
+			rawcode = null;
+			
 			// The code handlers could do something evil and try to use
 			// multi-threaded code generation.
 			synchronized (lock)
@@ -193,33 +253,6 @@ public class JVMCodeParser
 					// Handle it
 					__handleOp();
 				}
-			}
-		}
-		
-		if (true)
-			throw new Error("TODO");
-		
-		// Handle attributes, only two are cared about
-		int nas = __das.readUnsignedShort();
-		for (int i = 0; i < nas; i++)
-		{
-			// Read attribute name
-			String an = classfile.__readAttributeName(__das);
-			
-			// Depends on the name
-			// StackMapTable and StackMap are just ignored, this will assume
-			// that the compiler actually generates sane code (the stack map
-			// just verifies information that can be obtained wnile parsing
-			// and is essentially a "At this point, these must be on the stack"
-			// kind of deal). Note that the code must conform to the assumption
-			// that it would be under if it were actually handled (each
-			// operation MUST have only one explicit state, so to speak).
-			switch (an)
-			{
-					// Ignored
-				default:
-					classfile.__skipAttribute(__das);
-					break;
 			}
 		}
 		

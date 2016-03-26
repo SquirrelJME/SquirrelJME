@@ -317,6 +317,9 @@ These codes do not have a index meaning and are meant to be short.
  * `IN1q` -- Zero or negative register sizes.
    * Integer register size.
    * Floating point register size.
+ * `IN1r` -- End of stream reached reading the byte code of a class.
+   * The number of bytes read.
+   * The number of expected bytes.
 
 # `net.multiphasicapps.interpreter.local`
 

@@ -23,3 +23,7 @@ exception handler to indicate that it is not used there. Then this way I do
 not have to constantly store values for created operator chains for locals
 which are not cared about if an exception is thrown.
 
+## 21:16
+
+Computer turned into a nice brick today.
+

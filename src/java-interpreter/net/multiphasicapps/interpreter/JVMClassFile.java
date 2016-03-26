@@ -187,6 +187,17 @@ public class JVMClassFile
 	}
 	
 	/**
+	 * Returns the version of the class file.
+	 *
+	 * @return The class file version.
+	 * @since 2016/03/25
+	 */
+	public JVMClassVersion version()
+	{
+		return _version;
+	}
+	
+	/**
 	 * Reads the name of the attribute.
 	 *
 	 * @param __das The data source.
