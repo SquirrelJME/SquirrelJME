@@ -336,7 +336,8 @@ public class Build
 				// Setup Java Compiler
 				JavaCompiler.CompilationTask task = javac.getTask(null,
 					jfm, null, Arrays.<String>asList("-source", "1.7",
-						"-target", "1.7", "-g"), null, compile);
+						"-target", "1.7", "-g", "-Xlint:deprecation"), null,
+						compile);
 				
 				// Execute
 				if (!task.call())

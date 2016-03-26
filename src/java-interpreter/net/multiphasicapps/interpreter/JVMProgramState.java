@@ -401,6 +401,9 @@ public class JVMProgramState
 		private volatile int _logpos =
 			-1;
 		
+		/** The type this slot contains a value for. */
+		private volatile JVMVariableType _type;
+		
 		/**
 		 * Initializes the slot.
 		 *
@@ -438,6 +441,34 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Returns the type of value contained in this slot.
+		 *
+		 * If there is no value here, then this propogates up the slot mappings
+		 * until a type is found. This should never return {@code null}.
+		 *
+		 * @return The value stored in this slot.
+		 * @since 2016/03/25
+		 */
+		public JVMVariableType getType()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Loop until the start
+				for (Slot s = this; s != null; s = s.previous())
+				{
+					// Only return if a type was actually set
+					JVMVariableType rv = _type;
+					if (rv != null)
+						return rv;
+				}
+				
+				// Not found, use an implied nothing
+				return JVMVariableType.NOTHING;
+			}
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2016/03/25
 		 */
@@ -447,6 +478,25 @@ public class JVMProgramState
 			// To make map finding easier and allowing slots to be used as keys
 			// if needed, the position is used.
 			return position;
+		}
+		
+		/**
+		 * Returns the slot before this one.
+		 *
+		 * @return The previous slot or {@code null} if this is the first.
+		 * @since 2016/03/25
+		 */
+		public Slot previous()
+		{
+			// Calculate previous position
+			int prev = position - 1;
+			
+			// If out of bounds, stop
+			if (prev < 0)
+				return null;
+			
+			// Otherwise get the slot before this one
+			return variables.get(prev);
 		}
 		
 		/**
@@ -470,8 +520,8 @@ public class JVMProgramState
 				// The slot becomes very real now
 				__makeLogical();
 				
-				if (true)
-					throw new Error("TODO");
+				// Set the type
+				_type = __vt;
 			}
 			
 			// Self
@@ -491,6 +541,10 @@ public class JVMProgramState
 			
 			// Add position
 			sb.append(position);
+			
+			// Add the ttype
+			sb.append(':');
+			sb.append(getType());
 			
 			// Finish
 			sb.append('}');
@@ -514,10 +568,27 @@ public class JVMProgramState
 				if (_logpos >= 0)
 					return this;
 				
+				// Get the slots to insert into
 				Variables vars = variables;
+				List<Slot> act = vars._dslots;
 				
-				if (true)
-					throw new Error("TODO");
+				// Find the insertion point of this slot
+				int pos = Collections.<Object>binarySearch(act, position,
+					_SLOT_COMPARATOR);
+				
+				// Cannot be happening
+				if (pos >= 0)
+					throw new IllegalStateException(String.format("WTFX %d",
+						pos));
+				
+				// Insert it there
+				int at = (-pos) - 1;
+				act.add(at, this);
+				
+				// Correct logical positions for everything
+				int n = act.size();
+				for (int i = at; i < n; i++)
+					act.get(i)._logpos = i;
 					
 				// Destroy the reference because it is no longer needed
 				vars._vslots.remove(this);

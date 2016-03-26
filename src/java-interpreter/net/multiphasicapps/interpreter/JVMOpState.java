@@ -20,6 +20,7 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/23
  */
+@Deprecated
 public class JVMOpState
 {
 	/** Local variables. */

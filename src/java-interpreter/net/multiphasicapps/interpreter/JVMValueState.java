@@ -22,6 +22,7 @@ import java.util.AbstractList;
  *
  * @since 2016/03/23
  */
+@Deprecated
 public class JVMValueState
 	extends AbstractList<JVMVariableType>
 {
