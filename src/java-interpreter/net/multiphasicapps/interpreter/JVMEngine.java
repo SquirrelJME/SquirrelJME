@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
@@ -51,6 +52,10 @@ public abstract class JVMEngine
 	
 	/** Classpaths for the interpreter (how it finds classes). */
 	protected final Set<JVMClassPath> classpaths =
+		new LinkedHashSet<>();
+	
+	/** Partially loaded classes. */
+	private final Set<JVMClass> _partialclasses =
 		new LinkedHashSet<>();
 	
 	/**
@@ -182,19 +187,55 @@ public abstract class JVMEngine
 		{
 			// See if an existing reference exists
 			Reference<JVMClass> ref = classes.get(__bn);
-			JVMClass rv = null;
+			JVMClass rv;
 			
 			// Reference is still valid?
-			if (ref != null)
-				rv = ref.get();
-			
-			// Class needs to be read in
-			if (rv == null)
+			if (ref == null || null == (rv = ref.get()))
 				classes.put(__bn, new WeakReference<>((rv =
 					__internalLoadClass(__bn, dims))));
 			
 			// Return the read class
 			return rv;
+		}
+	}
+	
+	/**
+	 * Returns a class which may be partially loaded by the interpreter engine.
+	 *
+	 * @param __bn The name of the partially loaded class.
+	 * @return The partially loaded class or a fully loaded class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/26
+	 */
+	public final JVMClass partialClass(String __bn)
+		throws NullPointerException
+	{
+		// Check
+		if (__bn == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on classes
+		synchronized (classes)
+		{
+			// Check partials for the class
+			for (JVMClass pc : _partialclasses)
+				try
+				{
+					// Get the class loader name
+					String clname = pc.getClassLoaderName();
+					
+					// Is this name?
+					if (Objects.equals(clname, __bn))
+						return pc;
+				}
+				
+				// No name was set yet
+				catch (IllegalStateException ise)
+				{
+				}
+			
+			// Not in the partial list, just load it
+			return loadClass(__bn);
 		}
 	}
 	
@@ -274,6 +315,7 @@ public abstract class JVMEngine
 		synchronized (classpaths)
 		{
 			// Go through all classpaths
+			JVMClass part = null;
 			for (JVMClassPath icp : classpaths)
 				try (InputStream is = icp.getResourceAsStream(
 						__bn.replace('.', '/') + ".class"))
@@ -283,7 +325,10 @@ public abstract class JVMEngine
 						continue;
 					
 					// Create class data (from files)
-					JVMClass rv = new JVMClass(this);
+					JVMClass rv = part = new JVMClass(this);
+					
+					// Add to partial class list
+					_partialclasses.add(rv);
 					
 					// Load in class data
 					new JVMClassFile(this, rv).parse(is);
@@ -304,6 +349,14 @@ public abstract class JVMEngine
 				{
 					throw new JVMClassFormatError(String.format("IN0o %s",
 						__bn), e);
+				}
+				
+				// Loading either worked, or failed so remove it from the
+				// partial class list
+				finally
+				{
+					if (part != null)
+						_partialclasses.remove(part);
 				}
 		}
 		

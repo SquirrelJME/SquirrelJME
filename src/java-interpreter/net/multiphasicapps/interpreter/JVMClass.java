@@ -95,9 +95,11 @@ public class JVMClass
 	 * Returns the name of this class as returned by {@link Class#getName()}.
 	 *
 	 * @return The name of this class.
+	 * @throws IllegalStateException If the name of the class was not set.
 	 * @since 2016/03/02
 	 */
 	public final String getClassLoaderName()
+		throws IllegalStateException
 	{
 		// Lock
 		synchronized (lock)
