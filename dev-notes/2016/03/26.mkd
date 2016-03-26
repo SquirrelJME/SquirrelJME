@@ -1,2 +1,7 @@
 # 2016/03/26
 
+## 02:06
+
+For stack entries, I need to actually hide when the stack grows a bit too
+small, since currently they are treated like locals.
+

@@ -454,9 +454,27 @@ public class JVMProgramState
 			// Lock
 			synchronized (lock)
 			{
+				// Stack elements?
+				boolean isstack = variables.isstack;
+				int mtop = variables._stacktop;
+				int ipos = position;
+				
 				// Loop until the start
 				for (Slot s = this; s != null; s = s.previous())
 				{
+					// When getting types, the top of the stack must be
+					// handled because when a get is at or exceeds the top
+					// of the stack then it must always return nothing.
+					if (isstack)
+					{
+						// Get the top of the stack for this slot
+						mtop = Math.min(mtop, s.variables._stacktop);
+					
+						// Would get chopped off, stop
+						if (ipos >= mtop)
+							return JVMVariableType.NOTHING;
+					}
+					
 					// Only return if a type was actually set
 					JVMVariableType rv = _type;
 					if (rv != null)
@@ -481,7 +499,8 @@ public class JVMProgramState
 		}
 		
 		/**
-		 * Returns the slot before this one.
+		 * Returns the slot on the next lower PC address which is at this
+		 * position.
 		 *
 		 * @return The previous slot or {@code null} if this is the first.
 		 * @since 2016/03/25
@@ -764,6 +783,38 @@ public class JVMProgramState
 		public int size()
 		{
 			return (isstack ? maxstack : maxlocal);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/26
+		 */
+		@Override
+		public String toString()
+		{
+			// If not a stack, use normal string stuff
+			if (!isstack)
+				return super.toString();
+			
+			// Otherwise printing must stop at the end of the stack, that is
+			// the size is pretty much faked here.
+			StringBuilder sb = new StringBuilder("[");
+			int stoptop = _stacktop;
+			
+			// Go through all of them
+			for (int i = 0; i < stoptop; i++)
+			{
+				// Comma?
+				if (i > 0)
+					sb.append(", ");
+				
+				// Add entry here
+				sb.append(get(i));
+			}
+			
+			// Done
+			sb.append(']');
+			return sb.toString();
 		}
 	}
 }
