@@ -187,7 +187,8 @@ public class JVMCodeParser
 		}
 		
 		// Read the exception table
-		if (true)
+		int numex = __das.readUnsignedShort();
+		for (int i = 0; i < numex; i++)
 			throw new Error("TODO");
 		
 		// Handle attributes, only two are cared about
