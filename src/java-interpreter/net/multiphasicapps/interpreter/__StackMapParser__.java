@@ -84,8 +84,6 @@ class __StackMapParser__
 				// Read the frame type
 				int type = in.readUnsignedByte();
 				
-				System.err.printf("DEBUG -- %d%n", type);
-				
 				// Full frame?
 				if (type == 255)
 					__fullFrame();
@@ -106,13 +104,59 @@ class __StackMapParser__
 				else if (type >= 248 && type <= 250)
 					__choppedFrame(251 - type);
 				
+				// Same frame but with a supplied delta
+				else if (type == 251)
+					__sameFrameDelta();
+				
+				// Appended frame
+				else if (type >= 252 && type <= 254)
+					__appendFrame(type - 251);
+				
 				else
 					throw new JVMClassFormatError(
 						String.format("WTFX %d", type));
-				
-				System.err.printf("DEBUG -- %s%n", state);
 			}
 		}
+	}
+	
+	/**
+	 * Append extra locals to the frame and clear the stack.
+	 *
+	 * @param __addlocs The number of local variables to add.
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private void __appendFrame(int __addlocs)
+		throws IOException
+	{
+		// Get the atom to use
+		DataInputStream das = in;
+		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+			false);
+		
+		// Stack is cleared
+		atom.stack().setStackTop(0);
+		
+		// Read in local variables
+		JVMProgramState.Variables locals = atom.locals();
+		int n = locals.size();
+		for (int i = 0; __addlocs > 0 && i < n; i++)
+		{
+			// Get slot here
+			JVMProgramState.Slot s = locals.get(i);
+			
+			// If it is not empty, ignore it
+			if (s.getType() != JVMVariableType.NOTHING)
+				continue;
+			
+			// Set it
+			s.setType(__loadInfo());
+			__addlocs--;
+		}
+		
+		// Error if added stuff remains
+		if (__addlocs != 0)
+			throw new JVMClassFormatError(String.format("IN1v %d", __addlocs));
 	}
 	
 	/**
@@ -316,6 +360,19 @@ class __StackMapParser__
 	private void __sameFrame(int __delta)
 	{
 		JVMProgramState.Atom atom = __calculateAtom(__delta, false);
+	}
+	
+	/**
+	 * Same frame but with a supplied delta rather than using it with the type.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2016/03/26
+	 */
+	private void __sameFrameDelta()
+		throws IOException
+	{
+		JVMProgramState.Atom atom = __calculateAtom(in.readUnsignedShort(),
+			false);
 	}
 	
 	/**

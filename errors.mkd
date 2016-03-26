@@ -326,6 +326,9 @@ These codes do not have a index meaning and are meant to be short.
  * `IN1u` -- Stack map table has chopped locals but there are not enough
    locals to chop.
    * The number of frames remaining.
+ * `IN1v` -- Appending local variables, however not all of them could be
+   appended.
+   * The number of locals to be appended remaining.
 
 # `net.multiphasicapps.interpreter.local`
 
