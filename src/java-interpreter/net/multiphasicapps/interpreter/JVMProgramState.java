@@ -772,6 +772,43 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Resets the link.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/27
+		 */
+		public Slot resetLink()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				_haslink = false;
+				_link = null;
+			}
+			
+			// Self
+			return this;
+		}
+		
+		/**
+		 * Resets the type.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/27
+		 */
+		public Slot resetType()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				_type = null;
+			}
+			
+			// Self
+			return this;
+		}
+		
+		/**
 		 * Sets the operator link for this slot which contains the current
 		 * calculated value.
 		 *
@@ -916,6 +953,25 @@ public class JVMProgramState
 					
 				// Destroy the reference because it is no longer needed
 				vars._vslots.remove(this);
+			}
+			
+			// Self
+			return this;
+		}
+		
+		/**
+		 * Resets the state of this slot and clears the type and link.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/27
+		 */
+		private Slot __resetAll()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				resetType();
+				resetLink();
 			}
 			
 			// Self
@@ -1079,6 +1135,41 @@ public class JVMProgramState
 		public boolean isStack()
 		{
 			return isstack;
+		}
+		
+		/**
+		 * Pushes a slot to the stack and returns it, it is initialized to
+		 * the {@link JVMVariableType#NOTHING} type with no link.
+		 *
+		 * @return The slot at the top of the stack.
+		 * @throws IllegalStateException If this is not a stack.
+		 * @throws IndexOutOfBoundsException If this overflows the stack.
+		 * @since 2016/03/27
+		 */
+		public Slot push()
+			throws IllegalStateException, IndexOutOfBoundsException
+		{
+			// If not a stack, fail
+			if (!isstack)
+				throw new IllegalStateException("IN1s");
+			
+			// Lock
+			synchronized (lock)
+			{
+				// Get the slot at the top
+				int top = _stacktop;
+				Slot rv = this.get(top);
+				
+				// Initialize to nothing
+				rv.setType(JVMVariableType.NOTHING);
+				rv.setLink(null);
+				
+				// Set the new top
+				setStackTop(top + 1);
+				
+				// Return the slot
+				return rv;
+			}
 		}
 		
 		/**
