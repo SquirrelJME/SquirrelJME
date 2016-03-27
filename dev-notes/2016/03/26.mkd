@@ -43,3 +43,24 @@ all of the byte code handlers would be very messy and error prone.
 Actually looking at my code, the previous slot for the previous operation
 is incorrect.
 
+## 21:32
+
+Thinking about it, I wonder what would be the cleanest and efficient way to do
+what I wrote previously about performing operations on the next of state.
+Perhaps I could use internal temporaries of sorts, however those might not be
+needed at all because the operator links are just virtual. If for example `dup`
+is called which duplicates a stack element, then it just copies the operator
+link without requiring temporary variables at all. Thus the code generator
+would be smart enough to know that no actual work has to be done for said
+operations. The stack contains most of the work however. So I suppose a
+method which contains the operation to perform which also pushes the result
+to the stack with the correct operator links and such. Then later on when
+store needs to be done, the opposite effect. The only operation which really
+takes from the locals and stores a value back in without using the stack is
+`iinc` (which can also be used as an explicit add). So initially the first
+method will be essentially `operatorLocalToStack` which reads a local,
+performs an operation, and places the result onto the stack. That seems simple
+enough. Then it can check the target atom to make sure that it has the correct
+state and such specified (that is, it would result in the same stack if it is
+explicitely set).
+

@@ -42,7 +42,7 @@ public class JVMOpHandler32To47
 					2 + (__op - 32), __br);
 				break;
 			
-				// fload_0 to float_3
+				// fload_0 to fload_3
 			case 34:
 			case 35:
 			case 36:
