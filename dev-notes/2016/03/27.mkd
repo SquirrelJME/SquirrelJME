@@ -4,3 +4,13 @@
 
 Operator links should stop at TOP also and treat those the same as NOTHING.
 
+## 12:19
+
+Yes, I know how I can do it with checking and such. For an atom I can have
+a derivation of the current atom. This essentially clones the current atom (not
+using `clone()`) where its state can be freely modified and operator chains
+used as such. Then once the code runs and sets the state, the future atom for
+the next instruction (or any jumping points) can be set to copy the state of it
+so that at the entry of the instruction, the state is known. The derivation
+however has to have the correct position and the code has to know its it one.
+
