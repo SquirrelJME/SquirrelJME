@@ -56,20 +56,29 @@ class __GenericLocalLoad__
 		JVMProgramState.Atom fol = __br.followingAtom();
 		
 		// Get the current local type and check the type
-		JVMProgramState.Slot cls = cur.locals().get(__local);
-		JVMVariableType clt = cls.getType();
-		if (!__type.equals(clt))
-			throw new JVMClassFormatError(String.format("IN1y %d %s %s %s",
-				__local, __type, clt, cur));
+		try
+		{
+			JVMProgramState.Slot cls = cur.locals().get(__local);
+			JVMVariableType clt = cls.getType();
+			if (!__type.equals(clt))
+				throw new JVMClassFormatError(String.format("IN1y %d %s %s %s",
+					__local, __type, clt, cur));
 		
-		// If wide, make sure the next local is TOP
-		boolean iswide = __type.isWide();
-		if (iswide && !JVMVariableType.TOP.equals(
-			cls.nextSlot(true).getType()))
-			throw new JVMClassFormatError(String.format("IN1x %d %s %s",
-				__local, __type, cur));
+			// If wide, make sure the next local is TOP
+			boolean iswide = __type.isWide();
+			if (iswide && !JVMVariableType.TOP.equals(
+				cls.nextSlot(true).getType()))
+				throw new JVMClassFormatError(String.format("IN1x %d %s %s",
+					__local, __type, cur));
 		
-		throw new Error("TODO");
+			throw new Error("TODO");
+		}
+		
+		// Out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new JVMClassFormatError("IN20", e);
+		}
 	}
 }
 

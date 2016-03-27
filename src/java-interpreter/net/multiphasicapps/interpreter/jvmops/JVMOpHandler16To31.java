@@ -35,6 +35,36 @@ public class JVMOpHandler16To31
 		// Depends on the operation
 		switch (__op)
 		{
+				// iload
+			case 21:
+				__GenericLocalLoad__.__load(JVMVariableType.INTEGER,
+					__br.source().readUnsignedByte(), __br);
+				break;
+				
+				// lload
+			case 22:
+				__GenericLocalLoad__.__load(JVMVariableType.LONG,
+					__br.source().readUnsignedByte(), __br);
+				break;
+				
+				// fload
+			case 23:
+				__GenericLocalLoad__.__load(JVMVariableType.FLOAT,
+					__br.source().readUnsignedByte(), __br);
+				break;
+				
+				// dload
+			case 24:
+				__GenericLocalLoad__.__load(JVMVariableType.DOUBLE,
+					__br.source().readUnsignedByte(), __br);
+				break;
+				
+				// aload
+			case 25:
+				__GenericLocalLoad__.__load(JVMVariableType.OBJECT,
+					__br.source().readUnsignedByte(), __br);
+				break;
+				
 				// iload_0 to iload_4
 			case 26:
 			case 27:
