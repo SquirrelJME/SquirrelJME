@@ -316,6 +316,9 @@ public class JVMProgramState
 		/** Stack. */
 		protected final Variables stack;
 		
+		/** Is this a derived atom? */
+		protected final boolean isderived;
+		
 		/** The current array index. */
 		private volatile int _index;
 		
@@ -331,8 +334,36 @@ public class JVMProgramState
 			pcaddr = __pc;
 			
 			// Setup state
-			locals = new Variables(this, false);
-			stack = new Variables(this, true);
+			locals = new Variables(this, false, null);
+			stack = new Variables(this, true, null);
+			isderived = false;
+		}
+		
+		/**
+		 * This initializes an atom which is derived from another.
+		 *
+		 * @param __div The atom this is derived from.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/27
+		 */
+		private Atom(Atom __div)
+			throws NullPointerException
+		{
+			// Check
+			if (__div == null)
+				throw new NullPointerException("NARG");
+			
+			// Is derived
+			isderived = true;
+			pcaddr = -1;
+			
+			// Lock
+			synchronized (lock)
+			{
+				// Base Variables
+				locals = new Variables(this, false, __div.locals);
+				stack = new Variables(this, true, __div.stack);
+			}
 		}
 		
 		/**
@@ -347,23 +378,55 @@ public class JVMProgramState
 			if (__b == null)
 				throw new NullPointerException("NARG");
 			
+			// Derived atoms are always last compared to non-derived ones
+			// Derived atoms are also both considered equal
+			boolean adv = isderived;
+			boolean bdv = __b.isderived;
+			if (adv || bdv)
+			{
+				if (adv && !bdv)
+					return 1;
+				else if (!adv && bdv)
+					return -1;
+				return 0;
+			}
+			
 			// Check addresses
+			int apc = pcaddr;
 			int bpc = __b.pcaddr;
-			if (pcaddr < bpc)
+			if (apc < bpc)
 				return -1;
-			else if (pcaddr > bpc)
+			else if (apc > bpc)
 				return 1;
 			return 0;
 		}
 		
 		/**
+		 * This creates an atom which is derived from this one and duplicates
+		 * its entire state, it is not injected into the list of operations.
+		 *
+		 * This is used to setup the state for a following atom so that it may
+		 * be set and checked to make sure the state is consistent if it is
+		 * known.
+		 *
+		 * @return The derived atom.
+		 * @since 2016/03/27
+		 */
+		public Atom derive()
+		{
+			return new Atom(this);
+		}
+		
+		/**
 		 * Returns the address associated with this atom.
 		 *
-		 * @return The PC address.
+		 * @return The PC address, or {@code -1} if this is derived.
 		 * @since 2016/03/24
 		 */
 		public int getAddress()
 		{
+			if (isderived)
+				return -1;
 			return pcaddr;
 		}
 		
@@ -519,6 +582,28 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Clears the operator link for the current slot.
+		 *
+		 * Note that the operation is considered to be set, but to a
+		 * {@code null} value.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/03/27
+		 */
+		public Slot clearLink()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				_haslink = true;
+				_link = null;
+			}
+			
+			// Self
+			return this;
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2016/03/25
 		 */
@@ -562,10 +647,10 @@ public class JVMProgramState
 				// Loop until the start
 				for (Slot s = this; s != null; s = s.previousPC())
 				{
-					// If it has a link, use it
+					// If it has a link, use it. Note that null may be a valid
+					// link if it is cleared
 					if (s._haslink)
-						return Objects.<JVMOperatorLink>requireNonNull(
-							s._link);
+						return s._link;
 				}
 				
 				// Not found
@@ -868,10 +953,12 @@ public class JVMProgramState
 		 *
 		 * @param __a The owning atom.
 		 * @param __stack Is this the stack?
-		 * @throws NullPointerException On null arguments.
+		 * @param __copy If not {@code null} then the entire state of the
+		 * given variables is copied to this one.
+		 * @throws NullPointerException If the owning atom was not specified.
 		 * @since 2016/03/24
 		 */
-		private Variables(Atom __a, boolean __stack)
+		private Variables(Atom __a, boolean __stack, Variables __copy)
 			throws NullPointerException
 		{
 			// Check
@@ -880,6 +967,37 @@ public class JVMProgramState
 			
 			atom = __a;
 			isstack = __stack;
+			
+			// Lock
+			synchronized (lock)
+			{
+				// Copy the state?
+				if (__copy != null)
+				{
+					// Set stack top?
+					if (isstack)
+						setStackTop(__copy.getStackTop());
+					
+					// Copy lines
+					int n = size();
+					for (int i = 0; i < n; i++)
+					{
+						// Get both slots
+						Slot m = get(i);
+						Slot o = __copy.get(i);
+						
+						// Copy type
+						m.setType(o.getType());
+						
+						// The operator link may be clearable
+						JVMOperatorLink l = o.getLink();
+						if (l == null)
+							m.clearLink();
+						else
+							m.setLink(l);
+					}
+				}
+			}
 		}
 		
 		/**
