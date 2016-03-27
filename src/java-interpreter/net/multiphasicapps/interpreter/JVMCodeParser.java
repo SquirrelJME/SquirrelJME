@@ -313,6 +313,17 @@ public class JVMCodeParser
 		
 		// Call it
 		handler.handle(code, bridge);
+		
+		// Debug
+		System.err.println("DEBUG vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+		JVMProgramState zzzs = _state;
+		int zzzn = zzzs.size();
+		for (int i = 0; i < zzzn; i++)
+		{
+			JVMProgramState.Atom zzza = zzzs.get(i);
+			System.err.printf("DEBUG -- %d: %s%n", i, zzza);
+		}
+		System.err.println("DEBUG ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 	}
 	
 	/**
