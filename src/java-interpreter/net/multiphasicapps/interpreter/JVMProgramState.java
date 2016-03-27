@@ -705,6 +705,9 @@ public class JVMProgramState
 			// Lock
 			synchronized (lock)
 			{
+				// The slot becomes very real now
+				__makeLogical();
+				
 				// Set
 				_link = __ol;
 				_haslink = true;
