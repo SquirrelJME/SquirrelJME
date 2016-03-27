@@ -154,7 +154,11 @@ public class JVMCodeParser
 			// If an instance method, the first local variable is this.
 			int lx = 0;
 			if (!method.getFlags().isStatic())
-				locals.get(lx++).setType(JVMVariableType.OBJECT);
+			{
+				JVMProgramState.Slot ss = locals.get(lx++);
+				ss.setType(JVMVariableType.OBJECT);
+				ss.setLink(new JVMOperatorLink(ss.unique()));
+			}
 			
 			// Handle method arguments otherwise
 			MethodSymbol sym = method.type();
@@ -165,13 +169,17 @@ public class JVMCodeParser
 				JVMVariableType addme = JVMVariableType.bySymbol(sym.get(i));
 				
 				// Place
-				locals.get(lx++).setType(addme);
+				JVMProgramState.Slot ss = locals.get(lx++);
+				ss.setType(addme);
+				ss.setLink(new JVMOperatorLink(ss.unique()));
 				
 				// If wide, follow with a top argument
 				if (addme.isWide())
 					locals.get(lx++).setType(JVMVariableType.TOP);
 			}
 		}
+		
+		System.err.printf("DEBUG -- %s%n", prgstate);
 		
 		// Read in the code array so it can be parsed later after the
 		// exceptions and the (optional) StackMap/StackMapTable are parsed.

@@ -552,9 +552,11 @@ public class JVMProgramState
 			{
 				// Get the type of this variable, this will propogare itself
 				// to determine the type. Thus, if this returns NOTHING then
-				// no extra work needs to be done
+				// no extra work needs to be done.
+				// TOP is treated the same way because it destroys values.
 				JVMVariableType it = getType();
-				if (JVMVariableType.NOTHING.equals(it))
+				if (it == JVMVariableType.NOTHING ||
+					it == JVMVariableType.TOP)
 					return null;
 				
 				// Loop until the start

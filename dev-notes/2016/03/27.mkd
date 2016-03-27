@@ -1,0 +1,6 @@
+# 2016/03/27
+
+## 10:11
+
+Operator links should stop at TOP also and treat those the same as NOTHING.
+
