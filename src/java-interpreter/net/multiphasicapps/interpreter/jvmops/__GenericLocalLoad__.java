@@ -74,7 +74,20 @@ class __GenericLocalLoad__
 			// Get the target stack
 			JVMProgramState.Variables stack = div.stack();
 			
-			throw new Error("TODO");
+			// Push to it
+			JVMProgramState.Slot pu = stack.push();
+			
+			// Copy the type and link from the local, this propogates the
+			// value in the link without performing any operation with it.
+			pu.setType(clt);
+			pu.setLink(cls.getLink());
+			
+			// If wide, set the next stack element to TOP
+			if (iswide)
+				stack.push().setType(JVMVariableType.TOP);
+			
+			// Merge the derived state into the program
+			__br.merge(div);
 		}
 		
 		// Out of bounds

@@ -402,6 +402,33 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Copies from the target atom to this one.
+		 *
+		 * @param __v Copies from the given atom to this one.
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/27
+		 */
+		public Atom copyFrom(Atom __v)
+			throws NullPointerException
+		{
+			// Check
+			if (__v == null)
+				throw new NullPointerException("NARG");
+			
+			// Lock
+			synchronized (lock)
+			{
+				// Just copy the variables
+				locals.copyFrom(__v.locals);
+				stack.copyFrom(__v.stack);
+			}
+			
+			// Self
+			return this;
+		}
+		
+		/**
 		 * This creates an atom which is derived from this one and duplicates
 		 * its entire state, it is not injected into the list of operations.
 		 *
@@ -753,15 +780,12 @@ public class JVMProgramState
 		 */
 		public Slot previousPC()
 		{
-			// Calculate previous PC address
-			int prev = variables.atom.pcaddr - 1;
-			
-			// If out of bounds, stop
-			if (prev < 0)
-				return null;
-			
 			// Get the previous atom
-			Atom patom = JVMProgramState.this.get(prev);
+			Atom patom = variables.atom.previous();
+			
+			// At the start?
+			if (patom == null)
+				return null;
 			
 			// Find the variable type to use
 			Variables pvars = (variables.isstack ? patom.stack() :
@@ -1029,31 +1053,54 @@ public class JVMProgramState
 			{
 				// Copy the state?
 				if (__copy != null)
+					this.copyFrom(__copy);
+			}
+		}
+		
+		/**
+		 * Copies from the given variable state into this one.
+		 *
+		 * @param __copy The variables to copy from.
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/27
+		 */
+		public Variables copyFrom(Variables __copy)
+			throws NullPointerException
+		{
+			// Check
+			if (__copy == null)
+				throw new NullPointerException("NARG");
+			
+			// Lock
+			synchronized (lock)
+			{
+				// Set stack top?
+				if (isstack)
+					setStackTop(__copy.getStackTop());
+				
+				// Copy lines
+				int n = size();
+				for (int i = 0; i < n; i++)
 				{
-					// Set stack top?
-					if (isstack)
-						setStackTop(__copy.getStackTop());
+					// Get both slots
+					Slot m = get(i);
+					Slot o = __copy.get(i);
 					
-					// Copy lines
-					int n = size();
-					for (int i = 0; i < n; i++)
-					{
-						// Get both slots
-						Slot m = get(i);
-						Slot o = __copy.get(i);
-						
-						// Copy type
-						m.setType(o.getType());
-						
-						// The operator link may be clearable
-						JVMOperatorLink l = o.getLink();
-						if (l == null)
-							m.clearLink();
-						else
-							m.setLink(l);
-					}
+					// Copy type
+					m.setType(o.getType());
+					
+					// The operator link may be clearable
+					JVMOperatorLink l = o.getLink();
+					if (l == null)
+						m.clearLink();
+					else
+						m.setLink(l);
 				}
 			}
+			
+			// Self
+			return this;
 		}
 		
 		/**
@@ -1162,7 +1209,7 @@ public class JVMProgramState
 				
 				// Initialize to nothing
 				rv.setType(JVMVariableType.NOTHING);
-				rv.setLink(null);
+				rv.clearLink();
 				
 				// Set the new top
 				setStackTop(top + 1);

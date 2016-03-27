@@ -54,3 +54,12 @@ GCF and MEEP are subsets of MIDP 3 however and there is no MIDP 8 as of yet. So
 essentially GCF and MEEP would be implemented and then MIDP 3 would just depend
 on it and add anything that exists in MIDP3 that is missing.
 
+## 15:07
+
+I should probably split the sub-classes of `JVMProgramState` before that file
+grows too big since it is already about 1300 lines.
+
+## 15:09
+
+Can move `ByteOpHandler` also.
+

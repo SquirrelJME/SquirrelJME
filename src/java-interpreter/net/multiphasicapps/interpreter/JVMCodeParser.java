@@ -443,26 +443,41 @@ public class JVMCodeParser
 		}
 		
 		/**
-		 * Returns the atom which would be returned 
+		 * Merges the derived atom into the following atom.
 		 *
-		 * @return The atom for the current program position.
-		 * @since 2016/03/26
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/27
 		 */
-		public JVMProgramState.Atom followingAtom()
+		public HandlerBridge merge(JVMProgramState.Atom __div)
+			throws NullPointerException
 		{
+			// Check
+			if (__div == null)
+				throw new NullPointerException("NARG");
+			
+			// Lock
 			synchronized (lock)
 			{
-				// Get the counter count
-				int cc = (int)_counter.count();
+				// Get the next atom, check if it exists first before
+				// actually having it be created.
+				JVMProgramState.Atom next = __followingAtom(false);
+				boolean fresh = (next == null);
+				if (fresh)
+					next = __followingAtom(true);
 				
-				// If it exceeds the program size, then fail
-				if (cc >= _counter.limit())
-					throw new IllegalStateException(String.format("XXXX %d",
-						cc));
+				// Check to see if the derived atom matches the type state for
+				// the target atom.
+				if (!fresh)
+					throw new Error("TODO");
 				
-				// Get it
-				return programState().get(cc, true);
+				// Otherwise it is fresh, so just copy the state
+				else
+					next.copyFrom(__div);
 			}
+			
+			// Self
+			return this;
 		}
 		
 		/**
@@ -507,6 +522,33 @@ public class JVMCodeParser
 			synchronized (lock)
 			{
 				return _source;
+			}
+		}
+		
+		/**
+		 * Returns the atom which would be returned 
+		 *
+		 * @param __create Should the atom be created?
+		 * @return The atom for the current program position.
+		 * @throws JVMClassFormatError If the following atom exceeds the
+		 * program bounds.
+		 * @since 2016/03/26
+		 */
+		private JVMProgramState.Atom __followingAtom(boolean __create)
+			throws JVMClassFormatError
+		{
+			synchronized (lock)
+			{
+				// Get the counter count
+				int cc = (int)_counter.count();
+				
+				// If it exceeds the program size, then fail
+				if (cc >= _counter.limit())
+					throw new JVMClassFormatError(String.format("IN1w %d",
+						cc));
+				
+				// Get it
+				return programState().get(cc, __create);
 			}
 		}
 	}
