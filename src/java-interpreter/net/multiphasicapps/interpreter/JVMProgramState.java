@@ -499,6 +499,34 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Returns the next slot following this one, if this is at the end
+		 * then an exception may be thrown.
+		 *
+		 * @param __toss If {@code true} then an exception is thrown.
+		 * @return The next slot which follows this one or {@code null} if this
+		 * is at the end and an exception is not being thrown.
+		 * @since 2016/03/26
+		 */
+		public Slot nextSlot(boolean __toss)
+			throws JVMClassFormatError
+		{
+			// Calculate the next slot
+			int use = position + 1;
+			
+			// After the end?
+			Variables vars = variables;
+			if (use >= vars.size())
+				if (__toss)
+					throw new JVMClassFormatError(String.format("IN1z %d",
+						use));
+				else
+					return null;
+			
+			// Return it
+			return vars.get(use);
+		}
+		
+		/**
 		 * Returns the slot on the next lower PC address which is at this
 		 * position.
 		 *

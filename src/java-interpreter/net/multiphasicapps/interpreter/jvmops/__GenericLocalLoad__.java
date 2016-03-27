@@ -40,19 +40,16 @@ class __GenericLocalLoad__
 	 *
 	 * @param __local The local variable to read.
 	 * @param __br The handler bridge.
-	 * @throws IllegalArgumentException If the type is wide.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/26
 	 */
 	static void __load(JVMVariableType __type, int __local,
 		JVMCodeParser.HandlerBridge __br)
-		throws IllegalArgumentException, NullPointerException
+		throws NullPointerException
 	{
 		// Check
 		if (__br == null || __type == null)
 			throw new NullPointerException("NARG");
-		if (__type.isWide())
-			throw new IllegalArgumentException("IN1x");
 		
 		// Get the current and next atom
 		JVMProgramState.Atom cur = __br.currentAtom();
@@ -62,8 +59,15 @@ class __GenericLocalLoad__
 		JVMProgramState.Slot cls = cur.locals().get(__local);
 		JVMVariableType clt = cls.getType();
 		if (!__type.equals(clt))
-			throw new JVMClassFormatError(String.format("IN %s %s",
-				__local, __type, clt));
+			throw new JVMClassFormatError(String.format("IN1y %d %s %s %s",
+				__local, __type, clt, cur));
+		
+		// If wide, make sure the next local is TOP
+		boolean iswide = __type.isWide();
+		if (iswide && !JVMVariableType.TOP.equals(
+			cls.nextSlot(true).getType()))
+			throw new JVMClassFormatError(String.format("IN1x %d %s %s",
+				__local, __type, cur));
 		
 		throw new Error("TODO");
 	}

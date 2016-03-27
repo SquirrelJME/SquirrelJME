@@ -17,11 +17,11 @@ import net.multiphasicapps.interpreter.JVMProgramState;
 import net.multiphasicapps.interpreter.JVMVariableType;
 
 /**
- * Handles opcodes 32 to 47.
+ * Handles opcodes 16 to 31.
  *
- * @since 2016/03/23
+ * @since 2016/03/26
  */
-public class JVMOpHandler32To47
+public class JVMOpHandler16To31
 	implements JVMCodeParser.ByteOpHandler
 {
 	/**
@@ -35,40 +35,23 @@ public class JVMOpHandler32To47
 		// Depends on the operation
 		switch (__op)
 		{
-				// lload_2 to lload_3
-			case 32:
-			case 33:
+				// iload_0 to iload_4
+			case 26:
+			case 27:
+			case 28:
+			case 29:
+				__GenericLocalLoad__.__load(JVMVariableType.INTEGER,
+					(__op - 26), __br);
+				break;
+			
+				// lload_0 to lload_1
+			case 30:
+			case 31:
 				__GenericLocalLoad__.__load(JVMVariableType.LONG,
-					2 + (__op - 32), __br);
+					(__op - 30), __br);
 				break;
 			
-				// fload_0 to float_3
-			case 34:
-			case 35:
-			case 36:
-			case 37:
-				__GenericLocalLoad__.__load(JVMVariableType.FLOAT,
-					__op - 34, __br);
-				break;
-			
-				// dload_0 to dload_3
-			case 38:
-			case 39:
-			case 40:
-			case 41:
-				__GenericLocalLoad__.__load(JVMVariableType.DOUBLE,
-					__op - 38, __br);
-				break;
-			
-				// aload_0 to aload_3
-			case 42:
-			case 43:
-			case 44:
-			case 45:
-				__GenericLocalLoad__.__load(JVMVariableType.OBJECT,
-					__op - 42, __br);
-				break;
-			
+				// Unknown
 			default:
 				throw new JVMClassFormatError(
 					String.format("IN1h %d", __op));
