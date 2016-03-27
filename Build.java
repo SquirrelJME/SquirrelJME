@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -649,6 +650,21 @@ public class Build
 				String[] xargs = __args.<String>toArray(
 					new String[__args.size()]);
 				themain.invoke(null, (Object)xargs);
+			}
+			
+			// Called code failed to invoke
+			catch (InvocationTargetException e)
+			{
+				Throwable c = e.getCause();
+				
+				// Unchecked exceptions?
+				if (c instanceof RuntimeException)
+					throw (RuntimeException)c;
+				else if (c instanceof Error)
+					throw (Error)c;
+				
+				// Otherwise wrap the original
+				throw new RuntimeException(e);
 			}
 			
 			// Could not execute the main class

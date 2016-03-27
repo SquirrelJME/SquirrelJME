@@ -63,3 +63,15 @@ grows too big since it is already about 1300 lines.
 
 Can move `ByteOpHandler` also.
 
+## 15:38
+
+And now they are in their own individual sources and the file with the most
+lines is Slot at 477.
+
+## 15:40
+
+And the second instruction to handle is `invokespecial`. So this means I have
+to do potential variable calculation and such since such a call with its
+input arguments would mean that all operators of that kind would have to be
+evaluated.
+

@@ -475,4 +475,3 @@ public final class JVMProgramSlot
 	}
 }
 
-
