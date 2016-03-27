@@ -14,7 +14,6 @@ import java.io.IOException;
 import net.multiphasicapps.interpreter.JVMByteOpHandler;
 import net.multiphasicapps.interpreter.JVMClassFormatError;
 import net.multiphasicapps.interpreter.JVMCodeParser;
-import net.multiphasicapps.interpreter.JVMProgramState;
 import net.multiphasicapps.interpreter.JVMVariableType;
 
 /**
