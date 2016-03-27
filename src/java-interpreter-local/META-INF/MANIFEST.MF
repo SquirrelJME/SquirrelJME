@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-interpreter-local
+X-Hairball-UUID: d1fc29a4-4654-48a5-82ed-f14189f5f37a
 X-Hairball-Depends: java-interpreter, zip-compression
 Main-Class: net.multiphasicapps.interpreter.local.Main
 LIBlet-Title: Local Interpreter

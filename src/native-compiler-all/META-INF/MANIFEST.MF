@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: native-compiler-all
+X-Hairball-UUID: d09a96ac-f981-44d9-bc29-599d6fc5ccb4
 X-Hairball-Depends: native-compiler-os-linux,
  native-compiler-cpu-powerpc
 LIBlet-Title: POIT Compiler All

@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: extra-io
+X-Hairball-UUID: 8e11af81-9834-4c13-9ab9-8505f5898597
 X-Hairball-Depends: javame-cldc-compact, extra-collections, extra-buffers
 LIBlet-Title: Extra IO
 LIBlet-Vendor: Steven Gawroriski

@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-descriptors
+X-Hairball-UUID: c51c05cc-565e-409e-b71c-642470bdf24e
 X-Hairball-Depends: javame-cldc-compact
 LIBlet-Title: Java Descriptors
 LIBlet-Vendor: Steven Gawroriski

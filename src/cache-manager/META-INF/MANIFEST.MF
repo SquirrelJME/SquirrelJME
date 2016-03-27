@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: cache-manager
+X-Hairball-UUID: 62e92755-25b2-4f75-b2ac-961f54df06a5
 X-Hairball-Depends: javame-cldc-compact
 LIBlet-Title: Cache Manager
 LIBlet-Vendor: Steven Gawroriski

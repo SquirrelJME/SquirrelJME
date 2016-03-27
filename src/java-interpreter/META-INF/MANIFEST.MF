@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-interpreter
+X-Hairball-UUID: e6cf29aa-7274-4f89-9984-91d84d60c789
 X-Hairball-Depends: javame-cldc-compact, extra-collections, 
  java-descriptors, extra-buffers
 LIBlet-Title: Java Interpreter

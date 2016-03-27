@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: test-extra-buffers
+X-Hairball-UUID: a4903bfc-7dbf-42de-8577-1ca671c24be8
 X-Hairball-Depends: test-base, extra-buffers
 LIBlet-Title: Extra Buffer Tests
 LIBlet-Vendor: Steven Gawroriski

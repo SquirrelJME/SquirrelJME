@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: zip-compression
+X-Hairball-UUID: 71331290-14ad-490a-b0ed-139ec86b1767
 X-Hairball-Depends: javame-cldc-full, extra-collections, extra-io
 LIBlet-Title: ZIP Compression
 LIBlet-Vendor: Steven Gawroriski

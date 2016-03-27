@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: native-compiler-cpu-powerpc
+X-Hairball-UUID: fb2e445c-f16d-46e6-ba3d-3186ad367185
 X-Hairball-Depends: native-compiler
 LIBlet-Title: POIT CPU PowerPC
 LIBlet-Vendor: Steven Gawroriski

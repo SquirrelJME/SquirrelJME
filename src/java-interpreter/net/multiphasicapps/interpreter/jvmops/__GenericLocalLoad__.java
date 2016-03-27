@@ -53,7 +53,7 @@ class __GenericLocalLoad__
 		
 		// Get the current and next atom
 		JVMProgramState.Atom cur = __br.currentAtom();
-		JVMProgramState.Atom fol = __br.followingAtom();
+		JVMProgramState.Atom div = cur.derive();
 		
 		// Get the current local type and check the type
 		try
@@ -70,7 +70,10 @@ class __GenericLocalLoad__
 				cls.nextSlot(true).getType()))
 				throw new JVMClassFormatError(String.format("IN1x %d %s %s",
 					__local, __type, cur));
-		
+			
+			// Get the target stack
+			JVMProgramState.Variables stack = div.stack();
+			
 			throw new Error("TODO");
 		}
 		

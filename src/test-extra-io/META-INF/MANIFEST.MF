@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: test-extra-io
+X-Hairball-UUID: 2a490af8-b2c9-4037-bbae-c063e3df996f
 X-Hairball-Depends: test-base, extra-io
 LIBlet-Title: Extra IO Tests
 LIBlet-Vendor: Steven Gawroriski

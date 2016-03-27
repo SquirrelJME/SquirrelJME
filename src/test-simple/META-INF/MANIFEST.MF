@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 X-Hairball-Name: test-simple
+X-Hairball-UUID: 3ef431bd-f47d-4a92-9cec-2b421df7978a
 X-Hairball-Depends: test-base
 LIBlet-Title: Simple Tests
 LIBlet-Vendor: Steven Gawroriski
