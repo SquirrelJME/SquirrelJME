@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 /**
@@ -491,6 +492,12 @@ public class JVMProgramState
 		/** The type this slot contains a value for. */
 		private volatile JVMVariableType _type;
 		
+		/** The operator link. */
+		private volatile JVMOperatorLink _link;
+		
+		/** Has an operator link? */
+		private volatile boolean _haslink;
+		
 		/**
 		 * Initializes the slot.
 		 *
@@ -525,6 +532,43 @@ public class JVMProgramState
 			
 			// Otherwise must be this only
 			return __o == this;
+		}
+		
+		/**
+		 * Returns the current operator link associated with this value.
+		 *
+		 * If there is no link here, then this propogates up the slot mappings
+		 * until a link is found. Propogation additionally stops when the
+		 * current slot value is {@link JVMVariableType#NOTHING}.
+		 *
+		 * @return The current link that this has an associated value for, or
+		 * {@code null} if there is no value.
+		 * @since 2016/03/26
+		 */
+		public JVMOperatorLink getLink()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get the type of this variable, this will propogare itself
+				// to determine the type. Thus, if this returns NOTHING then
+				// no extra work needs to be done
+				JVMVariableType it = getType();
+				if (JVMVariableType.NOTHING.equals(it))
+					return null;
+				
+				// Loop until the start
+				for (Slot s = this; s != null; s = s.previousPC())
+				{
+					// If it has a link, use it
+					if (s._haslink)
+						return Objects.<JVMOperatorLink>requireNonNull(
+							s._link);
+				}
+				
+				// Not found
+				return null;
+			}
 		}
 		
 		/**
@@ -641,6 +685,34 @@ public class JVMProgramState
 		}
 		
 		/**
+		 * Sets the operator link for this slot which contains the current
+		 * calculated value.
+		 *
+		 * @param __ol The value of this slot.
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/26
+		 */
+		public Slot setLink(JVMOperatorLink __ol)
+			throws NullPointerException
+		{
+			// Check
+			if (__ol == null)
+				throw new NullPointerException("NARG");
+			
+			// Lock
+			synchronized (lock)
+			{
+				// Set
+				_link = __ol;
+				_haslink = true;
+			}
+			
+			// Set
+			return this;
+		}
+		
+		/**
 		 * Sets the type of variable this local or stack variable uses.
 		 *
 		 * @param __vt The variable type to set.
@@ -686,6 +758,14 @@ public class JVMProgramState
 			// Add the ttype
 			sb.append(':');
 			sb.append(getType());
+			
+			// The operator chain
+			JVMOperatorLink ol = getLink();
+			if (ol != null)
+			{
+				sb.append('=');
+				sb.append(ol);
+			}
 			
 			// Finish
 			sb.append('}');
