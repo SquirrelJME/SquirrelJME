@@ -188,6 +188,56 @@ public class JVMProgramState
 	}
 	
 	/**
+	 * Returns the slot which is associated with the given unique ID.
+	 *
+	 * @param __u The unique slot ID to obtain.
+	 * @return The slot which has the associated ID or {@code null} if there is
+	 * no atom associated with the unique ID.
+	 * @throws IndexOutOfBoundsException If the unique ID uses a slot which is
+	 * not within the bounds of the local variabels or stack.
+	 * @since 2016/03/26
+	 */
+	public Slot getUnique(long __u)
+		throws IndexOutOfBoundsException
+	{
+		return getUnique(__u, false);
+	}
+	
+	/**
+	 * Returns the slot which is associated with the given unique ID and
+	 * optionally may create the atom if it is missing.
+	 *
+	 * @param __u The unique slot ID to obtain.
+	 * @param __create If {@code true} then if the atom is missing, it will be
+	 * created.
+	 * @return The slot which has the associated ID or {@code null} if there is
+	 * no atom associated with the unique ID and {@code __create} is
+	 * {@code false}.
+	 * @throws IndexOutOfBoundsException If the unique ID uses a slot which is
+	 * not within the bounds of the local variabels or stack.
+	 * @since 2016/03/26
+	 */
+	public Slot getUnique(long __u, boolean __create)
+		throws IndexOutOfBoundsException
+	{
+		// Is the stack?
+		boolean isstack = (0L != (__u & 0x8000_0000__0000_0000L));
+		int pc = ((int)(__u  >>> 32L)) & 0x7FFF_FFFF;
+		int sl = (int)(__u & 0xFFFF_FFFFL);
+		
+		// Get the atom
+		Atom at = get(pc, __create);
+		if (at == null)
+			return null;
+		
+		// Stack or locals?
+		Variables xv = (isstack ? at.stack() : at.locals());
+		
+		// Get the slot there
+		return xv.get(sl);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/24
 	 */
@@ -603,6 +653,19 @@ public class JVMProgramState
 			// Finish
 			sb.append('}');
 			return sb.toString();
+		}
+		
+		/**
+		 * Returns the unique identifier of this slot.
+		 *
+		 * @return The slot unique identifier.
+		 * @since 2016/03/26
+		 */
+		public long unique()
+		{
+			Variables vars = variables;
+			return (vars.isstack ? 0x8000_0000__0000_0000L : 0) |
+				(((long)vars.atom.pcaddr) << 32L) | ((long)position);
 		}
 		
 		/**
