@@ -75,3 +75,16 @@ to do potential variable calculation and such since such a call with its
 input arguments would mean that all operators of that kind would have to be
 evaluated.
 
+## 15:46
+
+For `invokespecial` and the operator links, I will have to perform the pushing
+and popping as usual. Also the identity result of the invoked method has to be
+placed on the stack also (as an unknown). So I suppose what I need is a special
+operator link which performs an invoke operation on inputs. So this would be
+a method based link. What I must determine though is if I should set a flag
+along with the link that indicates that the value is to be evaluated when it
+is used, or handle this later at the final code generation phase once the
+entire program is known. I suppose then I should generate operations and then
+wait until the end to determine if a value needs to be calculated before it
+is placed in a field or called through a method.
+
