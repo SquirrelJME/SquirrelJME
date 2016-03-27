@@ -188,6 +188,55 @@ public class JVMProgramState
 	}
 	
 	/**
+	 * Obtains the spoecified slot at the given address from either the stack
+	 * or the local variables.
+	 *
+	 * @param __i The PC address to get the atom for.
+	 * @param __stack Is the desired slot on the stack?
+	 * @param __s The slot index.
+	 * @return The slot associated with the given inputs, or {@code null} if
+	 * it does not exist and {@code __create} is {@code false}.
+	 * @throws IndexOutOfBoundsException If the unique ID uses a slot which is
+	 * not within the bounds of the local variabels or stack.
+	 * @since 2016/03/26
+	 */
+	public Slot get(int __i, boolean __stack, int __s)
+		throws IndexOutOfBoundsException
+	{
+		return get(__i, false, __stack, __s);
+	}
+	
+	/**
+	 * Obtains the spoecified slot at the given address from either the stack
+	 * or the local variables. If the atom does not exist then it may
+	 * optionally be created.
+	 *
+	 * @param __i The PC address to get the atom for.
+	 * @param __create If {@code true}
+	 * @param __stack Is the desired slot on the stack?
+	 * @param __s The slot index.
+	 * @return The slot associated with the given inputs, or {@code null} if
+	 * it does not exist and {@code __create} is {@code false}.
+	 * @throws IndexOutOfBoundsException If the unique ID uses a slot which is
+	 * not within the bounds of the local variabels or stack.
+	 * @since 2016/03/26
+	 */
+	public Slot get(int __i, boolean __create, boolean __stack, int __s)
+		throws IndexOutOfBoundsException
+	{
+		// Get the atom
+		Atom at = get(__i, __create);
+		if (at == null)
+			return null;
+		
+		// Stack or locals?
+		Variables xv = (__stack ? at.stack() : at.locals());
+		
+		// Get the slot there
+		return xv.get(__s);
+	}
+	
+	/**
 	 * Returns the slot which is associated with the given unique ID.
 	 *
 	 * @param __u The unique slot ID to obtain.
@@ -220,21 +269,9 @@ public class JVMProgramState
 	public Slot getUnique(long __u, boolean __create)
 		throws IndexOutOfBoundsException
 	{
-		// Is the stack?
-		boolean isstack = (0L != (__u & 0x8000_0000__0000_0000L));
-		int pc = ((int)(__u  >>> 32L)) & 0x7FFF_FFFF;
-		int sl = (int)(__u & 0xFFFF_FFFFL);
-		
-		// Get the atom
-		Atom at = get(pc, __create);
-		if (at == null)
-			return null;
-		
-		// Stack or locals?
-		Variables xv = (isstack ? at.stack() : at.locals());
-		
-		// Get the slot there
-		return xv.get(sl);
+		return get(((int)(__u  >>> 32L)) & 0x7FFF_FFFF,
+			__create, (0L != (__u & 0x8000_0000__0000_0000L)),
+			(int)(__u & 0xFFFF_FFFFL));
 	}
 	
 	/**
