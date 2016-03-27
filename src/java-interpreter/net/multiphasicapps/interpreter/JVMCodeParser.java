@@ -329,7 +329,8 @@ public class JVMCodeParser
 		for (int i = 0; i < zzzn; i++)
 		{
 			JVMProgramState.Atom zzza = zzzs.get(i);
-			System.err.printf("DEBUG -- %d: %s%n", i, zzza);
+			if (zzza != null)
+				System.err.printf("DEBUG -- %d: %s%n", i, zzza);
 		}
 		System.err.println("DEBUG ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 	}

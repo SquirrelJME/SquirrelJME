@@ -662,18 +662,18 @@ public class JVMProgramState
 			// Lock
 			synchronized (lock)
 			{
-				// Get the type of this variable, this will propogare itself
-				// to determine the type. Thus, if this returns NOTHING then
-				// no extra work needs to be done.
-				// TOP is treated the same way because it destroys values.
-				JVMVariableType it = getType();
-				if (it == JVMVariableType.NOTHING ||
-					it == JVMVariableType.TOP)
-					return null;
-				
 				// Loop until the start
 				for (Slot s = this; s != null; s = s.previousPC())
 				{
+					// Get the type of this variable, this will propogate
+					// itself to determine the type. Thus, if this returns
+					// NOTHING then no extra work needs to be done.
+					// TOP is treated the same way because it destroys values.
+					JVMVariableType it = s.getType();
+					if (it == JVMVariableType.NOTHING ||
+						it == JVMVariableType.TOP)
+						return null;
+					
 					// If it has a link, use it. Note that null may be a valid
 					// link if it is cleared
 					if (s._haslink)
