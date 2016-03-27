@@ -11,6 +11,7 @@
 package net.multiphasicapps.interpreter.jvmops;
 
 import java.io.IOException;
+import net.multiphasicapps.interpreter.JVMByteOpHandler;
 import net.multiphasicapps.interpreter.JVMClassFormatError;
 import net.multiphasicapps.interpreter.JVMCodeParser;
 import net.multiphasicapps.interpreter.JVMProgramState;
@@ -22,7 +23,7 @@ import net.multiphasicapps.interpreter.JVMVariableType;
  * @since 2016/03/23
  */
 public class JVMOpHandler32To47
-	implements JVMCodeParser.ByteOpHandler
+	implements JVMByteOpHandler
 {
 	/**
 	 * {@inheritDoc}

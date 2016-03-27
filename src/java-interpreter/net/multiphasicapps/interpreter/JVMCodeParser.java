@@ -40,7 +40,7 @@ public class JVMCodeParser
 		(1 << _HANDLER_SHIFT) - 1;
 	
 	/** Handlers for operations. */
-	private static final Reference<ByteOpHandler>[] _HANDLERS =
+	private static final Reference<JVMByteOpHandler>[] _HANDLERS =
 		__makeByteOpRefArray();
 	
 	/** Lock. */
@@ -145,17 +145,17 @@ public class JVMCodeParser
 		// Setup initial stack state
 		{
 			// Get atom for the first state
-			JVMProgramState.Atom entryatom = prgstate.get(0, true);
+			JVMProgramAtom entryatom = prgstate.get(0, true);
 			
 			// Get locals since they need to be filled with the arguments of
 			// the method
-			JVMProgramState.Variables locals = entryatom.locals();
+			JVMProgramVars locals = entryatom.locals();
 			
 			// If an instance method, the first local variable is this.
 			int lx = 0;
 			if (!method.getFlags().isStatic())
 			{
-				JVMProgramState.Slot ss = locals.get(lx++);
+				JVMProgramSlot ss = locals.get(lx++);
 				ss.setType(JVMVariableType.OBJECT);
 				ss.setLink(new JVMOperatorLink(ss.unique()));
 			}
@@ -169,7 +169,7 @@ public class JVMCodeParser
 				JVMVariableType addme = JVMVariableType.bySymbol(sym.get(i));
 				
 				// Place
-				JVMProgramState.Slot ss = locals.get(lx++);
+				JVMProgramSlot ss = locals.get(lx++);
 				ss.setType(addme);
 				ss.setLink(new JVMOperatorLink(ss.unique()));
 				
@@ -317,7 +317,7 @@ public class JVMCodeParser
 			throw new JVMClassFormatError(String.format("IN1n %d", code));
 		
 		// Get operation handler
-		ByteOpHandler handler = __obtainByteOpHandler(code);
+		JVMByteOpHandler handler = __obtainByteOpHandler(code);
 		
 		// Call it
 		handler.handle(code, bridge);
@@ -328,7 +328,7 @@ public class JVMCodeParser
 		int zzzn = zzzs.size();
 		for (int i = 0; i < zzzn; i++)
 		{
-			JVMProgramState.Atom zzza = zzzs.get(i);
+			JVMProgramAtom zzza = zzzs.get(i);
 			if (zzza != null)
 				System.err.printf("DEBUG -- %d: %s%n", i, zzza);
 		}
@@ -342,9 +342,9 @@ public class JVMCodeParser
 	 * @since 2016/03/23
 	 */
 	@SuppressWarnings({"unchecked"})
-	private static Reference<ByteOpHandler>[] __makeByteOpRefArray()
+	private static Reference<JVMByteOpHandler>[] __makeByteOpRefArray()
 	{
-		return (Reference<ByteOpHandler>[])
+		return (Reference<JVMByteOpHandler>[])
 			((Object)new Reference[512 >>> _HANDLER_SHIFT]);
 	}
 	
@@ -360,14 +360,14 @@ public class JVMCodeParser
 	 * @throws JVMClassFormatError If the opcode is not valid.
 	 * @since 2016/03/23
 	 */
-	private static ByteOpHandler __obtainByteOpHandler(int __code)
+	private static JVMByteOpHandler __obtainByteOpHandler(int __code)
 		throws IndexOutOfBoundsException, JVMClassFormatError
 	{
 		// Major shift
 		int major = __code >>> _HANDLER_SHIFT;
 		
 		// Get the handler array and check bounds
-		Reference<ByteOpHandler>[] refs = _HANDLERS;
+		Reference<JVMByteOpHandler>[] refs = _HANDLERS;
 		if (major < 0 || major >= refs.length)
 			throw new JVMClassFormatError(String.format("IN1h %d", __code));
 		
@@ -375,8 +375,8 @@ public class JVMCodeParser
 		synchronized (refs)
 		{
 			// Get reference
-			Reference<ByteOpHandler> ref = refs[major];
-			ByteOpHandler rv;
+			Reference<JVMByteOpHandler> ref = refs[major];
+			JVMByteOpHandler rv;
 			
 			// Needs caching?
 			if (ref == null || null == (rv = ref.get()))
@@ -391,7 +391,7 @@ public class JVMCodeParser
 						(__code | _HANDLER_MASK));
 					
 					// Create instance of it
-					rv = ByteOpHandler.class.cast(ohcl.newInstance());
+					rv = JVMByteOpHandler.class.cast(ohcl.newInstance());
 				}
 				
 				// Could not find, create, or cast.
@@ -434,7 +434,7 @@ public class JVMCodeParser
 		 * @return The current instruction atom.
 		 * @since 2016/03/26
 		 */
-		public JVMProgramState.Atom currentAtom()
+		public JVMProgramAtom currentAtom()
 		{
 			// Lock
 			synchronized (lock)
@@ -450,7 +450,7 @@ public class JVMCodeParser
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/27
 		 */
-		public HandlerBridge merge(JVMProgramState.Atom __div)
+		public HandlerBridge merge(JVMProgramAtom __div)
 			throws NullPointerException
 		{
 			// Check
@@ -462,7 +462,7 @@ public class JVMCodeParser
 			{
 				// Get the next atom, check if it exists first before
 				// actually having it be created.
-				JVMProgramState.Atom next = __followingAtom(false);
+				JVMProgramAtom next = __followingAtom(false);
 				boolean fresh = (next == null);
 				if (fresh)
 					next = __followingAtom(true);
@@ -535,7 +535,7 @@ public class JVMCodeParser
 		 * program bounds.
 		 * @since 2016/03/26
 		 */
-		private JVMProgramState.Atom __followingAtom(boolean __create)
+		private JVMProgramAtom __followingAtom(boolean __create)
 			throws JVMClassFormatError
 		{
 			synchronized (lock)
@@ -552,27 +552,6 @@ public class JVMCodeParser
 				return programState().get(cc, __create);
 			}
 		}
-	}
-	
-	/**
-	 * This class contains the base for a byte operation handler, when an
-	 * operation needs to be handled, it is searched for in a lookup table.
-	 * If it is not there, then it is created and cached.
-	 *
-	 * @since 2016/03/23
-	 */
-	public static interface ByteOpHandler
-	{
-		/**
-		 * Handles the given operation.
-		 *
-		 * @param __op The opcode which is requested to be handled.
-		 * @param __br The bridge which interfaces with this code parser.
-		 * @throws IOException On read errors.
-		 * @since 2016/03/23
-		 */
-		public abstract void handle(int __op, JVMCodeParser.HandlerBridge __br)
-			throws IOException;
 	}
 }
 

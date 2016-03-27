@@ -34,7 +34,7 @@ class __StackMapParser__
 	protected final JVMProgramState state;
 	
 	/** The last frame used. */
-	private volatile JVMProgramState.Atom _last;
+	private volatile JVMProgramAtom _last;
 	
 	/**
 	 * This initializes and performs the parsing.
@@ -131,19 +131,19 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
 			false);
 		
 		// Stack is cleared
 		atom.stack().setStackTop(0);
 		
 		// Read in local variables
-		JVMProgramState.Variables locals = atom.locals();
+		JVMProgramVars locals = atom.locals();
 		int n = locals.size();
 		for (int i = 0; __addlocs > 0 && i < n; i++)
 		{
 			// Get slot here
-			JVMProgramState.Slot s = locals.get(i);
+			JVMProgramSlot s = locals.get(i);
 			
 			// If it is not empty, ignore it
 			if (s.getType() != JVMVariableType.NOTHING)
@@ -167,10 +167,10 @@ class __StackMapParser__
 	 * @return The atom for the next address.
 	 * @since 2016/03/26
 	 */
-	private JVMProgramState.Atom __calculateAtom(int __au, boolean __abs)
+	private JVMProgramAtom __calculateAtom(int __au, boolean __abs)
 	{
 		// Get the current atom
-		JVMProgramState.Atom now = _last, was = now;
+		JVMProgramAtom now = _last, was = now;
 		int naddr = now.getAddress();
 		
 		// Get the next atom to use
@@ -179,14 +179,14 @@ class __StackMapParser__
 		_last = now;
 		
 		// Copy local states
-		JVMProgramState.Variables al = now.locals(),
+		JVMProgramVars al = now.locals(),
 			bl = was.locals();
 		int n = al.size();
 		for (int i = 0; i < n; i ++)
 			al.get(i).setType(bl.get(i).getType());
 		
 		// Copy stack states
-		JVMProgramState.Variables as = now.stack(),
+		JVMProgramVars as = now.stack(),
 			bs = was.stack();
 		n = as.size();
 		for (int i = 0; i < n; i ++)
@@ -209,19 +209,19 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
 			false);
 		
 		// No stack
 		atom.stack().setStackTop(0);
 		
 		// Chop off some locals
-		JVMProgramState.Variables locals = atom.locals();
+		JVMProgramVars locals = atom.locals();
 		int i, n = locals.size();
 		for (i = n - 1; __chops > 0 && i >= 0; i--)
 		{
 			// Get slot here
-			JVMProgramState.Slot s = locals.get(i);
+			JVMProgramSlot s = locals.get(i);
 			
 			// If it is empty, ignore it
 			if (s.getType() == JVMVariableType.NOTHING)
@@ -248,18 +248,18 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
 			false);
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
-		JVMProgramState.Variables locals = atom.locals();
+		JVMProgramVars locals = atom.locals();
 		for (int i = 0; i < nl; i++)
 			locals.get(i).setType(__loadInfo());
 		
 		// Read in stack variables
 		int ns = das.readUnsignedShort();
-		JVMProgramState.Variables stack = atom.stack();
+		JVMProgramVars stack = atom.stack();
 		for (int i = 0; i < ns; i++)
 			stack.get(i).setType(__loadInfo());
 		stack.setStackTop(ns);
@@ -334,18 +334,18 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
 			true);
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
-		JVMProgramState.Variables locals = atom.locals();
+		JVMProgramVars locals = atom.locals();
 		for (int i = 0; i < nl; i++)
 			locals.get(i).setType(__loadInfo());
 		
 		// Read in stack variables
 		int ns = das.readUnsignedShort();
-		JVMProgramState.Variables stack = atom.stack();
+		JVMProgramVars stack = atom.stack();
 		for (int i = 0; i < ns; i++)
 			stack.get(i).setType(__loadInfo());
 		stack.setStackTop(ns);
@@ -359,7 +359,7 @@ class __StackMapParser__
 	 */
 	private void __sameFrame(int __delta)
 	{
-		JVMProgramState.Atom atom = __calculateAtom(__delta, false);
+		JVMProgramAtom atom = __calculateAtom(__delta, false);
 	}
 	
 	/**
@@ -371,7 +371,7 @@ class __StackMapParser__
 	private void __sameFrameDelta()
 		throws IOException
 	{
-		JVMProgramState.Atom atom = __calculateAtom(in.readUnsignedShort(),
+		JVMProgramAtom atom = __calculateAtom(in.readUnsignedShort(),
 			false);
 	}
 	
@@ -387,10 +387,10 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramState.Atom atom = __calculateAtom(__delta, false);
+		JVMProgramAtom atom = __calculateAtom(__delta, false);
 		
 		// Set the single stack
-		JVMProgramState.Variables stack = atom.stack();
+		JVMProgramVars stack = atom.stack();
 		stack.get(0).setType(__loadInfo());
 		stack.setStackTop(1);
 	}
@@ -407,11 +407,11 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramState.Atom atom = __calculateAtom(das.readUnsignedShort(),
+		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
 			false);
 		
 		// Set the single stack
-		JVMProgramState.Variables stack = atom.stack();
+		JVMProgramVars stack = atom.stack();
 		stack.get(0).setType(__loadInfo());
 		stack.setStackTop(1);
 	}

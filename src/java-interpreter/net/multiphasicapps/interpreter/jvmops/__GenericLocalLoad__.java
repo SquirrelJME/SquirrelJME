@@ -13,7 +13,10 @@ package net.multiphasicapps.interpreter.jvmops;
 import java.io.IOException;
 import net.multiphasicapps.interpreter.JVMClassFormatError;
 import net.multiphasicapps.interpreter.JVMCodeParser;
+import net.multiphasicapps.interpreter.JVMProgramAtom;
+import net.multiphasicapps.interpreter.JVMProgramSlot;
 import net.multiphasicapps.interpreter.JVMProgramState;
+import net.multiphasicapps.interpreter.JVMProgramVars;
 import net.multiphasicapps.interpreter.JVMVariableType;
 
 /**
@@ -52,13 +55,13 @@ class __GenericLocalLoad__
 			throw new NullPointerException("NARG");
 		
 		// Get the current and next atom
-		JVMProgramState.Atom cur = __br.currentAtom();
-		JVMProgramState.Atom div = cur.derive();
+		JVMProgramAtom cur = __br.currentAtom();
+		JVMProgramAtom div = cur.derive();
 		
 		// Get the current local type and check the type
 		try
 		{
-			JVMProgramState.Slot cls = cur.locals().get(__local);
+			JVMProgramSlot cls = cur.locals().get(__local);
 			JVMVariableType clt = cls.getType();
 			if (!__type.equals(clt))
 				throw new JVMClassFormatError(String.format("IN1y %d %s %s %s",
@@ -72,10 +75,10 @@ class __GenericLocalLoad__
 					__local, __type, cur));
 			
 			// Get the target stack
-			JVMProgramState.Variables stack = div.stack();
+			JVMProgramVars stack = div.stack();
 			
 			// Push to it
-			JVMProgramState.Slot pu = stack.push();
+			JVMProgramSlot pu = stack.push();
 			
 			// Copy the type and link from the local, this propogates the
 			// value in the link without performing any operation with it.
