@@ -40,3 +40,7 @@ symbol and the bitmask, if applicable.
 
 Appears a thunderstorm is approaching.
 
+## 03:36
+
+Appears my huffman tree is rather lopsided.
+

@@ -132,7 +132,7 @@ public class HuffmanTree<T>
 						_values[vat] = __v;
 						
 						// Set table index to point there
-						table[at + 1] = -(vat + 1);
+						table[at + q] = -(vat + 1);
 						
 						// Modified
 						_modcount++;
@@ -154,7 +154,7 @@ public class HuffmanTree<T>
 					
 						// Set jump to that position
 						// Use that position instead on the next read
-						table[at + 1] = at = jat;
+						table[at + q] = at = jat;
 					}
 				}
 				
@@ -211,6 +211,8 @@ public class HuffmanTree<T>
 			
 			// Look through all values
 			int n = vals.length;
+			for (int i = 0; i < n; i++)
+				System.err.printf("DEBUG -- Val %s%n", vals[i]);
 			for (int i = 0; i < n; i++)
 				if (Objects.equals(vals[i], __v))
 					return __recursiveMatch(0, 0, 0, -(i + 1));
