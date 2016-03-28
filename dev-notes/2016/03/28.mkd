@@ -44,3 +44,8 @@ Appears a thunderstorm is approaching.
 
 Appears my huffman tree is rather lopsided.
 
+## 04:13
+
+And my traverser is not correct, it stops a bit short of a value so instead I
+have it stop on an actual value.
+

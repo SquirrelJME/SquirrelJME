@@ -371,21 +371,19 @@ public class HuffmanTree<T>
 							throw new ConcurrentModificationException("XC04");
 						
 						// Get the jump table
-						int[] table = _table;
+						Object[] vals = _values;
 						
 						// Missing table?
-						if (table == null)
+						if (vals == null)
 							throw new NoSuchElementException("NSEE");
 						
-						// Read the jump index here
-						int jump = table[_at];
-						
-						// Not a value associated jump?
-						if (jump >= 0)
+						// Not reading a value?
+						int at = _at;
+						if (at >= 0)
 							throw new NoSuchElementException("NSEE");
 						
 						// Return value here
-						return __cast(_values[(-jump) - 1]);
+						return __cast(vals[(-at) - 1]);
 					}
 				}
 				
@@ -442,12 +440,12 @@ public class HuffmanTree<T>
 						// Get the at index
 						int at = _at;
 						
+						// A value or the end of the tree? Fail
+						if (at < 0 || at == Integer.MAX_VALUE)
+							throw new NoSuchElementException("NSEE");
+						
 						// Get the jump value
 						int jump = table[at + __side];
-						
-						// A value or the end of the tree? Fail
-						if (jump < 0 || jump == Integer.MAX_VALUE)
-							throw new NoSuchElementException("NSEE");
 						
 						// Set the new position to this position
 						_at = jump;
