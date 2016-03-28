@@ -101,3 +101,9 @@ between them. At least keeping it to a single class would be simpler.
 I believe I am starting to understand the dynamic huffman code. The code
 lengths must become huffman code.
 
+## 22:38
+
+I should probably read the top of the RFC document and just implement the
+algorithms it specifies. Shorter codes precede longer ones, so I must
+decode those and then sort them accordingly.
+

@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.buffers.CircularBooleanBuffer;
 import net.multiphasicapps.buffers.CircularByteBuffer;
-import net.multiphasicapps.collections.HuffmanTree;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
@@ -112,7 +111,7 @@ public class InflateDataProcessor
 	private volatile int _readclnext;
 	
 	/** The code length huffman tree. */
-	private volatile HuffmanTree<Integer> _clentree;
+	private volatile __CodeLenTree__ _clentree;
 	
 	/**
 	 * {@inheritDoc}
@@ -447,15 +446,10 @@ public class InflateDataProcessor
 				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LIT;
 				
 				// Setup the huffman tree
-				HuffmanTree<Integer> clt = new HuffmanTree<>();
-				_clentree = clt;
+				_clentree = new __CodeLenTree__(cll);
 				
-				// Debug
-				for (int i = 0; i < cll.length; i++)
-					System.err.printf("DEBUG -- PreCLL %d: %d%n", i, cll[i]);
-				
-				if (true)
-					throw new Error("TODO");
+				// Not needed anymore
+				_rawcodelens = null;
 				
 				// Done
 				return;
@@ -715,6 +709,33 @@ public class InflateDataProcessor
 					return;
 				}
 			}
+	}
+	
+	/**
+	 * This is a very basic huffman tree for the input code length values
+	 * which are needed when this is parsed.
+	 *
+	 * @since 2016/03/27
+	 */
+	private static class __CodeLenTree__
+	{
+		/**
+		 * Initializes the code length tree.
+		 *
+		 * @param __lens Code lengths, this array is used directly and is not
+		 * copied.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/27
+		 */
+		private __CodeLenTree__(int... __lens)
+			throws NullPointerException
+		{
+			// Check
+			if (__lens == null)
+				throw new NullPointerException("NARG");
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
