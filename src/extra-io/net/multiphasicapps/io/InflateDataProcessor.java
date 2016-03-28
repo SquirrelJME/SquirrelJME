@@ -377,7 +377,7 @@ public class InflateDataProcessor
 	{
 		// If using fixed huffman read 5 bits since they are all the same
 		// Otherwise for dynamic use the huffman tree symbol set
-		int code = (__dist == null ? inputbits.removeFirstInt(5, false) :
+		int code = (__dist == null ? inputbits.removeFirstInt(5, true) :
 			__readTreeCode(__dist));
 		
 		// Error if above 29

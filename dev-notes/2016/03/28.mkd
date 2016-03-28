@@ -239,3 +239,9 @@ This looks wrong:
 
 Actually it is part of the distance codes, they are combined together as one.
 
+## 16:44
+
+Well, reading the values correctly leads to the uncompressed class file being
+the same length while the one sent through my version of the algorithm ended
+up with an extra byte or so.
+
