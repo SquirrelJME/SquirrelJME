@@ -445,6 +445,11 @@ public class InflateDataProcessor
 				// Read the literal table
 				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LIT;
 				
+				// DEBUG tree
+				System.err.println("DEBUG -- Tree:");
+				new __CodeLenTree__(3, 3, 3, 3, 3, 2, 4, 4);
+				System.err.println("DEBUG -- END TREE");
+				
 				// Setup the huffman tree
 				_clentree = new __CodeLenTree__(cll);
 				
@@ -743,7 +748,7 @@ public class InflateDataProcessor
 				keys[i] = new __Key__(i, __lens[i]);
 			
 			// Sort the keys
-			Arrays.<__Key__>sort(keys, null);
+			//Arrays.<__Key__>sort(keys, null);
 			
 			// The maximum bit count
 			int maxbits = 0;
