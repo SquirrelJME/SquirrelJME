@@ -189,6 +189,48 @@ public class HuffmanTree<T>
 	}
 	
 	/**
+	 * Finds the bit representation and the mask which is associated with the
+	 * given symbol.
+	 *
+	 * @param __v The value to find.
+	 * @return {@code -1} if nothing was found, otherwise the upper 32-bits is
+	 * the bit mask and the lower 32 is the symbol.
+	 * @since 2016/03/28
+	 */
+	public long findSequence(Object __v)
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get values
+			Object[] vals = _values;
+			
+			// No values? nothing will ever be found
+			if (vals == null)
+				return -1L;
+			
+			// Look through all values
+			int n = vals.length;
+			for (int i = 0; i < n; i++)
+				if (Objects.equals(vals[i], __v))
+				{
+					// Determine the virtual index this would actually be
+					int vdex = -(vat + 1);
+				}
+			
+	/** The huffman table. */
+	private volatile int[] _table;
+	
+	/** Stored tree values. */
+	private volatile Object[] _values;	
+			
+		}
+		
+		// Not found
+		return -1L;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/10
 	 */

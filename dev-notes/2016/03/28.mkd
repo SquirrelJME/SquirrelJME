@@ -31,3 +31,8 @@ pair always, so the array is a power of two. If the uppermost bit is set then
 a value is used, otherwise then a pointer is used instead. So basically it
 would be in a linear jump fashion so to speak.
 
+## 03:19
+
+Using the new huffman code, need to figure out a way to find the associated
+symbol and the bitmask, if applicable.
+
