@@ -120,6 +120,12 @@ public class InflateDataProcessor
 	/** Next literal lengths. */
 	private volatile int[] _rawlitdistlens;
 	
+	/** The literal code tree. */
+	private volatile HuffmanTree<Integer> _treehlit;
+	
+	/** The distance code tree. */
+	private volatile HuffmanTree<Integer> _treedist;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/11
@@ -543,7 +549,7 @@ public class InflateDataProcessor
 				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LITDIST;
 				
 				// Load into tree
-				_clentree = __thunkCodeLengthTree(cll);
+				_clentree = __thunkCodeLengthTree(cll, 0, cll.length);
 				
 				// Not needed anymore
 				_rawcodelens = null;
@@ -551,6 +557,8 @@ public class InflateDataProcessor
 				// Setup for read
 				_nexthlitdist = 0;
 				_rawlitdistlens = null;
+				_treehlit = null;
+				_treedist = null;
 				
 				// Done
 				return;
@@ -616,6 +624,17 @@ public class InflateDataProcessor
 					for (int i = 0; i < total; i++)
 						System.err.printf("DEBUG -- hlit/dist %d: %d%n", i,
 							rawints[i]);
+					
+					// No longer needed
+					_clentree = null;
+					
+					// Generate trees
+					_treehlit = __thunkCodeLengthTree(rawints, 0, hlit);
+					_treedist = __thunkCodeLengthTree(rawints, hlit, hdist);
+					
+					// Debug
+					System.err.printf("DEBUG -- LIT %s%n", _treehlit);
+					System.err.printf("DEBUG -- DST %s%n", _treedist);
 					
 					throw new Error("TODO");
 				}
@@ -692,6 +711,8 @@ public class InflateDataProcessor
 		_readclnext = 0;
 		_nexthlitdist = 0;
 		_rawlitdistlens = null;
+		_treehlit = null;
+		_treedist = null;
 		
 		// Need to read the alphabet
 		_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_CLEN;
@@ -896,11 +917,14 @@ public class InflateDataProcessor
 	 * be decoded.
 	 *
 	 * @param __lens The input code lengths.
+	 * @param __o The starting offset.
+	 * @param __len The number of lengths to decode.
 	 * @return A huffman tree from the code length input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/28
 	 */
-	private HuffmanTree<Integer> __thunkCodeLengthTree(int... __lens)
+	private HuffmanTree<Integer> __thunkCodeLengthTree(int[] __lens, int __o,
+		int __l)
 		throws NullPointerException
 	{
 		// Check
@@ -911,18 +935,18 @@ public class InflateDataProcessor
 		HuffmanTree<Integer> rv = new HuffmanTree<>();
 		
 		// The number of lengths
-		int n = __lens.length;
+		int n = __l;
 		
 		// Obtain the number of bits that are available in all of the input
 		// lengths
 		int maxbits = 0;
 		for (int i = 0; i < n; i++)
-			maxbits = Math.max(maxbits, __lens[i]);
+			maxbits = Math.max(maxbits, __lens[__o + i]);
 		
 		// Determine the bitlength count for all of the inputs
 		int[] bl_count = new int[n];
 		for (int i = 0; i < n; i++)
-			bl_count[__lens[i]]++;
+			bl_count[__lens[__o + i]]++;
 		
 		// Find the numerical value of the smallest code for each code
 		// length.
@@ -939,7 +963,7 @@ public class InflateDataProcessor
 		for (int q = 0; q < n; q++)
 		{
 			// Get length
-			int len = __lens[q];
+			int len = __lens[__o + q];
 		
 			// Calculate
 			if (len != 0)
