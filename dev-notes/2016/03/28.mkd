@@ -102,3 +102,18 @@ method was handling distances and the distance one was handling lengths.
 I believe my sliding window has an off by one where the distance code which
 was off by one worked, but now that it has been corrected it is incorrect.
 
+## 13:32
+
+Got spare computer in the mail today. Oddly it has a UK keyboard layout I
+believe anyway. It has the Euro and the british pound sign. However It has a
+plus over minus key which also has that double S section symbol. It was not
+working properly, however I just needed new RAM for it. It has a few dents in
+it but with the aluminum case I can sort of bend it back into shape, I just
+need to replace the LCD frame though since it has a dent in it. But anyway,
+I must fix the sldiing window offset off by one now.
+
+## 13:41
+
+However, it seems I cannot install Mac OS X on it, so I suppose I would instead
+just go pure Linux instead if I cannot get it installed at all.
+
