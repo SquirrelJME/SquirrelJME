@@ -325,14 +325,11 @@ public class HuffmanTree<T>
 					if (i > 0)
 						sb.append(", ");
 					
-					// Add the value
-					Object v = vals[i];
-					sb.append(v);
-					
 					// Begin sequence data
 					sb.append('<');
 					
 					// Get the sequence of it
+					Object v = vals[i];
 					long seq = findSequence(v);
 					
 					// Not found?
@@ -353,7 +350,10 @@ public class HuffmanTree<T>
 					}
 					
 					// End sequence data
-					sb.append('>');
+					sb.append(">=");
+					
+					// Add the value
+					sb.append(v);
 				}
 			}
 			
