@@ -436,6 +436,10 @@ public class InflateDataProcessor
 		if (__codes == null || __out == null)
 			throw new NullPointerException("NARG");
 		
+		// Read in code based on an input huffman tree
+		int code = __readTreeCode(__codes);
+		System.err.printf("DEBUG -- Read code %d%n", code);
+		
 		throw new Error("TODO");
 	}
 	
@@ -779,6 +783,42 @@ public class InflateDataProcessor
 					return;
 				}
 			}
+	}
+	
+	/**
+	 * Reads in a code using the given huffman code.
+	 *
+	 * @param __codes The input tree.
+	 * @return The read symbol.
+	 * @throws IOException On read errors.
+	 * @throws NoSuchElementException If the input ran out of available bits
+	 * or the tree contains an unfinished structure.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/28
+	 */
+	private int __readTreeCode(HuffmanTree<Integer> __codes)
+		throws NullPointerException, NoSuchElementException,
+			NullPointerException
+	{
+		// Check
+		if (__codes == null)
+			throw new NullPointerException("NARG");
+		
+		// Start traversal in the tree
+		HuffmanTree.Traverser<Integer> trav = __codes.traverser();
+		for (;;)
+		{
+			// Is a value reached?
+			if (trav.hasValue())
+				return trav.getValue();
+			
+			// Read in a bit which designates the side to move down on the
+			// tree
+			int side = inputbits.removeFirstInt(1);
+			
+			// Traverse that side
+			trav.traverse(side);
+		}
 	}
 	
 	/**
