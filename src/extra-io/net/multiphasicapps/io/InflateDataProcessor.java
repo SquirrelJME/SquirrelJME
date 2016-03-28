@@ -734,6 +734,42 @@ public class InflateDataProcessor
 			if (__lens == null)
 				throw new NullPointerException("NARG");
 			
+			// Input length
+			int n = __lens.length;
+			
+			// The maximum bit count
+			int maxbits = 0;
+			for (int i = 0; i < n; i++)
+				maxbits = Math.max(maxbits, __lens[i]);
+			
+			// Find the numerical value of the smallest code for each code
+			// length:
+			int code = 0;
+			int[] next_code = new int[maxbits + 1];
+			for (int bits = 1; bits <= maxbits; bits++)
+			{
+				code = (code + __lens[bits - 1]) << 1;
+				next_code[bits] = code;
+			}
+			
+			// Assign values to all codes
+			int act_bits[] = new int[n];
+			for (int q = 0; q < n; q++)
+			{
+				// Get length
+				int len = __lens[q];
+				
+				// Calculate
+				if (len != 0)
+					act_bits[q] = ((next_code[len])++);
+			}
+			
+			for (int i = 0; i < n; i++)
+			{
+				System.err.printf("DEBUG -- B=%d H=%10s%n", __lens[i],
+					Integer.toBinaryString(act_bits[i]));
+			}
+			
 			throw new Error("TODO");
 		}
 	}
