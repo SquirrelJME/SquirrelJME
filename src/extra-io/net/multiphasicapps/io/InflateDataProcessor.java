@@ -446,15 +446,9 @@ public class InflateDataProcessor
 				// Read the literal table
 				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LIT;
 				
-				// DEBUG tree
-				System.err.println("DEBUG -- Tree:");
-				new __CodeLenTree__(3, 3, 3, 3, 3, 2, 4, 4);
-				System.err.println("DEBUG -- END TREE");
-				
-				// Setup the huffman tree
-				if (true)
-					throw new Error("TODO");
-				/*_clentree = new __CodeLenTree__(cll);*/
+				// Load into tree
+				__thunkCodeLengthTree(3, 3, 3, 3, 3, 2, 4, 4);
+				_clentree = __thunkCodeLengthTree(cll);
 				
 				// Not needed anymore
 				_rawcodelens = null;
@@ -717,6 +711,35 @@ public class InflateDataProcessor
 					return;
 				}
 			}
+	}
+	
+	/**
+	 * Creates a huffman tree from the given code lengths. These generate
+	 * symbols which are used to determine how the dynamic huffman data is to
+	 * be decoded.
+	 *
+	 * @param __lens The input code lengths.
+	 * @return A huffman tree from the code length input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/28
+	 */
+	private HuffmanTree<Integer> __thunkCodeLengthTree(int... __lens)
+		throws NullPointerException
+	{
+		// Check
+		if (__lens == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup target tree
+		HuffmanTree<Integer> rv = new HuffmanTree<>();
+		
+		if (true)
+			throw new Error("TODO");
+		
+		System.err.printf("DEBUG -- LoadTree %s%n", rv);
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

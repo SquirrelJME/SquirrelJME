@@ -326,7 +326,34 @@ public class HuffmanTree<T>
 						sb.append(", ");
 					
 					// Add the value
-					sb.append(vals[i]);
+					Object v = vals[i];
+					sb.append(v);
+					
+					// Begin sequence data
+					sb.append('<');
+					
+					// Get the sequence of it
+					long seq = findSequence(v);
+					
+					// Not found?
+					if (seq == -1L)
+						sb.append('?');
+					
+					// Print bit pattern otherwise
+					else
+					{
+						// Get mask and value
+						int msk = (int)(seq >>> 32L);
+						int val = (int)(seq);
+						
+						// Start from the highest bit first
+						int hib = Integer.bitCount(msk);
+						for (int b = hib - 1; b >= 0; b--)
+							sb.append((0 == (val & msk) ? '0' : '1'));
+					}
+					
+					// End sequence data
+					sb.append('>');
 				}
 			}
 			
