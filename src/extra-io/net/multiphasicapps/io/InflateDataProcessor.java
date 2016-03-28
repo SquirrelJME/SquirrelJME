@@ -737,10 +737,18 @@ public class InflateDataProcessor
 			// Input length
 			int n = __lens.length;
 			
+			// Setup keys
+			__Key__[] keys = new __Key__[n];
+			for (int i = 0; i < n; i++)
+				keys[i] = new __Key__(i, __lens[i]);
+			
+			// Sort the keys
+			Arrays.<__Key__>sort(keys, null);
+			
 			// The maximum bit count
 			int maxbits = 0;
 			for (int i = 0; i < n; i++)
-				maxbits = Math.max(maxbits, __lens[i]);
+				maxbits = Math.max(maxbits, keys[i].length);
 			
 			// Find the numerical value of the smallest code for each code
 			// length:
@@ -748,7 +756,7 @@ public class InflateDataProcessor
 			int[] next_code = new int[maxbits + 1];
 			for (int bits = 1; bits <= maxbits; bits++)
 			{
-				code = (code + __lens[bits - 1]) << 1;
+				code = (code + keys[bits - 1].length) << 1;
 				next_code[bits] = code;
 			}
 			
@@ -757,7 +765,7 @@ public class InflateDataProcessor
 			for (int q = 0; q < n; q++)
 			{
 				// Get length
-				int len = __lens[q];
+				int len = keys[q].length;
 				
 				// Calculate
 				if (len != 0)
@@ -766,11 +774,75 @@ public class InflateDataProcessor
 			
 			for (int i = 0; i < n; i++)
 			{
-				System.err.printf("DEBUG -- B=%d H=%10s%n", __lens[i],
+				System.err.printf("DEBUG -- B=%s H=%10s%n", keys[i],
 					Integer.toBinaryString(act_bits[i]));
 			}
 			
 			throw new Error("TODO");
+		}
+		
+		/**
+		 * This key contains a symbol and a value.
+		 *
+		 * @since 2016/03/28
+		 */
+		private static class __Key__
+			implements Comparable<__Key__>
+		{
+			/** The symbol. */
+			protected final int symbol;
+			
+			/** The length. */
+			protected final int length;
+			
+			/**
+			 * Initializes the key.
+			 *
+			 * @param __sym The symbol used.
+			 * @param __len The length.
+			 * @since 2016/03/28
+			 */
+			private __Key__(int __sym, int __len)
+			{
+				// Set
+				symbol = __sym;
+				length = __len;
+			}
+			
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/03/28
+			 */
+			@Override
+			public int compareTo(__Key__ __o)
+			{
+				// Shorter lengths first
+				int al = length;
+				int bl = __o.length;
+				if (al < bl)
+					return -1;
+				else if (al > bl)
+					return 1;
+				
+				// Symbol scond
+				int as = symbol;
+				int bs = __o.symbol;
+				if (as < bs)
+					return -1;
+				else if (as > bs)
+					return 1;
+				return 0;
+			}
+			
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/03/28
+			 */
+			@Override
+			public String toString()
+			{
+				return "<" + symbol + "," + length + ">";
+			}
 		}
 	}
 	
