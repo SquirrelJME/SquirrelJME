@@ -123,3 +123,91 @@ Ok so the distance can exceed the end of the sliding window (just not the
 start). Looks like for any extra bytes it just repeats the sequence. Thus I
 will have to handle that specially as a kind of overlap thing.
 
+## 13:55
+
+Ok so it now appears to work, however the input and output class file are not
+matched properly. My current inflater has a single extra byte of output. There
+are also a bunch of shifted areas too. The input has a sequence containing
+`0100046d61696` but mine is instead `0100036d61696e` at least for that
+portion. The debug sequence is this
+
+	DEBUG -- c 103 g
+	DEBUG -- W 67 g
+	DEBUG -- Read DC 59
+	DEBUG -- c 59 ;
+	DEBUG -- W 3b ;
+	DEBUG -- in 60
+	DEBUG -- in d2
+	DEBUG -- Read DC 257
+	DEBUG -- c 257 ?
+	DEBUG -- Lent Code 257 > 3
+	DEBUG -- Length 3
+	DEBUG -- Dist Code 10 > 43
+	DEBUG -- Distance 43
+	DEBUG -- W 01 ^A
+	DEBUG -- W 00 ^@
+	DEBUG -- W 03 ^C       ---- Should be 4
+	DEBUG -- Read DC 109
+	DEBUG -- c 109 m
+	DEBUG -- W 6d m
+	DEBUG -- in 78
+	DEBUG -- in 7f
+	DEBUG -- Read DC 97
+	DEBUG -- c 97 a
+	DEBUG -- W 61 a
+	DEBUG -- Read DC 105
+	DEBUG -- c 105 i
+	DEBUG -- W 69 i
+	DEBUG -- Read DC 110
+	DEBUG -- c 110 n
+	DEBUG -- W 6e n
+	DEBUG -- in f1
+	DEBUG -- in 96
+	DEBUG -- Read DC 1
+	DEBUG -- c 1 ^A
+	DEBUG -- W 01 ^A
+
+## 14:00
+
+Unrelated but rather freaky is that when the screen is off on this used
+laptop I can see the Apple logo shining through the LCD. It is dim however so
+I suppose the Sun is bright enough even in cloudy weather to cause this event.
+
+## 14:05
+
+Actually, getting the smaller of length and distance to use as the distance
+back is not correct. I need to check if it exceeds the bounds, then cap to the
+distance if it is larger.
+
+## 14:09
+
+Actually the corruption happens much earlier than I expect.
+
+	DEBUG -- W 00 ^@
+	DEBUG -- W 09   
+	DEBUG -- W 00 ^@
+	DEBUG -- in 39
+	DEBUG -- in 8f
+	DEBUG -- Read DC 39
+	DEBUG -- c 39 '
+	DEBUG -- W 27 '
+	DEBUG -- Read DC 258
+	DEBUG -- c 258 ?
+	DEBUG -- Lent Code 258 > 4
+	DEBUG -- Length 4
+	DEBUG -- Dist Code 8 > 21
+	DEBUG -- Distance 21
+	DEBUG -- W 08     ----- should be 0a
+	DEBUG -- W 00 ^@
+	DEBUG -- W 23 #
+	DEBUG -- W 0a 
+
+## 14:12
+
+My code sequence is as follows, which is correct:
+
+	a0002002208
+
+However it appears looking back that 08 is read instead of 0a, so it is
+possible that my sliding window is reading from the wrong end.
+

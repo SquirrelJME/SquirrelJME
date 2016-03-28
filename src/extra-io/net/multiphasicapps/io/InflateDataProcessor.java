@@ -333,7 +333,11 @@ public class InflateDataProcessor
 			
 			// Get the maximum valid length, so for example if the length is 5
 			// and the distance is two, then only read two bytes.
-			int maxlen = Math.min(lent, dist);
+			int maxlen;
+			if (dist - lent < 0)
+				maxlen = dist;
+			else
+				maxlen = lent;
 			
 			// Create a byte array from the sliding window data
 			byte[] winb = new byte[maxlen];
