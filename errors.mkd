@@ -178,6 +178,8 @@ These codes do not have a index meaning and are meant to be short.
    * The distance back to start from.
    * The number of bytes which were requested.
    * The actual number of bytes in the window.
+ * `XI0v` -- Not enough input bits or the dynamic huffman tree is incomplete
+   and a request was made to use data traverses runs off the tree.
 
 # `net.multiphasicapps.interpreter`
 

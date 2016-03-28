@@ -114,6 +114,12 @@ public class InflateDataProcessor
 	/** The code length huffman tree. */
 	private volatile HuffmanTree<Integer> _clentree;
 	
+	/** The next literal to read. */
+	private volatile int _nexthlitdist;
+	
+	/** Next literal lengths. */
+	private volatile int[] _rawlitdistlens;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/11
@@ -176,13 +182,8 @@ public class InflateDataProcessor
 						break;
 						
 						// Read dynamic huffman alphabet (LIT)
-					case DYNAMIC_HUFFMAN_ALPHABET_LIT:
-						__readDynamicHuffmanAlphabetLIT();
-						break;
-						
-						// Read dynamic huffman alphabet (DIST)
-					case DYNAMIC_HUFFMAN_ALPHABET_DIST:
-						__readDynamicHuffmanAlphabetDIST();
+					case DYNAMIC_HUFFMAN_ALPHABET_LITDIST:
+						__readDynamicHuffmanAlphabetLITDIST();
 						break;
 						
 						// Read dynamic huffman compressed data
@@ -416,6 +417,29 @@ public class InflateDataProcessor
 	}
 	
 	/**
+	 * Reads code bits using the given huffman tree and into the specified
+	 * array.
+	 *
+	 * @param __codes The huffman tree which contains the length codes which
+	 * the values being read are encoded with.
+	 * @param __out The output array.
+	 * @param __next The next value to read.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/28
+	 */
+	private void __readCodeBits(HuffmanTree<Integer> __codes, int[] __out,
+		int __next)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__codes == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Reads the code lengths for the code lengths alphabet.
 	 *
 	 * This is second (part A).
@@ -444,13 +468,17 @@ public class InflateDataProcessor
 			if (next == clen)
 			{
 				// Read the literal table
-				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LIT;
+				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LITDIST;
 				
 				// Load into tree
 				_clentree = __thunkCodeLengthTree(cll);
 				
 				// Not needed anymore
 				_rawcodelens = null;
+				
+				// Setup for read
+				_nexthlitdist = 0;
+				_rawlitdistlens = null;
 				
 				// Done
 				return;
@@ -473,31 +501,70 @@ public class InflateDataProcessor
 	}
 	
 	/**
-	 * Reads code lengths for the distance alphabet.
-	 *
-	 * This is second (part C).
-	 *
-	 * @throws IOException On read/write errors.
-	 * @since 2016/03/13
-	 */
-	private void __readDynamicHuffmanAlphabetDIST()
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Reads code lengths for the literal alphabet (0-255 values).
+	 * Reads code lengths for the literal alphabet (0-255 values) and the
+	 * distance codes.
 	 *
 	 * This is second (part B).
 	 *
+	 * It should be noted that once the values are decoded, the read values
+	 * are turned into a huffman tree the same as the code lengths. However
+	 * the encoding of the values here are a bit more complex because they
+	 * are compressed with the codelengths themselves.
+	 *
 	 * @throws IOException On read/write errors.
 	 * @since 2016/03/13
 	 */
-	private void __readDynamicHuffmanAlphabetLIT()
+	private void __readDynamicHuffmanAlphabetLITDIST()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Get the tree and the max bit count used
+		HuffmanTree<Integer> htree = _clentree;
+		int maxbits = htree.maximumBits();
+		int hlit = _dhlit;
+		int hdist = _dhdist;
+		int total = hlit + hdist;
+		
+		// Get raw literal lengths
+		int[] rawints = _rawlitdistlens;
+		if (rawints == null)
+			_rawlitdistlens = rawints = new int[total];
+		
+		// Read loop
+		try
+		{
+			for (;;)
+			{
+				// Get the next literal to read
+				int next = _nexthlitdist;
+				
+				// Read them all?
+				if (next >= total)
+				{
+					// Dump it
+					for (int i = 0; i < total; i++)
+						System.err.printf("DEBUG -- all %d: %d%n", i,
+							rawints[i]);
+					
+					throw new Error("TODO");
+				}
+				
+				// Not enough bits to read code lengths?
+				if (!isFinished() && inputbits.available() < maxbits)
+					throw new WaitingException("XI0i");
+				
+				// Read in code
+				__readCodeBits(htree, rawints, next);
+				
+				// Increase read
+				_nexthlitdist = next + 1;
+			}
+		}
+		
+		// Out of bits or a bad tree
+		catch (NoSuchElementException nsee)
+		{
+			throw new IOException("XI0v", nsee);
+		}
 	}
 	
 	/**
@@ -550,6 +617,8 @@ public class InflateDataProcessor
 		_rawcodelens = null;
 		_clentree = null;
 		_readclnext = 0;
+		_nexthlitdist = 0;
+		_rawlitdistlens = null;
 		
 		// Need to read the alphabet
 		_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_CLEN;
@@ -802,11 +871,8 @@ public class InflateDataProcessor
 		/** Read dynamic huffman alphabet (code lengths). */
 		DYNAMIC_HUFFMAN_ALPHABET_CLEN,
 		
-		/** Read dynamic huffman alphabet (literals). */
-		DYNAMIC_HUFFMAN_ALPHABET_LIT,
-		
-		/** Read dynamic huffman alphabet (distances). */
-		DYNAMIC_HUFFMAN_ALPHABET_DIST,
+		/** Read dynamic huffman alphabet (literals and distances). */
+		DYNAMIC_HUFFMAN_ALPHABET_LITDIST,
 		
 		/** Read dynamic huffman compressed data. */
 		DYNAMIC_HUFFMAN_COMPRESSED,

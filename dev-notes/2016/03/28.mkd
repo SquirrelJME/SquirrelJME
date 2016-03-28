@@ -72,3 +72,8 @@ up all night programming since I could not sleep. However I did get a bunch
 of huffman work going on, which is good. A slight break from the interpreter
 compiler part.
 
+## 10:12
+
+Reading of the distance codes and literal codes are combined, so I should
+handle that case.
+

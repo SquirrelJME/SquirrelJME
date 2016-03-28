@@ -48,6 +48,9 @@ public class HuffmanTree<T>
 	/** Modification count. */
 	private volatile int _modcount;
 	
+	/** Maximum used bits. */
+	private volatile int _maxbits;
+	
 	/**
 	 * Initializes a basic blank huffman tree.
 	 *
@@ -94,6 +97,9 @@ public class HuffmanTree<T>
 			// Get the table
 			int[] table = _table;
 			int n = table.length;
+			
+			// Increase max bit count
+			_maxbits = Math.max(_maxbits, ibm);
 			
 			// Find the spot to add it based on the bit depth
 			int at = 0;
@@ -299,6 +305,21 @@ public class HuffmanTree<T>
 					throw new UnsupportedOperationException("RORO");
 				}
 			};
+	}
+	
+	/**
+	 * Returns the maximum number of bits entries use.
+	 *
+	 * @return The maximum number of used bits.
+	 * @since 2016/03/28
+	 */
+	public int maximumBits()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _maxbits;
+		}
 	}
 	
 	/**
