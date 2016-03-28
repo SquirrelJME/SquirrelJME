@@ -212,8 +212,6 @@ public class HuffmanTree<T>
 			// Look through all values
 			int n = vals.length;
 			for (int i = 0; i < n; i++)
-				System.err.printf("DEBUG -- Val %s (%d)%n", vals[i], i);
-			for (int i = 0; i < n; i++)
 				if (Objects.equals(vals[i], __v))
 					return __recursiveMatch(0, 0, 0, -(i + 1));
 		}
@@ -557,8 +555,6 @@ public class HuffmanTree<T>
 		// Get the left and right side jump values
 		int jl = table[__at];
 		int jr = table[__at + 1];
-		
-		System.err.printf("DEBUG -- rm %d %d ? %d%n", jl, jr, __match);
 		
 		// Matches left or right side?
 		boolean left = (jl == __match);
