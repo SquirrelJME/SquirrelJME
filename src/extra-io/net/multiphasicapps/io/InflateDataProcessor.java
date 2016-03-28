@@ -755,13 +755,19 @@ public class InflateDataProcessor
 			for (int i = 0; i < n; i++)
 				maxbits = Math.max(maxbits, keys[i].length);
 			
+			// The counts for all keys
+			int[] bl_count = new int[n];
+			for (int i = 0; i < n; i++)
+				bl_count[keys[i].length]++;
+			
 			// Find the numerical value of the smallest code for each code
 			// length:
 			int code = 0;
 			int[] next_code = new int[maxbits + 1];
+			bl_count[0] = 0;
 			for (int bits = 1; bits <= maxbits; bits++)
 			{
-				code = (code + keys[bits - 1].length) << 1;
+				code = (code + bl_count[bits - 1]) << 1;
 				next_code[bits] = code;
 			}
 			

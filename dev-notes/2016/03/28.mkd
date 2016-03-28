@@ -4,3 +4,18 @@
 
 Figured out what that bl_count means.
 
+## 01:42
+
+For the sample input, I now have:
+
+	DEBUG -- B=<0,3> H=        10
+	DEBUG -- B=<1,3> H=        11
+	DEBUG -- B=<2,3> H=       100
+	DEBUG -- B=<3,3> H=       101
+	DEBUG -- B=<4,3> H=       110
+	DEBUG -- B=<5,2> H=         0
+	DEBUG -- B=<6,4> H=      1110
+	DEBUG -- B=<7,4> H=      1111
+
+Which appears to be correct. I just need to figure out how this stuff is used
+now that it is correct.
