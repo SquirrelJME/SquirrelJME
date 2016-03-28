@@ -97,3 +97,8 @@ the length, so the same tree is used so to speak.
 Actually my length and distance methods were entirely swapped, the length
 method was handling distances and the distance one was handling lengths.
 
+## 11:38
+
+I believe my sliding window has an off by one where the distance code which
+was off by one worked, but now that it has been corrected it is incorrect.
+
