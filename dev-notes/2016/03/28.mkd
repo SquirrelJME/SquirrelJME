@@ -211,3 +211,23 @@ My code sequence is as follows, which is correct:
 However it appears looking back that 08 is read instead of 0a, so it is
 possible that my sliding window is reading from the wrong end.
 
+## 15:18
+
+This:
+
+	DEBUG -- BACKFRAG dx=7 sz=4 bf=1 ln=2 lbfs=3
+	DEBUG -- src=0 rat=0 (0/6)
+	DEBUG -- BACKFRAG dx=6 sz=4 bf=1 ln=2 lbfs=2
+	DEBUG -- src=0 rat=1 (1/6)
+	DEBUG -- BACKFRAG dx=5 sz=4 bf=1 ln=2 lbfs=1
+	DEBUG -- src=0 rat=2 (2/6)
+	DEBUG -- BACKFRAG dx=4 sz=4 bf=1 ln=2 lbfs=0
+	DEBUG -- src=0 rat=3 (3/6)
+	DEBUG -- BACKFRAG dx=3 sz=4 bf=0 ln=2 lbfs=3
+	DEBUG -- src=1 rat=0 (4/6)
+	DEBUG -- BACKFRAG dx=2 sz=4 bf=0 ln=2 lbfs=2
+	DEBUG -- src=1 rat=1 (5/6)
+
+Tells me that entries are being read I believe in the reverse order. The output
+index 0 should be the oldest of the distance and not the first.
+

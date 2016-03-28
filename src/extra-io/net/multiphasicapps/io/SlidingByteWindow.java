@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.io;
 
+import java.util.Arrays;
+
 /**
  * This represents a sliding byte window.
  *
@@ -85,8 +87,8 @@ public class SlidingByteWindow
 		windowsize = __wsz;
 		
 		// Determine the best fragment size
-		fragmentsize = Math.max(1, Math.min(
-			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE));
+		fragmentsize = Math.min(4, Math.max(1, Math.min(
+			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE)));
 		numfragments = windowsize / fragmentsize;
 		
 		// Not power of two? fail
@@ -275,7 +277,7 @@ public class SlidingByteWindow
 			for (int i = 0; i < __l; i++)
 			{
 				// Determine the far back distance used
-				int backdx = __ago - i;
+				int backdx = (__ago - 1) - i;
 				
 				// The window to read from
 				byte[] source;
@@ -297,8 +299,9 @@ public class SlidingByteWindow
 					int backfrag = logback / fragmentsize;
 					byte[][] all = _fragments;
 					System.err.printf("DEBUG -- BACKFRAG dx=%d sz=%d bf=%d" +
-						" ln=%d%n",
-						backdx, fragmentsize, backfrag, all.length);
+						" ln=%d lbfs=%d%n",
+						backdx, fragmentsize, backfrag, all.length,
+						(logback % fragmentsize));
 					source = all[(all.length - 1) - backfrag];
 					
 					// The index to read from is the remaining data
@@ -318,6 +321,10 @@ public class SlidingByteWindow
 				
 				// Copy
 				__b[__o + i] = source[rat];
+				
+				System.err.printf("DEBUG -- src=%d rat=%d (%d/%d) %02x (%c)%n",
+					Arrays.<byte[]>asList(_fragments).indexOf(source), rat,
+					i, __l, __b[__o + i], (char)__b[__o + i]);
 			}
 		}
 		
