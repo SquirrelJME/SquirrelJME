@@ -452,7 +452,9 @@ public class InflateDataProcessor
 				System.err.println("DEBUG -- END TREE");
 				
 				// Setup the huffman tree
-				_clentree = new __CodeLenTree__(cll);
+				if (true)
+					throw new Error("TODO");
+				/*_clentree = new __CodeLenTree__(cll);*/
 				
 				// Not needed anymore
 				_rawcodelens = null;
