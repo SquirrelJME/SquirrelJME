@@ -292,8 +292,20 @@ public class SlidingByteWindow
 				// Otherwise in another fragment
 				else
 				{
+					// Determine the fragment this should belong in
+					int logback = (backdx - nowcur);
+					int backfrag = logback / fragmentsize;
+					byte[][] all = _fragments;
+					System.err.printf("DEBUG -- BACKFRAG dx=%d sz=%d bf=%d" +
+						" ln=%d%n",
+						backdx, fragmentsize, backfrag, all.length);
+					source = all[(all.length - 1) - backfrag];
+					
+					// The index to read from is the remaining data
+					rat = (fragmentsize - 1) - (logback % fragmentsize);
+					
 					// The logical back index from the current
-					int logbdx = backdx - nowcur;
+					/*int logbdx = backdx - nowcur;
 					
 					// Determine the fragment index from the end to visit
 					byte[][] all = _fragments;
@@ -301,7 +313,7 @@ public class SlidingByteWindow
 					
 					// Source is from the end
 					source = all[endfrag];
-					rat = (fragmentsize - (logbdx % fragmentsize)) - 1;
+					rat = (fragmentsize - (logbdx % fragmentsize)) - 1;*/
 				}
 				
 				// Copy
