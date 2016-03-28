@@ -376,10 +376,10 @@ public class InflateDataProcessor
 			throw new InflaterException(String.format("XI0l %d", code));
 		
 		// Calculate the required distance to use
-		int rv = 0;
+		int rv = 1;
 		for (int i = 0; i < code; i++)
 		{
-			// This uses a similar pattern to the distance code, however the
+			// This uses a similar pattern to the length code, however the
 			// division is half the size (so there are groups of 2 now).
 			rv += (1 << Math.max(0, (i / 2) - 1));
 		}
@@ -390,6 +390,8 @@ public class InflateDataProcessor
 		// If there are bits to read then read them in
 		if (extrabits > 0)
 			rv += inputbits.removeFirstInt(extrabits, true);
+			
+		System.err.printf("DEBUG -- Dist Code %d > %d%n", code, rv);
 		
 		// Return it
 		return rv;
@@ -416,7 +418,7 @@ public class InflateDataProcessor
 		int rv = 3;
 		for (int i = 0; i < base; i++)
 		{
-			// Determine how many groups of 4 the code is away. Since zero
+			// Determine how many groups of 4 the code is long. Since zero
 			// appears as items then subtract 1 to make it longer. However
 			// after the first 8 it goes up in a standard pattern.
 			rv += (1 << Math.max(0, (i / 4) - 1));
@@ -429,7 +431,9 @@ public class InflateDataProcessor
 		if (extrabits > 0)
 			rv += inputbits.removeFirstInt(extrabits, true);
 		
-		// Return the distance
+		System.err.printf("DEBUG -- Lent Code %d > %d%n", __c, rv);
+		
+		// Return the length
 		return rv;
 	}
 	
