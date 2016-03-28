@@ -213,7 +213,7 @@ public class HuffmanTree<T>
 			int n = vals.length;
 			for (int i = 0; i < n; i++)
 				if (Objects.equals(vals[i], __v))
-					return __recursiveMatch(0, 0, 0, -(vat + 1));
+					return __recursiveMatch(0, 0, 0, -(i + 1));
 		}
 		
 		// Not found
@@ -556,12 +556,32 @@ public class HuffmanTree<T>
 		int jl = table[__at];
 		int jr = table[__at + 1];
 		
-		// Matches left or right side?
-		if (jl == __match || jr == __match)
-			return (((long)((mask << 1) | 1)) << 32L)
+		System.err.printf("DEBUG -- rm %d %d ? %d%n", jl, jr, __match);
 		
-		if (true)
-			throw new Error("TODO");
+		// Matches left or right side?
+		boolean left = (jl == __match);
+		if (left || jr == __match)
+			return (((long)((__mask << 1) | 1)) << 32L) |
+				((long)((__huf << 1) | (left ? 0 : 1)));
+		
+		// Traverse left side
+		long rv;
+		if (jl >= 0 && jl != Integer.MAX_VALUE)
+		{
+			rv = __recursiveMatch(jl, __huf << 1, (__mask << 1) | 1,
+				__match);
+			if (rv != -1L)
+				return rv;
+		}
+		
+		// Traverse right side
+		if (jr >= 0 && jr != Integer.MAX_VALUE)
+		{
+			rv = __recursiveMatch(jr, (__huf << 1) | 1, (__mask << 1) | 1,
+				__match);
+			if (rv != 1L)
+				return rv;
+		}
 		
 		// Not found
 		return -1L;
