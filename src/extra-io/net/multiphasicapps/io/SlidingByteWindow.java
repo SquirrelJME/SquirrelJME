@@ -286,7 +286,7 @@ public class SlidingByteWindow
 				if (backdx < nowcur)
 				{
 					source = _active;
-					rat = (nowcur - 1) - (backdx - 1);
+					rat = nowcur - backdx;
 				}
 				
 				// Otherwise in another fragment
