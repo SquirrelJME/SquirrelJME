@@ -30,6 +30,7 @@ import java.util.Set;
 public class HuffmanTree<T>
 {
 	/** This is the root traversal node. */
+	@Deprecated
 	protected final Traverse root =
 		new Traverse(null);
 	
@@ -48,6 +49,7 @@ public class HuffmanTree<T>
 	 * @return The root node.
 	 * @since 2016/03/10
 	 */
+	@Deprecated
 	public Traverse root()
 	{
 		return root;
@@ -68,6 +70,7 @@ public class HuffmanTree<T>
 	 * masked.
 	 * @since 2016/03/10
 	 */
+	@Deprecated
 	public HuffmanTree setLiteralRepresentation(int __rep, int __repmask,
 		T __lit)
 		throws IllegalArgumentException
@@ -119,6 +122,7 @@ public class HuffmanTree<T>
 	 *
 	 * @since 2016/03/10
 	 */
+	@Deprecated
 	public abstract class Node
 	{
 		/**
@@ -180,6 +184,7 @@ public class HuffmanTree<T>
 	 *
 	 * @since 2016/03/10
 	 */
+	@Deprecated
 	public class Leaf
 		extends Node
 	{
@@ -272,6 +277,7 @@ public class HuffmanTree<T>
 	 *
 	 * @since 2016/03/10
 	 */
+	@Deprecated
 	public class Traverse
 		extends Node
 	{
