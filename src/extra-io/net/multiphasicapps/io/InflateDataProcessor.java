@@ -289,10 +289,13 @@ public class InflateDataProcessor
 	 * Handles a single huffman code.
 	 *
 	 * @param __c The input code.
+	 * @param __len Length tree.
+	 * @param __dist Distance tree.
 	 * @throws IOException On read/write error.s
 	 * @since 2016/03/12
 	 */
-	private void __handleCode(int __c)
+	private void __handleCode(int __c, HuffmanTree<Integer> __len,
+		HuffmanTree<Integer> __dist)
 		throws IOException
 	{
 		// Debug
@@ -636,7 +639,11 @@ public class InflateDataProcessor
 					System.err.printf("DEBUG -- LIT %s%n", _treehlit);
 					System.err.printf("DEBUG -- DST %s%n", _treedist);
 					
-					throw new Error("TODO");
+					// Read the compressed data now
+					_task = __Task__.DYNAMIC_HUFFMAN_COMPRESSED;
+					
+					// Use a waiting exception to break from the loop
+					throw new WaitingException("XI0i");
 				}
 				
 				// Not enough bits to read code lengths?
@@ -671,7 +678,24 @@ public class InflateDataProcessor
 	private void __readDynamicHuffmanCompressed()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Get both trees
+		HuffmanTree<Integer> thlit = _treehlit;
+		HuffmanTree<Integer> tdist = _treedist;
+		
+		// Maximum number of btis to read
+		int maxbits = Math.max(thlit.maximumBits(), tdist.maximumBits());
+		
+		// Need to be able to read a value from the tree along with any
+		// extra distance and length codes it may have
+		while (isFinished() || inputbits.available() >= maxbits + 32)
+		{
+			// Decode literal code
+			int code = __readTreeCode(thlit);
+			
+			// Handle it
+			System.err.printf("DEBUG -- Read DC %d%n", code);
+			__handleCode(code, thlit, tdist);
+		}
 	}
 	
 	/**
@@ -727,17 +751,15 @@ public class InflateDataProcessor
 	private void __readFixedHuffman()
 		throws IOException
 	{
-		// If there are at least 9 available bits for input, read them.
-		// Alternatively if this is the final block allow 7 because this
-		// could be the final stop code.
-		while (inputbits.available() >= 9 ||
-			(_finalhit && inputbits.available() >= 7))
+		// Require up to 32 bits because of the input along with extra distance
+		// codes, length codes, and more
+		while (isFinished() || inputbits.available() >= 32)
 		{
 			// Read single code
 			int code = DeflateFixedHuffman.read(inputbits);
 			
 			// Handle the code
-			__handleCode(code);
+			__handleCode(code, null, null);
 		}
 	}
 	

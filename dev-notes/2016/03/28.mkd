@@ -82,3 +82,8 @@ handle that case.
 Suppose to solve the huffman data, I just needed to read the top of the RFC
 document and just make the stuff there.
 
+## 10:59
+
+My fixed huffman parser seems wrong. I read bits for the distance and the
+length yet it works.
+
