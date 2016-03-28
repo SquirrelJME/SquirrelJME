@@ -312,5 +312,20 @@ public class SlidingByteWindow
 		// Self
 		return this;
 	}
+	
+	/**
+	 * Returns the total number of bytes in the sliding window.
+	 *
+	 * @return The total number of bytes in the window.
+	 * @since 2016/03/28
+	 */
+	public int size()
+	{
+		// lock
+		synchronized (lock)
+		{
+			return _total;
+		}
+	}
 }
 

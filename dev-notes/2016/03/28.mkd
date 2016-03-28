@@ -117,3 +117,9 @@ I must fix the sldiing window offset off by one now.
 However, it seems I cannot install Mac OS X on it, so I suppose I would instead
 just go pure Linux instead if I cannot get it installed at all.
 
+## 14:39
+
+Ok so the distance can exceed the end of the sliding window (just not the
+start). Looks like for any extra bytes it just repeats the sequence. Thus I
+will have to handle that specially as a kind of overlap thing.
+

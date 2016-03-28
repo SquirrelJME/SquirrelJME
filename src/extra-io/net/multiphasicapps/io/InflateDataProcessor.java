@@ -331,11 +331,15 @@ public class InflateDataProcessor
 			int dist = __handleDistance(__dist);
 			System.err.printf("DEBUG -- Distance %d%n", dist);
 			
+			// Get the maximum valid length, so for example if the length is 5
+			// and the distance is two, then only read two bytes.
+			int maxlen = Math.min(lent, dist);
+			
 			// Create a byte array from the sliding window data
-			byte[] winb = new byte[lent];
+			byte[] winb = new byte[maxlen];
 			try
 			{
-				window.get(dist, winb, 0, lent);
+				window.get(dist, winb, 0, maxlen);
 			}
 			
 			// Bad window read
@@ -345,9 +349,10 @@ public class InflateDataProcessor
 					"XI0j %d %d", dist, lent), ioobe);
 			}
 			
-			// Add those bytes to the output
+			// Add those bytes to the output, handle wrapping around if the
+			// length is greater than the current position
 			for (int i = 0; i < lent; i++)
-				compactor.add(winb[i] & 0xFF, 0xFF);
+				compactor.add(winb[i % maxlen] & 0xFF, 0xFF);
 		}
 		
 		// Error
@@ -401,11 +406,12 @@ public class InflateDataProcessor
 	 * Reads length codes from the input.
 	 *
 	 * @param __c Input code value.
+	 * @throws InflaterException If the code is an invalid length.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/03/12
 	 */
 	private int __handleLength(int __c)
-		throws IOException
+		throws InflaterException, IOException
 	{
 		// If the code is 285 then the length will be that
 		if (__c == 285)
@@ -413,6 +419,10 @@ public class InflateDataProcessor
 		
 		// Get the base code
 		int base = __c - 257;
+		
+		// Invalid?
+		if (base < 0)
+			throw new InflaterException(String.format("XI0l %d", __c));
 		
 		// Calculate the required length to use
 		int rv = 3;
