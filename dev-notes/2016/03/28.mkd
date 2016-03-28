@@ -19,3 +19,15 @@ For the sample input, I now have:
 
 Which appears to be correct. I just need to figure out how this stuff is used
 now that it is correct.
+
+## 01:46
+
+Also figured out how I can have a huffman tree just be based on an array of
+sorts that kind of builds up as entries are added. I can probably use that
+instead because it would be much smaller, although it does not have to be
+limited to specific data types. Instead of having nodes for every part of the
+tree I can instead just have an array of index references. Each index is in a
+pair always, so the array is a power of two. If the uppermost bit is set then
+a value is used, otherwise then a pointer is used instead. So basically it
+would be in a linear jump fashion so to speak.
+
