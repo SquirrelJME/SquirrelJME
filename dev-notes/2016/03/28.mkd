@@ -250,3 +250,10 @@ up with an extra byte or so.
 Now I believe the sliding window is not working correctly, since I see many
 `cafebabe` and similar to that in the output stream.
 
+## 19:09
+
+Well I made a bunch of decompressor progress, however I appear to be stuck on
+the sliding window part. I made lots of progress on the code since I last
+touched it however and it is mostly complete except for this last remaining
+issue. So I shall put it on hold to clear my mind of it.
+

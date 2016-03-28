@@ -274,11 +274,10 @@ public class SlidingByteWindow
 					"XI0u %d %d %d", __ago, __l, _total));
 			
 			// Write into the buffer
-			int agobase = __ago - __l;
 			for (int i = 0; i < __l; i++)
 			{
 				// Determine the far back distance used
-				int backdx = agobase + i;
+				int backdx = __ago + (__l - i);
 				
 				// The window to read from
 				byte[] source;
@@ -299,10 +298,12 @@ public class SlidingByteWindow
 					backdx -= nowcur;
 					
 					// Get the fragment in the past
-					int pastfrag = backdx / fragmentsize;
+					int pastfrag = (backdx / fragmentsize);
 					
 					// Use it
 					byte[][] all = _fragments;
+					System.err.printf("DEBUG -- pfff %d %d%n", pastfrag,
+						all.length);
 					source = all[pastfrag];
 					
 					// The read index is the remainder of the fragment
@@ -312,9 +313,10 @@ public class SlidingByteWindow
 				// Copy
 				__b[__o + i] = source[rat];
 				
-				System.err.printf("DEBUG -- src=%d rat=%d (%d/%d) %02x (%c)%n",
+				System.err.printf("DEBUG -- src=%d rat=%d (@%d %d/%d) " +
+					"%02x (%c)%n",
 					Arrays.<byte[]>asList(_fragments).indexOf(source), rat,
-					i, __l, __b[__o + i], (char)__b[__o + i]);
+					__ago - (__l - i), i, __l, __b[__o + i], (char)__b[__o + i]);
 			}
 		}
 		
