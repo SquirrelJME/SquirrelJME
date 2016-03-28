@@ -49,3 +49,10 @@ Appears my huffman tree is rather lopsided.
 And my traverser is not correct, it stops a bit short of a value so instead I
 have it stop on an actual value.
 
+## 05:09
+
+Seems my file server disk is failing, it only boots and loads the OS when it is
+on its side, but it does it rather slowly. Either that or it is a loose cable
+or the SATA port is not working correctly. If it is the SATA port then Intel
+makes rather horrible ports if they die so often.
+
