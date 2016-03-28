@@ -87,3 +87,13 @@ document and just make the stuff there.
 My fixed huffman parser seems wrong. I read bits for the distance and the
 length yet it works.
 
+## 11:15
+
+Yes it was swapped. Also I kept missing that the literals was combined with
+the length, so the same tree is used so to speak.
+
+## 11:20
+
+Actually my length and distance methods were entirely swapped, the length
+method was handling distances and the distance one was handling lengths.
+

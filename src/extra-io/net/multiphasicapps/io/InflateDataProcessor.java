@@ -310,6 +310,11 @@ public class InflateDataProcessor
 		// and go back to the header handler
 		else if (__c == 256)
 		{
+			// Do not need the litreral and distance trees again
+			_treehlit = null;
+			_treedist = null;
+			
+			// Go back to reading the header
 			System.err.println("DEBUG -- STOPPED");
 			_task = __Task__.READ_HEADER;
 			throw new WaitingException("XI0i");
@@ -318,13 +323,13 @@ public class InflateDataProcessor
 		// Window based result
 		else if (__c >= 257 && __c <= 285)
 		{
-			// Read the distance
-			int dist = __handleDistance(__c);
-			System.err.printf("DEBUG -- Distance %d%n", dist);
-			
 			// Read the length
-			int lent = __handleLength();
+			int lent = __handleLength(__c);
 			System.err.printf("DEBUG -- Length %d%n", lent);
+			
+			// Read the distance
+			int dist = __handleDistance(__dist);
+			System.err.printf("DEBUG -- Distance %d%n", dist);
 			
 			// Create a byte array from the sliding window data
 			byte[] winb = new byte[lent];
@@ -353,22 +358,61 @@ public class InflateDataProcessor
 	/**
 	 * Handles distance codes.
 	 *
-	 * @param __c The distance code.
+	 * @param __dist The distance codes.
 	 * @return The distance to actually use
 	 * @throws IOException On read/write errors.
 	 * @since 2016/03/12
 	 */
-	private int __handleDistance(int __c)
+	private int __handleDistance(HuffmanTree<Integer> __dist)
 		throws IOException
 	{
-		// If the code is 285 then the distance will be that
+		// If using fixed huffman read 5 bits since they are all the same
+		// Otherwise for dynamic use the huffman tree symbol set
+		int code = (__dist == null ? inputbits.removeFirstInt(5, true) :
+			__readTreeCode(__dist));
+		
+		// Error if above 29
+		if (code > 29)
+			throw new InflaterException(String.format("XI0l %d", code));
+		
+		// Calculate the required distance to use
+		int rv = 0;
+		for (int i = 0; i < code; i++)
+		{
+			// This uses a similar pattern to the distance code, however the
+			// division is half the size (so there are groups of 2 now).
+			rv += (1 << Math.max(0, (i / 2) - 1));
+		}
+		
+		// Determine the number of extra bits
+		int extrabits = Math.max(0, (code / 2) - 1);
+		
+		// If there are bits to read then read them in
+		if (extrabits > 0)
+			rv += inputbits.removeFirstInt(extrabits, true);
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Reads length codes from the input.
+	 *
+	 * @param __c Input code value.
+	 * @throws IOException On read/write errors.
+	 * @since 2016/03/12
+	 */
+	private int __handleLength(int __c)
+		throws IOException
+	{
+		// If the code is 285 then the length will be that
 		if (__c == 285)
 			return 285;
 		
 		// Get the base code
 		int base = __c - 257;
 		
-		// Calculate the required distance to use
+		// Calculate the required length to use
 		int rv = 3;
 		for (int i = 0; i < base; i++)
 		{
@@ -386,42 +430,6 @@ public class InflateDataProcessor
 			rv += inputbits.removeFirstInt(extrabits, true);
 		
 		// Return the distance
-		return rv;
-	}
-	
-	/**
-	 * Reads length codes from the input.
-	 *
-	 * @throws IOException On read/write errors.
-	 * @since 2016/03/12
-	 */
-	private int __handleLength()
-		throws IOException
-	{
-		// Read 5 bits of length input
-		int code = inputbits.removeFirstInt(5, true);
-		
-		// Error if above 29
-		if (code > 29)
-			throw new InflaterException(String.format("XI0l %d", code));
-		
-		// Calculate the required length to use
-		int rv = 0;
-		for (int i = 0; i < code; i++)
-		{
-			// This uses a similar pattern to the distance code, however the
-			// division is half the size (so there are groups of 2 now).
-			rv += (1 << Math.max(0, (i / 2) - 1));
-		}
-		
-		// Determine the number of extra bits
-		int extrabits = Math.max(0, (code / 2) - 1);
-		
-		// If there are bits to read then read them in
-		if (extrabits > 0)
-			rv += inputbits.removeFirstInt(extrabits, true);
-		
-		// Return it
 		return rv;
 	}
 	
