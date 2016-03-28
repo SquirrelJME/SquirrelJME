@@ -134,12 +134,46 @@ public class HuffmanTreeTests
 		// Decode the message
 		try
 		{
+			// String to build
+			StringBuilder sb = new StringBuilder();
+			
 			// Wrap in case of nulls
 			try (ByteArrayInputStream bais =
 				new ByteArrayInputStream(encodedas);
 				BitInputStream bis = new BitInputStream(bais, false))
 			{
+				// Read until end of bits
+				for (HuffmanTree.Traverser<Character> trav = null;;)
+				{
+					// Need a new traverser?
+					if (trav == null)
+						trav = htree.traverser();
+					
+					// Read single bit
+					int val = bis.readBitsInt(1);
+					
+					// Traverse down
+					trav.traverse(val);
+					
+					// Is there an object here?
+					if (trav.hasValue())
+					{
+						// Get the value and add it to the string
+						Character c = trav.getValue();
+						sb.append(c);
+						
+						// Clear traverse
+						trav = null;
+						
+						// Stop when the message length was reached
+						if (sb.length() == MESSAGE.length())
+							break;
+					}
+				}
 			}
+			
+			// Check
+			__tc.checkEquals("decode", MESSAGE, sb.toString());
 		}
 		
 		// Could not decode
