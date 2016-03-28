@@ -38,7 +38,7 @@ symbol and the bitmask, if applicable.
 
 ## 03:28
 
-Appears a thunderstorm is approaching.
+Appears a thunderstorm is approaching.p
 
 ## 03:36
 
@@ -62,4 +62,13 @@ I can access my data just fine when using another system and the same cable,
 so I suppose that the SATA ports are flaky and not working correctly, this
 means I will have to replace the board and such. I may be able to find a
 replacement, hopefully.
+
+## 05:33
+
+Well, I suppose that board lasted about 5 years. I could though use a PCI
+SATA adapter but that might not be worth it, I will just find another system
+to use instead. This will be done after I sleep and wake up, since I have been
+up all night programming since I could not sleep. However I did get a bunch
+of huffman work going on, which is good. A slight break from the interpreter
+compiler part.
 
