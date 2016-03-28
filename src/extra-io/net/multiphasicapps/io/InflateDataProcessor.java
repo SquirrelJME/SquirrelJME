@@ -733,8 +733,47 @@ public class InflateDataProcessor
 		// Setup target tree
 		HuffmanTree<Integer> rv = new HuffmanTree<>();
 		
-		if (true)
-			throw new Error("TODO");
+		// The number of lengths
+		int n = __lens.length;
+		
+		// Obtain the number of bits that are available in all of the input
+		// lengths
+		int maxbits = 0;
+		for (int i = 0; i < n; i++)
+			maxbits = Math.max(maxbits, __lens[i]);
+		
+		// Determine the bitlength count for all of the inputs
+		int[] bl_count = new int[n];
+		for (int i = 0; i < n; i++)
+			bl_count[__lens[i]]++;
+		
+		// Find the numerical value of the smallest code for each code
+		// length.
+		int code = 0;
+		int[] next_code = new int[maxbits + 1];
+		bl_count[0] = 0;
+		for (int bits = 1; bits <= maxbits; bits++)
+		{
+			code = (code + bl_count[bits - 1]) << 1;
+			next_code[bits] = code;
+		}
+	
+		// Assign values to all codes
+		for (int q = 0; q < n; q++)
+		{
+			// Get length
+			int len = __lens[q];
+		
+			// Calculate
+			if (len != 0)
+			{
+				// The bits to use
+				int use = ((next_code[len])++);
+				
+				// Add to the output table
+				rv.add(q, use, (1 << len) - 1);
+			}
+		}
 		
 		System.err.printf("DEBUG -- LoadTree %s%n", rv);
 		

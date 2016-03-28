@@ -349,7 +349,7 @@ public class HuffmanTree<T>
 						// Start from the highest bit first
 						int hib = Integer.bitCount(msk);
 						for (int b = hib - 1; b >= 0; b--)
-							sb.append((0 == (val & msk) ? '0' : '1'));
+							sb.append(((0 == (val & (1 << b))) ? '0' : '1'));
 					}
 					
 					// End sequence data
