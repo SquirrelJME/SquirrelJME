@@ -56,3 +56,10 @@ on its side, but it does it rather slowly. Either that or it is a loose cable
 or the SATA port is not working correctly. If it is the SATA port then Intel
 makes rather horrible ports if they die so often.
 
+## 05:21
+
+I can access my data just fine when using another system and the same cable,
+so I suppose that the SATA ports are flaky and not working correctly, this
+means I will have to replace the board and such. I may be able to find a
+replacement, hopefully.
+
