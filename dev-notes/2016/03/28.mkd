@@ -36,3 +36,7 @@ would be in a linear jump fashion so to speak.
 Using the new huffman code, need to figure out a way to find the associated
 symbol and the bitmask, if applicable.
 
+## 03:28
+
+Appears a thunderstorm is approaching.
+

@@ -213,17 +213,7 @@ public class HuffmanTree<T>
 			int n = vals.length;
 			for (int i = 0; i < n; i++)
 				if (Objects.equals(vals[i], __v))
-				{
-					// Determine the virtual index this would actually be
-					int vdex = -(vat + 1);
-				}
-			
-	/** The huffman table. */
-	private volatile int[] _table;
-	
-	/** Stored tree values. */
-	private volatile Object[] _values;	
-			
+					return __recursiveMatch(0, 0, 0, -(vat + 1));
 		}
 		
 		// Not found
@@ -544,6 +534,37 @@ public class HuffmanTree<T>
 	private T __cast(Object __v)
 	{
 		return (T)__v;
+	}
+	
+	/**
+	 * Searches the huffman tree for the given raw match value.
+	 *
+	 * @param __at The index to look at.
+	 * @param __huf The huffman index.
+	 * @param __mask The mask of the input value.
+	 * @param __match The value to match.
+	 * @return The bit mask and the value for the given entry or {@code -1L} if
+	 * not found.
+	 * @since 2016/03/28
+	 */
+	private long __recursiveMatch(int __at, int __huf, int __mask, int __match)
+	{
+		// Get tree
+		int[] table = _table;
+		
+		// Get the left and right side jump values
+		int jl = table[__at];
+		int jr = table[__at + 1];
+		
+		// Matches left or right side?
+		if (jl == __match || jr == __match)
+			return (((long)((mask << 1) | 1)) << 32L)
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Not found
+		return -1L;
 	}
 	
 	/**
