@@ -97,10 +97,10 @@ public class HuffmanTree<T>
 			
 			// Find the spot to add it based on the bit depth
 			int at = 0;
-			for (int b = 0; b < ibm; b++)
+			for (int b = ibm - 1; b >= 0; b--)
 			{
 				// Last bit set?
-				boolean last = (b == (ibm - 1));
+				boolean last = (b == 0);
 				
 				// The array index to look at for the current position depends
 				// on which bit is set
@@ -212,7 +212,7 @@ public class HuffmanTree<T>
 			// Look through all values
 			int n = vals.length;
 			for (int i = 0; i < n; i++)
-				System.err.printf("DEBUG -- Val %s%n", vals[i]);
+				System.err.printf("DEBUG -- Val %s (%d)%n", vals[i], i);
 			for (int i = 0; i < n; i++)
 				if (Objects.equals(vals[i], __v))
 					return __recursiveMatch(0, 0, 0, -(i + 1));
