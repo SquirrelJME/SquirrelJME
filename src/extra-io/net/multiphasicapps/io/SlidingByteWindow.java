@@ -274,16 +274,17 @@ public class SlidingByteWindow
 					"XI0u %d %d %d", __ago, __l, _total));
 			
 			// Write into the buffer
+			int agobase = __ago - __l;
 			for (int i = 0; i < __l; i++)
 			{
 				// Determine the far back distance used
-				int backdx = (__ago - 1) - i;
+				int backdx = agobase + i;
 				
 				// The window to read from
 				byte[] source;
 				int rat;
 				
-				// Is this close?
+				// Is the back index within the current fragment?
 				int nowcur = _current;
 				if (backdx < nowcur)
 				{
@@ -291,32 +292,21 @@ public class SlidingByteWindow
 					rat = nowcur - backdx;
 				}
 				
-				// Otherwise in another fragment
+				// Otherwise it is in another fragment
 				else
 				{
-					// Determine the fragment this should belong in
-					int logback = (backdx - nowcur);
-					int backfrag = logback / fragmentsize;
+					// Remove the current from the back index
+					backdx -= nowcur;
+					
+					// Get the fragment in the past
+					int pastfrag = backdx / fragmentsize;
+					
+					// Use it
 					byte[][] all = _fragments;
-					System.err.printf("DEBUG -- BACKFRAG dx=%d sz=%d bf=%d" +
-						" ln=%d lbfs=%d%n",
-						backdx, fragmentsize, backfrag, all.length,
-						(logback % fragmentsize));
-					source = all[(all.length - 1) - backfrag];
+					source = all[pastfrag];
 					
-					// The index to read from is the remaining data
-					rat = (fragmentsize - 1) - (logback % fragmentsize);
-					
-					// The logical back index from the current
-					/*int logbdx = backdx - nowcur;
-					
-					// Determine the fragment index from the end to visit
-					byte[][] all = _fragments;
-					int endfrag = (all.length - 1) - (logbdx / fragmentsize);
-					
-					// Source is from the end
-					source = all[endfrag];
-					rat = (fragmentsize - (logbdx % fragmentsize)) - 1;*/
+					// The read index is the remainder of the fragment
+					rat = backdx % fragmentsize;
 				}
 				
 				// Copy
