@@ -115,7 +115,7 @@ public class HuffmanTreeTests
 					break;
 				
 				// Otherwise add it
-				bc.add((int)dat, (int)(dat >>> 32));
+				bc.add((int)dat, (int)(dat >>> 32), true);
 			}
 			
 			// Target encoding info
