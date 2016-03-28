@@ -22,17 +22,22 @@ import java.util.Set;
 /**
  * This represents a mutable huffman tree.
  * 
- * This class is not thread safe.
+ * This class is thread safe.
  *
  * @param <T> The type of values to store in the tree.
  * @since 2016/03/10
  */
 public class HuffmanTree<T>
 {
-	/** This is the root traversal node. */
-	@Deprecated
-	protected final Traverse root =
-		new Traverse(null);
+	/** Lock. */
+	protected final Object lock =
+		new Object();	
+	
+	/** The huffman table. */
+	private volatile int[] _table;
+	
+	/** Stored tree values. */
+	private volatile Object[] _values;
 	
 	/**
 	 * Initializes a basic blank huffman tree.
@@ -41,70 +46,128 @@ public class HuffmanTree<T>
 	 */
 	public HuffmanTree()
 	{
+		// Initially add table space so that it is always initially valid but
+		// points to nothing.
+		__addTableSpace();
 	}
 	
 	/**
-	 * Returns the root node.
+	 * Adds the specified object which is associated with the given symbol
+	 * and mask.
 	 *
-	 * @return The root node.
-	 * @since 2016/03/10
+	 * @param __v The value to add.
+	 * @param __sym The bit representation of the symbol.
+	 * @param __mask The mask of the symbol for its valid bits.
+	 * @return The old value, or {@code null} if it is not set.
+	 * @throws IllegalArgumentException If the specified symbol contains a bit
+	 * which is outside of the mask or the mask does not start at shift zero
+	 * or has zero gaps.
+	 * @since 2016/03/28
 	 */
-	@Deprecated
-	public Traverse root()
-	{
-		return root;
-	}
-	
-	/**
-	 * Adds a literal value representation to the tree.
-	 *
-	 * Traversal through the huffman tree is done from the higher shift values
-	 * to the lower shift values.
-	 *
-	 * @param __rep The representation of the value.
-	 * @param __bit The mask to use in the literal representation.
-	 * @param __lit The literal value the representation encodes to.
-	 * @return {@code this}.
-	 * @throws IllegalArgumentException If the representation mask has an unset
-	 * gap in its bits or a bit is sit in the representation which is not
-	 * masked.
-	 * @since 2016/03/10
-	 */
-	@Deprecated
-	public HuffmanTree setLiteralRepresentation(int __rep, int __repmask,
-		T __lit)
+	public T add(T __v, int __sym, int __mask)
 		throws IllegalArgumentException
 	{
 		// Number of bits in the mask
-		int ibm = Integer.bitCount(__repmask);
+		int ibm = Integer.bitCount(__mask);
 		
 		// Check mask and representation
-		if ((__rep & (~__repmask)) != 0)
+		if ((__sym & (~__mask)) != 0)
 			throw new IllegalArgumentException(String.format("XC01 %x %x",
-				__rep, __repmask));
-		if (ibm != (32 - Integer.numberOfLeadingZeros(__repmask)) ||
-			(__repmask & 1) == 0)
+				__sym, __mask));
+		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
+			(__mask & 1) == 0)
 			throw new IllegalArgumentException(String.format("XC02 %x %x",
-				__rep, __repmask));
+				__sym, __mask));
 		
-		// Start from higher shifts to lower shifts
-		Traverse rover = root;
-		for (int i = ibm - 1; i >= 0; i--)
+		// Lock
+		synchronized (lock)
 		{
-			// Get zero or one
-			int code = (__rep >>> i) & 1;
+			// Get the table
+			int[] table = _table;
+			int n = table.length;
 			
-			// Last shift? Set the value
-			if (i == 0)
-				rover.setupLeaf(code).set(__lit);
+			// Find the spot to add it based on the bit depth
+			int at = 0;
+			for (int b = 0; b < ibm; b++)
+			{
+				// Last bit set?
+				boolean last = (b == (ibm - 1));
+				
+				// The array index to look at for the current position depends
+				// on which bit is set
+				int q = (__sym >>> b) & 1;
+				
+				// Get the jump value
+				int jump = table[at + q];
+				
+				// If this points to a constant area but this is not the last
+				// bit, then trash it
+				if (!last && jump < 0)
+					jump = Integer.MAX_VALUE;
+				
+				// Jumps off the table end? Needs more values to be added for
+				// the tree to be built
+				if (jump == Integer.MAX_VALUE)
+				{
+					// If this is the last entry then a value index needs to
+					// be created to store the value
+					if (last)
+					{
+						// Add space for a new variable
+						int vat = __addValueSpace();
+						
+						// Place value there
+						_values[vat] = __v;
+						
+						// Set table index to point there
+						table[at + 1] = -(vat + 1);
+						
+						// No old value exists
+						return null;
+					}
+					
+					// Otherwise, add some table space and jump to that
+					// instead on the next run.
+					else
+					{
+						// Add new location info
+						int jat = __addTableSpace();
+					
+						// Correct vars
+						table = _table;
+						n = table.length;
+					
+						// Set jump to that position
+						// Use that position instead on the next read
+						table[at + 1] = at = jat;
+					}
+				}
+				
+				// Points to a constant area, return a value
+				else if (jump < 0)
+				{
+					// Calculate actual placement
+					int vat = (-jump) - 1;
+					
+					// Get old value
+					Object[] vals = _values;
+					Object old = vals[vat];
+					
+					// Set new value
+					vals[vat] = __v;
+					
+					// Return the old value
+					return __castValue(old);
+				}
+				
+				// Points to another location in the array
+				else
+					at = jump;
+			}
 			
-			// Add traverser
-			else
-				rover = rover.setupTraverse(code);
+			// Should not occur
+			throw new RuntimeException("WTFX");
 		}
-		
-		// Self
-		return this;
 	}
 	
 	/**
@@ -114,331 +177,84 @@ public class HuffmanTree<T>
 	@Override
 	public String toString()
 	{
-		return root.toString();
+		throw new Error("TODO");
 	}
 	
 	/**
-	 * This represents a single huffman node.
+	 * Adds more table space for a branch.
 	 *
-	 * @since 2016/03/10
+	 * @return The base index of the newly added space.
+	 * @since 2016/03/28
 	 */
-	@Deprecated
-	public abstract class Node
+	private int __addTableSpace()
 	{
-		/**
-		 * Initializes the base node.
-		 *
-		 * @since 2016/03/10
-		 */
-		private Node()
+		// Lock
+		synchronized (lock)
 		{
-		}
-		
-		/**
-		 * Returns this node as a leaf.
-		 *
-		 * @return {@code this}.
-		 * @since 2016/03/10
-		 */
-		public final Leaf asLeaf()
-		{
-			return (Leaf)this;
-		}
-		
-		/**
-		 * Returns this node as a traverse.
-		 *
-		 * @return {@code this}.
-		 * @since 2016/03/10
-		 */
-		public final Traverse asTraverse()
-		{
-			return (Traverse)this;
-		}
-		
-		/**
-		 * Returns {@code true} if this is a leaf.
-		 *
-		 * @return {@code true} if this is a leaf.
-		 * @since 2016/03/10
-		 */
-		public boolean isLeaf()
-		{
-			return Leaf.class.isInstance(this);
-		}
-		
-		/**
-		 * Returns {@code true} if this is a traverse.
-		 *
-		 * @return {@code true} if this is a traverse.
-		 * @since 2016/03/10
-		 */
-		public boolean isTraverse()
-		{
-			return Traverse.class.isInstance(this);
+			// The returned value is the end of the table
+			int[] table = _table;
+			int rv = (table == null ? 0 : table.length);
+			
+			// Allocate some extra space
+			int[] becomes = new int[rv + 2];
+			
+			// Copy the old array over
+			for (int i = 0; i < rv; i++)
+				becomes[i] = table[i];
+			
+			// The end bits become invalidated
+			becomes[rv] = Integer.MAX_VALUE;
+			becomes[rv + 1] = Integer.MAX_VALUE;
+			
+			// Set new table
+			_table = becomes;
+			
+			// Return it
+			return rv;
 		}
 	}
 	
 	/**
-	 * This is a leaf of the tree which contains a value.
+	 * Adds more value space to add a new value.
 	 *
-	 * @since 2016/03/10
+	 * @return The index where the value space was increased.
+	 * @since 2016/03/28
 	 */
-	@Deprecated
-	public class Leaf
-		extends Node
+	private int __addValueSpace()
 	{
-		/** The value of this leaf. */
-		private volatile T _value;
-		
-		/**
-		 * Initializes this leaf.
-		 *
-		 * @since 2016/03/10
-		 */
-		protected Leaf()
+		// Lock
+		synchronized (lock)
 		{
-		}
-		
-		/**
-		 * Initializes this leaf with an initial value.
-		 *
-		 * @param __v The initial value of the leaf.
-		 * @since 2016/03/10
-		 */
-		protected Leaf(T __v)
-		{
-			set(__v);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/10
-		 */
-		@Override
-		public boolean equals(Object __o)
-		{
-			// Not a leaf?
-			if (!Leaf.class.isInstance(__o))
-				return false;
+			// The returned value is the end of the table
+			Object[] values = _values;
+			int rv = (values == null ? 0 : values.length);
 			
-			// Same value?
-			return Objects.equals(_value, Leaf.class.cast(__o)._value);
-		}
-		
-		/**
-		 * Returns the value of this leaf.
-		 *
-		 * @return The leaf value.
-		 * @since 2016/03/10
-		 */
-		public T get()
-		{
-			return _value;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/10
-		 */
-		@Override
-		public int hashCode()
-		{
-			return Objects.hashCode(_value);
-		}
-		
-		/**
-		 * Sets the value of this leaf.
-		 *
-		 * @param __v The value to set.
-		 * @return The old value.
-		 * @since 2016/03/10
-		 */
-		public T set(T __v)
-		{
-			T old = _value;
-			_value = __v;
-			return old;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/10
-		 */
-		@Override
-		public String toString()
-		{
-			return Objects.toString(get());
+			// Allocate some extra space
+			Object[] becomes = new Object[rv + 1];
+			
+			// Copy the old array over
+			for (int i = 0; i < rv; i++)
+				becomes[i] = values[i];
+			
+			// Set new table
+			_values = becomes;
+			
+			// Return it
+			return rv;
 		}
 	}
 	
 	/**
-	 * This is a traversal node.
+	 * Fake casts the value to prevent warnings elsewhere.
 	 *
-	 * @since 2016/03/10
+	 * @param __v The value to cast.
+	 * @return The value casted to a specific type.
+	 * @since 2016/03/28
 	 */
-	@Deprecated
-	public class Traverse
-		extends Node
+	@SuppressWarnings({"unchecked"})
+	private T __castValue(Object __v)
 	{
-		/** The parent of this traverse. */
-		protected final Traverse parent;
-		
-		/** The zero side of the tree. */
-		private volatile Node _zero;
-		
-		/** The one side of the tree. */
-		private volatile Node _one;
-		
-		/**
-		 * Initializes the traversal node.
-		 *
-		 * @param __p The parent node.
-		 * @since 2016/03/10
-		 */
-		protected Traverse(Traverse __p)
-		{
-			// Set
-			parent = __p;
-		}
-		
-		/**
-		 * Gets the node which is either zero or one.
-		 *
-		 * @param __n {@code 0} or {@code 1}.
-		 * @return That node or {@code null} if it is not set.
-		 * @throws IllegalArgumentException If {@code null} is not zero or one.
-		 * @since 2016/03/10
-		 */
-		public Node get(int __n)
-			throws IllegalArgumentException
-		{
-			if (__n == 0)
-				return _zero;
-			else if (__n == 1)
-				return _one;
-			throw new IllegalArgumentException(String.format("XC03 %d", __n));
-		}
-		
-		/**
-		 * Returns the one node of the tree.
-		 *
-		 * @return The one node.
-		 * @since 2016/03/10
-		 */
-		public Node getOne()
-		{
-			return _one;
-		}
-		
-		/**
-		 * Returns the parent traverse node.
-		 *
-		 * @return The parent traverse node.
-		 * @since 2016/03/10
-		 */
-		public Traverse getParent()
-		{
-			return parent;
-		}
-		
-		/**
-		 * Returns the zero node of the tree.
-		 *
-		 * @return The zero node.
-		 * @since 2016/03/10
-		 */ 
-		public Node getZero()
-		{
-			return _zero;
-		}
-		
-		/**
-		 * Sets the given side to a traverse, if there is a leaf here already
-		 * then it is removed.
-		 *
-		 * @param __s The side to use as a traverse if it is not one.
-		 * @return The traverse of the given side.
-		 * @throws IllegalArgumentException If {@code __s} is not zero or
-		 * one.
-		 * @since 2016/03/10
-		 */
-		public Traverse setupTraverse(int __s)
-			throws IllegalArgumentException
-		{
-			// Must be zero or one
-			if (__s != 0 && __s != 1)
-				throw new IllegalArgumentException(
-					String.format("XC03 %d", __s));
-			
-			// Get node on this side
-			Node n = get(__s);
-			
-			// If null or not a traverse, create new one
-			if (n == null || !n.isTraverse())
-			{
-				// Create
-				n = new Traverse(this);
-				
-				// Replace
-				if (__s == 0)
-					_zero = n;
-				else
-					_one = n;
-			}
-			
-			// Return the traverse
-			return (Traverse)n;
-		}
-		
-		/**
-		 * Sets the given side to a leaf and returns it, if a traverse on this
-		 * side then it is removed.
-		 *
-		 * @param __s The side to use as aleaf.
-		 * @return The leaf of the given side.
-		 * @throws IllegalArgumentException If {@code __s} is not zero or
-		 * one.
-		 * @since 2016/03/10
-		 */
-		public Leaf setupLeaf(int __s)
-			throws IllegalArgumentException
-		{
-			// Must be zero or one
-			if (__s != 0 && __s != 1)
-				throw new IllegalArgumentException(
-					String.format("XC03 %d", __s));
-			
-			// Get node on this side
-			Node n = get(__s);
-			
-			// If null or not a leaf, create new one
-			if (n == null || !n.isLeaf())
-			{
-				// Create
-				n = new Leaf();
-				
-				// Replace
-				if (__s == 0)
-					_zero = n;
-				else
-					_one = n;
-			}
-			
-			// Return the leaf
-			return (Leaf)n;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/10
-		 */
-		@Override
-		public String toString()
-		{
-			return "[0=" + Objects.toString(getZero()) + ", 1=" +
-				Objects.toString(getOne()) + "]";
-		}
+		return (T)__v;
 	}
 }
 
