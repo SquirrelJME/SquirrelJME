@@ -12,10 +12,12 @@ package net.multiphasicapps.collections;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.ConcurrentModificationException;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,10 +26,14 @@ import java.util.Set;
  * 
  * This class is thread safe.
  *
+ * Iteration of values goes through the internal value table in no particular
+ * order. The iterator is fail-fast.
+ *
  * @param <T> The type of values to store in the tree.
  * @since 2016/03/10
  */
 public class HuffmanTree<T>
+	implements Iterable<T>
 {
 	/** Lock. */
 	protected final Object lock =
@@ -38,6 +44,9 @@ public class HuffmanTree<T>
 	
 	/** Stored tree values. */
 	private volatile Object[] _values;
+	
+	/** Modification count. */
+	private volatile int _modcount;
 	
 	/**
 	 * Initializes a basic blank huffman tree.
@@ -101,9 +110,12 @@ public class HuffmanTree<T>
 				int jump = table[at + q];
 				
 				// If this points to a constant area but this is not the last
-				// bit, then trash it
+				// bit, then trash it.
 				if (!last && jump < 0)
+				{
 					jump = Integer.MAX_VALUE;
+					table[at + q] = jump;
+				}
 				
 				// Jumps off the table end? Needs more values to be added for
 				// the tree to be built
@@ -121,6 +133,9 @@ public class HuffmanTree<T>
 						
 						// Set table index to point there
 						table[at + 1] = -(vat + 1);
+						
+						// Modified
+						_modcount++;
 						
 						// No old value exists
 						return null;
@@ -156,6 +171,9 @@ public class HuffmanTree<T>
 					// Set new value
 					vals[vat] = __v;
 					
+					// Modified
+					_modcount++;
+					
 					// Return the old value
 					return __castValue(old);
 				}
@@ -175,9 +193,80 @@ public class HuffmanTree<T>
 	 * @since 2016/03/10
 	 */
 	@Override
+	public Iterator<T> iterator()
+	{
+		return new Iterator<T>()
+			{
+				/** The modification base. */
+				protected final int basemod = 
+					_modcount;
+				
+				/** The current index. */
+				private volatile int _dx;
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/28
+				 */
+				@Override
+				public boolean hasNext()
+				{
+					// Lock
+					synchronized (lock)
+					{
+						// Modified too much?
+						if (_modcount !=
+					}
+				}
+			};
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/10
+	 */
+	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Setup
+			StringBuilder sb = new StringBuilder("[");
+			
+			// Add elements in no particular order
+			Object[] vals = _values;
+			if (vals != null)
+			{
+				int n = vals.length;
+				for (int i = 0; i < n; i++)
+				{
+					// Comma?
+					if (i > 0)
+						sb.append(", ");
+					
+					// Add the value
+					
+				}
+			}
+			
+			// Build it
+			sb.append(']');
+			return sb.toString();
+		}
+	}
+	
+	/**
+	 * Returns a traverser over the given values in the tree.
+	 *
+	 * @return The traverser over the tree.
+	 * @since 2016/03/28
+	 */
+	public Traverser<T> traverser()
+	{
+		return new Traverser<T>()
+			{
+			};
 	}
 	
 	/**
@@ -255,6 +344,28 @@ public class HuffmanTree<T>
 	private T __castValue(Object __v)
 	{
 		return (T)__v;
+	}
+	
+	/**
+	 * This is a traverser for the huffman table.
+	 *
+	 * @param <T> The type of value to return.
+	 * @since 2016/03/28
+	 */
+	public static interface Traverser<T>
+	{
+		public 
+			throws NoSuchElementException;
+		
+		/**
+		 * Traverses the given side, if there is nothing left to traverse
+		 * then this does not move.
+		 *
+		 * @param __side The side to traverse, must be zero or one.
+		 * @return {@code this}.
+		 * @since 2016/03/28
+		 */
+		public abstract Traverser<T> traverse(int __side);
 	}
 }
 
