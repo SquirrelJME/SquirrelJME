@@ -377,7 +377,7 @@ public class InflateDataProcessor
 	{
 		// If using fixed huffman read 5 bits since they are all the same
 		// Otherwise for dynamic use the huffman tree symbol set
-		int code = (__dist == null ? inputbits.removeFirstInt(5, true) :
+		int code = (__dist == null ? inputbits.removeFirstInt(5, false) :
 			__readTreeCode(__dist));
 		
 		// Error if above 29
@@ -398,7 +398,7 @@ public class InflateDataProcessor
 		
 		// If there are bits to read then read them in
 		if (extrabits > 0)
-			rv += inputbits.removeFirstInt(extrabits, true);
+			rv += inputbits.removeFirstInt(extrabits, false);
 			
 		System.err.printf("DEBUG -- Dist Code %d > %d%n", code, rv);
 		
@@ -443,7 +443,7 @@ public class InflateDataProcessor
 		
 		// Read in those bits, if applicable
 		if (extrabits > 0)
-			rv += inputbits.removeFirstInt(extrabits, true);
+			rv += inputbits.removeFirstInt(extrabits, false);
 		
 		System.err.printf("DEBUG -- Lent Code %d > %d%n", __c, rv);
 		
@@ -572,7 +572,7 @@ public class InflateDataProcessor
 			int next = _readclnext;
 			
 			// Read them all?
-			if (next == clen)
+			if (next >= clen)
 			{
 				// Read the literal table
 				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LITDIST;

@@ -231,3 +231,11 @@ This:
 Tells me that entries are being read I believe in the reverse order. The output
 index 0 should be the oldest of the distance and not the first.
 
+## 16:12
+
+This looks wrong:
+
+	DEBUG -- hlit/dist 290: 6
+
+Actually it is part of the distance codes, they are combined together as one.
+
