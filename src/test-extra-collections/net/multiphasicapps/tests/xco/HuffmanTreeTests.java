@@ -29,7 +29,11 @@ public class HuffmanTreeTests
 {
 	/** A message to be encoded then decoded with. */
 	public static final String MESSAGE =
-		"GOLDEN EYES USE NO MAGIC";	
+		"GOLDEN EYES USE NO MAGIC";
+	
+	/** The secret but encoded into a byte array. */
+	private static final byte[] _ENCODED =
+		new byte[]{-14, 31, 65, 115, -61, 30, -90, 112, -33, -46, -36};
 	
 	/**
 	 * {@inheritDoc}
@@ -122,7 +126,7 @@ public class HuffmanTreeTests
 			encodedas = baos.toByteArray();
 			
 			// Test result
-			__tc.checkEquals("encode", new byte[]{12, 34, 56}, encodedas);
+			__tc.checkEquals("encode", _ENCODED, encodedas);
 		}
 		
 		// Failed to encode
