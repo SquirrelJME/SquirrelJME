@@ -175,7 +175,7 @@ public class HuffmanTree<T>
 					_modcount++;
 					
 					// Return the old value
-					return __castValue(old);
+					return __cast(old);
 				}
 				
 				// Points to another location in the array
@@ -215,8 +215,56 @@ public class HuffmanTree<T>
 					synchronized (lock)
 					{
 						// Modified too much?
-						if (_modcount !=
+						if (_modcount != basemod)
+							throw new ConcurrentModificationException("XC04");
+						
+						// Before the end?
+						Object[] vals = _values;
+						return (vals == null ? false : _dx < vals.length);
 					}
+				}
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/28
+				 */
+				@Override
+				public T next()
+				{
+					// Lock
+					synchronized (lock)
+					{
+						// Modified too much?
+						if (_modcount != basemod)
+							throw new ConcurrentModificationException("XC04");
+						
+						// The curent index
+						int dx = _dx;
+							
+						// At the end?
+						Object[] vals = _values;
+						if (vals == null || dx >= vals.length)
+							throw new NoSuchElementException("NSEE");
+						
+						// Get it
+						Object rv = vals[dx];
+						
+						// Set next index
+						_dx = dx + 1;
+						
+						// Return it
+						return __cast(rv);
+					}
+				}
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/28
+				 */
+				@Override
+				public void remove()
+				{
+					throw new UnsupportedOperationException("RORO");
 				}
 			};
 	}
@@ -246,7 +294,7 @@ public class HuffmanTree<T>
 						sb.append(", ");
 					
 					// Add the value
-					
+					sb.append(vals[i]);
 				}
 			}
 			
@@ -259,6 +307,8 @@ public class HuffmanTree<T>
 	/**
 	 * Returns a traverser over the given values in the tree.
 	 *
+	 * The traverser is fail fast.
+	 *
 	 * @return The traverser over the tree.
 	 * @since 2016/03/28
 	 */
@@ -266,6 +316,114 @@ public class HuffmanTree<T>
 	{
 		return new Traverser<T>()
 			{
+				/** The modification base. */
+				protected final int basemod = 
+					_modcount;
+				
+				/** The current location index. */
+				private volatile int _at;
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/28
+				 */
+				@Override
+				public T getValue()
+					throws NoSuchElementException
+				{
+					// Lock
+					synchronized (lock)
+					{
+						// Modified too much?
+						if (_modcount != basemod)
+							throw new ConcurrentModificationException("XC04");
+						
+						// Get the jump table
+						int[] table = _table;
+						
+						// Missing table?
+						if (table == null)
+							throw new NoSuchElementException("NSEE");
+						
+						// Read the jump index here
+						int jump = table[_at];
+						
+						// Not a value associated jump?
+						if (jump >= 0)
+							throw new NoSuchElementException("NSEE");
+						
+						// Return value here
+						return __cast(_values[(-jump) - 1]);
+					}
+				}
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/28
+				 */
+				@Override
+				public boolean hasValue()
+				{
+					// Try to get a value
+					try
+					{
+						Object v = getValue();
+						
+						// If this point is reached then the value is valid
+						return true;
+					}
+					
+					// Indicative of no value.
+					catch (NoSuchElementException e)
+					{
+						return false;
+					}
+				}
+				
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/03/28
+				 */
+				@Override
+				public Traverser<T> traverse(int __side)
+					throws IllegalArgumentException, NoSuchElementException
+				{
+					// Check
+					if (__side < 0 || __side > 1)
+						throw new IllegalArgumentException(String.format(
+							"XC03 %d", __side));
+					
+					// Lock
+					synchronized (lock)
+					{
+						// Modified too much?
+						if (_modcount != basemod)
+							throw new ConcurrentModificationException("XC04");
+						
+						// Get the jump table
+						int[] table = _table;
+						
+						// Missing table? Fail
+						if (table == null)
+							throw new NoSuchElementException("NSEE");
+						
+						// Get the at index
+						int at = _at;
+						
+						// Get the jump value
+						int jump = table[at + __side];
+						
+						// A value or the end of the tree? Fail
+						if (jump < 0 || jump == Integer.MAX_VALUE)
+							throw new NoSuchElementException("NSEE");
+						
+						// Set the new position to this position
+						_at = jump;
+					}
+					
+					// Self
+					return this;
+				}
 			};
 	}
 	
@@ -341,7 +499,7 @@ public class HuffmanTree<T>
 	 * @since 2016/03/28
 	 */
 	@SuppressWarnings({"unchecked"})
-	private T __castValue(Object __v)
+	private T __cast(Object __v)
 	{
 		return (T)__v;
 	}
@@ -354,18 +512,38 @@ public class HuffmanTree<T>
 	 */
 	public static interface Traverser<T>
 	{
-		public 
+		/**
+		 * Returns the value at this position.
+		 *
+		 * @return The value at this node.
+		 * @throws NoSuchElementException If this is not a value node.
+		 * @since 2016/03/28
+		 */
+		public abstract T getValue()
 			throws NoSuchElementException;
 		
 		/**
-		 * Traverses the given side, if there is nothing left to traverse
-		 * then this does not move.
+		 * Returns {@code true} if a value is stored here.
+		 *
+		 * @return {@code true} if a value is at this location, this will
+		 * return {@code false} if this is not a value node.
+		 * @since 2016/03/28
+		 */
+		public abstract boolean hasValue();
+		
+		/**
+		 * Traverses the given side, if the end of the value chain is reached
+		 * and a value is valid then this throws an exception.
 		 *
 		 * @param __side The side to traverse, must be zero or one.
 		 * @return {@code this}.
+		 * @throws IllegalArgumentException If the side is not zero or one.
+		 * @throws NoSuchElementException If an attempt was made to traverse
+		 * over a value.
 		 * @since 2016/03/28
 		 */
-		public abstract Traverser<T> traverse(int __side);
+		public abstract Traverser<T> traverse(int __side)
+			throws IllegalArgumentException, NoSuchElementException;
 	}
 }
 

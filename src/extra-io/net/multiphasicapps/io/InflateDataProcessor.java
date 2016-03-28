@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.buffers.CircularBooleanBuffer;
 import net.multiphasicapps.buffers.CircularByteBuffer;
+import net.multiphasicapps.collections.HuffmanTree;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
@@ -111,7 +112,7 @@ public class InflateDataProcessor
 	private volatile int _readclnext;
 	
 	/** The code length huffman tree. */
-	private volatile __CodeLenTree__ _clentree;
+	private volatile HuffmanTree<Integer> _clentree;
 	
 	/**
 	 * {@inheritDoc}

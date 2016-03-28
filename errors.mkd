@@ -49,6 +49,7 @@ These codes do not have a index meaning and are meant to be short.
    * The mask being used.
  * `XC03` -- Expected a zero or a one.
    * The input value.
+ * `XC04` -- Huffman table modified.
 
 # `net.multiphasicapps.descriptors`
 
