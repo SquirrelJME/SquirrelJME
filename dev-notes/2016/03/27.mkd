@@ -96,3 +96,8 @@ shared between all of its methods. Previously I thought of doing it per
 method, however if there are any shared calls they would just be duplicated
 between them. At least keeping it to a single class would be simpler.
 
+## 19:14
+
+I believe I am starting to understand the dynamic huffman code. The code
+lengths must become huffman code.
+

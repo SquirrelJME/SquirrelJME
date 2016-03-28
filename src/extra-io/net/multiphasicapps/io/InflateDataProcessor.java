@@ -11,6 +11,7 @@
 package net.multiphasicapps.io;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.buffers.CircularBooleanBuffer;
 import net.multiphasicapps.buffers.CircularByteBuffer;
@@ -451,7 +452,7 @@ public class InflateDataProcessor
 				
 				// Debug
 				for (int i = 0; i < cll.length; i++)
-					System.err.printf("DEBUG -- CLL %d: %d%n", i, cll[i]);
+					System.err.printf("DEBUG -- PreCLL %d: %d%n", i, cll[i]);
 				
 				if (true)
 					throw new Error("TODO");
