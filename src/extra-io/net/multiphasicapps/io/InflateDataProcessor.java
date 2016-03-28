@@ -428,7 +428,7 @@ public class InflateDataProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/28
 	 */
-	private void __readCodeBits(HuffmanTree<Integer> __codes, int[] __out,
+	private int __readCodeBits(HuffmanTree<Integer> __codes, int[] __out,
 		int __next)
 		throws IOException, NullPointerException
 	{
@@ -437,10 +437,78 @@ public class InflateDataProcessor
 			throw new NullPointerException("NARG");
 		
 		// Read in code based on an input huffman tree
+		int basenext = __next;
 		int code = __readTreeCode(__codes);
 		System.err.printf("DEBUG -- Read code %d%n", code);
 		
-		throw new Error("TODO");
+		// Literal length, the input is used
+		if (code >= 0 && code < 16)
+			__out[__next++] = code;
+		
+		// Repeating
+		else
+		{
+			// Repeat this value and for this many lengths
+			int repval;
+			int repfor;
+			
+			// Repeat the previous length 3-6 times
+			if (code == 16)
+			{
+				// Make sure there is a last length
+				int lastlendx = __next - 1;	
+				if (lastlendx < 0)
+					throw new InflaterException(String.format("XI0x %d",
+						lastlendx));
+				
+				// Read the last
+				repval = __out[lastlendx];
+				
+				// Read the repeat count
+				repfor = 3 + inputbits.removeFirstInt(2);
+			}
+			
+			// Repeat zero for 3-10 times
+			else if (code == 17)
+			{
+				// Use zero
+				repval = 0;
+				
+				// Read 3 bits
+				repfor = 3 + inputbits.removeFirstInt(3);
+			}
+			
+			// Repeat zero for 11-138 times
+			else if (code == 18)
+			{
+				// Use zero
+				repval = 0;
+				
+				// Read 7 bits
+				repfor = 11 + inputbits.removeFirstInt(7);
+			}
+			
+			// Illegal code
+			else
+				throw new InflaterException(String.format("XI0w %d", code));
+			
+			// Could fail
+			try
+			{
+				// Place in repeated values
+				for (int i = 0; i < repfor; i++)
+					__out[__next++] = repval;
+			}
+			
+			// Out of bounds entry
+			catch (IndexOutOfBoundsException ioobe)
+			{
+				throw new InflaterException("XI0y", ioobe);
+			}
+		}
+		
+		// Skip count
+		return __next - basenext;
 	}
 	
 	/**
@@ -546,21 +614,22 @@ public class InflateDataProcessor
 				{
 					// Dump it
 					for (int i = 0; i < total; i++)
-						System.err.printf("DEBUG -- all %d: %d%n", i,
+						System.err.printf("DEBUG -- hlit/dist %d: %d%n", i,
 							rawints[i]);
 					
 					throw new Error("TODO");
 				}
 				
 				// Not enough bits to read code lengths?
-				if (!isFinished() && inputbits.available() < maxbits)
+				// Add 7 due to the repeat zero many times symbol
+				if (!isFinished() && inputbits.available() < maxbits + 7)
 					throw new WaitingException("XI0i");
 				
 				// Read in code
-				__readCodeBits(htree, rawints, next);
+				int cbskip = __readCodeBits(htree, rawints, next);
 				
 				// Increase read
-				_nexthlitdist = next + 1;
+				_nexthlitdist = next + cbskip;
 			}
 		}
 		

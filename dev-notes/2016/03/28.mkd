@@ -77,3 +77,8 @@ compiler part.
 Reading of the distance codes and literal codes are combined, so I should
 handle that case.
 
+## 10:43
+
+Suppose to solve the huffman data, I just needed to read the top of the RFC
+document and just make the stuff there.
+

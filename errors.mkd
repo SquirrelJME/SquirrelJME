@@ -180,6 +180,14 @@ These codes do not have a index meaning and are meant to be short.
    * The actual number of bytes in the window.
  * `XI0v` -- Not enough input bits or the dynamic huffman tree is incomplete
    and a request was made to use data traverses runs off the tree.
+ * `XI0w` -- Illegal code length when reading the dynamic huffman literal and
+   distance code compressed tree.
+   * The input code length.
+ * `XI0x` -- Read a length which duplicates the last length, however the
+   current length being read is the first one.
+   * The attempted length to be read.
+ * `XI0y` -- Write of a literal or distance code length has a repeat which
+   exceeds the bounds of the output table.
 
 # `net.multiphasicapps.interpreter`
 
