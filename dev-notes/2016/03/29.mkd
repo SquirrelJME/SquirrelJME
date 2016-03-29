@@ -21,3 +21,8 @@ of a virtual machine exception.
 The derivation fallback for the state of operations must not destroy the top
 of stack elements unless perhaps a specific flag is set.
 
+## 17:58
+
+For method calls which return no result, I will still need to generate a
+method call for it. Thus the atom will need an operator link itself.
+

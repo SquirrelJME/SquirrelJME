@@ -169,7 +169,19 @@ final class __GenericInvoke__
 			System.err.printf("DEBUG -- Unique #%d: %s%n", i,
 				JVMOperatorLink.uniqueToString(uniqs[i]));
 		
-		throw new Error("TODO");
+		// Setup an operator link which is the result of a method call.
+		if (true)
+			throw new Error("TODO");
+		
+		// Does this method return a value?
+		FieldSymbol frv = desc.returnValue();
+		if (frv != null)
+			throw new Error("TODO");
+		
+		// If it does not, the operation must still be done so attach the
+		// link to the atom
+		else
+			throw new Error("TODO");
 	}
 }
 

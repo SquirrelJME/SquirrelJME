@@ -52,6 +52,9 @@ public final class JVMProgramAtom
 	/** The current array index. */
 	volatile int _index;
 	
+	/** Out of domain operator link to be executed but its value is dropped. */
+	private volatile JVMOperatorLink _oodlink;
+	
 	/**
 	 * Initializes the base of the atom.
 	 *
@@ -164,6 +167,9 @@ public final class JVMProgramAtom
 			// Just copy the variables
 			locals.copyFrom(__v.locals);
 			stack.copyFrom(__v.stack);
+			
+			// Copy the link
+			_oodlink = __v._oodlink;
 		}
 		
 		// Self
@@ -197,6 +203,22 @@ public final class JVMProgramAtom
 		if (isderived)
 			return -1;
 		return pcaddr;
+	}
+	
+	/**
+	 * Returns the out-of-domain operator link which is used when work with no
+	 * result must be performed.
+	 *
+	 * @return The operator link for this atom.
+	 * @since 2016/03/29
+	 */
+	public JVMOperatorLink getLink()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _oodlink;
+		}
 	}
 	
 	/**
@@ -257,6 +279,33 @@ public final class JVMProgramAtom
 	}
 	
 	/**
+	 * Sets the out of domain link which is used to execute operations which
+	 * contain no output to be placed on the stack or a local variable.
+	 *
+	 * @param __l The operation to be performed.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/29
+	 */
+	public JVMProgramAtom setLink(JVMOperatorLink __l)
+		throws NullPointerException
+	{
+		// Check
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Set
+			_oodlink = __l;
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
 	 * Returns the stack variables state.
 	 *
 	 * @rteurn The state of stack variables.
@@ -289,6 +338,14 @@ public final class JVMProgramAtom
 		// Stack
 		sb.append(", stack=");
 		sb.append(stack);
+		
+		// Link, which is optional
+		JVMOperatorLink ll = _oodlink;
+		if (ll != null)
+		{
+			sb.append(", link=");
+			sb.append(ll);
+		}
 		
 		// Finish it
 		sb.append('}');
