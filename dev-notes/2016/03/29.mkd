@@ -47,3 +47,36 @@ which describe what a program does. So all operations would reference a
 unique variable. However if at a given time a variable has not changed value
 then an older one is used in its place.
 
+## 18:16
+
+So for any given address operation, the virtual program would know the
+operations and the state of variables. It would appear as a waterfall with
+logs rolling off so to speak. So all operations would use a unique value for
+one at the given operation and the output of that is for the next operation.
+So for going backwards when an operation is performed, it must check its
+inputs to see if there is a change in the output. This would be done
+recursively for each variable as it is requested. The states of variables
+could be cached so they can be garbage collected as needed, the variables
+which do not need to be constant in memory. The ones that do remain constant
+are the ones which set an actual value.
+
+## 18:21
+
+To recap: input variables (which may be virtual), and an operation. If a
+variable is virtual then it propogates up to find its value based on former
+operations and such. Virtually all variables would end up being virtual. This
+would cut on active memory. I can also have a pool of unique values which are
+known to the entire program. I would have to handle situations where variables
+are just copied to another place, in that case the unique variable number for
+both locations would be the same. Then each unique variable would have a set
+of operations which are performed on it. However, with propogation upwards this
+would not be needed at all. The copy operation would be the operation itself
+and it could just return its input as its output, so the unique variable list
+is not needed. Thus if it eats `local#7@n` then it will for its stack variables
+have there exactly `local#7@n` despite being in the stack. This would be done
+instead of having its output be `stack#1@n+1`. The operation would be cached
+and the copy operation is pointless. When code generation time occurs, the
+program can allocation registers and stack space. Pointless operations such
+as copy would not be sent to the generator at all, unless it were really
+important.
+
