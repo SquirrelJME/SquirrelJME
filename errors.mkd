@@ -357,6 +357,14 @@ These codes do not have a index meaning and are meant to be short.
    length of the variable set.
    * The desired slot which exceeds the bound (the number of slots).
  * `IN20` -- Index out of bounds while obtaining local or stack variable.
+ * `IN21` -- Cannot use the given method/interface method reference with an
+   invocation of a given type.
+   * The reference which was used.
+   * The type of invocation being performed.
+ * `IN22` -- `invokeinterface` instruction argument `count` is zero.
+   * The zero value.
+ * `IN23` -- `invokeinterface` instruction argument `0` is not zero.
+   * The non-zero value.
 
 # `net.multiphasicapps.interpreter.local`
 

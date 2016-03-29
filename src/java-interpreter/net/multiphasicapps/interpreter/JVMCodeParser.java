@@ -429,6 +429,17 @@ public class JVMCodeParser
 		}
 		
 		/**
+		 * Returns the class constant pool.
+		 *
+		 * @return The class constant pool.
+		 * @since 2016/03/29
+		 */
+		public JVMConstantPool constantPool()
+		{
+			return constantpool;
+		}
+		
+		/**
 		 * Returns the atom for the current instruction.
 		 *
 		 * @return The current instruction atom.

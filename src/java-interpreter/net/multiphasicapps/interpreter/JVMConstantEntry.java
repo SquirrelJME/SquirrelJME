@@ -364,7 +364,7 @@ public abstract class JVMConstantEntry
 	 * @since 2016/03/15
 	 */
 	public static final class InterfaceMethodReference
-		extends MemberReference<MethodSymbol>
+		extends MethodReference
 	{
 		/**
 		 * Initializes the interface method reference.
@@ -378,7 +378,7 @@ public abstract class JVMConstantEntry
 			DataInputStream __dis)
 			throws IOException
 		{
-			super(__icp, __dis, MethodSymbol.class);
+			super(__icp, __dis);
 		}
 	}
 	
@@ -387,7 +387,7 @@ public abstract class JVMConstantEntry
 	 *
 	 * @since 2016/03/15
 	 */
-	public static final class MethodReference
+	public static class MethodReference
 		extends MemberReference<MethodSymbol>
 	{
 		/**

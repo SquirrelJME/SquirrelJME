@@ -14,6 +14,7 @@ import java.io.IOException;
 import net.multiphasicapps.interpreter.JVMByteOpHandler;
 import net.multiphasicapps.interpreter.JVMClassFormatError;
 import net.multiphasicapps.interpreter.JVMCodeParser;
+import net.multiphasicapps.interpreter.JVMInvokeType;
 import net.multiphasicapps.interpreter.JVMProgramState;
 import net.multiphasicapps.interpreter.JVMVariableType;
 
@@ -36,9 +37,25 @@ public class JVMOpHandler176To191
 		// Depends on the operation
 		switch (__op)
 		{
+				// invokevirtual
+			case 182:
+				__GenericInvoke__.__invoke(JVMInvokeType.VIRTUAL, __br);
+				break;
+				
 				// invokespecial
 			case 183:
-				throw new Error("TODO");
+				__GenericInvoke__.__invoke(JVMInvokeType.SPECIAL, __br);
+				break;
+				
+				// invokestatic
+			case 184:
+				__GenericInvoke__.__invoke(JVMInvokeType.STATIC, __br);
+				break;
+				
+				// invokeinterface
+			case 185:
+				__GenericInvoke__.__invoke(JVMInvokeType.INTERFACE, __br);
+				break;
 			
 			default:
 				throw new JVMClassFormatError(

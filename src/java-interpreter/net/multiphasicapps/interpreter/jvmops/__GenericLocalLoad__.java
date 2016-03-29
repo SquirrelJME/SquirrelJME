@@ -25,7 +25,7 @@ import net.multiphasicapps.interpreter.JVMVariableType;
  *
  * @since 2016/03/26
  */
-class __GenericLocalLoad__
+final class __GenericLocalLoad__
 {
 	/**
 	 * Not initialized.

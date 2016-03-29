@@ -1,0 +1,13 @@
+# 2016/03/29
+
+## 16:39
+
+All of the invoke operations are essentially the same and since I do not have
+to handle `invokedynamic` at all, I do not have to worry about the complexities
+that it brings to the virtual machine.
+
+## 16:41
+
+The interface method reference would probably be best as a method, I do have to
+check them if an interface is used however.
+
