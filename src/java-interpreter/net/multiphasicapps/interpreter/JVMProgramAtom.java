@@ -97,7 +97,7 @@ public final class JVMProgramAtom
 		_programstate = __div._programstate;
 		lock = _programstate.lock;
 		isderived = true;
-		pcaddr = -1;
+		pcaddr = __div.pcaddr;
 		
 		// Lock
 		synchronized (lock)

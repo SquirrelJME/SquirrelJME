@@ -187,7 +187,7 @@ public class JVMOperatorLink
 		if (constanta != null)
 			sb.append(constanta);
 		else
-			sb.append(__uniqueToString(uniquea));
+			sb.append(uniqueToString(uniquea));
 		
 		// Has an operation?
 		if (op != null)
@@ -201,7 +201,7 @@ public class JVMOperatorLink
 			if (constantb != null)
 				sb.append(constantb);
 			else
-				sb.append(__uniqueToString(uniqueb));
+				sb.append(uniqueToString(uniqueb));
 		}
 		
 		// End
@@ -216,7 +216,7 @@ public class JVMOperatorLink
 	 * @return The string representation of the unique.
 	 * @since 2016/03/27
 	 */
-	private static String __uniqueToString(long __u)
+	public static String uniqueToString(long __u)
 	{
 		// Setup
 		StringBuilder sb = new StringBuilder("<");

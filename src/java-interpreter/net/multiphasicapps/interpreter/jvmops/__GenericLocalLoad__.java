@@ -54,7 +54,7 @@ final class __GenericLocalLoad__
 		if (__br == null || __type == null)
 			throw new NullPointerException("NARG");
 		
-		// Get the current and next atom
+		// Get the current and derived atom
 		JVMProgramAtom cur = __br.currentAtom();
 		JVMProgramAtom div = cur.derive();
 		

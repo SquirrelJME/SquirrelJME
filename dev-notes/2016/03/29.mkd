@@ -11,3 +11,13 @@ that it brings to the virtual machine.
 The interface method reference would probably be best as a method, I do have to
 check them if an interface is used however.
 
+## 17:33
+
+Stack overflow and underflow would probably best throw an exception which is
+of a virtual machine exception.
+
+## 17:50
+
+The derivation fallback for the state of operations must not destroy the top
+of stack elements unless perhaps a specific flag is set.
+

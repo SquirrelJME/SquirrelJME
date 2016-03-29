@@ -179,6 +179,30 @@ public abstract class JVMConstantEntry
 			return pool.<ClassName>getAs(classdx,
 				ClassName.class);
 		}
+		
+		/**
+		 * Returns the descriptor of this member.
+		 *
+		 * @return The method descriptor.
+		 * @since 2016/03/29
+		 */
+		@SuppressWarnings({"unchecked"})
+		public final V memberType()
+		{
+			return (V)nameAndType().getValue();
+		}
+		
+		/**
+		 * Returns the name and type of this member.
+		 *
+		 * @return The member name and type.
+		 * @since 2016/03/29
+		 */
+		public final NameAndType nameAndType()
+		{
+			return pool.<NameAndType>getAs(natdx,
+				NameAndType.class);
+		}
 	}
 	
 	/**

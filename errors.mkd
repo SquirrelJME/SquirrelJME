@@ -365,6 +365,17 @@ These codes do not have a index meaning and are meant to be short.
    * The zero value.
  * `IN23` -- `invokeinterface` instruction argument `0` is not zero.
    * The non-zero value.
+ * `IN24` -- The stack overflowed.
+ * `IN25` -- The stack underflowed.
+ * `IN26` -- Method argument is `long`/`double` however the element at the top
+   of the stack is not TOP.
+   * The type is actually is.
+ * `IN27` -- Expected 
+   * The expected type.
+   * The type which was popped from the stack.
+ * `IN28` -- The instance variable for an instance method invocation is not an
+   object.
+   * The type which was popped from the stack.
 
 # `net.multiphasicapps.interpreter.local`
 

@@ -168,6 +168,21 @@ public final class JVMProgramSlot
 	 */
 	public JVMVariableType getType()
 	{
+		return getType(false);
+	}
+	
+	/**
+	 * Returns the type of value contained in this slot.
+	 *
+	 * If there is no value here, then this propogates up the slot mappings
+	 * until a type is found. This should never return {@code null}.
+	 *
+	 * @param __iso If {@code true} then stack overflows are ignored.
+	 * @return The value stored in this slot.
+	 * @since 2016/03/29
+	 */
+	public JVMVariableType getType(boolean __iso)
+	{
 		// Lock
 		synchronized (lock)
 		{
@@ -182,7 +197,8 @@ public final class JVMProgramSlot
 				// When getting types, the top of the stack must be
 				// handled because when a get is at or exceeds the top
 				// of the stack then it must always return nothing.
-				if (isstack)
+				// But might not want stack overflows to stop the value here
+				if (isstack && !__iso)
 				{
 					// Get the top of the stack for this slot
 					mtop = Math.min(mtop, s.variables._stacktop);

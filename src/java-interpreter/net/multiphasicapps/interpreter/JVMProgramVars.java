@@ -242,16 +242,15 @@ public class JVMProgramVars
 	}
 	
 	/**
-	 * Pushes a slot to the stack and returns it, it is initialized to
-	 * the {@link JVMVariableType#NOTHING} type with no link.
+	 * Pops a slot from the stack and returns it.
 	 *
-	 * @return The slot at the top of the stack.
+	 * @return The entry which was at the top of the stack.
 	 * @throws IllegalStateException If this is not a stack.
-	 * @throws IndexOutOfBoundsException If this overflows the stack.
-	 * @since 2016/03/27
+	 * @throws JVMVerifyException If this underflows the stack.
+	 * @since 2016/03/29
 	 */
-	public JVMProgramSlot push()
-		throws IllegalStateException, IndexOutOfBoundsException
+	public JVMProgramSlot pop()
+		throws IllegalStateException, JVMVerifyException
 	{
 		// If not a stack, fail
 		if (!isstack)
@@ -262,7 +261,58 @@ public class JVMProgramVars
 		{
 			// Get the slot at the top
 			int top = _stacktop;
-			JVMProgramSlot rv = this.get(top);
+			JVMProgramSlot rv;
+			try
+			{
+				rv = this.get(top - 1);
+			}
+			
+			// Underflowed
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new JVMVerifyException("IN25", e);
+			}
+			
+			// Set the new top
+			setStackTop(top - 1);
+			
+			// Return the slot
+			return rv;
+		}
+	}
+	
+	/**
+	 * Pushes a slot to the stack and returns it, it is initialized to
+	 * the {@link JVMVariableType#NOTHING} type with no link.
+	 *
+	 * @return The slot at the top of the stack.
+	 * @throws IllegalStateException If this is not a stack.
+	 * @throws JVMVerifyException If this overflows the stack.
+	 * @since 2016/03/27
+	 */
+	public JVMProgramSlot push()
+		throws IllegalStateException, JVMVerifyException
+	{
+		// If not a stack, fail
+		if (!isstack)
+			throw new IllegalStateException("IN1s");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Get the slot at the top
+			int top = _stacktop;
+			JVMProgramSlot rv;
+			try
+			{
+				rv = this.get(top);
+			}
+			
+			// Overflowed
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new JVMVerifyException("IN24", e);
+			}
 			
 			// Initialize to nothing
 			rv.setType(JVMVariableType.NOTHING);
@@ -282,12 +332,12 @@ public class JVMProgramVars
 	 * @param __s The new stack top to use.
 	 * @return {@code this}.
 	 * @throws IllegalStateException If this is not a stack.
-	 * @throws IndexOutOfBoundsException If the top of the stack entry is
+	 * @throws JVMVerifyException If the top of the stack entry is
 	 * not within bounds.
 	 * @since 2016/03/26
 	 */
 	public JVMProgramVars setStackTop(int __s)
-		throws IllegalStateException, IndexOutOfBoundsException
+		throws IllegalStateException, JVMVerifyException
 	{
 		// If not a stack, fail
 		if (!isstack)
@@ -295,7 +345,7 @@ public class JVMProgramVars
 		
 		// Must be in bounds
 		if (__s < 0 || __s > size())
-			throw new IndexOutOfBoundsException(String.format("IOOB %d",
+			throw new JVMVerifyException(String.format("IOOB %d",
 				__s));
 		
 		// Lock
