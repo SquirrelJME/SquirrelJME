@@ -26,3 +26,24 @@ of stack elements unless perhaps a specific flag is set.
 For method calls which return no result, I will still need to generate a
 method call for it. Thus the atom will need an operator link itself.
 
+## 18:06
+
+It would likely be easier if I were to generate the SSA and the specified
+chains and uniques and such on the fly rather than associating them with the
+state of things. Essentially, instead of having operator links for locals,
+stack items, and atoms I would instead have a program chain which performs
+operations. As for the local and stack variables, I can have a change order
+for that position (likely the PC address) which when a variable is changed then
+the variable ID is incremented. Then `JVMProgramSlot.unique()` would go away
+because that points to the individual slot. `JVMOperatorLink` would also go
+away. This way the stack and locals would just keep their former states and
+such. The change order could either be explicit and implicit potentially. If
+a jump back is made and variables change, then a phi-function could be placed.
+It would work with implicit IDs, because say the locals do not change at all,
+then suddenly it does because a jump back is made for a loop, then it gets
+updated. An alternative to all of this is have something similar, but where
+each slot is still unique, exception a linear set of operations are performed
+which describe what a program does. So all operations would reference a
+unique variable. However if at a given time a variable has not changed value
+then an older one is used in its place.
+
