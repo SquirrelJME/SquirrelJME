@@ -80,3 +80,23 @@ program can allocation registers and stack space. Pointless operations such
 as copy would not be sent to the generator at all, unless it were really
 important.
 
+## 20:03
+
+Thinking about it (by not thinking about it), I can merge the byte code with
+this idea I have. I give it a program and instead of my own operations it
+uses the byte code. However it also has the cached operations and such which
+do things. First I get the byte code array, then I get the position of all the
+instructions. Then I run through them. The class can handle caching and such.
+It would be a hybrid of an interpreter, with caching, and SSA so to speak. It
+would also be combined into one. I can also have a cache of inputs and outputs.
+Then when it comes to code generation, I will have an SSA kind of form and I
+can just iterate over the byte code and generate code depending on the
+operations. Only a specific set of operations would need to be handled. If
+some instructions to special things, I can have an external do something class
+which describes what it does.
+
+## 20:31
+
+Exceptions and other verification details such as the `StackMapTable` can be
+merged into this.
+
