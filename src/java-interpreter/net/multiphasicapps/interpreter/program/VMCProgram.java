@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,6 +168,22 @@ public class VMCProgram
 			// Get the operation here
 			Op op = get(i);
 			
+			// Get the jump targets for the operation
+			List<VMCJumpTarget> jts = op.jumpTargets();
+			int nj = jts.size();
+			
+			// No target jumps are made, this instruction ends execution
+			if (nj <= 0)
+				continue;
+			
+			// If only a natural jump is performed then do not perform any work
+			// to jump sources. This is performed later for each target when
+			// there are actually other jump targets to consider. Otherwise
+			// every instruction will end up getting an explicit jump source
+			// when it is not truly needed, unless exceptions are being used.
+			else if (nj == 1 && jts.get(0).getType() == VMCJumpType.NATURAL)
+				continue;
+			
 			throw new Error("TODO");
 		}
 		
@@ -246,6 +263,9 @@ public class VMCProgram
 		/** Jump sources (if implicit). */
 		private volatile Reference<List<VMCJumpSource>> _ijsrc;
 		
+		/** Jump targets (always implicit). */
+		private volatile Reference<List<VMCJumpTarget>> _ijtar;
+		
 		/**
 		 * Initializes the operation.
 		 *
@@ -256,6 +276,17 @@ public class VMCProgram
 		{
 			logical = __pc;
 			physical = _ipos[logical];
+		}
+		
+		/**
+		 * Returns the address of this operation.
+		 *
+		 * @return The operation address.
+		 * @since 2016/03/30
+		 */
+		public int address()
+		{
+			return logical;
 		}
 		
 		/**
@@ -321,6 +352,83 @@ public class VMCProgram
 		}
 		
 		/**
+		 * Returns the jump targets for the current instruction.
+		 *
+		 * @return The list of jump targets.
+		 * @since 2016/03/30
+		 */
+		public List<VMCJumpTarget> jumpTargets()
+		{
+			// Cached?
+			Reference<List<VMCJumpTarget>> ref = _ijtar;
+			List<VMCJumpTarget> rv;
+			
+			// Needs creation?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Get the instruction code
+				int ik = instructionCode();
+				
+				// The following have no jump targets
+				if (ik == VMCInstructionIDs.ARETURN ||
+					ik == VMCInstructionIDs.ATHROW ||
+					ik == VMCInstructionIDs.DRETURN ||
+					ik == VMCInstructionIDs.FRETURN ||
+					ik == VMCInstructionIDs.IRETURN ||
+					ik == VMCInstructionIDs.LRETURN ||
+					ik == VMCInstructionIDs.RETURN)
+					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
+						Arrays.<VMCJumpTarget>asList());
+				
+				// Lookup switch
+				else if (ik == VMCInstructionIDs.LOOKUPSWITCH)
+					throw new Error("TODO");
+				
+				// Table switch
+				else if (ik == VMCInstructionIDs.TABLESWITCH)
+					throw new Error("TODO");
+				
+				// An expilcit address
+				else if (ik == VMCInstructionIDs.GOTO ||
+					ik == VMCInstructionIDs.GOTO_W)
+					throw new Error("TODO");
+				
+				// Conditional to a given instruction or if false, the next
+				// instruction
+				else if (ik == VMCInstructionIDs.IF_ACMPEQ ||
+					ik == VMCInstructionIDs.IF_ACMPNE ||
+					ik == VMCInstructionIDs.IFEQ ||
+					ik == VMCInstructionIDs.IFGE ||
+					ik == VMCInstructionIDs.IFGT ||
+					ik == VMCInstructionIDs.IF_ICMPEQ ||
+					ik == VMCInstructionIDs.IF_ICMPGE ||
+					ik == VMCInstructionIDs.IF_ICMPGT ||
+					ik == VMCInstructionIDs.IF_ICMPLE ||
+					ik == VMCInstructionIDs.IF_ICMPLT ||
+					ik == VMCInstructionIDs.IF_ICMPNE ||
+					ik == VMCInstructionIDs.IFLE ||
+					ik == VMCInstructionIDs.IFLT ||
+					ik == VMCInstructionIDs.IFNE ||
+					ik == VMCInstructionIDs.IFNONNULL ||
+					ik == VMCInstructionIDs.IFNULL)
+					throw new Error("TODO");
+				
+				// Implicit next instruction
+				else
+					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
+						Arrays.<VMCJumpTarget>asList(new VMCJumpTarget(
+							VMCProgram.this, VMCJumpType.NATURAL,
+							logical + 1)));
+				
+				// Cache it
+				_ijtar = new WeakReference<>(rv);
+			}
+			
+			// Return it
+			return rv;
+		}
+		
+		/**
 		 * Returns the next operation.
 		 *
 		 * @return The next operation or {@code null} if this is the last.
@@ -331,6 +439,17 @@ public class VMCProgram
 			if (logical >= (_ipos.length - 1))
 				return null;
 			return VMCProgram.this.get(logical + 1);
+		}
+		
+		/**
+		 * Returns the physical address of this operation.
+		 *
+		 * @return The physical address.
+		 * @since 2016/03/30
+		 */
+		public int physicalAddress()
+		{
+			return physical;
 		}
 		
 		/**

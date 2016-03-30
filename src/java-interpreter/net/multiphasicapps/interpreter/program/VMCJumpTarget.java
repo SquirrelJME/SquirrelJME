@@ -87,5 +87,27 @@ public class VMCJumpTarget
 		exception = __bn;
 		address = __addr;
 	}
+	
+	/**
+	 * Returns the address to jump to.
+	 *
+	 * @return The address to jump to.
+	 * @since 2016/03/30
+	 */
+	public int address()
+	{
+		return address;
+	}
+	
+	/**
+	 * Returns the jump type that this jump makes.
+	 *
+	 * @return The jump type used for this jump.
+	 * @since 2016/03/30
+	 */
+	public VMCJumpType getType()
+	{
+		return type;
+	}
 }
 

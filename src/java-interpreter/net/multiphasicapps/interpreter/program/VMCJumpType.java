@@ -17,8 +17,11 @@ package net.multiphasicapps.interpreter.program;
  */
 public enum VMCJumpType
 {
-	/** Normal. */
-	NORMAL,
+	/** Natural progression. */
+	NATURAL,
+	
+	/** Explicit jump. */
+	EXPLICIT,
 	
 	/** Conditional. */
 	CONDITIONAL,
