@@ -83,12 +83,14 @@ public class VMCJumpSource
 	 * @param __lo The inclusive starting address of the jump.
 	 * @param __hi The inclusive ending address of the jump.
 	 * @throws IllegalArgumentException If the jump type is not exceptional
-	 * and the low address is not equal to the high address, or it is not
-	 * exceptional and a binary name was specified.
+	 * and the low address is not equal to the high address, it is not
+	 * exceptional and a binary name was specified, or a binary name was
+	 * not specified and this is an exception.
 	 * @throws JVMVerifyException If the low or high address are negative or
 	 * exceed the program size, or the high address is lower than the lower
 	 * address.
-	 * @throws NullPointerException On null arguments, except for {@link __bn}.
+	 * @throws NullPointerException On null arguments, except for {@link __bn}
+	 * unless the jump type is an exception.
 	 * @since 2016/03/30
 	 */
 	VMCJumpSource(VMCProgram __prg, VMCJumpType __jt, BinaryNameSymbol __bn,
@@ -101,11 +103,11 @@ public class VMCJumpSource
 			throw new NullPointerException("NARG");
 		if (__lo < 0 || __hi < 0 || __hi < __lo || __lo >= __prg.size() ||
 			__hi >= __prg.size())
-			throw new JVMVerifyException(String.format("IN29 %s %s",
+			throw new JVMVerifyException(String.format("IN29 %d %d",
 				__lo, __hi));
 		if (__jt != VMCJumpType.EXCEPTIONAL && __lo != __hi)
 			throw new IllegalArgumentException("IN2a");
-		if (__jt != VMCJumpType.EXCEPTIONAL && __bn != null)
+		if ((__jt == VMCJumpType.EXCEPTIONAL) != (__bn != null))
 			throw new IllegalArgumentException("IN2b");
 		
 		// Set

@@ -382,8 +382,10 @@ These codes do not have a index meaning and are meant to be short.
    * The high address range.
  * `IN2a` -- Normal and conditional jumps must have a range consisting of only
    a single address.
- * `IN2b` -- Exception to catch was specified when the jump source is not an
-   exceptional jump.
+ * `IN2b` -- Exception to throw/catch was specified when the jump is not an
+   exceptional jump or a class was not specified when one is thrown/caught.
+ * `IN2c` -- Jump to an address which is outside of the program.
+   * The address.
 
 # `net.multiphasicapps.interpreter.local`
 
