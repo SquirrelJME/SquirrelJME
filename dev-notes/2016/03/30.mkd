@@ -65,3 +65,14 @@ example an instruction after `return` or `athrow` with no other jump sources
 would need to be initialized with a blank jump source because it is not
 reachable, otherwise if none is set then the implied one will be used instead.
 
+## 13:58
+
+Going to need a good way to represent the state of variables in the program.
+Ones which are both implicit and explicit. Something similar to the operator
+links but a bit better perhaps.
+
+## 18:16
+
+It would be nice to generate some documentation of the source code (i.e. the
+JavaDoc) and then host it somewhere.
+

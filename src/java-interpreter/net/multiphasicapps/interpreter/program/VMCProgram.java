@@ -36,12 +36,6 @@ public class VMCProgram
 	protected final Object lock =
 		new Object();
 	
-	/** Maximum local variables. */
-	protected final int maxlocals;
-	
-	/** Maximum stack variables. */
-	protected final int maxstack;
-	
 	/** The code length. */
 	private final int length;
 	
@@ -57,6 +51,15 @@ public class VMCProgram
 	
 	/** Jump sources in the program which are explicit and not implicit. */
 	private final Map<Integer, List<VMCJumpSource>> _expjumps;
+	
+	/** Initial variable state. */
+	private final VMCVariableStates _entrystate;
+	
+	/** Maximum local variables. */
+	final int _maxlocals;
+	
+	/** Maximum stack variables. */
+	final int _maxstack;
 	
 	/**
 	 * This initializes the program using the specified code array.
@@ -83,8 +86,8 @@ public class VMCProgram
 			throw new NullPointerException("NARG");
 		
 		// Set
-		maxlocals = __ml;
-		maxstack = __ms;
+		_maxlocals = __ml;
+		_maxstack = __ms;
 		_code = __code;
 		length = _code.length;
 		
@@ -184,6 +187,7 @@ public class VMCProgram
 			else if (nj == 1 && jts.get(0).getType() == VMCJumpType.NATURAL)
 				continue;
 			
+			// Add source target jumps to the destination operations
 			throw new Error("TODO");
 		}
 		
@@ -195,6 +199,8 @@ public class VMCProgram
 			unmodifiableMap(xj);
 		
 		// Setup the initial program state based on the method descriptor.
+		VMCVariableStates entrystate = new VMCVariableStates(this);
+		_entrystate = entrystate;
 		if (true)
 			throw new Error("TODO");
 	}
