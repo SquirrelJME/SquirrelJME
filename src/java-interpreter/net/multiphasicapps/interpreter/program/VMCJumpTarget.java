@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter.program;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.interpreter.JVMVerifyException;
 
@@ -35,6 +37,9 @@ public class VMCJumpTarget
 	
 	/** The exception to throw. */
 	protected final BinaryNameSymbol exception;
+	
+	/** String representation cache. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the jump target.
@@ -108,6 +113,44 @@ public class VMCJumpTarget
 	public VMCJumpType getType()
 	{
 		return type;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/30
+	 */
+	@Override
+	public String toString()
+	{
+		// Get reference
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Create?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Build it
+			StringBuilder sb = new StringBuilder("JT:");
+			sb.append(type.name());
+			
+			// Address
+			sb.append('@');
+			sb.append(address);
+			
+			// Throws an exception?
+			BinaryNameSymbol x = exception;
+			if (x != null)
+			{
+				sb.append('^');
+				sb.append(x);
+			}
+			
+			// Finish it
+			_string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		// Return it
+		return rv;
 	}
 }
 

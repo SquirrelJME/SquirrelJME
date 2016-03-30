@@ -238,6 +238,19 @@ public class VMCProgram
 	}
 	
 	/**
+	 * Converts a physical address to a logical one.
+	 *
+	 * @param __phy The physical address to convert.
+	 * @return The logical address from the given physical address or
+	 * {@code -1} if no logical address is associated with one.
+	 * @since 2016/03/30
+	 */
+	public int physicalToLogical(int __phy)
+	{
+		return Math.max(-1, Arrays.binarySearch(_ipos, __phy));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/30
 	 */
@@ -394,7 +407,7 @@ public class VMCProgram
 					throw new Error("TODO");
 				
 				// Conditional to a given instruction or if false, the next
-				// instruction
+				// instruction.
 				else if (ik == VMCInstructionIDs.IF_ACMPEQ ||
 					ik == VMCInstructionIDs.IF_ACMPNE ||
 					ik == VMCInstructionIDs.IFEQ ||
@@ -411,7 +424,14 @@ public class VMCProgram
 					ik == VMCInstructionIDs.IFNE ||
 					ik == VMCInstructionIDs.IFNONNULL ||
 					ik == VMCInstructionIDs.IFNULL)
-					throw new Error("TODO");
+					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
+						Arrays.<VMCJumpTarget>asList(new VMCJumpTarget(
+								VMCProgram.this, VMCJumpType.NATURAL,
+								logical + 1),
+							new VMCJumpTarget(VMCProgram.this,
+								VMCJumpType.CONDITIONAL,
+								physicalToLogical(__ByteUtils__.__readUShort(
+									_code, physical + 1)))));
 				
 				// Implicit next instruction
 				else

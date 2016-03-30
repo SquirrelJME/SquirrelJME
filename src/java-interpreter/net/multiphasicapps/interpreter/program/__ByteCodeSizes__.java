@@ -37,29 +37,6 @@ class __ByteCodeSizes__
 	}
 	
 	/**
-	 * Reads an unsigned integer from the given buffer.
-	 *
-	 * @param __code The byte array.
-	 * @param __pos The position of the integer.
-	 * @return The read value.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/29
-	 */
-	private static int __readUInt(byte[] __code, int __pos)
-		throws NullPointerException
-	{
-		// Check
-		if (__code == null)
-			throw new NullPointerException("NARG");
-		
-		// Read and merge the values (big endian)
-		return ((((int)__code[__pos]) & 0xFF) << 24) |
-			((((int)__code[__pos + 1]) & 0xFF) << 16) |
-			((((int)__code[__pos + 2]) & 0xFF) << 8) |
-			((((int)__code[__pos + 3]) & 0xFF));
-	}
-	
-	/**
 	 * This determines the size of the given instruction.
 	 *
 	 * @param __pos The position of the instruction.
@@ -107,8 +84,8 @@ class __ByteCodeSizes__
 				int ppos = ((__pos + 3) & (~3));
 				
 				// Read the low and high bytes
-				int lo = __readUInt(__code, ppos + 4);
-				int hi = __readUInt(__code, ppos + 8);
+				int lo = __ByteUtils__.__readUInt(__code, ppos + 4);
+				int hi = __ByteUtils__.__readUInt(__code, ppos + 8);
 				
 				// Calculate the size
 				return (ppos - __pos) + 12 + (4 * ((hi - lo) + 1));
@@ -121,7 +98,7 @@ class __ByteCodeSizes__
 				int ppos = ((__pos + 3) & (~3));
 				
 				// Read the pair count
-				int np = __readUInt(__code, ppos + 4);
+				int np = __ByteUtils__.__readUInt(__code, ppos + 4);
 				
 				// Calculate the size
 				return (ppos - __pos) + 8 + (8 * np);

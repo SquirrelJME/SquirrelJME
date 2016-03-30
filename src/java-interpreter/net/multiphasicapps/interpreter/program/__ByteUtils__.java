@@ -1,0 +1,74 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
+//     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU Affero General Public License v3+, or later.
+// For more information see license.mkd.
+// ---------------------------------------------------------------------------
+
+package net.multiphasicapps.interpreter.program;
+
+/**
+ * This contains methods for reading data from a byte array.
+ *
+ * @since 2016/03/30
+ */
+class __ByteUtils__
+{
+	/**
+	 * Not used.
+	 *
+	 * @since 2016/03/30
+	 */
+	private __ByteUtils__()
+	{
+		throw new RuntimeException("TODO");
+	}
+	
+	/**
+	 * Reads an unsigned integer from the given buffer.
+	 *
+	 * @param __code The byte array.
+	 * @param __pos The position of the integer.
+	 * @return The read value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/29
+	 */
+	static int __readUInt(byte[] __code, int __pos)
+		throws NullPointerException
+	{
+		// Check
+		if (__code == null)
+			throw new NullPointerException("NARG");
+		
+		// Read and merge the values (big endian)
+		return ((((int)__code[__pos]) & 0xFF) << 24) |
+			((((int)__code[__pos + 1]) & 0xFF) << 16) |
+			((((int)__code[__pos + 2]) & 0xFF) << 8) |
+			((((int)__code[__pos + 3]) & 0xFF));
+	}
+	
+	/**
+	 * Reads an unsigned short from the given buffer.
+	 *
+	 * @param __code The byte array.
+	 * @param __pos The position of the short.
+	 * @return The read value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/30
+	 */
+	static int __readUShort(byte[] __code, int __pos)
+		throws NullPointerException
+	{
+		// Check
+		if (__code == null)
+			throw new NullPointerException("NARG");
+		
+		// Read and merge the values (big endian)
+		return ((((int)__code[__pos + 0]) & 0xFF) << 8) |
+			((((int)__code[__pos + 1]) & 0xFF));
+	}
+}
+
