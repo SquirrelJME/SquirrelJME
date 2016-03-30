@@ -56,3 +56,12 @@ the program stuff to its own package also.
 I will need a prefix for the program though, not `JVM` but something else.
 Perhaps just `PRG`.
 
+## 13:56
+
+For program sources, all instructions can have it. If there is none in the
+source mapping then it is an implied previous instruction. I would have to
+build it around places where there is no natural flow to the instruction. For
+example an instruction after `return` or `athrow` with no other jump sources
+would need to be initialized with a blank jump source because it is not
+reachable, otherwise if none is set then the implied one will be used instead.
+

@@ -13,9 +13,12 @@ package net.multiphasicapps.interpreter.program;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.interpreter.JVMVerifyException;
@@ -51,6 +54,9 @@ public class VMCProgram
 	private final Map<Op, Reference<Op>> _opcache =
 		new WeakHashMap<>();
 	
+	/** Jump sources in the program which are explicit and not implicit. */
+	private final Map<Integer, List<VMCJumpSource>> _expjumps;
+	
 	/**
 	 * This initializes the program using the specified code array.
 	 *
@@ -84,10 +90,10 @@ public class VMCProgram
 		// Determine the position of all operations so that they can be
 		// condensed into single index points (they all consume a single
 		// address rather than multiple ones).
-		int n = length;
-		int[] bp = new int[n];
+		int pn = length;
+		int[] bp = new int[pn];
 		int bpa = 0;
-		for (int i = 0; i < n;)
+		for (int i = 0; i < pn;)
 		{
 			// Set position where this instruction starts
 			bp[bpa++] = i;
@@ -105,7 +111,7 @@ public class VMCProgram
 		
 		// The byte code for this method entirely uses single byte instructions
 		// so no condensation is needed
-		if (bpa == n)
+		if (bpa == pn)
 			_ipos = bp;
 		
 		// Otherwise, condense
@@ -125,8 +131,51 @@ public class VMCProgram
 		// Not needed
 		bp = null;
 		
-		// Determine the control flow graph to determine which operations
-		// flow into each other and which ones do not.
+		// The control flow graph needs to be determined. Since most
+		// instructions naturally flow to the next instruction, this has to be
+		// handled initially so that instructions which follow non-natural
+		// program flow sources have no jump sources set.
+		Map<Integer, List<VMCJumpSource>> xj = new HashMap<>();
+		int n = size();
+		for (int i = 0; i < n; i++)
+		{
+			// Get the operation here
+			Op op = get(i);
+			int ik = op.instructionCode();
+			
+			// No instruction following these has a naturally implicit jump
+			// source from the previous instruction
+			if (i == 0 || 
+				ik == VMCInstructionIDs.ARETURN ||
+				ik == VMCInstructionIDs.ATHROW ||
+				ik == VMCInstructionIDs.DRETURN ||
+				ik == VMCInstructionIDs.FRETURN ||
+				ik == VMCInstructionIDs.GOTO ||
+				ik == VMCInstructionIDs.GOTO_W ||
+				ik == VMCInstructionIDs.IRETURN ||
+				ik == VMCInstructionIDs.LOOKUPSWITCH ||
+				ik == VMCInstructionIDs.LRETURN ||
+				ik == VMCInstructionIDs.RETURN ||
+				ik == VMCInstructionIDs.TABLESWITCH)
+				xj.put(i, new ArrayList<VMCJumpSource>());
+		}
+		
+		// Now go through the program again and add any jump sources which
+		// are specified in the byte code via conditions and such.
+		for (int i = 0; i < n; i++)
+		{
+			// Get the operation here
+			Op op = get(i);
+			
+			throw new Error("TODO");
+		}
+		
+		// Lock in the explicit jump map
+		for (Map.Entry<Integer, List<VMCJumpSource>> e : xj.entrySet())
+			e.setValue(MissingCollections.<VMCJumpSource>unmodifiableList(
+				e.getValue()));
+		_expjumps = MissingCollections.<Integer, List<VMCJumpSource>>
+			unmodifiableMap(xj);
 		
 		// Setup the initial program state based on the method descriptor.
 		if (true)
@@ -188,8 +237,11 @@ public class VMCProgram
 	 */
 	public class Op
 	{
-		/** The address of this operation. */
-		protected final int address;
+		/** The logical address of this operation. */
+		protected final int logical;
+		
+		/** The physical address of this operation. */
+		protected final int physical;
 		
 		/**
 		 * Initializes the operation.
@@ -199,7 +251,8 @@ public class VMCProgram
 		 */
 		private Op(int __pc)
 		{
-			address = __pc;
+			logical = __pc;
+			physical = _ipos[logical];
 		}
 		
 		/**
@@ -211,7 +264,7 @@ public class VMCProgram
 		{
 			// If an integer, compare against the address
 			if (__o instanceof Integer)
-				return (address == ((Integer)__o).intValue());
+				return (logical == ((Integer)__o).intValue());
 			
 			// Otherwise must be this
 			return this == __o;
@@ -225,7 +278,26 @@ public class VMCProgram
 		public int hashCode()
 		{
 			// Just use the address
-			return address;
+			return logical;
+		}
+		
+		/**
+		 * Reads the instruction specified code that this operation performs.
+		 *
+		 * @return The instruction ID of this operation.
+		 * @since 2016/03/30
+		 */
+		public int instructionCode()
+		{
+			// Read code here
+			int bc = ((int)_code[physical]) & 0xFF;
+			
+			// If wide, read some more bytes
+			if (bc == VMCInstructionIDs.WIDE)
+				return (bc << 8) | (((int)_code[physical + 1]) & 0xFF);
+			
+			// Otherwise return the code
+			return bc;
 		}
 		
 		/**
@@ -236,9 +308,9 @@ public class VMCProgram
 		 */
 		public Op next()
 		{
-			if (address >= (_ipos.length - 1))
+			if (logical >= (_ipos.length - 1))
 				return null;
-			return VMCProgram.this.get(address + 1);
+			return VMCProgram.this.get(logical + 1);
 		}
 		
 		/**
@@ -249,9 +321,9 @@ public class VMCProgram
 		 */
 		public Op previous()
 		{
-			if (address <= 0)
+			if (logical <= 0)
 				return null;
-			return VMCProgram.this.get(address - 1);
+			return VMCProgram.this.get(logical - 1);
 		}
 	}
 }
