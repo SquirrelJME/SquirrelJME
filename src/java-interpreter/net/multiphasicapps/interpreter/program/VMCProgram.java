@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.interpreter.program;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,14 +18,15 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
  * This class is given a chunk of byte code .
  *
  * @since 2016/03/29
  */
-public class JVMByteProgram
-	extends AbstractList<JVMByteProgram.Op>
+public class VMCProgram
+	extends AbstractList<VMCProgram.Op>
 {
 	/** Lock. */
 	protected final Object lock =
@@ -66,7 +67,7 @@ public class JVMByteProgram
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/29
 	 */
-	public JVMByteProgram(int __ml, int __ms, MethodSymbol __desc,
+	public VMCProgram(int __ml, int __ms, MethodSymbol __desc,
 		boolean __ins, byte... __code)
 		throws JVMVerifyException, NullPointerException
 	{
@@ -237,7 +238,7 @@ public class JVMByteProgram
 		{
 			if (address >= (_ipos.length - 1))
 				return null;
-			return JVMByteProgram.this.get(address + 1);
+			return VMCProgram.this.get(address + 1);
 		}
 		
 		/**
@@ -250,7 +251,7 @@ public class JVMByteProgram
 		{
 			if (address <= 0)
 				return null;
-			return JVMByteProgram.this.get(address - 1);
+			return VMCProgram.this.get(address - 1);
 		}
 	}
 }

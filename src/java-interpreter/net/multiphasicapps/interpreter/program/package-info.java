@@ -9,13 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the individual byte operation handles so that the
- * primary class which performs the translation of byte code is not a massive
- * source or binary file.
+ * This package contains all of the details needed for programs to run on the
+ * virtual machine and carries the state of them.
  *
- * @since 2016/03/23
+ * @since 2016/03/30
  */
 
-@Deprecated
-package net.multiphasicapps.interpreter.jvmops;
+package net.multiphasicapps.interpreter.program;
 

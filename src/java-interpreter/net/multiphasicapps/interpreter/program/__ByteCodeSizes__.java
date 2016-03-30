@@ -8,7 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.interpreter.program;
+
+import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
  * This class contains the logic which is used to determine the size of

@@ -51,3 +51,8 @@ until the entire program is parsed. So it will contain a set of jump sources
 which are either normal, conditional, or exceptional. I should probably move
 the program stuff to its own package also.
 
+## 13:27
+
+I will need a prefix for the program though, not `JVM` but something else.
+Perhaps just `PRG`.
+

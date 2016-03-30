@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.interpreter.program.VMCProgram;
 
 /**
  * This parses the code block of a method and translates the byte code into
@@ -164,10 +165,10 @@ public class JVMCodeParser
 		
 		// Setup a byte program for translation and dynamic cache friendly
 		// program parsing
-		JVMByteProgram jbp = new JVMByteProgram(maxlocal, maxstack, msym,
+		VMCProgram jbp = new VMCProgram(maxlocal, maxstack, msym,
 			!method.getFlags().isStatic(), rawcode);
 		
-		// OLD CODE TO BE REINTEGRATED TO THE NEW JVMByteProgram FOLLOWS
+		// OLD CODE TO BE REINTEGRATED TO THE NEW VMCProgram FOLLOWS
 		if (true)
 			throw new Error("TODO");
 		
