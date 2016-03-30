@@ -376,6 +376,12 @@ These codes do not have a index meaning and are meant to be short.
  * `IN28` -- The instance variable for an instance method invocation is not an
    object.
    * The type which was popped from the stack.
+ * `IN29` -- Jump from outside of the program or the higher address is lower
+   than the lower address.
+   * The low address range.
+   * The high address range.
+ * `IN2a` -- Normal and conditional jumps must have a range consisting of only
+   a single address.
 
 # `net.multiphasicapps.interpreter.local`
 
