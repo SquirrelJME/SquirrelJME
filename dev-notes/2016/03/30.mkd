@@ -8,5 +8,34 @@ all operations are combined as one. I would only have to maintain a single
 state, but it would have to be able to handle the stack and such. It would
 have to be like my old one, where variable types and such are implicit.
 Although this time instead of being actually existing and forced into memory
-it is instead cached fully.
+it is instead cached fully. Thinking about other things, I likely do not need
+to do the program output as I can use the `JVMByteProgram` class and use that
+for translation and such. This class would be handling the SSA and such and
+it could be combined into an interpreter of sorts also.
+
+## 11:04
+
+The program will have an initial input state which is determined by the method
+signature and if it is an instance method or not. When the `StackMapTable` is
+read in the future it will instead of modifying the state of an instruction
+like I have done before, it will become a sort of "checked" state which when
+a check is done, it must be the result for a given operation. This way I do
+not have to juggle setting that state and having derivations of it. Essentially
+there would be no derivations so to speak as the output of an instruction would
+be run through the instruction. It would be cached of course. In the end,
+although using caches much will increase the CPU requirements, it will allow
+the interpreter to run on tighter constrained systems. However since the code
+blocks of all classes must be in memory it is unlikely that the interpreter
+will run at all on constrained systems. Thus on said systems it will likely
+only be AOT only or a JIT of sorts which compiles as needed.
+
+## 11:10
+
+For input and output chaining, they can share the same objects so to speak.
+The initial method inputs will be the input for the first instruction. The
+output of the first instruction will be the input of the next instruction (or
+any points it jumps to). So, I will have to scan the code for jumping points
+so that can correctly be determined. However, the only jumping around
+instructions are literal `goto`s and comparison branches. Exception handlers
+would also have to be known too.
 
