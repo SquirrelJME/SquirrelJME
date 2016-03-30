@@ -145,7 +145,7 @@ public class VMCProgram
 			
 			// No instruction following these has a naturally implicit jump
 			// source from the previous instruction
-			if (i == 0 || 
+			if ((i + 1 < n) && (i == 0 || 
 				ik == VMCInstructionIDs.ARETURN ||
 				ik == VMCInstructionIDs.ATHROW ||
 				ik == VMCInstructionIDs.DRETURN ||
@@ -156,8 +156,8 @@ public class VMCProgram
 				ik == VMCInstructionIDs.LOOKUPSWITCH ||
 				ik == VMCInstructionIDs.LRETURN ||
 				ik == VMCInstructionIDs.RETURN ||
-				ik == VMCInstructionIDs.TABLESWITCH)
-				xj.put(i, new ArrayList<VMCJumpSource>());
+				ik == VMCInstructionIDs.TABLESWITCH))
+				xj.put(i + 1, new ArrayList<VMCJumpSource>());
 		}
 		
 		// Now go through the program again and add any jump sources which
@@ -243,6 +243,9 @@ public class VMCProgram
 		/** The physical address of this operation. */
 		protected final int physical;
 		
+		/** Jump sources (if implicit). */
+		private volatile Reference<List<VMCJumpSource>> _ijsrc;
+		
 		/**
 		 * Initializes the operation.
 		 *
@@ -298,6 +301,23 @@ public class VMCProgram
 			
 			// Otherwise return the code
 			return bc;
+		}
+		
+		/**
+		 * Returns the jump sources for this instruction, a list of addresses
+		 * which jump to this given instruction.
+		 *
+		 * @return The list of jump sources, the list cannot be modified.
+		 * @since 2016/03/30
+		 */
+		public List<VMCJumpSource> jumpSources()
+		{
+			// Explicit jump sources?
+			List<VMCJumpSource> rv = _expjumps.get(logical);
+			if (rv != null)
+				return rv;
+			
+			throw new Error("TODO");
 		}
 		
 		/**
