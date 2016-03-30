@@ -39,3 +39,15 @@ so that can correctly be determined. However, the only jumping around
 instructions are literal `goto`s and comparison branches. Exception handlers
 would also have to be known too.
 
+## 13:20
+
+I will need an efficient way to store the control flow graph, most of the flow
+is implied as it always goes forwards. All of the other parts depend on
+comparisons and such. I need a fast and and an efficent way to store all the
+information. I could use a map. However I believe what I will do is have a map
+of destinations which are then sourced. When evaluating instructions, it is
+known what it jumps to however in general processing sources are not known
+until the entire program is parsed. So it will contain a set of jump sources
+which are either normal, conditional, or exceptional. I should probably move
+the program stuff to its own package also.
+

@@ -124,6 +124,9 @@ public class JVMByteProgram
 		// Not needed
 		bp = null;
 		
+		// Determine the control flow graph to determine which operations
+		// flow into each other and which ones do not.
+		
 		// Setup the initial program state based on the method descriptor.
 		if (true)
 			throw new Error("TODO");
