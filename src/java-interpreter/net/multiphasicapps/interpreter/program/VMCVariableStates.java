@@ -11,6 +11,7 @@
 package net.multiphasicapps.interpreter.program;
 
 import java.util.AbstractList;
+import net.multiphasicapps.interpreter.JVMVariableType;
 
 /**
  * This represents the state of multiple variables within the program.
@@ -26,14 +27,23 @@ public class VMCVariableStates
 	/** The owning program. */
 	protected final VMCProgram program;
 	
+	/** The address of the operation this carries a state for. */
+	protected final int address;
+	
+	/** Is this used as output? */
+	protected final boolean isoutput;
+	
 	/**
 	 * Initializes the variable states.
 	 *
 	 * @param __prg The program which owns this.
-	 * @throws NullPointerException On null arguments.
+	 * @param __addr The addressed operation which this defines a state for.
+	 * @param __io If {@code true} then this represents an output state which
+	 * is used as the input.
+	 * @throws NullPointerException If no program was specified.
 	 * @since 2016/03/30
 	 */
-	VMCVariableStates(VMCProgram __prg)
+	VMCVariableStates(VMCProgram __prg, int __addr, boolean __io)
 		throws NullPointerException
 	{
 		// Check
@@ -42,6 +52,8 @@ public class VMCVariableStates
 		
 		// Set
 		program = __prg;
+		address = __addr;
+		isoutput = __io;
 	}
 	
 	/**

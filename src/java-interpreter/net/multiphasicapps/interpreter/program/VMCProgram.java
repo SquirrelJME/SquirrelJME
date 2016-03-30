@@ -22,6 +22,7 @@ import java.util.WeakHashMap;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.interpreter.JVMVariableType;
 import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
@@ -199,10 +200,23 @@ public class VMCProgram
 			unmodifiableMap(xj);
 		
 		// Setup the initial program state based on the method descriptor.
-		VMCVariableStates entrystate = new VMCVariableStates(this);
+		VMCVariableStates entrystate = new VMCVariableStates(this, 0, false);
 		_entrystate = entrystate;
-		if (true)
+		
+		// If this is an instance method then the first argument is this.
+		int spot = 0;
+		if (__ins)
 			throw new Error("TODO");
+		
+		// Parse
+		int na = __desc.argumentCount();
+		for (int i = 0; i < na; i++)
+		{
+			// Get argument
+			FieldSymbol arg = __desc.get(i);
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -285,6 +299,12 @@ public class VMCProgram
 		/** Jump targets (always implicit). */
 		private volatile Reference<List<VMCJumpTarget>> _ijtar;
 		
+		/** Input state cache. */
+		private volatile Reference<VMCVariableStates> _vsinput;
+		
+		/** Output state cache. */
+		private volatile Reference<VMCVariableStates> _vsoutput;
+		
 		/**
 		 * Initializes the operation.
 		 *
@@ -332,6 +352,31 @@ public class VMCProgram
 		{
 			// Just use the address
 			return logical;
+		}
+		
+		/**
+		 * Returns the state of the instruction when it is first entered which
+		 * acts as an input state to the operation it performs.
+		 *
+		 * Note that the input state of an instruction (except for the first
+		 * one) may be the output of the previous operation, unless there are
+		 * multiple entry points for the operation in which the intersection
+		 * will be calculated if a verification state exists. If a verification
+		 * state does not exist, then all previous outputs must carry the same
+		 * type and value information.
+		 *
+		 * @return The input state.
+		 * @since 2016/03/30
+		 */
+		public VMCVariableStates inputState()
+		{
+			// If this is the first instruction then return the entry state
+			// of the method
+			if (logical == 0)
+				return _entrystate;
+			
+			// Otherwise cache it
+			throw new Error("TODO");
 		}
 		
 		/**
@@ -465,6 +510,18 @@ public class VMCProgram
 			if (logical >= (_ipos.length - 1))
 				return null;
 			return VMCProgram.this.get(logical + 1);
+		}
+		
+		/**
+		 * Returns the output state of the current address after the operation
+		 * it performs has been performed.
+		 *
+		 * @return The operation output state.
+		 * @since 2016/03/30
+		 */
+		public VMCVariableStates outputState()
+		{
+			throw new Error("TODO");
 		}
 		
 		/**

@@ -76,3 +76,15 @@ links but a bit better perhaps.
 It would be nice to generate some documentation of the source code (i.e. the
 JavaDoc) and then host it somewhere.
 
+## 19:11
+
+I suppose states would be based on the initial instruction as input. The first
+instruction would always return the method input state, while other
+instructions for input will pull from one of the sources it has. If there are
+multiple entry points for an instruction, then an intersection of the base
+outputs would be used instead (they must be compatible however). The
+`StackMapTable` and other attributed details can instead be something different
+and act as an input verification state rather than actually being state. This
+means that the states do not have to stick around if they are not needed, it
+also simplifies things also.
+

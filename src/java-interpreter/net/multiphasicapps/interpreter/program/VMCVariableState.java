@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter.program;
 
+import net.multiphasicapps.interpreter.JVMVariableType;
+
 /**
  * This represents the state of a single variable, it may be explicitely
  * generated or implicitely generated.
