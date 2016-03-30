@@ -28,6 +28,7 @@ import java.util.WeakHashMap;
  *
  * @since 2016/03/24
  */
+@Deprecated
 public final class JVMProgramAtom
 	implements Comparable<JVMProgramAtom>
 {

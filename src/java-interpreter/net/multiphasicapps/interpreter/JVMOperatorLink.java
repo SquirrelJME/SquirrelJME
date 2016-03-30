@@ -20,6 +20,7 @@ import java.util.Objects;
  *
  * @since 2016/03/24
  */
+@Deprecated
 public class JVMOperatorLink
 {
 	/**

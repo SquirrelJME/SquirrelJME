@@ -100,3 +100,9 @@ which describes what it does.
 Exceptions and other verification details such as the `StackMapTable` can be
 merged into this.
 
+## 22:50
+
+Just started to implement this, it should in the end result in a cleaner
+and more pure interpreter in the long run. It would also likely use less
+memory than what I have done before.
+

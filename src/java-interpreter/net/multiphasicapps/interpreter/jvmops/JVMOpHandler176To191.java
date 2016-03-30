@@ -23,6 +23,7 @@ import net.multiphasicapps.interpreter.JVMVariableType;
  *
  * @since 2016/03/27
  */
+@Deprecated
 public class JVMOpHandler176To191
 	implements JVMByteOpHandler
 {

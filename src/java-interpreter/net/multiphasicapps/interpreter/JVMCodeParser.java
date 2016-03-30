@@ -139,47 +139,11 @@ public class JVMCodeParser
 			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
 		
 		// Setup state
+		MethodSymbol msym = method.type();
+		
+		// DEPRECATED -- Remove program state
 		JVMProgramState prgstate;
 		_state = prgstate = new JVMProgramState(maxlocal, maxstack);
-		
-		// Setup initial stack state
-		{
-			// Get atom for the first state
-			JVMProgramAtom entryatom = prgstate.get(0, true);
-			
-			// Get locals since they need to be filled with the arguments of
-			// the method
-			JVMProgramVars locals = entryatom.locals();
-			
-			// If an instance method, the first local variable is this.
-			int lx = 0;
-			if (!method.getFlags().isStatic())
-			{
-				JVMProgramSlot ss = locals.get(lx++);
-				ss.setType(JVMVariableType.OBJECT);
-				ss.setLink(new JVMOperatorLink(ss.unique()));
-			}
-			
-			// Handle method arguments otherwise
-			MethodSymbol sym = method.type();
-			int nargs = sym.argumentCount();
-			for (int i = 0; i < nargs; i++)
-			{
-				// Get the one to add
-				JVMVariableType addme = JVMVariableType.bySymbol(sym.get(i));
-				
-				// Place
-				JVMProgramSlot ss = locals.get(lx++);
-				ss.setType(addme);
-				ss.setLink(new JVMOperatorLink(ss.unique()));
-				
-				// If wide, follow with a top argument
-				if (addme.isWide())
-					locals.get(lx++).setType(JVMVariableType.TOP);
-			}
-		}
-		
-		System.err.printf("DEBUG -- %s%n", prgstate);
 		
 		// Read in the code array so it can be parsed later after the
 		// exceptions and the (optional) StackMap/StackMapTable are parsed.
@@ -197,6 +161,15 @@ public class JVMCodeParser
 			// Add into it
 			rx += rc;
 		}
+		
+		// Setup a byte program for translation and dynamic cache friendly
+		// program parsing
+		JVMByteProgram jbp = new JVMByteProgram(maxlocal, maxstack, msym,
+			!method.getFlags().isStatic(), rawcode);
+		
+		// OLD CODE TO BE REINTEGRATED TO THE NEW JVMByteProgram FOLLOWS
+		if (true)
+			throw new Error("TODO");
 		
 		// Read the exception table
 		{

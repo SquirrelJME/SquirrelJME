@@ -27,6 +27,7 @@ import java.util.WeakHashMap;
  *
  * @since 2016/03/25
  */
+@Deprecated
 public class JVMProgramVars
 	extends AbstractList<JVMProgramSlot>
 {
