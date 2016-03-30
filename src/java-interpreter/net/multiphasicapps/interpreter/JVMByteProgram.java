@@ -30,8 +30,14 @@ public class JVMByteProgram
 	/** Maximum stack variables. */
 	protected final int maxstack;
 	
+	/** The code length. */
+	private final int length;
+	
 	/** The buffer containing the raw byte code. */
-	protected final byte[] code;
+	private final byte[] _code;
+	
+	/** The position of each logical instruction to a physical one. */
+	private final int[] _ipos;
 	
 	/**
 	 * This initializes the program using the specified code array.
@@ -60,7 +66,52 @@ public class JVMByteProgram
 		// Set
 		maxlocals = __ml;
 		maxstack = __ms;
-		code = __code;
+		_code = __code;
+		length = _code.length;
+		
+		// Determine the position of all operations so that they can be
+		// condensed into single index points (they all consume a single
+		// address rather than multiple ones).
+		int n = length;
+		int[] bp = new int[n];
+		int bpa = 0;
+		for (int i = 0; i < n;)
+		{
+			// Set position where this instruction starts
+			bp[bpa++] = i;
+			
+			// Get instruction size here
+			int sz = __ByteCodeSizes__.__sizeOf(i, __code);
+			
+			// Negative or zero size?
+			if (sz <= 0)
+				throw new RuntimeException("WTFX");
+			
+			// Go to next instruction
+			i += sz;
+		}
+		
+		// The byte code for this method entirely uses single byte instructions
+		// so no condensation is needed
+		if (bpa == n)
+			_ipos = bp;
+		
+		// Otherwise, condense
+		else
+		{
+			// Setup array
+			int[] actbp = new int[bpa];
+			
+			// Copy into it
+			for (int i = 0; i < bpa; i++)
+				actbp[i] = bp[i];
+			
+			// Use this array instead
+			_ipos = actbp;
+		}
+		
+		// Not needed
+		bp = null;
 		
 		// Setup the initial program state based on the method descriptor.
 		if (true)

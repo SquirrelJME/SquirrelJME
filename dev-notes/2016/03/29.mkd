@@ -106,3 +106,10 @@ Just started to implement this, it should in the end result in a cleaner
 and more pure interpreter in the long run. It would also likely use less
 memory than what I have done before.
 
+## 23:01
+
+I believe for simplicity in the operations I am going to condense the byte code
+addresses into list addresses. This would make iteration a bit simpler and
+all instructions would take up a single address, rather than multiple
+addresses. However, internally they would still take up multiple addresses.
+
