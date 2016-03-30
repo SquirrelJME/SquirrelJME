@@ -1,2 +1,12 @@
 # 2016/03/30
 
+## 11:00
+
+I suppose I can have a single class for variable states, I could also just
+merge the stack and locals into one single list so that the visible state of
+all operations are combined as one. I would only have to maintain a single
+state, but it would have to be able to handle the stack and such. It would
+have to be like my old one, where variable types and such are implicit.
+Although this time instead of being actually existing and forced into memory
+it is instead cached fully.
+
