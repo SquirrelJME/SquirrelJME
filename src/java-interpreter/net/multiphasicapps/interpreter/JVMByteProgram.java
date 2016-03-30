@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.AbstractList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
@@ -19,6 +25,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  * @since 2016/03/29
  */
 public class JVMByteProgram
+	extends AbstractList<JVMByteProgram.Op>
 {
 	/** Lock. */
 	protected final Object lock =
@@ -38,6 +45,10 @@ public class JVMByteProgram
 	
 	/** The position of each logical instruction to a physical one. */
 	private final int[] _ipos;
+	
+	/** The operation cache. */
+	private final Map<Op, Reference<Op>> _opcache =
+		new WeakHashMap<>();
 	
 	/**
 	 * This initializes the program using the specified code array.
@@ -116,6 +127,128 @@ public class JVMByteProgram
 		// Setup the initial program state based on the method descriptor.
 		if (true)
 			throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/30
+	 */
+	@Override
+	public Op get(int __i)
+		throws IndexOutOfBoundsException
+	{
+		// Check
+		if (__i < 0 || __i >= size())
+			throw new IndexOutOfBoundsException(String.format("IOOB %d", __i));
+		
+		// lock
+		synchronized (lock)
+		{
+			// The keyed integer
+			Integer key = Integer.valueOf(__i);
+			
+			// Obtain reference
+			Map<Op, Reference<Op>> cache = _opcache;
+			Reference<Op> ref = cache.get(key);
+			Op rv;
+			
+			// Needs caching?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Set it up, since the value is both a key and a value
+				rv = new Op(__i);
+				
+				// Store into the map
+				cache.put(rv, new WeakReference<>(rv));
+			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/30
+	 */
+	@Override
+	public int size()
+	{
+		return _ipos.length;
+	}
+	
+	/**
+	 * This represents a single operation in the byte code chain.
+	 *
+	 * @since 2016/03/30
+	 */
+	public class Op
+	{
+		/** The address of this operation. */
+		protected final int address;
+		
+		/**
+		 * Initializes the operation.
+		 *
+		 * @param __pc The operation address.
+		 * @since 2016/03/30
+		 */
+		private Op(int __pc)
+		{
+			address = __pc;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/30
+		 */
+		@Override
+		public boolean equals(Object __o)
+		{
+			// If an integer, compare against the address
+			if (__o instanceof Integer)
+				return (address == ((Integer)__o).intValue());
+			
+			// Otherwise must be this
+			return this == __o;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/03/30
+		 */
+		@Override
+		public int hashCode()
+		{
+			// Just use the address
+			return address;
+		}
+		
+		/**
+		 * Returns the next operation.
+		 *
+		 * @return The next operation or {@code null} if this is the last.
+		 * @since 2016/03/30
+		 */
+		public Op next()
+		{
+			if (address >= (_ipos.length - 1))
+				return null;
+			return JVMByteProgram.this.get(address + 1);
+		}
+		
+		/**
+		 * Returns the previous operation.
+		 *
+		 * @return The previous operation or {@code null} if this is the first.
+		 * @since 2016/03/30
+		 */
+		public Op previous()
+		{
+			if (address <= 0)
+				return null;
+			return JVMByteProgram.this.get(address - 1);
+		}
 	}
 }
 
