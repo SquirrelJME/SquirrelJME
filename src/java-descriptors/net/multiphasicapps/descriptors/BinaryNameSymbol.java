@@ -31,6 +31,10 @@ public final class BinaryNameSymbol
 	extends __BaseSymbol__
 	implements Iterable<IdentifierSymbol>, FieldBaseTypeSymbol
 {
+	/** The throwable class. */
+	public static final BinaryNameSymbol THROWABLE =
+		new BinaryNameSymbol("java/lang/Throwable");
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();

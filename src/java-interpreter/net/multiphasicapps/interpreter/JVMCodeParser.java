@@ -15,9 +15,12 @@ import java.lang.ref.WeakReference;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.interpreter.program.VMCException;
 import net.multiphasicapps.interpreter.program.VMCProgram;
 import net.multiphasicapps.interpreter.program.VMCVariableType;
 
@@ -135,23 +138,29 @@ public class JVMCodeParser
 			rx += rc;
 		}
 		
+		// Read the exception table
+		// If there are no exceptions, then use shorter handlers
+		List<JVMRawException> excs = new ArrayList<>();
+		int numex = __das.readUnsignedShort();
+		for (int i = 0; i < numex; i++)
+		{
+			// Read data
+			int spc = __das.readUnsignedShort();
+			int epc = __das.readUnsignedShort();
+			int hpc = __das.readUnsignedShort();
+			int xht = __das.readUnsignedShort();
+			
+			// Add it
+			excs.add(new JVMRawException(spc, epc, hpc, (xht == 0 ? null :
+				constantpool.<JVMConstantEntry.ClassName>getAs(xht,
+					JVMConstantEntry.ClassName.class).symbol().
+						asBinaryName())));
+		}
+		
 		// Setup a byte program for translation and dynamic cache friendly
 		// program parsing
 		VMCProgram jbp = new VMCProgram(maxlocal, maxstack, msym,
-			!method.getFlags().isStatic(), rawcode);
-		
-		// Read the exception table
-		{
-			// If there are no exceptions, then use shorter handlers
-			int numex = __das.readUnsignedShort();
-			if (numex == 0)
-				jbp.setNoExceptions();
-			
-			// There are exceptions
-			else
-				for (int i = 0; i < numex; i++)
-					throw new Error("TODO");
-		}
+			!method.getFlags().isStatic(), excs, rawcode);
 		
 		// Handle attributes, only two are cared about
 		int nas = __das.readUnsignedShort();

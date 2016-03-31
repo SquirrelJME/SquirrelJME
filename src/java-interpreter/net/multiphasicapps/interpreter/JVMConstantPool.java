@@ -208,22 +208,46 @@ public class JVMConstantPool
 	public <Q extends JVMConstantEntry> Q getAs(int __i, Class<Q> __cl)
 		throws JVMClassFormatError, NullPointerException
 	{
-		// Check
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Cast it
+		// Locate entry
 		try
 		{
-			return __cl.cast(Objects.requireNonNull(get(__i)));
+			return Objects.<Q>requireNonNull(__cl.cast(get(__i)));
 		}
 		
-		// Could not cast
+		// Is missing
 		catch (ClassCastException|NullPointerException e)
 		{
 			throw new JVMClassFormatError(String.format("IN0j %d %s", __i,
 				__cl), e);
 		}
+	}
+	
+	/**
+	 * Obtains the specified constant pool entry at the given location
+	 *
+	 * @param <Q> The type of entry to return.
+	 * @param __i The index of this entry, if zero then {@code null} is
+	 * returned.
+	 * @param __cl The type of the expected entry.
+	 * @return The entry at the given position or {@code null} if it is the
+	 * zero index.
+	 * @throws JVMClassFormatError If the type at this position is not
+	 * of the given class.
+	 * @since 2016/03/31
+	 */
+	public <Q extends JVMConstantEntry> Q getAsOptional(int __i, Class<Q> __cl)
+		throws JVMClassFormatError, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// If zero, then nothing needs to be done
+		if (__i == 0)
+			return null;
+		
+		// Otherwise get it
+		return this.<Q>getAs(__i, __cl);
 	}
 	
 	/**

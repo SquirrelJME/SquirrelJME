@@ -18,10 +18,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.interpreter.JVMRawException;
 import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
@@ -53,6 +55,9 @@ public class VMCProgram
 	/** Jump sources in the program which are explicit and not implicit. */
 	final Map<Integer, List<VMCJumpSource>> _expjumps;
 	
+	/** Program exceptions. */
+	final List<VMCException> _exceptions;
+	
 	/** Initial variable state. */
 	final VMCVariableStates _entrystate;
 	
@@ -80,6 +85,7 @@ public class VMCProgram
 	 * @param __desc The descriptor which describes the argument of this
 	 * method, this is used to seed the initial stack.
 	 * @param __ins Is this an instance method (which has a {@code this}?).
+	 * @param __ex Exceptions used in the program.
 	 * @param __code The input byte code, note that it is not copied and that
 	 * it is used directly.
 	 * @throws JVMVerifyException If the maximum stack and local entries are
@@ -88,11 +94,11 @@ public class VMCProgram
 	 * @since 2016/03/29
 	 */
 	public VMCProgram(int __ml, int __ms, MethodSymbol __desc,
-		boolean __ins, byte... __code)
+		boolean __ins, Iterable<JVMRawException> __ex, byte... __code)
 		throws JVMVerifyException, NullPointerException
 	{
 		// Check
-		if (__desc == null || __code == null)
+		if (__desc == null || __code == null || __ex == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -100,6 +106,11 @@ public class VMCProgram
 		_maxstack = __ms;
 		_code = __code;
 		length = _code.length;
+		
+		// Defensive copy exceptions
+		List<JVMRawException> dex = new ArrayList<>();
+		for (JVMRawException ex : __ex)
+			dex.add(Objects.<JVMRawException>requireNonNull(ex, "NARG"));
 		
 		// Determine the position of all operations so that they can be
 		// condensed into single index points (they all consume a single
@@ -282,6 +293,18 @@ public class VMCProgram
 		int esn = entrystate.size();
 		while (spot < esn)
 			entrystate.get(spot++).__setType(VMCVariableType.NOTHING);
+		
+		// Set exceptions
+		List<VMCException> rex = new ArrayList<>();
+		if (dex.isEmpty())
+			_noexceptions = true;
+		else
+			for (JVMRawException re : dex)
+				rex.add(new VMCException(this, re));
+		
+		// Lock in
+		_exceptions = MissingCollections.<VMCException>unmodifiableList(rex);
+		_exceptionsset = true;
 	}
 	
 	/**
@@ -415,33 +438,6 @@ public class VMCProgram
 		{
 			// Set
 			_expvstate.put(__lp, __vs);
-		}
-		
-		// Self
-		return this;
-	}
-	
-	/**
-	 * Sets that the method catches no exceptions and exception handling is not
-	 * to be done at all in this method.
-	 *
-	 * @return {@code this}.
-	 * @throws IllegalStateException If exceptions were already set.
-	 * @since 2016/03/31
-	 */
-	public VMCProgram setNoExceptions()
-		throws IllegalStateException
-	{
-		// Lock
-		synchronized (lock)
-		{
-			// Check
-			if (_exceptionsset)
-				throw new IllegalStateException("IN2h");
-			
-			// Set both
-			_exceptionsset = true;
-			_noexceptions = true;
 		}
 		
 		// Self
