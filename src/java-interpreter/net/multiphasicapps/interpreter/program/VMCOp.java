@@ -168,12 +168,19 @@ public class VMCOp
 	 */
 	public List<VMCJumpSource> jumpSources()
 	{
-		// Explicit jump sources?
-		List<VMCJumpSource> rv = program._expjumps.get(logical);
-		if (rv != null)
-			return rv;
-		
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Have exceptions been set?
+			boolean exset = program.__areExceptionsSet();
+			
+			// Explicit jump sources?
+			List<VMCJumpSource> exp = program._expjumps.get(logical);
+			if (!exset && exp != null)
+				return exp;
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -187,6 +194,9 @@ public class VMCOp
 		// Lock
 		synchronized (lock)
 		{
+			// Have exceptions been set?
+			boolean exset = program.__areExceptionsSet();
+			
 			// Cached?
 			Reference<List<VMCJumpTarget>> ref = _ijtar;
 			List<VMCJumpTarget> rv;
@@ -362,8 +372,16 @@ public class VMCOp
 							program, VMCJumpType.NATURAL,
 							logical + 1)));
 			
-				// Cache it
-				_ijtar = new WeakReference<>(rv);
+				// If exceptions were set then add any exceptional targets
+				// which would be missing from the list
+				if (exset)
+				{
+					if (true)
+						throw new Error("TODO");
+					
+					// Cache it
+					_ijtar = new WeakReference<>(rv);
+				}
 			}
 		
 			// Return it

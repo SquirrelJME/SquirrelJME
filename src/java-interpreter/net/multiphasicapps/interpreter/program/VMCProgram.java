@@ -62,6 +62,9 @@ public class VMCProgram
 	/** Maximum stack variables. */
 	final int _maxstack;
 	
+	/** Have exceptions been set yet? */
+	private volatile boolean _exceptionsset;
+	
 	/**
 	 * This initializes the program using the specified code array.
 	 *
@@ -343,6 +346,23 @@ public class VMCProgram
 	public int size()
 	{
 		return _ipos.length;
+	}
+	
+	/**
+	 * Returns {@code true} if the exceptions have been set.
+	 *
+	 * This is used by the operation target and source jump caches to determine
+	 * if they should initially be cached or not.
+	 *
+	 * @return {@code true} if exceptions were set.
+	 * @since 2016/03/31
+	 */
+	boolean __areExceptionsSet()
+	{
+		synchronized (lock)
+		{
+			return _exceptionsset;
+		}
 	}
 }
 
