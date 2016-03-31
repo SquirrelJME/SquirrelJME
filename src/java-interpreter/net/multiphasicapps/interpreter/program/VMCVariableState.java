@@ -57,6 +57,27 @@ public class VMCVariableState
 	}
 	
 	/**
+	 * Returns the type of variable which is used at this position.
+	 *
+	 * @return The variable type used.
+	 * @since 2016/03/31
+	 */
+	public JVMVariableType getType()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// If there is an implicit type set then use it
+			JVMVariableType rv = _implicit;
+			if (rv != null)
+				return rv;
+			
+			// Derived from a source location
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Sets the type of the variable stored here.
 	 *
 	 * @param __vt The type of variable stored here.

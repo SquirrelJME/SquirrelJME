@@ -56,6 +56,9 @@ public class VMCOp
 	/** Output state cache. */
 	private volatile Reference<VMCVariableStates> _vsoutput;
 	
+	/** Verification state cache. */
+	private volatile Reference<VMCVerifyState> _vstate;
+	
 	/**
 	 * Initializes the operation.
 	 *
@@ -468,6 +471,58 @@ public class VMCOp
 		// Finish it
 		sb.append('}');
 		return sb.toString();
+	}
+	
+	/**
+	 * Returns the verification state of this operation.
+	 *
+	 * @return The verification state.
+	 * @throws IllegalStateException If no state is available for derivation.
+	 * @since 2016/03/31
+	 */
+	public VMCVerifyState verificationState()
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<VMCVerifyState> ref = _vstate;
+			VMCVerifyState rv;
+			
+			// Needs caching?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Is there an explicit verification state?
+				VMCVerifyState exp = program._expvstate.get(logical);
+				if (exp != null)
+					rv = exp;
+				
+				// Need to generate otherwise
+				else
+				{
+					// Get input state
+					VMCVariableStates inputstate = inputState();
+					if (inputstate == null)
+						throw new IllegalStateException(String.format(
+							"IN2i %d", logical));
+				
+					// Setup base state
+					rv = new VMCVerifyState(program);
+					
+					// Copy them all
+					int n = program.maxLocals() + program.maxStack();
+					for (int i = 0; i < n; i++)
+						rv.set(i, inputstate.get(i).getType());
+				}
+				
+				// Cache it
+				_vstate = new WeakReference<>(rv);
+			}
+			
+			// Return it
+			return rv;
+		}
 	}
 }
 

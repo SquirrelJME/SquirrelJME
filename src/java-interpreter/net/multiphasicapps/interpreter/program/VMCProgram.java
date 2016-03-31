@@ -47,6 +47,10 @@ public class VMCProgram
 	/** The position of each logical instruction to a physical one. */
 	private final int[] _ipos;
 	
+	/** Explicit verification states. */
+	final Map<Integer, VMCVerifyState> _expvstate =
+		new HashMap<>();
+	
 	/** Jump sources in the program which are explicit and not implicit. */
 	final Map<Integer, List<VMCJumpSource>> _expjumps;
 	
@@ -294,28 +298,6 @@ public class VMCProgram
 	}
 	
 	/**
-	 * Returns the entry verification state of the program.
-	 *
-	 * @return The entry verification state.
-	 * @throws IllegalStateException If entry state was specified.
-	 * @since 2016/03/31
-	 */
-	public VMCVerifyState entryVerificationState()
-		throws IllegalStateException
-	{
-		// Lock
-		synchronized (lock)
-		{
-			// Get entry state
-			VMCVariableStates entrystate = _entrystate;
-			if (entrystate == null)
-				throw new IllegalStateException("IN2i");
-			
-			throw new Error("TODO");
-		}
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/30
 	 */
@@ -400,6 +382,39 @@ public class VMCProgram
 	public int physicalToLogical(int __phy)
 	{
 		return Math.max(-1, Arrays.binarySearch(_ipos, __phy));
+	}
+	
+	/**
+	 * Sets the specified logical operation to the given explicit verification
+	 * state.
+	 *
+	 * @param __lp The logical operation address.
+	 * @param __vs The verification state to set.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the logical address it outside of
+	 * the program bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/31
+	 */
+	public VMCProgram setExplicitVerifyState(int __lp, VMCVerifyState __vs)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__lp < 0 || __lp >= size())
+			throw new IndexOutOfBoundsException(String.format(
+				"IOOB %d", __lp));
+		if (__vs == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Set
+			_expvstate.put(__lp, __vs);
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**

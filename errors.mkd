@@ -400,7 +400,8 @@ These codes do not have a index meaning and are meant to be short.
  * `IN2g` -- Can only change the variable state type of the program entry
    state.
  * `IN2h` -- Exceptions have already been set.
- * `IN2i` -- Program has no entry state set.
+ * `IN2i` -- Program has no variable state set for the current position.
+   * The current operation.
  * `IN2j` -- `StackMapTable` full frame specified more local variables than
    are available.
    * Locals specified in the frame.

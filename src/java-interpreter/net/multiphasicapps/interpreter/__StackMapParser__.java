@@ -72,7 +72,7 @@ class __StackMapParser__
 		maxstack = program.maxStack();
 		
 		// The last is always the first!
-		VMCVerifyState es = program.entryVerificationState();
+		VMCVerifyState es = program.get(0).verificationState();
 		
 		// Make a copy of the last state for the next state
 		_next = new VMCVerifyState(es);
@@ -86,14 +86,7 @@ class __StackMapParser__
 			
 			// All entries in the table are full frames
 			for (int i = 0; i < ne; i++)
-			{
-				// Handle it
 				__oldStyle();
-				
-				// Add state to program
-				if (true)
-					throw new Error("TODO");
-			}
 		}
 		
 		// The modern stack map table
@@ -139,10 +132,6 @@ class __StackMapParser__
 				else
 					throw new JVMVerifyException(
 						String.format("WTFX %d", type));
-				
-				// Add state to program
-				if (true)
-					throw new Error("TODO");
 			}
 		}
 	}
@@ -212,6 +201,10 @@ class __StackMapParser__
 		int naddr = _placeaddr;
 		_placeaddr = (__abs ? __au :
 			naddr + (__au + (naddr == 0 ? 0 : 1)));
+		
+		// Set the state
+		program.setExplicitVerifyState(program.physicalToLogical(_placeaddr),
+			now);
 		
 		// The next state
 		return next;
