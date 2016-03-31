@@ -268,11 +268,29 @@ public class VMCOp
 			
 				// Goto a single address (16-bit)
 				else if (ik == VMCInstructionIDs.GOTO)
-					throw new Error("TODO");
+				{
+					// Read offset
+					int off = __ByteUtils__.__readSShort(bc, physical + 1);
+					
+					// Only a single set is used
+					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
+						Arrays.<VMCJumpTarget>asList(new VMCJumpTarget(
+							program, VMCJumpType.EXPLICIT,
+							program.physicalToLogical(physical + off))));
+				}
 			
 				// Goto a single address (32-bit)
 				else if (ik == VMCInstructionIDs.GOTO_W)
-					throw new Error("TODO");
+				{
+					// Read offset
+					int off = __ByteUtils__.__readSInt(bc, physical + 1);
+					
+					// Only a single set is used
+					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
+						Arrays.<VMCJumpTarget>asList(new VMCJumpTarget(
+							program, VMCJumpType.EXPLICIT,
+							program.physicalToLogical(physical + off))));
+				}
 			
 				// Conditional to a given instruction or if false, the next
 				// instruction.

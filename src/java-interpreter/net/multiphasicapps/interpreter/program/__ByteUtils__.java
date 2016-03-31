@@ -51,6 +51,21 @@ class __ByteUtils__
 	}
 	
 	/**
+	 * Reads a signed short from the given buffer.
+	 *
+	 * @param __code The code buffer.
+	 * @param __pos The position to read from.
+	 * @return The signed short value which was read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/30
+	 */
+	static int __readSShort(byte[] __code, int __pos)
+		throws NullPointerException
+	{
+		return ((short)__readUShort(__code, __pos));
+	}
+	
+	/**
 	 * Reads an unsigned short from the given buffer.
 	 *
 	 * @param __code The byte array.
