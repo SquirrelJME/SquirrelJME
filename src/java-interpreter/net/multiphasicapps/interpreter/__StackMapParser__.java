@@ -12,6 +12,8 @@ package net.multiphasicapps.interpreter;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.interpreter.program.VMCProgram;
+import net.multiphasicapps.interpreter.program.VMCVerifyState;
 
 /**
  * This parses the stack map table using either the modern Java 6 format or
@@ -30,36 +32,51 @@ class __StackMapParser__
 	/** The input source. */
 	protected final DataInputStream in;
 	
-	/** The program state to modify. */
-	protected final JVMProgramState state;
+	/** The program to modify. */
+	protected final VMCProgram program;
 	
-	/** The last frame used. */
-	private volatile JVMProgramAtom _last;
+	/** The maximum local count. */
+	protected final int maxlocals;
+	
+	/** The maximum stack count. */
+	protected final int maxstack;
+	
+	/** The placement address. */
+	private volatile int _placeaddr;
+	
+	/** The next state to verify for. */
+	private volatile VMCVerifyState _next;
 	
 	/**
 	 * This initializes and performs the parsing.
 	 *
 	 * @param __m Parse the moderm format?
 	 * @param __in The input stream containing the data.
-	 * @param __ps The state of the program to verify for.
+	 * @param __prg The program to be verified.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/25
 	 */
-	__StackMapParser__(boolean __m, DataInputStream __in, JVMProgramState __ps)
+	__StackMapParser__(boolean __m, DataInputStream __in, VMCProgram __prg)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__in == null || __ps == null)
+		if (__in == null || __prg == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		modern = __m;
 		in = __in;
-		state = __ps;
+		program = __prg;
+		maxlocals = program.maxLocals();
+		maxstack = program.maxStack();
 		
 		// The last is always the first!
-		_last = state.get(0);
+		VMCVerifyState es = program.entryVerificationState();
+		
+		// Make a copy of the last state for the next state
+		_next = new VMCVerifyState(es);
+		_placeaddr = 0;
 		
 		// Parsing the class stack map table
 		if (!modern)
@@ -69,7 +86,14 @@ class __StackMapParser__
 			
 			// All entries in the table are full frames
 			for (int i = 0; i < ne; i++)
+			{
+				// Handle it
 				__oldStyle();
+				
+				// Add state to program
+				if (true)
+					throw new Error("TODO");
+			}
 		}
 		
 		// The modern stack map table
@@ -113,8 +137,12 @@ class __StackMapParser__
 					__appendFrame(type - 251);
 				
 				else
-					throw new JVMClassFormatError(
+					throw new JVMVerifyException(
 						String.format("WTFX %d", type));
+				
+				// Add state to program
+				if (true)
+					throw new Error("TODO");
 			}
 		}
 	}
@@ -131,70 +159,62 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
+		VMCVerifyState next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// Stack is cleared
-		atom.stack().setStackTop(0);
+		next.setStackTop(maxlocals);
 		
 		// Read in local variables
-		JVMProgramVars locals = atom.locals();
-		int n = locals.size();
+		int n = maxlocals;
 		for (int i = 0; __addlocs > 0 && i < n; i++)
 		{
 			// Get slot here
-			JVMProgramSlot s = locals.get(i);
+			JVMVariableType s = next.get(i);
 			
 			// If it is not empty, ignore it
-			if (s.getType() != JVMVariableType.NOTHING)
+			if (s != JVMVariableType.NOTHING)
 				continue;
 			
 			// Set it
-			s.setType(__loadInfo());
+			JVMVariableType aa;
+			next.set(i, (aa = __loadInfo()));
 			__addlocs--;
+			
+			// If a wide element was added, then the next one becomes TOP
+			if (aa.isWide())
+				next.set(++i, JVMVariableType.TOP);
 		}
 		
 		// Error if added stuff remains
 		if (__addlocs != 0)
-			throw new JVMClassFormatError(String.format("IN1v %d", __addlocs));
+			throw new JVMVerifyException(String.format("IN1v %d", __addlocs));
 	}
 	
 	/**
-	 * Calculates the next atom to use.
+	 * Calculates the next state to use.
 	 *
 	 * @param __au The address offset.
 	 * @param __abs Absolute position?
-	 * @return The atom for the next address.
+	 * @return The state for the next address.
 	 * @since 2016/03/26
 	 */
-	private JVMProgramAtom __calculateAtom(int __au, boolean __abs)
+	private VMCVerifyState __calculateNext(int __au, boolean __abs)
 	{
-		// Get the current atom
-		JVMProgramAtom now = _last, was = now;
-		int naddr = now.getAddress();
+		// The current placement
+		VMCVerifyState now = _next;
 		
-		// Get the next atom to use
-		now = state.get((__abs ? __au :
-			naddr + (__au + (naddr == 0 ? 0 : 1))), true);
-		_last = now;
+		// Setup new next
+		VMCVerifyState next = new VMCVerifyState(now);
+		_next = next;
 		
-		// Copy local states
-		JVMProgramVars al = now.locals(),
-			bl = was.locals();
-		int n = al.size();
-		for (int i = 0; i < n; i ++)
-			al.get(i).setType(bl.get(i).getType());
+		// Set new placement address
+		int naddr = _placeaddr;
+		_placeaddr = (__abs ? __au :
+			naddr + (__au + (naddr == 0 ? 0 : 1)));
 		
-		// Copy stack states
-		JVMProgramVars as = now.stack(),
-			bs = was.stack();
-		n = as.size();
-		for (int i = 0; i < n; i ++)
-			as.get(i).setType(bs.get(i).getType());
-		as.setStackTop(bs.getStackTop());
-		
-		// Return it
-		return now;
+		// The next state
+		return next;
 	}
 	
 	/**
@@ -209,32 +229,31 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
+		VMCVerifyState next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// No stack
-		atom.stack().setStackTop(0);
+		next.setStackTop(maxlocals);
 		
 		// Chop off some locals
-		JVMProgramVars locals = atom.locals();
-		int i, n = locals.size();
+		int i, n = maxlocals;
 		for (i = n - 1; __chops > 0 && i >= 0; i--)
 		{
 			// Get slot here
-			JVMProgramSlot s = locals.get(i);
+			JVMVariableType s = next.get(i);
 			
 			// If it is empty, ignore it
-			if (s.getType() == JVMVariableType.NOTHING)
+			if (s == JVMVariableType.NOTHING)
 				continue;
 			
 			// Clear it
-			s.setType(JVMVariableType.NOTHING);
+			next.set(i, JVMVariableType.NOTHING);
 			__chops--;
 		}
 		
 		// Still chops left?
 		if (__chops != 0)
-			throw new JVMClassFormatError(String.format("IN1u %d", __chops));
+			throw new JVMVerifyException(String.format("IN1u %d", __chops));
 	}
 	
 	/**
@@ -248,21 +267,22 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
+		VMCVerifyState next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
-		JVMProgramVars locals = atom.locals();
+		if (nl >= maxlocals)
+			throw new JVMVerifyException(String.format("IN2j %d %d", nl,
+				maxlocals));
 		for (int i = 0; i < nl; i++)
-			locals.get(i).setType(__loadInfo());
+			next.set(i, __loadInfo());
 		
 		// Read in stack variables
-		int ns = das.readUnsignedShort();
-		JVMProgramVars stack = atom.stack();
-		for (int i = 0; i < ns; i++)
-			stack.get(i).setType(__loadInfo());
-		stack.setStackTop(ns);
+		int ns = maxlocals + das.readUnsignedShort();
+		for (int i = maxlocals; i < ns; i++)
+			next.set(i, __loadInfo());
+		next.setStackTop(ns);
 	}
 	
 	/**
@@ -319,7 +339,7 @@ class __StackMapParser__
 				
 				// Unknown
 			default:
-				throw new JVMClassFormatError(String.format("IN1t %d", tag));
+				throw new JVMVerifyException(String.format("IN1t %d", tag));
 		}
 	}
 	
@@ -334,21 +354,22 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
+		VMCVerifyState next = __calculateNext(das.readUnsignedShort(),
 			true);
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
-		JVMProgramVars locals = atom.locals();
+		if (nl >= maxlocals)
+			throw new JVMVerifyException(String.format("IN2j %d %d", nl,
+				maxlocals));
 		for (int i = 0; i < nl; i++)
-			locals.get(i).setType(__loadInfo());
+			next.set(i, __loadInfo());
 		
 		// Read in stack variables
-		int ns = das.readUnsignedShort();
-		JVMProgramVars stack = atom.stack();
-		for (int i = 0; i < ns; i++)
-			stack.get(i).setType(__loadInfo());
-		stack.setStackTop(ns);
+		int ns = maxlocals + das.readUnsignedShort();
+		for (int i = maxlocals; i < ns; i++)
+			next.set(i, __loadInfo());
+		next.setStackTop(ns);
 	}
 	
 	/**
@@ -359,7 +380,7 @@ class __StackMapParser__
 	 */
 	private void __sameFrame(int __delta)
 	{
-		JVMProgramAtom atom = __calculateAtom(__delta, false);
+		VMCVerifyState next = __calculateNext(__delta, false);
 	}
 	
 	/**
@@ -371,7 +392,7 @@ class __StackMapParser__
 	private void __sameFrameDelta()
 		throws IOException
 	{
-		JVMProgramAtom atom = __calculateAtom(in.readUnsignedShort(),
+		VMCVerifyState next = __calculateNext(in.readUnsignedShort(),
 			false);
 	}
 	
@@ -387,33 +408,25 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramAtom atom = __calculateAtom(__delta, false);
+		VMCVerifyState next = __calculateNext(__delta, false);
 		
 		// Set the single stack
-		JVMProgramVars stack = atom.stack();
-		stack.get(0).setType(__loadInfo());
-		stack.setStackTop(1);
+		next.setStackTop(maxlocals + 1);
+		next.set(maxlocals, __loadInfo());
 	}
 	
 	/**
-	 * Same locals but the stack has only a single entry.
+	 * Same locals but the stack has only a single entry, the delta offset
+	 * is specified.
 	 *
-	 * @param __delta The delta offset.
 	 * @throws IOException On read errors.
 	 * @since 2016/03/26
 	 */
 	private void __sameLocalsSingleStackExplicit()
 		throws IOException
 	{
-		// Get the atom to use
 		DataInputStream das = in;
-		JVMProgramAtom atom = __calculateAtom(das.readUnsignedShort(),
-			false);
-		
-		// Set the single stack
-		JVMProgramVars stack = atom.stack();
-		stack.get(0).setType(__loadInfo());
-		stack.setStackTop(1);
+		__sameLocalsSingleStack(das.readUnsignedShort());
 	}
 }
 

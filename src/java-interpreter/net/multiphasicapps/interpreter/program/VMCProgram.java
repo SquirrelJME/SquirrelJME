@@ -277,6 +277,45 @@ public class VMCProgram
 	}
 	
 	/**
+	 * Returns {@code true} if there are no exceptions to be caught at all.
+	 *
+	 * This is used so that some operations which handle exceptions can be
+	 * done faster.
+	 *
+	 * @return {@code true} if this method catches no exceptions.
+	 * @since 2016/03/31
+	 */
+	public boolean areNoExceptions()
+	{
+		synchronized (lock)
+		{
+			return _noexceptions;
+		}
+	}
+	
+	/**
+	 * Returns the entry verification state of the program.
+	 *
+	 * @return The entry verification state.
+	 * @throws IllegalStateException If entry state was specified.
+	 * @since 2016/03/31
+	 */
+	public VMCVerifyState entryVerificationState()
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get entry state
+			VMCVariableStates entrystate = _entrystate;
+			if (entrystate == null)
+				throw new IllegalStateException("IN2i");
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/30
 	 */
@@ -329,6 +368,28 @@ public class VMCProgram
 	}
 	
 	/**
+	 * Returns the maximum number of local variables.
+	 *
+	 * @return The local variable count.
+	 * @since 2016/03/31
+	 */
+	public int maxLocals()
+	{
+		return _maxlocals;
+	}
+	
+	/**
+	 * Returns the maximum number of stack variables.
+	 *
+	 * @return The maximum size of the stack.
+	 * @since 2016/03/31
+	 */
+	public int maxStack()
+	{
+		return _maxstack;
+	}
+	
+	/**
 	 * Converts a physical address to a logical one.
 	 *
 	 * @param __phy The physical address to convert.
@@ -339,6 +400,33 @@ public class VMCProgram
 	public int physicalToLogical(int __phy)
 	{
 		return Math.max(-1, Arrays.binarySearch(_ipos, __phy));
+	}
+	
+	/**
+	 * Sets that the method catches no exceptions and exception handling is not
+	 * to be done at all in this method.
+	 *
+	 * @return {@code this}.
+	 * @throws IllegalStateException If exceptions were already set.
+	 * @since 2016/03/31
+	 */
+	public VMCProgram setNoExceptions()
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Check
+			if (_exceptionsset)
+				throw new IllegalStateException("IN2h");
+			
+			// Set both
+			_exceptionsset = true;
+			_noexceptions = true;
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -365,23 +453,6 @@ public class VMCProgram
 		synchronized (lock)
 		{
 			return _exceptionsset;
-		}
-	}
-	
-	/**
-	 * Returns {@code true} if there are no exceptions to be caught at all.
-	 *
-	 * This is used so that some operations which handle exceptions can be
-	 * done faster.
-	 *
-	 * @return {@code true} if this method catches no exceptions.
-	 * @since 2016/03/31
-	 */
-	boolean __areNoExceptions()
-	{
-		synchronized (lock)
-		{
-			return _noexceptions;
 		}
 	}
 }

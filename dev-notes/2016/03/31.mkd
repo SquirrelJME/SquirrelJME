@@ -12,3 +12,29 @@ will reduce the complication that would be required when handling such things.
 The jump targets and jump sources would get additions to them. This would work
 out since I only have to worry about exceptions later on.
 
+## 13:25
+
+Actually with this new way of doing things, I can load classes faster and just
+have to worry about the translation parts as they are executed and/or
+compiled. So this would in fact result in slightly increased load times at the
+cost of execution time. However, the interpreter is not made for speed or
+standard execution, it is designed for recompilation.
+
+## 13:34
+
+Need to bring back the by index variable states since now it is used.
+
+## 14:12
+
+In idea for having the interpreter or compiled target against J2ME, the older
+versions, is that for filesystem handling I can still perform it and provide
+`FileChannel` access and such. It would instead operate at a speed reduction
+since seeking backwards is not really possible. Thus the `FileChannel` will
+cache parts of the file, log any changes, and then create a new file when
+closed or synchronized. Also with the verification state being combined with
+the stack top and such, I can instead do it in a single pass. The locals are
+done first, but the stack is placed after the locals. Before I would need a
+pass for the locals and the stack, but now it can be combined into one. The
+stack essentially will never drop down below the number of locals which are
+available.
+

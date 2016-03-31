@@ -168,15 +168,17 @@ public class JVMCodeParser
 		VMCProgram jbp = new VMCProgram(maxlocal, maxstack, msym,
 			!method.getFlags().isStatic(), rawcode);
 		
-		// OLD CODE TO BE REINTEGRATED TO THE NEW VMCProgram FOLLOWS
-		if (true)
-			throw new Error("TODO");
-		
 		// Read the exception table
 		{
+			// If there are no exceptions, then use shorter handlers
 			int numex = __das.readUnsignedShort();
-			for (int i = 0; i < numex; i++)
-				throw new Error("TODO");
+			if (numex == 0)
+				jbp.setNoExceptions();
+			
+			// There are exceptions
+			else
+				for (int i = 0; i < numex; i++)
+					throw new Error("TODO");
 		}
 		
 		// Handle attributes, only two are cared about
@@ -212,7 +214,7 @@ public class JVMCodeParser
 						new JVMCountLimitInputStream(__das,
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
-						new __StackMapParser__(newstack, smdi, prgstate);
+						new __StackMapParser__(newstack, smdi, jbp);
 					}
 					
 					// Done
@@ -225,38 +227,9 @@ public class JVMCodeParser
 			}
 		}
 		
-		// Handle the input byte code now
-		try (JVMCountLimitInputStream clis = new JVMCountLimitInputStream(
-			new ByteArrayInputStream(rawcode), ((long)codelen) & 0xFFFF_FFFFL);
-			DataInputStream csource = new DataInputStream(clis))
-		{
-			// Raw code not needed, may be collected
-			rawcode = null;
-			
-			// The code handlers could do something evil and try to use
-			// multi-threaded code generation.
-			synchronized (lock)
-			{
-				// Set the code source
-				_source = csource;
-				
-				// Set the counter used for the following instruction
-				_counter = clis;
-				
-				// Parse code data
-				while (clis.hasRemaining())
-				{
-					// Set current address
-					_pcaddr = (int)clis.count();
-				
-					// Handle it
-					__handleOp();
-				}
-			}
-		}
-		
-		// Clear the counter
-		_counter = null;
+		// OLD CODE TO BE REINTEGRATED TO THE NEW VMCProgram FOLLOWS
+		if (true)
+			throw new Error("TODO");
 		
 		// Self
 		return this;
