@@ -22,7 +22,6 @@ import java.util.WeakHashMap;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.interpreter.JVMVariableType;
 import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
@@ -261,7 +260,7 @@ public class VMCProgram
 		// If this is an instance method then the first argument is this.
 		int spot = 0;
 		if (__ins)
-			entrystate.get(spot++).__setType(JVMVariableType.OBJECT);
+			entrystate.get(spot++).__setType(VMCVariableType.OBJECT);
 		
 		// Parse
 		int na = __desc.argumentCount();
@@ -269,20 +268,20 @@ public class VMCProgram
 		{
 			// Get argument and its type
 			FieldSymbol arg = __desc.get(i);
-			JVMVariableType vt = JVMVariableType.bySymbol(arg);
+			VMCVariableType vt = VMCVariableType.bySymbol(arg);
 			
 			// Set it here
 			entrystate.get(spot++).__setType(vt);
 			
 			// If wide, add TOP
 			if (vt.isWide())
-				entrystate.get(spot++).__setType(JVMVariableType.TOP);
+				entrystate.get(spot++).__setType(VMCVariableType.TOP);
 		}
 		
 		// Fill the remainder with nothing so that all states are explicit
 		int esn = entrystate.size();
 		while (spot < esn)
-			entrystate.get(spot++).__setType(JVMVariableType.NOTHING);
+			entrystate.get(spot++).__setType(VMCVariableType.NOTHING);
 	}
 	
 	/**

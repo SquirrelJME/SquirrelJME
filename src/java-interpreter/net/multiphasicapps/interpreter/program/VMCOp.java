@@ -22,7 +22,6 @@ import java.util.WeakHashMap;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.interpreter.JVMVariableType;
 import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**

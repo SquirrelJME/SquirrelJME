@@ -13,6 +13,8 @@ package net.multiphasicapps.interpreter;
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.interpreter.program.VMCProgram;
+import net.multiphasicapps.interpreter.program.VMCVariableState;
+import net.multiphasicapps.interpreter.program.VMCVariableType;
 import net.multiphasicapps.interpreter.program.VMCVerifyState;
 
 /**
@@ -159,20 +161,20 @@ class __StackMapParser__
 		for (int i = 0; __addlocs > 0 && i < n; i++)
 		{
 			// Get slot here
-			JVMVariableType s = next.get(i);
+			VMCVariableType s = next.get(i);
 			
 			// If it is not empty, ignore it
-			if (s != JVMVariableType.NOTHING)
+			if (s != VMCVariableType.NOTHING)
 				continue;
 			
 			// Set it
-			JVMVariableType aa;
+			VMCVariableType aa;
 			next.set(i, (aa = __loadInfo()));
 			__addlocs--;
 			
 			// If a wide element was added, then the next one becomes TOP
 			if (aa.isWide())
-				next.set(++i, JVMVariableType.TOP);
+				next.set(++i, VMCVariableType.TOP);
 		}
 		
 		// Error if added stuff remains
@@ -233,14 +235,14 @@ class __StackMapParser__
 		for (i = n - 1; __chops > 0 && i >= 0; i--)
 		{
 			// Get slot here
-			JVMVariableType s = next.get(i);
+			VMCVariableType s = next.get(i);
 			
 			// If it is empty, ignore it
-			if (s == JVMVariableType.NOTHING)
+			if (s == VMCVariableType.NOTHING)
 				continue;
 			
 			// Clear it
-			next.set(i, JVMVariableType.NOTHING);
+			next.set(i, VMCVariableType.NOTHING);
 			__chops--;
 		}
 		
@@ -285,7 +287,7 @@ class __StackMapParser__
 	 * @throws IOException On read errors.
 	 * @since 2016/03/26
 	 */
-	private JVMVariableType __loadInfo()
+	private VMCVariableType __loadInfo()
 		throws IOException
 	{
 		// Read the tag
@@ -297,38 +299,38 @@ class __StackMapParser__
 		{
 				// Top
 			case 0:
-				return JVMVariableType.TOP;
+				return VMCVariableType.TOP;
 				
 				// Integer
 			case 1:
-				return JVMVariableType.INTEGER;
+				return VMCVariableType.INTEGER;
 				
 				// Float
 			case 2:
-				return JVMVariableType.FLOAT;
+				return VMCVariableType.FLOAT;
 				
 				// Double
 			case 3:
-				return JVMVariableType.DOUBLE;
+				return VMCVariableType.DOUBLE;
 				
 				// Long
 			case 4:
-				return JVMVariableType.LONG;
+				return VMCVariableType.LONG;
 				
 				// Nothing
 			case 5:
-				return JVMVariableType.NOTHING;
+				return VMCVariableType.NOTHING;
 				
 				// Uninitialized object
 			case 6:
-				return JVMVariableType.OBJECT;
+				return VMCVariableType.OBJECT;
 				
 				// Initialized object or a new object which has yet to be
 				// invokespecialed
 			case 7:
 			case 8:
 				das.readUnsignedShort();
-				return JVMVariableType.OBJECT;
+				return VMCVariableType.OBJECT;
 				
 				// Unknown
 			default:

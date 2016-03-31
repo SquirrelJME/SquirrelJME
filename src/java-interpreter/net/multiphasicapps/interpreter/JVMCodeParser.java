@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.interpreter.program.VMCProgram;
+import net.multiphasicapps.interpreter.program.VMCVariableType;
 
 /**
  * This parses the code block of a method and translates the byte code into

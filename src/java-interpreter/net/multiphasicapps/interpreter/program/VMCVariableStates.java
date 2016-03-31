@@ -11,7 +11,6 @@
 package net.multiphasicapps.interpreter.program;
 
 import java.util.AbstractList;
-import net.multiphasicapps.interpreter.JVMVariableType;
 
 /**
  * This represents the state of multiple variables within the program.

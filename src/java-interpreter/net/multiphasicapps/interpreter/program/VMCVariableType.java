@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.interpreter.program;
 
 import net.multiphasicapps.descriptors.FieldSymbol;
 
@@ -18,7 +18,7 @@ import net.multiphasicapps.descriptors.FieldSymbol;
  *
  * @since 2016/03/21
  */
-public enum JVMVariableType
+public enum VMCVariableType
 {
 	/** Nothing. */
 	NOTHING(false),
@@ -53,7 +53,7 @@ public enum JVMVariableType
 	 * @param __w Is this a wide type?
 	 * @since 2016/03/21
 	 */
-	private JVMVariableType(boolean __w)
+	private VMCVariableType(boolean __w)
 	{
 		wide = __w;
 	}
@@ -77,11 +77,11 @@ public enum JVMVariableType
 	 * @throws IllegalArgumentException If the type is not known.
 	 * @since 2016/03/23
 	 */
-	public static JVMVariableType byIndex(int __i)
+	public static VMCVariableType byIndex(int __i)
 		throws IllegalArgumentException
 	{
 		// Determine which one to use
-		JVMVariableType rv;
+		VMCVariableType rv;
 		switch (__i)
 		{
 			case 0: rv = NOTHING; break;
@@ -115,7 +115,7 @@ public enum JVMVariableType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/23
 	 */
-	public static JVMVariableType bySymbol(FieldSymbol __sym)
+	public static VMCVariableType bySymbol(FieldSymbol __sym)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check

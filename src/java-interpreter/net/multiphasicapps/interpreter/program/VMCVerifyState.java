@@ -11,7 +11,6 @@
 package net.multiphasicapps.interpreter.program;
 
 import java.util.AbstractList;
-import net.multiphasicapps.interpreter.JVMVariableType;
 
 /**
  * This represents a verification state which on entry to an operation, the
@@ -24,7 +23,7 @@ import net.multiphasicapps.interpreter.JVMVariableType;
  * @since 2016/03/31
  */
 public class VMCVerifyState
-	extends AbstractList<JVMVariableType>
+	extends AbstractList<VMCVariableType>
 {
 	/** Verification lock. */
 	final Object lock;
@@ -103,7 +102,7 @@ public class VMCVerifyState
 	 * @since 2016/03/31
 	 */
 	@Override
-	public JVMVariableType get(int __i)
+	public VMCVariableType get(int __i)
 	{
 		// Check
 		if (__i < 0 || __i >= size())
@@ -121,8 +120,8 @@ public class VMCVerifyState
 			
 			// Return which one?
 			if (hi)
-				return JVMVariableType.byIndex(val >>> 4);
-			return JVMVariableType.byIndex(val & 0xF);
+				return VMCVariableType.byIndex(val >>> 4);
+			return VMCVariableType.byIndex(val & 0xF);
 		}
 	}
 	
@@ -146,7 +145,7 @@ public class VMCVerifyState
 	 * @since 2016/03/31
 	 */
 	@Override
-	public JVMVariableType set(int __i, JVMVariableType __vt)
+	public VMCVariableType set(int __i, VMCVariableType __vt)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -167,7 +166,7 @@ public class VMCVerifyState
 			byte val = tips[div];
 			
 			// Old value
-			JVMVariableType old = JVMVariableType.byIndex((hi ? val >>> 4 :
+			VMCVariableType old = VMCVariableType.byIndex((hi ? val >>> 4 :
 				val & 0xF));
 			
 			// Set the new value

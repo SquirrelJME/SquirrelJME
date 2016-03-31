@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.interpreter.program;
 
-import net.multiphasicapps.interpreter.JVMVariableType;
-
 /**
  * This represents the state of a single variable, it may be explicitely
  * generated or implicitely generated.
@@ -33,7 +31,7 @@ public class VMCVariableState
 	protected final int index;
 	
 	/** Explicit state set? */
-	private volatile JVMVariableType _explicit;
+	private volatile VMCVariableType _explicit;
 	
 	/**
 	 * Initializes the variable state.
@@ -62,13 +60,13 @@ public class VMCVariableState
 	 * @return The variable type used.
 	 * @since 2016/03/31
 	 */
-	public JVMVariableType getType()
+	public VMCVariableType getType()
 	{
 		// Lock
 		synchronized (lock)
 		{
 			// If there is an explcit type set then use it
-			JVMVariableType rv = _explicit;
+			VMCVariableType rv = _explicit;
 			if (rv != null)
 				return rv;
 			
@@ -86,7 +84,7 @@ public class VMCVariableState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
-	VMCVariableState __setType(JVMVariableType __vt)
+	VMCVariableState __setType(VMCVariableType __vt)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check
