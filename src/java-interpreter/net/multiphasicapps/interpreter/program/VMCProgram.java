@@ -189,7 +189,52 @@ public class VMCProgram
 				continue;
 			
 			// Add source target jumps to the destination operations
-			throw new Error("TODO");
+			for (VMCJumpTarget jt : jts)
+			{
+				// Get target address
+				int addr = jt.address();
+				
+				// Get potential explicit source for a target
+				List<VMCJumpSource> srcs = xj.get(addr);
+				
+				// If it does not exist, add it
+				if (srcs == null)
+				{
+					// Setup new list
+					srcs = new ArrayList<>();
+					
+					// Add an implicit from the previous instruction because
+					// this would not have been formerly hit when that code was
+					// ran previously
+					// But only if it is not zero
+					if (addr != 0)
+						srcs.add(new VMCJumpSource(this, VMCJumpType.NATURAL,
+							addr - 1));
+					
+					// Add it
+					xj.put(addr, srcs);
+				}
+				
+				// Is there a natural jump point in this?
+				boolean hasnat = false;
+				for (VMCJumpTarget jtb : jts)
+					if (jtb.getType() == VMCJumpType.NATURAL)
+					{
+						hasnat |= true;
+						break;
+					}
+				
+				// Get the current jump type
+				VMCJumpType mjt = jt.getType();
+				
+				// If the jump type is natural and the list already has one
+				// then do not add it
+				if (hasnat && mjt == VMCJumpType.NATURAL)
+					continue;
+				
+				// Add jump with all details
+				srcs.add(new VMCJumpSource(this, mjt, i));
+			}
 		}
 		
 		// Lock in the explicit jump map
@@ -452,9 +497,12 @@ public class VMCProgram
 				else if (ik == VMCInstructionIDs.TABLESWITCH)
 					throw new Error("TODO");
 				
-				// An expilcit address
-				else if (ik == VMCInstructionIDs.GOTO ||
-					ik == VMCInstructionIDs.GOTO_W)
+				// Goto a single address (16-bit)
+				else if (ik == VMCInstructionIDs.GOTO)
+					throw new Error("TODO");
+				
+				// Goto a single address (32-bit)
+				else if (ik == VMCInstructionIDs.GOTO_W)
 					throw new Error("TODO");
 				
 				// Conditional to a given instruction or if false, the next
@@ -481,8 +529,9 @@ public class VMCProgram
 								logical + 1),
 							new VMCJumpTarget(VMCProgram.this,
 								VMCJumpType.CONDITIONAL,
-								physicalToLogical(__ByteUtils__.__readUShort(
-									_code, physical + 1)))));
+								physicalToLogical(physical +
+									__ByteUtils__.__readUShort(
+										_code, physical + 1)))));
 				
 				// Implicit next instruction
 				else
