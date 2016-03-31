@@ -88,3 +88,7 @@ and act as an input verification state rather than actually being state. This
 means that the states do not have to stick around if they are not needed, it
 also simplifies things also.
 
+## 20:39
+
+Better to split off the operations before it gets too large.
+
