@@ -251,16 +251,22 @@ public class VMCProgram
 		// If this is an instance method then the first argument is this.
 		int spot = 0;
 		if (__ins)
-			throw new Error("TODO");
+			entrystate.get(spot++).__setType(JVMVariableType.OBJECT);
 		
 		// Parse
 		int na = __desc.argumentCount();
 		for (int i = 0; i < na; i++)
 		{
-			// Get argument
+			// Get argument and its type
 			FieldSymbol arg = __desc.get(i);
+			JVMVariableType vt = JVMVariableType.bySymbol(arg);
 			
-			throw new Error("TODO");
+			// Set it here
+			entrystate.get(spot++).__setType(vt);
+			
+			// If wide, add TOP
+			if (vt.isWide())
+				entrystate.get(spot++).__setType(JVMVariableType.TOP);
 		}
 	}
 	

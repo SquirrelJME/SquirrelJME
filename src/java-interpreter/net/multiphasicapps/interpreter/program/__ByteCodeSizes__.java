@@ -87,6 +87,11 @@ class __ByteCodeSizes__
 				int lo = __ByteUtils__.__readSInt(__code, ppos + 4);
 				int hi = __ByteUtils__.__readSInt(__code, ppos + 8);
 				
+				// Lower must really be lower
+				if (lo > hi)
+					throw new JVMVerifyException(String.format("IN2d %d %d %d",
+						__pos, lo, hi));
+				
 				// Calculate the size
 				return (ppos - __pos) + 12 + (4 * ((hi - lo) + 1));
 			}

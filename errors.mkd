@@ -392,6 +392,13 @@ These codes do not have a index meaning and are meant to be short.
    * The negative pair count.
  * `IN2e` -- `lookupswitch` has keys which are not properly sorted.
    * The position of the instruction.
+ * `IN2f` -- `tableswitch` has a lower value which is higher than the higher
+   value.
+   * The position of the instruction.
+   * The low value.
+   * The high value.
+ * `IN2g` -- Can only change the variable state type of the program entry
+   state.
 
 # `net.multiphasicapps.interpreter.local`
 

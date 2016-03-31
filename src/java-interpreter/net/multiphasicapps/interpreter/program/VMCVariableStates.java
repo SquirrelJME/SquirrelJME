@@ -24,6 +24,9 @@ import net.multiphasicapps.interpreter.JVMVariableType;
 public class VMCVariableStates
 	extends AbstractList<VMCVariableState>
 {
+	/** Lock. */
+	final Object lock;	
+	
 	/** The owning program. */
 	protected final VMCProgram program;
 	
@@ -32,6 +35,12 @@ public class VMCVariableStates
 	
 	/** Is this used as output? */
 	protected final boolean isoutput;
+	
+	/** Is this the entry state? */
+	final boolean _isentrystate;
+	
+	/** Implicit states, for entry usage. */
+	private final VMCVariableState[] _implicit;
 	
 	/**
 	 * Initializes the variable states.
@@ -52,8 +61,27 @@ public class VMCVariableStates
 		
 		// Set
 		program = __prg;
+		lock = program.lock;
 		address = __addr;
 		isoutput = __io;
+		_isentrystate = (address == 0 && !isoutput);
+		
+		// If this is the net
+		if (_isentrystate)
+		{
+			// Setup implicit set
+			int n = size();
+			VMCVariableState[] imps = new VMCVariableState[n];
+			_implicit = imps;
+			
+			// Create values
+			for (int i = 0; i < n; i++)
+				imps[i] = new VMCVariableState(this, i);
+		}
+		
+		// No implicit states
+		else
+			_implicit = null;
 	}
 	
 	/**
@@ -63,7 +91,20 @@ public class VMCVariableStates
 	@Override
 	public VMCVariableState get(int __i)
 	{
-		throw new Error("TODO");
+		// Check
+		if (__i < 0 || __i >= size())
+			throw new IndexOutOfBoundsException(String.format("IOOB %d", __i));
+		
+		// Implicits?
+		VMCVariableState[] imps = _implicit;
+		if (imps != null)
+			return imps[__i];
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -73,7 +114,7 @@ public class VMCVariableStates
 	@Override
 	public int size()
 	{
-		throw new Error("TODO");
+		return program._maxlocals + program._maxstack;
 	}
 }
 

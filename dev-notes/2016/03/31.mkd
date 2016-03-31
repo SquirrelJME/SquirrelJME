@@ -1,0 +1,14 @@
+# 2016/03/31
+
+## 09:59
+
+If you look at the jump target for instructions, you can notice loops and such.
+
+## 10:00
+
+Thinking about it, I could have exceptions done separate from the jump sources.
+Then I can have a union list and cache it when exception data is loaded. This
+will reduce the complication that would be required when handling such things.
+The jump targets and jump sources would get additions to them. This would work
+out since I only have to worry about exceptions later on.
+

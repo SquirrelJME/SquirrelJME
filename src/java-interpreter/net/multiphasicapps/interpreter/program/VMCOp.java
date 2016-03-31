@@ -268,7 +268,37 @@ public class VMCOp
 					// Align pointer to read the jump values
 					int ap = ((physical + 3) & (~3));
 					
-					throw new Error("TODO");
+					// Read the default offset
+					int defo = __ByteUtils__.__readSInt(bc, ap);
+					
+					// Read the low to high values
+					int lo = __ByteUtils__.__readSInt(bc, ap + 4);
+					int hi = __ByteUtils__.__readSInt(bc, ap + 8);
+					
+					// The number of items
+					int ni = (hi - lo) + 1;
+					
+					// Setup the target array
+					int num = ni + 1;
+					VMCJumpTarget[] tsjt = new VMCJumpTarget[num];
+					
+					// Default jump
+					tsjt[0] = new VMCJumpTarget(program,
+						VMCJumpType.CONDITIONAL,
+						program.physicalToLogical(physical + defo));
+					
+					// Read all the other offsets in
+					int baseoff = ap + 12;
+					for (int i = 0; i < ni; i++)
+						tsjt[1 + i] = new VMCJumpTarget(program,
+							VMCJumpType.CONDITIONAL,
+							program.physicalToLogical(physical +
+								__ByteUtils__.__readSInt(bc,
+									baseoff + (4 * i))));
+					
+					// Wrap and lock it in
+					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
+						Arrays.<VMCJumpTarget>asList(tsjt));
 				}
 			
 				// Goto a single address (16-bit)
