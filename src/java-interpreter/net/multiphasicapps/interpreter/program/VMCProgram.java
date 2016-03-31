@@ -491,7 +491,57 @@ public class VMCProgram
 				
 				// Lookup switch
 				else if (ik == VMCInstructionIDs.LOOKUPSWITCH)
-					throw new Error("TODO");
+				{
+					// Align pointer to read the jump values
+					int ap = ((physical + 3) & (~3));
+					
+					// Read the default offset
+					byte[] bc = _code;
+					int defo = __ByteUtils__.__readSInt(bc, ap);
+					
+					// Read the pair count
+					int np = __ByteUtils__.__readSInt(bc, ap + 4);
+					
+					// There are a specific number of pairs so an array can
+					// be used
+					VMCJumpTarget[] ojta = new VMCJumpTarget[np + 1];
+					
+					// Setup default first
+					ojta[0] = new VMCJumpTarget(VMCProgram.this,
+						VMCJumpType.CONDITIONAL,
+						physicalToLogical(physical + defo));
+					
+					// Add extra value pairs now
+					int lastdx = Integer.MIN_VALUE;
+					boolean lastisval = false;
+					for (int j = 0; j < np; j++)
+					{
+						// Read the key here
+						int baseoff = ap + 8 + (j * 8);
+						int keyv = __ByteUtils__.__readSInt(bc, baseoff);
+						
+						// It MUST be higher than the last index, that is all
+						// entries in the switch are sorted.
+						if (keyv < lastdx && lastisval)
+							throw new JVMVerifyException(String.format(
+								"IN2e %s", physical));
+						
+						// Set the last value which is checked to make sure the
+						// key is actually higher
+						lastdx = keyv;
+						lastisval = true;
+						
+						// Read the offset and calculate the jump
+						int joff = __ByteUtils__.__readSInt(bc, baseoff + 4);
+						ojta[1 + j] = new VMCJumpTarget(VMCProgram.this,
+							VMCJumpType.CONDITIONAL,
+							physicalToLogical(physical + joff));
+					}
+					
+					// Wrap and lock it in
+					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
+						Arrays.<VMCJumpTarget>asList(ojta));
+				}
 				
 				// Table switch
 				else if (ik == VMCInstructionIDs.TABLESWITCH)

@@ -28,7 +28,7 @@ class __ByteUtils__
 	}
 	
 	/**
-	 * Reads an unsigned integer from the given buffer.
+	 * Reads a signed integer from the given buffer.
 	 *
 	 * @param __code The byte array.
 	 * @param __pos The position of the integer.
@@ -36,7 +36,7 @@ class __ByteUtils__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/29
 	 */
-	static int __readUInt(byte[] __code, int __pos)
+	static int __readSInt(byte[] __code, int __pos)
 		throws NullPointerException
 	{
 		// Check

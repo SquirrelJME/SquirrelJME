@@ -386,6 +386,12 @@ These codes do not have a index meaning and are meant to be short.
    exceptional jump or a class was not specified when one is thrown/caught.
  * `IN2c` -- Jump to an address which is outside of the program.
    * The address.
+ * `IN2d` -- `lookupswitch` instruction at the given position has a negative
+   key/value pair count.
+   * The position of the instruction.
+   * The negative pair count.
+ * `IN2e` -- `lookupswitch` has keys which are not properly sorted.
+   * The position of the instruction.
 
 # `net.multiphasicapps.interpreter.local`
 

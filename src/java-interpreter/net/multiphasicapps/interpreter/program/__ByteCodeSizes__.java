@@ -84,8 +84,8 @@ class __ByteCodeSizes__
 				int ppos = ((__pos + 3) & (~3));
 				
 				// Read the low and high bytes
-				int lo = __ByteUtils__.__readUInt(__code, ppos + 4);
-				int hi = __ByteUtils__.__readUInt(__code, ppos + 8);
+				int lo = __ByteUtils__.__readSInt(__code, ppos + 4);
+				int hi = __ByteUtils__.__readSInt(__code, ppos + 8);
 				
 				// Calculate the size
 				return (ppos - __pos) + 12 + (4 * ((hi - lo) + 1));
@@ -98,7 +98,10 @@ class __ByteCodeSizes__
 				int ppos = ((__pos + 3) & (~3));
 				
 				// Read the pair count
-				int np = __ByteUtils__.__readUInt(__code, ppos + 4);
+				int np = __ByteUtils__.__readSInt(__code, ppos + 4);
+				if (np <= 0)
+					throw new JVMVerifyException(String.format("IN2d %d %d",
+						__pos, np));
 				
 				// Calculate the size
 				return (ppos - __pos) + 8 + (8 * np);
