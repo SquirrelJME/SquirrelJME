@@ -406,6 +406,10 @@ These codes do not have a index meaning and are meant to be short.
    are available.
    * Locals specified in the frame.
    * The number of maximum locals.
+ * `IN2k` -- An exception handler in a method does not map to any instruction
+   within the method (the start, end, or handler addresses are not mappable to
+   logical instructions).
+   * The exception.
 
 # `net.multiphasicapps.interpreter.local`
 

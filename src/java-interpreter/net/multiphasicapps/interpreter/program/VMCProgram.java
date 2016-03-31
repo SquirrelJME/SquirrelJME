@@ -399,6 +399,17 @@ public class VMCProgram
 	}
 	
 	/**
+	 * Returns the physical program size.
+	 *
+	 * @return The physical program size.
+	 * @since 2016/03/31
+	 */
+	public int physicalSize()
+	{
+		return _code.length;
+	}
+	
+	/**
 	 * Converts a physical address to a logical one.
 	 *
 	 * @param __phy The physical address to convert.

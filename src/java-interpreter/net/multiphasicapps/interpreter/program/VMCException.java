@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.interpreter.program;
 
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.interpreter.JVMRawException;
+import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
  * This represents an exception which is handled within a method.
@@ -22,18 +24,32 @@ import net.multiphasicapps.interpreter.JVMRawException;
 public class VMCException
 {
 	/** The owning program. */
-	protected final VMCProgram program;	
+	protected final VMCProgram program;
+	
+	/** The logical inclusive start address. */
+	protected final int startpc;
+	
+	/** The logical inclusive end address. */
+	protected final int endpc;
+	
+	/** The logical handler address. */
+	protected final int handlerpc;
+	
+	/** The type of exception to handle. */
+	protected final BinaryNameSymbol handles;
 	
 	/**
 	 * This initializes an exception.
 	 *
 	 * @param __prg The owning program.
 	 * @param __rx The raw exception.
+	 * @throws JVMVerifyException If the input exception is not mappable to
+	 * program instructions.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
 	VMCException(VMCProgram __prg, JVMRawException __rx)
-		throws NullPointerException
+		throws JVMVerifyException, NullPointerException
 	{
 		// Check
 		if (__prg == null || __rx == null)
@@ -41,8 +57,66 @@ public class VMCException
 		
 		// Set
 		program = __prg;
+		handles = __rx.handles();
 		
-		throw new Error("TODO");
+		// Determine addresses
+		startpc = program.physicalToLogical(__rx.startPC());
+		handlerpc = program.physicalToLogical(__rx.handlerPC());
+		
+		// The end address is special
+		int xe = __rx.endPC();
+		if (xe == program.physicalSize())
+			endpc = program.size() - 1;
+		else
+			endpc = program.physicalToLogical(xe) - 1;
+		
+		// Check them all
+		if (startpc < 0 || endpc < 0 || handlerpc < 0)
+			throw new JVMVerifyException(String.format("IN2k %s", __rx));
+	}
+	
+	/**
+	 * Returns the ending PC address.
+	 *
+	 * @return The ending PC address.
+	 * @since 2016/03/31
+	 */
+	public int endPC()
+	{
+		return endpc;
+	}
+	
+	/**
+	 * Returns the address of the exception handler.
+	 *
+	 * @return The address of the exception handler code.
+	 * @since 2016/03/31
+	 */
+	public int handlerPC()
+	{
+		return handlerpc;
+	}
+	
+	/**
+	 * Returns the name of the exception to catch.
+	 *
+	 * @return The exception to catch.
+	 * @since 2016/03/31
+	 */
+	public BinaryNameSymbol handles()
+	{
+		return handles;
+	}
+	
+	/**
+	 * Returns the starting PC address.
+	 *
+	 * @return The starting PC address.
+	 * @since 2016/03/31
+	 */
+	public int startPC()
+	{
+		return startpc;
 	}
 }
 

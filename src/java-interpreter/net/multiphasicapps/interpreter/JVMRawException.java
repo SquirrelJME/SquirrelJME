@@ -52,17 +52,6 @@ public class JVMRawException
 	}
 	
 	/**
-	 * Returns the name of the exception to catch.
-	 *
-	 * @return The exception to catch.
-	 * @since 2016/03/31
-	 */
-	public BinaryNameSymbol getName()
-	{
-		return catches;
-	}
-	
-	/**
 	 * Returns the ending PC address.
 	 *
 	 * @return The ending PC address.
@@ -85,6 +74,17 @@ public class JVMRawException
 	}
 	
 	/**
+	 * Returns the name of the exception to catch.
+	 *
+	 * @return The exception to catch.
+	 * @since 2016/03/31
+	 */
+	public BinaryNameSymbol handles()
+	{
+		return catches;
+	}
+	
+	/**
 	 * Returns the starting PC address.
 	 *
 	 * @return The starting PC address.
@@ -93,6 +93,17 @@ public class JVMRawException
 	public int startPC()
 	{
 		return startpc;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/31
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("[%d, %d] -> %d (%s)", startpc, endpc, handlerpc,
+			catches);
 	}
 }
 
