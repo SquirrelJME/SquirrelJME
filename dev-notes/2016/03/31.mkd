@@ -42,3 +42,12 @@ available.
 
 Now to remove the program output and such.
 
+## 18:05
+
+So now I have enough of this new interpreter (which actually handles no
+instructions) where I can continue on and start making objects for things and
+such. Thus some verification will end up being lazy. Although at a slight speed
+cost, it should be easier when it comes to memory usage sort of when
+compilation is being performed. The partial program code could also be used
+for inlining potential too.
+
