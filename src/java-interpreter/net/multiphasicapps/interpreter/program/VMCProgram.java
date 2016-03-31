@@ -278,6 +278,11 @@ public class VMCProgram
 			if (vt.isWide())
 				entrystate.get(spot++).__setType(JVMVariableType.TOP);
 		}
+		
+		// Fill the remainder with nothing so that all states are explicit
+		int esn = entrystate.size();
+		while (spot < esn)
+			entrystate.get(spot++).__setType(JVMVariableType.NOTHING);
 	}
 	
 	/**

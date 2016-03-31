@@ -57,7 +57,7 @@ public class VMCVerifyState
 		lock = program.lock;
 		
 		// Get the number of element
-		int count = size() / 2;
+		int count = (size() / 2) + 1;
 		_types = new byte[count];
 		_stacktop = program._maxlocals;
 	}
@@ -81,7 +81,7 @@ public class VMCVerifyState
 		lock = program.lock;
 		
 		// Setup array using the original size count
-		int count = size() / 2;
+		int count = (size() / 2) + 1;
 		byte[] vt;
 		_types = vt = new byte[count];
 		
@@ -138,6 +138,49 @@ public class VMCVerifyState
 		synchronized (lock)
 		{
 			return _stacktop;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/31
+	 */
+	@Override
+	public JVMVariableType set(int __i, JVMVariableType __vt)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__i < 0 || __i >= size())
+			throw new IndexOutOfBoundsException(String.format("IOOB %d", __i));
+		if (__vt == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Is this a high or low reference?
+			boolean hi = (__i & 1) != 0;
+			int div = __i / 2;
+			
+			// Get value at the index
+			byte[] tips = _types;
+			byte val = tips[div];
+			
+			// Old value
+			JVMVariableType old = JVMVariableType.byIndex((hi ? val >>> 4 :
+				val & 0xF));
+			
+			// Set the new value
+			if (hi)
+				val = (byte)((val & 0x0F) | (__vt.ordinal() << 4));
+			else
+				val = (byte)((val & 0xF0) | __vt.ordinal());
+			
+			// Place it
+			tips[div] = val;
+			
+			// Return the old
+			return old;
 		}
 	}
 	

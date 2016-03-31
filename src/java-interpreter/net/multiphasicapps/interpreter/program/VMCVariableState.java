@@ -32,8 +32,8 @@ public class VMCVariableState
 	/** The index of this state. */
 	protected final int index;
 	
-	/** Implicit state set? */
-	private volatile JVMVariableType _implicit;
+	/** Explicit state set? */
+	private volatile JVMVariableType _explicit;
 	
 	/**
 	 * Initializes the variable state.
@@ -67,8 +67,8 @@ public class VMCVariableState
 		// Lock
 		synchronized (lock)
 		{
-			// If there is an implicit type set then use it
-			JVMVariableType rv = _implicit;
+			// If there is an explcit type set then use it
+			JVMVariableType rv = _explicit;
 			if (rv != null)
 				return rv;
 			
@@ -100,7 +100,7 @@ public class VMCVariableState
 		// Lock
 		synchronized (lock)
 		{
-			_implicit = __vt;
+			_explicit = __vt;
 		}
 		
 		// Self
