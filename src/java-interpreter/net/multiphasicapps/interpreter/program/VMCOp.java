@@ -264,7 +264,12 @@ public class VMCOp
 			
 				// Table switch
 				else if (ik == VMCInstructionIDs.TABLESWITCH)
+				{
+					// Align pointer to read the jump values
+					int ap = ((physical + 3) & (~3));
+					
 					throw new Error("TODO");
+				}
 			
 				// Goto a single address (16-bit)
 				else if (ik == VMCInstructionIDs.GOTO)
