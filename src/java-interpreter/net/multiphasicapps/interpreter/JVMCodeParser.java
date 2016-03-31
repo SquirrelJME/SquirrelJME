@@ -32,18 +32,6 @@ public class JVMCodeParser
 	public static final int MAX_CODE_SIZE =
 		65535;
 	
-	/** Handler shift count. */
-	private static final int _HANDLER_SHIFT =
-		4;
-	
-	/** Handler shift mask. */
-	private static final int _HANDLER_MASK =
-		(1 << _HANDLER_SHIFT) - 1;
-	
-	/** Handlers for operations. */
-	private static final Reference<JVMByteOpHandler>[] _HANDLERS =
-		__makeByteOpRefArray();
-	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -56,16 +44,6 @@ public class JVMCodeParser
 	
 	/** The class file parser. */
 	protected final JVMClassFile classfile;
-	
-	/** The program bridge. */
-	protected final HandlerBridge bridge =
-		new HandlerBridge();
-	
-	/** Program output. */
-	protected final JVMProgramOutput programoutput;
-	
-	/** Program state. */
-	private volatile JVMProgramState _state;
 	
 	/** Current active code source, may change in special circumstances. */
 	private volatile DataInputStream _source;
@@ -99,9 +77,6 @@ public class JVMCodeParser
 		method = __method;
 		constantpool = __pool;
 		classfile = __cfp;
-		
-		// Setup program output generator
-		programoutput = method.outerClass().engine().__createProgramOutput();
 	}
 	
 	/**
@@ -141,10 +116,6 @@ public class JVMCodeParser
 		
 		// Setup state
 		MethodSymbol msym = method.type();
-		
-		// DEPRECATED -- Remove program state
-		JVMProgramState prgstate;
-		_state = prgstate = new JVMProgramState(maxlocal, maxstack);
 		
 		// Read in the code array so it can be parsed later after the
 		// exceptions and the (optional) StackMap/StackMapTable are parsed.
@@ -232,283 +203,6 @@ public class JVMCodeParser
 		
 		// Self
 		return this;
-	}
-	
-	/**
-	 * Handles an input operation.
-	 *
-	 * @throws IOException On read errors.
-	 * @since 2016/03/23
-	 */
-	private void __handleOp()
-		throws IOException
-	{
-		// Get the code source
-		DataInputStream source = _source;
-		
-		// Read in a single byte
-		int code = source.readUnsignedByte();
-		
-		// If it is the wide specifier, read another byte and use a special
-		// code for it
-		if (code == 0xC4)
-			code = 0x100 | source.readUnsignedByte();
-		
-		// Subroutines not supported)
-		if (code == 0xA8 || code == 0xC9 || code == 0xA9 || code == 0xC4A9)
-			throw new JVMClassFormatError(String.format("IN1m %d", code));
-		
-		// Nor is invokedynamic
-		if (code == 0xBA)
-			throw new JVMClassFormatError(String.format("IN1n %d", code));
-		
-		// Get operation handler
-		JVMByteOpHandler handler = __obtainByteOpHandler(code);
-		
-		// Call it
-		handler.handle(code, bridge);
-		
-		// Debug
-		System.err.println("DEBUG vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-		JVMProgramState zzzs = _state;
-		int zzzn = zzzs.size();
-		for (int i = 0; i < zzzn; i++)
-		{
-			JVMProgramAtom zzza = zzzs.get(i);
-			if (zzza != null)
-				System.err.printf("DEBUG -- %d: %s%n", i, zzza);
-		}
-		System.err.println("DEBUG ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-	}
-	
-	/**
-	 * This creates the byte operation handler reference array.
-	 *
-	 * @return The handler cache array.
-	 * @since 2016/03/23
-	 */
-	@SuppressWarnings({"unchecked"})
-	private static Reference<JVMByteOpHandler>[] __makeByteOpRefArray()
-	{
-		return (Reference<JVMByteOpHandler>[])
-			((Object)new Reference[512 >>> _HANDLER_SHIFT]);
-	}
-	
-	/**
-	 * Obtains from the cache or caches a class which is used for the handling
-	 * of byte code operations. This is to prevent this file from being a
-	 * massive 5000 line file.
-	 *
-	 * @param __code The opcode, if the value is >= 0x100 then.
-	 * @return The handler for the given operation.
-	 * @throws IndexOutOfBoundsException If the code is not within the bounds
-	 * of the cache table.
-	 * @throws JVMClassFormatError If the opcode is not valid.
-	 * @since 2016/03/23
-	 */
-	private static JVMByteOpHandler __obtainByteOpHandler(int __code)
-		throws IndexOutOfBoundsException, JVMClassFormatError
-	{
-		// Major shift
-		int major = __code >>> _HANDLER_SHIFT;
-		
-		// Get the handler array and check bounds
-		Reference<JVMByteOpHandler>[] refs = _HANDLERS;
-		if (major < 0 || major >= refs.length)
-			throw new JVMClassFormatError(String.format("IN1h %d", __code));
-		
-		// Lock on the handlers
-		synchronized (refs)
-		{
-			// Get reference
-			Reference<JVMByteOpHandler> ref = refs[major];
-			JVMByteOpHandler rv;
-			
-			// Needs caching?
-			if (ref == null || null == (rv = ref.get()))
-			{
-				// Can fail
-				try
-				{
-					// Find class first
-					Class<?> ohcl = Class.forName("net.multiphasicapps." +
-						"interpreter.jvmops.JVMOpHandler" +
-						(__code & ~_HANDLER_MASK) + "To" +
-						(__code | _HANDLER_MASK));
-					
-					// Create instance of it
-					rv = JVMByteOpHandler.class.cast(ohcl.newInstance());
-				}
-				
-				// Could not find, create, or cast.
-				catch (InstantiationException|IllegalAccessException|
-					ClassNotFoundException|ClassCastException e)
-				{
-					throw new JVMClassFormatError(
-						String.format("IN1h %d", __code), e);
-				}
-				
-				// Cache it
-				refs[major] = new WeakReference<>(rv);
-			}
-			
-			// Return it
-			return rv;
-		}
-	}
-	
-	/**
-	 * This is a bridge which is used to interact with the code parser because
-	 * the operation handlers are for the most part statically used.
-	 *
-	 * @since 2016/03/23
-	 */
-	public class HandlerBridge
-	{
-		/**
-		 * Internally initialized only.
-		 *
-		 * @since 2016/03/23
-		 */
-		private HandlerBridge()
-		{
-		}
-		
-		/**
-		 * Returns the class constant pool.
-		 *
-		 * @return The class constant pool.
-		 * @since 2016/03/29
-		 */
-		public JVMConstantPool constantPool()
-		{
-			return constantpool;
-		}
-		
-		/**
-		 * Returns the atom for the current instruction.
-		 *
-		 * @return The current instruction atom.
-		 * @since 2016/03/26
-		 */
-		public JVMProgramAtom currentAtom()
-		{
-			// Lock
-			synchronized (lock)
-			{
-				return programState().get(pcAddress(), true);
-			}
-		}
-		
-		/**
-		 * Merges the derived atom into the following atom.
-		 *
-		 * @return {@code this}.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/03/27
-		 */
-		public HandlerBridge merge(JVMProgramAtom __div)
-			throws NullPointerException
-		{
-			// Check
-			if (__div == null)
-				throw new NullPointerException("NARG");
-			
-			// Lock
-			synchronized (lock)
-			{
-				// Get the next atom, check if it exists first before
-				// actually having it be created.
-				JVMProgramAtom next = __followingAtom(false);
-				boolean fresh = (next == null);
-				if (fresh)
-					next = __followingAtom(true);
-				
-				// Check to see if the derived atom matches the type state for
-				// the target atom.
-				if (!fresh)
-					throw new Error("TODO");
-				
-				// Otherwise it is fresh, so just copy the state
-				else
-					next.copyFrom(__div);
-			}
-			
-			// Self
-			return this;
-		}
-		
-		/**
-		 * Returns the address of the current instruction.
-		 *
-		 * @return The current instruction address.
-		 * @since 2016/03/23
-		 */
-		public int pcAddress()
-		{
-			// Lock
-			synchronized (lock)
-			{
-				return _pcaddr;
-			}
-		}
-		
-		/**
-		 * Returns the program state.
-		 *
-		 * @return The program state.
-		 * @since 2016/03/24
-		 */
-		public JVMProgramState programState()
-		{
-			// Lock
-			synchronized (lock)
-			{
-				return _state;
-			}
-		}
-		
-		/**
-		 * Returns the stream to read bytes from.
-		 *
-		 * @return The stream to read bytes from
-		 * @since 2016/03/23
-		 */
-		public DataInputStream source()
-		{
-			// Lock
-			synchronized (lock)
-			{
-				return _source;
-			}
-		}
-		
-		/**
-		 * Returns the atom which would be returned 
-		 *
-		 * @param __create Should the atom be created?
-		 * @return The atom for the current program position.
-		 * @throws JVMClassFormatError If the following atom exceeds the
-		 * program bounds.
-		 * @since 2016/03/26
-		 */
-		private JVMProgramAtom __followingAtom(boolean __create)
-			throws JVMClassFormatError
-		{
-			synchronized (lock)
-			{
-				// Get the counter count
-				int cc = (int)_counter.count();
-				
-				// If it exceeds the program size, then fail
-				if (cc >= _counter.limit())
-					throw new JVMClassFormatError(String.format("IN1w %d",
-						cc));
-				
-				// Get it
-				return programState().get(cc, __create);
-			}
-		}
 	}
 }
 

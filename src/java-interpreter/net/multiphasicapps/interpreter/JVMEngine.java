@@ -68,15 +68,6 @@ public abstract class JVMEngine
 	}
 	
 	/**
-	 * This creates a program output which is used to store generated machine
-	 * code for interpretation, execution, or compilation.
-	 *
-	 * @return The program output.
-	 * @since 2016/03/24
-	 */
-	protected abstract JVMProgramOutput createProgramOutput();
-	
-	/**
 	 * Adds a class path to the engine.
 	 *
 	 * @param __icp The class path to add.
@@ -256,17 +247,6 @@ public abstract class JVMEngine
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Provides access to create outputs for {@link JVMCodeParser}.
-	 *
-	 * @return The created program output.
-	 * @since 2016/03/24
-	 */
-	final JVMProgramOutput __createProgramOutput()
-	{
-		return createProgramOutput();
 	}
 	
 	/**

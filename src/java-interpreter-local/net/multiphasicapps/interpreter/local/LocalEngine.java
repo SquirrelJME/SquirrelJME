@@ -25,7 +25,6 @@ import net.multiphasicapps.interpreter.JVMEngine;
 import net.multiphasicapps.interpreter.JVMMemberKey;
 import net.multiphasicapps.interpreter.JVMMethod;
 import net.multiphasicapps.interpreter.JVMObject;
-import net.multiphasicapps.interpreter.JVMProgramOutput;
 import net.multiphasicapps.interpreter.JVMThread;
 
 /**
@@ -105,16 +104,6 @@ public class LocalEngine
 		
 		// Create main thread
 		JVMThread mthread = createThread(mainmethod, pargs);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/24
-	 */
-	@Override
-	protected JVMProgramOutput createProgramOutput()
-	{
-		return new LocalProgramOutput();
 	}
 }
 
