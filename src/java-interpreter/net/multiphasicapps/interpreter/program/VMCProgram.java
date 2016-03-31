@@ -65,6 +65,9 @@ public class VMCProgram
 	/** Have exceptions been set yet? */
 	private volatile boolean _exceptionsset;
 	
+	/** There are no exceptions to handle. */
+	private volatile boolean _noexceptions;
+	
 	/**
 	 * This initializes the program using the specified code array.
 	 *
@@ -362,6 +365,23 @@ public class VMCProgram
 		synchronized (lock)
 		{
 			return _exceptionsset;
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if there are no exceptions to be caught at all.
+	 *
+	 * This is used so that some operations which handle exceptions can be
+	 * done faster.
+	 *
+	 * @return {@code true} if this method catches no exceptions.
+	 * @since 2016/03/31
+	 */
+	boolean __areNoExceptions()
+	{
+		synchronized (lock)
+		{
+			return _noexceptions;
 		}
 	}
 }

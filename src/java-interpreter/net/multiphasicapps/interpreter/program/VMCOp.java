@@ -176,7 +176,7 @@ public class VMCOp
 			
 			// Explicit jump sources?
 			List<VMCJumpSource> exp = program._expjumps.get(logical);
-			if (!exset && exp != null)
+			if ((!exset || program.__areNoExceptions()) && exp != null)
 				return exp;
 			
 			throw new Error("TODO");
@@ -374,9 +374,10 @@ public class VMCOp
 			
 				// If exceptions were set then add any exceptional targets
 				// which would be missing from the list
-				if (exset)
+				if (exset || program.__areNoExceptions())
 				{
-					if (true)
+					// Add any missing exceptions
+					if (!program.__areNoExceptions())
 						throw new Error("TODO");
 					
 					// Cache it
