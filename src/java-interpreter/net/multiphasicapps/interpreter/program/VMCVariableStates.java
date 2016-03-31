@@ -19,6 +19,8 @@ import net.multiphasicapps.interpreter.JVMVariableType;
  * Compared to before, the stack and local variables are combined into a single
  * state for usage simplicity.
  *
+ * Some states may be implied based on previous operations.
+ *
  * @since 2016/03/30
  */
 public class VMCVariableStates
@@ -39,8 +41,8 @@ public class VMCVariableStates
 	/** Is this the entry state? */
 	final boolean _isentrystate;
 	
-	/** Implicit states, for entry usage. */
-	private final VMCVariableState[] _implicit;
+	/** Explicit states, for entry usage. */
+	private final VMCVariableState[] _explicit;
 	
 	/**
 	 * Initializes the variable states.
@@ -69,19 +71,19 @@ public class VMCVariableStates
 		// If this is the net
 		if (_isentrystate)
 		{
-			// Setup implicit set
+			// Setup explicit set
 			int n = size();
-			VMCVariableState[] imps = new VMCVariableState[n];
-			_implicit = imps;
+			VMCVariableState[] xpls = new VMCVariableState[n];
+			_explicit = xpls;
 			
 			// Create values
 			for (int i = 0; i < n; i++)
-				imps[i] = new VMCVariableState(this, i);
+				xpls[i] = new VMCVariableState(this, i);
 		}
 		
-		// No implicit states
+		// No explicit states
 		else
-			_implicit = null;
+			_explicit = null;
 	}
 	
 	/**
@@ -95,14 +97,14 @@ public class VMCVariableStates
 		if (__i < 0 || __i >= size())
 			throw new IndexOutOfBoundsException(String.format("IOOB %d", __i));
 		
-		// Implicits?
-		VMCVariableState[] imps = _implicit;
-		if (imps != null)
-			return imps[__i];
-		
 		// Lock
 		synchronized (lock)
 		{
+			// Explicits?
+			VMCVariableState[] xpls = _explicit;
+			if (xpls != null)
+				return xpls[__i];
+			
 			throw new Error("TODO");
 		}
 	}
