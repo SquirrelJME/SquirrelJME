@@ -38,3 +38,7 @@ pass for the locals and the stack, but now it can be combined into one. The
 stack essentially will never drop down below the number of locals which are
 available.
 
+## 15:19
+
+Now to remove the program output and such.
+

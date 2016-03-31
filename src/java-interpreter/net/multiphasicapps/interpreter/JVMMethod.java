@@ -13,6 +13,7 @@ package net.multiphasicapps.interpreter;
 import java.util.Set;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.interpreter.program.VMCProgram;
 
 /**
  * This represents an interpreted method within a class.
@@ -22,11 +23,18 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 public class JVMMethod
 	extends JVMMember<MethodSymbol, JVMMethodFlags>
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();	
+	
 	/** Is this a constructor? */
 	protected final boolean isconstructor;	
 	
 	/** Is this a class initialization method? */
 	protected final boolean isclassinit;
+	
+	/** The current method program. */
+	private volatile VMCProgram _program;
 	
 	/**
 	 * Initializes the interpreted method.
@@ -44,6 +52,21 @@ public class JVMMethod
 		// Is this a constructor?
 		isconstructor = name().equals("<init>");
 		isclassinit = name().equals("<clinit>");
+	}
+	
+	/**
+	 * Returns the program which describes what this method performs.
+	 *
+	 * @return The method's program.
+	 * @since 2016/03/31
+	 */
+	public VMCProgram getProgram()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _program;
+		}
 	}
 	
 	/**
@@ -112,6 +135,31 @@ public class JVMMethod
 		
 		// Perform super work
 		return (JVMMethod)super.setFlags(__fl);
+	}
+	
+	/**
+	 * Returns the program to be used when executing this method.
+	 *
+	 * @param __prg The program to use.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since m2016/03/31
+	 */
+	public JVMMethod setProgram(VMCProgram __prg)
+		throws NullPointerException
+	{
+		// Check
+		if (__prg == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock and set
+		synchronized (lock)
+		{
+			_program = __prg;
+		}
+		
+		// Self
+		return this;
 	}
 }
 

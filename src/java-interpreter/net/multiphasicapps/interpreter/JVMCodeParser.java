@@ -227,9 +227,8 @@ public class JVMCodeParser
 			}
 		}
 		
-		// OLD CODE TO BE REINTEGRATED TO THE NEW VMCProgram FOLLOWS
-		if (true)
-			throw new Error("TODO");
+		// Set the method program
+		method.setProgram(jbp);
 		
 		// Self
 		return this;
