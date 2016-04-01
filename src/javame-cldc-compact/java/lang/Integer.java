@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.magic.Magic;
+
 public final class Integer
 	extends Number
 	implements Comparable<Integer>
@@ -24,7 +26,7 @@ public final class Integer
 		32;
 	
 	public static final Class<Integer> TYPE =
-		int.class;
+		Magic.primitiveIntegerClass();
 	
 	public Integer(int __a)
 	{

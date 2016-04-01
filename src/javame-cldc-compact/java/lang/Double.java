@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.magic.Magic;
+
 public final class Double
 	extends Number
 	implements Comparable<Double>
@@ -42,7 +44,7 @@ public final class Double
 		64;
 	
 	public static final Class<Double> TYPE =
-		double.class;
+		Magic.primitiveDoubleClass();
 	
 	public Double(double __a)
 	{

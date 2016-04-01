@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.magic.Magic;
+
 public final class Short
 	extends Number
 	implements Comparable<Short>
@@ -24,7 +26,7 @@ public final class Short
 		16;
 	
 	public static final Class<Short> TYPE =
-		short.class;
+		Magic.primitiveShortClass();
 	
 	public Short(short __a)
 	{

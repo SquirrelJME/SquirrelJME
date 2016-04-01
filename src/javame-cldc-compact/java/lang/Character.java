@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.magic.Magic;
+
 public final class Character
 	implements Comparable<Character>
 {
@@ -29,7 +31,7 @@ public final class Character
 		16;
 	
 	public static final Class<Character> TYPE =
-		char.class;
+		Magic.primitiveCharacterClass();
 	
 	public Character(char __a)
 	{

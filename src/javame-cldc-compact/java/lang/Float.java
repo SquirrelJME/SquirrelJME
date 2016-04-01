@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.magic.Magic;
+
 public final class Float
 	extends Number
 	implements Comparable<Float>
@@ -42,7 +44,7 @@ public final class Float
 		32;
 	
 	public static final Class<Float> TYPE =
-		float.class;
+		Magic.primitiveFloatClass();
 	
 	public Float(float __a)
 	{

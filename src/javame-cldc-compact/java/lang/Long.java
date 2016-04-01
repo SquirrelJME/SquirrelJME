@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.magic.Magic;
+
 public final class Long
 	extends Number
 	implements Comparable<Long>
@@ -24,7 +26,7 @@ public final class Long
 		64;
 	
 	public static final Class<Long> TYPE =
-		long.class;
+		Magic.primitiveLongClass();
 	
 	public Long(long __a)
 	{

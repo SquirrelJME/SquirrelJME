@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.magic.Magic;
+
 public final class Byte
 	extends Number
 	implements Comparable<Byte>
@@ -24,7 +26,7 @@ public final class Byte
 		8;
 	
 	public static final Class<Byte> TYPE =
-		byte.class;
+		Magic.primitiveByteClass();
 	
 	public Byte(byte __a)
 	{

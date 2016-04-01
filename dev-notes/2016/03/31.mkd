@@ -51,3 +51,11 @@ cost, it should be easier when it comes to memory usage sort of when
 compilation is being performed. The partial program code could also be used
 for inlining potential too.
 
+## 21:34
+
+One probably less known thing about the VM is that `.class` on a primitive is
+syntactic sugar for `Boxed.TYPE`. I previously just did the primitive since
+I figured instead of adding a bunch of magic I could instead just detect or
+set the value of `TYPE` for boxed primitives. However magic would likely be
+the better route due to the interpreter and compiler.
+

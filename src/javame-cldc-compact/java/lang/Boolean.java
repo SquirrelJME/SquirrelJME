@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.magic.Magic;
+
 public final class Boolean
 	implements Comparable<Boolean>
 {
@@ -20,7 +22,7 @@ public final class Boolean
 		new Boolean(true);
 	
 	public static final Class<Boolean> TYPE =
-		boolean.class;
+		Magic.primitiveBooleanClass();
 	
 	public Boolean(boolean __a)
 	{

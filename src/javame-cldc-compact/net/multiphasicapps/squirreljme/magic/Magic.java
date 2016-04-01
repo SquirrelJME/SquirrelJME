@@ -59,6 +59,94 @@ public abstract class Magic
 	}
 	
 	/**
+	 * Returns the class type for the primitive type {@code boolean}.
+	 *
+	 * @return The class for it.
+	 * @since 2016/03/31
+	 */
+	public static Class<Boolean> primitiveBooleanClass()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns the class type for the primitive type {@code byte}.
+	 *
+	 * @return The class for it.
+	 * @since 2016/03/31
+	 */
+	public static Class<Byte> primitiveByteClass()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns the class type for the primitive type {@code char}.
+	 *
+	 * @return The class for it.
+	 * @since 2016/03/31
+	 */
+	public static Class<Character> primitiveCharacterClass()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns the class type for the primitive type {@code double}.
+	 *
+	 * @return The class for it.
+	 * @since 2016/03/31
+	 */
+	public static Class<Double> primitiveDoubleClass()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns the class type for the primitive type {@code float}.
+	 *
+	 * @return The class for it.
+	 * @since 2016/03/31
+	 */
+	public static Class<Float> primitiveFloatClass()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns the class type for the primitive type {@code int}.
+	 *
+	 * @return The class for it.
+	 * @since 2016/03/31
+	 */
+	public static Class<Integer> primitiveIntegerClass()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns the class type for the primitive type {@code long}.
+	 *
+	 * @return The class for it.
+	 * @since 2016/03/31
+	 */
+	public static Class<Long> primitiveLongClass()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
+	 * Returns the class type for the primitive type {@code short}.
+	 *
+	 * @return The class for it.
+	 * @since 2016/03/31
+	 */
+	public static Class<Short> primitiveShortClass()
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
 	 * Returns a raw output stream which is attached to standard error.
 	 *
 	 * @return The stream attached to standard error.
