@@ -158,7 +158,17 @@ public abstract class JVMEngine
 		// Requesting an array class?
 		int dims;
 		if (__bn.startsWith("["))
-			throw new Error("TODO");
+		{
+			int n = __bn.length();
+			dims = 0;
+			while (dims < n && __bn.charAt(dims) == '[')
+				dims++;
+			
+			// Exceeded size?
+			if (dims >= n)
+				throw new IllegalArgumentException(String.format("IN0l %s",
+					__bn));
+		}
 		
 		// A normal class
 		else
@@ -182,8 +192,14 @@ public abstract class JVMEngine
 			
 			// Reference is still valid?
 			if (ref == null || null == (rv = ref.get()))
+			{
+				// Debug notice
+				System.err.printf("Loading class '%s'...%n", __bn);
+				
+				// Perform the load
 				classes.put(__bn, new WeakReference<>((rv =
 					__internalLoadClass(__bn, dims))));
+			}
 			
 			// Return the read class
 			return rv;
@@ -246,6 +262,9 @@ public abstract class JVMEngine
 		if (__strings == null)
 			throw new NullPointerException("NARG");
 		
+		// Get the string array class
+		JVMClass strarray = loadClass("[Ljava/lang/String;");
+		
 		throw new Error("TODO");
 	}
 	
@@ -268,7 +287,29 @@ public abstract class JVMEngine
 		if (__dims <= 0 || __dims >= MAX_ARRAY_DIMENSIONS)
 			throw new JVMEngineException(String.format("IN0m %d", __dims));
 		
-		throw new Error("TODO");
+		// Need to determine the component type
+		JVMComponentType component;
+		String stripped = __bn.substring(1);
+		
+		// Is another array?
+		char cc = stripped.charAt(0);
+		if (cc == '[')
+			component = loadClass(stripped);
+		
+		// Describes a class (in L; form)
+		else if (cc == 'L')
+			component = loadClass(stripped.substring(1, stripped.length() - 1).
+				replace('/', '.'));
+		
+		// A primitive type?
+		else
+		{
+			if (null == (component = JVMPrimitiveType.byCode(cc)))
+				throw new JVMEngineException(String.format("IN2m %c", cc));
+		}
+		
+		// Build array for it
+		return new JVMClass(this, component);
 	}
 	
 	/**

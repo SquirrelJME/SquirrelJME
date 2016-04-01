@@ -27,6 +27,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  * @since 2016/03/16
  */
 public class JVMClass
+	implements JVMComponentType
 {
 	/** Internal lock. */
 	Object lock =
@@ -34,6 +35,9 @@ public class JVMClass
 	
 	/** The interpreter engine which owns this class. */
 	protected final JVMEngine engine;
+	
+	/** The component type of this class. */
+	protected final JVMComponentType componenttype;
 	
 	/** Class interfaces. */
 	protected final JVMClassInterfaces interfaces =
@@ -78,6 +82,40 @@ public class JVMClass
 		
 		// Set
 		engine = __eng;
+		componenttype = null;
+	}
+	
+	/**
+	 * This initializes a class which is an array of the given component type.
+	 *
+	 * @param __eng The owning engine.
+	 * @param __ct The component type of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/31
+	 */
+	protected JVMClass(JVMEngine __eng, JVMComponentType __ct)
+		throws NullPointerException
+	{
+		// Check
+		if (__eng == null || __ct == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		engine = __eng;
+		componenttype = null;
+		
+		// Flags are fixed
+		_flags = new JVMClassFlags(JVMClassFlag.PUBLIC.mask |
+			JVMClassFlag.FINAL.mask |
+			JVMClassFlag.SYNTHETIC.mask);
+		
+		// The this name of the class is the component type as a field with
+		// an array marker atatched
+		_this = new ClassNameSymbol("[" + __ct.getThisName().asField());
+		
+		// The super class is always object
+		_super = ClassNameSymbol.BINARY_OBJECT;
+		_superset = true;
 	}
 	
 	/**
@@ -110,8 +148,19 @@ public class JVMClass
 			
 			// Needs to be cached?
 			if (ref == null || null == (rv = ref.get()))
-				_clbname = new WeakReference<>((rv =
-					getThisName().toString().replace('/', '.')));
+			{
+				// If an array, then the field syntax is directly used
+				if (isArray())
+					rv = getThisName().toString();
+				
+				// Otherwise use the binary form instead but with characters
+				// replaced
+				else
+					rv = getThisName().toString().replace('/', '.');
+				
+				// Cache it
+				_clbname = new WeakReference<>(rv);
+			}
 			
 			// Return it
 			return rv;
@@ -220,19 +269,33 @@ public class JVMClass
 	}
 	
 	/**
+	 * Is this class an array?
+	 *
+	 * @return {@code true} if this class is an array.
+	 * @since 2016/03/31
+	 */
+	public boolean isArray()
+	{
+		return componenttype != null;
+	}
+	
+	/**
 	 * Sets the flags used by this class.
 	 *
 	 * @param __fl The class flags.
 	 * @return {@code this}.
+	 * @throws IllegalStateException If this is an array.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
 	public final JVMClass setFlags(JVMClassFlags __fl)
-		throws NullPointerException
+		throws IllegalStateException, NullPointerException
 	{
 		// Check
 		if (__fl == null)
 			throw new NullPointerException("NARG");
+		if (isArray())
+			throw new IllegalStateException("IN2n");
 		
 		// Lock
 		synchronized (lock)
@@ -253,7 +316,8 @@ public class JVMClass
 	 *
 	 * @param __n The name to set.
 	 * @return {@code this}.
-	 * @throws IllegalStateException Of the current class name is not set.
+	 * @throws IllegalStateException Of the current class name is not set, or
+	 * this is an array.
 	 * @throws JVMClassFormatError If this class name is {@link Object} and
 	 * a super class was attempted to be set.
 	 * @since 2016/03/19
@@ -264,6 +328,8 @@ public class JVMClass
 		// Cannot be an array
 		if (__n != null && __n.isArray())
 			throw new JVMClassFormatError(String.format("IN0z %s", __n));
+		if (isArray())
+			throw new IllegalStateException("IN2o");
 		
 		// Lock
 		synchronized (lock)
@@ -304,15 +370,18 @@ public class JVMClass
 	 *
 	 * @param __n The name of the class.
 	 * @return {@code this}.
+	 * @throws IllegalStateException If this is an array.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
 	public final JVMClass setThisName(ClassNameSymbol __n)
-		throws NullPointerException
+		throws IllegalStateException, NullPointerException
 	{
 		// Check
 		if (__n == null)
 			throw new NullPointerException("NARG");
+		if (isArray())
+			throw new IllegalStateException("IN2p");
 		
 		// Lock
 		synchronized (lock)
@@ -329,7 +398,7 @@ public class JVMClass
 			// If not set or this is the super class, then correct to Object
 			boolean tio = __n.equals("java/lang/Object");
 			if ((sup == null && !tio) || (sup != null && sup.equals(__n)))
-				_super = new ClassNameSymbol("java/lang/Object");
+				_super = ClassNameSymbol.BINARY_OBJECT;
 			
 			// Otherwise clear if not already set
 			else if (sup != null && tio)

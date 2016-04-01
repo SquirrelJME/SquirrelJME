@@ -19,7 +19,8 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
 /**
- * This is the base class for the set of .
+ * This is the base class for the set of members and such that a class may
+ * have.
  *
  * @param <S> The type of symbol the member type uses.
  * @param <F> The flag type the member uses.
@@ -124,12 +125,13 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws IllegalStateException If the owning class is an array.
 	 * @since 2016/03/20
 	 */
 	@Override
 	public E put(JVMMemberKey<S> __k, E __v)
 		throws ClassCastException, IllegalArgumentException,
-			NullPointerException
+			IllegalStateException, NullPointerException
 	{
 		// Check
 		if (__k == null || __v == null)
@@ -137,6 +139,8 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 		if (!__v.nameAndType().equals(__k))
 			throw new ClassCastException(String.format("IN1d %s %s", __k,
 				__v.nameAndType()));
+		if (owner.isArray())
+			throw new IllegalStateException("IN2l");
 		
 		// Cast self
 		__v = cast.cast(__v);

@@ -23,8 +23,47 @@ import java.lang.ref.WeakReference;
 public final class ClassNameSymbol
 	extends __BaseSymbol__
 {
+	/** The class for object. */
+	public static final ClassNameSymbol BINARY_OBJECT =
+		new ClassNameSymbol("java/lang/Object");
+	
+	/** Boolean. */
+	public static final ClassNameSymbol BOOLEAN =
+		new ClassNameSymbol("Z", true);
+	
+	/** Byte. */
+	public static final ClassNameSymbol BYTE =
+		new ClassNameSymbol("B", true);
+	
+	/** Short. */
+	public static final ClassNameSymbol SHORT =
+		new ClassNameSymbol("S", true);
+	
+	/** Character. */
+	public static final ClassNameSymbol CHARACTER =
+		new ClassNameSymbol("C", true);
+	
+	/** Integer. */
+	public static final ClassNameSymbol INTEGER =
+		new ClassNameSymbol("I", true);
+	
+	/** Long. */
+	public static final ClassNameSymbol LONG =
+		new ClassNameSymbol("J", true);
+	
+	/** Float. */
+	public static final ClassNameSymbol FLOAT =
+		new ClassNameSymbol("F", true);
+	
+	/** Double. */
+	public static final ClassNameSymbol DOUBLE =
+		new ClassNameSymbol("D", true);
+	
 	/** Is this an array? */
 	protected final boolean isarray;
+	
+	/** Is this a primitive type? */
+	protected final boolean isprimitive;
 	
 	/** As a field symbol. */
 	private volatile Reference<FieldSymbol> _asfield;
@@ -35,6 +74,7 @@ public final class ClassNameSymbol
 	/**
 	 * Initializes the class name symbol.
 	 *
+	 * @param __s The descriptor.
 	 * @throws IllegalSymbolException If the class name is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/15
@@ -42,13 +82,29 @@ public final class ClassNameSymbol
 	public ClassNameSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
+		this(__s, false);
+	}
+		
+	/**
+	 * Initializes the class name symbol.
+	 *
+	 * @param __s The descriptor.
+	 * @param __prim Is this a primitive type?
+	 * @throws IllegalSymbolException If the class name is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/31
+	 */
+	private ClassNameSymbol(String __s, boolean __prim)
+		throws IllegalSymbolException, NullPointerException
+	{
 		super(__s);
 		
 		// Is an array?
 		isarray = charAt(0) == '[';
+		isprimitive = __prim;
 		
 		// Check it by making it
-		if (isarray)
+		if (isarray || isprimitive)
 			asField();
 		else
 			asBinaryName();
@@ -65,7 +121,7 @@ public final class ClassNameSymbol
 		throws IllegalSymbolException
 	{
 		// Arrays will never be compatible
-		if (isarray)
+		if (isarray || isprimitive)
 			throw new IllegalSymbolException(String.format("DS04 %s",
 				toString()));
 		
@@ -108,7 +164,8 @@ public final class ClassNameSymbol
 		// Needs creation?
 		if (rv == null)
 			_asfield = new WeakReference<>((rv = new FieldSymbol(
-				(isarray ? toString() : 'L' + toString() + ';'))));
+				((isarray || isprimitive) ? toString() :
+					'L' + toString() + ';'))));
 		
 		// Return it
 		return rv;
