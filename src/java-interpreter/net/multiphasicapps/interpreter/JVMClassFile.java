@@ -257,7 +257,17 @@ public class JVMClassFile
 			{
 					// Only care about constants
 				case "ConstantValue":
-					throw new Error("TODO");
+					try (DataInputStream cdis = new DataInputStream(
+						new JVMCountLimitInputStream(__das,
+							(((long)__das.readInt()) & 0xFFFFFFFFL))))
+					{
+						rv.setConstantValue(_constantpool.
+							<JVMConstantEntry.ConstantValue>getAs(
+								cdis.readUnsignedShort(),
+								JVMConstantEntry.ConstantValue.class).
+									getValue());
+					}
+					break;
 				
 					// Ignored
 				default:

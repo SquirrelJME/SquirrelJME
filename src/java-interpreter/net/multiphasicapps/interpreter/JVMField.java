@@ -22,6 +22,9 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
 public class JVMField
 	extends JVMMember<FieldSymbol, JVMFieldFlags>
 {
+	/** The constant value of the field. */
+	private volatile Object _constant;
+	
 	/**
 	 * Initializes the interpreted method.
 	 *
@@ -34,6 +37,56 @@ public class JVMField
 		throws NullPointerException
 	{
 		super(__owner, FieldSymbol.class, __nat, JVMFieldFlags.class);
+	}
+	
+	/**
+	 * Returns the field constant value, if any has been set.
+	 *
+	 * @return The constant value or {@code null} if there is no value set.
+	 * @since 2016/04/01
+	 */
+	public Object getConstantValue()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _constant;
+		}
+	}
+	
+	/**
+	 * Sets the constant value of this field.
+	 *
+	 * @param __cv The field constant value.
+	 * @return {@code this}.
+	 * @throws ClassCastException If the constant is not a valid constant and
+	 * primitive type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/01
+	 */
+	public JVMField setConstantValue(Object __cv)
+		throws ClassCastException, NullPointerException
+	{
+		// Check
+		if (__cv == null)
+			throw new NullPointerException("NARG");
+		if (!(__cv instanceof Boolean || __cv instanceof Byte ||
+			__cv instanceof Short || __cv instanceof Character ||
+			__cv instanceof Integer || __cv instanceof Long ||
+			__cv instanceof Float || __cv instanceof Double ||
+			__cv instanceof String))
+			throw new ClassCastException(String.format("IN2q %s",
+				__cv.getClass()));
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Set
+			_constant = __cv;
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**

@@ -416,6 +416,9 @@ These codes do not have a index meaning and are meant to be short.
  * `IN2n` -- An array cannot other flags.
  * `IN2o` -- Cannot set the super-class for an array class.
  * `IN2p` -- Cannot set the current class name for an array class.
+ * `IN2q` -- Attempted to set the constant value of a class, however it is not
+   of a valid constant type.
+   * The class type of the constant value.
 
 # `net.multiphasicapps.interpreter.local`
 
