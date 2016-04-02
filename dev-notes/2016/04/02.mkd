@@ -66,3 +66,17 @@ the former with the base class stuff split off as required.
 I can also split off the code parser and the compiler core (the program stuff)
 from the base class loading stuff.
 
+## 18:42
+
+Now that the code has been moved, I just need to fix it all up with my new plan
+that I have written earlier today. The first hurdle would be to fixup the class
+file handler since it has at least 100 errors. However once the basic layout
+is fixed and such, it should be better. When it comes to programs the class
+file handler will just not touch that at all. Thus the program and the
+class file support would essentially be standalone except the program needs
+stuff such as the constant pool for example when the byte code and other things
+are parsed. `CFClass` will be immutable and the class file parser will just
+build it instead. The eventual fixup of the interpreter will have its own
+notion of the class and its state. This way the class file code and the
+program parser code remain cleaner and simpler.
+
