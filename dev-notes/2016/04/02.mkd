@@ -35,3 +35,10 @@ then derive a partial and complete from them. The compiler will just know
 about loaded classes, the interpreter would keep a cache of the classes as
 they are loaded into memory (one which the virtual machine would expect).
 
+## 15:27
+
+When it comes to the error codes, I can use special JavaDoc tags and put the
+error codes in the method description where the error is thrown. Then I can
+write a script which reads source code and then extracts those error codes and
+places them into a list.
+
