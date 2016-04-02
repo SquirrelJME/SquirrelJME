@@ -5,7 +5,7 @@ X-Hairball-Depends: javame-cldc-compact, extra-collections,
  java-descriptors, extra-buffers
 LIBlet-Title: Java Class File Support
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160228
+LIBlet-Version: 1.8.0.20160402
 LIBlet-Description: This contains support for the Java class file format by
   enabling it to be decoded and the class representation to be loaded into
   memory.

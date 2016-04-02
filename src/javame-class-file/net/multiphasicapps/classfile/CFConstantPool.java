@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.classfile;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
@@ -25,8 +25,8 @@ import java.util.Objects;
  *
  * @since 2016/03/13
  */
-public class JVMConstantPool
-	extends AbstractList<JVMConstantEntry>
+public class CFConstantPool
+	extends AbstractList<CFConstantEntry>
 {
 	/** The UTF constant tag. */
 	protected static final int TAG_UTF8 =
@@ -91,7 +91,7 @@ public class JVMConstantPool
 	protected final int numentries;
 	
 	/** Internal constant pool entries. */
-	private final JVMConstantEntry[] _entries;
+	private final CFConstantEntry[] _entries;
 	
 	/**
 	 * Initializes and interprets the constant pool of a class.
@@ -102,7 +102,7 @@ public class JVMConstantPool
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/13
 	 */
-	JVMConstantPool(JVMClassFile __cl, DataInputStream __is)
+	CFConstantPool(JVMClassFile __cl, DataInputStream __is)
 		throws JVMClassFormatError, IOException, NullPointerException
 	{
 		// Check
@@ -118,51 +118,51 @@ public class JVMConstantPool
 			throw new JVMClassFormatError("IN0g");
 		
 		// Read them all
-		JVMConstantEntry[] ents;
-		_entries = ents = new JVMConstantEntry[numentries];
+		CFConstantEntry[] ents;
+		_entries = ents = new CFConstantEntry[numentries];
 		for (int i = 1; i < numentries; i++)
 		{
 			// Read the tag
 			int tag = __is.readUnsignedByte();
 			
 			// Depends on the tag
-			JVMConstantEntry en;
+			CFConstantEntry en;
 			switch (tag)
 			{
 					// UTF-8 Constant
 				case TAG_UTF8:
-					en = new JVMConstantEntry.UTF8(this, __is);
+					en = new CFConstantEntry.UTF8(this, __is);
 					break;
 					
 					// The name of a class
 				case TAG_CLASS:
-					en = new JVMConstantEntry.ClassName(this, __is);
+					en = new CFConstantEntry.ClassName(this, __is);
 					break;
 					
 					// A reference to a field
 				case TAG_FIELDREF:
-					en = new JVMConstantEntry.FieldReference(this, __is);
+					en = new CFConstantEntry.FieldReference(this, __is);
 					break;
 					
 					// A reference to a method
 				case TAG_METHODREF:
-					en = new JVMConstantEntry.MethodReference(this, __is);
+					en = new CFConstantEntry.MethodReference(this, __is);
 					break;
 					
 					// A reference to an interface method
 				case TAG_INTERFACEMETHODREF:
-					en = new JVMConstantEntry.InterfaceMethodReference(
+					en = new CFConstantEntry.InterfaceMethodReference(
 						this, __is);
 					break;
 					
 					// String constant
 				case TAG_STRING:
-					en = new JVMConstantEntry.ConstantString(this, __is);
+					en = new CFConstantEntry.ConstantString(this, __is);
 					break;
 					
 					// Name and type information
 				case TAG_NAMEANDTYPE:
-					en = new JVMConstantEntry.NameAndType(this, __is);
+					en = new CFConstantEntry.NameAndType(this, __is);
 					break;
 					
 					// invokedynamic is not supported!
@@ -190,7 +190,7 @@ public class JVMConstantPool
 	 * @since 2016/03/13
 	 */
 	@Override
-	public JVMConstantEntry get(int __i)
+	public CFConstantEntry get(int __i)
 	{
 		return _entries[__i];
 	}
@@ -205,7 +205,7 @@ public class JVMConstantPool
 	 * of the given class.
 	 * @since 2016/03/15
 	 */
-	public <Q extends JVMConstantEntry> Q getAs(int __i, Class<Q> __cl)
+	public <Q extends CFConstantEntry> Q getAs(int __i, Class<Q> __cl)
 		throws JVMClassFormatError, NullPointerException
 	{
 		// Locate entry
@@ -235,7 +235,7 @@ public class JVMConstantPool
 	 * of the given class.
 	 * @since 2016/03/31
 	 */
-	public <Q extends JVMConstantEntry> Q getAsOptional(int __i, Class<Q> __cl)
+	public <Q extends CFConstantEntry> Q getAsOptional(int __i, Class<Q> __cl)
 		throws JVMClassFormatError, NullPointerException
 	{
 		// Check

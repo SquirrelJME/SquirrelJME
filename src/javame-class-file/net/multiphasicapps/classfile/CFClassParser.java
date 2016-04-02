@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.classfile;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -32,7 +32,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/01
  */
-public class JVMClassFile
+public class CFClassParser
 {
 	/** The class file magic number. */
 	public static final int MAGIC_NUMBER =
@@ -52,7 +52,7 @@ public class JVMClassFile
 	private volatile JVMClassVersion _version;
 	
 	/** The class constant pool. */
-	private volatile JVMConstantPool _constantpool;
+	private volatile CFConstantPool _constantpool;
 	
 	/** Did this already? */
 	private volatile boolean _did;
@@ -66,7 +66,7 @@ public class JVMClassFile
 	 * @throws NUllPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	public JVMClassFile(JVMEngine __eng, JVMClass __targ)
+	public CFClassParser(JVMEngine __eng, JVMClass __targ)
 		throws NullPointerException
 	{
 		// Check
@@ -88,7 +88,7 @@ public class JVMClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	public JVMClassFile parse(InputStream __is)
+	public CFClassParser parse(InputStream __is)
 		throws IllegalStateException, IOException, JVMClassFormatError,
 			NullPointerException
 	{
@@ -124,22 +124,22 @@ public class JVMClassFile
 				version, JVMClassVersion.MAX_VERSION));
 		
 		// Initialize the constant pool
-		JVMConstantPool constantpool;
-		_constantpool = constantpool = new JVMConstantPool(this, das);
+		CFConstantPool constantpool;
+		_constantpool = constantpool = new CFConstantPool(this, das);
 		
 		// Read class access flags
 		target.setFlags(new JVMClassFlags(das.readUnsignedShort()));
 		
 		// Set current class name
-		target.setThisName(constantpool.<JVMConstantEntry.ClassName>getAs(
-			das.readUnsignedShort(), JVMConstantEntry.ClassName.class).
+		target.setThisName(constantpool.<CFConstantEntry.ClassName>getAs(
+			das.readUnsignedShort(), CFConstantEntry.ClassName.class).
 			symbol());
 		
 		// Set super class name
 		int sid = das.readUnsignedShort();
 		if (sid != 0)
-			target.setSuperName(constantpool.<JVMConstantEntry.ClassName>getAs(
-				sid, JVMConstantEntry.ClassName.class).symbol());
+			target.setSuperName(constantpool.<CFConstantEntry.ClassName>getAs(
+				sid, CFConstantEntry.ClassName.class).symbol());
 		else
 			target.setSuperName(null);
 		
@@ -148,8 +148,8 @@ public class JVMClassFile
 		JVMClassInterfaces ints = target.getInterfaces();
 		ClassNameSymbol ix;
 		for (int i = 0; i < nints; i++)
-			if (!ints.add((ix = constantpool.<JVMConstantEntry.ClassName>getAs(
-				das.readUnsignedShort(), JVMConstantEntry.ClassName.class).
+			if (!ints.add((ix = constantpool.<CFConstantEntry.ClassName>getAs(
+				das.readUnsignedShort(), CFConstantEntry.ClassName.class).
 					symbol())))
 				throw new JVMClassVersionError(String.format("IN11 %s %s",
 					ints, ix));
@@ -214,8 +214,8 @@ public class JVMClassFile
 			throw new NullPointerException("NARG");
 		
 		// Read it in
-		return _constantpool.<JVMConstantEntry.UTF8>getAs(
-			__das.readUnsignedShort(), JVMConstantEntry.UTF8.class).toString();
+		return _constantpool.<CFConstantEntry.UTF8>getAs(
+			__das.readUnsignedShort(), CFConstantEntry.UTF8.class).toString();
 	}
 	
 	/**
@@ -262,9 +262,9 @@ public class JVMClassFile
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
 						rv.setConstantValue(_constantpool.
-							<JVMConstantEntry.ConstantValue>getAs(
+							<CFConstantEntry.ConstantValue>getAs(
 								cdis.readUnsignedShort(),
-								JVMConstantEntry.ConstantValue.class).
+								CFConstantEntry.ConstantValue.class).
 									getValue());
 					}
 					break;
@@ -364,13 +364,13 @@ public class JVMClassFile
 		
 		// Read name
 		IdentifierSymbol name = new IdentifierSymbol(
-			_constantpool.<JVMConstantEntry.UTF8>getAs(__d.readUnsignedShort(),
-				JVMConstantEntry.UTF8.class).toString());
+			_constantpool.<CFConstantEntry.UTF8>getAs(__d.readUnsignedShort(),
+				CFConstantEntry.UTF8.class).toString());
 		
 		// Read type
 		S type = __cl.cast(MemberTypeSymbol.create(
-			_constantpool.<JVMConstantEntry.UTF8>getAs(__d.readUnsignedShort(),
-				JVMConstantEntry.UTF8.class).toString()));
+			_constantpool.<CFConstantEntry.UTF8>getAs(__d.readUnsignedShort(),
+				CFConstantEntry.UTF8.class).toString()));
 		
 		// Construct key
 		return new JVMMemberKey<>(name, type);

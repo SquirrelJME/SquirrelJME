@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.classfile;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -30,10 +30,10 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/15
  */
-public abstract class JVMConstantEntry
+public abstract class CFConstantEntry
 {
 	/** The owning pool. */
-	protected final JVMConstantPool pool;
+	protected final CFConstantPool pool;
 	
 	/**
 	 * Initializes the base of an entry.
@@ -42,7 +42,7 @@ public abstract class JVMConstantEntry
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/15
 	 */
-	private JVMConstantEntry(JVMConstantPool __icp)
+	private CFConstantEntry(CFConstantPool __icp)
 		throws NullPointerException
 	{
 		// Check
@@ -78,7 +78,7 @@ public abstract class JVMConstantEntry
 	 * @since 2016/03/15
 	 */
 	public static abstract class ConstantValue<C>
-		extends JVMConstantEntry
+		extends CFConstantEntry
 	{
 		/** The type of value to store. */
 		protected final Class<C> castas;
@@ -91,7 +91,7 @@ public abstract class JVMConstantEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		ConstantValue(JVMConstantPool __icp, Class<C> __cl)
+		ConstantValue(CFConstantPool __icp, Class<C> __cl)
 		{
 			super(__icp);
 			
@@ -129,7 +129,7 @@ public abstract class JVMConstantEntry
 	 * @since 2016/03/15
 	 */
 	public static abstract class MemberReference<V extends MemberTypeSymbol>
-		extends JVMConstantEntry
+		extends CFConstantEntry
 	{
 		/** The type to cast the type as. */
 		protected final Class<V> castas;
@@ -150,7 +150,7 @@ public abstract class JVMConstantEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		MemberReference(JVMConstantPool __icp,
+		MemberReference(CFConstantPool __icp,
 			DataInputStream __dis, Class<V> __cl)
 			throws IOException, NullPointerException
 		{
@@ -211,7 +211,7 @@ public abstract class JVMConstantEntry
 	 * @since 2016/03/15
 	 */
 	public static final class ClassName
-		extends JVMConstantEntry
+		extends CFConstantEntry
 	{
 		/** The class name index. */
 		protected final int index;
@@ -230,7 +230,7 @@ public abstract class JVMConstantEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		ClassName(JVMConstantPool __icp, DataInputStream __dis)
+		ClassName(CFConstantPool __icp, DataInputStream __dis)
 			throws JVMClassFormatError, IOException,
 				NullPointerException
 		{
@@ -303,7 +303,7 @@ public abstract class JVMConstantEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		ConstantString(JVMConstantPool __icp,
+		ConstantString(CFConstantPool __icp,
 			DataInputStream __dis)
 			throws IOException, NullPointerException
 		{
@@ -374,7 +374,7 @@ public abstract class JVMConstantEntry
 		 * @throws IOException On read errors.
 		 * @since 2016/03/15
 		 */
-		FieldReference(JVMConstantPool __icp,
+		FieldReference(CFConstantPool __icp,
 			DataInputStream __dis)
 			throws IOException
 		{
@@ -398,7 +398,7 @@ public abstract class JVMConstantEntry
 		 * @throws IOException On read errors.
 		 * @since 2016/03/15
 		 */
-		InterfaceMethodReference(JVMConstantPool __icp,
+		InterfaceMethodReference(CFConstantPool __icp,
 			DataInputStream __dis)
 			throws IOException
 		{
@@ -422,7 +422,7 @@ public abstract class JVMConstantEntry
 		 * @throws IOException On read errors.
 		 * @since 2016/03/15
 		 */
-		MethodReference(JVMConstantPool __icp,
+		MethodReference(CFConstantPool __icp,
 			DataInputStream __dis)
 			throws IOException
 		{
@@ -436,7 +436,7 @@ public abstract class JVMConstantEntry
 	 * @since 2016/03/15
 	 */
 	public static final class NameAndType
-		extends JVMConstantEntry
+		extends CFConstantEntry
 		implements Map.Entry<IdentifierSymbol, MemberTypeSymbol>
 	{
 		/** Lock. */
@@ -464,7 +464,7 @@ public abstract class JVMConstantEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
-		NameAndType(JVMConstantPool __icp, DataInputStream __dis)
+		NameAndType(CFConstantPool __icp, DataInputStream __dis)
 			throws IOException, NullPointerException
 		{
 			super(__icp);
@@ -665,7 +665,7 @@ public abstract class JVMConstantEntry
 	 * @since 2016/03/13
 	 */
 	public static final class UTF8
-		extends JVMConstantEntry
+		extends CFConstantEntry
 		implements CharSequence
 	{
 		/** Internally read string. */
@@ -682,7 +682,7 @@ public abstract class JVMConstantEntry
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/13
 		 */
-		UTF8(JVMConstantPool __icp, DataInputStream __dis)
+		UTF8(CFConstantPool __icp, DataInputStream __dis)
 			throws JVMClassFormatError, IOException,
 				NullPointerException
 		{
