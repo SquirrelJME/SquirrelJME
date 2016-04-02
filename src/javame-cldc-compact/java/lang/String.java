@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.magic.Magic;
 
 public final class String
 	implements Comparable<String>, CharSequence
@@ -95,9 +96,53 @@ public final class String
 		throw new Error("TODO");
 	}
 	
-	public int compareTo(String __a)
+	/**
+	 * Compares the character values of this string and compares it to the
+	 * character values of the other string.
+	 *
+	 * Smaller strings always precede longer strings.
+	 *
+	 * This is equivalent to the standard POSIX {@link strcmp()} with the "C"
+	 * locale.
+	 *
+	 * Internally this does not handle the special variants of this class and
+	 * is a general purpose method.
+	 *
+	 * @param __os The string to compare against.
+	 * @return A negative value if this string precedes the other string, a
+	 * positive value if this string procedes the other string, or zero if the
+	 * strings are equal.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/02
+	 */
+	public int compareTo(String __os)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Get both string lengths
+		int an = length();
+		int bn = __os.length();
+		
+		// Max comparison length
+		int max = Math.min(an, bn);
+		
+		// Compare both strings
+		for (int i = 0; i < max; i++)
+		{
+			// Get character difference
+			int diff = ((int)charAt(i)) - ((int)__os.charAt(i));
+			
+			// If there is a difference, then return it
+			if (diff != 0)
+				return diff;
+		}
+		
+		// Remaining comparison is the length parameter, shorter strings are
+		// first
+		return an - bn;
 	}
 	
 	public int compareToIgnoreCase(String __a)
@@ -239,6 +284,16 @@ public final class String
 	 */
 	public String intern()
 	{
+		// Strings may be placed within an array which is internal to the
+		// precompiled virtual machine into a native binary. Thus string
+		// objects just as these would always exist. Thus for example, the
+		// built in string array should contain a string called "intern" since
+		// it is the name of a method.despite not being an actual string. It is
+		// this way because
+		String im = Magic.matchInternalString(this);
+		if (im != null)
+			return im;
+		
 		// Lock on the map
 		Map<String, Reference<String>> map = _INTERNS;
 		synchronized (map)

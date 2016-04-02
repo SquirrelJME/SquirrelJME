@@ -59,6 +59,27 @@ public abstract class Magic
 	}
 	
 	/**
+	 * Matches the specified string with the internal string array (if one
+	 * exists) so that {@link String@intern()}ed strings match pre-defined
+	 * and constant strings.
+	 *
+	 * To implementors of this magic, the best result would be to have the
+	 * internal strings sorted so that {@code compareTo()} works correctly.
+	 * Thus, since the internal strings are always of fixed size, they can
+	 * easily be searched for without probing the entire array (it would be
+	 * O(log(n)) instead of O(n)).
+	 *
+	 * @param __s The string to match.
+	 * @return The string which matches the given string or {@code null} if
+	 * no internal string was found.
+	 * @since 2016/04/02
+	 */
+	public static String matchInternalString(String __s)
+	{
+		throw new ForbiddenMagicError();
+	}
+	
+	/**
 	 * Returns the class type for the primitive type {@code boolean}.
 	 *
 	 * @return The class for it.
