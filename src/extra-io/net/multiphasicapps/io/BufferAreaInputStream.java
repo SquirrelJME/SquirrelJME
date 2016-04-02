@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.io.IOException;
  *
  * @since 2016/03/20
  */
-public class JVMCountLimitInputStream
+public class BufferAreaInputStream
 	extends InputStream
 {
 	/** Lock. */
@@ -48,7 +48,7 @@ public class JVMCountLimitInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	public JVMCountLimitInputStream(InputStream __w, long __lim)
+	public BufferAreaInputStream(InputStream __w, long __lim)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check

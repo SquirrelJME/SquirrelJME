@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-Hairball-Name: javame-basic-interpreter
+X-Hairball-UUID: 914e6b52-0f1d-403a-aeef-a0866850202e
+X-Hairball-Depends: javame-class-file, javame-class-program
+Main-Class: net.multiphasicapps.interpreter.Main
+LIBlet-Title: Basic Java Interpreter
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160402
+LIBlet-Description: This contains the basic interpreter which
+  is used for providing a basic virtual machine for which to
+  test with.
+

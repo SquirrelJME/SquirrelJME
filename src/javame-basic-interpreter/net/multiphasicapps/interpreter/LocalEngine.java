@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.local;
+package net.multiphasicapps.interpreter;
 
 import java.io.InputStream;
 import java.io.IOException;

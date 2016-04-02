@@ -1,8 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: javame-class-program
 X-Hairball-UUID: 44302e20-9664-42a1-8c45-09a13331ddad
-X-Hairball-Depends: javame-cldc-compact, extra-collections, 
- java-descriptors, extra-buffers
+X-Hairball-Depends: javame-class-file
 LIBlet-Title: Java Class Program
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160402

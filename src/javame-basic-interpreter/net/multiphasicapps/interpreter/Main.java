@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.local;
+package net.multiphasicapps.interpreter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
