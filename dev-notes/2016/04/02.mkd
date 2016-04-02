@@ -56,3 +56,13 @@ I would suppose that the class loading code should be part of the base code.
 Looks like Java 9 will be released later this year. But regardless of that, it
 is refactoring time.
 
+## 17:50
+
+Also instead of `java-interpreter` and `java-interpreter-local` it will just be
+the former with the base class stuff split off as required.
+
+## 17:53
+
+I can also split off the code parser and the compiler core (the program stuff)
+from the base class loading stuff.
+
