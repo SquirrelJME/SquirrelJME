@@ -42,3 +42,17 @@ error codes in the method description where the error is thrown. Then I can
 write a script which reads source code and then extracts those error codes and
 places them into a list.
 
+## 15:57
+
+Would also have to do the same thing with class members too, so that they are
+mutable and can be partially loaded also.
+
+## 16:06
+
+I would suppose that the class loading code should be part of the base code.
+
+## 17:44
+
+Looks like Java 9 will be released later this year. But regardless of that, it
+is refactoring time.
+
