@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 /**
  * This interface contains instruction identification numbers which identify
@@ -16,7 +16,7 @@ package net.multiphasicapps.interpreter.program;
  *
  * @since 2016/03/30
  */
-public interface VMCInstructionIDs
+public interface CPOpcodes
 {
 	/** NOP. */
 	public static final int NOP =

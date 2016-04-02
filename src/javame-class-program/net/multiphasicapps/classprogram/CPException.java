@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.interpreter.JVMRawException;
@@ -21,7 +21,7 @@ import net.multiphasicapps.interpreter.JVMVerifyException;
  *
  * @since 2016/03/31
  */
-public class VMCException
+public class CPException
 {
 	/** The owning program. */
 	protected final VMCProgram program;

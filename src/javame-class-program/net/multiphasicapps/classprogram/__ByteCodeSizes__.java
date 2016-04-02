@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.interpreter.JVMVerifyException;
 

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -31,7 +31,7 @@ import net.multiphasicapps.interpreter.JVMVerifyException;
  *
  * @since 2016/03/29
  */
-public class VMCProgram
+public class CPProgram
 	extends AbstractList<VMCOp>
 {
 	/** Lock. */

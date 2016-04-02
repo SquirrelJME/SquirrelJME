@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.classprogram;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -30,7 +30,7 @@ import net.multiphasicapps.interpreter.program.VMCVariableType;
  *
  * @since 2016/03/22
  */
-public class JVMCodeParser
+public class CPProgramBuilder
 {
 	/** The maximum size method code may be. */
 	public static final int MAX_CODE_SIZE =

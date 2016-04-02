@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 /**
  * This represents the type being performed.
  *
  * @since 2016/03/30
  */
-public enum VMCJumpType
+public enum CPJumpType
 {
 	/** Natural progression. */
 	NATURAL,

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -29,7 +29,7 @@ import net.multiphasicapps.interpreter.JVMVerifyException;
  *
  * @since 2016/03/30
  */
-public class VMCOp
+public class CPOp
 {
 	/** Operation lock. */
 	final Object lock;

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -24,7 +24,7 @@ import net.multiphasicapps.interpreter.JVMVerifyException;
  *
  * @since 2016/03/30
  */
-public class VMCJumpTarget
+public class CPJumpTarget
 {
 	/** The owning program. */
 	protected final VMCProgram program;

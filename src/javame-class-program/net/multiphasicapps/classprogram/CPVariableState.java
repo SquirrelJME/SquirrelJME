@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 /**
  * This represents the state of a single variable, it may be explicitely
@@ -19,7 +19,7 @@ package net.multiphasicapps.interpreter.program;
  *
  * @since 2016/03/30
  */
-public class VMCVariableState
+public class CPVariableState
 {
 	/** Lock. */
 	final Object lock;

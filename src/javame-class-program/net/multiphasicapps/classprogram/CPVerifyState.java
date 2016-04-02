@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 import java.util.AbstractList;
 
@@ -22,7 +22,7 @@ import java.util.AbstractList;
  *
  * @since 2016/03/31
  */
-public class VMCVerifyState
+public class CPVerifyState
 	extends AbstractList<VMCVariableType>
 {
 	/** Verification lock. */

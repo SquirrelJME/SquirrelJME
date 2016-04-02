@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter.program;
+package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.descriptors.FieldSymbol;
 
@@ -18,7 +18,7 @@ import net.multiphasicapps.descriptors.FieldSymbol;
  *
  * @since 2016/03/21
  */
-public enum VMCVariableType
+public enum CPVariableType
 {
 	/** Nothing. */
 	NOTHING(false),
