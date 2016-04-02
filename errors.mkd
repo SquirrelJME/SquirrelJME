@@ -30,14 +30,18 @@ These codes do not have a index meaning and are meant to be short.
    indicate that a bug exists, that the virtual machine is in a potentially
    damaged state, or there is memory corruption.
 
-# `net.multiphasicapps.cache`
+# Standard Class Library
+
+# Libraries
+
+## `net.multiphasicapps.cache`
 
  * `CH01` -- Could not initialize the `Instantiable` because it has no nullary
    constructor, is abstract, an enumeration, an array, or has a inaccessible
    nullary constructor.
  * `CH02` -- The input class is not a `Instantiable`.
 
-# `net.multiphasicapps.collections`
+## `net.multiphasicapps.collections`
 
  * `XC01` -- Adding a value to the huffman tree has a value which sets bits
    which were not specified in the mask.
@@ -51,7 +55,7 @@ These codes do not have a index meaning and are meant to be short.
    * The input value.
  * `XC04` -- Huffman table modified.
 
-# `net.multiphasicapps.descriptors`
+## `net.multiphasicapps.descriptors`
 
  * `DS01` -- The input descriptor is blank.
  * `DS02` -- The input descriptor contains an illegal character.
@@ -90,12 +94,12 @@ These codes do not have a index meaning and are meant to be short.
    evaluate to `void`.
    * The input method descriptor.
 
-# `net.multiphasicapps.hairball`
+## `net.multiphasicapps.hairball`
 
  * `HB01` -- A package has an illegal manifest.
    * The manifest which is not legal.
 
-# `net.multiphasicapps.io`
+## `net.multiphasicapps.io`
 
  * `XI01` -- Adding a value to the bit compactor has a value which sets bits
    which were not specified in the mask.
@@ -189,7 +193,7 @@ These codes do not have a index meaning and are meant to be short.
  * `XI0y` -- Write of a literal or distance code length has a repeat which
    exceeds the bounds of the output table.
 
-# `net.multiphasicapps.interpreter`
+## `net.multiphasicapps.interpreter`
 
  * `IN01` -- The class magic number is not valid.
    * The read magic number.
@@ -420,7 +424,7 @@ These codes do not have a index meaning and are meant to be short.
    of a valid constant type.
    * The class type of the constant value.
 
-# `net.multiphasicapps.interpreter.local`
+## `net.multiphasicapps.interpreter.local`
 
  * `LI01` -- No bootstrap classpaths were specified.
  * `LI02` -- The main class does not exist.
@@ -440,7 +444,7 @@ These codes do not have a index meaning and are meant to be short.
  * `LI09` -- Main class not specified on the command line.
  * `LI0a` -- The JAR manifest does not have the `Main-Class` attribute.
 
-# `net.multiphasicapps.narf`
+## `net.multiphasicapps.narf`
 
  * `NF01` -- If the input operation specified (opcode) is not within the value
    mask for operations.
@@ -463,7 +467,7 @@ These codes do not have a index meaning and are meant to be short.
    * Logical position.
    * Bytes in the chunk.
 
-# `net.multiphasicapps.zips`
+## `net.multiphasicapps.zips`
 
  * `ZP01` -- Attempted to read an array index from a structured type, however
    the element being read is not an array.

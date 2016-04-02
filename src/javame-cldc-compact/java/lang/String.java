@@ -11,7 +11,11 @@
 package java.lang;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public final class String
 	implements Comparable<String>, CharSequence
@@ -23,6 +27,14 @@ public final class String
 	/** The UTF-8 encoding. */
 	private static final String _ENCODING_UTF =
 		"utf-8";
+	
+	/**
+	 * Strings which are intered so that the same string is referred to so that
+	 * for example the {@code ==} operator is actually valid (despite not being
+	 * recommended at all).
+	 */
+	private static final Map<String, Reference<String>> _INTERNS =
+		new WeakHashMap<>();
 	
 	public String()
 	{
@@ -214,9 +226,34 @@ public final class String
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * This returns the unique string instance used for the current string, if
+	 * the current string is not within the internal map then it is added. If
+	 * it already exists in the map then that pre-existing value is returned.
+	 *
+	 * Although this may be used for {@code ==} to work, it is not recommended
+	 * to use this method for such things.
+	 *
+	 * @return The unique string instance.
+	 * @since 2016/04/01
+	 */
 	public String intern()
 	{
-		throw new Error("TODO");
+		// Lock on the map
+		Map<String, Reference<String>> map = _INTERNS;
+		synchronized (map)
+		{
+			// In a reference?
+			Reference<String> ref = map.get(this);
+			String rv;
+			
+			// Needs map placement?
+			if (ref == null || null == (rv = ref.get()))
+				map.put(this, new WeakReference<>((rv = this)));
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	public boolean isEmpty()
@@ -376,5 +413,4 @@ public final class String
 		throw new Error("TODO");
 	}
 }
-
 
