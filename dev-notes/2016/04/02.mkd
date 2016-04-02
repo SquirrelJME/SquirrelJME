@@ -4,3 +4,34 @@
 
 New day today.
 
+## 10:24
+
+I should make it so that `JVMClass` can temporarily be mutable (when it is
+partially loaded) then once I am done constructing it, it can be made
+immutable. I could then remove some data locks when accessing classes for
+example. I could also split off instance related information and have an
+instance state in the virtual machine also. Instead of having the interpreter
+bits built into the `JVM` code, I can branch it off and have a base engine
+for it. So essentially, I would be forking the code so to speak. Thus, what
+I have now with the compiler bits will go into its own project. There would
+only be things needed for loading classes and such, stuff which the compiler
+can use but not what the interpreter should use. The compiler generally is
+not going to need to create new instances of strings and create arrays and
+threads for example, it just wants to pass through the code. This would also
+act as separation which would be good too. If the interpreter engine needs to
+be rewritten then there is no need to worry about interfering with the code
+that is part of the compiler.
+
+## 10:31
+
+Also my list of errors is getting a bit cumbersome, so I need a better way to
+store the dictionary of sorts. At least when moving the code over I will
+potentially have to reassociate all of the error codes and prune them as
+needed. However, the most likely case is that most parts of the current
+interpreter namespace become part of the compiler base. Thus, performing these
+changes should result in cleaner and better to maintain code. For the mutable
+and immutable `JVMClass` variants, I will have a base class for classes and
+then derive a partial and complete from them. The compiler will just know
+about loaded classes, the interpreter would keep a cache of the classes as
+they are loaded into memory (one which the virtual machine would expect).
+
