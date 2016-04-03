@@ -41,11 +41,15 @@ __nowyear="$(date +%Y)"
 __nowmont="$(date +%m)"
 __nowdayy="$(date +%d)"
 
+# Note list file
+__notelist="$__exedir/../src/developer-notes/notes.list"
+
 __nowtime="$__nowyear$__nowmont$__nowdayy"
 __htmtime="$__nowyear\/$__nowmont\/$__nowdayy"
 #__nowfile="$__exedir/../chm/blog/$__nowtime.htm"
 __sublet="$__nowyear/$__nowmont/$__nowdayy.mkd"
-__nowfile="$__exedir/../src/developer-notes/$__myname/$__sublet"
+__basedir="$__myname/$__sublet"
+__nowfile="$__exedir/../src/developer-notes/$__basedir"
 
 # Create if missing
 if [ ! -f "$__nowfile" ]
@@ -53,6 +57,13 @@ then
 	echo "Does not exist, creating."
 	"$__exedir/create.sh" "$__nowfile"
 	sed "s/YYYYMMDD/$__htmtime/g" < "$__exedir/crtmpl/blog.mkd" > "$__nowfile"
+	
+	# Add to the note list
+	touch "$__notelist"
+	cat "$__notelist" > /tmp/$$
+	echo "$__basedir" >> /tmp/$$
+	sort < /tmp/$$ > "$__notelist"
+	rm -f /tmp/$$
 fi
 
 # Open it
