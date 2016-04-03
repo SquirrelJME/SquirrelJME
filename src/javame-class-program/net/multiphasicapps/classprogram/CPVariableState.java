@@ -25,13 +25,13 @@ public class CPVariableState
 	final Object lock;
 	
 	/** Owning states. */
-	protected final VMCVariableStates states;
+	protected final CPVariableStates states;
 	
 	/** The index of this state. */
 	protected final int index;
 	
 	/** Explicit state set? */
-	private volatile VMCVariableType _explicit;
+	private volatile CPVariableType _explicit;
 	
 	/**
 	 * Initializes the variable state.
@@ -41,7 +41,7 @@ public class CPVariableState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
-	VMCVariableState(VMCVariableStates __s, int __dx)
+	CPVariableState(CPVariableStates __s, int __dx)
 		throws NullPointerException
 	{
 		// Check
@@ -60,13 +60,13 @@ public class CPVariableState
 	 * @return The variable type used.
 	 * @since 2016/03/31
 	 */
-	public VMCVariableType getType()
+	public CPVariableType getType()
 	{
 		// Lock
 		synchronized (lock)
 		{
 			// If there is an explcit type set then use it
-			VMCVariableType rv = _explicit;
+			CPVariableType rv = _explicit;
 			if (rv != null)
 				return rv;
 			
@@ -84,7 +84,7 @@ public class CPVariableState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
-	VMCVariableState __setType(VMCVariableType __vt)
+	CPVariableState __setType(CPVariableType __vt)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check

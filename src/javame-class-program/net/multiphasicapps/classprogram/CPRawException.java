@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 
@@ -17,7 +17,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
  *
  * @since 2016/03/31
  */
-public class JVMRawException
+public class CPRawException
 {
 	/** The start PC address (inclusive). */
 	protected final int startpc;
@@ -41,7 +41,7 @@ public class JVMRawException
 	 * {@link Throwable} is used instead.
 	 * @since 2016/03/31
 	 */
-	public JVMRawException(int __spc, int __epc, int __hpc,
+	public CPRawException(int __spc, int __epc, int __hpc,
 		BinaryNameSymbol __catch)
 	{
 		// Set

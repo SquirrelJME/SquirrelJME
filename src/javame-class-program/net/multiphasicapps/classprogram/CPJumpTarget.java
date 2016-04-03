@@ -13,7 +13,6 @@ package net.multiphasicapps.classprogram;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
-import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
  * This represents a jump target for an instruction which translates to other
@@ -27,10 +26,10 @@ import net.multiphasicapps.interpreter.JVMVerifyException;
 public class CPJumpTarget
 {
 	/** The owning program. */
-	protected final VMCProgram program;
+	protected final CPProgram program;
 	
 	/** The type of jump. */
-	protected final VMCJumpType type;
+	protected final CPJumpType type;
 	
 	/** Target address. */
 	protected final int address;
@@ -47,12 +46,12 @@ public class CPJumpTarget
 	 * @param __prg The program this jump is within.
 	 * @param __type The type of jump to perform.
 	 * @param __addr The target address of the jump.
-	 * @throws JVMVerifyException If the address is out of bounds.
+	 * @throws CPProgramException If the address is out of bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/30
 	 */
-	public VMCJumpTarget(VMCProgram __prg, VMCJumpType __type, int __addr)
-		throws IllegalArgumentException, JVMVerifyException,
+	public CPJumpTarget(CPProgram __prg, CPJumpType __type, int __addr)
+		throws IllegalArgumentException, CPProgramException,
 			NullPointerException
 	{
 		this(__prg, __type, null, __addr);
@@ -68,22 +67,22 @@ public class CPJumpTarget
 	 * @throws IllegalArgumentException If it is not
 	 * exceptional and a binary name was specified, or a binary name was
 	 * not specified and this is an exception.
-	 * @throws JVMVerifyException If the address is out of bounds.
+	 * @throws CPProgramException If the address is out of bounds.
 	 * @throws NullPointerException On null arguments, except for {@link __bn}
 	 * unless the jump type is an exception.
 	 * @since 2016/03/30
 	 */
-	public VMCJumpTarget(VMCProgram __prg, VMCJumpType __type,
+	public CPJumpTarget(CPProgram __prg, CPJumpType __type,
 		BinaryNameSymbol __bn, int __addr)
-		throws IllegalArgumentException, JVMVerifyException,
+		throws IllegalArgumentException, CPProgramException,
 			NullPointerException
 	{
 		// Check
 		if (__prg == null || __type == null)
 			throw new NullPointerException("NARG");
 		if (__addr < 0 || __addr >= __prg.size())
-			throw new JVMVerifyException(String.format("IN2c %d", __addr));
-		if ((__type == VMCJumpType.EXCEPTIONAL) != (__bn != null))
+			throw new CPProgramException(String.format("IN2c %d", __addr));
+		if ((__type == CPJumpType.EXCEPTIONAL) != (__bn != null))
 			throw new IllegalArgumentException("IN2b");
 		
 		// Set
@@ -110,7 +109,7 @@ public class CPJumpTarget
 	 * @return The jump type used for this jump.
 	 * @since 2016/03/30
 	 */
-	public VMCJumpType getType()
+	public CPJumpType getType()
 	{
 		return type;
 	}

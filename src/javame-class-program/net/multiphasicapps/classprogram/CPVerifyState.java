@@ -23,13 +23,13 @@ import java.util.AbstractList;
  * @since 2016/03/31
  */
 public class CPVerifyState
-	extends AbstractList<VMCVariableType>
+	extends AbstractList<CPVariableType>
 {
 	/** Verification lock. */
 	final Object lock;
 	
 	/** The owning program. */
-	protected final VMCProgram program;
+	protected final CPProgram program;
 	
 	/** Verification data. */
 	private final byte[] _types;
@@ -44,7 +44,7 @@ public class CPVerifyState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
-	public VMCVerifyState(VMCProgram __prg)
+	public CPVerifyState(CPProgram __prg)
 		throws NullPointerException
 	{
 		// Check
@@ -68,7 +68,7 @@ public class CPVerifyState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
-	public VMCVerifyState(VMCVerifyState __copy)
+	public CPVerifyState(CPVerifyState __copy)
 		throws NullPointerException
 	{
 		// Check
@@ -102,7 +102,7 @@ public class CPVerifyState
 	 * @since 2016/03/31
 	 */
 	@Override
-	public VMCVariableType get(int __i)
+	public CPVariableType get(int __i)
 	{
 		// Check
 		if (__i < 0 || __i >= size())
@@ -120,8 +120,8 @@ public class CPVerifyState
 			
 			// Return which one?
 			if (hi)
-				return VMCVariableType.byIndex(val >>> 4);
-			return VMCVariableType.byIndex(val & 0xF);
+				return CPVariableType.byIndex(val >>> 4);
+			return CPVariableType.byIndex(val & 0xF);
 		}
 	}
 	
@@ -145,7 +145,7 @@ public class CPVerifyState
 	 * @since 2016/03/31
 	 */
 	@Override
-	public VMCVariableType set(int __i, VMCVariableType __vt)
+	public CPVariableType set(int __i, CPVariableType __vt)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -166,7 +166,7 @@ public class CPVerifyState
 			byte val = tips[div];
 			
 			// Old value
-			VMCVariableType old = VMCVariableType.byIndex((hi ? val >>> 4 :
+			CPVariableType old = CPVariableType.byIndex((hi ? val >>> 4 :
 				val & 0xF));
 			
 			// Set the new value
@@ -192,7 +192,7 @@ public class CPVerifyState
 	 * bounds.
 	 * @since 2016/03/31
 	 */
-	public VMCVerifyState setStackTop(int __t)
+	public CPVerifyState setStackTop(int __t)
 		throws IndexOutOfBoundsException
 	{
 		// Check

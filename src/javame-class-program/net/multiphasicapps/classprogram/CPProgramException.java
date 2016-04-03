@@ -16,7 +16,7 @@ package net.multiphasicapps.classprogram;
  * @since 2016/03/29
  */
 public class CPProgramException
-	extends JVMClassFormatError
+	extends RuntimeException
 {
 	/**
 	 * Initializes the exception with no message or cause.

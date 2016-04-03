@@ -53,7 +53,7 @@ public enum CPVariableType
 	 * @param __w Is this a wide type?
 	 * @since 2016/03/21
 	 */
-	private VMCVariableType(boolean __w)
+	private CPVariableType(boolean __w)
 	{
 		wide = __w;
 	}
@@ -77,11 +77,11 @@ public enum CPVariableType
 	 * @throws IllegalArgumentException If the type is not known.
 	 * @since 2016/03/23
 	 */
-	public static VMCVariableType byIndex(int __i)
+	public static CPVariableType byIndex(int __i)
 		throws IllegalArgumentException
 	{
 		// Determine which one to use
-		VMCVariableType rv;
+		CPVariableType rv;
 		switch (__i)
 		{
 			case 0: rv = NOTHING; break;
@@ -115,7 +115,7 @@ public enum CPVariableType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/23
 	 */
-	public static VMCVariableType bySymbol(FieldSymbol __sym)
+	public static CPVariableType bySymbol(FieldSymbol __sym)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check

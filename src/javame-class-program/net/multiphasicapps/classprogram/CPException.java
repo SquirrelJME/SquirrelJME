@@ -11,8 +11,6 @@
 package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
-import net.multiphasicapps.interpreter.JVMRawException;
-import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
  * This represents an exception which is handled within a method.
@@ -24,7 +22,7 @@ import net.multiphasicapps.interpreter.JVMVerifyException;
 public class CPException
 {
 	/** The owning program. */
-	protected final VMCProgram program;
+	protected final CPProgram program;
 	
 	/** The logical inclusive start address. */
 	protected final int startpc;
@@ -43,13 +41,13 @@ public class CPException
 	 *
 	 * @param __prg The owning program.
 	 * @param __rx The raw exception.
-	 * @throws JVMVerifyException If the input exception is not mappable to
+	 * @throws CPProgramException If the input exception is not mappable to
 	 * program instructions.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
-	VMCException(VMCProgram __prg, JVMRawException __rx)
-		throws JVMVerifyException, NullPointerException
+	CPException(CPProgram __prg, CPRawException __rx)
+		throws CPProgramException, NullPointerException
 	{
 		// Check
 		if (__prg == null || __rx == null)
@@ -72,7 +70,7 @@ public class CPException
 		
 		// Check them all
 		if (startpc < 0 || endpc < 0 || handlerpc < 0)
-			throw new JVMVerifyException(String.format("IN2k %s", __rx));
+			throw new CPProgramException(String.format("IN2k %s", __rx));
 	}
 	
 	/**

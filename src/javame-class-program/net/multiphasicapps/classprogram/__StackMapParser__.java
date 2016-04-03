@@ -12,10 +12,6 @@ package net.multiphasicapps.classprogram;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import net.multiphasicapps.interpreter.program.VMCProgram;
-import net.multiphasicapps.interpreter.program.VMCVariableState;
-import net.multiphasicapps.interpreter.program.VMCVariableType;
-import net.multiphasicapps.interpreter.program.VMCVerifyState;
 
 /**
  * This parses the stack map table using either the modern Java 6 format or
@@ -35,7 +31,7 @@ class __StackMapParser__
 	protected final DataInputStream in;
 	
 	/** The program to modify. */
-	protected final VMCProgram program;
+	protected final CPProgram program;
 	
 	/** The maximum local count. */
 	protected final int maxlocals;
@@ -47,7 +43,7 @@ class __StackMapParser__
 	private volatile int _placeaddr;
 	
 	/** The next state to verify for. */
-	private volatile VMCVerifyState _next;
+	private volatile CPVerifyState _next;
 	
 	/**
 	 * This initializes and performs the parsing.
@@ -59,7 +55,7 @@ class __StackMapParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/25
 	 */
-	__StackMapParser__(boolean __m, DataInputStream __in, VMCProgram __prg)
+	__StackMapParser__(boolean __m, DataInputStream __in, CPProgram __prg)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -74,10 +70,10 @@ class __StackMapParser__
 		maxstack = program.maxStack();
 		
 		// The last is always the first!
-		VMCVerifyState es = program.get(0).verificationState();
+		CPVerifyState es = program.get(0).verificationState();
 		
 		// Make a copy of the last state for the next state
-		_next = new VMCVerifyState(es);
+		_next = new CPVerifyState(es);
 		_placeaddr = 0;
 		
 		// Parsing the class stack map table
@@ -132,7 +128,7 @@ class __StackMapParser__
 					__appendFrame(type - 251);
 				
 				else
-					throw new JVMVerifyException(
+					throw new CPProgramException(
 						String.format("WTFX %d", type));
 			}
 		}
@@ -150,7 +146,7 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		VMCVerifyState next = __calculateNext(das.readUnsignedShort(),
+		CPVerifyState next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// Stack is cleared
@@ -161,25 +157,25 @@ class __StackMapParser__
 		for (int i = 0; __addlocs > 0 && i < n; i++)
 		{
 			// Get slot here
-			VMCVariableType s = next.get(i);
+			CPVariableType s = next.get(i);
 			
 			// If it is not empty, ignore it
-			if (s != VMCVariableType.NOTHING)
+			if (s != CPVariableType.NOTHING)
 				continue;
 			
 			// Set it
-			VMCVariableType aa;
+			CPVariableType aa;
 			next.set(i, (aa = __loadInfo()));
 			__addlocs--;
 			
 			// If a wide element was added, then the next one becomes TOP
 			if (aa.isWide())
-				next.set(++i, VMCVariableType.TOP);
+				next.set(++i, CPVariableType.TOP);
 		}
 		
 		// Error if added stuff remains
 		if (__addlocs != 0)
-			throw new JVMVerifyException(String.format("IN1v %d", __addlocs));
+			throw new CPProgramException(String.format("IN1v %d", __addlocs));
 	}
 	
 	/**
@@ -190,13 +186,13 @@ class __StackMapParser__
 	 * @return The state for the next address.
 	 * @since 2016/03/26
 	 */
-	private VMCVerifyState __calculateNext(int __au, boolean __abs)
+	private CPVerifyState __calculateNext(int __au, boolean __abs)
 	{
 		// The current placement
-		VMCVerifyState now = _next;
+		CPVerifyState now = _next;
 		
 		// Setup new next
-		VMCVerifyState next = new VMCVerifyState(now);
+		CPVerifyState next = new CPVerifyState(now);
 		_next = next;
 		
 		// Set new placement address
@@ -224,7 +220,7 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		VMCVerifyState next = __calculateNext(das.readUnsignedShort(),
+		CPVerifyState next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// No stack
@@ -235,20 +231,20 @@ class __StackMapParser__
 		for (i = n - 1; __chops > 0 && i >= 0; i--)
 		{
 			// Get slot here
-			VMCVariableType s = next.get(i);
+			CPVariableType s = next.get(i);
 			
 			// If it is empty, ignore it
-			if (s == VMCVariableType.NOTHING)
+			if (s == CPVariableType.NOTHING)
 				continue;
 			
 			// Clear it
-			next.set(i, VMCVariableType.NOTHING);
+			next.set(i, CPVariableType.NOTHING);
 			__chops--;
 		}
 		
 		// Still chops left?
 		if (__chops != 0)
-			throw new JVMVerifyException(String.format("IN1u %d", __chops));
+			throw new CPProgramException(String.format("IN1u %d", __chops));
 	}
 	
 	/**
@@ -262,13 +258,13 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		VMCVerifyState next = __calculateNext(das.readUnsignedShort(),
+		CPVerifyState next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
 		if (nl >= maxlocals)
-			throw new JVMVerifyException(String.format("IN2j %d %d", nl,
+			throw new CPProgramException(String.format("IN2j %d %d", nl,
 				maxlocals));
 		for (int i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
@@ -287,7 +283,7 @@ class __StackMapParser__
 	 * @throws IOException On read errors.
 	 * @since 2016/03/26
 	 */
-	private VMCVariableType __loadInfo()
+	private CPVariableType __loadInfo()
 		throws IOException
 	{
 		// Read the tag
@@ -299,42 +295,42 @@ class __StackMapParser__
 		{
 				// Top
 			case 0:
-				return VMCVariableType.TOP;
+				return CPVariableType.TOP;
 				
 				// Integer
 			case 1:
-				return VMCVariableType.INTEGER;
+				return CPVariableType.INTEGER;
 				
 				// Float
 			case 2:
-				return VMCVariableType.FLOAT;
+				return CPVariableType.FLOAT;
 				
 				// Double
 			case 3:
-				return VMCVariableType.DOUBLE;
+				return CPVariableType.DOUBLE;
 				
 				// Long
 			case 4:
-				return VMCVariableType.LONG;
+				return CPVariableType.LONG;
 				
 				// Nothing
 			case 5:
-				return VMCVariableType.NOTHING;
+				return CPVariableType.NOTHING;
 				
 				// Uninitialized object
 			case 6:
-				return VMCVariableType.OBJECT;
+				return CPVariableType.OBJECT;
 				
 				// Initialized object or a new object which has yet to be
 				// invokespecialed
 			case 7:
 			case 8:
 				das.readUnsignedShort();
-				return VMCVariableType.OBJECT;
+				return CPVariableType.OBJECT;
 				
 				// Unknown
 			default:
-				throw new JVMVerifyException(String.format("IN1t %d", tag));
+				throw new CPProgramException(String.format("IN1t %d", tag));
 		}
 	}
 	
@@ -349,13 +345,13 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		VMCVerifyState next = __calculateNext(das.readUnsignedShort(),
+		CPVerifyState next = __calculateNext(das.readUnsignedShort(),
 			true);
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
 		if (nl >= maxlocals)
-			throw new JVMVerifyException(String.format("IN2j %d %d", nl,
+			throw new CPProgramException(String.format("IN2j %d %d", nl,
 				maxlocals));
 		for (int i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
@@ -375,7 +371,7 @@ class __StackMapParser__
 	 */
 	private void __sameFrame(int __delta)
 	{
-		VMCVerifyState next = __calculateNext(__delta, false);
+		CPVerifyState next = __calculateNext(__delta, false);
 	}
 	
 	/**
@@ -387,7 +383,7 @@ class __StackMapParser__
 	private void __sameFrameDelta()
 		throws IOException
 	{
-		VMCVerifyState next = __calculateNext(in.readUnsignedShort(),
+		CPVerifyState next = __calculateNext(in.readUnsignedShort(),
 			false);
 	}
 	
@@ -403,7 +399,7 @@ class __StackMapParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		VMCVerifyState next = __calculateNext(__delta, false);
+		CPVerifyState next = __calculateNext(__delta, false);
 		
 		// Set the single stack
 		next.setStackTop(maxlocals + 1);

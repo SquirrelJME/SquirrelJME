@@ -11,7 +11,6 @@
 package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
-import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
  * This represents the source of a jump (which is not natural) to get to this
@@ -24,10 +23,10 @@ import net.multiphasicapps.interpreter.JVMVerifyException;
 public class CPJumpSource
 {
 	/** The owning program. */
-	protected final VMCProgram program;
+	protected final CPProgram program;
 	
 	/** The type of jump. */
-	protected final VMCJumpType type;
+	protected final CPJumpType type;
 	
 	/** The low address (inclusive). */
 	protected final int lowaddr;
@@ -47,7 +46,7 @@ public class CPJumpSource
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/30
 	 */
-	VMCJumpSource(VMCProgram __prg, VMCJumpType __jt, int __addr)
+	CPJumpSource(CPProgram __prg, CPJumpType __jt, int __addr)
 		throws NullPointerException
 	{
 		this(__prg, __jt, __addr, __addr);
@@ -62,14 +61,14 @@ public class CPJumpSource
 	 * @param __hi The inclusive ending address of the jump.
 	 * @throws IllegalArgumentException If the jump type is not exceptional
 	 * and the low address is not equal to the high address.
-	 * @throws JVMVerifyException If the low or high address are negative or
+	 * @throws CPProgramException If the low or high address are negative or
 	 * exceed the program size, or the high address is lower than the lower
 	 * address.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/30
 	 */
-	VMCJumpSource(VMCProgram __prg, VMCJumpType __jt, int __lo, int __hi)
-		throws IllegalArgumentException, JVMVerifyException,
+	CPJumpSource(CPProgram __prg, CPJumpType __jt, int __lo, int __hi)
+		throws IllegalArgumentException, CPProgramException,
 			NullPointerException
 	{
 		this(__prg, __jt, null, __lo, __hi);
@@ -86,16 +85,16 @@ public class CPJumpSource
 	 * and the low address is not equal to the high address, it is not
 	 * exceptional and a binary name was specified, or a binary name was
 	 * not specified and this is an exception.
-	 * @throws JVMVerifyException If the low or high address are negative or
+	 * @throws CPProgramException If the low or high address are negative or
 	 * exceed the program size, or the high address is lower than the lower
 	 * address.
 	 * @throws NullPointerException On null arguments, except for {@link __bn}
 	 * unless the jump type is an exception.
 	 * @since 2016/03/30
 	 */
-	VMCJumpSource(VMCProgram __prg, VMCJumpType __jt, BinaryNameSymbol __bn,
+	CPJumpSource(CPProgram __prg, CPJumpType __jt, BinaryNameSymbol __bn,
 		int __lo, int __hi)
-		throws IllegalArgumentException, JVMVerifyException,
+		throws IllegalArgumentException, CPProgramException,
 			NullPointerException
 	{
 		// Check
@@ -103,11 +102,11 @@ public class CPJumpSource
 			throw new NullPointerException("NARG");
 		if (__lo < 0 || __hi < 0 || __hi < __lo || __lo >= __prg.size() ||
 			__hi >= __prg.size())
-			throw new JVMVerifyException(String.format("IN29 %d %d",
+			throw new CPProgramException(String.format("IN29 %d %d",
 				__lo, __hi));
-		if (__jt != VMCJumpType.EXCEPTIONAL && __lo != __hi)
+		if (__jt != CPJumpType.EXCEPTIONAL && __lo != __hi)
 			throw new IllegalArgumentException("IN2a");
-		if ((__jt == VMCJumpType.EXCEPTIONAL) != (__bn != null))
+		if ((__jt == CPJumpType.EXCEPTIONAL) != (__bn != null))
 			throw new IllegalArgumentException("IN2b");
 		
 		// Set

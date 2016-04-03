@@ -10,19 +10,21 @@
 
 package net.multiphasicapps.classprogram;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.CFClass;
+import net.multiphasicapps.classfile.CFConstantEntry;
+import net.multiphasicapps.classfile.CFConstantPool;
+import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.interpreter.program.VMCException;
-import net.multiphasicapps.interpreter.program.VMCProgram;
-import net.multiphasicapps.interpreter.program.VMCVariableType;
+import net.multiphasicapps.io.BufferAreaInputStream;
 
 /**
  * This parses the code block of a method and translates the byte code into
@@ -41,13 +43,13 @@ public class CPProgramBuilder
 		new Object();
 	
 	/** Owning method. */
-	protected final JVMMethod method;
+	protected final CFMethod method;
 	
 	/** The class constant pool. */
-	protected final JVMConstantPool constantpool;
+	protected final CFConstantPool constantpool;
 	
 	/** The class file parser. */
-	protected final JVMClassFile classfile;
+	protected final CFClass classfile;
 	
 	/** Current active code source, may change in special circumstances. */
 	private volatile DataInputStream _source;
@@ -59,7 +61,7 @@ public class CPProgramBuilder
 	private volatile int _pcaddr;
 	
 	/** The limit stream used for counting the "next" operation. */
-	private volatile JVMCountLimitInputStream _counter;
+	private volatile BufferAreaInputStream _counter;
 	
 	/**
 	 * Initializes the code parser.
@@ -69,8 +71,8 @@ public class CPProgramBuilder
 	 * @param __pool The constant pool of the class.
 	 * @throws NullPointerException On null arguments.
 	 */
-	public JVMCodeParser(JVMClassFile __cfp, JVMMethod __method,
-		JVMConstantPool __pool)
+	public CPProgramBuilder(CFClass __cfp, CFMethod __method,
+		CFConstantPool __pool)
 		throws NullPointerException
 	{
 		// Check
@@ -89,12 +91,12 @@ public class CPProgramBuilder
 	 * @param __das The code attribute data.
 	 * @return {@code this}.
 	 * @throws IOException On read errors.
-	 * @throws JVMClassFormatError If the code is malformed.
+	 * @throws CPProgramException If the code is malformed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/22
 	 */
-	public JVMCodeParser parse(DataInputStream __das)
-		throws IllegalStateException, IOException, JVMClassFormatError,
+	public CPProgramBuilder parse(DataInputStream __das)
+		throws IllegalStateException, IOException, CPProgramException,
 			NullPointerException
 	{
 		// Check
@@ -116,7 +118,7 @@ public class CPProgramBuilder
 		// Read code length
 		int codelen = __das.readInt();
 		if (codelen <= 0 || codelen >= MAX_CODE_SIZE)
-			throw new JVMClassFormatError(String.format("IN1f %d", codelen));
+			throw new CPProgramException(String.format("IN1f %d", codelen));
 		
 		// Setup state
 		MethodSymbol msym = method.type();
@@ -131,7 +133,7 @@ public class CPProgramBuilder
 			
 			// EOF is bad
 			if (rc < 0)
-				throw new JVMClassFormatError(String.format("IN1r %d %d",
+				throw new CPProgramException(String.format("IN1r %d %d",
 					rx, codelen));
 			
 			// Add into it
@@ -140,7 +142,7 @@ public class CPProgramBuilder
 		
 		// Read the exception table
 		// If there are no exceptions, then use shorter handlers
-		List<JVMRawException> excs = new ArrayList<>();
+		List<CPRawException> excs = new ArrayList<>();
 		int numex = __das.readUnsignedShort();
 		for (int i = 0; i < numex; i++)
 		{
@@ -151,15 +153,15 @@ public class CPProgramBuilder
 			int xht = __das.readUnsignedShort();
 			
 			// Add it
-			excs.add(new JVMRawException(spc, epc, hpc, (xht == 0 ? null :
-				constantpool.<JVMConstantEntry.ClassName>getAs(xht,
-					JVMConstantEntry.ClassName.class).symbol().
+			excs.add(new CPRawException(spc, epc, hpc, (xht == 0 ? null :
+				constantpool.<CFConstantEntry.ClassName>getAs(xht,
+					CFConstantEntry.ClassName.class).symbol().
 						asBinaryName())));
 		}
 		
 		// Setup a byte program for translation and dynamic cache friendly
 		// program parsing
-		VMCProgram jbp = new VMCProgram(maxlocal, maxstack, msym,
+		CPProgram jbp = new CPProgram(maxlocal, maxstack, msym,
 			!method.getFlags().isStatic(), excs, rawcode);
 		
 		// Handle attributes, only two are cared about
@@ -192,7 +194,7 @@ public class CPProgramBuilder
 					
 					// Read in and parse the stack map table
 					try (DataInputStream smdi = new DataInputStream(
-						new JVMCountLimitInputStream(__das,
+						new BufferAreaInputStream(__das,
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
 						new __StackMapParser__(newstack, smdi, jbp);

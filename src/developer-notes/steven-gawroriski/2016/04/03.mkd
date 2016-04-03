@@ -15,3 +15,9 @@ interpreter into it too so that code may still run and be tested. I also have
 this idea of putting all of these notes into their own package which might be
 included in a distribution of sorts.
 
+## 13:25
+
+Now that the class file code is refactored (except for the interface bits but
+I can get to that later on), the next goal is the program parser and handler
+which will act as the basis for the compiler and the interpreter.
+

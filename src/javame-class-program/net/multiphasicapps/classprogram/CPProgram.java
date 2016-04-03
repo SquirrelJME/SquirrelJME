@@ -23,8 +23,6 @@ import java.util.WeakHashMap;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.interpreter.JVMRawException;
-import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
  * This class is given a chunk of byte code .
@@ -32,14 +30,14 @@ import net.multiphasicapps.interpreter.JVMVerifyException;
  * @since 2016/03/29
  */
 public class CPProgram
-	extends AbstractList<VMCOp>
+	extends AbstractList<CPOp>
 {
 	/** Lock. */
 	final Object lock =
 		new Object();
 	
 	/** The operation cache. */
-	private final Map<VMCOp, Reference<VMCOp>> _opcache =
+	private final Map<CPOp, Reference<CPOp>> _opcache =
 		new WeakHashMap<>();
 	
 	/** The code length. */
@@ -49,17 +47,17 @@ public class CPProgram
 	private final int[] _ipos;
 	
 	/** Explicit verification states. */
-	final Map<Integer, VMCVerifyState> _expvstate =
+	final Map<Integer, CPVerifyState> _expvstate =
 		new HashMap<>();
 	
 	/** Jump sources in the program which are explicit and not implicit. */
-	final Map<Integer, List<VMCJumpSource>> _expjumps;
+	final Map<Integer, List<CPJumpSource>> _expjumps;
 	
 	/** Program exceptions. */
-	final List<VMCException> _exceptions;
+	final List<CPException> _exceptions;
 	
 	/** Initial variable state. */
-	final VMCVariableStates _entrystate;
+	final CPVariableStates _entrystate;
 	
 	/** The buffer containing the raw byte code. */
 	final byte[] _code;
@@ -88,14 +86,14 @@ public class CPProgram
 	 * @param __ex Exceptions used in the program.
 	 * @param __code The input byte code, note that it is not copied and that
 	 * it is used directly.
-	 * @throws JVMVerifyException If the maximum stack and local entries are
+	 * @throws CPProgramException If the maximum stack and local entries are
 	 * negative, or there is not enough room
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/29
 	 */
-	public VMCProgram(int __ml, int __ms, MethodSymbol __desc,
-		boolean __ins, Iterable<JVMRawException> __ex, byte... __code)
-		throws JVMVerifyException, NullPointerException
+	public CPProgram(int __ml, int __ms, MethodSymbol __desc,
+		boolean __ins, Iterable<CPRawException> __ex, byte... __code)
+		throws CPProgramException, NullPointerException
 	{
 		// Check
 		if (__desc == null || __code == null || __ex == null)
@@ -108,9 +106,9 @@ public class CPProgram
 		length = _code.length;
 		
 		// Defensive copy exceptions
-		List<JVMRawException> dex = new ArrayList<>();
-		for (JVMRawException ex : __ex)
-			dex.add(Objects.<JVMRawException>requireNonNull(ex, "NARG"));
+		List<CPRawException> dex = new ArrayList<>();
+		for (CPRawException ex : __ex)
+			dex.add(Objects.<CPRawException>requireNonNull(ex, "NARG"));
 		
 		// Determine the position of all operations so that they can be
 		// condensed into single index points (they all consume a single
@@ -160,29 +158,29 @@ public class CPProgram
 		// instructions naturally flow to the next instruction, this has to be
 		// handled initially so that instructions which follow non-natural
 		// program flow sources have no jump sources set.
-		Map<Integer, List<VMCJumpSource>> xj = new HashMap<>();
+		Map<Integer, List<CPJumpSource>> xj = new HashMap<>();
 		int n = size();
 		for (int i = 0; i < n; i++)
 		{
 			// Get the operation here
-			VMCOp op = get(i);
+			CPOp op = get(i);
 			int ik = op.instructionCode();
 			
 			// No instruction following these has a naturally implicit jump
 			// source from the previous instruction
 			if ((i + 1 < n) && (i == 0 || 
-				ik == VMCInstructionIDs.ARETURN ||
-				ik == VMCInstructionIDs.ATHROW ||
-				ik == VMCInstructionIDs.DRETURN ||
-				ik == VMCInstructionIDs.FRETURN ||
-				ik == VMCInstructionIDs.GOTO ||
-				ik == VMCInstructionIDs.GOTO_W ||
-				ik == VMCInstructionIDs.IRETURN ||
-				ik == VMCInstructionIDs.LOOKUPSWITCH ||
-				ik == VMCInstructionIDs.LRETURN ||
-				ik == VMCInstructionIDs.RETURN ||
-				ik == VMCInstructionIDs.TABLESWITCH))
-				xj.put(i + 1, new ArrayList<VMCJumpSource>());
+				ik == CPOpcodes.ARETURN ||
+				ik == CPOpcodes.ATHROW ||
+				ik == CPOpcodes.DRETURN ||
+				ik == CPOpcodes.FRETURN ||
+				ik == CPOpcodes.GOTO ||
+				ik == CPOpcodes.GOTO_W ||
+				ik == CPOpcodes.IRETURN ||
+				ik == CPOpcodes.LOOKUPSWITCH ||
+				ik == CPOpcodes.LRETURN ||
+				ik == CPOpcodes.RETURN ||
+				ik == CPOpcodes.TABLESWITCH))
+				xj.put(i + 1, new ArrayList<CPJumpSource>());
 		}
 		
 		// Now go through the program again and add any jump sources which
@@ -190,10 +188,10 @@ public class CPProgram
 		for (int i = 0; i < n; i++)
 		{
 			// Get the operation here
-			VMCOp op = get(i);
+			CPOp op = get(i);
 			
 			// Get the jump targets for the operation
-			List<VMCJumpTarget> jts = op.jumpTargets();
+			List<CPJumpTarget> jts = op.jumpTargets();
 			int nj = jts.size();
 			
 			// No target jumps are made, this instruction ends execution
@@ -205,17 +203,17 @@ public class CPProgram
 			// there are actually other jump targets to consider. Otherwise
 			// every instruction will end up getting an explicit jump source
 			// when it is not truly needed, unless exceptions are being used.
-			else if (nj == 1 && jts.get(0).getType() == VMCJumpType.NATURAL)
+			else if (nj == 1 && jts.get(0).getType() == CPJumpType.NATURAL)
 				continue;
 			
 			// Add source target jumps to the destination operations
-			for (VMCJumpTarget jt : jts)
+			for (CPJumpTarget jt : jts)
 			{
 				// Get target address
 				int addr = jt.address();
 				
 				// Get potential explicit source for a target
-				List<VMCJumpSource> srcs = xj.get(addr);
+				List<CPJumpSource> srcs = xj.get(addr);
 				
 				// If it does not exist, add it
 				if (srcs == null)
@@ -228,7 +226,7 @@ public class CPProgram
 					// ran previously
 					// But only if it is not zero
 					if (addr != 0)
-						srcs.add(new VMCJumpSource(this, VMCJumpType.NATURAL,
+						srcs.add(new CPJumpSource(this, CPJumpType.NATURAL,
 							addr - 1));
 					
 					// Add it
@@ -237,41 +235,41 @@ public class CPProgram
 				
 				// Is there a natural jump point in this?
 				boolean hasnat = false;
-				for (VMCJumpTarget jtb : jts)
-					if (jtb.getType() == VMCJumpType.NATURAL)
+				for (CPJumpTarget jtb : jts)
+					if (jtb.getType() == CPJumpType.NATURAL)
 					{
 						hasnat |= true;
 						break;
 					}
 				
 				// Get the current jump type
-				VMCJumpType mjt = jt.getType();
+				CPJumpType mjt = jt.getType();
 				
 				// If the jump type is natural and the list already has one
 				// then do not add it
-				if (hasnat && mjt == VMCJumpType.NATURAL)
+				if (hasnat && mjt == CPJumpType.NATURAL)
 					continue;
 				
 				// Add jump with all details
-				srcs.add(new VMCJumpSource(this, mjt, i));
+				srcs.add(new CPJumpSource(this, mjt, i));
 			}
 		}
 		
 		// Lock in the explicit jump map
-		for (Map.Entry<Integer, List<VMCJumpSource>> e : xj.entrySet())
-			e.setValue(MissingCollections.<VMCJumpSource>unmodifiableList(
+		for (Map.Entry<Integer, List<CPJumpSource>> e : xj.entrySet())
+			e.setValue(MissingCollections.<CPJumpSource>unmodifiableList(
 				e.getValue()));
-		_expjumps = MissingCollections.<Integer, List<VMCJumpSource>>
+		_expjumps = MissingCollections.<Integer, List<CPJumpSource>>
 			unmodifiableMap(xj);
 		
 		// Setup the initial program state based on the method descriptor.
-		VMCVariableStates entrystate = new VMCVariableStates(this, 0, false);
+		CPVariableStates entrystate = new CPVariableStates(this, 0, false);
 		_entrystate = entrystate;
 		
 		// If this is an instance method then the first argument is this.
 		int spot = 0;
 		if (__ins)
-			entrystate.get(spot++).__setType(VMCVariableType.OBJECT);
+			entrystate.get(spot++).__setType(CPVariableType.OBJECT);
 		
 		// Parse
 		int na = __desc.argumentCount();
@@ -279,31 +277,31 @@ public class CPProgram
 		{
 			// Get argument and its type
 			FieldSymbol arg = __desc.get(i);
-			VMCVariableType vt = VMCVariableType.bySymbol(arg);
+			CPVariableType vt = CPVariableType.bySymbol(arg);
 			
 			// Set it here
 			entrystate.get(spot++).__setType(vt);
 			
 			// If wide, add TOP
 			if (vt.isWide())
-				entrystate.get(spot++).__setType(VMCVariableType.TOP);
+				entrystate.get(spot++).__setType(CPVariableType.TOP);
 		}
 		
 		// Fill the remainder with nothing so that all states are explicit
 		int esn = entrystate.size();
 		while (spot < esn)
-			entrystate.get(spot++).__setType(VMCVariableType.NOTHING);
+			entrystate.get(spot++).__setType(CPVariableType.NOTHING);
 		
 		// Set exceptions
-		List<VMCException> rex = new ArrayList<>();
+		List<CPException> rex = new ArrayList<>();
 		if (dex.isEmpty())
 			_noexceptions = true;
 		else
-			for (JVMRawException re : dex)
-				rex.add(new VMCException(this, re));
+			for (CPRawException re : dex)
+				rex.add(new CPException(this, re));
 		
 		// Lock in
-		_exceptions = MissingCollections.<VMCException>unmodifiableList(rex);
+		_exceptions = MissingCollections.<CPException>unmodifiableList(rex);
 		_exceptionsset = true;
 	}
 	
@@ -329,7 +327,7 @@ public class CPProgram
 	 * @since 2016/03/30
 	 */
 	@Override
-	public VMCOp get(int __i)
+	public CPOp get(int __i)
 		throws IndexOutOfBoundsException
 	{
 		// Check
@@ -343,15 +341,15 @@ public class CPProgram
 			Integer key = Integer.valueOf(__i);
 			
 			// Obtain reference
-			Map<VMCOp, Reference<VMCOp>> cache = _opcache;
-			Reference<VMCOp> ref = cache.get(key);
-			VMCOp rv;
+			Map<CPOp, Reference<CPOp>> cache = _opcache;
+			Reference<CPOp> ref = cache.get(key);
+			CPOp rv;
 			
 			// Needs caching?
 			if (ref == null || null == (rv = ref.get()))
 			{
 				// Set it up, since the value is both a key and a value
-				rv = new VMCOp(this, __i);
+				rv = new CPOp(this, __i);
 				
 				// Store into the map
 				cache.put(rv, new WeakReference<>(rv));
@@ -434,7 +432,7 @@ public class CPProgram
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
-	public VMCProgram setExplicitVerifyState(int __lp, VMCVerifyState __vs)
+	public CPProgram setExplicitVerifyState(int __lp, CPVerifyState __vs)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check

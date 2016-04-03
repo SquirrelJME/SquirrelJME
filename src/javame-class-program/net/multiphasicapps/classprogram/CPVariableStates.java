@@ -23,13 +23,13 @@ import java.util.AbstractList;
  * @since 2016/03/30
  */
 public class CPVariableStates
-	extends AbstractList<VMCVariableState>
+	extends AbstractList<CPVariableState>
 {
 	/** Lock. */
 	final Object lock;	
 	
 	/** The owning program. */
-	protected final VMCProgram program;
+	protected final CPProgram program;
 	
 	/** The address of the operation this carries a state for. */
 	protected final int address;
@@ -41,7 +41,7 @@ public class CPVariableStates
 	final boolean _isentrystate;
 	
 	/** Explicit states, for entry usage. */
-	private final VMCVariableState[] _explicit;
+	private final CPVariableState[] _explicit;
 	
 	/**
 	 * Initializes the variable states.
@@ -53,7 +53,7 @@ public class CPVariableStates
 	 * @throws NullPointerException If no program was specified.
 	 * @since 2016/03/30
 	 */
-	VMCVariableStates(VMCProgram __prg, int __addr, boolean __io)
+	CPVariableStates(CPProgram __prg, int __addr, boolean __io)
 		throws NullPointerException
 	{
 		// Check
@@ -72,12 +72,12 @@ public class CPVariableStates
 		{
 			// Setup explicit set
 			int n = size();
-			VMCVariableState[] xpls = new VMCVariableState[n];
+			CPVariableState[] xpls = new CPVariableState[n];
 			_explicit = xpls;
 			
 			// Create values
 			for (int i = 0; i < n; i++)
-				xpls[i] = new VMCVariableState(this, i);
+				xpls[i] = new CPVariableState(this, i);
 		}
 		
 		// No explicit states
@@ -90,7 +90,7 @@ public class CPVariableStates
 	 * @since 2016/03/30
 	 */
 	@Override
-	public VMCVariableState get(int __i)
+	public CPVariableState get(int __i)
 	{
 		// Check
 		if (__i < 0 || __i >= size())
@@ -100,7 +100,7 @@ public class CPVariableStates
 		synchronized (lock)
 		{
 			// Explicits?
-			VMCVariableState[] xpls = _explicit;
+			CPVariableState[] xpls = _explicit;
 			if (xpls != null)
 				return xpls[__i];
 			

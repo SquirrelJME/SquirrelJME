@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.classprogram;
 
-import net.multiphasicapps.interpreter.JVMVerifyException;
-
 /**
  * This class contains the logic which is used to determine the size of
  * operations within a given byte code array.
@@ -42,13 +40,13 @@ class __ByteCodeSizes__
 	 * @param __pos The position of the instruction.
 	 * @param __code The instruction code for parsing.
 	 * @return The size of the given instruction.
-	 * @throws JVMVerifyException If the instruction runs off the code block
+	 * @throws CPProgramException If the instruction runs off the code block
 	 * or it is unknown or invalid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/29
 	 */
 	static int __sizeOf(int __pos, byte[] __code)
-		throws JVMVerifyException, NullPointerException
+		throws CPProgramException, NullPointerException
 	{
 		// Check
 		if (__code == null)
@@ -89,7 +87,7 @@ class __ByteCodeSizes__
 				
 				// Lower must really be lower
 				if (lo > hi)
-					throw new JVMVerifyException(String.format("IN2d %d %d %d",
+					throw new CPProgramException(String.format("IN2d %d %d %d",
 						__pos, lo, hi));
 				
 				// Calculate the size
@@ -105,7 +103,7 @@ class __ByteCodeSizes__
 				// Read the pair count
 				int np = __ByteUtils__.__readSInt(__code, ppos + 4);
 				if (np <= 0)
-					throw new JVMVerifyException(String.format("IN2d %d %d",
+					throw new CPProgramException(String.format("IN2d %d %d",
 						__pos, np));
 				
 				// Calculate the size
@@ -154,14 +152,14 @@ class __ByteCodeSizes__
 				return 5;
 
 			// If this point is reached then the instruction is not known.
-			throw new JVMVerifyException(String.format(
+			throw new CPProgramException(String.format(
 				"IN1h %d", opcode));
 		}
 		
 		// Out of bounds instruction
 		catch (IndexOutOfBoundsException e)
 		{
-			throw new JVMVerifyException(String.format("IN1h %d", opcode), e);
+			throw new CPProgramException(String.format("IN1h %d", opcode), e);
 		}
 	}
 }

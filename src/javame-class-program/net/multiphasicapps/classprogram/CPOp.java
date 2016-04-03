@@ -22,7 +22,6 @@ import java.util.WeakHashMap;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.interpreter.JVMVerifyException;
 
 /**
  * This represents a single operation in the byte code chain.
@@ -35,7 +34,7 @@ public class CPOp
 	final Object lock;
 	
 	/** The program to use. */
-	protected final VMCProgram program;	
+	protected final CPProgram program;	
 	
 	/** The logical address of this operation. */
 	protected final int logical;
@@ -44,19 +43,19 @@ public class CPOp
 	protected final int physical;
 	
 	/** Jump sources (if implicit). */
-	private volatile Reference<List<VMCJumpSource>> _ijsrc;
+	private volatile Reference<List<CPJumpSource>> _ijsrc;
 	
 	/** Jump targets (always implicit). */
-	private volatile Reference<List<VMCJumpTarget>> _ijtar;
+	private volatile Reference<List<CPJumpTarget>> _ijtar;
 	
 	/** Input state cache. */
-	private volatile Reference<VMCVariableStates> _vsinput;
+	private volatile Reference<CPVariableStates> _vsinput;
 	
 	/** Output state cache. */
-	private volatile Reference<VMCVariableStates> _vsoutput;
+	private volatile Reference<CPVariableStates> _vsoutput;
 	
 	/** Verification state cache. */
-	private volatile Reference<VMCVerifyState> _vstate;
+	private volatile Reference<CPVerifyState> _vstate;
 	
 	/**
 	 * Initializes the operation.
@@ -66,7 +65,7 @@ public class CPOp
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/30
 	 */
-	VMCOp(VMCProgram __prg, int __pc)
+	CPOp(CPProgram __prg, int __pc)
 		throws NullPointerException
 	{
 		// Check
@@ -130,7 +129,7 @@ public class CPOp
 	 * @return The input state.
 	 * @since 2016/03/30
 	 */
-	public VMCVariableStates inputState()
+	public CPVariableStates inputState()
 	{
 		// If this is the first instruction then return the entry state
 		// of the method
@@ -154,7 +153,7 @@ public class CPOp
 		int rv = ((int)bc[physical]) & 0xFF;
 		
 		// If wide, read some more bytes
-		if (rv == VMCInstructionIDs.WIDE)
+		if (rv == CPOpcodes.WIDE)
 			return (rv << 8) | (((int)bc[physical + 1]) & 0xFF);
 		
 		// Otherwise return the code
@@ -168,7 +167,7 @@ public class CPOp
 	 * @return The list of jump sources, the list cannot be modified.
 	 * @since 2016/03/30
 	 */
-	public List<VMCJumpSource> jumpSources()
+	public List<CPJumpSource> jumpSources()
 	{
 		// Lock
 		synchronized (lock)
@@ -177,7 +176,7 @@ public class CPOp
 			boolean exset = program.__areExceptionsSet();
 			
 			// Explicit jump sources?
-			List<VMCJumpSource> exp = program._expjumps.get(logical);
+			List<CPJumpSource> exp = program._expjumps.get(logical);
 			if ((!exset || program.areNoExceptions()) && exp != null)
 				return exp;
 			
@@ -191,7 +190,7 @@ public class CPOp
 	 * @return The list of jump targets.
 	 * @since 2016/03/30
 	 */
-	public List<VMCJumpTarget> jumpTargets()
+	public List<CPJumpTarget> jumpTargets()
 	{
 		// Lock
 		synchronized (lock)
@@ -200,8 +199,8 @@ public class CPOp
 			boolean exset = program.__areExceptionsSet();
 			
 			// Cached?
-			Reference<List<VMCJumpTarget>> ref = _ijtar;
-			List<VMCJumpTarget> rv;
+			Reference<List<CPJumpTarget>> ref = _ijtar;
+			List<CPJumpTarget> rv;
 		
 			// Needs creation?
 			if (ref == null || null == (rv = ref.get()))
@@ -211,18 +210,18 @@ public class CPOp
 				int ik = instructionCode();
 			
 				// The following have no jump targets
-				if (ik == VMCInstructionIDs.ARETURN ||
-					ik == VMCInstructionIDs.ATHROW ||
-					ik == VMCInstructionIDs.DRETURN ||
-					ik == VMCInstructionIDs.FRETURN ||
-					ik == VMCInstructionIDs.IRETURN ||
-					ik == VMCInstructionIDs.LRETURN ||
-					ik == VMCInstructionIDs.RETURN)
-					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
-						Arrays.<VMCJumpTarget>asList());
+				if (ik == CPOpcodes.ARETURN ||
+					ik == CPOpcodes.ATHROW ||
+					ik == CPOpcodes.DRETURN ||
+					ik == CPOpcodes.FRETURN ||
+					ik == CPOpcodes.IRETURN ||
+					ik == CPOpcodes.LRETURN ||
+					ik == CPOpcodes.RETURN)
+					rv = MissingCollections.<CPJumpTarget>unmodifiableList(
+						Arrays.<CPJumpTarget>asList());
 			
 				// Lookup switch
-				else if (ik == VMCInstructionIDs.LOOKUPSWITCH)
+				else if (ik == CPOpcodes.LOOKUPSWITCH)
 				{
 					// Align pointer to read the jump values
 					int ap = ((physical + 3) & (~3));
@@ -235,11 +234,11 @@ public class CPOp
 				
 					// There are a specific number of pairs so an array can
 					// be used
-					VMCJumpTarget[] ojta = new VMCJumpTarget[np + 1];
+					CPJumpTarget[] ojta = new CPJumpTarget[np + 1];
 				
 					// Setup default first
-					ojta[0] = new VMCJumpTarget(program,
-						VMCJumpType.CONDITIONAL,
+					ojta[0] = new CPJumpTarget(program,
+						CPJumpType.CONDITIONAL,
 						program.physicalToLogical(physical + defo));
 				
 					// Add extra value pairs now
@@ -254,7 +253,7 @@ public class CPOp
 						// It MUST be higher than the last index, that is all
 						// entries in the switch are sorted.
 						if (keyv < lastdx && lastisval)
-							throw new JVMVerifyException(String.format(
+							throw new CPProgramException(String.format(
 								"IN2e %s", physical));
 					
 						// Set the last value which is checked to make sure the
@@ -264,18 +263,18 @@ public class CPOp
 					
 						// Read the offset and calculate the jump
 						int joff = __ByteUtils__.__readSInt(bc, baseoff + 4);
-						ojta[1 + j] = new VMCJumpTarget(program,
-							VMCJumpType.CONDITIONAL,
+						ojta[1 + j] = new CPJumpTarget(program,
+							CPJumpType.CONDITIONAL,
 							program.physicalToLogical(physical + joff));
 					}
 				
 					// Wrap and lock it in
-					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
-						Arrays.<VMCJumpTarget>asList(ojta));
+					rv = MissingCollections.<CPJumpTarget>unmodifiableList(
+						Arrays.<CPJumpTarget>asList(ojta));
 				}
 			
 				// Table switch
-				else if (ik == VMCInstructionIDs.TABLESWITCH)
+				else if (ik == CPOpcodes.TABLESWITCH)
 				{
 					// Align pointer to read the jump values
 					int ap = ((physical + 3) & (~3));
@@ -292,86 +291,86 @@ public class CPOp
 					
 					// Setup the target array
 					int num = ni + 1;
-					VMCJumpTarget[] tsjt = new VMCJumpTarget[num];
+					CPJumpTarget[] tsjt = new CPJumpTarget[num];
 					
 					// Default jump
-					tsjt[0] = new VMCJumpTarget(program,
-						VMCJumpType.CONDITIONAL,
+					tsjt[0] = new CPJumpTarget(program,
+						CPJumpType.CONDITIONAL,
 						program.physicalToLogical(physical + defo));
 					
 					// Read all the other offsets in
 					int baseoff = ap + 12;
 					for (int i = 0; i < ni; i++)
-						tsjt[1 + i] = new VMCJumpTarget(program,
-							VMCJumpType.CONDITIONAL,
+						tsjt[1 + i] = new CPJumpTarget(program,
+							CPJumpType.CONDITIONAL,
 							program.physicalToLogical(physical +
 								__ByteUtils__.__readSInt(bc,
 									baseoff + (4 * i))));
 					
 					// Wrap and lock it in
-					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
-						Arrays.<VMCJumpTarget>asList(tsjt));
+					rv = MissingCollections.<CPJumpTarget>unmodifiableList(
+						Arrays.<CPJumpTarget>asList(tsjt));
 				}
 			
 				// Goto a single address (16-bit)
-				else if (ik == VMCInstructionIDs.GOTO)
+				else if (ik == CPOpcodes.GOTO)
 				{
 					// Read offset
 					int off = __ByteUtils__.__readSShort(bc, physical + 1);
 					
 					// Only a single set is used
-					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
-						Arrays.<VMCJumpTarget>asList(new VMCJumpTarget(
-							program, VMCJumpType.EXPLICIT,
+					rv = MissingCollections.<CPJumpTarget>unmodifiableList(
+						Arrays.<CPJumpTarget>asList(new CPJumpTarget(
+							program, CPJumpType.EXPLICIT,
 							program.physicalToLogical(physical + off))));
 				}
 			
 				// Goto a single address (32-bit)
-				else if (ik == VMCInstructionIDs.GOTO_W)
+				else if (ik == CPOpcodes.GOTO_W)
 				{
 					// Read offset
 					int off = __ByteUtils__.__readSInt(bc, physical + 1);
 					
 					// Only a single set is used
-					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
-						Arrays.<VMCJumpTarget>asList(new VMCJumpTarget(
-							program, VMCJumpType.EXPLICIT,
+					rv = MissingCollections.<CPJumpTarget>unmodifiableList(
+						Arrays.<CPJumpTarget>asList(new CPJumpTarget(
+							program, CPJumpType.EXPLICIT,
 							program.physicalToLogical(physical + off))));
 				}
 			
 				// Conditional to a given instruction or if false, the next
 				// instruction.
-				else if (ik == VMCInstructionIDs.IF_ACMPEQ ||
-					ik == VMCInstructionIDs.IF_ACMPNE ||
-					ik == VMCInstructionIDs.IFEQ ||
-					ik == VMCInstructionIDs.IFGE ||
-					ik == VMCInstructionIDs.IFGT ||
-					ik == VMCInstructionIDs.IF_ICMPEQ ||
-					ik == VMCInstructionIDs.IF_ICMPGE ||
-					ik == VMCInstructionIDs.IF_ICMPGT ||
-					ik == VMCInstructionIDs.IF_ICMPLE ||
-					ik == VMCInstructionIDs.IF_ICMPLT ||
-					ik == VMCInstructionIDs.IF_ICMPNE ||
-					ik == VMCInstructionIDs.IFLE ||
-					ik == VMCInstructionIDs.IFLT ||
-					ik == VMCInstructionIDs.IFNE ||
-					ik == VMCInstructionIDs.IFNONNULL ||
-					ik == VMCInstructionIDs.IFNULL)
-					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
-						Arrays.<VMCJumpTarget>asList(new VMCJumpTarget(
-								program, VMCJumpType.NATURAL,
+				else if (ik == CPOpcodes.IF_ACMPEQ ||
+					ik == CPOpcodes.IF_ACMPNE ||
+					ik == CPOpcodes.IFEQ ||
+					ik == CPOpcodes.IFGE ||
+					ik == CPOpcodes.IFGT ||
+					ik == CPOpcodes.IF_ICMPEQ ||
+					ik == CPOpcodes.IF_ICMPGE ||
+					ik == CPOpcodes.IF_ICMPGT ||
+					ik == CPOpcodes.IF_ICMPLE ||
+					ik == CPOpcodes.IF_ICMPLT ||
+					ik == CPOpcodes.IF_ICMPNE ||
+					ik == CPOpcodes.IFLE ||
+					ik == CPOpcodes.IFLT ||
+					ik == CPOpcodes.IFNE ||
+					ik == CPOpcodes.IFNONNULL ||
+					ik == CPOpcodes.IFNULL)
+					rv = MissingCollections.<CPJumpTarget>unmodifiableList(
+						Arrays.<CPJumpTarget>asList(new CPJumpTarget(
+								program, CPJumpType.NATURAL,
 								logical + 1),
-							new VMCJumpTarget(program,
-								VMCJumpType.CONDITIONAL,
+							new CPJumpTarget(program,
+								CPJumpType.CONDITIONAL,
 								program.physicalToLogical(physical +
 									__ByteUtils__.__readUShort(
 										bc, physical + 1)))));
 			
 				// Implicit next instruction
 				else
-					rv = MissingCollections.<VMCJumpTarget>unmodifiableList(
-						Arrays.<VMCJumpTarget>asList(new VMCJumpTarget(
-							program, VMCJumpType.NATURAL,
+					rv = MissingCollections.<CPJumpTarget>unmodifiableList(
+						Arrays.<CPJumpTarget>asList(new CPJumpTarget(
+							program, CPJumpType.NATURAL,
 							logical + 1)));
 			
 				// If exceptions were set then add any exceptional targets
@@ -398,7 +397,7 @@ public class CPOp
 	 * @return The next operation or {@code null} if this is the last.
 	 * @since 2016/03/30
 	 */
-	public VMCOp next()
+	public CPOp next()
 	{
 		if (logical >= (program.size() - 1))
 			return null;
@@ -412,7 +411,7 @@ public class CPOp
 	 * @return The operation output state.
 	 * @since 2016/03/30
 	 */
-	public VMCVariableStates outputState()
+	public CPVariableStates outputState()
 	{
 		throw new Error("TODO");
 	}
@@ -434,7 +433,7 @@ public class CPOp
 	 * @return The previous operation or {@code null} if this is the first.
 	 * @since 2016/03/30
 	 */
-	public VMCOp previous()
+	public CPOp previous()
 	{
 		if (logical <= 0)
 			return null;
@@ -479,21 +478,21 @@ public class CPOp
 	 * @throws IllegalStateException If no state is available for derivation.
 	 * @since 2016/03/31
 	 */
-	public VMCVerifyState verificationState()
+	public CPVerifyState verificationState()
 		throws IllegalStateException
 	{
 		// Lock
 		synchronized (lock)
 		{
 			// Get reference
-			Reference<VMCVerifyState> ref = _vstate;
-			VMCVerifyState rv;
+			Reference<CPVerifyState> ref = _vstate;
+			CPVerifyState rv;
 			
 			// Needs caching?
 			if (ref == null || null == (rv = ref.get()))
 			{
 				// Is there an explicit verification state?
-				VMCVerifyState exp = program._expvstate.get(logical);
+				CPVerifyState exp = program._expvstate.get(logical);
 				if (exp != null)
 					rv = exp;
 				
@@ -501,13 +500,13 @@ public class CPOp
 				else
 				{
 					// Get input state
-					VMCVariableStates inputstate = inputState();
+					CPVariableStates inputstate = inputState();
 					if (inputstate == null)
 						throw new IllegalStateException(String.format(
 							"IN2i %d", logical));
 				
 					// Setup base state
-					rv = new VMCVerifyState(program);
+					rv = new CPVerifyState(program);
 					
 					// Copy them all
 					int n = program.maxLocals() + program.maxStack();
