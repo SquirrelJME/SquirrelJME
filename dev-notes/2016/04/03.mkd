@@ -4,3 +4,14 @@
 
 Was pretty worn out yesterday, so could not program as much.
 
+## 12:50
+
+In the future, I can have a virtual reflection API. Basically I create a class
+file parser and then define methods which can create, iterate, and invoke
+methods of another class. Such a thing could eventually be used for example in
+an IDE or similar. I could have an IDE for the creating and editing of programs
+for this so one can write code on said devices. I could also tie the
+interpreter into it too so that code may still run and be tested. I also have
+this idea of putting all of these notes into their own package which might be
+included in a distribution of sorts.
+
