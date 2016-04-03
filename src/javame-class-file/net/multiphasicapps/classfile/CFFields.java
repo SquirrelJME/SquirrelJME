@@ -30,6 +30,27 @@ public class CFFields
 	public CFFields(CFClass __own)
 	{
 		super(__own, CFField.class);
+		
+		throw new Error("TODO");
+		/*
+		// FIELD
+		// Get class flags
+		CFClassFlags cl = inclass.getFlags();
+		
+		// If an interface
+		if (cl.isInterface())
+		{
+			// Must have these flags set and some not set
+			if ((!__fl.isPublic() || !__fl.isStatic() || !__fl.isFinal()) ||
+				__fl.isProtected() || __fl.isPrivate() || __fl.isVolatile() ||
+				__fl.isTransient() || __fl.isEnum())
+				throw new CFFormatException(String.format("IN1c %s %s",
+						__fl, cl));
+		}
+		
+		// Continue with super call
+		return (CFField)super.setFlags(__fl);
+		*/
 	}
 }
 

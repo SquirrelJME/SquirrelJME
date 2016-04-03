@@ -48,7 +48,7 @@ public class CFClassInterfaces
 	 * @since 2016/03/19
 	 */
 	@Override
-	public Iterator<ClassNameSymbol> iterator()
+	public Iterator<BinaryNameSymbol> iterator()
 	{
 		throw new Error("TODO");
 	}

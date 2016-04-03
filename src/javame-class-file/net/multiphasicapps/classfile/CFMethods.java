@@ -30,6 +30,28 @@ public class CFMethods
 	public CFMethods(CFClass __own)
 	{
 		super(__own, CFMethod.class);
+		
+		throw new Error("TODO");
+		/*
+		// METHOD
+				// Class initializer flags are ignored for the most part
+		if (!isClassInitializer())
+		{
+			// If the class is an interface...
+			if (cl.isInterface())
+			{
+				// Default methods are not supported
+				if (__fl.isPrivate() || !__fl.isAbstract())
+					throw new CFFormatException(String.format("IN19 %s",
+						__fl));
+				
+				// Cannot have these flags
+				if (__fl.isProtected() || __fl.isFinal() ||
+					__fl.isSynchronized() || __fl.isNative())
+					throw new CFFormatException(String.format("IN1a %s %s",
+						__fl, cl));
+			}
+		*/
 	}
 }
 

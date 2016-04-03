@@ -15,6 +15,7 @@ import java.util.AbstractSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
@@ -31,9 +32,6 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 	F extends CFMemberFlags, E extends CFMember<S, F>>
 	extends AbstractMap<CFMemberKey<S>, E>
 {
-	/** Internal lock. */
-	final Object lock;
-	
 	/** The owning class. */
 	protected final CFClass owner;	
 	
@@ -41,8 +39,7 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 	protected final Class<E> cast;
 	
 	/** Internal storage. */
-	private final Map<CFMemberKey<S>, E> _store =
-		new LinkedHashMap<>();
+	private final Map<CFMemberKey<S>, E> _store;
 	
 	/**
 	 * Initializes the member list.
@@ -61,8 +58,9 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 		
 		// Set
 		owner = __own;
-		lock = owner.lock;
 		cast = __cl;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -72,11 +70,7 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 	@Override
 	public final E get(Object __k)
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _store.get(__k);
-		}
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -121,35 +115,6 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 		
 		// Place it in
 		return put(__e.nameAndType(), __e);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @throws IllegalStateException If the owning class is an array.
-	 * @since 2016/03/20
-	 */
-	@Override
-	public E put(CFMemberKey<S> __k, E __v)
-		throws ClassCastException, IllegalArgumentException,
-			IllegalStateException, NullPointerException
-	{
-		// Check
-		if (__k == null || __v == null)
-			throw new NullPointerException("NARG");
-		if (!__v.nameAndType().equals(__k))
-			throw new ClassCastException(String.format("IN1d %s %s", __k,
-				__v.nameAndType()));
-		if (owner.isArray())
-			throw new IllegalStateException("IN2l");
-		
-		// Cast self
-		__v = cast.cast(__v);
-		
-		// Lock
-		synchronized (lock)
-		{
-			return _store.put(__k, __v);
-		}
 	}
 }
 

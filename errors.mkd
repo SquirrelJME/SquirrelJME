@@ -423,7 +423,7 @@ These codes do not have a index meaning and are meant to be short.
  * `IN2q` -- Attempted to set the constant value of a class, however it is not
    of a valid constant type.
    * The class type of the constant value.
- * `IN2t`
+ * `IN2y`
 
 ## `net.multiphasicapps.interpreter.local`
 

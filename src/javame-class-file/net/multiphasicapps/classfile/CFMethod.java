@@ -36,7 +36,6 @@ public final class CFMethod
 	/**
 	 * Initializes the interpreted method.
 	 *
-	 * @param __owner The class which owns this method.
 	 * @param __nat The name and type of the field.
 	 * @param __fl The flags which the member uses.
 	 * @param __ca The code attribute, the direct array is used and should
@@ -44,11 +43,10 @@ public final class CFMethod
 	 * @throws NullPointerException On null arguments except for {@code __ca}.
 	 * @since 2016/03/01
 	 */
-	CFMethod(CFClass __owner, CFMemberKey<MethodSymbol> __nat,
-		CFMethodFlags __fl, byte[] __ca)
+	CFMethod(CFMemberKey<MethodSymbol> __nat, CFMethodFlags __fl, byte[] __ca)
 		throws NullPointerException
 	{
-		super(__owner, MethodSymbol.class, __nat, CFMethodFlags.class, __fl);
+		super(MethodSymbol.class, __nat, CFMethodFlags.class, __fl);
 		
 		// Is this a constructor?
 		isconstructor = name().equals("<init>");
@@ -70,6 +68,11 @@ public final class CFMethod
 					throw new CFFormatException(String.format("IN1b %s",
 						__fl));
 		}
+		
+		// {@squirreljme.error IN2w Non-abstract and non-native methods must
+		// have a code attribute.}
+		if (codeattribute == null && (__fl.isAbstract() || __fl.isNative()))
+			throw new CFFormatException("IN2w");
 	}
 	
 	/**

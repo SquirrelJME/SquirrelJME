@@ -27,6 +27,7 @@ import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.io.BufferAreaInputStream;
 
 /**
  * This represents a single class loaded by the interpreter which is derived
@@ -272,12 +273,9 @@ public class CFClassParser
 		CFMemberKey<FieldSymbol> key = this.<FieldSymbol>__readNAT(__das,
 			FieldSymbol.class);
 		
-		// Setup
-		CFField rv = new CFField(target, key);
-		rv.setFlags(flags);
-		
 		// Read in attributes?
 		int nas = __das.readUnsignedShort();
+		Object constantvalue = null;
 		for (int i = 0; i < nas; i++)
 		{
 			// Read attribute name
@@ -287,16 +285,22 @@ public class CFClassParser
 			switch (an)
 			{
 					// Only care about constants
-				case "ConstantValue":
+				case "ConstantValue":	
+					// {@squirreljme.error IN2y A field must not have more
+					// than one constant value.}
+					if (constantvalue != null)
+						throw new CFFormatException("IN2y");
+					
+					// Read
 					try (DataInputStream cdis = new DataInputStream(
 						new BufferAreaInputStream(__das,
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
-						rv.setConstantValue(_constantpool.
+						constantvalue = _constantpool.
 							<CFConstantEntry.ConstantValue>getAs(
 								cdis.readUnsignedShort(),
 								CFConstantEntry.ConstantValue.class).
-									getValue());
+									getValue();
 					}
 					break;
 				
@@ -308,7 +312,7 @@ public class CFClassParser
 		}
 		
 		// Return it
-		return rv;
+		return new CFField(key, flags, constantvalue);
 	}
 	
 	/**
@@ -334,12 +338,9 @@ public class CFClassParser
 		CFMemberKey<MethodSymbol> key = this.<MethodSymbol>__readNAT(__das,
 			MethodSymbol.class);
 		
-		// Setup
-		CFMethod rv = new CFMethod(target, key);
-		rv.setFlags(flags);
-		
 		// Read in attributes?
 		int nas = __das.readUnsignedShort();
+		byte[] codeattr = null;
 		for (int i = 0; i < nas; i++)
 		{
 			// Read attribute name
@@ -350,16 +351,40 @@ public class CFClassParser
 			{
 					// Only care about code
 				case "Code":
-					try (DataInputStream cdis = new DataInputStream(
-						new BufferAreaInputStream(__das,
-							(((long)__das.readInt()) & 0xFFFFFFFFL))))
+					// Read in byte array of the data.
+					int cal = __das.readInt();
+					
+					// {@squirreljme.error IN2u The code attribute of a method
+					// has negative length. (The length of the code attribute)}
+					if (cal < 0)
+						throw new CFFormatException(String.format("IN2u %d",
+							cal));
+					
+					// {@squirreljme.error IN2v A method must only have no
+					// code attribute or a single one defined.}
+					if (codeattr != null)
+						throw new CFFormatException("IN2v");
+					
+					// Handle attribute
+					codeattr = new byte[cal];
+					try (InputStream is = new BufferAreaInputStream(__das,
+						cal))
 					{
-						// Setup code parse
-						JVMCodeParser parser = new JVMCodeParser(this, rv,
-							_constantpool);
-						
-						// Parse it
-						parser.parse(cdis);
+						// Allocate attribute data
+						int total = 0;
+						while (total < cal)
+						{
+							// Read
+							int rc = is.read(codeattr, total, cal - total);
+							
+							// {@squirreljme.error IN2x Reached end of file
+							// while reading the code attribute.}
+							if (rc < 0)
+								throw new CFFormatException("IN2x");
+							
+							// Add it
+							total += rc;
+						}
 					}
 					break;
 					
@@ -370,8 +395,8 @@ public class CFClassParser
 			}
 		}
 		
-		// Return it
-		return rv;
+		// Build it
+		return new CFMethod(key, flags, codeattr);
 	}
 	
 	/**

@@ -26,9 +26,6 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
 public abstract class CFMember<S extends MemberTypeSymbol,
 	F extends CFMemberFlags>
 {
-	/** The class this member is in. */
-	protected final CFClass inclass;
-	
 	/** Member name and type. */
 	protected final CFMemberKey<S> nameandtype;
 	
@@ -41,7 +38,6 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	/**
 	 * Initializes the interpreted member.
 	 *
-	 * @param __owner The class which owns this.
 	 * @param __st The descriptor symbol type.
 	 * @param __nat The name and type of the member.
 	 * @param __fcl The type of class flags must be.
@@ -51,18 +47,15 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/17
 	 */
-	CFMember(CFClass __owner, Class<S> __st, CFMemberKey<S> __nat,
-		Class<F> __fcl, F __fl)
+	CFMember(Class<S> __st, CFMemberKey<S> __nat, Class<F> __fcl, F __fl)
 		throws ClassCastException, NullPointerException
 	{
 		// Check
-		if (__owner == null || __st == null || __nat == null ||
+		if (__st == null || __nat == null ||
 			__fcl == null || __fl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		inclass = __owner;
-		lock = inclass.lock;
 		symboltype = __st;
 		nameandtype = __nat;
 		symboltype.cast(nameandtype.getValue());

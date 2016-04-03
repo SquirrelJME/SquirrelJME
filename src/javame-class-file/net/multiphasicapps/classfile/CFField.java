@@ -28,18 +28,16 @@ public class CFField
 	/**
 	 * Initializes the interpreted method.
 	 *
-	 * @param __owner The class which owns this method.
 	 * @param __nat The name and type of the field.
 	 * @param __fl The flags the field uses.
 	 * @param __cv The constant value of the field.
 	 * @throws NullPointerException On null arguments, except for {@code __cv}.
 	 * @since 2016/03/01
 	 */
-	CFField(CFClass __owner, CFMemberKey<FieldSymbol> __nat, CFFieldFlags __fl,
-		Object __cv)
+	CFField(CFMemberKey<FieldSymbol> __nat, CFFieldFlags __fl, Object __cv)
 		throws NullPointerException
 	{
-		super(__owner, FieldSymbol.class, __nat, CFFieldFlags.class, __fl);
+		super(FieldSymbol.class, __nat, CFFieldFlags.class, __fl);
 		
 		// {@squirreljme.error IN2q A field cannot have a constant value which
 		// is not of the standard boxed and fixed immutable types. (the class
@@ -70,7 +68,7 @@ public class CFField
 	 */
 	public Object getConstantValue()
 	{
-		return constanvalue;
+		return constantvalue;
 	}
 }
 
