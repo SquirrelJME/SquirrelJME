@@ -43,11 +43,28 @@ public class CFClassParser
 	final Map<CFMemberKey<FieldSymbol>, CFField> _fields =
 		new LinkedHashMap<>();
 	
+	/** Methods which were parsed. */
+	final Map<CFMemberKey<MethodSymbol>, CFMethod> _methods =
+		new LinkedHashMap<>();
+	
+	/** Class interfaces. */
+	final Set<BinaryNameSymbol> _interfaces =
+		new LinkedHashSet<>();
+	
 	/** The version of this class file. */
 	volatile CFClassVersion _version;
 	
 	/** The class constant pool. */
 	volatile CFConstantPool _constantpool;
+	
+	/** Class flags. */
+	volatile CFClassFlags _flags;
+	
+	/** The current class name. */
+	volatile BinaryNameSymbol _thisname;
+	
+	/** The super class name. */
+	volatile BinaryNameSymbol _supername;
 	
 	/** Did this already? */
 	volatile boolean _did;
@@ -119,20 +136,20 @@ public class CFClassParser
 		_constantpool = constantpool = new CFConstantPool(this, das);
 		
 		// Read class access flags
-		target.setFlags(new JVMClassFlags(das.readUnsignedShort()));
+		_flags = new JVMClassFlags(das.readUnsignedShort());
 		
 		// Set current class name
-		target.setThisName(constantpool.<CFConstantEntry.ClassName>getAs(
+		_thisname = constantpool.<CFConstantEntry.ClassName>getAs(
 			das.readUnsignedShort(), CFConstantEntry.ClassName.class).
-			symbol());
+			symbol().asBinaryName();
 		
 		// Set super class name
 		int sid = das.readUnsignedShort();
 		if (sid != 0)
-			target.setSuperName(constantpool.<CFConstantEntry.ClassName>getAs(
-				sid, CFConstantEntry.ClassName.class).symbol());
+			_supername = constantpool.<CFConstantEntry.ClassName>getAs(
+				sid, CFConstantEntry.ClassName.class).symbol().asBinaryName();
 		else
-			target.setSuperName(null);
+			_supername = null;
 		
 		// Read interface count
 		// @{squirreljme.error IN11 The class file to parse has a duplicated
@@ -140,26 +157,38 @@ public class CFClassParser
 		// only be specified once. (Existing interfaces, the duplicate
 		// interface)}
 		int nints = das.readUnsignedShort();
-		JVMClassInterfaces ints = target.getInterfaces();
+		Set<BinaryNameSymbol> ints = _interfaces;
 		ClassNameSymbol ix;
 		for (int i = 0; i < nints; i++)
 			if (!ints.add((ix = constantpool.<CFConstantEntry.ClassName>getAs(
 				das.readUnsignedShort(), CFConstantEntry.ClassName.class).
-					symbol())))
-				throw new CFClassVersionError(String.format("IN11 %s %s",
+					symbol().asBinaryName())))
+				throw new CFFormatException(String.format("IN11 %s %s",
 					ints, ix));
 		
 		// Read fields
 		int nf = das.readUnsignedShort();
-		CFFields flds = target.getFields();
+		Map<CFMemberKey<FieldSymbol>, CFField> flds = _fields;
 		for (int i = 0; i < nf; i++)
-			flds.put(__readField(das));
+		{
+			CFField x = __readField(das);
+			
+			// @{squirreljme.error IN2r Class has a duplicate field.}
+			if (null != flds.put(x.nameAndType(), x))
+				throw new CFFormatException(String.format("IN2r %s", x));
+		}
 		
 		// Read methods
 		int nm = das.readUnsignedShort();
-		CFMethods mths = target.getMethods();
+		Map<CFMemberKey<MethodSymbol>, CFMethod> mths = _methods;
 		for (int i = 0; i < nm; i++)
-			mths.put(__readMethod(das));
+		{
+			CFMethod x =__readMethod(das);
+			
+			// @{squirreljme.error IN2s Class has a duplicate method.}
+			if (null != mths.put(x.nameAndType(), x))
+				throw new CFFormatException(String.format("IN2s %s", x));
+		}
 		
 		// No class attributes are used by the Java ME VM, thus they can
 		// completely be ignored as if they did not exist.
