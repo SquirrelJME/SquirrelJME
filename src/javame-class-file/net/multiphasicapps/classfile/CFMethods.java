@@ -34,27 +34,36 @@ public class CFMethods
 	{
 		super(__own, CFMethod.class, __s);
 		
-		throw new Error("TODO");
-		/*
-		// METHOD
-				// Class initializer flags are ignored for the most part
-		if (!isClassInitializer())
+		// Check the flags for all members
+		CFClassFlags cl = owner.flags();
+		for (CFMethod m : values())
 		{
-			// If the class is an interface...
+			// Initializer flags are ignored
+			if (!m.isClassInitializer())
+				continue;
+			
+			// Get flags
+			CFMethodFlags fl = m.flags();
+		
+			// If an interface
 			if (cl.isInterface())
 			{
-				// Default methods are not supported
-				if (__fl.isPrivate() || !__fl.isAbstract())
-					throw new CFFormatException(String.format("IN19 %s",
-						__fl));
+				// {@squirreljme.error IN19 Default members and private methods
+				// in interfaces are not supported. (The method flags;
+				// The class flags)}
+				if (fl.isPrivate() || !fl.isAbstract())
+					throw new CFFormatException(String.format("IN19 %s %s",
+						fl, cl));
 				
-				// Cannot have these flags
-				if (__fl.isProtected() || __fl.isFinal() ||
-					__fl.isSynchronized() || __fl.isNative())
+				// {@squirreljme.error IN1a Interface methods cannot be
+				// {@code protected}, {@code final}, {@code synchronized}, or
+				// {@code native}. (The method flags; The class flags)}
+				if (fl.isProtected() || fl.isFinal() ||
+					fl.isSynchronized() || fl.isNative())
 					throw new CFFormatException(String.format("IN1a %s %s",
-						__fl, cl));
+						fl, cl));
 			}
-		*/
+		}
 	}
 }
 

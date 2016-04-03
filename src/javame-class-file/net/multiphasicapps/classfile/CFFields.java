@@ -33,26 +33,26 @@ public class CFFields
 	{
 		super(__own, CFField.class, __s);
 		
-		throw new Error("TODO");
-		/*
-		// FIELD
-		// Get class flags
-		CFClassFlags cl = inclass.getFlags();
-		
-		// If an interface
-		if (cl.isInterface())
+		// Check the flags for all members
+		CFClassFlags cl = owner.flags();
+		for (CFField m : values())
 		{
-			// Must have these flags set and some not set
-			if ((!__fl.isPublic() || !__fl.isStatic() || !__fl.isFinal()) ||
-				__fl.isProtected() || __fl.isPrivate() || __fl.isVolatile() ||
-				__fl.isTransient() || __fl.isEnum())
-				throw new CFFormatException(String.format("IN1c %s %s",
-						__fl, cl));
-		}
+			// Get flags
+			CFFieldFlags fl = m.flags();
 		
-		// Continue with super call
-		return (CFField)super.setFlags(__fl);
-		*/
+			// If an interface
+			if (cl.isInterface())
+			{
+				// {@squirreljme.error IN1c Fields of interfaces must always
+				// be {@code public static final}. (The flags for this field;
+				// The flags for this method)}
+				if ((!fl.isPublic() || !fl.isStatic() || !fl.isFinal()) ||
+					fl.isProtected() || fl.isPrivate() || fl.isVolatile() ||
+					fl.isTransient() || fl.isEnum())
+					throw new CFFormatException(String.format("IN1c %s %s",
+							fl, cl));
+			}
+		}
 	}
 }
 

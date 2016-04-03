@@ -69,7 +69,7 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	 * @throws IllegalStateException If no flags were set.
 	 * @since 2016/03/20
 	 */
-	public final F getFlags()
+	public final F flags()
 		throws IllegalStateException
 	{
 		return flags;
