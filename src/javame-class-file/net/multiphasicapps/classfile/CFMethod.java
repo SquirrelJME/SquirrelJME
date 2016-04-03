@@ -8,12 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.classfile;
 
 import java.util.Set;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.interpreter.program.VMCProgram;
+import net.multiphasicapps.classfile.program.VMCProgram;
 
 /**
  * This represents an interpreted method within a class.
