@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.CFAttributeUtils;
 import net.multiphasicapps.classfile.CFClass;
 import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
@@ -49,7 +50,7 @@ public class CPProgramBuilder
 	protected final CFConstantPool constantpool;
 	
 	/** The class file parser. */
-	protected final CFClass classfile;
+	protected final CFClass inclass;
 	
 	/** Current active code source, may change in special circumstances. */
 	private volatile DataInputStream _source;
@@ -68,34 +69,33 @@ public class CPProgramBuilder
 	 *
 	 * @param __cfp The class file parser.
 	 * @param __method The method owning the code being parsed.
-	 * @param __pool The constant pool of the class.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/22
 	 */
-	public CPProgramBuilder(CFClass __cfp, CFMethod __method,
-		CFConstantPool __pool)
+	public CPProgramBuilder(CFClass __cfp, CFMethod __method)
 		throws NullPointerException
 	{
 		// Check
-		if (__cfp == null || __method == null || __pool == null)
+		if (__cfp == null || __method == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		method = __method;
-		constantpool = __pool;
-		classfile = __cfp;
+		inclass = __cfp;
+		constantpool = inclass.constantPool();
 	}
 	
 	/**
 	 * Parses the code attribute and turns it into NARF code.
 	 *
 	 * @param __das The code attribute data.
-	 * @return {@code this}.
+	 * @return The decoded program.
 	 * @throws IOException On read errors.
 	 * @throws CPProgramException If the code is malformed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/22
 	 */
-	public CPProgramBuilder parse(DataInputStream __das)
+	public CPProgram parse(DataInputStream __das)
 		throws IllegalStateException, IOException, CPProgramException,
 			NullPointerException
 	{
@@ -162,59 +162,42 @@ public class CPProgramBuilder
 		// Setup a byte program for translation and dynamic cache friendly
 		// program parsing
 		CPProgram jbp = new CPProgram(maxlocal, maxstack, msym,
-			!method.getFlags().isStatic(), excs, rawcode);
+			!method.flags().isStatic(), excs, rawcode);
 		
 		// Handle attributes, only two are cared about
 		int nas = __das.readUnsignedShort();
 		for (int i = 0; i < nas; i++)
 		{
 			// Read attribute name
-			String an = classfile.__readAttributeName(__das);
+			String an = CFAttributeUtils.readName(constantpool, __das);
 			
-			// Depends on the name
-			boolean newstack = false;
-			switch (an)
+			// There are two attributes which represent stack maps
+			// which are used for verification (and in my case it also
+			// include optimization). StackMap existed since CLDC 1.0
+			// and at the basic level is the same as StackMapTable
+			// which was introduced in Java 6. The newer version
+			// (StackMapTable) is just more compact, but they
+			// essentially provide the same data.
+			boolean newstack = an.equals("StackMapTable");
+			boolean oldstack = an.equals("StackMap");
+			boolean isastack = (newstack | oldstack);
+			
+			// Read in and parse the stack map table if it is one, otherwise
+			// the attribute is just skipped
+			try (DataInputStream smdi = new DataInputStream(
+				new BufferAreaInputStream(__das,
+					(((long)__das.readInt()) & 0xFFFFFFFFL))))
 			{
-					// There are two attributes which represent stack maps
-					// which are used for verification (and in my case it also
-					// include optimization). StackMap existed since CLDC 1.0
-					// and at the basic level is the same as StackMapTable
-					// which was introduced in Java 6. The newer version
-					// (StackMapTable) is just more compact, but they
-					// essentially provide the same data.
-				case "StackMapTable":
-					newstack = true;
-				case "StackMap":
-					// For older classes do not use this at all
-					if (newstack != classfile.version().useStackMapTable())
-					{
-						classfile.__skipAttribute(__das);
-						break;
-					}
-					
-					// Read in and parse the stack map table
-					try (DataInputStream smdi = new DataInputStream(
-						new BufferAreaInputStream(__das,
-							(((long)__das.readInt()) & 0xFFFFFFFFL))))
-					{
-						new __StackMapParser__(newstack, smdi, jbp);
-					}
-					
-					// Done
-					break;
-					
-					// Ignored
-				default:
-					classfile.__skipAttribute(__das);
-					break;
+				// This has the benefit of being able to skip the
+				// attribute if it is over another class.
+				if (isastack &&
+					newstack == inclass.version().useStackMapTable())
+					new __StackMapParser__(newstack, smdi, jbp);
 			}
 		}
 		
-		// Set the method program
-		method.setProgram(jbp);
-		
-		// Self
-		return this;
+		// Return the generated program
+		return jbp;
 	}
 }
 

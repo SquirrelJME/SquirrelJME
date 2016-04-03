@@ -230,27 +230,6 @@ public class CFClassParser
 	}
 	
 	/**
-	 * Reads the name of the attribute.
-	 *
-	 * @param __das The data source.
-	 * @return The current attribute to be read.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/20
-	 */
-	String __readAttributeName(DataInputStream __das)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__das == null)
-			throw new NullPointerException("NARG");
-		
-		// Read it in
-		return _constantpool.<CFConstantEntry.UTF8>getAs(
-			__das.readUnsignedShort(), CFConstantEntry.UTF8.class).toString();
-	}
-	
-	/**
 	 * Reads a single field.
 	 *
 	 * @param __das Data source.
@@ -279,7 +258,7 @@ public class CFClassParser
 		for (int i = 0; i < nas; i++)
 		{
 			// Read attribute name
-			String an = __readAttributeName(__das);
+			String an = CFAttributeUtils.readName(_constantpool, __das);
 			
 			// Depends on the name
 			switch (an)
@@ -344,7 +323,7 @@ public class CFClassParser
 		for (int i = 0; i < nas; i++)
 		{
 			// Read attribute name
-			String an = __readAttributeName(__das);
+			String an = CFAttributeUtils.readName(_constantpool, __das);
 			
 			// Depends on the name
 			switch (an)

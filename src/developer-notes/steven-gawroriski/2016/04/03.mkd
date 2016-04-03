@@ -28,3 +28,13 @@ Oracle as a library on top of vendor provided LCDUI and such. Looking at the
 classes in the binary, it looks like they can put it on top of the canvas and
 the game canvas. I would have to test this out in the future.
 
+## 16:47
+
+In a hypothetical Minecraft clone I could also have as a sample, I can have
+a repeating world. This would mean that world is a kind of sphere of sorts.
+Thus, the world would have a circumference of 33,554,431 meters. This would be
+about 0.84 times the circumference of the Earth, so it would be a slightly
+smaller size. The world would be 1.5 times the circumference of Mars but
+should still be smaller than Venus. This is assuming I can fully trust
+Wolfram Alpha and the data I put in without thinking about it.
+
