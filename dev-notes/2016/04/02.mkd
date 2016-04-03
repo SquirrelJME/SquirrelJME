@@ -80,3 +80,7 @@ build it instead. The eventual fixup of the interpreter will have its own
 notion of the class and its state. This way the class file code and the
 program parser code remain cleaner and simpler.
 
+## 20:16
+
+This means the class file parser does not need locks at all.
+

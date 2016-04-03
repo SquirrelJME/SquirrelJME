@@ -15,6 +15,7 @@ import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,18 +39,18 @@ public class CFClassParser
 	public static final int MAGIC_NUMBER =
 		0xCAFEBABE;
 	
-	/** Internal lock. */
-	protected final Object lock =
-		new Object();
+	/** Fields which were parsed. */
+	final Map<CFMemberKey<FieldSymbol>, CFField> _fields =
+		new LinkedHashMap<>();
 	
 	/** The version of this class file. */
-	private volatile CFClassVersion _version;
+	volatile CFClassVersion _version;
 	
 	/** The class constant pool. */
-	private volatile CFConstantPool _constantpool;
+	volatile CFConstantPool _constantpool;
 	
 	/** Did this already? */
-	private volatile boolean _did;
+	volatile boolean _did;
 	
 	/**
 	 * Initializes the class file parser.
@@ -65,13 +66,13 @@ public class CFClassParser
 	 * Parses the class file and loads the information into the target class.
 	 *
 	 * @param __is The input stream to read class data from.
-	 * @return {@code this}.
+	 * @return A class which contains the given parsed data.
 	 * @throws IOException On read errors.
 	 * @throws CFFormatException If the class is badly formatted.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	public CFClassParser parse(InputStream __is)
+	public CFClass parse(InputStream __is)
 		throws IllegalStateException, IOException, CFFormatException,
 			NullPointerException
 	{
@@ -178,8 +179,8 @@ public class CFClassParser
 		if (das.read() >= 0)
 			throw new CFFormatException("IN08");
 		
-		// Self
-		return this;
+		// Build the final class
+		return new CFClass(this);
 	}
 	
 	/**
