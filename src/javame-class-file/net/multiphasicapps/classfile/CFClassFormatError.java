@@ -16,15 +16,15 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/02
  */
-public class JVMClassFormatError
-	extends JVMEngineException
+public class CFFormatException
+	extends RuntimeException
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
 	 * @since 2016/03/15
 	 */
-	public JVMClassFormatError()
+	public CFFormatException()
 	{
 	}
 	
@@ -34,7 +34,7 @@ public class JVMClassFormatError
 	 * @param __msg The exception message.
 	 * @since 2016/03/02
 	 */
-	public JVMClassFormatError(String __msg)
+	public CFFormatException(String __msg)
 	{
 		super(__msg);
 	}
@@ -46,7 +46,7 @@ public class JVMClassFormatError
 	 * @param __c The cause.
 	 * @since 2016/03/02
 	 */
-	public JVMClassFormatError(String __msg, Throwable __c)
+	public CFFormatException(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}
@@ -57,7 +57,7 @@ public class JVMClassFormatError
 	 * @param __c The cause of the exception.
 	 * @since 2016/03/15
 	 */
-	public JVMClassFormatError(Throwable __c)
+	public CFFormatException(Throwable __c)
 	{
 		super(__c);
 	}

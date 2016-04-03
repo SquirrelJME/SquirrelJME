@@ -44,12 +44,12 @@ public class JVMClass
 		new JVMClassInterfaces(this);
 	
 	/** Class fields. */
-	protected final JVMFields fields =
-		new JVMFields(this);
+	protected final CFFields fields =
+		new CFFields(this);
 	
 	/** Class methods. */
-	protected final JVMMethods methods =
-		new JVMMethods(this);
+	protected final CFMethods methods =
+		new CFMethods(this);
 	
 	/** The current class flags. */
 	private volatile JVMClassFlags _flags;
@@ -173,7 +173,7 @@ public class JVMClass
 	 * @return The field mappings.
 	 * @since 2016/03/20
 	 */
-	public final JVMFields getFields()
+	public final CFFields getFields()
 	{
 		return fields;
 	}
@@ -218,7 +218,7 @@ public class JVMClass
 	 * @return The method mappings.
 	 * @since 2016/03/20
 	 */
-	public final JVMMethods getMethods()
+	public final CFMethods getMethods()
 	{
 		return methods;
 	}
@@ -318,16 +318,16 @@ public class JVMClass
 	 * @return {@code this}.
 	 * @throws IllegalStateException Of the current class name is not set, or
 	 * this is an array.
-	 * @throws JVMClassFormatError If this class name is {@link Object} and
+	 * @throws CFFormatException If this class name is {@link Object} and
 	 * a super class was attempted to be set.
 	 * @since 2016/03/19
 	 */
 	public final JVMClass setSuperName(ClassNameSymbol __n)
-		throws IllegalStateException, JVMClassFormatError
+		throws IllegalStateException, CFFormatException
 	{
 		// Cannot be an array
 		if (__n != null && __n.isArray())
-			throw new JVMClassFormatError(String.format("IN0z %s", __n));
+			throw new CFFormatException(String.format("IN0z %s", __n));
 		if (isArray())
 			throw new IllegalStateException("IN2o");
 		
@@ -339,13 +339,13 @@ public class JVMClass
 			
 			// Cannot be this
 			if (__n != null && self.equals(__n))
-				throw new JVMClassFormatError(String.format("IN12 %s", __n));
+				throw new CFFormatException(String.format("IN12 %s", __n));
 			
 			// If it is object then super-class is not valid, or if this is
 			// not object then it must be set
 			boolean isobj = self.equals("java/lang/Object");
 			if ((__n != null && isobj) || (__n == null && !isobj))
-				throw new JVMClassFormatError(String.format("IN07 %s %s",
+				throw new CFFormatException(String.format("IN07 %s %s",
 					self, __n));
 			
 			// Set

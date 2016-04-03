@@ -15,7 +15,7 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/13
  */
-public enum JVMClassVersion
+public enum CFClassVersion
 {
 	/** Probably invalid or ancient Java. */
 	INVALID(Integer.MIN_VALUE,
@@ -40,8 +40,12 @@ public enum JVMClassVersion
 	/** End. */
 	;
 	
+	/** The minimum supported version. */
+	public static final CFClassVersion MIN_VERSION =
+		CLDC_1;
+	
 	/** The maximum supported version. */
-	public static final JVMClassVersion MAX_VERSION =
+	public static final CFClassVersion MAX_VERSION =
 		CLDC_8;
 	
 	/** The version ID. */
@@ -69,7 +73,7 @@ public enum JVMClassVersion
 	 * @param __usesmt Should the StackMapTable attribute be used?
 	 * @since 2016/03/13
 	 */
-	private JVMClassVersion(int __vid, boolean __undef,
+	private CFClassVersion(int __vid, boolean __undef,
 		boolean __float, boolean __hasid, boolean __usesmt)
 	{
 		// Set
@@ -138,17 +142,17 @@ public enum JVMClassVersion
 	 * @return The closest matching version number.
 	 * @since 2016/03/13
 	 */
-	public static JVMClassVersion findVersion(int __vid)
+	public static CFClassVersion findVersion(int __vid)
 	{
 		// Go through all values from last to first
-		JVMClassVersion[] vers = values();
+		CFClassVersion[] vers = values();
 		int n = vers.length;
 		for (int i = n - 1; i >= 0; i--)
 			if (__vid >= vers[i].version)
 				return vers[i];
 		
 		// This really should not occur, but in case it does
-		return JVMClassVersion.INVALID;
+		return CFClassVersion.INVALID;
 	}
 }
 

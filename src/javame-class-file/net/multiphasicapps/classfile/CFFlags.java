@@ -43,13 +43,13 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 	 * @param __type The class type used for flags.
 	 * @param __all All available flags, the set is directly used so it must
 	 * not be modified.
-	 * @throws JVMClassFormatError If a bit which has no associated flag is
+	 * @throws CFFormatException If a bit which has no associated flag is
 	 * set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
 	public JVMFlags(int __b, Class<F> __type, List<F> __all)
-		throws JVMClassFormatError, NullPointerException
+		throws CFFormatException, NullPointerException
 	{
 		// Check
 		if (__all == null || __type == null)
@@ -65,7 +65,7 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 		for (F f : all)
 			rem &= ~f.mask();
 		if (rem != 0)
-			throw new JVMClassFormatError(String.format("IN0a %x %x", bits,
+			throw new CFFormatException(String.format("IN0a %x %x", bits,
 				rem));
 	}
 	

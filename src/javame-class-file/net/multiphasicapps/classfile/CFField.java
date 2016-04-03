@@ -19,8 +19,8 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
  *
  * @since 2016/03/17
  */
-public class JVMField
-	extends JVMMember<FieldSymbol, JVMFieldFlags>
+public class CFField
+	extends CFMember<FieldSymbol, CFFieldFlags>
 {
 	/** The constant value of the field. */
 	private volatile Object _constant;
@@ -33,10 +33,10 @@ public class JVMField
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public JVMField(JVMClass __owner, JVMMemberKey<FieldSymbol> __nat)
+	public CFField(JVMClass __owner, CFMemberKey<FieldSymbol> __nat)
 		throws NullPointerException
 	{
-		super(__owner, FieldSymbol.class, __nat, JVMFieldFlags.class);
+		super(__owner, FieldSymbol.class, __nat, CFFieldFlags.class);
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class JVMField
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/01
 	 */
-	public JVMField setConstantValue(Object __cv)
+	public CFField setConstantValue(Object __cv)
 		throws ClassCastException, NullPointerException
 	{
 		// Check
@@ -94,8 +94,8 @@ public class JVMField
 	 * @since 2016/03/20
 	 */
 	@Override
-	public JVMField setFlags(JVMFieldFlags __fl)
-		throws JVMClassFormatError, NullPointerException
+	public CFField setFlags(CFFieldFlags __fl)
+		throws CFFormatException, NullPointerException
 	{
 		// Check
 		if (__fl == null)
@@ -111,12 +111,12 @@ public class JVMField
 			if ((!__fl.isPublic() || !__fl.isStatic() || !__fl.isFinal()) ||
 				__fl.isProtected() || __fl.isPrivate() || __fl.isVolatile() ||
 				__fl.isTransient() || __fl.isEnum())
-				throw new JVMClassFormatError(String.format("IN1c %s %s",
+				throw new CFFormatException(String.format("IN1c %s %s",
 						__fl, cl));
 		}
 		
 		// Continue with super call
-		return (JVMField)super.setFlags(__fl);
+		return (CFField)super.setFlags(__fl);
 	}
 }
 

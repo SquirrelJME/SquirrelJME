@@ -103,7 +103,7 @@ public class CFConstantPool
 	 * @since 2016/03/13
 	 */
 	CFConstantPool(JVMClassFile __cl, DataInputStream __is)
-		throws JVMClassFormatError, IOException, NullPointerException
+		throws CFFormatException, IOException, NullPointerException
 	{
 		// Check
 		if (__cl == null || __is == null)
@@ -115,7 +115,7 @@ public class CFConstantPool
 		// Read entry count, a class cannot have zero entries in it
 		numentries = __is.readUnsignedShort();
 		if (numentries <= 0)
-			throw new JVMClassFormatError("IN0g");
+			throw new CFFormatException("IN0g");
 		
 		// Read them all
 		CFConstantEntry[] ents;
@@ -169,7 +169,7 @@ public class CFConstantPool
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
 				case TAG_INVOKEDYNAMIC:
-					throw new JVMClassFormatError("IN0h");
+					throw new CFFormatException("IN0h");
 					
 					// Unknown
 				case TAG_INTEGER:
@@ -177,7 +177,7 @@ public class CFConstantPool
 				case TAG_LONG:
 				case TAG_DOUBLE:
 				default:
-					throw new JVMClassFormatError(String.format("IN0i", tag));
+					throw new CFFormatException(String.format("IN0i", tag));
 			}
 			
 			// Set
@@ -201,12 +201,12 @@ public class CFConstantPool
 	 * @param <Q> The type of entry to return.
 	 * @param __i The index of the entry.
 	 * @param __cl The class type to cast to.
-	 * @throws JVMClassFormatError If the type at this position is not
+	 * @throws CFFormatException If the type at this position is not
 	 * of the given class.
 	 * @since 2016/03/15
 	 */
 	public <Q extends CFConstantEntry> Q getAs(int __i, Class<Q> __cl)
-		throws JVMClassFormatError, NullPointerException
+		throws CFFormatException, NullPointerException
 	{
 		// Locate entry
 		try
@@ -217,7 +217,7 @@ public class CFConstantPool
 		// Is missing
 		catch (ClassCastException|NullPointerException e)
 		{
-			throw new JVMClassFormatError(String.format("IN0j %d %s", __i,
+			throw new CFFormatException(String.format("IN0j %d %s", __i,
 				__cl), e);
 		}
 	}
@@ -231,12 +231,12 @@ public class CFConstantPool
 	 * @param __cl The type of the expected entry.
 	 * @return The entry at the given position or {@code null} if it is the
 	 * zero index.
-	 * @throws JVMClassFormatError If the type at this position is not
+	 * @throws CFFormatException If the type at this position is not
 	 * of the given class.
 	 * @since 2016/03/31
 	 */
 	public <Q extends CFConstantEntry> Q getAsOptional(int __i, Class<Q> __cl)
-		throws JVMClassFormatError, NullPointerException
+		throws CFFormatException, NullPointerException
 	{
 		// Check
 		if (__cl == null)

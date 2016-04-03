@@ -42,14 +42,8 @@ public class CFClassParser
 	protected final Object lock =
 		new Object();
 	
-	/** The owning engine. */
-	protected final JVMEngine engine;
-	
-	/** The target class. */
-	protected final JVMClass target;
-	
 	/** The version of this class file. */
-	private volatile JVMClassVersion _version;
+	private volatile CFClassVersion _version;
 	
 	/** The class constant pool. */
 	private volatile CFConstantPool _constantpool;
@@ -58,24 +52,13 @@ public class CFClassParser
 	private volatile boolean _did;
 	
 	/**
-	 * Initializes the class loader.
+	 * Initializes the class file parser.
 	 *
-	 * @param __eng The engine which is loading this class.
-	 * @param __targ The target class to write data into, it is undefined
-	 * behavior if it already has details set.
-	 * @throws NUllPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	public CFClassParser(JVMEngine __eng, JVMClass __targ)
+	public CFClassParser()
 		throws NullPointerException
 	{
-		// Check
-		if (__eng == null || __targ == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		engine = __eng;
-		target = __targ;
 	}
 	
 	/**
@@ -84,12 +67,12 @@ public class CFClassParser
 	 * @param __is The input stream to read class data from.
 	 * @return {@code this}.
 	 * @throws IOException On read errors.
-	 * @throws JVMClassFormatError If the class is badly formatted.
+	 * @throws CFFormatException If the class is badly formatted.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
 	public CFClassParser parse(InputStream __is)
-		throws IllegalStateException, IOException, JVMClassFormatError,
+		throws IllegalStateException, IOException, CFFormatException,
 			NullPointerException
 	{
 		// Already done?
@@ -108,20 +91,27 @@ public class CFClassParser
 		DataInputStream das = new DataInputStream(__is);
 		
 		// Check the magic number
+		// @{squirreljme.error IN01 The magic number of the class is not a
+		// valid one for the standard class file format. Expects 0xCAFEBABE,
+		// however the given magic number was specified.}
 		int clmagic;
 		if (MAGIC_NUMBER != (clmagic = das.readInt()))
-			throw new JVMClassFormatError(String.format("IN01 %08x %08x",
-				clmagic, MAGIC_NUMBER));
+			throw new CFFormatException(String.format("IN01 %08x", clmagic));
 		
 		// Read the class version number, this modifies if certain
 		// instructions are handled and how they are verified (StackMap vs
 		// StackMapTable)
-		JVMClassVersion version;
-		_version = version = JVMClassVersion.findVersion(
+		// @{squirreljme.error IN02 The input class file version is either too
+		// new or too old. The specified class file version must be within the
+		// specified range.}
+		CFClassVersion version;
+		_version = version = CFClassVersion.findVersion(
 			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
-		if (version.compareTo(JVMClassVersion.MAX_VERSION) > 0)
-			throw new JVMClassVersionError(String.format("IN02 %s %s",
-				version, JVMClassVersion.MAX_VERSION));
+		if (version.compareTo(CFClassVersion.MAX_VERSION) > 0 ||
+			version.compareTo(CFClassVersion.MIN_VERSION) < 0)
+			throw new CFClassVersionError(String.format("IN02 %s != [%s, %s]",
+				version, CFClassVersion.MIN_VERSION,
+				CFClassVersion.MAX_VERSION));
 		
 		// Initialize the constant pool
 		CFConstantPool constantpool;
@@ -144,6 +134,10 @@ public class CFClassParser
 			target.setSuperName(null);
 		
 		// Read interface count
+		// @{squirreljme.error IN11 The class file to parse has a duplicated
+		// interface in its implemented interfaces list, an interface may
+		// only be specified once. (Existing interfaces, the duplicate
+		// interface)}
 		int nints = das.readUnsignedShort();
 		JVMClassInterfaces ints = target.getInterfaces();
 		ClassNameSymbol ix;
@@ -151,18 +145,18 @@ public class CFClassParser
 			if (!ints.add((ix = constantpool.<CFConstantEntry.ClassName>getAs(
 				das.readUnsignedShort(), CFConstantEntry.ClassName.class).
 					symbol())))
-				throw new JVMClassVersionError(String.format("IN11 %s %s",
+				throw new CFClassVersionError(String.format("IN11 %s %s",
 					ints, ix));
 		
 		// Read fields
 		int nf = das.readUnsignedShort();
-		JVMFields flds = target.getFields();
+		CFFields flds = target.getFields();
 		for (int i = 0; i < nf; i++)
 			flds.put(__readField(das));
 		
 		// Read methods
 		int nm = das.readUnsignedShort();
-		JVMMethods mths = target.getMethods();
+		CFMethods mths = target.getMethods();
 		for (int i = 0; i < nm; i++)
 			mths.put(__readMethod(das));
 		
@@ -179,8 +173,10 @@ public class CFClassParser
 		}
 		
 		// If this is not EOF, then the class has extra junk following it
+		// @{squirreljme.error IN08 Extra bytes follow the end of the class
+		// file data which is illegal.}
 		if (das.read() >= 0)
-			throw new JVMClassFormatError("IN08");
+			throw new CFFormatException("IN08");
 		
 		// Self
 		return this;
@@ -192,7 +188,7 @@ public class CFClassParser
 	 * @return The class file version.
 	 * @since 2016/03/25
 	 */
-	public JVMClassVersion version()
+	public CFClassVersion version()
 	{
 		return _version;
 	}
@@ -227,7 +223,7 @@ public class CFClassParser
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	private JVMField __readField(DataInputStream __das)
+	private CFField __readField(DataInputStream __das)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -235,14 +231,14 @@ public class CFClassParser
 			throw new NullPointerException("NARG");
 		
 		// Read flags
-		JVMFieldFlags flags = new JVMFieldFlags(__das.readUnsignedShort());
+		CFFieldFlags flags = new CFFieldFlags(__das.readUnsignedShort());
 		
 		// Read name and type key
-		JVMMemberKey<FieldSymbol> key = this.<FieldSymbol>__readNAT(__das,
+		CFMemberKey<FieldSymbol> key = this.<FieldSymbol>__readNAT(__das,
 			FieldSymbol.class);
 		
 		// Setup
-		JVMField rv = new JVMField(target, key);
+		CFField rv = new CFField(target, key);
 		rv.setFlags(flags);
 		
 		// Read in attributes?
@@ -289,7 +285,7 @@ public class CFClassParser
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	private JVMMethod __readMethod(DataInputStream __das)
+	private CFMethod __readMethod(DataInputStream __das)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -297,14 +293,14 @@ public class CFClassParser
 			throw new NullPointerException("NARG");
 		
 		// Read flags
-		JVMMethodFlags flags = new JVMMethodFlags(__das.readUnsignedShort());
+		CFMethodFlags flags = new CFMethodFlags(__das.readUnsignedShort());
 		
 		// Read name and type key
-		JVMMemberKey<MethodSymbol> key = this.<MethodSymbol>__readNAT(__das,
+		CFMemberKey<MethodSymbol> key = this.<MethodSymbol>__readNAT(__das,
 			MethodSymbol.class);
 		
 		// Setup
-		JVMMethod rv = new JVMMethod(target, key);
+		CFMethod rv = new CFMethod(target, key);
 		rv.setFlags(flags);
 		
 		// Read in attributes?
@@ -354,7 +350,7 @@ public class CFClassParser
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	private <S extends MemberTypeSymbol> JVMMemberKey<S> __readNAT(
+	private <S extends MemberTypeSymbol> CFMemberKey<S> __readNAT(
 		DataInputStream __d, Class<S> __cl)
 		throws IOException, NullPointerException
 	{
@@ -373,7 +369,7 @@ public class CFClassParser
 				CFConstantEntry.UTF8.class).toString()));
 		
 		// Construct key
-		return new JVMMemberKey<>(name, type);
+		return new CFMemberKey<>(name, type);
 	}
 	
 	/**
@@ -381,12 +377,12 @@ public class CFClassParser
 	 *
 	 * @param __das Data source.
 	 * @throws IOException On read errors.
-	 * @throws JVMClassFormatError If EOF was reached.
+	 * @throws CFFormatException If EOF was reached.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
 	void __skipAttribute(DataInputStream __das)
-		throws IOException, JVMClassFormatError, NullPointerException
+		throws IOException, CFFormatException, NullPointerException
 	{
 		// Check
 		if (__das == null)
@@ -395,10 +391,12 @@ public class CFClassParser
 		// Ignore the length, but fail if EOF is reached
 		// Using != instead of < makes it so that attributes that are larger
 		// than 2GiB can be properly skipped (although unlikely)
+		// @{squirreljme.error IN09 End of file reached while skipping an
+		// attribute.}
 		int alen = __das.readInt();
 		for (int w = 0; w != alen; w++)
 			if (__das.read() < 0)
-				throw new JVMClassFormatError("IN09");
+				throw new CFFormatException("IN09");
 	}
 }
 

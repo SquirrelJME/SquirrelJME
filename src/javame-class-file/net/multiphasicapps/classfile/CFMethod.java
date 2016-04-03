@@ -20,8 +20,8 @@ import net.multiphasicapps.interpreter.program.VMCProgram;
  *
  * @since 2016/03/01
  */
-public class JVMMethod
-	extends JVMMember<MethodSymbol, JVMMethodFlags>
+public class CFMethod
+	extends CFMember<MethodSymbol, CFMethodFlags>
 {
 	/** Lock. */
 	protected final Object lock =
@@ -44,10 +44,10 @@ public class JVMMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public JVMMethod(JVMClass __owner, JVMMemberKey<MethodSymbol> __nat)
+	public CFMethod(JVMClass __owner, CFMemberKey<MethodSymbol> __nat)
 		throws NullPointerException
 	{
-		super(__owner, MethodSymbol.class, __nat, JVMMethodFlags.class);
+		super(__owner, MethodSymbol.class, __nat, CFMethodFlags.class);
 		
 		// Is this a constructor?
 		isconstructor = name().equals("<init>");
@@ -96,8 +96,8 @@ public class JVMMethod
 	 * @since 2016/03/20
 	 */
 	@Override
-	public JVMMethod setFlags(JVMMethodFlags __fl)
-		throws JVMClassFormatError, NullPointerException
+	public CFMethod setFlags(CFMethodFlags __fl)
+		throws CFFormatException, NullPointerException
 	{
 		// Check
 		if (__fl == null)
@@ -114,13 +114,13 @@ public class JVMMethod
 			{
 				// Default methods are not supported
 				if (__fl.isPrivate() || !__fl.isAbstract())
-					throw new JVMClassFormatError(String.format("IN19 %s",
+					throw new CFFormatException(String.format("IN19 %s",
 						__fl));
 				
 				// Cannot have these flags
 				if (__fl.isProtected() || __fl.isFinal() ||
 					__fl.isSynchronized() || __fl.isNative())
-					throw new JVMClassFormatError(String.format("IN1a %s %s",
+					throw new CFFormatException(String.format("IN1a %s %s",
 						__fl, cl));
 			}
 			
@@ -129,12 +129,12 @@ public class JVMMethod
 				if (__fl.isPrivate() || __fl.isStatic() || __fl.isFinal() ||
 					__fl.isSynchronized() || __fl.isNative() ||
 					__fl.isStrict())
-					throw new JVMClassFormatError(String.format("IN1b %s",
+					throw new CFFormatException(String.format("IN1b %s",
 						__fl));
 		}
 		
 		// Perform super work
-		return (JVMMethod)super.setFlags(__fl);
+		return (CFMethod)super.setFlags(__fl);
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public class JVMMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since m2016/03/31
 	 */
-	public JVMMethod setProgram(VMCProgram __prg)
+	public CFMethod setProgram(VMCProgram __prg)
 		throws NullPointerException
 	{
 		// Check

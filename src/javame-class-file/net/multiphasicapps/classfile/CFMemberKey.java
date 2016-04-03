@@ -24,7 +24,7 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * @param <S> The type of symbol to use for the value.
  * @since 2016/03/17
  */
-public final class JVMMemberKey<S extends MemberTypeSymbol>
+public final class CFMemberKey<S extends MemberTypeSymbol>
 	implements Map.Entry<IdentifierSymbol, S>
 {
 	/** The name of this entry. */
@@ -41,7 +41,7 @@ public final class JVMMemberKey<S extends MemberTypeSymbol>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/17
 	 */
-	public JVMMemberKey(IdentifierSymbol __id, S __ty)
+	public CFMemberKey(IdentifierSymbol __id, S __ty)
 		throws NullPointerException
 	{
 		// Check

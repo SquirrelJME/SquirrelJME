@@ -18,8 +18,8 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/19
  */
-public class JVMMethods
-	extends JVMMembers<MethodSymbol, JVMMethodFlags, JVMMethod>
+public class CFMethods
+	extends CFMembers<MethodSymbol, CFMethodFlags, CFMethod>
 {
 	/**
 	 * Initializes the method mappings.
@@ -27,9 +27,9 @@ public class JVMMethods
 	 * @param __own The owning class.
 	 * @since 2016/03/20
 	 */
-	public JVMMethods(JVMClass __own)
+	public CFMethods(JVMClass __own)
 	{
-		super(__own, JVMMethod.class);
+		super(__own, CFMethod.class);
 	}
 }
 

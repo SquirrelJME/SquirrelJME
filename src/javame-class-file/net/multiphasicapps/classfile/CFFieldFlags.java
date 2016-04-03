@@ -15,24 +15,24 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/19
  */
-public final class JVMFieldFlags
-	extends JVMMemberFlags<JVMFieldFlag>
+public final class CFFieldFlags
+	extends CFMemberFlags<CFFieldFlag>
 {
 	/**
 	 * Initializes the field flags.
 	 *
 	 * @param __b The bits used for the field.
-	 * @throws JVMClassFormatError If the flag combination is not valid.
+	 * @throws CFFormatException If the flag combination is not valid.
 	 * @since 2016/03/19
 	 */
-	public JVMFieldFlags(int __b)
-		throws JVMClassFormatError
+	public CFFieldFlags(int __b)
+		throws CFFormatException
 	{
-		super(__b, JVMFieldFlag.class, JVMFieldFlag.allFlags());
+		super(__b, CFFieldFlag.class, CFFieldFlag.allFlags());
 		
 		// Cannot be final and volatile
 		if (isFinal() && isVolatile())
-			throw new JVMClassFormatError(String.format("IN16 %s", this));
+			throw new CFFormatException(String.format("IN16 %s", this));
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public final class JVMFieldFlags
 	 */
 	public boolean isEnum()
 	{
-		return contains(JVMFieldFlag.ENUM);
+		return contains(CFFieldFlag.ENUM);
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public final class JVMFieldFlags
 	@Override
 	public boolean isFinal()
 	{
-		return contains(JVMFieldFlag.FINAL);
+		return contains(CFFieldFlag.FINAL);
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public final class JVMFieldFlags
 	@Override
 	public boolean isPrivate()
 	{
-		return contains(JVMFieldFlag.PRIVATE);
+		return contains(CFFieldFlag.PRIVATE);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public final class JVMFieldFlags
 	@Override
 	public boolean isProtected()
 	{
-		return contains(JVMFieldFlag.PROTECTED);
+		return contains(CFFieldFlag.PROTECTED);
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public final class JVMFieldFlags
 	@Override
 	public boolean isPublic()
 	{
-		return contains(JVMFieldFlag.PUBLIC);
+		return contains(CFFieldFlag.PUBLIC);
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public final class JVMFieldFlags
 	@Override
 	public boolean isStatic()
 	{
-		return contains(JVMFieldFlag.STATIC);
+		return contains(CFFieldFlag.STATIC);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public final class JVMFieldFlags
 	@Override
 	public boolean isSynthetic()
 	{
-		return contains(JVMFieldFlag.SYNTHETIC);
+		return contains(CFFieldFlag.SYNTHETIC);
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public final class JVMFieldFlags
 	 */
 	public boolean isTransient()
 	{
-		return contains(JVMFieldFlag.TRANSIENT);
+		return contains(CFFieldFlag.TRANSIENT);
 	}
 	
 	/**
@@ -125,7 +125,7 @@ public final class JVMFieldFlags
 	 */
 	public boolean isVolatile()
 	{
-		return contains(JVMFieldFlag.VOLATILE);
+		return contains(CFFieldFlag.VOLATILE);
 	}
 }
 

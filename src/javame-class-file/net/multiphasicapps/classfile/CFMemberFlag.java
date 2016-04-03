@@ -15,7 +15,7 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/19
  */
-public interface JVMMemberFlag
+public interface CFMemberFlag
 	extends JVMBitFlag
 {
 }

@@ -15,31 +15,31 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/19
  */
-public final class JVMMethodFlags
-	extends JVMMemberFlags<JVMMethodFlag>
+public final class CFMethodFlags
+	extends CFMemberFlags<CFMethodFlag>
 {
 	/**
 	 * Initializes the method flags.
 	 *
 	 * @param __b The bits used for the method.
-	 * @throws JVMClassFormatError If the method flag combinations are not
+	 * @throws CFFormatException If the method flag combinations are not
 	 * valid.
 	 * @since 2016/03/19
 	 */
-	public JVMMethodFlags(int __b)
-		throws JVMClassFormatError
+	public CFMethodFlags(int __b)
+		throws CFFormatException
 	{
-		super(__b, JVMMethodFlag.class, JVMMethodFlag.allFlags());
+		super(__b, CFMethodFlag.class, CFMethodFlag.allFlags());
 		
 		// Native is just not supported by this virtual machine
 		if (isNative())
-			throw new JVMClassFormatError("IN18");
+			throw new CFFormatException("IN18");
 		
 		// If this method is abstract then other flags cannot be set
 		if (isAbstract())
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
-				throw new JVMClassFormatError(String.format("IN17 %s", this));
+				throw new CFFormatException(String.format("IN17 %s", this));
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public final class JVMMethodFlags
 	 */
 	public boolean isAbstract()
 	{
-		return contains(JVMMethodFlag.ABSTRACT);
+		return contains(CFMethodFlag.ABSTRACT);
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public final class JVMMethodFlags
 	 */
 	public boolean isBridge()
 	{
-		return contains(JVMMethodFlag.BRIDGE);
+		return contains(CFMethodFlag.BRIDGE);
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public final class JVMMethodFlags
 	@Override
 	public boolean isFinal()
 	{
-		return contains(JVMMethodFlag.FINAL);
+		return contains(CFMethodFlag.FINAL);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public final class JVMMethodFlags
 	 */
 	public boolean isNative()
 	{
-		return contains(JVMMethodFlag.NATIVE);
+		return contains(CFMethodFlag.NATIVE);
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public final class JVMMethodFlags
 	@Override
 	public boolean isPrivate()
 	{
-		return contains(JVMMethodFlag.PRIVATE);
+		return contains(CFMethodFlag.PRIVATE);
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public final class JVMMethodFlags
 	@Override
 	public boolean isProtected()
 	{
-		return contains(JVMMethodFlag.PROTECTED);
+		return contains(CFMethodFlag.PROTECTED);
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public final class JVMMethodFlags
 	@Override
 	public boolean isPublic()
 	{
-		return contains(JVMMethodFlag.PUBLIC);
+		return contains(CFMethodFlag.PUBLIC);
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public final class JVMMethodFlags
 	@Override
 	public boolean isStatic()
 	{
-		return contains(JVMMethodFlag.STATIC);
+		return contains(CFMethodFlag.STATIC);
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public final class JVMMethodFlags
 	 */
 	public boolean isStrict()
 	{
-		return contains(JVMMethodFlag.STRICT);
+		return contains(CFMethodFlag.STRICT);
 	}
 	
 	/**
@@ -144,7 +144,7 @@ public final class JVMMethodFlags
 	 */
 	public boolean isSynchronized()
 	{
-		return contains(JVMMethodFlag.SYNCHRONIZED);
+		return contains(CFMethodFlag.SYNCHRONIZED);
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public final class JVMMethodFlags
 	@Override
 	public boolean isSynthetic()
 	{
-		return contains(JVMMethodFlag.SYNTHETIC);
+		return contains(CFMethodFlag.SYNTHETIC);
 	}
 	
 	/**
@@ -165,7 +165,7 @@ public final class JVMMethodFlags
 	 */
 	public boolean isVarArgs()
 	{
-		return contains(JVMMethodFlag.VARARGS);
+		return contains(CFMethodFlag.VARARGS);
 	}
 }
 

@@ -23,8 +23,8 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * @param <F> The flag type.
  * @since 2016/03/17
  */
-public abstract class JVMMember<S extends MemberTypeSymbol,
-	F extends JVMMemberFlags>
+public abstract class CFMember<S extends MemberTypeSymbol,
+	F extends CFMemberFlags>
 {
 	/** Internal lock. */
 	Object lock;	
@@ -33,7 +33,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	protected final JVMClass inclass;
 	
 	/** Member name and type. */
-	protected final JVMMemberKey<S> nameandtype;
+	protected final CFMemberKey<S> nameandtype;
 	
 	/** The type that the symbol must be. */
 	protected final Class<S> symboltype;
@@ -56,7 +56,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/17
 	 */
-	JVMMember(JVMClass __owner, Class<S> __st, JVMMemberKey<S> __nat,
+	CFMember(JVMClass __owner, Class<S> __st, CFMemberKey<S> __nat,
 		Class<F> __fcl)
 		throws ClassCastException, NullPointerException
 	{
@@ -114,7 +114,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @return The member name and type.
 	 * @since 2016/03/20
 	 */
-	public final JVMMemberKey<S> nameAndType()
+	public final CFMemberKey<S> nameAndType()
 	{
 		return nameandtype;
 	}
@@ -139,7 +139,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	public JVMMember<S, F> setFlags(F __fl)
+	public CFMember<S, F> setFlags(F __fl)
 		throws ClassCastException, NullPointerException
 	{
 		// Check

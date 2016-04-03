@@ -15,8 +15,8 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/13
  */
-public class JVMClassVersionError
-	extends JVMClassFormatError
+public class CFClassVersionError
+	extends CFFormatException
 {
 	/**
 	 * Initializes exception with the given message.
@@ -24,7 +24,7 @@ public class JVMClassVersionError
 	 * @param __msg The exception message.
 	 * @since 2016/03/13
 	 */
-	public JVMClassVersionError(String __msg)
+	public CFClassVersionError(String __msg)
 	{
 		super(__msg);
 	}
@@ -36,7 +36,7 @@ public class JVMClassVersionError
 	 * @param __c The cause.
 	 * @since 2016/03/13
 	 */
-	public JVMClassVersionError(String __msg, Throwable __c)
+	public CFClassVersionError(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}

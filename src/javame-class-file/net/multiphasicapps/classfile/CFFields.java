@@ -18,8 +18,8 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
  *
  * @since 2016/03/19
  */
-public class JVMFields
-	extends JVMMembers<FieldSymbol, JVMFieldFlags, JVMField>
+public class CFFields
+	extends CFMembers<FieldSymbol, CFFieldFlags, CFField>
 {
 	/**
 	 * Initializes the field mappings.
@@ -27,9 +27,9 @@ public class JVMFields
 	 * @param __own The owning class.
 	 * @since 2016/03/20
 	 */
-	public JVMFields(JVMClass __own)
+	public CFFields(JVMClass __own)
 	{
-		super(__own, JVMField.class);
+		super(__own, CFField.class);
 	}
 }
 

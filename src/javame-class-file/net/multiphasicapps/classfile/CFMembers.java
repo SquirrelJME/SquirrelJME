@@ -27,9 +27,9 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * @param <E> The entry type.
  * @since 2016/03/19
  */
-public abstract class JVMMembers<S extends MemberTypeSymbol,
-	F extends JVMMemberFlags, E extends JVMMember<S, F>>
-	extends AbstractMap<JVMMemberKey<S>, E>
+public abstract class CFMembers<S extends MemberTypeSymbol,
+	F extends CFMemberFlags, E extends CFMember<S, F>>
+	extends AbstractMap<CFMemberKey<S>, E>
 {
 	/** Internal lock. */
 	final Object lock;
@@ -41,7 +41,7 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	protected final Class<E> cast;
 	
 	/** Internal storage. */
-	private final Map<JVMMemberKey<S>, E> _store =
+	private final Map<CFMemberKey<S>, E> _store =
 		new LinkedHashMap<>();
 	
 	/**
@@ -52,7 +52,7 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	public JVMMembers(JVMClass __own, Class<E> __cl)
+	public CFMembers(JVMClass __own, Class<E> __cl)
 		throws NullPointerException
 	{
 		// Check
@@ -90,7 +90,7 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	 */
 	public final E get(IdentifierSymbol __n, S __t)
 	{
-		return get(new JVMMemberKey<>(__n, __t));
+		return get(new CFMemberKey<>(__n, __t));
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	 * @since 2016/03/20
 	 */
 	@Override
-	public final Set<Map.Entry<JVMMemberKey<S>, E>> entrySet()
+	public final Set<Map.Entry<CFMemberKey<S>, E>> entrySet()
 	{
 		throw new Error("TODO");
 	}
@@ -129,7 +129,7 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	 * @since 2016/03/20
 	 */
 	@Override
-	public E put(JVMMemberKey<S> __k, E __v)
+	public E put(CFMemberKey<S> __k, E __v)
 		throws ClassCastException, IllegalArgumentException,
 			IllegalStateException, NullPointerException
 	{

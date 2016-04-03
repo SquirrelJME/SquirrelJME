@@ -18,7 +18,7 @@ import java.util.List;
  * @param <F> The type of flags to use.
  * @since 2016/03/19
  */
-public abstract class JVMMemberFlags<F extends JVMMemberFlag>
+public abstract class CFMemberFlags<F extends CFMemberFlag>
 	extends JVMFlags<F>
 {
 	/**
@@ -27,12 +27,12 @@ public abstract class JVMMemberFlags<F extends JVMMemberFlag>
 	 * @param __b The input bits.
 	 * @param __type The flag type.
 	 * @param __all All available flags.
-	 * @throws JVMClassFormatError If a member has multiple access flags
+	 * @throws CFFormatException If a member has multiple access flags
 	 * specified.
 	 * @since 2016/03/19
 	 */
-	public JVMMemberFlags(int __b, Class<F> __type, List<F> __all)
-		throws JVMClassFormatError
+	public CFMemberFlags(int __b, Class<F> __type, List<F> __all)
+		throws CFFormatException
 	{
 		super(__b, __type, __all);
 		
@@ -41,7 +41,7 @@ public abstract class JVMMemberFlags<F extends JVMMemberFlag>
 		q += (isProtected() ? 1 : 0);
 		q += (isPrivate() ? 1 : 0);
 		if (q > 1)
-			throw new JVMClassFormatError(String.format("IN15 %s", this));
+			throw new CFFormatException(String.format("IN15 %s", this));
 	}
 	
 	/**

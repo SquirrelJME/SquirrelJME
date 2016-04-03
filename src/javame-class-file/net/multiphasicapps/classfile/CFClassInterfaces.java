@@ -57,13 +57,13 @@ public class JVMClassInterfaces
 	
 	/**
 	 * {@inheritDoc}
-	 * @throws JVMClassFormatError If the added symbol is an array.
+	 * @throws CFFormatException If the added symbol is an array.
 	 * @NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
 	@Override
 	public boolean add(ClassNameSymbol __e)
-		throws JVMClassFormatError, NullPointerException
+		throws CFFormatException, NullPointerException
 	{
 		// Check
 		if (__e == null)
@@ -71,11 +71,11 @@ public class JVMClassInterfaces
 		
 		// Cannot implement an array
 		if (__e.isArray())
-			throw new JVMClassFormatError(String.format("IN10 %s", __e));
+			throw new CFFormatException(String.format("IN10 %s", __e));
 		
 		// Cannot be Object
 		if (__e.equals("java/lang/Object"))
-			throw new JVMClassFormatError("IN13");
+			throw new CFFormatException("IN13");
 		
 		// Lock
 		synchronized (lock)

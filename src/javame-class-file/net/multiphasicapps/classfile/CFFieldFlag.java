@@ -21,8 +21,8 @@ import net.multiphasicapps.collections.MissingCollections;
  *
  * @since 2016/03/19
  */
-public enum JVMFieldFlag
-	implements JVMBitFlag, JVMMemberFlag
+public enum CFFieldFlag
+	implements JVMBitFlag, CFMemberFlag
 {
 	/** Public field. */
 	PUBLIC(0x0001),
@@ -55,7 +55,7 @@ public enum JVMFieldFlag
 	;
 	
 	/** All available flags. */
-	private static volatile Reference<List<JVMFieldFlag>> _FLAGS;
+	private static volatile Reference<List<CFFieldFlag>> _FLAGS;
 	
 	/** The flag mask. */
 	protected final int mask;
@@ -67,7 +67,7 @@ public enum JVMFieldFlag
 	 * @throws IllegalArgumentException If not exactly a single bit is set.
 	 * @since 2016/03/19
 	 */
-	private JVMFieldFlag(int __m)
+	private CFFieldFlag(int __m)
 		throws IllegalArgumentException
 	{
 		// Check
@@ -94,17 +94,17 @@ public enum JVMFieldFlag
 	 * @return The available field flags.
 	 * @since 2016/03/19
 	 */
-	public static List<JVMFieldFlag> allFlags()
+	public static List<CFFieldFlag> allFlags()
 	{
 		// Get reference
-		Reference<List<JVMFieldFlag>> ref = _FLAGS;
-		List<JVMFieldFlag> rv;
+		Reference<List<CFFieldFlag>> ref = _FLAGS;
+		List<CFFieldFlag> rv;
 		
 		// Check it
 		if (ref == null || null == (rv = ref.get()))
 			_FLAGS = new WeakReference<>((rv = MissingCollections.
-				<JVMFieldFlag>unmodifiableList(
-					Arrays.<JVMFieldFlag>asList(values()))));
+				<CFFieldFlag>unmodifiableList(
+					Arrays.<CFFieldFlag>asList(values()))));
 		
 		// Return it
 		return rv;

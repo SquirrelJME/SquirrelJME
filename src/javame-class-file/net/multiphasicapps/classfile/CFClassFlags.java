@@ -22,11 +22,11 @@ public final class JVMClassFlags
 	 * Initializes the class flags.
 	 *
 	 * @param __fl The flags to use.
-	 * @throws JVMClassFormatError If the given flag combination is not legal.
+	 * @throws CFFormatException If the given flag combination is not legal.
 	 * @since 2016/03/19
 	 */
 	public JVMClassFlags(int __fl)
-		throws JVMClassFormatError
+		throws CFFormatException
 	{
 		super(__fl, JVMClassFlag.class, JVMClassFlag.allFlags());
 		
@@ -35,12 +35,12 @@ public final class JVMClassFlags
 		{
 			// Must be abstract
 			if (!isAbstract())
-				throw new JVMClassFormatError(String.format("IN03 %s",
+				throw new CFFormatException(String.format("IN03 %s",
 					toString()));
 			
 			// cannot have some flags set
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new JVMClassFormatError(String.format("IN04 %s",
+				throw new CFFormatException(String.format("IN04 %s",
 					toString()));
 		}
 		
@@ -49,12 +49,12 @@ public final class JVMClassFlags
 		{
 			// Cannot be an annotation
 			if (isAnnotation())
-				throw new JVMClassFormatError(String.format("IN05 %s",
+				throw new CFFormatException(String.format("IN05 %s",
 					toString()));
 				
 			// Cannot be abstract and final
 			if (isAbstract() && isFinal())
-				throw new JVMClassFormatError(String.format("IN06 %s",
+				throw new CFFormatException(String.format("IN06 %s",
 					toString()));
 		}
 	}

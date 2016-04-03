@@ -59,15 +59,15 @@ public abstract class CFConstantEntry
 	 *
 	 * @param __v The index to check the range for.
 	 * @return {@code __v} if the range is valid.
-	 * @throws JVMClassFormatError If the range is not valid.
+	 * @throws CFFormatException If the range is not valid.
 	 * @since 2016/03/15
 	 */
 	int __rangeCheck(int __v)
-		throws JVMClassFormatError
+		throws CFFormatException
 	{
 		if (__v > 0 && __v < pool.size())
 			return __v;
-		throw new JVMClassFormatError(String.format("IN0d %d %d", __v,
+		throw new CFFormatException(String.format("IN0d %d %d", __v,
 			pool.size()));
 	}
 	
@@ -224,14 +224,14 @@ public abstract class CFConstantEntry
 		 *
 		 * @param __icp The owning constant pool.
 		 * @param __dis Input stream to read data from.
-		 * @throws JVMClassFormatError If the class name is not
+		 * @throws CFFormatException If the class name is not
 		 * valid.
 		 * @throws IOException On read errors.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/15
 		 */
 		ClassName(CFConstantPool __icp, DataInputStream __dis)
-			throws JVMClassFormatError, IOException,
+			throws CFFormatException, IOException,
 				NullPointerException
 		{
 			super(__icp);
@@ -248,12 +248,12 @@ public abstract class CFConstantEntry
 		 * Returns the symbol associated with this class.
 		 *
 		 * @return The class name symbol.
-		 * @throws JVMClassFormatError If the class name symbol is
+		 * @throws CFFormatException If the class name symbol is
 		 * invalid.
 		 * @since 2016/03/15
 		 */
 		public ClassNameSymbol symbol()
-			throws JVMClassFormatError
+			throws CFFormatException
 		{
 			// Get reference
 			Reference<ClassNameSymbol> ref = _cname;
@@ -274,7 +274,7 @@ public abstract class CFConstantEntry
 				// Bad symbol
 				catch (IllegalSymbolException ise)
 				{
-					throw new JVMClassFormatError("IN0e", ise);
+					throw new CFFormatException("IN0e", ise);
 				}
 			
 			// Return it
@@ -500,7 +500,7 @@ public abstract class CFConstantEntry
 			}
 			
 			// One has an illegal set of symbols.
-			catch (JVMClassFormatError jvmcfe)
+			catch (CFFormatException jvmcfe)
 			{
 				// Do not match
 				return false;
@@ -536,7 +536,7 @@ public abstract class CFConstantEntry
 					// Bad identifier
 					catch (IllegalSymbolException ise)
 					{
-						throw new JVMClassFormatError("IN0s", ise);
+						throw new CFFormatException("IN0s", ise);
 					}
 				
 				// Return it
@@ -574,7 +574,7 @@ public abstract class CFConstantEntry
 					// Not a valid symbol
 					catch (IllegalSymbolException ise)
 					{
-						throw new JVMClassFormatError(String.format("IN0r"),
+						throw new CFFormatException(String.format("IN0r"),
 							ise);
 					}
 				
@@ -598,7 +598,7 @@ public abstract class CFConstantEntry
 			}
 			
 			// Badly formed symbol
-			catch (JVMClassFormatError jvmcfe)
+			catch (CFFormatException jvmcfe)
 			{
 				return 0xDEADBEEF;
 			}
@@ -618,11 +618,11 @@ public abstract class CFConstantEntry
 		 * Returns the represented symbol as a field symbol.
 		 *
 		 * @return The type as a field symbol.
-		 * @throws JVMClassFormatError If the type is not a field symbol.
+		 * @throws CFFormatException If the type is not a field symbol.
 		 * @since 2016/03/17
 		 */
 		public FieldSymbol typeAsField()
-			throws JVMClassFormatError
+			throws CFFormatException
 		{
 			try
 			{
@@ -632,7 +632,7 @@ public abstract class CFConstantEntry
 			// Is not one
 			catch (ClassCastException cce)
 			{
-				throw new JVMClassFormatError("IN0p", cce);
+				throw new CFFormatException("IN0p", cce);
 			}
 		}
 		
@@ -640,11 +640,11 @@ public abstract class CFConstantEntry
 		 * Returns the represented symbol as a method symbol.
 		 *
 		 * @return The type as a method symbol.
-		 * @throws JVMClassFormatError If the type is not a method symbol.
+		 * @throws CFFormatException If the type is not a method symbol.
 		 * @since 2016/03/17
 		 */
 		public MethodSymbol typeAsMethod()
-			throws JVMClassFormatError
+			throws CFFormatException
 		{
 			try
 			{
@@ -654,7 +654,7 @@ public abstract class CFConstantEntry
 			// Is not one
 			catch (ClassCastException cce)
 			{
-				throw new JVMClassFormatError("IN0q", cce);
+				throw new CFFormatException("IN0q", cce);
 			}
 		}
 	}
@@ -676,14 +676,14 @@ public abstract class CFConstantEntry
 		 *
 		 * @param __icp The owning constant pool.
 		 * @param __is Data input source.
-		 * @throws JVMClassFormatError If the modfied UTF string is
+		 * @throws CFFormatException If the modfied UTF string is
 		 * malformed.
 		 * @throws IOException On read errors.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/13
 		 */
 		UTF8(CFConstantPool __icp, DataInputStream __dis)
-			throws JVMClassFormatError, IOException,
+			throws CFFormatException, IOException,
 				NullPointerException
 		{
 			super(__icp);
@@ -701,7 +701,7 @@ public abstract class CFConstantEntry
 			// Malformed sequence
 			catch (UTFDataFormatException utfdfe)
 			{
-				throw new JVMClassFormatError("IN0f", utfdfe);
+				throw new CFFormatException("IN0f", utfdfe);
 			}
 		}
 		
