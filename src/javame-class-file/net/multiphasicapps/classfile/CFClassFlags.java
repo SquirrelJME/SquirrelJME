@@ -33,29 +33,30 @@ public final class CFClassFlags
 		// Interface?
 		if (isInterface())
 		{
-			// Must be abstract
+			// {@squirreljme.error CF03 An interface must also be abstract.
+			// (The class flags}}
 			if (!isAbstract())
-				throw new CFFormatException(String.format("IN03 %s",
-					toString()));
+				throw new CFFormatException(String.format("CF03 %s", this));
 			
-			// cannot have some flags set
+			// {@squirreljme.error CF04 An interface cannot be {@code final} or
+			// {@code enum} and it must not have the special flag set. (The
+			// class flags)}
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new CFFormatException(String.format("IN04 %s",
-					toString()));
+				throw new CFFormatException(String.format("CF04 %s", this));
 		}
 		
 		// Normal class
 		else
 		{
-			// Cannot be an annotation
+			// {@squirreljme.error CF05 Annotations must be interfaces. (The
+			// class flags)}
 			if (isAnnotation())
-				throw new CFFormatException(String.format("IN05 %s",
-					toString()));
+				throw new CFFormatException(String.format("CF05 %s", this));
 				
-			// Cannot be abstract and final
+			// {@squirreljme.error CF06 A class cannot be both {@code abstract}
+			// and {@code final}. (The class flags)}
 			if (isAbstract() && isFinal())
-				throw new CFFormatException(String.format("IN06 %s",
-					toString()));
+				throw new CFFormatException(String.format("CF06 %s", this));
 		}
 	}
 	

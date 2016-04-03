@@ -13,6 +13,9 @@ package net.multiphasicapps.classfile;
 /**
  * This represents a class format in the Java virtual machine.
  *
+ * {@squirreljme.error CF0c If the current class version does not have any
+ * defined attributes.}
+ *
  * @since 2016/03/13
  */
 public enum CFClassVersion
@@ -97,7 +100,7 @@ public enum CFClassVersion
 		throws IllegalStateException
 	{
 		if (undefined)
-			throw new IllegalStateException("IN0c");
+			throw new IllegalStateException("CF0c");
 		return hasfloat;
 	}
 	
@@ -114,7 +117,7 @@ public enum CFClassVersion
 		throws IllegalStateException
 	{
 		if (undefined)
-			throw new IllegalStateException("IN0c");
+			throw new IllegalStateException("CF0c");
 		return hasinvokedynamic;
 	}
 	
@@ -131,7 +134,7 @@ public enum CFClassVersion
 		throws IllegalStateException
 	{
 		if (undefined)
-			throw new IllegalStateException("IN0c");
+			throw new IllegalStateException("CF0c");
 		return usestackmaptable;
 	}
 	

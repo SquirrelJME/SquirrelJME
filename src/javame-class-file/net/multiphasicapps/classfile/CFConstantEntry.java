@@ -66,8 +66,13 @@ public abstract class CFConstantEntry
 		throws CFFormatException
 	{
 		if (__v > 0 && __v < pool.size())
-			return __v;
-		throw new CFFormatException(String.format("IN0d %d %d", __v,
+			if (pool.get(__v) != null)
+				return __v;
+		
+		// {@squirreljme.error CF0d A constant pool entry references an index
+		// which must be set, however it does not exist.
+		// (The input value; The size of the pool)}
+		throw new CFFormatException(String.format("CF0d %d %d", __v,
 			pool.size()));
 	}
 	

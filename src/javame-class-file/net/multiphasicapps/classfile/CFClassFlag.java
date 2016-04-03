@@ -67,9 +67,10 @@ public enum CFClassFlag
 	private CFClassFlag(int __m)
 		throws IllegalArgumentException
 	{
-		// Check
+		// {@squirreljme.error CF02 Input bits for class flags does not have
+		// one bit. (The input bits)}
 		if (Integer.bitCount(__m) != 1)
-			throw new IllegalArgumentException(String.format("IN0b %d", __m));
+			throw new IllegalArgumentException(String.format("CF02 %d", __m));
 		
 		// Set
 		mask = __m;

@@ -286,10 +286,10 @@ public class CFClassParser
 			{
 					// Only care about constants
 				case "ConstantValue":	
-					// {@squirreljme.error IN2y A field must not have more
+					// {@squirreljme.error CF07 A field must not have more
 					// than one constant value.}
 					if (constantvalue != null)
-						throw new CFFormatException("IN2y");
+						throw new CFFormatException("CF07");
 					
 					// Read
 					try (DataInputStream cdis = new DataInputStream(
@@ -354,16 +354,16 @@ public class CFClassParser
 					// Read in byte array of the data.
 					int cal = __das.readInt();
 					
-					// {@squirreljme.error IN2u The code attribute of a method
+					// {@squirreljme.error CF08 The code attribute of a method
 					// has negative length. (The length of the code attribute)}
 					if (cal < 0)
-						throw new CFFormatException(String.format("IN2u %d",
+						throw new CFFormatException(String.format("CF08 %d",
 							cal));
 					
-					// {@squirreljme.error IN2v A method must only have no
+					// {@squirreljme.error CF09 A method must only have no
 					// code attribute or a single one defined.}
 					if (codeattr != null)
-						throw new CFFormatException("IN2v");
+						throw new CFFormatException("CF09");
 					
 					// Handle attribute
 					codeattr = new byte[cal];
@@ -377,10 +377,10 @@ public class CFClassParser
 							// Read
 							int rc = is.read(codeattr, total, cal - total);
 							
-							// {@squirreljme.error IN2x Reached end of file
+							// {@squirreljme.error CF0a Reached end of file
 							// while reading the code attribute.}
 							if (rc < 0)
-								throw new CFFormatException("IN2x");
+								throw new CFFormatException("CF0a");
 							
 							// Add it
 							total += rc;
@@ -451,12 +451,12 @@ public class CFClassParser
 		// Ignore the length, but fail if EOF is reached
 		// Using != instead of < makes it so that attributes that are larger
 		// than 2GiB can be properly skipped (although unlikely)
-		// @{squirreljme.error IN09 End of file reached while skipping an
+		// @{squirreljme.error CF0b End of file reached while skipping an
 		// attribute.}
 		int alen = __das.readInt();
 		for (int w = 0; w != alen; w++)
 			if (__das.read() < 0)
-				throw new CFFormatException("IN09");
+				throw new CFFormatException("CF0b");
 	}
 }
 

@@ -80,11 +80,11 @@ public final class CFClass
 		thisname = Objects.<BinaryNameSymbol>requireNonNull(__cf._thisname);
 		supername = Objects.<BinaryNameSymbol>requireNonNull(__cf._supername);
 		
-		// {@squirreljme.error IN30 If this is the object class and it has a
+		// {@squirreljme.error CF01 If this is the object class and it has a
 		// super class, or this is not the object class and there is no super
 		// class set. (This class name; The super class name)}
 		if (thisname.equals("java/lang/Object") != (supername == null))
-			throw new CFFormatException(String.format("IN30 %s %s", thisname,
+			throw new CFFormatException(String.format("CF01 %s %s", thisname,
 				supername));
 	}
 	
