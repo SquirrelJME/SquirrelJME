@@ -11,10 +11,11 @@
 package net.multiphasicapps.classfile;
 
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
 
 /**
  * This contains a mutable set of interfaces which a class implements.
@@ -24,65 +25,22 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  * @since 2016/03/19
  */
 public class CFClassInterfaces
-	extends AbstractSet<ClassNameSymbol>
+	extends AbstractSet<BinaryNameSymbol>
 {
-	/** Internal lock. */
-	Object lock;
-	
-	/** The class which owns this interface set. */
-	protected final CFClass owner;
-	
-	/** Internal interface storage list. */
-	private final Set<ClassNameSymbol> _store =
-		new LinkedHashSet<>();
-	
 	/**
 	 * Initializes the interface set.
 	 *
-	 * @param __owner The owner of this class.
+	 * @param __bn The interfaces that the class uses.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	CFClassInterfaces(CFClass __owner)
-		throws NullPointerException
+	CFClassInterfaces(Set<BinaryNameSymbol> __bn)
 	{
 		// Check
-		if (__owner == null)
+		if (__bn == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		owner = __owner;
-		lock = owner.lock;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @throws CFFormatException If the added symbol is an array.
-	 * @NullPointerException On null arguments.
-	 * @since 2016/03/19
-	 */
-	@Override
-	public boolean add(ClassNameSymbol __e)
-		throws CFFormatException, NullPointerException
-	{
-		// Check
-		if (__e == null)
-			throw new NullPointerException("NARG");
-		
-		// Cannot implement an array
-		if (__e.isArray())
-			throw new CFFormatException(String.format("IN10 %s", __e));
-		
-		// Cannot be Object
-		if (__e.equals("java/lang/Object"))
-			throw new CFFormatException("IN13");
-		
-		// Lock
-		synchronized (lock)
-		{
-			// Add it
-			return _store.add(__e);
-		}
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -92,54 +50,7 @@ public class CFClassInterfaces
 	@Override
 	public Iterator<ClassNameSymbol> iterator()
 	{
-		return new Iterator<ClassNameSymbol>()
-			{
-				/** The base iterator. */
-				protected final Iterator<ClassNameSymbol> base =
-					_store.iterator();
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/19
-				 */
-				@Override
-				public boolean hasNext()
-				{
-					// Lock
-					synchronized (lock)
-					{
-						return base.hasNext();
-					}
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/19
-				 */
-				@Override
-				public ClassNameSymbol next()
-				{
-					// Lock
-					synchronized (lock)
-					{
-						return base.next();
-					}
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/19
-				 */
-				@Override
-				public void remove()
-				{
-					// Lock
-					synchronized (lock)
-					{
-						base.remove();
-					}
-				}
-			};
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -149,11 +60,7 @@ public class CFClassInterfaces
 	@Override
 	public int size()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _store.size();
-		}
+		throw new Error("TODO");
 	}
 }
 

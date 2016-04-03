@@ -23,20 +23,43 @@ public class CFField
 	extends CFMember<FieldSymbol, CFFieldFlags>
 {
 	/** The constant value of the field. */
-	private volatile Object _constant;
+	protected final Object constantvalue;
 	
 	/**
 	 * Initializes the interpreted method.
 	 *
 	 * @param __owner The class which owns this method.
 	 * @param __nat The name and type of the field.
-	 * @throws NullPointerException On null arguments.
+	 * @param __fl The flags the field uses.
+	 * @param __cv The constant value of the field.
+	 * @throws NullPointerException On null arguments, except for {@code __cv}.
 	 * @since 2016/03/01
 	 */
-	public CFField(CFClass __owner, CFMemberKey<FieldSymbol> __nat)
+	CFField(CFClass __owner, CFMemberKey<FieldSymbol> __nat, CFFieldFlags __fl,
+		Object __cv)
 		throws NullPointerException
 	{
-		super(__owner, FieldSymbol.class, __nat, CFFieldFlags.class);
+		super(__owner, FieldSymbol.class, __nat, CFFieldFlags.class, __fl);
+		
+		// {@squirreljme.error IN2q A field cannot have a constant value which
+		// is not of the standard boxed and fixed immutable types. (the class
+		// of the object attempted to be used)}
+		if (__cv != null)
+			if (!(__cv instanceof Boolean || __cv instanceof Byte ||
+				__cv instanceof Short || __cv instanceof Character ||
+				__cv instanceof Integer || __cv instanceof Long ||
+				__cv instanceof Float || __cv instanceof Double ||
+				__cv instanceof String))
+				throw new ClassCastException(String.format("IN2q %s",
+					__cv.getClass()));
+		
+		// {@squirreljme.error IN2t A field cannot be both volatile and final.
+		// (the flags the field uses)}
+		if (__fl.isFinal() && __fl.isVolatile())
+			throw new CFFormatException(String.format("IN2t %s", __fl));
+		
+		// Set
+		constantvalue = __cv;
 	}
 	
 	/**
@@ -47,76 +70,7 @@ public class CFField
 	 */
 	public Object getConstantValue()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _constant;
-		}
-	}
-	
-	/**
-	 * Sets the constant value of this field.
-	 *
-	 * @param __cv The field constant value.
-	 * @return {@code this}.
-	 * @throws ClassCastException If the constant is not a valid constant and
-	 * primitive type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/01
-	 */
-	public CFField setConstantValue(Object __cv)
-		throws ClassCastException, NullPointerException
-	{
-		// Check
-		if (__cv == null)
-			throw new NullPointerException("NARG");
-		if (!(__cv instanceof Boolean || __cv instanceof Byte ||
-			__cv instanceof Short || __cv instanceof Character ||
-			__cv instanceof Integer || __cv instanceof Long ||
-			__cv instanceof Float || __cv instanceof Double ||
-			__cv instanceof String))
-			throw new ClassCastException(String.format("IN2q %s",
-				__cv.getClass()));
-		
-		// Lock
-		synchronized (lock)
-		{
-			// Set
-			_constant = __cv;
-		}
-		
-		// Self
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/20
-	 */
-	@Override
-	public CFField setFlags(CFFieldFlags __fl)
-		throws CFFormatException, NullPointerException
-	{
-		// Check
-		if (__fl == null)
-			throw new NullPointerException("NARG");
-		
-		// Get class flags
-		CFClassFlags cl = inclass.getFlags();
-		
-		// If an interface
-		if (cl.isInterface())
-		{
-			// Must have these flags set and some not set
-			if ((!__fl.isPublic() || !__fl.isStatic() || !__fl.isFinal()) ||
-				__fl.isProtected() || __fl.isPrivate() || __fl.isVolatile() ||
-				__fl.isTransient() || __fl.isEnum())
-				throw new CFFormatException(String.format("IN1c %s %s",
-						__fl, cl));
-		}
-		
-		// Continue with super call
-		return (CFField)super.setFlags(__fl);
+		return constanvalue;
 	}
 }
 

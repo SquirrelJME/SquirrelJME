@@ -26,9 +26,6 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
 public abstract class CFMember<S extends MemberTypeSymbol,
 	F extends CFMemberFlags>
 {
-	/** Internal lock. */
-	Object lock;	
-	
 	/** The class this member is in. */
 	protected final CFClass inclass;
 	
@@ -38,11 +35,8 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	/** The type that the symbol must be. */
 	protected final Class<S> symboltype;
 	
-	/** The class which flags must be. */
-	protected final Class<F> flagcast;
-	
 	/** Flags used for the member. */
-	private volatile F _flags;
+	protected final F flags;
 	
 	/**
 	 * Initializes the interpreted member.
@@ -51,18 +45,19 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	 * @param __st The descriptor symbol type.
 	 * @param __nat The name and type of the member.
 	 * @param __fcl The type of class flags must be.
+	 * @param __fl The member flags.
 	 * @throws ClassCastException If the {@code __type} is not a sub-class of
 	 * {@code __st}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/17
 	 */
 	CFMember(CFClass __owner, Class<S> __st, CFMemberKey<S> __nat,
-		Class<F> __fcl)
+		Class<F> __fcl, F __fl)
 		throws ClassCastException, NullPointerException
 	{
 		// Check
 		if (__owner == null || __st == null || __nat == null ||
-			__fcl == null)
+			__fcl == null || __fl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -71,7 +66,7 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 		symboltype = __st;
 		nameandtype = __nat;
 		symboltype.cast(nameandtype.getValue());
-		flagcast = __fcl;
+		flags = __fcl.cast(__fl);
 	}
 	
 	/**
@@ -84,17 +79,7 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	public final F getFlags()
 		throws IllegalStateException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// If not set, that is bad
-			F rv = _flags;
-			if (rv == null)
-				throw new IllegalStateException("IN14");
-			
-			// Return them
-			return rv;
-		}
+		return flags;
 	}
 	
 	/**
@@ -117,43 +102,6 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	public final CFMemberKey<S> nameAndType()
 	{
 		return nameandtype;
-	}
-	
-	/**
-	 * Returns the owning class.
-	 *
-	 * @return The class which owns this.
-	 * @since 2016/03/17
-	 */
-	public final CFClass outerClass()
-	{
-		return inclass;
-	}
-	
-	/**
-	 * Sets the flags for this member.
-	 *
-	 * @param __fl The flags to set.
-	 * @return {@code this}.
-	 * @throws ClassCastException If the input flags are of the wrong type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/20
-	 */
-	public CFMember<S, F> setFlags(F __fl)
-		throws ClassCastException, NullPointerException
-	{
-		// Check
-		if (__fl == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (lock)
-		{
-			_flags = flagcast.cast(__fl);
-		}
-		
-		// Self
-		return this;
 	}
 	
 	/**
