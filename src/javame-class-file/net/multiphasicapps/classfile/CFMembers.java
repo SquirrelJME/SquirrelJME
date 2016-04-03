@@ -71,11 +71,11 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 			CFMemberKey<S> k = e.getKey();
 			E v = e.getValue();
 			
-			// {@squirreljme.error IN2z Attempt to add a member to the mapping
+			// {@squirreljme.error CF0v Attempt to add a member to the mapping
 			// where the specified key does not match the mapping of the
 			// member. (The mapping key; The value key)}
 			if (!v.nameAndType().equals(k))
-				throw new IllegalArgumentException(String.format("IN2z %s %s",
+				throw new IllegalArgumentException(String.format("CF0v %s %s",
 					k, v.nameAndType()));
 			
 			// Put it in

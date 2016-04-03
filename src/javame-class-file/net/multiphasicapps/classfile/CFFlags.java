@@ -64,8 +64,11 @@ public abstract class CFFlags<F extends CFBitFlag>
 		int rem = bits;
 		for (F f : all)
 			rem &= ~f.mask();
+		
+		// {@squirreljme.error CF0t The bit field for flags contains set flags
+		// for those that are not known. (The input bits; The remaining bits)}
 		if (rem != 0)
-			throw new CFFormatException(String.format("IN0a %x %x", bits,
+			throw new CFFormatException(String.format("CF0t %x %x", bits,
 				rem));
 	}
 	

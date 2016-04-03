@@ -58,21 +58,21 @@ public final class CFMethod
 		// Class initializer flags are ignored for the most part
 		if (!isClassInitializer())
 		{
-			// {@squirreljme.error IN1b An abstract method cannot be {@code
+			// {@squirreljme.error CF0w An abstract method cannot be {@code
 			// private}, {@code static}, {@code final}, {@code synchronized},
 			// {@code native}, or {@code strict}. (The method flags)}
 			if (__fl.isAbstract())
 				if (__fl.isPrivate() || __fl.isStatic() || __fl.isFinal() ||
 					__fl.isSynchronized() || __fl.isNative() ||
 					__fl.isStrict())
-					throw new CFFormatException(String.format("IN1b %s",
+					throw new CFFormatException(String.format("CF0w %s",
 						__fl));
 		}
 		
-		// {@squirreljme.error IN2w Non-abstract and non-native methods must
+		// {@squirreljme.error CF0x Non-abstract and non-native methods must
 		// have a code attribute.}
 		if (codeattribute == null && (__fl.isAbstract() || __fl.isNative()))
-			throw new CFFormatException("IN2w");
+			throw new CFFormatException("CF0x");
 	}
 	
 	/**

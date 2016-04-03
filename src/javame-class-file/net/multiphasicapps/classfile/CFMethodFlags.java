@@ -31,15 +31,19 @@ public final class CFMethodFlags
 	{
 		super(__b, CFMethodFlag.class, CFMethodFlag.allFlags());
 		
-		// Native is just not supported by this virtual machine
+		// {@squirreljme.error CF0z Native methods are not supported in Java ME
+		// and as such, methods must not be {@code native}.}
 		if (isNative())
-			throw new CFFormatException("IN18");
+			throw new CFFormatException("CF0z");
 		
-		// If this method is abstract then other flags cannot be set
+		// {@squirreljme.error CF10 An {@code abstract} method cannot be
+		// {@code private}, {@code static}, {@code final},
+		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
+		// method flags)}
 		if (isAbstract())
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
-				throw new CFFormatException(String.format("IN17 %s", this));
+				throw new CFFormatException(String.format("CF10 %s", this));
 	}
 	
 	/**

@@ -40,8 +40,11 @@ public abstract class CFMemberFlags<F extends CFMemberFlag>
 		int q = (isPublic() ? 1 : 0);
 		q += (isProtected() ? 1 : 0);
 		q += (isPrivate() ? 1 : 0);
+		
+		// {@squirreljme.error CF0u A member must have zero or exactly one
+		// access modifier. (The member flags)}
 		if (q > 1)
-			throw new CFFormatException(String.format("IN15 %s", this));
+			throw new CFFormatException(String.format("CF0u %s", this));
 	}
 	
 	/**

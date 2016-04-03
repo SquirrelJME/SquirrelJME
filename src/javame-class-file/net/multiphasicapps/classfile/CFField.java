@@ -39,7 +39,7 @@ public class CFField
 	{
 		super(FieldSymbol.class, __nat, CFFieldFlags.class, __fl);
 		
-		// {@squirreljme.error IN2q A field cannot have a constant value which
+		// {@squirreljme.error CF0o A field cannot have a constant value which
 		// is not of the standard boxed and fixed immutable types. (the class
 		// of the object attempted to be used)}
 		if (__cv != null)
@@ -48,13 +48,13 @@ public class CFField
 				__cv instanceof Integer || __cv instanceof Long ||
 				__cv instanceof Float || __cv instanceof Double ||
 				__cv instanceof String))
-				throw new ClassCastException(String.format("IN2q %s",
+				throw new ClassCastException(String.format("CF0o %s",
 					__cv.getClass()));
 		
-		// {@squirreljme.error IN2t A field cannot be both volatile and final.
+		// {@squirreljme.error CF0p A field cannot be both volatile and final.
 		// (the flags the field uses)}
 		if (__fl.isFinal() && __fl.isVolatile())
-			throw new CFFormatException(String.format("IN2t %s", __fl));
+			throw new CFFormatException(String.format("CF0p %s", __fl));
 		
 		// Set
 		constantvalue = __cv;

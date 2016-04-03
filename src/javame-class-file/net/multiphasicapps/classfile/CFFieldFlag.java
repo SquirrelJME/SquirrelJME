@@ -70,9 +70,10 @@ public enum CFFieldFlag
 	private CFFieldFlag(int __m)
 		throws IllegalArgumentException
 	{
-		// Check
+		// {@squirreljme.error CF0q The mask used for a field flag does not
+		// contain exactly one bit. (The given mask)}
 		if (Integer.bitCount(__m) != 1)
-			throw new IllegalArgumentException(String.format("IN0b %d", __m));
+			throw new IllegalArgumentException(String.format("CF0q %d", __m));
 		
 		// Set
 		mask = __m;

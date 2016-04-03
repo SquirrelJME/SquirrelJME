@@ -279,7 +279,10 @@ public abstract class CFConstantEntry
 				// Bad symbol
 				catch (IllegalSymbolException ise)
 				{
-					throw new CFFormatException("IN0e", ise);
+					// @{squirreljme.error CF0e The descriptor which represents
+					// the name of a class is not valid. (The class name
+					// symbol)}
+					throw new CFFormatException("CF0e", ise);
 				}
 			
 			// Return it
@@ -541,7 +544,9 @@ public abstract class CFConstantEntry
 					// Bad identifier
 					catch (IllegalSymbolException ise)
 					{
-						throw new CFFormatException("IN0s", ise);
+						// {@squirreljme.error CF0f The specified symbol is
+						// not a valid identifier. (The identifier symbol)}
+						throw new CFFormatException("CF0f", ise);
 					}
 				
 				// Return it
@@ -579,7 +584,10 @@ public abstract class CFConstantEntry
 					// Not a valid symbol
 					catch (IllegalSymbolException ise)
 					{
-						throw new CFFormatException(String.format("IN0r"),
+						// {@squirreljme.error CF0g The given descriptor is
+						// neither a valid field or method descriptor. (The
+						// member type symbol)}
+						throw new CFFormatException(String.format("CF0g"),
 							ise);
 					}
 				
@@ -637,7 +645,10 @@ public abstract class CFConstantEntry
 			// Is not one
 			catch (ClassCastException cce)
 			{
-				throw new CFFormatException("IN0p", cce);
+				// {@squirreljme.error CF0h The specified symbol cannot be
+				// represented as a field because it is not a field symbol.
+				// (The current symbol)}
+				throw new CFFormatException("CF0h", cce);
 			}
 		}
 		
@@ -659,7 +670,10 @@ public abstract class CFConstantEntry
 			// Is not one
 			catch (ClassCastException cce)
 			{
-				throw new CFFormatException("IN0q", cce);
+				// {@squirreljme.error CF0i The specified symbol cannot be
+				// represented as a method because it is not a valid method
+				// symbol. (The current symbol)}
+				throw new CFFormatException("CF0i", cce);
 			}
 		}
 	}
@@ -706,7 +720,10 @@ public abstract class CFConstantEntry
 			// Malformed sequence
 			catch (UTFDataFormatException utfdfe)
 			{
-				throw new CFFormatException("IN0f", utfdfe);
+				// {@squirreljme.error CF0j The string which makes up a UTF-8
+				// constant string is not a correctly formatted modified UTF-8
+				// string.}
+				throw new CFFormatException("CF0j", utfdfe);
 			}
 		}
 		

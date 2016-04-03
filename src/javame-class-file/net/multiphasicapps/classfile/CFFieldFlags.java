@@ -30,9 +30,10 @@ public final class CFFieldFlags
 	{
 		super(__b, CFFieldFlag.class, CFFieldFlag.allFlags());
 		
-		// Cannot be final and volatile
+		// {@squirreljme.error CF0r A field cannot be both {@code final} and
+		// {@code volatile}. (The field flags).}
 		if (isFinal() && isVolatile())
-			throw new CFFormatException(String.format("IN16 %s", this));
+			throw new CFFormatException(String.format("CF0r %s", this));
 	}
 	
 	/**

@@ -114,8 +114,11 @@ public class CFConstantPool
 		
 		// Read entry count, a class cannot have zero entries in it
 		numentries = __is.readUnsignedShort();
+		
+		// {@squirreljme.errr CF0k Class has a constant pool with a negative
+		// number of entries.}
 		if (numentries <= 0)
-			throw new CFFormatException("IN0g");
+			throw new CFFormatException("CF0k");
 		
 		// Read them all
 		CFConstantEntry[] ents;
@@ -169,7 +172,9 @@ public class CFConstantPool
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
 				case TAG_INVOKEDYNAMIC:
-					throw new CFFormatException("IN0h");
+					// {@squirreljme.error CF0l {@code invokedynamic} is not
+					// supported in Java ME.}
+					throw new CFFormatException("CF0l");
 					
 					// Unknown
 				case TAG_INTEGER:
@@ -177,7 +182,9 @@ public class CFConstantPool
 				case TAG_LONG:
 				case TAG_DOUBLE:
 				default:
-					throw new CFFormatException(String.format("IN0i", tag));
+					// {@squirreljme.error CF0m The specified constant pool
+					// tag is not valid. (The illegal constant pool tag).}
+					throw new CFFormatException(String.format("CF0m", tag));
 			}
 			
 			// Set
@@ -217,7 +224,11 @@ public class CFConstantPool
 		// Is missing
 		catch (ClassCastException|NullPointerException e)
 		{
-			throw new CFFormatException(String.format("IN0j %d %s", __i,
+			// {@squirreljme.error CF0n Cannot get a constant of the specified
+			// type because it does not match the type that it was expected
+			// to be. (The index to get; The type of class it was expected to
+			// be)}
+			throw new CFFormatException(String.format("CF0n %d %s", __i,
 				__cl), e);
 		}
 	}

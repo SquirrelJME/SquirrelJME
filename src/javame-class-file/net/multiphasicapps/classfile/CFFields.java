@@ -43,13 +43,13 @@ public class CFFields
 			// If an interface
 			if (cl.isInterface())
 			{
-				// {@squirreljme.error IN1c Fields of interfaces must always
+				// {@squirreljme.error CF0s Fields of interfaces must always
 				// be {@code public static final}. (The flags for this field;
 				// The flags for this method)}
 				if ((!fl.isPublic() || !fl.isStatic() || !fl.isFinal()) ||
 					fl.isProtected() || fl.isPrivate() || fl.isVolatile() ||
 					fl.isTransient() || fl.isEnum())
-					throw new CFFormatException(String.format("IN1c %s %s",
+					throw new CFFormatException(String.format("CF0s %s %s",
 							fl, cl));
 			}
 		}

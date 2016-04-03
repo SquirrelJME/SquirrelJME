@@ -48,19 +48,19 @@ public class CFMethods
 			// If an interface
 			if (cl.isInterface())
 			{
-				// {@squirreljme.error IN19 Default members and private methods
+				// {@squirreljme.error CF11 Default members and private methods
 				// in interfaces are not supported. (The method flags;
 				// The class flags)}
 				if (fl.isPrivate() || !fl.isAbstract())
-					throw new CFFormatException(String.format("IN19 %s %s",
+					throw new CFFormatException(String.format("CF11 %s %s",
 						fl, cl));
 				
-				// {@squirreljme.error IN1a Interface methods cannot be
+				// {@squirreljme.error CF12 Interface methods cannot be
 				// {@code protected}, {@code final}, {@code synchronized}, or
 				// {@code native}. (The method flags; The class flags)}
 				if (fl.isProtected() || fl.isFinal() ||
 					fl.isSynchronized() || fl.isNative())
-					throw new CFFormatException(String.format("IN1a %s %s",
+					throw new CFFormatException(String.format("CF12 %s %s",
 						fl, cl));
 			}
 		}

@@ -79,9 +79,10 @@ public enum CFMethodFlag
 	private CFMethodFlag(int __m)
 		throws IllegalArgumentException
 	{
-		// Check
+		// {@squirreljme.error CF0y The method flag has a mask which does not
+		// have exactly one bit. (The bit mask)}
 		if (Integer.bitCount(__m) != 1)
-			throw new IllegalArgumentException(String.format("IN0b %d", __m));
+			throw new IllegalArgumentException(String.format("CF0y %d", __m));
 		
 		// Set
 		mask = __m;
