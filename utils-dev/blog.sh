@@ -45,7 +45,7 @@ __nowtime="$__nowyear$__nowmont$__nowdayy"
 __htmtime="$__nowyear\/$__nowmont\/$__nowdayy"
 #__nowfile="$__exedir/../chm/blog/$__nowtime.htm"
 __sublet="$__nowyear/$__nowmont/$__nowdayy.mkd"
-__nowfile="$__exedir/../dev-notes/$__sublet"
+__nowfile="$__exedir/../src/developer-notes/$__myname/$__sublet"
 
 # Create if missing
 if [ ! -f "$__nowfile" ]
