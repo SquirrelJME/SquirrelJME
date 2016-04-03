@@ -26,21 +26,20 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/16
  */
-public class JVMClass
-	implements JVMComponentType
+public class CFClass
 {
 	/**
 	 * Initializes the base class information.
 	 *
-	 * @param __eng The owning engine.
+	 * @param __cf The parser which loaded class file data.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/16
 	 */
-	protected JVMClass(CFClassParser __cf)
+	protected CFClass(CFClassParser __cf)
 		throws NullPointerException
 	{
 		// Check
-		if (__eng == null)
+		if (__cf == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
@@ -64,7 +63,7 @@ public class JVMClass
 	 * @throws IllegalStateException If flags are not set.
 	 * @since 2016/03/16
 	 */
-	public final JVMClassFlags flags()
+	public final CFClassFlags flags()
 		throws IllegalStateException
 	{
 		throw new Error("TODO");
@@ -76,7 +75,7 @@ public class JVMClass
 	 * @return The class interface set.
 	 * @since 2016/03/19
 	 */
-	public final JVMClassInterfaces interfaces()
+	public final CFClassInterfaces interfaces()
 	{
 		throw new Error("TODO");
 	}

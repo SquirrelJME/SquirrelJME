@@ -21,8 +21,8 @@ import net.multiphasicapps.collections.MissingCollections;
  *
  * @since 2016/03/15
  */
-public enum JVMClassFlag
-	implements JVMBitFlag
+public enum CFClassFlag
+	implements CFBitFlag
 {
 	/** Public access. */
 	PUBLIC(0x0001),
@@ -52,7 +52,7 @@ public enum JVMClassFlag
 	;
 	
 	/** All available flags. */
-	private static volatile Reference<List<JVMClassFlag>> _FLAGS;
+	private static volatile Reference<List<CFClassFlag>> _FLAGS;
 	
 	/** The flag mask. */
 	public final int mask;
@@ -64,7 +64,7 @@ public enum JVMClassFlag
 	 * @throws IllegalArgumentException If not exactly a single bit is set.
 	 * @since 2016/03/15
 	 */
-	private JVMClassFlag(int __m)
+	private CFClassFlag(int __m)
 		throws IllegalArgumentException
 	{
 		// Check
@@ -91,17 +91,17 @@ public enum JVMClassFlag
 	 * @return The available class flags.
 	 * @since 2016/03/19
 	 */
-	public static List<JVMClassFlag> allFlags()
+	public static List<CFClassFlag> allFlags()
 	{
 		// Get reference
-		Reference<List<JVMClassFlag>> ref = _FLAGS;
-		List<JVMClassFlag> rv;
+		Reference<List<CFClassFlag>> ref = _FLAGS;
+		List<CFClassFlag> rv;
 		
 		// Check it
 		if (ref == null || null == (rv = ref.get()))
 			_FLAGS = new WeakReference<>((rv = MissingCollections.
-				<JVMClassFlag>unmodifiableList(
-					Arrays.<JVMClassFlag>asList(values()))));
+				<CFClassFlag>unmodifiableList(
+					Arrays.<CFClassFlag>asList(values()))));
 		
 		// Return it
 		return rv;

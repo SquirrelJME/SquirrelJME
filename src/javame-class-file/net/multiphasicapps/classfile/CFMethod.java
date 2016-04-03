@@ -13,7 +13,6 @@ package net.multiphasicapps.classfile;
 import java.util.Set;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.classfile.program.VMCProgram;
 
 /**
  * This represents an interpreted method within a class.
@@ -23,18 +22,11 @@ import net.multiphasicapps.classfile.program.VMCProgram;
 public class CFMethod
 	extends CFMember<MethodSymbol, CFMethodFlags>
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();	
-	
 	/** Is this a constructor? */
 	protected final boolean isconstructor;	
 	
 	/** Is this a class initialization method? */
 	protected final boolean isclassinit;
-	
-	/** The current method program. */
-	private volatile VMCProgram _program;
 	
 	/**
 	 * Initializes the interpreted method.
@@ -44,7 +36,7 @@ public class CFMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public CFMethod(JVMClass __owner, CFMemberKey<MethodSymbol> __nat)
+	public CFMethod(CFClass __owner, CFMemberKey<MethodSymbol> __nat)
 		throws NullPointerException
 	{
 		super(__owner, MethodSymbol.class, __nat, CFMethodFlags.class);
@@ -52,21 +44,6 @@ public class CFMethod
 		// Is this a constructor?
 		isconstructor = name().equals("<init>");
 		isclassinit = name().equals("<clinit>");
-	}
-	
-	/**
-	 * Returns the program which describes what this method performs.
-	 *
-	 * @return The method's program.
-	 * @since 2016/03/31
-	 */
-	public VMCProgram getProgram()
-	{
-		// Lock
-		synchronized (lock)
-		{
-			return _program;
-		}
 	}
 	
 	/**
@@ -104,7 +81,7 @@ public class CFMethod
 			throw new NullPointerException("NARG");
 		
 		// Get class flags
-		JVMClassFlags cl = inclass.getFlags();
+		CFClassFlags cl = inclass.getFlags();
 		
 		// Class initializer flags are ignored for the most part
 		if (!isClassInitializer())

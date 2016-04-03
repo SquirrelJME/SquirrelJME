@@ -35,7 +35,7 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 	final Object lock;
 	
 	/** The owning class. */
-	protected final JVMClass owner;	
+	protected final CFClass owner;	
 	
 	/** The type the sub-class must be. */
 	protected final Class<E> cast;
@@ -52,7 +52,7 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	public CFMembers(JVMClass __own, Class<E> __cl)
+	public CFMembers(CFClass __own, Class<E> __cl)
 		throws NullPointerException
 	{
 		// Check

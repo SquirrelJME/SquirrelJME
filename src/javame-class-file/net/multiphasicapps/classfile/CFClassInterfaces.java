@@ -23,14 +23,14 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  *
  * @since 2016/03/19
  */
-public class JVMClassInterfaces
+public class CFClassInterfaces
 	extends AbstractSet<ClassNameSymbol>
 {
 	/** Internal lock. */
 	Object lock;
 	
 	/** The class which owns this interface set. */
-	protected final JVMClass owner;
+	protected final CFClass owner;
 	
 	/** Internal interface storage list. */
 	private final Set<ClassNameSymbol> _store =
@@ -43,7 +43,7 @@ public class JVMClassInterfaces
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	JVMClassInterfaces(JVMClass __owner)
+	CFClassInterfaces(CFClass __owner)
 		throws NullPointerException
 	{
 		// Check

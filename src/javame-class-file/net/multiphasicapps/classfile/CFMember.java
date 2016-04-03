@@ -30,7 +30,7 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	Object lock;	
 	
 	/** The class this member is in. */
-	protected final JVMClass inclass;
+	protected final CFClass inclass;
 	
 	/** Member name and type. */
 	protected final CFMemberKey<S> nameandtype;
@@ -56,7 +56,7 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/17
 	 */
-	CFMember(JVMClass __owner, Class<S> __st, CFMemberKey<S> __nat,
+	CFMember(CFClass __owner, Class<S> __st, CFMemberKey<S> __nat,
 		Class<F> __fcl)
 		throws ClassCastException, NullPointerException
 	{
@@ -125,7 +125,7 @@ public abstract class CFMember<S extends MemberTypeSymbol,
 	 * @return The class which owns this.
 	 * @since 2016/03/17
 	 */
-	public final JVMClass outerClass()
+	public final CFClass outerClass()
 	{
 		return inclass;
 	}

@@ -22,7 +22,7 @@ import net.multiphasicapps.collections.MissingCollections;
  * @since 2016/03/19
  */
 public enum CFFieldFlag
-	implements JVMBitFlag, CFMemberFlag
+	implements CFBitFlag, CFMemberFlag
 {
 	/** Public field. */
 	PUBLIC(0x0001),

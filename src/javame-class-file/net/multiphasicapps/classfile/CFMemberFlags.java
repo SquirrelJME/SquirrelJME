@@ -19,7 +19,7 @@ import java.util.List;
  * @since 2016/03/19
  */
 public abstract class CFMemberFlags<F extends CFMemberFlag>
-	extends JVMFlags<F>
+	extends CFFlags<F>
 {
 	/**
 	 * Initializes the member flags.

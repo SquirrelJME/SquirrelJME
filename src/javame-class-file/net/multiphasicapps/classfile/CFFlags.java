@@ -24,7 +24,7 @@ import java.util.Set;
  * @param <F> The type of flags to use.
  * @since 2016/03/19
  */
-public abstract class JVMFlags<F extends JVMBitFlag>
+public abstract class CFFlags<F extends CFBitFlag>
 	extends AbstractSet<F>
 {
 	/** All available flags. */
@@ -48,7 +48,7 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/19
 	 */
-	public JVMFlags(int __b, Class<F> __type, List<F> __all)
+	public CFFlags(int __b, Class<F> __type, List<F> __all)
 		throws CFFormatException, NullPointerException
 	{
 		// Check
@@ -78,7 +78,7 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 	{
 		// If this is a flag then check the bits on it
 		if (type.isInstance(__o))
-			return (0 != (bits & ((JVMBitFlag)__o).mask()));
+			return (0 != (bits & ((CFBitFlag)__o).mask()));
 		
 		// Use super call instead (performs iteration)
 		return super.contains(__o);
@@ -93,7 +93,7 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 	 * is null.
 	 * @since 2016/03/19
 	 */
-	public boolean containsAll(JVMBitFlag... __fs)
+	public boolean containsAll(CFBitFlag... __fs)
 		throws NullPointerException
 	{
 		// Check
@@ -101,7 +101,7 @@ public abstract class JVMFlags<F extends JVMBitFlag>
 			throw new NullPointerException("NARG");
 		
 		// Go through it
-		for (JVMBitFlag f : __fs)
+		for (CFBitFlag f : __fs)
 		{
 			// Crash on null
 			if (f == null)

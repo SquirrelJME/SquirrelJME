@@ -27,7 +27,7 @@ public class CFMethods
 	 * @param __own The owning class.
 	 * @since 2016/03/20
 	 */
-	public CFMethods(JVMClass __own)
+	public CFMethods(CFClass __own)
 	{
 		super(__own, CFMethod.class);
 	}

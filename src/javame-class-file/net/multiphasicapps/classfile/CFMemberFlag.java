@@ -16,7 +16,7 @@ package net.multiphasicapps.classfile;
  * @since 2016/03/19
  */
 public interface CFMemberFlag
-	extends JVMBitFlag
+	extends CFBitFlag
 {
 }
 

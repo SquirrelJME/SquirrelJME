@@ -27,7 +27,7 @@ public class CFFields
 	 * @param __own The owning class.
 	 * @since 2016/03/20
 	 */
-	public CFFields(JVMClass __own)
+	public CFFields(CFClass __own)
 	{
 		super(__own, CFField.class);
 	}

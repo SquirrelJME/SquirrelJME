@@ -15,7 +15,7 @@ package net.multiphasicapps.classfile;
  *
  * @since 2016/03/15
  */
-public interface JVMBitFlag
+public interface CFBitFlag
 {
 	/**
 	 * Returns the mask of the flag.

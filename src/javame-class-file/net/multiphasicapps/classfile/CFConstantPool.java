@@ -85,7 +85,7 @@ public class CFConstantPool
 		18;
 	
 	/** The class which owns the constant pool. */
-	protected final JVMClassFile owner;	
+	protected final CFClassParser owner;	
 	
 	/** Number of entries in the pool. */
 	protected final int numentries;
@@ -102,7 +102,7 @@ public class CFConstantPool
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/13
 	 */
-	CFConstantPool(JVMClassFile __cl, DataInputStream __is)
+	CFConstantPool(CFClassParser __cl, DataInputStream __is)
 		throws CFFormatException, IOException, NullPointerException
 	{
 		// Check

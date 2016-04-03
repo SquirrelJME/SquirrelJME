@@ -33,7 +33,7 @@ public class CFField
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public CFField(JVMClass __owner, CFMemberKey<FieldSymbol> __nat)
+	public CFField(CFClass __owner, CFMemberKey<FieldSymbol> __nat)
 		throws NullPointerException
 	{
 		super(__owner, FieldSymbol.class, __nat, CFFieldFlags.class);
@@ -102,7 +102,7 @@ public class CFField
 			throw new NullPointerException("NARG");
 		
 		// Get class flags
-		JVMClassFlags cl = inclass.getFlags();
+		CFClassFlags cl = inclass.getFlags();
 		
 		// If an interface
 		if (cl.isInterface())

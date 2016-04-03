@@ -22,7 +22,7 @@ import net.multiphasicapps.collections.MissingCollections;
  * @since 2016/03/19
  */
 public enum CFMethodFlag
-	implements JVMBitFlag, CFMemberFlag
+	implements CFBitFlag, CFMemberFlag
 {
 	/** Public method. */
 	PUBLIC(0x0001),

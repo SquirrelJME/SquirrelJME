@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
@@ -38,6 +39,10 @@ public class CFClassParser
 	/** The class file magic number. */
 	public static final int MAGIC_NUMBER =
 		0xCAFEBABE;
+	
+	/** Lock to prevent doing double the work. */
+	protected final Object lock =
+		new Object();
 	
 	/** Fields which were parsed. */
 	final Map<CFMemberKey<FieldSymbol>, CFField> _fields =
@@ -136,7 +141,7 @@ public class CFClassParser
 		_constantpool = constantpool = new CFConstantPool(this, das);
 		
 		// Read class access flags
-		_flags = new JVMClassFlags(das.readUnsignedShort());
+		_flags = new CFClassFlags(das.readUnsignedShort());
 		
 		// Set current class name
 		_thisname = constantpool.<CFConstantEntry.ClassName>getAs(
@@ -158,7 +163,7 @@ public class CFClassParser
 		// interface)}
 		int nints = das.readUnsignedShort();
 		Set<BinaryNameSymbol> ints = _interfaces;
-		ClassNameSymbol ix;
+		BinaryNameSymbol ix;
 		for (int i = 0; i < nints; i++)
 			if (!ints.add((ix = constantpool.<CFConstantEntry.ClassName>getAs(
 				das.readUnsignedShort(), CFConstantEntry.ClassName.class).
@@ -284,7 +289,7 @@ public class CFClassParser
 					// Only care about constants
 				case "ConstantValue":
 					try (DataInputStream cdis = new DataInputStream(
-						new JVMCountLimitInputStream(__das,
+						new BufferAreaInputStream(__das,
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
 						rv.setConstantValue(_constantpool.
@@ -346,7 +351,7 @@ public class CFClassParser
 					// Only care about code
 				case "Code":
 					try (DataInputStream cdis = new DataInputStream(
-						new JVMCountLimitInputStream(__das,
+						new BufferAreaInputStream(__das,
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
 						// Setup code parse

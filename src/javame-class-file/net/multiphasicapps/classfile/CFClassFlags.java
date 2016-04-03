@@ -15,8 +15,8 @@ package net.multiphasicapps.classfile;
  *
  * @since 2016/03/19
  */
-public final class JVMClassFlags
-	extends JVMFlags<JVMClassFlag>
+public final class CFClassFlags
+	extends CFFlags<CFClassFlag>
 {
 	/**
 	 * Initializes the class flags.
@@ -25,10 +25,10 @@ public final class JVMClassFlags
 	 * @throws CFFormatException If the given flag combination is not legal.
 	 * @since 2016/03/19
 	 */
-	public JVMClassFlags(int __fl)
+	public CFClassFlags(int __fl)
 		throws CFFormatException
 	{
-		super(__fl, JVMClassFlag.class, JVMClassFlag.allFlags());
+		super(__fl, CFClassFlag.class, CFClassFlag.allFlags());
 		
 		// Interface?
 		if (isInterface())
@@ -67,7 +67,7 @@ public final class JVMClassFlags
 	 */
 	public final boolean isAbstract()
 	{
-		return contains(JVMClassFlag.ABSTRACT);
+		return contains(CFClassFlag.ABSTRACT);
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public final class JVMClassFlags
 	 */
 	public final boolean isAnnotation()
 	{
-		return contains(JVMClassFlag.ANNOTATION);
+		return contains(CFClassFlag.ANNOTATION);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public final class JVMClassFlags
 	 */
 	public final boolean isEnum()
 	{
-		return contains(JVMClassFlag.ENUM);
+		return contains(CFClassFlag.ENUM);
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public final class JVMClassFlags
 	 */
 	public final boolean isFinal()
 	{
-		return contains(JVMClassFlag.FINAL);
+		return contains(CFClassFlag.FINAL);
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public final class JVMClassFlags
 	 */
 	public final boolean isInterface()
 	{
-		return contains(JVMClassFlag.INTERFACE);
+		return contains(CFClassFlag.INTERFACE);
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public final class JVMClassFlags
 	 */
 	public final boolean isPublic()
 	{
-		return contains(JVMClassFlag.PUBLIC);
+		return contains(CFClassFlag.PUBLIC);
 	}
 	
 	/**
@@ -144,7 +144,7 @@ public final class JVMClassFlags
 	 */
 	public final boolean isSpecialInvokeSpecial()
 	{
-		return contains(JVMClassFlag.SUPER);
+		return contains(CFClassFlag.SUPER);
 	}
 }
 
