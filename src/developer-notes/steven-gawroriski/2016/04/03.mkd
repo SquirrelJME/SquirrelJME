@@ -21,3 +21,10 @@ Now that the class file code is refactored (except for the interface bits but
 I can get to that later on), the next goal is the program parser and handler
 which will act as the basis for the compiler and the interpreter.
 
+## 14:50
+
+I wonder if LWUIT could be layered on top, this assumes that it is provided by
+Oracle as a library on top of vendor provided LCDUI and such. Looking at the
+classes in the binary, it looks like they can put it on top of the canvas and
+the game canvas. I would have to test this out in the future.
+
