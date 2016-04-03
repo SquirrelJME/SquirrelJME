@@ -1,5 +1,7 @@
 # Error Codes
 
+## THIS FILE IS DEPRECATED AND WILL BE REPLACED BY AN AUTO-GENERATED VERSION
+
 Error codes consist of ASCII characters and are limited to 4 characters. The
 first two characters are the prefix, followed by a base-36 index starting from
 `00` and ending at `zz` indicating the sub-type of the message. The first two
@@ -423,7 +425,7 @@ These codes do not have a index meaning and are meant to be short.
  * `IN2q` -- Attempted to set the constant value of a class, however it is not
    of a valid constant type.
    * The class type of the constant value.
- * `IN2y`
+ * `IN30`
 
 ## `net.multiphasicapps.interpreter.local`
 

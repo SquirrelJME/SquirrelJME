@@ -38,29 +38,52 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 	/** The type the sub-class must be. */
 	protected final Class<E> cast;
 	
-	/** Internal storage. */
-	private final Map<CFMemberKey<S>, E> _store;
+	/** The member mappings. */
+	protected final Map<CFMemberKey<S>, E> store;
 	
 	/**
 	 * Initializes the member list.
 	 *
 	 * @param __own The owning class to use.
 	 * @param __cl The type the added elements must be.
+	 * @param __s The mapping to source values from.
+	 * @throws IllegalArgumentException If the mapping has a key which does not
+	 * match its value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/20
 	 */
-	public CFMembers(CFClass __own, Class<E> __cl)
-		throws NullPointerException
+	public CFMembers(CFClass __own, Class<E> __cl, Map<CFMemberKey<S>, E> __s)
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
-		if (__own == null || __cl == null)
+		if (__own == null || __cl == null || __s == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		owner = __own;
 		cast = __cl;
 		
-		throw new Error("TODO");
+		// Setup storage
+		Map<CFMemberKey<S>, E> ss = new LinkedHashMap<>();
+		for (Map.Entry<CFMemberKey<S>, E> e : __s.entrySet())
+		{
+			// Read values
+			CFMemberKey<S> k = e.getKey();
+			E v = e.getValue();
+			
+			// {@squirreljme.error IN2z Attempt to add a member to the mapping
+			// where the specified key does not match the mapping of the
+			// member. (The mapping key; The value key)}
+			if (!v.nameAndType().equals(k))
+				throw new IllegalArgumentException(String.format("IN2z %s %s",
+					k, v.nameAndType()));
+			
+			// Put it in
+			ss.put(k, v);
+		}
+		
+		// Lock
+		store = MissingCollections.<CFMemberKey<S>, E>unmodifiableMap(ss);
 	}
 	
 	/**
@@ -70,7 +93,7 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 	@Override
 	public final E get(Object __k)
 	{
-		throw new Error("TODO");
+		return store.get(__k);
 	}
 	
 	/**
@@ -94,27 +117,7 @@ public abstract class CFMembers<S extends MemberTypeSymbol,
 	@Override
 	public final Set<Map.Entry<CFMemberKey<S>, E>> entrySet()
 	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Adds the given member to the mapping.
-	 *
-	 * @param __e The member to add to the mapping.
-	 * @return The old member this replaced, will be {@code null} if nothing
-	 * was replaced.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/20
-	 */
-	public final E put(E __e)
-		throws NullPointerException
-	{
-		// Check
-		if (__e == null)
-			throw new NullPointerException("NARG");
-		
-		// Place it in
-		return put(__e.nameAndType(), __e);
+		return store.entrySet();
 	}
 }
 

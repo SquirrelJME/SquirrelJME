@@ -14,7 +14,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
@@ -26,23 +28,75 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/16
  */
-public class CFClass
+public final class CFClass
 {
+	/** The class flags. */
+	protected final CFClassFlags flags;
+	
+	/** The interfaces of a class. */
+	protected final CFClassInterfaces interfaces;	
+	
+	/** Field. */
+	protected final CFFields fields;
+	
+	/** Methods. */
+	protected final CFMethods methods;
+	
+	/** The constant pool of the class. */
+	protected final CFConstantPool constantpool;
+	
+	/** The version of this class. */
+	protected final CFClassVersion version;
+	
+	/** The name of this class. */
+	protected final BinaryNameSymbol thisname;
+	
+	/** The name of the super class. */
+	protected final BinaryNameSymbol supername;
+	
 	/**
 	 * Initializes the base class information.
 	 *
 	 * @param __cf The parser which loaded class file data.
+	 * @throws CFFormatException If final checks for a class are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/16
 	 */
-	protected CFClass(CFClassParser __cf)
-		throws NullPointerException
+	CFClass(CFClassParser __cf)
+		throws CFFormatException, NullPointerException
 	{
 		// Check
 		if (__cf == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		flags = Objects.<CFClassFlags>requireNonNull(__cf._flags);
+		interfaces = new CFClassInterfaces(__cf._interfaces);
+		fields = new CFFields(this, __cf._fields);
+		methods = new CFMethods(this, __cf._methods);
+		constantpool = Objects.<CFConstantPool>requireNonNull(
+			__cf._constantpool);
+		version = Objects.<CFClassVersion>requireNonNull(__cf._version);
+		thisname = Objects.<BinaryNameSymbol>requireNonNull(__cf._thisname);
+		supername = Objects.<BinaryNameSymbol>requireNonNull(__cf._supername);
+		
+		// {@squirreljme.error IN30 If this is the object class and it has a
+		// super class, or this is not the object class and there is no super
+		// class set. (This class name; The super class name)}
+		if (thisname.equals("java/lang/Object") != (supername == null))
+			throw new CFFormatException(String.format("IN30 %s %s", thisname,
+				supername));
+	}
+	
+	/**
+	 * Returns the constant pool which this class uses.
+	 *
+	 * @return The constant pool of this class.
+	 * @sincer 2016/04/03
+	 */
+	public final CFConstantPool constantPool()
+	{
+		return constantpool;
 	}
 	
 	/**
@@ -53,7 +107,7 @@ public class CFClass
 	 */
 	public final CFFields fields()
 	{
-		throw new Error("TODO");
+		return fields;
 	}
 	
 	/**
@@ -66,7 +120,7 @@ public class CFClass
 	public final CFClassFlags flags()
 		throws IllegalStateException
 	{
-		throw new Error("TODO");
+		return flags;
 	}
 	
 	/**
@@ -77,7 +131,7 @@ public class CFClass
 	 */
 	public final CFClassInterfaces interfaces()
 	{
-		throw new Error("TODO");
+		return interfaces;
 	}
 	
 	/**
@@ -88,33 +142,40 @@ public class CFClass
 	 */
 	public final CFMethods methods()
 	{
-		throw new Error("TODO");
+		return methods;
 	}
 	
 	/**
 	 * Returns the super class name of this class.
 	 *
 	 * @return The super class this extends.
-	 * @throws IllegalStateException If the super class name was not set.
 	 * @since 2016/03/19
 	 */
-	public final ClassNameSymbol superName()
-		throws IllegalStateException
+	public final BinaryNameSymbol superName()
 	{
-		throw new Error("TODO");
+		return supername;
 	}
 	
 	/**
 	 * Returns the name of the current class.
 	 *
 	 * @return The current class name.
-	 * @throws IllegalStateException On null arguments.
 	 * @since 2016/03/19
 	 */
-	public final ClassNameSymbol thisName()
-		throws IllegalStateException
+	public final BinaryNameSymbol thisName()
 	{
-		throw new Error("TODO");
+		return thisname;
+	}
+	
+	/**
+	 * Returns the version of this class.
+	 *
+	 * @return The class version.
+	 * @since 2016/04/03
+	 */
+	public final CFClassVersion version()
+	{
+		return version;
 	}
 }
 

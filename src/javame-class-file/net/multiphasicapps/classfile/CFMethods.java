@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import java.util.Map;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
@@ -25,11 +26,13 @@ public class CFMethods
 	 * Initializes the method mappings.
 	 *
 	 * @param __own The owning class.
+	 * @param __s The methods to source from.
 	 * @since 2016/03/20
 	 */
-	public CFMethods(CFClass __own)
+	public CFMethods(CFClass __own,
+		Map<CFMemberKey<MethodSymbol>, CFMethod> __s)
 	{
-		super(__own, CFMethod.class);
+		super(__own, CFMethod.class, __s);
 		
 		throw new Error("TODO");
 		/*

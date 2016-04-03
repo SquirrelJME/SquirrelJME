@@ -24,7 +24,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
  *
  * @since 2016/03/19
  */
-public class CFClassInterfaces
+public final class CFClassInterfaces
 	extends AbstractSet<BinaryNameSymbol>
 {
 	/**

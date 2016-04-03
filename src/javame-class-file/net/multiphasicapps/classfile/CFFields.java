@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile;
 
+import java.util.Map;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 
@@ -25,11 +26,12 @@ public class CFFields
 	 * Initializes the field mappings.
 	 *
 	 * @param __own The owning class.
+	 * @param __s The field mapping to source from.
 	 * @since 2016/03/20
 	 */
-	public CFFields(CFClass __own)
+	public CFFields(CFClass __own, Map<CFMemberKey<FieldSymbol>, CFField> __s)
 	{
-		super(__own, CFField.class);
+		super(__own, CFField.class, __s);
 		
 		throw new Error("TODO");
 		/*
