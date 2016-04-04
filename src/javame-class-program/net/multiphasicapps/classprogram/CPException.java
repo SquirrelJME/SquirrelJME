@@ -68,9 +68,10 @@ public class CPException
 		else
 			endpc = program.physicalToLogical(xe) - 1;
 		
-		// Check them all
+		// {@squirreljme.error CP04 The exception does not map to any known
+		// address. (The current exception)}
 		if (startpc < 0 || endpc < 0 || handlerpc < 0)
-			throw new CPProgramException(String.format("IN2k %s", __rx));
+			throw new CPProgramException(String.format("CP04 %s", __rx));
 	}
 	
 	/**

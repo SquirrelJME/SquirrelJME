@@ -80,10 +80,17 @@ public class CPJumpTarget
 		// Check
 		if (__prg == null || __type == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirrelme.error CP08 The target jump address is outside of the
+		// bounds of the program. (The target address)}
 		if (__addr < 0 || __addr >= __prg.size())
-			throw new CPProgramException(String.format("IN2c %d", __addr));
+			throw new CPProgramException(String.format("CP08 %d", __addr));
+		
+		// {@squirreljme.error CP09 An exceptional jump target must have the
+		// name of the thrown exception, if not an exception no binary name
+		// must be specified.}
 		if ((__type == CPJumpType.EXCEPTIONAL) != (__bn != null))
-			throw new IllegalArgumentException("IN2b");
+			throw new IllegalArgumentException("CP09");
 		
 		// Set
 		program = __prg;

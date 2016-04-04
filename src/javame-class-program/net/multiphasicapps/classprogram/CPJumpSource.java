@@ -79,6 +79,7 @@ public class CPJumpSource
 	 *
 	 * @param __prg The program containing the jump source.
 	 * @param __jt The type of jump this is.
+	 * @param __bn If an exception, this is the exception which is handled.
 	 * @param __lo The inclusive starting address of the jump.
 	 * @param __hi The inclusive ending address of the jump.
 	 * @throws IllegalArgumentException If the jump type is not exceptional
@@ -100,14 +101,25 @@ public class CPJumpSource
 		// Check
 		if (__prg == null || __jt == null)
 			throw new NullPointerException("NARG");
+			
+		// {@squirreljme.error CP05 The low address is higher than the higher
+		// address or the low or high address are outside the bounds of the
+		// program. (The low address; The high address)}
 		if (__lo < 0 || __hi < 0 || __hi < __lo || __lo >= __prg.size() ||
 			__hi >= __prg.size())
-			throw new CPProgramException(String.format("IN29 %d %d",
+			throw new CPProgramException(String.format("CP05 %d %d",
 				__lo, __hi));
+		
+		// {@squirreljme.error CP06 Non-exceptional jump sources must only
+		// have a source which consists of a single address.}
 		if (__jt != CPJumpType.EXCEPTIONAL && __lo != __hi)
-			throw new IllegalArgumentException("IN2a");
+			throw new IllegalArgumentException("CP06");
+		
+		// {@squirreljme.error CP07 A binary name must be specified with an
+		// exceptional jump source and if not an exception then one must not
+		// be specified.}
 		if ((__jt == CPJumpType.EXCEPTIONAL) != (__bn != null))
-			throw new IllegalArgumentException("IN2b");
+			throw new IllegalArgumentException("CP07");
 		
 		// Set
 		program = __prg;
