@@ -277,14 +277,14 @@ class __StackMapParser__
 			throw new CPProgramException(String.format("CP0k %d %d", nl,
 				maxlocals));
 		int i;
-		for (int i = 0; i < nl; i++)
+		for (i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
 		for (;i < maxlocals; i++)
 			next.set(i, CPVariableType.NOTHING);
 		
 		// Read in stack variables
 		int ns = maxlocals + das.readUnsignedShort();
-		for  i = maxlocals; i < ns; i++)
+		for (i = maxlocals; i < ns; i++)
 			next.set(i, __loadInfo());
 		next.setStackTop(ns);
 	}
@@ -368,14 +368,15 @@ class __StackMapParser__
 		if (nl >= maxlocals)
 			throw new CPProgramException(String.format("CP0k %d %d", nl,
 				maxlocals));
-		for (int i = 0; i < nl; i++)
+		int i = 0;
+		for (i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
 		for (;i < maxlocals; i++)
 			next.set(i, CPVariableType.NOTHING);
 		
 		// Read in stack variables
 		int ns = maxlocals + das.readUnsignedShort();
-		for (int i = maxlocals; i < ns; i++)
+		for (i = maxlocals; i < ns; i++)
 			next.set(i, __loadInfo());
 		next.setStackTop(ns);
 	}
