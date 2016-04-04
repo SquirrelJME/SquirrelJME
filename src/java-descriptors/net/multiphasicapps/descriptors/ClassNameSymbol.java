@@ -84,6 +84,47 @@ public final class ClassNameSymbol
 	{
 		this(__s, false);
 	}
+	
+	/**
+	 * Initializes a class name symbol which is derived from a compatible
+	 * symbol that can be treated as a class name.
+	 *
+	 * @param __compat The compatible symbol.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/04
+	 */
+	ClassNameSymbol(__ClassNameCompatible__ __compat)
+		throws NullPointerException
+	{
+		super(__compat.toString());
+		
+		// Is a binary name?
+		if (__compat instanceof BinaryNameSymbol)
+		{
+			// Not used
+			isarray = false;
+			isprimitive = false;
+			
+			// Pre-cache
+			_asbinary = new WeakReference<>((BinaryNameSymbol)__compat);
+		}
+		
+		// Is a field?
+		else if (__compat instanceof FieldSymbol)
+		{
+			// Could be used
+			FieldSymbol fs = (FieldSymbol)__compat;
+			isarray = fs.isArray();
+			isprimitive = (!isarray && fs.primitiveType() != null);
+			
+			// Pre-cache
+			_asfield = new WeakReference<>(fs);
+		}
+		
+		// Unknown?
+		else
+			throw new RuntimeException("WTFX");
+	}
 		
 	/**
 	 * Initializes the class name symbol.
@@ -136,7 +177,7 @@ public final class ClassNameSymbol
 		// Needs creation?
 		if (rv == null)
 			_asbinary = new WeakReference<>(
-				(rv = new BinaryNameSymbol(toString())));
+				(rv = new BinaryNameSymbol(toString(), this)));
 		
 		// Return it
 		return rv;
@@ -165,7 +206,7 @@ public final class ClassNameSymbol
 		if (rv == null)
 			_asfield = new WeakReference<>((rv = new FieldSymbol(
 				((isarray || isprimitive) ? toString() :
-					'L' + toString() + ';'))));
+					'L' + toString() + ';'), this)));
 		
 		// Return it
 		return rv;

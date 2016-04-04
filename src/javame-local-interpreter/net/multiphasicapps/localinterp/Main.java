@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.localinterp;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,6 +51,9 @@ public class Main
 			PATH_SEPARATOR = ":";
 		
 		// Big problems if it is multiple characters long
+		// {@squirreljme.error LI04 The local interpreter does not support path
+		// separators which are more than one character long. (The path
+		// separater; The property to set)}
 		if (PATH_SEPARATOR.length() != 1)
 			throw new RuntimeException(String.format("LI04 %s %s",
 				PATH_SEPARATOR, PATH_SEPARATOR_PROPERTY));
@@ -95,7 +98,8 @@ __outer_loop:
 					// Class Path
 				case "-cp":
 				case "-classpath":
-					// Only once
+					// {@squirreljme.error LI05 -classpath cannot be specified
+					// if it or -jar has already been specified.}
 					if (didcp || didjar)
 						throw new IllegalArgumentException("LI05");
 					
@@ -104,6 +108,9 @@ __outer_loop:
 					
 					// Get next
 					String cparg = hargs.pollFirst();
+					
+					// {@squirreljme.error Li06 An argument is expected to
+					// follow the -classpath option.}
 					if (cparg == null)
 						throw new IllegalArgumentException("LI06");
 					
@@ -119,15 +126,19 @@ __outer_loop:
 					
 					// JAR
 				case "-jar":
-					// Only once
+					// {@squirreljme.error LI0c -jar cannot be specified
+					// if it or -classpath has already been specified.}
 					if (didcp || didjar)
-						throw new IllegalArgumentException("LI05");
+						throw new IllegalArgumentException("LI0c");
 					
 					// Eat
 					hargs.pollFirst();
 					
 					// Get next
 					String jarf = hargs.pollFirst();
+					
+					// {@squirreljme.error Li06 An argument is expected to
+					// follow the -jar option.}
 					if (jarf == null)
 						throw new IllegalArgumentException("LI07");
 					
@@ -140,6 +151,8 @@ __outer_loop:
 				
 					// Unknown
 				default:
+					// {@squirreljme.error LI08 An unknown command line switch
+					// was specified. (The command line switch)}
 					if (cur.startsWith("-"))
 						throw new IllegalArgumentException(String.format(
 							"LI08 %s", cur));
@@ -168,7 +181,10 @@ __outer_loop:
 		else
 			mainclass = hargs.pollFirst();
 		
-		// If not specified, fail
+		// {@squirreljme.error LI0a The input JAR does not have a "Main-Class"
+		// attribute.}
+		// {@squirreljme.error LI09 No main class was specified in the
+		// program arguments.}
 		if (mainclass == null)
 			throw new IllegalArgumentException((didjar ? "LI0a" : "LI09"));
 		

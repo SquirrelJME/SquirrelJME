@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-Hairball-Name: javame-local-interpreter
+X-Hairball-UUID: f2bd90b7-8346-4374-b788-3df6429707bd
+X-Hairball-Depends: javame-cldc-full, javame-basic-interpreter,
+ zip-compression
+Main-Class: net.multiphasicapps.localinterp.Main
+LIBlet-Title: Local Interpreter
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160404
+LIBlet-Description: This is the local interpreter which uses
+  the local filesystem and provides a standard-like environment
+  which runs inside of an existing virtual machine.
+

@@ -20,10 +20,12 @@ import java.lang.ref.WeakReference;
  */
 public final class FieldSymbol
 	extends MemberTypeSymbol
+	implements __ClassNameCompatible__
 {
 	/** Maximum array size. */
 	public static final int MAX_ARRAY_DIMENSIONS =
 		255;
+	
 	/** Array dimensions, will be zero if not an array. */
 	protected final int dimensions;
 	
@@ -32,6 +34,9 @@ public final class FieldSymbol
 	
 	/** Base type for the field? */
 	private volatile Reference<FieldBaseTypeSymbol> _basetype;
+	
+	/** As a class name? */
+	private volatile Reference<ClassNameSymbol> _clname;
 	
 	/**
 	 * Initializes the field symbol which represents the type of a field.
@@ -42,6 +47,22 @@ public final class FieldSymbol
 	 * @since 2016/03/14
 	 */
 	public FieldSymbol(String __s)
+		throws IllegalSymbolException, NullPointerException
+	{
+		this(__s, null);
+	}
+	
+	/**
+	 * Initializes the field symbol which represents the type of a field.
+	 *
+	 * @param __s Field descriptor data.
+	 * @param __cls Symbol back reference.
+	 * @throws IllegalSymbolException If the field descriptor is not valid.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __cls}.
+	 * @since 2016/04/04
+	 */
+	FieldSymbol(String __s, ClassNameSymbol __cls)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -56,6 +77,9 @@ public final class FieldSymbol
 		
 		// Set
 		dimensions = i;
+		
+		// {@squirreljme.error DS07 There cannot be negative or more than 255
+		// dimensions in an array. (This symbol; The dimension count)}
 		if (dimensions < 0 || dimensions > MAX_ARRAY_DIMENSIONS)
 			throw new IllegalSymbolException(String.format("DS07 %s %d",
 				this, dimensions));
@@ -63,6 +87,10 @@ public final class FieldSymbol
 		// Just cache all of them to check for symbol validity
 		binaryName();
 		baseType();
+		
+		// Back cache?
+		if (__cls != null)
+			_clname = new WeakReference<>(__cls);
 	}
 	
 	/**
@@ -74,6 +102,27 @@ public final class FieldSymbol
 	public int arrayDimensions()
 	{
 		return dimensions;
+	}
+	
+	/**
+	 * Returns this binary name symbol as a class name symbol.
+	 *
+	 * @return The class name symbol representation of this.
+	 * @since 2016/04/04
+	 */
+	public ClassNameSymbol asClassName()
+	{
+		// Get reference
+		Reference<ClassNameSymbol> ref = _clname;
+		ClassNameSymbol rv;
+		
+		// Create cache if required
+		if (ref == null || null == (rv = ref.get()))
+			_clname = new WeakReference<>(
+				(rv = new ClassNameSymbol(this)));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

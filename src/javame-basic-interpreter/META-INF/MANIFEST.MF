@@ -1,9 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: javame-basic-interpreter
 X-Hairball-UUID: 914e6b52-0f1d-403a-aeef-a0866850202e
-X-Hairball-Depends: javame-class-file, javame-class-program,
- javame-cldc-full, zip-compression
-Main-Class: net.multiphasicapps.interpreter.Main
+X-Hairball-Depends: javame-class-file, javame-class-program
 LIBlet-Title: Basic Java Interpreter
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160402

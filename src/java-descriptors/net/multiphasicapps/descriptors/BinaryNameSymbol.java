@@ -29,7 +29,8 @@ import java.util.Objects;
  */
 public final class BinaryNameSymbol
 	extends __BaseSymbol__
-	implements Iterable<IdentifierSymbol>, FieldBaseTypeSymbol
+	implements Iterable<IdentifierSymbol>, FieldBaseTypeSymbol,
+		__ClassNameCompatible__
 {
 	/** The throwable class. */
 	public static final BinaryNameSymbol THROWABLE =
@@ -54,6 +55,9 @@ public final class BinaryNameSymbol
 	/** As a list? */
 	private volatile Reference<List<IdentifierSymbol>> _aslist;
 	
+	/** As a class name? */
+	private volatile Reference<ClassNameSymbol> _clname;
+	
 	/**
 	 * Initializes the binary name symbol.
 	 *
@@ -63,6 +67,22 @@ public final class BinaryNameSymbol
 	 * @since 2016/03/14
 	 */
 	public BinaryNameSymbol(String __s)
+		throws IllegalSymbolException, NullPointerException
+	{
+		this(__s, null);
+	}
+	
+	/**
+	 * Initializes the binary name symbol.
+	 *
+	 * @param __s The string to use for the symbol.
+	 * @param __cls The class name back reference to quick back-cache.
+	 * @throws IllegalSymbolException If it is not a valid binary name.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __cls}.
+	 * @since 2016/04/04
+	 */
+	BinaryNameSymbol(String __s, ClassNameSymbol __cls)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -108,6 +128,10 @@ public final class BinaryNameSymbol
 		
 		// Initialize array
 		_idents = __makeIDRefArray(count);
+		
+		// Back cache?
+		if (__cls != null)
+			_clname = new WeakReference<>(__cls);
 	}
 	
 	/**
@@ -123,6 +147,27 @@ public final class BinaryNameSymbol
 		throws IllegalSymbolException, NullPointerException
 	{
 		this(__symbolsToBinaryName(__ids));
+	}
+	
+	/**
+	 * Returns this binary name symbol as a class name symbol.
+	 *
+	 * @return The class name symbol representation of this.
+	 * @since 2016/04/04
+	 */
+	public ClassNameSymbol asClassName()
+	{
+		// Get reference
+		Reference<ClassNameSymbol> ref = _clname;
+		ClassNameSymbol rv;
+		
+		// Create cache if required
+		if (ref == null || null == (rv = ref.get()))
+			_clname = new WeakReference<>(
+				(rv = new ClassNameSymbol(this)));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

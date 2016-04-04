@@ -21,15 +21,14 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import net.multiphasicapps.classfile.CFClass;
+import net.multiphasicapps.classfile.CFClassParser;
+import net.multiphasicapps.classfile.CFFormatException;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
 
 /**
  * This class acts as the interpreter engine.
- *
- * This class is also abstract because it is also intended that the classes
- * which extend off this provide a means to locate classes and perform some
- * file system details. So in short, this is essentially a virtual machine.
  *
  * This engine only supports JavaME 8 and may not be fully capable of running
  * Java SE code (it does not support invokedynamic or reflection).
@@ -52,10 +51,6 @@ public abstract class JVMEngine
 	
 	/** Classpaths for the interpreter (how it finds classes). */
 	protected final Set<JVMClassPath> classpaths =
-		new LinkedHashSet<>();
-	
-	/** Partially loaded classes. */
-	private final Set<JVMClass> _partialclasses =
 		new LinkedHashSet<>();
 	
 	/**
@@ -207,46 +202,6 @@ public abstract class JVMEngine
 	}
 	
 	/**
-	 * Returns a class which may be partially loaded by the interpreter engine.
-	 *
-	 * @param __bn The name of the partially loaded class.
-	 * @return The partially loaded class or a fully loaded class.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/26
-	 */
-	public final JVMClass partialClass(String __bn)
-		throws NullPointerException
-	{
-		// Check
-		if (__bn == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock on classes
-		synchronized (classes)
-		{
-			// Check partials for the class
-			for (JVMClass pc : _partialclasses)
-				try
-				{
-					// Get the class loader name
-					String clname = pc.getClassLoaderName();
-					
-					// Is this name?
-					if (Objects.equals(clname, __bn))
-						return pc;
-				}
-				
-				// No name was set yet
-				catch (IllegalStateException ise)
-				{
-				}
-			
-			// Not in the partial list, just load it
-			return loadClass(__bn);
-		}
-	}
-	
-	/**
 	 * Creates a string array with the given strings.
 	 *
 	 * @param __strings Strings to place in the array.
@@ -318,11 +273,13 @@ public abstract class JVMEngine
 	 * @param __bn The binary name of the class.
 	 * @param __dims The number of dimensions in the array.
 	 * @return The loaded class or {@code null} if it does not exist.
+	 * @throws JVMEngineException If the loaded class does not match the
+	 * expected class.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/05
 	 */
 	private final JVMClass __internalLoadClass(String __bn, int __dims)
-		throws NullPointerException
+		throws JVMEngineException, NullPointerException
 	{
 		// Check
 		if (__bn == null)
@@ -346,18 +303,15 @@ public abstract class JVMEngine
 						continue;
 					
 					// Create class data (from files)
-					JVMClass rv = part = new JVMClass(this);
+					JVMClass rv = part = new JVMClass(this,
+						new CFClassParser().parse(is));
 					
-					// Add to partial class list
-					_partialclasses.add(rv);
-					
-					// Load in class data
-					new JVMClassFile(this, rv).parse(is);
-					
-					// Wrong class? Ignore it
+					// {@squirreljme.error IN0n The name of the expected class
+					// and the class that was loaded differ. (The requested
+					// class; The class it really was)}
 					String xn;
-					if (!__bn.equals((xn = rv.getClassLoaderName())))
-						throw new JVMClassFormatError(String.format(
+					if (!__bn.equals((xn = rv.classLoaderName())))
+						throw new JVMEngineException(String.format(
 							"IN0n %s %s", __bn, xn));
 					
 					// Return it
@@ -366,18 +320,12 @@ public abstract class JVMEngine
 				
 				// Failed to load class, ignore
 				catch (IOException|IllegalSymbolException|
-					JVMClassFormatError e)
+					CFFormatException e)
 				{
-					throw new JVMClassFormatError(String.format("IN0o %s",
+					// {@squirreljme.error IN0o Failed to load the class with
+					// the given name. (The name of the class)}
+					throw new JVMEngineException(String.format("IN0o %s",
 						__bn), e);
-				}
-				
-				// Loading either worked, or failed so remove it from the
-				// partial class list
-				finally
-				{
-					if (part != null)
-						_partialclasses.remove(part);
 				}
 		}
 		

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.interpreter;
+package net.multiphasicapps.localinterp;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -93,7 +93,11 @@ public class LocalClassPath
 			
 			// Print trace
 			ioe.printStackTrace(System.err);
-			System.err.println("Failed to read the ZIP '" + path + "'.");
+			
+			// {@squirreljme.error LI0b Could not read the given path as a
+			// ZIP file, it is either not a ZIP or is malformed. (The
+			// file path)}
+			System.err.printf("LI0b %s", path);
 		}
 		
 		// Set ZIP

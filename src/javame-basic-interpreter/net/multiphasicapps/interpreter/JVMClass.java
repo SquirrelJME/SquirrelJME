@@ -12,9 +12,10 @@ package net.multiphasicapps.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.CFClass;
-import net.multiphasicapps.CFClassFlag;
-import net.multiphasicapps.CFClassFlags;
+import net.multiphasicapps.classfile.CFClass;
+import net.multiphasicapps.classfile.CFClassFlag;
+import net.multiphasicapps.classfile.CFClassFlags;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
  * This represents a class which is loaded by the virtual machine.
@@ -38,6 +39,9 @@ public class JVMClass
 	/** Is this an array? */
 	protected final boolean isarray;
 	
+	/** The name of this class. */
+	protected final ClassNameSymbol classname;
+	
 	/** Class loader formatted binary name cache. */
 	private volatile Reference<String> _clbname;
 	
@@ -58,6 +62,7 @@ public class JVMClass
 		// Set
 		engine = __e;
 		basedon = __cf;
+		classname = basedon.thisName().toClassName();
 		
 		// Not an array
 		isarray = false;
@@ -115,6 +120,17 @@ public class JVMClass
 		
 		// Otherwise defer
 		return basedon.flags();
+	}
+	
+	/**
+	 * Returns the name of the current class.
+	 *
+	 * @return The current class name.
+	 * @since 2016/04/04
+	 */
+	public ClassNameSymbol thisName()
+	{
+		return classname;
 	}
 }
 
