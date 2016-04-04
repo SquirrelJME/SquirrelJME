@@ -86,8 +86,12 @@ class __ByteCodeSizes__
 				int hi = __ByteUtils__.__readSInt(__code, ppos + 8);
 				
 				// Lower must really be lower
+				// {@squirreljme.error CP01 The {@code tableswitch}
+				// operation has a low value which is higher than the high
+				// value. (The position of the current operation; The
+				// low byte; The high byte)}
 				if (lo > hi)
-					throw new CPProgramException(String.format("IN2d %d %d %d",
+					throw new CPProgramException(String.format("CP01 %d %d %d",
 						__pos, lo, hi));
 				
 				// Calculate the size
@@ -102,8 +106,12 @@ class __ByteCodeSizes__
 				
 				// Read the pair count
 				int np = __ByteUtils__.__readSInt(__code, ppos + 4);
+				
+				// {@squirreljme.error CP02 The {@code lookupswitch} operation
+				// has a zero or negative pair count. (The position of the
+				// current operation; The pair count)}
 				if (np <= 0)
-					throw new CPProgramException(String.format("IN2d %d %d",
+					throw new CPProgramException(String.format("CP02 %d %d",
 						__pos, np));
 				
 				// Calculate the size
@@ -159,7 +167,9 @@ class __ByteCodeSizes__
 		// Out of bounds instruction
 		catch (IndexOutOfBoundsException e)
 		{
-			throw new CPProgramException(String.format("IN1h %d", opcode), e);
+			// {@squirreljme.error CP03 While decoding an operation, the bounds
+			// of the program were exceeded. (The current opcode)}
+			throw new CPProgramException(String.format("CP03 %d", opcode), e);
 		}
 	}
 }
