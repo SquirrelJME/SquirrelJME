@@ -252,9 +252,13 @@ public class CPOp
 					
 						// It MUST be higher than the last index, that is all
 						// entries in the switch are sorted.
+						// {@squirreljme.error CP0a Subsequent keys in the
+						// {@link lookupswitch} operation must have higher
+						// valued keys placed higher so that they may be
+						// binary searched. (The physical address)}
 						if (keyv < lastdx && lastisval)
 							throw new CPProgramException(String.format(
-								"IN2e %s", physical));
+								"CP0a %s", physical));
 					
 						// Set the last value which is checked to make sure the
 						// key is actually higher
