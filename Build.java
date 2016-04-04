@@ -574,7 +574,7 @@ public class Build
 		
 		// If using the interpreter, build it
 		if (__interp)
-			__build(getProject("javame-basic-interpreter"));
+			__build(getProject("javame-local-interpreter"));
 		
 		// Build the target to be ran
 		__build(__p);
@@ -619,7 +619,7 @@ public class Build
 				newargs.offerLast(__args.pollFirst());
 			
 			// Call non-interpreted version
-			__launch(false, getProject("javame-basic-interpreter"), newargs);
+			__launch(false, getProject("javame-local-interpreter"), newargs);
 		}
 		
 		// Otherwise, run it native
