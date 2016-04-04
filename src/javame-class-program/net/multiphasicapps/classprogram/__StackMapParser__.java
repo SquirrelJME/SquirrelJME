@@ -269,16 +269,22 @@ class __StackMapParser__
 		// Read in local variables
 		int nl = das.readUnsignedShort();
 		
-		// {@squireljme.error CP0k  (The read local variable count; The number of locals the method uses)}
+		// {@squireljme.error CP0k The number of specified local variables in
+		// the full frame exceeds the maximum permitted local variable
+		// count. (The read local variable count; The number of locals the
+		// method uses)}
 		if (nl >= maxlocals)
 			throw new CPProgramException(String.format("CP0k %d %d", nl,
 				maxlocals));
+		int i;
 		for (int i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
+		for (i < maxlocals; i++)
+			next.set(i, CPVariableType.NOTHING);
 		
 		// Read in stack variables
 		int ns = maxlocals + das.readUnsignedShort();
-		for (int i = maxlocals; i < ns; i++)
+		for  i = maxlocals; i < ns; i++)
 			next.set(i, __loadInfo());
 		next.setStackTop(ns);
 	}
@@ -337,7 +343,9 @@ class __StackMapParser__
 				
 				// Unknown
 			default:
-				throw new CPProgramException(String.format("IN1t %d", tag));
+				// {@squirreljme.error CP0l The verification tag in the
+				// StackMap/STackMapTable attribute is not valid. (The tag)}
+				throw new CPProgramException(String.format("CP0l %d", tag));
 		}
 	}
 	
@@ -358,10 +366,12 @@ class __StackMapParser__
 		// Read in local variables
 		int nl = das.readUnsignedShort();
 		if (nl >= maxlocals)
-			throw new CPProgramException(String.format("IN2j %d %d", nl,
+			throw new CPProgramException(String.format("CP0k %d %d", nl,
 				maxlocals));
 		for (int i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
+		for (i < maxlocals; i++)
+			next.set(i, CPVariableType.NOTHING);
 		
 		// Read in stack variables
 		int ns = maxlocals + das.readUnsignedShort();
