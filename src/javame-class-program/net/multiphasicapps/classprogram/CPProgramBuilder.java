@@ -106,8 +106,9 @@ public class CPProgramBuilder
 		// Only one
 		synchronized (lock)
 		{
+			// {@squirreljme.error CP0c A program may only be built once.}
 			if (_did)
-				throw new IllegalStateException("IN1g");
+				throw new IllegalStateException("CP0c");
 			_did = true;
 		}
 		
@@ -117,8 +118,12 @@ public class CPProgramBuilder
 		
 		// Read code length
 		int codelen = __das.readInt();
+		
+		// {@squirreljme.error CP0d The length of the method code is either
+		// zero, negative, or greater than the maximum limit permitted by
+		// the virtual machine (64K). (The length of this code)}
 		if (codelen <= 0 || codelen >= MAX_CODE_SIZE)
-			throw new CPProgramException(String.format("IN1f %d", codelen));
+			throw new CPProgramException(String.format("CP0d %d", codelen));
 		
 		// Setup state
 		MethodSymbol msym = method.type();
@@ -131,9 +136,11 @@ public class CPProgramBuilder
 			// Read data
 			int rc = __das.read(rawcode, rx, codelen - rx);
 			
-			// EOF is bad
+			// {@squirreljme.error CP0e Reached end of file reading while
+			// reading the array of byte code which a method contains. (The
+			// actual read length; The length of the code area)}
 			if (rc < 0)
-				throw new CPProgramException(String.format("IN1r %d %d",
+				throw new CPProgramException(String.format("CP0e %d %d",
 					rx, codelen));
 			
 			// Add into it

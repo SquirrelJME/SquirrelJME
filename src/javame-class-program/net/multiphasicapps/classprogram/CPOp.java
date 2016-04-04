@@ -505,9 +505,12 @@ public class CPOp
 				{
 					// Get input state
 					CPVariableStates inputstate = inputState();
+					
+					// {@squirreljme.error CP0b The instruction has no input
+					// state. (The logical address)}
 					if (inputstate == null)
 						throw new IllegalStateException(String.format(
-							"IN2i %d", logical));
+							"CP0b %d", logical));
 				
 					// Setup base state
 					rv = new CPVerifyState(program);

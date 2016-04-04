@@ -92,8 +92,10 @@ public class CPVariableState
 			throw new NullPointerException("NARG");
 		
 		// Can only change the entry state
+		// {@squirreljme.error CP0f Can only set the type for the entry
+		// state of a method.}
 		if (!states._isentrystate)
-			throw new IllegalStateException("IN2g");
+			throw new IllegalStateException("CP0f");
 		
 		// Lock
 		synchronized (lock)

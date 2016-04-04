@@ -94,8 +94,10 @@ public enum CPVariableType
 				
 				// Unknown
 			default:
+				// {@squirreljme.error CP0g The type index is not
+				// valid. (The index)}
 				throw new IllegalArgumentException(String.format(
-					"IN1k %d", __i));
+					"CP0g %d", __i));
 		}
 		
 		// Sanity check
@@ -144,8 +146,10 @@ public enum CPVariableType
 				
 				// Unknown
 			default:
+				// {@squirreljme.error CP0h The specified field symbol
+				// cannot be mapped to a variable type. (The field symbol)}
 				throw new IllegalArgumentException(String.format(
-					"IN1k %s", __sym));
+					"CP0h %s", __sym));
 		}
 	}
 }

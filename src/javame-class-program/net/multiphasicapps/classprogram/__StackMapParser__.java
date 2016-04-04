@@ -174,8 +174,10 @@ class __StackMapParser__
 		}
 		
 		// Error if added stuff remains
+		// {@squirreljme.error CP0i Appending local variables to the frame
+		// however there is no room to place them. (The remaining local count)}
 		if (__addlocs != 0)
-			throw new CPProgramException(String.format("IN1v %d", __addlocs));
+			throw new CPProgramException(String.format("CP0i %d", __addlocs));
 	}
 	
 	/**
@@ -243,8 +245,11 @@ class __StackMapParser__
 		}
 		
 		// Still chops left?
+		// {@squirreljme.error CP0j Could not chop off all local variables
+		// because there are no variables remaining to be chopped. (The
+		// remaining variables to remove)}
 		if (__chops != 0)
-			throw new CPProgramException(String.format("IN1u %d", __chops));
+			throw new CPProgramException(String.format("CP0j %d", __chops));
 	}
 	
 	/**
@@ -263,8 +268,10 @@ class __StackMapParser__
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
+		
+		// {@squireljme.error CP0k  (The read local variable count; The number of locals the method uses)}
 		if (nl >= maxlocals)
-			throw new CPProgramException(String.format("IN2j %d %d", nl,
+			throw new CPProgramException(String.format("CP0k %d %d", nl,
 				maxlocals));
 		for (int i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
