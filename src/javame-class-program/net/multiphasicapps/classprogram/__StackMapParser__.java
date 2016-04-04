@@ -279,7 +279,7 @@ class __StackMapParser__
 		int i;
 		for (int i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
-		for (i < maxlocals; i++)
+		for (;i < maxlocals; i++)
 			next.set(i, CPVariableType.NOTHING);
 		
 		// Read in stack variables
@@ -370,7 +370,7 @@ class __StackMapParser__
 				maxlocals));
 		for (int i = 0; i < nl; i++)
 			next.set(i, __loadInfo());
-		for (i < maxlocals; i++)
+		for (;i < maxlocals; i++)
 			next.set(i, CPVariableType.NOTHING);
 		
 		// Read in stack variables
