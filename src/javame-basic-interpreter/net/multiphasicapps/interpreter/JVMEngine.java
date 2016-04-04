@@ -24,6 +24,7 @@ import java.util.Set;
 import net.multiphasicapps.classfile.CFClass;
 import net.multiphasicapps.classfile.CFClassParser;
 import net.multiphasicapps.classfile.CFFormatException;
+import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
 
@@ -103,7 +104,7 @@ public abstract class JVMEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public final JVMThread createThread(JVMMethod __meth,
+	public final JVMThread createThread(CFMethod __meth,
 		Object... __args)
 		throws NullPointerException
 	{

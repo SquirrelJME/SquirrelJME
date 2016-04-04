@@ -23,13 +23,14 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  * @since 2016/04/02
  */
 public class JVMClass
+	implements JVMComponentType
 {
 	/** All arrays use the given flags. */
 	public static final CFClassFlags ARRAY_FLAGS =
 		new CFClassFlags(CFClassFlag.PUBLIC.mask |
 			CFClassFlag.FINAL.mask |
 			CFClassFlag.SYNTHETIC.mask);
-
+	
 	/** The owning engine. */
 	protected final JVMEngine engine;
 	
@@ -62,10 +63,28 @@ public class JVMClass
 		// Set
 		engine = __e;
 		basedon = __cf;
-		classname = basedon.thisName().toClassName();
+		classname = basedon.thisName().asClassName();
 		
 		// Not an array
 		isarray = false;
+	}
+	
+	/**
+	 * Initializes a class which is a component of the given class.
+	 *
+	 * @param __e The owning engine.
+	 * @param __comp The component type of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/04
+	 */
+	public JVMClass(JVMEngine __e, JVMComponentType __comp)
+		throws NullPointerException
+	{
+		// Check
+		if (__e == null || __comp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -79,7 +98,7 @@ public class JVMClass
 		throws IllegalStateException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this)
 		{
 			// Get reference
 			Reference<String> ref = _clbname;
@@ -89,7 +108,7 @@ public class JVMClass
 			if (ref == null || null == (rv = ref.get()))
 			{
 				// If an array, then the field syntax is directly used
-				if (isArray())
+				if (isarray)
 					rv = thisName().toString();
 				
 				// Otherwise use the binary form instead but with characters

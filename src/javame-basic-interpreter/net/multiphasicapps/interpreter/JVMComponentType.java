@@ -26,6 +26,6 @@ public interface JVMComponentType
 	 * @return The current class name.
 	 * @since 2016/03/19
 	 */
-	public abstract ClassNameSymbol getThisName();
+	public abstract ClassNameSymbol thisName();
 }
 

@@ -82,7 +82,7 @@ public enum JVMPrimitiveType
 	 * @since 2016/03/31
 	 */
 	@Override
-	public ClassNameSymbol getThisName()
+	public ClassNameSymbol thisName()
 	{
 		return classname;
 	}
