@@ -12,6 +12,7 @@ package net.multiphasicapps.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Map;
 import net.multiphasicapps.classfile.CFClass;
 import net.multiphasicapps.classfile.CFClassFlag;
 import net.multiphasicapps.classfile.CFClassFlags;
@@ -88,6 +89,19 @@ public class JVMClass
 	}
 	
 	/**
+	 * Returns the compiler representation of the class that this is based on.
+	 *
+	 * @return The class file, or {@code null} if an array.
+	 * @since 2016/04/04
+	 */
+	public final CFClass base()
+	{
+		if (isarray)
+			return null;
+		return basedon;
+	}
+	
+	/**
 	 * Returns the name of this class as returned by {@link Class#getName()}.
 	 *
 	 * @return The name of this class.
@@ -126,6 +140,17 @@ public class JVMClass
 	}
 	
 	/**
+	 * Returns the list of fields that this class contains.
+	 *
+	 * @return The fields contained in this class.
+	 * @since 2016/04/04
+	 */
+	public JVMFields fields()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the flags which are associated with the current class.
 	 *
 	 * @return The class flags.
@@ -139,6 +164,17 @@ public class JVMClass
 		
 		// Otherwise defer
 		return basedon.flags();
+	}
+	
+	/**
+	 * Returns the list of methods that this class contains.
+	 *
+	 * @return The methods contained in this class.
+	 * @since 2016/04/04
+	 */
+	public JVMMethods methods()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**

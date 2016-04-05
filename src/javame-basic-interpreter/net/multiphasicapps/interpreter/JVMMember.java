@@ -10,35 +10,15 @@
 
 package net.multiphasicapps.interpreter;
 
-import net.multiphasicapps.classfile.CFMethodFlags;
-
 /**
- * This represents a bound method within a class.
+ * DESCRIBE THIS.
  *
  * @since 2016/04/04
  */
-public class JVMMethod
-	extends JVMMember
+public abstract class JVMMember
 {
-	/**
-	 * Initializes the method.
-	 *
-	 * @since 2016/04/04
-	 */
-	JVMMethod()
+	JVMMember()
 	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Returns the method flags.
-	 *
-	 * @return The method flags.
-	 * @since 2016/04/04
-	 */
-	public CFMethodFlags flags()
-	{
-		throw new Error("TODO");
 	}
 }
 

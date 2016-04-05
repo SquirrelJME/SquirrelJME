@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.CFMemberKey;
+import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -91,11 +92,11 @@ public class LocalEngine
 				"LI02 %s", __main));
 		
 		// Find the main method
-		JVMMethod mainmethod = mainclass.getMethods().get(
+		JVMMethod mainmethod = mainclass.methods().get(
 			new IdentifierSymbol("main"),
 			new MethodSymbol("([Ljava/lang/String;)V"));
-		if (mainmethod == null || !mainmethod.getFlags().isStatic() ||
-			!mainmethod.getFlags().isPublic())
+		CFMethodFlags mf = mainmethod.flags();
+		if (mainmethod == null || !mf.isStatic() || !mf.isPublic())
 			throw new IllegalArgumentException(String.format(
 				"LI03 %s", __main));
 		

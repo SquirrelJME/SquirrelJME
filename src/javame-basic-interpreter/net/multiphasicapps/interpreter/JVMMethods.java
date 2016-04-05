@@ -10,35 +10,29 @@
 
 package net.multiphasicapps.interpreter;
 
+import net.multiphasicapps.classfile.CFMemberKey;
+import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.classfile.CFMethodFlags;
+import net.multiphasicapps.classfile.CFMethods;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
- * This represents a bound method within a class.
+ * This represents the collection of methods which are available to a class..
  *
  * @since 2016/04/04
  */
-public class JVMMethod
-	extends JVMMember
+public class JVMMethods
+	extends JVMMembers<MethodSymbol, CFMethodFlags, CFMethod, JVMMethod>
 {
 	/**
-	 * Initializes the method.
+	 * Initializes the class method mappings.
 	 *
+	 * @param __cl The class containing the methods.
 	 * @since 2016/04/04
 	 */
-	JVMMethod()
+	JVMMethods(JVMClass __cl)
 	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Returns the method flags.
-	 *
-	 * @return The method flags.
-	 * @since 2016/04/04
-	 */
-	public CFMethodFlags flags()
-	{
-		throw new Error("TODO");
+		super(__cl, __cl.base().methods());
 	}
 }
 

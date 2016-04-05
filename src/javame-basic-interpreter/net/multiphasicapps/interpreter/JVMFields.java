@@ -10,35 +10,29 @@
 
 package net.multiphasicapps.interpreter;
 
-import net.multiphasicapps.classfile.CFMethodFlags;
+import net.multiphasicapps.classfile.CFField;
+import net.multiphasicapps.classfile.CFFieldFlags;
+import net.multiphasicapps.classfile.CFFields;
+import net.multiphasicapps.classfile.CFMemberKey;
+import net.multiphasicapps.descriptors.FieldSymbol;
 
 /**
- * This represents a bound method within a class.
+ * This represents the collection of fields which are availale to a class..
  *
  * @since 2016/04/04
  */
-public class JVMMethod
-	extends JVMMember
+public class JVMFields
+	extends JVMMembers<FieldSymbol, CFFieldFlags, CFField, JVMField>
 {
 	/**
-	 * Initializes the method.
+	 * Initializes the class field mappings.
 	 *
+	 * @param __cl The owning class.
 	 * @since 2016/04/04
 	 */
-	JVMMethod()
+	JVMFields(JVMClass __cl)
 	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Returns the method flags.
-	 *
-	 * @return The method flags.
-	 * @since 2016/04/04
-	 */
-	public CFMethodFlags flags()
-	{
-		throw new Error("TODO");
+		super(__cl, __cl.base().fields());
 	}
 }
 

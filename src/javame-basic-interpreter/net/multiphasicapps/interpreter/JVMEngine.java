@@ -104,7 +104,7 @@ public abstract class JVMEngine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	public final JVMThread createThread(CFMethod __meth,
+	public final JVMThread createThread(JVMMethod __meth,
 		Object... __args)
 		throws NullPointerException
 	{
