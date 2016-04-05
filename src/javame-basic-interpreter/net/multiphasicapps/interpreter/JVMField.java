@@ -10,13 +10,28 @@
 
 package net.multiphasicapps.interpreter;
 
+import net.multiphasicapps.classfile.CFField;
+import net.multiphasicapps.classfile.CFFieldFlags;
+import net.multiphasicapps.descriptors.FieldSymbol;
+
 /**
- * DESCRIBE THIS.
+ * This represents a virtual machine field.
  *
  * @since 2016/04/04
  */
 public class JVMField
-	extends JVMMember
+	extends JVMMember<FieldSymbol, CFFieldFlags, CFField, JVMField>
 {
+	/**
+	 * Initializes the field.
+	 *
+	 * @param __o The owning group.
+	 * @param __b The base for it.
+	 * @since 2016/04/05
+	 */
+	JVMField(JVMFields __o, CFField __b)
+	{
+		super(__o, __b);
+	}
 }
 

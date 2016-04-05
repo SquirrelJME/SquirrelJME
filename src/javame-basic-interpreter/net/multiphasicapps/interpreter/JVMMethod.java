@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.interpreter;
 
+import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.classfile.CFMethodFlags;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This represents a bound method within a class.
@@ -18,27 +20,18 @@ import net.multiphasicapps.classfile.CFMethodFlags;
  * @since 2016/04/04
  */
 public class JVMMethod
-	extends JVMMember
+	extends JVMMember<MethodSymbol, CFMethodFlags, CFMethod, JVMMethod>
 {
 	/**
 	 * Initializes the method.
 	 *
-	 * @since 2016/04/04
+	 * @param __o The owning group.
+	 * @param __b The base for it.
+	 * @since 2016/04/05
 	 */
-	JVMMethod()
+	JVMMethod(JVMMethods __o, CFMethod __b)
 	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Returns the method flags.
-	 *
-	 * @return The method flags.
-	 * @since 2016/04/04
-	 */
-	public CFMethodFlags flags()
-	{
-		throw new Error("TODO");
+		super(__o, __b);
 	}
 }
 

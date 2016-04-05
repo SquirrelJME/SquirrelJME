@@ -34,5 +34,14 @@ public class JVMFields
 	{
 		super(__cl, __cl.base().fields());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/05
+	 */
+	protected JVMField wrapInternally(CFField __cf)
+	{
+		return new JVMField(this, __cf);
+	}
 }
 

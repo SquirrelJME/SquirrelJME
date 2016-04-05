@@ -34,5 +34,14 @@ public class JVMMethods
 	{
 		super(__cl, __cl.base().methods());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/05
+	 */
+	protected JVMMethod wrapInternally(CFMethod __cf)
+	{
+		return new JVMMethod(this, __cf);
+	}
 }
 

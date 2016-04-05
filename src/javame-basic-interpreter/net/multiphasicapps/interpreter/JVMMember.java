@@ -10,15 +10,58 @@
 
 package net.multiphasicapps.interpreter;
 
+import net.multiphasicapps.classfile.CFMember;
+import net.multiphasicapps.classfile.CFMemberFlags;
+import net.multiphasicapps.descriptors.MemberTypeSymbol;
+
 /**
- * DESCRIBE THIS.
+ * This is the base for all member types.
  *
+ * @param <S> The symbol type.
+ * @param <C> The base class file member type.
+ * @param <F> The flag type.
+ * @param <J> The virtual machine type.
  * @since 2016/04/04
  */
-public abstract class JVMMember
+public abstract class JVMMember<S extends MemberTypeSymbol, 
+	F extends CFMemberFlags, C extends CFMember<S, F>,
+	J extends JVMMember<S, F, C, J>>
 {
-	JVMMember()
+	/** Raw member list owner. */
+	protected final JVMMembers<S, F, C, J> rawowner;
+	
+	/** The class file bit this is based on. */
+	protected final C base;
+	
+	/**
+	 * Initializes the base for the member.
+	 *
+	 * @param __ro The member mapping owning this.
+	 * @param __b The type this is based on.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/05
+	 */
+	JVMMember(JVMMembers<S, F, C, J> __ro, C __b)
+		throws NullPointerException
 	{
+		// Check
+		if (__ro == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		rawowner = __ro;
+		base = __b;
+	}
+	
+	/**
+	 * Returns the member flags.
+	 *
+	 * @return The member flags.
+	 * @since 2016/04/04
+	 */
+	public F flags()
+	{
+		return base.flags();
 	}
 }
 

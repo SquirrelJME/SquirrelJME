@@ -10,10 +10,16 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.AbstractMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classfile.CFMember;
 import net.multiphasicapps.classfile.CFMemberFlags;
 import net.multiphasicapps.classfile.CFMembers;
 import net.multiphasicapps.classfile.CFMemberKey;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
@@ -28,13 +34,18 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * @since 2016/04/04
  */
 public abstract class JVMMembers<S extends MemberTypeSymbol,
-	F extends CFMemberFlags, C extends CFMember<S, F>, J extends JVMMember>
+	F extends CFMemberFlags, C extends CFMember<S, F>,
+	J extends JVMMember<S, F, C, J>>
+	extends AbstractMap<CFMemberKey<S>, J>
 {
 	/** The owning class. */
 	protected final JVMClass outerclass;
 	
 	/** The source mappings. */
 	protected final CFMembers<S, F, C> basemembers;
+	
+	/** Wrapped members. */
+	protected final Map<CFMemberKey<S>, J> wrapped;
 	
 	/**
 	 * Initializes the member mappings.
@@ -54,6 +65,33 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 		// Set
 		outerclass = __cl;
 		basemembers = __bm;
+		
+		// Setup wrapper
+		Map<CFMemberKey<S>, J> wx = new LinkedHashMap<>();
+		for (Map.Entry<CFMemberKey<S>, C> e : __bm.entrySet())
+			wx.put(e.getKey(), wrapInternally(e.getValue()));
+		
+		// Lock in
+		wrapped = MissingCollections.<CFMemberKey<S>, J>unmodifiableMap(wx);
+	}
+	
+	/**
+	 * Internally wraps the given entry.
+	 *
+	 * @param __cf The entry to be wrapped.
+	 * @return The wrapped entry.
+	 * @since 2016/04/05
+	 */
+	protected abstract J wrapInternally(C __cf);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/05
+	 */
+	@Override
+	public final Set<Map.Entry<CFMemberKey<S>, J>> entrySet()
+	{
+		return wrapped.entrySet();
 	}
 	
 	/**
@@ -65,7 +103,17 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	 */
 	public final J get(IdentifierSymbol __id, S __ty)
 	{
-		throw new Error("TODO");
+		return get(new CFMemberKey<S>(__id, __ty));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/05
+	 */
+	@Override
+	public int size()
+	{
+		return wrapped.size();
 	}
 }
 

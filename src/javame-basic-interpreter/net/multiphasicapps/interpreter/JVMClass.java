@@ -44,6 +44,12 @@ public class JVMClass
 	/** The name of this class. */
 	protected final ClassNameSymbol classname;
 	
+	/** Class methods. */
+	protected final JVMMethods methods;
+	
+	/** Class fields. */
+	protected final JVMFields fields;
+	
 	/** Class loader formatted binary name cache. */
 	private volatile Reference<String> _clbname;
 	
@@ -68,6 +74,10 @@ public class JVMClass
 		
 		// Not an array
 		isarray = false;
+		
+		// Setup
+		methods = new JVMMethods(this);
+		fields = new JVMFields(this);
 	}
 	
 	/**
@@ -111,32 +121,28 @@ public class JVMClass
 	public final String classLoaderName()
 		throws IllegalStateException
 	{
-		// Lock
-		synchronized (this)
+		// Get reference
+		Reference<String> ref = _clbname;
+		String rv;
+		
+		// Needs to be cached?
+		if (ref == null || null == (rv = ref.get()))
 		{
-			// Get reference
-			Reference<String> ref = _clbname;
-			String rv;
+			// If an array, then the field syntax is directly used
+			if (isarray)
+				rv = thisName().toString();
 			
-			// Needs to be cached?
-			if (ref == null || null == (rv = ref.get()))
-			{
-				// If an array, then the field syntax is directly used
-				if (isarray)
-					rv = thisName().toString();
-				
-				// Otherwise use the binary form instead but with characters
-				// replaced
-				else
-					rv = thisName().toString().replace('/', '.');
-				
-				// Cache it
-				_clbname = new WeakReference<>(rv);
-			}
+			// Otherwise use the binary form instead but with characters
+			// replaced
+			else
+				rv = thisName().toString().replace('/', '.');
 			
-			// Return it
-			return rv;
+			// Cache it
+			_clbname = new WeakReference<>(rv);
 		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -147,7 +153,7 @@ public class JVMClass
 	 */
 	public JVMFields fields()
 	{
-		throw new Error("TODO");
+		return fields;
 	}
 	
 	/**
@@ -174,7 +180,7 @@ public class JVMClass
 	 */
 	public JVMMethods methods()
 	{
-		throw new Error("TODO");
+		return methods;
 	}
 	
 	/**
