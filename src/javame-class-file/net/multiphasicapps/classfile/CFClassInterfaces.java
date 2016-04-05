@@ -14,7 +14,9 @@ import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 
 /**
@@ -27,6 +29,9 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
 public final class CFClassInterfaces
 	extends AbstractSet<BinaryNameSymbol>
 {
+	/** The associated binary names. */
+	protected final Set<BinaryNameSymbol> bnames;
+	
 	/**
 	 * Initializes the interface set.
 	 *
@@ -40,7 +45,15 @@ public final class CFClassInterfaces
 		if (__bn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Copy the set
+		// {@squirreljme.error CF13 Duplicated interface in class. (The
+		// duplicated interface).
+		Set<BinaryNameSymbol> on = new LinkedHashSet<>();
+		for (BinaryNameSymbol s : __bn)
+			if (!on.add(Objects.<BinaryNameSymbol>requireNonNull(s, "NARG")))
+				throw new CFFormatException(String.format("CF13 %s", s));
+				
+		bnames = MissingCollections.<BinaryNameSymbol>unmodifiableSet(on);
 	}
 	
 	/**
@@ -50,7 +63,7 @@ public final class CFClassInterfaces
 	@Override
 	public Iterator<BinaryNameSymbol> iterator()
 	{
-		throw new Error("TODO");
+		return bnames.iterator();
 	}
 	
 	/**
@@ -60,7 +73,7 @@ public final class CFClassInterfaces
 	@Override
 	public int size()
 	{
-		throw new Error("TODO");
+		return bnames.size();
 	}
 }
 

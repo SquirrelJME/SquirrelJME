@@ -86,6 +86,15 @@ public final class CFClass
 		if (thisname.equals("java/lang/Object") != (supername == null))
 			throw new CFFormatException(String.format("CF01 %s %s", thisname,
 				supername));
+		
+		// {@squirreljme.error CF14 Class implements an interface which is
+		// the current class or the super class. (The interface name; The
+		// name of the current class; The name of the super class)}
+		BinaryNameSymbol tn = thisname, sn = supername;
+		for (BinaryNameSymbol i : interfaces)
+			if (i.equals(tn) || i.equals(sn))
+				throw new CFFormatException(String.format("CF14 %s %s %s",
+					i, tn, sn));
 	}
 	
 	/**
