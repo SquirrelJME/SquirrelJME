@@ -97,7 +97,7 @@ public class LocalClassPath
 			// {@squirreljme.error LI0b Could not read the given path as a
 			// ZIP file, it is either not a ZIP or is malformed. (The
 			// file path)}
-			System.err.printf("LI0b %s", path);
+			System.err.printf("LI0b %s%n", path);
 		}
 		
 		// Set ZIP

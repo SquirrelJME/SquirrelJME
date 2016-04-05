@@ -18,3 +18,9 @@ for another target.
 Also due to the way the new class loading code works, there will no longer be
 any partial classes.
 
+## 20:42
+
+Actually in my range check, I added an extra check which makes sure that the
+entry exists. However this cannot be true if a constant pool entry references
+an entry defined at a later index.
+
