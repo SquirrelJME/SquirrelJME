@@ -216,6 +216,27 @@ public abstract class JVMEngine
 	}
 	
 	/**
+	 * Spawns a string which wraps a string used by this host virtual machine
+	 * so it may be accessed by the guest virtual machine.
+	 *
+	 * Strings may be recycled as if they were interned.
+	 *
+	 * @param __s The string to wrap.
+	 * @return The wrapped string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/05
+	 */
+	public final JVMObject spawnString(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Creates a string array with the given strings.
 	 *
 	 * @param __strings Strings to place in the array.
@@ -235,10 +256,22 @@ public abstract class JVMEngine
 		JVMClass strarray = loadClass("[Ljava/lang/String;");
 		
 		// Create array which carries the same length
-		JVMObject rv = new JVMObject(strarray, __strings.length);
+		int n = __strings.length;
+		JVMObject rv = new JVMObject(strarray, n);
 		
-		if (true)
-			throw new Error("TODO");
+		// Create string elements
+		for (int i = 0; i < n; i++)
+		{
+			// Get string here
+			String s = __strings[i];
+			
+			// If null, ignore
+			if (s == null)
+				continue;
+			
+			// Set otherwise
+			rv.setArrayElement(i, spawnString(s));
+		}
 		
 		// Return it
 		return rv;

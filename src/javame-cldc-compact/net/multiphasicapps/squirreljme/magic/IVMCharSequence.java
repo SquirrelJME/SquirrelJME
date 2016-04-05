@@ -20,7 +20,7 @@ package net.multiphasicapps.squirreljme.magic;
  */
 public final class IVMCharSequence
 {
-	/** The internally wrapped sequence. */
+	/** The internally wrapped sequence, this will be used as a key. */
 	protected final Object internal =
 		null;
 	

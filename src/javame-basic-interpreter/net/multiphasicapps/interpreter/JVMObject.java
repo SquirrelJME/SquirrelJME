@@ -26,6 +26,9 @@ public final class JVMObject
 	/** The length of this array . */
 	protected final int arraylength;
 	
+	/** Internal array data. */
+	protected final Object array;
+	
 	/**
 	 * Initializes the object, which may be an array.
 	 *
@@ -58,6 +61,14 @@ public final class JVMObject
 		
 		// Register this object with the engine
 		engine.__registerObject(this);
+		
+		// Not an array?
+		if (arraylength < 0)
+			array = null;
+		
+		// Create array of the given type
+		else
+			array = classtype.createBackingArray(arraylength);
 	}
 	
 	/**
@@ -83,6 +94,19 @@ public final class JVMObject
 	public int identityHashCode()
 	{
 		return System.identityHashCode(this);
+	}
+	
+	/**
+	 * Sets the element of the array.
+	 *
+	 * @param __i Index to set.
+	 * @param __v The value to set.
+	 * @return {@code this}.
+	 * @since 2016/04/05
+	 */
+	public JVMObject setArrayElement(int __i, Object __v)
+	{
+		throw new Error("TODO");
 	}
 }
 

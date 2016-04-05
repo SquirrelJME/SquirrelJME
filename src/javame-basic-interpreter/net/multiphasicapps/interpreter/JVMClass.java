@@ -157,6 +157,18 @@ public final class JVMClass
 	}
 	
 	/**
+	 * Create an array to store the given object data.
+	 *
+	 * @param __len The length of the array.
+	 * @return The newly created array.
+	 * @since 2016/04/05
+	 */
+	public final Object createBackingArray(int __len)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the owning engine.
 	 *
 	 * @return The engine owner.
