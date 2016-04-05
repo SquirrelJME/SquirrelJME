@@ -13,6 +13,7 @@ package net.multiphasicapps.interpreter;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,9 +51,21 @@ public abstract class JVMEngine
 	protected final Map<String, Reference<JVMClass>> classes =
 		new LinkedHashMap<>();
 	
+	/** The class reference queue. */
+	protected final ReferenceQueue<JVMClass> classqueue =
+		new ReferenceQueue<JVMClass>();
+	
 	/** Classpaths for the interpreter (how it finds classes). */
 	protected final Set<JVMClassPath> classpaths =
 		new LinkedHashSet<>();
+	
+	/** Registered objects (weakly associated). */
+	protected final Set<Reference<JVMObject>> objects =
+		new HashSet<>();
+	
+	/** Reference queue to know when objects go away. */
+	protected final ReferenceQueue<JVMObject> objectqueue =
+		new ReferenceQueue<>();
 	
 	/**
 	 * Initializes the base engine.
@@ -194,7 +207,7 @@ public abstract class JVMEngine
 				
 				// Perform the load
 				classes.put(__bn, new WeakReference<>((rv =
-					__internalLoadClass(__bn, dims))));
+					__internalLoadClass(__bn, dims)), classqueue));
 			}
 			
 			// Return the read class
@@ -221,7 +234,14 @@ public abstract class JVMEngine
 		// Get the string array class
 		JVMClass strarray = loadClass("[Ljava/lang/String;");
 		
-		throw new Error("TODO");
+		// Create array which carries the same length
+		JVMObject rv = new JVMObject(strarray, __strings.length);
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -307,13 +327,13 @@ public abstract class JVMEngine
 					JVMClass rv = part = new JVMClass(this,
 						new CFClassParser().parse(is));
 					
-					// {@squirreljme.error IN0n The name of the expected class
+					// {@squirreljme.error LI0g The name of the expected class
 					// and the class that was loaded differ. (The requested
 					// class; The class it really was)}
 					String xn;
 					if (!__bn.equals((xn = rv.classLoaderName())))
 						throw new JVMEngineException(String.format(
-							"IN0n %s %s", __bn, xn));
+							"LI0g %s %s", __bn, xn));
 					
 					// Return it
 					return rv;
@@ -323,15 +343,52 @@ public abstract class JVMEngine
 				catch (IOException|IllegalSymbolException|
 					CFFormatException e)
 				{
-					// {@squirreljme.error IN0o Failed to load the class with
+					// {@squirreljme.error LI0f Failed to load the class with
 					// the given name. (The name of the class)}
-					throw new JVMEngineException(String.format("IN0o %s",
+					throw new JVMEngineException(String.format("LI0f %s",
 						__bn), e);
 				}
 		}
 		
 		// A class was not loaded
 		return null;
+	}
+	
+	/**
+	 * Registers a given object with this virtual machine.
+	 *
+	 * Internally the objects are stored in reference and assigned to a given
+	 * reference queue. This permits the ability to have a garbage collector
+	 * in the target virtual machine with regards to objects without actually
+	 * implementing one at all. Thus, the target virtual machine will have the
+	 * garbage collection characteristics of the host.
+	 *
+	 * @param __jo The object to register.
+	 * @return {@code this}.
+	 * @throws IllegalStateException If the object belongs to another engine.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/05
+	 */
+	final JVMEngine __registerObject(JVMObject __jo)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__jo == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error LI0e
+		if (this != __jo.engine())
+			throw new IllegalStateException("LI0e");
+		
+		// Lock
+		Set<Reference<JVMObject>> objs = objects;
+		synchronized (objs)
+		{
+			objs.add(new WeakReference<>(__jo, objectqueue));
+		}
+		
+		// Self
+		return this;
 	}
 }
 

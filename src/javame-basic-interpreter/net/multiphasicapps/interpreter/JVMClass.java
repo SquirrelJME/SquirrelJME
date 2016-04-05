@@ -23,7 +23,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  *
  * @since 2016/04/02
  */
-public class JVMClass
+public final class JVMClass
 	implements JVMComponentType
 {
 	/** All arrays use the given flags. */
@@ -63,7 +63,7 @@ public class JVMClass
 	 * @param __cf The parsed class file data.
 	 * @since 2016/03/02
 	 */
-	public JVMClass(JVMEngine __e, CFClass __cf)
+	JVMClass(JVMEngine __e, CFClass __cf)
 		throws NullPointerException
 	{
 		// Check
@@ -157,6 +157,17 @@ public class JVMClass
 	}
 	
 	/**
+	 * Returns the owning engine.
+	 *
+	 * @return The engine owner.
+	 * @since 2016/04/05
+	 */
+	public JVMEngine engine()
+	{
+		return engine;
+	}
+	
+	/**
 	 * Returns the list of fields that this class contains.
 	 *
 	 * @return The fields contained in this class.
@@ -181,6 +192,17 @@ public class JVMClass
 		
 		// Otherwise defer
 		return basedon.flags();
+	}
+	
+	/**
+	 * Is this an array?
+	 *
+	 * @return Returns {@code true} if this is an array.
+	 * @since 2016/04/05
+	 */
+	public boolean isArray()
+	{
+		return isarray;
 	}
 	
 	/**
