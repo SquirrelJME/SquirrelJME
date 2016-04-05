@@ -14,6 +14,7 @@ import net.multiphasicapps.classfile.CFField;
 import net.multiphasicapps.classfile.CFFieldFlags;
 import net.multiphasicapps.classfile.CFFields;
 import net.multiphasicapps.classfile.CFMemberKey;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 
 /**
@@ -33,6 +34,18 @@ public class JVMFields
 	JVMFields(JVMClass __cl)
 	{
 		super(__cl, __cl.base().fields());
+	}
+	
+	/**
+	 * Initializes the class field mappings with no actual mappings.
+	 *
+	 * @param __cl The owning class.
+	 * @param __ign Ignored.
+	 * @since 2016/04/04
+	 */
+	JVMFields(JVMClass __cl, boolean __ign)
+	{
+		super(__cl, null);
 	}
 	
 	/**

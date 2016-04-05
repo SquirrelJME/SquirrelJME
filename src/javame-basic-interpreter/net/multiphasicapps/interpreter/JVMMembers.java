@@ -52,14 +52,14 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	 *
 	 * @param __cl The class which contains the set of members.
 	 * @param __bm The mapping of members.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __bm}.
 	 * @since 2016/04/04
 	 */
 	JVMMembers(JVMClass __cl, CFMembers<S, F, C> __bm)
 		throws NullPointerException
 	{
 		// Check
-		if (__cl == null || __bm == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -68,8 +68,9 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 		
 		// Setup wrapper
 		Map<CFMemberKey<S>, J> wx = new LinkedHashMap<>();
-		for (Map.Entry<CFMemberKey<S>, C> e : __bm.entrySet())
-			wx.put(e.getKey(), wrapInternally(e.getValue()));
+		if (__bm != null)
+			for (Map.Entry<CFMemberKey<S>, C> e : __bm.entrySet())
+				wx.put(e.getKey(), wrapInternally(e.getValue()));
 		
 		// Lock in
 		wrapped = MissingCollections.<CFMemberKey<S>, J>unmodifiableMap(wx);

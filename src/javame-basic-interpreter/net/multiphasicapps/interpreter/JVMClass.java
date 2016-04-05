@@ -50,6 +50,9 @@ public class JVMClass
 	/** Class fields. */
 	protected final JVMFields fields;
 	
+	/** The component type, if an array. */
+	protected final JVMComponentType component;
+	
 	/** Class loader formatted binary name cache. */
 	private volatile Reference<String> _clbname;
 	
@@ -70,14 +73,13 @@ public class JVMClass
 		// Set
 		engine = __e;
 		basedon = __cf;
+		methods = new JVMMethods(this);
+		fields = new JVMFields(this);
 		classname = basedon.thisName().asClassName();
 		
 		// Not an array
 		isarray = false;
-		
-		// Setup
-		methods = new JVMMethods(this);
-		fields = new JVMFields(this);
+		component = null;
 	}
 	
 	/**
@@ -95,7 +97,16 @@ public class JVMClass
 		if (__e == null || __comp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		engine = __e;
+		basedon = null;
+		methods = new JVMMethods(this, true);
+		fields = new JVMFields(this, true);
+		
+		// Is an array
+		isarray = true;
+		component = __comp;
+		classname = new ClassNameSymbol("[" + __comp.thisName().asField());
 	}
 	
 	/**

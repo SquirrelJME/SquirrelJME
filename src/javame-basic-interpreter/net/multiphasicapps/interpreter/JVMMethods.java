@@ -14,6 +14,7 @@ import net.multiphasicapps.classfile.CFMemberKey;
 import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classfile.CFMethods;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
@@ -33,6 +34,18 @@ public class JVMMethods
 	JVMMethods(JVMClass __cl)
 	{
 		super(__cl, __cl.base().methods());
+	}
+	
+	/**
+	 * Initializes the class method mappings with no actual mappings.
+	 *
+	 * @param __cl The owning class.
+	 * @param __ign Ignored.
+	 * @since 2016/04/04
+	 */
+	JVMMethods(JVMClass __cl, boolean __ign)
+	{
+		super(__cl, null);
 	}
 	
 	/**
