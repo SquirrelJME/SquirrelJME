@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.multiphasicapps.squirreljme.magic.IVMCharSequence;
 import net.multiphasicapps.squirreljme.magic.Magic;
 
 public final class String
@@ -89,6 +90,22 @@ public final class String
 		throws NullPointerException
 	{
 		this(__a.toString());
+	}
+	
+	/**
+	 * Constructs a new string which uses the specified virtual machine
+	 * internal character sequence as a data source. The characters of this
+	 * string would be sourced from the input object since it has no
+	 * presence in the running virtual machine. In most cases, this would only
+	 * be used by the interpreter.
+	 *
+	 * @param __ivmcs The internal virtual machine character sequence, this
+	 * data is not copied.
+	 * @since 2016/04/05
+	 */
+	private String(IVMCharSequence __ivmcs)
+	{
+		throw new Error("TODO");
 	}
 	
 	public char charAt(int __a)
