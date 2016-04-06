@@ -10,8 +10,9 @@
 
 package net.multiphasicapps.interpreter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This contains the thread manager for the interpreter engine..
@@ -23,13 +24,12 @@ public final class JVMThreads
 	/** The owning engine. */
 	protected final JVMEngine engine;
 	
-	/**
-	 * The threads the interpreter owns (lock on this), the threads are in a
-	 * list so that random cycling could be performed with regards to all
-	 * threads.
-	 */
-	protected final List<JVMThread> threads =
-		new ArrayList<>();
+	/** The threads the interpreter owns (lock on this). */
+	protected final Set<JVMThread> threads =
+		new LinkedHashSet<>();
+	
+	/** The next thread ID. */
+	private volatile int _nextid;
 	
 	/**
 	 * Initializes the thread manager.
@@ -66,7 +66,19 @@ public final class JVMThreads
 		if (__meth == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock on threads
+		Set<JVMThread> ths = threads;
+		synchronized (ths)
+		{
+			// Create
+			JVMThread jt = new JVMThread(this, _nextid++, __meth, __args);
+			
+			// Add it to the thread list
+			ths.add(jt);
+			
+			// Return it
+			return jt;
+		}
 	}
 	
 	/**
@@ -80,8 +92,21 @@ public final class JVMThreads
 	public final boolean isTerminated()
 	{
 		// Lock on threads
-		synchronized (threads)
+		Set<JVMThread> ths = threads;
+		synchronized (ths)
 		{
+			// Go through all threads
+			Iterator<JVMThread> it = ths.iterator();
+			while (it.hasNext())
+			{
+				// Next thread to check
+				JVMThread nx = it.next();
+				
+				// Has ended?
+				if (nx.isTerminated())
+					it.remove();
+			}
+			
 			// Only if no threads remain
 			return threads.isEmpty();
 		}

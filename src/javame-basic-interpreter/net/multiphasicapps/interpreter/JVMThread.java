@@ -21,20 +21,45 @@ public class JVMThread
 	protected final Object lock =
 		new Object();
 	
-	/** The engine which owns this thread. */
-	protected final JVMEngine engine;
+	/** The thread manager. */
+	protected final JVMThreads threads;
+	
+	/** The entry method. */
+	protected final JVMMethod entrymethod;
+	
+	/** Entry arguments. */
+	protected final Object[] entryargs;
+	
+	/** The current thread ID. */
+	protected final int id;
+	
+	/** The internall created thread. */
+	private volatile Thread _thread;
 	
 	/** Has this thread started? */
 	private volatile boolean _started;
 	
+	/** Has this thread ended? */
+	private volatile boolean _ended;
+	
+	/** The name of this thread. */
+	private volatile String _name;
+	
+	/** The thread priority. */
+	private volatile int _priority =
+		Thread.NORM_PRIORITY;
+	
 	/**
 	 * Initializes the thread.
 	 *
-	 * @param __owner The owning thread.
+	 * @param __owner The owning thread manager.
+	 * @param __id The next thread ID.
+	 * @param __em The method to execute on entry.
+	 * @param __args The arguments to use on entry.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	JVMThread(JVMEngine __owner)
+	JVMThread(JVMThreads __owner, int __id, JVMMethod __em, Object... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -42,7 +67,43 @@ public class JVMThread
 			throw new NullPointerException();
 		
 		// Set
-		engine = __owner;
+		threads = __owner;
+		id = __id;
+		entrymethod = __em;
+		entryargs = (__args == null ? new Object[0] : __args.clone());
+		
+		// By default name the thread based on the method used
+		_name = __em.name().toString();
+	}
+	
+	/**
+	 * Returns {@code true} if this thread is alive.
+	 *
+	 * @return If this thread is alive or not.
+	 * @since 2016/04/06
+	 */
+	public boolean isAlive()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _started && !_ended;
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if this has been terminated.
+	 *
+	 * @return If this thread was terminated.
+	 * @since 2016/04/06
+	 */
+	public boolean isTerminated()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _ended;
+		}
 	}
 	
 	/**
@@ -66,7 +127,78 @@ public class JVMThread
 					"IN07 %s", this));
 			_started = true;
 			
+			// Setup new thread and run it
+			Thread rt = new Thread(new __Runner__());
+			_thread = rt;
+			
+			// Start it
+			rt.start();
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/06
+	 */
+	@Override
+	public String toString()
+	{
+		return "Thread[" + id + "," + _priority + "," + _name + "]";
+	}
+	
+	/**
+	 * This is the internal intrepretation loop.
+	 *
+	 * @since 2016/04/06
+	 */
+	private void __interpreterLoop()
+	{
+		// Loop
+		try
+		{
 			throw new Error("TODO");
+		}
+		
+		// Caught some exception
+		catch (Throwable t)
+		{
+			// {@squirreljme.error IN08 An uncaught exception was thrown by
+			// a thread. (The current thread)}
+			System.err.printf("IN08 %s%n", toString());
+			
+			// Print it
+			t.printStackTrace(System.err);
+		}
+		
+		// Always mark as ended
+		finally
+		{
+			synchronized (lock)
+			{
+				_ended = true;
+			}
+		}
+	}
+	
+	/**
+	 * This performs the actual thread running work.
+	 *
+	 * @since 2016/04/06
+	 */
+	private final class __Runner__
+		implements Runnable
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/06
+		 */
+		@Override
+		public void run()
+		{
+			__interpreterLoop();
 		}
 	}
 }

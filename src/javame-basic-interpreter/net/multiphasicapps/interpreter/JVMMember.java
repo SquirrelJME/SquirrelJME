@@ -12,6 +12,7 @@ package net.multiphasicapps.interpreter;
 
 import net.multiphasicapps.classfile.CFMember;
 import net.multiphasicapps.classfile.CFMemberFlags;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
 /**
@@ -62,6 +63,17 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	public F flags()
 	{
 		return base.flags();
+	}
+	
+	/**
+	 * Returns the name of this method.
+	 *
+	 * @return The method name.
+	 * @since 2016/04/06
+	 */
+	public IdentifierSymbol name()
+	{
+		return base.name();
 	}
 }
 

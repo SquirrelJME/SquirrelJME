@@ -107,6 +107,9 @@ public class LocalEngine
 		
 		// Create main thread
 		JVMThread mthread = threads.createThread(mainmethod, pargs);
+		
+		// Start it
+		mthread.start();
 	}
 }
 
