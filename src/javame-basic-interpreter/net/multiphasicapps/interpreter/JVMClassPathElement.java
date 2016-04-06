@@ -10,26 +10,29 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.io.InputStream;
+import java.util.LinkedHashMap;
+
 /**
- * This contains the class path which manages a set of classes which are
- * available in an engine.
+ * This represents a class path which is visible to the interpreter so that
+ * classes may be grouped together.
  *
- * @see JVMClassPathElement
- * @since 2016/04/06
+ * @see JVMClassPath
+ * @since 2016/03/05
  */
-public final class JVMClassPath
+public abstract class JVMClassPathElement
 {
-	/** The owning engine. */
+	/** The owning interpreter engine. */
 	protected final JVMEngine engine;	
 	
 	/**
-	 * Initializes the class path.
+	 * Initializes the classpath which is part of an interpreter.
 	 *
 	 * @param __eng The owning engine.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/06
+	 * @since 2016/03/05
 	 */
-	JVMClassPath(JVMEngine __eng)
+	public JVMClassPathElement(JVMEngine __eng)
 		throws NullPointerException
 	{
 		// Check
@@ -39,5 +42,27 @@ public final class JVMClassPath
 		// Set
 		engine = __eng;
 	}
+	
+	/**
+	 * Returns the engine which owns this class path element.
+	 *
+	 * @return The owning engine.
+	 * @since 2016/03/05
+	 */
+	public final JVMEngine engine()
+	{
+		return engine;
+	}
+	
+	/**
+	 * Finds a resource using the given name as if it were requested from a
+	 * {@link ClassLoader}.
+	 *
+	 * @param __res The resource to find.
+	 * @return The input stream of the given resource or {@code null} if not
+	 * found.
+	 * @since 2016/03/02
+	 */
+	public abstract InputStream getResourceAsStream(String __res);
 }
 

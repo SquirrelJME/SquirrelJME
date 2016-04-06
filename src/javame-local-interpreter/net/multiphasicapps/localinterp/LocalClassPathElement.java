@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.StringTokenizer;
-import net.multiphasicapps.interpreter.JVMClassPath;
+import net.multiphasicapps.interpreter.JVMClassPathElement;
 import net.multiphasicapps.zips.StandardZIPFile;
 
 /**
@@ -26,7 +26,7 @@ import net.multiphasicapps.zips.StandardZIPFile;
  *
  * @since 2016/03/06
  */
-public class LocalClassPath
+public class LocalClassPathElement
 	extends JVMClassPath
 {
 	/** The local engine used. */
@@ -46,7 +46,7 @@ public class LocalClassPath
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/06
 	 */
-	public LocalClassPath(LocalEngine __le, Path __p)
+	public LocalClassPathElement(LocalEngine __le, Path __p)
 		throws NullPointerException
 	{
 		super(__le);

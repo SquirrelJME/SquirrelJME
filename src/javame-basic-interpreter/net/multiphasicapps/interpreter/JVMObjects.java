@@ -11,33 +11,12 @@
 package net.multiphasicapps.interpreter;
 
 /**
- * This contains the class path which manages a set of classes which are
- * available in an engine.
+ * This manages and allows for the creation of objects within the interpreter.
+ * When an object is initialized, this keeps a reference of it.
  *
- * @see JVMClassPathElement
  * @since 2016/04/06
  */
-public final class JVMClassPath
+public class JVMObjects
 {
-	/** The owning engine. */
-	protected final JVMEngine engine;	
-	
-	/**
-	 * Initializes the class path.
-	 *
-	 * @param __eng The owning engine.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/06
-	 */
-	JVMClassPath(JVMEngine __eng)
-		throws NullPointerException
-	{
-		// Check
-		if (__eng == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		engine = __eng;
-	}
 }
 
