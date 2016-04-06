@@ -12,6 +12,7 @@ package net.multiphasicapps.classprogram;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -83,6 +84,24 @@ public class CPProgramBuilder
 		method = __method;
 		inclass = __cfp;
 		constantpool = inclass.constantPool();
+	}
+	
+	/**
+	 * Wraps the input stream to one that is for data and then parses the
+	 * code attribute.
+	 *
+	 * @param __is The stream to wrap.
+	 * @return The resulting program.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/06
+	 */
+	public CPProgram parse(InputStream __is)
+		throws IOException, NullPointerException
+	{
+		if (__is instanceof DataInputStream)
+			return parse((DataInputStream)__is);
+		return parse(new DataInputStream(__is));
 	}
 	
 	/**

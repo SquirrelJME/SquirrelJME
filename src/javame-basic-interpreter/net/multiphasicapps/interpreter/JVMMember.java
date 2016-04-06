@@ -55,6 +55,17 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	}
 	
 	/**
+	 * Returns the mappings which contains this member.
+	 *
+	 * @return The member container.
+	 * @since 2016/04/06
+	 */
+	public JVMMembers<S, F, C, J> container()
+	{
+		return rawowner;
+	}
+	
+	/**
 	 * Returns the member flags.
 	 *
 	 * @return The member flags.

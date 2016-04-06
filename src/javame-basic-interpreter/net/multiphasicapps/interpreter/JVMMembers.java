@@ -108,11 +108,22 @@ public abstract class JVMMembers<S extends MemberTypeSymbol,
 	}
 	
 	/**
+	 * Returns the class which contains these mappings.
+	 *
+	 * @return The class which contains the mappings.
+	 * @since 2016/04/06
+	 */
+	public final JVMClass outerClass()
+	{
+		return outerclass;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/05
 	 */
 	@Override
-	public int size()
+	public final int size()
 	{
 		return wrapped.size();
 	}
