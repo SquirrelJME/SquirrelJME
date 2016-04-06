@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.Deque;
+import java.util.LinkedList;
+import net.multiphasicapps.classprogram.CPProgram;
+
 /**
  * This represents a thread within the interpreter.
  *
@@ -32,6 +36,10 @@ public class JVMThread
 	
 	/** The current thread ID. */
 	protected final int id;
+	
+	/** This thread's stack trace and its state. */
+	protected final Deque<StackElement> stacktrace =
+		new LinkedList<>();
 	
 	/** The internall created thread. */
 	private volatile Thread _thread;
@@ -159,7 +167,49 @@ public class JVMThread
 		// Loop
 		try
 		{
-			throw new Error("TODO");
+			// Setup the initial stack trace
+			Deque<StackElement> stack = stacktrace;
+			synchronized (lock)
+			{
+				stack.offerLast(new StackElement(entrymethod, entryargs));
+			}
+			
+			// Execution loop
+			for (;;)
+				synchronized (lock)
+				{
+					// Execute the topmost entry
+					try
+					{
+						// Get the top-most element
+						StackElement exectop = stack.peekLast();
+						
+						// Nothing is on the top, the thread terminates
+						if (exectop == null)
+							break;
+						
+						throw new Error("TODO");
+					}
+					
+					// Attempt to handle the exception, if it can even be
+					// handled. Some exceptions which are thrown by the engine
+					// may end up being wrapped and handled.
+					catch (Throwable t)
+					{
+						// Errors are not to be handled because they pertain
+						// to the host virtual machine.
+						// However if the host VM is out of error then attempt
+						// to translate that to the guest virtual machine.
+						if ((t instanceof Error) &&
+							!(t instanceof OutOfMemoryError))
+							throw (Error)t;
+						
+						throw new Error("TODO");
+					}
+				}
+			
+			// Execution ends
+			_ended = true;
 		}
 		
 		// Caught some exception
@@ -180,6 +230,43 @@ public class JVMThread
 			{
 				_ended = true;
 			}
+		}
+	}
+	
+	/**
+	 * This represents the current state of the stack.
+	 *
+	 * @since 2016/04/06
+	 */
+	protected final class StackElement
+	{
+		/** The current method. */
+		protected final JVMMethod method;
+		
+		/** The method to execute. */
+		protected final CPProgram program;
+		
+		/**
+		 * Initializes the stack element.
+		 *
+		 * @param __meth The current method.
+		 * @param __args The method arguments which set the initial local
+		 * variables.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/04/06
+		 */
+		private StackElement(JVMMethod __meth, Object... __args)
+			throws NullPointerException
+		{
+			// Check
+			if (__meth == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			method = __meth;
+			program = method.program();
+			
+			throw new Error("TODO");
 		}
 	}
 	
