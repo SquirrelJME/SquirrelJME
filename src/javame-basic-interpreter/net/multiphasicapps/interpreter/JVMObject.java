@@ -15,71 +15,35 @@ package net.multiphasicapps.interpreter;
  *
  * @since 2016/03/01
  */
-public final class JVMObject
+public class JVMObject
 {
-	/** The owning engine. */
-	protected final JVMEngine engine;
+	/** The owning object manager. */
+	protected final JVMObjects objects;
 	
 	/** The class this object is. */
 	protected final JVMClass classtype;
 	
-	/** The length of this array . */
-	protected final int arraylength;
-	
-	/** Internal array data. */
-	protected final Object array;
-	
 	/**
 	 * Initializes the object, which may be an array.
 	 *
+	 * @param __objs Object manager.
 	 * @param __type The array type.
-	 * @param __length The length of the array, if not an array type this must
-	 * be negative.
-	 * @throws IllegalStateException If 
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/05
 	 */
-	JVMObject(JVMClass __type, int __length)
-		throws IllegalStateException, NullPointerException
+	JVMObject(JVMObjects __objs, JVMClass __type)
+		throws NullPointerException
 	{
 		// Check
-		if (__type == null)
+		if (__objs == null || __type == null)
 			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error LI0d Attempting to create a new instance of an
-		// object which is or is not an array type yet if it is an array it has
-		// negative length. If not an array then it has positive length.
-		// (The type; The length of the array)}
-		if (__type.isArray() != (__length >= 0))
-			throw new IllegalStateException(String.format("LI0d %s %d", __type,
-				__length));
 		
 		// Set
 		classtype = __type;
-		engine = classtype.engine();
-		arraylength = (__length >= 0 ? __length : Integer.MIN_VALUE);
+		objects = __objs;
 		
 		// Register this object with the engine
-		engine.__registerObject(this);
-		
-		// Not an array?
-		if (arraylength < 0)
-			array = null;
-		
-		// Create array of the given type
-		else
-			array = classtype.createBackingArray(arraylength);
-	}
-	
-	/**
-	 * Returns the engine which owns this object.
-	 *
-	 * @return The owning engine.
-	 * @since 2016/04/05
-	 */
-	public JVMEngine engine()
-	{
-		return engine;
+		objects.__registerObject(this);
 	}
 	
 	/**
@@ -97,16 +61,25 @@ public final class JVMObject
 	}
 	
 	/**
-	 * Sets the element of the array.
+	 * Returns {@code true} if this is an array, otherwise false.
 	 *
-	 * @param __i Index to set.
-	 * @param __v The value to set.
-	 * @return {@code this}.
+	 * @return If this is an array or not.
+	 * @since 2016/04/06
+	 */
+	public boolean isArray()
+	{
+		return false;
+	}
+	
+	/**
+	 * Returns the object manager which manages this object.
+	 *
+	 * @return The owning object manager.
 	 * @since 2016/04/05
 	 */
-	public JVMObject setArrayElement(int __i, Object __v)
+	public JVMObjects objects()
 	{
-		throw new Error("TODO");
+		return objects;
 	}
 }
 

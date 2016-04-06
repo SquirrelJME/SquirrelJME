@@ -35,78 +35,31 @@ public final class JVMClass
 	/** The owning engine. */
 	protected final JVMEngine engine;
 	
-	/** The class to base off. */
-	protected final CFClass basedon;
-	
-	/** Is this an array? */
-	protected final boolean isarray;
+	/** The class path which spawned this. */
+	protected final JVMClassPath owningpath;
 	
 	/** The name of this class. */
-	protected final ClassNameSymbol classname;
-	
-	/** Class methods. */
-	protected final JVMMethods methods;
-	
-	/** Class fields. */
-	protected final JVMFields fields;
-	
-	/** The component type, if an array. */
-	protected final JVMComponentType component;
-	
-	/** Class loader formatted binary name cache. */
-	private volatile Reference<String> _clbname;
+	protected final ClassNameSymbol thisname;
 	
 	/**
-	 * Initializes a class which is based on the given class.
+	 * Initalizes the lazily loaded class.
 	 *
-	 * @param __e The owning engine.
-	 * @param __cf The parsed class file data.
-	 * @since 2016/03/02
-	 */
-	JVMClass(JVMEngine __e, CFClass __cf)
-		throws NullPointerException
-	{
-		// Check
-		if (__e == null || __cf == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		engine = __e;
-		basedon = __cf;
-		methods = new JVMMethods(this);
-		fields = new JVMFields(this);
-		classname = basedon.thisName().asClassName();
-		
-		// Not an array
-		isarray = false;
-		component = null;
-	}
-	
-	/**
-	 * Initializes a class which is a component of the given class.
-	 *
-	 * @param __e The owning engine.
-	 * @param __comp The component type of the array.
+	 * @param __cp The owning class path.
+	 * @param __bn The name of this class.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/04
+	 * @since 2016/04/06
 	 */
-	public JVMClass(JVMEngine __e, JVMComponentType __comp)
+	JVMClass(JVMClassPath __cp, ClassNameSymbol __bn)
 		throws NullPointerException
 	{
 		// Check
-		if (__e == null || __comp == null)
+		if (__cp == null || __bn == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		engine = __e;
-		basedon = null;
-		methods = new JVMMethods(this, true);
-		fields = new JVMFields(this, true);
-		
-		// Is an array
-		isarray = true;
-		component = __comp;
-		classname = new ClassNameSymbol("[" + __comp.thisName().asField());
+		owningpath = __cp;
+		engine = owningpath.engine();
+		thisname = __bn;
 	}
 	
 	/**
@@ -117,54 +70,10 @@ public final class JVMClass
 	 */
 	public final CFClass base()
 	{
-		if (isarray)
+		// No base for arrays
+		if (thisname.isArray())
 			return null;
-		return basedon;
-	}
-	
-	/**
-	 * Returns the name of this class as returned by {@link Class#getName()}.
-	 *
-	 * @return The name of this class.
-	 * @throws IllegalStateException If the name of the class was not set.
-	 * @since 2016/03/02
-	 */
-	public final String classLoaderName()
-		throws IllegalStateException
-	{
-		// Get reference
-		Reference<String> ref = _clbname;
-		String rv;
 		
-		// Needs to be cached?
-		if (ref == null || null == (rv = ref.get()))
-		{
-			// If an array, then the field syntax is directly used
-			if (isarray)
-				rv = thisName().toString();
-			
-			// Otherwise use the binary form instead but with characters
-			// replaced
-			else
-				rv = thisName().toString().replace('/', '.');
-			
-			// Cache it
-			_clbname = new WeakReference<>(rv);
-		}
-		
-		// Return it
-		return rv;
-	}
-	
-	/**
-	 * Create an array to store the given object data.
-	 *
-	 * @param __len The length of the array.
-	 * @return The newly created array.
-	 * @since 2016/04/05
-	 */
-	public final Object createBackingArray(int __len)
-	{
 		throw new Error("TODO");
 	}
 	
@@ -187,7 +96,7 @@ public final class JVMClass
 	 */
 	public JVMFields fields()
 	{
-		return fields;
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -199,11 +108,10 @@ public final class JVMClass
 	public CFClassFlags flags()
 	{
 		// If an array, the flags are fixed to a specific variety.
-		if (isarray)
+		if (thisname.isArray())
 			return ARRAY_FLAGS;
 		
-		// Otherwise defer
-		return basedon.flags();
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -214,7 +122,7 @@ public final class JVMClass
 	 */
 	public boolean isArray()
 	{
-		return isarray;
+		return thisname.isArray();
 	}
 	
 	/**
@@ -225,7 +133,7 @@ public final class JVMClass
 	 */
 	public JVMMethods methods()
 	{
-		return methods;
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -236,7 +144,7 @@ public final class JVMClass
 	 */
 	public ClassNameSymbol thisName()
 	{
-		return classname;
+		return thisname;
 	}
 }
 

@@ -22,36 +22,14 @@ import java.util.LinkedHashMap;
  */
 public abstract class JVMClassPathElement
 {
-	/** The owning interpreter engine. */
-	protected final JVMEngine engine;	
-	
 	/**
 	 * Initializes the classpath which is part of an interpreter.
 	 *
-	 * @param __eng The owning engine.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/05
 	 */
-	public JVMClassPathElement(JVMEngine __eng)
+	public JVMClassPathElement()
 		throws NullPointerException
 	{
-		// Check
-		if (__eng == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		engine = __eng;
-	}
-	
-	/**
-	 * Returns the engine which owns this class path element.
-	 *
-	 * @return The owning engine.
-	 * @since 2016/03/05
-	 */
-	public final JVMEngine engine()
-	{
-		return engine;
 	}
 	
 	/**
