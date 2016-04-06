@@ -29,35 +29,35 @@ public final class ClassNameSymbol
 	
 	/** Boolean. */
 	public static final ClassNameSymbol BOOLEAN =
-		new ClassNameSymbol("Z", true);
+		new ClassNameSymbol("Z", true, null);
 	
 	/** Byte. */
 	public static final ClassNameSymbol BYTE =
-		new ClassNameSymbol("B", true);
+		new ClassNameSymbol("B", true, null);
 	
 	/** Short. */
 	public static final ClassNameSymbol SHORT =
-		new ClassNameSymbol("S", true);
+		new ClassNameSymbol("S", true, null);
 	
 	/** Character. */
 	public static final ClassNameSymbol CHARACTER =
-		new ClassNameSymbol("C", true);
+		new ClassNameSymbol("C", true, null);
 	
 	/** Integer. */
 	public static final ClassNameSymbol INTEGER =
-		new ClassNameSymbol("I", true);
+		new ClassNameSymbol("I", true, null);
 	
 	/** Long. */
 	public static final ClassNameSymbol LONG =
-		new ClassNameSymbol("J", true);
+		new ClassNameSymbol("J", true, null);
 	
 	/** Float. */
 	public static final ClassNameSymbol FLOAT =
-		new ClassNameSymbol("F", true);
+		new ClassNameSymbol("F", true, null);
 	
 	/** Double. */
 	public static final ClassNameSymbol DOUBLE =
-		new ClassNameSymbol("D", true);
+		new ClassNameSymbol("D", true, null);
 	
 	/** Is this an array? */
 	protected final boolean isarray;
@@ -71,6 +71,9 @@ public final class ClassNameSymbol
 	/** As a binary name symbol. */
 	private volatile Reference<BinaryNameSymbol> _asbinary;
 	
+	/** Class loader name. */
+	private volatile Reference<ClassLoaderNameSymbol> _asclname;
+	
 	/**
 	 * Initializes the class name symbol.
 	 *
@@ -82,7 +85,7 @@ public final class ClassNameSymbol
 	public ClassNameSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
-		this(__s, false);
+		this(__s, false, null);
 	}
 	
 	/**
@@ -131,11 +134,12 @@ public final class ClassNameSymbol
 	 *
 	 * @param __s The descriptor.
 	 * @param __prim Is this a primitive type?
+	 * @param __clname Class loader name cache, is optional.
 	 * @throws IllegalSymbolException If the class name is not valid.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/31
 	 */
-	private ClassNameSymbol(String __s, boolean __prim)
+	ClassNameSymbol(String __s, boolean __prim,
+		ClassLoaderNameSymbol __clname)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -143,6 +147,10 @@ public final class ClassNameSymbol
 		// Is an array?
 		isarray = charAt(0) == '[';
 		isprimitive = __prim;
+		
+		// Cache the class loader name
+		if (__clname != null)
+			_asclname = new WeakReference<>(__clname);
 		
 		// Check it by making it
 		if (isarray || isprimitive)
@@ -178,6 +186,27 @@ public final class ClassNameSymbol
 		if (rv == null)
 			_asbinary = new WeakReference<>(
 				(rv = new BinaryNameSymbol(toString(), this)));
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Returns this class name as a class loader name.
+	 *
+	 * @return This class name as a class loader name.
+	 * @since 2016/04/06
+	 */
+	public ClassLoaderNameSymbol asClassLoaderName()
+	{
+		// Get reference
+		Reference<ClassLoaderNameSymbol> ref = _asclname;
+		ClassLoaderNameSymbol rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+			_asclname = new WeakReference<>((rv = new ClassLoaderNameSymbol(
+				(isarray ? toString() : toString().replace('/', '.')), this)));
 		
 		// Return it
 		return rv;

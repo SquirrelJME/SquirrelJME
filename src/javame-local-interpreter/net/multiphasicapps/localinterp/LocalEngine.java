@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.CFMemberKey;
 import net.multiphasicapps.classfile.CFMethodFlags;
+import net.multiphasicapps.collections.ClassLoaderNameSymbol;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -80,13 +81,14 @@ public class LocalEngine
 		
 		// Setup classpath
 		for (Path p : bootclasspath)
-			classes.addClassPath(new LocalClassPath(p));
+			classes.addClassPath(new LocalClassPathElement(p));
 		for (Path p : classpath)
 			if (!bootclasspath.contains(p))
-				classes.addClassPath(new LocalClassPath(p));
+				classes.addClassPath(new LocalClassPathElement(p));
 		
 		// Find the main class
-		JVMClass mainclass = classes.loadClass(__main);
+		JVMClass mainclass = classes.loadClass(
+			new ClassLoaderNameSymbol(__main).asClassName());
 		if (mainclass == null)
 			throw new IllegalArgumentException(String.format(
 				"LI02 %s", __main));

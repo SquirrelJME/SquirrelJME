@@ -38,7 +38,7 @@ abstract class __BaseSymbol__
 		// Set
 		string = __s;
 		
-		// Cannot be blank
+		// {@squirreljme.error DS01 A symbol cannot be blank.}
 		int n = length();
 		if (n <= 0)
 			throw new IllegalSymbolException("DS01");
