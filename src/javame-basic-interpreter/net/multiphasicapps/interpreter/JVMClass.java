@@ -100,23 +100,23 @@ public final class JVMClass
 				try (InputStream is = owningpath.getResourceAsStream((res =
 					thisname.asClassLoaderName().resourceName())))
 				{
-					// {@squirreljme.error Li0e The current class has no
+					// {@squirreljme.error IN04 The current class has no
 					// definition. (The class which does not exist; The
 					// resource which was attempted to be obtained)}
 					if (is == null)
 						throw new JVMNoClassDefFoundError(
-							String.format("LI0e %s %s", thisName(), res));
+							String.format("IN04 %s %s", thisName(), res));
 					
 					// Parse the class
 					else
 						_classfile = rv = new CFClassParser().parse(is);
 				}
 				
-				// {@squirreljme.error LI0d Cannot get class representation
+				// {@squirreljme.error IN05 Cannot get class representation
 				// because the class file is malformed. (The failing class)}
 				catch (CFFormatException|IOException e)
 				{
-					throw new JVMClassFormatError(String.format("LI0d %s",
+					throw new JVMClassFormatError(String.format("IN05 %s",
 						thisName()), e);
 				}
 			

@@ -59,11 +59,11 @@ public class JVMThread
 		// Lock
 		synchronized (lock)
 		{
-			// {@squirreljme.error IN01 Thread has already been started.
+			// {@squirreljme.error IN07 Thread has already been started.
 			// (The current thread)}
 			if (_started)
 				throw new JVMIllegalThreadStateException(String.format(
-					"IN01 %s", this));
+					"IN07 %s", this));
 			_started = true;
 			
 			throw new Error("TODO");

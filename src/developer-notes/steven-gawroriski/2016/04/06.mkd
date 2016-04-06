@@ -26,3 +26,7 @@ used.
 
 Going to have to fixup and renumber the interpreter errors.
 
+## 17:27
+
+Refactored code is much cleaner now and I can progress much more easily.
+

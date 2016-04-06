@@ -36,16 +36,16 @@ public class JVMArray
 	{
 		super(__objs, __type);
 		
-		// {@squirreljme.error IN0d Attempting to create a new instance of an
+		// {@squirreljme.error IN01 Attempting to create a new instance of an
 		// object which is not an array. (The type; The length of the array)}
 		if (!__type.isArray())
-			throw new JVMClassCastException(String.format("IN0d %s %d", __type,
+			throw new JVMClassCastException(String.format("IN01 %s %d", __type,
 				__length));
 		
-		// {@squirreljme.error IN0e Attempting to create an array with a
+		// {@squirreljme.error IN02 Attempting to create an array with a
 		// negative length. (The negative length)}
 		if (__length < 0)
-			throw new JVMNegativeArraySizeException(String.format("IN0e %s",
+			throw new JVMNegativeArraySizeException(String.format("IN02 %s",
 				__length));
 		
 		// Set
@@ -75,12 +75,12 @@ public class JVMArray
 	public Object setArrayElement(int __i, Object __v)
 		throws JVMArrayIndexOutOfBoundsException
 	{
-		// {@squirreljme.error IN0f An attempt was made to set the element of
+		// {@squirreljme.error IN03 An attempt was made to set the element of
 		// and array which is not within bounds of the array. (The index;
 		// The size of the array)}
 		if (__i < 0 || __i >= arraylength)
 			throw new JVMArrayIndexOutOfBoundsException(String.format(
-				"IN0f", __i, arraylength));
+				"IN03", __i, arraylength));
 		
 		throw new Error("TODO");
 	}
