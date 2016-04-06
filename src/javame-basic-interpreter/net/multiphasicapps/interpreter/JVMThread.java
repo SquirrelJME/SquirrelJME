@@ -16,13 +16,16 @@ package net.multiphasicapps.interpreter;
  * @since 2016/03/01
  */
 public class JVMThread
-	implements Runnable
 {
-	/** The real thread of the interpreter. */
-	protected final Thread realthread;	
+	/** Lock. */
+	protected final Object lock =
+		new Object();
 	
 	/** The engine which owns this thread. */
 	protected final JVMEngine engine;
+	
+	/** Has this thread started? */
+	private volatile boolean _started;
 	
 	/**
 	 * Initializes the thread.
@@ -40,19 +43,31 @@ public class JVMThread
 		
 		// Set
 		engine = __owner;
-		
-		// Setup real thread
-		realthread = new Thread(this);
 	}
 	
 	/**
 	 * Runs the current thread.
 	 *
+	 * @return {@code this}.
+	 * @throws JVMIllegalThreadStateException If this thread has already
+	 * started.
 	 * @since 2016/03/01
 	 */
-	public void run()
+	public JVMThread start()
+		throws JVMIllegalThreadStateException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// {@squirreljme.error IN01 Thread has already been started.
+			// (The current thread)}
+			if (_started)
+				throw new JVMIllegalThreadStateException(String.format(
+					"IN01 %s", this));
+			_started = true;
+			
+			throw new Error("TODO");
+		}
 	}
 }
 
