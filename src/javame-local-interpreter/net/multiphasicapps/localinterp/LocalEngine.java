@@ -80,13 +80,13 @@ public class LocalEngine
 		
 		// Setup classpath
 		for (Path p : bootclasspath)
-			addClassPath(new LocalClassPath(this, p));
+			classes.addClassPath(new LocalClassPath(p));
 		for (Path p : classpath)
 			if (!bootclasspath.contains(p))
-				addClassPath(new LocalClassPath(this, p));
+				classes.addClassPath(new LocalClassPath(p));
 		
 		// Find the main class
-		JVMClass mainclass = loadClass(__main);
+		JVMClass mainclass = classes.loadClass(__main);
 		if (mainclass == null)
 			throw new IllegalArgumentException(String.format(
 				"LI02 %s", __main));
@@ -101,10 +101,10 @@ public class LocalEngine
 				"LI03 %s", __main));
 		
 		// Create arguments for the main thread
-		JVMObject pargs = spawnStringArray(__args);
+		JVMObject pargs = objects.spawnStringArray(__args);
 		
 		// Create main thread
-		JVMThread mthread = createThread(mainmethod, pargs);
+		JVMThread mthread = threads.createThread(mainmethod, pargs);
 	}
 }
 

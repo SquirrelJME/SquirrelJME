@@ -27,11 +27,8 @@ import net.multiphasicapps.zips.StandardZIPFile;
  * @since 2016/03/06
  */
 public class LocalClassPathElement
-	extends JVMClassPath
+	extends JVMClassPathElement
 {
-	/** The local engine used. */
-	protected final LocalEngine localengine;
-	
 	/** The used path. */
 	protected final Path path;
 	
@@ -46,17 +43,14 @@ public class LocalClassPathElement
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/06
 	 */
-	public LocalClassPathElement(LocalEngine __le, Path __p)
+	public LocalClassPathElement(Path __p)
 		throws NullPointerException
 	{
-		super(__le);
-		
 		// Check
-		if (__le == null || __p == null)
+		if (__p == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		localengine = __le;
 		path = __p;
 		
 		// Open file

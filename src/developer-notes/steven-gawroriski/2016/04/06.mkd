@@ -22,4 +22,7 @@ complicate complexity a bit. So if classes are referenced but are never
 initialized or called then they sort of exist until they are attempted to be
 used.
 
+## 10:15
+
+Going to have to fixup and renumber the interpreter errors.
 

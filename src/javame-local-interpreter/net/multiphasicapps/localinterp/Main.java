@@ -197,7 +197,7 @@ __outer_loop:
 		// could be cooperatively threaded which means the loop will never
 		// terminate. Thus this yield will force the other interpreter threads
 		// which are running to actually run.
-		while (!le.isTerminated())
+		while (!le.threads().isTerminated())
 			Thread.yield();
 	}
 }

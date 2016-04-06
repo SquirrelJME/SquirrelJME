@@ -145,10 +145,10 @@ public final class JVMObjects
 		if (__jo == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error LI0g The object to register is not owned by
+		// {@squirreljme.error IN0g The object to register is not owned by
 		// this object manager.}
 		if (this != __jo.objects())
-			throw new IllegalStateException("LI0g");
+			throw new IllegalStateException("IN0g");
 		
 		// Lock
 		Set<Reference<JVMObject>> objs = objects;
