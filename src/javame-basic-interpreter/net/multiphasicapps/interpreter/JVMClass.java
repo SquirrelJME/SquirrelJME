@@ -10,12 +10,16 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import net.multiphasicapps.classfile.CFClass;
 import net.multiphasicapps.classfile.CFClassFlag;
 import net.multiphasicapps.classfile.CFClassFlags;
+import net.multiphasicapps.classfile.CFClassParser;
+import net.multiphasicapps.classfile.CFFormatException;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -32,6 +36,10 @@ public final class JVMClass
 			CFClassFlag.FINAL.mask |
 			CFClassFlag.SYNTHETIC.mask);
 	
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The owning engine. */
 	protected final JVMEngine engine;
 	
@@ -40,6 +48,12 @@ public final class JVMClass
 	
 	/** The name of this class. */
 	protected final ClassNameSymbol thisname;
+	
+	/** The based class file. */
+	private volatile CFClass _classfile;
+	
+	/** Methods contained in this class. */
+	private volatile JVMMethods _methods;
 	
 	/**
 	 * Initalizes the lazily loaded class.
@@ -74,7 +88,41 @@ public final class JVMClass
 		if (thisname.isArray())
 			return null;
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Already loaded?
+			CFClass rv = _classfile;
+			
+			// Needs loading?
+			String res;
+			if (rv == null)
+				try (InputStream is = owningpath.getResourceAsStream((res =
+					thisname.asClassLoaderName().resourceName())))
+				{
+					// {@squirreljme.error Li0e The current class has no
+					// definition. (The class which does not exist; The
+					// resource which was attempted to be obtained)}
+					if (is == null)
+						throw new JVMNoClassDefFoundError(
+							String.format("LI0e %s %s", thisName(), res));
+					
+					// Parse the class
+					else
+						_classfile = rv = new CFClassParser().parse(is);
+				}
+				
+				// {@squirreljme.error LI0d Cannot get class representation
+				// because the class file is malformed. (The failing class)}
+				catch (CFFormatException|IOException e)
+				{
+					throw new JVMClassFormatError(String.format("LI0d %s",
+						thisName()), e);
+				}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
@@ -133,7 +181,20 @@ public final class JVMClass
 	 */
 	public JVMMethods methods()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Already loaded?
+			JVMMethods rv = _methods;
+			
+			// Needs loading?
+			if (rv == null)
+				_methods = (rv = (thisname.isArray() ?
+					new JVMMethods(this, true) : new JVMMethods(this)));
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
@@ -145,6 +206,16 @@ public final class JVMClass
 	public ClassNameSymbol thisName()
 	{
 		return thisname;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/06
+	 */
+	@Override
+	public String toString()
+	{
+		return thisname.toString();
 	}
 }
 

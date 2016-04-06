@@ -38,7 +38,7 @@ public class JVMArray
 		
 		// {@squirreljme.error IN0d Attempting to create a new instance of an
 		// object which is not an array. (The type; The length of the array)}
-		if (__type.isArray())
+		if (!__type.isArray())
 			throw new JVMClassCastException(String.format("IN0d %s %d", __type,
 				__length));
 		

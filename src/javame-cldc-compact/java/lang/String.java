@@ -371,6 +371,11 @@ public final class String
 	
 	public String replace(char __a, char __b)
 	{
+		// If a character is going to be replaced with itself then no
+		// replacement has to actually be performed.
+		if (__a == __b)
+			return this;
+		
 		throw new Error("TODO");
 	}
 	

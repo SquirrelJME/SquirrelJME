@@ -21,8 +21,14 @@ import java.lang.ref.WeakReference;
 public final class ClassLoaderNameSymbol
 	extends __BaseSymbol__
 {
+	/** Is this an array? */
+	protected final boolean isarray;
+	
 	/** The class name of this symbol. */
 	private volatile Reference<ClassNameSymbol> _cname;
+	
+	/** The name of this resource. */
+	private volatile Reference<String> _rcname;
 	
 	/**
 	 * Initializes the class loader symbol.
@@ -53,7 +59,7 @@ public final class ClassLoaderNameSymbol
 		super(__s);
 		
 		// If not an array, it cannot contain any forward slashes
-		boolean isarray = ('[' == charAt(0));
+		isarray = ('[' == charAt(0));
 		if (!isarray)
 		{
 			// {@squirreljme.error DS0e Non-array class loader names cannot
@@ -89,15 +95,37 @@ public final class ClassLoaderNameSymbol
 		// Needs to be created?
 		if (ref == null || null == (rv = ref.get()))
 		{
-			// Is this an array?
-			boolean isarray = ('[' == charAt(0));	
-			
 			// Arrays are treated like fields, otherwise the names of classes
 			// get their dots replaced with slashes
 			_cname = new WeakReference<>((rv = new ClassNameSymbol(
-				(isarray ? toString() :  toString(). replace('.', '/')),
+				(isarray ? toString() : toString(). replace('.', '/')),
 				false, this)));
 		}
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Returns the name of this class name as a resoiurce.
+	 *
+	 * @return The resource name or {@code null} if an array.
+	 * @since 2016/04/06
+	 */
+	public String resourceName()
+	{
+		// Not valid for arrays
+		if (isarray)
+			return null;
+		
+		// Get reference
+		Reference<String> ref = _rcname;
+		String rv;
+		
+		// Needs caching?
+		if (ref == null || (null == (rv = ref.get())))
+			_rcname = new WeakReference<>((rv = '/' + toString().
+				replace('.', '/') + ".class"));
 		
 		// Return it
 		return rv;

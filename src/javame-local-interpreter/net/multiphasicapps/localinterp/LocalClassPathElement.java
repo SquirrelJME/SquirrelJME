@@ -105,6 +105,10 @@ public class LocalClassPathElement
 	@Override
 	public InputStream getResourceAsStream(String __res)
 	{
+		// If it starts with a slash, remove it
+		if (__res.startsWith("/"))
+			__res = __res.substring(1);
+		
 		// Could fail to read
 		try
 		{

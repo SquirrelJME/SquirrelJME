@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -106,6 +108,32 @@ public final class JVMClassPath
 	public JVMEngine engine()
 	{
 		return engine;
+	}
+	
+	/**
+	 * Finds a resource using the given name as if it were requested from a
+	 * {@link ClassLoader}.
+	 *
+	 * @param __res The resource to find.
+	 * @return The input stream of the given resource or {@code null} if not
+	 * found.
+	 * @since 2016/04/06
+	 */
+	public InputStream getResourceAsStream(String __res)
+	{
+		// Lock on the class paths
+		Set<JVMClassPathElement> cps = classpaths;
+		synchronized (cps)
+		{
+			// Work until a resource is found
+			InputStream rv = null;
+			for (JVMClassPathElement e : cps)
+				if (null != (rv = e.getResourceAsStream(__res)))
+					return rv;
+			
+			// Not found
+			return null;
+		}
 	}
 	
 	/**
