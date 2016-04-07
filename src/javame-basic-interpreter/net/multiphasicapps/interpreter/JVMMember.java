@@ -72,6 +72,17 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	}
 	
 	/**
+	 * Returns the engine owning this member.
+	 *
+	 * @return The engine which owns this.
+	 * @since 2016/04/07
+	 */
+	public JVMEngine engine()
+	{
+		return container().outerClass().engine();
+	}
+	
+	/**
 	 * Returns the member flags.
 	 *
 	 * @return The member flags.
@@ -102,6 +113,17 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	public CFMemberKey<S> nameAndType()
 	{
 		return base.nameAndType();
+	}
+	
+	/**
+	 * Returns the descriptor of this member.
+	 *
+	 * @return The member descriptor.
+	 * @since 2016/04/07
+	 */
+	public S type()
+	{
+		return base.type();
 	}
 	
 	/**

@@ -34,3 +34,7 @@ exists and can be used for example.
 What I need now is to interpret the class constructor, which would be very
 important.
 
+## 17:32
+
+Going to need classes for the primitive types.
+

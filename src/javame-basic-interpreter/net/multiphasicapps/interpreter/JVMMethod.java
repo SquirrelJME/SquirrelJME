@@ -14,12 +14,15 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classprogram.CPProgram;
 import net.multiphasicapps.classprogram.CPProgramBuilder;
 import net.multiphasicapps.classprogram.CPProgramException;
+import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
@@ -70,8 +73,7 @@ public class JVMMethod
 		
 		// If no thread is specified, then 
 		if (__thr == null)
-			__thr = container().outerClass().engine().threads().
-				defaultThread();
+			__thr = engine().threads().defaultThread();
 		
 		// On entry of a method, add this method to the call stack.
 		Deque<JVMMethod> callstack = __thr.stackTrace();
@@ -86,7 +88,52 @@ public class JVMMethod
 			// Debug
 			System.err.printf("DEBUG -- Interpret %s (%s)%n", this, __init);
 			
-			throw new Error("TODO");
+			// Get program here
+			CPProgram program = program();
+			
+			// Make sure the right about of arguments were passed
+			MethodSymbol desc = type();
+			int ncargs = desc.argumentCount();
+			if (!flags().isStatic())
+				ncargs += 1;
+			
+			// {@squirreljme.error IN0g Incorrect number of arguments passed to
+			// this method. (The number of method arguments; The number of
+			// passed arguments)}
+			int inac = __args.length;
+			if (inac != ncargs)
+				throw new JVMEngineException(String.format("IN0g %d %d",
+					ncargs, inac));
+			
+			// Setup entry variable state
+			int numlocals = program.maxLocals();
+			int numvars = program.variableCount();
+			JVMVariable[] vars = new JVMVariable[numvars];
+			
+			// Setup the initial variable state
+			{
+				// Classpaths
+				JVMClassPath jcp = engine().classes();
+				
+				// Setup variable
+				int vat = 0;
+				for (int i = 0; i < ncargs; i++)
+				{
+					// Get method argument from the descriptor and the input
+					// argument
+					FieldSymbol farg = desc.get(i);
+					Object carg = __args[i];
+					
+					throw new Error("TODO");
+				}
+			}
+			
+			// Keep executing until a return is reached or an unhandled
+			// exception is done.
+			for (int pc = 0;;)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		// When execution terminates, remove the top stack item.

@@ -251,5 +251,16 @@ public final class ClassNameSymbol
 	{
 		return isarray;
 	}
+	
+	/**
+	 * Is this a primitive type?
+	 *
+	 * @return {@code true} if this is a primitive type.
+	 * @since 2016/04/07
+	 */
+	public boolean isPrimitive()
+	{
+		return isprimitive;
+	}
 }
 

@@ -24,6 +24,7 @@ import net.multiphasicapps.classfile.CFClass;
 import net.multiphasicapps.classfile.CFClassParser;
 import net.multiphasicapps.classfile.CFFormatException;
 import net.multiphasicapps.classfile.CFMethod;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -54,6 +55,9 @@ public final class JVMClassPath
 	protected final Set<JVMClassPathElement> classpaths =
 		new LinkedHashSet<>();
 	
+	/** Classes which represent primitive types. */
+	protected final Map<ClassNameSymbol, JVMClass> primitives;
+	
 	/**
 	 * Initializes the class path.
 	 *
@@ -70,6 +74,21 @@ public final class JVMClassPath
 		
 		// Set
 		engine = __eng;
+		
+		// Setup primitive classes
+		Map<ClassNameSymbol, JVMClass> pm = new HashMap<>();
+		for (JVMPrimitiveType jpt : JVMPrimitiveType.values())
+		{
+			// Setup class for it
+			JVMClass pcl = new JVMClass(this, jpt);
+			
+			// Place it in the primitive mappings
+			pm.put(pcl.thisName(), pcl);
+		}
+		
+		// Lock in
+		primitives = MissingCollections.<ClassNameSymbol, JVMClass>
+			unmodifiableMap(pm);
 	}
 	
 	/**
@@ -154,6 +173,10 @@ public final class JVMClassPath
 		if (__bn == null)
 			throw new NullPointerException("NARG");
 		
+		// If a primitive class then return a direct reference of it
+		if (__bn.isPrimitive())
+			return primitives.get(__bn);
+		
 		// Lock on the class map
 		synchronized (classes)
 		{
@@ -163,8 +186,8 @@ public final class JVMClassPath
 			
 			// Reference is still valid?
 			if (ref == null || null == (rv = ref.get()))
-				classes.put(__bn, new WeakReference<>((rv =
-					new JVMClass(this, __bn)), classqueue));
+				classes.put(__bn, new WeakReference<>((rv = new JVMClass(this,
+					__bn)), classqueue));
 			
 			// Return the read class
 			return rv;

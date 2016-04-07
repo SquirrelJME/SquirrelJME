@@ -69,6 +69,9 @@ public final class JVMClass
 	/** The name of this class. */
 	protected final ClassNameSymbol thisname;
 	
+	/** The primitive type this class represents. */
+	protected final JVMPrimitiveType primitive;
+	
 	/** The based class file. */
 	private volatile CFClass _classfile;
 	
@@ -106,6 +109,29 @@ public final class JVMClass
 		owningpath = __cp;
 		engine = owningpath.engine();
 		thisname = __bn;
+		primitive = null;
+	}
+	
+	/**
+	 * Initializes a class which represents a primitive type.
+	 *
+	 * @param __cp The owning class path.
+	 * @param __prim The primitive type this represents.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/07
+	 */
+	JVMClass(JVMClassPath __cp, JVMPrimitiveType __prim)
+		throws NullPointerException
+	{
+		// Check
+		if (__cp == null || __prim == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		owningpath = __cp;
+		engine = owningpath.engine();
+		primitive = __prim;
+		thisname = primitive.thisName();
 	}
 	
 	/**
@@ -116,8 +142,8 @@ public final class JVMClass
 	 */
 	public final CFClass base()
 	{
-		// No base for arrays
-		if (thisname.isArray())
+		// No base for arrays or primitives
+		if (isArray() || isPrimitive())
 			return null;
 		
 		// Lock
@@ -163,7 +189,7 @@ public final class JVMClass
 	 *
 	 * @param __th The thread which may be used if this class required
 	 * initialization, if {@code null} then the default thread is used.
-	 * @return The initializes class object.
+	 * @return The initialized class object.
 	 * @since 2016/04/07
 	 */
 	public final JVMObject classObject(JVMThread __th)
@@ -266,7 +292,8 @@ public final class JVMClass
 	public CFClassFlags flags()
 	{
 		// If an array, the flags are fixed to a specific variety.
-		if (thisname.isArray())
+		// Have primitives use the same flags also
+		if (isArray() || isPrimitive())
 			return ARRAY_FLAGS;
 		
 		throw new Error("TODO");
@@ -299,6 +326,10 @@ public final class JVMClass
 				if (isArray())
 					is.add(cpath.loadClass(CLONEABLE_NAME));
 				
+				// Primitives have no interfaces
+				else if (isPrimitive())
+					;
+				
 				// Otherwise add all of them
 				else
 					for (BinaryNameSymbol bn : base().interfaces())
@@ -325,6 +356,17 @@ public final class JVMClass
 	}
 	
 	/**
+	 * Is this a primitive type?
+	 *
+	 * @return {@code true} if this is a primitive type.
+	 * @since 2016/03/07
+	 */
+	public boolean isPrimitive()
+	{
+		return primitive != null;
+	}
+	
+	/**
 	 * Returns the list of methods that this class contains.
 	 *
 	 * @return The methods contained in this class.
@@ -340,7 +382,7 @@ public final class JVMClass
 			
 			// Needs loading?
 			if (rv == null)
-				_methods = (rv = (thisname.isArray() ?
+				_methods = (rv = ((isArray() || isPrimitive()) ?
 					new JVMMethods(this, true) : new JVMMethods(this)));
 			
 			// Return it
@@ -370,8 +412,9 @@ public final class JVMClass
 			if (rv == null)
 			{
 				// If this is Object then there will be no super class
+				// Also primitive types have no super classes
 				ClassNameSymbol sn = superName();
-				if (sn == null)
+				if (sn == null || isPrimitive())
 				{
 					_nosuperclass = true;
 					return null;
@@ -398,6 +441,10 @@ public final class JVMClass
 		// Arrays always just have Object as their superclass
 		if (isArray())
 			return ClassNameSymbol.BINARY_OBJECT;
+		
+		// Primitive have no super class
+		if (isPrimitive())
+			return null;
 		
 		// Otherwise derive from the base
 		BinaryNameSymbol bn = base().superName();
