@@ -33,6 +33,66 @@ public abstract class JVMVariable<T>
 	}
 	
 	/**
+	 * Sets this to the given value, if {@code null} it is reset.
+	 *
+	 * @param __v The value to set it as.
+	 * @return {@code this}.
+	 * @since 2016/04/07
+	 */
+	public abstract JVMVariable<T> set(T __v);
+	
+	/**
+	 * Wraps the given object and sets the value of it and returns the value.
+	 *
+	 * @param __v The value to wrap.
+	 * @throws JVMEngineException If the type is not known.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/07
+	 */
+	public static JVMVariable<?> wrap(Object __v)
+		throws JVMEngineException, NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Treat Boolean as an integer
+		if (__v instanceof Boolean)
+			return OfInteger.empty().set(
+				((Boolean)__v).booleanValue() ? 1 : 0);
+		
+		// Integer or promotes to one
+		else if ((__v instanceof Short) || (__v instanceof Integer))
+			return OfInteger.empty().set(((Number)__v).intValue());
+		
+		// Character
+		else if (__v instanceof Character)
+			return OfInteger.empty().set((int)((Character)__v).charValue());
+		
+		// Long
+		else if (__v instanceof Long)
+			return OfLong.empty().set(((Number)__v).longValue());
+		
+		// Float
+		else if (__v instanceof Float)
+			return OfFloat.empty().set(((Number)__v).floatValue());
+		
+		// Double
+		else if (__v instanceof Double)
+			return OfDouble.empty().set(((Number)__v).doubleValue());
+		
+		// Objects
+		else if (__v instanceof JVMObject)
+			return OfObject.empty().set((JVMObject)__v);
+		
+		// {@squirreljme.error IN0d Cannot wrap the given value because it is
+		// of an unknown type. (The type of value to wrap).}
+		else
+			throw new JVMEngineException(String.format("IN0d %s",
+				__v.getClass()));
+	}
+	
+	/**
 	 * Obtains the next free item from the queue.
 	 *
 	 * @param <X> The variable type.
@@ -63,13 +123,39 @@ public abstract class JVMVariable<T>
 		private static final Deque<OfDouble> _FREE_QUEUE =
 			new LinkedList<>();
 		
+		/** The current value. */
+		private volatile double _value;
+		
+		/**
+		 * Initializes the value storage.
+		 *
+		 * @since 2016/04/07
+		 */
+		private OfDouble()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public OfDouble set(Double __v)
+		{
+			if (__v == null)
+				_value = 0;
+			else
+				_value = __v;
+			return this;
+		}
+		
 		/**
 		 * Returns the next empty element.
 		 *
 		 * @return The next empty element.
 		 * @since 2016/04/07
 		 */
-		public static OfDouble nextEmpty()
+		public static OfDouble empty()
 		{
 			// In queue?
 			OfDouble rv = JVMVariable.<OfDouble>__nextQueue(_FREE_QUEUE);
@@ -95,13 +181,39 @@ public abstract class JVMVariable<T>
 		private static final Deque<OfFloat> _FREE_QUEUE =
 			new LinkedList<>();
 		
+		/** The value of this. */
+		private volatile float _value;
+		
+		/**
+		 * Initializes the value storage.
+		 *
+		 * @since 2016/04/07
+		 */
+		private OfFloat()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public OfFloat set(Float __v)
+		{
+			if (__v == null)
+				_value = 0;
+			else
+				_value = __v;
+			return this;
+		}
+		
 		/**
 		 * Returns the next empty element.
 		 *
 		 * @return The next empty element.
 		 * @since 2016/04/07
 		 */
-		public static OfFloat nextEmpty()
+		public static OfFloat empty()
 		{
 			// In queue?
 			OfFloat rv = JVMVariable.<OfFloat>__nextQueue(_FREE_QUEUE);
@@ -127,13 +239,39 @@ public abstract class JVMVariable<T>
 		private static final Deque<OfInteger> _FREE_QUEUE =
 			new LinkedList<>();
 		
+		/** The current value. */
+		private volatile int _value;
+		
+		/**
+		 * Initializes the value storage.
+		 *
+		 * @since 2016/04/07
+		 */
+		private OfInteger()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public OfInteger set(Integer __v)
+		{
+			if (__v == null)
+				_value = 0;
+			else
+				_value = __v;
+			return this;
+		}
+		
 		/**
 		 * Returns the next empty element.
 		 *
 		 * @return The next empty element.
 		 * @since 2016/04/07
 		 */
-		public static OfInteger nextEmpty()
+		public static OfInteger empty()
 		{
 			// In queue?
 			OfInteger rv = JVMVariable.<OfInteger>__nextQueue(_FREE_QUEUE);
@@ -159,13 +297,39 @@ public abstract class JVMVariable<T>
 		private static final Deque<OfLong> _FREE_QUEUE =
 			new LinkedList<>();
 		
+		/** The current value. */
+		private volatile long _value;
+		
+		/**
+		 * Initializes the value storage.
+		 *
+		 * @since 2016/04/07
+		 */
+		private OfLong()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public OfLong set(Long __v)
+		{
+			if (__v == null)
+				_value = 0;
+			else
+				_value = __v;
+			return this;
+		}
+		
 		/**
 		 * Returns the next empty element.
 		 *
 		 * @return The next empty element.
 		 * @since 2016/04/07
 		 */
-		public static OfLong nextEmpty()
+		public static OfLong empty()
 		{
 			// In queue?
 			OfLong rv = JVMVariable.<OfLong>__nextQueue(_FREE_QUEUE);
@@ -191,13 +355,36 @@ public abstract class JVMVariable<T>
 		private static final Deque<OfObject> _FREE_QUEUE =
 			new LinkedList<>();
 		
+		/** The current value. */
+		private volatile JVMObject _value;
+		
+		/**
+		 * Initializes the value storage.
+		 *
+		 * @since 2016/04/07
+		 */
+		private OfObject()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public OfObject set(JVMObject __v)
+		{
+			_value = __v;
+			return this;
+		}
+		
 		/**
 		 * Returns the next empty element.
 		 *
 		 * @return The next empty element.
 		 * @since 2016/04/07
 		 */
-		public static OfObject nextEmpty()
+		public static OfObject empty()
 		{
 			// In queue?
 			OfObject rv = JVMVariable.<OfObject>__nextQueue(_FREE_QUEUE);

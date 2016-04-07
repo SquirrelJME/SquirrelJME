@@ -251,7 +251,7 @@ public class JVMThread
 		protected final CPProgram program;
 		
 		/** Current program variables. */
-		protected final List<Object> variables;
+		protected final List<JVMVariable> variables;
 		
 		/** The current PC address. */
 		private volatile int _pcaddr;
@@ -278,7 +278,7 @@ public class JVMThread
 			
 			// Varaibles match the program variable count
 			int maxlocals = program.maxLocals();
-			variables = Arrays.<Object>asList(new Object[
+			variables = Arrays.<JVMVariable>asList(new JVMVariable[
 				program.variableCount()]);
 			
 			// Store variables
@@ -289,7 +289,7 @@ public class JVMThread
 			{
 				// Set variable data
 				Object o = __args[i];
-				variables.set(j++, o);
+				variables.set(j++, JVMVariable.wrap(o));
 				
 				// If long/double then it is wide and thus the next variable
 				// is skipped
@@ -314,7 +314,7 @@ public class JVMThread
 		private StackElement __execute()
 		{
 			// Current variable state
-			List<Object> vars = variables;
+			List<JVMVariable> vars = variables;
 			System.err.printf("DEBUG -- Vars: %s%n", vars);
 			
 			// Get the current operation
