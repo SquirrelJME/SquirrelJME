@@ -464,6 +464,17 @@ public class CPProgram
 	}
 	
 	/**
+	 * Returns the number of variables the program uses.
+	 *
+	 * @return The variable count.
+	 * @since 2016/04/06
+	 */
+	public int variableCount()
+	{
+		return _maxlocals + _maxstack;
+	}
+	
+	/**
 	 * Returns {@code true} if the exceptions have been set.
 	 *
 	 * This is used by the operation target and source jump caches to determine

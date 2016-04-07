@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.classprogram.CPProgram;
 
 /**
@@ -246,6 +248,12 @@ public class JVMThread
 		/** The method to execute. */
 		protected final CPProgram program;
 		
+		/** Current program variables. */
+		protected final List<Object> variables;
+		
+		/** The current PC address. */
+		private volatile int _pcaddr;
+		
 		/**
 		 * Initializes the stack element.
 		 *
@@ -266,7 +274,9 @@ public class JVMThread
 			method = __meth;
 			program = method.program();
 			
-			throw new Error("TODO");
+			// Varaibles match the program variable count
+			variables = Arrays.<Object>asList(new Object[
+				program.variableCount()]);
 		}
 	}
 	
