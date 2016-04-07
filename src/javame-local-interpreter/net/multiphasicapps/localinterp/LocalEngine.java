@@ -103,7 +103,7 @@ public class LocalEngine
 				"LI03 %s", __main));
 		
 		// Create arguments for the main thread
-		JVMObject pargs = objects.spawnStringArray(__args);
+		JVMObject pargs = objects.spawnStringArray(null, __args);
 		
 		// Create main thread
 		JVMThread mthread = threads.createThread(mainmethod, pargs);

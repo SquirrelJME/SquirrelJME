@@ -25,16 +25,17 @@ public class JVMArray
 	 * Initializes the array type.
 	 *
 	 * @param __objs The object manager.
+	 * @param __th The thread creating this object.
 	 * @param __type The array type.
 	 * @param __length The array length.
 	 * @throws JVMClassCastException If the type is not an array.
 	 * @throws JVMNegativeArraySizeException If the length is negative.
 	 * @since 2016/04/06
 	 */
-	JVMArray(JVMObjects __objs, JVMClass __type, int __length)
+	JVMArray(JVMObjects __objs, JVMThread __th, JVMClass __type, int __length)
 		throws JVMClassCastException, JVMNegativeArraySizeException
 	{
-		super(__objs, __type);
+		super(__objs, __th, __type);
 		
 		// {@squirreljme.error IN01 Attempting to create a new instance of an
 		// object which is not an array. (The type; The length of the array)}

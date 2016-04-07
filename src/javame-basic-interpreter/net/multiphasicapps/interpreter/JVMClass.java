@@ -132,11 +132,17 @@ public final class JVMClass
 	 * Returns the initialized class object which is used by the internal
 	 * virtual machine to represent classes of this type.
 	 *
+	 * @param __th The thread which may be used if this class required
+	 * initialization, if {@code null} then the default thread is used.
 	 * @return The initializes class object.
 	 * @since 2016/04/07
 	 */
-	public final JVMObject classObject()
+	public final JVMObject classObject(JVMThread __th)
 	{
+		// If no thread was specified, use the default thread
+		if (__th == null)
+			__th = engine.threads().defaultThread();
+		
 		// Lock
 		synchronized (lock)
 		{

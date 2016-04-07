@@ -64,12 +64,13 @@ public final class JVMObjects
 	 *
 	 * Strings may be recycled as if they were interned.
 	 *
+	 * @param __th The thread spawning this object.
 	 * @param __s The string to wrap.
 	 * @return The wrapped string.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __th}.
 	 * @since 2016/04/05
 	 */
-	public final JVMObject spawnString(String __s)
+	public final JVMObject spawnString(JVMThread __th, String __s)
 		throws NullPointerException
 	{
 		// Check
@@ -82,13 +83,14 @@ public final class JVMObjects
 	/**
 	 * Creates a string array with the given strings.
 	 *
+	 * @param __th The thread spawning this object.
 	 * @param __strings Strings to place in the array.
 	 * @return The string array as seen by the program running in the
 	 * interpreter.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __th}.
 	 * @since 2016/03/01
 	 */
-	public final JVMArray spawnStringArray(String... __strings)
+	public final JVMArray spawnStringArray(JVMThread __th, String... __strings)
 		throws NullPointerException
 	{
 		// Check
@@ -103,7 +105,7 @@ public final class JVMObjects
 		
 		// Create array which carries the same length
 		int n = __strings.length;
-		JVMArray rv = new JVMArray(this, strarray, n);
+		JVMArray rv = new JVMArray(this, __th, strarray, n);
 		
 		// Create string elements
 		for (int i = 0; i < n; i++)
@@ -116,7 +118,7 @@ public final class JVMObjects
 				continue;
 			
 			// Set otherwise
-			rv.setArrayElement(i, spawnString(s));
+			rv.setArrayElement(i, spawnString(__th, s));
 		}
 		
 		// Return it

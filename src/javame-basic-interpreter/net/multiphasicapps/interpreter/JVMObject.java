@@ -36,11 +36,12 @@ public class JVMObject
 	 * Initializes the object, which may be an array.
 	 *
 	 * @param __objs Object manager.
+	 * @param __th The thread creating this object.
 	 * @param __type The array type.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __th}.
 	 * @since 2016/04/05
 	 */
-	JVMObject(JVMObjects __objs, JVMClass __type)
+	JVMObject(JVMObjects __objs, JVMThread __th, JVMClass __type)
 		throws NullPointerException
 	{
 		// Check
@@ -53,7 +54,7 @@ public class JVMObject
 		
 		// Get the class object, this is the value which would be returned
 		// by the getClass() method.
-		classobject = classtype.classObject();
+		classobject = classtype.classObject(__th);
 		
 		// Register this object with the engine
 		objects.__registerObject(this);
