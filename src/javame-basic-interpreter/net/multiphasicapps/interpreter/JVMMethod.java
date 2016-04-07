@@ -52,6 +52,8 @@ public class JVMMethod
 	/**
 	 * Runs the interpreter logic for the given thread.
 	 *
+	 * @param __init Is this an class instance or static initializer, if it is
+	 * then it is permitted to write to final fields.
 	 * @param __thr The thread of execution, if {@code null} then there is none
 	 * or the default thread is implied.
 	 * @param __args The arguments to the call of the method.
@@ -59,7 +61,7 @@ public class JVMMethod
 	 * propogated upwards.
 	 * @since 2016/04/07
 	 */
-	public void interpret(JVMThread __thr, Object... __args)
+	public void interpret(boolean __init, JVMThread __thr, Object... __args)
 		throws JVMEngineException
 	{
 		// Force arguments to exist
@@ -82,7 +84,7 @@ public class JVMMethod
 			}
 			
 			// Debug
-			System.err.printf("DEBUG -- Interpret %s%n", this);
+			System.err.printf("DEBUG -- Interpret %s (%s)%n", this, __init);
 			
 			throw new Error("TODO");
 		}

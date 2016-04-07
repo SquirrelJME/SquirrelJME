@@ -217,7 +217,17 @@ public final class JVMClass
 				// Call the static class constructor, if one exists
 				JVMMethod clinit = methods().get(CLINIT_KEY);
 				if (clinit != null)
-					clinit.interpret(__th);
+				{
+					// {@squirreljme.error IN0f The static class initializer
+					// for the given class is not static. (The name of this
+					// class)}
+					if (!clinit.flags().isStatic())
+						throw new JVMClassFormatError(String.format("IN0f %s",
+							this));
+					
+					// Interpret to initialize it
+					clinit.interpret(true, __th);
+				}
 			}
 			
 			// Return it

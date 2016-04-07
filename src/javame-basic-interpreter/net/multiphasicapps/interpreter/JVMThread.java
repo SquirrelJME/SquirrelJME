@@ -220,7 +220,7 @@ public class JVMThread
 		try
 		{
 			// Start execution at the entry method
-			entrymethod.interpret(this, entryargs);
+			entrymethod.interpret(false, this, entryargs);
 			
 			// Execution ends
 			_ended = true;
