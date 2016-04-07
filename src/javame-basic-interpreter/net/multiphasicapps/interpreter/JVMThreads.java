@@ -28,8 +28,12 @@ public final class JVMThreads
 	protected final Set<JVMThread> threads =
 		new LinkedHashSet<>();
 	
+	/** The default thread. */
+	protected final JVMThread defaultthread;
+	
 	/** The next thread ID. */
-	private volatile int _nextid;
+	private volatile long _nextid =
+		0L;
 	
 	/**
 	 * Initializes the thread manager.
@@ -47,6 +51,9 @@ public final class JVMThreads
 		
 		// Set
 		engine = __e;
+		
+		// Setup default thread
+		defaultthread = new JVMThread(this, _nextid++);
 	}
 	
 	/**
@@ -79,6 +86,17 @@ public final class JVMThreads
 			// Return it
 			return jt;
 		}
+	}
+	
+	/**
+	 * The default thread.
+	 *
+	 * @return The default thread.
+	 * @since 2016/04/07
+	 */
+	public JVMThread defaultThread()
+	{
+		return defaultthread;
 	}
 	
 	/**

@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Deque;
 import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classprogram.CPProgram;
@@ -46,6 +47,59 @@ public class JVMMethod
 	JVMMethod(JVMMethods __o, CFMethod __b)
 	{
 		super(__o, __b);
+	}
+	
+	/**
+	 * Runs the interpreter logic for the given thread.
+	 *
+	 * @param __thr The thread of execution, if {@code null} then there is none
+	 * or the default thread is implied.
+	 * @param __args The arguments to the call of the method.
+	 * @throws Throwable Any thrown exceptions are either handled or propogated
+	 * upwards.
+	 * @since 2016/04/07
+	 */
+	public void interpret(JVMThread __thr, Object... __args)
+		throws Throwable
+	{
+		// Force arguments to exist
+		if (__args == null)
+			__args = new Object[0];
+		
+		// If no thread is specified, then 
+		if (__thr == null)
+			__thr = container().outerClass().engine().threads().
+				defaultThread();
+		
+		// On entry of a method, add this method to the call stack.
+		Deque<JVMMethod> callstack = __thr.stackTrace();
+		try
+		{
+			// Add it to the call stack
+			synchronized (callstack)
+			{
+				callstack.offerLast(this);
+			}
+			
+			throw new Error("TODO");
+		}
+		
+		// When execution terminates, remove the top stack item.
+		finally
+		{
+			// Remove it from the callstack
+			synchronized (callstack)
+			{
+				// {@squirreljme.error IN0e The callstack for the thread has
+				// potentially been corrupted as the last item on the stack is
+				// not the current method. (The current method; The method
+				// which was at the top of the call stack)}
+				JVMMethod was;
+				if (this != (was = callstack.pollLast()))
+					throw new JVMEngineException(String.format("IN0e %s %s",
+						this, was));
+			}
+		}
 	}
 	
 	/**

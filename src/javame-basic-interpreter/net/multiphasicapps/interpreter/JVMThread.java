@@ -38,11 +38,14 @@ public class JVMThread
 	protected final Object[] entryargs;
 	
 	/** The current thread ID. */
-	protected final int id;
+	protected final long id;
 	
-	/** This thread's stack trace and its state. */
-	protected final Deque<StackElement> stacktrace =
+	/** This thread's stack trace. */
+	protected final Deque<JVMMethod> stacktrace =
 		new LinkedList<>();
+	
+	/** Is this the host VM thread? */
+	protected final boolean ishostthread;
 	
 	/** The internall created thread. */
 	private volatile Thread _thread;
@@ -61,16 +64,46 @@ public class JVMThread
 		Thread.NORM_PRIORITY;
 	
 	/**
+	 * Initializes a thread which is logically always started but is not an
+	 * actual part of the run-time. It is a purely virtual and somewhat
+	 * uncounted hosting virtual machine thread.
+	 *
+	 * @param __own The owning thread manager.
+	 * @param __id The thread ID.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/07
+	 */
+	JVMThread(JVMThreads __owner, long __id)
+	{
+		// Check
+		if (__owner == null)
+			throw new NullPointerException();
+		
+		// Set
+		threads = __owner;
+		id = __id;
+		
+		// Not used
+		entrymethod = null;
+		entryargs = null;
+		
+		// This is a host thread
+		ishostthread = true;
+		_name = "HostVM";
+		_started = true;
+	}
+	
+	/**
 	 * Initializes the thread.
 	 *
 	 * @param __owner The owning thread manager.
-	 * @param __id The next thread ID.
+	 * @param __id The thread ID.
 	 * @param __em The method to execute on entry.
 	 * @param __args The arguments to use on entry.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/01
 	 */
-	JVMThread(JVMThreads __owner, int __id, JVMMethod __em, Object... __args)
+	JVMThread(JVMThreads __owner, long __id, JVMMethod __em, Object... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -82,6 +115,7 @@ public class JVMThread
 		id = __id;
 		entrymethod = __em;
 		entryargs = (__args == null ? new Object[0] : __args.clone());
+		ishostthread = false;
 		
 		// By default name the thread based on the method used
 		_name = __em.name().toString();
@@ -89,6 +123,8 @@ public class JVMThread
 	
 	/**
 	 * Returns {@code true} if this thread is alive.
+	 *
+	 * Host threads are always alive.
 	 *
 	 * @return If this thread is alive or not.
 	 * @since 2016/04/06
@@ -98,12 +134,14 @@ public class JVMThread
 		// Lock
 		synchronized (lock)
 		{
-			return _started && !_ended;
+			return ishostthread || (_started && !_ended);
 		}
 	}
 	
 	/**
 	 * Returns {@code true} if this has been terminated.
+	 *
+	 * Host threads are never terminated.
 	 *
 	 * @return If this thread was terminated.
 	 * @since 2016/04/06
@@ -113,8 +151,19 @@ public class JVMThread
 		// Lock
 		synchronized (lock)
 		{
-			return _ended;
+			return !ishostthread && _ended;
 		}
+	}
+	
+	/**
+	 * Returns the stack trace of the current thread.
+	 *
+	 * @return The thread's stack trace.
+	 * @since 2016/04/07
+	 */
+	public Deque<JVMMethod> stackTrace()
+	{
+		return stacktrace;
 	}
 	
 	/**
@@ -170,47 +219,8 @@ public class JVMThread
 		// Loop
 		try
 		{
-			// Setup the initial stack trace
-			Deque<StackElement> stack = stacktrace;
-			synchronized (lock)
-			{
-				stack.offerLast(new StackElement(entrymethod, entryargs));
-			}
-			
-			// Execution loop
-			for (;;)
-				synchronized (lock)
-				{
-					// Execute the topmost entry
-					try
-					{
-						// Get the top-most element
-						StackElement exectop = stack.peekLast();
-						
-						// Nothing is on the top, the thread terminates
-						if (exectop == null)
-							break;
-						
-						// Execute it
-						exectop.__execute();
-					}
-					
-					// Attempt to handle the exception, if it can even be
-					// handled. Some exceptions which are thrown by the engine
-					// may end up being wrapped and handled.
-					catch (Throwable t)
-					{
-						// Errors are not to be handled because they pertain
-						// to the host virtual machine.
-						// However if the host VM is out of error then attempt
-						// to translate that to the guest virtual machine.
-						if ((t instanceof Error) &&
-							!(t instanceof OutOfMemoryError))
-							throw (Error)t;
-						
-						throw new Error("TODO");
-					}
-				}
+			// Start execution at the entry method
+			entrymethod.interpret(this, entryargs);
 			
 			// Execution ends
 			_ended = true;
@@ -234,99 +244,6 @@ public class JVMThread
 			{
 				_ended = true;
 			}
-		}
-	}
-	
-	/**
-	 * This represents the current state of the stack.
-	 *
-	 * @since 2016/04/06
-	 */
-	@Deprecated
-	protected final class StackElement
-	{
-		/** The current method. */
-		protected final JVMMethod method;
-		
-		/** The method to execute. */
-		protected final CPProgram program;
-		
-		/** Current program variables. */
-		protected final List<JVMVariable> variables;
-		
-		/** The current PC address. */
-		private volatile int _pcaddr;
-		
-		/**
-		 * Initializes the stack element.
-		 *
-		 * @param __meth The current method.
-		 * @param __args The method arguments which set the initial local
-		 * variables.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/04/06
-		 */
-		private StackElement(JVMMethod __meth, Object... __args)
-			throws NullPointerException
-		{
-			// Check
-			if (__meth == null)
-				throw new NullPointerException("NARG");
-			
-			// Set
-			method = __meth;
-			program = method.program();
-			
-			// Varaibles match the program variable count
-			int maxlocals = program.maxLocals();
-			variables = Arrays.<JVMVariable>asList(new JVMVariable[
-				program.variableCount()]);
-			
-			// Store variables
-			int n = __args.length;
-			
-			// Place them
-			for (int i = 0, j = 0; i < n; i++)
-			{
-				// Set variable data
-				Object o = __args[i];
-				variables.set(j++, JVMVariable.wrap(o));
-				
-				// If long/double then it is wide and thus the next variable
-				// is skipped
-				if ((o instanceof Long) || (o instanceof Double))
-					j++;
-				
-				// {@squirreljme.error IN0b Passed in too many local variables
-				// for a method call. (The current argument count; The passed
-				// argument count; The actual argument count)}
-				if (j > maxlocals)
-					throw new JVMEngineException(String.format("IN0b %d %d %d",
-						j, n, maxlocals));
-			}
-		}
-		
-		/**
-		 * Execute the current element.
-		 *
-		 * @return {@code this}.
-		 * @since 2016/04/07
-		 */
-		private StackElement __execute()
-		{
-			// Current variable state
-			List<JVMVariable> vars = variables;
-			System.err.printf("DEBUG -- Vars: %s%n", vars);
-			
-			// Get the current operation
-			int pcaddr = _pcaddr;
-			CPOp cop = program.get(pcaddr);
-			
-			if (true)
-				throw new Error("TODO");
-			
-			// Self
-			return this;
 		}
 	}
 	
