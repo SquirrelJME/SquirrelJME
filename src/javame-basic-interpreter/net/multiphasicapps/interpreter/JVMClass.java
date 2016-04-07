@@ -14,7 +14,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classfile.CFClass;
 import net.multiphasicapps.classfile.CFClassFlag;
 import net.multiphasicapps.classfile.CFClassFlags;
@@ -36,6 +38,10 @@ public final class JVMClass
 		new CFClassFlags(CFClassFlag.PUBLIC.mask |
 			CFClassFlag.FINAL.mask |
 			CFClassFlag.SYNTHETIC.mask);
+	
+	/** The name of the Class class. */
+	public static final ClassNameSymbol CLASS_NAME =
+		new ClassNameSymbol("java/lang/Class");
 	
 	/** Lock. */
 	protected final Object lock =
@@ -61,6 +67,9 @@ public final class JVMClass
 	
 	/** The super class of this class. */
 	private volatile JVMClass _superclass;
+	
+	/** Interfaces this implements. */
+	private volatile Set<JVMClass> _interfaceclasses;
 	
 	/** No super-class? */
 	private volatile boolean _nosuperclass;
@@ -165,6 +174,13 @@ public final class JVMClass
 				if (scl != null)
 					scl.classObject(__th);
 				
+				// Also initialize interfaces
+				for (JVMClass ji : interfaceClasses())
+					ji.classObject(__th);
+				
+				// Get the class for the class type
+				JVMClass classtype = engine().classes().loadClass(CLASS_NAME);
+				
 				throw new Error("TODO");
 			}
 			
@@ -207,6 +223,17 @@ public final class JVMClass
 		if (thisname.isArray())
 			return ARRAY_FLAGS;
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the interfaces that this class implements.
+	 *
+	 * @return The class interfaces.
+	 * @since 2016/03/07
+	 */
+	public Set<JVMClass> interfaceClasses()
+	{
 		throw new Error("TODO");
 	}
 	
