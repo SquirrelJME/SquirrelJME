@@ -20,6 +20,7 @@ import net.multiphasicapps.classfile.CFClassFlag;
 import net.multiphasicapps.classfile.CFClassFlags;
 import net.multiphasicapps.classfile.CFClassParser;
 import net.multiphasicapps.classfile.CFFormatException;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -57,6 +58,12 @@ public final class JVMClass
 	
 	/** The initialized {@link Class} object. */
 	private volatile Reference<JVMObject> _classobject;
+	
+	/** The super class of this class. */
+	private volatile JVMClass _superclass;
+	
+	/** No super-class? */
+	private volatile boolean _nosuperclass;
 	
 	/**
 	 * Initalizes the lazily loaded class.
@@ -152,7 +159,14 @@ public final class JVMClass
 			
 			// Class needs to be initialized in the VM?
 			if (ref == null || null == (rv = ref.get()))
+			{
+				// Obtain and initialize any superclasses and interfaces
+				JVMClass scl = superClass();
+				if (scl != null)
+					scl.classObject(__th);
+				
 				throw new Error("TODO");
+			}
 			
 			// Return it
 			return rv;
@@ -229,6 +243,64 @@ public final class JVMClass
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the super class of this class.
+	 *
+	 * @return The super class or {@code null} if there is none.
+	 * @since 2016/04/07
+	 */
+	public JVMClass superClass()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// No super class?
+			if (_nosuperclass)
+				return null;
+			
+			// Get it
+			JVMClass rv = _superclass;
+			
+			// Needs obtaining?
+			if (rv == null)
+			{
+				// If this is Object then there will be no super class
+				ClassNameSymbol sn = superName();
+				if (sn == null)
+				{
+					_nosuperclass = true;
+					return null;
+				}
+				
+				// There is one
+				else
+					_superclass = (rv = engine().classes().loadClass(sn));
+			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the name of the super class.
+	 *
+	 * @return The super class name or {@code null} if there is none.
+	 * @since 2016/04/07
+	 */
+	public ClassNameSymbol superName()
+	{
+		// Arrays always just have Object as their superclass
+		if (isArray())
+			return ClassNameSymbol.BINARY_OBJECT;
+		
+		// Otherwise derive from the base
+		BinaryNameSymbol bn = base().superName();
+		if (bn == null)
+			return null;
+		return bn.asClassName();
 	}
 	
 	/**

@@ -78,12 +78,27 @@ public final class CFClass
 			__cf._constantpool);
 		version = Objects.<CFClassVersion>requireNonNull(__cf._version);
 		thisname = Objects.<BinaryNameSymbol>requireNonNull(__cf._thisname);
-		supername = Objects.<BinaryNameSymbol>requireNonNull(__cf._supername);
+		boolean isobject = thisname.equals("java/lang/Object");
+		
+		// Could be object
+		BinaryNameSymbol psn = __cf._supername;
+		if (isobject)
+		{
+			// {@squirreljme.error CF15 The object class cannot have a super
+			// class specified. (The super-class name)}
+			if (psn != null)
+				throw new CFFormatException(String.format("CF15 %s", psn));
+			
+			// There is none
+			supername = null;
+		}
+		else
+			supername = Objects.<BinaryNameSymbol>requireNonNull(psn);
 		
 		// {@squirreljme.error CF01 If this is the object class and it has a
 		// super class, or this is not the object class and there is no super
 		// class set. (This class name; The super class name)}
-		if (thisname.equals("java/lang/Object") != (supername == null))
+		if (isobject != (supername == null))
 			throw new CFFormatException(String.format("CF01 %s %s", thisname,
 				supername));
 		
