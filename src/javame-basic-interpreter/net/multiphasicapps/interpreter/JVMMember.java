@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.CFMember;
 import net.multiphasicapps.classfile.CFMemberFlags;
+import net.multiphasicapps.classfile.CFMemberKey;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
@@ -33,6 +36,9 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	
 	/** The class file bit this is based on. */
 	protected final C base;
+	
+	/** toString() cache. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the base for the member.
@@ -85,6 +91,37 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	public IdentifierSymbol name()
 	{
 		return base.name();
+	}
+	
+	/**
+	 * Returns the name and type of this member.
+	 *
+	 * @return The member name and type.
+	 * @since 2016/04/07
+	 */
+	public CFMemberKey<S> nameAndType()
+	{
+		return base.nameAndType();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/07
+	 */
+	@Override
+	public String toString()
+	{
+		// Get reference
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = rawowner.outerClass() +
+				"::" + nameAndType()));
+		
+		// Return it
+		return rv;
 	}
 }
 

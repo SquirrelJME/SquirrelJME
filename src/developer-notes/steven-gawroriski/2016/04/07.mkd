@@ -21,3 +21,16 @@ stuff now will be changed over. When a guest method goes to invoke another
 guest method it will just perform the same logic and such on the destination
 method.
 
+## 15:21
+
+A work around is needed for `Class`. I will need to note this in the future
+when native code is generated. Since every object references a class for the
+`getClass()` method, on initialization the `Class` object's initialized
+object would not exist at all. Thus a minor work around is needed so that it
+exists and can be used for example.
+
+## 15:23
+
+What I need now is to interpret the class constructor, which would be very
+important.
+

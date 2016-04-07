@@ -40,6 +40,9 @@ public final class JVMObjects
 	protected final ReferenceQueue<JVMObject> objectqueue =
 		new ReferenceQueue<>();
 	
+	/** The class object. */
+	protected final JVMObject classobject;
+	
 	/**
 	 * Initializes the object manager.
 	 *
@@ -56,6 +59,31 @@ public final class JVMObjects
 		
 		// Set
 		engine = __e;
+		
+		// Setup class object
+		classobject = new JVMObject(this, true);
+	}
+	
+	/**
+	 * Returns the object which is associated with the {@link Class} object.
+	 *
+	 * @return The object for {@link Class}.
+	 * @since 2016/04/07
+	 */
+	public JVMObject classObject()
+	{
+		return classobject;
+	}
+	
+	/**
+	 * Returns the owning engine.
+	 *
+	 * @return The owning engine.
+	 * @since 2016/04/07
+	 */
+	public JVMEngine engine()
+	{
+		return engine;
 	}
 	
 	/**
@@ -67,7 +95,7 @@ public final class JVMObjects
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/07
 	 */
-	public final JVMObject spawnObject(JVMThread __th, JVMClass __cl)
+	public JVMObject spawnObject(JVMThread __th, JVMClass __cl)
 		throws NullPointerException
 	{
 		// Check
@@ -90,7 +118,7 @@ public final class JVMObjects
 	 * @throws NullPointerException On null arguments, except for {@code __th}.
 	 * @since 2016/04/05
 	 */
-	public final JVMObject spawnString(JVMThread __th, String __s)
+	public JVMObject spawnString(JVMThread __th, String __s)
 		throws NullPointerException
 	{
 		// Check
@@ -110,7 +138,7 @@ public final class JVMObjects
 	 * @throws NullPointerException On null arguments, except for {@code __th}.
 	 * @since 2016/03/01
 	 */
-	public final JVMArray spawnStringArray(JVMThread __th, String... __strings)
+	public JVMArray spawnStringArray(JVMThread __th, String... __strings)
 		throws NullPointerException
 	{
 		// Check

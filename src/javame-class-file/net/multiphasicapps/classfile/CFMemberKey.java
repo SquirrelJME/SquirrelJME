@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Objects;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
@@ -32,6 +34,9 @@ public final class CFMemberKey<S extends MemberTypeSymbol>
 	
 	/** The type of this entry. */
 	protected final S type;
+	
+	/** String cache. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the member entry key.
@@ -108,6 +113,25 @@ public final class CFMemberKey<S extends MemberTypeSymbol>
 	public S setValue(S __v)
 	{
 		throw new UnsupportedOperationException("RORO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/07
+	 */
+	@Override
+	public String toString()
+	{
+		// Get reference
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = getKey() + ":" + getValue()));
+		
+		// Return it
+		return rv;
 	}
 }
 

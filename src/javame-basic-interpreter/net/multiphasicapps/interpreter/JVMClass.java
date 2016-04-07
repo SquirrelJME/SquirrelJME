@@ -22,9 +22,12 @@ import net.multiphasicapps.classfile.CFClassFlag;
 import net.multiphasicapps.classfile.CFClassFlags;
 import net.multiphasicapps.classfile.CFClassParser;
 import net.multiphasicapps.classfile.CFFormatException;
+import net.multiphasicapps.classfile.CFMemberKey;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This represents a class which is loaded by the virtual machine.
@@ -47,6 +50,11 @@ public final class JVMClass
 	/** The name of the cloneable interface. */
 	public static final ClassNameSymbol CLONEABLE_NAME =
 		new ClassNameSymbol("java/lang/Cloneable");
+	
+	/** This is the key which is associated with the static class init. */
+	public static CFMemberKey<MethodSymbol> CLINIT_KEY =
+		new CFMemberKey<>(new IdentifierSymbol("<clinit>"),
+			new MethodSymbol("()V"));
 	
 	/** Lock. */
 	protected final Object lock =
@@ -174,25 +182,42 @@ public final class JVMClass
 			// Class needs to be initialized in the VM?
 			if (ref == null || null == (rv = ref.get()))
 			{
-				// Obtain and initialize any superclasses and interfaces
-				JVMClass scl = superClass();
-				if (scl != null)
-					scl.classObject(__th);
+				// If this is the object for the Class class then it is
+				// special and preinitialized before-hand
+				if (thisName().equals(CLASS_NAME))
+					rv = engine().objects().classObject();
 				
-				// Also initialize interfaces
-				for (JVMClass ji : interfaceClasses())
-					ji.classObject(__th);
+				// Otherwise, it is a normal object instance which does not
+				// require a work around.
+				else
+				{
+					// Obtain and initialize any superclasses and interfaces
+					JVMClass scl = superClass();
+					if (scl != null)
+						scl.classObject(__th);
 				
-				// Get the class for the class type
-				JVMClass classtype = engine().classes().loadClass(CLASS_NAME);
+					// Also initialize interfaces
+					for (JVMClass ji : interfaceClasses())
+						ji.classObject(__th);
+					
+					// Get the class for the class type
+					JVMClass classtype = engine().classes().
+						loadClass(CLASS_NAME);
 				
-				// Spawn an object of that class
-				rv = engine().objects().spawnObject(__th, classtype);
+					// Spawn an object of that class
+					rv = engine().objects().spawnObject(__th, classtype);
+				}
+				
+				// Cache it
 				_classobject = new WeakReference<>(rv);
 				
-				// Setup that object
-				System.err.printf("DEBUG -- Setup Class<?> details (%s)%n.",
-					this);
+				// Debug
+				System.err.printf("DEBUG -- Initialize class %s%n", this);
+				
+				// Call the static class constructor, if one exists
+				JVMMethod clinit = methods().get(CLINIT_KEY);
+				if (clinit != null)
+					clinit.interpret(__th);
 			}
 			
 			// Return it

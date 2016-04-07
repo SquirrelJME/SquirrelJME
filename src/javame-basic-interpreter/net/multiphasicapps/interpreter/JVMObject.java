@@ -30,11 +30,29 @@ public class JVMObject
 	/** The class object this uses. */
 	protected final JVMObject classobject;
 	
-	/** Is the class object a special null? (This is Class) */
-	protected final boolean specialclassobject;
-	
 	/** String representation of this object. */
 	private volatile Reference<String> _stringrep;
+	
+	/**
+	 * Initializes the special {@link Class<?>} type.
+	 *
+	 * @param __objs The owning object manager.
+	 * @param __ign Ignored.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/07
+	 */
+	JVMObject(JVMObjects __objs, boolean __ign)
+		throws NullPointerException
+	{
+		// Check
+		if (__objs == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		objects = __objs;
+		classtype = objects.engine().classes().loadClass(JVMClass.CLASS_NAME);
+		classobject = this;
+	}
 	
 	/**
 	 * Initializes the object, which may be an array.
@@ -59,9 +77,7 @@ public class JVMObject
 		// Get the class object, this is the value which would be returned
 		// by the getClass() method.
 		ClassNameSymbol cn = __type.thisName();
-		specialclassobject = cn.equals("java/lang/Class");
-		classobject = (specialclassobject ? null :
-			classtype.classObject(__th));
+		classobject = classtype.classObject(__th);
 		
 		// Register this object with the engine
 		objects.__registerObject(this);

@@ -55,12 +55,12 @@ public class JVMMethod
 	 * @param __thr The thread of execution, if {@code null} then there is none
 	 * or the default thread is implied.
 	 * @param __args The arguments to the call of the method.
-	 * @throws Throwable Any thrown exceptions are either handled or propogated
-	 * upwards.
+	 * @throws JVMEngineException Any thrown exceptions are either handled or
+	 * propogated upwards.
 	 * @since 2016/04/07
 	 */
 	public void interpret(JVMThread __thr, Object... __args)
-		throws Throwable
+		throws JVMEngineException
 	{
 		// Force arguments to exist
 		if (__args == null)
@@ -80,6 +80,9 @@ public class JVMMethod
 			{
 				callstack.offerLast(this);
 			}
+			
+			// Debug
+			System.err.printf("DEBUG -- Interpret %s%n", this);
 			
 			throw new Error("TODO");
 		}
