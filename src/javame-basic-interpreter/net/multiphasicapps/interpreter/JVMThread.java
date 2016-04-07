@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.classprogram.CPOp;
 import net.multiphasicapps.classprogram.CPProgram;
 
 /**
@@ -190,7 +191,8 @@ public class JVMThread
 						if (exectop == null)
 							break;
 						
-						throw new Error("TODO");
+						// Execute it
+						exectop.__execute();
 					}
 					
 					// Attempt to handle the exception, if it can even be
@@ -275,8 +277,55 @@ public class JVMThread
 			program = method.program();
 			
 			// Varaibles match the program variable count
+			int maxlocals = program.maxLocals();
 			variables = Arrays.<Object>asList(new Object[
 				program.variableCount()]);
+			
+			// Store variables
+			int n = __args.length;
+			
+			// Place them
+			for (int i = 0, j = 0; i < n; i++)
+			{
+				// Set variable data
+				Object o = __args[i];
+				variables.set(j++, o);
+				
+				// If long/double then it is wide and thus the next variable
+				// is skipped
+				if ((o instanceof Long) || (o instanceof Double))
+					j++;
+				
+				// {@squirreljme.error IN0b Passed in too many local variables
+				// for a method call. (The current argument count; The passed
+				// argument count; The actual argument count)}
+				if (j > maxlocals)
+					throw new JVMEngineException(String.format("IN0b %d %d %d",
+						j, n, maxlocals));
+			}
+		}
+		
+		/**
+		 * Execute the current element.
+		 *
+		 * @return {@code this}.
+		 * @since 2016/04/07
+		 */
+		private StackElement __execute()
+		{
+			// Current variable state
+			List<Object> vars = variables;
+			System.err.printf("DEBUG -- Vars: %s%n", vars);
+			
+			// Get the current operation
+			int pcaddr = _pcaddr;
+			CPOp cop = program.get(pcaddr);
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// Self
+			return this;
 		}
 	}
 	
