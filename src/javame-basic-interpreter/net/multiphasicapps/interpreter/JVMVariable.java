@@ -51,6 +51,11 @@ public abstract class JVMVariable<T>
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Stores a double value.
+	 *
+	 * @since 2016/04/07
+	 */
 	public static final class OfDouble
 		extends JVMVariable<Double>
 	{
@@ -78,6 +83,11 @@ public abstract class JVMVariable<T>
 		}
 	}
 	
+	/**
+	 * Stores a float value.
+	 *
+	 * @since 2016/04/07
+	 */
 	public static final class OfFloat
 		extends JVMVariable<Float>
 	{
@@ -105,6 +115,11 @@ public abstract class JVMVariable<T>
 		}
 	}
 	
+	/**
+	 * Stores an integer value.
+	 *
+	 * @since 2016/04/07
+	 */
 	public static final class OfInteger
 		extends JVMVariable<Integer>
 	{
@@ -132,6 +147,11 @@ public abstract class JVMVariable<T>
 		}
 	}
 	
+	/**
+	 * Stores a long value.
+	 *
+	 * @since 2016/04/07
+	 */
 	public static final class OfLong
 		extends JVMVariable<Long>
 	{
@@ -159,6 +179,11 @@ public abstract class JVMVariable<T>
 		}
 	}
 	
+	/**
+	 * Stores a double value.
+	 *
+	 * @since 2016/04/07
+	 */
 	public static final class OfObject
 		extends JVMVariable<JVMObject>
 	{
