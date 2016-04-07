@@ -242,6 +242,7 @@ public class JVMThread
 	 *
 	 * @since 2016/04/06
 	 */
+	@Deprecated
 	protected final class StackElement
 	{
 		/** The current method. */

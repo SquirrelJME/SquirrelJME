@@ -26,6 +26,9 @@ public class JVMObject
 	/** The class this object is. */
 	protected final JVMClass classtype;
 	
+	/** The class object this uses. */
+	protected final JVMObject classobject;
+	
 	/** String representation of this object. */
 	private volatile Reference<String> _stringrep;
 	
@@ -47,6 +50,10 @@ public class JVMObject
 		// Set
 		classtype = __type;
 		objects = __objs;
+		
+		// Get the class object, this is the value which would be returned
+		// by the getClass() method.
+		classobject = classtype.classObject();
 		
 		// Register this object with the engine
 		objects.__registerObject(this);

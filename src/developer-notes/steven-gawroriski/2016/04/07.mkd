@@ -10,3 +10,14 @@ bits to perform actual actions and such.
 
 Can do better with variable storage.
 
+## 13:00
+
+Actually when it comes to the interpreter, I will need the method code to
+actually perform the execution. I have to do this because for example during
+class initialization I will have to jump into the guest virtual machine to
+initialize objects as they appear in the guest. My current thread based stuff
+sort of works, but no quite as much. So basically what I have in the thread
+stuff now will be changed over. When a guest method goes to invoke another
+guest method it will just perform the same logic and such on the destination
+method.
+

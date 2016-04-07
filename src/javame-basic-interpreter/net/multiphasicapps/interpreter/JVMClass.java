@@ -55,6 +55,9 @@ public final class JVMClass
 	/** Methods contained in this class. */
 	private volatile JVMMethods _methods;
 	
+	/** The initialized {@link Class} object. */
+	private volatile Reference<JVMObject> _classobject;
+	
 	/**
 	 * Initalizes the lazily loaded class.
 	 *
@@ -119,6 +122,31 @@ public final class JVMClass
 					throw new JVMClassFormatError(String.format("IN05 %s",
 						thisName()), e);
 				}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the initialized class object which is used by the internal
+	 * virtual machine to represent classes of this type.
+	 *
+	 * @return The initializes class object.
+	 * @since 2016/04/07
+	 */
+	public final JVMObject classObject()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<JVMObject> ref = _classobject;
+			JVMObject rv;
+			
+			// Class needs to be initialized in the VM?
+			if (ref == null || null == (rv = ref.get()))
+				throw new Error("TODO");
 			
 			// Return it
 			return rv;
