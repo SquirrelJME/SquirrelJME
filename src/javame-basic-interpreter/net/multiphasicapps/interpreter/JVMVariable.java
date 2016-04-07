@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Objects;
 
 /**
  * This represents a variable which is used to store a value.
@@ -33,6 +34,14 @@ public abstract class JVMVariable<T>
 	}
 	
 	/**
+	 * Returns the value.
+	 *
+	 * @return The current value.
+	 * @since 2016/04/07
+	 */
+	public abstract T get();
+	
+	/**
 	 * Sets this to the given value, if {@code null} it is reset.
 	 *
 	 * @param __v The value to set it as.
@@ -40,6 +49,16 @@ public abstract class JVMVariable<T>
 	 * @since 2016/04/07
 	 */
 	public abstract JVMVariable<T> set(T __v);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/07
+	 */
+	@Override
+	public String toString()
+	{
+		return Objects.toString(get());
+	}
 	
 	/**
 	 * Wraps the given object and sets the value of it and returns the value.
@@ -101,14 +120,32 @@ public abstract class JVMVariable<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/07
 	 */
-	private static <X extends JVMVariable<?>> X __nextQueue(Deque<X> __q)
+	private static <X extends JVMVariable<?>> X __nextQueue(
+		Deque<Reference<X>> __q)
 		throws NullPointerException
 	{
 		// Check
 		if (__q == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock on the queue
+		synchronized (__q)
+		{
+			// While it is not empty
+			while (!__q.isEmpty())
+			{
+				// Get the next item
+				Reference<X> ref = __q.pollFirst();
+				
+				// In the reference?
+				X rv;
+				if (null != (rv = ref.get()))
+					return rv;
+			}
+		}
+		
+		// Not in it at all
+		return null;
 	}
 	
 	/**
@@ -120,7 +157,7 @@ public abstract class JVMVariable<T>
 		extends JVMVariable<Double>
 	{
 		/** Next value type queue. */
-		private static final Deque<OfDouble> _FREE_QUEUE =
+		private static final Deque<Reference<OfDouble>> _FREE_QUEUE =
 			new LinkedList<>();
 		
 		/** The current value. */
@@ -133,6 +170,16 @@ public abstract class JVMVariable<T>
 		 */
 		private OfDouble()
 		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public Double get()
+		{
+			return _value;
 		}
 		
 		/**
@@ -178,7 +225,7 @@ public abstract class JVMVariable<T>
 		extends JVMVariable<Float>
 	{
 		/** Next value type queue. */
-		private static final Deque<OfFloat> _FREE_QUEUE =
+		private static final Deque<Reference<OfFloat>> _FREE_QUEUE =
 			new LinkedList<>();
 		
 		/** The value of this. */
@@ -191,6 +238,16 @@ public abstract class JVMVariable<T>
 		 */
 		private OfFloat()
 		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public Float get()
+		{
+			return _value;
 		}
 		
 		/**
@@ -236,7 +293,7 @@ public abstract class JVMVariable<T>
 		extends JVMVariable<Integer>
 	{
 		/** Next value type queue. */
-		private static final Deque<OfInteger> _FREE_QUEUE =
+		private static final Deque<Reference<OfInteger>> _FREE_QUEUE =
 			new LinkedList<>();
 		
 		/** The current value. */
@@ -249,6 +306,16 @@ public abstract class JVMVariable<T>
 		 */
 		private OfInteger()
 		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public Integer get()
+		{
+			return _value;
 		}
 		
 		/**
@@ -294,7 +361,7 @@ public abstract class JVMVariable<T>
 		extends JVMVariable<Long>
 	{
 		/** Next value type queue. */
-		private static final Deque<OfLong> _FREE_QUEUE =
+		private static final Deque<Reference<OfLong>> _FREE_QUEUE =
 			new LinkedList<>();
 		
 		/** The current value. */
@@ -307,6 +374,16 @@ public abstract class JVMVariable<T>
 		 */
 		private OfLong()
 		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public Long get()
+		{
+			return _value;
 		}
 		
 		/**
@@ -352,7 +429,7 @@ public abstract class JVMVariable<T>
 		extends JVMVariable<JVMObject>
 	{
 		/** Next value type queue. */
-		private static final Deque<OfObject> _FREE_QUEUE =
+		private static final Deque<Reference<OfObject>> _FREE_QUEUE =
 			new LinkedList<>();
 		
 		/** The current value. */
@@ -365,6 +442,16 @@ public abstract class JVMVariable<T>
 		 */
 		private OfObject()
 		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/07
+		 */
+		@Override
+		public JVMObject get()
+		{
+			return _value;
 		}
 		
 		/**

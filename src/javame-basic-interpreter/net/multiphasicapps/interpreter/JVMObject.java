@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents an object within the interpreter.
  *
@@ -22,6 +25,9 @@ public class JVMObject
 	
 	/** The class this object is. */
 	protected final JVMClass classtype;
+	
+	/** String representation of this object. */
+	private volatile Reference<String> _stringrep;
 	
 	/**
 	 * Initializes the object, which may be an array.
@@ -80,6 +86,26 @@ public class JVMObject
 	public JVMObjects objects()
 	{
 		return objects;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/07
+	 */
+	@Override
+	public String toString()
+	{
+		// Get reference
+		Reference<String> ref = _stringrep;
+		String rv;
+		
+		// In a reference?
+		if (ref == null || null == (rv = ref.get()))
+			_stringrep = new WeakReference<>((rv = String.format("%s@%08x",
+				classtype.thisName().toString(), identityHashCode())));
+		
+		// Return it
+		return rv;
 	}
 }
 
