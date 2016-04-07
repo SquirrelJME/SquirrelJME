@@ -144,7 +144,22 @@ public class JVMMethod
 						throw new JVMClassCastException(String.format(
 							"IN0h %s %s", vw, acl));
 					
-					throw new Error("TODO");
+					// Is this a wide variable?
+					boolean iswide = (vw instanceof JVMVariable.OfLong) ||
+						(vw instanceof JVMVariable.OfDouble);
+					int nextvat = vat + (iswide ? 2 : 1);
+					
+					// {@squirreljme.error IN0i The number of method arguments
+					// would exceed the number of available local variables
+					// that exist within a method program. (The current
+					// argument count; The maximum local variable count)}
+					if (nextvat > numlocals)
+						throw new JVMEngineException(String.format(
+							"IN0i %d %d", nextvat, numlocals));
+					
+					// Store variable
+					vars[vat] = vw;
+					vat = nextvat;
 				}
 			}
 			
