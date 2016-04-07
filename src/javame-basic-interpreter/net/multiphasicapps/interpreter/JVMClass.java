@@ -356,6 +356,42 @@ public final class JVMClass
 	}
 	
 	/**
+	 * Checks whether the given object is an instance of this class.
+	 *
+	 * @param __jo The object to check.
+	 * @return If it is an instance or not.
+	 * @since 2016/04/07
+	 */
+	public boolean isInstance(JVMObject __jo)
+	{
+		// Null objects are never instances
+		if (__jo == null)
+			return false;
+		
+		// If this class is primitive, then it will never compare with an
+		// object
+		if (isPrimitive())
+			return false;
+		
+		// Go through the object's interfaces and super classes and check
+		for (JVMClass rover = __jo.classType(); rover != null;
+			rover = rover.superClass())
+		{
+			// Matches this class
+			if (rover == this)
+				return true;
+			
+			// Check class interface
+			for (JVMClass ri : rover.interfaceClasses())
+				if (rover == ri)
+					return true;
+		}
+		
+		// Not an instance
+		return false;
+	}
+	
+	/**
 	 * Is the given variable an instance of this class?
 	 *
 	 * @param __jv The variable to check.
@@ -406,22 +442,8 @@ public final class JVMClass
 		if (!(__jv instanceof JVMVariable.OfObject))
 			return false;
 		
-		if (true)
-			throw new Error("TODO");
-		
-		// Is there a superclass? If so then check that also
-		JVMClass scl = superClass();
-		if (scl != null)
-			if (scl.isInstance(__jv))
-				return true;
-		
-		// Check interfaces
-		for (JVMClass icl : interfaceClasses())
-			if (icl.isInstance(__jv))
-				return true;
-		
-		// Not an instance at all
-		return false;
+		// Get the variable's object
+		return isInstance(((JVMVariable.OfObject)__jv).get());
 	}
 	
 	/**

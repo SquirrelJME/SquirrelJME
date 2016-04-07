@@ -84,6 +84,17 @@ public class JVMObject
 	}
 	
 	/**
+	 * Returns the class of this object.
+	 *
+	 * @return The object class.
+	 * @since 2016/04/07
+	 */
+	public JVMClass classType()
+	{
+		return classtype;
+	}
+	
+	/**
 	 * Returns the identity hashcode of the object this represents. In the
 	 * case of this interpreter that hash code will be the same identity hash
 	 * code as it is on the host virtual machine. This way objects have a one

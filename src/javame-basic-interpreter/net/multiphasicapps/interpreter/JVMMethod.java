@@ -130,11 +130,17 @@ public class JVMMethod
 					// Setup wrapped variable
 					JVMVariable<?> vw = JVMVariable.wrap(carg);
 					
+					// Is this possibly the null object?
+					boolean isobject = (vw instanceof JVMVariable.OfObject);
+					boolean isnullob = (isobject &&
+						((JVMVariable.OfObject)vw).get() == null);
+					
 					// {@squirreljme.error IN0h An input argument which was
 					// passed to the method is not of the expected type that
 					// the method accepts. (The actual input method argument;
 					// The argument class type)}
-					if (!acl.isInstance(vw))
+					// Ignore null though
+					if (!isnullob && !acl.isInstance(vw))
 						throw new JVMClassCastException(String.format(
 							"IN0h %s %s", vw, acl));
 					
