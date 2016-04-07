@@ -59,6 +59,26 @@ public final class JVMObjects
 	}
 	
 	/**
+	 * Spawns an object of the specified class, it is not constructed.
+	 *
+	 * @param __th The thread creating the object.
+	 * @param __cl The class type of the object.
+	 * @return The created object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/07
+	 */
+	public final JVMObject spawnObject(JVMThread __th, JVMClass __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		return new JVMObject(this, __th, __cl);
+	}
+	
+	/**
 	 * Spawns a string which wraps a string used by this host virtual machine
 	 * so it may be accessed by the guest virtual machine.
 	 *

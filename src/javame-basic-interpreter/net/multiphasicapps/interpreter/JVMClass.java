@@ -22,6 +22,7 @@ import net.multiphasicapps.classfile.CFClassFlag;
 import net.multiphasicapps.classfile.CFClassFlags;
 import net.multiphasicapps.classfile.CFClassParser;
 import net.multiphasicapps.classfile.CFFormatException;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
@@ -42,6 +43,10 @@ public final class JVMClass
 	/** The name of the Class class. */
 	public static final ClassNameSymbol CLASS_NAME =
 		new ClassNameSymbol("java/lang/Class");
+	
+	/** The name of the cloneable interface. */
+	public static final ClassNameSymbol CLONEABLE_NAME =
+		new ClassNameSymbol("java/lang/Cloneable");
 	
 	/** Lock. */
 	protected final Object lock =
@@ -181,7 +186,13 @@ public final class JVMClass
 				// Get the class for the class type
 				JVMClass classtype = engine().classes().loadClass(CLASS_NAME);
 				
-				throw new Error("TODO");
+				// Spawn an object of that class
+				rv = engine().objects().spawnObject(__th, classtype);
+				_classobject = new WeakReference<>(rv);
+				
+				// Setup that object
+				System.err.printf("DEBUG -- Setup Class<?> details (%s)%n.",
+					this);
 			}
 			
 			// Return it
@@ -234,7 +245,37 @@ public final class JVMClass
 	 */
 	public Set<JVMClass> interfaceClasses()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Get interface list
+			Set<JVMClass> rv = _interfaceclasses;
+			
+			// Needs loading?
+			if (rv == null)
+			{
+				// Get the class path
+				JVMClassPath cpath = engine().classes();
+				
+				// Setup
+				Set<JVMClass> is = new LinkedHashSet<>();
+				
+				// Arrays are just cloneable
+				if (isArray())
+					is.add(cpath.loadClass(CLONEABLE_NAME));
+				
+				// Otherwise add all of them
+				else
+					for (BinaryNameSymbol bn : base().interfaces())
+						is.add(cpath.loadClass(bn.asClassName()));
+				
+				// Lock in
+				rv = MissingCollections.<JVMClass>unmodifiableSet(is);
+			}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**

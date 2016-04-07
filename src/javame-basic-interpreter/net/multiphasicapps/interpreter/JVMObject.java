@@ -12,6 +12,7 @@ package net.multiphasicapps.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
  * This represents an object within the interpreter.
@@ -28,6 +29,9 @@ public class JVMObject
 	
 	/** The class object this uses. */
 	protected final JVMObject classobject;
+	
+	/** Is the class object a special null? (This is Class) */
+	protected final boolean specialclassobject;
 	
 	/** String representation of this object. */
 	private volatile Reference<String> _stringrep;
@@ -54,7 +58,10 @@ public class JVMObject
 		
 		// Get the class object, this is the value which would be returned
 		// by the getClass() method.
-		classobject = classtype.classObject(__th);
+		ClassNameSymbol cn = __type.thisName();
+		specialclassobject = cn.equals("java/lang/Class");
+		classobject = (specialclassobject ? null :
+			classtype.classObject(__th));
 		
 		// Register this object with the engine
 		objects.__registerObject(this);
