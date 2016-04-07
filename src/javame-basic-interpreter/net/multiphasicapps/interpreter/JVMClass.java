@@ -356,6 +356,75 @@ public final class JVMClass
 	}
 	
 	/**
+	 * Is the given variable an instance of this class?
+	 *
+	 * @param __jv The variable to check.
+	 * @return {@code true} if this is an instacne of it, otherwise
+	 * {@code false}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/07
+	 */
+	public boolean isInstance(JVMVariable<?> __jv)
+		throws NullPointerException
+	{
+		// Check
+		if (__jv == null)
+			throw new NullPointerException("NARG");
+		
+		// If this is a primitive type then logic is simplified a bit
+		if (primitive != null)
+			switch (primitive)
+			{
+					// Integer types
+				case BOOLEAN:
+				case BYTE:
+				case SHORT:
+				case CHARACTER:
+				case INTEGER:
+					return (__jv instanceof JVMVariable.OfInteger);
+					
+					// Long
+				case LONG:
+					return (__jv instanceof JVMVariable.OfLong);
+					
+					// Float
+				case FLOAT:
+					return (__jv instanceof JVMVariable.OfFloat);
+					
+					// Double
+				case DOUBLE:
+					return (__jv instanceof JVMVariable.OfDouble);
+				
+					// Unknown
+				default:
+					throw new RuntimeException(String.format("WTXF %s",
+						primitive));
+			}
+		
+		// If the target is not an object then not an instance at all against
+		// any object
+		if (!(__jv instanceof JVMVariable.OfObject))
+			return false;
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Is there a superclass? If so then check that also
+		JVMClass scl = superClass();
+		if (scl != null)
+			if (scl.isInstance(__jv))
+				return true;
+		
+		// Check interfaces
+		for (JVMClass icl : interfaceClasses())
+			if (icl.isInstance(__jv))
+				return true;
+		
+		// Not an instance at all
+		return false;
+	}
+	
+	/**
 	 * Is this a primitive type?
 	 *
 	 * @return {@code true} if this is a primitive type.

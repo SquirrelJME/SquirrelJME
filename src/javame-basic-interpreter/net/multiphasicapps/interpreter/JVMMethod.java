@@ -124,6 +124,20 @@ public class JVMMethod
 					FieldSymbol farg = desc.get(i);
 					Object carg = __args[i];
 					
+					// Get the system class for the given argument
+					JVMClass acl = jcp.loadClass(farg.asClassName());
+					
+					// Setup wrapped variable
+					JVMVariable<?> vw = JVMVariable.wrap(carg);
+					
+					// {@squirreljme.error IN0h An input argument which was
+					// passed to the method is not of the expected type that
+					// the method accepts. (The actual input method argument;
+					// The argument class type)}
+					if (!acl.isInstance(vw))
+						throw new JVMClassCastException(String.format(
+							"IN0h %s %s", vw, acl));
+					
 					throw new Error("TODO");
 				}
 			}
