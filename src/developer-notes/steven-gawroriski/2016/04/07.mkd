@@ -1,0 +1,8 @@
+# 2016/04/07
+
+## 09:47
+
+Going to need some kind of operational logic that a program uses so that things
+are done for example. The interpreter and compiler could use those logical
+bits to perform actual actions and such.
+
