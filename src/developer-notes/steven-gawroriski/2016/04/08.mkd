@@ -40,3 +40,7 @@ that an alternative format could be developed.
 
 Need to test the sliding byte window to make sure it operates correctly.
 
+## 11:24
+
+I also need a way to just run a single test rather than all of them.
+
