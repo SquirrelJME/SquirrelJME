@@ -87,3 +87,8 @@ I should make sure that the interpreter tests can run with the new sliding
 window code. The classes I load should be read correctly, hopefully. I must
 now remove all of the debug printing stuff.
 
+## 14:25
+
+Seems my inflate code is somewhat slow. I could speed it up in the future
+however.
+
