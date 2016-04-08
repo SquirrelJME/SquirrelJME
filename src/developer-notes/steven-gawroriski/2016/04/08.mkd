@@ -81,3 +81,9 @@ This means my inflater woes were caused by the sliding window code. So I
 suppose this means that I no longer need to use the -0 flag when running the
 tests and such.
 
+## 14:22
+
+I should make sure that the interpreter tests can run with the new sliding
+window code. The classes I load should be read correctly, hopefully. I must
+now remove all of the debug printing stuff.
+
