@@ -1,0 +1,11 @@
+# Mac OS Classic
+
+# Different Directory Separator
+
+MacOS's directory separator is `:` (colon). This makes it a bit odd out of the
+bunch since before that was the case, the OS had no actual directories.
+
+# Cooperating Tasking
+
+The OS is cooperatively tasked, although there may be multi-threading.
+

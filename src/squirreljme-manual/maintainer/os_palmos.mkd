@@ -114,3 +114,8 @@ Palm OS does not support daemons at all. With thread creation however,
 background tasks can be created. These along with IPC would allow the threads
 to act as virtual machine daemons.
 
+## Launch Codes and the Notification Manager
+
+These two important bits will be a way to have system notifications be sent to
+programs running the JVM, perhaps even URL handling and such.
+

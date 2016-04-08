@@ -1,0 +1,15 @@
+# DOS Family
+
+Everyone's favorite 16-bit protected mode operating system.
+
+# Cooperative Tasking
+
+DOS has no threads, it even has no processes. Thus everything will be
+multi-tasked.
+
+# TSRs?
+
+It is possible to have a fork in the background TSR running which runs the
+JVM code. However that would be rather complex, although something similar
+would be done with Palm OS.
+
