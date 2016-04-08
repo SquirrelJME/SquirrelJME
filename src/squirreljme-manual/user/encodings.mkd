@@ -1,0 +1,20 @@
+# Supported Character Encodings
+
+Only two character encodings are supported on all targets:
+
+ * `ISO-8859-1`
+   * This is essentially the first 256 unicode characters.
+ * `UTF-8`
+
+It should be noted that `ASCII` is 7-bit and **NOT** the values which are above
+the 127's character, this is known as `Extended ASCII` and is not supported.
+Other encodings and codepages are not supported unless it is required by a
+target.
+
+A target may require an extra encoding to exist (such as Palm OS since it has
+characters which do not map directly to Unicode). In the event that a target
+specific encoding is required, it will be in the form of the following:
+`x-squirreljme-<target>`. The host filesystems as provided by an operating
+system may require these encodings so that files are located and accessed
+correctly, especially if they appeared before the common adoption of Unicode.
+

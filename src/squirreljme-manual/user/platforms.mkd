@@ -1,0 +1,13 @@
+# Supported Operating Systems and Freestanding Hardware
+
+This contains the list of supported operating systems, architectures, and
+hardware that is supported by SquirrelJME.
+
+_% -- Only tested on emulators, not real hardware._
+
+## Hosted
+
+## Freestanding
+
+## Virtual
+

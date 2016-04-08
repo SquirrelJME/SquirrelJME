@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-Hairball-Name: squirreljme-manual
+X-Hairball-UUID: 35a12598-0ff9-407a-91e0-ec9c52cb99d1
+LIBlet-Title: SquirrelJME Manual
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160407
+LIBlet-Description: This package contains the manual which contains
+  the information that is needed to operate this.
+

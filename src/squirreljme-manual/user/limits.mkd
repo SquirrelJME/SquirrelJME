@@ -1,0 +1,8 @@
+# Limitations
+
+These are planned limitations:
+
+ * Only _4,096_ classes may be used at any one time, provided there is enough
+   memory to load all of them. Note that in standard desktop Java, this would
+   mean that almost the entire standard class library has been loaded.
+

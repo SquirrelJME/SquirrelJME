@@ -1,0 +1,50 @@
+# Differences Between Java SE and Java ME
+
+Java ME is a much lighter Java platform and here are the things which are
+missing along with a reason as to why this may be a good thing:
+
+ * No finalizers (the `finalize()` method).
+   * Finalizers are very integrated with how the garbage collector works.
+   * It is never known when they will actually be called (if ever).
+   * Timing attacks could be performed when finalizers are called between
+     garbage collection runs.
+ * No serialization.
+   * Not all objects are `Serializable`.
+   * Serialization uses virtual machine magic to access internal details.
+   * The `transient` keyword should never appear.
+   * Simplifies implementation.
+ * No reflection.
+   * There is `Class.forName()` and `Class.newInstance()`, however they are
+     trivial to support.
+   * More secure because access checks do not have to be performed at run-time
+     to determine if it is permissable to access an object.
+   * Random object fields (and finals) can be cached because their reference
+     or primitive values will never change.
+   * More secure because for example changing `Boolean.TRUE` to be `false` may
+     cause security exploits with code that relies on it being `true`.
+ * No `invokedynamic` instruction.
+   * Simplifies virtual machine operation, at the cost of lambdas (which could
+     be smartly wrapped in anonymous classes by a compiler).
+
+However, given these differences there are advantages:
+
+ * Faster
+   * Due to the lack of reflection, optimization is safer because finals are
+     truly final. This means no exceptions are required to allow for this
+     change.
+ * Lighter
+   * The main library is much smaller which means it will load faster and
+     use less memory. Less memory means it can run on smaller systems such as
+     calculators.
+
+There are also disadvantages however:
+
+ * Without reflection, one cannot include plugins dynamically from the program.
+   * However, Java ME 3 (or so) added LIBlets which may be optional and provide
+     a slight alternative to plugins. These however are fixed to the JAR/JAD
+     which means that the difficulty is increased.
+   * Alternatively, Java ME 8 has `ServiceLoader` which enables JARs to
+     potentially be merged to provide services. Also using `Class.forName()`
+     and `Class.newInstance()`, plugins using a common interface can be
+     initialized when they are not directly known.
+

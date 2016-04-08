@@ -95,3 +95,8 @@ I really lost was my idea of having an `index.mkd` for the blogs so they can be
 indexed and I can have that info there. Luckily though my paragraph before this
 I had an open web browser seeing what I wrote which is nice.
 
+## 21:15
+
+I can also setup a manual too which contains the needed operations and such
+for how to build and run the stuff.
+

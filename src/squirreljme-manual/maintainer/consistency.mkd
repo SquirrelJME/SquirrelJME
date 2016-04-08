@@ -1,0 +1,8 @@
+# Consistency Requirements
+
+## Unknown Characters Representation
+
+When the target is UTF-8 the unknown character will become `0xFFFD`.
+
+When the target is ISO-8859-1 the unknown character will become `?`.
+

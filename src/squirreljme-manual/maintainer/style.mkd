@@ -1,0 +1,46 @@
+# Style Requirements
+
+## Always Tab With Size 4
+
+Indentation is not done with spaces at all, it is pure tab. The tab size used
+is 4 spaces.
+
+## Never Exceed 79 Characters Per Column
+
+There is a maxiumum limit of 79 characters per line of source code and in
+other files also.
+
+## Always Surround Ternary Operators With Parenthesis
+
+When using ternary operators, you must always surround them in parenthesis even
+if they are obvious. That is they must appear in the form of
+`(condition ? true : false)`.
+
+## Do Not Use Default Methods
+
+Default methods in interfaces are not supported.
+
+## Do Not Use Static Modifiable/Mutable Globals In Standalone Classes
+
+The garbage collector upon determining that a class (which may contain static
+variables treated as globals) is no longer referenced, it may be garbage
+collected. This means that if you set a global in a class such as that and
+then reference it later, it may be reset to its default value. This is more
+likely to happen on lower memory systems where the garbage collector will act
+more aggressively.
+
+## Use Error Codes
+
+Although descriptive details of why an exception is thrown is a nice thing, it
+can waste much space on the static constant data and some extra time building
+the messages. In general cases, exceptions that require detailed messages
+might not always occur while in the case where they are needed the details
+are important. All appearences of error codes must have the following
+before it declared in a comment:
+
+	{@squirreljme.error CODE What this means. (Any extra values which are
+	displayed in the message)}
+
+All files are scanned for these sequences to build the error table which is
+used by maintainers and developers for debugging.
+

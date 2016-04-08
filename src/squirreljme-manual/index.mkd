@@ -1,0 +1,17 @@
+# SquirrelJME Manual
+
+This is the manual for SquirrelJME which should contain and describe the
+operation of this software.
+
+# Table of Contents
+
+ * User's Manual
+   * [Supported Platforms](user/platforms.mkd)
+   * [Supported Character Encodings](user/encodings.mkd)
+   * [Limitations](user/limits.mkd)
+ * Developer's Manual
+   * [Differences between Java SE and Java ME](developer/differences.mkd)
+ * Maintainer's Manual
+   * [Style Requirements](maintainer/style.mkd)
+   * [Consistency Guidelines](maintainer/consistency.mkd)
+
