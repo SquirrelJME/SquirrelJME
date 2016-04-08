@@ -1,2 +1,7 @@
 # 2016/04/08
 
+## 09:30
+
+Actually, my compute machine will need two pass-through values. It will need
+to know the current thread along with the variable states.
+

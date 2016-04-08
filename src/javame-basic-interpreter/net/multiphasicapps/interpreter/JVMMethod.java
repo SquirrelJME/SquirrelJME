@@ -166,12 +166,23 @@ public class JVMMethod
 			
 			// Keep executing until a return is reached or an unhandled
 			// exception is done.
+			JVMComputeMachine cm = engine().computeMachine();
 			for (int pc = 0;;)
 			{
-				// Get the operation for the current address
-				CPOp op = program.get(pc);
+				try
+				{
+					// Get the operation for the current address
+					CPOp op = program.get(pc);
 				
-				throw new Error("TODO");
+					// Compute it
+					op.<JVMThread, JVMVariable[]>compute(cm, __thr, vars);
+				}
+				
+				// Caught exception, it needs to be handled.
+				catch (JVMEngineException e)
+				{
+					throw new Error("TODO");
+				}
 			}
 		}
 		

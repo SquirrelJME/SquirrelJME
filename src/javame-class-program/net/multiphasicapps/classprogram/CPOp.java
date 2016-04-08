@@ -90,6 +90,22 @@ public class CPOp
 	}
 	
 	/**
+	 * Computes this instruction and has it call the computational machine so
+	 * that interpretation or compilation may be performed.
+	 *
+	 * @param <A> The first type to pass.
+	 * @param <B> The second type to pass.
+	 * @param __cm The compute machine.
+	 * @param __a The first value to pass.
+	 * @param __b The second value to pass.
+	 * @since 2016/04/08
+	 */
+	public <A, B> void compute(CPComputeMachine<A, B> __cm, A __a, B __b)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/30
 	 */

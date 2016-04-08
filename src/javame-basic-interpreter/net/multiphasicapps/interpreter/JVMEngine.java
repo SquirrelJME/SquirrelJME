@@ -47,6 +47,10 @@ public abstract class JVMEngine
 	protected final JVMThreads threads =
 		new JVMThreads(this);
 	
+	/** The computational machine. */
+	protected final JVMComputeMachine computer =
+		new JVMComputeMachine(this);
+	
 	/**
 	 * Initializes the base engine.
 	 *
@@ -65,6 +69,17 @@ public abstract class JVMEngine
 	public final JVMClassPath classes()
 	{
 		return classes;
+	}
+	
+	/**
+	 * Returns the compute machine used for logical operations.
+	 *
+	 * @return The computational machine for operation execution.
+	 * @since 2016/04/08
+	 */
+	public final JVMComputeMachine computeMachine()
+	{
+		return computer;
 	}
 	
 	/**
