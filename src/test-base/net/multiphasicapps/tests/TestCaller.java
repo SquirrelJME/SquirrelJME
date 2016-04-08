@@ -43,6 +43,10 @@ public class TestCaller
 	/** Ignoring tossed exceptions? */
 	protected final boolean ignoretoss;
 	
+	/** The specific tests to run. */
+	protected final Set<String> runtests =
+		new HashSet<>();
+	
 	/**
 	 * Initializes the test caller.
 	 *
@@ -87,8 +91,9 @@ public class TestCaller
 							igntoss = true;
 							break;
 						
-							// Unknown
+							// Unknown, treat as test to run
 						default:
+							runtests.add(arg);
 							break;
 					}
 		
@@ -144,9 +149,14 @@ public class TestCaller
 		// Go through all test services
 		for (TestInvoker ti : alltests)
 		{
+			// Is this a test which wants to be ran?
+			String name = ti.invokerName();
+			if (!runtests.isEmpty())
+				if (!runtests.contains(name))
+					continue;
+			
 			// Non-important status output
-			String name;
-			output.printf("---- %s%n", (name = ti.invokerName()));
+			output.printf("---- %s%n", name);
 			
 			// Initialize a new test checker with an initial state
 			TestChecker tc = new TestChecker(this, ti);
