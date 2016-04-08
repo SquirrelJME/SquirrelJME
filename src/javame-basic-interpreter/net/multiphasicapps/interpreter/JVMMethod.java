@@ -112,57 +112,7 @@ public class JVMMethod
 			JVMVariable[] vars = new JVMVariable[numvars];
 			
 			// Setup the initial variable state
-			{
-				// Classpaths
-				JVMClassPath jcp = engine().classes();
-				
-				// Setup variable
-				int vat = 0;
-				for (int i = 0; i < ncargs; i++)
-				{
-					// Get method argument from the descriptor and the input
-					// argument
-					FieldSymbol farg = desc.get(i);
-					Object carg = __args[i];
-					
-					// Get the system class for the given argument
-					JVMClass acl = jcp.loadClass(farg.asClassName());
-					
-					// Setup wrapped variable
-					JVMVariable<?> vw = JVMVariable.wrap(carg);
-					
-					// Is this possibly the null object?
-					boolean isobject = (vw instanceof JVMVariable.OfObject);
-					boolean isnullob = (isobject &&
-						((JVMVariable.OfObject)vw).get() == null);
-					
-					// {@squirreljme.error IN0h An input argument which was
-					// passed to the method is not of the expected type that
-					// the method accepts. (The actual input method argument;
-					// The argument class type)}
-					// Ignore null though
-					if (!isnullob && !acl.isInstance(vw))
-						throw new JVMClassCastException(String.format(
-							"IN0h %s %s", vw, acl));
-					
-					// Is this a wide variable?
-					boolean iswide = (vw instanceof JVMVariable.OfLong) ||
-						(vw instanceof JVMVariable.OfDouble);
-					int nextvat = vat + (iswide ? 2 : 1);
-					
-					// {@squirreljme.error IN0i The number of method arguments
-					// would exceed the number of available local variables
-					// that exist within a method program. (The current
-					// argument count; The maximum local variable count)}
-					if (nextvat > numlocals)
-						throw new JVMEngineException(String.format(
-							"IN0i %d %d", nextvat, numlocals));
-					
-					// Store variable
-					vars[vat] = vw;
-					vat = nextvat;
-				}
-			}
+			__initVariables(vars, numlocals, __args, desc, ncargs);
 			
 			// Keep executing until a return is reached or an unhandled
 			// exception is done.
@@ -175,7 +125,16 @@ public class JVMMethod
 					CPOp op = program.get(pc);
 				
 					// Compute it
-					op.<JVMThread, JVMVariable[]>compute(cm, __thr, vars);
+					try
+					{
+						op.<JVMThread, JVMVariable[]>compute(cm, __thr, vars);
+					}
+					
+					// Failed to compute the program
+					catch (CPProgramException e)
+					{
+						throw new JVMEngineException(e);
+					}
 				}
 				
 				// Caught exception, it needs to be handled.
@@ -246,6 +205,70 @@ public class JVMMethod
 				}
 			
 			return rv;
+		}
+	}
+	
+	/**
+	 * Initializes the variables on entry of a method.
+	 *
+	 * @param __vars Output variables.
+	 * @param __nl The number of local variables.
+	 * @param __args Program arguments.
+	 * @param __desc Method descriptor.
+	 * @param __nia The number of input arguments expected.
+	 * @since 2016/04/08
+	 */
+	private void __initVariables(JVMVariable[] __vars, int __nl,
+		Object[] __args, MethodSymbol __desc, int __nia)
+	{
+		// Classpaths
+		JVMClassPath jcp = engine().classes();
+		
+		// Setup variable
+		int vat = 0;
+		for (int i = 0; i < __nia; i++)
+		{
+			// Get method argument from the descriptor and the input
+			// argument
+			FieldSymbol farg = __desc.get(i);
+			Object carg = __args[i];
+			
+			// Get the system class for the given argument
+			JVMClass acl = jcp.loadClass(farg.asClassName());
+			
+			// Setup wrapped variable
+			JVMVariable<?> vw = JVMVariable.wrap(carg);
+			
+			// Is this possibly the null object?
+			boolean isobject = (vw instanceof JVMVariable.OfObject);
+			boolean isnullob = (isobject &&
+				((JVMVariable.OfObject)vw).get() == null);
+			
+			// {@squirreljme.error IN0h An input argument which was
+			// passed to the method is not of the expected type that
+			// the method accepts. (The actual input method argument;
+			// The argument class type)}
+			// Ignore null though
+			if (!isnullob && !acl.isInstance(vw))
+				throw new JVMClassCastException(String.format(
+					"IN0h %s %s", vw, acl));
+			
+			// Is this a wide variable?
+			boolean iswide = (vw instanceof JVMVariable.OfLong) ||
+				(vw instanceof JVMVariable.OfDouble);
+			int nextvat = vat + (iswide ? 2 : 1);
+			
+			// {@squirreljme.error IN0i The number of method arguments
+			// would exceed the number of available local variables
+			// that exist within a method program. (The current
+			// argument count; The maximum local variable count)}
+			if (nextvat > __nl)
+				throw new JVMEngineException(String.format(
+					"IN0i %d %d", nextvat, __nl));
+			
+			// Store variable
+			__vars[vat] = vw;
+			vat = nextvat;
 		}
 	}
 }

@@ -269,7 +269,7 @@ class __StackMapParser__
 		// Read in local variables
 		int nl = das.readUnsignedShort();
 		
-		// {@squireljme.error CP0k The number of specified local variables in
+		// {@squirreljme.error CP0k The number of specified local variables in
 		// the full frame exceeds the maximum permitted local variable
 		// count. (The read local variable count; The number of locals the
 		// method uses)}

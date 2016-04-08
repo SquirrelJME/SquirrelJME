@@ -30,8 +30,13 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  */
 public class CPOp
 {
+	/** Virtual machine workers. */
+	private static final __VMWorkers__ _VMWORKERS =
+		new __VMWorkers__();
+	
 	/** Operation lock. */
-	final Object lock;
+	final Object lock =
+		new Object();
 	
 	/** The program to use. */
 	protected final CPProgram program;	
@@ -73,7 +78,6 @@ public class CPOp
 			throw new NullPointerException("NARG");
 		
 		program = __prg;
-		lock = program.lock;
 		logical = __pc;
 		physical = program.logicalToPhysical(logical);
 	}
@@ -102,6 +106,16 @@ public class CPOp
 	 */
 	public <A, B> void compute(CPComputeMachine<A, B> __cm, A __a, B __b)
 	{
+		// Obtain the worker for this instruction
+		int opcode = instructionCode();
+		__VMWorkers__.__Worker__ worker = _VMWORKERS.__lookup(opcode);
+		
+		// {@squirreljme.error CP0m Method contains an illegal opcode. (The
+		// current logical address; The instruction opcode})
+		if (worker == null)
+			throw new CPProgramException(String.format("CP0m %d %d", logical,
+				opcode));
+		
 		throw new Error("TODO");
 	}
 	

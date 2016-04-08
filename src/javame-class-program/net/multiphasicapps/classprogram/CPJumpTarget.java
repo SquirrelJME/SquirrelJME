@@ -81,7 +81,7 @@ public class CPJumpTarget
 		if (__prg == null || __type == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirrelme.error CP08 The target jump address is outside of the
+		// {@squirreljme.error CP08 The target jump address is outside of the
 		// bounds of the program. (The target address)}
 		if (__addr < 0 || __addr >= __prg.size())
 			throw new CPProgramException(String.format("CP08 %d", __addr));
