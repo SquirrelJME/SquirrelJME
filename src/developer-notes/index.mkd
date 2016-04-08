@@ -1,0 +1,96 @@
+# Developer Notes
+
+# 2016
+
+## 02
+
+ * 26: 
+   [steven-gawroriski](steven-gawroriski/2016/02/26.mkd)
+ * 27: 
+   [steven-gawroriski](steven-gawroriski/2016/02/27.mkd)
+ * 28: 
+   [steven-gawroriski](steven-gawroriski/2016/02/28.mkd)
+ * 29: 
+   [steven-gawroriski](steven-gawroriski/2016/02/29.mkd)
+
+## 03
+
+ * 01: 
+   [steven-gawroriski](steven-gawroriski/2016/03/01.mkd)
+ * 02: 
+   [steven-gawroriski](steven-gawroriski/2016/03/02.mkd)
+ * 03: 
+   [steven-gawroriski](steven-gawroriski/2016/03/03.mkd)
+ * 04: 
+   [steven-gawroriski](steven-gawroriski/2016/03/04.mkd)
+ * 05: 
+   [steven-gawroriski](steven-gawroriski/2016/03/05.mkd)
+ * 06: 
+   [steven-gawroriski](steven-gawroriski/2016/03/06.mkd)
+ * 07: 
+   [steven-gawroriski](steven-gawroriski/2016/03/07.mkd)
+ * 08: 
+   [steven-gawroriski](steven-gawroriski/2016/03/08.mkd)
+ * 09: 
+   [steven-gawroriski](steven-gawroriski/2016/03/09.mkd)
+ * 10: 
+   [steven-gawroriski](steven-gawroriski/2016/03/10.mkd)
+ * 11: 
+   [steven-gawroriski](steven-gawroriski/2016/03/11.mkd)
+ * 12: 
+   [steven-gawroriski](steven-gawroriski/2016/03/12.mkd)
+ * 13: 
+   [steven-gawroriski](steven-gawroriski/2016/03/13.mkd)
+ * 14: 
+   [steven-gawroriski](steven-gawroriski/2016/03/14.mkd)
+ * 15: 
+   [steven-gawroriski](steven-gawroriski/2016/03/15.mkd)
+ * 16: 
+   [steven-gawroriski](steven-gawroriski/2016/03/16.mkd)
+ * 17: 
+   [steven-gawroriski](steven-gawroriski/2016/03/17.mkd)
+ * 18: 
+   [steven-gawroriski](steven-gawroriski/2016/03/18.mkd)
+ * 19: 
+   [steven-gawroriski](steven-gawroriski/2016/03/19.mkd)
+ * 20: 
+   [steven-gawroriski](steven-gawroriski/2016/03/20.mkd)
+ * 21: 
+   [steven-gawroriski](steven-gawroriski/2016/03/21.mkd)
+ * 22: 
+   [steven-gawroriski](steven-gawroriski/2016/03/22.mkd)
+ * 23: 
+   [steven-gawroriski](steven-gawroriski/2016/03/23.mkd)
+ * 24: 
+   [steven-gawroriski](steven-gawroriski/2016/03/24.mkd)
+ * 25: 
+   [steven-gawroriski](steven-gawroriski/2016/03/25.mkd)
+ * 26: 
+   [steven-gawroriski](steven-gawroriski/2016/03/26.mkd)
+ * 27: 
+   [steven-gawroriski](steven-gawroriski/2016/03/27.mkd)
+ * 28: 
+   [steven-gawroriski](steven-gawroriski/2016/03/28.mkd)
+ * 29: 
+   [steven-gawroriski](steven-gawroriski/2016/03/29.mkd)
+ * 30: 
+   [steven-gawroriski](steven-gawroriski/2016/03/30.mkd)
+ * 31: 
+   [steven-gawroriski](steven-gawroriski/2016/03/31.mkd)
+
+## 04
+
+ * 01: 
+   [steven-gawroriski](steven-gawroriski/2016/04/01.mkd)
+ * 02: 
+   [steven-gawroriski](steven-gawroriski/2016/04/02.mkd)
+ * 03: 
+   [steven-gawroriski](steven-gawroriski/2016/04/03.mkd)
+ * 04: 
+   [steven-gawroriski](steven-gawroriski/2016/04/04.mkd)
+ * 05: 
+   [steven-gawroriski](steven-gawroriski/2016/04/05.mkd)
+ * 06: 
+   [steven-gawroriski](steven-gawroriski/2016/04/06.mkd)
+ * 07: 
+   [steven-gawroriski](steven-gawroriski/2016/04/07.mkd)

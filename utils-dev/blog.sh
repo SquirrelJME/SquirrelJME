@@ -42,7 +42,7 @@ __nowmont="$(date +%m)"
 __nowdayy="$(date +%d)"
 
 # Note list file
-__notelist="$__exedir/../src/developer-notes/notes.list"
+__notelist="$__exedir/../src/developer-notes/index.mkd"
 
 __nowtime="$__nowyear$__nowmont$__nowdayy"
 __htmtime="$__nowyear\/$__nowmont\/$__nowdayy"
@@ -58,12 +58,8 @@ then
 	"$__exedir/create.sh" "$__nowfile"
 	sed "s/YYYYMMDD/$__htmtime/g" < "$__exedir/crtmpl/blog.mkd" > "$__nowfile"
 	
-	# Add to the note list
-	touch "$__notelist"
-	cat "$__notelist" > /tmp/$$
-	echo "$__basedir" >> /tmp/$$
-	sort < /tmp/$$ > "$__notelist"
-	rm -f /tmp/$$
+	# Rebuild the blog index
+	"$__exedir/blogdx.sh"
 fi
 
 # Open it

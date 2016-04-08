@@ -75,4 +75,23 @@ currently. However, if the backend calling into the compute machine becomes
 optimized (such as compacting adds and removing useless operations) then the
 interpreter and compiler should remain untouched for the most part.
 
+## 20:32
+
+What I need however is a class which acts as an ideal type of variable
+reference. I suppose just integer variable references could do. At least to the
+interpreter it will have the feeling of being given the local variable IDs to
+do stuff on, while for the compiler this would be virtual registers. So yes,
+the integer would just be the register for the most part. It would not be
+precisely SSA at least as seen by the interpreter and compiler though. However,
+any optimizations would be done by the program layout itself which may use SSA
+or not. The only thing that is really needed is that the execution layer is
+called with the right logical code.
+
+## 20:47
+
+Accidently lost some of my notes. However they were just a few sentences on
+the my idea and a creation of an index for the blog. Actually the only thing
+I really lost was my idea of having an `index.mkd` for the blogs so they can be
+indexed and I can have that info there. Luckily though my paragraph before this
+I had an open web browser seeing what I wrote which is nice.
 
