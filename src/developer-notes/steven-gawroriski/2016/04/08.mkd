@@ -71,3 +71,13 @@ Actually to really test it, I should write double the amount of bytes in it
 that way I know the actual sliding works. Although doing it on the base byte
 array will be a bit slow.
 
+## 14:19
+
+And the thing which I like to see is this:
+
+	PASS extraio.inflater@d
+
+This means my inflater woes were caused by the sliding window code. So I
+suppose this means that I no longer need to use the -0 flag when running the
+tests and such.
+
