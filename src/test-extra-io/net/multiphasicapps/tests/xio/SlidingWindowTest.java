@@ -29,6 +29,10 @@ public class SlidingWindowTest
 	public static final int WINDOW_SIZE =
 		8192;
 	
+	/** Maximum failure count. */
+	public static final int MAX_FAILURES =
+		8;
+	
 	/** Random Seed. */
 	public static final long RANDOM_SEED =
 		0xC0FFEE_15_407L;
@@ -64,15 +68,58 @@ public class SlidingWindowTest
 		Random rand = new Random(RANDOM_SEED);
 		
 		// While the window is not yet full
-		int totalbytes = 0;
-		while (totalbytes < WINDOW_SIZE)
+		int totalbytes = 0, checknum = 0;
+		int arrayfails = 0, windowfails = 0;
+		while (totalbytes < WINDOW_SIZE && arrayfails < MAX_FAILURES &&
+			windowfails < MAX_FAILURES)
 		{
 			// Is this a check or a put operation?
-			boolean docheck = rand.nextBoolean();
+			boolean docheck = (rand.nextInt(4) == 0);
 			
-			// Check byte in the window
-			if (docheck)
-				throw new Error("TODO");
+			// Check byte in the window, but only if the window is past a
+			// minimum size
+			if (docheck && totalbytes >= 4)
+			{
+				// The name of this test
+				String testname = Integer.toString(++checknum);
+				
+				// How far back? And how much?
+				int ago = rand.nextInt(totalbytes - 1) + 1;
+				int len = Math.max(1, rand.nextInt(ago));
+				
+				// Allocate destination buffers
+				byte[] a = new byte[len];
+				byte[] b = new byte[len];
+				
+				// From the byte array
+				try
+				{
+					__ago(raw, ago, a, 0, len, totalbytes);
+				}
+				
+				// Ignore
+				catch (Throwable t)
+				{
+					__tc.exception(testname, t);
+					arrayfails++;
+				}
+				
+				// From the real window
+				try
+				{
+					sbw.get(ago, b, 0, len);
+				}
+				
+				// Ignore
+				catch (Throwable t)
+				{
+					__tc.exception(testname, t);
+					windowfails++;
+				}
+				
+				// Check the buffer data
+				__tc.checkEquals(testname, a, b);
+			}
 			
 			// Add byte to the window
 			else
@@ -80,9 +127,78 @@ public class SlidingWindowTest
 				// Byte value to add
 				byte add = (byte)rand.nextInt(256);
 				
-				throw new Error("TODO");
+				// Add to the end of the window and the buffer
+				sbw.append(add);
+				raw[totalbytes++] = add;
 			}
 		}
+		
+		// Setup final entire buffer setup
+		byte[] rawli = new byte[totalbytes];
+		byte[] fulla = new byte[totalbytes];
+		byte[] fullb = new byte[totalbytes];
+		
+		// Copy raw data
+		for (int i = 0; i < totalbytes; i++)
+			rawli[i] = raw[i];
+		
+		// From the byte array
+		try
+		{
+			__ago(raw, totalbytes, fulla, 0, totalbytes, totalbytes);
+		}
+		
+		// Ignore
+		catch (Throwable t)
+		{
+			__tc.exception("fullarray", t);
+			arrayfails++;
+		}
+		
+		// From the sliding window
+		try
+		{
+			sbw.get(totalbytes, fullb, 0, totalbytes);
+		}
+		
+		// Ignore
+		catch (Throwable t)
+		{
+			__tc.exception("fullwindow", t);
+			windowfails++;
+		}
+		
+		// Check for no failures
+		__tc.checkEquals("arrayfailures", 0, arrayfails);
+		__tc.checkEquals("windowfailures", 0, windowfails);
+		
+		// Check all the bytes against the raw window
+		__tc.checkEquals("fullarray", rawli, fulla);
+		__tc.checkEquals("fullwindow", rawli, fullb);
+	}
+	
+	/**
+	 * Obtains a bunch of bytes near the end of the sliding window.
+	 *
+	 * @param __src The source array.
+	 * @param __ago The number of bytes to look in the past in.
+	 * @param __dest The destination array.
+	 * @param __o The write offset in the destination.
+	 * @param __l The number of bytes to copy.
+	 * @param __end The total number of buffer bytes.
+	 * @since 2016/04/08
+	 */
+	private void __ago(byte[] __src, int __ago, byte[] __dest, int __o,
+		int __l, int __end)
+		throws NullPointerException
+	{
+		// Check
+		if (__src == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all bytes
+		for (int i = 0; i < __l; i++)
+			__dest[__o + i] = __src[(__end - __ago) + i];
 	}
 }
 

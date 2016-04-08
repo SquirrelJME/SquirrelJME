@@ -44,3 +44,12 @@ Need to test the sliding byte window to make sure it operates correctly.
 
 I also need a way to just run a single test rather than all of them.
 
+## 13:25
+
+Looks like I run out of memory in my sliding byte window tester.
+
+## 13:42
+
+I suppose my sliding byte window code is rather horrible since the sliding
+window class is full of errors while the arrays are fine.
+
