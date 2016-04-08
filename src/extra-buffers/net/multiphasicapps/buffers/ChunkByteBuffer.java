@@ -294,7 +294,7 @@ public class ChunkByteBuffer
 		{
 			// Source exceeds bounds?
 			int limit = size();
-			if (__base < 0 || (__base + __l) >= limit)
+			if (__base < 0 || (__base + __l) > limit)
 				throw new IndexOutOfBoundsException(String.format(
 					"IOOB %d %d %d", __base, __l, limit));
 			

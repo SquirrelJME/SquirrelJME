@@ -95,15 +95,15 @@ public class SlidingByteWindow
 			
 			// Increases by one byte
 			int vt = _total + 1;
-			_total = vt;
 			
-			// Exceeds the window size?
+			// Exceeds the window size? Remove the first byte
 			int max = windowsize;
 			if (vt > max)
-			{
 				back.remove(0);
-				_total = vt - 1;
-			}
+			
+			// Set total count
+			else
+				_total = vt;
 		}
 		
 		// Self

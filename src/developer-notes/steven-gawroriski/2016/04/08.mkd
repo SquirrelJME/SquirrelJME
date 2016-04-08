@@ -65,3 +65,9 @@ So far it looks like my redone and simplified (using the chunked buffer code
 now) sliding window code works. However, I believe there are far too many tests
 being done on it at once.
 
+## 14:11
+
+Actually to really test it, I should write double the amount of bytes in it
+that way I know the actual sliding works. Although doing it on the base byte
+array will be a bit slow.
+

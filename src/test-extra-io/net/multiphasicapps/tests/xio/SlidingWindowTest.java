@@ -27,7 +27,11 @@ public class SlidingWindowTest
 {
 	/** The test size of the sliding window. */
 	public static final int WINDOW_SIZE =
-		8192;
+		512;
+	
+	/** The number of bytes that should be written (to test sliding). */
+	public static final int WRITE_TOTAL =
+		1024;
 	
 	/** Maximum failure count. */
 	public static final int MAX_FAILURES =
@@ -70,11 +74,12 @@ public class SlidingWindowTest
 		// While the window is not yet full
 		int totalbytes = 0, checknum = 0;
 		int arrayfails = 0, windowfails = 0;
-		while (totalbytes < WINDOW_SIZE && arrayfails < MAX_FAILURES &&
+		int written = 0;
+		while (written < WRITE_TOTAL && arrayfails < MAX_FAILURES &&
 			windowfails < MAX_FAILURES)
 		{
 			// Is this a check or a put operation?
-			boolean docheck = (rand.nextInt(4) == 0);
+			boolean docheck = (rand.nextInt(15) == 0);
 			
 			// Check byte in the window, but only if the window is past a
 			// minimum size
@@ -127,9 +132,27 @@ public class SlidingWindowTest
 				// Byte value to add
 				byte add = (byte)rand.nextInt(256);
 				
-				// Add to the end of the window and the buffer
+				// Add to the end of the window
 				sbw.append(add);
-				raw[totalbytes++] = add;
+				
+				// At the window maximum? Then all bytes need to be shifted
+				// down
+				if (totalbytes >= WINDOW_SIZE)
+				{
+					// Shift down
+					for (int i = 0; i < totalbytes - 1; i++)
+						raw[i] = raw[i + 1];
+					
+					// Write at the end
+					raw[totalbytes - 1] = add;
+				}
+				
+				// Still below the max
+				else
+					raw[totalbytes++] = add;
+				
+				// Increase write count
+				written++;
 			}
 		}
 		
