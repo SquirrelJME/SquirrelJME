@@ -24,3 +24,19 @@ possible that there can be more user space in very constrained systems. For
 example, all of the input JARs could be pack200ed and placed in a ROM and
 then used that way.
 
+## 10:41
+
+Correction, it is not the ZIP compressor, but the ZIP archive support which I
+currently use for the interpreter for reading ZIPs from the classpath. Having
+pack200 supported like this however, would be a nice bonus. For example, on
+some systems there might not be enough room for a compressed JAR. However if on
+average an uncompressed pack200 is smaller than the JAR, then there will be
+considerable space savings. However, this depends on the pack200 format if it
+is possible to kludge archive-like access on top of it. If it is viable and
+does not require a large amount of memory then I would do it. It is possible
+that an alternative format could be developed.
+
+## 11:18
+
+Need to test the sliding byte window to make sure it operates correctly.
+

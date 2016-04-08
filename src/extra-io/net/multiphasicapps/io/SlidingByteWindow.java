@@ -316,7 +316,8 @@ public class SlidingByteWindow
 				System.err.printf("DEBUG -- src=%d rat=%d (@%d %d/%d) " +
 					"%02x (%c)%n",
 					Arrays.<byte[]>asList(_fragments).indexOf(source), rat,
-					__ago - (__l - i), i, __l, __b[__o + i], (char)__b[__o + i]);
+					__ago - (__l - i), i, __l, __b[__o + i],
+					(char)__b[__o + i]);
 			}
 		}
 		

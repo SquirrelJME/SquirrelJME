@@ -34,6 +34,7 @@ public class TestInflater
 	 * {@inheritDoc}
 	 * @since 2016/03/03
 	 */
+	@Override
 	public String invokerName()
 	{
 		return "extraio.inflater";
@@ -43,6 +44,7 @@ public class TestInflater
 	 * {@inheritDoc}
 	 * @since 2016/03/03
 	 */
+	@Override
 	public void runTests(TestChecker __tc)
 		throws NullPointerException
 	{
