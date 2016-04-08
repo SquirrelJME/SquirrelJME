@@ -14,4 +14,6 @@ operation of this software.
  * Maintainer's Manual
    * [Style Requirements](maintainer/style.mkd)
    * [Consistency Guidelines](maintainer/consistency.mkd)
+   * Operating System Notes
+     * [Palm OS](maintainer/os_palmos.mkd)
 

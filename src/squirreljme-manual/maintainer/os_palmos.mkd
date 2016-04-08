@@ -1,0 +1,116 @@
+# Palm OS
+
+Rumor has it that Palm OS was inspired by Mac OS Classic (creator and type
+IDs are rather noticeable).
+
+Note that Cobalt (Palm OS 6) is very different and the only known instance of
+it is the simulator which runs on Windows and uses DLLs for native libraries.
+
+# Dual Architecture
+
+There are two supported architectures in PalmOS:
+
+ * m68k
+   * All Palm OS versions up to 4.
+ * ARM
+   * Palm OS 5.
+   * m68k is run on an emulator which integrates quite well, however it has
+     limitations on what it can do.
+
+# Palm OS 1 to 4 (m68k)
+
+## Cooperative or Preemptive?
+
+I do know that Palm OS 5 is preemptive, however I do not know about older
+versions of Palm OS.
+
+## Alarms
+
+Alarms could be used if there is no preemptive multi-tasking to simulate a
+preemptive call. Basically when an alarm is called it can launch the program
+which then performs the proper dispatching and such.
+
+# Palm OS 5 (ARM)
+
+## Preemptive
+
+Contrary to popular believe, Palm OS 5 is preemptive when it comes to
+multi-threading. However, there is still only a single thread which runs all
+user programs. Thus if that thread does not perform the right calls, then
+the entire system will freeze.
+
+## Native Programs Are Not Documented
+
+Native ARM programs are not documented. The general way that was intended to
+have ARM native code was essentially to write your program and compile it to
+m68k and then have ARM specified subroutines called PNOlets. There are native
+applications, however the format is not really known. However there has been
+some reverse engineering of the format, however that reverse engineering is
+only available in Russian.
+
+## System Calls
+
+All system calls (the traps in m68k) essentially offset a system global
+register (`r9?`), perform some math, and then treat the address as a function
+pointer. Libraries are also loaded into this register and mapped to specific
+offsets. The system calls that are the most popular would be the HAL, DAL, and
+the UI.
+
+## Threading
+
+There is no user exposed threading API, at least in the Palm OS SDK. However,
+threads can still be created by using internal system APIs. The APIs are quite
+simple. Using the non-documented thread APIs in general is superior to using
+the sound API to create threads. If threads are created using the sound
+API, then all sounds will stutter unless the threads exit quickly after
+execution.
+
+### Thread Limit
+
+There are a hard limit of either 16 or 32 threads (I believe it to be 32). Note
+that there will be one lost thread for the sound API and another lost thread
+usually used by the system to run all of the user space code.
+
+# All Versions
+
+## "Illegal" Threading
+
+Palm was under contract to not expose any threading API and make it
+available to developers. There are no threading headers at all. From what I
+remember, the limitations were only for the kernel used for the m68k devices
+since they licensed another company's kernel. The kernel is the AMX kernel by
+Kadak.
+
+Palm however is no longer around and HP has buried everything pertaining to
+Palm OS.
+
+Note that Kadak is also dead, they left a note on their website stating
+"KADAK Products Ltd. regrets to announce that, effective January 29, 2016
+it will cease operation world-wide.". I suppose if Palm OS had threading since
+AMX was a RTOS, it probably could have competed a bit better.
+
+## IPC
+
+IPC would be the most complex process, it can either be fast or it will be
+slow.
+
+### Mailboxes?
+
+If the undocumented mailboxes are figured out and if their name makes any
+sense, they can be used as IPC. Otherwise, IPC would be layered on the feature
+manager.
+
+### Feature Manager
+
+The feature manager will be used heavily. New features can be declared and
+they are not saved in RAM across reboots (well they are wiped). The feature
+manager will essentially be the only way there can be safe IPC across various
+threads. That is, unless the undocumented mailboxes are workable. The feature
+manager is well documented however.
+
+### Daemons
+
+Palm OS does not support daemons at all. With thread creation however,
+background tasks can be created. These along with IPC would allow the threads
+to act as virtual machine daemons.
+
