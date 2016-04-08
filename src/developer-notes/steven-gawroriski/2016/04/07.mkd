@@ -38,3 +38,41 @@ important.
 
 Going to need classes for the primitive types.
 
+## 20:20
+
+I suppose I can do the same thing as I did before, by using an interface and
+implementations of that so that logicals may be created and returned based on
+the instruction used. However, there are going to be logicals for instructions
+which are exactly the same. Right now, my logicals are planned to be sub-things
+based on the byte code. However that might not actually be needed at all. Well
+really my plan for logicals was for it to be stuff such as add, subtract, and
+other things with variables. What is really just needed is an abstract class
+of sorts which wraps operation handlers for input and output. I could also
+possibly have a kind of abstract computation machine so that when operations
+are called, the actual codes can be generated and such. So basically remove
+logicals and just have operation handlers that I had similarly before. However
+instead of a list of operations to perform, there is instead a logical machine
+of sorts which operates on something. I would need to pass an argument back
+and forth so that way I do not have to create a few thousand objects for each
+instruction to be executed. So basically it would look like this:
+
+	public interface CPComputeMachine<P>
+	{
+		public abstract void add(P __pass, ? __dest, ? __a, ? __b);
+	}
+	
+	CPOp.<P>compute(CPComputeMachine<P> __p, P __pass);
+
+This compute machine would be able to be used by later operations to set the
+variable states without performing an actual work. The method I listed above
+would essentially just perform the actual operation work and handle calling
+into the compute machine with the given object. Then I just need one compute
+machine implemented for the inetrpreter. The compiler would also use the
+compute machine to perform any intermediary work between operations. I would
+support currently my compute machine would not be as optimizing (just not
+performing wasteful stack moving operations) as I intend it to be in the future
+currently. However, if the backend calling into the compute machine becomes
+optimized (such as compacting adds and removing useless operations) then the
+interpreter and compiler should remain untouched for the most part.
+
+

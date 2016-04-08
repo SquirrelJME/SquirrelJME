@@ -406,16 +406,20 @@ public class CPOp
 	 */
 	public List<CPLogical> logicals()
 	{
-		// Get reference
-		Reference<List<CPLogical>> ref = _logicals;
-		List<CPLogical> rv;
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<List<CPLogical>> ref = _logicals;
+			List<CPLogical> rv;
 		
-		// Needs creation?
-		if (ref == null || null == (rv = ref.get()))
-			throw new Error("TODO");
+			// Needs creation?
+			if (ref == null || null == (rv = ref.get()))
+				throw new Error("TODO");
 		
-		// Return it
-		return rv;
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
