@@ -19,7 +19,6 @@ import java.util.Deque;
 import java.util.List;
 import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.classfile.CFMethodFlags;
-import net.multiphasicapps.classprogram.CPLogical;
 import net.multiphasicapps.classprogram.CPOp;
 import net.multiphasicapps.classprogram.CPProgram;
 import net.multiphasicapps.classprogram.CPProgramBuilder;
@@ -172,9 +171,7 @@ public class JVMMethod
 				// Get the operation for the current address
 				CPOp op = program.get(pc);
 				
-				// Execute logical operations
-				for (CPLogical log : op.logicals())
-					throw new Error("TODO");
+				throw new Error("TODO");
 			}
 		}
 		

@@ -57,9 +57,6 @@ public class CPOp
 	/** Verification state cache. */
 	private volatile Reference<CPVerifyState> _vstate;
 	
-	/** Logical operations. */
-	private volatile Reference<List<CPLogical>> _logicals;
-	
 	/**
 	 * Initializes the operation.
 	 *
@@ -392,30 +389,6 @@ public class CPOp
 					_ijtar = new WeakReference<>(rv);
 				}
 			}
-		
-			// Return it
-			return rv;
-		}
-	}
-	
-	/**
-	 * Returns the list of logicals which this operation performs.
-	 *
-	 * @return The logical operation list.
-	 * @since 2016/04/07
-	 */
-	public List<CPLogical> logicals()
-	{
-		// Lock
-		synchronized (lock)
-		{
-			// Get reference
-			Reference<List<CPLogical>> ref = _logicals;
-			List<CPLogical> rv;
-		
-			// Needs creation?
-			if (ref == null || null == (rv = ref.get()))
-				throw new Error("TODO");
 		
 			// Return it
 			return rv;
