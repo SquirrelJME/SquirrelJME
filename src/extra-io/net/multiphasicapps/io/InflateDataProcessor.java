@@ -76,10 +76,6 @@ public class InflateDataProcessor
 					
 					// Also give it to the sliding window
 					window.append(__v);
-					
-					// DEBUG
-					System.err.printf("DEBUG -- W %02x %c%n", __v & 0xFF,
-						(char)__v);
 				}
 			});
 	
@@ -145,7 +141,6 @@ public class InflateDataProcessor
 			int v;
 			inputbits.offerLastInt((v = ((int)input.removeFirst()) & 0xFF),
 				0xFF);
-			System.err.printf("DEBUG -- in %02x%n", v);
 		}
 		
 		// Processing loop
@@ -298,10 +293,6 @@ public class InflateDataProcessor
 		HuffmanTree<Integer> __dist)
 		throws IOException
 	{
-		// Debug
-		System.err.println("DEBUG -- c " + __c + " " + (char)__c);
-		System.err.flush();
-		
 		// Literal byte value
 		if (__c >= 0 && __c <= 255)
 			compactor.add(__c & 0xFF, 0xFF);
@@ -315,7 +306,6 @@ public class InflateDataProcessor
 			_treedist = null;
 			
 			// Go back to reading the header
-			System.err.println("DEBUG -- STOPPED");
 			_task = __Task__.READ_HEADER;
 			throw new WaitingException("XI0i");
 		}
@@ -325,11 +315,9 @@ public class InflateDataProcessor
 		{
 			// Read the length
 			int lent = __handleLength(__c);
-			System.err.printf("DEBUG -- Length %d%n", lent);
 			
 			// Read the distance
 			int dist = __handleDistance(__dist);
-			System.err.printf("DEBUG -- Distance %d%n", dist);
 			
 			// Get the maximum valid length, so for example if the length is 5
 			// and the distance is two, then only read two bytes.
@@ -399,8 +387,6 @@ public class InflateDataProcessor
 		// If there are bits to read then read them in
 		if (extrabits > 0)
 			rv += inputbits.removeFirstInt(extrabits, false);
-			
-		System.err.printf("DEBUG -- Dist Code %d > %d%n", code, rv);
 		
 		// Return it
 		return rv;
@@ -445,8 +431,6 @@ public class InflateDataProcessor
 		if (extrabits > 0)
 			rv += inputbits.removeFirstInt(extrabits, false);
 		
-		System.err.printf("DEBUG -- Lent Code %d > %d%n", __c, rv);
-		
 		// Return the length
 		return rv;
 	}
@@ -474,7 +458,6 @@ public class InflateDataProcessor
 		// Read in code based on an input huffman tree
 		int basenext = __next;
 		int code = __readTreeCode(__codes);
-		System.err.printf("DEBUG -- Read code %d%n", code);
 		
 		// Literal length, the input is used
 		if (code >= 0 && code < 16)
@@ -600,10 +583,6 @@ public class InflateDataProcessor
 			// Read three bits
 			cll[__alphaSwap(next)] = inputbits.removeFirstInt(3);
 			
-			// Debug
-			System.err.printf("DEBUG -- CLEN %d (%d) %d%n", next,
-				__alphaSwap(next), cll[__alphaSwap(next)]);
-			
 			// Go to the next one
 			_readclnext = (next + 1);
 		}
@@ -649,21 +628,12 @@ public class InflateDataProcessor
 				// Read them all?
 				if (next >= total)
 				{
-					// Dump it
-					for (int i = 0; i < total; i++)
-						System.err.printf("DEBUG -- hlit/dist %d: %d%n", i,
-							rawints[i]);
-					
 					// No longer needed
 					_clentree = null;
 					
 					// Generate trees
 					_treehlit = __thunkCodeLengthTree(rawints, 0, hlit);
 					_treedist = __thunkCodeLengthTree(rawints, hlit, hdist);
-					
-					// Debug
-					System.err.printf("DEBUG -- LIT %s%n", _treehlit);
-					System.err.printf("DEBUG -- DST %s%n", _treedist);
 					
 					// Read the compressed data now
 					_task = __Task__.DYNAMIC_HUFFMAN_COMPRESSED;
@@ -719,7 +689,6 @@ public class InflateDataProcessor
 			int code = __readTreeCode(thlit);
 			
 			// Handle it
-			System.err.printf("DEBUG -- Read DC %d%n", code);
 			__handleCode(code, thlit, tdist);
 		}
 	}
@@ -746,10 +715,6 @@ public class InflateDataProcessor
 		_dhlit = inputbits.removeFirstInt(5) + 257;
 		_dhdist = inputbits.removeFirstInt(5) + 1;
 		_dhclen = cll = inputbits.removeFirstInt(4) + 4;
-		
-		// DEBUG
-		System.err.printf("DEBUG -- DHH %d %d %d %n", _dhlit, _dhdist,
-			_dhclen);
 		
 		// Code lengths cannot be higher than 19
 		if (cll > 19)
@@ -798,7 +763,7 @@ public class InflateDataProcessor
 	 */
 	private boolean __readHeader()
 		throws IOException
-	{System.err.println("DEBUG -- ReadHeader");
+	{
 		// If the final block was hit then just stop
 		if (_finalhit)
 		{
@@ -812,10 +777,6 @@ public class InflateDataProcessor
 		
 		// Read type
 		int type = inputbits.removeFirstInt(2);
-		
-		// Debug
-		System.err.printf("DEBUG -- fn: %s%n", _finalhit);
-		System.err.printf("DEBUG -- ty: %d%n", type);
 		
 		// Depends on the type to read
 		switch (type)
@@ -877,8 +838,6 @@ public class InflateDataProcessor
 			// Align to byte boundary
 			while ((inputbits.headPosition() & 7) != 0)
 			{
-				System.err.printf("DEBUG -- hp %d%n",
-					inputbits.headPosition());
 				inputbits.removeFirst();
 			}
 			
@@ -887,7 +846,6 @@ public class InflateDataProcessor
 			int com = inputbits.removeFirstInt(16);
 			
 			// The complemented length must be equal to the complement
-			System.err.printf("DEBUG -- NL %04x %04x%n", len, com);
 			if ((len ^ 0xFFFF) != com)
 				throw new InflaterException(String.format("XI0o %x %x",
 					len, com));
@@ -1023,8 +981,6 @@ public class InflateDataProcessor
 				rv.add(q, use, (1 << len) - 1);
 			}
 		}
-		
-		System.err.printf("DEBUG -- LoadTree %s%n", rv);
 		
 		// Return it
 		return rv;
