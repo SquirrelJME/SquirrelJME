@@ -92,3 +92,10 @@ now remove all of the debug printing stuff.
 Seems my inflate code is somewhat slow. I could speed it up in the future
 however.
 
+## 14:36
+
+To make the inflate decompression faster, the following needs to happen:
+
+ * Support bulk operations in the sliding window and chunk buffers so that
+   many calls are not made to access buffer data using single bytes at a time.
+
