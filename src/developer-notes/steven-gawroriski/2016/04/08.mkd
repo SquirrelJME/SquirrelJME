@@ -59,3 +59,9 @@ Ok, so for the sliding window I will just use my chunked byte buffer. In the
 chunked code I will just add an array variant and then I can have array support
 later on for a bit.
 
+## 14:10
+
+So far it looks like my redone and simplified (using the chunked buffer code
+now) sliding window code works. However, I believe there are far too many tests
+being done on it at once.
+

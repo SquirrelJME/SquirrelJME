@@ -145,6 +145,28 @@ public class ChunkByteBuffer
 	}
 	
 	/**
+	 * Bulk appending of bytes to the end of the chunk.
+	 *
+	 * @param __src The source byte array.
+	 * @param __o The base offset in the source array.
+	 * @param __l The number of bytes to write.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the input array range is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/08
+	 */
+	public ChunkByteBuffer add(byte[] __src, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return add(size(), __src, __o, __l);
+		}
+	}
+	
+	/**
 	 * Inserts a byte at the given position which moves all of the bytes
 	 * following it forward.
 	 *
@@ -162,6 +184,41 @@ public class ChunkByteBuffer
 		synchronized (lock)
 		{
 			__chunkForPos(__i).add(__i, __v);
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Bulk appending of bytes at a specific location.
+	 *
+	 * @param __base The base location to start writing at.
+	 * @param __src The source byte array.
+	 * @param __o The base offset in the source array.
+	 * @param __l The number of bytes to write.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the input array range is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/08
+	 */
+	public ChunkByteBuffer add(int __base, byte[] __src, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __src.length)
+			throw new IndexOutOfBoundsException(String.format("IOOB %d %d %d",
+				__src.length, __o, __l));
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Add bytes
+			for (int i = 0; i < __l; i++)
+				add(__base + i, __src[__o + i]);
 		}
 		
 		// Self

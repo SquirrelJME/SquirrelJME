@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.io;
 
-import java.util.Arrays;
+import net.multiphasicapps.buffers.ChunkByteBuffer;
 
 /**
  * This represents a sliding byte window.
@@ -25,34 +25,22 @@ import java.util.Arrays;
  */
 public class SlidingByteWindow
 {
-	/** The standard estimated fragment size (must be power of two). */
+	/** The default fragment size. */
 	public static final int DEFAULT_FRAGMENT_SIZE =
-		64;
+		4;
 	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
 	
+	/** The backing byte buffer. */
+	protected final ChunkByteBuffer backingbuffer;
+	
 	/** The window size. */
 	protected final int windowsize;
 	
-	/** The size of fragments. */
-	protected final int fragmentsize;
-	
-	/** The number of fragments. */
-	protected final int numfragments;
-	
-	/** The set of fragments. */
-	private volatile byte[][] _fragments;
-	
-	/** The active fragment. */
-	private volatile byte[] _active;
-	
-	/** The total number of available bytes. */
+	/** The total number of written bytes. */
 	private volatile int _total;
-	
-	/** The current active fragment write position. */
-	private volatile int _current;
 	
 	/**
 	 * Sanity check.
@@ -71,33 +59,22 @@ public class SlidingByteWindow
 	 * This initializes the sliding byte window.
 	 *
 	 * @param __wsz The size of the sliding window.
-	 * @throws IllegalArgumentException If the window size is zero or negative
-	 * or is not a power of 2.
 	 * @since 2016/03/10
 	 */
 	public SlidingByteWindow(int __wsz)
 		throws IllegalArgumentException
 	{
 		// Check
-		if (__wsz <= 0 || Integer.bitCount(__wsz) != 1)
+		if (__wsz <= 0)
 			throw new IllegalArgumentException(String.format("XI0s %d",
 				__wsz));
 		
 		// Set
 		windowsize = __wsz;
 		
-		// Determine the best fragment size
-		fragmentsize = Math.min(4, Math.max(1, Math.min(
-			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE)));
-		numfragments = windowsize / fragmentsize;
-		
-		// Not power of two? fail
-		if (Integer.bitCount(fragmentsize) != 1)
-			throw new RuntimeException(String.format("XI0t %d", fragmentsize));
-		
-		// Start in the active fragment
-		_fragments = new byte[0][];
-		_active = new byte[fragmentsize];
+		// Setup backing store
+		backingbuffer = new ChunkByteBuffer(Math.min(4, Math.max(1, Math.min(
+			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE))));
 	}
 	
 	/**
@@ -112,63 +89,21 @@ public class SlidingByteWindow
 		// Lock
 		synchronized (lock)
 		{
-			// Get the active window
-			byte[] act = _active;
+			// Add to the sliding window
+			ChunkByteBuffer back = backingbuffer;
+			back.add(__b);
 			
-			// Write at the current position
-			int write = _current;
-			act[write++] = __b;
+			// Increases by one byte
+			int vt = _total + 1;
+			_total = vt;
 			
-			// Cap total
-			int total = _total + 1;
-			_total = Math.max(total, windowsize);
-			
-			// Current active window is full?
-			if (write == fragmentsize)
+			// Exceeds the window size?
+			int max = windowsize;
+			if (vt > max)
 			{
-				// Get all fragments
-				byte[][] all = _fragments;
-				
-				// Still too little?
-				int olen = all.length;
-				if (olen < numfragments)
-				{
-					// Setup new target
-					int nlen = olen + 1;
-					byte[][] vex = new byte[nlen][];
-					
-					// Copy originals
-					for (int i = 0; i < olen; i++)
-						vex[i] = all[i];
-					
-					// Set new one at the end
-					vex[olen] = act;
-					
-					// Set it
-					_fragments = all = vex;
-				}
-				
-				// Move everything down and add at the end
-				else
-				{
-					// Move down
-					for (int i = 0; i < olen - 1; i++)
-						all[i] = all[i + 1];
-					
-					// Set current at the end
-					all[olen - 1] = act;
-				}
-				
-				// Clear it for next run
-				_current = 0;
-				
-				// Setup new buffer
-				_active = new byte[fragmentsize];
+				back.remove(0);
+				_total = vt - 1;
 			}
-			
-			// Otherwise set the current
-			else
-				_current = write;
 		}
 		
 		// Self
@@ -262,63 +197,28 @@ public class SlidingByteWindow
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < __o || (__o + __l > __b.length))
-			throw new IllegalArgumentException("BAOB");
+			throw new IndexOutOfBoundsException(String.format("BAOB %d %d %d",
+				__b.length, __o, __l));
 		
 		// Lock
 		synchronized (lock)
 		{
-			// Cannot exceed the viewable window area
-			if (__ago <= 0 || (__ago - __l) < 0 || __ago > windowsize ||
-				__ago > ((fragmentsize * _fragments.length) + _total))
-				throw new IndexOutOfBoundsException(String.format(
-					"XI0u %d %d %d", __ago, __l, _total));
+			// Total buffer size
+			int max = _total;
 			
-			// Write into the buffer
-			for (int i = 0; i < __l; i++)
-			{
-				// Determine the far back distance used
-				int backdx = __ago + (__l - i);
-				
-				// The window to read from
-				byte[] source;
-				int rat;
-				
-				// Is the back index within the current fragment?
-				int nowcur = _current;
-				if (backdx < nowcur)
-				{
-					source = _active;
-					rat = nowcur - backdx;
-				}
-				
-				// Otherwise it is in another fragment
-				else
-				{
-					// Remove the current from the back index
-					backdx -= nowcur;
-					
-					// Get the fragment in the past
-					int pastfrag = (backdx / fragmentsize);
-					
-					// Use it
-					byte[][] all = _fragments;
-					System.err.printf("DEBUG -- pfff %d %d%n", pastfrag,
-						all.length);
-					source = all[pastfrag];
-					
-					// The read index is the remainder of the fragment
-					rat = backdx % fragmentsize;
-				}
-				
-				// Copy
-				__b[__o + i] = source[rat];
-				
-				System.err.printf("DEBUG -- src=%d rat=%d (@%d %d/%d) " +
-					"%02x (%c)%n",
-					Arrays.<byte[]>asList(_fragments).indexOf(source), rat,
-					__ago - (__l - i), i, __l, __b[__o + i],
-					(char)__b[__o + i]);
-			}
+			// {@squirreljme.error XI0u Bulk read of window bytes would exceed
+			// the bounds of the window. (The bytes in the past to start the
+			// copy from; The number of bytes to read; The total number of
+			// bytes in the window)}
+			if (__ago <= 0 || (__ago - __l) > max)
+				throw new IndexOutOfBoundsException(String.format(
+					"XI0u %d %d %d", __ago, __l, max));
+			
+			// Get backing buffer
+			ChunkByteBuffer back = backingbuffer;
+			
+			// Read from the buffer at a given position
+			back.get(max - __ago, __b, __o, __l);
 		}
 		
 		// Self
