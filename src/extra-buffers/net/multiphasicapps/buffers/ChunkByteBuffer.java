@@ -210,6 +210,45 @@ public class ChunkByteBuffer
 	}
 	
 	/**
+	 * Obtains multiple bytes from this chunked byte buffer and places them
+	 * into the given destination byte array.
+	 *
+	 * @param __base The base index to start a read from.
+	 * @param __dest The destination buffer.
+	 * @param __o The offset into the target buffer.
+	 * @param __l The length of the target buffer.
+	 * @throws IndexOutOfBoundsException If the base and the length exceeds the
+	 * buffer region, or the array offsets and lengths are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/08
+	 */
+	public void get(int __base, byte[] __dest, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__dest == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __dest.length)
+			throw new IndexOutOfBoundsException(String.format("IOOB %d %d %d",
+				__dest.length, __o, __l));
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Source exceeds bounds?
+			int limit = size();
+			if (__base < 0 || (__base + __l) >= limit)
+				throw new IndexOutOfBoundsException(String.format(
+					"IOOB %d %d %d", __base, __l, limit));
+			
+			// Read in bytes, a TODO in the future: Support more efficient
+			// bulk retrieval
+			for (int i = 0; i < __l; i++)
+				__dest[__o + i] = get(__base + i);
+		}
+	}
+	
+	/**
 	 * Performs a quick compaction of all chunks to potentially reduce wasted
 	 * allocation space.
 	 *

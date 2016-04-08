@@ -53,3 +53,9 @@ Looks like I run out of memory in my sliding byte window tester.
 I suppose my sliding byte window code is rather horrible since the sliding
 window class is full of errors while the arrays are fine.
 
+## 13:47
+
+Ok, so for the sliding window I will just use my chunked byte buffer. In the
+chunked code I will just add an array variant and then I can have array support
+later on for a bit.
+
