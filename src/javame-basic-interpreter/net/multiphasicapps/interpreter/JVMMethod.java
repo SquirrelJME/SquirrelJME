@@ -140,7 +140,9 @@ public class JVMMethod
 				// Caught exception, it needs to be handled.
 				catch (JVMEngineException e)
 				{
-					throw new Error("TODO");
+					// Currently wrap no exceptions into the guest
+					System.err.println("TODO -- Wrap exceptions into guest.");
+					throw e;
 				}
 			}
 		}
