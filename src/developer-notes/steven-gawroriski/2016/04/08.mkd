@@ -5,3 +5,22 @@
 Actually, my compute machine will need two pass-through values. It will need
 to know the current thread along with the variable states.
 
+## 10:10
+
+I wonder if it would be possible to have random access pack200 files, provided
+they are not compressed. It should be possible to expose them as a ZIP file or
+archive of sorts. pack200 is rather compact. The uncompressed pack file is
+smaller than the JAR also, especially with debugging information removed. If
+pack200 is supported, then they can be used as a smaller JAR for example if
+it is worth it to.
+
+## 10:19
+
+As an example, I can add to the ZIP compressor to detect pack200 files and
+then the files would be fake ZIPed. When a class or other file is requested
+then that will be decoded and handled into an input stream. The ZIP support
+would be a part of the JVM binary, but if it supports pack200 then it is
+possible that there can be more user space in very constrained systems. For
+example, all of the input JARs could be pack200ed and placed in a ROM and
+then used that way.
+
