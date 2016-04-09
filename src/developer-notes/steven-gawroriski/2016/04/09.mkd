@@ -5,3 +5,12 @@
 Since I run my code on an interpreter, this means my interpreter that I am
 building right now will run even slower.
 
+## 18:12
+
+Going to need a better thread setup. I can instead have a frame used in a
+thread which stores stuff such as the PC address and such. Then instead of
+having an `A` and `B` for computation and passing, it is just this single
+frame for the thread. This would also help when it comes to stack traces and
+would make setting the next PC address simpler as it can be performed by the
+computation.
+
