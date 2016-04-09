@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.interpreter;
 
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
+
 /**
  * This is a class or member of a class which has access modifier flags
  * associated with it.

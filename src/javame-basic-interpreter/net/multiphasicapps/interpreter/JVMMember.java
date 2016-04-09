@@ -67,7 +67,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @return The member container.
 	 * @since 2016/04/06
 	 */
-	public JVMMembers<S, F, C, J> container()
+	public final JVMMembers<S, F, C, J> container()
 	{
 		return rawowner;
 	}
@@ -78,7 +78,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @return The engine which owns this.
 	 * @since 2016/04/07
 	 */
-	public JVMEngine engine()
+	public final JVMEngine engine()
 	{
 		return container().outerClass().engine();
 	}
@@ -89,7 +89,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @return The member flags.
 	 * @since 2016/04/04
 	 */
-	public F flags()
+	public final F flags()
 	{
 		return base.flags();
 	}
@@ -100,7 +100,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @return The method name.
 	 * @since 2016/04/06
 	 */
-	public IdentifierSymbol name()
+	public final IdentifierSymbol name()
 	{
 		return base.name();
 	}
@@ -111,9 +111,20 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @return The member name and type.
 	 * @since 2016/04/07
 	 */
-	public CFMemberKey<S> nameAndType()
+	public final CFMemberKey<S> nameAndType()
 	{
 		return base.nameAndType();
+	}
+	
+	/**
+	 * Returns the outer class of this member.
+	 *
+	 * @return The member's outer class.
+	 * @since 2016/04/09
+	 */
+	public final JVMClass outerClass()
+	{
+		return container().outerClass();
 	}
 	
 	/**
@@ -122,7 +133,7 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @return The member descriptor.
 	 * @since 2016/04/07
 	 */
-	public S type()
+	public final S type()
 	{
 		return base.type();
 	}

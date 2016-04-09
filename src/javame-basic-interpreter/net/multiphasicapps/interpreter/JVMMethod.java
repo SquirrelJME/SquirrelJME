@@ -59,17 +59,44 @@ public class JVMMethod
 	 *
 	 * @param __o The object check the access againt.
 	 * @return {@code true} if it can be accessed, otherwise {@code false}.
+	 * @throws JVMClassCastException If a class cannot be resolved for the
+	 * target accessible object.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/09
 	 */
 	public boolean canAccess(JVMAccessibleObject __o)
-		throws NullPointerException
+		throws JVMClassCastException, NullPointerException
 	{
 		// Check
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// If this is a member then get the class it is in
+		JVMMember member;
+		if (__o instanceof JVMMember)
+			__o = (member = ((JVMMember)__o)).outerClass();
+		else
+			member = null;
+		
+		// Must be a class
+		JVMClass intoclass;
+		if (__o instanceof JVMClass)
+			intoclass = (JVMClass)__o;
+		
+		// {@squirreljme.error IN0l Cannot determine the class of the object
+		// to check access into. (The other object)}
+		else
+			throw new JVMClassCastException(String.format("IN0l %s", __o));
+		
+		// Get our own class
+		JVMClass fromclass = super.outerClass();
+		
+		// If the same class, then all access is permitted
+		if (fromclass == intoclass)
+			return true;
+		
+		else
+			throw new Error("TODO");
 	}
 	
 	/**
