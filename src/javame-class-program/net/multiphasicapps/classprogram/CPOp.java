@@ -35,6 +35,10 @@ public class CPOp
 	private static final __VMWorkers__ _VMWORKERS =
 		new __VMWorkers__();
 	
+	/** The nullary compute machine (does nothing). */
+	private static volatile Reference<CPComputeMachine<Object, Object>>
+		_NULL_CM;
+	
 	/** Operation lock. */
 	final Object lock =
 		new Object();
@@ -466,7 +470,7 @@ public class CPOp
 	 */
 	public CPVariableStates outputState()
 	{
-		throw new Error("TODO");
+		return __outputState(true);
 	}
 	
 	/**
@@ -580,6 +584,45 @@ public class CPOp
 	}
 	
 	/**
+	 * Returns the output state of the current address after the operation
+	 * it performs has been performed, this is used internally by the operation
+	 * handlers so that they can set the output state.
+	 *
+	 * @param __calc If {@code true} then the operation is to be performed by
+	 * calling the computation.
+	 * @return The operation output state.
+	 * @since 2016/04/09
+	 */
+	CPVariableStates __outputState(boolean __calc)
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<CPVariableStates> ref = _vsoutput;
+			CPVariableStates rv;
+			
+			// Needs to be calculated?
+			if (ref == null || null == (rv = ref.get()))
+				_vsoutput = new WeakReference<>(
+					(rv = new CPVariableStates(program, logical, true)));
+			
+			// Compute it if it has not been computed?
+			if (__calc && !rv._gotcomputed)
+			{
+				// Compute it
+				this.<Object, Object>compute(__nullComputer(), null, null);
+				
+				// Set as computed
+				rv._gotcomputed = true;
+			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Returns the constant pool.
 	 *
 	 * @return The constant pool for the class.
@@ -606,6 +649,28 @@ public class CPOp
 		// Read in data
 		return ((((int)bc[base]) & 0xFF) << 8) |
 			(((int)bc[base + 1]) & 0xFF);
+	}
+	
+	/**
+	 * Returns the null machine computer which is used so that the input/output
+	 * variable states can be computing without performing any code generation.
+	 *
+	 * @return The cached null computer.
+	 * @since 2016/04/09
+	 */
+	private static CPComputeMachine<Object, Object> __nullComputer()
+	{
+		// Get reference
+		Reference<CPComputeMachine<Object, Object>> ref = _NULL_CM;
+		CPComputeMachine<Object, Object> rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			_NULL_CM = new WeakReference<>(
+				(rv = new __NullComputeMachine__()));
+		
+		// Return it
+		return rv;
 	}
 }
 

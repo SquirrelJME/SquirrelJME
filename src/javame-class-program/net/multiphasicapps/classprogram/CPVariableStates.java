@@ -43,6 +43,9 @@ public class CPVariableStates
 	/** Explicit states, for entry usage. */
 	private final CPVariableState[] _explicit;
 	
+	/** Has this state been computed properly? */
+	volatile boolean _gotcomputed;
+	
 	/**
 	 * Initializes the variable states.
 	 *

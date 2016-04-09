@@ -75,6 +75,10 @@ class __OpHandler176To191__
 			__op.__readUnsignedShort(1), CFConstantEntry.ClassName.class).
 			symbol();
 		
+		// Get the input and output variable states
+		CPVariableStates inputs = __op.inputState();
+		CPVariableStates outputs = __op.__outputState(false);
+		
 		// Perform the allocation
 		__castCM(__cm).allocateObject(__a, __b, -1, clname);
 		
