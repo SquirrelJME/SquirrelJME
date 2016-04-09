@@ -216,9 +216,10 @@ public class CFConstantPool
 		throws CFFormatException, NullPointerException
 	{
 		// Locate entry
+		Object maybe = null;
 		try
 		{
-			return Objects.<Q>requireNonNull(__cl.cast(get(__i)));
+			return Objects.<Q>requireNonNull(__cl.cast((maybe = get(__i))));
 		}
 		
 		// Is missing
@@ -227,9 +228,9 @@ public class CFConstantPool
 			// {@squirreljme.error CF0n Cannot get a constant of the specified
 			// type because it does not match the type that it was expected
 			// to be. (The index to get; The type of class it was expected to
-			// be)}
-			throw new CFFormatException(String.format("CF0n %d %s", __i,
-				__cl), e);
+			// be; The class that it really was)}
+			throw new CFFormatException(String.format("CF0n %d %s %s", __i,
+				__cl, (maybe != null ? maybe.getClass() : null)), e);
 		}
 	}
 	

@@ -589,5 +589,23 @@ public class CPOp
 	{
 		return program._pool;
 	}
+	
+	/**
+	 * Reads an unsigned short at an offset from the physical address.
+	 *
+	 * @param __off The offset to read from.
+	 * @return The read value.
+	 * @since 2016/04/09
+	 */
+	int __readUnsignedShort(int __off)
+	{
+		// Get code
+		byte[] bc = program._code;
+		int base = physical + __off;
+		
+		// Read in data
+		return ((((int)bc[base]) & 0xFF) << 8) |
+			(((int)bc[base + 1]) & 0xFF);
+	}
 }
 

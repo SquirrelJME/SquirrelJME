@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.classprogram;
 
+import net.multiphasicapps.classfile.CFConstantEntry;
+import net.multiphasicapps.classfile.CFConstantPool;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+
 /**
  * Handles opcodes 176 to 191.
  *
@@ -32,8 +36,8 @@ class __OpHandler176To191__
 	 * @since 2016/04/09
 	 */
 	@Override
-	void compute(CPComputeMachine<?, ?> __cm, Object __a, Object __b,
-		CPOp __op)
+	void compute(CPComputeMachine<? extends Object, ? extends Object> __cm,
+		Object __a, Object __b, CPOp __op)
 	{
 		// Determine the opcode
 		int opcode = __op.instructionCode();
@@ -60,9 +64,20 @@ class __OpHandler176To191__
 	 * @param __b Passed B.
 	 * @since 2016/04/09
 	 */
-	void __new(CPComputeMachine<?, ?> __cm, Object __a, Object __b,
-		CPOp __op)
+	void __new(CPComputeMachine<? extends Object, ? extends Object> __cm,
+		Object __a, Object __b, CPOp __op)
 	{
+		// Obtain the constant pool because it has the class reference
+		CFConstantPool pool = __op.__pool();
+		
+		// Get the referenced class entry
+		ClassNameSymbol clname = pool.<CFConstantEntry.ClassName>getAs(
+			__op.__readUnsignedShort(1), CFConstantEntry.ClassName.class).
+			symbol();
+		
+		// Perform the allocation
+		__castCM(__cm).allocateObject(__a, __b, -1, clname);
+		
 		throw new Error("TODO");
 	}
 }

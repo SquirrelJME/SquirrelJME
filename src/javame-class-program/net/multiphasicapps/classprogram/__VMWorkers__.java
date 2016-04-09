@@ -169,8 +169,23 @@ class __VMWorkers__
 		 * @param __op The operation to work with.
 		 * @since 2016/04/09
 		 */
-		abstract void compute(CPComputeMachine<?, ?> __cm, Object __a,
-			Object __b, CPOp __op);
+		abstract void compute(
+			CPComputeMachine<? extends Object, ? extends Object> __cm,
+			Object __a, Object __b, CPOp __op);
+		
+		/**
+		 * Casts down the compute machine to object.
+		 *
+		 * @param __cm The compute machine to cast.
+		 * @return The compute machine with its CAPs removed.
+		 * @since 2016/04/09
+		 */
+		@SuppressWarnings({"unchecked"})
+		final CPComputeMachine<Object, Object> __castCM(
+			CPComputeMachine<? extends Object, ? extends Object> __cm)
+		{
+			return (CPComputeMachine<Object, Object>)((Object)__cm);
+		}
 	}
 }
 
