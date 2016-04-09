@@ -102,21 +102,39 @@ public class CPOp
 	 * @param __cm The compute machine.
 	 * @param __a The first value to pass.
 	 * @param __b The second value to pass.
+	 * @throws NullPointerException if no compute machine was specified.
 	 * @since 2016/04/08
 	 */
 	public <A, B> void compute(CPComputeMachine<A, B> __cm, A __a, B __b)
+		throws NullPointerException
 	{
+		// Check
+		if (__cm == null)
+			throw new NullPointerException("NARG");
+		
 		// Obtain the worker for this instruction
 		int opcode = instructionCode();
 		__VMWorkers__.__Worker__ worker = _VMWORKERS.__lookup(opcode);
 		
-		// {@squirreljme.error CP0m Method contains an illegal opcode. (The
-		// current logical address; The instruction opcode})
-		if (worker == null)
-			throw new CPProgramException(String.format("CP0m %d %d", logical,
-				opcode));
+		// Run computation on it
+		try
+		{
+			// Not valid?
+			if (worker == null)
+				throw new __VMWorkers__.__UnknownOp__();
+			
+			// Compute it
+			worker.compute(__cm, __a, __b, this);
+		}
 		
-		throw new Error("TODO");
+		// Unknown
+		catch (__VMWorkers__.__UnknownOp__ e)
+		{
+			// {@squirreljme.error CP0m Method contains an illegal opcode. (The
+			// current logical address; The instruction opcode})
+			throw new CPProgramException(String.format("CP0m %d %d", logical,
+				opcode), e);
+		}
 	}
 	
 	/**

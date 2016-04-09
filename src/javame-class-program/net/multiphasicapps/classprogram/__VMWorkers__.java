@@ -135,12 +135,42 @@ class __VMWorkers__
 	}
 	
 	/**
+	 * Thrown when the operation is not known.
+	 *
+	 * @since 2016/04/09
+	 */
+	static final class __UnknownOp__
+		extends RuntimeException
+	{
+	}
+	
+	/**
 	 * This is the actual worker base.
 	 *
 	 * @since 2016/04/08
 	 */
 	static abstract class __Worker__
 	{
+		/**
+		 * Any needed initialization.
+		 *
+		 * @since 2016/04/09
+		 */
+		__Worker__()
+		{
+		}
+		
+		/**
+		 * Performs the computation as required.
+		 *
+		 * @param __cm The computation machine.
+		 * @param __a First pass-through.
+		 * @param __b Second pass-through.
+		 * @param __op The operation to work with.
+		 * @since 2016/04/09
+		 */
+		abstract void compute(CPComputeMachine<?, ?> __cm, Object __a,
+			Object __b, CPOp __op);
 	}
 }
 
