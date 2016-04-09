@@ -175,6 +175,44 @@ public class CPVariableStates
 	}
 	
 	/**
+	 * Locks in this state so that it does not go away.
+	 *
+	 * @param __vs The state to lock in.
+	 * @return {@code this}
+	 * @throws IllegalStateException If the state to be locked in is not owned
+	 * by this state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/09
+	 */
+	CPVariableStates __lockIn(CPVariableState __vs)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__vs == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CP0r Attempt to add a state which belongs to
+		// another set of states.}
+		if (this != __vs.owner())
+			throw new IllegalStateException("CP0r");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Get locked states
+			CPVariableState[] locked = _locked;
+			if (locked == null)
+				_locked = (locked = new CPVariableState[size()]);
+			
+			// Store it
+			locked[__vs.index()] = __vs;
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
 	 * Pushes a new variable onto the stack.
 	 *
 	 * @return The newly pushed variable.

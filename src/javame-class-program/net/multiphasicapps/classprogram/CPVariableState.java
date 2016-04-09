@@ -117,6 +117,28 @@ public class CPVariableState
 	}
 	
 	/**
+	 * Returns the index of this state.
+	 *
+	 * @return The state's index.
+	 * @since 2016/04/09
+	 */
+	public int index()
+	{
+		return index;
+	}
+	
+	/**
+	 * Returns the states set which holds this variable state.
+	 *
+	 * @return The owning states.
+	 * @since 2016/04/09
+	 */
+	public CPVariableStates owner()
+	{
+		return states;
+	}
+	
+	/**
 	 * Calculates the value identifier for the current variable for the given
 	 * operation.
 	 *
@@ -178,8 +200,8 @@ public class CPVariableState
 			if (_exists)
 				return this;
 			
-			if (true)
-				throw new Error("TODO");
+			// Lock it in
+			states.__lockIn(this);
 			
 			// Now exists
 			_exists = true;
