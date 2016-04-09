@@ -66,12 +66,20 @@ public class JVMComputeMachine
 		if (!__pa.checkAccess(jcl))
 			throw new JVMEngineException();
 		
-		if (true)
-			throw new Error("TODO");
+		// Debug
+		System.err.printf("DEBUG -- allocateObject(%d, %s)%n", __dest, __cl);
 		
-		// Get the variable at the destination
+		// Allocate a new object of that kind
+		JVMObject obj = engine.objects().spawnObject(__pa, jcl);
 		
-		throw new Error("TODO");
+		// Store it in the given varaible
+		JVMVariable var = __pb[__dest];
+		if (!(var instanceof JVMVariable.OfObject))
+			__pb[__dest] = (var = JVMVariable.OfObject.empty());
+		
+		// Set it
+		JVMVariable.OfObject vo = (JVMVariable.OfObject)var;
+		vo.set(obj);
 	}
 }
 
