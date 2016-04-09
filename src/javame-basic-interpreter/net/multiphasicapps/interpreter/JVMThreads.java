@@ -100,6 +100,17 @@ public final class JVMThreads
 	}
 	
 	/**
+	 * Returns the engine which owns this.
+	 *
+	 * @return The owning engine.
+	 * @since 2016/04/09
+	 */
+	public JVMEngine engine()
+	{
+		return engine;
+	}
+	
+	/**
 	 * Returns {@code true} if the intepreter has no threads remaining which
 	 * are alive and executing (they have all exited).
 	 *

@@ -188,7 +188,7 @@ public class CPProgramBuilder
 		// Setup a byte program for translation and dynamic cache friendly
 		// program parsing
 		CPProgram jbp = new CPProgram(maxlocal, maxstack, msym,
-			!method.flags().isStatic(), excs, rawcode);
+			!method.flags().isStatic(), excs, constantpool, rawcode);
 		
 		// Handle attributes, only two are cared about
 		int nas = __das.readUnsignedShort();

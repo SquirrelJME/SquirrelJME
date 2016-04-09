@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -45,6 +46,9 @@ public class CPProgram
 	
 	/** The position of each logical instruction to a physical one. */
 	private final int[] _ipos;
+	
+	/** The class constant pool. */
+	final CFConstantPool _pool;
 	
 	/** Explicit verification states. */
 	final Map<Integer, CPVerifyState> _expvstate =
@@ -84,6 +88,7 @@ public class CPProgram
 	 * method, this is used to seed the initial stack.
 	 * @param __ins Is this an instance method (which has a {@code this}?).
 	 * @param __ex Exceptions used in the program.
+	 * @param __pool The class constant pool.
 	 * @param __code The input byte code, note that it is not copied and that
 	 * it is used directly.
 	 * @throws CPProgramException If the maximum stack and local entries are
@@ -92,11 +97,12 @@ public class CPProgram
 	 * @since 2016/03/29
 	 */
 	public CPProgram(int __ml, int __ms, MethodSymbol __desc,
-		boolean __ins, Iterable<CPRawException> __ex, byte... __code)
+		boolean __ins, Iterable<CPRawException> __ex, CFConstantPool __pool,
+		byte... __code)
 		throws CPProgramException, NullPointerException
 	{
 		// Check
-		if (__desc == null || __code == null || __ex == null)
+		if (__desc == null || __code == null || __ex == null || __pool == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -104,6 +110,7 @@ public class CPProgram
 		_maxstack = __ms;
 		_code = __code;
 		length = _code.length;
+		_pool = __pool;
 		
 		// Defensive copy exceptions
 		List<CPRawException> dex = new ArrayList<>();

@@ -35,7 +35,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  * @since 2016/04/02
  */
 public final class JVMClass
-	implements JVMComponentType
+	implements JVMComponentType, JVMAccessibleObject
 {
 	/** All arrays use the given flags. */
 	public static final CFClassFlags ARRAY_FLAGS =

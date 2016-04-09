@@ -30,6 +30,7 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
 public abstract class JVMMember<S extends MemberTypeSymbol, 
 	F extends CFMemberFlags, C extends CFMember<S, F>,
 	J extends JVMMember<S, F, C, J>>
+	implements JVMAccessibleObject
 {
 	/** Raw member list owner. */
 	protected final JVMMembers<S, F, C, J> rawowner;

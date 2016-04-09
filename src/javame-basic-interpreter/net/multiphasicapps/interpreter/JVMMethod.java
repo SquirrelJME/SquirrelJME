@@ -54,6 +54,51 @@ public class JVMMethod
 	}
 	
 	/**
+	 * Checks whether the current method can access the given accessible
+	 * object.
+	 *
+	 * @param __o The object check the access againt.
+	 * @return {@code true} if it can be accessed, otherwise {@code false}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/09
+	 */
+	public boolean canAccess(JVMAccessibleObject __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Checks whether the current method can access the given accessible
+	 * object.
+	 *
+	 * @param __o The other accessible object to check.
+	 * @return {@code true} if it can be access, otherwise an exception is
+	 * thrown.
+	 * @throws JVMIncompatibleClassChangeError If the access is denied.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/09
+	 */
+	public boolean checkAccess(JVMAccessibleObject __o)
+		throws JVMIncompatibleClassChangeError, NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error IN0k The current method is not permitted to
+		// access the given accessible object. (This method; The accessible object)}
+		if (!canAccess(__o))
+			throw new JVMIncompatibleClassChangeError(String.format(
+				"IN0k %s %s", this, __o));
+		return true;
+	}
+	
+	/**
 	 * Runs the interpreter logic for the given thread.
 	 *
 	 * @param __init Is this an class instance or static initializer, if it is

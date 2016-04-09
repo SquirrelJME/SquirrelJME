@@ -32,8 +32,8 @@ class __OpHandler176To191__
 	 * @since 2016/04/09
 	 */
 	@Override
-	void compute(CPComputeMachine<?, ?> __cm, Object __a,
-		Object __b, CPOp __op)
+	void compute(CPComputeMachine<?, ?> __cm, Object __a, Object __b,
+		CPOp __op)
 	{
 		// Determine the opcode
 		int opcode = __op.instructionCode();
@@ -41,10 +41,29 @@ class __OpHandler176To191__
 		// Depends on the operation
 		switch (opcode)
 		{
+				// new
+			case 187:
+				__new(__cm, __a, __b, __op);
+				break;
+			
 				// Unknown
 			default:
 				throw new __VMWorkers__.__UnknownOp__();
 		}
+	}
+	
+	/**
+	 * Allocates a new object.
+	 *
+	 * @param __cm The compute machine.
+	 * @param __a Passed A.
+	 * @param __b Passed B.
+	 * @since 2016/04/09
+	 */
+	void __new(CPComputeMachine<?, ?> __cm, Object __a, Object __b,
+		CPOp __op)
+	{
+		throw new Error("TODO");
 	}
 }
 

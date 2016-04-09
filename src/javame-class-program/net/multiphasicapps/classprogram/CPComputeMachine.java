@@ -10,8 +10,12 @@
 
 package net.multiphasicapps.classprogram;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+
 /**
  * This interface is implemented by classes.
+ *
+ * Destination and source registers are identified by their ID.
  *
  * @param <A> The first pass through value.
  * @param <B> The second pass through value.
@@ -19,5 +23,16 @@ package net.multiphasicapps.classprogram;
  */
 public interface CPComputeMachine<A, B>
 {
+	/**
+	 * Allocates an object but does not perform construction of it.
+	 *
+	 * @param __pa Passed A.
+	 * @param __pb Passed B.
+	 * @param __dest Destination register.
+	 * @param __cl The class to allocate.
+	 * @since 2016/04/09
+	 */
+	public abstract void allocateObject(A __pa, B __pb, int __dest,
+		ClassNameSymbol __cl);
 }
 

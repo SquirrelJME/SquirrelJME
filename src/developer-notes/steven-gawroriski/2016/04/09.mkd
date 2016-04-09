@@ -1,2 +1,7 @@
 # 2016/04/09
 
+## 15:21
+
+Since I run my code on an interpreter, this means my interpreter that I am
+building right now will run even slower.
+

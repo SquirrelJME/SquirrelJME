@@ -122,6 +122,26 @@ public class JVMThread
 	}
 	
 	/**
+	 * Checks whether the current method can access the given accessible
+	 * object.
+	 *
+	 * @param __o The other accessible object to check.
+	 * @throws JVMIncompatibleClassChangeError If the access is denied.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/09
+	 */
+	public boolean checkAccess(JVMAccessibleObject __o)
+		throws JVMIncompatibleClassChangeError, NullPointerException
+	{
+		// Get top stack entry
+		Deque<JVMMethod> stack = stacktrace;
+		synchronized (stack)
+		{
+			return stack.peekLast().checkAccess(__o);
+		}
+	}
+	
+	/**
 	 * Returns {@code true} if this thread is alive.
 	 *
 	 * Host threads are always alive.
@@ -197,6 +217,17 @@ public class JVMThread
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Obtains the owning thread manager.
+	 *
+	 * @return The owning thread manager.
+	 * @since 2016/04/09
+	 */
+	public JVMThreads threads()
+	{
+		return threads;
 	}
 	
 	/**

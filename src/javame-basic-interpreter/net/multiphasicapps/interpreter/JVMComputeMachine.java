@@ -11,6 +11,7 @@
 package net.multiphasicapps.interpreter;
 
 import net.multiphasicapps.classprogram.CPComputeMachine;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
  * This is the computational machine which performs the actual logic operations
@@ -40,6 +41,37 @@ public class JVMComputeMachine
 		
 		// Set
 		engine = __e;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws JVMNoClassDefFoundError If the class was not found.
+	 * @since 2016/04/09
+	 */
+	@Override
+	public void allocateObject(JVMThread __pa, JVMVariable[] __pb, int __dest,
+		ClassNameSymbol __cl)
+		throws JVMNoClassDefFoundError
+	{
+		// Find the class representation
+		JVMEngine engine = __pa.threads().engine();
+		JVMClass jcl = engine.classes().loadClass(__cl);
+		
+		// {@squirreljme.error IN0j Could not find a definition for the given
+		// class. (The missing class)}
+		if (jcl == null)
+			throw new JVMNoClassDefFoundError(String.format("IN0j %s", __cl));
+		
+		// Check if the method can be accessed or not
+		if (!__pa.checkAccess(jcl))
+			throw new JVMEngineException();
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Get the variable at the destination
+		
+		throw new Error("TODO");
 	}
 }
 

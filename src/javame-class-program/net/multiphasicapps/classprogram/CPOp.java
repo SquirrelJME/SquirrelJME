@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -576,6 +577,17 @@ public class CPOp
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the constant pool.
+	 *
+	 * @return The constant pool for the class.
+	 * @since 2016/04/09
+	 */
+	CFConstantPool __pool()
+	{
+		return program._pool;
 	}
 }
 
