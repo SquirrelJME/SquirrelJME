@@ -148,57 +148,29 @@ public class JVMMethod
 			__thr = engine().threads().defaultThread();
 		
 		// On entry of a method, add this method to the call stack.
-		Deque<JVMMethod> callstack = __thr.stackTrace();
+		JVMStackFrame currentframe = __thr.enterFrame(this, __args);
 		try
 		{
-			// Add it to the call stack
-			synchronized (callstack)
-			{
-				callstack.offerLast(this);
-			}
-			
 			// Debug
 			System.err.printf("DEBUG -- Interpret %s (%s)%n", this, __init);
 			
 			// Get program here
 			CPProgram program = program();
 			
-			// Make sure the right about of arguments were passed
-			MethodSymbol desc = type();
-			int ncargs = desc.argumentCount();
-			if (!flags().isStatic())
-				ncargs += 1;
-			
-			// {@squirreljme.error IN0g Incorrect number of arguments passed to
-			// this method. (The number of method arguments; The number of
-			// passed arguments)}
-			int inac = __args.length;
-			if (inac != ncargs)
-				throw new JVMEngineException(String.format("IN0g %d %d",
-					ncargs, inac));
-			
-			// Setup entry variable state
-			int numlocals = program.maxLocals();
-			int numvars = program.variableCount();
-			JVMVariable[] vars = new JVMVariable[numvars];
-			
-			// Setup the initial variable state
-			__initVariables(vars, numlocals, __args, desc, ncargs);
-			
 			// Keep executing until a return is reached or an unhandled
 			// exception is done.
 			JVMComputeMachine cm = engine().computeMachine();
-			for (int pc = 0;;)
+			for (;;)
 			{
 				try
 				{
 					// Get the operation for the current address
-					CPOp op = program.get(pc);
+					CPOp op = program.get(currentframe.getPCAddress());
 				
 					// Compute it
 					try
 					{
-						op.<JVMThread, JVMVariable[]>compute(cm, __thr, vars);
+						op.<JVMStackFrame>compute(cm, currentframe);
 					}
 					
 					// Failed to compute the program
@@ -221,18 +193,7 @@ public class JVMMethod
 		// When execution terminates, remove the top stack item.
 		finally
 		{
-			// Remove it from the callstack
-			synchronized (callstack)
-			{
-				// {@squirreljme.error IN0e The callstack for the thread has
-				// potentially been corrupted as the last item on the stack is
-				// not the current method. (The current method; The method
-				// which was at the top of the call stack)}
-				JVMMethod was;
-				if (this != (was = callstack.pollLast()))
-					throw new JVMEngineException(String.format("IN0e %s %s",
-						this, was));
-			}
+			currentframe.leave();
 		}
 	}
 	
@@ -278,70 +239,6 @@ public class JVMMethod
 				}
 			
 			return rv;
-		}
-	}
-	
-	/**
-	 * Initializes the variables on entry of a method.
-	 *
-	 * @param __vars Output variables.
-	 * @param __nl The number of local variables.
-	 * @param __args Program arguments.
-	 * @param __desc Method descriptor.
-	 * @param __nia The number of input arguments expected.
-	 * @since 2016/04/08
-	 */
-	private void __initVariables(JVMVariable[] __vars, int __nl,
-		Object[] __args, MethodSymbol __desc, int __nia)
-	{
-		// Classpaths
-		JVMClassPath jcp = engine().classes();
-		
-		// Setup variable
-		int vat = 0;
-		for (int i = 0; i < __nia; i++)
-		{
-			// Get method argument from the descriptor and the input
-			// argument
-			FieldSymbol farg = __desc.get(i);
-			Object carg = __args[i];
-			
-			// Get the system class for the given argument
-			JVMClass acl = jcp.loadClass(farg.asClassName());
-			
-			// Setup wrapped variable
-			JVMVariable<?> vw = JVMVariable.wrap(carg);
-			
-			// Is this possibly the null object?
-			boolean isobject = (vw instanceof JVMVariable.OfObject);
-			boolean isnullob = (isobject &&
-				((JVMVariable.OfObject)vw).get() == null);
-			
-			// {@squirreljme.error IN0h An input argument which was
-			// passed to the method is not of the expected type that
-			// the method accepts. (The actual input method argument;
-			// The argument class type)}
-			// Ignore null though
-			if (!isnullob && !acl.isInstance(vw))
-				throw new JVMClassCastException(String.format(
-					"IN0h %s %s", vw, acl));
-			
-			// Is this a wide variable?
-			boolean iswide = (vw instanceof JVMVariable.OfLong) ||
-				(vw instanceof JVMVariable.OfDouble);
-			int nextvat = vat + (iswide ? 2 : 1);
-			
-			// {@squirreljme.error IN0i The number of method arguments
-			// would exceed the number of available local variables
-			// that exist within a method program. (The current
-			// argument count; The maximum local variable count)}
-			if (nextvat > __nl)
-				throw new JVMEngineException(String.format(
-					"IN0i %d %d", nextvat, __nl));
-			
-			// Store variable
-			__vars[vat] = vw;
-			vat = nextvat;
 		}
 	}
 }

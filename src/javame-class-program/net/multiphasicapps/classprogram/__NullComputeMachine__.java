@@ -18,14 +18,14 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  * @since 2016/04/09
  */
 class __NullComputeMachine__
-	implements CPComputeMachine<Object, Object>
+	implements CPComputeMachine<Object>
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/09
 	 */
 	@Override
-	public void allocateObject(Object __pa, Object __pb, int __dest,
+	public void allocateObject(Object __pa, int __dest,
 		ClassNameSymbol __cl)
 	{
 	}

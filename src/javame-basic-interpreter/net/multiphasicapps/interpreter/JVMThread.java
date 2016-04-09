@@ -41,7 +41,7 @@ public class JVMThread
 	protected final long id;
 	
 	/** This thread's stack trace. */
-	protected final Deque<JVMMethod> stacktrace =
+	protected final Deque<JVMStackFrame> stacktrace =
 		new LinkedList<>();
 	
 	/** Is this the host VM thread? */
@@ -134,11 +134,73 @@ public class JVMThread
 		throws JVMIncompatibleClassChangeError, NullPointerException
 	{
 		// Get top stack entry
-		Deque<JVMMethod> stack = stacktrace;
+		Deque<JVMStackFrame> stack = stacktrace;
 		synchronized (stack)
 		{
-			return stack.peekLast().checkAccess(__o);
+			return stack.peekLast().method().checkAccess(__o);
 		}
+	}
+	
+	/**
+	 * Enters the given method.
+	 *
+	 * @param __m The method to enter.
+	 * @param __args Arguments to this method call.
+	 * @return The created stack frame.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/09
+	 */
+	public JVMStackFrame enterFrame(JVMMethod __m, Object... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Deque<JVMStackFrame> stack = stacktrace;
+		synchronized (stack)
+		{
+			JVMStackFrame rv = new JVMStackFrame(this, __m, __args);
+			stack.offerLast(rv);
+			return rv;
+		}
+	}
+	
+	/**
+	 * Exits the given stack frame.
+	 *
+	 * @param __fr The frame to exit.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/09
+	 */
+	public JVMThread exitFrame(JVMStackFrame __fr)
+		throws NullPointerException
+	{
+		
+		// Check
+		if (__fr == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Deque<JVMStackFrame> stack = stacktrace;
+		synchronized (stack)
+		{
+			// Remove the last
+			JVMStackFrame was = stack.pollLast();
+			
+			// {@squirreljme.error IN0e The callstack for the thread has
+			// potentially been corrupted as the last item on the stack is
+			// not the current frame. (The current frame; The frame
+			// which was at the top of the call stack)}
+			if (was != __fr)
+				throw new JVMEngineException(String.format("IN0e %s %s",
+					__fr, was));
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -173,17 +235,6 @@ public class JVMThread
 		{
 			return !ishostthread && _ended;
 		}
-	}
-	
-	/**
-	 * Returns the stack trace of the current thread.
-	 *
-	 * @return The thread's stack trace.
-	 * @since 2016/04/07
-	 */
-	public Deque<JVMMethod> stackTrace()
-	{
-		return stacktrace;
 	}
 	
 	/**

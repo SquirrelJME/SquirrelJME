@@ -36,7 +36,7 @@ public class CPOp
 		new __VMWorkers__();
 	
 	/** The nullary compute machine (does nothing). */
-	private static volatile Reference<CPComputeMachine<Object, Object>>
+	private static volatile Reference<CPComputeMachine<Object>>
 		_NULL_CM;
 	
 	/** Operation lock. */
@@ -102,15 +102,13 @@ public class CPOp
 	 * Computes this instruction and has it call the computational machine so
 	 * that interpretation or compilation may be performed.
 	 *
-	 * @param <A> The first type to pass.
-	 * @param <B> The second type to pass.
+	 * @param <A> The type to pass.
 	 * @param __cm The compute machine.
-	 * @param __a The first value to pass.
-	 * @param __b The second value to pass.
+	 * @param __a The value to pass.
 	 * @throws NullPointerException if no compute machine was specified.
 	 * @since 2016/04/08
 	 */
-	public <A, B> void compute(CPComputeMachine<A, B> __cm, A __a, B __b)
+	public <A> void compute(CPComputeMachine<A> __cm, A __a)
 		throws NullPointerException
 	{
 		// Check
@@ -129,7 +127,7 @@ public class CPOp
 				throw new __VMWorkers__.__UnknownOp__();
 			
 			// Compute it
-			worker.compute(__cm, __a, __b, this);
+			worker.compute(__cm, __a, this);
 		}
 		
 		// Unknown
@@ -611,7 +609,7 @@ public class CPOp
 			if (__calc && !rv._gotcomputed)
 			{
 				// Compute it
-				this.<Object, Object>compute(__nullComputer(), null, null);
+				this.<Object>compute(__nullComputer(), null);
 				
 				// Set as computed
 				rv._gotcomputed = true;
@@ -658,11 +656,11 @@ public class CPOp
 	 * @return The cached null computer.
 	 * @since 2016/04/09
 	 */
-	private static CPComputeMachine<Object, Object> __nullComputer()
+	private static CPComputeMachine<Object> __nullComputer()
 	{
 		// Get reference
-		Reference<CPComputeMachine<Object, Object>> ref = _NULL_CM;
-		CPComputeMachine<Object, Object> rv;
+		Reference<CPComputeMachine<Object>> ref = _NULL_CM;
+		CPComputeMachine<Object> rv;
 		
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))

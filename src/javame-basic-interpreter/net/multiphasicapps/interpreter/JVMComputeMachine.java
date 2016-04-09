@@ -20,7 +20,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  * @since 2016/04/08
  */
 public class JVMComputeMachine
-	implements CPComputeMachine<JVMThread, JVMVariable[]>
+	implements CPComputeMachine<JVMStackFrame>
 {
 	/** The owning engine. */
 	protected final JVMEngine engine;	
@@ -49,12 +49,15 @@ public class JVMComputeMachine
 	 * @since 2016/04/09
 	 */
 	@Override
-	public void allocateObject(JVMThread __pa, JVMVariable[] __pb, int __dest,
+	public void allocateObject(JVMStackFrame __frame, int __dest,
 		ClassNameSymbol __cl)
 		throws JVMNoClassDefFoundError
 	{
+		// This thread
+		JVMThread thread = __frame.thread();
+		
 		// Find the class representation
-		JVMEngine engine = __pa.threads().engine();
+		JVMEngine engine = __frame.engine();
 		JVMClass jcl = engine.classes().loadClass(__cl);
 		
 		// {@squirreljme.error IN0j Could not find a definition for the given
@@ -63,23 +66,27 @@ public class JVMComputeMachine
 			throw new JVMNoClassDefFoundError(String.format("IN0j %s", __cl));
 		
 		// Check if the method can be accessed or not
-		if (!__pa.checkAccess(jcl))
+		if (!thread.checkAccess(jcl))
 			throw new JVMEngineException();
 		
 		// Debug
 		System.err.printf("DEBUG -- allocateObject(%d, %s)%n", __dest, __cl);
 		
 		// Allocate a new object of that kind
-		JVMObject obj = engine.objects().spawnObject(__pa, jcl);
+		JVMObject obj = engine.objects().spawnObject(thread, jcl);
 		
 		// Store it in the given varaible
-		JVMVariable var = __pb[__dest];
+		JVMVariable[] vars = __frame.variables();
+		JVMVariable var = vars[__dest];
 		if (!(var instanceof JVMVariable.OfObject))
-			__pb[__dest] = (var = JVMVariable.OfObject.empty());
+			vars[__dest] = (var = JVMVariable.OfObject.empty());
 		
 		// Set it
 		JVMVariable.OfObject vo = (JVMVariable.OfObject)var;
 		vo.set(obj);
+		
+		// Go to the next address now
+		__frame.setPCAddress(__frame.getPCAddress() + 1);
 	}
 }
 

@@ -17,22 +17,20 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  *
  * Destination and source registers are identified by their ID.
  *
- * @param <A> The first pass through value.
- * @param <B> The second pass through value.
+ * @param <A> The pass through value.
  * @since 2016/04/08
  */
-public interface CPComputeMachine<A, B>
+public interface CPComputeMachine<A>
 {
 	/**
 	 * Allocates an object but does not perform construction of it.
 	 *
-	 * @param __pa Passed A.
-	 * @param __pb Passed B.
+	 * @param __pa Passed value.
 	 * @param __dest Destination register.
 	 * @param __cl The class to allocate.
 	 * @since 2016/04/09
 	 */
-	public abstract void allocateObject(A __pa, B __pb, int __dest,
+	public abstract void allocateObject(A __pa, int __dest,
 		ClassNameSymbol __cl);
 }
 

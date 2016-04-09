@@ -36,8 +36,8 @@ class __OpHandler176To191__
 	 * @since 2016/04/09
 	 */
 	@Override
-	void compute(CPComputeMachine<? extends Object, ? extends Object> __cm,
-		Object __a, Object __b, CPOp __op)
+	void compute(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op)
 	{
 		// Determine the opcode
 		int opcode = __op.instructionCode();
@@ -47,7 +47,7 @@ class __OpHandler176To191__
 		{
 				// new
 			case 187:
-				__new(__cm, __a, __b, __op);
+				__new(__cm, __a, __op);
 				break;
 			
 				// Unknown
@@ -64,8 +64,7 @@ class __OpHandler176To191__
 	 * @param __b Passed B.
 	 * @since 2016/04/09
 	 */
-	void __new(CPComputeMachine<? extends Object, ? extends Object> __cm,
-		Object __a, Object __b, CPOp __op)
+	void __new(CPComputeMachine<? extends Object> __cm, Object __a, CPOp __op)
 	{
 		// Obtain the constant pool because it has the class reference
 		CFConstantPool pool = __op.__pool();
@@ -97,7 +96,7 @@ class __OpHandler176To191__
 		}
 		
 		// Perform the allocation
-		__castCM(__cm).allocateObject(__a, __b, stacktop, clname);
+		__castCM(__cm).allocateObject(__a, stacktop, clname);
 	}
 }
 
