@@ -33,6 +33,18 @@ public class CPVariableState
 	/** Explicit state set? */
 	private volatile CPVariableType _explicit;
 	
+	/** Computed Type? */
+	private volatile CPVariableType _comptype;
+	
+	/** Is the computed value set? */
+	private volatile boolean _isvalueset;
+	
+	/** The computed value identifier. */
+	private volatile long _computedval;
+	
+	/** Does this value exist in the parent state? */
+	private volatile boolean _exists;
+	
 	/**
 	 * Initializes the variable state.
 	 *
@@ -70,9 +82,53 @@ public class CPVariableState
 			if (rv != null)
 				return rv;
 			
+			// Computed type?
+			rv = _comptype;
+			if (rv != null)
+				return rv;
+			
 			// Derived from a source location
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Returns the unique value identifier for this position.
+	 *
+	 * @return The current unique value stored here.
+	 * @since 2016/04/09
+	 */
+	public long getValue()
+	{
+		// If the entry state, this is just the index
+		if (states._isentrystate)
+			return index;
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Specified value?
+			if (_isvalueset)
+				return _computedval;
+			
+			// Derived from source instructions
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Calculates the value identifier for the current variable for the given
+	 * operation.
+	 *
+	 * @param __op The operation used for the base address.
+	 * @return The value identifier.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/09
+	 */
+	long __newValueAt(CPOp __op)
+		throws NullPointerException
+	{
+		return (((long)__op.address()) << 32L) | (long)index;
 	}
 	
 	/**
@@ -105,6 +161,91 @@ public class CPVariableState
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * This makes it so the state exists in the parent state.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/04/09
+	 */
+	private CPVariableState __mustExist()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Already exists, does not need placement
+			if (_exists)
+				return this;
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// Now exists
+			_exists = true;
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Sets the computed type of this variable.
+	 *
+	 * @param __vt The type to set.
+	 * @return {@code this}.
+	 * @throws IllegalStateException If this is the entry state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/09
+	 */
+	CPVariableState __setComputedType(CPVariableType __vt)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__vt == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CP0p Cannot set the type used for the entry
+		// state.}
+		if (states._isentrystate)
+			throw new IllegalStateException("CP0p");
+		
+		// Lock
+		synchronized (lock)
+		{
+			_comptype = __vt;
+			
+			// Must exist in the parent
+			return __mustExist();
+		}
+	}
+	
+	/**
+	 * Sets the computed value identifer of this state which specified which
+	 * unique variable this method uses (this makes it SSA).
+	 *
+	 * @param __vi The value identifier to use.
+	 * @return {@code this}.
+	 * @throws IllegalStateException If this is the entry state.
+	 * @since 2016/04/09
+	 */
+	CPVariableState __setComputedValue(long __vi)
+		throws IllegalStateException
+	{
+		// {@squirreljme.error CP0o Cannot set the computed value for the
+		// entry state.}
+		if (states._isentrystate)
+			throw new IllegalStateException("CP0o");
+		
+		// Lock
+		synchronized (lock)
+		{
+			_isvalueset = true;
+			_computedval = __vi;
+			
+			// Must exist in the parent
+			return __mustExist();
+		}
 	}
 }
 

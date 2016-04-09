@@ -46,6 +46,9 @@ public class CPVariableStates
 	/** Has this state been computed properly? */
 	volatile boolean _gotcomputed;
 	
+	/** The position of the top of the stack. */
+	private volatile int _stacktop;
+	
 	/**
 	 * Initializes the variable states.
 	 *
@@ -69,6 +72,7 @@ public class CPVariableStates
 		address = __addr;
 		isoutput = __io;
 		_isentrystate = (address == 0 && !isoutput);
+		_stacktop = program._maxlocals;
 		
 		// If this is the net
 		if (_isentrystate)
@@ -112,6 +116,21 @@ public class CPVariableStates
 	}
 	
 	/**
+	 * Returns the top of the stack.
+	 *
+	 * @return The stack top.
+	 * @since 2016/04/09
+	 */
+	public int getStackTop()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _stacktop;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/30
 	 */
@@ -119,6 +138,34 @@ public class CPVariableStates
 	public int size()
 	{
 		return program._maxlocals + program._maxstack;
+	}
+	
+	/**
+	 * Pushes a new variable onto the stack.
+	 *
+	 * @return The newly pushed variable.
+	 * @throws CPProgramException If the stack overflows.
+	 * @since 2016/04/09
+	 */
+	CPVariableState __push()
+		throws CPProgramException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// {@squirreljme.error CP0q Cannot push to the stack because it
+			// would overflow. (The next position; The top of the stack)}
+			int now = _stacktop;
+			int next = now + 1;
+			int max;
+			if (next >= (max = size()))
+				throw new CPProgramException(String.format("CP0q %d %d",
+					next, max));
+			
+			// Set the new top and return the current top
+			_stacktop = next;
+			return get(now);
+		}
 	}
 }
 

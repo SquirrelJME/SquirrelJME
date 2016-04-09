@@ -78,11 +78,26 @@ class __OpHandler176To191__
 		// Get the input and output variable states
 		CPVariableStates inputs = __op.inputState();
 		CPVariableStates outputs = __op.__outputState(false);
+		boolean docalc = !outputs._gotcomputed;
+		
+		// Get the top of the stack
+		int stacktop = inputs.getStackTop();
+		
+		// Calculate next state
+		if (docalc)
+		{
+			// Push to the stack
+			CPVariableState vs = outputs.__push();
+			
+			// Is an object
+			vs.__setComputedType(CPVariableType.OBJECT);
+			
+			// Becomes a new variable
+			vs.__setComputedValue(vs.__newValueAt(__op));
+		}
 		
 		// Perform the allocation
-		__castCM(__cm).allocateObject(__a, __b, -1, clname);
-		
-		throw new Error("TODO");
+		__castCM(__cm).allocateObject(__a, __b, stacktop, clname);
 	}
 }
 

@@ -47,7 +47,7 @@ class __VMWorkers__
 	 * of byte code operations. This is to prevent this file from being a
 	 * massive 5000 line file.
 	 *
-	 * {@squirreljme.error CP0g No handler exists for this given
+	 * {@squirreljme.error CP0n No handler exists for this given
 	 * instruction. (The opcode)}
 	 * 
 	 * @param __code The opcode, if the value is >= 0x100 then it is shifted
@@ -65,7 +65,7 @@ class __VMWorkers__
 		{
 			// Not wide?
 			if (upper != (CPOpcodes.WIDE << 8))
-				throw new CPProgramException(String.format("CP0g %d", __code));
+				throw new CPProgramException(String.format("CP0n %d", __code));
 			
 			// Make it down to 0x100 level
 			__code = 0x100 | (__code & 0xFF);
@@ -79,7 +79,7 @@ class __VMWorkers__
 		
 		// Out of range?
 		if (major < 0 || major >= refs.length)
-			throw new CPProgramException(String.format("CP0g %d", __code));
+			throw new CPProgramException(String.format("CP0n %d", __code));
 		
 		// Lock on the handlers
 		synchronized (refs)
@@ -109,7 +109,7 @@ class __VMWorkers__
 					ClassNotFoundException|ClassCastException e)
 				{
 					throw new CPProgramException(
-						String.format("CP0g %d", __code), e);
+						String.format("CP0n %d", __code), e);
 				}
 				
 				// Cache it
