@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classprogram;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 
 /**
@@ -48,6 +50,12 @@ public class CPVariableStates
 	
 	/** The position of the top of the stack. */
 	private volatile int _stacktop;
+	
+	/** Reference array of states. */
+	private volatile Reference<CPVariableState>[] _staterefs;
+	
+	/** Locked in states. */
+	private volatile CPVariableState[] _locked;
 	
 	/**
 	 * Initializes the variable states.
@@ -111,7 +119,33 @@ public class CPVariableStates
 			if (xpls != null)
 				return xpls[__i];
 			
-			throw new Error("TODO");
+			// Locked in variable?
+			CPVariableState[] locked = _locked;
+			if (locked != null)
+			{
+				CPVariableState rv = locked[__i];
+				
+				// If locked in, use it
+				if (rv != null)
+					return rv;
+			}
+			
+			// Get state references
+			Reference<CPVariableState>[] srefs = _staterefs;
+			if (srefs == null)
+				_staterefs = (srefs = __makeRefArray());
+			
+			// Get reference for this position
+			Reference<CPVariableState> ref = srefs[__i];
+			CPVariableState rv;
+			
+			// Needs initialization?
+			if (ref == null || null == (rv = ref.get()))
+				srefs[__i] = new WeakReference<>(
+					(rv = new CPVariableState(this, __i)));
+			
+			// Return it
+			return rv;
 		}
 	}
 	
@@ -166,6 +200,18 @@ public class CPVariableStates
 			_stacktop = next;
 			return get(now);
 		}
+	}
+	
+	/**
+	 * Makes a new reference array.
+	 *
+	 * @return The newly created reference array.
+	 * @since 2016/04/09
+	 */
+	@SuppressWarnings({"unchecked"})
+	private Reference<CPVariableState>[] __makeRefArray()
+	{
+		return (Reference<CPVariableState>[])((Object)new Reference[size()]);
 	}
 }
 
