@@ -196,44 +196,8 @@ public class CPOp
 			
 			// Needs to be initialized?
 			if (ref == null || null == (rv = ref.get()))
-			{
-				// Get locations which jump here
-				List<CPJumpSource> jss = jumpSources();
-				
-				// Nothing jumps here, so this is dead code.
-				int n = jss.size();
-				if (n == 0)
-				{
-					if (true)
-						throw new Error("TODO");
-				}
-				
-				// If there is only a single jump source, then use its output
-				else if (n == 1)
-				{
-					// Get the single state
-					CPJumpSource src = jss.get(0);
-					
-					throw new Error("TODO");
-				}
-				
-				// Otherwise get the outputs of all the jump sources, all the
-				// types must match and any value identifiers which do not
-				// match get marked with a "phi" flag.
-				else
-					throw new Error("TODO");
-				
-				// Obtain the explicit verification state for this position
-				// because it is possible that an output of a previous
-				// instruction will remove some variables in the local variable
-				// table because they are not used. These clearings may be
-				// used by the Java compiler to increase optimization.
-				CPVerifyState expvs = __explicitVerificationState();
-				if (expvs != null)
-					throw new Error("TODO");
-				
-				throw new Error("TODO");
-			}
+				_vsinput = new WeakReference<>(
+					(rv = new CPVariableStates(program, logical, false)));
 			
 			// Return it
 			return rv;
