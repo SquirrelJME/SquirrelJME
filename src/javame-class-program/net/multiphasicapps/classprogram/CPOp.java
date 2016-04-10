@@ -301,6 +301,22 @@ public class CPOp
 				sb.append(']');
 			}
 			
+			// Jump targets?
+			if (!jumptargets.isEmpty())
+			{
+				sb.append(", jt=");
+				sb.append('[');
+				boolean comma = false;
+				for (CPOp xop : jumptargets)
+				{
+					if (comma)
+						sb.append(", ");
+					comma = true;
+					sb.append(xop.logicaladdress);
+				}
+				sb.append(']');
+			}
+			
 			// Finish
 			sb.append('}');
 			_string = new WeakReference<>((rv = sb.toString()));
