@@ -79,6 +79,26 @@ public class CPOp
 	}
 	
 	/**
+	 * Performs computations on the current instruction.
+	 *
+	 * @param <A> The type of value to pass.
+	 * @param __cm The computational machine to compute with.
+	 * @param __a The value to pass.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/10
+	 */
+	public <A> CPOp compute(CPComputeMachine<A> __cm, A __a)
+		throws NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the instruction identifier.
 	 *
 	 * @return The instruction identifier.

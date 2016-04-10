@@ -21,7 +21,6 @@ import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classprogram.CPOp;
 import net.multiphasicapps.classprogram.CPProgram;
-import net.multiphasicapps.classprogram.CPProgramBuilder;
 import net.multiphasicapps.classprogram.CPProgramException;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -243,8 +242,8 @@ public class JVMMethod
 							this));
 					
 					// Load it
-					_program = new WeakReference<>((rv = new CPProgramBuilder(
-						container().outerClass().base(), base).parse(is)));
+					_program = new WeakReference<>((rv = new CPProgram(
+						container().outerClass().base(), base, is)));
 				}
 				
 				// Failed to load program
