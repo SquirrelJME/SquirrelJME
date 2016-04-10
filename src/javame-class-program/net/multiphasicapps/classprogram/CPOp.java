@@ -48,6 +48,9 @@ public class CPOp
 	/** The physical address of this instruction. */
 	protected final int physicaladdress;
 	
+	/** The opcode used. */
+	protected final int opcode;
+	
 	/**
 	 * Initializes the operation data.
 	 *
@@ -74,6 +77,12 @@ public class CPOp
 		program = __prg;
 		logicaladdress = __lognum;
 		physicaladdress = __prg.logicalToPhysical(__lognum);
+		
+		// Determine the used opcode, handle wide operations also.
+		int rawoc = ((int)__code[physicaladdress]) & 0xFF;
+		if (rawoc == CPOpcodes.WIDE)
+			rawoc = (rawoc << 8) | (((int)__code[physicaladdress + 1]) & 0xFF);
+		opcode = rawoc;
 		
 		throw new Error("TODO");
 	}
@@ -106,7 +115,7 @@ public class CPOp
 	 */
 	public int instructionCode()
 	{
-		throw new Error("TODO");
+		return opcode;
 	}
 	
 	/**

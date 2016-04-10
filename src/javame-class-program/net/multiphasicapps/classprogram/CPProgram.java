@@ -232,6 +232,9 @@ public final class CPProgram
 			}
 		}
 		
+		// Debug
+		System.err.printf("DEBUG -- %s%n", vmap);
+		
 		// Setup logical operations
 		int ln = logicalsize;
 		CPOp[] logs = new CPOp[ln];
