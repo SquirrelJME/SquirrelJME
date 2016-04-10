@@ -232,15 +232,13 @@ public final class CPProgram
 			}
 		}
 		
-		// Debug
-		System.err.printf("DEBUG -- %s%n", vmap);
-		
 		// Setup logical operations
 		int ln = logicalsize;
 		CPOp[] logs = new CPOp[ln];
 		_logops = logs;
 		for (int i = 0; i < ln; i++)
-			logs[i] = new CPOp(this, rawcode, excs, vmap, logs, i);
+			if (logs[i] == null)
+				logs[i] = new CPOp(this, rawcode, excs, vmap, logs, i);
 		
 		throw new Error("TODO");
 	}

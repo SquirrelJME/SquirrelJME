@@ -16,6 +16,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -51,6 +52,12 @@ public class CPOp
 	/** The opcode used. */
 	protected final int opcode;
 	
+	/** Instruction jump targets. */
+	protected final List<CPJumpTarget> jumptargets;
+	
+	/** Exceptions that must get handled. */
+	protected final List<CPException> exceptions;
+	
 	/**
 	 * Initializes the operation data.
 	 *
@@ -73,6 +80,9 @@ public class CPOp
 			__vmap == null || __ops == null)
 			throw new NullPointerException("NARG");
 		
+		// Instruction in the array becomes this
+		__ops[__lognum] = this;
+		
 		// Set
 		program = __prg;
 		logicaladdress = __lognum;
@@ -83,6 +93,14 @@ public class CPOp
 		if (rawoc == CPOpcodes.WIDE)
 			rawoc = (rawoc << 8) | (((int)__code[physicaladdress + 1]) & 0xFF);
 		opcode = rawoc;
+		
+		// Setup exceptions
+		int n = __exs.size();
+		CPException[] rxe = new CPException[n];
+		for (int i = 0; i < n; i++)
+			rxe[i] = __exs.get(i).__create(program);
+		exceptions = MissingCollections.<CPException>unmodifiableList(
+			Arrays.<CPException>asList(rxe));
 		
 		throw new Error("TODO");
 	}
@@ -108,6 +126,16 @@ public class CPOp
 	}
 	
 	/**
+	 * Returns the exceptions that this instruction handles.
+	 *
+	 * @since 2016/04/10
+	 */
+	public List<CPException> exceptions()
+	{
+		return exceptions;
+	}
+	
+	/**
 	 * Returns the instruction identifier.
 	 *
 	 * @return The instruction identifier.
@@ -116,6 +144,17 @@ public class CPOp
 	public int instructionCode()
 	{
 		return opcode;
+	}
+	
+	/**
+	 * Returns the list of jump targets (the instructions this one jumps to).
+	 *
+	 * @return The list of jump targets.
+	 * @since 2016/04/10
+	 */
+	public List<CPJumpTarget> jumpTargets()
+	{
+		return jumptargets;
 	}
 	
 	/**

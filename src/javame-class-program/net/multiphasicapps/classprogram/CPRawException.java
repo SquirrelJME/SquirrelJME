@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classprogram;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 
 /**
@@ -30,6 +32,9 @@ public class CPRawException
 	
 	/** The exception to be caught. */
 	protected final BinaryNameSymbol catches;
+	
+	/** The real exception created from this. */
+	private volatile Reference<CPException> _real;
 	
 	/**
 	 * Initializes the raw exception.
@@ -104,6 +109,33 @@ public class CPRawException
 	{
 		return String.format("[%d, %d] -> %d (%s)", startpc, endpc, handlerpc,
 			catches);
+	}
+	
+	/**
+	 * Creates the actual exception for the given program.
+	 *
+	 * @param __prg The program it is within.
+	 * @return The exception for it.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/10
+	 */
+	CPException __create(CPProgram __prg)
+		throws NullPointerException
+	{
+		// Check
+		if (__prg == null)
+			throw new NullPointerException("NARG");
+		
+		// Get reference
+		Reference<CPException> ref = _real;
+		CPException rv;
+		
+		// Needs creation or is of another program?
+		if (ref == null || null == (rv = ref.get()) || rv.program() != __prg)
+			_real = new WeakReference<>((rv = new CPException(__prg, this)));
+		
+		// Return it
+		return rv;
 	}
 }
 

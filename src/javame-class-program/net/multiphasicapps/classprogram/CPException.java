@@ -108,6 +108,17 @@ public class CPException
 	}
 	
 	/**
+	 * Returns the program that this exception handler is within.
+	 *
+	 * @return The program containing this exception handler.
+	 * @since 2016/04/10
+	 */
+	public CPProgram program()
+	{
+		return program;
+	}
+	
+	/**
 	 * Returns the starting PC address.
 	 *
 	 * @return The starting PC address.
