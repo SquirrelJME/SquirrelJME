@@ -12,6 +12,9 @@ package net.multiphasicapps.classprogram;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Map;
+import net.multiphasicapps.classfile.CFMethod;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This parses the stack map table using either the modern Java 6 format or
@@ -39,6 +42,9 @@ class __StackMapParser__
 	/** The maximum stack count. */
 	protected final int maxstack;
 	
+	/** The output verification map. */
+	protected final Map<Integer, CPVerifyState> outputmap;
+	
 	/** The placement address. */
 	private volatile int _placeaddr;
 	
@@ -51,15 +57,19 @@ class __StackMapParser__
 	 * @param __m Parse the moderm format?
 	 * @param __in The input stream containing the data.
 	 * @param __prg The program to be verified.
+	 * @param __outmap Output verification map.
+	 * @param __meth The current method being parsed.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/25
 	 */
-	__StackMapParser__(boolean __m, DataInputStream __in, CPProgram __prg)
+	__StackMapParser__(boolean __m, DataInputStream __in, CPProgram __prg,
+		Map<Integer, CPVerifyState> __outmap, CFMethod __meth)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__in == null || __prg == null)
+		if (__in == null || __prg == null || __outmap == null ||
+			__meth == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -68,9 +78,13 @@ class __StackMapParser__
 		program = __prg;
 		maxlocals = program.maxLocals();
 		maxstack = program.maxStack();
+		outputmap = __outmap;
 		
-		// The last is always the first!
-		CPVerifyState es = program.get(0).verificationState();
+		// Setup initial verification state for the given map
+		CPVerifyState es = new CPVerifyState(program);
+		outputmap.put(0, es);
+		if (true)
+			throw new Error("TODO");
 		
 		// Make a copy of the last state for the next state
 		_next = new CPVerifyState(es);
@@ -203,8 +217,7 @@ class __StackMapParser__
 			naddr + (__au + (naddr == 0 ? 0 : 1)));
 		
 		// Set the state
-		program.setExplicitVerifyState(program.physicalToLogical(_placeaddr),
-			now);
+		outputmap.put(program.physicalToLogical(_placeaddr), now);
 		
 		// The next state
 		return next;

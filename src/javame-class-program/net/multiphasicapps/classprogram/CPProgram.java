@@ -33,6 +33,7 @@ import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.io.BufferAreaInputStream;
 
 /**
  * This class is given a chunk of byte code and represents that program in SSA
@@ -49,6 +50,9 @@ public final class CPProgram
 	
 	/** The program constant pool. */
 	protected final CFConstantPool constantpool;
+	
+	/** The owning method. */
+	protected final CFMethod method;
 	
 	/** The size of the stack. */
 	protected final int maxstack;
@@ -194,12 +198,46 @@ public final class CPProgram
 		// Not needed
 		bp = null;
 		
+		// Handle attributes, only two are cared about
+		int nas = das.readUnsignedShort();
+		Map<Integer, CPVerifyState> vmap = new HashMap<>();
+		for (int i = 0; i < nas; i++)
+		{
+			// Read attribute name
+			String an = CFAttributeUtils.readName(constantpool, das);
+			
+			// There are two attributes which represent stack maps
+			// which are used for verification (and in my case it also
+			// include optimization). StackMap existed since CLDC 1.0
+			// and at the basic level is the same as StackMapTable
+			// which was introduced in Java 6. The newer version
+			// (StackMapTable) is just more compact, but they
+			// essentially provide the same data.
+			boolean newstack = an.equals("StackMapTable");
+			boolean oldstack = an.equals("StackMap");
+			boolean isastack = (newstack | oldstack);
+			
+			// Read in and parse the stack map table if it is one, otherwise
+			// the attribute is just skipped
+			try (DataInputStream smdi = new DataInputStream(
+				new BufferAreaInputStream(das,
+					(((long)das.readInt()) & 0xFFFFFFFFL))))
+			{
+				// This has the benefit of being able to skip the
+				// attribute if it is over another class.
+				if (isastack &&
+					newstack == __cl.version().useStackMapTable())
+					new __StackMapParser__(newstack, smdi, this, vmap,
+						__method);
+			}
+		}
+		
 		// Setup logical operations
 		int ln = logicalsize;
 		CPOp[] logs = new CPOp[ln];
 		_logops = logs;
 		for (int i = 0; i < ln; i++)
-			logs[i] = new CPOp(this, excs, logs, i);
+			logs[i] = new CPOp(this, rawcode, excs, vmap, logs, i);
 		
 		throw new Error("TODO");
 	}
@@ -214,7 +252,7 @@ public final class CPProgram
 		// Check
 		int max = logicalsize;
 		if (__i < 0 || __i >= max)
-			throw new IndexOutOfBoundsArguments(String.format("IOOB %d %d",
+			throw new IndexOutOfBoundsException(String.format("IOOB %d %d",
 				__i, max));
 		
 		// Get instruction
@@ -233,6 +271,39 @@ public final class CPProgram
 		if (__log < 0 || __log >= size())
 			return -1;
 		return _ipos[__log];
+	}
+	
+	/**
+	 * Returns the maximum number of local variables.
+	 *
+	 * @return The local variable count.
+	 * @since 2016/03/31
+	 */
+	public int maxLocals()
+	{
+		return maxlocals;
+	}
+	
+	/**
+	 * Returns the maximum number of stack variables.
+	 *
+	 * @return The maximum size of the stack.
+	 * @since 2016/03/31
+	 */
+	public int maxStack()
+	{
+		return maxstack;
+	}
+	
+	/**
+	 * Returns the physical program size.
+	 *
+	 * @return The physical program size.
+	 * @since 2016/03/31
+	 */
+	public int physicalSize()
+	{
+		return physicalsize;
 	}
 	
 	/**
@@ -256,6 +327,17 @@ public final class CPProgram
 	public int size()
 	{
 		return logicalsize;
+	}
+	
+	/**
+	 * Returns the number of variables which are used in this method.
+	 *
+	 * @return The variable count.
+	 * @since 2016/04/10
+	 */
+	public int variableCount()
+	{
+		return maxvariables;
 	}
 }
 

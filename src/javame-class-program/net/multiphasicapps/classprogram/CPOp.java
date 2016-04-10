@@ -52,17 +52,22 @@ public class CPOp
 	 * Initializes the operation data.
 	 *
 	 * @param __prg The owning program.
+	 * @param __code The raw byte code array.
 	 * @param __exs The list of exceptions in the program.
+	 * @param __vmap Verification map.
 	 * @param __ops The operations in the program in the event that recursive
 	 * future initialization is required.
+	 * @param __lognum The logical ID of this instruction.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/10
 	 */
-	CPOp(CPProgram __prg, List<CPRawException> __exs, CPOp[] __ops,
-		int __lognum)
+	CPOp(CPProgram __prg, byte[] __code, List<CPRawException> __exs,
+		Map<Integer, CPVerifyState> __vmap, CPOp[] __ops, int __lognum)
 		throws NullPointerException
 	{
 		// Check
-		if (__prg == null || __exs == null || __ops == null)
+		if (__prg == null || __code == null || __exs == null ||
+			__vmap == null || __ops == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -70,6 +75,17 @@ public class CPOp
 		logicaladdress = __lognum;
 		physicaladdress = __prg.logicalToPhysical(__lognum);
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the instruction identifier.
+	 *
+	 * @return The instruction identifier.
+	 * @since 2016/04/10
+	 */
+	public int instructionCode()
+	{
 		throw new Error("TODO");
 	}
 	

@@ -25,9 +25,6 @@ import java.util.AbstractList;
 public class CPVerifyState
 	extends AbstractList<CPVariableType>
 {
-	/** Verification lock. */
-	final Object lock;
-	
 	/** The owning program. */
 	protected final CPProgram program;
 	
@@ -53,12 +50,11 @@ public class CPVerifyState
 		
 		// Set
 		program = __prg;
-		lock = program.lock;
 		
 		// Get the number of element
 		int count = (size() / 2) + 1;
 		_types = new byte[count];
-		_stacktop = program._maxlocals;
+		_stacktop = program.maxLocals();
 	}
 	
 	/**
@@ -77,24 +73,19 @@ public class CPVerifyState
 		
 		// Copy data
 		program = __copy.program;
-		lock = program.lock;
 		
 		// Setup array using the original size count
 		int count = (size() / 2) + 1;
 		byte[] vt;
 		_types = vt = new byte[count];
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Copy the top of the stack
-			_stacktop = __copy._stacktop;
-			
-			// Copy each item
-			byte[] ot = __copy._types;
-			for (int i = 0; i < count; i++)
-				vt[i] = ot[i];
-		}
+		// Copy the top of the stack
+		_stacktop = __copy._stacktop;
+		
+		// Copy each item
+		byte[] ot = __copy._types;
+		for (int i = 0; i < count; i++)
+			vt[i] = ot[i];
 	}
 	
 	/**
@@ -108,21 +99,17 @@ public class CPVerifyState
 		if (__i < 0 || __i >= size())
 			throw new IndexOutOfBoundsException(String.format("IOOB %d", __i));
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Is this a high or low reference?
-			boolean hi = (__i & 1) != 0;
-			int div = __i / 2;
-			
-			// Get value at the index
-			byte val = _types[div];
-			
-			// Return which one?
-			if (hi)
-				return CPVariableType.byIndex(val >>> 4);
-			return CPVariableType.byIndex(val & 0xF);
-		}
+		// Is this a high or low reference?
+		boolean hi = (__i & 1) != 0;
+		int div = __i / 2;
+		
+		// Get value at the index
+		byte val = _types[div];
+		
+		// Return which one?
+		if (hi)
+			return CPVariableType.byIndex(val >>> 4);
+		return CPVariableType.byIndex(val & 0xF);
 	}
 	
 	/**
@@ -133,11 +120,7 @@ public class CPVerifyState
 	 */
 	public int getStackTop()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _stacktop;
-		}
+		return _stacktop;
 	}
 	
 	/**
@@ -154,33 +137,29 @@ public class CPVerifyState
 		if (__vt == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Is this a high or low reference?
-			boolean hi = (__i & 1) != 0;
-			int div = __i / 2;
-			
-			// Get value at the index
-			byte[] tips = _types;
-			byte val = tips[div];
-			
-			// Old value
-			CPVariableType old = CPVariableType.byIndex((hi ? val >>> 4 :
-				val & 0xF));
-			
-			// Set the new value
-			if (hi)
-				val = (byte)((val & 0x0F) | (__vt.ordinal() << 4));
-			else
-				val = (byte)((val & 0xF0) | __vt.ordinal());
-			
-			// Place it
-			tips[div] = val;
-			
-			// Return the old
-			return old;
-		}
+		// Is this a high or low reference?
+		boolean hi = (__i & 1) != 0;
+		int div = __i / 2;
+		
+		// Get value at the index
+		byte[] tips = _types;
+		byte val = tips[div];
+		
+		// Old value
+		CPVariableType old = CPVariableType.byIndex((hi ? val >>> 4 :
+			val & 0xF));
+		
+		// Set the new value
+		if (hi)
+			val = (byte)((val & 0x0F) | (__vt.ordinal() << 4));
+		else
+			val = (byte)((val & 0xF0) | __vt.ordinal());
+		
+		// Place it
+		tips[div] = val;
+		
+		// Return the old
+		return old;
 	}
 	
 	/**
@@ -196,14 +175,10 @@ public class CPVerifyState
 		throws IndexOutOfBoundsException
 	{
 		// Check
-		if (__t < program._maxlocals || __t > size())
+		if (__t < program.maxLocals() || __t > size())
 			throw new IndexOutOfBoundsException(String.format("IOOB %d", __t));
 		
-		// Lock
-		synchronized (lock)
-		{
-			_stacktop = __t;
-		}
+		_stacktop = __t;
 		
 		// Self
 		return this;
@@ -216,7 +191,7 @@ public class CPVerifyState
 	@Override
 	public int size()
 	{
-		return program._maxstack + program._maxlocals;
+		return program.variableCount();
 	}
 }
 
