@@ -55,9 +55,6 @@ public class CPOp
 	/** The opcode used. */
 	protected final int opcode;
 	
-	/** Instruction jump targets. */
-	protected final List<CPJumpTarget> jumptargets;
-	
 	/** Exceptions that must get handled. */
 	protected final List<CPException> exceptions;
 	
@@ -133,8 +130,6 @@ public class CPOp
 		}
 		handles = MissingCollections.<CPOp>unmodifiableList(
 			new ArrayList<>(hx));
-		
-		jumptargets = null;
 	}
 	
 	/**
@@ -213,17 +208,6 @@ public class CPOp
 	}
 	
 	/**
-	 * Returns the list of jump targets (the instructions this one jumps to).
-	 *
-	 * @return The list of jump targets.
-	 * @since 2016/04/10
-	 */
-	public List<CPJumpTarget> jumpTargets()
-	{
-		return jumptargets;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/10
 	 */
@@ -247,6 +231,29 @@ public class CPOp
 			sb.append('(');
 			sb.append(physicaladdress);
 			sb.append(')');
+			
+			// Exception handlers
+			if (!exceptions.isEmpty())
+			{
+				sb.append(", eh=");
+				sb.append(exceptions);
+			}
+			
+			// Exceptions that this handles
+			if (!handles.isEmpty())
+			{
+				sb.append(", hi=");
+				sb.append('[');
+				boolean comma = false;
+				for (CPOp xop : handles)
+				{
+					if (comma)
+						sb.append(", ");
+					comma = true;
+					sb.append(xop.logicaladdress);
+				}
+				sb.append(']');
+			}
 			
 			// Finish
 			sb.append('}');

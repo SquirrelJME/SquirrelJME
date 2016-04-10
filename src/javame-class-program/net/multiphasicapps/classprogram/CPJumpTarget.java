@@ -23,6 +23,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
  *
  * @since 2016/03/30
  */
+@Deprecated
 public class CPJumpTarget
 {
 	/** The owning program. */

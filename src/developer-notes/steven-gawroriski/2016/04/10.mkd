@@ -86,3 +86,15 @@ know of a way where I can determine the jump targets and have it all in the
 operation code as required. The same could be said for operation sources. With
 this I would completely remove the jump source and jump target list.
 
+## 19:17
+
+After I determine the natural and exception flow of instructions I can follow
+with determine the states of variables and the SSA required bits such as "phi"
+junctions and uniquely set values. However in retrospect, this new operation
+handling is far simpler than before despite it having some recursion involved.
+In general it should result in code that is much cleaner to maintain since the
+current existing program representation was just a gigantic mess of mutables,
+references, and other things. In the current case, the program description is
+completely mutable which means multiple threads can safely work on it without
+requiring locks. Thus as a result, the interpreter speed would be increased.
+

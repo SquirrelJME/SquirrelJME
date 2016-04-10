@@ -15,6 +15,7 @@ package net.multiphasicapps.classprogram;
  *
  * @since 2016/03/30
  */
+@Deprecated
 public enum CPJumpType
 {
 	/** Natural progression. */
