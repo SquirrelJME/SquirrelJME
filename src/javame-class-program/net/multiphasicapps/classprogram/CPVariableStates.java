@@ -49,7 +49,8 @@ public class CPVariableStates
 	volatile boolean _gotcomputed;
 	
 	/** The position of the top of the stack. */
-	private volatile int _stacktop;
+	private volatile int _stacktop =
+		Integer.MIN_VALUE;
 	
 	/** Reference array of states. */
 	private volatile Reference<CPVariableState>[] _staterefs;
@@ -80,7 +81,6 @@ public class CPVariableStates
 		address = __addr;
 		isoutput = __io;
 		_isentrystate = (address == 0 && !isoutput);
-		_stacktop = program._maxlocals;
 		
 		// If this is the net
 		if (_isentrystate)
@@ -160,7 +160,17 @@ public class CPVariableStates
 		// Lock
 		synchronized (lock)
 		{
-			return _stacktop;
+			// If entry state, is the max local set
+			if (_isentrystate)
+				return program._maxlocals;
+			
+			// May potentially need calculation
+			int rv = _stacktop;
+			if (rv >= 0)
+				return rv;
+			
+			// Must be calculated
+			throw new Error("TODO");
 		}
 	}
 	
@@ -227,7 +237,7 @@ public class CPVariableStates
 		{
 			// {@squirreljme.error CP0q Cannot push to the stack because it
 			// would overflow. (The next position; The top of the stack)}
-			int now = _stacktop;
+			int now = getStackTop();
 			int next = now + 1;
 			int max;
 			if (next >= (max = size()))
