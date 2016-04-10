@@ -25,7 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import net.multiphasicapps.classfile.CFAttributeUtils;
+import net.multiphasicapps.classfile.CFClass;
+import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
+import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -36,16 +40,12 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/03/29
  */
-public class CPProgram
+public final class CPProgram
 	extends AbstractList<CPOp>
 {
 	/** The maximum size method code may be. */
 	public static final int MAX_CODE_SIZE =
 		65535;
-	
-	/** Lock. */
-	protected final Object lock =
-		new Object();
 	
 	/** The program constant pool. */
 	protected final CFConstantPool constantpool;
@@ -151,10 +151,9 @@ public class CPProgram
 		// Determine the position of all operations so that they can be
 		// condensed into single index points (they all consume a single
 		// address rather than multiple ones).
-		int pn = length;
-		int[] bp = new int[pn];
+		int[] bp = new int[codelen];
 		int bpa = 0;
-		for (int i = 0; i < pn;)
+		for (int i = 0; i < codelen;)
 		{
 			// Set position where this instruction starts
 			bp[bpa++] = i;
@@ -172,7 +171,7 @@ public class CPProgram
 		
 		// The byte code for this method entirely uses single byte instructions
 		// so no condensation is needed
-		if (bpa == pn)
+		if (bpa == codelen)
 			_ipos = bp;
 		
 		// Otherwise, condense
@@ -200,7 +199,7 @@ public class CPProgram
 		CPOp[] logs = new CPOp[ln];
 		_logops = logs;
 		for (int i = 0; i < ln; i++)
-			logs[i] = new CPOp(this, excs);
+			logs[i] = new CPOp(this, excs, logs, i);
 		
 		throw new Error("TODO");
 	}
@@ -220,6 +219,33 @@ public class CPProgram
 		
 		// Get instruction
 		return _logops[__i];
+	}
+	
+	/**
+	 * Converts a logical instruction address to a physical one.
+	 *
+	 * @param __log The logical instruction position.
+	 * @return The physical position of the instruction.
+	 * @since 2016/03/30
+	 */
+	public int logicalToPhysical(int __log)
+	{
+		if (__log < 0 || __log >= size())
+			return -1;
+		return _ipos[__log];
+	}
+	
+	/**
+	 * Converts a physical address to a logical one.
+	 *
+	 * @param __phy The physical address to convert.
+	 * @return The logical address from the given physical address or
+	 * {@code -1} if no logical address is associated with one.
+	 * @since 2016/03/30
+	 */
+	public int physicalToLogical(int __phy)
+	{
+		return Math.max(-1, Arrays.binarySearch(_ipos, __phy));
 	}
 	
 	/**

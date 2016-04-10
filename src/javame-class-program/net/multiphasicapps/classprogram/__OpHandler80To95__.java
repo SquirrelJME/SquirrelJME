@@ -63,39 +63,7 @@ class __OpHandler80To95__
 	private void __dup(CPComputeMachine<? extends Object> __cm, Object __a,
 		CPOp __op)
 	{
-		// Get the output variable state
-		CPVariableStates outputs = __op.__outputState(false);
-		boolean docalc = !outputs._gotcomputed;
-		
-		// Calculate next state
-		if (docalc)
-		{
-			// Derive state from the input
-			CPVariableStates inputs = __op.inputState();
-			
-			// {@squirreljme.error CP0s Cannot duplicate topmost stack entry
-			// because the stack is empty.}
-			int stacktop = inputs.getStackTop();
-			if (stacktop <= __op.program().maxLocals())
-				throw new CPProgramException("CP0s");
-			
-			// Get the input variable at the current stack top
-			CPVariableState ontop = inputs.get(stacktop - 1);
-			CPVariableType toptype = ontop.getType();
-			
-			// {@squirreljme.error CP0t Cannot duplicate TOP, LONG, or DOUBLE
-			// types. (The topmost type)}
-			if (toptype.isWide() || toptype == CPVariableType.TOP)
-				throw new CPProgramException(String.format("CP0t %s",
-					toptype));
-			
-			// Push to the stack
-			CPVariableState vs = outputs.__push();
-			
-			// Clone date
-			vs.__setComputedType(toptype);
-			vs.__setComputedValue(ontop.getValue());
-		}
+		throw new Error("TODO");
 	}
 }
 
