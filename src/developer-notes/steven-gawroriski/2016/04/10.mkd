@@ -14,3 +14,56 @@ state so derivation can determine what is what.
 Actually it is not needed to pass it to them, the derivation can determine
 such things.
 
+## 12:14
+
+I do wonder though if the current `classprogram` is overly complex and cached.
+Right now I have a mashup of states which are all mutable and rather
+intertwined with other states. However due to my recent refactoring and split
+placement I should be able to change the entire `classprogram` structure
+without requiring that I rework parts of the interpreter and such since I do
+like some existing things. I like the operation handlers and the computational
+state. The one thing that I would change is all the dynamic variable states
+and the operations. The operations would be kept logical except their type
+would be known and there could be possible derivations of `CPOp` for specific
+instructions. Operations could still use computations. However the goal of
+this refactor would be a very broadband simplification of the code. I would
+still have SSA in the end however. I would propose that I:
+
+ 1. Get logical instruction orderings like I already do.
+    * This is good because there are no gaps, the next instruction is always
+      +1 and not +3 in some cases +2 in others.
+    * Simplifies jumps and checking of states.
+ 2. Have `CPOp` for every instruction precreated with their initialized state
+    with verifications.
+    * These operations would chain to others potentially.
+ 3. Determine the variable states for every instruction along with their type
+    inside of `CPOp`.
+ 4. Handle exceptions and such.
+    * The SSA variable IDs would be merged and potentially "phi"ed if an
+      instruction has multiple entry points and local variables contain
+      different states.
+    * Would also need to handle conditions where a variable may be used in an
+      exception handlers and branches so that their values are saved even if
+      they are pointless operations. However, this would only be done when
+      it is a local to local copy, copies from locals to the stack are still
+      pointless.
+    * As such, the stack **NEVER** gets "phi"ed.
+ 5. Verify the states are correct by parsing the `StackMap`/`StackMapTable` and
+    then dropping the verification info since it would not be needed.
+    * Local variables which get removed away would not require that they be
+      saved.
+ 6. Each operation would be able to be passed to a computational machine.
+    * Operations that generally have no effect (they are copies) would just
+      not perform any computations.
+    * However, if a variable is "phi"ed then a computation is performed on it.
+    * The general cases, storing values into locals would result in them
+      potentially getting stored even if they are not actually used in the
+      future. Later optimization passes could determine this however.
+
+I would also keep the combined local and stack elements since uniformity is
+nice.
+
+As for "phi", the variable states for each operation would have a flag which
+specifies that it is a junction of other types and that its current value is
+not really that known yet.
+

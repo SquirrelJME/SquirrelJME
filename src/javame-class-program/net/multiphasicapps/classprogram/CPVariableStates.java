@@ -13,6 +13,7 @@ package net.multiphasicapps.classprogram;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import java.util.List;
 
 /**
  * This represents the state of multiple variables within the program.
