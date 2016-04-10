@@ -496,6 +496,17 @@ public class CPOp
 	}
 	
 	/**
+	 * Returns the program this operation is a part of.
+	 *
+	 * @return The program which contains this operation.
+	 * @since 2016/04/10
+	 */
+	public CPProgram program()
+	{
+		return program;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/30
 	 */

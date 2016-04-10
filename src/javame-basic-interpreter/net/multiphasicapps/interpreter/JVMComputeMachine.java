@@ -84,9 +84,6 @@ public class JVMComputeMachine
 		// Set it
 		JVMVariable.OfObject vo = (JVMVariable.OfObject)var;
 		vo.set(obj);
-		
-		// Go to the next address now
-		__frame.setPCAddress(__frame.getPCAddress() + 1);
 	}
 }
 

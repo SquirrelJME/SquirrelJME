@@ -189,7 +189,6 @@ public class JVMThread
 	public JVMThread exitFrame(JVMStackFrame __fr)
 		throws NullPointerException
 	{
-		
 		// Check
 		if (__fr == null)
 			throw new NullPointerException("NARG");

@@ -10,30 +10,26 @@
 
 package net.multiphasicapps.classprogram;
 
-import net.multiphasicapps.classfile.CFConstantEntry;
-import net.multiphasicapps.classfile.CFConstantPool;
-import net.multiphasicapps.descriptors.ClassNameSymbol;
-
 /**
- * Handles opcodes 176 to 191.
+ * Handles opcodes 80 to 95.
  *
- * @since 2016/04/09
+ * @since 2016/04/10
  */
-class __OpHandler176To191__
+class __OpHandler80To95__
 	extends __VMWorkers__.__Worker__
 {
 	/**
 	 * Not used.
 	 *
-	 * @since 2016/04/09
+	 * @since 2016/04/10
 	 */
-	__OpHandler176To191__()
+	__OpHandler80To95__()
 	{
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/04/09
+	 * @since 2016/04/10
 	 */
 	@Override
 	void compute(CPComputeMachine<? extends Object> __cm, Object __a,
@@ -45,9 +41,9 @@ class __OpHandler176To191__
 		// Depends on the operation
 		switch (opcode)
 		{
-				// new
-			case 187:
-				__new(__cm, __a, __op);
+				// dup
+			case 89:
+				__dup(__cm, __a, __op);
 				break;
 			
 				// Unknown
@@ -57,46 +53,49 @@ class __OpHandler176To191__
 	}
 	
 	/**
-	 * Allocates a new object.
+	 * Duplicates the topmost entry on the stack.
 	 *
 	 * @param __cm The compute machine.
 	 * @param __a Passed A.
 	 * @param __op Current operation.
-	 * @since 2016/04/09
+	 * @since 2016/04/10
 	 */
-	void __new(CPComputeMachine<? extends Object> __cm, Object __a, CPOp __op)
+	private void __dup(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op)
 	{
-		// Obtain the constant pool because it has the class reference
-		CFConstantPool pool = __op.__pool();
-		
-		// Get the referenced class entry
-		ClassNameSymbol clname = pool.<CFConstantEntry.ClassName>getAs(
-			__op.__readUnsignedShort(1), CFConstantEntry.ClassName.class).
-			symbol();
-		
-		// Get the input and output variable states
-		CPVariableStates inputs = __op.inputState();
+		// Get the output variable state
 		CPVariableStates outputs = __op.__outputState(false);
 		boolean docalc = !outputs._gotcomputed;
-		
-		// Get the top of the stack
-		int stacktop = inputs.getStackTop();
 		
 		// Calculate next state
 		if (docalc)
 		{
+			// Derive state from the input
+			CPVariableStates inputs = __op.inputState();
+			
+			// {@squirreljme.error CP0s Cannot duplicate topmost stack entry
+			// because the stack is empty.}
+			int stacktop = inputs.getStackTop();
+			if (stacktop <= __op.program().maxLocals())
+				throw new CPProgramException("CP0s");
+			
+			// Get the input variable at the current stack top
+			CPVariableState ontop = inputs.get(stacktop - 1);
+			CPVariableType toptype = ontop.getType();
+			
+			// {@squirreljme.error CP0t Cannot duplicate TOP, LONG, or DOUBLE
+			// types. (The topmost type)}
+			if (toptype.isWide() || toptype == CPVariableType.TOP)
+				throw new CPProgramException(String.format("CP0t %s",
+					toptype));
+			
 			// Push to the stack
 			CPVariableState vs = outputs.__push();
 			
-			// Is an object
-			vs.__setComputedType(CPVariableType.OBJECT);
-			
-			// Becomes a new variable
-			vs.__setComputedValue(vs.__newValueAt(__op));
+			// Clone date
+			vs.__setComputedType(toptype);
+			vs.__setComputedValue(ontop.getValue());
 		}
-		
-		// Perform the allocation
-		__castCM(__cm).allocateObject(__a, stacktop, clname);
 	}
 }
 

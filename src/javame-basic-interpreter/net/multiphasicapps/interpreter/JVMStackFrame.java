@@ -39,6 +39,10 @@ public class JVMStackFrame
 	/** The current PC address. */
 	private volatile int _pcaddr;
 	
+	/** Explicit jump address. */
+	private volatile int _jumptarget =
+		Integer.MIN_VALUE;
+	
 	/**
 	 * Initializes the stack frame.
 	 *
@@ -87,7 +91,22 @@ public class JVMStackFrame
 		
 		// Setup the initial variable state
 		__initVariables(vars, numlocals, __args, desc, ncargs);
-		
+	}
+	
+	/**
+	 * Clears the jump target.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/04/10
+	 */
+	public JVMStackFrame clearJumpTarget()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			_jumptarget = Integer.MIN_VALUE;
+			return this; 
+		}
 	}
 	
 	/**
@@ -99,6 +118,23 @@ public class JVMStackFrame
 	public JVMEngine engine()
 	{
 		return thread.engine();
+	}
+	
+	/**
+	 * Returns the jump target of a jump if this performs one and does not
+	 * naturally flow to the next instruction.
+	 *
+	 * @return The jump target, or a negative value if not set.
+	 * @since 2016/04/10
+	 */
+	public int getJumpTarget()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			int rv = _jumptarget;
+			return (rv < 0 ? Integer.MIN_VALUE : rv);
+		}
 	}
 	
 	/**

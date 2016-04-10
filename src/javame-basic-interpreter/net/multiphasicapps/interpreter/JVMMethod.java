@@ -170,7 +170,26 @@ public class JVMMethod
 					// Compute it
 					try
 					{
+						// Get the entry address
+						int entryaddr = currentframe.getPCAddress();
+						
+						// Perform the operation
 						op.<JVMStackFrame>compute(cm, currentframe);
+						
+						// Jumping?
+						int potjump = currentframe.getJumpTarget();
+						if (potjump >= 0)
+						{
+							// Set new position and clear the jump
+							currentframe.setPCAddress(potjump);
+							currentframe.clearJumpTarget();
+						}
+						
+						// Otherwise, flow to the next instruction
+						else
+						{
+							currentframe.setPCAddress(entryaddr + 1);
+						}
 					}
 					
 					// Failed to compute the program
