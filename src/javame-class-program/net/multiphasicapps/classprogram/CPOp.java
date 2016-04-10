@@ -61,6 +61,9 @@ public class CPOp
 	/** Logical operations this handles exceptions for. */
 	protected final List<CPOp> handles;
 	
+	/** Natural and conditional jump targets. */
+	protected final List<CPOp> jumptargets;
+	
 	/** String representation of this operation. */
 	private volatile Reference<String> _string;
 	
@@ -130,6 +133,37 @@ public class CPOp
 		}
 		handles = MissingCollections.<CPOp>unmodifiableList(
 			new ArrayList<>(hx));
+		
+		// Calculate jump targets for this instruction
+		int[] jts = __JumpTargetCalc__.__calculate(opcode, __code,
+			physicaladdress);
+		int jtn = jts.length;
+		CPOp[] destjts = new CPOp[jtn];
+		for (int i = 0; i < jtn; i++)
+		{
+			// Get physical and its logical address
+			int jphy = jts[i];
+			int jlog = (jphy == Integer.MIN_VALUE ? logicaladdress + 1 :
+				program.physicalToLogical(jphy));
+			
+			// {@squirreljme.error CP0o Logical instruction has a jump to
+			// an instruction which is not within the program bounds or does
+			// not point to the start of an instruction. (The current
+			// instruction address; The destination physical address of the
+			// jump; The current opcode)}
+			if (jlog < 0)
+				throw new CPProgramException(String.format("CP0o %d %d %d",
+					logicaladdress, jphy, opcode));
+			
+			// Set it
+			CPOp xop;
+			destjts[i] = (xop = __ops[jlog]);
+			if (xop == null)
+				throw new RuntimeException(String.format("WTFX %d %d",
+					logicaladdress, jlog));
+		}
+		jumptargets = MissingCollections.<CPOp>unmodifiableList(
+			Arrays.<CPOp>asList(destjts));
 	}
 	
 	/**
@@ -194,6 +228,18 @@ public class CPOp
 	public int instructionCode()
 	{
 		return opcode;
+	}
+	
+	/**
+	 * The instructions this jumps to naturally or conditionally. This does
+	 * not include exception handler.
+	 *
+	 * @return The list of target instructions.
+	 * @since 2016/04/10
+	 */
+	public List<CPOp> jumpTargets()
+	{
+		return jumptargets;
 	}
 	
 	/**
