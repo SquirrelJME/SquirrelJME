@@ -79,3 +79,10 @@ compared to before.
 
 `CPProgramBuilder` would be merged into `CPProgram` and become its constructor.
 
+## 19:11
+
+Instead of jump target, the following addresses could just be operations. I
+know of a way where I can determine the jump targets and have it all in the
+operation code as required. The same could be said for operation sources. With
+this I would completely remove the jump source and jump target list.
+
