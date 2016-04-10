@@ -9,3 +9,8 @@ Now to continue with code generation and such.
 `CPVariableStates` may require the list of jump sources and the verification
 state so derivation can determine what is what.
 
+## 10:48
+
+Actually it is not needed to pass it to them, the derivation can determine
+such things.
+
