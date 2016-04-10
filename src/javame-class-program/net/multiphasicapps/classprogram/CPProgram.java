@@ -450,10 +450,11 @@ public class CPProgram
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		synchronized (lock)
+		Map<Integer, CPVerifyState> xvs = _expvstate;
+		synchronized (xvs)
 		{
 			// Set
-			_expvstate.put(__lp, __vs);
+			xvs.put(__lp, __vs);
 		}
 		
 		// Self

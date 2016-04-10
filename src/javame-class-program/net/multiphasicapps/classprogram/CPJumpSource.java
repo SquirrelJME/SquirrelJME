@@ -128,5 +128,16 @@ public class CPJumpSource
 		lowaddr = Math.min(__lo, __hi);
 		highaddr = Math.max(__lo, __hi);
 	}
+	
+	/**
+	 * Returns the type of jump that is made.
+	 *
+	 * @return The jump type.
+	 * @since 2016/04/10
+	 */
+	public CPJumpType type()
+	{
+		return type;
+	}
 }
 

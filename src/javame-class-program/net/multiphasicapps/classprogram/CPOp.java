@@ -187,8 +187,57 @@ public class CPOp
 		if (logical == 0)
 			return program._entrystate;
 		
-		// Otherwise cache it
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<CPVariableStates> ref = _vsinput;
+			CPVariableStates rv;
+			
+			// Needs to be initialized?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Get locations which jump here
+				List<CPJumpSource> jss = jumpSources();
+				
+				// Nothing jumps here, so this is dead code.
+				int n = jss.size();
+				if (n == 0)
+				{
+					if (true)
+						throw new Error("TODO");
+				}
+				
+				// If there is only a single jump source, then use its output
+				else if (n == 1)
+				{
+					// Get the single state
+					CPJumpSource src = jss.get(0);
+					
+					throw new Error("TODO");
+				}
+				
+				// Otherwise get the outputs of all the jump sources, all the
+				// types must match and any value identifiers which do not
+				// match get marked with a "phi" flag.
+				else
+					throw new Error("TODO");
+				
+				// Obtain the explicit verification state for this position
+				// because it is possible that an output of a previous
+				// instruction will remove some variables in the local varaible
+				// table because they are not used. These clearings may be
+				// used by the Java compiler to increase optimization.
+				CPVerifyState expvs = __explicitVerificationState();
+				if (expvs != null)
+					throw new Error("TODO");
+				
+				throw new Error("TODO");
+			}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
@@ -558,7 +607,7 @@ public class CPOp
 			if (ref == null || null == (rv = ref.get()))
 			{
 				// Is there an explicit verification state?
-				CPVerifyState exp = program._expvstate.get(logical);
+				CPVerifyState exp = __explicitVerificationState();
 				if (exp != null)
 					rv = exp;
 				
@@ -589,6 +638,23 @@ public class CPOp
 			
 			// Return it
 			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the explicit verification state or {@code null} if there is
+	 * none.
+	 *
+	 * @return The explicit verification state or {@code null}.
+	 * @since 2016/04/10
+	 */
+	CPVerifyState __explicitVerificationState()
+	{
+		// Lock
+		Map<Integer, CPVerifyState> xvs = program._expvstate;
+		synchronized (xvs)
+		{
+			return xvs.get(logical);
 		}
 	}
 	
