@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.interpreter;
 
+import net.multiphasicapps.classfile.CFMethodFlags;
+import net.multiphasicapps.classprogram.CPProgram;
+import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
@@ -64,9 +67,9 @@ public class JVMStackFrame
 		CPProgram program = method.program();
 		
 		// Make sure the right about of arguments were passed
-		MethodSymbol desc = type();
+		MethodSymbol desc = method.type();
 		int ncargs = desc.argumentCount();
-		if (!flags().isStatic())
+		if (!method.flags().isStatic())
 			ncargs += 1;
 		
 		// {@squirreljme.error IN0g Incorrect number of arguments passed to

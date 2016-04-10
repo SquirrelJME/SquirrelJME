@@ -142,6 +142,17 @@ public class JVMThread
 	}
 	
 	/**
+	 * Returns the engine which owns this thread.
+	 *
+	 * @return The owning engine.
+	 * @since 2016/04/09
+	 */
+	public JVMEngine engine()
+	{
+		return threads.engine();
+	}
+	
+	/**
 	 * Enters the given method.
 	 *
 	 * @param __m The method to enter.
