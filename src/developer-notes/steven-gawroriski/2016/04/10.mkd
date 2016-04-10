@@ -67,3 +67,11 @@ As for "phi", the variable states for each operation would have a flag which
 specifies that it is a junction of other types and that its current value is
 not really that known yet.
 
+## 12:29
+
+This should in general result in cleaner and easier to maintain code, with an
+added speed bonus at the cost of using extra memory (since now entire methods
+would have to exist within memory). Thus most of the existing classes I have
+would generally still exist, however they would be radically different
+compared to before.
+
