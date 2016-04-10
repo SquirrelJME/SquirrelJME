@@ -51,9 +51,6 @@ public final class CPProgram
 	/** The program constant pool. */
 	protected final CFConstantPool constantpool;
 	
-	/** The owning method. */
-	protected final CFMethod method;
-	
 	/** The size of the stack. */
 	protected final int maxstack;
 	
@@ -239,8 +236,6 @@ public final class CPProgram
 		for (int i = 0; i < ln; i++)
 			if (logs[i] == null)
 				logs[i] = new CPOp(this, rawcode, excs, vmap, logs, i);
-		
-		throw new Error("TODO");
 	}
 	
 	/**

@@ -244,6 +244,9 @@ public class JVMMethod
 					// Load it
 					_program = new WeakReference<>((rv = new CPProgram(
 						container().outerClass().base(), base, is)));
+					
+					// Debug
+					System.err.printf("DEBUG -- Program: %s%n", rv);
 				}
 				
 				// Failed to load program

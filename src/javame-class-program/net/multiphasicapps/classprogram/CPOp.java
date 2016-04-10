@@ -16,9 +16,12 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.collections.MissingCollections;
@@ -57,6 +60,12 @@ public class CPOp
 	
 	/** Exceptions that must get handled. */
 	protected final List<CPException> exceptions;
+	
+	/** Logical operations this handles exceptions for. */
+	protected final List<CPOp> handles;
+	
+	/** String representation of this operation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the operation data.
@@ -102,7 +111,41 @@ public class CPOp
 		exceptions = MissingCollections.<CPException>unmodifiableList(
 			Arrays.<CPException>asList(rxe));
 		
-		throw new Error("TODO");
+		// Go through all instructions that already exist and check ones where
+		// this is an exception handler for
+		Set<CPOp> hx = new LinkedHashSet<>();
+		int pgn = __ops.length;
+		for (int i = 0; i < pgn; i++)
+		{
+			// Get operation here
+			CPOp xop = __ops[i];
+			
+			// If missing, it requires initialization
+			if (xop == null)
+				__ops[i] =
+					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops, i));
+			
+			// Go through that instruction's exception handlers
+			// If this is a handler for that exception then add it
+			for (CPException ex : xop.exceptions)
+				if (ex.handlerPC() == __lognum)
+					hx.add(xop);
+		}
+		handles = MissingCollections.<CPOp>unmodifiableList(
+			new ArrayList<>(hx));
+		
+		jumptargets = null;
+	}
+	
+	/**
+	 * Returns the address of this instruction.
+	 *
+	 * @return The instruction address.
+	 * @since 2016/04/10
+	 */
+	public int address()
+	{
+		return logicaladdress;
 	}
 	
 	/**
@@ -136,6 +179,18 @@ public class CPOp
 	}
 	
 	/**
+	 * Returns the list of operations which contain exception handlers for this
+	 * operation.
+	 *
+	 * @return The list of handling exceptions.
+	 * @since 2016/04/10
+	 */
+	public List<CPOp> exceptionsHandled()
+	{
+		return handles;
+	}
+	
+	/**
 	 * Returns the instruction identifier.
 	 *
 	 * @return The instruction identifier.
@@ -147,6 +202,17 @@ public class CPOp
 	}
 	
 	/**
+	 * Returns the physical address of this instruction.
+	 *
+	 * @return The physical address.
+	 * @since 2016/04/10
+	 */
+	public int physicalAddress()
+	{
+		return physicaladdress;
+	}
+	
+	/**
 	 * Returns the list of jump targets (the instructions this one jumps to).
 	 *
 	 * @return The list of jump targets.
@@ -155,6 +221,40 @@ public class CPOp
 	public List<CPJumpTarget> jumpTargets()
 	{
 		return jumptargets;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/10
+	 */
+	@Override
+	public String toString()
+	{
+		// Get reference
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			StringBuilder sb = new StringBuilder("{");
+			
+			// The logical position
+			sb.append('@');
+			sb.append(logicaladdress);
+			
+			// The physical address
+			sb.append('(');
+			sb.append(physicaladdress);
+			sb.append(')');
+			
+			// Finish
+			sb.append('}');
+			_string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
