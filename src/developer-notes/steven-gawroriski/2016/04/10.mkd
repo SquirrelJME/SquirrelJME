@@ -4,3 +4,8 @@
 
 Now to continue with code generation and such.
 
+## 10:21
+
+`CPVariableStates` may require the list of jump sources and the verification
+state so derivation can determine what is what.
+

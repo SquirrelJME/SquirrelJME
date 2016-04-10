@@ -225,7 +225,7 @@ public class CPOp
 				
 				// Obtain the explicit verification state for this position
 				// because it is possible that an output of a previous
-				// instruction will remove some variables in the local varaible
+				// instruction will remove some variables in the local variable
 				// table because they are not used. These clearings may be
 				// used by the Java compiler to increase optimization.
 				CPVerifyState expvs = __explicitVerificationState();
