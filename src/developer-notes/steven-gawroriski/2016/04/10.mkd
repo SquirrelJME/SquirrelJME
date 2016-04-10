@@ -75,3 +75,7 @@ would have to exist within memory). Thus most of the existing classes I have
 would generally still exist, however they would be radically different
 compared to before.
 
+## 12:32
+
+`CPProgramBuilder` would be merged into `CPProgram` and become its constructor.
+
