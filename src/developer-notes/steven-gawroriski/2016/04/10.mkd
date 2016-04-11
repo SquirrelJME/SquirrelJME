@@ -127,3 +127,10 @@ say tommorrow that I do something I did similarly to the jump sources.
 Otherwise it will just be really really slow when more bulky methods come into
 play.
 
+## 22:32
+
+While I prepared to go to sleep, I found a bug in my implementation. I just
+assign exceptions to every single instruction and use all of them instead of
+checking to see if they are in range or not. So this needs fixing, also in the
+code which does that I can do the similar thing to jump sources.
+
