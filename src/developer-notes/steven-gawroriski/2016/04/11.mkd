@@ -29,3 +29,14 @@ anyway. So the SSA stuff is elsewhere then.
 
 For SSA stuff, everything can be a "phi" junction so to speak.
 
+## 16:42
+
+When an instruction has multiple jump sources and possibly from
+instructions which have not been calculated yet, then I can create virtual
+phi and values for the current instructions. They would be marked as potential
+phi functions. So the values would be newly assigned and unique, however the
+compiler could just treat the vlaue as an alias of another. So basically it is
+a pointless copy operation that is performed. But this is only for jump
+sources. If it is determined that state is known from the jump sources then
+only known changed variables need to be calculated.
+
