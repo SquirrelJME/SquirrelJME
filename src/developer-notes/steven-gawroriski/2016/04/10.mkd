@@ -104,3 +104,26 @@ It would be too complex in the constructor to calculate the SSA states and
 such, thus that will be delayed so that it is calculated when it is needed for
 example.
 
+## 22:16
+
+I suppose I shall sleep soon, however with part of my pre-existing base and
+refactoring the operations, things are a bit simpler now. The control flow
+graph is more direct in that operations are used rather than jump targets and
+jump sources. So a slight level of indirection was removed. Following this, the
+variable types and SSA variables will need to be initialized. For that, the
+types can be implicit as specified by the stack map, or explicit which is based
+on actual operations. So the compute machine and the operation handlers will
+return as such. They have not really gone away at all anyway. The class program
+code is still the most line heavy code however at 1733 sloccount lines. However
+once every operation is handled and the variable states are setup, I predict it
+may be aroung 4000 lines total. 4000 is quite a high number, however the
+operation handlers for each instruction that exists will add to the count by
+quite a number. Once the SSA states and other such things get enough of a base
+I can continue interpretation. The operation initialization is a bit recursive
+however. The exception handler linking stuff by having it scan around makes it
+a `O(n^2)` operation which is quite slow. So a gigantic method containing
+65535 logical instructions will require about 4 billion iterations. I would
+say tommorrow that I do something I did similarly to the jump sources.
+Otherwise it will just be really really slow when more bulky methods come into
+play.
+
