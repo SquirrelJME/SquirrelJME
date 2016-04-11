@@ -44,6 +44,10 @@ public class CPOp
 	private static volatile Reference<CPComputeMachine<Object>>
 		_NULL_CM;
 	
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The program to use. */
 	protected final CPProgram program;
 	
@@ -64,6 +68,12 @@ public class CPOp
 	
 	/** Natural and conditional jump targets. */
 	protected final List<CPOp> jumptargets;
+	
+	/** Explicit variable states? */
+	protected final CPVariables expvars;
+	
+	/** Implicit varaible states? */
+	private volatile Reference<CPVariables> _impvars;
 	
 	/** Actual jump sources. */
 	private volatile CPOp[] _realjumpsources;
@@ -106,6 +116,19 @@ public class CPOp
 		program = __prg;
 		logicaladdress = __lognum;
 		physicaladdress = __prg.logicalToPhysical(__lognum);
+		
+		// Create explicit varaible state?
+		CPVerifyState xpvs = __vmap.get(__lognum);
+		if (__lognum == 0)
+			throw new Error("TODO");
+		
+		// Defined by the StackMap/StackMapTable
+		else if (xpvs != null)
+			throw new Error("TODO");
+		
+		// None, fully implicit
+		else
+			expvars = null;
 		
 		// Determine the used opcode, handle wide operations also.
 		int rawoc = ((int)__code[physicaladdress]) & 0xFF;
@@ -358,6 +381,35 @@ public class CPOp
 	}
 	
 	/**
+	 * Returns the variable states.
+	 *
+	 * @return The state of variables for this operation.
+	 * @since 2016/04/10
+	 */
+	public CPVariables variables()
+	{
+		// Explicit variables exist?
+		CPVariables xv = expvars;
+		if (xv != null)
+			return xv;
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<CPVariables> ref = _impvars;
+			CPVariables rv;
+			
+			// Needs to cache?
+			if (ref == null || null == (rv = ref.get()))
+				throw new Error("TODO");
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/10
 	 */
@@ -441,6 +493,10 @@ public class CPOp
 				}
 				sb.append(']');
 			}
+			
+			// Variable states
+			sb.append(", vs=");
+			sb.append(variables());
 			
 			// Finish
 			sb.append('}');
