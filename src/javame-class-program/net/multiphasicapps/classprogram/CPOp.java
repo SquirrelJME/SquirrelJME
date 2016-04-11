@@ -34,6 +34,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  * @since 2016/03/30
  */
 public class CPOp
+	implements Comparable<CPOp>
 {
 	/** Virtual machine workers. */
 	private static final __VMWorkers__ _VMWORKERS =
@@ -64,8 +65,11 @@ public class CPOp
 	/** Natural and conditional jump targets. */
 	protected final List<CPOp> jumptargets;
 	
-	/** Natural and conditional Jump sources. */
-	protected final List<CPOp> jumpsources;
+	/** Actual jump sources. */
+	private volatile CPOp[] _realjumpsources;
+	
+	/** Jump source list. */
+	private volatile Reference<List<CPOp>> _jumpsources;
 	
 	/** String representation of this operation. */
 	private volatile Reference<String> _string;
@@ -80,24 +84,17 @@ public class CPOp
 	 * @param __ops The operations in the program in the event that recursive
 	 * future initialization is required.
 	 * @param __lognum The logical ID of this instruction.
-	 * @param __tjs Temporary jump source map.
-	 * @throws NullPointerException On null arguments, except for
-	 * {@code __tjs}.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/10
 	 */
 	CPOp(CPProgram __prg, byte[] __code, List<CPRawException> __exs,
-		Map<Integer, CPVerifyState> __vmap, CPOp[] __ops, int __lognum,
-		Map<CPOp, Set<CPOp>> __tjs)
+		Map<Integer, CPVerifyState> __vmap, CPOp[] __ops, int __lognum)
 		throws NullPointerException
 	{
 		// Check
 		if (__prg == null || __code == null || __exs == null ||
 			__vmap == null || __ops == null)
 			throw new NullPointerException("NARG");
-		
-		// If missing, setup the jump source map
-		if (__tjs == null)
-			__tjs = new HashMap<>();
 		
 		// Instruction in the array becomes this
 		if (__ops[__lognum] == null)
@@ -148,7 +145,7 @@ public class CPOp
 			if (xop == null)
 				__ops[jlog] =
 					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops,
-						jlog, __tjs));
+						jlog));
 			
 			// Set it
 			destjts[i] = xop;
@@ -156,14 +153,32 @@ public class CPOp
 				throw new RuntimeException(String.format("WTFX %d %d",
 					logicaladdress, jlog));
 			
-			// Add destination jump source
-			Set<CPOp> vvjs = __tjs.get(xop);
-			if (vvjs == null)
+			// Need to append jump source?
+			CPOp[] xrjs = xop._realjumpsources;
+			boolean xdonothing = false;
+			if (xrjs != null)
+				for (CPOp xsop : xrjs)
+					if (xsop == this)
+					{
+						xdonothing = true;
+						break;
+					}
+			
+			// Will add it
+			if (!xdonothing)
 			{
-				vvjs = new HashSet<>();
-				__tjs.put(xop, vvjs);
+				// Initial empty array
+				if (xrjs == null)
+					xop._realjumpsources = (xrjs = new CPOp[1]);
+				
+				// Increase size
+				else
+					xop._realjumpsources = (xrjs = Arrays.<CPOp>copyOf(xrjs,
+						xrjs.length + 1));
+				
+				// Add to the end
+				xrjs[xrjs.length - 1] = this;
 			}
-			vvjs.add(this);
 		}
 		jumptargets = MissingCollections.<CPOp>unmodifiableList(
 			Arrays.<CPOp>asList(destjts));
@@ -171,7 +186,6 @@ public class CPOp
 		// Go through all instructions that already exist and check ones where
 		// this is an exception handler for
 		Set<CPOp> hx = new LinkedHashSet<>();
-		Set<CPOp> js = new LinkedHashSet<>();
 		int pgn = __ops.length;
 		for (int i = 0; i < pgn; i++)
 		{
@@ -181,8 +195,7 @@ public class CPOp
 			// If missing, it requires initialization
 			if (xop == null)
 				__ops[i] =
-					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops, i,
-						__tjs));
+					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops, i));
 			
 			// Go through that instruction's exception handlers
 			// If this is a handler for that exception then add it
@@ -192,15 +205,6 @@ public class CPOp
 		}
 		handles = MissingCollections.<CPOp>unmodifiableList(
 			new ArrayList<>(hx));
-		
-		// Setup jump sources
-		Set<CPOp> vvjs = __tjs.get(this);
-		if (vvjs == null)
-			jumpsources = MissingCollections.<CPOp>emptyList();
-		else
-			jumpsources = MissingCollections.<CPOp>unmodifiableList(
-				new ArrayList<>(vvjs));
-		__tjs.put(this, MissingCollections.<CPOp>emptySet());
 	}
 	
 	/**
@@ -212,6 +216,22 @@ public class CPOp
 	public int address()
 	{
 		return logicaladdress;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/10
+	 */
+	@Override
+	public int compareTo(CPOp __o)
+	{
+		int ml = logicaladdress;
+		int ol = __o.logicaladdress;
+		if (ml < ol)
+			return -1;
+		else if (ml > ol)
+			return 1;
+		return 0;
 	}
 	
 	/**
@@ -257,6 +277,16 @@ public class CPOp
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/10
+	 */
+	@Override
+	public int hashCode()
+	{
+		return logicaladdress;
+	}
+	
+	/**
 	 * Returns the instruction identifier.
 	 *
 	 * @return The instruction identifier.
@@ -276,7 +306,30 @@ public class CPOp
 	 */
 	public List<CPOp> jumpSources()
 	{
-		return jumpsources;
+		// Get reference
+		Reference<List<CPOp>> ref = _jumpsources;
+		List<CPOp> rv;
+		
+		// Needs to be cached?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Get real sources
+			CPOp[] rjs = _realjumpsources;
+			
+			// There are none
+			if (rjs == null || rjs.length <= 0)
+				_jumpsources = new WeakReference<>(
+					(rv = MissingCollections.<CPOp>emptyList()));
+			
+			// Wrap them
+			else
+				_jumpsources = new WeakReference<>(
+					(rv = MissingCollections.<CPOp>unmodifiableList(
+						Arrays.<CPOp>asList(rjs))));
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -357,6 +410,23 @@ public class CPOp
 				sb.append('[');
 				boolean comma = false;
 				for (CPOp xop : jumptargets)
+				{
+					if (comma)
+						sb.append(", ");
+					comma = true;
+					sb.append(xop.logicaladdress);
+				}
+				sb.append(']');
+			}
+			
+			// Jump sources?
+			List<CPOp> jss = jumpSources();
+			if (!jss.isEmpty())
+			{
+				sb.append(", js=");
+				sb.append('[');
+				boolean comma = false;
+				for (CPOp xop : jss)
 				{
 					if (comma)
 						sb.append(", ");
