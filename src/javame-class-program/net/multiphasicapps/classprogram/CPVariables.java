@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.collections.MissingCollections;
+import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This represents the state of variables for a given operation in the program.
@@ -34,6 +36,10 @@ public class CPVariables
 	
 	/** The bottom of the stack. */
 	protected final int stackbottom;
+	
+	/** The top of the stack. */
+	private volatile int _stacktop =
+		Integer.MIN_VALUE;
 	
 	/**
 	 * Initializes an fully implicit variable state.
@@ -113,13 +119,83 @@ public class CPVariables
 		if (!__expl && __method == null && __vs == null)
 			;
 		
-		// The entry state of the first instruction
+		// The entry state of the first instruction, note that the types are
+		// known, however the SSA IDs are still implicit due to potential "phi"
+		// junctions.
 		else if (__expl && __method != null && __vs == null)
-			throw new Error("TODO");
+		{
+			// Obtain the method descriptor
+			MethodSymbol desc = __method.type();
+			
+			// Stack starts at the base
+			_stacktop = stackbottom;
+			
+			// There could be more method arguments than there are locals
+			int vat = 0;
+			try
+			{
+				// If the method is not static, the first type becomes the
+				// first method argument
+				if (!__method.flags().isStatic())
+				{
+					// Get slot
+					Slot sl = slots.get(vat++);
+				
+					// Set type and the SSA ID
+					sl.__setType(CPVariableType.OBJECT);
+				}
+			
+				// Go through all method arguments
+				int na = desc.argumentCount();
+				for (int i = 0; i < na; i++)
+				{
+					// Get field type
+					FieldSymbol fs = desc.get(i);
+					CPVariableType vt = CPVariableType.bySymbol(fs);
+				
+					// Get next slot
+					Slot sl = slots.get(vat++);
+					
+					// Set data
+					sl.__setType(vt);
+					
+					// If top, set the next one
+					if (vt.isWide())
+					{
+						// Get top slot
+						sl = slots.get(vat++);
+						
+						// Make it a top
+						sl.__setType(CPVariableType.TOP);
+					}
+				}
+			}
+			
+			// {@squirreljme.error CP0s There are not enough local
+			// variables to store method arguments in the current
+			// operation. (The variable position; The bottom of the stack)}
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new CPProgramException(String.format("CP0s %d %d",
+					vat, stackbottom), e);
+			}
+			
+			// Check for bounds
+			if (vat > stackbottom)
+				throw new CPProgramException(String.format("CP0s %d %d",
+					vat, stackbottom));
+		}
 		
 		// Types are explicit but the SSA variable IDs are implicit
 		else if (__expl && __method == null && __vs != null)
-			throw new Error("TODO");
+		{
+			// Copy all explicit types
+			for (int i = 0; i < sn; i++)
+				slots.get(i).__setType(__vs.get(i));
+			
+			// Set stack top
+			_stacktop = __vs.getStackTop();
+		}
 		
 		// invalid input
 		else
@@ -147,14 +223,27 @@ public class CPVariables
 	}
 	
 	/**
-	 * This is a variable slot,
+	 * This is a variable slot, which contains type and SSA variable
+	 * information.
+	 *
+	 * The upper 16-bits of the SSA ID represent the logical instruction of
+	 * the source, while the lower 16-bit of the ID represent the slot number.
+	 * SSA IDs change when the value becomes something different and it is not
+	 * a copy. 
 	 *
 	 * @since 2016/04/10
 	 */
-	public class Slot
+	public final class Slot
 	{
+		/** Internal lock. */
+		protected final Object lock =
+			new Object();
+		
 		/** The index of this slot. */
 		protected final int index;
+		
+		/** The type of variable contained here. */
+		private volatile CPVariableType _type;
 		
 		/** String representation. */
 		private volatile Reference<String> _string;
@@ -199,6 +288,53 @@ public class CPVariables
 			
 			// Return it
 			return rv;
+		}
+		
+		/**
+		 * Sets the type of value that this variable is.
+		 *
+		 * @param __vt The type of value this contains.
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/04/11
+		 */
+		Slot __setType(CPVariableType __vt)
+			throws NullPointerException
+		{
+			// Check
+			if (__vt == null)
+				throw new NullPointerException("NARG");
+			
+			// Lock
+			synchronized (lock)
+			{
+				_type = __vt;
+			}
+			
+			// Self
+			return this;
+		}
+		
+		/**
+		 * Sets the SSA value ID of the current slot, this may also be a "phi"
+		 * junction.
+		 *
+		 * @param __phi If {@code true} then this is a 
+		 * @param __vid The value IDs, if not a "phi" junction then this must
+		 * contain a single element containing the source ID, otherwise the
+		 * values represent other instructions
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/04/11
+		 */
+		Slot __setValue(boolean __phi, int... __vids)
+			throws NullPointerException
+		{
+			// Check
+			if (__vids == null)
+				throw new NullPointerException("NARG");
+			
+			throw new Error("TODO");
 		}
 	}
 }

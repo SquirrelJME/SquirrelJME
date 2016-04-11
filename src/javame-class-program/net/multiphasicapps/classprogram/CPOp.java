@@ -422,7 +422,7 @@ public class CPOp
 			
 			// Needs to cache?
 			if (ref == null || null == (rv = ref.get()))
-				throw new Error("TODO");
+				_impvars = new WeakReference<>((rv = new CPVariables(this)));
 			
 			// Return it
 			return rv;
