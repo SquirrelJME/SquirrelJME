@@ -487,8 +487,30 @@ public class CPVariables
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// Get current array
+				int[] now = _vids;
+				
+				// Would not exist anyway
+				if (now == null)
+					_vids = new int[]{__vid};
+				
+				// Check it
+				else
+				{
+					// Never add the same variable twice
+					for (int i : now)
+						if (i == __vid)
+							return this;
+					
+					// Resize
+					int end;
+					_vids = (now = Arrays.copyOf(now, (end = now.length) + 1));
+					now[end] = __vid;
+				}
 			}
+			
+			// Self
+			return this;
 		}
 		
 		/**
