@@ -21,6 +21,24 @@ public class CPVariables
 	extends AbstractList<CPVariables.Slot>
 {
 	/**
+	 * Initializes the variable state.
+	 *
+	 * @param __op The operation to hold the state for.
+	 * @param __Vs The optional verification state, if one is set.
+	 * @throws NullPointerException If no operation was specified.
+	 * @since 2016/04/10
+	 */
+	CPVariables(CPOp __op, CPVerifyState __vs)
+		throws NullPointerException
+	{
+		// Check
+		if (__op == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/10
 	 */

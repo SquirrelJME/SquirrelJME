@@ -120,11 +120,11 @@ public class CPOp
 		// Create explicit varaible state?
 		CPVerifyState xpvs = __vmap.get(__lognum);
 		if (__lognum == 0)
-			throw new Error("TODO");
+			expvars = new CPVariables(this, null);
 		
 		// Defined by the StackMap/StackMapTable
 		else if (xpvs != null)
-			throw new Error("TODO");
+			expvars = new CPVariables(this, xpvs);
 		
 		// None, fully implicit
 		else
