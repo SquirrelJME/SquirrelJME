@@ -260,6 +260,26 @@ public class CPVariables
 		}
 		
 		/**
+		 * Returns the type of variable this slot is.
+		 *
+		 * @return The type that this variable is.
+		 * @since 2016/04/11
+		 */
+		public CPVariableType type()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Explicit or has already been determined?
+				CPVariableType rv = _type;
+				if (rv != null)
+					return null;
+			
+				throw new Error("TODO");
+			}
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2016/04/11
 		 */
@@ -280,6 +300,7 @@ public class CPVariables
 				
 				// The type that is here
 				sb.append(':');
+				sb.append(type());
 				
 				// Finish
 				sb.append('>');
