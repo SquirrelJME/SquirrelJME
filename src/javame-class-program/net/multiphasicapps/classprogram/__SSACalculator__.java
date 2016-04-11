@@ -151,6 +151,50 @@ class __SSACalculator__
 	}
 	
 	/**
+	 * Sets the operations for all targets and potentially checks them.
+	 *
+	 * @parma __op The operation to set targets for.
+	 * @param __top The top of the stack, {@code Integer.MIN_VALUE} if it does
+	 * not change.
+	 * @param __vt The type of variable to set, if {@code null} it is not
+	 * changed.
+	 * @param __val The value to set, if {@code Integer.MIN_VALUE} it is not
+	 * changed.
+	 * @since 2016/04/11
+	 */
+	public void set(CPOp __op, int __top, CPVariableType __vt, int __val)
+	{
+		// Check
+		if (__op == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Determins the value of a given slot.
+	 *
+	 * @param __op The operation containing the slot.
+	 * @param __slot the slot index that gets the value.
+	 * @return The value ID for the given slot.
+	 * @throws IllegalArgumentException If the slot is out of bounds.
+	 * @since 2016/04/11
+	 */
+	public int valueOf(CPOp __op, int __slot)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error CP10 Slot value out of bounds. (The slot value)}
+		if (0 != (__slot & (~CPVariables.SSA_SLOT_VALUE_MASK)))
+			throw new IllegalArgumentException(String.format("CP10 %d",
+				__slot));
+		
+		// Build it
+		return (__op.address() << CPVariables.SSA_ADDRESS_SHIFT) |
+			((__slot & CPVariables.SSA_SLOT_VALUE_MASK) <<
+				CPVariables.SSA_SLOT_SHIFT);
+	}
+	
+	/**
 	 * Calculates the new operation.
 	 *
 	 * @param __op The current operation.
@@ -158,7 +202,13 @@ class __SSACalculator__
 	 */
 	private void __new(CPOp __op)
 	{
-		throw new Error("TODO");
+		// Get the input variables
+		CPVariables xin = __op.variables();
+		
+		// Just add an element to the stack
+		int top;
+		set(__op, (top = xin.getStackTop()) + 1, CPVariableType.OBJECT,
+			valueOf(__op, top));
 	}
 }
 

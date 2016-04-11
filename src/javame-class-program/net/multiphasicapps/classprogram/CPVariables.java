@@ -361,7 +361,16 @@ public class CPVariables
 				// Must be determined
 				CPPhiType rv = _phitype;
 				if (rv != null)
+				{
+					// If there are more than two values then it is a phi, so
+					// always return that state.
+					int[] vx = _vids;
+					if (vx != null && vx.length >= 2)
+						return CPPhiType.PHI;
+					
+					// Otherwise use the flagged one
 					return rv;
+				}
 				
 				// {@squirreljme.error CP0v Attempt to get the phi type of a
 				// slot, however the phi type was not determined yet.

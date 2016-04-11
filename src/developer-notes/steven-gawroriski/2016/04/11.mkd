@@ -40,3 +40,11 @@ a pointless copy operation that is performed. But this is only for jump
 sources. If it is determined that state is known from the jump sources then
 only known changed variables need to be calculated.
 
+## 18:51
+
+For broadband SSA set, I need a function which sets all the desired types and
+potential checking in the target type. So basically it goes through all targets
+and exception handlers for an operation and sets the type and values. If they
+are already set then they become phis and things are checked to make sure they
+are valid.
+
