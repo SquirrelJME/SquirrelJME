@@ -72,6 +72,10 @@ public final class CPProgram
 	/** The logical instructions in this program. */
 	private final CPOp[] _logops;
 	
+	/** Is this program in the initialization phase? */
+	private volatile boolean _initphase =
+		true;
+	
 	/**
 	 * Initializes the class program with the given input stream represents
 	 * the {@code Code} attribute.
@@ -243,6 +247,14 @@ public final class CPProgram
 			if (logs[i] == null)
 				logs[i] = new CPOp(this, rawcode, rex, vmap, logs, i,
 					__method);
+		
+		// Start initialization and determination of types and values
+		for (__SSACalculator__ calc = new __SSACalculator__(this);
+			calc.calculate();)
+			;
+		
+		// End initialization phase
+		_initphase = false;
 	}
 	
 	/**

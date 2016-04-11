@@ -88,6 +88,9 @@ public class CPOp
 	/** Recursive computation detection. */
 	private volatile int _recursivity;
 	
+	/** Calculation counter. */
+	volatile int _calccount;
+	
 	/**
 	 * Initializes the operation data.
 	 *

@@ -279,24 +279,11 @@ public class CPVariables
 				if (rv != null)
 					return rv;
 				
-				// Compute all source operations, this builds the potential
-				// SSA and variable trees.
-				for (CPOp xop : operation.jumpSources())
-					xop.__compute();
-				
-				// Try again
-				rv = _type;
-				
-				// {@squirreljme.error CP0t Attempt to get the type that a
-				// slot is after computation, however the type was not
-				// determined during a computation. (The opcode index; The
-				// slot index)}
-				if (rv == null)
-					throw new CPProgramException(String.format("CP0t %d %d",
-						operation.address(), index));
-				
-				// Return it
-				return rv;
+				// {@squirreljme.error CP0t Attempt to get the type of a
+				// slot, however the type was not determined yet.
+				// (The opcode index; The slot index)}
+				throw new CPProgramException(String.format("CP0t %d %d",
+					operation.address(), index));
 			}
 		}
 		

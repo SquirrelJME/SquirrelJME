@@ -12,3 +12,20 @@ both input and output based. The input of a target instruction is the output
 of the source instruction's input. For example, there could be some work that
 is performed and then a `return` is reached making that work pointless.
 
+## 14:55
+
+When it comes to SSA, I am going to after decoding the operations go then
+determine the state of everything.
+
+## 16:28
+
+Sharing the compute machines with SSA computations would complicate and put the
+SSA related stuff in the computations. Once all the SSA stuff is figured out
+then nothing needs to be figured out after that. Thus, in these cases the
+computation code would be checking immutable state and just doing nothing
+anyway. So the SSA stuff is elsewhere then.
+
+## 16:33
+
+For SSA stuff, everything can be a "phi" junction so to speak.
+
