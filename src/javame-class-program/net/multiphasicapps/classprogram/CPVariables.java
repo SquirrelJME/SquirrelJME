@@ -278,8 +278,23 @@ public class CPVariables
 				CPVariableType rv = _type;
 				if (rv != null)
 					return rv;
-			
-				throw new Error("TODO");
+				
+				// Compute the operation
+				operation.__compute();
+				
+				// Try again
+				rv = _type;
+				
+				// {@squirreljme.error CP0t Attempt to get the type that a
+				// slot is after computation, however the type was not
+				// determined during a computation. (The opcode index; The
+				// slot index)}
+				if (rv == null)
+					throw new CPProgramException(String.format("CP0t %d %d",
+						operation.address(), index));
+				
+				// Return it
+				return rv;
 			}
 		}
 		

@@ -85,6 +85,9 @@ public class CPOp
 	/** String representation of this operation. */
 	private volatile Reference<String> _string;
 	
+	/** Recursive computation detection. */
+	private volatile int _recursivity;
+	
 	/**
 	 * Initializes the operation data.
 	 *
@@ -275,17 +278,62 @@ public class CPOp
 	 * @param __cm The computational machine to compute with.
 	 * @param __a The value to pass.
 	 * @return {@code this}.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException If no compute machine was specified.
 	 * @since 2016/04/10
 	 */
 	public <A> CPOp compute(CPComputeMachine<A> __cm, A __a)
 		throws NullPointerException
 	{
 		// Check
-		if (__a == null)
+		if (__cm == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Detects recursion
+			try
+			{
+				// Increase recursion count
+				if ((++_recursivity) < 0)
+					throw new RuntimeException("WTFX");
+				
+				// Lookup operation worker
+				__VMWorkers__.__Worker__ worker = _VMWORKERS.__lookup(opcode);
+				
+				// Run computation on it
+				try
+				{
+					// Not valid?
+					if (worker == null)
+						throw new __VMWorkers__.__UnknownOp__();
+			
+					// Compute it
+					worker.compute(__cm, __a, this);
+				}
+		
+				// Unknown
+				catch (__VMWorkers__.__UnknownOp__ e)
+				{
+					// {@squirreljme.error CP0m Method contains an illegal
+					// opcode. (The current logical address; The instruction
+					// opcode})
+					throw new CPProgramException(String.format("CP0m %d %d",
+						logicaladdress, opcode), e);
+				}
+			}
+			
+			// Reduce recursion amount
+			finally
+			{
+				// Underflows
+				if ((--_recursivity) < 0)
+					throw new RuntimeException("WTFX");
+			}
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -525,6 +573,18 @@ public class CPOp
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Computes this operation which performs the executional work and possibly
+	 * initializes the state of variables.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/04/11
+	 */
+	CPOp __compute()
+	{
+		return this.<Object>compute(__nullComputer(), null);
 	}
 	
 	/**
