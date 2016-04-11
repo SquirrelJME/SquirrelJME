@@ -279,8 +279,10 @@ public class CPVariables
 				if (rv != null)
 					return rv;
 				
-				// Compute the operation
-				operation.__compute();
+				// Compute all source operations, this builds the potential
+				// SSA and variable trees.
+				for (CPOp xop : operation.jumpSources())
+					xop.__compute();
 				
 				// Try again
 				rv = _type;
