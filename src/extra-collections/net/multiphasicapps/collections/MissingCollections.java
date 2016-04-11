@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.collections;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +25,15 @@ import java.util.Set;
  */
 public class MissingCollections
 {
+	/** The empty iterator. */
+	private static volatile Reference<Iterator> _EMPTY_ITERATOR;
+	
+	/** The empty list. */
+	private static volatile Reference<List> _EMPTY_LIST;
+	
+	/** The empty set. */
+	private static volatile Reference<Set> _EMPTY_SET;
+	
 	/**
 	 * Not initialized.
 	 *
@@ -29,6 +41,74 @@ public class MissingCollections
 	 */
 	private MissingCollections()
 	{
+	}
+	
+	/**
+	 * This returns an iterator which contains nothing.
+	 *
+	 * @param <V> The type of values to iterate over.
+	 * @return The empty iterator.
+	 * @since 2016/04/10
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <V> Iterator<V> emptyIterator()
+	{
+		// Get reference
+		Reference<Iterator> ref = _EMPTY_ITERATOR;
+		Iterator rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+			_EMPTY_ITERATOR = new WeakReference<>(
+				(rv = new __EmptyIterator__()));
+		
+		// Return it
+		return (Iterator<V>)rv;
+	}
+	
+	/**
+	 * This returns a list which contains nothing.
+	 *
+	 * @param <V> The type of values the list contains.
+	 * @return The empty list.
+	 * @since 2016/04/10
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <V> List<V> emptyList()
+	{
+		// Get reference
+		Reference<List> ref = _EMPTY_LIST;
+		List rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+			_EMPTY_LIST = new WeakReference<>(
+				(rv = new __EmptyList__()));
+		
+		// Return it
+		return (List<V>)rv;
+	}
+	
+	/**
+	 * This returns an empty and unmodifiable set.
+	 *
+	 * @param <V> The element type used by the set.
+	 * @return The unmodifiable and empty set.
+	 * @since 2016/04/10
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <V> Set<V> emptySet()
+	{
+		// Get reference
+		Reference<Set> ref = _EMPTY_SET;
+		Set rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+			_EMPTY_SET = new WeakReference<>((rv = new __EmptySet__()));
+		
+		// Return it
+		return (Set<V>)rv;
 	}
 	
 	/**

@@ -235,7 +235,7 @@ public final class CPProgram
 		_logops = logs;
 		for (int i = 0; i < ln; i++)
 			if (logs[i] == null)
-				logs[i] = new CPOp(this, rawcode, excs, vmap, logs, i);
+				logs[i] = new CPOp(this, rawcode, excs, vmap, logs, i, null);
 	}
 	
 	/**

@@ -64,6 +64,9 @@ public class CPOp
 	/** Natural and conditional jump targets. */
 	protected final List<CPOp> jumptargets;
 	
+	/** Natural and conditional Jump sources. */
+	protected final List<CPOp> jumpsources;
+	
 	/** String representation of this operation. */
 	private volatile Reference<String> _string;
 	
@@ -77,11 +80,14 @@ public class CPOp
 	 * @param __ops The operations in the program in the event that recursive
 	 * future initialization is required.
 	 * @param __lognum The logical ID of this instruction.
-	 * @throws NullPointerException On null arguments.
+	 * @param __tjs Temporary jump source map.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __tjs}.
 	 * @since 2016/04/10
 	 */
 	CPOp(CPProgram __prg, byte[] __code, List<CPRawException> __exs,
-		Map<Integer, CPVerifyState> __vmap, CPOp[] __ops, int __lognum)
+		Map<Integer, CPVerifyState> __vmap, CPOp[] __ops, int __lognum,
+		Map<CPOp, Set<CPOp>> __tjs)
 		throws NullPointerException
 	{
 		// Check
@@ -89,8 +95,13 @@ public class CPOp
 			__vmap == null || __ops == null)
 			throw new NullPointerException("NARG");
 		
+		// If missing, setup the jump source map
+		if (__tjs == null)
+			__tjs = new HashMap<>();
+		
 		// Instruction in the array becomes this
-		__ops[__lognum] = this;
+		if (__ops[__lognum] == null)
+			__ops[__lognum] = this;
 		
 		// Set
 		program = __prg;
@@ -110,29 +121,6 @@ public class CPOp
 			rxe[i] = __exs.get(i).__create(program);
 		exceptions = MissingCollections.<CPException>unmodifiableList(
 			Arrays.<CPException>asList(rxe));
-		
-		// Go through all instructions that already exist and check ones where
-		// this is an exception handler for
-		Set<CPOp> hx = new LinkedHashSet<>();
-		int pgn = __ops.length;
-		for (int i = 0; i < pgn; i++)
-		{
-			// Get operation here
-			CPOp xop = __ops[i];
-			
-			// If missing, it requires initialization
-			if (xop == null)
-				__ops[i] =
-					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops, i));
-			
-			// Go through that instruction's exception handlers
-			// If this is a handler for that exception then add it
-			for (CPException ex : xop.exceptions)
-				if (ex.handlerPC() == __lognum)
-					hx.add(xop);
-		}
-		handles = MissingCollections.<CPOp>unmodifiableList(
-			new ArrayList<>(hx));
 		
 		// Calculate jump targets for this instruction
 		int[] jts = __JumpTargetCalc__.__calculate(opcode, __code,
@@ -155,15 +143,64 @@ public class CPOp
 				throw new CPProgramException(String.format("CP0o %d %d %d",
 					logicaladdress, jphy, opcode));
 			
+			// Potentially create it
+			CPOp xop = __ops[jlog];
+			if (xop == null)
+				__ops[jlog] =
+					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops,
+						jlog, __tjs));
+			
 			// Set it
-			CPOp xop;
-			destjts[i] = (xop = __ops[jlog]);
+			destjts[i] = xop;
 			if (xop == null)
 				throw new RuntimeException(String.format("WTFX %d %d",
 					logicaladdress, jlog));
+			
+			// Add destination jump source
+			Set<CPOp> vvjs = __tjs.get(xop);
+			if (vvjs == null)
+			{
+				vvjs = new HashSet<>();
+				__tjs.put(xop, vvjs);
+			}
+			vvjs.add(this);
 		}
 		jumptargets = MissingCollections.<CPOp>unmodifiableList(
 			Arrays.<CPOp>asList(destjts));
+		
+		// Go through all instructions that already exist and check ones where
+		// this is an exception handler for
+		Set<CPOp> hx = new LinkedHashSet<>();
+		Set<CPOp> js = new LinkedHashSet<>();
+		int pgn = __ops.length;
+		for (int i = 0; i < pgn; i++)
+		{
+			// Get operation here
+			CPOp xop = __ops[i];
+			
+			// If missing, it requires initialization
+			if (xop == null)
+				__ops[i] =
+					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops, i,
+						__tjs));
+			
+			// Go through that instruction's exception handlers
+			// If this is a handler for that exception then add it
+			for (CPException ex : xop.exceptions)
+				if (ex.handlerPC() == __lognum)
+					hx.add(xop);
+		}
+		handles = MissingCollections.<CPOp>unmodifiableList(
+			new ArrayList<>(hx));
+		
+		// Setup jump sources
+		Set<CPOp> vvjs = __tjs.get(this);
+		if (vvjs == null)
+			jumpsources = MissingCollections.<CPOp>emptyList();
+		else
+			jumpsources = MissingCollections.<CPOp>unmodifiableList(
+				new ArrayList<>(vvjs));
+		__tjs.put(this, MissingCollections.<CPOp>emptySet());
 	}
 	
 	/**
@@ -228,6 +265,18 @@ public class CPOp
 	public int instructionCode()
 	{
 		return opcode;
+	}
+	
+	/**
+	 * The instructions which jump to this instruction. This does not include
+	 * exceptions.
+	 *
+	 * @return The list of source operations.
+	 * @since 2016/04/10
+	 */
+	public List<CPOp> jumpSources()
+	{
+		return jumpsources;
 	}
 	
 	/**
