@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import net.multiphasicapps.classfile.CFConstantPool;
+import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -94,16 +95,18 @@ public class CPOp
 	 * @param __ops The operations in the program in the event that recursive
 	 * future initialization is required.
 	 * @param __lognum The logical ID of this instruction.
+	 * @param __method The method this is an operation for.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/10
 	 */
 	CPOp(CPProgram __prg, byte[] __code, CPException[] __exs,
-		Map<Integer, CPVerifyState> __vmap, CPOp[] __ops, int __lognum)
+		Map<Integer, CPVerifyState> __vmap, CPOp[] __ops, int __lognum,
+		CFMethod __method)
 		throws NullPointerException
 	{
 		// Check
 		if (__prg == null || __code == null || __exs == null ||
-			__vmap == null || __ops == null)
+			__vmap == null || __ops == null || __method == null)
 			throw new NullPointerException("NARG");
 		
 		// Instruction in the array becomes this
@@ -120,7 +123,7 @@ public class CPOp
 		// Create explicit varaible state?
 		CPVerifyState xpvs = __vmap.get(__lognum);
 		if (__lognum == 0)
-			expvars = new CPVariables(this, null);
+			expvars = new CPVariables(this, __method);
 		
 		// Defined by the StackMap/StackMapTable
 		else if (xpvs != null)
@@ -162,7 +165,7 @@ public class CPOp
 			if (xop == null)
 				__ops[jlog] =
 					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops,
-						jlog));
+						jlog, __method));
 			
 			// Set it
 			destjts[i] = xop;
@@ -227,7 +230,7 @@ public class CPOp
 					if (xop == null)
 						__ops[xpc] =
 							(xop = new CPOp(__prg, __code, __exs, __vmap,
-								__ops, xpc));
+								__ops, xpc, __method));
 					
 					// Add that instruction
 					hx.add(xop);
@@ -384,6 +387,17 @@ public class CPOp
 	public int physicalAddress()
 	{
 		return physicaladdress;
+	}
+	
+	/**
+	 * Returns the program which contains this operation.
+	 *
+	 * @return The containing program.
+	 * @since 2016/04/11
+	 */
+	public CPProgram program()
+	{
+		return program;
 	}
 	
 	/**
