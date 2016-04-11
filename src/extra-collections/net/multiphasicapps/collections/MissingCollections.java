@@ -44,6 +44,21 @@ public class MissingCollections
 	}
 	
 	/**
+	 * Makes a boxed wrapped around a given list.
+	 *
+	 * @param __v The list to wrap boxed values for.
+	 * @return The wrapped array as boxed values or the empty list if the
+	 * input array is {@code null} or is empty.
+	 * @since 2016/04/11
+	 */
+	public static List<Integer> boxedList(int... __v)
+	{
+		if (__v == null || __v.length <= 0)
+			return MissingCollections.<Integer>emptyList();
+		return new __BoxedIntegerList__(__v);
+	}
+	
+	/**
 	 * This returns an iterator which contains nothing.
 	 *
 	 * @param <V> The type of values to iterate over.

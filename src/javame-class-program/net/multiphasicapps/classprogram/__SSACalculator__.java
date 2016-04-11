@@ -79,12 +79,86 @@ class __SSACalculator__
 			if (xop == null)
 				return !queue.isEmpty();
 			
+			// Debug
+			System.err.printf("DEBUG -- Calc %d%n", xop.address());
+			
+			// Current operation variables
+			CPVariables xin = xop.variables();
+			
 			// Increase the operation calculation count to later find
 			// operations which never got calculations performed for them.
-			xop._calccount++;
+			int clcn = xop._calccount++;
+			
+			// Multiple jump sources?
+			boolean hashandlers = !xop.exceptionsHandled().isEmpty();
+			boolean mulsource = (xop.jumpSources().size() > 1) ||
+				hashandlers;
+			
+			// If this is the first instruction then it gets its initial
+			// values for inputs which are just the slot IDs. If this is a
+			// jump source then potential phi-functions are flagged.
+			if (xop.address() == 0)
+			{
+				// Go through all slots
+				for (CPVariables.Slot sl : xin)
+				{
+					// Start always with the initial input set
+					sl.__addValue(sl.index());
+					
+					// Not or a possible phi?
+					sl.__setPhi((mulsource ? CPPhiType.POSSIBLE :
+						CPPhiType.NOT));
+				}
+			}
+			
+			// If this is the first address or this handles exceptions then
+			// the stack must be empty.
+			if (xop.address() == 0 || hashandlers)
+			{
+				// {@squirreljme.error CP0x The instruction is an exception
+				// handler or is the entry of a method and it has elements
+				// on the stack. The stack in these situations must be empty.
+				// (The current instruction address)}
+				int myt, psb;
+				if ((myt = xin.getStackTop()) != (psb = program.maxLocals()))
+					throw new CPProgramException(String.format("CP0x %d",
+						xop.address()));
+			}
+			
+			// Depends on the opcode
+			int opcode = xop.instructionCode();
+			switch (opcode)
+			{
+					// New
+				case 187:
+					__new(xop);
+					break;
 				
-			System.err.printf("DEBUG -- Calc %d%n", xop.address());
+					// {@squirreljme.error CP0u Cannot calculate the SSA for
+					// the given opcode because it is unknown. (The program
+					// address; The opcode)}
+				default:
+					throw new CPProgramException(String.format("CP0u %d %d",
+						xop.address(), opcode));
+			}
+			
+			// Handle the operation's exception handlers (which may produce
+			// quite a number of phi functions).
+			// Note that only local variables get phied
+			for (CPException e : xop.exceptions())
+				throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Calculates the new operation.
+	 *
+	 * @param __op The current operation.
+	 * @since 2016/04/11
+	 */
+	private void __new(CPOp __op)
+	{
+		throw new Error("TODO");
 	}
 }
 

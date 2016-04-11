@@ -28,6 +28,37 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 public class CPVariables
 	extends AbstractList<CPVariables.Slot>
 {
+	/** Slot value ID instruction shift. */
+	public static final int SSA_ADDRESS_SHIFT =
+		16;
+	
+	/** Slot value ID instruction value mask. */
+	public static final int SSA_ADDRESS_VALUE_MASK =
+		0x0000_FFFF;
+	
+	/** Slot value ID instruction shifted mask. */
+	public static final int SSA_ADDRESS_SHIFTED_MASK =
+		0xFFFF_0000;
+	
+	/** Slot value ID slot shift. */
+	public static final int SSA_SLOT_SHIFT =
+		0;
+	
+	/** Slot value ID slot value mask. */
+	public static final int SSA_SLOT_VALUE_MASK =
+		0x0000_FFFF;
+	
+	/** Slot value ID slot shifted mask. */
+	public static final int SSA_SLOT_SHIFTED_MASK =
+		0x0000_FFFF;
+	
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
+	/** The owning program. */
+	protected final CPProgram program;
+	
 	/** The operation this is a state for. */
 	protected final CPOp operation;
 	
@@ -104,10 +135,19 @@ public class CPVariables
 		
 		// Set
 		operation = __op;
+		program = operation.program();
+		
+		// {@squirreljme.error CP0y The number of local variables and stack
+		// variables is limited to 65536 individual variables. This is a
+		// limitation of this software, however having large methods in code
+		// that is intended to be run on embedded and mobile environments using
+		// this many variables is not recommended.
+		// (The number of variables which the method uses)}
+		int sn = program.variableCount();
+		if (sn >= 65536)
+			throw new CPProgramException(String.format("CP0y %d", sn));
 		
 		// Setup slots
-		CPProgram program = operation.program();
-		int sn = program.variableCount();
 		Slot[] aslots = new Slot[sn];
 		for (int i = 0; i < sn; i++)
 			aslots[i] = new Slot(i);
@@ -217,6 +257,32 @@ public class CPVariables
 	}
 	
 	/**
+	 * Returns the top of the stack.
+	 *
+	 * @return The top of the stack.
+	 * @throws CPProgramException If the top of the stack was not set.
+	 * @since 2016/04/11
+	 */
+	public int getStackTop()
+		throws CPProgramException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			int rv = _stacktop;
+			
+			// {@squirreljme.error CP0w The top of the stack has never been
+			// set. (The instruction address)}
+			if (rv < 0)
+				throw new CPProgramException(String.format("CP0w %d",
+					operation.address()));
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/10
 	 */
@@ -239,18 +305,23 @@ public class CPVariables
 	 */
 	public final class Slot
 	{
-		/** Internal lock. */
-		protected final Object lock =
-			new Object();
-		
 		/** The index of this slot. */
 		protected final int index;
 		
 		/** The type of variable contained here. */
 		private volatile CPVariableType _type;
 		
+		/** Phi-function state. */
+		private volatile CPPhiType _phitype;
+		
+		/** Current variable IDs. */
+		private volatile int[] _vids;
+		
 		/** String representation. */
 		private volatile Reference<String> _string;
+		
+		/** Value ID as a list cache. */
+		private volatile Reference<List<Integer>> _vidwrap;
 		
 		/**
 		 * Internal slot initialization.
@@ -264,12 +335,51 @@ public class CPVariables
 		}
 		
 		/**
+		 * Returns the index of this slot.
+		 *
+		 * @return The slot index.
+		 * @since 2016/04/11
+		 */
+		public int index()
+		{
+			return index;
+		}
+		
+		/**
+		 * Returns the phi type of the current slot.
+		 *
+		 * @return The phy type of the slot.
+		 * @throws CPProgramException If it has not been set.
+		 * @since 2016/04/11
+		 */
+		public CPPhiType phi()
+			throws CPProgramException
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Must be determined
+				CPPhiType rv = _phitype;
+				if (rv != null)
+					return rv;
+				
+				// {@squirreljme.error CP0v Attempt to get the phi type of a
+				// slot, however the phi type was not determined yet.
+				// (The opcode index; The slot index)}
+				throw new CPProgramException(String.format("CP0v %d %d",
+					operation.address(), index));
+			}
+		}
+		
+		/**
 		 * Returns the type of variable this slot is.
 		 *
 		 * @return The type that this variable is.
+		 * @throws CPProgramException If it has not been set.
 		 * @since 2016/04/11
 		 */
 		public CPVariableType type()
+			throws CPProgramException
 		{
 			// Lock
 			synchronized (lock)
@@ -310,6 +420,10 @@ public class CPVariables
 				sb.append(':');
 				sb.append(type());
 				
+				// The phi type that this is
+				sb.append('^');
+				sb.append(phi());
+				
 				// Finish
 				sb.append('>');
 				_string = new WeakReference<>((rv = sb.toString()));
@@ -317,6 +431,89 @@ public class CPVariables
 			
 			// Return it
 			return rv;
+		}
+		
+		/**
+		 * Returns the list of values that this may potentially have a value
+		 * for.
+		 *
+		 * @return The boxed list of raw SSA values.
+		 * @since 2016/04/11
+		 */
+		public List<Integer> values()
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Get reference
+				Reference<List<Integer>> ref = _vidwrap;
+				List<Integer> rv;
+				
+				// Needs to be cached?
+				if (ref == null || null == (rv = ref.get()))
+					_vidwrap = new WeakReference<>((rv = MissingCollections.
+						<Integer>unmodifiableList(
+							MissingCollections.boxedList(_vids))));
+				
+				// Return it
+				return rv;
+			}
+		}
+		
+		/**
+		 * Adds an SSA value ID to the current slot.
+		 *
+		 * @param __vid The value ID to add.
+		 * @return {@code this}.
+		 * @throws CPProgramException If the value ID would be outside of the
+		 * program or slot bounds.
+		 * @since 2016/04/11
+		 */
+		Slot __addValue(int __vid)
+			throws CPProgramException
+		{
+			// Sanity check
+			int ipc = (__vid >>> SSA_ADDRESS_SHIFT) & SSA_ADDRESS_VALUE_MASK;
+			int isl = (__vid >>> SSA_SLOT_SHIFT) & SSA_SLOT_VALUE_MASK;
+			
+			// {@squirreljme.error CP0z Attempt to add a SSA value to a slot
+			// which references a value which is not within the program or
+			// variable bounds. (The variable address; The variable slot)}
+			if (ipc < 0 || ipc >= program.size() ||
+				isl < 0 || isl >= slots.size())
+				throw new CPProgramException(String.format("CP0z %d %d",
+					ipc, isl));
+			
+			// Lock
+			synchronized (lock)
+			{
+				throw new Error("TODO");
+			}
+		}
+		
+		/**
+		 * Sets the phi type of the current slot.
+		 *
+		 * @param __pt The phy type to set.
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/04/11
+		 */
+		Slot __setPhi(CPPhiType __pt)
+			throws NullPointerException
+		{
+			// Check
+			if (__pt == null)
+				throw new NullPointerException("NARG");
+			
+			// Lock
+			synchronized (lock)
+			{
+				_phitype = __pt;
+			}
+			
+			// Self
+			return this;
 		}
 		
 		/**
@@ -342,28 +539,6 @@ public class CPVariables
 			
 			// Self
 			return this;
-		}
-		
-		/**
-		 * Sets the SSA value ID of the current slot, this may also be a "phi"
-		 * junction.
-		 *
-		 * @param __phi If {@code true} then this is a 
-		 * @param __vid The value IDs, if not a "phi" junction then this must
-		 * contain a single element containing the source ID, otherwise the
-		 * values represent other instructions
-		 * @return {@code this}.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/04/11
-		 */
-		Slot __setValue(boolean __phi, int... __vids)
-			throws NullPointerException
-		{
-			// Check
-			if (__vids == null)
-				throw new NullPointerException("NARG");
-			
-			throw new Error("TODO");
 		}
 	}
 }

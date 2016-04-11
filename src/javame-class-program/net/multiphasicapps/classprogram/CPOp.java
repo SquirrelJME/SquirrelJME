@@ -73,9 +73,6 @@ public class CPOp
 	/** Explicit variable states? */
 	protected final CPVariables expvars;
 	
-	/** Implicit varaible states? */
-	private volatile Reference<CPVariables> _impvars;
-	
 	/** Actual jump sources. */
 	private volatile CPOp[] _realjumpsources;
 	
@@ -137,7 +134,7 @@ public class CPOp
 		
 		// None, fully implicit
 		else
-			expvars = null;
+			expvars = new CPVariables(this);
 		
 		// Determine the used opcode, handle wide operations also.
 		int rawoc = ((int)__code[physicaladdress]) & 0xFF;
@@ -459,25 +456,8 @@ public class CPOp
 	 */
 	public CPVariables variables()
 	{
-		// Explicit variables exist?
-		CPVariables xv = expvars;
-		if (xv != null)
-			return xv;
-		
-		// Lock
-		synchronized (lock)
-		{
-			// Get reference
-			Reference<CPVariables> ref = _impvars;
-			CPVariables rv;
-			
-			// Needs to cache?
-			if (ref == null || null == (rv = ref.get()))
-				_impvars = new WeakReference<>((rv = new CPVariables(this)));
-			
-			// Return it
-			return rv;
-		}
+		// Explicit variable states always exist
+		return expvars;
 	}
 	
 	/**
