@@ -100,6 +100,8 @@ public class CPOp
 		if (__ops[__lognum] == null)
 			__ops[__lognum] = this;
 		
+		System.err.printf("DEBUG -- Init %d%n", __lognum);
+		
 		// Set
 		program = __prg;
 		logicaladdress = __lognum;
@@ -379,6 +381,10 @@ public class CPOp
 			sb.append('(');
 			sb.append(physicaladdress);
 			sb.append(')');
+			
+			// The opcode
+			sb.append(", oc=");
+			sb.append(opcode);
 			
 			// Exception handlers
 			if (!exceptions.isEmpty())

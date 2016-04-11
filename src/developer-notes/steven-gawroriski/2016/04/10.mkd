@@ -98,3 +98,9 @@ references, and other things. In the current case, the program description is
 completely mutable which means multiple threads can safely work on it without
 requiring locks. Thus as a result, the interpreter speed would be increased.
 
+## 22:02
+
+It would be too complex in the constructor to calculate the SSA states and
+such, thus that will be delayed so that it is calculated when it is needed for
+example.
+
