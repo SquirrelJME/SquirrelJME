@@ -184,6 +184,10 @@ public class CPVariables
 			if (vat > stackbottom)
 				throw new CPProgramException(String.format("CP0s %d %d",
 					vat, stackbottom));
+			
+			// The remaining slots are nothing
+			while (vat < sn)
+				slots.get(vat++).__setType(CPVariableType.NOTHING);
 		}
 		
 		// Types are explicit but the SSA variable IDs are implicit
@@ -273,7 +277,7 @@ public class CPVariables
 				// Explicit or has already been determined?
 				CPVariableType rv = _type;
 				if (rv != null)
-					return null;
+					return rv;
 			
 				throw new Error("TODO");
 			}

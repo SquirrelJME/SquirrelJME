@@ -246,7 +246,10 @@ public class JVMMethod
 						container().outerClass().base(), base, is)));
 					
 					// Debug
-					System.err.printf("DEBUG -- Program: %s%n", rv);
+					int pn = rv.size();
+					for (int i = 0; i < pn; i++)
+						System.err.printf("DEBUG -- Program: %d: %s%n", i,
+							rv.get(i));
 				}
 				
 				// Failed to load program
