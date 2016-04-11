@@ -15,7 +15,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
 /**
  * This represents an exception which is handled within a method.
  *
- * The addressing is logical.
+ * The addressing is logical and the ranges are inclusive.
  *
  * @since 2016/03/31
  */
@@ -75,9 +75,9 @@ public class CPException
 	}
 	
 	/**
-	 * Returns the ending PC address.
+	 * Returns the inclusive ending PC address.
 	 *
-	 * @return The ending PC address.
+	 * @return The inclusive ending PC address.
 	 * @since 2016/03/31
 	 */
 	public int endPC()
@@ -119,9 +119,9 @@ public class CPException
 	}
 	
 	/**
-	 * Returns the starting PC address.
+	 * Returns the inclusive starting PC address.
 	 *
-	 * @return The starting PC address.
+	 * @return The inclusive starting PC address.
 	 * @since 2016/03/31
 	 */
 	public int startPC()

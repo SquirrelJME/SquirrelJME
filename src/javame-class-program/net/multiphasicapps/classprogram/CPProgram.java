@@ -229,13 +229,19 @@ public final class CPProgram
 			}
 		}
 		
+		// Setup real exceptions
+		int xn = excs.size();
+		CPException[] rex = new CPException[xn];
+		for (int i = 0; i < xn; i++)
+			rex[i] = excs.get(i).__create(this);
+		
 		// Setup logical operations
 		int ln = logicalsize;
 		CPOp[] logs = new CPOp[ln];
 		_logops = logs;
 		for (int i = 0; i < ln; i++)
 			if (logs[i] == null)
-				logs[i] = new CPOp(this, rawcode, excs, vmap, logs, i);
+				logs[i] = new CPOp(this, rawcode, rex, vmap, logs, i);
 	}
 	
 	/**

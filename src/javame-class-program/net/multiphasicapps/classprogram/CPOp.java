@@ -97,7 +97,7 @@ public class CPOp
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/10
 	 */
-	CPOp(CPProgram __prg, byte[] __code, List<CPRawException> __exs,
+	CPOp(CPProgram __prg, byte[] __code, CPException[] __exs,
 		Map<Integer, CPVerifyState> __vmap, CPOp[] __ops, int __lognum)
 		throws NullPointerException
 	{
@@ -135,14 +135,6 @@ public class CPOp
 		if (rawoc == CPOpcodes.WIDE)
 			rawoc = (rawoc << 8) | (((int)__code[physicaladdress + 1]) & 0xFF);
 		opcode = rawoc;
-		
-		// Setup exceptions
-		int n = __exs.size();
-		CPException[] rxe = new CPException[n];
-		for (int i = 0; i < n; i++)
-			rxe[i] = __exs.get(i).__create(program);
-		exceptions = MissingCollections.<CPException>unmodifiableList(
-			Arrays.<CPException>asList(rxe));
 		
 		// Calculate jump targets for this instruction
 		int[] jts = __JumpTargetCalc__.__calculate(opcode, __code,
@@ -208,26 +200,40 @@ public class CPOp
 		jumptargets = MissingCollections.<CPOp>unmodifiableList(
 			Arrays.<CPOp>asList(destjts));
 		
-		// Go through all instructions that already exist and check ones where
-		// this is an exception handler for
+		// Setup exceptions that there are handlers here for and any exceptions
+		// that this instruction handles (point to those instructions)
+		List<CPException> dxx = new ArrayList<>();
 		Set<CPOp> hx = new LinkedHashSet<>();
-		int pgn = __ops.length;
-		for (int i = 0; i < pgn; i++)
+		for (CPException rx : __exs)
 		{
-			// Get operation here
-			CPOp xop = __ops[i];
+			// Get addresses (all inclusive)
+			int spc = rx.startPC();
+			int epc = rx.endPC();
+			int hpc = rx.handlerPC();
 			
-			// If missing, it requires initialization
-			if (xop == null)
-				__ops[i] =
-					(xop = new CPOp(__prg, __code, __exs, __vmap, __ops, i));
+			// This instruction has an exception handler available
+			if (__lognum >= spc && __lognum <= epc)
+				dxx.add(rx);
 			
-			// Go through that instruction's exception handlers
-			// If this is a handler for that exception then add it
-			for (CPException ex : xop.exceptions)
-				if (ex.handlerPC() == __lognum)
+			// Handles an exception for an address
+			// Go through the start and end addresses
+			if (__lognum == hpc)
+				for (int xpc = spc; xpc <= epc; xpc++)
+				{
+					// Get operation here
+					CPOp xop = __ops[xpc];
+			
+					// If missing, it requires initialization
+					if (xop == null)
+						__ops[xpc] =
+							(xop = new CPOp(__prg, __code, __exs, __vmap,
+								__ops, xpc));
+					
+					// Add that instruction
 					hx.add(xop);
+				}
 		}
+		exceptions = MissingCollections.<CPException>unmodifiableList(dxx);
 		handles = MissingCollections.<CPOp>unmodifiableList(
 			new ArrayList<>(hx));
 	}

@@ -1,0 +1,7 @@
+# 2016/04/11
+
+## 08:50
+
+Actually the using of exceptions is much simpler because there is no `O(n^2)`
+work required at all, it is just the number of exceptions which are available.
+
