@@ -5,3 +5,10 @@
 Actually the using of exceptions is much simpler because there is no `O(n^2)`
 work required at all, it is just the number of exceptions which are available.
 
+## 09:04
+
+I could keep the SSA states simple by having it be input based rather than
+both input and output based. The input of a target instruction is the output
+of the source instruction's input. For example, there could be some work that
+is performed and then a `return` is reached making that work pointless.
+

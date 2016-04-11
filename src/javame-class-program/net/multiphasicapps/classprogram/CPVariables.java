@@ -24,7 +24,10 @@ public class CPVariables
 	 * Initializes the variable state.
 	 *
 	 * @param __op The operation to hold the state for.
-	 * @param __Vs The optional verification state, if one is set.
+	 * @param __Vs The optional verification state, if one is set then it is
+	 * used to fill the types of variables for each state. Otherwise, all
+	 * types are implicit based on the source operation (and the source
+	 * operations of those operations).
 	 * @throws NullPointerException If no operation was specified.
 	 * @since 2016/04/10
 	 */
