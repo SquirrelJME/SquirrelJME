@@ -62,9 +62,19 @@ public final class Objects
 		return __a.equals(__b);
 	}
 	
+	/**
+	 * Returns the hash code of the given object or {@code 0} if it is
+	 * {@code null}.
+	 *
+	 * @param __a The object to get the hashcode of.
+	 * @return The object's hash code or {@code 0} if it is {@code null}.
+	 * @since 2016/04/12
+	 */
 	public static int hashCode(Object __a)
 	{
-		throw new Error("TODO");
+		if (__a == null)
+			return 0;
+		return __a.hashCode();
 	}
 	
 	public static <T> T requireNonNull(T __a)

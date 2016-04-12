@@ -71,6 +71,14 @@ public class TestObjects
 		// Float and double, with the same value
 		__tc.checkEquals("equals.floatdoublesame", false,
 			Objects.equals(new Float(42.0F), new Double(42.0D)));
+		
+		// Hashcode of null
+		__tc.checkEquals("hashcode.null", 0,
+			Objects.hashCode(null));
+		
+		// Hashcode of integer value
+		__tc.checkEquals("hashcode.int", new Integer(42),
+			Objects.hashCode(new Integer(42)));
 	}
 }
 
