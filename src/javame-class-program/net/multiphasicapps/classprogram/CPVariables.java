@@ -568,6 +568,68 @@ public class CPVariables
 		}
 		
 		/**
+		 * Checks set of a variable type.
+		 *
+		 * @param __vt The type of variable to set.
+		 * @return {@code this}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/04/12
+		 */
+		Slot __checkedSetType(CPVariableType __vt)
+			throws NullPointerException
+		{
+			// Check
+			if (__vt == null)
+				throw new NullPointerException("NARG");
+			
+			// Lock
+			synchronized (lock)
+			{
+				// Check stack bounds
+				__checkStackBounds();
+				
+				throw new Error("TODO");
+			}
+		}
+		
+		/**
+		 * Checks setting a SSA value to the slot.
+		 *
+		 * @param __vid The value to set.
+		 * @return {@code this}.
+		 * @since 2016/04/12
+		 */
+		Slot __checkedSetValue(int __vid)
+		{
+			// Lock
+			synchronized (lock)
+			{
+				// Check stack bounds
+				__checkStackBounds();
+				
+				// Add value
+				return __addValue(int __vid)
+			}
+		}
+		
+		/**
+		 * Checks the bounds of the stack to make sure it is within the stack.
+		 *
+		 * @return {@code this}.
+		 * @throws CPProgramException If it is not within bounds.
+		 * @since 2016/04/12
+		 */
+		Slot __checkStackBounds()
+			throws CPProgramException
+		{
+			// Lock
+			synchronized (lock)
+			{
+				throw new Error("TODO");
+			}
+		}
+		
+		/**
 		 * Sets the phi type of the current slot.
 		 *
 		 * @param __pt The phy type to set.

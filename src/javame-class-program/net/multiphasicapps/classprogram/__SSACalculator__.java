@@ -182,10 +182,32 @@ class __SSACalculator__
 			CPVariables tvars = xop.variables();
 			
 			// Set the top of the stack?
-			if (__sl != Integer.MIN_VALUE)
-				tvars.__checkedSetStackTop(__sl);
+			if (__top != Integer.MIN_VALUE)
+				tvars.__checkedSetStackTop(__top);
 			
-			throw new Error("TODO");
+			// Get slot
+			CPVarables.Slot sl;
+			try
+			{
+				sl = tvars.get(__sl);
+			}
+			
+			// Out of bounds read of slot
+			catch (IndexOutOfBoundsException e)
+			{
+				// {@squirreljme.error CP13 Attempt to access a slot which is
+				// not within the program bounds. (The slot index)}
+				throw new CPProgramException(String.format("CP13 %s", __sl),
+					e);
+			}
+			
+			// Setting a type?
+			if (__vt != null)
+				sl.__checkedSetType(__vt);
+			
+			// Setting a value
+			if (__val != Integer.MIN_VALUE)
+				sl.__checkedSetValue(__val);
 		}
 	}
 	
