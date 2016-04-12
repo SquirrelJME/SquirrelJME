@@ -27,6 +27,9 @@ class __SSACalculator__
 	protected final Deque<CPOp> queue =
 		new LinkedList<>();
 	
+	/** The base of the stack. */
+	protected final int stackbase;
+	
 	/**
 	 * This calculates SSA operations.
 	 *
@@ -42,6 +45,9 @@ class __SSACalculator__
 		
 		// Set
 		program = __prg;
+		
+		// Setup stack base
+		stackbase = program.maxLocals();
 		
 		// At the first instruction to the queue initially
 		queue.offerLast(program.get(0));
@@ -142,10 +148,9 @@ class __SSACalculator__
 						xop.address(), opcode));
 			}
 			
-			// Handle the operation's exception handlers (which may produce
-			// quite a number of phi functions).
-			// Note that only local variables get phied
-			for (CPException e : xop.exceptions())
+			// If this operation handles exceptions then it potentially needs
+			// to derive variable state from the source operations.
+			for (CPOp e : xop.exceptionsHandled())
 				throw new Error("TODO");
 		}
 	}
@@ -154,6 +159,7 @@ class __SSACalculator__
 	 * Sets the operations for all targets and potentially checks them.
 	 *
 	 * @parma __op The operation to set targets for.
+	 * @param __sl The slot to modify.
 	 * @param __top The top of the stack, {@code Integer.MIN_VALUE} if it does
 	 * not change.
 	 * @param __vt The type of variable to set, if {@code null} it is not
@@ -162,13 +168,25 @@ class __SSACalculator__
 	 * changed.
 	 * @since 2016/04/11
 	 */
-	public void set(CPOp __op, int __top, CPVariableType __vt, int __val)
+	public void set(CPOp __op, int __sl, int __top, CPVariableType __vt,
+		int __val)
 	{
 		// Check
 		if (__op == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through all targets
+		for (CPOp xop : __op.jumpTargets())
+		{
+			// Get the target variables
+			CPVariables tvars = xop.variables();
+			
+			// Set the top of the stack?
+			if (__sl != Integer.MIN_VALUE)
+				tvars.__checkedSetStackTop(__sl);
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -207,7 +225,7 @@ class __SSACalculator__
 		
 		// Just add an element to the stack
 		int top;
-		set(__op, (top = xin.getStackTop()) + 1, CPVariableType.OBJECT,
+		set(__op, (top = xin.getStackTop()), top + 1, CPVariableType.OBJECT,
 			valueOf(__op, top));
 	}
 }

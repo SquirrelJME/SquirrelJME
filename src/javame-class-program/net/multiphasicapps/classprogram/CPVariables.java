@@ -66,7 +66,10 @@ public class CPVariables
 	protected final List<Slot> slots;
 	
 	/** The bottom of the stack. */
-	protected final int stackbottom;
+	protected final int stackbase;
+	
+	/** Maximum variables permitted. */
+	protected final int maxvars;
 	
 	/** The top of the stack. */
 	private volatile int _stacktop =
@@ -144,6 +147,7 @@ public class CPVariables
 		// this many variables is not recommended.
 		// (The number of variables which the method uses)}
 		int sn = program.variableCount();
+		maxvars = sn;
 		if (sn >= 65536)
 			throw new CPProgramException(String.format("CP0y %d", sn));
 		
@@ -153,7 +157,7 @@ public class CPVariables
 			aslots[i] = new Slot(i);
 		slots = MissingCollections.<Slot>unmodifiableList(
 			Arrays.<Slot>asList(aslots));
-		stackbottom = program.maxLocals();
+		stackbase = program.maxLocals();
 		
 		// Fully implicit? Then nothing has to be done
 		if (!__expl && __method == null && __vs == null)
@@ -168,7 +172,7 @@ public class CPVariables
 			MethodSymbol desc = __method.type();
 			
 			// Stack starts at the base
-			_stacktop = stackbottom;
+			_stacktop = stackbase;
 			
 			// There could be more method arguments than there are locals
 			int vat = 0;
@@ -217,13 +221,13 @@ public class CPVariables
 			catch (IndexOutOfBoundsException e)
 			{
 				throw new CPProgramException(String.format("CP0s %d %d",
-					vat, stackbottom), e);
+					vat, stackbase), e);
 			}
 			
 			// Check for bounds
-			if (vat > stackbottom)
+			if (vat > stackbase)
 				throw new CPProgramException(String.format("CP0s %d %d",
-					vat, stackbottom));
+					vat, stackbase));
 			
 			// The remaining slots are nothing
 			while (vat < sn)
@@ -290,6 +294,47 @@ public class CPVariables
 	public int size()
 	{
 		return slots.size();
+	}
+	
+	/**
+	 * Sets the top of the stack and checks whether the given operation is
+	 * valid.
+	 *
+	 * @param __top The top of the stack to set.
+	 * @return The set of variables.
+	 * @throws CPProgramException If the set of the stack top is not valid.
+	 * @since 2016/04/12
+	 */
+	CPVariables __checkedSetStackTop(int __top)
+		throws CPProgramException
+	{
+		// {@squirreljme.error CP11 Attempt to set the top of the stack to
+		// an index which is nothing the bounds of the stack (The requested
+		// stack top; The base of the stack; The top of the stack)}
+		if (__top < stackbase || __top > maxvars)
+			throw new CPProgramException(String.format("CP11 %d %d %d",
+				__top, stackbase, maxvars));
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Get the current stack top
+			int now = _stacktop;
+			
+			// Was never set at all?
+			if (now == Integer.MIN_VALUE)
+				_stacktop = __top;
+			
+			// {@squirreljme.error CP12 Attempt to set the stack size of an
+			// operation which does not match the previously set size.
+			// (The requested top; The current top)}
+			else if (__top != now)
+				throw new CPProgramException(String.format("CP12 %d %d",
+					__top, now));
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
