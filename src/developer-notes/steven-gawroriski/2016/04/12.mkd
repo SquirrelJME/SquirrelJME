@@ -17,3 +17,11 @@ operation handlers for the SSA code. However I believe I am going to take a
 slight break from the interpreter and work on the class library since my work
 has been slowing down a bit.
 
+## 19:33
+
+I also need to be able to test the standard library to make sure that it works.
+However the only way to actually test if things work properly is for the
+interpreter to be written to run the code to be tested. However, I can write
+a test framework which should pass when host tests are ran on the desktop for
+example.
+

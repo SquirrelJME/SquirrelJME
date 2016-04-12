@@ -50,7 +50,7 @@ public class TestInflater
 	{
 		// Check
 		if (__tc == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Go through samples, which are resources
 		for (char c = 'a'; c <= 'z'; c++)

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-Hairball-Name: test-javame-cldc-compact
+X-Hairball-UUID: a091a9ac-9265-4775-9e32-85ce04cd4f45
+X-Hairball-Depends: javame-cldc-compact, test-base
+LIBlet-Title: Java ME CLDC Tests
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160412
+LIBlet-Description: This contains tests to make sure that the
+  CLDC library is correctly implemented.
+
