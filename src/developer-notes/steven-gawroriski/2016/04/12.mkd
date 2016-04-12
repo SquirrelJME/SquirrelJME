@@ -1,0 +1,10 @@
+# 2016/04/12
+
+## 15:37
+
+Was cutting grass, however I thought about the future code computation.
+Basically when it comes to instrutions I can have input and variables
+associated with the operation variable state. Then when computations are
+performed these can be used directly. However, there is potential that this is
+not required at all.
+

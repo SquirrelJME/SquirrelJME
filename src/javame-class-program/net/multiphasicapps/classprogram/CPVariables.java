@@ -572,11 +572,12 @@ public class CPVariables
 		 *
 		 * @param __vt The type of variable to set.
 		 * @return {@code this}.
+		 * @throws CPProgramException If the type verifies incorrectly.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/04/12
 		 */
 		Slot __checkedSetType(CPVariableType __vt)
-			throws NullPointerException
+			throws CPProgramException, NullPointerException
 		{
 			// Check
 			if (__vt == null)
@@ -588,8 +589,33 @@ public class CPVariables
 				// Check stack bounds
 				__checkStackBounds();
 				
-				throw new Error("TODO");
+				// Is a type already set?
+				CPVariableType already = _type;
+				
+				// One already is
+				if (already != null)
+				{
+					// Values never replace nothing
+					if (already == CPVariableType.NOTHING)
+						return this;
+					
+					// {@squirreljme.error CP15 Setting of the type of a slot
+					// however it does not match the type that is already in
+					// this position. (The slot index; The type to set it as;
+					// The type this is already set as)}
+					if (__vt != already)
+						throw new CPProgramException(String.format(
+							"CP15 %d %s %s", index, __vt, already));
+						
+				}
+				
+				// Set it
+				else
+					_type = __vt;
 			}
+			
+			// Self
+			return this;
 		}
 		
 		/**
@@ -608,7 +634,7 @@ public class CPVariables
 				__checkStackBounds();
 				
 				// Add value
-				return __addValue(int __vid)
+				return __addValue(__vid);
 			}
 		}
 		
@@ -625,8 +651,17 @@ public class CPVariables
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// {@squirreljme.error CP14 Setting of a type of value exceeds
+				// the top of the stack. (The current slot index; The top of
+				// the stack)}
+				int top;
+				if (index >= (top = getStackTop()))
+					throw new CPProgramException(String.format("CP14 %d %d",
+						index, top));
 			}
+			
+			// Self
+			return this;
 		}
 		
 		/**

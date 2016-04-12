@@ -186,7 +186,7 @@ class __SSACalculator__
 				tvars.__checkedSetStackTop(__top);
 			
 			// Get slot
-			CPVarables.Slot sl;
+			CPVariables.Slot sl;
 			try
 			{
 				sl = tvars.get(__sl);
