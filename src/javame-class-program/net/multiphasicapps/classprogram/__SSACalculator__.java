@@ -12,6 +12,8 @@ package net.multiphasicapps.classprogram;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
+import net.multiphasicapps.collections.MissingCollections;
 
 /**
  * This calculates variables types and their SSA values.
@@ -135,6 +137,11 @@ class __SSACalculator__
 			int opcode = xop.instructionCode();
 			switch (opcode)
 			{
+					// Dup
+				case 89:
+					__dup(xop);
+					break;
+									
 					// New
 				case 187:
 					__new(xop);
@@ -152,6 +159,9 @@ class __SSACalculator__
 			// to derive variable state from the source operations.
 			for (CPOp e : xop.exceptionsHandled())
 				throw new Error("TODO");
+			
+			// Debug
+			System.err.printf("DEBUG -- State: %s%n", xop);
 		}
 	}
 	
@@ -164,12 +174,32 @@ class __SSACalculator__
 	 * not change.
 	 * @param __vt The type of variable to set, if {@code null} it is not
 	 * changed.
-	 * @param __val The value to set, if {@code Integer.MIN_VALUE} it is not
+	 * @param __val The value to set, if {@code null} it is not
 	 * changed.
 	 * @since 2016/04/11
 	 */
 	public void set(CPOp __op, int __sl, int __top, CPVariableType __vt,
-		int __val)
+		int... __val)
+	{
+		set(__op, __sl, __top, __vt, (__val == null ? null :
+			MissingCollections.boxedList(__val)));
+	}
+	
+	/**
+	 * Sets the operations for all targets and potentially checks them.
+	 *
+	 * @parma __op The operation to set targets for.
+	 * @param __sl The slot to modify.
+	 * @param __top The top of the stack, {@code Integer.MIN_VALUE} if it does
+	 * not change.
+	 * @param __vt The type of variable to set, if {@code null} it is not
+	 * changed.
+	 * @param __val The values to set, if {@code null} it is not
+	 * changed.
+	 * @since 2016/04/11
+	 */
+	public void set(CPOp __op, int __sl, int __top, CPVariableType __vt,
+		List<Integer> __val)
 	{
 		// Check
 		if (__op == null)
@@ -206,8 +236,9 @@ class __SSACalculator__
 				sl.__checkedSetType(__vt);
 			
 			// Setting a value
-			if (__val != Integer.MIN_VALUE)
-				sl.__checkedSetValue(__val);
+			if (__val != null)
+				for (Integer i : __val)
+					sl.__checkedSetValue(i);
 		}
 	}
 	
@@ -232,6 +263,25 @@ class __SSACalculator__
 		return (__op.address() << CPVariables.SSA_ADDRESS_SHIFT) |
 			((__slot & CPVariables.SSA_SLOT_VALUE_MASK) <<
 				CPVariables.SSA_SLOT_SHIFT);
+	}
+	
+	/**
+	 * Duplicates the top-most stack item.
+	 *
+	 * @param __op The current operation.
+	 * @since 2016/04/12
+	 */
+	private void __dup(CPOp __op)
+	{
+		// Get the input variables
+		CPVariables xin = __op.variables();
+		
+		// Get the topmost variable
+		int top;
+		CPVariables.Slot at = xin.get((top = xin.getStackTop()) - 1);
+		
+		// Duplicate it
+		set(__op, top, top + 1, at.type(), at.values());
 	}
 	
 	/**

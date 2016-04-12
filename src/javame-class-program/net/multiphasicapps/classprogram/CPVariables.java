@@ -438,6 +438,10 @@ public class CPVariables
 			// Lock
 			synchronized (lock)
 			{
+				// If this is below the stack, then treat as no type
+				if (index >= getStackTop())
+					return CPVariableType.NOTHING;
+				
 				// Explicit or has already been determined?
 				CPVariableType rv = _type;
 				if (rv != null)
@@ -472,11 +476,20 @@ public class CPVariables
 				
 				// The type that is here
 				sb.append(':');
-				sb.append(type());
+				CPVariableType t;
+				sb.append((t = type()));
 				
-				// The phi type that this is
-				sb.append('^');
-				sb.append(phi());
+				// Nothings have no values
+				if (t != CPVariableType.NOTHING)
+				{
+					// The phi type that this is
+					sb.append('^');
+					sb.append(phi());
+				
+					// Values
+					sb.append('=');
+					sb.append(values());
+				}
 				
 				// Finish
 				sb.append('>');
@@ -499,6 +512,11 @@ public class CPVariables
 			// Lock
 			synchronized (lock)
 			{
+				// If this is below the stack, then treat as no type
+				CPVariableType t = type();
+				if (index >= getStackTop() || t == CPVariableType.NOTHING)
+					return MissingCollections.<Integer>emptyList();
+				
 				// Get reference
 				Reference<List<Integer>> ref = _vidwrap;
 				List<Integer> rv;
