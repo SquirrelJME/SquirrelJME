@@ -8,3 +8,12 @@ associated with the operation variable state. Then when computations are
 performed these can be used directly. However, there is potential that this is
 not required at all.
 
+## 19:30
+
+Not liking how my current variable slot states and such is going. The variable
+states is turning into how the code was before, a bunch of mutable states
+that gets calculated first. I suppose I should do the same thing as the
+operation handlers for the SSA code. However I believe I am going to take a
+slight break from the interpreter and work on the class library since my work
+has been slowing down a bit.
+

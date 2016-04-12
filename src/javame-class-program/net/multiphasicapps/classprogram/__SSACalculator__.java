@@ -160,6 +160,10 @@ class __SSACalculator__
 			for (CPOp e : xop.exceptionsHandled())
 				throw new Error("TODO");
 			
+			// Offer jump targets to the queue
+			for (CPOp jt : xop.jumpTargets())
+				queue.offerLast(jt);
+			
 			// Debug
 			System.err.printf("DEBUG -- State: %s%n", xop);
 		}
