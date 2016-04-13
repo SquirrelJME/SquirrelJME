@@ -28,30 +28,6 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 public class CPVariables
 	extends AbstractList<CPVariables.Slot>
 {
-	/** Slot value ID instruction shift. */
-	public static final int SSA_ADDRESS_SHIFT =
-		16;
-	
-	/** Slot value ID instruction value mask. */
-	public static final int SSA_ADDRESS_VALUE_MASK =
-		0x0000_FFFF;
-	
-	/** Slot value ID instruction shifted mask. */
-	public static final int SSA_ADDRESS_SHIFTED_MASK =
-		0xFFFF_0000;
-	
-	/** Slot value ID slot shift. */
-	public static final int SSA_SLOT_SHIFT =
-		0;
-	
-	/** Slot value ID slot value mask. */
-	public static final int SSA_SLOT_VALUE_MASK =
-		0x0000_FFFF;
-	
-	/** Slot value ID slot shifted mask. */
-	public static final int SSA_SLOT_SHIFTED_MASK =
-		0x0000_FFFF;
-	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -103,8 +79,7 @@ public class CPVariables
 	}
 	
 	/**
-	 * Initializes the variable state with an explicit verification state, the
-	 * SSA variable IDs are implicit.
+	 * Initializes the variable state with an explicit verification state.
 	 *
 	 * @param __op The operation to hold the state for.
 	 * @param __vs The types that each state of variables be.
@@ -164,8 +139,7 @@ public class CPVariables
 			;
 		
 		// The entry state of the first instruction, note that the types are
-		// known, however the SSA IDs are still implicit due to potential "phi"
-		// junctions.
+		// known.
 		else if (__expl && __method != null && __vs == null)
 		{
 			// Obtain the method descriptor
@@ -185,7 +159,7 @@ public class CPVariables
 					// Get slot
 					Slot sl = slots.get(vat++);
 				
-					// Set type and the SSA ID
+					// Set type
 					sl.__setType(CPVariableType.OBJECT);
 				}
 			
@@ -234,7 +208,7 @@ public class CPVariables
 				slots.get(vat++).__setType(CPVariableType.NOTHING);
 		}
 		
-		// Types are explicit but the SSA variable IDs are implicit
+		// Types are explicit
 		else if (__expl && __method == null && __vs != null)
 		{
 			// Copy all explicit types
@@ -338,13 +312,7 @@ public class CPVariables
 	}
 	
 	/**
-	 * This is a variable slot, which contains type and SSA variable
-	 * information.
-	 *
-	 * The upper 16-bits of the SSA ID represent the logical instruction of
-	 * the source, while the lower 16-bit of the ID represent the slot number.
-	 * SSA IDs change when the value becomes something different and it is not
-	 * a copy. 
+	 * This is a variable slot, which contains the type information.
 	 *
 	 * @since 2016/04/10
 	 */
@@ -356,17 +324,8 @@ public class CPVariables
 		/** The type of variable contained here. */
 		private volatile CPVariableType _type;
 		
-		/** Phi-function state. */
-		private volatile CPPhiType _phitype;
-		
-		/** Current variable IDs. */
-		private volatile int[] _vids;
-		
 		/** String representation. */
 		private volatile Reference<String> _string;
-		
-		/** Value ID as a list cache. */
-		private volatile Reference<List<Integer>> _vidwrap;
 		
 		/**
 		 * Internal slot initialization.
@@ -388,41 +347,6 @@ public class CPVariables
 		public int index()
 		{
 			return index;
-		}
-		
-		/**
-		 * Returns the phi type of the current slot.
-		 *
-		 * @return The phy type of the slot.
-		 * @throws CPProgramException If it has not been set.
-		 * @since 2016/04/11
-		 */
-		public CPPhiType phi()
-			throws CPProgramException
-		{
-			// Lock
-			synchronized (lock)
-			{
-				// Must be determined
-				CPPhiType rv = _phitype;
-				if (rv != null)
-				{
-					// If there are more than two values then it is a phi, so
-					// always return that state.
-					int[] vx = _vids;
-					if (vx != null && vx.length >= 2)
-						return CPPhiType.PHI;
-					
-					// Otherwise use the flagged one
-					return rv;
-				}
-				
-				// {@squirreljme.error CP0v Attempt to get the phi type of a
-				// slot, however the phi type was not determined yet.
-				// (The opcode index; The slot index)}
-				throw new CPProgramException(String.format("CP0v %d %d",
-					operation.address(), index));
-			}
 		}
 		
 		/**
@@ -469,7 +393,7 @@ public class CPVariables
 			// Needs initialization?
 			if (ref == null || null == (rv = ref.get()))
 			{
-				StringBuilder sb = new StringBuilder("<");
+				StringBuilder sb = new StringBuilder("(");
 				
 				// The slot index
 				sb.append(index);
@@ -479,110 +403,13 @@ public class CPVariables
 				CPVariableType t;
 				sb.append((t = type()));
 				
-				// Nothings have no values
-				if (t != CPVariableType.NOTHING)
-				{
-					// The phi type that this is
-					sb.append('^');
-					sb.append(phi());
-				
-					// Values
-					sb.append('=');
-					sb.append(values());
-				}
-				
 				// Finish
-				sb.append('>');
+				sb.append(')');
 				_string = new WeakReference<>((rv = sb.toString()));
 			}
 			
 			// Return it
 			return rv;
-		}
-		
-		/**
-		 * Returns the list of values that this may potentially have a value
-		 * for.
-		 *
-		 * @return The boxed list of raw SSA values.
-		 * @since 2016/04/11
-		 */
-		public List<Integer> values()
-		{
-			// Lock
-			synchronized (lock)
-			{
-				// If this is below the stack, then treat as no type
-				CPVariableType t = type();
-				if (index >= getStackTop() || t == CPVariableType.NOTHING)
-					return MissingCollections.<Integer>emptyList();
-				
-				// Get reference
-				Reference<List<Integer>> ref = _vidwrap;
-				List<Integer> rv;
-				
-				// Needs to be cached?
-				if (ref == null || null == (rv = ref.get()))
-					_vidwrap = new WeakReference<>((rv = MissingCollections.
-						<Integer>unmodifiableList(
-							MissingCollections.boxedList(_vids))));
-				
-				// Return it
-				return rv;
-			}
-		}
-		
-		/**
-		 * Adds an SSA value ID to the current slot.
-		 *
-		 * @param __vid The value ID to add.
-		 * @return {@code this}.
-		 * @throws CPProgramException If the value ID would be outside of the
-		 * program or slot bounds.
-		 * @since 2016/04/11
-		 */
-		Slot __addValue(int __vid)
-			throws CPProgramException
-		{
-			// Sanity check
-			int ipc = (__vid >>> SSA_ADDRESS_SHIFT) & SSA_ADDRESS_VALUE_MASK;
-			int isl = (__vid >>> SSA_SLOT_SHIFT) & SSA_SLOT_VALUE_MASK;
-			
-			// {@squirreljme.error CP0z Attempt to add a SSA value to a slot
-			// which references a value which is not within the program or
-			// variable bounds. (The variable address; The variable slot)}
-			if (ipc < 0 || ipc >= program.size() ||
-				isl < 0 || isl >= slots.size())
-				throw new CPProgramException(String.format("CP0z %d %d",
-					ipc, isl));
-			
-			// Lock
-			synchronized (lock)
-			{
-				// Get current array
-				int[] now = _vids;
-				
-				// Would not exist anyway
-				if (now == null)
-					_vids = new int[]{__vid};
-				
-				// Check it
-				else
-				{
-					// Never add the same variable twice
-					for (int i : now)
-						if (i == __vid)
-							return this;
-					
-					// Resize
-					int end;
-					_vids = (now = Arrays.copyOf(now, (end = now.length) + 1));
-					now[end] = __vid;
-				}
-			}
-			
-			// Self
-			return this;
 		}
 		
 		/**
@@ -637,26 +464,6 @@ public class CPVariables
 		}
 		
 		/**
-		 * Checks setting a SSA value to the slot.
-		 *
-		 * @param __vid The value to set.
-		 * @return {@code this}.
-		 * @since 2016/04/12
-		 */
-		Slot __checkedSetValue(int __vid)
-		{
-			// Lock
-			synchronized (lock)
-			{
-				// Check stack bounds
-				__checkStackBounds();
-				
-				// Add value
-				return __addValue(__vid);
-			}
-		}
-		
-		/**
 		 * Checks the bounds of the stack to make sure it is within the stack.
 		 *
 		 * @return {@code this}.
@@ -676,31 +483,6 @@ public class CPVariables
 				if (index >= (top = getStackTop()))
 					throw new CPProgramException(String.format("CP14 %d %d",
 						index, top));
-			}
-			
-			// Self
-			return this;
-		}
-		
-		/**
-		 * Sets the phi type of the current slot.
-		 *
-		 * @param __pt The phy type to set.
-		 * @return {@code this}.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/04/11
-		 */
-		Slot __setPhi(CPPhiType __pt)
-			throws NullPointerException
-		{
-			// Check
-			if (__pt == null)
-				throw new NullPointerException("NARG");
-			
-			// Lock
-			synchronized (lock)
-			{
-				_phitype = __pt;
 			}
 			
 			// Self

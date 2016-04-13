@@ -11,8 +11,8 @@
 /**
  * This describes a program that code within methods performs.
  *
- * It provides an SSA-like environment with details needed for interpretation
- * and compilation of Java byte code.
+ * This does not provide SSA at all and just describes how byte code is
+ * represented and executable in the class code.
  *
  * @since 2016/04/02
  */

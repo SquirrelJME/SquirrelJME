@@ -36,8 +36,9 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.io.BufferAreaInputStream;
 
 /**
- * This class is given a chunk of byte code and represents that program in SSA
- * form.
+ * This class is given a chunk of byte code and represents that program so
+ * that future SSA transformation may be performed and so the method can be
+ * used by interpreters.
  *
  * @since 2016/03/29
  */
