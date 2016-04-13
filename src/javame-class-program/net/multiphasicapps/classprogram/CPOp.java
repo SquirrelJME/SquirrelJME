@@ -617,6 +617,18 @@ public class CPOp
 	}
 	
 	/**
+	 * Reads an unsigned byte from the code array.
+	 *
+	 * @param __off The offset from the instruction address.
+	 * @return The read value.
+	 * @since 2016/03/30
+	 */
+	int __readUByte(int __off)
+	{
+		return program.__readUByte(physicaladdress + __off);
+	}
+	
+	/**
 	 * Reads an unsigned short from the code array.
 	 *
 	 * @param __off The offset from the instruction address.

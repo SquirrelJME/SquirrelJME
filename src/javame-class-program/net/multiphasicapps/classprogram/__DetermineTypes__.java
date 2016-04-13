@@ -127,9 +127,56 @@ final class __DetermineTypes__
 			int opcode = xop.instructionCode();
 			switch (opcode)
 			{
+				case 21: __load(xop, xin, CPVariableType.INTEGER); break;
+				case 22: __load(xop, xin, CPVariableType.LONG); break;
+				case 23: __load(xop, xin, CPVariableType.FLOAT); break;
+				case 24: __load(xop, xin, CPVariableType.DOUBLE); break;
+				case 25: __load(xop, xin, CPVariableType.OBJECT); break;
+				
+				case 26:
+				case 27:
+				case 28:
+				case 29:
+					__load_n(xop, xin, opcode - 26, CPVariableType.INTEGER);
+					break;
+				
+				case 30:
+				case 31:
+				case 32:
+				case 33:
+					__load_n(xop, xin, opcode - 30, CPVariableType.LONG);
+					break;
+				
+				case 34:
+				case 35:
+				case 36:
+				case 37:
+					__load_n(xop, xin, opcode - 24, CPVariableType.FLOAT);
+					break;
+				
+				case 38:
+				case 39:
+				case 40:
+				case 41:
+					__load_n(xop, xin, opcode - 38, CPVariableType.DOUBLE);
+					break;
+					
+				case 42:
+				case 43:
+				case 44:
+				case 45:
+					__load_n(xop, xin, opcode - 42, CPVariableType.OBJECT);
+					break;
+					
 				case 89: __dup(xop, xin); break;
 				case 178: __getstatic(xop, xin); break;
 				case 187: __new(xop, xin); break;
+				
+				case 50197: __load_w(xop, xin, CPVariableType.INTEGER); break;
+				case 50198: __load_w(xop, xin, CPVariableType.LONG); break;
+				case 50199: __load_w(xop, xin, CPVariableType.FLOAT); break;
+				case 50200: __load_w(xop, xin, CPVariableType.DOUBLE); break;
+				case 50201: __load_w(xop, xin, CPVariableType.OBJECT); break;
 				
 					// {@squirreljme.error CP0u Cannot calculate the SSA for
 					// the given opcode because it is unknown. (The program
@@ -200,6 +247,55 @@ final class __DetermineTypes__
 			if (__vt != null)
 				sl.__checkedSetType(__vt);
 		}
+	}
+	
+	/**
+	 * Load variable from locals and push it onto the stack.
+	 *
+	 * @param __xop The input operation.
+	 * @param __xin The input variables.
+	 * @param __t The type of value to load.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/12
+	 */
+	private void __load(CPOp __xop, CPVariables __xin, CPVariableType __t)
+	{
+		__load_n(__xop, __xin, __xop.__readUByte(1), __t);
+	}
+	
+	/**
+	 * Load variable from locals and push it onto the stack.
+	 *
+	 * @param __xop The input operation.
+	 * @param __xin The input variables.
+	 * @param __dx The index.
+	 * @param __t The type of value to load.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/12
+	 */
+	private void __load_n(CPOp __xop, CPVariables __xin, int __dx,
+		CPVariableType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Load variable from locals and push it onto the stack (wide).
+	 *
+	 * @param __xop The input operation.
+	 * @param __xin The input variables.
+	 * @param __t The type of value to load.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/12
+	 */
+	private void __load_w(CPOp __xop, CPVariables __xin, CPVariableType __t)
+	{
+		__load_n(__xop, __xin, __xop.__readUShort(1), __t);
 	}
 	
 	/**

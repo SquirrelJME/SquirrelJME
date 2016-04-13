@@ -77,6 +77,35 @@ final class __ByteUtils__
 	}
 	
 	/**
+	 * Reads an unsigned byte from the given buffer.
+	 *
+	 * @param __code The byte array.
+	 * @param __pos The position of the short.
+	 * @return The read value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/03/30
+	 */
+	static int __readUByte(byte[] __code, int __pos)
+		throws NullPointerException
+	{
+		// Check
+		if (__code == null)
+			throw new NullPointerException("NARG");
+		
+		// Read and merge the values (big endian)
+		try
+		{
+			return (((int)__code[__pos]) & 0xFF);
+		}
+		
+		// Read out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new CPProgramException("CP17", e);
+		}
+	}
+	
+	/**
 	 * Reads an unsigned short from the given buffer.
 	 *
 	 * @param __code The byte array.

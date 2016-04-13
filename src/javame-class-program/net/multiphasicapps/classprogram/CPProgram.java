@@ -408,6 +408,18 @@ public final class CPProgram
 	}
 	
 	/**
+	 * Reads an unsigned byte from the code array.
+	 *
+	 * @param __pos The position of the short.
+	 * @return The read value.
+	 * @since 2016/03/30
+	 */
+	int __readUByte(int __pos)
+	{
+		return __ByteUtils__.__readUByte(_code, __pos);
+	}
+	
+	/**
 	 * Reads an unsigned short from the code array.
 	 *
 	 * @param __pos The position of the short.
