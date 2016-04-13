@@ -281,7 +281,60 @@ final class __DetermineTypes__
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Could fail
+		try
+		{
+			// {@squirreljme.error CP1b Out of bounds index.}
+			if (__dx >= stackbase)
+				throw new IndexOutOfBoundsException("CP1b");
+			
+			// Get local variable slot
+			CPVariables.Slot local = __xin.get(__dx);
+			
+			// {@squirreljme.error CP1a Expected the local variable to be of
+			// the given type, however it was not. (The operation address;
+			// The slot index; The type the slot should have been; The type
+			// it was)}
+			CPVariableType was;
+			if ((was = local.type()) != __t)
+				throw new CPProgramException(String.format("CP1a %d %d %s %s",
+					__xop.address(), __dx, __t, was));
+			
+			// Push to the stack
+			int top;
+			set(__xop, (top = __xin.getStackTop()), top + 1, __t);
+			
+			// If wide, add a top
+			if (__t.isWide())
+			{
+				// {@squirreljme.error CP1c Top of long/double is out of
+				// bounds.}
+				int ndx = __dx + 1;
+				if (ndx >= stackbase)
+					throw new IndexOutOfBoundsException("CP1c");
+				
+				// {@squirreljme.error CP1d Read of a wide local variable,
+				// however there is not a TOP following it. (The operation
+				// address; The index to read from; The type that it was)}
+				if ((was = __xin.get(ndx).type()) != CPVariableType.TOP)
+					throw new CPProgramException(String.format("CP1d %d %d %s",
+						__xop.address(), ndx, was));
+				
+				// Set it to the top
+				set(__xop, (top = __xin.getStackTop()), top + 1,
+					CPVariableType.TOP);
+			}
+		}
+		
+		// Out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			// {@squirreljme.error CP19 Attempt to read local variable from a
+			// slot which is not within bounds. (The operation address;
+			// The slot index)}
+			throw new CPProgramException(String.format("CP19 %d %d",
+				__xop.address(), __dx), e);
+		}
 	}
 	
 	/**
