@@ -216,11 +216,6 @@ public class Build
 			case "build":
 				__build(getProject(__args.removeFirst()));
 				break;
-				
-				// GCJ bridge (requires GCJ)
-			case "gcj":
-				__gcj(__args);
-				break;
 			
 				// Unknown
 			default:
@@ -543,72 +538,6 @@ public class Build
 					ioe.printStackTrace();
 				}
 		}
-	}
-	
-	/**
-	 * Performs compilation with GCJ.
-	 *
-	 * @param __args Program argument queue.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/13
-	 */
-	private void __gcj(Deque<String> __args)
-		throws NullPointerException
-	{
-		// Check
-		if (__args == null)
-			throw new NullPointerException("NARG");
-		
-		// Alternative name for the GCJ compiler?
-		String gcjname = __args.pollFirst();
-		if (gcjname == null)
-			gcjname = "gcj";
-		
-		// Find GCJ first
-		String env = System.getenv("PATH");
-		if (env == null)
-			throw new RuntimeException("Could not get the PATH variable.");
-		Path gcjpath = null;
-		for (String pe : env.split(Pattern.quote(PATH_SEPARATOR)))
-		{
-			// Get GCJ location
-			Path pot = Paths.get(pe).resolve(gcjname);
-			
-			// If it exists and is executable, use it
-			if (Files.exists(pot) && Files.isExecutable(pot))
-			{
-				gcjpath = pot;
-				break;
-			}
-		}
-		
-		// As a last resort, see if GCJ was named absolutely instead
-		if (gcjpath == null)
-		{
-			Path pot = Paths.get(gcjname);
-			if (Files.exists(pot) && Files.isExecutable(pot))
-				gcjpath = pot;
-		}
-		
-		// Could not find GCJ?
-		if (gcjpath == null)
-			throw new RuntimeException("Could not find GCJ.");
-		System.err.printf("Found GCJ: %s%n", gcjpath);
-		
-		// Build the native GCJ support classes
-		Project proj;
-		__build((proj = getProject("native-system-vm-gcj")));
-		
-		// Get all projects
-		Set<Project> allproj = proj.allProjects();
-		
-		// Must go through all projects and extract class files into
-		// directories.
-		// If any non-class files are encountered then they will
-		// be turned into C source code files containing data, which would be
-		// built into a native resource tree.
-		
-		throw new Error("TODO");
 	}
 	
 	/**
