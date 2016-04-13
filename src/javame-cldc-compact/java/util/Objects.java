@@ -28,9 +28,36 @@ public final class Objects
 		throw new RuntimeException("WTFX");
 	}
 	
+	/**
+	 * This compares two values and possibly may compare it with the given
+	 * {@link Comparator}. First, if the input objects are identical (in that
+	 * {@code __a == __b} is performed) then {@code 0} is returned. Otherwise,
+	 * the values are passed to the specified {@link Comparator}.
+	 *
+	 * A {@link NullPointerException} may be thrown by the comparator.
+	 *
+	 * @param <T> The type of value to compare.
+	 * @param __a The first value.
+	 * @param __b The second value.
+	 * @param __c The comparator to use.
+	 * @return {@code 0} if {@code __a == __b}, otherwise the value returned
+	 * from the {@link Comparator}.
+	 * @throws NullPointerException If the objects are not the same object
+	 * reference and there is no {@link Comparator}. May also be thrown if the
+	 * comparator is unable to handle {@code null} arguments.
+	 * @since 2016/04/12
+	 */
 	public static <T> int compare(T __a, T __b, Comparator<? super T> __c)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// The same object?
+		if (__a == __b)
+			return 0;
+		
+		// Compare otherwise
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		return __c.compare(__a, __b);
 	}
 	
 	/**
@@ -115,14 +142,37 @@ public final class Objects
 		return __a;
 	}
 	
+	/**
+	 * Converts the specified object to a string, if the input value is
+	 * {@code null} then {@code "null"} is returned.
+	 *
+	 * @param __a The value to get the string of.
+	 * @return The string of the given value or {@code "null"} if the input is
+	 * {@code null}.
+	 * @since 2016/04/12
+	 */
 	public static String toString(Object __a)
 	{
-		throw new Error("TODO");
+		if (__a == null)
+			return "null";
+		return __a.toString();
 	}
 	
+	/**
+	 * Converts the specified object to a string, if the input value is
+	 * {@code null} then {@code __b} is returned.
+	 *
+	 * @param __a The object to get the string of.
+	 * @param __b The value to return if {@code __a} is {@code null}.
+	 * @return The string represention of {@code __a} or else {@code __b} if
+	 * the input is {@code null}.
+	 * @since 2016/04/12
+	 */
 	public static String toString(Object __a, String __b)
 	{
-		throw new Error("TODO");
+		if (__a == null)
+			return __b;
+		return __a.toString();
 	}
 }
 
