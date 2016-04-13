@@ -20,5 +20,6 @@ operation of this software.
      * OS: [Mac OS Classic](maintainer/os_macos.mkd)
      * OS: [Palm OS](maintainer/os_palmos.mkd)
      * OS: [Windows 3.1](maintainer/os_win16.mkd)
+     * VM: [GNU GCJ](maintainer/vm_gcj.mkd)
      * VM: [J2ME MIDP 2](maintainer/vm_midp.mkd)
 

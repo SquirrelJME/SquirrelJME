@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-Hairball-Name: native-system-vm-gcj
+X-Hairball-UUID: e1996721-be76-4410-be62-b0a305a0fb47
+X-Hairball-Depends: native-system
+LIBlet-Title: GNU GCJ VM
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160413
+LIBlet-Description: This provides support for SquirrelJME to
+  be built with GCJ and ran as a native binary.
+

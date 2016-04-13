@@ -8,3 +8,12 @@ Java ME is essentially Java 5 in that it has nothing that makes it require
 Java 7, it works regardless. Language features such as `AutoCloseable` and
 such are just syntactic sugar on top of the byte code.
 
+## 08:01
+
+Thus potentially, GCJ could be used in the initial stages and would essentially
+currently just support Linux for now. Following that then, I could develop the
+main library and then also have the interpreter laid out on top of that for
+example. This way I can develop the main library. I could also then reverse
+engineer the output binaries to figure out how certain code is generated and
+such.
+

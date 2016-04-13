@@ -1,0 +1,14 @@
+# GNU GCJ
+
+GNU GCJ is able to compile Java ME 8 class files despite them having higher
+version numbers and being essentially Java 7. However, Java 7's primary
+features are essentially syntactic sugar. So as long as GCJ is given class
+files it does not have to handle any Java 7 specific details. Also since
+`invokedynamic` is not supported by Java ME 8 and that GCJ being very ancient
+does not support it, means that the code can be used.
+
+# Lack of `StackMap`/`StackMapTable` Support
+
+GCJ does not support these attributes so those tables are not used in byte code
+verification.
+

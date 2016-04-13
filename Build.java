@@ -216,6 +216,11 @@ public class Build
 			case "build":
 				__build(getProject(__args.removeFirst()));
 				break;
+				
+				// GCJ bridge (requires GCJ)
+			case "gcj":
+				__gcj(__args);
+				break;
 			
 				// Unknown
 			default:
@@ -541,6 +546,54 @@ public class Build
 	}
 	
 	/**
+	 * Performs compilation with GCJ.
+	 *
+	 * @param __args Program argument queue.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/13
+	 */
+	private void __gcj(Deque<String> __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		// Alternative name for the GCJ compiler?
+		String gcjname = __args.pollFirst();
+		if (gcjname == null)
+			gcjname = "gcj";
+		
+		// Find GCJ first
+		String env = System.getenv("PATH");
+		if (env == null)
+			throw new RuntimeException("Could not get the PATH variable.");
+		Path gcjpath = null;
+		for (String pe : env.split(Pattern.quote(PATH_SEPARATOR)))
+		{
+			// Get GCJ location
+			Path pot = Paths.get(pe).resolve(gcjname);
+			
+			// If it exists and is executable, use it
+			if (Files.exists(pot) && Files.isExecutable(pot))
+			{
+				gcjpath = pot;
+				break;
+			}
+		}
+		
+		// Could not find GCJ?
+		if (gcjpath == null)
+			throw new RuntimeException("Could not find GCJ.");
+		System.err.printf("Found GCJ: %s%n", gcjpath);
+		
+		// Build the native GCJ support classes
+		__build(getProject("native-system-vm-gcj"));
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Launches the given project.
 	 *
 	 * @param __interp Run this project using the internal interpreter?
@@ -570,7 +623,7 @@ public class Build
 	{
 		// Check
 		if (__p == null || __args == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// If using the interpreter, build it
 		if (__interp)
