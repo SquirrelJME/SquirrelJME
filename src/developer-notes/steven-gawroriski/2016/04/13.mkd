@@ -1,0 +1,10 @@
+# 2016/04/13
+
+## 07:58
+
+I can actually use GCJ to compile the stuff to byte code interestingly. GCJ
+appears to just completely ignore the version identifier. However, since
+Java ME is essentially Java 5 in that it has nothing that makes it require
+Java 7, it works regardless. Language features such as `AutoCloseable` and
+such are just syntactic sugar on top of the byte code.
+
