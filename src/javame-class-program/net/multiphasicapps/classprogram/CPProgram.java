@@ -249,8 +249,8 @@ public final class CPProgram
 				logs[i] = new CPOp(this, rawcode, rex, vmap, logs, i,
 					__method);
 		
-		// Start initialization and determination of types and values
-		for (__SSACalculator__ calc = new __SSACalculator__(this);
+		// Start initialization and determination of types and
+		for (__DetermineTypes__ calc = new __DetermineTypes__(this);
 			calc.calculate();)
 			;
 		

@@ -51,6 +51,9 @@ public class CPVariables
 	private volatile int _stacktop =
 		Integer.MIN_VALUE;
 	
+	/** Has this been initialized yet? */
+	volatile boolean _initialized;
+	
 	/**
 	 * Initializes an fully implicit variable state.
 	 *
@@ -65,7 +68,7 @@ public class CPVariables
 	}
 	
 	/**
-	 * Initializes 
+	 * Initializes the types for the given method.
 	 *
 	 * @param __op The operation this contains a state for.
 	 * @param __method The method to initialize a state for.
@@ -134,7 +137,7 @@ public class CPVariables
 			Arrays.<Slot>asList(aslots));
 		stackbase = program.maxLocals();
 		
-		// Fully implicit? Then nothing has to be done
+		// Fully implicit? Then nothing has to be done... yet
 		if (!__expl && __method == null && __vs == null)
 			;
 		
@@ -206,6 +209,9 @@ public class CPVariables
 			// The remaining slots are nothing
 			while (vat < sn)
 				slots.get(vat++).__setType(CPVariableType.NOTHING);
+			
+			// Is already initialized
+			_initialized = true;
 		}
 		
 		// Types are explicit
@@ -217,6 +223,9 @@ public class CPVariables
 			
 			// Set stack top
 			_stacktop = __vs.getStackTop();
+			
+			// Already initialized
+			_initialized = true;
 		}
 		
 		// invalid input
@@ -371,11 +380,56 @@ public class CPVariables
 				if (rv != null)
 					return rv;
 				
+				// Derive the type that is in this slot since it has not been
+				// set.
+				for (CPOp xop : operation.jumpSources())
+				{
+					// Get the variables here and the slot
+					CPVariables xvars = xop.variables();
+					Slot xslot = xvars.get(index);
+					
+					// Get the type here
+					CPVariableType type;
+					synchronized (xvars.lock)
+					{
+						type = xslot.type();
+					}
+					
+					// It is set
+					if (type != null)
+					{
+						// No return value, use the type
+						if (rv == null)
+							rv = type;
+						
+						// Otherwise it must be the same type
+						else
+						{
+							// {@squirreljme.error CP15 A variable slot has an
+							// implicit type determination based on the source
+							// operation, however the sources do not match the
+							// currently set type. (The current slot; The
+							// address of this operation; The address of the
+							// source operation; A previously set type; The\
+							// type that does not match)}
+							if (rv != type)
+								throw new CPProgramException(String.format(
+									"CP15 %d %d %d %s %s", index,
+									operation.address(), xop.address(), rv,
+									type));
+						}
+					}
+				}
+				
 				// {@squirreljme.error CP0t Attempt to get the type of a
 				// slot, however the type was not determined yet.
 				// (The opcode index; The slot index)}
-				throw new CPProgramException(String.format("CP0t %d %d",
-					operation.address(), index));
+				if (rv == null)
+					throw new CPProgramException(String.format("CP0t %d %d",
+						operation.address(), index));
+				
+				// Return it
+				return rv;
 			}
 		}
 		
@@ -395,8 +449,15 @@ public class CPVariables
 			{
 				StringBuilder sb = new StringBuilder("(");
 				
+				// Stack or local?
+				boolean isstack = (index >= stackbase);
+				sb.append((isstack ? 'S' : 'L'));
+				
 				// The slot index
-				sb.append(index);
+				if (isstack)
+					sb.append(index - stackbase);
+				else
+					sb.append(index);
 				
 				// The type that is here
 				sb.append(':');
