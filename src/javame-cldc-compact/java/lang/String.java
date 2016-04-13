@@ -119,7 +119,7 @@ public final class String
 	 *
 	 * Smaller strings always precede longer strings.
 	 *
-	 * This is equivalent to the standard POSIX {@link strcmp()} with the "C"
+	 * This is equivalent to the standard POSIX {@code strcmp()} with the "C"
 	 * locale.
 	 *
 	 * Internally this does not handle the special variants of this class and
