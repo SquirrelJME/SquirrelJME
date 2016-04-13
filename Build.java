@@ -903,7 +903,7 @@ public class Build
 		 */
 		public Set<Project> allProjects()
 		{
-			return allProjects(new LinkedHashSet<>());
+			return allProjects(new LinkedHashSet<Project>());
 		}
 		
 		/**
