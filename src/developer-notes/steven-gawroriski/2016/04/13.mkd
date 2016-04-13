@@ -54,3 +54,10 @@ From what I started writing at _09:02_, `Class.forName()` would be wrapped so
 even if it sends it `"java.lang.Object"`, the method that would be called is:
 `__squirreljme.java.lang.Class.forName()`.
 
+## 10:04
+
+The interpreter could then just use the bytecodes mostly directly and become a
+pure intrepreter which would be simpler to implement. Then I can develop the
+main library. Once that is developed, I will have enough base to have actual
+native compilation without hitting TODOs all the time.
+
