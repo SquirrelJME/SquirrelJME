@@ -29,6 +29,7 @@ import net.multiphasicapps.classfile.CFAttributeUtils;
 import net.multiphasicapps.classfile.CFClass;
 import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
+import net.multiphasicapps.classfile.CFFormatException;
 import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
@@ -66,6 +67,9 @@ public final class CPProgram
 	
 	/** Logical instruction count. */
 	protected final int logicalsize;
+	
+	/** The program code. */
+	private final byte[] _code;
 	
 	/** The position of each logical instruction to a physical one. */
 	private final int[] _ipos;
@@ -134,6 +138,7 @@ public final class CPProgram
 			// Add into it
 			rx += rc;
 		}
+		_code = rawcode;
 		
 		// Read the exception table
 		// If there are no exceptions, then use shorter handlers
@@ -249,13 +254,35 @@ public final class CPProgram
 				logs[i] = new CPOp(this, rawcode, rex, vmap, logs, i,
 					__method);
 		
-		// Start initialization and determination of types and
-		for (__DetermineTypes__ calc = new __DetermineTypes__(this);
-			calc.calculate();)
-			;
+		// Determination of types could fail (perhaps the constant pool is
+		// correct but an instruction uses an index in the wrong way).
+		try
+		{
+			// Start initialization and determination of types and
+			for (__DetermineTypes__ calc = new __DetermineTypes__(this);
+				calc.calculate();)
+				;
+		}
+		
+		// {@squirreljme.error CP18 The program is malformed.}
+		catch (CFFormatException e)
+		{
+			throw new CPProgramException("CP18", e);
+		}
 		
 		// End initialization phase
 		_initphase = false;
+	}
+	
+	/**
+	 * Returns the constant pool of this program.
+	 *
+	 * @return The program constant pool.
+	 * @since 2016/04/13
+	 */
+	public CFConstantPool constantPool()
+	{
+		return constantpool;
 	}
 	
 	/**
@@ -354,6 +381,42 @@ public final class CPProgram
 	public int variableCount()
 	{
 		return maxvariables;
+	}
+	
+	/**
+	 * Reads a signed integer from the code array.
+	 *
+	 * @param __pos The position of the integer.
+	 * @return The read value.
+	 * @since 2016/04/13
+	 */
+	int __readSInt(int __pos)
+	{
+		return __ByteUtils__.__readSInt(_code, __pos);
+	}
+	
+	/**
+	 * Reads a signed short from the code array.
+	 *
+	 * @param __pos The position to read from.
+	 * @return The signed short value which was read.
+	 * @since 2016/03/30
+	 */
+	int __readSShort(int __pos)
+	{
+		return __ByteUtils__.__readSShort(_code, __pos);
+	}
+	
+	/**
+	 * Reads an unsigned short from the code array.
+	 *
+	 * @param __pos The position of the short.
+	 * @return The read value.
+	 * @since 2016/03/30
+	 */
+	int __readUShort(int __pos)
+	{
+		return __ByteUtils__.__readUShort(_code, __pos);
 	}
 }
 

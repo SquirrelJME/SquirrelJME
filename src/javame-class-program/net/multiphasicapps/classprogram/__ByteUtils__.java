@@ -13,9 +13,11 @@ package net.multiphasicapps.classprogram;
 /**
  * This contains methods for reading data from a byte array.
  *
+ * {@squirreljme.error CP17 Out of bounds read.}
+ *
  * @since 2016/03/30
  */
-class __ByteUtils__
+final class __ByteUtils__
 {
 	/**
 	 * Not used.
@@ -44,10 +46,19 @@ class __ByteUtils__
 			throw new NullPointerException("NARG");
 		
 		// Read and merge the values (big endian)
-		return ((((int)__code[__pos]) & 0xFF) << 24) |
-			((((int)__code[__pos + 1]) & 0xFF) << 16) |
-			((((int)__code[__pos + 2]) & 0xFF) << 8) |
-			((((int)__code[__pos + 3]) & 0xFF));
+		try
+		{
+			return ((((int)__code[__pos]) & 0xFF) << 24) |
+				((((int)__code[__pos + 1]) & 0xFF) << 16) |
+				((((int)__code[__pos + 2]) & 0xFF) << 8) |
+				((((int)__code[__pos + 3]) & 0xFF));
+		}
+		
+		// Read out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new CPProgramException("CP17", e);
+		}
 	}
 	
 	/**
@@ -82,8 +93,17 @@ class __ByteUtils__
 			throw new NullPointerException("NARG");
 		
 		// Read and merge the values (big endian)
-		return ((((int)__code[__pos + 0]) & 0xFF) << 8) |
-			((((int)__code[__pos + 1]) & 0xFF));
+		try
+		{
+			return ((((int)__code[__pos + 0]) & 0xFF) << 8) |
+				((((int)__code[__pos + 1]) & 0xFF));
+		}
+		
+		// Read out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new CPProgramException("CP17", e);
+		}
 	}
 }
 

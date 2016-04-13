@@ -591,5 +591,41 @@ public class CPOp
 		// Return it
 		return rv;
 	}
+	
+	/**
+	 * Reads a signed integer from the code array.
+	 *
+	 * @param __off The offset from the instruction address.
+	 * @return The read value.
+	 * @since 2016/04/13
+	 */
+	int __readSInt(int __off)
+	{
+		return program.__readSInt(physicaladdress + __off);
+	}
+	
+	/**
+	 * Reads a signed short from the code array.
+	 *
+	 * @param __off The offset from the instruction address.
+	 * @return The signed short value which was read.
+	 * @since 2016/03/30
+	 */
+	int __readSShort(int __off)
+	{
+		return program.__readSShort(physicaladdress + __off);
+	}
+	
+	/**
+	 * Reads an unsigned short from the code array.
+	 *
+	 * @param __off The offset from the instruction address.
+	 * @return The read value.
+	 * @since 2016/03/30
+	 */
+	int __readUShort(int __off)
+	{
+		return program.__readUShort(physicaladdress + __off);
+	}
 }
 

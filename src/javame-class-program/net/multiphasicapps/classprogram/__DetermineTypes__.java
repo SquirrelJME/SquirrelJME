@@ -13,6 +13,8 @@ package net.multiphasicapps.classprogram;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.classfile.CFConstantEntry;
+import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.collections.MissingCollections;
 
 /**
@@ -33,6 +35,9 @@ final class __DetermineTypes__
 	/** The base of the stack. */
 	protected final int stackbase;
 	
+	/** The constant pool. */
+	protected final CFConstantPool constantpool;
+	
 	/**
 	 * This calculates stack types.
 	 *
@@ -48,6 +53,7 @@ final class __DetermineTypes__
 		
 		// Set
 		program = __prg;
+		constantpool = program.constantPool();
 		
 		// Setup stack base
 		stackbase = program.maxLocals();
@@ -121,9 +127,9 @@ final class __DetermineTypes__
 			int opcode = xop.instructionCode();
 			switch (opcode)
 			{
-				case 89: __dup(xop); break;
-				case 178: __getstatic(xop); break;
-				case 187: __new(xop); break;
+				case 89: __dup(xop, xin); break;
+				case 178: __getstatic(xop, xin); break;
+				case 187: __new(xop, xin); break;
 				
 					// {@squirreljme.error CP0u Cannot calculate the SSA for
 					// the given opcode because it is unknown. (The program
@@ -200,16 +206,14 @@ final class __DetermineTypes__
 	 * Duplicates the top-most stack item.
 	 *
 	 * @param __op The current operation.
+	 * @param __xin Input variables.
 	 * @since 2016/04/12
 	 */
-	private void __dup(CPOp __op)
+	private void __dup(CPOp __op, CPVariables __xin)
 	{
-		// Get the input variables
-		CPVariables xin = __op.variables();
-		
 		// Get the topmost variable
 		int top;
-		CPVariables.Slot at = xin.get((top = xin.getStackTop()) - 1);
+		CPVariables.Slot at = __xin.get((top = __xin.getStackTop()) - 1);
 		
 		// Duplicate it
 		set(__op, top, top + 1, at.type());
@@ -219,27 +223,42 @@ final class __DetermineTypes__
 	 * Gets a static variable.
 	 *
 	 * @param __op The current operation.
+	 * @param __xin Input variables.
 	 * @since 2016/04/12
 	 */
-	private void __getstatic(CPOp __op)
+	private void __getstatic(CPOp __op, CPVariables __xin)
 	{
-		throw new Error("TODO");
+		// Read the field value which is read
+		CFConstantEntry.FieldReference ref = constantpool.
+			<CFConstantEntry.FieldReference>getAs(__op.__readUShort(1),
+			CFConstantEntry.FieldReference.class);
+		
+		// Get the variable associated for the given field
+		CPVariableType type = CPVariableType.bySymbol(
+			ref.nameAndType().getValue().asField());
+		
+		// Add it to the top of the stack
+		int top;
+		set(__op, (top = __xin.getStackTop()), top + 1, type);
+		
+		// If wide, add TOP
+		if (type.isWide())
+			set(__op, (top = __xin.getStackTop()), top + 1,
+				CPVariableType.TOP);
 	}
 	
 	/**
 	 * Calculates the new operation.
 	 *
 	 * @param __op The current operation.
+	 * @param __xin Input variables.
 	 * @since 2016/04/11
 	 */
-	private void __new(CPOp __op)
+	private void __new(CPOp __op, CPVariables __xin)
 	{
-		// Get the input variables
-		CPVariables xin = __op.variables();
-		
 		// Just add an element to the stack
 		int top;
-		set(__op, (top = xin.getStackTop()), top + 1, CPVariableType.OBJECT);
+		set(__op, (top = __xin.getStackTop()), top + 1, CPVariableType.OBJECT);
 	}
 }
 

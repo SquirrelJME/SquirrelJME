@@ -638,7 +638,7 @@ public abstract class CFConstantEntry
 		{
 			try
 			{
-				return getValue().asFieldSymbol();
+				return getValue().asField();
 			}
 			
 			// Is not one
@@ -663,7 +663,7 @@ public abstract class CFConstantEntry
 		{
 			try
 			{
-				return getValue().asMethodSymbol();
+				return getValue().asMethod();
 			}
 			
 			// Is not one

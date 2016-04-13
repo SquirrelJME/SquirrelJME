@@ -35,7 +35,7 @@ public abstract class MemberTypeSymbol
 	 * @throws ClassCastException If this is not a field symbol.
 	 * @since 2016/03/17
 	 */
-	public final FieldSymbol asFieldSymbol()
+	public final FieldSymbol asField()
 		throws ClassCastException
 	{
 		return (FieldSymbol)this;
@@ -48,7 +48,7 @@ public abstract class MemberTypeSymbol
 	 * @throws ClassCastException If this is not a method symbol.
 	 * @since 2016/03/17
 	 */
-	public final MethodSymbol asMethodSymbol()
+	public final MethodSymbol asMethod()
 		throws ClassCastException
 	{
 		return (MethodSymbol)this;

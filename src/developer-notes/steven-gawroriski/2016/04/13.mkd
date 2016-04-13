@@ -61,3 +61,9 @@ pure intrepreter which would be simpler to implement. Then I can develop the
 main library. Once that is developed, I will have enough base to have actual
 native compilation without hitting TODOs all the time.
 
+## 14:10
+
+What if for the class file consants, instead of having all of it be in the same
+class, I split the entries apart. These would be a bit easier to type and the
+entry code would be slightly smaller.
+

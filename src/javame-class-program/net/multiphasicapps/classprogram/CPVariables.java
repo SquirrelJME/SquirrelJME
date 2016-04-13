@@ -505,14 +505,13 @@ public class CPVariables
 					if (already == CPVariableType.NOTHING)
 						return this;
 					
-					// {@squirreljme.error CP15 Setting of the type of a slot
+					// {@squirreljme.error CP16 Setting of the type of a slot
 					// however it does not match the type that is already in
 					// this position. (The slot index; The type to set it as;
 					// The type this is already set as)}
 					if (__vt != already)
 						throw new CPProgramException(String.format(
-							"CP15 %d %s %s", index, __vt, already));
-						
+							"CP16 %d %s %s", index, __vt, already));
 				}
 				
 				// Set it
