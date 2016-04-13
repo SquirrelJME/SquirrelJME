@@ -40,3 +40,17 @@ VM would be quite simple when it comes to code generation. Note that a VM on
 the VM would also need the compiler code to exist too so that JARs ran by the
 user can be cross compiled and ran.
 
+## 09:14
+
+So an eventual JVM on JVM could eventually be compiled with GCJ anyway so
+that it would be native for the most part. However thinking about this and the
+SSA class program code. I believe that I will have the class program code not
+use SSA and instead have the SSA functionality and layout elsewhere. Thus the
+classprogram will strictly handle Java byte code.
+
+## 09:17
+
+From what I started writing at _09:02_, `Class.forName()` would be wrapped so
+even if it sends it `"java.lang.Object"`, the method that would be called is:
+`__squirreljme.java.lang.Class.forName()`.
+
