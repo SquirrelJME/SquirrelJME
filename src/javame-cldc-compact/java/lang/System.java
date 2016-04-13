@@ -70,19 +70,20 @@ public final class System
 	/**
 	 * This returns the identity hash code of the object. The identity hash
 	 * code is randomly given by the virtual machine to an object. There is
-	 * no definition on how the value is to be derived.
+	 * no definition on how the value is to be derived. It may be a unique
+	 * object ID or it may be a memory address. Two objects may also share the
+	 * same identity hash code.
 	 *
 	 * @param __a The input object to get the hash code for.
-	 * @return The hash code which was given by the virtual machine.
-	 * @throws NullPointerException If no object was specified.
+	 * @return The hash code which was given by the virtual machine, if the
+	 * input is {@code null} then {@code 0} is returned.
 	 * @since 2015/11/09
 	 */
 	public static int identityHashCode(Object __a)
-		throws NullPointerException
 	{
-		// Check
+		// If null, this is zero
 		if (__a == null)
-			throw new NullPointerException("NARG");
+			return 0;
 		
 		throw new Error("TODO");
 	}

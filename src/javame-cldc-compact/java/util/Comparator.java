@@ -14,6 +14,13 @@ public interface Comparator<T>
 {
 	public abstract int compare(T __a, T __b);
 	
+	/**
+	 * Generally this should return {@code true} if a given comparison results
+	 * in a value of {@code 0}.
+	 *
+	 * {@inheritDoc}
+	 * @since 2016/04/12
+	 */
 	@Override
 	public abstract boolean equals(Object __a);
 }

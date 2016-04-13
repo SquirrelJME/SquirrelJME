@@ -15,9 +15,14 @@ import net.multiphasicapps.squirreljme.magic.Magic;
 
 public final class Class<T>
 {
+	/**
+	 * This method may or may not be called internally by the virtual machine
+	 * when it initializes a new class object for a given class type.
+	 *
+	 * @since 2016/04/12
+	 */
 	private Class()
 	{
-		throw new Error("TODO");
 	}
 	
 	public <U> Class<? extends U> asSubclass(Class<U> __a)

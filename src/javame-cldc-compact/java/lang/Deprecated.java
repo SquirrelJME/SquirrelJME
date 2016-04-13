@@ -17,6 +17,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * This is a flagging annotation which may be attached to classes, fields,
+ * and methods to indicate that it should no longer be used in the future and
+ * alternatives should be searched for and used instead.
+ *
+ * @since 2016/04/12
+ */
 @Documented
 @Retention(value=RetentionPolicy.RUNTIME)
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
