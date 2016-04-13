@@ -77,14 +77,42 @@ public final class Objects
 		return __a.hashCode();
 	}
 	
+	/**
+	 * Checks whether the given input value is not {@code null} and then
+	 * returns it, otherwise this throws {@link NullPointerException}.
+	 *
+	 * @param <T> The type of value to return.
+	 * @param __a The value to return.
+	 * @return {@code __a}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/12
+	 */
 	public static <T> T requireNonNull(T __a)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		return __a;
 	}
 	
+	/**
+	 * Checks whether the given input value is not {@code null} and then
+	 * returns it, otherwise this throws a {@link NullPointerException} with
+	 * the given message.
+	 *
+	 * @param <T> The type of value to return.
+	 * @param __a The value to return.
+	 * @return {@code __a}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/12
+	 */
 	public static <T> T requireNonNull(T __a, String __b)
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException((__b != null ? __b : "NARG"));
+		return __a;
 	}
 	
 	public static String toString(Object __a)

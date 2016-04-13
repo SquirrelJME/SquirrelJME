@@ -79,6 +79,27 @@ public class TestObjects
 		// Hashcode of integer value
 		__tc.checkEquals("hashcode.int", new Integer(42),
 			Objects.hashCode(new Integer(42)));
+		
+		// Require non-null value
+		__tc.checkEquals("requireNonNull.notnull", true,
+			Objects.<Boolean>requireNonNull(true));
+		
+		// Check null
+		try
+		{
+			Objects.<Object>requireNonNull(null);
+			
+			// Failed
+			__tc.checkEquals("requireNonNull.null", true,
+				false);
+		}
+		
+		// It worked
+		catch (NullPointerException e)
+		{
+			__tc.checkEquals("requireNonNull.null", true,
+				true);
+		}
 	}
 }
 
