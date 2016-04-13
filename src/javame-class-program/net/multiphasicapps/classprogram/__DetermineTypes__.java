@@ -121,15 +121,9 @@ final class __DetermineTypes__
 			int opcode = xop.instructionCode();
 			switch (opcode)
 			{
-					// Dup
-				case 89:
-					__dup(xop);
-					break;
-									
-					// New
-				case 187:
-					__new(xop);
-					break;
+				case 89: __dup(xop); break;
+				case 178: __getstatic(xop); break;
+				case 187: __new(xop); break;
 				
 					// {@squirreljme.error CP0u Cannot calculate the SSA for
 					// the given opcode because it is unknown. (The program
@@ -219,6 +213,17 @@ final class __DetermineTypes__
 		
 		// Duplicate it
 		set(__op, top, top + 1, at.type());
+	}
+	
+	/**
+	 * Gets a static variable.
+	 *
+	 * @param __op The current operation.
+	 * @since 2016/04/12
+	 */
+	private void __getstatic(CPOp __op)
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
