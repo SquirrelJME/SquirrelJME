@@ -17,3 +17,26 @@ example. This way I can develop the main library. I could also then reverse
 engineer the output binaries to figure out how certain code is generated and
 such.
 
+## 08:35
+
+One thing though, it seems that GCJ when given my class files is not including
+any code at all even when specifying shared and such.
+
+## 08:42
+
+This might be because it is an interface, which has no code.
+
+## 09:02
+
+However, GCJ is heavily tied into GNU classpath and since Java ME lacks some
+things, there are some impossible means of doing things. The only way to get
+it to work on GCJ would be to rename all of my classes with a prefix and then
+use a bridge of sorts so it runs on an existing VM. So this would just be
+plain Java support. So that is, all of the byte codes and such would remain
+the same, however instead stuff such as `java.lang.Object` would become instead
+`__squirreljme.java.lang.Object`, then any references in the class would also
+just become referenced as such. In reality, having this code run on an existing
+VM would be quite simple when it comes to code generation. Note that a VM on
+the VM would also need the compiler code to exist too so that JARs ran by the
+user can be cross compiled and ran.
+

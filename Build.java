@@ -582,13 +582,31 @@ public class Build
 			}
 		}
 		
+		// As a last resort, see if GCJ was named absolutely instead
+		if (gcjpath == null)
+		{
+			Path pot = Paths.get(gcjname);
+			if (Files.exists(pot) && Files.isExecutable(pot))
+				gcjpath = pot;
+		}
+		
 		// Could not find GCJ?
 		if (gcjpath == null)
 			throw new RuntimeException("Could not find GCJ.");
 		System.err.printf("Found GCJ: %s%n", gcjpath);
 		
 		// Build the native GCJ support classes
-		__build(getProject("native-system-vm-gcj"));
+		Project proj;
+		__build((proj = getProject("native-system-vm-gcj")));
+		
+		// Get all projects
+		Set<Project> allproj = proj.allProjects();
+		
+		// Must go through all projects and extract class files into
+		// directories.
+		// If any non-class files are encountered then they will
+		// be turned into C source code files containing data, which would be
+		// built into a native resource tree.
 		
 		throw new Error("TODO");
 	}
@@ -949,6 +967,43 @@ public class Build
 		}
 		
 		/**
+		 * Returns the set of all projects along with their dependencies.
+		 *
+		 * @return The set of all projects and their dependencies.
+		 * @since 2016/04/13
+		 */
+		public Set<Project> allProjects()
+		{
+			return allProjects(new LinkedHashSet<>());
+		}
+		
+		/**
+		 * Adds all projects and their dependencies to the given set.
+		 *
+		 * @param __into The set to place into.
+		 * @return {@code __into}.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/04/13
+		 */
+		public Set<Project> allProjects(Set<Project> __into)
+			throws NullPointerException
+		{
+			// Check
+			if (__into == null)
+				throw new NullPointerException("NARG");
+				
+			// Add self
+			__into.add(this);
+			
+			// Add dependencies
+			for (Project dep : depends)
+				dep.allProjects(__into);
+			
+			// Return it
+			return __into;
+		}
+		
+		/**
 		 * Calculates the classpath used for execution.
 		 *
 		 * @param __cp The classpath to use for execution.
@@ -960,7 +1015,7 @@ public class Build
 		{
 			// Check
 			if (__cp == null)
-				throw new NullPointerException();
+				throw new NullPointerException("NARG");
 			
 			// Add dependencies
 			for (Project dep : depends)

@@ -1,5 +1,7 @@
 # GNU GCJ
 
+# Careless Versioning
+
 GNU GCJ is able to compile Java ME 8 class files despite them having higher
 version numbers and being essentially Java 7. However, Java 7's primary
 features are essentially syntactic sugar. So as long as GCJ is given class
