@@ -312,14 +312,14 @@ final class __DetermineTypes__
 				CPVariables.Slot sl = __xin.get(
 					(top = __xin.getStackTop()) - j);
 				
-				// {@squirreljme.error CP1f Expected the top of the stack to
+				// {@squirreljme.error CP1g Expected the top of the stack to
 				// be of a specific type, however it was not that type. (The
 				// operation address; The index of this slot; The type that it
 				// was; The type it should have been)}
 				CPVariableType was = sl.type();
 				if (was != type)
 					throw new CPProgramException(String.format(
-						"CP1f %d %d %s %s", __xop.address(), sl.index, was,
+						"CP1g %d %d %s %s", __xop.address(), sl.index, was,
 						type));
 				
 				// Reduce the stack
@@ -328,7 +328,22 @@ final class __DetermineTypes__
 			
 			// If an instance, pop an object
 			if (__inst)
-				throw new Error("TODO");
+			{
+				// Pop the top
+				int top;
+				CPVariables.Slot sl = __xin.get(
+					(top = __xin.getStackTop()) - j);
+				
+				// {@squirreljme.error CP1h Expected the last entry to be
+				// popped before an instance method call to be an object
+				// which contains the instance of the object to invoke the
+				// method on. (The operation address; The index of this slot;
+				// The type that it was)}
+				CPVariableType was = sl.type();
+				if (was != CPVariableType.OBJECT)
+					throw new CPProgramException(String.format(
+						"CP1h %d %d %s", __xop.address(), sl.index, was));
+			}
 			
 			// No return value?
 			FieldSymbol rvt = desc.returnValue();
@@ -345,23 +360,29 @@ final class __DetermineTypes__
 				CPVariableType rt = CPVariableType.bySymbol(rvt);
 				
 				// Reduce the number of eaten stack items.
-				boolean wide;
-				j -= ((wide = rt.isWide()) ? 2 : 1);
-				
-				// Set the stack size
-				set(__xop, Integer.MIN_VALUE, basetop - j, null);
+				int bottom = basetop - j;
 				
 				// Set wide type 
-				if (wide)
+				if (rt.isWide())
 				{
-					set(__xop, (basetop - j) - 1, Integer.MIN_VALUE,
+					// Size
+					set(__xop, Integer.MIN_VALUE, bottom + 2, null);
+					
+					// Values
+					set(__xop, bottom + 1, Integer.MIN_VALUE, rt);
+					set(__xop, bottom + 2, Integer.MIN_VALUE,
 						CPVariableType.TOP);
-					set(__xop, (basetop - j) - 2, Integer.MIN_VALUE, rt);
 				}
 				
 				// Narrow otherwise
 				else
-					set(__xop, (basetop - j) - 1, Integer.MIN_VALUE, rt);
+				{
+					// Size
+					set(__xop, Integer.MIN_VALUE, bottom + 1, null);
+					
+					// Value
+					set(__xop, bottom + 1, Integer.MIN_VALUE, rt);
+				}
 			}
 		}
 		
