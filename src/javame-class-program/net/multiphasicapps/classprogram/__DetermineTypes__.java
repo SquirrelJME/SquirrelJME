@@ -234,24 +234,27 @@ final class __DetermineTypes__
 				tvars.__checkedSetStackTop(__top);
 			
 			// Get slot
-			CPVariables.Slot sl;
-			try
+			if (__sl != Integer.MIN_VALUE)
 			{
-				sl = tvars.get(__sl);
-			}
+				CPVariables.Slot sl;
+				try
+				{
+					sl = tvars.get(__sl);
+				}
 			
-			// Out of bounds read of slot
-			catch (IndexOutOfBoundsException e)
-			{
-				// {@squirreljme.error CP13 Attempt to access a slot which is
-				// not within the program bounds. (The slot index)}
-				throw new CPProgramException(String.format("CP13 %s", __sl),
-					e);
-			}
+				// Out of bounds read of slot
+				catch (IndexOutOfBoundsException e)
+				{
+					// {@squirreljme.error CP13 Attempt to access a slot which
+					// is not within the program bounds. (The slot index)}
+					throw new CPProgramException(String.format("CP13 %s",
+						__sl), e);
+				}
 			
-			// Setting a type?
-			if (__vt != null)
-				sl.__checkedSetType(__vt);
+				// Setting a type?
+				if (__vt != null)
+					sl.__checkedSetType(__vt);
+			}
 		}
 	}
 	
@@ -276,6 +279,8 @@ final class __DetermineTypes__
 			// Pop from last to first
 			MethodSymbol desc = ref.nameAndType().getValue().asMethod();
 			int n = desc.argumentCount();
+			int j = 1;
+			int basetop = __xin.getStackTop(); 
 			for (int i = n - 1; i >= 0; i--)
 			{
 				// Get argument here
@@ -288,22 +293,76 @@ final class __DetermineTypes__
 					// Must be a wide at the top
 					int top;
 					CPVariables.Slot sl = __xin.get(
-						(top = __xin.getStackTop()) - 1);
+						(top = __xin.getStackTop()) - j);
 				
-					// {@squirreljme
+					// {@squirreljme CP1e Excepted the stack to contain the top
+					// of a long/double. (The current operation address; The
+					// index of this slot; The type that it was)}
 					CPVariableType was = sl.type();
 					if (was != CPVariableType.TOP)
 						throw new CPProgramException(String.format(
 							"CP1e %d %d %s", __xop.address(), sl.index, was));
 					
-					// Clear it
-					set(__xop, Integer.MIN_VALUE, top - 1, null);
+					// Reduce the stack
+					j++;
 				}
 				
-				throw new Error("TODO");
+				// Get the current top
+				int top;
+				CPVariables.Slot sl = __xin.get(
+					(top = __xin.getStackTop()) - j);
+				
+				// {@squirreljme.error CP1f Expected the top of the stack to
+				// be of a specific type, however it was not that type. (The
+				// operation address; The index of this slot; The type that it
+				// was; The type it should have been)}
+				CPVariableType was = sl.type();
+				if (was != type)
+					throw new CPProgramException(String.format(
+						"CP1f %d %d %s %s", __xop.address(), sl.index, was,
+						type));
+				
+				// Reduce the stack
+				j++;
 			}
 			
-			throw new Error("TODO");
+			// If an instance, pop an object
+			if (__inst)
+				throw new Error("TODO");
+			
+			// No return value?
+			FieldSymbol rvt = desc.returnValue();
+			if (rvt == null)
+			{
+				// Set the final stack size
+				set(__xop, Integer.MIN_VALUE, basetop - j, null);
+			}
+			
+			// Need to add the return value back in
+			else
+			{
+				// Get the type of return value used
+				CPVariableType rt = CPVariableType.bySymbol(rvt);
+				
+				// Reduce the number of eaten stack items.
+				boolean wide;
+				j -= ((wide = rt.isWide()) ? 2 : 1);
+				
+				// Set the stack size
+				set(__xop, Integer.MIN_VALUE, basetop - j, null);
+				
+				// Set wide type 
+				if (wide)
+				{
+					set(__xop, (basetop - j) - 1, Integer.MIN_VALUE,
+						CPVariableType.TOP);
+					set(__xop, (basetop - j) - 2, Integer.MIN_VALUE, rt);
+				}
+				
+				// Narrow otherwise
+				else
+					set(__xop, (basetop - j) - 1, Integer.MIN_VALUE, rt);
+			}
 		}
 		
 		// Out of bounds
