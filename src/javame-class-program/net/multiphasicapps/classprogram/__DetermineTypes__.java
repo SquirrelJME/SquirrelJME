@@ -16,6 +16,8 @@ import java.util.List;
 import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.collections.MissingCollections;
+import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This determines the types that variables are and is part of the verification
@@ -170,6 +172,10 @@ final class __DetermineTypes__
 					
 				case 89: __dup(xop, xin); break;
 				case 178: __getstatic(xop, xin); break;
+				case 182:
+				case 183: __invoke(xop, xin, true); break;
+				case 184: __invoke(xop, xin, false); break;
+				case 185: __invoke(xop, xin, true); break;
 				case 187: __new(xop, xin); break;
 				
 				case 50197: __load_w(xop, xin, CPVariableType.INTEGER); break;
@@ -246,6 +252,68 @@ final class __DetermineTypes__
 			// Setting a type?
 			if (__vt != null)
 				sl.__checkedSetType(__vt);
+		}
+	}
+	
+	/**
+	 * Invokes a method.
+	 *
+	 * @param __xop The input operation.
+	 * @param __xin The input variables.
+	 * @param __inst Instance method?*
+	 * @since 2016/04/13
+	 */
+	private void __invoke(CPOp __xop, CPVariables __xin, boolean __inst)
+	{
+		// Read the method to invoke
+		CFConstantEntry.MethodReference ref = constantpool.
+			<CFConstantEntry.MethodReference>getAs(__xop.__readUShort(1),
+			CFConstantEntry.MethodReference.class);
+		
+		// Could fail
+		try
+		{
+			// Pop from last to first
+			MethodSymbol desc = ref.nameAndType().getValue().asMethod();
+			int n = desc.argumentCount();
+			for (int i = n - 1; i >= 0; i--)
+			{
+				// Get argument here
+				FieldSymbol arg = desc.get(i);
+				CPVariableType type = CPVariableType.bySymbol(arg);
+			
+				// If wide, pop a top
+				if (type.isWide())
+				{
+					// Must be a wide at the top
+					int top;
+					CPVariables.Slot sl = __xin.get(
+						(top = __xin.getStackTop()) - 1);
+				
+					// {@squirreljme
+					CPVariableType was = sl.type();
+					if (was != CPVariableType.TOP)
+						throw new CPProgramException(String.format(
+							"CP1e %d %d %s", __xop.address(), sl.index, was));
+					
+					// Clear it
+					set(__xop, Integer.MIN_VALUE, top - 1, null);
+				}
+				
+				throw new Error("TODO");
+			}
+			
+			throw new Error("TODO");
+		}
+		
+		// Out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			// {@squirreljme.error CP1f Out of bounds stack access when
+			// popping and pushing on the stack for an method invocation. (The
+			// current operation address)}
+			throw new CPProgramException(String.format("CP1f %d",
+				__xop.address()), e);
 		}
 	}
 	
