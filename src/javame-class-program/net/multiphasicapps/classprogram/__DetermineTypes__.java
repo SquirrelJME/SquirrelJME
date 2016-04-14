@@ -212,6 +212,10 @@ final class __DetermineTypes__
 					break;
 					
 				case 89: __dup(xop, xin); break;
+				
+					// Return, does nothing
+				case 177: break;
+				
 				case 178: __getstatic(xop, xin); break;
 				case 182:
 				case 183: __invoke(xop, xin, true); break;
