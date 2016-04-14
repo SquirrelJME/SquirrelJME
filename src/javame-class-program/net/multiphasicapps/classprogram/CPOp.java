@@ -76,6 +76,9 @@ public class CPOp
 	/** Actual jump sources. */
 	private volatile CPOp[] _realjumpsources;
 	
+	/** Operation arguments. */
+	private volatile Reference<List<Object>> _args;
+	
 	/** Jump source list. */
 	private volatile Reference<List<CPOp>> _jumpsources;
 	
@@ -253,6 +256,60 @@ public class CPOp
 	public int address()
 	{
 		return logicaladdress;
+	}
+	
+	/**
+	 * Returns the arguments of the instruction, that is the values which are
+	 * part of the byte code.
+	 *
+	 * @since 2016/04/14
+	 */
+	public List<Object> arguments()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<List<Object>> ref = _args;
+			List<Object> rv;
+			
+			// Needs to be cached?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				Object[] w;
+				switch (opcode)
+				{
+						// loads and stores
+					case 21:
+					case 22:
+					case 23:
+					case 24:
+					case 25:
+					case 54:
+					case 55:
+					case 56:
+					case 57:
+					case 58:
+						w = new Object[]{
+							Integer.valueOf(__readUByte(1))
+							};
+						break;
+					
+						// No arguments
+					default:
+						w = new Object[0];
+						break;
+				}
+				
+				// Cache it
+				_args = new WeakReference<>(
+					(rv = MissingCollections.<Object>unmodifiableList(
+						Arrays.<Object>asList(w))));
+			}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
