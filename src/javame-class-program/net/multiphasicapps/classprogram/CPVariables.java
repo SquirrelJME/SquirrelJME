@@ -533,6 +533,10 @@ public class CPVariables
 		Slot __checkStackBounds()
 			throws CPProgramException
 		{
+			// Does not matter if the slot is below the base of the stack
+			if (index < stackbase)
+				return this;
+			
 			// Lock
 			synchronized (lock)
 			{

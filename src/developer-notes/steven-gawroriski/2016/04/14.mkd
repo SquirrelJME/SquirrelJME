@@ -4,3 +4,7 @@
 
 Waking up early is nice.
 
+## 12:51
+
+Need to not care about the stack if it is low enough.
+

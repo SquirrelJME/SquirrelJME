@@ -683,6 +683,7 @@ final class __DetermineTypes__
 			// The slot index; The expected type; The type it actually was)
 			CPVariables.Slot sl = __xin.get(newt);
 			CPVariableType was = sl.type();
+			if (was != __t)
 				throw new CPProgramException(String.format("CP1k %d %d %s %s",
 					__xop.address(), __dx, __t, was));
 		}
