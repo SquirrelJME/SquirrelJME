@@ -366,13 +366,41 @@ final class __DetermineTypes__
 			// Pop values from the stack
 			for (;;)
 			{
-				Object v = __vts[pi++];
+				CPVariableType v = (CPVariableType)__vts[pi++];
 				
 				// End?
 				if (v == null)
 					break;
 				
-				throw new Error("TODO");
+				// {@squirreljme.error CP1c Stack underflow popping from the
+				// stack. (The operation address)}
+				if ((newt - 1) < stackbase)
+					throw new CPProgramException(String.format("CP1c %d",
+						__op.address()));
+				
+				// Handle wide values
+				if (v.isWide())
+				{
+					// {@squirreljme.error CP1e Expected TOP to be at the top
+					// of the stack. (The operation address; The slot index;
+					// The type it was)}
+					int dx;
+					CPVariables.Slot sl = vars.get(dx = (--newt));
+					CPVariableType was = sl.type();
+					if (was != CPVariableType.TOP)
+						throw new CPProgramException(String.format(
+							"CP1e %d %d %s", __op.address(), dx, was));
+				}
+				
+				// {@squirreljme.error CP1d Popped the incorrect type from the
+				// stack. (The operation address; The slot index;
+				// The expected type; The type it was)}
+				int dx;
+				CPVariables.Slot sl = vars.get(dx = (--newt));
+				CPVariableType was = sl.type();
+				if (was != v)
+					throw new CPProgramException(String.format(
+						"CP1d %d %d %s %s", __op.address(), dx, v, was));
 			}
 			
 			// Determine where the top of the stack will be
