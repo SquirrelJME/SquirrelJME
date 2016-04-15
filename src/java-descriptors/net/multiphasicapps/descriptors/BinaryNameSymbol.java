@@ -32,6 +32,14 @@ public final class BinaryNameSymbol
 	implements Iterable<IdentifierSymbol>, FieldBaseTypeSymbol,
 		__ClassNameCompatible__
 {
+	/** The default package. */
+	public static final BinaryNameSymbol DEFAULT_PACKAGE =
+		new BinaryNameSymbol(false);
+	
+	/** The special package. */
+	public static final BinaryNameSymbol SPECIAL_PACKAGE =
+		new BinaryNameSymbol(false);
+	
 	/** The throwable class. */
 	public static final BinaryNameSymbol THROWABLE =
 		new BinaryNameSymbol("java/lang/Throwable");
@@ -150,6 +158,21 @@ public final class BinaryNameSymbol
 	}
 	
 	/**
+	 * Initializes the default and special packages.
+	 *
+	 * @param __ign Ignored.
+	 * @since 2016/04/15
+	 */
+	private BinaryNameSymbol(boolean __ign)
+	{
+		super(false);
+		
+		// Default package is blank
+		count = 0;
+		_baseoffs = _baselens = new int[0];
+	}
+	
+	/**
 	 * Returns this binary name symbol as a class name symbol.
 	 *
 	 * @return The class name symbol representation of this.
@@ -218,6 +241,26 @@ public final class BinaryNameSymbol
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Check super first
+		if (!super.equals(__o))
+			return false;
+		
+		// The default and special packages never compare to each other
+		if ((this == DEFAULT_PACKAGE && __o == SPECIAL_PACKAGE) ||
+			(this == SPECIAL_PACKAGE && __o == DEFAULT_PACKAGE))
+			return false;
+		
+		// Is the same
+		return true;
 	}
 	
 	/**

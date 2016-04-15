@@ -95,6 +95,16 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean isPublic()
+	{
+		return flags().isPublic();
+	}
+	
+	/**
 	 * Returns the name of this method.
 	 *
 	 * @return The method name.

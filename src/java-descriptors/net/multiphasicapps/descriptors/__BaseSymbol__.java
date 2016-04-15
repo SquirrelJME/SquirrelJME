@@ -45,6 +45,17 @@ abstract class __BaseSymbol__
 	}
 	
 	/**
+	 * Initializes an empty string symbol.
+	 *
+	 * @param __ign Ignored.
+	 * @since 2016/04/15
+	 */
+	__BaseSymbol__(boolean __ign)
+	{
+		string = "";
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/14
 	 */
@@ -59,7 +70,7 @@ abstract class __BaseSymbol__
 	 * @since 2016/03/14
 	 */
 	@Override
-	public final boolean equals(Object __o)
+	public boolean equals(Object __o)
 	{
 		// If the other is a string, compare against it
 		if (__o instanceof String)

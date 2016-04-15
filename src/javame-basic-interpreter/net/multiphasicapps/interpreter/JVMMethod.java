@@ -94,7 +94,13 @@ public class JVMMethod
 		if (fromclass == intoclass)
 			return true;
 		
-		throw new Error("TODO");
+		// Accessing member
+		if (member != null)
+			throw new Error("TODO");
+		
+		// Accessing class
+		else
+			throw new Error("TODO");
 	}
 	
 	/**

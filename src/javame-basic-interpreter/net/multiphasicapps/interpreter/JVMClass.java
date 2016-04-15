@@ -87,6 +87,9 @@ public final class JVMClass
 	/** Interfaces this implements. */
 	private volatile Set<JVMClass> _interfaceclasses;
 	
+	/** The package of this class. */
+	private volatile Reference<BinaryNameSymbol> _inpackage;
+	
 	/** No super-class? */
 	private volatile boolean _nosuperclass;
 	
@@ -296,7 +299,8 @@ public final class JVMClass
 		if (isArray() || isPrimitive())
 			return ARRAY_FLAGS;
 		
-		throw new Error("TODO");
+		// Get class base flags
+		return base().flags();
 	}
 	
 	/**
@@ -479,6 +483,45 @@ public final class JVMClass
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the package which this class resides in.
+	 *
+	 * @return The package of this class.
+	 * @since 2016/04/15
+	 */
+	public BinaryNameSymbol getPackage()
+	{
+		// Primitives and arrays belong to the special package, which appears
+		// as the default package but not really
+		if (isArray() || isPrimitive())
+			return BinaryNameSymbol.SPECIAL_PACKAGE;
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<BinaryNameSymbol> ref = _inpackage;
+			BinaryNameSymbol rv;
+			
+			// Needs to be cached?
+			if (ref == null || null == (rv = ref.get()))
+				throw new Error("TODO");
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean isPublic()
+	{
+		return flags().isPublic();
 	}
 	
 	/**

@@ -20,5 +20,12 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
  */
 public interface JVMAccessibleObject
 {
+	/**
+	 * Is this object public?
+	 *
+	 * @return {@code true} if it is public.
+	 * @since 2016/04/15
+	 */
+	public abstract boolean isPublic();
 }
 
