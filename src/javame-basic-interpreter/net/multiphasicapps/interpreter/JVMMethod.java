@@ -264,12 +264,6 @@ public class JVMMethod
 					// Load it
 					_program = new WeakReference<>((rv = new CPProgram(
 						container().outerClass().base(), base, is)));
-					
-					// Debug
-					int pn = rv.size();
-					for (int i = 0; i < pn; i++)
-						System.err.printf("DEBUG -- Program: %d: %s%n", i,
-							rv.get(i));
 				}
 				
 				// Failed to load program
