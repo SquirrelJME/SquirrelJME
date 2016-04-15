@@ -14,7 +14,10 @@ import net.multiphasicapps.classfile.CFClassName;
 import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.classfile.CFFieldReference;
+import net.multiphasicapps.classfile.CFMethodReference;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * Handles opcodes 176 to 191.
@@ -111,7 +114,41 @@ class __OpHandler176To191__
 	void __invoke(CPComputeMachine<? extends Object> __cm, Object __a,
 		CPOp __op, CPInvokeType __it)
 	{
-		throw new Error("TODO");
+		// Get reference
+		CFMethodReference ref = (CFMethodReference)__op.arguments().get(0);
+		
+		// Get the current stack
+		CPVariables vars = __op.variables();
+		int stacktop = vars.getStackTop();
+		
+		// Determine the number of arguments to pass
+		MethodSymbol desc = ref.nameAndType().getValue().asMethod();
+		int popcount = 0;
+		int n = desc.argumentCount();
+		for (int i = 0; i < popcount; i++)
+			popcount += (CPVariableType.bySymbol(desc.get(i)).isWide() ? 2 :
+				1);
+		
+		// If instance, add one
+		if (__it.isInstance())
+			popcount++;
+		
+		// Return value
+		int rvslot;
+		FieldSymbol rvfs = desc.returnValue();
+		if (rvfs == null)
+			rvslot = Integer.MIN_VALUE;
+		else
+			rvslot = (stacktop - popcount) +
+				(CPVariableType.bySymbol(rvfs).isWide() ? 2 : 1);
+		
+		// Setup passed arguments
+		int[] passargs = new int[popcount];
+		for (int i = 0; i < popcount; i++)
+			passargs[i] = stacktop - (popcount - i);
+		
+		// Perform the call
+		__castCM(__cm).invoke(__a, rvslot, ref, __it, passargs);
 	}
 	
 	/**

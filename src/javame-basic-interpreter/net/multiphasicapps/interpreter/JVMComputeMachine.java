@@ -14,6 +14,7 @@ import net.multiphasicapps.classfile.CFFieldReference;
 import net.multiphasicapps.classfile.CFMethodReference;
 import net.multiphasicapps.classprogram.CPComputeMachine;
 import net.multiphasicapps.classprogram.CPInvokeType;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -123,6 +124,7 @@ public class JVMComputeMachine
 	public void getStaticField(JVMStackFrame __frame, int __dest,
 		CFFieldReference __f)
 	{
+		// Debug
 		System.err.printf("DEBUG -- Read Static %s%n", __f);
 		
 		// Get and initialize the class
@@ -140,6 +142,10 @@ public class JVMComputeMachine
 	public void invoke(JVMStackFrame __frame, int __dest,
 		CFMethodReference __ref, CPInvokeType __type, int... __args)
 	{
+		// Debug
+		System.err.printf("DEBUG -- Invoke method %d %s %s %s%n", __dest,
+			__ref, __type, MissingCollections.boxedList(__args));
+		
 		// Get the target class and make sure it is initialized
 		JVMClass cl = engine.classes().loadClass(__ref.className().symbol());
 		JVMObject clo = cl.classObject(__frame.thread());

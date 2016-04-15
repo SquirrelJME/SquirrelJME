@@ -18,18 +18,42 @@ package net.multiphasicapps.classprogram;
 public enum CPInvokeType
 {
 	/** Virtual. */
-	VIRTUAL,
+	VIRTUAL(true),
 	
 	/** Static. */
-	STATIC,
+	STATIC(false),
 	
 	/** Special. */
-	SPECIAL,
+	SPECIAL(true),
 	
 	/** Interface. */
-	INTERFACE,
+	INTERFACE(true),
 	
 	/** End. */
 	;
+	
+	/** Is this an instance invocation? */
+	protected boolean isinstance;
+	
+	/**
+	 * Initializes the invocation type.
+	 *
+	 * @param __i Is this an instance invocation?
+	 * @since 2016/04/15
+	 */
+	private CPInvokeType(boolean __i)
+	{
+		isinstance = __i;
+	}
+	
+	/**
+	 * Is this an instance invocation?
+	 *
+	 * @return {@code true} if this is an instance invocation.
+	 */
+	public boolean isInstance()
+	{
+		return isinstance;
+	}
 }
 
