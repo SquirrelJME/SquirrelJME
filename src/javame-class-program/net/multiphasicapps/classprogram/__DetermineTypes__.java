@@ -316,7 +316,51 @@ final class __DetermineTypes__
 				if (load)
 					dx = -dx;
 				
-				throw new Error("TODO");
+				// {@squirreljme.error CP19 Local variable index is out of
+				// bounds. (The current operation address; The slot index)}
+				if (dx >= (program.maxLocals() - (type.isWide() ? 1 : 0)))
+					throw new CPProgramException(String.format("CP19 %d %d",
+						__op.address(), dx));
+				
+				// Loading?
+				if (load)
+				{
+					// {@squirreljme.error CP1a The local variable is not of
+					// the correct type. (The operation address; The slot
+					// index; The expected type; The type that it was)}
+					CPVariables.Slot sl = vars.get(dx);
+					CPVariableType was = sl.type();
+					if (was != type)
+						throw new CPProgramException(String.format(
+							"CP1a %d %d %s %s", __op.address(), dx, type,
+							was));
+					
+					// Check top
+					if (type.isWide())
+					{
+						// {@squirreljme.error CP1b Expected TOP to follow
+						// LONG/DOUBLE when loading local variable.
+						// (The operation address; The slot index; The type
+						// that it was)}
+						sl = vars.get(dx + 1);
+						was = sl.type();
+						if (was != CPVariableType.TOP)
+							throw new CPProgramException(String.format(
+								"CP1b %d %d %s", __op.address(), dx, was));
+					}
+				}
+				
+				// Storing?
+				else
+				{
+					// Single
+					set(__op, dx, Integer.MIN_VALUE, type);
+					
+					// Wide?
+					if (type.isWide())
+						set(__op, dx + 1, Integer.MIN_VALUE,
+							CPVariableType.TOP);
+				}
 			}
 			
 			// Pop values from the stack
