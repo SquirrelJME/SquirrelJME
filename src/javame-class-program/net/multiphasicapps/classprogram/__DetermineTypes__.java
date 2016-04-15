@@ -219,6 +219,7 @@ final class __DetermineTypes__
 				case 177: break;
 				
 				case 178: __getstatic(xop, xin); break;
+				case 179: __putstatic(xop, xin); break;
 				case 182:
 				case 183: __invoke(xop, xin, true); break;
 				case 184: __invoke(xop, xin, false); break;
@@ -610,12 +611,65 @@ final class __DetermineTypes__
 	}
 	
 	/**
+	 * Stores a value into a static field.
+	 *
+	 * @param __op The operation.
+	 * @param __xin The input variables.
+	 * @since 2016/04/15
+	 */
+	private void __putstatic(CPOp __xop, CPVariables __xin)
+	{
+		// Read the field value which is read
+		CFFieldReference ref = (CFFieldReference)__xop.arguments().get(0);
+		
+		// Get the variable associated for the given field
+		CPVariableType type = CPVariableType.bySymbol(
+			ref.nameAndType().getValue().asField());
+			
+		System.err.printf("DEBUG -- Put static %s%n", ref);
+		
+		// Get stack top
+		int top;
+		int newt = (top = __xin.getStackTop());
+		
+		// Wide value?
+		if (type.isWide())
+		{
+			// {@squirreljme.error CP1m Expected the type TOP to be on the
+			// stack for a put of a static field, however it was not.
+			// (The operation address; The slot index; The type that it was)}
+			CPVariables.Slot sl = __xin.get(newt - 1);
+			CPVariableType ty = sl.type();
+			if (ty != CPVariableType.TOP)
+				throw new CPProgramException(String.format("CP1m %d %d %s",
+					__xop.address(), newt - 1, ty));
+			
+			// Remove item
+			newt--;	
+		}
+		
+		// {@squirreljme.error CP1n Expected the given type when storing a
+		// value into a static field. (The operation address; The slot index;
+		// The type which was expected; The type that it was)}
+		CPVariables.Slot sl = __xin.get(newt - 1);
+		CPVariableType ty = sl.type();
+		if (ty != type)
+			throw new CPProgramException(String.format("CP1n %d %d %s %s",
+				__xop.address(), newt - 1, type, ty));
+		
+		// Remove it
+		newt--;
+		
+		// Set new top
+		set(__xop, Integer.MIN_VALUE, newt, null);
+	}
+	
+	/**
 	 * Store variable from the stack and place it in a local (narrow).
 	 *
 	 * @param __xop The input operation.
 	 * @param __xin The input variables.
 	 * @param __t The type of value to store.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/14
 	 */
 	private void __store(CPOp __xop, CPVariables __xin, CPVariableType __t)

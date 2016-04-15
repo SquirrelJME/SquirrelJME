@@ -32,3 +32,8 @@ get it down to a single line statement.
 
 Interesting, this method has only stack entries and no locals.
 
+## 14:53
+
+I can commonize the pushing and popping of operations and reduce much
+duplicated code between a number of used operation.
+

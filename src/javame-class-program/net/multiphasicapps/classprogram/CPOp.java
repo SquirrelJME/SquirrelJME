@@ -120,8 +120,6 @@ public class CPOp
 		if (__ops[__lognum] == null)
 			__ops[__lognum] = this;
 		
-		System.err.printf("DEBUG -- Init %d%n", __lognum);
-		
 		// Set
 		program = __prg;
 		logicaladdress = __lognum;
