@@ -17,6 +17,7 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
 import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classprogram.CPOp;
@@ -94,13 +95,21 @@ public class JVMMethod
 		if (fromclass == intoclass)
 			return true;
 		
-		// Accessing member
-		if (member != null)
-			throw new Error("TODO");
+		// OK if public
+		if (__o.isPublic())
+			return true;
 		
-		// Accessing class
-		else
-			throw new Error("TODO");
+		// Not OK if private
+		if (__o.isPrivate())
+			return false;
+		
+		// If package private, must be in the same package
+		if (__o.isPackagePrivate() && Objects.equals(fromclass.inPackage(),
+			intoclass.inPackage()))
+			return true;
+		
+		// Otherwise check if this is a superclass of the given class
+		throw new Error("TODO");
 	}
 	
 	/**

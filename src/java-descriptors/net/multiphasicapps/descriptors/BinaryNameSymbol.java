@@ -66,6 +66,9 @@ public final class BinaryNameSymbol
 	/** As a class name? */
 	private volatile Reference<ClassNameSymbol> _clname;
 	
+	/** The parent package. */
+	private volatile Reference<BinaryNameSymbol> _parent;
+	
 	/**
 	 * Initializes the binary name symbol.
 	 *
@@ -374,6 +377,54 @@ public final class BinaryNameSymbol
 	public IdentifierSymbol last()
 	{
 		return get(size() - 1);
+	}
+	
+	/**
+	 * Returns the parent package of this binary name symbol.
+	 *
+	 * @return The package containing this.
+	 * @since 2016/04/15
+	 */
+	public BinaryNameSymbol parentPackage()
+	{
+		// Keep specials
+		if (this == DEFAULT_PACKAGE || this == SPECIAL_PACKAGE)
+			return this;
+		
+		// If there is not count, use the default package
+		if (count <= 0)
+			return DEFAULT_PACKAGE;
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<BinaryNameSymbol> ref = _parent;
+			BinaryNameSymbol rv;
+			
+			// Needs to be cached?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Setup string
+				StringBuilder sb = new StringBuilder();
+				
+				// Add all but the last count
+				int n = count - 1;
+				for (int i = 0; i < n; i++)
+				{
+					if (i > 0)
+						sb.append('/');
+					sb.append(get(i));
+				}
+				
+				// Lock it in
+				_parent = new WeakReference<>(
+					(rv = new BinaryNameSymbol(sb.toString())));
+			}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**

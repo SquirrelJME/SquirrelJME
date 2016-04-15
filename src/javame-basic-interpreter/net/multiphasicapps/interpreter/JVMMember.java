@@ -99,6 +99,36 @@ public abstract class JVMMember<S extends MemberTypeSymbol,
 	 * @since 2016/04/15
 	 */
 	@Override
+	public boolean isPackagePrivate()
+	{
+		return flags().isPackagePrivate();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean isPrivate()
+	{
+		return flags().isPrivate();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean isProtected()
+	{
+		return flags().isProtected();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
 	public boolean isPublic()
 	{
 		return flags().isPublic();

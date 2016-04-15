@@ -21,6 +21,30 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
 public interface JVMAccessibleObject
 {
 	/**
+	 * Is this object package private?
+	 *
+	 * @return {@code true} if it is package private.
+	 * @sicne 2016/04/16
+	 */
+	public abstract boolean isPackagePrivate();
+	
+	/**
+	 * Is this object private?
+	 *
+	 * @return {@code true} if it is private.
+	 * @sicne 2016/04/16
+	 */
+	public abstract boolean isPrivate();
+	
+	/**
+	 * Is this object protected?
+	 *
+	 * @return {@code true} if it is protected.
+	 * @sicne 2016/04/16
+	 */
+	public abstract boolean isProtected();
+	
+	/**
 	 * Is this object public?
 	 *
 	 * @return {@code true} if it is public.

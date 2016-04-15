@@ -304,6 +304,36 @@ public final class JVMClass
 	}
 	
 	/**
+	 * Returns the package which this class resides in.
+	 *
+	 * @return The package of this class.
+	 * @since 2016/04/15
+	 */
+	public BinaryNameSymbol inPackage()
+	{
+		// Primitives and arrays belong to the special package, which appears
+		// as the default package but not really
+		if (isArray() || isPrimitive())
+			return BinaryNameSymbol.SPECIAL_PACKAGE;
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Get reference
+			Reference<BinaryNameSymbol> ref = _inpackage;
+			BinaryNameSymbol rv;
+			
+			// Needs to be cached?
+			if (ref == null || null == (rv = ref.get()))
+				_inpackage = new WeakReference<>(
+					(rv = thisName().asBinaryName().parentPackage()));
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Returns the interfaces that this class implements.
 	 *
 	 * @return The class interfaces.
@@ -451,6 +481,16 @@ public final class JVMClass
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean isPackagePrivate()
+	{
+		return !isPublic();
+	}
+	
+	/**
 	 * Is this a primitive type?
 	 *
 	 * @return {@code true} if this is a primitive type.
@@ -459,6 +499,38 @@ public final class JVMClass
 	public boolean isPrimitive()
 	{
 		return primitive != null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean isPrivate()
+	{
+		// Classes are never private
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean isProtected()
+	{
+		// Classes are never protected
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public boolean isPublic()
+	{
+		return flags().isPublic();
 	}
 	
 	/**
@@ -483,45 +555,6 @@ public final class JVMClass
 			// Return it
 			return rv;
 		}
-	}
-	
-	/**
-	 * Returns the package which this class resides in.
-	 *
-	 * @return The package of this class.
-	 * @since 2016/04/15
-	 */
-	public BinaryNameSymbol getPackage()
-	{
-		// Primitives and arrays belong to the special package, which appears
-		// as the default package but not really
-		if (isArray() || isPrimitive())
-			return BinaryNameSymbol.SPECIAL_PACKAGE;
-		
-		// Lock
-		synchronized (lock)
-		{
-			// Get reference
-			Reference<BinaryNameSymbol> ref = _inpackage;
-			BinaryNameSymbol rv;
-			
-			// Needs to be cached?
-			if (ref == null || null == (rv = ref.get()))
-				throw new Error("TODO");
-			
-			// Return it
-			return rv;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/04/15
-	 */
-	@Override
-	public boolean isPublic()
-	{
-		return flags().isPublic();
 	}
 	
 	/**
