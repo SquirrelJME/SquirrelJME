@@ -5,3 +5,11 @@
 Going to split off part of the constant pool stuff and make those into other
 classes so it is a bit cleaner.
 
+## 08:31
+
+Ok so today:
+
+ * Refactor and split about the constant pool entry stuff.
+ * Move any gigantic case switch stuff out from `CPOp` and similar (such as
+   argument get and a few other things) into another helper class.
+
