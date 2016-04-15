@@ -608,40 +608,6 @@ public class CPOp
 	}
 	
 	/**
-	 * Computes this operation which performs the executional work and possibly
-	 * initializes the state of variables.
-	 *
-	 * @return {@code this}.
-	 * @since 2016/04/11
-	 */
-	CPOp __compute()
-	{
-		return this.<Object>compute(__nullComputer(), null);
-	}
-	
-	/**
-	 * Returns the null machine computer which is used so that the input/output
-	 * variable states can be computing without performing any code generation.
-	 *
-	 * @return The cached null computer.
-	 * @since 2016/04/09
-	 */
-	private static CPComputeMachine<Object> __nullComputer()
-	{
-		// Get reference
-		Reference<CPComputeMachine<Object>> ref = _NULL_CM;
-		CPComputeMachine<Object> rv;
-		
-		// Needs caching?
-		if (ref == null || null == (rv = ref.get()))
-			_NULL_CM = new WeakReference<>(
-				(rv = new __NullComputeMachine__()));
-		
-		// Return it
-		return rv;
-	}
-	
-	/**
 	 * Reads a signed byte from the code array.
 	 *
 	 * @param __off The offset from the instruction address.

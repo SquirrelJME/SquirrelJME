@@ -63,7 +63,12 @@ class __OpHandler80To95__
 	private void __dup(CPComputeMachine<? extends Object> __cm, Object __a,
 		CPOp __op)
 	{
-		throw new Error("TODO");
+		// Get variables and the stack top
+		CPVariables vars = __op.variables();
+		int top = vars.getStackTop();
+		
+		// Copy up
+		__castCM(__cm).copy(__a, top, top - 1);
 	}
 }
 

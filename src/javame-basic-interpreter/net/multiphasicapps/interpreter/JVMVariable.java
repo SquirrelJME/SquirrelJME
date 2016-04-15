@@ -61,6 +61,45 @@ public abstract class JVMVariable<T>
 	}
 	
 	/**
+	 * Returns an empty variable which has the same type as the input variable.
+	 *
+	 * @param __v The variable to get an empty of the same type.
+	 * @return An empty variable of the same type.
+	 * @since 2016/04/15
+	 */
+	public static JVMVariable<?> empty(JVMVariable<?> __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Double?
+		if (__v instanceof OfDouble)
+			return OfDouble.empty();
+		
+		// Float?
+		else if (__v instanceof OfFloat)
+			return OfFloat.empty();
+		
+		// Integer?
+		else if (__v instanceof OfInteger)
+			return OfInteger.empty();
+		
+		// Long?
+		else if (__v instanceof OfLong)
+			return OfLong.empty();
+		
+		// Object?
+		else if (__v instanceof OfObject)
+			return OfObject.empty();
+		
+		// Unknown type
+		else
+			throw new RuntimeException("WTFX");
+	}
+	
+	/**
 	 * Wraps the given object and sets the value of it and returns the value.
 	 *
 	 * @param __v The value to wrap.

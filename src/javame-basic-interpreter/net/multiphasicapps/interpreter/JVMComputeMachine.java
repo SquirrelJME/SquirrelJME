@@ -85,5 +85,30 @@ public class JVMComputeMachine
 		JVMVariable.OfObject vo = (JVMVariable.OfObject)var;
 		vo.set(obj);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public void copy(JVMStackFrame __frame, int __dest, int __src)
+	{
+		// Do nothing if the same
+		if (__dest == __src)
+			return;
+		
+		// Get source to copy
+		JVMVariable[] vars = __frame.variables();
+		JVMVariable src = vars[__src];
+		
+		// The destination may need to be replaced
+		JVMVariable dest = vars[__dest];
+		if (dest == null ||
+			!(dest.getClass().isInstance(src.getClass())))
+			vars[__dest] = dest = JVMVariable.empty(src);
+		
+		// Set the value of the destination to the source
+		dest.set(src.get());
+	}
 }
 

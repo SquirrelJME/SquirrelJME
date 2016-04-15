@@ -32,5 +32,15 @@ public interface CPComputeMachine<A>
 	 */
 	public abstract void allocateObject(A __pa, int __dest,
 		ClassNameSymbol __cl);
+	
+	/**
+	 * Copy from one variable to another.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest The destination variable.
+	 * @param __src The source variable.
+	 * @since 2016/04/15
+	 */
+	public abstract void copy(A __pa, int __dest, int __src);
 }
 
