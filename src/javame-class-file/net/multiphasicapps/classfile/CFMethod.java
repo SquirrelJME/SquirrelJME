@@ -71,7 +71,7 @@ public final class CFMethod
 		
 		// {@squirreljme.error CF0x Non-abstract and non-native methods must
 		// have a code attribute.}
-		if (codeattribute == null && (__fl.isAbstract() || __fl.isNative()))
+		if (codeattribute == null && !(__fl.isAbstract() || __fl.isNative()))
 			throw new CFFormatException("CF0x");
 	}
 	
