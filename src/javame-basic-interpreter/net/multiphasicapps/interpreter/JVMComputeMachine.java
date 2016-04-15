@@ -11,7 +11,9 @@
 package net.multiphasicapps.interpreter;
 
 import net.multiphasicapps.classfile.CFFieldReference;
+import net.multiphasicapps.classfile.CFMethodReference;
 import net.multiphasicapps.classprogram.CPComputeMachine;
+import net.multiphasicapps.classprogram.CPInvokeType;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -125,6 +127,21 @@ public class JVMComputeMachine
 		
 		// Get and initialize the class
 		JVMClass cl = engine.classes().loadClass(__f.className().symbol());
+		JVMObject clo = cl.classObject(__frame.thread());
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public void invoke(JVMStackFrame __frame, int __dest,
+		CFMethodReference __ref, CPInvokeType __type, int... __args)
+	{
+		// Get the target class and make sure it is initialized
+		JVMClass cl = engine.classes().loadClass(__ref.className().symbol());
 		JVMObject clo = cl.classObject(__frame.thread());
 		
 		throw new Error("TODO");

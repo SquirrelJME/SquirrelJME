@@ -11,6 +11,7 @@
 package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.classfile.CFFieldReference;
+import net.multiphasicapps.classfile.CFMethodReference;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -54,5 +55,19 @@ public interface CPComputeMachine<A>
 	 */
 	public abstract void getStaticField(A __pa, int __dest,
 		CFFieldReference __f);
+	
+	/**
+	 * Invokes the given method.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest The destination local variable, will be negative if there
+	 * is no return value.
+	 * @param __ref The reference to the method.
+	 * @param __type The type of invocation to perform.
+	 * @param __args The variables which act as arguments of the method.
+	 * @since 2016/04/15
+	 */
+	public abstract void invoke(A __pa, int __dest, CFMethodReference __ref,
+		CPInvokeType __type, int... __args);
 }
 

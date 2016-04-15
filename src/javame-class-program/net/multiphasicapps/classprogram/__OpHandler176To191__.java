@@ -51,6 +51,26 @@ class __OpHandler176To191__
 			case 178:
 				__getstatic(__cm, __a, __op);
 				break;
+				
+				// invokevirtual
+			case 182:
+				__invoke(__cm, __a, __op, CPInvokeType.VIRTUAL);
+				break;
+				
+				// invokespecial
+			case 183:
+				__invoke(__cm, __a, __op, CPInvokeType.SPECIAL);
+				break;
+			
+				// invokestatic
+			case 184:
+				__invoke(__cm, __a, __op, CPInvokeType.STATIC);
+				break;
+				
+				// invokeinterface
+			case 185:
+				__invoke(__cm, __a, __op, CPInvokeType.INTERFACE);
+				break;
 			
 				// new
 			case 187:
@@ -77,6 +97,21 @@ class __OpHandler176To191__
 		// Place value onto the stack
 		__castCM(__cm).getStaticField(__a, __op.variables().getStackTop(),
 			((CFFieldReference)__op.arguments().get(0)));
+	}
+	
+	/**
+	 * Invokes a method.
+	 *
+	 * @param __cm Compute machine.
+	 * @param __a Passed value.
+	 * @param __op The operation.
+	 * @param __it The operation to be performed.
+	 * @since 2016/04/15
+	 */
+	void __invoke(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op, CPInvokeType __it)
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
