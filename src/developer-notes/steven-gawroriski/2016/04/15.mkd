@@ -1,0 +1,7 @@
+# 2016/04/15
+
+## 08:21
+
+Going to split off part of the constant pool stuff and make those into other
+classes so it is a bit cleaner.
+

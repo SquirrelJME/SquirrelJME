@@ -384,6 +384,18 @@ public final class CPProgram
 	}
 	
 	/**
+	 * Reads a signed byte from the code array.
+	 *
+	 * @param __pos The position of the byte.
+	 * @return The read value.
+	 * @since 2016/04/13
+	 */
+	int __readSByte(int __pos)
+	{
+		return __ByteUtils__.__readSByte(_code, __pos);
+	}
+	
+	/**
 	 * Reads a signed integer from the code array.
 	 *
 	 * @param __pos The position of the integer.

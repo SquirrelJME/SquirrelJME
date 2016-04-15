@@ -30,6 +30,35 @@ final class __ByteUtils__
 	}
 	
 	/**
+	 * Reads an signed byte from the given buffer.
+	 *
+	 * @param __code The byte array.
+	 * @param __pos The position of the short.
+	 * @return The read value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/15
+	 */
+	static int __readSByte(byte[] __code, int __pos)
+		throws NullPointerException
+	{
+		// Check
+		if (__code == null)
+			throw new NullPointerException("NARG");
+		
+		// Read and merge the values (big endian)
+		try
+		{
+			return (((int)__code[__pos]));
+		}
+		
+		// Read out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			throw new CPProgramException("CP17", e);
+		}
+	}
+	
+	/**
 	 * Reads a signed integer from the given buffer.
 	 *
 	 * @param __code The byte array.

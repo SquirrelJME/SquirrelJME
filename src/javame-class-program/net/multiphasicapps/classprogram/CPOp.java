@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.classfile.CFMethod;
 import net.multiphasicapps.collections.MissingCollections;
@@ -279,7 +280,14 @@ public class CPOp
 				Object[] w;
 				switch (opcode)
 				{
-						// loads and stores
+						// bipush
+					case 16:
+						w = new Object[]{
+							Integer.valueOf(__readSByte(1))
+							};
+						break;
+					
+						// loads, stores
 					case 21:
 					case 22:
 					case 23:
@@ -292,6 +300,80 @@ public class CPOp
 					case 58:
 						w = new Object[]{
 							Integer.valueOf(__readUByte(1))
+							};
+						break;
+						
+						// Increment local variable
+					case 132:
+						w = new Object[]{
+							Integer.valueOf(__readUByte(1)),
+							Integer.valueOf(__readSByte(2))
+							};
+						break;
+						
+						// Goto and branches
+					case 153:
+					case 154:
+					case 155:
+					case 156:
+					case 157:
+					case 158:
+					case 159:
+					case 160:
+					case 161:
+					case 162:
+					case 163:
+					case 164:
+					case 165:
+					case 166:
+					case 167:
+					case 198:
+					case 199:
+						w = new Object[]{
+							Integer.valueOf(__readSShort(1))
+							};
+						break;
+						
+						// Field
+					case 178:
+					case 180:
+						w = new Object[]{
+							program.constantPool().
+								<CFConstantEntry.FieldReference>getAs(
+								__readUShort(1),
+								CFConstantEntry.FieldReference.class)
+							};
+						break;
+					
+						// Method invoke
+					case 182:
+					case 183:
+					case 184:
+					case 185:
+					case 186:
+						w = new Object[]{
+							program.constantPool().
+								<CFConstantEntry.MethodReference>getAs(
+								__readUShort(1),
+								CFConstantEntry.MethodReference.class)
+							};
+						break;
+						
+						// Single Class
+					case 189:
+					case 192:
+					case 193:
+						w = new Object[]{
+							program.constantPool().<CFConstantEntry.ClassName>
+								getAs(__readUShort(1),
+								CFConstantEntry.ClassName.class).symbol()
+							};
+						break;
+						
+						// Goto wide
+					case 200:
+						w = new Object[]{
+							Integer.valueOf(__readSInt(1))
 							};
 						break;
 					
@@ -647,6 +729,18 @@ public class CPOp
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Reads a signed byte from the code array.
+	 *
+	 * @param __off The offset from the instruction address.
+	 * @return The read value.
+	 * @since 2016/04/15
+	 */
+	int __readSByte(int __off)
+	{
+		return program.__readSByte(physicaladdress + __off);
 	}
 	
 	/**
