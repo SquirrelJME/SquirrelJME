@@ -96,5 +96,15 @@ public final class CFClassName
 		// Return it
 		return rv;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public String toString()
+	{
+		return symbol().toString();
+	}
 }
 

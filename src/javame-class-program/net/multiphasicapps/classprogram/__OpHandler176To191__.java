@@ -13,6 +13,7 @@ package net.multiphasicapps.classprogram;
 import net.multiphasicapps.classfile.CFClassName;
 import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
+import net.multiphasicapps.classfile.CFFieldReference;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -46,6 +47,11 @@ class __OpHandler176To191__
 		// Depends on the operation
 		switch (opcode)
 		{
+				// getstatic
+			case 178:
+				__getstatic(__cm, __a, __op);
+				break;
+			
 				// new
 			case 187:
 				__new(__cm, __a, __op);
@@ -55,6 +61,22 @@ class __OpHandler176To191__
 			default:
 				throw new __VMWorkers__.__UnknownOp__();
 		}
+	}
+	
+	/**
+	 * Obtains the value of a static variable.
+	 *
+	 * @param __cm Compute machine.
+	 * @param __a Passed value.
+	 * @param __op The operation.
+	 * @since 2016/04/15
+	 */
+	void __getstatic(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op)
+	{
+		// Place value onto the stack
+		__castCM(__cm).getStaticField(__a, __op.variables().getStackTop(),
+			((CFFieldReference)__op.arguments().get(0)));
 	}
 	
 	/**

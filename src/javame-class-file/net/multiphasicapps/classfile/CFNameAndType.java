@@ -212,6 +212,16 @@ public final class CFNameAndType
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public String toString()
+	{
+		return getKey() + ":" + getValue();
+	}
+	
+	/**
 	 * Returns the represented symbol as a field symbol.
 	 *
 	 * @return The type as a field symbol.

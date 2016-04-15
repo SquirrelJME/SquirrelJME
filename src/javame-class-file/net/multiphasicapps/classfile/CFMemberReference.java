@@ -94,5 +94,15 @@ public abstract class CFMemberReference<V extends MemberTypeSymbol>
 	{
 		return pool.<CFNameAndType>getAs(natdx, CFNameAndType.class);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public String toString()
+	{
+		return className() + "::" + nameAndType();
+	}
 }
 

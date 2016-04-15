@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.interpreter;
 
+import net.multiphasicapps.classfile.CFFieldReference;
 import net.multiphasicapps.classprogram.CPComputeMachine;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
@@ -109,6 +110,19 @@ public class JVMComputeMachine
 		
 		// Set the value of the destination to the source
 		dest.set(src.get());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public void getStaticField(JVMStackFrame __frame, int __dest,
+		CFFieldReference __f)
+	{
+		System.err.printf("DEBUG -- Read Static %s%n", __f);
+		
+		throw new Error("TODO");
 	}
 }
 

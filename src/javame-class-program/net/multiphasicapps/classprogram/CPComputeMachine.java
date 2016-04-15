@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classprogram;
 
+import net.multiphasicapps.classfile.CFFieldReference;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -42,5 +43,16 @@ public interface CPComputeMachine<A>
 	 * @since 2016/04/15
 	 */
 	public abstract void copy(A __pa, int __dest, int __src);
+	
+	/**
+	 * Reads a value from a static field.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest Destination variable.
+	 * @param __f The field to read.
+	 * @since 2016/04/15
+	 */
+	public abstract void getStaticField(A __pa, int __dest,
+		CFFieldReference __f);
 }
 
