@@ -331,16 +331,35 @@ final class __DetermineTypes__
 				throw new Error("TODO");
 			}
 			
-			// Set the size of the stack
-			int pushcount = pin - pi;
+			// Determine where the top of the stack will be
+			int pushcount = 0;
+			for (int vpi = pi; vpi < pin; vpi++)
+			{
+				// Get it
+				CPVariableType v = (CPVariableType)__vts[vpi++];
+				
+				// Wide gets two
+				if (v.isWide())
+					pushcount += 2;
+				else
+					pushcount++;
+			}
+			
+			// Set the top of the stack
 			set(__op, Integer.MIN_VALUE, newt + pushcount, null);
 			
 			// Push values to the stack
 			for (; pi < pin;)
 			{
-				Object v = __vts[pi++];
+				// Get it
+				CPVariableType v = (CPVariableType)__vts[pi++];
 				
-				throw new Error("TODO");
+				// Place onto the stack
+				set(__op, newt++, Integer.MIN_VALUE, v);
+				
+				// If wide, add a top
+				if (v.isWide())
+					set(__op, newt++, Integer.MIN_VALUE, CPVariableType.TOP);
 			}
 		}
 		
