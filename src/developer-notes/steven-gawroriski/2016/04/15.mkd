@@ -37,3 +37,13 @@ Interesting, this method has only stack entries and no locals.
 I can commonize the pushing and popping of operations and reduce much
 duplicated code between a number of used operation.
 
+## 15:15
+
+This multi-functional method should be able to shave about 500 lines or so.
+
+## 15:32
+
+This is definitely a much cleaner and more uniform way to perform these
+operations.
+
+

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classprogram;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -131,112 +132,112 @@ final class __DetermineTypes__
 			int opcode = xop.instructionCode();
 			switch (opcode)
 			{
-				case 21: __load(xop, xin, CPVariableType.INTEGER); break;
-				case 22: __load(xop, xin, CPVariableType.LONG); break;
-				case 23: __load(xop, xin, CPVariableType.FLOAT); break;
-				case 24: __load(xop, xin, CPVariableType.DOUBLE); break;
-				case 25: __load(xop, xin, CPVariableType.OBJECT); break;
+				case 21: __load(xop, CPVariableType.INTEGER); break;
+				case 22: __load(xop, CPVariableType.LONG); break;
+				case 23: __load(xop, CPVariableType.FLOAT); break;
+				case 24: __load(xop, CPVariableType.DOUBLE); break;
+				case 25: __load(xop, CPVariableType.OBJECT); break;
 				
 				case 26:
 				case 27:
 				case 28:
 				case 29:
-					__load_n(xop, xin, opcode - 26, CPVariableType.INTEGER);
+					__load_n(xop, opcode - 26, CPVariableType.INTEGER);
 					break;
 				
 				case 30:
 				case 31:
 				case 32:
 				case 33:
-					__load_n(xop, xin, opcode - 30, CPVariableType.LONG);
+					__load_n(xop, opcode - 30, CPVariableType.LONG);
 					break;
 				
 				case 34:
 				case 35:
 				case 36:
 				case 37:
-					__load_n(xop, xin, opcode - 24, CPVariableType.FLOAT);
+					__load_n(xop, opcode - 24, CPVariableType.FLOAT);
 					break;
 				
 				case 38:
 				case 39:
 				case 40:
 				case 41:
-					__load_n(xop, xin, opcode - 38, CPVariableType.DOUBLE);
+					__load_n(xop, opcode - 38, CPVariableType.DOUBLE);
 					break;
 					
 				case 42:
 				case 43:
 				case 44:
 				case 45:
-					__load_n(xop, xin, opcode - 42, CPVariableType.OBJECT);
+					__load_n(xop, opcode - 42, CPVariableType.OBJECT);
 					break;
 				
-				case 54: __store(xop, xin, CPVariableType.INTEGER); break;
-				case 55: __store(xop, xin, CPVariableType.LONG); break;
-				case 56: __store(xop, xin, CPVariableType.FLOAT); break;
-				case 57: __store(xop, xin, CPVariableType.DOUBLE); break;
-				case 58: __store(xop, xin, CPVariableType.OBJECT); break;
+				case 54: __store(xop, CPVariableType.INTEGER); break;
+				case 55: __store(xop, CPVariableType.LONG); break;
+				case 56: __store(xop, CPVariableType.FLOAT); break;
+				case 57: __store(xop, CPVariableType.DOUBLE); break;
+				case 58: __store(xop, CPVariableType.OBJECT); break;
 				
 				case 59:
 				case 60:
 				case 61:
 				case 62:
-					__store_n(xop, xin, opcode - 59, CPVariableType.INTEGER);
+					__store_n(xop, opcode - 59, CPVariableType.INTEGER);
 					break;
 				
 				case 63:
 				case 64:
 				case 65:
 				case 66:
-					__store_n(xop, xin, opcode - 63, CPVariableType.LONG);
+					__store_n(xop, opcode - 63, CPVariableType.LONG);
 					break;
 				
 				case 67:
 				case 68:
 				case 69:
 				case 70:
-					__store_n(xop, xin, opcode - 67, CPVariableType.FLOAT);
+					__store_n(xop, opcode - 67, CPVariableType.FLOAT);
 					break;
 				
 				case 71:
 				case 72:
 				case 73:
 				case 74:
-					__store_n(xop, xin, opcode - 71, CPVariableType.DOUBLE);
+					__store_n(xop, opcode - 71, CPVariableType.DOUBLE);
 					break;
 				
 				case 75:
 				case 76:
 				case 77:
 				case 78:
-					__store_n(xop, xin, opcode - 75, CPVariableType.OBJECT);
+					__store_n(xop, opcode - 75, CPVariableType.OBJECT);
 					break;
 					
-				case 89: __dup(xop, xin); break;
+				case 89: __dup(xop); break;
 				
 					// Return, does nothing
 				case 177: break;
 				
-				case 178: __getstatic(xop, xin); break;
-				case 179: __putstatic(xop, xin); break;
+				case 178: __getstatic(xop); break;
+				case 179: __putstatic(xop); break;
 				case 182:
-				case 183: __invoke(xop, xin, true); break;
-				case 184: __invoke(xop, xin, false); break;
-				case 185: __invoke(xop, xin, true); break;
-				case 187: __new(xop, xin); break;
+				case 183: __invoke(xop, true); break;
+				case 184: __invoke(xop, false); break;
+				case 185: __invoke(xop, true); break;
+				case 187: __new(xop); break;
 				
-				case 50197: __load_w(xop, xin, CPVariableType.INTEGER); break;
-				case 50198: __load_w(xop, xin, CPVariableType.LONG); break;
-				case 50199: __load_w(xop, xin, CPVariableType.FLOAT); break;
-				case 50200: __load_w(xop, xin, CPVariableType.DOUBLE); break;
-				case 50201: __load_w(xop, xin, CPVariableType.OBJECT); break;
+				case 50197: __load_w(xop, CPVariableType.INTEGER); break;
+				case 50198: __load_w(xop, CPVariableType.LONG); break;
+				case 50199: __load_w(xop, CPVariableType.FLOAT); break;
+				case 50200: __load_w(xop, CPVariableType.DOUBLE); break;
+				case 50201: __load_w(xop, CPVariableType.OBJECT); break;
 				
-				case 50230: __store_w(xop, xin, CPVariableType.INTEGER); break;
-				case 50231: __store_w(xop, xin, CPVariableType.LONG); break;
-				case 50232: __store_w(xop, xin, CPVariableType.FLOAT); break;
-				case 50233: __store_w(xop, xin, CPVariableType.DOUBLE); break;
-				case 50234: __store_w(xop, xin, CPVariableType.OBJECT); break;
+				case 50230: __store_w(xop, CPVariableType.INTEGER); break;
+				case 50231: __store_w(xop, CPVariableType.LONG); break;
+				case 50232: __store_w(xop, CPVariableType.FLOAT); break;
+				case 50233: __store_w(xop, CPVariableType.DOUBLE); break;
+				case 50234: __store_w(xop, CPVariableType.OBJECT); break;
 				
 					// {@squirreljme.error CP0u Cannot calculate the SSA for
 					// the given opcode because it is unknown. (The program
@@ -269,7 +270,8 @@ final class __DetermineTypes__
 	 *
 	 * @param __op The current operation.
 	 * @param __vts The first set of inputs are {@link Integer} and
-	 * {@link CPVariableType} type pairs; {@code null} specifies the end of
+	 * {@link CPVariableType} type pairs, negative values are checked reads
+	 * and positive values are stores; {@code null} specifies the end of
 	 * local variable setting; the types to be popped in sequential order;
 	 * {@code null}; The types to be pushed in sequential order.
 	 * @throws CPProgramException If there are too little or too many nulls,
@@ -304,6 +306,15 @@ final class __DetermineTypes__
 				// End?
 				if (v == null)
 					break;
+				
+				// Get the local index and type
+				int dx = ((Number)v).intValue();
+				CPVariableType type = (CPVariableType)__vts[pi++];
+				
+				// Is this a load or store operation?
+				boolean load = (dx < 0);
+				if (load)
+					dx = -dx;
 				
 				throw new Error("TODO");
 			}
@@ -340,7 +351,7 @@ final class __DetermineTypes__
 			// was being performed or the input type is incorrect.
 			// (The operation address; The operations to be performed)}
 			throw new CPProgramException(String.format("CP1l %d %d",
-				__xop.address(), Arrays.<Object>asList(__vts)), e);
+				__op.address(), Arrays.<Object>asList(__vts)), e);
 		}
 	}
 	
@@ -399,242 +410,86 @@ final class __DetermineTypes__
 	/**
 	 * Invokes a method.
 	 *
-	 * @param __xop The input operation.
-	 * @param __xin The input variables.
+	 * @param __op The input operation.
 	 * @param __inst Instance method?*
 	 * @since 2016/04/13
 	 */
-	private void __invoke(CPOp __xop, CPVariables __xin, boolean __inst)
+	private void __invoke(CPOp __op, boolean __inst)
 	{
 		// Read the method to invoke
-		CFMethodReference ref = (CFMethodReference)__xop.arguments().get(0);
+		CFMethodReference ref = (CFMethodReference)__op.arguments().get(0);
+		MethodSymbol desc = ref.nameAndType().getValue().asMethod();
 		
-		// Could fail
-		try
-		{
-			// Pop from last to first
-			MethodSymbol desc = ref.nameAndType().getValue().asMethod();
-			int n = desc.argumentCount();
-			int j = 1;
-			int basetop = __xin.getStackTop(); 
-			for (int i = n - 1; i >= 0; i--)
-			{
-				// Get argument here
-				FieldSymbol arg = desc.get(i);
-				CPVariableType type = CPVariableType.bySymbol(arg);
-			
-				// If wide, pop a top
-				if (type.isWide())
-				{
-					// Must be a wide at the top
-					int top;
-					CPVariables.Slot sl = __xin.get(
-						(top = __xin.getStackTop()) - j);
-				
-					// {@squirreljme CP1e Excepted the stack to contain the top
-					// of a long/double. (The current operation address; The
-					// index of this slot; The type that it was)}
-					CPVariableType was = sl.type();
-					if (was != CPVariableType.TOP)
-						throw new CPProgramException(String.format(
-							"CP1e %d %d %s", __xop.address(), sl.index, was));
-					
-					// Reduce the stack
-					j++;
-				}
-				
-				// Get the current top
-				int top;
-				CPVariables.Slot sl = __xin.get(
-					(top = __xin.getStackTop()) - j);
-				
-				// {@squirreljme.error CP1g Expected the top of the stack to
-				// be of a specific type, however it was not that type. (The
-				// operation address; The index of this slot; The type that it
-				// was; The type it should have been)}
-				CPVariableType was = sl.type();
-				if (was != type)
-					throw new CPProgramException(String.format(
-						"CP1g %d %d %s %s", __xop.address(), sl.index, was,
-						type));
-				
-				// Reduce the stack
-				j++;
-			}
-			
-			// If an instance, pop an object
-			if (__inst)
-			{
-				// Pop the top
-				int top;
-				CPVariables.Slot sl = __xin.get(
-					(top = __xin.getStackTop()) - j);
-				
-				// {@squirreljme.error CP1h Expected the last entry to be
-				// popped before an instance method call to be an object
-				// which contains the instance of the object to invoke the
-				// method on. (The operation address; The index of this slot;
-				// The type that it was)}
-				CPVariableType was = sl.type();
-				if (was != CPVariableType.OBJECT)
-					throw new CPProgramException(String.format(
-						"CP1h %d %d %s", __xop.address(), sl.index, was));
-			}
-			
-			// No return value?
-			FieldSymbol rvt = desc.returnValue();
-			if (rvt == null)
-			{
-				// Set the final stack size
-				set(__xop, Integer.MIN_VALUE, basetop - j, null);
-			}
-			
-			// Need to add the return value back in
-			else
-			{
-				// Get the type of return value used
-				CPVariableType rt = CPVariableType.bySymbol(rvt);
-				
-				// Reduce the number of eaten stack items.
-				int bottom = basetop - j;
-				
-				// Set wide type 
-				if (rt.isWide())
-				{
-					// Size
-					set(__xop, Integer.MIN_VALUE, bottom + 2, null);
-					
-					// Values
-					set(__xop, bottom, Integer.MIN_VALUE, rt);
-					set(__xop, bottom + 1, Integer.MIN_VALUE,
-						CPVariableType.TOP);
-				}
-				
-				// Narrow otherwise
-				else
-				{
-					// Size
-					set(__xop, Integer.MIN_VALUE, bottom + 1, null);
-					
-					// Value
-					set(__xop, bottom, Integer.MIN_VALUE, rt);
-				}
-			}
-		}
+		// Get argument count and any instance variables
+		int argc = desc.argumentCount();
+		int ivc = (__inst ? 1 : 0);
+		FieldSymbol rv;
+		int rvc = (((rv = desc.returnValue()) != null) ? 1 : 0);
 		
-		// Out of bounds
-		catch (IndexOutOfBoundsException e)
-		{
-			// {@squirreljme.error CP1f Out of bounds stack access when
-			// popping and pushing on the stack for an method invocation. (The
-			// current operation address)}
-			throw new CPProgramException(String.format("CP1f %d",
-				__xop.address()), e);
-		}
+		// Setup operation array
+		Object[] ops = new Object[2 + argc + ivc + rvc];
+		int wp = 0;
+		
+		// There are no locals
+		ops[wp++] = null;
+		
+		// Pop method arguments from last to first
+		for (int i = argc - 1; i >= 0; i--)
+			ops[wp++] = CPVariableType.bySymbol(desc.get(i));
+		
+		// If an instance, pop an extra object
+		if (__inst)
+			ops[wp++] = CPVariableType.OBJECT;
+		
+		// Spacer null
+		ops[wp++] = null;
+		
+		// Push the return type
+		if (rv != null)
+			ops[wp++] = CPVariableType.bySymbol(rv);
+		
+		// Perform operation
+		operate(__op, ops);
 	}
 	
 	/**
 	 * Load variable from locals and push it onto the stack.
 	 *
-	 * @param __xop The input operation.
-	 * @param __xin The input variables.
+	 * @param __op The input operation.
 	 * @param __t The type of value to load.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
-	private void __load(CPOp __xop, CPVariables __xin, CPVariableType __t)
+	private void __load(CPOp __op, CPVariableType __t)
 	{
-		__load_n(__xop, __xin, ((Number)__xop.arguments().get(0)).intValue(),
-			__t);
+		__load_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
 	}
 	
 	/**
 	 * Load variable from locals and push it onto the stack.
 	 *
-	 * @param __xop The input operation.
-	 * @param __xin The input variables.
+	 * @param __op The input operation.
 	 * @param __dx The index.
 	 * @param __t The type of value to load.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
-	private void __load_n(CPOp __xop, CPVariables __xin, int __dx,
-		CPVariableType __t)
-		throws NullPointerException
+	private void __load_n(CPOp __op, int __dx, CPVariableType __t)
 	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Could fail
-		try
-		{
-			// {@squirreljme.error CP1b Out of bounds index.}
-			if (__dx >= stackbase)
-				throw new IndexOutOfBoundsException("CP1b");
-			
-			// Get local variable slot
-			CPVariables.Slot local = __xin.get(__dx);
-			
-			// {@squirreljme.error CP1a Expected the local variable to be of
-			// the given type, however it was not. (The operation address;
-			// The slot index; The type the slot should have been; The type
-			// it was)}
-			CPVariableType was;
-			if ((was = local.type()) != __t)
-				throw new CPProgramException(String.format("CP1a %d %d %s %s",
-					__xop.address(), __dx, __t, was));
-			
-			// Push to the stack
-			int top;
-			set(__xop, (top = __xin.getStackTop()), top + 1, __t);
-			
-			// If wide, add a top
-			if (__t.isWide())
-			{
-				// {@squirreljme.error CP1c Top of long/double is out of
-				// bounds.}
-				int ndx = __dx + 1;
-				if (ndx >= stackbase)
-					throw new IndexOutOfBoundsException("CP1c");
-				
-				// {@squirreljme.error CP1d Read of a wide local variable,
-				// however there is not a TOP following it. (The operation
-				// address; The index to read from; The type that it was)}
-				if ((was = __xin.get(ndx).type()) != CPVariableType.TOP)
-					throw new CPProgramException(String.format("CP1d %d %d %s",
-						__xop.address(), ndx, was));
-				
-				// Set it to the top
-				set(__xop, (top = __xin.getStackTop()), top + 1,
-					CPVariableType.TOP);
-			}
-		}
-		
-		// Out of bounds
-		catch (IndexOutOfBoundsException e)
-		{
-			// {@squirreljme.error CP19 Attempt to read local variable from a
-			// slot which is not within bounds. (The operation address;
-			// The slot index)}
-			throw new CPProgramException(String.format("CP19 %d %d",
-				__xop.address(), __dx), e);
-		}
+		// Load it onto the stack
+		operate(__op, -__dx, __t, null, null, __t);
 	}
 	
 	/**
 	 * Load variable from locals and push it onto the stack (wide).
 	 *
-	 * @param __xop The input operation.
-	 * @param __xin The input variables.
+	 * @param __op The input operation.
 	 * @param __t The type of value to load.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
-	private void __load_w(CPOp __xop, CPVariables __xin, CPVariableType __t)
+	private void __load_w(CPOp __op, CPVariableType __t)
 	{
-		__load_n(__xop, __xin, ((Number)__xop.arguments().get(0)).intValue(),
-			__t);
+		__load_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
 	}
 	
 	/**
@@ -644,11 +499,14 @@ final class __DetermineTypes__
 	 * @param __xin Input variables.
 	 * @since 2016/04/12
 	 */
-	private void __dup(CPOp __op, CPVariables __xin)
+	private void __dup(CPOp __op)
 	{
+		// Handle
+		CPVariables xin = __op.variables();
+		
 		// Get the topmost variable
 		int top;
-		CPVariables.Slot at = __xin.get((top = __xin.getStackTop()) - 1);
+		CPVariables.Slot at = xin.get((top = xin.getStackTop()) - 1);
 		
 		// Duplicate it
 		set(__op, top, top + 1, at.type());
@@ -661,23 +519,11 @@ final class __DetermineTypes__
 	 * @param __xin Input variables.
 	 * @since 2016/04/12
 	 */
-	private void __getstatic(CPOp __op, CPVariables __xin)
+	private void __getstatic(CPOp __op)
 	{
-		// Read the field value which is read
-		CFFieldReference ref = (CFFieldReference)__op.arguments().get(0);
-		
-		// Get the variable associated for the given field
-		CPVariableType type = CPVariableType.bySymbol(
-			ref.nameAndType().getValue().asField());
-		
-		// Add it to the top of the stack
-		int top;
-		set(__op, (top = __xin.getStackTop()), top + 1, type);
-		
-		// If wide, add TOP
-		if (type.isWide())
-			set(__op, (top = __xin.getStackTop()), top + 1,
-				CPVariableType.TOP);
+		operate(__op, null, null, CPVariableType.bySymbol(
+			((CFFieldReference)__op.arguments().get(0)).
+			nameAndType().getValue().asField()));
 	}
 	
 	/**
@@ -687,11 +533,10 @@ final class __DetermineTypes__
 	 * @param __xin Input variables.
 	 * @since 2016/04/11
 	 */
-	private void __new(CPOp __op, CPVariables __xin)
+	private void __new(CPOp __op)
 	{
 		// Just add an element to the stack
-		int top;
-		set(__op, (top = __xin.getStackTop()), top + 1, CPVariableType.OBJECT);
+		operate(__op, null, null, CPVariableType.OBJECT);
 	}
 	
 	/**
@@ -701,160 +546,49 @@ final class __DetermineTypes__
 	 * @param __xin The input variables.
 	 * @since 2016/04/15
 	 */
-	private void __putstatic(CPOp __xop, CPVariables __xin)
+	private void __putstatic(CPOp __op)
 	{
-		// Read the field value which is read
-		CFFieldReference ref = (CFFieldReference)__xop.arguments().get(0);
-		
-		// Get the variable associated for the given field
-		CPVariableType type = CPVariableType.bySymbol(
-			ref.nameAndType().getValue().asField());
-			
-		System.err.printf("DEBUG -- Put static %s%n", ref);
-		
-		// Get stack top
-		int top;
-		int newt = (top = __xin.getStackTop());
-		
-		// Wide value?
-		if (type.isWide())
-		{
-			// {@squirreljme.error CP1m Expected the type TOP to be on the
-			// stack for a put of a static field, however it was not.
-			// (The operation address; The slot index; The type that it was)}
-			CPVariables.Slot sl = __xin.get(newt - 1);
-			CPVariableType ty = sl.type();
-			if (ty != CPVariableType.TOP)
-				throw new CPProgramException(String.format("CP1m %d %d %s",
-					__xop.address(), newt - 1, ty));
-			
-			// Remove item
-			newt--;	
-		}
-		
-		// {@squirreljme.error CP1n Expected the given type when storing a
-		// value into a static field. (The operation address; The slot index;
-		// The type which was expected; The type that it was)}
-		CPVariables.Slot sl = __xin.get(newt - 1);
-		CPVariableType ty = sl.type();
-		if (ty != type)
-			throw new CPProgramException(String.format("CP1n %d %d %s %s",
-				__xop.address(), newt - 1, type, ty));
-		
-		// Remove it
-		newt--;
-		
-		// Set new top
-		set(__xop, Integer.MIN_VALUE, newt, null);
+		operate(__op, null, CPVariableType.bySymbol(
+			((CFFieldReference)__op.arguments().get(0)).
+			nameAndType().getValue().asField()), null);
 	}
 	
 	/**
 	 * Store variable from the stack and place it in a local (narrow).
 	 *
-	 * @param __xop The input operation.
-	 * @param __xin The input variables.
+	 * @param __op The input operation.
 	 * @param __t The type of value to store.
 	 * @since 2016/04/14
 	 */
-	private void __store(CPOp __xop, CPVariables __xin, CPVariableType __t)
+	private void __store(CPOp __op, CPVariableType __t)
 	{
-		__store_n(__xop, __xin, ((Number)__xop.arguments().get(0)).intValue(),
-			__t);
+		__store_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
 	}
+	
 	/**
 	 * Store variable from the stack and place it in a local.
 	 *
-	 * @param __xop The input operation.
-	 * @param __xin The input variables.
+	 * @param __op The input operation.
 	 * @param __dx The index.
 	 * @param __t The type of value to store.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/14
 	 */
-	private void __store_n(CPOp __xop, CPVariables __xin, int __dx,
-		CPVariableType __t)
-		throws NullPointerException
+	private void __store_n(CPOp __op, int __dx, CPVariableType __t)
 	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Could fail
-		try
-		{
-			// {@squirreljme.error CP1i Out of bounds index.}
-			if (__dx >= stackbase)
-				throw new IndexOutOfBoundsException("CP1i");
-			
-			// If wide, pop TOP
-			int top = __xin.getStackTop();
-			int newt;
-			if (__t.isWide())
-			{
-				// New stack top
-				newt = top - 2;
-				
-				// Set both variables
-				set(__xop, __dx, Integer.MIN_VALUE, __t);
-				set(__xop, __dx + 1, Integer.MIN_VALUE, CPVariableType.TOP);
-				
-				// {@squirreljme.error CP1j Expected the top of the stack to
-				// contain TOP for long/double. (The operation address; The
-				// slot index; The type the top of the stack contained)}
-				CPVariables.Slot sl = __xin.get(newt + 1);
-				CPVariableType was = sl.type();
-				if (was != CPVariableType.TOP)
-					throw new CPProgramException(String.format("CP1j %d %d %s",
-						__xop.address(), __dx + 1, was));
-			}
-			
-			// Narrow
-			else
-			{
-				// New stack top
-				newt = top - 1;
-				
-				// Set just one
-				set(__xop, __dx, Integer.MIN_VALUE, __t);
-			}
-			
-			// Set the new stack top
-			set(__xop, Integer.MIN_VALUE, newt, null);
-			
-			// {@squirreljme.error CP1k Expected to pop a value of a specific
-			// type for storage into a local variable. (The operation address;
-			// The slot index; The expected type; The type it actually was)
-			CPVariables.Slot sl = __xin.get(newt);
-			CPVariableType was = sl.type();
-			if (was != __t)
-				throw new CPProgramException(String.format("CP1k %d %d %s %s",
-					__xop.address(), __dx, __t, was));
-		}
-		
-		// Out of bounds
-		catch (IndexOutOfBoundsException e)
-		{
-			// {@squirreljme.error CP1l Attempt to read write variable from a
-			// slot which is not within bounds. (The operation address;
-			// The slot index)}
-			throw new CPProgramException(String.format("CP1l %d %d",
-				__xop.address(), __dx), e);
-		}
+		operate(__op, __dx, __t, null, __t, null);
 	}
 	
 	/**
 	 * Store variable from the stack and place it in a local (wide).
 	 *
-	 * @param __xop The input operation.
-	 * @param __xin The input variables.
+	 * @param __op The input operation.
 	 * @param __t The type of value to store.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/14
 	 */
-	private void __store_w(CPOp __xop, CPVariables __xin, CPVariableType __t)
+	private void __store_w(CPOp __op, CPVariableType __t)
 	{
-		__store_n(__xop, __xin, ((Number)__xop.arguments().get(0)).intValue(),
-			__t);
+		__store_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
 	}
 }
 
