@@ -92,6 +92,7 @@ public class JVMComputeMachine
 	 * @since 2016/04/15
 	 */
 	@Override
+	@SuppressWarnings({"unchecked"})
 	public void copy(JVMStackFrame __frame, int __dest, int __src)
 	{
 		// Do nothing if the same
@@ -109,7 +110,7 @@ public class JVMComputeMachine
 			vars[__dest] = dest = JVMVariable.empty(src);
 		
 		// Set the value of the destination to the source
-		dest.set(src.get());
+		dest.set((Object)src.get());
 	}
 	
 	/**
@@ -121,6 +122,10 @@ public class JVMComputeMachine
 		CFFieldReference __f)
 	{
 		System.err.printf("DEBUG -- Read Static %s%n", __f);
+		
+		// Get and initialize the class
+		JVMClass cl = engine.classes().loadClass(__f.className().symbol());
+		JVMObject clo = cl.classObject(__frame.thread());
 		
 		throw new Error("TODO");
 	}
