@@ -13,3 +13,8 @@ Ok so today:
  * Move any gigantic case switch stuff out from `CPOp` and similar (such as
    argument get and a few other things) into another helper class.
 
+## 10:29
+
+Also the other portions of code which directly read arguments can just instead
+read the argument table. This would be cleaner.
+

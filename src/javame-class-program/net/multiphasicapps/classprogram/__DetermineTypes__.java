@@ -15,6 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
+import net.multiphasicapps.classfile.CFFieldReference;
+import net.multiphasicapps.classfile.CFMethodReference;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -320,9 +322,7 @@ final class __DetermineTypes__
 	private void __invoke(CPOp __xop, CPVariables __xin, boolean __inst)
 	{
 		// Read the method to invoke
-		CFConstantEntry.MethodReference ref = constantpool.
-			<CFConstantEntry.MethodReference>getAs(__xop.__readUShort(1),
-			CFConstantEntry.MethodReference.class);
+		CFMethodReference ref = (CFMethodReference)__xop.arguments().get(0);
 		
 		// Could fail
 		try
@@ -459,7 +459,8 @@ final class __DetermineTypes__
 	 */
 	private void __load(CPOp __xop, CPVariables __xin, CPVariableType __t)
 	{
-		__load_n(__xop, __xin, __xop.__readUByte(1), __t);
+		__load_n(__xop, __xin, ((Number)__xop.arguments().get(0)).intValue(),
+			__t);
 	}
 	
 	/**
@@ -547,7 +548,8 @@ final class __DetermineTypes__
 	 */
 	private void __load_w(CPOp __xop, CPVariables __xin, CPVariableType __t)
 	{
-		__load_n(__xop, __xin, __xop.__readUShort(1), __t);
+		__load_n(__xop, __xin, ((Number)__xop.arguments().get(0)).intValue(),
+			__t);
 	}
 	
 	/**
@@ -577,9 +579,7 @@ final class __DetermineTypes__
 	private void __getstatic(CPOp __op, CPVariables __xin)
 	{
 		// Read the field value which is read
-		CFConstantEntry.FieldReference ref = constantpool.
-			<CFConstantEntry.FieldReference>getAs(__op.__readUShort(1),
-			CFConstantEntry.FieldReference.class);
+		CFFieldReference ref = (CFFieldReference)__op.arguments().get(0);
 		
 		// Get the variable associated for the given field
 		CPVariableType type = CPVariableType.bySymbol(
@@ -620,7 +620,8 @@ final class __DetermineTypes__
 	 */
 	private void __store(CPOp __xop, CPVariables __xin, CPVariableType __t)
 	{
-		__store_n(__xop, __xin, __xop.__readUByte(1), __t);
+		__store_n(__xop, __xin, ((Number)__xop.arguments().get(0)).intValue(),
+			__t);
 	}
 	/**
 	 * Store variable from the stack and place it in a local.
@@ -714,7 +715,8 @@ final class __DetermineTypes__
 	 */
 	private void __store_w(CPOp __xop, CPVariables __xin, CPVariableType __t)
 	{
-		__store_n(__xop, __xin, __xop.__readUShort(1), __t);
+		__store_n(__xop, __xin, ((Number)__xop.arguments().get(0)).intValue(),
+			__t);
 	}
 }
 

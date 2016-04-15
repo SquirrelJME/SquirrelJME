@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import net.multiphasicapps.classfile.CFAttributeUtils;
 import net.multiphasicapps.classfile.CFClass;
+import net.multiphasicapps.classfile.CFClassName;
 import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.classfile.CFFormatException;
@@ -154,8 +155,8 @@ public final class CPProgram
 			
 			// Add it
 			excs.add(new CPRawException(spc, epc, hpc, (xht == 0 ? null :
-				constantpool.<CFConstantEntry.ClassName>getAs(xht,
-					CFConstantEntry.ClassName.class).symbol().
+				constantpool.<CFClassName>getAs(xht,
+					CFClassName.class).symbol().
 						asBinaryName())));
 		}
 		

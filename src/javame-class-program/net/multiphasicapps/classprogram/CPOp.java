@@ -277,116 +277,18 @@ public class CPOp
 			// Needs to be cached?
 			if (ref == null || null == (rv = ref.get()))
 			{
-				Object[] w;
-				switch (opcode)
-				{
-						// bipush
-					case 16:
-						w = new Object[]{
-							Integer.valueOf(__readSByte(1))
-							};
-						break;
-					
-						// loads, stores
-					case 21:
-					case 22:
-					case 23:
-					case 24:
-					case 25:
-					case 54:
-					case 55:
-					case 56:
-					case 57:
-					case 58:
-						w = new Object[]{
-							Integer.valueOf(__readUByte(1))
-							};
-						break;
-						
-						// Increment local variable
-					case 132:
-						w = new Object[]{
-							Integer.valueOf(__readUByte(1)),
-							Integer.valueOf(__readSByte(2))
-							};
-						break;
-						
-						// Goto and branches
-					case 153:
-					case 154:
-					case 155:
-					case 156:
-					case 157:
-					case 158:
-					case 159:
-					case 160:
-					case 161:
-					case 162:
-					case 163:
-					case 164:
-					case 165:
-					case 166:
-					case 167:
-					case 198:
-					case 199:
-						w = new Object[]{
-							Integer.valueOf(__readSShort(1))
-							};
-						break;
-						
-						// Field
-					case 178:
-					case 180:
-						w = new Object[]{
-							program.constantPool().
-								<CFConstantEntry.FieldReference>getAs(
-								__readUShort(1),
-								CFConstantEntry.FieldReference.class)
-							};
-						break;
-					
-						// Method invoke
-					case 182:
-					case 183:
-					case 184:
-					case 185:
-					case 186:
-						w = new Object[]{
-							program.constantPool().
-								<CFConstantEntry.MethodReference>getAs(
-								__readUShort(1),
-								CFConstantEntry.MethodReference.class)
-							};
-						break;
-						
-						// Single Class
-					case 189:
-					case 192:
-					case 193:
-						w = new Object[]{
-							program.constantPool().<CFConstantEntry.ClassName>
-								getAs(__readUShort(1),
-								CFConstantEntry.ClassName.class).symbol()
-							};
-						break;
-						
-						// Goto wide
-					case 200:
-						w = new Object[]{
-							Integer.valueOf(__readSInt(1))
-							};
-						break;
-					
-						// No arguments
-					default:
-						w = new Object[0];
-						break;
-				}
+				Object[] args = __OpArguments__.__getArguments(this);
 				
-				// Cache it
-				_args = new WeakReference<>(
-					(rv = MissingCollections.<Object>unmodifiableList(
-						Arrays.<Object>asList(w))));
+				// There are arguments
+				if (args != null && args.length >= 1)
+					_args = new WeakReference<>(
+						(rv = MissingCollections.<Object>unmodifiableList(
+							Arrays.<Object>asList(args))));
+				
+				// There are none
+				else
+					_args = new WeakReference<>(
+						rv = MissingCollections.<Object>emptyList());
 			}
 			
 			// Return it
