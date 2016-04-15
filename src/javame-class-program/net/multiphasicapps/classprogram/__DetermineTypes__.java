@@ -261,6 +261,90 @@ final class __DetermineTypes__
 	}
 	
 	/**
+	 * Performs stack popping and pushing along with setting of local variable
+	 * types.
+	 *
+	 * Popping is done in the input sequential order, thus to pop INT and
+	 * OBJECT the input arguments must be OBJECT INT.
+	 *
+	 * @param __op The current operation.
+	 * @param __vts The first set of inputs are {@link Integer} and
+	 * {@link CPVariableType} type pairs; {@code null} specifies the end of
+	 * local variable setting; the types to be popped in sequential order;
+	 * {@code null}; The types to be pushed in sequential order.
+	 * @throws CPProgramException If there are too little or too many nulls,
+	 * or there is an invalid current state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/15
+	 */
+	public void operate(CPOp __op, Object... __vts)
+		throws CPProgramException, NullPointerException
+	{
+		// Check
+		if (__vts == null)
+			throw new NullPointerException("NARG");
+		
+		// Could fail
+		try
+		{
+			// Get variables
+			CPVariables vars = __op.variables();
+			int top = vars.getStackTop();
+			int newt = top;
+			
+			// Input parse index
+			int pi = 0;
+			final int pin = __vts.length;
+			
+			// Handle local variables
+			for (;;)
+			{
+				Object v = __vts[pi++];
+				
+				// End?
+				if (v == null)
+					break;
+				
+				throw new Error("TODO");
+			}
+			
+			// Pop values from the stack
+			for (;;)
+			{
+				Object v = __vts[pi++];
+				
+				// End?
+				if (v == null)
+					break;
+				
+				throw new Error("TODO");
+			}
+			
+			// Set the size of the stack
+			int pushcount = pin - pi;
+			set(__op, Integer.MIN_VALUE, newt + pushcount, null);
+			
+			// Push values to the stack
+			for (; pi < pin;)
+			{
+				Object v = __vts[pi++];
+				
+				throw new Error("TODO");
+			}
+		}
+		
+		// Incorrect input type; Out of bounds
+		catch (ClassCastException|IndexOutOfBoundsException e)
+		{
+			// {@squirreljme.error CP1l Operation exceeded bounds while it
+			// was being performed or the input type is incorrect.
+			// (The operation address; The operations to be performed)}
+			throw new CPProgramException(String.format("CP1l %d %d",
+				__xop.address(), Arrays.<Object>asList(__vts)), e);
+		}
+	}
+	
+	/**
 	 * Sets the operations for all targets and potentially checks them.
 	 *
 	 * @parma __op The operation to set targets for.
