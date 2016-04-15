@@ -156,6 +156,11 @@ public class JVMMethod
 			// Get program here
 			CPProgram program = program();
 			
+			// Get the current class and the class object, this way before a
+			// method is executed the current class is initialized properly.
+			JVMClass incl = outerClass();
+			JVMObject inclo = incl.classObject(__thr);
+			
 			// Keep executing until a return is reached or an unhandled
 			// exception is done.
 			JVMComputeMachine cm = engine().computeMachine();
