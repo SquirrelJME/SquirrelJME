@@ -688,6 +688,14 @@ public class CPOp
 			sb.append(", vs=");
 			sb.append(variables());
 			
+			// Arguments
+			List<Object> args = arguments();
+			if (!args.isEmpty())
+			{
+				sb.append(", ar=");
+				sb.append(args);
+			}
+			
 			// Finish
 			sb.append('}');
 			_string = new WeakReference<>((rv = sb.toString()));
