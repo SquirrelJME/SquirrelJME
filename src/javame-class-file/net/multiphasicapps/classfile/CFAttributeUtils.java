@@ -48,8 +48,8 @@ public final class CFAttributeUtils
 			throw new NullPointerException("NARG");
 		
 		// Read it in
-		return __pool.<CFConstantEntry.UTF8>getAs(
-			__das.readUnsignedShort(), CFConstantEntry.UTF8.class).toString();
+		return __pool.<CFUTF8>getAs(
+			__das.readUnsignedShort(), CFUTF8.class).toString();
 	}
 }
 

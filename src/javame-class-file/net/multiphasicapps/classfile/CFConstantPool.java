@@ -134,38 +134,38 @@ public class CFConstantPool
 			{
 					// UTF-8 Constant
 				case TAG_UTF8:
-					en = new CFConstantEntry.UTF8(this, __is);
+					en = new CFUTF8(this, __is);
 					break;
 					
 					// The name of a class
 				case TAG_CLASS:
-					en = new CFConstantEntry.ClassName(this, __is);
+					en = new CFClassName(this, __is);
 					break;
 					
 					// A reference to a field
 				case TAG_FIELDREF:
-					en = new CFConstantEntry.FieldReference(this, __is);
+					en = new CFFieldReference(this, __is);
 					break;
 					
 					// A reference to a method
 				case TAG_METHODREF:
-					en = new CFConstantEntry.MethodReference(this, __is);
+					en = new CFMethodReference(this, __is);
 					break;
 					
 					// A reference to an interface method
 				case TAG_INTERFACEMETHODREF:
-					en = new CFConstantEntry.InterfaceMethodReference(
+					en = new CFInterfaceMethodReference(
 						this, __is);
 					break;
 					
 					// String constant
 				case TAG_STRING:
-					en = new CFConstantEntry.ConstantString(this, __is);
+					en = new CFConstantString(this, __is);
 					break;
 					
 					// Name and type information
 				case TAG_NAMEANDTYPE:
-					en = new CFConstantEntry.NameAndType(this, __is);
+					en = new CFNameAndType(this, __is);
 					break;
 					
 					// invokedynamic is not supported!

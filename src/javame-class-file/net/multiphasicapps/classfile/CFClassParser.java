@@ -145,15 +145,15 @@ public class CFClassParser
 		_flags = new CFClassFlags(das.readUnsignedShort());
 		
 		// Set current class name
-		_thisname = constantpool.<CFConstantEntry.ClassName>getAs(
-			das.readUnsignedShort(), CFConstantEntry.ClassName.class).
+		_thisname = constantpool.<CFClassName>getAs(
+			das.readUnsignedShort(), CFClassName.class).
 			symbol().asBinaryName();
 		
 		// Set super class name
 		int sid = das.readUnsignedShort();
 		if (sid != 0)
-			_supername = constantpool.<CFConstantEntry.ClassName>getAs(
-				sid, CFConstantEntry.ClassName.class).symbol().asBinaryName();
+			_supername = constantpool.<CFClassName>getAs(
+				sid, CFClassName.class).symbol().asBinaryName();
 		else
 			_supername = null;
 		
@@ -166,8 +166,8 @@ public class CFClassParser
 		Set<BinaryNameSymbol> ints = _interfaces;
 		BinaryNameSymbol ix;
 		for (int i = 0; i < nints; i++)
-			if (!ints.add((ix = constantpool.<CFConstantEntry.ClassName>getAs(
-				das.readUnsignedShort(), CFConstantEntry.ClassName.class).
+			if (!ints.add((ix = constantpool.<CFClassName>getAs(
+				das.readUnsignedShort(), CFClassName.class).
 					symbol().asBinaryName())))
 				throw new CFFormatException(String.format("IN11 %s %s",
 					ints, ix));
@@ -276,9 +276,9 @@ public class CFClassParser
 							(((long)__das.readInt()) & 0xFFFFFFFFL))))
 					{
 						constantvalue = _constantpool.
-							<CFConstantEntry.ConstantValue>getAs(
+							<CFConstantValue>getAs(
 								cdis.readUnsignedShort(),
-								CFConstantEntry.ConstantValue.class).
+								CFConstantValue.class).
 									getValue();
 					}
 					break;
@@ -399,13 +399,13 @@ public class CFClassParser
 		
 		// Read name
 		IdentifierSymbol name = new IdentifierSymbol(
-			_constantpool.<CFConstantEntry.UTF8>getAs(__d.readUnsignedShort(),
-				CFConstantEntry.UTF8.class).toString());
+			_constantpool.<CFUTF8>getAs(__d.readUnsignedShort(),
+				CFUTF8.class).toString());
 		
 		// Read type
 		S type = __cl.cast(MemberTypeSymbol.create(
-			_constantpool.<CFConstantEntry.UTF8>getAs(__d.readUnsignedShort(),
-				CFConstantEntry.UTF8.class).toString()));
+			_constantpool.<CFUTF8>getAs(__d.readUnsignedShort(),
+				CFUTF8.class).toString()));
 		
 		// Construct key
 		return new CFMemberKey<>(name, type);

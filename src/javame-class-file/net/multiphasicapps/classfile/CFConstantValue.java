@@ -10,54 +10,58 @@
 
 package net.multiphasicapps.classfile;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Objects;
+
 /**
- * This represents the base class for all constant pool entries.
+ * This represents the base of the constant value pool.
  *
+ * @param <C> The type of constant value to return.
  * @since 2016/03/15
  */
-public abstract class CFConstantEntry
+public abstract class CFConstantValue<C>
+	extends CFConstantEntry
 {
-	/** The owning pool. */
-	protected final CFConstantPool pool;
+	/** The type of value to store. */
+	protected final Class<C> castas;
 	
 	/**
-	 * Initializes the base of an entry.
+	 * Initializes the base constant information.
 	 *
 	 * @param __icp The owning constant pool.
+	 * @param __cl The class to cast to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/15
 	 */
-	CFConstantEntry(CFConstantPool __icp)
-		throws NullPointerException
+	CFConstantValue(CFConstantPool __icp, Class<C> __cl)
 	{
+		super(__icp);
+		
 		// Check
-		if (__icp == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		pool = __icp;
+		castas = __cl;
 	}
 	
 	/**
-	 * Checks the range of a reference to make sure it is within bounds of
-	 * an existing entry.
+	 * Returns the value of the constant.
 	 *
-	 * @param __v The index to check the range for.
-	 * @return {@code __v} if the range is valid.
-	 * @throws CFFormatException If the range is not valid.
+	 * @return The constant value.
 	 * @since 2016/03/15
 	 */
-	int __rangeCheck(int __v)
-		throws CFFormatException
+	public abstract C getValue();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/15
+	 */
+	@Override
+	public final String toString()
 	{
-		if (__v > 0 && __v < pool.size())
-			return __v;
-		
-		// {@squirreljme.error CF0d A constant pool entry references an index
-		// which is outside of the constant pool.
-		// (The input value; The size of the pool)}
-		throw new CFFormatException(String.format("CF0d %d %d", __v,
-			pool.size()));
+		return Objects.toString(getValue());
 	}
 }
 
