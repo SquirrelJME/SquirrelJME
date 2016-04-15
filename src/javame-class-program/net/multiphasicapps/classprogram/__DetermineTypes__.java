@@ -420,8 +420,8 @@ final class __DetermineTypes__
 					set(__xop, Integer.MIN_VALUE, bottom + 2, null);
 					
 					// Values
-					set(__xop, bottom + 1, Integer.MIN_VALUE, rt);
-					set(__xop, bottom + 2, Integer.MIN_VALUE,
+					set(__xop, bottom, Integer.MIN_VALUE, rt);
+					set(__xop, bottom + 1, Integer.MIN_VALUE,
 						CPVariableType.TOP);
 				}
 				
@@ -432,7 +432,7 @@ final class __DetermineTypes__
 					set(__xop, Integer.MIN_VALUE, bottom + 1, null);
 					
 					// Value
-					set(__xop, bottom + 1, Integer.MIN_VALUE, rt);
+					set(__xop, bottom, Integer.MIN_VALUE, rt);
 				}
 			}
 		}

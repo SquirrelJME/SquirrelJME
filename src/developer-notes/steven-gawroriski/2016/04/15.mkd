@@ -28,3 +28,7 @@ Which the type determination and the arguments, the operation handler for `new`
 is much shorter. It was previously 32 lines, now it is just 5. Well I can just
 get it down to a single line statement.
 
+## 14:34
+
+Interesting, this method has only stack entries and no locals.
+
