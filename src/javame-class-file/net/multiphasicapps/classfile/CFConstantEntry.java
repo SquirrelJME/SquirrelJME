@@ -16,6 +16,7 @@ package net.multiphasicapps.classfile;
  * @since 2016/03/15
  */
 public abstract class CFConstantEntry
+	implements CFConstantEntryKind
 {
 	/** The owning pool. */
 	protected final CFConstantPool pool;

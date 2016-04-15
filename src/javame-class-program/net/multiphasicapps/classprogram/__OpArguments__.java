@@ -11,7 +11,9 @@
 package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.classfile.CFClassName;
+import net.multiphasicapps.classfile.CFConstantValue;
 import net.multiphasicapps.classfile.CFFieldReference;
+import net.multiphasicapps.classfile.CFLDCLoadable;
 import net.multiphasicapps.classfile.CFMethodReference;
 
 /**
@@ -53,18 +55,28 @@ final class __OpArguments__
 		
 		// Single unsigned byte
 		else if ((opcode >= 21 && opcode <= 25) ||
-			(opcode >= 54 && opcode <= 58))
+			(opcode >= 54 && opcode <= 58) ||
+			(opcode == 188))
 			return new Object[]
 				{
 					Integer.valueOf(__op.__readUByte(1))
 				};
 		
 		// Single signed short
-		else if ((opcode >= 153 && opcode <= 167) ||
+		else if ((opcode == 17) ||
+			(opcode >= 153 && opcode <= 167) ||
 			(opcode >= 198 && opcode <= 199))
 			return new Object[]
 				{
 					Integer.valueOf(__op.__readSShort(1))
+				};
+		
+		// Single unsigned short
+		else if ((opcode >= 50197 && opcode <= 50201) ||
+			(opcode >= 50230 && opcode <= 50234))
+			return new Object[]
+				{
+					Integer.valueOf(__op.__readUShort(1))
 				};
 		
 		// Single signed int
@@ -80,6 +92,38 @@ final class __OpArguments__
 				{
 					Integer.valueOf(__op.__readUByte(1)),
 					Integer.valueOf(__op.__readSByte(2))
+				};
+		
+		// Wide Increment/Decrement local
+		else if (opcode == 50308)
+			return new Object[]
+				{
+					Integer.valueOf(__op.__readUShort(1)),
+					Integer.valueOf(__op.__readSShort(3))
+				};
+		
+		// Narrow Pool constant (narrow)
+		else if (opcode == 18)
+			return new Object[]
+				{
+					__op.program().constantPool().<CFLDCLoadable.Narrow>getAs(
+						__op.__readUByte(1), CFLDCLoadable.Narrow.class)
+				};
+		
+		// Wide pool constant (narrow)
+		else if (opcode == 19)
+			return new Object[]
+				{
+					__op.program().constantPool().<CFLDCLoadable.Narrow>getAs(
+						__op.__readUShort(1), CFLDCLoadable.Narrow.class)
+				};
+		
+		// Wide pool constant (wide)
+		else if (opcode == 20)
+			return new Object[]
+				{
+					__op.program().constantPool().<CFLDCLoadable.Wide>getAs(
+						__op.__readUShort(1), CFLDCLoadable.Wide.class)
 				};
 		
 		// Single field reference
@@ -100,13 +144,31 @@ final class __OpArguments__
 				};
 		
 		// Single class
-		else if ((opcode == 189) ||
+		else if ((opcode == 187) ||
+			(opcode == 189) ||
 			(opcode >= 192 && opcode <= 193))
 			return new Object[]
 				{
 					__op.program().constantPool().<CFClassName>getAs(
 						__op.__readUShort(1), CFClassName.class).symbol()
 				};
+		
+		// New multi-dimentional array
+		else if (opcode == 197)
+			return new Object[]
+				{
+					__op.program().constantPool().<CFClassName>getAs(
+						__op.__readUShort(1), CFClassName.class).symbol(),
+					__op.__readUByte(2)
+				};
+		
+		// Table switch
+		else if (opcode == 170)
+			throw new Error("TODO");
+		
+		// Lookup switch
+		else if (opcode == 171)
+			throw new Error("TODO");
 		
 		// Assume no arguments
 		else

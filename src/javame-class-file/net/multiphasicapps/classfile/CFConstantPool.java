@@ -212,7 +212,7 @@ public class CFConstantPool
 	 * of the given class.
 	 * @since 2016/03/15
 	 */
-	public <Q extends CFConstantEntry> Q getAs(int __i, Class<Q> __cl)
+	public <Q extends CFConstantEntryKind> Q getAs(int __i, Class<Q> __cl)
 		throws CFFormatException, NullPointerException
 	{
 		// Locate entry

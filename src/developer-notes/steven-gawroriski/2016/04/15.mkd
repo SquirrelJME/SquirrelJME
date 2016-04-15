@@ -18,3 +18,7 @@ Ok so today:
 Also the other portions of code which directly read arguments can just instead
 read the argument table. This would be cleaner.
 
+## 11:22
+
+With arguments, things should be easier to implement.
+

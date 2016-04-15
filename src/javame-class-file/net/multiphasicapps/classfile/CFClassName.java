@@ -24,6 +24,7 @@ import net.multiphasicapps.descriptors.IllegalSymbolException;
  */
 public final class CFClassName
 	extends CFConstantEntry
+	implements CFLDCLoadable.Narrow
 {
 	/** The class name index. */
 	protected final int index;

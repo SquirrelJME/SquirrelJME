@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 public final class CFConstantString
 	extends CFConstantValue<String>
-	implements CharSequence
+	implements CFLDCLoadable.Narrow, CharSequence
 {
 	/** The indexed UTF-8 constant. */
 	protected final int index;
