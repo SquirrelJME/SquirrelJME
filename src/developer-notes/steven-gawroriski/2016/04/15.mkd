@@ -22,3 +22,9 @@ read the argument table. This would be cleaner.
 
 With arguments, things should be easier to implement.
 
+## 11:24
+
+Which the type determination and the arguments, the operation handler for `new`
+is much shorter. It was previously 32 lines, now it is just 5. Well I can just
+get it down to a single line statement.
+

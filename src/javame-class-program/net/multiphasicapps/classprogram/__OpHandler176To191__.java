@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classprogram;
 
+import net.multiphasicapps.classfile.CFClassName;
 import net.multiphasicapps.classfile.CFConstantEntry;
 import net.multiphasicapps.classfile.CFConstantPool;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
@@ -66,41 +67,9 @@ class __OpHandler176To191__
 	 */
 	void __new(CPComputeMachine<? extends Object> __cm, Object __a, CPOp __op)
 	{
-		/*// Obtain the constant pool because it has the class reference
-		CFConstantPool pool = __op.__pool();
-		
-		// Get the referenced class entry
-		ClassNameSymbol clname = pool.<CFConstantEntry.ClassName>getAs(
-			__op.__readUnsignedShort(1), CFConstantEntry.ClassName.class).
-			symbol();
-		
-		// Get input variables
-		CPVariables inputs = __op.variables();
-		
-		// Get the input and output variable states
-		CPVariableStates inputs = __op.inputState();
-		CPVariableStates outputs = __op.__outputState(false);
-		boolean docalc = !outputs._gotcomputed;
-		
-		// Get the top of the stack
-		int stacktop = inputs.getStackTop();
-		
-		// Calculate next state
-		if (docalc)
-		{
-			// Push to the stack
-			CPVariableState vs = outputs.__push();
-			
-			// Is an object
-			vs.__setComputedType(CPVariableType.OBJECT);
-			
-			// Becomes a new variable
-			vs.__setComputedValue(vs.__newValueAt(__op));
-		}
-		
 		// Perform the allocation
-		__castCM(__cm).allocateObject(__a, stacktop, clname);*/
-		throw new Error("TODO");
+		__castCM(__cm).allocateObject(__a, __op.variables().getStackTop(),
+			((ClassNameSymbol)__op.arguments().get(0)));
 	}
 }
 
