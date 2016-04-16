@@ -10,39 +10,110 @@
 
 package java.io;
 
+/**
+ * This class is the base class for all byte oriented output streams.
+ *
+ * @since 2016/04/16
+ */
 public abstract class OutputStream
 	implements Closeable, Flushable
 {
+	/**
+	 * Initializes the base output stream.
+	 *
+	 * @since 2016/04/16
+	 */
 	public OutputStream()
 	{
-		throw new Error("TODO");
 	}
 	
+	/**
+	 * Writes a single byte to the output stream, the byte is in the range of
+	 * 0 and 255. If the byte exceeds that range, then it must take the low
+	 * order value and write that {@code __a & 0xFF}.
+	 *
+	 * @param __a The value the low order byte is derived from for output to
+	 * this stream.
+	 * @throws IOException On write errors.
+	 * @since 2016/04/16
+	 */
 	public abstract void write(int __a)
 		throws IOException;
 	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * If this method is not overridden by a sub-class then this does nothing.
+	 *
+	 * @since 2016/04/16
+	 */
+	@Override
 	public void close()
 		throws IOException
-	{
-		throw new Error("TODO");
+	{	
+		// Does nothing
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * If this method is not overridden by a sub-class then this does nothing.
+	 *
+	 * @since 2016/04/16
+	 */
+	@Override
 	public void flush()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Does nothing
 	}
 	
+	/**
+	 * Writes bytes from the given input array to this output stream.
+	 *
+	 * If this method is not overidden by a sub-class then this will call
+	 * {@link #write(int)} for each byte in the buffer.
+	 *
+	 * @param __a The source byte array to write.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/16
+	 */
 	public void write(byte[] __a)
-		throws IOException
+		throws IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// Wrap
+		write(__a, 0, __a.length);
 	}
 	
-	public void write(byte[] __a, int __b, int __c)
-		throws IOException
+	/**
+	 * Writes multiple bytes from the specific array into this output stream.
+	 *
+	 * @param __a The array to source bytes from.
+	 * @param __o The offset from the start of the array to start reading from.
+	 * @param __l The number of bytes to write.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative;
+	 * or the offset and the length exceeds the input array.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/16
+	 */
+	public void write(byte[] __a, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) >= __a.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Write all bytes
+		for (int i = 0; i < __l; i++)
+			write(__a[__o + i]);
 	}
 }
 
