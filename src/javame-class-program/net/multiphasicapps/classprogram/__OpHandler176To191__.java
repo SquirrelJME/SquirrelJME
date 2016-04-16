@@ -50,6 +50,16 @@ class __OpHandler176To191__
 		// Depends on the operation
 		switch (opcode)
 		{
+				// areturn
+			case 176:
+				__return(__cm, __a, __op, CPVariableType.OBJECT);
+				break;
+			
+				// return
+			case 177:
+				__return(__cm, __a, __op, null);
+				break;
+				
 				// getstatic
 			case 178:
 				__getstatic(__cm, __a, __op);
@@ -183,6 +193,22 @@ class __OpHandler176To191__
 		// Perform the allocation
 		__castCM(__cm).allocateObject(__a, __op.variables().getStackTop(),
 			((ClassNameSymbol)__op.arguments().get(0)));
+	}
+	
+	/**
+	 * Returns a value to the calling method.
+	 *
+	 * @param __cm The compute machine.
+	 * @param __a Passed A.
+	 * @param __op The current operation.
+	 * @param __rvt The return value type.
+	 * @since 2016/04/16
+	 */
+	void __return(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op, CPVariableType __rvt)
+	{
+		__castCM(__cm).returnValue(__a, (__rvt == null ? Integer.MIN_VALUE :
+			__op.variables().getStackTop() - (__rvt.isWide() ? 2 : 1)));
 	}
 }
 

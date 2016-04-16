@@ -52,6 +52,9 @@ public class JVMStackFrame
 	private volatile int _jumptarget =
 		Integer.MIN_VALUE;
 	
+	/** Is this frame returning? */
+	private volatile boolean _doreturn;
+	
 	/**
 	 * Initializes the stack frame.
 	 *
@@ -202,6 +205,21 @@ public class JVMStackFrame
 	}
 	
 	/**
+	 * Is this method returning?
+	 *
+	 * @return {@code true} if this method is returning.
+	 * @since 2016/04/16
+	 */
+	public boolean isReturning()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _doreturn;
+		}
+	}
+	
+	/**
 	 * Leaves the current stack frame.
 	 *
 	 * @since 2016/04/09
@@ -209,6 +227,24 @@ public class JVMStackFrame
 	public void leave()
 	{
 		thread.exitFrame(this);
+	}
+	
+	/**
+	 * Marks that this frame should return.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/04/16
+	 */
+	public JVMStackFrame markReturn()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			_doreturn = true;
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**

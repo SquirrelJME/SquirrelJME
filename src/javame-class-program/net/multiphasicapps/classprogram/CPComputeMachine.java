@@ -71,6 +71,16 @@ public interface CPComputeMachine<A>
 		CPInvokeType __type, int... __args);
 	
 	/**
+	 * Returns from the given method returning the specified value.
+	 *
+	 * @param __pa Passed value.
+	 * @param __src The value to be returned, if negative then not value is
+	 * returned.
+	 * @since 2016/04/16
+	 */
+	public abstract void returnValue(A __pa, int __src);
+	
+	/**
 	 * Tosses an exception so that it may potentially be handled by exception
 	 * handlers.
 	 *

@@ -275,6 +275,21 @@ public class JVMComputeMachine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/04/16
+	 */
+	@Override
+	public void returnValue(JVMStackFrame __frame, int __src)
+	{
+		// Handle return of value
+		if (__src >= 0)
+			throw new Error("TODO");
+		
+		// Mark frame to be returned from
+		__frame.markReturn();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/04/16 
 	 */
 	@Override

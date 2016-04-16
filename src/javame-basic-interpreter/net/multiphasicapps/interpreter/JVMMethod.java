@@ -181,7 +181,7 @@ public class JVMMethod
 			// Keep executing until a return is reached or an unhandled
 			// exception is done.
 			JVMComputeMachine cm = engine().computeMachine();
-			for (;;)
+			while (!currentframe.isReturning())
 			{
 				try
 				{
