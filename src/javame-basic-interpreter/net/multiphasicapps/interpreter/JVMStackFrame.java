@@ -287,8 +287,8 @@ public class JVMStackFrame
 				method, Arrays.asList(__args)));
 		
 		// Setup variable
-		int vat = 0;
-		for (int i = (isinstance ? 1 : 0), varg = 0; i < __nia; i++)
+		int vat = (isinstance ? 1 : 0);
+		for (int i = vat, varg = 0; i < __nia; i++)
 		{
 			// Get method argument from the descriptor and the input
 			// argument
