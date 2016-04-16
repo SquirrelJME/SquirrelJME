@@ -153,7 +153,7 @@ final class __DetermineTypes__
 				case 35:
 				case 36:
 				case 37:
-					__load_n(xop, opcode - 24, CPVariableType.FLOAT);
+					__load_n(xop, opcode - 34, CPVariableType.FLOAT);
 					break;
 				
 				case 38:
