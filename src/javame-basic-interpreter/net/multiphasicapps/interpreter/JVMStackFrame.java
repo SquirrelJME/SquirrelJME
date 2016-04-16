@@ -12,6 +12,7 @@ package net.multiphasicapps.interpreter;
 
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classprogram.CPProgram;
+import net.multiphasicapps.classprogram.CPProgramException;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
@@ -75,7 +76,19 @@ public class JVMStackFrame
 		isinit = __init;
 		
 		// Get program here
-		CPProgram program = method.program();
+		CPProgram program;
+		try
+		{
+			program = method.program();
+		}
+		
+		// {@squirreljme.error IN0r Could not load the program.
+		// (The current method)}
+		catch (CPProgramException e)
+		{
+			throw new JVMClassFormatError(__thr, String.format(
+				"IN0r %s", this), e);
+		}
 		
 		// Make sure the right about of arguments were passed
 		MethodSymbol desc = method.type();

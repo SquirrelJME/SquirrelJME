@@ -187,36 +187,26 @@ public class JVMMethod
 				{
 					// Get the operation for the current address
 					CPOp op = program.get(currentframe.getPCAddress());
-				
-					// Compute it
-					try
+					
+					// Get the entry address
+					int entryaddr = currentframe.getPCAddress();
+					
+					// Perform the operation
+					op.<JVMStackFrame>compute(cm, currentframe);
+					
+					// Jumping?
+					int potjump = currentframe.getJumpTarget();
+					if (potjump >= 0)
 					{
-						// Get the entry address
-						int entryaddr = currentframe.getPCAddress();
-						
-						// Perform the operation
-						op.<JVMStackFrame>compute(cm, currentframe);
-						
-						// Jumping?
-						int potjump = currentframe.getJumpTarget();
-						if (potjump >= 0)
-						{
-							// Set new position and clear the jump
-							currentframe.setPCAddress(potjump);
-							currentframe.clearJumpTarget();
-						}
-						
-						// Otherwise, flow to the next instruction
-						else
-						{
-							currentframe.setPCAddress(entryaddr + 1);
-						}
+						// Set new position and clear the jump
+						currentframe.setPCAddress(potjump);
+						currentframe.clearJumpTarget();
 					}
 					
-					// Failed to compute the program
-					catch (CPProgramException e)
+					// Otherwise, flow to the next instruction
+					else
 					{
-						throw new JVMEngineException(__thr, e);
+						currentframe.setPCAddress(entryaddr + 1);
 					}
 				}
 				
@@ -233,6 +223,15 @@ public class JVMMethod
 					// Currently wrap no exceptions into the guest
 					System.err.println("TODO -- Wrap exceptions into guest.");
 					throw e;
+				}
+				
+				// Not as critical, but still pretty bad
+				catch (CPProgramException e)
+				{
+					// {@squirreljme.error IN0s The current method is
+					// malformed and is not correct.}
+					throw new JVMIncompatibleClassChangeError(__thr, "IN0s",
+						e);
 				}
 				
 				// Very critical failure
