@@ -273,11 +273,11 @@ public class JVMStackFrame
 		
 		// Setup variable
 		int vat = 0;
-		for (int i = 0; i < __nia; i++)
+		for (int i = 0, varg = 0; i < __nia; i++)
 		{
 			// Get method argument from the descriptor and the input
 			// argument
-			FieldSymbol farg = __desc.get(i);
+			FieldSymbol farg = __desc.get(varg++);
 			Object carg = __args[i];
 			
 			// Get the system class for the given argument

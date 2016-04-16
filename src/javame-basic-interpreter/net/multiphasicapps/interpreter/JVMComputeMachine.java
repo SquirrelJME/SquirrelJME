@@ -257,7 +257,7 @@ public class JVMComputeMachine
 		int n = __args.length;
 		Object[] call = new Object[n];
 		for (int i = 0; i < n; i++)
-			call[i] = vars[i].get();
+			call[i] = vars[__args[i]].get();
 		
 		// Invoke it
 		invokethis.interpret(__frame.thread(), false, call);

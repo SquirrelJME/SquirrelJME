@@ -144,7 +144,7 @@ class __OpHandler176To191__
 		MethodSymbol desc = ref.nameAndType().getValue().asMethod();
 		int popcount = 0;
 		int n = desc.argumentCount();
-		for (int i = 0; i < popcount; i++)
+		for (int i = 0; i < n; i++)
 			popcount += (CPVariableType.bySymbol(desc.get(i)).isWide() ? 2 :
 				1);
 		
