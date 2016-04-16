@@ -10,3 +10,8 @@ a static initializer.
 Ok, so constructors can be called regardless of whether they are
 initializers or not.
 
+## 17:38
+
+Magical stuff will just be rewritten by the interpreter. So if specific methods
+are called, they will just do something else.
+

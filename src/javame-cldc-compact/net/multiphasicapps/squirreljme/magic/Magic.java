@@ -23,6 +23,14 @@ import java.io.OutputStream;
  */
 public abstract class Magic
 {
+	/** Standard output stream. */
+	private static final __StdOutOutputStream__ _stdout =
+		new __StdOutOutputStream__();
+	
+	/** Standard error stream. */
+	private static final __StdErrOutputStream__ _stderr =
+		new __StdErrOutputStream__();
+	
 	/**
 	 * Not initialized or its initialization is faked.
 	 *
@@ -30,6 +38,7 @@ public abstract class Magic
 	 */
 	private Magic()
 	{
+		throw new RuntimeException("WTFX");
 	}
 	
 	/**
@@ -175,7 +184,7 @@ public abstract class Magic
 	 */
 	public static OutputStream stdErr()
 	{
-		throw new ForbiddenMagicError();
+		return _stderr;
 	}
 	
 	/**
@@ -186,7 +195,7 @@ public abstract class Magic
 	 */
 	public static OutputStream stdOut()
 	{
-		throw new ForbiddenMagicError();
+		return _stdout;
 	}
 }
 

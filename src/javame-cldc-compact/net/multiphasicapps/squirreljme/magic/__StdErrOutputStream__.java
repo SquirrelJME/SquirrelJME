@@ -10,24 +10,34 @@
 
 package net.multiphasicapps.squirreljme.magic;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
- * This is thrown when magic is called when it is forbidden to use it.
+ * This is a rewritten stream which writes to the host standard error.
  *
- * There is no {@code sun.misc.Unsafe} exploitation here.
- *
- * @since 2016/03/17
+ * @since 2016/04/16
  */
-public final class ForbiddenMagicError
-	extends Error
+final class __StdErrOutputStream__
+	extends OutputStream
 {
 	/**
-	 * Initializes the exception with a hidden message.
+	 * Initializes the standard error stream.
 	 *
-	 * @since 2016/03/17
+	 * @since 2016/04/16
 	 */
-	ForbiddenMagicError()
+	__StdErrOutputStream__()
 	{
-		super();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/16
+	 */
+	@Override
+	public void write(int __b)
+	{
+		throw new ForbiddenMagicError();
 	}
 }
 
