@@ -255,7 +255,7 @@ public final class JVMClass
 							String.format("IN0f %s", this));
 					
 					// Interpret to initialize it
-					clinit.interpret(true, __th);
+					clinit.interpret(__th, true);
 				}
 			}
 			

@@ -157,12 +157,14 @@ public class JVMThread
 	 * Enters the given method.
 	 *
 	 * @param __m The method to enter.
+	 * @param __init Is this an initializer?
 	 * @param __args Arguments to this method call.
 	 * @return The created stack frame.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/09
 	 */
-	public JVMStackFrame enterFrame(JVMMethod __m, Object... __args)
+	public JVMStackFrame enterFrame(JVMMethod __m, boolean __init,
+		Object... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -173,7 +175,7 @@ public class JVMThread
 		Deque<JVMStackFrame> stack = stacktrace;
 		synchronized (stack)
 		{
-			JVMStackFrame rv = new JVMStackFrame(this, __m, __args);
+			JVMStackFrame rv = new JVMStackFrame(this, __m, __init, __args);
 			stack.offerLast(rv);
 			return rv;
 		}
@@ -350,7 +352,7 @@ public class JVMThread
 		try
 		{
 			// Start execution at the entry method
-			entrymethod.interpret(false, this, entryargs);
+			entrymethod.interpret(this, false, entryargs);
 			
 			// Execution ends
 			_ended = true;

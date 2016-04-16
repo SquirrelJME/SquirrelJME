@@ -37,6 +37,9 @@ public class JVMStackFrame
 	/** Variables that are currently set in this frame. */
 	protected final JVMVariable[] vars;
 	
+	/** Is this an initializer? */
+	protected final boolean isinit;
+	
 	/** The current PC address. */
 	private volatile int _pcaddr;
 	
@@ -49,11 +52,13 @@ public class JVMStackFrame
 	 *
 	 * @param __thr The current thread of execution.
 	 * @param __in The method currently being executed.
+	 * @param __init Is this an initializer?
 	 * @param __args Method arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/09
 	 */
-	public JVMStackFrame(JVMThread __thr, JVMMethod __in, Object... __args)
+	public JVMStackFrame(JVMThread __thr, JVMMethod __in, boolean __init,
+		Object... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -67,6 +72,7 @@ public class JVMStackFrame
 		// Set
 		thread = __thr;
 		method = __in;
+		isinit = __init;
 		
 		// Get program here
 		CPProgram program = method.program();
@@ -151,6 +157,17 @@ public class JVMStackFrame
 		{
 			return _pcaddr;
 		}
+	}
+	
+	/**
+	 * Is this a static or instance initializer?
+	 *
+	 * @return {@code true} if it is.
+	 * @since 2016/04/15
+	 */
+	public boolean isInitializer()
+	{
+		return isinit;
 	}
 	
 	/**

@@ -179,7 +179,18 @@ public class JVMComputeMachine
 					String.format("IN0n %s %s", cl, instance.classType()));
 		}
 		
-		throw new Error("TODO");
+		// Setup calling arguments
+		int n = __args.length;
+		Object[] call = new Object[n];
+		for (int i = 0; i < n; i++)
+			call[i] = vars[i].get();
+		
+		// Invoke it
+		res.interpret(__frame.thread(), false, call);
+		
+		// Handle return value
+		if (__ref.memberType().returnValue() != null)
+			throw new Error("TODO");
 	}
 	
 	/**

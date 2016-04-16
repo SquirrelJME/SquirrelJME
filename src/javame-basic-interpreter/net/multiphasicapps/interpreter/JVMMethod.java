@@ -143,16 +143,16 @@ public class JVMMethod
 	/**
 	 * Runs the interpreter logic for the given thread.
 	 *
-	 * @param __init Is this an class instance or static initializer, if it is
-	 * then it is permitted to write to final fields.
 	 * @param __thr The thread of execution, if {@code null} then there is none
 	 * or the default thread is implied.
+	 * @param __init Is this an class instance or static initializer, if it is
+	 * then it is permitted to write to final fields.
 	 * @param __args The arguments to the call of the method.
 	 * @throws JVMEngineException Any thrown exceptions are either handled or
 	 * propogated upwards.
 	 * @since 2016/04/07
 	 */
-	public void interpret(boolean __init, JVMThread __thr, Object... __args)
+	public void interpret(JVMThread __thr, boolean __init, Object... __args)
 		throws JVMEngineException
 	{
 		// Force arguments to exist
@@ -164,7 +164,7 @@ public class JVMMethod
 			__thr = engine().threads().defaultThread();
 		
 		// On entry of a method, add this method to the call stack.
-		JVMStackFrame currentframe = __thr.enterFrame(this, __args);
+		JVMStackFrame currentframe = __thr.enterFrame(this, __init, __args);
 		try
 		{
 			// Debug
