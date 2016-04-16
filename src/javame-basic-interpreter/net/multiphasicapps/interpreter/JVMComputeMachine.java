@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.Objects;
 import net.multiphasicapps.classfile.CFFieldReference;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classfile.CFMethodReference;
@@ -104,19 +105,22 @@ public class JVMComputeMachine
 		if (__dest == __src)
 			return;
 		
-		// Get source to copy
+		// Get variables to copy
 		JVMVariable[] vars = __frame.variables();
 		JVMVariable src = vars[__src];
+		JVMVariable dest = vars[__dest];
+		
+		// Debug
+		System.err.printf("DEBUG -- Copy %d (%s) -> %d (%s)%n",
+			__src, Objects.toString(src),
+			__dest, Objects.toString(dest));
 		
 		// The destination may need to be replaced
-		JVMVariable dest = vars[__dest];
 		if (dest == null ||
 			!(dest.getClass().isInstance(src.getClass())))
 			vars[__dest] = dest = JVMVariable.empty(src);
 		
 		// Set the value of the destination to the source
-		System.err.printf("DEBUG -- Copy %d (%s) -> %d (%s)%n",
-			__src, src.get(), __dest, dest.get());
 		dest.set((Object)src.get());
 	}
 	

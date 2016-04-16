@@ -286,8 +286,19 @@ public class JVMStackFrame
 			throw new JVMEngineException(this, String.format("IN0w %s %s",
 				method, Arrays.asList(__args)));
 		
+		// Setup variable for first argument
+		int vat = 0;
+		if (isinstance)
+		{
+			// Get new object
+			JVMVariable.OfObject iobj = JVMVariable.OfObject.empty();
+			__vars[vat++] = iobj;
+			
+			// Set the value
+			iobj.set((JVMObject)__args[0]);
+		}
+		
 		// Setup variable
-		int vat = (isinstance ? 1 : 0);
 		for (int i = vat, varg = 0; i < __nia; i++)
 		{
 			// Get method argument from the descriptor and the input

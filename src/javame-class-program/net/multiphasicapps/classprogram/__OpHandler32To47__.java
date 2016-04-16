@@ -52,7 +52,7 @@ class __OpHandler32To47__
 			case 35:
 			case 36:
 			case 37:
-				__load(__cm, __a, __op, false, opcode - 24);
+				__load(__cm, __a, __op, false, opcode - 34);
 				break;
 				
 				// double
@@ -91,7 +91,7 @@ class __OpHandler32To47__
 		boolean __wide, int __lv)
 	{
 		// Copy up
-		__castCM(__cm).copy(__a, __lv, __op.variables().getStackTop());
+		__castCM(__cm).copy(__a, __op.variables().getStackTop(), __lv);
 	}
 }
 
