@@ -223,9 +223,24 @@ public class JVMMethod
 				// Caught exception, it needs to be handled.
 				catch (JVMEngineException e)
 				{
+					// Record trace potentially
+					e.setVMStackTrace(__thr);
+					
+					// If a VM error, do not wrap
+					if (e instanceof JVMVirtualMachineError)
+						throw e;
+					
 					// Currently wrap no exceptions into the guest
 					System.err.println("TODO -- Wrap exceptions into guest.");
 					throw e;
+				}
+				
+				// Very critical failure
+				catch (Error e)
+				{
+					// {@squirreljme.error IN0o Critical virtual machine
+					// error.}
+					throw new JVMVirtualMachineError(__thr, "IN0o", e);
 				}
 			}
 		}

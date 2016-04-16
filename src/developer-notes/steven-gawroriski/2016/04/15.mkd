@@ -50,4 +50,8 @@ operations.
 
 All of the exceptions that the VM can throw need to have frames.
 
+## 21:42
+
+And now when an exception is caught I can determine where in the virtual
+machine internally it was thrown so to speak.
 

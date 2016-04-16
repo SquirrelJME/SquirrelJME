@@ -215,6 +215,33 @@ public class JVMThread
 	}
 	
 	/**
+	 * Returns the exception trace which represents the stack trace as it
+	 * appears internally to the virtual machine.
+	 *
+	 * @return The exception trace.
+	 * @since 2016/04/15
+	 */
+	public JVMExceptionTrace[] getExceptionTrace()
+	{
+		// Lock
+		Deque<JVMStackFrame> trace = stacktrace;
+		synchronized (lock)
+		{
+			// Setup return array
+			int n = trace.size();
+			JVMExceptionTrace[] rv = new JVMExceptionTrace[n];
+			
+			// Go through it
+			int i = 0;
+			for (JVMStackFrame f : trace)
+				rv[i++] = new JVMExceptionTrace(f);
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Returns {@code true} if this thread is alive.
 	 *
 	 * Host threads are always alive.
@@ -336,8 +363,25 @@ public class JVMThread
 			// a thread. (The current thread)}
 			System.err.printf("IN08 %s%n", toString());
 			
+			// Get exception cause
+			Throwable c = t.getCause();
+			JVMEngineException jee = (t instanceof JVMEngineException ?
+				(JVMEngineException)t : (c instanceof JVMEngineException ?
+				(JVMEngineException)c : null));
+			
 			// Print it
+			System.err.println("********** INTERPRETER **********");
 			t.printStackTrace(System.err);
+			
+			// Print exception as it appears to the virtual machine
+			if (jee != null)
+			{
+				System.err.println("******** VIRTUAL MACHINE ********");
+				jee.printVMStackTrace(System.err);
+			}
+			
+			// End marker
+			System.err.println("*********************************");
 		}
 		
 		// Always mark as ended
