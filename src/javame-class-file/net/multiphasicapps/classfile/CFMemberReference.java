@@ -12,6 +12,7 @@ package net.multiphasicapps.classfile;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
@@ -70,6 +71,17 @@ public abstract class CFMemberReference<V extends MemberTypeSymbol>
 	public final CFClassName className()
 	{
 		return pool.<CFClassName>getAs(classdx, CFClassName.class);
+	}
+	
+	/**
+	 * Returns the name of the referenced member.
+	 *
+	 * @return The referenced member name.
+	 * @since 2016/04/15
+	 */
+	public final IdentifierSymbol memberName()
+	{
+		return nameAndType().getKey();
 	}
 	
 	/**

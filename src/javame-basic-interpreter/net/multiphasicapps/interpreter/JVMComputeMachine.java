@@ -147,10 +147,6 @@ public class JVMComputeMachine
 		System.err.printf("DEBUG -- Invoke method %d %s %s %s%n", __dest,
 			__ref, __type, MissingCollections.boxedList(__args));
 		
-		// Get the target class and make sure it is initialized
-		JVMClass cl = engine.classes().loadClass(__ref.className().symbol());
-		JVMObject clo = cl.classObject(__frame.thread());
-		
 		// Get the instance to perform the invocation on
 		JVMVariable[] vars = __frame.variables();
 		JVMObject instance;
@@ -160,7 +156,21 @@ public class JVMComputeMachine
 			if (null == (instance = ((JVMVariable.OfObject)vars[__args[0]]).
 				get()))
 				throw new JVMNullPointerException(__frame, "IN0m");
-			
+		}
+		
+		// Static call	
+		else
+			instance = null;
+		
+		// Resolve the method to be invoked
+		JVMMethod res = __resolveMethod(__frame, instance, __ref, __type);
+		
+		// Get the target class and make sure it is initialized
+		JVMClass cl = res.outerClass();
+		
+		// If an instance it must be one of the class containing the method
+		if (instance != null)
+		{
 			// {@squirreljme.error IN0n The instance does not extend or
 			// implement the given class. (The expected class type; The current
 			// class type)}
@@ -169,19 +179,13 @@ public class JVMComputeMachine
 					String.format("IN0n %s %s", cl, instance.classType()));
 		}
 		
-		// Static call	
-		else
-			instance = null;
-		
-		// Resolve the method to be invoked
-		JVMMethod res = __resolveMethod(instance, __ref, __type);
-		
 		throw new Error("TODO");
 	}
 	
 	/**
 	 * Resolves the given method.
 	 *
+	 * @param __frame The stack frame.
 	 * @param __i The object instance.
 	 * @param __ref The class and name of the method.
 	 * @param __type How the method is to be invoked.
@@ -189,17 +193,41 @@ public class JVMComputeMachine
 	 * @throws JVMClassFormatError If the method is not resolvable.
 	 * @throws NullPointerException On null arguments, except for {@code __i}.
 	 */
-	private JVMMethod __resolveMethod(JVMObject __i, CFMethodReference __ref,
-		CPInvokeType __type)
+	private JVMMethod __resolveMethod(JVMStackFrame __frame, JVMObject __i,
+		CFMethodReference __ref, CPInvokeType __type)
 		throws JVMClassFormatError, NullPointerException
 	{
 		// Check
 		if (__ref == null || __type == null)
 			throw new NullPointerException("NARG");
 		
-		// Go through all classes 
+		// Static initialization?
+		if (__type == CPInvokeType.STATIC)
+		{
+			// Get the class of the given method
+			JVMClass cl = engine.classes().loadClass(__ref.className().
+				symbol());
+			JVMObject clo = cl.classObject(__frame.thread());
+			
+			// Find a method by the given name
+			JVMMethod rv = cl.methods().get(__ref.memberName(),
+				__ref.memberType());
+			if (rv != null)
+				return rv;
+			
+			// {@squirreljme.error IN0q Could not locate the specified static
+			// method. (The static method)}
+			throw new JVMIncompatibleClassChangeError(__frame, String.format(
+				"IN0q %s", __ref));
+		}
 		
-		throw new Error("TODO");
+		// Called on an instance of a method
+		else
+		{
+			// Go through all classes 
+		
+			throw new Error("TODO");
+		}
 	}
 }
 
