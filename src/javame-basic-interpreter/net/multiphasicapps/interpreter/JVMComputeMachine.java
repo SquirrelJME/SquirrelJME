@@ -115,6 +115,8 @@ public class JVMComputeMachine
 			vars[__dest] = dest = JVMVariable.empty(src);
 		
 		// Set the value of the destination to the source
+		System.err.printf("DEBUG -- Copy %d (%s) -> %d (%s)%n",
+			__src, src.get(), __dest, dest.get());
 		dest.set((Object)src.get());
 	}
 	

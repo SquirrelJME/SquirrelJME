@@ -91,8 +91,7 @@ class __OpHandler32To47__
 		boolean __wide, int __lv)
 	{
 		// Copy up
-		__castCM(__cm).copy(__a, __lv,
-			__op.variables().getStackTop() - (__wide ? 2 : 1));
+		__castCM(__cm).copy(__a, __lv, __op.variables().getStackTop());
 	}
 }
 
