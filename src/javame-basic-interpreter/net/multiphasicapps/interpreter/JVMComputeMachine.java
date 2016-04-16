@@ -130,6 +130,7 @@ public class JVMComputeMachine
 	 * @since 2016/04/15
 	 */
 	@Override
+	@SuppressWarnings({"unchecked"})
 	public void getStaticField(JVMStackFrame __frame, int __dest,
 		CFFieldReference __f)
 	{
@@ -139,7 +140,8 @@ public class JVMComputeMachine
 		// Obtain the static field
 		JVMField field = __getStaticField(__frame, __f);
 		
-		throw new Error("TODO");
+		// Get the value
+		(__frame.variables()[__dest]).set(field.getStaticValue());
 	}
 	
 	/**
@@ -287,7 +289,8 @@ public class JVMComputeMachine
 		// Obtain the static field
 		JVMField field = __getStaticField(__frame, __f);
 		
-		throw new Error("TODO");
+		// Place the value
+		field.setStaticValue((__frame.variables()[__src]).get());
 	}
 	
 	/**

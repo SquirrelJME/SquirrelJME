@@ -251,6 +251,18 @@ public final class FieldSymbol
 	}
 	
 	/**
+	 * Returns {@code true} if this is a reference type.
+	 *
+	 * @return {@code true} if a reference type, otherwise {@code false} if
+	 * a primitive value.
+	 * @since 2016/04/16
+	 */
+	public boolean isReference()
+	{
+		return isArray() || primitiveType() == null;
+	}
+	
+	/**
 	 * Returns the primitive type of the field.
 	 *
 	 * @return The primitive type or {@code null} if not one.
