@@ -79,11 +79,30 @@ class __OpHandler176To191__
 			case 187:
 				__new(__cm, __a, __op);
 				break;
+				
+				// athrow
+			case 191:
+				__athrow(__cm, __a, __op);
+				break;
 			
 				// Unknown
 			default:
 				throw new __VMWorkers__.__UnknownOp__();
 		}
+	}
+	
+	/**
+	 * Throws an exception at the top of the stack.
+	 *
+	 * @param __cm Compute machine.
+	 * @param __a Passed value.
+	 * @param __op The operation.
+	 * @since 2016/04/16
+	 */
+	void __athrow(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op)
+	{
+		__castCM(__cm).tossException(__a, __op.variables().getStackTop() - 1);
 	}
 	
 	/**

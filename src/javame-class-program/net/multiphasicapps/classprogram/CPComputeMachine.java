@@ -69,5 +69,15 @@ public interface CPComputeMachine<A>
 	 */
 	public abstract void invoke(A __pa, int __dest, CFMethodReference __ref,
 		CPInvokeType __type, int... __args);
+	
+	/**
+	 * Tosses an exception so that it may potentially be handled by exception
+	 * handlers.
+	 *
+	 * @param __pa Passed value.
+	 * @param __object The object to throw.
+	 * @since 2016/04/16 
+	 */
+	public abstract void tossException(A __pa, int __object);
 }
 

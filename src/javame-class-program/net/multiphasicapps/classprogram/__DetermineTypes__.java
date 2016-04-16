@@ -224,6 +224,9 @@ final class __DetermineTypes__
 				case 185: __invoke(xop, true); break;
 				case 187: __new(xop); break;
 				
+					// Throw exception
+				case 191: __athrow(xop); break;
+				
 				case 50197: __load_w(xop, CPVariableType.INTEGER); break;
 				case 50198: __load_w(xop, CPVariableType.LONG); break;
 				case 50199: __load_w(xop, CPVariableType.FLOAT); break;
@@ -490,6 +493,18 @@ final class __DetermineTypes__
 					sl.__checkedSetType(__vt);
 			}
 		}
+	}
+	
+	/**
+	 * Throws an exception.
+	 *
+	 * @param __op The input operation.
+	 * @since 2016/04/16
+	 */
+	private void __athrow(CPOp __op)
+	{
+		// Just pop an object
+		operate(__op, null, CPVariableType.OBJECT, null);
 	}
 	
 	/**

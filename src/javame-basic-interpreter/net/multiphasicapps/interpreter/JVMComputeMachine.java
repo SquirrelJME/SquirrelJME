@@ -194,6 +194,19 @@ public class JVMComputeMachine
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/16 
+	 */
+	@Override
+	public void tossException(JVMStackFrame __frame, int __object)
+	{
+		// Debug
+		System.err.printf("DEBUG -- Throw exception %d.%n", __object);
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Resolves the given method.
 	 *
 	 * @param __frame The stack frame.
