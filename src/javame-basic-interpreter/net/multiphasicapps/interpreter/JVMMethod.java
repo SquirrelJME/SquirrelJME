@@ -235,7 +235,7 @@ public class JVMMethod
 				}
 				
 				// Very critical failure
-				catch (Error e)
+				catch (RuntimeException|Error e)
 				{
 					// {@squirreljme.error IN0o Critical virtual machine
 					// error.}
@@ -249,6 +249,39 @@ public class JVMMethod
 		{
 			currentframe.leave();
 		}
+	}
+	
+	/**
+	 * Returns {@code true} if this is a static initializer.
+	 *
+	 * @return {@code true} if a static initializer.
+	 * @since 2016/04/16
+	 */
+	public boolean isClassInitializer()
+	{
+		return base.isClassInitializer();
+	}
+	
+	/**
+	 * Returns {@code true} if this is a constructor.
+	 *
+	 * @return {@code true} if this is a constructor.
+	 * @since 2016/04/16
+	 */
+	public boolean isConstructor()
+	{
+		return base.isConstructor();
+	}
+	
+	/**
+	 * Is this an initializer for the static area or instance of class.
+	 *
+	 * @return {@code true} if it is an initializer.
+	 * @since 2016/04/16
+	 */
+	public boolean isInitializer()
+	{
+		return isClassInitializer() | isConstructor();
 	}
 	
 	/**

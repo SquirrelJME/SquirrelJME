@@ -173,6 +173,17 @@ public class JVMStackFrame
 	}
 	
 	/**
+	 * Returns the class that the frame is currently being executed from.
+	 *
+	 * @return The class this method is in.
+	 * @since 2016/04/16
+	 */
+	public JVMClass inClass()
+	{
+		return method.outerClass();
+	}
+	
+	/**
 	 * Is this a static or instance initializer?
 	 *
 	 * @return {@code true} if it is.

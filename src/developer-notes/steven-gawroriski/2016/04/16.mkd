@@ -1,2 +1,12 @@
 # 2016/04/16
 
+## 17:01
+
+I wonder what would happen if I were to hexedit a class so that I could call
+a static initializer.
+
+## 17:09
+
+Ok, so constructors can be called regardless of whether they are
+initializers or not.
+

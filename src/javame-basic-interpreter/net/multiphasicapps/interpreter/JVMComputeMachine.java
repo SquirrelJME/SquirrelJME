@@ -11,6 +11,7 @@
 package net.multiphasicapps.interpreter;
 
 import net.multiphasicapps.classfile.CFFieldReference;
+import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classfile.CFMethodReference;
 import net.multiphasicapps.classprogram.CPComputeMachine;
 import net.multiphasicapps.classprogram.CPInvokeType;
@@ -146,6 +147,9 @@ public class JVMComputeMachine
 		// Debug
 		System.err.printf("DEBUG -- Invoke method %d %s %s %s%n", __dest,
 			__ref, __type, MissingCollections.boxedList(__args));
+			
+		// Our current source class
+		JVMClass frameclass = __frame.inClass();
 		
 		// Get the instance to perform the invocation on
 		JVMVariable[] vars = __frame.variables();
@@ -162,11 +166,81 @@ public class JVMComputeMachine
 		else
 			instance = null;
 		
-		// Resolve the method to be invoked
-		JVMMethod res = __resolveMethod(__frame, instance, __ref, __type);
+		// The method to invoke
+		JVMMethod invokethis;
+		
+		// Get the class of the given method
+		JVMClass basecl = engine.classes().loadClass(__ref.className().
+			symbol());
+		JVMObject baseclo = basecl.classObject(__frame.thread());
+		
+		// Find a method by the given name
+		JVMMethod baseit = basecl.methods().get(__ref.memberName(),
+			__ref.memberType());
+		
+		// {@squirreljme.error IN0q Could not locate the specified method to
+		// derive an invocation from. (The static method)}
+		if (baseit == null)
+			throw new JVMIncompatibleClassChangeError(__frame,
+				String.format("IN0q %s", __ref));
+		
+		// Static invoke?
+		if (__type == CPInvokeType.STATIC)
+		{
+			// {@squirreljme.error IN0t Cannot statically invoke a non-static
+			// method. (The given method)}
+			if (!baseit.flags().isStatic())
+				throw new JVMIncompatibleClassChangeError(__frame,
+					String.format("IN0t %s", __ref));
+			
+			// Use this method
+			invokethis = baseit;
+		}
+		
+		// Special invoke?
+		else if (__type == CPInvokeType.SPECIAL)
+		{
+			// A new method is chosen if the following is true:
+			// 1. SUPER flag is set for the calling class
+			// 2. The method's class is a superclass of our class
+			// 3. The class is not an initialization method
+			if (frameclass.flags().isSpecialInvokeSpecial() &&
+				frameclass.isSuperClass(basecl) &&
+				!baseit.isInitializer())
+				throw new Error("TODO");
+			
+			// Otherwise use the given method
+			else
+				invokethis = baseit;
+		}
+		
+		// Invoke on an interface
+		else if (__type == CPInvokeType.INTERFACE)
+			throw new Error("TODO");
+		
+		// Called on an instance of a method
+		else if (__type == CPInvokeType.VIRTUAL)
+			throw new Error("TODO");
+		
+		// Unknown
+		else
+			throw new RuntimeException("WTFX");
+		
+		// {@squirreljme.error IN0u Not permitted to access the specified
+		// method. (The method to invoke)}
+		if (!__frame.thread().checkAccess(invokethis))
+			throw new JVMIncompatibleClassChangeError(__frame,
+				String.format("IN0u %s", invokethis));
+		
+		// {@squirreljme.error IN0v Cannot invoke an abstract or static method.
+		// (The method to invoke; The access flags)}
+		CFMethodFlags mf = invokethis.flags();
+		if (mf.isAbstract() || mf.isNative())
+			throw new JVMIncompatibleClassChangeError(__frame,
+				String.format("IN0v %s %s", invokethis, mf));
 		
 		// Get the target class and make sure it is initialized
-		JVMClass cl = res.outerClass();
+		JVMClass cl = invokethis.outerClass();
 		
 		// If an instance it must be one of the class containing the method
 		if (instance != null)
@@ -186,7 +260,7 @@ public class JVMComputeMachine
 			call[i] = vars[i].get();
 		
 		// Invoke it
-		res.interpret(__frame.thread(), false, call);
+		invokethis.interpret(__frame.thread(), false, call);
 		
 		// Handle return value
 		if (__ref.memberType().returnValue() != null)
@@ -204,54 +278,6 @@ public class JVMComputeMachine
 		System.err.printf("DEBUG -- Throw exception %d.%n", __object);
 		
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Resolves the given method.
-	 *
-	 * @param __frame The stack frame.
-	 * @param __i The object instance.
-	 * @param __ref The class and name of the method.
-	 * @param __type How the method is to be invoked.
-	 * @return The resolved method.
-	 * @throws JVMClassFormatError If the method is not resolvable.
-	 * @throws NullPointerException On null arguments, except for {@code __i}.
-	 */
-	private JVMMethod __resolveMethod(JVMStackFrame __frame, JVMObject __i,
-		CFMethodReference __ref, CPInvokeType __type)
-		throws JVMClassFormatError, NullPointerException
-	{
-		// Check
-		if (__ref == null || __type == null)
-			throw new NullPointerException("NARG");
-		
-		// Static initialization?
-		if (__type == CPInvokeType.STATIC)
-		{
-			// Get the class of the given method
-			JVMClass cl = engine.classes().loadClass(__ref.className().
-				symbol());
-			JVMObject clo = cl.classObject(__frame.thread());
-			
-			// Find a method by the given name
-			JVMMethod rv = cl.methods().get(__ref.memberName(),
-				__ref.memberType());
-			if (rv != null)
-				return rv;
-			
-			// {@squirreljme.error IN0q Could not locate the specified static
-			// method. (The static method)}
-			throw new JVMIncompatibleClassChangeError(__frame, String.format(
-				"IN0q %s", __ref));
-		}
-		
-		// Called on an instance of a method
-		else
-		{
-			// Go through all classes 
-		
-			throw new Error("TODO");
-		}
 	}
 }
 

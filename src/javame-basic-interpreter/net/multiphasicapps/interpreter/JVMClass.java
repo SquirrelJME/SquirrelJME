@@ -534,6 +534,30 @@ public final class JVMClass
 	}
 	
 	/**
+	 * Returns {@code true} if the specified class is a super class of the
+	 * current class.
+	 *
+	 * Interfaces are not checked.
+	 *
+	 * @param __cl The class to check.
+	 * @return {@code true} if it is a super class.
+	 * @since 2016/04/16
+	 */
+	public boolean isSuperClass(JVMClass __cl)
+	{
+		// Go through all classes
+		for (JVMClass rover = this; rover != null; rover = rover.superClass())
+		{
+			// Matches the input class
+			if (rover == __cl)
+				return true;
+		}
+		
+		// Not one
+		return false;
+	}
+	
+	/**
 	 * Returns the list of methods that this class contains.
 	 *
 	 * @return The methods contained in this class.
