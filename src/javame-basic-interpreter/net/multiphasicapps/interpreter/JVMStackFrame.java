@@ -22,6 +22,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  * @since 2016/04/09
  */
 public class JVMStackFrame
+	implements JVMFrameable
 {
 	/** Lock. */
 	protected final Object lock =
@@ -81,7 +82,7 @@ public class JVMStackFrame
 		// passed arguments)}
 		int inac = __args.length;
 		if (inac != ncargs)
-			throw new JVMEngineException(String.format("IN0g %d %d",
+			throw new JVMEngineException(this, String.format("IN0g %d %d",
 				ncargs, inac));
 		
 		// Setup entry variable state
@@ -193,11 +194,10 @@ public class JVMStackFrame
 	}
 	
 	/**
-	 * Returns the thread which owns this frame.
-	 *
-	 * @return The thread owning this frame.
+	 * {@inheritDoc}
 	 * @since 2016/04/09
 	 */
+	@Override
 	public JVMThread thread()
 	{
 		return thread;
@@ -256,7 +256,7 @@ public class JVMStackFrame
 			// The argument class type)}
 			// Ignore null though
 			if (!isnullob && !acl.isInstance(vw))
-				throw new JVMClassCastException(String.format(
+				throw new JVMClassCastException(this, String.format(
 					"IN0h %s %s", vw, acl));
 			
 			// Is this a wide variable?
@@ -269,7 +269,7 @@ public class JVMStackFrame
 			// that exist within a method program. (The current
 			// argument count; The maximum local variable count)}
 			if (nextvat > __nl)
-				throw new JVMEngineException(String.format(
+				throw new JVMEngineException(this, String.format(
 					"IN0i %d %d", nextvat, __nl));
 			
 			// Store variable

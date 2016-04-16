@@ -11,20 +11,20 @@
 package net.multiphasicapps.interpreter;
 
 /**
- * This is thrown when an illegal array index is referenced.
+ * This is thrown when an attempt is made to access a {@code null} reference.
  *
- * @since 2016/04/05
+ * @since 2016/04/15
  */
-public class JVMArrayIndexOutOfBoundsException
+public class JVMNullPointerException
 	extends JVMEngineException
 {
 	/**
 	 * Initializes the exception with no message.
 	 *
 	 * @param __f The execution frame.
-	 * @since 2016/04/05
+	 * @since 2016/04/15
 	 */
-	public JVMArrayIndexOutOfBoundsException(JVMFrameable __f)
+	public JVMNullPointerException(JVMFrameable __f)
 	{
 		super(__f);
 	}
@@ -34,9 +34,9 @@ public class JVMArrayIndexOutOfBoundsException
 	 *
 	 * @param __f The execution frame.
 	 * @param __msg The exception message.
-	 * @since 2016/04/05
+	 * @since 2016/04/15
 	 */
-	public JVMArrayIndexOutOfBoundsException(JVMFrameable __f, String __msg)
+	public JVMNullPointerException(JVMFrameable __f, String __msg)
 	{
 		super(__f, __msg);
 	}
@@ -47,9 +47,9 @@ public class JVMArrayIndexOutOfBoundsException
 	 * @param __f The execution frame.
 	 * @param __msg The exception message.
 	 * @param __c The cause.
-	 * @since 2016/04/05
+	 * @since 2016/04/15
 	 */
-	public JVMArrayIndexOutOfBoundsException(JVMFrameable __f, String __msg,
+	public JVMNullPointerException(JVMFrameable __f, String __msg,
 		Throwable __c)
 	{
 		super(__f, __msg, __c);
@@ -60,9 +60,9 @@ public class JVMArrayIndexOutOfBoundsException
 	 *
 	 * @param __f The execution frame.
 	 * @param __c The cause of the exception.
-	 * @since 2016/04/05
+	 * @since 2016/04/15
 	 */
-	public JVMArrayIndexOutOfBoundsException(JVMFrameable __f, Throwable __c)
+	public JVMNullPointerException(JVMFrameable __f, Throwable __c)
 	{
 		super(__f, __c);
 	}

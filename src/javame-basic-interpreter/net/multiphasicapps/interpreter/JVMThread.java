@@ -23,6 +23,7 @@ import net.multiphasicapps.classprogram.CPProgram;
  * @since 2016/03/01
  */
 public class JVMThread
+	implements JVMFrameable
 {
 	/** Lock. */
 	protected final Object lock =
@@ -205,7 +206,7 @@ public class JVMThread
 			// not the current frame. (The current frame; The frame
 			// which was at the top of the call stack)}
 			if (was != __fr)
-				throw new JVMEngineException(String.format("IN0e %s %s",
+				throw new JVMEngineException(__fr, String.format("IN0e %s %s",
 					__fr, was));
 		}
 		
@@ -264,7 +265,7 @@ public class JVMThread
 			// {@squirreljme.error IN07 Thread has already been started.
 			// (The current thread)}
 			if (_started)
-				throw new JVMIllegalThreadStateException(String.format(
+				throw new JVMIllegalThreadStateException(this, String.format(
 					"IN07 %s", this));
 			_started = true;
 			
@@ -277,6 +278,16 @@ public class JVMThread
 		}
 		
 		// Self
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/15
+	 */
+	@Override
+	public JVMThread thread()
+	{
 		return this;
 	}
 	

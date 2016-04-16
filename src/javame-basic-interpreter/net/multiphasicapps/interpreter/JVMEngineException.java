@@ -22,9 +22,10 @@ public class JVMEngineException
 	/**
 	 * Initializes the exception with no message.
 	 *
+	 * @param __f The execution frame.
 	 * @since 2016/03/05
 	 */
-	public JVMEngineException()
+	public JVMEngineException(JVMFrameable __f)
 	{
 		super();
 	}
@@ -32,10 +33,11 @@ public class JVMEngineException
 	/**
 	 * Initializes exception with the given message.
 	 *
+	 * @param __f The execution frame.
 	 * @param __msg The exception message.
 	 * @since 2016/03/02
 	 */
-	public JVMEngineException(String __msg)
+	public JVMEngineException(JVMFrameable __f, String __msg)
 	{
 		super(__msg);
 	}
@@ -43,11 +45,12 @@ public class JVMEngineException
 	/**
 	 * Initializes exception with the given message and cause.
 	 *
+	 * @param __f The execution frame.
 	 * @param __msg The exception message.
 	 * @param __c The cause.
 	 * @since 2016/03/02
 	 */
-	public JVMEngineException(String __msg, Throwable __c)
+	public JVMEngineException(JVMFrameable __f, String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}
@@ -55,10 +58,11 @@ public class JVMEngineException
 	/**
 	 * Initializes the exception with the given cause and no message.
 	 *
+	 * @param __f The execution frame.
 	 * @param __c The cause of the exception.
 	 * @since 2016/03/15
 	 */
-	public JVMEngineException(Throwable __c)
+	public JVMEngineException(JVMFrameable __f, Throwable __c)
 	{
 		super(__c);
 	}

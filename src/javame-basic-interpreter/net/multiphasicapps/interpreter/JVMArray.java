@@ -40,14 +40,14 @@ public class JVMArray
 		// {@squirreljme.error IN01 Attempting to create a new instance of an
 		// object which is not an array. (The type; The length of the array)}
 		if (!__type.isArray())
-			throw new JVMClassCastException(String.format("IN01 %s %d", __type,
-				__length));
+			throw new JVMClassCastException(__th, String.format("IN01 %s %d",
+				__type, __length));
 		
 		// {@squirreljme.error IN02 Attempting to create an array with a
 		// negative length. (The negative length)}
 		if (__length < 0)
-			throw new JVMNegativeArraySizeException(String.format("IN02 %s",
-				__length));
+			throw new JVMNegativeArraySizeException(__th,
+				String.format("IN02 %s", __length));
 		
 		// Set
 		arraylength = __length;
@@ -80,7 +80,7 @@ public class JVMArray
 		// and array which is not within bounds of the array. (The index;
 		// The size of the array)}
 		if (__i < 0 || __i >= arraylength)
-			throw new JVMArrayIndexOutOfBoundsException(String.format(
+			throw new JVMArrayIndexOutOfBoundsException(null, String.format(
 				"IN03", __i, arraylength));
 		
 		throw new Error("TODO");

@@ -46,4 +46,8 @@ This multi-functional method should be able to shave about 500 lines or so.
 This is definitely a much cleaner and more uniform way to perform these
 operations.
 
+## 20:47
+
+All of the exceptions that the VM can throw need to have frames.
+
 

@@ -165,7 +165,7 @@ public final class JVMClass
 					// definition. (The class which does not exist; The
 					// resource which was attempted to be obtained)}
 					if (is == null)
-						throw new JVMNoClassDefFoundError(
+						throw new JVMNoClassDefFoundError(null,
 							String.format("IN04 %s %s", thisName(), res));
 					
 					// Parse the class
@@ -177,8 +177,8 @@ public final class JVMClass
 				// because the class file is malformed. (The failing class)}
 				catch (CFFormatException|IOException e)
 				{
-					throw new JVMClassFormatError(String.format("IN05 %s",
-						thisName()), e);
+					throw new JVMClassFormatError(null, String.format(
+						"IN05 %s", thisName()), e);
 				}
 			
 			// Return it
@@ -251,8 +251,8 @@ public final class JVMClass
 					// for the given class is not static. (The name of this
 					// class)}
 					if (!clinit.flags().isStatic())
-						throw new JVMClassFormatError(String.format("IN0f %s",
-							this));
+						throw new JVMClassFormatError(__th,
+							String.format("IN0f %s", this));
 					
 					// Interpret to initialize it
 					clinit.interpret(true, __th);

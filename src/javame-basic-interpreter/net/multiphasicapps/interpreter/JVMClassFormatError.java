@@ -21,45 +21,49 @@ public class JVMClassFormatError
 	/**
 	 * Initializes the exception with no message.
 	 *
+	 * @param __f The execution frame.
 	 * @since 2016/04/06
 	 */
-	public JVMClassFormatError()
+	public JVMClassFormatError(JVMFrameable __f)
 	{
-		super();
+		super(__f);
 	}
 	
 	/**
 	 * Initializes exception with the given message.
 	 *
+	 * @param __f The execution frame.
 	 * @param __msg The exception message.
 	 * @since 2016/04/06
 	 */
-	public JVMClassFormatError(String __msg)
+	public JVMClassFormatError(JVMFrameable __f, String __msg)
 	{
-		super(__msg);
+		super(__f, __msg);
 	}
 	
 	/**
 	 * Initializes exception with the given message and cause.
 	 *
+	 * @param __f The execution frame.
 	 * @param __msg The exception message.
 	 * @param __c The cause.
 	 * @since 2016/04/06
 	 */
-	public JVMClassFormatError(String __msg, Throwable __c)
+	public JVMClassFormatError(JVMFrameable __f, String __msg, Throwable __c)
 	{
-		super(__msg, __c);
+		super(__f, __msg, __c);
 	}
 	
 	/**
 	 * Initializes the exception with the given cause and no message.
 	 *
+	 * @param __f The execution frame.
 	 * @param __c The cause of the exception.
 	 * @since 2016/04/06
 	 */
-	public JVMClassFormatError(Throwable __c)
+	public JVMClassFormatError(JVMFrameable __f, Throwable __c)
 	{
-		super(__c);
+		super(__f, __c);
 	}
 }
 

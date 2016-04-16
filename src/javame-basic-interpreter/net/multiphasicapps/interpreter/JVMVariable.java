@@ -146,7 +146,7 @@ public abstract class JVMVariable<T>
 		// {@squirreljme.error IN0d Cannot wrap the given value because it is
 		// of an unknown type. (The type of value to wrap).}
 		else
-			throw new JVMEngineException(String.format("IN0d %s",
+			throw new JVMEngineException(null, String.format("IN0d %s",
 				__v.getClass()));
 	}
 	

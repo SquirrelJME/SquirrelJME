@@ -67,11 +67,12 @@ public class JVMComputeMachine
 		// {@squirreljme.error IN0j Could not find a definition for the given
 		// class. (The missing class)}
 		if (jcl == null)
-			throw new JVMNoClassDefFoundError(String.format("IN0j %s", __cl));
+			throw new JVMNoClassDefFoundError(__frame, String.format("IN0j %s",
+				__cl));
 		
 		// Check if the method can be accessed or not
 		if (!thread.checkAccess(jcl))
-			throw new JVMEngineException();
+			throw new JVMEngineException(__frame);
 		
 		// Debug
 		System.err.printf("DEBUG -- allocateObject(%d, %s)%n", __dest, __cl);
@@ -149,6 +150,54 @@ public class JVMComputeMachine
 		// Get the target class and make sure it is initialized
 		JVMClass cl = engine.classes().loadClass(__ref.className().symbol());
 		JVMObject clo = cl.classObject(__frame.thread());
+		
+		// Get the instance to perform the invocation on
+		JVMVariable[] vars = __frame.variables();
+		JVMObject instance;
+		if (__type.isInstance())
+		{
+			// {@squirreljme.error IN0m Cannot invoke a null instance.}
+			if (null == (instance = ((JVMVariable.OfObject)vars[__args[0]]).
+				get()))
+				throw new JVMNullPointerException(__frame, "IN0m");
+			
+			// {@squirreljme.error IN0n The instance does not extend or
+			// implement the given class. (The expected class type; The current
+			// class type)}
+			if (!cl.isInstance(instance))
+				throw new JVMClassCastException(__frame,
+					String.format("IN0n %s %s", cl, instance.classType()));
+		}
+		
+		// Static call	
+		else
+			instance = null;
+		
+		// Resolve the method to be invoked
+		JVMMethod res = __resolveMethod(instance, __ref, __type);
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Resolves the given method.
+	 *
+	 * @param __i The object instance.
+	 * @param __ref The class and name of the method.
+	 * @param __type How the method is to be invoked.
+	 * @return The resolved method.
+	 * @throws JVMClassFormatError If the method is not resolvable.
+	 * @throws NullPointerException On null arguments, except for {@code __i}.
+	 */
+	private JVMMethod __resolveMethod(JVMObject __i, CFMethodReference __ref,
+		CPInvokeType __type)
+		throws JVMClassFormatError, NullPointerException
+	{
+		// Check
+		if (__ref == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all classes 
 		
 		throw new Error("TODO");
 	}

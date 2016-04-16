@@ -86,7 +86,8 @@ public class JVMMethod
 		// {@squirreljme.error IN0l Cannot determine the class of the object
 		// to check access into. (The other object)}
 		else
-			throw new JVMClassCastException(String.format("IN0l %s", __o));
+			throw new JVMClassCastException(null, String.format("IN0l %s",
+				__o));
 		
 		// Get our own class
 		JVMClass fromclass = super.outerClass();
@@ -131,9 +132,10 @@ public class JVMMethod
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error IN0k The current method is not permitted to
-		// access the given accessible object. (This method; The accessible object)}
+		// access the given accessible object. (This method; The accessible
+		// object)}
 		if (!canAccess(__o))
-			throw new JVMIncompatibleClassChangeError(String.format(
+			throw new JVMIncompatibleClassChangeError(null, String.format(
 				"IN0k %s %s", this, __o));
 		return true;
 	}
@@ -214,7 +216,7 @@ public class JVMMethod
 					// Failed to compute the program
 					catch (CPProgramException e)
 					{
-						throw new JVMEngineException(e);
+						throw new JVMEngineException(__thr, e);
 					}
 				}
 				
@@ -258,8 +260,8 @@ public class JVMMethod
 					// defined program, it is likely {@code abstract} or
 					// {@code native}. (The current method)}
 					if (is == null)
-						throw new JVMClassFormatError(String.format("IN0a %s",
-							this));
+						throw new JVMClassFormatError(null,
+							String.format("IN0a %s", this));
 					
 					// Load it
 					_program = new WeakReference<>((rv = new CPProgram(
@@ -272,8 +274,8 @@ public class JVMMethod
 					// {@squirreljme.error IN09 Could not get the program for
 					// the current method either because it does not exist or
 					// it is not a valid program. (The current method)}
-					throw new JVMClassFormatError(String.format("IN09 %s",
-						this), e);
+					throw new JVMClassFormatError(null,
+						String.format("IN09 %s", this), e);
 				}
 			
 			return rv;
