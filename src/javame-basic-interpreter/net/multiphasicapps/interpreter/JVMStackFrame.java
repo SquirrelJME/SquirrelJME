@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.interpreter;
 
+import java.util.Arrays;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classprogram.CPProgram;
 import net.multiphasicapps.classprogram.CPProgramException;
@@ -40,6 +41,9 @@ public class JVMStackFrame
 	
 	/** Is this an initializer? */
 	protected final boolean isinit;
+	
+	/** Is this in an instance of an object? */
+	protected final boolean isinstance;
 	
 	/** The current PC address. */
 	private volatile int _pcaddr;
@@ -74,6 +78,9 @@ public class JVMStackFrame
 		thread = __thr;
 		method = __in;
 		isinit = __init;
+		
+		// Instance?
+		isinstance = !method.flags().isStatic();
 		
 		// Get program here
 		CPProgram program;
@@ -271,9 +278,17 @@ public class JVMStackFrame
 		// Classpaths
 		JVMClassPath jcp = engine().classes();
 		
+		// {@squirreljme.error IN0w Input argument when initializing the
+		// variables for an instance method is not an object. (The current
+		// method; The used arguments)}
+		if (isinstance && (__args.length <= 0 ||
+			!(__args[0] instanceof JVMObject)))
+			throw new JVMEngineException(this, String.format("IN0w %s %s",
+				method, Arrays.asList(__args)));
+		
 		// Setup variable
 		int vat = 0;
-		for (int i = 0, varg = 0; i < __nia; i++)
+		for (int i = (isinstance ? 1 : 0), varg = 0; i < __nia; i++)
 		{
 			// Get method argument from the descriptor and the input
 			// argument

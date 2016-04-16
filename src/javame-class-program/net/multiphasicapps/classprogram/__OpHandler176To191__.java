@@ -164,7 +164,7 @@ class __OpHandler176To191__
 		// Setup passed arguments
 		int[] passargs = new int[popcount];
 		for (int i = 0; i < popcount; i++)
-			passargs[i] = stacktop - (popcount - i);
+			passargs[i] = (stacktop - 1) - (popcount - i);
 		
 		// Perform the call
 		__castCM(__cm).invoke(__a, rvslot, ref, __it, passargs);
