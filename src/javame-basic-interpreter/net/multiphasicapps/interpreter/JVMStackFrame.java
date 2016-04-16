@@ -124,6 +124,18 @@ public class JVMStackFrame
 	}
 	
 	/**
+	 * Checks whether the given object can be accessed by this frame.
+	 *
+	 * @param __o The object to check.
+	 * @return {@code true} if it can be accessed.
+	 * @since 2016/04/16
+	 */
+	public boolean checkAccess(JVMAccessibleObject __o)
+	{
+		return thread().checkAccess(__o);
+	}
+	
+	/**
 	 * Clears the jump target.
 	 *
 	 * @return {@code this}.

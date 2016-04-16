@@ -11,6 +11,7 @@
 package net.multiphasicapps.interpreter;
 
 import java.util.Objects;
+import net.multiphasicapps.classfile.CFFieldFlags;
 import net.multiphasicapps.classfile.CFFieldReference;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classfile.CFMethodReference;
@@ -133,11 +134,10 @@ public class JVMComputeMachine
 		CFFieldReference __f)
 	{
 		// Debug
-		System.err.printf("DEBUG -- Read Static %s%n", __f);
+		System.err.printf("DEBUG -- Read Static %s %d%n", __f, __dest);
 		
-		// Get and initialize the class
-		JVMClass cl = engine.classes().loadClass(__f.className().symbol());
-		JVMObject clo = cl.classObject(__frame.thread());
+		// Obtain the static field
+		JVMField field = __getStaticField(__frame, __f);
 		
 		throw new Error("TODO");
 	}
@@ -278,6 +278,23 @@ public class JVMComputeMachine
 	 * @since 2016/04/16
 	 */
 	@Override
+	public void putStaticField(JVMStackFrame __frame, CFFieldReference __f,
+		int __src)
+	{
+		// Debug
+		System.err.printf("DEBUG -- Put Static %s %d%n", __f, __src);
+		
+		// Obtain the static field
+		JVMField field = __getStaticField(__frame, __f);
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/16
+	 */
+	@Override
 	public void returnValue(JVMStackFrame __frame, int __src)
 	{
 		// Handle return of value
@@ -299,6 +316,40 @@ public class JVMComputeMachine
 		System.err.printf("DEBUG -- Throw exception %d.%n", __object);
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Obtains the specified static field.
+	 *
+	 * @param __frame The execution frame.
+	 * @param __f The field to obtain.
+	 * @return The static field.
+	 * @since 2016/04/16
+	 */
+	JVMField __getStaticField(JVMStackFrame __frame, CFFieldReference __f) 
+	{
+		// Get and initialize the class
+		JVMClass cl = engine.classes().loadClass(__f.className().symbol());
+		JVMObject clo = cl.classObject(__frame.thread());
+		
+		// Locate the field
+		JVMField f = cl.fields().get(__f.memberName(), __f.memberType());
+		
+		// {@squirreljme.error IN0x The specified field is not static.
+		// (The field to obtain; The flags of that field)}
+		CFFieldFlags ff = f.flags();
+		if (!ff.isStatic())
+			throw new JVMIncompatibleClassChangeError(__frame, String.format(
+				"IN0x %s %s", __f, ff));
+		
+		// {@squirreljme.error IN0y Cannot access the given static field.
+		// (The static field)}
+		if (!__frame.checkAccess(f))
+			throw new JVMIncompatibleClassChangeError(__frame, String.format(
+				"IN0y %s", __f));
+		
+		// Use it
+		return f;
 	}
 }
 

@@ -65,6 +65,11 @@ class __OpHandler176To191__
 				__getstatic(__cm, __a, __op);
 				break;
 				
+				// putstatic
+			case 179:
+				__putstatic(__cm, __a, __op);
+				break;
+				
 				// invokevirtual
 			case 182:
 				__invoke(__cm, __a, __op, CPInvokeType.VIRTUAL);
@@ -193,6 +198,22 @@ class __OpHandler176To191__
 		// Perform the allocation
 		__castCM(__cm).allocateObject(__a, __op.variables().getStackTop(),
 			((ClassNameSymbol)__op.arguments().get(0)));
+	}
+	
+	/**
+	 * Places a value into a static field for a class.
+	 *
+	 * @param __cm Compute machine.
+	 * @param __a Passed value.
+	 * @param __op The operation.
+	 * @since 2016/04/16
+	 */
+	void __putstatic(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op)
+	{
+		// Place value onto the stack
+		__castCM(__cm).putStaticField(__a, ((CFFieldReference)__op.arguments().
+			get(0)), __op.variables().getStackTop() - 1);
 	}
 	
 	/**

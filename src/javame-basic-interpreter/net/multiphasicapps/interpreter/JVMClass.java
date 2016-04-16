@@ -78,6 +78,9 @@ public final class JVMClass
 	/** Methods contained in this class. */
 	private volatile JVMMethods _methods;
 	
+	/** Fields contained in this class. */
+	private volatile JVMFields _fields;
+	
 	/** The initialized {@link Class} object. */
 	private volatile Reference<JVMObject> _classobject;
 	
@@ -283,7 +286,20 @@ public final class JVMClass
 	 */
 	public JVMFields fields()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Already loaded?
+			JVMFields rv = _fields;
+			
+			// Needs loading?
+			if (rv == null)
+				_fields = (rv = ((isArray() || isPrimitive()) ?
+					new JVMFields(this, true) : new JVMFields(this)));
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**

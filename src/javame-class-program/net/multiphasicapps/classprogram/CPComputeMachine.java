@@ -71,6 +71,17 @@ public interface CPComputeMachine<A>
 		CPInvokeType __type, int... __args);
 	
 	/**
+	 * Places a value into the specified static field.
+	 *
+	 * @param __pa Passed value.
+	 * @param __f The destination static variable.
+	 * @param __src The source variable which contains the value.
+	 * @since 2016/04/16
+	 */
+	public abstract void putStaticField(A __pa, CFFieldReference __f,
+		int __src);
+	
+	/**
 	 * Returns from the given method returning the specified value.
 	 *
 	 * @param __pa Passed value.
