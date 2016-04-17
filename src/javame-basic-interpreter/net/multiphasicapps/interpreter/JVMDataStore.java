@@ -133,7 +133,7 @@ public class JVMDataStore
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return __fragment(__i).getFloat(__i & FRAGMENT_MASK);
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class JVMDataStore
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return __fragment(__i).getInt(__i & FRAGMENT_MASK);
 		}
 	}
 	
@@ -193,7 +193,7 @@ public class JVMDataStore
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return __fragment(__i).getObject(__i & FRAGMENT_MASK);
 		}
 	}
 	
@@ -211,7 +211,7 @@ public class JVMDataStore
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return __fragment(__i).getType(__i & FRAGMENT_MASK);
 		}
 	}
 	
