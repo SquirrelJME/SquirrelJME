@@ -100,6 +100,10 @@ public class JVMDataStore
 				case DOUBLE:
 					return getDouble(__i);
 				
+					// Object
+				case OBJECT:
+					return getObject(__i);
+				
 					// Unknown
 				default:
 					throw new RuntimeException("WTFX");
