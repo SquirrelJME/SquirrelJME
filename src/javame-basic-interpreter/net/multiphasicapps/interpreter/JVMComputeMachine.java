@@ -104,7 +104,7 @@ public class JVMComputeMachine
 		JVMDataStore.Window window = __frame.window();
 		
 		// Copy it
-		window.set(dest, window.get(src));
+		window.set(__dest, window.get(__src));
 	}
 	
 	/**
@@ -138,14 +138,13 @@ public class JVMComputeMachine
 		// Our current source class
 		JVMClass frameclass = __frame.inClass();
 		
-		// Get the instance to perform the invocation on
-		JVMVariable[] vars = __frame.variables();
+		// Get the instance to perform the invocation on.
+		JVMDataStore.Window window = __frame.window();
 		JVMObject instance;
 		if (__type.isInstance())
 		{
 			// {@squirreljme.error IN0m Cannot invoke a null instance.}
-			if (null == (instance = ((JVMVariable.OfObject)vars[__args[0]]).
-				get()))
+			if (null == (instance = window.getObject(__args[0])))
 				throw new JVMNullPointerException(__frame, "IN0m");
 		}
 		
@@ -244,7 +243,7 @@ public class JVMComputeMachine
 		int n = __args.length;
 		Object[] call = new Object[n];
 		for (int i = 0; i < n; i++)
-			call[i] = vars[__args[i]].get();
+			call[i] = window.get(__args[i]);
 		
 		// Invoke it
 		invokethis.interpret(__frame.thread(), false, call);
