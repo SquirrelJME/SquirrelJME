@@ -824,6 +824,18 @@ public class JVMDataStore
 	 */
 	private class __Fragment__
 	{
+		/** Cell types. */
+		private final CPVariableType[] _types =
+			new CPVariableType[FRAGMENT_SIZE];
+		
+		/** Data cells. */
+		private final int[] _cells =
+			new int[FRAGMENT_SIZE];
+		
+		/** Object cells. */
+		private final JVMObject[] _objects =
+			new JVMObject[FRAGMENT_SIZE];
+		
 		/**
 		 * Initializes the fragment.
 		 *
@@ -929,7 +941,15 @@ public class JVMDataStore
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// {@squirreljme.error IN14 This slot is not an object.
+				// (The current type)}
+				CPVariableType type = _types[__i];
+				if (type != CPVariableType.OBJECT)
+					throw new JVMEngineException(null, String.format("IN14 %s",
+						type));
+				
+				// Return the value
+				return _objects[__i];
 			}
 		}
 		
@@ -947,7 +967,7 @@ public class JVMDataStore
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				return _types[__i];
 			}
 		}
 	
@@ -1094,7 +1114,20 @@ public class JVMDataStore
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// Get current type
+				CPVariableType oldt = getType(__i);
+				
+				// Calculate old value
+				JVMObject old = (oldt == CPVariableType.OBJECT ?
+					getObject(__i) : null);
+				
+				// Set it
+				_types[__i] = CPVariableType.OBJECT;
+				_cells[__i] = 0;
+				_objects[__i] = __v;
+				
+				// Return the old value
+				return old;
 			}
 		}
 		
