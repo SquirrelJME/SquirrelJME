@@ -216,6 +216,29 @@ public class JVMDataStore
 	}
 	
 	/**
+	 * Pushes a window over the data storage, new fragments are created as
+	 * needed to store the window data.
+	 *
+	 * @param __nvars The number of variables to store.
+	 * @return The window over the storage are.
+	 * @throws IllegalArgumentException On null arguments.
+	 * @since 2016/04/17
+	 */
+	public Window pushWindow(int __nvars)
+		throws IllegalArgumentException
+	{
+		// Check
+		if (__nvars < 0)
+			throw new IllegalArgumentException("NEGI");
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/17
 	 */
@@ -384,7 +407,7 @@ public class JVMDataStore
 				case INTEGER: return orig;
 				case FLOAT: return (long)Float.intBitsToFloat(orig);
 				case DOUBLE: return (long)Double.longBitsToDouble(rrv);
-				default: rrv;
+				default: return rrv;
 			}
 		}
 	}
@@ -600,6 +623,23 @@ public class JVMDataStore
 			throws IndexOutOfBoundsException
 		{
 			return JVMDataStore.this.getType(start + __bounds(__i, false));
+		}
+		
+		/**
+		 * Pops this window from the top of the window stack.
+		 *
+		 * @return The owning data store.
+		 * @throws IllegalStateException If this is not the topmost window.
+		 * @since 2016/04/17
+		 */
+		public JVMDataStore popWindow()
+			throws IllegalStateException
+		{
+			// Lock
+			synchronized (lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 	
 		/**

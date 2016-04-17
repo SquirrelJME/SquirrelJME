@@ -41,6 +41,10 @@ public class JVMThread
 	/** The current thread ID. */
 	protected final long id;
 	
+	/** The stack data storage. */
+	protected final JVMDataStore stackvariables =
+		new JVMDataStore();
+	
 	/** This thread's stack trace. */
 	protected final Deque<JVMStackFrame> stacktrace =
 		new LinkedList<>();
@@ -175,7 +179,8 @@ public class JVMThread
 		Deque<JVMStackFrame> stack = stacktrace;
 		synchronized (stack)
 		{
-			JVMStackFrame rv = new JVMStackFrame(this, __m, __init, __args);
+			JVMStackFrame rv = new JVMStackFrame(this, __m, __init,
+				stackvariables, __args);
 			stack.offerLast(rv);
 			return rv;
 		}

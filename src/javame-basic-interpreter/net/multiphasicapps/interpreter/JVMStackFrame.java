@@ -14,6 +14,7 @@ import java.util.Arrays;
 import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classprogram.CPProgram;
 import net.multiphasicapps.classprogram.CPProgramException;
+import net.multiphasicapps.classprogram.CPVariableType;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
@@ -36,8 +37,8 @@ public class JVMStackFrame
 	/** The method the frame is executing. */
 	protected final JVMMethod method;
 	
-	/** Variables that are currently set in this frame. */
-	protected final JVMVariable[] vars;
+	/** Data storage window. */
+	protected final JVMDataStore.Window datawindow;
 	
 	/** Is this an initializer? */
 	protected final boolean isinit;
@@ -61,16 +62,17 @@ public class JVMStackFrame
 	 * @param __thr The current thread of execution.
 	 * @param __in The method currently being executed.
 	 * @param __init Is this an initializer?
+	 * @param __ds Stack data storage.
 	 * @param __args Method arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/09
 	 */
 	public JVMStackFrame(JVMThread __thr, JVMMethod __in, boolean __init,
-		Object... __args)
+		JVMDataStore __ds, Object... __args)
 		throws NullPointerException
 	{
 		// Check
-		if (__thr == null || __in == null)
+		if (__thr == null || __in == null || __ds == null)
 			throw new NullPointerException("NARG");
 		
 		// Must exist
@@ -117,10 +119,13 @@ public class JVMStackFrame
 		// Setup entry variable state
 		int numlocals = program.maxLocals();
 		int numvars = program.variableCount();
-		vars = new JVMVariable[numvars];
+		
+		// Setup window
+		JVMDataStore.Window dsw = __ds.pushWindow(numvars);
+		datawindow = dsw;
 		
 		// Setup the initial variable state
-		__initVariables(vars, numlocals, __args, desc, ncargs);
+		__initVariables(dsw, numlocals, __args, desc, ncargs);
 	}
 	
 	/**
@@ -238,7 +243,12 @@ public class JVMStackFrame
 	 */
 	public void leave()
 	{
-		thread.exitFrame(this);
+		// Lock
+		synchronized (lock)
+		{
+			thread.exitFrame(this);
+			datawindow.popWindow();
+		}
 	}
 	
 	/**
@@ -300,14 +310,14 @@ public class JVMStackFrame
 	}
 	
 	/**
-	 * Returns the array of variables which this frame uses.
+	 * Returns the window this frame uses for data storage.
 	 *
-	 * @return The array of variables.
+	 * @return The data storage window.
 	 * @since 2016/04/09
 	 */
-	public JVMVariable[] variables()
+	public JVMDataStore.Window window()
 	{
-		return vars;
+		return datawindow;
 	}
 	
 	/**
@@ -320,7 +330,7 @@ public class JVMStackFrame
 	 * @param __nia The number of input arguments expected.
 	 * @since 2016/04/08
 	 */
-	private void __initVariables(JVMVariable[] __vars, int __nl,
+	private void __initVariables(JVMDataStore.Window __vars, int __nl,
 		Object[] __args, MethodSymbol __desc, int __nia)
 	{
 		// Classpaths
@@ -337,14 +347,7 @@ public class JVMStackFrame
 		// Setup variable for first argument
 		int vat = 0;
 		if (isinstance)
-		{
-			// Get new object
-			JVMVariable.OfObject iobj = JVMVariable.OfObject.empty();
-			__vars[vat++] = iobj;
-			
-			// Set the value
-			iobj.set((JVMObject)__args[0]);
-		}
+			__vars.setObject(vat++, (JVMObject)__args[0]);
 		
 		// Setup variable
 		for (int i = vat, varg = 0; i < __nia; i++)
@@ -354,41 +357,68 @@ public class JVMStackFrame
 			FieldSymbol farg = __desc.get(varg++);
 			Object carg = __args[i];
 			
-			// Get the system class for the given argument
-			JVMClass acl = jcp.loadClass(farg.asClassName());
+			// Get the variable type used for the argument
+			CPVariableType type = CPVariableType.bySymbol(farg);
 			
-			// Setup wrapped variable
-			JVMVariable<?> vw = JVMVariable.wrap(carg);
+			// Could be the wrong type
+			try
+			{
+				// Depends on the symbol
+				switch (type)
+				{
+						// Integer
+					case INTEGER:
+						__vars.setInt(vat, ((Integer)carg).intValue());
+						break;
+						
+						// Long
+					case LONG:
+						__vars.setLong(vat, ((Long)carg).longValue());
+						break;
+						
+						// Float
+					case FLOAT:
+						__vars.setFloat(vat, ((Float)carg).floatValue());
+						break;
+						
+						// Double
+					case DOUBLE:
+						__vars.setDouble(vat, ((Double)carg).doubleValue());
+						break;
+						
+						// Object
+					case OBJECT:
+						__vars.setObject(vat, ((JVMObject)carg));
+						break;
+				
+						// Unknown
+					default:
+						throw new RuntimeException("WTFX");
+				}
+			}
 			
-			// Is this possibly the null object?
-			boolean isobject = (vw instanceof JVMVariable.OfObject);
-			boolean isnullob = (isobject &&
-				((JVMVariable.OfObject)vw).get() == null);
-			
-			// {@squirreljme.error IN0h An input argument which was
-			// passed to the method is not of the expected type that
-			// the method accepts. (The actual input method argument;
-			// The argument class type)}
-			// Ignore null though
-			if (!isnullob && !acl.isInstance(vw))
+			// Was the wrong type
+			catch (ClassCastException|NullPointerException e)
+			{
+				// {@squirreljme.error IN0h An input argument which was
+				// passed to the method is not of the expected type that
+				// the method accepts. (The actual input method argument;
+				// The argument class type)}
+				// Ignore null though
 				throw new JVMClassCastException(this, String.format(
-					"IN0h %s %s", vw, acl));
-			
-			// Is this a wide variable?
-			boolean iswide = (vw instanceof JVMVariable.OfLong) ||
-				(vw instanceof JVMVariable.OfDouble);
-			int nextvat = vat + (iswide ? 2 : 1);
+					"IN0h %s %s", type, carg.getClass()), e);
+			}
 			
 			// {@squirreljme.error IN0i The number of method arguments
 			// would exceed the number of available local variables
 			// that exist within a method program. (The current
 			// argument count; The maximum local variable count)}
+			int nextvat = vat + (type.isWide() ? 2 : 1);
 			if (nextvat > __nl)
 				throw new JVMEngineException(this, String.format(
 					"IN0i %d %d", nextvat, __nl));
 			
-			// Store variable
-			__vars[vat] = vw;
+			// Set write position
 			vat = nextvat;
 		}
 	}
