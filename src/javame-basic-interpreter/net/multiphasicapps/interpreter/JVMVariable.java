@@ -51,6 +51,19 @@ public abstract class JVMVariable<T>
 	public abstract JVMVariable<T> set(T __v);
 	
 	/**
+	 * Sets the raw value.
+	 *
+	 * @param __v The value to set.
+	 * @return {@code this}.
+	 * @since 2016/04/16
+	 */
+	@SuppressWarnings({"unchecked"})
+	public final JVMVariable<?> setRaw(Object __v)
+	{
+		return (JVMVariable<?>)set((T)__v);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/07
 	 */
@@ -97,6 +110,32 @@ public abstract class JVMVariable<T>
 		// Unknown type
 		else
 			throw new RuntimeException("WTFX");
+	}
+	
+	/**
+	 * Sets the given variable or creates a new empty variable which contains
+	 * the given value.
+	 *
+	 * @param __var The variable to set.
+	 * @param __val The value to set it as.
+	 * @return Either {@code __var} or a new variable if it was {@code null}
+	 * or was of the incorrect type.
+	 * @since 2016/04/16 
+	 */
+	public static JVMVariable<?> setOrNew(JVMVariable<?> __var, Object __val)
+	{
+		// If it already exists, set it if it is the same type
+		if (__var != null)
+			if ((__val instanceof Integer && __var instanceof OfInteger) ||
+				(__val instanceof Long && __var instanceof OfLong) ||
+				(__val instanceof Float && __var instanceof OfFloat) ||
+				(__val instanceof Double && __var instanceof OfDouble) ||
+				((__val instanceof JVMObject || __val == null) &&
+					__var instanceof OfObject))
+				return __var.setRaw(__val);
+		
+		// Create otherwise
+		return wrap(__val);
 	}
 	
 	/**

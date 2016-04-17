@@ -15,3 +15,7 @@ initializers or not.
 Magical stuff will just be rewritten by the interpreter. So if specific methods
 are called, they will just do something else.
 
+## 19:47
+
+Need to implement return value handling, which should be rather easy to do.
+

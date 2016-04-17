@@ -213,6 +213,12 @@ final class __DetermineTypes__
 					
 				case 89: __dup(xop); break;
 				
+				case 172: __return(xop, CPVariableType.INTEGER); break;
+				case 173: __return(xop, CPVariableType.LONG); break;
+				case 174: __return(xop, CPVariableType.FLOAT); break;
+				case 175: __return(xop, CPVariableType.DOUBLE); break;
+				case 176: __return(xop, CPVariableType.OBJECT); break;
+				
 					// Return, does nothing
 				case 177: break;
 				
@@ -508,6 +514,26 @@ final class __DetermineTypes__
 	}
 	
 	/**
+	 * Duplicates the top-most stack item.
+	 *
+	 * @param __op The current operation.
+	 * @param __xin Input variables.
+	 * @since 2016/04/12
+	 */
+	private void __dup(CPOp __op)
+	{
+		// Handle
+		CPVariables xin = __op.variables();
+		
+		// Get the topmost variable
+		int top;
+		CPVariables.Slot at = xin.get((top = xin.getStackTop()) - 1);
+		
+		// Duplicate it
+		set(__op, top, top + 1, at.type());
+	}
+	
+	/**
 	 * Invokes a method.
 	 *
 	 * @param __op The input operation.
@@ -593,26 +619,6 @@ final class __DetermineTypes__
 	}
 	
 	/**
-	 * Duplicates the top-most stack item.
-	 *
-	 * @param __op The current operation.
-	 * @param __xin Input variables.
-	 * @since 2016/04/12
-	 */
-	private void __dup(CPOp __op)
-	{
-		// Handle
-		CPVariables xin = __op.variables();
-		
-		// Get the topmost variable
-		int top;
-		CPVariables.Slot at = xin.get((top = xin.getStackTop()) - 1);
-		
-		// Duplicate it
-		set(__op, top, top + 1, at.type());
-	}
-	
-	/**
 	 * Gets a static variable.
 	 *
 	 * @param __op The current operation.
@@ -651,6 +657,24 @@ final class __DetermineTypes__
 		operate(__op, null, CPVariableType.bySymbol(
 			((CFFieldReference)__op.arguments().get(0)).
 			nameAndType().getValue().asField()), null);
+	}
+	
+	/**
+	 * Returns a value.
+	 *
+	 * @param __op The operation.
+	 * @param __rt The type of value to return.
+	 * @throws NullPointerException If no type was specified.
+	 * @since 2016/04/16
+	 */
+	private void __return(CPOp __op, CPVariableType __rt)
+		throws NullPointerException
+	{
+		// Check
+		if (__rt == null)
+			throw new NullPointerException("NARG");
+		
+		operate(__op, null, __rt, null);
 	}
 	
 	/**

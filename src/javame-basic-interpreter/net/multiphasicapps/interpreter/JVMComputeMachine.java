@@ -140,8 +140,14 @@ public class JVMComputeMachine
 		// Obtain the static field
 		JVMField field = __getStaticField(__frame, __f);
 		
-		// Get the value
-		(__frame.variables()[__dest]).set(field.getStaticValue());
+		// Get field value
+		Object fv = field.getStaticValue();
+		
+		// Variable needs creation?
+		JVMVariable[] vars = __frame.variables();
+		
+		// Set it or new it?
+		vars[__dest] = JVMVariable.setOrNew(vars[__dest], fv);
 	}
 	
 	/**
