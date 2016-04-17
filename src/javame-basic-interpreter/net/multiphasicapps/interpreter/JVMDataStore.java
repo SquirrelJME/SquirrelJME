@@ -11,6 +11,7 @@
 package net.multiphasicapps.interpreter;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import net.multiphasicapps.classprogram.CPVariableType;
 
 /**
@@ -43,6 +44,9 @@ public class JVMDataStore
 	
 	/** The fragments which are known. */
 	private volatile __Fragment__[] _fragments;
+	
+	/** The window top. */
+	private volatile int _wintop;
 	
 	/**
 	 * Initializes the data store.
@@ -222,10 +226,11 @@ public class JVMDataStore
 	 * @param __nvars The number of variables to store.
 	 * @return The window over the storage are.
 	 * @throws IllegalArgumentException On null arguments.
+	 * @throws IllegalStateException If there is no room for the window.
 	 * @since 2016/04/17
 	 */
 	public Window pushWindow(int __nvars)
-		throws IllegalArgumentException
+		throws IllegalArgumentException, IllegalStateException
 	{
 		// Check
 		if (__nvars < 0)
@@ -234,7 +239,36 @@ public class JVMDataStore
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Calculate start and end
+			int start = _wintop;
+			
+			// {@squirreljme.error IN13 Too much storage is in use.}
+			int newtop = start + __nvars;
+			if (newtop < start)
+				throw new IllegalStateException("IN13");
+			
+			// Set new top
+			_wintop = newtop;
+			
+			// Need to resize?
+			__Fragment__[] frags = _fragments;
+			int newl = (newtop >> FRAGMENT_SHIFT);
+			if (frags == null || newl > frags.length)
+			{
+				// Direct allocation
+				if (frags == null)
+					frags = new __Fragment__[newl];
+				
+				// Resized
+				else
+					frags = Arrays.<__Fragment__>copyOf(frags, newl);
+				
+				// Set new
+				_fragments = frags;
+			}
+			
+			// Create the window
+			return new Window(start, __nvars);
 		}
 	}
 	
@@ -481,7 +515,14 @@ public class JVMDataStore
 				throw new IndexOutOfBoundsException("IOOB");
 			
 			// Otherwise use the one
-			return frags[shdx];
+			__Fragment__ rv = frags[shdx];
+			
+			// Needs initialization
+			if (rv == null)
+				frags[shdx] = (rv = new __Fragment__());
+			
+			// Return it
+			return rv;
 		}
 	}
 	
