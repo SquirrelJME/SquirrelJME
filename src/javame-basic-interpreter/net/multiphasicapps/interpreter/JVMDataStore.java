@@ -269,7 +269,7 @@ public class JVMDataStore
 				setDouble(__i, ((Number)__v).doubleValue());
 			
 			// Object
-			else if (__v instanceof JVMObject)
+			else if (__v instanceof JVMObject || __v == null)
 				setObject(__i, (JVMObject)__v);
 			
 			// {@squirreljme.error IN11 Unknown data storage class type.}

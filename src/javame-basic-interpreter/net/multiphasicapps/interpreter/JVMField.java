@@ -87,7 +87,8 @@ public class JVMField
 	 *
 	 * @param __v The value to set.
 	 * @return The old value.
-	 * @throws JVMEngineException If this field is not static.
+	 * @throws JVMEngineException If this field is not static or the wrong
+	 * type was set.
 	 * @since 2016/04/16
 	 */
 	public Object setStaticValue(Object __v)
@@ -98,7 +99,20 @@ public class JVMField
 		JVMDataStore.Window var = svalue;
 		if (var == null)
 			throw new JVMEngineException(null, String.format("IN10 %s", this));
+
+		// Get the type used
+		CPVariableType type = CPVariableType.bySymbol(type());
 		
+		// {@squirreljme.error IN12 Set of a field value of the wrong
+		// type.}
+		if ((type == CPVariableType.INTEGER && !(__v instanceof Integer)) ||
+			(type == CPVariableType.LONG && !(__v instanceof Long)) ||
+			(type == CPVariableType.FLOAT && !(__v instanceof Float)) ||
+			(type == CPVariableType.DOUBLE && !(__v instanceof Double)) ||
+			(type == CPVariableType.OBJECT && __v != null &&
+				!(__v instanceof JVMObject)))
+			throw new JVMEngineException(null, "IN12");
+				
 		// Lock
 		synchronized (var)
 		{

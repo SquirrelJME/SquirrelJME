@@ -84,15 +84,9 @@ public class JVMComputeMachine
 		// Allocate a new object of that kind
 		JVMObject obj = engine.objects().spawnObject(thread, jcl);
 		
-		// Store it in the given varaible
-		JVMVariable[] vars = __frame.variables();
-		JVMVariable var = vars[__dest];
-		if (!(var instanceof JVMVariable.OfObject))
-			vars[__dest] = (var = JVMVariable.OfObject.empty());
-		
-		// Set it
-		JVMVariable.OfObject vo = (JVMVariable.OfObject)var;
-		vo.set(obj);
+		// Store it in the given variable
+		JVMDataStore.Window window = __frame.window();
+		window.setObject(__dest, obj);
 	}
 	
 	/**
@@ -100,7 +94,6 @@ public class JVMComputeMachine
 	 * @since 2016/04/15
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public void copy(JVMStackFrame __frame, int __dest, int __src)
 	{
 		// Do nothing if the same
@@ -108,22 +101,10 @@ public class JVMComputeMachine
 			return;
 		
 		// Get variables to copy
-		JVMVariable[] vars = __frame.variables();
-		JVMVariable src = vars[__src];
-		JVMVariable dest = vars[__dest];
+		JVMDataStore.Window window = __frame.window();
 		
-		// Debug
-		System.err.printf("DEBUG -- Copy %d (%s) -> %d (%s)%n",
-			__src, Objects.toString(src),
-			__dest, Objects.toString(dest));
-		
-		// The destination may need to be replaced
-		if (dest == null ||
-			!(dest.getClass().isInstance(src.getClass())))
-			vars[__dest] = dest = JVMVariable.empty(src);
-		
-		// Set the value of the destination to the source
-		dest.set((Object)src.get());
+		// Copy it
+		window.set(dest, window.get(src));
 	}
 	
 	/**
@@ -131,24 +112,15 @@ public class JVMComputeMachine
 	 * @since 2016/04/15
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
 	public void getStaticField(JVMStackFrame __frame, int __dest,
 		CFFieldReference __f)
 	{
 		// Debug
 		System.err.printf("DEBUG -- Read Static %s %d%n", __f, __dest);
 		
-		// Obtain the static field
-		JVMField field = __getStaticField(__frame, __f);
-		
-		// Get field value
-		Object fv = field.getStaticValue();
-		
-		// Variable needs creation?
-		JVMVariable[] vars = __frame.variables();
-		
-		// Set it or new it?
-		vars[__dest] = JVMVariable.setOrNew(vars[__dest], fv);
+		// Set variable to it
+		__frame.window().set(__dest,
+			__getStaticField(__frame, __f).getStaticValue()); 
 	}
 	
 	/**
@@ -293,11 +265,9 @@ public class JVMComputeMachine
 		// Debug
 		System.err.printf("DEBUG -- Put Static %s %d%n", __f, __src);
 		
-		// Obtain the static field
-		JVMField field = __getStaticField(__frame, __f);
-		
-		// Place the value
-		field.setStaticValue((__frame.variables()[__src]).get());
+		// Set the field value
+		__getStaticField(__frame, __f).setStaticValue(
+			__frame.window().get(__src));
 	}
 	
 	/**
