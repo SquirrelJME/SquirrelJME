@@ -17,6 +17,7 @@ import net.multiphasicapps.classfile.CFMethodFlags;
 import net.multiphasicapps.classfile.CFMethodReference;
 import net.multiphasicapps.classprogram.CPComputeMachine;
 import net.multiphasicapps.classprogram.CPInvokeType;
+import net.multiphasicapps.classprogram.CPVariableType;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 

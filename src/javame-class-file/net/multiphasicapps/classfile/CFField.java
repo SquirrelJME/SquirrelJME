@@ -39,17 +39,23 @@ public class CFField
 	{
 		super(FieldSymbol.class, __nat, CFFieldFlags.class, __fl);
 		
-		// {@squirreljme.error CF0o A field cannot have a constant value which
-		// is not of the standard boxed and fixed immutable types. (the class
-		// of the object attempted to be used)}
 		if (__cv != null)
-			if (!(__cv instanceof Boolean || __cv instanceof Byte ||
-				__cv instanceof Short || __cv instanceof Character ||
-				__cv instanceof Integer || __cv instanceof Long ||
-				__cv instanceof Float || __cv instanceof Double ||
-				__cv instanceof String))
-				throw new ClassCastException(String.format("CF0o %s",
+		{
+			// {@squirreljme.error CF0o A field cannot have a constant value
+			// which is not of the standard boxed and fixed immutable types; or
+			// the constant value is not compatible with the field type.
+			// (The class of the object attempted to be used)}
+			FieldSymbol fs = type();
+			if (((fs.equals("I") || fs.equals("Z") || fs.equals("B") ||
+					fs.equals("S") || fs.equals("C")) &&
+						!(__cv instanceof Integer)) ||
+				(fs.equals("J") && !(__cv instanceof Long)) ||
+				(fs.equals("F") && !(__cv instanceof Float)) ||
+				(fs.equals("D") && !(__cv instanceof Double)) ||
+				(fs.equals("Ljava/lang/String;") && !(__cv instanceof String)))
+				throw new CFFormatException(String.format("CF0o %s",
 					__cv.getClass()));
+		}
 		
 		// {@squirreljme.error CF0p A field cannot be both volatile and final.
 		// (the flags the field uses)}
@@ -57,7 +63,14 @@ public class CFField
 			throw new CFFormatException(String.format("CF0p %s", __fl));
 		
 		// Set
-		constantvalue = __cv;
+		if (__cv instanceof Boolean)
+			constantvalue = (((Boolean)__cv) ? 1 : 0);
+		else if (__cv instanceof Byte || __cv instanceof Short)
+			constantvalue = Integer.valueOf(((Number)__cv).intValue());
+		else if (__cv instanceof Character)
+			constantvalue = (int)(((Character)__cv).charValue());
+		else
+			constantvalue = __cv;
 	}
 	
 	/**

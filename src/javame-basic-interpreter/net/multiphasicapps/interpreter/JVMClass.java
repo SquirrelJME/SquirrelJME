@@ -72,6 +72,10 @@ public final class JVMClass
 	/** The primitive type this class represents. */
 	protected final JVMPrimitiveType primitive;
 	
+	/** Static data storage window. */
+	protected final JVMDataStore staticwindow =
+		new JVMDataStore();
+	
 	/** The based class file. */
 	private volatile CFClass _classfile;
 	
@@ -447,53 +451,46 @@ public final class JVMClass
 	 * @param __jv The variable to check.
 	 * @return {@code true} if this is an instacne of it, otherwise
 	 * {@code false}.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/07
 	 */
-	public boolean isInstance(JVMVariable<?> __jv)
-		throws NullPointerException
+	public boolean isInstance(Object __jv)
 	{
-		// Check
+		// Null is never an instance
 		if (__jv == null)
-			throw new NullPointerException("NARG");
-		
-		// If this is a primitive type then logic is simplified a bit
-		if (primitive != null)
-			switch (primitive)
-			{
-					// Integer types
-				case BOOLEAN:
-				case BYTE:
-				case SHORT:
-				case CHARACTER:
-				case INTEGER:
-					return (__jv instanceof JVMVariable.OfInteger);
-					
-					// Long
-				case LONG:
-					return (__jv instanceof JVMVariable.OfLong);
-					
-					// Float
-				case FLOAT:
-					return (__jv instanceof JVMVariable.OfFloat);
-					
-					// Double
-				case DOUBLE:
-					return (__jv instanceof JVMVariable.OfDouble);
-				
-					// Unknown
-				default:
-					throw new RuntimeException(String.format("WTXF %s",
-						primitive));
-			}
-		
-		// If the target is not an object then not an instance at all against
-		// any object
-		if (!(__jv instanceof JVMVariable.OfObject))
 			return false;
 		
-		// Get the variable's object
-		return isInstance(((JVMVariable.OfObject)__jv).get());
+		// Pass objects elsewhere
+		if (__jv instanceof JVMObject)
+			return isInstance((JVMObject)__jv);
+		
+		// A primtive type
+		switch (primitive)
+		{
+				// Integer types
+			case BOOLEAN:
+			case BYTE:
+			case SHORT:
+			case CHARACTER:
+			case INTEGER:
+				return (__jv instanceof Integer);
+				
+				// Long
+			case LONG:
+				return (__jv instanceof Long);
+				
+				// Float
+			case FLOAT:
+				return (__jv instanceof Float);
+				
+				// Double
+			case DOUBLE:
+				return (__jv instanceof Double);
+			
+				// Unknown
+			default:
+				throw new RuntimeException(String.format("WTXF %s",
+					primitive));
+		}
 	}
 	
 	/**
@@ -595,6 +592,17 @@ public final class JVMClass
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the static data storage area.
+	 *
+	 * @return The static data area.
+	 * @since 2016/04/17
+	 */
+	public JVMDataStore staticData()
+	{
+		return staticwindow;
 	}
 	
 	/**

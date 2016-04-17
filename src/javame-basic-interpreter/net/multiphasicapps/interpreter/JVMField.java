@@ -12,6 +12,7 @@ package net.multiphasicapps.interpreter;
 
 import net.multiphasicapps.classfile.CFField;
 import net.multiphasicapps.classfile.CFFieldFlags;
+import net.multiphasicapps.classprogram.CPVariableType;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.PrimitiveSymbol;
 
@@ -24,7 +25,7 @@ public class JVMField
 	extends JVMMember<FieldSymbol, CFFieldFlags, CFField, JVMField>
 {
 	/** The static field value. */
-	protected final JVMVariable<? extends Object> svalue;
+	protected final JVMDataStore.Window svalue;
 	
 	/**
 	 * Initializes the field.
@@ -40,50 +41,17 @@ public class JVMField
 		// Is this a static field?
 		if (flags().isStatic())
 		{
-			// Get the field type
-			FieldSymbol type = type();
+			// Get the type used
+			CPVariableType type = CPVariableType.bySymbol(type());
 			
-			// If an object
-			if (type.isReference())
-				svalue = JVMVariable.OfObject.empty();
-			
-			// Primitive otherwise
-			else
-				switch (type.primitiveType())
-				{
-						// Integer types
-					case BOOLEAN:
-					case BYTE:
-					case SHORT:
-					case CHARACTER:
-					case INTEGER:
-						svalue = JVMVariable.OfInteger.empty();
-						break;
-						
-						// Long
-					case LONG:
-						svalue = JVMVariable.OfLong.empty();
-						break;
-						
-						// Float
-					case FLOAT:
-						svalue = JVMVariable.OfFloat.empty();
-						break;
-						
-						// Double
-					case DOUBLE:
-						svalue = JVMVariable.OfDouble.empty();
-						break;
-					
-						// Unknown primitive type
-					default:
-						throw new RuntimeException("WTFX");
-				}
+			// If wide, allocate 2, otherwise just one
+			svalue = outerClass().staticData().pushWindow(
+				(type.isWide() ? 2 : 1));
 			
 			// Handle constant value
 			Object cons = base.getConstantValue();
 			if (cons != null)
-				setStaticValue(cons);
+				svalue.set(0, cons);
 		}
 		
 		// Not static
@@ -103,14 +71,14 @@ public class JVMField
 	{
 		// {@squirreljme.error IN0z Cannot get static value because this field
 		// is not static. (This field)}
-		JVMVariable<?> var = svalue;
+		JVMDataStore.Window var = svalue;
 		if (var == null)
 			throw new JVMEngineException(null, String.format("IN0z %s", this));
 		
 		// Lock
 		synchronized (var)
 		{
-			return var.get();
+			return var.get(0);
 		}
 	}
 	
@@ -122,26 +90,19 @@ public class JVMField
 	 * @throws JVMEngineException If this field is not static.
 	 * @since 2016/04/16
 	 */
-	@SuppressWarnings({"unchecked"})
 	public Object setStaticValue(Object __v)
 		throws JVMEngineException
 	{
 		// {@squirreljme.error IN10 Cannot put static value because this field
 		// is not static. (This field)}
-		JVMVariable<Object> var = (JVMVariable<Object>)svalue;
+		JVMDataStore.Window var = svalue;
 		if (var == null)
 			throw new JVMEngineException(null, String.format("IN10 %s", this));
 		
 		// Lock
 		synchronized (var)
 		{
-			Object old = var.get();
-			
-			// Set new one
-			var.set(__v);
-			
-			// Return the old
-			return old;
+			return var.set(0, __v);
 		}
 	}
 }
