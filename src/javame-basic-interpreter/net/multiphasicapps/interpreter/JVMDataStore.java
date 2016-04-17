@@ -12,6 +12,8 @@ package net.multiphasicapps.interpreter;
 
 import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import net.multiphasicapps.classprogram.CPVariableType;
 
 /**
@@ -41,6 +43,10 @@ public class JVMDataStore
 	/** Lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** Internal used windows. */
+	protected final Deque<Window> windows =
+		new LinkedList<>();
 	
 	/** The fragments which are known. */
 	private volatile __Fragment__[] _fragments;
@@ -268,7 +274,9 @@ public class JVMDataStore
 			}
 			
 			// Create the window
-			return new Window(start, __nvars);
+			Window rv = new Window(start, __nvars);
+			windows.offerLast(rv);
+			return rv;
 		}
 	}
 	
@@ -679,8 +687,21 @@ public class JVMDataStore
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// Get all the windows
+				Deque<Window> wins = windows;
+				
+				// {@squirreljme.error IN15 The current window is not the top
+				// window.}
+				if (wins.peekLast() != this)
+					throw new IllegalStateException("IN15");
+				
+				// Remove it
+				wins.removeLast();
+				_wintop = start;
 			}
+			
+			// Return parent.
+			return JVMDataStore.this;
 		}
 	
 		/**
