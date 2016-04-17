@@ -252,7 +252,7 @@ public class JVMDataStore
 			
 			// Need to resize?
 			__Fragment__[] frags = _fragments;
-			int newl = (newtop >> FRAGMENT_SHIFT);
+			int newl = (newtop >> FRAGMENT_SHIFT) + 1;
 			if (frags == null || newl > frags.length)
 			{
 				// Direct allocation
@@ -371,13 +371,13 @@ public class JVMDataStore
 	 * storage bounds.
 	 * @since 2016/04/17
 	 */
-	public float setFloat(int __i, double __v)
+	public float setFloat(int __i, float __v)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return __fragment(__i).setFloat(__i & FRAGMENT_MASK, __v);
 		}
 	}
 	
@@ -398,7 +398,7 @@ public class JVMDataStore
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return __fragment(__i).setInt(__i & FRAGMENT_MASK, __v);
 		}
 	}
 	
@@ -463,7 +463,7 @@ public class JVMDataStore
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return __fragment(__i).setObject(__i & FRAGMENT_MASK, __v);
 		}
 	}
 	
@@ -723,7 +723,7 @@ public class JVMDataStore
 		 * storage bounds.
 		 * @since 2016/04/17
 		 */
-		public float setFloat(int __i, double __v)
+		public float setFloat(int __i, float __v)
 			throws IndexOutOfBoundsException
 		{
 			return JVMDataStore.this.setFloat(start + __bounds(__i, false),
@@ -1004,7 +1004,7 @@ public class JVMDataStore
 		 * storage bounds.
 		 * @since 2016/04/17
 		 */
-		public float setFloat(int __i, double __v)
+		public float setFloat(int __i, float __v)
 			throws IndexOutOfBoundsException
 		{
 			// Lock
