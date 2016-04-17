@@ -22,6 +22,7 @@ import java.util.Objects;
  * @param <T> The boxed type.
  * @since 2016/04/07
  */
+@Deprecated
 public abstract class JVMVariable<T>
 {
 	/**

@@ -112,3 +112,5 @@
    [steven-gawroriski](steven-gawroriski/2016/04/15.mkd)
  * 16: 
    [steven-gawroriski](steven-gawroriski/2016/04/16.mkd)
+ * 17: 
+   [steven-gawroriski](steven-gawroriski/2016/04/17.mkd)

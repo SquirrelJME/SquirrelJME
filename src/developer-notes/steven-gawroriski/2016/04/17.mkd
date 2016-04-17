@@ -1,0 +1,6 @@
+# 2016/04/17
+
+## 08:31
+
+Now to split the variable storage into something potentially more efficient.
+
