@@ -235,28 +235,11 @@ final class __DetermineTypes__
 				case 78:
 					__store_n(xop, opcode - 75, CPVariableType.OBJECT);
 					break;
-					
-				case 89: __dup(xop); break;
 				
 				case 172: __return(xop, CPVariableType.INTEGER); break;
 				case 173: __return(xop, CPVariableType.LONG); break;
 				case 174: __return(xop, CPVariableType.FLOAT); break;
 				case 175: __return(xop, CPVariableType.DOUBLE); break;
-				case 176: __return(xop, CPVariableType.OBJECT); break;
-				
-					// Return, does nothing
-				case 177: break;
-				
-				case 178: __getstatic(xop); break;
-				case 179: __putstatic(xop); break;
-				case 182:
-				case 183: __invoke(xop, true); break;
-				case 184: __invoke(xop, false); break;
-				case 185: __invoke(xop, true); break;
-				case 187: __new(xop); break;
-				
-					// Throw exception
-				case 191: __athrow(xop); break;
 				
 				case 50197: __load_w(xop, CPVariableType.INTEGER); break;
 				case 50198: __load_w(xop, CPVariableType.LONG); break;
@@ -527,83 +510,6 @@ final class __DetermineTypes__
 	}
 	
 	/**
-	 * Throws an exception.
-	 *
-	 * @param __op The input operation.
-	 * @since 2016/04/16
-	 */
-	private void __athrow(CPOp __op)
-	{
-		// Just pop an object
-		operate(__op, null, CPVariableType.OBJECT, null);
-	}
-	
-	/**
-	 * Duplicates the top-most stack item.
-	 *
-	 * @param __op The current operation.
-	 * @param __xin Input variables.
-	 * @since 2016/04/12
-	 */
-	private void __dup(CPOp __op)
-	{
-		// Handle
-		CPVariables xin = __op.variables();
-		
-		// Get the topmost variable
-		int top;
-		CPVariables.Slot at = xin.get((top = xin.getStackTop()) - 1);
-		
-		// Duplicate it
-		set(__op, top, top + 1, at.type());
-	}
-	
-	/**
-	 * Invokes a method.
-	 *
-	 * @param __op The input operation.
-	 * @param __inst Instance method?*
-	 * @since 2016/04/13
-	 */
-	private void __invoke(CPOp __op, boolean __inst)
-	{
-		// Read the method to invoke
-		CFMethodReference ref = (CFMethodReference)__op.arguments().get(0);
-		MethodSymbol desc = ref.nameAndType().getValue().asMethod();
-		
-		// Get argument count and any instance variables
-		int argc = desc.argumentCount();
-		int ivc = (__inst ? 1 : 0);
-		FieldSymbol rv;
-		int rvc = (((rv = desc.returnValue()) != null) ? 1 : 0);
-		
-		// Setup operation array
-		Object[] ops = new Object[2 + argc + ivc + rvc];
-		int wp = 0;
-		
-		// There are no locals
-		ops[wp++] = null;
-		
-		// Pop method arguments from last to first
-		for (int i = argc - 1; i >= 0; i--)
-			ops[wp++] = CPVariableType.bySymbol(desc.get(i));
-		
-		// If an instance, pop an extra object
-		if (__inst)
-			ops[wp++] = CPVariableType.OBJECT;
-		
-		// Spacer null
-		ops[wp++] = null;
-		
-		// Push the return type
-		if (rv != null)
-			ops[wp++] = CPVariableType.bySymbol(rv);
-		
-		// Perform operation
-		operate(__op, ops);
-	}
-	
-	/**
 	 * Loads a narrow constant pool entry.
 	 *
 	 * @param __op The operation.
@@ -686,74 +592,6 @@ final class __DetermineTypes__
 	private void __load_w(CPOp __op, CPVariableType __t)
 	{
 		__load_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
-	}
-	
-	/**
-	 * Gets a static variable.
-	 *
-	 * @param __op The current operation.
-	 * @param __xin Input variables.
-	 * @since 2016/04/12
-	 */
-	private void __getstatic(CPOp __op)
-	{
-		operate(__op, null, null, CPVariableType.bySymbol(
-			((CFFieldReference)__op.arguments().get(0)).
-			nameAndType().getValue().asField()));
-	}
-	
-	/**
-	 * Calculates the new operation.
-	 *
-	 * @param __op The current operation.
-	 * @param __xin Input variables.
-	 * @since 2016/04/11
-	 */
-	private void __new(CPOp __op)
-	{
-		// Just add an element to the stack
-		operate(__op, null, null, CPVariableType.OBJECT);
-	}
-	
-	/**
-	 * Stores a value into a static field.
-	 *
-	 * @param __op The operation.
-	 * @param __xin The input variables.
-	 * @since 2016/04/15
-	 */
-	private void __putstatic(CPOp __op)
-	{
-		operate(__op, null, CPVariableType.bySymbol(
-			((CFFieldReference)__op.arguments().get(0)).
-			nameAndType().getValue().asField()), null);
-	}
-	
-	/**
-	 * Returns a value.
-	 *
-	 * @param __op The operation.
-	 * @param __rt The type of value to return.
-	 * @throws NullPointerException If no type was specified.
-	 * @since 2016/04/16
-	 */
-	private void __return(CPOp __op, CPVariableType __rt)
-		throws NullPointerException
-	{
-		// Check
-		if (__rt == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error CP15 Incompatible method return value. (The
-		// value to be returned; The type that the method returns)}
-		CPVariableType real = CPVariableType.bySymbol(
-			__op.program().returnSymbol());
-		if (__rt != real)
-			throw new CPProgramException(String.format("CP15 %s %s", __rt,
-				real));
-		
-		// Operate on it
-		operate(__op, null, __rt, null);
 	}
 	
 	/**
