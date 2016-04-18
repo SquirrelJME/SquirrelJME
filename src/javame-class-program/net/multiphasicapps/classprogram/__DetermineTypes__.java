@@ -129,6 +129,10 @@ final class __DetermineTypes__
 			int opcode = xop.instructionCode();
 			switch (opcode)
 			{
+				case 18: __ldc(xop); break;
+				case 19: __ldc_w(xop); break;
+				case 20: __ldc2_w(xop); break;
+				
 				case 21: __load(xop, CPVariableType.INTEGER); break;
 				case 22: __load(xop, CPVariableType.LONG); break;
 				case 23: __load(xop, CPVariableType.FLOAT); break;
@@ -576,6 +580,51 @@ final class __DetermineTypes__
 		
 		// Perform operation
 		operate(__op, ops);
+	}
+	
+	/**
+	 * Loads a narrow constant pool entry.
+	 *
+	 * @param __op The operation.
+	 * @since 2016/04/18
+	 */
+	private void __ldc(CPOp __op)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Loads a narrow constant pool entry which can reference the entire pool.
+	 *
+	 * @param __op The operation.
+	 * @since 2016/04/18
+	 */
+	private void __ldc_w(CPOp __op)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Performs loading of a constant pool entry.
+	 *
+	 * @param __op The operation.
+	 * @param __dx The source index of the operation.
+	 * @since 2016/04/18
+	 */
+	private void __ldc_x(CPOp __op, int __dx)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Loads a wide constant pool entry (can access entire pool).
+	 *
+	 * @param __op The operation.
+	 * @since 2016/04/18
+	 */
+	private void __ldc2_w(CPOp __op)
+	{
+		throw new Error("TODO");
 	}
 	
 	/**

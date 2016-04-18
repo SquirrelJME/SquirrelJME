@@ -8,3 +8,16 @@ except for `<clinit>`. There is actually a bug in JamVM, the spec says that
 only `invokespecial` may call the initializers, however that VM permits those
 instructions from calling the initializers.
 
+## 14:52
+
+It is possible for the type determination system that I can create a kind of
+domain specific language which can be compiled into actions of sorts. Then
+data that needs to be verified for operations will just essentially be a text
+file which performs specific actions.
+
+## 14:55
+
+An alternative is to do something similar to the operation handlers and instead
+just split the cases across multiple classes. Operations which are similar to
+each other appear close by in numbers anyway.
+
