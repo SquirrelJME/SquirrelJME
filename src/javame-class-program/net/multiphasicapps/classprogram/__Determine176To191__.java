@@ -29,10 +29,28 @@ class __Determine176To191__
 		int opcode = __op.instructionCode();
 		switch (opcode)
 		{
+				// New
+			case 187:
+				__new(__dt, __op);
+				break;
+			
 				// Unknown
 			default:
 				throw new __VMWorkers__.__UnknownOp__();
 		}
+	}
+	
+	/**
+	 * Calculates the new operation.
+	 *
+	 * @param __dt The owning determiner
+	 * @param __op The current operation.
+	 * @since 2016/04/11
+	 */
+	private void __new(__DetermineTypes__ __dt, CPOp __op)
+	{
+		// Just add an element to the stack
+		__dt.operate(__op, null, null, CPVariableType.OBJECT);
 	}
 }
 

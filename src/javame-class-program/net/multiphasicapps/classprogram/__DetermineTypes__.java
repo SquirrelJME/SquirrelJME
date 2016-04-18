@@ -133,7 +133,20 @@ final class __DetermineTypes__
 				opcode);
 			
 			// Call it
-			det.determine(this, xop);
+			try
+			{
+				det.determine(this, xop);
+			}
+			
+			// Unknown operation
+			catch (__VMWorkers__.__UnknownOp__ e)
+			{
+				// {@squirreljme.error CP1f Cannot determine the types for the
+				// given opcode at the specified address. (The operation
+				// address; The opcode)}
+				throw new CPProgramException(String.format("CP1f %d %d",
+					xop.address(), opcode), e);
+			}
 			
 			/*switch (opcode)
 			{
