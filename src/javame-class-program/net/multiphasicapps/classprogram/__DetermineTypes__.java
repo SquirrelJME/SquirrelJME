@@ -674,6 +674,15 @@ final class __DetermineTypes__
 		if (__rt == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error CP15 Incompatible method return value. (The
+		// value to be returned; The type that the method returns)}
+		CPVariableType real = CPVariableType.bySymbol(
+			__op.program().returnSymbol());
+		if (__rt != real)
+			throw new CPProgramException(String.format("CP15 %s %s", __rt,
+				real));
+		
+		// Operate on it
 		operate(__op, null, __rt, null);
 	}
 	

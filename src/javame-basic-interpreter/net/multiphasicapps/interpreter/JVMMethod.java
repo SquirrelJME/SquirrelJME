@@ -148,11 +148,13 @@ public class JVMMethod
 	 * @param __init Is this an class instance or static initializer, if it is
 	 * then it is permitted to write to final fields.
 	 * @param __args The arguments to the call of the method.
+	 * @return The frame that this method was in, note that it is not active.
 	 * @throws JVMEngineException Any thrown exceptions are either handled or
 	 * propogated upwards.
 	 * @since 2016/04/07
 	 */
-	public void interpret(JVMThread __thr, boolean __init, Object... __args)
+	public JVMStackFrame interpret(JVMThread __thr, boolean __init,
+		Object... __args)
 		throws JVMEngineException
 	{
 		// Force arguments to exist
@@ -249,6 +251,9 @@ public class JVMMethod
 		{
 			currentframe.leave();
 		}
+		
+		// Return the left frame.
+		return currentframe;
 	}
 	
 	/**

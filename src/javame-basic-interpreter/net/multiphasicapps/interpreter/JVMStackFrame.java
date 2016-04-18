@@ -31,6 +31,9 @@ public class JVMStackFrame
 	protected final Object lock =
 		new Object();
 	
+	/** The parent of this frame. */
+	protected final JVMStackFrame parent;
+	
 	/** The thread this frame exists in. */
 	protected final JVMThread thread;
 	
@@ -56,6 +59,10 @@ public class JVMStackFrame
 	/** Is this frame returning? */
 	private volatile boolean _doreturn;
 	
+	/** Return value variable. */
+	private volatile int _returnslot =
+		Integer.MIN_VALUE;
+	
 	/**
 	 * Initializes the stack frame.
 	 *
@@ -63,12 +70,13 @@ public class JVMStackFrame
 	 * @param __in The method currently being executed.
 	 * @param __init Is this an initializer?
 	 * @param __ds Stack data storage.
+	 * @param __parent The parent stack frame.
 	 * @param __args Method arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/09
 	 */
 	public JVMStackFrame(JVMThread __thr, JVMMethod __in, boolean __init,
-		JVMDataStore __ds, Object... __args)
+		JVMDataStore __ds, JVMStackFrame __parent, Object... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -80,6 +88,7 @@ public class JVMStackFrame
 			__args = new Object[0];
 		
 		// Set
+		parent = __parent;
 		thread = __thr;
 		method = __in;
 		isinit = __init;
@@ -154,6 +163,23 @@ public class JVMStackFrame
 			_jumptarget = Integer.MIN_VALUE;
 			return this; 
 		}
+	}
+	
+	/**
+	 * Clears the return value slot.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/04/18
+	 */
+	public JVMStackFrame clearReturnSlot()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			_returnslot = Integer.MIN_VALUE;
+		}
+		
+		return this;
 	}
 	
 	/**
@@ -255,18 +281,32 @@ public class JVMStackFrame
 	 * Marks that this frame should return.
 	 *
 	 * @return {@code this}.
+	 * @throws JVMEngineException If the frame is already returning.
 	 * @since 2016/04/16
 	 */
 	public JVMStackFrame markReturn()
+		throws JVMEngineException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			_doreturn = true;
-		}
+		return __markReturn(Integer.MIN_VALUE);
+	}
+	
+	/**
+	 * Marks that this frame should return with the specified value.
+	 *
+	 * @param __rv The slot to return.
+	 * @return {@code this}.
+	 * @throws JVMEngineException If the frame is already returning or the
+	 * slot is not valid.
+	 * @since 2016/04/18
+	 */
+	public JVMStackFrame markReturn(int __rv)
+		throws JVMEngineException
+	{
+		// {@squirreljme.error IN16 Return value slot is out of range.}
+		if (__rv < 0 || __rv >= datawindow.size())
+			throw new JVMEngineException(null, String.format("IN16 %d", __rv));
 		
-		// Self
-		return this;
+		return __markReturn(__rv);
 	}
 	
 	/**
@@ -293,6 +333,31 @@ public class JVMStackFrame
 		synchronized (lock)
 		{
 			_pcaddr = __addr;
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Sets the return value slot.
+	 *
+	 * @param __dest The destination slot.
+	 * @return {@code this}.
+	 * @since 2016/04/18
+	 */
+	public JVMStackFrame setReturnSlot(int __dest)
+	{
+		// {@squirreljme.error IN18 Return value slot out of bounds. (The
+		// input slot; The number of available slots.)}
+		if (__dest < 0 || __dest >= datawindow.size())
+			throw new JVMIncompatibleClassChangeError(null, String.format(
+				"IN18 %d %d", __dest, datawindow.size()));
+		
+		// Lock
+		synchronized (lock)
+		{
+			_returnslot = __dest;
 		}
 		
 		// Self
@@ -421,6 +486,46 @@ public class JVMStackFrame
 			// Set write position
 			vat = nextvat;
 		}
+	}
+	
+	/**
+	 * Marks that a value is potentially to be returned from this frame.
+	 *
+	 * @param __rv The slot to return a value, if positive.
+	 * @return {@code this}.
+	 * @throws JVMEngineException If already returning.
+	 * @since 2016/04/18
+	 */
+	private JVMStackFrame __markReturn(int __rv)
+		throws JVMEngineException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// {@squirreljme.error IN17 Already returning a value.)
+			if (_doreturn)
+				throw new JVMEngineException(null, "IN17");
+			
+			// Mark for return
+			_doreturn = true;
+			
+			// {@squirreljme.error IN19 The caller either set a
+			// return value for a method returning {@code void} or did not set
+			// a return value for a method returning non-{@code void}.
+			// (Returning a value; The slot being returned)}
+			boolean hasreturn = (__rv >= 0);
+			int rsv = parent._returnslot;
+			if (hasreturn != (rsv >= 0))
+				throw new JVMIncompatibleClassChangeError(null,
+					String.format("IN19 %s %d", hasreturn, rsv));
+		
+			// Set return value
+			if (hasreturn)
+				parent.datawindow.set(rsv, datawindow.get(__rv));
+		}
+		
+		// Self
+		return this;
 	}
 }
 

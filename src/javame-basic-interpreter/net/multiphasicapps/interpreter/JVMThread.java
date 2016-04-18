@@ -180,7 +180,7 @@ public class JVMThread
 		synchronized (stack)
 		{
 			JVMStackFrame rv = new JVMStackFrame(this, __m, __init,
-				stackvariables, __args);
+				stackvariables, stack.peekLast(), __args);
 			stack.offerLast(rv);
 			return rv;
 		}

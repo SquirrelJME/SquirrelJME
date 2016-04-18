@@ -245,12 +245,24 @@ public class JVMComputeMachine
 		for (int i = 0; i < n; i++)
 			call[i] = window.get(__args[i]);
 		
-		// Invoke it
-		invokethis.interpret(__frame.thread(), false, call);
-		
-		// Handle return value
+		// Set the return slot
 		if (__ref.memberType().returnValue() != null)
-			throw new Error("TODO");
+			__frame.setReturnSlot(__dest);
+		else
+			__frame.clearReturnSlot();
+		
+		// Invoke it
+		try
+		{
+			JVMStackFrame oldframe = invokethis.interpret(__frame.thread(),
+				false, call);
+		}
+		
+		// Clear the return slot even during exceptions
+		finally
+		{
+			__frame.clearReturnSlot();
+		}
 	}
 	
 	/**
@@ -278,10 +290,9 @@ public class JVMComputeMachine
 	{
 		// Handle return of value
 		if (__src >= 0)
-			throw new Error("TODO");
-		
-		// Mark frame to be returned from
-		__frame.markReturn();
+			__frame.markReturn(__src);
+		else
+			__frame.markReturn();
 	}
 	
 	/**

@@ -833,9 +833,10 @@ public class JVMDataStore
 			throws IndexOutOfBoundsException
 		{
 			// Check
-			if (__i < 0 || __i >= length - (__wide ? 1 : 0))
-				throw new IndexOutOfBoundsException(String.format("IOOB %d",
-					__i));
+			int limit = length - (__wide ? 1 : 0);
+			if (__i < 0 || __i >= limit)
+				throw new IndexOutOfBoundsException(String.format(
+					"IOOB %d %d %d %s", __i, limit, length, __wide));
 			
 			// Return it
 			return __i;

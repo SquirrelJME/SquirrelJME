@@ -51,6 +51,9 @@ public final class CPProgram
 	public static final int MAX_CODE_SIZE =
 		65535;
 	
+	/** The return valu of this method. */
+	protected final FieldSymbol returnsymbol;
+	
 	/** The program constant pool. */
 	protected final CFConstantPool constantpool;
 	
@@ -105,6 +108,9 @@ public final class CPProgram
 		
 		// Set
 		constantpool = __cl.constantPool();
+		
+		// Get return symbol
+		returnsymbol = __method.type().returnValue();
 		
 		// Max stack and local entries
 		maxstack = das.readUnsignedShort();
@@ -361,6 +367,17 @@ public final class CPProgram
 	public int physicalToLogical(int __phy)
 	{
 		return Math.max(-1, Arrays.binarySearch(_ipos, __phy));
+	}
+	
+	/**
+	 * Returns the type of value returned from this program.
+	 *
+	 * @return The return type symbol.
+	 * @since 2016/04/18
+	 */
+	public FieldSymbol returnSymbol()
+	{
+		return returnsymbol;
 	}
 	
 	/**
