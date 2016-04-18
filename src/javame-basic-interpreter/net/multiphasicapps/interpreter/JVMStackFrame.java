@@ -237,6 +237,28 @@ public class JVMStackFrame
 	}
 	
 	/**
+	 * Is this a static initializer?
+	 *
+	 * @return {@code true} if it is.
+	 * @since 2016/04/18
+	 */
+	public boolean isClassInitializer()
+	{
+		return method.isClassInitializer();
+	}
+	
+	/**
+	 * Is this a constructor?
+	 *
+	 * @return {@code true} if it is a constructor.
+	 * @since 2016/04/18
+	 */
+	public boolean isConstructor()
+	{
+		return method.isConstructor();
+	}
+	
+	/**
 	 * Is this a static or instance initializer?
 	 *
 	 * @return {@code true} if it is.
@@ -244,7 +266,7 @@ public class JVMStackFrame
 	 */
 	public boolean isInitializer()
 	{
-		return isinit;
+		return isClassInitializer() || isConstructor();
 	}
 	
 	/**

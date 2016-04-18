@@ -1,2 +1,10 @@
 # 2016/04/18
 
+## 09:22
+
+According to the rules of the virtual machine, final fields for instances can
+only be set if the current method is called `<init>`. The same goes for statics
+except for `<clinit>`. There is actually a bug in JamVM, the spec says that
+only `invokespecial` may call the initializers, however that VM permits those
+instructions from calling the initializers.
+

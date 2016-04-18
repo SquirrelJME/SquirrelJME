@@ -212,6 +212,27 @@ public class JVMComputeMachine
 		else
 			throw new RuntimeException("WTFX");
 		
+		// {@squirreljme.error IN1c Cannot invoke a method which is or is not
+		// static when the calling type does not match the staticness of the
+		// call. (The method to call; The invocation type; The method flags)}
+		CFMethodFlags mf = invokethis.flags();
+		if ((__type == CPInvokeType.STATIC) != mf.isStatic())
+			throw new JVMIncompatibleClassChangeError(__frame,
+				String.format("IN1c", invokethis, __type, mf));
+		
+		// Initializes cannot be called at all
+		if (__type != CPInvokeType.SPECIAL)
+		{
+			// {@squirreljme.error IN1d Static initializers may only be called
+			// by the virtual machine and not by any byte code instruction,
+			// instance initializers may only be called by
+			// {@link invokespecial}. (The method to be invoked; The type if
+			// invocation to be performed)}
+			if (invokethis.isInitializer())
+				throw new JVMIncompatibleClassChangeError(__frame,
+					String.format("IN1d", invokethis, __type));
+		}
+		
 		// {@squirreljme.error IN0u Not permitted to access the specified
 		// method. (The method to invoke)}
 		if (!__frame.thread().checkAccess(invokethis))
@@ -220,7 +241,6 @@ public class JVMComputeMachine
 		
 		// {@squirreljme.error IN0v Cannot invoke an abstract or static method.
 		// (The method to invoke; The access flags)}
-		CFMethodFlags mf = invokethis.flags();
 		if (mf.isAbstract() || mf.isNative())
 			throw new JVMIncompatibleClassChangeError(__frame,
 				String.format("IN0v %s %s", invokethis, mf));
@@ -255,7 +275,8 @@ public class JVMComputeMachine
 		try
 		{
 			JVMStackFrame oldframe = invokethis.interpret(__frame.thread(),
-				false, call);
+				(instance != null ? invokethis.isConstructor() :
+				invokethis.isClassInitializer()), call);
 		}
 		
 		// Clear the return slot even during exceptions
@@ -276,9 +297,30 @@ public class JVMComputeMachine
 		// Debug
 		System.err.printf("DEBUG -- Put Static %s %d%n", __f, __src);
 		
+		// Get the field to set
+		JVMField field = __getStaticField(__frame, __f);
+		
+		// If the field is final then only the static initializer of the
+		// given class can initialize its value
+		if (field.flags().isFinal())
+		{
+			// {@squirreljme.error IN1b Cannot set a static final field of
+			// another class. (The class containing the static final field to
+			// set; The class the current method resides in)}
+			JVMClass a, b;
+			if ((a = field.outerClass()) != (b = __frame.inClass()))
+				throw new JVMIncompatibleClassChangeError(__frame,
+					String.format("IN1b %s %s", a, b));
+			
+			// {@squirreljme.error IN1a Cannot set a final field to a value as
+			// a non-static initializer. (The field being set)}
+			if (!__frame.isClassInitializer())
+				throw new JVMIncompatibleClassChangeError(__frame,
+					String.format("IN1a %s", field));
+		}
+		
 		// Set the field value
-		__getStaticField(__frame, __f).setStaticValue(
-			__frame.window().get(__src));
+		field.setStaticValue(__frame.window().get(__src));
 	}
 	
 	/**
