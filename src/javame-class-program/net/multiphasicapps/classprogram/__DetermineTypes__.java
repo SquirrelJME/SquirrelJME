@@ -132,8 +132,8 @@ final class __DetermineTypes__
 			__VMWorkers__.__Determiner__ det = CPOp._VMWORKERS.__determine(
 				opcode);
 			
-			if (true)
-				throw new Error("TODO");
+			// Call it
+			det.determine(this, xop);
 			
 			/*switch (opcode)
 			{

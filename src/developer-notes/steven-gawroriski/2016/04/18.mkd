@@ -21,3 +21,12 @@ An alternative is to do something similar to the operation handlers and instead
 just split the cases across multiple classes. Operations which are similar to
 each other appear close by in numbers anyway.
 
+## 19:03
+
+Apart from writing my own interpreter and such, I can also port either my
+library to be usable with JamVM or patch JamVM to be able to use my library.
+
+## 19:19
+
+That would require messing with C, and C is rather messy.
+
