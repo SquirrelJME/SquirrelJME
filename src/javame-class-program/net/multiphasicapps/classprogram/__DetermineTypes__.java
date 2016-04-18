@@ -127,7 +127,15 @@ final class __DetermineTypes__
 			
 			// Depends on the opcode
 			int opcode = xop.instructionCode();
-			switch (opcode)
+			
+			// Lookup the determiner
+			__VMWorkers__.__Determiner__ det = CPOp._VMWORKERS.__determine(
+				opcode);
+			
+			if (true)
+				throw new Error("TODO");
+			
+			/*switch (opcode)
 			{
 				case 18: __ldc(xop); break;
 				case 19: __ldc_w(xop); break;
@@ -249,13 +257,13 @@ final class __DetermineTypes__
 				case 50233: __store_w(xop, CPVariableType.DOUBLE); break;
 				case 50234: __store_w(xop, CPVariableType.OBJECT); break;
 				
-					// {@squirreljme.error CP0u Cannot calculate the SSA for
+					// {@squirreljme.error CP0u Cannot calculate the types for
 					// the given opcode because it is unknown. (The program
 					// address; The opcode)}
 				default:
 					throw new CPProgramException(String.format("CP0u %d %d",
 						xop.address(), opcode));
-			}
+			}*/
 			
 			// If this operation handles exceptions then it potentially needs
 			// to derive variable state from the source operations.

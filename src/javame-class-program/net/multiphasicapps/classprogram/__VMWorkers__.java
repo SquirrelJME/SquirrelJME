@@ -53,6 +53,10 @@ class __VMWorkers__
 	/**
 	 * Obtains the type determination for the given opcode.
 	 *
+	 * {@squirreljme.error CP0u Cannot calculate the types for
+	 * the given opcode because it is unknown. (The program
+	 * address; The opcode)}
+	 *
 	 * @param __code The operation to get the determiner for.
 	 * @return The determiner for the given operation.
 	 * @throws CPProgramException If there is no determiner for the given
@@ -64,13 +68,16 @@ class __VMWorkers__
 	{
 		return this.<__Determiner__>__lookupInternal(__code,
 			__Determiner__.class, _DETERMINERS,
-			"net.multiphasicapps.classprogram.__Determine", "__");
+			"net.multiphasicapps.classprogram.__Determine", "__", "CP0u");
 	}
 	
 	/**
 	 * Obtains from the cache or caches a class which is used for the handling
 	 * of byte code operations. This is to prevent this file from being a
 	 * massive 5000 line file.
+	 *
+	 * {@squirreljme.error CP0n No handler exists for this given
+	 * instruction. (The opcode)}
 	 *
 	 * @param __code The opcode, if the value is >= 0x100 then it is shifted
 	 * down to not become wide.
@@ -82,7 +89,8 @@ class __VMWorkers__
 		throws CPProgramException
 	{
 		return this.<__Worker__>__lookupInternal(__code, __Worker__.class,
-			_HANDLERS, "net.multiphasicapps.classprogram.__OpHandler", "__");
+			_HANDLERS, "net.multiphasicapps.classprogram.__OpHandler", "__",
+			"CP0n");
 	}
 	
 	/**
@@ -90,9 +98,6 @@ class __VMWorkers__
 	 * of byte code operations. This is to prevent this file from being a
 	 * massive 5000 line file. This is the general lookup which can do it for
 	 * any kind of class.
-	 *
-	 * {@squirreljme.error CP0n No handler exists for this given
-	 * instruction. (The opcode)}
 	 * 
 	 * @param <G> The type of value to return
 	 * @param __code The opcode, if the value is >= 0x100 then it is shifted
@@ -101,18 +106,19 @@ class __VMWorkers__
 	 * @param __from The source array.
 	 * @param __prefix The class prefix.
 	 * @param __suffix The class suffix.
+	 * @param __ec The error code used.
 	 * @return The handler for the given operation.
 	 * @throws CPProgramException If the opcode is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/18
 	 */
 	private <G> G __lookupInternal(int __code, Class<G> __cl,
-		Reference<G>[] __from, String __prefix, String __suffix)
+		Reference<G>[] __from, String __prefix, String __suffix, String __ec)
 		throws CPProgramException, NullPointerException
 	{
 		// Check
 		if (__prefix == null || __suffix == null || __cl == null ||
-			__from == null)
+			__from == null || __ec == null)
 			throw new NullPointerException("NARG");
 		
 		// Is this wide?
@@ -121,7 +127,8 @@ class __VMWorkers__
 		{
 			// Not wide?
 			if (upper != (CPOpcodes.WIDE << 8))
-				throw new CPProgramException(String.format("CP0n %d", __code));
+				throw new CPProgramException(String.format(__ec + " %d",
+					__code));
 			
 			// Make it down to 0x100 level
 			__code = 0x100 | (__code & 0xFF);
@@ -132,7 +139,7 @@ class __VMWorkers__
 		
 		// Out of range?
 		if (major < 0 || major >= __from.length)
-			throw new CPProgramException(String.format("CP0n %d", __code));
+			throw new CPProgramException(String.format(__ec + " %d", __code));
 		
 		// Lock on the handlers
 		synchronized (__from)
@@ -161,7 +168,7 @@ class __VMWorkers__
 					ClassNotFoundException|ClassCastException e)
 				{
 					throw new CPProgramException(
-						String.format("CP0n %d", __code), e);
+						String.format(__ec + " %d", __code), e);
 				}
 				
 				// Cache it
@@ -224,6 +231,15 @@ class __VMWorkers__
 		__Determiner__()
 		{
 		}
+		
+		/**
+		 * Determines the required types for the given operation.
+		 *
+		 * @param __dt The determine core.
+		 * @param __op The operation to determine values for.
+		 * @since 2016/04/18
+		 */
+		public abstract void determine(__DetermineTypes__ __dt, CPOp __op);
 	}
 	
 	/**

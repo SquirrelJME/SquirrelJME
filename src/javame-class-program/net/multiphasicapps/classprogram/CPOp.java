@@ -39,7 +39,7 @@ public class CPOp
 	implements Comparable<CPOp>
 {
 	/** Virtual machine workers. */
-	private static final __VMWorkers__ _VMWORKERS =
+	static final __VMWorkers__ _VMWORKERS =
 		new __VMWorkers__();
 	
 	/** The nullary compute machine (does nothing). */
