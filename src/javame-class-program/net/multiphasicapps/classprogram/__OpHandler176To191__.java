@@ -173,8 +173,7 @@ class __OpHandler176To191__
 		if (rvfs == null)
 			rvslot = Integer.MIN_VALUE;
 		else
-			rvslot = (stacktop - popcount) +
-				(CPVariableType.bySymbol(rvfs).isWide() ? 2 : 1);
+			rvslot = (stacktop - popcount);
 		
 		// Setup passed arguments
 		int[] passargs = new int[popcount];
