@@ -18,6 +18,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
   * [Online repository](http://multiphasicapps.net:8080/squirreljme)
   * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
+  * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
   * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
   * [Manual](src/squirreljme-manual/index.mkd)
   * [Developer Notes](src/developer-notes/index.mkd)
@@ -53,7 +54,12 @@ help the purchase of various hardware:
   * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
     dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
 
-# Important Statements
+## Reporting Bugs
+
+You may report bugs and such by either posting on the sub-Reddit or to the
+mailing list.
+
+## Important Statements
 
 ***THIS SOFTWARE IS INCOMPLETE AND IN ITS CURRENT STATE IS NOT CURRENTLY
 100% COMPATIBLE WITH JAVA ME 8. THERE ARE CURRENTLY NO RELEASED VERSIONS OF
