@@ -28,7 +28,24 @@ class __Determine144To159__
 		// Depends on the opcode
 		int opcode = __op.instructionCode();
 		switch (opcode)
-		{	
+		{
+				// Compare long
+			case 148:
+				__iftwo(__dt, __op, CPVariableType.LONG);
+				break;
+			
+				// Compare float
+			case 149:
+			case 150:
+				__iftwo(__dt, __op, CPVariableType.FLOAT);
+				break;
+				
+				// Compare double
+			case 151:
+			case 152:
+				__iftwo(__dt, __op, CPVariableType.DOUBLE);
+				break;
+			
 				// Compare int against zero
 			case 153:
 			case 154:
@@ -55,6 +72,19 @@ class __Determine144To159__
 	static void __ifint(__DetermineTypes__ __dt, CPOp __op)
 	{
 		__dt.operate(__op, null, CPVariableType.INTEGER, null);
+	}
+	
+	/**
+	 * Compare two values and return a signum.
+	 *
+	 * @param __dt The determiner.
+	 * @param __op The current operation.
+	 * @param __t The types to compare.
+	 * @since 2016/04/19
+	 */
+	static void __iftwo(__DetermineTypes__ __dt, CPOp __op, CPVariableType __t)
+	{
+		__dt.operate(__op, null, __t, __t, null, CPVariableType.INTEGER);
 	}
 }
 

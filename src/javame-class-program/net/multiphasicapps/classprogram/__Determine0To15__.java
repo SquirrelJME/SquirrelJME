@@ -84,7 +84,7 @@ class __Determine0To15__
 	 */
 	static void __const(__DetermineTypes__ __dt, CPOp __op, CPVariableType __t)
 	{
-		__dt.operate(__op, null, null, __t, null);
+		__dt.operate(__op, null, null, __t);
 	}
 }
 

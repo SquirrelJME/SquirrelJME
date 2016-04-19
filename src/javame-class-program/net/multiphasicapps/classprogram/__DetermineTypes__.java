@@ -362,7 +362,8 @@ final class __DetermineTypes__
 		}
 		
 		// Incorrect input type; Out of bounds
-		catch (ClassCastException|IndexOutOfBoundsException e)
+		catch (ClassCastException|IndexOutOfBoundsException|
+			NullPointerException e)
 		{
 			// {@squirreljme.error CP1l Operation exceeded bounds while it
 			// was being performed or the input type is incorrect.
