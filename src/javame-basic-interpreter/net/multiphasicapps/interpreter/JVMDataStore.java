@@ -897,7 +897,15 @@ public class JVMDataStore
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// {@squirreljme.error IN1f This slot is not a float.
+				// (The current type)}
+				CPVariableType type = _types[__i];
+				if (type != CPVariableType.FLOAT)
+					throw new JVMEngineException(null, String.format("IN1f %s",
+						type));
+				
+				// Return the value
+				return Float.intBitsToFloat(_cells[__i]);
 			}
 		}
 	
@@ -917,7 +925,15 @@ public class JVMDataStore
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// {@squirreljme.error IN1e This slot is not an integer.
+				// (The current type)}
+				CPVariableType type = _types[__i];
+				if (type != CPVariableType.INTEGER)
+					throw new JVMEngineException(null, String.format("IN1e %s",
+						type));
+				
+				// Return the value
+				return _cells[__i];
 			}
 		}
 	
