@@ -22,6 +22,12 @@ public final class IdentifierSymbol
 	/** Is this a valid method name? */
 	protected final boolean validmethod;
 	
+	/** Is this the symbol for the static initializer? */
+	protected final boolean isstaticinit;
+	
+	/** is this the symbol for the instance initializer? */
+	protected final boolean isconstructor;
+	
 	/**
 	 * Initializes an identifier symbol.
 	 *
@@ -62,8 +68,31 @@ public final class IdentifierSymbol
 			}
 		
 		// Valid method?
-		validmethod = (!gtlt || toString().equals("<init>") ||
-			toString().equals("<clinit>"));
+		isstaticinit = toString().equals("<clinit>");
+		isconstructor = toString().equals("<init>");
+		validmethod = (!gtlt || isstaticinit || isconstructor);
+	}
+	
+	/**
+	 * Is this the name for a constructor?
+	 *
+	 * @return {@code true} if this is the constructor name.
+	 * @since 2016/04/19
+	 */
+	public boolean isConstructor()
+	{
+		return isconstructor;
+	}
+	
+	/**
+	 * Is this the name for the static initializer?
+	 *
+	 * @return {@code true} if this is the static initializer name.
+	 * @since 2016/04/19
+	 */
+	public boolean isStaticInitializer()
+	{
+		return isstaticinit;
 	}
 	
 	/**

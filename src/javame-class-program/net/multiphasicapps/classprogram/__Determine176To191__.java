@@ -13,6 +13,7 @@ package net.multiphasicapps.classprogram;
 import net.multiphasicapps.classfile.CFFieldReference;
 import net.multiphasicapps.classfile.CFMethodReference;
 import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
@@ -53,16 +54,24 @@ class __Determine176To191__
 				__putstatic(__dt, __op);
 				break;
 				
-				// invokevirtual, invokespecial, invokeinterface
+				// invokevirtual
 			case 182:
+				__invoke(__dt, __op, CPInvokeType.VIRTUAL);
+				break;
+			
+				// invokespecial
 			case 183:
-			case 185:
-				__invoke(__dt, __op, true);
+				__invoke(__dt, __op, CPInvokeType.SPECIAL);
 				break;
 				
 				// invokestatic
 			case 184:
-				__invoke(__dt, __op, false);
+				__invoke(__dt, __op, CPInvokeType.STATIC);
+				break;
+				
+				// invokeinterface
+			case 185:
+				__invoke(__dt, __op, CPInvokeType.INTERFACE);
 				break;
 				
 				// New
@@ -113,18 +122,42 @@ class __Determine176To191__
 	 *
 	 * @param __dt The determiner.
 	 * @param __op The input operation.
-	 * @param __inst Instance method?
+	 * @param __it The type of invocation being performed.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/13
 	 */
-	static void __invoke(__DetermineTypes__ __dt, CPOp __op, boolean __inst)
+	static void __invoke(__DetermineTypes__ __dt, CPOp __op, CPInvokeType __it)
+		throws NullPointerException
 	{
+		// Check
+		if (__it == null)
+			throw new NullPointerException("NARG");
+		
 		// Read the method to invoke
 		CFMethodReference ref = (CFMethodReference)__op.arguments().get(0);
 		MethodSymbol desc = ref.nameAndType().getValue().asMethod();
 		
+		// Get the method name
+		IdentifierSymbol name = ref.memberName();
+		
+		// {@squirreljme.error CP1m Cannot invoke a method with the specified
+		// name. (The method name)}
+		if (!name.isValidMethod())
+			throw new CPProgramException(String.format("CP1m %s", name));
+		
+		// {@squirreljme.error CP1o Cannot invoke a method which is called the
+		// static initializer. (The method name)}
+		if (name.isStaticInitializer())
+			throw new CPProgramException(String.format("CP1o %s", name));
+		
+		// {@squirreljme.error CP1p Only {@code invokespecial} may invoke a
+		// method which is called the constructor. (The method name)}
+		if (name.isConstructor() && __it != CPInvokeType.SPECIAL)
+			throw new CPProgramException(String.format("CP1p %s", name));
+		
 		// Get argument count and any instance variables
 		int argc = desc.argumentCount();
-		int ivc = (__inst ? 1 : 0);
+		int ivc = (__it.isInstance() ? 1 : 0);
 		FieldSymbol rv;
 		int rvc = (((rv = desc.returnValue()) != null) ? 1 : 0);
 		
@@ -140,7 +173,7 @@ class __Determine176To191__
 			ops[wp++] = CPVariableType.bySymbol(desc.get(i));
 		
 		// If an instance, pop an extra object
-		if (__inst)
+		if (__it.isInstance())
 			ops[wp++] = CPVariableType.OBJECT;
 		
 		// Spacer null
