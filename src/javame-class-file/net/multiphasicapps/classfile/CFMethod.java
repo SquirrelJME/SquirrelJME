@@ -40,23 +40,30 @@ public final class CFMethod
 	 * @param __fl The flags which the member uses.
 	 * @param __ca The code attribute, the direct array is used and should
 	 * not be modified.
+	 * @param __ver The class version number.
 	 * @throws NullPointerException On null arguments except for {@code __ca}.
 	 * @since 2016/03/01
 	 */
-	CFMethod(CFMemberKey<MethodSymbol> __nat, CFMethodFlags __fl, byte[] __ca)
+	CFMethod(CFMemberKey<MethodSymbol> __nat, CFMethodFlags __fl, byte[] __ca,
+		CFClassVersion __ver)
 		throws NullPointerException
 	{
 		super(MethodSymbol.class, __nat, CFMethodFlags.class, __fl);
 		
+		// Check
+		if (__ver == null)
+			throw new NullPointerException("NARG");
+		
 		// Is this a constructor?
-		isconstructor = name().equals("<init>");
-		isclassinit = name().equals("<clinit>");
+		IdentifierSymbol name = name();
+		isconstructor = name.equals("<init>");
+		isclassinit = name.equals("<clinit>");
 		
 		// Set
 		codeattribute = __ca;
 		
-		// Class initializer flags are ignored for the most part
-		if (!isClassInitializer())
+		// If not an initializer of any kind
+		if (!isconstructor && !isclassinit)
 		{
 			// {@squirreljme.error CF0w An abstract method cannot be {@code
 			// private}, {@code static}, {@code final}, {@code synchronized},
@@ -67,6 +74,40 @@ public final class CFMethod
 					__fl.isStrict())
 					throw new CFFormatException(String.format("CF0w %s",
 						__fl));
+			
+			// Cannot contain < or >
+			int n = name.length();
+			for (int i = 0; i < n; i++)
+			{
+				char c = name.charAt(i);
+				
+				// {@squirreljme.error CF1c Methods cannot have greater than
+				// or less than signs in their name. (The method name)}
+				if (c == '<' || c == '>')
+					throw new CFFormatException(String.format("CF1c %s",
+						name));
+			}
+		}
+		
+		// Otherwise specific flags must be set
+		else
+		{
+			if (isconstructor)
+			{
+				// {@squirreljme.error CF1d Instance initializers cannot be
+				// {@code static}, {@code abstract}, {@code final}, 
+				// {@code synchronized}, or {@code native}.
+				// (Method flags)}
+				if (__fl.isStatic() || __fl.isAbstract() || __fl.isFinal() ||
+					__fl.isSynchronized() || __fl.isNative())
+					throw new CFFormatException(String.format("CF1d", __fl));
+			}
+			
+			// {@squirreljme.error CF1e Starting with CLDC 1.7, class
+			// initializers must have their static flag set. (Method flags)}
+			if (__ver.compareTo(CFClassVersion.CLDC_8) >= 0 &&
+				isclassinit && !__fl.isStatic())
+				throw new CFFormatException(String.format("CF1e", __fl));
 		}
 		
 		// {@squirreljme.error CF0x Non-abstract and non-native methods must

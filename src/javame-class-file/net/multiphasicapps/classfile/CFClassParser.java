@@ -102,8 +102,9 @@ public class CFClassParser
 		// Already done?
 		synchronized (lock)
 		{
+			// {@squirreljme.error CF16 Classes may only be parsed once.}
 			if (_did)
-				throw new IllegalStateException("IN0w");
+				throw new IllegalStateException("CF16");
 			_did = true;
 		}
 		
@@ -115,17 +116,17 @@ public class CFClassParser
 		DataInputStream das = new DataInputStream(__is);
 		
 		// Check the magic number
-		// @{squirreljme.error IN01 The magic number of the class is not a
+		// @{squirreljme.error CF17 The magic number of the class is not a
 		// valid one for the standard class file format. Expects 0xCAFEBABE,
 		// however the given magic number was specified.}
 		int clmagic;
 		if (MAGIC_NUMBER != (clmagic = das.readInt()))
-			throw new CFFormatException(String.format("IN01 %08x", clmagic));
+			throw new CFFormatException(String.format("CF17 %08x", clmagic));
 		
 		// Read the class version number, this modifies if certain
 		// instructions are handled and how they are verified (StackMap vs
 		// StackMapTable)
-		// @{squirreljme.error IN02 The input class file version is either too
+		// @{squirreljme.error CF18 The input class file version is either too
 		// new or too old. The specified class file version must be within the
 		// specified range.}
 		CFClassVersion version;
@@ -133,7 +134,7 @@ public class CFClassParser
 			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
 		if (version.compareTo(CFClassVersion.MAX_VERSION) > 0 ||
 			version.compareTo(CFClassVersion.MIN_VERSION) < 0)
-			throw new CFClassVersionError(String.format("IN02 %s != [%s, %s]",
+			throw new CFClassVersionError(String.format("CF18 %s != [%s, %s]",
 				version, CFClassVersion.MIN_VERSION,
 				CFClassVersion.MAX_VERSION));
 		
@@ -158,7 +159,7 @@ public class CFClassParser
 			_supername = null;
 		
 		// Read interface count
-		// @{squirreljme.error IN11 The class file to parse has a duplicated
+		// @{squirreljme.error CF19 The class file to parse has a duplicated
 		// interface in its implemented interfaces list, an interface may
 		// only be specified once. (Existing interfaces, the duplicate
 		// interface)}
@@ -169,7 +170,7 @@ public class CFClassParser
 			if (!ints.add((ix = constantpool.<CFClassName>getAs(
 				das.readUnsignedShort(), CFClassName.class).
 					symbol().asBinaryName())))
-				throw new CFFormatException(String.format("IN11 %s %s",
+				throw new CFFormatException(String.format("CF19 %s %s",
 					ints, ix));
 		
 		// Read fields
@@ -179,9 +180,9 @@ public class CFClassParser
 		{
 			CFField x = __readField(das);
 			
-			// @{squirreljme.error IN2r Class has a duplicate field.}
+			// @{squirreljme.error CF1a Class has a duplicate field.}
 			if (null != flds.put(x.nameAndType(), x))
-				throw new CFFormatException(String.format("IN2r %s", x));
+				throw new CFFormatException(String.format("CF1a %s", x));
 		}
 		
 		// Read methods
@@ -191,9 +192,9 @@ public class CFClassParser
 		{
 			CFMethod x =__readMethod(das);
 			
-			// @{squirreljme.error IN2s Class has a duplicate method.}
+			// @{squirreljme.error CF1b Class has a duplicate method.}
 			if (null != mths.put(x.nameAndType(), x))
-				throw new CFFormatException(String.format("IN2s %s", x));
+				throw new CFFormatException(String.format("CF1b %s", x));
 		}
 		
 		// No class attributes are used by the Java ME VM, thus they can
@@ -209,10 +210,10 @@ public class CFClassParser
 		}
 		
 		// If this is not EOF, then the class has extra junk following it
-		// @{squirreljme.error IN08 Extra bytes follow the end of the class
+		// @{squirreljme.error CF1c Extra bytes follow the end of the class
 		// file data which is illegal.}
 		if (das.read() >= 0)
-			throw new CFFormatException("IN08");
+			throw new CFFormatException("CF1c");
 		
 		// Build the final class
 		return new CFClass(this);
@@ -375,7 +376,7 @@ public class CFClassParser
 		}
 		
 		// Build it
-		return new CFMethod(key, flags, codeattr);
+		return new CFMethod(key, flags, codeattr, _version);
 	}
 	
 	/**
