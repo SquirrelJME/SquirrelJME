@@ -81,3 +81,23 @@ exception occurs type checking will occur to determine which exception was hit
 except if the given exception is `Throwable` (which catches everything). In the
 case of `Throwable` it will just be a jump to the exception handler.
 
+## 19:16
+
+I believe I have a verification operation which is not correct which causes the
+error I hit in the interpreter.
+
+## 19:25
+
+Appears the topmost float is not passed to the constructor.
+
+## 19:35
+
+The class program code and the current interpreter are quite large:
+
+    3221    javame-class-program java=3221
+    2659    javame-basic-interpreter java=2659
+
+And consist of a number of methods and classes. I must find a way to simplify
+them so that they are together as one and perhaps in only 4000 lines. It must
+also handle SSA too. The class file code is about 2000 lines of code.
+

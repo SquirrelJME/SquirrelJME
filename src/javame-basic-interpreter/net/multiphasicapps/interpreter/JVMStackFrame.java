@@ -490,10 +490,11 @@ public class JVMStackFrame
 				// {@squirreljme.error IN0h An input argument which was
 				// passed to the method is not of the expected type that
 				// the method accepts. (The actual input method argument;
-				// The argument class type)}
+				// The argument class type; The argument list)}
 				// Ignore null though
 				throw new JVMClassCastException(this, String.format(
-					"IN0h %s %s", type, carg.getClass()), e);
+					"IN0h %s %s %s", type, carg.getClass(),
+					Arrays.asList(__args)), e);
 			}
 			
 			// {@squirreljme.error IN0i The number of method arguments

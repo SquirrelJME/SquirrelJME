@@ -12,6 +12,7 @@ package net.multiphasicapps.classprogram;
 
 import net.multiphasicapps.classfile.CFConstantString;
 import net.multiphasicapps.classfile.CFConstantValue;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
  * Handles operations 16 to 31.
@@ -87,6 +88,11 @@ class __OpHandler16To31__
 		if (cv instanceof String)
 			__castCM(__cm).setConstant(__a, __op.variables().getStackTop(),
 				((String)cv));
+		
+		// Class
+		else if (cv instanceof ClassNameSymbol)
+			__castCM(__cm).setConstant(__a, __op.variables().getStackTop(),
+				((ClassNameSymbol)cv));
 		
 		// Integer
 		else if (cv instanceof Integer)

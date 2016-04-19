@@ -73,7 +73,7 @@ class __Determine16To31__
 				// Load double
 			case 24:
 				__load(__dt, __op, CPVariableType.DOUBLE);
-					break;
+				break;
 				
 				// Load object
 			case 25:
