@@ -342,6 +342,46 @@ public class JVMComputeMachine
 	 * @since 2016/04/19
 	 */
 	@Override
+	public void setConstant(JVMStackFrame __frame, int __dest, int __c)
+	{
+		__frame.window().setInt(__dest, __c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/19
+	 */
+	@Override
+	public void setConstant(JVMStackFrame __frame, int __dest, long __c)
+	{
+		__frame.window().setLong(__dest, __c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/19
+	 */
+	@Override
+	public void setConstant(JVMStackFrame __frame, int __dest, float __c)
+	{
+		__frame.window().setFloat(__dest, __c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/19
+	 */
+	@Override
+	public void setConstant(JVMStackFrame __frame, int __dest, double __c)
+	{
+		__frame.window().setDouble(__dest, __c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/19
+	 */
+	@Override
 	public void setConstant(JVMStackFrame __frame, int __dest, String __c)
 	{
 		__frame.window().set(__dest, __frame.engine().objects().spawnString(

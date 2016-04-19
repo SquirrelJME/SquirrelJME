@@ -92,7 +92,47 @@ public interface CPComputeMachine<A>
 	public abstract void returnValue(A __pa, int __src);
 	
 	/**
-	 * Sets the given value to the given string constant.
+	 * Sets the given variable to the given integer constant.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest Destination variable.
+	 * @param __c The constant to set.
+	 * @since 2016/04/19
+	 */
+	public abstract void setConstant(A __pa, int __dest, int __c);
+	
+	/**
+	 * Sets the given variable to the given long constant.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest Destination variable.
+	 * @param __c The constant to set.
+	 * @since 2016/04/19
+	 */
+	public abstract void setConstant(A __pa, int __dest, long __c);
+	
+	/**
+	 * Sets the given variable to the given float constant.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest Destination variable.
+	 * @param __c The constant to set.
+	 * @since 2016/04/19
+	 */
+	public abstract void setConstant(A __pa, int __dest, float __c);
+	
+	/**
+	 * Sets the given variable to the given double constant.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest Destination variable.
+	 * @param __c The constant to set.
+	 * @since 2016/04/19
+	 */
+	public abstract void setConstant(A __pa, int __dest, double __c);
+	
+	/**
+	 * Sets the given variable to the given string constant.
 	 *
 	 * @param __pa Passed value.
 	 * @param __dest Destination variable.

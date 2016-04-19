@@ -36,6 +36,11 @@ class __OpHandler16To31__
 		// Depends on the operation
 		switch (opcode)
 		{
+				// Push constant
+			case 16:
+			case 17:
+				__bsipush(__cm, __a, __op);
+			
 				// ldc
 			case 18:
 			case 19:
@@ -47,6 +52,21 @@ class __OpHandler16To31__
 			default:
 				throw new __VMWorkers__.__UnknownOp__();
 		}
+	}
+	
+	/**
+	 * Pushes a constant into the stack.
+	 *
+	 * @param __cm The compute machine.
+	 * @param __a The passed value.
+	 * @param __op The operation.
+	 * @since 2016/04/19
+	 */
+	static void __bsipush(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op)
+	{
+		__castCM(__cm).setConstant(__a, __op.variables().getStackTop(),
+			((Number)__op.arguments().get(0)).intValue());
 	}
 	
 	/**
