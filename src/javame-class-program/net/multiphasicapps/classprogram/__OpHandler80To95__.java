@@ -60,7 +60,7 @@ class __OpHandler80To95__
 	 * @param __op Current operation.
 	 * @since 2016/04/10
 	 */
-	private void __dup(CPComputeMachine<? extends Object> __cm, Object __a,
+	static void __dup(CPComputeMachine<? extends Object> __cm, Object __a,
 		CPOp __op)
 	{
 		// Get variables and the stack top

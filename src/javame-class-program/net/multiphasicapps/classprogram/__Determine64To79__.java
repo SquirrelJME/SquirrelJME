@@ -11,11 +11,11 @@
 package net.multiphasicapps.classprogram;
 
 /**
- * Determines the stack operations for opcodes 80 to 95.
+ * Determines the stack operations for opcodes 64 to 79.
  *
  * @since 2016/04/18
  */
-class __Determine80To95__
+class __Determine64To79__
 	extends __VMWorkers__.__Determiner__
 {
 	/**
@@ -28,10 +28,36 @@ class __Determine80To95__
 		// Depends on the opcode
 		int opcode = __op.instructionCode();
 		switch (opcode)
-		{	
-				// Dup
-			case 89:
-				__dup(__dt, __op);
+		{
+				// Store long
+			case 64:
+			case 65:
+			case 66:
+				__store_n(__dt, __op, opcode - 63, CPVariableType.LONG);
+				break;
+			
+				// Store float
+			case 67:
+			case 68:
+			case 69:
+			case 70:
+				__store_n(__dt, __op, opcode - 67, CPVariableType.FLOAT);
+				break;
+			
+				// Store double
+			case 71:
+			case 72:
+			case 73:
+			case 74:
+				__store_n(__dt, __op, opcode - 71, CPVariableType.DOUBLE);
+				break;
+			
+				// Store object
+			case 75:
+			case 76:
+			case 77:
+			case 78:
+				__store_n(__dt, __op, opcode - 75, CPVariableType.OBJECT);
 				break;
 				
 				// Unknown
@@ -41,30 +67,18 @@ class __Determine80To95__
 	}
 	
 	/**
-	 * Duplicates the top-most stack item.
+	 * Store variable from the stack and place it in a local.
 	 *
 	 * @param __dt The determiner.
-	 * @param __op The current operation.
-	 * @since 2016/04/12
+	 * @param __op The input operation.
+	 * @param __dx The index.
+	 * @param __t The type of value to store.
+	 * @since 2016/04/14
 	 */
-	static void __dup(__DetermineTypes__ __dt, CPOp __op)
+	static void __store_n(__DetermineTypes__ __dt, CPOp __op, int __dx,
+		CPVariableType __t)
 	{
-		// Handle
-		CPVariables xin = __op.variables();
-		
-		// Get the topmost variable
-		int top;
-		CPVariables.Slot at = xin.get((top = xin.getStackTop()) - 1);
-		
-		// {@squirreljme.error CP1g Cannot duplicate long or double types on
-		// the stack. (The operation address; The topmost stack item)}
-		CPVariableType ttt = at.type();
-		if (ttt.isWide() || ttt == CPVariableType.TOP)
-			throw new CPProgramException(String.format("CP1g %d %s",
-				__op.address(), ttt));
-		
-		// Duplicate it
-		__dt.set(__op, top, top + 1, ttt);
+		__dt.operate(__op, __dx, __t, null, __t, null);
 	}
 }
 

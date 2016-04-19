@@ -114,7 +114,7 @@ class __OpHandler176To191__
 	 * @param __op The operation.
 	 * @since 2016/04/16
 	 */
-	void __athrow(CPComputeMachine<? extends Object> __cm, Object __a,
+	static void __athrow(CPComputeMachine<? extends Object> __cm, Object __a,
 		CPOp __op)
 	{
 		__castCM(__cm).tossException(__a, __op.variables().getStackTop() - 1);
@@ -128,8 +128,8 @@ class __OpHandler176To191__
 	 * @param __op The operation.
 	 * @since 2016/04/15
 	 */
-	void __getstatic(CPComputeMachine<? extends Object> __cm, Object __a,
-		CPOp __op)
+	static void __getstatic(CPComputeMachine<? extends Object> __cm,
+		Object __a, CPOp __op)
 	{
 		// Place value onto the stack
 		__castCM(__cm).getStaticField(__a, __op.variables().getStackTop(),
@@ -145,7 +145,7 @@ class __OpHandler176To191__
 	 * @param __it The operation to be performed.
 	 * @since 2016/04/15
 	 */
-	void __invoke(CPComputeMachine<? extends Object> __cm, Object __a,
+	static void __invoke(CPComputeMachine<? extends Object> __cm, Object __a,
 		CPOp __op, CPInvokeType __it)
 	{
 		// Get reference
@@ -192,7 +192,8 @@ class __OpHandler176To191__
 	 * @param __op Current operation.
 	 * @since 2016/04/09
 	 */
-	void __new(CPComputeMachine<? extends Object> __cm, Object __a, CPOp __op)
+	static void __new(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op)
 	{
 		// Perform the allocation
 		__castCM(__cm).allocateObject(__a, __op.variables().getStackTop(),
@@ -207,8 +208,8 @@ class __OpHandler176To191__
 	 * @param __op The operation.
 	 * @since 2016/04/16
 	 */
-	void __putstatic(CPComputeMachine<? extends Object> __cm, Object __a,
-		CPOp __op)
+	static void __putstatic(CPComputeMachine<? extends Object> __cm,
+		Object __a, CPOp __op)
 	{
 		// Place value onto the stack
 		__castCM(__cm).putStaticField(__a, ((CFFieldReference)__op.arguments().
@@ -224,7 +225,7 @@ class __OpHandler176To191__
 	 * @param __rvt The return value type.
 	 * @since 2016/04/16
 	 */
-	void __return(CPComputeMachine<? extends Object> __cm, Object __a,
+	static void __return(CPComputeMachine<? extends Object> __cm, Object __a,
 		CPOp __op, CPVariableType __rvt)
 	{
 		__castCM(__cm).returnValue(__a, (__rvt == null ? Integer.MIN_VALUE :

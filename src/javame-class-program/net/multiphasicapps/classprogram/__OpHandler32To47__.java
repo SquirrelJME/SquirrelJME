@@ -87,8 +87,8 @@ class __OpHandler32To47__
 	 * @param __lv The local variable to source from.
 	 * @since 2016/04/16
 	 */
-	void __load(CPComputeMachine<? extends Object> __cm, Object __a, CPOp __op,
-		boolean __wide, int __lv)
+	static void __load(CPComputeMachine<? extends Object> __cm, Object __a,
+		CPOp __op, boolean __wide, int __lv)
 	{
 		// Copy up
 		__castCM(__cm).copy(__a, __op.variables().getStackTop(), __lv);

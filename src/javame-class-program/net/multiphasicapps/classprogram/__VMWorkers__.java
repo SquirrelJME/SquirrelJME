@@ -278,7 +278,7 @@ class __VMWorkers__
 		 * @since 2016/04/09
 		 */
 		@SuppressWarnings({"unchecked"})
-		final CPComputeMachine<Object> __castCM(
+		static final CPComputeMachine<Object> __castCM(
 			CPComputeMachine<? extends Object> __cm)
 		{
 			return (CPComputeMachine<Object>)((Object)__cm);

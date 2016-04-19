@@ -88,7 +88,7 @@ class __Determine176To191__
 	 * @param __op The input operation.
 	 * @since 2016/04/16
 	 */
-	void __athrow(__DetermineTypes__ __dt, CPOp __op)
+	static void __athrow(__DetermineTypes__ __dt, CPOp __op)
 	{
 		// Just pop an object
 		__dt.operate(__op, null, CPVariableType.OBJECT, null);
@@ -101,7 +101,7 @@ class __Determine176To191__
 	 * @param __op The current operation.
 	 * @since 2016/04/12
 	 */
-	void __getstatic(__DetermineTypes__ __dt, CPOp __op)
+	static void __getstatic(__DetermineTypes__ __dt, CPOp __op)
 	{
 		__dt.operate(__op, null, null, CPVariableType.bySymbol(
 			((CFFieldReference)__op.arguments().get(0)).
@@ -116,7 +116,7 @@ class __Determine176To191__
 	 * @param __inst Instance method?
 	 * @since 2016/04/13
 	 */
-	void __invoke(__DetermineTypes__ __dt, CPOp __op, boolean __inst)
+	static void __invoke(__DetermineTypes__ __dt, CPOp __op, boolean __inst)
 	{
 		// Read the method to invoke
 		CFMethodReference ref = (CFMethodReference)__op.arguments().get(0);
@@ -161,7 +161,7 @@ class __Determine176To191__
 	 * @param __op The current operation.
 	 * @since 2016/04/11
 	 */
-	void __new(__DetermineTypes__ __dt, CPOp __op)
+	static void __new(__DetermineTypes__ __dt, CPOp __op)
 	{
 		// Just add an element to the stack
 		__dt.operate(__op, null, null, CPVariableType.OBJECT);
@@ -174,7 +174,7 @@ class __Determine176To191__
 	 * @param __op The operation.
 	 * @since 2016/04/15
 	 */
-	void __putstatic(__DetermineTypes__ __dt, CPOp __op)
+	static void __putstatic(__DetermineTypes__ __dt, CPOp __op)
 	{
 		__dt.operate(__op, null, CPVariableType.bySymbol(
 			((CFFieldReference)__op.arguments().get(0)).
@@ -190,7 +190,8 @@ class __Determine176To191__
 	 * @throws NullPointerException If no type was specified.
 	 * @since 2016/04/16
 	 */
-	void __return(__DetermineTypes__ __dt, CPOp __op, CPVariableType __rt)
+	static void __return(__DetermineTypes__ __dt, CPOp __op,
+		CPVariableType __rt)
 		throws NullPointerException
 	{
 		// Check

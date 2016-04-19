@@ -150,91 +150,6 @@ final class __DetermineTypes__
 			
 			/*switch (opcode)
 			{
-				case 18: __ldc(xop); break;
-				case 19: __ldc_w(xop); break;
-				case 20: __ldc2_w(xop); break;
-				
-				case 21: __load(xop, CPVariableType.INTEGER); break;
-				case 22: __load(xop, CPVariableType.LONG); break;
-				case 23: __load(xop, CPVariableType.FLOAT); break;
-				case 24: __load(xop, CPVariableType.DOUBLE); break;
-				case 25: __load(xop, CPVariableType.OBJECT); break;
-				
-				case 26:
-				case 27:
-				case 28:
-				case 29:
-					__load_n(xop, opcode - 26, CPVariableType.INTEGER);
-					break;
-				
-				case 30:
-				case 31:
-				case 32:
-				case 33:
-					__load_n(xop, opcode - 30, CPVariableType.LONG);
-					break;
-				
-				case 34:
-				case 35:
-				case 36:
-				case 37:
-					__load_n(xop, opcode - 34, CPVariableType.FLOAT);
-					break;
-				
-				case 38:
-				case 39:
-				case 40:
-				case 41:
-					__load_n(xop, opcode - 38, CPVariableType.DOUBLE);
-					break;
-					
-				case 42:
-				case 43:
-				case 44:
-				case 45:
-					__load_n(xop, opcode - 42, CPVariableType.OBJECT);
-					break;
-				
-				case 54: __store(xop, CPVariableType.INTEGER); break;
-				case 55: __store(xop, CPVariableType.LONG); break;
-				case 56: __store(xop, CPVariableType.FLOAT); break;
-				case 57: __store(xop, CPVariableType.DOUBLE); break;
-				case 58: __store(xop, CPVariableType.OBJECT); break;
-				
-				case 59:
-				case 60:
-				case 61:
-				case 62:
-					__store_n(xop, opcode - 59, CPVariableType.INTEGER);
-					break;
-				
-				case 63:
-				case 64:
-				case 65:
-				case 66:
-					__store_n(xop, opcode - 63, CPVariableType.LONG);
-					break;
-				
-				case 67:
-				case 68:
-				case 69:
-				case 70:
-					__store_n(xop, opcode - 67, CPVariableType.FLOAT);
-					break;
-				
-				case 71:
-				case 72:
-				case 73:
-				case 74:
-					__store_n(xop, opcode - 71, CPVariableType.DOUBLE);
-					break;
-				
-				case 75:
-				case 76:
-				case 77:
-				case 78:
-					__store_n(xop, opcode - 75, CPVariableType.OBJECT);
-					break;
 				
 				case 172: __return(xop, CPVariableType.INTEGER); break;
 				case 173: __return(xop, CPVariableType.LONG); break;
@@ -510,116 +425,6 @@ final class __DetermineTypes__
 	}
 	
 	/**
-	 * Loads a narrow constant pool entry.
-	 *
-	 * @param __op The operation.
-	 * @since 2016/04/18
-	 */
-	private void __ldc(CPOp __op)
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Loads a narrow constant pool entry which can reference the entire pool.
-	 *
-	 * @param __op The operation.
-	 * @since 2016/04/18
-	 */
-	private void __ldc_w(CPOp __op)
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Performs loading of a constant pool entry.
-	 *
-	 * @param __op The operation.
-	 * @param __dx The source index of the operation.
-	 * @since 2016/04/18
-	 */
-	private void __ldc_x(CPOp __op, int __dx)
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Loads a wide constant pool entry (can access entire pool).
-	 *
-	 * @param __op The operation.
-	 * @since 2016/04/18
-	 */
-	private void __ldc2_w(CPOp __op)
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Load variable from locals and push it onto the stack.
-	 *
-	 * @param __op The input operation.
-	 * @param __t The type of value to load.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/12
-	 */
-	private void __load(CPOp __op, CPVariableType __t)
-	{
-		__load_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
-	}
-	
-	/**
-	 * Load variable from locals and push it onto the stack.
-	 *
-	 * @param __op The input operation.
-	 * @param __dx The index.
-	 * @param __t The type of value to load.
-	 * @since 2016/04/12
-	 */
-	private void __load_n(CPOp __op, int __dx, CPVariableType __t)
-	{
-		// Load it onto the stack
-		operate(__op, -__dx, __t, null, null, __t);
-	}
-	
-	/**
-	 * Load variable from locals and push it onto the stack (wide).
-	 *
-	 * @param __op The input operation.
-	 * @param __t The type of value to load.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/12
-	 */
-	private void __load_w(CPOp __op, CPVariableType __t)
-	{
-		__load_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
-	}
-	
-	/**
-	 * Store variable from the stack and place it in a local (narrow).
-	 *
-	 * @param __op The input operation.
-	 * @param __t The type of value to store.
-	 * @since 2016/04/14
-	 */
-	private void __store(CPOp __op, CPVariableType __t)
-	{
-		__store_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
-	}
-	
-	/**
-	 * Store variable from the stack and place it in a local.
-	 *
-	 * @param __op The input operation.
-	 * @param __dx The index.
-	 * @param __t The type of value to store.
-	 * @since 2016/04/14
-	 */
-	private void __store_n(CPOp __op, int __dx, CPVariableType __t)
-	{
-		operate(__op, __dx, __t, null, __t, null);
-	}
-	
-	/**
 	 * Store variable from the stack and place it in a local (wide).
 	 *
 	 * @param __op The input operation.
@@ -629,7 +434,8 @@ final class __DetermineTypes__
 	 */
 	private void __store_w(CPOp __op, CPVariableType __t)
 	{
-		__store_n(__op, ((Number)__op.arguments().get(0)).intValue(), __t);
+		__Determine64To79__.__store_n(this, __op,
+			((Number)__op.arguments().get(0)).intValue(), __t);
 	}
 }
 
