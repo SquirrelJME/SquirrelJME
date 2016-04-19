@@ -54,6 +54,11 @@ class __Determine176To191__
 				__putstatic(__dt, __op);
 				break;
 				
+				// putfield
+			case 181:
+				__putfield(__dt, __op);
+				break;
+				
 				// invokevirtual
 			case 182:
 				__invoke(__dt, __op, CPInvokeType.VIRTUAL);
@@ -212,6 +217,20 @@ class __Determine176To191__
 		__dt.operate(__op, null, CPVariableType.bySymbol(
 			((CFFieldReference)__op.arguments().get(0)).
 			nameAndType().getValue().asField()), null);
+	}
+	
+	/**
+	 * Sets an instance field to the specified value.
+	 *
+	 * @param __dt The determiner.
+	 * @param __op The operation.
+	 * @since 2016/04/19
+	 */
+	static void __putfield(__DetermineTypes__ __dt, CPOp __op)
+	{
+		__dt.operate(__op, null, CPVariableType.bySymbol(
+			((CFFieldReference)__op.arguments().get(0)).
+			nameAndType().getValue().asField()), CPVariableType.OBJECT, null);
 	}
 	
 	/**
