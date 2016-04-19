@@ -1,0 +1,12 @@
+# 2016/04/19
+
+## 08:06
+
+Actually with my argument handling, I can simplify.
+
+## 08:19
+
+I can also have an interpreter on the interpreter test, which would be
+likely exponentially slow when running tests, however it would see if the
+interpreter can interpret itself however.
+

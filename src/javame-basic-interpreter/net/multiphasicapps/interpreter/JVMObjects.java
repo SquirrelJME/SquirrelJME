@@ -13,8 +13,11 @@ package net.multiphasicapps.interpreter;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -29,6 +32,10 @@ public final class JVMObjects
 	public static final ClassNameSymbol STRING_ARRAY_CLASSNAME =
 		new ClassNameSymbol("[Ljava/lang/String;");
 	
+	/** The string class. */
+	public static final ClassNameSymbol STRING_CLASSNAME =
+		new ClassNameSymbol("java/lang/String");
+	
 	/** The owning engine. */
 	protected final JVMEngine engine;
 	
@@ -42,6 +49,10 @@ public final class JVMObjects
 	
 	/** The class object. */
 	protected final JVMObject classobject;
+	
+	/** Interned strings. */
+	protected final Map<String, Reference<JVMObject>> internedstrings =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the object manager.
@@ -110,7 +121,7 @@ public final class JVMObjects
 	 * Spawns a string which wraps a string used by this host virtual machine
 	 * so it may be accessed by the guest virtual machine.
 	 *
-	 * Strings may be recycled as if they were interned.
+	 * Strings will be recycled as if they were interned.
 	 *
 	 * @param __th The thread spawning this object.
 	 * @param __s The string to wrap.
@@ -125,7 +136,31 @@ public final class JVMObjects
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get the internal string map
+		Map<String, Reference<JVMObject>> interned = internedstrings;
+		synchronized (interned)
+		{
+			// Get potential object reference
+			Reference<JVMObject> ref = interned.get(__s);
+			JVMObject rv;
+			
+			// Needs to be initialized?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Create new object for the new string
+				rv = spawnObject(__th,
+					engine.classes().loadClass(STRING_CLASSNAME));
+				
+				if (true)
+					throw new Error("TODO");
+					
+				// Set it
+				interned.put(__s, new WeakReference<>(rv));
+			}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**

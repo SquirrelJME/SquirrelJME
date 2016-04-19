@@ -32,14 +32,10 @@ class __Determine16To31__
 		int opcode = __op.instructionCode();
 		switch (opcode)
 		{
-				// Load pool constant (narrow byte)
+				// Load pool constant (narrow byte/short)
 			case 18:
-				__ldc(__dt, __op);
-				break;
-				
-				// Load pool constant (narrow short)
 			case 19:
-				__ldc_w(__dt, __op);
+				__ldc(__dt, __op);
 				break;
 				
 				// Load pool constant (wide short)
@@ -103,19 +99,7 @@ class __Determine16To31__
 	 */
 	static void __ldc(__DetermineTypes__ __dt, CPOp __op)
 	{
-		__ldc_x(__dt, __op, __op.__readUByte(1), false);
-	}
-	
-	/**
-	 * Loads a narrow constant pool entry which can reference the entire pool.
-	 *
-	 * @param __dt Type determiner.
-	 * @param __op The operation.
-	 * @since 2016/04/18
-	 */
-	static void __ldc_w(__DetermineTypes__ __dt, CPOp __op)
-	{
-		__ldc_x(__dt, __op, __op.__readUShort(1), false);
+		__ldc_x(__dt, __op, false);
 	}
 	
 	/**
@@ -123,24 +107,20 @@ class __Determine16To31__
 	 *
 	 * @param __dt Type determiner.
 	 * @param __op The operation.
-	 * @param __dx The source index of the operation.
 	 * @param __wide Must the operation be wide?
 	 * @since 2016/04/18
 	 */
-	static void __ldc_x(__DetermineTypes__ __dt, CPOp __op, int __dx,
-		boolean __wide)
+	static void __ldc_x(__DetermineTypes__ __dt, CPOp __op, boolean __wide)
 	{
 		// Get the pool entry here
-		CFConstantValue cv = __op.program().constantPool().<CFConstantValue>
-			getAs(__dx, CFConstantValue.class);
+		CFConstantValue cv = ((CFConstantValue)__op.arguments().get(0));
 		
 		// {@squirreljme.error CP1h Cannot load the given constant pool entry
 		// onto the stack because it does not match the expected wideness of
-		// the instruction. (The operation address; The constant pool entry;
-		// The constant value)}
+		// the instruction. (The operation address; The constant value)}
 		if (__wide != cv.isWide())
-			throw new CPProgramException(String.format("CP1h %d %d %s",
-				__op.address(), __dx, cv));
+			throw new CPProgramException(String.format("CP1h %d %s",
+				__op.address(), cv));
 		
 		// String
 		if (cv instanceof CFConstantString)
@@ -160,7 +140,7 @@ class __Determine16To31__
 	 */
 	static void __ldc2_w(__DetermineTypes__ __dt, CPOp __op)
 	{
-		__ldc_x(__dt, __op, __op.__readUShort(1), false);
+		__ldc_x(__dt, __op, true);
 	}
 	
 	/**

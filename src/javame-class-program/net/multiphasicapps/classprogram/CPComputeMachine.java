@@ -92,6 +92,16 @@ public interface CPComputeMachine<A>
 	public abstract void returnValue(A __pa, int __src);
 	
 	/**
+	 * Sets the given value to the given string constant.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest Destination variable.
+	 * @param __c The string constant to set.
+	 * @since 2016/04/19
+	 */
+	public abstract void setConstant(A __pa, int __dest, String __c);
+	
+	/**
 	 * Tosses an exception so that it may potentially be handled by exception
 	 * handlers.
 	 *

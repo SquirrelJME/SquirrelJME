@@ -339,6 +339,17 @@ public class JVMComputeMachine
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/04/19
+	 */
+	@Override
+	public void setConstant(JVMStackFrame __frame, int __dest, String __c)
+	{
+		__frame.window().set(__dest, __frame.engine().objects().spawnString(
+			__frame.thread(), __c));
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/04/16 
 	 */
 	@Override
