@@ -180,19 +180,23 @@ public class Build
 		
 		// Depends on the command
 		Project pp;
-		boolean terptarget = false;
+		int terptarget = 0;
 		switch (command)
 		{
 				// Run tests on the host or interpreter
+			case "interpreter-interpreter-tests":
+				terptarget++;
 			case "interpreter-tests":
-				terptarget = true;
+				terptarget++;
 			case "host-tests":
 				__launch(terptarget, getProject("test-all"), __args);
 				break;
 				
 				// Target a specific system (with optional interpreter)
+			case "interpreter-interpreter-target":
+				terptarget++;
 			case "interpreter-target":
-				terptarget = true;
+				terptarget++;
 			case "target":
 				// Build hairball
 				__build((pp = getProject("hairball")));
@@ -206,8 +210,10 @@ public class Build
 				break;
 			
 				// Launch a program
+			case "interpreter-interpreter-launch":
+				terptarget++;
 			case "interpreter-launch":
-				terptarget = true;
+				terptarget++;
 			case "launch":
 				__launch(terptarget, getProject(__args.removeFirst()), __args);
 				break;
@@ -550,7 +556,7 @@ public class Build
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/21
 	 */
-	private void __launch(boolean __interp, Project __p, String... __args)
+	private void __launch(int __interp, Project __p, String... __args)
 		throws NullPointerException
 	{
 		__launch(__interp, __p,
@@ -566,7 +572,7 @@ public class Build
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/21
 	 */
-	private void __launch(boolean __interp, Project __p, Deque<String> __args)
+	private void __launch(int __interp, Project __p, Deque<String> __args)
 		throws NullPointerException
 	{
 		// Check
@@ -574,7 +580,7 @@ public class Build
 			throw new NullPointerException("NARG");
 		
 		// If using the interpreter, build it
-		if (__interp)
+		if (__interp >= 1)
 			__build(getProject("javame-local-interpreter"));
 		
 		// Build the target to be ran
@@ -591,7 +597,7 @@ public class Build
 				"attribute in the JAR or in any of its dependencies.");
 		
 		// If interpreted, forward to normal code
-		if (__interp)
+		if (__interp >= 1)
 		{
 			// Build new argument set
 			Deque<String> newargs = new LinkedList<>();
@@ -620,7 +626,8 @@ public class Build
 				newargs.offerLast(__args.pollFirst());
 			
 			// Call non-interpreted version
-			__launch(false, getProject("javame-local-interpreter"), newargs);
+			__launch(__interp - 1, getProject("javame-local-interpreter"),
+				newargs);
 		}
 		
 		// Otherwise, run it native

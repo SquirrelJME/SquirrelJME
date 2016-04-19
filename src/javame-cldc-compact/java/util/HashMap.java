@@ -14,6 +14,14 @@ public class HashMap<K, V>
 	extends AbstractMap<K, V>
 	implements Map<K, V>, Cloneable
 {
+	/** The default capacity. */
+	private static final int _DEFAULT_CAPACITY =
+		16;
+	
+	/** The default load factor. */
+	private static final float _DEFAULT_LOAD =
+		0.75F;
+	
 	public HashMap(int __a, float __b)
 	{
 		super();

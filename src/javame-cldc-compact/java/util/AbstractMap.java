@@ -15,8 +15,6 @@ public abstract class AbstractMap<K, V>
 {
 	protected AbstractMap()
 	{
-		super();
-		throw new Error("TODO");
 	}
 	
 	public abstract Set<Map.Entry<K, V>> entrySet();
