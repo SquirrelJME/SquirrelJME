@@ -30,3 +30,9 @@ library to be usable with JamVM or patch JamVM to be able to use my library.
 
 That would require messing with C, and C is rather messy.
 
+## 20:07
+
+The type determination moved over appears much cleaner and would be easier to
+find pieces to fit them together. The main type determination code is no longer
+higher than 1000 lines of code.
+
