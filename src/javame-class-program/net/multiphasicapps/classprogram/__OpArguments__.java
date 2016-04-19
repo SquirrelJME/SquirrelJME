@@ -107,7 +107,8 @@ final class __OpArguments__
 			return new Object[]
 				{
 					__op.program().constantPool().<CFLDCLoadable.Narrow>getAs(
-						__op.__readUByte(1), CFLDCLoadable.Narrow.class)
+						__op.__readUByte(1), CFLDCLoadable.Narrow.class).
+						getValue()
 				};
 		
 		// Wide pool constant (narrow)
@@ -115,7 +116,8 @@ final class __OpArguments__
 			return new Object[]
 				{
 					__op.program().constantPool().<CFLDCLoadable.Narrow>getAs(
-						__op.__readUShort(1), CFLDCLoadable.Narrow.class)
+						__op.__readUShort(1), CFLDCLoadable.Narrow.class).
+						getValue()
 				};
 		
 		// Wide pool constant (wide)
@@ -123,7 +125,8 @@ final class __OpArguments__
 			return new Object[]
 				{
 					__op.program().constantPool().<CFLDCLoadable.Wide>getAs(
-						__op.__readUShort(1), CFLDCLoadable.Wide.class)
+						__op.__readUShort(1), CFLDCLoadable.Wide.class).
+						getValue()
 				};
 		
 		// Single field reference

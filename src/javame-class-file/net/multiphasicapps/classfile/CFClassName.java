@@ -58,6 +58,26 @@ public final class CFClassName
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/19
+	 */
+	@Override
+	public ClassNameSymbol getValue()
+	{
+		return symbol();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/19
+	 */
+	@Override
+	public boolean isWide()
+	{
+		return false;
+	}
+	
+	/**
 	 * Returns the symbol associated with this class.
 	 *
 	 * @return The class name symbol.

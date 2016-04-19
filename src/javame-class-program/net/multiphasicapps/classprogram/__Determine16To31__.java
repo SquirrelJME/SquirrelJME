@@ -16,6 +16,8 @@ import net.multiphasicapps.classfile.CFConstantInteger;
 import net.multiphasicapps.classfile.CFConstantLong;
 import net.multiphasicapps.classfile.CFConstantString;
 import net.multiphasicapps.classfile.CFConstantValue;
+import net.multiphasicapps.classfile.CFLDCLoadable;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
  * Determines the stack operations for opcodes 16 to 31.
@@ -135,38 +137,39 @@ class __Determine16To31__
 	static void __ldc_x(__DetermineTypes__ __dt, CPOp __op, boolean __wide)
 	{
 		// Get the pool entry here
-		CFConstantValue cv = ((CFConstantValue)__op.arguments().get(0));
-		
-		// {@squirreljme.error CP1h Cannot load the given constant pool entry
-		// onto the stack because it does not match the expected wideness of
-		// the instruction. (The operation address; The constant value)}
-		if (__wide != cv.isWide())
-			throw new CPProgramException(String.format("CP1h %d %s",
-				__op.address(), cv));
+		Object cv = __op.arguments().get(0);
 		
 		// String
-		if (cv instanceof CFConstantString)
+		if (cv instanceof String || cv instanceof ClassNameSymbol)
 			__dt.operate(__op, null, null, CPVariableType.OBJECT);
 		
 		// Integer
-		else if (cv instanceof CFConstantInteger)
+		else if (cv instanceof Integer)
 			__dt.operate(__op, null, null, CPVariableType.INTEGER);
 		
 		// Long
-		else if (cv instanceof CFConstantLong)
+		else if (cv instanceof Long)
 			__dt.operate(__op, null, null, CPVariableType.LONG);
 		
 		// Float
-		else if (cv instanceof CFConstantFloat)
+		else if (cv instanceof Float)
 			__dt.operate(__op, null, null, CPVariableType.FLOAT);
 			
 		// Double
-		else if (cv instanceof CFConstantDouble)
+		else if (cv instanceof Double)
 			__dt.operate(__op, null, null, CPVariableType.DOUBLE);
 			
 		// Unknown
 		else
 			throw new RuntimeException("WTFX");
+		
+		// {@squirreljme.error CP1h Cannot load the given constant pool entry
+		// onto the stack because it does not match the expected wideness of
+		// the instruction. (The operation address; The constant value)}
+		boolean waswide = (cv instanceof Long || cv instanceof Double);
+		if (__wide != waswide)
+			throw new CPProgramException(String.format("CP1h %d %s",
+				__op.address(), cv));
 	}
 	
 	/**

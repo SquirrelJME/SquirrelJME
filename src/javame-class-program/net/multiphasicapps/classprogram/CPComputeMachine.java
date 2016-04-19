@@ -142,6 +142,16 @@ public interface CPComputeMachine<A>
 	public abstract void setConstant(A __pa, int __dest, String __c);
 	
 	/**
+	 * Sets the given variable to the given class type.
+	 *
+	 * @param __pa Passed value.
+	 * @param __dest Destination variable.
+	 * @param __c The class to set.
+	 * @since 2016/04/19
+	 */
+	public abstract void setConstant(A __pa, int __dest, ClassNameSymbol __c);
+	
+	/**
 	 * Tosses an exception so that it may potentially be handled by exception
 	 * handlers.
 	 *

@@ -81,12 +81,32 @@ class __OpHandler16To31__
 		CPOp __op)
 	{
 		// Get the pool entry here
-		CFConstantValue cv = ((CFConstantValue)__op.arguments().get(0));
+		Object cv = __op.arguments().get(0);
 		
-		// Set topmost stack item to the given constant
-		if (cv instanceof CFConstantString)
+		// String
+		if (cv instanceof String)
 			__castCM(__cm).setConstant(__a, __op.variables().getStackTop(),
-				((CFConstantString)cv).toString());
+				((String)cv));
+		
+		// Integer
+		else if (cv instanceof Integer)
+			__castCM(__cm).setConstant(__a, __op.variables().getStackTop(),
+				((Integer)cv));
+		
+		// Long
+		else if (cv instanceof Long)
+			__castCM(__cm).setConstant(__a, __op.variables().getStackTop(),
+				((Long)cv));
+		
+		// Float
+		else if (cv instanceof Float)
+			__castCM(__cm).setConstant(__a, __op.variables().getStackTop(),
+				((Float)cv));
+		
+		// Double
+		else if (cv instanceof Double)
+			__castCM(__cm).setConstant(__a, __op.variables().getStackTop(),
+				((Double)cv));
 		
 		// Unknown
 		else

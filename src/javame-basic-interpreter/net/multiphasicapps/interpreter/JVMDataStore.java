@@ -360,15 +360,10 @@ public class JVMDataStore
 			rrv |= (long)__fragment(__i + 1).setDoubleLow(
 				((__i + 1) & FRAGMENT_MASK), lo);
 			
-			// Convert the value
-			switch (ot)
-			{
-				case OBJECT: return Double.NaN;
-				case INTEGER: return (double)orig;
-				case LONG: return (double)rrv;
-				case FLOAT: return Float.intBitsToFloat(orig);
-				default: return Double.longBitsToDouble(rrv);
-			}
+			// Return the old value
+			if (ot == CPVariableType.DOUBLE)
+				return Double.longBitsToDouble(rrv);
+			return Double.NaN;
 		}
 	}
 	
@@ -446,15 +441,10 @@ public class JVMDataStore
 			rrv |= (long)__fragment(__i + 1).setLongLow(
 				((__i + 1) & FRAGMENT_MASK), lo);
 			
-			// Return it
-			switch (ot)
-			{
-				case OBJECT: return Long.MIN_VALUE;
-				case INTEGER: return orig;
-				case FLOAT: return (long)Float.intBitsToFloat(orig);
-				case DOUBLE: return (long)Double.longBitsToDouble(rrv);
-				default: return rrv;
-			}
+			// Return the old value
+			if (ot == CPVariableType.LONG)
+				return rrv;
+			return Long.MIN_VALUE;
 		}
 	}
 	
@@ -1056,7 +1046,18 @@ public class JVMDataStore
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// Get old
+				CPVariableType ot = _types[__i];
+				int rv = _cells[__i];
+				
+				// Set new
+				_types[__i] = CPVariableType.FLOAT;
+				_cells[__i] = Float.floatToRawIntBits(__v);
+				
+				// Return it
+				if (ot == CPVariableType.FLOAT)
+					return Float.intBitsToFloat(rv);
+				return Float.NaN;
 			}
 		}
 	
@@ -1077,7 +1078,18 @@ public class JVMDataStore
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// Get old
+				CPVariableType ot = _types[__i];
+				int rv = _cells[__i];
+				
+				// Set new
+				_types[__i] = CPVariableType.INTEGER;
+				_cells[__i] = __v;
+				
+				// Return it
+				if (ot == CPVariableType.INTEGER)
+					return rv;
+				return Integer.MIN_VALUE;
 			}
 		}
 	
