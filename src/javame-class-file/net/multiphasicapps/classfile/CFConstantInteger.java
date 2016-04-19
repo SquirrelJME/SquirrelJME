@@ -14,78 +14,48 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 /**
- * This represents a constant string value.
+ * Stores an {@link int} constant.
  *
- * @since 2016/03/15
+ * @since 2016/04/19
  */
-public final class CFConstantString
-	extends CFConstantValue<String>
-	implements CFLDCLoadable.Narrow, CharSequence
+public class CFConstantInteger
+	extends CFConstantValue<Integer>
+	implements CFLDCLoadable.Narrow
 {
-	/** The indexed UTF-8 constant. */
-	protected final int index;
+	/** The value of this constant. */
+	protected final Integer value;
 	
 	/**
-	 * Initializes the string constant.
+	 * Decodes the value.
 	 *
-	 * @param __icp The owning constant pool.
-	 * @param __dis Data source.
+	 * @param __icp The owning pool.
+	 * @param __dis The input data stream.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/15
+	 * @since 2016/04/19
 	 */
-	CFConstantString(CFConstantPool __icp,
+	CFConstantInteger(CFConstantPool __icp,
 		DataInputStream __dis)
 		throws IOException, NullPointerException
 	{
-		super(__icp, String.class);
+		super(__icp, Integer.class);
 		
 		// Check
 		if (__dis == null)
 			throw new NullPointerException("NARG");
 		
-		// Read the string index
-		index = __dis.readUnsignedShort();
+		// Read
+		value = Integer.valueOf(__dis.readInt());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/03/15
+	 * @since 2016/04/19
 	 */
 	@Override
-	public char charAt(int __i)
+	public Integer getValue()
 	{
-		return toString().charAt(__i);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/15
-	 */
-	@Override
-	public String getValue()
-	{
-		return pool.<CFUTF8>getAs(index, CFUTF8.class).toString();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/15
-	 */
-	@Override
-	public int length()
-	{
-		return toString().length();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/15
-	 */
-	@Override
-	public CharSequence subSequence(int __s, int __e)
-	{
-		return toString().subSequence(__s, __e);
+		return value;
 	}
 }
 

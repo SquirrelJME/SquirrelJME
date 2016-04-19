@@ -129,6 +129,7 @@ public class CFConstantPool
 			int tag = __is.readUnsignedByte();
 			
 			// Depends on the tag
+			boolean wide = false;
 			CFConstantEntry en;
 			switch (tag)
 			{
@@ -158,6 +159,28 @@ public class CFConstantPool
 						this, __is);
 					break;
 					
+					// Integer constant
+				case TAG_INTEGER:
+					en = new CFConstantInteger(this, __is);
+					break;
+					
+					// Floating point constant
+				case TAG_FLOAT:
+					en = new CFConstantFloat(this, __is);
+					break;
+					
+					// Long integer constant
+				case TAG_LONG:
+					wide = true;
+					en = new CFConstantLong(this, __is);
+					break;
+					
+					// Double floating point constant
+				case TAG_DOUBLE:
+					wide = true;
+					en = new CFConstantDouble(this, __is);
+					break;
+					
 					// String constant
 				case TAG_STRING:
 					en = new CFConstantString(this, __is);
@@ -177,10 +200,6 @@ public class CFConstantPool
 					throw new CFFormatException("CF0l");
 					
 					// Unknown
-				case TAG_INTEGER:
-				case TAG_FLOAT:
-				case TAG_LONG:
-				case TAG_DOUBLE:
 				default:
 					// {@squirreljme.error CF0m The specified constant pool
 					// tag is not valid. (The illegal constant pool tag).}
@@ -189,6 +208,10 @@ public class CFConstantPool
 			
 			// Set
 			ents[i] = en;
+			
+			// Wide constant entries? Skip because they consume more space
+			if (wide)
+				i++;
 		}
 	}
 	

@@ -60,7 +60,11 @@ public abstract class CFConstantValue<C>
 	 * @return {@code true} if it consumes two variables on the stack.
 	 * @since 2016/04/18
 	 */
-	public abstract boolean isWide();
+	public final boolean isWide()
+	{
+		// Constants must implement this interface
+		return (this instanceof CFLDCLoadable.Wide);
+	}
 	
 	/**
 	 * {@inheritDoc}

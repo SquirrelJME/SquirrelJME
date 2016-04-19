@@ -49,13 +49,13 @@ public class WeakHashMap<K, V>
 		// {@squirreljme.error CL01 The initial capacity of the weak
 		// hash map is negative. (The negative initial capacity)}
 		if (__icap < 0)
-			throw new IllegalArgumentException(String.format("CL01 %d",
+			throw new IllegalArgumentException(String.format("JA01 %d",
 				__icap));
 		
 		// {@squirreljme.error CL2 The load factor of the weak hash map is
 		// not positive. (The non-positive load factor)}
 		if (__load <= 0.0F)
-			throw new IllegalArgumentException(String.format("CL02 %f",
+			throw new IllegalArgumentException(String.format("JA02 %f",
 				__load));
 		
 		// Setup
@@ -98,7 +98,7 @@ public class WeakHashMap<K, V>
 	{
 		// {@squirreljme.error CL03 No map to copy data from was specified.}
 		if (__a == null)
-			throw new NullPointerException("CL03");
+			throw new NullPointerException("JA03");
 		
 		// Setup initial map
 		_load = _DEFAULT_LOAD;

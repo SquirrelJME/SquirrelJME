@@ -43,3 +43,12 @@ namespace .Then `HashSet` and `LinkedHashSet` could just use the `HashMap` and
 `LinkedHashMap` and go through their keys then use dummy object for usage in
 `add` since it must know if the data actually changed.
 
+## 10:46
+
+I suppose instead of `NARG` or `IOOB` and such I can give them actual error
+codes when null is passed. However that will create a lot of error codes for
+just null checks. So I suppose for the main class library I will use error
+codes like that instead. With two sets of letters, I have 1,296 error codes
+available. If this is not enough then I can always add another letter. I
+suppose for the class library instead of `CL` I should use `JA` instead.
+
