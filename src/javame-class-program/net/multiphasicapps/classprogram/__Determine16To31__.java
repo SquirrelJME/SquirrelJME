@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.classprogram;
 
+import net.multiphasicapps.classfile.CFConstantString;
+import net.multiphasicapps.classfile.CFConstantValue;
+
 /**
  * Determines the stack operations for opcodes 16 to 31.
  *
@@ -29,13 +32,17 @@ class __Determine16To31__
 		int opcode = __op.instructionCode();
 		switch (opcode)
 		{
-				// Load pool constants
+				// Load pool constant (narrow byte)
 			case 18:
 				__ldc(__dt, __op);
 				break;
+				
+				// Load pool constant (narrow short)
 			case 19:
 				__ldc_w(__dt, __op);
 				break;
+				
+				// Load pool constant (wide short)
 			case 20:
 				__ldc2_w(__dt, __op);
 				break;
@@ -96,7 +103,7 @@ class __Determine16To31__
 	 */
 	static void __ldc(__DetermineTypes__ __dt, CPOp __op)
 	{
-		throw new Error("TODO");
+		__ldc_x(__dt, __op, __op.__readUByte(1), false);
 	}
 	
 	/**
@@ -108,7 +115,7 @@ class __Determine16To31__
 	 */
 	static void __ldc_w(__DetermineTypes__ __dt, CPOp __op)
 	{
-		throw new Error("TODO");
+		__ldc_x(__dt, __op, __op.__readUShort(1), false);
 	}
 	
 	/**
@@ -117,11 +124,31 @@ class __Determine16To31__
 	 * @param __dt Type determiner.
 	 * @param __op The operation.
 	 * @param __dx The source index of the operation.
+	 * @param __wide Must the operation be wide?
 	 * @since 2016/04/18
 	 */
-	static void __ldc_x(__DetermineTypes__ __dt, CPOp __op, int __dx)
+	static void __ldc_x(__DetermineTypes__ __dt, CPOp __op, int __dx,
+		boolean __wide)
 	{
-		throw new Error("TODO");
+		// Get the pool entry here
+		CFConstantValue cv = __op.program().constantPool().<CFConstantValue>
+			getAs(__dx, CFConstantValue.class);
+		
+		// {@squirreljme.error CP1h Cannot load the given constant pool entry
+		// onto the stack because it does not match the expected wideness of
+		// the instruction. (The operation address; The constant pool entry;
+		// The constant value)}
+		if (__wide != cv.isWide())
+			throw new CPProgramException(String.format("CP1h %d %d %s",
+				__op.address(), __dx, cv));
+		
+		// String
+		if (cv instanceof CFConstantString)
+			__dt.operate(__op, null, null, CPVariableType.OBJECT);
+			
+		// Unknown
+		else
+			throw new RuntimeException("WTFX");
 	}
 	
 	/**
@@ -133,7 +160,7 @@ class __Determine16To31__
 	 */
 	static void __ldc2_w(__DetermineTypes__ __dt, CPOp __op)
 	{
-		throw new Error("TODO");
+		__ldc_x(__dt, __op, __op.__readUShort(1), false);
 	}
 	
 	/**

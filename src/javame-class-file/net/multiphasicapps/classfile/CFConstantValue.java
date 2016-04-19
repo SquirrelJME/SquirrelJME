@@ -55,6 +55,14 @@ public abstract class CFConstantValue<C>
 	public abstract C getValue();
 	
 	/**
+	 * Is this a wide entry when placed onto the stack?
+	 *
+	 * @return {@code true} if it consumes two variables on the stack.
+	 * @since 2016/04/18
+	 */
+	public abstract boolean isWide();
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/15
 	 */

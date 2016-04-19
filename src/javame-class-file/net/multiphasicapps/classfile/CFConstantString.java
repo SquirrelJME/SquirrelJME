@@ -70,6 +70,16 @@ public final class CFConstantString
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/04/18
+	 */
+	@Override
+	public boolean isWide()
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/03/15
 	 */
 	@Override
