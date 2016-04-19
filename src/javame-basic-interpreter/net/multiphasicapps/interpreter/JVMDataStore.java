@@ -673,11 +673,11 @@ public class JVMDataStore
 		 * Pops this window from the top of the window stack.
 		 *
 		 * @return The owning data store.
-		 * @throws IllegalStateException If this is not the topmost window.
+		 * @throws JVMVirtualMachineError If this is not the topmost window.
 		 * @since 2016/04/17
 		 */
 		public JVMDataStore popWindow()
-			throws IllegalStateException
+			throws JVMVirtualMachineError
 		{
 			// Lock
 			synchronized (lock)
@@ -689,7 +689,7 @@ public class JVMDataStore
 				// window. (This window; The top window)}
 				Window rll;
 				if ((rll = wins.pollLast()) != this)
-					throw new IllegalStateException(String.format(
+					throw new JVMVirtualMachineError(null, String.format(
 						"IN15 %s %s", this.toString(),
 						Objects.toString(rll)));
 				

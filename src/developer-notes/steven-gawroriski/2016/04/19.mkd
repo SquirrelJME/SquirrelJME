@@ -57,3 +57,27 @@ suppose for the class library instead of `CL` I should use `JA` instead.
 It would be simpler for type determination if the old values were only sane for
 what the type an existing value is.
 
+## 18:59
+
+I may have enough of a partial interpreter to write an SSA optimized variant
+of it which might be cleaner than the current interpreter and much faster.
+Currently hit a bug in the interperter when popping frames. However the
+interpreter is very complex and slow. The SSA representation should be similar
+to the native code representation. Need to have an efficient means of handling
+exceptions in the SSA code. Perhaps a kind of lookup table instructionally
+speaking.
+
+## 19:09
+
+I will need two registers, the address being handled and the exception being
+handled. The exception handler lookup will be at the start of a method. It will
+check if there is an exception, if there is then it will look for the given
+instruction in a specific range and if one of the correct type is found then
+it will go to the exception handler. This can get really branchy however,
+although it would not require a lookup table. An alternative however is a
+special instruction which contains a lookup key. If the exception handler of
+an instruction changes then that register becomes the lookup key. Then when an
+exception occurs type checking will occur to determine which exception was hit
+except if the given exception is `Throwable` (which catches everything). In the
+case of `Throwable` it will just be a jump to the exception handler.
+

@@ -166,7 +166,21 @@ public class JVMMethod
 			__thr = engine().threads().defaultThread();
 		
 		// On entry of a method, add this method to the call stack.
-		JVMStackFrame currentframe = __thr.enterFrame(this, __init, __args);
+		JVMStackFrame currentframe = null;
+		try
+		{
+			currentframe = __thr.enterFrame(this, __init, __args);
+		}
+		
+		// Failed
+		catch (RuntimeException|Error e)
+		{
+			System.err.println("EXCEPTION DURING FRAME ENTRY!!!");
+			e.printStackTrace();
+			throw e;
+		}
+		
+		// Could fail
 		try
 		{
 			// Debug
@@ -249,7 +263,23 @@ public class JVMMethod
 		// When execution terminates, remove the top stack item.
 		finally
 		{
-			currentframe.leave();
+			try
+			{
+				currentframe.leave();
+			}
+			
+			// Failed to leave frame
+			catch (RuntimeException|Error e)
+			{
+				System.err.println("EXCEPTION DURING FRAME LEAVE!!!");
+				e.printStackTrace();
+				
+				// Toss it
+				throw e;
+			}
+			
+			// Debug
+			System.err.printf("DEBUG -- Leave %s (%s)%n", this, __init);
 		}
 		
 		// Return the left frame.
