@@ -184,7 +184,7 @@ public class CFConstantPool
 				default:
 					// {@squirreljme.error CF0m The specified constant pool
 					// tag is not valid. (The illegal constant pool tag).}
-					throw new CFFormatException(String.format("CF0m", tag));
+					throw new CFFormatException(String.format("CF0m %d", tag));
 			}
 			
 			// Set
