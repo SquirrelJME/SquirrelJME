@@ -368,7 +368,7 @@ final class __DetermineTypes__
 			// {@squirreljme.error CP1l Operation exceeded bounds while it
 			// was being performed or the input type is incorrect.
 			// (The operation address; The operations to be performed)}
-			throw new CPProgramException(String.format("CP1l %d %d",
+			throw new CPProgramException(String.format("CP1l %d %s",
 				__op.address(), Arrays.<Object>asList(__vts)), e);
 		}
 	}

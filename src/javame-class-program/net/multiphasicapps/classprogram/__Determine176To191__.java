@@ -84,6 +84,11 @@ class __Determine176To191__
 				__new(__dt, __op);
 				break;
 				
+				// anewarray
+			case 189:
+				__anewarray(__dt, __op);
+				break;
+				
 				// Throw exception
 			case 191:
 				__athrow(__dt, __op);
@@ -93,6 +98,19 @@ class __Determine176To191__
 			default:
 				throw new __VMWorkers__.__UnknownOp__();
 		}
+	}
+	
+	/**
+	 * Allocate a new array.
+	 *
+	 * @param __dt The determiner.
+	 * @param __op The input operation.
+	 * @since 2016/04/19
+	 */
+	static void __anewarray(__DetermineTypes__ __dt, CPOp __op)
+	{
+		__dt.operate(__op, null, CPVariableType.INTEGER, null,
+			CPVariableType.OBJECT);
 	}
 	
 	/**

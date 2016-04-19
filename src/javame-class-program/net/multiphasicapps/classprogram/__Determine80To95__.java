@@ -28,7 +28,35 @@ class __Determine80To95__
 		// Depends on the opcode
 		int opcode = __op.instructionCode();
 		switch (opcode)
-		{	
+		{
+				// Store int/byte/char/short into array
+			case 79:
+			case 84:
+			case 85:
+			case 86:
+				__arraystore(__dt, __op, CPVariableType.INTEGER);
+				break;
+				
+				// Store long into array
+			case 80:
+				__arraystore(__dt, __op, CPVariableType.LONG);
+				break;
+				
+				// Store float into array
+			case 81:
+				__arraystore(__dt, __op, CPVariableType.FLOAT);
+				break;
+				
+				// Store double into array
+			case 82:
+				__arraystore(__dt, __op, CPVariableType.DOUBLE);
+				break;
+				
+				// Store object into array
+			case 83:
+				__arraystore(__dt, __op, CPVariableType.OBJECT);
+				break;
+			
 				// Dup
 			case 89:
 				__dup(__dt, __op);
@@ -38,6 +66,21 @@ class __Determine80To95__
 			default:
 				throw new __VMWorkers__.__UnknownOp__();
 		}
+	}
+	
+	/**
+	 * Store value into array.
+	 *
+	 * @param __dt The determiner.
+	 * @param __op The current operation.
+	 * @param __t The type of value to store.
+	 * @since 2016/04/19
+	 */
+	static void __arraystore(__DetermineTypes__ __dt, CPOp __op,
+		CPVariableType __t)
+	{
+		__dt.operate(__op, null, __t, CPVariableType.INTEGER,
+			CPVariableType.OBJECT, null);
 	}
 	
 	/**

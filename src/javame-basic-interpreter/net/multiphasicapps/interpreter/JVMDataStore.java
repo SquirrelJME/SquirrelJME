@@ -14,6 +14,7 @@ import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Objects;
 import net.multiphasicapps.classprogram.CPVariableType;
 
 /**
@@ -685,12 +686,14 @@ public class JVMDataStore
 				Deque<Window> wins = windows;
 				
 				// {@squirreljme.error IN15 The current window is not the top
-				// window.}
-				if (wins.peekLast() != this)
-					throw new IllegalStateException("IN15");
+				// window. (This window; The top window)}
+				Window rll;
+				if ((rll = wins.pollLast()) != this)
+					throw new IllegalStateException(String.format(
+						"IN15 %s %s", this.toString(),
+						Objects.toString(rll)));
 				
 				// Remove it
-				wins.removeLast();
 				_wintop = start;
 			}
 			

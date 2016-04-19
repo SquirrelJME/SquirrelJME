@@ -294,8 +294,8 @@ public class JVMStackFrame
 		// Lock
 		synchronized (lock)
 		{
-			thread.exitFrame(this);
 			datawindow.popWindow();
+			thread.exitFrame(this);
 		}
 	}
 	
