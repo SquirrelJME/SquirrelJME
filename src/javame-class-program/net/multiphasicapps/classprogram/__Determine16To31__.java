@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.classprogram;
 
+import net.multiphasicapps.classfile.CFConstantDouble;
+import net.multiphasicapps.classfile.CFConstantFloat;
+import net.multiphasicapps.classfile.CFConstantInteger;
+import net.multiphasicapps.classfile.CFConstantLong;
 import net.multiphasicapps.classfile.CFConstantString;
 import net.multiphasicapps.classfile.CFConstantValue;
 
@@ -32,6 +36,12 @@ class __Determine16To31__
 		int opcode = __op.instructionCode();
 		switch (opcode)
 		{
+				// Push byte or short
+			case 16:
+			case 17:
+				__bsipush(__dt, __op);
+				break;
+			
 				// Load pool constant (narrow byte/short)
 			case 18:
 			case 19:
@@ -91,6 +101,18 @@ class __Determine16To31__
 	}
 	
 	/**
+	 * Pushes a byte or short to the stack.
+	 *
+	 * @param __dt Type determiner.
+	 * @param __op The operation.
+	 * @since 2016/04/19
+	 */
+	static void __bsipush(__DetermineTypes__ __dt, CPOp __op)
+	{
+		__dt.operate(__op, null, null, CPVariableType.INTEGER);
+	}
+	
+	/**
 	 * Loads a narrow constant pool entry.
 	 *
 	 * @param __dt Type determiner.
@@ -125,6 +147,22 @@ class __Determine16To31__
 		// String
 		if (cv instanceof CFConstantString)
 			__dt.operate(__op, null, null, CPVariableType.OBJECT);
+		
+		// Integer
+		else if (cv instancoef CFConstantInteger)
+			__dt.operate(__op, null, null, CPVariableType.INTEGER);
+		
+		// Long
+		else if (cv instanceof CFConstantLong)
+			__dt.operate(__op, null, null, CPVariableType.LONG);
+		
+		// Float
+		else if (cv instanceof CFConstantFloat)
+			__dt.operate(__op, null, null, CPVariableType.FLOAT);
+			
+		// Double
+		else if (cv instanceof CFConstantDouble)
+			__dt.operate(__op, null, null, CPVariableType.DOUBLE);
 			
 		// Unknown
 		else
