@@ -149,7 +149,7 @@ class __Determine16To31__
 			__dt.operate(__op, null, null, CPVariableType.OBJECT);
 		
 		// Integer
-		else if (cv instancoef CFConstantInteger)
+		else if (cv instanceof CFConstantInteger)
 			__dt.operate(__op, null, null, CPVariableType.INTEGER);
 		
 		// Long
