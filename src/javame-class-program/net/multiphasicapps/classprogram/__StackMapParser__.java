@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Map;
 import net.multiphasicapps.classfile.CFMethod;
+import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
@@ -83,8 +84,48 @@ class __StackMapParser__
 		// Setup initial verification state for the given map
 		CPVerifyState es = new CPVerifyState(program);
 		outputmap.put(0, es);
-		if (true)
-			throw new Error("TODO");
+		
+		// Is this method static?
+		boolean isstatic = __meth.flags().isStatic();
+		
+		// Setup state
+		int vat = 0;
+		try
+		{
+			// Add object if not static
+			if (!isstatic)
+				es.set(vat++, CPVariableType.OBJECT);
+			
+			// Go through all arguments
+			MethodSymbol ms = __meth.type();
+			int n = ms.argumentCount();
+			for (int i = 0; i < n; i++)
+			{
+				// Convert to type
+				CPVariableType vt = CPVariableType.bySymbol(ms.get(i));
+				
+				// Set
+				es.set(vat++, vt);
+				
+				// If wide, skip one
+				if (vt.isWide())
+					es.set(vat++, CPVariableType.TOP);
+			}
+			
+			// If the size is exceeded then fail
+			if (vat > maxlocals)
+				throw new IndexOutOfBoundsException();
+		}
+		
+		// Initialization out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			// {@squirreljme.error CP1j There are not enough local variables
+			// to store the input method arguments. (The number of input
+			// variables; The number of local variables)}
+			throw new CPProgramException(String.format("CP1j", vat,
+				maxlocals), e);
+		}
 		
 		// Make a copy of the last state for the next state
 		_next = new CPVerifyState(es);
@@ -286,7 +327,7 @@ class __StackMapParser__
 		// the full frame exceeds the maximum permitted local variable
 		// count. (The read local variable count; The number of locals the
 		// method uses)}
-		if (nl >= maxlocals)
+		if (nl > maxlocals)
 			throw new CPProgramException(String.format("CP0k %d %d", nl,
 				maxlocals));
 		int i;
@@ -378,7 +419,7 @@ class __StackMapParser__
 		
 		// Read in local variables
 		int nl = das.readUnsignedShort();
-		if (nl >= maxlocals)
+		if (nl > maxlocals)
 			throw new CPProgramException(String.format("CP0k %d %d", nl,
 				maxlocals));
 		int i = 0;
