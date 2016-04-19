@@ -10,3 +10,36 @@ I can also have an interpreter on the interpreter test, which would be
 likely exponentially slow when running tests, however it would see if the
 interpreter can interpret itself however.
 
+## 10:16
+
+`WeakHashMap` just using `HashMap` will not work because I may need reference
+queues and the ability to use iterators without worrying about concurrent
+modification of the key values. Otherwise keys will only be removed during
+iteration. However, with multiple iterators it would get confusing as to which
+entries are gone which are not. So basing it off that will not work.
+
+## 10:20
+
+I suppose for my implementation of the hashmap, I will have buckets where the
+keys are identified by their hash. The keys would be sorted by their hash.
+When a lookup is performed a binary search is made for a matching key. If one
+is found, then its value is obtained. When the load amount is reached then the
+number of entries would be doubled in size. Entries in a bucket will be split
+between the two buckets. To determine the bucket that a key is within there
+will be a basic binary search based on an initial starting hash. So for example
+the starting bucket has a hash range between `0x0000_0000` and `0xFFFF_FFFF`.
+Values are placed accordingly. When the capacity or load factor is reached then
+the bucket is split down the middle and entries are sparsly placed in the
+arrays. with an even amount of spacing between them. The only thing to
+determine though is if a position is blank is could possibly affect the binary
+search. So if an area is blank then it should share the same key as an entry
+before it. Then for values I can have a special value identity which says
+if the key is actually valid or not. If a binary search does not find the
+entry then it would specify the location where the item would be and if it
+points to an invalid entry then it will be cleared. Since `HashMap`,
+`LinkedHashMap`, and `WeakHashMap` will be very similar. Thus, I can have a
+common hash class which can be used internall by the code in a private
+namespace .Then `HashSet` and `LinkedHashSet` could just use the `HashMap` and
+`LinkedHashMap` and go through their keys then use dummy object for usage in
+`add` since it must know if the data actually changed.
+

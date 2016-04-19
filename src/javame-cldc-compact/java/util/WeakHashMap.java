@@ -26,8 +26,8 @@ public class WeakHashMap<K, V>
 	private static final float _DEFAULT_LOAD =
 		0.75F;
 	
-	/** The internal hashmap which stores the keys. */
-	private final Map<Reference<K>, V> _internal;
+	/** The load factor. */
+	private final float _load;
 	
 	/** This is used to clear keys when they are collected. */
 	private final ReferenceQueue<K> _rq =
@@ -58,8 +58,8 @@ public class WeakHashMap<K, V>
 			throw new IllegalArgumentException(String.format("CL02 %f",
 				__load));
 		
-		// Setup initial map
-		_internal = new HashMap<>(__icap, __load);
+		// Setup
+		_load = __load;
 	}
 	
 	/**
@@ -101,18 +101,11 @@ public class WeakHashMap<K, V>
 			throw new NullPointerException("CL03");
 		
 		// Setup initial map
-		_internal = new HashMap<>(_DEFAULT_CAPACITY, _DEFAULT_LOAD);
+		_load = _DEFAULT_LOAD;
 		
 		// Add all entries to it
-		ReferenceQueue<K> qq = _rq;
 		for (Map.Entry<? extends K, ? extends V> e : __a.entrySet())
-		{
-			K k = e.getKey();
-			
-			// Place into the map
-			_internal.put((k == null ? null : new WeakReference<>(k, qq)),
-				e.getValue());
-		}
+			put(e.getKey(), e.getValue());
 	}
 	
 	@Override
