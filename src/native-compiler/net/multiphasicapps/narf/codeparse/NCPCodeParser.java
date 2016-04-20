@@ -39,7 +39,7 @@ public class NCPCodeParser
 	 * method.
 	 * @throws NullPointerException
 	 */
-	public NCPCodeParser(CFClass __cf, CFMethod __meth)
+	NCPCodeParser(CFClass __cf, CFMethod __meth)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check

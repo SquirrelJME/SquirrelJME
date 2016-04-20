@@ -230,3 +230,21 @@ it does not require "pirate" ROM carts.
 
 One thing though, are conditionals at the bounds of a basic block?
 
+## 18:39
+
+For JIT simplicity, the entire program on start will either be compiled
+completely at the start and potentially cached or just compiled all at once.
+This would permit for some whole program optimization regarding fields. If
+say a final field with an int contains the value `42`, a `getstatic` or
+`getfield` of that field would just result in `42` with no actual memory
+operation required.
+
+## 18:45
+
+The compiler's class library lookup will need a separated detail. I will
+require this so that I do need to actually have to depend on
+`javame-class-file` since for example the JIT when cross compiling will use
+class files, however on the target system when it is running all of the classes
+in the main library are built into the executable. Thus, they cannot be in
+class file (they can but that would waste much space).
+
