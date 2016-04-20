@@ -209,3 +209,24 @@ the exception jump table, I determine the bounds of basic blocks. If there are
 two method calls in a row or similar then they would be in their own basic
 block since there can only be a method call at the start of the block.
 
+## 17:46
+
+To start the virtual machine faster, there can be an initial program state
+which has already been calculated in memory. For example, all of the static
+variables and instances would for the most part already exist. This could be
+a bonus on systems with a small amount of memory where initialization and
+loading of classes could be quite filling.
+
+## 17:58
+
+If I can get the run-time to run in under 8KiB then it could run on an NES.
+This would be an achievement. Including the 8KiB save chip, the NES comes with
+2KiB of space. So there is about 10KiB of RAM available. With the right ROM
+size and enough bank switching, it would be possible to have a system on a
+large ROM. However I would want it to be as close as possible to 2KiB so that
+it does not require "pirate" ROM carts.
+
+## 18:18
+
+One thing though, are conditionals at the bounds of a basic block?
+
