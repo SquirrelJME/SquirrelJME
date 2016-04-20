@@ -248,3 +248,10 @@ class files, however on the target system when it is running all of the classes
 in the main library are built into the executable. Thus, they cannot be in
 class file (they can but that would waste much space).
 
+## 19:01
+
+Having a bridge over the class file code will permit as stated before. Although
+there would be some duplication it would be better than hacking the class file
+code to support built in classes, including the class files in the ROM, or
+including the CLDC JARs somewhere.
+
