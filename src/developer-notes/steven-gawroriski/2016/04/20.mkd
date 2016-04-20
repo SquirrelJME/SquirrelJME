@@ -112,3 +112,20 @@ a jump target. So the most important thing is reading the exception table first
 to determine the potential future jumps since past jumps would require
 recalculation.
 
+## 11:34
+
+Took a walk, have some ideas. Instead of `CFMethod` returning an `InputStream`
+of a byte array containing the code attribute it instead has a
+`CFCodeAttribute` which can provide an `InputStream` for `CPProgram` usage.
+It would also handle exceptions. This way when I write the processor I do not
+have to have another copy of the all of the data such as exceptions, the byte
+code, and the attributes. The class will just provide a view of the class.
+
+Then something similar could be done with the deflate processor. I can have the
+sliding window provide the `InputStream` data and it would support limited
+mark and such. However, it could only be done once. So instead of an output
+queue, it would just use the window directly. I also thought about having a
+system property which can set the maximum size of the sliding window. So for
+example on very limited systems with barely any memory, a sliding window of
+32KiB can be very large and not all of it might be needed at all.
+
