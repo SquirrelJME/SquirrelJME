@@ -24,3 +24,32 @@ will provide details such as the native integer size, if it can do Java
 compatible floating point, the memory model (flat, segmented, split data/code,
 and banked).
 
+## 09:40
+
+With all of the stack operations and such, and copies I can have a basic high
+speed to SSA first which is rather ugly. Then once all of it is loaded in then
+optimization can be performed to generate a new program which is faster and
+potentially smaller. For the program state, instead of having what I have
+before with a set of variables with values I can have instead a global register
+file which operations perform work on. So instead of operations having state
+such as "variable 2 is an int with value 42." the operations would at on
+unique variables given by their IDs (so for example `add $17 = $14 + $12`).
+Then in the register file there would be slots for 17, 14, and 12. Another
+possible kind of SSA thing would be to only care about side effects. The
+register file will contain operations and their derived values from other
+registers. Then if a method returns variable 12 then it goes backwards and
+performs the required operations to compute the given value. However this would
+be easily done if there were no method calls for example. A bunch of methods
+could be called which change the state of a global field which to the method
+itself it never set in that method, but the one that is called. One major
+hurdle is getting the SSA representation to be clean and the ability for
+optimization to update variable data and such. At least with a register file
+all of the used variables would be in a single location. Each variable could
+have direct dependencies. If an operation adds 14 and 12 and puts it into 17
+then the variable 17 will have a dependency on that operation.
+
+## 09:50
+
+However, even with copy operations in the SSA code, the native code generation
+pass which takes input SSA could determine if any actual work was performed.
+
