@@ -12,6 +12,8 @@ package net.multiphasicapps.classfile;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Set;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -32,6 +34,9 @@ public final class CFMethod
 	
 	/** Code attribute data. */
 	protected final byte[] codeattribute;
+	
+	/** Code attribute viewer. */
+	private volatile Reference<CFCodeAttribute> _cviewer;
 	
 	/**
 	 * Initializes the interpreted method.
@@ -117,17 +122,30 @@ public final class CFMethod
 	}
 	
 	/**
-	 * Returns the code attribute data as an input stream.
+	 * Returns the code attribute that is associated with this method.
 	 *
-	 * @return The code attribute data as an input stream, or {@code null} if
+	 * @return The code attribute or {@code null} if
 	 * there is no code attribute.
 	 * @since 2016/04/03
 	 */
-	public InputStream codeAttribute()
+	public CFCodeAttribute codeAttribute()
 	{
-		if (codeattribute != null)
-			return new ByteArrayInputStream(codeattribute);
-		return null;
+		// Get attribute
+		byte[] attr = codeattribute;
+		if (attr == null)
+			return null;
+		
+		// Get ref
+		Reference<CFCodeAttribute> ref = _cviewer;
+		CFCodeAttribute rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			_cviewer = new WeakReference<>((rv = new CFCodeAttribute(this,
+				attr)));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
