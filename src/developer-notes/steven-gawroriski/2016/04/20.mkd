@@ -53,3 +53,40 @@ then the variable 17 will have a dependency on that operation.
 However, even with copy operations in the SSA code, the native code generation
 pass which takes input SSA could determine if any actual work was performed.
 
+## 10:14
+
+However, a very limited system such as ancient 16-bit systems with about only
+64K of RAM will be unlikely to load the entire program into SSA form, optimize
+it, then generate native code very fast. So, I propose instead a straight
+generation pass from Java byte code to machine code with stack caching in a
+linear sense. However, in specific cases I cannot cache some items because they
+could for example be the start of a for loop. However, if I do not scan the
+method before hand for jumps going back I can do a rewind. Since everything is
+done in a single pass so to speak, if there is a goto into the back and it goes
+for example to the start of a loop then I can just drop everything I performed
+and flag a specific state. This would only be handled for a single operation
+however. Once its jump back point has been calculated it is dropped and not
+done again. However any jump backs will require recalculation. The next thing
+to consider is jump forwards (such as `tableswitch` and such). For future
+operations I can just set a marker to say that there is a given state. I will
+need to store the variable types so that verification is possible and the
+stack map can be used. I will do the same thing as before by using a linear
+passing of the stack map. However, jump backs which revert state will also
+force the stack map to go back also so that it has to be handled again. So if
+a jump back occurs, then all known state following the target instruction is
+dropped as if it never occured except for that flagging bit. Then for basic
+optimization of values instead of having value ranges I can have a sign
+extended mask. That is the highest bit of the mask represents the sign bit so
+a value of `127` will be `0xFF` along with `-127` using the same even though
+`127` is `0x7F`, the extra bit set will represent the sign bit to extend. This
+would only work for integers however. Then to remove multiple null checks I
+can have a null flagging bit which says that something is known to be null or
+not null. For arrays I can have a specifier which gives the array length. For
+example, an unknown array would have length `n`. If a request is made to access
+index 8 in the array, then a check is made against the size. Following that
+access or a similar check against the length of an array will result in the
+array having the indices up 8 values be unchecked. The important optimization
+would be removing array bounds checks and null pointer checks since those can
+be costly. So an operation which performs lots of work on a single array would
+eventually get all of its checks removed depending on how the method works.
+

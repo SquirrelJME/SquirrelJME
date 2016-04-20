@@ -9,8 +9,8 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This contains the personality classes which are used to modify the SSA
- * compilation so that it is best optimized for a given CPU.
+ * This contains the personality classes which are used to modify how the
+ * compiler generates code.
  *
  * @since 2016/04/20
  */
