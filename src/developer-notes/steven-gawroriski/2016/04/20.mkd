@@ -90,3 +90,25 @@ would be removing array bounds checks and null pointer checks since those can
 be costly. So an operation which performs lots of work on a single array would
 eventually get all of its checks removed depending on how the method works.
 
+## 10:30
+
+The next thing would be exceptions. I will do as I thought of before, have the
+exceptions be ran first so that the tables are generated at the start. I can
+also drop some temporaries because when it comes to exceptions anything that is
+on the stack is destroyed. The only thing on the stack is the exception which
+is to be handled. So as before, a dedicated register and an index which
+specifies the exception table entry which should be handled. With that, there
+would only be a need to have a single lookup for exception handling. One
+thing however I need to determine when exceptions and gotos exist is block
+barriers. Say an exception handler is between a jump forward and another kind
+of block and there is no potential jump in. A jump back should not remove the
+exception handler code at all. However, it is possible for an exception handler
+to jump back into the normal program control flow (an exception handler in a
+for loop for example). So exceptions complicate this. So if an exception
+performs a goto or similar then it will perform a jump back and the exception
+potentially rehandled since it could modify the state of the program. Then
+as before, jump forwards would set a future flag that an instruction later is
+a jump target. So the most important thing is reading the exception table first
+to determine the potential future jumps since past jumps would require
+recalculation.
+
