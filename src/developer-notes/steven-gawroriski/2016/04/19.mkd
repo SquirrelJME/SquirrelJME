@@ -101,3 +101,15 @@ And consist of a number of methods and classes. I must find a way to simplify
 them so that they are together as one and perhaps in only 4000 lines. It must
 also handle SSA too. The class file code is about 2000 lines of code.
 
+## 20:47
+
+When I look up the exceptions I can generate the code at the very start and
+put special markers as such for handling exceptions. For the stack map table
+and the byte code, I can process them linearly at the same time. Verification
+of types can be inlaid to the SSA variable data. So instead of a verification
+and then an interpretation/compilation pass, they are both performed at the
+same time. So instead of determination and op handlers, it would be combined
+into a single unit. Many operations are pretty much the same. So it would be
+similar to the compute machine except it would be given actions which could be
+merged to and from SSA code.
+
