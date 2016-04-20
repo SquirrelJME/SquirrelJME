@@ -9,11 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the POIT compiler which acts as an AOT compiler for
- * target system and then as a AOT/JIT for loaded classes.
+ * This is the base package for the Native ARchitecture Format compiler.
  *
- * @since 2016/02/27
+ * @since 2016/04/20
  */
 
-package net.multiphasicapps.squirreljme.poit;
+package net.multiphasicapps.narf;
 

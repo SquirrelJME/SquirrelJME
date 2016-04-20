@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-Hairball-Name: native-compiler-os
+X-Hairball-UUID: d6a83fbf-ede5-4915-a336-5cdec76de4f8
+X-Hairball-Depends: 
+ native-compiler-os-linux
+LIBlet-Title: NARF Compiler All OSes
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160420
+LIBlet-Description: This is a meta-package which depends on all OS
+ native compiler support.
+

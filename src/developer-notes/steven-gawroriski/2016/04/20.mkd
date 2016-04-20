@@ -1,0 +1,26 @@
+# 2016/04/20
+
+## 08:57
+
+So for the single pass compilation, I will also need an existing run-time state
+so that final variables may potentially be optimized globally and so that I
+actually get global optimizations. I can have the interpreter be similar.
+When compiling the memory space will be similar to an actual running system
+which essentially sees everything as a bunch of integers. The SSA operations
+would essentially be the required operations so that it is easily translated
+to the target system.
+
+## 09:16
+
+I suppose for native systems, the SSA will need personalities. For example if
+I target a 16-bit CPU it will not have 32-bit add operations so they will need
+to be split up if specific values need to be calculated. That is, I will need
+to keep a potential value store. If an if is done and a value is say below
+100 but greater than zero and a value of 7 is added, I can just keep it as
+a 8-bit add instead of requiring a full 32-bits. This would be better for
+8-bit and 16-bit systems which I do plan to target. Otherwise even simple math
+would take lots of memory and far too many cycles to complete. The personality
+will provide details such as the native integer size, if it can do Java
+compatible floating point, the memory model (flat, segmented, split data/code,
+and banked).
+
