@@ -190,7 +190,10 @@ __outer_loop:
 		if (mainclass == null)
 			throw new IllegalArgumentException((didjar ? "NI01" : "NI02"));
 		
-		// Setup the local interpreter engine
+		// Setup the class library
+		InterpreterLibrary ilib = new InterpreterLibrary(bootclasspath,
+			classpath);
+		
 		throw new Error("TODO");
 	}
 }
