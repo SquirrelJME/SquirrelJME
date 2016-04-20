@@ -336,7 +336,7 @@ public class JVMMethod
 			
 			// Needs loading?
 			if (ref == null || null == (rv = ref.get()))
-				try (InputStream is = base.codeAttribute())
+				try (InputStream is = base.codeAttribute().getInputStream())
 				{
 					// {@squirreljme.error IN0a The current method has no
 					// defined program, it is likely {@code abstract} or
