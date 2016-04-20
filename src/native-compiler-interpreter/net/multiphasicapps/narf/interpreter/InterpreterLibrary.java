@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.narf.interpreter;
 
-import net.multiphasicapps.narf.codeparse.NCPClassLibrary;
+import net.multiphasicapps.narf.library.NLClassLibrary;
 
 /**
  * This provides the means of locating classes which exist somewhere on the
@@ -19,7 +19,7 @@ import net.multiphasicapps.narf.codeparse.NCPClassLibrary;
  * @since 2016/04/20
  */
 public class InterpreterLibrary
-	extends NCPClassLibrary
+	extends NLClassLibrary
 {
 }
 

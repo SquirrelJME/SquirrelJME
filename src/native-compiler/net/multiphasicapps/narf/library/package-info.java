@@ -8,14 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.codeparse;
-
 /**
- * This class is given a method which is then parsed.
+ * This contains the class library interface which is used by the compiler to
+ * locate classes and obtain method code and such.
  *
  * @since 2016/04/20
  */
-public class NCPCodeParser
-{
-}
+
+package net.multiphasicapps.narf.library;
 

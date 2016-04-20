@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.codeparse;
+package net.multiphasicapps.narf.library;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -20,14 +20,14 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/04/20
  */
-public abstract class NCPClassLibrary
+public abstract class NLClassLibrary
 {
 	/**
 	 * Initializes the class library.
 	 *
 	 * @since 2016/04/20
 	 */
-	public NCPClassLibrary()
+	public NLClassLibrary()
 	{
 	}
 }

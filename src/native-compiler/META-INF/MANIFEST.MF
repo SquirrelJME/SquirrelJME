@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: native-compiler
 X-Hairball-UUID: 0bc54925-e49d-4524-8d1a-101628ffd61d
-X-Hairball-Depends: javame-cldc-full, javame-class-file
+X-Hairball-Depends: javame-cldc-compact, java-descriptors
 LIBlet-Title: NARF Compiler
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160420
