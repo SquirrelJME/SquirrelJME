@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.narf.codeparse;
 
-import net.multiphasicapps.classfile.CFClassFile;
+import net.multiphasicapps.classfile.CFClass;
 import net.multiphasicapps.classfile.CFCodeAttribute;
 import net.multiphasicapps.classfile.CFMethod;
 
@@ -22,7 +22,7 @@ import net.multiphasicapps.classfile.CFMethod;
 public class NCPCodeParser
 {
 	/** The class file this is in. */
-	protected final CFClassFile classfile;
+	protected final CFClass classfile;
 	
 	/** The method being parsed. */
 	protected final CFMethod method;
@@ -39,7 +39,7 @@ public class NCPCodeParser
 	 * method.
 	 * @throws NullPointerException
 	 */
-	public NCPCodeParser(CFClassFile __cf, CFMethod __meth)
+	public NCPCodeParser(CFClass __cf, CFMethod __meth)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -50,7 +50,7 @@ public class NCPCodeParser
 		// given method. (The class; The method)}
 		if (!__cf.methods().containsValue(__meth))
 			throw new IllegalArgumentException(String.format("NA01 %s %s",
-				__cf, __meth);
+				__cf, __meth));
 		
 		// Set
 		classfile = __cf;

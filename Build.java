@@ -80,6 +80,11 @@ public class Build
 	/** Path separator. */
 	public static final String PATH_SEPARATOR;
 	
+	/** This is the name of the interpreter that is used. */
+	public static final String INTERPRETER_NAME =
+		Objects.toString(System.getProperty("net.multiphasicapps.interpreter"),
+			"native-compiler-interpreter");
+	
 	/** Build JARs with no compression? */
 	private static volatile boolean _nocompression;
 	
@@ -581,7 +586,7 @@ public class Build
 		
 		// If using the interpreter, build it
 		if (__interp >= 1)
-			__build(getProject("javame-local-interpreter"));
+			__build(getProject(INTERPRETER_NAME));
 		
 		// Build the target to be ran
 		__build(__p);
@@ -626,7 +631,7 @@ public class Build
 				newargs.offerLast(__args.pollFirst());
 			
 			// Call non-interpreted version
-			__launch(__interp - 1, getProject("javame-local-interpreter"),
+			__launch(__interp - 1, getProject(INTERPRETER_NAME),
 				newargs);
 		}
 		
