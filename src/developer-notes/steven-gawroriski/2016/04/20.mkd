@@ -129,3 +129,83 @@ system property which can set the maximum size of the sliding window. So for
 example on very limited systems with barely any memory, a sliding window of
 32KiB can be very large and not all of it might be needed at all.
 
+## 15:56
+
+So I will need an output program which contains the parsing state which is set
+by an input program. The input program parser will read and handle the byte
+codes. Actually one property of the byte code is that all operations must have
+the same variable type state. So jump backs, if their value states differ then
+they have to be calculated. However types which are removed do nothing at all.
+
+## 16:05
+
+For simplicity the stack caching idea would have a fast code generator although
+it would not produce the fastest code. So basically only local variables would
+count for the most part. The stack operations would really do nothing. The
+locals stay the same during exception handlers, so they are assigned actual
+registers. The stack entries would just be virtual temporaries which are
+assigned no registers. So essentially local variables will be permanent. When
+a local variable is written to in the byte code the stack is consumed and the
+code to be generated is executed. Other points such as returning values and
+loading and storing from fields and arrays, and would trigger events to occur.
+So essentially there would be synchronization events. Stack entries would be
+pure virtual. If there is an event where a method is called, then its return
+value would be placed in a real register (since it has to go somewhere). That
+variable will be like a local except that it is dropped during exception
+handlers. So I would flow through the program quite normally, and in the case
+of these synchronizations, depending on the operations I would not need to
+redo operations if I jump back unless a synchronization occurs. I do however
+have to consider that there could be an entry on the stack which has a
+different value when it is jumped to. So jump targets which are not exception
+handlers would have to have all their stack entries on a barrier of sorts. So
+that the stack entries become temporary real registers. One of the good things
+is that I never have to worry about `jsr` and `ret` since no code will ever
+have those instructions.
+
+## 16:16
+
+So I may have to go through all the instructions to determine jump targets. If
+an instruction has stack entries then I will do an implicit generate of the
+entries and real register allocation on them. There would just be real
+registers contianing the actual values and the calculations dropped so that
+they just become values. Then normal virtual stack registers would be used
+while the temporary real ones will just contain some values. Then when that
+jump back point is reached, all the input values will be calculated between
+the slices so that it can jump back. Doing it this way, although not as
+optimized will be faster and simpler to implement. So I only perform stack
+caching when an instruction is not a target of a jump. If I jump to an
+instruction in the future, it would be the same. There would be temporary
+register sets. Thus, the basic blocks of a method will start with the
+instruction which is the start of an exception handler, the method, or the
+target of a jump. The end of basic blocks would be return values, method
+calls, load/store fields/arrays, jumps to a target, or instructions which have
+jumps to it. Each basic block has its own set of stack temporaries if
+required. At the end of a basic block, all values are synchronized into
+these temporaries. During the transition of one block to another, temporaries
+may be moved and shuffled as needed so the values fit.
+
+I should note that as before, locals are always up to date regardless of
+whether they are just set, and never used again.
+
+## 16:25
+
+For basic blocks though, should I end a block at remote call or should it end
+on the instruction before it? Before a method is called however, registers need
+to be saved and the stack and registers setup so that arguments can be passed
+to the given method. If I end before it, I would have all of the stack items
+saved accordingly since they are all popped from the stack. That would be good
+because then a method call or similar would start a basic block and it would
+have none of the stack temporaries used as method arguments in it. Then the
+same thing can be done for field get and set, throwing, and returning of
+values (and some others). So operations such as `getfield` will be the start
+of a basic block. The same would be done for all the synchronizing operations.
+
+## 16:31
+
+This would not produce the best code, however it would be simple to perform and
+stuff such as method invocation would be simplified because methods being at
+the start would mean that all stack temporaries are synced. So after setting up
+the exception jump table, I determine the bounds of basic blocks. If there are
+two method calls in a row or similar then they would be in their own basic
+block since there can only be a method call at the start of the block.
+
