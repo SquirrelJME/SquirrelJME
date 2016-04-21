@@ -70,12 +70,14 @@ public final class Boolean
 	
 	public static boolean parseBoolean(String __a)
 	{
-		throw new Error("TODO");
+		return (__a != null && __a.equalsIgnoreCase("true"));
 	}
 	
 	public static String toString(boolean __a)
 	{
-		throw new Error("TODO");
+		if (__a)
+			return "true";
+		return "false";
 	}
 	
 	/**
@@ -94,7 +96,9 @@ public final class Boolean
 	
 	public static Boolean valueOf(String __a)
 	{
-		throw new Error("TODO");
+		if (__a != null && __a.equalsIgnoreCase("true"))
+			return TRUE;
+		return FALSE;
 	}
 }
 

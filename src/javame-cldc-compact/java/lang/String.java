@@ -30,6 +30,10 @@ public final class String
 	private static final String _ENCODING_UTF =
 		"utf-8";
 	
+	/** The minumum trim character. */
+	private static final char _MIN_TRIM_CHAR =
+		' ';
+	
 	/**
 	 * Strings which are intered so that the same string is referred to so that
 	 * for example the {@code ==} operator is actually valid (despite not being
@@ -45,7 +49,7 @@ public final class String
 	
 	public String(String __a)
 	{
-		throw new Error("TODO");
+		this(__a, 0, __a.length());
 	}
 	
 	public String(char[] __a)
@@ -105,6 +109,26 @@ public final class String
 	 */
 	private String(IVMCharSequence __ivmcs)
 	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Provides a sub-string view of the given string.
+	 *
+	 * @param __str The string.
+	 * @param __s The inclusive starting index.
+	 * @param __e The exclusive ending index.
+	 * @throws IndexOutOfBoundsException If the indices are out of bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/20
+	 */
+	private String(String __str, int __s, int __e)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__str == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
@@ -394,13 +418,25 @@ public final class String
 		throw new Error("TODO");
 	}
 	
-	public String substring(int __a)
+	public String substring(int __s)
+		throws IndexOutOfBoundsException
 	{
-		throw new Error("TODO");
+		// A substring starting at the zero character is the same
+		if (__s == 0)
+			return this;
+		
+		// Call other
+		return substring(__s, length());
 	}
 	
-	public String substring(int __a, int __b)
+	public String substring(int __s, int __e)
+		throws IndexOutOfBoundsException
 	{
+		// The entire string region requires no new string
+		int n = length();
+		if (__s == 0 && __e == n)
+			return this;
+		
 		throw new Error("TODO");
 	}
 	
@@ -425,9 +461,39 @@ public final class String
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * This trims all of the low ASCII whitespace and control characters at
+	 * the start and the end of this string and returns a new string with
+	 * the trimmed whitespace.
+	 *
+	 * This does not handle any other potential characters which may act as
+	 * whitespace in the high unicode range and only handles the first 32
+	 * ASCII characters.
+	 *
+	 * @return A string with the whitespace trimmed, if the string does not
+	 * start or end in whitespace then {@code this} is returned.
+	 * @since 2016/04/20
+	 */
 	public String trim()
 	{
-		throw new Error("TODO");
+		// If there are no viable characters to trim, then return self
+		int n = this.length();
+		if (n <= 0 ||
+			(charAt(0) > _MIN_TRIM_CHAR && charAt(n - 1) > _MIN_TRIM_CHAR))
+			return this;
+		
+		// Find starting trim position
+		int s;
+		for (s = 0; s < n && charAt(s) <= _MIN_TRIM_CHAR; s++)
+			;
+		
+		// Find ending trim position
+		int e;
+		for (e = n - 1; e >= 0 && charAt(e) <= _MIN_TRIM_CHAR; e--)
+			;
+		
+		// Return trimmed variant of it
+		return substring(s, e + 1);
 	}
 	
 	public static String copyValueOf(char[] __a, int __b, int __c)
@@ -447,47 +513,53 @@ public final class String
 	
 	public static String valueOf(Object __a)
 	{
+		// The value is a string already
+		if (__a instanceof String)
+			return (String)__a;
+		
 		throw new Error("TODO");
 	}
 	
 	public static String valueOf(char[] __a)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		return valueOf(__a, 0, (__a != null ? __a.length : 0));
 	}
 	
-	public static String valueOf(char[] __a, int __b, int __c)
+	public static String valueOf(char[] __c, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
 		throw new Error("TODO");
 	}
 	
 	public static String valueOf(boolean __a)
 	{
-		throw new Error("TODO");
+		return Boolean.valueOf(__a).toString();
 	}
 	
 	public static String valueOf(char __a)
 	{
-		throw new Error("TODO");
+		return Character.valueOf(__a).toString();
 	}
 	
 	public static String valueOf(int __a)
 	{
-		throw new Error("TODO");
+		return Integer.valueOf(__a).toString();
 	}
 	
 	public static String valueOf(long __a)
 	{
-		throw new Error("TODO");
+		return Long.valueOf(__a).toString();
 	}
 	
 	public static String valueOf(float __a)
 	{
-		throw new Error("TODO");
+		return Float.valueOf(__a).toString();
 	}
 	
 	public static String valueOf(double __a)
 	{
-		throw new Error("TODO");
+		return Double.valueOf(__a).toString();
 	}
 }
 
