@@ -6,3 +6,14 @@ These are planned limitations:
    memory to load all of them. Note that in standard desktop Java, this would
    mean that almost the entire standard class library has been loaded.
 
+# Filesystems
+
+If there is a limitation to the length of a file name and an attempt is made
+to open or create a file that exceeds the length limitations, then those
+attempts will fail. File names will not be truncated to fit within the
+limitations. This is to prevent cases where multiple files may attempted to
+be created which all share the same truncated name, where they would instead
+potentially overwrite and replace each other. For resources that a program
+uses, it is highly recommended to place them within the JAR rather than use
+the filesystem.
+

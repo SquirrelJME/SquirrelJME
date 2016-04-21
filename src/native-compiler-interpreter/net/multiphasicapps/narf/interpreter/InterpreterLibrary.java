@@ -12,6 +12,8 @@ package net.multiphasicapps.narf.interpreter;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -23,8 +25,13 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.classfile.CFClass;
+import net.multiphasicapps.classfile.CFClassParser;
+import net.multiphasicapps.classfile.CFFormatException;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.narf.classfile.CFToNLClass;
 import net.multiphasicapps.narf.library.NLClass;
 import net.multiphasicapps.narf.library.NLClassLibrary;
 import net.multiphasicapps.narf.library.NLClassLoadException;
@@ -50,6 +57,10 @@ public class InterpreterLibrary
 	
 	/** Loaded ZIP files. */
 	protected final Map<Path, StandardZIPFile> zips;
+	
+	/** Already loaded binary classes? */
+	protected final Map<ClassNameSymbol, Reference<InterpreterClass>> loaded =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the interpreter library which uses the real filesystem or
@@ -130,6 +141,54 @@ public class InterpreterLibrary
 	}
 	
 	/**
+	 * Locates and initializes the given class.
+	 *
+	 * @param __core The core interpreter.
+	 * @param __cn The class to initialize.
+	 * @return The initialized interpreter class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/21
+	 */
+	public InterpreterClass initClass(InterpreterCore __core,
+		ClassNameSymbol __cn)
+		throws NullPointerException
+	{
+		// Check
+		if (__cn == null || __core == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on the loaded classes
+		Map<ClassNameSymbol, Reference<InterpreterClass>> map = loaded;
+		synchronized (map)
+		{
+			// Get ref
+			Reference<InterpreterClass> ref = map.get(__cn);
+			InterpreterClass rv;
+			
+			// Needs to be loaded?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// An array
+				if (__cn.isArray())
+					throw new Error("TODO");
+				
+				// Primitive type
+				else if (__cn.isPrimitive())
+					throw new Error("TODO");
+				
+				// Normal class
+				else
+					map.put(__cn, new WeakReference<>((rv =
+						new InterpreterClass(__core,
+							loadClass(__cn.asBinaryName())))));
+			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/21
 	 */
@@ -158,18 +217,81 @@ public class InterpreterLibrary
 	 * @param __boot If {@code true} then this is looking in the boot class
 	 * path.
 	 * @return The loaded class or {@code null} if it does not exist.
+	 * @throws NLClassLoadException If it failed to be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
 	private NLClass __loadClass(BinaryNameSymbol __bn, Set<Path> __paths,
 		boolean __boot)
-		throws NullPointerException
+		throws NLClassLoadException, NullPointerException
 	{
 		// Check
 		if (__bn == null || __paths == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through the paths
+		for (Path p : __paths)
+		{
+			try
+			{
+				// Lookin in a directory
+				if (isadir.contains(p))
+				{
+					// Resolve the path going to the class
+					Path res = p;
+					int n = __bn.size();
+					for (int i = 0; i < n - 1; i++)
+						res = res.resolve(__bn.get(i).toString());
+					
+					// Resolve the last with the .class extension
+					res = res.resolve(__bn.get(n - 1) + ".class");
+					
+					// Load file stream
+					try (InputStream is = Channels.newInputStream(
+						FileChannel.open(res, StandardOpenOption.READ)))
+					{
+						return new CFToNLClass(new CFClassParser().parse(is));
+					}
+				}
+			
+				// Look in a ZIP
+				else
+				{
+					// Get the ZIP
+					StandardZIPFile zip = zips.get(p);
+					
+					// Build ZIP file name
+					StringBuilder fn = new StringBuilder();
+					int n = __bn.size();
+					for (int i = 0; i < n; i++)
+					{
+						if (i > 0)
+							fn.append("/");
+						fn.append(__bn.get(i));
+					}
+					
+					// Append class
+					fn.append(".class");
+					
+					try (InputStream is = zip.get(fn.toString()).open())
+					{
+						return new CFToNLClass(new CFClassParser().parse(is));
+					}
+				}
+			}
+			
+			// Failed read
+			catch (CFFormatException|IOException e)
+			{
+				// {@squirreljme.error NI0a Failed to read a class from the
+				// given path. (The binary name; The path read from)}
+				throw new NLClassLoadException(String.format("NI0a %s %s",
+					__bn, p), e);
+			}
+		}
+		
+		// Not found
+		return null;
 	}
 }
 

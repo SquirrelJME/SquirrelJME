@@ -9,8 +9,10 @@ operation of this software.
    * [Supported Platforms](user/platforms.mkd)
    * [Supported Character Encodings](user/encodings.mkd)
    * [Limitations](user/limits.mkd)
+   * OS: [DOS Family](user/os_dos.mkd)
  * Developer's Manual
    * [Differences between Java SE and Java ME](developer/differences.mkd)
+   * [Pitfalls](developer/pitfalls.mkd)
  * Maintainer's Manual
    * [Style Requirements](maintainer/style.mkd)
    * [Consistency Guidelines](maintainer/consistency.mkd)

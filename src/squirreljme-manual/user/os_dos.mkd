@@ -1,0 +1,6 @@
+# DOS Family
+
+This document pertains to the family of DOS compatible operating systems on the
+x86 architecture such as FreeDOS, MS-DOS, DOSBox, and DOSEmu.
+
+

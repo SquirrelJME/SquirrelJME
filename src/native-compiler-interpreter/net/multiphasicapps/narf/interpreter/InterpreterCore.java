@@ -25,7 +25,7 @@ import net.multiphasicapps.narf.library.NLClassLibrary;
 public class InterpreterCore
 {
 	/** The library which contains classes to load. */
-	protected final NLClassLibrary classlib;
+	protected final InterpreterLibrary classlib;
 	
 	/** The mapping of real threads to interpreter threads. */
 	protected final Map<Thread, InterpreterThread> threadmap =
@@ -41,8 +41,8 @@ public class InterpreterCore
 	 * @param __main The main class.
 	 * @param __args Main program arguments.
 	 */
-	public InterpreterCore(NLClassLibrary __cl, ClassLoaderNameSymbol __main,
-		String... __args)
+	public InterpreterCore(InterpreterLibrary __cl,
+		ClassLoaderNameSymbol __main, String... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -59,11 +59,11 @@ public class InterpreterCore
 		threadmap.put(mt, new InterpreterThread(this, mt));
 		
 		// Locate the main class
-		NLClass nlmain = __cl.lookup(__main.asClassName().asBinaryName());
+		InterpreterClass maincl = __cl.initClass(this, __main.asClassName());
 		
 		// {@squirreljme.error NI08 The main class could not be found.
 		// (The main class)}
-		if (nlmain == null)
+		if (maincl == null)
 			throw new IllegalArgumentException(String.format("NI08 %s",
 				__main));
 		

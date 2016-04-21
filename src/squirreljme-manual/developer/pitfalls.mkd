@@ -1,0 +1,22 @@
+# Pitfalls
+
+These are some pitfalls that may occur when writing cross platform SquirrelJME
+applications.
+
+# The Host Filesystem
+
+When using `FileChannel` and other NIO related classes to access the native
+file system, there may be some issues on older and more limited systems when
+it comes to files.
+
+This does not affect using JAR resources however.
+
+## File Names
+
+Some operating systems and filesystems place limits on the characters which
+are valid in file names along with potential case sensitivity and the length
+of the file name.
+
+For the file name length, some filesystems treat the name and extension as
+just a single name, while others treat them as separate entities.
+
