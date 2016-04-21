@@ -1,2 +1,31 @@
 # 2016/04/21
 
+## 10:28
+
+When I tried to type `zs` I instead typed `xz`.
+
+## 10:37
+
+I believe for this instance of the interpreter, instead of passing the thread I
+will instead have a thread map which can be looked up. So there will
+essentially be a map of threads where I can use Thread.currentThread() to get
+the associated virtual machine thread. This would be far easier to maintain.
+If a program is also single threaded, then no other threads are created and
+everything just is based on the main thread.
+
+## 10:42
+
+Well, it would be easier to create a main thread instead of having it part of
+the actual main entry.
+
+## 10:44
+
+Also hopefully the interpreter callstacks are much simpler since it would be
+executing the direct code representation the compiler would interpreter.
+
+## 10:46
+
+For cooperatively tasked systems, I should have `Thread.yield` compile to a
+special instruction so that when it is called it could be done in a single
+instruction instead of a method call.
+

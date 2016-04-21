@@ -197,17 +197,18 @@ __outer_loop:
 		InterpreterLibrary ilib = new InterpreterLibrary(bootclasspath,
 			classpath);
 		
-		// Locate the main class
-		NLClass nlmain = ilib.lookup(new ClassLoaderNameSymbol(mainclass).
-			asClassName().asBinaryName());
+		// Setup the interpreter core
+		InterpreterCore ic = new InterpreterCore(ilib,
+			new ClassLoaderNameSymbol(mainclass),
+			hargs.<String>toArray(new String[hargs.size()]));
 		
-		// {@squirreljme.error NI08 The main class could not be found.
-		// (The main class)}
-		if (nlmain == null)
-			throw new IllegalArgumentException(String.format("NI08 %s",
-				mainclass));
-		
-		throw new Error("TODO");
+		// If the VM is still running, yield the current thread. Although they
+		// say to never use yield, it is very possible that this environment
+		// can be running on a system which has cooperative multi-tasking. If
+		// the main thread never yields then essentially the VM will freeze
+		// solid.
+		while (ic.isRunning())
+			Thread.yield();
 	}
 }
 
