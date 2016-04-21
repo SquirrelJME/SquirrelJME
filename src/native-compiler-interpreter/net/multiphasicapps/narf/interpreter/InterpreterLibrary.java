@@ -10,13 +10,25 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.narf.library.NLClass;
 import net.multiphasicapps.narf.library.NLClassLibrary;
+import net.multiphasicapps.narf.library.NLClassLoadException;
+import net.multiphasicapps.zips.StandardZIPFile;
 
 /**
  * This provides the means of locating classes which exist somewhere on the
@@ -32,6 +44,12 @@ public class InterpreterLibrary
 	
 	/** The classpath. */
 	protected final Set<Path> classpath;
+	
+	/** Is a path form? */
+	protected final Set<Path> isadir;
+	
+	/** Loaded ZIP files. */
+	protected final Map<Path, StandardZIPFile> zips;
 	
 	/**
 	 * Initializes the interpreter library which uses the real filesystem or
@@ -55,6 +73,103 @@ public class InterpreterLibrary
 		// Setup standard classpath
 		classpath = MissingCollections.<Path>unmodifiableSet(
 			new LinkedHashSet<>(__cp));
+		
+		// Go through all paths and determine if they are directories or
+		// ZIPS
+		Set<Path> id = new HashSet<>();
+		Map<Path, StandardZIPFile> zs = new HashMap<>();
+		for (int i = 0; i < 2; i++)
+			for (Path p : (i == 0 ? bootpath : classpath))
+			{
+				// Is this a directory?
+				if (Files.isDirectory(p))
+				{
+					id.add(p);
+					
+					// Do not try reading as a ZIP
+					continue;
+				}
+				
+				// Otherwise load ZIP
+				FileChannel fc = null;
+				try
+				{
+					// Open file
+					fc = FileChannel.open(p, StandardOpenOption.READ);
+					
+					// Set as ZIP
+					zs.put(p, StandardZIPFile.open(fc));
+				}
+				
+				// Failed to read
+				catch (IOException e)
+				{
+					// Close the ZIP
+					if (fc != null)
+						try
+						{
+							fc.close();
+						}
+						
+						// Failed to close that
+						catch (IOException f)
+						{
+							e.addSuppressed(f);
+						}
+					
+					// {@squirreljme.error NI09 Could not load the given path
+					// as a ZIP file. (The path to the ZIP.)}
+					throw new IllegalArgumentException(String.format("NI09 %s",
+						p), e);
+				}
+			}
+		
+		// Lock in
+		isadir = MissingCollections.<Path>unmodifiableSet(id);
+		zips = MissingCollections.<Path, StandardZIPFile>unmodifiableMap(zs);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/21
+	 */
+	@Override
+	protected NLClass loadClass(BinaryNameSymbol __bn)
+		throws NLClassLoadException, NullPointerException
+	{
+		// Check
+		if (__bn == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the bootclasspath
+		NLClass rv;
+		if (null != (rv = __loadClass(__bn, bootpath, true)))
+			return rv;
+		
+		// Otherwise use the normal class
+		return __loadClass(__bn, classpath, false);
+	}
+	
+	/**
+	 * Internally loads a given class.
+	 *
+	 * @param __bn The binary name of the class.
+	 * @param __paths The set of paths to look in.
+	 * @param __boot If {@code true} then this is looking in the boot class
+	 * path.
+	 * @return The loaded class or {@code null} if it does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/21
+	 */
+	private NLClass __loadClass(BinaryNameSymbol __bn, Set<Path> __paths,
+		boolean __boot)
+		throws NullPointerException
+	{
+		// Check
+		if (__bn == null || __paths == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

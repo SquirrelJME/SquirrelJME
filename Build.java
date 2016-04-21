@@ -900,9 +900,9 @@ public class Build
 			libtitle = Objects.<String>requireNonNull(attr.getValue(
 				"LIBlet-Title"), "Missing library title.");
 			libvendor = Objects.<String>requireNonNull(attr.getValue(
-				"LIBlet-Vendor"), "Missing library title.");
+				"LIBlet-Vendor"), "Missing library vendor.");
 			libversion = Objects.<String>requireNonNull(attr.getValue(
-				"LIBlet-Version"), "Missing library title.");
+				"LIBlet-Version"), "Missing library version.");
 			
 			// Determine JAR name
 			jarname = Paths.get(name + ".jar");

@@ -17,6 +17,9 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.StringTokenizer;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
+import net.multiphasicapps.narf.library.NLClass;
 
 /**
  * This is the main entry point for the NARF interpreter, it handles a standard
@@ -193,6 +196,16 @@ __outer_loop:
 		// Setup the class library
 		InterpreterLibrary ilib = new InterpreterLibrary(bootclasspath,
 			classpath);
+		
+		// Locate the main class
+		NLClass nlmain = ilib.lookup(new ClassLoaderNameSymbol(mainclass).
+			asClassName().asBinaryName());
+		
+		// {@squirreljme.error NI08 The main class could not be found.
+		// (The main class)}
+		if (nlmain == null)
+			throw new IllegalArgumentException(String.format("NI08 %s",
+				mainclass));
 		
 		throw new Error("TODO");
 	}
