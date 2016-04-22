@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.narf.library;
 
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
@@ -19,8 +20,16 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  *
  * @since 2016/04/21
  */
-public abstract class NLClass
+public interface NLClass
 {
+	/**
+	 * Returns the mapping of fields that this class contains.
+	 *
+	 * @return The fields this class contains.
+	 * @since 2016/04/22
+	 */
+	public abstract Map<NLFieldID, NLField> fields();
+	
 	/**
 	 * Returns the name of the implemented interfaces.
 	 *
@@ -28,6 +37,14 @@ public abstract class NLClass
 	 * @since 2016/04/22
 	 */
 	public abstract Set<ClassNameSymbol> interfaceNames();
+	
+	/**
+	 * Returns the mappin of methods that this class contains.
+	 *
+	 * @return The methods this class contains.
+	 * @since 2016/04/22
+	 */
+	public abstract Map<NLMethodID, NLMethod> methods();
 	
 	/**
 	 * Returns the name of the super class.

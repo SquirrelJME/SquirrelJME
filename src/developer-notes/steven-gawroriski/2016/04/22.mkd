@@ -5,3 +5,9 @@
 Instead of having a few thousand subclasses for different exceptions, I will
 just have one with a given type.
 
+## 19:18
+
+`NLClass` and most of the family would be best as interfaces. Then quite
+literally the class file interface can implement that interface and I no
+longer need a bridge.
+

@@ -27,7 +27,7 @@ import net.multiphasicapps.narf.library.NLClass;
  * @since 2016/04/21
  */
 public class CFToNLClass
-	extends NLClass
+	implements NLClass
 {
 	/** The class file to base off. */
 	protected final CFClass classfile;
