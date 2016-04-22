@@ -10,7 +10,12 @@
 
 package net.multiphasicapps.narf.classfile;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.classfile.CFClass;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.library.NLClass;
@@ -26,6 +31,9 @@ public class CFToNLClass
 {
 	/** The class file to base off. */
 	protected final CFClass classfile;
+	
+	/** The implemented interfaces. */
+	private volatile Reference<Set<ClassNameSymbol>> _impls;
 	
 	/**
 	 * Initializes the wrapped class.
@@ -43,6 +51,36 @@ public class CFToNLClass
 		
 		// Set
 		classfile = __cf;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/22
+	 */
+	@Override
+	public Set<ClassNameSymbol> interfaceNames()
+	{
+		// Get reference
+		Reference<Set<ClassNameSymbol>> ref = _impls;
+		Set<ClassNameSymbol> rv;
+		
+		// Needs to be cached?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Target set
+			Set<ClassNameSymbol> in = new LinkedHashSet<>();
+			
+			// Fill in
+			for (BinaryNameSymbol bns : classfile.interfaces())
+				in.add(bns.asClassName());
+			
+			// Wrap
+			_impls = new WeakReference<>((rv =
+				MissingCollections.<ClassNameSymbol>unmodifiableSet(in)));
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.narf.library;
 
+import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
@@ -20,6 +21,14 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  */
 public abstract class NLClass
 {
+	/**
+	 * Returns the name of the implemented interfaces.
+	 *
+	 * @return The set of implemented interfaces.
+	 * @since 2016/04/22
+	 */
+	public abstract Set<ClassNameSymbol> interfaceNames();
+	
 	/**
 	 * Returns the name of the super class.
 	 *

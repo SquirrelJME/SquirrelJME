@@ -12,7 +12,10 @@ package net.multiphasicapps.narf.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.library.NLClass;
 
@@ -37,6 +40,9 @@ public class NIClass
 	
 	/** The super class of this class. */
 	protected final NIClass superclass;
+	
+	/** The interfaces this class implements. */
+	protected final Set<NIClass> interfaceclasses;
 	
 	/**
 	 * Initializes an interpreted class.
@@ -77,21 +83,33 @@ public class NIClass
 		
 		// Obtain the superclass of this class
 		ClassNameSymbol sn = __base.superName();
-		if (sn == null)
-			superclass = null;
-		else
+		superclass = (sn == null ? null : __core.initClass(sn));
+		
+		// Obtain class interfaces
+		Set<NIClass> in = new LinkedHashSet<>();
+		for (ClassNameSymbol cns : __base.interfaceNames())
+			in.add(__core.initClass(cns));
+		interfaceclasses = MissingCollections.<NIClass>unmodifiableSet(in);
+		
+		// Make sure the class does not eventually extend or implement itself
+		// If it does then the class definition is circular
+		for (NIClass rover = superclass; rover != null;
+			rover = rover.superclass)
 		{
-			// Load it
-			superclass = __core.initClass(sn);
-			
 			// {@squirreljme.error NI0c The current class eventually extends
 			// itself. (The name of this class)}
-			for (NIClass rover = superclass; rover != null;
-				rover = rover.superclass)
-				if (rover == this)
+			if (rover == this)
+				throw new NIException(core,
+					NIException.Type.CLASS_CIRCULARITY,
+					String.format("NI0c %s", thisname));
+			
+			// {@squirreljme.error NI0d The current class eventually implements
+			// itself. (The name of this name; The class implementing this)}
+			for (NIClass impl : rover.interfaceclasses)
+				if (impl == this)
 					throw new NIException(core,
 						NIException.Type.CLASS_CIRCULARITY,
-						String.format("NI0c %s", thisname));
+						String.format("NI0d %s %s", thisname, rover.thisname));
 		}
 		
 		// Class loaded
