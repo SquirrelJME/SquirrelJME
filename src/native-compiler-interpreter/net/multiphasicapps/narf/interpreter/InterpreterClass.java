@@ -43,8 +43,6 @@ public class InterpreterClass
 		// Set
 		core = __core;
 		base = __base;
-		
-		throw new Error("TODO");
 	}
 }
 
