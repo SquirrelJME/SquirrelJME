@@ -194,12 +194,10 @@ __outer_loop:
 			throw new IllegalArgumentException((didjar ? "NI01" : "NI02"));
 		
 		// Setup the class library
-		InterpreterLibrary ilib = new InterpreterLibrary(bootclasspath,
-			classpath);
+		NILibrary ilib = new NILibrary(bootclasspath, classpath);
 		
 		// Setup the interpreter core
-		InterpreterCore ic = new InterpreterCore(ilib,
-			new ClassLoaderNameSymbol(mainclass),
+		NICore ic = new NICore(ilib, new ClassLoaderNameSymbol(mainclass),
 			hargs.<String>toArray(new String[hargs.size()]));
 		
 		// If the VM is still running, yield the current thread. Although they

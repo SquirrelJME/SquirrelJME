@@ -21,10 +21,10 @@ import net.multiphasicapps.narf.library.NLClass;
  *
  * @since 2016/04/21
  */
-public class InterpreterClass
+public class NIClass
 {
 	/** The interpreter core. */
-	protected final InterpreterCore core;
+	protected final NICore core;
 	
 	/** The based class (if {@code null} is a virtual class). */
 	protected final NLClass base;
@@ -36,7 +36,7 @@ public class InterpreterClass
 	protected final ClassNameSymbol thisname;
 	
 	/** The super class of this class. */
-	protected final InterpreterClass superclass;
+	protected final NIClass superclass;
 	
 	/**
 	 * Initializes an interpreted class.
@@ -48,9 +48,9 @@ public class InterpreterClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	InterpreterClass(InterpreterCore __core, NLClass __base,
+	NIClass(NICore __core, NLClass __base,
 		ClassNameSymbol __cns,
-		Map<ClassNameSymbol, Reference<InterpreterClass>> __tm)
+		Map<ClassNameSymbol, Reference<NIClass>> __tm)
 		throws NullPointerException
 	{
 		// Check
@@ -66,8 +66,7 @@ public class InterpreterClass
 		// requested class)}
 		thisname = __base.thisName().asClassName();
 		if (!__cns.equals(thisname))
-			throw new InterpreterException(core,
-				InterpreterException.CLASS_NAME_MISMATCH,
+			throw new NIException(core, NIException.CLASS_NAME_MISMATCH,
 				String.format("NI0b %s %s", thisname, __cns));
 		
 		// Place into the given map, it would be partially loaded at this time

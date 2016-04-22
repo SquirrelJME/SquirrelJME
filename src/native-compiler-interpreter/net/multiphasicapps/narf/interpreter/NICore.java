@@ -25,17 +25,17 @@ import net.multiphasicapps.narf.library.NLClassLibrary;
  *
  * @since 2016/04/21
  */
-public class InterpreterCore
+public class NICore
 {
 	/** The library which contains classes to load. */
-	protected final InterpreterLibrary classlib;
+	protected final NILibrary classlib;
 	
 	/** The mapping of real threads to interpreter threads. */
-	protected final Map<Thread, InterpreterThread> threadmap =
+	protected final Map<Thread, NIThread> threadmap =
 		new HashMap<>();
 	
 	/** Already loaded binary classes? */
-	protected final Map<ClassNameSymbol, Reference<InterpreterClass>> loaded =
+	protected final Map<ClassNameSymbol, Reference<NIClass>> loaded =
 		new HashMap<>();
 	
 	/** Is the virtual machine running? */
@@ -48,7 +48,7 @@ public class InterpreterCore
 	 * @param __main The main class.
 	 * @param __args Main program arguments.
 	 */
-	public InterpreterCore(InterpreterLibrary __cl,
+	public NICore(NILibrary __cl,
 		ClassLoaderNameSymbol __main, String... __args)
 		throws NullPointerException
 	{
@@ -63,10 +63,10 @@ public class InterpreterCore
 		// Java ME lacks daemon threads, the interpreter internally will need
 		// a thread so it can determine where execution is being performed.
 		Thread mt = Thread.currentThread();
-		threadmap.put(mt, new InterpreterThread(this, mt));
+		threadmap.put(mt, new NIThread(this, mt));
 		
 		// Locate the main class
-		InterpreterClass maincl = initClass(__main.asClassName());
+		NIClass maincl = initClass(__main.asClassName());
 		
 		// {@squirreljme.error NI08 The main class could not be found.
 		// (The main class)}
@@ -89,7 +89,7 @@ public class InterpreterCore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public InterpreterClass initClass(ClassNameSymbol __cn)
+	public NIClass initClass(ClassNameSymbol __cn)
 		throws NullPointerException
 	{
 		// Check
@@ -97,12 +97,12 @@ public class InterpreterCore
 			throw new NullPointerException("NARG");
 		
 		// Lock on the loaded classes
-		Map<ClassNameSymbol, Reference<InterpreterClass>> map = loaded;
+		Map<ClassNameSymbol, Reference<NIClass>> map = loaded;
 		synchronized (map)
 		{
 			// Get ref
-			Reference<InterpreterClass> ref = map.get(__cn);
-			InterpreterClass rv;
+			Reference<NIClass> ref = map.get(__cn);
+			NIClass rv;
 			
 			// Needs to be loaded?
 			if (ref == null || null == (rv = ref.get()))
@@ -117,7 +117,7 @@ public class InterpreterCore
 				
 				// Normal class
 				else
-					rv = new InterpreterClass(this,
+					rv = new NIClass(this,
 						classlib.loadClass(__cn.asBinaryName()), __cn, map);
 			}
 			
@@ -144,7 +144,7 @@ public class InterpreterCore
 	 * @return The class library interface.
 	 * @since 2016/04/22
 	 */
-	public InterpreterLibrary library()
+	public NILibrary library()
 	{
 		return classlib;
 	}
@@ -158,7 +158,7 @@ public class InterpreterCore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public InterpreterThread thread(Thread __t)
+	public NIThread thread(Thread __t)
 		throws NullPointerException
 	{
 		// Check
@@ -166,7 +166,7 @@ public class InterpreterCore
 			throw new NullPointerException("NARG");
 		
 		// Lock on the thread map
-		Map<Thread, InterpreterThread> tm = threadmap;
+		Map<Thread, NIThread> tm = threadmap;
 		synchronized (tm)
 		{
 			return tm.get(__t);

@@ -15,7 +15,7 @@ package net.multiphasicapps.narf.interpreter;
  *
  * @since 2016/04/22
  */
-public class InterpreterException
+public class NIException
 	extends RuntimeException
 {
 	/** The exception type. */
@@ -29,7 +29,7 @@ public class InterpreterException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public JVMEngineException(InterpreterCore __ic, Type __t)
+	public JVMEngineException(NICore __ic, Type __t)
 		throws NullPointerException
 	{
 		super();
@@ -51,7 +51,7 @@ public class InterpreterException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public JVMEngineException(InterpreterCore __ic, Type __t, String __msg)
+	public JVMEngineException(NICore __ic, Type __t, String __msg)
 		throws NullPointerException
 	{
 		super(__msg);
@@ -74,7 +74,7 @@ public class InterpreterException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public JVMEngineException(InterpreterCore __ic, Type __t, String __msg,
+	public JVMEngineException(NICore __ic, Type __t, String __msg,
 		Throwable __c)
 		throws NullPointerException
 	{
@@ -97,7 +97,7 @@ public class InterpreterException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public JVMEngineException(InterpreterCore __ic, Type __t, Throwable __c)
+	public JVMEngineException(NICore __ic, Type __t, Throwable __c)
 		throws NullPointerException
 	{
 		super(__c);

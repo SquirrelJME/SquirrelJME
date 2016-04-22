@@ -43,7 +43,7 @@ import net.multiphasicapps.zips.StandardZIPFile;
  *
  * @since 2016/04/20
  */
-public class InterpreterLibrary
+public class NILibrary
 	extends NLClassLibrary
 {
 	/** The boot classpath. */
@@ -66,7 +66,7 @@ public class InterpreterLibrary
 	 * @param __cp The program classpath.
 	 * @since 2016/04/20
 	 */
-	public InterpreterLibrary(Set<Path> __bootcp, Set<Path> __cp)
+	public NILibrary(Set<Path> __bootcp, Set<Path> __cp)
 		throws NullPointerException
 	{
 		// Check

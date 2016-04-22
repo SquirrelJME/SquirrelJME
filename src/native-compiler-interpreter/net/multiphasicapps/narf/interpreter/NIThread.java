@@ -15,10 +15,10 @@ package net.multiphasicapps.narf.interpreter;
  *
  * @since 2016/04/21
  */
-public class InterpreterThread
+public class NIThread
 {
 	/** The owning core. */
-	protected final InterpreterCore core;
+	protected final NICore core;
 	
 	/** The thread this executes from. */
 	protected final Thread thread;
@@ -36,7 +36,7 @@ public class InterpreterThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public InterpreterThread(InterpreterCore __c, Thread __xt)
+	public NIThread(NICore __c, Thread __xt)
 		throws NullPointerException
 	{
 		// Check
