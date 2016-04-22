@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.library;
+package net.multiphasicapps.narf.classinterface;
 
 import java.util.Map;
 import java.util.Set;

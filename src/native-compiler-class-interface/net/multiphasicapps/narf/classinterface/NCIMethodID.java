@@ -8,17 +8,29 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.library;
+package net.multiphasicapps.narf.classinterface;
 
-import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
- * This represents a field.
+ * This identifies a method by its name and type.
  *
  * @since 2016/04/22
  */
-public interface NLField
-	extends NLMember<NLFieldID>
+public class NLMethodID
+	extends NLMemberID<MethodSymbol>
 {
+	/**
+	 * Initializes the method identifier.
+	 *
+	 * @param __n The name of this method.
+	 * @param __t The type of this member.
+	 * @since 2016/04/22
+	 */
+	public NLMethodID(IdentifierSymbol __n, MethodSymbol __t)
+	{
+		super(__n, __t);
+	}
 }
 

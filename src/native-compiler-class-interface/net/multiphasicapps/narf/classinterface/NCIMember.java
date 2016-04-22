@@ -8,17 +8,24 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.library;
+package net.multiphasicapps.narf.classinterface;
 
-import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
 /**
- * This represents a method.
+ * This interface is used to represent members.
  *
+ * @param <I> The member identifier that this uses.
  * @since 2016/04/22
  */
-public interface NLMethod
-	extends NLMember<NLMethodID>
+public interface NLMember<I extends NLMemberID>
 {
+	/**
+	 * Returns the name and type of the member.
+	 *
+	 * @return The member name and type.
+	 * @since 2016/04/22
+	 */
+	public abstract I nameAndType();
 }
 

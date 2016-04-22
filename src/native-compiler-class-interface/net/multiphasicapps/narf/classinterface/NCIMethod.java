@@ -8,12 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
+package net.multiphasicapps.narf.classinterface;
 
-package net.multiphasicapps.narf.library;
+import net.multiphasicapps.descriptors.MethodSymbol;
+
+/**
+ * This represents a method.
+ *
+ * @since 2016/04/22
+ */
+public interface NLMethod
+	extends NLMember<NLMethodID>
+{
+}
 
