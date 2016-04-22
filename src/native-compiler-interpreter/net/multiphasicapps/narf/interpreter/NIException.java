@@ -29,7 +29,7 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public JVMEngineException(NICore __ic, Type __t)
+	public NIException(NICore __ic, Type __t)
 		throws NullPointerException
 	{
 		super();
@@ -51,7 +51,7 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public JVMEngineException(NICore __ic, Type __t, String __msg)
+	public NIException(NICore __ic, Type __t, String __msg)
 		throws NullPointerException
 	{
 		super(__msg);
@@ -74,7 +74,7 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public JVMEngineException(NICore __ic, Type __t, String __msg,
+	public NIException(NICore __ic, Type __t, String __msg,
 		Throwable __c)
 		throws NullPointerException
 	{
@@ -97,7 +97,7 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public JVMEngineException(NICore __ic, Type __t, Throwable __c)
+	public NIException(NICore __ic, Type __t, Throwable __c)
 		throws NullPointerException
 	{
 		super(__c);
@@ -119,6 +119,9 @@ public class NIException
 	{
 		/** The name of a class mismatches the one which was read. */
 		CLASS_NAME_MISMATCH,
+		
+		/** The class extends or implements itself eventually. */
+		CLASS_CIRCULARITY,
 		
 		/** End. */
 		;

@@ -64,18 +64,35 @@ public class NIClass
 		// {@squirreljme.error NI0b The class which was read differs by name
 		// with the class that is to be loaded. (The loaded class name; The
 		// requested class)}
-		thisname = __base.thisName().asClassName();
+		thisname = __base.thisName();
 		if (!__cns.equals(thisname))
-			throw new NIException(core, NIException.CLASS_NAME_MISMATCH,
+			throw new NIException(core, NIException.Type.CLASS_NAME_MISMATCH,
 				String.format("NI0b %s %s", thisname, __cns));
+		
+		// DEBUG
+		System.err.printf("DEBUG -- Init class %s%n", thisname);
 		
 		// Place into the given map, it would be partially loaded at this time
 		__tm.put(__cns, new WeakReference<>(this));
 		
 		// Obtain the superclass of this class
-		if (true)
-			throw new Error("TODO");
-		superclass = null;
+		ClassNameSymbol sn = __base.superName();
+		if (sn == null)
+			superclass = null;
+		else
+		{
+			// Load it
+			superclass = __core.initClass(sn);
+			
+			// {@squirreljme.error NI0c The current class eventually extends
+			// itself. (The name of this class)}
+			for (NIClass rover = superclass; rover != null;
+				rover = rover.superclass)
+				if (rover == this)
+					throw new NIException(core,
+						NIException.Type.CLASS_CIRCULARITY,
+						String.format("NI0c %s", thisname));
+		}
 		
 		// Class loaded
 		loaded = true;

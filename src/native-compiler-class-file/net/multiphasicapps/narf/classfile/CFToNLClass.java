@@ -11,6 +11,8 @@
 package net.multiphasicapps.narf.classfile;
 
 import net.multiphasicapps.classfile.CFClass;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.library.NLClass;
 
 /**
@@ -41,6 +43,27 @@ public class CFToNLClass
 		
 		// Set
 		classfile = __cf;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/22
+	 */
+	@Override
+	public ClassNameSymbol superName()
+	{
+		BinaryNameSymbol sn = classfile.superName();
+		return (sn == null ? null : sn.asClassName());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/22
+	 */
+	@Override
+	public ClassNameSymbol thisName()
+	{
+		return classfile.thisName().asClassName();
 	}
 }
 
