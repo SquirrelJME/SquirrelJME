@@ -58,10 +58,6 @@ public class InterpreterLibrary
 	/** Loaded ZIP files. */
 	protected final Map<Path, StandardZIPFile> zips;
 	
-	/** Already loaded binary classes? */
-	protected final Map<ClassNameSymbol, Reference<InterpreterClass>> loaded =
-		new HashMap<>();
-	
 	/**
 	 * Initializes the interpreter library which uses the real filesystem or
 	 * ZIP files for class data.
@@ -138,54 +134,6 @@ public class InterpreterLibrary
 		// Lock in
 		isadir = MissingCollections.<Path>unmodifiableSet(id);
 		zips = MissingCollections.<Path, StandardZIPFile>unmodifiableMap(zs);
-	}
-	
-	/**
-	 * Locates and initializes the given class.
-	 *
-	 * @param __core The core interpreter.
-	 * @param __cn The class to initialize.
-	 * @return The initialized interpreter class.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/21
-	 */
-	public InterpreterClass initClass(InterpreterCore __core,
-		ClassNameSymbol __cn)
-		throws NullPointerException
-	{
-		// Check
-		if (__cn == null || __core == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock on the loaded classes
-		Map<ClassNameSymbol, Reference<InterpreterClass>> map = loaded;
-		synchronized (map)
-		{
-			// Get ref
-			Reference<InterpreterClass> ref = map.get(__cn);
-			InterpreterClass rv;
-			
-			// Needs to be loaded?
-			if (ref == null || null == (rv = ref.get()))
-			{
-				// An array
-				if (__cn.isArray())
-					throw new Error("TODO");
-				
-				// Primitive type
-				else if (__cn.isPrimitive())
-					throw new Error("TODO");
-				
-				// Normal class
-				else
-					map.put(__cn, new WeakReference<>((rv =
-						new InterpreterClass(__core,
-							loadClass(__cn.asBinaryName())))));
-			}
-			
-			// Return it
-			return rv;
-		}
 	}
 	
 	/**

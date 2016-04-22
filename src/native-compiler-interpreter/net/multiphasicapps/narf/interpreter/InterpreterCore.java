@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.library.NLClass;
 import net.multiphasicapps.narf.library.NLClassLibrary;
 
@@ -29,6 +32,10 @@ public class InterpreterCore
 	
 	/** The mapping of real threads to interpreter threads. */
 	protected final Map<Thread, InterpreterThread> threadmap =
+		new HashMap<>();
+	
+	/** Already loaded binary classes? */
+	protected final Map<ClassNameSymbol, Reference<InterpreterClass>> loaded =
 		new HashMap<>();
 	
 	/** Is the virtual machine running? */
@@ -59,7 +66,7 @@ public class InterpreterCore
 		threadmap.put(mt, new InterpreterThread(this, mt));
 		
 		// Locate the main class
-		InterpreterClass maincl = __cl.initClass(this, __main.asClassName());
+		InterpreterClass maincl = initClass(__main.asClassName());
 		
 		// {@squirreljme.error NI08 The main class could not be found.
 		// (The main class)}
@@ -75,6 +82,51 @@ public class InterpreterCore
 	}
 	
 	/**
+	 * Locates and initializes the given class.
+	 *
+	 * @param __cn The class to initialize.
+	 * @return The initialized interpreter class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/21
+	 */
+	public InterpreterClass initClass(ClassNameSymbol __cn)
+		throws NullPointerException
+	{
+		// Check
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on the loaded classes
+		Map<ClassNameSymbol, Reference<InterpreterClass>> map = loaded;
+		synchronized (map)
+		{
+			// Get ref
+			Reference<InterpreterClass> ref = map.get(__cn);
+			InterpreterClass rv;
+			
+			// Needs to be loaded?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// An array
+				if (__cn.isArray())
+					throw new Error("TODO");
+				
+				// Primitive type
+				else if (__cn.isPrimitive())
+					throw new Error("TODO");
+				
+				// Normal class
+				else
+					rv = new InterpreterClass(this,
+						classlib.loadClass(__cn.asBinaryName()), __cn, map);
+			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Returns {@code true} if there is at least one thread running.
 	 *
 	 * @return If the virtual machine is still running.
@@ -83,6 +135,18 @@ public class InterpreterCore
 	public boolean isRunning()
 	{
 		return _isrunning;
+	}
+	
+	/**
+	 * Returns the class library interface which is used to obtain classes for
+	 * initialization.
+	 *
+	 * @return The class library interface.
+	 * @since 2016/04/22
+	 */
+	public InterpreterLibrary library()
+	{
+		return classlib;
 	}
 	
 	/**
