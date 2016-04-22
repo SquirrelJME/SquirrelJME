@@ -23,7 +23,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
  *
  * @since 2016/04/20
  */
-public abstract class NLClassLibrary
+public abstract class NARFLibrary
 {
 	/** The loaded class library. */
 	private final Map<BinaryNameSymbol, Reference<NLClass>> _loaded =
@@ -34,7 +34,7 @@ public abstract class NLClassLibrary
 	 *
 	 * @since 2016/04/20
 	 */
-	public NLClassLibrary()
+	public NARFLibrary()
 	{
 	}
 	

@@ -16,7 +16,7 @@ package net.multiphasicapps.narf.library;
  *
  * @since 2016/04/21
  */
-public class NLClassLoadException
+public class NARFClassLoadException
 	extends RuntimeException
 {
 	/**
@@ -24,7 +24,7 @@ public class NLClassLoadException
 	 *
 	 * @since 2016/04/21
 	 */
-	public NLClassLoadException()
+	public NARFClassLoadException()
 	{
 	}
 	
@@ -34,7 +34,7 @@ public class NLClassLoadException
 	 * @param __msg The exception message.
 	 * @since 2016/04/21
 	 */
-	public NLClassLoadException(String __msg)
+	public NARFClassLoadException(String __msg)
 	{
 		super(__msg);
 	}
@@ -46,7 +46,7 @@ public class NLClassLoadException
 	 * @param __c The cause.
 	 * @since 2016/04/21
 	 */
-	public NLClassLoadException(String __msg, Throwable __c)
+	public NARFClassLoadException(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}
@@ -57,7 +57,7 @@ public class NLClassLoadException
 	 * @param __c The cause of the exception.
 	 * @since 2016/04/21
 	 */
-	public NLClassLoadException(Throwable __c)
+	public NARFClassLoadException(Throwable __c)
 	{
 		super(__c);
 	}
