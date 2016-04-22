@@ -11,3 +11,7 @@ just have one with a given type.
 literally the class file interface can implement that interface and I no
 longer need a bridge.
 
+## 19:20
+
+So `NLClassLibrary` would be in the wrong package.
+
