@@ -247,10 +247,27 @@ public class InterpreterLibrary
 					res = res.resolve(__bn.get(n - 1) + ".class");
 					
 					// Load file stream
+					boolean wasopened = false;
 					try (InputStream is = Channels.newInputStream(
 						FileChannel.open(res, StandardOpenOption.READ)))
 					{
+						wasopened = true;
 						return new CFToNLClass(new CFClassParser().parse(is));
+					}
+					
+					// Failed to open
+					catch (IOException e)
+					{
+						// Since there is no {@code FileNotFoundException} then
+						// if opening failed, the reason could be anything. So
+						// if the body was never entered then it is possible
+						// that the file does not exist at all. So in that case
+						// ignore it.
+						if (!wasopened && !Files.exists(res))
+							continue;
+						
+						// Otherwise some other error, fail
+						throw e;
 					}
 				}
 			
@@ -273,7 +290,13 @@ public class InterpreterLibrary
 					// Append class
 					fn.append(".class");
 					
-					try (InputStream is = zip.get(fn.toString()).open())
+					// See if it exists
+					StandardZIPFile.FileEntry zf = zip.get(fn.toString());
+					if (zf == null)
+						continue;
+					
+					// Open it
+					try (InputStream is = zf.open())
 					{
 						return new CFToNLClass(new CFClassParser().parse(is));
 					}
