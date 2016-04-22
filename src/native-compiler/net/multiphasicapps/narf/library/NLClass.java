@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.library;
 
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
+
 /**
  * This represents information about a class such as its access flags and any
  * fields or methods it contains.
@@ -18,5 +20,12 @@ package net.multiphasicapps.narf.library;
  */
 public abstract class NLClass
 {
+	/**
+	 * Returns the super class of this class.
+	 *
+	 * @return The class super name.
+	 * @since 2016/04/22
+	 */
+	public abstract BinaryNameSymbol superClass();
 }
 

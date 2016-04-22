@@ -32,6 +32,12 @@ public class InterpreterClass
 	/** Is this class fully loaded? */
 	protected final boolean loaded;
 	
+	/** The name of this class. */
+	protected final ClassNameSymbol thisname;
+	
+	/** The super class of this class. */
+	protected final InterpreterClass superclass;
+	
 	/**
 	 * Initializes an interpreted class.
 	 *
@@ -55,8 +61,22 @@ public class InterpreterClass
 		core = __core;
 		base = __base;
 		
-		// Place into the given map
+		// {@squirreljme.error NI0b The class which was read differs by name
+		// with the class that is to be loaded. (The loaded class name; The
+		// requested class)}
+		thisname = __base.thisName().asClassName();
+		if (!__cns.equals(thisname))
+			throw new InterpreterException(core,
+				InterpreterException.CLASS_NAME_MISMATCH,
+				String.format("NI0b %s %s", thisname, __cns));
+		
+		// Place into the given map, it would be partially loaded at this time
 		__tm.put(__cns, new WeakReference<>(this));
+		
+		// Obtain the superclass of this class
+		if (true)
+			throw new Error("TODO");
+		superclass = null;
 		
 		// Class loaded
 		loaded = true;

@@ -1,2 +1,7 @@
 # 2016/04/22
 
+## 15:43
+
+Instead of having a few thousand subclasses for different exceptions, I will
+just have one with a given type.
+
