@@ -22,3 +22,7 @@ be nice. So with the code now no more duplicating bridge will be required and
 I can also have the potential for classes which exist in the run-time and are
 accessed through the interface.
 
+## 23:38
+
+I can do typed exceptions for the compiler system also, so to speak.
+

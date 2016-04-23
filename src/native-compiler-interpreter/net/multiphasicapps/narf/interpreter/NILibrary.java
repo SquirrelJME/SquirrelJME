@@ -43,7 +43,7 @@ import net.multiphasicapps.zips.StandardZIPFile;
  * @since 2016/04/20
  */
 public class NILibrary
-	extends NLClassLibrary
+	extends NARFClassLibrary
 {
 	/** The boot classpath. */
 	protected final Set<Path> bootpath;
