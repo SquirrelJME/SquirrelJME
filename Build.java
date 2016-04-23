@@ -149,7 +149,7 @@ public class Build
 		catch (RuntimeException|Error e)
 		{
 			// Report it
-			System.err.printf("Illegal Project: %s%n", __n);
+			System.err.println("Illegal Project: " + __n);
 			
 			// Toss it
 			throw e;

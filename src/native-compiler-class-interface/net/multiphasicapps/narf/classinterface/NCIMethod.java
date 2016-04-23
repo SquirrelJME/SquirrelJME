@@ -17,8 +17,8 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/04/22
  */
-public interface NLMethod
-	extends NLMember<NLMethodID>
+public interface NCIMethod
+	extends NCIMember<NCIMethodID>
 {
 }
 

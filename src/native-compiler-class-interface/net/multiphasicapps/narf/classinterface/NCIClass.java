@@ -20,7 +20,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  *
  * @since 2016/04/21
  */
-public interface NLClass
+public interface NCIClass
 {
 	/**
 	 * Returns the mapping of fields that this class contains.
@@ -28,7 +28,7 @@ public interface NLClass
 	 * @return The fields this class contains.
 	 * @since 2016/04/22
 	 */
-	public abstract Map<NLFieldID, NLField> fields();
+	public abstract Map<NCIFieldID, NCIField> fields();
 	
 	/**
 	 * Returns the name of the implemented interfaces.
@@ -44,7 +44,7 @@ public interface NLClass
 	 * @return The methods this class contains.
 	 * @since 2016/04/22
 	 */
-	public abstract Map<NLMethodID, NLMethod> methods();
+	public abstract Map<NCIMethodID, NCIMethod> methods();
 	
 	/**
 	 * Returns the name of the super class.

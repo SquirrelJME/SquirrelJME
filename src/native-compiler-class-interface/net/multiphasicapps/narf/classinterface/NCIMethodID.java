@@ -18,8 +18,8 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/04/22
  */
-public class NLMethodID
-	extends NLMemberID<MethodSymbol>
+public class NCIMethodID
+	extends NCIMemberID<MethodSymbol>
 {
 	/**
 	 * Initializes the method identifier.
@@ -28,7 +28,7 @@ public class NLMethodID
 	 * @param __t The type of this member.
 	 * @since 2016/04/22
 	 */
-	public NLMethodID(IdentifierSymbol __n, MethodSymbol __t)
+	public NCIMethodID(IdentifierSymbol __n, MethodSymbol __t)
 	{
 		super(__n, __t);
 	}

@@ -18,7 +18,7 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * @param <I> The member identifier that this uses.
  * @since 2016/04/22
  */
-public interface NLMember<I extends NLMemberID>
+public interface NCIMember<I extends NCIMemberID>
 {
 	/**
 	 * Returns the name and type of the member.

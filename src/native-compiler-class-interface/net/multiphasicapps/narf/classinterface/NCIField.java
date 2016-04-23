@@ -17,8 +17,8 @@ import net.multiphasicapps.descriptors.FieldSymbol;
  *
  * @since 2016/04/22
  */
-public interface NLField
-	extends NLMember<NLFieldID>
+public interface NCIField
+	extends NCIMember<NCIFieldID>
 {
 }
 

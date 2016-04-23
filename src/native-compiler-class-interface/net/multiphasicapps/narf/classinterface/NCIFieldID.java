@@ -18,8 +18,8 @@ import net.multiphasicapps.descriptors.FieldSymbol;
  *
  * @since 2016/04/22
  */
-public final class NLFieldID
-	extends NLMemberID<FieldSymbol>
+public final class NCIFieldID
+	extends NCIMemberID<FieldSymbol>
 {
 	/**
 	 * Initializes the field identifer.
@@ -28,7 +28,7 @@ public final class NLFieldID
 	 * @param __t The type that the field is.
 	 * @since 2016/04/22
 	 */
-	public NLFieldID(IdentifierSymbol __n, FieldSymbol __t)
+	public NCIFieldID(IdentifierSymbol __n, FieldSymbol __t)
 	{
 		super(__n, __t);
 	}

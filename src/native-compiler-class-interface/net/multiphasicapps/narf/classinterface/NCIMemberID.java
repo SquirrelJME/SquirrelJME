@@ -21,7 +21,7 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * @param <S> The descriptor type that the member uses.
  * @since 2016/04/22
  */
-public abstract class NLMemberID<S extends MemberTypeSymbol>
+public abstract class NCIMemberID<S extends MemberTypeSymbol>
 {
 	/** The name of this member. */
 	protected final IdentifierSymbol name;
@@ -40,7 +40,7 @@ public abstract class NLMemberID<S extends MemberTypeSymbol>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	NLMemberID(IdentifierSymbol __n, S __t)
+	NCIMemberID(IdentifierSymbol __n, S __t)
 		throws NullPointerException
 	{
 		// Check
@@ -60,11 +60,11 @@ public abstract class NLMemberID<S extends MemberTypeSymbol>
 	public final boolean equals(Object __o)
 	{
 		// Not this?
-		if (!(__o instanceof NLMemberID))
+		if (!(__o instanceof NCIMemberID))
 			return false;
 		
 		// Check types
-		NLMemberID<?> o = (NLMemberID<?>)__o;
+		NCIMemberID<?> o = (NCIMemberID<?>)__o;
 		return name.equals(o.name()) && type.equals(o.type());
 	}
 	
