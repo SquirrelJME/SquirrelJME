@@ -31,10 +31,9 @@ import net.multiphasicapps.classfile.CFFormatException;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.narf.classfile.CFToNLClass;
-import net.multiphasicapps.narf.library.NLClass;
-import net.multiphasicapps.narf.library.NLClassLibrary;
-import net.multiphasicapps.narf.library.NLClassLoadException;
+import net.multiphasicapps.narf.classinterface.NLClass;
+import net.multiphasicapps.narf.NARFClassLibrary;
+import net.multiphasicapps.narf.NARFClassLoadException;
 import net.multiphasicapps.zips.StandardZIPFile;
 
 /**
@@ -142,7 +141,7 @@ public class NILibrary
 	 */
 	@Override
 	protected NLClass loadClass(BinaryNameSymbol __bn)
-		throws NLClassLoadException, NullPointerException
+		throws NARFClassLoadException, NullPointerException
 	{
 		// Check
 		if (__bn == null)
@@ -165,13 +164,13 @@ public class NILibrary
 	 * @param __boot If {@code true} then this is looking in the boot class
 	 * path.
 	 * @return The loaded class or {@code null} if it does not exist.
-	 * @throws NLClassLoadException If it failed to be read.
+	 * @throws NARFClassLoadException If it failed to be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
 	private NLClass __loadClass(BinaryNameSymbol __bn, Set<Path> __paths,
 		boolean __boot)
-		throws NLClassLoadException, NullPointerException
+		throws NARFClassLoadException, NullPointerException
 	{
 		// Check
 		if (__bn == null || __paths == null)
@@ -200,7 +199,7 @@ public class NILibrary
 						FileChannel.open(res, StandardOpenOption.READ)))
 					{
 						wasopened = true;
-						return new CFToNLClass(new CFClassParser().parse(is));
+						return new CFClassParser().parse(is);
 					}
 					
 					// Failed to open
@@ -246,7 +245,7 @@ public class NILibrary
 					// Open it
 					try (InputStream is = zf.open())
 					{
-						return new CFToNLClass(new CFClassParser().parse(is));
+						return new CFClassParser().parse(is);
 					}
 				}
 			}
@@ -256,7 +255,7 @@ public class NILibrary
 			{
 				// {@squirreljme.error NI0a Failed to read a class from the
 				// given path. (The binary name; The path read from)}
-				throw new NLClassLoadException(String.format("NI0a %s %s",
+				throw new NARFClassLoadException(String.format("NI0a %s %s",
 					__bn, p), e);
 			}
 		}

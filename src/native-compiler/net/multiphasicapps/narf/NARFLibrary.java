@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.narf.classinterface.NCIClass;
 
 /**
  * This is the base class which provides access to classes as an entire
@@ -26,7 +27,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
 public abstract class NARFLibrary
 {
 	/** The loaded class library. */
-	private final Map<BinaryNameSymbol, Reference<NLClass>> _loaded =
+	private final Map<BinaryNameSymbol, Reference<NCIClass>> _loaded =
 		new HashMap<>();
 	
 	/**
@@ -43,13 +44,13 @@ public abstract class NARFLibrary
 	 *
 	 * @param __bn The binary name of class.
 	 * @return The class with the given or {@code null} if it does not exist.
-	 * @throws NLClassLoadException If the class exists however it is not
+	 * @throws NARFClassLoadException If the class exists however it is not
 	 * formed correctly or could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	protected abstract NLClass loadClass(BinaryNameSymbol __bn)
-		throws NLClassLoadException, NullPointerException;
+	protected abstract NCIClass loadClass(BinaryNameSymbol __bn)
+		throws NARFClassLoadException, NullPointerException;
 	
 	/**
 	 * Looks up a binary name.
@@ -57,25 +58,25 @@ public abstract class NARFLibrary
 	 * @param __bn The binary name of the class.
 	 * @return The discovered class by its given name or {@code null} if it
 	 * was not found.
-	 * @throws NLClassLoadException If the class exists however it is not
+	 * @throws NARFClassLoadException If the class exists however it is not
 	 * formed correctly or could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public final NLClass lookup(BinaryNameSymbol __bn)
-		throws NLClassLoadException, NullPointerException
+	public final NCIClass lookup(BinaryNameSymbol __bn)
+		throws NARFClassLoadException, NullPointerException
 	{
 		// Check
 		if (__bn == null)
 			throw new NullPointerException("NARG");
 		
 		// Lock on the cache
-		Map<BinaryNameSymbol, Reference<NLClass>> cache = _loaded;
+		Map<BinaryNameSymbol, Reference<NCIClass>> cache = _loaded;
 		synchronized (cache)
 		{
 			// Already exists?
-			Reference<NLClass> ref = cache.get(__bn);
-			NLClass rv;
+			Reference<NCIClass> ref = cache.get(__bn);
+			NCIClass rv;
 			
 			// Needs to be loaded?
 			if (ref == null || null == (rv = ref.get()))
