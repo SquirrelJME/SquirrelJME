@@ -103,6 +103,9 @@ public class NCIException
 		/** Illegal modified UTF-8 sequence. */
 		ILLEGAL_MUTF,
 		
+		/** A constant pool entry is not valid. */
+		ILLEGAL_CONSTANT,
+		
 		/** End. */
 		;
 	}

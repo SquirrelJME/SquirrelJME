@@ -13,11 +13,22 @@ package net.multiphasicapps.narf.classfile;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
+import net.multiphasicapps.narf.descriptors.ClassNameSymbol;
+import net.multiphasicapps.narf.descriptors.FieldSymbol;
+import net.multiphasicapps.narf.descriptors.IdentifierSymbol;
+import net.multiphasicapps.narf.descriptors.IllegalSymbolException;
+import net.multiphasicapps.narf.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.narf.descriptors.MethodSymbol;
+import net.multiphasicapps.narf.classinterface.NCIClassReference;
 import net.multiphasicapps.narf.classinterface.NCIConstantDouble;
 import net.multiphasicapps.narf.classinterface.NCIConstantFloat;
 import net.multiphasicapps.narf.classinterface.NCIConstantInteger;
 import net.multiphasicapps.narf.classinterface.NCIConstantLong;
+import net.multiphasicapps.narf.classinterface.NCIConstantString;
 import net.multiphasicapps.narf.classinterface.NCIException;
+import net.multiphasicapps.narf.classinterface.NCIFieldReference;
+import net.multiphasicapps.narf.classinterface.NCIMemberNameAndType;
+import net.multiphasicapps.narf.classinterface.NCIMethodReference;
 import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.classinterface.NCIPoolEntry;
 import net.multiphasicapps.narf.classinterface.NCIUTF;
@@ -230,18 +241,97 @@ class __PoolDecoder__
 			if (refs == null)
 				continue;
 			
-			// Depends on the tag
+			// Could be wrong
 			int tag = refs[0];
-			switch (tag)
+			try
 			{
-					// Unknown
-				default:
-					throw new RuntimeException(String.format("WTFX %d", tag));
+				// Depends on the tag
+				switch (tag)
+				{
+						// Class
+					case TAG_CLASS:
+						entries[i] = new NCIClassReference(new ClassNameSymbol(
+							((NCIUTF)entries[refs[1]]).toString()));
+						break;
+					
+						// String
+					case TAG_STRING:
+						entries[i] = new NCIConstantString(
+							((NCIUTF)entries[refs[1]]).toString());
+						break;
+					
+						// Name and type
+					case TAG_NAMEANDTYPE:
+						__nat(dref, i);
+						break;
+					
+						// Field reference
+					case TAG_FIELDREF:
+						throw new Error("TODO");
+					
+						// Method reference
+					case TAG_METHODREF:
+						throw new Error("TODO");
+					
+						// Interface method reference
+					case TAG_INTERFACEMETHODREF:
+						throw new Error("TODO");
+					
+						// Unknown
+					default:
+						throw new RuntimeException(String.format("WTFX %d",
+							tag));
+				}
+			}
+			
+			// Bad pool
+			catch (IndexOutOfBoundsException|ClassCastException|
+				NullPointerException|IllegalSymbolException e)
+			{
+				// {@squirrejme.error CF1g A constant pool entry references a
+				// constant which is not valid. (The tag; Reference A;
+				// Reference B)}
+				int q = refs.length;
+				throw new NCIException(NCIException.Issue.ILLEGAL_CONSTANT,
+					String.format("CF1g %d %d %d", tag, (1 < q ? refs[1] : -1),
+					(2 < q ? refs[2] : -1)), e);
 			}
 		}
 		
 		// Build it
 		return new NCIPool(entries);
+	}
+	
+	/**
+	 * Initializes the name and type information.
+	 *
+	 * @param __refs The reference data.
+	 * @param __ei The index of the name and type.
+	 * @return The initialized member name and type.
+	 * @throws NullPointerException On null arguments
+	 * @since 2016/04/24
+	 */
+	private NCIMemberNameAndType __nat(int[][] __refs, int __ei)
+		throws NullPointerException
+	{
+		// Check
+		if (__ents == null || __refs == null)
+			throw new NullPointerException("NARG");
+		
+		// Get entry set
+		NCIPoolEntry ents[] = entries;
+		
+		// Already here?
+		NCIPoolEntry erv;
+		if ((erv = ents[__ei]) != null)
+			return (NCIMemberNameAndType)erv;
+		
+		// Need to construct it
+		NCIMemberNameAndType rv = new NCIMemberNameAndType();
+		
+		// Set it
+		ents[__ei] = rv;
+		return rv;
 	}
 }
 
