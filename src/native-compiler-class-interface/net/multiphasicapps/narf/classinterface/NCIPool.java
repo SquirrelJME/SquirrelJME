@@ -12,6 +12,7 @@ package net.multiphasicapps.narf.classinterface;
 
 import java.util.AbstractList;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,9 @@ import java.util.Set;
 public final class NCIPool
 	extends AbstractList<NCIPoolEntry>
 {
+	/** Internal entry list. */
+	private final NCIPoolEntry[] _entries;
+	
 	/**
 	 * This initializes the constant pool.
 	 *
@@ -53,7 +57,13 @@ public final class NCIPool
 		if (__ents == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Copy all elements
+		List<NCIPoolEntry> dest = new ArrayList<>();
+		for (NCIPoolEntry e : __ents)
+			dest.add(e);
+		
+		// Lock in
+		_entries = dest.<NCIPoolEntry>toArray(new NCIPoolEntry[dest.size()]);
 	}
 	
 	/**
@@ -63,7 +73,7 @@ public final class NCIPool
 	@Override
 	public NCIPoolEntry get(int __i)
 	{
-		throw new Error("TODO");
+		return _entries[__i];
 	}
 	
 	/**
@@ -73,7 +83,7 @@ public final class NCIPool
 	@Override
 	public int size()
 	{
-		throw new Error("TODO");
+		return _entries.length;
 	}
 }
 
