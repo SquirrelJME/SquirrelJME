@@ -10,14 +10,31 @@
 
 package net.multiphasicapps.narf.classinterface;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+
 /**
  * This refers to another field.
  *
  * @since 2016/04/24
  */
 public final class NCIFieldReference
-	extends NCIMemberReference
+	extends NCIMemberReference<FieldSymbol>
 {
+	/**
+	 * Initializes the field reference.
+	 *
+	 * @param __cl The class it is in.
+	 * @param __name The name of the member.
+	 * @param __type The type of the member.
+	 * @since 2016/04/24
+	 */
+	public NCIFieldReference(ClassNameSymbol __cl, IdentifierSymbol __name,
+		FieldSymbol __type)
+	{
+		super(__cl, __name, __type);
+	}
 	
 	/**
 	 * {@inheritDoc}

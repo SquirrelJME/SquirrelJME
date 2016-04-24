@@ -13,12 +13,12 @@ package net.multiphasicapps.narf.classfile;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
-import net.multiphasicapps.narf.descriptors.ClassNameSymbol;
-import net.multiphasicapps.narf.descriptors.FieldSymbol;
-import net.multiphasicapps.narf.descriptors.IdentifierSymbol;
-import net.multiphasicapps.narf.descriptors.IllegalSymbolException;
-import net.multiphasicapps.narf.descriptors.MemberTypeSymbol;
-import net.multiphasicapps.narf.descriptors.MethodSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.IllegalSymbolException;
+import net.multiphasicapps.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClassReference;
 import net.multiphasicapps.narf.classinterface.NCIConstantDouble;
 import net.multiphasicapps.narf.classinterface.NCIConstantFloat;
@@ -250,8 +250,7 @@ class __PoolDecoder__
 				{
 						// Class
 					case TAG_CLASS:
-						entries[i] = new NCIClassReference(new ClassNameSymbol(
-							((NCIUTF)entries[refs[1]]).toString()));
+						__class(dref, i);
 						break;
 					
 						// String
@@ -265,17 +264,24 @@ class __PoolDecoder__
 						__nat(dref, i);
 						break;
 					
-						// Field reference
+						// References to members
 					case TAG_FIELDREF:
-						throw new Error("TODO");
-					
-						// Method reference
 					case TAG_METHODREF:
-						throw new Error("TODO");
-					
-						// Interface method reference
 					case TAG_INTERFACEMETHODREF:
-						throw new Error("TODO");
+						ClassNameSymbol cl = __class(dref, refs[1]).get();
+						NCIMemberNameAndType nat = __nat(dref, refs[2]);
+						
+						// A field
+						if (tag == TAG_FIELDREF)
+							entries[i] = new NCIFieldReference(cl, nat.name(),
+								nat.type().asField());
+						
+						// Methods
+						else
+							entries[i] = new NCIMethodReference(
+								tag != TAG_METHODREF, cl, nat.name(),
+								nat.type().asMethod());
+						break;
 					
 						// Unknown
 					default:
@@ -303,6 +309,40 @@ class __PoolDecoder__
 	}
 	
 	/**
+	 * initializes the class reference.
+	 *
+	 * @param __refs The reference data.
+	 * @param __ei The index of the class name.
+	 * @return The class reference here.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/24
+	 */
+	private NCIClassReference __class(int[][] __refs, int __ei)
+		throws NullPointerException
+	{
+		// Check
+		if (__refs == null)
+			throw new NullPointerException("NARG");
+		
+		// Get entry set
+		NCIPoolEntry ents[] = entries;
+		
+		// Already here?
+		NCIPoolEntry erv;
+		if ((erv = ents[__ei]) != null)
+			return (NCIClassReference)erv;
+		
+		// Construct it
+		int[] refs = __refs[__ei];
+		NCIClassReference rv = new NCIClassReference(new ClassNameSymbol(
+			((NCIUTF)entries[refs[1]]).toString()));
+		
+		// Set and return it
+		ents[__ei] = rv;
+		return rv;
+	}
+	
+	/**
 	 * Initializes the name and type information.
 	 *
 	 * @param __refs The reference data.
@@ -315,7 +355,7 @@ class __PoolDecoder__
 		throws NullPointerException
 	{
 		// Check
-		if (__ents == null || __refs == null)
+		if (__refs == null)
 			throw new NullPointerException("NARG");
 		
 		// Get entry set
@@ -327,7 +367,10 @@ class __PoolDecoder__
 			return (NCIMemberNameAndType)erv;
 		
 		// Need to construct it
-		NCIMemberNameAndType rv = new NCIMemberNameAndType();
+		int[] refs = __refs[__ei];
+		NCIMemberNameAndType rv = new NCIMemberNameAndType(
+			new IdentifierSymbol(((NCIUTF)ents[refs[1]]).toString()),
+			MemberTypeSymbol.of(((NCIUTF)ents[refs[2]]).toString()));
 		
 		// Set it
 		ents[__ei] = rv;

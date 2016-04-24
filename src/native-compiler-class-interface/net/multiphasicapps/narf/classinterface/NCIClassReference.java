@@ -61,5 +61,15 @@ public final class NCIClassReference
 	{
 		return NCIPoolTag.CLASS;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/24
+	 */
+	@Override
+	public String toString()
+	{
+		return classname.toString();
+	}
 }
 

@@ -63,7 +63,7 @@ public abstract class MemberTypeSymbol
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/18
 	 */
-	public static MemberTypeSymbol create(String __sym)
+	public static MemberTypeSymbol of(String __sym)
 		throws IllegalSymbolException, NullPointerException
 	{
 		// Check
