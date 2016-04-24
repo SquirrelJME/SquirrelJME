@@ -11,3 +11,9 @@ common code set.
 The current major thing is splitting off the `CF` code so that it becomes
 commonized.
 
+## 22:12
+
+It might be faster to just redo the class file code to use the new interfaces
+and bring in the code as required. The end result would pretty much end up
+being the same for the most part however.
+
