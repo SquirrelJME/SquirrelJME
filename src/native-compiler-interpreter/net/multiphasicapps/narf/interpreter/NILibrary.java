@@ -25,9 +25,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.classfile.CFClass;
-import net.multiphasicapps.classfile.CFClassParser;
-import net.multiphasicapps.classfile.CFFormatException;
+import net.multiphasicapps.narf.classfile.NCFClass;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
@@ -199,7 +197,7 @@ public class NILibrary
 						FileChannel.open(res, StandardOpenOption.READ)))
 					{
 						wasopened = true;
-						return new CFClassParser().parse(is);
+						return new NCFClass(is);
 					}
 					
 					// Failed to open
@@ -245,7 +243,7 @@ public class NILibrary
 					// Open it
 					try (InputStream is = zf.open())
 					{
-						return new CFClassParser().parse(is);
+						return new NCFClass(is);
 					}
 				}
 			}

@@ -69,5 +69,13 @@ public interface NCIClass
 	 * @since 2016/04/22
 	 */
 	public abstract ClassNameSymbol thisName();
+	
+	/**
+	 * Returns the version of this class.
+	 *
+	 * @return The class version.
+	 * @since 2016/04/24
+	 */
+	public abstract NCIVersion version();
 }
 

@@ -30,6 +30,10 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.io.BufferAreaInputStream;
 import net.multiphasicapps.narf.classinterface.NCIClassFlag;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
+import net.multiphasicapps.narf.classinterface.NCIFieldFlag;
+import net.multiphasicapps.narf.classinterface.NCIFieldFlags;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 
 /**
  * This represents a single class loaded by the interpreter which is derived
@@ -272,6 +276,24 @@ public class CFClassParser
 		
 		// Build it
 		return new NCIClassFlags(fl);
+	}
+	
+	/**
+	 * Decodes the field flag set.
+	 *
+	 * @param __i The input flag field.
+	 * @since 2016/04/24
+	 */
+	public NCIFieldFlags __decodeFieldFlags(int __i)
+	{
+		Set<NCIClassFlag> fl = new HashSet<>();
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Build it
+		return new NCIFieldFlags(fl);
+		
 	}
 	
 	/**

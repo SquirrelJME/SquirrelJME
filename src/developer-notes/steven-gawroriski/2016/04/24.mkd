@@ -1,0 +1,8 @@
+# 2016/04/24
+
+## 07:54
+
+It might actually be faster to just start from a new base and build up from
+that rather than breaking and fixing all the existing code so that interfaces
+are used instead.
+
