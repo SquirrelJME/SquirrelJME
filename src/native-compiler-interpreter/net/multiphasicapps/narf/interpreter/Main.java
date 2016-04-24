@@ -20,7 +20,6 @@ import java.util.StringTokenizer;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.NARFClassLibrary;
 
 /**
  * This is the main entry point for the NARF interpreter, it handles a standard

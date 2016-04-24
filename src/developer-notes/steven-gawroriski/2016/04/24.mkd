@@ -6,3 +6,9 @@ It might actually be faster to just start from a new base and build up from
 that rather than breaking and fixing all the existing code so that interfaces
 are used instead.
 
+## 08:06
+
+This should at least result in much cleaner code. Then if I need to make any
+adjustments or add support for different class formats (perhaps pack200)
+then I do not need to support new interfaces, just use the existing one.
+

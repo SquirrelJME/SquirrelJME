@@ -85,6 +85,12 @@ public class NCIException
 		/** Native method. */
 		NATIVE_METHOD,
 		
+		/** Illegal class magic number. */
+		BAD_MAGIC_NUMBER,
+		
+		/** The class version is not supported or correct. */
+		BAD_CLASS_VERSION,
+		
 		/** End. */
 		;
 	}
