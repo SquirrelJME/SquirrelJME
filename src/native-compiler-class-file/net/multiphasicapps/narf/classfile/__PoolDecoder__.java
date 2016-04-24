@@ -13,9 +13,13 @@ package net.multiphasicapps.narf.classfile;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
-import net.multiphasicapps.narf.classinterface.NCIPoolEntry;
-import net.multiphasicapps.narf.classinterface.NCIPool;
+import net.multiphasicapps.narf.classinterface.NCIConstantDouble;
+import net.multiphasicapps.narf.classinterface.NCIConstantFloat;
+import net.multiphasicapps.narf.classinterface.NCIConstantInteger;
+import net.multiphasicapps.narf.classinterface.NCIConstantLong;
 import net.multiphasicapps.narf.classinterface.NCIException;
+import net.multiphasicapps.narf.classinterface.NCIPool;
+import net.multiphasicapps.narf.classinterface.NCIPoolEntry;
 import net.multiphasicapps.narf.classinterface.NCIUTF;
 
 /**
@@ -165,19 +169,23 @@ class __PoolDecoder__
 					
 					// Integer constant
 				case TAG_INTEGER:
-					throw new Error("TODO");
+					entries[i] = new NCIConstantInteger(das.readInt());
+					break;
 					
 					// Float constant
 				case TAG_FLOAT:
-					throw new Error("TODO");
+					entries[i] = new NCIConstantFloat(das.readFloat());
+					break;
 					
 					// Long constant
 				case TAG_LONG:
-					throw new Error("TODO");
+					entries[i++] = new NCIConstantLong(das.readLong());
+					break;
 					
 					// Double constant
 				case TAG_DOUBLE:
-					throw new Error("TODO");
+					entries[i++] = new NCIConstantDouble(das.readDouble());
+					break;
 					
 					// Single reference
 				case TAG_CLASS:
@@ -187,16 +195,11 @@ class __PoolDecoder__
 					
 					// Double reference
 				case TAG_NAMEANDTYPE:
-					dref[i] = new int[]{tag, das.readUnsignedShort(),
-						das.readUnsignedShort()};
-					break;
-					
-					// Triple reference
 				case TAG_FIELDREF:
 				case TAG_METHODREF:
 				case TAG_INTERFACEMETHODREF:
 					dref[i] = new int[]{tag, das.readUnsignedShort(),
-						das.readUnsignedShort(), das.readUnsignedShort()};
+						das.readUnsignedShort()};
 					break;
 					
 					// invokedynamic is not supported!
@@ -215,8 +218,6 @@ class __PoolDecoder__
 					throw new NCIException(NCIException.Issue.ILLEGAL_TAG,
 						String.format("CF0m %d", tag));
 			}
-			
-			throw new Error("TODO");
 		}
 		
 		// Build entries for references
