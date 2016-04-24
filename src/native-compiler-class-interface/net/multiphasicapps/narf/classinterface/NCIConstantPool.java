@@ -36,7 +36,7 @@ public final class NCIConstantPool
 	public NCIConstantPool(NCIConstantEntry... __ents)
 		throws NullPointerException
 	{
-		this(Arrays.<NCIConstantEntry>asList(__ents);
+		this(Arrays.<NCIConstantEntry>asList(__ents));
 	}
 	
 	/**

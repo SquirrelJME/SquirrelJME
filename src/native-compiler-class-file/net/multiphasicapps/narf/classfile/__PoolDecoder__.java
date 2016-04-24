@@ -109,7 +109,7 @@ class __PoolDecoder__
 		das = __das;
 		
 		// Read entry count, a class cannot have zero entries in it
-		int numentries = __is.readUnsignedShort();
+		int numentries = das.readUnsignedShort();
 		
 		// {@squirreljme.errr CF0k Class has a constant pool with a negative
 		// number of entries.}
@@ -144,23 +144,23 @@ class __PoolDecoder__
 			{
 					// UTF string
 				case TAG_UTF8:
-					throw Error("TODO");
+					throw new Error("TODO");
 					
 					// Integer constant
 				case TAG_INTEGER:
-					throw Error("TODO");
+					throw new Error("TODO");
 					
 					// Float constant
 				case TAG_FLOAT:
-					throw Error("TODO");
+					throw new Error("TODO");
 					
 					// Long constant
 				case TAG_LONG:
-					throw Error("TODO");
+					throw new Error("TODO");
 					
 					// Double constant
 				case TAG_DOUBLE:
-					throw Error("TODO");
+					throw new Error("TODO");
 					
 					// Single reference
 				case TAG_CLASS:
@@ -209,9 +209,11 @@ class __PoolDecoder__
 			int refs[] = dref[i];
 			
 			// Not shared
-			if (ref == null)
+			if (refs == null)
 				continue;
 			
+			// Depends on the tag
+			int tag = refs[0];
 			throw new Error("TODO");
 		}
 		
