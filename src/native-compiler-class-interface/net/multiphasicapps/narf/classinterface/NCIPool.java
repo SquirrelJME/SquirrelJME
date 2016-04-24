@@ -77,6 +77,46 @@ public final class NCIPool
 	}
 	
 	/**
+	 * Returns the given entry as the given type or {@code null} if it is
+	 * {@code null}, otherwise it must be the given type.
+	 *
+	 * @param <E> The type of entry to get.
+	 * @param __i The index to get.
+	 * @param __t The type to get.
+	 * @return The entry here.
+	 * @throws NCIException If it is not of the given type.
+	 * @since 2016/04/24
+	 */
+	public <E extends NCIPoolEntry> E nullableAs(int __i, Class<E> __t)
+		throws NCIException 
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the given entry as the given type, it must be that type.
+	 *
+	 * @param <E> The type of entry to get.
+	 * @param __i The index to get.
+	 * @param __t The type to get.
+	 * @return The entry here.
+	 * @throws NCIException If it is not of the given type or it is
+	 * {@code null}.
+	 * @since 2016/04/24
+	 */
+	public <E extends NCIPoolEntry> E requiredAs(int __i, Class<E> __t)
+		throws NCIException
+	{
+		E rv = nullableAs(__i, __t);
+		
+		// Cannot be null
+		if (rv == null)
+			throw new Error("TODO");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/04/24
 	 */

@@ -31,6 +31,7 @@ final class __FlagDecoder__
 	{
 		throw new RuntimeException("WTFX");
 	}
+	
 	/**
 	 * Decodes the class flag set.
 	 *

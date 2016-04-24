@@ -20,6 +20,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlag;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
+import net.multiphasicapps.narf.classinterface.NCIClassReference;
 import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIField;
@@ -48,6 +49,12 @@ public class NCFClass
 	
 	/** The class flags. */
 	protected final NCIClassFlags flags;
+	
+	/** The name of this class. */
+	protected final ClassNameSymbol thisname;
+	
+	/** The name of the super class. */
+	protected final ClassNameSymbol supername;
 	
 	/**
 	 * Initializes the class.
@@ -96,6 +103,18 @@ public class NCFClass
 		
 		// Parse the class flags
 		flags = __FlagDecoder__.__class(das.readUnsignedShort());
+		
+		// Read class name
+		thisname = constantpool.<NCIClassReference>requiredAs(
+			das.readUnsignedShort(), NCIClassReference.class).get();
+		
+		// Read super name
+		NCIClassReference scr = constantpool.<NCIClassReference>nullableAs(
+			das.readUnsignedShort(), NCIClassReference.class);
+		if (scr != null)
+			supername = scr.get();
+		else
+			supername = null;
 		
 		throw new Error("TODO");
 	}
@@ -157,7 +176,7 @@ public class NCFClass
 	@Override
 	public ClassNameSymbol superName()
 	{
-		throw new Error("TODO");
+		return supername;
 	}
 	
 	/**
@@ -167,7 +186,7 @@ public class NCFClass
 	@Override
 	public ClassNameSymbol thisName()
 	{
-		throw new Error("TODO");
+		return thisname;
 	}
 	
 	/**
