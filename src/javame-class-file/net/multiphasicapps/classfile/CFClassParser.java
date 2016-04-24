@@ -28,6 +28,8 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.io.BufferAreaInputStream;
+import net.multiphasicapps.narf.classinterface.NCIClassFlag;
+import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 
 /**
  * This represents a single class loaded by the interpreter which is derived
@@ -64,7 +66,7 @@ public class CFClassParser
 	volatile CFConstantPool _constantpool;
 	
 	/** Class flags. */
-	volatile CFClassFlags _flags;
+	volatile NCIClassFlags _flags;
 	
 	/** The current class name. */
 	volatile BinaryNameSymbol _thisname;
@@ -143,7 +145,7 @@ public class CFClassParser
 		_constantpool = constantpool = new CFConstantPool(this, das);
 		
 		// Read class access flags
-		_flags = new CFClassFlags(das.readUnsignedShort());
+		_flags = __decodeClassFlags(das.readUnsignedShort());
 		
 		// Set current class name
 		_thisname = constantpool.<CFClassName>getAs(
@@ -228,6 +230,48 @@ public class CFClassParser
 	public CFClassVersion version()
 	{
 		return _version;
+	}
+	
+	/**
+	 * Decodes the class flag set.
+	 *
+	 * @param __i The input flag field.
+	 * @since 2016/04/23
+	 */
+	public NCIClassFlags __decodeClassFlags(int __i)
+	{
+		Set<NCIClassFlag> fl = new HashSet<>();
+		
+		// Public?
+		if (0 != (__i & 0x0001))
+			fl.add(NCIClassFlag.PUBLIC);
+		
+		// Final?
+		if (0 != (__i & 0x0010))
+			fl.add(NCIClassFlag.FINAL);
+		
+		// Super?
+		if (0 != (__i & 0x0020))
+			fl.add(NCIClassFlag.SUPER);
+		
+		// Interface?
+		if (0 != (__i & 0x0200))
+			fl.add(NCIClassFlag.INTERFACE);
+		
+		// Synthetic?
+		if (0 != (__i & 0x1000))
+			fl.add(NCIClassFlag.SYNTHETIC);
+		
+		// Annotation?
+		if (0 != (__i & 0x20000))
+			fl.add(NCIClassFlag.ANNOTATION);
+		
+		// Enumeration?
+		if (0 != (__i & 0x4000))
+			fl.add(NCIClassFlag.ENUM);
+		
+		// Build it
+		return new NCIClassFlags(fl);
 	}
 	
 	/**

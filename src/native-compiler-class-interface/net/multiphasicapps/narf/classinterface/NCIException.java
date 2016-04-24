@@ -79,6 +79,12 @@ public class NCIException
 		/** Class failed to be read. */
 		READ_ERROR,
 		
+		/** Illegal flags. */
+		ILLEGAL_FLAGS,
+		
+		/** Native method. */
+		NATIVE_METHOD,
+		
 		/** End. */
 		;
 	}

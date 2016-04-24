@@ -23,6 +23,7 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 
 /**
  * This is the base class for all class related information.
@@ -33,7 +34,7 @@ public final class CFClass
 	implements NCIClass
 {
 	/** The class flags. */
-	protected final CFClassFlags flags;
+	protected final NCIClassFlags flags;
 	
 	/** The interfaces of a class. */
 	protected final CFClassInterfaces interfaces;	

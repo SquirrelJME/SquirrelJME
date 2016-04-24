@@ -31,6 +31,14 @@ public interface NCIClass
 	public abstract Map<NCIFieldID, NCIField> fields();
 	
 	/**
+	 * Returns the flags which are associated with this class.
+	 *
+	 * @return The associated class flags.
+	 * @since 2016/04/23
+	 */
+	public abstract NCIClassFlags flags();
+	
+	/**
 	 * Returns the name of the implemented interfaces.
 	 *
 	 * @return The set of implemented interfaces.

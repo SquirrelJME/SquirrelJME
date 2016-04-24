@@ -1,2 +1,13 @@
 # 2016/04/23
 
+## 21:22
+
+The `NCI` family seems to be better interfaces when it comes to class
+representation. I can actually pull code from the class file to those in the
+common code set.
+
+## 21:32
+
+The current major thing is splitting off the `CF` code so that it becomes
+commonized.
+
