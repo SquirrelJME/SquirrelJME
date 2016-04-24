@@ -232,7 +232,12 @@ class __PoolDecoder__
 			
 			// Depends on the tag
 			int tag = refs[0];
-			throw new Error("TODO");
+			switch (tag)
+			{
+					// Unknown
+				default:
+					throw new RuntimeException(String.format("WTFX %d", tag));
+			}
 		}
 		
 		// Build it
