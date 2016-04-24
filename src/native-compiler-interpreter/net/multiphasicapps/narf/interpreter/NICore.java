@@ -17,7 +17,7 @@ import java.util.Map;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.NARFClassLibrary;
+import net.multiphasicapps.narf.NARFLibrary;
 
 /**
  * This is the core of the interpreter, this dispatches and maintains all of

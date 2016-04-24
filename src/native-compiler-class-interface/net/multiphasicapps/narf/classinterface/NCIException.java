@@ -8,7 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.library;
+package net.multiphasicapps.narf.classinterface;
+
+import net.multiphasicapps.narf.exception.NARFException;
 
 /**
  * This is thrown when a class is attempted to be read however it cannot be
@@ -16,16 +18,17 @@ package net.multiphasicapps.narf.library;
  *
  * @since 2016/04/21
  */
-public class NARFClassLoadException
-	extends RuntimeException
+public class NCIException
+	extends NARFException
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
 	 * @since 2016/04/21
 	 */
-	public NARFClassLoadException()
+	public NCIException(Issue __i)
 	{
+		super(__i);
 	}
 	
 	/**
@@ -34,9 +37,9 @@ public class NARFClassLoadException
 	 * @param __msg The exception message.
 	 * @since 2016/04/21
 	 */
-	public NARFClassLoadException(String __msg)
+	public NCIException(Issue __i, String __msg)
 	{
-		super(__msg);
+		super(__i, __msg);
 	}
 	
 	/**
@@ -46,9 +49,9 @@ public class NARFClassLoadException
 	 * @param __c The cause.
 	 * @since 2016/04/21
 	 */
-	public NARFClassLoadException(String __msg, Throwable __c)
+	public NCIException(Issue __i, String __msg, Throwable __c)
 	{
-		super(__msg, __c);
+		super(__i, __msg, __c);
 	}
 	
 	/**
@@ -57,9 +60,24 @@ public class NARFClassLoadException
 	 * @param __c The cause of the exception.
 	 * @since 2016/04/21
 	 */
-	public NARFClassLoadException(Throwable __c)
+	public NCIException(Issue __i, Throwable __c)
 	{
-		super(__c);
+		super(__i, __c);
+	}
+	
+	/**
+	 * This represents 
+	 *
+	 * @since 2016/04/23
+	 */
+	public static enum Issue
+		implements BaseIssue
+	{
+		/** A class was not found. */
+		CLASS_NOT_FOUND,
+		
+		/** End. */
+		;
 	}
 }
 

@@ -8,14 +8,13 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.library;
+package net.multiphasicapps.narf.classinterface;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
-import net.multiphasicapps.narf.classinterface.NCIClass;
 
 /**
  * This is the base class which provides access to classes as an entire
@@ -24,7 +23,7 @@ import net.multiphasicapps.narf.classinterface.NCIClass;
  *
  * @since 2016/04/20
  */
-public abstract class NARFLibrary
+public abstract class NCIClassLookup
 {
 	/** The loaded class library. */
 	private final Map<BinaryNameSymbol, Reference<NCIClass>> _loaded =
@@ -35,7 +34,7 @@ public abstract class NARFLibrary
 	 *
 	 * @since 2016/04/20
 	 */
-	public NARFLibrary()
+	public NCIClassLookup()
 	{
 	}
 	
@@ -44,13 +43,13 @@ public abstract class NARFLibrary
 	 *
 	 * @param __bn The binary name of class.
 	 * @return The class with the given or {@code null} if it does not exist.
-	 * @throws NARFClassLoadException If the class exists however it is not
+	 * @throws NCIException If the class exists however it is not
 	 * formed correctly or could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
 	protected abstract NCIClass loadClass(BinaryNameSymbol __bn)
-		throws NARFClassLoadException, NullPointerException;
+		throws NCIException, NullPointerException;
 	
 	/**
 	 * Looks up a binary name.
@@ -58,13 +57,13 @@ public abstract class NARFLibrary
 	 * @param __bn The binary name of the class.
 	 * @return The discovered class by its given name or {@code null} if it
 	 * was not found.
-	 * @throws NARFClassLoadException If the class exists however it is not
+	 * @throws NCIException If the class exists however it is not
 	 * formed correctly or could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
 	public final NCIClass lookup(BinaryNameSymbol __bn)
-		throws NARFClassLoadException, NullPointerException
+		throws NCIException, NullPointerException
 	{
 		// Check
 		if (__bn == null)
