@@ -90,7 +90,20 @@ public final class NCIPool
 	public <E extends NCIPoolEntry> E nullableAs(int __i, Class<E> __t)
 		throws NCIException 
 	{
-		throw new Error("TODO");
+		// Could be wrong
+		try
+		{
+			return __t.cast(get(__i));
+		}
+		
+		// Could not cast
+		catch (ClassCastException e)
+		{
+			// {@squirreljme.error CF1h The entry at the given index is not of
+			// the expected type. (The index; The expected type)}
+			throw new NCIException(NCIException.Issue.WRONG_CONSTANT,
+				String.format("CF1h %d %s", __i, __t), e);
+		}
 	}
 	
 	/**
@@ -109,11 +122,14 @@ public final class NCIPool
 	{
 		E rv = nullableAs(__i, __t);
 		
-		// Cannot be null
+		// {@squirreljme.error CF1i The entry at the given index is null.
+		// (The index; The expected type)}
 		if (rv == null)
-			throw new Error("TODO");
+			throw new NCIException(NCIException.Issue.WRONG_CONSTANT,
+				String.format("CF1i %d %s", __i, __t));
 		
-		throw new Error("TODO");
+		// Return it
+		return rv;
 	}
 	
 	/**

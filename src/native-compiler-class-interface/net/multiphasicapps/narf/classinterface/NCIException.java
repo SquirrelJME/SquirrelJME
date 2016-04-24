@@ -106,6 +106,12 @@ public class NCIException
 		/** A constant pool entry is not valid. */
 		ILLEGAL_CONSTANT,
 		
+		/** The wrong constant is here. */
+		WRONG_CONSTANT,
+		
+		/** The name of a class is not valid. */
+		BAD_CLASS_NAME,
+		
 		/** End. */
 		;
 	}

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IllegalSymbolException;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlag;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
@@ -104,17 +105,30 @@ public class NCFClass
 		// Parse the class flags
 		flags = __FlagDecoder__.__class(das.readUnsignedShort());
 		
-		// Read class name
-		thisname = constantpool.<NCIClassReference>requiredAs(
-			das.readUnsignedShort(), NCIClassReference.class).get();
+		try
+		{
+			// Read class name
+			thisname = constantpool.<NCIClassReference>requiredAs(
+				das.readUnsignedShort(), NCIClassReference.class).get().
+				asBinaryName().asClassName();
 		
-		// Read super name
-		NCIClassReference scr = constantpool.<NCIClassReference>nullableAs(
-			das.readUnsignedShort(), NCIClassReference.class);
-		if (scr != null)
-			supername = scr.get();
-		else
-			supername = null;
+			// Read super name
+			NCIClassReference scr = constantpool.<NCIClassReference>nullableAs(
+				das.readUnsignedShort(), NCIClassReference.class);
+			if (scr != null)
+				supername = scr.get().asBinaryName().asClassName();
+			else
+				supername = null;
+		}
+		
+		// A given class name was likely an array
+		catch (IllegalSymbolException e)
+		{
+			// {@squirreljme.error CF1j The name of the current, super, or
+			// an implemented interface is not a valid binary name.}
+			throw new NCIException(NCIException.Issue.BAD_CLASS_NAME, "CF1j",
+				e);
+		}
 		
 		throw new Error("TODO");
 	}
