@@ -19,7 +19,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlag;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
-import net.multiphasicapps.narf.classinterface.NCIConstantPool;
+import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIField;
 import net.multiphasicapps.narf.classinterface.NCIFieldID;
@@ -43,7 +43,7 @@ public class NCFClass
 	protected final NCIVersion version;
 	
 	/** The constant pool of the class. */
-	protected final NCIConstantPool constantpool;
+	protected final NCIPool constantpool;
 	
 	/**
 	 * Initializes the class.
@@ -98,7 +98,7 @@ public class NCFClass
 	 * @since 2016/04/24
 	 */
 	@Override
-	public NCIConstantPool constantPool()
+	public NCIPool constantPool()
 	{
 		return constantpool;
 	}

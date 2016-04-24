@@ -100,6 +100,9 @@ public class NCIException
 		/** Invokedynamic is used. */
 		INVOKEDYNAMIC,
 		
+		/** Illegal modified UTF-8 sequence. */
+		ILLEGAL_MUTF,
+		
 		/** End. */
 		;
 	}

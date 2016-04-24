@@ -12,9 +12,11 @@ package net.multiphasicapps.narf.classfile;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import net.multiphasicapps.narf.classinterface.NCIConstantEntry;
-import net.multiphasicapps.narf.classinterface.NCIConstantPool;
+import java.io.UTFDataFormatException;
+import net.multiphasicapps.narf.classinterface.NCIPoolEntry;
+import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.classinterface.NCIException;
+import net.multiphasicapps.narf.classinterface.NCIUTF;
 
 /**
  * This decodes the constant pool of a class.
@@ -86,7 +88,7 @@ class __PoolDecoder__
 	protected final DataInputStream das;
 	
 	/** The target pool list. */
-	protected final NCIConstantEntry[] entries;
+	protected final NCIPoolEntry[] entries;
 	
 	/**
 	 * Initializes the constant pool decoder.
@@ -118,7 +120,7 @@ class __PoolDecoder__
 				"CF0k");
 		
 		// Setup target array
-		entries = new NCIConstantEntry[numentries];
+		entries = new NCIPoolEntry[numentries];
 	}
 	
 	/**
@@ -128,7 +130,7 @@ class __PoolDecoder__
 	 * @throws IOException On read errors.
 	 * @since 2016/04/24
 	 */
-	public NCIConstantPool get()
+	public NCIPool get()
 		throws IOException
 	{
 		// Some entries refer to other entries
@@ -144,7 +146,22 @@ class __PoolDecoder__
 			{
 					// UTF string
 				case TAG_UTF8:
-					throw new Error("TODO");
+					// Read
+					try
+					{
+						entries[i] = new NCIUTF(das.readUTF());
+					}
+		
+					// Malformed sequence
+					catch (UTFDataFormatException utfdfe)
+					{
+						// {@squirreljme.error CF0j The string which makes up a
+						// UTF-8 constant string is not a correctly formatted
+						// modified UTF-8 string.}
+						throw new NCIException(NCIException.Issue.ILLEGAL_MUTF,
+							"CF0j", utfdfe);
+					}
+					break;
 					
 					// Integer constant
 				case TAG_INTEGER:
@@ -218,7 +235,7 @@ class __PoolDecoder__
 		}
 		
 		// Build it
-		return new NCIConstantPool(entries);
+		return new NCIPool(entries);
 	}
 }
 

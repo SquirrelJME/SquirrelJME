@@ -15,7 +15,7 @@ package net.multiphasicapps.narf.classinterface;
  *
  * @since 2016/04/24
  */
-public enum NCIConstantTag
+public enum NCIPoolTag
 {
 	/** The UTF constant tag. */
 	UTF8,

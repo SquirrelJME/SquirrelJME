@@ -11,18 +11,43 @@
 package net.multiphasicapps.narf.classinterface;
 
 /**
- * This interface is used to represent constant pool entries.
+ * This represents a float constant.
  *
  * @since 2016/04/24
  */
-public interface NCIConstantEntry
+public final class NCIConstantFloat
+	extends NCIConstantValue<Float>
 {
 	/**
-	 * Returns the tag of the entry.
+	 * Initializes the constant value.
 	 *
-	 * @return The constant pool tag.
+	 * @param __v The value to store.
 	 * @since 2016/04/24
 	 */
-	public abstract NCIConstantTag tag();
+	public NCIConstantFloat(float __v)
+	{
+		super(Float.valueOf(__v));
+	}
+	
+	/**
+	 * Returns the value of this constant.
+	 *
+	 * @return The constant value.
+	 * @since 2016/04/24
+	 */
+	public float floatValue()
+	{
+		return value.floatValue();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/24
+	 */
+	@Override
+	public NCIPoolTag tag()
+	{
+		return NCIPoolTag.FLOAT;
+	}
 }
 

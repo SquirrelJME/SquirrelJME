@@ -28,7 +28,7 @@ public interface NCIClass
 	 * @return The class constant pool.
 	 * @since 2016/04/24
 	 */
-	public abstract NCIConstantPool constantPool();
+	public abstract NCIPool constantPool();
 	
 	/**
 	 * Returns the mapping of fields that this class contains.

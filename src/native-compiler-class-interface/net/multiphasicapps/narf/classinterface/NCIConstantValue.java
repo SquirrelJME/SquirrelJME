@@ -10,50 +10,45 @@
 
 package net.multiphasicapps.narf.classinterface;
 
-import java.util.AbstractList;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
- * This class stores the constant pool.
+ * This represents a constant value.
  *
+ * @param <V> The type of value to store.
  * @since 2016/04/24
  */
-public final class NCIConstantPool
-	extends AbstractList<NCIConstantEntry>
+public abstract class NCIConstantValue<V>
+	implements NCIPoolEntry
 {
-	/**
-	 * This initializes the constant pool.
-	 *
-	 * @param __ents The entries in the constant pool.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/24
-	 */
-	public NCIConstantPool(NCIConstantEntry... __ents)
-		throws NullPointerException
-	{
-		this(Arrays.<NCIConstantEntry>asList(__ents));
-	}
+	/** The stored value. */
+	protected final V value;	
 	
 	/**
-	 * This initializes the constant pool.
+	 * Initializes the constant value.
 	 *
-	 * @param __ents The entries in the constant pool.
+	 * @param __v The value to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/24
 	 */
-	public NCIConstantPool(Iterable<NCIConstantEntry> __ents)
+	NCIConstantValue(V __v)
 		throws NullPointerException
 	{
 		// Check
-		if (__ents == null)
+		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		value = __v;
+	}
+	
+	/**
+	 * Returns the value of this constant.
+	 *
+	 * @return The constant value.
+	 * @since 2016/04/24
+	 */
+	public final V get()
+	{
+		return value;
 	}
 	
 	/**
@@ -61,19 +56,9 @@ public final class NCIConstantPool
 	 * @since 2016/04/24
 	 */
 	@Override
-	public NCIConstantEntry get(int __i)
+	public final String toString()
 	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/04/24
-	 */
-	@Override
-	public int size()
-	{
-		throw new Error("TODO");
+		return value.toString();
 	}
 }
 
