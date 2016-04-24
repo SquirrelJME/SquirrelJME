@@ -15,7 +15,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
 import net.multiphasicapps.narf.classinterface.NCIClass;
@@ -56,6 +58,9 @@ public class NCFClass
 	
 	/** The name of the super class. */
 	protected final ClassNameSymbol supername;
+	
+	/** The names of implemented interfaces. */
+	protected final Set<ClassNameSymbol> interfacenames;
 	
 	/**
 	 * Initializes the class.
@@ -119,6 +124,18 @@ public class NCFClass
 				supername = scr.get().asBinaryName().asClassName();
 			else
 				supername = null;
+			
+			// Read implemented interfaces
+			int ni = das.readUnsignedShort();
+			Set<ClassNameSymbol> in = new LinkedHashSet<>();
+			for (int i = 0; i < ni; i++)
+				in.add(constantpool.<NCIClassReference>requiredAs(
+					das.readUnsignedShort(), NCIClassReference.class).get().
+					asBinaryName().asClassName());
+			
+			// Set
+			interfacenames = MissingCollections.
+				<ClassNameSymbol>unmodifiableSet(in);
 		}
 		
 		// A given class name was likely an array
@@ -130,7 +147,13 @@ public class NCFClass
 				e);
 		}
 		
-		throw new Error("TODO");
+		if (true)
+			throw new Error("TODO");
+		
+		// @{squirreljme.error CF1c Extra bytes follow the end of the class
+		// file data which is illegal.}
+		if (das.read() >= 0)
+			throw new NCIException(NCIException.Issue.NOT_EOC, "CF1c");
 	}
 	
 	/**
@@ -170,7 +193,7 @@ public class NCFClass
 	@Override
 	public Set<ClassNameSymbol> interfaceNames()
 	{
-		throw new Error("TODO");
+		return interfacenames;
 	}
 	
 	/**

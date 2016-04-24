@@ -112,6 +112,9 @@ public class NCIException
 		/** The name of a class is not valid. */
 		BAD_CLASS_NAME,
 		
+		/** Expected the end of the class, however there is still data. */
+		NOT_EOC,
+		
 		/** End. */
 		;
 	}
