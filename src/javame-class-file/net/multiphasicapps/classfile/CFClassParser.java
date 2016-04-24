@@ -267,7 +267,7 @@ public class CFClassParser
 			fl.add(NCIClassFlag.SYNTHETIC);
 		
 		// Annotation?
-		if (0 != (__i & 0x20000))
+		if (0 != (__i & 0x2000))
 			fl.add(NCIClassFlag.ANNOTATION);
 		
 		// Enumeration?

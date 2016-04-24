@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
@@ -44,6 +45,9 @@ public class NCFClass
 	
 	/** The constant pool of the class. */
 	protected final NCIPool constantpool;
+	
+	/** The class flags. */
+	protected final NCIClassFlags flags;
 	
 	/**
 	 * Initializes the class.
@@ -90,6 +94,9 @@ public class NCFClass
 		// Decode the constant pool
 		constantpool = new __PoolDecoder__(this, das).get();
 		
+		// Parse the class flags
+		flags = __FlagDecoder__.__class(das.readUnsignedShort());
+		
 		throw new Error("TODO");
 	}
 	
@@ -120,7 +127,7 @@ public class NCFClass
 	@Override
 	public NCIClassFlags flags()
 	{
-		throw new Error("TODO");
+		return flags;
 	}
 	
 	/**
