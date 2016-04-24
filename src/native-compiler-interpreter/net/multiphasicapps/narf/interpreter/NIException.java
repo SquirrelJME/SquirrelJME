@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import net.multiphasicapps.narf.NARFException;
+
 /**
  * This is the base for exceptions which may be thrown by the interpreter.
  *
@@ -18,9 +20,6 @@ package net.multiphasicapps.narf.interpreter;
 public class NIException
 	extends RuntimeException
 {
-	/** The exception type. */
-	protected final Type type;
-	
 	/**
 	 * Initializes the exception with no message.
 	 *
@@ -29,17 +28,14 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIException(NICore __ic, Type __t)
+	public NIException(NICore __ic, Issue __t)
 		throws NullPointerException
 	{
-		super();
+		super(__t);
 		
 		// Check
-		if (__ic == null || __t == null)
+		if (__ic == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		type = __t;
 	}
 	
 	/**
@@ -51,17 +47,14 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIException(NICore __ic, Type __t, String __msg)
+	public NIException(NICore __ic, Issue __t, String __msg)
 		throws NullPointerException
 	{
-		super(__msg);
+		super(__t, __msg);
 		
 		// Check
-		if (__ic == null || __t == null)
+		if (__ic == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		type = __t;
 	}
 	
 	/**
@@ -74,18 +67,15 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIException(NICore __ic, Type __t, String __msg,
+	public NIException(NICore __ic, Issue __t, String __msg,
 		Throwable __c)
 		throws NullPointerException
 	{
-		super(__msg, __c);
+		super(__t, __msg, __c);
 		
 		// Check
-		if (__ic == null || __t == null)
+		if (__ic == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		type = __t;
 	}
 	
 	/**
@@ -97,17 +87,14 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIException(NICore __ic, Type __t, Throwable __c)
+	public NIException(NICore __ic, Issue __t, Throwable __c)
 		throws NullPointerException
 	{
-		super(__c);
+		super(__t, __c);
 		
 		// Check
-		if (__ic == null || __t == null)
+		if (__ic == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		type = __t;
 	}
 	
 	/**
@@ -115,7 +102,8 @@ public class NIException
 	 *
 	 * @since 2016/04/22
 	 */
-	public static enum Type
+	public static enum Issue
+		implements BaseIssue
 	{
 		/** The name of a class mismatches the one which was read. */
 		CLASS_NAME_MISMATCH,

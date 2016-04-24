@@ -23,7 +23,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
  *
  * @since 2016/04/20
  */
-public abstract class NCIClassLookup
+public abstract class NCILookup
 {
 	/** The loaded class library. */
 	private final Map<BinaryNameSymbol, Reference<NCIClass>> _loaded =
@@ -34,7 +34,7 @@ public abstract class NCIClassLookup
 	 *
 	 * @since 2016/04/20
 	 */
-	public NCIClassLookup()
+	public NCILookup()
 	{
 	}
 	

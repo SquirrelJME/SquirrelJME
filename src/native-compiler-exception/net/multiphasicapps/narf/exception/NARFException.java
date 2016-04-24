@@ -21,6 +21,9 @@ package net.multiphasicapps.narf.exception;
 public class NARFException
 	extends RuntimeException
 {
+	/** The kind of issue. */
+	protected final BaseIssue kind;	
+	
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
@@ -28,7 +31,7 @@ public class NARFException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	public NCPException(BaseIssue __k)
+	public NARFException(BaseIssue __k)
 		throws NullPointerException
 	{
 		// Check
@@ -47,7 +50,7 @@ public class NARFException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	public NCPException(BaseIssue __k, String __msg)
+	public NARFException(BaseIssue __k, String __msg)
 		throws NullPointerException
 	{
 		super(__msg);
@@ -69,7 +72,7 @@ public class NARFException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	public NCPException(BaseIssue __k, String __msg, Throwable __c)
+	public NARFException(BaseIssue __k, String __msg, Throwable __c)
 		throws NullPointerException
 	{
 		super(__msg, __c);
@@ -90,7 +93,7 @@ public class NARFException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	public NCPException(BaseIssue __k, Throwable __c)
+	public NARFException(BaseIssue __k, Throwable __c)
 		throws NullPointerException
 	{
 		super(__c);
@@ -101,6 +104,17 @@ public class NARFException
 		
 		// Set
 		kind = __k;
+	}
+	
+	/**
+	 * Returns the kind of issue which was caused.
+	 *
+	 * @return The issue kind.
+	 * @since 2016/04/23
+	 */
+	public final BaseIssue getKind()
+	{
+		return kind;
 	}
 	
 	/**

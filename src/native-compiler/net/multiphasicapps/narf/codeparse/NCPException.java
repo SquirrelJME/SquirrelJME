@@ -71,7 +71,7 @@ public class NCPException
 	 * @since 2016/04/23
 	 */
 	public static enum Issue
-		extends BaseIssue
+		implements BaseIssue
 	{
 		/** End. */
 		;

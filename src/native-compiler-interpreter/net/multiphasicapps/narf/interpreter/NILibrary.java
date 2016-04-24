@@ -31,9 +31,9 @@ import net.multiphasicapps.classfile.CFFormatException;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.narf.classinterface.NLClass;
-import net.multiphasicapps.narf.NARFClassLibrary;
-import net.multiphasicapps.narf.NARFClassLoadException;
+import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIException;
+import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.zips.StandardZIPFile;
 
 /**
@@ -43,7 +43,7 @@ import net.multiphasicapps.zips.StandardZIPFile;
  * @since 2016/04/20
  */
 public class NILibrary
-	extends NARFClassLibrary
+	extends NCILookup
 {
 	/** The boot classpath. */
 	protected final Set<Path> bootpath;
@@ -140,15 +140,15 @@ public class NILibrary
 	 * @since 2016/04/21
 	 */
 	@Override
-	protected NLClass loadClass(BinaryNameSymbol __bn)
-		throws NARFClassLoadException, NullPointerException
+	protected NCIClass loadClass(BinaryNameSymbol __bn)
+		throws NCIException, NullPointerException
 	{
 		// Check
 		if (__bn == null)
 			throw new NullPointerException("NARG");
 		
 		// Use the bootclasspath
-		NLClass rv;
+		NCIClass rv;
 		if (null != (rv = __loadClass(__bn, bootpath, true)))
 			return rv;
 		
@@ -164,13 +164,13 @@ public class NILibrary
 	 * @param __boot If {@code true} then this is looking in the boot class
 	 * path.
 	 * @return The loaded class or {@code null} if it does not exist.
-	 * @throws NARFClassLoadException If it failed to be read.
+	 * @throws NCIException If it failed to be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	private NLClass __loadClass(BinaryNameSymbol __bn, Set<Path> __paths,
+	private NCIClass __loadClass(BinaryNameSymbol __bn, Set<Path> __paths,
 		boolean __boot)
-		throws NARFClassLoadException, NullPointerException
+		throws NCIException, NullPointerException
 	{
 		// Check
 		if (__bn == null || __paths == null)
@@ -250,13 +250,13 @@ public class NILibrary
 				}
 			}
 			
-			// Failed read
-			catch (CFFormatException|IOException e)
+			// Failed read or other exception
+			catch (NCIException|IOException e)
 			{
 				// {@squirreljme.error NI0a Failed to read a class from the
 				// given path. (The binary name; The path read from)}
-				throw new NARFClassLoadException(String.format("NI0a %s %s",
-					__bn, p), e);
+				throw new NCIException(NCIException.Issue.READ_ERROR,
+					String.format("NI0a %s %s", __bn, p), e);
 			}
 		}
 		
