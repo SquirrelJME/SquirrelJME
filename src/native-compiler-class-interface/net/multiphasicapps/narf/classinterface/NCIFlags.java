@@ -12,7 +12,10 @@ package net.multiphasicapps.narf.classinterface;
 
 import java.util.AbstractSet;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import net.multiphasicapps.collections.MissingCollections;
 
 /**
  * This is the base class for all flag collections.
@@ -23,6 +26,15 @@ import java.util.Iterator;
 public abstract class NCIFlags<F extends NCIFlag>
 	extends AbstractSet<F>
 {
+	/** The class type to use. */
+	protected final Class<F> cast;
+	
+	/** The set ordinals. */
+	protected final int setbits;
+	
+	/** The slower access set. */
+	protected final Set<F> flags;
+	
 	/**
 	 * Initializes the flag set.
 	 *
@@ -51,7 +63,27 @@ public abstract class NCIFlags<F extends NCIFlag>
 		if (__cl == null || __fl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		cast = __cl;
+		
+		// Go through all input flags
+		Set<F> to = new HashSet<>();
+		int bits = 0;
+		for (F f : __fl)
+		{
+			// Get ordinal
+			int o = __cl.cast(f).ordinal();
+			
+			// Set it
+			bits |= (1 << o);
+			
+			// Add to flag set
+			to.add(f);
+		}
+		
+		// Lock in
+		setbits = bits;
+		flags = MissingCollections.<F>unmodifiableSet(to);
 	}
 	
 	/**
@@ -59,9 +91,14 @@ public abstract class NCIFlags<F extends NCIFlag>
 	 * @since 2016/04/23
 	 */
 	@Override
-	public Iterator<F> iterator()
+	public final boolean contains(Object __o)
 	{
-		throw new Error("TODO");
+		// Quick bit check?
+		if (cast.isInstance(__o))
+			return 0 != (setbits & (1 << (((NCIFlag)__o).ordinal())));
+		
+		// Fallback
+		return flags.contains(__o);
 	}
 	
 	/**
@@ -69,9 +106,19 @@ public abstract class NCIFlags<F extends NCIFlag>
 	 * @since 2016/04/23
 	 */
 	@Override
-	public int size()
+	public final Iterator<F> iterator()
 	{
-		throw new Error("TODO");
+		return flags.iterator();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/23
+	 */
+	@Override
+	public final int size()
+	{
+		return flags.size();
 	}
 }
 
