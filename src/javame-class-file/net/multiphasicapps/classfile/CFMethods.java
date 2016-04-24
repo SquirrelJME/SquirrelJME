@@ -13,6 +13,7 @@ package net.multiphasicapps.classfile;
 import java.util.Map;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 
 /**
  * This represents methods which exist in a class.
@@ -35,7 +36,7 @@ public class CFMethods
 		super(__own, CFMethod.class, __s);
 		
 		// Check the flags for all members
-		CFClassFlags cl = owner.flags();
+		NCIClassFlags cl = owner.flags();
 		for (CFMethod m : values())
 		{
 			// Initializer flags are ignored

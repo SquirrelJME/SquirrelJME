@@ -73,7 +73,7 @@ public final class CFClass
 			throw new NullPointerException("NARG");
 		
 		// Set
-		flags = Objects.<CFClassFlags>requireNonNull(__cf._flags);
+		flags = Objects.<NCIClassFlags>requireNonNull(__cf._flags);
 		interfaces = new CFClassInterfaces(__cf._interfaces);
 		fields = new CFFields(this, __cf._fields);
 		methods = new CFMethods(this, __cf._methods);
@@ -144,7 +144,7 @@ public final class CFClass
 	 * @throws IllegalStateException If flags are not set.
 	 * @since 2016/03/16
 	 */
-	public final CFClassFlags flags()
+	public final NCIClassFlags flags()
 		throws IllegalStateException
 	{
 		return flags;
@@ -178,9 +178,9 @@ public final class CFClass
 	 * @return The super class this extends.
 	 * @since 2016/03/19
 	 */
-	public final BinaryNameSymbol superName()
+	public final ClassNameSymbol superName()
 	{
-		return supername;
+		return supername.asClassName();
 	}
 	
 	/**
@@ -189,9 +189,9 @@ public final class CFClass
 	 * @return The current class name.
 	 * @since 2016/03/19
 	 */
-	public final BinaryNameSymbol thisName()
+	public final ClassNameSymbol thisName()
 	{
-		return thisname;
+		return thisname.asClassName();
 	}
 	
 	/**

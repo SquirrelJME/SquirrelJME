@@ -13,6 +13,7 @@ package net.multiphasicapps.classfile;
 import java.util.Map;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 
 /**
  * This represents fields which exist in a class.
@@ -34,7 +35,7 @@ public class CFFields
 		super(__own, CFField.class, __s);
 		
 		// Check the flags for all members
-		CFClassFlags cl = owner.flags();
+		NCIClassFlags cl = owner.flags();
 		for (CFField m : values())
 		{
 			// Get flags
