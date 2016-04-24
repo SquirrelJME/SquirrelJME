@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.narf.interpreter;
 
-import net.multiphasicapps.narf.NARFException;
+import net.multiphasicapps.narf.exception.NARFException;
 
 /**
  * This is the base for exceptions which may be thrown by the interpreter.
@@ -18,7 +18,7 @@ import net.multiphasicapps.narf.NARFException;
  * @since 2016/04/22
  */
 public class NIException
-	extends RuntimeException
+	extends NARFException
 {
 	/**
 	 * Initializes the exception with no message.

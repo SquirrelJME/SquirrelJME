@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.narf.library.NLClass;
+import net.multiphasicapps.narf.classinterface.NCIClass;
 
 /**
  * This represents a class which is loaded by the interpreter.
@@ -30,7 +30,7 @@ public class NIClass
 	protected final NICore core;
 	
 	/** The based class (if {@code null} is a virtual class). */
-	protected final NLClass base;
+	protected final NCIClass base;
 	
 	/** Is this class fully loaded? */
 	protected final boolean loaded;
@@ -54,7 +54,7 @@ public class NIClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	NIClass(NICore __core, NLClass __base,
+	NIClass(NICore __core, NCIClass __base,
 		ClassNameSymbol __cns,
 		Map<ClassNameSymbol, Reference<NIClass>> __tm)
 		throws NullPointerException
@@ -72,7 +72,7 @@ public class NIClass
 		// requested class)}
 		thisname = __base.thisName();
 		if (!__cns.equals(thisname))
-			throw new NIException(core, NIException.Type.CLASS_NAME_MISMATCH,
+			throw new NIException(core, NIException.Issue.CLASS_NAME_MISMATCH,
 				String.format("NI0b %s %s", thisname, __cns));
 		
 		// DEBUG
@@ -100,7 +100,7 @@ public class NIClass
 			// itself. (The name of this class)}
 			if (rover == this)
 				throw new NIException(core,
-					NIException.Type.CLASS_CIRCULARITY,
+					NIException.Issue.CLASS_CIRCULARITY,
 					String.format("NI0c %s", thisname));
 			
 			// {@squirreljme.error NI0d The current class eventually implements
@@ -108,7 +108,7 @@ public class NIClass
 			for (NIClass impl : rover.interfaceclasses)
 				if (impl == this)
 					throw new NIException(core,
-						NIException.Type.CLASS_CIRCULARITY,
+						NIException.Issue.CLASS_CIRCULARITY,
 						String.format("NI0d %s %s", thisname, rover.thisname));
 		}
 		

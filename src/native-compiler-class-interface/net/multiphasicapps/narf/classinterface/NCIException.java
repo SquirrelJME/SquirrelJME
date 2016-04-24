@@ -76,6 +76,9 @@ public class NCIException
 		/** A class was not found. */
 		CLASS_NOT_FOUND,
 		
+		/** Class failed to be read. */
+		READ_ERROR,
+		
 		/** End. */
 		;
 	}

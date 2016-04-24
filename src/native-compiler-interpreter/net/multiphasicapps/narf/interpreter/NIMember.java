@@ -22,7 +22,7 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
 public abstract class NIMember
 {
 	/** The owning class. */
-	protected final NIMember outerclass;
+	protected final NIClass outerclass;
 	
 	/**
 	 * Initializes the class member.
