@@ -19,6 +19,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlag;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
+import net.multiphasicapps.narf.classinterface.NCIConstantPool;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIField;
 import net.multiphasicapps.narf.classinterface.NCIFieldID;
@@ -40,6 +41,9 @@ public class NCFClass
 	
 	/** The class version number. */
 	protected final NCIVersion version;
+	
+	/** The constant pool of the class. */
+	protected final NCIConstantPool constantpool;
 	
 	/**
 	 * Initializes the class.
@@ -83,7 +87,20 @@ public class NCFClass
 				String.format("CF18 %s != [%s, %s]", version,
 				NCIVersion.MIN_VERSION, NCIVersion.MAX_VERSION));
 		
+		// Decode the constant pool
+		constantpool = new __PoolDecoder__(this, das).get();
+		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/24
+	 */
+	@Override
+	public NCIConstantPool constantPool()
+	{
+		return constantpool;
 	}
 	
 	/**

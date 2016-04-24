@@ -23,6 +23,14 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 public interface NCIClass
 {
 	/**
+	 * Returns the constant pool of the class.
+	 *
+	 * @return The class constant pool.
+	 * @since 2016/04/24
+	 */
+	public abstract NCIConstantPool constantPool();
+	
+	/**
 	 * Returns the mapping of fields that this class contains.
 	 *
 	 * @return The fields this class contains.

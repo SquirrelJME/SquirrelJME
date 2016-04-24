@@ -91,6 +91,15 @@ public class NCIException
 		/** The class version is not supported or correct. */
 		BAD_CLASS_VERSION,
 		
+		/** The constant pool has an invalid size. */
+		INVALID_POOL_SIZE,
+		
+		/** Illegal constant pool tag. */
+		ILLEGAL_TAG,
+		
+		/** Invokedynamic is used. */
+		INVOKEDYNAMIC,
+		
 		/** End. */
 		;
 	}
