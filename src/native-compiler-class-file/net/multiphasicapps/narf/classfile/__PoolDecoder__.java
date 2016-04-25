@@ -334,8 +334,8 @@ class __PoolDecoder__
 		
 		// Construct it
 		int[] refs = __refs[__ei];
-		NCIClassReference rv = new NCIClassReference(new ClassNameSymbol(
-			((NCIUTF)entries[refs[1]]).toString()));
+		NCIClassReference rv = new NCIClassReference((
+			((NCIUTF)entries[refs[1]]).asClassName()));
 		
 		// Set and return it
 		ents[__ei] = rv;
@@ -369,7 +369,7 @@ class __PoolDecoder__
 		// Need to construct it
 		int[] refs = __refs[__ei];
 		NCIMemberNameAndType rv = new NCIMemberNameAndType(
-			new IdentifierSymbol(((NCIUTF)ents[refs[1]]).toString()),
+			(((NCIUTF)ents[refs[1]]).asIdentifier()),
 			(((NCIUTF)ents[refs[2]]).asMember()));
 		
 		// Set it

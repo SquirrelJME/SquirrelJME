@@ -12,6 +12,7 @@ package net.multiphasicapps.narf.classinterface;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 
@@ -28,6 +29,12 @@ public final class NCIUTF
 	
 	/** This string as a member type symbol. */
 	private volatile Reference<MemberTypeSymbol> _memtype;
+	
+	/** The string as the name of a class. */
+	private volatile Reference<ClassNameSymbol> _classname;
+	
+	/** The string as an identifier. */
+	private volatile Reference<IdentifierSymbol> _id;
 	
 	/**
 	 * Initializes the constant with a value.
@@ -48,9 +55,51 @@ public final class NCIUTF
 	}
 	
 	/**
+	 * Returns the string as a class name.
+	 *
+	 * @return The string as a class name symbol.
+	 * @since 2016/04/25
+	 */
+	public ClassNameSymbol asClassName()
+	{
+		// Get reference
+		Reference<ClassNameSymbol> ref = _classname;
+		ClassNameSymbol rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			_classname = new WeakReference<>(
+				(rv = new ClassNameSymbol(toString())));
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Returns the string as an identifier symbol.
+	 *
+	 * @return The string as an identifier symbol.
+	 * @since 2016/04/25
+	 */
+	public IdentifierSymbol asIdentifier()
+	{
+		// Get reference
+		Reference<IdentifierSymbol> ref = _id;
+		IdentifierSymbol rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			_id = new WeakReference<>(
+				(rv = new IdentifierSymbol(toString())));
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
 	 * Returns the string data contained here as a member.
 	 *
-	 * @return This symbol as a member.
+	 * @return This string as a member symbol.
 	 * @since 2016/04/25
 	 */
 	public MemberTypeSymbol asMember()
