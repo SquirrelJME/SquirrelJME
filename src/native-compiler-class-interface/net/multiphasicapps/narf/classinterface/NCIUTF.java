@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.narf.classinterface;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MemberTypeSymbol;
+
 /**
  * This represents a UTF-8 constant entry.
  *
@@ -20,6 +25,9 @@ public final class NCIUTF
 {
 	/** Internally read string. */
 	protected final String string;
+	
+	/** This string as a member type symbol. */
+	private volatile Reference<MemberTypeSymbol> _memtype;
 	
 	/**
 	 * Initializes the constant with a value.
@@ -37,6 +45,27 @@ public final class NCIUTF
 		
 		// Set
 		string = __v;
+	}
+	
+	/**
+	 * Returns the string data contained here as a member.
+	 *
+	 * @return This symbol as a member.
+	 * @since 2016/04/25
+	 */
+	public MemberTypeSymbol asMember()
+	{
+		// Get reference
+		Reference<MemberTypeSymbol> ref = _memtype;
+		MemberTypeSymbol rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			_memtype = new WeakReference<>(
+				(rv = MemberTypeSymbol.of(toString())));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

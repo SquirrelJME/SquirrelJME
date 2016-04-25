@@ -370,7 +370,7 @@ class __PoolDecoder__
 		int[] refs = __refs[__ei];
 		NCIMemberNameAndType rv = new NCIMemberNameAndType(
 			new IdentifierSymbol(((NCIUTF)ents[refs[1]]).toString()),
-			MemberTypeSymbol.of(((NCIUTF)ents[refs[2]]).toString()));
+			(((NCIUTF)ents[refs[2]]).asMember()));
 		
 		// Set it
 		ents[__ei] = rv;
