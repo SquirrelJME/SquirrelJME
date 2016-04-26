@@ -165,7 +165,7 @@ public final class NCFClass
 		// Read in methods
 		int nm = das.readUnsignedShort();
 		Map<NCIMethodID, NCIMethod> om = new HashMap<>();
-		for (int i = 0; i < nf; i++)
+		for (int i = 0; i < nm; i++)
 			__ReadMember__.__method(this, das, om);
 		methods = MissingCollections.<NCIMethodID, NCIMethod>unmodifiableMap(
 			om);
@@ -177,8 +177,12 @@ public final class NCFClass
 			// Skip name
 			das.readUnsignedShort();
 			
-			// Get length
-			int len = das.readUnsignedShort();
+			// {@squirreljme.error CF1w An attribute in the class has a
+			// negative size.}
+			int len = das.readInt();
+			if (len < 0)
+				throw new NCIException(NCIException.Issue.NEGATIVE_ATTRIBUTE,
+					"CF1w");
 			
 			// Skip the length
 			__ReadMember__.__skipBytes(das, len);
