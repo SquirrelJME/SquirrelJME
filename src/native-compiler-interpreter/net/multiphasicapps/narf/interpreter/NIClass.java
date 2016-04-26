@@ -12,12 +12,15 @@ package net.multiphasicapps.narf.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.narf.classinterface.NCIMethodID;
 
 /**
  * This represents a class which is loaded by the interpreter.
@@ -43,6 +46,9 @@ public class NIClass
 	
 	/** The interfaces this class implements. */
 	protected final Set<NIClass> interfaceclasses;
+	
+	/** The mapped methods for this class. */
+	protected final Map<NCIMethodID, NIMethod> methods;
 	
 	/**
 	 * Initializes an interpreted class.
@@ -111,6 +117,24 @@ public class NIClass
 						NIException.Issue.CLASS_CIRCULARITY,
 						String.format("NI0d %s %s", thisname, rover.thisname));
 		}
+		
+		// Create methods for all of the current class methods
+		Map<NCIMethodID, NIMethod> mm = new HashMap<>();
+		for (Map.Entry<NCIMethodID, NCIMethod> e : base.methods().entrySet())
+			mm.put(e.getKey(), new NIMethod(this, e.getValue()));
+		
+		// Bind all superclass methods which are not static, are initializers,
+		// or are constructors to the current method if they are not set (this
+		// is for faster virtual handling)
+		for (NIClass rover = superclass; rover != null;
+			rover = rover.superclass)
+		{
+			throw new Error("TODO");
+		}
+		
+		// Lock in
+		methods = MissingCollections.<NCIMethodID, NIMethod>unmodifiableMap(
+			mm);
 		
 		// Class loaded
 		loaded = true;

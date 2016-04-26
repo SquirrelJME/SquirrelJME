@@ -11,34 +11,40 @@
 package net.multiphasicapps.narf.interpreter;
 
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.narf.classinterface.NCIMember;
 
 /**
  * This represents a member which exists within a class.
  *
- * @param <S> The symbol type.
- * @param <K> The key type.
+ * @param <M> The base member type
  * @since 2016/04/22
  */
-public abstract class NIMember
+public abstract class NIMember<M extends NCIMember>
 {
 	/** The owning class. */
 	protected final NIClass outerclass;
+	
+	/** The base member data. */
+	protected final M base;
 	
 	/**
 	 * Initializes the class member.
 	 *
 	 * @param __oc The outer class.
+	 * @param __m The base member.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIMember(NIClass __oc)
+	public NIMember(NIClass __oc, M __m)
 		throws NullPointerException
 	{
 		// Check
-		if (__oc == null)
+		if (__oc == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		outerclass = __oc;
+		base = __m;
 	}
 }
 
