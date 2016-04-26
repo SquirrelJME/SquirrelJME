@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
@@ -31,6 +33,11 @@ import net.multiphasicapps.narf.classinterface.NCIMethodID;
  */
 public class NIClass
 {
+	/** The static initializer method key. */
+	public static final NCIMethodID STATIC_INITIALIZER =
+		new NCIMethodID(new IdentifierSymbol("<clinit>"),
+		new MethodSymbol("()V"));
+	
 	/** The interpreter core. */
 	protected final NICore core;
 	
@@ -200,6 +207,13 @@ public class NIClass
 									interf.base.thisName()));
 						
 					}
+		
+		// Obtain the static initializer
+		NIMethod sinit = methods.get(STATIC_INITIALIZER);
+		if (sinit != null && sinit.flags().isStatic())
+		{
+			throw new Error("TODO");
+		}
 		
 		// Class loaded
 		loaded = true;
