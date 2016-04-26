@@ -16,8 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCILookup;
+import net.multiphasicapps.narf.classinterface.NCIMethodID;
 
 /**
  * This is the core of the interpreter, this dispatches and maintains all of
@@ -73,6 +76,19 @@ public class NICore
 		if (maincl == null)
 			throw new IllegalArgumentException(String.format("NI08 %s",
 				__main));
+		
+		// Find the main method
+		NIMethod mainme = maincl.methods().get(new NCIMethodID(
+			new IdentifierSymbol("main"),
+			new MethodSymbol("([Ljava/lang/String;)V")));
+		
+		// {@squirreljme.error NI0g The main class does not contain a static
+		// method which take a string argument, returns void, and is called
+		// "main". (The main class)}
+		if (mainme == null || !mainme.flags().isStatic())
+			throw new NIException(this,
+				NIException.Issue.METHOD_DOES_NOT_EXIST, String.format(
+				"NI0g %s", __main));
 		
 		if (true)
 			throw new Error("TODO");

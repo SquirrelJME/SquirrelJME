@@ -105,6 +105,9 @@ public class NIException
 	public static enum Issue
 		implements BaseIssue
 	{
+		/** Missing class definition. */
+		MISSING_CLASS,
+		
 		/** The name of a class mismatches the one which was read. */
 		CLASS_NAME_MISMATCH,
 		
@@ -113,6 +116,9 @@ public class NIException
 		
 		/** A class does not implement an abstract method. */
 		ABSTRACT_NOT_IMPLEMENTED,
+		
+		/** A method does not exist. */
+		METHOD_DOES_NOT_EXIST,
 		
 		/** End. */
 		;
