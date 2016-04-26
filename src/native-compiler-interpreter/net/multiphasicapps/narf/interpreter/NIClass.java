@@ -19,7 +19,9 @@ import java.util.Set;
 import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethodID;
 
 /**
@@ -126,11 +128,47 @@ public class NIClass
 		// Bind all superclass methods which are not static, are initializers,
 		// or are constructors to the current method if they are not set (this
 		// is for faster virtual handling)
+		boolean selfabs = flags().isAbstract();
 		for (NIClass rover = superclass; rover != null;
 			rover = rover.superclass)
-		{
-			throw new Error("TODO");
-		}
+			for (Map.Entry<NCIMethodID, NIMethod> e : rover.methods.
+				entrySet())
+			{
+				// Get key and value
+				NCIMethodID k = e.getKey();
+				NIMethod v = e.getValue();
+				
+				// Get flags
+				NCIMethodFlags mf = v.flags();
+				
+				// Ignore static and initializers
+				if (mf.isStatic() || k.name().isConstructor())
+					continue;
+				
+				// If abstract, it must be implemented (it must be contained
+				// in the map and not be abstract)
+				if (!selfabs && mf.isAbstract())
+				{
+					// Get the method
+					NIMethod iv = mm.get(k);
+					
+					// {@squirreljme.error NI0e The top-level class is not
+					// abstract and it does not implement an abstract method.
+					// (The method identifier)}
+					if (iv == null || iv.flags().isAbstract())
+						throw new NIException(core,
+							NIException.Issue.ABSTRACT_NOT_IMPLEMENTED,
+							String.format("NI0e %s", k));
+				}
+				
+				// Never replace methods in a sub-class with the superclass
+				// methods.
+				if (mm.containsKey(k))
+					continue;
+				
+				// Bind it
+				mm.put(k, v);
+			}
 		
 		// Lock in
 		methods = MissingCollections.<NCIMethodID, NIMethod>unmodifiableMap(
@@ -138,6 +176,17 @@ public class NIClass
 		
 		// Class loaded
 		loaded = true;
+	}
+	
+	/**
+	 * Returns the flags for this class.
+	 *
+	 * @return The class flags.
+	 * @since 2016/04/26
+	 */
+	public NCIClassFlags flags()
+	{
+		return base.flags();
 	}
 	
 	/**
@@ -149,6 +198,17 @@ public class NIClass
 	public boolean isLoaded()
 	{
 		return loaded;
+	}
+	
+	/**
+	 * Returns the methods of this class.
+	 *
+	 * @return The mapping of methods for this class.
+	 * @since 2016/04/26
+	 */
+	public Map<NCIMethodID, NIMethod> methods()
+	{
+		return methods;
 	}
 }
 

@@ -12,6 +12,7 @@ package net.multiphasicapps.narf.interpreter;
 
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.narf.classinterface.NCIMember;
+import net.multiphasicapps.narf.classinterface.NCIMemberFlags;
 
 /**
  * This represents a member which exists within a class.
@@ -45,6 +46,25 @@ public abstract class NIMember<M extends NCIMember>
 		// Set
 		outerclass = __oc;
 		base = __m;
+	}
+	
+	/**
+	 * Returns the flags of this member.
+	 *
+	 * @return The member flags.
+	 * @since 2016/04/26
+	 */
+	public abstract NCIMemberFlags flags();
+	
+	/**
+	 * Returns the base member.
+	 *
+	 * @return The member base.
+	 * @since 2016/04/26
+	 */
+	public final M base()
+	{
+		return base;
 	}
 }
 

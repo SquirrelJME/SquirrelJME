@@ -211,7 +211,7 @@ public final class NCFClass
 	@Override
 	public Map<NCIFieldID, NCIField> fields()
 	{
-		throw new Error("TODO");
+		return fields;
 	}
 	
 	/**
@@ -241,7 +241,7 @@ public final class NCFClass
 	@Override
 	public Map<NCIMethodID, NCIMethod> methods()
 	{
-		throw new Error("TODO");
+		return methods;
 	}
 	
 	/**

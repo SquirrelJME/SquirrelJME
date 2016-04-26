@@ -111,6 +111,9 @@ public class NIException
 		/** The class extends or implements itself eventually. */
 		CLASS_CIRCULARITY,
 		
+		/** A class does not implement an abstract method. */
+		ABSTRACT_NOT_IMPLEMENTED,
+		
 		/** End. */
 		;
 	}

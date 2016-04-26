@@ -12,6 +12,7 @@ package net.multiphasicapps.narf.interpreter;
 
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 
 /**
  * This represents a method which exists within a class.
@@ -31,6 +32,16 @@ public class NIMethod
 	public NIMethod(NIClass __oc, NCIMethod __m)
 	{
 		super(__oc, __m);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/26
+	 */
+	@Override
+	public NCIMethodFlags flags()
+	{
+		return base.flags();
 	}
 }
 
