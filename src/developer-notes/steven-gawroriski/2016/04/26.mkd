@@ -1,2 +1,14 @@
 # 2016/04/26
 
+## 13:08
+
+So after some days of being busy in real life to do things, I finished the
+class file refactor for the most part.
+
+    1860    javame-class-file java=1860
+    1074    native-compiler-class-interface java=1074
+    684     native-compiler-class-file java=684
+
+The javame-class-file project was essentially split into two parts. As
+individual units they are much simpler than before.
+
