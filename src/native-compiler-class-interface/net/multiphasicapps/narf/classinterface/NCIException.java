@@ -124,6 +124,24 @@ public class NCIException
 		/** The constant of a field is not valid. */
 		BAD_CONSTANT,
 		
+		/** The method has multiple code attributes. */
+		DOUBLE_CODE,
+		
+		/** Class has a duplicated field. */
+		DUPLICATE_FIELD,
+		
+		/** Class has a duplicated method. */
+		DUPLICATE_METHOD,
+		
+		/** Short read of the code attribute. */
+		SHORT_CODE,
+		
+		/** Abstract/Native method has code. */
+		ABSTRACT_CODE,
+		
+		/** Non-abstract/non-native method is missing code. */
+		MISSING_CODE,
+		
 		/** End. */
 		;
 	}

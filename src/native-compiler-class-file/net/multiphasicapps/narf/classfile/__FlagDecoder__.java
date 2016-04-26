@@ -17,6 +17,8 @@ import net.multiphasicapps.narf.classinterface.NCIClassFlag;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCIFieldFlag;
 import net.multiphasicapps.narf.classinterface.NCIFieldFlags;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 
 /**
  * This decodes class flags.
@@ -128,6 +130,70 @@ final class __FlagDecoder__
 		
 		// Build flags
 		return new NCIFieldFlags(__oc, ff);
+	}
+	/**
+	 * Parses the flags for a method.
+	 *
+	 * @param __oc The outer class.
+	 * @param __bits The input bits.
+	 * @return The method flags.
+	 * @since 2016/04/26
+	 */
+	static NCIMethodFlags __method(NCIClass __oc, int __bits)
+	{
+		// Target set
+		Set<NCIMethodFlag> ff = new HashSet<>();
+		
+		// Public method.
+		if (0 != (__bits & 0x0001))
+			ff.add(NCIMethodFlag.PUBLIC);
+	
+		// Private method.
+		if (0 != (__bits & 0x0002))
+			ff.add(NCIMethodFlag.PRIVATE);
+	
+		// Protected method.
+		if (0 != (__bits & 0x0004))
+			ff.add(NCIMethodFlag.PROTECTED);
+	
+		// Static method.
+		if (0 != (__bits & 0x0008))
+			ff.add(NCIMethodFlag.STATIC);
+	
+		// Final method.
+		if (0 != (__bits & 0x0010))
+			ff.add(NCIMethodFlag.FINAL);
+	
+		// Synchronized method.
+		if (0 != (__bits & 0x0020))
+			ff.add(NCIMethodFlag.SYNCHRONIZED);
+	
+		// Bridge method.
+		if (0 != (__bits & 0x0040))
+			ff.add(NCIMethodFlag.BRIDGE);
+	
+		// Variable argument method.
+		if (0 != (__bits & 0x0080))
+			ff.add(NCIMethodFlag.VARARGS);
+	
+		// Native method.
+		if (0 != (__bits & 0x0100))
+			ff.add(NCIMethodFlag.NATIVE);
+	
+		// Abstract method.
+		if (0 != (__bits & 0x0400))
+			ff.add(NCIMethodFlag.ABSTRACT);
+	
+		// Strict floating point method.
+		if (0 != (__bits & 0x0800))
+			ff.add(NCIMethodFlag.STRICT);
+	
+		// Synthetic method.
+		if (0 != (__bits & 0x1000))
+			ff.add(NCIMethodFlag.SYNTHETIC);
+	
+		// Build flags
+		return new NCIMethodFlags(__oc, ff);
 	}
 }
 
