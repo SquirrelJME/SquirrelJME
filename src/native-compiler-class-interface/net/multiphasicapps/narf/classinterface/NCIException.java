@@ -142,6 +142,9 @@ public class NCIException
 		/** Non-abstract/non-native method is missing code. */
 		MISSING_CODE,
 		
+		/** The name for a method is not valid. */
+		INVALID_METHOD_NAME,
+		
 		/** End. */
 		;
 	}

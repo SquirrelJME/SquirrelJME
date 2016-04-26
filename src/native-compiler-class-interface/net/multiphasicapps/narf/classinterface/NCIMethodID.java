@@ -26,11 +26,19 @@ public class NCIMethodID
 	 *
 	 * @param __n The name of this method.
 	 * @param __t The type of this member.
+	 * @throws NCIException If the method name is not valid.
 	 * @since 2016/04/22
 	 */
 	public NCIMethodID(IdentifierSymbol __n, MethodSymbol __t)
+		throws NCIException
 	{
 		super(__n, __t);
+		
+		// {@squirreljme.error NC20 The specified name is not a valid name for
+		// a method. (The name of the method)}
+		if (!name.isValidMethod())
+			throw new NCIException(NCIException.Issue.INVALID_METHOD_NAME,
+				String.format("NC20", __n));
 	}
 }
 

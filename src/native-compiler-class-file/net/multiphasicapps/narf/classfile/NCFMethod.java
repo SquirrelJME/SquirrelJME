@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.narf.classfile;
 
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethodID;
 
@@ -46,16 +48,34 @@ public final class NCFMethod
 		
 		// {@squirreljme.error CF1x The specified method is either native or
 		// abstract and has a code attribute or is not native or abstract and
-		// does not have a code attribute. (The method ID)}
+		// does not have a code attribute. (The method ID; The flags)}
 		NCIMethodFlags f = flags();
 		boolean abs;
 		if ((abs = (f.isNative() || f.isAbstract())) != (__ca == null))
 			throw new NCIException((abs ? NCIException.Issue.ABSTRACT_CODE :
 				NCIException.Issue.MISSING_CODE),
-				String.format("CF1x %s", __id));
+				String.format("CF1x %s %s", __id, f));
 		
 		// Set
 		code = __ca;
+		
+		// Get the identifier to check flags
+		IdentifierSymbol name = __id.name();
+		boolean in = name.isConstructor();
+		boolean cl = name.isStaticInitializer();
+		
+		// {@squirreljme.error CF20 Instance and static initializers have
+		// additional requirements as to which flags may be set. (The method
+		// ID; The flags)}
+		if ((in && (f.contains(NCIMethodFlag.STATIC) ||
+			f.contains(NCIMethodFlag.FINAL) ||
+			f.contains(NCIMethodFlag.SYNCHRONIZED) ||
+			f.contains(NCIMethodFlag.BRIDGE) ||
+			f.contains(NCIMethodFlag.NATIVE) ||
+			f.contains(NCIMethodFlag.ABSTRACT))) ||
+			(cl && (!f.contains(NCIMethodFlag.STATIC))))
+			throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
+				String.format("CF20 %s %s", __id, f));
 	}
 }
 
