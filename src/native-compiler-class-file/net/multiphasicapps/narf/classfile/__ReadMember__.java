@@ -21,8 +21,12 @@ import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIConstantValue;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIField;
+import net.multiphasicapps.narf.classinterface.NCIFieldFlag;
+import net.multiphasicapps.narf.classinterface.NCIFieldFlags;
 import net.multiphasicapps.narf.classinterface.NCIFieldID;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
+import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethodID;
 import net.multiphasicapps.narf.classinterface.NCIUTF;
 import net.multiphasicapps.io.BufferAreaInputStream;
@@ -104,8 +108,12 @@ class __ReadMember__
 			}
 		}
 		
-		// Build field
-		throw new Error("TODO");
+		// {@squirreljme.error CF1s Duplicate field in class. (The field ID)}
+		NCIField old = __into.put(id, new NCFField(__oc,
+			id, __FlagDecoder__.__field(__oc, flags), constval));
+		if (old != null)
+			throw new NCIException(NCIException.Issue.DOUBLE_CONST,
+				String.format("CF1s", id));
 	}
 	
 	/**

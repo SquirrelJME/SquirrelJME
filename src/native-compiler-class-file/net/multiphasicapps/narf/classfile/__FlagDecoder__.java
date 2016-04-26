@@ -12,8 +12,11 @@ package net.multiphasicapps.narf.classfile;
 
 import java.util.HashSet;
 import java.util.Set;
+import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlag;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
+import net.multiphasicapps.narf.classinterface.NCIFieldFlag;
+import net.multiphasicapps.narf.classinterface.NCIFieldFlags;
 
 /**
  * This decodes class flags.
@@ -72,6 +75,59 @@ final class __FlagDecoder__
 		
 		// Build it
 		return new NCIClassFlags(fl);
+	}
+	
+	/**
+	 * Parses the flags for a field.
+	 *
+	 * @param __oc The outer class.
+	 * @param __bits The input bits.
+	 * @return The field flags.
+	 * @since 2016/04/26
+	 */
+	static NCIFieldFlags __field(NCIClass __oc, int __bits)
+	{
+		// Target set
+		Set<NCIFieldFlag> ff = new HashSet<>();
+		
+		// Enumeration?
+		if (0 != (__bits & 0x4000))
+			ff.add(NCIFieldFlag.ENUM);
+		
+		// Final?
+		if (0 != (__bits & 0x0010))
+			ff.add(NCIFieldFlag.FINAL);
+		
+		// Private?
+		if (0 != (__bits & 0x0002))
+			ff.add(NCIFieldFlag.PRIVATE);
+		
+		// Protected?
+		if (0 != (__bits & 0x0004))
+			ff.add(NCIFieldFlag.PROTECTED);
+		
+		// Public?
+		if (0 != (__bits & 0x0001))
+			ff.add(NCIFieldFlag.PUBLIC);
+		
+		// Static?
+		if (0 != (__bits & 0x0008))
+			ff.add(NCIFieldFlag.STATIC);
+		
+		// Synthetic?
+		if (0 != (__bits & 0x1000))
+			ff.add(NCIFieldFlag.SYNTHETIC);
+		
+		// Transient?
+		if (0 != (__bits & 0x0080))
+			ff.add(NCIFieldFlag.TRANSIENT);
+		
+		// Volatile?
+		if (0 != (__bits & 0x0040))
+			ff.add(NCIFieldFlag.VOLATILE);
+		
+		// Build flags
+		return new NCIFieldFlags(__oc, ff);
 	}
 }
 

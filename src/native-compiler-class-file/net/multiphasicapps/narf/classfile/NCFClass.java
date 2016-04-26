@@ -38,7 +38,7 @@ import net.multiphasicapps.narf.classinterface.NCIVersion;
  *
  * @since 2016/04/24
  */
-public class NCFClass
+public final class NCFClass
 	implements NCIClass
 {
 	/** The class file magic number. */

@@ -18,7 +18,14 @@ import net.multiphasicapps.descriptors.FieldSymbol;
  * @since 2016/04/22
  */
 public interface NCIField
-	extends NCIMember<NCIFieldID>
+	extends NCIMember<NCIFieldID, NCIFieldFlags>
 {
+	/**
+	 * Returns the constant value of this field.
+	 *
+	 * @return The field constant value or {@code null} if there is none.
+	 * @since 2016/04/26
+	 */
+	public abstract Object constantValue();
 }
 

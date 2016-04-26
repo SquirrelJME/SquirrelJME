@@ -16,10 +16,19 @@ import net.multiphasicapps.descriptors.MemberTypeSymbol;
  * This interface is used to represent members.
  *
  * @param <I> The member identifier that this uses.
+ * @param <F> The flag type for this member.
  * @since 2016/04/22
  */
-public interface NCIMember<I extends NCIMemberID>
+public interface NCIMember<I extends NCIMemberID, F extends NCIMemberFlags>
 {
+	/**
+	 * Returns the flags associated with the member.
+	 *
+	 * @return The member flags.
+	 * @since 2016/04/26
+	 */
+	public abstract F flags();
+	
 	/**
 	 * Returns the name and type of the member.
 	 *
@@ -27,5 +36,13 @@ public interface NCIMember<I extends NCIMemberID>
 	 * @since 2016/04/22
 	 */
 	public abstract I nameAndType();
+	
+	/**
+	 * Returns the class which contains this member.
+	 *
+	 * @return The class containing this member.
+	 * @since 2016/04/26
+	 */
+	public abstract NCIClass outerClass();
 }
 

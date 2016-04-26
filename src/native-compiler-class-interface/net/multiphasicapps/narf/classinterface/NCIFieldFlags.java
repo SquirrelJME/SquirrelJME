@@ -21,27 +21,29 @@ public final class NCIFieldFlags
 	/**
 	 * Initializes the field flags.
 	 *
+	 * @param __oc The outer class.
 	 * @param __fl The field flags.
 	 * @since 2016/04/23
 	 */
-	public NCIFieldFlags(NCIFieldFlag... __fl)
+	public NCIFieldFlags(NCIClass __oc, NCIFieldFlag... __fl)
 	{
 		super(NCIFieldFlag.class, __fl);
 		
-		__checkFlags();
+		__checkFlags(__oc);
 	}
 	
 	/**
 	 * Initializes the field flags.
 	 *
+	 * @param __oc The outer class.
 	 * @param __fl The field flags.
 	 * @since 2016/04/23
 	 */
-	public NCIFieldFlags(Iterable<NCIFieldFlag> __fl)
+	public NCIFieldFlags(NCIClass __oc, Iterable<NCIFieldFlag> __fl)
 	{
 		super(NCIFieldFlag.class, __fl);
 		
-		__checkFlags();
+		__checkFlags(__oc);
 	}
 	
 	/**
@@ -140,17 +142,44 @@ public final class NCIFieldFlags
 	/**
 	 * Checks that the given flags are valid.
 	 *
+	 * @param __oc The outer class.
 	 * @throws NCIException If they are not valid.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags()
-		throws NCIException
+	private final void __checkFlags(NCIClass __oc)
+		throws NCIException, NullPointerException
 	{
+		// Check
+		if (__oc == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error NC0r A field cannot be both {@code final} and
-		// {@code volatile}. (The field flags).}
+		// {@code volatile}. (The field flags)}
 		if (isFinal() && isVolatile())
 			throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
 				String.format("NC0r %s", this));
+		
+		// If the class is an interface, some flags cannot be set
+		if (__oc.flags().isInterface())
+			for (NCIFieldFlag f : NCIFieldFlag.values())
+			{
+				// Must have these
+				boolean must = (f == NCIFieldFlag.PUBLIC ||
+					f == NCIFieldFlag.STATIC || f == NCIFieldFlag.FINAL);
+				
+				// Could have these
+				boolean maybe = (f == NCIFieldFlag.SYNTHETIC);
+				
+				// Is it set?
+				boolean has = contains(f);
+				
+				// {@squirreljme.error NC1t Flags for interface fields has an
+				// incorrect set of flags. (The field flags)}
+				if (must != has && !maybe)
+					throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
+						String.format("NC1t %s", this));
+			}
 	}
 }
 

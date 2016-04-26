@@ -121,6 +121,9 @@ public class NCIException
 		/** Field has multiple constant values. */
 		DOUBLE_CONST,
 		
+		/** The constant of a field is not valid. */
+		BAD_CONSTANT,
+		
 		/** End. */
 		;
 	}

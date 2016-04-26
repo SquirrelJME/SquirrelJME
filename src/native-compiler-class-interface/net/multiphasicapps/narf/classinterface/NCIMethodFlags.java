@@ -21,27 +21,29 @@ public final class NCIMethodFlags
 	/**
 	 * Initializes the method flags.
 	 *
+	 * @param __oc The outer class.
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
-	public NCIMethodFlags(NCIMethodFlag... __fl)
+	public NCIMethodFlags(NCIClass __oc, NCIMethodFlag... __fl)
 	{
 		super(NCIMethodFlag.class, __fl);
 		
-		__checkFlags();
+		__checkFlags(__oc);
 	}
 	
 	/**
 	 * Initializes the method flags.
 	 *
+	 * @param __oc The outer class.
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
-	public NCIMethodFlags(Iterable<NCIMethodFlag> __fl)
+	public NCIMethodFlags(NCIClass __oc, Iterable<NCIMethodFlag> __fl)
 	{
 		super(NCIMethodFlag.class, __fl);
 		
-		__checkFlags();
+		__checkFlags(__oc);
 	}
 	
 	/**
@@ -172,12 +174,18 @@ public final class NCIMethodFlags
 	/**
 	 * Checks that the given flags are valid.
 	 *
+	 * @param __oc The outer class.
 	 * @throws NCIException If they are not valid.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags()
+	private final void __checkFlags(NCIClass __oc)
 		throws NCIException
 	{
+		// Check
+		if (__oc == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error NC0z Native methods are not supported in Java ME
 		// and as such, methods must not be {@code native}.}
 		if (isNative())
