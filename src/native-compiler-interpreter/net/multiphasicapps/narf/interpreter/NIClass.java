@@ -174,6 +174,10 @@ public class NIClass
 		methods = MissingCollections.<NCIMethodID, NIMethod>unmodifiableMap(
 			mm);
 		
+		// Check that interfaces methods are implements
+		if (true)
+			throw new Error("TODO");
+		
 		// Class loaded
 		loaded = true;
 	}
