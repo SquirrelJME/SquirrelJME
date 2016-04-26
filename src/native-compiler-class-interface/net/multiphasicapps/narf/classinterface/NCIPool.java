@@ -97,7 +97,7 @@ public final class NCIPool
 		}
 		
 		// Could not cast
-		catch (ClassCastException e)
+		catch (IndexOutOfBoundsException|ClassCastException e)
 		{
 			// {@squirreljme.error CF1h The entry at the given index is not of
 			// the expected type. (The index; The expected type)}

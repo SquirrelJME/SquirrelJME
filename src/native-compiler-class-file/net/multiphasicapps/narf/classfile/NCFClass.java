@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -61,6 +62,12 @@ public class NCFClass
 	
 	/** The names of implemented interfaces. */
 	protected final Set<ClassNameSymbol> interfacenames;
+	
+	/** Class fields. */
+	protected final Map<NCIFieldID, NCIField> fields;
+	
+	/** Class methods. */
+	protected final Map<NCIMethodID, NCIMethod> methods;
 	
 	/**
 	 * Initializes the class.
@@ -147,13 +154,40 @@ public class NCFClass
 				e);
 		}
 		
-		if (true)
-			throw new Error("TODO");
+		// Read in fields
+		int nf = das.readUnsignedShort();
+		Map<NCIFieldID, NCIField> of = new HashMap<>();
+		for (int i = 0; i < nf; i++)
+			__ReadMember__.__field(this, das, of);
+		fields = MissingCollections.<NCIFieldID, NCIField>unmodifiableMap(of);
 		
-		// @{squirreljme.error CF1c Extra bytes follow the end of the class
+		
+		// Read in methods
+		int nm = das.readUnsignedShort();
+		Map<NCIMethodID, NCIMethod> om = new HashMap<>();
+		for (int i = 0; i < nf; i++)
+			__ReadMember__.__method(this, das, om);
+		methods = MissingCollections.<NCIMethodID, NCIMethod>unmodifiableMap(
+			om);
+		
+		// Skip attributes
+		int na = das.readUnsignedShort();
+		for (int i = 0; i < na; i++)
+		{
+			// Skip name
+			das.readUnsignedShort();
+			
+			// Get length
+			int len = das.readUnsignedShort();
+			
+			// Skip the length
+			__ReadMember__.__skipBytes(das, len);
+		}
+		
+		// {@squirreljme.error CF1o Extra bytes follow the end of the class
 		// file data which is illegal.}
 		if (das.read() >= 0)
-			throw new NCIException(NCIException.Issue.NOT_EOC, "CF1c");
+			throw new NCIException(NCIException.Issue.NOT_EOC, "CF1o");
 	}
 	
 	/**

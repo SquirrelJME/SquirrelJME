@@ -115,6 +115,12 @@ public class NCIException
 		/** Expected the end of the class, however there is still data. */
 		NOT_EOC,
 		
+		/** Attribute length is negative. */
+		NEGATIVE_ATTRIBUTE,
+		
+		/** Field has multiple constant values. */
+		DOUBLE_CONST,
+		
 		/** End. */
 		;
 	}
