@@ -174,9 +174,32 @@ public class NIClass
 		methods = MissingCollections.<NCIMethodID, NIMethod>unmodifiableMap(
 			mm);
 		
-		// Check that interfaces methods are implements
-		if (true)
-			throw new Error("TODO");
+		// Check that interface methods are implemented
+		if (!selfabs)
+			for (NIClass rover = this; rover != null; rover = rover.superclass)
+				for (NIClass interf : rover.interfaceclasses)
+					for (Map.Entry<NCIMethodID, NIMethod> e : interf.methods.
+						entrySet())
+					{
+						// Get target method
+						NIMethod v = e.getValue();
+					
+						// Only check abstract methods
+						if (!v.flags().isAbstract())
+							continue;
+					
+						// {@squirreljme.error NI0f The current class does not
+						// implement an abstract interface method. (The
+						// unimplemented method; The current class name;
+						// The interface name)}
+						NCIMethodID k = e.getKey();
+						if (!methods.containsKey(k))
+							throw new NIException(core,
+								NIException.Issue.ABSTRACT_NOT_IMPLEMENTED,
+								String.format("NI0f %s %s", k, base.thisName(),
+									interf.base.thisName()));
+						
+					}
 		
 		// Class loaded
 		loaded = true;
