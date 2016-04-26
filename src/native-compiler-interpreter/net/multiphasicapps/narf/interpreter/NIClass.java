@@ -148,8 +148,9 @@ public class NIClass
 				// Get flags
 				NCIMethodFlags mf = v.flags();
 				
-				// Ignore static and initializers
-				if (mf.isStatic() || k.name().isConstructor())
+				// Ignore static, initializers, and private methods
+				if (mf.isStatic() || k.name().isConstructor() ||
+					mf.isPrivate())
 					continue;
 				
 				// If abstract, it must be implemented (it must be contained
