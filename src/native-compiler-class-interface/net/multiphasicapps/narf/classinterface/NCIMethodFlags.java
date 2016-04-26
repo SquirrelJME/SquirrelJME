@@ -200,6 +200,28 @@ public final class NCIMethodFlags
 				isNative() || isStrict())
 				throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
 					String.format("NC10 %s", this));
+		
+		// If the class is an interface it cannot have specific flags set
+		if (__oc.flags().isInterface())
+			for (NCIMethodFlag f : NCIMethodFlag.values())
+			{
+				// Must have these
+				boolean must = (f == NCIMethodFlag.PUBLIC ||
+					f == NCIMethodFlag.ABSTRACT);
+				
+				// Could have these
+				boolean maybe = (f == NCIMethodFlag.SYNTHETIC ||
+					f == NCIMethodFlag.VARARGS || f == NCIMethodFlag.BRIDGE);
+				
+				// Is it set?
+				boolean has = contains(f);
+				
+				// {@squirreljme.error NC1x Flags for interface method has an
+				// incorrect set of flags. (The method flags)}
+				if (must != has && !maybe)
+					throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
+						String.format("NC1x %s", this));
+			}
 	}
 }
 

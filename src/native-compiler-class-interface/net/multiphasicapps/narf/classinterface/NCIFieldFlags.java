@@ -174,7 +174,7 @@ public final class NCIFieldFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error NC1t Flags for interface fields has an
+				// {@squirreljme.error NC1t Flags for interface field has an
 				// incorrect set of flags. (The field flags)}
 				if (must != has && !maybe)
 					throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,

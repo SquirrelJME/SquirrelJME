@@ -99,10 +99,10 @@ public final class NCIPool
 		// Could not cast
 		catch (IndexOutOfBoundsException|ClassCastException e)
 		{
-			// {@squirreljme.error CF1h The entry at the given index is not of
+			// {@squirreljme.error NC1h The entry at the given index is not of
 			// the expected type. (The index; The expected type)}
 			throw new NCIException(NCIException.Issue.WRONG_CONSTANT,
-				String.format("CF1h %d %s", __i, __t), e);
+				String.format("NC1h %d %s", __i, __t), e);
 		}
 	}
 	
@@ -122,11 +122,11 @@ public final class NCIPool
 	{
 		E rv = nullableAs(__i, __t);
 		
-		// {@squirreljme.error CF1i The entry at the given index is null.
+		// {@squirreljme.error NC1i The entry at the given index is null.
 		// (The index; The expected type)}
 		if (rv == null)
 			throw new NCIException(NCIException.Issue.WRONG_CONSTANT,
-				String.format("CF1i %d %s", __i, __t));
+				String.format("NC1i %d %s", __i, __t));
 		
 		// Return it
 		return rv;
