@@ -92,7 +92,10 @@ class __ReadMember__
 				len))
 			{
 				// Only constants are valid
-				if (kind.equals("ConstantValue"))
+				if (!kind.equals("ConstantValue"))
+					continue;
+				
+				try (DataInputStream dais = new DataInputStream(bais))
 				{
 					// {@squirreljme.error CF1r Field already has a constant
 					// value. (The field ID)}
@@ -102,7 +105,7 @@ class __ReadMember__
 					
 					// Reads the constant field value
 					constval = __oc.constantPool().<NCIConstantValue>
-						requiredAs(bais.readUnsignedShort(),
+						requiredAs(dais.readUnsignedShort(),
 						NCIConstantValue.class).get();
 				}
 			}
@@ -160,7 +163,10 @@ class __ReadMember__
 				len))
 			{
 				// Only code is valid
-				if (kind.equals("Code"))
+				if (!kind.equals("Code"))
+					continue;
+				
+				try (DataInputStream dais = new DataInputStream(bais))
 				{
 					// {@squirreljme.error CF1v Method already has a code
 					// attribute. (The method ID)}
@@ -171,10 +177,9 @@ class __ReadMember__
 					// {@squirreljme.error CF1v Did not read the entire code
 					// attribute for a method. (The method ID)}
 					code = new byte[len];
-					if (len != bais.read(code))
+					if (len != dais.read(code))
 						throw new NCIException(NCIException.Issue.SHORT_CODE,
 							String.format("CF1w", id));
-						
 				}
 			}
 		}
