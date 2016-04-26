@@ -18,6 +18,7 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIConstantValue;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIField;
 import net.multiphasicapps.narf.classinterface.NCIFieldID;
@@ -95,11 +96,15 @@ class __ReadMember__
 						throw new NCIException(NCIException.Issue.DOUBLE_CONST,
 							String.format("CF1r", id));
 					
-					throw new Error("TODO");
+					// Reads the constant field value
+					constval = __oc.constantPool().<NCIConstantValue>
+						requiredAs(__das.readUnsignedShort(),
+						NCIConstantValue.class).get();
 				}
 			}
 		}
 		
+		// Build field
 		throw new Error("TODO");
 	}
 	
