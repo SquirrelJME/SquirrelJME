@@ -102,7 +102,7 @@ class __ReadMember__
 					
 					// Reads the constant field value
 					constval = __oc.constantPool().<NCIConstantValue>
-						requiredAs(__das.readUnsignedShort(),
+						requiredAs(bais.readUnsignedShort(),
 						NCIConstantValue.class).get();
 				}
 			}
@@ -171,7 +171,7 @@ class __ReadMember__
 					// {@squirreljme.error CF1v Did not read the entire code
 					// attribute for a method. (The method ID)}
 					code = new byte[len];
-					if (len != __das.read(code))
+					if (len != bais.read(code))
 						throw new NCIException(NCIException.Issue.SHORT_CODE,
 							String.format("CF1w", id));
 						
