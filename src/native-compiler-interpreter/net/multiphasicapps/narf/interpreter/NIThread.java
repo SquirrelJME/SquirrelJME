@@ -48,5 +48,25 @@ public class NIThread
 		thread = __xt;
 		isspecial = true;
 	}
+	
+	/**
+	 * Initializes a new thread which executes the given method with the
+	 * specified argument list.
+	 *
+	 * @param __c The owning virtual machine.
+	 * @param __m The method to execute.
+	 * @param __a The arguments to the method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/27
+	 */
+	public NIThread(NICore __c, NIMethod __m, Object... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null || __m == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 

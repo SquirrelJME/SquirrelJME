@@ -120,6 +120,15 @@ public class NIException
 		/** A method does not exist. */
 		METHOD_DOES_NOT_EXIST,
 		
+		/** An attempt was made to {@code new} an abstract class. */
+		NEW_ABSTRACT,
+		
+		/** Attempted to allocate an array for a class which is not one. */
+		NOT_AN_ARRAY,
+		
+		/** Attempted to allocate an array of negative length. */
+		NEGATIVE_ARRAY_LENGTH,
+		
 		/** End. */
 		;
 	}

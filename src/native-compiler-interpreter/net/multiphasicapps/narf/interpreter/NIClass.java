@@ -232,6 +232,17 @@ public class NIClass
 	}
 	
 	/**
+	 * Is this an array?
+	 *
+	 * @return {@code true} if this is an array.
+	 * @since 2016/04/27
+	 */
+	public boolean isArray()
+	{
+		return thisName().isArray();
+	}
+		
+	/**
 	 * Is this class fully loaded?
 	 *
 	 * @return {@code true} if it is loaded.
@@ -243,6 +254,17 @@ public class NIClass
 	}
 	
 	/**
+	 * Is this a primitive type?
+	 *
+	 * @return {@code true} if this is a primitive type.
+	 * @since 2016/04/27
+	 */
+	public boolean isPrimitive()
+	{
+		return thisName().isPrimitive();
+	}
+	
+	/**
 	 * Returns the methods of this class.
 	 *
 	 * @return The mapping of methods for this class.
@@ -251,6 +273,17 @@ public class NIClass
 	public Map<NCIMethodID, NIMethod> methods()
 	{
 		return methods;
+	}
+	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The current class name.
+	 * @since 2016/04/27
+	 */
+	public ClassNameSymbol thisName()
+	{
+		return base.thisName();
 	}
 }
 

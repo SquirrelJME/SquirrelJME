@@ -30,6 +30,10 @@ import net.multiphasicapps.narf.classinterface.NCIMethodID;
  */
 public class NICore
 {
+	/** The string class. */
+	public static final ClassNameSymbol STRING_CLASS =
+		new ClassNameSymbol("java/lang/String");
+	
 	/** The library which contains classes to load. */
 	protected final NILibrary classlib;
 	
@@ -90,11 +94,22 @@ public class NICore
 				NIException.Issue.METHOD_DOES_NOT_EXIST, String.format(
 				"NI0g %s", __main));
 		
-		if (true)
-			throw new Error("TODO");
-		
 		// Is running
 		_isrunning = true;
+		
+		// Locate the string class
+		NIClass strclass = initClass(STRING_CLASS);
+		
+		// Allocate an array for the input arguments
+		int an = __args.length;
+		NIObject argarr = new NIObject(this, strclass, an);
+		
+		// Wrap the passed arguments to the target VM
+		for (int i = 0; i < an; i++)
+			throw new Error("TODO");
+		
+		if (true)
+			throw new Error("TODO");
 	}
 	
 	/**
@@ -187,6 +202,33 @@ public class NICore
 		{
 			return tm.get(__t);
 		}
+	}
+	
+	/**
+	 * Registers the given thread with the thread mapping.
+	 *
+	 * @param __t The owning thread.
+	 * @param __it The interpreter thread.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/27
+	 */
+	NICore __registerThread(Thread __t, NIThread __it)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null || __it == null)
+			throw new NullPointerException("NARG");
+				
+		// Lock on the thread map
+		Map<Thread, NIThread> tm = threadmap;
+		synchronized (tm)
+		{
+			tm.put(__t, __it);
+		}
+		
+		// Self
+		return this;
 	}
 }
 
