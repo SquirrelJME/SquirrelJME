@@ -10,23 +10,32 @@
 
 package net.multiphasicapps.narf.classinterface;
 
-import net.multiphasicapps.descriptors.MethodSymbol;
-
 /**
- * This represents a method.
+ * This represents a code attribute.
  *
- * @since 2016/04/22
+ * @since 2016/04/27
  */
-public interface NCIMethod
-	extends NCIMember<NCIMethodID, NCIMethodFlags>
+public final class NCICodeAttribute
 {
+	/** The code attribute data. */
+	protected final byte[] data;
+	
 	/**
-	 * Returns the code attribute of this method or {@code null} if there is
-	 * none.
+	 * Initializes the code attribute with the given attribute data.
 	 *
-	 * @return The code attribute or {@code null} if there is none.
+	 * @param __data The code attribute data.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/27
 	 */
-	public abstract NCICodeAttribute code();
+	public NCICodeAttribute(byte... __data)
+		throws NullPointerException
+	{
+		// Check
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		data = __data;
+	}
 }
 

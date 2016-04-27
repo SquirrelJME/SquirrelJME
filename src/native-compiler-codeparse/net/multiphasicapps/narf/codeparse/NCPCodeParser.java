@@ -11,6 +11,7 @@
 package net.multiphasicapps.narf.codeparse;
 
 import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
@@ -40,6 +41,9 @@ public class NCPCodeParser
 	/** The method to parse. */
 	protected final NCIMethod method;
 	
+	/** The code attribute. */
+	protected final NCICodeAttribute code;
+	
 	/** Has this work been done already? */
 	private volatile boolean _did;
 	
@@ -64,6 +68,7 @@ public class NCPCodeParser
 		method = __m;
 		outerclass = __m.outerClass();
 		constantpool = outerclass.constantPool();
+		code = __m.code();
 	}
 	
 	/**

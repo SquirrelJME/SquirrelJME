@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.narf.classfile;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
@@ -28,6 +31,9 @@ public final class NCFMethod
 {
 	/** Raw code attribute. */
 	protected final byte[] code;
+	
+	/** Cached code attribute data. */
+	private volatile Reference<NCICodeAttribute> _ca;
 	
 	/**
 	 * Initializes the class method.
@@ -76,6 +82,25 @@ public final class NCFMethod
 			(cl && (!f.contains(NCIMethodFlag.STATIC))))
 			throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
 				String.format("CF20 %s %s", __id, f));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/27
+	 */
+	@Override
+	public NCICodeAttribute code()
+	{
+		// Obtain the attribute
+		Reference<NCICodeAttribute> ref = _ca;
+		NCICodeAttribute rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			_ca = new WeakReference<>((rv = new NCICodeAttribute(code)));
+		
+		// Return it
+		return rv;
 	}
 }
 
