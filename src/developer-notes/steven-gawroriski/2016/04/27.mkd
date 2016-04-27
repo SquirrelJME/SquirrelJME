@@ -47,3 +47,7 @@ when generating code.
 
 Actually, not too sure if this would even be SSA.
 
+## 12:09
+
+It would be somewhat SSA inspired however.
+
