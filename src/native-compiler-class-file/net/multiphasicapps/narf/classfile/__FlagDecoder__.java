@@ -63,6 +63,10 @@ final class __FlagDecoder__
 		if (0 != (__i & 0x0200))
 			fl.add(NCIClassFlag.INTERFACE);
 		
+		// Abstract?
+		if (0 != (__i & 0x0400))
+			fl.add(NCIClassFlag.ABSTRACT);
+		
 		// Synthetic?
 		if (0 != (__i & 0x1000))
 			fl.add(NCIClassFlag.SYNTHETIC);
