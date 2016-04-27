@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.narf.codeparse;
 
+import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCILibrary;
+import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.narf.classinterface.NCIPool;
+
 /**
  * This class is given a method which is then parsed.
  *
@@ -17,5 +22,38 @@ package net.multiphasicapps.narf.codeparse;
  */
 public class NCPCodeParser
 {
+	/** The library for class lookup (optimization). */
+	protected final NCILibrary library;
+	
+	/** The containing class. */
+	protected final NCIClass outerclass;
+	
+	/** The constant pool. */
+	protected final NCIPool constantpool;
+	
+	/** The method to parse. */
+	protected final NCIMethod method;
+	
+	/**
+	 * Initializes the code parser.
+	 *
+	 * @param __lib The library used to lookup other class definitions.
+	 * @param __m The method to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/27
+	 */
+	public NCPCodeParse(NCILibrary __lib, NCIMethod __m)
+		throws NullPointerException
+	{
+		// Check
+		if (__lib == null || __m == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		library = __lib;
+		method = __m;
+		outerclass = __m.outerClass();
+		constantpool = outerclass.constantPool();
+	}
 }
 
