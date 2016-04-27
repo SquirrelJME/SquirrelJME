@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.narf.classinterface.NCIMember;
 import net.multiphasicapps.narf.classinterface.NCIMemberFlags;
+import net.multiphasicapps.narf.classinterface.NCIMemberID;
 
 /**
  * This represents a member which exists within a class.
@@ -27,6 +30,9 @@ public abstract class NIMember<M extends NCIMember>
 	
 	/** The base member data. */
 	protected final M base;
+	
+	/** The string representation of this member. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the class member.
@@ -65,6 +71,27 @@ public abstract class NIMember<M extends NCIMember>
 	public final M base()
 	{
 		return base;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/27
+	 */
+	@Override
+	public String toString()
+	{
+		// Get reference
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Needs caching?
+		NCIMemberID nat = base.nameAndType();
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = outerclass.thisName() + "::" +
+				nat.name() + ":" + nat.type()));
+		
+		// Return the given string
+		return rv;
 	}
 }
 

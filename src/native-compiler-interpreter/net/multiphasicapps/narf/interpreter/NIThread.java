@@ -68,5 +68,38 @@ public class NIThread
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Invokes the given method within the current thread's context.
+	 *
+	 * @param __m The method to invoke.
+	 * @param __args The method arguments.
+	 * @return The return value of the invoked method.
+	 * @throws NIException If the thread of execution is not this thread or
+	 * the method is abstract.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/27
+	 */
+	public Object invoke(NIMethod __m, Object... __args)
+		throws NIException, NullPointerException
+	{
+		// Check
+		if (__m == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error NI0j Attempted to invoke a method which is
+		// across the context of a thread.}
+		if (core.thread(thread) != this)
+			throw new NIException(core, NIException.Issue.CROSS_CONTEXT,
+				"NI0j");
+		
+		// {@squirreljme.error NI0k Attempted to invoke an abstract method.
+		// (The method to invoke)}
+		if (__m.flags().isAbstract())
+			throw new NIException(core, NIException.Issue.INVOKE_ABSTRACT,
+				String.format("NI0k", __m));
+		
+		throw new Error("TODO");
+	}
 }
 

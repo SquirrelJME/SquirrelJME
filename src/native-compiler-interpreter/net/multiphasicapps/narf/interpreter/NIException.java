@@ -129,6 +129,12 @@ public class NIException
 		/** Attempted to allocate an array of negative length. */
 		NEGATIVE_ARRAY_LENGTH,
 		
+		/** Attempt to invoke a method across a context. */
+		CROSS_CONTEXT,
+		
+		/** Attempt to invoke an abstract method. */
+		INVOKE_ABSTRACT,
+		
 		/** End. */
 		;
 	}

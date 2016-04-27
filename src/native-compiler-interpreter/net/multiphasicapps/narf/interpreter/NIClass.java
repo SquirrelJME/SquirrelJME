@@ -38,6 +38,10 @@ public class NIClass
 		new NCIMethodID(new IdentifierSymbol("<clinit>"),
 		new MethodSymbol("()V"));
 	
+	/** No argument array. */
+	private static final Object[] _NO_ARGS =
+		new Object[0];
+	
 	/** The interpreter core. */
 	protected final NICore core;
 	
@@ -213,7 +217,11 @@ public class NIClass
 		NIMethod sinit = methods.get(STATIC_INITIALIZER);
 		if (sinit != null && sinit.flags().isStatic())
 		{
-			throw new Error("TODO");
+			// Get the current thread so that execution may be performed on it
+			NIThread tt = core.thread(Thread.currentThread());
+			
+			// Invoke the method
+			tt.invoke(sinit, _NO_ARGS);
 		}
 		
 		// Class loaded

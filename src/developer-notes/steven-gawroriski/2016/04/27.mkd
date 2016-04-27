@@ -1,2 +1,8 @@
 # 2016/04/27
 
+## 10:27
+
+I wonder how valid it would be for `newarray` and `anewarray` to return the
+same object if an attempt is made to allocate an array of zero length for a
+given class.
+
