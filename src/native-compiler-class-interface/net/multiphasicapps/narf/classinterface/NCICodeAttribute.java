@@ -17,25 +17,46 @@ package net.multiphasicapps.narf.classinterface;
  */
 public final class NCICodeAttribute
 {
-	/** The code attribute data. */
-	protected final byte[] data;
+	/** The attribute data buffer. */
+	protected final NCIByteBuffer abuffer;
+	
+	/** The owning method. */
+	protected final NCIMethod method;
+
+	/**
+	 * Initializes the code attribute with the given attribute data.
+	 *
+	 * @param __m The method which owns this code attribute.
+	 * @param __d The code attribute data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/27
+	 */
+	public NCICodeAttribute(NCIMethod __m, byte... __d)
+		throws NullPointerException
+	{
+		this(__m, __d, 0, __d.length);
+	}
 	
 	/**
 	 * Initializes the code attribute with the given attribute data.
 	 *
-	 * @param __data The code attribute data.
+	 * @param __m The method which owns this code attribute.
+	 * @param __d The code attribute data.
+	 * @param __o The starting offset to read bytes from.
+	 * @param __l The length of the area to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/27
 	 */
-	public NCICodeAttribute(byte... __data)
+	public NCICodeAttribute(NCIMethod __m, byte[] __d, int __o, int __l)
 		throws NullPointerException
 	{
 		// Check
-		if (__data == null)
+		if (__m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		data = __data;
+		method = __m;
+		abuffer = new NCIByteBuffer(__d, __o, __l);
 	}
 }
 

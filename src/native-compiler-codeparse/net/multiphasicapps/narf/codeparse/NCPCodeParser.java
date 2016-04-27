@@ -89,6 +89,9 @@ public class NCPCodeParser
 			_did = true;
 		}
 		
+		// Local cache
+		final NCICodeAttribute code = this.code;
+		
 		throw new Error("TODO");
 	}
 }

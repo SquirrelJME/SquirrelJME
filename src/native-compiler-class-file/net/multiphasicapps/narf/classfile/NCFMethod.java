@@ -97,7 +97,7 @@ public final class NCFMethod
 		
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))
-			_ca = new WeakReference<>((rv = new NCICodeAttribute(code)));
+			_ca = new WeakReference<>((rv = new NCICodeAttribute(this, code)));
 		
 		// Return it
 		return rv;
