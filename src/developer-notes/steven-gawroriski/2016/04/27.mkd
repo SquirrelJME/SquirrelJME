@@ -13,3 +13,33 @@ will need that for the invocation of methods. The first thing I will do is the
 native compiler core so that the code generator and parsers are in separated
 parts along with the personalities split apart.
 
+## 11:09
+
+Ok so as I have stated on the 20th of this month, the SSA and basic block
+layout will remain simple so that although it would not heavily be that
+optimized it should result in faster JITs for much weaker systems. The
+resulting code should be smaller and faster than a literal pure interpreter
+translation of the byte code. In essence, SSA will only be really performed
+within the internals of the basic block rather than the entire method. So to
+keep things simple, writes to locals will always be performed and basic blocks
+will start on methods. So the instruction before the method is called, if
+anything is on the stack it is calculated and stored into variables. Then at
+the start of the new block which has the method call, the arguments are passed
+around to the sub-method and existing stack storage places are ignored. Also,
+getting and putting of fields will be the start of basic blocks also. Also, any
+jump target is the start of a basic block. An exception for getting of a field
+that is not the start of a basic block will be one which is final and has a
+constant value assigned to it. That will just use the given value of the
+field as a temporary, however this might not always be possible for instances.
+I can also perform basic optimization with locals. For example if a local is
+pushed to the stack and it is checked for null or an array operation is
+performed then its length is "known" or it is null/not-null. So this means that
+in addition to jump targets, I need to consider local variable sets. If a local
+variable is set by any instruction then it cannot use a global cached state.
+For example, the input of a method, the local variable for this if not changed
+by the method it will be known that it is always non-null so it will be flagged
+as such. However if the given parameter is changed, then it will be null
+checked in each basic block. The resulting SSA would not produce the fastest
+code, but the code generator should run fast and not use that much memory
+when generating code.
+
