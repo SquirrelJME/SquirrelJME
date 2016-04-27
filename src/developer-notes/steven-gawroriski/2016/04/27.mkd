@@ -43,3 +43,7 @@ checked in each basic block. The resulting SSA would not produce the fastest
 code, but the code generator should run fast and not use that much memory
 when generating code.
 
+## 12:04
+
+Actually, not too sure if this would even be SSA.
+

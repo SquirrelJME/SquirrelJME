@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-Hairball-Name: native-compiler-program
+X-Hairball-UUID: a047f5d4-7d56-41ff-bea0-50c236d1f016
+X-Hairball-Depends: javame-cldc-compact
+LIBlet-Title: NARF SSA Representation
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160427
+LIBlet-Description: This is the representation of a program
+  which describes how it is executed.
+
