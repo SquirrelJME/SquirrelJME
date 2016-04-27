@@ -229,6 +229,17 @@ public class NIClass
 	}
 	
 	/**
+	 * Returns the core of the interpreter.
+	 *
+	 * @return The interpreter core.
+	 * @since 2016/04/27
+	 */
+	public NICore core()
+	{
+		return core;
+	}
+	
+	/**
 	 * Returns the flags for this class.
 	 *
 	 * @return The class flags.

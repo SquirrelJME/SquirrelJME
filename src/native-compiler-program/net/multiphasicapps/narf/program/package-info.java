@@ -14,5 +14,5 @@
  * @since 2016/04/27
  */
 
-package net.multiphasicapps.program;
+package net.multiphasicapps.narf.program;
 

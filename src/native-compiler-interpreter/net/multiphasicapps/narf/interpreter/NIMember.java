@@ -25,6 +25,9 @@ import net.multiphasicapps.narf.classinterface.NCIMemberID;
  */
 public abstract class NIMember<M extends NCIMember>
 {
+	/** The execution core. */
+	protected final NICore core;
+	
 	/** The owning class. */
 	protected final NIClass outerclass;
 	
@@ -51,6 +54,7 @@ public abstract class NIMember<M extends NCIMember>
 		
 		// Set
 		outerclass = __oc;
+		core = __oc.core();
 		base = __m;
 	}
 	

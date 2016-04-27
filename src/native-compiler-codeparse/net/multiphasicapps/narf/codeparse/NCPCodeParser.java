@@ -14,6 +14,8 @@ import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
+import net.multiphasicapps.narf.program.NRBasicBlock;
+import net.multiphasicapps.narf.program.NRProgram;
 
 /**
  * This class is given a method which is then parsed.
@@ -22,6 +24,10 @@ import net.multiphasicapps.narf.classinterface.NCIPool;
  */
 public class NCPCodeParser
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The library for class lookup (optimization). */
 	protected final NCILookup lookup;
 	
@@ -33,6 +39,9 @@ public class NCPCodeParser
 	
 	/** The method to parse. */
 	protected final NCIMethod method;
+	
+	/** Has this work been done already? */
+	private volatile boolean _did;
 	
 	/**
 	 * Initializes the code parser.
@@ -55,6 +64,27 @@ public class NCPCodeParser
 		method = __m;
 		outerclass = __m.outerClass();
 		constantpool = outerclass.constantPool();
+	}
+	
+	/**
+	 * Parses and returns the resultant program.
+	 *
+	 * @return The decoded program.
+	 * @since 2016/04/27
+	 */
+	public NRProgram get()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// {@squirreljme.error ND01 Program parsing is or has already
+			// been performed.}
+			if (_did)
+				throw new IllegalStateException("ND01");
+			_did = true;
+		}
+		
+		throw new Error("TODO");
 	}
 }
 

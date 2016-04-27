@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import net.multiphasicapps.narf.program.NRProgram;
+
 /**
  * This represents a thread which runs inside of the interpreter.
  *
@@ -93,11 +95,8 @@ public class NIThread
 			throw new NIException(core, NIException.Issue.CROSS_CONTEXT,
 				"NI0j");
 		
-		// {@squirreljme.error NI0k Attempted to invoke an abstract method.
-		// (The method to invoke)}
-		if (__m.flags().isAbstract())
-			throw new NIException(core, NIException.Issue.INVOKE_ABSTRACT,
-				String.format("NI0k", __m));
+		// Obtain the method program
+		NRProgram prg = __m.program();
 		
 		throw new Error("TODO");
 	}
