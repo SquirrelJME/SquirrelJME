@@ -6,3 +6,10 @@ I wonder how valid it would be for `newarray` and `anewarray` to return the
 same object if an attempt is made to allocate an array of zero length for a
 given class.
 
+## 10:39
+
+Time to start delving into the native code generation and SSA stuff since I
+will need that for the invocation of methods. The first thing I will do is the
+native compiler core so that the code generator and parsers are in separated
+parts along with the personalities split apart.
+
