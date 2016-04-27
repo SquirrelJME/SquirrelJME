@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-Hairball-Name: native-compiler-os-linux
 X-Hairball-UUID: 4e718579-3ff9-4743-9913-8f2aa94f7d02
 X-Hairball-Depends: native-compiler
-LIBlet-Title: POIT OS Linux
+LIBlet-Title: NARF OS Linux
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160229
 LIBlet-Description: This supports the generation of code for the Linux
