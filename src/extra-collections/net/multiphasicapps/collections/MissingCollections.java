@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 import java.util.Set;
 
 /**
@@ -139,8 +140,11 @@ public class MissingCollections
 		if (__l instanceof __UnmodifiableList__)
 			return __l;
 		
-		// Wrap
-		return new __UnmodifiableList__<V>(__l);
+		// Wrap, make sure that if the list being wrapped can be randomly
+		// accessed that it also carries the RandomAccess interface.
+		if (__l instanceof RandomAccess)
+			return new __UnmodifiableList__.__Random__<V>(__l);
+		return new __UnmodifiableList__.__Sequential__<V>(__l);
 	}
 	
 	/**

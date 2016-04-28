@@ -16,6 +16,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.RandomAccess;
 
 /**
  * This symbol describes the arguments and the return value which a method
@@ -25,6 +26,7 @@ import java.util.List;
  */
 public final class MethodSymbol
 	extends MemberTypeSymbol
+	implements RandomAccess
 {
 	/** Offsets to arguments (last is return value). */
 	private final int[] _offsets;

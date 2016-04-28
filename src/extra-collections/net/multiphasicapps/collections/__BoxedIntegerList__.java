@@ -11,6 +11,7 @@
 package net.multiphasicapps.collections;
 
 import java.util.AbstractList;
+import java.util.RandomAccess;
 
 /**
  * This wraps an integer array and provides boxes access to getting and
@@ -20,6 +21,7 @@ import java.util.AbstractList;
  */
 final class __BoxedIntegerList__
 	extends AbstractList<Integer>
+	implements RandomAccess
 {
 	/** The original primitive array. */
 	protected final int[] primitives;

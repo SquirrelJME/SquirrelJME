@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 import java.util.Set;
 
 /**
@@ -26,6 +27,7 @@ import java.util.Set;
  */
 public final class NCIPool
 	extends AbstractList<NCIPoolEntry>
+	implements RandomAccess
 {
 	/** Internal entry list. */
 	private final NCIPoolEntry[] _entries;

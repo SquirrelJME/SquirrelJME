@@ -11,6 +11,7 @@
 package net.multiphasicapps.collections;
 
 import java.util.AbstractList;
+import java.util.RandomAccess;
 
 /**
  * This is a list which contains no elements.
@@ -19,6 +20,7 @@ import java.util.AbstractList;
  */
 final class __EmptyList__
 	extends AbstractList
+	implements RandomAccess
 {
 	/**
 	 * Initializes the empty list.

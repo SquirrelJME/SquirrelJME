@@ -12,6 +12,7 @@ package net.multiphasicapps.collections;
 
 import java.util.AbstractList;
 import java.util.List;
+import java.util.RandomAccess;
 
 /**
  * This is a list which cannot be modified.
@@ -19,7 +20,7 @@ import java.util.List;
  * @param <V> The type of value the list stores.
  * @since 2016/03/03
  */
-class __UnmodifiableList__<V>
+abstract class __UnmodifiableList__<V>
 	extends AbstractList<V>
 {
 	/** The list to wrap. */
@@ -32,7 +33,7 @@ class __UnmodifiableList__<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/03
 	 */
-	__UnmodifiableList__(List<V> __l)
+	private __UnmodifiableList__(List<V> __l)
 		throws NullPointerException
 	{
 		// Check
@@ -48,7 +49,7 @@ class __UnmodifiableList__<V>
 	 * @since 2016/03/03
 	 */
 	@Override
-	public V get(int __i)
+	public final V get(int __i)
 	{
 		return wrapped.get(__i);
 	}
@@ -58,9 +59,56 @@ class __UnmodifiableList__<V>
 	 * @since 2016/03/03
 	 */
 	@Override
-	public int size()
+	public final int size()
 	{
 		return wrapped.size();
+	}
+	
+	/**
+	 * This is a list which implements {@link RandomAccess} so that the sort
+	 * and search operations do not result in an entire copy of the list
+	 * before the operation is performed.
+	 *
+	 * @param <V> The type to contain.
+	 * @since 2016/04/28
+	 */
+	static final class __Random__<V>
+		extends __UnmodifiableList__<V>
+		implements RandomAccess
+	{
+		/**
+		 * Initializes the random access list.
+		 *
+		 * @param __l The list to wrap.
+		 * @since 2016/04/28
+		 */
+		__Random__(List<V> __l)
+		{
+			super(__l);
+		}
+	}
+	
+	/**
+	 * This is a list which does not implement {@link RandomAccess} and as
+	 * such when sort or binary search is done, an intermediate array is used
+	 * in place.
+	 *
+	 * @param <V> The type to contain.
+	 * @since 2016/04/28
+	 */
+	static final class __Sequential__<V>
+		extends __UnmodifiableList__<V>
+	{
+		/**
+		 * Initializes the sequential access list.
+		 *
+		 * @param __l The list to wrap.
+		 * @since 2016/04/28
+		 */
+		__Sequential__(List<V> __l)
+		{
+			super(__l);
+		}
 	}
 }
 
