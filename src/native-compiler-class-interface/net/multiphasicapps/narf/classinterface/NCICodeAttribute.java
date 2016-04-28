@@ -58,5 +58,27 @@ public final class NCICodeAttribute
 		method = __m;
 		abuffer = new NCIByteBuffer(__d, __o, __l);
 	}
+	
+	/**
+	 * Returns the maximum number of local variables used.
+	 *
+	 * @return The maximum number of local varaibles.
+	 * @since 2016/04/27
+	 */
+	public int maxLocals()
+	{
+		return abuffer.readUnsignedShort(2);
+	}
+	
+	/**
+	 * Returns the maximum number of stack variables used.
+	 *
+	 * @return The maximum number of stack variables.
+	 * @since 2016/04/27
+	 */
+	public int maxStack()
+	{
+		return abuffer.readUnsignedShort(0);
+	}
 }
 

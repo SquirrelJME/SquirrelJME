@@ -18,6 +18,7 @@ operation of this software.
    * [Consistency Guidelines](maintainer/consistency.mkd)
    * Target porting Notes
      * HW: [Nintendo 64](maintainer/hw_n64.mkd)
+     * HW: [Nintendo NES](maintainer/hw_nes.mkd)
      * OS: [DOS Family](maintainer/os_dos.mkd)
      * OS: [Mac OS Classic](maintainer/os_macos.mkd)
      * OS: [Palm OS](maintainer/os_palmos.mkd)
