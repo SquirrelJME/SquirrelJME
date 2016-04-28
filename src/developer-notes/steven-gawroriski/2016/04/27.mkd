@@ -51,3 +51,8 @@ Actually, not too sure if this would even be SSA.
 
 It would be somewhat SSA inspired however.
 
+## 22:03
+
+When the sorting algorithms are implemented, there will quite literally be
+quite a number of duplicate code which does similar things when sorting.
+
