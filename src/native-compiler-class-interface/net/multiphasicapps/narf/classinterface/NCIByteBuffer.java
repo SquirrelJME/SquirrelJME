@@ -50,7 +50,7 @@ public class NCIByteBuffer
 		// Set
 		_data = __d;
 		_offset = __o;
-		_length = __o;
+		_length = __l;
 	}
 	
 	/**
@@ -142,6 +142,34 @@ public class NCIByteBuffer
 	}
 	
 	/**
+	 * Creates a view of the current byte buffer.
+	 *
+	 * @param __s The relative start of the sub-window.
+	 * @param __l The length of the sub-window.
+	 * @return The sub-window view.
+	 * @throws IndexOutOfBoundsException If the window region is not within
+	 * bounds or any value is negative.
+	 * @since 2016/04/28
+	 */
+	public NCIByteBuffer window(int __s, int __l)
+		throws IndexOutOfBoundsException
+	{
+		// No actual window
+		int of = _offset;
+		int ll = _length;
+		if (__s == 0 && __l == ll)
+			return this;
+		
+		// Out of bounds?
+		int news = of + __s;
+		if (__s < 0 || __l < 0 || __l > ll || ((news + __l) > (of + ll)))
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Setup window
+		return new NCIByteBuffer(_data, news, __l);
+	}
+	
+	/**
 	 * Checks the bounds of a given read and returns the offset to base reads
 	 * from.
 	 *
@@ -158,8 +186,9 @@ public class NCIByteBuffer
 		int bl = _length;
 		
 		// Check bounds
-		if (__p < 0 || (__p + __l) >= bl)
-			throw new IndexOutOfBoundsException(String.format("IOOB %d", __p));
+		if (__p < 0 || (__p + __l) > bl)
+			throw new IndexOutOfBoundsException(String.format("IOOB %d %d %d",
+				__p, __l, bl));
 		
 		// Calculated base
 		return __p + bo;

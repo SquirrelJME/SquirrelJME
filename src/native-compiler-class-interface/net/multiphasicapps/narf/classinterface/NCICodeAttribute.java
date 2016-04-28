@@ -17,11 +17,30 @@ package net.multiphasicapps.narf.classinterface;
  */
 public final class NCICodeAttribute
 {
+	/** Maximum code length. */
+	public static final int MAXIMUM_CODE_LENGTH =
+		65535;
+
 	/** The attribute data buffer. */
 	protected final NCIByteBuffer abuffer;
 	
+	/** The code buffer. */
+	protected final NCIByteBuffer cbuffer;
+	
 	/** The owning method. */
 	protected final NCIMethod method;
+	
+	/** Maximum locals. */
+	protected final int maxlocals;
+	
+	/** Maximum stack. */
+	protected final int maxstack;
+	
+	/** The length of code. */
+	protected final int codelen;
+	
+	/** The number of exception handlers. */
+	protected final int numhandlers;
 
 	/**
 	 * Initializes the code attribute with the given attribute data.
@@ -57,6 +76,35 @@ public final class NCICodeAttribute
 		// Set
 		method = __m;
 		abuffer = new NCIByteBuffer(__d, __o, __l);
+		
+		// Read in values
+		maxlocals = abuffer.readUnsignedShort(2);
+		maxstack = abuffer.readUnsignedShort(0);
+		
+		// {@squirreljme.error NC0y The methode code length exceeds the maximum
+		// length limit. (The containing method; The code length)}
+		codelen = abuffer.readInt(4);
+		if (codelen < 0 || codelen > MAXIMUM_CODE_LENGTH)
+			throw new NCIException(NCIException.Issue.LARGE_CODE,
+				String.format("NC0y %s %d", method.nameAndType(), codelen));
+		
+		// Setup code buffer
+		cbuffer = abuffer.window(8, codelen);
+		
+		// Exception handlers
+		numhandlers = abuffer.readUnsignedShort(8 + codelen);
+	}
+	
+	/**
+	 * Returns the buffer which provides access to the raw byte code of a
+	 * method.
+	 *
+	 * @return The view of the method byte code.
+	 * @since 2016/04/28
+	 */
+	public NCIByteBuffer code()
+	{
+		return cbuffer;
 	}
 	
 	/**
@@ -67,7 +115,7 @@ public final class NCICodeAttribute
 	 */
 	public int maxLocals()
 	{
-		return abuffer.readUnsignedShort(2);
+		return maxlocals;
 	}
 	
 	/**
@@ -78,7 +126,7 @@ public final class NCICodeAttribute
 	 */
 	public int maxStack()
 	{
-		return abuffer.readUnsignedShort(0);
+		return maxstack;
 	}
 }
 

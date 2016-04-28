@@ -56,3 +56,12 @@ It would be somewhat SSA inspired however.
 When the sorting algorithms are implemented, there will quite literally be
 quite a number of duplicate code which does similar things when sorting.
 
+## 22:15
+
+However, if I choose merge sort then the sort of an array can just recursively
+call itself. That is, it would split as small as possible and then call the
+from index and to index variant to sort the internal section. There would be
+function all overhead, especially with very large arrays however. It would
+be possible that there would not be enough stack space to call that many
+sub-iterations of it.
+

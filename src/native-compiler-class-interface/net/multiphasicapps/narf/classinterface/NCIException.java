@@ -145,6 +145,9 @@ public class NCIException
 		/** The name for a method is not valid. */
 		INVALID_METHOD_NAME,
 		
+		/** The amount of byte code is too large. */
+		LARGE_CODE,
+		
 		/** End. */
 		;
 	}
