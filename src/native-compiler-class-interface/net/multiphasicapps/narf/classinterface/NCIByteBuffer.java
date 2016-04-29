@@ -54,6 +54,17 @@ public class NCIByteBuffer
 	}
 	
 	/**
+	 * Returns the length of the buffer.
+	 *
+	 * @return The buffer length.
+	 * @since 2016/04/29
+	 */
+	public int length()
+	{
+		return _length;
+	}
+	
+	/**
 	 * Reads a byte at the given position.
 	 *
 	 * @param __p The position to read from.

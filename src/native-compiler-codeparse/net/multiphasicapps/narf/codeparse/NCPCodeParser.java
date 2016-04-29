@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.narf.codeparse;
 
+import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCILookup;
@@ -44,6 +45,9 @@ public class NCPCodeParser
 	/** The code attribute. */
 	protected final NCICodeAttribute code;
 	
+	/** The actual code. */
+	protected final NCIByteBuffer actual;
+	
 	/** Has this work been done already? */
 	private volatile boolean _did;
 	
@@ -69,6 +73,7 @@ public class NCPCodeParser
 		outerclass = __m.outerClass();
 		constantpool = outerclass.constantPool();
 		code = __m.code();
+		actual = code.code();
 	}
 	
 	/**
@@ -82,7 +87,7 @@ public class NCPCodeParser
 		// Lock
 		synchronized (lock)
 		{
-			// {@squirreljme.error ND01 Program parsing is or has already
+			// {@squirreljme.error ND01 Program parsing is being or has already
 			// been performed.}
 			if (_did)
 				throw new IllegalStateException("ND01");
@@ -90,7 +95,10 @@ public class NCPCodeParser
 		}
 		
 		// Local cache
-		final NCICodeAttribute code = this.code;
+		NCICodeAttribute code = this.code;
+		NCIByteBuffer actual = this.actual;
+		
+		// 
 		
 		throw new Error("TODO");
 	}
