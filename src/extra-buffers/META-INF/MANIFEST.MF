@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-X-Hairball-Name: extra-buffers
-X-Hairball-UUID: 1d0bb722-4bee-4d58-bda5-e430ce21c185
-X-Hairball-Depends: javame-cldc-compact
-LIBlet-Title: Extra Buffers
-LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160323
-LIBlet-Description: This contains classes which act as extra buffered data.
-

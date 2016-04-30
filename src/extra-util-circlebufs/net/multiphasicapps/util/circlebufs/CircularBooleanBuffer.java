@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.buffers;
+package net.multiphasicapps.util.circlebufs;
 
 import java.util.NoSuchElementException;
 

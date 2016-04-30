@@ -12,8 +12,7 @@ package net.multiphasicapps.io.datapipe;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.buffers.CircularBooleanBuffer;
-import net.multiphasicapps.buffers.CircularByteBuffer;
+import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
 
 /**
  * This is a data processor which is given input bytes and performs

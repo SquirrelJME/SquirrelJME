@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains extra buffers.
+ * This package contains the circular buffer code.
  *
- * @since 2016/03/23
+ * @since 2016/04/30
  */
 
-package net.multiphasicapps.buffers;
+package net.multiphasicapps.util.circlebufs;
 
