@@ -102,7 +102,7 @@ public abstract class DataPipe
 		throws PipeProcessException, PipeStalledException;
 	
 	/**
-	 * Closes the input end of the pipe indicating that no more bytes are
+	 * Completes the input end of the pipe indicating that no more bytes are
 	 * available for input.
 	 *
 	 * @return {@code this}.
@@ -111,7 +111,7 @@ public abstract class DataPipe
 	 * @throws PipeProcessException If this is called during processing.
 	 * @since 2016/04/30
 	 */
-	public final DataPipe closeInput()
+	public final DataPipe completeInput()
 		throws PipeInputClosedException, PipeProcessException
 	{
 		// Lock
@@ -245,6 +245,21 @@ public abstract class DataPipe
 	}
 	
 	/**
+	 * Returns {@code true} if the input side of the pipe is complete.
+	 *
+	 * @return {@code true} if there is no more input to be read.
+	 * @since 2016/04/30
+	 */
+	public final boolean isInputComplete()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _input.isComplete();
+		}
+	}
+	
+	/**
 	 * Offers a single byte to the pipe input.
 	 *
 	 * @param __b The byte to offer to the input.
@@ -348,6 +363,22 @@ public abstract class DataPipe
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Indicates that processing is complete and that there is no more
+	 * output to be generated.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/04/30
+	 */
+	protected final DataPipe setOutputComplete()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

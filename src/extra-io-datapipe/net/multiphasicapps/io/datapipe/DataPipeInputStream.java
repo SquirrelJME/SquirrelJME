@@ -145,7 +145,7 @@ public class DataPipeInputStream
 						// EOF reached?
 						if (rc < 0)
 						{
-							processor.closeInput();
+							processor.completeInput();
 							continue;
 						}
 						

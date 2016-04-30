@@ -11,6 +11,7 @@
 package net.multiphasicapps.io.inflate;
 
 import java.io.IOException;
+import net.multiphasicapps.io.datapipe.PipeProcessException;
 
 /**
  * This is the base class for any exceptions the inflater may thrown when
@@ -19,7 +20,7 @@ import java.io.IOException;
  * @since 2016/03/10
  */
 public class InflaterException
-	extends IOException
+	extends PipeProcessException
 {
 	/**
 	 * Initializes the exception with no message or cause.

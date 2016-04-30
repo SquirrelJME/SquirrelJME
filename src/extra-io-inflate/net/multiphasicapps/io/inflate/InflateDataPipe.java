@@ -10,11 +10,12 @@
 
 package net.multiphasicapps.io.inflate;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.io.bits.BitCompactor;
 import net.multiphasicapps.io.datapipe.DataPipe;
+import net.multiphasicapps.io.datapipe.PipeProcessException;
+import net.multiphasicapps.io.datapipe.PipeStalledException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.circlebufs.CircularBooleanBuffer;
 import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
@@ -75,7 +76,9 @@ public class InflateDataPipe
 				public void ready(byte __v)
 				{
 					// Give it to the output data
-					pipeOutput(__v);
+					if (true)
+						throw new Error("TODO");
+					/*pipeOutput(__v);*/
 					
 					// Also give it to the sliding window
 					window.append(__v);
@@ -131,7 +134,7 @@ public class InflateDataPipe
 	 */
 	@Override
 	protected void process()
-		throws IOException, WaitingException
+		throws PipeProcessException, PipeStalledException
 	{
 		// Nothing left? Stop
 		if (_nothingleft)
@@ -143,7 +146,9 @@ public class InflateDataPipe
 		for (byte[] qq = new byte[READQ];;)
 		{
 			// Read in all bytes
-			int rc = pipeInput(qq, 0, READQ);
+			int rc = READQ + 1/*pipeInput(qq, 0, READQ)*/;
+			if (true)
+				throw new Error("TODO");
 			
 			// No more bytes to read?
 			if (rc <= 0)
@@ -158,8 +163,8 @@ public class InflateDataPipe
 		while (!_nothingleft)
 		{
 			// Require more available bytes if not finished
-			if (!isFinished() && inputbits.available() < REQUIRED_BITS)
-				throw new WaitingException("XI0e");
+			if (!isInputComplete() && inputbits.available() < REQUIRED_BITS)
+				throw new PipeStalledException("XI0e");
 		
 			// Perform work
 			try
@@ -205,7 +210,7 @@ public class InflateDataPipe
 						
 						// Unknown
 					default:
-						throw new IOException(String.format("XI0f",
+						throw new PipeProcessException(String.format("XI0f",
 							_task.name()));
 				}
 			}
@@ -213,7 +218,7 @@ public class InflateDataPipe
 			// Short read
 			catch (NoSuchElementException nsee)
 			{
-				throw new IOException("XI0g", nsee);
+				throw new PipeProcessException("XI0g", nsee);
 			}
 		}
 	}
@@ -227,11 +232,11 @@ public class InflateDataPipe
 	 * value is {@code 0} then shift 16 is used.
 	 * @param __val Is the current bit set?
 	 * @return The shift value to OR into.
-	 * @throws IOException If the shift is out of range.
+	 * @throws PipeProcessException If the shift is out of range.
 	 * @since 2016/03/13
 	 */
 	private int __alphaShift(int __c, boolean __val)
-		throws IOException
+		throws PipeProcessException
 	{
 		// Check
 		if (__c < 0 || __c >= 19)
@@ -251,11 +256,11 @@ public class InflateDataPipe
 	 *
 	 * @param __c The current index to write
 	 * @return The actual position in the raw code length array to write to.
-	 * @throws IOException If the read position is out of range.
+	 * @throws PipeProcessException If the read position is out of range.
 	 * @since 2016/03/13
 	 */
 	private int __alphaSwap(int __c)
-		throws IOException
+		throws PipeProcessException
 	{
 		// Check
 		if (__c < 0 || __c >= 19)
@@ -297,12 +302,12 @@ public class InflateDataPipe
 	 * @param __c The input code.
 	 * @param __len Length tree.
 	 * @param __dist Distance tree.
-	 * @throws IOException On read/write error.s
+	 * @throws PipeProcessException On read/write error.s
 	 * @since 2016/03/12
 	 */
 	private void __handleCode(int __c, HuffmanTree<Integer> __len,
 		HuffmanTree<Integer> __dist)
-		throws IOException
+		throws PipeProcessException
 	{
 		// Literal byte value
 		if (__c >= 0 && __c <= 255)
@@ -318,7 +323,7 @@ public class InflateDataPipe
 			
 			// Go back to reading the header
 			_task = __Task__.READ_HEADER;
-			throw new WaitingException("XI0i");
+			throw new PipeStalledException("XI0i");
 		}
 		
 		// Window based result
@@ -368,11 +373,11 @@ public class InflateDataPipe
 	 *
 	 * @param __dist The distance codes.
 	 * @return The distance to actually use
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/12
 	 */
 	private int __handleDistance(HuffmanTree<Integer> __dist)
-		throws IOException
+		throws PipeProcessException
 	{
 		// If using fixed huffman read 5 bits since they are all the same
 		// Otherwise for dynamic use the huffman tree symbol set
@@ -408,11 +413,11 @@ public class InflateDataPipe
 	 *
 	 * @param __c Input code value.
 	 * @throws InflaterException If the code is an invalid length.
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/12
 	 */
 	private int __handleLength(int __c)
-		throws InflaterException, IOException
+		throws InflaterException, PipeProcessException
 	{
 		// If the code is 285 then the length will be that
 		if (__c == 285)
@@ -454,13 +459,13 @@ public class InflateDataPipe
 	 * the values being read are encoded with.
 	 * @param __out The output array.
 	 * @param __next The next value to read.
-	 * @throws IOException On read errors.
+	 * @throws PipeProcessException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/28
 	 */
 	private int __readCodeBits(HuffmanTree<Integer> __codes, int[] __out,
 		int __next)
-		throws IOException, NullPointerException
+		throws PipeProcessException, NullPointerException
 	{
 		// Check
 		if (__codes == null || __out == null)
@@ -545,11 +550,11 @@ public class InflateDataPipe
 	 *
 	 * This is second (part A).
 	 *
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/13
 	 */
 	private void __readDynamicHuffmanAlphabetCLEN()
-		throws IOException
+		throws PipeProcessException
 	{
 		// Current code length
 		int clen = _dhclen;
@@ -588,8 +593,8 @@ public class InflateDataPipe
 			}
 			
 			// Not enough bits to read code lengths
-			if (!isFinished() && inputbits.available() < 3)
-				throw new WaitingException("XI0i");
+			if (!isInputComplete() && inputbits.available() < 3)
+				throw new PipeStalledException("XI0i");
 			
 			// Read three bits
 			cll[__alphaSwap(next)] = inputbits.removeFirstInt(3);
@@ -610,11 +615,11 @@ public class InflateDataPipe
 	 * the encoding of the values here are a bit more complex because they
 	 * are compressed with the codelengths themselves.
 	 *
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/13
 	 */
 	private void __readDynamicHuffmanAlphabetLITDIST()
-		throws IOException
+		throws PipeProcessException
 	{
 		// Get the tree and the max bit count used
 		HuffmanTree<Integer> htree = _clentree;
@@ -650,13 +655,13 @@ public class InflateDataPipe
 					_task = __Task__.DYNAMIC_HUFFMAN_COMPRESSED;
 					
 					// Use a waiting exception to break from the loop
-					throw new WaitingException("XI0i");
+					throw new PipeStalledException("XI0i");
 				}
 				
 				// Not enough bits to read code lengths?
 				// Add 7 due to the repeat zero many times symbol
-				if (!isFinished() && inputbits.available() < maxbits + 7)
-					throw new WaitingException("XI0i");
+				if (!isInputComplete() && inputbits.available() < maxbits + 7)
+					throw new PipeStalledException("XI0i");
 				
 				// Read in code
 				int cbskip = __readCodeBits(htree, rawints, next);
@@ -669,7 +674,7 @@ public class InflateDataPipe
 		// Out of bits or a bad tree
 		catch (NoSuchElementException nsee)
 		{
-			throw new IOException("XI0v", nsee);
+			throw new PipeProcessException("XI0v", nsee);
 		}
 	}
 	
@@ -679,11 +684,11 @@ public class InflateDataPipe
 	 *
 	 * This is third and last.
 	 *
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/13
 	 */
 	private void __readDynamicHuffmanCompressed()
-		throws IOException
+		throws PipeProcessException
 	{
 		// Get both trees
 		HuffmanTree<Integer> thlit = _treehlit;
@@ -694,7 +699,7 @@ public class InflateDataPipe
 		
 		// Need to be able to read a value from the tree along with any
 		// extra distance and length codes it may have
-		while (isFinished() || inputbits.available() >= maxbits + 32)
+		while (isInputComplete() || inputbits.available() >= maxbits + 32)
 		{
 			// Decode literal code
 			int code = __readTreeCode(thlit);
@@ -711,15 +716,15 @@ public class InflateDataPipe
 	 *
 	 * This is first.
 	 *
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/13
 	 */
 	private void __readDynamicHuffmanHeader()
-		throws IOException
+		throws PipeProcessException
 	{
 		// The header consists of 14 bits: HLIT (5), HDIST (5), HCLEN (4)
-		if (!isFinished() && inputbits.available() < 14)
-			throw new WaitingException("XI0i");
+		if (!isInputComplete() && inputbits.available() < 14)
+			throw new PipeStalledException("XI0i");
 		
 		// Read the bits
 		int cll;
@@ -747,15 +752,15 @@ public class InflateDataPipe
 	/**
 	 * Reads the fixed huffman based input.
 	 *
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/11
 	 */
 	private void __readFixedHuffman()
-		throws IOException
+		throws PipeProcessException
 	{
 		// Require up to 32 bits because of the input along with extra distance
 		// codes, length codes, and more
-		while (isFinished() || inputbits.available() >= 32)
+		while (isInputComplete() || inputbits.available() >= 32)
 		{
 			// Read single code
 			int code = InflateFixedHuffman.read(inputbits);
@@ -769,17 +774,17 @@ public class InflateDataPipe
 	 * Reads the deflate header.
 	 *
 	 * @return {@code true} if the calling loop should terminate.
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/11
 	 */
 	private boolean __readHeader()
-		throws IOException
+		throws PipeProcessException
 	{
 		// If the final block was hit then just stop
 		if (_finalhit)
 		{
 			_nothingleft = true;
-			setWaiting(false);
+			setOutputComplete();
 			return false;
 		}
 		
@@ -830,11 +835,11 @@ public class InflateDataPipe
 	/**
 	 * Reads the no compression block.
 	 *
-	 * @throws IOException On read/write errors.
+	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/12
 	 */
 	private void __readNoCompression()
-		throws IOException
+		throws PipeProcessException
 	{
 		// Get the current length
 		int curlen = _nocomplen;
@@ -843,8 +848,8 @@ public class InflateDataPipe
 		if (curlen < 0)
 		{
 			// Need four bytes of input, along with potential alignment bits
-			if (!isFinished() && inputbits.available() < 39)
-				throw new WaitingException("XI0i");
+			if (!isInputComplete() && inputbits.available() < 39)
+				throw new PipeStalledException("XI0i");
 			
 			// Align to byte boundary
 			while ((inputbits.headPosition() & 7) != 0)
@@ -870,8 +875,8 @@ public class InflateDataPipe
 			while (curlen > 0)
 			{
 				// Need at least a byte of input
-				if (!isFinished() && inputbits.available() < 8)
-					throw new WaitingException("XI0i");
+				if (!isInputComplete() && inputbits.available() < 8)
+					throw new PipeStalledException("XI0i");
 				
 				// Read byte
 				int val = inputbits.removeFirstInt(8);
@@ -897,7 +902,7 @@ public class InflateDataPipe
 	 *
 	 * @param __codes The input tree.
 	 * @return The read symbol.
-	 * @throws IOException On read errors.
+	 * @throws PipeProcessException On read errors.
 	 * @throws NoSuchElementException If the input ran out of available bits
 	 * or the tree contains an unfinished structure.
 	 * @throws NullPointerException On null arguments.
