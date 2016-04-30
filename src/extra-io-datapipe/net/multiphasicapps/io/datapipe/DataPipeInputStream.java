@@ -40,6 +40,9 @@ public class DataPipeInputStream
 	/** Closed? */
 	private volatile boolean _closed;
 	
+	/** Finished? */
+	private volatile boolean _done;
+	
 	/**
 	 * Initializes the pipe from the given input stream to the given processor.
 	 *
@@ -101,11 +104,18 @@ public class DataPipeInputStream
 			
 			// Constantly read input
 			for (;;)
-			{
+			{System.err.println("DEBUG -- DPIS read");
 				// Try to read bytes from the output
 				try
 				{
-					return processor.drain();
+					int rv = processor.drain();
+					
+					// Nothing left?
+					if (rv < 0 && _done)
+						return -1;
+					
+					// Return it
+					return rv;
 				}
 				
 				// Failed pipe read
@@ -124,7 +134,7 @@ public class DataPipeInputStream
 				{
 					int ADD = 32;
 					for (byte[] bb = new byte[ADD];;)
-					{
+					{System.err.println("DEBUG -- Giving");
 						// Read some input
 						int rc;
 						try
@@ -145,12 +155,16 @@ public class DataPipeInputStream
 						// EOF reached?
 						if (rc < 0)
 						{
-							processor.completeInput();
-							continue;
+							if (!_done)
+								processor.completeInput();
+							_done = true;
+							break;
 						}
 						
 						// Add to the input queue
 						processor.offer(bb, 0, rc);
+						
+						// Gave enough bytes, stop
 					} 
 				}
 			}

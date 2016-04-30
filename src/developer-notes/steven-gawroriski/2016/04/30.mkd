@@ -77,3 +77,13 @@ Well this may be confusing. The code currently goes into the faucet for
 processing to read output bytes. However the data sink has to be handled. But
 I should just be able to flush the sink.
 
+## 19:23
+
+Appears that I am deadlocking somewhere.
+
+## 19:28
+
+Actually caused by the overzealous data pipe input stream. When there is
+nothing to read it just reads in all of the input and pipes it in. That would
+require much memory to be used.
+

@@ -421,8 +421,29 @@ public abstract class DataPipe
 			{
 				// Set the bit
 				_inproc |= __f;
+				System.err.printf("DEBUG -- Pipe %d %d%n", _inproc, __f);
+				// Processing in the sink
+				if (__f == _SINK_MASK)
+				{
+					// If bytes were added to the sink but no output bytes
+					// were yet requested then do nothing.
+					if (0 == (ip & _FAUCET_MASK))
+						return;
+					
+					throw new Error("TODO");
+				}
 				
-				throw new Error("TODO");
+				// Processing in the faucet, just flush the input so that it is
+				// forced to be handled. This way when the sink processor is
+				// called and this method is entered again the actual data
+				// processor can be used to safely read the input and write
+				// the output faucet bytes.
+				else if (__f == _FAUCET_MASK)
+					_input.flush();
+				
+				// Unknown
+				else
+					throw new RuntimeException("WTFX");
 			}
 			
 			// Did fail
