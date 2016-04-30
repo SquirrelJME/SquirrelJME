@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package net.multiphasicapps.util.huffmantree;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;

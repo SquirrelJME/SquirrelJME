@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tests.xco;
+package net.multiphasicapps.tests.util.huffmantree;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.BitCompactor;
 import net.multiphasicapps.io.BitInputStream;
-import net.multiphasicapps.collections.HuffmanTree;
+import net.multiphasicapps.util.huffmantree.HuffmanTree;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 

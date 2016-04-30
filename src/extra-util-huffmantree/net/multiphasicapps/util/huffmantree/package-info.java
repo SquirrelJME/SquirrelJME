@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This contains tests for the extra collections library.
+ * This package contains an implementation of the huffman tree.
  *
- * @since 2016/03/28
+ * @since 2016/04/30
  */
 
-package net.multiphasicapps.tests.xco;
+package net.multiphasicapps.util.huffmantree;
 
