@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-Hairball-Name: native-compiler-class-file
 X-Hairball-UUID: 8e1bb3de-ac70-4e63-ae1e-ce94f8c5e339
 X-Hairball-Depends: javame-cldc-compact, extra-collections, 
- java-descriptors, extra-io,
+ java-descriptors, 
  native-compiler-class-interface
 LIBlet-Title: Native Compiler Java Class Support
 LIBlet-Vendor: Steven Gawroriski
