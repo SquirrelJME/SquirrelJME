@@ -39,3 +39,12 @@ would be less method call overhead and such.
 Thinking about it, `DataPipe` could combine a `DataSink` and a `DataFaucet`
 to create the pipe.
 
+## 12:54
+
+This `DataSink` is rather nice though. When I write the faucet end of the
+code and then merge the two together to form a new pipe, it should be much
+cleaner than before. For example calculating the CRC32 will use a data sink
+while inflate will use the pipe as it currently does. Also having single
+classes for the three should make state easier to be checked. For example, I
+do not permit bytes to be accepted unless processing is being performed.
+
