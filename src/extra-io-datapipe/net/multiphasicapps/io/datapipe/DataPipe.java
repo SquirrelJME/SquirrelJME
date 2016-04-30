@@ -482,7 +482,8 @@ public abstract class DataPipe
 			int rv = _input.__accept(__b, __o, __l);
 			
 			// Log it
-			_cr += __l;
+			if (rv > 0)
+				_cr += rv;
 			
 			// Return it
 			return rv;
@@ -558,7 +559,7 @@ public abstract class DataPipe
 			int ip = _inproc;
 			if (0 != (ip & __f))
 				throw new PipeProcessException(String.format("AC07 %d", __f));
-			System.err.printf("DEBUG -- R %4d W %4d\r", _cr, _cw);
+			System.err.printf("DEBUG -- R %5d W %5d\r", _cr, _cw);
 			// Could fail
 			try
 			{
