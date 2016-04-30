@@ -65,29 +65,71 @@ public abstract class DataFaucet
 		_output = new CircularByteBuffer(__lk);
 	}
 	
+	/**
+	 * Adds data to be output via the drain.
+	 *
+	 * @param __b The single byte to add.
+	 * @return {@code this}.
+	 * @throws FaucetProcessException If the faucet is complete.
+	 * @since 2016/04/30
+	 */
 	protected final DataFaucet fill(byte __b)
+		throws FaucetProcessException
 	{
 		// Lock
 		synchronized (lock)
 		{
+			// Cannot fill when already complete
 			if (_complete)
-				throw new ("AB01");
+				throw new FaucetProcessException("AB01");
 			
 			throw new Error("TODO");
 		}
 	}
 	
+	/**
+	 * Adds data to be output via the drain.
+	 *
+	 * @param __b The bytes to add.
+	 * @return {@code this}.
+	 * @throws FaucetProcessException If the faucet is complete.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/30
+	 */
 	protected final DataFaucet fill(byte[] __b)
-		throws NullPointerException
+		throws FaucetProcessException, NullPointerException
 	{
 		return fill(__b, 0, __b.length);
 	}
 	
+	/**
+	 * Adds data to be output via the drain.
+	 *
+	 * @param __b The bytes to add.
+	 * @return {@code this}.
+	 * @throws FaucetProcessException If the faucet is complete.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or exceed the array size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/30
+	 */
 	protected final DataFaucet fill(byte[] __b, int __o, int __l)
+		throws FaucetProcessException, IndexOutOfBoundsException,
+			NullPointerException
 	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
 		// Lock
 		synchronized (lock)
 		{
+			// Cannot fill when already complete
+			if (_complete)
+				throw new FaucetProcessException("AB01");
+			
 			throw new Error("TODO");
 		}
 	}
