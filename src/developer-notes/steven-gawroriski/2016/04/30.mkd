@@ -34,3 +34,8 @@ I am going to deprecate the generic circular buffer and the related classes
 so that they are instead single classes. This would be much faster as there
 would be less method call overhead and such.
 
+## 11:56
+
+Thinking about it, `DataPipe` could combine a `DataSink` and a `DataFaucet`
+to create the pipe.
+
