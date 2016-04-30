@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tests.xio;
+package net.multiphasicapps.tests.io.inflate;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,8 +17,8 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
-import net.multiphasicapps.io.DataProcessorInputStream;
-import net.multiphasicapps.io.InflateDataProcessor;
+import net.multiphasicapps.io.datapipe.DataPipeInputStream;
+import net.multiphasicapps.io.inflate.InflateDataPipe;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 
@@ -37,7 +37,7 @@ public class TestInflater
 	@Override
 	public String invokerName()
 	{
-		return "extraio.inflater";
+		return "net.multiphasicapps.io.inflate";
 	}
 	
 	/**
@@ -102,8 +102,8 @@ public class TestInflater
 			throw new NullPointerException();
 		
 		// Open the input
-		try (InputStream in = new DataProcessorInputStream(
-			new ByteArrayInputStream(__in), new InflateDataProcessor());
+		try (InputStream in = new DataPipeInputStream(
+			new ByteArrayInputStream(__in), new InflateDataPipe());
 			ByteArrayOutputStream out = new ByteArrayOutputStream())
 		{
 			// Read input to the output

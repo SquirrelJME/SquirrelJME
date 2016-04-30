@@ -752,7 +752,7 @@ public class InflateDataPipe
 		while (isFinished() || inputbits.available() >= 32)
 		{
 			// Read single code
-			int code = DeflateFixedHuffman.read(inputbits);
+			int code = InflateFixedHuffman.read(inputbits);
 			
 			// Handle the code
 			__handleCode(code, null, null);

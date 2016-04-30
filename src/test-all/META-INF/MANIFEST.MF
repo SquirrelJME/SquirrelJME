@@ -1,9 +1,11 @@
 Manifest-Version: 1.0
 X-Hairball-Name: test-all
 X-Hairball-UUID: a788b5a5-3e1a-4aca-bbd3-aac405e6cb80
-X-Hairball-Depends: test-base, test-simple,
- test-javame-cldc-compact,
+X-Hairball-Depends: test-base,
+ test-extra-io-inflate,
  test-extra-util-huffmantree
+ test-javame-cldc-compact,
+ test-simple,
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160303
