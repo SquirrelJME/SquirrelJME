@@ -4,7 +4,8 @@ X-Hairball-UUID: b0ee8a43-da57-4fcd-834a-64d0327c457b
 X-Hairball-Depends: extra-io-datapipe,
  extra-util-huffmantree,
  extra-util-circlebufs,
- extra-io-slidingwindow
+ extra-io-slidingwindow,
+ extra-io-bits
 LIBlet-Title: Extra IO Inflate Algorithm
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160429

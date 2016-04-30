@@ -13,6 +13,7 @@ package net.multiphasicapps.io.inflate;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import net.multiphasicapps.io.bits.BitCompactor;
 import net.multiphasicapps.io.datapipe.DataPipe;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.circlebufs.CircularBooleanBuffer;

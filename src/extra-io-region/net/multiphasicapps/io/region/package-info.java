@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains extra I/O related classes.
+ * This package contains region based limits and on input streams.
  *
  * @since 2016/03/09
  */
 
-package net.multiphasicapps.io;
+package net.multiphasicapps.io.region;
 

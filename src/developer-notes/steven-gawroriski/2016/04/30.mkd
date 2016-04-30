@@ -22,3 +22,8 @@ dependencies.
 Instead of a `BitCompactor` I can instead have a `BitOutputStream` which can
 write bits to an output stream.
 
+## 01:05
+
+The extra collections could end up being replaced also. Instead of using
+`MissingCollections`, it could just be `of` or `new`.
+

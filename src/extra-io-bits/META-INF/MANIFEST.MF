@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-Hairball-Name: extra-io-bits
+X-Hairball-UUID: c45a0724-653e-4a54-b43f-35d00ac1cb32
+X-Hairball-Depends: javame-cldc-compact
+LIBlet-Title: Extra IO Bits
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160430
+LIBlet-Description: This provides bit based interfaces
+  for the transferal of bits rather than bytes.
+

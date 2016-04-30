@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io;
+package net.multiphasicapps.io.bits;
 
 /**
  * This is a bit compactor which is given bits, when there are enough bits to
