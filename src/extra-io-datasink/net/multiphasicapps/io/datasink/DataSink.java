@@ -43,6 +43,9 @@ public abstract class DataSink
 	/** Lock. */
 	protected final Object lock;
 	
+	/** Externally visible lock. */
+	final Object _lock;
+	
 	/** Data used for input to the data processor. */
 	private final CircularByteBuffer _input;
 	
@@ -81,6 +84,7 @@ public abstract class DataSink
 		
 		// Set
 		lock = __lk;
+		_lock = __lk;
 		
 		// Setup input
 		_input = new CircularByteBuffer(__lk);

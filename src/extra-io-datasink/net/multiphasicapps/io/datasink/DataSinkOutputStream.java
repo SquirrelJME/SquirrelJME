@@ -25,8 +25,7 @@ public class DataSinkOutputStream
 	extends OutputStream
 {
 	/** Internal lock. */
-	protected final Object lock =
-		new Object();
+	protected final Object lock;
 	
 	/** The output sink. */
 	protected final DataSink sink;
@@ -50,6 +49,7 @@ public class DataSinkOutputStream
 		
 		// Set
 		sink = __ds;
+		lock = __ds._lock;
 	}
 	
 	/**

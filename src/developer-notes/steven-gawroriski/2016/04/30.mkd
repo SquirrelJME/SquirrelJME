@@ -53,3 +53,15 @@ do not permit bytes to be accepted unless processing is being performed.
 The faucet end, there will be `fill` to add bytes to the output and then
 `drain` which is used by others to obtain the filled bytes.
 
+## 17:53
+
+Now that the faucet code is complete I can modify the pipe code to use that
+instead and then eventually that would mean that the inflate pipe would be
+changed also. Then after that an input stream for the data faucet.
+
+## 17:55
+
+Likely also the input/output streams which wrap sinks and faucets should share
+the lock of the faucet it wraps so that there is a kind of thread safety used
+when they are wrapped.
+

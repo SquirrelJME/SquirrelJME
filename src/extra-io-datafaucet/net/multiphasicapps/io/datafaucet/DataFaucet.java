@@ -104,19 +104,20 @@ public abstract class DataFaucet
 			
 			// Process
 			__process();
-			
+		
 			// Try to read a single byte
 			try
 			{
 				return ((int)_output.removeFirst()) & 0xFF;
 			}
-			
+		
+			// Byte not available
 			catch (NoSuchElementException e)
 			{
 				// If complete end it
 				if (_complete)
 					return -1;
-				
+			
 				// Otherwise, rethrow
 				throw e;
 			}

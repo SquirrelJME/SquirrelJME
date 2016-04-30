@@ -13,6 +13,8 @@ package net.multiphasicapps.io.datapipe;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import net.multiphasicapps.io.datafaucet.FaucetProcessException;
+import net.multiphasicapps.io.datasink.SinkProcessException;
 
 /**
  * This is {@link InputStream} which uses a given {@link DataPipe} with
@@ -24,8 +26,7 @@ public class DataPipeInputStream
 	extends InputStream
 {
 	/** Lock. */
-	protected final Object lock =
-		new Object();
+	protected final Object lock;
 	
 	/** Input source. */
 	protected final InputStream in;
@@ -34,7 +35,7 @@ public class DataPipeInputStream
 	protected final DataPipe processor;
 	
 	/** Threw some kind of exception? */
-	private volatile boolean _threwexception;
+	private volatile boolean _failed;
 	
 	/** Closed? */
 	private volatile boolean _closed;
@@ -57,6 +58,7 @@ public class DataPipeInputStream
 		// Set
 		in = __in;
 		processor = __dp;
+		lock = __dp._lock;
 	}
 	
 	/**
@@ -89,68 +91,67 @@ public class DataPipeInputStream
 		// Lock
 		synchronized (lock)
 		{
-			// Failed so just stop
-			if (_threwexception)
-				throw new IOException("XI0d");
+			// {@squirreljme.error AC04 Previous read failed.}
+			if (_failed)
+				throw new IOException("AC04");
 			
 			// If closed then read nothing
 			if (_closed)
 				return -1;
 			
-			// Also lock on the processor lock also to prevent from using the
-			// processor while this input stream is running.
-			synchronized (processor._lock)
+			// Constantly read input
+			for (;;)
 			{
-				// Could fail
+				// Try to read bytes from the output
 				try
 				{
-					for (;;)
+					return processor.drain();
+				}
+				
+				// Failed pipe read
+				catch (PipeProcessException|FaucetProcessException|
+					SinkProcessException e)
+				{
+					// Failed read
+					_failed = true; 
+					
+					// {@squirreljme.error AC05 Failed to drain from the pipe.}
+					throw new IOException("AC05", e);
+				}
+				
+				// Output stalled, add more bytes to the input
+				catch (PipeStalledException e)
+				{
+					int ADD = 32;
+					for (byte[] bb = new byte[ADD];;)
 					{
-						// Attempt to grab bytes from the output
+						// Read some input
+						int rc;
 						try
 						{
-							// Try to grab a byte from the output
-							byte rv = processor.remove();
-					
-							// If one was grabbed then return it
-							return ((int)rv) & 0xFF;
+							rc = in.read(bb);
 						}
-				
-						// There are no bytes waiting
-						catch (NoSuchElementException nsee)
-						{
-						}
-				
-						// If the processor is waiting then give it some bytes
-						if (processor.isWaiting())
-						{
-							// Read input byte
-							int val = in.read();
 						
-							// EOF? then finish
-							if (val < 0)
-								processor.finish();
-						
-							// Otherwise offer it
-							else
-								processor.offer((byte)val);
+						// Failed to read some input
+						catch (IOException f)
+						{
+							// Mark it
+							_failed = true;
+							
+							// Rethrow
+							throw f;
 						}
-					
-						// Otherwise if no more output bytes are available,
-						// then end it
-						else if (!processor.hasRemainingOutput())
-							return -1;
-					}
-				}
-					
-				// Read/write/process error
-				catch (IOException ioe)
-				{
-					// Set failure state
-					_threwexception = true;
-				
-					// Rethrow it
-					throw ioe;
+						
+						// EOF reached?
+						if (rc < 0)
+						{
+							processor.closeInput();
+							continue;
+						}
+						
+						// Add to the input queue
+						processor.offer(bb, 0, rc);
+					} 
 				}
 			}
 		}
