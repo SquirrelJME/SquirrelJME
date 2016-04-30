@@ -8,19 +8,19 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io;
+package net.multiphasicapps.io.datapipe;
 
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
 /**
- * This is {@link InputStream} which uses a given {@link DataProcessor} with
+ * This is {@link InputStream} which uses a given {@link DataPipe} with
  * bytes that are read from a wrapped stream to provide output for usage.
  *
  * @since 2016/03/11
  */
-public class DataProcessorInputStream
+public class DataPipeInputStream
 	extends InputStream
 {
 	/** Lock. */
@@ -31,7 +31,7 @@ public class DataProcessorInputStream
 	protected final InputStream in;
 	
 	/** The data processor which handles input byte sources. */
-	protected final DataProcessor processor;
+	protected final DataPipe processor;
 	
 	/** Threw some kind of exception? */
 	private volatile boolean _threwexception;
@@ -47,7 +47,7 @@ public class DataProcessorInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
-	public DataProcessorInputStream(InputStream __in, DataProcessor __dp)
+	public DataPipeInputStream(InputStream __in, DataPipe __dp)
 		throws NullPointerException
 	{
 		// Check

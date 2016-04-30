@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io;
+package net.multiphasicapps.io.datapipe;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -27,18 +27,18 @@ import net.multiphasicapps.buffers.CircularByteBuffer;
  *
  * @since 2016/03/11
  */
-public abstract class DataProcessor
+public abstract class DataPipe
 {
 	/** Lock. */
 	protected final Object lock =
 		new Object();
 	
 	/** Data used for input to the data processor. */
-	protected final CircularByteBuffer input =
+	private final CircularByteBuffer _input =
 		new CircularByteBuffer(lock);
 	
 	/** Data which has been output by the data processor. */
-	protected final CircularByteBuffer output =
+	private final CircularByteBuffer _output =
 		new CircularByteBuffer(lock);
 	
 	/** Visible lock. */
@@ -61,7 +61,7 @@ public abstract class DataProcessor
 	/**
 	 * Processes some data.
 	 *
-	 * This method called from the {@link DataProcessor} class will be done
+	 * This method called from the {@link DataPipe} class will be done
 	 * during a lock.
 	 *
 	 * @throws IOException On processing errors.
@@ -72,30 +72,6 @@ public abstract class DataProcessor
 		throws IOException, WaitingException;
 	
 	/**
-	 * Sets the waiting state (if the processor is waiting for more bytes as
-	 * input).
-	 *
-	 * If the waiting state is {@code false} and there no output data then
-	 * {@code -1} will be returned from the read.
-	 *
-	 * @param __w If {@code true} then the waiting state is set, otherwise
-	 * it is cleared.
-	 * @return {@code this}.
-	 * @since 2016/03/11
-	 */
-	protected final DataProcessor setWaiting(boolean __w)
-	{
-		// Lock
-		synchronized (lock)
-		{
-			_iswaiting = __w;
-		}
-		
-		// Self
-		return this;
-	}
-	
-	/**
 	 * Signals that the end of the input has been reached and that processing
 	 * should do as much as it can or fail, no more input is permitted after
 	 * this.
@@ -104,7 +80,7 @@ public abstract class DataProcessor
 	 * @throws IOException On processing errors.
 	 * @since 2016/03/11
 	 */
-	public final DataProcessor finish()
+	public final DataPipe finish()
 		throws IOException
 	{
 		// Lock
@@ -133,7 +109,7 @@ public abstract class DataProcessor
 		// Lock
 		synchronized (lock)
 		{
-			return output.hasAvailable();
+			return _output.hasAvailable();
 		}
 	}
 	
@@ -178,7 +154,7 @@ public abstract class DataProcessor
 	 * @throws IOException On processing errors.
 	 * @since 2016/03/11
 	 */
-	public final DataProcessor offer(byte __b)
+	public final DataPipe offer(byte __b)
 		throws IllegalStateException, IOException
 	{
 		// Lock
@@ -189,7 +165,7 @@ public abstract class DataProcessor
 				throw new IllegalStateException("XI0c");
 			
 			// Add byte to the input
-			input.offerLast(__b);
+			_input.offerLast(__b);
 		}
 		
 		// Self
@@ -206,7 +182,7 @@ public abstract class DataProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
-	public final DataProcessor offer(byte... __b)
+	public final DataPipe offer(byte... __b)
 		throws IllegalStateException, IOException, NullPointerException
 	{
 		return offer(__b, 0, __b.length);
@@ -227,7 +203,7 @@ public abstract class DataProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
-	public final DataProcessor offer(byte[] __b, int __o, int __l)
+	public final DataPipe offer(byte[] __b, int __o, int __l)
 		throws IllegalStateException, IndexOutOfBoundsException, IOException,
 			NullPointerException
 	{
@@ -248,6 +224,64 @@ public abstract class DataProcessor
 		return this;
 	}
 	
+	/**
+	 * Reads bytes which are waiting on the input side of the pipe.
+	 *
+	 * @param __b The output array to read input from.
+	 * @param __o The base offset to start the output at.
+	 * @param __l The maximum number of bytes to read from the input for
+	 * placement onto the output.
+	 * @return The number of input bytes which were removed.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the bounds of the input array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/29
+	 */
+	protected final int pipeInput(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int n;
+		if (__o < 0 || __l < 0 || (__o + __l) > (n = __b.length))
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Writes bytes from the given array into the output of this pipe.
+	 *
+	 * @param __b The array containing bytes to place in the output.
+	 * @param __o The offset of the input bytes.
+	 * @param __l The number of bytes to output.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the bounds of the input array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/29 
+	 */
+	protected final DataPipe pipeOutput(byte[] __b, int __o, __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int n;
+		if (__o < 0 || __l < 0 || (__o + __l) > (n = __b.length))
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
 	
 	/**
 	 * Reads and removes the first available byte, if one is not available
@@ -274,7 +308,7 @@ public abstract class DataProcessor
 				try
 				{
 					// Return an output byte
-					return output.removeFirst();
+					return _output.removeFirst();
 				}
 			
 				// No data is available
@@ -376,6 +410,30 @@ public abstract class DataProcessor
 			// Return the read count
 			return rc;	
 		}
+	}
+	
+	/**
+	 * Sets the waiting state (if the processor is waiting for more bytes as
+	 * input).
+	 *
+	 * If the waiting state is {@code false} and there no output data then
+	 * {@code -1} will be returned from the read.
+	 *
+	 * @param __w If {@code true} then the waiting state is set, otherwise
+	 * it is cleared.
+	 * @return {@code this}.
+	 * @since 2016/03/11
+	 */
+	protected final DataPipe setWaiting(boolean __w)
+	{
+		// Lock
+		synchronized (lock)
+		{
+			_iswaiting = __w;
+		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
