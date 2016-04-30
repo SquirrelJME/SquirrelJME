@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.io.slidingwindow;
 
-import net.multiphasicapps.buffers.ChunkByteBuffer;
+import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 
 /**
  * This represents a sliding byte window.
@@ -34,7 +34,7 @@ public class SlidingByteWindow
 		new Object();
 	
 	/** The backing byte buffer. */
-	protected final ChunkByteBuffer backingbuffer;
+	protected final DynamicByteBuffer backingbuffer;
 	
 	/** The window size. */
 	protected final int windowsize;
@@ -73,7 +73,7 @@ public class SlidingByteWindow
 		windowsize = __wsz;
 		
 		// Setup backing store
-		backingbuffer = new ChunkByteBuffer(Math.min(4, Math.max(1, Math.min(
+		backingbuffer = new DynamicByteBuffer(Math.min(4, Math.max(1, Math.min(
 			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE))));
 	}
 	
@@ -90,7 +90,7 @@ public class SlidingByteWindow
 		synchronized (lock)
 		{
 			// Add to the sliding window
-			ChunkByteBuffer back = backingbuffer;
+			DynamicByteBuffer back = backingbuffer;
 			back.add(__b);
 			
 			// Increases by one byte
@@ -215,7 +215,7 @@ public class SlidingByteWindow
 					"XI0u %d %d %d", __ago, __l, max));
 			
 			// Get backing buffer
-			ChunkByteBuffer back = backingbuffer;
+			DynamicByteBuffer back = backingbuffer;
 			
 			// Read from the buffer at a given position
 			back.get(max - __ago, __b, __o, __l);

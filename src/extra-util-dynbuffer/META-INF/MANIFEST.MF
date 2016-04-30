@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-Hairball-Name: extra-util-dynbuffer
+X-Hairball-UUID: 233abe2b-3eca-443d-88fd-a63ac0c95f3e
+X-Hairball-Depends: javame-cldc-compact
+LIBlet-Title: Extra Util Dynamic Buffers
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160430
+LIBlet-Description: This provides a dynamically sized
+  and growable buffer of bytes.
+

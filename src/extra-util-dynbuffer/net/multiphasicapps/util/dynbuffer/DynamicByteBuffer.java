@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.buffers;
+package net.multiphasicapps.util.dynbuffer;
 
 /**
  * This class provides a dynamically sized array of bytes for efficient
@@ -18,7 +18,7 @@ package net.multiphasicapps.buffers;
  *
  * @since 2016/03/22
  */
-public class ChunkByteBuffer
+public class DynamicByteBuffer
 {
 	/** The default individual chunk size. */
 	public static final int DEFAULT_CHUNK_SIZE =
@@ -39,7 +39,7 @@ public class ChunkByteBuffer
 	 *
 	 * @since 2016/03/22
 	 */
-	public ChunkByteBuffer()
+	public DynamicByteBuffer()
 	{
 		this(DEFAULT_CHUNK_SIZE);
 	}
@@ -51,7 +51,7 @@ public class ChunkByteBuffer
 	 * @throws IllegalArgumentException If the chunk size is zero or negative.
 	 * @since 2016/03/22
 	 */
-	public ChunkByteBuffer(int __cs)
+	public DynamicByteBuffer(int __cs)
 		throws IllegalArgumentException
 	{
 		// Check
@@ -72,7 +72,7 @@ public class ChunkByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/22
 	 */
-	public ChunkByteBuffer(ChunkByteBuffer __from)
+	public DynamicByteBuffer(DynamicByteBuffer __from)
 		throws NullPointerException
 	{
 		this(DEFAULT_CHUNK_SIZE, __from);
@@ -87,7 +87,7 @@ public class ChunkByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/22
 	 */
-	public ChunkByteBuffer(int __cs, ChunkByteBuffer __from)
+	public DynamicByteBuffer(int __cs, DynamicByteBuffer __from)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -135,7 +135,7 @@ public class ChunkByteBuffer
 	 * @return {@code this}.
 	 * @since 2016/03/22
 	 */
-	public ChunkByteBuffer add(byte __v)
+	public DynamicByteBuffer add(byte __v)
 	{
 		// Lock
 		synchronized (lock)
@@ -156,7 +156,7 @@ public class ChunkByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/08
 	 */
-	public ChunkByteBuffer add(byte[] __src, int __o, int __l)
+	public DynamicByteBuffer add(byte[] __src, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Lock
@@ -177,7 +177,7 @@ public class ChunkByteBuffer
 	 * chunk bounds.
 	 * @since 2016/03/22
 	 */
-	public ChunkByteBuffer add(int __i, byte __v)
+	public DynamicByteBuffer add(int __i, byte __v)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
@@ -203,7 +203,7 @@ public class ChunkByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/08
 	 */
-	public ChunkByteBuffer add(int __base, byte[] __src, int __o, int __l)
+	public DynamicByteBuffer add(int __base, byte[] __src, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -232,7 +232,7 @@ public class ChunkByteBuffer
 	 * @return {@code this}.
 	 * @since 2016/03/22
 	 */
-	public ChunkByteBuffer clear()
+	public DynamicByteBuffer clear()
 	{
 		// Lock
 		synchronized (lock)
@@ -312,7 +312,7 @@ public class ChunkByteBuffer
 	 * @return {@code this}.
 	 * @since 2016/03/22
 	 */
-	public ChunkByteBuffer quickCompact()
+	public DynamicByteBuffer quickCompact()
 	{
 		// Lock
 		synchronized (lock)
