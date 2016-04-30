@@ -72,6 +72,9 @@ public abstract class DataPipe
 	/** Processing failed? */
 	private volatile boolean _failed;
 	
+	/** The number of bytes read and written. */
+	private volatile int _cr, _cw;
+	
 	/**
 	 * Initializes the data pipe with a default lock.
 	 *
@@ -412,6 +415,9 @@ public abstract class DataPipe
 				if (rv < 0)
 					return -1;
 				
+				// Log it
+				_cr++;
+				
 				// Return it
 				return rv;
 			}
@@ -473,9 +479,45 @@ public abstract class DataPipe
 				throw new PipeProcessException("AC0a");
 			
 			// Read from the input
-			return _input.__accept(__b, __o, __l);
+			int rv = _input.__accept(__b, __o, __l);
+			
+			// Log it
+			_cr += __l;
+			
+			// Return it
+			return rv;
 		}
 	}
+	
+	/**
+	 * Pipes a single byte to the pipe's output.
+	 *
+	 * @param __b The byte to output.
+	 * @return {@code this}.
+	 * @throws PipeProcessException If the dual state of the pipeline is
+	 * not currently set.
+	 * @since 2016/04/30
+	 */
+	protected final DataPipe pipeOutput(byte __b)
+		throws PipeProcessException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Not the dual state
+			if (_inproc != _BOTH_MASK)
+				throw new PipeProcessException("AC0a");
+			
+			// Write to the output
+			_output.__fill(__b);
+			
+			// Log it
+			_cw++;
+		}
+		
+		// Self
+		return this;
+	} 
 	
 	/**
 	 * Indicates that processing is complete and that there is no more
@@ -516,13 +558,13 @@ public abstract class DataPipe
 			int ip = _inproc;
 			if (0 != (ip & __f))
 				throw new PipeProcessException(String.format("AC07 %d", __f));
-			
+			System.err.printf("DEBUG -- R %4d W %4d\r", _cr, _cw);
 			// Could fail
 			try
 			{
 				// Set the bit
 				_inproc |= __f;
-				System.err.printf("DEBUG -- Pipe %d %d%n", _inproc, __f);
+				
 				// Processing in the sink
 				if (__f == _SINK_MASK)
 				{
@@ -609,6 +651,17 @@ public abstract class DataPipe
 				// Call the other processor
 				__process(_FAUCET_MASK);
 			}
+		}
+		
+		/**
+		 * Wraps the faucet fill.
+		 *
+		 * @param __b The byte to add.
+		 * @since 2016/04/30
+		 */
+		private void __fill(byte __b)
+		{
+			fill(__b);
 		}
 	}
 	

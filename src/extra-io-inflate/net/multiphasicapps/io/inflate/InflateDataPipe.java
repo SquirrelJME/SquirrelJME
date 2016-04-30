@@ -76,9 +76,7 @@ public class InflateDataPipe
 				public void ready(byte __v)
 				{
 					// Give it to the output data
-					if (true)
-						throw new Error("TODO");
-					/*pipeOutput(__v);*/
+					pipeOutput(__v);
 					
 					// Also give it to the sliding window
 					window.append(__v);
