@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-Hairball-Name: extra-io-datasink
+X-Hairball-UUID: e6e78b78-39ac-4a05-a14c-4e2c1323070b
+X-Hairball-Depends: javame-cldc-compact
+LIBlet-Title: Extra IO Data Sink
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160429
+LIBlet-Description: This contains classes which act as a data
+  sink which consumes input bytes to potentially create an
+  output.
+
