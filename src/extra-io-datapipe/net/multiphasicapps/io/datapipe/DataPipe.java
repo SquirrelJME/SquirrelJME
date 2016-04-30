@@ -215,8 +215,12 @@ public abstract class DataPipe
 		// Lock
 		synchronized (lock)
 		{
-			for (int i = 0; i < __l; i++)
-				offer(__b[__o + i]);
+			// Cannot offer if finished
+			if (_isfinished)
+				throw new IllegalStateException("XI0c");
+			
+			// Add to the output
+			_input.offerLast(__b, __o, __l);
 		}
 		
 		// Self
@@ -249,7 +253,7 @@ public abstract class DataPipe
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return _input.removeFirst(__b, __o, __l);
 		}
 	}
 	
@@ -265,8 +269,11 @@ public abstract class DataPipe
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			_output.offerLast(__b);
 		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -294,8 +301,11 @@ public abstract class DataPipe
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			_output.offerLast(__b, __o, __l);
 		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
