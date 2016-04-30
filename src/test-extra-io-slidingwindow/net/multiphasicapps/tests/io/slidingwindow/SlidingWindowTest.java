@@ -48,7 +48,7 @@ public class SlidingWindowTest
 	@Override
 	public String invokerName()
 	{
-		return "extraio.slidingwindow";
+		return "net.multiphasicapps.io.slidingwindow";
 	}
 	
 	/**
