@@ -104,7 +104,7 @@ public class DataPipeInputStream
 			
 			// Constantly read input
 			for (;;)
-			{System.err.println("DEBUG -- DPIS read");
+			{
 				// Try to read bytes from the output
 				try
 				{
@@ -132,40 +132,41 @@ public class DataPipeInputStream
 				// Output stalled, add more bytes to the input
 				catch (PipeStalledException e)
 				{
+					// Setup buffer
 					int ADD = 32;
-					for (byte[] bb = new byte[ADD];;)
-					{System.err.println("DEBUG -- Giving");
-						// Read some input
-						int rc;
-						try
-						{
-							rc = in.read(bb);
-						}
+					byte[] bb = new byte[ADD];
+					
+					// Read some input
+					int rc;
+					try
+					{
+						rc = in.read(bb);
+					}
+					
+					// Failed to read some input
+					catch (IOException f)
+					{
+						// Mark it
+						_failed = true;
 						
-						// Failed to read some input
-						catch (IOException f)
-						{
-							// Mark it
-							_failed = true;
-							
-							// Rethrow
-							throw f;
-						}
+						// Rethrow
+						throw f;
+					}
+					
+					// EOF reached?
+					if (rc < 0)
+					{
+						// Mark done, but only once
+						if (!_done)
+							processor.completeInput();
+						_done = true;
 						
-						// EOF reached?
-						if (rc < 0)
-						{
-							if (!_done)
-								processor.completeInput();
-							_done = true;
-							break;
-						}
-						
-						// Add to the input queue
-						processor.offer(bb, 0, rc);
-						
-						// Gave enough bytes, stop
-					} 
+						// Try draining
+						continue;
+					}
+					
+					// Add to the input queue
+					processor.offer(bb, 0, rc);
 				}
 			}
 		}
