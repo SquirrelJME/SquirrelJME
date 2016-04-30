@@ -66,17 +66,6 @@ public abstract class DataSink
 	}
 	
 	/**
-	 * This is implemented by sub-classes to indicate that there are bytes
-	 * ready to be processed.
-	 *
-	 * @param __n The number of bytes available for processing.
-	 * @throws SinkProcessException If there was an error processing the bytes.
-	 * @since 2016/04/30
-	 */
-	protected abstract void process(int __n)
-		throws SinkProcessException;
-	
-	/**
 	 * Initializes the data sink and uses the specified object as a lock.
 	 *
 	 * @param __lk The locking object to use.
@@ -96,6 +85,17 @@ public abstract class DataSink
 		// Setup input
 		_input = new CircularByteBuffer(__lk);
 	}
+	
+	/**
+	 * This is implemented by sub-classes to indicate that there are bytes
+	 * ready to be processed.
+	 *
+	 * @param __n The number of bytes available for processing.
+	 * @throws SinkProcessException If there was an error processing the bytes.
+	 * @since 2016/04/30
+	 */
+	protected abstract void process(int __n)
+		throws SinkProcessException;
 	
 	/**
 	 * Removes a single byte from the input queue.
