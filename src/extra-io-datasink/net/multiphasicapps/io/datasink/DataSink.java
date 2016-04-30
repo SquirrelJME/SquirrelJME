@@ -354,6 +354,18 @@ public abstract class DataSink
 	}
 	
 	/**
+	 * Should the given exception cause the sink to enter the error state?
+	 *
+	 * @param __t The exception to check.
+	 * @return {@code true} if it should trigger the error state.
+	 * @since 2016/04/30
+	 */
+	protected boolean shouldFail(Throwable __t)
+	{
+		return true;
+	}
+	
+	/**
 	 * Returns the number of bytes which are waiting to be processed in the
 	 * input.
 	 *
@@ -409,7 +421,8 @@ public abstract class DataSink
 			// Sink processor has some issues
 			catch (Throwable e)
 			{
-				_didfail = true;
+				if (shouldFail(e))
+					_didfail = true;
 				
 				// Rethrow it
 				if (e instanceof RuntimeException)

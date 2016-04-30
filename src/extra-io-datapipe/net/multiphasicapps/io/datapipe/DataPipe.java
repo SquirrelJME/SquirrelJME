@@ -551,6 +551,10 @@ public abstract class DataPipe
 			// Did fail
 			catch (Throwable t)
 			{
+				// Ignore stalling pipes
+				if (t instanceof PipeStalledException)
+					return;
+				
 				// Set failure
 				_failed = true;
 				
@@ -639,6 +643,17 @@ public abstract class DataPipe
 				// Call the other processor
 				__process(_SINK_MASK);
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/04/30
+		 */
+		@Override
+		protected boolean shouldFail(Throwable __t)
+		{
+			// Ignore stalling pipelines
+			return !(__t instanceof PipeStalledException);
 		}
 		
 		/**
