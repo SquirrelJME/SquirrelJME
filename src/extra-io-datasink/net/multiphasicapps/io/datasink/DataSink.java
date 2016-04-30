@@ -349,6 +349,22 @@ public abstract class DataSink
 	}
 	
 	/**
+	 * Returns the number of bytes which are waiting to be processed in the
+	 * input.
+	 *
+	 * @return The number of bytes waiting on input.
+	 * @since 2016/04/30
+	 */
+	public final int waiting()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _input.available();
+		}
+	}
+	
+	/**
 	 * Processes input bytes.
 	 *
 	 * @throws SinkProcessException If processing has failed.
