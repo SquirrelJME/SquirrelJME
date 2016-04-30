@@ -10,3 +10,10 @@ similar to how I use it now. So if I go through every package, I start at AA
 and go all the way through ZZ until things are reached. This way there is no
 bias in letter selection. That still gives me about 676 unique codes.
 
+## 00:48
+
+This splitting and moving around of the `extra` packages will result in smaller
+fragments which are easier to split. There might be something needed in the
+extra I/O, however it might not need everything which would bring in pointless
+dependencies.
+
