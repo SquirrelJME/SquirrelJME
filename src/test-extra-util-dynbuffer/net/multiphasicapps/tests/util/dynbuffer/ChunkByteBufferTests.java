@@ -8,12 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tests.buffers;
+package net.multiphasicapps.tests.util.dynbuffer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import net.multiphasicapps.buffers.ChunkByteBuffer;
+import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 
@@ -21,7 +21,7 @@ import net.multiphasicapps.tests.TestInvoker;
  * This class tests that the code chunk setup works correctly.
  *
  * This contains two uses of the same algorithm, one which uses an
- * {@link ArrayList} and one which uses the {@link ChunkByteBuffer}. Both
+ * {@link ArrayList} and one which uses the {@link DynamicByteBuffer}. Both
  * should compute the same (although the {@link ArrayList} is slower and uses
  * much more memory).
  *
@@ -48,7 +48,7 @@ public class ChunkByteBufferTests
 	 */
 	public String invokerName()
 	{
-		return "xbufs.codechunks";
+		return "net.multiphasicapps.util.dynbuffer.DynamicByteBuffer";
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class ChunkByteBufferTests
 		
 		// A list containing bytes of stuff being added, along with the chunks
 		List<Byte> snail = new ArrayList<>();
-		ChunkByteBuffer bunny = new ChunkByteBuffer();
+		DynamicByteBuffer bunny = new DynamicByteBuffer();
 		
 		// Initialize PRNG
 		Random rand = new Random(INITIAL_SEED);

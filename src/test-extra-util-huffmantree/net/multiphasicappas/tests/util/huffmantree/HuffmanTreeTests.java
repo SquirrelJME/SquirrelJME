@@ -41,7 +41,7 @@ public class HuffmanTreeTests
 	 */
 	public String invokerName()
 	{
-		return "net.multiphasicapps.util.huffmantree";
+		return "net.multiphasicapps.util.huffmantree.HuffmanTree";
 	}
 	
 	/**

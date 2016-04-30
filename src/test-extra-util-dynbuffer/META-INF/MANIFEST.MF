@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-Hairball-Name: test-extra-util-dynbuffer
+X-Hairball-UUID: a4903bfc-7dbf-42de-8577-1ca671c24be8
+X-Hairball-Depends: test-base, extra-util-dynbuffer
+LIBlet-Title: Extra Buffer Tests
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160430
+LIBlet-Description: This contains tests for the extra buffer
+  code.

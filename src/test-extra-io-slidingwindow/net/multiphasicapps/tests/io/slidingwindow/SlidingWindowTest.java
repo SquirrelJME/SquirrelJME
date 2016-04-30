@@ -48,7 +48,7 @@ public class SlidingWindowTest
 	@Override
 	public String invokerName()
 	{
-		return "net.multiphasicapps.io.slidingwindow";
+		return "net.multiphasicapps.io.slidingwindow.SlidingByteWindow";
 	}
 	
 	/**

@@ -37,7 +37,7 @@ public class TestInflater
 	@Override
 	public String invokerName()
 	{
-		return "net.multiphasicapps.io.inflate";
+		return "net.multiphasicapps.io.inflate.InflateDataPipe";
 	}
 	
 	/**
