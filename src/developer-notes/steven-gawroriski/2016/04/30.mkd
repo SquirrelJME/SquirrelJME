@@ -65,3 +65,9 @@ Likely also the input/output streams which wrap sinks and faucets should share
 the lock of the faucet it wraps so that there is a kind of thread safety used
 when they are wrapped.
 
+## 18:52
+
+Now the interesting part will be handling the singular state of the sinks and
+faucets so that they do not trigger any pipe processing errors. Will be
+interesting.
+

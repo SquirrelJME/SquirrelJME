@@ -32,6 +32,8 @@ import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
  * {@squirreljme.error AC01 The input end of the pipe is closed.}
  * {@squirreljme.error AC02 Cannot offer or remove pipe bytes during
  * processing.}
+ * {@squirreljme.error AC06 Internal pipe input and output may only be
+ * performed during processing.}
  *
  * @since 2016/03/11
  */
@@ -51,7 +53,7 @@ public abstract class DataPipe
 	private final __Faucet__ _output;
 	
 	/** Is processing being performed? */
-	private volatile boolean _inproc;
+	private volatile int _inproc;
 	
 	/**
 	 * Initializes the data pipe with a default lock.
@@ -117,7 +119,7 @@ public abstract class DataPipe
 		{
 			// {@squirreljme.error AC03 Cannot close the pipe input during
 			// processing.}
-			if (_inproc)
+			if (_inproc > 0)
 				throw new PipeProcessException("AC03");
 			
 			// Close the input
@@ -155,11 +157,8 @@ public abstract class DataPipe
 		synchronized (lock)
 		{
 			// Cannot be processing
-			if (_inproc)
+			if (_inproc > 0)
 				throw new PipeProcessException("AC02");
-			
-			// Process bytes
-			__process();
 			
 			// Drain single byte
 			try
@@ -221,11 +220,8 @@ public abstract class DataPipe
 		synchronized (lock)
 		{
 			// Cannot be processing
-			if (_inproc)
+			if (_inproc > 0)
 				throw new PipeProcessException("AC02");
-			
-			// Process bytes
-			__process();
 			
 			// Drain multiple bytes
 			return _output.drain(__b, __o, __l);
@@ -265,7 +261,7 @@ public abstract class DataPipe
 		synchronized (lock)
 		{
 			// Cannot be processing
-			if (_inproc)
+			if (_inproc > 0)
 				throw new PipeProcessException("AC02");
 			
 			// Offer input bytes
@@ -273,9 +269,6 @@ public abstract class DataPipe
 			{
 				// Add bytes
 				_input.offer(__b);
-				
-				// Process those bytes
-				__process();
 			}
 			
 			// The input is closed
@@ -336,7 +329,7 @@ public abstract class DataPipe
 		synchronized (lock)
 		{
 			// Cannot be processing
-			if (_inproc)
+			if (_inproc > 0)
 				throw new PipeProcessException("AC02");
 			
 			// Offer input bytes
@@ -344,9 +337,6 @@ public abstract class DataPipe
 			{
 				// Add bytes
 				_input.offer(__b, __o, __l);
-				
-				// Process those bytes
-				__process();
 			}
 			
 			// The input is closed
@@ -363,9 +353,10 @@ public abstract class DataPipe
 	/**
 	 * Processes pipe bytes.
 	 *
+	 * @param __f If {@code true} then this was called by the faucet.
 	 * @since 2016/04/30
 	 */
-	private final void __process()
+	private final void __process(boolean __f)
 	{
 		// Lock
 		synchronized (lock)
