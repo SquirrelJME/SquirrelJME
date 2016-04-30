@@ -49,6 +49,7 @@ public class CircularByteBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	@Deprecated
 	protected int arrayLength(byte[] __arr)
 	{
 		return __arr.length;
@@ -59,6 +60,7 @@ public class CircularByteBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	@Deprecated
 	protected byte[] arrayNew(int __len)
 	{
 		return new byte[__len];
@@ -69,6 +71,7 @@ public class CircularByteBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	@Deprecated
 	protected Byte arrayRead(byte[] __arr, int __dx)
 	{
 		return __arr[__dx];
@@ -79,6 +82,7 @@ public class CircularByteBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	@Deprecated
 	protected CircularGenericBuffer arrayWrite(byte[] __arr, int __dx,
 		Byte __v)
 	{

@@ -27,3 +27,10 @@ write bits to an output stream.
 The extra collections could end up being replaced also. Instead of using
 `MissingCollections`, it could just be `of` or `new`.
 
+## 11:18
+
+Going to implement the CRC32 check for ZIP files and such. However right now
+I am going to deprecate the generic circular buffer and the related classes
+so that they are instead single classes. This would be much faster as there
+would be less method call overhead and such.
+

@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
  * @param <E> The erased type.
  * @since 2016/03/11
  */
+@Deprecated
 public abstract class CircularGenericBuffer<T, E>
 {
 	/** Initial buffer size (power of two). */
@@ -57,6 +58,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 *
 	 * @since 2016/03/11
 	 */
+	@Deprecated
 	public CircularGenericBuffer()
 	{
 		this(null);
@@ -69,6 +71,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * created.
 	 * @since 2016/03/11
 	 */
+	@Deprecated
 	public CircularGenericBuffer(Object __lock)
 	{
 		lock = (__lock != null ? __lock : new Object());
@@ -81,6 +84,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return The array length.
 	 * @since 2016/03/11
 	 */
+	@Deprecated
 	protected abstract int arrayLength(T __arr);
 	
 	/**
@@ -90,6 +94,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return The new array.
 	 * @since 2016/03/11
 	 */
+	@Deprecated
 	protected abstract T arrayNew(int __len);
 	
 	/**
@@ -100,6 +105,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return The value at this position.
 	 * @since 2016/03/11
 	 */
+	@Deprecated
 	protected abstract E arrayRead(T __arr, int __dx);
 	
 	/**
@@ -111,6 +117,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
+	@Deprecated
 	protected abstract CircularGenericBuffer arrayWrite(T __arr, int __dx,
 		E __v);
 	

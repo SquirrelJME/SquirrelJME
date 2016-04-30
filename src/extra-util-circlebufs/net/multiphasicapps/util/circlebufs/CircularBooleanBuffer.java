@@ -60,6 +60,7 @@ public class CircularBooleanBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	@Deprecated
 	protected int arrayLength(boolean[] __arr)
 	{
 		return __arr.length;
@@ -70,6 +71,7 @@ public class CircularBooleanBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	@Deprecated
 	protected boolean[] arrayNew(int __len)
 	{
 		return new boolean[__len];
@@ -80,6 +82,7 @@ public class CircularBooleanBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	@Deprecated
 	protected Boolean arrayRead(boolean[] __arr, int __dx)
 	{
 		return __arr[__dx];
@@ -90,6 +93,7 @@ public class CircularBooleanBuffer
 	 * @since 2016/03/11
 	 */
 	@Override
+	@Deprecated
 	protected CircularGenericBuffer arrayWrite(boolean[] __arr, int __dx,
 		Boolean __v)
 	{
