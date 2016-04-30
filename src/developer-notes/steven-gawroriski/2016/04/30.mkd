@@ -17,3 +17,8 @@ fragments which are easier to split. There might be something needed in the
 extra I/O, however it might not need everything which would bring in pointless
 dependencies.
 
+## 00:59
+
+Instead of a `BitCompactor` I can instead have a `BitOutputStream` which can
+write bits to an output stream.
+

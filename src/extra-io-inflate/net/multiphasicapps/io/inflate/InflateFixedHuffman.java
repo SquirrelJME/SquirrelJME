@@ -11,8 +11,8 @@
 package net.multiphasicapps.io.inflate;
 
 import java.io.IOException;
-import net.multiphasicapps.buffers.CircularBooleanBuffer;
-import net.multiphasicapps.buffers.CircularByteBuffer;
+import net.multiphasicapps.util.circlebufs.CircularBooleanBuffer;
+import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
 
 /**
  * This contains the fixed huffman tree.

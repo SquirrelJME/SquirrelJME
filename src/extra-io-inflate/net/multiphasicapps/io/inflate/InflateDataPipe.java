@@ -13,10 +13,11 @@ package net.multiphasicapps.io.inflate;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.buffers.CircularBooleanBuffer;
-import net.multiphasicapps.buffers.CircularByteBuffer;
-import net.multiphasicapps.collections.HuffmanTree;
-import net.multiphasicapps.io.DataPipe;
+import net.multiphasicapps.io.datapipe.DataPipe;
+import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
+import net.multiphasicapps.util.circlebufs.CircularBooleanBuffer;
+import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
+import net.multiphasicapps.util.huffmantree.HuffmanTree;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
@@ -145,7 +146,7 @@ public class InflateDataPipe
 			
 			// For every byte, offer it to the output
 			for (int i = 0; i < rc; i++)
-				inputbits.offerLastInt((v = ((int)qq[i]) & 0xFF, 0xFF);
+				inputbits.offerLastInt(((int)qq[i]) & 0xFF, 0xFF);
 		}
 		
 		// Processing loop
