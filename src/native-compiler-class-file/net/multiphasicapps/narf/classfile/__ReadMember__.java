@@ -17,6 +17,7 @@ import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.io.region.BufferAreaInputStream;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIConstantValue;
 import net.multiphasicapps.narf.classinterface.NCIException;
@@ -29,7 +30,6 @@ import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethodID;
 import net.multiphasicapps.narf.classinterface.NCIUTF;
-import net.multiphasicapps.io.BufferAreaInputStream;
 
 /**
  * This reads class members.

@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import net.multiphasicapps.collections.MissingCollections;
-import net.multiphasicapps.io.CRC32InputStream;
-import net.multiphasicapps.io.DataProcessorInputStream;
-import net.multiphasicapps.io.InflateDataProcessor;
-import net.multiphasicapps.io.SizeLimitedInputStream;
+import net.multiphasicapps.io.datapipe.DataPipeInputStream;
+import net.multiphasicapps.io.inflate.InflateDataPipe;
+import net.multiphasicapps.io.region.SizeLimitedInputStream;
 
 /**
  * This represents a standard ZIP file.
@@ -460,8 +459,8 @@ public class StandardZIP32File
 			// Deflated
 			else if (method == METHOD_DEFLATED)
 				return new SizeLimitedInputStream(
-					new DataProcessorInputStream(rawsource,
-						new InflateDataProcessor()), usz, true);
+					new DataPipeInputStream(rawsource,
+						new InflateDataPipe()), usz, true);
 			
 			// Unknown
 			else
