@@ -8,22 +8,23 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io.datasink;
+package net.multiphasicapps.io.datafaucet;
 
 /**
- * This is thrown when there is an error processing data in the sink.
+ * This is thrown when an attempt is made to fill the faucet with more data
+ * when it is already complete.
  *
  * @since 2016/04/30
  */
-public class SinkProcessException
-	extends RuntimeException
+public class CompleteFaucetException
+	extends IllegalStateException
 {
 	/**
 	 * Initializes the exception with no message.
 	 *
 	 * @since 2016/04/30
 	 */
-	public SinkProcessException()
+	public CompleteFaucetException()
 	{
 		super();
 	}
@@ -34,7 +35,7 @@ public class SinkProcessException
 	 * @param __m The message to use.
 	 * @since 2016/04/30
 	 */
-	public SinkProcessException(String __m)
+	public CompleteFaucetException(String __m)
 	{
 		super(__m);
 	}
@@ -46,7 +47,7 @@ public class SinkProcessException
 	 * @param __c The cause of this exception.
 	 * @since 2016/04/30
 	 */
-	public SinkProcessException(String __m, Throwable __c)
+	public CompleteFaucetException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -57,7 +58,7 @@ public class SinkProcessException
 	 * @param __c The cause of this exception.
 	 * @since 2016/04/30
 	 */
-	public SinkProcessException(Throwable __c)
+	public CompleteFaucetException(Throwable __c)
 	{
 		super(__c);
 	}

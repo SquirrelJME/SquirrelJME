@@ -17,6 +17,9 @@ import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
 /**
  * This is a data faucet which generates bytes.
  *
+ * {@squirreljme.error AB01 Cannot add bytes for draining when the output is
+ * complete.}
+ *
  * @since 2016/04/30
  */
 public abstract class DataFaucet
@@ -60,6 +63,33 @@ public abstract class DataFaucet
 		
 		// Setup output buffer
 		_output = new CircularByteBuffer(__lk);
+	}
+	
+	protected final DataFaucet fill(byte __b)
+	{
+		// Lock
+		synchronized (lock)
+		{
+			if (_complete)
+				throw new ("AB01");
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	protected final DataFaucet fill(byte[] __b)
+		throws NullPointerException
+	{
+		return fill(__b, 0, __b.length);
+	}
+	
+	protected final DataFaucet fill(byte[] __b, int __o, int __l)
+	{
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
