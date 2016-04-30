@@ -146,9 +146,7 @@ public class InflateDataPipe
 		for (byte[] qq = new byte[READQ];;)
 		{
 			// Read in all bytes
-			int rc = READQ + 1/*pipeInput(qq, 0, READQ)*/;
-			if (true)
-				throw new Error("TODO");
+			int rc = pipeInput(qq, 0, READQ);
 			
 			// No more bytes to read?
 			if (rc <= 0)

@@ -104,13 +104,13 @@ public abstract class DataSink
 	/**
 	 * Removes a single byte from the input queue.
 	 *
-	 * @return The read byte, {@link #COMPLETED} if completed, or
-	 * {@link #NO_INPUT} if there is no input available. 
+	 * @return The read byte or {@link #COMPLETED} if completed.
+	 * @throws NoSuchElementException If no data is available for reading.
 	 * @throws SinkProcessException If there was an acceptance error.
 	 * @since 2016/04/30
 	 */
 	protected final int accept()
-		throws SinkProcessException
+		throws NoSuchElementException, SinkProcessException
 	{
 		// Lock
 		synchronized (lock)
@@ -128,7 +128,9 @@ public abstract class DataSink
 			// No data read
 			catch (NoSuchElementException nsee)
 			{
-				return (_complete ? COMPLETED : NO_INPUT);
+				if (_complete)
+					return COMPLETED;
+				throw nsee;
 			}
 		}
 	}

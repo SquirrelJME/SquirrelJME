@@ -34,6 +34,8 @@ import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
  * processing.}
  * {@squirreljme.error AC06 Internal pipe input and output may only be
  * performed during processing.}
+ * {@squirreljme.error AC0a The pipe dual state has not been
+ * statisfied (input must be handled when the output is requested.}
  *
  * @since 2016/03/11
  */
@@ -47,6 +49,10 @@ public abstract class DataPipe
 	/** The mask for the sink activity state. */
 	private static final int _SINK_MASK =
 		1;
+	
+	/** Both masks combined. */
+	private static final int _BOTH_MASK =
+		_FAUCET_MASK | _SINK_MASK;
 	
 	/** Lock. */
 	protected final Object lock;
@@ -377,6 +383,101 @@ public abstract class DataPipe
 	}
 	
 	/**
+	 * Reads a single byte of input.
+	 *
+	 * @return The read byte or {@code -1} there are no more input bytes.
+	 * @throws PipeProcessException If the state for pipe operations is not
+	 * set.
+	 * @throws PipeStalledException If there are no bytes available for
+	 * input.
+	 * @since 2016/04/30
+	 */
+	protected final int pipeInput()
+		throws PipeProcessException, PipeStalledException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Not the dual state
+			if (_inproc != _BOTH_MASK)
+				throw new PipeProcessException("AC0a");
+			
+			// Could stall
+			try
+			{
+				// Accept from the input
+				int rv = _input.__accept();
+			
+				// Complete?
+				if (rv < 0)
+					return -1;
+				
+				// Return it
+				return rv;
+			}
+			
+			// Did stall
+			catch (NoSuchElementException e)
+			{
+				// {@squirreljme.error AC0b The pipeline input stalled.}
+				throw new PipeStalledException("AC0b", e);
+			}
+		}
+	}
+	
+	/**
+	 * Reads multiple bytes of input.
+	 *
+	 * @param __b The array to read into.
+	 * @return The number of read bytes or {@code -1} if the end of input
+	 * was reached.
+	 * @throws NullPointerException On null arguments.
+	 * @throws PipeProcessException If the state for pipe operations is not
+	 * set.
+	 * @since 2016/04/30
+	 */
+	protected final int pipeInput(byte[] __b)
+		throws NullPointerException, PipeProcessException
+	{
+		return pipeInput(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Reads multiple bytes of input.
+	 *
+	 * @param __b The array to read into.
+	 * @param __o The starting offset to write into the array at.
+	 * @param __l The maximum number of bytes to read.
+	 * @return The number of read bytes or {@code -1} if the end of input
+	 * was reached.
+	 * @throws NullPointerException On null arguments.
+	 * @throws PipeProcessException If the state for pipe operations is not
+	 * set.
+	 * @since 2016/04/30
+	 */
+	protected final int pipeInput(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException,
+			PipeProcessException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Not the dual state
+			if (_inproc != _BOTH_MASK)
+				throw new PipeProcessException("AC0a");
+			
+			// Read from the input
+			return _input.__accept(__b, __o, __l);
+		}
+	}
+	
+	/**
 	 * Indicates that processing is complete and that there is no more
 	 * output to be generated.
 	 *
@@ -538,6 +639,31 @@ public abstract class DataPipe
 				// Call the other processor
 				__process(_SINK_MASK);
 			}
+		}
+		
+		/**
+		 * Wraps the acceptor.
+		 *
+		 * @return The read value.
+		 * @since 2016/04/30
+		 */
+		private int __accept()
+		{
+			return accept();
+		}
+		
+		/**
+		 * Wraps the acceptor.
+		 *
+		 * @param __b The output array.
+		 * @param __o The offset.
+		 * @param __l The length.
+		 * @return The number of accepted bytes.
+		 * @since 2016/04/30
+		 */
+		private int __accept(byte[] __b, int __o, int __l)
+		{
+			return accept(__b, __o, __l);
 		}
 	}
 }
