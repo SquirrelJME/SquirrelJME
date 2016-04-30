@@ -254,6 +254,22 @@ public abstract class DataPipe
 	}
 	
 	/**
+	 * Writes a single byte to the output of this pipe.
+	 *
+	 * @param __b The byte to write.
+	 * @return {@code this}.
+	 * @since 2016/04/30
+	 */
+	protected final DataPipe pipeOutput(byte __b)
+	{
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Writes bytes from the given array into the output of this pipe.
 	 *
 	 * @param __b The array containing bytes to place in the output.

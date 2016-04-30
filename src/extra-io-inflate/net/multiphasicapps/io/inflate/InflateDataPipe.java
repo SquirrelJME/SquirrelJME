@@ -75,7 +75,7 @@ public class InflateDataPipe
 				public void ready(byte __v)
 				{
 					// Give it to the output data
-					output.offerLast(__v);
+					pipeOutput(__v);
 					
 					// Also give it to the sliding window
 					window.append(__v);
@@ -144,6 +144,10 @@ public class InflateDataPipe
 		{
 			// Read in all bytes
 			int rc = pipeInput(qq, 0, READQ);
+			
+			// No more bytes to read?
+			if (rc <= 0)
+				break;
 			
 			// For every byte, offer it to the output
 			for (int i = 0; i < rc; i++)

@@ -13,11 +13,11 @@ package net.multiphasicapps.tests.util.huffmantree;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.BitCompactor;
-import net.multiphasicapps.io.BitInputStream;
-import net.multiphasicapps.util.huffmantree.HuffmanTree;
+import net.multiphasicapps.io.bits.BitCompactor;
+import net.multiphasicapps.io.bits.BitInputStream;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
+import net.multiphasicapps.util.huffmantree.HuffmanTree;
 
 /**
  * This contains tests for the huffman tree.
