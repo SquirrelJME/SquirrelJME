@@ -430,7 +430,8 @@ public abstract class DataPipe
 					if (0 == (ip & _FAUCET_MASK))
 						return;
 					
-					throw new Error("TODO");
+					// Call the actual processor
+					DataPipe.this.process();
 				}
 				
 				// Processing in the faucet, just flush the input so that it is
