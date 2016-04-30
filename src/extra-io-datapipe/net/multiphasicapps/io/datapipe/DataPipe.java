@@ -266,7 +266,7 @@ public abstract class DataPipe
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/29 
 	 */
-	protected final DataPipe pipeOutput(byte[] __b, int __o, __l)
+	protected final DataPipe pipeOutput(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
