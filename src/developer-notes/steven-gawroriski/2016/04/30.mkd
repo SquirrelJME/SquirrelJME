@@ -48,3 +48,8 @@ while inflate will use the pipe as it currently does. Also having single
 classes for the three should make state easier to be checked. For example, I
 do not permit bytes to be accepted unless processing is being performed.
 
+## 13:46
+
+The faucet end, there will be `fill` to add bytes to the output and then
+`drain` which is used by others to obtain the filled bytes.
+
