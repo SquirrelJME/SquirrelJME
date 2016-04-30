@@ -40,6 +40,14 @@ import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
 public abstract class DataPipe
 	implements Flushable
 {
+	/** The mask for the faucet activity state. */
+	private static final int _FAUCET_MASK =
+		2;
+	
+	/** The mask for the sink activity state. */
+	private static final int _SINK_MASK =
+		1;
+	
 	/** Lock. */
 	protected final Object lock;
 	
@@ -472,7 +480,7 @@ public abstract class DataPipe
 			synchronized (lock)
 			{
 				// Call the other processor
-				__process(1);
+				__process(_FAUCET_MASK);
 			}
 		}
 	}
@@ -506,7 +514,7 @@ public abstract class DataPipe
 			synchronized (lock)
 			{
 				// Call the other processor
-				__process(2);
+				__process(_SINK_MASK);
 			}
 		}
 	}

@@ -71,3 +71,9 @@ Now the interesting part will be handling the singular state of the sinks and
 faucets so that they do not trigger any pipe processing errors. Will be
 interesting.
 
+## 19:09
+
+Well this may be confusing. The code currently goes into the faucet for
+processing to read output bytes. However the data sink has to be handled. But
+I should just be able to flush the sink.
+
