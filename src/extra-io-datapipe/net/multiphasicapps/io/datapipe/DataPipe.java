@@ -13,6 +13,7 @@ package net.multiphasicapps.io.datapipe;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.io.datafaucet.DataFaucet;
+import net.multiphasicapps.io.datafaucet.FaucetProcessException;
 import net.multiphasicapps.io.datasink.DataSink;
 import net.multiphasicapps.io.datasink.SinkProcessException;
 import net.multiphasicapps.util.circlebufs.CircularByteBuffer;

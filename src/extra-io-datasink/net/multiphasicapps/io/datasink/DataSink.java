@@ -387,6 +387,10 @@ public abstract class DataSink
 			if (count <= 0)
 				return;
 			
+			// {@squirreljme.error AA07 Double processing.}
+			if (_inproc)
+				throw new IllegalStateException("AA07");
+			
 			try
 			{
 				// Now processing

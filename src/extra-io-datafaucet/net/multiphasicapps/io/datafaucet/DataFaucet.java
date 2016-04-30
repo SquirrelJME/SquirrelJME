@@ -19,6 +19,9 @@ import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
  *
  * {@squirreljme.error AB01 Cannot add bytes for draining when the output is
  * complete.}
+ * {@squirreljme.error AB02 Cannot add bytes for draining when processing is
+ * not being performed.}
+ * {@squirreljme.error AB05 Cannot drain bytes during processing.}
  *
  * @since 2016/04/30
  */
@@ -33,6 +36,12 @@ public abstract class DataFaucet
 	
 	/** Is the faucet complete? */
 	private volatile boolean _complete;
+	
+	/** Processing is being performed. */
+	private volatile boolean _inproc;
+	
+	/** Did processing fail. */
+	private volatile boolean _didfail;
 	
 	/**
 	 * Initializes the data faucet.
@@ -66,25 +75,146 @@ public abstract class DataFaucet
 	}
 	
 	/**
+	 * Processes data for output to be drained in the faucet.
+	 *
+	 * @throws FaucetProcessException On processing errors.
+	 * @since 2016/04/30
+	 */
+	protected abstract void process()
+		throws FaucetProcessException;
+	
+	/**
+	 * Drains a single byte from the faucet.
+	 *
+	 * @return The read byte value or {@code -1} if the end has been reached.
+	 * @throws FaucetProcessException If could not process bytes for draining.
+	 * @throws NoSuchElementException If the faucet is not yet complete and
+	 * there is no byte which is available.
+	 * @since 2016/04/30
+	 */
+	public final int drain()
+		throws FaucetProcessException, NoSuchElementException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Cannot drain during processing
+			if (_inproc)
+				throw new FaucetProcessException("AB05");
+			
+			// Process
+			__process();
+			
+			// Try to read a single byte
+			try
+			{
+				return ((int)_output.removeFirst()) & 0xFF;
+			}
+			
+			catch (NoSuchElementException e)
+			{
+				// If complete end it
+				if (_complete)
+					return -1;
+				
+				// Otherwise, rethrow
+				throw e;
+			}
+		}
+	}
+	
+	/**
+	 * Drains multiple bytes from the faucet.
+	 *
+	 * @param __b The byte array to write to.
+	 * @return The number of drained bytes or {@code -1} if the end has been
+	 * reached.
+	 * @throws FaucetProcessException If could not process bytes for draining.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/30
+	 */
+	public final int drain(byte[] __b)
+		throws FaucetProcessException, NullPointerException
+	{
+		return drain(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Drains multiple bytes from the faucet.
+	 *
+	 * @param __b The byte array to write to.
+	 * @param __o The offset to start the write at.
+	 * @param __l The number of bytes to write.
+	 * @return The number of drained bytes or {@code -1} if the end has been
+	 * reached.
+	 * @throws FaucetProcessException If could not process bytes for draining.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/30
+	 */
+	public final int drain(byte[] __b, int __o, int __l)
+		throws FaucetProcessException, IndexOutOfBoundsException,
+			NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Cannot drain during processing
+			if (_inproc)
+				throw new FaucetProcessException("AB05");
+			
+			// Process
+			__process();
+			
+			// Read many bytes
+			int rv = _output.removeFirst(__b, __o, __l);
+			
+			// No bytes read?
+			if (rv <= 0)
+				return (_complete ? -1 : 0);
+			
+			// Return the read count
+			return rv;
+		}
+	}
+	
+	/**
 	 * Adds data to be output via the drain.
 	 *
 	 * @param __b The single byte to add.
 	 * @return {@code this}.
-	 * @throws FaucetProcessException If the faucet is complete.
+	 * @throws CompleteFaucetException If the faucet is complete.
+	 * @throws FaucetProcessException If filling is not called during
+	 * processing.
 	 * @since 2016/04/30
 	 */
 	protected final DataFaucet fill(byte __b)
-		throws FaucetProcessException
+		throws CompleteFaucetException, FaucetProcessException
 	{
 		// Lock
 		synchronized (lock)
 		{
 			// Cannot fill when already complete
 			if (_complete)
-				throw new FaucetProcessException("AB01");
+				throw new CompleteFaucetException("AB01");
 			
-			throw new Error("TODO");
+			// Must be processing
+			if (!_inproc)
+				throw new FaucetProcessException("AB02");
+			
+			// Send in
+			_output.offerLast(__b);
 		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -92,12 +222,15 @@ public abstract class DataFaucet
 	 *
 	 * @param __b The bytes to add.
 	 * @return {@code this}.
-	 * @throws FaucetProcessException If the faucet is complete.
+	 * @throws CompleteFaucetException If the faucet is complete.
+	 * @throws FaucetProcessException If filling is not called during
+	 * processing.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/30
 	 */
 	protected final DataFaucet fill(byte[] __b)
-		throws FaucetProcessException, NullPointerException
+		throws CompleteFaucetException, FaucetProcessException,
+			NullPointerException
 	{
 		return fill(__b, 0, __b.length);
 	}
@@ -107,15 +240,17 @@ public abstract class DataFaucet
 	 *
 	 * @param __b The bytes to add.
 	 * @return {@code this}.
-	 * @throws FaucetProcessException If the faucet is complete.
+	 * @throws CompleteFaucetException If the faucet is complete.
+	 * @throws FaucetProcessException If filling is not called during
+	 * processing.
 	 * @throws IndexOutOfBoundsException If the offset or length are negative
 	 * or exceed the array size.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/30
 	 */
 	protected final DataFaucet fill(byte[] __b, int __o, int __l)
-		throws FaucetProcessException, IndexOutOfBoundsException,
-			NullPointerException
+		throws CompleteFaucetException, FaucetProcessException,
+			IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
 		if (__b == null)
@@ -130,8 +265,16 @@ public abstract class DataFaucet
 			if (_complete)
 				throw new FaucetProcessException("AB01");
 			
-			throw new Error("TODO");
+			// Must be processing
+			if (!_inproc)
+				throw new FaucetProcessException("AB02");
+			
+			// Send in
+			_output.offerLast(__b, __o, __l);
 		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -144,7 +287,7 @@ public abstract class DataFaucet
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			__process();
 		}
 	}
 	
@@ -161,6 +304,66 @@ public abstract class DataFaucet
 		synchronized (lock)
 		{
 			return _complete;
+		}
+	}
+	
+	/**
+	 * Processes the faucet to determine if there are more bytes for input.
+	 *
+	 * @throws FaucetProcessException If processing failed.
+	 * @since 2016/04/30
+	 */
+	private final void __process()
+		throws FaucetProcessException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// {@squirreljme.error AB03 The faucet previously threw an
+			// exception during processing.}
+			if (_didfail)
+				throw new FaucetProcessException("AB03");
+			
+			// {@squirreljme.error AB07 Double processing.}
+			if (_inproc)
+				throw new IllegalStateException("AB07");
+			
+			// Already complete, there will be no more bytes
+			if (_complete)
+				return;
+			
+			// Could fail
+			try
+			{
+				// Set
+				_inproc = true;
+				
+				// Call processor
+				process();
+			}
+			
+			// Failed
+			catch (Throwable t)
+			{
+				// Set failure
+				_didfail = true;
+				
+				// Throw as is
+				if (t instanceof RuntimeException)
+					throw (RuntimeException)t;
+				else if (t instanceof Error)
+					throw (Error)t;
+				
+				// {@squirreljme.error AB04 Caught another exception while
+				// processing the faucet.}
+				throw new FaucetProcessException("AB04", t);
+			}
+			
+			// Not in a processor run
+			finally
+			{
+				_inproc = false;
+			}
 		}
 	}
 }
