@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io;
+package net.multiphasicapps.io.inflate;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -16,14 +16,15 @@ import java.util.NoSuchElementException;
 import net.multiphasicapps.buffers.CircularBooleanBuffer;
 import net.multiphasicapps.buffers.CircularByteBuffer;
 import net.multiphasicapps.collections.HuffmanTree;
+import net.multiphasicapps.io.DataPipe;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
  *
  * @since 2016/03/11
  */
-public class InflateDataProcessor
-	extends DataProcessor
+public class InflateDataPipe
+	extends DataPipe
 {
 	/**
 	 * Required non-finished bits in the queue, this is for optimal processing
@@ -136,11 +137,15 @@ public class InflateDataProcessor
 		
 		// Take all bytes which are available to the input and add them to the
 		// input bit buffer
-		while (input.hasAvailable())
+		final int READQ = 32;
+		for (byte[] qq = new byte[READQ];;)
 		{
-			int v;
-			inputbits.offerLastInt((v = ((int)input.removeFirst()) & 0xFF),
-				0xFF);
+			// Read in all bytes
+			int rc = pipeInput(qq, 0, READQ);
+			
+			// For every byte, offer it to the output
+			for (int i = 0; i < rc; i++)
+				inputbits.offerLastInt((v = ((int)qq[i]) & 0xFF, 0xFF);
 		}
 		
 		// Processing loop

@@ -1,0 +1,12 @@
+# 2016/04/30
+
+## 00:03
+
+Thinking about it, when performing mass class movearounds, the error code
+prefixes can get out of sync. It can also be confusing as to which codes
+belong to what. When a stack trace is printed however, the source would be
+known. However, I believe for future use that the error codes should be fixed
+similar to how I use it now. So if I go through every package, I start at AA
+and go all the way through ZZ until things are reached. This way there is no
+bias in letter selection. That still gives me about 676 unique codes.
+
