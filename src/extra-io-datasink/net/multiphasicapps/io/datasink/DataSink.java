@@ -322,13 +322,25 @@ public abstract class DataSink
 	 * into the sink.
 	 *
 	 * @return {@code this}.
+	 * @throws SinkProcessException If the sink is already complete.
 	 * @since 2016/04/30
 	 */
 	public final DataSink setComplete()
+		throws SinkProcessException
 	{
 		// Lock
 		synchronized (lock)
 		{
+			// {@squirreljme.error AA07 The data sink cannot be set as complete
+			// during processing.}
+			if (_inproc)
+				throw new SinkProcessException("AA07");
+			
+			// {@squirreljme.error AA06 The data sink is already complete}
+			if (_complete)
+				throw new SinkProcessException("AA06");
+			
+			// Set
 			_complete = true;
 		}
 		
