@@ -11,6 +11,7 @@
 package net.multiphasicapps.io.datasink;
 
 import java.io.Flushable;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
 
 /**
@@ -23,12 +24,22 @@ import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
  * completed.}
  * {@squirreljme.error AA02 Cannot add more bytes because the sink is
  * currently processing data.}
+ * {@squirreljme.error AA05 Cannot accept bytes when processing is not being
+ * performed.}
  *
  * @since 2016/04/30
  */
 public abstract class DataSink
 	implements Flushable
 {
+	/** This is returned when there is no input and the source is complete. */
+	public static final int COMPLETED =
+		Integer.MIN_VALUE;
+	
+	/** This is returned when there is no input. */
+	public static final int NO_INPUT =
+		COMPLETED + 1;
+	
 	/** Lock. */
 	protected final Object lock;
 	
@@ -84,6 +95,95 @@ public abstract class DataSink
 		
 		// Setup input
 		_input = new CircularByteBuffer(__lk);
+	}
+	
+	/**
+	 * Removes a single byte from the input queue.
+	 *
+	 * @return The read byte, {@link #COMPLETED} if completed, or
+	 * {@link #NO_INPUT} if there is no input available. 
+	 * @throws SinkProcessException If there was an acceptance error.
+	 * @since 2016/04/30
+	 */
+	protected final int accept()
+		throws SinkProcessException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Not being processed?
+			if (!_inproc)
+				throw new SinkProcessException("AA05");
+			
+			// Could have no data in the buffer
+			try
+			{
+				return ((int)((byte)(_input.removeFirst()))) & 0xFF;
+			}
+			
+			// No data read
+			catch (NoSuchElementException nsee)
+			{
+				return (_complete ? COMPLETED : NO_INPUT);
+			}
+		}
+	}
+	
+	/**
+	 * Removes multiples bytes from the input queue.
+	 *
+	 * @param __b The output buffer to read bytes into.
+	 * @return The number of read bytes.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SinkProcessException If there was an acceptance error.
+	 * @since 2016/04/30
+	 */
+	protected final int accept(byte[] __b)
+		throws NullPointerException, SinkProcessException
+	{
+		return accept(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Removes multiples bytes from the input queue.
+	 *
+	 * @param __b The output buffer to read bytes into.
+	 * @param __o The starting offset to place bytes at.
+	 * @param __l The number of bytes to add.
+	 * @return The number of read bytes.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SinkProcessException If there was an acceptance error.
+	 * @since 2016/04/30
+	 */
+	protected final int accept(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException,
+			SinkProcessException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Not being processed?
+			if (!_inproc)
+				throw new SinkProcessException("AA05");
+			
+			// Read input bytes
+			int rv = _input.removeFirst(__b, __o, __l);
+			
+			// Nothing read?
+			if (rv <= 0)
+				return (_complete ? COMPLETED : NO_INPUT);
+			
+			// Return the read count
+			return rv;
+		}
 	}
 	
 	/**
