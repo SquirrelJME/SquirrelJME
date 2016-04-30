@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io;
+package net.multiphasicapps.io.slidingwindow;
 
 import net.multiphasicapps.buffers.ChunkByteBuffer;
 

@@ -8,10 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tests.xio;
+package net.multiphasicapps.tests.io.slidingwindow;
 
 import java.util.Random;
-import net.multiphasicapps.io.SlidingByteWindow;
+import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 

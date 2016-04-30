@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-Hairball-Name: test-extra-io-slidingwindow
+X-Hairball-UUID: f21c2e90-c207-45c9-983c-eecc75ac9c15
+X-Hairball-Depends: test-base, extra-io-slidingwindow
+LIBlet-Title: Sliding Window Tests
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160430
+LIBlet-Description: This contains tests to determine
+  if the sliding windows work correctly.
