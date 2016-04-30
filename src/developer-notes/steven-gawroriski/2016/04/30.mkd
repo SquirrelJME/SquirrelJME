@@ -87,3 +87,8 @@ Actually caused by the overzealous data pipe input stream. When there is
 nothing to read it just reads in all of the input and pipes it in. That would
 require much memory to be used.
 
+## 19:57
+
+Seems like the pipe reads quite a number of input but just stops when nothing
+is really left.
+
