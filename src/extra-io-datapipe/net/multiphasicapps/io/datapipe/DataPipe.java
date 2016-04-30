@@ -55,6 +55,9 @@ public abstract class DataPipe
 	/** Is processing being performed? */
 	private volatile int _inproc;
 	
+	/** Processing failed? */
+	private volatile boolean _failed;
+	
 	/**
 	 * Initializes the data pipe with a default lock.
 	 *
@@ -384,15 +387,59 @@ public abstract class DataPipe
 	/**
 	 * Processes pipe bytes.
 	 *
-	 * @param __f If {@code true} then this was called by the faucet.
+	 * @param __f Bit mask for the processor code.
+	 * @throws PipeProcessException If the processing type is already being
+	 * performed.
 	 * @since 2016/04/30
 	 */
-	private final void __process(boolean __f)
+	private final void __process(int __f)
+		throws PipeProcessException
 	{
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// {@squirreljme.error AC09 A previous pipe operation failed.}
+			if (_failed)
+				throw new PipeProcessException("AC09");
+			
+			// {@squirreljme.error AC07 Processing is already being performed.
+			// (The mask)}
+			int ip = _inproc;
+			if (0 != (ip & __f))
+				throw new PipeProcessException(String.format("AC07 %d", __f));
+			
+			// Could fail
+			try
+			{
+				// Set the bit
+				_inproc |= __f;
+				
+				throw new Error("TODO");
+			}
+			
+			// Did fail
+			catch (Throwable t)
+			{
+				// Set failure
+				_failed = true;
+				
+				// Rethrow
+				if (t instanceof RuntimeException)
+					throw (RuntimeException)t;
+				else if (t instanceof Error)
+					throw (Error)t;
+				
+				// {@squirreljme.error AC08 Threw another exception during
+				// processing.}
+				throw new PipeProcessException("AC08", t);
+			}
+			
+			// Clear processing bit
+			finally
+			{
+				// Clear the bit
+				_inproc &= (~__f);
+			}
 		}
 	}
 	
@@ -424,7 +471,8 @@ public abstract class DataPipe
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// Call the other processor
+				__process(1);
 			}
 		}
 	}
@@ -457,7 +505,8 @@ public abstract class DataPipe
 			// Lock
 			synchronized (lock)
 			{
-				throw new Error("TODO");
+				// Call the other processor
+				__process(2);
 			}
 		}
 	}
