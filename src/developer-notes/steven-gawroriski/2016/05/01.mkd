@@ -101,5 +101,7 @@ Right now the only thing to implement is `offerLast` and `removeFirst`.
 ## 17:17
 
 The `CircularByteBuffer` could just use the `DynamicByteBuffer` although there
-may be an added inefficiency.
+may be an added inefficiency. However, an improvement in `DynamicByteBuffer`
+could increase the speed of the circular byte buffer, especially if the
+dynamic byte buffer becomes like the circular byte buffer more.
 
