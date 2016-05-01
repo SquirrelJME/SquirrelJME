@@ -86,4 +86,8 @@ verified.
 Of the things used, the boxed integers and empty collections have not been used
 at all.
 
+## 12:36
+
+Real life stuff puts a large dent into refactoring today.
+
 
