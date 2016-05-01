@@ -168,7 +168,7 @@ public abstract class DataPipe
 	 * for output.
 	 * @since 2016/04/30
 	 */
-	protected final DataPipe outputComplete()
+	protected final DataPipe completeOutput()
 		throws PipeProcessException
 	{
 		// Lock
@@ -177,7 +177,7 @@ public abstract class DataPipe
 			// Not the dual state
 			if (_inproc != _BOTH_MASK)
 				throw new PipeProcessException("AC0a");
-			
+			System.err.println("DEBUG -- output complete.\n");
 			// Complete the output
 			try
 			{

@@ -43,6 +43,9 @@ public abstract class DataFaucet
 	/** Did processing fail. */
 	private volatile boolean _didfail;
 	
+	/** Did final complete. */
+	private volatile boolean _finished;
+	
 	/**
 	 * Initializes the data faucet.
 	 *
@@ -360,8 +363,17 @@ public abstract class DataFaucet
 				throw new IllegalStateException("AB07");
 			
 			// Already complete, there will be no more bytes
+			boolean markfinish = false;
 			if (_complete)
-				return;
+			{
+				// Need to process the final -1 bit
+				if (!_finished)
+					markfinish = true;
+				
+				// Stop otherwise
+				else
+					return;
+			}
 			
 			// Could fail
 			try
@@ -371,6 +383,10 @@ public abstract class DataFaucet
 				
 				// Call processor
 				process();
+				
+				// Mark finished
+				if (markfinish)
+					_finished = true;
 			}
 			
 			// Failed

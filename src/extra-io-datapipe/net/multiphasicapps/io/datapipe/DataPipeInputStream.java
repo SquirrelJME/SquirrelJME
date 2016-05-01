@@ -114,6 +114,10 @@ public class DataPipeInputStream
 					if (rv < 0)
 						return -1;
 					
+					// {@squirreljme.error AC0e Forced stall.}
+					else if (rv == 0)
+						throw new PipeStalledException("AC0e");
+					
 					// Return it
 					return rv;
 				}
