@@ -4,3 +4,14 @@
 
 New month.
 
+## 10:37
+
+So there have been about 440 commits for the entire month, which is not too
+bad. Although I have yet to reach native code compilation and I had part of an
+interpreter which I deleted (it was very ugly). The early part of the month
+was refactoring. I had working inflate code, but my current partial refactor
+is changing how the code works underneath (datapipe and such). I thought about
+compiling to C and using GCJ but that would be very ugly. And the last day or
+so is a refactor of the extra packages that I have.
+
+
