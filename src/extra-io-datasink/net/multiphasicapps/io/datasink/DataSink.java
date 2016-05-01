@@ -54,6 +54,9 @@ public abstract class DataSink
 	/** Has failure occur? */
 	private volatile boolean _didfail;
 	
+	/** Has the sink been completely finished? */
+	private volatile boolean _finished;
+	
 	/**
 	 * Initializes the data sink.
 	 *
@@ -402,7 +405,18 @@ public abstract class DataSink
 			
 			// if no bytes to process, do nothing
 			if (count <= 0)
-				return;
+			{
+				boolean co = _complete;
+				
+				// If completed yet not finished (the processed code did not
+				// read a -1 potentially, then use a zero count process
+				if (co && !_finished)
+					_finished = true;
+				
+				// Otherwise, stop
+				else
+					return;
+			}
 			
 			// {@squirreljme.error AA07 Double processing.}
 			if (_inproc)

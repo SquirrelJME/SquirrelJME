@@ -100,3 +100,8 @@ It seems as if the input completion state is never triggered at all.
 
 Actually, I never set the output as done.
 
+## 21:42
+
+Actually for the data sink, I need to handle the actual final byte which
+would return -1.
+
