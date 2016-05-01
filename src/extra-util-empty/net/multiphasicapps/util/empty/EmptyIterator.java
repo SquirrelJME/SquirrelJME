@@ -8,8 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package net.multiphasicapps.util.empty;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -18,15 +20,18 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/04/10
  */
-final class __EmptyIterator__
+public final class EmptyIterator
 	implements Iterator
 {
+	/** The empty iterator. */
+	private static volatile Reference<Iterator> _EMPTY_ITERATOR;
+	
 	/**
 	 * Initializes the empty iterator.
 	 *
 	 * @sicne 2016/04/10
 	 */
-	__EmptyIterator__()
+	final EmptyIterator()
 	{
 	}
 	
@@ -61,6 +66,29 @@ final class __EmptyIterator__
 		// {@squirreljme.error XC05 Cannot remove elements from the empty
 		// iterator.}
 		throw new UnsupportedOperationException("XC05");
+	}
+	
+	/**
+	 * This returns an iterator which contains nothing.
+	 *
+	 * @param <V> The type of values to iterate over.
+	 * @return The empty iterator.
+	 * @since 2016/04/10
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <V> Iterator<V> empty()
+	{
+		// Get reference
+		Reference<Iterator> ref = _EMPTY_ITERATOR;
+		Iterator rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+			_EMPTY_ITERATOR = new WeakReference<>(
+				(rv = new EmptyIterator()));
+		
+		// Return it
+		return (Iterator<V>)rv;
 	}
 }
 

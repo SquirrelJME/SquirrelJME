@@ -8,25 +8,30 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package net.multiphasicapps.util.empty;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractSet;
 import java.util.Iterator;
 
 /**
- * DESCRIBE THIS.
+ * This is a set which cannot be changed and has no entries.
  *
  * @since 2016/04/10
  */
-final class __EmptySet__
+public final class EmptySet
 	extends AbstractSet
 {
+	/** The empty set. */
+	private static volatile Reference<Set> _EMPTY_SET;
+	
 	/**
 	 * Initializes the empty set.
 	 *
 	 * @since 2016/04/10
 	 */
-	__EmptySet__()
+	private EmptySet()
 	{
 	}
 	
@@ -37,7 +42,7 @@ final class __EmptySet__
 	@Override
 	public Iterator iterator()
 	{
-		return MissingCollections.emptyIterator();
+		return EmptyIterator.empty();
 	}
 	
 	/**
@@ -48,6 +53,28 @@ final class __EmptySet__
 	public int size()
 	{
 		return 0;
+	}
+	
+	/**
+	 * This returns an empty and unmodifiable set.
+	 *
+	 * @param <V> The element type used by the set.
+	 * @return The unmodifiable and empty set.
+	 * @since 2016/04/10
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <V> Set<V> empty()
+	{
+		// Get reference
+		Reference<Set> ref = _EMPTY_SET;
+		Set rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+			_EMPTY_SET = new WeakReference<>((rv = new EmptySet()));
+		
+		// Return it
+		return (Set<V>)rv;
 	}
 }
 

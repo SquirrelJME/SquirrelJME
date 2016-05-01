@@ -8,8 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package net.multiphasicapps.util.empty;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.RandomAccess;
 
@@ -18,16 +20,19 @@ import java.util.RandomAccess;
  *
  * @since 2016/04/10
  */
-final class __EmptyList__
+public final class EmptyList
 	extends AbstractList
 	implements RandomAccess
 {
+	/** The empty list. */
+	private static volatile Reference<List> _EMPTY_LIST;
+	
 	/**
 	 * Initializes the empty list.
 	 *
 	 * @since 2016/04/10
 	 */
-	__EmptyList__()
+	private EmptyList()
 	{
 	}
 	
@@ -44,12 +49,45 @@ final class __EmptyList__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/01
+	 */
+	@Override
+	public Iterator iterator()
+	{
+		return EmptyIterator.empty();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/04/10
 	 */
 	@Override
 	public int size()
 	{
 		return 0;
+	}
+	
+	/**
+	 * This returns a list which contains nothing.
+	 *
+	 * @param <V> The type of values the list contains.
+	 * @return The empty list.
+	 * @since 2016/04/10
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <V> List<V> empty()
+	{
+		// Get reference
+		Reference<List> ref = _EMPTY_LIST;
+		List rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+			_EMPTY_LIST = new WeakReference<>(
+				(rv = new EmptyList()));
+		
+		// Return it
+		return (List<V>)rv;
 	}
 }
 
