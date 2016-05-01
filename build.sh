@@ -36,6 +36,6 @@ then
 fi
 
 # Run it
-"$JAVA" "-Dproject.root=$__exedir" "Build" $*
+"$JAVA" $JAVA_OPTIONS "-Dproject.root=$__exedir" "Build" $*
 exit $?
 
