@@ -31,3 +31,12 @@ then output completion may occur if the faucet is being filled.
 And output completion is called twice, but that is the inflate code which I
 added since nothing was being called.
 
+## 10:47
+
+Then right now I have truncated output, at least for the very large compressed
+data set. Well actually it is not truncated, quite a number of the output is
+missing. Quite a number of zeros are missing from the output. So it seems as
+if zeros are never recorded in the output. Since my output sink is a single
+byte it is possible that it is recorded incorrectly when sent to the output
+that it does not like zero values.
+
