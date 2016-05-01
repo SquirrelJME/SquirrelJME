@@ -404,6 +404,7 @@ public abstract class DataSink
 			int count = _input.available();
 			
 			// if no bytes to process, do nothing
+			boolean markfinish = false;
 			if (count <= 0)
 			{
 				boolean co = _complete;
@@ -411,7 +412,7 @@ public abstract class DataSink
 				// If completed yet not finished (the processed code did not
 				// read a -1 potentially, then use a zero count process
 				if (co && !_finished)
-					_finished = true;
+					markfinish = true;
 				
 				// Otherwise, stop
 				else
@@ -429,6 +430,10 @@ public abstract class DataSink
 				
 				// Run processor
 				process(count);
+				
+				// If marking as finished, mark it
+				if (markfinish)
+					_finished = true;
 			}
 			
 			// Sink processor has some issues
