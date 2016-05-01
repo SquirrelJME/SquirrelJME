@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: java-compiler
 X-Hairball-UUID: c1cd0d27-74fe-4903-ba99-a35b6511a8ba
-X-Hairball-Depends: javame-cldc-full, extra-collections, 
+X-Hairball-Depends: javame-cldc-full, 
  zip-compression
 LIBlet-Title: Java Compiler
 LIBlet-Vendor: Steven Gawroriski

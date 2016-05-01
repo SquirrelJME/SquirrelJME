@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-Hairball-Name: native-compiler-interpreter
 X-Hairball-UUID: 6bb0b8c1-01da-4a8b-999f-dce8cb34f4a1
 X-Hairball-Depends: javame-cldc-full, native-compiler,
- zip-compression, extra-collections,
+ zip-compression,
  native-compiler-class-file, native-compiler-codeparse
 Main-Class: net.multiphasicapps.narf.interpreter.Main
 LIBlet-Title: Native Compiler Interpreter

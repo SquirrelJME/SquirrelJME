@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: hairball
 X-Hairball-UUID: 3c06605e-a4ff-4172-9a38-b03b1c7cb88c
-X-Hairball-Depends: javame-cldc-full, extra-collections, 
+X-Hairball-Depends: javame-cldc-full, 
  zip-compression, java-compiler, java-interpreter,
  native-compiler-all
 Main-Class: net.multiphasicapps.hairball.Main
