@@ -72,9 +72,6 @@ public abstract class DataPipe
 	/** Processing failed? */
 	private volatile boolean _failed;
 	
-	/** The number of bytes read and written. */
-	private volatile int _DEBUGcr, _DEBUGcw;
-	
 	/**
 	 * Initializes the data pipe with a default lock.
 	 *
@@ -179,7 +176,6 @@ public abstract class DataPipe
 			if (0 == (_inproc & _FAUCET_MASK))
 				throw new PipeProcessException("AC0f");
 			
-			System.err.println("DEBUG -- output complete.\n");
 			// Complete the output
 			try
 			{
@@ -460,9 +456,6 @@ public abstract class DataPipe
 				if (rv < 0)
 					return -1;
 				
-				// Log it
-				_DEBUGcr++;
-				
 				// Return it
 				return rv;
 			}
@@ -531,14 +524,7 @@ public abstract class DataPipe
 			}
 			
 			// Read from the input
-			int rv = _input.__accept(__b, __o, __l);
-			
-			// Log it
-			if (rv > 0)
-				_DEBUGcr += rv;
-			
-			// Return it
-			return rv;
+			return _input.__accept(__b, __o, __l);
 		}
 	}
 	
@@ -563,9 +549,6 @@ public abstract class DataPipe
 			
 			// Write to the output
 			_output.__fill(__b);
-			
-			// Log it
-			_DEBUGcw++;
 		}
 		
 		// Self
@@ -595,7 +578,7 @@ public abstract class DataPipe
 			int ip = _inproc;
 			if (0 != (ip & __f))
 				throw new PipeProcessException(String.format("AC07 %d", __f));
-			System.err.printf("DEBUG -- R %5d W %5d\r", _DEBUGcr, _DEBUGcw);
+			
 			// Could fail
 			try
 			{
