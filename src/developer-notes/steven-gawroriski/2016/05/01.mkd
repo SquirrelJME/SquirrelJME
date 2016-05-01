@@ -98,4 +98,8 @@ I walked 8 miles in 2 hours.
 
 Right now the only thing to implement is `offerLast` and `removeFirst`.
 
+## 17:17
+
+The `CircularByteBuffer` could just use the `DynamicByteBuffer` although there
+may be an added inefficiency.
 
