@@ -92,3 +92,7 @@ require much memory to be used.
 Seems like the pipe reads quite a number of input but just stops when nothing
 is really left.
 
+## 20:06
+
+It seems as if the input completion state is never triggered at all.
+
