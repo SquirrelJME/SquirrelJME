@@ -98,6 +98,68 @@ public class ByteDeque
 		lock = __lock;
 		capacity = __cap;
 	}
+	/**
+	 * Attempts to add a single byte to the start of the queue, if the capacity
+	 * would be violated then an exception is thrown.
+	 *
+	 * @param __b The byte to add.
+	 * @throws IllegalStateException If the capacity is violated.
+	 * @since 2016/05/01
+	 */
+	public void addFirst(byte __b)
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Attempts to add multiple bytes to the start of the queue, if the
+	 * capacity would be violated then an exception is thrown.
+	 *
+	 * @param __b The array to source bytes from.
+	 * @throws IllegalStateException If the capacity is violated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public void addFirst(byte[] __b)
+		throws IllegalStateException, NullPointerException
+	{
+		addFirst(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Attempts to add multiple bytes to the start of the queue, if the
+	 * capacity would be violated then an exception is thrown.
+	 *
+	 * @param __b The array to source bytes from.
+	 * @param __o The offset to start reading from.
+	 * @param __l The number of bytes to write.
+	 * @throws IllegalStateException If the capacity is violated.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public void addFirst(byte[] __b, int __o, int __l)
+		throws IllegalStateException, IndexOutOfBoundsException,
+			NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
 	
 	/**
 	 * Attempts to add a single byte to the end of the queue, if the capacity
@@ -163,8 +225,79 @@ public class ByteDeque
 	}
 	
 	/**
-	 * Offers a single byte to the deque and returns {@code true} if it was
-	 * added to the deque.
+	 * Offers a single byte to the start of the deque and returns {@code true}
+	 * if it was added to the deque.
+	 *
+	 * @param __b The byte to add to the start.
+	 * @return {@code true} if the capacity was not violated and the bytes were
+	 * added.
+	 * @since 2016/05/01
+	 */
+	public boolean offerFirst(byte __b)
+	{
+		// May violate the capacity
+		try
+		{
+			addFirst(__b);
+			return true;
+		}
+		
+		// Violates capacity
+		catch (IllegalStateException ise)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * Offers multiple bytes to the start of the deque and returns {@code true}
+	 * if they were added to the deque.
+	 *
+	 * @param __b The array to source bytes from.
+	 * @return {@code true} if the capacity was not violated and the bytes were
+	 * added.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public boolean offerFirst(byte[] __b)
+		throws NullPointerException
+	{
+		return offerFirst(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Offers multiple bytes to the start of the deque and returns {@code true}
+	 * if they were added to the deque.
+	 *
+	 * @param __b The array to source bytes from.
+	 * @param __o The offset to start reading from.
+	 * @param __l The number of bytes to write.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public boolean offerFirst(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException
+	{
+		// May violate the capacity
+		try
+		{
+			addFirst(__b, __o, __l);
+			return true;
+		}
+		
+		// Violates capacity
+		catch (IllegalStateException ise)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * Offers a single byte to the end of the deque and returns {@code true} if
+	 * it was added to the deque.
 	 *
 	 * @param __b The byte to add to the end.
 	 * @return {@code true} if the capacity was not violated and the bytes were
@@ -188,8 +321,8 @@ public class ByteDeque
 	}
 	
 	/**
-	 * Offers multiple bytes to the deque and returns {@code true} if they were
-	 * added to the deque.
+	 * Offers multiple bytes to the end of the deque and returns {@code true}
+	 * if they were added to the deque.
 	 *
 	 * @param __b The array to source bytes from.
 	 * @return {@code true} if the capacity was not violated and the bytes were
@@ -204,8 +337,8 @@ public class ByteDeque
 	}
 	
 	/**
-	 * Offers multiple bytes to the deque and returns {@code true} if they were
-	 * added to the deque.
+	 * Offers multiple bytes to the end of the deque and returns {@code true}
+	 * if they were added to the deque.
 	 *
 	 * @param __b The array to source bytes from.
 	 * @param __o The offset to start reading from.
