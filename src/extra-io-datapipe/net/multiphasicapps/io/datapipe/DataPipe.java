@@ -174,9 +174,11 @@ public abstract class DataPipe
 		// Lock
 		synchronized (lock)
 		{
-			// Not the dual state
-			if (_inproc != _BOTH_MASK)
-				throw new PipeProcessException("AC0a");
+			// {@squirreljme.error AC0f Completion may only be performed on the
+			// output while the faucet is being filled.}
+			if (_inproc != _FAUCET_MASK)
+				throw new PipeProcessException("AC0f");
+			
 			System.err.println("DEBUG -- output complete.\n");
 			// Complete the output
 			try
@@ -440,7 +442,13 @@ public abstract class DataPipe
 		{
 			// Not the dual state
 			if (_inproc != _BOTH_MASK)
+			{
+				// If the input is complete, then all reads are EOF
+				if (isInputComplete())
+					return -1;
+				
 				throw new PipeProcessException("AC0a");
+			}
 			
 			// Could stall
 			try
@@ -513,7 +521,14 @@ public abstract class DataPipe
 		{
 			// Not the dual state
 			if (_inproc != _BOTH_MASK)
+			{
+				// if the input is complete, then all reads are EOF
+				if (isInputComplete())
+					return -1;
+				
+				// Fail
 				throw new PipeProcessException("AC0a");
+			}
 			
 			// Read from the input
 			int rv = _input.__accept(__b, __o, __l);

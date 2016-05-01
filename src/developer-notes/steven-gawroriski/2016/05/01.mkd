@@ -14,4 +14,15 @@ is changing how the code works underneath (datapipe and such). I thought about
 compiling to C and using GCJ but that would be very ugly. And the last day or
 so is a refactor of the extra packages that I have.
 
+## 10:40
+
+So from where I left off, I get an AC0a which means that the dual state of
+the pipeline was not specifically set when I try reading input bytes from the
+pipeline. So I propose that if the input is complete and the input pipeline
+is empty that all reads cause EOF to occur.
+
+## 10:43
+
+I also get it now in `completeOutput`, since the input state may be complete
+then output completion may occur if the faucet is being filled.
 
