@@ -309,6 +309,36 @@ public abstract class DataFaucet
 	}
 	
 	/**
+	 * Marks the faucet as complete.
+	 *
+	 * @return {@code this}.
+	 * @throws CompleteFaucetException If the faucet is already complete.
+	 * @throws FaucetProcessException If this was not called during processing.
+	 * @since 2016/04/30
+	 */
+	protected final DataFaucet setComplete()
+		throws FaucetProcessException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Must be processing
+			if (!_inproc)
+				throw new FaucetProcessException("AB02");
+			
+			// {@squirreljme.error AB06 The faucet is already complete.}
+			if (_complete)
+				throw new CompleteFaucetException("AB06");
+			
+			// Set
+			_complete = true;
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
 	 * Processes the faucet to determine if there are more bytes for input.
 	 *
 	 * @throws FaucetProcessException If processing failed.

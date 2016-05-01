@@ -148,7 +148,7 @@ public abstract class DataPipe
 				_input.setComplete();
 			}
 			
-			// Could not close it
+			// Could not complete it
 			catch (CompleteSinkException e)
 			{
 				throw new PipeInputClosedException(e);
@@ -178,8 +178,22 @@ public abstract class DataPipe
 			if (_inproc != _BOTH_MASK)
 				throw new PipeProcessException("AC0a");
 			
-			throw new Error("TODO");
+			// Complete the output
+			try
+			{
+				_output.__setComplete();
+			}
+			
+			// Could not complete it
+			catch (CompleteFaucetException e)
+			{
+				// {@squirreljme.error AC0d The faucet is already completed.}
+				throw new PipeProcessException("AC0d", e);
+			}
 		}
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -670,6 +684,16 @@ public abstract class DataPipe
 		private void __fill(byte __b)
 		{
 			fill(__b);
+		}
+		
+		/**
+		 * Marks the faucet as complete.
+		 *
+		 * @since 2016/04/30
+		 */
+		private void __setComplete()
+		{
+			setComplete();
 		}
 	}
 	
