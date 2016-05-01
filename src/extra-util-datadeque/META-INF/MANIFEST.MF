@@ -3,6 +3,7 @@ X-Hairball-Name: extra-util-datadeque
 X-Hairball-UUID: 82c221db-c5d8-4aad-a8e4-ac1a2a91d17c
 X-Hairball-Depends: javame-cldc-compact,
  extra-util-dynbuffer
+X-Hairball-Error: AE
 LIBlet-Title: Extra Util Byte Deques
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160430

@@ -30,6 +30,9 @@ public class ByteDeque
 	protected final DynamicByteBuffer base =
 		new DynamicByteBuffer();
 	
+	/** The maximum permitted capacity. */
+	protected final int capacity;
+	
 	/** The head position. */
 	private volatile int _head;
 	
@@ -37,17 +40,30 @@ public class ByteDeque
 	private volatile int _tail;
 	
 	/**
-	 * Initializes a circular byte buffer.
+	 * Initializes a byte deque.
 	 *
 	 * @since 2016/03/11
 	 */
 	public ByteDeque()
 	{
-		this(new Object());
+		this(new Object(), Integer.MAX_VALUE);
 	}
 	
 	/**
-	 * Initializes a circular byte buffer with the given lock object.
+	 * Initializes a byte deque with the given capacity.
+	 *
+	 * @param __cap The maximum deque capacity.
+	 * @throws IllegalArgumentException If the capacity is negative.
+	 * @since 2016/05/01
+	 */
+	public ByteDeque(int __cap)
+		throws IllegalArgumentException
+	{
+		this(new Object(), __cap);
+	}
+	
+	/**
+	 * Initializes a byte deque with the given lock object.
 	 *
 	 * @param __lock The lock to use.
 	 * @throws NullPointerException On null arguments.
@@ -56,12 +72,165 @@ public class ByteDeque
 	public ByteDeque(Object __lock)
 		throws NullPointerException
 	{
+		this(__lock, Integer.MAX_VALUE);
+	}
+	
+	/**
+	 * Initializes a byte deque with the given capacity and lock object.
+	 *
+	 * @param __lock The lock object to use.
+	 * @param __cap The maximum deque capacity.
+	 * @throws IllegalArgumentException If the capacity is negative.
+	 * @since 2016/05/01
+	 */
+	public ByteDeque(Object __lock, int __cap)
+		throws IllegalArgumentException, NullPointerException
+	{
 		// Check
 		if (__lock == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AE01 Negative deque capacity specified.}
+		if (__cap < 0)
+			throw new IllegalArgumentException("AE01");
+		
 		// Set
 		lock = __lock;
+		capacity = __cap;
+	}
+	
+	/**
+	 * Attempts to add a single byte to the end of the queue, if the capacity
+	 * would be violated then an exception is thrown.
+	 *
+	 * @param __b The byte to add.
+	 * @throws IllegalStateException If the capacity is violated.
+	 * @since 2016/05/01
+	 */
+	public void addLast(byte __b)
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Attempts to add multiple bytes to the end of the queue, if the capacity
+	 * would be violated then an exception is thrown.
+	 *
+	 * @param __b The array to source bytes from.
+	 * @throws IllegalStateException If the capacity is violated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public void addLast(byte[] __b)
+		throws IllegalStateException, NullPointerException
+	{
+		addLast(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Attempts to add multiple bytes to the end of the queue, if the capacity
+	 * would be violated then an exception is thrown.
+	 *
+	 * @param __b The array to source bytes from.
+	 * @param __o The offset to start reading from.
+	 * @param __l The number of bytes to write.
+	 * @throws IllegalStateException If the capacity is violated.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public void addLast(byte[] __b, int __o, int __l)
+		throws IllegalStateException, IndexOutOfBoundsException,
+			NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Offers a single byte to the deque and returns {@code true} if it was
+	 * added to the deque.
+	 *
+	 * @param __b The byte to add to the end.
+	 * @return {@code true} if the capacity was not violated and the bytes were
+	 * added.
+	 * @since 2016/05/01
+	 */
+	public boolean offerLast(byte __b)
+	{
+		// May violate the capacity
+		try
+		{
+			addLast(__b);
+			return true;
+		}
+		
+		// Violates capacity
+		catch (IllegalStateException ise)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * Offers multiple bytes to the deque and returns {@code true} if they were
+	 * added to the deque.
+	 *
+	 * @param __b The array to source bytes from.
+	 * @return {@code true} if the capacity was not violated and the bytes were
+	 * added.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public boolean offerLast(byte[] __b)
+		throws NullPointerException
+	{
+		return offerLast(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Offers multiple bytes to the deque and returns {@code true} if they were
+	 * added to the deque.
+	 *
+	 * @param __b The array to source bytes from.
+	 * @param __o The offset to start reading from.
+	 * @param __l The number of bytes to write.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public boolean offerLast(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException
+	{
+		// May violate the capacity
+		try
+		{
+			addLast(__b, __o, __l);
+			return true;
+		}
+		
+		// Violates capacity
+		catch (IllegalStateException ise)
+		{
+			return false;
+		}
 	}
 }
 
