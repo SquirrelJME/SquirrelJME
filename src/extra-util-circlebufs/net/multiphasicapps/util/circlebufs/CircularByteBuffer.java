@@ -11,6 +11,7 @@
 package net.multiphasicapps.util.circlebufs;
 
 import java.util.NoSuchElementException;
+import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 
 /**
  * This is a circular buffer which provides bytes for input and output as a
@@ -24,6 +25,10 @@ public class CircularByteBuffer
 {
 	/** The lock to use. */
 	protected final Object lock;
+	
+	/** The buffer to base off. */
+	protected final DynamicByteBuffer base =
+		new DynamicByteBuffer();
 	
 	/**
 	 * Initializes a circular byte buffer.
