@@ -605,7 +605,13 @@ public abstract class DataPipe
 				// processor can be used to safely read the input and write
 				// the output faucet bytes.
 				else if (__f == _FAUCET_MASK)
+				{
 					_input.flush();
+					
+					// Process the pipe regardless if the input is complete
+					if (_input.isComplete())
+						DataPipe.this.process();
+				}
 				
 				// Unknown
 				else

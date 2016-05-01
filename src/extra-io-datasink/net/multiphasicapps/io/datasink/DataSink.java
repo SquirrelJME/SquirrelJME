@@ -217,7 +217,6 @@ public abstract class DataSink
 		// Lock
 		synchronized (lock)
 		{
-			System.err.printf("DEBUG -- %s%n%n", _complete);
 			return _complete;
 		}
 	}
@@ -336,7 +335,6 @@ public abstract class DataSink
 		// Lock
 		synchronized (lock)
 		{
-			System.err.println("DEBUG -- COMPLETE? " + _complete + "\n");
 			// {@squirreljme.error AA07 The data sink cannot be set as complete
 			// during processing.}
 			if (_inproc)
@@ -348,7 +346,6 @@ public abstract class DataSink
 			
 			// Set
 			_complete = true;
-			System.err.println("DEBUG -- COMPLETED " + _complete + "\n");
 		}
 		
 		// Self

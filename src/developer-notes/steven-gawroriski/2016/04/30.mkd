@@ -105,3 +105,8 @@ Actually, I never set the output as done.
 Actually for the data sink, I need to handle the actual final byte which
 would return -1.
 
+## 22:17
+
+Well having processing be performed regardless gives me AC05.
+
+
