@@ -16,6 +16,9 @@ package net.multiphasicapps.util.dynbuffer;
  *
  * This class must be thread safe.
  *
+ * {@squirreljme.error AD04 The input chunk size is negative. (The negative
+ * chunk size)}
+ *
  * @since 2016/03/22
  */
 public class DynamicByteBuffer
@@ -56,7 +59,7 @@ public class DynamicByteBuffer
 	{
 		// Check
 		if (__cs <= 0)
-			throw new IllegalArgumentException(String.format("NF04 %d", __cs));
+			throw new IllegalArgumentException(String.format("AD04 %d", __cs));
 		
 		// Set
 		chunksize = __cs;
@@ -94,7 +97,7 @@ public class DynamicByteBuffer
 		if (__from == null)
 			throw new NullPointerException("NARG");
 		if (__cs <= 0)
-			throw new IllegalArgumentException(String.format("NF04 %d", __cs));
+			throw new IllegalArgumentException(String.format("AD04 %d", __cs));
 		
 		// Set
 		chunksize = __cs;
@@ -210,7 +213,7 @@ public class DynamicByteBuffer
 		if (__src == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __src.length)
-			throw new IndexOutOfBoundsException(String.format("IOOB %d %d %d",
+			throw new IndexOutOfBoundsException(String.format("BAOB %d %d %d",
 				__src.length, __o, __l));
 		
 		// Lock
@@ -286,7 +289,7 @@ public class DynamicByteBuffer
 		if (__dest == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __dest.length)
-			throw new IndexOutOfBoundsException(String.format("IOOB %d %d %d",
+			throw new IndexOutOfBoundsException(String.format("BAOB %d %d %d",
 				__dest.length, __o, __l));
 		
 		// Lock
@@ -444,9 +447,10 @@ public class DynamicByteBuffer
 	private __Chunk__ __chunkForPos(int __i)
 		throws IndexOutOfBoundsException
 	{
-		// Must be within bounds
+		// {@squirreljme.error AD05 Requested a negative position.
+		// (The position)}
 		if (__i < 0)
-			throw new IndexOutOfBoundsException(String.format("NF05 %d", __i));
+			throw new IndexOutOfBoundsException(String.format("AD05 %d", __i));
 		
 		// Lock
 		synchronized (lock)
@@ -461,9 +465,11 @@ public class DynamicByteBuffer
 			if (__i == sz)
 				return cx[n - 1];
 			
-			// Out of bounds otherwise
+			// {@squirreljme.error AD06 The given position is not within
+			// bounds of all the combined chunks. (The requested position;
+			// The size of the dynamic buffer)}
 			else if (__i > sz)
-				throw new IndexOutOfBoundsException(String.format("NF06 %d %d",
+				throw new IndexOutOfBoundsException(String.format("AD06 %d %d",
 					__i, sz));
 			
 			// Go through the chunks, starting in the middle to find the
@@ -553,9 +559,13 @@ public class DynamicByteBuffer
 				// Obtain the logical add position
 				int logpos = __i - _position;
 				int len = _count;
+				
+				// {@squirreljme.error AD07 Add of a byte which is not within
+				// bounds of the current chunk. (The index to add; The logical
+				// position; The length of this chunk)}
 				if (logpos < 0 || logpos > len)
 					throw new IndexOutOfBoundsException(
-						String.format("NF07 %d %d %d", __i, logpos, len));
+						String.format("AD07 %d %d %d", __i, logpos, len));
 				
 				// Get data buffer
 				byte[] ddx = data;
@@ -682,9 +692,13 @@ public class DynamicByteBuffer
 				// Obtain the logical add position
 				int logpos = __i - _position;
 				int len = _count;
+				
+				// {@squirreljme.error AD17 Out of bounds read when obtaining
+				// a value in a chunk. (The requested position; The logical
+				// position; The length of this chunk)}
 				if (logpos < 0 || logpos > len)
 					throw new IndexOutOfBoundsException(
-						String.format("NF07 %d %d %d", __i, logpos, len));
+						String.format("AD17 %d %d %d", __i, logpos, len));
 				
 				// Read byte here
 				return data[logpos];
@@ -725,9 +739,13 @@ public class DynamicByteBuffer
 				// Obtain the logical add position
 				int logpos = __i - _position;
 				int len = _count;
+				
+				// {@squirreljme.error AD27 Attempt to remove an out of bounds
+				// index in the current chunk. (The index to remove; The
+				// logical index; The length of this chunk)}
 				if (logpos < 0 || logpos >= len)
 					throw new IndexOutOfBoundsException(
-						String.format("NF07 %d %d %d", __i, logpos, len));
+						String.format("AD27 %d %d %d", __i, logpos, len));
 				
 				// Get data buffer
 				byte[] ddx = data;
@@ -772,9 +790,13 @@ public class DynamicByteBuffer
 				// Obtain the logical add position
 				int logpos = __i - _position;
 				int len = _count;
+				
+				// {@squirreljme.error AD37 Out of bounds of the current chunk
+				// when setting an index to a new value. (The index to set;
+				// The logical position to set; The length of this chunk)}
 				if (logpos < 0 || logpos >= len)
 					throw new IndexOutOfBoundsException(
-						String.format("NF07 %d %d %d", __i, logpos, len));
+						String.format("AD37 %d %d %d", __i, logpos, len));
 				
 				// Get data buffer
 				byte[] ddx = data;

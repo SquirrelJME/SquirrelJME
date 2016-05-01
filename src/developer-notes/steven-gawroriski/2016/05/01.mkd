@@ -105,3 +105,8 @@ may be an added inefficiency. However, an improvement in `DynamicByteBuffer`
 could increase the speed of the circular byte buffer, especially if the
 dynamic byte buffer becomes like the circular byte buffer more.
 
+## 17:33
+
+The `CircularByteBuffer` is not really circular, it is more of a queue so I
+suppose I shall call it that instead.
+

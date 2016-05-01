@@ -12,7 +12,7 @@ package net.multiphasicapps.io.datasink;
 
 import java.io.Flushable;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This is a data sink which consumes bytes.
@@ -43,7 +43,7 @@ public abstract class DataSink
 	final Object _lock;
 	
 	/** Data used for input to the data processor. */
-	private final CircularByteBuffer _input;
+	private final ByteDeque _input;
 	
 	/** Is the input complete? */
 	private volatile boolean _complete;
@@ -86,7 +86,7 @@ public abstract class DataSink
 		_lock = __lk;
 		
 		// Setup input
-		_input = new CircularByteBuffer(__lk);
+		_input = new ByteDeque(__lk);
 	}
 	
 	/**

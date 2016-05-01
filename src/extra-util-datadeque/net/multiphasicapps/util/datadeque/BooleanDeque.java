@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.util.circlebufs;
+package net.multiphasicapps.util.datadeque;
 
 import java.util.NoSuchElementException;
 
@@ -20,8 +20,8 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/03/11
  */
-public class CircularBooleanBuffer
-	extends CircularGenericBuffer<boolean[], Boolean>
+public class BooleanDeque
+	extends GenericDeque<boolean[], Boolean>
 {
 	/** The internal buffer. */
 	private volatile boolean[] _buffer;
@@ -39,7 +39,7 @@ public class CircularBooleanBuffer
 	 *
 	 * @since 2016/03/11
 	 */
-	public CircularBooleanBuffer()
+	public BooleanDeque()
 	{
 		super();
 	}
@@ -50,7 +50,7 @@ public class CircularBooleanBuffer
 	 * @param __lock The lock to use.
 	 * @since 2016/03/11
 	 */
-	public CircularBooleanBuffer(Object __lock)
+	public BooleanDeque(Object __lock)
 	{
 		super(__lock);
 	}
@@ -94,7 +94,7 @@ public class CircularBooleanBuffer
 	 */
 	@Override
 	@Deprecated
-	protected CircularGenericBuffer arrayWrite(boolean[] __arr, int __dx,
+	protected GenericDeque arrayWrite(boolean[] __arr, int __dx,
 		Boolean __v)
 	{
 		__arr[__dx] = __v.booleanValue();
@@ -108,9 +108,9 @@ public class CircularBooleanBuffer
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
-	public CircularBooleanBuffer offerFirst(boolean __b)
+	public BooleanDeque offerFirst(boolean __b)
 	{
-		return (CircularBooleanBuffer)super.offerFirst(Boolean.valueOf(__b));
+		return (BooleanDeque)super.offerFirst(Boolean.valueOf(__b));
 	}
 	
 	/**
@@ -120,9 +120,9 @@ public class CircularBooleanBuffer
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
-	public CircularBooleanBuffer offerLast(boolean __b)
+	public BooleanDeque offerLast(boolean __b)
 	{
-		return (CircularBooleanBuffer)super.offerLast(Boolean.valueOf(__b));
+		return (BooleanDeque)super.offerLast(Boolean.valueOf(__b));
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class CircularBooleanBuffer
 	 * the mask, or the mask has a zero gap in it.
 	 * @since 2016/03/11
 	 */
-	public final CircularBooleanBuffer offerLastInt(int __val, int __mask)
+	public final BooleanDeque offerLastInt(int __val, int __mask)
 		throws IllegalArgumentException
 	{
 		return offerLastInt(__val, __mask, false);
@@ -153,7 +153,7 @@ public class CircularBooleanBuffer
 	 * the mask, or the mask has a zero gap in it.
 	 * @since 2016/03/11
 	 */
-	public final CircularBooleanBuffer offerLastInt(int __val, int __mask,
+	public final BooleanDeque offerLastInt(int __val, int __mask,
 		boolean __msb)
 		throws IllegalArgumentException
 	{

@@ -19,7 +19,7 @@ import net.multiphasicapps.io.datafaucet.FaucetProcessException;
 import net.multiphasicapps.io.datasink.CompleteSinkException;
 import net.multiphasicapps.io.datasink.DataSink;
 import net.multiphasicapps.io.datasink.SinkProcessException;
-import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This is a data processor which is given input bytes and performs

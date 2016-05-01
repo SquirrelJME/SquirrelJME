@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.util.circlebufs;
+package net.multiphasicapps.util.datadeque;
 
 import java.util.NoSuchElementException;
 
@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
  * @since 2016/03/11
  */
 @Deprecated
-public abstract class CircularGenericBuffer<T, E>
+public abstract class GenericDeque<T, E>
 {
 	/** Initial buffer size (power of two). */
 	protected static final int INITIAL_SIZE =
@@ -59,7 +59,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @since 2016/03/11
 	 */
 	@Deprecated
-	public CircularGenericBuffer()
+	public GenericDeque()
 	{
 		this(null);
 	}
@@ -72,7 +72,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @since 2016/03/11
 	 */
 	@Deprecated
-	public CircularGenericBuffer(Object __lock)
+	public GenericDeque(Object __lock)
 	{
 		lock = (__lock != null ? __lock : new Object());
 	}
@@ -118,7 +118,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @since 2016/03/11
 	 */
 	@Deprecated
-	protected abstract CircularGenericBuffer arrayWrite(T __arr, int __dx,
+	protected abstract GenericDeque arrayWrite(T __arr, int __dx,
 		E __v);
 	
 	/**
@@ -183,7 +183,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
-	public CircularGenericBuffer offerFirst(E __b)
+	public GenericDeque offerFirst(E __b)
 	{
 		synchronized (lock)
 		{
@@ -204,7 +204,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
-	public CircularGenericBuffer offerFirst(T __b, int __o, int __l)
+	public GenericDeque offerFirst(T __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -232,7 +232,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @return {@code this}.
 	 * @since 2016/03/11
 	 */
-	public CircularGenericBuffer offerLast(E __b)
+	public GenericDeque offerLast(E __b)
 	{
 		synchronized (lock)
 		{
@@ -266,7 +266,7 @@ public abstract class CircularGenericBuffer<T, E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
-	public CircularGenericBuffer offerLast(T __b, int __o, int __l)
+	public GenericDeque offerLast(T __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check

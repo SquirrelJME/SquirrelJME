@@ -12,7 +12,7 @@ package net.multiphasicapps.io.datafaucet;
 
 import java.io.Flushable;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This is a data faucet which generates bytes.
@@ -32,7 +32,7 @@ public abstract class DataFaucet
 	protected final Object lock;
 	
 	/** The output temporary buffer. */
-	private final CircularByteBuffer _output;
+	private final ByteDeque _output;
 	
 	/** Is the faucet complete? */
 	private volatile boolean _complete;
@@ -74,7 +74,7 @@ public abstract class DataFaucet
 		lock = __lk;
 		
 		// Setup output buffer
-		_output = new CircularByteBuffer(__lk);
+		_output = new ByteDeque(__lk);
 	}
 	
 	/**

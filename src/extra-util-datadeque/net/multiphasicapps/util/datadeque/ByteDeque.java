@@ -8,20 +8,20 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.util.circlebufs;
+package net.multiphasicapps.util.datadeque;
 
 import java.util.NoSuchElementException;
 import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 
 /**
- * This is a circular buffer which provides bytes for input and output as a
- * queue.
+ * This is a byte buffer which provides bytes for input and output as a
+ * double ended queue.
  *
  * If the queue reaches full capacity then it is increased in size.
  *
  * @since 2016/03/11
  */
-public class CircularByteBuffer
+public class ByteDeque
 {
 	/** The lock to use. */
 	protected final Object lock;
@@ -30,12 +30,18 @@ public class CircularByteBuffer
 	protected final DynamicByteBuffer base =
 		new DynamicByteBuffer();
 	
+	/** The head position. */
+	private volatile int _head;
+	
+	/** The tail position. */
+	private volatile int _tail;
+	
 	/**
 	 * Initializes a circular byte buffer.
 	 *
 	 * @since 2016/03/11
 	 */
-	public CircularByteBuffer()
+	public ByteDeque()
 	{
 		this(new Object());
 	}
@@ -47,7 +53,7 @@ public class CircularByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
-	public CircularByteBuffer(Object __lock)
+	public ByteDeque(Object __lock)
 		throws NullPointerException
 	{
 		// Check

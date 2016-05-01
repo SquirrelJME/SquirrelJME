@@ -17,8 +17,8 @@ import net.multiphasicapps.io.datapipe.DataPipe;
 import net.multiphasicapps.io.datapipe.PipeProcessException;
 import net.multiphasicapps.io.datapipe.PipeStalledException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
-import net.multiphasicapps.util.circlebufs.CircularBooleanBuffer;
-import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
+import net.multiphasicapps.util.datadeque.BooleanDeque;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 import net.multiphasicapps.util.huffmantree.HuffmanTree;
 
 /**
@@ -57,8 +57,8 @@ public class InflateDataPipe
 		0b11;
 	
 	/** Input bits. */
-	protected final CircularBooleanBuffer inputbits =
-		new CircularBooleanBuffer();
+	protected final BooleanDeque inputbits =
+		new BooleanDeque();
 	
 	/** The sliding byte window. */
 	protected final SlidingByteWindow window =

@@ -11,8 +11,8 @@
 package net.multiphasicapps.io.inflate;
 
 import java.io.IOException;
-import net.multiphasicapps.util.circlebufs.CircularBooleanBuffer;
-import net.multiphasicapps.util.circlebufs.CircularByteBuffer;
+import net.multiphasicapps.util.datadeque.BooleanDeque;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This contains the fixed huffman tree.
@@ -45,7 +45,7 @@ public class InflateFixedHuffman
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public static int read(CircularBooleanBuffer __in)
+	public static int read(BooleanDeque __in)
 		throws NullPointerException
 	{
 		// Check
