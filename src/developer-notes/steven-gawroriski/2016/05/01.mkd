@@ -40,3 +40,19 @@ if zeros are never recorded in the output. Since my output sink is a single
 byte it is possible that it is recorded incorrectly when sent to the output
 that it does not like zero values.
 
+## 10:51
+
+So the values are sent to the data filler, so then it must be the drain side
+which is not correct.
+
+## 10:52
+
+Actually it is the input stream for the data pipe:
+
+    // {@squirreljme.error AC0e Forced stall.}
+    else if (rv == 0)
+        throw new PipeStalledException("AC0e");
+
+That is discard read zero values and treating them as stall, this would be
+correct if the read were multiple bytes instead of just one.
+
