@@ -21,8 +21,10 @@ import java.util.NoSuchElementException;
  * @since 2016/03/11
  */
 public class CircularByteBuffer
-	extends CircularGenericBuffer<byte[], Byte>
 {
+	/** The lock to use. */
+	protected final Object lock;
+	
 	/**
 	 * Initializes a circular byte buffer.
 	 *
@@ -30,114 +32,25 @@ public class CircularByteBuffer
 	 */
 	public CircularByteBuffer()
 	{
-		super();
+		this(new Object());
 	}
 	
 	/**
 	 * Initializes a circular byte buffer with the given lock object.
 	 *
-	 * @param __lock The lock to use, if {@code null} then one is initialized.
+	 * @param __lock The lock to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/11
 	 */
 	public CircularByteBuffer(Object __lock)
+		throws NullPointerException
 	{
-		super(__lock);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/11
-	 */
-	@Override
-	@Deprecated
-	protected int arrayLength(byte[] __arr)
-	{
-		return __arr.length;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/11
-	 */
-	@Override
-	@Deprecated
-	protected byte[] arrayNew(int __len)
-	{
-		return new byte[__len];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/11
-	 */
-	@Override
-	@Deprecated
-	protected Byte arrayRead(byte[] __arr, int __dx)
-	{
-		return __arr[__dx];
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/11
-	 */
-	@Override
-	@Deprecated
-	protected CircularGenericBuffer arrayWrite(byte[] __arr, int __dx,
-		Byte __v)
-	{
-		__arr[__dx] = __v.byteValue();
-		return this;
-	}
-	
-	/**
-	 * Offers a primitive value to the start of the queue.
-	 *
-	 * @param __b Value to add.
-	 * @return {@code this}.
-	 * @since 2016/03/11
-	 */
-	public CircularByteBuffer offerFirst(byte __b)
-	{
-		return (CircularByteBuffer)super.offerFirst(Byte.valueOf(__b));
-	}
-	
-	/**
-	 * Offers a primitive value to the end of the queue.
-	 *
-	 * @param __b Value to add.
-	 * @return {@code this}.
-	 * @since 2016/03/11
-	 */
-	public CircularByteBuffer offerLast(byte __b)
-	{
-		return (CircularByteBuffer)super.offerLast(Byte.valueOf(__b));
-	}
-	
-	/**
-	 * Removes the first element, but returns a primitive type.
-	 *
-	 * @return The next primitive value.
-	 * @throws NoSuchElementException If no elements remain.
-	 * @since 2016/03/11
-	 */
-	public byte removeFirstPrimitive()
-		throws NoSuchElementException
-	{
-		return super.removeFirst().byteValue();
-	}
-	
-	/**
-	 * Removes the first element, but returns a primitive type.
-	 *
-	 * @return The next primitive value.
-	 * @throws NoSuchElementException If no elements remain.
-	 * @since 2016/03/11
-	 */
-	public byte removeLastPrimitive()
-		throws NoSuchElementException
-	{
-		return super.removeLast().byteValue();
+		// Check
+		if (__lock == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		lock = __lock;
 	}
 }
 
