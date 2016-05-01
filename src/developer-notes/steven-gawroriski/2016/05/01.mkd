@@ -56,3 +56,23 @@ Actually it is the input stream for the data pipe:
 That is discard read zero values and treating them as stall, this would be
 correct if the read were multiple bytes instead of just one.
 
+## 10:57
+
+Using zero it can be seen how slow the official pure interpreter is, however
+my decompression algorithm seems rather fast. So the next speed optimization I
+can make is rewriting the circular buffers so that they are standalone rather
+than being part of generic buffers.
+
+## 11:00
+
+I also can remove potentially `MissingCollections` and use the unmodifiable
+classes semi-directly instead. So just `UnmodifiableSet.<A>of(foo)` instead
+of the longer `MissingCollections.<A>unmodifiableSet(foo)`. I believe I will
+do that first since I must prepare food to cook and changing that would be
+simpler than rewriting the circular buffers in a short amount of time.
+
+## 11:03
+
+I can also move them into their own packages. So just `extra-util-unmodifiable`
+and `extra-util-boxed` so that they are part of the same family and such.
+
