@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package net.multiphasicapps.util.unmodifiable;
 
 import java.util.AbstractSet;
 import java.util.Iterator;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @param <T> The value to store in the set.
  * @since 2016/02/28
  */
-final class __UnmodifiableSet__<T>
+public final class UnmodifiableSet<T>
 	extends AbstractSet<T>
 {
 	/** The set to wrap. */
@@ -33,7 +33,7 @@ final class __UnmodifiableSet__<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/02/28
 	 */
-	__UnmodifiableSet__(Set<T> __w)
+	private UnmodifiableSet(Set<T> __w)
 		throws NullPointerException
 	{
 		// Check
@@ -107,6 +107,24 @@ final class __UnmodifiableSet__<T>
 	public int size()
 	{
 		return wrapped.size();
+	}
+	
+	/**
+	 * This creates a view of the specified set which cannot be modified.
+	 *
+	 * @param <T> The type of value the set stores.
+	 * @param __s The set to wrap to disable modifications of.
+	 * @return An unmodifiable view of the set.
+	 * @since 2016/02/28
+	 */
+	public static <T> Set<T> of(Set<T> __s)
+	{
+		// If already one, return that set
+		if (__s instanceof UnmodifiableSet)
+			return __s;
+		
+		// Otherwise create a new one
+		return new UnmodifiableSet<T>(__s);
 	}
 }
 

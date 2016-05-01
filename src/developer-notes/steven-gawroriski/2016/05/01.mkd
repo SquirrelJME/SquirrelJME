@@ -76,3 +76,9 @@ simpler than rewriting the circular buffers in a short amount of time.
 I can also move them into their own packages. So just `extra-util-unmodifiable`
 and `extra-util-boxed` so that they are part of the same family and such.
 
+## 11:36
+
+Then after those two, implement the CRC32 algorithm so that ZIP entries are
+verified.
+
+

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package net.multiphasicapps.util.unmodifiable;
 
 import java.util.AbstractList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.RandomAccess;
  * @param <V> The type of value the list stores.
  * @since 2016/03/03
  */
-abstract class __UnmodifiableList__<V>
+public abstract class UnmodifiableList<V>
 	extends AbstractList<V>
 {
 	/** The list to wrap. */
@@ -33,7 +33,7 @@ abstract class __UnmodifiableList__<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/03
 	 */
-	private __UnmodifiableList__(List<V> __l)
+	private UnmodifiableList(List<V> __l)
 		throws NullPointerException
 	{
 		// Check
@@ -65,6 +65,26 @@ abstract class __UnmodifiableList__<V>
 	}
 	
 	/**
+	 * This creates a view of the specified list which cannot be modified.
+	 *
+	 * @param <V> The type of value stored in the list.
+	 * @return An unmodifiable view of the list.
+	 * @since 2016/03/03
+	 */
+	public static <V> List<V> of(List<V> __l)
+	{
+		// If already one, return it
+		if (__l instanceof UnmodifiableList)
+			return __l;
+		
+		// Wrap, make sure that if the list being wrapped can be randomly
+		// accessed that it also carries the RandomAccess interface.
+		if (__l instanceof RandomAccess)
+			return new UnmodifiableList.__Random__<V>(__l);
+		return new UnmodifiableList.__Sequential__<V>(__l);
+	}
+	
+	/**
 	 * This is a list which implements {@link RandomAccess} so that the sort
 	 * and search operations do not result in an entire copy of the list
 	 * before the operation is performed.
@@ -73,7 +93,7 @@ abstract class __UnmodifiableList__<V>
 	 * @since 2016/04/28
 	 */
 	static final class __Random__<V>
-		extends __UnmodifiableList__<V>
+		extends UnmodifiableList<V>
 		implements RandomAccess
 	{
 		/**
@@ -82,7 +102,7 @@ abstract class __UnmodifiableList__<V>
 		 * @param __l The list to wrap.
 		 * @since 2016/04/28
 		 */
-		__Random__(List<V> __l)
+		private __Random__(List<V> __l)
 		{
 			super(__l);
 		}
@@ -97,7 +117,7 @@ abstract class __UnmodifiableList__<V>
 	 * @since 2016/04/28
 	 */
 	static final class __Sequential__<V>
-		extends __UnmodifiableList__<V>
+		extends UnmodifiableList<V>
 	{
 		/**
 		 * Initializes the sequential access list.
@@ -105,7 +125,7 @@ abstract class __UnmodifiableList__<V>
 		 * @param __l The list to wrap.
 		 * @since 2016/04/28
 		 */
-		__Sequential__(List<V> __l)
+		private __Sequential__(List<V> __l)
 		{
 			super(__l);
 		}

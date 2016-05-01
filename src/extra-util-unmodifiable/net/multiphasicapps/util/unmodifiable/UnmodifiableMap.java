@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package net.multiphasicapps.util.unmodifiable;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -26,7 +26,7 @@ import java.util.Set;
  * @param <V> Value type to store.
  * @since 2016/02/29
  */
-final class __UnmodifiableMap__<K, V>
+public final class UnmodifiableMap<K, V>
 	extends AbstractMap<K, V>
 {
 	/** The existing map to wrap. */
@@ -42,7 +42,7 @@ final class __UnmodifiableMap__<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/02/29
 	 */
-	__UnmodifiableMap__(Map<K, V> __w)
+	private UnmodifiableMap(Map<K, V> __w)
 		throws NullPointerException
 	{
 		// Check
@@ -104,6 +104,25 @@ final class __UnmodifiableMap__<K, V>
 	public int size()
 	{
 		return wrapped.size();
+	}
+	
+	/**
+	 * This creates a view of the specified map which cannot be modified.
+	 *
+	 * @param <K> The map key.
+	 * @param <V> The map value.
+	 * @param __m The map to wrap.
+	 * @return An unmodifiable view of the map.
+	 * @since 2016/02/28
+	 */
+	public static <K, V> Map<K, V> of(Map<K, V> __m)
+	{
+		// If already one, return it
+		if (__m instanceof UnmodifiableMap)
+			return __m;
+		
+		// Wrap
+		return new UnmodifiableMap<K, V>(__m);
 	}
 	
 	/**
