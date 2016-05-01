@@ -26,3 +26,8 @@ is empty that all reads cause EOF to occur.
 I also get it now in `completeOutput`, since the input state may be complete
 then output completion may occur if the faucet is being filled.
 
+## 10:45
+
+And output completion is called twice, but that is the inflate code which I
+added since nothing was being called.
+

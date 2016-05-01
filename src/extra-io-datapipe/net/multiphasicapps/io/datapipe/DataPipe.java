@@ -176,7 +176,7 @@ public abstract class DataPipe
 		{
 			// {@squirreljme.error AC0f Completion may only be performed on the
 			// output while the faucet is being filled.}
-			if (_inproc != _FAUCET_MASK)
+			if (0 == (_inproc & _FAUCET_MASK))
 				throw new PipeProcessException("AC0f");
 			
 			System.err.println("DEBUG -- output complete.\n");

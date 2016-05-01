@@ -136,13 +136,7 @@ public class InflateDataPipe
 	{
 		// Nothing left? Stop
 		if (_nothingleft)
-		{
-			// Trigger end
-			completeOutput();
-				
-			// Done
 			return;
-		}
 		
 		// Take all bytes which are available to the input and add them to the
 		// input bit buffer
