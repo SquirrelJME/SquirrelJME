@@ -94,4 +94,8 @@ Real life stuff puts a large dent into refactoring today.
 
 I walked 8 miles in 2 hours.
 
+## 16:14
+
+Right now the only thing to implement is `offerLast` and `removeFirst`.
+
 
