@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 X-Hairball-Name: native-compiler-class-interface
 X-Hairball-UUID: c6d0507c-f9cb-43d9-ab02-09e4fb502b60
 X-Hairball-Depends: javame-cldc-compact,
- java-descriptors, native-compiler-exception
+ java-descriptors, native-compiler-exception,
+ extra-util-unmodifiable
 LIBlet-Title: Native Compiler Class Interface
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160421

@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import net.multiphasicapps.collections.MissingCollections;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This is the base class for all flag collections.
@@ -83,7 +83,7 @@ public abstract class NCIFlags<F extends NCIFlag>
 		
 		// Lock in
 		setbits = bits;
-		flags = MissingCollections.<F>unmodifiableSet(to);
+		flags = UnmodifiableSet.<F>of(to);
 	}
 	
 	/**

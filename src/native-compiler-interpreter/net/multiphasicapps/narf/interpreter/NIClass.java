@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
@@ -25,6 +24,8 @@ import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethodID;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This represents a class which is loaded by the interpreter.
@@ -108,7 +109,7 @@ public class NIClass
 		Set<NIClass> in = new LinkedHashSet<>();
 		for (ClassNameSymbol cns : __base.interfaceNames())
 			in.add(__core.initClass(cns));
-		interfaceclasses = MissingCollections.<NIClass>unmodifiableSet(in);
+		interfaceclasses = UnmodifiableSet.<NIClass>of(in);
 		
 		// Make sure the class does not eventually extend or implement itself
 		// If it does then the class definition is circular
@@ -183,8 +184,7 @@ public class NIClass
 			}
 		
 		// Lock in
-		methods = MissingCollections.<NCIMethodID, NIMethod>unmodifiableMap(
-			mm);
+		methods = UnmodifiableMap.<NCIMethodID, NIMethod>of(mm);
 		
 		// Check that interface methods are implemented
 		if (!selfabs)

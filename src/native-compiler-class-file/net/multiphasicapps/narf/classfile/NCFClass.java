@@ -13,25 +13,26 @@ package net.multiphasicapps.narf.classfile;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlag;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCIClassReference;
-import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIField;
 import net.multiphasicapps.narf.classinterface.NCIFieldID;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIMethodID;
+import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.classinterface.NCIVersion;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This loads and handles the standard Java class file format.
@@ -141,8 +142,7 @@ public final class NCFClass
 					asBinaryName().asClassName());
 			
 			// Set
-			interfacenames = MissingCollections.
-				<ClassNameSymbol>unmodifiableSet(in);
+			interfacenames = UnmodifiableSet.<ClassNameSymbol>of(in);
 		}
 		
 		// A given class name was likely an array
@@ -159,7 +159,7 @@ public final class NCFClass
 		Map<NCIFieldID, NCIField> of = new HashMap<>();
 		for (int i = 0; i < nf; i++)
 			__ReadMember__.__field(this, das, of);
-		fields = MissingCollections.<NCIFieldID, NCIField>unmodifiableMap(of);
+		fields = UnmodifiableMap.<NCIFieldID, NCIField>of(of);
 		
 		
 		// Read in methods
@@ -167,8 +167,7 @@ public final class NCFClass
 		Map<NCIMethodID, NCIMethod> om = new HashMap<>();
 		for (int i = 0; i < nm; i++)
 			__ReadMember__.__method(this, das, om);
-		methods = MissingCollections.<NCIMethodID, NCIMethod>unmodifiableMap(
-			om);
+		methods = UnmodifiableMap.<NCIMethodID, NCIMethod>of(om);
 		
 		// Skip attributes
 		int na = das.readUnsignedShort();

@@ -25,13 +25,14 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.narf.classfile.NCFClass;
-import net.multiphasicapps.collections.MissingCollections;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.narf.classfile.NCFClass;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCILookup;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.StandardZIPFile;
 
 /**
@@ -71,12 +72,10 @@ public class NILibrary
 			throw new NullPointerException("NARG");
 		
 		// Setup boot classpath
-		bootpath = MissingCollections.<Path>unmodifiableSet(
-			new LinkedHashSet<>(__bootcp));
+		bootpath = UnmodifiableSet.<Path>of(new LinkedHashSet<>(__bootcp));
 		
 		// Setup standard classpath
-		classpath = MissingCollections.<Path>unmodifiableSet(
-			new LinkedHashSet<>(__cp));
+		classpath = UnmodifiableSet.<Path>of(new LinkedHashSet<>(__cp));
 		
 		// Go through all paths and determine if they are directories or
 		// ZIPS
@@ -129,8 +128,8 @@ public class NILibrary
 			}
 		
 		// Lock in
-		isadir = MissingCollections.<Path>unmodifiableSet(id);
-		zips = MissingCollections.<Path, StandardZIPFile>unmodifiableMap(zs);
+		isadir = UnmodifiableSet.<Path>of(id);
+		zips = UnmodifiableMap.<Path, StandardZIPFile>of(zs);
 	}
 	
 	/**
