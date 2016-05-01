@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-Hairball-Name: extra-util-boxed
+X-Hairball-UUID: 96c28e3d-9fc2-46fb-9a3f-7080d635ad08
+X-Hairball-Depends: javame-cldc-compact, extra-util-empty
+LIBlet-Title: Boxed Collections
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160501
+LIBlet-Description: This contains collections which provide
+  boxed access to arrays.
+

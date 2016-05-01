@@ -8,10 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.collections;
+package net.multiphasicapps.util.boxed;
 
 import java.util.AbstractList;
 import java.util.RandomAccess;
+import net.multiphasicapps.util.empty.EmptyList;
 
 /**
  * This wraps an integer array and provides boxes access to getting and
@@ -19,7 +20,7 @@ import java.util.RandomAccess;
  *
  * @since 2016/04/11
  */
-final class __BoxedIntegerList__
+public final class BoxedIntegerList
 	extends AbstractList<Integer>
 	implements RandomAccess
 {
@@ -33,7 +34,7 @@ final class __BoxedIntegerList__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/11
 	 */
-	__BoxedIntegerList__(int... __v)
+	private BoxedIntegerList(int... __v)
 		throws NullPointerException
 	{
 		// Check
@@ -79,6 +80,21 @@ final class __BoxedIntegerList__
 	public int size()
 	{
 		return primitives.length;
+	}
+	
+	/**
+	 * Makes a boxed wrapped around a given list.
+	 *
+	 * @param __v The list to wrap boxed values for.
+	 * @return The wrapped array as boxed values or the empty list if the
+	 * input array is {@code null} or is empty.
+	 * @since 2016/04/11
+	 */
+	public static List<Integer> of(int... __v)
+	{
+		if (__v == null || __v.length <= 0)
+			return EmptyList.<Integer>empty();
+		return new BoxedIntegerList(__v);
 	}
 }
 
