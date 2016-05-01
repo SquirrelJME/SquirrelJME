@@ -111,7 +111,7 @@ public class DataPipeInputStream
 					int rv = processor.drain();
 					
 					// Nothing left?
-					if (rv < 0 && _done)
+					if (rv < 0)
 						return -1;
 					
 					// Return it

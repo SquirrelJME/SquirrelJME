@@ -36,10 +36,6 @@ public abstract class DataSink
 	public static final int COMPLETED =
 		Integer.MIN_VALUE;
 	
-	/** This is returned when there is no input. */
-	public static final int NO_INPUT =
-		COMPLETED + 1;
-	
 	/** Lock. */
 	protected final Object lock;
 	
@@ -185,7 +181,7 @@ public abstract class DataSink
 			
 			// Nothing read?
 			if (rv <= 0)
-				return (_complete ? COMPLETED : NO_INPUT);
+				return (_complete ? COMPLETED : 0);
 			
 			// Return the read count
 			return rv;
@@ -218,6 +214,7 @@ public abstract class DataSink
 		// Lock
 		synchronized (lock)
 		{
+			System.err.printf("DEBUG -- %s%n%n", _complete);
 			return _complete;
 		}
 	}
@@ -336,6 +333,7 @@ public abstract class DataSink
 		// Lock
 		synchronized (lock)
 		{
+			System.err.println("DEBUG -- COMPLETE? " + _complete + "\n");
 			// {@squirreljme.error AA07 The data sink cannot be set as complete
 			// during processing.}
 			if (_inproc)
@@ -347,6 +345,7 @@ public abstract class DataSink
 			
 			// Set
 			_complete = true;
+			System.err.println("DEBUG -- COMPLETED " + _complete + "\n");
 		}
 		
 		// Self

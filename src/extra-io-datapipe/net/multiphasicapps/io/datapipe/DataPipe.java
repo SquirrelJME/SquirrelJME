@@ -160,6 +160,29 @@ public abstract class DataPipe
 	}
 	
 	/**
+	 * Indicates that processing is complete and that there is no more
+	 * output to be generated.
+	 *
+	 * @return {@code this}.
+	 * @throws PipeProcessException If the pipe is not in the special state
+	 * for output.
+	 * @since 2016/04/30
+	 */
+	protected final DataPipe outputComplete()
+		throws PipeProcessException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Not the dual state
+			if (_inproc != _BOTH_MASK)
+				throw new PipeProcessException("AC0a");
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Removes a single byte from the output.
 	 *
 	 * @return The read byte value or {@code -1} if the processing is
@@ -518,22 +541,6 @@ public abstract class DataPipe
 		
 		// Self
 		return this;
-	} 
-	
-	/**
-	 * Indicates that processing is complete and that there is no more
-	 * output to be generated.
-	 *
-	 * @return {@code this}.
-	 * @since 2016/04/30
-	 */
-	protected final DataPipe setOutputComplete()
-	{
-		// Lock
-		synchronized (lock)
-		{
-			throw new Error("TODO");
-		}
 	}
 	
 	/**

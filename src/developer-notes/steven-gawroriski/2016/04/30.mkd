@@ -96,3 +96,7 @@ is really left.
 
 It seems as if the input completion state is never triggered at all.
 
+## 21:06
+
+Actually, I never set the output as done.
+

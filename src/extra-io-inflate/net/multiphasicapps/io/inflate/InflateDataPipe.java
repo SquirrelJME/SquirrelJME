@@ -780,7 +780,7 @@ public class InflateDataPipe
 		if (_finalhit)
 		{
 			_nothingleft = true;
-			setOutputComplete();
+			outputComplete();
 			return false;
 		}
 		
