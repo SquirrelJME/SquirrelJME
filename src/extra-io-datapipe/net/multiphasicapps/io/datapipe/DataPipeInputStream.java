@@ -132,6 +132,10 @@ public class DataPipeInputStream
 				// Output stalled, add more bytes to the input
 				catch (PipeStalledException e)
 				{
+					// If done, not going to read anything
+					if (_done)
+						continue;
+					
 					// Setup buffer
 					int ADD = 32;
 					byte[] bb = new byte[ADD];
@@ -156,9 +160,8 @@ public class DataPipeInputStream
 					// EOF reached?
 					if (rc < 0)
 					{
-						// Mark done, but only once
-						if (!_done)
-							processor.completeInput();
+						// Mark done and complete the input
+						processor.completeInput();
 						_done = true;
 						
 						// Try draining
