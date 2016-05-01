@@ -81,4 +81,9 @@ and `extra-util-boxed` so that they are part of the same family and such.
 Then after those two, implement the CRC32 algorithm so that ZIP entries are
 verified.
 
+## 11:59
+
+Of the things used, the boxed integers and empty collections have not been used
+at all.
+
 
