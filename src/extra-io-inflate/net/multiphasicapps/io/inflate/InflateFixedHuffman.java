@@ -53,26 +53,26 @@ public class InflateFixedHuffman
 			throw new NullPointerException("NARG");
 		
 		// The long if statement block
-		if (__in.removeFirstPrimitive())
-			if (__in.removeFirstPrimitive())
-				if (__in.removeFirstPrimitive())
+		if (__in.removeFirst())
+			if (__in.removeFirst())
+				if (__in.removeFirst())
 					return 192 + __in.removeFirstInt(6, true);
 				else
-					if (__in.removeFirstPrimitive())
+					if (__in.removeFirst())
 						return 160 + __in.removeFirstInt(5, true);
 					else
-						if (__in.removeFirstPrimitive())
+						if (__in.removeFirst())
 							return 144 + __in.removeFirstInt(4, true);
 						else
 							return 280 + __in.removeFirstInt(3, true);
 			else
 				return 80 + __in.removeFirstInt(6, true);
 		else
-			if (__in.removeFirstPrimitive())
+			if (__in.removeFirst())
 				return 16 + __in.removeFirstInt(6, true);
 			else
-				if (__in.removeFirstPrimitive())
-					if (__in.removeFirstPrimitive())
+				if (__in.removeFirst())
+					if (__in.removeFirst())
 						return 0 + __in.removeFirstInt(4, true);
 					else
 						return 272 + __in.removeFirstInt(3, true);
