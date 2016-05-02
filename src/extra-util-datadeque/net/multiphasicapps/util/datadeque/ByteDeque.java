@@ -20,6 +20,7 @@ import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
  * If the queue reaches full capacity then it is increased in size.
  *
  * {@squirreljme.error AE02 No bytes available.}
+ * {@squirreljme.error AE03 Capacity reached.}
  *
  * @since 2016/03/11
  */
@@ -108,7 +109,13 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Exceeds capacity?
+			int n = base.size();
+			if (n < 0 || n >= capacity)
+				throw new IllegalStateException("AE03");
+			
+			// Add to the start
+			base.add(0, __b);
 		}
 	}
 	
@@ -153,7 +160,14 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Exceeds capacity?
+			int n = base.size();
+			int w = n + __l;
+			if (w < 0 || w > capacity)
+				throw new IllegalStateException("AE03");
+			
+			// Add to the start
+			base.add(0, __b, __o, __l);
 		}
 	}
 	
@@ -171,7 +185,13 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Exceeds capacity?
+			int n = base.size();
+			if (n < 0 || n >= capacity)
+				throw new IllegalStateException("AE03");
+			
+			// Add to the end
+			base.add(n, __b);
 		}
 	}
 	
@@ -216,7 +236,14 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Exceeds capacity?
+			int n = base.size();
+			int w = n + __l;
+			if (w < 0 || w > capacity)
+				throw new IllegalStateException("AE03");
+			
+			// Add to the end
+			base.add(n, __b, __o, __l);
 		}
 	}
 	
@@ -437,7 +464,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return base.remove(0, __b, __o, __l);
 		}
 	}
 	
@@ -502,7 +529,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return base.remove(Math.max(0, base.size() - __l), __b, __o, __l);
 		}
 	}
 }

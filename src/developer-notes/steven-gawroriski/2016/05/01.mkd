@@ -110,3 +110,10 @@ dynamic byte buffer becomes like the circular byte buffer more.
 The `CircularByteBuffer` is not really circular, it is more of a queue so I
 suppose I shall call it that instead.
 
+## 22:53
+
+Changing the `ByteDeque` to use `DynamicByteBuffer` despite some speed
+limitations of the dynamic byte buffer results in the tests for the deflate
+algorithm running a bit faster now. A second is small on this system (which is
+quite old), but on an even slower system that second could be 5 minutes.
+
