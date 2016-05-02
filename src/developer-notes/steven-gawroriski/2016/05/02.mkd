@@ -5,3 +5,8 @@
 I suppose the the boolean deque I can have a marker that indicates how many
 bits are in the deque and number of bits the start is offset from.
 
+## 11:24
+
+For alignment I need to count the bits that I remove, otherwise it would just
+be unknown. However this is not a complex issue.
+
