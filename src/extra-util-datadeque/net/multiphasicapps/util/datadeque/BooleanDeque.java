@@ -322,11 +322,13 @@ public class BooleanDeque
 	 *
 	 * @param __bits The bits to set.
 	 * @param __mask The mask for set bits.
+	 * @throws IllegalArgumentException If any bit is set that is not within
+	 * the mask, or the mask has a zero gap in it.
 	 * @throws IllegalStateException If the capacity would be exceeded.
 	 * @since 2016/05/02
 	 */
 	public void addLastInt(int __bits, int __mask)
-		throws IllegalStateException
+		throws IllegalArgumentException, IllegalStateException
 	{
 		addLastInt(__bits, __mask, false);
 	}
@@ -338,13 +340,40 @@ public class BooleanDeque
 	 * @param __mask The mask for set bits.
 	 * @param __msb If the bits are to be added using the most significant
 	 * digits first.
+	 * @throws IllegalArgumentException If any bit is set that is not within
+	 * the mask, or the mask has a zero gap in it.
 	 * @throws IllegalStateException If the capacity would be exceeded.
 	 * @since 2016/05/02
 	 */
-	public void addLastInt(int __bits, int __mask, boolean __msb)
-		throws IllegalStateException
+	public void addLastInt(int __val, int __mask, boolean __msb)
+		throws IllegalArgumentException, IllegalStateException
 	{
-		throw new Error("TODO");
+		// Number of bits in the mask
+		int ibm = Integer.bitCount(__mask);
+		
+		// Check to make sure the input is valid
+		if ((__val & (~__mask)) != 0)
+			throw new IllegalArgumentException(String.format("XI06 %x %x",
+				__val, __mask));
+		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
+			(__mask & 1) == 0)
+			throw new IllegalArgumentException(String.format("XI07 %x %x",
+				__val, __mask));
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Would exceed capacity?
+			int n = _count;
+			int w = n + ibm;
+			if (w < 0 || w > capacity)
+				throw new IllegalStateException("AE03");
+			
+			// Add bits
+			int an = (__msb ? -1 : 1);
+			for (int at = (__msb ? ibm - 1 : 0); at >= 0 && at < ibm; at += an)
+				addLast(0 != (__val & (1 << at)));
+		}
 	}
 	
 	/**
