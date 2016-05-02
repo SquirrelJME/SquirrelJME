@@ -1100,14 +1100,17 @@ public class InflateDataPipe
 			// Request a single byte
 			__zzQuick(1);
 			
-			if (true)
-				throw new Error("TODO");
+			// Read in a single bit
+			int qbit = _qbit;
+			boolean rv = (0 != (_qwin[qbit / 8] & (1 << qbit & 7)));
 			
 			// Increase the read count and drop the wait count
 			_readcount++;
 			_qwait--;
+			_qbit = qbit + 1;
 			
-			throw new Error("TODO");
+			// Return it
+			return rv;
 		}
 	}
 	
