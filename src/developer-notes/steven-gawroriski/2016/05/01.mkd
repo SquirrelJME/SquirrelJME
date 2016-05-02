@@ -117,3 +117,12 @@ limitations of the dynamic byte buffer results in the tests for the deflate
 algorithm running a bit faster now. A second is small on this system (which is
 quite old), but on an even slower system that second could be 5 minutes.
 
+## 23:13
+
+Also, the obvious big speed increase would be the removal of insane amounts of
+boxing due to the way the generic deque worked. Should also result in less
+pointless and quick allocations also. So on more memory constrained systems it
+should also be faster. I just now need to implement the boolean side of the
+data. I will do something similar and perform a large copy and paste of the
+`ByteDeque` code but handle a higher precision at the `boolean` level.
+
