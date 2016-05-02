@@ -342,6 +342,20 @@ public abstract class DataFaucet
 	}
 	
 	/**
+	 * Returns the number of bytes which are waiting to be drained.
+	 *
+	 * @return The number of available bytes for draining.
+	 * @since 2016/05/02
+	 */
+	public final int waiting()
+	{
+		synchronized (lock)
+		{
+			return _output.size();
+		}
+	}
+	
+	/**
 	 * Processes the faucet to determine if there are more bytes for input.
 	 *
 	 * @throws FaucetProcessException If processing failed.

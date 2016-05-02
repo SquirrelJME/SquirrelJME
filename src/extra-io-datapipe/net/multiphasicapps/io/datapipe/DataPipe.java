@@ -300,6 +300,22 @@ public abstract class DataPipe
 	}
 	
 	/**
+	 * Returns the number of bytes which are on the input end of the pipe that
+	 * are waiting to be processed.
+	 *
+	 * @return The number of bytes waiting to be processed.
+	 * @since 2016/05/02
+	 */
+	public final int inputWaiting()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _input.waiting();
+		}
+	}
+	
+	/**
 	 * Returns {@code true} if the input side of the pipe is complete.
 	 *
 	 * @return {@code true} if there is no more input to be read.
@@ -418,6 +434,21 @@ public abstract class DataPipe
 		
 		// Self
 		return this;
+	}
+	
+	/**
+	 * Returns the number of bytes which are waiting to be drained.
+	 *
+	 * @return The number of bytes waiting to be drained.
+	 * @since 2016/05/02
+	 */
+	public final int outputWaiting()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _output.waiting();
+		}
 	}
 	
 	/**
