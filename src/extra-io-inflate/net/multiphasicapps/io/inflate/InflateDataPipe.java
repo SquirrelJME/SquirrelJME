@@ -126,6 +126,9 @@ public class InflateDataPipe
 	/** The distance code tree. */
 	private volatile HuffmanTree<Integer> _treedist;
 	
+	/** The number of bits read, for alignment purposes. */
+	private volatile int _readcount;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/11
@@ -377,7 +380,7 @@ public class InflateDataPipe
 	{
 		// If using fixed huffman read 5 bits since they are all the same
 		// Otherwise for dynamic use the huffman tree symbol set
-		int code = (__dist == null ? inputbits.removeFirstInt(5, true) :
+		int code = (__dist == null ? __ibRemoveFirstInt(5, true) :
 			__readTreeCode(__dist));
 		
 		// Error if above 29
@@ -398,7 +401,7 @@ public class InflateDataPipe
 		
 		// If there are bits to read then read them in
 		if (extrabits > 0)
-			rv += inputbits.removeFirstInt(extrabits, false);
+			rv += __ibRemoveFirstInt(extrabits, false);
 		
 		// Return it
 		return rv;
@@ -441,9 +444,52 @@ public class InflateDataPipe
 		
 		// Read in those bits, if applicable
 		if (extrabits > 0)
-			rv += inputbits.removeFirstInt(extrabits, false);
+			rv += __ibRemoveFirstInt(extrabits, false);
 		
 		// Return the length
+		return rv;
+	}
+	
+	/**
+	 * Removes the first bit and counts it.
+	 *
+	 * @return The first bit.
+	 * @since 2016/05/02
+	 */
+	private boolean __ibRemoveFirst()
+	{
+		boolean rv = inputbits.removeFirst();
+		_readcount++;
+		return rv;
+	}
+	
+	/**
+	 * Removes the first integer and counts it.
+	 *
+	 * @param __b The number of bits to read.
+	 * @return The read value.
+	 * @since 2016/05/02
+	 */
+	private int __ibRemoveFirstInt(int __b)
+	{
+		int rv = inputbits.removeFirstInt(__b);
+		_readcount += __b;
+		return rv;
+	}
+	
+	/**
+	 * Removes the first integer and counts it.
+	 *
+	 * @param __b The number of bits to read.
+	 * @param __msb If {@code true} then the bits read into most significant
+	 * values first.
+	 * @return The read value.
+	 * @since 2016/05/02
+	 */
+	private int __ibRemoveFirstInt(int __b, boolean __msb)
+	{
+		int rv = inputbits.removeFirstInt(__b, __msb);
+		_readcount += __b;
 		return rv;
 	}
 	
@@ -495,7 +541,7 @@ public class InflateDataPipe
 				repval = __out[lastlendx];
 				
 				// Read the repeat count
-				repfor = 3 + inputbits.removeFirstInt(2);
+				repfor = 3 + __ibRemoveFirstInt(2);
 			}
 			
 			// Repeat zero for 3-10 times
@@ -505,7 +551,7 @@ public class InflateDataPipe
 				repval = 0;
 				
 				// Read 3 bits
-				repfor = 3 + inputbits.removeFirstInt(3);
+				repfor = 3 + __ibRemoveFirstInt(3);
 			}
 			
 			// Repeat zero for 11-138 times
@@ -515,7 +561,7 @@ public class InflateDataPipe
 				repval = 0;
 				
 				// Read 7 bits
-				repfor = 11 + inputbits.removeFirstInt(7);
+				repfor = 11 + __ibRemoveFirstInt(7);
 			}
 			
 			// Illegal code
@@ -593,7 +639,7 @@ public class InflateDataPipe
 				throw new PipeStalledException("XI0i");
 			
 			// Read three bits
-			cll[__alphaSwap(next)] = inputbits.removeFirstInt(3);
+			cll[__alphaSwap(next)] = __ibRemoveFirstInt(3);
 			
 			// Go to the next one
 			_readclnext = (next + 1);
@@ -724,9 +770,9 @@ public class InflateDataPipe
 		
 		// Read the bits
 		int cll;
-		_dhlit = inputbits.removeFirstInt(5) + 257;
-		_dhdist = inputbits.removeFirstInt(5) + 1;
-		_dhclen = cll = inputbits.removeFirstInt(4) + 4;
+		_dhlit = __ibRemoveFirstInt(5) + 257;
+		_dhdist = __ibRemoveFirstInt(5) + 1;
+		_dhclen = cll = __ibRemoveFirstInt(4) + 4;
 		
 		// Code lengths cannot be higher than 19
 		if (cll > 19)
@@ -785,10 +831,10 @@ public class InflateDataPipe
 		}
 		
 		// Read final bit
-		_finalhit |= inputbits.removeFirst();
+		_finalhit |= __ibRemoveFirst();
 		
 		// Read type
-		int type = inputbits.removeFirstInt(2);
+		int type = __ibRemoveFirstInt(2);
 		
 		// Depends on the type to read
 		switch (type)
@@ -848,14 +894,14 @@ public class InflateDataPipe
 				throw new PipeStalledException("XI0i");
 			
 			// Align to byte boundary
-			while ((inputbits.available() & 7) != 0)
+			while ((_readcount & 7) != 0)
 			{
-				inputbits.removeFirst();
+				__ibRemoveFirst();
 			}
 			
 			// Read length and the one's complement of it
-			int len = inputbits.removeFirstInt(16);
-			int com = inputbits.removeFirstInt(16);
+			int len = __ibRemoveFirstInt(16);
+			int com = __ibRemoveFirstInt(16);
 			
 			// The complemented length must be equal to the complement
 			if ((len ^ 0xFFFF) != com)
@@ -875,7 +921,7 @@ public class InflateDataPipe
 					throw new PipeStalledException("XI0i");
 				
 				// Read byte
-				int val = inputbits.removeFirstInt(8);
+				int val = __ibRemoveFirstInt(8);
 				
 				// Add to output
 				compactor.add(val, 0xFF);
@@ -922,7 +968,7 @@ public class InflateDataPipe
 			
 			// Read in a bit which designates the side to move down on the
 			// tree
-			int side = inputbits.removeFirstInt(1);
+			int side = __ibRemoveFirstInt(1);
 			
 			// Traverse that side
 			trav.traverse(side);
