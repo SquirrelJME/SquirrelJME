@@ -19,6 +19,8 @@ import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
  *
  * If the queue reaches full capacity then it is increased in size.
  *
+ * {@squirreljme.error AE02 No bytes available.}
+ *
  * @since 2016/03/11
  */
 public class ByteDeque
@@ -388,7 +390,12 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// No data available
+			if (base.size() <= 0)
+				throw new NoSuchElementException("AE02");
+			
+			// Remove the first item
+			return base.remove(0);
 		}
 	}
 	
@@ -419,6 +426,71 @@ public class ByteDeque
 	 * @since 2016/05/01
 	 */
 	public int removeFirst(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Removes a single byte from the from of the deque.
+	 *
+	 * @return The next input byte.
+	 * @throws NoSuchElementException If not a single byte is available.
+	 * @since 2016/05/01
+	 */
+	public byte removeLast()
+		throws NoSuchElementException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// No data available
+			int n;
+			if ((n = base.size()) <= 0)
+				throw new NoSuchElementException("AE02");
+			
+			// Remove the last item
+			return base.remove(n - 1);
+		}
+	}
+	
+	/**
+	 * Removes multiple bytes from the end of the deque.
+	 *
+	 * @param __b The array to read bytes into.
+	 * @return The number of removed bytes, may be {@code 0}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int removeLast(byte[] __b)
+		throws NullPointerException
+	{
+		return removeLast(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Removes multiple bytes from the end of the deque.
+	 *
+	 * @param __b The array to read bytes into.
+	 * @param __o The offset to start writing into.
+	 * @param __l The number of bytes to remove.
+	 * @return The number of removed bytes, may be {@code 0}.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int removeLast(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
