@@ -351,7 +351,7 @@ public abstract class DataFaucet
 	{
 		synchronized (lock)
 		{
-			return _output.size();
+			return _output.available();
 		}
 	}
 	

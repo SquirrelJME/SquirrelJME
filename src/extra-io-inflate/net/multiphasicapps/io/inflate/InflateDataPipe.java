@@ -23,6 +23,8 @@ import net.multiphasicapps.util.huffmantree.HuffmanTree;
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
  *
+ * {@squirreljme.error AF01 Requested a negative number of bits.}
+ *
  * @since 2016/03/11
  */
 public class InflateDataPipe
@@ -34,6 +36,10 @@ public class InflateDataPipe
 	 */
 	protected static final int REQUIRED_BITS =
 		48;
+	
+	/** Quick access window size. */
+	private static final int _QUICK_WINDOW_BYTES =
+		(REQUIRED_BITS / 8) + 2;
 	
 	/** The size of the sliding window. */
 	protected static final int SLIDING_WINDOW_SIZE =
@@ -77,6 +83,19 @@ public class InflateDataPipe
 					window.append(__v);
 				}
 			});
+	
+	/** Quick access window. */
+	private final byte[] _qwin =
+		new byte[_QUICK_WINDOW_BYTES];
+	
+	/** The current bit in the access window. */
+	private volatile int _qbit;
+	
+	/** The number of bits left in the window. */
+	private volatile int _qwait;
+	
+	/** The number of byte in the access window. */
+	private volatile int _qwinsz;
 	
 	/** Current decoding task. */
 	private volatile __Task__ _task =
@@ -140,8 +159,9 @@ public class InflateDataPipe
 		while (!_nothingleft)
 		{
 			// Require more available bytes if not finished
+			// {@squirreljme.error AF02 Not enough input bits are available.}
 			if (!isInputComplete() && __zzAvailable() < REQUIRED_BITS)
-				throw new PipeStalledException("XI0e");
+				throw new PipeStalledException("AF02");
 		
 			// Perform work
 			try
@@ -187,7 +207,8 @@ public class InflateDataPipe
 						
 						// Unknown
 					default:
-						throw new PipeProcessException(String.format("XI0f",
+						// {@squirreljme.error AF03 Unknown task. (The task)}
+						throw new PipeProcessException(String.format("AF03 %s",
 							_task.name()));
 				}
 			}
@@ -195,36 +216,11 @@ public class InflateDataPipe
 			// Short read
 			catch (NoSuchElementException nsee)
 			{
-				throw new PipeProcessException("XI0g", nsee);
+				// {@squirreljme.error AF04 Not enough input bits were
+				// actually available.}
+				throw new PipeProcessException("AF04", nsee);
 			}
 		}
-	}
-	
-	/**
-	 * Calculates the value to shift into when using the dynamic huffman table
-	 * where codes are written in this mixed format.
-	 *
-	 * @param __c The bit number currently being read, this is the read order
-	 * as it appears in the data and not in the mixed order. Thus if the
-	 * value is {@code 0} then shift 16 is used.
-	 * @param __val Is the current bit set?
-	 * @return The shift value to OR into.
-	 * @throws PipeProcessException If the shift is out of range.
-	 * @since 2016/03/13
-	 */
-	private int __alphaShift(int __c, boolean __val)
-		throws PipeProcessException
-	{
-		// Check
-		if (__c < 0 || __c >= 19)
-			throw new InflaterException(String.format("XI0h %d", __c));
-		
-		// If not set, nothing is returned
-		if (!__val)
-			return 0;
-		
-		// Shift it
-		return (1 << __alphaSwap(__c));
 	}
 	
 	/**
@@ -239,9 +235,9 @@ public class InflateDataPipe
 	private int __alphaSwap(int __c)
 		throws PipeProcessException
 	{
-		// Check
+		// {@squirreljme.error AF06 Alpha-shift out of range. (The shift)}
 		if (__c < 0 || __c >= 19)
-			throw new InflaterException(String.format("XI0h %d", __c));
+			throw new InflaterException(String.format("AF06 %d", __c));
 		
 		// Depends on the input value
 		switch (__c)
@@ -300,7 +296,9 @@ public class InflateDataPipe
 			
 			// Go back to reading the header
 			_task = __Task__.READ_HEADER;
-			throw new PipeStalledException("XI0i");
+			
+			// {@squirreljme.error AF07 Stalling after code stop.}
+			throw new PipeStalledException("AF07");
 		}
 		
 		// Window based result
@@ -330,8 +328,10 @@ public class InflateDataPipe
 			// Bad window read
 			catch (IndexOutOfBoundsException ioobe)
 			{
+				// {@squirreljme.error AF08 Window access out of range.
+				// (The distance; The length)}
 				throw new InflaterException(String.format(
-					"XI0j %d %d", dist, lent), ioobe);
+					"AF08 %d %d", dist, lent), ioobe);
 			}
 			
 			// Add those bytes to the output, handle wrapping around if the
@@ -340,9 +340,9 @@ public class InflateDataPipe
 				compactor.add(winb[i % maxlen] & 0xFF, 0xFF);
 		}
 		
-		// Error
+		// {@squirreljme.error AF09 Illegal code. (The code.)}
 		else
-			throw new InflaterException(String.format("XI0k %d", __c));
+			throw new InflaterException(String.format("AF09 %d", __c));
 	}
 	
 	/**
@@ -361,9 +361,9 @@ public class InflateDataPipe
 		int code = (__dist == null ? __zzReadInt(5, true) :
 			__readTreeCode(__dist));
 		
-		// Error if above 29
-		if (code > 29)
-			throw new InflaterException(String.format("XI0l %d", code));
+		// {@squirreljme.error AF0a Illegal distance code. (The distance code)}
+		if (code < 0 || code > 29)
+			throw new InflaterException(String.format("AF0a %d", code));
 		
 		// Calculate the required distance to use
 		int rv = 1;
@@ -403,9 +403,9 @@ public class InflateDataPipe
 		// Get the base code
 		int base = __c - 257;
 		
-		// Invalid?
+		// {@squirreljme.error AF0b Illegal length code. (The length code)}
 		if (base < 0)
-			throw new InflaterException(String.format("XI0l %d", __c));
+			throw new InflaterException(String.format("AF0b %d", __c));
 		
 		// Calculate the required length to use
 		int rv = 3;
@@ -466,10 +466,11 @@ public class InflateDataPipe
 			// Repeat the previous length 3-6 times
 			if (code == 16)
 			{
-				// Make sure there is a last length
-				int lastlendx = __next - 1;	
+				// {@squirreljme.error AF0c A repeat code was specified,
+				// however this is the first entry. (The last length index)}
+				int lastlendx = __next - 1;
 				if (lastlendx < 0)
-					throw new InflaterException(String.format("XI0x %d",
+					throw new InflaterException(String.format("AF0c %d",
 						lastlendx));
 				
 				// Read the last
@@ -499,9 +500,9 @@ public class InflateDataPipe
 				repfor = 11 + __zzReadInt(7);
 			}
 			
-			// Illegal code
+			// {@squirreljme.error AF0d Illegal code. (The code)}
 			else
-				throw new InflaterException(String.format("XI0w %d", code));
+				throw new InflaterException(String.format("AF0d %d", code));
 			
 			// Could fail
 			try
@@ -514,7 +515,8 @@ public class InflateDataPipe
 			// Out of bounds entry
 			catch (IndexOutOfBoundsException ioobe)
 			{
-				throw new InflaterException("XI0y", ioobe);
+				// {@squirreljme.error AF0e Out of bounds index read.}
+				throw new InflaterException("AF0e", ioobe);
 			}
 		}
 		
@@ -570,8 +572,10 @@ public class InflateDataPipe
 			}
 			
 			// Not enough bits to read code lengths
+			// {@squirreljme.error AF0f Not enough input is available to read
+			// code length count.}
 			if (!isInputComplete() && __zzAvailable() < 3)
-				throw new PipeStalledException("XI0i");
+				throw new PipeStalledException("AF0f");
 			
 			// Read three bits
 			cll[__alphaSwap(next)] = __zzReadInt(3);
@@ -632,13 +636,17 @@ public class InflateDataPipe
 					_task = __Task__.DYNAMIC_HUFFMAN_COMPRESSED;
 					
 					// Use a waiting exception to break from the loop
-					throw new PipeStalledException("XI0i");
+					// {@squirreljme.error AF0g Stalling after huffman tree
+					// setup.}
+					throw new PipeStalledException("AF0g");
 				}
 				
 				// Not enough bits to read code lengths?
 				// Add 7 due to the repeat zero many times symbol
+				// {@squirreljme.error AF0h Not enough bits are available to
+				// read the next literal or distance code entry.}
 				if (!isInputComplete() && __zzAvailable() < maxbits + 7)
-					throw new PipeStalledException("XI0i");
+					throw new PipeStalledException("AF0h");
 				
 				// Read in code
 				int cbskip = __readCodeBits(htree, rawints, next);
@@ -651,7 +659,9 @@ public class InflateDataPipe
 		// Out of bits or a bad tree
 		catch (NoSuchElementException nsee)
 		{
-			throw new PipeProcessException("XI0v", nsee);
+			// {@squirreljme.error AF0i The compressed stream is damaged by
+			// being too short or having an illegal tree access.}
+			throw new PipeProcessException("AF0i", nsee);
 		}
 	}
 	
@@ -700,8 +710,10 @@ public class InflateDataPipe
 		throws PipeProcessException
 	{
 		// The header consists of 14 bits: HLIT (5), HDIST (5), HCLEN (4)
+		// {@squirreljme.error AF0j Not enough bits available to read the
+		// dynamic huffman header.}
 		if (!isInputComplete() && __zzAvailable() < 14)
-			throw new PipeStalledException("XI0i");
+			throw new PipeStalledException("AF0j");
 		
 		// Read the bits
 		int cll;
@@ -710,8 +722,9 @@ public class InflateDataPipe
 		_dhclen = cll = __zzReadInt(4) + 4;
 		
 		// Code lengths cannot be higher than 19
+		// {@squirreljme.error AF0k Illegal code length. (The code length)}
 		if (cll > 19)
-			throw new InflaterException(String.format("XI0m %d", cll));
+			throw new InflaterException(String.format("AF0k %d", cll));
 		
 		// Initialize
 		_rawcodelens = null;
@@ -802,7 +815,9 @@ public class InflateDataPipe
 				// Error or unknown
 			case TYPE_ERROR:
 			default:
-				throw new InflaterException("XI0n");
+				// {@squirreljme.error AF0l Unknown type or the error type
+				// was reached.}
+				throw new InflaterException("AF0l");
 		}
 		
 		// Continue
@@ -825,8 +840,10 @@ public class InflateDataPipe
 		if (curlen < 0)
 		{
 			// Need four bytes of input, along with potential alignment bits
+			// {@squirreljme.error AF0m Not enough bits to read uncompressed
+			// data.}
 			if (!isInputComplete() && __zzAvailable() < 39)
-				throw new PipeStalledException("XI0i");
+				throw new PipeStalledException("AF0m");
 			
 			// Align to byte boundary
 			while ((_readcount & 7) != 0)
@@ -839,8 +856,10 @@ public class InflateDataPipe
 			int com = __zzReadInt(16);
 			
 			// The complemented length must be equal to the complement
+			// {@squirreljme.error AF0n Value mismatch reading the number of
+			// uncompressed symbols that exist. (The length; The complement)}
 			if ((len ^ 0xFFFF) != com)
-				throw new InflaterException(String.format("XI0o %x %x",
+				throw new InflaterException(String.format("AF0n %x %x",
 					len, com));
 			
 			// Set it
@@ -852,8 +871,10 @@ public class InflateDataPipe
 			while (curlen > 0)
 			{
 				// Need at least a byte of input
+				// {@squirreljme.error AF0o Not enough bits to read a single
+				// value.}
 				if (!isInputComplete() && __zzAvailable() < 8)
-					throw new PipeStalledException("XI0i");
+					throw new PipeStalledException("AF0o");
 				
 				// Read byte
 				int val = __zzReadInt(8);
@@ -987,7 +1008,11 @@ public class InflateDataPipe
 	 */
 	int __zzAvailable()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -998,7 +1023,11 @@ public class InflateDataPipe
 	 */
 	boolean __zzRead()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -1010,6 +1039,10 @@ public class InflateDataPipe
 	 */
 	int __zzReadInt(int __b)
 	{
+		// Check
+		if (__b < 0)
+			throw new IllegalArgumentException("AF01");
+		
 		return __zzReadInt(__b, false);
 	}
 	
@@ -1024,7 +1057,52 @@ public class InflateDataPipe
 	 */
 	int __zzReadInt(int __b, boolean __msb)
 	{
-		throw new Error("TODO");
+		// Check
+		if (__b < 0)
+			throw new IllegalArgumentException("AF01");
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Checks and initializes the given number of bits in the queue.
+	 *
+	 * @param __b The number of bits to request.
+	 * @throws IllegalArgumentException If a negative number of bits were
+	 * requested.
+	 * @throws NoSuchElementException If there are not enough bits in the
+	 * queue.
+	 * @since 2016/05/02
+	 */
+	private void __zzQuick(int __b)
+		throws IllegalArgumentException, NoSuchElementException
+	{
+		// Check
+		if (__b < 0)
+			throw new IllegalArgumentException("AF01");
+		
+		///** Quick access window. */
+		//private final byte[] _qwin =
+		//	new byte[_QUICK_WINDOW_BYTES];
+		//
+		///** The current bit in the access window. */
+		//private volatile int _qbit;
+		//
+		///** The number of bits left in the window. */
+		//private volatile int _qwait;
+		//
+		///** The number of byte in the access window. */
+		//private volatile int _qwinsz;
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
