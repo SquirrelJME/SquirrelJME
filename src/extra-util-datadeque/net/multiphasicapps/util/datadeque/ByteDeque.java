@@ -263,6 +263,154 @@ public class ByteDeque
 	}
 	
 	/**
+	 * Obtains but does not remove the first byte.
+	 *
+	 * @return The value of the first byte.
+	 * @throws NoSuchElementException If the deque is empty.
+	 * @since 2016/05/01
+	 */
+	public byte getFirst()
+		throws NoSuchElementException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Check
+			if (base.size() <= 0)
+				throw new NoSuchElementException("AE02");
+			
+			// Get
+			return base.get(0);
+		}
+	}
+	
+	/**
+	 * Obtains but does not remove the first set of bytes.
+	 *
+	 * @param __b The destination array to obtain the first bytes for.
+	 * @return The number of read bytes.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int getFirst(byte[] __b)
+		throws NullPointerException
+	{
+		return getFirst(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Obtains but does not remove the first set of bytes.
+	 *
+	 * @param __b The destination array to obtain the first bytes for.
+	 * @param __o The offset in the destination array to start reading bytes
+	 * into.
+	 * @param __l The number of bytes to read.
+	 * @return The number of read bytes.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the bounds of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int getFirst(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Pointless if empty
+			int n;
+			if ((n = base.size()) <= 0)
+				return 0;
+			
+			// Get
+			int rv;
+			base.get(0, __b, __o, rv = Math.min(n, __l));
+			return rv;
+		}
+	}
+	
+	/**
+	 * Obtains but does not remove the last byte.
+	 *
+	 * @return The value of the last byte.
+	 * @throws NoSuchElementException If the deque is empty.
+	 * @since 2016/05/01
+	 */
+	public byte getLast()
+		throws NoSuchElementException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Check
+			int n;
+			if ((n = base.size()) <= 0)
+				throw new NoSuchElementException("AE02");
+			
+			// Get
+			return base.get(n - 1);
+		}
+	}
+	
+	/**
+	 * Obtains but does not remove the last set of bytes.
+	 *
+	 * @param __b The destination array to obtain the last bytes for.
+	 * @return The number of read bytes.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int getLast(byte[] __b)
+		throws NullPointerException
+	{
+		return getLast(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Obtains but does not remove the last set of bytes.
+	 *
+	 * @param __b The destination array to obtain the last bytes for.
+	 * @param __o The offset in the destination array to start reading bytes
+	 * into.
+	 * @param __l The number of bytes to read.
+	 * @return The number of read bytes.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or they exceed the bounds of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int getLast(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Pointless if empty
+			int n;
+			if ((n = base.size()) <= 0)
+				return 0;
+			
+			// Get
+			int d = n - __l;
+			int rv;
+			base.get(Math.max(0, d), __b, __o, rv = Math.min(n, __l));
+			return rv;
+		}
+	}
+	
+	/**
 	 * Offers a single byte to the start of the deque and returns {@code true}
 	 * if it was added to the deque.
 	 *
@@ -401,6 +549,54 @@ public class ByteDeque
 		catch (IllegalStateException ise)
 		{
 			return false;
+		}
+	}
+	
+	/**
+	 * Obtains but does not remove the first byte, returning a special value
+	 * if the deque is empty.
+	 *
+	 * @return The value of the first byte or a negative value if the deque is
+	 * empty.
+	 * @since 2016/05/01
+	 */
+	public int peekFirst()
+		throws NoSuchElementException
+	{
+		// The deque could be empty
+		try
+		{
+			return ((int)getFirst()) & 0xFF;
+		}
+		
+		// Does not exist.
+		catch (NoSuchElementException e)
+		{
+			return -1;
+		}
+	}
+	
+	/**
+	 * Obtains but does not remove the last byte, returning a special value
+	 * if the deque is empty.
+	 *
+	 * @return The value of the last byte or a negative value if the deque is
+	 * empty.
+	 * @since 2016/05/01
+	 */
+	public int peekLast()
+		throws NoSuchElementException
+	{
+		// The deque could be empty
+		try
+		{
+			return ((int)getLast()) & 0xFF;
+		}
+		
+		// Does not exist.
+		catch (NoSuchElementException e)
+		{
+			return -1;
 		}
 	}
 	
