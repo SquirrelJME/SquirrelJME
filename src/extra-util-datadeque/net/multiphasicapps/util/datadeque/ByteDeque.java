@@ -33,12 +33,6 @@ public class ByteDeque
 	/** The maximum permitted capacity. */
 	protected final int capacity;
 	
-	/** The head position. */
-	private volatile int _head;
-	
-	/** The tail position. */
-	private volatile int _tail;
-	
 	/**
 	 * Initializes a byte deque.
 	 *
@@ -235,7 +229,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return base.size();
 		}
 	}
 	

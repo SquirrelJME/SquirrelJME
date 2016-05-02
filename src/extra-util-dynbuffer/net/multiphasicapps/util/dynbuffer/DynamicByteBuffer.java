@@ -359,6 +359,61 @@ public class DynamicByteBuffer
 	}
 	
 	/**
+	 * Removes multiple bytes from the given position
+	 *
+	 * @param __i The base index to get bytes from.
+	 * @param __b The destination array where read bytes are placed.
+	 * @return The number of removed bytes.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int remove(int __i, byte[] __b)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		return remove(__i, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Removes multiple bytes at the given position.
+	 *
+	 * @param __i The base index to get bytes from.
+	 * @param __b The destination array where read bytes are placed.
+	 * @param __o The offset to start writing at.
+	 * @param __l The number of bytes to read.
+	 * @return The number of removed bytes.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds or
+	 * the offset or length are negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int remove(int __i, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		if (__i < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Obtain the given number of bytes if possible
+			int avail = Math.min(Math.max(0, size() - __o), __l);
+			
+			// Read that many
+			for (int i = 0; i < avail; i++)
+				__b[__o + i] = remove(__i);
+			
+			// Return the read count
+			return avail;
+		}
+	}
+	
+	/**
 	 * Sets the byte at the given position.
 	 *
 	 * @param __i The index to write the byte at.
