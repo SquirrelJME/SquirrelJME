@@ -17,7 +17,6 @@ import net.multiphasicapps.io.datapipe.DataPipe;
 import net.multiphasicapps.io.datapipe.PipeProcessException;
 import net.multiphasicapps.io.datapipe.PipeStalledException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
-import net.multiphasicapps.util.datadeque.BooleanDeque;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 import net.multiphasicapps.util.huffmantree.HuffmanTree;
 
@@ -55,10 +54,6 @@ public class InflateDataPipe
 	/** An error. */
 	protected static final int TYPE_ERROR =
 		0b11;
-	
-	/** Input bits. */
-	protected final BooleanDeque inputbits =
-		new BooleanDeque();
 	
 	/** The sliding byte window. */
 	protected final SlidingByteWindow window =
@@ -141,28 +136,11 @@ public class InflateDataPipe
 		if (_nothingleft)
 			return;
 		
-		// Take all bytes which are available to the input and add them to the
-		// input bit buffer
-		final int READQ = 32;
-		for (byte[] qq = new byte[READQ];;)
-		{
-			// Read in all bytes
-			int rc = pipeInput(qq, 0, READQ);
-			
-			// No more bytes to read?
-			if (rc <= 0)
-				break;
-			
-			// For every byte, offer it to the output
-			for (int i = 0; i < rc; i++)
-				inputbits.offerLastInt(((int)qq[i]) & 0xFF, 0xFF);
-		}
-		
 		// Processing loop
 		while (!_nothingleft)
 		{
 			// Require more available bytes if not finished
-			if (!isInputComplete() && inputbits.available() < REQUIRED_BITS)
+			if (!isInputComplete() && __zzAvailable() < REQUIRED_BITS)
 				throw new PipeStalledException("XI0e");
 		
 			// Perform work
@@ -380,7 +358,7 @@ public class InflateDataPipe
 	{
 		// If using fixed huffman read 5 bits since they are all the same
 		// Otherwise for dynamic use the huffman tree symbol set
-		int code = (__dist == null ? __ibRemoveFirstInt(5, true) :
+		int code = (__dist == null ? __zzReadInt(5, true) :
 			__readTreeCode(__dist));
 		
 		// Error if above 29
@@ -401,7 +379,7 @@ public class InflateDataPipe
 		
 		// If there are bits to read then read them in
 		if (extrabits > 0)
-			rv += __ibRemoveFirstInt(extrabits, false);
+			rv += __zzReadInt(extrabits, false);
 		
 		// Return it
 		return rv;
@@ -444,52 +422,9 @@ public class InflateDataPipe
 		
 		// Read in those bits, if applicable
 		if (extrabits > 0)
-			rv += __ibRemoveFirstInt(extrabits, false);
+			rv += __zzReadInt(extrabits, false);
 		
 		// Return the length
-		return rv;
-	}
-	
-	/**
-	 * Removes the first bit and counts it.
-	 *
-	 * @return The first bit.
-	 * @since 2016/05/02
-	 */
-	private boolean __ibRemoveFirst()
-	{
-		boolean rv = inputbits.removeFirst();
-		_readcount++;
-		return rv;
-	}
-	
-	/**
-	 * Removes the first integer and counts it.
-	 *
-	 * @param __b The number of bits to read.
-	 * @return The read value.
-	 * @since 2016/05/02
-	 */
-	private int __ibRemoveFirstInt(int __b)
-	{
-		int rv = inputbits.removeFirstInt(__b);
-		_readcount += __b;
-		return rv;
-	}
-	
-	/**
-	 * Removes the first integer and counts it.
-	 *
-	 * @param __b The number of bits to read.
-	 * @param __msb If {@code true} then the bits read into most significant
-	 * values first.
-	 * @return The read value.
-	 * @since 2016/05/02
-	 */
-	private int __ibRemoveFirstInt(int __b, boolean __msb)
-	{
-		int rv = inputbits.removeFirstInt(__b, __msb);
-		_readcount += __b;
 		return rv;
 	}
 	
@@ -541,7 +476,7 @@ public class InflateDataPipe
 				repval = __out[lastlendx];
 				
 				// Read the repeat count
-				repfor = 3 + __ibRemoveFirstInt(2);
+				repfor = 3 + __zzReadInt(2);
 			}
 			
 			// Repeat zero for 3-10 times
@@ -551,7 +486,7 @@ public class InflateDataPipe
 				repval = 0;
 				
 				// Read 3 bits
-				repfor = 3 + __ibRemoveFirstInt(3);
+				repfor = 3 + __zzReadInt(3);
 			}
 			
 			// Repeat zero for 11-138 times
@@ -561,7 +496,7 @@ public class InflateDataPipe
 				repval = 0;
 				
 				// Read 7 bits
-				repfor = 11 + __ibRemoveFirstInt(7);
+				repfor = 11 + __zzReadInt(7);
 			}
 			
 			// Illegal code
@@ -635,11 +570,11 @@ public class InflateDataPipe
 			}
 			
 			// Not enough bits to read code lengths
-			if (!isInputComplete() && inputbits.available() < 3)
+			if (!isInputComplete() && __zzAvailable() < 3)
 				throw new PipeStalledException("XI0i");
 			
 			// Read three bits
-			cll[__alphaSwap(next)] = __ibRemoveFirstInt(3);
+			cll[__alphaSwap(next)] = __zzReadInt(3);
 			
 			// Go to the next one
 			_readclnext = (next + 1);
@@ -702,7 +637,7 @@ public class InflateDataPipe
 				
 				// Not enough bits to read code lengths?
 				// Add 7 due to the repeat zero many times symbol
-				if (!isInputComplete() && inputbits.available() < maxbits + 7)
+				if (!isInputComplete() && __zzAvailable() < maxbits + 7)
 					throw new PipeStalledException("XI0i");
 				
 				// Read in code
@@ -741,7 +676,7 @@ public class InflateDataPipe
 		
 		// Need to be able to read a value from the tree along with any
 		// extra distance and length codes it may have
-		while (isInputComplete() || inputbits.available() >= maxbits + 32)
+		while (isInputComplete() || __zzAvailable() >= maxbits + 32)
 		{
 			// Decode literal code
 			int code = __readTreeCode(thlit);
@@ -765,14 +700,14 @@ public class InflateDataPipe
 		throws PipeProcessException
 	{
 		// The header consists of 14 bits: HLIT (5), HDIST (5), HCLEN (4)
-		if (!isInputComplete() && inputbits.available() < 14)
+		if (!isInputComplete() && __zzAvailable() < 14)
 			throw new PipeStalledException("XI0i");
 		
 		// Read the bits
 		int cll;
-		_dhlit = __ibRemoveFirstInt(5) + 257;
-		_dhdist = __ibRemoveFirstInt(5) + 1;
-		_dhclen = cll = __ibRemoveFirstInt(4) + 4;
+		_dhlit = __zzReadInt(5) + 257;
+		_dhdist = __zzReadInt(5) + 1;
+		_dhclen = cll = __zzReadInt(4) + 4;
 		
 		// Code lengths cannot be higher than 19
 		if (cll > 19)
@@ -802,10 +737,10 @@ public class InflateDataPipe
 	{
 		// Require up to 32 bits because of the input along with extra distance
 		// codes, length codes, and more
-		while (isInputComplete() || inputbits.available() >= 32)
+		while (isInputComplete() || __zzAvailable() >= 32)
 		{
 			// Read single code
-			int code = InflateFixedHuffman.read(inputbits);
+			int code = __InflateFixedHuffman__.read(this);
 			
 			// Handle the code
 			__handleCode(code, null, null);
@@ -831,10 +766,10 @@ public class InflateDataPipe
 		}
 		
 		// Read final bit
-		_finalhit |= __ibRemoveFirst();
+		_finalhit |= __zzRead();
 		
 		// Read type
-		int type = __ibRemoveFirstInt(2);
+		int type = __zzReadInt(2);
 		
 		// Depends on the type to read
 		switch (type)
@@ -890,18 +825,18 @@ public class InflateDataPipe
 		if (curlen < 0)
 		{
 			// Need four bytes of input, along with potential alignment bits
-			if (!isInputComplete() && inputbits.available() < 39)
+			if (!isInputComplete() && __zzAvailable() < 39)
 				throw new PipeStalledException("XI0i");
 			
 			// Align to byte boundary
 			while ((_readcount & 7) != 0)
 			{
-				__ibRemoveFirst();
+				__zzRead();
 			}
 			
 			// Read length and the one's complement of it
-			int len = __ibRemoveFirstInt(16);
-			int com = __ibRemoveFirstInt(16);
+			int len = __zzReadInt(16);
+			int com = __zzReadInt(16);
 			
 			// The complemented length must be equal to the complement
 			if ((len ^ 0xFFFF) != com)
@@ -917,11 +852,11 @@ public class InflateDataPipe
 			while (curlen > 0)
 			{
 				// Need at least a byte of input
-				if (!isInputComplete() && inputbits.available() < 8)
+				if (!isInputComplete() && __zzAvailable() < 8)
 					throw new PipeStalledException("XI0i");
 				
 				// Read byte
-				int val = __ibRemoveFirstInt(8);
+				int val = __zzReadInt(8);
 				
 				// Add to output
 				compactor.add(val, 0xFF);
@@ -968,7 +903,7 @@ public class InflateDataPipe
 			
 			// Read in a bit which designates the side to move down on the
 			// tree
-			int side = __ibRemoveFirstInt(1);
+			int side = __zzReadInt(1);
 			
 			// Traverse that side
 			trav.traverse(side);
@@ -1042,6 +977,54 @@ public class InflateDataPipe
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Returns the number of bits available for reading.
+	 *
+	 * @return The number of available bits.
+	 * @since 2016/05/02
+	 */
+	int __zzAvailable()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Removes the first bit and counts it.
+	 *
+	 * @return The first bit.
+	 * @since 2016/05/02
+	 */
+	boolean __zzRead()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Removes the first integer and counts it.
+	 *
+	 * @param __b The number of bits to read.
+	 * @return The read value.
+	 * @since 2016/05/02
+	 */
+	int __zzReadInt(int __b)
+	{
+		return __zzReadInt(__b, false);
+	}
+	
+	/**
+	 * Removes the first integer and counts it.
+	 *
+	 * @param __b The number of bits to read.
+	 * @param __msb If {@code true} then the bits read into most significant
+	 * values first.
+	 * @return The read value.
+	 * @since 2016/05/02
+	 */
+	int __zzReadInt(int __b, boolean __msb)
+	{
+		throw new Error("TODO");
 	}
 	
 	/**

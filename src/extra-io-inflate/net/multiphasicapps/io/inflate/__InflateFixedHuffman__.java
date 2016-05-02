@@ -11,7 +11,6 @@
 package net.multiphasicapps.io.inflate;
 
 import java.io.IOException;
-import net.multiphasicapps.util.datadeque.BooleanDeque;
 import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
@@ -19,15 +18,16 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  *
  * @since 2016/03/11
  */
-public class InflateFixedHuffman
+final class __InflateFixedHuffman__
 {
 	/**
 	 * Not initialized.
 	 *
 	 * @since 2016/03/11
 	 */
-	private InflateFixedHuffman()
+	private __InflateFixedHuffman__()
 	{
+		throw new RuntimeException("WTFX");
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class InflateFixedHuffman
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public static int read(BooleanDeque __in)
+	static int read(InflateDataPipe __in)
 		throws NullPointerException
 	{
 		// Check
@@ -53,31 +53,31 @@ public class InflateFixedHuffman
 			throw new NullPointerException("NARG");
 		
 		// The long if statement block
-		if (__in.removeFirst())
-			if (__in.removeFirst())
-				if (__in.removeFirst())
-					return 192 + __in.removeFirstInt(6, true);
+		if (__in.__zzRead())
+			if (__in.__zzRead())
+				if (__in.__zzRead())
+					return 192 + __in.__zzReadInt(6, true);
 				else
-					if (__in.removeFirst())
-						return 160 + __in.removeFirstInt(5, true);
+					if (__in.__zzRead())
+						return 160 + __in.__zzReadInt(5, true);
 					else
-						if (__in.removeFirst())
-							return 144 + __in.removeFirstInt(4, true);
+						if (__in.__zzRead())
+							return 144 + __in.__zzReadInt(4, true);
 						else
-							return 280 + __in.removeFirstInt(3, true);
+							return 280 + __in.__zzReadInt(3, true);
 			else
-				return 80 + __in.removeFirstInt(6, true);
+				return 80 + __in.__zzReadInt(6, true);
 		else
-			if (__in.removeFirst())
-				return 16 + __in.removeFirstInt(6, true);
+			if (__in.__zzRead())
+				return 16 + __in.__zzReadInt(6, true);
 			else
-				if (__in.removeFirst())
-					if (__in.removeFirst())
-						return 0 + __in.removeFirstInt(4, true);
+				if (__in.__zzRead())
+					if (__in.__zzRead())
+						return 0 + __in.__zzReadInt(4, true);
 					else
-						return 272 + __in.removeFirstInt(3, true);
+						return 272 + __in.__zzReadInt(3, true);
 				else
-					return 256 + __in.removeFirstInt(4, true);
+					return 256 + __in.__zzReadInt(4, true);
 	}
 }
 
