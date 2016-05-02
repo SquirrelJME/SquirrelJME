@@ -39,11 +39,11 @@ public class InflateDataPipe
 	
 	/** Quick access window size. */
 	private static final int _QUICK_WINDOW_BYTES =
-		(REQUIRED_BITS / 8) + 2;
+		(REQUIRED_BITS >> 3) + 2;
 	
 	/** The maximum number of bits in the quick window. */
 	private static final int _QUICK_WINDOW_BITS =
-		_QUICK_WINDOW_BYTES * 8;
+		_QUICK_WINDOW_BYTES << 3;
 	
 	/** The size of the sliding window. */
 	protected static final int SLIDING_WINDOW_SIZE =
@@ -1017,7 +1017,7 @@ public class InflateDataPipe
 		{
 			// The number of bits available are those that are waiting and
 			// a multiple of the bits that are waiting to be input
-			return _qwait + (inputWaiting() * 8);
+			return _qwait + (inputWaiting() << 3);
 		}
 	}
 	
@@ -1077,9 +1077,9 @@ public class InflateDataPipe
 			
 			// Read bytes from the input pipe and place them at the end of the
 			// window
-			int n = (__b / 8) + 1;
-			pipeInput(qwin, qwinsz / 8, n);
-			qwinsz += (n * 8);
+			int n = (__b >> 3) + 1;
+			pipeInput(qwin, qwinsz >> 3, n);
+			qwinsz += (n << 3);
 			
 			// Store
 			_qwinsz = qwinsz;
@@ -1102,7 +1102,7 @@ public class InflateDataPipe
 			
 			// Read in a single bit
 			int qbit = _qbit;
-			boolean rv = (0 != (_qwin[qbit / 8] & (1 << qbit & 7)));
+			boolean rv = (0 != (_qwin[qbit >>> 3] & (1 << qbit & 7)));
 			
 			// Increase the read count and drop the wait count
 			_readcount++;
@@ -1152,14 +1152,26 @@ public class InflateDataPipe
 			// Request multiple bytes
 			__zzQuick(__b);
 			
-			if (true)
-				throw new Error("TODO");
+			// Read in multiple bytes
+			int rv = 0;
+			byte[] qwin = _qwin;
+			int qbit = _qbit;
+			for (int i = 0; i < __b; i++)
+			{
+				// if bit is set, set it on the output
+				if ((0 != (qwin[qbit >>> 3] & (1 << qbit & 7))))
+					rv |= (__msb ? (1 << (__b - i)) : (1 << i));
+				
+				// Next bit to try
+				qbit++;
+			}
 			
 			// Increase the read count and drop the wait count
 			_readcount += __b;
 			_qwait -= __b;
+			_qbit = qbit;
 			
-			throw new Error("TODO");
+			return rv;
 		}
 	}
 	
