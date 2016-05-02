@@ -95,6 +95,7 @@ public class ByteDeque
 		lock = __lock;
 		capacity = __cap;
 	}
+	
 	/**
 	 * Attempts to add a single byte to the start of the queue, if the capacity
 	 * would be violated then an exception is thrown.

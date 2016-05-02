@@ -126,3 +126,14 @@ should also be faster. I just now need to implement the boolean side of the
 data. I will do something similar and perform a large copy and paste of the
 `ByteDeque` code but handle a higher precision at the `boolean` level.
 
+## 23:17
+
+The `boolean` based version which would use the `DynamicByteBuffer` will have
+to handle shifts for the head and tail. Much more complex.
+
+## 23:20
+
+One thing would be to handle the slight offset since the backing store are
+bytes rather than booleans. I could write a `DynamicBooleanBuffer` but that
+would just duplicate the code.
+
