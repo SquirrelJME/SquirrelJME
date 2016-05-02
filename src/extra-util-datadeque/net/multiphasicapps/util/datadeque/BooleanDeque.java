@@ -313,7 +313,8 @@ public class BooleanDeque
 				throw new IllegalStateException("AE03");
 			
 			// Add to the end
-			throw new Error("TODO");
+			for (int i = 0; i < __l; i++)
+				addLast(__b[__o + i]);
 		}
 	}
 	
