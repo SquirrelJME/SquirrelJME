@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.util.datadeque;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 
@@ -32,6 +33,23 @@ public class BooleanDeque
 	
 	/** The maximum permitted capacity. */
 	protected final int capacity;
+	
+	/** The head set. */
+	private final boolean _head[] =
+		new boolean[8];
+	
+	/** The tail set. */
+	private final boolean _tail[] =
+		new boolean[8];
+	
+	/** The head offset. */
+	private volatile int _headp;
+	
+	/** The tail offset. */
+	private volatile int _tailp;
+	
+	/** The number of bits in the deque. */
+	private volatile int _count;
 	
 	/**
 	 * Initializes a boolean deque.
@@ -108,12 +126,35 @@ public class BooleanDeque
 		synchronized (lock)
 		{
 			// Exceeds capacity?
-			int n = base.size();
+			int n = _count;
 			if (n < 0 || n >= capacity)
 				throw new IllegalStateException("AE03");
 			
-			// Add to the start
-			base.add(0, __b);
+			// Get the 
+			int hp = _headp;
+			
+			// Need to push byte to the queue
+			boolean[] hx = _head;
+			if (hp >= 7)
+			{
+				// Compact the byte to add
+				byte syn = __compact(hx);
+				
+				// Clear the array
+				Arrays.fill(hx, false);
+				
+				// Add the byte to the base
+				base.add(0, syn);
+				
+				// Back to no room
+				_headp = hp = 0;
+			}
+			
+			// Set the given boolean
+			hx[hp] = __b;
+			
+			// Next bit to set
+			_headp = hp + 1;
 		}
 	}
 	
@@ -159,14 +200,45 @@ public class BooleanDeque
 		synchronized (lock)
 		{
 			// Exceeds capacity?
-			int n = base.size();
+			int n = _count;
 			int w = n + __l;
 			if (w < 0 || w > capacity)
 				throw new IllegalStateException("AE03");
 			
 			// Add to the start
-			base.add(0, __b, __o, __l);
+			for (int i = __l - 1; i >= 0; i--)
+				addFirst(__b[__o + i]);
 		}
+	}
+	
+	/**
+	 * Adds an integer to the start of the queue.
+	 *
+	 * @param __bits The bits to set.
+	 * @param __mask The mask for set bits.
+	 * @throws IllegalStateException If the capacity would be exceeded.
+	 * @since 2016/05/02
+	 */
+	public void addFirstInt(int __bits, int __mask)
+		throws IllegalStateException
+	{
+		addFirstInt(__bits, __mask, false);
+	}
+	
+	/**
+	 * Adds an integer to the start of the queue.
+	 *
+	 * @param __bits The bits to set.
+	 * @param __mask The mask for set bits.
+	 * @param __msb If the bits are to be added using the most significant
+	 * digits first.
+	 * @throws IllegalStateException If the capacity would be exceeded.
+	 * @since 2016/05/02
+	 */
+	public void addFirstInt(int __bits, int __mask, boolean __msb)
+		throws IllegalStateException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -184,12 +256,12 @@ public class BooleanDeque
 		synchronized (lock)
 		{
 			// Exceeds capacity?
-			int n = base.size();
+			int n = _count;
 			if (n < 0 || n >= capacity)
 				throw new IllegalStateException("AE03");
 			
 			// Add to the end
-			base.add(n, __b);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -235,14 +307,44 @@ public class BooleanDeque
 		synchronized (lock)
 		{
 			// Exceeds capacity?
-			int n = base.size();
+			int n = _count;
 			int w = n + __l;
 			if (w < 0 || w > capacity)
 				throw new IllegalStateException("AE03");
 			
 			// Add to the end
-			base.add(n, __b, __o, __l);
+			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Adds an integer to the end of the queue.
+	 *
+	 * @param __bits The bits to set.
+	 * @param __mask The mask for set bits.
+	 * @throws IllegalStateException If the capacity would be exceeded.
+	 * @since 2016/05/02
+	 */
+	public void addLastInt(int __bits, int __mask)
+		throws IllegalStateException
+	{
+		addLastInt(__bits, __mask, false);
+	}
+	
+	/**
+	 * Adds an integer to the end of the queue.
+	 *
+	 * @param __bits The bits to set.
+	 * @param __mask The mask for set bits.
+	 * @param __msb If the bits are to be added using the most significant
+	 * digits first.
+	 * @throws IllegalStateException If the capacity would be exceeded.
+	 * @since 2016/05/02
+	 */
+	public void addLastInt(int __bits, int __mask, boolean __msb)
+		throws IllegalStateException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -256,7 +358,7 @@ public class BooleanDeque
 		// Lock
 		synchronized (lock)
 		{
-			return base.size();
+			return _count;
 		}
 	}
 	
@@ -274,11 +376,11 @@ public class BooleanDeque
 		synchronized (lock)
 		{
 			// Check
-			if (base.size() <= 0)
+			if (_count <= 0)
 				throw new NoSuchElementException("AE02");
 			
 			// Get
-			return base.get(0);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -323,13 +425,10 @@ public class BooleanDeque
 		{
 			// Pointless if empty
 			int n;
-			if ((n = base.size()) <= 0)
+			if ((n = _count) <= 0)
 				return 0;
 			
-			// Get
-			int rv;
-			base.get(0, __b, __o, rv = Math.min(n, __l));
-			return rv;
+			throw new Error("TODO");
 		}
 	}
 	
@@ -348,11 +447,11 @@ public class BooleanDeque
 		{
 			// Check
 			int n;
-			if ((n = base.size()) <= 0)
+			if ((n = _count) <= 0)
 				throw new NoSuchElementException("AE02");
 			
 			// Get
-			return base.get(n - 1);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -397,14 +496,11 @@ public class BooleanDeque
 		{
 			// Pointless if empty
 			int n;
-			if ((n = base.size()) <= 0)
+			if ((n = _count) <= 0)
 				return 0;
 			
 			// Get
-			int d = n - __l;
-			int rv;
-			base.get(Math.max(0, d), __b, __o, rv = Math.min(n, __l));
-			return rv;
+			throw new Error("TODO");
 		}
 	}
 	
@@ -469,6 +565,45 @@ public class BooleanDeque
 		try
 		{
 			addFirst(__b, __o, __l);
+			return true;
+		}
+		
+		// Violates capacity
+		catch (IllegalStateException ise)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * Offers an integer and a mask to start of the queue.
+	 *
+	 * @param __bits The bits to add.
+	 * @param __mask The mask for the bits.
+	 * @return {@code true} if the bits were added.
+	 * @since 2016/05/02
+	 */
+	public boolean offerFirstInt(int __bits, int __mask)
+	{
+		return offerFirstInt(__bits, __mask, false);
+	}
+	
+	/**
+	 * Offers an integer and a mask to start of the queue.
+	 *
+	 * @param __bits The bits to add.
+	 * @param __mask The mask for the bits.
+	 * @param __msb If {@code true} then the bits are added in most significant
+	 * order first.
+	 * @return {@code true} if the bits were added.
+	 * @since 2016/05/02
+	 */
+	public boolean offerFirstInt(int __bits, int __mask, boolean __msb)
+	{
+		// May violate the capacity
+		try
+		{
+			addFirstInt(__bits, __mask, __msb);
 			return true;
 		}
 		
@@ -551,6 +686,45 @@ public class BooleanDeque
 	}
 	
 	/**
+	 * Offers an integer and a mask to end of the queue.
+	 *
+	 * @param __bits The bits to add.
+	 * @param __mask The mask for the bits.
+	 * @return {@code true} if the bits were added.
+	 * @since 2016/05/02
+	 */
+	public boolean offerLastInt(int __bits, int __mask)
+	{
+		return offerLastInt(__bits, __mask, false);
+	}
+	
+	/**
+	 * Offers an integer and a mask to end of the queue.
+	 *
+	 * @param __bits The bits to add.
+	 * @param __mask The mask for the bits.
+	 * @param __msb If {@code true} then the bits are added in most significant
+	 * order first.
+	 * @return {@code true} if the bits were added.
+	 * @since 2016/05/02
+	 */
+	public boolean offerLastInt(int __bits, int __mask, boolean __msb)
+	{
+		// May violate the capacity
+		try
+		{
+			addLastInt(__bits, __mask, __msb);
+			return true;
+		}
+		
+		// Violates capacity
+		catch (IllegalStateException ise)
+		{
+			return false;
+		}
+	}
+	
+	/**
 	 * Obtains but does not remove the first boolean, returning a special value
 	 * if the deque is empty.
 	 *
@@ -564,7 +738,7 @@ public class BooleanDeque
 		// The deque could be empty
 		try
 		{
-			return ((int)getFirst()) & 0xFF;
+			throw new Error("TODO");
 		}
 		
 		// Does not exist.
@@ -588,7 +762,7 @@ public class BooleanDeque
 		// The deque could be empty
 		try
 		{
-			return ((int)getLast()) & 0xFF;
+			throw new Error("TODO");
 		}
 		
 		// Does not exist.
@@ -612,11 +786,11 @@ public class BooleanDeque
 		synchronized (lock)
 		{
 			// No data available
-			if (base.size() <= 0)
+			if (_count <= 0)
 				throw new NoSuchElementException("AE02");
 			
 			// Remove the first item
-			return base.remove(0);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -658,8 +832,38 @@ public class BooleanDeque
 		// Lock
 		synchronized (lock)
 		{
-			return base.remove(0, __b, __o, __l);
+			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Removes an integer from the start of the queue.
+	 *
+	 * @param __bits The number of bits to remove.
+	 * @return The read value.
+	 * @throws NoSuchElementException If there are not enough bits in the queue.
+	 * @since 2016/05/02
+	 */
+	public int removeFirstInt(int __bits)
+		throws NoSuchElementException
+	{
+		return removeFirstInt(__bits, false);
+	}
+	
+	/**
+	 * Removes an integer from the start of the queue.
+	 *
+	 * @param __bits The number of bits to remove.
+	 * @param __msb If the bits are to be removed from the most significant
+	 * end first.
+	 * @return The read value.
+	 * @throws NoSuchElementException If there are not enough bits in the queue.
+	 * @since 2016/05/02
+	 */
+	public int removeFirstInt(int __bits, boolean __msb)
+		throws NoSuchElementException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -677,11 +881,11 @@ public class BooleanDeque
 		{
 			// No data available
 			int n;
-			if ((n = base.size()) <= 0)
+			if ((n = _count) <= 0)
 				throw new NoSuchElementException("AE02");
 			
 			// Remove the last item
-			return base.remove(n - 1);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -723,8 +927,54 @@ public class BooleanDeque
 		// Lock
 		synchronized (lock)
 		{
-			return base.remove(Math.max(0, base.size() - __l), __b, __o, __l);
+			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Removes an integer from the end of the queue.
+	 *
+	 * @param __bits The number of bits to remove.
+	 * @return The read value.
+	 * @throws NoSuchElementException If there are not enough bits in the queue.
+	 * @since 2016/05/02
+	 */
+	public int removeLastInt(int __bits)
+		throws NoSuchElementException
+	{
+		return removeLastInt(__bits, false);
+	}
+	
+	/**
+	 * Removes an integer from the end of the queue.
+	 *
+	 * @param __bits The number of bits to remove.
+	 * @param __msb If the bits are to be removed from the most significant
+	 * end first.
+	 * @return The read value.
+	 * @throws NoSuchElementException If there are not enough bits in the queue.
+	 * @since 2016/05/02
+	 */
+	public int removeLastInt(int __bits, boolean __msb)
+		throws NoSuchElementException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Compacts the given boolean buffer so it fits into a byte.
+	 *
+	 * @param __b The array to compact.
+	 * @return The compacted byte.
+	 * @since 2016/05/02
+	 */
+	private final byte __compact(boolean[] __b)
+	{
+		byte rv = 0;
+		for (byte i = 0, s = 1; i < 8; i++, s <<= 1)
+			if (__b[i])
+				rv |= s;
+		return rv;
 	}
 }
 

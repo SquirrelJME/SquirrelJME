@@ -848,7 +848,7 @@ public class InflateDataPipe
 				throw new PipeStalledException("XI0i");
 			
 			// Align to byte boundary
-			while ((inputbits.headPosition() & 7) != 0)
+			while ((inputbits.available() & 7) != 0)
 			{
 				inputbits.removeFirst();
 			}
