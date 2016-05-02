@@ -41,6 +41,10 @@ public class InflateDataPipe
 	private static final int _QUICK_WINDOW_BYTES =
 		(REQUIRED_BITS / 8) + 2;
 	
+	/** The maximum number of bits in the quick window. */
+	private static final int _QUICK_WINDOW_BITS =
+		_QUICK_WINDOW_BYTES * 8;
+	
 	/** The size of the sliding window. */
 	protected static final int SLIDING_WINDOW_SIZE =
 		32768;
@@ -94,7 +98,7 @@ public class InflateDataPipe
 	/** The number of bits left in the window. */
 	private volatile int _qwait;
 	
-	/** The number of byte in the access window. */
+	/** The number of bits in the access window. */
 	private volatile int _qwinsz;
 	
 	/** Current decoding task. */
@@ -1011,7 +1015,74 @@ public class InflateDataPipe
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// The number of bits available are those that are waiting and
+			// a multiple of the bits that are waiting to be input
+			return _qwait + (inputWaiting() * 8);
+		}
+	}
+	
+	/**
+	 * Checks and initializes the given number of bits in the queue.
+	 *
+	 * @param __b The number of bits to request.
+	 * @throws IllegalArgumentException If a negative number of bits were
+	 * requested.
+	 * @throws NoSuchElementException If there are not enough bits in the
+	 * queue.
+	 * @since 2016/05/02
+	 */
+	private void __zzQuick(int __b)
+		throws IllegalArgumentException, NoSuchElementException
+	{
+		// Check
+		if (__b < 0 && __b != Integer.MIN_VALUE)
+			throw new IllegalArgumentException("AF01");
+		
+		// {@squirreljme.error AF0p The requested number of bits is not
+		// possible because it exceeds the quick window size.
+		// (The requested bit count)}
+		if (__b > _QUICK_WINDOW_BITS - 8)
+			throw new NoSuchElementException(String.format("AF0p %d", __b));
+		
+		///** Quick access window. */
+		//private final byte[] _qwin =
+		//	new byte[_QUICK_WINDOW_BYTES];
+		//  _QUICK_WINDOW_BITS
+		///** The current bit in the access window. */
+		//private volatile int _qbit;
+		//
+		///** The number of bits left in the window. */
+		//private volatile int _qwait;
+		//
+		///** The number of bits in the access window. */
+		//private volatile int _qwinsz;
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Pre-cached bit count is waiting
+			int qwait = _qwait;
+			if (__b < qwait)
+				return;
+			
+			// If the next number of requested bits exceeds the size of the
+			// input window, then move the values down and adjust.
+			byte[] qwin = _qwin;
+			int qbit = _qbit;
+			int qwinsz = _qwinsz;
+			if ((qwinsz + __b) >= _QUICK_WINDOW_BITS)
+			{
+				throw new Error("TODO");
+			}
+			
+			// Read bytes from the input pipe and place them at the end of the
+			// window
+			int n = (__b / 8) + 1;
+			pipeInput(qwin, qwinsz / 8, n);
+			qwinsz += (n * 8);
+			
+			// Store
+			_qwinsz = qwinsz;
 		}
 	}
 	
@@ -1026,6 +1097,16 @@ public class InflateDataPipe
 		// Lock
 		synchronized (lock)
 		{
+			// Request a single byte
+			__zzQuick(1);
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// Increase the read count and drop the wait count
+			_readcount++;
+			_qwait--;
+			
 			throw new Error("TODO");
 		}
 	}
@@ -1043,6 +1124,7 @@ public class InflateDataPipe
 		if (__b < 0)
 			throw new IllegalArgumentException("AF01");
 		
+		// Forward
 		return __zzReadInt(__b, false);
 	}
 	
@@ -1064,43 +1146,16 @@ public class InflateDataPipe
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
-		}
-	}
-	
-	/**
-	 * Checks and initializes the given number of bits in the queue.
-	 *
-	 * @param __b The number of bits to request.
-	 * @throws IllegalArgumentException If a negative number of bits were
-	 * requested.
-	 * @throws NoSuchElementException If there are not enough bits in the
-	 * queue.
-	 * @since 2016/05/02
-	 */
-	private void __zzQuick(int __b)
-		throws IllegalArgumentException, NoSuchElementException
-	{
-		// Check
-		if (__b < 0)
-			throw new IllegalArgumentException("AF01");
-		
-		///** Quick access window. */
-		//private final byte[] _qwin =
-		//	new byte[_QUICK_WINDOW_BYTES];
-		//
-		///** The current bit in the access window. */
-		//private volatile int _qbit;
-		//
-		///** The number of bits left in the window. */
-		//private volatile int _qwait;
-		//
-		///** The number of byte in the access window. */
-		//private volatile int _qwinsz;
-		
-		// Lock
-		synchronized (lock)
-		{
+			// Request multiple bytes
+			__zzQuick(__b);
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// Increase the read count and drop the wait count
+			_readcount += __b;
+			_qwait -= __b;
+			
 			throw new Error("TODO");
 		}
 	}
