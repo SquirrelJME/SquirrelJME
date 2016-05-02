@@ -225,6 +225,21 @@ public class ByteDeque
 	}
 	
 	/**
+	 * Returns the number of available bytes inside of the queue.
+	 *
+	 * @return The number of bytes in the queue.
+	 * @since 2016/05/01
+	 */
+	public int available()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Offers a single byte to the start of the deque and returns {@code true}
 	 * if it was added to the deque.
 	 *
@@ -363,6 +378,65 @@ public class ByteDeque
 		catch (IllegalStateException ise)
 		{
 			return false;
+		}
+	}
+	
+	/**
+	 * Removes a single byte from the from of the deque.
+	 *
+	 * @return The next input byte.
+	 * @throws NoSuchElementException If not a single byte is available.
+	 * @since 2016/05/01
+	 */
+	public byte removeFirst()
+		throws NoSuchElementException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Removes multiple bytes from the front of the deque.
+	 *
+	 * @param __b The array to read bytes into.
+	 * @return The number of removed bytes, may be {@code 0}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int removeFirst(byte[] __b)
+		throws NullPointerException
+	{
+		return removeFirst(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Removes multiple bytes from the front of the deque.
+	 *
+	 * @param __b The array to read bytes into.
+	 * @param __o The offset to start writing into.
+	 * @param __l The number of bytes to remove.
+	 * @return The number of removed bytes, may be {@code 0}.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/01
+	 */
+	public int removeFirst(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			throw new Error("TODO");
 		}
 	}
 }
