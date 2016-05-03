@@ -1192,7 +1192,7 @@ public class InflateDataPipe
 			_qbit = qbit;
 			
 			// Return it
-			System.err.printf("DEBUG -- Int: %x%n", rv);
+			System.err.printf("DEBUG -- Int: %x (%d)%n", rv, __b);
 			return rv;
 		}
 	}
