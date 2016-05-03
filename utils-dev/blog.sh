@@ -58,10 +58,17 @@ then
 	"$__exedir/create.sh" "$__nowfile"
 	sed "s/YYYYMMDD/$__htmtime/g" < "$__exedir/crtmpl/blog.mkd" > "$__nowfile"
 	
+	# Open the blog for editing early
+	"$__cmd" $* "$__nowfile" &
+	
 	# Rebuild the blog index
 	"$__exedir/blogdx.sh"
-fi
+	
+	# Resume it
+	fg
 
 # Open it
-"$__cmd" $* "$__nowfile"
+else
+	"$__cmd" $* "$__nowfile"
+fi
 
