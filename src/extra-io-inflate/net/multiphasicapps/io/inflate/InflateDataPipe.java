@@ -1077,8 +1077,8 @@ public class InflateDataPipe
 			
 			// Read bytes from the input pipe and place them at the end of the
 			// window
-			int n = (__b >> 3) + 1;
-			pipeInput(qwin, qwinsz >> 3, n);
+			int n = (__b >>> 3) + 1;
+			pipeInput(qwin, qwinsz >>> 3, n);
 			qwinsz += (n << 3);
 			
 			// Store
@@ -1110,6 +1110,7 @@ public class InflateDataPipe
 			_qbit = qbit + 1;
 			
 			// Return it
+			System.err.printf("DEBUG -- Bit: %s%n", rv);
 			return rv;
 		}
 	}
@@ -1171,6 +1172,8 @@ public class InflateDataPipe
 			_qwait -= __b;
 			_qbit = qbit;
 			
+			// Return it
+			System.err.printf("DEBUG -- Int: %x%n", rv);
 			return rv;
 		}
 	}

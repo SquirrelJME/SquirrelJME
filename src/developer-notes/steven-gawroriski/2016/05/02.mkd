@@ -21,3 +21,7 @@ remove the `BooleanDeque` and then just modify the inflate algorithm to
 completely not use it for input bits. That should result in a somewhat faster
 speed with regards to reading input.
 
+## 17:23
+
+I have bits read currently, however they are not correct currently.
+
