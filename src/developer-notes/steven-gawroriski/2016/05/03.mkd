@@ -10,3 +10,7 @@ generator will make it appear faster on new days.
 So the read error was caused by the order of operations, I missed the
 parenthesis around the shifted AND operation.
 
+## 08:36
+
+Appears I shift one index too high.
+

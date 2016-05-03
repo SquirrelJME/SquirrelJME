@@ -1060,62 +1060,48 @@ public class InflateDataPipe
 		// Lock
 		synchronized (lock)
 		{
-			// Pre-cached bit count is waiting
-			int qwait = _qwait;
-			if (__b < qwait)
-				return;
-			
-			// If the next number of requested bits exceeds the size of the
-			// input window, then move the values down and adjust.
-			byte[] qwin = _qwin;
-			int qbit = _qbit;
-			int qwinsz = _qwinsz;
-			if ((qwinsz + __b) >= _QUICK_WINDOW_BITS)
+			try
 			{
-				// Move down
-				int dn = (__b >>> 3) + 1;
-				int sn = (qwinsz >>> 3);
-				int d = 0;
-				for (int s = (qbit >>> 3); s < sn; d++, s++)
+				// Pre-cached bit count is waiting
+				int qwait = _qwait;
+				if (__b < qwait)
+					return;
+			
+				// If the next number of requested bits exceeds the size of the
+				// input window, then move the values down and adjust.
+				byte[] qwin = _qwin;
+				int qbit = _qbit;
+				int qwinsz = _qwinsz;
+				if ((qwinsz + __b) >= _QUICK_WINDOW_BITS)
 				{
-					System.err.printf("DEBUG -- %d < %d = %02x (%d %d)%n", d,
-						s, qwin[s], qwinsz, __b);
-					qwin[d] = qwin[s];
+					throw new Error("TODO");
 				}
-				
-				// Debug
-				for (int x = d; x < qwin.length; x++)
-					qwin[x] = (byte)0xFE;
-				
-				// Crimp inputs
-				qwinsz -= (qbit & (~7));
-				qbit &= 7;
-				_qbit = qbit;
-				_qwinsz = qwinsz;
+			
+				// Read bytes from the input pipe and place them at the end of
+				// the window
+				int n = (__b >>> 3) + 1;
+				pipeInput(qwin, qwinsz >>> 3, n);
+				int nb = (n << 3);
+				_qwinsz = (qwinsz += nb);
+				_qwait = (qwait += nb);
 			}
 			
-			// Read bytes from the input pipe and place them at the end of the
-			// window
-			int n = (__b >>> 3) + 1;
-			pipeInput(qwin, qwinsz >>> 3, n);
-			qwinsz += (n << 3);
-			
-			// Store
-			_qwinsz = qwinsz;
-			
-			// The window state
-			System.err.printf("DEBUG -- %d/%d (%d):", _qbit, _qbit / 8,
-				_qwinsz);
-			for (int i = 0; i < (_qwinsz >>> 3); i++)
+			finally
 			{
-				System.err.print(' ');
-				if ((_qbit >>> 3) == i)
-					System.err.print('<');
-				System.err.printf("%02x", _qwin[i]);
-				if ((_qbit >>> 3) == i)
-					System.err.print('>');
+				// The window state
+				System.err.printf("DEBUG -- %d/%d (%d):", _qbit, _qbit / 8,
+					_qwinsz);
+				for (int i = 0; i < (_qwinsz >>> 3); i++)
+				{
+					System.err.print(' ');
+					if ((_qbit >>> 3) == i)
+						System.err.print('<');
+					System.err.printf("%02x", _qwin[i]);
+					if ((_qbit >>> 3) == i)
+						System.err.print('>');
+				}
+				System.err.println();
 			}
-			System.err.println();
 		}
 	}
 	
