@@ -5,3 +5,8 @@
 Hopefully opening the blog file in the specified command and then running the
 generator will make it appear faster on new days.
 
+## 08:00
+
+So the read error was caused by the order of operations, I missed the
+parenthesis around the shifted AND operation.
+
