@@ -1102,7 +1102,7 @@ public class InflateDataPipe
 			
 			// Read in a single bit
 			int qbit = _qbit;
-			boolean rv = (0 != (_qwin[qbit >>> 3] & (1 << qbit & 7)));
+			boolean rv = (0 != (_qwin[qbit >>> 3] & (1 << (qbit & 7))));
 			
 			// Increase the read count and drop the wait count
 			_readcount++;
@@ -1160,7 +1160,7 @@ public class InflateDataPipe
 			for (int i = 0; i < __b; i++)
 			{
 				// if bit is set, set it on the output
-				if ((0 != (qwin[qbit >>> 3] & (1 << qbit & 7))))
+				if ((0 != (qwin[qbit >>> 3] & (1 << (qbit & 7)))))
 					rv |= (__msb ? (1 << (__b - i)) : (1 << i));
 				
 				// Next bit to try
