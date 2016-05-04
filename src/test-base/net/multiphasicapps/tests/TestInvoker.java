@@ -29,11 +29,20 @@ public interface TestInvoker
 	public abstract String invokerName();
 	
 	/**
-	 * This runs tests.
+	 * Returns the name of all the sub-tests available in this interface.
+	 *
+	 * @return The list of all known tests.
+	 * @since 2016/05/04
+	 */
+	public abstract Iterable<String> invokerTests();
+	
+	/**
+	 * This runs a single test by its sub name.
 	 *
 	 * @param __tc The checker to interface with when running tests.
+	 * @param __n The name of the sub-test to run.
 	 * @since 2016/03/03
 	 */
-	public abstract void runTests(TestChecker __tc);
+	public abstract void runTest(TestChecker __tc, String __n);
 }
 

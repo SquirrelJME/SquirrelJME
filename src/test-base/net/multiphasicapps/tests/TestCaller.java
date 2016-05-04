@@ -47,11 +47,6 @@ public class TestCaller
 	protected final Set<TestMatch> matches =
 		new HashSet<>();
 	
-	/** The specific tests to run. */
-	@Deprecated
-	protected final Set<String> runtests =
-		new HashSet<>();
-	
 	/**
 	 * Initializes the test caller.
 	 *
@@ -114,7 +109,6 @@ public class TestCaller
 									String.format("AG01 %s", arg));
 							
 							matches.add(new TestMatch(arg));
-							runtests.add(arg);
 							break;
 					}
 		
@@ -168,13 +162,27 @@ public class TestCaller
 		output.println("---- tests.start");
 		
 		// Go through all test services
+		Set<TestMatch> ma = matches;
+		boolean specific = !ma.isEmpty();
 		for (TestInvoker ti : alltests)
 		{
 			// Is this a test which wants to be ran?
 			String name = ti.invokerName();
-			if (!runtests.isEmpty())
-				if (!runtests.contains(name))
+			if (specific)
+			{
+				// Must be a match
+				boolean matched = false;
+				for (TestMatch tm : ma)
+					if (tm.isMatchMajor(name)) 
+					{
+						matched = true;
+						break;
+					}
+				
+				// If not matched then do not run it
+				if (!matched)
 					continue;
+			}
 			
 			// Non-important status output
 			output.printf("---- %s%n", name);
@@ -185,17 +193,44 @@ public class TestCaller
 			tc.setIgnoreFail(ignorefail);
 			tc.setIgnoreException(ignoretoss);
 			
-			// Make sure a crashing test does not take out other tests
-			try
-			{
-				// Run all the tests
-				ti.runTests(tc);
-			}
+			// Get all the tests this has
+			Iterable<String> subtests = tc.invokerTests();
 			
-			// Caught some exception
-			catch (Throwable t)
+			// Go through all sub-tests
+			for (String st : subtests)
 			{
-				tc.exception("", t);
+				// Set the test used
+				st.setSubTest(st);
+				
+				// Only running specific tests?
+				if (specific)
+				{
+					// Must be a match
+					boolean matched = false;
+					for (TestMatch tm : ma)
+						if (tm.isMatch(name, st)) 
+						{
+							matched = true;
+							break;
+						}
+			
+					// If not matched then do not run it
+					if (!matched)
+						continue;
+				}
+			
+				// Make sure a crashing test does not take out other tests
+				try
+				{
+					// Run the given test
+					ti.runTest(tc, st);
+				}
+		
+				// Caught some exception
+				catch (Throwable t)
+				{
+					tc.exception(t);
+				}
 			}
 		}
 		
@@ -235,6 +270,7 @@ public class TestCaller
 	 * @since 2016/05/04
 	 */
 	public static class TestMatch
+		implements Comparable<TestMatch>
 	{
 		/** The major test to compare with. */
 		protected final String major;
@@ -291,6 +327,91 @@ public class TestCaller
 			// Get minor details
 			minor = __get(b, mm);
 			minormode = mm[0];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/04
+		 */
+		@Override
+		public int compareTo(TestMatch __o)
+		{
+			// Compare the major first
+			int rv = major.compareTo(__o.major);
+			if (rv != 0)
+				return rv;
+			
+			// The minor
+			rv = minor.compareTo(__o.minor);
+			if (rv != 0)
+				return rv;
+			
+			// The major match type
+			rv = majormode.compareTo(__o.majormode);
+			if (rv != 0);
+				return rv;
+			
+			// The minor match tpe
+			return minormode.compareTo(__o.minormode);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/04
+		 */
+		@Override
+		public boolean equals(Object __o)
+		{
+			// Must match against self type
+			if (!(__o instanceof TestMatch))
+				return false;
+			
+			// Must have the same majors and minors
+			TestMatch o = (TestMatch)__o;
+			return major.equals(o.major) &&
+				minor.equals(o.minor) &&
+				majormode.equals(o.majormode) &&
+				minormode.equals(o.minormode);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/04
+		 */
+		@Override
+		public int hashCode()
+		{
+			return major.hashCode() ^ majormode.hashCode() ^
+				minor.hashCode() ^ minormode.hashCode();
+		}
+		
+		/**
+		 * Is the given test a match against this specific test that is
+		 * desired to be ran?
+		 *
+		 * @param __maj The major test identifier.
+		 * @param __min The minor test identifier.
+		 * @return {@code true} if this is a matching test.
+		 * @throws NullPointerException On null arguments.
+		 */
+		public boolean isMatch(String __maj, String __min)
+			throws NullPointerException
+		{
+			// Check
+			if (__maj == null || __min == null)
+				throw new NullPointerException("NARG");
+			
+			throw new Error("TODO");
+		}
+		
+		public boolean isMatchMajor(String __maj)
+			throws NullPointerException
+		{
+			// Check
+			if (__maj == null)
+				throw new NullPointerException("NARG");
+			
+			throw new Error("TODO");
 		}
 		
 		/**

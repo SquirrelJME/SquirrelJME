@@ -33,14 +33,17 @@ public class TestChecker
 	/** The test being invoked. */
 	protected final TestInvoker invoker;
 	
+	/** The current sub-test being ran. */
+	private volatile String _subtest;
+	
 	/** Ignoring passing tests? */
-	protected volatile boolean _ignorepass;
+	private volatile boolean _ignorepass;
 	
 	/** Ignoring failing tests? */
-	protected volatile boolean _ignorefail;
+	private volatile boolean _ignorefail;
 	
 	/** Ignoring tossed exceptions? */
-	protected volatile boolean _ignoretoss;
+	private volatile boolean _ignoretoss;
 	
 	/**
 	 * This initializes the test checker.
