@@ -60,12 +60,13 @@ then
 	
 	# Open the blog for editing early
 	"$__cmd" $* "$__nowfile" &
+	__job=$!
 	
 	# Rebuild the blog index
 	"$__exedir/blogdx.sh"
 	
 	# Resume it
-	fg
+	fg "$__job"
 
 # Open it
 else
