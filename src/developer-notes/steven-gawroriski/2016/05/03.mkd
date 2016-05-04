@@ -14,3 +14,8 @@ parenthesis around the shifted AND operation.
 
 Appears I shift one index too high.
 
+## 23:14
+
+Was a busy real life day, kind of drained and rained. I should write up a
+_Why?_ document.
+

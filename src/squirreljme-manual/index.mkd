@@ -6,6 +6,7 @@ operation of this software.
 # Table of Contents
 
  * User's Manual
+   * [Why Use This?](user/why.mkd)
    * [Supported Platforms](user/platforms.mkd)
    * [Supported Character Encodings](user/encodings.mkd)
    * [Limitations](user/limits.mkd)

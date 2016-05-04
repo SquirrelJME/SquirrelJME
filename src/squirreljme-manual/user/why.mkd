@@ -1,0 +1,24 @@
+# Why Use This?
+
+Here are a number of reasons why one should use this environment.
+
+# Portability
+
+With the code being written purely in Java, a port to another system requires
+modifying the compiler to support that system along with having a backend which
+interacts with the hardware and software. This is a bonus, because due to
+Java's consistency across platforms this means that the code that runs the
+virtual machine itself is written for the virtual machine itself. This means
+that there are no quirks to workaround or having to require the proprocessor
+to differentiate and flag differing platforms.
+
+# Consistency
+
+Java and the virtual machine it runs on is intended to be write once and run
+anywhere. SquirrelJME is intended to take the lightest variant of Java and aims
+to be 100% compatible with it. There are many variations in software and
+hardware that the environment inside of Java is layered on top of. This
+provides a single execution environment and in the general case programs which
+run inside of it could not tell the difference if the platform is 8-bit or
+4096-bit. This means that
+
