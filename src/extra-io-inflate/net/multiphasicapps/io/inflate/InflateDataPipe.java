@@ -17,7 +17,6 @@ import net.multiphasicapps.io.datapipe.DataPipe;
 import net.multiphasicapps.io.datapipe.PipeProcessException;
 import net.multiphasicapps.io.datapipe.PipeStalledException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
-import net.multiphasicapps.util.datadeque.ByteDeque;
 import net.multiphasicapps.util.huffmantree.HuffmanTree;
 
 /**

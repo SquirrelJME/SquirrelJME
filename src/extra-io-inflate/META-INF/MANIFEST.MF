@@ -3,7 +3,6 @@ X-Hairball-Name: extra-io-inflate
 X-Hairball-UUID: b0ee8a43-da57-4fcd-834a-64d0327c457b
 X-Hairball-Depends: extra-io-datapipe,
  extra-util-huffmantree,
- extra-util-datadeque,
  extra-io-slidingwindow,
  extra-io-bits
 X-Hairball-Error: AF

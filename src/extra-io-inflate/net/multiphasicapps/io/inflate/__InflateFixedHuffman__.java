@@ -11,7 +11,6 @@
 package net.multiphasicapps.io.inflate;
 
 import java.io.IOException;
-import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This contains the fixed huffman tree.
