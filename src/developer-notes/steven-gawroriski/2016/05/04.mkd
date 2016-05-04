@@ -1,2 +1,12 @@
 # 2016/05/04
 
+## 10:28
+
+For the testing framework, I need to have it so the tests and subtests can
+be fragmented and run individually. So the task for testing would return what
+this test is called and any of the sub-tests. Then I can modify it so that
+instead of just a group of tests, just a specific test can be run instead.
+I would have to change the string which tests for checking and place it within
+a smarter class, which can check a given test and its sub-test to determine if
+it should be ran or not.
+
