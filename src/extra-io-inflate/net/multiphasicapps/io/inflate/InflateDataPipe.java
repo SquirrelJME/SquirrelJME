@@ -1082,8 +1082,14 @@ public class InflateDataPipe
 				int n = (__b >>> 3) + 1;
 				int apic = pipeInput(qwin, qwinsz >>> 3, n);
 				int nb = (apic << 3);
-				_qwinsz = (qwinsz += nb);
-				_qwait = (qwait += nb);
+				
+				// It is possible for the input to be at the end, do not use
+				// a negative value here
+				if (apic >= 0)
+				{
+					_qwinsz = (qwinsz += nb);
+					_qwait = (qwait += nb);
+				}
 				
 				// {@squirreljme.error Read input bits, however there are not
 				// enough bits to statisfy the requested input.}
