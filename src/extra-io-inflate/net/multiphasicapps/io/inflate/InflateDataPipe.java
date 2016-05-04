@@ -1074,7 +1074,17 @@ public class InflateDataPipe
 				int qwinsz = _qwinsz;
 				if ((qbit + __b) >= _QUICK_WINDOW_BITS - 8)
 				{
-					throw new Error("TODO");
+					// Calculate the source base
+					int src = (qbit >>> 3);
+					int cap = (qwinsz >>> 3);
+					
+					// Copy bytes down
+					for (int d = 0, s = src; s < cap; d++, s++)
+						qwin[d] = qwin[s];
+					
+					// Correct
+					_qbit = (qbit &= 7);
+					_qwinsz = (qwinsz -= (src << 3));
 				}
 			
 				// Read bytes from the input pipe and place them at the end of
