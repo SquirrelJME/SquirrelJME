@@ -1183,15 +1183,28 @@ public class InflateDataPipe
 			// Request multiple bytes
 			__zzQuick(__b);
 			
+			// Cached shift calculations
+			int sh, sha;
+			if (__msb)
+			{
+				sh = (__b - 1);
+				sha = -1;
+			}
+			else
+			{
+				sh = 0;
+				sha = 1;
+			}
+			
 			// Read in multiple bytes
 			int rv = 0;
 			byte[] qwin = _qwin;
 			int qbit = _qbit;
-			for (int i = 0; i < __b; i++)
+			for (int i = 0; i < __b; i++, sh += sha)
 			{
 				// if bit is set, set it on the output
 				if ((0 != (qwin[qbit >>> 3] & (1 << (qbit & 7)))))
-					rv |= (__msb ? (1 << (__b - i)) : (1 << i));
+					rv |= (1 << sh);
 				
 				// Next bit to try
 				qbit++;
