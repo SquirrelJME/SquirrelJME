@@ -8,11 +8,18 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains simple tests.
- *
- * @since 2016/03/03
- */
+package net.multiphasicapps.tests.cldc.java;
 
-package net.multiphasicapps.tests.simple;
+import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestInvoker;
+
+/**
+ * Tests integers.
+ *
+ * @since 2016/05/04
+ */
+public class TestInteger
+	implements TestInvoker
+{
+}
 

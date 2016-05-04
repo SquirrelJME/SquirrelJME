@@ -6,8 +6,7 @@ X-Hairball-Depends: test-base,
  test-extra-io-slidingwindow,
  test-extra-util-dynbuffer,
  test-extra-util-huffmantree,
- test-javame-cldc-compact,
- test-simple,
+ test-javame-cldc-compact
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160303

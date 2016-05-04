@@ -1,1 +1,3 @@
+net.multiphasicapps.tests.cldc.java.lang.TestInteger
+net.multiphasicapps.tests.cldc.java.lang.TestLong
 net.multiphasicapps.tests.cldc.java.util.TestObjects

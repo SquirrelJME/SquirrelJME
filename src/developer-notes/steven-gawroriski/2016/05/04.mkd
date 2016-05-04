@@ -80,4 +80,9 @@ if a field is final (and potentially static) it will just use the same value
 and cache it. In these cases however, the basic block must not be split at the
 `getstatic`. `getfield` will be a little bit more complex.
 
+## 19:09
+
+The test interface caller also does not require the sub-test name to be passed
+since it is set beforehand. I just need to migrate all of the tests to the new
+interface.
 
