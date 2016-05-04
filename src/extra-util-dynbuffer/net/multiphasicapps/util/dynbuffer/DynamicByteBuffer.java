@@ -402,7 +402,7 @@ public class DynamicByteBuffer
 		synchronized (lock)
 		{
 			// Obtain the given number of bytes if possible
-			int avail = Math.min(Math.max(0, size() - __o), __l);
+			int avail = Math.min(Math.max(0, size() - __i), __l);
 			
 			// Read that many
 			for (int i = 0; i < avail; i++)

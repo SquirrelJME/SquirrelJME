@@ -44,3 +44,23 @@ Yes, the number of bytes input are completely ignored, so that needs to change.
 
 The input bits when read as MSB were shifted off by one, this has been
 corrected.
+
+## 10:57
+
+Now I must figure out why the input bits are not being appended properly when
+space runs out.
+
+## 11:05
+
+Appears the resize marker is not being hit, need to fix that.
+
+## 11:09
+
+The `DynamicByteBuffer` bulk removal is incorrect, it does not take the current
+position into account when availability is calculated.
+
+## 11:11
+
+The wrong variable was used.
+
+

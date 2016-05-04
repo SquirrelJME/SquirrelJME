@@ -1072,7 +1072,7 @@ public class InflateDataPipe
 				byte[] qwin = _qwin;
 				int qbit = _qbit;
 				int qwinsz = _qwinsz;
-				if ((qwinsz + __b) >= _QUICK_WINDOW_BITS)
+				if ((qbit + __b) >= _QUICK_WINDOW_BITS - 8)
 				{
 					throw new Error("TODO");
 				}
@@ -1100,8 +1100,9 @@ public class InflateDataPipe
 			finally
 			{
 				// The window state
-				System.err.printf("DEBUG -- %d/%d (%d):", _qbit, _qbit / 8,
-					_qwinsz);
+				System.err.printf("DEBUG -- q=%2d/%2d (z=%2d) t=%2d t+r=%2d " +
+					"r=%2d:",
+					_qbit, _qbit / 8, _qwinsz, _qwait, _qwait + _qbit, __b);
 				for (int i = 0; i < (_qwinsz >>> 3); i++)
 				{
 					System.err.print(' ');
