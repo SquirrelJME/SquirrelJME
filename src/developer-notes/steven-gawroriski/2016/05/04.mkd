@@ -20,3 +20,23 @@ should be:
 
 Either the input really reads that or the output is not correct.
 
+## 10:39
+
+Likely the input is not being read correctly.
+
+## 10:40
+
+Appears the issue may be with the input stream. At the end of the data stream
+there is `0b 49 2d 2e c9 cc <00>` however the compressed code is
+`0b492d2ec9cc4b0f815000` which means that some zeros are being placed when they
+should not be.
+
+## 10:41
+
+Actually it is likely that the read count returned is either incorrect on
+pipe input or it is not used at all.
+
+## 10:42
+
+Yes, the number of bytes input are completely ignored, so that needs to change.
+

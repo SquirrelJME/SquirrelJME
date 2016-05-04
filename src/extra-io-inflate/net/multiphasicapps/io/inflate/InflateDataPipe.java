@@ -1080,10 +1080,15 @@ public class InflateDataPipe
 				// Read bytes from the input pipe and place them at the end of
 				// the window
 				int n = (__b >>> 3) + 1;
-				pipeInput(qwin, qwinsz >>> 3, n);
-				int nb = (n << 3);
+				int apic = pipeInput(qwin, qwinsz >>> 3, n);
+				int nb = (apic << 3);
 				_qwinsz = (qwinsz += nb);
 				_qwait = (qwait += nb);
+				
+				// {@squirreljme.error Read input bits, however there are not
+				// enough bits to statisfy the requested input.}
+				if (__b > qwait)
+					throw new NoSuchElementException("AF0q");
 			}
 			
 			finally
