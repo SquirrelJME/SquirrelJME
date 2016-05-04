@@ -194,13 +194,13 @@ public class TestCaller
 			tc.setIgnoreException(ignoretoss);
 			
 			// Get all the tests this has
-			Iterable<String> subtests = tc.invokerTests();
+			Iterable<String> subtests = ti.invokerTests();
 			
 			// Go through all sub-tests
 			for (String st : subtests)
 			{
 				// Set the test used
-				st.setSubTest(st);
+				tc.setSubTest(st);
 				
 				// Only running specific tests?
 				if (specific)
@@ -348,7 +348,7 @@ public class TestCaller
 			
 			// The major match type
 			rv = majormode.compareTo(__o.majormode);
-			if (rv != 0);
+			if (rv != 0)
 				return rv;
 			
 			// The minor match tpe

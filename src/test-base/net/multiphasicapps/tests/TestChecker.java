@@ -34,7 +34,8 @@ public class TestChecker
 	protected final TestInvoker invoker;
 	
 	/** The current sub-test being ran. */
-	private volatile String _subtest;
+	private volatile String _subtest =
+		"?";
 	
 	/** Ignoring passing tests? */
 	private volatile boolean _ignorepass;
@@ -68,51 +69,48 @@ public class TestChecker
 	/**
 	 * Checks that both objects are equal to each other.
 	 *
-	 * @param __name The name of the test.
 	 * @param __exp The expected value.
 	 * @param __was The value that it was.
 	 * @since 2016/03/03
 	 */
-	public void checkEquals(String __name, Object __exp, Object __was)
+	public void checkEquals(Object __exp, Object __was)
 	{
 		// If both are arrays of the same type then use array comparison
 		// because otherwise they will only be equal if they refer to the same
 		// object. Also this method may be called on unknown values.
 		if (__exp instanceof byte[] && __was instanceof byte[])
-			checkEquals(__name, (byte[])__exp, (byte[])__was);
+			checkEquals((byte[])__exp, (byte[])__was);
 		
 		// Use object comparison instead
 		else
-			__passFail(Objects.equals(__exp, __was), __name, __exp, __was);
+			__passFail(Objects.equals(__exp, __was), __exp, __was);
 	}
 	
 	/**
 	 * Checks that both byte arrays are equal to each other.
 	 *
-	 * @param __name The name of the test.
 	 * @param __exp The expected value.
 	 * @param __was The value that it was.
 	 * @since 2016/03/10
 	 */
-	public void checkEquals(String __name, byte[] __exp, byte[] __was)
+	public void checkEquals(byte[] __exp, byte[] __was)
 	{
-		__passFail(Arrays.equals(__exp, __was), __name,
+		__passFail(Arrays.equals(__exp, __was),
 			__byteArrayToString(__exp), __byteArrayToString(__was));
 	}
 	
 	/**
 	 * Indicates that an exception was thrown.
 	 *
-	 * @param __name The name of the test.
 	 * @param __t The exception which was thrown.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public void exception(String __name, Throwable __t)
+	public void exception(Throwable __t)
 		throws NullPointerException
 	{
 		// Check
-		if (__name == null || __t == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// Ignoring?
@@ -126,7 +124,7 @@ public class TestChecker
 		ps.print("TOSS ");
 		ps.print(invoker.invokerName());
 		ps.print('@');
-		ps.print(__name);
+		ps.print(_subtest);
 		
 		// And the exception
 		ps.print(' ');
@@ -218,6 +216,28 @@ public class TestChecker
 	}
 	
 	/**
+	 * Sets the name of the sub-test currently used.
+	 *
+	 * @param __stn The name of the sub-test.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/04
+	 */
+	public TestChecker setSubTest(String __stn)
+		throws NullPointerException
+	{
+		// Check
+		if (__stn == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		_subtest = __stn;
+		
+		// Self
+		return this;
+	}
+	
+	/**
 	 * Escapes the string representation of the object.
 	 *
 	 * @param __ps The print stream to write to.
@@ -294,20 +314,13 @@ public class TestChecker
 	 * Prints pass or failure status and the input objects.
 	 *
 	 * @param __pass If {@code true} then the test passed.
-	 * @param __name The name of the test.
 	 * @param __exp The expected value.
 	 * @param __was The value that it was.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/03
 	 */
-	private void __passFail(boolean __pass, String __name, Object __exp,
+	private void __passFail(boolean __pass, Object __exp,
 		Object __was)
-		throws NullPointerException
 	{
-		// Check
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
 		// Ignoring?
 		if ((_ignorepass && __pass) || (_ignorefail && !__pass))
 			return;
@@ -320,7 +333,7 @@ public class TestChecker
 		ps.print(' ');
 		ps.print(invoker.invokerName());
 		ps.print('@');
-		ps.println(__name);
+		ps.println(_subtest);
 		
 		// The expected result
 		ps.print('\t');
