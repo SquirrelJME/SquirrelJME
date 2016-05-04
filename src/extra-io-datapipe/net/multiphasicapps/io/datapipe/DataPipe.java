@@ -580,9 +580,6 @@ public abstract class DataPipe
 			
 			// Write to the output
 			_output.__fill(__b);
-			
-			System.err.printf("DEBUG -- >>>>>>>>>>>>>>>>>>>> %02x %c%n", __b,
-				(__b >= ' ' ? (char)__b : '?'));
 		}
 		
 		// Self
@@ -638,14 +635,6 @@ public abstract class DataPipe
 			
 			// Write to the output
 			_output.__fill(__b, __o, __l);
-			
-			// Debug
-			for (int i = 0; i < __l; i++)
-			{
-				byte x = __b[__o + i];
-				System.err.printf("DEBUG -- >>>>>>>>>>>>>>>>>>>> %02x %c%n", x,
-					(x >= ' ' ? (char)x : '?'));
-			}
 		}
 		
 		// Self

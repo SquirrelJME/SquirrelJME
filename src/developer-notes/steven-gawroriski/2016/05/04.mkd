@@ -63,4 +63,13 @@ position into account when availability is calculated.
 
 The wrong variable was used.
 
+## 11:16
+
+And now it works, so time to remove the debug printing code.
+
+## 11:18
+
+Removing the requirement of the boolean based queue, the speed of decompression
+appears to be slighly faster but not by much.
+
 

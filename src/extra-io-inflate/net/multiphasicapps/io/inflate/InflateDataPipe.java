@@ -1060,70 +1060,49 @@ public class InflateDataPipe
 		// Lock
 		synchronized (lock)
 		{
-			try
+			// Pre-cached bit count is waiting
+			int qwait = _qwait;
+			if (__b < qwait)
+				return;
+		
+			// If the next number of requested bits exceeds the size of the
+			// input window, then move the values down and adjust.
+			byte[] qwin = _qwin;
+			int qbit = _qbit;
+			int qwinsz = _qwinsz;
+			if ((qbit + __b) >= _QUICK_WINDOW_BITS - 8)
 			{
-				// Pre-cached bit count is waiting
-				int qwait = _qwait;
-				if (__b < qwait)
-					return;
-			
-				// If the next number of requested bits exceeds the size of the
-				// input window, then move the values down and adjust.
-				byte[] qwin = _qwin;
-				int qbit = _qbit;
-				int qwinsz = _qwinsz;
-				if ((qbit + __b) >= _QUICK_WINDOW_BITS - 8)
-				{
-					// Calculate the source base
-					int src = (qbit >>> 3);
-					int cap = (qwinsz >>> 3);
-					
-					// Copy bytes down
-					for (int d = 0, s = src; s < cap; d++, s++)
-						qwin[d] = qwin[s];
-					
-					// Correct
-					_qbit = (qbit &= 7);
-					_qwinsz = (qwinsz -= (src << 3));
-				}
-			
-				// Read bytes from the input pipe and place them at the end of
-				// the window
-				int n = (__b >>> 3) + 1;
-				int apic = pipeInput(qwin, qwinsz >>> 3, n);
-				int nb = (apic << 3);
+				// Calculate the source base
+				int src = (qbit >>> 3);
+				int cap = (qwinsz >>> 3);
 				
-				// It is possible for the input to be at the end, do not use
-				// a negative value here
-				if (apic >= 0)
-				{
-					_qwinsz = (qwinsz += nb);
-					_qwait = (qwait += nb);
-				}
+				// Copy bytes down
+				for (int d = 0, s = src; s < cap; d++, s++)
+					qwin[d] = qwin[s];
 				
-				// {@squirreljme.error Read input bits, however there are not
-				// enough bits to statisfy the requested input.}
-				if (__b > qwait)
-					throw new NoSuchElementException("AF0q");
+				// Correct
+				_qbit = (qbit &= 7);
+				_qwinsz = (qwinsz -= (src << 3));
+			}
+		
+			// Read bytes from the input pipe and place them at the end of
+			// the window
+			int n = (__b >>> 3) + 1;
+			int apic = pipeInput(qwin, qwinsz >>> 3, n);
+			int nb = (apic << 3);
+			
+			// It is possible for the input to be at the end, do not use
+			// a negative value here
+			if (apic >= 0)
+			{
+				_qwinsz = (qwinsz += nb);
+				_qwait = (qwait += nb);
 			}
 			
-			finally
-			{
-				// The window state
-				System.err.printf("DEBUG -- q=%2d/%2d (z=%2d) t=%2d t+r=%2d " +
-					"r=%2d:",
-					_qbit, _qbit / 8, _qwinsz, _qwait, _qwait + _qbit, __b);
-				for (int i = 0; i < (_qwinsz >>> 3); i++)
-				{
-					System.err.print(' ');
-					if ((_qbit >>> 3) == i)
-						System.err.print('<');
-					System.err.printf("%02x", _qwin[i]);
-					if ((_qbit >>> 3) == i)
-						System.err.print('>');
-				}
-				System.err.println();
-			}
+			// {@squirreljme.error Read input bits, however there are not
+			// enough bits to statisfy the requested input.}
+			if (__b > qwait)
+				throw new NoSuchElementException("AF0q");
 		}
 	}
 	
@@ -1151,7 +1130,6 @@ public class InflateDataPipe
 			_qbit = qbit + 1;
 			
 			// Return it
-			System.err.printf("DEBUG -- Bit: %s%n", rv);
 			return rv;
 		}
 	}
@@ -1227,7 +1205,6 @@ public class InflateDataPipe
 			_qbit = qbit;
 			
 			// Return it
-			System.err.printf("DEBUG -- Int: %x (%d)%n", rv, __b);
 			return rv;
 		}
 	}
