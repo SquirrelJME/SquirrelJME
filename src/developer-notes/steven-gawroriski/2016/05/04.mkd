@@ -72,4 +72,12 @@ And now it works, so time to remove the debug printing code.
 Removing the requirement of the boolean based queue, the speed of decompression
 appears to be slighly faster but not by much.
 
+## 11:38
+
+Thinking about my optimizer, I can optimize for cases where `System.out` for
+example is printed all the time. Well I am planning on doing that already, that
+if a field is final (and potentially static) it will just use the same value
+and cache it. In these cases however, the basic block must not be split at the
+`getstatic`. `getfield` will be a little bit more complex.
+
 

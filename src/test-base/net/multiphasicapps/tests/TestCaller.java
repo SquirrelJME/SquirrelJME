@@ -43,7 +43,12 @@ public class TestCaller
 	/** Ignoring tossed exceptions? */
 	protected final boolean ignoretoss;
 	
+	/** The acceptable test matches to perform. */
+	protected final Set<TestMatch> matches =
+		new HashSet<>();
+	
 	/** The specific tests to run. */
+	@Deprecated
 	protected final Set<String> runtests =
 		new HashSet<>();
 	
@@ -74,6 +79,15 @@ public class TestCaller
 				if (arg != null)
 					switch (arg)
 					{
+							// Print usage
+						case "-?":
+						case "-help":
+						case "--help":
+							__usage();
+							
+							// {@squirreljme.error AG02 Help was printed.}
+							throw new IllegalArgumentException("AG02");
+						
 							// Ignore passes
 						case "-ip":
 							ignpass = true;
@@ -93,6 +107,13 @@ public class TestCaller
 						
 							// Unknown, treat as test to run
 						default:
+							// {@squirreljme.error AG01 Unknown command line
+							// switch. (The unknown switch)}
+							if (arg.startsWith("-"))
+								throw new IllegalArgumentException(
+									String.format("AG01 %s", arg));
+							
+							matches.add(new TestMatch(arg));
 							runtests.add(arg);
 							break;
 					}
@@ -195,6 +216,165 @@ public class TestCaller
 		
 		// Run tests
 		tc.runTests();
+	}
+	
+	/**
+	 * Prints how the test caller is used.
+	 *
+	 * @since 2016/05/04
+	 */
+	private static void __usage()
+	{
+		// Must faster
+		PrintStream o = System.err;
+	}
+	
+	/**
+	 * This class is used to test for matching tests.
+	 *
+	 * @since 2016/05/04
+	 */
+	public static class TestMatch
+	{
+		/** The major test to compare with. */
+		protected final String major;
+		
+		/** The major mode. */
+		protected final SearchMode majormode;
+		
+		/** The minor test to compare with. */
+		protected final String minor;
+		
+		/** The minor mode. */
+		protected final SearchMode minormode;
+		
+		/**
+		 * Initializes a test match.
+		 *
+		 * @param __form The input form to check.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/05/04
+		 */
+		public TestMatch(String __form)
+			throws NullPointerException
+		{
+			// Check
+			if (__form == null)
+				throw new NullPointerException("NARG");
+			
+			// Split base forms
+			String a, b;
+			int atdx = __form.indexOf('@');
+			if (atdx >= 0)
+			{
+				b = __form.substring(atdx + 1);
+				
+				// If this is just an @ followed by something then it is an
+				// any match.
+				a = (atdx == 0 ? "*" : __form.substring(0, atdx));
+			}
+			
+			// No at sign, just a major is used
+			else
+			{
+				a = __form;
+				
+				// The minor is the wildcard always
+				b = "*";
+			}
+			
+			// Get major details
+			SearchMode[] mm = new SearchMode[1];
+			major = __get(a, mm);
+			majormode = mm[0];
+			
+			// Get minor details
+			minor = __get(b, mm);
+			minormode = mm[0];
+		}
+		
+		/**
+		 * Gets the major string sequence to check against and its search mode.
+		 *
+		 * @param __s The input form.
+		 * @param __m The search mode to perform.
+		 * @return The comparison string.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/05/04
+		 */
+		private static String __get(String __s, SearchMode[] __m)
+			throws NullPointerException
+		{
+			// Check
+			if (__s == null || __m == null)
+				throw new NullPointerException("NARG");
+			
+			// Asterisks?
+			int len = __s.length();
+			boolean astart = __s.startsWith("*");
+			boolean aend = __s.endsWith("*");
+			
+			// Any wildcard match?
+			if (len <= 1 && astart)
+			{
+				__m[0] = SearchMode.ANY;
+				return "";
+			}
+			
+			// Contains?
+			else if (astart && aend)
+			{
+				__m[0] = SearchMode.CONTAINS;
+				return __s.substring(1, len - 1);
+			}
+			
+			// Starts with?
+			else if (!astart && aend)
+			{
+				__m[0] = SearchMode.STARTS_WITH;
+				return __s.substring(0, len - 1);
+			}
+			
+			// Ends with?
+			else if (astart && !aend)
+			{
+				__m[0] = SearchMode.ENDS_WITH;
+				return __s.substring(1, len);
+			}
+			
+			// Otherwise exact match
+			else
+			{
+				__m[0] = SearchMode.EXACT;
+				return __s;
+			}
+		}
+		
+		/**
+		 * This is the type of comparison to make.
+		 *
+		 * @since 2016/05/04
+		 */
+		public static enum SearchMode
+		{
+			/** Any match. */
+			ANY,
+			
+			/** Exact match. */
+			EXACT,
+			
+			/** Contains. */
+			CONTAINS,
+			
+			/** Starts with. */
+			STARTS_WITH,
+			
+			/** Ends with. */
+			ENDS_WITH,
+			
+			/** End. */
+			;
+		}
 	}
 }
 

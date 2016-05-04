@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-Hairball-Name: test-base
 X-Hairball-UUID: a37f7c7f-1b0e-4312-8be3-913f3c3e4b6c
 X-Hairball-Depends: javame-cldc-compact
+X-Hairball-Error: AG
 LIBlet-Title: Test Base
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160303
