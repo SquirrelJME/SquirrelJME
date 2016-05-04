@@ -10,3 +10,13 @@ I would have to change the string which tests for checking and place it within
 a smarter class, which can check a given test and its sub-test to determine if
 it should be ran or not.
 
+## 10:31
+
+However, currently my inflate algorithm is not working as correctly as it
+should be:
+
+    54657374696e6754657374696e67
+    587a96988280
+
+Either the input really reads that or the output is not correct.
+

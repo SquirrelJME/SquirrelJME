@@ -580,6 +580,72 @@ public abstract class DataPipe
 			
 			// Write to the output
 			_output.__fill(__b);
+			
+			System.err.printf("DEBUG -- >>>>>>>>>>>>>>>>>>>> %02x %c%n", __b,
+				(__b >= ' ' ? (char)__b : '?'));
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Outputs multiple bytes to be drained in the future.
+	 *
+	 * @param __b The bytes to drain.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @throws PipeProcessException If the pipe is not currently in the dual
+	 * state.
+	 * @since 2016/05/04
+	 */
+	protected final DataPipe pipeOutput(byte[] __b)
+		throws NullPointerException, PipeProcessException
+	{
+		return pipeOutput(__b, 0, __b.length);
+	}
+	
+	/**
+	 * Outputs multiple bytes to be drained in the future.
+	 *
+	 * @param __b The bytes to drain.
+	 * @param __o The base offset to read bytes from.
+	 * @param __l The number of bytes to read for future draining.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative
+	 * or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @throws PipeProcessException If the pipe is not currently in the dual
+	 * state.
+	 * @since 2016/05/04
+	 */
+	protected final DataPipe pipeOutput(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException,
+			PipeProcessException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Not the dual state
+			if (_inproc != _BOTH_MASK)
+				throw new PipeProcessException("AC0a");
+			
+			// Write to the output
+			_output.__fill(__b, __o, __l);
+			
+			// Debug
+			for (int i = 0; i < __l; i++)
+			{
+				byte x = __b[__o + i];
+				System.err.printf("DEBUG -- >>>>>>>>>>>>>>>>>>>> %02x %c%n", x,
+					(x >= ' ' ? (char)x : '?'));
+			}
 		}
 		
 		// Self
@@ -719,6 +785,19 @@ public abstract class DataPipe
 		private void __fill(byte __b)
 		{
 			fill(__b);
+		}
+		
+		/**
+		 * Wraps bulk faucet fill.
+		 *
+		 * @param __b The bytes to add.
+		 * @param __o The offset.
+		 * @param __l The length.
+		 * @since 2016/05/04
+		 */
+		private void __fill(byte[] __b, int __o, int __l)
+		{
+			fill(__b, __o, __l);
 		}
 		
 		/**
