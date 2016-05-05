@@ -13,8 +13,10 @@ package net.multiphasicapps.tests.util.huffmantree;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import net.multiphasicapps.io.bits.BitCompactor;
 import net.multiphasicapps.io.bits.BitInputStream;
+import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.util.huffmantree.HuffmanTree;
@@ -39,6 +41,7 @@ public class HuffmanTreeTests
 	 * {@inheritDoc}
 	 * @since 2016/03/28
 	 */
+	@Override
 	public String invokerName()
 	{
 		return "net.multiphasicapps.util.huffmantree.HuffmanTree";
@@ -46,46 +49,47 @@ public class HuffmanTreeTests
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/05
+	 */
+	@Override
+	public Iterable<String> invokerTests()
+	{
+		return Arrays.<String>asList("huffman");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/03/28
 	 */
-	public void runTests(TestChecker __tc)
-		throws NullPointerException
+	@Override
+	public void runTest(TestChecker __tc, String __st)
+		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null)
+		if (__tc == null || __st == null)
 			throw new NullPointerException();
 		
 		// Setup base tree to store characters
 		HuffmanTree<Character> htree = new HuffmanTree<>();
 		
-		// Add characters to them
-		try
-		{
-			// Add them all individually
-			htree.add('G', 0b010, 0b111);
-			htree.add('O', 0b011, 0b111);
-			htree.add('N', 0b000, 0b111);
-			htree.add('S', 0b001, 0b111);
-			htree.add('E', 0b100, 0b111);
-			htree.add(' ', 0b101, 0b111);
-			htree.add('A', 0b11010, 0b11111);
-			htree.add('C', 0b11011, 0b11111);
-			htree.add('D', 0b11000, 0b11111);
-			htree.add('I', 0b11001, 0b11111);
-			htree.add('U', 0b11100, 0b11111);
-			htree.add('Y', 0b11101, 0b11111);
-			htree.add('M', 0b11110, 0b11111);
-			htree.add('L', 0b11111, 0b11111);
-			
-			// Characters seem to have been added OK
-			__tc.checkEquals("add", true, true);
-		}
+		// Add them all individually
+		htree.add('G', 0b010, 0b111);
+		htree.add('O', 0b011, 0b111);
+		htree.add('N', 0b000, 0b111);
+		htree.add('S', 0b001, 0b111);
+		htree.add('E', 0b100, 0b111);
+		htree.add(' ', 0b101, 0b111);
+		htree.add('A', 0b11010, 0b11111);
+		htree.add('C', 0b11011, 0b11111);
+		htree.add('D', 0b11000, 0b11111);
+		htree.add('I', 0b11001, 0b11111);
+		htree.add('U', 0b11100, 0b11111);
+		htree.add('Y', 0b11101, 0b11111);
+		htree.add('M', 0b11110, 0b11111);
+		htree.add('L', 0b11111, 0b11111);
 		
-		// That failed
-		catch (Throwable t)
-		{
-			__tc.exception("add", t);
-		}
+		// Characters seem to have been added OK
+		__tc.checkEquals(true, true);
 		
 		// Encode a message with it
 		byte[] encodedas = null;
@@ -126,65 +130,50 @@ public class HuffmanTreeTests
 			encodedas = baos.toByteArray();
 			
 			// Test result
-			__tc.checkEquals("encode", _ENCODED, encodedas);
-		}
-		
-		// Failed to encode
-		catch (Throwable t)
-		{
-			__tc.exception("encode", t);
+			__tc.checkEquals(_ENCODED, encodedas);
 		}
 		
 		// Decode the message
-		try
+		// String to build
+		StringBuilder sb = new StringBuilder();
+		
+		// Wrap in case of nulls
+		try (ByteArrayInputStream bais =
+			new ByteArrayInputStream(encodedas);
+			BitInputStream bis = new BitInputStream(bais, false))
 		{
-			// String to build
-			StringBuilder sb = new StringBuilder();
-			
-			// Wrap in case of nulls
-			try (ByteArrayInputStream bais =
-				new ByteArrayInputStream(encodedas);
-				BitInputStream bis = new BitInputStream(bais, false))
+			// Read until end of bits
+			for (HuffmanTree.Traverser<Character> trav = null;;)
 			{
-				// Read until end of bits
-				for (HuffmanTree.Traverser<Character> trav = null;;)
+				// Need a new traverser?
+				if (trav == null)
+					trav = htree.traverser();
+				
+				// Read single bit
+				int val = bis.readBitsInt(1);
+				
+				// Traverse down
+				trav.traverse(val);
+				
+				// Is there an object here?
+				if (trav.hasValue())
 				{
-					// Need a new traverser?
-					if (trav == null)
-						trav = htree.traverser();
+					// Get the value and add it to the string
+					Character c = trav.getValue();
+					sb.append(c);
 					
-					// Read single bit
-					int val = bis.readBitsInt(1);
+					// Clear traverse
+					trav = null;
 					
-					// Traverse down
-					trav.traverse(val);
-					
-					// Is there an object here?
-					if (trav.hasValue())
-					{
-						// Get the value and add it to the string
-						Character c = trav.getValue();
-						sb.append(c);
-						
-						// Clear traverse
-						trav = null;
-						
-						// Stop when the message length was reached
-						if (sb.length() == MESSAGE.length())
-							break;
-					}
+					// Stop when the message length was reached
+					if (sb.length() == MESSAGE.length())
+						break;
 				}
 			}
-			
-			// Check
-			__tc.checkEquals("decode", MESSAGE, sb.toString());
 		}
 		
-		// Could not decode
-		catch (Throwable t)
-		{
-			__tc.exception("decode", t);
-		}
+		// Check
+		__tc.checkEquals(MESSAGE, sb.toString());
 	}
 }
 

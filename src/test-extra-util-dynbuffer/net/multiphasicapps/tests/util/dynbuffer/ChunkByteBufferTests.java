@@ -11,9 +11,11 @@
 package net.multiphasicapps.tests.util.dynbuffer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
+import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 
@@ -46,6 +48,7 @@ public class ChunkByteBufferTests
 	 * {@inheritDoc}
 	 * @since 2016/03/22
 	 */
+	@Override
 	public String invokerName()
 	{
 		return "net.multiphasicapps.util.dynbuffer.DynamicByteBuffer";
@@ -53,21 +56,45 @@ public class ChunkByteBufferTests
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/05
+	 */
+	@Override
+	public Iterable<String> invokerTests()
+	{
+		return Arrays.<String>asList(Long.toString(INITIAL_SEED));
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/03/22
 	 */
-	public void runTests(TestChecker __tc)
-		throws NullPointerException
+	@Override
+	public void runTest(TestChecker __tc, String __st)
+		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null)
-			throw new NullPointerException();
+		if (__tc == null || __st == null)
+			throw new NullPointerException("NARG");
+		
+		// Extract the used seed
+		long seed;
+		try
+		{
+			seed = Long.decode(__st);
+		}
+		
+		// Illegal number
+		catch (NumberFormatException e)
+		{
+			throw new InvalidTestException();
+		}
 		
 		// A list containing bytes of stuff being added, along with the chunks
 		List<Byte> snail = new ArrayList<>();
 		DynamicByteBuffer bunny = new DynamicByteBuffer();
 		
 		// Initialize PRNG
-		Random rand = new Random(INITIAL_SEED);
+		Random rand = new Random(seed);
 		
 		// Go through 
 		int n = TEST_BUFFER_SIZE;
@@ -119,14 +146,16 @@ public class ChunkByteBufferTests
 			}
 		}
 		
+		// Build a unique key for comparisons
+		
 		// Check for size equality
-		__tc.checkEquals("snailbunny.size", snail.size(), bunny.size());
+		__tc.checkEquals(snail.size(), bunny.size());
 		
 		// Check that sets changed the same values
-		__tc.checkEquals("snailbunny.sets", tset, kset);
+		__tc.checkEquals(tset, kset);
 		
 		// Check that removals removed the same values
-		__tc.checkEquals("snailbunny.removals", trem, krem);
+		__tc.checkEquals(trem, krem);
 		
 		// Create byte arrays for both sets of code
 		byte[] slow = new byte[n];
@@ -140,9 +169,7 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check equality between them
-		__tc.checkEquals("snailbunny.data", slow, fast);
-		__tc.checkEquals("snailbunny.data.actual", bunny.actualSize(),
-			bunny.actualSize());
+		__tc.checkEquals(slow, fast);
 		
 		// Now remove alot of random bytes from the stuff
 		for (int i = TEST_BUFFER_SIZE; i >= LOWER_LIMIT;)
@@ -162,10 +189,10 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check for size equality
-		__tc.checkEquals("snailbunny.prunesize", snail.size(), bunny.size());
+		__tc.checkEquals(snail.size(), bunny.size());
 		
 		// Check that removals removed the same values
-		__tc.checkEquals("snailbunny.pruneremovals", trem, krem);
+		__tc.checkEquals(trem, krem);
 		
 		// Create byte arrays for both sets of code
 		n = Math.min(snail.size(), bunny.size());
@@ -180,9 +207,8 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check equality between them
-		__tc.checkEquals("snailbunny.prunedata", slow, fast);
-		__tc.checkEquals("snailbunny.prunedata.actual", bunny.actualSize(),
-			bunny.actualSize());
+		__tc.checkEquals(slow, fast);
+		__tc.checkEquals(bunny.actualSize(), bunny.actualSize());
 		
 		// Perform quick compaction
 		bunny.quickCompact();
@@ -192,10 +218,9 @@ public class ChunkByteBufferTests
 			fast[i] = bunny.get(i);
 		
 		// Check equality between them
-		__tc.checkEquals("snailbunny.cprunesize", snail.size(), bunny.size());
-		__tc.checkEquals("snailbunny.cprunedata", slow, fast);
-		__tc.checkEquals("snailbunny.cprunedata.actual", bunny.actualSize(),
-			bunny.actualSize());
+		__tc.checkEquals(snail.size(), bunny.size());
+		__tc.checkEquals(slow, fast);
+		__tc.checkEquals(bunny.actualSize(), bunny.actualSize());
 	}
 }
 
