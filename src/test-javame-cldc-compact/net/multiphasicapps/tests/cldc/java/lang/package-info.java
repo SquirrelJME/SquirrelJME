@@ -8,18 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tests.cldc.java;
-
-import net.multiphasicapps.tests.TestChecker;
-import net.multiphasicapps.tests.TestInvoker;
-
 /**
- * Test longs.
+ * Java language tests.
  *
- * @since 2016/05/04
+ * @since 2016/05/05
  */
-public class TestLong
-	implements TestInvoker
-{
-}
+
+package net.multiphasicapps.tests.cldc.java.lang;
 
