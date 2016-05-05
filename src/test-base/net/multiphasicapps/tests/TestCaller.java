@@ -11,6 +11,7 @@
 package net.multiphasicapps.tests;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -108,7 +109,7 @@ public class TestCaller
 								throw new IllegalArgumentException(
 									String.format("AG01 %s", arg));
 							
-							matches.add(new TestMatch(arg));
+							matches.add(new TestMatch(__lower(arg)));
 							break;
 					}
 		
@@ -164,10 +165,11 @@ public class TestCaller
 		// Go through all test services
 		Set<TestMatch> ma = matches;
 		boolean specific = !ma.isEmpty();
+		List<String> subtests = new ArrayList<>();
 		for (TestInvoker ti : alltests)
 		{
 			// Is this a test which wants to be ran?
-			String name = ti.invokerName();
+			String name = __lower(ti.invokerName());
 			if (specific)
 			{
 				// Must be a match
@@ -194,7 +196,20 @@ public class TestCaller
 			tc.setIgnoreException(ignoretoss);
 			
 			// Get all the tests this has
-			Iterable<String> subtests = ti.invokerTests();
+			subtests.clear();
+			try
+			{
+				for (String st : ti.invokerTests())
+					subtests.add(__lower(st));
+			}
+			
+			// Failed to execute
+			catch (Throwable t)
+			{
+				tc.setSubTest("");
+				tc.exception(t);
+				continue;
+			}
 			
 			// Go through all sub-tests
 			for (String st : subtests)
@@ -251,6 +266,63 @@ public class TestCaller
 		
 		// Run tests
 		tc.runTests();
+	}
+	
+	/**
+	 * Lower cases the given string using a neutral ASCII encoding which does
+	 * not take locale into consideration.
+	 *
+	 * @param __s The input string to lowercase.
+	 * @return The lowercase version of the string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/05
+	 */
+	private static String __lower(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Check for any uppercase characters first
+		int n = __s.length();
+		int quick = -1;
+		for (int i = 0; i < n; i++)
+		{
+			// Obtain character
+			char c = __s.charAt(i);
+			
+			// If upper case, then stop
+			if (c >= 'A' && c <= 'Z')
+			{
+				quick = i;
+				break;
+			}
+		}
+		
+		// No upper-case characters
+		if (quick < 0)
+			return __s;
+		
+		// Otherwise start building, start with the initial string characters
+		// that have no uppercase characters
+		StringBuilder sb = new StringBuilder(__s.substring(0, quick));
+		
+		// Copy the remaining characters lowercasing them
+		for (int i = quick; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// If uppercase, make it lower
+			if (c >= 'A' && c <= 'Z')
+				c = (char)('a' + (c - 'A'));
+			
+			// Add it
+			sb.append(c);
+		}
+		
+		// Return variant of strng
+		return sb.toString();
 	}
 	
 	/**
@@ -393,6 +465,7 @@ public class TestCaller
 		 * @param __min The minor test identifier.
 		 * @return {@code true} if this is a matching test.
 		 * @throws NullPointerException On null arguments.
+		 * @since 2016/05/04
 		 */
 		public boolean isMatch(String __maj, String __min)
 			throws NullPointerException
@@ -401,9 +474,17 @@ public class TestCaller
 			if (__maj == null || __min == null)
 				throw new NullPointerException("NARG");
 			
-			throw new Error("TODO");
+			// Must match major and minor
+			return isMatchMajor(__maj) && __matches(__min, minor, minormode);
 		}
 		
+		/**
+		 * Is the given test a match against the desired test?
+		 *
+		 * @param __maj The major test identifier.
+		 * @return {@code true} if the test is a match.
+		 * @since 2016/05/04
+		 */
 		public boolean isMatchMajor(String __maj)
 			throws NullPointerException
 		{
@@ -411,7 +492,8 @@ public class TestCaller
 			if (__maj == null)
 				throw new NullPointerException("NARG");
 			
-			throw new Error("TODO");
+			// Match only the major
+			return __matches(__maj, major, majormode);
 		}
 		
 		/**
@@ -468,6 +550,54 @@ public class TestCaller
 			{
 				__m[0] = SearchMode.EXACT;
 				return __s;
+			}
+		}
+		
+		/**
+		 * Checks whether the specified major and minor matches the fragment
+		 * with the specified mode.
+		 *
+		 * @param __in The input string.
+		 * @param __frag The fragment to check against.
+		 * @param __mode The mode of comparison.
+		 * @return {@code true} if the match is valid.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/05/05
+		 */
+		private static boolean __matches(String __in, String __frag,
+			SearchMode __mode)
+			throws NullPointerException
+		{
+			// Check
+			if (__in == null || __frag == null || __mode == null)
+				throw new NullPointerException("NARG");
+			
+			// Depends on the match mode
+			switch (__mode)
+			{
+					// Anything, always succeeds
+				case ANY:
+					return true;
+					
+					// Exact
+				case EXACT:
+					return __in.equals(__frag);
+					
+					// Contains the given string
+				case CONTAINS:
+					return __in.indexOf(__frag) > 0;
+					
+					// Starts with
+				case STARTS_WITH:
+					return __in.startsWith(__frag);
+					
+					// Ends with
+				case ENDS_WITH:
+					return __in.endsWith(__frag);
+				
+					// Unknown
+				default:
+					throw new RuntimeException("WTFX");
 			}
 		}
 		
