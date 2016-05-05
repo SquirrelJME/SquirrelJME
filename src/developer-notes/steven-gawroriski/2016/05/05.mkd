@@ -23,3 +23,12 @@ operation as desired. So a test for example could be
 where the arguments are decoded as the specific type and value and then passed.
 Then it can be compared against a given value type.
 
+## 12:44
+
+I will have to come back to the test framework after I work on other things. I
+would need to redo a few of the tests. Not too sure if I had any other ideas
+to refactor. I did the main splitting of the extra projects so that are more
+standalone and compacted. I would not like to return to the
+compiler/interpreter, so that eventually I can get code generation being
+performed.
+
