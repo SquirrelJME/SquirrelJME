@@ -1,0 +1,162 @@
+# Logo/Mascot
+
+Most software has a logo and I have decided that based on the name it would be
+an animal. The art of the mascot would have to remain simple but good enough
+so that it looks excellent on various platforms from low resolution black and
+white LCDs to ultra-fine high resolution CRT displays.
+
+# Picture Requirements
+
+Due the the previously mentioned broad scope of usage, the following picture
+requirements are needed. When downscaling, fine details may easily be lost and
+dithering is potentially a very high possibility.
+
+## Freely Licensed (As In Freedom)
+
+Since SquirrelJME is licensed under the Affero GNU General Public License
+version 3, the mascot would have to be under a compatible in spirit license
+such as the CC-BY-SA 4.0 Commercial. Commercial is required because it is
+against the spirit of open source to discriminate against certain fields of
+endeaver. Such an image would be freely modifiable and accept derivatives
+provided attribution remains in place. Share-alike enables others to copy the
+mascot and grant others the ability to copy it. Generally for legal purposes
+a real name and contact (e-mail) should be associated with the copyright,
+however it is possible that an image creator may wish to remain anonymous or
+under a pseudonym. I would ask that in that specific case that it not be
+inappropriate (violence, sex, _strong_ words, etc.) or be associated with
+trademarked or branded materials (thus the real name of a **portable monster**
+**in the form of a electrified yellow rodent with brown zig-zags** would not be
+appropriate for example).
+
+So in retrospect, the image should be in the spirit of what the
+<http://www.fsf.org/> would expect.
+
+## High Resolution, But Not Pixel Art
+
+Pixel art generally does not scale up without complex algorithms being used
+(such as _n_xSAI). The image should be in its original high resolution form.
+
+## Thick Solid Borders
+
+Borders should be thick enough so that they are well defined and so that there
+is room for the thickness to be adjusted when downscaling. For example, a
+border should be thick on high resolution displays (not a single pixel width)
+while when it is scaled down and adjusted it becomes a single pixel border.
+Thicker borders are easier to work with when downscaling. Borders are not
+required to be black, but they should be dark to seperate adjacent areas.
+Borders can be stroked, however they should be solid in their stroke, borders
+which appear similar to a crayon drawn on construction paper in high resolution
+but color lacking environments would dither and appear speckled.
+
+## Solid Color Fills
+
+On low color devices (for example the NES or old VGA displays), there might not
+be enough colors available. This does not mean that only a specific palette
+must be followed (such as VGA 16-colors, NES, web safe, etc.). This
+means that there must not be any gradients, conversion to simpler color spaces
+would be complicated because there might not even have the entire set of
+available colors to have a complete gradient. Any choice of color can be used,
+however it should be noted that colors that ideally could be erased to another
+color are not placed next to each other if they are in important detail. As an
+example, pink may be erased to white rather than be converted to red since pink
+is much lighter than red. If a given important feature is pink and is placed on
+white, it may disappear causing much confusion as to the blank spot
+potentially.
+
+## Bright "Cheerful" Colors
+
+The colors used should be happy light colors. Neon colors generally appear too
+deep. Darker areas can be used as normal.
+
+## Watermarks/Signatures Not Permitted
+
+Watermarks and signatures in any form are not permitted. Copyright and the
+appropriate licensing would be placed in the documentation.
+
+## Retrospect
+
+Thus in resprospect, it would be a shame if such a mascot which looks nice
+would end up being completely destroyed when displayed on a graphic calculator
+or an NES.
+
+# Mascot
+
+## Species
+
+The species of the mascot, since this software is called `SquirrelJME` would be
+a squirrel. The variant of the squirrel would be the eastern gray squirrel. The
+mascot would have albinism.
+
+## Gender
+
+The squirrel would be male.
+
+## Anthropromorphidness
+
+The mascot would not completely be an animal, but would have some qualities of
+that of a human as appropriate.
+
+## Fur
+
+Although with albinism the fur would be white, this does not have to be the
+complete case. Since a solid white fur when colored may look flat and odd,
+simple shading using the appropriate light colors can be used to remove the
+blandedness. It would be acceptable for a very light pink color (that is close
+to white but not quite) to be mostly used with a white edge on the side where
+light shines more.
+
+## Hair (On Top Of The Head)
+
+There should be hair on the top of the head. A large amount of hair with a
+slight curl/curve. The hair is not straight but it is also not curly. Since
+the mascot has albinism the hair would be white. The hair length is not short
+but it is also not long. The hair on the front should be long enough to reach
+and potentially surpass the eyes in certain cases, while in the back be long
+down to the back of the next.
+
+## Tail
+
+The tail is not to be neatly folded like a sheet nor extremely and chaotically
+fuzzy.
+
+## Arms
+
+The arms would be more human like and squirrel like, with extremely short
+arms it would be impossible to easily type on keyboards and use tools
+designed for humans.
+
+## Hands
+
+The hands should be clawed and shaped like a squirrel's claws.
+
+## Ears
+
+The ears are those of a squirrel and placed as such.
+
+## Eyes
+
+The eyes would be human like rather than squirrel like, so there should be
+pupils, a dark center where light moves into, and white. The pupils should be
+more oval rather than round (thinner width with the same height). Since the
+squirrel has albinism the color of the pupils should be red colored. The shape
+of the eyes themselves is not spherical but where the eyelids are closed to
+meet that how in general the eyes of a human would look. However, the eyes
+should be open enough to fit most of the pupil but not closed.
+
+## Personal Areas
+
+There must be no inappropriate personal areas such as nipples, belly buttons,
+genitalia, or "buldges".
+
+## Clothing
+
+Previous ideas for a mascot in older projects were a reference to
+_The Legend of Zelda: A Link To The Past_, so I shall keep the reference. So
+this means the mascot is in a green tunic.
+
+## Posture
+
+I would prefer that the mascot looks straight ahead but not at the viewer, so
+likely slightly turned away so the side of the body may be seen and not just
+the front.
+
