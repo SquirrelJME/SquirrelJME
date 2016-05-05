@@ -46,6 +46,10 @@ public class TestChecker
 	/** Ignoring tossed exceptions? */
 	private volatile boolean _ignoretoss;
 	
+	/** The current test number. */
+	private volatile int _testid =
+	 	1;
+	
 	/**
 	 * This initializes the test checker.
 	 *
@@ -232,6 +236,7 @@ public class TestChecker
 		
 		// Set
 		_subtest = __stn;
+		_testid = 1;
 		
 		// Self
 		return this;
@@ -333,7 +338,9 @@ public class TestChecker
 		ps.print(' ');
 		ps.print(invoker.invokerName());
 		ps.print('@');
-		ps.println(_subtest);
+		ps.print(_subtest);
+		ps.print('#');
+		ps.println(_testid++);
 		
 		// The expected result
 		ps.print('\t');
