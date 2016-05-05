@@ -34,7 +34,14 @@ So in retrospect, the image should be in the spirit of what the
 ## High Resolution, But Not Pixel Art
 
 Pixel art generally does not scale up without complex algorithms being used
-(such as _n_xSAI). The image should be in its original high resolution form.
+(such as _n_xSAI). The image should be in its original high resolution form as
+if it were to be printed on a poster. High resolution would be images that are
+above 1024x1024 pixels.
+
+## Style
+
+The style of art I am not looking for are cartoons or overly realistic imagry
+(due to technical limitations).
 
 ## Thick Solid Borders
 
@@ -68,10 +75,22 @@ potentially.
 The colors used should be happy light colors. Neon colors generally appear too
 deep. Darker areas can be used as normal.
 
+## No backgrounds
+
+Backgrounds are not acceptable, the background must be fully transparent.
+
+## Opaque Image Areas Only
+
+All pixels of the image should be either fully opaque or fully transparent.
+This means that if for example sun-glasses were to be placed in a way where
+part of the lens does not cover the character or the glasses support themselves
+then it cannot be transparent. It should be dark colored. In the opposite end
+for glasses, they should be fully transparent.
+
 ## Watermarks/Signatures Not Permitted
 
 Watermarks and signatures in any form are not permitted. Copyright and the
-appropriate licensing would be placed in the documentation.
+appropriate licensing information would be placed in the documentation.
 
 ## No Truncation Or Cropping
 
@@ -79,8 +98,8 @@ Images should not be truncated or cropped.
 
 ## Retrospect
 
-Thus in resprospect, it would be a shame if such a mascot which looks nice
-would end up being completely destroyed when displayed on a graphic calculator
+Thus in retrospect, it would be a shame if such a mascot which looks nice
+would end up being completely destroyed when displayed on a graphing calculator
 or an NES.
 
 # Mascot
@@ -166,5 +185,6 @@ a small hole.
 
 I would prefer that the mascot looks straight ahead but not at the viewer, so
 likely slightly turned away so the side of the body may be seen and not just
-the front.
+the front. Arms should be straight down and to the side and the mascot standing
+tall, but looking straight ahead.
 
