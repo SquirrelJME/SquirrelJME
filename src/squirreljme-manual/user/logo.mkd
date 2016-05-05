@@ -160,9 +160,9 @@ The ears are those of a squirrel and placed as such.
 ## Eyes
 
 The eyes would be human like rather than squirrel like, so there should be
-pupils, a dark center where light moves into, and white. The pupils should be
-more oval rather than round (thinner width with the same height). Since the
-squirrel has albinism the color of the pupils should be red colored. The shape
+an iris, pupils, and white. The iris/pupils should
+be more oval rather than round (thinner width with the same height). Since the
+squirrel has albinism the color of the iris should be red colored. The shape
 of the eyes themselves is not spherical but where the eyelids are closed to
 meet that how in general the eyes of a human would look. However, the eyes
 should be open enough to fit most of the pupil but not closed.
