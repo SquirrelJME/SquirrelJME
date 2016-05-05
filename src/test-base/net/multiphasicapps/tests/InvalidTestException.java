@@ -26,5 +26,16 @@ public class InvalidTestException
 	public InvalidTestException()
 	{
 	}
+	
+	/**
+	 * Initializes the exception with the given message.
+	 *
+	 * @param __m The message to use.
+	 * @since 2016/05/05
+	 */
+	public InvalidTestException(String __m)
+	{
+		super(__m);
+	}
 }
 

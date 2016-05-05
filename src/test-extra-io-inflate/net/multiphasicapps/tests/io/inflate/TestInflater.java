@@ -102,7 +102,7 @@ public class TestInflater
 		{
 			// Ends
 			if (ii == null || oo == null)
-				throw new InvalidTestException();
+				throw new InvalidTestException(__st);
 			
 			// Read in both files to arrays
 			byte[] xi = __readToArray(new InputStreamReader(ii, "utf-8"));

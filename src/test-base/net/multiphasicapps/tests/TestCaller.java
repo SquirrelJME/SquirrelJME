@@ -166,6 +166,7 @@ public class TestCaller
 		Set<TestMatch> ma = matches;
 		boolean specific = !ma.isEmpty();
 		List<String> subtests = new ArrayList<>();
+		Set<TestMatch> wasmatched = new HashSet<>();
 		for (TestInvoker ti : alltests)
 		{
 			// Is this a test which wants to be ran?
@@ -196,6 +197,7 @@ public class TestCaller
 			tc.setIgnoreException(ignoretoss);
 			
 			// Get all the tests this has
+			wasmatched.clear();
 			subtests.clear();
 			try
 			{
@@ -226,6 +228,7 @@ public class TestCaller
 						if (tm.isMatch(name, st)) 
 						{
 							matched = true;
+							wasmatched.add(tm);
 							break;
 						}
 			
@@ -246,6 +249,31 @@ public class TestCaller
 				{
 					tc.exception(t);
 				}
+			}
+			
+			// There may be free-form tests being ran which do not have
+			// explicit sub-tests specified for them. Thus they should be ran
+			// regardless
+			if (specific)
+			{
+				// Go through all tests again
+				for (TestMatch tm : ma)
+					if (tm.isExact(name) && !wasmatched.contains(tm))
+						try
+						{
+							// Set the sub-test used
+							String sub = tm.minor;
+							tc.setSubTest(sub);
+							
+							// Run the given test
+							ti.runTest(tc, sub);
+						}
+		
+						// Caught some exception
+						catch (Throwable t)
+						{
+							tc.exception(t);
+						}
 			}
 		}
 		
@@ -455,6 +483,28 @@ public class TestCaller
 		{
 			return major.hashCode() ^ majormode.hashCode() ^
 				minor.hashCode() ^ minormode.hashCode();
+		}
+		
+		/**
+		 * This tests whether the given test matches the specified major and
+		 * if it has an exact minor test. This is used to access potentially
+		 * freeform tests which have no defined parameters or are pre-specified
+		 * in the sub test list.
+		 *
+		 * @param __maj The major test.
+		 * @return {@code true} if this is an exact minor match.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/05/05
+		 */
+		public boolean isExact(String __maj)
+			throws NullPointerException
+		{
+			// Check
+			if (__maj == null)
+				throw new NullPointerException("NARG");
+			
+			// Must be major matched and exactly a minor
+			return isMatchMajor(__maj) && minormode == SearchMode.EXACT;
 		}
 		
 		/**
