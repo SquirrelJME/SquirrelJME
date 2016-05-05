@@ -41,8 +41,10 @@ public interface TestInvoker
 	 *
 	 * @param __tc The checker to interface with when running tests.
 	 * @param __n The name of the sub-test to run.
+	 * @throws Throwable On any exception that the test may generate.
 	 * @since 2016/03/03
 	 */
-	public abstract void runTest(TestChecker __tc, String __n);
+	public abstract void runTest(TestChecker __tc, String __n)
+		throws Throwable;
 }
 

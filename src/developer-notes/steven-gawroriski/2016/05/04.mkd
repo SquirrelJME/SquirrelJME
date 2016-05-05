@@ -86,3 +86,8 @@ The test interface caller also does not require the sub-test name to be passed
 since it is set beforehand. I just need to migrate all of the tests to the new
 interface.
 
+## 21:46
+
+I should probably put down a document for a logo/mascot that this software
+would use.
+

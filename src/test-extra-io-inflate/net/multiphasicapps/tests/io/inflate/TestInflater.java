@@ -17,8 +17,12 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.io.datapipe.DataPipeInputStream;
 import net.multiphasicapps.io.inflate.InflateDataPipe;
+import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 
@@ -42,15 +46,13 @@ public class TestInflater
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/03/03
+	 * @since 2016/05/04
 	 */
 	@Override
-	public void runTests(TestChecker __tc)
-		throws NullPointerException
+	public Iterable<String> invokerTests()
 	{
-		// Check
-		if (__tc == null)
-			throw new NullPointerException("NARG");
+		// Setup list based on found resources
+		List<String> rv = new LinkedList<>();
 		
 		// Go through samples, which are resources
 		for (char c = 'a'; c <= 'z'; c++)
@@ -63,23 +65,51 @@ public class TestInflater
 			try (InputStream ii = getClass().getResourceAsStream(in);
 				InputStream oo = getClass().getResourceAsStream(on))
 			{
-				// Ends
-				if (ii == null || oo == null)
-					break;
-				
-				// Read in both files to arrays
-				byte[] xi = __readToArray(new InputStreamReader(ii, "utf-8"));
-				byte[] xo = __readToArray(new InputStreamReader(oo, "utf-8"));
-				
-				// Call checker
-				__check(__tc, Character.toString(c), xi, xo);
+				// If both files exist, then add it
+				if (ii != null && oo != null)
+					rv.add(Character.toString(c));
 			}
 			
-			// Problem
-			catch (IOException ioe)
+			// Ignore these
+			catch (IOException e)
 			{
-				__tc.exception(Character.toString(c), ioe);
 			}
+		}
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/03
+	 */
+	@Override
+	public void runTest(TestChecker __tc, String __st)
+		throws NullPointerException, Throwable
+	{
+		// Check
+		if (__tc == null || __st == null)
+			throw new NullPointerException("NARG");
+		
+		// Sample names
+		String in = "test-" + __st + ".in";
+		String on = "test-" + __st + ".out";
+			
+		// Try opening resources for them
+		try (InputStream ii = getClass().getResourceAsStream(in);
+			InputStream oo = getClass().getResourceAsStream(on))
+		{
+			// Ends
+			if (ii == null || oo == null)
+				throw new InvalidTestException();
+			
+			// Read in both files to arrays
+			byte[] xi = __readToArray(new InputStreamReader(ii, "utf-8"));
+			byte[] xo = __readToArray(new InputStreamReader(oo, "utf-8"));
+			
+			// Call checker
+			__check(__tc, xi, xo);
 		}
 	}
 	
@@ -87,18 +117,17 @@ public class TestInflater
 	 * Checks whether the inflater works for the given input.
 	 *
 	 * @param __tc The test checker.
-	 * @param __id The identification of this test.
 	 * @param __in The input bytes.
 	 * @param __out The output bytes.
 	 * @throws NullPointerException On null arguments.
+	 * @throws Throwable On any exception.
 	 * @since 2016/03/10
 	 */
-	private void __check(TestChecker __tc, String __id, byte[] __in,
-		byte[] __out)
-		throws NullPointerException
+	private void __check(TestChecker __tc, byte[] __in, byte[] __out)
+		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null || __id == null || __in == null || __out == null)
+		if (__tc == null || __in == null || __out == null)
 			throw new NullPointerException();
 		
 		// Open the input
@@ -121,13 +150,7 @@ public class TestInflater
 			}
 			
 			// Check the array
-			__tc.checkEquals(__id, __out, out.toByteArray());
-		}
-		
-		// Failed
-		catch (IOException ioe)
-		{
-			__tc.exception(__id, ioe);
+			__tc.checkEquals(__out, out.toByteArray());
 		}
 	}
 	
