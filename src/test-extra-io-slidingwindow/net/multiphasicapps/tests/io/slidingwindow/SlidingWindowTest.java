@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.tests.io.slidingwindow;
 
+import java.util.Arrays;
 import java.util.Random;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
+import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 
@@ -53,15 +55,38 @@ public class SlidingWindowTest
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/04
+	 */
+	@Override
+	public Iterable<String> invokerTests()
+	{
+		return Arrays.<String>asList(Long.toString(RANDOM_SEED));
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/04/08
 	 */
 	@Override
-	public void runTests(TestChecker __tc)
-		throws NullPointerException
+	public void runTest(TestChecker __tc, String __st)
+		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null)
+		if (__tc == null || __st == null)
 			throw new NullPointerException();
+		
+		// Extract the used seed
+		long seed;
+		try
+		{
+			seed = Long.decode(__st);
+		}
+		
+		// Illegal number
+		catch (NumberFormatException e)
+		{
+			throw new InvalidTestException();
+		}
 		
 		// Create a sliding window and another buffer of a given size where
 		// bytes are to be written to.
@@ -69,14 +94,13 @@ public class SlidingWindowTest
 		byte[] raw = new byte[WINDOW_SIZE];
 		
 		// Setup random number source
-		Random rand = new Random(RANDOM_SEED);
+		Random rand = new Random(seed);
 		
 		// While the window is not yet full
 		int totalbytes = 0, checknum = 0;
-		int arrayfails = 0, windowfails = 0;
+		int checkpass = 0, checkfail = 0;
 		int written = 0;
-		while (written < WRITE_TOTAL && arrayfails < MAX_FAILURES &&
-			windowfails < MAX_FAILURES)
+		while (written < WRITE_TOTAL && checkfail < MAX_FAILURES)
 		{
 			// Is this a check or a put operation?
 			boolean docheck = (rand.nextInt(15) == 0);
@@ -85,9 +109,6 @@ public class SlidingWindowTest
 			// minimum size
 			if (docheck && totalbytes >= 4)
 			{
-				// The name of this test
-				String testname = Integer.toString(++checknum);
-				
 				// How far back? And how much?
 				int ago = rand.nextInt(totalbytes - 1) + 1;
 				int len = Math.max(1, rand.nextInt(ago));
@@ -97,33 +118,17 @@ public class SlidingWindowTest
 				byte[] b = new byte[len];
 				
 				// From the byte array
-				try
-				{
-					__ago(raw, ago, a, 0, len, totalbytes);
-				}
-				
-				// Ignore
-				catch (Throwable t)
-				{
-					__tc.exception(testname, t);
-					arrayfails++;
-				}
+				__ago(raw, ago, a, 0, len, totalbytes);
 				
 				// From the real window
-				try
-				{
-					sbw.get(ago, b, 0, len);
-				}
+				sbw.get(ago, b, 0, len);
 				
-				// Ignore
-				catch (Throwable t)
-				{
-					__tc.exception(testname, t);
-					windowfails++;
-				}
-				
-				// Check the buffer data
-				__tc.checkEquals(testname, a, b);
+				// The arrays must be equal
+				checknum++;
+				if (!Arrays.equals(a, b))
+					checkfail++;
+				else
+					checkpass++;
 			}
 			
 			// Add byte to the window
@@ -166,38 +171,18 @@ public class SlidingWindowTest
 			rawli[i] = raw[i];
 		
 		// From the byte array
-		try
-		{
-			__ago(raw, totalbytes, fulla, 0, totalbytes, totalbytes);
-		}
-		
-		// Ignore
-		catch (Throwable t)
-		{
-			__tc.exception("fullarray", t);
-			arrayfails++;
-		}
+		__ago(raw, totalbytes, fulla, 0, totalbytes, totalbytes);
 		
 		// From the sliding window
-		try
-		{
-			sbw.get(totalbytes, fullb, 0, totalbytes);
-		}
-		
-		// Ignore
-		catch (Throwable t)
-		{
-			__tc.exception("fullwindow", t);
-			windowfails++;
-		}
+		sbw.get(totalbytes, fullb, 0, totalbytes);
 		
 		// Check for no failures
-		__tc.checkEquals("arrayfailures", 0, arrayfails);
-		__tc.checkEquals("windowfailures", 0, windowfails);
+		if (checkfail != 0)
+			__tc.checkEquals(0, checkfail);
 		
 		// Check all the bytes against the raw window
-		__tc.checkEquals("fullarray", rawli, fulla);
-		__tc.checkEquals("fullwindow", rawli, fullb);
+		else
+			__tc.checkEquals(fulla, fullb);
 	}
 	
 	/**

@@ -1,2 +1,7 @@
 # 2016/05/05
 
+## 08:49
+
+The sliding window test would be the most complex test to port since much of
+it is sequential.
+
