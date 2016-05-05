@@ -73,6 +73,10 @@ deep. Darker areas can be used as normal.
 Watermarks and signatures in any form are not permitted. Copyright and the
 appropriate licensing would be placed in the documentation.
 
+## No Truncation Or Cropping
+
+Images should not be truncated or cropped.
+
 ## Retrospect
 
 Thus in resprospect, it would be a shame if such a mascot which looks nice
@@ -94,7 +98,8 @@ The squirrel would be male.
 ## Anthropromorphidness
 
 The mascot would not completely be an animal, but would have some qualities of
-that of a human as appropriate.
+that of a human as appropriate. That is, it would have the head of a squirrel
+and stand on its hind legs.
 
 ## Fur
 
@@ -152,7 +157,10 @@ genitalia, or "buldges".
 
 Previous ideas for a mascot in older projects were a reference to
 _The Legend of Zelda: A Link To The Past_, so I shall keep the reference. So
-this means the mascot is in a green tunic.
+this means the mascot is wearing a green tunic. There should be matching
+V or triangular shaped slits. This would be so that the tail can slip through
+that on the back side without requiring it unrealistically be placed through
+a small hole.
 
 ## Posture
 
