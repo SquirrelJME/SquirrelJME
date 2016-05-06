@@ -4,3 +4,7 @@
 
 I suppose I should migrate the remaining error codes to the new system.
 
+## 17:48
+
+I suppose for the CLDC the error codes should start at ZZ and go to AA.
+
