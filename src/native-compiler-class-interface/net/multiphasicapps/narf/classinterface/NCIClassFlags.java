@@ -144,34 +144,34 @@ public class NCIClassFlags
 		// Interface?
 		if (isInterface())
 		{
-			// {@squirreljme.error NC03 An interface must also be abstract.
+			// {@squirreljme.error AO03 An interface must also be abstract.
 			// (The class flags}}
 			if (!isAbstract())
 				throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-					String.format("NC03 %s", this));
+					String.format("AO03 %s", this));
 			
-			// {@squirreljme.error NC04 An interface cannot be {@code final} or
+			// {@squirreljme.error AO04 An interface cannot be {@code final} or
 			// {@code enum} and it must not have the special flag set. (The
 			// class flags)}
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
 				throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-					String.format("NC04 %s", this));
+					String.format("AO04 %s", this));
 		}
 		
 		// Normal class
 		else
 		{
-			// {@squirreljme.error NC05 Annotations must be interfaces. (The
+			// {@squirreljme.error AO05 Annotations must be interfaces. (The
 			// class flags)}
 			if (isAnnotation())
 				throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-					String.format("NC05 %s", this));
+					String.format("AO05 %s", this));
 				
-			// {@squirreljme.error NC06 A class cannot be both {@code abstract}
+			// {@squirreljme.error AO06 A class cannot be both {@code abstract}
 			// and {@code final}. (The class flags)}
 			if (isAbstract() && isFinal())
 				throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-					String.format("NC06 %s", this));
+					String.format("AO06 %s", this));
 		}
 	}
 }

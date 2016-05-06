@@ -154,11 +154,11 @@ public final class NCIFieldFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error NC0r A field cannot be both {@code final} and
+		// {@squirreljme.error AO0r A field cannot be both {@code final} and
 		// {@code volatile}. (The field flags)}
 		if (isFinal() && isVolatile())
 			throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-				String.format("NC0r %s", this));
+				String.format("AO0r %s", this));
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.flags().isInterface())
@@ -174,11 +174,11 @@ public final class NCIFieldFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error NC1t Flags for interface field has an
+				// {@squirreljme.error AO1t Flags for interface field has an
 				// incorrect set of flags. (The field flags)}
 				if (must != has && !maybe)
 					throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-						String.format("NC1t %s", this));
+						String.format("AO1t %s", this));
 			}
 	}
 }

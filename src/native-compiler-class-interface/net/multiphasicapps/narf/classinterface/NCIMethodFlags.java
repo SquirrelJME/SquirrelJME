@@ -186,12 +186,12 @@ public final class NCIMethodFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error NC0z Native methods are not supported in Java ME
+		// {@squirreljme.error AO0z Native methods are not supported in Java ME
 		// and as such, methods must not be {@code native}.}
 		if (isNative())
-			throw new NCIException(NCIException.Issue.NATIVE_METHOD, "NC0z");
+			throw new NCIException(NCIException.Issue.NATIVE_METHOD, "AO0z");
 		
-		// {@squirreljme.error NC10 An {@code abstract} method cannot be
+		// {@squirreljme.error AO10 An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
 		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
 		// method flags)}
@@ -199,7 +199,7 @@ public final class NCIMethodFlags
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
 				throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-					String.format("NC10 %s", this));
+					String.format("AO10 %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.flags().isInterface())
@@ -216,11 +216,11 @@ public final class NCIMethodFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error NC1x Flags for interface method has an
+				// {@squirreljme.error AO1x Flags for interface method has an
 				// incorrect set of flags. (The method flags)}
 				if (must != has && !maybe)
 					throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-						String.format("NC1x %s", this));
+						String.format("AO1x %s", this));
 			}
 	}
 }

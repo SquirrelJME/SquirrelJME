@@ -97,7 +97,7 @@ public enum NCIVersion
 		throws IllegalStateException
 	{
 		if (undefined)
-			throw new IllegalStateException("NC0c");
+			throw new IllegalStateException("AO0c");
 		return hasfloat;
 	}
 	
@@ -114,7 +114,7 @@ public enum NCIVersion
 		throws IllegalStateException
 	{
 		if (undefined)
-			throw new IllegalStateException("NC0c");
+			throw new IllegalStateException("AO0c");
 		return hasinvokedynamic;
 	}
 	
@@ -131,7 +131,7 @@ public enum NCIVersion
 		throws IllegalStateException
 	{
 		if (undefined)
-			throw new IllegalStateException("NC0c");
+			throw new IllegalStateException("AO0c");
 		return usestackmaptable;
 	}
 	

@@ -81,12 +81,12 @@ public final class NCICodeAttribute
 		maxlocals = abuffer.readUnsignedShort(2);
 		maxstack = abuffer.readUnsignedShort(0);
 		
-		// {@squirreljme.error NC0y The methode code length exceeds the maximum
+		// {@squirreljme.error AO0y The methode code length exceeds the maximum
 		// length limit. (The containing method; The code length)}
 		codelen = abuffer.readInt(4);
 		if (codelen < 0 || codelen > MAXIMUM_CODE_LENGTH)
 			throw new NCIException(NCIException.Issue.LARGE_CODE,
-				String.format("NC0y %s %d", method.nameAndType(), codelen));
+				String.format("AO0y %s %d", method.nameAndType(), codelen));
 		
 		// Setup code buffer
 		cbuffer = abuffer.window(8, codelen);

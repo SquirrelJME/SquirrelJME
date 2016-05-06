@@ -34,11 +34,11 @@ public class NCIMethodID
 	{
 		super(__n, __t);
 		
-		// {@squirreljme.error NC20 The specified name is not a valid name for
+		// {@squirreljme.error AO20 The specified name is not a valid name for
 		// a method. (The name of the method)}
 		if (!name.isValidMethod())
 			throw new NCIException(NCIException.Issue.INVALID_METHOD_NAME,
-				String.format("NC20", __n));
+				String.format("AO20", __n));
 	}
 }
 
