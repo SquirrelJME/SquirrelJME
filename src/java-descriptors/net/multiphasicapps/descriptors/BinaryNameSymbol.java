@@ -104,12 +104,14 @@ public final class BinaryNameSymbol
 		for (int i = 0; i < n; i++)
 			switch (charAt(i))
 			{
-					// Illegal
+					// {@squirreljme.error AL02 The binary name symbol contains
+					// an illegal character. (The symbol; The character index;
+					// The illegal character)}
 				case '.':
 				case ';':
 				case '[':
 					throw new IllegalSymbolException(String.format(
-						"DS02 %s %d %c", this, i, charAt(i)));
+						"AL02 %s %d %c", this, i, charAt(i)));
 					
 					// Count slashes
 				case '/':
@@ -278,9 +280,10 @@ public final class BinaryNameSymbol
 	public IdentifierSymbol get(int __i)
 		throws IndexOutOfBoundsException
 	{
-		// Check
+		// {@squirreljme.error Request for a binary name identifier which is
+		// not within bounds. (The index; The number of identifiers)}
 		if (__i < 0 || __i >= count)
-			throw new IndexOutOfBoundsException(String.format("DS03 %d",
+			throw new IndexOutOfBoundsException(String.format("AL03 %d",
 				__i, count));
 		
 		// Lock on the array

@@ -48,13 +48,15 @@ public final class IdentifierSymbol
 		for (int i = 0; i < n; i++)
 			switch (charAt(i))
 			{
-					// These are illegal
+					// {@squirreljme.error AL42 The identifier symbol contains
+					// an illegal character. (This symbol; The character index;
+					// The character at the given index)}
 				case '.':
 				case ';':
 				case '[':
 				case '/':
 					throw new IllegalSymbolException(String.format(
-						"DS02 %s %d %c", this, i, charAt(i)));
+						"AL42 %s %d %c", this, i, charAt(i)));
 				
 					// Flag these
 				case '<':

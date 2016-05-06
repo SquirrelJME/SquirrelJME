@@ -62,14 +62,14 @@ public final class ClassLoaderNameSymbol
 		isarray = ('[' == charAt(0));
 		if (!isarray)
 		{
-			// {@squirreljme.error DS0e Non-array class loader names cannot
+			// {@squirreljme.error AL0e Non-array class loader names cannot
 			// contain forward slashes. (This symbol; The illegal character)}
 			int n = length();
 			char c;
 			for (int i = 0; i < n; i++)
 				if ((c = charAt(i)) == '/')
 					throw new IllegalSymbolException(String.format(
-						"DS0e %s %c", this, c));
+						"AL0e %s %c", this, c));
 		}
 		
 		// Pre-cache?

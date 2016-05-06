@@ -29,6 +29,10 @@ import java.util.Set;
  * Iteration of values goes through the internal value table in no particular
  * order. The iterator is fail-fast.
  *
+ *
+ * {@squirreljme.error AK04 The huffman tree was modified in the middle of
+ * iteration.}
+ *
  * @param <T> The type of values to store in the tree.
  * @since 2016/03/10
  */
@@ -83,12 +87,16 @@ public class HuffmanTree<T>
 		int ibm = Integer.bitCount(__mask);
 		
 		// Check mask and representation
+		// {@squirreljme.error AK01 The symbol exceeds the range of the mask.
+		// (The value; The mask)}
 		if ((__sym & (~__mask)) != 0)
-			throw new IllegalArgumentException(String.format("XC01 %x %x",
+			throw new IllegalArgumentException(String.format("AK01 %x %x",
 				__sym, __mask));
+		// {@squirreljme.error AK02 The mask has a zero gap between bits or
+		// at the least significant end. (The value; The mask)}
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
 			(__mask & 1) == 0)
-			throw new IllegalArgumentException(String.format("XC02 %x %x",
+			throw new IllegalArgumentException(String.format("AK02 %x %x",
 				__sym, __mask));
 		
 		// Lock
@@ -254,7 +262,7 @@ public class HuffmanTree<T>
 					{
 						// Modified too much?
 						if (_modcount != basemod)
-							throw new ConcurrentModificationException("XC04");
+							throw new ConcurrentModificationException("AK04");
 						
 						// Before the end?
 						Object[] vals = _values;
@@ -274,7 +282,7 @@ public class HuffmanTree<T>
 					{
 						// Modified too much?
 						if (_modcount != basemod)
-							throw new ConcurrentModificationException("XC04");
+							throw new ConcurrentModificationException("AK04");
 						
 						// The curent index
 						int dx = _dx;
@@ -416,7 +424,7 @@ public class HuffmanTree<T>
 					{
 						// Modified too much?
 						if (_modcount != basemod)
-							throw new ConcurrentModificationException("XC04");
+							throw new ConcurrentModificationException("AK04");
 						
 						// Get the jump table
 						Object[] vals = _values;
@@ -469,14 +477,14 @@ public class HuffmanTree<T>
 					// Check
 					if (__side < 0 || __side > 1)
 						throw new IllegalArgumentException(String.format(
-							"XC03 %d", __side));
+							"AK03 %d", __side));
 					
 					// Lock
 					synchronized (lock)
 					{
 						// Modified too much?
 						if (_modcount != basemod)
-							throw new ConcurrentModificationException("XC04");
+							throw new ConcurrentModificationException("AK04");
 						
 						// Get the jump table
 						int[] table = _table;

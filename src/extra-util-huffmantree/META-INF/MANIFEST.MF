@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-Hairball-Name: extra-util-huffmantree
 X-Hairball-UUID: 569b0a72-0aa7-4bda-8273-4ad58779701f
 X-Hairball-Depends: javame-cldc-compact
+X-Hairball-Error: AK
 LIBlet-Title: Extra Util Huffman Tree
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160430

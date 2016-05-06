@@ -50,9 +50,10 @@ public final class MethodSymbol
 	{
 		super(__s);
 		
-		// First must be a (
+		// {@squirreljme.error AL0c Method symbols must start with an opening
+		// parenthesis. (This symbol)}
 		if (charAt(0) != '(')
-			throw new IllegalSymbolException(String.format("DS0c %s", this));
+			throw new IllegalSymbolException(String.format("AL0c %s", this));
 		
 		// Target offset and length pairings
 		List<Long> pairs = new ArrayList<>();
@@ -99,13 +100,16 @@ public final class MethodSymbol
 			pairs.add(((long)startdx) | (((long)((i + 1) - startdx)) << 32L));
 		}
 		
-		// Does not have closing )
+		// {@squirreljme.error AL0b Method symbol does not end its arguments
+		// with a closing parenthesis. (This symbol)}
 		if (!latched)
-			throw new IllegalSymbolException(String.format("DS0b %s", this));
+			throw new IllegalSymbolException(String.format("AL0b %s", this));
 		
 		// Skip end
+		// {@squirreljme.error AL0a The method symbol does not specify a return
+		// type. (This symbol)}
 		if ((++i) >= n)
-			throw new IllegalSymbolException(String.format("DS0a %s", this));
+			throw new IllegalSymbolException(String.format("AL0a %s", this));
 		
 		// Add final pair
 		pairs.add(((long)i) | (((long)(n - i) << 32L)));
@@ -202,9 +206,10 @@ public final class MethodSymbol
 		// If V, it is void
 		if (charAt(off) == 'V')
 		{
-			// Error if not the last one
+			// {@squirreljme.error AL0d The arguments in a method symbol
+			// cannot contain void. (This symbol)}
 			if (__i != (n - 1))
-				throw new IllegalSymbolException(String.format("DS0d %s",
+				throw new IllegalSymbolException(String.format("AL0d %s",
 					this));
 			
 			// Use null

@@ -169,9 +169,10 @@ public final class ClassNameSymbol
 	public BinaryNameSymbol asBinaryName()
 		throws IllegalSymbolException
 	{
-		// Arrays will never be compatible
+		// {@squirreljme.error AL04 Primitive types or arrays cannot be
+		// represented as a binary name. (This symbol)}
 		if (isarray || isprimitive)
-			throw new IllegalSymbolException(String.format("DS04 %s",
+			throw new IllegalSymbolException(String.format("AL04 %s",
 				toString()));
 		
 		// Get reference

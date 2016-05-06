@@ -78,10 +78,10 @@ public final class FieldSymbol
 		// Set
 		dimensions = i;
 		
-		// {@squirreljme.error DS07 There cannot be negative or more than 255
+		// {@squirreljme.error AL07 There cannot be negative or more than 255
 		// dimensions in an array. (This symbol; The dimension count)}
 		if (dimensions < 0 || dimensions > MAX_ARRAY_DIMENSIONS)
-			throw new IllegalSymbolException(String.format("DS07 %s %d",
+			throw new IllegalSymbolException(String.format("AL07 %s %d",
 				this, dimensions));
 		
 		// Just cache all of them to check for symbol validity
@@ -157,9 +157,10 @@ public final class FieldSymbol
 			// Is a class name?
 			if (fc == 'L')
 			{
-				// Last must be a ';'
+				// {@squirreljme.error AL09 Expected a semi-colon at the end
+				// of the class name. (This symbol)}
 				if (';' != charAt(n - 1))
-					throw new IllegalSymbolException(String.format("DS09 %s",
+					throw new IllegalSymbolException(String.format("AL09 %s",
 						this));
 				
 				// Get it
@@ -169,17 +170,19 @@ public final class FieldSymbol
 			// Primitive type
 			else
 			{
-				// Must consist of a single character
+				// {@squirreljme.error AL08 Primitive types must only contain
+				// a single character. (This symbol)}
 				if (n != 1)
-					throw new IllegalSymbolException(String.format("DS08 %s",
+					throw new IllegalSymbolException(String.format("AL08 %s",
 						this));
 				
 				// Find matching primitive
 				rv = PrimitiveSymbol.byCode(fc);
 				
-				// If not found, then it is invalid
+				// {@squirreljme.error AL06 Unknown primitive type identifier.
+				// (This symbol)}
 				if (rv == null)
-					throw new IllegalSymbolException(String.format("DS06 %s",
+					throw new IllegalSymbolException(String.format("AL06 %s",
 						this));
 			}
 			
