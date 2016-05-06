@@ -52,7 +52,7 @@ public final class NCFMethod
 	{
 		super(__oc, __id, __fl);
 		
-		// {@squirreljme.error CF1x The specified method is either native or
+		// {@squirreljme.error AQ1x The specified method is either native or
 		// abstract and has a code attribute or is not native or abstract and
 		// does not have a code attribute. (The method ID; The flags)}
 		NCIMethodFlags f = flags();
@@ -60,7 +60,7 @@ public final class NCFMethod
 		if ((abs = (f.isNative() || f.isAbstract())) != (__ca == null))
 			throw new NCIException((abs ? NCIException.Issue.ABSTRACT_CODE :
 				NCIException.Issue.MISSING_CODE),
-				String.format("CF1x %s %s", __id, f));
+				String.format("AQ1x %s %s", __id, f));
 		
 		// Set
 		code = __ca;
@@ -70,7 +70,7 @@ public final class NCFMethod
 		boolean in = name.isConstructor();
 		boolean cl = name.isStaticInitializer();
 		
-		// {@squirreljme.error CF20 Instance and static initializers have
+		// {@squirreljme.error AQ20 Instance and static initializers have
 		// additional requirements as to which flags may be set. (The method
 		// ID; The flags)}
 		if ((in && (f.contains(NCIMethodFlag.STATIC) ||
@@ -81,7 +81,7 @@ public final class NCFMethod
 			f.contains(NCIMethodFlag.ABSTRACT))) ||
 			(cl && (!f.contains(NCIMethodFlag.STATIC))))
 			throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
-				String.format("CF20 %s %s", __id, f));
+				String.format("AQ20 %s %s", __id, f));
 	}
 	
 	/**

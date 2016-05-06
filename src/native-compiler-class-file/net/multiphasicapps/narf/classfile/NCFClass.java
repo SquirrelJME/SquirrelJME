@@ -90,18 +90,18 @@ public final class NCFClass
 		DataInputStream das = new DataInputStream(__in);
 		
 		// Check the magic number
-		// @{squirreljme.error CF17 The magic number of the class is not a
+		// @{squirreljme.error AQ17 The magic number of the class is not a
 		// valid one for the standard class file format. Expects 0xCAFEBABE,
 		// however the given magic number was specified.}
 		int clmagic;
 		if (MAGIC_NUMBER != (clmagic = das.readInt()))
 			throw new NCIException(NCIException.Issue.BAD_MAGIC_NUMBER,
-				String.format("CF17 %08x", clmagic));
+				String.format("AQ17 %08x", clmagic));
 		
 		// Read the class version number, this modifies if certain
 		// instructions are handled and how they are verified (StackMap vs
 		// StackMapTable)
-		// @{squirreljme.error CF18 The input class file version is either too
+		// @{squirreljme.error AQ18 The input class file version is either too
 		// new or too old. The specified class file version must be within the
 		// specified range.}
 		version = NCIVersion.findVersion(
@@ -109,7 +109,7 @@ public final class NCFClass
 		if (version.compareTo(NCIVersion.MAX_VERSION) > 0 ||
 			version.compareTo(NCIVersion.MIN_VERSION) < 0)
 			throw new NCIException(NCIException.Issue.BAD_CLASS_VERSION,
-				String.format("CF18 %s != [%s, %s]", version,
+				String.format("AQ18 %s != [%s, %s]", version,
 				NCIVersion.MIN_VERSION, NCIVersion.MAX_VERSION));
 		
 		// Decode the constant pool
@@ -148,9 +148,9 @@ public final class NCFClass
 		// A given class name was likely an array
 		catch (IllegalSymbolException e)
 		{
-			// {@squirreljme.error CF1j The name of the current, super, or
+			// {@squirreljme.error AQ1j The name of the current, super, or
 			// an implemented interface is not a valid binary name.}
-			throw new NCIException(NCIException.Issue.BAD_CLASS_NAME, "CF1j",
+			throw new NCIException(NCIException.Issue.BAD_CLASS_NAME, "AQ1j",
 				e);
 		}
 		
@@ -176,21 +176,21 @@ public final class NCFClass
 			// Skip name
 			das.readUnsignedShort();
 			
-			// {@squirreljme.error CF1w An attribute in the class has a
+			// {@squirreljme.error AQ1w An attribute in the class has a
 			// negative size.}
 			int len = das.readInt();
 			if (len < 0)
 				throw new NCIException(NCIException.Issue.NEGATIVE_ATTRIBUTE,
-					"CF1w");
+					"AQ1w");
 			
 			// Skip the length
 			__ReadMember__.__skipBytes(das, len);
 		}
 		
-		// {@squirreljme.error CF1o Extra bytes follow the end of the class
+		// {@squirreljme.error AQ1o Extra bytes follow the end of the class
 		// file data which is illegal.}
 		if (das.read() >= 0)
-			throw new NCIException(NCIException.Issue.NOT_EOC, "CF1o");
+			throw new NCIException(NCIException.Issue.NOT_EOC, "AQ1o");
 	}
 	
 	/**

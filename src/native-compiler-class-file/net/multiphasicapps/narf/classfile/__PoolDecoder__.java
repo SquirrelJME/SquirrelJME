@@ -132,7 +132,7 @@ class __PoolDecoder__
 		// number of entries.}
 		if (numentries <= 0)
 			throw new NCIException(NCIException.Issue.INVALID_POOL_SIZE,
-				"CF0k");
+				"AQ0k");
 		
 		// Setup target array
 		entries = new NCIPoolEntry[numentries];
@@ -170,11 +170,11 @@ class __PoolDecoder__
 					// Malformed sequence
 					catch (UTFDataFormatException utfdfe)
 					{
-						// {@squirreljme.error CF0j The string which makes up a
+						// {@squirreljme.error AQ0j The string which makes up a
 						// UTF-8 constant string is not a correctly formatted
 						// modified UTF-8 string.}
 						throw new NCIException(NCIException.Issue.ILLEGAL_MUTF,
-							"CF0j", utfdfe);
+							"AQ0j", utfdfe);
 					}
 					break;
 					
@@ -217,17 +217,17 @@ class __PoolDecoder__
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
 				case TAG_INVOKEDYNAMIC:
-					// {@squirreljme.error CF0l {@code invokedynamic} is not
+					// {@squirreljme.error AQ0l {@code invokedynamic} is not
 					// supported in Java ME.}
 					throw new NCIException(NCIException.Issue.INVOKEDYNAMIC,
-						"CF0l");
+						"AQ0l");
 					
 					// Unknown
 				default:
-					// {@squirreljme.error CF0m The specified constant pool
+					// {@squirreljme.error AQ0m The specified constant pool
 					// tag is not valid. (The illegal constant pool tag).}
 					throw new NCIException(NCIException.Issue.ILLEGAL_TAG,
-						String.format("CF0m %d", tag));
+						String.format("AQ0m %d", tag));
 			}
 		}
 		
@@ -294,12 +294,12 @@ class __PoolDecoder__
 			catch (IndexOutOfBoundsException|ClassCastException|
 				NullPointerException|IllegalSymbolException e)
 			{
-				// {@squirrejme.error CF1g A constant pool entry references a
+				// {@squirrejme.error AQ1g A constant pool entry references a
 				// constant which is not valid. (The tag; Reference A;
 				// Reference B)}
 				int q = refs.length;
 				throw new NCIException(NCIException.Issue.ILLEGAL_CONSTANT,
-					String.format("CF1g %d %d %d", tag, (1 < q ? refs[1] : -1),
+					String.format("AQ1g %d %d %d", tag, (1 < q ? refs[1] : -1),
 					(2 < q ? refs[2] : -1)), e);
 			}
 		}

@@ -47,7 +47,7 @@ public final class NCFField
 		// Check that the type is valid
 		if (__cv != null)
 		{
-			// {@squirreljme.error CF0o A field cannot have a constant value
+			// {@squirreljme.error AQ0o A field cannot have a constant value
 			// which is not of the standard boxed and fixed immutable types; or
 			// the constant value is not compatible with the field type.
 			// (The class of the object attempted to be used)}
@@ -60,7 +60,7 @@ public final class NCFField
 				(fs.equals("D") && !(__cv instanceof Double)) ||
 				(fs.equals("Ljava/lang/String;") && !(__cv instanceof String)))
 				throw new NCIException(NCIException.Issue.BAD_CONSTANT,
-					String.format("CF0o %s", __cv.getClass()));
+					String.format("AQ0o %s", __cv.getClass()));
 		}
 	}
 	

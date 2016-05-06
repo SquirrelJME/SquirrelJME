@@ -81,11 +81,11 @@ class __ReadMember__
 				__das.readUnsignedShort(), NCIUTF.class).toString();
 			int len = __das.readInt();
 			
-			// {@squirreljme.error CF1q Field attribute has negative length.
+			// {@squirreljme.error AQ1q Field attribute has negative length.
 			// (The field id)}
 			if (len < 0)
 				throw new NCIException(NCIException.Issue.NEGATIVE_ATTRIBUTE,
-					String.format("CF1q", id));
+					String.format("AQ1q", id));
 			
 			// Setup area
 			try (BufferAreaInputStream bais = new BufferAreaInputStream(__das,
@@ -97,11 +97,11 @@ class __ReadMember__
 				
 				try (DataInputStream dais = new DataInputStream(bais))
 				{
-					// {@squirreljme.error CF1r Field already has a constant
+					// {@squirreljme.error AQ1r Field already has a constant
 					// value. (The field ID)}
 					if (constval != null)
 						throw new NCIException(NCIException.Issue.DOUBLE_CONST,
-							String.format("CF1r", id));
+							String.format("AQ1r", id));
 					
 					// Reads the constant field value
 					constval = __oc.constantPool().<NCIConstantValue>
@@ -111,12 +111,12 @@ class __ReadMember__
 			}
 		}
 		
-		// {@squirreljme.error CF1s Duplicate field in class. (The field ID)}
+		// {@squirreljme.error AQ1s Duplicate field in class. (The field ID)}
 		NCIField old = __into.put(id, new NCFField(__oc,
 			id, __FlagDecoder__.__field(__oc, flags), constval));
 		if (old != null)
 			throw new NCIException(NCIException.Issue.DUPLICATE_FIELD,
-				String.format("CF1s", id));
+				String.format("AQ1s", id));
 	}
 	
 	/**
@@ -152,11 +152,11 @@ class __ReadMember__
 				__das.readUnsignedShort(), NCIUTF.class).toString();
 			int len = __das.readInt();
 			
-			// {@squirreljme.error CF1w Method attribute has negative length.
+			// {@squirreljme.error AQ1w Method attribute has negative length.
 			// (The method id)}
 			if (len < 0)
 				throw new NCIException(NCIException.Issue.NEGATIVE_ATTRIBUTE,
-					String.format("CF1w", id));
+					String.format("AQ1w", id));
 			
 			// Setup area
 			try (BufferAreaInputStream bais = new BufferAreaInputStream(__das,
@@ -168,28 +168,28 @@ class __ReadMember__
 				
 				try (DataInputStream dais = new DataInputStream(bais))
 				{
-					// {@squirreljme.error CF1v Method already has a code
+					// {@squirreljme.error AQ1v Method already has a code
 					// attribute. (The method ID)}
 					if (code != null)
 						throw new NCIException(NCIException.Issue.DOUBLE_CODE,
-							String.format("CF1v", id));
+							String.format("AQ1v", id));
 					
-					// {@squirreljme.error CF1v Did not read the entire code
+					// {@squirreljme.error AQ1v Did not read the entire code
 					// attribute for a method. (The method ID)}
 					code = new byte[len];
 					if (len != dais.read(code))
 						throw new NCIException(NCIException.Issue.SHORT_CODE,
-							String.format("CF1w", id));
+							String.format("AQ1w", id));
 				}
 			}
 		}
 		
-		// {@squirreljme.error CF1u Duplicate field in class. (The field ID)}
+		// {@squirreljme.error AQ1u Duplicate field in class. (The field ID)}
 		NCIMethod old = __into.put(id, new NCFMethod(__oc,
 			id, __FlagDecoder__.__method(__oc, flags), code));
 		if (old != null)
 			throw new NCIException(NCIException.Issue.DUPLICATE_METHOD,
-				String.format("CF1u", id));
+				String.format("AQ1u", id));
 	}
 	
 	/**
@@ -245,11 +245,11 @@ class __ReadMember__
 			// Calculate new total
 			int nt = total + act;
 			
-			// {@squirreljme.error CF1p End of file reached while skipping
+			// {@squirreljme.error AQ1p End of file reached while skipping
 			// the class attributes.}
 			if (total >= nt)
 				throw new NCIException(NCIException.Issue.READ_ERROR,
-					"CF1p");
+					"AQ1p");
 			
 			// Set new total
 			total = nt;
