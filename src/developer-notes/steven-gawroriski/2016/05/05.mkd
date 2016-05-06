@@ -32,3 +32,7 @@ standalone and compacted. I would not like to return to the
 compiler/interpreter, so that eventually I can get code generation being
 performed.
 
+## 21:29
+
+So the first thing to be done, would be to run through all the operations to
+determine the bounds of the basic blocks based on jump targets and such.

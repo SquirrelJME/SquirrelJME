@@ -98,9 +98,9 @@ public class BitInputStream
 				// Read next byte
 				int val = wrapped.read();
 				
-				// EOF?
+				// {@squirreljme.error AH03 End of file reached.}
 				if (val < 0)
-					throw new EOFException("XI03");
+					throw new EOFException("AH03");
 				
 				// Set active byte
 				_byte = (byte)val;
@@ -177,9 +177,10 @@ public class BitInputStream
 	public int readBitsInt(int __c, boolean __msb)
 		throws IllegalArgumentException, IOException
 	{
-		// Check
+		// {@squirreljme.error AH04 The number of bits to read is not valid
+		// for the integer type. (The number of bits to read)}
 		if (__c <= 0 || __c > 32)
-			throw new IllegalArgumentException(String.format("XI04 %d", __c));
+			throw new IllegalArgumentException(String.format("AH04 %d", __c));
 		
 		// Call other
 		return (int)readBits(__c, __msb);
@@ -205,9 +206,10 @@ public class BitInputStream
 	public long readBits(int __c, boolean __msb)
 		throws EOFException, IllegalArgumentException, IOException
 	{
-		// Check
+		// {@squirreljme.error AH05 The number of bits to read is not valid
+		// for the long type. (The number of bits to read)}
 		if (__c <= 0 || __c > 64)
-			throw new IllegalArgumentException(String.format("XI05 %d", __c));
+			throw new IllegalArgumentException(String.format("AH05 %d", __c));
 		
 		// Lock
 		synchronized (lock)

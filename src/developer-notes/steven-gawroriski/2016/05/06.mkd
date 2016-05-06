@@ -1,0 +1,6 @@
+# 2016/05/06
+
+## 17:09
+
+I suppose I should migrate the remaining error codes to the new system.
+

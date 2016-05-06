@@ -160,13 +160,17 @@ public class BitCompactor
 		// Number of bits in the mask
 		int ibm = Integer.bitCount(__mask);
 		
-		// Check to make sure the input is valid
+		// {@squirreljme.error AH01 The value is outside the range of the mask.
+		// (The value; The mask)}
 		if ((__val & (~__mask)) != 0)
-			throw new IllegalArgumentException(String.format("XI01 %x %x",
+			throw new IllegalArgumentException(String.format("AH01 %x %x",
 				__val, __mask));
+		
+		// {@squirreljme.error AH02 The mask has a zero gap between bits or
+		// in the least significant bits. (The value; The mask)}
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
 			(__mask & 1) == 0)
-			throw new IllegalArgumentException(String.format("XI02 %x %x",
+			throw new IllegalArgumentException(String.format("AH02 %x %x",
 				__val, __mask));
 		
 		// Lock
