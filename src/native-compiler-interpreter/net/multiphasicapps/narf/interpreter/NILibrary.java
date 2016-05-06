@@ -120,9 +120,9 @@ public class NILibrary
 							e.addSuppressed(f);
 						}
 					
-					// {@squirreljme.error NI09 Could not load the given path
+					// {@squirreljme.error AN09 Could not load the given path
 					// as a ZIP file. (The path to the ZIP.)}
-					throw new IllegalArgumentException(String.format("NI09 %s",
+					throw new IllegalArgumentException(String.format("AN09 %s",
 						p), e);
 				}
 			}
@@ -250,10 +250,10 @@ public class NILibrary
 			// Failed read or other exception
 			catch (NCIException|IOException e)
 			{
-				// {@squirreljme.error NI0a Failed to read a class from the
+				// {@squirreljme.error AN0a Failed to read a class from the
 				// given path. (The binary name; The path read from)}
 				throw new NCIException(NCIException.Issue.READ_ERROR,
-					String.format("NI0a %s %s", __bn, p), e);
+					String.format("AN0a %s %s", __bn, p), e);
 			}
 		}
 		

@@ -87,13 +87,13 @@ public class NIClass
 		core = __core;
 		base = __base;
 		
-		// {@squirreljme.error NI0b The class which was read differs by name
+		// {@squirreljme.error AN0b The class which was read differs by name
 		// with the class that is to be loaded. (The loaded class name; The
 		// requested class)}
 		thisname = __base.thisName();
 		if (!__cns.equals(thisname))
 			throw new NIException(core, NIException.Issue.CLASS_NAME_MISMATCH,
-				String.format("NI0b %s %s", thisname, __cns));
+				String.format("AN0b %s %s", thisname, __cns));
 		
 		// DEBUG
 		System.err.printf("DEBUG -- Init class %s%n", thisname);
@@ -116,20 +116,20 @@ public class NIClass
 		for (NIClass rover = superclass; rover != null;
 			rover = rover.superclass)
 		{
-			// {@squirreljme.error NI0c The current class eventually extends
+			// {@squirreljme.error AN0c The current class eventually extends
 			// itself. (The name of this class)}
 			if (rover == this)
 				throw new NIException(core,
 					NIException.Issue.CLASS_CIRCULARITY,
-					String.format("NI0c %s", thisname));
+					String.format("AN0c %s", thisname));
 			
-			// {@squirreljme.error NI0d The current class eventually implements
+			// {@squirreljme.error AN0d The current class eventually implements
 			// itself. (The name of this name; The class implementing this)}
 			for (NIClass impl : rover.interfaceclasses)
 				if (impl == this)
 					throw new NIException(core,
 						NIException.Issue.CLASS_CIRCULARITY,
-						String.format("NI0d %s %s", thisname, rover.thisname));
+						String.format("AN0d %s %s", thisname, rover.thisname));
 		}
 		
 		// Create methods for all of the current class methods
@@ -165,13 +165,13 @@ public class NIClass
 					// Get the method
 					NIMethod iv = mm.get(k);
 					
-					// {@squirreljme.error NI0e The top-level class is not
+					// {@squirreljme.error AN0e The top-level class is not
 					// abstract and it does not implement an abstract method.
 					// (The method identifier)}
 					if (iv == null || iv.flags().isAbstract())
 						throw new NIException(core,
 							NIException.Issue.ABSTRACT_NOT_IMPLEMENTED,
-							String.format("NI0e %s", k));
+							String.format("AN0e %s", k));
 				}
 				
 				// Never replace methods in a sub-class with the superclass
@@ -200,7 +200,7 @@ public class NIClass
 						if (!v.flags().isAbstract())
 							continue;
 					
-						// {@squirreljme.error NI0f The current class does not
+						// {@squirreljme.error AN0f The current class does not
 						// implement an abstract interface method. (The
 						// unimplemented method; The current class name;
 						// The interface name)}
@@ -208,7 +208,7 @@ public class NIClass
 						if (!methods.containsKey(k))
 							throw new NIException(core,
 								NIException.Issue.ABSTRACT_NOT_IMPLEMENTED,
-								String.format("NI0f %s %s", k, base.thisName(),
+								String.format("AN0f %s %s", k, base.thisName(),
 									interf.base.thisName()));
 						
 					}

@@ -65,11 +65,11 @@ public class NIMethod
 	public NRProgram program()
 		throws NIException
 	{
-		// {@squirreljme.error NI0k Attempted to invoke an abstract method.
+		// {@squirreljme.error AN0k Attempted to invoke an abstract method.
 		// (The method to invoke)}
 		if (flags().isAbstract())
 			throw new NIException(core, NIException.Issue.INVOKE_ABSTRACT,
-				String.format("NI0k", this));
+				String.format("AN0k", this));
 		
 		// Get reference
 		Reference<NRProgram> ref = _program;

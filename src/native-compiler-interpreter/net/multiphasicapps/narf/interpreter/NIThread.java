@@ -89,11 +89,11 @@ public class NIThread
 		if (__m == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error NI0j Attempted to invoke a method which is
+		// {@squirreljme.error AN0j Attempted to invoke a method which is
 		// across the context of a thread.}
 		if (core.thread(thread) != this)
 			throw new NIException(core, NIException.Issue.CROSS_CONTEXT,
-				"NI0j");
+				"AN0j");
 		
 		// Obtain the method program
 		NRProgram prg = __m.program();

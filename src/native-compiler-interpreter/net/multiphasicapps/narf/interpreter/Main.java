@@ -56,11 +56,11 @@ public class Main
 			PATH_SEPARATOR = ":";
 		
 		// Big problems if it is multiple characters long
-		// {@squirreljme.error NI07 The local interpreter does not support path
+		// {@squirreljme.error AN07 The local interpreter does not support path
 		// separators which are more than one character long. (The path
 		// separater; The property to set)}
 		if (PATH_SEPARATOR.length() != 1)
-			throw new RuntimeException(String.format("NI07 %s %s",
+			throw new RuntimeException(String.format("AN07 %s %s",
 				PATH_SEPARATOR, PATH_SEPARATOR_PROPERTY));
 	}
 	
@@ -103,10 +103,10 @@ __outer_loop:
 					// Class Path
 				case "-cp":
 				case "-classpath":
-					// {@squirreljme.error NI06 -classpath cannot be specified
+					// {@squirreljme.error AN06 -classpath cannot be specified
 					// if it or -jar has already been specified.}
 					if (didcp || didjar)
-						throw new IllegalArgumentException("NI06");
+						throw new IllegalArgumentException("AN06");
 					
 					// Eat
 					hargs.pollFirst();
@@ -114,10 +114,10 @@ __outer_loop:
 					// Get next
 					String cparg = hargs.pollFirst();
 					
-					// {@squirreljme.error NI05 An argument is expected to
+					// {@squirreljme.error AN05 An argument is expected to
 					// follow the -classpath option.}
 					if (cparg == null)
-						throw new IllegalArgumentException("NI05");
+						throw new IllegalArgumentException("AN05");
 					
 					// Split and get paths from them
 					StringTokenizer st = new StringTokenizer(cparg,
@@ -131,10 +131,10 @@ __outer_loop:
 					
 					// JAR
 				case "-jar":
-					// {@squirreljme.error NI04 -jar cannot be specified
+					// {@squirreljme.error AN04 -jar cannot be specified
 					// if it or -classpath has already been specified.}
 					if (didcp || didjar)
-						throw new IllegalArgumentException("NI04");
+						throw new IllegalArgumentException("AN04");
 					
 					// Eat
 					hargs.pollFirst();
@@ -142,10 +142,10 @@ __outer_loop:
 					// Get next
 					String jarf = hargs.pollFirst();
 					
-					// {@squirreljme.error NI03 An argument is expected to
+					// {@squirreljme.error AN03 An argument is expected to
 					// follow the -jar option.}
 					if (jarf == null)
-						throw new IllegalArgumentException("NI03");
+						throw new IllegalArgumentException("AN03");
 					
 					// Single JAR only
 					classpath.add(Paths.get(jarf));	
@@ -186,12 +186,12 @@ __outer_loop:
 		else
 			mainclass = hargs.pollFirst();
 		
-		// {@squirreljme.error NI01 The input JAR does not have a "Main-Class"
+		// {@squirreljme.error AN01 The input JAR does not have a "Main-Class"
 		// attribute.}
-		// {@squirreljme.error NI02 No main class was specified in the
+		// {@squirreljme.error AN02 No main class was specified in the
 		// program arguments.}
 		if (mainclass == null)
-			throw new IllegalArgumentException((didjar ? "NI01" : "NI02"));
+			throw new IllegalArgumentException((didjar ? "AN01" : "AN02"));
 		
 		// Setup the class library
 		NILibrary ilib = new NILibrary(bootclasspath, classpath);

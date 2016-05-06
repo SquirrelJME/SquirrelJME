@@ -58,19 +58,19 @@ public class NIObject
 		// for a class which is not an array. (The class)}
 		if (__al != 0 && !__cl.isArray())
 			throw new NIException(__c, NIException.Issue.NOT_AN_ARRAY,
-				String.format("NI0j %s", __cl.thisName()));
+				String.format("AN0j %s", __cl.thisName()));
 		
-		// {@squirreljme.error NI0i Attempted to allocate an array with a
+		// {@squirreljme.error AN0i Attempted to allocate an array with a
 		// negative length. (The array length)}
 		if (__al < 0)
 			throw new NIException(__c, NIException.Issue.NEGATIVE_ARRAY_LENGTH,
-				String.format("NI0i %d", __al));
+				String.format("AN0i %d", __al));
 		
-		// {@squirreljme.error NI0h Attempted to initialize an object which
+		// {@squirreljme.error AN0h Attempted to initialize an object which
 		// is an instance of an abstract class. (The class)}
 		if (__cl.flags().isAbstract())
 			throw new NIException(__c, NIException.Issue.NEW_ABSTRACT,
-				String.format("NI0h %s", __cl.thisName()));
+				String.format("AN0h %s", __cl.thisName()));
 		
 		// Set
 		core = __c;

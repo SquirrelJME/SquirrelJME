@@ -75,10 +75,10 @@ public class NICore
 		// Locate the main class
 		NIClass maincl = initClass(__main.asClassName());
 		
-		// {@squirreljme.error NI08 The main class could not be found.
+		// {@squirreljme.error AN08 The main class could not be found.
 		// (The main class)}
 		if (maincl == null)
-			throw new IllegalArgumentException(String.format("NI08 %s",
+			throw new IllegalArgumentException(String.format("AN08 %s",
 				__main));
 		
 		// Find the main method
@@ -86,13 +86,13 @@ public class NICore
 			new IdentifierSymbol("main"),
 			new MethodSymbol("([Ljava/lang/String;)V")));
 		
-		// {@squirreljme.error NI0g The main class does not contain a static
+		// {@squirreljme.error AN0g The main class does not contain a static
 		// method which take a string argument, returns void, and is called
 		// "main". (The main class)}
 		if (mainme == null || !mainme.flags().isStatic())
 			throw new NIException(this,
 				NIException.Issue.METHOD_DOES_NOT_EXIST, String.format(
-				"NI0g %s", __main));
+				"AN0g %s", __main));
 		
 		// Is running
 		_isrunning = true;
