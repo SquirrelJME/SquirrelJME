@@ -52,8 +52,8 @@ public final class EmptyIterator
 	@Override
 	public Object next()
 	{
-		// {@squirreljme.error CX06 The empty iterator contains no elements.}
-		throw new NoSuchElementException("XC06");
+		// {@squirreljme.error AJ06 The empty iterator contains no elements.}
+		throw new NoSuchElementException("AJ06");
 	}
 	
 	/**
@@ -63,9 +63,9 @@ public final class EmptyIterator
 	@Override
 	public void remove()
 	{
-		// {@squirreljme.error XC05 Cannot remove elements from the empty
+		// {@squirreljme.error AJ05 Cannot remove elements from the empty
 		// iterator.}
-		throw new UnsupportedOperationException("XC05");
+		throw new UnsupportedOperationException("AJ05");
 	}
 	
 	/**

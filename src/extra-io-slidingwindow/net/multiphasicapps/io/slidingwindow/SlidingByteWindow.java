@@ -49,9 +49,10 @@ public class SlidingByteWindow
 	 */
 	static
 	{
-		// Must be a power of two
+		// {@squirreljme.error AI01 The default fragment size is not a power of
+		// two. (The default fragment size)}
 		if (Integer.bitCount(DEFAULT_FRAGMENT_SIZE) != 1)
-			throw new RuntimeException(String.format("XI0r %d",
+			throw new RuntimeException(String.format("AI01 %d",
 				DEFAULT_FRAGMENT_SIZE));
 	}
 	
@@ -64,9 +65,10 @@ public class SlidingByteWindow
 	public SlidingByteWindow(int __wsz)
 		throws IllegalArgumentException
 	{
-		// Check
+		// {@squirreljme.error AI02 Zero or negative window size specified.
+		// (The window size)}
 		if (__wsz <= 0)
-			throw new IllegalArgumentException(String.format("XI0s %d",
+			throw new IllegalArgumentException(String.format("AI02 %d",
 				__wsz));
 		
 		// Set
@@ -206,13 +208,13 @@ public class SlidingByteWindow
 			// Total buffer size
 			int max = _total;
 			
-			// {@squirreljme.error XI0u Bulk read of window bytes would exceed
+			// {@squirreljme.error AI03 Bulk read of window bytes would exceed
 			// the bounds of the window. (The bytes in the past to start the
 			// copy from; The number of bytes to read; The total number of
 			// bytes in the window)}
 			if (__ago <= 0 || (__ago - __l) > max)
 				throw new IndexOutOfBoundsException(String.format(
-					"XI0u %d %d %d", __ago, __l, max));
+					"AI03 %d %d %d", __ago, __l, max));
 			
 			// Get backing buffer
 			DynamicByteBuffer back = backingbuffer;

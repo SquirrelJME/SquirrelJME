@@ -43,8 +43,8 @@ public final class EmptyList
 	@Override
 	public Object get(int __i)
 	{
-		// {@squirreljme.error CX07 The empty list contains no elements.}
-		throw new IndexOutOfBoundsException("CX07");
+		// {@squirreljme.error AJ07 The empty list contains no elements.}
+		throw new IndexOutOfBoundsException("AJ07");
 	}
 	
 	/**

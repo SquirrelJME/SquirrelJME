@@ -3,6 +3,7 @@ X-Hairball-Name: extra-io-slidingwindow
 X-Hairball-UUID: 4a4eac91-13ec-4385-980f-3ed23c1346bb
 X-Hairball-Depends: javame-cldc-compact,
  extra-util-dynbuffer
+X-Hairball-Error: AI
 LIBlet-Title: Extra IO Sliding Window
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160430
