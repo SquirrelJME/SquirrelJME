@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-Hairball-Name: extra-io-region
 X-Hairball-UUID: e6cc1f54-fd8e-4fb2-bbc4-c7f41499181b
 X-Hairball-Depends: javame-cldc-compact
+X-Hairball-Error: AP
 LIBlet-Title: Extra IO Regions
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160430

@@ -71,8 +71,11 @@ public class SizeLimitedInputStream
 		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AP04 The limit is negative. (The negative
+		// limit)}
 		if (__li < 0)
-			throw new IllegalArgumentException(String.format("XI0p %d", __li));
+			throw new IllegalArgumentException(String.format("AP04 %d", __li));
 		
 		// Set
 		wrapped = __is;
@@ -137,9 +140,11 @@ public class SizeLimitedInputStream
 			// EOF?
 			if (next < 0)
 			{
-				// No short read?
+				// {@squirreljme.error AP05 Required an exact number of bytes
+				// however the limit was not yet reached. (The limit; The
+				// current position)}
 				if (exact && cur != limit)
-					throw new IOException(String.format("XI0q %d %d",
+					throw new IOException(String.format("AP05 %d %d",
 						limit, cur));
 				
 				// Return original negative

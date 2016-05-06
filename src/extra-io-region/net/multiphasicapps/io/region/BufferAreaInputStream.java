@@ -54,8 +54,10 @@ public class BufferAreaInputStream
 		// Check
 		if (__w == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AP01 Negative limit. (The negative limit)}
 		if (__lim < 0L)
-			throw new IllegalArgumentException(String.format("IN1i %d",
+			throw new IllegalArgumentException(String.format("AP01 %d",
 				__lim));
 		
 		// Set
@@ -91,18 +93,22 @@ public class BufferAreaInputStream
 		synchronized (lock)
 		{
 			// Reach the limit
+			int lim = limit;
 			for (;;)
 			{
 				// Get count
 				long cc = _count;
 				
 				// At the limit? then stop
-				if (cc >= limit)
+				if (cc >= lim)
 					break;
 				
 				// Otherwise skip a byte, fail on EOF
+				// {@squirreljme.error AP02 Reached early EOF when closing
+				// the stream. (The position of the read byte; The limit)}
 				if (in.read() < 0)
-					throw new IOException("IN1e");
+					throw new IOException(String.format("AP02 %d %d", cc,
+						lim));
 				
 				// Set next position
 				_count = cc + 1;
@@ -172,9 +178,10 @@ public class BufferAreaInputStream
 			// Otherwise read value
 			int rv = in.read();
 			
-			// Bad EOF?
+			// {@squirreljme.error AP03 Reached early EOF when reading a byte
+			// from the stream. (The position of the read byte; The limit)}
 			if (rv < 0)
-				throw new IOException("IN1e");
+				throw new IOException(String.format("AP03 %d %d", cur, limit));
 			
 			// Increase index
 			_count = cur + 1;
