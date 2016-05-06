@@ -51,9 +51,10 @@ public final class IBM437CodePage
 	public static char byteToChar(int __b)
 		throws IllegalArgumentException
 	{
-		// Check
+		// {@squirreljme.error AM0e Byte index is not within bounds.
+		// (The byte)}
 		if (__b < 0 || __b > 255)
-			throw new IllegalArgumentException(String.format("ZP0e %d", __b));
+			throw new IllegalArgumentException(String.format("AM0e %d", __b));
 		
 		// Lower ASCII is the same
 		if (__b <= 127)

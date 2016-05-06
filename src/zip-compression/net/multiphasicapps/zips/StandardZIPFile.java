@@ -170,7 +170,9 @@ public abstract class StandardZIPFile
 				// Could not read the directory
 				catch (IOException ioe)
 				{
-					throw new IllegalStateException("ZP0c", ioe);
+					// {@squirreljme.error AM0c Could not read the central
+					// directory.}
+					throw new IllegalStateException("AM0c", ioe);
 				}
 			
 			// Return it
@@ -355,8 +357,11 @@ public abstract class StandardZIPFile
 			
 			// Get the variable field info
 			ZIPStructureElement varf = __se.variableField();
+			
+			// {@squirreljme.error AM01 The given structure entry is not
+			// variable. (The structure index)}
 			if (__ai != 0 && varf == null)
-				throw new ZIPFormatException(String.format("ZP01 %d", __ai));
+				throw new ZIPFormatException(String.format("AM01 %d", __ai));
 			
 			// Otherwise check the bounds of the read
 			else if (varf != null)
@@ -364,9 +369,10 @@ public abstract class StandardZIPFile
 				// Read the count
 				long ec = readStruct(__pos, varf);
 				
-				// Out of bounds?
+				// {@squirreljme.error AM02 Read of array index which is not
+				// within the array bounds. (The structure index; The count})
 				if (__ai < 0 || (long)__ai >= ec)
-					throw new ZIPFormatException(String.format("ZP02 %d %d",
+					throw new ZIPFormatException(String.format("AM02 %d %d",
 						__ai, ec));
 			}
 			
@@ -448,9 +454,10 @@ public abstract class StandardZIPFile
 					rc = channel.read(rv);
 				}
 			
-			// Check to make sure all the data was read
+			// {@squirreljme.error AM03 Did not read all the bytes. (The length
+			// to read; The actual length read)}
 			if (rc < __len)
-				throw new ZIPFormatException(String.format("ZP03 %d %d",
+				throw new ZIPFormatException(String.format("AM03 %d %d",
 					__len, rc));
 		
 			// Flip the buffer
@@ -677,9 +684,10 @@ public abstract class StandardZIPFile
 		protected Directory(int __ne)
 			throws IOException
 		{
-			// Check
+			// {@squirreljme.error AM04 The ZIP directory has a negative
+			// number of entries. (The negative count)}
 			if (__ne < 0)
-				throw new ZIPFormatException(String.format("ZP04 %d", __ne));
+				throw new ZIPFormatException(String.format("AM04 %d", __ne));
 			
 			// Initialize offset table
 			offsets = new long[__ne];
@@ -741,10 +749,10 @@ public abstract class StandardZIPFile
 			// Get the directory offset for this entry
 			long off = offsets[__i];
 			
-			// If the offset is invalid then the entry cannot be determined
-			// for this.
+			// {@squirreljme.error AM06 The file entry has a negative offset.
+			// (The index of the entry)}
 			if (off < 0L)
-				throw new ZIPFormatException(String.format("ZP05 %d", __i));
+				throw new ZIPFormatException(String.format("AM05 %d", __i));
 			
 			// Lock on the entry cache so it is a sort of volatile
 			synchronized (_entrycache)
@@ -838,7 +846,8 @@ public abstract class StandardZIPFile
 				// Failed to read
 				catch (IOException ioe)
 				{
-					throw new IllegalStateException("ZP0d", ioe);
+					// {@squirreljme.error AM0d Failed to read the file entry.}
+					throw new IllegalStateException("AM0d", ioe);
 				}
 			}
 			
