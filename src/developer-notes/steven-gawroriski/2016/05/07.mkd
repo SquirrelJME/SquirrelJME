@@ -11,5 +11,14 @@ are determined on the fly for the most part. Since at the end of every basic
 block, all temporaries that may need to be calculated are calculated if they
 have not been. However a sequence of operation bytes might not be as strong.
 `NRProgram` could be immutable, however that would complicate how it is
-implemented at the cost of speed (and interpreted execution speed).
+implemented at the cost of speed (and interpreted execution speed). The
+other alternative is straight code generation. Determine the jump targets and
+such for all operations and where they are placed (to determine basic block
+boundaries). Just go through all the bytes and perform computations as they
+are needed. The computations would be linked to a native code generator.
+
+## 11:08
+
+This would not be strictly SSA however, but it should be able to remove
+pointless operations such as register moving.
 

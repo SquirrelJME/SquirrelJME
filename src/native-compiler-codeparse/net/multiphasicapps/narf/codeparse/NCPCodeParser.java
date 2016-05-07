@@ -98,9 +98,6 @@ public class NCPCodeParser
 		NCICodeAttribute code = this.code;
 		NCIByteBuffer actual = this.actual;
 		
-		// Determine the positions of all instruction
-		int oppos[] = new __OpPositions__(actual).get();
-		
 		throw new Error("TODO");
 	}
 }
