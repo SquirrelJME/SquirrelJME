@@ -20,5 +20,18 @@ are needed. The computations would be linked to a native code generator.
 ## 11:08
 
 This would not be strictly SSA however, but it should be able to remove
-pointless operations such as register moving.
+pointless operations such as register moving. Also, a straight and simple pass
+that goes straight to the compiler would consume the least amount of memory and
+execution time figuring things out. So I suppose the first thing would be to
+figure out the logical operation positions and basic block boundaries. Then
+run through that with a code generator. At the end of a basic block, operations
+are performed and temporaries are recorded. The state machine for specific
+CPUs and such can store which variables are where within basic blocks. It
+should be noted that for simplicity, variables that are allocated should only
+be mapped to single registers as much as possible so that exception handling
+and other things are not complicated as much. For temporary values on the stack
+they can just remain in registers, if an exception is called then those values
+are destroyed anyway. Only when the end of a basic block is reached will they
+actually be stored somewhere, be it in registers or on the stack. I would
+suppose that a generic code generator can work also.
 
