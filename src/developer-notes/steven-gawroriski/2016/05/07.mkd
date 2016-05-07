@@ -35,3 +35,19 @@ are destroyed anyway. Only when the end of a basic block is reached will they
 actually be stored somewhere, be it in registers or on the stack. I would
 suppose that a generic code generator can work also.
 
+## 13:30
+
+SquirrelJME now has a mascot! yay! She did quite a nice job on it.
+
+## 16:01
+
+I need to devise a somewhat slow downscale method which can keep borders of an
+image. That is, it downscale intelligently rather than using an average kind of
+means when doing so. Current downscalers pretty much treat all pixels as alike.
+Nearest is rather even when it comes to pixels by just choosing one at a given
+position, while linear and such average the colors out. I suppose for extremley
+low resolutions, I can just drop to pixel art. For example 8x8 would be pixel
+art drawn myself while high resolution images would be the drawn mascot. Not
+sure it would be possible for the algorithm I am thinking about writing would
+be able to scale the image down so much.
+

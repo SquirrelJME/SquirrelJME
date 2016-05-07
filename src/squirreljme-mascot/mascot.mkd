@@ -1,0 +1,17 @@
+# Mascot
+
+This package contains the mascot for this software.
+
+  * The SquirrelJME Mascot was drawn by...
+    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
+
+# High Resolution Usage
+
+For display purposes and on high resolution systems, the mascot as it currently
+is can be used.
+
+# Low Resolution Usage
+
+For extremely low resolutions from 16x16 and below, the mascot would likely
+have to be manually drawn as low resolution pixel art.
+
