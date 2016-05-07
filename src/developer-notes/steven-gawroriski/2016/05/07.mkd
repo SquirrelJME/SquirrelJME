@@ -1,0 +1,15 @@
+# 2016/05/07
+
+## 11:02
+
+One thing I would like is a single pass parsing of code which generates the
+basic blocks as required. An idea with this is that I have `NRProgramBuilder`.
+When the input operations of the instructions are read they are passed to
+the program builder. The builder then creates an internal stream of bytes which
+represents the program in register form with temporaries and such. Basic blocks
+are determined on the fly for the most part. Since at the end of every basic
+block, all temporaries that may need to be calculated are calculated if they
+have not been. However a sequence of operation bytes might not be as strong.
+`NRProgram` could be immutable, however that would complicate how it is
+implemented at the cost of speed (and interpreted execution speed).
+
