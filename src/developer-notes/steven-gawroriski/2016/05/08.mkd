@@ -130,3 +130,8 @@ which will save an extra check for those conditions at the start. So there is
 some tradeoff. So, check for exceptions after going away and performing a
 method call would be the way to go.
 
+## 12:44
+
+So the code attribute should have the exception table also. The exceptions
+should be cached and immutable.
+

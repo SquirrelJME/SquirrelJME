@@ -41,6 +41,9 @@ public final class NCICodeAttribute
 	
 	/** The number of exception handlers. */
 	protected final int numhandlers;
+	
+	/** Exception handler cache. */
+	protected final NCICodeExceptions exceptions;
 
 	/**
 	 * Initializes the code attribute with the given attribute data.
@@ -93,6 +96,10 @@ public final class NCICodeAttribute
 		
 		// Exception handlers
 		numhandlers = abuffer.readUnsignedShort(8 + codelen);
+		
+		// Setup the excpetion list
+		exceptions = new NCICodeExceptions(method.outerClass().constantPool(),
+			numhandlers, abuffer.window(10 + codelen, numhandlers * 8));
 	}
 	
 	/**
@@ -105,6 +112,17 @@ public final class NCICodeAttribute
 	public NCIByteBuffer code()
 	{
 		return cbuffer;
+	}
+	
+	/**
+	 * Returns the list of exception handlers in this code block
+	 *
+	 * @return The exception handler list.
+	 * @since 2016/05/08
+	 */
+	public NCICodeExceptions exceptionHandlers()
+	{
+		return exceptions;
 	}
 	
 	/**
@@ -127,6 +145,17 @@ public final class NCICodeAttribute
 	public int maxStack()
 	{
 		return maxstack;
+	}
+	
+	/**
+	 * Returns the method which contains this attribute.
+	 *
+	 * @return The containing method.
+	 * @since 2016/04/08
+	 */
+	public NCIMethod method()
+	{
+		return method;
 	}
 }
 
