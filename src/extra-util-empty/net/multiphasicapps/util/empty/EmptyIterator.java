@@ -31,7 +31,7 @@ public final class EmptyIterator
 	 *
 	 * @sicne 2016/04/10
 	 */
-	final EmptyIterator()
+	private EmptyIterator()
 	{
 	}
 	

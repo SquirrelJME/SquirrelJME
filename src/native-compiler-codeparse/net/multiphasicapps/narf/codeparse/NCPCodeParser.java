@@ -18,6 +18,7 @@ import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.program.NRBasicBlock;
 import net.multiphasicapps.narf.program.NRProgram;
+import net.multiphasicapps.util.boxed.BoxedIntegerList;
 
 /**
  * This class is given a method which is then parsed.
@@ -97,6 +98,12 @@ public class NCPCodeParser
 		// Local cache
 		NCICodeAttribute code = this.code;
 		NCIByteBuffer actual = this.actual;
+		
+		// Calculation all the operation positions
+		int[] opos = new __OpPositions__(actual).get();
+		
+		// Debug
+		System.err.printf("DEBUG -- %s%n", BoxedIntegerList.of(opos));
 		
 		throw new Error("TODO");
 	}

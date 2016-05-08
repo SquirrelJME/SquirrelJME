@@ -93,7 +93,7 @@ public class BufferAreaInputStream
 		synchronized (lock)
 		{
 			// Reach the limit
-			int lim = limit;
+			long lim = limit;
 			for (;;)
 			{
 				// Get count

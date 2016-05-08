@@ -11,6 +11,7 @@
 package net.multiphasicapps.util.boxed;
 
 import java.util.AbstractList;
+import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.util.empty.EmptyList;
 

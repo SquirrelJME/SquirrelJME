@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * This is a set which cannot be changed and has no entries.
