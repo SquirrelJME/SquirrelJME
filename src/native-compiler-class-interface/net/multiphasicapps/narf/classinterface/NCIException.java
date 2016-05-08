@@ -148,6 +148,9 @@ public class NCIException
 		/** The amount of byte code is too large. */
 		LARGE_CODE,
 		
+		/** A given exception handler address it not valid. */
+		INVALID_EXCEPTION_ADDRESS,
+		
 		/** End. */
 		;
 	}

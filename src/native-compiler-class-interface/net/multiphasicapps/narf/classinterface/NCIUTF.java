@@ -12,6 +12,7 @@ package net.multiphasicapps.narf.classinterface;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
@@ -52,6 +53,17 @@ public final class NCIUTF
 		
 		// Set
 		string = __v;
+	}
+	
+	/**
+	 * Returns the current string as a binary name.
+	 *
+	 * @return The binary name representing this symbol.
+	 * @since 2016/05/08
+	 */
+	public BinaryNameSymbol asBinaryName()
+	{
+		return asClassName().asBinaryName();
 	}
 	
 	/**

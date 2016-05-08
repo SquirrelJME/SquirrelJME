@@ -13,6 +13,7 @@ package net.multiphasicapps.narf.classinterface;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
 
 /**
  * This describes all of the exceptions that are handled in the specified
@@ -84,7 +85,22 @@ public final class NCICodeExceptions
 			
 			// In reference?
 			if (ref == null || null == (rv = ref.get()))
-				throw new Error("TODO");
+			{
+				// Calculate positio
+				NCIByteBuffer buf = buffer;
+				int base = (8 * __i);
+				
+				// Is there a binary name?
+				NCIUTF utf = pool.<NCIUTF>nullableAs(buffer.readUnsignedShort(
+					base, 6), NCIUTF.class);
+				
+				// Build it
+				refs[__i] = new WeakReference<>((rv = new NCICodeException(
+					buffer.readUnsignedShort(base, 0),
+					buffer.readUnsignedShort(base, 2),
+					buffer.readUnsignedShort(base, 4),
+					(utf == null ? null : utf.asBinaryName()))));
+			}
 			
 			// Return it
 			return rv;
