@@ -106,9 +106,6 @@ public class NCPCodeParser
 		int[] opos = new __OpPositions__(actual).get();
 		_opos = opos;
 		
-		// Debug
-		System.err.printf("DEBUG -- %s%n", BoxedIntegerList.of(opos));
-		
 		throw new Error("TODO");
 	}
 }
