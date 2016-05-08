@@ -85,4 +85,48 @@ the exception handler at the start of the method looks like this:
 	label exceptionHandlerB:
 	...
 
+## 11:27
+
+So the part of any `NRProgram` will be the exception double table. This also
+means that I will need a volatile variable per thread or a reserved one for
+the current exception block and the exception which was thrown. Also, there
+will be a need for storing the exception block. So before a method or exception
+is thrown by a program, the exception block ID is stored into some value. If
+an exception handler throws an exception out of the method by returning then
+the exception block ID will have to be stored and then restored.
+
+	if (thrownException != null && exceptionBlock == 0)
+		exceptionBlock = savedExceptionBlock;
+		
+	if (exceptionBlock != 0)
+	{
+
+However, in the case of propogation down, this means that after every method
+call (if I want to keep it simple) would have to check if an exception was
+thrown (the thrownException global/register is not null) and if it is, jump
+to the start of the method which contains the exception jumping code. An
+alternative to this would be if instead there were an exceptional return
+address used. So say if the exception handler propgates upwards, instead of
+returning the address of the previous instruction, it is instead returned to
+the exception handler. However, this can complicate restoring saved local
+variables and stack entries which are stored on the stack. Doing it that way
+would also require some variables to be "locked" into position so that a
+generic restoration of values can be performed. So due to that complexity and
+the double return address and the need of an extra register (when they might
+be few), means that after each method invocation, there must be a check for
+a thrown exception. This check however would be performed after all of the
+local values are restored however.
+
+## 11:35
+
+This would be the simplest to implement as a slight cost of code bloat and
+speed. Note that value restoration is only concerned with registers, so if a
+local value is stored on the stack and this is a CISC where stack access really
+does not matter when it comes to using values, then restoration is not really
+needed as much anyway. So the start of the method will be very important. This
+then would mean that the exceptionBlock is restored also and the check if an
+exception was thrown and the block is zero does not have to be done at all,
+which will save an extra check for those conditions at the start. So there is
+some tradeoff. So, check for exceptions after going away and performing a
+method call would be the way to go.
 
