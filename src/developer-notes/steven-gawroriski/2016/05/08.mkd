@@ -135,3 +135,35 @@ method call would be the way to go.
 So the code attribute should have the exception table also. The exceptions
 should be cached and immutable.
 
+## 18:54
+
+This revision 1710f107b5bccc6a50ccccdac446995d7f9c6fe8 has quite a number of
+`c` in it, but I stopped programming in C really.
+
+## 19:01
+
+I wonder if I can base64 a favicon, appears that I can.
+
+## 19:11
+
+I figured out what my downscaler would be called, it would be called a weighted
+color downscale. Basically "heavier" colors will appear more than lower colors.
+If downscaling for example by 16 times, the color which has the most weight
+attached to the downscale area would be shown instead.
+
+## 19:27
+
+I suppose for image reading, thinking about by pixel or by whatever, but likely
+I would just load plain RGB data.
+
+## 19:43
+
+I thought Java ME 8 lacked Reader and InputStream reader, but it does have it
+so handling the XPM image would be easier.
+
+## 19:46
+
+I suppose for correct XPM read support, I need to implement some part of a
+C preprocessor.
+
+

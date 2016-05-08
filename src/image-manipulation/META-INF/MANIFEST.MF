@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-Hairball-Name: image-manipulation
+X-Hairball-UUID: 0b42447e-fc9d-40f5-939e-f3f5feb7c2c4
+X-Hairball-Depends: javame-cldc-full,
+ image-reader-xpm
+X-Hairball-Error: AS
+LIBlet-Title: Image Manipulation
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160508
+LIBlet-Description: This provides some image manipulation tools
+  so that they are processed and such.
+

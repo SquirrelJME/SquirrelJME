@@ -13,6 +13,8 @@ package net.multiphasicapps.narf.codeparse;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
+import net.multiphasicapps.narf.classinterface.NCICodeException;
+import net.multiphasicapps.narf.classinterface.NCICodeExceptions;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
@@ -105,6 +107,8 @@ public class NCPCodeParser
 		// Calculation all the operation positions
 		int[] opos = new __OpPositions__(actual).get();
 		_opos = opos;
+		
+		// 
 		
 		throw new Error("TODO");
 	}
