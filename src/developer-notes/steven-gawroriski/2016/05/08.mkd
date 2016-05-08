@@ -4,3 +4,85 @@
 
 For the buffer, I should also have a base and an offset variant also.
 
+## 10:52
+
+If I follow the model of storing locals as they are set, then I do not need a
+boundary for exception handlers, however something that I will need is which
+exception block is currently being used. So that if an exception handler is
+called then the exception can be handled properly. As planned before the
+first instruction on entry of a method will be one which checks whether an
+exception was thrown, and if it was then checks are made to see which handler
+to use or if the exception should propogate upwards. Doing it this way would
+make it mappable to C's setjmp/longjmp. Say C source code is desired to be
+generated, then the start of the method would be a setjmp which is given a
+value or where an exception is stored elsewhere. That return value would be the
+exception block number that was last executed. There would be a global
+variable for a given thread which indicates the exception currently being
+thrown. If the exception block index is non-zero then the exception is read
+along with its class type. Execution is made at the start against comparisons
+which check if it matches the given block or if there is no handler for the
+given exception. Note that in C, using setjmp/longjmp would be slightly more
+complicated since local items would have to be copied to the stack before a
+method call or exception throwing. C code would be structured so that basic
+blocks are in their own scope. There would be labels at the start of each
+basic block. For exception handlers, the initial stack item is initialized an
+then the exception is clearaed in the handler and a `goto` is performed. When
+the set of exception handlers changes, then the exception handler ID will be
+updated accordingly. This permits the machine code instead of multiple
+comparisons the exception handler ID is just a table which contains an address
+relative to some base to jump to. The class type instance comparisons would be
+made in those however, and those would require comparisons. However, to
+simplify checking of classes, since most code would be static anyway and all
+ran programs are JITed or AOTed, then... I was going to say that I could just
+check against an index but due to inheritence this cannot be done. So for each
+exception an instanceof check has to be performed. So instead for speed the
+exception handler table can instead be another table (the ID table would
+point to this). That second table would have the expected class type and the
+jump target to the handler (since a single instruction can have many handlers),
+a simple and cheap "system call" would be made (that does not require stack
+manipulation or variable saving) on the class of the exception to potentially
+be handled if a given class type is an instance of it. Each class that extends
+Throwable would have a special table in it which contains the class IDs of all
+the other `Throwable` class types which are compatible with the given
+exception.
+
+## 11:14
+
+Note that exception handlers for a given block **MUST** match the order that
+they appear in the `Code` attribute in. So basically in pseudo code of sorts
+the exception handler at the start of the method looks like this:
+
+	global thrownException
+	non-thrashed-local exceptionBlock
+	
+	if (exceptionBlock != 0)
+	{
+		table exceptions;
+		
+		switch (exceptionBlock)
+		{
+			case 1: exceptions = table1; break;
+			case 2: exceptions = table2; break;
+			case 3: exceptions = table3; break;
+				
+			default: goto propogateException; 
+		}
+		
+		for (entry e : exceptions)
+			if (thrownException.isInstance(e.type))
+				goto e.handler;
+		
+		label propogateException:
+		...
+	}
+	
+	label normalEntryPoint:
+	...
+	
+	label exceptionHandlerA:
+	...
+	
+	label exceptionHandlerB:
+	...
+
+
