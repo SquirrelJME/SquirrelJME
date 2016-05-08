@@ -51,3 +51,13 @@ art drawn myself while high resolution images would be the drawn mascot. Not
 sure it would be possible for the algorithm I am thinking about writing would
 be able to scale the image down so much.
 
+## 16:20
+
+The image utilities could actually be called `extra-util-image` and such then
+the downscaler could use those utilities.
+
+## 16:27
+
+One thing though that I have not completely worked on is the native compiler,
+I kind of just keep avoiding it.
+

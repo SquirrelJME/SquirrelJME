@@ -13,5 +13,6 @@ is can be used.
 # Low Resolution Usage
 
 For extremely low resolutions from 16x16 and below, the mascot would likely
-have to be manually drawn as low resolution pixel art.
+have to be manually drawn as low resolution pixel art using the high resolution
+version as a base.
 
