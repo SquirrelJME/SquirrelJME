@@ -70,7 +70,25 @@ public final class NCICodeExceptions
 	@Override
 	public NCICodeException get(int __i)
 	{
-		throw new Error("TODO");
+		// Check
+		if (__i < 0 || __i >= count)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Lock references
+		Reference<NCICodeException>[] refs = _refs;
+		synchronized (refs)
+		{
+			// Check reference
+			Reference<NCICodeException> ref = refs[__i];
+			NCICodeException rv;
+			
+			// In reference?
+			if (ref == null || null == (rv = ref.get()))
+				throw new Error("TODO");
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
