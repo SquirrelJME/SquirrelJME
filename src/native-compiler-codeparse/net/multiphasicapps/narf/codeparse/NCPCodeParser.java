@@ -108,5 +108,70 @@ public class NCPCodeParser
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Converts a logical address to a physical one.
+	 *
+	 * @param __l The input logical address.
+	 * @return The physical address or {@code -1} if it is not matched to an
+	 * instruction.
+	 * @since 2016/05/08
+	 */
+	public int logicalToPhysical(int __l)
+	{
+		// Would never match
+		int[] pp = _opos;
+		if (__l < 0 || __l >= pp.length)
+			return -1;
+		
+		// Directly represented
+		return pp[__l];
+	}
+	
+	/**
+	 * Converts a physical address to a logical one.
+	 *
+	 * @param __p The input physical address.
+	 * @return The logical address or {@code -1} if it is not matched to an
+	 * instruction.
+	 * @since 2016/05/08
+	 */
+	public int physicalToLogical(int __p)
+	{
+		// Would never match
+		int[] pp = _opos;
+		int n = pp.length;
+		if (__p < 0 || __p > pp[n - 1])
+			return -1;
+		
+		// Perform a binary search
+		for (int lo = 0, hi = n - 1, piv = (n >>> 1); !(piv < 0 || piv >= n);)
+		{
+			// Get the address at the pivot
+			int pva = pp[piv];
+			
+			// If matched, return it
+			if (pva == __p)
+				return piv;
+			
+			// Nothing left?
+			if (lo == hi)
+				return -1;
+			
+			// Go higher
+			if (__p > pva)
+				lo = piv + 1;
+			
+			// Go lower
+			else
+				hi = piv - 1;
+			
+			// Set the new pivot
+			piv = lo + ((hi - lo) >>> 1);
+		}
+		
+		// Not found
+		return -1;
+	}
 }
 
