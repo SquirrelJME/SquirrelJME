@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.classinterface;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 
@@ -31,6 +33,9 @@ public final class NCICodeException
 	
 	/** The class type to handle. */
 	protected final ClassNameSymbol handletype;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the code exception.
@@ -75,6 +80,25 @@ public final class NCICodeException
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/08
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Must be self
+		if (!(__o instanceof NCICodeException))
+			return false;
+		
+		// Cast and check
+		NCICodeException o = (NCICodeException)__o;
+		return startpc == o.startpc &&
+			endpc == o.endpc &&
+			handlerpc == o.handlerpc &&
+			handletype.equals(o.handletype);
+	}
+	
+	/**
 	 * Returns the address of the exception handler.
 	 *
 	 * @return The exception handler address.
@@ -97,6 +121,16 @@ public final class NCICodeException
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/08
+	 */
+	@Override
+	public int hashCode()
+	{
+		return startpc ^ endpc ^ handlerpc ^ handletype.hashCode();
+	}
+	
+	/**
 	 * Returns the inclusive start address.
 	 *
 	 * @return The inclusive start address.
@@ -105,6 +139,26 @@ public final class NCICodeException
 	public int startAddress()
 	{
 		return startpc;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/08
+	 */
+	@Override
+	public String toString()
+	{
+		// Get reference
+		Reference<String> ref = _string;
+		String rv;
+		
+		// In reference?
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = "[" + startpc + ", " +
+				endpc + ")->" + handlerpc + "?" + handletype));
+		
+		// Return it
+		return rv;
 	}
 }
 
