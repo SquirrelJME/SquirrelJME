@@ -52,6 +52,9 @@ public class NCPCodeParser
 	/** Has this work been done already? */
 	private volatile boolean _did;
 	
+	/** Operation positions. */
+	private volatile int[] _opos;
+	
 	/**
 	 * Initializes the code parser.
 	 *
@@ -101,6 +104,7 @@ public class NCPCodeParser
 		
 		// Calculation all the operation positions
 		int[] opos = new __OpPositions__(actual).get();
+		_opos = opos;
 		
 		// Debug
 		System.err.printf("DEBUG -- %s%n", BoxedIntegerList.of(opos));
