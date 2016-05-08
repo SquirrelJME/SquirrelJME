@@ -53,9 +53,37 @@ class __OpPositions__
 		int len = buffer.length();
 		int[] build = new int[len];
 		
-		//
+		// Go through all operation
+		int i, a;
+		for (i = 0, a = 0; i < len;)
+		{
+			// Get the operation size
+			int sz = __sizeOf(i);
+			
+			// {@squirreljme.error AR04 The size of the current operation is
+			// zero or negative. (The opcode position; The size of it)}
+			if (sz <= 0)
+				throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+					String.format("AR04 %d %d", i, sz));
+			
+			// Current operation is here
+			build[a++] = i;
+			
+			// Next operation is after this one
+			i += sz;
+		}
 		
-		throw new Error("TODO");
+		// Exactly sized? (Only contains single wide ops)
+		if (a == len)
+			return build;
+		
+		// Setup a new given sized array
+		int[] rv = new int[a];
+		for (int x = 0; x < a; x++)
+			rv[x] = build[x];
+		
+		// Return that instead
+		return rv;
 	}
 	
 	
