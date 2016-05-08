@@ -35,8 +35,8 @@ public final class NCICodeException
 	/**
 	 * Initializes the code exception.
 	 *
-	 * @param __spc Starting address.
-	 * @param __epc Ending address.
+	 * @param __spc The inclusive starting address.
+	 * @param __epc The exclusive ending address.
 	 * @param __hpc The handler address.
 	 * @param __t The type of exception to handle, if {@code null} then this
 	 * means {@link Throwable}.
@@ -61,6 +61,50 @@ public final class NCICodeException
 		handlerpc = __hpc;
 		handletype = (__t == null ? BinaryNameSymbol.THROWABLE : __t).
 			asClassName();
+	}
+	
+	/**
+	 * Returns the exclusive end address.
+	 *
+	 * @return The exclusive end address.
+	 * @since 2016/05/08
+	 */
+	public int endAddress()
+	{
+		return endpc;
+	}
+	
+	/**
+	 * Returns the address of the exception handler.
+	 *
+	 * @return The exception handler address.
+	 * @since 2016/05/08
+	 */
+	public int handlerAddress()
+	{
+		return handlerpc;
+	}
+	
+	/**
+	 * Returns the type of exception this handles.
+	 *
+	 * @return The type of exception to handle.
+	 * @since 2016/05/08
+	 */
+	public ClassNameSymbol handlesType()
+	{
+		return handletype;
+	}
+	
+	/**
+	 * Returns the inclusive start address.
+	 *
+	 * @return The inclusive start address.
+	 * @since 2016/05/08
+	 */
+	public int startAddress()
+	{
+		return startpc;
 	}
 }
 
