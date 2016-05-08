@@ -1,2 +1,6 @@
 # 2016/05/08
 
+## 09:07
+
+For the buffer, I should also have a base and an offset variant also.
+

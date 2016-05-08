@@ -80,6 +80,22 @@ public class NCIByteBuffer
 	}
 	
 	/**
+	 * Reads a byte at the given position and offset.
+	 *
+	 * @param __p The position to read from.
+	 * @param __o The relative offset.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the position is not within bounds
+	 * or the offset is negative.
+	 * @since 2016/05/08
+	 */
+	public byte readByte(int __p, int __o)
+		throws IndexOutOfBoundsException
+	{
+		return readByte(__rel(__p, __o));
+	}
+	
+	/**
 	 * Reads an int at the given position.
 	 *
 	 * @param __p The position to read from.
@@ -95,6 +111,22 @@ public class NCIByteBuffer
 			((((int)_data[o + 1]) & 0xFF) << 16) |
 			((((int)_data[o + 2]) & 0xFF) << 8) |
 			((((int)_data[o + 3]) & 0xFF));
+	}
+	
+	/**
+	 * Reads an int at the given position and offset.
+	 *
+	 * @param __p The position to read from.
+	 * @param __o The relative offset.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the position is not within bounds
+	 * or the offset is negative.
+	 * @since 2016/05/08
+	 */
+	public int readInt(int __p, int __o)
+		throws IndexOutOfBoundsException
+	{
+		return readInt(__rel(__p, __o));
 	}
 	
 	/**
@@ -114,6 +146,22 @@ public class NCIByteBuffer
 	}
 	
 	/**
+	 * Reads a short at the given position and offset.
+	 *
+	 * @param __p The position to read from.
+	 * @param __o The relative offset.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the position is not within bounds
+	 * or the offset is negative.
+	 * @since 2016/05/08
+	 */
+	public short readShort(int __p, int __o)
+		throws IndexOutOfBoundsException
+	{
+		return readShort(__rel(__p, __o));
+	}
+	
+	/**
 	 * Reads an unsigned byte at the given position.
 	 *
 	 * @param __p The position to read from.
@@ -122,8 +170,25 @@ public class NCIByteBuffer
 	 * @since 2016/04/27
 	 */
 	public int readUnsignedByte(int __p)
+		throws IndexOutOfBoundsException
 	{
 		return ((int)readByte(__p)) & 0xFF;
+	}
+	
+	/**
+	 * Reads an unsigned byte at the given position and offset.
+	 *
+	 * @param __p The position to read from.
+	 * @param __o The relative offset.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the position is not within bounds
+	 * or the offset is negative.
+	 * @since 2016/05/08
+	 */
+	public int readUnsignedByte(int __p, int __o)
+		throws IndexOutOfBoundsException
+	{
+		return readUnsignedByte(__rel(__p, __o));
 	}
 	
 	/**
@@ -135,8 +200,25 @@ public class NCIByteBuffer
 	 * @since 2016/04/27
 	 */
 	public long readUnsignedInt(int __p)
+		throws IndexOutOfBoundsException
 	{
 		return ((long)readInt(__p)) & 0xFFFF_FFFF;
+	}
+	
+	/**
+	 * Reads an unsigned int at the given position and offset.
+	 *
+	 * @param __p The position to read from.
+	 * @param __o The relative offset.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the position is not within bounds
+	 * or the offset is negative.
+	 * @since 2016/05/08
+	 */
+	public long readUnsignedInt(int __p, int __o)
+		throws IndexOutOfBoundsException
+	{
+		return readUnsignedInt(__rel(__p, __o));
 	}
 	
 	/**
@@ -148,8 +230,25 @@ public class NCIByteBuffer
 	 * @since 2016/04/27
 	 */
 	public int readUnsignedShort(int __p)
+		throws IndexOutOfBoundsException
 	{
 		return ((int)readShort(__p)) & 0xFFFF;
+	}
+	
+	/**
+	 * Reads an unsigned short at the given position and offset.
+	 *
+	 * @param __p The position to read from.
+	 * @param __o The relative offset.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the position is not within bounds
+	 * or the offset is negative.
+	 * @since 2016/05/08
+	 */
+	public int readUnsignedShort(int __p, int __o)
+		throws IndexOutOfBoundsException
+	{
+		return readUnsignedShort(__rel(__p, __o));
 	}
 	
 	/**
@@ -203,6 +302,28 @@ public class NCIByteBuffer
 		
 		// Calculated base
 		return __p + bo;
+	}
+	
+	/**
+	 * Calculates the relative offset from the base to read from.
+	 *
+	 * @param __p The base position to read from.
+	 * @param __o The relative offset.
+	 * @return The calculated position.
+	 * @throws IndexOutOfBoundsException If the position or offset are
+	 * negative.
+	 * @since 2016/05/08
+	 */
+	private int __rel(int __p, int __o)
+		throws IndexOutOfBoundsException
+	{
+		// Check
+		if (__p < 0 || __o < 0)
+			throw new IndexOutOfBoundsException(String.format("IOOB %d %d",
+				__p, __o));
+		
+		// Calculate
+		return __p + __o;
 	}
 }
 
