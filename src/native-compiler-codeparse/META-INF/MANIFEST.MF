@@ -5,6 +5,7 @@ X-Hairball-Depends: javame-cldc-compact,
  native-compiler-personality,
  native-compiler-class-interface, native-compiler-program,
  extra-util-boxed
+X-Hairball-Error: AR
 LIBlet-Title: NARF Java Byte Code Parser
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160427

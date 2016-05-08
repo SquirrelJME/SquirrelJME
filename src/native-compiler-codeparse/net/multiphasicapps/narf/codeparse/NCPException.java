@@ -73,6 +73,9 @@ public class NCPException
 	public static enum Issue
 		implements BaseIssue
 	{
+		/** The operation is not legal. */
+		ILLEGAL_OPCODE,
+		
 		/** End. */
 		;
 	}

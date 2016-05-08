@@ -57,5 +57,144 @@ class __OpPositions__
 		
 		throw new Error("TODO");
 	}
+	
+	
+	/**
+	 * This determines the size of the given instruction.
+	 *
+	 * @param __pos The position of the instruction.
+	 * @return The size of the given instruction.
+	 * @throws NCPException If the instruction runs off the code block
+	 * or it is unknown or invalid.
+	 * @since 2016/03/29
+	 */
+	int __sizeOf(int __pos)
+		throws NCPException
+	{
+		// Get the buffer
+		NCIByteBuffer buffer = this.buffer;
+		int len = buffer.length();
+		
+		// Could be out of bounds
+		int opcode = -1;
+		try
+		{
+			// Read the opcode
+			opcode = buffer.readUnsignedByte(__pos);
+			
+			// Wide operations
+			if (opcode == 196)
+			{
+				// Read a new byte
+				opcode = buffer.readUnsignedByte(__pos, 1);
+				
+				// Four bytes
+				if ((opcode >= 21 && opcode <= 25) ||
+					(opcode == 169))
+					return 4;
+				
+				// 6 bytes
+				else if (opcode == 132)
+					return 6;
+			}
+			
+			// Tableswitch
+			else if (opcode == 170)
+			{
+				// Get padded position, which is rounded up to the next byte
+				int ppos = ((__pos + 3) & (~3));
+				
+				// Read the low and high bytes
+				int lo = buffer.readInt(ppos, 4);
+				int hi = buffer.readInt(ppos, 8);
+				
+				// Lower must really be lower
+				// {@squirreljme.error AR01 The {@code tableswitch}
+				// operation has a low value which is higher than the high
+				// value. (The position of the current operation; The
+				// low byte; The high byte)}
+				if (lo > hi)
+					throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+						String.format("AR01 %d %d %d", __pos, lo, hi));
+				
+				// Calculate the size
+				return (ppos - __pos) + 12 + (4 * ((hi - lo) + 1));
+			}
+			
+			// Lookup switch
+			else if (opcode == 171)
+			{
+				// Get padded position, which is rounded up to the next byte
+				int ppos = ((__pos + 3) & (~3));
+				
+				// Read the pair count
+				int np = buffer.readInt(ppos, 4);
+				
+				// {@squirreljme.error AR02 The {@code lookupswitch} operation
+				// has a zero or negative pair count. (The position of the
+				// current operation; The pair count)}
+				if (np <= 0)
+					throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+						String.format("AR02 %d %d", __pos, np));
+				
+				// Calculate the size
+				return (ppos - __pos) + 8 + (8 * np);
+			}
+			
+			// These are single byte operations
+			else if ((opcode >= 0 && opcode <= 15) ||
+				(opcode >= 26 && opcode <= 53) ||
+				(opcode >= 59 && opcode <= 131) ||
+				(opcode >= 133 && opcode <= 152) ||
+				(opcode >= 172 && opcode <= 177) ||
+				(opcode >= 190 && opcode <= 191) ||
+				(opcode >= 194 && opcode <= 195))
+				return 1;
+			
+			// These are two byte operations
+			else if ((opcode == 18) ||
+				(opcode == 16) ||
+				(opcode >= 21 && opcode <= 25) ||
+				(opcode >= 54 && opcode <= 58) ||
+				(opcode == 169) ||
+				(opcode == 188))
+				return 2;
+			
+			// And three byte operations
+			else if ((opcode == 17) ||
+				(opcode >= 19 && opcode <= 20) ||
+				(opcode == 132) ||
+				(opcode >= 153 && opcode <= 168) ||
+				(opcode >= 178 && opcode <= 183) ||
+				(opcode == 184) ||
+				(opcode == 187) ||
+				(opcode == 189) ||
+				(opcode >= 192 && opcode <= 193) ||
+				(opcode >= 198 && opcode <= 199))
+				return 3;
+			
+			// Four bytes
+			else if (opcode == 197)
+				return 4;
+			
+			// Five bytes
+			else if ((opcode >= 185 && opcode <= 186) ||
+				(opcode >= 200 && opcode <= 201))
+				return 5;
+
+			// If this point is reached then the instruction is not known.
+			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+				String.format( "IN1h %d", opcode));
+		}
+		
+		// Out of bounds instruction
+		catch (IndexOutOfBoundsException e)
+		{
+			// {@squirreljme.error AR03 While decoding an operation, the bounds
+			// of the program were exceeded. (The current opcode)}
+			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+				String.format("AR03 %d", opcode), e);
+		}
+	}
 }
 
