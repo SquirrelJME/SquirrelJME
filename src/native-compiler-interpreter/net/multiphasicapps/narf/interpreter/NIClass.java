@@ -220,6 +220,9 @@ public class NIClass
 			// Get the current thread so that execution may be performed on it
 			NIThread tt = core.thread(Thread.currentThread());
 			
+			// Debug
+			System.err.printf("DEBUG -- Static init %s.%n", base.thisName());
+			
 			// Invoke the method
 			tt.invoke(sinit, _NO_ARGS);
 		}
