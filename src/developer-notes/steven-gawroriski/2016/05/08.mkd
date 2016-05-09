@@ -170,4 +170,12 @@ C preprocessor.
 
 XPM parsing likely does not require a very complex C preprocessor to be used.
 
+## 23:02
+
+For complete speed and potentially reduced memory usage, the code parser might
+just complicate things a bit. I would want a mutable `NRProgram` but that might
+just not be that required. An alternative to this would just to have
+`NRProgram` which would perform the work of the code parser and such. At least
+in the constructor of sorts it can build the required operation tables and
+such.
 
