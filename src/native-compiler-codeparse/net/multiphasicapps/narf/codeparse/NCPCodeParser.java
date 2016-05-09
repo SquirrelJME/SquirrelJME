@@ -118,13 +118,13 @@ public final class NCPCodeParser
 		if (nohandlers)
 		{
 			// The return which is the next following operation
-			NROp rop = __pushNext(new NROpReturn(dxfactory));
+			/*NROp rop = __pushNext(new NROpReturn(dxfactory));
 			
 			// Compare against null
 			__pushNow(new NROpObjectIsNull(dxfactory, ???, rop));
 			
 			// Add both blocks
-			__popBlock
+			__popBlock*/
 			
 			if (true)
 				throw new Error("TODO");

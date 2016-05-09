@@ -31,3 +31,8 @@ as required.
 For simplicity and some speed, I do not need to strictly follow SSA. The
 compiler will just perform basic cached optimizations.
 
+## 17:44
+
+I know how I can implement branching without requiring knowing the exact IDs
+of future basic blocks.
+
