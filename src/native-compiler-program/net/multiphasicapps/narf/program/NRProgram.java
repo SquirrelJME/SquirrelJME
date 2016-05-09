@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 
@@ -33,6 +34,19 @@ public class NRProgram
 	private final NRBasicBlock[] _blocks;
 	
 	/**
+	 * Initializes the program from the given basic blocks.
+	 *
+	 * @param __blocks The basic blocks which make up the program.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/09
+	 */
+	public NRProgram(NRBasicBlock... __blocks)
+		throws NullPointerException
+	{
+		this(Arrays.<NRBasicBlock>asList(__blocks));
+	}
+	
+	/**
 	 * Initializes the program representation.
 	 *
 	 * @param __blocks The basic blocks which make up the program.
@@ -45,6 +59,17 @@ public class NRProgram
 		// Check
 		if (__blocks == null)
 			throw new NullPointerException("NARG");
+		
+		// First copy all blocks
+		int n = __blocks.size();
+		count = n;
+		NRBasicBlock[] blocks = new NRBasicBlock[n];
+		_blocks = blocks;
+		{
+			int i = 0;
+			for (NRBasicBlock block : __blocks)
+				blocks[i++] = Objects.<NRBasicBlock>requireNonNull(block);
+		}
 		
 		throw new Error("TODO");
 	}

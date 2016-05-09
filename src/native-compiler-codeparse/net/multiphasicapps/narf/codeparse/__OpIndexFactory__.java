@@ -8,33 +8,29 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.program;
+package net.multiphasicapps.narf.codeparse;
+
+import net.multiphasicapps.narf.program.NROpIndexFactory;
 
 /**
- * This represents a single operation in a program.
+ * This is used to count operations within the program.
  *
- * @since 2016/05/08
+ * @since 2016/05/09
  */
-public abstract class NROp
+final class __OpIndexFactory__
+	implements NROpIndexFactory
 {
-	/**
-	 * Initializes the base operation.
-	 *
-	 * @since 2016/05/09
-	 */
-	NROp()
-	{
-	}
+	/** The current index. */
+	private volatile int _dx;
 	
 	/**
-	 * This is a flagging interface attached to operations to indicate that
-	 * they are terminal operations and must be the last operation in a basic
-	 * block.
-	 *
+	 * {@inheritDoc}
 	 * @since 2016/05/09
 	 */
-	static interface __Terminal__
+	@Override
+	public int next()
 	{
+		return _dx++;
 	}
 }
 

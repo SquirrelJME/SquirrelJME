@@ -25,6 +25,7 @@ import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.program.NRBasicBlock;
 import net.multiphasicapps.narf.program.NROp;
+import net.multiphasicapps.narf.program.NROpIndexFactory;
 import net.multiphasicapps.narf.program.NRProgram;
 
 /**
@@ -52,12 +53,23 @@ public final class NCPCodeParser
 	/** The actual code. */
 	protected final NCIByteBuffer actual;
 	
-	/** Operations which are waiting to be returned. */
-	protected final List<NROp> wait =
+	/** Basic blocks which are waiting to be returned. */
+	protected final List<NRBasicBlock> wait =
+		new ArrayList<>();
+	
+	/** The current queue of operations in the curent basic block. */
+	protected final List<NROp> intobasic =
 		new ArrayList<>();
 	
 	/** No exceptions to handle at all? */
 	protected final boolean nohandlers;
+	
+	/** The basic block which is associated with the exception handler. */
+	protected final NRBasicBlock exceptionhandlerbb;
+	
+	/** Operation index factory. */
+	protected final NROpIndexFactory dxfactory =
+		new __OpIndexFactory__();
 	
 	/** Operation positions. */
 	private final int[] _opos;
@@ -109,6 +121,8 @@ public final class NCPCodeParser
 			if (true)
 				throw new Error("TODO");
 		}
+		
+		// Setup block
 		
 		throw new Error("TODO");
 	}

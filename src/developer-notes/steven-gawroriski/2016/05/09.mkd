@@ -21,3 +21,8 @@ exceptions are normally handled would be used instead.
 To locate jump targets, I can have jump indexes which are associated with a
 program.
 
+## 17:04
+
+For programs I will need a kind of index so a class which can provide indices
+as required.
+

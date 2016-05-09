@@ -11,30 +11,20 @@
 package net.multiphasicapps.narf.program;
 
 /**
- * This represents a single operation in a program.
+ * This factory is used to return an index which is uniquely associated with
+ * an operation. All operations within a program must be mapped to a single
+ * address.
  *
- * @since 2016/05/08
+ * @since 2016/05/09
  */
-public abstract class NROp
+public interface NROpIndexFactory
 {
 	/**
-	 * Initializes the base operation.
+	 * Returns the next available operation index.
 	 *
+	 * @return The next index.
 	 * @since 2016/05/09
 	 */
-	NROp()
-	{
-	}
-	
-	/**
-	 * This is a flagging interface attached to operations to indicate that
-	 * they are terminal operations and must be the last operation in a basic
-	 * block.
-	 *
-	 * @since 2016/05/09
-	 */
-	static interface __Terminal__
-	{
-	}
+	public abstract int next();
 }
 

@@ -76,6 +76,9 @@ public class NRException
 		/** The operation is not legal. */
 		ILLEGAL_OPCODE,
 		
+		/** Terminal operation not at end of basic block. */
+		TERMINAL_BEFORE_END,
+		
 		/** End. */
 		;
 	}
