@@ -10,3 +10,9 @@ of the method then I would not need a check at the start. However, for stuff
 such as array access where bounds checks need to be performed, if there is
 an exception then it will have to be thrown by the generated code.
 
+## 09:46
+
+However, for asynchronous exceptions if one does occur then it will just appear
+in the current method being called. If it propogates upwards then how
+exceptions are normally handled would be used instead.
+
