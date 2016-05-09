@@ -54,3 +54,11 @@ sent to the program as required.
 Also some operations such as getting and setting of fields would be terminal
 operations potentially (provided they are not `final` or have a known value).
 
+## 18:19
+
+So the first thing to do then would be to go through all operations and
+determine the jump targets that the operations jump to then exception handlers.
+The mapping of logical instructions to block builders will be setup. The block
+handlers can also have the register states such as which ones are active and
+which ones are temporary for example.
+
