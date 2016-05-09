@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.program;
+package net.multiphasicapps.narf.codeparse;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -23,13 +23,15 @@ import net.multiphasicapps.narf.classinterface.NCICodeExceptions;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
+import net.multiphasicapps.narf.program.NROp;
+import net.multiphasicapps.narf.program.NRProgram;
 
 /**
  * This performs parsing operations.
  *
  * @since 2016/05/08
  */
-final class __OpParser__
+public final class NCPCodeParser
 {
 	/** The library for class lookup (optimization). */
 	protected final NCILookup lookup;
@@ -67,7 +69,7 @@ final class __OpParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/08
 	 */
-	__OpParser__(NCILookup __lu, NCIMethod __m)
+	public NCPCodeParser(NCILookup __lu, NCIMethod __m)
 		throws NullPointerException
 	{
 		// Check
@@ -111,12 +113,12 @@ final class __OpParser__
 	}
 	
 	/**
-	 * Returns all operations.
+	 * Returns the parsed program.
 	 *
-	 * @return All operations.
+	 * @return The parsed program.
 	 * @since 2016/05/08
 	 */
-	public NROp[] get()
+	public NRProgram get()
 	{
 		throw new Error("TODO");
 	}

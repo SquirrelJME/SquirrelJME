@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-Hairball-Name: native-compiler-codeparse
+X-Hairball-UUID: 6bb0b8c1-01da-4a8b-999f-dce8cb34f4a1
+X-Hairball-Depends: javame-cldc-compact, native-compiler,
+ extra-util-unmodifiable,
+ native-compiler-program
+X-Hairball-Error: AR
+LIBlet-Title: Java Byte Code Parser
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160509
+LIBlet-Description: This contains the byte code parser which
+  generates the program.
+
