@@ -16,3 +16,8 @@ However, for asynchronous exceptions if one does occur then it will just appear
 in the current method being called. If it propogates upwards then how
 exceptions are normally handled would be used instead.
 
+## 16:56
+
+To locate jump targets, I can have jump indexes which are associated with a
+program.
+

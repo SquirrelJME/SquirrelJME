@@ -23,6 +23,7 @@ import net.multiphasicapps.narf.classinterface.NCICodeExceptions;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
+import net.multiphasicapps.narf.program.NRBasicBlock;
 import net.multiphasicapps.narf.program.NROp;
 import net.multiphasicapps.narf.program.NRProgram;
 

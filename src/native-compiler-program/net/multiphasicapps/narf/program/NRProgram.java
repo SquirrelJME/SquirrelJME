@@ -24,38 +24,29 @@ import net.multiphasicapps.narf.classinterface.NCIMethod;
  * @since 2016/04/27
  */
 public class NRProgram
-	extends AbstractList<NROp>
+	extends AbstractList<NRBasicBlock>
 {
 	/** The operation count. */
 	protected final int count;
 	
-	/** Operations which are available. */
-	private final NROp[] _ops;
+	/** Blocks which are available. */
+	private final NRBasicBlock[] _blocks;
 	
 	/**
 	 * Initializes the program representation.
 	 *
-	 * @param __lu The program lookup.
-	 * @param __m The method to represent a program for.
+	 * @param __blocks The basic blocks which make up the program.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/08
 	 */
-	public NRProgram(NCILookup __lu, NCIMethod __m)
+	public NRProgram(List<NRBasicBlock> __blocks)
 		throws NullPointerException
 	{
 		// Check
-		if (__lu == null || __m == null)
+		if (__blocks == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup operations
-		__OpParser__ opr = new __OpParser__(__lu, __m);
-		NROp[] ops = opr.get();
-		count = ops.length;
-		_ops = ops;
-		
-		// Debug
-		System.err.printf("DEBUG -- Operations: %s%n",
-			Arrays.<NROp>asList(ops));
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -63,9 +54,9 @@ public class NRProgram
 	 * @since 2016/05/08
 	 */
 	@Override
-	public NROp get(int __i)
+	public NRBasicBlock get(int __i)
 	{
-		return _ops[__i];
+		return _blocks[__i];
 	}
 	
 	/**
