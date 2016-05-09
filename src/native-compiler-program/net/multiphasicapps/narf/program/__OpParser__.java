@@ -10,12 +10,16 @@
 
 package net.multiphasicapps.narf.program;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
+import net.multiphasicapps.narf.classinterface.NCICodeException;
+import net.multiphasicapps.narf.classinterface.NCICodeExceptions;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
@@ -46,8 +50,11 @@ final class __OpParser__
 	protected final NCIByteBuffer actual;
 	
 	/** Operations which are waiting to be returned. */
-	protected final Deque<NROp> wait =
-		new LinkedList<>();
+	protected final List<NROp> wait =
+		new ArrayList<>();
+	
+	/** No exceptions to handle at all? */
+	protected final boolean nohandlers;
 	
 	/** Operation positions. */
 	private final int[] _opos;
@@ -79,6 +86,38 @@ final class __OpParser__
 		int[] opos = new __OpPositions__(actual).get();
 		_opos = opos;
 		
+		// Determine if exceptions are handled
+		NCICodeExceptions handlers = code.exceptionHandlers();
+		boolean nohandlers = handlers.isEmpty();
+		this.nohandlers = nohandlers;
+		
+		// If there are no exception handlers, then just return from the
+		// method without clearing the exception handler register.
+		if (nohandlers)
+		{
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Otherwise the exception handler table needs to be created and
+		// properly initialized.
+		else
+		{
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns all operations.
+	 *
+	 * @return All operations.
+	 * @since 2016/05/08
+	 */
+	public NROp[] get()
+	{
 		throw new Error("TODO");
 	}
 	
@@ -99,19 +138,6 @@ final class __OpParser__
 		
 		// Directly represented
 		return pp[__l];
-	}
-	
-	/**
-	 * Returns the next operation.
-	 *
-	 * @return The next operation.
-	 * @throws NoSuchElementException If there are no operations remaining.
-	 * @since 2016/05/08
-	 */
-	public NROp next()
-		throws NoSuchElementException
-	{
-		throw new Error("TODO");
 	}
 	
 	/**

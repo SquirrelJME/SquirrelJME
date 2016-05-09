@@ -15,7 +15,15 @@ package net.multiphasicapps.narf.program;
  *
  * @since 2016/05/08
  */
-public class NROp
+public abstract class NROp
 {
+	/**
+	 * Initializes the base operation.
+	 *
+	 * @since 2016/05/09
+	 */
+	NROp()
+	{
+	}
 }
 

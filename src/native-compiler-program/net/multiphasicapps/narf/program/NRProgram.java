@@ -12,6 +12,7 @@ package net.multiphasicapps.narf.program;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.narf.classinterface.NCILookup;
@@ -25,6 +26,12 @@ import net.multiphasicapps.narf.classinterface.NCIMethod;
 public class NRProgram
 	extends AbstractList<NROp>
 {
+	/** The operation count. */
+	protected final int count;
+	
+	/** Operations which are available. */
+	private final NROp[] _ops;
+	
 	/**
 	 * Initializes the program representation.
 	 *
@@ -41,24 +48,14 @@ public class NRProgram
 			throw new NullPointerException("NARG");
 		
 		// Setup operations
-		List<NROp> target = new ArrayList<>();
 		__OpParser__ opr = new __OpParser__(__lu, __m);
-		try
-		{
-			// Add all operations
-			for (;;)
-				target.add(opr.next());
-		}
-		
-		// Ignore
-		catch (NoSuchElementException e)
-		{
-		}
+		NROp[] ops = opr.get();
+		count = ops.length;
+		_ops = ops;
 		
 		// Debug
-		System.err.printf("DEBUG -- Operations: %s%n", opr);
-		
-		throw new Error("TODO");
+		System.err.printf("DEBUG -- Operations: %s%n",
+			Arrays.<NROp>asList(ops));
 	}
 	
 	/**
@@ -68,7 +65,7 @@ public class NRProgram
 	@Override
 	public NROp get(int __i)
 	{
-		throw new Error("TODO");
+		return _ops[__i];
 	}
 	
 	/**
@@ -78,7 +75,7 @@ public class NRProgram
 	@Override
 	public int size()
 	{
-		throw new Error("TODO");
+		return count;
 	}
 }
 
