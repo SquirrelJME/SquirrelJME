@@ -1,0 +1,12 @@
+# 2016/05/09
+
+## 09:37
+
+Actually for the exception handler generated code, I can place it anywhere
+which would remove a check at the start of a method. If I follow the controlled
+exception route (where there are no asynchronous exceptions, note that I do
+not have `Thread.stop` which is a good thing here). If I place it at the end
+of the method then I would not need a check at the start. However, for stuff
+such as array access where bounds checks need to be performed, if there is
+an exception then it will have to be thrown by the generated code.
+
