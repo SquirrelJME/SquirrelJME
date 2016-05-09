@@ -24,10 +24,8 @@ import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.program.NRBasicBlock;
+import net.multiphasicapps.narf.program.NRJumpTarget;
 import net.multiphasicapps.narf.program.NROp;
-import net.multiphasicapps.narf.program.NROpIndexFactory;
-import net.multiphasicapps.narf.program.NROpObjectIsNull;
-import net.multiphasicapps.narf.program.NROpReturn;
 import net.multiphasicapps.narf.program.NRProgram;
 
 /**
@@ -72,10 +70,6 @@ public final class NCPCodeParser
 	
 	/** The basic block which is associated with the exception handler. */
 	protected final NRBasicBlock exceptionhandlerbb;
-	
-	/** Operation index factory. */
-	protected final NROpIndexFactory dxfactory =
-		new __OpIndexFactory__();
 	
 	/** Operation positions. */
 	private final int[] _opos;

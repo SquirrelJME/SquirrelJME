@@ -79,6 +79,12 @@ public class NRException
 		/** Terminal operation not at end of basic block. */
 		TERMINAL_BEFORE_END,
 		
+		/** The jump target is not bound to any basic block. */
+		UNBOUND_JUMP_TARGET,
+		
+		/** Jump target is already bound. */
+		BOUND_JUMP_TARGET,
+		
 		/** End. */
 		;
 	}

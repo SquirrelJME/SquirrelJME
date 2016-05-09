@@ -36,3 +36,16 @@ compiler will just perform basic cached optimizations.
 I know how I can implement branching without requiring knowing the exact IDs
 of future basic blocks.
 
+## 17:46
+
+This also means I would not need an index factory which would be a bit ugly.
+Jumps can only be made to the start of basic blocks anyway.
+
+## 18:30
+
+I just need to figure out the potential jump targets for all operations then
+setup jump targets for all of them. Then once that is done, I can have a
+multiple of lists which define the operations to be placed within basic blocks.
+Then at program generation the lists can be turned into basic blocks and then
+sent to the program as required.
+
