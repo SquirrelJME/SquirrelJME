@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.codeparse;
+package net.multiphasicapps.narf.program;
 
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 
@@ -63,7 +63,7 @@ class __OpPositions__
 			// {@squirreljme.error AR04 The size of the current operation is
 			// zero or negative. (The opcode position; The size of it)}
 			if (sz <= 0)
-				throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+				throw new NRException(NRException.Issue.ILLEGAL_OPCODE,
 					String.format("AR04 %d %d", i, sz));
 			
 			// Current operation is here
@@ -92,12 +92,12 @@ class __OpPositions__
 	 *
 	 * @param __pos The position of the instruction.
 	 * @return The size of the given instruction.
-	 * @throws NCPException If the instruction runs off the code block
+	 * @throws NRException If the instruction runs off the code block
 	 * or it is unknown or invalid.
 	 * @since 2016/03/29
 	 */
 	int __sizeOf(int __pos)
-		throws NCPException
+		throws NRException
 	{
 		// Get the buffer
 		NCIByteBuffer buffer = this.buffer;
@@ -142,7 +142,7 @@ class __OpPositions__
 				// value. (The position of the current operation; The
 				// low byte; The high byte)}
 				if (lo > hi)
-					throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+					throw new NRException(NRException.Issue.ILLEGAL_OPCODE,
 						String.format("AR01 %d %d %d", __pos, lo, hi));
 				
 				// Calculate the size
@@ -162,7 +162,7 @@ class __OpPositions__
 				// has a zero or negative pair count. (The position of the
 				// current operation; The pair count)}
 				if (np <= 0)
-					throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+					throw new NRException(NRException.Issue.ILLEGAL_OPCODE,
 						String.format("AR02 %d %d", __pos, np));
 				
 				// Calculate the size
@@ -211,7 +211,7 @@ class __OpPositions__
 				return 5;
 
 			// If this point is reached then the instruction is not known.
-			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+			throw new NRException(NRException.Issue.ILLEGAL_OPCODE,
 				String.format( "IN1h %d", opcode));
 		}
 		
@@ -220,7 +220,7 @@ class __OpPositions__
 		{
 			// {@squirreljme.error AR03 While decoding an operation, the bounds
 			// of the program were exceeded. (The current opcode)}
-			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+			throw new NRException(NRException.Issue.ILLEGAL_OPCODE,
 				String.format("AR03 %d", opcode), e);
 		}
 	}

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.codeparse;
+package net.multiphasicapps.narf.program;
 
 import net.multiphasicapps.narf.exception.NARFException;
 
@@ -16,17 +16,17 @@ import net.multiphasicapps.narf.exception.NARFException;
  * This is thrown when the native compiler is not operating correctly or there
  * is a code parse issue.
  *
- * @since 2016/04/23
+ * @since 2016/05/08
  */
-public class NCPException
+public class NRException
 	extends NARFException
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
-	 * @since 2016/04/23
+	 * @since 2016/05/08
 	 */
-	public NCPException(Issue __i)
+	public NRException(Issue __i)
 	{
 		super(__i);
 	}
@@ -35,9 +35,9 @@ public class NCPException
 	 * Initializes the exception with the given message.
 	 *
 	 * @param __msg The exception message.
-	 * @since 2016/04/23
+	 * @since 2016/05/08
 	 */
-	public NCPException(Issue __i, String __msg)
+	public NRException(Issue __i, String __msg)
 	{
 		super(__i, __msg);
 	}
@@ -47,9 +47,9 @@ public class NCPException
 	 *
 	 * @param __msg The exception message.
 	 * @param __c The cause.
-	 * @since 2016/04/23
+	 * @since 2016/05/08
 	 */
-	public NCPException(Issue __i, String __msg, Throwable __c)
+	public NRException(Issue __i, String __msg, Throwable __c)
 	{
 		super(__i, __msg, __c);
 	}
@@ -58,9 +58,9 @@ public class NCPException
 	 * Initializes the exception with the given cause and no message.
 	 *
 	 * @param __c The cause of the exception.
-	 * @since 2016/04/23
+	 * @since 2016/05/08
 	 */
-	public NCPException(Issue __i, Throwable __c)
+	public NRException(Issue __i, Throwable __c)
 	{
 		super(__i, __c);
 	}
@@ -68,7 +68,7 @@ public class NCPException
 	/**
 	 * This is the reason for failure.
 	 *
-	 * @since 2016/04/23
+	 * @since 2016/05/08
 	 */
 	public static enum Issue
 		implements BaseIssue

@@ -8,12 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains code parsers of Java byte code which are used to
- * eventually generate the native machine code.
- *
- * @since 2016/04/20
- */
+package net.multiphasicapps.narf.program;
 
-package net.multiphasicapps.narf.codeparse;
+/**
+ * This represents a single operation in a program.
+ *
+ * @since 2016/05/08
+ */
+public class NROp
+{
+}
 

@@ -8,31 +8,25 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.codeparse;
+package net.multiphasicapps.narf.program;
 
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
-import net.multiphasicapps.narf.classinterface.NCICodeException;
-import net.multiphasicapps.narf.classinterface.NCICodeExceptions;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
-import net.multiphasicapps.narf.program.NRBasicBlock;
-import net.multiphasicapps.narf.program.NRProgram;
-import net.multiphasicapps.util.boxed.BoxedIntegerList;
 
 /**
- * This class is given a method which is then parsed.
+ * This performs parsing operations.
  *
- * @since 2016/04/20
+ * @since 2016/05/08
  */
-public class NCPCodeParser
+final class __OpParser__
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** The library for class lookup (optimization). */
 	protected final NCILookup lookup;
 	
@@ -51,73 +45,39 @@ public class NCPCodeParser
 	/** The actual code. */
 	protected final NCIByteBuffer actual;
 	
-	/** Has this work been done already? */
-	private volatile boolean _did;
+	/** Operations which are waiting to be returned. */
+	protected final Deque<NROp> wait =
+		new LinkedList<>();
 	
 	/** Operation positions. */
-	private volatile int[] _opos;
-	
-	/** Exception handler data. */
-	private volatile __ExceptionHandlers__ _handlers;
-	
-	/** Exception identifiers for each operation (-1 means propogate). */
-	private volatile int[] _handlerblocks;
+	private final int[] _opos;
 	
 	/**
-	 * Initializes the code parser.
+	 * Parses all operations.
 	 *
-	 * @param __lib The lookup to find class definitions (used for final
-	 * optimizations and such).
-	 * @param __m The method to parse.
+	 * @param __lu The lookup for other classes.
+	 * @param __m The source method.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/27
+	 * @since 2016/05/08
 	 */
-	public NCPCodeParser(NCILookup __lib, NCIMethod __m)
+	__OpParser__(NCILookup __lu, NCIMethod __m)
 		throws NullPointerException
 	{
 		// Check
-		if (__lib == null || __m == null)
+		if (__lu == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		lookup = __lib;
+		lookup = __lu;
 		method = __m;
 		outerclass = __m.outerClass();
 		constantpool = outerclass.constantPool();
 		code = __m.code();
 		actual = code.code();
-	}
-	
-	/**
-	 * Parses and returns the resultant program.
-	 *
-	 * @return The decoded program.
-	 * @since 2016/04/27
-	 */
-	public NRProgram get()
-	{
-		// Lock
-		synchronized (lock)
-		{
-			// {@squirreljme.error ND01 Program parsing is being or has already
-			// been performed.}
-			if (_did)
-				throw new IllegalStateException("ND01");
-			_did = true;
-		}
-		
-		// Local cache
-		NCICodeAttribute code = this.code;
-		NCIByteBuffer actual = this.actual;
 		
 		// Calculation all the operation positions
 		int[] opos = new __OpPositions__(actual).get();
 		_opos = opos;
-		
-		// Setup exception handler data (unique byte areas and such)
-		__ExceptionHandlers__ handlers = new __ExceptionHandlers__(this,
-			code.exceptionHandlers());
-		_handlers = handlers;
 		
 		throw new Error("TODO");
 	}
@@ -139,6 +99,19 @@ public class NCPCodeParser
 		
 		// Directly represented
 		return pp[__l];
+	}
+	
+	/**
+	 * Returns the next operation.
+	 *
+	 * @return The next operation.
+	 * @throws NoSuchElementException If there are no operations remaining.
+	 * @since 2016/05/08
+	 */
+	public NROp next()
+		throws NoSuchElementException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
