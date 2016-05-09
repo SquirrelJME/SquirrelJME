@@ -41,11 +41,16 @@ of future basic blocks.
 This also means I would not need an index factory which would be a bit ugly.
 Jumps can only be made to the start of basic blocks anyway.
 
-## 18:30
+## 18:03
 
 I just need to figure out the potential jump targets for all operations then
 setup jump targets for all of them. Then once that is done, I can have a
 multiple of lists which define the operations to be placed within basic blocks.
 Then at program generation the lists can be turned into basic blocks and then
 sent to the program as required.
+
+## 18:13
+
+Also some operations such as getting and setting of fields would be terminal
+operations potentially (provided they are not `final` or have a known value).
 
