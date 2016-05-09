@@ -12,8 +12,10 @@ package net.multiphasicapps.narf.codeparse;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
@@ -53,23 +55,16 @@ public final class NCPCodeParser
 	/** The actual code. */
 	protected final NCIByteBuffer actual;
 	
-	/** Basic blocks which are waiting to be returned. */
-	protected final List<NRBasicBlock> wait =
-		new ArrayList<>();
+	/** The entry basic block (also the exception handler block). */
+	protected final __Block__ entryblock =
+		new __Block__();
 	
-	/** The current queue of operations in the curent basic block. */
-	protected final List<NROp> intobasic =
-		new ArrayList<>();
-	
-	/** The current queue of operations in the next basic block. */
-	protected final List<NROp> intonextbasic =
-		new ArrayList<>();
+	/** The basic blocks in a program. */
+	protected final Map<Integer, __Block__> blocks =
+		new HashMap<>();
 	
 	/** No exceptions to handle at all? */
 	protected final boolean nohandlers;
-	
-	/** The basic block which is associated with the exception handler. */
-	protected final NRBasicBlock exceptionhandlerbb;
 	
 	/** Operation positions. */
 	private final int[] _opos;
@@ -203,27 +198,5 @@ public final class NCPCodeParser
 		// Not found
 		return -1;
 	}
-	
-	/**
-	 * Pops the current operations which are waiting to be placed into the
-	 * current basic block
-	 */
-	NRBasicBlock __popBlock()
-	{
-		// Create new block
-		NRBasicBlock rv = new NRBasicBlock(intobasic);
-		wait.add(rv);
-		
-		// Clear old instructions
-		intobasic.clear();
-		
-		// If there are any instruction waiting to be placed into the next
-		// block then place them in the current one.
-		intobasic.addAll(intonextbasic);
-		intonextbasic.clear();
-		
-		// Return the block
-		return rv;
-	} 
 }
 
