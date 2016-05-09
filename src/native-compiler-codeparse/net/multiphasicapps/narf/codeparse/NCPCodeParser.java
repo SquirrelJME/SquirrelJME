@@ -57,6 +57,12 @@ public class NCPCodeParser
 	/** Operation positions. */
 	private volatile int[] _opos;
 	
+	/** Exception handler data. */
+	private volatile __ExceptionHandlers__ _handlers;
+	
+	/** Exception identifiers for each operation (-1 means propogate). */
+	private volatile int[] _handlerblocks;
+	
 	/**
 	 * Initializes the code parser.
 	 *
@@ -108,7 +114,10 @@ public class NCPCodeParser
 		int[] opos = new __OpPositions__(actual).get();
 		_opos = opos;
 		
-		// 
+		// Setup exception handler data (unique byte areas and such)
+		__ExceptionHandlers__ handlers = new __ExceptionHandlers__(this,
+			code.exceptionHandlers());
+		_handlers = handlers;
 		
 		throw new Error("TODO");
 	}
