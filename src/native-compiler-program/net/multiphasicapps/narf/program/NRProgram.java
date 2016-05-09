@@ -70,8 +70,6 @@ public class NRProgram
 			for (NRBasicBlock block : __blocks)
 				blocks[i++] = Objects.<NRBasicBlock>requireNonNull(block);
 		}
-		
-		throw new Error("TODO");
 	}
 	
 	/**

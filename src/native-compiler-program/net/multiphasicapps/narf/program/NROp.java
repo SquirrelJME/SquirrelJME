@@ -27,13 +27,23 @@ public abstract class NROp
 	}
 	
 	/**
+	 * This represents an operation which may branch to the start of a basic
+	 * block.
+	 *
+	 * @since 2016/05/09
+	 */
+	public static interface TypeBranch
+	{
+	}
+	
+	/**
 	 * This is a flagging interface attached to operations to indicate that
 	 * they are terminal operations and must be the last operation in a basic
 	 * block.
 	 *
 	 * @since 2016/05/09
 	 */
-	static interface __Terminal__
+	public static interface TypeTerminal
 	{
 	}
 }

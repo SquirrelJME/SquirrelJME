@@ -72,7 +72,7 @@ public class NRBasicBlock
 				// {@squirreljme.error AW01 Terminal operation is not at the
 				// end of a block. (The operation; The operation index; The
 				// operation count)}
-				if ((op instanceof NROp.__Terminal__) && at < n - 1)
+				if ((op instanceof NROp.TypeTerminal) && at < n - 1)
 					throw new NRException(NRException.Issue.
 						TERMINAL_BEFORE_END, String.format("AW01 %s %d",
 							op, at, n));

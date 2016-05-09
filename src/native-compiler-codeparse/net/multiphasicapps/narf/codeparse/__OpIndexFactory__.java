@@ -32,5 +32,15 @@ final class __OpIndexFactory__
 	{
 		return _dx++;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/09
+	 */
+	@Override
+	public int peek()
+	{
+		return _dx;
+	}
 }
 

@@ -26,6 +26,8 @@ import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.narf.program.NRBasicBlock;
 import net.multiphasicapps.narf.program.NROp;
 import net.multiphasicapps.narf.program.NROpIndexFactory;
+import net.multiphasicapps.narf.program.NROpObjectIsNull;
+import net.multiphasicapps.narf.program.NROpReturn;
 import net.multiphasicapps.narf.program.NRProgram;
 
 /**
@@ -59,6 +61,10 @@ public final class NCPCodeParser
 	
 	/** The current queue of operations in the curent basic block. */
 	protected final List<NROp> intobasic =
+		new ArrayList<>();
+	
+	/** The current queue of operations in the next basic block. */
+	protected final List<NROp> intonextbasic =
 		new ArrayList<>();
 	
 	/** No exceptions to handle at all? */
@@ -107,9 +113,19 @@ public final class NCPCodeParser
 		this.nohandlers = nohandlers;
 		
 		// If there are no exception handlers, then just return from the
-		// method without clearing the exception handler register.
+		// method without clearing the exception handler register if there is
+		// an exception.
 		if (nohandlers)
 		{
+			// The return which is the next following operation
+			NROp rop = __pushNext(new NROpReturn(dxfactory));
+			
+			// Compare against null
+			__pushNow(new NROpObjectIsNull(dxfactory, ???, rop));
+			
+			// Add both blocks
+			__popBlock
+			
 			if (true)
 				throw new Error("TODO");
 		}
@@ -202,5 +218,27 @@ public final class NCPCodeParser
 		// Not found
 		return -1;
 	}
+	
+	/**
+	 * Pops the current operations which are waiting to be placed into the
+	 * current basic block
+	 */
+	NRBasicBlock __popBlock()
+	{
+		// Create new block
+		NRBasicBlock rv = new NRBasicBlock(intobasic);
+		wait.add(rv);
+		
+		// Clear old instructions
+		intobasic.clear();
+		
+		// If there are any instruction waiting to be placed into the next
+		// block then place them in the current one.
+		intobasic.addAll(intonextbasic);
+		intonextbasic.clear();
+		
+		// Return the block
+		return rv;
+	} 
 }
 
