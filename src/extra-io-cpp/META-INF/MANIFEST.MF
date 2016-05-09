@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: extra-io-cpp
 X-Hairball-UUID: 88a544a1-a838-479f-9108-87e351d47ea1
-X-Hairball-Depends: javame-cldc-compact
+X-Hairball-Depends: javame-cldc-compact, extra-util-checked
 X-Hairball-Error: AU
 LIBlet-Title: C Preprocessor
 LIBlet-Vendor: Steven Gawroriski
