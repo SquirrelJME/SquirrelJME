@@ -26,3 +26,8 @@ program.
 For programs I will need a kind of index so a class which can provide indices
 as required.
 
+## 17:27
+
+For simplicity and some speed, I do not need to strictly follow SSA. The
+compiler will just perform basic cached optimizations.
+
