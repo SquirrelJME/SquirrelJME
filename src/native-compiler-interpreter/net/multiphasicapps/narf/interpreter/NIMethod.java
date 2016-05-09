@@ -15,7 +15,6 @@ import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
-import net.multiphasicapps.narf.codeparse.NCPCodeParser;
 import net.multiphasicapps.narf.program.NRProgram;
 
 /**
@@ -88,8 +87,8 @@ public class NIMethod
 			
 			// Needs to be cached?
 			if (ref == null || null == (rv = ref.get()))
-				_program = new WeakReference<>((rv = new NCPCodeParser(
-					core.library(), base).get()));
+				_program = new WeakReference<>((rv = new NRProgram(
+					core.library(), base)));
 			
 			return rv;
 		}
