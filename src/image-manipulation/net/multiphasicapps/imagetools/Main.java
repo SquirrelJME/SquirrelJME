@@ -94,7 +94,7 @@ public class Main
 		for (ImageReader ir : _SERVICES)
 		{
 			// Can handle the given extension or path?
-			if (!(ir.canRead(ext) || ir.canRead(__path)))
+			if (!ir.canRead(ext))
 				continue;
 			
 			// Try opening as a file first
@@ -119,11 +119,16 @@ public class Main
 				{
 				}
 			}
+			
+			// {@squirreljme.error AS02 The specified path does not exist on
+			// the disk or as a resource within the classpath. (The path to the
+			// image)}
+			throw new IOException(String.format("AS02 %s", __path));
 		}
 		
-		// {@squirreljme.error AS02 The specified path does not exist on the
-		// disk or as a resource within the classpath. (The path to the image)}
-		throw new IOException(String.format("AS02 %s", __path));
+		// {@squirreljme.error AS09 There is no image handler for the given
+		// path. (The path to the image; The extension used)}
+		throw new IOException(String.format("AS09 %s %s", __path, ext));
 	}
 	
 	/**
