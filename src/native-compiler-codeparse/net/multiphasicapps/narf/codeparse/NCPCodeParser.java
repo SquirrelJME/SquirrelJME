@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.codeparse;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;

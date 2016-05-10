@@ -1,0 +1,7 @@
+# 2016/05/10
+
+## 10:56
+
+For some simplicity the code parser can handle generation of operation data,
+one that provides stack operations and opcode arguments.
+

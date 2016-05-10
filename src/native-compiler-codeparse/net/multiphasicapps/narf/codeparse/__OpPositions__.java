@@ -210,9 +210,10 @@ class __OpPositions__
 				(opcode >= 200 && opcode <= 201))
 				return 5;
 
-			// If this point is reached then the instruction is not known.
+			// {@squirreljme.error AR07 Method byte code contains an illegal
+			// opcode. (The opcode)}
 			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
-				String.format( "IN1h %d", opcode));
+				String.format("AR07 %d", opcode));
 		}
 		
 		// Out of bounds instruction

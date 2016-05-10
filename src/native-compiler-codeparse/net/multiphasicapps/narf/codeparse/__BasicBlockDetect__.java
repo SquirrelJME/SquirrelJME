@@ -81,7 +81,11 @@ class __BasicBlockDetect__
 			emit(x.handlerAddress()).setExceptionHandler();
 		}
 		
-		throw new Error("TODO");
+		// Go through all instructions
+		for (int i = 0; i < n; i++)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
