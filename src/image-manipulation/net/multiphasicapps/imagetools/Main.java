@@ -48,6 +48,16 @@ public class Main
 		if (__args.length <= 0)
 			throw new IllegalArgumentException("AS01");
 		
+		// Which commands?
+		String command = __args[0];
+		switch (command)
+		{
+				// {@squirreljme.error AS03 Unknown command (The command)}
+			default:
+				throw new IllegalArgumentException(String.format("AS03 %s",
+					command));
+		}
+		
 		throw new Error("TODO");
 	}
 	
