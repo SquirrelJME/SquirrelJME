@@ -42,9 +42,17 @@ public final class NCPOp
 		if (opcode == NCPOpCode.WIDE)
 			opcode = (NCPOpCode.WIDE << 8) | __code.readUnsignedByte(__pa, 1);
 		
+		// Debug
 		System.err.printf("DEBUG -- Op %d%n", opcode);
 		
-		throw new Error("TODO");
+		// Allocate new object
+		if (opcode == NCPOpCode.NEW)
+			throw new Error("TODO");
+		
+		// {@squirreljme.error AR08 Unknown opcode. (The opcode)}
+		else
+			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
+				String.format("AR08 %d", opcode));
 	}
 }
 
