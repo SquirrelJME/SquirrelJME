@@ -101,6 +101,11 @@ public final class NCPCodeParser
 		boolean nohandlers = handlers.isEmpty();
 		this.nohandlers = nohandlers;
 		
+		// Detect basic blocks
+		new __BasicBlockDetect__(actual, opos, blocks, handlers, this);
+		System.err.printf("DEBUG -- Block starts: %s%n", blocks);
+		
+		
 		// If there are no exception handlers, then just return from the
 		// method without clearing the exception handler register if there is
 		// an exception.

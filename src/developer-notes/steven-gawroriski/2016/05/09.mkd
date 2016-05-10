@@ -62,3 +62,7 @@ The mapping of logical instructions to block builders will be setup. The block
 handlers can also have the register states such as which ones are active and
 which ones are temporary for example.
 
+## 19:30
+
+Actually with this new code route, I do not need to have a mutable `NRProgram`.
+
