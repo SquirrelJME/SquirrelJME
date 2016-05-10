@@ -55,5 +55,12 @@ invocations and such and the targets of jumps.
 Exception handlers only care about local variables and the stack items are
 all temporary anyway. When a method is called, arguments are popped from the
 stack. If I start a basic block on the invocation then all stack items are
-saved and then they are saved again before the method call.
+saved and then they are saved again before the method call. So to think about
+it, are basic blocks even needed at all? All stack items are essentially
+temporary. If I calculate the jump targets, arguments, and verification info
+for operations, I should then be able to just directly create executable code.
+As stated before, locals would be written to immedietly for simplicity while
+stack items would remain temporary. When a method call is performed, I would
+just store the local variables and any stack items which were not popped and
+move the values over so the calling convention is statisfied.
 
