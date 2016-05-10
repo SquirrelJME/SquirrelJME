@@ -75,10 +75,10 @@ public class NICore
 		// Locate the main class
 		NIClass maincl = initClass(__main.asClassName());
 		
-		// {@squirreljme.error AN08 The main class could not be found.
+		// {@squirreljme.error AN0m The main class could not be found.
 		// (The main class)}
 		if (maincl == null)
-			throw new IllegalArgumentException(String.format("AN08 %s",
+			throw new IllegalArgumentException(String.format("AN0m %s",
 				__main));
 		
 		// Find the main method

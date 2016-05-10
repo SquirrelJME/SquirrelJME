@@ -156,11 +156,11 @@ __outer_loop:
 				
 					// Unknown
 				default:
-					// {@squirreljme.error LI08 An unknown command line switch
+					// {@squirreljme.error AN08 An unknown command line switch
 					// was specified. (The command line switch)}
 					if (cur.startsWith("-"))
 						throw new IllegalArgumentException(String.format(
-							"LI08 %s", cur));
+							"AN08 %s", cur));
 					
 					// Stop processing because these are normal commands now
 					break __outer_loop;

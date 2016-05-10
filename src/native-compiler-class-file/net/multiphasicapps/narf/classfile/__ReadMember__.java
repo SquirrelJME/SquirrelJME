@@ -168,18 +168,18 @@ class __ReadMember__
 				
 				try (DataInputStream dais = new DataInputStream(bais))
 				{
-					// {@squirreljme.error AQ1v Method already has a code
+					// {@squirreljme.error AQ1y Method already has a code
 					// attribute. (The method ID)}
 					if (code != null)
 						throw new NCIException(NCIException.Issue.DOUBLE_CODE,
-							String.format("AQ1v", id));
+							String.format("AQ1y", id));
 					
-					// {@squirreljme.error AQ1v Did not read the entire code
+					// {@squirreljme.error AQ1z Did not read the entire code
 					// attribute for a method. (The method ID)}
 					code = new byte[len];
 					if (len != dais.read(code))
 						throw new NCIException(NCIException.Issue.SHORT_CODE,
-							String.format("AQ1w", id));
+							String.format("AQ1z", id));
 				}
 			}
 		}

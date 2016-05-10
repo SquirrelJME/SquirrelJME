@@ -190,12 +190,12 @@ public class StandardZIP32File
 				int cdmag = (int)readStruct(p,
 					ZIP32CentralDirectory.MAGIC_NUMBER);
 				
-				// {@squirreljme.error AM07 The ZIP directory has an illegal
+				// {@squirreljme.error AM0f The ZIP directory has an illegal
 				// magic number. (The illegal magic value; The value it should
 				// be)}
 				if (cdmag != ZIP32CentralDirectory.MAGIC_NUMBER_VALUE)
 					throw new ZIPFormatException(
-						String.format("AM07 %08x %08x",
+						String.format("AM0f %08x %08x",
 						cdmag, ZIP32CentralDirectory.MAGIC_NUMBER_VALUE));
 				
 				// Set offset

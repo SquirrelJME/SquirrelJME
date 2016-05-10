@@ -52,7 +52,7 @@ public class WeakHashMap<K, V>
 			throw new IllegalArgumentException(String.format("ZZ01 %d",
 				__icap));
 		
-		// {@squirreljme.error ZZ2 The load factor of the weak hash map is
+		// {@squirreljme.error ZZ02 The load factor of the weak hash map is
 		// not positive. (The non-positive load factor)}
 		if (__load <= 0.0F)
 			throw new IllegalArgumentException(String.format("ZZ02 %f",

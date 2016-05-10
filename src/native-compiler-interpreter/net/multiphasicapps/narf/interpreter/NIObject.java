@@ -54,7 +54,7 @@ public class NIObject
 		if (__c == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error Ni0j An attempt was made to allocate an array
+		// {@squirreljme.error AN0j An attempt was made to allocate an array
 		// for a class which is not an array. (The class)}
 		if (__al != 0 && !__cl.isArray())
 			throw new NIException(__c, NIException.Issue.NOT_AN_ARRAY,

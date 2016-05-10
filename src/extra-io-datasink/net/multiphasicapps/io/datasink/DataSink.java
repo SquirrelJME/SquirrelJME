@@ -335,10 +335,10 @@ public abstract class DataSink
 		// Lock
 		synchronized (lock)
 		{
-			// {@squirreljme.error AA07 The data sink cannot be set as complete
+			// {@squirreljme.error AA0a The data sink cannot be set as complete
 			// during processing.}
 			if (_inproc)
-				throw new SinkProcessException("AA07");
+				throw new SinkProcessException("AA0a");
 			
 			// {@squirreljme.error AA06 The data sink is already complete}
 			if (_complete)
