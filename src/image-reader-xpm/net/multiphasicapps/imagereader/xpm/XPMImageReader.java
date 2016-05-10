@@ -53,11 +53,11 @@ public class XPMImageReader
 			case "image/x-xpixmap":
 			case "image/xpm":
 			case "image/x-xpm":
-			case "application/x-xpm:"
+			case "application/x-xpm":
 				return true;
 			
 				// Not valid
-			default
+			default:
 				return false;
 		}
 	}
