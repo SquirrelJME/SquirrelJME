@@ -30,6 +30,9 @@ class __Block__
 	protected final List<NROp> ops =
 		new ArrayList<>();
 	
+	/** Is this block an exception handler? */
+	private volatile boolean _ishandler;
+	
 	/**
 	 * Initializes the basic block.
 	 *
@@ -37,6 +40,18 @@ class __Block__
 	 */
 	__Block__()
 	{
+	}
+	
+	/**
+	 * Sets that this block is the target of a exception handler.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/05/09
+	 */
+	public __Block__ setExceptionHandler()
+	{
+		_ishandler = true;
+		return this;
 	}
 }
 

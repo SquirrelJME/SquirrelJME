@@ -78,7 +78,7 @@ class __BasicBlockDetect__
 					String.format("AR06 %s", x));
 			
 			// Emit block at the handler location
-			emit(x.handlerAddress());
+			emit(x.handlerAddress()).setExceptionHandler();
 		}
 		
 		throw new Error("TODO");
