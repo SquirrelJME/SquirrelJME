@@ -134,6 +134,17 @@ public final class NCPCodeParser
 	}
 	
 	/**
+	 * Returns the constant pool.
+	 *
+	 * @return The constant pool.
+	 * @since 2016/05/10
+	 */
+	public NCIPool constantPool()
+	{
+		return constantpool;
+	}
+	
+	/**
 	 * Returns the parsed program.
 	 *
 	 * @return The parsed program.
