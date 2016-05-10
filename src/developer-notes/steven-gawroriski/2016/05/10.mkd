@@ -76,3 +76,12 @@ are not exactly the same they would be moved around. Then if I follow the
 write local immedietly rule, then that means I do not have to have a new basic
 block after a method call or similar.
 
+## 19:55
+
+Then as before, operations such as push and pop would just have a basic "copy".
+If the end of a basic block is reached then the copy is stored on the stack as
+needed. The copy would not actually be set in a temporary register unless a
+basic block boundary was reached. Then once flow passes to a new basic block,
+all temporary register assignments are reset and such. For simplicity with
+exception handlers, local variables would be bound to the same locations.
+

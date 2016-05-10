@@ -91,13 +91,6 @@ class __BasicBlockDetect__
 			
 			switch (cop.instructionId())
 			{
-					// These operations force a basic block to be started on
-					// their operation because they may potentially require
-					// calculated states to exist
-				case NCPOpCode.NEW:		// May initialize classes
-					emit(i);
-					break;
-					
 					// The instructions which are not here do not force a basic
 					// block to be started
 				default:
