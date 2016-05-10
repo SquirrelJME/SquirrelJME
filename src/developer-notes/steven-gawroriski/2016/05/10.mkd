@@ -13,3 +13,13 @@ that there were even a single pixel of the border color then it would be
 border colored. However this may make things a bit ugly especially when it
 comes to borders and such.
 
+## 15:44
+
+For `NCPOp` to work better, I will need to know the potential verification
+state of the operation. However, if I ignore this then I can have the states
+be a bit implicit so to speak. When I go through the actual decoded operations
+I can determine if the stack states are correct and such. By then I would know
+the start locations of all basic blocks for example. However the verification
+state could still be indicated in the operation, using a similar means of
+setting the data like I have done before.
+
