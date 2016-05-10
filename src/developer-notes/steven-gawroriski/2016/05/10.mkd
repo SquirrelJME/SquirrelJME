@@ -62,5 +62,17 @@ for operations, I should then be able to just directly create executable code.
 As stated before, locals would be written to immedietly for simplicity while
 stack items would remain temporary. When a method call is performed, I would
 just store the local variables and any stack items which were not popped and
-move the values over so the calling convention is statisfied.
+move the values over so the calling convention is statisfied. Provided I
+verify that the states are correct for the instructions things can get a bit
+simplified. However, thinking about that. I do need basic blocks because of
+jump targets. I only need to start a new basic block when execution flows to
+another basic block, which saves the existing stack items. Doing it this way
+would reduce the complexity of requiring SSA magic going backwards and setting
+up phi functions for locals and stack items. So essentially it would just be a
+simple register storage mechanism. Each basic block could then have its own
+register mapping and stack mappings. So say for example a basic block jumps to
+another and the registers/stack entries which are associated with the stack
+are not exactly the same they would be moved around. Then if I follow the
+write local immedietly rule, then that means I do not have to have a new basic
+block after a method call or similar.
 
