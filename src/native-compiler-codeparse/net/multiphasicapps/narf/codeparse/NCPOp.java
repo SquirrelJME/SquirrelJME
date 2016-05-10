@@ -26,8 +26,8 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  */
 public final class NCPOp
 {
-	/** The current opcode. */
-	protected final int opcode;
+	/** The current instruction identifier. */
+	protected final int instid;
 	
 	/** Operation arguments. */
 	protected final List<Object> args;
@@ -52,24 +52,24 @@ public final class NCPOp
 		if (__cp == null || __code == null)
 			throw new NullPointerException("NARG");
 		
-		// Read the opcode
-		int opcode = __code.readUnsignedByte(__pa);
-		if (opcode == NCPOpCode.WIDE)
-			opcode = (NCPOpCode.WIDE << 8) | __code.readUnsignedByte(__pa, 1);
-		this.opcode = opcode;
+		// Read the instid
+		int instid = __code.readUnsignedByte(__pa);
+		if (instid == NCPOpCode.WIDE)
+			instid = (NCPOpCode.WIDE << 8) | __code.readUnsignedByte(__pa, 1);
+		this.instid = instid;
 		
 		// Get the constant pool
 		NCIPool pool = __cp.constantPool();
 		
 		// Allocate new object
-		if (opcode == NCPOpCode.NEW)
+		if (instid == NCPOpCode.NEW)
 			args = __args(pool.<NCIClassReference>requiredAs(
 				__code.readUnsignedShort(__pa, 1), NCIClassReference.class));
 		
-		// {@squirreljme.error AR08 Unknown opcode. (The opcode)}
+		// {@squirreljme.error AR08 Unknown instid. (The instid)}
 		else
 			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
-				String.format("AR08 %d", opcode));
+				String.format("AR08 %d", instid));
 	}
 	
 	/**
@@ -81,6 +81,17 @@ public final class NCPOp
 	public List<Object> arguments()
 	{
 		return args;
+	}
+	
+	/**
+	 * Returns the ID of the given instruction.
+	 *
+	 * @return The instruction identifier.
+	 * @since 2016/05/10
+	 */
+	public int instructionId()
+	{
+		return instid;
 	}
 	
 	/**
@@ -96,7 +107,7 @@ public final class NCPOp
 		
 		// Create?
 		if (ref == null || null == (rv = ref.get()))
-			_string = new WeakReference<>((rv = "(" + opcode + "=" +
+			_string = new WeakReference<>((rv = "(" + instid + "=" +
 				args.toString() + ")"));
 		
 		// Return
