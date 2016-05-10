@@ -97,7 +97,7 @@ public final class NCPOp
 		// Create?
 		if (ref == null || null == (rv = ref.get()))
 			_string = new WeakReference<>((rv = "(" + opcode + "=" +
-				args.toString()));
+				args.toString() + ")"));
 		
 		// Return
 		return rv;
