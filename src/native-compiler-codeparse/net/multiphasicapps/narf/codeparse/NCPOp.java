@@ -63,13 +63,8 @@ public final class NCPOp
 		
 		// Allocate new object
 		if (opcode == NCPOpCode.NEW)
-		{
-			// Load arguments
 			args = __args(pool.<NCIClassReference>requiredAs(
 				__code.readUnsignedShort(__pa, 1), NCIClassReference.class));
-			
-			throw new Error("TODO");
-		}
 		
 		// {@squirreljme.error AR08 Unknown opcode. (The opcode)}
 		else
