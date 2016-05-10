@@ -16,5 +16,15 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # List errors
-grep -rh 'squirreljme\.error[ \t]\{1,\}....' | sed 's/^[ \t]*//g' | sort
+echo "******** LIST OF ERRORS *********" 1>&2
+(grep -rl '{@squirreljme\.error[ \t]\{1,\}....' . | while read __file
+do
+	tr '\n' ' ' < "$__file" | sed 's/{@code[ \t]\{1,\}\([^}]*\)}/\1/g' |
+		sed 's/{@squirreljme\.error[ \t]\{1,\}\([^}]*\)}/\v##ER \1 ##FI\v/g' |
+		sed 's/\/\///g' | sed 's/\/\*//g' | tr '\v' '\n' |
+		grep '##ER' | sed 's/^##ER[ \t]*//g' |
+		sed 's/##FI/<'"$(basename $__file)"'>/g' |
+		sed 's/[ \t]\{2,\}/ /g'
+done) | sort
+echo "*********************************" 1>&2
 
