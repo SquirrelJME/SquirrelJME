@@ -23,3 +23,7 @@ the start locations of all basic blocks for example. However the verification
 state could still be indicated in the operation, using a similar means of
 setting the data like I have done before.
 
+## 15:51
+
+Going to look at the statistics for this repository.
+
