@@ -5,3 +5,11 @@
 For some simplicity the code parser can handle generation of operation data,
 one that provides stack operations and opcode arguments.
 
+## 14:01
+
+Actually for image downscaling with weights, say a region to downscale has a
+bunch of colors in it. For example it is mostly white. My previous plan was if
+that there were even a single pixel of the border color then it would be
+border colored. However this may make things a bit ugly especially when it
+comes to borders and such.
+

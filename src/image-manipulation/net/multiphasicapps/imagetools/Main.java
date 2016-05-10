@@ -57,8 +57,6 @@ public class Main
 				throw new IllegalArgumentException(String.format("AS03 %s",
 					command));
 		}
-		
-		throw new Error("TODO");
 	}
 	
 	/**
