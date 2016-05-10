@@ -84,6 +84,11 @@ class __BasicBlockDetect__
 		// Go through all instructions
 		for (int i = 0; i < n; i++)
 		{
+			// Get the operation here
+			NCPOp cop = __ncp.op(i);
+			
+			System.err.printf("DEBUG -- #%3d: %s%n", i, cop);
+			
 			throw new Error("TODO");
 		}
 	}

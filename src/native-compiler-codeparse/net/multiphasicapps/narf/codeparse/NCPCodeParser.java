@@ -68,6 +68,9 @@ public final class NCPCodeParser
 	/** No exceptions to handle at all? */
 	protected final boolean nohandlers;
 	
+	/** Java operation cache. */
+	private final Reference<NCPOp>[] _ops;
+	
 	/** Operation positions. */
 	private final int[] _opos;
 	
@@ -97,6 +100,7 @@ public final class NCPCodeParser
 		// Calculation all the operation positions
 		int[] opos = new __OpPositions__(actual).get();
 		_opos = opos;
+		_ops = __makeOpArray(opos.length);
 		
 		// Determine if exceptions are handled
 		NCICodeExceptions handlers = code.exceptionHandlers();
@@ -106,7 +110,6 @@ public final class NCPCodeParser
 		// Detect basic blocks
 		new __BasicBlockDetect__(actual, opos, blocks, handlers, this);
 		System.err.printf("DEBUG -- Block starts: %s%n", blocks);
-		
 		
 		// If there are no exception handlers, then just return from the
 		// method without clearing the exception handler register if there is
@@ -161,6 +164,36 @@ public final class NCPCodeParser
 	}
 	
 	/**
+	 * Obtains the operation at the given logical address.
+	 *
+	 * @param __i The logical address to get the operational data for.
+	 * @return The operation defined at this position.
+	 * @throws IndexOutOfBoundsException If the operation is not a valid
+	 * logical instruction address.
+	 * @since 2016/05/10
+	 */
+	public NCPOp op(int __i)
+		throws IndexOutOfBoundsException
+	{
+		// Lock on the array
+		Reference<NCPOp>[] ops = _ops;
+		synchronized (ops)
+		{
+			// Get
+			Reference<NCPOp> ref = ops[__i];
+			NCPOp rv;
+			
+			// Needs caching?
+			if (ref == null || null == (rv = ref.get()))
+				ops[__i] = new WeakReference<>((rv = new NCPOp(this, actual,
+					logicalToPhysical(__i))));
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Converts a physical address to a logical one.
 	 *
 	 * @param __p The input physical address.
@@ -204,6 +237,19 @@ public final class NCPCodeParser
 		
 		// Not found
 		return -1;
+	}
+	
+	/**
+	 * Makes the operation cache array.
+	 *
+	 * @param __n The number of elements in the array.
+	 * @return The array of references.
+	 * @since 2016/05/10
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static Reference<NCPOp>[] __makeOpArray(int __n)
+	{
+		return (Reference<NCPOp>[])((Object)new Reference[__n]);
 	}
 }
 
