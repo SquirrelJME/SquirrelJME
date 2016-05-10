@@ -17,6 +17,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.ServiceLoader;
 import net.multiphasicapps.imagereader.ImageReader;
 
@@ -52,6 +53,10 @@ public class Main
 		String command = __args[0];
 		switch (command)
 		{
+			case "downscale":
+				ImageDownScale.main(__bump(__args));
+				break;
+			
 				// {@squirreljme.error AS03 Unknown command (The command)}
 			default:
 				throw new IllegalArgumentException(String.format("AS03 %s",
@@ -119,6 +124,29 @@ public class Main
 		// {@squirreljme.error AS02 The specified path does not exist on the
 		// disk or as a resource within the classpath. (The path to the image)}
 		throw new IOException(String.format("AS02 %s", __path));
+	}
+	
+	/**
+	 * Returns an array which has the first element removed.
+	 *
+	 * @param __args The input string array.
+	 * @return The array with the first element removed.
+	 * @since 2016/05/10
+	 */
+	private static String[] __bump(String... __args)
+	{
+		// Check
+		int n = __args.length;
+		if (__args == null || n <= 1)
+			return new String[0];
+		
+		// Setup new array
+		String[] rv = new String[n - 1];
+		for (int i = 1, j = 0; i < n; i++, j++)
+			rv[j] = __args[i];
+		
+		// Return it
+		return rv;
 	}
 }
 
