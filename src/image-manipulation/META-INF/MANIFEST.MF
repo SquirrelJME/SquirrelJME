@@ -4,6 +4,7 @@ X-Hairball-UUID: 0b42447e-fc9d-40f5-939e-f3f5feb7c2c4
 X-Hairball-Depends: javame-cldc-full,
  image-reader-xpm
 X-Hairball-Error: AS
+Main-Class: net.multiphasicapps.imagetools.Main
 LIBlet-Title: Image Manipulation
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160508

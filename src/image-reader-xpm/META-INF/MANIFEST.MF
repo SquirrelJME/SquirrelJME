@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-Hairball-Name: image-reader-xpm
 X-Hairball-UUID: 814470f6-eeab-41bc-9966-a82706c6ca0d
-X-Hairball-Depends: image-reader, extra-io-cpp
+X-Hairball-Depends: image-reader
 X-Hairball-Error: AT
 LIBlet-Title: XPM Image Reader
 LIBlet-Vendor: Steven Gawroriski

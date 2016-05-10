@@ -35,6 +35,35 @@ public class XPMImageReader
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/10
+	 */
+	@Override
+	public boolean canRead(String __m)
+	{
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__m)
+		{
+				// Is valid
+			case "xpm":
+			case "XPM":
+			case "image/x-xpixmap":
+			case "image/xpm":
+			case "image/x-xpm":
+			case "application/x-xpm:"
+				return true;
+			
+				// Not valid
+			default
+				return false;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/08
 	 */
 	@Override

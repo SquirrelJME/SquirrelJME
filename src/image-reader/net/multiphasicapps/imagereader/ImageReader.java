@@ -22,6 +22,17 @@ import java.io.IOException;
 public interface ImageReader
 {
 	/**
+	 * Checks whether this image reader is capable of reading this image type.
+	 *
+	 * @param __m The mime type or extension of the file.
+	 * @return {@code true} if this is capable of reading the given file type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/10
+	 */
+	public boolean canRead(String __m)
+		throws NullPointerException;
+	
+	/**
 	 * Reads the given input stream and decodes an image from it.
 	 *
 	 * @param __is The input stream to read image data from.
