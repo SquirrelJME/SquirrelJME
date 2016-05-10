@@ -11,6 +11,7 @@
 package net.multiphasicapps.narf.codeparse;
 
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This describes an operation.
@@ -35,6 +36,13 @@ public final class NCPOp
 		// Check
 		if (__cp == null || __code == null)
 			throw new NullPointerException("NARG");
+		
+		// Read the opcode
+		int opcode = __code.readUnsignedByte(__pa);
+		if (opcode == NCPOpCode.WIDE)
+			opcode = (NCPOpCode.WIDE << 8) | __code.readUnsignedByte(__pa, 1);
+		
+		System.err.printf("DEBUG -- Op %d%n", opcode);
 		
 		throw new Error("TODO");
 	}
