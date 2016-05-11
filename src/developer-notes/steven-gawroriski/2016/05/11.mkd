@@ -1,0 +1,6 @@
+# 2016/05/11
+
+## 07:19
+
+Ok, so write a representation of byte code.
+
