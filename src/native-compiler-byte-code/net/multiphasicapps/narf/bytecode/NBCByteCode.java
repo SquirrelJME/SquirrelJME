@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.bytecode;
 
+import java.util.AbstractList;
+import java.util.List;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
@@ -20,6 +22,7 @@ import net.multiphasicapps.narf.classinterface.NCIMethod;
  * @since 2016/05/11
  */
 public class NBCByteCode
+	extends AbstractList<NBCOperation>
 {
 	/** The containing method. */
 	protected final NCIMethod method;
@@ -53,6 +56,26 @@ public class NBCByteCode
 		NCIByteBuffer code = attribute.code();
 		this.code = code;
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/11
+	 */
+	@Override
+	public NBCOperation get(int __i)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/11
+	 */
+	@Override
+	public int size()
+	{
 		throw new Error("TODO");
 	}
 }
