@@ -9,3 +9,7 @@ Ok, so write a representation of byte code.
 I should probably start using `this.` for field setting so that I may have
 local variables named the same and such.
 
+## 18:37
+
+Despite waking up early I did not program this as much.
+
