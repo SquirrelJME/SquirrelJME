@@ -33,6 +33,9 @@ public class NBCByteCode
 	/** The actual byte code. */
 	protected final NCIByteBuffer code;
 	
+	/** The positions for all logical operations. */
+	private final int[] _logpos;
+	
 	/**
 	 * Initilizes the byte code representation.
 	 *
@@ -55,6 +58,10 @@ public class NBCByteCode
 		this.attribute = attribute;
 		NCIByteBuffer code = attribute.code();
 		this.code = code;
+		
+		// Setup logical positions
+		int[] logpos = new __OpPositions__(code).get();
+		_logpos = logpos;
 		
 		throw new Error("TODO");
 	}

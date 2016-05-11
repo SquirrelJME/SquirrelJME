@@ -105,8 +105,8 @@ public class NIMethod
 					// {@squirreljme.error AN0o Could not generate the program
 					// for the byte code for the specified method. (The method
 					// which failed to load)}
-					throw new NIException(NIException.Issue.METHOD_LOAD_ERROR,
-						String.format("AN0o %s",  this), e);
+					throw new NIException(core, NIException.Issue.
+						METHOD_LOAD_ERROR, String.format("AN0o %s",  this), e);
 				}
 			
 			return rv;

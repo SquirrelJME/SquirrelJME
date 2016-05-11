@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.codeparse;
+package net.multiphasicapps.narf.bytecode;
 
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 
@@ -17,7 +17,7 @@ import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
  *
  * @since 2016/05/08
  */
-class __OpPositions__
+final class __OpPositions__
 {
 	/** The code buffer. */
 	protected final NCIByteBuffer buffer;
@@ -60,11 +60,11 @@ class __OpPositions__
 			// Get the operation size
 			int sz = __sizeOf(i);
 			
-			// {@squirreljme.error AR04 The size of the current operation is
+			// {@squirreljme.error AX04 The size of the current operation is
 			// zero or negative. (The opcode position; The size of it)}
 			if (sz <= 0)
-				throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
-					String.format("AR04 %d %d", i, sz));
+				throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+					String.format("AX04 %d %d", i, sz));
 			
 			// Current operation is here
 			build[a++] = i;
@@ -92,12 +92,12 @@ class __OpPositions__
 	 *
 	 * @param __pos The position of the instruction.
 	 * @return The size of the given instruction.
-	 * @throws NCPException If the instruction runs off the code block
+	 * @throws NBCException If the instruction runs off the code block
 	 * or it is unknown or invalid.
 	 * @since 2016/03/29
 	 */
 	int __sizeOf(int __pos)
-		throws NCPException
+		throws NBCException
 	{
 		// Get the buffer
 		NCIByteBuffer buffer = this.buffer;
@@ -137,13 +137,13 @@ class __OpPositions__
 				int hi = buffer.readInt(ppos, 8);
 				
 				// Lower must really be lower
-				// {@squirreljme.error AR01 The {@code tableswitch}
+				// {@squirreljme.error AX01 The {@code tableswitch}
 				// operation has a low value which is higher than the high
 				// value. (The position of the current operation; The
 				// low byte; The high byte)}
 				if (lo > hi)
-					throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
-						String.format("AR01 %d %d %d", __pos, lo, hi));
+					throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+						String.format("AX01 %d %d %d", __pos, lo, hi));
 				
 				// Calculate the size
 				return (ppos - __pos) + 12 + (4 * ((hi - lo) + 1));
@@ -158,12 +158,12 @@ class __OpPositions__
 				// Read the pair count
 				int np = buffer.readInt(ppos, 4);
 				
-				// {@squirreljme.error AR02 The {@code lookupswitch} operation
+				// {@squirreljme.error AX02 The {@code lookupswitch} operation
 				// has a zero or negative pair count. (The position of the
 				// current operation; The pair count)}
 				if (np <= 0)
-					throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
-						String.format("AR02 %d %d", __pos, np));
+					throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+						String.format("AX02 %d %d", __pos, np));
 				
 				// Calculate the size
 				return (ppos - __pos) + 8 + (8 * np);
@@ -210,19 +210,19 @@ class __OpPositions__
 				(opcode >= 200 && opcode <= 201))
 				return 5;
 
-			// {@squirreljme.error AR07 Method byte code contains an illegal
+			// {@squirreljme.error AX07 Method byte code contains an illegal
 			// opcode. (The opcode)}
-			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
-				String.format("AR07 %d", opcode));
+			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+				String.format("AX07 %d", opcode));
 		}
 		
 		// Out of bounds instruction
 		catch (IndexOutOfBoundsException e)
 		{
-			// {@squirreljme.error AR03 While decoding an operation, the bounds
+			// {@squirreljme.error AX03 While decoding an operation, the bounds
 			// of the program were exceeded. (The current opcode)}
-			throw new NCPException(NCPException.Issue.ILLEGAL_OPCODE,
-				String.format("AR03 %d", opcode), e);
+			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+				String.format("AX03 %d", opcode), e);
 		}
 	}
 }

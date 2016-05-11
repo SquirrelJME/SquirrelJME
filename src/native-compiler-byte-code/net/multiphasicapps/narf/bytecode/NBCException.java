@@ -73,6 +73,9 @@ public class NBCException
 	public static enum Issue
 		implements BaseIssue
 	{
+		/** An operation is not valid. */
+		ILLEGAL_OPCODE,
+		
 		/** End. */
 		;
 	}
