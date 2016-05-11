@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.bytecode;
 
+import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
+import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 
 /**
@@ -21,6 +23,12 @@ public class NBCByteCode
 {
 	/** The containing method. */
 	protected final NCIMethod method;
+	
+	/** The code attribute. */
+	protected final NCICodeAttribute attribute;
+	
+	/** The actual byte code. */
+	protected final NCIByteBuffer code;
 	
 	/**
 	 * Initilizes the byte code representation.
@@ -37,7 +45,13 @@ public class NBCByteCode
 			throw new NullPointerException("NARG");
 		
 		// Set
-		method = __m;
+		this.method = __m;
+		
+		// Extract code data
+		NCICodeAttribute attribute = __m.code();
+		this.attribute = attribute;
+		NCIByteBuffer code = attribute.code();
+		this.code = code;
 		
 		throw new Error("TODO");
 	}
