@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.narf.bytecode;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents a single operation in the byte code.
  *
@@ -22,6 +25,9 @@ public final class NBCOperation
 	
 	/** The logical position. */
 	protected final int logicaladdress;
+	
+	/** The string representation of this operation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the operation data.
@@ -41,6 +47,25 @@ public final class NBCOperation
 		// Set
 		owner = __bc;
 		logicaladdress = __lp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/11
+	 */
+	@Override
+	public String toString()
+	{
+		// Get
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+			throw new Error("TODO");
+		
+		// Return it
+		return rv;
 	}
 }
 
