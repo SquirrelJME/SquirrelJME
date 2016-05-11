@@ -85,3 +85,21 @@ basic block boundary was reached. Then once flow passes to a new basic block,
 all temporary register assignments are reset and such. For simplicity with
 exception handlers, local variables would be bound to the same locations.
 
+## 20:00
+
+So perhaps instead of a code parser, I would instead have a byte code
+representation. Setup an immutable class which is given the code attribute and
+can setup operations for everything immutably. This representation would
+**ONLY** concern itself with byte code, it does not execute it, it just
+describes how it works. Then there is a code generator which takes this
+representation and runs the code so that it creates a `NRProgram` with its
+basic blocks and such. The byte code representation would still have to save
+on memory by caching things and reading in things as needed however.
+
+## 20:06
+
+Then the byte code could be used for debugging such as `javap` or if a JAR file
+exists and there is an exception and a debugger wants to be attached or
+similar. Rather than just looking at native code it can actually see the
+byte code that it is mapped to potentially.
+
