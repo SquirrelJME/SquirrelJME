@@ -17,13 +17,30 @@ package net.multiphasicapps.narf.bytecode;
  */
 public final class NBCOperation
 {
+	/** The owning byte code. */
+	protected final NBCByteCode owner;
+	
+	/** The logical position. */
+	protected final int logicaladdress;
+	
 	/**
 	 * Initializes the operation data.
 	 *
+	 * @param __bc The owning byte code.
+	 * @param __lp The logical position of the operation.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	NBCOperation()
+	NBCOperation(NBCByteCode __bc, int __lp)
+		throws NullPointerException
 	{
+		// Check
+		if (__bc == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		owner = __bc;
+		logicaladdress = __lp;
 	}
 }
 

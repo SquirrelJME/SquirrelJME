@@ -106,7 +106,7 @@ public class NIMethod
 					// for the byte code for the specified method. (The method
 					// which failed to load)}
 					throw new NIException(core, NIException.Issue.
-						METHOD_LOAD_ERROR, String.format("AN0o %s",  this), e);
+						METHOD_LOAD_ERROR, String.format("AN0o %s", this), e);
 				}
 			
 			return rv;
