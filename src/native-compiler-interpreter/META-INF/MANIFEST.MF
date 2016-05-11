@@ -5,7 +5,8 @@ X-Hairball-Depends: javame-cldc-full, native-compiler,
  zip-compression, extra-util-unmodifiable,
  native-compiler-class-file,
  native-compiler-program,
- native-compiler-codeparse
+ native-compiler-codeparse,
+ native-compiler-byte-code
 X-Hairball-Error: AN
 Main-Class: net.multiphasicapps.narf.interpreter.Main
 LIBlet-Title: Native Compiler Interpreter

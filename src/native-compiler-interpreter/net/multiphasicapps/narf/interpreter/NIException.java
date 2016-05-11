@@ -135,6 +135,9 @@ public class NIException
 		/** Attempt to invoke an abstract method. */
 		INVOKE_ABSTRACT,
 		
+		/** Method could not correctly be read. */
+		METHOD_LOAD_ERROR,
+		
 		/** End. */
 		;
 	}

@@ -13,9 +13,14 @@ package net.multiphasicapps.narf.interpreter;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.narf.bytecode.NBCByteCode;
+import net.multiphasicapps.narf.bytecode.NBCException;
+import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 import net.multiphasicapps.narf.codeparse.NCPCodeParser;
+import net.multiphasicapps.narf.codeparse.NCPException;
+import net.multiphasicapps.narf.program.NRException;
 import net.multiphasicapps.narf.program.NRProgram;
 
 /**
@@ -69,7 +74,7 @@ public class NIMethod
 		// (The method to invoke)}
 		if (flags().isAbstract())
 			throw new NIException(core, NIException.Issue.INVOKE_ABSTRACT,
-				String.format("AN0k", this));
+				String.format("AN0k %s", this));
 		
 		// Get reference
 		Reference<NRProgram> ref = _program;
@@ -88,8 +93,21 @@ public class NIMethod
 			
 			// Needs to be cached?
 			if (ref == null || null == (rv = ref.get()))
-				_program = new WeakReference<>((rv = new NCPCodeParser(
-					core.library(), base).get()));
+				try
+				{
+					_program = new WeakReference<>((rv = new NCPCodeParser(
+						core.library(), new NBCByteCode(base)).get()));
+				}
+				
+				// Failed to load properly
+				catch (NBCException|NCIException|NCPException|NRException e)
+				{
+					// {@squirreljme.error AN0o Could not generate the program
+					// for the byte code for the specified method. (The method
+					// which failed to load)}
+					throw new NIException(NIException.Issue.METHOD_LOAD_ERROR,
+						String.format("AN0o %s",  this), e);
+				}
 			
 			return rv;
 		}
