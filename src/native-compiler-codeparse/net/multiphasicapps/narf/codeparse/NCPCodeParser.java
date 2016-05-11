@@ -10,30 +10,12 @@
 
 package net.multiphasicapps.narf.codeparse;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
-import net.multiphasicapps.narf.classinterface.NCICodeException;
-import net.multiphasicapps.narf.classinterface.NCICodeExceptions;
+import net.multiphasicapps.narf.bytecode.NBCByteCode;
 import net.multiphasicapps.narf.classinterface.NCILookup;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
-import net.multiphasicapps.narf.classinterface.NCIPool;
-import net.multiphasicapps.narf.program.NRBasicBlock;
-import net.multiphasicapps.narf.program.NRJumpTarget;
-import net.multiphasicapps.narf.program.NROp;
 import net.multiphasicapps.narf.program.NRProgram;
 
 /**
- * This performs parsing operations.
+ * This performs parsing operations from Java byte code to native programs.
  *
  * @since 2016/05/08
  */
@@ -42,106 +24,29 @@ public final class NCPCodeParser
 	/** The library for class lookup (optimization). */
 	protected final NCILookup lookup;
 	
-	/** The containing class. */
-	protected final NCIClass outerclass;
-	
-	/** The constant pool. */
-	protected final NCIPool constantpool;
-	
-	/** The method to parse. */
-	protected final NCIMethod method;
-	
-	/** The code attribute. */
-	protected final NCICodeAttribute code;
-	
-	/** The actual code. */
-	protected final NCIByteBuffer actual;
-	
-	/** The entry basic block (also the exception handler block). */
-	protected final __Block__ entryblock =
-		new __Block__();
-	
-	/** The basic blocks in a program. */
-	protected final Map<Integer, __Block__> blocks =
-		new HashMap<>();
-	
-	/** No exceptions to handle at all? */
-	protected final boolean nohandlers;
-	
-	/** Java operation cache. */
-	private final Reference<NCPOp>[] _ops;
-	
-	/** Operation positions. */
-	private final int[] _opos;
+	/** The program byte code. */
+	protected final NBCByteCode bytecode;
 	
 	/**
 	 * Parses all operations.
 	 *
 	 * @param __lu The lookup for other classes.
-	 * @param __m The source method.
+	 * @param __bc The program byte code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/08
 	 */
-	public NCPCodeParser(NCILookup __lu, NCIMethod __m)
+	public NCPCodeParser(NCILookup __lu, NBCByteCode __bc)
 		throws NullPointerException
 	{
 		// Check
-		if (__lu == null || __m == null)
+		if (__lu == null || __bc == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		lookup = __lu;
-		method = __m;
-		outerclass = __m.outerClass();
-		constantpool = outerclass.constantPool();
-		code = __m.code();
-		actual = code.code();
-		
-		// Calculation all the operation positions
-		int[] opos = new __OpPositions__(actual).get();
-		_opos = opos;
-		_ops = __makeOpArray(opos.length);
-		
-		// Determine if exceptions are handled
-		NCICodeExceptions handlers = code.exceptionHandlers();
-		boolean nohandlers = handlers.isEmpty();
-		this.nohandlers = nohandlers;
-		
-		// Detect basic blocks
-		new __BasicBlockDetect__(actual, opos, blocks, handlers, this);
-		System.err.printf("DEBUG -- Block starts: %s%n", blocks);
-		
-		// If there are no exception handlers, then just return from the
-		// method without clearing the exception handler register if there is
-		// an exception.
-		if (nohandlers)
-		{
-			if (true)
-				throw new Error("TODO");
-		}
-		
-		// Otherwise the exception handler table needs to be created and
-		// properly initialized.
-		else
-		{
-			if (true)
-				throw new Error("TODO");
-		}
-		
-		// Setup block
+		this.lookup = __lu;
+		this.bytecode = __bc;
 		
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Returns the constant pool.
-	 *
-	 * @return The constant pool.
-	 * @since 2016/05/10
-	 */
-	public NCIPool constantPool()
-	{
-		return constantpool;
 	}
 	
 	/**
@@ -153,114 +58,6 @@ public final class NCPCodeParser
 	public NRProgram get()
 	{
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Converts a logical address to a physical one.
-	 *
-	 * @param __l The input logical address.
-	 * @return The physical address or {@code -1} if it is not matched to an
-	 * instruction.
-	 * @since 2016/05/08
-	 */
-	public int logicalToPhysical(int __l)
-	{
-		// Would never match
-		int[] pp = _opos;
-		if (__l < 0 || __l >= pp.length)
-			return -1;
-		
-		// Directly represented
-		return pp[__l];
-	}
-	
-	/**
-	 * Obtains the operation at the given logical address.
-	 *
-	 * @param __i The logical address to get the operational data for.
-	 * @return The operation defined at this position.
-	 * @throws IndexOutOfBoundsException If the operation is not a valid
-	 * logical instruction address.
-	 * @since 2016/05/10
-	 */
-	public NCPOp op(int __i)
-		throws IndexOutOfBoundsException
-	{
-		// Lock on the array
-		Reference<NCPOp>[] ops = _ops;
-		synchronized (ops)
-		{
-			// Get
-			Reference<NCPOp> ref = ops[__i];
-			NCPOp rv;
-			
-			// Needs caching?
-			if (ref == null || null == (rv = ref.get()))
-				ops[__i] = new WeakReference<>((rv = new NCPOp(this, actual,
-					logicalToPhysical(__i))));
-			
-			// Return it
-			return rv;
-		}
-	}
-	
-	/**
-	 * Converts a physical address to a logical one.
-	 *
-	 * @param __p The input physical address.
-	 * @return The logical address or {@code -1} if it is not matched to an
-	 * instruction.
-	 * @since 2016/05/08
-	 */
-	public int physicalToLogical(int __p)
-	{
-		// Would never match
-		int[] pp = _opos;
-		int n = pp.length;
-		if (__p < 0 || __p > pp[n - 1])
-			return -1;
-		
-		// Perform a binary search
-		for (int lo = 0, hi = n - 1, piv = (n >>> 1); !(piv < 0 || piv >= n);)
-		{
-			// Get the address at the pivot
-			int pva = pp[piv];
-			
-			// If matched, return it
-			if (pva == __p)
-				return piv;
-			
-			// Nothing left?
-			if (lo == hi)
-				return -1;
-			
-			// Go higher
-			if (__p > pva)
-				lo = piv + 1;
-			
-			// Go lower
-			else
-				hi = piv - 1;
-			
-			// Set the new pivot
-			piv = lo + ((hi - lo) >>> 1);
-		}
-		
-		// Not found
-		return -1;
-	}
-	
-	/**
-	 * Makes the operation cache array.
-	 *
-	 * @param __n The number of elements in the array.
-	 * @return The array of references.
-	 * @since 2016/05/10
-	 */
-	@SuppressWarnings({"unchecked"})
-	private static Reference<NCPOp>[] __makeOpArray(int __n)
-	{
-		return (Reference<NCPOp>[])((Object)new Reference[__n]);
 	}
 }
 

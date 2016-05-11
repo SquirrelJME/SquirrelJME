@@ -73,15 +73,6 @@ public class NCPException
 	public static enum Issue
 		implements BaseIssue
 	{
-		/** The operation is not legal. */
-		ILLEGAL_OPCODE,
-		
-		/** The specified instruction cannot be the start of a basic block. */
-		ILLEGAL_BLOCK_START,
-		
-		/** Exception is out of range. */
-		EXCEPTION_RANGE,
-		
 		/** End. */
 		;
 	}
