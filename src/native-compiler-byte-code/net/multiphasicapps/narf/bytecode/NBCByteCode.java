@@ -75,8 +75,6 @@ public class NBCByteCode
 		int n = logpos.length;
 		count = n;
 		_bops = __makeBops(n);
-		
-		throw new Error("TODO");
 	}
 	
 	/**

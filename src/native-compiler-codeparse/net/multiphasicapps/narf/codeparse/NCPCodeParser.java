@@ -11,6 +11,7 @@
 package net.multiphasicapps.narf.codeparse;
 
 import net.multiphasicapps.narf.bytecode.NBCByteCode;
+import net.multiphasicapps.narf.bytecode.NBCOperation;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.program.NRProgram;
 
@@ -45,6 +46,9 @@ public final class NCPCodeParser
 		// Set
 		this.lookup = __lu;
 		this.bytecode = __bc;
+		
+		// Debug
+		System.err.printf("DEBUG -- Parse Program: %s%n", __bc);
 		
 		throw new Error("TODO");
 	}
