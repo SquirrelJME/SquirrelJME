@@ -103,3 +103,7 @@ exists and there is an exception and a debugger wants to be attached or
 similar. Rather than just looking at native code it can actually see the
 byte code that it is mapped to potentially.
 
+## 21:07
+
+This should in general result in much cleaner code.
+
