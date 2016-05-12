@@ -94,6 +94,9 @@ public class NBCException
 		/** Accessible object has impossible access flags. */
 		ILLEGAL_ACCESS_FLAGS,
 		
+		/** A class eventually is a superclass of itself. */
+		CIRCULAR_EXTENDS,
+		
 		/** End. */
 		;
 	}

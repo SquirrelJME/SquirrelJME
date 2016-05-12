@@ -14,8 +14,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIAccessibleFlags;
 import net.multiphasicapps.narf.classinterface.NCIAccessibleObject;
@@ -119,7 +121,8 @@ public final class NBCByteCode
 	 *
 	 * @param __ao The object to check access against.
 	 * @return {@code true} if the object can be accessed.
-	 * @throws NBCException If the class has no set access flag type.
+	 * @throws NBCException If the class has no set access flag type or is
+	 * a class which eventually extends itself.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
@@ -144,7 +147,8 @@ public final class NBCByteCode
 			return true;
 		
 		// Get the name of our class and the object
-		ClassNameSymbol tname = method.outerClass().thisName(),
+		NCIClass myclass = method.outerClass();
+		ClassNameSymbol tname = myclass.thisName(),
 			oname = otherouter.thisName();
 		
 		// If this is the same exact class then no checks have to be performed
@@ -161,7 +165,42 @@ public final class NBCByteCode
 		
 		// The other class must be a super class or the same as this class
 		else if (af.isProtected())
-			throw new Error("TODO");
+		{
+			// Detect potential class recursion here
+			Set<ClassNameSymbol> didclass = new HashSet<>();
+			didclass.add(tname);
+			
+			// Go through super classes
+			for (NCIClass rover = myclass;;)
+			{
+				// Go to the super class
+				ClassNameSymbol scn = rover.superName();
+				
+				// If out of classes then it cannot be implemented
+				if (scn == null)
+					return false;
+				
+				// {@squirreljme.error AX0d The specified class eventually
+				// extends itself. (The name of the current class)}
+				if (didclass.contains(scn))
+					throw new NBCException(NBCException.Issue.CIRCULAR_EXTENDS,
+						String.format("AX0d %s", tname));
+				
+				// Go to that class
+				rover = this.lookup.lookup(scn);
+				
+				// {@squirreljme.error AX0e Cannot check protected access
+				// against a super class if it does not exist. (The name of the
+				// super class)}
+				if (rover == null)
+					throw new NBCException(NBCException.Issue.MISSING_CLASS,
+						String.format("AX0e %s", scn));
+				
+				// Same name?
+				if (tname.equals(scn))
+					return true;
+			}
+		}
 		
 		// {@squirreljme.error AX0c The accessible object to check access
 		// against has an impossible flag combination. (The accessible object;
