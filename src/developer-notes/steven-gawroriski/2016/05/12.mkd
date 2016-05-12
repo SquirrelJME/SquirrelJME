@@ -21,3 +21,9 @@ interpreted properly before the compilation route is taken. It would have to
 be pluggable in that any route can be chosen. Although the pure interpreter
 would be a bit slow it would help much in debugging.
 
+## 08:34
+
+Although the pure interpreter would be slow, hopefully this new design will
+make it slightly faster. Then once the pure interpreter works fully I can then
+design a native compiler that works with it.
+
