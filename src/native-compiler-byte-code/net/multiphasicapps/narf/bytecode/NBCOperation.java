@@ -12,7 +12,11 @@ package net.multiphasicapps.narf.bytecode;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This represents a single operation in the byte code.
@@ -29,6 +33,15 @@ public final class NBCOperation
 	
 	/** The instruction ID. */
 	protected final int instructionid;
+	
+	/** The local variables which are accessed. */
+	protected final List<NBCLocalAccess> localaccess;
+	
+	/** Variables types which are popped from the stack. */
+	protected final List<NBCVariableType> stackpop;
+	
+	/** Variable types which are pushed to the stack. */
+	protected final List<NBCVariablePush> stackpush;
 	
 	/** The string representation of this operation. */
 	private volatile Reference<String> _string;
@@ -60,6 +73,40 @@ public final class NBCOperation
 			opcode = (opcode << 8) | __bb.readUnsignedByte(phy, 1);
 		
 		instructionid = opcode;
+	}
+	
+	
+	/** The local variables which are accessed. */
+	protected final List<NBCLocalAccess> localaccess;
+	
+	/** Variables types which are popped from the stack. */
+	protected final List<NBCVariableType> stackpop;
+	
+	/** Variable types which are pushed to the stack. */
+	protected final List<NBCVariableType> stackpush;
+	
+	/**
+	 * Returns the list of variable types which are popped from this
+	 * instruction.
+	 *
+	 * @return The type of values to pop.
+	 * @since 2016/05/12
+	 */
+	public List<NBCVariableType> stackPops()
+	{
+		return stackpop;
+	}
+	
+	/**
+	 * Returns the list of variable types and value changes which are to be
+	 * pushed to the stack.
+	 *
+	 * @return The push types and value assignment used.
+	 * @since 2016/05/12
+	 */
+	public List<NBCVariablePush> stackPushes()
+	{
+		return stackpush;
 	}
 	
 	/**

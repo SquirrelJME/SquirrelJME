@@ -1,2 +1,23 @@
 # 2016/05/12
 
+## 08:12
+
+The stack pushing and popping would likely be better if it were more
+intelligent rather than just the types. So pops would be just the type while
+pushes would be the given _n_-th pop or a new value.
+
+## 08:15
+
+Also the state of the stack and operations should be known also, so there must
+be no narrow or wide alias types. This would make parsing much easier for
+example.
+
+## 08:18
+
+The interpreter could actually first have a duality. For example I can have a
+pure interpreter which is standalone so to speak, and then have the compiled
+program execution. This way I can easily test if the byte code is being
+interpreted properly before the compilation route is taken. It would have to
+be pluggable in that any route can be chosen. Although the pure interpreter
+would be a bit slow it would help much in debugging.
+
