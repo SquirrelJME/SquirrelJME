@@ -90,7 +90,6 @@ public final class NBCOperation
 		else
 			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
 				String.format("AX05 %d %d", __lp, opcode));
-		
 	}
 	
 	/**

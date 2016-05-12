@@ -104,7 +104,8 @@ public final class NBCByteCode
 		// None used
 		else
 			verification = UnmodifiableMap.<Integer, NBCStateVerification>of(
-				new SingletonMap<>(0, new NBCStateVerification()));
+				new SingletonMap<>(0, new NBCStateVerification(__m.
+					nameAndType().type())));
 	}
 	
 	/**
@@ -165,6 +166,17 @@ public final class NBCByteCode
 		
 		// Directly represented
 		return pp[__l];
+	}
+	
+	/**
+	 * Returns the class interface lookup.
+	 *
+	 * @return The lookup for classes.
+	 * @since 2016/05/12
+	 */
+	public NCILookup lookup()
+	{
+		return this.lookup;
 	}
 	
 	/**

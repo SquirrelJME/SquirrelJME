@@ -72,3 +72,13 @@ through the entire list and the further away the `ListIterator` is the more
 operations are performed, so it would basically be **O(n^2)** which is
 quite bad.
 
+## 16:48
+
+Also with the lookup, the byte code initializer can verify the access
+permissions of the target class. This would then mean that the interpreter
+would never have to check the access requirements during execution which
+would result in slightly faster interpretation. It is illegal for the byte
+code to reference classes in this way also however. So this would result in
+an easier to implement compiler and interpreter since the operations and such
+would already be checked.
+
