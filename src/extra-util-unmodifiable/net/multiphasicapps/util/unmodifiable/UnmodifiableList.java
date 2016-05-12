@@ -46,12 +46,52 @@ public abstract class UnmodifiableList<V>
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public boolean contains(Object __o)
+	{
+		return wrapped.contains(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/03/03
 	 */
 	@Override
 	public final V get(int __i)
 	{
 		return wrapped.get(__i);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public int indexOf(Object __o)
+	{
+		return wrapped.indexOf(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public boolean isEmpty()
+	{
+		return wrapped.isEmpty();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public int lastIndexOf(Object __o)
+	{
+		return wrapped.lastIndexOf(__o);
 	}
 	
 	/**

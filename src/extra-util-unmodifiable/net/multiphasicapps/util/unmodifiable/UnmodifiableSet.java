@@ -56,6 +56,16 @@ public final class UnmodifiableSet<T>
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public boolean isEmpty()
+	{
+		return wrapped.isEmpty();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/02/28
 	 */
 	@Override

@@ -57,3 +57,8 @@ going to be gigantic.
 Something which I need would be to have is the stack map table and such loaded
 in so the byte code can be verified correctly.
 
+## 14:35
+
+Will need a singleton so that the first operation always has an implicit
+verification state which matches the flags and input arguments.
+

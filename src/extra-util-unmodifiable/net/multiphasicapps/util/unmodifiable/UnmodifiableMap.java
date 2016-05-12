@@ -65,6 +65,16 @@ public final class UnmodifiableMap<K, V>
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public boolean containsValue(Object __o)
+	{
+		return wrapped.containsValue(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/02/29
 	 */
 	@Override
@@ -94,6 +104,16 @@ public final class UnmodifiableMap<K, V>
 	public V get(Object __k)
 	{
 		return wrapped.get(__k);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public boolean isEmpty()
+	{
+		return wrapped.isEmpty();
 	}
 	
 	/**

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-Hairball-Name: extra-util-singleton
+X-Hairball-UUID: a86563c1-84bb-4cd2-b1e7-7d968c36ae19
+X-Hairball-Depends: javame-cldc-compact
+LIBlet-Title: Singleton Collections
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160512
+LIBlet-Description: This contains collections which only have
+  a single value.
+

@@ -82,6 +82,16 @@ public class EmptyMap
 	 * @since 2016/05/12
 	 */
 	@Override
+	public Set keySet()
+	{
+		return EmptySet.<Object>empty();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
 	public int size()
 	{
 		return 0;

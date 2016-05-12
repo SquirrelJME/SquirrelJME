@@ -21,6 +21,8 @@ import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.util.empty.EmptyMap;
+import net.multiphasicapps.util.singleton.SingletonMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
  * This class contains the main representation of Java byte code.
@@ -101,7 +103,8 @@ public final class NBCByteCode
 		
 		// None used
 		else
-			verification = EmptyMap.<Integer, NBCStateVerification>empty();
+			verification = UnmodifiableMap.<Integer, NBCStateVerification>of(
+				new SingletonMap<>(0, new NBCStateVerification()));
 	}
 	
 	/**
