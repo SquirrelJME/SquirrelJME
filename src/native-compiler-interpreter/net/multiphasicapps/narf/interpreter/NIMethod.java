@@ -31,12 +31,16 @@ import net.multiphasicapps.narf.program.NRProgram;
 public class NIMethod
 	extends NIMember<NCIMethod>
 {
+	/** Should a pure interpreter be used? */
+	public static final boolean PURE_INTERPRETER =
+		Boolean.getBoolean("net.multiphasicapps.narf.interpreter.pure");
+	
 	/** Internal lock. */
 	protected final Object lock =
 		new Object();
 	
-	/** The cached program. */
-	private volatile Reference<NRProgram> _program;
+	/** The cached program or byte code. */
+	private volatile Reference<Object> _program;
 
 	/**
 	 * Initializes the method.
@@ -67,7 +71,7 @@ public class NIMethod
 	 * @throws NIException If the program is not valid.
 	 * @since 2016/04/27
 	 */
-	public NRProgram program()
+	public Object program()
 		throws NIException
 	{
 		// {@squirreljme.error AN0k Attempted to invoke an abstract method.
@@ -77,8 +81,8 @@ public class NIMethod
 				String.format("AN0k %s", this));
 		
 		// Get reference
-		Reference<NRProgram> ref = _program;
-		NRProgram rv;
+		Reference<Object> ref = _program;
+		Object rv;
 		
 		// In the reference?
 		if (ref != null)
@@ -95,8 +99,19 @@ public class NIMethod
 			if (ref == null || null == (rv = ref.get()))
 				try
 				{
-					_program = new WeakReference<>((rv = new NCPCodeParser(
-						core.library(), new NBCByteCode(base)).get()));
+					// Load the byte code program
+					NBCByteCode bc = new NBCByteCode(base);
+					
+					// If pure, use that
+					if (PURE_INTERPRETER)
+						rv = bc;
+					
+					// Otherwise, dynamically recompile
+					else
+						rv = new NCPCodeParser(core.library(), bc).get();
+					
+					// Cache it
+					_program = new WeakReference<>(rv);
 				}
 				
 				// Failed to load properly

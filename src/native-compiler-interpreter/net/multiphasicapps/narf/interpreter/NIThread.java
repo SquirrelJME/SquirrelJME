@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import net.multiphasicapps.narf.bytecode.NBCByteCode;
 import net.multiphasicapps.narf.program.NRProgram;
 
 /**
@@ -96,7 +97,29 @@ public class NIThread
 				"AN0n");
 		
 		// Obtain the method program
-		NRProgram prg = __m.program();
+		Object rawprg = __m.program();
+		
+		// Pure interpreting?
+		if (rawprg instanceof NBCByteCode)
+		{
+			NBCByteCode prg = (NBCByteCode)rawprg;
+			
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Optimized program
+		else if (rawprg instanceof NRProgram)
+		{
+			NRProgram prg = (NRProgram)rawprg;
+			
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Unknown
+		else
+			throw new RuntimeException("WTFX");
 		
 		throw new Error("TODO");
 	}
