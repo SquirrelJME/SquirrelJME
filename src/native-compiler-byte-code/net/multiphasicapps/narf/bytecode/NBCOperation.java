@@ -73,17 +73,21 @@ public final class NBCOperation
 			opcode = (opcode << 8) | __bb.readUnsignedByte(phy, 1);
 		
 		instructionid = opcode;
+		
+		throw new Error("TODO");
 	}
 	
-	
-	/** The local variables which are accessed. */
-	protected final List<NBCLocalAccess> localaccess;
-	
-	/** Variables types which are popped from the stack. */
-	protected final List<NBCVariableType> stackpop;
-	
-	/** Variable types which are pushed to the stack. */
-	protected final List<NBCVariableType> stackpush;
+	/**
+	 * Returns the list of local variables which are accessed by this
+	 * operation.
+	 *
+	 * @return The local variable access list.
+	 * @since 2016/05/12
+	 */
+	public List<NBCLocalAccess> localAccesses()
+	{
+		return localaccess;
+	}
 	
 	/**
 	 * Returns the list of variable types which are popped from this
