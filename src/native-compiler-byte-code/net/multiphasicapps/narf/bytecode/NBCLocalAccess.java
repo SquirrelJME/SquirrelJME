@@ -35,7 +35,7 @@ public final class NBCLocalAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public NBCLocalAccess(int __dx, boolean __write, NBCVariableType __t)
+	NBCLocalAccess(int __dx, boolean __write, NBCVariableType __t)
 		throws NullPointerException
 	{
 		// Check

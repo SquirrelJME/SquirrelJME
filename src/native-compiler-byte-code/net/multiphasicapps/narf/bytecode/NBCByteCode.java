@@ -13,18 +13,21 @@ package net.multiphasicapps.narf.bytecode;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.util.empty.EmptyMap;
 
 /**
  * This class contains the main representation of Java byte code.
  *
  * @since 2016/05/11
  */
-public class NBCByteCode
+public final class NBCByteCode
 	extends AbstractList<NBCOperation>
 {
 	/** The containing method. */
@@ -41,6 +44,9 @@ public class NBCByteCode
 	
 	/** The instruction count. */
 	protected final int count;
+	
+	/** Explicit verification states. */
+	protected final Map<Integer, NBCStateVerification> verification;
 	
 	/** The positions for all logical operations. */
 	private final int[] _logpos;
@@ -84,6 +90,18 @@ public class NBCByteCode
 		// Decode the stack map table
 		NCIByteBuffer os = attribute.stackMapOld();
 		NCIByteBuffer ns = attribute.stackMapNew();
+		
+		// Old states
+		if (os != null)
+			verification = __StackMapParser__(false, os, this).result();
+		
+		// New States
+		else if (ns != null)
+			verification = __StackMapParser__(true, ns, this).result();
+		
+		// None used
+		else
+			verification = EmptyMap.<Integer, NBCStateVerification>empty();
 	}
 	
 	/**
@@ -113,6 +131,18 @@ public class NBCByteCode
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the implicit verification state as determined by the stack map
+	 * attributes.
+	 *
+	 * @return The mapping of implicit verifications.
+	 * @since 2016/05/12
+	 */
+	public Map<Integer, NBCStateVerification> implicitVerification()
+	{
+		return verification;
 	}
 	
 	/**

@@ -26,7 +26,7 @@ public final class NBCVariablePush
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public NBCVariablePush(NBCVariableType __t)
+	NBCVariablePush(NBCVariableType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -44,7 +44,7 @@ public final class NBCVariablePush
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public NBCVariablePush(NBCLocalAccess __l)
+	NBCVariablePush(NBCLocalAccess __l)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -63,7 +63,7 @@ public final class NBCVariablePush
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public NBCVariablePush(List<NBCVariableType> __pops, int __i)
+	NBCVariablePush(List<NBCVariableType> __pops, int __i)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
