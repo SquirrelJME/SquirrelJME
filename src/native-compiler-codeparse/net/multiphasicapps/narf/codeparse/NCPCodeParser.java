@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.codeparse;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.narf.bytecode.NBCByteCode;
 import net.multiphasicapps.narf.bytecode.NBCOperation;
 import net.multiphasicapps.narf.classinterface.NCILookup;
@@ -27,6 +29,10 @@ public final class NCPCodeParser
 	
 	/** The program byte code. */
 	protected final NBCByteCode bytecode;
+	
+	/** Blocks in the program. */
+	protected final Map<Integer, __Block__> blocks =
+		new HashMap<>();
 	
 	/**
 	 * Parses all operations.
@@ -49,6 +55,10 @@ public final class NCPCodeParser
 		
 		// Debug
 		System.err.printf("DEBUG -- Parse Program: %s%n", __bc);
+		
+		// Detect basic blocks
+		new __FindBlocks__(this, __bc, blocks);
+		System.err.printf("DEBUG -- Basic blocks: %s%n", blocks);
 		
 		throw new Error("TODO");
 	}
