@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 
 /**
  * This is the base class which provides access to classes as an entire
@@ -26,7 +27,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
 public abstract class NCILookup
 {
 	/** The loaded class library. */
-	private final Map<BinaryNameSymbol, Reference<NCIClass>> _loaded =
+	private final Map<ClassNameSymbol, Reference<NCIClass>> _loaded =
 		new HashMap<>();
 	
 	/**
@@ -52,9 +53,31 @@ public abstract class NCILookup
 		throws NCIException, NullPointerException;
 	
 	/**
-	 * Looks up a binary name.
+	 * Looks up a class name.
 	 *
-	 * @param __bn The binary name of the class.
+	 * @param __cn The name of the class.
+	 * @return The discovered class by its given name or {@code null} if it
+	 * was not found.
+	 * @throws NCIException If the class exists however it is not
+	 * formed correctly or could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/12
+	 */
+	public final NCIClass lookup(BinaryNameSymbol __cn)
+		throws NCIException, NullPointerException
+	{
+		// Check
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Wrapped
+		return lookup(__cn.asClassName());
+	}
+	
+	/**
+	 * Looks up a class name.
+	 *
+	 * @param __cn The name of the class.
 	 * @return The discovered class by its given name or {@code null} if it
 	 * was not found.
 	 * @throws NCIException If the class exists however it is not
@@ -62,33 +85,42 @@ public abstract class NCILookup
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public final NCIClass lookup(BinaryNameSymbol __bn)
+	public final NCIClass lookup(ClassNameSymbol __cn)
 		throws NCIException, NullPointerException
 	{
 		// Check
-		if (__bn == null)
+		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
 		// Lock on the cache
-		Map<BinaryNameSymbol, Reference<NCIClass>> cache = _loaded;
+		Map<ClassNameSymbol, Reference<NCIClass>> cache = _loaded;
 		synchronized (cache)
 		{
 			// Already exists?
-			Reference<NCIClass> ref = cache.get(__bn);
+			Reference<NCIClass> ref = cache.get(__cn);
 			NCIClass rv;
 			
 			// Needs to be loaded?
 			if (ref == null || null == (rv = ref.get()))
 			{
-				// Load the class
-				rv = loadClass(__bn);
+				// Use precomposed synthetic class for primitive types
+				if (__cn.isPrimitive())
+					throw new Error("TODO");
+				
+				// Virtualize creation and representation of array types
+				else if (__cn.isArray())
+					throw new Error("TODO");
+				
+				// Otherwise lookup the class
+				else
+					rv = loadClass(__cn.asBinaryName());
 				
 				// No class?
 				if (rv == null)
 					return null;
 				
 				// Cache it
-				cache.put(__bn, new WeakReference<>(rv));
+				cache.put(__cn, new WeakReference<>(rv));
 			}
 			
 			// Return it

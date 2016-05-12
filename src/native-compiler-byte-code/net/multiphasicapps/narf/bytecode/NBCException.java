@@ -85,6 +85,12 @@ public class NBCException
 		/** The field type is not known. */
 		UNKNOWN_FIELD_TYPE,
 		
+		/** A reference was made to a class which does not exit. */
+		MISSING_CLASS,
+		
+		/** An attempt would be made to initialize an abstract class. */
+		INIT_ABSTRACT_CLASS,
+		
 		/** End. */
 		;
 	}

@@ -92,3 +92,8 @@ such.
 This time individual treads for the locals and stack makes it easier than
 having them combined together such as it was done previously.
 
+## 17:33
+
+I wonder if the class lookup should accept `ClassNameSymbol`s so that arrays
+can be referenced and such.
+

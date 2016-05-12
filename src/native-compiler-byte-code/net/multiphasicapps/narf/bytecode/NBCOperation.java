@@ -16,6 +16,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
+import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIClassFlags;
+import net.multiphasicapps.narf.classinterface.NCIClassReference;
+import net.multiphasicapps.narf.classinterface.NCILookup;
+import net.multiphasicapps.narf.classinterface.NCIPool;
+import net.multiphasicapps.util.empty.EmptyList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
@@ -33,6 +39,9 @@ public final class NBCOperation
 	
 	/** The instruction ID. */
 	protected final int instructionid;
+	
+	/** Arguments of the operation. */
+	protected final List<Object> arguments;
 	
 	/** The local variables which are accessed. */
 	protected final List<NBCLocalAccess> localaccess;
@@ -78,9 +87,37 @@ public final class NBCOperation
 		// Set
 		this.instructionid = opcode;
 		
+		// Constant pool to work with
+		NCIPool pool = __bc.constantPool();
+		NCILookup lookup = __bc.lookup();
+		
 		// New
 		if (opcode == NBCInstructionID.NEW)
 		{
+			// Get the type of class to allocate
+			NCIClassReference ref = pool.<NCIClassReference>requiredAs(
+				__bb.readUnsignedShort(phy, 1), NCIClassReference.class);
+			arguments = __arguments(ref);
+			
+			// Lookup the class
+			NCIClass ncl = lookup.lookup(ref.get());
+			
+			// {@squirreljme.error AX0a Byte code refers to a class to be
+			// allocated, however it does not exist. (The class name)}
+			if (ncl == null)
+				throw new NBCException(NBCException.Issue.MISSING_CLASS,
+					String.format("AX0a %s", ref));
+			
+			// {@squirreljme.error AX0b The byte code would have attempted to
+			// allocate a class which was either abstract or an interface.
+			// (The class name; The class flags)}
+			NCIClassFlags fl = ncl.flags();
+			if (fl.isAbstract() || fl.isInterface())
+				throw new NBCException(NBCException.Issue.INIT_ABSTRACT_CLASS,
+					String.format("AX0b %s %s", ref, fl));
+			
+			// Setup push and pops
+			
 			throw new Error("TODO");
 		}
 		
@@ -90,6 +127,17 @@ public final class NBCOperation
 		else
 			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
 				String.format("AX05 %d %d", __lp, opcode));
+	}
+	
+	/**
+	 * Returns the arguments to this instruction.
+	 *
+	 * @return The list of arguments.
+	 * @since 2016/05/12
+	 */
+	public List<Object> arguments()
+	{
+		return this.arguments;
 	}
 	
 	/**
@@ -170,6 +218,65 @@ public final class NBCOperation
 	public NBCStateVerification verification()
 	{
 		return verification;
+	}
+	
+	/**
+	 * Simple wrapper into unmodifiable list.
+	 *
+	 * @param __a Input arguments.
+	 * @return The wrapped input arguments.
+	 * @since 2016/05/12
+	 */
+	private static List<Object> __arguments(Object... __a)
+	{
+		if (__a == null || __a.length <= 0)
+			return EmptyList.<Object>empty();
+		return UnmodifiableList.<Object>of(Arrays.<Object>asList(__a));
+	}
+	
+	/**
+	 * Simple wrapper into unmodifiable list.
+	 *
+	 * @param __a Input arguments.
+	 * @return The wrapped input arguments.
+	 * @since 2016/05/12
+	 */
+	private static List<NBCLocalAccess> __localAccess(NBCLocalAccess... __a)
+	{
+		if (__a == null || __a.length <= 0)
+			return EmptyList.<NBCLocalAccess>empty();
+		return UnmodifiableList.<NBCLocalAccess>of(Arrays.<NBCLocalAccess>
+			asList(__a));
+	}
+	
+	/**
+	 * Simple wrapper into unmodifiable list.
+	 *
+	 * @param __a Input arguments.
+	 * @return The wrapped input arguments.
+	 * @since 2016/05/12
+	 */
+	private static List<NBCVariableType> __stackPop(NBCVariableType... __a)
+	{
+		if (__a == null || __a.length <= 0)
+			return EmptyList.<NBCVariableType>empty();
+		return UnmodifiableList.<NBCVariableType>of(Arrays.<NBCVariableType>
+			asList(__a));
+	}
+	
+	/**
+	 * Simple wrapper into unmodifiable list.
+	 *
+	 * @param __a Input arguments.
+	 * @return The wrapped input arguments.
+	 * @since 2016/05/12
+	 */
+	private static List<NBCVariablePush> __stackPush(NBCVariablePush... __a)
+	{
+		if (__a == null || __a.length <= 0)
+			return EmptyList.<NBCVariablePush>empty();
+		return UnmodifiableList.<NBCVariablePush>of(Arrays.<NBCVariablePush>
+			asList(__a));
 	}
 }
 

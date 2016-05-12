@@ -20,6 +20,7 @@ import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.narf.classinterface.NCIPool;
 import net.multiphasicapps.util.empty.EmptyMap;
 import net.multiphasicapps.util.singleton.SingletonMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -105,6 +106,17 @@ public final class NBCByteCode
 		else
 			verification = UnmodifiableMap.<Integer, NBCStateVerification>of(
 				new SingletonMap<>(0, new NBCStateVerification(__m)));
+	}
+	
+	/**
+	 * Returns the constant pool associated with this class.
+	 *
+	 * @return The associated constant pool.
+	 * @since 2016/05/12
+	 */
+	public NCIPool constantPool()
+	{
+		return this.method.outerClass().constantPool();
 	}
 	
 	/**
