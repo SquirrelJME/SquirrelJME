@@ -46,3 +46,9 @@ Also since the work would be done in the byte code representation, then that
 means the interpreter would be much simpler because it does not have to
 perform that many checks.
 
+## 10:56
+
+What I need in the operation is a way to cleanly load all of the required
+information without making it very ugly. The constructor for operations is
+going to be gigantic.
+
