@@ -80,6 +80,10 @@ public class NBCByteCode
 		int n = logpos.length;
 		count = n;
 		_bops = __makeBops(n);
+		
+		// Decode the stack map table
+		NCIByteBuffer os = attribute.stackMapOld();
+		NCIByteBuffer ns = attribute.stackMapNew();
 	}
 	
 	/**

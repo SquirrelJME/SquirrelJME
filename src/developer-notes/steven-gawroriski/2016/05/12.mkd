@@ -52,3 +52,8 @@ What I need in the operation is a way to cleanly load all of the required
 information without making it very ugly. The constructor for operations is
 going to be gigantic.
 
+## 13:31
+
+Something which I need would be to have is the stack map table and such loaded
+in so the byte code can be verified correctly.
+

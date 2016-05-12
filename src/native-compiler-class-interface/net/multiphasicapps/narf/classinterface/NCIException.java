@@ -151,6 +151,12 @@ public class NCIException
 		/** A given exception handler address it not valid. */
 		INVALID_EXCEPTION_ADDRESS,
 		
+		/** An attribute is quite large. */
+		LARGE_ATTRIBUTE,
+		
+		/** An attribute is illegally duplicated. */
+		DUPLICATE_ATTR,
+		
 		/** End. */
 		;
 	}

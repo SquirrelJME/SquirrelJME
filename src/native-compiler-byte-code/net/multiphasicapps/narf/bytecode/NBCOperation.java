@@ -75,7 +75,19 @@ public final class NBCOperation
 		// Set
 		this.instructionid = opcode;
 		
-		throw new Error("TODO");
+		// New
+		if (opcode == NBCInstructionID.NEW)
+		{
+			throw new Error("TODO");
+		}
+		
+		// {@squirreljme.error AX05 The instruction identifier for the
+		// specified position is not valid or is not yet supported. (The
+		// logical instruction position; The operation code)}
+		else
+			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+				String.format("AX05 %d %d", __lp, opcode));
+		
 	}
 	
 	/**

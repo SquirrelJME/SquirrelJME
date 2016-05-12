@@ -44,6 +44,12 @@ public final class NCICodeAttribute
 	
 	/** Exception handler cache. */
 	protected final NCICodeExceptions exceptions;
+	
+	/** The old stack map table. */
+	protected final NCIByteBuffer oldstackmap;
+	
+	/** The new stack map table. */
+	protected final NCIByteBuffer newstackmap;
 
 	/**
 	 * Initializes the code attribute with the given attribute data.
@@ -77,16 +83,18 @@ public final class NCICodeAttribute
 			throw new NullPointerException("NARG");
 		
 		// Set
-		method = __m;
-		abuffer = new NCIByteBuffer(__d, __o, __l);
+		this.method = __m;
+		NCIByteBuffer abuffer = new NCIByteBuffer(__d, __o, __l);
+		this.abuffer = abuffer;
 		
 		// Read in values
-		maxlocals = abuffer.readUnsignedShort(2);
-		maxstack = abuffer.readUnsignedShort(0);
+		this.maxlocals = abuffer.readUnsignedShort(2);
+		this.maxstack = abuffer.readUnsignedShort(0);
 		
 		// {@squirreljme.error AO0y The methode code length exceeds the maximum
 		// length limit. (The containing method; The code length)}
-		codelen = abuffer.readInt(4);
+		int codelen = abuffer.readInt(4);
+		this.codelen = codelen;
 		if (codelen < 0 || codelen > MAXIMUM_CODE_LENGTH)
 			throw new NCIException(NCIException.Issue.LARGE_CODE,
 				String.format("AO0y %s %d", method.nameAndType(), codelen));
@@ -98,8 +106,64 @@ public final class NCICodeAttribute
 		numhandlers = abuffer.readUnsignedShort(8 + codelen);
 		
 		// Setup the excpetion list
-		exceptions = new NCICodeExceptions(method.outerClass().constantPool(),
-			numhandlers, abuffer.window(10 + codelen, numhandlers * 8));
+		int xbase = 10 + codelen;
+		int xsize = numhandlers * 8;
+		exceptions = new NCICodeExceptions(__m.outerClass().constantPool(),
+			numhandlers, abuffer.window(xbase, xsize));
+		
+		// Go through the attributes to find the stack mappings
+		int bp = xbase + xsize;
+		int na = abuffer.readUnsignedShort(bp);
+		NCIPool pool = __m.outerClass().constantPool();
+		NCIByteBuffer sold = null, snew = null;
+		for (int i = 0, pp = bp + 2; i < na; i++)
+		{
+			// Read associated string and length
+			String attr = pool.<NCIUTF>requiredAs(abuffer.
+				readUnsignedShort(pp), NCIUTF.class).toString();
+			int len = abuffer.readInt(pp + 2);
+			
+			// {@squirreljme.error AO02 An attribute in the code attribute
+			// has a size larger than 2GiB. (The length)}
+			if (len < 0)
+				throw new NCIException(NCIException.Issue.LARGE_ATTRIBUTE,
+					String.format("AO02 %d", len));
+			
+			// New stack map?
+			if (attr.equals("StackMapTable"))
+			{
+				// {@squirreljme.error AO07 The StackMapTable attribute
+				// appears multiple times, there must only be a single
+				// attribute. (The attribute name)}
+				if (snew != null)
+					throw new NCIException(NCIException.Issue.DUPLICATE_ATTR,
+						String.format("AO07 %s", attr));
+				
+				// Create window
+				snew = abuffer.window(pp + 6, len);
+			}
+			
+			// Old stack map
+			else if (attr.equals("StackMap"))
+			{
+				// {@squirreljme.error AO08 The StackMap attribute
+				// appears multiple times, there must only be a single
+				// attribute. (The attribute name)}
+				if (sold != null)
+					throw new NCIException(NCIException.Issue.DUPLICATE_ATTR,
+						String.format("AO08 %s", attr));
+				
+				// Create window
+				sold = abuffer.window(pp + 6, len);
+			}
+			
+			// Skip ahead to the next attribute
+			pp += 6 + len;
+		}
+		
+		// Store
+		newstackmap = snew;
+		oldstackmap = sold;
 	}
 	
 	/**
@@ -111,7 +175,7 @@ public final class NCICodeAttribute
 	 */
 	public NCIByteBuffer code()
 	{
-		return cbuffer;
+		return this.cbuffer;
 	}
 	
 	/**
@@ -122,7 +186,7 @@ public final class NCICodeAttribute
 	 */
 	public NCICodeExceptions exceptionHandlers()
 	{
-		return exceptions;
+		return this.exceptions;
 	}
 	
 	/**
@@ -133,7 +197,7 @@ public final class NCICodeAttribute
 	 */
 	public int maxLocals()
 	{
-		return maxlocals;
+		return this.maxlocals;
 	}
 	
 	/**
@@ -144,7 +208,7 @@ public final class NCICodeAttribute
 	 */
 	public int maxStack()
 	{
-		return maxstack;
+		return this.maxstack;
 	}
 	
 	/**
@@ -155,7 +219,35 @@ public final class NCICodeAttribute
 	 */
 	public NCIMethod method()
 	{
-		return method;
+		return this.method;
+	}
+	
+	/**
+	 * Returns the old {@code StackMap} attribute that this code may
+	 * optionally have.
+	 *
+	 * @return The old stack map data or {@code null} if it does not exist.
+	 * @since 2016/05/12
+	 */
+	public NCIByteBuffer stackMapOld()
+	{
+		if (!this.method.outerClass().version().useStackMapTable())
+			return this.oldstackmap;
+		return null;
+	}
+	
+	/**
+	 * Returns the new {@code StackMapTable} attribute that this code may
+	 * optionally have.
+	 *
+	 * @return The new stack map data or {@code null} if it does not exist.
+	 * @since 2016/05/12
+	 */
+	public NCIByteBuffer stackMapNew()
+	{
+		if (this.method.outerClass().version().useStackMapTable())
+			return this.newstackmap;
+		return null;
 	}
 }
 
