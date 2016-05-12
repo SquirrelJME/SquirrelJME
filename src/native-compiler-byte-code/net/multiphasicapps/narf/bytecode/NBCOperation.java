@@ -55,6 +55,9 @@ public final class NBCOperation
 	/** The verification state of this operation. */
 	protected final NBCStateVerification verification;
 	
+	/** The continued result of verification. */
+	protected final NBCStateVerification verifresult;
+	
 	/** The string representation of this operation. */
 	private volatile Reference<String> _string;
 	
@@ -122,9 +125,12 @@ public final class NBCOperation
 				throw new NBCException(NBCException.Issue.CANNOT_ACCESS_CLASS,
 					String.format("AX0f %s", ncl.thisName()));
 			
-			// Setup push and pops
+			// Nothing is popped and no variables are touched
+			stackpop = __stackPop();
+			localaccess = __localAccess();
 			
-			throw new Error("TODO");
+			// A new object is pushed
+			stackpush = __stackPush(NBCVariablePush.newObject());
 		}
 		
 		// {@squirreljme.error AX05 The instruction identifier for the
@@ -133,6 +139,20 @@ public final class NBCOperation
 		else
 			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
 				String.format("AX05 %d %d", __lp, opcode));
+		
+		// Determine the entry verification state
+		NBCStateVerification expv = __bc.explicitVerification().get(__lp);
+		if (expv != null)
+			verification = expv;
+		
+		// Otherwise, the entry state is derived from the source operation (the
+		// operation which precedes this one during execution)
+		else
+			throw new Error("TODO");
+		
+		// Determine the result of this operation for targets if applicable
+		System.err.println("DEBUG -- Verification result.");
+		verifresult = null;
 	}
 	
 	/**
@@ -208,8 +228,8 @@ public final class NBCOperation
 		if (ref == null || null == (rv = ref.get()))
 			_string = new WeakReference<>((rv = "(" + instructionId() +
 				"la=" + localAccesses() + ", pop=" + stackPops() +
-				", push=" + stackPushes() + ", verif=" + verification() +
-				")"));
+				", push=" + stackPushes() + ", iv=" + verificationInput() +
+				", ov=" + verificationOutput() + ")"));
 		
 		// Return it
 		return rv;
@@ -221,9 +241,21 @@ public final class NBCOperation
 	 * @return The verification state.
 	 * @since 2016/05/12
 	 */
-	public NBCStateVerification verification()
+	public NBCStateVerification verificationInput()
 	{
-		return verification;
+		return this.verification;
+	}
+	
+	/**
+	 * Returns the verification state that would be under affect when this
+	 * operation has been executed.
+	 *
+	 * @return The resulting verification state.
+	 * @since 2016/05/12
+	 */
+	public NBCStateVerification verificationOutput()
+	{
+		return this.verifresult;
 	}
 	
 	/**

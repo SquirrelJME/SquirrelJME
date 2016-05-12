@@ -19,6 +19,10 @@ import java.util.List;
  */
 public final class NBCVariablePush
 {
+	/** A new object. */
+	private static final NBCVariablePush _NEW_OBJECT =
+		new NBCVariablePush(NBCVariableType.OBJECT);
+	
 	/**
 	 * Pushes a new value which is an entirely new value.
 	 *
@@ -101,6 +105,19 @@ public final class NBCVariablePush
 	public String toString()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * This returns a push representation which indicates that a new value
+	 * which is not derived from any input stack entries or local variables
+	 * is pushed to the stack.
+	 *
+	 * @return A push representation which specifies a new object value.
+	 * @since 2016/05/12
+	 */
+	public static NBCVariablePush newObject()
+	{
+		return _NEW_OBJECT;
 	}
 }
 

@@ -222,6 +222,18 @@ public final class NBCByteCode
 	}
 	
 	/**
+	 * Returns the explicit verification state as determined by the stack map
+	 * attributes.
+	 *
+	 * @return The mapping of explicit verifications.
+	 * @since 2016/05/12
+	 */
+	public Map<Integer, NBCStateVerification> explicitVerification()
+	{
+		return verification;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/11
 	 */
@@ -248,18 +260,6 @@ public final class NBCByteCode
 			// Return it
 			return rv;
 		}
-	}
-	
-	/**
-	 * Returns the implicit verification state as determined by the stack map
-	 * attributes.
-	 *
-	 * @return The mapping of implicit verifications.
-	 * @since 2016/05/12
-	 */
-	public Map<Integer, NBCStateVerification> implicitVerification()
-	{
-		return verification;
 	}
 	
 	/**
