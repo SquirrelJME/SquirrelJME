@@ -40,3 +40,9 @@ only has to exist in the byte code representation and not in the interpreter
 or the compiler. Duplicating the verification could end up being rather
 dangerous.
 
+## 09:46
+
+Also since the work would be done in the byte code representation, then that
+means the interpreter would be much simpler because it does not have to
+perform that many checks.
+

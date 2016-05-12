@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import net.multiphasicapps.narf.bytecode.NBCByteCode;
 import net.multiphasicapps.narf.program.NRProgram;
 
@@ -28,6 +30,10 @@ public class NIThread
 	
 	/** Special thread? */
 	protected final boolean isspecial;
+	
+	/** The interpreter call stack. */
+	protected final Deque<NIInterpreter> callstack =
+		new ArrayDeque<>();
 	
 	/**
 	 * Initializes the interpreter thread which maps a thread to the specified
@@ -98,30 +104,44 @@ public class NIThread
 		
 		// Obtain the method program
 		Object rawprg = __m.program();
+		NIInterpreter terp;
 		
 		// Use pure interpreter
 		if (rawprg instanceof NBCByteCode)
-		{
-			NBCByteCode prg = (NBCByteCode)rawprg;
-			
-			if (true)
-				throw new Error("TODO");
-		}
+			terp = new NIInterpreterPure(this, (NBCByteCode)rawprg);
 		
 		// Optimized program
 		else if (rawprg instanceof NRProgram)
-		{
-			NRProgram prg = (NRProgram)rawprg;
-			
-			if (true)
-				throw new Error("TODO");
-		}
+			terp = new NIInterpreterCompiler(this, (NRProgram)rawprg);
 		
 		// Unknown
 		else
 			throw new RuntimeException("WTFX");
 		
-		throw new Error("TODO");
+		// Setup interpreter on the stack
+		Deque<NIInterpreter> stack = this.callstack;
+		synchronized (stack)
+		{
+			stack.offerLast(terp);
+		}
+		
+		// Call interpreter
+		try
+		{
+			return terp.interpret(__args);
+		}
+		
+		// Always remove the top-most frame
+		finally
+		{
+			// {@squirreljme.error AN0p Incorrect stack frame when
+			// interpretation has finished. (The expected stack frame; The
+			// frame which was at the top)}
+			NIInterpreter xi;
+			if (terp != (xi = stack.removeLast()))
+				throw new NIException(this.core, NIException.Issue.WRONG_STACK,
+					String.format("AN0p %s %s", terp, xi));
+		}
 	}
 }
 

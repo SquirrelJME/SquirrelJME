@@ -138,6 +138,9 @@ public class NIException
 		/** Method could not correctly be read. */
 		METHOD_LOAD_ERROR,
 		
+		/** Popped the wrong item on the stack. */
+		WRONG_STACK,
+		
 		/** End. */
 		;
 	}
