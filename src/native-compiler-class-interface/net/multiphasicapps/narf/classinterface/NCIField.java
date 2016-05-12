@@ -18,7 +18,7 @@ import net.multiphasicapps.descriptors.FieldSymbol;
  * @since 2016/04/22
  */
 public interface NCIField
-	extends NCIMember<NCIFieldID, NCIFieldFlags>
+	extends NCIMember<NCIFieldID, NCIFieldFlags>, NCIAccessibleObject
 {
 	/**
 	 * Returns the constant value of this field.

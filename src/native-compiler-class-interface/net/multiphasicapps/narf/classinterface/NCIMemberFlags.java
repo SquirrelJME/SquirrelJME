@@ -18,6 +18,7 @@ package net.multiphasicapps.narf.classinterface;
  */
 public abstract class NCIMemberFlags<F extends NCIMemberFlag>
 	extends NCIFlags<F>
+	implements NCIAccessibleFlags
 {
 	/**
 	 * Initializes the member flags.
@@ -52,27 +53,24 @@ public abstract class NCIMemberFlags<F extends NCIMemberFlag>
 	public abstract boolean isFinal();
 	
 	/**
-	 * Returns {@code true} if this is private.
-	 *
-	 * @return {@code true} if private.
+	 * {@inheritDoc}
 	 * @since 2016/03/20
 	 */
+	@Override
 	public abstract boolean isPrivate();
 	
 	/**
-	 * Returns {@code true} if this is protected.
-	 *
-	 * @return {@code true} if protected.
+	 * {@inheritDoc}
 	 * @since 2016/03/20
 	 */
+	@Override
 	public abstract boolean isProtected();
 	
 	/**
-	 * Returns {@code true} if this is public.
-	 *
-	 * @return {@code true} if public.
+	 * {@inheritDoc}
 	 * @since 2016/03/20
 	 */
+	@Override
 	public abstract boolean isPublic();
 	
 	/**
@@ -92,11 +90,10 @@ public abstract class NCIMemberFlags<F extends NCIMemberFlag>
 	public abstract boolean isSynthetic();
 	
 	/**
-	 * Returns {@code true} if this is package private.
-	 *
-	 * @return {@code true} if package private.
+	 * {@inheritDoc}
 	 * @since 2016/03/20
 	 */
+	@Override
 	public final boolean isPackagePrivate()
 	{
 		return !isPublic() && !isProtected() && !isPrivate();

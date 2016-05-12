@@ -10,23 +10,28 @@
 
 package net.multiphasicapps.narf.classinterface;
 
-import net.multiphasicapps.descriptors.MethodSymbol;
-
 /**
- * This represents a method.
+ * This describes objects which .
  *
- * @since 2016/04/22
+ * @since 2016/05/12
  */
-public interface NCIMethod
-	extends NCIMember<NCIMethodID, NCIMethodFlags>, NCIAccessibleObject
+public interface NCIAccessibleObject
 {
 	/**
-	 * Returns the code attribute of this method or {@code null} if there is
-	 * none.
+	 * Returns flags which are appropriate for access checking.
 	 *
-	 * @return The code attribute or {@code null} if there is none.
-	 * @since 2016/04/27
+	 * @return Flags which are capable of being access checked.
+	 * @since 2016/05/12
 	 */
-	public abstract NCICodeAttribute code();
+	public abstract NCIAccessibleFlags flags();
+	
+	/**
+	 * Returns the class which contains this accessible object or {@code this}
+	 * if this is a class.
+	 *
+	 * @return The containing class or {@code this} if this is a class.
+	 * @since 2016/05/12
+	 */
+	public abstract NCIClass outerClass();
 }
 

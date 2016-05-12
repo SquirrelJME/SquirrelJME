@@ -21,6 +21,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  * @since 2016/04/21
  */
 public interface NCIClass
+	extends NCIAccessibleObject
 {
 	/**
 	 * Returns the constant pool of the class.

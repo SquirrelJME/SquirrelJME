@@ -17,6 +17,7 @@ package net.multiphasicapps.narf.classinterface;
  */
 public class NCIClassFlags
 	extends NCIFlags<NCIClassFlag>
+	implements NCIAccessibleFlags
 {
 	/**
 	 * Initializes the class flags.
@@ -100,22 +101,42 @@ public class NCIClassFlags
 	}
 	
 	/**
-	 * Is this class package private?
-	 *
-	 * @return {@code true} if it is package private.
+	 * {@inheritDoc}
 	 * @since 2016/03/15
 	 */
+	@Override
 	public final boolean isPackagePrivate()
 	{
 		return !isPublic();
 	}
 	
 	/**
-	 * Is this class public?
-	 *
-	 * @return {@code true} if it is public.
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public final boolean isPrivate()
+	{
+		// Classes are never private
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public final boolean isProtected()
+	{
+		// Classes are never protected
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/03/15
 	 */
+	@Override
 	public final boolean isPublic()
 	{
 		return contains(NCIClassFlag.PUBLIC);

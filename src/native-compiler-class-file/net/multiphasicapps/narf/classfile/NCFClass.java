@@ -149,7 +149,7 @@ public final class NCFClass
 		catch (IllegalSymbolException e)
 		{
 			// {@squirreljme.error AQ1j The name of the current, super, or
-			// an implemented interface is not a valid binary name.}
+			// an NCIClassimplemented interface is not a valid binary name.}
 			throw new NCIException(NCIException.Issue.BAD_CLASS_NAME, "AQ1j",
 				e);
 		}
@@ -241,6 +241,16 @@ public final class NCFClass
 	public Map<NCIMethodID, NCIMethod> methods()
 	{
 		return methods;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public NCIClass outerClass()
+	{
+		return this;
 	}
 	
 	/**

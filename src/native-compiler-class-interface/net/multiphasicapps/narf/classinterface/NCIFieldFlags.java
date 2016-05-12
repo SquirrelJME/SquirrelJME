@@ -17,6 +17,7 @@ package net.multiphasicapps.narf.classinterface;
  */
 public final class NCIFieldFlags
 	extends NCIMemberFlags<NCIFieldFlag>
+	implements NCIAccessibleFlags
 {
 	/**
 	 * Initializes the field flags.

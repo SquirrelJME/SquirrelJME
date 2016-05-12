@@ -97,3 +97,7 @@ having them combined together such as it was done previously.
 I wonder if the class lookup should accept `ClassNameSymbol`s so that arrays
 can be referenced and such.
 
+## 17:42
+
+This means I will need a can access checker for the byte code.
+
