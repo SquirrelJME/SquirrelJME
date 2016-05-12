@@ -91,6 +91,9 @@ public class NBCException
 		/** An attempt would be made to initialize an abstract class. */
 		INIT_ABSTRACT_CLASS,
 		
+		/** Accessible object has impossible access flags. */
+		ILLEGAL_ACCESS_FLAGS,
+		
 		/** End. */
 		;
 	}

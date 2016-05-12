@@ -263,5 +263,21 @@ public final class ClassNameSymbol
 	{
 		return isprimitive;
 	}
+	
+	/**
+	 * Returns the package which contains this class.
+	 *
+	 * @return The parent package this is in.
+	 * @since 2016/05/12
+	 */
+	public BinaryNameSymbol parentPackage()
+	{
+		// Arrays and primitive types are always in the special package
+		if (isarray || isprimitive)
+			return BinaryNameSymbol.SPECIAL_PACKAGE;
+		
+		// Otherwise, this is already done by the binary name
+		return asBinaryName().parentPackage();
+	}
 }
 

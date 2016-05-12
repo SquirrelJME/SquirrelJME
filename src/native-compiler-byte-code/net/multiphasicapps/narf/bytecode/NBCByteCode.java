@@ -16,7 +16,12 @@ import java.util.AbstractList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.narf.classinterface.NCIAccessibleFlags;
+import net.multiphasicapps.narf.classinterface.NCIAccessibleObject;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
+import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
@@ -106,6 +111,64 @@ public final class NBCByteCode
 		else
 			verification = UnmodifiableMap.<Integer, NBCStateVerification>of(
 				new SingletonMap<>(0, new NBCStateVerification(__m)));
+	}
+	
+	/**
+	 * Checks whether the current byte code (the method that contains this byte
+	 * code) can access the specified accessible object.
+	 *
+	 * @param __ao The object to check access against.
+	 * @return {@code true} if the object can be accessed.
+	 * @throws NBCException If the class has no set access flag type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/12
+	 */
+	public final boolean canAccess(NCIAccessibleObject __ao)
+		throws NBCException, NullPointerException
+	{
+		// Check
+		if (__ao == null)
+			throw new NullPointerException("NARG");
+		
+		// Check the access for the class first
+		NCIClass otherouter = __ao.outerClass();
+		if (!(__ao instanceof NCIClass))
+			if (!canAccess(otherouter))
+				return false;
+		
+		// Target flags
+		NCIAccessibleFlags af = __ao.flags();
+		
+		// If public, always OK
+		if (af.isPublic())
+			return true;
+		
+		// Get the name of our class and the object
+		ClassNameSymbol tname = method.outerClass().thisName(),
+			oname = otherouter.thisName();
+		
+		// If this is the same exact class then no checks have to be performed
+		if (tname.equals(oname))
+			return true;
+		
+		// Otherwise these are never accessible
+		else if (af.isPrivate())
+			return false;
+		
+		// Otherwise the package must match
+		else if (af.isPackagePrivate())
+			return tname.parentPackage().equals(oname.parentPackage());
+		
+		// The other class must be a super class or the same as this class
+		else if (af.isProtected())
+			throw new Error("TODO");
+		
+		// {@squirreljme.error AX0c The accessible object to check access
+		// against has an impossible flag combination. (The accessible object;
+		// The accessible object flags)}
+		else
+			throw new NBCException(NBCException.Issue.ILLEGAL_ACCESS_FLAGS,
+				String.format("AX0c %s", __ao, af));
 	}
 	
 	/**
