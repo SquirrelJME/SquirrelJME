@@ -226,8 +226,8 @@ public final class NBCOperation
 		
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))
-			_string = new WeakReference<>((rv = "(" + instructionId() +
-				"la=" + localAccesses() + ", pop=" + stackPops() +
+			_string = new WeakReference<>((rv = "(id=" + instructionId() +
+				", la=" + localAccesses() + ", pop=" + stackPops() +
 				", push=" + stackPushes() + ", iv=" + verificationInput() +
 				", ov=" + verificationOutput() + ")"));
 		
