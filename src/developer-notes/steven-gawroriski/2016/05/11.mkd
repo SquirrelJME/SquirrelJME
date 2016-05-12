@@ -13,3 +13,9 @@ local variables named the same and such.
 
 Despite waking up early I did not program this as much.
 
+## 23:14
+
+Seeing that common PowerPC systems are big endian and have similar instruction
+sizes, I wonder how viable it would be to have a Nintendo 64 emulator which is
+just a basic operation translation in place.
+
