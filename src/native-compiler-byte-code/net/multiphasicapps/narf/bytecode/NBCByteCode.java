@@ -93,11 +93,11 @@ public final class NBCByteCode
 		
 		// Old states
 		if (os != null)
-			verification = __StackMapParser__(false, os, this).result();
+			verification = new __StackMapParser__(false, os, this).result();
 		
 		// New States
 		else if (ns != null)
-			verification = __StackMapParser__(true, ns, this).result();
+			verification = new __StackMapParser__(true, ns, this).result();
 		
 		// None used
 		else
