@@ -82,3 +82,13 @@ code to reference classes in this way also however. So this would result in
 an easier to implement compiler and interpreter since the operations and such
 would already be checked.
 
+## 16:59
+
+Class types would have to be verified though along with `null` references and
+such.
+
+## 17:04
+
+This time individual treads for the locals and stack makes it easier than
+having them combined together such as it was done previously.
+

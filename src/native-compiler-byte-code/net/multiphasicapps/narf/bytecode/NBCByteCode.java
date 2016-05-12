@@ -104,8 +104,7 @@ public final class NBCByteCode
 		// None used
 		else
 			verification = UnmodifiableMap.<Integer, NBCStateVerification>of(
-				new SingletonMap<>(0, new NBCStateVerification(__m.
-					nameAndType().type())));
+				new SingletonMap<>(0, new NBCStateVerification(__m)));
 	}
 	
 	/**

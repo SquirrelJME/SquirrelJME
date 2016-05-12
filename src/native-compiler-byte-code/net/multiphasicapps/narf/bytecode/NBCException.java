@@ -76,6 +76,15 @@ public class NBCException
 		/** An operation is not valid. */
 		ILLEGAL_OPCODE,
 		
+		/** The stack overflows or underflows. */
+		STACK_OVERFLOW,
+		
+		/** Not enough local variables for method call. */
+		NOT_ENOUGH_LOCALS,
+		
+		/** The field type is not known. */
+		UNKNOWN_FIELD_TYPE,
+		
 		/** End. */
 		;
 	}
