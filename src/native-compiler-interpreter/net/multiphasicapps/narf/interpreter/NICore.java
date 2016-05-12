@@ -113,6 +113,18 @@ public class NICore
 	}
 	
 	/**
+	 * Returns the current interpreter thread which is mapped to the current
+	 * executing thread.
+	 *
+	 * @return The interpreter thread for the current thread.
+	 * @since 2016/05/12
+	 */
+	public NIThread currentThread()
+	{
+		return thread(Thread.currentThread());
+	}
+	
+	/**
 	 * Locates and initializes the given class.
 	 *
 	 * @param __cn The class to initialize.
