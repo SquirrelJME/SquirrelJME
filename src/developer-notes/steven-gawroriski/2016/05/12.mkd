@@ -62,3 +62,13 @@ in so the byte code can be verified correctly.
 Will need a singleton so that the first operation always has an implicit
 verification state which matches the flags and input arguments.
 
+## 15:02
+
+The `UnmodifiableList` class for the non-random access list should implement
+the list iterator since it is possible for `AbstractList` to not actually
+be `RandomAccess`. As such depending on the `ListIterator` implementation it
+is quite likely that for stuff such as `LinkedList` that it would just iterate
+through the entire list and the further away the `ListIterator` is the more
+operations are performed, so it would basically be **O(n^2)** which is
+quite bad.
+

@@ -11,7 +11,9 @@
 package net.multiphasicapps.util.unmodifiable;
 
 import java.util.AbstractList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.RandomAccess;
 
 /**
@@ -125,6 +127,127 @@ public abstract class UnmodifiableList<V>
 	}
 	
 	/**
+	 * Wraps a list iterator so that it cannot have modifications.
+	 *
+	 * @param <V> The type of value in the list.
+	 * @since 2016/05/12
+	 */
+	private static final class __ListIterator__<V>
+		implements ListIterator<V>
+	{
+		/** The list iterator to wrap. */
+		protected final ListIterator<V> li;
+		
+		/**
+		 * Initializes the wrapped list iterator.
+		 *
+		 * @param __li The iterator to wrap.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/05/12
+		 */
+		private __ListIterator__(ListIterator<V> __li)
+			throws NullPointerException
+		{
+			// Check
+			if (__li == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			li = __li;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public void add(V __e)
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return li.hasNext();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public boolean hasPrevious()
+		{
+			return li.hasPrevious();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public V next()
+		{
+			return li.next();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public int nextIndex()
+		{
+			return li.nextIndex();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public V previous()
+		{
+			return li.previous();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public int previousIndex()
+		{
+			return li.previousIndex();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public void set(V __v)
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
+	}
+	
+	/**
 	 * This is a list which implements {@link RandomAccess} so that the sort
 	 * and search operations do not result in an entire copy of the list
 	 * before the operation is performed.
@@ -168,6 +291,36 @@ public abstract class UnmodifiableList<V>
 		private __Sequential__(List<V> __l)
 		{
 			super(__l);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public Iterator<V> iterator()
+		{
+			return listIterator();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public ListIterator<V> listIterator()
+		{
+			return listIterator(0);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/12
+		 */
+		@Override
+		public ListIterator<V> listIterator(int __i)
+		{
+			return new __ListIterator__<V>(wrapped.listIterator(__i));
 		}
 	}
 }
