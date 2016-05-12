@@ -20,6 +20,9 @@ public abstract class NIInterpreter
 	/** The thread of execution. */
 	protected final NIThread thread;
 	
+	/** The core manager. */
+	protected final NICore core;
+	
 	/**
 	 * Initializes the base interpreter.
 	 *
@@ -36,6 +39,7 @@ public abstract class NIInterpreter
 		
 		// Set
 		this.thread = __t;
+		this.core = __t.core();
 	}
 	
 	/**

@@ -79,6 +79,17 @@ public final class NBCOperation
 	}
 	
 	/**
+	 * Returns the instruction ID of this instruction.
+	 *
+	 * @return The instruction ID.
+	 * @since 2016/05/12
+	 */
+	public int instructionId()
+	{
+		return this.instructionid;
+	}
+	
+	/**
 	 * Returns the list of local variables which are accessed by this
 	 * operation.
 	 *

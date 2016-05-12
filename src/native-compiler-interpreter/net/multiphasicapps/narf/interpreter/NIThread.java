@@ -53,9 +53,9 @@ public class NIThread
 			throw new NullPointerException("NARG");
 		
 		// Set
-		core = __c;
-		thread = __xt;
-		isspecial = true;
+		this.core = __c;
+		this.thread = __xt;
+		this.isspecial = true;
 	}
 	
 	/**
@@ -76,6 +76,17 @@ public class NIThread
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the core of the interpreter.
+	 *
+	 * @return The interpreter core.
+	 * @since 2016/05/12
+	 */
+	public NICore core()
+	{
+		return this.core;
 	}
 	
 	/**

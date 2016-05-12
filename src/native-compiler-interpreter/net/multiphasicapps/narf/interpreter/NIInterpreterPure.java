@@ -11,6 +11,7 @@
 package net.multiphasicapps.narf.interpreter;
 
 import net.multiphasicapps.narf.bytecode.NBCByteCode;
+import net.multiphasicapps.narf.bytecode.NBCOperation;
 
 /**
  * This is the pure interpreter which takes byte code directly for execution.
@@ -22,6 +23,9 @@ public class NIInterpreterPure
 {
 	/** The code to be interpreted. */
 	protected final NBCByteCode program;
+	
+	/** The current instruction address. */
+	private volatile int _pcaddr;
 	
 	/**
 	 * Initializes the interpreter which uses the direct byte code.
@@ -51,7 +55,27 @@ public class NIInterpreterPure
 	@Override
 	public Object interpret(Object... __args)
 	{
-		throw new Error("TODO");
+		// Execution loop
+		NBCByteCode program = this.program;
+		for (;;)
+		{
+			// Get the current operation
+			int pcaddr = this._pcaddr;
+			NBCOperation op = program.get(pcaddr);
+			
+			// Depends on the instruction code
+			int code = op.instructionId();
+			switch (code)
+			{
+					// {@squirreljme.error AN0q The current operation is not
+					// known. (The instruction address; The instruction ID; The
+					// operation itself)}
+				default:
+					throw new NIException(this.core, NIException.Issue.
+						ILLEGAL_OPCODE, String.format("AN0q %d %d %s",
+						pcaddr, code, op));
+			}
+		}
 	}
 }
 

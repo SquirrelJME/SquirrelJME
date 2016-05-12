@@ -141,6 +141,9 @@ public class NIException
 		/** Popped the wrong item on the stack. */
 		WRONG_STACK,
 		
+		/** An illegal opcode was attempted to be executed. */
+		ILLEGAL_OPCODE,
+		
 		/** End. */
 		;
 	}
