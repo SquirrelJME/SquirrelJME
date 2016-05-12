@@ -116,6 +116,12 @@ public final class NBCOperation
 				throw new NBCException(NBCException.Issue.INIT_ABSTRACT_CLASS,
 					String.format("AX0b %s %s", ref, fl));
 			
+			// {@squirreljme.error AX0f The specified class cannot be accessed
+			// and cannot be allocated. (The class to access)}
+			if (!__bc.canAccess(ncl))
+				throw new NBCException(NBCException.Issue.CANNOT_ACCESS_CLASS,
+					String.format("AX0f %s", ncl.thisName()));
+			
 			// Setup push and pops
 			
 			throw new Error("TODO");

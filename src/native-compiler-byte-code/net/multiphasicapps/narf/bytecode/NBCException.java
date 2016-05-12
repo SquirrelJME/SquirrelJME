@@ -97,6 +97,9 @@ public class NBCException
 		/** A class eventually is a superclass of itself. */
 		CIRCULAR_EXTENDS,
 		
+		/** Cannot access the class. */
+		CANNOT_ACCESS_CLASS,
+		
 		/** End. */
 		;
 	}
