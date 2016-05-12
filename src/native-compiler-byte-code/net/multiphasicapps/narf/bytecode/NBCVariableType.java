@@ -32,6 +32,9 @@ public enum NBCVariableType
 	/** Object. */
 	OBJECT,
 	
+	/** The top of a long or double. */
+	TOP,
+	
 	/** End. */
 	;
 }
