@@ -33,6 +33,9 @@ public final class NBCStateVerification
 	/** Stack variables. */
 	protected final Stack stack;
 	
+	/** The string cache. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes a verification state for the given method.
 	 *
@@ -118,6 +121,26 @@ public final class NBCStateVerification
 	public Stack stack()
 	{
 		return stack;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public String toString()
+	{
+		// Get reference
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Check
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = "{locals=" + locals +
+				", stack=" + stack + "}"));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
