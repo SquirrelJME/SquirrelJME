@@ -12,6 +12,7 @@ package net.multiphasicapps.narf.bytecode;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 
 /**
  * This represents a single operation in the byte code.
@@ -26,6 +27,9 @@ public final class NBCOperation
 	/** The logical position. */
 	protected final int logicaladdress;
 	
+	/** The instruction ID. */
+	protected final int instructionid;
+	
 	/** The string representation of this operation. */
 	private volatile Reference<String> _string;
 	
@@ -33,20 +37,29 @@ public final class NBCOperation
 	 * Initializes the operation data.
 	 *
 	 * @param __bc The owning byte code.
+	 * @param __bb The buffer which contains code.
 	 * @param __lp The logical position of the operation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	NBCOperation(NBCByteCode __bc, int __lp)
+	NBCOperation(NBCByteCode __bc, NCIByteBuffer __bb, int __lp)
 		throws NullPointerException
 	{
 		// Check
-		if (__bc == null)
+		if (__bc == null || __bb == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		owner = __bc;
 		logicaladdress = __lp;
+		
+		// Read opcode
+		int phy = __bc.logicalToPhysical(__lp);
+		int opcode = __bb.readUnsignedByte(phy);
+		if (opcode == NBCInstructionID.WIDE)
+			opcode = (opcode << 8) | __bb.readUnsignedByte(phy, 1);
+		
+		instructionid = opcode;
 	}
 	
 	/**
@@ -62,7 +75,7 @@ public final class NBCOperation
 		
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))
-			throw new Error("TODO");
+			_string = new WeakReference<>((rv = "(" + instructionid + ")"));
 		
 		// Return it
 		return rv;

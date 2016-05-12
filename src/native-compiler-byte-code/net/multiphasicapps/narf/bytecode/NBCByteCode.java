@@ -99,7 +99,7 @@ public class NBCByteCode
 			// Check
 			if (ref == null || null == (rv = ref.get()))
 				bops[__i] = new WeakReference<>(
-					(rv = new NBCOperation(this, __i)));
+					(rv = new NBCOperation(this, code, __i)));
 			
 			// Return it
 			return rv;
