@@ -99,7 +99,7 @@ public class NIThread
 		// Obtain the method program
 		Object rawprg = __m.program();
 		
-		// Pure interpreting?
+		// Use pure interpreter
 		if (rawprg instanceof NBCByteCode)
 		{
 			NBCByteCode prg = (NBCByteCode)rawprg;

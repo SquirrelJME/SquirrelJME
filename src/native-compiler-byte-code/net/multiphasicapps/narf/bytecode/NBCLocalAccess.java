@@ -43,9 +43,9 @@ public final class NBCLocalAccess
 			throw new NullPointerException("NARG");
 		
 		// Set
-		index = __dx;
-		write = __write;
-		type = __t;
+		this.index = __dx;
+		this.write = __write;
+		this.type = __t;
 	}
 	
 	/**

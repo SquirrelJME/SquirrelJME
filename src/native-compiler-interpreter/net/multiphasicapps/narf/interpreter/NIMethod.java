@@ -16,6 +16,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.bytecode.NBCByteCode;
 import net.multiphasicapps.narf.bytecode.NBCException;
 import net.multiphasicapps.narf.classinterface.NCIException;
+import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 import net.multiphasicapps.narf.codeparse.NCPCodeParser;
@@ -106,7 +107,8 @@ public class NIMethod
 				try
 				{
 					// Load the byte code program
-					NBCByteCode bc = new NBCByteCode(base);
+					NCILookup lu = core.library();
+					NBCByteCode bc = new NBCByteCode(lu, base);
 					
 					// If pure, use that
 					if (PURE_INTERPRETER)
@@ -114,7 +116,7 @@ public class NIMethod
 					
 					// Otherwise, dynamically recompile
 					else
-						rv = new NCPCodeParser(core.library(), bc).get();
+						rv = new NCPCodeParser(lu, bc).get();
 					
 					// Cache it
 					_program = new WeakReference<>(rv);

@@ -63,8 +63,8 @@ public final class NBCOperation
 			throw new NullPointerException("NARG");
 		
 		// Set
-		owner = __bc;
-		logicaladdress = __lp;
+		this.owner = __bc;
+		this.logicaladdress = __lp;
 		
 		// Read opcode
 		int phy = __bc.logicalToPhysical(__lp);
@@ -72,7 +72,8 @@ public final class NBCOperation
 		if (opcode == NBCInstructionID.WIDE)
 			opcode = (opcode << 8) | __bb.readUnsignedByte(phy, 1);
 		
-		instructionid = opcode;
+		// Set
+		this.instructionid = opcode;
 		
 		throw new Error("TODO");
 	}

@@ -32,3 +32,11 @@ design a native compiler that works with it.
 Actually for system properties I need something similar to the useful
 `squirreljme.error`.
 
+## 09:26
+
+It would be best if the byte code representation was given the lookup
+interface. This way the verification that the byte code is actually correct
+only has to exist in the byte code representation and not in the interpreter
+or the compiler. Duplicating the verification could end up being rather
+dangerous.
+

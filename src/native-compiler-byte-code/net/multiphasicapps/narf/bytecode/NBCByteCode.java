@@ -16,6 +16,7 @@ import java.util.AbstractList;
 import java.util.List;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
+import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 
 /**
@@ -28,6 +29,9 @@ public class NBCByteCode
 {
 	/** The containing method. */
 	protected final NCIMethod method;
+	
+	/** The lookup for other classes (and fields/methods). */
+	protected final NCILookup lookup;
 	
 	/** The code attribute. */
 	protected final NCICodeAttribute attribute;
@@ -51,14 +55,15 @@ public class NBCByteCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	public NBCByteCode(NCIMethod __m)
+	public NBCByteCode(NCILookup __lu, NCIMethod __m)
 		throws NullPointerException
 	{
 		// Check
-		if (__m == null)
+		if (__lu == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.lookup = __lu;
 		this.method = __m;
 		
 		// Extract code data
