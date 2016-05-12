@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.bytecode;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;

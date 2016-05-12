@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.narf.bytecode;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -22,6 +24,12 @@ public final class NBCVariablePush
 	/** A new object. */
 	private static final NBCVariablePush _NEW_OBJECT =
 		new NBCVariablePush(NBCVariableType.OBJECT);
+	
+	/** The type of value to push. */
+	protected final NBCVariableType pushtype;
+	
+	/** String cache. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Pushes a new value which is an entirely new value.
@@ -37,7 +45,8 @@ public final class NBCVariablePush
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		pushtype = __t;
 	}
 	
 	/**
@@ -104,7 +113,26 @@ public final class NBCVariablePush
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		// Get reference
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Needs caching?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Setup builder
+			StringBuilder sb = new StringBuilder("(");
+			
+			// Add the type to push
+			sb.append(pushtype);
+			
+			// Finish it
+			sb.append(')');
+			_string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		// Return the string
+		return rv;
 	}
 	
 	/**
