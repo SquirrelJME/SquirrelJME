@@ -27,3 +27,8 @@ Although the pure interpreter would be slow, hopefully this new design will
 make it slightly faster. Then once the pure interpreter works fully I can then
 design a native compiler that works with it.
 
+## 08:49
+
+Actually for system properties I need something similar to the useful
+`squirreljme.error`.
+

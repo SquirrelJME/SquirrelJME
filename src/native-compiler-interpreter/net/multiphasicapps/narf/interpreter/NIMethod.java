@@ -31,7 +31,13 @@ import net.multiphasicapps.narf.program.NRProgram;
 public class NIMethod
 	extends NIMember<NCIMethod>
 {
-	/** Should a pure interpreter be used? */
+	/**
+	 * {@squirreljme.property net.multiphasicapps.narf.interpreter.pure
+	 * If this is set to {@code true} then the interpreter execution path is
+	 * pure and does not run the code which would be used by the native
+	 * compiler. In general it is not recommended to use this unless for
+	 * testing purposes.}
+	 */
 	public static final boolean PURE_INTERPRETER =
 		Boolean.getBoolean("net.multiphasicapps.narf.interpreter.pure");
 	
