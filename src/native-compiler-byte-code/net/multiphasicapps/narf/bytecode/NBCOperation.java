@@ -43,6 +43,9 @@ public final class NBCOperation
 	/** Variable types which are pushed to the stack. */
 	protected final List<NBCVariablePush> stackpush;
 	
+	/** The verification state of this operation. */
+	protected final NBCStateVerification verification;
+	
 	/** The string representation of this operation. */
 	private volatile Reference<String> _string;
 	
@@ -110,7 +113,7 @@ public final class NBCOperation
 	 */
 	public List<NBCLocalAccess> localAccesses()
 	{
-		return localaccess;
+		return this.localaccess;
 	}
 	
 	/**
@@ -122,7 +125,7 @@ public final class NBCOperation
 	 */
 	public List<NBCVariableType> stackPops()
 	{
-		return stackpop;
+		return this.stackpop;
 	}
 	
 	/**
@@ -134,7 +137,7 @@ public final class NBCOperation
 	 */
 	public List<NBCVariablePush> stackPushes()
 	{
-		return stackpush;
+		return this.stackpush;
 	}
 	
 	/**
@@ -150,10 +153,24 @@ public final class NBCOperation
 		
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))
-			_string = new WeakReference<>((rv = "(" + instructionid + ")"));
+			_string = new WeakReference<>((rv = "(" + instructionId() +
+				"la=" + localAccesses() + ", pop=" + stackPops() +
+				", push=" + stackPushes() + ", verif=" + verification() +
+				")"));
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Returns the verification state of this operation.
+	 *
+	 * @return The verification state.
+	 * @since 2016/05/12
+	 */
+	public NBCStateVerification verification()
+	{
+		return verification;
 	}
 }
 
