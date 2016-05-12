@@ -13,6 +13,7 @@ package net.multiphasicapps.util.empty;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
@@ -40,6 +41,26 @@ public final class EmptyList
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public boolean contains(Object __o)
+	{
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public boolean containsAll(Collection __c)
+	{
+		return __c.isEmpty();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/04/10
 	 */
 	@Override
@@ -51,12 +72,42 @@ public final class EmptyList
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public int indexOf(Object __o)
+	{
+		return -1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public boolean isEmpty()
+	{
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/01
 	 */
 	@Override
 	public Iterator iterator()
 	{
 		return EmptyIterator.empty();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/12
+	 */
+	@Override
+	public int lastIndexOf(Object __o)
+	{
+		return -1;
 	}
 	
 	/**

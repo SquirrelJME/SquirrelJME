@@ -118,7 +118,7 @@ class __StackMapParser__
 			// {@squirreljme.error CP1j There are not enough local variables
 			// to store the input method arguments. (The number of input
 			// variables; The number of local variables)}
-			throw new CPProgramException(String.format("CP1j", vat,
+			throw new NBCException(String.format("CP1j", vat,
 				maxlocals), e);
 		}
 		
@@ -177,9 +177,11 @@ class __StackMapParser__
 				else if (type >= 252 && type <= 254)
 					__appendFrame(type - 251);
 				
+				// {@squirreljme.error AO09 Unknown StackMapTable verification
+				// type. (The verification type)}
 				else
-					throw new CPProgramException(
-						String.format("WTFX %d", type));
+					throw new NBCException(NBCException.Issue.
+						UNKNOWN_STACK_TYPE, String.format("AO09 %d", type));
 			}
 		}
 	}
@@ -239,7 +241,7 @@ class __StackMapParser__
 		// {@squirreljme.error CP0i Appending local variables to the frame
 		// however there is no room to place them. (The remaining local count)}
 		if (__addlocs != 0)
-			throw new CPProgramException(String.format("CP0i %d", __addlocs));
+			throw new NBCException(String.format("CP0i %d", __addlocs));
 	}
 	
 	/**
@@ -310,7 +312,7 @@ class __StackMapParser__
 		// because there are no variables remaining to be chopped. (The
 		// remaining variables to remove)}
 		if (__chops != 0)
-			throw new CPProgramException(String.format("CP0j %d", __chops));
+			throw new NBCException(String.format("CP0j %d", __chops));
 	}
 	
 	/**
@@ -335,7 +337,7 @@ class __StackMapParser__
 		// count. (The read local variable count; The number of locals the
 		// method uses)}
 		if (nl > maxlocals)
-			throw new CPProgramException(String.format("CP0k %d %d", nl,
+			throw new NBCException(String.format("CP0k %d %d", nl,
 				maxlocals));
 		int i;
 		for (i = 0; i < nl; i++)
@@ -406,7 +408,7 @@ class __StackMapParser__
 			default:
 				// {@squirreljme.error CP0l The verification tag in the
 				// StackMap/STackMapTable attribute is not valid. (The tag)}
-				throw new CPProgramException(String.format("CP0l %d", tag));
+				throw new NBCException(String.format("CP0l %d", tag));
 		}
 	}
 	
@@ -427,7 +429,7 @@ class __StackMapParser__
 		// Read in local variables
 		int nl = das.readUnsignedShort();
 		if (nl > maxlocals)
-			throw new CPProgramException(String.format("CP0k %d %d", nl,
+			throw new NBCException(String.format("CP0k %d %d", nl,
 				maxlocals));
 		int i = 0;
 		for (i = 0; i < nl; i++)

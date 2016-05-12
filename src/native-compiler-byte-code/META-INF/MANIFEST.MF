@@ -3,7 +3,8 @@ X-Hairball-Name: native-compiler-byte-code
 X-Hairball-UUID: d2e4c743-4047-4e20-8aaf-dff98bd9981a
 X-Hairball-Depends: javame-cldc-compact,
   native-compiler-exception,
-  native-compiler-class-interface
+  native-compiler-class-interface,
+  extra-util-empty
 X-Hairball-Error: AX
 LIBlet-Title: Java Byte Code Representation
 LIBlet-Vendor: Steven Gawroriski
