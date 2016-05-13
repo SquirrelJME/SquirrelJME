@@ -62,3 +62,36 @@ which pops all the desired values, then pushes them based on the input values.
 All of the pop, push, and dup variants would then use this single shuffle
 mechanism.
 
+## 11:30
+
+Also, the byte code representation could optimize exception handling for
+example. For example `athrow` could be represented as clear the temporaries,
+place the given item onto the stack by itself, and then jump to a given
+address. Also thinking about it, the byte code representation could perform
+simple operations also somewhat. So the byte code representation could be a
+very early optimization sequence where easily optimized things can be placed.
+So there could be some stack caching and NOPs in place of operations. However
+at first I suppose I should perform the obvious operations. At least with a
+potentially optimized `athrow` it might be done. However, I suppose to
+maximize basic byte code optimization I also need to know the class types of
+values on the stack and such, beyond of whether they are just objects or not.
+Specifying the object types would be very useful in the optimizations I am
+talking about. The stack and local states could also have that kind of
+optimization where values are `null` and such. The types would also be handy
+during generating `NRProgram`.
+
+## 11:38
+
+So to recap, give types and potential values for stack entries in the byte
+code representation. This information could then be used as a kind of
+optimization and cache. This would complicate the byte code representation
+however. I would suppose for ease and simplicity that I should not do this and
+keep the byte code mostly pure in representation. Optimizations such as this
+could be laid out when `NRProgram` is to be generated. So if an optimization
+is not very easily performed then it should not be performed. This would make
+the initial loading of the byte code simple and closer to the specification.
+Writing the more difficult optimizations would mean that they would have to be
+tested. However the byte code representation would only really be used at the
+early stage. When it comes to actual native execution, the compiler will never
+be called because everything would already be compiled when a program is ran.
+
