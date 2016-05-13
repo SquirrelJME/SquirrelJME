@@ -16,13 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIClassFlags;
-import net.multiphasicapps.narf.classinterface.NCIClassReference;
-import net.multiphasicapps.narf.classinterface.NCILookup;
-import net.multiphasicapps.narf.classinterface.NCIPool;
-import net.multiphasicapps.util.empty.EmptyList;
-import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This represents a single operation in the byte code.
@@ -90,10 +83,6 @@ public final class NBCOperation
 		// Set
 		this.instructionid = opcode;
 		
-		// Constant pool to work with
-		NCIPool pool = __bc.constantPool();
-		NCILookup lookup = __bc.lookup();
-		
 		// Determine the entry verification state
 		NBCStateVerification expv = __bc.explicitVerification().get(__lp);
 		if (expv != null)
@@ -104,51 +93,25 @@ public final class NBCOperation
 		else
 			verification = (expv = __bc.get(__lp - 1).verificationOutput());
 		
-		// New
-		if (opcode == NBCInstructionID.NEW)
+		// Initialize operation data
+		__OpInitData__ out = new __OpInitData__(this);
+		switch (opcode)
 		{
-			// Get the type of class to allocate
-			NCIClassReference ref = pool.<NCIClassReference>requiredAs(
-				__bb.readUnsignedShort(phy, 1), NCIClassReference.class);
-			arguments = __arguments(ref);
-			
-			// Lookup the class
-			NCIClass ncl = lookup.lookup(ref.get());
-			
-			// {@squirreljme.error AX0a Byte code refers to a class to be
-			// allocated, however it does not exist. (The class name)}
-			if (ncl == null)
-				throw new NBCException(NBCException.Issue.MISSING_CLASS,
-					String.format("AX0a %s", ref));
-			
-			// {@squirreljme.error AX0b The byte code would have attempted to
-			// allocate a class which was either abstract or an interface.
-			// (The class name; The class flags)}
-			NCIClassFlags fl = ncl.flags();
-			if (fl.isAbstract() || fl.isInterface())
-				throw new NBCException(NBCException.Issue.INIT_ABSTRACT_CLASS,
-					String.format("AX0b %s %s", ref, fl));
-			
-			// {@squirreljme.error AX0f The specified class cannot be accessed
-			// and cannot be allocated. (The class to access)}
-			if (!__bc.canAccess(ncl))
-				throw new NBCException(NBCException.Issue.CANNOT_ACCESS_CLASS,
-					String.format("AX0f %s", ncl.thisName()));
-			
-			// Nothing is popped and no variables are touched
-			stackpop = __stackPop();
-			localaccess = __localAccess();
-			
-			// A new object is pushed
-			stackpush = __stackPush(NBCVariablePush.newObject());
+			case NBCInstructionID.NEW: __OpInit__.new_(out); break;
+				
+				// {@squirreljme.error AX05 The instruction identifier for the
+				// specified position is not valid or is not yet supported.
+				// (The logical instruction position; The operation code)}
+			default:
+				throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+					String.format("AX05 %d %d", __lp, opcode));
 		}
 		
-		// {@squirreljme.error AX05 The instruction identifier for the
-		// specified position is not valid or is not yet supported. (The
-		// logical instruction position; The operation code)}
-		else
-			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
-				String.format("AX05 %d %d", __lp, opcode));
+		// Set
+		arguments = out.getArguments();
+		localaccess = out.getLocalAccess();
+		stackpop = out.getStackPop();
+		stackpush = out.getStackPush();
 		
 		// Determine the result of this operation for targets if applicable
 		verifresult = expv.derive(this);
@@ -197,6 +160,28 @@ public final class NBCOperation
 	public List<NBCLocalAccess> localAccesses()
 	{
 		return this.localaccess;
+	}
+	
+	/**
+	 * Returns the owner of of this operation.
+	 *
+	 * @return The operation owner.
+	 * @since 2016/05/13
+	 */
+	public NBCByteCode owner()
+	{
+		return this.owner;
+	}
+	
+	/**
+	 * Returns the physical address of the operation.
+	 *
+	 * @return The operation physical address.
+	 * @since 2016/05/13
+	 */
+	public int physicalAddress()
+	{
+		return this.owner.logicalToPhysical(this.logicaladdress);
 	}
 	
 	/**
@@ -267,65 +252,6 @@ public final class NBCOperation
 	public NBCStateVerification verificationOutput()
 	{
 		return this.verifresult;
-	}
-	
-	/**
-	 * Simple wrapper into unmodifiable list.
-	 *
-	 * @param __a Input arguments.
-	 * @return The wrapped input arguments.
-	 * @since 2016/05/12
-	 */
-	private static List<Object> __arguments(Object... __a)
-	{
-		if (__a == null || __a.length <= 0)
-			return EmptyList.<Object>empty();
-		return UnmodifiableList.<Object>of(Arrays.<Object>asList(__a));
-	}
-	
-	/**
-	 * Simple wrapper into unmodifiable list.
-	 *
-	 * @param __a Input arguments.
-	 * @return The wrapped input arguments.
-	 * @since 2016/05/12
-	 */
-	private static List<NBCLocalAccess> __localAccess(NBCLocalAccess... __a)
-	{
-		if (__a == null || __a.length <= 0)
-			return EmptyList.<NBCLocalAccess>empty();
-		return UnmodifiableList.<NBCLocalAccess>of(Arrays.<NBCLocalAccess>
-			asList(__a));
-	}
-	
-	/**
-	 * Simple wrapper into unmodifiable list.
-	 *
-	 * @param __a Input arguments.
-	 * @return The wrapped input arguments.
-	 * @since 2016/05/12
-	 */
-	private static List<NBCVariableType> __stackPop(NBCVariableType... __a)
-	{
-		if (__a == null || __a.length <= 0)
-			return EmptyList.<NBCVariableType>empty();
-		return UnmodifiableList.<NBCVariableType>of(Arrays.<NBCVariableType>
-			asList(__a));
-	}
-	
-	/**
-	 * Simple wrapper into unmodifiable list.
-	 *
-	 * @param __a Input arguments.
-	 * @return The wrapped input arguments.
-	 * @since 2016/05/12
-	 */
-	private static List<NBCVariablePush> __stackPush(NBCVariablePush... __a)
-	{
-		if (__a == null || __a.length <= 0)
-			return EmptyList.<NBCVariablePush>empty();
-		return UnmodifiableList.<NBCVariablePush>of(Arrays.<NBCVariablePush>
-			asList(__a));
 	}
 }
 

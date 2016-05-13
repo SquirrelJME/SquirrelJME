@@ -1,0 +1,80 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
+//     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU Affero General Public License v3+, or later.
+// For more information see license.mkd.
+// ---------------------------------------------------------------------------
+
+package net.multiphasicapps.narf.bytecode;
+
+import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
+import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIClassFlags;
+import net.multiphasicapps.narf.classinterface.NCIClassReference;
+import net.multiphasicapps.narf.classinterface.NCIPool;
+
+/**
+ * This initializes operation data.
+ *
+ * @since 2016/05/13
+ */
+class __OpInit__
+{
+	/**
+	 * Not used.
+	 *
+	 * @since 2016/05/13
+	 */
+	private __OpInit__()
+	{
+		throw new RuntimeException("WTFX");
+	}
+	
+	/**
+	 * Allocates an object.
+	 *
+	 * @param __id Operation data.
+	 * @since 2016/05/13
+	 */
+	public static void new_(__OpInitData__ __id)
+	{
+		// Get the byte buffer
+		NCIByteBuffer bb = __id.byteBuffer();
+		int phy = __id.physicalAddress();
+		
+		// Get the type of class to allocate
+		NCIClassReference ref = __id.pool().<NCIClassReference>requiredAs(
+			bb.readUnsignedShort(phy, 1), NCIClassReference.class);
+		__id.setArguments(ref);
+		
+		// Lookup the class
+		NCIClass ncl = __id.lookup(ref.get());
+		
+		// {@squirreljme.error AX0a Byte code refers to a class to be
+		// allocated, however it does not exist. (The class name)}
+		if (ncl == null)
+			throw new NBCException(NBCException.Issue.MISSING_CLASS,
+				String.format("AX0a %s", ref));
+		
+		// {@squirreljme.error AX0b The byte code would have attempted to
+		// allocate a class which was either abstract or an interface.
+		// (The class name; The class flags)}
+		NCIClassFlags fl = ncl.flags();
+		if (fl.isAbstract() || fl.isInterface())
+			throw new NBCException(NBCException.Issue.INIT_ABSTRACT_CLASS,
+				String.format("AX0b %s %s", ref, fl));
+		
+		// {@squirreljme.error AX0f The specified class cannot be accessed
+		// and cannot be allocated. (The class to access)}
+		if (!__id.canAccess(ncl))
+			throw new NBCException(NBCException.Issue.CANNOT_ACCESS_CLASS,
+				String.format("AX0f %s", ncl.thisName()));
+		
+		// A new object is pushed
+		__id.setStackPush(NBCVariablePush.newObject());
+	}
+}
+

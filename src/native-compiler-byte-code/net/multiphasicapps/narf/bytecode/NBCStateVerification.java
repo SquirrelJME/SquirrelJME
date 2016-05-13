@@ -234,7 +234,7 @@ public final class NBCStateVerification
 				// If wide, the next must be top
 				if (vt.isWide())
 				{
-					// {@squirreljme.error AX0l Expected the read wide local
+					// {@squirreljme.error AX0m Expected the read wide local
 					// variable to have a top following it, however that was
 					// not the case. (The current local variables; The
 					// variables to access; The current variable to check; The

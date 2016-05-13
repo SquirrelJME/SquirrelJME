@@ -105,4 +105,13 @@ Alternatively I can precalculate the stack data using basic simple types and
 such then have the full information when needed. Alternatively, the stack state
 of the input operation if it is not implicit is the one that precedes it.
 
+## 16:34
+
+Even though I do not have value type or multiple return values I can instead
+use an array for information passing and initialization of operation
+information.
+
+## 16:54
+
+I completely did not realize that today was Friday the 13th.
 

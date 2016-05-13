@@ -223,6 +223,17 @@ public final class NBCByteCode
 	}
 	
 	/**
+	 * Returns the raw code buffer.
+	 *
+	 * @return The code buffer.
+	 * @since 2016/05/13
+	 */
+	public NCIByteBuffer codeBuffer()
+	{
+		return this.code;
+	}
+	
+	/**
 	 * Returns the constant pool associated with this class.
 	 *
 	 * @return The associated constant pool.
