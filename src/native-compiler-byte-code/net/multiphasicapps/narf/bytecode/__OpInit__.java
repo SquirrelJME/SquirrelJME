@@ -64,7 +64,8 @@ class __OpInit__
 		List<NBCVariableType> pops = __id.setStackPop(vt);
 		
 		// Push it also
-		__id.setStackPush(new NBCVariablePush(pops, 0));
+		NBCVariablePush vu = new NBCVariablePush(pops, 0);
+		__id.setStackPush(vu, vu);
 		
 		// Rewrite the operation
 		__id.rewrite(NBCInstructionID.SYNTHETIC_STACK_SHUFFLE);
