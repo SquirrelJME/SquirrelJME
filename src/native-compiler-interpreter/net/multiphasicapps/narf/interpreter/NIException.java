@@ -144,6 +144,9 @@ public class NIException
 		/** An illegal opcode was attempted to be executed. */
 		ILLEGAL_OPCODE,
 		
+		/** Class failed to initialize properly. */
+		CLASS_INIT_FAILURE,
+		
 		/** End. */
 		;
 	}

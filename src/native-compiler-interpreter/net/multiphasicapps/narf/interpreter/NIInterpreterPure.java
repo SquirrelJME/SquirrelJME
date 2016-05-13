@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.bytecode.NBCByteCode;
+import net.multiphasicapps.narf.bytecode.NBCInstructionID;
 import net.multiphasicapps.narf.bytecode.NBCOperation;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
+import net.multiphasicapps.narf.classinterface.NCIClassReference;
 
 /**
  * This is the pure interpreter which takes byte code directly for execution.
@@ -28,8 +31,17 @@ public class NIInterpreterPure
 	/** The code attribute used. */
 	protected final NCICodeAttribute attribute;
 	
+	/** Local variable data. */
+	private final Object[] _locals;
+	
+	/** Stack variable data. */
+	private final Object[] _stack;
+	
 	/** The current instruction address. */
 	private volatile int _pcaddr;
+	
+	/** The top of the stack. */
+	private volatile int _top;
 	
 	/**
 	 * Initializes the interpreter which uses the direct byte code.
@@ -50,7 +62,12 @@ public class NIInterpreterPure
 		
 		// Set
 		this.program = __p;
-		this.attribute = __p.attribute();
+		NCICodeAttribute attr;
+		this.attribute = (attr = __p.attribute());
+		
+		// Setup storage
+		_locals = new Object[attr.maxLocals()];
+		_stack = new Object[attr.maxStack()];
 	}
 	
 	/**
@@ -60,6 +77,11 @@ public class NIInterpreterPure
 	@Override
 	public Object interpret(Object... __args)
 	{
+		// Setup local variables
+		int n = __args.length;
+		for (int i = 0; i < n; i++)
+			throw new Error("TODO");
+		
 		// Execution loop
 		NBCByteCode program = this.program;
 		for (;;)
@@ -72,6 +94,11 @@ public class NIInterpreterPure
 			int code = op.instructionId();
 			switch (code)
 			{
+					// Allocate new object
+				case NBCInstructionID.NEW:
+					__new(op);
+					break;
+				
 					// {@squirreljme.error AN0q The current operation is not
 					// known. (The instruction address; The instruction ID; The
 					// operation itself)}
@@ -81,6 +108,23 @@ public class NIInterpreterPure
 						pcaddr, code, op));
 			}
 		}
+	}
+	
+	/**
+	 * Allocates a new object.
+	 *
+	 * @param __op The operation.
+	 * @since 2016/05/13
+	 */
+	private void __new(NBCOperation __op)
+	{
+		// Lookup the class
+		ClassNameSymbol csn = ((NCIClassReference)__op.arguments().get(0)).
+			get();
+		NICore core = this.core;
+		NIClass cl = core.initClass(csn);
+		
+		throw new Error("TODO");
 	}
 }
 

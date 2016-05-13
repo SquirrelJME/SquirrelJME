@@ -18,7 +18,9 @@ import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.narf.bytecode.NBCException;
 import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethodID;
 
@@ -149,20 +151,20 @@ public class NICore
 			
 			// Needs to be loaded?
 			if (ref == null || null == (rv = ref.get()))
-			{
-				// An array
-				if (__cn.isArray())
-					throw new Error("TODO");
-				
-				// Primitive type
-				else if (__cn.isPrimitive())
-					throw new Error("TODO");
-				
-				// Normal class
-				else
+				try
+				{
 					rv = new NIClass(this,
 						classlib.loadClass(__cn.asBinaryName()), __cn, map);
-			}
+				}
+				
+				// Failed to load properly
+				catch (NBCException|NCIException e)
+				{
+					// {@squirreljme.error AN0r Failed to initialize the
+					// given class. (The name of the class)}
+					throw new NIException(this, NIException.Issue.
+						CLASS_INIT_FAILURE, String.format("AN0r %s", __cn), e);
+				}
 			
 			// Return it
 			return rv;
