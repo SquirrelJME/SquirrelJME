@@ -155,7 +155,7 @@ public final class NBCOperation
 		// Could be rewritten
 		int rv = rwinstructionid;
 		if (rv != 0)
-			return 0;
+			return rv;
 		
 		// Otherwise use the original instruction
 		return this.instructionid;

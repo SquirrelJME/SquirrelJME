@@ -28,6 +28,9 @@ public final class NBCVariablePush
 	/** The type of value to push. */
 	protected final NBCVariableType pushtype;
 	
+	/** The value to use when popping. */
+	protected final int popindex;
+	
 	/** String cache. */
 	private volatile Reference<String> _string;
 	
@@ -47,6 +50,7 @@ public final class NBCVariablePush
 		
 		// Set
 		pushtype = __t;
+		popindex = -1;
 	}
 	
 	/**
@@ -83,7 +87,14 @@ public final class NBCVariablePush
 		if (__pops == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Use the specified index
+		popindex = __i;
+		pushtype = __pops.get(__i);
+		
+		// {@squirreljme.error AX0w There was no type associated with the
+		// push index.}
+		if (pushtype == null)
+			throw new NullPointerException("AX0w");
 	}
 	
 	/**
@@ -104,6 +115,17 @@ public final class NBCVariablePush
 	public int hashCode()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the value that this is a copy of in the given pop index.
+	 *
+	 * @return The pop index or a negitive value if it is not valid.
+	 * @since 2016/05/13
+	 */
+	public int popIndex()
+	{
+		return this.popindex;
 	}
 	
 	/**
@@ -136,6 +158,14 @@ public final class NBCVariablePush
 			
 			// Add the type to push
 			sb.append(pushtype);
+			
+			// Has a pop index?
+			int pi = popIndex();
+			if (pi >= 0)
+			{
+				sb.append(":POP=");
+				sb.append(pi);
+			}
 			
 			// Finish it
 			sb.append(')');
