@@ -49,3 +49,16 @@ remains is available to programs to use. The whole program optimization could
 also merge methods together so that for example my large bulk of TODO throwing
 code essentially is merged into a single method which would save space.
 
+## 09:36
+
+What I can do instead of a large number of push operations for constants, I can
+instead just change them to a single push of a value. Then in the interpreter
+and compiler I can just check the value to be pushed and then handle it
+accordingly. This would save conditions in the switch because a large number of
+the operations are for the most part duplicates. This would also result in
+much smaller code since the cases would be condensed. Then for stack shuffling
+such as pop and push, I can instead have a generic stack shuffling operation
+which pops all the desired values, then pushes them based on the input values.
+All of the pop, push, and dup variants would then use this single shuffle
+mechanism.
+
