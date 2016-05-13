@@ -27,3 +27,25 @@ same for `LDC` operations so they are just a constant value push for the
 most part. If I can remove the need for the byte code to require the compiler
 and interpreter to access the constant pool, that would be a bonus.
 
+## 09:00
+
+I can also replace other instructions also. The byte code program has access
+to the lookup and everything is statically determined. However, some
+instructions can operation on unknown objects such as `instanceof`. However,
+the compiler could detect if an object would be an instance in specific cases
+and then just push a boolean to the stack. So when a `NRProgram` is executed
+there would never be an `instanceof` check on known objects of a given class
+type. Since everything is statically determined, optimizations are easier to
+make. When it comes to run-time JIT and cache however, I would likely compile
+the entire program first and then link it in as an addition to the current JVM.
+Although this would be a slow initial start, everything is compiled at the same
+time which means whole program optimization is possible. Then that compilation
+is cached so that recompilation does not have to occur again. However if the
+JAR or any of its dependencies change, then the entire program must be
+recompiled again before it safely can be used. So basically the JIT can be seen
+as a collection of JARs to native program. So for example on an N64, the
+binary would be generated, then it would be loaded into memory. Any memory that
+remains is available to programs to use. The whole program optimization could
+also merge methods together so that for example my large bulk of TODO throwing
+code essentially is merged into a single method which would save space.
+
