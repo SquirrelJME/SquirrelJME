@@ -95,3 +95,8 @@ tested. However the byte code representation would only really be used at the
 early stage. When it comes to actual native execution, the compiler will never
 be called because everything would already be compiled when a program is ran.
 
+## 14:23
+
+I will need to calculate jump sources.
+
+
