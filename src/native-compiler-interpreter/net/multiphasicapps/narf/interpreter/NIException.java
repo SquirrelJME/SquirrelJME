@@ -147,6 +147,9 @@ public class NIException
 		/** Class failed to initialize properly. */
 		CLASS_INIT_FAILURE,
 		
+		/** Illegal push of value. */
+		ILLEGAL_PUSH,
+		
 		/** End. */
 		;
 	}
