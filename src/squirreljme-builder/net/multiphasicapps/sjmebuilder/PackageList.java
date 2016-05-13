@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.hairball;
+package net.multiphasicapps.sjmebuilder;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;

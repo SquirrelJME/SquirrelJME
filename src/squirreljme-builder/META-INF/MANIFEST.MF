@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
-X-Hairball-Name: hairball
+X-Hairball-Name: squirreljme-builder
 X-Hairball-UUID: 3c06605e-a4ff-4172-9a38-b03b1c7cb88c
 X-Hairball-Depends: javame-cldc-full, 
  zip-compression, java-compiler, java-interpreter,
  native-compiler-all
-Main-Class: net.multiphasicapps.hairball.Main
+Main-Class: net.multiphasicapps.sjmebuilder.Main
 LIBlet-Title: Hairball
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228
-LIBlet-Description: This is the micro version of the Hairball Build
- system which can compile and build SquirrelJME (so that it is self
- hosting).
+LIBlet-Description: This is the build system which is used to
+  cross compile SquirrelJME to targets to be ran on.
 

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.hairball;
+package net.multiphasicapps.sjmebuilder;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
