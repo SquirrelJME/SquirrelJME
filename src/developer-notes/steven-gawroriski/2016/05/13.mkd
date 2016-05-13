@@ -1,0 +1,11 @@
+# 2016/05/13
+
+## 07:24
+
+Looks like I forgot to commit build instructions.
+
+## 07:31
+
+I should likely rename the build system stuff from `hairball` to something
+more noticable.
+

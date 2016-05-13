@@ -1,0 +1,27 @@
+# Build Instructions
+
+SquirrelJME is designed for a wide range of systems, thus there are specific
+requirements so that the system may be built and cross compiled for all of the
+platforms that are supported.
+
+# Compiling On Sane Development Systems
+
+Currently the build system supports POSIX and Windows hosts when building. To
+build SquirrelJME a Java 7 JDK or higher is required. The build system is
+written in Java and requires a bootstrap be performed to start it.
+
+## Invoking the Build System
+
+Since the build system is bootstrapped, it must be initialized by a script
+before it can be called.
+
+### POSIX Systems (Linux, BSD, Solaris, Mac OS X, etc.)
+
+### Windows
+
+Building requires the command line interface (`cmd`) be used.
+
+# Compiling In SquirrelJME Environments
+
+This does not exist yet, so it cannot be written.
+
