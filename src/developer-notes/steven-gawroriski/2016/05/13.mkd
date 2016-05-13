@@ -115,3 +115,8 @@ information.
 
 I completely did not realize that today was Friday the 13th.
 
+## 17:50
+
+Then with the stack operations, this means that stack shuffling can be done in
+a single operaton, which would save some time.
+

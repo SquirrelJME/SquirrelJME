@@ -101,6 +101,11 @@ public class NIInterpreterPure
 				case NBCInstructionID.NEW:
 					pcaddr = __new(op);
 					break;
+					
+					// Shuffle entries on the stack
+				case NBCInstructionID.SYNTHETIC_STACK_SHUFFLE:
+					pcaddr = __stackShuffle(op);
+					break;
 				
 					// {@squirreljme.error AN0q The current operation is not
 					// known. (The instruction address; The instruction ID; The
@@ -138,6 +143,22 @@ public class NIInterpreterPure
 		int top = _top;
 		_stack[top] = obj;
 		_top = top + 1;
+		
+		// Next address
+		return __op.address() + 1;
+	}
+	
+	/**
+	 * Shuffles items on the stack.
+	 *
+	 * @param __op The operation.
+	 * @return The next address.
+	 * @since 2016/05/13
+	 */
+	private int __stackShuffle(NBCOperation __op)
+	{
+		if (true)
+			throw new Error("TODO");
 		
 		// Next address
 		return __op.address() + 1;
