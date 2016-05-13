@@ -120,3 +120,9 @@ I completely did not realize that today was Friday the 13th.
 Then with the stack operations, this means that stack shuffling can be done in
 a single operaton, which would save some time.
 
+## 18:26
+
+So now back to invoke special again. Although this time I can have the method
+to execute for virtual, special, and interface calls handled by the byte code
+representation rather than the interpreter/compiler itself.
+
