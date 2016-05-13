@@ -31,7 +31,7 @@ and interpreter to access the constant pool, that would be a bonus.
 
 I can also replace other instructions also. The byte code program has access
 to the lookup and everything is statically determined. However, some
-instructions can operation on unknown objects such as `instanceof`. However,
+instructions can operate on unknown objects such as `instanceof`. However,
 the compiler could detect if an object would be an instance in specific cases
 and then just push a boolean to the stack. So when a `NRProgram` is executed
 there would never be an `instanceof` check on known objects of a given class
