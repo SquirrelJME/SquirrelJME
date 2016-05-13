@@ -88,8 +88,8 @@ public final class NCICodeAttribute
 		this.abuffer = abuffer;
 		
 		// Read in values
-		this.maxlocals = abuffer.readUnsignedShort(2);
 		this.maxstack = abuffer.readUnsignedShort(0);
+		this.maxlocals = abuffer.readUnsignedShort(2);
 		
 		// {@squirreljme.error AO0y The methode code length exceeds the maximum
 		// length limit. (The containing method; The code length)}

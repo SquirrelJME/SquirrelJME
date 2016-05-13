@@ -156,6 +156,17 @@ public final class NBCOperation
 	}
 	
 	/**
+	 * Returns the address of this operation.
+	 *
+	 * @return The operation address.
+	 * @since 2016/05/13
+	 */
+	public int address()
+	{
+		return this.logicaladdress;
+	}
+	
+	/**
 	 * Returns the arguments to this instruction.
 	 *
 	 * @return The list of arguments.

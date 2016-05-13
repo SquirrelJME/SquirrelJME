@@ -66,8 +66,9 @@ public class NIInterpreterPure
 		this.attribute = (attr = __p.attribute());
 		
 		// Setup storage
-		_locals = new Object[attr.maxLocals()];
-		_stack = new Object[attr.maxStack()];
+		this._top = 0;
+		this._locals = new Object[attr.maxLocals()];
+		this._stack = new Object[attr.maxStack()];
 	}
 	
 	/**
@@ -84,11 +85,13 @@ public class NIInterpreterPure
 		
 		// Execution loop
 		NBCByteCode program = this.program;
-		for (;;)
+		for (int pcaddr = 0;;)
 		{
 			// Get the current operation
-			int pcaddr = this._pcaddr;
 			NBCOperation op = program.get(pcaddr);
+			
+			// Debug
+			System.err.printf("DEBUG -- Exec: %s%n", op);
 			
 			// Depends on the instruction code
 			int code = op.instructionId();
@@ -96,7 +99,7 @@ public class NIInterpreterPure
 			{
 					// Allocate new object
 				case NBCInstructionID.NEW:
-					__new(op);
+					pcaddr = __new(op);
 					break;
 				
 					// {@squirreljme.error AN0q The current operation is not
@@ -107,6 +110,9 @@ public class NIInterpreterPure
 						ILLEGAL_OPCODE, String.format("AN0q %d %d %s",
 						pcaddr, code, op));
 			}
+			
+			// Set the new address
+			this._pcaddr = pcaddr;
 		}
 	}
 	
@@ -114,9 +120,10 @@ public class NIInterpreterPure
 	 * Allocates a new object.
 	 *
 	 * @param __op The operation.
+	 * @return The next instruction pointer address.
 	 * @since 2016/05/13
 	 */
-	private void __new(NBCOperation __op)
+	private int __new(NBCOperation __op)
 	{
 		// Lookup the class
 		ClassNameSymbol csn = ((NCIClassReference)__op.arguments().get(0)).
@@ -127,7 +134,13 @@ public class NIInterpreterPure
 		// Allocate object (arrays are allocated to zero length using new)
 		NIObject obj = new NIObject(core, cl, 0);
 		
-		throw new Error("TODO");
+		// Set the topmost stack entry to the new object
+		int top = _top;
+		_stack[top] = obj;
+		_top = top + 1;
+		
+		// Next address
+		return __op.address() + 1;
 	}
 }
 
