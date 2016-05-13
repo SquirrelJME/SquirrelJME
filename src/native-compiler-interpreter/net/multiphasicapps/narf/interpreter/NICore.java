@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
@@ -46,6 +47,10 @@ public class NICore
 	/** Already loaded binary classes? */
 	protected final Map<ClassNameSymbol, Reference<NIClass>> loaded =
 		new HashMap<>();
+	
+	/** Hash code generator function. */
+	protected final Random hashcodegen =
+		new Random(0x590144E723E_1989L);
 	
 	/** Is the virtual machine running? */
 	private volatile boolean _isrunning;
@@ -192,6 +197,21 @@ public class NICore
 	public NILibrary library()
 	{
 		return classlib;
+	}
+	
+	/**
+	 * Calculates and returns the next hash code.
+	 *
+	 * @return The next hash code to use.
+	 * @since 2016/05/13
+	 */
+	public int nextHashCode()
+	{
+		Random r = hashcodegen;
+		synchronized (r)
+		{
+			return r.nextInt();
+		}
 	}
 	
 	/**

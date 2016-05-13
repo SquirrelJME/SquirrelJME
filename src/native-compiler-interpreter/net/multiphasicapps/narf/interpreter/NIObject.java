@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.narf.interpreter;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents an object which exists within the virtual machine.
  *
@@ -22,6 +25,12 @@ public class NIObject
 	
 	/** The associated class type used. */
 	protected final NIClass niclass;
+	
+	/** The object's internal hash code. */
+	protected final int hashcode;
+	
+	/** The string representation of this object. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes an object (but does not construct it) for usage by the
@@ -78,6 +87,50 @@ public class NIObject
 		// Set
 		this.core = __c;
 		this.niclass = __cl;
+		
+		// Hashcode is the next object index
+		this.hashcode = __c.nextHashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/13
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		return this == __o;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/13
+	 */
+	@Override
+	public int hashCode()
+	{
+		return hashcode;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/13
+	 */
+	@Override
+	public String toString()
+	{
+		// Get
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Needs initialization?
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>(
+				(rv = String.format("%s@%x", this.niclass.thisName(),
+					this.hashcode)));
+		
+		// Return it
+		return rv;
 	}
 }
 
