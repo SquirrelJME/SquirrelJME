@@ -100,6 +100,15 @@ public class NBCException
 		/** Cannot access the class. */
 		CANNOT_ACCESS_CLASS,
 		
+		/** The stack underflows. */
+		STACK_UNDERFLOW,
+		
+		/** The stack is not correct. */
+		INCORRECT_STACK,
+		
+		/** A local variable is not correct. */
+		ILLEGAL_LOCAL,
+		
 		/** End. */
 		;
 	}

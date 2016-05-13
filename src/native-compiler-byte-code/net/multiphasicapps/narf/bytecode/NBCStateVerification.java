@@ -102,6 +102,206 @@ public final class NBCStateVerification
 	}
 	
 	/**
+	 * Initializes a verification for locals and stack entries.
+	 *
+	 * @param __l The local variable tread.
+	 * @param __s The stack tread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/13
+	 */
+	private NBCStateVerification(Locals __l, Stack __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__l == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.locals = __l;
+		this.stack = __s;
+	}
+	
+	/**
+	 * Derives a verification state for the given operation.
+	 *
+	 * @param __op The operation to derive a state for.
+	 * @return The derived verification state.
+	 * @throws NBCException If a local variable read is incorrect; if a written
+	 * local variable is not valid; If a stack pop is not valid; If the stack
+	 * overflows or underflows.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/13
+	 */
+	public NBCStateVerification derive(NBCOperation __op)
+		throws NBCException, NullPointerException
+	{
+		// Check
+		if (__op == null)
+			throw new NullPointerException("NARG");
+		
+		// Get operation details
+		List<NBCLocalAccess> la = __op.localAccesses();
+		List<NBCVariableType> so = __op.stackPops();
+		List<NBCVariablePush> su = __op.stackPushes();
+		
+		// Get current stuff
+		Locals locals = this.locals;
+		Stack stack = this.stack;
+		int maxlocals = locals.size();
+		int maxstack = stack.size();
+		
+		// Calculate the top of the stack
+		int newtop = stack.top();
+		int n = so.size();
+		for (int i = n - 1; i >= 0; i--)
+		{
+			// Simulated pop
+			NBCVariableType vt = so.get(i);
+			boolean iswide;
+			newtop -= ((iswide = vt.isWide()) ? 2 : 1);
+			
+			// {@squirreljme.error AX0g Stack underflow popping variables for
+			// derivation. (The source stack; The pop operations; The push
+			// operations)}
+			if (newtop < 0)
+				throw new NBCException(NBCException.Issue.STACK_UNDERFLOW,
+					String.format("AX0g %s %s %s", stack, so, su));
+			
+			// {@squirreljme.error AX0i Unexpected type on stack while popping
+			// values. (The source stack; The pop operations)}
+			NBCVariableType oops;
+			if ((oops = stack.get(newtop)) != vt)
+				throw new NBCException(NBCException.Issue.INCORRECT_STACK,
+					String.format("AX0i %s %s", stack, so));
+			
+			// {@squirreljme.error AX0j Expected top of long or double to
+			// follow a pop of long or double. (The source stack; The pop
+			// operations)}
+			if (iswide &&
+				(oops = stack.get(newtop + 1)) != NBCVariableType.TOP)
+				throw new NBCException(NBCException.Issue.INCORRECT_STACK,
+					String.format("AX0j %s %s", stack, so));
+		}
+		
+		// Remember the base bottom
+		int bottom = newtop;
+		
+		// Now push entries to the stack
+		n = su.size();
+		for (int i = 0; i < n; i++)
+		{
+			// Simulated push
+			NBCVariableType vt = su.get(i).pushType();
+			newtop += (vt.isWide() ? 2 : 1);
+			
+			// {@squirreljme.error AX0h Stack overflow pushing variabels for
+			// derivation. (The source stack; The pop operations; The push
+			// operations})
+			if (newtop > maxstack)
+				throw new NBCException(NBCException.Issue.STACK_OVERFLOW,
+					String.format("AX0h %s %s %s", stack, so, su));
+		}
+		
+		// Check local variable read/writes
+		for (NBCLocalAccess a : la)
+		{
+			// Get the type
+			NBCVariableType vt = a.type();
+			boolean iswide = vt.isWide();
+			
+			// {@squirreljme.error AX0k Access of a local variable which is
+			// not within the bounds of the local variable tread. (The current
+			// local variables; The variables accessed; The current variable)}
+			int dx = a.getIndex();
+			if (dx < 0 || (dx + (iswide ? 1 : 0)) >= maxlocals)
+				throw new NBCException(NBCException.Issue.ILLEGAL_LOCAL,
+					String.format("AX0k %s %s", locals, la, a));
+			
+			// If read from, check the type
+			if (a.isRead())
+			{
+				// {@squirreljme.error AX0l Expected the read local variable to
+				// be of the given type, however it was not the specified type.
+				// (The current local variables; The variables to access; The
+				// current variable to check; The type that it was; The
+				// expected type)}
+				NBCVariableType was = locals.get(dx);
+				if (was != vt)
+					throw new NBCException(NBCException.Issue.ILLEGAL_LOCAL,
+						String.format("AX0l %s %s %s %s", locals, la, a,
+						was, vt));
+				
+				// If wide, the next must be top
+				if (vt.isWide())
+				{
+					// {@squirreljme.error AX0l Expected the read wide local
+					// variable to have a top following it, however that was
+					// not the case. (The current local variables; The
+					// variables to access; The current variable to check; The
+					// type that it was; The expected type)}
+					was = locals.get(dx + 1);
+					if (was != NBCVariableType.TOP)
+						throw new NBCException(NBCException.Issue.
+							ILLEGAL_LOCAL, String.format("AX0m %s %s %s %s",
+							locals, la, a, was, vt));
+				}
+			}
+		}
+		
+		// Setup return value
+		Locals ll = new Locals(maxlocals);
+		Stack ss = new Stack(maxstack, newtop);
+		
+		// Get target storage
+		NBCVariableType[] mll = ll.storage;
+		NBCVariableType[] mss = ss.storage;
+		
+		// And source storage
+		NBCVariableType[] zll = locals.storage;
+		NBCVariableType[] zss = stack.storage;
+		
+		// Base copy locals
+		for (int i = 0; i < maxlocals; i++)
+			mll[i] = zll[i];
+		
+		// Copy stack to the base
+		for (int i = 0; i < bottom; i++)
+			mss[i] = zss[i];
+		
+		// Write local variables
+		for (NBCLocalAccess a : la)
+			if (a.isWritten())
+			{
+				// Get the type to write
+				NBCVariableType vt = a.type();
+				int dx;
+				mll[(dx = a.getIndex())] = vt;
+				
+				// Add top
+				if (vt.isWide())
+					mll[dx + 1] = NBCVariableType.TOP;
+			}
+		
+		// Write target stack
+		n = su.size();
+		for (int i = 0, at = bottom; i < n; i++)
+		{
+			// Actual push
+			NBCVariableType vt = su.get(i).pushType();
+			
+			// Write here
+			mss[at++] = vt;
+			
+			// Add top if wide
+			if (vt.isWide())
+				mss[at++] = NBCVariableType.TOP;
+		}
+		
+		// Return it
+		return new NBCStateVerification(ll, ss);
+	}
+	
+	/**
 	 * Returns the set of local variable types.
 	 *
 	 * @return The set of local variable types to use.

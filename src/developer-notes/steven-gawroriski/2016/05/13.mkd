@@ -99,4 +99,10 @@ be called because everything would already be compiled when a program is ran.
 
 I will need to calculate jump sources.
 
+## 15:18
+
+Alternatively I can precalculate the stack data using basic simple types and
+such then have the full information when needed. Alternatively, the stack state
+of the input operation if it is not implicit is the one that precedes it.
+
 

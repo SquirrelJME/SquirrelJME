@@ -69,6 +69,39 @@ public final class NBCLocalAccess
 	}
 	
 	/**
+	 * Returns the index of the written variable.
+	 *
+	 * @return The index accessed.
+	 * @since 2016/05/13
+	 */
+	public int getIndex()
+	{
+		return this.index;
+	}
+	
+	/**
+	 * Is the local variable read?
+	 *
+	 * @return {@code true} if the local is read.
+	 * @since 2016/05/13
+	 */
+	public boolean isRead()
+	{
+		return !this.write;
+	}
+	
+	/**
+	 * Is the local variable written to?
+	 *
+	 * @return {@code true} if the local is written to.
+	 * @since 2016/05/13
+	 */
+	public boolean isWritten()
+	{
+		return this.write;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/12
 	 */
@@ -76,6 +109,17 @@ public final class NBCLocalAccess
 	public String toString()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the type of value which was read or written to.
+	 *
+	 * @return The type of value to read or write.
+	 * @since 2016/05/13
+	 */
+	public NBCVariableType type()
+	{
+		return this.type;
 	}
 }
 

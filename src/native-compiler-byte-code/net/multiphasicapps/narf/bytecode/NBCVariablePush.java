@@ -107,6 +107,17 @@ public final class NBCVariablePush
 	}
 	
 	/**
+	 * Returns the type of value being pushed.
+	 *
+	 * @return The push value type.
+	 * @since 2016/05/13
+	 */
+	public NBCVariableType pushType()
+	{
+		return this.pushtype;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/12
 	 */

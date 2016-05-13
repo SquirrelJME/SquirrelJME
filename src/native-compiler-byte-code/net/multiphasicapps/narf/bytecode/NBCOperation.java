@@ -102,7 +102,7 @@ public final class NBCOperation
 		// Otherwise, the entry state is derived from the source operation (the
 		// operation which precedes this one during execution)
 		else
-			throw new Error("TODO");
+			verification = (expv = __bc.get(__lp - 1).verificationOutput());
 		
 		// New
 		if (opcode == NBCInstructionID.NEW)
@@ -151,8 +151,7 @@ public final class NBCOperation
 				String.format("AX05 %d %d", __lp, opcode));
 		
 		// Determine the result of this operation for targets if applicable
-		System.err.println("DEBUG -- Verification result.");
-		verifresult = null;
+		verifresult = expv.derive(this);
 	}
 	
 	/**
