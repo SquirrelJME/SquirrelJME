@@ -20,6 +20,9 @@ public class NIObject
 	/** The owning core. */
 	protected final NICore core;
 	
+	/** The associated class type used. */
+	protected final NIClass niclass;
+	
 	/**
 	 * Initializes an object (but does not construct it) for usage by the
 	 * virtual machine.
@@ -73,9 +76,8 @@ public class NIObject
 				String.format("AN0h %s", __cl.thisName()));
 		
 		// Set
-		core = __c;
-		
-		throw new Error("TODO");
+		this.core = __c;
+		this.niclass = __cl;
 	}
 }
 
