@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.narf.bytecode;
 
+import java.util.List;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
@@ -31,6 +32,42 @@ class __OpInit__
 	private __OpInit__()
 	{
 		throw new RuntimeException("WTFX");
+	}
+	
+	/**
+	 * Duplicates the top most stack entry.
+	 *
+	 * @param __id Operation data.
+	 * @since 2016/05/13
+	 */
+	public static void dup(__OpInitData__ __id)
+	{
+		// Get input and the stack
+		NBCStateVerification vin = __id.verificationInput();
+		NBCStateVerification.Stack stack = vin.stack();
+		int top = stack.top();
+		
+		// {@squirreljme.error AX0t Stack underflow duplicating top-most
+		// stack entry.}
+		if (top <= 0)
+			throw new NBCException(NBCException.Issue.STACK_UNDERFLOW,
+				"AX0t");
+		
+		// {@squirreljme.error AX0u Cannot duplicate wide types. (The top most
+		// entry)}
+		NBCVariableType vt = stack.get(top - 1);
+		if (vt.isWide() || vt == NBCVariableType.TOP)
+			throw new NBCException(NBCException.Issue.INCORRECT_STACK,
+				String.format("AX0u %s", vt));
+		
+		// Add it to the pop
+		List<NBCVariableType> pops = __id.setStackPop(vt);
+		
+		// Push it also
+		__id.setStackPush(new NBCVariablePush(pops, 0));
+		
+		// Rewrite the operation
+		__id.rewrite(NBCInstructionID.SYNTHETIC_STACK_SHUFFLE);
 	}
 	
 	/**

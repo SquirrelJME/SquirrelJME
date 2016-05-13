@@ -45,6 +45,12 @@ final class __OpInitData__
 	/** Variable types which are pushed to the stack. */
 	private volatile List<NBCVariablePush> _stackpush;
 	
+	/** Rewritten operation. */
+	private volatile int _rewrite;
+	
+	/** Was rewritten? */
+	private volatile boolean _wasrewritten;
+	
 	/**
 	 * Inititalizes the operation initialization data.
 	 *
@@ -115,6 +121,17 @@ final class __OpInitData__
 	}
 	
 	/**
+	 * Returns the potentially rewritten operation ID.
+	 *
+	 * @return The rewrite ID.
+	 * @since 2016/05/13
+	 */
+	public int getRewrite()
+	{
+		return _rewrite;
+	}
+	
+	/**
 	 * Returns the popped stack values.
 	 *
 	 * @return The popped stack values.
@@ -174,6 +191,25 @@ final class __OpInitData__
 	public NCIPool pool()
 	{
 		return this.operation.owner().constantPool();
+	}
+	
+	/**
+	 * Rewrites the operation so it uses another opcode.
+	 *
+	 * @param __oc The operation to rewrite it as.
+	 * @throws IllegalStateException If it was already rewritten.
+	 * @since 2016/05/13
+	 */
+	public void rewrite(int __oc)
+		throws IllegalStateException
+	{
+		// {@squirreljme.error AX0v The operation ID was already rewritten.}
+		if (_wasrewritten)
+			throw new IllegalStateException("AX0v");
+		
+		// Set it
+		_rewrite = __oc;
+		_wasrewritten = true;
 	}
 	
 	/**
@@ -258,6 +294,17 @@ final class __OpInitData__
 			return EmptyList.<NBCVariablePush>empty();
 		return (this._stackpush = UnmodifiableList.<NBCVariablePush>of(
 			Arrays.<NBCVariablePush>asList(__a)));
+	}
+	
+	/**
+	 * Returns the verification input.
+	 *
+	 * @return The verification input.
+	 * @since 2016/05/13
+	 */
+	public NBCStateVerification verificationInput()
+	{
+		return this.operation.verificationInput();
 	}
 }
 

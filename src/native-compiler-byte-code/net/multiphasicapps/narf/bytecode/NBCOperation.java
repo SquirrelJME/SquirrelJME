@@ -33,6 +33,9 @@ public final class NBCOperation
 	/** The instruction ID. */
 	protected final int instructionid;
 	
+	/** Rewritten instruction ID. */
+	protected final int rwinstructionid;
+	
 	/** Arguments of the operation. */
 	protected final List<Object> arguments;
 	
@@ -97,6 +100,7 @@ public final class NBCOperation
 		__OpInitData__ out = new __OpInitData__(this);
 		switch (opcode)
 		{
+			case NBCInstructionID.DUP: __OpInit__.dup(out); break;
 			case NBCInstructionID.NEW: __OpInit__.new_(out); break;
 				
 				// {@squirreljme.error AX05 The instruction identifier for the
@@ -112,6 +116,7 @@ public final class NBCOperation
 		localaccess = out.getLocalAccess();
 		stackpop = out.getStackPop();
 		stackpush = out.getStackPush();
+		rwinstructionid = out.getRewrite();
 		
 		// Determine the result of this operation for targets if applicable
 		verifresult = expv.derive(this);
@@ -147,6 +152,12 @@ public final class NBCOperation
 	 */
 	public int instructionId()
 	{
+		// Could be rewritten
+		int rv = rwinstructionid;
+		if (rv != 0)
+			return 0;
+		
+		// Otherwise use the original instruction
 		return this.instructionid;
 	}
 	
