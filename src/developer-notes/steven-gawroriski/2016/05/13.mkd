@@ -9,3 +9,21 @@ Looks like I forgot to commit build instructions.
 I should likely rename the build system stuff from `hairball` to something
 more noticable.
 
+## 08:50
+
+Actually with this operation code, I can easily change operations so that they
+become other operations. For example if a get is made of a field which is
+final and has an assigned value, it can just be turned into a sipush or a `LDC`
+instead of a field read. However for fields, the instances would need to be
+popped also, so they cannot cleanly be aliased. However for static fields this
+is always the case. Constant values are always constant. I suppose for
+instance field reads which are constant like this, I can have it so a null
+check is performed, then the value is placed onto the stack accordingly. This
+would require new instructions to be defined however which are not in normally
+valid programs. However, since my instructions are of any range, I can instead
+just use really high impossible values for the operations since these
+operations would have no representation that is possible. Also, I can do the
+same for `LDC` operations so they are just a constant value push for the
+most part. If I can remove the need for the byte code to require the compiler
+and interpreter to access the constant pool, that would be a bonus.
+
