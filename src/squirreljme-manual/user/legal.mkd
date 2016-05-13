@@ -1,9 +1,0 @@
-# Legal
-
-I am not a lawyer, however is this software even legal to write? With the
-very recent occurence of _Oracle vs Google_ some confusing things may appear.
-Traditionally, APIs could be copied by developers meaning to create a fully
-compatible implementation of that given API under fair use rules. However
-Google with Android copied a considerable portion of the Java APIs and created
-the incompatible Android. However with this software myself, I intend to be
-100% compatible with Java ME 8 as released by Oracle.

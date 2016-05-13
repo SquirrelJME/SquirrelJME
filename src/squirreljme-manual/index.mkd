@@ -10,7 +10,6 @@ operation of this software.
    * [Supported Platforms](user/platforms.mkd)
    * [Supported Character Encodings](user/encodings.mkd)
    * [Limitations](user/limits.mkd)
-   * [Legal](user/legal.mkd)
    * OS: [DOS Family](user/os_dos.mkd)
  * Developer's Manual
    * [Differences between Java SE and Java ME](developer/differences.mkd)
