@@ -94,6 +94,16 @@ public final class NBCOperation
 		NCIPool pool = __bc.constantPool();
 		NCILookup lookup = __bc.lookup();
 		
+		// Determine the entry verification state
+		NBCStateVerification expv = __bc.explicitVerification().get(__lp);
+		if (expv != null)
+			verification = expv;
+		
+		// Otherwise, the entry state is derived from the source operation (the
+		// operation which precedes this one during execution)
+		else
+			throw new Error("TODO");
+		
 		// New
 		if (opcode == NBCInstructionID.NEW)
 		{
@@ -139,16 +149,6 @@ public final class NBCOperation
 		else
 			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
 				String.format("AX05 %d %d", __lp, opcode));
-		
-		// Determine the entry verification state
-		NBCStateVerification expv = __bc.explicitVerification().get(__lp);
-		if (expv != null)
-			verification = expv;
-		
-		// Otherwise, the entry state is derived from the source operation (the
-		// operation which precedes this one during execution)
-		else
-			throw new Error("TODO");
 		
 		// Determine the result of this operation for targets if applicable
 		System.err.println("DEBUG -- Verification result.");
