@@ -124,6 +124,9 @@ public class NIInterpreterPure
 		NICore core = this.core;
 		NIClass cl = core.initClass(csn);
 		
+		// Allocate object (arrays are allocated to zero length using new)
+		NIObject obj = new NIObject(core, cl, 0);
+		
 		throw new Error("TODO");
 	}
 }
