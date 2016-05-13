@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: native-compiler-personality
-X-Hairball-UUID: 8cfb3d87-e0ae-46f1-9796-404e0d52909e
-X-Hairball-Depends: native-compiler
+X-SquirrelJME-Name: native-compiler-personality
+X-SquirrelJME-UUID: 8cfb3d87-e0ae-46f1-9796-404e0d52909e
+X-SquirrelJME-Depends: native-compiler
 LIBlet-Title: NARF Personalities
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160427

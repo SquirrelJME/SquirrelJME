@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
-X-Hairball-Name: extra-util-empty
-X-Hairball-UUID: ab7fb631-53cb-46b1-9066-b05a634009e5
-X-Hairball-Depends: javame-cldc-compact
-X-Hairball-Error: AJ
+X-SquirrelJME-Name: extra-util-empty
+X-SquirrelJME-UUID: ab7fb631-53cb-46b1-9066-b05a634009e5
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: AJ
 LIBlet-Title: Empty Collections
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160501

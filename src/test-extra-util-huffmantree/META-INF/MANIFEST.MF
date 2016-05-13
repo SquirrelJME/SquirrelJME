@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: test-extra-util-huffmantree
-X-Hairball-UUID: 8ac53406-fbdb-459b-bf83-b5948143455f
-X-Hairball-Depends: test-base, extra-util-huffmantree,
+X-SquirrelJME-Name: test-extra-util-huffmantree
+X-SquirrelJME-UUID: 8ac53406-fbdb-459b-bf83-b5948143455f
+X-SquirrelJME-Depends: test-base, extra-util-huffmantree,
  extra-io-bits
 LIBlet-Title: Huffman Tree Tests
 LIBlet-Vendor: Steven Gawroriski

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: native-compiler-all
-X-Hairball-UUID: d09a96ac-f981-44d9-bc29-599d6fc5ccb4
-X-Hairball-Depends: native-compiler-all-os,
+X-SquirrelJME-Name: native-compiler-all
+X-SquirrelJME-UUID: d09a96ac-f981-44d9-bc29-599d6fc5ccb4
+X-SquirrelJME-Depends: native-compiler-all-os,
  native-compiler-all-cpu
 LIBlet-Title: NARF Compiler All
 LIBlet-Vendor: Steven Gawroriski

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: native-compiler-cpu
-X-Hairball-UUID: 08ed574b-e804-49f9-93bf-e4d10876e4bd
-X-Hairball-Depends: 
+X-SquirrelJME-Name: native-compiler-cpu
+X-SquirrelJME-UUID: 08ed574b-e804-49f9-93bf-e4d10876e4bd
+X-SquirrelJME-Depends: 
  native-compiler-cpu-powerpc
 LIBlet-Title: NARF Compiler All CPUs
 LIBlet-Vendor: Steven Gawroriski

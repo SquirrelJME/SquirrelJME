@@ -60,15 +60,15 @@ import javax.tools.ToolProvider;
  * Each project requires a manifest (META-INF/MANIFEST.MF) file. The manifest
  * must contain the following attributes:
  *
- * X-Hairball-Name    -- The name of the project.
+ * X-SquirrelJME-Name -- The name of the project.
  * LIBlet-Title       -- The title of the project (a short nice name).
  * LIBlet-Vendor      -- The creator of the project.
  * LIBlet-Version     -- The version of the project.
  *
  * The following attributes are optional.
  *
- * X-Hairball-Depends -- Other packages (separated by comma) which this project
- *                       depends on for compilation.
+ * X-SquirrelJME-Depends -- Other packages (separated by comma) which this
+ *                          project depends on for compilation.
  *
  * @since 2016/03/21
  */
@@ -886,11 +886,11 @@ public class Build
 			
 			// Get project name
 			name = Objects.<String>requireNonNull(
-				attr.getValue("X-Hairball-Name"), "Missing package name.");
+				attr.getValue("X-SquirrelJME-Name"), "Missing package name.");
 			
 			// Optional dependencies
 			Set<Project> xdeps = new HashSet<>();
-			String odeps = attr.getValue("X-Hairball-Depends");
+			String odeps = attr.getValue("X-SquirrelJME-Depends");
 			if (odeps != null)
 				for (String s : odeps.split(Pattern.quote(",")))
 					xdeps.add(getProject(s.trim()));

@@ -23,8 +23,8 @@ do
 	then
 		__err="$(sed \
 			'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
-			< "$__man" | grep 'X-HAIRBALL-ERROR' |
-			sed 's/X-HAIRBALL-ERROR[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
+			< "$__man" | grep 'X-SQUIRRELJME-ERROR' |
+			sed 's/X-SQUIRRELJME-ERROR[ \t]*:[ \t]*\([^ \t]*\)[ \t]*/\1/')"
 		if [ -n "$__err" ]
 		then
 			echo "$__err $(basename $__dir)"

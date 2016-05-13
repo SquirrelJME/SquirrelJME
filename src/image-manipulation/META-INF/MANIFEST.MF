@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
-X-Hairball-Name: image-manipulation
-X-Hairball-UUID: 0b42447e-fc9d-40f5-939e-f3f5feb7c2c4
-X-Hairball-Depends: javame-cldc-full,
+X-SquirrelJME-Name: image-manipulation
+X-SquirrelJME-UUID: 0b42447e-fc9d-40f5-939e-f3f5feb7c2c4
+X-SquirrelJME-Depends: javame-cldc-full,
  image-reader-xpm
-X-Hairball-Error: AS
+X-SquirrelJME-Error: AS
 Main-Class: net.multiphasicapps.imagetools.Main
 LIBlet-Title: Image Manipulation
 LIBlet-Vendor: Steven Gawroriski

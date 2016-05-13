@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: extra-io-crc32
-X-Hairball-UUID: 5a97bc11-a924-4494-b971-9537f8202431
-X-Hairball-Depends: extra-io-datasink
+X-SquirrelJME-Name: extra-io-crc32
+X-SquirrelJME-UUID: 5a97bc11-a924-4494-b971-9537f8202431
+X-SquirrelJME-Depends: extra-io-datasink
 LIBlet-Title: Extra IO CRC32
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160430

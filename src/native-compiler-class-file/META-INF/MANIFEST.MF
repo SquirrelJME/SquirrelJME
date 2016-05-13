@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-X-Hairball-Name: native-compiler-class-file
-X-Hairball-UUID: 8e1bb3de-ac70-4e63-ae1e-ce94f8c5e339
-X-Hairball-Depends: javame-cldc-compact, 
+X-SquirrelJME-Name: native-compiler-class-file
+X-SquirrelJME-UUID: 8e1bb3de-ac70-4e63-ae1e-ce94f8c5e339
+X-SquirrelJME-Depends: javame-cldc-compact, 
  java-descriptors, extra-io-region,
  native-compiler-class-interface
-X-Hairball-Error: AQ
+X-SquirrelJME-Error: AQ
 LIBlet-Title: Native Compiler Java Class Support
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160424

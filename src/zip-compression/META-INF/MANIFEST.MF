@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
-X-Hairball-Name: zip-compression
-X-Hairball-UUID: 71331290-14ad-490a-b0ed-139ec86b1767
-X-Hairball-Depends: javame-cldc-full,
+X-SquirrelJME-Name: zip-compression
+X-SquirrelJME-UUID: 71331290-14ad-490a-b0ed-139ec86b1767
+X-SquirrelJME-Depends: javame-cldc-full,
  extra-io-inflate, extra-io-region
-X-Hairball-Error: AM
+X-SquirrelJME-Error: AM
 LIBlet-Title: ZIP Compression
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228

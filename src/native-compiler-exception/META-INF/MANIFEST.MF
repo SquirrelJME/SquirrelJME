@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: native-compiler-exception
-X-Hairball-UUID: 58c21fa9-503b-4339-a47f-bd28e563f4da
-X-Hairball-Depends: javame-cldc-compact
+X-SquirrelJME-Name: native-compiler-exception
+X-SquirrelJME-UUID: 58c21fa9-503b-4339-a47f-bd28e563f4da
+X-SquirrelJME-Depends: javame-cldc-compact
 LIBlet-Title: Native Compiler Exception
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160423

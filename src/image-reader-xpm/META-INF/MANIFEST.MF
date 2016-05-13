@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
-X-Hairball-Name: image-reader-xpm
-X-Hairball-UUID: 814470f6-eeab-41bc-9966-a82706c6ca0d
-X-Hairball-Depends: image-reader
-X-Hairball-Error: AT
+X-SquirrelJME-Name: image-reader-xpm
+X-SquirrelJME-UUID: 814470f6-eeab-41bc-9966-a82706c6ca0d
+X-SquirrelJME-Depends: image-reader
+X-SquirrelJME-Error: AT
 LIBlet-Title: XPM Image Reader
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160508

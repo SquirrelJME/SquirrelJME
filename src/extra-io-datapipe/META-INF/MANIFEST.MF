@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
-X-Hairball-Name: extra-io-datapipe
-X-Hairball-UUID: 558ba8fd-4a7c-4e47-a4d7-f3a315564944
-X-Hairball-Depends: extra-io-datasink, extra-io-datafaucet
-X-Hairball-Error: AC
+X-SquirrelJME-Name: extra-io-datapipe
+X-SquirrelJME-UUID: 558ba8fd-4a7c-4e47-a4d7-f3a315564944
+X-SquirrelJME-Depends: extra-io-datasink, extra-io-datafaucet
+X-SquirrelJME-Error: AC
 LIBlet-Title: Extra IO Data Pipe
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160429

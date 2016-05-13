@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: native-system
-X-Hairball-UUID: 979063f6-4fa5-4c26-b387-575d971bcaa7
-X-Hairball-Depends: javame-cldc-full
+X-SquirrelJME-Name: native-system
+X-SquirrelJME-UUID: 979063f6-4fa5-4c26-b387-575d971bcaa7
+X-SquirrelJME-Depends: javame-cldc-full
 LIBlet-Title: Native System Support
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160413

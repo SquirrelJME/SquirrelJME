@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: test-extra-io-inflate
-X-Hairball-UUID: 22f2f584-5d5a-4ecd-bdfd-d307de1e1f6a
-X-Hairball-Depends: test-base, extra-io-inflate
+X-SquirrelJME-Name: test-extra-io-inflate
+X-SquirrelJME-UUID: 22f2f584-5d5a-4ecd-bdfd-d307de1e1f6a
+X-SquirrelJME-Depends: test-base, extra-io-inflate
 LIBlet-Title: RFC1951 Inflate Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160430

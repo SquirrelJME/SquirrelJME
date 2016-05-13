@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-Hairball-Name: image-reader
-X-Hairball-UUID: bb1cf568-ee57-4b72-a424-cc21491ec82d
-X-Hairball-Depends: javame-cldc-compact
+X-SquirrelJME-Name: image-reader
+X-SquirrelJME-UUID: bb1cf568-ee57-4b72-a424-cc21491ec82d
+X-SquirrelJME-Depends: javame-cldc-compact
 LIBlet-Title: Base Image Reader Support
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160508
