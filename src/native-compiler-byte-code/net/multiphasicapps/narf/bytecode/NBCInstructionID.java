@@ -837,5 +837,17 @@ public interface NBCInstructionID
 	/** IMPDEP2. */
 	public static final int IMPDEP2 =
 		255;
+	
+	/** Synthetic: Push value to stack. */
+	public static final int SYNTHETIC_PUSH_VALUE =
+		65536;
+	
+	/** Synthetic: Check null on stack, push value to stack. */
+	public static final int SYNTHETIC_CHECK_NULL_PUSH_VALUE =
+		65537;
+	
+	/** Synthetic: Shuffle items on the stack. */
+	public static final int SYNTHETIC_STACK_SHUFFLE =
+		65538;
 }
 
