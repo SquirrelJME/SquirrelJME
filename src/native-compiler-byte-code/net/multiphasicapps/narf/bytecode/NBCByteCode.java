@@ -116,6 +116,18 @@ public final class NBCByteCode
 	}
 	
 	/**
+	 * Returns the code attribute that this byte code representation is based
+	 * on.
+	 *
+	 * @return The code attribute this represents byte code for.
+	 * @since 2016/05/13
+	 */
+	public final NCICodeAttribute attribute()
+	{
+		return this.attribute;
+	}
+	
+	/**
 	 * Checks whether the current byte code (the method that contains this byte
 	 * code) can access the specified accessible object.
 	 *

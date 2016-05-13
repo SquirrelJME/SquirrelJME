@@ -12,6 +12,7 @@ package net.multiphasicapps.narf.interpreter;
 
 import net.multiphasicapps.narf.bytecode.NBCByteCode;
 import net.multiphasicapps.narf.bytecode.NBCOperation;
+import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
 
 /**
  * This is the pure interpreter which takes byte code directly for execution.
@@ -23,6 +24,9 @@ public class NIInterpreterPure
 {
 	/** The code to be interpreted. */
 	protected final NBCByteCode program;
+	
+	/** The code attribute used. */
+	protected final NCICodeAttribute attribute;
 	
 	/** The current instruction address. */
 	private volatile int _pcaddr;
@@ -46,6 +50,7 @@ public class NIInterpreterPure
 		
 		// Set
 		this.program = __p;
+		this.attribute = __p.attribute();
 	}
 	
 	/**
