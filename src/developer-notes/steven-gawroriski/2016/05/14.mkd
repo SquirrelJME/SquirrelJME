@@ -111,3 +111,8 @@ with a basic text based launcher interface. I suppose to keep it simple, the
 base launcher should just use a console interface. Other interface would be
 supported in the future if they are available.
 
+## 15:22
+
+For the base interface for the launcher, I will need JSR 238 so that I have an
+internationalized interface as needed.
+

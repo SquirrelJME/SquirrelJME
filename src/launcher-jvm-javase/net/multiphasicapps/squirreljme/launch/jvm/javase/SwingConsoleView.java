@@ -10,28 +10,33 @@
 
 package net.multiphasicapps.squirreljme.launch.jvm.javase;
 
-import net.multiphasicapps.squirreljme.launch.AbstractLauncher;
+import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
 
 /**
- * This contains the launcher used by the host Java SE system.
+ * This provides a swing console view.
  *
  * @since 2016/05/14
  */
-public class JVMJavaSELauncher
-	extends AbstractLauncher
+public class SwingConsoleView
+	extends AbstractConsoleView
 {
+	/** The frame which displays the console graphics. */
+	protected final JFrame frame;
+	
 	/**
-	 * This initializes the launcher which uses an existing full Java SE JVM.
+	 * Initializes the swing console view.
 	 *
-	 * @param __args The arguments to the launcher.
 	 * @since 2016/05/14
 	 */
-	public JVMJavaSELauncher(String... __args)
+	public SwingConsoleView()
 	{
-		// Must always exist
-		if (__args == null)
-			__args = new String[0];
+		// Setup the console view frame
+		JFrame frame = new JFrame("SquirrelJME");
+		this.frame = frame;
+		
+		// Make it exit on close
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	/**
@@ -39,16 +44,19 @@ public class JVMJavaSELauncher
 	 * @since 2016/05/14
 	 */
 	@Override
-	public AbstractConsoleView createConsoleView()
+	public void displayConsole()
 	{
-		// Setup a new console which uses a Swing based interface
-		SwingConsoleView scv = new SwingConsoleView();
-		
-		// Show it
-		scv.setVisible();
-		
-		// Return it
-		return scv;
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Makes the console view visible.
+	 *
+	 * @since 2016/05/14
+	 */
+	public void setVisible()
+	{
+		this.frame.setVisible(true);
 	}
 }
 
