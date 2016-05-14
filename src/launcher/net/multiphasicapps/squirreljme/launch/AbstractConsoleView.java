@@ -41,6 +41,9 @@ public abstract class AbstractConsoleView
 	/** The number of rows. */
 	private volatile int _rows;
 	
+	/** The current attribute brush. */
+	private volatile byte _attrbrush;
+	
 	/**
 	 * Initializes the base console view, which is initially sized to be a
 	 * default sized character terminal.
@@ -144,6 +147,94 @@ public abstract class AbstractConsoleView
 		synchronized (lock)
 		{
 			return _rows;
+		}
+	}
+	
+	/**
+	 * Invoked {@code put(__c, __r, __cs, 0, __cs.length())}.
+	 *
+	 * @param __c The column to place at.
+	 * @param __r The row to place at.
+	 * @param __cs The sequence to place.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/14
+	 */
+	public final void put(int __c, int __r, CharSequence __cs)
+		throws NullPointerException
+	{
+		put(__c, __r, __cs, 0, __cs.length());
+	}
+	
+	/**
+	 * Puts the given character sequence onto the console surface.
+	 *
+	 * Note that if the length added to the offset exceeds the length of the
+	 * character sequence then placement of characters stops. Also, if a
+	 * sequence exceeds the columns in the terminal it will not wrap around.
+	 *
+	 * @param __c The column to place at.
+	 * @param __r The row to place at.
+	 * @param __cs The sequence to place.
+	 * @param __o The offset to read characters from.
+	 * @param __l The maximum number of characters to write.
+	 * @throws IndexOutOfBoundsException If the offset or length are negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/14
+	 */
+	public final void put(int __c, int __r, CharSequence __cs, int __o,
+		int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__cs == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Nothing to place
+		if (__l == 0 || __r < 0 || __c < (-__l))
+			return;
+		
+		// Lock
+		synchronized (lock)
+		{
+			// Get console details
+			char[] chars = this._chars;
+			byte[] attrs = this._attrs;
+			int cells = this._cells;
+			int cols = this._cols;
+			int rows = this._rows;
+			byte attrbrush = this._attrbrush;
+			
+			// Off the end of the console? Do nothing
+			if (__c >= cols || __r >= rows)
+				return;
+			
+			// Reading characters could run off the length since the sequence
+			// may be modified during execution and
+			try
+			{
+				for (int i = 0, cx = __c, dx = (__r * cols) + __c; i < __l;
+					i++, cx++, dx++)
+				{
+					// If off the left end, ignore
+					if (cx < 0)
+						continue;
+					
+					// Cannot draw any more so stop
+					else if (cx >= cols)
+						break;
+					
+					// Place character
+					chars[dx] = __cs.charAt(__o + i);
+					attrs[dx] = attrbrush;
+				}
+			}
+			
+			// Character was out of bounds, so just ignore it
+			catch (IndexOutOfBoundsException e)
+			{
+			}
 		}
 	}
 	

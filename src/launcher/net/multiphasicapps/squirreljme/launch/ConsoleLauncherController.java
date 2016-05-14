@@ -59,6 +59,16 @@ public class ConsoleLauncherController
 		// Update the calendar
 		Calendar currentcal = this.currentcal;
 		currentcal.setTimeInMillis(System.currentTimeMillis());
+		
+		// Get the console
+		AbstractConsoleView console = this.console;
+		int cols = console.getColumns(), rows = console.getRows();
+		
+		// Draw the name of the software
+		console.put(0, 0, "SquirrelJME");
+		
+		// Force the console to be drawn
+		console.displayConsole();
 	}
 }
 

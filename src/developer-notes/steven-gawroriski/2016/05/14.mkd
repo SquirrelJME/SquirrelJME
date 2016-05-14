@@ -130,3 +130,8 @@ So the launcher will also need an abstract file system interface so that the
 host filesystem (or block device, which means I would have to implement a
 file system driver) can be accessed for JARs, programs, and such.
 
+## 17:34
+
+The launcher interface could actually provide connections so that `jdb` and
+`gdb` may connetc and debug programs running on the system.
+
