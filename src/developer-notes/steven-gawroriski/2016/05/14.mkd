@@ -19,3 +19,26 @@ since it would not have to duplicate all of the access checks and such. I
 could also virtually wrap all `NCIClass` and have mapped methods accordingly
 as such.
 
+## 13:30
+
+I should keep some kind of statistics, since those would be useful in the
+interpreter.
+
+## 13:32
+
+Also, I should be able to implement the `jdb` protocol potentially so I can
+actively debug the running virtual machine instance. However, one major issue
+with this is how can the interpreter communicate with the debugger when there
+is no real communication channel which is possible? I would need to actually
+create some socket code perhaps from MIDP 3 and then use that as a kind of
+agent using TCP of sorts. Although, there is MEEP. Or GCF.
+
+## 13:47
+
+However the GCF classes do not even specify how lookup of things and such
+are even performed. So I would suppose that I am given freedom to implement
+the services how I would do it, via the service loader and such. The thing is
+however, that I will need an actual launcher that wraps everything up while
+performing the needed magic. That would be rather complex at this stage. So I
+suppose that the interpreter I am writing cannot have an attached debugger.
+

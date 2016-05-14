@@ -52,6 +52,10 @@ public class NICore
 	protected final Random hashcodegen =
 		new Random(0x590144E723E_1989L);
 	
+	/** Virtual machine statistics. */
+	protected final NIStatistics stats =
+		new NIStatistics();
+	
 	/** Is the virtual machine running? */
 	private volatile boolean _isrunning;
 	
@@ -215,6 +219,17 @@ public class NICore
 	}
 	
 	/**
+	 * Returns the statistics of the virtual machine.
+	 *
+	 * @return The virtual machine statistics.
+	 * @since 2016/05/14
+	 */
+	public NIStatistics statistics()
+	{
+		return this.stats;
+	}
+	
+	/**
 	 * Obtains the interpreter based thread which wraps the given thread.
 	 *
 	 * @param __t The thread to obtain the interpreter based thread from.
@@ -236,6 +251,10 @@ public class NICore
 		{
 			return tm.get(__t);
 		}
+	}
+	
+	void __incrementNew
+	{
 	}
 	
 	/**
