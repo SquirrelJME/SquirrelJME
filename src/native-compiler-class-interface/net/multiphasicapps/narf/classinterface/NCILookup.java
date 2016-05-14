@@ -363,6 +363,14 @@ public abstract class NCILookup
 			else
 				break;
 			
+			// {@squirreljme.error AO0g The current class cannot extend the
+			// specified class because it cannot be accessed from the
+			// sub-class. (The current class; The super class)}
+			if (!canAccess(rover, next))
+				throw new NCIException(NCIException.Issue.ACCESS_DENIED,
+					String.format("AO0g %s %s", rover.thisName(),
+						next.thisName()));
+			
 			// {@squirreljme.error The current class extends a final class.
 			// (The current class; The super class)}
 			if (next.flags().isFinal())

@@ -175,6 +175,9 @@ public class NCIException
 		/** Extends final class. */
 		EXTENDS_FINAL,
 		
+		/** Access to the given object is not permitted. */
+		ACCESS_DENIED,
+		
 		/** End. */
 		;
 	}
