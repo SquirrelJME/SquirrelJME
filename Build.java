@@ -69,6 +69,8 @@ import javax.tools.ToolProvider;
  *
  * X-SquirrelJME-Depends -- Other packages (separated by comma) which this
  *                          project depends on for compilation.
+ * X-SquirrelJME-HostClassPath -- Use the host classpath when building the
+ *                                specified package rather than the target one.
  *
  * @since 2016/03/21
  */
@@ -223,6 +225,11 @@ public class Build
 				__launch(terptarget, getProject(__args.removeFirst()), __args);
 				break;
 				
+				// Run SquirrelJME launcher
+			case "squirreljme":
+				__launch(0, getProject("launcher-jvm-javase"), __args);
+				break;
+				
 				// Build a project
 			case "build":
 				__build(getProject(__args.removeFirst()));
@@ -298,7 +305,11 @@ public class Build
 			Set<File> ccpath = new HashSet<>();
 			__p.classPathFile(ccpath);
 			jfm.setLocation(StandardLocation.CLASS_PATH, ccpath);
-			jfm.setLocation(StandardLocation.PLATFORM_CLASS_PATH, ccpath);
+			
+			// Unless the host classpath was specified, use the classpath
+			// for the package as the platform one.
+			if (!__p.hostclasspath)
+				jfm.setLocation(StandardLocation.PLATFORM_CLASS_PATH, ccpath);
 			
 			// Files to compile
 			final Set<JavaFileObject> compile = new HashSet<>();
@@ -846,6 +857,9 @@ public class Build
 		/** The library version. */
 		protected final String libversion;
 		
+		/** Use the host class path? */
+		protected final boolean hostclasspath;
+		
 		/** Source code date. */
 		private volatile long _sourcedate =
 			Long.MIN_VALUE;
@@ -903,6 +917,10 @@ public class Build
 				"LIBlet-Vendor"), "Missing library vendor.");
 			libversion = Objects.<String>requireNonNull(attr.getValue(
 				"LIBlet-Version"), "Missing library version.");
+			
+			// Use the host class path?
+			String hcps = attr.getValue("X-SquirrelJME-HostClassPath");
+			hostclasspath = Boolean.valueOf(hcps);
 			
 			// Determine JAR name
 			jarname = Paths.get(name + ".jar");
