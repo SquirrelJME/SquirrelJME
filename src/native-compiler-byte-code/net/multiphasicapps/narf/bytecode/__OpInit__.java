@@ -15,6 +15,7 @@ import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCIClassReference;
+import net.multiphasicapps.narf.classinterface.NCIMethodReference;
 import net.multiphasicapps.narf.classinterface.NCIPool;
 
 /**
@@ -78,12 +79,27 @@ class __OpInit__
 	 * @param __it The type of invocation to perform.
 	 * @since 2016/05/12
 	 */
-	public static void invoke(__OpInitData__ id, NBCInvokeType __it)
+	public static void invoke(__OpInitData__ __id, NBCInvokeType __it)
 		throws NullPointerException
 	{
 		// Check
 		if (__it == null)
 			throw new NullPointerException("NARG");
+		
+		// Get the byte buffer
+		NCIByteBuffer bb = __id.byteBuffer();
+		int phy = __id.physicalAddress();
+		
+		// Get the method which was referenced
+		NCIMethodReference ref = __id.pool().<NCIMethodReference>requiredAs(
+			bb.readUnsignedShort(phy, 1), NCIMethodReference.class);
+		__id.setArguments(ref);
+		
+		// {@squirreljme.error AX0x Invocation of an interface method does not
+		// refer to the interface method reference. (The method reference)}
+		if (__it == NBCInvokeType.INTERFACE && !ref.isInterface())
+			throw new NBCException(NBCException.Issue.NOT_INTERFACE_METHOD,
+				String.format("AX0x %s", ref));
 		
 		throw new Error("TODO");
 	}

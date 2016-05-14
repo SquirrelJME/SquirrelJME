@@ -109,6 +109,9 @@ public class NBCException
 		/** A local variable is not correct. */
 		ILLEGAL_LOCAL,
 		
+		/** The method to invoke is not an interface. */
+		NOT_INTERFACE_METHOD,
+		
 		/** End. */
 		;
 	}

@@ -101,7 +101,6 @@ public final class NBCOperation
 		switch (opcode)
 		{
 			case NBCInstructionID.DUP: __OpInit__.dup(out); break;
-			case NBCInstructionID.NEW: __OpInit__.new_(out); break;
 				
 			case NBCInstructionID.INVOKEINTERFACE:
 				__OpInit__.invoke(out, NBCInvokeType.INTERFACE);
@@ -118,6 +117,8 @@ public final class NBCOperation
 			case NBCInstructionID.INVOKEVIRTUAL:
 				__OpInit__.invoke(out, NBCInvokeType.VIRTUAL);
 				break;
+				
+			case NBCInstructionID.NEW: __OpInit__.new_(out); break;
 				
 				// {@squirreljme.error AX05 The instruction identifier for the
 				// specified position is not valid or is not yet supported.
