@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
  * This is the base class which provides access to classes as an entire
