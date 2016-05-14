@@ -10,10 +10,12 @@
 
 package net.multiphasicapps.squirreljme.launch.jvm.javase;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
 
 /**
@@ -50,6 +52,9 @@ public class SwingConsoleView
 		// Setup character view
 		CharacterView view = new CharacterView();
 		this.view = view;
+		
+		// Set font
+		font = Font.decode(Font.MONOSPACED);
 		
 		// Add to the frame
 		frame.add(view);
@@ -92,7 +97,11 @@ public class SwingConsoleView
 	 */
 	public void setVisible()
 	{
+		// Make it shown
 		this.frame.setVisible(true);
+		
+		// Center on screen
+		this.frame.setLocationRelativeTo(null);
 	}
 	
 	/**
@@ -105,6 +114,11 @@ public class SwingConsoleView
 		// Get the new size
 		int cols = getColumns();
 		int rows = getRows();
+		
+		// Fix the size
+		CharacterView view = this.view;
+		if (view != null)
+			view.__fixSize(cols, rows);
 	}
 	
 	/**
@@ -128,6 +142,11 @@ public class SwingConsoleView
 	public class CharacterView
 		extends JPanel
 	{
+		/** The character width and height. */
+		volatile int _charw, _charh;
+		
+		private volatile boolean _fixed;
+		
 		/**
 		 * Initializes the character view.
 		 *
@@ -150,6 +169,44 @@ public class SwingConsoleView
 			// Determine the size of the characters in pixels
 			__g.setFont(font);
 			FontMetrics fm = __g.getFontMetrics();
+			
+			// Set size
+			_charw = fm.charWidth('S');
+			_charh = fm.getHeight();
+			
+			// Fix it?
+			if (!this._fixed)
+			{
+				SwingConsoleView.this.sizeChanged();
+				frame.setLocationRelativeTo(null);
+			}
+		}
+		
+		/**
+		 * Fixes the panel size.
+		 *
+		 * @param __c Column count.
+		 * @param __r Row count.
+		 * @since 2016/05/14
+		 */
+		void __fixSize(int __c, int __r)
+		{
+			// Setup dimension
+			int nw = __c * Math.max(1, _charw);
+			int nh = __r * Math.max(1, _charh);
+			Dimension d = new Dimension(nw, nh);
+			
+			// Set everything
+			setPreferredSize(d);
+			setMinimumSize(d);
+			setMaximumSize(d);
+			setSize(d);
+			
+			// Pack it
+			frame.pack();
+			
+			// Set
+			this._fixed = true;
 		}
 	}
 }
