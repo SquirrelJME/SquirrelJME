@@ -79,3 +79,20 @@ There could also optionally be an attached interpreter too. The launcher using
 the service loader can determine if an interpreter or a AOT/JIT interface is
 being used.
 
+## 14:05
+
+So the first thing then would be to define the base launcher interface which
+can manage things. Then there would be an extension of this launcher which is
+defined by sub-classes, this becomes the driver which can perform the system
+specific magical stuff changed by the compiler. To simplify the base however,
+I would need to split the compact CLDC to a bare minimum set or at least
+modify the package builder to allow for alternative dependencies in a kind of
+replacement scheme. Or, I can have a special package which indicates that the
+host classpath should be used instead of a dependency. This way the CLDC is
+compiled and depended upon but it has no real effect since the system classpath
+takes priority when it comes to using classes such as Object and such. That
+would allow me to get away with defining a bunch of classes of the classes
+that I use. The host JVM interface would use reflection and other details to
+perform its magical work. Classes at least in this interface can be converted
+so that they conform to Java SE 7 (renaming things also) then used directly.
+
