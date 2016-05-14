@@ -298,6 +298,7 @@ public abstract class NCILookup
 	 * overridden and implemented as such.
 	 *
 	 * @param __cl The class to verify.
+	 * @return {@code __cl} or a wrapped variant of it.
 	 * @throws NCIException If the conditions do not hold and the class breaks
 	 * the requirements set by the virtual machine.
 	 * @throws NullPointerException On null arguments.
@@ -310,7 +311,11 @@ public abstract class NCILookup
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		if (true)
+			throw new Error("TODO");
+		
+		// Return the input (or perhaps a wrapped class in the future)
+		return __cl;
 	}
 }
 
