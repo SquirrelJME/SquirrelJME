@@ -345,6 +345,9 @@ public abstract class NCILookup
 			throw new NCIException(NCIException.Issue.CLASS_NO_SUPERCLASS,
 				String.format("AO0d %s", tcn));
 		
+		// Is the current class abstract?
+		boolean isabstract = __cl.flags().isAbstract();
+		
 		// Go through all available super classes to make sure that this class
 		// is not eventually extended or a superclass is final
 		for (NCIClass rover = __cl, next = null; rover != null; rover = next)
@@ -360,8 +363,19 @@ public abstract class NCILookup
 					throw new NCIException(NCIException.Issue.MISSING_CLASS,
 						String.format("AO0e %s %s", rover.thisName(), ssn));
 			}
+			
+			// No more super classes to process
 			else
 				break;
+			
+			// {@squirreljme.error AO0h In the superclass lookup chain, the
+			// given class eventually extends itself. (The top-most class;
+			// The current class; The super class)}
+			if (rover.thisName().equals(next.thisName()) ||
+				next.thisName().equals(__cl.thisName()))
+				throw new NCIException(NCIException.Issue.CIRCULAR_EXTENDS,
+					String.format("AO0h %s %s %s", __cl, rover.thisName(),
+						next.thisName()));
 			
 			// {@squirreljme.error AO0g The current class cannot extend the
 			// specified class because it cannot be accessed from the
