@@ -89,7 +89,8 @@ public class SwingConsoleView
 	@Override
 	public void displayConsole()
 	{
-		throw new Error("TODO");
+		// Force redraw of the console display
+		this.frame.repaint();
 	}
 	
 	/**

@@ -51,7 +51,7 @@ public abstract class AbstractLauncher
 			// Update the controller
 			clc.update();
 			
-			// Yeild thread to let others run
+			// Yield thread to let others run
 			Thread.yield();
 		}
 	}
