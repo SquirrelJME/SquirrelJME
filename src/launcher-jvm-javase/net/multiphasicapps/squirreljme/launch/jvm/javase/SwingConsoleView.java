@@ -44,6 +44,26 @@ public class SwingConsoleView
 	 * @since 2016/05/14
 	 */
 	@Override
+	public int defaultColumns()
+	{
+		return 80;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/14
+	 */
+	@Override
+	public int defaultRows()
+	{
+		return 24;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/14
+	 */
+	@Override
 	public void displayConsole()
 	{
 		throw new Error("TODO");
