@@ -148,3 +148,8 @@ spawned for the user interface and associated with the kernel somewhat or
 similar. Then the interface will just implement `run` in `Runnable` to do
 things.
 
+## 19:17
+
+Drawing the console might be really difficult when it comes to swing, so likely
+the best way to do it would be with images.
+

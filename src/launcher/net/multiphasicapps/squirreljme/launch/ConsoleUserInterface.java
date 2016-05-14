@@ -25,6 +25,10 @@ public class ConsoleUserInterface
 	extends StandardUserInterface
 	implements Runnable
 {
+	/** The number of nanoseconds to spend in a console frame. */
+	public static final long CONSOLE_DELAY =
+		50_000_000L;
+	
 	/** The console view which interacts with the user directly. */
 	protected final AbstractConsoleView console;
 	
@@ -63,6 +67,9 @@ public class ConsoleUserInterface
 	{
 		for (;;)
 		{
+			// Get the entry time
+			long entertime = System.nanoTime();
+			
 			// Update the calendar
 			Calendar currentcal = this.currentcal;
 			long nowtime = System.currentTimeMillis();
@@ -79,12 +86,37 @@ public class ConsoleUserInterface
 			StringBuilder timebuilder = this.timebuilder;
 			__handleTime(timebuilder, currentcal);
 			console.put((cols - 1) - timebuilder.length(), 0, timebuilder); 
-		
-			// Force the console to be drawn
-			console.displayConsole();
 			
-			// Yield so another thread can run
-			Thread.yield();
+			// If there is enough time to draw the console then display it
+			long durtime = System.nanoTime() - entertime;
+			if (durtime < CONSOLE_DELAY)
+			{
+				// Force the console to be drawn
+				console.displayConsole();
+			}
+			
+			// Get the console frame duration
+			durtime = System.nanoTime() - entertime;
+			long restime = CONSOLE_DELAY - durtime;
+			if (restime > 0)
+				try
+				{
+					// If the rest time is really high then do not sleep for
+					// an extreme amount of time, otherwise the user interface
+					// would freeze solid
+					Thread.sleep(Math.min(CONSOLE_DELAY, restime) /
+						1_000_000L);
+				}
+				
+				// Ignore
+				catch (InterruptedException e)
+				{
+				}
+			
+			// The user interface might be busy so do not go crazy and
+			// consume all available cycles
+			else
+				Thread.yield();
 		}
 	}
 	

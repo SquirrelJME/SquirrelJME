@@ -123,7 +123,7 @@ public abstract class Kernel
 			// Rest for a bit since threads usually will not just die.
 			try
 			{
-				Thread.sleep(500L);
+				Thread.sleep(750L);
 			}
 			
 			// Do nothing
