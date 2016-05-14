@@ -25,11 +25,8 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		// Initialize the main launcher
-		JVMJavaSELauncher jsel = new JVMJavaSELauncher(__args);
-		
-		// Run the launcher loop
-		jsel.primaryLoop();
+		// Initialize the main launcher and run the main loop
+		new JVMJavaSELauncher(__args).primaryLoop();
 	}
 }
 

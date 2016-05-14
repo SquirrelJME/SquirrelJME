@@ -31,9 +31,6 @@ public class JVMJavaSELauncher
 		// Must always exist
 		if (__args == null)
 			__args = new String[0];
-		
-		// Run the launcher loop
-		jsel.primaryLoop();
 	}
 	
 	/**
