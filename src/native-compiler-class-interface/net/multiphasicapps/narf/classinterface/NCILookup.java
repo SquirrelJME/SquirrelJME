@@ -385,11 +385,18 @@ public abstract class NCILookup
 					String.format("AO0g %s %s", rover.thisName(),
 						next.thisName()));
 			
-			// {@squirreljme.error The current class extends a final class.
+			// {@squirreljme.error AO0f The current class extends a final class.
 			// (The current class; The super class)}
 			if (next.flags().isFinal())
 				throw new NCIException(NCIException.Issue.EXTENDS_FINAL,
 					String.format("AO0f %s %s", rover.thisName(),
+						next.thisName()));
+			
+			// {@squirreljme.error AO0i Classes cannot extend interfaces, they
+			// must only implement them. (The current class; The super class)}
+			if (next.flags().isInterface())
+				throw new NCIException(NCIException.Issue.EXTENDS_FINAL,
+					String.format("AO0i %s %s", rover.thisName(),
 						next.thisName()));
 			
 			if (true)
