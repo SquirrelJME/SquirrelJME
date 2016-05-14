@@ -169,6 +169,9 @@ public class NCIException
 		/** The object class has a superclass. */
 		OBJECT_HAS_SUPERCLASS,
 		
+		/** The non-Object class has no superclass. */
+		CLASS_NO_SUPERCLASS,
+		
 		/** End. */
 		;
 	}

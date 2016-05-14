@@ -156,6 +156,9 @@ public class NIException
 		/** Extends final class. */
 		EXTENDS_FINAL,
 		
+		/** The class has no superclass. */
+		CLASS_NO_SUPERCLASS,
+		
 		/** End. */
 		;
 	}

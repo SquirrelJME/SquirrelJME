@@ -315,9 +315,16 @@ public abstract class NCILookup
 		// should not do so. (The name of the super class)}
 		ClassNameSymbol tcn = __cl.thisName();
 		ClassNameSymbol scn = __cl.superName();
-		if (tcn.equals("java/lang/Object") && scn != null)
+		boolean tio = tcn.equals("java/lang/Object");
+		if (tio && scn != null)
 			throw new NCIException(NCIException.Issue.OBJECT_HAS_SUPERCLASS,
 				String.format("AO0c %s", scn));
+		
+		// {@squirreljme.error AO0d The current class does not extend a super
+		// class. (The name of this class)}
+		if (!tio && scn == null)
+			throw new NCIException(NCIException.Issue.CLASS_NO_SUPERCLASS,
+				String.format("AO0d %s", tcn));
 		
 		if (true)
 			throw new Error("TODO");
