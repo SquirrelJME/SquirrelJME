@@ -177,13 +177,17 @@ public class SwingConsoleView
 				}
 				
 				// Get character data and attribute here
+				char c = chars[i];
 				byte a = attrs[i];
 				
 				// Draw new background colors over black
 				
-				// Draw the character
-				gfx.setColor(Color.LIGHT_GRAY);
-				gfx.drawChars(chars, i, 1, dx, dy);
+				// Do not bother drawing control and space characters
+				if (c > ' ')
+				{
+					gfx.setColor(Color.LIGHT_GRAY);
+					gfx.drawChars(chars, i, 1, dx, dy);
+				}
 			}
 			
 			// Force redraw of the console display
