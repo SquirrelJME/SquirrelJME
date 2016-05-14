@@ -15,6 +15,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -31,11 +36,14 @@ public class SwingConsoleView
 	/** The frame which displays the console graphics. */
 	protected final JFrame frame;
 	
-	/** The font to use in the display. */
-	protected final Font font;
-	
 	/** The character view. */
 	protected final CharacterView view;
+	
+	/** The font width and height. */
+	protected final int fontw, fonth;
+	
+	/** Font image data. */
+	protected final BufferedImage fonti;
 	
 	/**
 	 * Initializes the swing console view.
@@ -51,12 +59,44 @@ public class SwingConsoleView
 		// Make it exit on close
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		// Get the device graphics configuration
+		GraphicsEnvironment ge = GraphicsEnvironment.
+			getLocalGraphicsEnvironment();
+		GraphicsDevice gs = ge.getDefaultScreenDevice();
+		GraphicsConfiguration gc = gs.getDefaultConfiguration();
+		
+		// Create an initial 1x1 image to determine the size of the font
+		BufferedImage toy = gc.createCompatibleImage(1, 1);
+		Graphics2D toygfx = toy.createGraphics();
+		
+		// Use monospaced font
+		Font font = Font.decode(Font.MONOSPACED);
+		toygfx.setFont(font);
+		
+		// Get font character size
+		FontMetrics fm = toygfx.getFontMetrics();
+		int cw = fm.charWidth('S'),
+			ch = fm.getHeight();
+		this.fontw = cw;
+		this.fonth = ch;
+		
+		// Setup precomposed image which contains all possible characters
+		BufferedImage fonti = new BufferedImage(cw * 65536, ch,
+			BufferedImage.TYPE_BYTE_BINARY);
+		this.fonti = fonti;
+		
+		// Draw all characters into the given buffer
+		Graphics2D gfx = fonti.createGraphics();
+		char[] buf = new char[1];
+		for (int i = 0, px = 0; i < 65536; i++, px += cw)
+		{
+			buf[0] = (char)i;
+			gfx.drawChars(buf, 0, 1, cw, ch);
+		}
+		
 		// Setup character view
 		CharacterView view = new CharacterView();
 		this.view = view;
-		
-		// Set font
-		font = Font.decode(Font.MONOSPACED);
 		
 		// Add to the frame
 		frame.add(view);
@@ -145,9 +185,7 @@ public class SwingConsoleView
 	public class CharacterView
 		extends JPanel
 	{
-		/** The character width and height. */
-		volatile int _charw, _charh;
-		
+		/** Has the view size been corrected? */
 		private volatile boolean _fixed;
 		
 		/**
@@ -169,6 +207,16 @@ public class SwingConsoleView
 			// Call super paint
 			super.paintComponent(__g);
 			
+			// Fix it?
+			if (!this._fixed)
+			{
+				SwingConsoleView.this.sizeChanged();
+				frame.setLocationRelativeTo(null);
+			}
+			
+			__g.drawImage(fonti, 0, 0, null);
+			
+			/*
 			// Determine the size of the characters in pixels
 			__g.setFont(font);
 			FontMetrics fm = __g.getFontMetrics();
@@ -178,12 +226,6 @@ public class SwingConsoleView
 			_charw = cw = fm.charWidth('S');
 			_charh = ch = fm.getHeight();
 			
-			// Fix it?
-			if (!this._fixed)
-			{
-				SwingConsoleView.this.sizeChanged();
-				frame.setLocationRelativeTo(null);
-			}
 			
 			// Get character and attribute data
 			int tc, tr;
@@ -231,6 +273,7 @@ public class SwingConsoleView
 					__g.drawChars(chars, dx, 1, gx, gy + ch);
 				}
 			}
+			*/
 		}
 		
 		/**
@@ -243,8 +286,8 @@ public class SwingConsoleView
 		void __fixSize(int __c, int __r)
 		{
 			// Setup dimension
-			int nw = __c * Math.max(1, _charw);
-			int nh = __r * Math.max(1, _charh);
+			int nw = __c * Math.max(1, fontw);
+			int nh = __r * Math.max(1, fonth);
 			Dimension d = new Dimension(nw, nh);
 			
 			// Set everything
