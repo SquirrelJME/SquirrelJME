@@ -11,6 +11,8 @@
 package net.multiphasicapps.narf.bytecode;
 
 import java.util.List;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
@@ -100,6 +102,20 @@ class __OpInit__
 		if (__it == NBCInvokeType.INTERFACE && !ref.isInterface())
 			throw new NBCException(NBCException.Issue.NOT_INTERFACE_METHOD,
 				String.format("AX0x %s", ref));
+		
+		// {@squirreljme.error AX0y Could not find the class containing the
+		// method to be invoked. (The method reference)}
+		NCIClass ncl = __id.lookup(ref.memberClass());
+		if (ncl == null)
+			throw new NBCException(NBCException.Issue.MISSING_CLASS,
+				String.format("AX0y %s", ref));
+		
+		// {@squirreljme.error AX0z Cannot access the class which was
+		// referenced for a method invocation. (The method reference)}
+		if (!__id.canAccess(ncl))
+			throw new NBCException(NBCException.Issue.CANNOT_ACCESS_CLASS,
+				String.format("AX0z %s", ref));
+		
 		
 		throw new Error("TODO");
 	}
