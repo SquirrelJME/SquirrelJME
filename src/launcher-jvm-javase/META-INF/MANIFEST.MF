@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: launcher-jvm-javase
+X-SquirrelJME-UUID: 2e0c53a9-e82c-4c5a-9bac-8026b3966909
+X-SquirrelJME-Depends: launcher
+X-SquirrelJME-HostClassPath: true
+LIBlet-Title: Launcher (JVM: Java SE)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160514
+LIBlet-Description: This is the launcher which runs on
+  desktop Java SE systems.
+

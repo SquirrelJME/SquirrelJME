@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: launcher
+X-SquirrelJME-UUID: abb39a12-7deb-433c-a2d6-4c2f5ede429f
+X-SquirrelJME-Depends: javame-cldc-compact
+LIBlet-Title: Launcher
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160514
+LIBlet-Description: This is the base class for all classes
+  which are to be ran on the virtual machine, the launcher
+  can be thought of the OS kernel which runs SquirrelJME.
+
