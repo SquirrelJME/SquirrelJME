@@ -160,11 +160,9 @@ public class NIClass
 				
 				// If abstract, it must be implemented (it must be contained
 				// in the map and not be abstract)
+				NIMethod iv = mm.get(k);
 				if (!selfabs && mf.isAbstract())
 				{
-					// Get the method
-					NIMethod iv = mm.get(k);
-					
 					// {@squirreljme.error AN0e The top-level class is not
 					// abstract and it does not implement an abstract method.
 					// (The method identifier)}
@@ -176,8 +174,19 @@ public class NIClass
 				
 				// Never replace methods in a sub-class with the superclass
 				// methods.
-				if (mm.containsKey(k))
+				if (iv != null && iv != v)
+				{
+					// {@squirreljme.error AN0u A final method cannot be
+					// replaced. (The method identifier; The super class; The
+					// current class)}
+					if (v.flags().isFinal())
+						throw new NIException(core, NIException.Issue.
+							FINAL_REPLACED, String.format("AN0u %s %s %s", k,
+								rover, this));
+					
+					// Do not add
 					continue;
+				}
 				
 				// Bind it
 				mm.put(k, v);
@@ -306,6 +315,16 @@ public class NIClass
 	public ClassNameSymbol thisName()
 	{
 		return base.thisName();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/14
+	 */
+	@Override
+	public String toString()
+	{
+		return thisName().toString();
 	}
 }
 

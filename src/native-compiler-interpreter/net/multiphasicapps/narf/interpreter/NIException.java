@@ -150,6 +150,9 @@ public class NIException
 		/** Illegal push of value. */
 		ILLEGAL_PUSH,
 		
+		/** A final method was replaced. */
+		FINAL_REPLACED,
+		
 		/** End. */
 		;
 	}
