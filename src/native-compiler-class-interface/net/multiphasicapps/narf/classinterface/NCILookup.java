@@ -311,6 +311,14 @@ public abstract class NCILookup
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AO0c The object class extends a class when it
+		// should not do so. (The name of the super class)}
+		ClassNameSymbol tcn = __cl.thisName();
+		ClassNameSymbol scn = __cl.superName();
+		if (tcn.equals("java/lang/Object") && scn != null)
+			throw new NCIException(NCIException.Issue.OBJECT_HAS_SUPERCLASS,
+				String.format("AO0c %s", scn));
+		
 		if (true)
 			throw new Error("TODO");
 		

@@ -166,6 +166,9 @@ public class NCIException
 		/** Class or accessible object has illegal access flags. */
 		ILLEGAL_ACCESS_FLAGS,
 		
+		/** The object class has a superclass. */
+		OBJECT_HAS_SUPERCLASS,
+		
 		/** End. */
 		;
 	}
