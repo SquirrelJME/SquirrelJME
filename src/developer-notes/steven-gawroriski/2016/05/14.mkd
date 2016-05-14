@@ -71,3 +71,11 @@ writing it and having an optionally integrated interpreter in it. For any
 system specific stuff not defined in the CLDC I will just need a bridge package
 which defines all of the interfaces that my initial host JVM launcher uses.
 
+## 14:02
+
+So if the launcher can invoke the compiler to generate code to be ran, then the
+launcher would have to be bound to a native compiler if it can perform JIT.
+There could also optionally be an attached interpreter too. The launcher using
+the service loader can determine if an interpreter or a AOT/JIT interface is
+being used.
+
