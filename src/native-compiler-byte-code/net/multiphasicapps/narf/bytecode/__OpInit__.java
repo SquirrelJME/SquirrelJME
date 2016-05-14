@@ -72,6 +72,23 @@ class __OpInit__
 	}
 	
 	/**
+	 * Invokes a method.
+	 *
+	 * @param __id Operation info.
+	 * @param __it The type of invocation to perform.
+	 * @since 2016/05/12
+	 */
+	public static void invoke(__OpInitData__ id, NBCInvokeType __it)
+		throws NullPointerException
+	{
+		// Check
+		if (__it == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Allocates an object.
 	 *
 	 * @param __id Operation data.

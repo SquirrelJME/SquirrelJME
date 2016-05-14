@@ -838,16 +838,50 @@ public interface NBCInstructionID
 	public static final int IMPDEP2 =
 		255;
 	
-	/** Synthetic: Push value to stack. */
+	/**
+	 * Synthetic: Push value to stack.
+	 *
+	 * The first argument contains the value to push.
+	 */
 	public static final int SYNTHETIC_PUSH_VALUE =
 		65536;
 	
-	/** Synthetic: Check null on stack, push value to stack. */
+	/**
+	 * Synthetic: Check null on stack, push value to stack.
+	 *
+	 * An object is popped from the stack and checked against null.
+	 *
+	 * The first argument contains the value to push.
+	 */
 	public static final int SYNTHETIC_CHECK_NULL_PUSH_VALUE =
 		65537;
 	
-	/** Synthetic: Shuffle items on the stack. */
+	/**
+	 * Synthetic: Shuffle items on the stack.
+	 *
+	 * Values are popped from the stack in a specific order and their values
+	 * are temporarily copied. Pushing of values uses stack value reference
+	 * variety of {@link NBCVariablePush} ({@link NBCVariablePush#popIndex()})
+	 * which refers to the specified order that instruction were popped from
+	 * the lowest pop index to the highest (a pop index of zero is the zeroth
+	 * element of the pop value types, not the last).
+	 */
 	public static final int SYNTHETIC_STACK_SHUFFLE =
 		65538;
+	
+	/**
+	 * Synthetic: Specific instance invocation.
+	 *
+	 * The first argument is a reference to the method (NCIMethod) to invoke.
+	 * The byte code handler determines the correct method to invoke and as
+	 * such it is not required for the interpreter/compiler to perform
+	 * virtual lookup and such.
+	 *
+	 * An object along with the arguments to the call are popped to the stack.
+	 *
+	 * The instance method should be checked for {@code null}.
+	 */
+	public static final int SYNTHETIC_INSTANCE_INVOKE =
+		65539;
 }
 

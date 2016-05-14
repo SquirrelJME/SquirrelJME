@@ -126,3 +126,12 @@ So now back to invoke special again. Although this time I can have the method
 to execute for virtual, special, and interface calls handled by the byte code
 representation rather than the interpreter/compiler itself.
 
+## 20:01
+
+Definitely did not write that much code today, distractions and such.
+
+## 20:04
+
+In fact, for invocations they can all be treated as if they were static. Well
+not really because of null pointer checks.
+

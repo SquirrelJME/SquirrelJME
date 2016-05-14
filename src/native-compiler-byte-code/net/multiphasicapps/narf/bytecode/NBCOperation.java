@@ -103,6 +103,22 @@ public final class NBCOperation
 			case NBCInstructionID.DUP: __OpInit__.dup(out); break;
 			case NBCInstructionID.NEW: __OpInit__.new_(out); break;
 				
+			case NBCInstructionID.INVOKEINTERFACE:
+				__OpInit__.invoke(out, NBCInvokeType.INTERFACE);
+				break;
+			
+			case NBCInstructionID.INVOKESPECIAL:
+				__OpInit__.invoke(out, NBCInvokeType.SPECIAL);
+				break;
+				
+			case NBCInstructionID.INVOKESTATIC:
+				__OpInit__.invoke(out, NBCInvokeType.STATIC);
+				break;
+				
+			case NBCInstructionID.INVOKEVIRTUAL:
+				__OpInit__.invoke(out, NBCInvokeType.VIRTUAL);
+				break;
+				
 				// {@squirreljme.error AX05 The instruction identifier for the
 				// specified position is not valid or is not yet supported.
 				// (The logical instruction position; The operation code)}
