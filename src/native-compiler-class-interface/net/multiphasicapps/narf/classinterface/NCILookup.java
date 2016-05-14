@@ -129,5 +129,49 @@ public abstract class NCILookup
 			return rv;
 		}
 	}
+	
+	/**
+	 * Looks up a method for a given class.
+	 *
+	 * @param __virt If {@code true} then
+	 * @param __cn The containing class.
+	 * @param __mn The name of the method.
+	 * @param __mt The type of the method.
+	 * @return The associated method or {@code null} if it is not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/14
+	 */
+	public final NCIMethod lookupMethod(boolean __virt, ClassNameSymbol __cn,
+		IdentifierSymbol __mn, MethodSymbol __mt)
+		throws NullPointerException
+	{
+		// Check
+		if (__cn == null || __mn == null || __mt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Looks up a method for a given class.
+	 *
+	 * @param __virt If {@code true} then
+	 * @param __ref The reference to the given method.
+	 * @return The associated method or {@code null} if it is not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/14
+	 */
+	public final NCIMethod lookupMethod(boolean __virt,
+		NCIMethodReference __ref)
+		throws NullPointerException
+	{
+		// Check
+		if (__ref == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		return lookupMethod(__virt, __ref.memberClass(), __ref.memberName(),
+			__ref.memberType());
+	}
 }
 

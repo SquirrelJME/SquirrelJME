@@ -112,6 +112,9 @@ public class NBCException
 		/** The method to invoke is not an interface. */
 		NOT_INTERFACE_METHOD,
 		
+		/** The method could not be found. */
+		MISSING_METHOD,
+		
 		/** End. */
 		;
 	}

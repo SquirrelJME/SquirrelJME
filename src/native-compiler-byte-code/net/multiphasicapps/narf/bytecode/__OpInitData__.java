@@ -160,6 +160,17 @@ final class __OpInitData__
 	}
 	
 	/**
+	 * Returns the class lookup.
+	 *
+	 * @return The lookup for classes.
+	 * @since 2016/05/14
+	 */
+	public NCILookup lookup()
+	{
+		return this.operation.owner().lookup();
+	}
+	
+	/**
 	 * Finds the class by the given class name.
 	 *
 	 * @param __cl The class to find.
@@ -168,7 +179,7 @@ final class __OpInitData__
 	 */
 	public NCIClass lookup(ClassNameSymbol __cl)
 	{
-		return this.operation.owner().lookup().lookup(__cl);
+		return lookup().lookup(__cl);
 	}
 	
 	/**

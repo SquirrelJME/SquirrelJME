@@ -17,6 +17,8 @@ import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCIClassReference;
+import net.multiphasicapps.narf.classinterface.NCILookup;
+import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIMethodReference;
 import net.multiphasicapps.narf.classinterface.NCIPool;
 
@@ -105,7 +107,8 @@ class __OpInit__
 		
 		// {@squirreljme.error AX0y Could not find the class containing the
 		// method to be invoked. (The method reference)}
-		NCIClass ncl = __id.lookup(ref.memberClass());
+		NCILookup look = __id.lookup();
+		NCIClass ncl = look.lookup(ref.memberClass());
 		if (ncl == null)
 			throw new NBCException(NBCException.Issue.MISSING_CLASS,
 				String.format("AX0y %s", ref));
@@ -116,6 +119,12 @@ class __OpInit__
 			throw new NBCException(NBCException.Issue.CANNOT_ACCESS_CLASS,
 				String.format("AX0z %s", ref));
 		
+		// {@squirreljme.error AX10 The specified method could not be located.
+		// (The method reference)}
+		NCIMethod m = look.lookupMethod(false, ref);
+		if (m == null)
+			throw new NBCException(NBCException.Issue.MISSING_METHOD,
+				String.format("AX10 %s", ref));
 		
 		throw new Error("TODO");
 	}
