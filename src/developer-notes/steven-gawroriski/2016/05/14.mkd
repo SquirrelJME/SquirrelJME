@@ -96,3 +96,11 @@ that I use. The host JVM interface would use reflection and other details to
 perform its magical work. Classes at least in this interface can be converted
 so that they conform to Java SE 7 (renaming things also) then used directly.
 
+## 14:28
+
+So the launcher being done now rather than later will mean that I will be able
+to design the interpreter and compiler into the launcher itself rather than
+writing the launcher following it and then attaching the interpreter/compiler
+to it. The launcher would call the compiler to generate native binaries and
+then load them as needed.
+
