@@ -116,3 +116,11 @@ supported in the future if they are available.
 For the base interface for the launcher, I will need JSR 238 so that I have an
 internationalized interface as needed.
 
+## 15:39
+
+The terminal will just be a basic 16x16 color terminal potentially. However
+RGB colors would be nice and may be supported on specific systems. Having
+the color scheme be similar to DOS however would result in only requiring a
+single byte for colors and such. Instead of annoying blinking text, the bits
+will just be bright color and emphasis added.
+
