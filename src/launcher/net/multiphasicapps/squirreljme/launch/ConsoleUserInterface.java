@@ -21,8 +21,8 @@ import java.util.Calendar;
  *
  * @since 2016/05/14
  */
-public class ConsoleLauncherController
-	extends LauncherController
+public class ConsoleUserInterface
+	extends StandardUserInterface
 {
 	/** The console view which interacts with the user directly. */
 	protected final AbstractConsoleView console;
@@ -41,7 +41,7 @@ public class ConsoleLauncherController
 	 * @param __al The launcher interface.
 	 * @since 2016/05/14
 	 */
-	ConsoleLauncherController(AbstractLauncher __al)
+	ConsoleUserInterface(Kernel __al)
 	{
 		super(__al);
 		

@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.launch.jvm.javase;
 
-import net.multiphasicapps.squirreljme.launch.AbstractLauncher;
+import net.multiphasicapps.squirreljme.launch.Kernel;
 import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
 
 /**
@@ -18,8 +18,8 @@ import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
  *
  * @since 2016/05/14
  */
-public class JVMJavaSELauncher
-	extends AbstractLauncher
+public class JVMJavaSEKernel
+	extends Kernel
 {
 	/**
 	 * This initializes the launcher which uses an existing full Java SE JVM.
@@ -27,7 +27,7 @@ public class JVMJavaSELauncher
 	 * @param __args The arguments to the launcher.
 	 * @since 2016/05/14
 	 */
-	public JVMJavaSELauncher(String... __args)
+	public JVMJavaSEKernel(String... __args)
 	{
 		// Must always exist
 		if (__args == null)

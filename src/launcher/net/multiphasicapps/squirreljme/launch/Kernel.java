@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.launch;
  *
  * @since 2016/05/14
  */
-public abstract class AbstractLauncher
+public abstract class Kernel
 {
 	/**
 	 * Creates a view of a console window.
@@ -40,10 +40,10 @@ public abstract class AbstractLauncher
 	 *
 	 * @since 2016/05/14
 	 */
-	public final void runLauncherLoop()
+	public final void runKernelLoop()
 	{
 		// For now just use the console
-		ConsoleLauncherController clc = new ConsoleLauncherController(this);
+		StandardUserInterface clc = new ConsoleUserInterface(this);
 		
 		// Run the loop
 		for (;;)

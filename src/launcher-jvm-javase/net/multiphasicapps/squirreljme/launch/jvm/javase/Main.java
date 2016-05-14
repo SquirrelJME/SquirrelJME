@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.launch.jvm.javase;
 
 /**
- * DESCRIBE THIS.
+ * Main entry point for the Java SE JVM launcher interface kernel.
  *
  * @since 2016/05/14
  */
@@ -26,7 +26,7 @@ public class Main
 	public static void main(String... __args)
 	{
 		// Initialize the main launcher and run the main loop
-		new JVMJavaSELauncher(__args).runLauncherLoop();
+		new JVMJavaSEKernel(__args).runKernelLoop();
 	}
 }
 

@@ -11,14 +11,14 @@
 package net.multiphasicapps.squirreljme.launch;
 
 /**
- * This class uses the launcher interface to .
+ * This class uses the kernel interface to provide a user interface.
  *
  * @since 2016/05/14
  */
-public abstract class LauncherController
+public abstract class StandardUserInterface
 {
 	/** The launcher to really use. */
-	protected final AbstractLauncher launcher;
+	protected final Kernel launcher;
 	
 	/**
 	 * Initializes the launcher controller.
@@ -27,7 +27,7 @@ public abstract class LauncherController
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/15
 	 */
-	LauncherController(AbstractLauncher __an)
+	StandardUserInterface(Kernel __an)
 		throws NullPointerException
 	{
 		// Check
