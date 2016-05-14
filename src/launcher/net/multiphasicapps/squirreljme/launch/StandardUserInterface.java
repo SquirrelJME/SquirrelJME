@@ -28,7 +28,7 @@ public abstract class StandardUserInterface
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/15
 	 */
-	StandardUserInterface(Kernel __an)
+	public StandardUserInterface(Kernel __an)
 		throws NullPointerException
 	{
 		// Check
@@ -38,12 +38,5 @@ public abstract class StandardUserInterface
 		// Setup
 		launcher = __an;
 	}
-	
-	/**
-	 * Indicates that controller specific updating should be performed.
-	 *
-	 * @since 2016/05/14
-	 */
-	public abstract void update();
 }
 

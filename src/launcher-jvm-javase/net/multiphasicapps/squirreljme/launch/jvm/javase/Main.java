@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.launch.jvm.javase;
 
 import net.multiphasicapps.squirreljme.launch.ConsoleUserInterface;
+import net.multiphasicapps.squirreljme.launch.Kernel;
 
 /**
  * Main entry point for the Java SE JVM launcher interface kernel.
@@ -28,8 +29,15 @@ public class Main
 	public static void main(String... __args)
 	{
 		// Initialize the main launcher and run the main loop
+		Kernel kern;
 		ConsoleUserInterface cui = new ConsoleUserInterface(
-			new JVMJavaSEKernel(__args));
+			(kern = new JVMJavaSEKernel(__args)));
+		
+		// Create thread for the console interface
+		kern.newThread(cui);
+		
+		// Block until all workers are terminated
+		kern.untilThreadless();
 	}
 }
 

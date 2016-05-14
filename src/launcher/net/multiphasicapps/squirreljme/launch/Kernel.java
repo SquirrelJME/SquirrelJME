@@ -10,6 +10,13 @@
 
 package net.multiphasicapps.squirreljme.launch;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 /**
  * This is the base class for the launcher interfaces which are defined by
  * systems to provide anything that the default launcher does not provide
@@ -19,6 +26,10 @@ package net.multiphasicapps.squirreljme.launch;
  */
 public abstract class Kernel
 {
+	/** Threads currently associated with the kernel. */
+	protected final Set<Thread> threads =
+		new HashSet<>();
+	
 	/**
 	 * Creates a view of a console window.
 	 *
@@ -35,24 +46,90 @@ public abstract class Kernel
 	public abstract AbstractConsoleView createConsoleView();
 	
 	/**
-	 * After initialization of a launcher, this should be called to actually
-	 * start interacting with the system and the user.
+	 * Creates a new thread and registers it with the kernel.
+	 *
+	 * @param __r The code to be ran when the thread is started.
+	 * @return The newly created thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/14
+	 */
+	public final Thread newThread(Runnable __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup new thread and start it
+		Thread rv = new Thread(__r);
+		rv.start();
+		
+		// Lock
+		Set<Thread> thr = threads;
+		synchronized (thr)
+		{
+			thr.add(rv);
+		}
+		
+		// Return the newly created thread
+		return rv;
+	}
+	
+	/**
+	 * Does not return until all threads are no longer alive.
 	 *
 	 * @since 2016/05/14
 	 */
-	public final void runKernelLoop()
+	public final void untilThreadless()
 	{
-		// For now just use the console
-		StandardUserInterface clc = new ConsoleUserInterface(this);
-		
-		// Run the loop
+		// Loop
+		Set<Thread> thr = threads;
 		for (;;)
 		{
-			// Update the controller
-			clc.update();
+			// Lock
+			int livecount = 0;
+			synchronized (thr)
+			{
+				// Count and remove threads
+				Iterator<Thread> it = thr.iterator();
+				try
+				{
+					// Go through each iteration
+					for (;;)
+					{
+						// Get the next thread
+						Thread t = it.next();
+						
+						// If the thread is alive, count it
+						if (t.isAlive())
+							livecount++;
+						
+						// Otherwise remove it
+						else
+							it.remove();
+					}
+				}
+				
+				// End
+				catch (NoSuchElementException e)
+				{
+				}
+			}
 			
-			// Yield thread to let others run
-			Thread.yield();
+			// Out of threads?
+			if (livecount < 0)
+				return;
+			
+			// Rest for a bit since threads usually will not just die.
+			try
+			{
+				Thread.sleep(500L);
+			}
+			
+			// Do nothing
+			catch (InterruptedException e)
+			{
+			}
 		}
 	}
 }

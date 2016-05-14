@@ -23,6 +23,7 @@ import java.util.Calendar;
  */
 public class ConsoleUserInterface
 	extends StandardUserInterface
+	implements Runnable
 {
 	/** The console view which interacts with the user directly. */
 	protected final AbstractConsoleView console;
@@ -41,7 +42,7 @@ public class ConsoleUserInterface
 	 * @param __al The launcher interface.
 	 * @since 2016/05/14
 	 */
-	ConsoleUserInterface(Kernel __al)
+	public ConsoleUserInterface(Kernel __al)
 	{
 		super(__al);
 		
@@ -58,27 +59,33 @@ public class ConsoleUserInterface
 	 * @since 2016/05/14
 	 */
 	@Override
-	public void update()
+	public void run()
 	{
-		// Update the calendar
-		Calendar currentcal = this.currentcal;
-		long nowtime = System.currentTimeMillis();
-		currentcal.setTimeInMillis(nowtime);
+		for (;;)
+		{
+			// Update the calendar
+			Calendar currentcal = this.currentcal;
+			long nowtime = System.currentTimeMillis();
+			currentcal.setTimeInMillis(nowtime);
 		
-		// Get the console
-		AbstractConsoleView console = this.console;
-		int cols = console.getColumns(), rows = console.getRows();
+			// Get the console
+			AbstractConsoleView console = this.console;
+			int cols = console.getColumns(), rows = console.getRows();
 		
-		// Draw the name of the software
-		console.put(0, 0, "SquirrelJME");
+			// Draw the name of the software
+			console.put(0, 0, "SquirrelJME");
 		
-		// Setup the time to draw
-		StringBuilder timebuilder = this.timebuilder;
-		__handleTime(timebuilder, currentcal);
-		console.put((cols - 1) - timebuilder.length(), 0, timebuilder); 
+			// Setup the time to draw
+			StringBuilder timebuilder = this.timebuilder;
+			__handleTime(timebuilder, currentcal);
+			console.put((cols - 1) - timebuilder.length(), 0, timebuilder); 
 		
-		// Force the console to be drawn
-		console.displayConsole();
+			// Force the console to be drawn
+			console.displayConsole();
+			
+			// Yield so another thread can run
+			Thread.yield();
+		}
 	}
 	
 	/**
