@@ -221,7 +221,7 @@ public abstract class NCILookup
 					return null;
 				
 				// Cache it
-				cache.put(__cn, new WeakReference<>(rv));
+				cache.put(__cn, new WeakReference<>(__verifyClass(rv)));
 			}
 			
 			// Return it
@@ -290,6 +290,27 @@ public abstract class NCILookup
 		// Forward
 		return lookupMethod(__ref.memberClass(), __ref.memberName(),
 			__ref.memberType());
+	}
+	
+	/**
+	 * Verifies that the given class is correctly formed in that it does not
+	 * extend itself or any final classes, and that any methods are correctly
+	 * overridden and implemented as such.
+	 *
+	 * @param __cl The class to verify.
+	 * @throws NCIException If the conditions do not hold and the class breaks
+	 * the requirements set by the virtual machine.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/14
+	 */
+	private final NCIClass __verifyClass(NCIClass __cl)
+		throws NCIException, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
