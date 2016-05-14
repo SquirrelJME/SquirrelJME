@@ -157,6 +157,15 @@ public class NCIException
 		/** An attribute is illegally duplicated. */
 		DUPLICATE_ATTR,
 		
+		/** Class eventually extends itself. */
+		CIRCULAR_EXTENDS,
+		
+		/** A class is missing. */
+		MISSING_CLASS,
+		
+		/** Class or accessible object has illegal access flags. */
+		ILLEGAL_ACCESS_FLAGS,
+		
 		/** End. */
 		;
 	}

@@ -10,3 +10,12 @@ Actually the byte code representation does not know the object a method is
 being invoked on, so there cannot be a virtual lookup. This also means there
 has to be another special instruction.
 
+## 10:58
+
+If I move some of the verification stuff to the lookup (checking that there
+are no circular classes and extending/overridding of finals) then I can remove
+that code from the interpreter. Also the compiler would benefit from it also
+since it would not have to duplicate all of the access checks and such. I
+could also virtually wrap all `NCIClass` and have mapped methods accordingly
+as such.
+

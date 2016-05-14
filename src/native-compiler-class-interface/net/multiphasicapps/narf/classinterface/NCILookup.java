@@ -13,7 +13,9 @@ package net.multiphasicapps.narf.classinterface;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
@@ -51,8 +53,105 @@ public abstract class NCILookup
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	protected abstract NCIClass loadClass(BinaryNameSymbol __bn)
+	protected abstract NCIClass internalClassLookup(BinaryNameSymbol __bn)
 		throws NCIException, NullPointerException;
+	
+	/**
+	 * Checks whether the current byte code (the method that contains this byte
+	 * code) can access the specified accessible object.
+	 *
+	 * @param __from The object to act as the check source.
+	 * @param __ao The object to check access against.
+	 * @return {@code true} if the object can be accessed.
+	 * @throws NCIException If the class has no set access flag type or is
+	 * a class which eventually extends itself.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/12
+	 */
+	public final boolean canAccess(NCIAccessibleObject __from,
+		NCIAccessibleObject __ao)
+		throws NCIException, NullPointerException
+	{
+		// Check
+		if (__from == null || __ao == null)
+			throw new NullPointerException("NARG");
+		
+		// Check the access for the class first
+		NCIClass otherouter = __ao.outerClass();
+		if (!(__ao instanceof NCIClass))
+			if (!canAccess(__from, otherouter))
+				return false;
+		
+		// Target flags
+		NCIAccessibleFlags af = __ao.flags();
+		
+		// If public, always OK
+		if (af.isPublic())
+			return true;
+		
+		// Get the name of our class and the object
+		NCIClass myclass = __from.outerClass();
+		ClassNameSymbol tname = myclass.thisName(),
+			oname = otherouter.thisName();
+		
+		// If this is the same exact class then no checks have to be performed
+		if (tname.equals(oname))
+			return true;
+		
+		// Otherwise these are never accessible
+		else if (af.isPrivate())
+			return false;
+		
+		// Otherwise the package must match
+		else if (af.isPackagePrivate())
+			return tname.parentPackage().equals(oname.parentPackage());
+		
+		// The other class must be a super class or the same as this class
+		else if (af.isProtected())
+		{
+			// Detect potential class recursion here
+			Set<ClassNameSymbol> didclass = new HashSet<>();
+			didclass.add(tname);
+			
+			// Go through super classes
+			for (NCIClass rover = myclass;;)
+			{
+				// Go to the super class
+				ClassNameSymbol scn = rover.superName();
+				
+				// If out of classes then it cannot be implemented
+				if (scn == null)
+					return false;
+				
+				// {@squirreljme.error AO09 The specified class eventually
+				// extends itself. (The name of the current class)}
+				if (didclass.contains(scn))
+					throw new NCIException(NCIException.Issue.CIRCULAR_EXTENDS,
+						String.format("AO09 %s", tname));
+				
+				// Go to that class
+				rover = lookupClass(scn);
+				
+				// {@squirreljme.error AO0a Cannot check protected access
+				// against a super class if it does not exist. (The name of the
+				// super class)}
+				if (rover == null)
+					throw new NCIException(NCIException.Issue.MISSING_CLASS,
+						String.format("AO0a %s", scn));
+				
+				// Same name?
+				if (tname.equals(scn))
+					return true;
+			}
+		}
+		
+		// {@squirreljme.error AO0b The accessible object to check access
+		// against has an impossible flag combination. (The accessible object;
+		// The accessible object flags)}
+		else
+			throw new NCIException(NCIException.Issue.ILLEGAL_ACCESS_FLAGS,
+				String.format("AO0b %s", __ao, af));
+	}
 	
 	/**
 	 * Looks up a class name.
@@ -65,7 +164,7 @@ public abstract class NCILookup
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public final NCIClass lookup(BinaryNameSymbol __cn)
+	public final NCIClass lookupClass(BinaryNameSymbol __cn)
 		throws NCIException, NullPointerException
 	{
 		// Check
@@ -73,7 +172,7 @@ public abstract class NCILookup
 			throw new NullPointerException("NARG");
 		
 		// Wrapped
-		return lookup(__cn.asClassName());
+		return lookupClass(__cn.asClassName());
 	}
 	
 	/**
@@ -87,7 +186,7 @@ public abstract class NCILookup
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public final NCIClass lookup(ClassNameSymbol __cn)
+	public final NCIClass lookupClass(ClassNameSymbol __cn)
 		throws NCIException, NullPointerException
 	{
 		// Check
@@ -115,7 +214,7 @@ public abstract class NCILookup
 				
 				// Otherwise lookup the class
 				else
-					rv = loadClass(__cn.asBinaryName());
+					rv = internalClassLookup(__cn.asBinaryName());
 				
 				// No class?
 				if (rv == null)
@@ -148,7 +247,7 @@ public abstract class NCILookup
 			throw new NullPointerException("NARG");
 		
 		// Locate the class first
-		NCIClass ncl = lookup(__cn);
+		NCIClass ncl = lookupClass(__cn);
 		if (ncl == null)
 			return null;
 		

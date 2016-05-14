@@ -159,7 +159,7 @@ public class NICore
 				try
 				{
 					rv = new NIClass(this,
-						classlib.loadClass(__cn.asBinaryName()), __cn, map);
+						classlib.lookupClass(__cn.asBinaryName()), __cn, map);
 				}
 				
 				// Failed to load properly

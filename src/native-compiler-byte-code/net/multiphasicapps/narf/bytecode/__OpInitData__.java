@@ -179,7 +179,7 @@ final class __OpInitData__
 	 */
 	public NCIClass lookup(ClassNameSymbol __cl)
 	{
-		return lookup().lookup(__cl);
+		return lookup().lookupClass(__cl);
 	}
 	
 	/**

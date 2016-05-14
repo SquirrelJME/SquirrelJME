@@ -115,6 +115,9 @@ public class NBCException
 		/** The method could not be found. */
 		MISSING_METHOD,
 		
+		/** Could not check the specified access. */
+		ACCESS_ERROR,
+		
 		/** End. */
 		;
 	}

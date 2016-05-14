@@ -137,7 +137,7 @@ public class NILibrary
 	 * @since 2016/04/21
 	 */
 	@Override
-	protected NCIClass loadClass(BinaryNameSymbol __bn)
+	protected NCIClass internalClassLookup(BinaryNameSymbol __bn)
 		throws NCIException, NullPointerException
 	{
 		// Check

@@ -25,6 +25,7 @@ import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.narf.classinterface.NCIClassFlags;
 import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
+import net.multiphasicapps.narf.classinterface.NCIException;
 import net.multiphasicapps.narf.classinterface.NCILookup;
 import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIPool;
@@ -141,85 +142,18 @@ public final class NBCByteCode
 	public final boolean canAccess(NCIAccessibleObject __ao)
 		throws NBCException, NullPointerException
 	{
-		// Check
-		if (__ao == null)
-			throw new NullPointerException("NARG");
-		
-		// Check the access for the class first
-		NCIClass otherouter = __ao.outerClass();
-		if (!(__ao instanceof NCIClass))
-			if (!canAccess(otherouter))
-				return false;
-		
-		// Target flags
-		NCIAccessibleFlags af = __ao.flags();
-		
-		// If public, always OK
-		if (af.isPublic())
-			return true;
-		
-		// Get the name of our class and the object
-		NCIClass myclass = method.outerClass();
-		ClassNameSymbol tname = myclass.thisName(),
-			oname = otherouter.thisName();
-		
-		// If this is the same exact class then no checks have to be performed
-		if (tname.equals(oname))
-			return true;
-		
-		// Otherwise these are never accessible
-		else if (af.isPrivate())
-			return false;
-		
-		// Otherwise the package must match
-		else if (af.isPackagePrivate())
-			return tname.parentPackage().equals(oname.parentPackage());
-		
-		// The other class must be a super class or the same as this class
-		else if (af.isProtected())
+		// Could fail
+		try
 		{
-			// Detect potential class recursion here
-			Set<ClassNameSymbol> didclass = new HashSet<>();
-			didclass.add(tname);
-			
-			// Go through super classes
-			for (NCIClass rover = myclass;;)
-			{
-				// Go to the super class
-				ClassNameSymbol scn = rover.superName();
-				
-				// If out of classes then it cannot be implemented
-				if (scn == null)
-					return false;
-				
-				// {@squirreljme.error AX0d The specified class eventually
-				// extends itself. (The name of the current class)}
-				if (didclass.contains(scn))
-					throw new NBCException(NBCException.Issue.CIRCULAR_EXTENDS,
-						String.format("AX0d %s", tname));
-				
-				// Go to that class
-				rover = this.lookup.lookup(scn);
-				
-				// {@squirreljme.error AX0e Cannot check protected access
-				// against a super class if it does not exist. (The name of the
-				// super class)}
-				if (rover == null)
-					throw new NBCException(NBCException.Issue.MISSING_CLASS,
-						String.format("AX0e %s", scn));
-				
-				// Same name?
-				if (tname.equals(scn))
-					return true;
-			}
+			return lookup.canAccess(this.method, __ao);
 		}
 		
-		// {@squirreljme.error AX0c The accessible object to check access
-		// against has an impossible flag combination. (The accessible object;
-		// The accessible object flags)}
-		else
-			throw new NBCException(NBCException.Issue.ILLEGAL_ACCESS_FLAGS,
-				String.format("AX0c %s", __ao, af));
+		// {@squirreljme.error AX11 Could not check the access of an object to
+		// another.}
+		catch (NCIException e)
+		{
+			throw new NBCException(NBCException.Issue.ACCESS_ERROR, "AX11", e);
+		}
 	}
 	
 	/**
