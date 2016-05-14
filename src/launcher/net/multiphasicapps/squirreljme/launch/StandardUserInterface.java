@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.launch;
  * @since 2016/05/14
  */
 public abstract class StandardUserInterface
+	implements Runnable
 {
 	/** The launcher to really use. */
 	protected final Kernel launcher;

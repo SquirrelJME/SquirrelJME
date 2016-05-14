@@ -141,3 +141,10 @@ I will need some event system. Also, I should probably rename the launcher to
 something else. It would act as the kernel for the most part, so perhaps it
 should be named as such.
 
+## 18:18
+
+Also, instead of having a loop doing things, I should just have a thread
+spawned for the user interface and associated with the kernel somewhat or
+similar. Then the interface will just implement `run` in `Runnable` to do
+things.
+
