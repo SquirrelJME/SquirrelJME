@@ -220,8 +220,27 @@ public abstract class NCILookup
 				if (rv == null)
 					return null;
 				
-				// Cache it
-				cache.put(__cn, new WeakReference<>(__verifyClass(rv)));
+				// Cache it early because the verification process may actually
+				// reach this class which would end up in an infinite recursion
+				// looking for class details.
+				cache.put(__cn, new WeakReference<>(rv));
+				
+				// Verify the class
+				try
+				{
+					__verifyClass(rv);
+				}
+				
+				// Failed to verify, remove it from the cache so that it does
+				// not exist.
+				catch (Error|RuntimeException e)
+				{
+					// Remove it
+					cache.remove(__cn);
+					
+					// Rethrow
+					throw e;
+				}
 			}
 			
 			// Return it
@@ -325,6 +344,35 @@ public abstract class NCILookup
 		if (!tio && scn == null)
 			throw new NCIException(NCIException.Issue.CLASS_NO_SUPERCLASS,
 				String.format("AO0d %s", tcn));
+		
+		// Go through all available super classes to make sure that this class
+		// is not eventually extended or a superclass is final
+		for (NCIClass rover = __cl, next = null; rover != null; rover = next)
+		{
+			// Go up a class
+			ClassNameSymbol ssn = rover.superName();
+			if (ssn != null)
+			{
+				// {@squirreljme.error AO0e The super class of the current
+				// class (during superclass checking) does not actually exist.
+				// (The current class; The super class)}
+				if (null == (next = lookupClass(ssn)))
+					throw new NCIException(NCIException.Issue.MISSING_CLASS,
+						String.format("AO0e %s %s", rover.thisName(), ssn));
+			}
+			else
+				break;
+			
+			// {@squirreljme.error The current class extends a final class.
+			// (The current class; The super class)}
+			if (next.flags().isFinal())
+				throw new NCIException(NCIException.Issue.EXTENDS_FINAL,
+					String.format("AO0f %s %s", rover.thisName(),
+						next.thisName()));
+			
+			if (true)
+				throw new Error("TODO");
+		}
 		
 		if (true)
 			throw new Error("TODO");

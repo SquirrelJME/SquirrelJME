@@ -172,6 +172,9 @@ public class NCIException
 		/** The non-Object class has no superclass. */
 		CLASS_NO_SUPERCLASS,
 		
+		/** Extends final class. */
+		EXTENDS_FINAL,
+		
 		/** End. */
 		;
 	}
