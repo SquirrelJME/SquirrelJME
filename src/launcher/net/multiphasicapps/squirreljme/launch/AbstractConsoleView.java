@@ -314,10 +314,6 @@ public abstract class AbstractConsoleView
 				int cells = __c * __r;
 				char[] chars = new char[cells];
 				byte[] attrs = new byte[cells];
-				
-				// Fill with default data
-				for (int i = 0; i < cells; i++)
-					chars[i] = (char)('!' + (i % (126 - '!')));
 		
 				// Set new details
 				this._chars = chars;
