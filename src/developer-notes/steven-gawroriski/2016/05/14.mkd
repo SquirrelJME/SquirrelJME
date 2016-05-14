@@ -4,3 +4,9 @@
 
 Woke up a bit late this day.
 
+## 10:41
+
+Actually the byte code representation does not know the object a method is
+being invoked on, so there cannot be a virtual lookup. This also means there
+has to be another special instruction.
+

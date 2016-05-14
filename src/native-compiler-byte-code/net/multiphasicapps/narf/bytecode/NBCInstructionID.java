@@ -870,18 +870,30 @@ public interface NBCInstructionID
 		65538;
 	
 	/**
-	 * Synthetic: Specific instance invocation.
+	 * Synthetic: Specific instance invocation, using the exact method that
+	 * was given.
 	 *
 	 * The first argument is a reference to the method (NCIMethod) to invoke.
-	 * The byte code handler determines the correct method to invoke and as
-	 * such it is not required for the interpreter/compiler to perform
-	 * virtual lookup and such.
 	 *
 	 * An object along with the arguments to the call are popped to the stack.
 	 *
 	 * The instance method should be checked for {@code null}.
 	 */
-	public static final int SYNTHETIC_INSTANCE_INVOKE =
+	public static final int SYNTHETIC_INSTANCE_INVOKE_EXACT =
 		65539;
+	
+	/**
+	 * Synthetic: Virtual instance invocation.
+	 *
+	 * The first argument is a reference to the method (NCIMethod) to invoke.
+	 * If the class has a sub-class then the topmost virtual method should be
+	 * used.
+	 *
+	 * An object along with the arguments to the call are popped to the stack.
+	 *
+	 * The instance method should be checked for {@code null}.
+	 */
+	public static final int SYNTHETIC_INSTANCE_INVOKE_VIRTUAL =
+		65540;
 }
 

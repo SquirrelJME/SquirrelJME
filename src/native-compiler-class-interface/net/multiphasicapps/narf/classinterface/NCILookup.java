@@ -133,7 +133,32 @@ public abstract class NCILookup
 	/**
 	 * Looks up a method for a given class.
 	 *
-	 * @param __virt If {@code true} then
+	 * @param __cn The containing class.
+	 * @param __id The method identifier.
+	 * @return The associated method or {@code null} if it is not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/14
+	 */
+	public final NCIMethod lookupMethod(ClassNameSymbol __cn,
+		NCIMethodID __id)
+		throws NullPointerException
+	{
+		// Check
+		if (__cn == null || __id == null)
+			throw new NullPointerException("NARG");
+		
+		// Locate the class first
+		NCIClass ncl = lookup(__cn);
+		if (ncl == null)
+			return null;
+		
+		// Obtain the given method
+		return ncl.methods().get(__id);
+	}
+	
+	/**
+	 * Looks up a method for a given class.
+	 *
 	 * @param __cn The containing class.
 	 * @param __mn The name of the method.
 	 * @param __mt The type of the method.
@@ -141,28 +166,22 @@ public abstract class NCILookup
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/14
 	 */
-	public final NCIMethod lookupMethod(boolean __virt, ClassNameSymbol __cn,
+	public final NCIMethod lookupMethod(ClassNameSymbol __cn,
 		IdentifierSymbol __mn, MethodSymbol __mt)
 		throws NullPointerException
 	{
-		// Check
-		if (__cn == null || __mn == null || __mt == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
+		return lookupMethod(__cn, new NCIMethodID(__mn, __mt));
 	}
 	
 	/**
 	 * Looks up a method for a given class.
 	 *
-	 * @param __virt If {@code true} then
 	 * @param __ref The reference to the given method.
 	 * @return The associated method or {@code null} if it is not found.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/14
 	 */
-	public final NCIMethod lookupMethod(boolean __virt,
-		NCIMethodReference __ref)
+	public final NCIMethod lookupMethod(NCIMethodReference __ref)
 		throws NullPointerException
 	{
 		// Check
@@ -170,7 +189,7 @@ public abstract class NCILookup
 			throw new NullPointerException("NARG");
 		
 		// Forward
-		return lookupMethod(__virt, __ref.memberClass(), __ref.memberName(),
+		return lookupMethod(__ref.memberClass(), __ref.memberName(),
 			__ref.memberType());
 	}
 }

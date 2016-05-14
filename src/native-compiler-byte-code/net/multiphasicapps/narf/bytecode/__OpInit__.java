@@ -105,26 +105,22 @@ class __OpInit__
 			throw new NBCException(NBCException.Issue.NOT_INTERFACE_METHOD,
 				String.format("AX0x %s", ref));
 		
-		// {@squirreljme.error AX0y Could not find the class containing the
-		// method to be invoked. (The method reference)}
+		// {@squirreljme.error AX10 The specified method could not be located.
+		// (The method reference)}
 		NCILookup look = __id.lookup();
-		NCIClass ncl = look.lookup(ref.memberClass());
-		if (ncl == null)
-			throw new NBCException(NBCException.Issue.MISSING_CLASS,
-				String.format("AX0y %s", ref));
+		NCIMethod m = look.lookupMethod(ref);
+		if (m == null)
+			throw new NBCException(NBCException.Issue.MISSING_METHOD,
+				String.format("AX10 %s", ref));
+		
+		// Get the containing class
+		NCIClass ncl = m.outerClass();
 		
 		// {@squirreljme.error AX0z Cannot access the class which was
 		// referenced for a method invocation. (The method reference)}
 		if (!__id.canAccess(ncl))
 			throw new NBCException(NBCException.Issue.CANNOT_ACCESS_CLASS,
 				String.format("AX0z %s", ref));
-		
-		// {@squirreljme.error AX10 The specified method could not be located.
-		// (The method reference)}
-		NCIMethod m = look.lookupMethod(false, ref);
-		if (m == null)
-			throw new NBCException(NBCException.Issue.MISSING_METHOD,
-				String.format("AX10 %s", ref));
 		
 		throw new Error("TODO");
 	}
