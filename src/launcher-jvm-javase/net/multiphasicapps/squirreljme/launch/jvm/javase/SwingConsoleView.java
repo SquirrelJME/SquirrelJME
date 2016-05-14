@@ -39,11 +39,20 @@ public class SwingConsoleView
 	/** The character view. */
 	protected final CharacterView view;
 	
+	/** The font to draw with. */
+	protected final Font font;
+	
 	/** The font width and height. */
 	protected final int fontw, fonth;
 	
-	/** Font image data. */
-	protected final BufferedImage fonti;
+	/** Graphics configuration for the best image selection. */
+	protected final GraphicsConfiguration config;
+	
+	/** The precomposed image buffer. */
+	private volatile BufferedImage _buffer;
+	
+	/** Graphics for the image buffer. */
+	private volatile Graphics2D _gfx;
 	
 	/**
 	 * Initializes the swing console view.
@@ -64,6 +73,7 @@ public class SwingConsoleView
 			getLocalGraphicsEnvironment();
 		GraphicsDevice gs = ge.getDefaultScreenDevice();
 		GraphicsConfiguration gc = gs.getDefaultConfiguration();
+		this.config = gc;
 		
 		// Create an initial 1x1 image to determine the size of the font
 		BufferedImage toy = gc.createCompatibleImage(1, 1);
@@ -71,6 +81,7 @@ public class SwingConsoleView
 		
 		// Use monospaced font
 		Font font = Font.decode(Font.MONOSPACED);
+		this.font = font;
 		toygfx.setFont(font);
 		
 		// Get font character size
@@ -79,20 +90,6 @@ public class SwingConsoleView
 			ch = fm.getHeight();
 		this.fontw = cw;
 		this.fonth = ch;
-		
-		// Setup precomposed image which contains all possible characters
-		BufferedImage fonti = new BufferedImage(cw * 65536, ch,
-			BufferedImage.TYPE_BYTE_BINARY);
-		this.fonti = fonti;
-		
-		// Draw all characters into the given buffer
-		Graphics2D gfx = fonti.createGraphics();
-		char[] buf = new char[1];
-		for (int i = 0, px = 0; i < 65536; i++, px += cw)
-		{
-			buf[0] = (char)i;
-			gfx.drawChars(buf, 0, 1, cw, ch);
-		}
 		
 		// Setup character view
 		CharacterView view = new CharacterView();
@@ -129,8 +126,68 @@ public class SwingConsoleView
 	@Override
 	public void displayConsole()
 	{
-		// Force redraw of the console display
-		this.frame.repaint();
+		// Has the console changed?
+		if (hasChanged())
+		{
+			// Determine the size of the terminal and get the details
+			int cw = this.fontw, ch = this.fonth;
+			int tc, tr, tw, th, cells;
+			char[] chars;
+			byte[] attrs;
+			synchronized (lock)
+			{
+				tc = getColumns();
+				tr = getRows();
+				chars = rawChars();
+				attrs = rawAttributes();
+			}
+			
+			// Width and height
+			cells = tc * tr;
+			tw = tc * cw;
+			th = tr * ch;
+			
+			// Need to (re-)create the buffer?
+			BufferedImage buffer = this._buffer;
+			Graphics2D gfx = this._gfx;
+			if (buffer == null || buffer.getWidth() != tw ||
+				buffer.getHeight() != th)
+			{
+				this._buffer = buffer = this.config.createCompatibleImage(tw,
+					th);
+				this._gfx = gfx = (Graphics2D)buffer.getGraphics();
+			}
+			
+			// Use monospaced font
+			gfx.setFont(this.font);
+			
+			// Wipe over the entire background
+			gfx.setColor(Color.BLACK);
+			gfx.fillRect(0, 0, tw, th);
+			
+			// Draw using a single loop
+			for (int i = 0, dx = 0, dy = ch; i < cells; i++, dx += cw)
+			{
+				// Next column?
+				if (dx >= tw)
+				{
+					dx = 0;
+					dy += ch;
+				}
+				
+				// Get character data and attribute here
+				byte a = attrs[i];
+				
+				// Draw new background colors over black
+				
+				// Draw the character
+				gfx.setColor(Color.LIGHT_GRAY);
+				gfx.drawChars(chars, i, 1, dx, dy);
+			}
+			
+			// Force redraw of the console display
+			this.frame.repaint();
+		}
 	}
 	
 	/**
@@ -214,66 +271,10 @@ public class SwingConsoleView
 				frame.setLocationRelativeTo(null);
 			}
 			
-			__g.drawImage(fonti, 0, 0, null);
-			
-			/*
-			// Determine the size of the characters in pixels
-			__g.setFont(font);
-			FontMetrics fm = __g.getFontMetrics();
-			
-			// Set size
-			int cw, ch;
-			_charw = cw = fm.charWidth('S');
-			_charh = ch = fm.getHeight();
-			
-			
-			// Get character and attribute data
-			int tc, tr;
-			char[] chars;
-			byte[] attrs;
-			synchronized (lock)
-			{
-				tc = SwingConsoleView.this.getColumns();
-				tr = SwingConsoleView.this.getRows();
-				chars = SwingConsoleView.this.rawChars();
-				attrs = SwingConsoleView.this.rawAttributes();
-			}
-			
-			// Get clipping area
-			Rectangle rect = __g.getClipBounds();
-			int sx = rect.x, sy = rect.y;
-			int ww = rect.width, hh = rect.height;
-			int ex = sx + ww, ey = sy + hh;
-			
-			// Determine which characters to actually draw
-			int zsc = Math.max(0, (sx / cw) - 1),
-				zec = Math.min(tc - 1, (ex / cw) + 1),
-				zsr = Math.max(0, (sy / ch) - 1),
-				zer = Math.min(tr - 1, (ey / ch) + 1);
-			
-			// Draw every character
-			for (int r = zsr; r <= zer; r++)
-			{
-				// Calculate base draw position
-				int gy = (r * ch);
-				
-				// Draw each character in the row
-				for (int c = zsc, gx = (cw * c); c < zec; c++, gx += cw)
-				{
-					// Get character and attribute data
-					int dx = (r * tc) + c;
-					byte a = attrs[dx];
-					
-					// Clear the background
-					__g.setColor(Color.BLACK);
-					__g.fillRect(gx, gy, cw, ch);
-			
-					// Draw it
-					__g.setColor(Color.LIGHT_GRAY);
-					__g.drawChars(chars, dx, 1, gx, gy + ch);
-				}
-			}
-			*/
+			// Draw precomposed console image
+			BufferedImage bi = SwingConsoleView.this._buffer;
+			if (bi != null)
+				__g.drawImage(bi, 0, 0, null);
 		}
 		
 		/**

@@ -44,6 +44,9 @@ public abstract class AbstractConsoleView
 	/** The current attribute brush. */
 	private volatile byte _attrbrush;
 	
+	/** Has the console been changed? */
+	private volatile boolean _changed;
+	
 	/**
 	 * Initializes the base console view, which is initially sized to be a
 	 * default sized character terminal.
@@ -151,6 +154,20 @@ public abstract class AbstractConsoleView
 	}
 	
 	/**
+	 * Returns {@code true} if the console data has changed and clears the
+	 * current change state.
+	 *
+	 * @return {@code true} if the console has changed.
+	 * @since 2016/05/13
+	 */
+	protected boolean hasChanged()
+	{
+		boolean did = _changed;
+		_changed = false;
+		return did;
+	}
+	
+	/**
 	 * Invoked {@code put(__c, __r, __cs, 0, __cs.length())}.
 	 *
 	 * @param __c The column to place at.
@@ -235,6 +252,9 @@ public abstract class AbstractConsoleView
 			catch (IndexOutOfBoundsException e)
 			{
 			}
+			
+			// Console changed
+			_changed = true;
 		}
 	}
 	
