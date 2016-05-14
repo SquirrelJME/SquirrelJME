@@ -148,6 +148,36 @@ public abstract class AbstractConsoleView
 	}
 	
 	/**
+	 * Return the raw character array.
+	 *
+	 * @return The raw character array.
+	 * @since 2016/05/14
+	 */
+	protected final char[] rawChars()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _chars;
+		}
+	}
+	
+	/**
+	 * Returns the raw attribute array.
+	 *
+	 * @return The raw attribute array.
+	 * @since 2016/05/14
+	 */
+	protected final byte[] rawAttributes()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _attrs;
+		}
+	}
+	
+	/**
 	 * Sets the size of the console device.
 	 *
 	 * @param __c The number of columns to use.
@@ -193,6 +223,10 @@ public abstract class AbstractConsoleView
 				int cells = __c * __r;
 				char[] chars = new char[cells];
 				byte[] attrs = new byte[cells];
+				
+				// Fill with default data
+				for (int i = 0; i < cells; i++)
+					chars[i] = (char)('!' + i & (126 - '!'));
 		
 				// Set new details
 				this._chars = chars;

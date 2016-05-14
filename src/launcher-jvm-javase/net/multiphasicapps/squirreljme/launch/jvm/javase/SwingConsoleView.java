@@ -10,10 +10,12 @@
 
 package net.multiphasicapps.squirreljme.launch.jvm.javase;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
@@ -171,14 +173,62 @@ public class SwingConsoleView
 			FontMetrics fm = __g.getFontMetrics();
 			
 			// Set size
-			_charw = fm.charWidth('S');
-			_charh = fm.getHeight();
+			int cw, ch;
+			_charw = cw = fm.charWidth('S');
+			_charh = ch = fm.getHeight();
 			
 			// Fix it?
 			if (!this._fixed)
 			{
 				SwingConsoleView.this.sizeChanged();
 				frame.setLocationRelativeTo(null);
+			}
+			
+			// Get character and attribute data
+			int tc, tr;
+			char[] chars;
+			byte[] attrs;
+			synchronized (lock)
+			{
+				tc = SwingConsoleView.this.getColumns();
+				tr = SwingConsoleView.this.getRows();
+				chars = SwingConsoleView.this.rawChars();
+				attrs = SwingConsoleView.this.rawAttributes();
+			}
+			
+			// Get clipping area
+			Rectangle rect = __g.getClipBounds();
+			int sx = rect.x, sy = rect.y;
+			int ww = rect.width, hh = rect.height;
+			int ex = sx + ww, ey = sy + hh;
+			
+			// Determine which characters to actually draw
+			int zsc = Math.max(0, (sx / cw) - 1),
+				zec = Math.min(tc - 1, (ex / cw) + 1),
+				zsr = Math.max(0, (sy / ch) - 1),
+				zer = Math.min(tr - 1, (ey / ch) + 1);
+			
+			// Draw every character
+			for (int r = zsr; r <= zer; r++)
+			{
+				// Calculate base draw position
+				int gy = r * ch;
+				
+				// Draw each character in the row
+				for (int c = zsc, gx = (cw * c); c < zec; c++, gx += cw)
+				{
+					// Get character and attribute data
+					int dx = (r * tc) + c;
+					byte a = attrs[dx];
+					
+					// Clear the background
+					__g.setColor(Color.BLACK);
+					__g.fillRect(gx, gy, cw, ch);
+			
+					// Draw it
+					__g.setColor(Color.WHITE);
+					__g.drawChars(chars, dx, 1, gx, gy);
+				}
 			}
 		}
 		
