@@ -42,3 +42,24 @@ however, that I will need an actual launcher that wraps everything up while
 performing the needed magic. That would be rather complex at this stage. So I
 suppose that the interpreter I am writing cannot have an attached debugger.
 
+## 13:52
+
+I would suppose then, that I would have to define an actual launcher interface.
+This would be similar to an application selector. All running threads that
+either use real threads or are done via setjmp/longjmp style will be managed
+by the launcher. The launcher would need access to the magical stuff. In
+essence, the launcher is the kernel and is an important part of the virtual
+machine. The launcher should be able to run as a single thread. Any calls in
+the class library will just be forwarded to the launcher as a kind of user
+space call. So stuff such as permission checking will just cross calls and
+such. If I were to design the launcher in a way along with the magical
+interfaces where instead of writing the interpreter I have the launcher call
+the interpreter from a host virtual machine for now (perhaps Swing and such
+for example). There would be a system defined interface which defines and
+declares the needed things for the launcher to work. So programs would instead
+call into the launcher interface as a kind of system call. Then it should be
+handled in a way where the launcher being Java code can work when it is
+compiled and when it is running on another JVM such as desktop ones or
+SquirrelJME itself. Of course the launcher which runs on the JVM would be stuck
+to being interpreted, but tests could be ran on it and such.
+
