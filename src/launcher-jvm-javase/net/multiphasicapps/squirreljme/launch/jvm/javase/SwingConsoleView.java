@@ -212,7 +212,7 @@ public class SwingConsoleView
 			for (int r = zsr; r <= zer; r++)
 			{
 				// Calculate base draw position
-				int gy = r * ch;
+				int gy = (r * ch);
 				
 				// Draw each character in the row
 				for (int c = zsc, gx = (cw * c); c < zec; c++, gx += cw)
@@ -226,8 +226,8 @@ public class SwingConsoleView
 					__g.fillRect(gx, gy, cw, ch);
 			
 					// Draw it
-					__g.setColor(Color.WHITE);
-					__g.drawChars(chars, dx, 1, gx, gy);
+					__g.setColor(Color.LIGHT_GRAY);
+					__g.drawChars(chars, dx, 1, gx, gy + ch);
 				}
 			}
 		}
@@ -254,6 +254,7 @@ public class SwingConsoleView
 			
 			// Pack it
 			frame.pack();
+			frame.validate();
 			
 			// Set
 			this._fixed = true;

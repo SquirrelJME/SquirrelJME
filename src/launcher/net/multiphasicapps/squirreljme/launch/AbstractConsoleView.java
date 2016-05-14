@@ -226,7 +226,7 @@ public abstract class AbstractConsoleView
 				
 				// Fill with default data
 				for (int i = 0; i < cells; i++)
-					chars[i] = (char)('!' + i & (126 - '!'));
+					chars[i] = (char)('!' + (i % (126 - '!')));
 		
 				// Set new details
 				this._chars = chars;
