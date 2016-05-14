@@ -31,6 +31,10 @@ public class ConsoleLauncherController
 	protected final Calendar currentcal =
 		Calendar.getInstance();
 	
+	/** The current time string builder. */
+	protected final StringBuilder timebuilder =
+		new StringBuilder();
+	
 	/**
 	 * Initializes the console launcher controller.
 	 *
@@ -58,7 +62,8 @@ public class ConsoleLauncherController
 	{
 		// Update the calendar
 		Calendar currentcal = this.currentcal;
-		currentcal.setTimeInMillis(System.currentTimeMillis());
+		long nowtime = System.currentTimeMillis();
+		currentcal.setTimeInMillis(nowtime);
 		
 		// Get the console
 		AbstractConsoleView console = this.console;
@@ -67,8 +72,50 @@ public class ConsoleLauncherController
 		// Draw the name of the software
 		console.put(0, 0, "SquirrelJME");
 		
+		// Setup the time to draw
+		StringBuilder timebuilder = this.timebuilder;
+		__handleTime(timebuilder, currentcal);
+		console.put((cols - 1) - timebuilder.length(), 0, timebuilder); 
+		
 		// Force the console to be drawn
 		console.displayConsole();
+	}
+	
+	/**
+	 * Prints the current time to the given string.
+	 *
+	 * @param __sb The output buffer.
+	 * @param __cal The calendar interface to get the time from.
+	 * @since 2016/05/14
+	 */
+	private void __handleTime(StringBuilder __sb, Calendar __cal)
+	{
+		// Clear it
+		__sb.setLength(0);
+		
+		// Hour
+		int h;
+		if ((h = __cal.get(Calendar.HOUR_OF_DAY)) < 10)
+			__sb.append('0');
+		__sb.append(h);
+		
+		// Space
+		__sb.append(':');
+		
+		// Minute
+		int m;
+		if ((m = __cal.get(Calendar.MINUTE)) < 10)
+			__sb.append('0');
+		__sb.append(m);
+		
+		// Space
+		__sb.append(':');
+		
+		// Seocnd
+		int s;
+		if ((s = __cal.get(Calendar.SECOND)) < 10)
+			__sb.append('0');
+		__sb.append(s);
 	}
 }
 
