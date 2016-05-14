@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.launch.jvm.javase;
 
 import net.multiphasicapps.squirreljme.launch.AbstractLauncher;
+import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
 
 /**
  * This contains the launcher used by the host Java SE system.
@@ -34,16 +35,13 @@ public class JVMJavaSELauncher
 	}
 	
 	/**
-	 * This is the primary loop of execution.
-	 *
+	 * {@inheritDoc}
 	 * @since 2016/05/14
 	 */
-	public void primaryLoop()
+	@Override
+	public AbstractConsoleView createConsoleView()
 	{
-		for (;;)
-		{
-			throw new Error("TODO");
-		}
+		throw new Error("TODO");
 	}
 }
 

@@ -19,5 +19,37 @@ package net.multiphasicapps.squirreljme.launch;
  */
 public abstract class AbstractLauncher
 {
+	/**
+	 * Creates a view of a console window.
+	 *
+	 * Note that if multi-headed consoles are supported then the interface
+	 * may show multiple terminals either in windows, tabs, or some other
+	 * interface specific means. If a console does not support multiple heads
+	 * then any console being displayed will potentially erase or draw over
+	 * a previously drawn console.
+	 *
+	 * @return A newly created console window or {@code null} if it could not
+	 * be created for some reason.
+	 * @since 2016/05/14
+	 */
+	public abstract AbstractConsoleView createConsoleView();
+	
+	/**
+	 * After initialization of a launcher, this should be called to actually
+	 * start interacting with the system and the user.
+	 *
+	 * @since 2016/05/14
+	 */
+	public final void runLauncherLoop()
+	{
+		// For now just use the console
+		ConsoleLauncherController clc = new ConsoleLauncherController(this);
+		
+		// Run the loop
+		for (;;)
+		{
+			throw new Error("TODO");
+		}
+	}
 }
 

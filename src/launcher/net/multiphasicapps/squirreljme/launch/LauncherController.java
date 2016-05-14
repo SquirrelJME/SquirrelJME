@@ -8,25 +8,34 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.launch.jvm.javase;
+package net.multiphasicapps.squirreljme.launch;
 
 /**
- * DESCRIBE THIS.
+ * This class uses the launcher interface to .
  *
  * @since 2016/05/14
  */
-public class Main
+public abstract class LauncherController
 {
+	/** The launcher to really use. */
+	protected final AbstractLauncher launcher;
+	
 	/**
-	 * Main entry point.
+	 * Initializes the launcher controller.
 	 *
-	 * @param __args Program arguments.
-	 * @since 2016/05/14
+	 * @param __an The launcher to use for interaction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/15
 	 */
-	public static void main(String... __args)
+	LauncherController(AbstractLauncher __an)
+		throws NullPointerException
 	{
-		// Initialize the main launcher and run the main loop
-		new JVMJavaSELauncher(__args).runLauncherLoop();
+		// Check
+		if (__an == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup
+		launcher = __an;
 	}
 }
 
