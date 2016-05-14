@@ -166,13 +166,14 @@ public class SwingConsoleView
 			gfx.fillRect(0, 0, tw, th);
 			
 			// Draw using a single loop
-			for (int i = 0, dx = 0, dy = ch; i < cells; i++, dx += cw)
+			int head = tw - cw;
+			for (int i = cells - 1, dx = head, dy = th; i >= 0; i--, dx -= cw)
 			{
-				// Next column?
-				if (dx >= tw)
+				// Previous row?
+				if (dx < 0)
 				{
-					dx = 0;
-					dy += ch;
+					dx = head;
+					dy -= ch;
 				}
 				
 				// Get character data and attribute here
