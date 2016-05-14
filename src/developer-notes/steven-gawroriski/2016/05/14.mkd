@@ -124,3 +124,9 @@ the color scheme be similar to DOS however would result in only requiring a
 single byte for colors and such. Instead of annoying blinking text, the bits
 will just be bright color and emphasis added.
 
+## 17:09
+
+So the launcher will also need an abstract file system interface so that the
+host filesystem (or block device, which means I would have to implement a
+file system driver) can be accessed for JARs, programs, and such.
+
