@@ -153,6 +153,9 @@ public class NIException
 		/** A final method was replaced. */
 		FINAL_REPLACED,
 		
+		/** Extends final class. */
+		EXTENDS_FINAL,
+		
 		/** End. */
 		;
 	}

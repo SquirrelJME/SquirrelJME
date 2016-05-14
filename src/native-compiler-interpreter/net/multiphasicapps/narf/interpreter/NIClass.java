@@ -116,6 +116,12 @@ public class NIClass
 		for (NIClass rover = superclass; rover != null;
 			rover = rover.superclass)
 		{
+			// {@squirreljme.error AN0v The current class eventually extends
+			// a final class. (This class; The final class)}
+			if (rover.flags().isFinal())
+				throw new NIException(core, NIException.Issue.EXTENDS_FINAL,
+					String.format("AN0v %s %s", thisname, rover));
+			
 			// {@squirreljme.error AN0c The current class eventually extends
 			// itself. (The name of this class)}
 			if (rover == this)
