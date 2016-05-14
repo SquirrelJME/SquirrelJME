@@ -63,3 +63,11 @@ compiled and when it is running on another JVM such as desktop ones or
 SquirrelJME itself. Of course the launcher which runs on the JVM would be stuck
 to being interpreted, but tests could be ran on it and such.
 
+## 13:59
+
+Then this would mean there would be a launcher for each individual system
+on top of the common base launcher. Having such a launcher would save some time
+writing it and having an optionally integrated interpreter in it. For any
+system specific stuff not defined in the CLDC I will just need a bridge package
+which defines all of the interfaces that my initial host JVM launcher uses.
+
