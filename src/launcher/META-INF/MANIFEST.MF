@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: launcher
 X-SquirrelJME-UUID: abb39a12-7deb-433c-a2d6-4c2f5ede429f
 X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: AY
 LIBlet-Title: Launcher
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160514
