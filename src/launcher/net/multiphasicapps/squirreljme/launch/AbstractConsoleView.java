@@ -99,6 +99,55 @@ public abstract class AbstractConsoleView
 	public abstract void displayConsole();
 	
 	/**
+	 * This is a callback which is called when the size of the console has
+	 * changed.
+	 *
+	 * @since 2016/05/14
+	 */
+	protected abstract void sizeChanged();
+	
+	/**
+	 * Returns {@code true} if the terminal supports and can display a console
+	 * with the given size.
+	 *
+	 * @param __c The number of columns.
+	 * @param __r The number of rows.
+	 * @return {@code true} if the size is supported.
+	 * @since 2016/05/14
+	 */
+	public abstract boolean supportsSize(int __c, int __r);
+	
+	/**
+	 * Returns the number of columns the console has available.
+	 *
+	 * @return The number of columns displayed.
+	 * @since 2016/05/14
+	 */
+	public final int getColumns()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _cols;
+		}
+	}
+	
+	/**
+	 * Returns the number of rows the console has available.
+	 *
+	 * @return The number of rows displayed.
+	 * @since 2016/05/14
+	 */
+	public final int getRows()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return _rows;
+		}
+	}
+	
+	/**
 	 * Sets the size of the console device.
 	 *
 	 * @param __c The number of columns to use.
@@ -118,6 +167,11 @@ public abstract class AbstractConsoleView
 		if (__c <= 0 || __r <= 0)
 			throw new IllegalArgumentException(String.format("AY01 %d %d",
 				__c, __r));
+		
+		// If the given size is not supported, then do nothing
+		// However always support 1x1 character terminals
+		if (__c > 1 && __r > 1 && !supportsSize(__c, __r))
+			return false;
 		
 		// Lock
 		synchronized (lock)
@@ -146,6 +200,9 @@ public abstract class AbstractConsoleView
 				this._cells = cells;
 				this._cols = __c;
 				this._rows = __r;
+				
+				// Report size change
+				sizeChanged();
 				
 				// Was changed
 				return true;
