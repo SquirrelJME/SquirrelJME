@@ -25,7 +25,11 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		throw new Error("TODO");
+		// Initialize the main launcher
+		JVMJavaSELauncher jsel = new JVMJavaSELauncher(__args);
+		
+		// Run the launcher loop
+		jsel.primaryLoop();
 	}
 }
 

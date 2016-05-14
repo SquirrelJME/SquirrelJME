@@ -104,3 +104,10 @@ writing the launcher following it and then attaching the interpreter/compiler
 to it. The launcher would call the compiler to generate native binaries and
 then load them as needed.
 
+## 14:47
+
+I will actually need a GUI manager of sorts. I suppose for now I can stick
+with a basic text based launcher interface. I suppose to keep it simple, the
+base launcher should just use a console interface. Other interface would be
+supported in the future if they are available.
+

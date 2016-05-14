@@ -20,5 +20,33 @@ import net.multiphasicapps.squirreljme.launch.AbstractLauncher;
 public class JVMJavaSELauncher
 	extends AbstractLauncher
 {
+	/**
+	 * This initializes the launcher which uses an existing full Java SE JVM.
+	 *
+	 * @param __args The arguments to the launcher.
+	 * @since 2016/05/14
+	 */
+	public JVMJavaSELauncher(String... __args)
+	{
+		// Must always exist
+		if (__args == null)
+			__args = new String[0];
+		
+		// Run the launcher loop
+		jsel.primaryLoop();
+	}
+	
+	/**
+	 * This is the primary loop of execution.
+	 *
+	 * @since 2016/05/14
+	 */
+	public void primaryLoop()
+	{
+		for (;;)
+		{
+			throw new Error("TODO");
+		}
+	}
 }
 
