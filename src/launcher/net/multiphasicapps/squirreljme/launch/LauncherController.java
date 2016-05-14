@@ -37,5 +37,12 @@ public abstract class LauncherController
 		// Setup
 		launcher = __an;
 	}
+	
+	/**
+	 * Indicates that controller specific updating should be performed.
+	 *
+	 * @since 2016/05/14
+	 */
+	public abstract void update();
 }
 

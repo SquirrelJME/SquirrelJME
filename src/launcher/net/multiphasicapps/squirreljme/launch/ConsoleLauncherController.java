@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.launch;
 
+import java.util.Calendar;
+
 /**
  * This is the launcher controller which uses a console to interact with the
  * user. This uses a single console to display to the user and provides a
@@ -25,6 +27,10 @@ public class ConsoleLauncherController
 	/** The console view which interacts with the user directly. */
 	protected final AbstractConsoleView console;
 	
+	/** The current time. */
+	protected final Calendar currentcal =
+		Calendar.getInstance();
+	
 	/**
 	 * Initializes the console launcher controller.
 	 *
@@ -38,9 +44,21 @@ public class ConsoleLauncherController
 		// {@squirreljme.error AY02 Could not initialize the console
 		// that the console launcher controller would be using to display
 		// and interact with the user.}
-		console = __al.createConsoleView();
-		if (console == null)
+		this.console = __al.createConsoleView();
+		if (this.console == null)
 			throw new RuntimeException("AY02");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/14
+	 */
+	@Override
+	public void update()
+	{
+		// Update the calendar
+		Calendar currentcal = this.currentcal;
+		currentcal.setTimeInMillis(System.currentTimeMillis());
 	}
 }
 

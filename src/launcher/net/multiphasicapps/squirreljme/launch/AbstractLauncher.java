@@ -48,7 +48,11 @@ public abstract class AbstractLauncher
 		// Run the loop
 		for (;;)
 		{
-			throw new Error("TODO");
+			// Update the controller
+			clc.update();
+			
+			// Yeild thread to let others run
+			Thread.yield();
 		}
 	}
 }
