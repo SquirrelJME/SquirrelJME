@@ -207,3 +207,14 @@ Well, the algorithm made creating a 32x32 icon manually by hand rather nice
 and easy. I just had slight trouble getting the eyes just right, but I believe
 I have it now.
 
+## 23:17
+
+I believe 32x32 is the lowest sane resolution I would be able to reach. For
+lower resolutions such as 16x16 and 8x8, I suppose I should do something else.
+I suppose for 16x16 I can just do the eyes.
+
+## 23:18
+
+Actually the eyes and the mouth fit perfectly in a 16x16 image, so it is just
+cropped.
+
