@@ -28,3 +28,10 @@ So a game for example could use that kind of support. Joysticks could also be
 supported. However there is a bunch of code that varies between operating
 systems and the level of support.
 
+## 08:58
+
+For `final` fields with known constants, the fields could just not exist or
+be allocated at all. Their value never changes and it can be represented in
+the byte code so to speak. However for the dynamic compiler their values
+still need to be known and assigned to a specific field.
+
