@@ -33,5 +33,27 @@ public class EventQueue
 	
 	/** The write position in the queue. */
 	private volatile int _write;
+	
+	/**
+	 * Returns the next raw event in the queue.
+	 *
+	 * @return The next raw event.
+	 * @since 2016/05/15
+	 */
+	public int nextRaw()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Submits a raw event.
+	 *
+	 * @param __r The raw event to post.
+	 * @since 2016/05/15
+	 */
+	public void postRaw(int __r)
+	{
+		throw new Error("TODO");
+	}
 }
 
