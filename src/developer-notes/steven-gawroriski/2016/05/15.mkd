@@ -76,3 +76,8 @@ Then this means, much lighter now.
 Looking at the AWT key codes (which I am basing KeyChars slightly off) there
 is `SEPARATER`.
 
+## 17:28
+
+In my event stuff, I completely forgot some bytes in the 32-bit integer. So
+I really have plenty of room for codes and such.
+

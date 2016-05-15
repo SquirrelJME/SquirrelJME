@@ -29,10 +29,11 @@ public enum EventKind
 	 * have pressed and released states.
 	 *
 	 * {@code
-	 * 0b????__qqqq_rrrr__SSSS_SSSS
+	 * 0bssss__qqqq_qqqq__rrrr_rrrr__SSSS_SSSS
 	 *
-	 * q = Event code parameter 1, if applicable.
-	 * r = Event code parameter 2, if applicable.
+	 * q = Event code parameter 1, if applicable (0-255).
+	 * r = Event code parameter 2, if applicable (0-255).
+	 * s = Event code parameter 3, if applicable (0-31).
 	 * S = A {@link SystemEventCode} representing the event that occured.
 	 * }
 	 */
@@ -47,7 +48,7 @@ public enum EventKind
 	 * not symbols.
 	 *
 	 * {@code
-	 * 0bPP??__cccc_cccc__cccc_cccc
+	 * 0bPP??__????_????__cccc_cccc__cccc_cccc
 	 *
 	 * P = The controller port, from 1-4.
 	 * c = The {@link KeyChars} or {@code char} which was pressed.
@@ -78,12 +79,12 @@ public enum EventKind
 	 * The pen was moved.
 	 *
 	 * {@code
-	 * 0bPPnn__Vccc_cccc__cccc_cccc
-	 *
+	 * 0bPPnn__xxxx_xxxx__xxxx_yyyy__yyyy_yyyy
+	 * 
 	 * P = The controller port, from 1-4.
 	 * n = The pen number that changed position.
-	 * V = If 0, the X axis is used, otherwise the Y axis.
-	 * c = The position of the pen. (unsigned)
+	 * x = The unsigned X coordinate of the pen.
+	 * y = The unsigned Y coordinate of the pen.
 	 * }
 	 */
 	PEN_POSITION_CHANGED,
@@ -92,12 +93,12 @@ public enum EventKind
 	 * Joystick axis changed.
 	 *
 	 * {@code
-	 * 0bPPaa__Vppp_pppp__pppp_pppp
+	 * 0bPPaa__xxxx_xxxx__xxxx_yyyy__yyyy_yyyy
 	 *
 	 * P = The controller port, from 1-4.
-	 * a = The analog axis that changed.
-	 * V = If 0, the X axis is used, otherwise the Y axis.
-	 * p = The curren position of the joystick (signed).
+	 * a = The analog stick that changed.
+	 * x = The signed joystick X value.
+	 * y = The signed joystick Y value.
 	 * }
 	 */
 	JOYSTICK_AXIS_CHANGED,

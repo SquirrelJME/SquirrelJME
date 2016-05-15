@@ -28,6 +28,42 @@ package net.multiphasicapps.squirreljme.launch.event;
  */
 public class EventQueue
 {
+	/** The event kind shifted mask. */
+	public static final int EVENT_KIND_SHIFT_MASK =
+		0b1111_0000__0000_0000__0000_0000__0000_0000;
+	
+	/** The event kind value mask. */
+	public static final int EVENT_KIND_VALUE_MASK =
+		0b1111;
+	
+	/** The event kind shift. */
+	public static final int EVENT_KIND_SHIFT =
+		28;
+	
+	/** The controller port shifted mask. */
+	public static final int CONTROLLER_PORT_SHIFT_MASK =
+		0b0000_1100__0000_0000__0000_0000__0000_0000;
+	
+	/** The controller port value mask. */
+	public static final int CONTROLLER_PORT_VALUE_MASK =
+		0b11;
+	
+	/** The controller port shift. */
+	public static final int CONTROLLER_PORT_SHIFT =
+		26;
+	
+	/** The key character shifted mask. */
+	public static final int KEY_CHARACTER_SHIFT_MASK =
+		0b0000_0000__0000_0000__1111_1111__1111_1111;
+	
+	/** The key character value mask. */
+	public static final int KEY_CHARACTER_VALUE_MASK =
+		0b1111_1111__1111_1111;
+	
+	/** The key character shift. */
+	public static final int KEY_CHARACTER_SHIFT =
+		0;
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -60,7 +96,50 @@ public class EventQueue
 	 */
 	public void postRaw(int __r)
 	{
-		throw new Error("TODO");
+		System.err.printf("%08x%n", __r);
+		//throw new Error("TODO");
+	}
+	
+	/**
+	 * Posts a key pressed event.
+	 *
+	 * @param __port The controller port.
+	 * @param __v The key which was pressed.
+	 * @since 2016/05/15
+	 */
+	public void postKeyPressed(int __port, char __v)
+	{
+		postRaw((EventKind.KEY_PRESSED.ordinal() << EVENT_KIND_SHIFT) |
+			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
+			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
+	}
+	
+	/**
+	 * Posts a key release event.
+	 *
+	 * @param __port The controller port.
+	 * @param __v The key which was pressed.
+	 * @since 2016/05/15
+	 */
+	public void postKeyReleased(int __port, char __v)
+	{
+		postRaw((EventKind.KEY_RELEASED.ordinal() << EVENT_KIND_SHIFT) |
+			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
+			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
+	}
+	
+	/**
+	 * Posts a key typed event.
+	 *
+	 * @param __port The controller port.
+	 * @param __v The key which was pressed.
+	 * @since 2016/05/15
+	 */
+	public void postKeyTyped(int __port, char __v)
+	{
+		postRaw((EventKind.KEY_TYPED.ordinal() << EVENT_KIND_SHIFT) |
+			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
+			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
 	}
 }
 

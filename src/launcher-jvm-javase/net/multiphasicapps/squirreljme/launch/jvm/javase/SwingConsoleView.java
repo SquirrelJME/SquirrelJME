@@ -310,6 +310,25 @@ public class SwingConsoleView
 	}
 	
 	/**
+	 * Converts an AWT key event to a character.
+	 *
+	 * @param __typed If {@code true} then the key was typed.
+	 * @param __e The event.
+	 * @return The converted key code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/15
+	 */	
+	private char __keyToChar(boolean __typed, KeyEvent __e)
+		throws NullPointerException
+	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		return (char)0xDEAD;
+	}
+	
+	/**
 	 * Pushes a key event.
 	 *
 	 * @param __k The event kind.
@@ -323,6 +342,32 @@ public class SwingConsoleView
 		// Check
 		if (__k == null || __e == null)
 			throw new NullPointerException("NARG");
+		
+		// Get the event queue
+		EventQueue eventqueue = this.eventqueue;
+		
+		// Depends on the event
+		switch (__k)
+		{
+				// Pressed
+			case KEY_PRESSED:
+				eventqueue.postKeyPressed(0, __keyToChar(false, __e));
+				break;
+				
+				// Released
+			case KEY_RELEASED:
+				eventqueue.postKeyReleased(0, __keyToChar(false, __e));
+				break;
+				
+				// Typed
+			case KEY_TYPED:
+				eventqueue.postKeyTyped(0, __keyToChar(true, __e));
+				break;
+			
+				// Unknown
+			default:
+				break;
+		}
 	}
 	
 	/**
