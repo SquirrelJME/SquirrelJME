@@ -184,5 +184,13 @@ public interface SystemEventCode
 	/** Display removed. */
 	public static final int DISPLAY_REMOVED =
 		42;
+	
+	/** Mouse entered. */
+	public static final int MOUSE_ENTERED =
+		43;
+	
+	/** Mouse exited. */
+	public static final int MOUSE_EXITED =
+		44;
 }
 

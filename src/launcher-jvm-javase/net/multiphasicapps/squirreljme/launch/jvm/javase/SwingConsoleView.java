@@ -38,6 +38,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
+import net.multiphasicapps.squirreljme.launch.event.EventKind;
 import net.multiphasicapps.squirreljme.launch.event.EventQueue;
 
 /**
@@ -309,6 +310,22 @@ public class SwingConsoleView
 	}
 	
 	/**
+	 * Pushes a key event.
+	 *
+	 * @param __k The event kind.
+	 * @param __e The event data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/15
+	 */
+	private void __pushKeyEvent(EventKind __k, KeyEvent __e)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null || __e == null)
+			throw new NullPointerException("NARG");
+	}
+	
+	/**
 	 * This is a character view which shows the terminal text.
 	 *
 	 * @since 2016/05/14
@@ -342,7 +359,7 @@ public class SwingConsoleView
 		@Override
 		public void keyPressed(KeyEvent __e)
 		{
-			System.err.println(__e);
+			__pushKeyEvent(EventKind.KEY_PRESSED, __e);
 		}
 		
 		/**
@@ -352,7 +369,7 @@ public class SwingConsoleView
 		@Override
 		public void keyReleased(KeyEvent __e)
 		{
-			System.err.println(__e);
+			__pushKeyEvent(EventKind.KEY_RELEASED, __e);
 		}
 		
 		/**
@@ -362,7 +379,7 @@ public class SwingConsoleView
 		@Override
 		public void keyTyped(KeyEvent __e)
 		{
-			System.err.println(__e);
+			__pushKeyEvent(EventKind.KEY_TYPED, __e);
 		}
 		
 		/**
@@ -372,7 +389,7 @@ public class SwingConsoleView
 		@Override
 		public void mouseClicked(MouseEvent __e)
 		{
-			System.err.println(__e);
+			//System.err.println(__e);
 		}
 		
 		/**
@@ -382,7 +399,7 @@ public class SwingConsoleView
 		@Override
 		public void mouseDragged(MouseEvent __e)
 		{
-			System.err.println(__e);
+			//System.err.println(__e);
 		}
 		
 		/**
@@ -392,7 +409,7 @@ public class SwingConsoleView
 		@Override
 		public void mouseEntered(MouseEvent __e)
 		{
-			System.err.println(__e);
+			//System.err.println(__e);
 		}
 		
 		/**
@@ -402,7 +419,7 @@ public class SwingConsoleView
 		@Override
 		public void mouseExited(MouseEvent __e)
 		{
-			System.err.println(__e);
+			//System.err.println(__e);
 		}
 		
 		/**
@@ -412,7 +429,7 @@ public class SwingConsoleView
 		@Override
 		public void mouseMoved(MouseEvent __e)
 		{
-			System.err.println(__e);
+			//System.err.println(__e);
 		}
 		
 		/**
@@ -422,7 +439,7 @@ public class SwingConsoleView
 		@Override
 		public void mousePressed(MouseEvent __e)
 		{
-			System.err.println(__e);
+			//System.err.println(__e);
 		}
 		
 		/**
@@ -432,7 +449,7 @@ public class SwingConsoleView
 		@Override
 		public void mouseReleased(MouseEvent __e)
 		{
-			System.err.println(__e);
+			//System.err.println(__e);
 		}
 		
 		/**
