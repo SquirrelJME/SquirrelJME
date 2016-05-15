@@ -44,3 +44,7 @@ Some of these keys seem absurd, but you never know!
 Actually for some variable controls, I could just have a variable control
 group instead of having tons of on/off buttons.
 
+## 10:27
+
+Actually, I should move the event handler stuff and remove the special buttons.
+
