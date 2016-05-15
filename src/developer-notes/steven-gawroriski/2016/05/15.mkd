@@ -67,3 +67,7 @@ However on the target system they would become optional. This can be used for
 example to lighten the cross-compilation system so that not every part of it
 has to be included.
 
+## 15:15
+
+Then this means, much lighter now.
+
