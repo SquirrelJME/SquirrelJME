@@ -210,6 +210,8 @@ public class WeightedDownsample
 				// Use the heaviest color
 				int v = 0xFF00FF;	// Use magenta for background just in case
 				double w = 0.0D;
+				int sv = 0xFF00FF;
+				double sw = 0.0D;
 				for (Map.Entry<Integer, Double> e : weights.entrySet())
 				{
 					// Get values
@@ -219,6 +221,11 @@ public class WeightedDownsample
 					// Higher?
 					if (ev > w)
 					{
+						// Set old best
+						sv = v;
+						sw = w;
+						
+						// Set new best
 						v = ek;
 						w = ev;
 					}
@@ -228,7 +235,30 @@ public class WeightedDownsample
 				if (w <= 0.0D)
 					v = last;
 				else
+				{
+					// If there is a secondary color, average it
+					if (sw > 0.0D)
+					{
+						// Setup color
+						Color bc = new Color(v);
+						Color sc = new Color(sv);
+						
+						// Get color components
+						float[] bb = bc.getRGBComponents(null);
+						float[] ss = sc.getRGBComponents(null);
+						
+						// Average them
+						float xr = __avg(w, bb[0], sw, ss[0]);
+						float xg = __avg(w, bb[1], sw, ss[1]);
+						float xb = __avg(w, bb[2], sw, ss[2]);
+						
+						// Setup new color
+						v = new Color(xr, xg, xb).getRGB();
+					}
+					
+					// Set last
 					last = v;
+				}
 				
 				// Write RGB data
 				out.setRGB(dx, dy, v);
@@ -245,6 +275,21 @@ public class WeightedDownsample
 		/*System.out.println("Unknown colors:");
 		for (int u : UNKNOWN_COLORS)
 			System.out.printf("%06x%n", u);*/
+	}
+	
+	/**
+	 * Averages two colors.
+	 *
+	 * @param __ab Weight of first color.
+	 * @param __a First color.
+	 * @param __wb Weight of second color.
+	 * @param __b Second color.
+	 * @return The new color.
+	 * @since 2016/05/14
+	 */
+	public static float __avg(double __wa, float __a, double __wb, float __b)
+	{
+		return (__a + __b) / 2.0F;
 	}
 	
 	/**
@@ -334,7 +379,7 @@ public class WeightedDownsample
 				// Debug
 				UNKNOWN_COLORS.add(__c);
 				
-				// No weight
+				// Little weight
 				return 0.1D;
 		}
 	}
