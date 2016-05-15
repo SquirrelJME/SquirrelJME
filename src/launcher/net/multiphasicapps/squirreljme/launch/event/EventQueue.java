@@ -28,6 +28,10 @@ package net.multiphasicapps.squirreljme.launch.event;
  */
 public class EventQueue
 {
+	/** Initial event queue size. */
+	public static final int INITIAL_SIZE =
+		8;
+	
 	/** The event kind shifted mask. */
 	public static final int EVENT_KIND_SHIFT_MASK =
 		0b1111_0000__0000_0000__0000_0000__0000_0000;
@@ -80,12 +84,43 @@ public class EventQueue
 	/**
 	 * Returns the next raw event in the queue.
 	 *
-	 * @return The next raw event.
+	 * @return The next raw event, or {@code 0} if there none remaining.
 	 * @since 2016/05/15
 	 */
 	public int nextRaw()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Obtain the queue details
+			int[] queue = this._queue;
+			
+			// No queue?
+			if (queue == null)
+				return 0;
+			
+			// Get read/write positions
+			int n = queue.length;
+			int read = this._read;
+			int write = this._write;
+			
+			// If the read head is at the write head then there is no data
+			// in the buffer
+			if (read == write)
+				return 0;
+			
+			// Read value
+			int rv = queue[read];
+			
+			// Increment
+			int next = read + 1;
+			if (next >= n)
+				next = 0;
+			_read = next;
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
@@ -96,8 +131,80 @@ public class EventQueue
 	 */
 	public void postRaw(int __r)
 	{
-		System.err.printf("%08x%n", __r);
-		//throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Get the queue
+			int[] queue = this._queue;
+			
+			// Need to allocate?
+			if (queue == null)
+				try
+				{
+					queue = new int[INITIAL_SIZE];
+					this._queue = queue;
+				}
+			
+				// Drop the event
+				catch (OutOfMemoryError e)
+				{
+					return;
+				}
+			
+			// Get the positions
+			int n = queue.length;
+			int read = this._read;
+			int write = this._write;
+			
+			// Calculate the next write position
+			int next = write + 1;
+			if (next >= n)
+				next = 0;
+			
+			// No room in the queue?
+			if (next == read)
+				try
+				{
+					// Allocate new array, add double elements
+					int nl = n << 1;
+					
+					// The new size overflows, drop event
+					if (nl <= 0)
+						return;
+					
+					// Allocate
+					int[] into = new int[nl];
+					
+					// Copy items into it
+					write = 0;
+					for (int copy = nextRaw(); copy != 0; copy = nextRaw())
+						into[write++] = copy;
+					
+					// Set new details
+					read = 0;
+					this._read = read;
+					this._write = write;
+					
+					// Use new queue
+					queue = into;
+					this._queue = queue;
+					
+					// The next write position
+					next = write + 1;
+				}
+				
+				// Drop the event
+				catch (OutOfMemoryError e)
+				{
+					return;
+				}
+			
+			// Write in the queue
+			queue[write] = __r;
+			
+			// Set next write
+			this._write = next;
+		}
 	}
 	
 	/**
