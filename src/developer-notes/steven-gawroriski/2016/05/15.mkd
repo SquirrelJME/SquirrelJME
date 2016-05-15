@@ -48,8 +48,22 @@ group instead of having tons of on/off buttons.
 
 Actually, I should move the event handler stuff and remove the special buttons.
 
+## 10:58
+
+Depending on how some input is done, I can have synthetic keys so to speak. So
+for example if 
+
 ## 13:11
 
 For the class lookup, I hope I am using References when it comes to class
 caches.
+
+## 15:05
+
+Actually, there are optional liblets. This means I need to adjust my build
+system and have optional dependencies. On the host build system, the
+dependencies would be forced however as if they were hard dependencies.
+However on the target system they would become optional. This can be used for
+example to lighten the cross-compilation system so that not every part of it
+has to be included.
 
