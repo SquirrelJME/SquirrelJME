@@ -175,3 +175,8 @@ would be essentially controller _n_ pressing buttons or using a joystick. Then
 the user interfaces can have a virtual keyboard if text input is required and
 the system lacks an actual keyboard.
 
+## 20:33
+
+Implementing the weighted down scale was easy and looks nicer than GIMP doing
+the downscale. However some colors are missing it seems.
+

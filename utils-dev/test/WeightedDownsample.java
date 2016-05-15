@@ -132,11 +132,34 @@ public class WeightedDownsample
 	 */
 	public static double __weight(int __c)
 	{
-		switch (__c)
+		switch (__c & 0x00FFFFFF)
 		{
 				// Outline
-			case 0xFF030633:
+			case 0x030633:
 				return 20.0D;
+				
+				// Light fur color
+			case 0xFEFFFC:
+			case 0xFFFFFF:
+				return 1.0D;
+				
+				// Darker fur color
+			case 0xCACEDD:
+				return 2.0D;
+				
+				// Light Ear pink
+			case 0xffd1ce:
+				return 1.0D;
+				
+				// Dark ear pink
+			case 0xeaaaa0:
+				return 2.0D;
+				
+				// Eye color
+			case 0xf85150:	// light
+			case 0xf90f0f:	// medium
+			case 0xa51815:	// dark
+				return 50.0D;
 			
 				// Unknown, weighs nothing
 			default:
