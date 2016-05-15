@@ -69,6 +69,8 @@ import javax.tools.ToolProvider;
  *
  * X-SquirrelJME-Depends -- Other packages (separated by comma) which this
  *                          project depends on for compilation.
+ * X-SquirrelJME-Optional -- Optional dependencies which are not always needed
+ *                           at runtime.
  * X-SquirrelJME-HostClassPath -- Use the host classpath when building the
  *                                specified package rather than the target one.
  *
@@ -845,6 +847,9 @@ public class Build
 		/** Dependencies. */
 		protected final Set<Project> depends;
 		
+		/** Optional dependencies. */
+		protected final Set<Project> optional;
+		
 		/** The name of the output JAR file. */
 		protected final Path jarname;
 		
@@ -902,13 +907,25 @@ public class Build
 			name = Objects.<String>requireNonNull(
 				attr.getValue("X-SquirrelJME-Name"), "Missing package name.");
 			
-			// Optional dependencies
+			// Required dependencies
 			Set<Project> xdeps = new HashSet<>();
 			String odeps = attr.getValue("X-SquirrelJME-Depends");
 			if (odeps != null)
 				for (String s : odeps.split(Pattern.quote(",")))
 					xdeps.add(getProject(s.trim()));
+			
+			// Optional depends
+			Set<Project> pdeps = new HashSet<>();
+			String qdeps = attr.getValue("X-SquirrelJME-Optional");
+			if (qdeps != null)
+				for (String s : odeps.split(Pattern.quote(",")))
+					pdeps.add(getProject(s.trim()));
+			
+			// All force depends
+			xdeps.addAll(pdeps);
+			
 			depends = Collections.<Project>unmodifiableSet(xdeps);
+			optional = Collections.<Project>unmodifiableSet(pdeps);
 			
 			// These must exist for all projects
 			libtitle = Objects.<String>requireNonNull(attr.getValue(
