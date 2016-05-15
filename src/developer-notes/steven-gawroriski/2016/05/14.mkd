@@ -190,3 +190,9 @@ weigh using linear RGB.
 Disliking this since there is no way to convert to linear RGB and GIMP only
 shows linear RGB.
 
+## 21:59
+
+So the downscale works as intended so far. 32x32 is quite small, but it does
+not look that bad. However it seems 8x8 is really bad and 16x16 is not much
+better. So 32x32 is the absolute lower limit of the algorithm.
+

@@ -176,6 +176,11 @@ public class WeightedDownsample
 		
 		// Go through all output pixel positions
 		for (int dy = 0; dy < th; dy++)
+		{
+			// The last chosen color
+			int last = 0xFF00FF;
+			
+			// Go through all pixels
 			for (int dx = 0; dx < tw; dx++)
 			{
 				// Clear the weights
@@ -219,9 +224,16 @@ public class WeightedDownsample
 					}
 				}
 				
+				// If the selected color has no weight then use the last one
+				if (w <= 0.0D)
+					v = last;
+				else
+					last = v;
+				
 				// Write RGB data
 				out.setRGB(dx, dy, v);
 			}
+		}
 		
 		// Write output image
 		try (OutputStream os = new FileOutputStream(__args[3]))
@@ -323,7 +335,7 @@ public class WeightedDownsample
 				UNKNOWN_COLORS.add(__c);
 				
 				// No weight
-				return 0.0D;
+				return 0.1D;
 		}
 	}
 }
