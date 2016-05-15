@@ -406,10 +406,14 @@ public class Build
 			int libnum = 1;
 			for (Project dep : __p.depends)
 			{
+				// Required or optional
+				boolean isopt = __p.optional.contains(dep);
+				
 				// Add liblet dependency
 				jattr.putValue(String.format("LIBlet-Dependency-%d", libnum),
-					String.format("liblet;required;%s;%s;%s+",
-						dep.libtitle, dep.libvendor, dep.libversion));
+					String.format("liblet;%s;%s;%s;%s+", (isopt ? "optional" :
+						"required"), dep.libtitle, dep.libvendor,
+						dep.libversion));
 				
 				// Add to the classpath
 				jcp.append(' ');
