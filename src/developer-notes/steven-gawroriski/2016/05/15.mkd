@@ -1,0 +1,15 @@
+# 2016/05/15
+
+## 00:02
+
+So I suppose I did much stuff, wrote image downscale, dowscaled images and
+such. Did some interpreter stuff, but setup an interface for the launcher.
+The kernel and such at least for the JVM wrapper for now could just use the
+interpreter which I have been writing. I must modify the interpreter slightly
+so that it can garbage collect a bit easier. However, now that I have the
+actual kernel stuff in place I can handle system calls and magical calls. This
+means that I can write for the intended environment without needing to have
+some kind of odd bridge. So the first kernel of course would be the one that
+runs on an existing JVM. I can then go deeper and then port the kernel to
+SquirrelJME and interpret on the interpreter using the line based console
+interface in MEEP.
