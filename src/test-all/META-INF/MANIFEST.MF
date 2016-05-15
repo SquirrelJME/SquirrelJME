@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: test-all
 X-SquirrelJME-UUID: a788b5a5-3e1a-4aca-bbd3-aac405e6cb80
-X-SquirrelJME-Depends: test-base,
+X-SquirrelJME-Depends: test-base
+X-SquirrelJME-Optional:
  test-extra-io-inflate,
  test-extra-io-slidingwindow,
  test-extra-util-dynbuffer,

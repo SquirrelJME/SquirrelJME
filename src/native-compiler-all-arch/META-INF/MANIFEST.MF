@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: native-compiler-os
 X-SquirrelJME-UUID: d6a83fbf-ede5-4915-a336-5cdec76de4f8
-X-SquirrelJME-Depends: 
+X-SquirrelJME-Optional: 
  native-compiler-os-linux
 LIBlet-Title: NARF Compiler All OSes
 LIBlet-Vendor: Steven Gawroriski
