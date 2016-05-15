@@ -42,7 +42,7 @@ public class JVMJavaSEKernel
 	public AbstractConsoleView createConsoleView()
 	{
 		// Setup a new console which uses a Swing based interface
-		SwingConsoleView scv = new SwingConsoleView();
+		SwingConsoleView scv = new SwingConsoleView(eventQueue());
 		
 		// Show it
 		scv.setVisible();

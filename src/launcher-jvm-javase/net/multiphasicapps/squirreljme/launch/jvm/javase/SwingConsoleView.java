@@ -38,6 +38,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
+import net.multiphasicapps.squirreljme.launch.event.EventQueue;
 
 /**
  * This provides a swing console view.
@@ -64,6 +65,9 @@ public class SwingConsoleView
 	
 	/** Graphics configuration for the best image selection. */
 	protected final GraphicsConfiguration config;
+	
+	/** The event queue to use. */
+	protected final EventQueue eventqueue;
 	
 	/** The precomposed image buffer. */
 	private volatile BufferedImage _buffer;
@@ -105,10 +109,20 @@ public class SwingConsoleView
 	/**
 	 * Initializes the swing console view.
 	 *
+	 * @param __eq The event queue where events should be placed into.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/14
 	 */
-	public SwingConsoleView()
+	public SwingConsoleView(EventQueue __eq)
+		throws NullPointerException
 	{
+		// Check
+		if (__eq == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		eventqueue = __eq;
+		
 		// Setup the console view frame
 		JFrame frame = new JFrame("SquirrelJME");
 		this.frame = frame;
