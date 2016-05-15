@@ -350,6 +350,56 @@ public class SwingConsoleView
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void mouseClicked(MouseEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void mouseEntered(MouseEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void mouseExited(MouseEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void mousePressed(MouseEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void mouseReleased(MouseEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2016/05/14
 		 */
 		@Override

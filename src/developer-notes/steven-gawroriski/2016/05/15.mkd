@@ -48,3 +48,8 @@ group instead of having tons of on/off buttons.
 
 Actually, I should move the event handler stuff and remove the special buttons.
 
+## 13:11
+
+For the class lookup, I hope I am using References when it comes to class
+caches.
+
