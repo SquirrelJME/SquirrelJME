@@ -127,6 +127,39 @@ public class EventQueue
 	}
 	
 	/**
+	 * Peeks the next raw event in the queue.
+	 *
+	 * @return The next raw event, or {@code 0} if there none remaining.
+	 * @since 2016/05/15
+	 */
+	public int peekRaw()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Obtain the queue details
+			int[] queue = this._queue;
+			
+			// No queue?
+			if (queue == null)
+				return 0;
+			
+			// Get read/write positions
+			int n = queue.length;
+			int read = this._read;
+			int write = this._write;
+			
+			// If the read head is at the write head then there is no data
+			// in the buffer
+			if (read == write)
+				return 0;
+			
+			// Return it
+			return queue[read];
+		}
+	}
+	
+	/**
 	 * Submits a raw event.
 	 *
 	 * @param __r The raw event to post.
