@@ -116,5 +116,65 @@ public interface SystemEventCode
 	/** Headphones removed. */
 	public static final int HEADPHONES_REMOVED =
 		25;
+	
+	/** External interrupt triggered. */
+	public static final int EXTERNAL_INTERRUPT =
+		26;
+	
+	/** JVM made visible. */
+	public static final int JVM_VISIBLE =
+		27;
+	
+	/** JVM made invisible. */
+	public static final int JVM_INVISIBLE =
+		28;
+	
+	/** Battery is low warning. */
+	public static final int BATTERY_LOW_WARNING =
+		29;
+	
+	/** Battery is critical warning. */
+	public static final int BATTERY_CRITICAL_WARNING =
+		30;
+	
+	/** System is charging. */
+	public static final int BATTERY_CHARGING =
+		31;
+	
+	/** Charging complete. */
+	public static final int BATTERY_CHARGE_COMPLETE =
+		32;
+	
+	/** System is discharging. */
+	public static final int BATTERY_DISCHARGING =
+		33;
+	
+	/** A problem has occured with charging. */
+	public static final int BATTERY_CHARGE_ERROR =
+		34;
+	
+	/** The battery charge level has changed. */
+	public static final int BATTERY_LEVEL_CHANGED =
+		35;
+	
+	/** A battery has been removed. */
+	public static final int BATTERY_REMOVED =
+		36;
+	
+	/** A battery has been inserted. */
+	public static final int BATTERY_INSERTED =
+		37;
+	
+	/** Battery not full, but not charging. */
+	public static final int BATTERY_NOT_CHARGING =
+		38;
+	
+	/** External power attached. */
+	public static final int POWER_ATTACHED =
+		39;
+	
+	/** External power removed. */
+	public static final int POWER_REMOVED =
+		40;
 }
 
