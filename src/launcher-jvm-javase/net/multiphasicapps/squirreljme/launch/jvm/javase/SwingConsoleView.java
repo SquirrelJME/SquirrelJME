@@ -14,6 +14,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -297,7 +299,7 @@ public class SwingConsoleView
 	@SuppressWarnings({"serial"})
 	public class CharacterView
 		extends JPanel
-		implements KeyListener
+		implements KeyListener, MouseListener
 	{
 		/** Has the view size been corrected? */
 		private volatile boolean _fixed;

@@ -17,6 +17,13 @@ package net.multiphasicapps.squirreljme.launch.event;
  * store the event data. If the queue size is exceeded then it is attempted to
  * be increased in size, otherwise if that fails then events are dropped.
  *
+ * All events are 32-bit integers so that they keep space reduced and do not
+ * require a large multiple of objects to be allocated which may definitely
+ * strain low memory/speed systems especially when garbage is collected.
+ *
+ * The upper-most 4 bits are the event kind, {@code 0xFFFF} is reserved for
+ * special handling.
+ *
  * @since 2016/05/15
  */
 public class EventQueue

@@ -11,18 +11,26 @@
 package net.multiphasicapps.squirreljme.launch.event;
 
 /**
- * This contains key character codes for pressed key that are useful to have.
- *
- * Note that mouse and joystick buttons are considered keyboard keys for
- * simplicity in the event handler.
- *
- * Keys that have no officially assigned glyph or possible unicode match are to
- * be placed in the private use area, this way they get an actual assigned
- * glyph.
+ * The list of system event codes that may occur.
  *
  * @since 2016/05/15
  */
-public interface KeyChars
+public interface SystemEventCode
 {
+	/** A controller was attached to a port. */
+	public static final int CONTROLLER_ATTACHED =
+		1;
+	
+	/** A controller was removed from a port. */
+	public static final int CONTROLLER_DETACHED =
+		2;
+	
+	/** A block device was inserted. */
+	public static final int BLOCK_DEVICE_INSERTED =
+		3;
+	
+	/** A block device was removed. */
+	public static final int BLOCK_DEVICE_REMOVED =
+		4;
 }
 
