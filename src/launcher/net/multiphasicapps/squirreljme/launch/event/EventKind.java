@@ -75,27 +75,29 @@ public enum EventKind
 	KEY_TYPED,
 	
 	/**
-	 * The mouse was moved.
+	 * The pen was moved.
 	 *
 	 * {@code
-	 * 0bPPaa__rrrr_rrrr__rrrr_rrrr
+	 * 0bPPnn__Vccc_cccc__cccc_cccc
 	 *
 	 * P = The controller port, from 1-4.
-	 * a = The axis which was adjusted.
-	 * r = The relative movement from the previous position. (signed)
+	 * n = The pen number that changed position.
+	 * V = If 0, the X axis is used, otherwise the Y axis.
+	 * c = The position of the pen. (unsigned)
 	 * }
 	 */
-	MOUSE_POSITION_MOVED,
+	PEN_POSITION_CHANGED,
 	
 	/**
 	 * Joystick axis changed.
 	 *
 	 * {@code
-	 * 0bPPaa__pppp_pppp__pppp_pppp
+	 * 0bPPaa__Vppp_pppp__pppp_pppp
 	 *
 	 * P = The controller port, from 1-4.
-	 * a = The axis which was adjusted
-	 * p = The curren position of the joystick.
+	 * a = The analog axis that changed.
+	 * V = If 0, the X axis is used, otherwise the Y axis.
+	 * p = The curren position of the joystick (signed).
 	 * }
 	 */
 	JOYSTICK_AXIS_CHANGED,
