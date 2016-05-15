@@ -39,3 +39,8 @@ still need to be known and assigned to a specific field.
 
 Some of these keys seem absurd, but you never know!
 
+## 09:58
+
+Actually for some variable controls, I could just have a variable control
+group instead of having tons of on/off buttons.
+
