@@ -54,6 +54,21 @@ public class WeightedDownsample
 		BufferedImage out = new BufferedImage(tw, th,
 			BufferedImage.TYPE_INT_RGB);
 		
+		// The image scale
+		double xscale = (double)in.getWidth() / (double)tw;
+		double yscale = (double)in.getHeight() / (double)th;
+		
+		// Go through all output pixel positions
+		for (int dy = 0; dy < th; dy++)
+			for (int dx = 0; dx < tw; dx++)
+			{
+				// Determine the RGB data to use
+				int v = in.getRGB((int)(dx * xscale), (int)(dy * yscale));
+				
+				// Write RGB data
+				out.setRGB(dx, dy, v);
+			}
+		
 		// Write output image
 		try (OutputStream os = new FileOutputStream(__args[3]))
 		{
