@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.launch.jvm.javase;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -143,6 +145,9 @@ public class SwingConsoleView
 		
 		// Add to the frame
 		frame.add(view);
+		
+		// Handle keyboard events
+		view.addKeyListener(view);
 	}
 	
 	/**
@@ -292,6 +297,7 @@ public class SwingConsoleView
 	@SuppressWarnings({"serial"})
 	public class CharacterView
 		extends JPanel
+		implements KeyListener
 	{
 		/** Has the view size been corrected? */
 		private volatile boolean _fixed;
@@ -303,6 +309,41 @@ public class SwingConsoleView
 		 */
 		private CharacterView()
 		{
+			// Allow the character view to get focused on, mouse and keyboard
+			// wise. Also allow characters such as Tab to be pressed also.
+			setFocusable(true);
+			setRequestFocusEnabled(true);
+			setFocusTraversalKeysEnabled(false);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void keyPressed(KeyEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void keyReleased(KeyEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void keyTyped(KeyEvent __e)
+		{
+			System.err.println(__e);
 		}
 		
 		/**
