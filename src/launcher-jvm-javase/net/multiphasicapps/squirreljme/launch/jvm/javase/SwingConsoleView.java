@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -148,8 +149,10 @@ public class SwingConsoleView
 		// Add to the frame
 		frame.add(view);
 		
-		// Handle keyboard events
+		// Handle keyboard/mouse events
 		view.addKeyListener(view);
+		view.addMouseListener(view);
+		view.addMouseMotionListener(view);
 	}
 	
 	/**
@@ -299,7 +302,7 @@ public class SwingConsoleView
 	@SuppressWarnings({"serial"})
 	public class CharacterView
 		extends JPanel
-		implements KeyListener, MouseListener
+		implements KeyListener, MouseListener, MouseMotionListener
 	{
 		/** Has the view size been corrected? */
 		private volatile boolean _fixed;
@@ -363,6 +366,16 @@ public class SwingConsoleView
 		 * @since 2016/05/15
 		 */
 		@Override
+		public void mouseDragged(MouseEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
 		public void mouseEntered(MouseEvent __e)
 		{
 			System.err.println(__e);
@@ -374,6 +387,16 @@ public class SwingConsoleView
 		 */
 		@Override
 		public void mouseExited(MouseEvent __e)
+		{
+			System.err.println(__e);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/15
+		 */
+		@Override
+		public void mouseMoved(MouseEvent __e)
 		{
 			System.err.println(__e);
 		}
