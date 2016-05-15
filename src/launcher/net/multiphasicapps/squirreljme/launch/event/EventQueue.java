@@ -104,11 +104,17 @@ public class EventQueue
 	 * Posts a key pressed event.
 	 *
 	 * @param __port The controller port.
-	 * @param __v The key which was pressed.
+	 * @param __v The key which was pressed, if the value is {@code 0} then the
+	 * event is not posted.
 	 * @since 2016/05/15
 	 */
 	public void postKeyPressed(int __port, char __v)
 	{
+		// Do not post?
+		if (__v == 0)
+			return;
+		
+		// Post
 		postRaw((EventKind.KEY_PRESSED.ordinal() << EVENT_KIND_SHIFT) |
 			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
 			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
@@ -118,11 +124,17 @@ public class EventQueue
 	 * Posts a key release event.
 	 *
 	 * @param __port The controller port.
-	 * @param __v The key which was pressed.
+	 * @param __v The key which was pressed, if the value is {@code 0} then the
+	 * event is not posted.
 	 * @since 2016/05/15
 	 */
 	public void postKeyReleased(int __port, char __v)
 	{
+		// Do not post?
+		if (__v == 0)
+			return;
+		
+		// Post
 		postRaw((EventKind.KEY_RELEASED.ordinal() << EVENT_KIND_SHIFT) |
 			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
 			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
@@ -132,11 +144,17 @@ public class EventQueue
 	 * Posts a key typed event.
 	 *
 	 * @param __port The controller port.
-	 * @param __v The key which was pressed.
+	 * @param __v The key which was pressed, if the value is {@code 0} then the
+	 * event is not posted.
 	 * @since 2016/05/15
 	 */
 	public void postKeyTyped(int __port, char __v)
 	{
+		// Do not post?
+		if (__v == 0)
+			return;
+		
+		// Post
 		postRaw((EventKind.KEY_TYPED.ordinal() << EVENT_KIND_SHIFT) |
 			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
 			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));

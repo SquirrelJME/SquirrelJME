@@ -325,6 +325,16 @@ public class SwingConsoleView
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
+		// If typed, use the directly typed character
+		if (__typed)
+		{
+			char rv = __e.getKeyChar();
+			
+			// Only use the given typed key if it was defined
+			if (rv != KeyEvent.CHAR_UNDEFINED)
+				return rv;
+		}
+		
 		return (char)0xDEAD;
 	}
 	
