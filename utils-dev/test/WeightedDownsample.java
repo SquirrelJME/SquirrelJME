@@ -348,6 +348,11 @@ public class WeightedDownsample
 	{
 		switch (__c & 0x00FFFFFF)
 		{
+				// Outside area
+			case 0xFC00FF:
+			case 0xFF00FF:
+				return 0.0000001D;
+				
 				// Outline
 			case 0x030633:
 				return 20.0D;
