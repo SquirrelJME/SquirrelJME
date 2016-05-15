@@ -81,7 +81,7 @@ public class WeightedDownsample
 					for (int sx = ssx; sx < ssx + iyscale; sx++)
 					{
 						// Get RGB value here
-						int q = in.getRGB(sx, sy);
+						int q = in.getRGB(sx, sy) | 0xFF000000;
 						
 						// Get existing weight, start at zero if missing
 						Double d = weights.get(q);
@@ -96,7 +96,7 @@ public class WeightedDownsample
 					}
 				
 				// Use the heaviest color
-				int v = 0xFF00FF;	// Use magenta for background just in case
+				int v = 0xFFFF00FF;	// Use magenta for background just in case
 				double w = 0.0D;
 				for (Map.Entry<Integer, Double> e : weights.entrySet())
 				{
@@ -134,6 +134,10 @@ public class WeightedDownsample
 	{
 		switch (__c)
 		{
+				// Outline
+			case 0xFF030633:
+				return 20.0D;
+			
 				// Unknown, weighs nothing
 			default:
 				return 0.0D;
