@@ -337,6 +337,7 @@ public class SwingConsoleView
 		}
 		
 		// Depends on the key code
+		boolean rk = (__e.getKeyLocation() != KeyEvent.KEY_LOCATION_LEFT);
 		int vk = __e.getKeyCode();
 		switch (vk)
 		{
@@ -414,7 +415,6 @@ public class SwingConsoleView
 			case KeyEvent.VK_AGAIN:				return KeyChars.AGAIN;
 			case KeyEvent.VK_ALL_CANDIDATES:	return KeyChars.ALL_CANDIDATES;
 			case KeyEvent.VK_ALPHANUMERIC:		return KeyChars.ALPHANUMERIC;
-			case KeyEvent.VK_ALT:				return KeyChars.LEFT_ALT;
 			case KeyEvent.VK_ALT_GRAPH:			return KeyChars.ALT_GRAPH;
 			case KeyEvent.VK_BACK_SPACE:		return KeyChars.BACK_SPACE;
 			case KeyEvent.VK_BEGIN:				return KeyChars.BEGIN;
@@ -424,7 +424,6 @@ public class SwingConsoleView
 			case KeyEvent.VK_CODE_INPUT:		return KeyChars.CODE_INPUT;
 			case KeyEvent.VK_COMPOSE:			return KeyChars.COMPOSE;
 			case KeyEvent.VK_CONTEXT_MENU:		return KeyChars.CONTEXT_MENU;
-			case KeyEvent.VK_CONTROL:			return KeyChars.LEFT_CONTROL;
 			case KeyEvent.VK_CONVERT:			return KeyChars.CONVERT;
 			case KeyEvent.VK_COPY:				return KeyChars.COPY;
 			case KeyEvent.VK_CUT:				return KeyChars.CUT;
@@ -510,7 +509,6 @@ public class SwingConsoleView
 			case KeyEvent.VK_SCROLL_LOCK:		return KeyChars.SCROLL_LOCK;
 			case KeyEvent.VK_SEPARATOR:
 				return KeyChars.NUMPAD_SEPARATOR;
-			case KeyEvent.VK_SHIFT:				return KeyChars.LEFT_SHIFT;
 			case KeyEvent.VK_STOP:				return KeyChars.STOP;
 			case KeyEvent.VK_SUBTRACT:
 				return KeyChars.NUMPAD_SUBTRACT;
@@ -544,6 +542,13 @@ public class SwingConsoleView
 			case KeyEvent.VK_F23:
 			case KeyEvent.VK_F24:
 				return (char)(KeyChars.FUNCTION_1 + (vk - KeyEvent.VK_F24));
+			
+			case KeyEvent.VK_ALT:
+				return (rk ? KeyChars.RIGHT_ALT : KeyChars.LEFT_ALT);
+			case KeyEvent.VK_CONTROL:
+				return (rk ? KeyChars.RIGHT_CONTROL : KeyChars.LEFT_CONTROL);
+			case KeyEvent.VK_SHIFT:
+				return (rk ? KeyChars.RIGHT_SHIFT : KeyChars.LEFT_SHIFT);
 			
 				// Unknown
 			default:
