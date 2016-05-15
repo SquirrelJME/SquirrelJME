@@ -196,3 +196,14 @@ So the downscale works as intended so far. 32x32 is quite small, but it does
 not look that bad. However it seems 8x8 is really bad and 16x16 is not much
 better. So 32x32 is the absolute lower limit of the algorithm.
 
+## 22:48
+
+I put the SquirrelJME mascot as a base64 PNG in the skin for the fossil
+project, so hopefully it sticks.
+
+## 23:10
+
+Well, the algorithm made creating a 32x32 icon manually by hand rather nice
+and easy. I just had slight trouble getting the eyes just right, but I believe
+I have it now.
+
