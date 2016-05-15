@@ -922,7 +922,7 @@ public class Build
 			Set<Project> pdeps = new HashSet<>();
 			String qdeps = attr.getValue("X-SquirrelJME-Optional");
 			if (qdeps != null)
-				for (String s : odeps.split(Pattern.quote(",")))
+				for (String s : qdeps.split(Pattern.quote(",")))
 					pdeps.add(getProject(s.trim()));
 			
 			// All force depends
