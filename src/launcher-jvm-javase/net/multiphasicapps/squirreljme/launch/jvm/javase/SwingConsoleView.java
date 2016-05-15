@@ -19,8 +19,17 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
@@ -33,6 +42,9 @@ import net.multiphasicapps.squirreljme.launch.AbstractConsoleView;
 public class SwingConsoleView
 	extends AbstractConsoleView
 {
+	/** Icons for the console. */
+	public static final List<Image> ICONS;
+	
 	/** The frame which displays the console graphics. */
 	protected final JFrame frame;
 	
@@ -55,6 +67,37 @@ public class SwingConsoleView
 	private volatile Graphics2D _gfx;
 	
 	/**
+	 * Initializes the icon set.
+	 *
+	 * @since 2016/05/15
+	 */
+	static
+	{
+		// Setup target
+		List<Image> icos = new ArrayList<>();
+		
+		// Look for resources
+		BufferedImage base;
+		try (InputStream is = new HexInputStream(new InputStreamReader(
+			SwingConsoleView.class.getResourceAsStream("icon.hex"), "utf-8")))
+		{
+			base = ImageIO.read(is);
+		}
+		
+		// The image will just be blank then
+		catch (IOException e)
+		{
+			base = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+		}
+		
+		// Add the base image always
+		icos.add(base);
+		
+		// Lock in
+		ICONS = Collections.<Image>unmodifiableList(icos);
+	}
+	
+	/**
 	 * Initializes the swing console view.
 	 *
 	 * @since 2016/05/14
@@ -64,6 +107,9 @@ public class SwingConsoleView
 		// Setup the console view frame
 		JFrame frame = new JFrame("SquirrelJME");
 		this.frame = frame;
+		
+		// Setup icons
+		frame.setIconImages(ICONS);
 		
 		// Make it exit on close
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
