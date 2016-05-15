@@ -35,3 +35,7 @@ be allocated at all. Their value never changes and it can be represented in
 the byte code so to speak. However for the dynamic compiler their values
 still need to be known and assigned to a specific field.
 
+## 09:46
+
+Some of these keys seem absurd, but you never know!
+

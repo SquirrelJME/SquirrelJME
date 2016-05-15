@@ -763,6 +763,146 @@ public interface SpecialButton
 	public static final int AC_HEATER_OFF =
 		0xE16F;
 	
+	/** Heater toggle. */
+	public static final int HEATER_TOGGLE =
+		0xE170;
+	
+	/** Heater on. */
+	public static final int HEATER_ON =
+		0xE171;
+	
+	/** Heater off. */
+	public static final int HEATER_OFF =
+		0xE172;
+	
+	/** Heater hotter. */
+	public static final int HEATER_HOTTER =
+		0xE173;
+	
+	/** Heater colder. */
+	public static final int HEATER_COLDER =
+		0xE174;
+	
+	/** Washer fluid. */
+	public static final int WASHER_FLUID =
+		0xE175;
+	
+	/** Secondary washer fluid. */
+	public static final int SECONDARY_WASHER_FLUID =
+		0xE176;
+	
+	/** Front wiper toggle. */
+	public static final int FRONT_WIPER_TOGGLE =
+		0xE177;
+	
+	/** Front wiper on. */
+	public static final int FRONT_WIPER_ON =
+		0xE178;
+	
+	/** Front wiper off. */
+	public static final int FRONT_WIPER_OFF =
+		0xE179;
+	
+	/** Front wiper faster. */
+	public static final int FRONT_WIPER_FASTER =
+		0xE17A;
+	
+	/** Front wiper slower. */
+	public static final int FRONT_WIPER_SLOWER =
+		0xE17B;
+	
+	/** Front wiper long pause. */
+	public static final int FRONT_WIPER_LONGER_PAUSE =
+		0xE17C;
+	
+	/** Front wiper shorter pause. */
+	public static final int FRONT_WIPER_SHORTER_PAUSE =
+		0xE17D;
+	
+	/** Back wiper toggle. */
+	public static final int BACK_WIPER_TOGGLE =
+		0xE17E;
+	
+	/** Back wiper on. */
+	public static final int BACK_WIPER_ON =
+		0xE17F;
+	
+	/** Back wiper off. */
+	public static final int BACK_WIPER_OFF =
+		0xE180;
+	
+	/** Back wiper faster. */
+	public static final int BACK_WIPER_FASTER =
+		0xE181;
+	
+	/** Back wiper slower. */
+	public static final int BACK_WIPER_SLOWER =
+		0xE182;
+	
+	/** Back wiper long pause. */
+	public static final int BACK_WIPER_LONGER_PAUSE =
+		0xE183;
+	
+	/** Back wiper shorter pause. */
+	public static final int BACK_WIPER_SHORTER_PAUSE =
+		0xE184;
+	
+	/** Turn signal left toggle. */
+	public static final int TURN_SIGNAL_LEFT_TOGGLE =
+		0xE185;
+	
+	/** Turn signal left on. */
+	public static final int TURN_SIGNAL_LEFT_ON =
+		0xE186;
+	
+	/** Turn signal left off. */
+	public static final int TURN_SIGNAL_LEFT_OFF =
+		0xE187;
+	
+	/** Turn signal right toggle. */
+	public static final int TURN_SIGNAL_RIGHT_TOGGLE =
+		0xE188;
+	
+	/** Turn signal right on. */
+	public static final int TURN_SIGNAL_RIGHT_ON =
+		0xE189;
+	
+	/** Turn signal right off. */
+	public static final int TURN_SIGNAL_RIGHT_OFF =
+		0xE18A;
+	
+	/** Hazard lights toggle. */
+	public static final int HAZARD_LIGHTS_TOGGLE =
+		0xE18B;
+	
+	/** Hazard lights on. */
+	public static final int HAZARD_LIGHTS_ON =
+		0xE18C;
+	
+	/** Hazard lights off. */
+	public static final int HAZARD_LIGHTS_OFF =
+		0xE18D;
+	
+	/** Defroster toggle. */
+	public static final int DEFROSTER_TOGGLE =
+		0xE18E;
+	
+	/** Defroster on. */
+	public static final int DEFROSTER_ON =
+		0xE18F;
+	
+	/** Defroster off. */
+	public static final int DEFROSTER_OFF =
+		0xE190;
+	
+	/** Eject tape A. */
+	public static final int EJECT_TAPE_A =
+		0xE191;
+	
+	/** Eject tape B. */
+	public static final int EJECT_TAPE_B =
+		0xE192;
+	
 	/** End of buttons. */
 	public static final int END_OF_LIST =
 		0xF8FF;
