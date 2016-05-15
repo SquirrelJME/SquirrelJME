@@ -151,11 +151,11 @@ public interface SpecialButton
 	public static final int SECONDARY_RIGHT =
 		0xE01C;
 	
-	/** Contrast increase. */
+	/** Screen contrast increase. */
 	public static final int SCREEN_CONTRAST_INCREASE =
 		0xE01D;
 	
-	/** Contrast decrease. */
+	/** Screen contrast decrease. */
 	public static final int SCREEN_CONTRAST_DECREASE =
 		0xE01E;
 	
@@ -170,6 +170,110 @@ public interface SpecialButton
 	/** Screen backlight dimmer. */
 	public static final int SCREEN_BACKLIGHT_DIMMER =
 		0xE021;
+	
+	/** Keyboard backlight toggle. */
+	public static final int KEYBOARD_BACKLIGHT_TOGGLE =
+		0xE022;
+	
+	/** Keyboard backlight brighter. */
+	public static final int KEYBOARD_BACKLIGHT_BRIGHTER =
+		0xE023;
+	
+	/** Keyboard backlight dimmer. */
+	public static final int KEYBOARD_BACKLIGHT_DIMMER =
+		0xE024;
+	
+	/** Screen brightness increase. */
+	public static final int SCREEN_BRIGHTNESS_INCREASE =
+		0xE025;
+	
+	/** Screen brightness decrease. */
+	public static final int SCREEN_BRIGHTNESS_DECREASE =
+		0xE026;
+	
+	/** Screen tint increase. */
+	public static final int SCREEN_TINT_INCREASE =
+		0xE027;
+	
+	/** Screen tint decrease. */
+	public static final int SCREEN_TINT_DECREASE =
+		0xE028;
+	
+	/** Degauss the screen. */
+	public static final int SCREEN_DEGAUSS =
+		0xE029;
+	
+	/** Volume mute toggle. */
+	public static final int VOLUME_MUTE_TOGGLE =
+		0xE02A;
+	
+	/** Volume increase. */
+	public static final int VOLUME_INCREASE =
+		0xE02B;
+	
+	/** Volume decrease. */
+	public static final int VOLUME_DECREASE =
+		0xE02C;
+	
+	/** Previous screen display. */
+	public static final int SCREEN_DISPLAY_PREVIOUS =
+		0xE02D;
+	
+	/** Next screen display. */
+	public static final int SCREEN_DISPLAY_NEXT =
+		0xE02E;
+	
+	/** Eject floppy disk A. */
+	public static final int EJECT_FLOPPY_A =
+		0xE02F;
+	
+	/** Eject floppy disk B. */
+	public static final int EJECT_FLOPPY_B =
+		0xE030;
+	
+	/** Eject disc A. */
+	public static final int EJECT_DISC_A =
+		0xE031;
+	
+	/** Eject disc B. */
+	public static final int EJECT_DISC_B =
+		0xE032;
+	
+	/** Media play. */
+	public static final int MEDIA_PLAY =
+		0xE033;
+	
+	/** Media pause. */
+	public static final int MEDIA_PAUSE =
+		0xE034;
+	
+	/** Media play/pause toggle. */
+	public static final int MEDIA_PLAY_PAUSE_TOGGLE =
+		0xE035;
+	
+	/** Media stop. */
+	public static final int MEDIA_STOP =
+		0xE036;
+	
+	/** Media rewind. */
+	public static final int MEDIA_REWIND =
+		0xE037;
+	
+	/** Media fast forward. */
+	public static final int MEDIA_FAST_FORWARD =
+		0xE038;
+	
+	/** Media step single frame back. */
+	public static final int MEDIA_FRAME_STEP_PREVIOUS =
+		0xE039;
+	
+	/** Media step single frame forwards. */
+	public static final int MEDIA_FRAME_STEP_NEXT =
+		0xE03A;
+	
+	/** Media record. */
+	public static final int MEDIA_RECORD =
+		0xE03B;
 	
 	/** The F1 key. */
 	public static final int F1 =
@@ -286,6 +390,118 @@ public interface SpecialButton
 	/** The F29 key. */
 	public static final int F29 =
 		0xE10D;
+	
+	/** Alpha lock. */
+	public static final int ALPHA_LOCK =
+		0xE10E;
+	
+	/** Cut. */
+	public static final int CUT =
+		0xE10F;
+	
+	/** Copy. */
+	public static final int COPY =
+		0xE110;
+	
+	/** Paste. */
+	public static final int PASTE =
+		0xE111;
+	
+	/** Custom. */
+	public static final int CUSTOM =
+		0xE112;
+	
+	/** Infinity. */
+	public static final int INFINITY =
+		0xE113;
+	
+	/** Natural logarithm. */
+	public static final int NATURAL_LOG =
+		0xE114;
+	
+	/** Binary logarithm .*/
+	public static final int BINARY_LOG =
+		0xE115;
+	
+	/** Octal logarithm. */
+	public static final int OCTAL_LOG =
+		0xE116;
+	
+	/** Decimal logarithm. */
+	public static final int DECIMAL_LOG =
+		0xE117;
+	
+	/** Hexadecimal logarithm. */
+	public static final int HEX_LOG =
+		0xE118;
+	
+	/** Natural Exponent. */
+	public static final int NATURAL_EXPONENT =
+		0xE119;
+	
+	/** Exponent. */
+	public static final int EXPONENT =
+		0xE11A;
+	
+	/** Sine. */
+	public static final int SINE =
+		0xE11B;
+	
+	/** Inverse sine. */
+	public static final int INVERSE_SINE =
+		0xE11C;
+	
+	/** Cosine. */
+	public static final int COSINE =
+		0xE11D;
+	
+	/** Inverse cosine. */
+	public static final int INVERSE_COSINE =
+		0xE11E;
+	
+	/** Tangent. */
+	public static final int TANGENT =
+		0xE11F;
+	
+	/** Inverse Tangent. */
+	public static final int INVERSE_TANGENT =
+		0xE120;
+	
+	/** Math Key. */
+	public static final int MATH =
+		0xE121;
+	
+	/** Memory key. */
+	public static final int MEMORY =
+		0xE122;
+	
+	/** Var-Link key. */
+	public static final int VAR_LINK =
+		0xE123;
+	
+	/** Recall memory. */
+	public static final int MEMORY_RECALL =
+		0xE124;
+	
+	/** Store memory. */
+	public static final int MEMORY_STORE =
+		0xE125;
+	
+	/** Clear memory. */
+	public static final int MEMORY_CLEAR =
+		0xE126;
+	
+	/** Units. */
+	public static final int UNITS =
+		0xE127;
+	
+	/** Char. */
+	public static final int CHAR =
+		0xE128;
+	
+	/** Answer. */
+	public static final int ANSWER =
+		0xE129;
 	
 	/** End of buttons. */
 	public static final int END_OF_LIST =
