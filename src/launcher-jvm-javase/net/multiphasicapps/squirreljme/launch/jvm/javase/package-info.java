@@ -9,7 +9,8 @@
 // ---------------------------------------------------------------------------
 
 /**
- * DESCRIBE THIS.
+ * This contains the kernel interface for the standard Java SE environment
+ * running on an existing JVM.
  *
  * @since 2016/05/14
  */

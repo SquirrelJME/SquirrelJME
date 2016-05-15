@@ -153,3 +153,25 @@ things.
 Drawing the console might be really difficult when it comes to swing, so likely
 the best way to do it would be with images.
 
+## 19:54
+
+Checking if a character is actually visible before drawing it is actually
+faster than drawing all characters regardless.
+
+## 19:57
+
+Ok, so now I need an event system which is fast and does not require countless
+amounts of objects for each event that occurs. So I suppose single integers
+in an array would do for events. That would be 4 billion unique events, which
+is rather plenty. There is no need for objects to be used in this case. The
+event handler could just really call an abstractable event handler for the user
+interface or similar. Or the user interface would just poll the kernel and such
+then possibly send events to a thread that is running so that the program
+which is currently in view gets said events. Then the console UI or other
+interface can handle special keys and such for actions to be performed. In the
+general sense, since I am going to support game consoles and such, I would
+want the ability to use controller inputs and treat them as events. So they
+would be essentially controller _n_ pressing buttons or using a joystick. Then
+the user interfaces can have a virtual keyboard if text input is required and
+the system lacks an actual keyboard.
+
