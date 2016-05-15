@@ -176,5 +176,13 @@ public interface SystemEventCode
 	/** External power removed. */
 	public static final int POWER_REMOVED =
 		40;
+	
+	/** Display attached. */
+	public static final int DISPLAY_ATTACHED =
+		41;
+	
+	/** Display removed. */
+	public static final int DISPLAY_REMOVED =
+		42;
 }
 

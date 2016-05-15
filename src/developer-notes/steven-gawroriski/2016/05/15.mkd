@@ -71,3 +71,8 @@ has to be included.
 
 Then this means, much lighter now.
 
+## 16:04
+
+Looking at the AWT key codes (which I am basing KeyChars slightly off) there
+is `SEPARATER`.
+
