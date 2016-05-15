@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.launch;
+package net.multiphasicapps.squirreljme.launch.event;
 
 /**
  * This is a class which is used as an event handler when one is to be handled.

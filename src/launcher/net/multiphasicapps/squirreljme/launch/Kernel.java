@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.launch.event.EventQueue;
 
 /**
  * This is the base class for the launcher interfaces which are defined by
@@ -29,6 +30,10 @@ public abstract class Kernel
 	/** Threads currently associated with the kernel. */
 	protected final Set<Thread> threads =
 		new HashSet<>();
+	
+	/** The event queue. */
+	protected final EventQueue events =
+		new EventQueue();
 	
 	/**
 	 * Creates a view of a console window.
@@ -44,6 +49,17 @@ public abstract class Kernel
 	 * @since 2016/05/14
 	 */
 	public abstract AbstractConsoleView createConsoleView();
+	
+	/**
+	 * Returns the event queue of the kernel.
+	 *
+	 * @return The kernel event queue.
+	 * @since 2016/05/15
+	 */
+	public final EventQueue eventQueue()
+	{
+		return this.events;
+	}
 	
 	/**
 	 * Creates a new thread and registers it with the kernel.
