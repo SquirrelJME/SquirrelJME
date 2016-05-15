@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.imageio.ImageIO;
 
 /**
@@ -26,6 +28,10 @@ import javax.imageio.ImageIO;
  */
 public class WeightedDownsample
 {
+	/** Unknown colors. */
+	protected static final Set<Integer> UNKNOWN_COLORS =
+		new TreeSet<>();
+	
 	/**
 	 * Main entry point.
 	 *
@@ -121,6 +127,11 @@ public class WeightedDownsample
 		{
 			ImageIO.write(out, "png", os);
 		}
+		
+		// Print unknown colors
+		System.out.println("Unknown colors:");
+		for (int u : UNKNOWN_COLORS)
+			System.out.printf("%010x%n", u);
 	}
 	
 	/**
@@ -163,6 +174,10 @@ public class WeightedDownsample
 			
 				// Unknown, weighs nothing
 			default:
+				// Debug
+				UNKNOWN_COLORS.add(__c);
+				
+				// No weight
 				return 0.0D;
 		}
 	}
