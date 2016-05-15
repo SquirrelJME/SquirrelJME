@@ -180,3 +180,13 @@ the system lacks an actual keyboard.
 Implementing the weighted down scale was easy and looks nicer than GIMP doing
 the downscale. However some colors are missing it seems.
 
+## 21:08
+
+My color matching woes is due to sRGB however. I have the colors I want to
+weigh using linear RGB.
+
+## 21:38
+
+Disliking this since there is no way to convert to linear RGB and GIMP only
+shows linear RGB.
+

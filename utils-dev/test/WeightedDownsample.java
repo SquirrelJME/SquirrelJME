@@ -8,12 +8,24 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+import java.awt.Color;
+import java.awt.color.ColorSpace;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -47,12 +59,20 @@ public class WeightedDownsample
 			throw new IllegalArgumentException("Usage: (image) (w) (h) (out)");
 		
 		// Read input image
-		BufferedImage in;
+		BufferedImage inbase;
 		try (InputStream is = new FileInputStream(__args[0]))
 		{
 			// Read image data
-			in = ImageIO.read(is);
+			inbase = ImageIO.read(is);
 		}
+		
+		// Create a new copy using another colorspace
+		int ow = inbase.getWidth(),
+			oh = inbase.getHeight();
+		BufferedImage in = new BufferedImage(ow, oh,
+			BufferedImage.TYPE_INT_RGB);
+		in.createGraphics().drawImage(inbase, 0, 0, null);
+		inbase = null;
 		
 		// Target size?
 		int tw = Integer.decode(__args[1]);
@@ -63,12 +83,93 @@ public class WeightedDownsample
 			BufferedImage.TYPE_INT_RGB);
 		
 		// The image scale
-		double xscale = (double)in.getWidth() / (double)tw;
-		double yscale = (double)in.getHeight() / (double)th;
+		double xscale = (double)ow / (double)tw;
+		double yscale = (double)oh / (double)th;
 		
 		// The integral scale
 		int ixscale = (int)xscale;
 		int iyscale = (int)yscale;
+		
+		// Determine the pixels with the most colors used
+		Map<Integer, Integer> totals = new HashMap<>();
+		for (int sy = 0; sy < oh; sy++)
+			for (int sx = 0; sx < ow; sx++)
+			{
+				// Get value here
+				int rgb = in.getRGB(sx, sy) & 0xFFFFFF;
+				
+				Integer i = totals.get(rgb);
+				if (i == null)
+					totals.put(rgb, 1);
+				else
+					totals.put(rgb, i + 1);
+			}
+		
+		// Make an array instead
+		List<int[]> mostcolors = new ArrayList<>();
+		for (Map.Entry<Integer, Integer> e : totals.entrySet())
+			mostcolors.add(new int[]{e.getKey(), e.getValue()});
+		
+		// Place into a list
+		Collections.sort(mostcolors, new Comparator<int[]>()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/05/14
+				 */
+				@Override
+				public int compare(int[] __a, int[] __b)
+				{
+					// Compare the counts
+					return -Integer.compare(__a[1], __b[1]);
+				}
+			});
+		
+		// Draw a color chart
+		{
+			// Determine font to use
+			Font f = Font.decode(Font.MONOSPACED);
+			BufferedImage fi = new BufferedImage(1, 1,
+				BufferedImage.TYPE_INT_RGB);
+			Graphics2D gfx = (Graphics2D)(fi.createGraphics());
+			gfx.setFont(f);
+			FontMetrics fm = gfx.getFontMetrics(f);
+			int ch = fm.getHeight();
+			
+			// Setup output image
+			int n = mostcolors.size();
+			BufferedImage cti = new BufferedImage(320, ch * n,
+				BufferedImage.TYPE_INT_RGB);
+			gfx = (Graphics2D)(cti.createGraphics());
+			gfx.setFont(f);
+			for (int i = 0, dy = 0; i < n; i++, dy += ch)
+			{
+				// Get color
+				int[] vv = mostcolors.get(i);
+				int col = vv[0];
+				int cnt = vv[1];
+				
+				// Set color to the desired one
+				gfx.setColor(new Color(col));
+				gfx.fillRect(0, dy, ch, ch);
+				
+				// Background for fill
+				gfx.setColor(Color.WHITE);
+				gfx.fillRect(ch, dy, 320, ch);
+				
+				// Back to black
+				gfx.setColor(Color.BLACK);
+				gfx.drawLine(ch, dy, ch, dy + ch);
+				gfx.drawString(String.format("#%06X (%d)", col, cnt),
+					ch + 1, dy + ch);
+			}
+			
+			// Write output image
+			try (OutputStream os = new FileOutputStream("table.png"))
+			{
+				ImageIO.write(cti, "png", os);
+			}
+		}
 		
 		// Color weight map
 		Map<Integer, Double> weights = new HashMap<>();
@@ -87,7 +188,7 @@ public class WeightedDownsample
 					for (int sx = ssx; sx < ssx + iyscale; sx++)
 					{
 						// Get RGB value here
-						int q = in.getRGB(sx, sy) | 0xFF000000;
+						int q = __getRGB(in, sx, sy);
 						
 						// Get existing weight, start at zero if missing
 						Double d = weights.get(q);
@@ -102,7 +203,7 @@ public class WeightedDownsample
 					}
 				
 				// Use the heaviest color
-				int v = 0xFFFF00FF;	// Use magenta for background just in case
+				int v = 0xFF00FF;	// Use magenta for background just in case
 				double w = 0.0D;
 				for (Map.Entry<Integer, Double> e : weights.entrySet())
 				{
@@ -131,7 +232,52 @@ public class WeightedDownsample
 		// Print unknown colors
 		System.out.println("Unknown colors:");
 		for (int u : UNKNOWN_COLORS)
-			System.out.printf("%010x%n", u);
+			System.out.printf("%06x%n", u);
+	}
+	
+	/**
+	 * Converts the color from a float to an integer.
+	 *
+	 * @param __v The input color.
+	 * @return The integer version of it.
+	 * @since 2016/05/14
+	 */
+	public static int __cap(float __v)
+	{
+		return Math.min(255, Math.max(0, (int)((float)__v * 255.0F)));
+	}
+	
+	/**
+	 * Returns the pixel value in linear color space.
+	 *
+	 * @param __bi The image to read from.
+	 * @param __x The x coordinate.
+	 * @param __y The y coordinate.
+	 * @since 2016/05/14
+	 */
+	public static int __getRGB(BufferedImage __bi, int __x, int __y)
+	{
+		if (false)
+		{
+			Color c = new Color(__bi.getRGB(__x, __y));
+			
+			// Convert to linear RGB
+			float[] u = c.getColorComponents(ColorSpace.getInstance(
+				ColorSpace.CS_LINEAR_RGB), null);
+			
+			// Return that
+			return (__cap(u[2]) << 16) |
+				(__cap(u[1]) << 8) |
+				(__cap(u[0]));
+		}
+		
+		// Get raster
+		WritableRaster wr = __bi.getRaster();
+		
+		// Build RGB data
+		return (wr.getSample(__x, __y, 0) << 16) |
+			(wr.getSample(__x, __y, 1) << 8) |
+			(wr.getSample(__x, __y, 2));
 	}
 	
 	/**
