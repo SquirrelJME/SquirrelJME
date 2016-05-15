@@ -13,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
@@ -58,12 +60,57 @@ public class WeightedDownsample
 		double xscale = (double)in.getWidth() / (double)tw;
 		double yscale = (double)in.getHeight() / (double)th;
 		
+		// The integral scale
+		int ixscale = (int)xscale;
+		int iyscale = (int)yscale;
+		
+		// Color weight map
+		Map<Integer, Double> weights = new HashMap<>();
+		
 		// Go through all output pixel positions
 		for (int dy = 0; dy < th; dy++)
 			for (int dx = 0; dx < tw; dx++)
 			{
-				// Determine the RGB data to use
-				int v = in.getRGB((int)(dx * xscale), (int)(dy * yscale));
+				// Clear the weights
+				weights.clear();
+				
+				// Go through the target region
+				int ssy = (int)(dy * yscale);
+				int ssx = (int)(dx * xscale);
+				for (int sy = ssy; sy < ssy + ixscale; sy++)
+					for (int sx = ssx; sx < ssx + iyscale; sx++)
+					{
+						// Get RGB value here
+						int q = in.getRGB(sx, sy);
+						
+						// Get existing weight, start at zero if missing
+						Double d = weights.get(q);
+						if (d == null)
+							d = 0.0D;
+						
+						// Add weight of color
+						d += __weight(q);
+						
+						// Set it
+						weights.put(q, d);
+					}
+				
+				// Use the heaviest color
+				int v = 0xFF00FF;	// Use magenta for background just in case
+				double w = 0.0D;
+				for (Map.Entry<Integer, Double> e : weights.entrySet())
+				{
+					// Get values
+					int ek = e.getKey();
+					double ev = e.getValue();
+					
+					// Higher?
+					if (ev > w)
+					{
+						v = ek;
+						w = ev;
+					}
+				}
 				
 				// Write RGB data
 				out.setRGB(dx, dy, v);
@@ -73,6 +120,23 @@ public class WeightedDownsample
 		try (OutputStream os = new FileOutputStream(__args[3]))
 		{
 			ImageIO.write(out, "png", os);
+		}
+	}
+	
+	/**
+	 * Returns the weight of the given color.
+	 *
+	 * @param __c The color to weigh.
+	 * @return The weight of it.
+	 * @since 2016/05/14
+	 */
+	public static double __weight(int __c)
+	{
+		switch (__c)
+		{
+				// Unknown, weighs nothing
+			default:
+				return 0.0D;
 		}
 	}
 }
