@@ -218,3 +218,9 @@ I suppose for 16x16 I can just do the eyes.
 Actually the eyes and the mouth fit perfectly in a 16x16 image, so it is just
 cropped.
 
+## 23:20
+
+Now if I had a 24x24 version, I could draw it in the console window for the
+swing interface using purely ASCII art. It would essentially just be an intro
+of sorts.
+
