@@ -13,3 +13,9 @@ some kind of odd bridge. So the first kernel of course would be the one that
 runs on an existing JVM. I can then go deeper and then port the kernel to
 SquirrelJME and interpret on the interpreter using the line based console
 interface in MEEP.
+
+## 07:22
+
+Hopefully today I can get a bunch of commits done similar to yesterday.
+Although looking at the graph, most of my commits are on Saturday and Sunday.
+
