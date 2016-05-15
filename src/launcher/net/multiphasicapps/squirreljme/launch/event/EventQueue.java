@@ -68,6 +68,10 @@ public class EventQueue
 	public static final int KEY_CHARACTER_SHIFT =
 		0;
 	
+	/** No event array. */
+	private static final EventHandler[] _NO_EVENTS =
+		new EventHandler[0];
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -80,6 +84,58 @@ public class EventQueue
 	
 	/** The write position in the queue. */
 	private volatile int _write;
+	
+	/**
+	 * Parses input events and passes them to the given event handlers.
+	 *
+	 * @param __eh Event handlers which are used to handle events with.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/15
+	 */
+	public void handleEvents(EventHandler __eh)
+		throws NullPointerException
+	{
+		handleEvents(__eh, _NO_EVENTS);
+	}
+	
+	/**
+	 * Parses input events and passes them to the given event handlers.
+	 *
+	 * @param __eh Event handlers which are used to handle events with.
+	 * @param __rest The remaining event handlers which may get events.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/15
+	 */
+	public void handleEvents(EventHandler __eh, EventHandler... __rest)
+		throws NullPointerException
+	{
+		// Check
+		if (__eh == null || __rest == null)
+			throw new NullPointerException("NARG");
+		
+		// Count handlers
+		int nh = __rest.length;
+		
+		// Event handling loop
+		for (;;)
+		{
+			// Get next event
+			int v = nextRaw();
+			
+			// No more events?
+			if (v == 0)
+				return;
+			
+			// Go through all handlers, start at -1 for first argument
+			for (int i = -1; i < nh; i++)
+			{
+				// Get handler
+				EventHandler eh = (i < 0 ? __eh : __rest[i]);
+				
+				throw new Error("TODO");
+			}
+		}
+	}
 	
 	/**
 	 * Returns the next raw event in the queue.
@@ -162,11 +218,16 @@ public class EventQueue
 	/**
 	 * Submits a raw event.
 	 *
-	 * @param __r The raw event to post.
+	 * @param __r The raw event to post, the value of {@code 0} is never
+	 * posted (because that would cause all event handling to halt).
 	 * @since 2016/05/15
 	 */
 	public void postRaw(int __r)
 	{
+		// Can never be zero
+		if (__r == 0)
+			return;
+		
 		// Lock
 		synchronized (lock)
 		{

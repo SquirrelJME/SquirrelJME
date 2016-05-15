@@ -18,13 +18,13 @@ package net.multiphasicapps.squirreljme.launch;
 public abstract class StandardUserInterface
 	implements Runnable
 {
-	/** The launcher to really use. */
-	protected final Kernel launcher;
+	/** The kernel to really use. */
+	protected final Kernel kernel;
 	
 	/**
-	 * Initializes the launcher controller.
+	 * Initializes the user insterface for the given kernel.
 	 *
-	 * @param __an The launcher to use for interaction.
+	 * @param __an The kernel to use for interaction.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/15
 	 */
@@ -36,7 +36,7 @@ public abstract class StandardUserInterface
 			throw new NullPointerException("NARG");
 		
 		// Setup
-		launcher = __an;
+		kernel = __an;
 	}
 }
 

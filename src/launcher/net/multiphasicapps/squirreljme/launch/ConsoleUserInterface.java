@@ -11,6 +11,10 @@
 package net.multiphasicapps.squirreljme.launch;
 
 import java.util.Calendar;
+import net.multiphasicapps.squirreljme.launch.event.EventHandler;
+import net.multiphasicapps.squirreljme.launch.event.EventKind;
+import net.multiphasicapps.squirreljme.launch.event.EventQueue;
+import net.multiphasicapps.squirreljme.launch.event.KeyChars;
 
 /**
  * This is the launcher controller which uses a console to interact with the
@@ -23,7 +27,7 @@ import java.util.Calendar;
  */
 public class ConsoleUserInterface
 	extends StandardUserInterface
-	implements Runnable
+	implements EventHandler, Runnable
 {
 	/** The number of nanoseconds to spend in a console frame. */
 	public static final long CONSOLE_DELAY =
@@ -65,13 +69,17 @@ public class ConsoleUserInterface
 	@Override
 	public void run()
 	{
+		// Get some things
+		Calendar currentcal = this.currentcal;
+		EventQueue eventqueue = this.kernel.eventQueue();
+		
+		// Loop
 		for (;;)
 		{
 			// Get the entry time
 			long entertime = System.nanoTime();
 			
 			// Update the calendar
-			Calendar currentcal = this.currentcal;
 			long nowtime = System.currentTimeMillis();
 			currentcal.setTimeInMillis(nowtime);
 		
@@ -85,7 +93,10 @@ public class ConsoleUserInterface
 			// Setup the time to draw
 			StringBuilder timebuilder = this.timebuilder;
 			__handleTime(timebuilder, currentcal);
-			console.put((cols - 1) - timebuilder.length(), 0, timebuilder); 
+			console.put((cols - 1) - timebuilder.length(), 0, timebuilder);
+			
+			// Handle console events.
+			eventqueue.handleEvents(this);
 			
 			// If there is enough time to draw the console then display it
 			long durtime = System.nanoTime() - entertime;
