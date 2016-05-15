@@ -503,6 +503,266 @@ public interface SpecialButton
 	public static final int ANSWER =
 		0xE129;
 	
+	/** Select. */
+	public static final int SELECT =
+		0xE12A;
+	
+	/** Start. */
+	public static final int START =
+		0xE12B;
+	
+	/** Power on. */
+	public static final int POWER_ON =
+		0xE12C;
+	
+	/** Power off. */
+	public static final int POWER_OFF =
+		0xE12D;
+	
+	/** Sleep. */
+	public static final int POWER_SLEEP =
+		0xE12E;
+	
+	/** HotSync Button. */
+	public static final int HOTSYNC =
+		0xE12F;
+	
+	/** Mouse button 1. */
+	public static final int MOUSE_BUTTON_1 =
+		0xE130;
+	
+	/** Mouse button 2. */
+	public static final int MOUSE_BUTTON_2 =
+		0xE131;
+	
+	/** Mouse button 3. */
+	public static final int MOUSE_BUTTON_3 =
+		0xE132;
+	
+	/** Mouse button 4. */
+	public static final int MOUSE_BUTTON_4 =
+		0xE133;
+	
+	/** Mouse button 5. */
+	public static final int MOUSE_BUTTON_5 =
+		0xE134;
+	
+	/** Mouse button 6. */
+	public static final int MOUSE_BUTTON_6 =
+		0xE135;
+	
+	/** Mouse button 7. */
+	public static final int MOUSE_BUTTON_7 =
+		0xE136;
+	
+	/** Mouse button 8. */
+	public static final int MOUSE_BUTTON_8 =
+		0xE137;
+	
+	/** Mouse button 9. */
+	public static final int MOUSE_BUTTON_9 =
+		0xE138;
+	
+	/** Mouse button 10. */
+	public static final int MOUSE_BUTTON_10 =
+		0xE139;
+	
+	/** Mouse button 11. */
+	public static final int MOUSE_BUTTON_11 =
+		0xE13A;
+	
+	/** Mouse button 12. */
+	public static final int MOUSE_BUTTON_12 =
+		0xE13B;
+	
+	/** Mouse button 13. */
+	public static final int MOUSE_BUTTON_13 =
+		0xE13C;
+	
+	/** Mouse button 14. */
+	public static final int MOUSE_BUTTON_14 =
+		0xE13D;
+	
+	/** Mouse button 15. */
+	public static final int MOUSE_BUTTON_15 =
+		0xE13E;
+	
+	/** Mouse button 16. */
+	public static final int MOUSE_BUTTON_16 =
+		0xE13F;
+	
+	/** Joystick button 1. */
+	public static final int JOYSTICK_BUTTON_1 =
+		0xE140;
+	
+	/** Joystick button 2. */
+	public static final int JOYSTICK_BUTTON_2 =
+		0xE141;
+	
+	/** Joystick button 3. */
+	public static final int JOYSTICK_BUTTON_3 =
+		0xE142;
+	
+	/** Joystick button 4. */
+	public static final int JOYSTICK_BUTTON_4 =
+		0xE143;
+	
+	/** Joystick button 5. */
+	public static final int JOYSTICK_BUTTON_5 =
+		0xE144;
+	
+	/** Joystick button 6. */
+	public static final int JOYSTICK_BUTTON_6 =
+		0xE145;
+	
+	/** Joystick button 7. */
+	public static final int JOYSTICK_BUTTON_7 =
+		0xE146;
+	
+	/** Joystick button 8. */
+	public static final int JOYSTICK_BUTTON_8 =
+		0xE147;
+	
+	/** Joystick button 9. */
+	public static final int JOYSTICK_BUTTON_9 =
+		0xE148;
+	
+	/** Joystick button 10. */
+	public static final int JOYSTICK_BUTTON_10 =
+		0xE149;
+	
+	/** Joystick button 11. */
+	public static final int JOYSTICK_BUTTON_11 =
+		0xE14A;
+	
+	/** Joystick button 12. */
+	public static final int JOYSTICK_BUTTON_12 =
+		0xE14B;
+	
+	/** Joystick button 13. */
+	public static final int JOYSTICK_BUTTON_13 =
+		0xE14C;
+	
+	/** Joystick button 14. */
+	public static final int JOYSTICK_BUTTON_14 =
+		0xE14D;
+	
+	/** Joystick button 15. */
+	public static final int JOYSTICK_BUTTON_15 =
+		0xE14E;
+	
+	/** Joystick button 16. */
+	public static final int JOYSTICK_BUTTON_16 =
+		0xE14F;
+	
+	/** Left trigger. */
+	public static final int LEFT_TRIGGER =
+		0xE150;
+	
+	/** Right trigger. */
+	public static final int RIGHT_TRIGGER =
+		0xE151;
+	
+	/** Secondary left trigger. */
+	public static final int SECONDARY_LEFT_TRIGGER =
+		0xE152;
+	
+	/** Secondary right trigger. */
+	public static final int SECONDARY_RIGHT_TRIGGER =
+		0xE153;
+	
+	/** Eject ammunition. */
+	public static final int EJECT_AMMUNITION =
+		0xE154;
+	
+	/** Secondary eject ammunition. */
+	public static final int SECONDARY_EJECT_AMMUNITION =
+		0xE155;
+	
+	/** Toggle fire mode. */
+	public static final int TOGGLE_FIRE_MODE =
+		0xE156;
+	
+	/** Use burst fire mode. */
+	public static final int BURST_FIRE_MODE =
+		0xE157;
+	
+	/** Use single shot fire mode. */
+	public static final int SINGLE_SHOT_FIRE_MODE =
+		0xE158;
+	
+	/** Use semi-automatic fire mode. */
+	public static final int SEMI_AUTOMATIC_FIRE_MODE =
+		0xE159;
+	
+	/** Use automatic fire mode. */
+	public static final int AUTOMATIC_FIRE_MODE =
+		0xE15A;
+	
+	/** Brew liquid. */
+	public static final int BREW_LIQUID =
+		0xE160;
+	
+	/** Brew Hotter. */
+	public static final int BREW_HOTTER =
+		0xE161;
+	
+	/** Brew Colder. */
+	public static final int BREW_COLDER =
+		0xE162;
+	
+	/** Toggle fan. */
+	public static final int FAN_TOGGLE =
+		0xE163;
+	
+	/** Fan off. */
+	public static final int FAN_OFF =
+		0xE164;
+	
+	/** Fan on. */
+	public static final int FAN_ON =
+		0xE165;
+	
+	/** Fan speed increase. */
+	public static final int FAN_SPEED_INCREASE =
+		0xE166;
+	
+	/** Fan speed decrease. */
+	public static final int FAN_SPEED_DECREASE =
+		0xE167;
+	
+	/** Air conditioner toggle. */
+	public static final int AC_TOGGLE =
+		0xE168;
+	
+	/** Air conditioner on. */
+	public static final int AC_ON =
+		0xE169;
+	
+	/** Air conditioner off. */
+	public static final int AC_OFF =
+		0xE16A;
+	
+	/** Air conditioner colder. */
+	public static final int AC_COLDER =
+		0xE16B;
+	
+	/** Air conditioner hotter. */
+	public static final int AC_HOTTER =
+		0xE16C;
+	
+	/** Air conditioner, toggle heat mode. */
+	public static final int AC_TOGGLE_HEAT =
+		0xE16D;
+	
+	/** Air conditioner, heater on. */
+	public static final int AC_HEATER_ON =
+		0xE16E;
+	
+	/** Air conditioner, heater off. */
+	public static final int AC_HEATER_OFF =
+		0xE16F;
+	
 	/** End of buttons. */
 	public static final int END_OF_LIST =
 		0xF8FF;
