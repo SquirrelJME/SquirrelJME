@@ -112,6 +112,9 @@ public class EventQueue
 			// Read value
 			int rv = queue[read];
 			
+			// Clear value
+			queue[read] = 0;
+			
 			// Increment
 			int next = read + 1;
 			if (next >= n)
