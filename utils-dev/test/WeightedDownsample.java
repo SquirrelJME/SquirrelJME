@@ -230,9 +230,9 @@ public class WeightedDownsample
 		}
 		
 		// Print unknown colors
-		System.out.println("Unknown colors:");
+		/*System.out.println("Unknown colors:");
 		for (int u : UNKNOWN_COLORS)
-			System.out.printf("%06x%n", u);
+			System.out.printf("%06x%n", u);*/
 	}
 	
 	/**
@@ -297,25 +297,24 @@ public class WeightedDownsample
 				
 				// Light fur color
 			case 0xFEFFFC:
-			case 0xFFFFFF:
 				return 1.0D;
 				
 				// Darker fur color
-			case 0xCACEDD:
+			case 0xCACEDE:
 				return 2.0D;
 				
 				// Light Ear pink
-			case 0xffd1ce:
+			case 0xFFD0CD:
 				return 1.0D;
 				
 				// Dark ear pink
-			case 0xeaaaa0:
+			case 0xEAAAA0:
 				return 2.0D;
 				
 				// Eye color
-			case 0xf85150:	// light
-			case 0xf90f0f:	// medium
-			case 0xa51815:	// dark
+			case 0xF75150:	// light
+			case 0xF91110:	// medium
+			case 0xA51616:	// dark
 				return 50.0D;
 			
 				// Unknown, weighs nothing
