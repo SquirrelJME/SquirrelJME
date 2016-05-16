@@ -185,7 +185,7 @@ public class EventQueue
 	{
 		// Must be permitted
 		if (this.attached)
-			owner.permissions().eventRead();
+			owner.permissions().eventRead(this);
 		
 		// Lock
 		synchronized (lock)
@@ -234,7 +234,7 @@ public class EventQueue
 	{
 		// Must be permitted
 		if (this.attached)
-			owner.permissions().eventRead();
+			owner.permissions().eventRead(this);
 		
 		// Lock
 		synchronized (lock)
@@ -272,7 +272,7 @@ public class EventQueue
 	{
 		// Must be permitted
 		if (this.attached)
-			owner.permissions().eventWrite();
+			owner.permissions().eventWrite(this);
 		
 		// Can never be zero
 		if (__r == 0)

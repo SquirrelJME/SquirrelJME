@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.perm;
 
+import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
@@ -82,25 +83,45 @@ public final class PermissionManager
 	/**
 	 * Can read events from the event queue?
 	 *
+	 * @param __eq The queue to read from.
+	 * @throws NullPointerException On null arguments.
 	 * @throws SecurityException If events cannot be read from the event queue.
 	 * @since 2016/05/16
 	 */
-	public void eventRead()
+	public void eventRead(EventQueue __eq)
+		throws NullPointerException
 	{
+		// Check
+		if (__eq == null)
+			throw new NullPointerException("NARG");
+		
 		// Process access
 		KernelProcess curkp = accessProcess();
+		
+		// Generally access is granted
+		return;
 	}
 	
 	/**
 	 * Can write events to the event queue?
 	 *
+	 * @param __eq The queue to read from.
+	 * @throws NullPointerException On null arguments.
 	 * @throws SecurityException If events cannot be pushed to the event queue.
 	 * @since 2016/05/16
 	 */
-	public void eventWrite()
+	public void eventWrite(EventQueue __eq)
+		throws NullPointerException
 	{
+		// Check
+		if (__eq == null)
+			throw new NullPointerException("NARG");
+		
 		// Process access
 		KernelProcess curkp = accessProcess();
+		
+		// Generally access is granted
+		return;
 	}
 }
 
