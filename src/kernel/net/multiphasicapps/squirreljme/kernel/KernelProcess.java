@@ -229,17 +229,33 @@ public final class KernelProcess
 	 * Adds a thread to the current process.
 	 *
 	 * @param __t The thread to add.
+	 * @throws IllegalStateException If another process contains this thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/16
 	 */
 	final void __addThread(Thread __t)
-		throws NullPointerException
+		throws IllegalStateException, NullPointerException
 	{
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Check permission
+		this.permissions.createThread();
+		
+		// {@squirreljme.error AY07 The thread to be added is owned by
+		// another process.}
+		KernelProcess op = this.kernel.processByThread(__t);
+		if (op != null && op != this)
+			throw new IllegalStateException("AY07");
+		
+		// Lock
+		List<Thread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Add it
+			threads.add(__t);
+		}
 	}
 }
 
