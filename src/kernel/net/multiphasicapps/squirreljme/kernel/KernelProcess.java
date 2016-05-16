@@ -10,7 +10,11 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
@@ -42,6 +46,10 @@ public final class KernelProcess
 	protected final PermissionManager permissions =
 		new PermissionManager(this);
 	
+	/** Threads the process own. */
+	private final List<Thread> _threads =
+		new LinkedList<>();
+	
 	/**
 	 * Initializes the kernel process.
 	 *
@@ -58,11 +66,118 @@ public final class KernelProcess
 			throw new NullPointerException("NARG");
 		
 		// Set
-		kernel = __k;
-		iskernel = __ik;
+		this.kernel = __k;
+		this.iskernel = __ik;
 		
 		// Setup event queue
-		eventqueue = new EventQueue(this);
+		this.eventqueue = new EventQueue(this);
+	}
+	
+	/**
+	 * Returns {@code true} if any threads in the current process are
+	 * alive.
+	 *
+	 * @return {@code true} if any threads are currently alive.
+	 * @since 2016/05/16
+	 */
+	public final boolean areAnyThreadsAlive()
+	{
+		// Lock
+		List<Thread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Go through all threads
+			Iterator<Thread> it = threads.iterator();
+			while (it.hasNext())
+			{
+				Thread t = it.next();
+				
+				// If not alive, remove it
+				if (!t.isAlive())
+					it.remove();
+			}
+			
+			// Only if there are threads, is the process considered alive.
+			return !threads.isEmpty();
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if the process contains the given thread.
+	 *
+	 * @param __t The thread to see if this processes manages it.
+	 * @return {@code true} if this proccess owns the given thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/16
+	 */
+	public final boolean containsThread(Thread __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		List<Thread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Go through all threads and potentially cleanup while searching
+			// for the given thread
+			Iterator<Thread> it = threads.iterator();
+			while (it.hasNext())
+			{
+				Thread t = it.next();
+				
+				// Remove dead threads
+				if (!t.isAlive())
+					it.remove();
+				
+				// Is this a thread?
+				else if (t == __t)
+					return true;
+			}
+		}
+		
+		// Does not contain it
+		return false;
+	}
+	
+	/**
+	 * Creates a new thread with the specified code to run which is then
+	 * assigned to the current process.
+	 *
+	 * @param __r The code to run when the thread is started.
+	 * @return The newly created thread.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If thread creation is denied.
+	 * @since 2016/05/16
+	 */
+	public final Thread createThread(Runnable __r)
+		throws NullPointerException, SecurityException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Check permission
+		this.permissions.createThread();
+		
+		// Create thread
+		Thread rv = new Thread(__r);
+		
+		// Lock
+		List<Thread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Add to thread list
+			threads.add(rv);
+			
+			// Start it
+			rv.start();
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

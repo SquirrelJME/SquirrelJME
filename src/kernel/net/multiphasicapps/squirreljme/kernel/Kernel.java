@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -35,17 +36,12 @@ import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
  */
 public abstract class Kernel
 {
-	/** Threads currently associated with the kernel. */
-	@Deprecated
-	protected final Set<Thread> threads =
-		new HashSet<>();
-	
 	/** The kernel process. */
 	private final KernelProcess _kernelprocess;
 	
 	/** Kernel processes. */
 	private final List<KernelProcess> _processes =
-		new ArrayList<>();
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the base kernel interface.
@@ -102,37 +98,6 @@ public abstract class Kernel
 	}
 	
 	/**
-	 * Creates a new thread and registers it with the kernel.
-	 *
-	 * @param __r The code to be ran when the thread is started.
-	 * @return The newly created thread.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/14
-	 */
-	@Deprecated
-	public final Thread newThread(Runnable __r)
-		throws NullPointerException
-	{
-		// Check
-		if (__r == null)
-			throw new NullPointerException("NARG");
-		
-		// Setup new thread and start it
-		Thread rv = new Thread(__r);
-		rv.start();
-		
-		// Lock
-		Set<Thread> thr = threads;
-		synchronized (thr)
-		{
-			thr.add(rv);
-		}
-		
-		// Return the newly created thread
-		return rv;
-	}
-	
-	/**
 	 * Locates the process that owns the given thread.
 	 *
 	 * @param __t The thread to get the process of.
@@ -148,7 +113,8 @@ public abstract class Kernel
 		{
 			// Go through all of them
 			for (KernelProcess kp : kps)
-				throw new Error("TODO");
+				if (kp.containsThread(__t))
+					return kp;
 		}
 		
 		// Not found
@@ -156,61 +122,46 @@ public abstract class Kernel
 	}
 	
 	/**
-	 * Does not return until all threads are no longer alive.
+	 * Does not return until there are no processes remaining.
 	 *
-	 * @since 2016/05/14
+	 * @throws InterruptedException If the process was interrupted during
+	 * blocking.
+	 * @since 2016/05/16
 	 */
-	@Deprecated
-	public final void untilThreadless()
+	public final void untilProcessless()
+		throws InterruptedException
 	{
-		// Loop
-		Set<Thread> thr = threads;
+		// Loop for a long time
+		List<KernelProcess> processes = this._processes;
+		Thread curt = Thread.currentThread();
 		for (;;)
 		{
+			// {@squirreljme.error AY06 Thread interrupted.}
+			if (curt.isInterrupted())
+				throw new InterruptedException("AY06");
+			
 			// Lock
-			int livecount = 0;
-			synchronized (thr)
+			synchronized (processes)
 			{
-				// Count and remove threads
-				Iterator<Thread> it = thr.iterator();
-				try
+				// Go through all processes
+				Iterator<KernelProcess> it = processes.iterator();
+				while (it.hasNext())
 				{
-					// Go through each iteration
-					for (;;)
-					{
-						// Get the next thread
-						Thread t = it.next();
-						
-						// If the thread is alive, count it
-						if (t.isAlive())
-							livecount++;
-						
-						// Otherwise remove it
-						else
-							it.remove();
-					}
+					KernelProcess p = it.next();
+					
+					// If all threads in the process are dead, then remove
+					// the process.
+					if (!p.areAnyThreadsAlive())
+						it.remove();
 				}
 				
-				// End
-				catch (NoSuchElementException e)
-				{
-				}
+				// Empty?
+				if (processes.isEmpty())
+					return;
 			}
 			
-			// Out of threads?
-			if (livecount < 0)
-				return;
-			
-			// Rest for a bit since threads usually will not just die.
-			try
-			{
-				Thread.sleep(750L);
-			}
-			
-			// Do nothing
-			catch (InterruptedException e)
-			{
-			}
+			// Sleep for a bit
+			Thread.sleep(750L);
 		}
 	}
 }

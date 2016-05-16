@@ -81,6 +81,22 @@ public final class PermissionManager
 	}
 	
 	/**
+	 * Checks whether threads can be created on behalf of the given process.
+	 *
+	 * @throws SecurityException If threads cannot be created on the process.
+	 * @since 2016/05/16
+	 */
+	public void createThread()
+		throws SecurityException
+	{
+		// Process access
+		KernelProcess curkp = accessProcess();
+		
+		// Generally access is granted
+		return;
+	}
+	
+	/**
 	 * Can read events from the event queue?
 	 *
 	 * @param __eq The queue to read from.

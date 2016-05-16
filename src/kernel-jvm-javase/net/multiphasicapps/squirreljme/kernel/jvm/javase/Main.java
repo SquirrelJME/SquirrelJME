@@ -33,10 +33,26 @@ public class Main
 		ConsoleUI cui = new ConsoleUI((kern = new JVMJavaSEKernel(__args)));
 		
 		// Create thread for the console interface
-		kern.newThread(cui);
+		kern.kernelProcess().createThread(cui);
 		
 		// Block until all workers are terminated
-		kern.untilThreadless();
+		for (;;)
+		{
+			// Kernel loop
+			try
+			{
+				kern.untilProcessless();
+			
+				// Would normally terminate
+				return;
+			}
+			
+			// Interrupted, yield and retry
+			catch (InterruptedException e)
+			{
+				Thread.yield();
+			}
+		}
 	}
 }
 

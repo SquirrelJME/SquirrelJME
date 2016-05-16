@@ -142,10 +142,11 @@ public class EventQueue
 	 * @param __eh Event handlers which are used to handle events with.
 	 * @param __rest The remaining event handlers which may get events.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If reading events is not permitted.
 	 * @since 2016/05/15
 	 */
 	public void handleEvents(EventHandler __eh, EventHandler... __rest)
-		throws NullPointerException
+		throws NullPointerException, SecurityException
 	{
 		// Check
 		if (__eh == null || __rest == null)
@@ -179,9 +180,11 @@ public class EventQueue
 	 * Returns the next raw event in the queue.
 	 *
 	 * @return The next raw event, or {@code 0} if there none remaining.
+	 * @throws SecurityException If event removal is denied.
 	 * @since 2016/05/15
 	 */
 	public final int nextRaw()
+		throws SecurityException
 	{
 		// Must be permitted
 		if (this.attached)
@@ -228,9 +231,11 @@ public class EventQueue
 	 * Peeks the next raw event in the queue.
 	 *
 	 * @return The next raw event, or {@code 0} if there none remaining.
+	 * @throws SecurityException If event peeking is denied.
 	 * @since 2016/05/15
 	 */
 	public final int peekRaw()
+		throws SecurityException
 	{
 		// Must be permitted
 		if (this.attached)
@@ -262,13 +267,18 @@ public class EventQueue
 	}
 	
 	/**
-	 * Submits a raw event.
+	 * Submits a raw event. The event
 	 *
 	 * @param __r The raw event to post, the value of {@code 0} is never
+	 * @return {@code true} if the event was posted, otherwise {@code false}
+	 * will be returned if for example there is not enough memory remaining or
+	 * the event is not valid.
 	 * posted (because that would cause all event handling to halt).
+	 * @throws SecurityException If posting threads is denied.
 	 * @since 2016/05/15
 	 */
-	public final void postRaw(int __r)
+	public final boolean postRaw(int __r)
+		throws SecurityException
 	{
 		// Must be permitted
 		if (this.attached)
@@ -276,7 +286,7 @@ public class EventQueue
 		
 		// Can never be zero
 		if (__r == 0)
-			return;
+			return false;
 		
 		// Lock
 		synchronized (lock)
@@ -295,7 +305,7 @@ public class EventQueue
 				// Drop the event
 				catch (OutOfMemoryError e)
 				{
-					return;
+					return false;
 				}
 			
 			// Get the positions
@@ -317,7 +327,7 @@ public class EventQueue
 					
 					// The new size overflows, drop event
 					if (nl <= 0)
-						return;
+						return false;
 					
 					// Allocate
 					int[] into = new int[nl];
@@ -343,7 +353,7 @@ public class EventQueue
 				// Drop the event
 				catch (OutOfMemoryError e)
 				{
-					return;
+					return false;
 				}
 			
 			// Write in the queue
@@ -352,6 +362,9 @@ public class EventQueue
 			// Set next write
 			this._write = next;
 		}
+		
+		// Posted
+		return true;
 	}
 	
 	/**
@@ -360,9 +373,11 @@ public class EventQueue
 	 * @param __port The controller port.
 	 * @param __v The key which was pressed, if the value is {@code 0} then the
 	 * event is not posted.
+	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
 	public void postKeyPressed(int __port, char __v)
+		throws SecurityException
 	{
 		// Do not post?
 		if (__v == 0)
@@ -380,9 +395,11 @@ public class EventQueue
 	 * @param __port The controller port.
 	 * @param __v The key which was pressed, if the value is {@code 0} then the
 	 * event is not posted.
+	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
 	public void postKeyReleased(int __port, char __v)
+		throws SecurityException
 	{
 		// Do not post?
 		if (__v == 0)
@@ -400,9 +417,11 @@ public class EventQueue
 	 * @param __port The controller port.
 	 * @param __v The key which was pressed, if the value is {@code 0} then the
 	 * event is not posted.
+	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
 	public void postKeyTyped(int __port, char __v)
+		throws SecurityException
 	{
 		// Do not post?
 		if (__v == 0)
