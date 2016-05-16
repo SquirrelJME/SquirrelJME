@@ -45,6 +45,10 @@ public class ConsoleUI
 	/** The current time string builder. */
 	protected final StringBuilder timebuilder =
 		new StringBuilder();
+		
+	/** The event queue to use. */
+	protected final EventQueue eventqueue =
+		new EventQueue();
 	
 	/**
 	 * Initializes the console launcher controller.
@@ -73,7 +77,7 @@ public class ConsoleUI
 	{
 		// Get some things
 		Calendar currentcal = this.currentcal;
-		EventQueue eventqueue = this.kernel.kernelProcess().eventQueue();
+		EventQueue eventqueue = this.eventqueue;
 		
 		// Loop
 		for (;;)
