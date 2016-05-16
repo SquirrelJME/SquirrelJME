@@ -43,8 +43,7 @@ public final class KernelProcess
 	protected final EventQueue eventqueue;
 	
 	/** The permission manager. */
-	protected final PermissionManager permissions =
-		new PermissionManager(this);
+	protected final PermissionManager permissions;
 	
 	/** Threads the process own. */
 	private final List<Thread> _threads =
@@ -68,6 +67,9 @@ public final class KernelProcess
 		// Set
 		this.kernel = __k;
 		this.iskernel = __ik;
+		
+		// Setup permissions
+		this.permissions = new PermissionManager(this);
 		
 		// Setup event queue
 		this.eventqueue = new EventQueue(this);
@@ -241,7 +243,8 @@ public final class KernelProcess
 			throw new NullPointerException("NARG");
 		
 		// Check permission
-		this.permissions.createThread();
+		if (!iskernel)
+			this.permissions.createThread();
 		
 		// {@squirreljme.error AY07 The thread to be added is owned by
 		// another process.}

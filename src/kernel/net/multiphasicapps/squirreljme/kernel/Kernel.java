@@ -52,11 +52,13 @@ public abstract class Kernel
 	{
 		// Setup kernel process
 		KernelProcess kp = new KernelProcess(this, true);
-		kp.__addThread(Thread.currentThread());
 		this._kernelprocess = kp;
 		
 		// Kernel process is a global one
 		this._processes.add(kp);
+		
+		// Register the current thread
+		kp.__addThread(Thread.currentThread());
 	}
 	
 	/**
