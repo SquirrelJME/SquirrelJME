@@ -4,3 +4,10 @@
 
 Woke up late today.
 
+## 09:14
+
+The kernel likely does not need a set of threads, but more of a list. This is
+made for embedded systems and having a hash set for a few elements might just
+be overkill. I could however have a `Set` which is backed by an array or
+`ArrayList`.
+

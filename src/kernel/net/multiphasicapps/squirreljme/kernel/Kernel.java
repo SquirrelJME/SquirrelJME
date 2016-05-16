@@ -40,6 +40,15 @@ public abstract class Kernel
 		new EventQueue();
 	
 	/**
+	 * Initializes the base kernel interface.
+	 *
+	 * @since 2016/05/16
+	 */
+	public Kernel()
+	{
+	}
+	
+	/**
 	 * Creates a view of a console window.
 	 *
 	 * Note that if multi-headed consoles are supported then the interface
