@@ -290,6 +290,8 @@ public class WeightedDownsample
 	public static float __avg(double __wa, float __a, double __wb, float __b)
 	{
 		if (true)
+			return __a;
+		if (true)
 			return (float)(((__a * (__wa * 2.0D)) + (__b * __wb)) /
 				((__wa * 2.0D) + __wb));
 		return (__a + __b) / 2.0F;
