@@ -10,10 +10,11 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -36,16 +37,12 @@ public abstract class Kernel
 	protected final Set<Thread> threads =
 		new HashSet<>();
 	
-	/** The event queue. */
-	protected final EventQueue events =
-		new EventQueue();
-	
 	/** The kernel process. */
 	private final KernelProcess _kernelprocess;
 	
 	/** Kernel processes. */
-	private final Set<KernelProcess> _processes =
-		new HashSet<>();
+	private final List<KernelProcess> _processes =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the base kernel interface.
@@ -55,7 +52,7 @@ public abstract class Kernel
 	public Kernel()
 	{
 		// Setup kernel process
-		KernelProcess kp = new KernelProcess();
+		KernelProcess kp = new KernelProcess(this, true);
 		kp.__addThread(Thread.currentThread());
 		this._kernelprocess = kp;
 		
@@ -88,17 +85,6 @@ public abstract class Kernel
 	public final KernelProcess currentProcess()
 	{
 		return processByThread(Thread.currentThread());
-	}
-	
-	/**
-	 * Returns the event queue of the kernel.
-	 *
-	 * @return The kernel event queue.
-	 * @since 2016/05/15
-	 */
-	public final EventQueue eventQueue()
-	{
-		return this.events;
 	}
 	
 	/**
@@ -153,7 +139,7 @@ public abstract class Kernel
 	public final KernelProcess processByThread(Thread __t)
 	{
 		// Lock
-		Set<KernelProcess> kps = this._processes;
+		List<KernelProcess> kps = this._processes;
 		synchronized (kps)
 		{
 			// Go through all of them

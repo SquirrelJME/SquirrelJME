@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.event;
 
+import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+
 /**
  * This is the event queue.
  *
@@ -76,6 +78,9 @@ public class EventQueue
 	protected final Object lock =
 		new Object();
 	
+	/** The owning process. */
+	protected final KernelProcess owner;
+	
 	/** The event queue. */
 	private volatile int[] _queue;
 	
@@ -84,6 +89,24 @@ public class EventQueue
 	
 	/** The write position in the queue. */
 	private volatile int _write;
+	
+	/**
+	 * Initializes the event queue for the given process.
+	 *
+	 * @param __kp The process which owns the event queue
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/16
+	 */
+	public EventQueue(KernelProcess __kp)
+		throws NullPointerException
+	{
+		// Check
+		if (__kp == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		owner = __kp;
+	}
 	
 	/**
 	 * Parses input events and passes them to the given event handlers.

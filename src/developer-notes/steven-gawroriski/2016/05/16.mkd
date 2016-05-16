@@ -34,3 +34,9 @@ Only the process which owns the event manager/console should be able to access
 the queue details and such. Otherwise, other processes can just happily add
 events to other processes including the kernel.
 
+## 09:49
+
+Going to need a more advanced permission checker also. It will need to check
+if something is permitted by a process and then potentially ask the user using
+the user interface if it should be allowed to do so.
+
