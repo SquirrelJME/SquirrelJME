@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel;
 import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
+import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
 
 /**
  * This represents a process within the kernel. A process owns a number of
@@ -34,6 +35,10 @@ public final class KernelProcess
 	
 	/** The process event queue. */
 	protected final EventQueue eventqueue;
+	
+	/** The permission manager. */
+	protected final PermissionManager permissions =
+		new PermissionManager(this);
 	
 	/**
 	 * Initializes the kernel process.
@@ -59,34 +64,14 @@ public final class KernelProcess
 	}
 	
 	/**
-	 * Checks if the given permission is permitted by the current process on
-	 * behalf of this process.
+	 * Returns the event queue of the process.
 	 *
-	 * @param __p The permission to check.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SecurityException If the action is not permitted.
+	 * @return The process event queue.
 	 * @since 2016/05/16
 	 */
-	public final void checkPermission(String __p)
-		throws NullPointerException, SecurityException
+	public final EventQueue eventQueue()
 	{
-		// Check
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		// The current process
-		KernelProcess curkp = this.kernel.currentProcess();
-		
-		// The kernel can do whatever it wants
-		if (curkp.isKernelProcess())
-			return;
-		
-		// {@squirreljme.error AY04 User-space processes do not have any
-		// permissions when accessing other processes.}
-		if (curkp != this)
-			throw new SecurityException("AY04");
-		
-		throw new Error("TODO");
+		return this.eventqueue;
 	}
 	
 	/**
@@ -99,6 +84,28 @@ public final class KernelProcess
 	public final boolean isKernelProcess()
 	{
 		return this.iskernel;
+	}
+	
+	/**
+	 * Returns the kernel that this runs under.
+	 *
+	 * @return The kernel this runs under.
+	 * @since 2016/05/16
+	 */
+	public final Kernel kernel()
+	{
+		return this.kernel;
+	}
+	
+	/**
+	 * Returns the permission manager.
+	 *
+	 * @return The permission manager.
+	 * @since 2016/05/16
+	 */
+	public final PermissionManager permissions()
+	{
+		return this.permissions;
 	}
 	
 	/**

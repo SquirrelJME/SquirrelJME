@@ -81,6 +81,9 @@ public class EventQueue
 	/** The owning process. */
 	protected final KernelProcess owner;
 	
+	/** Is this attached to a process? */
+	protected final boolean attached;
+	
 	/** The event queue. */
 	private volatile int[] _queue;
 	
@@ -89,6 +92,17 @@ public class EventQueue
 	
 	/** The write position in the queue. */
 	private volatile int _write;
+	
+	/**
+	 * Initializes an event queue which is not attached to a process.
+	 *
+	 * @since 2016/05/16
+	 */
+	public EventQueue()
+	{
+		owner = null;
+		attached = false;
+	}
 	
 	/**
 	 * Initializes the event queue for the given process.
@@ -106,6 +120,7 @@ public class EventQueue
 		
 		// Set
 		owner = __kp;
+		attached = true;
 	}
 	
 	/**
@@ -166,8 +181,12 @@ public class EventQueue
 	 * @return The next raw event, or {@code 0} if there none remaining.
 	 * @since 2016/05/15
 	 */
-	public int nextRaw()
+	public final int nextRaw()
 	{
+		// Must be permitted
+		if (this.attached)
+			owner.permissions().eventRead();
+		
 		// Lock
 		synchronized (lock)
 		{
@@ -211,8 +230,12 @@ public class EventQueue
 	 * @return The next raw event, or {@code 0} if there none remaining.
 	 * @since 2016/05/15
 	 */
-	public int peekRaw()
+	public final int peekRaw()
 	{
+		// Must be permitted
+		if (this.attached)
+			owner.permissions().eventRead();
+		
 		// Lock
 		synchronized (lock)
 		{
@@ -245,8 +268,12 @@ public class EventQueue
 	 * posted (because that would cause all event handling to halt).
 	 * @since 2016/05/15
 	 */
-	public void postRaw(int __r)
+	public final void postRaw(int __r)
 	{
+		// Must be permitted
+		if (this.attached)
+			owner.permissions().eventWrite();
+		
 		// Can never be zero
 		if (__r == 0)
 			return;

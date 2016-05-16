@@ -73,7 +73,7 @@ public class ConsoleUI
 	{
 		// Get some things
 		Calendar currentcal = this.currentcal;
-		EventQueue eventqueue = this.kernel.eventQueue();
+		EventQueue eventqueue = this.kernel.kernelProcess().eventQueue();
 		
 		// Loop
 		for (;;)

@@ -21,6 +21,7 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
 
 /**
  * This is the base class for the kernel interfaces which are defined by
