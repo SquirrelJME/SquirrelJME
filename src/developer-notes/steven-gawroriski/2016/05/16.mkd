@@ -46,3 +46,7 @@ I will need to be careful when it comes to permissions so that there are no
 exploits. I would also need a way to have extra permission managers, for
 example with drivers (device IO) and such.
 
+## 17:33
+
+Did some busy real life things, rather drained of physical energy.
+
