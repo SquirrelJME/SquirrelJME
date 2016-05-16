@@ -16,12 +16,14 @@ import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
 
 /**
- * This represents a process within the kernel. A process owns a number of
- * {@link Thread}s and also is used for when the system is in kernel code that
- * permissions are checked and such for the current process before an
- * operation is performed.
+ * This represents a process within the kernel. {@link Thread}s are associated
+ * with processes and are generally used for permissions.
  *
- * This class acts as a {@link SecurityManager} to running threads.
+ * SquirrelJME can run without a memory manager and one is not needed at all
+ * (due to lack of reflection) and as such all processes if checks were not
+ * made could access other processes freely. However to prevent this, a
+ * permission manager is associated with each process and checks are placed in
+ * the specific locations to allow or deny specific behaviors of the code.
  *
  * @since 2016/05/16
  */

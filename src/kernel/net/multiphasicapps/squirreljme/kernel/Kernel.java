@@ -28,7 +28,8 @@ import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
  * systems to provide anything that the default kernel does not provide
  * when it comes to interfaces. All calls which are done by the user interface
  * and the running programs in the kernel, will call the kernel to perform
- * system calls and such.
+ * system calls and such. The kernel manages processes which are running on
+ * the virtual machine.
  *
  * @since 2016/05/14
  */
