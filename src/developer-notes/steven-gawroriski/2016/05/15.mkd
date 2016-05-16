@@ -97,3 +97,16 @@ some things which are missing on host JVM and such. However abstract classes
 should not trigger it. However the Java SE would need to have do not calls
 or duds when it comes to the other methods.
 
+## 21:07
+
+Actually I can do something like this, as long as another idea is also used.
+Basically I need an executable finder or similar that can provide executables.
+There would be two basic executable finder kinds. Internal ones which use
+precompiled binaries that are part of the ROM for example. Then another one
+which uses a filesystem. When it comes to the filesystem, the kernel will have
+an `Object` which is an internal representation of a kernel friendly filesystem
+which is declared in another package. The console interface would use the
+executable finder to show which things are available (the midlets that can
+be executed). The internal NIO code would then just grab the filesystem that
+is provided by the kernel.
+
