@@ -35,6 +35,7 @@ import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
 public abstract class Kernel
 {
 	/** Threads currently associated with the kernel. */
+	@Deprecated
 	protected final Set<Thread> threads =
 		new HashSet<>();
 	
@@ -107,6 +108,7 @@ public abstract class Kernel
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/14
 	 */
+	@Deprecated
 	public final Thread newThread(Runnable __r)
 		throws NullPointerException
 	{
@@ -157,6 +159,7 @@ public abstract class Kernel
 	 *
 	 * @since 2016/05/14
 	 */
+	@Deprecated
 	public final void untilThreadless()
 	{
 		// Loop
