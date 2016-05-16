@@ -37,6 +37,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import net.multiphasicapps.io.hex.HexInputStream;
 import net.multiphasicapps.squirreljme.kernel.AbstractConsoleView;
 import net.multiphasicapps.squirreljme.kernel.event.EventKind;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
