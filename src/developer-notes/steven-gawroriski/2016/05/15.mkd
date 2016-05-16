@@ -85,3 +85,15 @@ I really have plenty of room for codes and such.
 
 I suppose I did not get much done today at all.
 
+## 20:04
+
+The kernel interface will have to duplicate the `FileSystem` class and such
+without requiring that nio be included. However, I could just force the
+inclusion of NIO for filesystem support. NIO could be optional if it exists,
+however having bridges would complicate things a bit. Also duplicating the
+entire FileSystem interface would also be a bit complicated. However the kernel
+`FileSystem` would have to be abstract. The `FileSystem` for the CLDC lacks
+some things which are missing on host JVM and such. However abstract classes
+should not trigger it. However the Java SE would need to have do not calls
+or duds when it comes to the other methods.
+
