@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * This represents a process within the kernel. A process owns a number of
  * {@link Thread}s and also is used for when the system is in kernel code that
@@ -20,7 +23,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2016/05/16
  */
-public class KernelProcess
+public final class KernelProcess
 {
 	/**
 	 * Initializes the kernel process.
@@ -29,6 +32,23 @@ public class KernelProcess
 	 */
 	KernelProcess()
 	{
+	}
+	
+	/**
+	 * Adds a thread to the current process.
+	 *
+	 * @param __t The thread to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/16
+	 */
+	void __addThread(Thread __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

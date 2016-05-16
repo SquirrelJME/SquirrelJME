@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -39,6 +40,13 @@ public abstract class Kernel
 	protected final EventQueue events =
 		new EventQueue();
 	
+	/** The kernel process. */
+	private final KernelProcess _kernelprocess;
+	
+	/** Kernel processes. */
+	private final Set<KernelProcess> _processes =
+		new HashSet<>();
+	
 	/**
 	 * Initializes the base kernel interface.
 	 *
@@ -46,6 +54,13 @@ public abstract class Kernel
 	 */
 	public Kernel()
 	{
+		// Setup kernel process
+		KernelProcess kp = new KernelProcess();
+		kp.__addThread(Thread.currentThread());
+		this._kernelprocess = kp;
+		
+		// Kernel process is a global one
+		this._processes.add(kp);
 	}
 	
 	/**
@@ -72,6 +87,17 @@ public abstract class Kernel
 	public final EventQueue eventQueue()
 	{
 		return this.events;
+	}
+	
+	/**
+	 * Returns the kernel process.
+	 *
+	 * @return The kernel process.
+	 * @since 2016/05/16
+	 */
+	public final KernelProcess kernelProcess()
+	{
+		return _kernelprocess;
 	}
 	
 	/**
@@ -102,6 +128,29 @@ public abstract class Kernel
 		
 		// Return the newly created thread
 		return rv;
+	}
+	
+	/**
+	 * Locates the process that owns the given thread.
+	 *
+	 * @param __t The thread to get the process of.
+	 * @return The process which owns the given thread or {@code null} if no
+	 * process is bound to it.
+	 * @since 2016/05/16
+	 */
+	public final KernelProcess processByThread(Thread __t)
+	{
+		// Lock
+		Set<KernelProcess> kps = this._processes;
+		synchronized (kps)
+		{
+			// Go through all of them
+			for (KernelProcess kp : kps)
+				throw new Error("TODO");
+		}
+		
+		// Not found
+		return null;
 	}
 	
 	/**
