@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.jvm.javase;
 
-import net.multiphasicapps.squirreljme.kernel.ConsoleUserInterface;
+import net.multiphasicapps.squirreljme.kernel.ui.ConsoleUI;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
@@ -30,8 +30,7 @@ public class Main
 	{
 		// Initialize the main launcher and run the main loop
 		Kernel kern;
-		ConsoleUserInterface cui = new ConsoleUserInterface(
-			(kern = new JVMJavaSEKernel(__args)));
+		ConsoleUI cui = new ConsoleUI((kern = new JVMJavaSEKernel(__args)));
 		
 		// Create thread for the console interface
 		kern.newThread(cui);

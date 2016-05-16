@@ -9,7 +9,7 @@
 // ---------------------------------------------------------------------------
 
 /**
- * DESCRIBE THIS.
+ * This package contains the hexadecimal input stream.
  *
  * @since 2016/05/15
  */

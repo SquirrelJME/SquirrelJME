@@ -8,7 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package net.multiphasicapps.squirreljme.kernel.ui;
+
+import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
  * This class uses the kernel interface to provide a user interface.

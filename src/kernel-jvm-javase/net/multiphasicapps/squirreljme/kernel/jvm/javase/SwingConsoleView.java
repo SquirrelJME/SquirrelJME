@@ -38,7 +38,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import net.multiphasicapps.io.hex.HexInputStream;
-import net.multiphasicapps.squirreljme.kernel.AbstractConsoleView;
+import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventKind;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.event.KeyChars;
@@ -49,7 +49,7 @@ import net.multiphasicapps.squirreljme.kernel.event.KeyChars;
  * @since 2016/05/14
  */
 public class SwingConsoleView
-	extends AbstractConsoleView
+	extends ConsoleDisplay
 {
 	/** Icons for the console. */
 	public static final List<Image> ICONS;

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.ui;
+package net.multiphasicapps.squirreljme.kernel.display;
 
 /**
  * This provides an abstract implementation of a standard console interface
@@ -20,7 +20,7 @@ package net.multiphasicapps.squirreljme.kernel.ui;
  *
  * @since 2016/05/14
  */
-public abstract class AbstractConsoleView
+public abstract class ConsoleDisplay
 {
 	/** Console lock. */
 	protected final Object lock =
@@ -53,7 +53,7 @@ public abstract class AbstractConsoleView
 	 *
 	 * @since 2016/05/14
 	 */
-	public AbstractConsoleView()
+	public ConsoleDisplay()
 	{
 		// The console view might not be able to be initialized, so constantly
 		// attempt to do so. The console data buffer allocation should be

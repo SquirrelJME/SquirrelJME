@@ -16,7 +16,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
  * This is the base class for the launcher interfaces which are defined by
@@ -48,7 +50,7 @@ public abstract class Kernel
 	 * be created for some reason.
 	 * @since 2016/05/14
 	 */
-	public abstract AbstractConsoleView createConsoleView();
+	public abstract ConsoleDisplay createConsoleDisplay();
 	
 	/**
 	 * Returns the event queue of the kernel.

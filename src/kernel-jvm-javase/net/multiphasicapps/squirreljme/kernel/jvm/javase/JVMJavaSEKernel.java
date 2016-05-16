@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.jvm.javase;
 
+import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.kernel.AbstractConsoleView;
 
 /**
  * This contains the launcher used by the host Java SE system.
@@ -39,7 +39,7 @@ public class JVMJavaSEKernel
 	 * @since 2016/05/14
 	 */
 	@Override
-	public AbstractConsoleView createConsoleView()
+	public ConsoleDisplay createConsoleDisplay()
 	{
 		// Setup a new console which uses a Swing based interface
 		SwingConsoleView scv = new SwingConsoleView(eventQueue());

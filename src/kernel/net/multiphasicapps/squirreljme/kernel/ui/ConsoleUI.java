@@ -8,13 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package net.multiphasicapps.squirreljme.kernel.ui;
 
 import java.util.Calendar;
+import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventHandler;
 import net.multiphasicapps.squirreljme.kernel.event.EventKind;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.event.KeyChars;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
  * This is the launcher controller which uses a console to interact with the
@@ -34,7 +36,7 @@ public class ConsoleUI
 		50_000_000L;
 	
 	/** The console view which interacts with the user directly. */
-	protected final AbstractConsoleView console;
+	protected final ConsoleDisplay console;
 	
 	/** The current time. */
 	protected final Calendar currentcal =
@@ -57,7 +59,7 @@ public class ConsoleUI
 		// {@squirreljme.error AY02 Could not initialize the console
 		// that the console launcher controller would be using to display
 		// and interact with the user.}
-		this.console = __al.createConsoleView();
+		this.console = __al.createConsoleDisplay();
 		if (this.console == null)
 			throw new RuntimeException("AY02");
 	}
@@ -84,7 +86,7 @@ public class ConsoleUI
 			currentcal.setTimeInMillis(nowtime);
 		
 			// Get the console
-			AbstractConsoleView console = this.console;
+			ConsoleDisplay console = this.console;
 			int cols = console.getColumns(), rows = console.getRows();
 		
 			// Draw the name of the software
