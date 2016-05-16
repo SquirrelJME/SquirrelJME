@@ -110,3 +110,9 @@ executable finder to show which things are available (the midlets that can
 be executed). The internal NIO code would then just grab the filesystem that
 is provided by the kernel.
 
+## 21:20
+
+Then this way for certain setups, there does not have to actually be an
+actual filesystem used. So on these such systems there does not need to be much
+of a worry about including FS support when it may be pointless or waste space.
+
