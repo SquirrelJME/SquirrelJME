@@ -21,9 +21,11 @@ import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
- * This is the base class for the launcher interfaces which are defined by
- * systems to provide anything that the default launcher does not provide
- * when it comes to interfaces.
+ * This is the base class for the kernel interfaces which are defined by
+ * systems to provide anything that the default kernel does not provide
+ * when it comes to interfaces. All calls which are done by the user interface
+ * and the running programs in the kernel, will call the kernel to perform
+ * system calls and such.
  *
  * @since 2016/05/14
  */
