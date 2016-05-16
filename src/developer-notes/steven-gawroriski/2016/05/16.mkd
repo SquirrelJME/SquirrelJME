@@ -40,3 +40,9 @@ Going to need a more advanced permission checker also. It will need to check
 if something is permitted by a process and then potentially ask the user using
 the user interface if it should be allowed to do so.
 
+## 10:49
+
+I will need to be careful when it comes to permissions so that there are no
+exploits. I would also need a way to have extra permission managers, for
+example with drivers (device IO) and such.
+
