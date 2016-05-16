@@ -27,3 +27,10 @@ however would be efficient for low memory systems and such.
 Then the event queue can be given to processes instead of the actual kernel.
 Then processes can just read their own event queue and such.
 
+## 09:31
+
+This also means I need a secure event manager along with the console view.
+Only the process which owns the event manager/console should be able to access
+the queue details and such. Otherwise, other processes can just happily add
+events to other processes including the kernel.
+

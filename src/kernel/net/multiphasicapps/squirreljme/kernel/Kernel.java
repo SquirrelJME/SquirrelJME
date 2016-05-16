@@ -79,6 +79,18 @@ public abstract class Kernel
 	public abstract ConsoleDisplay createConsoleDisplay();
 	
 	/**
+	 * Returns the process which is associated with the current thread.
+	 *
+	 * @return The process for the current thread, if {@code null} then no
+	 * process owns the thread.
+	 * @since 2016/05/16
+	 */
+	public final KernelProcess currentProcess()
+	{
+		return processByThread(Thread.currentThread());
+	}
+	
+	/**
 	 * Returns the event queue of the kernel.
 	 *
 	 * @return The kernel event queue.
