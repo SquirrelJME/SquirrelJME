@@ -229,7 +229,7 @@ public class Build
 				
 				// Run SquirrelJME launcher
 			case "squirreljme":
-				__launch(0, getProject("kernel-jvm-javase"), __args);
+				__launch(0, getProject("kernel-impl-jvm-javase"), __args);
 				break;
 				
 				// Build a project

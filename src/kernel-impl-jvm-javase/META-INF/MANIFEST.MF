@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: kernel-jvm-javase
+X-SquirrelJME-Name: kernel-impl-jvm-javase
 X-SquirrelJME-UUID: 2e0c53a9-e82c-4c5a-9bac-8026b3966909
 X-SquirrelJME-Depends: kernel, extra-io-hex,
  squirreljme-mascot-png-low
