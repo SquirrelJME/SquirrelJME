@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.jvm.javase;
+package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
 import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.Kernel;

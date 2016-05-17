@@ -4,7 +4,8 @@ X-SquirrelJME-UUID: 2e0c53a9-e82c-4c5a-9bac-8026b3966909
 X-SquirrelJME-Depends: kernel, extra-io-hex
 X-SquirrelJME-HostClassPath: true
 X-SquirrelJME-Error: AZ
-Main-Class: net.multiphasicapps.squirreljme.kernel.jvm.javase.Main
+Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.
+ Main
 LIBlet-Title: Kernel (JVM: Java SE)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160514
