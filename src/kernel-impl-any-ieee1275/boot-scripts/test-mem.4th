@@ -15,8 +15,6 @@
 	
 	\ If equal to zero, allocation was a success
 	0 = IF
-		\ DEBUG TO FORCE FAILURE
-		DROP
 	
 	\ Otherwise, allocation failed, the stack is empty
 	ELSE
@@ -94,28 +92,31 @@
 
 \ Infinite memory testing loop
 : memory-test-loop
+	." Starting test" cr
 	BEGIN
 		\ Allocate some memory
 		1024 eat-memory
-	
-		\ Dup the value twice (need to store it)
-		DUP
+		
+		\ Duplicate to check against zero
 		DUP
 	
 		\ If zero, allocation failed, stop the loop
 		0 = IF
-			." Allocation failed, stopping!"
+			." Allocation failed, stopping!" cr
 			
 			\ Drop error value (the pointer)
 			DROP
 		
 			\ End loop
-			QUIT
+			LEAVE
 	
 		\ Allocation suceeded otherwise
 		ELSE
-			.S
-			DROP
+			\ Show the address
+			DUP
+			." $"
+			.
+			space
 		THEN
 	UNTIL
 	
@@ -124,4 +125,5 @@
 
 \ Run testing loop
 memory-test-loop
+." Terminated" cr
 
