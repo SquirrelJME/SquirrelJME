@@ -663,7 +663,8 @@ public class Build
 					urls[u++] = p.toUri().toURL();
 			
 				// Setup class loader
-				URLClassLoader ucl = new URLClassLoader(urls);
+				URLClassLoader ucl = new URLClassLoader(urls,
+					Build.class.getClassLoader());
 				
 				// Set the context class loader which is used by ServiceLoader,
 				// otherwise services will not be found
