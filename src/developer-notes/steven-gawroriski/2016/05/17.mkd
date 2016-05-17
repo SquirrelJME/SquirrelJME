@@ -15,3 +15,10 @@ I believe I am going to move the implementation down so that it is not
 `kernel` but `kernel.impl` instead. Otherwise operating systems and
 architectures could conflict with packages that exist in `kernel`.
 
+## 09:17
+
+I can also split the mascot package around and actually put them in their
+own package. So for example, I can have low resolution PNGs or XPMs in their
+own package. Also the original logo forms too. This way instead I do not have
+to duplicate the icon in as many places.
+
