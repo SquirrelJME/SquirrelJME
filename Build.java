@@ -305,6 +305,12 @@ public class Build
 			
 			// The class path is that of the dependencies
 			Set<File> ccpath = new HashSet<>();
+			
+			// If no classpath is defined, then use the source root
+			if (ccpath.isEmpty())
+				ccpath.add(__p.root.toFile());
+			
+			// Set it
 			__p.classPathFile(ccpath);
 			jfm.setLocation(StandardLocation.CLASS_PATH, ccpath);
 			

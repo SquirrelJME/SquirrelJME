@@ -36,10 +36,8 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.List;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import net.multiphasicapps.io.hex.HexInputStream;
 import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventKind;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
@@ -54,10 +52,7 @@ import net.multiphasicapps.squirreljme.kernel.KernelProcess;
  */
 public class SwingConsoleView
 	extends ConsoleDisplay
-{
-	/** Icons for the console. */
-	public static final List<Image> ICONS;
-	
+{	
 	/** The frame which displays the console graphics. */
 	protected final JFrame frame;
 	
@@ -91,41 +86,6 @@ public class SwingConsoleView
 	private volatile Graphics2D _gfx;
 	
 	/**
-	 * Initializes the icon set.
-	 *
-	 * @since 2016/05/15
-	 */
-	static
-	{
-		// Setup target
-		List<Image> icos = new ArrayList<>();
-		
-		// Go through some common sizes
-		for (int i : new int[]{16, 32, 48})
-		{
-			try (InputStream is = new HexInputStream(new InputStreamReader(
-				SwingConsoleView.class.getResourceAsStream("/net/" +
-				"multiphasicapps/squirreljme/mascot/png/low/head_" + i + "x" +
-				i + ".png.hex"), "utf-8")))
-			{
-				icos.add(ImageIO.read(is));
-			}
-			
-			// Ignore errors or not found
-			catch (NullPointerException|IOException e)
-			{
-			}
-		}
-		
-		// If no icons available, use a blank one
-		if (icos.isEmpty())
-			icos.add(new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB));
-		
-		// Lock in
-		ICONS = Collections.<Image>unmodifiableList(icos);
-	}
-	
-	/**
 	 * Initializes the swing console view.
 	 *
 	 * @param __kp The process which created the console view.
@@ -152,7 +112,7 @@ public class SwingConsoleView
 		this.frame = frame;
 		
 		// Setup icons
-		frame.setIconImages(ICONS);
+		frame.setIconImages(Main.ICONS);
 		
 		// Make it exit on close
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -77,7 +77,7 @@ public class HexInputStream
 		
 		// Read the high value
 		int hi = -1;
-		for (; hi < 0;)
+		while (hi < 0)
 		{
 			// Read 
 			int c = source.read();
@@ -92,7 +92,7 @@ public class HexInputStream
 		
 		// Read the low value
 		int lo = -1;
-		for (; lo < 0;)
+		while (lo < 0)
 		{
 			// Read 
 			int c = source.read();

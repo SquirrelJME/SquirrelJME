@@ -22,3 +22,25 @@ own package. So for example, I can have low resolution PNGs or XPMs in their
 own package. Also the original logo forms too. This way instead I do not have
 to duplicate the icon in as many places.
 
+## 12:26
+
+Thinking about forwarding <http://multiphasicapps.net/> to the repository, so
+that it becomes the official page and the offical software that I write. I
+would however have to see if the web server I use can check if a file exists
+and then if it does not, forward the call.
+
+## 13:04
+
+This is perplexing.
+
+	sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream@99bffc00
+	sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream@99c03ff0
+	[null, null, null]
+
+Actually figured it out, my icon requests were being made for 0, 1, and 2 but
+not the ones I actually desired.
+
+## 13:23
+
+Actually my PNG data is malformed, I was assuming that `hexdump` output the
+same kind of output. However for very small files, the address is not printed.
