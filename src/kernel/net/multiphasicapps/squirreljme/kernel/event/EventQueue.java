@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.event;
 
+import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
 /**
@@ -124,13 +125,54 @@ public class EventQueue
 	}
 	
 	/**
+	 * Adds an event to the queue and throws an exception if it was not
+	 * added.
+	 *
+	 * @param __r The event to add.
+	 * @throws IllegalStateException If the event was not added.
+	 * @throws SecurityException If the current thread is not permitted to
+	 * write events to this queue.
+	 * @since 2016/05/17
+	 */
+	public final void addRaw(int __r)
+		throws IllegalStateException, SecurityException
+	{
+		// {@squirreljme.error AY0a Could not add the raw event.}
+		if (!offerRaw(__r))
+			throw new IllegalStateException("AY0a");
+	}
+	
+	/**
+	 * Obtains the next event but does not remove it, an exception is thrown
+	 * if there is no event available.
+	 *
+	 * @return The next event.
+	 * @throws NoSuchElementException If there are no events.
+	 * @throws SecurityException If the current thread cannot peek events.
+	 * @since 2016/05/17
+	 */
+	public final int getRaw()
+		throws NoSuchElementException, SecurityException
+	{
+		// Get
+		int rv = peekRaw();
+		
+		// {@squirreljme.error AY08 No events available to peek.}
+		if (rv == 0)
+			throw new NoSuchElementException("AY08");
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
 	 * Parses input events and passes them to the given event handlers.
 	 *
 	 * @param __eh Event handlers which are used to handle events with.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/15
 	 */
-	public void handleEvents(EventHandler __eh)
+	public final void handleEvents(EventHandler __eh)
 		throws NullPointerException
 	{
 		handleEvents(__eh, _NO_EVENTS);
@@ -145,7 +187,7 @@ public class EventQueue
 	 * @throws SecurityException If reading events is not permitted.
 	 * @since 2016/05/15
 	 */
-	public void handleEvents(EventHandler __eh, EventHandler... __rest)
+	public final void handleEvents(EventHandler __eh, EventHandler... __rest)
 		throws NullPointerException, SecurityException
 	{
 		// Check
@@ -185,7 +227,7 @@ public class EventQueue
 	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
-	public void offerKeyPressed(int __port, char __v)
+	public final void offerKeyPressed(int __port, char __v)
 		throws SecurityException
 	{
 		// Do not post?
@@ -207,7 +249,7 @@ public class EventQueue
 	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
-	public void offerKeyReleased(int __port, char __v)
+	public final void offerKeyReleased(int __port, char __v)
 		throws SecurityException
 	{
 		// Do not post?
@@ -229,7 +271,7 @@ public class EventQueue
 	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
-	public void offerKeyTyped(int __port, char __v)
+	public final void offerKeyTyped(int __port, char __v)
 		throws SecurityException
 	{
 		// Do not post?
@@ -253,7 +295,7 @@ public class EventQueue
 	 * @throws SecurityException If posting threads is denied.
 	 * @since 2016/05/15
 	 */
-	public final boolean offerRaw(int __r)
+	public boolean offerRaw(int __r)
 		throws SecurityException
 	{
 		// Must be permitted
@@ -350,7 +392,7 @@ public class EventQueue
 	 * @throws SecurityException If event peeking is denied.
 	 * @since 2016/05/15
 	 */
-	public final int peekRaw()
+	public int peekRaw()
 		throws SecurityException
 	{
 		// Must be permitted
@@ -389,7 +431,7 @@ public class EventQueue
 	 * @throws SecurityException If event removal is denied.
 	 * @since 2016/05/15
 	 */
-	public final int pollRaw()
+	public int pollRaw()
 		throws SecurityException
 	{
 		// Must be permitted
@@ -431,6 +473,29 @@ public class EventQueue
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Removes the next event waiting in the queue, an exception is thrown
+	 * if there are no events in the queue.
+	 *
+	 * @return The raw event.
+	 * @throws NoSuchElementException If there are no available events.
+	 * @throws SecurityException If events are not permitted to be removed.
+	 * @since 2016/05/17
+	 */
+	public final int removeRaw()
+		throws NoSuchElementException, SecurityException
+	{
+		// Remove event
+		int rv = pollRaw();
+		
+		// {@squirreljme.error AY09 No event was polled.}
+		if (rv == 0)
+			throw new NoSuchElementException("AY09");
+		
+		// Return it
+		return rv;
 	}
 }
 
