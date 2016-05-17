@@ -14,8 +14,7 @@
 	allocate
 	
 	\ If equal to zero, allocation was a success
-	0 =
-	IF
+	0 = IF
 		\ DEBUG TO FORCE FAILURE
 		DROP
 	
@@ -33,28 +32,18 @@
 : eat-memory ( bytes -- addr)
 	\ If allocation fails in IEEE1275 then nothing is placed onto the stack
 	\ and it remains the same size, so the stack size must be counted
-	cr ." ?A" cr
-	.S
 	DEPTH
 	
 	\ Add one to it
-	cr ." ?B" cr
-	.S
 	1 +
 	
 	\ Swap so the bytes to allocate is at the top
-	cr ." ?C" cr
-	.S
 	swap
 	
 	\ Allocate memory
-	cr ." ?D" cr
-	.S
 	alloc-mem
 	
 	\ Place the stack depth onto the stack again
-	cr ." ?E" cr
-	.S
 	DEPTH
 	
 	\ Add one to the new depth
@@ -79,35 +68,22 @@
 	\    pointer
 	\    newdepth
 	\    pointer
-	cr ." ?F" cr
-	.S
 	OVER
 	
 	\ If the topmost values are equal then allocation failed
-	cr ." ?G" cr
-	.S
-	=
-	IF
+	= IF
 		\ Drop the old depth
-		cr ." ?H" cr
-		.S
 		DROP
 		
 		\ Place zero for failure
-		cr ." ?I" cr
-		.S
 		0
 	
 	\ If they are not then allocation suceeded
 	ELSE
 		\ Swap olddepth+1 and pointer
-		cr ." ?L" cr
-		.S
 		SWAP
 		
 		\ Drop olddepth+1
-		cr ." ?M" cr
-		.S
 		DROP
 	
 	\ End condition
@@ -116,15 +92,36 @@
 	\ End
 	;
 
-1024 eat-memory
-.S
-cr ." ?" cr
+\ Infinite memory testing loop
+: memory-test-loop
+	BEGIN
+		\ Allocate some memory
+		1024 eat-memory
+	
+		\ Dup the value twice (need to store it)
+		DUP
+		DUP
+	
+		\ If zero, allocation failed, stop the loop
+		0 = IF
+			." Allocation failed, stopping!"
+			
+			\ Drop error value (the pointer)
+			DROP
+		
+			\ End loop
+			QUIT
+	
+		\ Allocation suceeded otherwise
+		ELSE
+			.S
+			DROP
+		THEN
+	UNTIL
+	
+	\ End
+	;
 
-2048 eat-memory
-.S
-cr ." ?" cr
-
-4096 eat-memory
-.S
-cr ." ?" cr
+\ Run testing loop
+memory-test-loop
 
