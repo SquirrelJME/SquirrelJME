@@ -100,22 +100,26 @@ public class SwingConsoleView
 		// Setup target
 		List<Image> icos = new ArrayList<>();
 		
-		// Look for resources
-		BufferedImage base;
-		try (InputStream is = new HexInputStream(new InputStreamReader(
-			SwingConsoleView.class.getResourceAsStream("icon.hex"), "utf-8")))
+		// Go through some common sizes
+		for (int i : new int[]{16, 32, 48})
 		{
-			base = ImageIO.read(is);
+			try (InputStream is = new HexInputStream(new InputStreamReader(
+				SwingConsoleView.class.getResourceAsStream("/net/" +
+				"multiphasicapps/squirreljme/mascot/png/low/head_" + i + "x" +
+				i + ".png.hex"), "utf-8")))
+			{
+				icos.add(ImageIO.read(is));
+			}
+			
+			// Ignore errors or not found
+			catch (NullPointerException|IOException e)
+			{
+			}
 		}
 		
-		// The image will just be blank then
-		catch (IOException e)
-		{
-			base = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-		}
-		
-		// Add the base image always
-		icos.add(base);
+		// If no icons available, use a blank one
+		if (icos.isEmpty())
+			icos.add(new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB));
 		
 		// Lock in
 		ICONS = Collections.<Image>unmodifiableList(icos);
