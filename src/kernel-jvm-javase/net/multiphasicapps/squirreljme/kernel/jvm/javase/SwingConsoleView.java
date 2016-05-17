@@ -69,6 +69,9 @@ public class SwingConsoleView
 	/** Graphics configuration for the best image selection. */
 	protected final GraphicsConfiguration config;
 	
+	/** The event queue. */
+	protected final EventQueue eventqueue;
+	
 	/** The precomposed image buffer. */
 	private volatile BufferedImage _buffer;
 	
@@ -119,6 +122,9 @@ public class SwingConsoleView
 		// Check
 		if (__eq == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.eventqueue = __eq;
 		
 		// Setup the console view frame
 		JFrame frame = new JFrame("SquirrelJME");

@@ -42,7 +42,8 @@ public class JVMJavaSEKernel
 	public ConsoleDisplay createConsoleDisplay()
 	{
 		// Setup a new console which uses a Swing based interface
-		SwingConsoleView scv = new SwingConsoleView();
+		SwingConsoleView scv = new SwingConsoleView(
+			kernelProcess().eventQueue());
 		
 		// Show it
 		scv.setVisible();

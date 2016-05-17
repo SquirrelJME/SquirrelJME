@@ -175,3 +175,5 @@
    [steven-gawroriski](steven-gawroriski/2016/05/15.mkd)
  * 16: 
    [steven-gawroriski](steven-gawroriski/2016/05/16.mkd)
+ * 17: 
+   [steven-gawroriski](steven-gawroriski/2016/05/17.mkd)
