@@ -44,3 +44,9 @@ not the ones I actually desired.
 
 Actually my PNG data is malformed, I was assuming that `hexdump` output the
 same kind of output. However for very small files, the address is not printed.
+
+## 13:26
+
+I suppose I should take a short rest, since I did wake up earlier than
+expected.
+
