@@ -32,7 +32,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -42,6 +44,8 @@ import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventKind;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.event.KeyChars;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
 /**
  * This provides a swing console view.
@@ -71,6 +75,14 @@ public class SwingConsoleView
 	
 	/** The event queue. */
 	protected final EventQueue eventqueue;
+	
+	/** Cross event queue. */
+	private final EventQueue _crossqueue =
+		new EventQueue();
+	
+	/** Was the event queue registered? */
+	private final AtomicBoolean _regthread =
+		new AtomicBoolean();
 	
 	/** The precomposed image buffer. */
 	private volatile BufferedImage _buffer;
@@ -112,19 +124,24 @@ public class SwingConsoleView
 	/**
 	 * Initializes the swing console view.
 	 *
-	 * @param __eq The event queue where events should be placed into.
+	 * @param __kp The process which created the console view.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/14
 	 */
-	public SwingConsoleView(EventQueue __eq)
+	public SwingConsoleView(KernelProcess __kp)
 		throws NullPointerException
 	{
 		// Check
-		if (__eq == null)
+		if (__kp == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.eventqueue = __eq;
+		this.eventqueue = __kp.eventQueue();
+		
+		// Setup cross queue thread
+		Thread cqt = new Thread(new __EventPusher__());
+		cqt.setDaemon(true);
+		__kp.createThread(cqt);
 		
 		// Setup the console view frame
 		JFrame frame = new JFrame("SquirrelJME");
@@ -573,29 +590,35 @@ public class SwingConsoleView
 			throw new NullPointerException("NARG");
 		
 		// Get the event queue
-		EventQueue eventqueue = this.eventqueue;
+		EventQueue eventqueue = this._crossqueue;
 		
 		// Depends on the event
 		switch (__k)
 		{
 				// Pressed
 			case KEY_PRESSED:
-				eventqueue.postKeyPressed(0, __keyToChar(false, __e));
+				eventqueue.offerKeyPressed(0, __keyToChar(false, __e));
 				break;
 				
 				// Released
 			case KEY_RELEASED:
-				eventqueue.postKeyReleased(0, __keyToChar(false, __e));
+				eventqueue.offerKeyReleased(0, __keyToChar(false, __e));
 				break;
 				
 				// Typed
 			case KEY_TYPED:
-				eventqueue.postKeyTyped(0, __keyToChar(true, __e));
+				eventqueue.offerKeyTyped(0, __keyToChar(true, __e));
 				break;
 			
 				// Unknown
 			default:
-				break;
+				return;
+		}
+		
+		// An event was likely posted, so notify the thread
+		synchronized (eventqueue)
+		{
+			eventqueue.notify();
 		}
 	}
 	
@@ -775,6 +798,47 @@ public class SwingConsoleView
 			
 			// Set
 			this._fixed = true;
+		}
+	}
+	
+	/**
+	 * Takes input events and 
+	 */
+	private final class __EventPusher__
+		implements Runnable
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/17
+		 */
+		@Override
+		public void run()
+		{
+			// I/O
+			EventQueue in = SwingConsoleView.this._crossqueue;
+			EventQueue out = SwingConsoleView.this.eventqueue;
+			
+			// Lock
+			synchronized (in)
+			{
+				// Loop for a long time
+				for (;;)
+				{
+					// Wait on the monitor for the input
+					try
+					{
+						in.wait();
+					}
+				
+					// Ignore interruptions
+					catch (InterruptedException e)
+					{
+					}
+					
+					// Send to the output, the input event
+					out.offerRaw(in.pollRaw());
+				}
+			}
 		}
 	}
 }

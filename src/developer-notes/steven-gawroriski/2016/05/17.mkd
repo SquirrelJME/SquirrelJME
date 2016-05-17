@@ -4,3 +4,8 @@
 
 I woke up around 5 or so this morning.
 
+## 07:10
+
+I am going to use monitors such as `wait` and `notify` for the event handling.
+This is a situation where it would be quite handy to do so.
+

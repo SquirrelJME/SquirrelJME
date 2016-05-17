@@ -159,7 +159,7 @@ public class EventQueue
 		for (;;)
 		{
 			// Get next event
-			int v = nextRaw();
+			int v = pollRaw();
 			
 			// No more events?
 			if (v == 0)
@@ -177,93 +177,69 @@ public class EventQueue
 	}
 	
 	/**
-	 * Returns the next raw event in the queue.
+	 * Posts a key pressed event.
 	 *
-	 * @return The next raw event, or {@code 0} if there none remaining.
-	 * @throws SecurityException If event removal is denied.
+	 * @param __port The controller port.
+	 * @param __v The key which was pressed, if the value is {@code 0} then the
+	 * event is not posted.
+	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
-	public final int nextRaw()
+	public void offerKeyPressed(int __port, char __v)
 		throws SecurityException
 	{
-		// Must be permitted
-		if (this.attached)
-			owner.permissions().eventRead(this);
+		// Do not post?
+		if (__v == 0)
+			return;
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Obtain the queue details
-			int[] queue = this._queue;
-			
-			// No queue?
-			if (queue == null)
-				return 0;
-			
-			// Get read/write positions
-			int n = queue.length;
-			int read = this._read;
-			int write = this._write;
-			
-			// If the read head is at the write head then there is no data
-			// in the buffer
-			if (read == write)
-				return 0;
-			
-			// Read value
-			int rv = queue[read];
-			
-			// Clear value
-			queue[read] = 0;
-			
-			// Increment
-			int next = read + 1;
-			if (next >= n)
-				next = 0;
-			_read = next;
-			
-			// Return it
-			return rv;
-		}
+		// Post
+		offerRaw((EventKind.KEY_PRESSED.ordinal() << EVENT_KIND_SHIFT) |
+			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
+			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
 	}
 	
 	/**
-	 * Peeks the next raw event in the queue.
+	 * Posts a key release event.
 	 *
-	 * @return The next raw event, or {@code 0} if there none remaining.
-	 * @throws SecurityException If event peeking is denied.
+	 * @param __port The controller port.
+	 * @param __v The key which was pressed, if the value is {@code 0} then the
+	 * event is not posted.
+	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
-	public final int peekRaw()
+	public void offerKeyReleased(int __port, char __v)
 		throws SecurityException
 	{
-		// Must be permitted
-		if (this.attached)
-			owner.permissions().eventRead(this);
+		// Do not post?
+		if (__v == 0)
+			return;
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Obtain the queue details
-			int[] queue = this._queue;
-			
-			// No queue?
-			if (queue == null)
-				return 0;
-			
-			// Get read/write positions
-			int n = queue.length;
-			int read = this._read;
-			int write = this._write;
-			
-			// If the read head is at the write head then there is no data
-			// in the buffer
-			if (read == write)
-				return 0;
-			
-			// Return it
-			return queue[read];
-		}
+		// Post
+		offerRaw((EventKind.KEY_RELEASED.ordinal() << EVENT_KIND_SHIFT) |
+			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
+			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
+	}
+	
+	/**
+	 * Posts a key typed event.
+	 *
+	 * @param __port The controller port.
+	 * @param __v The key which was pressed, if the value is {@code 0} then the
+	 * event is not posted.
+	 * @throws SecurityException If events cannot be posted.
+	 * @since 2016/05/15
+	 */
+	public void offerKeyTyped(int __port, char __v)
+		throws SecurityException
+	{
+		// Do not post?
+		if (__v == 0)
+			return;
+		
+		// Post
+		offerRaw((EventKind.KEY_TYPED.ordinal() << EVENT_KIND_SHIFT) |
+			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
+			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
 	}
 	
 	/**
@@ -277,7 +253,7 @@ public class EventQueue
 	 * @throws SecurityException If posting threads is denied.
 	 * @since 2016/05/15
 	 */
-	public final boolean postRaw(int __r)
+	public final boolean offerRaw(int __r)
 		throws SecurityException
 	{
 		// Must be permitted
@@ -334,7 +310,7 @@ public class EventQueue
 					
 					// Copy items into it
 					write = 0;
-					for (int copy = nextRaw(); copy != 0; copy = nextRaw())
+					for (int copy = pollRaw(); copy != 0; copy = pollRaw())
 						into[write++] = copy;
 					
 					// Set new details
@@ -368,69 +344,93 @@ public class EventQueue
 	}
 	
 	/**
-	 * Posts a key pressed event.
+	 * Peeks the next raw event in the queue.
 	 *
-	 * @param __port The controller port.
-	 * @param __v The key which was pressed, if the value is {@code 0} then the
-	 * event is not posted.
-	 * @throws SecurityException If events cannot be posted.
+	 * @return The next raw event, or {@code 0} if there none remaining.
+	 * @throws SecurityException If event peeking is denied.
 	 * @since 2016/05/15
 	 */
-	public void postKeyPressed(int __port, char __v)
+	public final int peekRaw()
 		throws SecurityException
 	{
-		// Do not post?
-		if (__v == 0)
-			return;
+		// Must be permitted
+		if (this.attached)
+			owner.permissions().eventRead(this);
 		
-		// Post
-		postRaw((EventKind.KEY_PRESSED.ordinal() << EVENT_KIND_SHIFT) |
-			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
-			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
+		// Lock
+		synchronized (lock)
+		{
+			// Obtain the queue details
+			int[] queue = this._queue;
+			
+			// No queue?
+			if (queue == null)
+				return 0;
+			
+			// Get read/write positions
+			int n = queue.length;
+			int read = this._read;
+			int write = this._write;
+			
+			// If the read head is at the write head then there is no data
+			// in the buffer
+			if (read == write)
+				return 0;
+			
+			// Return it
+			return queue[read];
+		}
 	}
 	
 	/**
-	 * Posts a key release event.
+	 * Returns the next raw event in the queue.
 	 *
-	 * @param __port The controller port.
-	 * @param __v The key which was pressed, if the value is {@code 0} then the
-	 * event is not posted.
-	 * @throws SecurityException If events cannot be posted.
+	 * @return The next raw event, or {@code 0} if there none remaining.
+	 * @throws SecurityException If event removal is denied.
 	 * @since 2016/05/15
 	 */
-	public void postKeyReleased(int __port, char __v)
+	public final int pollRaw()
 		throws SecurityException
 	{
-		// Do not post?
-		if (__v == 0)
-			return;
+		// Must be permitted
+		if (this.attached)
+			owner.permissions().eventRead(this);
 		
-		// Post
-		postRaw((EventKind.KEY_RELEASED.ordinal() << EVENT_KIND_SHIFT) |
-			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
-			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
-	}
-	
-	/**
-	 * Posts a key typed event.
-	 *
-	 * @param __port The controller port.
-	 * @param __v The key which was pressed, if the value is {@code 0} then the
-	 * event is not posted.
-	 * @throws SecurityException If events cannot be posted.
-	 * @since 2016/05/15
-	 */
-	public void postKeyTyped(int __port, char __v)
-		throws SecurityException
-	{
-		// Do not post?
-		if (__v == 0)
-			return;
-		
-		// Post
-		postRaw((EventKind.KEY_TYPED.ordinal() << EVENT_KIND_SHIFT) |
-			((__port & CONTROLLER_PORT_VALUE_MASK) << CONTROLLER_PORT_SHIFT) |
-			((__v & KEY_CHARACTER_VALUE_MASK) << KEY_CHARACTER_SHIFT));
+		// Lock
+		synchronized (lock)
+		{
+			// Obtain the queue details
+			int[] queue = this._queue;
+			
+			// No queue?
+			if (queue == null)
+				return 0;
+			
+			// Get read/write positions
+			int n = queue.length;
+			int read = this._read;
+			int write = this._write;
+			
+			// If the read head is at the write head then there is no data
+			// in the buffer
+			if (read == write)
+				return 0;
+			
+			// Read value
+			int rv = queue[read];
+			
+			// Clear value
+			queue[read] = 0;
+			
+			// Increment
+			int next = read + 1;
+			if (next >= n)
+				next = 0;
+			_read = next;
+			
+			// Return it
+			return rv;
+		}
 	}
 }
 

@@ -76,6 +76,40 @@ public final class KernelProcess
 	}
 	
 	/**
+	 * Adds a thread to the current process.
+	 *
+	 * @param __t The thread to add.
+	 * @throws IllegalStateException If another process contains this thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/16
+	 */
+	public final void addThread(Thread __t)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Check permission
+		if (!iskernel)
+			this.permissions.createThread();
+		
+		// {@squirreljme.error AY07 The thread to be added is owned by
+		// another process.}
+		KernelProcess op = this.kernel.processByThread(__t);
+		if (op != null && op != this)
+			throw new IllegalStateException("AY07");
+		
+		// Lock
+		List<Thread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Add it
+			threads.add(__t);
+		}
+	}
+	
+	/**
 	 * Returns {@code true} if any threads in the current process are
 	 * alive.
 	 *
@@ -225,40 +259,6 @@ public final class KernelProcess
 	public final PermissionManager permissions()
 	{
 		return this.permissions;
-	}
-	
-	/**
-	 * Adds a thread to the current process.
-	 *
-	 * @param __t The thread to add.
-	 * @throws IllegalStateException If another process contains this thread.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/16
-	 */
-	final void __addThread(Thread __t)
-		throws IllegalStateException, NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Check permission
-		if (!iskernel)
-			this.permissions.createThread();
-		
-		// {@squirreljme.error AY07 The thread to be added is owned by
-		// another process.}
-		KernelProcess op = this.kernel.processByThread(__t);
-		if (op != null && op != this)
-			throw new IllegalStateException("AY07");
-		
-		// Lock
-		List<Thread> threads = this._threads;
-		synchronized (threads)
-		{
-			// Add it
-			threads.add(__t);
-		}
 	}
 }
 

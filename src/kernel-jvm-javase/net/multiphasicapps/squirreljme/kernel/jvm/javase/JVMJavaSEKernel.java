@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.kernel.jvm.javase;
 
 import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
 /**
  * This contains the launcher used by the host Java SE system.
@@ -42,8 +43,9 @@ public class JVMJavaSEKernel
 	public ConsoleDisplay createConsoleDisplay()
 	{
 		// Setup a new console which uses a Swing based interface
-		SwingConsoleView scv = new SwingConsoleView(
-			kernelProcess().eventQueue());
+		// Send events to the current process
+		KernelProcess kp = currentProcess();
+		SwingConsoleView scv = new SwingConsoleView(kp);
 		
 		// Show it
 		scv.setVisible();
