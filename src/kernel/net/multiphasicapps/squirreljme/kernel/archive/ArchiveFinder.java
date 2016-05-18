@@ -44,5 +44,13 @@ public abstract class ArchiveFinder
 		// Set
 		kernel = __k;
 	}
+	
+	/**
+	 * Returns the name of this archive finder.
+	 *
+	 * @return The archive finder name.
+	 * @since 2016/05/18
+	 */
+	public abstract String name();
 }
 

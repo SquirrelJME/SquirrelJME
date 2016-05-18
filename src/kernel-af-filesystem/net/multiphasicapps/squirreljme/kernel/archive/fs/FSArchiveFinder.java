@@ -33,5 +33,15 @@ public class FSArchiveFinder
 	{
 		super(__k);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/18
+	 */
+	@Override
+	public String name()
+	{
+		return "File System";
+	}
 }
 
