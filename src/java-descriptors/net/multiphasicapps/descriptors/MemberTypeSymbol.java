@@ -72,7 +72,7 @@ public abstract class MemberTypeSymbol
 		
 		// If it starts with (, it is a method
 		if (__sym.startsWith("("))
-			return new MethodSymbol(__sym);
+			return MethodSymbol.of(__sym);
 		
 		// Otherwise a field
 		return FieldSymbol.of(__sym);

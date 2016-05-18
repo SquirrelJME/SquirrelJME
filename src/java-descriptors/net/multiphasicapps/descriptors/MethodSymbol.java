@@ -28,6 +28,22 @@ public final class MethodSymbol
 	extends MemberTypeSymbol
 	implements RandomAccess
 {
+	/** The cache. */
+	static final __Cache__<MethodSymbol> _CACHE =
+		new __Cache__<>(MethodSymbol.class,
+		new __Cache__.__Create__<MethodSymbol>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/05/18
+			 */
+			@Override
+			public MethodSymbol create(String __s)
+			{
+				return new MethodSymbol(__s);
+			}
+		});
+	
 	/** Offsets to arguments (last is return value). */
 	private final int[] _offsets;
 	
@@ -45,7 +61,7 @@ public final class MethodSymbol
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/15
 	 */
-	public MethodSymbol(String __s)
+	private MethodSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -231,6 +247,22 @@ public final class MethodSymbol
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Creates a symbol for the given string or returns a pre-cached variant
+	 * of the string.
+	 *
+	 * @param __s The string to create a symbol for.
+	 * @return The symbol.
+	 * @throws IllegalSymbolException If the symbol is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/18
+	 */
+	public static MethodSymbol of(String __s)
+		throws IllegalSymbolException, NullPointerException
+	{
+		return _CACHE.__of(__s);
 	}
 	
 	/**
