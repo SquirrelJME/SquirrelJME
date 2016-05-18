@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.kernel.archive;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This is the base class for providers which provide archive views of JAR
  * files, native executables, and potentially other details.

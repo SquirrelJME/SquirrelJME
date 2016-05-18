@@ -52,7 +52,7 @@ public final class NCIUTF
 			throw new NullPointerException("NARG");
 		
 		// Set
-		string = __v;
+		string = __v.intern();
 	}
 	
 	/**

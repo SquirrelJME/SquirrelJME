@@ -122,3 +122,17 @@ string values can potentially reduce memory usage and such. There could
 quite possibly be a few hundred instances of `java/lang/Object` strings
 in memory at one time.
 
+## 10:22
+
+And now I have cached symbols, so memory can now be saved when many classes
+would likely share symbols. Although slightly slower, the decreased memory
+usage is a bonus. Also means that strings can be thrown away more often. I
+should also `intern` NCIUTF also so that it uses a single string set. Note
+that intern is managed by my own library as a WeakHashMap rather than magical
+JVM specific stuff for the most part. Although intern checks if the JVM has
+the string interned already.
+
+## 10:25
+
+Also, to the virtual machine all UTF strings are deemed to be interned anyway.
+
