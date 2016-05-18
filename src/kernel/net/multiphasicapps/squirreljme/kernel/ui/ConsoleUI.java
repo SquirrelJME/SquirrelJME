@@ -407,6 +407,13 @@ public class ConsoleUI
 		// Get the item to be selected
 		Object item = menu.get(menu.getCursor());
 		
+		// Quit the kernel?
+		if (item == MENU_QUIT)
+		{
+			this.kernel.quitKernel();
+			return;
+		}
+		
 		System.err.printf("DEBUG -- Select %s%n", item);
 	}
 }
