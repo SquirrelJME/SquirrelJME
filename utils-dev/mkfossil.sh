@@ -96,7 +96,7 @@ then
 		# URL being set to the local clone is bad by default
 	fossil remote-url -R "/tmp/$$.fsl" off
 	fossil remote-url -R "/tmp/$$.fsl" \
-		http://multiphasicapps.net:8080/squirreljme/
+		http://multiphasicapps.net/
 		# Autosync to a 127.0.0.1 == Very annoying
 	fossil settings -R "/tmp/$$.fsl" autosync 0
 		# Case sensitivity (for Windows/DOS)

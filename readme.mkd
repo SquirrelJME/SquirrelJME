@@ -19,7 +19,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 ## Links
 
   * [Why?](src/squirreljme-manual/user/why.mkd)
-  * [Online repository](http://multiphasicapps.net:8080/squirreljme)
+  * [Online repository](http://multiphasicapps.net/)
   * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
   * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
   * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
