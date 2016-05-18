@@ -146,3 +146,10 @@ which programs an archive provides and such.
 What I need is a way to bridge the archive to the kernel. I need actual
 archive finders now.
 
+## 14:07
+
+Actually, I will need a somewhat better menu interface on the console UI. I
+suppose first I will list archive finders which are then selected, this would
+go then into the list of archives that were found. Then when an archive is
+selected, it will list the available programs.
+
