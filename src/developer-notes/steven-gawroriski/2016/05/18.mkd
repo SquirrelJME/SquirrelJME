@@ -70,3 +70,10 @@ on its hash and store it in the cache. The cache would need to store the name
 of the class and its hash. There is a possibility of a class with the same name
 using different hashes can exist.
 
+## 09:27
+
+The executable interface can provide access to raw resource and class data
+somewhat. Well, actually instead I need an archive which provides access to
+resources. I need this for `getResourceAsStream` and `ServiceLoader`, where
+the later looks at multiple service records to find classes to use.
+
