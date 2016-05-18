@@ -52,8 +52,8 @@ final class __Cache__<S extends __BaseSymbol__>
 			throw new NullPointerException("NARG");
 		
 		// Set
-		type = __cl;
-		create = __cr;
+		this.type = __cl;
+		this.create = __cr;
 	}
 	
 	/**
@@ -71,7 +71,22 @@ final class __Cache__<S extends __BaseSymbol__>
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		Map<String, Reference<S>> cache = this.cache;
+		synchronized (cache)
+		{
+			// Get reference
+			Reference<S> ref = cache.get(__s);
+			S rv;
+			
+			// Needs creation?
+			if (ref == null || null == (rv = ref.get()))
+				cache.put(__s, new WeakReference<>(this.type.cast(
+					(rv = this.create.create(__s)))));
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
