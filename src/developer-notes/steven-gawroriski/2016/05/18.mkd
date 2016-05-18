@@ -93,3 +93,24 @@ a bit ugly. However, for common cache-ness, `ArchiveFinder` should be an
 `abstract class` instead of an `interface` so that resource locations and
 classes could be cached.
 
+## 09:35
+
+On the start of the user interface, the archives could be scanned and cached
+by the kernel for example. Then each program that is running with its set
+classpath could instead use archives to reference details and such. This way
+if 20 programs are running at once and they all share libraries, the libraries
+only have to be in memory at a single time. However since everything would be
+a library, I would need to adjust the compiler as before and not overly
+optimize static values. I would have to backtrack a bit and have it so classes
+can be compiled without knowing about any other class. Then that information
+would have to be checked at run-time or with the interpreter. However to
+remove the duplicate checking code, I can have a common class to check
+details in the run-time. So basically the NCI will have this checker, however
+its lookup class will be removed and not used by other places such as the
+byte code. The byte code representation itself would optimize only if it knows
+the details against itself. Archives can expose classes as NCIClass for example
+which could be bound to real class files or native binaries which provide
+internal details. So say if the CLDC is a native library and the user wants to
+run a class in an interpreter, the interpreted class must be able to access
+the native class details. The opposite has to be able to happen also.
+
