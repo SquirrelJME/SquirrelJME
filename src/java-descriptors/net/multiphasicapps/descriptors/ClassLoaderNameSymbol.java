@@ -113,9 +113,8 @@ public final class ClassLoaderNameSymbol
 		{
 			// Arrays are treated like fields, otherwise the names of classes
 			// get their dots replaced with slashes
-			_cname = new WeakReference<>((rv = new ClassNameSymbol(
-				(isarray ? toString() : toString(). replace('.', '/')),
-				false, this)));
+			_cname = new WeakReference<>((rv = ClassNameSymbol.of(
+				(isarray ? toString() : toString(). replace('.', '/')))));
 		}
 		
 		// Return it

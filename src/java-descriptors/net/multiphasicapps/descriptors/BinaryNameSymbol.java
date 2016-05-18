@@ -185,7 +185,7 @@ public final class BinaryNameSymbol
 		// Create cache if required
 		if (ref == null || null == (rv = ref.get()))
 			_clname = new WeakReference<>(
-				(rv = new ClassNameSymbol(this)));
+				(rv = ClassNameSymbol.of(toString())));
 		
 		// Return it
 		return rv;

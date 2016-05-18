@@ -116,10 +116,29 @@ public final class FieldSymbol
 		Reference<ClassNameSymbol> ref = _clname;
 		ClassNameSymbol rv;
 		
-		// Create cache if required
+		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			_clname = new WeakReference<>(
-				(rv = new ClassNameSymbol(this)));
+		{
+			// Map to primitive if one
+			String ss;
+			switch ((ss = toString()))
+			{
+				case "B": rv = ClassNameSymbol.BYTE; break;
+				case "S": rv = ClassNameSymbol.SHORT; break;
+				case "C": rv = ClassNameSymbol.CHARACTER; break;
+				case "I": rv = ClassNameSymbol.INTEGER; break;
+				case "J": rv = ClassNameSymbol.LONG; break;
+				case "F": rv = ClassNameSymbol.FLOAT; break;
+				case "D": rv = ClassNameSymbol.DOUBLE; break;
+				case "Z": rv = ClassNameSymbol.BOOLEAN; break;
+				
+					// General
+				default: rv = ClassNameSymbol.of(ss); break;
+			}
+			
+			// Cache it
+			_clname = new WeakReference<>(rv);
+		}
 		
 		// Return it
 		return rv;

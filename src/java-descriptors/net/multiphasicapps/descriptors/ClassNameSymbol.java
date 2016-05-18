@@ -23,9 +23,25 @@ import java.lang.ref.WeakReference;
 public final class ClassNameSymbol
 	extends __BaseSymbol__
 {
+	/** The cache. */
+	static final __Cache__<ClassNameSymbol> _CACHE =
+		new __Cache__<>(ClassNameSymbol.class,
+		new __Cache__.__Create__<ClassNameSymbol>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/05/18
+			 */
+			@Override
+			public ClassNameSymbol create(String __s)
+			{
+				return new ClassNameSymbol(__s);
+			}
+		});
+	
 	/** The class for object. */
 	public static final ClassNameSymbol BINARY_OBJECT =
-		new ClassNameSymbol("java/lang/Object");
+		of("java/lang/Object");
 	
 	/** Boolean. */
 	public static final ClassNameSymbol BOOLEAN =
@@ -82,53 +98,12 @@ public final class ClassNameSymbol
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/15
 	 */
-	public ClassNameSymbol(String __s)
+	private ClassNameSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
 		this(__s, false, null);
 	}
 	
-	/**
-	 * Initializes a class name symbol which is derived from a compatible
-	 * symbol that can be treated as a class name.
-	 *
-	 * @param __compat The compatible symbol.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/04
-	 */
-	ClassNameSymbol(__ClassNameCompatible__ __compat)
-		throws NullPointerException
-	{
-		super(__compat.toString());
-		
-		// Is a binary name?
-		if (__compat instanceof BinaryNameSymbol)
-		{
-			// Not used
-			isarray = false;
-			isprimitive = false;
-			
-			// Pre-cache
-			_asbinary = new WeakReference<>((BinaryNameSymbol)__compat);
-		}
-		
-		// Is a field?
-		else if (__compat instanceof FieldSymbol)
-		{
-			// Could be used
-			FieldSymbol fs = (FieldSymbol)__compat;
-			isarray = fs.isArray();
-			isprimitive = (!isarray && fs.primitiveType() != null);
-			
-			// Pre-cache
-			_asfield = new WeakReference<>(fs);
-		}
-		
-		// Unknown?
-		else
-			throw new RuntimeException("WTFX");
-	}
-		
 	/**
 	 * Initializes the class name symbol.
 	 *
@@ -138,7 +113,7 @@ public final class ClassNameSymbol
 	 * @throws IllegalSymbolException If the class name is not valid.
 	 * @since 2016/03/31
 	 */
-	ClassNameSymbol(String __s, boolean __prim,
+	private ClassNameSymbol(String __s, boolean __prim,
 		ClassLoaderNameSymbol __clname)
 		throws IllegalSymbolException, NullPointerException
 	{
@@ -278,6 +253,22 @@ public final class ClassNameSymbol
 		
 		// Otherwise, this is already done by the binary name
 		return asBinaryName().parentPackage();
+	}
+	
+	/**
+	 * Creates a symbol for the given string or returns a pre-cached variant
+	 * of the string.
+	 *
+	 * @param __s The string to create a symbol for.
+	 * @return The symbol.
+	 * @throws IllegalSymbolException If the symbol is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/18
+	 */
+	public static ClassNameSymbol of(String __s)
+		throws IllegalSymbolException, NullPointerException
+	{
+		return _CACHE.__of(__s);
 	}
 }
 
