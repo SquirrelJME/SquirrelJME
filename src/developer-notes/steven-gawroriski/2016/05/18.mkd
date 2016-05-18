@@ -28,3 +28,45 @@ The kernel will have to interact with the executable system and the executable
 finder so that push notifications and events can launch other midlets and
 such.
 
+## 08:50
+
+I believe I will impose a limitation that applications and such may only
+be found if they are currently active in executable finders. So for example
+a class path dependency of `foo/bar.jar` would be illegal and it would attempt
+to use `bar.jar` instead in any of the executable finders which exist. All
+finders have to be used because some libraries could be built-in.
+
+## 08:51
+
+To increase some speed potential and reduce the space needed for compiled
+applications being stored, JARs should only be compiled and packaged as if they
+were alone. They would however require a way to detect if a dependency was
+changed to trigger a recompile. The library fragments would be loaded and
+linked in as required. Provided I check if dependencies are out of date I can
+get away with static references and indices to classes. Libraries would have to
+be compiled first. For each library compiled, it would be given static
+addresses to classes and such. Then following this, the compilation will
+flow up to the program being ran which would then use those static references
+to do more things. This would require a non-looping dependency set however,
+which is required by the virtual machine anyway. However, what would be a bit
+complicated however are the three states of executables. If a JAR is a classic
+application, a MIDLet, and a LIBlet it can have three distinct dependency sets.
+There are also optional dependencies. Also when it comes to a JIT, it might
+just take forever to compile every single class that exists in the JAR and its
+dependencies. On limited systems, the user might just give up if a program is
+taking forever to start because it is compiling everything for maximum speed.
+So as I thought of before, I should instead of having extreme optimization of
+static devise a means where I can still somewhat do it, but be able to detect
+if a class dependency has changed and such. Calculating SHA-1 sums or similar
+for class files will be a lengthy operation however. So I just need a nice and
+faster checksum algorithm that is not an intensive operation. Those do exist.
+When it comes to verification, it will be done at compile time.
+
+## 09:06
+
+The hashing algorithm to use would likely be MurmurHash since it is fast and
+is adequite to find some collisions and changes. I could base a class file
+on its hash and store it in the cache. The cache would need to store the name
+of the class and its hash. There is a possibility of a class with the same name
+using different hashes can exist.
+
