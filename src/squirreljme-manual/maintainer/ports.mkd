@@ -5,6 +5,7 @@ These are developer related notes on specific platforms.
 # any -- General Support
 
  * [Amiga OS](plat_any_amigaos.mkd)
+ * [Linux](plat_any_linux.mkd)
  * [Palm OS](plat_any_palmos.mkd)
 
 # arm -- ARM

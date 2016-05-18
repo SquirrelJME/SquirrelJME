@@ -1,0 +1,18 @@
+# General Support: Linux
+
+Support for Linux.
+
+# Wide variety of libraries
+
+Linux offers an extremely wide variety of libraries and C runtimes. SquirrelJME
+will have to detect the correct C library and use it accordingly. This would
+for example be better than using systems calls and such. For example, using
+`gethostbyname` with a system call directly would not use the libraries listed
+in `/etc/nsswitch.conf` which would be bad for integration. However, C
+libraries are potentially not 100% compatible with each other, so this would
+be interesting to figure out. Generally though for architectures, the C
+libraries should hopefully be compatible with each other. As an idea, I can
+wrap and catch errors made in the standard library for example if calling
+some code crashes, I can catch the signal for say segmentation fault and then
+just generate an exception for it.
+
