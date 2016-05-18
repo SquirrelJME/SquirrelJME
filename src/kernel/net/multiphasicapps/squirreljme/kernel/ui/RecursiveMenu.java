@@ -69,6 +69,42 @@ public class RecursiveMenu
 	}
 	
 	/**
+	 * Sets the cursor to the next item.
+	 *
+	 * @return The old cursor position.
+	 * @since 2016/05/18
+	 */
+	public int nextItem()
+	{
+		return setCursor(getCursor() + 1);
+	}
+	
+	/**
+	 * Sets the cursor to the previous item.
+	 *
+	 * @return The old cursor position.
+	 * @since 2016/05/18
+	 */
+	public int previousItem()
+	{
+		return setCursor(getCursor() - 1);
+	}
+	
+	/**
+	 * Sets the position of the cursor.
+	 *
+	 * @param __p The cursor position.
+	 * @return The old cursor position.
+	 * @since 2016/05/18
+	 */
+	public int setCursor(int __p)
+	{
+		int rv = _cursor;
+		_cursor = Math.max(0, Math.min(this.items.length, __p));
+		return rv;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/18
 	 */
