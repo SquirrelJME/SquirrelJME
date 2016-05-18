@@ -114,3 +114,11 @@ internal details. So say if the CLDC is a native library and the user wants to
 run a class in an interpreter, the interpreted class must be able to access
 the native class details. The opposite has to be able to happen also.
 
+## 09:43
+
+Also to maximize memory savings when it comes to the descriptors, I should
+have bulk caches of them so that multiple descriptors which share similar
+string values can potentially reduce memory usage and such. There could
+quite possibly be a few hundred instances of `java/lang/Object` strings
+in memory at one time.
+
