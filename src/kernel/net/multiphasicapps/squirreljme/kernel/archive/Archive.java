@@ -18,6 +18,7 @@ import java.util.WeakHashMap;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.narf.classinterface.NCIException;
 
 /**
  * This is the base class for providers which provide archive views of JAR
@@ -34,6 +35,13 @@ public abstract class Archive
 	 * not exist in this archive.
 	 */
 	private static final __MissingClass__ _MISSING_CLASS =
+		new __MissingClass__();
+	
+	/**
+	 * This is a flagging object which indicates that a given class failed
+	 * to load properly.
+	 */
+	private static final __MissingClass__ _ILLEGAL_CLASS =
 		new __MissingClass__();
 	
 	/** Cache of loaded classes. */
@@ -70,11 +78,12 @@ public abstract class Archive
 	 * @return The cached class interface, or {@code null} if the class does
 	 * not exist in this archive.
 	 * @throws IllegalArgumentException If the specified class is an array
+	 * @throws NCIException If the class is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/18
 	 */
 	public final NCIClass locateClass(ClassNameSymbol __n)
-		throws IllegalArgumentException, NullPointerException
+		throws IllegalArgumentException, NCIException, NullPointerException
 	{
 		// Check
 		if (__n == null)
@@ -89,7 +98,51 @@ public abstract class Archive
 		Map<ClassNameSymbol, Reference<NCIClass>> cache = this._cache;
 		synchronized (cache)
 		{
-			throw new Error("TODO");
+			// Get reference
+			Reference<NCIClass> ref = cache.get(__n);
+			NCIClass rv;
+			
+			// Needs caching?
+			Throwable t = null;
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// The class could be badly formatted
+				try
+				{
+					// Attempt loading class
+					rv = internalLocateClass(__n);
+					
+					// If not found, set as null
+					if (rv == null)
+						rv = _MISSING_CLASS;
+				}
+				
+				// Make the class illegal
+				catch (NCIException e)
+				{
+					// Remember the cause
+					t = e;
+					
+					// Mark as illegal
+					rv = _ILLEGAL_CLASS;
+				}
+				
+				// Cache
+				cache.put(__n, new WeakReference<>(rv));
+			}
+			
+			// {@squirreljme.error AY0c The class is not valid.
+			// (The name of the class)}
+			if (rv == _ILLEGAL_CLASS)
+				throw new NCIException(NCIException.Issue.UNSPECIFIED,
+					String.format("AY0c %s", __n), t);
+			
+			// Missing?
+			else if (rv == _MISSING_CLASS)
+				return null;
+			
+			// Return it
+			return rv;
 		}
 	}
 }

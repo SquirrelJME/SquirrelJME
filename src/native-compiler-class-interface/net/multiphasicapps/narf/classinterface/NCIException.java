@@ -73,6 +73,9 @@ public class NCIException
 	public static enum Issue
 		implements BaseIssue
 	{
+		/** Unspecified issue. */
+		UNSPECIFIED,
+		
 		/** A class was not found. */
 		CLASS_NOT_FOUND,
 		
