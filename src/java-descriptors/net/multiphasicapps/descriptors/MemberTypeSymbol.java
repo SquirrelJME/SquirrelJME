@@ -75,7 +75,7 @@ public abstract class MemberTypeSymbol
 			return new MethodSymbol(__sym);
 		
 		// Otherwise a field
-		return new FieldSymbol(__sym);
+		return FieldSymbol.of(__sym);
 	}
 }
 

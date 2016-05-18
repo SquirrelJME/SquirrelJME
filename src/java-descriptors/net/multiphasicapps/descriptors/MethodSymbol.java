@@ -225,7 +225,7 @@ public final class MethodSymbol
 			
 			// Invalidated?
 			if (ref == null || null == (rv = ref.get()))
-				arr[__i] = new WeakReference<>((rv = new FieldSymbol(
+				arr[__i] = new WeakReference<>((rv = FieldSymbol.of(
 					toString().substring(off, off + len))));
 			
 			// Return it

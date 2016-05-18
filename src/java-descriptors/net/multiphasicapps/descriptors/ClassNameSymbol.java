@@ -209,9 +209,9 @@ public final class ClassNameSymbol
 		
 		// Needs creation?
 		if (rv == null)
-			_asfield = new WeakReference<>((rv = new FieldSymbol(
+			_asfield = new WeakReference<>((rv = FieldSymbol.of(
 				((isarray || isprimitive) ? toString() :
-					'L' + toString() + ';'), this)));
+					'L' + toString() + ';'))));
 		
 		// Return it
 		return rv;

@@ -22,6 +22,22 @@ public final class FieldSymbol
 	extends MemberTypeSymbol
 	implements __ClassNameCompatible__
 {
+	/** The cache. */
+	static final __Cache__<FieldSymbol> _CACHE =
+		new __Cache__<>(FieldSymbol.class,
+		new __Cache__.__Create__<FieldSymbol>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/05/18
+			 */
+			@Override
+			public FieldSymbol create(String __s)
+			{
+				return new FieldSymbol(__s);
+			}
+		});
+	
 	/** Maximum array size. */
 	public static final int MAX_ARRAY_DIMENSIONS =
 		255;
@@ -44,25 +60,9 @@ public final class FieldSymbol
 	 * @param __s Field descriptor data.
 	 * @throws IllegalSymbolException If the field descriptor is not valid.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/14
-	 */
-	public FieldSymbol(String __s)
-		throws IllegalSymbolException, NullPointerException
-	{
-		this(__s, null);
-	}
-	
-	/**
-	 * Initializes the field symbol which represents the type of a field.
-	 *
-	 * @param __s Field descriptor data.
-	 * @param __cls Symbol back reference.
-	 * @throws IllegalSymbolException If the field descriptor is not valid.
-	 * @throws NullPointerException On null arguments, except for
-	 * {@code __cls}.
 	 * @since 2016/04/04
 	 */
-	FieldSymbol(String __s, ClassNameSymbol __cls)
+	private FieldSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -87,10 +87,6 @@ public final class FieldSymbol
 		// Just cache all of them to check for symbol validity
 		binaryName();
 		baseType();
-		
-		// Back cache?
-		if (__cls != null)
-			_clname = new WeakReference<>(__cls);
 	}
 	
 	/**
@@ -297,6 +293,22 @@ public final class FieldSymbol
 		if (rv instanceof PrimitiveSymbol)
 			return (PrimitiveSymbol)rv;
 		return null;
+	}
+	
+	/**
+	 * Creates a symbol for the given string or returns a pre-cached variant
+	 * of the string.
+	 *
+	 * @param __s The string to create a symbol for.
+	 * @return The symbol.
+	 * @throws IllegalSymbolException If the symbol is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/18
+	 */
+	public static FieldSymbol of(String __s)
+		throws IllegalSymbolException, NullPointerException
+	{
+		return _CACHE.__of(__s);
 	}
 }
 
