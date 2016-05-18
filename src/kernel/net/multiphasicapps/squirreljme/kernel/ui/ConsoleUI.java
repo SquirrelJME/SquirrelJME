@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.kernel.ui;
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.ListIterator;
+import net.multiphasicapps.squirreljme.kernel.archive.ArchiveFinder;
 import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventHandler;
 import net.multiphasicapps.squirreljme.kernel.event.EventKind;
@@ -35,6 +38,18 @@ public class ConsoleUI
 	public static final long CONSOLE_DELAY =
 		50_000_000L;
 	
+	/** The starting row number to print menu items on. */
+	public static final int STARTING_ROW =
+		3;
+	
+	/** The column the cursor is on. */
+	public static final int CURSOR_COLUMN =
+		1;
+	
+	/** The column text starts on. */
+	public static final int ITEM_COLUMN =
+		2;
+	
 	/** The console view which interacts with the user directly. */
 	protected final ConsoleDisplay console;
 	
@@ -49,6 +64,15 @@ public class ConsoleUI
 	/** The event queue to use. */
 	protected final EventQueue eventqueue =
 		new EventQueue();
+	
+	/** The available archive finders. */
+	protected final List<ArchiveFinder> finders;
+	
+	/** The current archive finder being used. */
+	private volatile int _curfinder;
+	
+	/** The current cursor position. */
+	private volatile int _cursorpos;
 	
 	/**
 	 * Initializes the console launcher controller.
@@ -66,6 +90,9 @@ public class ConsoleUI
 		this.console = __al.createConsoleDisplay();
 		if (this.console == null)
 			throw new RuntimeException("AY02");
+		
+		// Setup finder seeker
+		this.finders = __al.archiveFinders();
 	}
 	
 	/**
@@ -101,6 +128,9 @@ public class ConsoleUI
 			__handleTime(timebuilder, currentcal);
 			console.put((cols - 1) - timebuilder.length(), 0, timebuilder);
 			
+			// Draw the menu
+			__drawMenu(console, cols, rows);
+			
 			// Handle console events.
 			eventqueue.handleEvents(this);
 			
@@ -135,6 +165,64 @@ public class ConsoleUI
 			else
 				Thread.yield();
 		}
+	}
+	
+	/**
+	 * Draws the menu.
+	 *
+	 * @param __con The output console.
+	 * @param __cols The column count.
+	 * @param __rows The number of rows.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/18
+	 */
+	private void __drawMenu(ConsoleDisplay __con, int __cols, int __rows)
+		throws NullPointerException
+	{
+		// Check
+		if (__con == null)
+			throw new NullPointerException("NARG");
+		
+		// The number of visible rows to use
+		int r = STARTING_ROW;
+		int visrow = Math.max(1, __rows - r);
+		int curpos = r + this._cursorpos;
+		
+		// Draw the cursor
+		console.put(CURSOR_COLUMN, curpos, "*");
+		
+		// Draw the current finder
+		int cf = this._curfinder;
+		ArchiveFinder af;
+		List<ArchiveFinder> finders = this.finders;
+		try
+		{
+			af = finders.get(_curfinder);
+		}
+		
+		// Not valid
+		catch (IndexOutOfBoundsException e)
+		{
+			// Cap to the start or end
+			int n = finders.size();
+			if (cf >= n)
+				_curfinder = cf = n - 1;
+			if (cf < 0)
+				_curfinder = cf = 0;
+			
+			// Try again
+			if (cf >= 0 && cf < n)
+				af = finders.get(_curfinder);
+			
+			// Missing
+			else
+				af = null;
+		}
+		
+		// Draw the finder header
+		console.put(ITEM_COLUMN, r, "From: ");
+		console.put(ITEM_COLUMN + 6, r++, (af != null ? af.name() :
+			"Not Available"));
 	}
 	
 	/**
