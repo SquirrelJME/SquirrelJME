@@ -14,9 +14,13 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.multiphasicapps.squirreljme.kernel.archive.Archive;
 import net.multiphasicapps.squirreljme.kernel.archive.ArchiveFinder;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This contains the archive finder which supports JAR files and utilizes
@@ -30,8 +34,19 @@ public class FSArchiveFinder
 	/** The directories that contains JAR files. */
 	private final Path[] _paths;
 	
+	/** The archives which are available for execution . */
+	private final List<Archive> _archives =
+		new ArrayList<>();
+	
+	/** Unmodifiable view. */
+	private final List<Archive> _unmod =
+		UnmodifiableList.<Archive>of(this._archives);
+	
 	/** The string cache. */
 	private volatile Reference<String> _string;
+	
+	/** Has this been refreshed? */
+	private volatile boolean _refreshed;
 	
 	/**
 	 * Initializes the file system based archive finder using the default
@@ -68,6 +83,41 @@ public class FSArchiveFinder
 		for (Path p : paths)
 			if (p == null)
 				throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/18
+	 */
+	@Override
+	public List<Archive> archives()
+	{
+		// Lock
+		Path[] paths = this._paths;
+		synchronized (paths)
+		{
+			// Needs refreshing?
+			if (!_refreshed)
+				refresh();
+			
+			// Return unmodifiable view
+			return this._unmod;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/18
+	 */
+	@Override
+	public void refresh()
+	{
+		// Lock
+		Path[] paths = this._paths;
+		synchronized (paths)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

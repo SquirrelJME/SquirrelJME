@@ -162,3 +162,11 @@ anything at all.
 
 I could probably use a kind of drop thread to a process from the kernel.
 
+## 19:42
+
+Made a number of commits this day, pretty nice. Although I have not made any
+in the past few hours. Suppose a short break of sorts. I suppose for simplicity
+the archives would be scanned and stored. Whenever a rescan is done the
+information is potentially updated as such. This way if a new file is added it
+can be rescanned and used.
+

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.archive;
 
+import java.util.List;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
@@ -44,5 +45,21 @@ public abstract class ArchiveFinder
 		// Set
 		kernel = __k;
 	}
+	
+	/**
+	 * Returns the list of archives which are available for usage.
+	 *
+	 * @return The list of archives which are available, the returned list
+	 * must not be modifiable.
+	 * @since 2016/05/18
+	 */
+	public abstract List<Archive> archives();
+	
+	/**
+	 * Refreshes the list of archives which are available.
+	 *
+	 * @since 2016/05/18
+	 */
+	public abstract void refresh();
 }
 
