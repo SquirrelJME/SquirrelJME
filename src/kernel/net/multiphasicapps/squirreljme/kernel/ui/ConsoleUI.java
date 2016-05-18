@@ -271,6 +271,9 @@ public class ConsoleUI
 			// Get the console
 			ConsoleDisplay console = this.console;
 			int cols = console.getColumns(), rows = console.getRows();
+			
+			// Clear the console
+			console.clear();
 		
 			// Draw the name of the software
 			console.put(0, 0, "SquirrelJME");

@@ -124,6 +124,36 @@ public abstract class ConsoleDisplay
 	public abstract boolean supportsSize(int __c, int __r);
 	
 	/**
+	 * Clears the console.
+	 *
+	 * @since 2016/05/18
+	 */
+	public final void clear()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Get data
+			char[] chars = this._chars;
+			byte[] attrs = this._attrs;
+			
+			// No console initialized
+			if (chars == null || attrs == null)
+				return;
+			
+			// Count it
+			int n = chars.length;
+			
+			// Erase values
+			for (int i = 0; i < n; i++)
+			{
+				chars[i] = 0;
+				attrs[i] = 0;
+			}
+		}
+	}
+	
+	/**
 	 * Returns the number of columns the console has available.
 	 *
 	 * @return The number of columns displayed.
