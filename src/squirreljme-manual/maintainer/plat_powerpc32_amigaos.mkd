@@ -1,0 +1,4 @@
+# PowerPC 32-bit: Amiga OS
+
+This line is the newer PowerPC version of Amiga OS.
+

@@ -4,6 +4,7 @@ These are developer related notes on specific platforms.
 
 # any -- General Support
 
+ * [Amiga OS](plat_any_amigaos.mkd)
  * [Palm OS](plat_any_palmos.mkd)
 
 # arm -- ARM
@@ -25,6 +26,7 @@ These are developer related notes on specific platforms.
 
 # m68k -- Motorolla 68000
 
+ * [Amiga OS](plat_m68k_amigaos.mkd)
  * [Palm OS](plat_m68k_palmos.mkd)
 
 # mips64 -- MIPS 64-bit
@@ -37,5 +39,7 @@ These are developer related notes on specific platforms.
 
 # powerpc32 -- PowerPC 32-bit
 
+ * [Amiga OS](plat_powerpc32_amigaos.mkd)
  * [Mac OS](plat_powerpc32_macos.mkd)
+ * [MorphOS](plat_powerpc32_morphos.mkd)
 
