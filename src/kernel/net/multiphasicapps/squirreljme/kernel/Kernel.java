@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.kernel.archive.ArchiveFinder;
 import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
@@ -60,6 +61,15 @@ public abstract class Kernel
 		// Register the current thread
 		kp.addThread(Thread.currentThread());
 	}
+	
+	/**
+	 * Returns the set of archive finders which are used to find archives such
+	 * as JAR files and other executables for later execution.
+	 *
+	 * @return The set of archive finders, the list should not be modifiable.
+	 * @since 2016/05/18
+	 */
+	public abstract List<ArchiveFinder> archiveFinders();
 	
 	/**
 	 * Creates a view of a console window.

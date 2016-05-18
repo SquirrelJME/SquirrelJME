@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import net.multiphasicapps.squirreljme.kernel.archive.ArchiveFinder;
+import net.multiphasicapps.squirreljme.kernel.archive.fs.FSArchiveFinder;
 import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
@@ -22,6 +28,9 @@ import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 public class JVMJavaSEKernel
 	extends Kernel
 {
+	/** The archive finders which are available. */
+	protected final List<ArchiveFinder> finders;
+	
 	/**
 	 * This initializes the launcher which uses an existing full Java SE JVM.
 	 *
@@ -33,6 +42,20 @@ public class JVMJavaSEKernel
 		// Must always exist
 		if (__args == null)
 			__args = new String[0];
+		
+		// Create
+		finders = Collections.<ArchiveFinder>unmodifiableList(
+			Arrays.<ArchiveFinder>asList(new FSArchiveFinder(this)));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/18
+	 */
+	@Override
+	public List<ArchiveFinder> archiveFinders()
+	{
+		return finders;
 	}
 	
 	/**
