@@ -21,6 +21,22 @@ import java.lang.ref.WeakReference;
 public final class ClassLoaderNameSymbol
 	extends __BaseSymbol__
 {
+	/** The cache. */
+	static final __Cache__<ClassLoaderNameSymbol> _CACHE =
+		new __Cache__<>(ClassLoaderNameSymbol.class,
+		new __Cache__.__Create__<ClassLoaderNameSymbol>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/05/18
+			 */
+			@Override
+			public ClassLoaderNameSymbol create(String __s)
+			{
+				return new ClassLoaderNameSymbol(__s);
+			}
+		});
+	
 	/** Is this an array? */
 	protected final boolean isarray;
 	
@@ -38,7 +54,7 @@ public final class ClassLoaderNameSymbol
 	 * characters.
 	 * @since 2016/04/06
 	 */
-	public ClassLoaderNameSymbol(String __s)
+	private ClassLoaderNameSymbol(String __s)
 		throws IllegalSymbolException
 	{
 		this(__s, null);
@@ -129,6 +145,22 @@ public final class ClassLoaderNameSymbol
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Creates a symbol for the given string or returns a pre-cached variant
+	 * of the string.
+	 *
+	 * @param __s The string to create a symbol for.
+	 * @return The symbol.
+	 * @throws IllegalSymbolException If the symbol is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/18
+	 */
+	public static ClassLoaderNameSymbol of(String __s)
+		throws IllegalSymbolException, NullPointerException
+	{
+		return _CACHE.__of(__s);
 	}
 }
 
