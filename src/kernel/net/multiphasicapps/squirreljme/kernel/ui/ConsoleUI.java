@@ -68,11 +68,13 @@ public class ConsoleUI
 	/** The available archive finders. */
 	protected final List<ArchiveFinder> finders;
 	
-	/** The current archive finder being used. */
-	private volatile int _curfinder;
+	/** The main menu. */
+	protected final Menu menumain =
+		new MenuMain();
 	
-	/** The current cursor position. */
-	private volatile int _cursorpos;
+	/** The current menu used. */
+	private volatile Menu _curmenu =
+		menumain;
 	
 	/**
 	 * Initializes the console launcher controller.
@@ -129,7 +131,8 @@ public class ConsoleUI
 			console.put((cols - 1) - timebuilder.length(), 0, timebuilder);
 			
 			// Draw the menu
-			__drawMenu(console, cols, rows);
+			this._curmenu.drawMenu(console, cols, rows, STARTING_ROW,
+				Math.max(1, rows - STARTING_ROW));
 			
 			// Handle console events.
 			eventqueue.handleEvents(this);
@@ -168,64 +171,6 @@ public class ConsoleUI
 	}
 	
 	/**
-	 * Draws the menu.
-	 *
-	 * @param __con The output console.
-	 * @param __cols The column count.
-	 * @param __rows The number of rows.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/18
-	 */
-	private void __drawMenu(ConsoleDisplay __con, int __cols, int __rows)
-		throws NullPointerException
-	{
-		// Check
-		if (__con == null)
-			throw new NullPointerException("NARG");
-		
-		// The number of visible rows to use
-		int r = STARTING_ROW;
-		int visrow = Math.max(1, __rows - r);
-		int curpos = r + this._cursorpos;
-		
-		// Draw the cursor
-		console.put(CURSOR_COLUMN, curpos, "*");
-		
-		// Draw the current finder
-		int cf = this._curfinder;
-		ArchiveFinder af;
-		List<ArchiveFinder> finders = this.finders;
-		try
-		{
-			af = finders.get(_curfinder);
-		}
-		
-		// Not valid
-		catch (IndexOutOfBoundsException e)
-		{
-			// Cap to the start or end
-			int n = finders.size();
-			if (cf >= n)
-				_curfinder = cf = n - 1;
-			if (cf < 0)
-				_curfinder = cf = 0;
-			
-			// Try again
-			if (cf >= 0 && cf < n)
-				af = finders.get(_curfinder);
-			
-			// Missing
-			else
-				af = null;
-		}
-		
-		// Draw the finder header
-		console.put(ITEM_COLUMN, r, "From: ");
-		console.put(ITEM_COLUMN + 6, r++, (af != null ? af.name() :
-			"Not Available"));
-	}
-	
-	/**
 	 * Prints the current time to the given string.
 	 *
 	 * @param __sb The output buffer.
@@ -260,6 +205,96 @@ public class ConsoleUI
 		if ((s = __cal.get(Calendar.SECOND)) < 10)
 			__sb.append('0');
 		__sb.append(s);
+	}
+	
+	/**
+	 * This is the base class for menus.
+	 *
+	 * @since 2016/05/18
+	 */
+	public abstract class Menu
+	{
+		/** The number of items in the menu. */
+		protected volatile int numitems;
+		
+		/** The cursor position. */
+		protected volatile int curpos;
+		
+		/**
+		 * Draws a single item.
+		 *
+		 * @param __con The item to draw.
+		 * @param __i The index of the item.
+		 * @param __cols The number of columns.
+		 * @param __rn The row number.
+		 * @since 2016/05/18
+		 */
+		public abstract void drawItem(ConsoleDisplay __con, int __i,
+			int __cols, int __rn);
+		
+		/**
+		 * Draws the menu.
+		 *
+		 * @param __con The console display.
+		 * @param __cols The column count.
+		 * @param __rows The row count.
+		 * @param __sr The starting row to draw on.
+		 * @param __nr The number of rows to draw.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/05/18
+		 */
+		public void drawMenu(ConsoleDisplay __con, int __cols,
+			int __rows, int __sr, int __nr)
+			throws NullPointerException
+		{
+			// Check
+			if (__con == null)
+				throw new NullPointerException("NARG");
+			
+			// Correct cursor position
+			int ni = this.numitems;
+			int cp = this.curpos;
+			if (cp < 0)
+				this.curpos = cp = 0;
+			else if (cp >= ni)
+				this.curpos = cp = Math.max(0, ni - 1);
+			
+			// Determine the number of pages to draw
+			int numpages = (__rows / __nr) + 1;
+			int itemsperpage = Math.max(1, Math.min(__nr, ni));
+			int onpage = (cp / itemsperpage) - 1;
+			
+			// Draw all items on the given page
+			for (int i = 0, dr = __sr, j = (onpage * itemsperpage);
+				i < itemsperpage; i++, dr++, j++)
+			{
+				// Is this item selected?
+				if (cp == j)
+					console.put(CURSOR_COLUMN, curpos, "*");
+				else
+					console.put(CURSOR_COLUMN, curpos, " ");
+				
+				// Draw item?
+				drawItem(__con, j, __cols, dr);
+			}
+		}
+	}
+	
+	/**
+	 * This provides an interface for the main menu.
+	 *
+	 * @since 2016/05/18
+	 */
+	public class MenuMain
+	{
+		/**
+		 * Initializes the main menu.
+		 *
+		 * @since 2016/05/18
+		 */
+		public MenuMain()
+		{
+		}
 	}
 }
 
