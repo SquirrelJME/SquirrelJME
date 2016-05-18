@@ -32,6 +32,22 @@ public final class BinaryNameSymbol
 	implements Iterable<IdentifierSymbol>, FieldBaseTypeSymbol,
 		__ClassNameCompatible__
 {
+	/** The cache. */
+	static final __Cache__<BinaryNameSymbol> _CACHE =
+		new __Cache__<>(BinaryNameSymbol.class,
+		new __Cache__.__Create__<BinaryNameSymbol>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/05/18
+			 */
+			@Override
+			public BinaryNameSymbol create(String __s)
+			{
+				return new BinaryNameSymbol(__s);
+			}
+		});
+	
 	/** The default package. */
 	public static final BinaryNameSymbol DEFAULT_PACKAGE =
 		new BinaryNameSymbol(false);
@@ -42,7 +58,7 @@ public final class BinaryNameSymbol
 	
 	/** The throwable class. */
 	public static final BinaryNameSymbol THROWABLE =
-		new BinaryNameSymbol("java/lang/Throwable");
+		of("java/lang/Throwable");
 	
 	/** Identifier count. */
 	protected final int count;
@@ -70,26 +86,11 @@ public final class BinaryNameSymbol
 	 *
 	 * @param __s The string to use for the symbol.
 	 * @throws IllegalSymbolException If it is not a valid binary name.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/14
-	 */
-	public BinaryNameSymbol(String __s)
-		throws IllegalSymbolException, NullPointerException
-	{
-		this(__s, null);
-	}
-	
-	/**
-	 * Initializes the binary name symbol.
-	 *
-	 * @param __s The string to use for the symbol.
-	 * @param __cls The class name back reference to quick back-cache.
-	 * @throws IllegalSymbolException If it is not a valid binary name.
 	 * @throws NullPointerException On null arguments, except for
 	 * {@code __cls}.
 	 * @since 2016/04/04
 	 */
-	BinaryNameSymbol(String __s, ClassNameSymbol __cls)
+	private BinaryNameSymbol(String __s)
 		throws IllegalSymbolException, NullPointerException
 	{
 		super(__s);
@@ -137,10 +138,6 @@ public final class BinaryNameSymbol
 		
 		// Initialize array
 		_idents = __makeIDRefArray(count);
-		
-		// Back cache?
-		if (__cls != null)
-			_clname = new WeakReference<>(__cls);
 	}
 	
 	/**
@@ -152,7 +149,7 @@ public final class BinaryNameSymbol
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/14
 	 */
-	public BinaryNameSymbol(IdentifierSymbol... __ids)
+	private BinaryNameSymbol(IdentifierSymbol... __ids)
 		throws IllegalSymbolException, NullPointerException
 	{
 		this(__symbolsToBinaryName(__ids));
@@ -417,8 +414,7 @@ public final class BinaryNameSymbol
 				}
 				
 				// Lock it in
-				_parent = new WeakReference<>(
-					(rv = new BinaryNameSymbol(sb.toString())));
+				_parent = new WeakReference<>((rv = of(sb.toString())));
 			}
 			
 			// Return it
@@ -435,6 +431,22 @@ public final class BinaryNameSymbol
 	public int size()
 	{
 		return count;
+	}
+	
+	/**
+	 * Creates a symbol for the given string or returns a pre-cached variant
+	 * of the string.
+	 *
+	 * @param __s The string to create a symbol for.
+	 * @return The symbol.
+	 * @throws IllegalSymbolException If the symbol is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/18
+	 */
+	public static BinaryNameSymbol of(String __s)
+		throws IllegalSymbolException, NullPointerException
+	{
+		return _CACHE.__of(__s);
 	}
 	
 	/**

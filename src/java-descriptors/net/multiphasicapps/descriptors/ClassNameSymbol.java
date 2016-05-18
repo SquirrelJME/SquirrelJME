@@ -186,7 +186,7 @@ public final class ClassNameSymbol
 		// Needs creation?
 		if (rv == null)
 			_asbinary = new WeakReference<>(
-				(rv = new BinaryNameSymbol(toString(), this)));
+				(rv = BinaryNameSymbol.of(toString())));
 		
 		// Return it
 		return rv;

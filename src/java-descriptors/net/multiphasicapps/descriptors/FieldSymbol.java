@@ -164,7 +164,7 @@ public final class FieldSymbol
 						this));
 				
 				// Get it
-				rv = new BinaryNameSymbol(toString().substring(1, n - 1));
+				rv = BinaryNameSymbol.of(toString().substring(1, n - 1));
 			}
 			
 			// Primitive type
