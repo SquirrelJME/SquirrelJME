@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.kernel.ui;
 
 import java.util.Calendar;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import net.multiphasicapps.squirreljme.kernel.archive.ArchiveFinder;
@@ -79,8 +81,9 @@ public class ConsoleUI
 	/** The available archive finders. */
 	protected final List<ArchiveFinder> finders;
 	
-	/** The current menu. */
-	private volatile RecursiveMenu _menu;
+	/** The menu stack. */
+	protected final Deque<RecursiveMenu> menus =
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the console launcher controller.
@@ -114,7 +117,7 @@ public class ConsoleUI
 		
 		// Set the menu
 		RecursiveMenu rm = new RecursiveMenu(ii);
-		this._menu = rm;
+		this.menus.offerLast(rm);
 		
 		// Use the kernel event queue
 		this.eventqueue = __al.kernelProcess().eventQueue();
@@ -131,8 +134,12 @@ public class ConsoleUI
 		if (__k != EventKind.KEY_TYPED)
 			return EventHandler.PASS_EVENT;
 		
+		// Get the top most menu
+		RecursiveMenu menu = this.menus.peekLast();
+		if (menu == null)
+			return EventHandler.PASS_EVENT;
+		
 		// Depends on the key
-		RecursiveMenu menu = this._menu;
 		switch (__c)
 		{
 				// Menu up
@@ -190,6 +197,7 @@ public class ConsoleUI
 				// such have one use this selection style.
 			case KeyChars.JOYSTICK_LIGHTGUN_MISSED:
 			case KeyChars.JOYSTICK_SELECT:
+			case KeyChars.PEN_SECONDARY_CLICK:
 			case KeyChars.GPIO_BUTTON_0:
 				{
 					// Get the current and move the cursor up
@@ -203,6 +211,23 @@ public class ConsoleUI
 					if (at == no)
 						menu.setCursor(0);
 				}
+				break;
+				
+				// Select item in the menu
+			case ' ':
+			case '2':
+			case KeyChars.ENTER:
+			case KeyChars.JOYSTICK_LIGHTGUN_HIT:
+			case KeyChars.JOYSTICK_START:
+			case KeyChars.JOYSTICK_FACE_BUTTON_0:
+			case KeyChars.JOYSTICK_FACE_BUTTON_0 + 1:
+			case KeyChars.JOYSTICK_FACE_BUTTON_0 + 2:
+			case KeyChars.JOYSTICK_FACE_BUTTON_0 + 3:
+			case KeyChars.NUMPAD_2:
+			case KeyChars.NUMPAD_ENTER:
+			case KeyChars.PEN_PRIMARY_CLICK:
+			case KeyChars.GPIO_BUTTON_0 + 1:
+				__selectMenu();
 				break;
 			
 				// Unknown, pass it through
@@ -307,7 +332,7 @@ public class ConsoleUI
 			throw new NullPointerException("NARG");
 		
 		// Get the menu
-		RecursiveMenu menu = this._menu;
+		RecursiveMenu menu = this.menus.peekLast();
 		
 		// Correct cursor position
 		int ni = menu.size();
@@ -365,6 +390,24 @@ public class ConsoleUI
 		if ((s = __cal.get(Calendar.SECOND)) < 10)
 			__sb.append('0');
 		__sb.append(s);
+	}
+	
+	/**
+	 * Selects the current item on the menu.
+	 *
+	 * @since 2016/05/18
+	 */
+	private void __selectMenu()
+	{
+		// Get the top most menu
+		RecursiveMenu menu = this.menus.peekLast();
+		if (menu == null || menu.isEmpty())
+			return;
+		
+		// Get the item to be selected
+		Object item = menu.get(menu.getCursor());
+		
+		System.err.printf("DEBUG -- Select %s%n", item);
 	}
 }
 
