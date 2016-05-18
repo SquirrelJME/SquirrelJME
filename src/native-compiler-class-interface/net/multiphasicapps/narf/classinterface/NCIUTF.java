@@ -81,7 +81,7 @@ public final class NCIUTF
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))
 			_classname = new WeakReference<>(
-				(rv = new ClassNameSymbol(toString())));
+				(rv = ClassNameSymbol.of(toString())));
 		
 		// Return it
 		return rv;
