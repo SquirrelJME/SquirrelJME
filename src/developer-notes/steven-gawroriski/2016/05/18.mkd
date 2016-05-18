@@ -153,3 +153,12 @@ suppose first I will list archive finders which are then selected, this would
 go then into the list of archives that were found. Then when an archive is
 selected, it will list the available programs.
 
+## 16:00
+
+So currently I just have a simple going up and down a menu without selecting
+anything at all.
+
+## 16:05
+
+I could probably use a kind of drop thread to a process from the kernel.
+
