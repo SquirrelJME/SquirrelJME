@@ -36,8 +36,8 @@ public class NIClass
 {
 	/** The static initializer method key. */
 	public static final NCIMethodID STATIC_INITIALIZER =
-		new NCIMethodID(new IdentifierSymbol("<clinit>"),
-		new MethodSymbol("()V"));
+		new NCIMethodID(IdentifierSymbol.of("<clinit>"),
+		MethodSymbol.of("()V"));
 	
 	/** No argument array. */
 	private static final Object[] _NO_ARGS =

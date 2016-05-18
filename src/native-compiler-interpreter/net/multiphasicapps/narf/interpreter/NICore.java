@@ -35,7 +35,7 @@ public class NICore
 {
 	/** The string class. */
 	public static final ClassNameSymbol STRING_CLASS =
-		new ClassNameSymbol("java/lang/String");
+		ClassNameSymbol.of("java/lang/String");
 	
 	/** The library which contains classes to load. */
 	protected final NILibrary classlib;
@@ -94,8 +94,8 @@ public class NICore
 		
 		// Find the main method
 		NIMethod mainme = maincl.methods().get(new NCIMethodID(
-			new IdentifierSymbol("main"),
-			new MethodSymbol("([Ljava/lang/String;)V")));
+			IdentifierSymbol.of("main"),
+			MethodSymbol.of("([Ljava/lang/String;)V")));
 		
 		// {@squirreljme.error AN0g The main class does not contain a static
 		// method which take a string argument, returns void, and is called
@@ -251,10 +251,6 @@ public class NICore
 		{
 			return tm.get(__t);
 		}
-	}
-	
-	void __incrementNew
-	{
 	}
 	
 	/**

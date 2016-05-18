@@ -197,7 +197,7 @@ __outer_loop:
 		NILibrary ilib = new NILibrary(bootclasspath, classpath);
 		
 		// Setup the interpreter core
-		NICore ic = new NICore(ilib, new ClassLoaderNameSymbol(mainclass),
+		NICore ic = new NICore(ilib, ClassLoaderNameSymbol.of(mainclass),
 			hargs.<String>toArray(new String[hargs.size()]));
 		
 		// If the VM is still running, yield the current thread. Although they
