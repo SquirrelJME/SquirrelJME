@@ -396,19 +396,19 @@ public interface KeyChars
 	public static final char KEYBOARD_BACKLIGHT_TOGGLE =
 		0xE0CA;
 
-	/** KP_DOWN. */
+	/** KP_DOWN (Numeric Pad). */
 	public static final char KP_DOWN =
 		0xE0CB;
 
-	/** KP_LEFT. */
+	/** KP_LEFT (Numeric Pad). */
 	public static final char KP_LEFT =
 		0xE0CC;
 
-	/** KP_RIGHT. */
+	/** KP_RIGHT (Numeric Pad). */
 	public static final char KP_RIGHT =
 		0xE0CD;
 
-	/** KP_UP. */
+	/** KP_UP (Numeric Pad). */
 	public static final char KP_UP =
 		0xE0CE;
 

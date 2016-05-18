@@ -131,12 +131,75 @@ public class ConsoleUI
 		if (__k != EventKind.KEY_TYPED)
 			return EventHandler.PASS_EVENT;
 		
-		System.err.printf("DEBUG -- Keyboard %d %c%n", __port, __c);
-		
 		// Depends on the key
+		RecursiveMenu menu = this._menu;
 		switch (__c)
 		{
+				// Menu up
+			case '1':
+			case 'a':
+			case 'A':
+			case 'w':
+			case 'W':
 			case '<':
+			case ',':
+			case KeyChars.JOYSTICK_UP:
+			case KeyChars.JOYSTICK_UP_SECONDARY:
+			case KeyChars.JOYSTICK_LEFT:
+			case KeyChars.JOYSTICK_LEFT_SECONDARY:
+			case KeyChars.JOYSTICK_LEFT_SHOULDER_0:
+			case KeyChars.JOYSTICK_LEFT_SHOULDER_0 + 1:
+			case KeyChars.KP_LEFT:
+			case KeyChars.KP_UP:
+			case KeyChars.LEFT:
+			case KeyChars.UP:
+			case KeyChars.NUMPAD_1:
+			case KeyChars.PEN_SCROLL_UP:
+			case KeyChars.PEN_SCROLL_LEFT:
+				menu.previousItem();
+				break;
+			
+				// Menu down
+			case '3':
+			case 'd':
+			case 'D':
+			case 's':
+			case 'S':
+			case '>':
+			case '.':
+			case KeyChars.JOYSTICK_DOWN:
+			case KeyChars.JOYSTICK_DOWN_SECONDARY:
+			case KeyChars.JOYSTICK_RIGHT:
+			case KeyChars.JOYSTICK_RIGHT_SECONDARY:
+			case KeyChars.JOYSTICK_RIGHT_SHOULDER_0:
+			case KeyChars.JOYSTICK_RIGHT_SHOULDER_0 + 1:
+			case KeyChars.KP_RIGHT:
+			case KeyChars.KP_DOWN:
+			case KeyChars.RIGHT:
+			case KeyChars.DOWN:
+			case KeyChars.NUMPAD_3:
+			case KeyChars.PEN_SCROLL_DOWN:
+			case KeyChars.PEN_SCROLL_RIGHT:
+				menu.nextItem();
+				break;
+			
+				// The light gun only can trigger hitting the screen or
+				// missing the screen, so if the menu would fall off the end
+				// Also do the same for the select button (aka Zelda style).
+			case KeyChars.JOYSTICK_LIGHTGUN_MISSED:
+			case KeyChars.JOYSTICK_SELECT:
+				{
+					// Get the current and move the cursor up
+					int at = menu.getCursor();
+					int nx = menu.nextItem();
+					int no = menu.getCursor();
+					
+					// If the cursor is at the same location, set it to the
+					// start position otherwise the user will be stuck at the
+					// last item and can never go back.
+					if (at == no)
+						menu.setCursor(0);
+				}
 				break;
 			
 				// Unknown, pass it through

@@ -100,7 +100,7 @@ public class RecursiveMenu
 	public int setCursor(int __p)
 	{
 		int rv = _cursor;
-		_cursor = Math.max(0, Math.min(this.items.length, __p));
+		_cursor = Math.max(0, Math.min(this.items.length - 1, __p));
 		return rv;
 	}
 	
