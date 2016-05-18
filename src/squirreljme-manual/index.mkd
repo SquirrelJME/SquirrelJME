@@ -24,24 +24,25 @@ operation of this software.
 ## Links
 
   * [Online repository](http://multiphasicapps.net/)
-  * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
   * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
   * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
+  * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
 
 # Table of Contents
 
  * User's Manual
-   * [Why Use This?](user/why.mkd)
-   * [Supported Platforms](user/platforms.mkd)
    * [Build Instructions](user/building.mkd)
    * [Limitations](user/limits.mkd)
    * [Reddit Updates](user/reddit_notes.mkd)
    * [Supported Character Encodings](user/encodings.mkd)
+   * [Supported Platforms](user/platforms.mkd)
+   * [Why Use This?](user/why.mkd)
  * Developer's Manual
    * [Differences between Java SE and Java ME](developer/differences.mkd)
    * [Pitfalls](developer/pitfalls.mkd)
  * Maintainer's Manual
-   * [Style Requirements](maintainer/style.mkd)
    * [Consistency Guidelines](maintainer/consistency.mkd)
+   * [Mascot Requirements](maintainer/mascot_req.mkd)
    * [Ports](maintainer/ports.mkd)
+   * [Style Requirements](maintainer/style.mkd)
 
