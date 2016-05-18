@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.kernel.execfinder;
  * @since 2016/05/18
  */
 public interface ExecutableClass
-	implements Executable
+	extends Executable
 {
 }
 

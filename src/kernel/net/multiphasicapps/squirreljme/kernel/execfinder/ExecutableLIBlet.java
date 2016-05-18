@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.kernel.execfinder;
  *
  * @since 2016/05/18
  */
-public class ExecutableLIBlet
+public interface ExecutableLIBlet
 	extends ExecutableXlet
 {
 }
