@@ -217,7 +217,7 @@ public class EventQueue
 				// Calculate the event kind
 				EventKind ek = EventKind.of((v & EVENT_KIND_SHIFT_MASK) >>>
 					EVENT_KIND_SHIFT);
-			
+				
 				// Not a valid event?
 				if (ek == null)
 					continue;

@@ -800,7 +800,11 @@ public class SwingConsoleView
 					}
 					
 					// Send to the output, the input event
-					out.offerRaw(in.pollRaw());
+					int c = 0;
+					do
+					{
+						out.offerRaw((c = in.pollRaw()));
+					} while (c != 0);
 				}
 			}
 		}
