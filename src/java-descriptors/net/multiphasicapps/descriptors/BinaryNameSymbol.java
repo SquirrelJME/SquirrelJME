@@ -44,10 +44,6 @@ public final class BinaryNameSymbol
 	public static final BinaryNameSymbol THROWABLE =
 		new BinaryNameSymbol("java/lang/Throwable");
 	
-	/** Lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** Identifier count. */
 	protected final int count;
 	
@@ -207,7 +203,7 @@ public final class BinaryNameSymbol
 	public List<IdentifierSymbol> asList()
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (_baseoffs)
 		{
 			// Get reference
 			Reference<List<IdentifierSymbol>> ref = _aslist;
@@ -399,7 +395,7 @@ public final class BinaryNameSymbol
 			return DEFAULT_PACKAGE;
 		
 		// Lock
-		synchronized (lock)
+		synchronized (_baseoffs)
 		{
 			// Get reference
 			Reference<BinaryNameSymbol> ref = _parent;
