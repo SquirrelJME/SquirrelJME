@@ -87,6 +87,14 @@ public abstract class Kernel
 	public abstract ConsoleDisplay createConsoleDisplay();
 	
 	/**
+	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing
+	 * happens.
+	 *
+	 * @since 2016/05/18
+	 */
+	public abstract void quitKernel();
+	
+	/**
 	 * Returns the process which is associated with the current thread.
 	 *
 	 * @return The process for the current thread, if {@code null} then no

@@ -50,6 +50,18 @@ public class ConsoleUI
 	public static final int ITEM_COLUMN =
 		2;
 	
+	/** The task menu item. */
+	public static final String MENU_TASKS =
+		"Tasks";
+	
+	/** The about menu item. */
+	public static final String MENU_ABOUT =
+		"About SquirrelJME";
+	
+	/** The quit menu item. */
+	public static final String MENU_QUIT =
+		"Quit";
+	
 	/** The console view which interacts with the user directly. */
 	protected final ConsoleDisplay console;
 	
@@ -68,13 +80,8 @@ public class ConsoleUI
 	/** The available archive finders. */
 	protected final List<ArchiveFinder> finders;
 	
-	/** The main menu. */
-	protected final Menu menumain =
-		new MenuMain();
-	
-	/** The current menu used. */
-	private volatile Menu _curmenu =
-		menumain;
+	/** The current menu. */
+	private volatile RecursiveMenu _menu;
 	
 	/**
 	 * Initializes the console launcher controller.
@@ -94,7 +101,21 @@ public class ConsoleUI
 			throw new RuntimeException("AY02");
 		
 		// Setup finder seeker
-		this.finders = __al.archiveFinders();
+		List<ArchiveFinder> finders = __al.archiveFinders();;
+		int nf = finders.size();
+		this.finders = finders;
+		
+		// Setup the main menu items
+		Object[] ii = new Object[nf + 3];
+		for (int i = 0; i < nf; i++)
+			ii[i] = finders.get(i);
+		ii[nf] = MENU_TASKS;
+		ii[nf + 1] = MENU_ABOUT;
+		ii[nf + 2] = MENU_QUIT;
+		
+		// Set the menu
+		RecursiveMenu rm = new RecursiveMenu();
+		this._menu = rm;
 	}
 	
 	/**
@@ -131,7 +152,7 @@ public class ConsoleUI
 			console.put((cols - 1) - timebuilder.length(), 0, timebuilder);
 			
 			// Draw the menu
-			this._curmenu.drawMenu(console, cols, rows, STARTING_ROW,
+			__drawMenu(console, cols, rows, STARTING_ROW,
 				Math.max(1, rows - STARTING_ROW));
 			
 			// Handle console events.
@@ -167,6 +188,49 @@ public class ConsoleUI
 			// consume all available cycles
 			else
 				Thread.yield();
+		}
+	}
+
+	/**
+	 * Draws the menu.
+	 *
+	 * @param __con The console display.
+	 * @param __cols The column count.
+	 * @param __rows The row count.
+	 * @param __sr The starting row to draw on.
+	 * @param __nr The number of rows to draw.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/18
+	 */
+	private void __drawMenu(ConsoleDisplay __con, int __cols,
+		int __rows, int __sr, int __nr)
+		throws NullPointerException
+	{
+		// Check
+		if (__con == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the menu
+		RecursiveMenu menu = this._menu;
+		
+		// Correct cursor position
+		int ni = menu.size();
+		int cp = menu.getCursor();
+	
+		// Determine the number of pages to draw
+		int numpages = (__rows / __nr) + 1;
+		int itemsperpage = Math.min(__nr, ni);
+		int onpage = (cp / (Math.max(1, itemsperpage))) - 1;
+	
+		// Draw all items on the given page
+		for (int i = 0, dr = __sr, j = (onpage * itemsperpage);
+			i < itemsperpage; i++, dr++, j++)
+		{
+			// Draw the selection cursor
+			console.put(CURSOR_COLUMN, dr, (cp == j ? "*" : " "));
+			
+			// Draw object
+			console.put(ITEM_COLUMN, dr, String.valueOf(menu.get(i)));
 		}
 	}
 	
@@ -205,107 +269,6 @@ public class ConsoleUI
 		if ((s = __cal.get(Calendar.SECOND)) < 10)
 			__sb.append('0');
 		__sb.append(s);
-	}
-	
-	/**
-	 * This is the base class for menus.
-	 *
-	 * @since 2016/05/18
-	 */
-	public abstract class Menu
-	{
-		/** The number of items in the menu. */
-		protected volatile int numitems;
-		
-		/** The cursor position. */
-		protected volatile int curpos;
-		
-		/**
-		 * Draws a single item.
-		 *
-		 * @param __con The item to draw.
-		 * @param __i The index of the item.
-		 * @param __cols The number of columns.
-		 * @param __rn The row number.
-		 * @since 2016/05/18
-		 */
-		public abstract void drawItem(ConsoleDisplay __con, int __i,
-			int __cols, int __rn);
-		
-		/**
-		 * Draws the menu.
-		 *
-		 * @param __con The console display.
-		 * @param __cols The column count.
-		 * @param __rows The row count.
-		 * @param __sr The starting row to draw on.
-		 * @param __nr The number of rows to draw.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/05/18
-		 */
-		public void drawMenu(ConsoleDisplay __con, int __cols,
-			int __rows, int __sr, int __nr)
-			throws NullPointerException
-		{
-			// Check
-			if (__con == null)
-				throw new NullPointerException("NARG");
-			
-			// Correct cursor position
-			int ni = this.numitems;
-			int cp = this.curpos;
-			if (cp < 0)
-				this.curpos = cp = 0;
-			else if (cp >= ni)
-				this.curpos = cp = Math.max(0, ni - 1);
-			
-			// Determine the number of pages to draw
-			int numpages = (__rows / __nr) + 1;
-			int itemsperpage = Math.max(1, Math.min(__nr, ni));
-			int onpage = (cp / itemsperpage) - 1;
-			
-			// Draw all items on the given page
-			for (int i = 0, dr = __sr, j = (onpage * itemsperpage);
-				i < itemsperpage; i++, dr++, j++)
-			{
-				// Is this item selected?
-				if (cp == j)
-					console.put(CURSOR_COLUMN, curpos, "*");
-				else
-					console.put(CURSOR_COLUMN, curpos, " ");
-				
-				// Draw item?
-				drawItem(__con, j, __cols, dr);
-			}
-		}
-	}
-	
-	/**
-	 * This provides an interface for the main menu.
-	 *
-	 * @since 2016/05/18
-	 */
-	public class MenuMain
-		extends Menu
-	{
-		/**
-		 * Initializes the main menu.
-		 *
-		 * @since 2016/05/18
-		 */
-		public MenuMain()
-		{
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/05/18
-		 */
-		@Override
-		public void drawItem(ConsoleDisplay __con, int __i,
-			int __cols, int __rn)
-		{
-		}
 	}
 }
 

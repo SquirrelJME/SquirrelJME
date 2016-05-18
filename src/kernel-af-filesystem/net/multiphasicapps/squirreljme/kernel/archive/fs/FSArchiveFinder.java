@@ -39,9 +39,9 @@ public class FSArchiveFinder
 	 * @since 2016/05/18
 	 */
 	@Override
-	public String name()
+	public String toString()
 	{
-		return "File System";
+		return "FileSystem";
 	}
 }
 

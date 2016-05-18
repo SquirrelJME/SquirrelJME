@@ -76,5 +76,16 @@ public class JVMJavaSEKernel
 		// Return it
 		return scv;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/18
+	 */
+	@Override
+	public void quitKernel()
+	{
+		// Can quit
+		System.exit(0);
+	}
 }
 
