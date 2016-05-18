@@ -23,7 +23,6 @@ operation of this software.
 
 ## Links
 
-  * [Why?](src/squirreljme-manual/user/why.mkd)
   * [Online repository](http://multiphasicapps.net/)
   * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
   * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
@@ -32,12 +31,12 @@ operation of this software.
 # Table of Contents
 
  * User's Manual
-   * [Build Instructions](user/building.mkd)
    * [Why Use This?](user/why.mkd)
    * [Supported Platforms](user/platforms.mkd)
-   * [Supported Character Encodings](user/encodings.mkd)
+   * [Build Instructions](user/building.mkd)
    * [Limitations](user/limits.mkd)
    * [Reddit Updates](user/reddit_notes.mkd)
+   * [Supported Character Encodings](user/encodings.mkd)
  * Developer's Manual
    * [Differences between Java SE and Java ME](developer/differences.mkd)
    * [Pitfalls](developer/pitfalls.mkd)
