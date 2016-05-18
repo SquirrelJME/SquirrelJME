@@ -64,6 +64,14 @@ public class ConsoleUI
 	public static final String MENU_QUIT =
 		"Quit";
 	
+	/** Go to the previous menu. */
+	public static final String MENU_BACK =
+		"Go Back";
+	
+	/** Do quit. */
+	public static final String MENU_QUIT_YES =
+		"Really Quit";
+	
 	/** The console view which interacts with the user directly. */
 	protected final ConsoleDisplay console;
 	
@@ -400,7 +408,8 @@ public class ConsoleUI
 	private void __selectMenu()
 	{
 		// Get the top most menu
-		RecursiveMenu menu = this.menus.peekLast();
+		Deque<RecursiveMenu> queue = this.menus;
+		RecursiveMenu menu = queue.peekLast();
 		if (menu == null || menu.isEmpty())
 			return;
 		
@@ -410,11 +419,18 @@ public class ConsoleUI
 		// Quit the kernel?
 		if (item == MENU_QUIT)
 		{
-			this.kernel.quitKernel();
-			return;
+			// Could have selected the menu by accident, so confirm it
+			RecursiveMenu rm = new RecursiveMenu(MENU_BACK, MENU_QUIT_YES);
+			queue.offerLast(rm);
 		}
 		
-		System.err.printf("DEBUG -- Select %s%n", item);
+		// Really quit
+		else if (item == MENU_QUIT_YES)
+			this.kernel.quitKernel();
+		
+		// Go to the previous menu
+		else if (item == MENU_BACK)
+			queue.removeLast();
 	}
 }
 
