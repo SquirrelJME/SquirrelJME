@@ -186,8 +186,11 @@ public class ConsoleUI
 				// The light gun only can trigger hitting the screen or
 				// missing the screen, so if the menu would fall off the end
 				// Also do the same for the select button (aka Zelda style).
+				// Also, there could possibly only be two GPIO buttons and as
+				// such have one use this selection style.
 			case KeyChars.JOYSTICK_LIGHTGUN_MISSED:
 			case KeyChars.JOYSTICK_SELECT:
+			case KeyChars.GPIO_BUTTON_0:
 				{
 					// Get the current and move the cursor up
 					int at = menu.getCursor();
