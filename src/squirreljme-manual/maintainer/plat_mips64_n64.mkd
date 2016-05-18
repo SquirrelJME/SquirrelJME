@@ -1,4 +1,4 @@
-# Nintendo 64
+# MIPS 64-bit: Nintendo 64
 
 # Either 4MiB or 8MiB
 

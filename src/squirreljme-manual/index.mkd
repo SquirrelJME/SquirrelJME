@@ -11,20 +11,11 @@ operation of this software.
    * [Supported Platforms](user/platforms.mkd)
    * [Supported Character Encodings](user/encodings.mkd)
    * [Limitations](user/limits.mkd)
-   * OS: [DOS Family](user/os_dos.mkd)
  * Developer's Manual
    * [Differences between Java SE and Java ME](developer/differences.mkd)
    * [Pitfalls](developer/pitfalls.mkd)
  * Maintainer's Manual
    * [Style Requirements](maintainer/style.mkd)
    * [Consistency Guidelines](maintainer/consistency.mkd)
-   * Target porting Notes
-     * HW: [Nintendo 64](maintainer/hw_n64.mkd)
-     * HW: [Nintendo NES](maintainer/hw_nes.mkd)
-     * OS: [DOS Family](maintainer/os_dos.mkd)
-     * OS: [Mac OS Classic](maintainer/os_macos.mkd)
-     * OS: [Palm OS](maintainer/os_palmos.mkd)
-     * OS: [Windows 3.1](maintainer/os_win16.mkd)
-     * VM: [GNU GCJ](maintainer/vm_gcj.mkd)
-     * VM: [J2ME MIDP 2](maintainer/vm_midp.mkd)
+   * [Ports](maintainer/ports.mkd)
 

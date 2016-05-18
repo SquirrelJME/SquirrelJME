@@ -1,0 +1,9 @@
+# Java Virtual Machine: Java SE 7
+
+# Requirements
+
+ * A Java SE 7 compatible virtual machine.
+   * OpenJDK 7
+   * Oracle Java 7
+ * A graphical environment capable of running Swing.
+

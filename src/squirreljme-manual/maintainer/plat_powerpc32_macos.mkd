@@ -1,4 +1,4 @@
-# Mac OS Classic
+# PowerPC 32-bit: Mac OS (9)
 
 # Different Directory Separator
 

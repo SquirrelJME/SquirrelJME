@@ -11,3 +11,5 @@ _% -- Only tested on emulators, not real hardware._
 
 ## Virtual
 
+ * Java Virtual Machine
+   * [Java SE 7](plat_jvm_javase7.mkd]

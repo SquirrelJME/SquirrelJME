@@ -1,4 +1,4 @@
-# GNU GCJ
+# Java Virtual Machine: GNU GCJ
 
 # Careless Versioning
 

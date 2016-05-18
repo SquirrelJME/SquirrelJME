@@ -1,4 +1,4 @@
-# 16-bit Windows (Windows 3.1)
+# Intel 286: 16-bit Windows (Windows 3.1)
 
 Ancient Windows versions that users likely still use programs for since they
 have not updated their software in a few decades (or the company that makes

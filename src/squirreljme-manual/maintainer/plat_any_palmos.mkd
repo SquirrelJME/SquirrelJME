@@ -1,4 +1,4 @@
-# Palm OS
+# General Support: Palm OS
 
 Rumor has it that Palm OS was inspired by Mac OS Classic (creator and type
 IDs are rather noticeable).

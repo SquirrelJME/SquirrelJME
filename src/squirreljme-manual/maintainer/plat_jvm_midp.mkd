@@ -1,4 +1,4 @@
-# J2ME MIDP 2
+# Java Virtual Machine: J2ME MIDP 2.0
 
 The virtual machine could be backwards compiled to this Java version, then with
 that a newer environment could run on it. Tricks would be required however

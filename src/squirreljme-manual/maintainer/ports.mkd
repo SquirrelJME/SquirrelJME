@@ -1,0 +1,41 @@
+# SquirrelJME Ports
+
+These are developer related notes on specific platforms.
+
+# any -- General Support
+
+ * [Palm OS](plat_any_palmos.mkd)
+
+# arm -- ARM
+
+ * [Palm OS](plat_arm_palmos.mkd)
+
+# i086 -- Intel 8086
+
+ * [DOS Family](plat_i086_dos.mkd)
+
+# i286 -- Intel 286
+
+ * [16-bit Windows](plat_i286_win16.mkd)
+
+# jvm -- Java Virtual Machine
+
+ * [GNU GCJ](plat_jvm_gcj.mkd)
+ * [MIDP 2.0](plat_jvm_midp.mkd)
+
+# m68k -- Motorolla 68000
+
+ * [Palm OS](plat_m68k_palmos.mkd)
+
+# mips64 -- MIPS 64-bit
+
+ * [Nintendo 64](plat_mips64_n64.mkd)
+
+# mos6502 -- MOS Technology 6502
+
+ * [Nintendo Entertainment System](plat_mos6502_nes.mkd)
+
+# powerpc32 -- PowerPC 32-bit
+
+ * [Mac OS](plat_powerpc32_macos.mkd)
+

@@ -1,4 +1,4 @@
-# Nintendo Entertainment System
+# MOS Technology 6502: Nintendo Entertainment System
 
 The NES is Nintendo's first real console that everyone really know about.
 
