@@ -40,7 +40,7 @@ public class ConsoleUI
 	
 	/** The starting row number to print menu items on. */
 	public static final int STARTING_ROW =
-		3;
+		2;
 	
 	/** The column the cursor is on. */
 	public static final int CURSOR_COLUMN =
@@ -114,7 +114,7 @@ public class ConsoleUI
 		ii[nf + 2] = MENU_QUIT;
 		
 		// Set the menu
-		RecursiveMenu rm = new RecursiveMenu();
+		RecursiveMenu rm = new RecursiveMenu(ii);
 		this._menu = rm;
 	}
 	
@@ -153,7 +153,7 @@ public class ConsoleUI
 			
 			// Draw the menu
 			__drawMenu(console, cols, rows, STARTING_ROW,
-				Math.max(1, rows - STARTING_ROW));
+				Math.max(1, rows - (STARTING_ROW + 1)));
 			
 			// Handle console events.
 			eventqueue.handleEvents(this);
@@ -220,7 +220,7 @@ public class ConsoleUI
 		// Determine the number of pages to draw
 		int numpages = (__rows / __nr) + 1;
 		int itemsperpage = Math.min(__nr, ni);
-		int onpage = (cp / (Math.max(1, itemsperpage))) - 1;
+		int onpage = Math.max(0, (cp / (Math.max(1, itemsperpage))) - 1);
 	
 		// Draw all items on the given page
 		for (int i = 0, dr = __sr, j = (onpage * itemsperpage);
@@ -230,7 +230,7 @@ public class ConsoleUI
 			console.put(CURSOR_COLUMN, dr, (cp == j ? "*" : " "));
 			
 			// Draw object
-			console.put(ITEM_COLUMN, dr, String.valueOf(menu.get(i)));
+			console.put(ITEM_COLUMN, dr, String.valueOf(menu.get(j)));
 		}
 	}
 	
