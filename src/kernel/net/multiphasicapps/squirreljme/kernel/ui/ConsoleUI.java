@@ -74,8 +74,7 @@ public class ConsoleUI
 		new StringBuilder();
 		
 	/** The event queue to use. */
-	protected final EventQueue eventqueue =
-		new EventQueue();
+	protected final EventQueue eventqueue;
 	
 	/** The available archive finders. */
 	protected final List<ArchiveFinder> finders;
@@ -116,6 +115,9 @@ public class ConsoleUI
 		// Set the menu
 		RecursiveMenu rm = new RecursiveMenu(ii);
 		this._menu = rm;
+		
+		// Use the kernel event queue
+		this.eventqueue = __al.kernelProcess().eventQueue();
 	}
 	
 	/**
