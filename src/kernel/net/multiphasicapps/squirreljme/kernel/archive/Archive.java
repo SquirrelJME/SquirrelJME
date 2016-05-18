@@ -30,13 +30,25 @@ import net.multiphasicapps.narf.classinterface.NCIClass;
 public abstract class Archive
 {
 	/**
+	 * This is a flagging object which is used to indicate that a class does
+	 * not exist in this archive.
+	 */
+	private static final __MissingClass__ _MISSING_CLASS =
+		new __MissingClass__();
+	
+	/** Cache of loaded classes. */
+	private final Map<ClassNameSymbol, Reference<NCIClass>> _cache =
+		new WeakHashMap<>();
+	
+	/**
 	 * If the class is not cached then this is called so that the archive
 	 * may load and initialize the desired class interface which is used by
 	 * the implementation of the kernel. The returned value may either be the
 	 * standard class file representation or it could be a native binary.
 	 *
 	 * @param __n The name of the class to load.
-	 * @return The newly initialized class interface.
+	 * @return The newly initialized class interface or {@code null} if the
+	 * class does not exist in this archive.
 	 * @since 2016/05/18
 	 */
 	protected abstract NCIClass internalLocateClass(ClassNameSymbol __n);
@@ -51,21 +63,34 @@ public abstract class Archive
 	protected abstract InputStream locateResource(String __n);
 	
 	/**
-	 * Locates a class by its name.
+	 * Checks the cache to see if a given class was loaded, otherwise it
+	 * will attempt to locate it.
 	 *
 	 * @param __n The class name to lookup.
-	 * @return The cached class interface.
+	 * @return The cached class interface, or {@code null} if the class does
+	 * not exist in this archive.
+	 * @throws IllegalArgumentException If the specified class is an array
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/18
 	 */
 	public final NCIClass locateClass(ClassNameSymbol __n)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error AY0b Cannot locate a class which is a primitive
+		// or an array type. (The class to locate)}
+		if (__n.isPrimitive() || __n.isArray())
+			throw new IllegalArgumentException(String.format("AY0b %s", __n));
+		
+		// Lock
+		Map<ClassNameSymbol, Reference<NCIClass>> cache = this._cache;
+		synchronized (cache)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 

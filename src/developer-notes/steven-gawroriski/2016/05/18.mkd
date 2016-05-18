@@ -136,3 +136,8 @@ the string interned already.
 
 Also, to the virtual machine all UTF strings are deemed to be interned anyway.
 
+## 10:33
+
+The `Archive` class could also manage the manifest which is used to determine
+which programs an archive provides and such.
+
