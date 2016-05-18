@@ -141,3 +141,8 @@ Also, to the virtual machine all UTF strings are deemed to be interned anyway.
 The `Archive` class could also manage the manifest which is used to determine
 which programs an archive provides and such.
 
+## 13:26
+
+What I need is a way to bridge the archive to the kernel. I need actual
+archive finders now.
+
