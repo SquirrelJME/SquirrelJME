@@ -35,15 +35,47 @@ public interface EventHandler
 	public static final int PASS_EVENT =
 		0xFFFF_FFF1;
 	
-	/**
-	 * Stop handling events with the current event handler and move to the
-	 * next one instead.
-	 */
-	public static final int NEXT_HANDLER =
-		0xFFFF_FFF2;
-	
 	/** Stop event handling and return. */
 	public static final int STOP_HANDLING =
 		0xFFFF_FFF3;
+	
+	/**
+	 * Interface for handling key events.
+	 *
+	 * @since 2016/05/18
+	 */
+	public static interface Key
+		extends EventHandler
+	{
+		/**
+		 * Handles a key event.
+		 *
+		 * @param __k The kind of key event this was.
+		 * @param __port The attached controller port.
+		 * @param __c The character code of the key.
+		 * @return A special code or a raw event.
+		 * @since 2016/05/18
+		 */
+		public abstract int handleKeyEvent(EventKind __k, int __port,
+			char __c);
+	}
+	
+	/**
+	 * Interface for handling unknown events.
+	 *
+	 * @since 2016/05/18
+	 */
+	public static interface Unknown
+		extends EventHandler
+	{
+		/**
+		 * Handles an unknown event.
+		 *
+		 * @param __r The event code.
+		 * @return A special code or a raw event.
+		 * @since 2016/05/18
+		 */
+		public abstract int handleUnknownEvent(int __r);
+	}
 }
 

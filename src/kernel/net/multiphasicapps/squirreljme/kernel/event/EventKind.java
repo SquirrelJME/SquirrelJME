@@ -105,5 +105,30 @@ public enum EventKind
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the event that is associated with the given event ID.
+	 *
+	 * @param __i The event ID.
+	 * @return The associated event.
+	 * @since 2016/05/18
+	 */
+	public static EventKind of(int __i)
+	{
+		switch (__i)
+		{
+				// Based on the index
+			case 0: return SYSTEM;
+			case 1: return KEY_PRESSED;
+			case 2: return KEY_RELEASED;
+			case 3: return KEY_TYPED;
+			case 4: return PEN_POSITION_CHANGED;
+			case 5: return JOYSTICK_AXIS_CHANGED;
+			
+				// Unknown
+			default:
+				return null;
+		}
+	}
 }
 

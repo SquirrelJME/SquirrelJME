@@ -210,10 +210,63 @@ public class EventQueue
 			// Go through all handlers, start at -1 for first argument
 			for (int i = -1; i < nh; i++)
 			{
+				// Zero event?
+				if (v == 0)
+					break;
+				
+				// Calculate the event kind
+				EventKind ek = EventKind.of((v & EVENT_KIND_SHIFT_MASK) >>>
+					EVENT_KIND_SHIFT);
+			
+				// Not a valid event?
+				if (ek == null)
+					continue;
+				
 				// Get handler
 				EventHandler eh = (i < 0 ? __eh : __rest[i]);
 				
-				throw new Error("TODO");
+				// Depends on the event kind
+				int n;
+				switch (ek)
+				{
+						// Keyboard
+					case KEY_PRESSED:
+					case KEY_RELEASED:
+					case KEY_TYPED:
+						if (eh instanceof EventHandler.Key)
+							n = ((EventHandler.Key)eh).handleKeyEvent(ek,
+								(v & CONTROLLER_PORT_SHIFT_MASK) >>>
+									CONTROLLER_PORT_SHIFT,
+								(char)((v & KEY_CHARACTER_SHIFT_MASK) >>>
+									KEY_CHARACTER_SHIFT));
+						else
+							n = EventHandler.PASS_EVENT;
+						break;
+					
+						// Unknown, send it as-is
+					default:
+						if (eh instanceof EventHandler.Unknown)
+							n = ((EventHandler.Unknown)eh).handleUnknownEvent(
+								v);
+						else
+							n = EventHandler.PASS_EVENT;
+						break;
+				}
+				
+				// Stop handling?
+				if (n == EventHandler.STOP_HANDLING)
+					return;
+				
+				// Consume event?
+				else if (n == EventHandler.CONSUME_EVENT)
+					break;
+				
+				// Keeping the input value
+				if (n == EventHandler.PASS_EVENT)
+					n = v;
+				
+				// Set next event and go to the next handler
+				v = n;
 			}
 		}
 	}

@@ -32,7 +32,7 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
  */
 public class ConsoleUI
 	extends StandardUI
-	implements EventHandler, Runnable
+	implements EventHandler.Key, Runnable
 {
 	/** The number of nanoseconds to spend in a console frame. */
 	public static final long CONSOLE_DELAY =
@@ -116,6 +116,34 @@ public class ConsoleUI
 		// Set the menu
 		RecursiveMenu rm = new RecursiveMenu(ii);
 		this._menu = rm;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/18
+	 */
+	@Override
+	public int handleKeyEvent(EventKind __k, int __port, char __c)
+	{
+		// Only accept typing events
+		if (__k != EventKind.KEY_TYPED)
+			return EventHandler.PASS_EVENT;
+		
+		System.err.printf("DEBUG -- Keyboard %d %c%n", __port, __c);
+		
+		// Depends on the key
+		switch (__c)
+		{
+			case '<':
+				break;
+			
+				// Unknown, pass it through
+			default:
+				return EventHandler.PASS_EVENT;
+		}
+		
+		// Consume it
+		return EventHandler.CONSUME_EVENT;
 	}
 	
 	/**
