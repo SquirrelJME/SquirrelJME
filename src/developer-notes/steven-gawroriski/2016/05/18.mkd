@@ -1,2 +1,30 @@
 # 2016/05/18
 
+## 08:22
+
+So the executable should provide information on what an executable actually
+is. However with the design of Java ME, it is possible for executables to be
+three things: standard JARs (Main-Class), MIDlets, and LIBlets. Of course
+liblets should be listed last for example mostly because they are not
+executable, however I would like allow the specification of alternative
+main entry points for example. So say if a liblet has a test function or
+some main interface hidden in it, the user should be able to call that
+main method.
+
+## 08:25
+
+Another consideration is that MIDlets and LIBlets can contain multiple
+programs within a single binary. So this means multiple executables that point
+to the same location for example.
+
+## 08:30
+
+I also need to handle JAD files, although I personally would prefer it if the
+information were just placed into the JAR's manifest. 
+
+## 08:33
+
+The kernel will have to interact with the executable system and the executable
+finder so that push notifications and events can launch other midlets and
+such.
+

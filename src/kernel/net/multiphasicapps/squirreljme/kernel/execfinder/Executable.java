@@ -23,5 +23,35 @@ package net.multiphasicapps.squirreljme.kernel.execfinder;
  */
 public interface Executable
 {
+	/**
+	 * Returns the type of executable that this is.
+	 *
+	 * @return The type of executable that this is.
+	 * @since 2016/05/18
+	 */
+	public abstract Type type();
+	
+	/**
+	 * The type of executable that this is.
+	 *
+	 * @since 2016/05/18
+	 */
+	public static enum Type
+	{
+		/** A classic {@code Main-Class}/{@code Class-Path} program. */
+		JAVA,
+		
+		/** A MIDlet. */
+		APPLICATION,
+		
+		/** A LIBlet. */
+		LIBRARY,
+		
+		/** A single class (which has a main). */
+		CLASS,
+		
+		/** End. */
+		;
+	}
 }
 
