@@ -1,0 +1,102 @@
+# Reddit Updates
+
+This self post is to indicate the current project status and will be modified
+accordingly.
+
+If there are any questions, then a self post can be made.
+
+_Last Updated: 2016/05/17_
+
+----
+
+__Currently being worked on:__
+
+ * Class Library
+   * Currently anything required to make the tests run properly
+ * Compiler
+ * Interpreter
+ * Kernel
+ * ZIP Read Support
+   * 64-bit ZIP
+   * Inflate64 algorithm
+
+----
+
+__What has been done:__
+
+ * ZIP Read Support
+   * Inflate algorithm (2016/04/08)
+   * 32-bit ZIP (2016/04/08)
+ * Class File Support (2016/04/03, refactored 2016/04/26)
+ * Basic Project Structure
+
+===============================================================================
+
+__Update 2016/05/17:__
+
+I updated my main site to be the repository for this software (rather than a
+bland page), so update your bookmarks and URLs.
+
+Currently, I am still working on the Interpreter/Compiler, however compared to
+the previous generation it is turning out to be far superior in code quality.
+
+Also, I decided to start work on the kernel which would be the core interface
+between the virtual machine and the system. Having the kernel interface in
+place would allow me to better meld in the interpreter/compiler in the future.
+It also means that the current kernel I am working on (runs on the host JVM)
+can be used to test programs as if they were in the SquirrelJME environment
+itself. It also feels nice to have an actual interface propping up to feel the
+results better than just writing and testing back end code.
+
+So porting to operating systems would require the following:
+
+ * Native compiler (to generate code).
+ * Kernel interface (which runs and can load the code).
+
+Also for certain systems, there might not be an operating system and as such
+filesystem drivers may be needed, the current project layout should allow for
+such drivers to be shared across ports.
+
+__Update 2016/05/07:__
+
+SquirrelJME now has a mascot! He resides in a base64 encoded PNG (because
+binary files are a bad idea in version control) at `src/squirreljme-mascot/`.
+He has no name currently however.
+
+__Update 2016/04/26:__
+
+Refactored the class file reading code so that it is much nicer and far easier
+to integrate into the compiler and interpreter. Although I have previously
+refactored this code, this new refactor is far better than before.
+
+The old interpreter is defunct as it was a pure interpreter and was quite slow
+in operation, the next generation interpreter being written currently should be
+much faster.
+
+__Update 2016/04/08:__
+
+Reading 32-bit ZIPs along with standard inflate decompression works. Note that
+the ZIP code needs to be profiled in the future to increase its speed since
+appears a bit sluggish. There are some optimizations which can be made in some
+backing code to make it a bit faster, however it should be noted that the ZIP
+and inflate decompression code are optimized for reduced memory consumption
+compared to Java SE which considers speed first.
+
+64-bit ZIPs (ones with entries larger than 2GiB or ZIPs beyong 4GiB) are not
+currently supported, however in general for Java ME these ZIPs should rarely
+if ever be encountered.
+
+__Update 2016/04/03:__
+
+Performing a refactor of the class file, interpreter, and base program support
+so that they are not combined into one. When it is complete, the code will be
+much cleaner and nicer than before. It will also be easier to maintain and to
+swap out things.
+
+__Update 2016/03/31:__
+
+The interpreter will also act as a compiler so that eventual code generation
+will follow the same route, code wise. Instructions will be implemented on an
+as-needed basis (when they need to be executed) while the interpreter is still
+worked on to support the execution of the basic test programs I have written.
+

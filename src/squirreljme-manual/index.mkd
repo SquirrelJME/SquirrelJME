@@ -1,7 +1,33 @@
 # SquirrelJME Manual
 
+  * Copyright (C) 2013-2016 Steven Gawroriski
+    <steven@multiphasicapps.net>
+  * Copyright (C) 2013-2016 Multi-Phasic Applications
+    <http://multiphasicapps.net/>
+  * The SquirrelJME Mascot was drawn by...
+    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
+
+**SquirrelJME** is intended to be a Java ME 8 compatible environment for
+strange and many other devices. The source is written in pure Java.
+
+# Frontmatter
+
+## About
+
 This is the manual for SquirrelJME which should contain and describe the
 operation of this software.
+
+## Licenses
+
+  * [GNU Affero General Public License, Version 3 or later](license.mkd)
+
+## Links
+
+  * [Why?](src/squirreljme-manual/user/why.mkd)
+  * [Online repository](http://multiphasicapps.net/)
+  * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
+  * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
+  * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
 
 # Table of Contents
 
@@ -11,6 +37,7 @@ operation of this software.
    * [Supported Platforms](user/platforms.mkd)
    * [Supported Character Encodings](user/encodings.mkd)
    * [Limitations](user/limits.mkd)
+   * [Reddit Updates](user/reddit_notes.mkd)
  * Developer's Manual
    * [Differences between Java SE and Java ME](developer/differences.mkd)
    * [Pitfalls](developer/pitfalls.mkd)

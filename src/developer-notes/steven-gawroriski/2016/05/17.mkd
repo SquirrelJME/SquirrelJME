@@ -55,3 +55,8 @@ expected.
 I made <http://multiphasicapps.net/> the repository, so it is more public. So
 this is the first content I placed on the site since for about 8 years or so.
 
+## 22:19
+
+I also should probably copy the reddit updates to a local file for mirroring
+and other notes in general.
+
