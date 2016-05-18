@@ -561,7 +561,16 @@ public class SwingConsoleView
 		{
 				// Pressed
 			case KEY_PRESSED:
-				eventqueue.offerKeyPressed(0, __keyToChar(false, __e));
+				{
+					// Generate a normal press event
+					char pp = __keyToChar(false, __e);
+					eventqueue.offerKeyPressed(0, pp);
+					
+					// Java does not generate type events for keys which
+					// do not have glyphs on them (arrow keys for example)
+					if (__e.getKeyChar() == KeyEvent.CHAR_UNDEFINED)
+						eventqueue.offerKeyTyped(0, pp);
+				}
 				break;
 				
 				// Released
