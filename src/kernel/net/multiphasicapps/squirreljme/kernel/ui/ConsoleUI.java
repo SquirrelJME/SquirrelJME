@@ -56,7 +56,7 @@ public class ConsoleUI
 	
 	/** The about menu item. */
 	public static final String MENU_ABOUT =
-		"About SquirrelJME";
+		"About";
 	
 	/** The quit menu item. */
 	public static final String MENU_QUIT =
