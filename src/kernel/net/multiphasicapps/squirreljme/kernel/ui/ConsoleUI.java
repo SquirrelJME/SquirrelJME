@@ -286,6 +286,7 @@ public class ConsoleUI
 	 * @since 2016/05/18
 	 */
 	public class MenuMain
+		extends Menu
 	{
 		/**
 		 * Initializes the main menu.
@@ -293,6 +294,16 @@ public class ConsoleUI
 		 * @since 2016/05/18
 		 */
 		public MenuMain()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/18
+		 */
+		@Override
+		public void drawItem(ConsoleDisplay __con, int __i,
+			int __cols, int __rn)
 		{
 		}
 	}
