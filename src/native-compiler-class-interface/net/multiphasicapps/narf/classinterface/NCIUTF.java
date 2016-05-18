@@ -102,7 +102,7 @@ public final class NCIUTF
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))
 			_id = new WeakReference<>(
-				(rv = new IdentifierSymbol(toString())));
+				(rv = IdentifierSymbol.of(toString())));
 		
 		// Return it
 		return rv;

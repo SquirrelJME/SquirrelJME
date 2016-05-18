@@ -299,7 +299,7 @@ public final class BinaryNameSymbol
 				
 				// Generate it
 				ids[__i] = new WeakReference<>((rv =
-					new IdentifierSymbol(subSequence(bo, bo + _baselens[__i]).
+					IdentifierSymbol.of(subSequence(bo, bo + _baselens[__i]).
 						toString())));
 			}
 			
