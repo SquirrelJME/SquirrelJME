@@ -77,3 +77,19 @@ somewhat. Well, actually instead I need an archive which provides access to
 resources. I need this for `getResourceAsStream` and `ServiceLoader`, where
 the later looks at multiple service records to find classes to use.
 
+## 09:29
+
+Then instead of executables, I can instead reference executables from
+archives instead. So if there is a JAR which provides 3 types of programs and
+say 42 different midlets in it, it would not massively clutter the programs
+available. This would be good for low memory systems. So basically instead
+I would have `ArchiveFinder` provided to the console interface. Then
+executable finders would be attached to archives and programs would be accessed
+through archives which as a group would act as a classpath. Native binaries
+would also be archives but they would instead act as binaries for the most
+part. However to handle differing things, the archive finder would instead have
+`locateClass` and `locateResource`. Treating class files as resources would be
+a bit ugly. However, for common cache-ness, `ArchiveFinder` should be an
+`abstract class` instead of an `interface` so that resource locations and
+classes could be cached.
+
