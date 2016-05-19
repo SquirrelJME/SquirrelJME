@@ -15,6 +15,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import net.multiphasicapps.squirreljme.kernel.archive.Archive;
 import net.multiphasicapps.squirreljme.kernel.archive.ArchiveFinder;
 import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
 import net.multiphasicapps.squirreljme.kernel.event.EventHandler;
@@ -54,23 +55,27 @@ public class ConsoleUI
 	
 	/** The task menu item. */
 	public static final String MENU_TASKS =
-		"Tasks";
+		"<Tasks>";
 	
 	/** The about menu item. */
 	public static final String MENU_ABOUT =
-		"About";
+		"<About>";
 	
 	/** The quit menu item. */
 	public static final String MENU_QUIT =
-		"Quit";
+		"<Quit>";
 	
 	/** Go to the previous menu. */
 	public static final String MENU_BACK =
-		"Go Back";
+		"<Go Back>";
 	
 	/** Do quit. */
 	public static final String MENU_QUIT_YES =
-		"Really Quit";
+		"<Really Quit>";
+	
+	/** Refresh current archive. */
+	public static final String MENU_REFRESH =
+		"<Refresh>";
 	
 	/** The console view which interacts with the user directly. */
 	protected final ConsoleDisplay console;
@@ -92,6 +97,12 @@ public class ConsoleUI
 	/** The menu stack. */
 	protected final Deque<RecursiveMenu> menus =
 		new LinkedList<>();
+	
+	/** Current oops. */
+	private volatile String _oops;
+	
+	/** The current archive being looked at for refreshing. */
+	private volatile ArchiveFinder _refresharchive;
 	
 	/**
 	 * Initializes the console launcher controller.
@@ -288,7 +299,21 @@ public class ConsoleUI
 				Math.max(1, rows - (STARTING_ROW + 1)));
 			
 			// Handle console events.
-			eventqueue.handleEvents(this);
+			try
+			{
+				eventqueue.handleEvents(this);
+			}
+			
+			// Oops!
+			catch (Throwable t)
+			{
+				this._oops = t.toString();
+			}
+			
+			// Is there an oops?
+			String oops = this._oops;
+			if (oops != null)
+				console.put(0, 1, oops);
 			
 			// If there is enough time to draw the console then display it
 			long durtime = System.nanoTime() - entertime;
@@ -434,6 +459,49 @@ public class ConsoleUI
 		// Go to the previous menu
 		else if (item == MENU_BACK)
 			queue.removeLast();
+		
+		// Refresh the current archive
+		else if (item == MENU_REFRESH)
+		{
+			// Get the archive
+			ArchiveFinder af = this._refresharchive;
+			
+			// Only if not null, is a refresh done
+			if (af != null)
+				af.refresh();
+		}
+		
+		// Is an archive?
+		else if (item instanceof ArchiveFinder)
+		{
+			// Cast
+			ArchiveFinder af = (ArchiveFinder)item;
+			
+			// Refresh it
+			af.refresh();
+			
+			// Get list of items to make new menu for it
+			List<Archive> list = af.archives();
+			int n = list.size();
+			
+			// Setup basic menu items
+			Object[] ix = new Object[n + 2];
+			ix[0] = MENU_BACK;
+			ix[1] = MENU_REFRESH;
+			
+			// Add archives to items
+			for (int i = 0; i < n; i++)
+				ix[2 + i] = list.get(i);
+			
+			// Setup new menu
+			RecursiveMenu pu = new RecursiveMenu(ix);
+			
+			// Add menu to top of the stack
+			queue.offerLast(pu);
+			
+			// Set the archive to refresh on
+			this._refresharchive = af;
+		}
 	}
 }
 
