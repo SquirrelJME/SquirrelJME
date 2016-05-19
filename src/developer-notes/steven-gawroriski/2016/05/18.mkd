@@ -170,3 +170,46 @@ the archives would be scanned and stored. Whenever a rescan is done the
 information is potentially updated as such. This way if a new file is added it
 can be rescanned and used.
 
+## 22:04
+
+I repaired my glasses rather nicely. Previously they were broken in the middle
+of the bridge (which makes me quite lucky). The first time they broke I took
+a paperclip across the bridge and wrapped a few wires of thin copper around it.
+They initially snapped on 2015/07/10. I wrote this on another project in my
+notes:
+
+> My glasses snapped in half earlier today also, which was not really a good
+> thing. However I repaired them myself after two attempts of which the second
+> succeeding. The center bridge between the lens was split in the middle, so my
+> successful attempt was taking copy wire and wrapping it around the hooks that
+> make part of the nose rest and then looping it around the branch. I did that
+> once and then placed a cut piece of paper clip and wrapped the copper wire
+> around that. I repeated until the center then brought in the other side
+> (with some help as the other held both sides of the glasses). Once I wrapped
+> around the bar on the right side too I then finished it with a loop around
+> the nose rest thing. Continued with a small loop back and then cut the wire.
+> I then soldered a whole bunch around it until it was soldered and one solid
+> piece. My first try soldering it ended up in the lens being shifted so a bit
+> wrong. So luckily once the solder melted again I could adjust the bits as
+> needed. Once I got it good enough I let it solidify. Luckily for me it felt
+> as if the glasses are a single piece. I suppose the solder bound between the
+> copper, the paperclip, and the frame of the glasses to take up a good solid
+> shape. After that ordeal, I wrapped some electrical tape around the solder
+> job so solder and copper bits do not contact my skin. So a good thing is that
+> I always go for metal glasses. And after this, the glasses do not fall off my
+> head as they did before.
+
+So I did essentially the same thing except instead I used thicker tinned
+copper. After the initial wrapping the glasses were surprisingly sturdy even
+before being soldered, while before they were shaky and had to be soldered on
+a very flat surface with hot glue holding the glasses in place. So just the
+better wire made things much better. I have been holding off repairing my
+glasses for a month or two though. The copper wires snapped which slowly
+started to cause the insides to slip around and such. I did not add electrical
+tape at all though. However, as extra insurance against the pieces breaking off
+the nose rest supports I wrapped some more wire around the two pieces and
+soldered those in place. I just hope this soldering job lasts quite awhile
+similar to my previous job. I forgot when I got these glasses however, I
+probably got them around 6 years ago so they are still hanging on some. It is
+difficult to get new pairs of glasses.
+
