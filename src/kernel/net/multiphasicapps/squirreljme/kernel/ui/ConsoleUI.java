@@ -460,6 +460,17 @@ public class ConsoleUI
 		else if (item == MENU_BACK)
 			queue.removeLast();
 		
+		// The about menu
+		else if (item == MENU_ABOUT)
+			queue.offerLast(new RecursiveMenu(
+				MENU_BACK,
+				"Multi-Phasic Applications",
+				"SquirrelJME",
+				"(C) 2013-2016 Steven Gawroriski",
+				"mail: steven@multiphasicapps.net",
+				"webs: http://multiphasicapps.net/",
+				"Under the GNU AGPLv3+"));
+		
 		// Refresh the current archive
 		else if (item == MENU_REFRESH)
 		{
