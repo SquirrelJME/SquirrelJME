@@ -77,6 +77,10 @@ public class ConsoleUI
 	public static final String MENU_REFRESH =
 		"<Refresh>";
 	
+	/** Easter egg. */
+	public static final String MENU_EASTER_EGG =
+		"      SquirrelJME";
+	
 	/** The console view which interacts with the user directly. */
 	protected final ConsoleDisplay console;
 	
@@ -464,12 +468,33 @@ public class ConsoleUI
 		else if (item == MENU_ABOUT)
 			queue.offerLast(new RecursiveMenu(
 				MENU_BACK,
-				"Multi-Phasic Applications",
-				"SquirrelJME",
+				"Multi-Phasic Applications:",
+				MENU_EASTER_EGG,
 				"(C) 2013-2016 Steven Gawroriski",
 				"mail: steven@multiphasicapps.net",
 				"webs: http://multiphasicapps.net/",
 				"Under the GNU AGPLv3+"));
+		
+		// An easter egg
+		else if (item == MENU_EASTER_EGG)
+			queue.offerLast(new RecursiveMenu(
+				MENU_BACK,
+				"  ;;;        ;; ",
+				"  ;. ; ;;; ;;.; ",
+				" ;.. ;;; ;; ..; ",
+				" ;.,.     . ,.; ",
+				" ;,. ,     .,,; ",
+				" ;. ,       .,; ",
+				" ;,,   .    .,; ",
+				" ;,,. .,.   ,;; ",
+				" ;,.|.  |.  ,;  ",
+				" ;; |   | ..,;  ",
+				"  ;         ;;  ",
+				"  ; \\ / ,  ;,;  ",
+				"  ;; |  ,  ;,;  ",
+				"   ;;;;;  ;,,;  ",
+				"    |||  ;,,;;  ",
+				"     ;;;;;;;    "));
 		
 		// Refresh the current archive
 		else if (item == MENU_REFRESH)
