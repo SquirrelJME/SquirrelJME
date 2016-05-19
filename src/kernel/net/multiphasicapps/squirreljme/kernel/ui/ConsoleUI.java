@@ -379,13 +379,13 @@ public class ConsoleUI
 		int cp = menu.getCursor();
 	
 		// Determine the number of pages to draw
-		int numpages = (__rows / __nr) + 1;
 		int itemsperpage = Math.min(__nr, ni);
-		int onpage = Math.max(0, (cp / (Math.max(1, itemsperpage))) - 1);
+		int numpages = (ni / itemsperpage) + 1;
+		int onpage = Math.max(0, cp / itemsperpage);
 	
 		// Draw all items on the given page
 		for (int i = 0, dr = __sr, j = (onpage * itemsperpage);
-			i < itemsperpage; i++, dr++, j++)
+			i < itemsperpage && j < ni; i++, dr++, j++)
 		{
 			// Draw the selection cursor
 			console.put(CURSOR_COLUMN, dr, (cp == j ? "*" : " "));
