@@ -471,9 +471,13 @@ public class ConsoleUI
 				"Multi-Phasic Applications:",
 				MENU_EASTER_EGG,
 				"(C) 2013-2016 Steven Gawroriski",
-				"mail: steven@multiphasicapps.net",
-				"webs: http://multiphasicapps.net/",
-				"Under the GNU AGPLv3+"));
+				"mail: <steven@multiphasicapps.net>",
+				"webs: <http://multiphasicapps.net/>",
+				"Under the GNU AGPLv3+",
+				"",
+				"Mascot by: `puppenstein`",
+				"<http://www.furaffinity.net/user/",
+				"puppenstein/>"));
 		
 		// An easter egg
 		else if (item == MENU_EASTER_EGG)
