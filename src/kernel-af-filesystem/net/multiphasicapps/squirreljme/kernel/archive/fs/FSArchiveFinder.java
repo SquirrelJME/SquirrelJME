@@ -10,13 +10,21 @@
 
 package net.multiphasicapps.squirreljme.kernel.archive.fs;
 
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.kernel.archive.Archive;
 import net.multiphasicapps.squirreljme.kernel.archive.ArchiveFinder;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
@@ -94,17 +102,7 @@ public class FSArchiveFinder
 	@Override
 	public List<? extends FSArchive> archives()
 	{
-		// Lock
-		Path[] paths = this._paths;
-		synchronized (paths)
-		{
-			// Needs refreshing?
-			if (!_refreshed)
-				refresh();
-			
-			// Return unmodifiable view
-			return this._unmod;
-		}
+		return this._unmod;
 	}
 	
 	/**
@@ -116,9 +114,102 @@ public class FSArchiveFinder
 	{
 		// Lock
 		Path[] paths = this._paths;
-		synchronized (paths)
+		List<FSArchive> unmod = this._unmod;;
+		synchronized (unmod)
 		{
-			throw new Error("TODO");
+			// Get target paths
+			List<FSArchive> archives = this._archives;
+			
+			// To remove old unused archives
+			Set<FSArchive> got = new HashSet<>();
+			
+			// Walk through all given paths
+			for (Path r : paths)
+			{
+				// Open stream
+				try (DirectoryStream<Path> ds = Files.newDirectoryStream(r))
+				{
+					// Go through all files in the directory
+					for (Path p : ds)
+					{
+						// Ignore directories
+						if (Files.isDirectory(p))
+							continue;
+						
+						// Get the filename
+						String fn = p.getFileName().toString();
+						
+						// Find the last and first dot
+						int ld = fn.lastIndexOf('.');
+						int fd = fn.indexOf('.');
+						
+						// Add to the list of archives? If it is either foo.jar
+						// or jar.foo (Amiga)
+						if (((ld >= 0 &&
+							fn.substring(ld + 1).equalsIgnoreCase("jar")) ||
+							(fd >= 0 &&
+							fn.substring(0, fd).equalsIgnoreCase("jar"))))
+						{
+							// Only add it once
+							int n = archives.size();
+							boolean has = false;
+							for (int i = 0; i < n; i++)
+							{
+								FSArchive vv = archives.get(i);	
+								
+								// Is this same path?
+								if (vv.path().equals(p))
+								{
+									// Already got it
+									has = true;
+									got.add(vv);
+									break;
+								}
+							}
+							
+							// Do not have an archive for it
+							if (!has)
+							{
+								FSArchive cr = new FSArchive(p);
+								got.add(cr);
+							}
+						}
+					}
+				}
+				
+				// Ignore, but warn on it
+				catch (IOException e)
+				{
+					e.printStackTrace(System.err);
+				}
+			}
+			
+			// Remove any archives associated with paths which are no longer
+			// in the given directories
+			Iterator<FSArchive> it = archives.iterator();
+			while (it.hasNext())
+			{
+				FSArchive vv = it.next();
+				
+				// Do not have this archive?
+				if (!got.contains(vv))
+					it.remove();
+			}
+			
+			// Sort the paths alphabetically
+			Collections.<FSArchive>sort(archives, new Comparator<FSArchive>()
+				{
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/20
+					 */
+					@Override
+					public int compare(FSArchive __a, FSArchive __b)
+					{
+						return __a.toString().compareToIgnoreCase(
+							__b.toString());
+					}
+				});
 		}
 	}
 	

@@ -49,6 +49,9 @@ public abstract class ArchiveFinder
 	/**
 	 * Returns the list of archives which are available for usage.
 	 *
+	 * Locking should be performed on the returned list. After the list is
+	 * returned and before it is used it should be refreshed and locked on.
+	 *
 	 * @return The list of archives which are available, the returned list
 	 * must not be modifiable.
 	 * @since 2016/05/18
@@ -57,6 +60,9 @@ public abstract class ArchiveFinder
 	
 	/**
 	 * Refreshes the list of archives which are available.
+	 *
+	 * Locking should be performed on the list that is returned by
+	 * {@link #archives()}.
 	 *
 	 * @since 2016/05/18
 	 */

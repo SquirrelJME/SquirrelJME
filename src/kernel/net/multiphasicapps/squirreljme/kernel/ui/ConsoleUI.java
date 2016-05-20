@@ -517,30 +517,34 @@ public class ConsoleUI
 			// Cast
 			ArchiveFinder af = (ArchiveFinder)item;
 			
-			// Refresh it
-			af.refresh();
-			
 			// Get list of items to make new menu for it
 			List<? extends Archive> list = af.archives();
-			int n = list.size();
+			synchronized (list)
+			{
+				// perform refresh
+				af.refresh();
+				
+				// Get size
+				int n = list.size();
 			
-			// Setup basic menu items
-			Object[] ix = new Object[n + 2];
-			ix[0] = MENU_BACK;
-			ix[1] = MENU_REFRESH;
+				// Setup basic menu items
+				Object[] ix = new Object[n + 2];
+				ix[0] = MENU_BACK;
+				ix[1] = MENU_REFRESH;
 			
-			// Add archives to items
-			for (int i = 0; i < n; i++)
-				ix[2 + i] = list.get(i);
+				// Add archives to items
+				for (int i = 0; i < n; i++)
+					ix[2 + i] = list.get(i);
 			
-			// Setup new menu
-			RecursiveMenu pu = new RecursiveMenu(ix);
+				// Setup new menu
+				RecursiveMenu pu = new RecursiveMenu(ix);
 			
-			// Add menu to top of the stack
-			queue.offerLast(pu);
+				// Add menu to top of the stack
+				queue.offerLast(pu);
 			
-			// Set the archive to refresh on
-			this._refresharchive = af;
+				// Set the archive to refresh on
+				this._refresharchive = af;
+			}
 		}
 	}
 }

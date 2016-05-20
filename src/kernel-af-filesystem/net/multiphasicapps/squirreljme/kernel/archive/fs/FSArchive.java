@@ -74,6 +74,17 @@ public class FSArchive
 	}
 	
 	/**
+	 * Returns the path that this filesystem archive points to.
+	 *
+	 * @return The path to the archive.
+	 * @since 2016/05/20
+	 */
+	public final Path path()
+	{
+		return this.path;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/20
 	 */
