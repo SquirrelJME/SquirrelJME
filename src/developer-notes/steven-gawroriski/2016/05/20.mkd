@@ -24,3 +24,10 @@ The `FSArchiveFinder` would be better named as JAR instead. or FSJAR.
 Likely it can remain the same. For other forms of binaries such as Palm
 databases then alternative means could be used for example.
 
+## 13:56
+
+Actually I need to branch the UI code off along with the standard interface
+code. The kernel does not truly need the UI to be a part of it, but only as a
+kind of add-on. If on graphical systems the console UI is not used, it would
+be a bit of a waste.
+
