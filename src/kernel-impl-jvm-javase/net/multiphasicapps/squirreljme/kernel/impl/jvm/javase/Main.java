@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.imageio.ImageIO;
 import net.multiphasicapps.io.hex.HexInputStream;
-import net.multiphasicapps.squirreljme.kernel.ui.ConsoleUI;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 
 /**
@@ -96,12 +95,8 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		// Initialize the main launcher and run the main loop
-		Kernel kern;
-		ConsoleUI cui = new ConsoleUI((kern = new JVMJavaSEKernel(__args)));
-		
-		// Create thread for the console interface
-		kern.kernelProcess().createThread(cui);
+		// Initialize the kernel, it is the most important
+		Kernel kern = new JVMJavaSEKernel(__args);
 		
 		// Block until all workers are terminated
 		for (;;)
