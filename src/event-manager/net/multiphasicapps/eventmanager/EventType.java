@@ -20,7 +20,7 @@ package net.multiphasicapps.squirreljme.kernel.event;
  *
  * @since 2016/05/15
  */
-public enum EventKind
+public enum EventType
 {
 	/**
 	 * A system event which just happens.

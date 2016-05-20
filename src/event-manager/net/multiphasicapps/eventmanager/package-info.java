@@ -9,10 +9,13 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the event handling interfaces.
+ * This package contains the event manager interfaces.
  *
- * @since 2016/05/15
+ * All events are 32-bits in length for reduced complexity and consist of a
+ * wide variety of available input devices.
+ *
+ * @since 2016/05/20
  */
 
-package net.multiphasicapps.squirreljme.kernel.event;
+package net.multiphasicapps.eventmanager;
 

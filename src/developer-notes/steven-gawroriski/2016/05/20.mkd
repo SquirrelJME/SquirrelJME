@@ -164,3 +164,8 @@ based version of it. If I am running on an native system such as Windows where
 they provide the ability to create a console window, I will use that. Otherwise
 the console view would be emulated.
 
+## 16:14
+
+Revision `ac48d034864be4f46d143a4e25b0ef654fc9e148` has the event stuff if I
+need it during deletion.
+

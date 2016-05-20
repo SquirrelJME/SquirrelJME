@@ -8,10 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.event;
+package net.multiphasicapps.eventmanager;
 
 import java.util.NoSuchElementException;
-import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
 /**
  * This is the event queue.
@@ -79,12 +78,6 @@ public class EventQueue
 	protected final Object lock =
 		new Object();
 	
-	/** The owning process. */
-	protected final KernelProcess owner;
-	
-	/** Is this attached to a process? */
-	protected final boolean attached;
-	
 	/** The event queue. */
 	private volatile int[] _queue;
 	
@@ -101,27 +94,6 @@ public class EventQueue
 	 */
 	public EventQueue()
 	{
-		owner = null;
-		attached = false;
-	}
-	
-	/**
-	 * Initializes the event queue for the given process.
-	 *
-	 * @param __kp The process which owns the event queue
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/16
-	 */
-	public EventQueue(KernelProcess __kp)
-		throws NullPointerException
-	{
-		// Check
-		if (__kp == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		owner = __kp;
-		attached = true;
 	}
 	
 	/**
@@ -130,12 +102,10 @@ public class EventQueue
 	 *
 	 * @param __r The event to add.
 	 * @throws IllegalStateException If the event was not added.
-	 * @throws SecurityException If the current thread is not permitted to
-	 * write events to this queue.
 	 * @since 2016/05/17
 	 */
 	public final void addRaw(int __r)
-		throws IllegalStateException, SecurityException
+		throws IllegalStateException
 	{
 		// {@squirreljme.error AY0a Could not add the raw event.}
 		if (!offerRaw(__r))
@@ -148,11 +118,10 @@ public class EventQueue
 	 *
 	 * @return The next event.
 	 * @throws NoSuchElementException If there are no events.
-	 * @throws SecurityException If the current thread cannot peek events.
 	 * @since 2016/05/17
 	 */
 	public final int getRaw()
-		throws NoSuchElementException, SecurityException
+		throws NoSuchElementException
 	{
 		// Get
 		int rv = peekRaw();
@@ -184,11 +153,10 @@ public class EventQueue
 	 * @param __eh Event handlers which are used to handle events with.
 	 * @param __rest The remaining event handlers which may get events.
 	 * @throws NullPointerException On null arguments.
-	 * @throws SecurityException If reading events is not permitted.
 	 * @since 2016/05/15
 	 */
 	public final void handleEvents(EventHandler __eh, EventHandler... __rest)
-		throws NullPointerException, SecurityException
+		throws NullPointerException
 	{
 		// Check
 		if (__eh == null || __rest == null)
@@ -277,11 +245,9 @@ public class EventQueue
 	 * @param __port The controller port.
 	 * @param __v The key which was pressed, if the value is {@code 0} then the
 	 * event is not posted.
-	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
 	public final void offerKeyPressed(int __port, char __v)
-		throws SecurityException
 	{
 		// Do not post?
 		if (__v == 0)
@@ -299,11 +265,9 @@ public class EventQueue
 	 * @param __port The controller port.
 	 * @param __v The key which was pressed, if the value is {@code 0} then the
 	 * event is not posted.
-	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
 	public final void offerKeyReleased(int __port, char __v)
-		throws SecurityException
 	{
 		// Do not post?
 		if (__v == 0)
@@ -321,11 +285,9 @@ public class EventQueue
 	 * @param __port The controller port.
 	 * @param __v The key which was pressed, if the value is {@code 0} then the
 	 * event is not posted.
-	 * @throws SecurityException If events cannot be posted.
 	 * @since 2016/05/15
 	 */
 	public final void offerKeyTyped(int __port, char __v)
-		throws SecurityException
 	{
 		// Do not post?
 		if (__v == 0)
@@ -345,16 +307,10 @@ public class EventQueue
 	 * will be returned if for example there is not enough memory remaining or
 	 * the event is not valid.
 	 * posted (because that would cause all event handling to halt).
-	 * @throws SecurityException If posting threads is denied.
 	 * @since 2016/05/15
 	 */
 	public boolean offerRaw(int __r)
-		throws SecurityException
 	{
-		// Must be permitted
-		if (this.attached)
-			owner.permissions().eventWrite(this);
-		
 		// Can never be zero
 		if (__r == 0)
 			return false;
@@ -442,16 +398,10 @@ public class EventQueue
 	 * Peeks the next raw event in the queue.
 	 *
 	 * @return The next raw event, or {@code 0} if there none remaining.
-	 * @throws SecurityException If event peeking is denied.
 	 * @since 2016/05/15
 	 */
 	public int peekRaw()
-		throws SecurityException
 	{
-		// Must be permitted
-		if (this.attached)
-			owner.permissions().eventRead(this);
-		
 		// Lock
 		synchronized (lock)
 		{
@@ -480,17 +430,11 @@ public class EventQueue
 	/**
 	 * Returns the next raw event in the queue.
 	 *
-	 * @return The next raw event, or {@code 0} if there none remaining.
-	 * @throws SecurityException If event removal is denied.
+	 * @return The next raw event, or {@code 0} if there non
 	 * @since 2016/05/15
 	 */
 	public int pollRaw()
-		throws SecurityException
 	{
-		// Must be permitted
-		if (this.attached)
-			owner.permissions().eventRead(this);
-		
 		// Lock
 		synchronized (lock)
 		{
@@ -534,11 +478,10 @@ public class EventQueue
 	 *
 	 * @return The raw event.
 	 * @throws NoSuchElementException If there are no available events.
-	 * @throws SecurityException If events are not permitted to be removed.
 	 * @since 2016/05/17
 	 */
 	public final int removeRaw()
-		throws NoSuchElementException, SecurityException
+		throws NoSuchElementException
 	{
 		// Remove event
 		int rv = pollRaw();

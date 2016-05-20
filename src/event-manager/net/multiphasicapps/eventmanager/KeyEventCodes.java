@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.event;
+package net.multiphasicapps.eventmanager;
 
 /**
  * This contains key character codes for pressed key that are useful to have.
@@ -22,7 +22,7 @@ package net.multiphasicapps.squirreljme.kernel.event;
  *
  * @since 2016/05/15
  */
-public interface KeyChars
+public interface KeyEventCodes
 {
 	/** Enter key. */
 	public static final char ENTER	=

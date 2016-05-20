@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.event;
+package net.multiphasicapps.eventmanager;
 
 /**
  * The list of system event codes that may occur.
  *
  * @since 2016/05/15
  */
-public interface SystemEventCode
+public interface SystemEventCodes
 {
 	/** A controller was attached to a port. */
 	public static final int CONTROLLER_ATTACHED =
