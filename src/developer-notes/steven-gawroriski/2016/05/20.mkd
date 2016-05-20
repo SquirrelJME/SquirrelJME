@@ -100,3 +100,20 @@ would save space and such. There could be standard IDs however for a given
 protocol. Also with the IPC interface, I can easily check all user input to
 make sure it is valid before being used.
 
+## 15:07
+
+My IPC would be asynchronous and I could allow for callback threads to be
+created when a datagram is received for example. That would be a use for
+drop priveledges of a thread to a given process. I could also have a gain
+kernel power using a special object key for example, or basically try with
+resources dropping and such. I would have to catch all exceptions and just use
+a generic throwable because otherwise a thread could setup an async handler,
+throw an exception with a crafted `toString()`, which would then be executed
+when the thread is running under the kernel. I suppose I would catch the
+exception and either drop it, or close the datagram stream from the sending
+end. I could have datagram sending have the ability to block to make sure the
+other party read closed it. After a datagram is sent, it could just have a
+`send` which returns immedietly and then a `sendAndWait` which uses the Object
+monitor methods as a callback to know when the other side has read and
+handled the datagram.
+
