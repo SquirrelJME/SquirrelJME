@@ -42,3 +42,10 @@ for the device IO and other drivers and such. Certain modules such as the
 console or filesystem would have a standard interface so that interfaces are
 not neededlessly duplicated and such.
 
+## 14:07
+
+Then the archive and executable format could somewhat be removed from the
+kernel and be made a module instead. The kernel would also need to have an IPC
+system with buffers so that processes may communicate with one another. Then
+with the base IPC and module system, the kernel would be kept simpler.
+
