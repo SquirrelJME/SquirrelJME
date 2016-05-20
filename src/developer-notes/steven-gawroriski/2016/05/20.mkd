@@ -194,3 +194,10 @@ to access the IPO which would make it very nasty.
 I would suppose for IPO I would have to limit it to the primitive array types,
 String, KIO classes, Kernel, and KernelProcess.
 
+## 18:26
+
+Sticking to the microkernel design with IPC, I essentially solved the issue
+I was going to have related to interpretation and such. I would have wanted
+the interpreter to call into the native kernel code normally, but that would
+be a really complicated issue (especially without reflection).
+
