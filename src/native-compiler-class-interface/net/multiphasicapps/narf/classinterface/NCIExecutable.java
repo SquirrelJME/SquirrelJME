@@ -10,32 +10,20 @@
 
 package net.multiphasicapps.narf.classinterface;
 
-import net.multiphasicapps.descriptors.MethodSymbol;
-
 /**
- * This represents a method.
+ * This interface is used for interfaces and classes which implement executable
+ * code for a single method.
  *
- * @since 2016/04/22
+ * @since 2016/05/20
  */
-public interface NCIMethod
-	extends NCIMember<NCIMethodID, NCIMethodFlags>, NCIAccessibleObject
+public interface NCIExecutable
 {
 	/**
-	 * Returns the code attribute of this method or {@code null} if there is
-	 * none.
+	 * Returns the method which owns this native code.
 	 *
-	 * @return The code attribute or {@code null} if there is none.
-	 * @since 2016/04/27
-	 */
-	public abstract NCICodeAttribute code();
-	
-	/**
-	 * Returns the native code data for this method or {@code null} if there
-	 * is no native code.
-	 *
-	 * @return The native code data.
+	 * @return The containing method.
 	 * @since 2016/05/20
 	 */
-	public abstract NCINativeCode nativeCode();
+	public abstract NCIMethod method();
 }
 

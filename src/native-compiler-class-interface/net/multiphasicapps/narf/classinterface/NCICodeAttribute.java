@@ -16,6 +16,7 @@ package net.multiphasicapps.narf.classinterface;
  * @since 2016/04/27
  */
 public final class NCICodeAttribute
+	implements NCIExecutable
 {
 	/** Maximum code length. */
 	public static final int MAXIMUM_CODE_LENGTH =
@@ -212,11 +213,10 @@ public final class NCICodeAttribute
 	}
 	
 	/**
-	 * Returns the method which contains this attribute.
-	 *
-	 * @return The containing method.
+	 * {@inheritDoc}
 	 * @since 2016/04/08
 	 */
+	@Override
 	public NCIMethod method()
 	{
 		return this.method;
