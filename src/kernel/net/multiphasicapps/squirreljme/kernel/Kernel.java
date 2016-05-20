@@ -19,19 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.kernel.archive.ArchiveFinder;
-import net.multiphasicapps.squirreljme.kernel.display.ConsoleDisplay;
-import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
 
 /**
  * This is the base class for the kernel interfaces which are defined by
  * systems to provide anything that the default kernel does not provide
- * when it comes to interfaces. All calls which are done by the user interface
- * and the running programs in the kernel, will call the kernel to perform
- * system calls and such. The kernel manages processes which are running on
- * the virtual machine.
+ * when it comes to interfaces. The kernel manages the processes for the
+ * system along with inter-process communication and inter-process objects.
  *
  * @since 2016/05/14
  */
@@ -61,30 +55,6 @@ public abstract class Kernel
 		// Register the current thread
 		kp.addThread(Thread.currentThread());
 	}
-	
-	/**
-	 * Returns the set of archive finders which are used to find archives such
-	 * as JAR files and other executables for later execution.
-	 *
-	 * @return The set of archive finders, the list should not be modifiable.
-	 * @since 2016/05/18
-	 */
-	public abstract List<ArchiveFinder> archiveFinders();
-	
-	/**
-	 * Creates a view of a console window.
-	 *
-	 * Note that if multi-headed consoles are supported then the interface
-	 * may show multiple terminals either in windows, tabs, or some other
-	 * interface specific means. If a console does not support multiple heads
-	 * then any console being displayed will potentially erase or draw over
-	 * a previously drawn console.
-	 *
-	 * @return A newly created console window or {@code null} if it could not
-	 * be created for some reason.
-	 * @since 2016/05/14
-	 */
-	public abstract ConsoleDisplay createConsoleDisplay();
 	
 	/**
 	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing

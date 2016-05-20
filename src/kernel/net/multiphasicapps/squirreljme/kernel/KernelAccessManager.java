@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.perm;
+package net.multiphasicapps.squirreljme.kernel;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
@@ -34,7 +34,7 @@ public final class KernelAccessManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/16
 	 */
-	public KernelAccessManager(KernelProcess __kp)
+	KernelAccessManager(KernelProcess __kp)
 		throws NullPointerException
 	{
 		// Check
