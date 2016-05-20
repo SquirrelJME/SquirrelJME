@@ -26,7 +26,7 @@ import java.util.Set;
  * @since 2016/05/20
  */
 public final class JavaManifest
-	extends AbstractMap<String, String>
+	extends AbstractMap<String, JavaManifestAttributes>
 {
 	/**
 	 * Decodes the manifest from the given input stream, it is treated as
@@ -66,7 +66,7 @@ public final class JavaManifest
 	 * @since 2016/05/20
 	 */
 	@Override
-	public Set<Map.Entry<String, String>> entrySet()
+	public Set<Map.Entry<String, JavaManifestAttributes>> entrySet()
 	{
 		throw new Error("TODO");
 	}
