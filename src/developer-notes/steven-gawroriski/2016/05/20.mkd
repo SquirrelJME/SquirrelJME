@@ -126,3 +126,10 @@ the kernel. However on the other side of the call, the throwable can be taken
 out and then thrown in user-space. However, exceptions thrown in kernel code
 can be sent to user-space, just not the other way around.
 
+## 15:40
+
+It would be slightly less complicated if I instead just used service numbers,
+where positive values are known services, negative values are process send but
+not receive, and zero values are mapped to the net available negative value.
+This would remove the complications caused by port numbers.
+

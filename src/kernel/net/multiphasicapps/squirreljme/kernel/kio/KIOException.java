@@ -11,17 +11,13 @@
 package net.multiphasicapps.squirreljme.kernel.kio;
 
 /**
- * This represents a single unit of communication that is sent and received
- * over a {@link KIOSocket}.
- *
- * Once a datagram is sent, it cannot be modified or read from by the sender.
- *
- * Datagrams may be reused across various processes, if a datagram is not
- * owned by a given process then it cannot read the data within the datagram.
+ * This represents an exception which is thrown by the kernel IPC datagram
+ * system.
  *
  * @since 2016/05/20
  */
-public final class KIODatagram
+public final class KIOException
+	extends IOException
 {
 }
 
