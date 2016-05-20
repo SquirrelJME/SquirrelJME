@@ -8,3 +8,10 @@ containing classes, resources and other such things might be cachable. I am
 going to add a bridge of sorts so that in the future I could potentially cache
 any kind of resource for example.
 
+## 08:04
+
+This would then mean that the Executable family of classes would be deprecated
+and not used at all. So then this means that the archive finder takes the
+sole responsibility of representing native classes and such. `NCIClass` may
+just then need a native code returning method.
+
