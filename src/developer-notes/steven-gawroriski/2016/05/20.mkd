@@ -47,5 +47,10 @@ not neededlessly duplicated and such.
 Then the archive and executable format could somewhat be removed from the
 kernel and be made a module instead. The kernel would also need to have an IPC
 system with buffers so that processes may communicate with one another. Then
-with the base IPC and module system, the kernel would be kept simpler.
+with the base IPC and module system, the kernel would be kept simpler. The
+event system could also just be IPC from a driver to a specific process rather
+than a direct event buffer and such. Then the archive stuff and other things
+being out of the kernel would result in much simplification. I suppose for
+programs which can be executed there would be a `KernelExecutable` instance
+or a `KernelProcess` setup which executes a given program.
 
