@@ -16,12 +16,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.kernel.event.EventQueue;
-import net.multiphasicapps.squirreljme.kernel.perm.PermissionManager;
 
 /**
  * This represents a process within the kernel. {@link Thread}s are associated
- * with processes and are generally used for permissions.
+ * with processes and are generally used for access.
  *
  * SquirrelJME can run without a memory manager and one is not needed at all
  * (due to lack of reflection) and as such all processes if checks were not
@@ -39,11 +37,8 @@ public final class KernelProcess
 	/** Is this the kernel process? */
 	protected final boolean iskernel;
 	
-	/** The process event queue. */
-	protected final EventQueue eventqueue;
-	
 	/** The permission manager. */
-	protected final PermissionManager permissions;
+	protected final KernelAccessManager access;
 	
 	/** Threads the process own. */
 	private final List<Thread> _threads =
@@ -68,11 +63,8 @@ public final class KernelProcess
 		this.kernel = __k;
 		this.iskernel = __ik;
 		
-		// Setup permissions
-		this.permissions = new PermissionManager(this);
-		
-		// Setup event queue
-		this.eventqueue = new EventQueue(this);
+		// Setup access
+		this.access = new KernelAccessManager(this);
 	}
 	
 	/**
@@ -92,7 +84,7 @@ public final class KernelProcess
 		
 		// Check permission
 		if (!iskernel)
-			this.permissions.createThread();
+			this.access.createThread();
 		
 		// {@squirreljme.error AY07 The thread to be added is owned by
 		// another process.}
@@ -196,7 +188,7 @@ public final class KernelProcess
 			throw new NullPointerException("NARG");
 		
 		// Check permission
-		this.permissions.createThread();
+		this.access.createThread();
 		
 		// Create thread
 		Thread rv = new Thread(__r);
@@ -214,17 +206,6 @@ public final class KernelProcess
 		
 		// Return it
 		return rv;
-	}
-	
-	/**
-	 * Returns the event queue of the process.
-	 *
-	 * @return The process event queue.
-	 * @since 2016/05/16
-	 */
-	public final EventQueue eventQueue()
-	{
-		return this.eventqueue;
 	}
 	
 	/**
@@ -256,9 +237,9 @@ public final class KernelProcess
 	 * @return The permission manager.
 	 * @since 2016/05/16
 	 */
-	public final PermissionManager permissions()
+	public final KernelAccessManager access()
 	{
-		return this.permissions;
+		return this.access;
 	}
 }
 
