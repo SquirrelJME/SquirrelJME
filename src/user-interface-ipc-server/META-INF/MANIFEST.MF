@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: user-interface-ipc-server
 X-SquirrelJME-UUID: 6c301684-cd07-4f51-bb82-7499b756a1f3
-X-SquirrelJME-Depends: user-interface, kernel
+X-SquirrelJME-Depends: user-interface-ipc
 X-SquirrelJME-Error: BK
 LIBlet-Title: User Interface IPC Server
 LIBlet-Vendor: Steven Gawroriski

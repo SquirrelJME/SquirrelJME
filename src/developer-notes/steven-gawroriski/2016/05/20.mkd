@@ -216,3 +216,11 @@ specific code.
 Might be best if the IPC display manager were in seprated client and server
 forms since both of them might not be needed at the same time.
 
+## 19:36
+
+Actually, with the IPC for displaying, it is kind of like X11 in a way except
+limited to just a single process (since the JVM runs as one). Although there
+is a slight loss of speed it would be rather portable because I can easily hide
+the user interfaces and could actually make it entirely optional in certain
+situations.
+
