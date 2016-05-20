@@ -31,3 +31,14 @@ code. The kernel does not truly need the UI to be a part of it, but only as a
 kind of add-on. If on graphical systems the console UI is not used, it would
 be a bit of a waste.
 
+## 14:02
+
+I can also make the kernel more modular and have the video console stuff just
+be a module that is available to the kernel. Filesystems and other such things
+could then just be attached to the module system. An implementation of the
+kernel would then implement module interfaces as desired. There could also be
+the possibility of non-standard modules also. Modules could also act as a base
+for the device IO and other drivers and such. Certain modules such as the
+console or filesystem would have a standard interface so that interfaces are
+not neededlessly duplicated and such.
+

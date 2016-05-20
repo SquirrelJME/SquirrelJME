@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: kernel-ui
+X-SquirrelJME-UUID: 050030ef-57b8-4f56-afcd-740e1bc7fec6
+X-SquirrelJME-Depends: kernel
+X-SquirrelJME-Error: BC
+LIBlet-Title: Kernel User Interface
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160520
+LIBlet-Description: This contains the base class for which
+  all user interfaces implemented on top of the kernel are
+  based.
+
