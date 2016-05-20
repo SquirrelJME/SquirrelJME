@@ -145,3 +145,13 @@ replies would be advanced but would complicate things.
 
 Time to move the UI and stuff over to new places then.
 
+## 16:07
+
+Also the UI stuff being moved over means that say for example I want primitive
+support for OS widgets and menus, I can extend the base UI. I want the standard
+UI interface to support as many MIDP 3.0 widgets and such as possible. Although
+the console interface would be a bit ugly looking like this, regardless of
+whether the system supports raster graphics or not, I can instead support MIDP
+programs and applications with forms on any device. This is a far better
+solution personally for me.
+

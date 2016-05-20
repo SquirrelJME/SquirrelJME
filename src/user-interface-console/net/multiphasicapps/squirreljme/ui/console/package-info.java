@@ -9,10 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the user interface code.
+ * This implements the standard UI interface and outputs it to a text based
+ * console device.
  *
- * @since 2016/05/15
+ * @since 2016/05/20
  */
 
-package net.multiphasicapps.squirreljme.kernel.ui;
+package net.multiphasicapps.squirreljme.ui.console;
 
