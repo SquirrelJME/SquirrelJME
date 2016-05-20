@@ -155,3 +155,12 @@ whether the system supports raster graphics or not, I can instead support MIDP
 programs and applications with forms on any device. This is a far better
 solution personally for me.
 
+## 16:09
+
+Then this means for the swing interface, instead of using a console I can just
+create a number of Swing widgets for this. If say a console window is created
+for Swing I can do the same thing as I am doing already and providing a Swing
+based version of it. If I am running on an native system such as Windows where
+they provide the ability to create a console window, I will use that. Otherwise
+the console view would be emulated.
+
