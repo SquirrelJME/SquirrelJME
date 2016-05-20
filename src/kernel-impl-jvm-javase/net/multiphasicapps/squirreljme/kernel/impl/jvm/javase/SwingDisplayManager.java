@@ -20,6 +20,16 @@ import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
  */
 public class SwingDisplayManager
 	extends UIDisplayManager
+	implements Runnable
 {
+	/**
+	 * Runs the display manager code in a loop.
+	 *
+	 * @since 2016/05/20
+	 */
+	@Override
+	public void run()
+	{
+	}
 }
 

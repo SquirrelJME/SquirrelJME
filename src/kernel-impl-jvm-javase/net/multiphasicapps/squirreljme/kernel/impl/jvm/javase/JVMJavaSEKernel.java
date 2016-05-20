@@ -36,6 +36,13 @@ public class JVMJavaSEKernel
 		// Must always exist
 		if (__args == null)
 			__args = new String[0];
+		
+		// Setup the display manager
+		SwingDisplayManager sdm = new SwingDisplayManager();
+		kernelProcess().createThread(sdm);
+		
+		// Finished booting
+		bootFinished(JVMJavaSEKernel.class);
 	}
 	
 	/**

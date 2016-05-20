@@ -38,6 +38,10 @@ public abstract class Kernel
 	private final List<KernelProcess> _processes =
 		new LinkedList<>();
 	
+	/** Boot lock to detect when the kernel finishes booting. */
+	private final Object _bootlock =
+		new Object();
+	
 	/**
 	 * Initializes the base kernel interface.
 	 *
@@ -54,6 +58,9 @@ public abstract class Kernel
 		
 		// Register the current thread
 		kp.addThread(Thread.currentThread());
+		
+		// Finished boot
+		bootFinished(Kernel.class);
 	}
 	
 	/**
@@ -63,6 +70,27 @@ public abstract class Kernel
 	 * @since 2016/05/18
 	 */
 	public abstract void quitKernel();
+	
+	/**
+	 * This is a signal to indicate that the kernel construction has completed
+	 * in the child class. If the current class is not the top level class
+	 * for the boot finished indicator then it is ignored.
+	 *
+	 * @param __top
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/20
+	 */
+	protected final void bootFinished(Class<?> __top)
+		throws NullPointerException
+	{
+		// Check
+		if (__top == null)
+			throw new NullPointerException("NARG");
+		
+		// Inside of a parent constructor still
+		if (__top != getClass())
+			return;
+	}
 	
 	/**
 	 * Creates a new process and returns it.
