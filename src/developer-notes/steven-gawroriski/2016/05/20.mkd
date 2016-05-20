@@ -86,3 +86,17 @@ which attaches to another process to send and receive datagrams from. Then
 listening sockets could listen for a specific process or from many processes.
 So in essence, the kernel/VM would be a microkernel.
 
+## 15:02
+
+There will need to be services which act like host names to bind to, and then
+there would be a port number that can also be bound also potentially. There
+would have to be multiple bindings to a process and a general service search
+I suppose. For example there could be multiple input drivers which listen on
+the input event generator protocol for events such as keyboard input and
+such. The names could be removed however, where unique IDs are used instead,
+so a service and port are just 64-bit integers. This would reduce the need of
+strings and comparisons. I suppose that would be the simplest approach as it
+would save space and such. There could be standard IDs however for a given
+protocol. Also with the IPC interface, I can easily check all user input to
+make sure it is valid before being used.
+

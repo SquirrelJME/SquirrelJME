@@ -8,15 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
-
 /**
- * This represents a datagram stream between two or more processes within the
- * kernel.
+ * This package contains the kernel input and output interfaces.
+ *
+ * The kernel is designed after a microkernel and uses datagrams with
+ * service descriptors to identify processes to listen and to connect to.
  *
  * @since 2016/05/20
  */
-public class KernelSocket
-{
-}
+
+package net.multiphasicapps.squirreljme.kernel.kio;
 
