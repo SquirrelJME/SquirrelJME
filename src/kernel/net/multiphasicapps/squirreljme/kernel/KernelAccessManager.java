@@ -80,6 +80,26 @@ public final class KernelAccessManager
 	}
 	
 	/**
+	 * Checks whether the current process can create a new process.
+	 *
+	 * @throws SecurityException If creating a new process is not permitted.
+	 * @since 2016/05/20
+	 */
+	public void createProcess()
+		throws SecurityException
+	{
+		// Process access
+		KernelProcess curkp = accessProcess();
+		
+		// {@squirreljme.error AY02 Only the kernel may create new processes.}
+		if (!curkp.isKernelProcess())
+			throw new SecurityException("AY02");
+		
+		// Is the kernel
+		return;
+	}
+	
+	/**
 	 * Checks whether threads can be created on behalf of the given process.
 	 *
 	 * @throws SecurityException If threads cannot be created on the process.

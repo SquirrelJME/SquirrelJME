@@ -73,7 +73,7 @@ public final class KernelProcess
 	 * @return The permission manager.
 	 * @since 2016/05/16
 	 */
-	public final KernelAccessManager access()
+	public final KernelAccessManager accessManager()
 	{
 		return this.access;
 	}

@@ -65,6 +65,42 @@ public abstract class Kernel
 	public abstract void quitKernel();
 	
 	/**
+	 * Creates a new process and returns it.
+	 *
+	 * @return The newly created process.
+	 * @throws IllegalStateException If no thread owns the current process.
+	 * @throws SecurityException If the current process is not permitted to
+	 * create new processes.
+	 * @since 2016/05/20
+	 */
+	public final KernelProcess createProcess()
+		throws IllegalStateException, SecurityException
+	{
+		// {@squirreljme.error AY01
+		KernelProcess me = currentProcess();
+		if (me == null)
+			throw new IllegalStateException("AY01");
+		
+		// Check access manager
+		me.accessManager().createProcess();
+		
+		// Lock
+		List<KernelProcess> kps = this._processes;
+		KernelProcess rv;
+		synchronized (kps)
+		{
+			// Create it
+			rv = new KernelProcess(this, false);
+			
+			// Add it
+			kps.add(rv);
+		}
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
 	 * Returns the process which is associated with the current thread.
 	 *
 	 * @return The process for the current thread, if {@code null} then no
