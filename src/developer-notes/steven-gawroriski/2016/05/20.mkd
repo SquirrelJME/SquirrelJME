@@ -211,3 +211,8 @@ Thinking about it, with the boot finished flagging I can instead have the
 launcher initialization in common code rather than the implementation
 specific code.
 
+## 19:25
+
+Might be best if the IPC display manager were in seprated client and server
+forms since both of them might not be needed at the same time.
+

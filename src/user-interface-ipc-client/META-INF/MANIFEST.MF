@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: user-interface-ipc
+X-SquirrelJME-Name: user-interface-ipc-client
 X-SquirrelJME-UUID: 8bfa8f3c-e48c-4c8d-8446-29c42983facb
 X-SquirrelJME-Depends: user-interface, kernel
 X-SquirrelJME-Error: BG
-LIBlet-Title: User Interface IPC
+LIBlet-Title: User Interface IPC Client
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160520
 LIBlet-Description: This is a bridge which utilizes the kernel
