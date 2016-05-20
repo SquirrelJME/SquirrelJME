@@ -11,7 +11,8 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * DESCRIBE THIS.
+ * This exception is used to indicate that the userspace process threw an
+ * exception for the current thread.
  *
  * @since 2016/05/20
  */
@@ -23,9 +24,9 @@ public class UserSpaceException
 	 *
 	 * @since 2016/05/20
 	 */
-	public KernelException()
+	public UserSpaceException()
 	{
-		super(null);
+		super((Throwable)null);
 	}
 	
 	/**
@@ -34,9 +35,9 @@ public class UserSpaceException
 	 * @param __s The message to use.
 	 * @since 2016/05/20
 	 */
-	public KernelException(String __s)
+	public UserSpaceException(String __s)
 	{
-		super(__s, null);
+		super(__s, (Throwable)null);
 	}
 	
 	/**

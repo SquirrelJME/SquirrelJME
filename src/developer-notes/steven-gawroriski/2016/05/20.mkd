@@ -133,3 +133,11 @@ where positive values are known services, negative values are process send but
 not receive, and zero values are mapped to the net available negative value.
 This would remove the complications caused by port numbers.
 
+## 15:44
+
+This means that datagrams for simplicity I need a reply mechanism which either
+uses the same datagram or finds a new one. For example, before a datagram is
+closed it can be request that a reply or more than one reply is made,
+potentially even a future reply if it cannot be replied to at this time. Future
+replies would be advanced but would complicate things.
+

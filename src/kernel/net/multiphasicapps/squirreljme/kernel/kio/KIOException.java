@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.kio;
 
+import java.io.IOException;
+
 /**
  * This represents an exception which is thrown by the kernel IPC datagram
  * system.
@@ -19,5 +21,15 @@ package net.multiphasicapps.squirreljme.kernel.kio;
 public final class KIOException
 	extends IOException
 {
+	/**
+	 * Initializes the exception with the given message.
+	 *
+	 * @param __s The message to use.
+	 * @since 2016/05/20
+	 */
+	public KIOException(String __s)
+	{
+		super(__s);
+	} 
 }
 
