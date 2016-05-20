@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * This represents a single unit of communication that is sent and received
  * over a {@link KIOSocket}.
@@ -23,5 +28,8 @@ package net.multiphasicapps.squirreljme.kernel;
  */
 public final class KIODatagram
 {
+	/** The queue of potentially already allocated datagrams. */
+	private static final Deque<Reference<KIODatagram>> _DEQUE =
+		new ArrayDeque<>();
 }
 

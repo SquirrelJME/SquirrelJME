@@ -224,3 +224,17 @@ is a slight loss of speed it would be rather portable because I can easily hide
 the user interfaces and could actually make it entirely optional in certain
 situations.
 
+## 19:52
+
+So today I mostly refactored code, I had the UI for JARs listed and such but
+that was really ugly. Now I hope with this standard single interface for the
+launcher that it can handle the various differences in systems because it
+would rely on generic UI interfaces. Also when it comes to the UI and native
+interfaces, widgets may have to be freed when they are garbage collected. Thus,
+native user interface implementations must keep a reference queue handy if this
+needs to be performed in the code at all. Otherwise, if it is not done and the
+native UI does not perform garbage collection then there might not be enough
+resources to display anything (such as in Windows 98) or the system might just
+run out of memory trying to display so many widgets.
+
+
