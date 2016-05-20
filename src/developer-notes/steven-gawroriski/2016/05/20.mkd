@@ -117,3 +117,12 @@ other party read closed it. After a datagram is sent, it could just have a
 monitor methods as a callback to know when the other side has read and
 handled the datagram.
 
+## 15:16
+
+Since I cannot disable suppression in `Throwable`, this gives me a problem
+since that method is `final`, although cause and such are not. Due to this,
+I need to guard all inter-process throwables so that they do not enter into
+the kernel. However on the other side of the call, the throwable can be taken
+out and then thrown in user-space. However, exceptions thrown in kernel code
+can be sent to user-space, just not the other way around.
+
