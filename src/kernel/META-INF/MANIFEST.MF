@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: kernel
 X-SquirrelJME-UUID: abb39a12-7deb-433c-a2d6-4c2f5ede429f
 X-SquirrelJME-Depends: javame-cldc-compact,
-  native-compiler-class-interface
+  native-compiler-class-interface, java-manifest
 X-SquirrelJME-Error: AY
 LIBlet-Title: Kernel
 LIBlet-Vendor: Steven Gawroriski
