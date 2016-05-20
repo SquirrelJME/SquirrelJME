@@ -56,8 +56,6 @@ public class FSArchiveFinder
 	/** Has this been refreshed? */
 	private volatile boolean _refreshed;
 	
-	/** Refresh number. */
-	
 	/**
 	 * Initializes the file system based archive finder using the default
 	 * system properties and such.
@@ -172,6 +170,7 @@ public class FSArchiveFinder
 							{
 								FSArchive cr = new FSArchive(p);
 								got.add(cr);
+								archives.add(cr);
 							}
 						}
 					}

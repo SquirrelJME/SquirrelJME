@@ -106,7 +106,7 @@ public class FSArchive
 			sb.append(p.getFileName());
 			
 			// And the directory it is in
-			sb.append('(');
+			sb.append(" (");
 			sb.append(p.getParent());
 			sb.append(')');
 			
