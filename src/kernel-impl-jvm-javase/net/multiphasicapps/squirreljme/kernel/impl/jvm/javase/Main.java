@@ -23,6 +23,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import net.multiphasicapps.io.hex.HexInputStream;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**
  * Main entry point for the Java SE JVM launcher interface kernel.
