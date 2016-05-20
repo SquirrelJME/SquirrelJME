@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: user-interface-console
+X-SquirrelJME-UUID: 76376e51-c60d-4f43-8e42-e952f6bfecff
+X-SquirrelJME-Depends: user-interface
+X-SquirrelJME-Error: BE
+LIBlet-Title: User Interface Support
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160520
+LIBlet-Description: This implements the standard user interface
+  which shows its output and such on a text based console. This
+  should be used as a fallback for situations where raster
+  graphics are not possible on a given system or are not feasible.
