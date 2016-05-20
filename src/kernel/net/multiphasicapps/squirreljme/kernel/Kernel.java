@@ -25,7 +25,7 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
  * This is the base class for the kernel interfaces which are defined by
  * systems to provide anything that the default kernel does not provide
  * when it comes to interfaces. The kernel manages the processes for the
- * system along with inter-process communication and inter-process arrays.
+ * system along with inter-process communication and inter-process objects.
  *
  * @since 2016/05/14
  */

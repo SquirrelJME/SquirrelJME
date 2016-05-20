@@ -19,8 +19,11 @@ package net.multiphasicapps.squirreljme.ui;
  * display, while on a mobile device there might only be just a single display
  * at a time.
  *
- * This is the class which is provided in inter-process objects by the UI
- * manager process for the creation of displays and such. 
+ * Generally at any time, there will be two distinct variants of the display
+ * manager being used. One will be an implementation by the kernel
+ * implementation to provide native integration, user space processes will
+ * also have a UIDisplayManager which uses the kernel IPC system to interact
+ * with the concrete implementation by an implementation.
  *
  * @since 2016/05/20
  */
