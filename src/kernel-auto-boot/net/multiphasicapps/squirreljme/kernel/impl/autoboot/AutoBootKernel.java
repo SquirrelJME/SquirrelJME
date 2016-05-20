@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.autoboot;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.launcher.LauncherInterface;
 
 /**
  * This is the autoboot kernel which instead of having the standard launcher
@@ -46,6 +47,9 @@ public abstract class AutoBootKernel
 	{
 		// Call super code first
 		super.bootFinishRunner();
+		
+		// Setup launcher
+		LauncherInterface li = new LauncherInterface(this);
 		
 		// Block until all workers are terminated
 		for (;;)
