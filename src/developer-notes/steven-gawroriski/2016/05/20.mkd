@@ -19,3 +19,8 @@ just then need a native code returning method.
 
 The `FSArchiveFinder` would be better named as JAR instead. or FSJAR.
 
+## 10:57
+
+Likely it can remain the same. For other forms of binaries such as Palm
+databases then alternative means could be used for example.
+

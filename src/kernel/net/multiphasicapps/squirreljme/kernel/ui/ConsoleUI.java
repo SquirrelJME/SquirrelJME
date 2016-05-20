@@ -521,7 +521,7 @@ public class ConsoleUI
 			af.refresh();
 			
 			// Get list of items to make new menu for it
-			List<Archive> list = af.archives();
+			List<? extends Archive> list = af.archives();
 			int n = list.size();
 			
 			// Setup basic menu items

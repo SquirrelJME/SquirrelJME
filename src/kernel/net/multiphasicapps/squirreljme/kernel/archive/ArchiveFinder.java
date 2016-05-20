@@ -53,7 +53,7 @@ public abstract class ArchiveFinder
 	 * must not be modifiable.
 	 * @since 2016/05/18
 	 */
-	public abstract List<Archive> archives();
+	public abstract List<? extends Archive> archives();
 	
 	/**
 	 * Refreshes the list of archives which are available.

@@ -35,18 +35,20 @@ public class FSArchiveFinder
 	private final Path[] _paths;
 	
 	/** The archives which are available for execution . */
-	private final List<Archive> _archives =
+	private final List<FSArchive> _archives =
 		new ArrayList<>();
 	
 	/** Unmodifiable view. */
-	private final List<Archive> _unmod =
-		UnmodifiableList.<Archive>of(this._archives);
+	private final List<FSArchive> _unmod =
+		UnmodifiableList.<FSArchive>of(this._archives);
 	
 	/** The string cache. */
 	private volatile Reference<String> _string;
 	
 	/** Has this been refreshed? */
 	private volatile boolean _refreshed;
+	
+	/** Refresh number. */
 	
 	/**
 	 * Initializes the file system based archive finder using the default
@@ -90,7 +92,7 @@ public class FSArchiveFinder
 	 * @since 2016/05/18
 	 */
 	@Override
-	public List<Archive> archives()
+	public List<? extends FSArchive> archives()
 	{
 		// Lock
 		Path[] paths = this._paths;
