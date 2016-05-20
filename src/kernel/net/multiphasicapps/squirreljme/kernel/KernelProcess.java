@@ -227,7 +227,7 @@ public final class KernelProcess
 	 */
 	public final Object[] getObjects()
 	{
-		return objects(this.kernel.currentProcess();
+		return getObjects(this.kernel.currentProcess());
 	}
 	
 	/**
