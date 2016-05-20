@@ -15,3 +15,7 @@ and not used at all. So then this means that the archive finder takes the
 sole responsibility of representing native classes and such. `NCIClass` may
 just then need a native code returning method.
 
+## 08:22
+
+The `FSArchiveFinder` would be better named as JAR instead. or FSJAR.
+
