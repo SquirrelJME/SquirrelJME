@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: kernel-auto-boot
+X-SquirrelJME-UUID: 15c4cbe4-8602-4a85-84c5-bd1222793da4
+X-SquirrelJME-Depends: kernel, launcher
+X-SquirrelJME-Error: BI
+LIBlet-Title: Launcher
+LIBlet-Vendor: Kernel Auto Boot
+LIBlet-Version: 1.8.0.20160520
+LIBlet-Description: This is an abstract just above base
+  kernel which can be implemented by interfaces which sets up
+  the launcher and then runs an infinite loop until processes
+  terminate. This is so that interfaces can share the same
+  logic without duplicating it.
+

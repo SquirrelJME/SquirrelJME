@@ -38,9 +38,8 @@ public abstract class Kernel
 	private final List<KernelProcess> _processes =
 		new LinkedList<>();
 	
-	/** Boot lock to detect when the kernel finishes booting. */
-	private final Object _bootlock =
-		new Object();
+	/** Set to {@code true} when booting has been completed. */
+	private volatile boolean _bootdone;
 	
 	/**
 	 * Initializes the base kernel interface.
@@ -87,9 +86,34 @@ public abstract class Kernel
 		if (__top == null)
 			throw new NullPointerException("NARG");
 		
-		// Inside of a parent constructor still
-		if (__top != getClass())
-			return;
+		// If already complete, ignore
+		if (!_bootdone)
+		{
+			// Inside of a parent constructor still
+			if (__top != getClass())
+				return;
+			
+			// Mark booted
+			_bootdone = true;
+			
+			// Execute the runner
+			bootFinishRunner();
+		}
+	}
+	
+	/**
+	 * This method may be implemented by sub-classes and is executed after the
+	 * contructors of the given classes are at the end just before they should
+	 * return.
+	 *
+	 * Overrides of this method should call {@code super.bootFinishRunner()}
+	 * at the start of the method.
+	 *
+	 * @since 2016/05/20
+	 */
+	protected void bootFinishRunner()
+	{
+		// Does nothing.
 	}
 	
 	/**

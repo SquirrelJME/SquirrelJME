@@ -98,25 +98,6 @@ public class Main
 	{
 		// Initialize the kernel, it is the most important
 		Kernel kern = new JVMJavaSEKernel(__args);
-		
-		// Block until all workers are terminated
-		for (;;)
-		{
-			// Kernel loop
-			try
-			{
-				kern.untilProcessless();
-			
-				// Would normally terminate
-				return;
-			}
-			
-			// Interrupted, yield and retry
-			catch (InterruptedException e)
-			{
-				Thread.yield();
-			}
-		}
 	}
 }
 
