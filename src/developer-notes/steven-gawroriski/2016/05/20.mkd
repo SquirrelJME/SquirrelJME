@@ -54,3 +54,35 @@ being out of the kernel would result in much simplification. I suppose for
 programs which can be executed there would be a `KernelExecutable` instance
 or a `KernelProcess` setup which executes a given program.
 
+## 14:15
+
+The datagram communication system I suppose should be similar to something as
+if UNIX sockets and UDP were combined into one. Stuff such as network
+communications and filesystem read/write could be stored within the socket
+buffers for communication between processes. However, if I were to only
+permit two processes at a time to communicate with each other, that would
+simplicate the IPC process.
+
+## 14:19
+
+I do have to consider that streams and pipes would add overhead and such.
+However, I can have a datagram packet which are a bunch of datagrams which
+are cached to the kernel and re-used when a process needs it. So instead of
+freshly allocating new `byte` arrays, I just have a cached set of free
+datagrams. If no free datagrams are large enough to fit the message then a new
+one is allocated. When a datagram is finished, `close` is called and the
+datagram is placed into a queue so that it may be freed by the garbage
+collector in low memory situations. For all datagrams they would have a source
+and target process, so when a datagram is sent across processes (or even to
+self) it knows the source of the message. One thing that I will need also are
+ports similar to TCP/UDP so that datagrams have a specific attachment to some
+kind of communication. I can also have multicast and unicast datagrams which
+can be sent to multiple processes. When all processes have read the data and
+closed the datagram then that data gram is placed into the free queue as
+usual. I have to hide the byte arrays for security purposes however, because
+otherwise it could be exploited by changing the data. Once a datagram is sent
+it is no longer modifiable by a process. I can also have a connect interface
+which attaches to another process to send and receive datagrams from. Then
+listening sockets could listen for a specific process or from many processes.
+So in essence, the kernel/VM would be a microkernel.
+
