@@ -8,17 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.squirreljme.ui;
+
 /**
- * This package provides the base user interface code which must be implemented
- * by rendering systems or other native means to provide an interactive
- * environment for the user.
- *
- * It is used by the launcher (to make launching programs easier), the console
- * output interface (to show the stdout/stderr of programs), and the MIDP LCD
- * UI using standard interfaces.
+ * This is a class which provides standardized UI elements which are used by
+ * the launcher (which launches programs), the line base user interface, and
+ * the MIDP LCD UI to provide a potentially native look and feel to a running
+ * program.
  *
  * @since 2016/05/20
  */
-
-package net.multiphasicapps.squirreljme.ui;
+public abstract class StandardUI
+{
+}
 

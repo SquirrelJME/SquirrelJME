@@ -169,3 +169,23 @@ the console view would be emulated.
 Revision `ac48d034864be4f46d143a4e25b0ef654fc9e148` has the event stuff if I
 need it during deletion.
 
+## 17:33
+
+I suppose I should just implement the LCD UI MIDP stuff and then use that
+for the standard UI. Well actually that will not work at all. The LCD UI would
+have to use my classes, but I can have a common and very similar interface to
+make porting easier. The LCD UI code will just access the standard UI
+classes and such for work to be performed. What I need though is to implement
+a kind of inter-process objects where other processes can use objects of
+another process (the JVM is a single process anyway so it really does not make
+it difficult).
+
+## 18:03
+
+Actually, inter-process objects might be a bit complicated. They will have to
+be inter-process primitive arrays. For example, if there were an interpreter
+running on a Java ME (or J2ME) device, where Java ME lacks reflection,
+accessing IPOs would be complicated because the IPO could be some very
+interface dependent class. The interpreter would need to implement a bridge
+to access the IPO which would make it very nasty.
+
