@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.kio;
+package net.multiphasicapps.squirreljme.kernel;
 
 import java.io.IOException;
 

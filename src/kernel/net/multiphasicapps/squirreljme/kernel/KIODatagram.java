@@ -8,14 +8,20 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.squirreljme.kernel;
+
 /**
- * This package contains the kernel input and output interfaces.
+ * This represents a single unit of communication that is sent and received
+ * over a {@link KIOSocket}.
  *
- * The kernel is designed after a microkernel and uses datagrams with
- * service descriptors to identify processes to listen and to connect to.
+ * Once a datagram is sent, it cannot be modified or read from by the sender.
+ *
+ * Datagrams may be reused across various processes, if a datagram is not
+ * owned by a given process then it cannot read the data within the datagram.
  *
  * @since 2016/05/20
  */
-
-package net.multiphasicapps.squirreljme.kernel.kio;
+public final class KIODatagram
+{
+}
 
