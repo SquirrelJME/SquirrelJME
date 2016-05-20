@@ -511,7 +511,7 @@ public class ConsoleUI
 				af.refresh();
 		}
 		
-		// Is an archive?
+		// Is an archive finder?
 		else if (item instanceof ArchiveFinder)
 		{
 			// Cast
@@ -526,7 +526,7 @@ public class ConsoleUI
 				
 				// Get size
 				int n = list.size();
-			
+				
 				// Setup basic menu items
 				Object[] ix = new Object[n + 2];
 				ix[0] = MENU_BACK;
@@ -535,16 +535,24 @@ public class ConsoleUI
 				// Add archives to items
 				for (int i = 0; i < n; i++)
 					ix[2 + i] = list.get(i);
-			
-				// Setup new menu
-				RecursiveMenu pu = new RecursiveMenu(ix);
-			
+				
 				// Add menu to top of the stack
-				queue.offerLast(pu);
+				queue.offerLast(new RecursiveMenu(ix));
 			
 				// Set the archive to refresh on
 				this._refresharchive = af;
 			}
+		}
+		
+		// Is an archive?
+		else if (item instanceof Archive)
+		{
+			// Setup basic menu items
+			Object[] ix = new Object[1];
+			ix[0] = MENU_BACK;
+			
+			// Add menu to top of the stack
+			queue.offerLast(new RecursiveMenu(ix));
 		}
 	}
 }
