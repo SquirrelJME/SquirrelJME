@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: kernel-af-filesystem
 X-SquirrelJME-UUID: 5cba94e5-6ec5-4f27-ae24-8bc646f7f9de
 X-SquirrelJME-Depends: kernel, javame-cldc-full,
-  extra-util-unmodifiable
+  extra-util-unmodifiable, zip-compression,
+  native-compiler-class-file
 X-SquirrelJME-Error: BA
 LIBlet-Title: Filesystem Archive Finder
 LIBlet-Vendor: Steven Gawroriski

@@ -19,6 +19,7 @@ import net.multiphasicapps.narf.classinterface.NCIMethod;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
 import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
 import net.multiphasicapps.narf.classinterface.NCIMethodID;
+import net.multiphasicapps.narf.classinterface.NCINativeCode;
 
 /**
  * This represents a method which is contained within a class file.
@@ -101,6 +102,17 @@ public final class NCFMethod
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/20
+	 */
+	@Override
+	public NCINativeCode nativeCode()
+	{
+		// Class files do not have native code
+		return null;
 	}
 }
 
