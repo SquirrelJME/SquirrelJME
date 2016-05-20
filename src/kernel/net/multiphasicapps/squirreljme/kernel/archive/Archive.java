@@ -68,7 +68,7 @@ public abstract class Archive
 	 * @return The resource or {@code null} if it does not exist.
 	 * @since 2016/05/18
 	 */
-	protected abstract InputStream locateResource(String __n);
+	protected abstract InputStream internalLocateResource(String __n);
 	
 	/**
 	 * Checks the cache to see if a given class was loaded, otherwise it
@@ -144,6 +144,18 @@ public abstract class Archive
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Locates a resource of the given name, the name is absolute.
+	 *
+	 * @param __n The absolute name of the resource to locate.
+	 * @return The resource or {@code null} if it does not exist.
+	 * @since 2016/05/19
+	 */
+	public final InputStream locateResource(String __s)
+	{
+		return internalLocateResource(__s);
 	}
 }
 

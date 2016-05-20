@@ -1,0 +1,10 @@
+# 2016/05/20
+
+## 08:01
+
+So I suppose for archives, I need a kind of data accessor of sorts. Actually,
+if all archives are shared and cached and with my current layout of them
+containing classes, resources and other such things might be cachable. I am
+going to add a bridge of sorts so that in the future I could potentially cache
+any kind of resource for example.
+
