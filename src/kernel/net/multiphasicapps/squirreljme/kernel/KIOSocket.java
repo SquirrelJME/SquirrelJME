@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.kernel;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,6 +60,9 @@ public final class KIOSocket
 	
 	/** Mutual lock. */
 	private volatile Object _mutual;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes a socket.
@@ -323,6 +328,25 @@ public final class KIOSocket
 			// Set
 			this._monitor = __o;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public String toString()
+	{
+		// Get
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Create?
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = "Socket#" + this.id));
+		
+		// Return it
+		return rv;
 	}
 }
 
