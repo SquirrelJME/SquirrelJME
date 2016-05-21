@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.ui.ipc.server;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
@@ -26,6 +27,10 @@ import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 public class UIDisplayManagerServer
 	implements Runnable
 {
+	/** The process rate of commands in miliseconds. */
+	public static final long PROCESS_TIME =
+		10L;
+	
 	/** The socket which acts as the display manager server. */
 	protected final KIOSocket socket;
 	
@@ -85,7 +90,10 @@ public class UIDisplayManagerServer
 					
 					// New client connection
 					if (cls != null)
-						throw new Error("TODO");
+					{
+						connections.add(new __ClientConnection__(cls, this));
+						hasclients = true;
+					}
 				}
 				
 				// Thread was interrupted during poll, or there was an
@@ -98,7 +106,10 @@ public class UIDisplayManagerServer
 				if (!hasclients)
 					continue;
 				
-				throw new Error("TODO");
+				// Run connection
+				Iterator<__ClientConnection__> it = connections.iterator();
+				while (it.hasNext())
+					it.next().run();
 			}
 		}
 	}

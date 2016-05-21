@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.ui.ipc.server;
 
+import net.multiphasicapps.squirreljme.kernel.KIOException;
+import net.multiphasicapps.squirreljme.kernel.KIOSocket;
+import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
+
 /**
  * This represents a client socket connection which is used as a two-way
  * communication channel to the display manager hosted by a server.
@@ -17,8 +21,40 @@ package net.multiphasicapps.squirreljme.ui.ipc.server;
  * @since 2016/05/21
  */
 final class __ClientConnection__
+	implements Runnable
 {
-	__ClientConnection__()
+	/** The socket used to communicate with the client. */
+	protected final KIOSocket socket;
+	
+	/** The displays server which owns this client. */
+	protected final UIDisplayManagerServer server;
+	
+	/**
+	 * Initializes the client connection.
+	 *
+	 * @param __sock The socket which is piped to the client.
+	 * @param __ds The associated display server.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/21
+	 */
+	__ClientConnection__(KIOSocket __sock, UIDisplayManagerServer __ds)
+		throws NullPointerException
+	{
+		// Check
+		if (__sock == null || __ds == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.socket = __sock;
+		this.server = __ds;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public void run()
 	{
 	}
 }
