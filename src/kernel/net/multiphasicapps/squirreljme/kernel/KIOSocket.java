@@ -61,6 +61,9 @@ public final class KIOSocket
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
+	/** Is the socket closed? */
+	private volatile boolean _isclosed;
+	
 	/**
 	 * Initializes a socket.
 	 *
@@ -113,15 +116,6 @@ public final class KIOSocket
 					// Notify the other end that a socket was accepted
 					remq.notify();
 				}
-				
-				// If a monitor is attached then alert anything waiting on
-				// the monitor that a socket is waiting to be accepted.
-				Object mon = this._monitor;
-				if (mon != null)
-					synchronized (mon)
-					{
-						mon.notifyAll();
-					}
 			}
 			
 			// Otherwise this is an accepted socket. Send data to the remote
@@ -133,6 +127,16 @@ public final class KIOSocket
 					// Set send targets
 					this._sendto = __rs;
 					__rs._sendto = this;
+				}
+			
+			// If a monitor is attached then alert anything waiting on
+			// the monitor that a socket is waiting to be accepted.
+			// Or if the socket was accepted.
+			Object mon = this._monitor;
+			if (mon != null)
+				synchronized (mon)
+				{
+					mon.notifyAll();
 				}
 		}
 	}
@@ -226,6 +230,21 @@ public final class KIOSocket
 	}
 	
 	/**
+	 * Returns {@code true} if this socket is closed.
+	 *
+	 * @return {@code true} if this socket is closed.
+	 * @since 2016/05/21
+	 */
+	public boolean isClosed()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._isclosed;
+		}
+	}
+	
+	/**
 	 * Is a server (listening) socket?
 	 *
 	 * @return {@code true} if this is a server socket.
@@ -279,15 +298,58 @@ public final class KIOSocket
 	 * @param __l The length of the datagram.
 	 * @throws IllegalArgumentException If the length is negative.
 	 * @throws KIOConnectionClosedException This is thrown when the connection
-	 * to the remote end has been closed.
-	 * @throws KIOException If the datagram could not be created.
+	 * to the remote end has been closed, if it is not closed by the time the
+	 * packet is created.
+	 * @throws KIOException If the datagram could not be created, or the
+	 * socket is not connected to anything.
 	 * @since 2016/05/21
 	 */
 	public KIODatagram send(int __l)
 		throws IllegalArgumentException, KIOConnectionClosedException,
 			KIOException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error AY0n Cannot send a packet with negative length.}
+		if (__l < 0)
+			throw new IllegalArgumentException("AY0n");
+		
+		// Detect early close
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error AY0p Cannot send datagram, socket is closed
+			// on the source side.}
+			if (this._isclosed)
+				throw new KIOConnectionClosedException("AY0p");
+			
+			// Get remote end
+			KIOSocket to = this._sendto;
+			
+			// {@squirreljme.error AY0o The socket is not currently connected
+			// to a remote end.}
+			if (to == null)
+				throw new KIOException("AY0o");
+			
+			// Lock on that one
+			synchronized (to.lock)
+			{
+				// {@squirreljme.error AY0q Cannot send datagram, socket is
+				// closed on the destination side.}
+				if (to._isclosed)
+					throw new KIOConnectionClosedException("AY0q");	
+				
+				// Create
+				try
+				{
+					return new KIODatagram(this, to, __l);
+				}
+				
+				// {@squirreljme.error AY0r Out of memory allocating
+				// datagram.}
+				catch (OutOfMemoryError e)
+				{
+					throw new KIOException("AY0r", e);
+				}
+			}
+		}
 	}
 	
 	/**
