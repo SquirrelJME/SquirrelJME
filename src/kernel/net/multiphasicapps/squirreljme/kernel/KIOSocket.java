@@ -97,9 +97,6 @@ public final class KIOSocket
 				
 				// Notify the other end that a socket was accepted
 				remq.notify();
-				
-				System.err.printf("DEBUG -- Socket connect %s (%s -> %s).%n",
-					remq, this, __rs);
 			}
 		}
 	}
@@ -131,46 +128,20 @@ public final class KIOSocket
 		// Lock on the local queue
 		Deque<KIOSocket> acceptq = this.acceptq;
 		synchronized (acceptq)
-		{System.err.printf("DEBUG -- Socket will accept %s %s%n", this,
-			acceptq);
+		{
 			// Is there a socket immedietly available?
 			KIOSocket as = acceptq.pollFirst();
-			System.err.printf("DEBUG -- Quick acccept %s%n", as);
 			
 			// No socket, wait for one
 			if (as == null)
-			{System.err.println("DEBUG -- A");
-				long start = System.nanoTime() / 1_000_000_000L;
-				for (;;)
-				{
-					// Get remaining time to wait for
-					long rem = (__l == 0L ? 10L : __l -
-						((System.nanoTime() / 1_000_000_000L) - start));
-					System.err.printf("DEBUG -- Socket wait %d %s (%s)%n", rem,
-						acceptq, this);
-				
-					// No more time left? Poll immedietly
-					if (rem <= 0)
-					{
-						// If nothing was read, stop
-						if (null == (as = acceptq.pollFirst()))
-							return null;
-					}
-				
-					// Otherwise wait for the given amount of time to pass
-					else
-					{
-						// Wait
-						acceptq.wait(rem);
-					
-						// If got an accept request, run with it
-						if (null != (as = acceptq.pollFirst()))
-							break;
-					}
-				}
+			{
+				// Wait for that given time
+				acceptq.wait(__l);
+		
+				// If nothing accepted, stop
+				if (null == (as = acceptq.pollFirst()))
+					return null;
 			}
-			
-			System.err.println("DEBUG -- Z");
 			
 			throw new Error("TODO");
 		}

@@ -117,8 +117,17 @@ public class LauncherInterface
 		// Infinite loop
 		for (;;)
 		{
-			// Yield to let other threads besides the launcher run
-			Thread.yield();
+			// Sleep for a bit
+			try
+			{
+				Thread.sleep(100L);
+			}
+			
+			// Yield to let other threads besides the launcher run/
+			catch (InterruptedException e)
+			{
+				Thread.yield();
+			}
 		}
 	}
 }
