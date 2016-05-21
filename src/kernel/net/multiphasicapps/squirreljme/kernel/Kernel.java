@@ -38,8 +38,15 @@ public abstract class Kernel
 	private final List<KernelProcess> _processes =
 		new LinkedList<>();
 	
+	/** The kernel tracer. */
+	final __KernelTraceHolder__ _tracer =
+		new __KernelTraceHolder__();
+	
 	/** Set to {@code true} when booting has been completed. */
 	private volatile boolean _bootdone;
+	
+	/** The next process ID to choose. */
+	private volatile int _nextid;
 	
 	/**
 	 * Initializes the base kernel interface.
@@ -49,7 +56,7 @@ public abstract class Kernel
 	public Kernel()
 	{
 		// Setup kernel process
-		KernelProcess kp = new KernelProcess(this, true);
+		KernelProcess kp = new KernelProcess(this, true, _nextid++);
 		this._kernelprocess = kp;
 		
 		// Kernel process is a global one
@@ -142,7 +149,7 @@ public abstract class Kernel
 			me.accessManager().createProcess();
 			
 			// Create it
-			rv = new KernelProcess(this, false);
+			rv = new KernelProcess(this, false, _nextid++);
 			
 			// Add it
 			kps.add(rv);

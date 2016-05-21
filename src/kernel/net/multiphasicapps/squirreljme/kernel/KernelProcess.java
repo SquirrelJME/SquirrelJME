@@ -50,6 +50,12 @@ public final class KernelProcess
 	/** The permission manager. */
 	protected final KernelAccessManager access;
 	
+	/** The ID of this process. */
+	protected final int id;
+	
+	/** The kernel tracer. */
+	final __KernelTraceHolder__ _tracer;
+	
 	/** Threads the process own. */
 	private final List<Thread> _threads =
 		new LinkedList<>();
@@ -65,6 +71,9 @@ public final class KernelProcess
 	private volatile int _nextanon =
 		-1;
 	
+	/** String representation of this process. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * Initializes the kernel process.
 	 *
@@ -73,7 +82,7 @@ public final class KernelProcess
 	 * @throws NullPointerException
 	 * @since 2016/05/16
 	 */
-	KernelProcess(Kernel __k, boolean __ik)
+	KernelProcess(Kernel __k, boolean __ik, int __id)
 		throws NullPointerException
 	{
 		// Check
@@ -82,7 +91,9 @@ public final class KernelProcess
 		
 		// Set
 		this.kernel = __k;
+		this._tracer = __k._tracer;
 		this.iskernel = __ik;
+		this.id = __id;
 		
 		// Setup access
 		this.access = new KernelAccessManager(this);
@@ -360,6 +371,17 @@ public final class KernelProcess
 	}
 	
 	/**
+	 * Returns the ID number of this process.
+	 *
+	 * @return The process ID number.
+	 * @since 2016/05/21
+	 */
+	public final int id()
+	{
+		return this.id;
+	}
+	
+	/**
 	 * Returns {@code true} if this is the kernel process.
 	 *
 	 * @return {@code true} if this is the kernel process, otherwise it is
@@ -380,6 +402,25 @@ public final class KernelProcess
 	public final Kernel kernel()
 	{
 		return this.kernel;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public String toString()
+	{
+		// Get
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Create?
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = "Process#" + this.id));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
