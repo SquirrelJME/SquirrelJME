@@ -70,3 +70,10 @@ processes. This personally would be best for if graphics are done and they
 need to be very fast, otherwise sending a frame that was drawn across the
 IPC would really slow it down.
 
+## 15:38
+
+Having loops and such with explicit timers is going to very polled which would
+result in high CPU usage or a laggy interface. Using monitors I can just have
+special event objects which are given to sockets for example. When an event
+object is triggered there is either a socket to accept or data to be read.
+
