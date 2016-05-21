@@ -192,7 +192,43 @@ public abstract class Kernel
 		if (__id <= 0)
 			throw new IllegalArgumentException(String.format("AY08 %d", __id));
 		
-		throw new Error("TODO");
+		// Return value
+		KernelProcess[] rv = null;
+		
+		// Lock
+		List<KernelProcess> kps = this._processes;
+		synchronized (kps)
+		{
+			// Are any processes hosting a server at all?
+			for (KernelProcess kp : kps)
+				if (kp.hostsService(__id))
+				{
+					// No array?
+					if (rv == null)
+						rv = new KernelProcess[]{kp};
+					
+					// Add one entry to the array
+					else
+					{
+						// Setup new array
+						int n = rv.length;
+						KernelProcess[] cr = new KernelProcess[n + 1];
+						
+						// Copy old values
+						for (int i = 0; i < n; i++)
+							cr[i] = rv[i];
+						cr[n] = kp;
+						
+						// Set new
+						rv = cr;
+					}
+				}
+		}
+		
+		// No value to return?
+		if (rv == null)
+			return KernelProcess._NO_KERNEL_PROCESSES;
+		return rv;
 	}
 	
 	/**

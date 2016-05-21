@@ -37,7 +37,7 @@ public final class KernelProcess
 	 * This is an array used by connectSocket to pass to the multi-connect
 	 * version without allocating.
 	 */
-	private static final KernelProcess[] _NO_KERNEL_PROCESSES =
+	static final KernelProcess[] _NO_KERNEL_PROCESSES =
 		new KernelProcess[0];
 	
 	/** The owning kernel. */
@@ -386,6 +386,22 @@ public final class KernelProcess
 	}
 	
 	/**
+	 * Checks if the current process hosts the given service.
+	 *
+	 * @param __id The service identifier to check.
+	 * @return {@code true} if the current process hosts a server for the
+	 * given service.
+	 * @throws IllegalArgumentException If the service identifier is zero or
+	 * negative.
+	 * @since 2016/05/21
+	 */
+	public final boolean hostsService(int __id)
+		throws IllegalArgumentException
+	{
+		return null != __getServiceSocket(__id);
+	}
+	
+	/**
 	 * Returns {@code true} if this is the kernel process.
 	 *
 	 * @return {@code true} if this is the kernel process, otherwise it is
@@ -465,6 +481,44 @@ public final class KernelProcess
 			if (this._dead)
 				throw new IllegalStateException("AY0b");
 		}
+	}
+	
+	/**
+	 * Returns the socket which is associated with the given service.
+	 *
+	 * @param __id The service identifier to check.
+	 * @return The socket which acts as the server for the given process or
+	 * {@code null} if no socket is associated with the given service.
+	 * @throws IllegalArgumentException If the service identifier is zero or
+	 * negative.
+	 * @since 2016/05/21
+	 */
+	final KIOSocket __getServiceSocket(int __id)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AY0g The service identifier is zero or
+		// negative. (The service identifier)}
+		if (__id <= 0)
+			throw new IllegalArgumentException(String.format("AY0g %d", __id));
+		
+		// Lock
+		List<KIOSocket> sockets = this._sockets;
+		synchronized (sockets)
+		{
+			// Go through all sockets
+			Iterator<KIOSocket> it = sockets.iterator();
+			while (it.hasNext())
+			{
+				KIOSocket sock = it.next();
+				
+				// Is this service?
+				if (sock.getId() == __id)
+					return sock;
+			}
+		}
+		
+		// Not a service being hosted
+		return null;
 	}
 }
 
