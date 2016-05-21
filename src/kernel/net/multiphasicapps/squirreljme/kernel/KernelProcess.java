@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -59,6 +60,10 @@ public final class KernelProcess
 	
 	/** Is the current process dead? */
 	private volatile boolean _dead;
+	
+	/** The next anonymous socket to use. */
+	private volatile int _nextanon =
+		-1;
 	
 	/**
 	 * Initializes the kernel process.
@@ -216,6 +221,63 @@ public final class KernelProcess
 				// Set
 				rsocks[i] = rs;
 			}
+			
+			// Obtain the next anonymous service ID to use for the given socket
+			// If there have been more than 2 billion sockets created, then
+			// a free socket identifier must be found.
+			int next = _nextanon - 1;
+			if (next >= 0)
+			{
+				// Need to determine a socket number that is not used at all.
+				int nes = sockets.size();
+				int[] used = new int[nes];
+				Iterator<KIOSocket> it = sockets.iterator();
+				int at = 0;
+				while (it.hasNext())
+					used[at++] = it.next().getId();
+				
+				// Sort the given array so values are in order
+				Arrays.sort(used);
+				
+				// Go through the array to find a free ID number
+				int usenum = 0;
+				int alloc = Integer.MIN_VALUE;
+				for (int i = 0; i < nes; i++)
+				{
+					// Current identifier
+					int now = used[i];
+					
+					// The remaining sockets are identified services (servers)
+					// and as such the search stops, since if this point is
+					// reached then that means that there are 2 billion
+					// open sockets.
+					if (now >= 0)
+						break;
+					
+					// If the allocation point is below the current socket
+					// then the given identifier is available
+					if (alloc < now)
+					{
+						usenum = alloc;
+						break;
+					}
+					
+					// Otherwise increase the allocation to the current id
+					alloc = now;
+				}
+				
+				// {@squirreljme.error AY0i No more anonymous sockets are
+				// available for the current process.}
+				if (usenum == 0)
+					throw new KIOException("AY0i");
+				
+				// Set
+				next = usenum;
+			}
+			
+			// Otherwise use that value instead next time
+			else
+				_nextanon = next;
 			
 			throw new Error("TODO");
 		}
