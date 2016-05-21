@@ -176,6 +176,26 @@ public abstract class Kernel
 	}
 	
 	/**
+	 * Locates the processes which host server sockets for the given service
+	 * IDs.
+	 *
+	 * @param __id The service ID number.
+	 * @return An array of processes which are hosting the given service.
+	 * @throws IllegalArgumentException If the service ID is zero or negative.
+	 * @since 2016/05/21
+	 */
+	public final KernelProcess[] locateServer(int __id)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AY08 Zero or negative service IDs are not
+		// permitted for server lookup. (The service ID)}
+		if (__id <= 0)
+			throw new IllegalArgumentException(String.format("AY08 %d", __id));
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Locates the process that owns the given thread.
 	 *
 	 * @param __t The thread to get the process of.

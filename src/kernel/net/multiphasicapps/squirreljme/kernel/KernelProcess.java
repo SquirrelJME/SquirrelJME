@@ -212,7 +212,7 @@ public final class KernelProcess
 	public final KIOSocket createSocket(int __id)
 		throws IllegalArgumentException, KIOException, SecurityException
 	{
-		// {@squirrejme.error AY03 The service number for a socket cannot be
+		// {@squirreljme.error AY03 The service number for a socket cannot be
 		// negative.}
 		if (__id < 0)
 			throw new IllegalArgumentException("AY03");
@@ -259,6 +259,28 @@ public final class KernelProcess
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Creates a socket connection to the given process and service ID.
+	 *
+	 * @param __kp The process which hosts the service to connect to.
+	 * @param __id The service identifier to connect to.
+	 * @throws IllegalArgumentException If the service ID is zero or negative.
+	 * @throws KIOException If the socket could not be opened.
+	 * @throws SecurityException If the current process cannot create a socket
+	 * for the given process.
+	 * @since 2016/05/21
+	 */
+	public final KIOSocket connectSocket(KernelProcess __kp, int __id)
+		throws IllegalArgumentException, KIOException, SecurityException
+	{	
+		// {@squirreljme.error AY09 Cannot connect to the given service ID
+		// of another process because it is not valid. (The service ID)}
+		if (__id <= 0)
+			throw new IllegalArgumentException(String.format("AY09 %d", __id));
+	
+		throw new Error("TODO");
 	}
 	
 	/**

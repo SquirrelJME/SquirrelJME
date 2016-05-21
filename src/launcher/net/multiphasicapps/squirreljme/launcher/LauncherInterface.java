@@ -12,6 +12,10 @@ package net.multiphasicapps.squirreljme.launcher;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.kernel.KIOException;
+import net.multiphasicapps.squirreljme.kernel.KIOSocket;
+import net.multiphasicapps.squirreljme.ui.ipc.client.UIDisplayManagerClient;
+import net.multiphasicapps.squirreljme.ui.ipc.DMServiceID;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**
@@ -33,15 +37,20 @@ public class LauncherInterface
 	/** The process of the kernel. */
 	protected final KernelProcess kernelprocess;
 	
+	/** The display manager to use to interact with the user. */
+	protected final UIDisplayManager displaymanager;
+	
 	/**
 	 * Initializes the launcher interface.
 	 *
 	 * @param __k The kernel to provide a launcher for.
+	 * @throws IllegalStateException If the server could not be found or did
+	 * not permit a connection.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/20
 	 */
 	public LauncherInterface(Kernel __k)
-		throws NullPointerException
+		throws IllegalStateException, NullPointerException
 	{
 		// Check
 		if (__k == null)
@@ -51,6 +60,31 @@ public class LauncherInterface
 		this.kernel = __k;
 		KernelProcess kernelprocess = __k.kernelProcess();
 		this.kernelprocess = kernelprocess;
+		
+		// Find the display manager server.
+		try
+		{
+			// Find processes which provide the given service
+			KernelProcess[] svs = __k.locateServer(DMServiceID.SERVICE_ID);
+			
+			// {@squirreljme.error BH02 No process provides the display
+			// manager service.}
+			if (svs.length <= 0)
+				throw new IllegalStateException("BH02");
+			
+			// Connect to the server
+			KIOSocket sock = kernelprocess.connectSocket(svs[0],
+				DMServiceID.SERVICE_ID);
+			
+			// Initialize the display manager
+			this.displaymanager = new UIDisplayManagerClient(sock);
+		}
+		
+		// {@squirreljme.error BH01 Could not create the socket to the server.}
+		catch (KIOException e)
+		{
+			throw new IllegalStateException("BH01", e);
+		}
 		
 		// Setup new launcher thread which runs under the kernel
 		kernelprocess.createThread(this);
