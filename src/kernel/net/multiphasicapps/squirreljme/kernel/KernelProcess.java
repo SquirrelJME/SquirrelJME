@@ -344,38 +344,6 @@ public final class KernelProcess
 	}
 	
 	/**
-	 * Returns the inter-process objects for the current process.
-	 *
-	 * @return The inter-process objects for the current process.
-	 * @since 2016/05/20
-	 */
-	public final Object[] getObjects()
-	{
-		return getObjects(this.kernel.currentProcess());
-	}
-	
-	/**
-	 * Returns the inter-process objects for the given process.
-	 *
-	 * @param __kp The process to get the objects for.
-	 * @return The inter-process objects for the given process.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SecurityException If the current process is not the kernel and
-	 * not the process being invoked on, where the given process is not the
-	 * current process (a process wants another process's objects).
-	 * @since 2016/05/20
-	 */
-	public final Object[] getObjects(KernelProcess __kp)
-		throws NullPointerException, SecurityException
-	{
-		// Check
-		if (__kp == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
 	 * Checks if the current process hosts the given service.
 	 *
 	 * @param __id The service identifier to check.
