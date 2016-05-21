@@ -88,18 +88,16 @@ public final class KernelProcess
 	 * @param __t The thread to add.
 	 * @throws IllegalStateException If another process contains this thread.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the current process cannot add a thread to
+	 * this process.
 	 * @since 2016/05/16
 	 */
 	public final void addThread(Thread __t)
-		throws IllegalStateException, NullPointerException
+		throws IllegalStateException, NullPointerException, SecurityException
 	{
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
-		
-		// Check permission
-		if (!iskernel)
-			this.access.createThread();
 		
 		// {@squirreljme.error AY07 The thread to be added is owned by
 		// another process.}
@@ -111,6 +109,10 @@ public final class KernelProcess
 		List<Thread> threads = this._threads;
 		synchronized (threads)
 		{
+			// Check permission
+			if (!iskernel)
+				this.access.createThread();
+			
 			// Add it
 			threads.add(__t);
 		}
@@ -218,13 +220,13 @@ public final class KernelProcess
 		if (__id <= 0)
 			throw new IllegalArgumentException("AY03");
 		
-		// Check permission
-		this.access.createSocket();
-		
 		// Lock
 		List<KIOSocket> sockets = this._sockets;
 		synchronized (sockets)
 		{
+			// Check permission
+			this.access.createSocket();
+			
 			throw new Error("TODO");
 		}
 	}
@@ -248,13 +250,13 @@ public final class KernelProcess
 		if (__id <= 0)
 			throw new IllegalArgumentException(String.format("AY09 %d", __id));
 	
-		// Check permission
-		this.access.connectSocket(__kp, __id);
-		
 		// Lock
 		List<KIOSocket> sockets = this._sockets;
 		synchronized (sockets)
 		{
+			// Check permission
+			this.access.connectSocket(__kp, __id);
+		
 			throw new Error("TODO");
 		}
 	}
@@ -276,25 +278,25 @@ public final class KernelProcess
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		// Check permission
-		this.access.createThread();
-		
-		// Create thread
-		Thread rv = new Thread(__r);
-		
 		// Lock
 		List<Thread> threads = this._threads;
 		synchronized (threads)
 		{
+			// Check permission
+			this.access.createThread();
+		
+			// Create thread
+			Thread rv = new Thread(__r);
+		
 			// Add to thread list
 			threads.add(rv);
 			
 			// Start it
 			rv.start();
-		}
 		
-		// Return it
-		return rv;
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**

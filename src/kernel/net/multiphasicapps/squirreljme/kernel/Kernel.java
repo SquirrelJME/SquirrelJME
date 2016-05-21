@@ -133,14 +133,14 @@ public abstract class Kernel
 		if (me == null)
 			throw new IllegalStateException("AY01");
 		
-		// Check access manager
-		me.accessManager().createProcess();
-		
 		// Lock
 		List<KernelProcess> kps = this._processes;
 		KernelProcess rv;
 		synchronized (kps)
 		{
+			// Check access manager
+			me.accessManager().createProcess();
+			
 			// Create it
 			rv = new KernelProcess(this, false);
 			
