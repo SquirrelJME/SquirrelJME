@@ -30,6 +30,18 @@ public final class KIOException
 	public KIOException(String __s)
 	{
 		super(__s);
+	}
+	
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __s The message to use.
+	 * @param __c The cause of the exception.
+	 * @since 2016/05/21
+	 */
+	public KIOException(String __s, Throwable __c)
+	{
+		super(__s, __c);
 	} 
 }
 

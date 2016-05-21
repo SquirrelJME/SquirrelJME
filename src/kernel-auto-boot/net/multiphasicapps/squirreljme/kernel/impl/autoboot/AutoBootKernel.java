@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.autoboot;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.launcher.LauncherInterface;
 
 /**
@@ -49,25 +50,33 @@ public abstract class AutoBootKernel
 		super.bootFinishRunner();
 		
 		// Setup launcher
-		LauncherInterface li = new LauncherInterface(this);
-		
-		// Block until all workers are terminated
-		for (;;)
+		try (LauncherInterface li = new LauncherInterface(this))
 		{
-			// Kernel loop
-			try
+			// Block until all workers are terminated
+			for (;;)
 			{
-				untilProcessless();
+				// Kernel loop
+				try
+				{
+					untilProcessless();
 			
-				// Would normally terminate
-				return;
-			}
+					// Would normally terminate
+					return;
+				}
 			
-			// Interrupted, yield and retry
-			catch (InterruptedException e)
-			{
-				Thread.yield();
+				// Interrupted, yield and retry
+				catch (InterruptedException e)
+				{
+					Thread.yield();
+				}
 			}
+		}
+		
+		// {@squirreljme.error BI01 Failed to initialize the launcher
+		// display socket.}
+		catch (KIOException e)
+		{
+			throw new RuntimeException("BI01", e);
 		}
 	}
 }

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.launcher;
 
+import java.io.Closeable;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
@@ -29,7 +30,7 @@ import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
  * @since 2016/05/20
  */
 public class LauncherInterface
-	implements Runnable
+	implements Closeable, Runnable
 {
 	/** The kernel to launch and control for. */
 	protected final Kernel kernel;
@@ -39,6 +40,9 @@ public class LauncherInterface
 	
 	/** The display manager to use to interact with the user. */
 	protected final UIDisplayManager displaymanager;
+	
+	/** The used socket to the server. */
+	protected final KIOSocket socket;
 	
 	/**
 	 * Initializes the launcher interface.
@@ -75,6 +79,7 @@ public class LauncherInterface
 			// Connect to the server
 			KIOSocket sock = kernelprocess.connectSocket(
 				DMServiceID.SERVICE_ID, svs[0]);
+			this.socket = sock;
 			
 			// Initialize the display manager
 			this.displaymanager = new UIDisplayManagerClient(sock);
@@ -92,7 +97,19 @@ public class LauncherInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/06/20
+	 * @since 2016/05/21
+	 */
+	@Override
+	public void close()
+		throws KIOException
+	{
+		// Close ehe socket
+		this.socket.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/20
 	 */
 	@Override
 	public void run()

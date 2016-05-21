@@ -31,6 +31,37 @@ import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 public final class KIOSocket
 	implements Closeable
 {
+	/** The owning process. */
+	protected final KernelProcess process;
+	
+	/** The service identifier. */
+	protected final int id;
+	
+	/**
+	 * Initializes a socket.
+	 *
+	 * @param __kp The process which owns this socket.
+	 * @param __id The service identifier.
+	 * @throws IllegalArgumentException If the service identifier is zero.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/21
+	 */
+	KIOSocket(KernelProcess __kp, int __id)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__kp == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY0f Zero service identifier. */
+		if (__id == 0)
+			throw new IllegalArgumentException("AY0f");
+		
+		// Set
+		this.process = __kp;
+		this.id = __id;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/20
@@ -50,7 +81,18 @@ public final class KIOSocket
 	 */
 	public int getId()
 	{
-		throw new Error("TODO");
+		return this.id;
+	}
+	
+	/**
+	 * Returns the process which owns this given socket.
+	 *
+	 * @return The owning process for the socket.
+	 * @since 2016/05/21
+	 */
+	public KernelProcess getProcess()
+	{
+		return this.process;
 	}
 	
 	/**
@@ -61,7 +103,7 @@ public final class KIOSocket
 	 */
 	public boolean isAnonymous()
 	{
-		throw new Error("TODO");
+		return this.id < 0;
 	}
 }
 

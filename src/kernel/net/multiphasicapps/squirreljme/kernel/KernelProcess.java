@@ -290,7 +290,25 @@ public final class KernelProcess
 				if (__id == it.next().getId())
 					throw new KIOException(String.format("AY0c %d", __id));
 			
-			throw new Error("TODO");
+			// Could fail
+			try
+			{
+				// Create the socket
+				KIOSocket rv = new KIOSocket(this, __id);
+			
+				// Add it to the socket list
+				sockets.add(rv);
+			
+				// Return it
+				return rv;
+			}
+			
+			// {@squirreljme.error AY0e Could not create a socket because not
+			// enough memory was available.}
+			catch (OutOfMemoryError e)
+			{
+				throw new KIOException("AY0e", e);
+			}
 		}
 	}
 	
