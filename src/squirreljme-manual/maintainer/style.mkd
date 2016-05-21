@@ -63,6 +63,6 @@ If a kernel IPC service identifier is used then it must be documented so that
 potential collisions are avoided. Each service identifier is a positive number
 that specifies the use and potentially the protocol of the IPC service.
 
-	{@squirreljme.serviceid 1 The description of the service.}
+	{@squirreljme.serviceid 1 shortname The description of the service.}
 
 
