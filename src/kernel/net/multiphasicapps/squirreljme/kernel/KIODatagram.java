@@ -61,5 +61,19 @@ public final class KIODatagram
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Indicates that this datagram is ready to be read by the receiving end.
+	 *
+	 * @return {@code this}.
+	 * @since 2016/05/21
+	 */
+	final KIODatagram __ready()
+	{
+		if (true)
+			throw new Error("TODO");
+		
+		return this;
+	}
 }
 

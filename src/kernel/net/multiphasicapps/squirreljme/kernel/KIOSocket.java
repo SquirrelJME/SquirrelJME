@@ -315,7 +315,7 @@ public final class KIOSocket
 			}
 			
 			// Return it
-			return rv;
+			return rv.__ready();
 		}
 	}
 	
