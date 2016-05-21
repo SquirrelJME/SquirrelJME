@@ -54,7 +54,15 @@ available, they must be documented.
 	what the system property is for, which kind of values it takes, and how it
 	may potentially modify execution if at all.}
 
-All files would be scanned to extract this information along with error codes
-and placed into the system property documentation.
+All files would be scanned to extract this information placed into the system
+property documentation.
+
+## Use Service Identifiers
+
+If a kernel IPC service identifier is used then it must be documented so that
+potential collisions are avoided. Each service identifier is a positive number
+that specifies the use and potentially the protocol of the IPC service.
+
+	{@squirreljme.serviceid 1 The description of the service.}
 
 
