@@ -17,6 +17,10 @@ import java.util.List;
 import net.multiphasicapps.squirreljme.kernel.impl.autoboot.AutoBootKernel;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
+import net.multiphasicapps.squirreljme.kernel.KIOException;
+import net.multiphasicapps.squirreljme.kernel.KIOSocket;
+import net.multiphasicapps.squirreljme.ui.ipc.DMServiceID;
+import net.multiphasicapps.squirreljme.ui.ipc.server.UIDisplayManagerServer;
 
 /**
  * This contains the launcher used by the host Java SE system.
@@ -40,7 +44,22 @@ public class JVMJavaSEKernel
 		
 		// Setup the display manager
 		SwingDisplayManager sdm = new SwingDisplayManager();
-		kernelProcess().createThread(sdm);
+		
+		// And the display manager server
+		try
+		{
+			KernelProcess kp = kernelProcess();
+			UIDisplayManagerServer uisv = new UIDisplayManagerServer(
+				kp.createSocket(DMServiceID.SERVICE_ID), sdm);
+			kp.createThread(uisv);
+		}
+		
+		// {@squirreljme.error AZ01 Could not create the display manager socket
+		// to display future user interfaces.}
+		catch (KIOException e)
+		{
+			throw new RuntimeException("AZ01", e);
+		}
 		
 		// Finished booting
 		bootFinished(JVMJavaSEKernel.class);

@@ -127,7 +127,7 @@ public final class System
 				return "Multi-Phasic Applications";
 			
 			case "java.vendor.url":
-				return "http://multiphasicapps.net/"
+				return "http://multiphasicapps.net/";
 			
 				// Unknown, use default handling
 			default:

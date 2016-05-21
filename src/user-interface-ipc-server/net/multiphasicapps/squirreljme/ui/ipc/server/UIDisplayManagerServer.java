@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
  * @since 2016/05/21
  */
 public class UIDisplayManagerServer
+	implements Runnable
 {
 	/** The socket which acts as the display manager server. */
 	protected final KIOSocket socket;
@@ -48,6 +49,16 @@ public class UIDisplayManagerServer
 		// Set
 		this.socket = __sock;
 		this.manager = __dm;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public void run()
+	{
+		throw new Error("TODO");
 	}
 }
 

@@ -72,7 +72,7 @@ public final class KernelAccessManager
 		
 		// {@squirreljme.error AY04 User-space processes do not have any
 		// permissions when accessing other processes.}
-		if (curkp != owner)
+		if (curkp != this.owner)
 			throw new SecurityException("AY04");
 		
 		// Ok
@@ -96,6 +96,23 @@ public final class KernelAccessManager
 			throw new SecurityException("AY02");
 		
 		// Is the kernel
+		return;
+	}
+	
+	/**
+	 * Checks whether the current process can create a new socket for the given
+	 * process.
+	 *
+	 * @throws SecurityException If the creation of a socket is denied.
+	 * @since 2016/05/21
+	 */
+	public void createSocket()
+		throws SecurityException
+	{
+		// Process access
+		KernelProcess curkp = accessProcess();
+		
+		// Generally access is granted
 		return;
 	}
 	

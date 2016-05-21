@@ -44,6 +44,10 @@ public final class KernelProcess
 	private final List<Thread> _threads =
 		new LinkedList<>();
 	
+	/** The process IPC sockets. */
+	private final List<KIOSocket> _sockets =
+		new LinkedList<>();
+	
 	/**
 	 * Initializes the kernel process.
 	 *
@@ -179,6 +183,44 @@ public final class KernelProcess
 		
 		// Does not contain it
 		return false;
+	}
+	
+	
+	/**
+	 * Creates a new anonymous socket which is used to connect and send data
+	 * to sockets which are listening.
+	 *
+	 * @throws KIOException If the socket could not be created.
+	 * @throws SecurityException If it is not permitted to create a new socket.
+	 * @since 2016/05/20
+	 */
+	public final KIOSocket createSocket()
+		throws KIOException, NullPointerException, SecurityException
+	{
+		return createSocket(0);
+	}
+	
+	/**
+	 * Creates a new socket for this process
+	 *
+	 * @param __sv The service number.
+	 * @throws IllegalArgumentException If the service number is negative.
+	 * @throws KIOException If the socket could not be created.
+	 * @throws SecurityException If it is not permitted to create a new socket.
+	 * @since 2016/05/20
+	 */
+	public final KIOSocket createSocket(int __id)
+		throws IllegalArgumentException, KIOException, SecurityException
+	{
+		// {@squirrejme.error AY03 The service number for a socket cannot be
+		// negative.}
+		if (__id < 0)
+			throw new IllegalArgumentException("AY03");
+		
+		// Check permission
+		this.access.createSocket();
+		
+		throw new Error("TODO");
 	}
 	
 	/**
