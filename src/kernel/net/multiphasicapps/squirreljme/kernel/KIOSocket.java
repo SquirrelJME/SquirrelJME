@@ -56,6 +56,9 @@ public final class KIOSocket
 	/** The socket to send data to. */
 	private volatile KIOSocket _sendto;
 	
+	/** Mutual lock. */
+	private volatile Object _mutual;
+	
 	/**
 	 * Initializes a socket.
 	 *
@@ -125,8 +128,14 @@ public final class KIOSocket
 			else
 				synchronized (__rs.lock)
 				{
+					// Set send targets
 					this._sendto = __rs;
 					__rs._sendto = this;
+					
+					// Use the same mutual lock
+					Object mut = new Object();
+					this._mutual = mut;
+					__rs._mutual = mut;
 				}
 		}
 	}
@@ -239,6 +248,49 @@ public final class KIOSocket
 	public KernelProcess process()
 	{
 		return this.process;
+	}
+	
+	/**
+	 * Receives a datagram from the remote and returns it, if one is not
+	 * available then the operation may block for a given amount of time.
+	 *
+	 * @param __wait The number of milliseconds to wait for a datagram to be
+	 * received, {@code 0L} means to wait forever while {@code 1L} means to
+	 * immedietly return if there is no available datagram.
+	 * @return The datagram that was received or {@code null} if none was
+	 * available.
+	 * @throws InterruptedException If the thread was interrupted while waiting
+	 * for a datagram.
+	 * @throws KIOConnectionClosedException If the connection to the remote end
+	 * has been closed.
+	 * @throws KIOException If a datagram could not be recieved.
+	 * @since 2016/05/21
+	 */
+	public KIODatagram receive(long __wait)
+		throws InterruptedException, KIOConnectionClosedException, KIOException
+	{
+		// {@squirreljme.error AY0m Negative receive wait delay.}
+		if (__wait < 0L)
+			throw new IllegalArgumentException("AY0m");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Creates a new datagram to be sent to the remote end.
+	 *
+	 * @param __l The length of the datagram.
+	 * @throws IllegalArgumentException If the length is negative.
+	 * @throws KIOConnectionClosedException This is thrown when the connection
+	 * to the remote end has been closed.
+	 * @throws KIOException If the datagram could not be created.
+	 * @since 2016/05/21
+	 */
+	public KIODatagram send(int __l)
+		throws IllegalArgumentException, KIOConnectionClosedException,
+			KIOException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
