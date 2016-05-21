@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
 import net.multiphasicapps.squirreljme.ui.ipc.client.UIDisplayManagerClient;
 import net.multiphasicapps.squirreljme.ui.ipc.DMServiceID;
+import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**
@@ -43,6 +44,9 @@ public class LauncherInterface
 	
 	/** The used socket to the server. */
 	protected final KIOSocket socket;
+	
+	/** The primary display. */
+	private volatile UIDisplay _maindisp;
 	
 	/**
 	 * Initializes the launcher interface.
@@ -142,6 +146,12 @@ public class LauncherInterface
 	 */
 	public void setup()
 	{
+		// Create new display to be shown to the user
+		UIDisplay maindisp = displaymanager.createDisplay();
+		this._maindisp = maindisp;
+		
+		// Done, make it visible
+		maindisp.setVisible(true);
 	}
 }
 

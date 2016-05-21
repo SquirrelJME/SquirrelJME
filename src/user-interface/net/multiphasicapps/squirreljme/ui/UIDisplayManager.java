@@ -29,5 +29,12 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public abstract class UIDisplayManager
 {
+	/**
+	 * Creates a new display.
+	 *
+	 * @return The newly created display.
+	 * @since 2016/05/21
+	 */
+	public abstract UIDisplay createDisplay();
 }
 

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
+import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**
@@ -28,6 +29,16 @@ public class SwingDisplayManager
 	 */
 	public SwingDisplayManager()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public UIDisplay createDisplay()
+	{
+		throw new Error("TODO");
 	}
 }
 

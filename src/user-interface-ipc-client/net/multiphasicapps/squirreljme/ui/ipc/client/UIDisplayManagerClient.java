@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.ui.ipc.client;
 
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
+import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**
@@ -41,6 +42,16 @@ public class UIDisplayManagerClient
 		
 		// Set
 		this.socket = __sock;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public UIDisplay createDisplay()
+	{
+		throw new Error("TODO");
 	}
 }
 
