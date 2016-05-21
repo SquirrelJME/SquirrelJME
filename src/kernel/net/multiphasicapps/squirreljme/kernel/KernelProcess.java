@@ -133,6 +133,71 @@ public final class KernelProcess
 	}
 	
 	/**
+	 * Creates a socket connection to the given process and service ID.
+	 *
+	 * @param __id The service identifier to connect to.
+	 * @param __kp The process which hosts the service to connect to.
+	 * @throws IllegalArgumentException If the service ID is zero or negative.
+	 * @throws KIOException If the socket could not be opened.
+	 * @throws SecurityException If the current process cannot create a socket
+	 * for the given process.
+	 * @since 2016/05/21
+	 */
+	public final KIOSocket connectSocket(int __id, KernelProcess __kp)
+		throws IllegalArgumentException, KIOException, SecurityException
+	{
+		return connectSocket(__id, __kp, _NO_KERNEL_PROCESSES);
+	}
+		
+	/**
+	 * Creates a socket connection to the given processes and service ID.
+	 *
+	 * @param __id The service identifier to connect to.
+	 * @param __kp The process which hosts the service to connect to.
+	 * @param __rest Optional set of other processes to connect to with the
+	 * given service number (multicast socket).
+	 * @throws IllegalArgumentException If the service ID is zero or negative.
+	 * @throws KIOException If the socket could not be opened.
+	 * @throws SecurityException If the current process cannot create a socket
+	 * for the given process.
+	 * @since 2016/05/21
+	 */
+	public final KIOSocket connectSocket(int __id, KernelProcess __kp,
+		KernelProcess... __rest)
+		throws IllegalArgumentException, KIOException, SecurityException
+	{	
+		// Check
+		if (__kp == null || __rest == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY09 Cannot connect to the given service ID
+		// of another process because it is not valid. (The service ID)}
+		if (__id <= 0)
+			throw new IllegalArgumentException(String.format("AY09 %d", __id));
+		
+		// Defensive copy
+		int n = __rest.length + 1;
+		KernelProcess[] def = new KernelProcess[n];
+		for (int i = 1, j = 0; i < n; i++, j++)
+			def[i] = __rest[j];
+		def[0] = __kp;
+		
+		// Lock
+		List<KIOSocket> sockets = this._sockets;
+		synchronized (sockets)
+		{
+			// Is dead
+			__checkDead();
+			
+			// Check permissions for all sockets
+			for (int i = 0; i < n; i++)
+				this.access.connectSocket(def[i], __id);
+		
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Returns {@code true} if the process contains the given thread.
 	 *
 	 * @param __t The thread to see if this processes manages it.
@@ -215,71 +280,6 @@ public final class KernelProcess
 			// Check permission
 			this.access.createSocket();
 			
-			throw new Error("TODO");
-		}
-	}
-	
-	/**
-	 * Creates a socket connection to the given process and service ID.
-	 *
-	 * @param __id The service identifier to connect to.
-	 * @param __kp The process which hosts the service to connect to.
-	 * @throws IllegalArgumentException If the service ID is zero or negative.
-	 * @throws KIOException If the socket could not be opened.
-	 * @throws SecurityException If the current process cannot create a socket
-	 * for the given process.
-	 * @since 2016/05/21
-	 */
-	public final KIOSocket connectSocket(int __id, KernelProcess __kp)
-		throws IllegalArgumentException, KIOException, SecurityException
-	{
-		return connectSocket(__id, __kp, _NO_KERNEL_PROCESSES);
-	}
-		
-	/**
-	 * Creates a socket connection to the given processes and service ID.
-	 *
-	 * @param __id The service identifier to connect to.
-	 * @param __kp The process which hosts the service to connect to.
-	 * @param __rest Optional set of other processes to connect to with the
-	 * given service number (multicast socket).
-	 * @throws IllegalArgumentException If the service ID is zero or negative.
-	 * @throws KIOException If the socket could not be opened.
-	 * @throws SecurityException If the current process cannot create a socket
-	 * for the given process.
-	 * @since 2016/05/21
-	 */
-	public final KIOSocket connectSocket(int __id, KernelProcess __kp,
-		KernelProcess... __rest)
-		throws IllegalArgumentException, KIOException, SecurityException
-	{	
-		// Check
-		if (__kp == null || __rest == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AY09 Cannot connect to the given service ID
-		// of another process because it is not valid. (The service ID)}
-		if (__id <= 0)
-			throw new IllegalArgumentException(String.format("AY09 %d", __id));
-		
-		// Defensive copy
-		int n = __rest.length + 1;
-		KernelProcess[] def = new KernelProcess[n];
-		for (int i = 1, j = 0; i < n; i++, j++)
-			def[i] = __rest[j];
-		def[0] = __kp;
-		
-		// Lock
-		List<KIOSocket> sockets = this._sockets;
-		synchronized (sockets)
-		{
-			// Is dead
-			__checkDead();
-			
-			// Check permissions for all sockets
-			for (int i = 0; i < n; i++)
-				this.access.connectSocket(def[i], __id);
-		
 			throw new Error("TODO");
 		}
 	}
