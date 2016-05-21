@@ -73,8 +73,8 @@ public class LauncherInterface
 				throw new IllegalStateException("BH02");
 			
 			// Connect to the server
-			KIOSocket sock = kernelprocess.connectSocket(svs[0],
-				DMServiceID.SERVICE_ID);
+			KIOSocket sock = kernelprocess.connectSocket(
+				DMServiceID.SERVICE_ID, svs[0]);
 			
 			// Initialize the display manager
 			this.displaymanager = new UIDisplayManagerClient(sock);
