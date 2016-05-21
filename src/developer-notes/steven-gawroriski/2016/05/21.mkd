@@ -1,0 +1,7 @@
+# 2016/05/21
+
+## 07:36
+
+So to write the kernel IPC system so that processes may communicate to each
+other.
+

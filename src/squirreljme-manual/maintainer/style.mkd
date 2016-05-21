@@ -44,3 +44,17 @@ before it declared in a comment:
 All files are scanned for these sequences to build the error table which is
 used by maintainers and developers for debugging.
 
+## Use Property Descriptions
+
+Similar to error codes, this lists the system properties that are defined by
+the code. Since there may be a multitude of system properties which are
+available, they must be documented.
+
+	{@squirrejme.property net.multiphasicapps.some.property A description of
+	what the system property is for, which kind of values it takes, and how it
+	may potentially modify execution if at all.}
+
+All files would be scanned to extract this information along with error codes
+and placed into the system property documentation.
+
+

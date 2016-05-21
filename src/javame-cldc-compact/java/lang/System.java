@@ -52,12 +52,92 @@ public final class System
 		throw new Error("TODO");
 	}
 	
-	public static String getProperty(String __a)
+	/**
+	 * This obtains the value of a system property (if one is set) and returns
+	 * its value. System properties are declared by the system and are used
+	 * by applications to potentially modify their behavior.
+	 *
+	 * {@squirreljme.property microedition.platform This is the name of the
+	 * device which SquirrelJME is running on. The name of the device is
+	 * determined }
+	 * {@squirreljme.property microedition.encoding This is the character
+	 * encoding that is used by default for specific methods when one has not
+	 * been specified. On modern systems this is likely to be {@code "UTF-8},
+	 * while on retro-devices and operating systems this will likely be an
+	 * encoding starting with {@code "x-squirreljme"}. Please note that the
+	 * default encoding might not be compatible with UTF-8 (and may possibly
+	 * well be EBCDIC).}
+	 * {@squirreljme.property microedition.configuration This is the current
+	 * configuration of CLDC library which indicates which primary classes
+	 * are available to it. The values will either be {@code "CLDC-1.8"} for
+	 * the complete set of APIs and {@code "CLDC-1.8-Compact"} for the compact
+	 * set of APIs.}
+	 * {@squirreljme.property java.version This is the version of the virtual
+	 * machine which the environment runs under.}
+	 * {@squirreljme.property java.vendor This is the vendor of the virtual
+	 * machine and specifies who wrote it.}
+	 * {@squirreljme.property java.vendor.url This is a URL which usually
+	 * points to the website of the vendor.}
+	 * {@squirreljme.property os.name This is the name of the operating system
+	 * that SquirrelJME is running on, if SquirrelJME is the operating itself
+	 * then this value will be {@code "squirreljme"}.}
+	 * {@squirreljme.property os.arch This is the architecture of the hardware
+	 * that SquirrelJME is running on, the value is dependent on the platform
+	 * itself. Note that architecture names use standard SquirrelJME
+	 * architecture names.}
+	 * {@squirreljme.property os.version This is the version number of the
+	 * host operating system. The returned value might not be a number and may
+	 * be a string representing the host.}
+	 * {@squirreljme.property line.separator This represents the line
+	 * separation sequence that the host operating system uses for its native
+	 * files. Generally it would either be {@code '\n'}, {@code '\r'}, or
+	 * {@code "\r\n"), however retro-systems might use a different line ending
+	 * sequence.}
+	 * {@squirreljme.property user.dir This is the current working directory
+	 * which indicates the location where non-absolute file paths are derived
+	 * from. If there is no filesystem on the device then a blank string will
+	 * always be returned.}
+	 * {@squirreljme.property java.io.tmpdir This is the temporary directory
+	 * which indicates where temporary files (those that are deleted after
+	 * an unspecified duration) are to be placed. If there is no filesystem
+	 * on the device then a blank string will always be returned.}
+	 *
+	 * @param __k The system property value to obtain.
+	 * @return The value of the system property or {@code null} if it is not
+	 * does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the current process is not permitted to
+	 * access system properties or obtain the value of a specific property.
+	 * @since 2016/05/21
+	 */
+	public static String getProperty(String __k)
+		throws NullPointerException, SecurityException
 	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Fixed values
+		switch (__k)
+		{
+			case "java.version":
+				return "1.8";
+			
+			case "java.vendor":
+				return "Multi-Phasic Applications";
+			
+			case "java.vendor.url":
+				return "http://multiphasicapps.net/"
+			
+				// Unknown, use default handling
+			default:
+				break;
+		}
+		
 		throw new Error("TODO");
 	}
 	
-	public static String getProperty(String __a, String __b)
+	public static String getProperty(String __k, String __d)
 	{
 		throw new Error("TODO");
 	}
