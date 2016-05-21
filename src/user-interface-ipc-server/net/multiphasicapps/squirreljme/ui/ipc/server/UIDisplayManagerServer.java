@@ -112,5 +112,29 @@ public class UIDisplayManagerServer
 			}
 		}
 	}
+	
+	/**
+	 * This is called by the connection when it detects that its connection
+	 * has been terminated, this tells the display server to destroy any
+	 * displays the specific client has made rather than to keep them around.
+	 *
+	 * @param __cc The client connection.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/21
+	 */
+	final void __closeConnection(__ClientConnection__ __cc)
+		throws NullPointerException
+	{
+		// Check
+		if (__cc == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		List<__ClientConnection__> connections = this._connections;
+		synchronized (connections)
+		{
+			throw new Error("TODO");
+		}
+	}
 }
 

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ui.ipc.server;
 
+import net.multiphasicapps.squirreljme.kernel.KIOConnectionClosedException;
+import net.multiphasicapps.squirreljme.kernel.KIODatagram;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
 import net.multiphasicapps.squirreljme.ui.ipc.DMCommandID;
@@ -58,6 +60,45 @@ final class __ClientConnection__
 	public void run()
 	{
 		System.err.printf("DEBUG -- Run UIClient %s%n", this);
+		
+		// Client run loop
+		KIOSocket socket = this.socket;
+		for (;;)
+		{
+			// 
+			KIODatagram dg;
+			try
+			{
+				// Try to immedietly read a packet
+				dg = socket.receive(1L);
+			}
+			
+			// The connection was closed, remove this connection and any
+			// displays it may have
+			catch (KIOConnectionClosedException e)
+			{
+				__closeConnection();
+			}
+			
+			// Stop if this occurs
+			catch (KIOException|InterruptedException e)
+			{
+				break;
+			}
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * The connection from the client was closed, so destroy any resources
+	 * that may be used by the display.
+	 *
+	 * @since 2016/05/21
+	 */
+	private void __closeConnection()
+	{
+		throw new Error("TODO");
 	}
 }
 
