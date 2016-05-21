@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.kernel;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
@@ -39,33 +40,53 @@ public final class KIOSocket
 	/** The service identifier. */
 	protected final int id;
 	
-	/** Default destinations. */
-	private final List<KIOSocket> _dests =
-		new LinkedList<>();
+	/** The other socket this is bound to. */
+	protected final KIOSocket bound;
+	
+	/** The acceptance queue for the server socket. */
+	protected final Deque<KIOSocket> acceptq;
 	
 	/**
 	 * Initializes a socket.
 	 *
 	 * @param __kp The process which owns this socket.
 	 * @param __id The service identifier.
+	 * @param __rs The remote socket to bind to, if {@code null} then this is
+	 * a server socket, otherwise a socket to the other endpoint is performed.
 	 * @throws IllegalArgumentException If the service identifier is zero.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __rs}.
 	 * @since 2016/05/21
 	 */
-	KIOSocket(KernelProcess __kp, int __id)
+	KIOSocket(KernelProcess __kp, int __id, KIOSocket __rs)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__kp == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AY0f Zero service identifier. */
-		if (__id == 0)
-			throw new IllegalArgumentException("AY0f");
+		// {@squirreljme.error AY0f Illegal service identifier. (The service
+		// identifier.}
+		if (__id == 0 || (__rs == null && __id <= 0) ||
+			(__rs != null && __id > 0))
+			throw new IllegalArgumentException(String.format("AY0f %d", __id));
 		
 		// Set
 		this.process = __kp;
 		this.id = __id;
+		this.bound = __rs;
+		
+		// If server, setup acceptance queue
+		if (__rs == null)
+			this.acceptq = new LinkedList<>();
+		
+		// Otherwise if client, add to accept queue on server side
+		else
+		{
+			// Does not use one
+			this.acceptq = null;
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -113,28 +134,14 @@ public final class KIOSocket
 	}
 	
 	/**
-	 * Sets the destinations of this socket to send data to the other given
-	 * sockets.
+	 * Is a server (listening) socket?
 	 *
-	 * @param __ks Destinations to set.
-	 * @throws NullPointerException On null arguments.
+	 * @return {@code true} if this is a server socket.
 	 * @since 2016/05/21
 	 */
-	void __setDestinations(KIOSocket... __ks)
-		throws NullPointerException
+	public boolean isServer()
 	{
-		// Lock destinations
-		List<KIOSocket> dests = this._dests;
-		synchronized (dests)
-		{
-			// Clear destinations
-			dests.clear();
-			
-			// Add all of them
-			for (KIOSocket ks : __ks)
-				if (ks != null)
-					dests.add(ks);
-		}
+		return null == this.bound;
 	}
 }
 

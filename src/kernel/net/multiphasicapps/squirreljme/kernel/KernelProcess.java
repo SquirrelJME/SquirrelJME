@@ -152,42 +152,15 @@ public final class KernelProcess
 	 */
 	public final KIOSocket connectSocket(int __id, KernelProcess __kp)
 		throws IllegalArgumentException, KIOException, SecurityException
-	{
-		return connectSocket(__id, __kp, _NO_KERNEL_PROCESSES);
-	}
-		
-	/**
-	 * Creates a socket connection to the given processes and service ID.
-	 *
-	 * @param __id The service identifier to connect to.
-	 * @param __kp The process which hosts the service to connect to.
-	 * @param __rest Optional set of other processes to connect to with the
-	 * given service number (multicast socket).
-	 * @throws IllegalArgumentException If the service ID is zero or negative.
-	 * @throws KIOException If the socket could not be opened.
-	 * @throws SecurityException If the current process cannot create a socket
-	 * for the given process.
-	 * @since 2016/05/21
-	 */
-	public final KIOSocket connectSocket(int __id, KernelProcess __kp,
-		KernelProcess... __rest)
-		throws IllegalArgumentException, KIOException, SecurityException
 	{	
 		// Check
-		if (__kp == null || __rest == null)
+		if (__kp == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error AY09 Cannot connect to the given service ID
 		// of another process because it is not valid. (The service ID)}
 		if (__id <= 0)
 			throw new IllegalArgumentException(String.format("AY09 %d", __id));
-		
-		// Defensive copy
-		int n = __rest.length + 1;
-		KernelProcess[] def = new KernelProcess[n];
-		for (int i = 1, j = 0; i < n; i++, j++)
-			def[i] = __rest[j];
-		def[0] = __kp;
 		
 		// Lock
 		List<KIOSocket> sockets = this._sockets;
@@ -196,94 +169,17 @@ public final class KernelProcess
 			// Is dead
 			__checkDead();
 			
-			// Get all remote socket identifiers
-			KIOSocket[] rsocks = new KIOSocket[n];
+			// Make sure connecting is permitted
+			this.access.connectSocket(__kp, __id);
 			
-			// Get all sockets
-			for (int i = 0; i < n; i++)
-			{
-				// The process to connect to
-				KernelProcess kp = def[i];
-				
-				// Make sure connecting is permitted
-				this.access.connectSocket(kp, __id);
-				
-				// Get socket data
-				KIOSocket rs = kp.__getServiceSocket(__id);
-				
-				// {@squirreljme.error AY0h The connection to the remote
-				// process cannot be made because it does not host the given
-				// service. (The remote process; The service identifier)}
-				if (rs == null)
-					throw new KIOException(String.format("AY0h %s %d", kp,
-						__id));
-				
-				// Set
-				rsocks[i] = rs;
-			}
+			// Get socket to connect/bind to
+			KIOSocket rsocks = __kp.__getServiceSocket(__id);
 			
-			// Obtain the next anonymous service ID to use for the given socket
-			// If there have been more than 2 billion sockets created, then
-			// a free socket identifier must be found.
-			int next = _nextanon - 1;
-			if (next >= 0)
-			{
-				// Need to determine a socket number that is not used at all.
-				int nes = sockets.size();
-				int[] used = new int[nes];
-				Iterator<KIOSocket> it = sockets.iterator();
-				int at = 0;
-				while (it.hasNext())
-					used[at++] = it.next().getId();
-				
-				// Sort the given array so values are in order
-				Arrays.sort(used);
-				
-				// Go through the array to find a free ID number
-				int usenum = 0;
-				int alloc = Integer.MIN_VALUE;
-				for (int i = 0; i < nes; i++)
-				{
-					// Current identifier
-					int now = used[i];
-					
-					// The remaining sockets are identified services (servers)
-					// and as such the search stops, since if this point is
-					// reached then that means that there are 2 billion
-					// open sockets.
-					if (now >= 0)
-						break;
-					
-					// If the allocation point is below the current socket
-					// then the given identifier is available
-					if (alloc < now)
-					{
-						usenum = alloc;
-						break;
-					}
-					
-					// Otherwise increase the allocation to the current id
-					alloc = now;
-				}
-				
-				// {@squirreljme.error AY0i No more anonymous sockets are
-				// available for the current process.}
-				if (usenum == 0)
-					throw new KIOException("AY0i");
-				
-				// Set
-				next = usenum;
-			}
-			
-			// Otherwise use that value instead next time
-			else
-				_nextanon = next;
+			// Determine the next service ID to use
+			int next = __nextAnonymousSocketID(null);
 			
 			// Create client socket
-			KIOSocket rv = new KIOSocket(this, next);
-			
-			// Set default send locations
-			rv.__setDestinations(rsocks);
+			KIOSocket rv = new KIOSocket(this, next, rsocks);
 			
 			// Add to socket list
 			sockets.add(rv);
@@ -388,7 +284,7 @@ public final class KernelProcess
 			try
 			{
 				// Create the socket
-				KIOSocket rv = new KIOSocket(this, __id);
+				KIOSocket rv = new KIOSocket(this, __id, null);
 			
 				// Add it to the socket list
 				sockets.add(rv);
@@ -613,6 +509,109 @@ public final class KernelProcess
 		
 		// Not a service being hosted
 		return null;
+	}
+	
+	/**
+	 * Determines the identifer to use for the next anonymous socket.
+	 *
+	 * @param __clb This is non-{@code null} if an ID is being requested on
+	 * the server end on behalf of a server socket.
+	 * @return The socket identifer to use for the given socket.
+	 * @throws KIOException If no identifiers remain.
+	 * @since 2016/05/21
+	 */
+	final int __nextAnonymousSocketID(KIOSocket __clb)
+		throws KIOException
+	{
+		// Lock
+		List<KIOSocket> sockets = this._sockets;
+		synchronized (sockets)
+		{
+			// Obtain the next anonymous service ID to use for the given socket
+			// If there have been more than 2 billion sockets created, then
+			// a free socket identifier must be found.
+			int next = _nextanon - 1;
+			if (next >= 0)
+			{
+				// Need to determine a socket number that is not used at all.
+				int nes = sockets.size();
+				int[] used = new int[nes];
+				Iterator<KIOSocket> it = sockets.iterator();
+				int at = 0;
+				while (it.hasNext())
+					used[at++] = it.next().getId();
+			
+				// Sort the given array so values are in order
+				Arrays.sort(used);
+			
+				// Go through the array to find a free ID number
+				int usenum = 0;
+				int alloc = Integer.MIN_VALUE;
+				for (int i = 0; i < nes; i++)
+				{
+					// Current identifier
+					int now = used[i];
+				
+					// The remaining sockets are identified services (servers)
+					// and as such the search stops, since if this point is
+					// reached then that means that there are 2 billion
+					// open sockets.
+					if (now >= 0)
+						break;
+				
+					// If the allocation point is below the current socket
+					// then the given identifier is available
+					if (alloc < now)
+					{
+						usenum = alloc;
+						break;
+					}
+				
+					// Otherwise increase the allocation to the current id
+					alloc = now;
+				}
+			
+				// {@squirreljme.error AY0i No more anonymous sockets are
+				// available for the current process.}
+				if (usenum == 0)
+					throw new KIOException("AY0i");
+			
+				// Set
+				next = usenum;
+			}
+		
+			// Otherwise use that value instead next time
+			else
+				_nextanon = next;
+		
+			// Return it
+			return next;
+		}
+	}
+	
+	/**
+	 * Registers a socket and places it into the socket list for the current
+	 * process, this is used for accepted sockets (which are anonymous and
+	 * are created by the server socket code).
+	 *
+	 * @param __sock The socket to register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/21
+	 */
+	final void __registerSocket(KIOSocket __sock)
+		throws NullPointerException
+	{
+		// Check
+		if (__sock == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		List<KIOSocket> sockets = this._sockets;
+		synchronized (sockets)
+		{
+			// Add it
+			sockets.add(__sock);
+		}
 	}
 }
 
