@@ -203,20 +203,9 @@ public final class KIOSocket
 	 * @return The server identifier number of the socket.
 	 * @since 2016/05/21
 	 */
-	public int getId()
+	public int id()
 	{
 		return this.id;
-	}
-	
-	/**
-	 * Returns the process which owns this given socket.
-	 *
-	 * @return The owning process for the socket.
-	 * @since 2016/05/21
-	 */
-	public KernelProcess getProcess()
-	{
-		return this.process;
 	}
 	
 	/**
@@ -239,6 +228,17 @@ public final class KIOSocket
 	public boolean isServer()
 	{
 		return null == this.bound;
+	}
+	
+	/**
+	 * Returns the process which owns this given socket.
+	 *
+	 * @return The owning process for the socket.
+	 * @since 2016/05/21
+	 */
+	public KernelProcess process()
+	{
+		return this.process;
 	}
 	
 	/**

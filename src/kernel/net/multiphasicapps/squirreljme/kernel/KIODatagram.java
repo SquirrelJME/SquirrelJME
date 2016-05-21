@@ -28,5 +28,38 @@ import java.util.Deque;
  */
 public final class KIODatagram
 {
+	/** The source socket. */
+	protected final KIOSocket src;
+	
+	/** The destination socket. */
+	protected final KIOSocket dest;
+	
+	/**
+	 * Initializes the datagram.
+	 *
+	 * @param __from The source socket.
+	 * @param __to The destination socket.
+	 * @param __l The length of the datagram.
+	 * @throws IllegalArgumentException If the length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/21
+	 */
+	KIODatagram(KIOSocket __from, KIOSocket __to, int __l)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__from == null || __to == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY0l The datagram length is negative.}
+		if (__l < 0)
+			throw new IllegalArgumentException("AY0l");
+		
+		// Set
+		this.src = __from;
+		this.dest = __to;
+		
+		throw new Error("TODO");
+	}
 }
 

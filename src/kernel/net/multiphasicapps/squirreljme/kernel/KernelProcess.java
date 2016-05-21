@@ -277,7 +277,7 @@ public final class KernelProcess
 			// a service with the given identifier. (The service identifier)}
 			Iterator<KIOSocket> it = sockets.iterator();
 			while (it.hasNext())
-				if (__id == it.next().getId())
+				if (__id == it.next().id())
 					throw new KIOException(String.format("AY0c %d", __id));
 			
 			// Could fail
@@ -470,7 +470,7 @@ public final class KernelProcess
 				KIOSocket sock = it.next();
 				
 				// Is this service?
-				if (sock.getId() == __id)
+				if (sock.id() == __id)
 					return sock;
 			}
 		}
@@ -507,7 +507,7 @@ public final class KernelProcess
 				Iterator<KIOSocket> it = sockets.iterator();
 				int at = 0;
 				while (it.hasNext())
-					used[at++] = it.next().getId();
+					used[at++] = it.next().id();
 			
 				// Sort the given array so values are in order
 				Arrays.sort(used);
