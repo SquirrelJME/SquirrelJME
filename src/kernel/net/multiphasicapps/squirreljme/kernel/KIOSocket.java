@@ -34,6 +34,10 @@ import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 public final class KIOSocket
 	implements Closeable
 {
+	/** Generic socket lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The owning process. */
 	protected final KernelProcess process;
 	
@@ -46,8 +50,8 @@ public final class KIOSocket
 	/** The acceptance queue for the server socket. */
 	protected final Deque<KIOSocket> acceptq;
 	
-	/** The accepted socket that is referenced on the server side. */
-	private volatile KIOSocket _svbacksock;
+	/** The socket to send data to. */
+	private volatile KIOSocket _sendto;
 	
 	/**
 	 * Initializes a socket.
@@ -82,22 +86,36 @@ public final class KIOSocket
 		if (__rs == null)
 			this.acceptq = new LinkedList<>();
 		
-		// Otherwise if client, add to accept queue on server side
+		// Otherwise if client, add to accept queue on server side if a server
 		else
 		{
 			// Does not use one
 			this.acceptq = null;
 			
-			// Get the accept queue of the remote socket
-			Deque<KIOSocket> remq = __rs.acceptq;
-			synchronized (remq)
+			// If a server, make is so the socket can be accepted
+			if (__rs.isServer())
 			{
-				// Offer it at the end
-				remq.offerLast(this);
+				// Get the accept queue of the remote socket
+				Deque<KIOSocket> remq = __rs.acceptq;
+				synchronized (remq)
+				{
+					// Offer it at the end
+					remq.offerLast(this);
 				
-				// Notify the other end that a socket was accepted
-				remq.notify();
+					// Notify the other end that a socket was accepted
+					remq.notify();
+				}
 			}
+			
+			// Otherwise this is an accepted socket. Send data to the remote
+			// socket from this end, and the remote socket sends data to this
+			// socket.
+			else
+				synchronized (__rs.lock)
+				{
+					this._sendto = __rs;
+					__rs._sendto = this;
+				}
 		}
 	}
 	
@@ -143,7 +161,16 @@ public final class KIOSocket
 					return null;
 			}
 			
-			throw new Error("TODO");
+			// Setup socket
+			KernelProcess process = this.process;
+			KIOSocket rv = new KIOSocket(process,
+				process.__nextAnonymousSocketID(this), as);
+			
+			// Register it
+			process.__registerSocket(rv);
+			
+			// Return it
+			return rv;
 		}
 	}
 	

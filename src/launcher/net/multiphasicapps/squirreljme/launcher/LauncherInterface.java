@@ -114,6 +114,9 @@ public class LauncherInterface
 	@Override
 	public void run()
 	{
+		// Setup the local user interface
+		setup();
+		
 		// Infinite loop
 		for (;;)
 		{
@@ -129,6 +132,16 @@ public class LauncherInterface
 				Thread.yield();
 			}
 		}
+	}
+	
+	/**
+	 * Sets up the local launcher user interface and initailizes basic
+	 * widgets to provide an interface to the user.
+	 *
+	 * @since 2016/05/21
+	 */
+	public void setup()
+	{
 	}
 }
 
