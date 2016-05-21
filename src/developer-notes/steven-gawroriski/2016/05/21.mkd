@@ -11,3 +11,8 @@ I do wonder if I should have a lock on the security checks or have them within
 locking regions. This way if threads or the kernel are modifying permissions
 while one is being checked, it does not get messed up.
 
+## 10:30
+
+The KIOSocket code can use `ReferenceQueue` and `WeakReference` to make it so
+the sockets can be cleared away when they are garbage collected and such.
+
