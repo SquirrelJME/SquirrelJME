@@ -89,8 +89,61 @@ public final class KIOSocket
 			Deque<KIOSocket> remq = __rs.acceptq;
 			synchronized (remq)
 			{
+				// Offer it at the end
 				remq.offerLast(this);
+				
+				// Notify the other end that a socket was accepted
+				remq.notify();
 			}
+		}
+	}
+	
+	/**
+	 * Accepts a given socket from a client, blocking for the given amount of
+	 * milliseconds until one is found or the thread is interrupted or the
+	 * timeout is reached.
+	 *
+	 * @param __l The number of milliseconds to wait for a client connection
+	 * to accept for. A timeout of {@code 0L} means to wait forever.
+	 * @return A socket connected to a given client or {@code null} if there
+	 * is socket (the timeout was reached). A timeout of {@code 1L} means to
+	 * not wait for a socket to enter the queue.
+	 * @throws KIOException If a client connection could not be accepted
+	 * properly.
+	 * @throws IllegalStateException If this is not a server socket.
+	 * @throws InterruptedException If during the wait for an accepted client
+	 * socket, the time expired.
+	 * @since 2016/05/21
+	 */
+	public KIOSocket accept(long __l)
+		throws KIOException, IllegalStateException, InterruptedException
+	{
+		// {@squirreljme.error AY0j Only server sockets may use accept.}
+		if (!isServer())
+			throw new IllegalStateException("AY0j");
+		
+		// Lock on the local queue
+		Deque<KIOSocket> acceptq = this.acceptq;
+		synchronized (acceptq)
+		{
+			// Is there a socket immedietly available?
+			KIOSocket as = acceptq.pollFirst();
+			
+			// No socket, wait for one
+			if (as == null && __l != 1L)
+			{
+				// Wait for it, possibly
+				acceptq.wait(__l);
+				
+				// Time out, see if there was something in the queue
+				as = acceptq.pollFirst();
+			}
+			
+			// Nothing to accept?
+			if (as == null)
+				return null;
+			
+			throw new Error("TODO");
 		}
 	}
 	
