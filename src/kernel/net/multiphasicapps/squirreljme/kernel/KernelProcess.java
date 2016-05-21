@@ -203,8 +203,9 @@ public final class KernelProcess
 	/**
 	 * Creates a new socket for this process
 	 *
-	 * @param __sv The service number.
-	 * @throws IllegalArgumentException If the service number is negative.
+	 * @param __sv The service number, must be a positive non-zero integer.
+	 * @throws IllegalArgumentException If the service number is negative or
+	 * zero.
 	 * @throws KIOException If the socket could not be created.
 	 * @throws SecurityException If it is not permitted to create a new socket.
 	 * @since 2016/05/20
@@ -213,14 +214,19 @@ public final class KernelProcess
 		throws IllegalArgumentException, KIOException, SecurityException
 	{
 		// {@squirreljme.error AY03 The service number for a socket cannot be
-		// negative.}
-		if (__id < 0)
+		// zero or negative.}
+		if (__id <= 0)
 			throw new IllegalArgumentException("AY03");
 		
 		// Check permission
 		this.access.createSocket();
 		
-		throw new Error("TODO");
+		// Lock
+		List<KIOSocket> sockets = this._sockets;
+		synchronized (sockets)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -242,7 +248,15 @@ public final class KernelProcess
 		if (__id <= 0)
 			throw new IllegalArgumentException(String.format("AY09 %d", __id));
 	
-		throw new Error("TODO");
+		// Check permission
+		this.access.connectSocket(__kp, __id);
+		
+		// Lock
+		List<KIOSocket> sockets = this._sockets;
+		synchronized (sockets)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

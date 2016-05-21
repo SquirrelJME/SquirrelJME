@@ -80,6 +80,39 @@ public final class KernelAccessManager
 	}
 	
 	/**
+	 * Checks whether the current process can connect to another process to
+	 * the provided service.
+	 *
+	 * @param __kp The process to connect to.
+	 * @param __sv The service identifier.
+	 * @throws IllegalArgumentException If the service number is zero or
+	 * negative.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the current process is not permitted to
+	 * connect to the remote process.
+	 * @since 2016/05/21
+	 */
+	public void connectSocket(KernelProcess __kp, int __sv)
+		throws IllegalArgumentException, NullPointerException,
+			SecurityException
+	{
+		// Check
+		if (__kp == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY0a Specified a zero or negative service
+		// number. (The service number)}
+		if (__sv <= 0)
+			throw new IllegalArgumentException(String.format("AY0a %d", __sv));
+		
+		// Process access
+		KernelProcess curkp = accessProcess();
+		
+		// Connects are generally acceptable
+		return;
+	}
+	
+	/**
 	 * Checks whether the current process can create a new process.
 	 *
 	 * @throws SecurityException If creating a new process is not permitted.
