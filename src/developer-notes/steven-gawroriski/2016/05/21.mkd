@@ -53,3 +53,11 @@ Having reusable (and thus immutable) datagrams would complicate socket
 communication. Reusing packets could get ugly since old state may be able to
 creep in.
 
+## 14:02
+
+When clients connect, they should have their connection accepted so that
+communication back to them can be performed. It would be similar to TCP in way
+except with datagrams. Also if I do not have multicasting and do purely
+two ends of a pipe for communication with accepting, that would make things a
+bit easier to implement.
+
