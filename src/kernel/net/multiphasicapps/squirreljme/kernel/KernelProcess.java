@@ -55,6 +55,9 @@ public final class KernelProcess
 	private final List<KIOSocket> _sockets =
 		new LinkedList<>();
 	
+	/** Is the current process dead? */
+	private volatile boolean _dead;
+	
 	/**
 	 * Initializes the kernel process.
 	 *
@@ -102,6 +105,10 @@ public final class KernelProcess
 		List<Thread> threads = this._threads;
 		synchronized (threads)
 		{
+			// If dead, this will never return true
+			if (this._dead)
+				return false;
+			
 			// Go through all threads
 			Iterator<Thread> it = threads.iterator();
 			while (it.hasNext())
@@ -114,7 +121,14 @@ public final class KernelProcess
 			}
 			
 			// Only if there are threads, is the process considered alive.
-			return !threads.isEmpty();
+			boolean isnotdead = !threads.isEmpty();
+			
+			// Mark as dead if dead
+			if (!isnotdead)
+				this._dead = true;
+			
+			// Return not dead state
+			return isnotdead;
 		}
 	}
 	
@@ -195,6 +209,9 @@ public final class KernelProcess
 		List<KIOSocket> sockets = this._sockets;
 		synchronized (sockets)
 		{
+			// Is dead
+			__checkDead();
+			
 			// Check permission
 			this.access.createSocket();
 			
@@ -256,6 +273,9 @@ public final class KernelProcess
 		List<KIOSocket> sockets = this._sockets;
 		synchronized (sockets)
 		{
+			// Is dead
+			__checkDead();
+			
 			// Check permissions for all sockets
 			for (int i = 0; i < n; i++)
 				this.access.connectSocket(def[i], __id);
@@ -285,6 +305,9 @@ public final class KernelProcess
 		List<Thread> threads = this._threads;
 		synchronized (threads)
 		{
+			// Is dead
+			__checkDead();
+			
 			// Check permission
 			this.access.createThread();
 		
@@ -393,6 +416,25 @@ public final class KernelProcess
 			
 			// Add it
 			threads.add(__t);
+		}
+	}
+	
+	/**
+	 * Checks if the current process is dead.
+	 *
+	 * @throws IllegalStateException If it is dead.
+	 * @since 2016/05/21
+	 */
+	final void __checkDead()
+		throws IllegalStateException
+	{
+		List<Thread> threads = this._threads;
+		synchronized (threads)
+		{
+			// {@squirreljme.error AY0b The requested operation is not valid
+			// because the given process is dead.}
+			if (this._dead)
+				throw new IllegalStateException("AY0b");
 		}
 	}
 }
