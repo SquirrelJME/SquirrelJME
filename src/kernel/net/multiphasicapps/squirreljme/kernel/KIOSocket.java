@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.kernel;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 
@@ -36,6 +38,10 @@ public final class KIOSocket
 	
 	/** The service identifier. */
 	protected final int id;
+	
+	/** Default destinations. */
+	private final List<KIOSocket> _dests =
+		new LinkedList<>();
 	
 	/**
 	 * Initializes a socket.
@@ -104,6 +110,31 @@ public final class KIOSocket
 	public boolean isAnonymous()
 	{
 		return this.id < 0;
+	}
+	
+	/**
+	 * Sets the destinations of this socket to send data to the other given
+	 * sockets.
+	 *
+	 * @param __ks Destinations to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/21
+	 */
+	void __setDestinations(KIOSocket... __ks)
+		throws NullPointerException
+	{
+		// Lock destinations
+		List<KIOSocket> dests = this._dests;
+		synchronized (dests)
+		{
+			// Clear destinations
+			dests.clear();
+			
+			// Add all of them
+			for (KIOSocket ks : __ks)
+				if (ks != null)
+					dests.add(ks);
+		}
 	}
 }
 

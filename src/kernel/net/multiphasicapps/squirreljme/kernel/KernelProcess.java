@@ -279,7 +279,17 @@ public final class KernelProcess
 			else
 				_nextanon = next;
 			
-			throw new Error("TODO");
+			// Create client socket
+			KIOSocket rv = new KIOSocket(this, next);
+			
+			// Set default send locations
+			rv.__setDestinations(rsocks);
+			
+			// Add to socket list
+			sockets.add(rv);
+			
+			// Return it
+			return rv;
 		}
 	}
 	
