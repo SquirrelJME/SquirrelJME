@@ -33,5 +33,12 @@ public abstract class KernelTrace
 	 * @since 2016/05/21
 	 */
 	public abstract void createdProcess(KernelProcess __kp);
+	
+	/**
+	 * All processes within the kernel have been terminated.
+	 *
+	 * @since 2016/05/21
+	 */
+	public abstract void noMoreProcesses();
 }
 

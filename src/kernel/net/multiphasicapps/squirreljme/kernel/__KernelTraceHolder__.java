@@ -61,5 +61,17 @@ final class __KernelTraceHolder__
 		if (trace != null)
 			trace.createdProcess(__kp);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public void noMoreProcesses()
+	{
+		KernelTrace trace = this._trace;
+		if (trace != null)
+			trace.noMoreProcesses();
+	}
 }
 

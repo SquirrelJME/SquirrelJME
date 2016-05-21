@@ -52,6 +52,16 @@ public final class KernelTracePrinter
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public void noMoreProcesses()
+	{
+		__printf("noMoreProcesses()");
+	}
+	
+	/**
 	 * Prints a formatted string to the output.
 	 *
 	 * @param __fmt The format data.

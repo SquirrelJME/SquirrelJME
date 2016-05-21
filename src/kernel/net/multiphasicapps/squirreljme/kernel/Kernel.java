@@ -301,7 +301,13 @@ public abstract class Kernel
 				
 				// Empty?
 				if (processes.isEmpty())
+				{
+					// Trace finish
+					this._trace.noMoreProcesses();
+					
+					// Done
 					return;
+				}
 			}
 			
 			// Sleep for a bit
