@@ -37,3 +37,13 @@ inputing keyboard keys and such would be impossible. So as an alternative it
 can pop up a keyboard (and create a virtual keyboard if there is no native
 one) which can generate the required keyboard events.
 
+## 11:40
+
+With the launcher using the IPC via the display manager, this means there
+could be an alternative launcher selection possibly.
+
+## 11:51
+
+Actually for sockets, I do not have to use the garbage collector, but I do
+have to close the sockets when the process completes.
+

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -192,7 +194,7 @@ public final class KernelProcess
 			// Check permissions for all sockets
 			for (int i = 0; i < n; i++)
 				this.access.connectSocket(def[i], __id);
-		
+			
 			throw new Error("TODO");
 		}
 	}
@@ -258,7 +260,8 @@ public final class KernelProcess
 	 * @param __sv The service number, must be a positive non-zero integer.
 	 * @throws IllegalArgumentException If the service number is negative or
 	 * zero.
-	 * @throws KIOException If the socket could not be created.
+	 * @throws KIOException If the socket could not be created because the
+	 * service identifier is already in use.
 	 * @throws SecurityException If it is not permitted to create a new socket.
 	 * @since 2016/05/20
 	 */
@@ -279,6 +282,13 @@ public final class KernelProcess
 			
 			// Check permission
 			this.access.createSocket();
+			
+			// {@squirreljme.error AY0c The current process is already hosting
+			// a service with the given identifier. (The service identifier)}
+			Iterator<KIOSocket> it = sockets.iterator();
+			while (it.hasNext())
+				if (__id == it.next().getId())
+					throw new KIOException(String.format("AY0c %d", __id));
 			
 			throw new Error("TODO");
 		}
