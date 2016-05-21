@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.ui.ipc.server;
 
+import java.util.LinkedList;
+import java.util.List;
+import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
@@ -28,6 +31,10 @@ public class UIDisplayManagerServer
 	
 	/** The display manager which is wrapped by the IPC. */
 	protected final UIDisplayManager manager;
+	
+	/** List of sockets which are connected to this server. */
+	private final List<__ClientConnection__> _connections =	
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the wrapper around a display manager and provides an IPC
@@ -58,7 +65,45 @@ public class UIDisplayManagerServer
 	@Override
 	public void run()
 	{
-		throw new Error("TODO");
+		// Infinite loop
+		KIOSocket socket = this.socket;
+		List<__ClientConnection__> connections = this._connections;
+		for (;;)
+		{
+			// Lock
+			synchronized (connections)
+			{
+				// Are there any current connections?
+				boolean hasclients = !connections.isEmpty();
+				
+				// Accept any sockets
+				try
+				{
+					// Accept any clients, wait forever unless there are
+					// clients connected (their loops need to be ran)
+					KIOSocket cls = socket.accept((hasclients ? 1L : 0L));
+					
+					// New client connection
+					if (cls != null)
+						throw new Error("TODO");
+				}
+				
+				// Thread was interrupted during poll, or there was an
+				// accept failure (ignore them)
+				catch (KIOException|InterruptedException e)
+				{
+				}
+				
+				// If there are no clients, perform no processing
+				finally
+				{
+					if (!hasclients)
+						continue;
+				}
+				
+				throw new Error("TODO");
+			}
+		}
 	}
 }
 

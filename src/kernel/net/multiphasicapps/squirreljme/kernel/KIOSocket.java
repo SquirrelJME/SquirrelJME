@@ -46,6 +46,9 @@ public final class KIOSocket
 	/** The acceptance queue for the server socket. */
 	protected final Deque<KIOSocket> acceptq;
 	
+	/** The accepted socket that is referenced on the server side. */
+	private volatile KIOSocket _svbacksock;
+	
 	/**
 	 * Initializes a socket.
 	 *
@@ -88,7 +91,7 @@ public final class KIOSocket
 			// Get the accept queue of the remote socket
 			Deque<KIOSocket> remq = __rs.acceptq;
 			synchronized (remq)
-			{
+			{System.err.println("DEBUG -- Socket connect.");
 				// Offer it at the end
 				remq.offerLast(this);
 				
@@ -130,18 +133,37 @@ public final class KIOSocket
 			KIOSocket as = acceptq.pollFirst();
 			
 			// No socket, wait for one
-			if (as == null && __l != 1L)
-			{
-				// Wait for it, possibly
-				acceptq.wait(__l);
-				
-				// Time out, see if there was something in the queue
-				as = acceptq.pollFirst();
-			}
-			
-			// Nothing to accept?
 			if (as == null)
-				return null;
+			{
+				long start = System.nanoTime() / 1_000_000_000L;
+				for (;;)
+				{
+					// Get remaining time to wait for
+					long rem = (__l == 0L ? 10L : __l -
+						((System.nanoTime() / 1_000_000_000L) - start));
+					System.err.printf("DEBUG -- Socket wait %d %d%n", rem,
+						acceptq.size());
+				
+					// No more time left? Poll immedietly
+					if (rem <= 0)
+					{
+						// If nothing was read, stop
+						if (null == (as = acceptq.pollFirst()))
+							return null;
+					}
+				
+					// Otherwise wait for the given amount of time to pass
+					else
+					{
+						// Wait
+						acceptq.wait(rem);
+					
+						// If got an accept request, run with it
+						if (null != (as = acceptq.pollFirst()))
+							break;
+					}
+				}
+			}
 			
 			throw new Error("TODO");
 		}
