@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.ui.ipc.server;
 
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
+import net.multiphasicapps.squirreljme.ui.ipc.DMCommandID;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**

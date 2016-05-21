@@ -21,15 +21,12 @@ import java.util.Deque;
  *
  * Once a datagram is sent, it cannot be modified or read from by the sender.
  *
- * Datagrams may be reused across various processes, if a datagram is not
- * owned by a given process then it cannot read the data within the datagram.
+ * Datagrams may also send arrays to act as a kind of shared memory along with
+ * their normal packet data if needed.
  *
  * @since 2016/05/20
  */
 public final class KIODatagram
 {
-	/** The queue of potentially already allocated datagrams. */
-	private static final Deque<Reference<KIODatagram>> _DEQUE =
-		new ArrayDeque<>();
 }
 

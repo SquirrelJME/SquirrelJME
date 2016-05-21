@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.ui.ipc.client;
 
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
+import net.multiphasicapps.squirreljme.ui.ipc.DMCommandID;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
