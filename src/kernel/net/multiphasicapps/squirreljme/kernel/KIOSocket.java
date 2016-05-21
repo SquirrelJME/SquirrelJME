@@ -139,7 +139,7 @@ public final class KIOSocket
 			
 			// No socket, wait for one
 			if (as == null)
-			{
+			{System.err.println("DEBUG -- A");
 				long start = System.nanoTime() / 1_000_000_000L;
 				for (;;)
 				{
@@ -169,6 +169,8 @@ public final class KIOSocket
 					}
 				}
 			}
+			
+			System.err.println("DEBUG -- Z");
 			
 			throw new Error("TODO");
 		}

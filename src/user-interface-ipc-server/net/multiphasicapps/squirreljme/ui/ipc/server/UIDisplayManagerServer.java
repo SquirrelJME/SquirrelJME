@@ -95,11 +95,8 @@ public class UIDisplayManagerServer
 				}
 				
 				// If there are no clients, perform no processing
-				finally
-				{
-					if (!hasclients)
-						continue;
-				}
+				if (!hasclients)
+					continue;
 				
 				throw new Error("TODO");
 			}
