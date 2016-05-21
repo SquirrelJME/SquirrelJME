@@ -428,6 +428,7 @@ public final class KernelProcess
 	final void __checkDead()
 		throws IllegalStateException
 	{
+		// Lock on threads
 		List<Thread> threads = this._threads;
 		synchronized (threads)
 		{

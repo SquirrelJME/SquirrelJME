@@ -27,3 +27,13 @@ perform a cleanup and close connections of other ends and such before it goes
 completely away. Then I can have a flag to indicate that a process is no longer
 around and all access to it throws an exception.
 
+## 11:23
+
+When it comes to the UIDisplayManager implementation on the server, I can have
+a control scheme set of flags. For example, some interfaces could be running
+on game consoles without a keyboard, so they would provide a joystick based
+interface. This would then be a hint to the standard display manager that
+inputing keyboard keys and such would be impossible. So as an alternative it
+can pop up a keyboard (and create a virtual keyboard if there is no native
+one) which can generate the required keyboard events.
+
