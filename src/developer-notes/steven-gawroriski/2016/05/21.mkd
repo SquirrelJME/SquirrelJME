@@ -77,3 +77,10 @@ result in high CPU usage or a laggy interface. Using monitors I can just have
 special event objects which are given to sockets for example. When an event
 object is triggered there is either a socket to accept or data to be read.
 
+## 17:39
+
+I need to wrap the threads created for processes so I know when the threads
+go away so they can be cleared so to speak. Alternatively I can make a kind of
+debug manager so to speak which can be given events about what happens and
+such. Basically something that would act like `strace`.
+
