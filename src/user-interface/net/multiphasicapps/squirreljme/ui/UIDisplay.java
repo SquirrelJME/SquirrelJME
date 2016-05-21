@@ -34,5 +34,20 @@ public abstract class UIDisplay
 	 * @since 2016/05/20
 	 */
 	public abstract boolean isVisible();
+	
+	/**
+	 * Sets whether or not this display is visible on the screen.
+	 *
+	 * In the event that the display manager can only display a single display
+	 * at a time and this is the currently visible display, this will have no
+	 * effect if visibility is being cleared.
+	 *
+	 * @param __vis If {@code true} then the display should be made visible to
+	 * the user, otherwise it should be hidden.
+	 * @return {@code true} if the visibility change was accepted and took
+	 * effect or if the display was already in the given visibility state.
+	 * @since 2016/05/21
+	 */
+	public abstract boolean setVisible(boolean __vis);
 }
 
