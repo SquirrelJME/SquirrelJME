@@ -16,3 +16,14 @@ while one is being checked, it does not get messed up.
 The KIOSocket code can use `ReferenceQueue` and `WeakReference` to make it so
 the sockets can be cleared away when they are garbage collected and such.
 
+## 10:31
+
+This means that the socket will need a kind of data point. Although
+alternatively since everything is garbage collected and managed by the JVM, I
+do not have to close a socket. If a process runs out of threads (which is a
+known event) then all sockets can automatically be closed and removed. So when
+a process detects that no more threads are running (from the main loop) it can
+perform a cleanup and close connections of other ends and such before it goes
+completely away. Then I can have a flag to indicate that a process is no longer
+around and all access to it throws an exception.
+
