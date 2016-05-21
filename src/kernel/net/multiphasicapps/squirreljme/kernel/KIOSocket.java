@@ -58,9 +58,6 @@ public final class KIOSocket
 	/** The socket to send data to. */
 	private volatile KIOSocket _sendto;
 	
-	/** Mutual lock. */
-	private volatile Object _mutual;
-	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
@@ -136,11 +133,6 @@ public final class KIOSocket
 					// Set send targets
 					this._sendto = __rs;
 					__rs._sendto = this;
-					
-					// Use the same mutual lock
-					Object mut = new Object();
-					this._mutual = mut;
-					__rs._mutual = mut;
 				}
 		}
 	}
