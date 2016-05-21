@@ -61,6 +61,10 @@ public class UIDisplayManagerServer
 		// Set
 		this.socket = __sock;
 		this.manager = __dm;
+		
+		// Set the monitor to be notified when a packet is received or an
+		// accept is made
+		__sock.setMonitor(this._connections);
 	}
 	
 	/**
@@ -73,43 +77,38 @@ public class UIDisplayManagerServer
 		// Infinite loop
 		KIOSocket socket = this.socket;
 		List<__ClientConnection__> connections = this._connections;
-		for (;;)
+		for (boolean firstloop = true;; firstloop = false)
 		{
 			// Lock
 			synchronized (connections)
 			{
-				// Are there any current connections?
-				boolean hasclients = !connections.isEmpty();
-				
-				// Accept any sockets
+				// Could be interrupted
 				try
 				{
-					// Accept any clients, wait forever unless there are
-					// clients connected (their loops need to be ran)
-					KIOSocket cls = socket.accept((hasclients ? 1L : 0L));
+					// Wait on the monitor for awhile, but for the first time
+					// wait for a second.
+					connections.wait((firstloop ? 1_000L : 0L));
+					
+					// Were any clients added to be accepted?
+					KIOSocket cls = socket.accept(1L);
 					
 					// New client connection
 					if (cls != null)
-					{
 						connections.add(new __ClientConnection__(cls, this));
-						hasclients = true;
-					}
 				}
 				
-				// Thread was interrupted during poll, or there was an
-				// accept failure (ignore them)
+				// Was interrupted, just run the normal loop
 				catch (KIOException|InterruptedException e)
 				{
 				}
 				
-				// If there are no clients, perform no processing
-				if (!hasclients)
-					continue;
-				
-				// Run connection
-				Iterator<__ClientConnection__> it = connections.iterator();
-				while (it.hasNext())
-					it.next().run();
+				// Run all connections
+				if (!connections.isEmpty())
+				{
+					Iterator<__ClientConnection__> it = connections.iterator();
+					while (it.hasNext())
+						it.next().run();
+				}
 			}
 		}
 	}

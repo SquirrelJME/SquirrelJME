@@ -50,6 +50,9 @@ public final class KIOSocket
 	/** The acceptance queue for the server socket. */
 	protected final Deque<KIOSocket> acceptq;
 	
+	/** The monitor object to be notified when an event occurs. */
+	private volatile Object _monitor;
+	
 	/** The socket to send data to. */
 	private volatile KIOSocket _sendto;
 	
@@ -105,6 +108,15 @@ public final class KIOSocket
 					// Notify the other end that a socket was accepted
 					remq.notify();
 				}
+				
+				// If a monitor is attached then alert anything waiting on
+				// the monitor that a socket is waiting to be accepted.
+				Object mon = this._monitor;
+				if (mon != null)
+					synchronized (mon)
+					{
+						mon.notifyAll();
+					}
 			}
 			
 			// Otherwise this is an accepted socket. Send data to the remote
@@ -227,6 +239,38 @@ public final class KIOSocket
 	public boolean isServer()
 	{
 		return null == this.bound;
+	}
+	
+	/**
+	 * Sets the monitor that will be notified when a socket is waiting to be
+	 * accepted or if data is waiting to be read from this socket.
+	 *
+	 * @param __o The monitor which is given notifications for packets being
+	 * received and sockets waiting to be accepted.
+	 * @throws IllegalStateException If there is already an associated
+	 * monitor and the given object is not that monitor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/21
+	 */
+	public void setMonitor(Object __o)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// {@squirreljme.error AY0k The socket already has an associated
+			// monitor.}
+			Object was = this._monitor;
+			if (was != null && __o != was)
+				throw new IllegalStateException("AY0k");
+			
+			// Set
+			this._monitor = __o;
+		}
 	}
 }
 

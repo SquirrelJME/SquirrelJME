@@ -56,6 +56,7 @@ final class __ClientConnection__
 	@Override
 	public void run()
 	{
+		System.err.printf("DEBUG -- Run UIClient %s%n", this);
 	}
 }
 
