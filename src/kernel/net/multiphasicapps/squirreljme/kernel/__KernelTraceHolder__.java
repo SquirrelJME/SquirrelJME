@@ -49,5 +49,17 @@ final class __KernelTraceHolder__
 		// Set
 		_trace = __kt;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public void createdProcess(KernelProcess __kp)
+	{
+		KernelTrace trace = this._trace;
+		if (trace != null)
+			trace.createdProcess(__kp);
+	}
 }
 

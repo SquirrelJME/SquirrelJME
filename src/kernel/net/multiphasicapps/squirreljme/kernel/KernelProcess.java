@@ -54,7 +54,7 @@ public final class KernelProcess
 	protected final int id;
 	
 	/** The kernel tracer. */
-	final __KernelTraceHolder__ _tracer;
+	final __KernelTraceHolder__ _trace;
 	
 	/** Threads the process own. */
 	private final List<Thread> _threads =
@@ -91,12 +91,15 @@ public final class KernelProcess
 		
 		// Set
 		this.kernel = __k;
-		this._tracer = __k._tracer;
+		this._trace = __k._trace;
 		this.iskernel = __ik;
 		this.id = __id;
 		
 		// Setup access
 		this.access = new KernelAccessManager(this);
+		
+		// Created process
+		this._trace.createdProcess(this);
 	}
 	
 	/**

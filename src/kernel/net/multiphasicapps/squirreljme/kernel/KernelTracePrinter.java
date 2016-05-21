@@ -40,5 +40,29 @@ public final class KernelTracePrinter
 		// Set
 		this.out = __out;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	public void createdProcess(KernelProcess __kp)
+	{
+		__printf("createdProcess(%s)", __kp);
+	}
+	
+	/**
+	 * Prints a formatted string to the output.
+	 *
+	 * @param __fmt The format data.
+	 * @param __args The arguments to the format.
+	 * @since 2016/05/21
+	 */
+	private final void __printf(String __fmt, Object... __args)
+	{
+		PrintStream out = this.out;
+		out.print("KERNEL -- ");
+		out.println(String.format(__fmt, __args));
+	}
 }
 

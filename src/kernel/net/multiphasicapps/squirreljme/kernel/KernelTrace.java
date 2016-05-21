@@ -25,5 +25,13 @@ public abstract class KernelTrace
 	KernelTrace()
 	{
 	}
+	
+	/**
+	 * Trace that a new process with the given ID was created.
+	 *
+	 * @param __kp The process which was created.
+	 * @since 2016/05/21
+	 */
+	public abstract void createdProcess(KernelProcess __kp);
 }
 

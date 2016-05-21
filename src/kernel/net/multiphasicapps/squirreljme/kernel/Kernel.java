@@ -39,7 +39,7 @@ public abstract class Kernel
 		new LinkedList<>();
 	
 	/** The kernel tracer. */
-	final __KernelTraceHolder__ _tracer =
+	final __KernelTraceHolder__ _trace =
 		new __KernelTraceHolder__();
 	
 	/** Set to {@code true} when booting has been completed. */
@@ -55,6 +55,9 @@ public abstract class Kernel
 	 */
 	public Kernel()
 	{
+		// Setup debug tracer
+		_trace.__setTrace(new KernelTracePrinter(System.err));
+		
 		// Setup kernel process
 		KernelProcess kp = new KernelProcess(this, true, _nextid++);
 		this._kernelprocess = kp;
