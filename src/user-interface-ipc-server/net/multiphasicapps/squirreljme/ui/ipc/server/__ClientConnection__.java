@@ -65,12 +65,16 @@ final class __ClientConnection__
 		KIOSocket socket = this.socket;
 		for (;;)
 		{
-			// 
+			// Obtain the next datagram
 			KIODatagram dg;
 			try
 			{
 				// Try to immedietly read a packet
 				dg = socket.receive(1L);
+				
+				// No datagram read? ignore
+				if (dg == null)
+					return;
 			}
 			
 			// The connection was closed, remove this connection and any

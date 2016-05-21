@@ -36,10 +36,6 @@ import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 public final class KIOSocket
 	implements Closeable
 {
-	/** Generic socket lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** The owning process. */
 	protected final KernelProcess process;
 	
@@ -51,6 +47,10 @@ public final class KIOSocket
 	
 	/** The acceptance queue for the server socket. */
 	protected final Deque<KIOSocket> acceptq;
+	
+	/** Datagram recieve queue. */
+	private final Deque<KIODatagram> _recvq =
+		new LinkedList<>();
 	
 	/** The monitor object to be notified when an event occurs. */
 	private volatile Object _monitor;
@@ -122,7 +122,7 @@ public final class KIOSocket
 			// socket from this end, and the remote socket sends data to this
 			// socket.
 			else
-				synchronized (__rs.lock)
+				synchronized (__rs._recvq)
 				{
 					// Set send targets
 					this._sendto = __rs;
@@ -238,7 +238,7 @@ public final class KIOSocket
 	public boolean isClosed()
 	{
 		// Lock
-		synchronized (this.lock)
+		synchronized (this._recvq)
 		{
 			return this._isclosed;
 		}
@@ -289,7 +289,34 @@ public final class KIOSocket
 		if (__wait < 0L)
 			throw new IllegalArgumentException("AY0m");
 		
-		throw new Error("TODO");
+		// Lock
+		Deque<KIODatagram> recvq = this._recvq;
+		synchronized (recvq)
+		{
+			// Try to get the topmost datagram
+			KIODatagram rv = recvq.pollFirst();
+			
+			// If none was returned...
+			if (rv == null)
+			{
+				// {@squirreljme.error AY0s The socket has been closed.}
+				if (this._isclosed)
+					throw new KIOConnectionClosedException("AY0s");
+				
+				// Instant-return
+				if (__wait == 1L)
+					return null;
+				
+				// Wait otherwise
+				recvq.wait(__wait);
+				
+				// Poll again and return that datagram
+				rv = recvq.pollFirst();
+			}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
@@ -313,7 +340,8 @@ public final class KIOSocket
 			throw new IllegalArgumentException("AY0n");
 		
 		// Detect early close
-		synchronized (this.lock)
+		Deque<KIODatagram> recvq = this._recvq;
+		synchronized (recvq)
 		{
 			// {@squirreljme.error AY0p Cannot send datagram, socket is closed
 			// on the source side.}
@@ -329,7 +357,7 @@ public final class KIOSocket
 				throw new KIOException("AY0o");
 			
 			// Lock on that one
-			synchronized (to.lock)
+			synchronized (to._recvq)
 			{
 				// {@squirreljme.error AY0q Cannot send datagram, socket is
 				// closed on the destination side.}
@@ -371,7 +399,7 @@ public final class KIOSocket
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this._recvq)
 		{
 			// {@squirreljme.error AY0k The socket already has an associated
 			// monitor.}
