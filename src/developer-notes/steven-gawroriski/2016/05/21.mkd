@@ -61,3 +61,12 @@ except with datagrams. Also if I do not have multicasting and do purely
 two ends of a pipe for communication with accepting, that would make things a
 bit easier to implement.
 
+## 15:27
+
+For IPO, I should have it as a kind of mailbox kind of system where. Or instead
+of `KernelProcess` IPOs, the IPCs can store an object to be shared between the
+remote end such as an array which then acts as shared memory across two
+processes. This personally would be best for if graphics are done and they
+need to be very fast, otherwise sending a frame that was drawn across the
+IPC would really slow it down.
+
