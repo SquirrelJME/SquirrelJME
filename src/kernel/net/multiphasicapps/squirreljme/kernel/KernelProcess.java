@@ -146,7 +146,13 @@ public final class KernelProcess
 			
 			// Mark as dead if dead
 			if (!isnotdead)
+			{
+				// Mark dead
 				this._dead = true;
+				
+				// Trace death
+				this._trace.deadProcess(this);
+			}
 			
 			// Return not dead state
 			return isnotdead;

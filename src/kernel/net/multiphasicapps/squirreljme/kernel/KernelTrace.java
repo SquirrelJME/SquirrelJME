@@ -35,6 +35,14 @@ public abstract class KernelTrace
 	public abstract void createdProcess(KernelProcess __kp);
 	
 	/**
+	 * The specified process no longer has any thread remaining.
+	 *
+	 * @param __kp The process which died.
+	 * @since 2016/05/21
+	 */
+	public abstract void deadProcess(KernelProcess __kp);
+	
+	/**
 	 * All processes within the kernel have been terminated.
 	 *
 	 * @since 2016/05/21

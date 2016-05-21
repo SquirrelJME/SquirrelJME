@@ -56,6 +56,16 @@ public final class KernelTracePrinter
 	 * @since 2016/05/21
 	 */
 	@Override
+	public void deadProcess(KernelProcess __kp)
+	{
+		__printf("deadProcess(%s)", __kp);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
 	public void noMoreProcesses()
 	{
 		__printf("noMoreProcesses()");
