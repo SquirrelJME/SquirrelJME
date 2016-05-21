@@ -191,9 +191,31 @@ public final class KernelProcess
 			// Is dead
 			__checkDead();
 			
-			// Check permissions for all sockets
+			// Get all remote socket identifiers
+			KIOSocket[] rsocks = new KIOSocket[n];
+			
+			// Get all sockets
 			for (int i = 0; i < n; i++)
-				this.access.connectSocket(def[i], __id);
+			{
+				// The process to connect to
+				KernelProcess kp = def[i];
+				
+				// Make sure connecting is permitted
+				this.access.connectSocket(kp, __id);
+				
+				// Get socket data
+				KIOSocket rs = kp.__getServiceSocket(__id);
+				
+				// {@squirreljme.error AY0h The connection to the remote
+				// process cannot be made because it does not host the given
+				// service. (The remote process; The service identifier)}
+				if (rs == null)
+					throw new KIOException(String.format("AY0h %s %d", kp,
+						__id));
+				
+				// Set
+				rsocks[i] = rs;
+			}
 			
 			throw new Error("TODO");
 		}
