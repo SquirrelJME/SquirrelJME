@@ -85,7 +85,12 @@ public final class KIOSocket
 			// Does not use one
 			this.acceptq = null;
 			
-			throw new Error("TODO");
+			// Get the accept queue of the remote socket
+			Deque<KIOSocket> remq = __rs.acceptq;
+			synchronized (remq)
+			{
+				remq.offerLast(this);
+			}
 		}
 	}
 	
