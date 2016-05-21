@@ -56,7 +56,7 @@ public abstract class Kernel
 		this._processes.add(kp);
 		
 		// Register the current thread
-		kp.addThread(Thread.currentThread());
+		kp.__addThread(Thread.currentThread());
 		
 		// Finished boot
 		bootFinished(Kernel.class);

@@ -83,42 +83,6 @@ public final class KernelProcess
 	}
 	
 	/**
-	 * Adds a thread to the current process.
-	 *
-	 * @param __t The thread to add.
-	 * @throws IllegalStateException If another process contains this thread.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SecurityException If the current process cannot add a thread to
-	 * this process.
-	 * @since 2016/05/16
-	 */
-	public final void addThread(Thread __t)
-		throws IllegalStateException, NullPointerException, SecurityException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AY07 The thread to be added is owned by
-		// another process.}
-		KernelProcess op = this.kernel.processByThread(__t);
-		if (op != null && op != this)
-			throw new IllegalStateException("AY07");
-		
-		// Lock
-		List<Thread> threads = this._threads;
-		synchronized (threads)
-		{
-			// Check permission
-			if (!iskernel)
-				this.access.createThread();
-			
-			// Add it
-			threads.add(__t);
-		}
-	}
-	
-	/**
 	 * Returns {@code true} if any threads in the current process are
 	 * alive.
 	 *
@@ -352,6 +316,45 @@ public final class KernelProcess
 	public final Kernel kernel()
 	{
 		return this.kernel;
+	}
+	
+	/**
+	 * Adds a thread to the current process.
+	 *
+	 * This method may be prone to dead-locks and as such should only be used
+	 * at the very start of the kernel to assign threads to a given process.
+	 *
+	 * @param __t The thread to add.
+	 * @throws IllegalStateException If another process contains this thread.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the current process cannot add a thread to
+	 * this process.
+	 * @since 2016/05/16
+	 */
+	final void __addThread(Thread __t)
+		throws IllegalStateException, NullPointerException, SecurityException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY07 The thread to be added is owned by
+		// another process.}
+		KernelProcess op = this.kernel.processByThread(__t);
+		if (op != null && op != this)
+			throw new IllegalStateException("AY07");
+		
+		// Lock
+		List<Thread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Check permission
+			if (!iskernel)
+				this.access.createThread();
+			
+			// Add it
+			threads.add(__t);
+		}
 	}
 }
 
