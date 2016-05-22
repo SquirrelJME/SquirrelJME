@@ -25,6 +25,7 @@ package net.multiphasicapps.squirreljme.ui;
  * @since 2016/05/20
  */
 public final class UIDisplayManager
+	extends UIElement
 {
 	/** The internal display manager to wrap. */
 	protected final InternalDisplayManager internal;
@@ -46,6 +47,7 @@ public final class UIDisplayManager
 		
 		// Set
 		this.internal = __idm;
+		__idm.__setLink(this);
 	}
 	
 	/**

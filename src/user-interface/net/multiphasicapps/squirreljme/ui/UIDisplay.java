@@ -19,6 +19,7 @@ package net.multiphasicapps.squirreljme.ui;
  * @since 2016/05/20
  */
 public final class UIDisplay
+	extends UIElement
 {
 	/**
 	 * Returns {@code true} if this display is visible to the user, but not

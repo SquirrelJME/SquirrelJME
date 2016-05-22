@@ -20,6 +20,7 @@ package net.multiphasicapps.squirreljme.ui;
  * @since 2016/05/21
  */
 public abstract class InternalDisplayManager
+	extends InternalElement<UIDisplayManager>
 {
 	/**
 	 * Initializes the internal display manager.

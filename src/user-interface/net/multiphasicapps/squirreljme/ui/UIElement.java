@@ -11,26 +11,19 @@
 package net.multiphasicapps.squirreljme.ui;
 
 /**
- * This is the internal display which in essence acts like a standard window,
- * tab, or single screen to provide an interactive environment for the user.
+ * This is the base class for all displayable elements.
  *
- * Internal classes are not meant to be used by the end user, but only by
- * the implementation of a display manager.
- *
- * @see UIDisplay
  * @since 2016/05/21
  */
-public abstract class InternalDisplay
-	extends InternalElement<UIDisplay>
+public abstract class UIElement
 {
 	/**
-	 * Initializes the internal display.
+	 * Initializes the base element.
 	 *
 	 * @since 2016/05/21
 	 */
-	public InternalDisplay()
+	UIElement()
 	{
-		throw new Error("TODO");
 	}
 }
 
