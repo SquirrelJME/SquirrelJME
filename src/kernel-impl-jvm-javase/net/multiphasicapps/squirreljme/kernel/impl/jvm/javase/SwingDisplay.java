@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.lang.ref.Reference;
 import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
@@ -25,6 +27,7 @@ import net.multiphasicapps.squirreljme.ui.UIException;
  */
 public class SwingDisplay
 	extends InternalDisplay
+	implements WindowListener
 {
 	/** The frame for the display. */
 	protected final JFrame frame;
@@ -42,6 +45,13 @@ public class SwingDisplay
 		// Create the frame
 		JFrame frame = new JFrame();
 		this.frame = frame;
+		
+		// The frame may have a close callback event attached to it, so the
+		// window cannot be normally closed unles disposed.
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		
+		// Handle events
+		frame.addWindowListener(this);
 	}
 	
 	/**
@@ -72,6 +82,69 @@ public class SwingDisplay
 		{
 			this.frame.setVisible(__vis);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void windowActivated(WindowEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void windowClosed(WindowEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void windowClosing(WindowEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void windowDeactivated(WindowEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void windowDeiconified(WindowEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void windowIconified(WindowEvent __e)
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void windowOpened(WindowEvent __e)
+	{
 	}
 }
 
