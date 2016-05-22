@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.launcher;
 
 import java.io.Closeable;
 import net.multiphasicapps.imagereader.ImageData;
+import net.multiphasicapps.imagereader.ImageReaderFactory;
 import net.multiphasicapps.imagereader.xpm.XPMImageReader;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
@@ -117,6 +118,9 @@ public class LauncherInterface
 		
 		// Setup image which acts as the icon
 		UIImage icon = displaymanager.createImage();
+		
+		// Get image factory
+		ImageReaderFactory irf = ImageReaderFactory.instance();
 		
 		// Load all preferred icon sizes
 		int[] pis = displaymanager.preferredIconSizes();
