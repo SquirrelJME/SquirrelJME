@@ -22,6 +22,15 @@ public final class UIDisplay
 	extends UIElement
 {
 	/**
+	 * Initializes the display wrapper.
+	 *
+	 * @since 2016/05/21
+	 */
+	UIDisplay()
+	{
+	}
+	
+	/**
 	 * Returns {@code true} if this display is visible to the user, but not
 	 * necessarily seen by the user.
 	 *
