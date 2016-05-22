@@ -14,7 +14,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
+import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageReader;
+import net.multiphasicapps.imagereader.ImageType;
 
 /**
  * This class is able to read XPM images.
@@ -67,16 +69,12 @@ public class XPMImageReader
 	 * @since 2016/05/08
 	 */
 	@Override
-	public int[] readImage(InputStream __is, int[] __dim)
-		throws IllegalArgumentException, IOException, NullPointerException
+	public ImageData readImage(InputStream __is)
+		throws IOException, NullPointerException
 	{
 		// Check
-		if (__is == null || __dim == null)
+		if (__is == null)
 			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error AT01 The output dimensions is less than two.}
-		if (__dim.length < 2)
-			throw new IllegalArgumentException("AT01");
 		
 		throw new Error("TODO");
 	}
