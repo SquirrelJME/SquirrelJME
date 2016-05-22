@@ -41,7 +41,7 @@ public final class UIDisplayManager
 	protected final Thread cleanupthread;
 	
 	/** The reference queue for element cleanup. */
-	protected final ReferenceQueue<? extends UIElement> rqueue =
+	protected final ReferenceQueue<UIElement> rqueue =
 		new ReferenceQueue<>();
 	
 	/** The mapping between references and internal elements. */
@@ -88,7 +88,10 @@ public final class UIDisplayManager
 	public UIDisplay createDisplay()
 		throws UIException
 	{
-		throw new Error("TODO");
+		UIDisplay rv = new UIDisplay(this);
+		this.internal.internalCreateDisplay(
+			new WeakReference<UIDisplay>(rv, this.rqueue));
+		return rv;
 	}
 	
 	/**

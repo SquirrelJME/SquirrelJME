@@ -34,8 +34,6 @@ public abstract class InternalDisplay
 	public InternalDisplay(Reference<UIDisplay> __ref)
 	{
 		super(__ref);
-		
-		throw new Error("TODO");
 	}
 }
 

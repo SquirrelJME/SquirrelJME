@@ -36,5 +36,17 @@ public abstract class InternalDisplayManager
 	{
 		super(__ref);
 	}
+	
+	/**
+	 * Creates a new internal display element.
+	 *
+	 * @param __ref The reference to the external display.
+	 * @return The internal display element.
+	 * @throws UIException If it could not be created.
+	 * @since 2016/05/22
+	 */
+	public abstract InternalDisplay internalCreateDisplay(
+		Reference<UIDisplay> __ref)
+		throws UIException;
 }
 
