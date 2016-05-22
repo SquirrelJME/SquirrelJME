@@ -19,8 +19,7 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
-import net.multiphasicapps.squirreljme.ui.ipc.DMServiceID;
-import net.multiphasicapps.squirreljme.ui.ipc.server.UIDisplayManagerServer;
+import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**
  * This contains the launcher used by the host Java SE system.
@@ -30,6 +29,9 @@ import net.multiphasicapps.squirreljme.ui.ipc.server.UIDisplayManagerServer;
 public class JVMJavaSEKernel
 	extends AutoBootKernel
 {
+	/** The display manager which utilizes Swing. */
+	protected final SwingDisplayManager displaymanager;
+	
 	/**
 	 * This initializes the launcher which uses an existing full Java SE JVM.
 	 *
@@ -43,26 +45,20 @@ public class JVMJavaSEKernel
 			__args = new String[0];
 		
 		// Setup the display manager
-		SwingDisplayManager sdm = new SwingDisplayManager();
-		
-		// And the display manager server
-		try
-		{
-			KernelProcess kp = kernelProcess();
-			UIDisplayManagerServer uisv = new UIDisplayManagerServer(
-				kp.createSocket(DMServiceID.SERVICE_ID), sdm);
-			kp.createThread(uisv);
-		}
-		
-		// {@squirreljme.error AZ01 Could not create the display manager socket
-		// to display future user interfaces.}
-		catch (KIOException e)
-		{
-			throw new RuntimeException("AZ01", e);
-		}
+		this.displaymanager = new SwingDisplayManager(this);
 		
 		// Finished booting
 		bootFinished(JVMJavaSEKernel.class);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/21
+	 */
+	@Override
+	protected UIDisplayManager getDisplayManager()
+	{
+		return this.displaymanager;
 	}
 	
 	/**

@@ -22,13 +22,25 @@ import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 public class SwingDisplayManager
 	extends UIDisplayManager
 {
+	/** The kernel which created this. */
+	protected final JVMJavaSEKernel kernel;	
+	
 	/**
 	 * Initializes the swing based display manager.
 	 *
+	 * @param The kernel which created this display manager.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/21
 	 */
-	public SwingDisplayManager()
+	public SwingDisplayManager(JVMJavaSEKernel __k)
+		throws NullPointerException
 	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.kernel = __k;
 	}
 	
 	/**
