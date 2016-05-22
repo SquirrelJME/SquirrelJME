@@ -34,6 +34,10 @@ import java.util.Set;
 public final class UIDisplayManager
 	extends UIElement
 {
+	/** Zero sized integer array. */
+	private static final int[] _ZERO_SIZE_INT_ARRAY =
+		new int[0];
+	
 	/** The internal display manager to wrap. */
 	protected final InternalDisplayManager internal;
 	
@@ -88,10 +92,98 @@ public final class UIDisplayManager
 	public UIDisplay createDisplay()
 		throws UIException
 	{
-		UIDisplay rv = new UIDisplay(this);
-		this.internal.internalCreateDisplay(
-			new WeakReference<UIDisplay>(rv, this.rqueue));
-		return rv;
+		try
+		{
+			UIDisplay rv = new UIDisplay(this);
+			this.internal.internalCreateDisplay(
+				new WeakReference<UIDisplay>(rv, this.rqueue));
+			return rv;
+		}
+		
+		// {@squirreljme.error BD07 Ran out of memory creating display.}
+		catch (OutOfMemoryError e)
+		{
+			throw new UIException("BD07");
+		}
+	}
+	
+	/**
+	 * Creates a new image which may be displayed.
+	 *
+	 * @return The newly created image.
+	 * @throws UIException If the image could not be created.
+	 * @since 2016/05/22
+	 */
+	public UIImage createImage()
+		throws UIException
+	{
+		try
+		{
+			UIImage rv = new UIImage(this);
+			this.internal.internalCreateImage(
+				new WeakReference<UIImage>(rv, this.rqueue));
+			return rv;
+		}
+		
+		// {@squirreljme.error BD06 Ran out of memory creating image.}
+		catch (OutOfMemoryError e)
+		{
+			throw new UIException("BD06");
+		}
+	}
+	
+	/**
+	 * Returns an array with width/height pairs which indicates the preferred
+	 * sizes of the icons to use.
+	 *
+	 * @return The preferred sizes which icons should be in width/height pairs.
+	 * @throws UIException If the preferred sizes could not be determined.
+	 * @since 2016/05/22
+	 */
+	public int[] preferredIconSizes()
+		throws UIException
+	{
+		try
+		{
+			// Get icons
+			int[] rv = this.internal.internalPreferredIconSizes();
+		
+			// No preferred size, no icons
+			if (rv == null || rv.length <= 1)
+				return _ZERO_SIZE_INT_ARRAY;
+			
+			// If not a multiple of two, clip
+			int l = rv.length;
+			if ((l & 1) != 0)
+			{
+				// Setup
+				int nl = l - 1;
+				int[] cv = new int[nl];
+				
+				// Fill
+				for (int i = 0; i < nl; i++)
+					cv[i] = rv[i];
+				
+				// Set
+				rv = cv;
+			}
+			
+			// If a dimension is zero or negative, make it at least a single
+			// pixel
+			l = rv.length;
+			for (int i = 0; i < l; i++)
+				if (rv[i] <= 0)
+					rv[i] = 1;
+			
+			// Return it
+			return rv;
+		}
+		
+		// Failed to determine or out of memory, use no icons
+		catch (OutOfMemoryError|UIException e)
+		{
+			return _ZERO_SIZE_INT_ARRAY;
+		}
 	}
 	
 	/**

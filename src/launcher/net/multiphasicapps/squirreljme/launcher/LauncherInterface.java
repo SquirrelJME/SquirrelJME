@@ -11,12 +11,15 @@
 package net.multiphasicapps.squirreljme.launcher;
 
 import java.io.Closeable;
+import net.multiphasicapps.imagereader.ImageData;
+import net.multiphasicapps.imagereader.xpm.XPMImageReader;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
+import net.multiphasicapps.squirreljme.ui.UIImage;
 
 /**
  * This class is the standard launcher which is used to run list programs,
@@ -111,6 +114,18 @@ public class LauncherInterface
 		
 		// Set title
 		maindisp.setTitle("SquirrelJME");
+		
+		// Setup image which acts as the icon
+		UIImage icon = displaymanager.createImage();
+		
+		// Load all preferred icon sizes
+		int[] pis = displaymanager.preferredIconSizes();
+		int pisn = pis.length;
+		for (int i = 0; i < pisn; i += 2)
+			throw new Error("TODO");
+		
+		// Set icon
+		maindisp.setIcon(icon);
 		
 		// Done, make it visible
 		maindisp.setVisible(true);

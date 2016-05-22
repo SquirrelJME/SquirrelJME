@@ -17,9 +17,11 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
 import net.multiphasicapps.squirreljme.ui.InternalDisplayManager;
+import net.multiphasicapps.squirreljme.ui.InternalImage;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 import net.multiphasicapps.squirreljme.ui.UIException;
+import net.multiphasicapps.squirreljme.ui.UIImage;
 
 /**
  * This is a display manager which interfaces with Java's Swing and uses it
@@ -56,13 +58,10 @@ public class SwingDisplayManager
 	}
 	
 	/**
-	 * Creates a new internal display element.
-	 *
-	 * @param __ref The reference to the external display.
-	 * @return The internal display element.
-	 * @throws UIException If it could not be created.
+	 * {@inheritDoc}
 	 * @since 2016/05/22
 	 */
+	@Override
 	public InternalDisplay internalCreateDisplay(Reference<UIDisplay> __ref)
 		throws UIException
 	{
@@ -73,10 +72,33 @@ public class SwingDisplayManager
 		}
 		
 		// {@squirreljme.error AZ01 Could not create a display.}
-		catch (OutOfMemoryError|AWTError|HeadlessException e)
+		catch (AWTError|HeadlessException e)
 		{
 			throw new UIException("AZ01", e);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public InternalImage internalCreateImage(
+		Reference<UIImage> __ref)
+		throws UIException
+	{
+		return new SwingImage(__ref);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public int[] internalPreferredIconSizes()
+		throws UIException
+	{
+		throw new Error("TODO");
 	}
 }
 

@@ -15,6 +15,7 @@ import java.awt.event.WindowListener;
 import java.lang.ref.Reference;
 import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
+import net.multiphasicapps.squirreljme.ui.InternalImage;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;

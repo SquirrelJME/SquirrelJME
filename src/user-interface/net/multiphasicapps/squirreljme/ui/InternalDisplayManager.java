@@ -48,5 +48,32 @@ public abstract class InternalDisplayManager
 	public abstract InternalDisplay internalCreateDisplay(
 		Reference<UIDisplay> __ref)
 		throws UIException;
+	
+	/**
+	 * Creates a new internal image.
+	 *
+	 * @param __ref The reference to the external image.
+	 * @return The internal image.
+	 * @throws UIException If the image could not be created.
+	 * @since 2016/05/22
+	 */
+	public abstract InternalImage internalCreateImage(
+		Reference<UIImage> __ref)
+		throws UIException;
+	
+	/**
+	 * Returns an array with width/height pairs which indicates the preferred
+	 * sizes of the icons to use.
+	 *
+	 * Dimensions returned by the array will be corrected to a minimal bound
+	 * of a single pixel.
+	 *
+	 * @return The preferred sizes which icons should be in width/height pairs,
+	 * may return {@code null} to indicate that no icons should be displayed.
+	 * @throws UIException If the preferred sizes could not be determined.
+	 * @since 2016/05/22
+	 */
+	public abstract int[] internalPreferredIconSizes()
+		throws UIException;
 }
 
