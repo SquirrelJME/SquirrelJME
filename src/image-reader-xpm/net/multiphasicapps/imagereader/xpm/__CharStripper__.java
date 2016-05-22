@@ -28,6 +28,10 @@ import java.io.Reader;
 class __CharStripper__
 	extends Reader
 {
+	/** Lock to make sure there is a consistent state. */
+	protected final Object lock =
+		new Object();
+	
 	/** The input reader. */
 	protected final Reader in;
 	
@@ -57,7 +61,11 @@ class __CharStripper__
 	public void close()
 		throws IOException
 	{
-		this.in.close();
+		// Lock
+		synchronized (this.lock)
+		{
+			this.in.close();
+		}
 	}
 	
 	/**
@@ -68,7 +76,11 @@ class __CharStripper__
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -85,34 +97,38 @@ class __CharStripper__
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Read loop
-		for (int i = 0; i < __l; i++)
-			try
-			{
-				// Read single character
-				int c = read();
+		// Lock
+		synchronized (this.lock)
+		{
+			// Read loop
+			for (int i = 0; i < __l; i++)
+				try
+				{
+					// Read single character
+					int c = read();
 				
-				// EOF?
-				if (c < 0)
-					return (i > 0 ? i : -1);
+					// EOF?
+					if (c < 0)
+						return (i > 0 ? i : -1);
 				
-				// Set
-				__b[__o + i] = (char)c;
-			}
+					// Set
+					__b[__o + i] = (char)c;
+				}
 			
-			// Failed read
-			catch (IOException e)
-			{
-				// If nothing read, fail
-				if (i <= 0)
-					throw e;
+				// Failed read
+				catch (IOException e)
+				{
+					// If nothing read, fail
+					if (i <= 0)
+						throw e;
 				
-				// Otherwise return the read count
-				return i;
-			}
+					// Otherwise return the read count
+					return i;
+				}
 		
-		// All characters read
-		return __l;
+			// All characters read
+			return __l;
+		}
 	}
 }
 
