@@ -80,6 +80,17 @@ public class XPMImageReader
 		__CharStripper__ cs = new __CharStripper__(new InputStreamReader(__is,
 			"utf-8"));
 		
+		// Read XPM header
+		int[] header = new int[7];
+		for (int i = 0;; i++)
+			if (__readInt(cs, header, Math.min(6, i)))
+				break;
+		
+		System.err.print("DEBUG -- XPM header: ");
+		for (int i = 0; i < header.length; i++)
+			System.err.printf("%d ", header[i]);
+		System.err.println();
+		
 		// DEBUG
 		System.err.print("DEBUG -- XPM Chars: ");
 		for (;;)
@@ -99,6 +110,67 @@ public class XPMImageReader
 		System.err.println();
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads a single integer value from the input.
+	 *
+	 * @param __r The stream to read an integer from.
+	 * @param __v The read value.
+	 * @param __o The offset in the array index.
+	 * @return {@code true} if the line or stream has ended.
+	 * @throws IOException On read errors.
+	 * @since 2016/05/22
+	 */
+	private boolean __readInt(Reader __r, int[] __v, int __o)
+		throws IOException
+	{
+		// Setup
+		int val = 0;
+		boolean neg = false;
+		
+		// Read character
+		for (boolean first = true, startwhite = true;; first = false)
+		{
+			// Read
+			int c = __r.read();
+			
+			// Ignore starting whitespace
+			if (c == ' ' || c == '\t' || c == '\r')
+				if (startwhite)
+					continue;
+			
+			// No more whitespace to ignore
+			startwhite = false;
+			
+			// EOF or EOL?
+			if (c < 0)
+			{
+				__v[__o] = (neg ? -val : val);
+				return true;
+			}
+			
+			// Negative?
+			if (first && c == '-')
+			{
+				neg = true;
+				continue;
+			}
+			
+			// As a digit
+			int dig = Character.digit((char)c, 10);
+			
+			// If not a digit, stop
+			if (dig < 0)
+			{
+				__v[__o] = (neg ? -val : val);
+				return false;
+			}
+			
+			// Shift up and add
+			val *= 10;
+			val += dig;
+		}
 	}
 }
 
