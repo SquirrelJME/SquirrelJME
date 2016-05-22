@@ -98,3 +98,22 @@ onto it later, rather than designing the UI layer and the protocol at the same
 time. Although I have a general idea of the kind of protocol it would be, it
 would best be done if it were actually implemented first.
 
+## 20:34
+
+Actually the base display manager should be able to manage and garbage
+collect automatically in a way, the UI elements and such if they ever lose
+references. Externally, the interfaces would be acted upon by `UIDisplay`s and
+such while internally classes would extend `InternalUIFoo`. The internal
+classes would also be abstract classes, because they would need to detect and
+have a cleanup method (which is like finalization). This also means that the
+`UIDisplay` which is used by the programs such as the launcher do not have to
+worry much about cleaning up internal objects and such. A window might
+disappear if it gets garbage collected if a program no longer touches it an
+such. Also, say if the internal UI does not support something, it can be
+wrapped on by the `UIDisplay` and such to provide the functionality without
+requiring every single internal display to be given such a feature. So in
+essence, I can extend the `UIDisplay` and have basic wrappers for specific
+functionality if it is lacking internally. Then this means that if the display
+is very primitive and the internal display does not have much functionality,
+it will all be virtualized by the wrapper.
+

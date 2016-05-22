@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
@@ -23,7 +26,7 @@ public class SwingDisplayManager
 	extends UIDisplayManager
 {
 	/** The kernel which created this. */
-	protected final JVMJavaSEKernel kernel;	
+	protected final JVMJavaSEKernel kernel;
 	
 	/**
 	 * Initializes the swing based display manager.
