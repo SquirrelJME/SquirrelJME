@@ -91,7 +91,10 @@ public class XPMImageReader
 			if (c < 0 && !eol)
 				break;
 			
-			System.err.print((char)c);
+			if (eol)
+				System.err.println();
+			else
+				System.err.print((char)c);
 		}
 		System.err.println();
 		

@@ -145,7 +145,60 @@ class __CharStripper__
 				
 				// In string?
 				if (this._instring)
-					throw new Error("TODO");
+				{
+					// Escape sequence?
+					if (c == '\\')
+					{
+						// Get character
+						c = in.read();
+						
+						// Depends on the character
+						switch (c)
+						{
+							case 'a': return (char)0x07;
+							case 'b': return (char)0x08;
+							case 'f': return (char)0x0C;
+							case 'n': return '\n';
+							case 'r': return '\r';
+							case 't': return '\t';
+							case 'v': return (char)0x0B;
+							case '\\': return '\\';
+							case '\'': return '\'';
+							case '"': return '"';
+							case '?': return '?';
+							
+							case 'x':
+								throw new Error("TODO");
+								
+							case '0':
+							case '1':
+							case '2':
+							case '3':
+							case '4':
+							case '5':
+							case '6':
+							case '7':
+							case '8':
+							case '9':
+								throw new Error("TODO");
+							
+								// Unknown, ignore
+							default:
+								continue;
+						}
+					}
+					
+					// End of string?
+					else if (c == '"')
+					{
+						this._instring = false;
+						continue;
+					}
+					
+					// Normal character, use it
+					else
+						return c;
+				}
 				
 				// Outside a string
 				else
