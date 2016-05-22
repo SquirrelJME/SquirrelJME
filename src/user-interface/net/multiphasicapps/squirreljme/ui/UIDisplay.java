@@ -67,5 +67,16 @@ public final class UIDisplay
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Returns the internal display.
+	 *
+	 * @return The internal display.
+	 * @since 2016/05/22
+	 */
+	final InternalDisplay __internal()
+	{
+		return super.<InternalDisplay>__internal(InternalDisplay.class);
+	}
 }
 

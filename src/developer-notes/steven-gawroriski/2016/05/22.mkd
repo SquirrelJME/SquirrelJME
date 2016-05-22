@@ -14,3 +14,7 @@ external elements could not be placed in a `WeakHashMap` because it auto
 manages references. I can however, send links as references already to the
 internal element details.
 
+## 10:05
+
+The internal and external displays should share locks.
+

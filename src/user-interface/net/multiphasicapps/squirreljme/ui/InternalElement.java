@@ -24,8 +24,7 @@ import java.util.Objects;
 public abstract class InternalElement<X extends UIElement>
 {
 	/** Lock. */
-	protected final Object lock =
-		new Object();
+	protected final Object lock;
 	
 	/** The owning display manager. */
 	protected final UIDisplayManager displaymanager;
@@ -48,15 +47,19 @@ public abstract class InternalElement<X extends UIElement>
 		if (__ref == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.externalelement = __ref;
-		
 		// {@squirreljme.error BD01 Reference to the external UI element was
 		// garbage collected as it was created, this is a bug in the virtual
 		// machine.}
-		X disp = __ref.get();
-		UIDisplayManager displaymanager = Objects.<X>requireNonNull(
-			disp, "BD01").displayManager();
+		X disp = Objects.<X>requireNonNull(__ref.get(), "BD01");
+		
+		// Share the same lock as the external element
+		this.lock = disp.__lock();
+		
+		// Set
+		this.externalelement = __ref;
+		
+		// Owned by this display manager
+		UIDisplayManager displaymanager = disp.displayManager();
 		this.displaymanager = displaymanager;
 		
 		// Have the display manager link back this element

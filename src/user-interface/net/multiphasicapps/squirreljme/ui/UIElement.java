@@ -117,5 +117,17 @@ public abstract class UIElement
 			this._internal = __i;
 		}
 	}
+	
+	/**
+	 * Returns the lock of the external element, this is used so that internal
+	 * elements and internal elements share the same lock.
+	 *
+	 * @return The locking object that the external element uses.
+	 * @since 2016/05/22
+	 */
+	final Object __lock()
+	{
+		return this.lock;
+	}
 }
 
