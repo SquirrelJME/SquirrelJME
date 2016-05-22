@@ -84,3 +84,17 @@ go away so they can be cleared so to speak. Alternatively I can make a kind of
 debug manager so to speak which can be given events about what happens and
 such. Basically something that would act like `strace`.
 
+## 20:16
+
+Thinking about it, having the launcher use the IPC interface, although it
+would be good for setting it up, would complicate things a bit. The launcher
+runs in the kernel space anyway so it can have direct access to the launcher
+display manager anyway. It would be faster for the launcher to directly use it
+anyway. However, when it comes time to actually run programs and such where
+they have to interact with a UI, they can use the existing IPC for the client
+and server as I write it. One bonus to this besides the speed, would be that
+I would have a working display manager interface which I can attach a protocol
+onto it later, rather than designing the UI layer and the protocol at the same
+time. Although I have a general idea of the kind of protocol it would be, it
+would best be done if it were actually implemented first.
+

@@ -90,7 +90,16 @@ final class __ClientConnection__
 				break;
 			}
 			
-			throw new Error("TODO");
+			// Handle the datagram
+			try
+			{
+			}
+			
+			// Do not propogate any excep
+			catch (Throwable t)
+			{
+				throw new Error("TODO");
+			}
 		}
 	}
 	
