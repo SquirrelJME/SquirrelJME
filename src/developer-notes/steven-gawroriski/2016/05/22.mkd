@@ -4,3 +4,13 @@
 
 I wonder if I can get much work done today also.
 
+## 07:38
+
+I suppose for element cleanup, the display manager is concrete and in memory
+while all of the internal display elements are concrete also. Then they just
+reference to their display owners and such. The display manager would have
+internal elements referenced for everything and not the outside container. The
+external elements could not be placed in a `WeakHashMap` because it auto
+manages references. I can however, send links as references already to the
+internal element details.
+
