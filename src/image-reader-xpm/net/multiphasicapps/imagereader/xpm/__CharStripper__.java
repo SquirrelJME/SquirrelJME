@@ -168,7 +168,18 @@ class __CharStripper__
 							case '?': return '?';
 							
 							case 'x':
-								throw new Error("TODO");
+								{
+									// Read all chars as hex
+									int x = Character.digit((char)in.read(),
+										16);
+									int y = Character.digit((char)in.read(),
+										16);
+									
+									// If all are valid, use it
+									if (x >= 0 && y >= 0)
+										return (x << 4) | (y);
+									continue;
+								}
 								
 							case '0':
 							case '1':
@@ -180,7 +191,19 @@ class __CharStripper__
 							case '7':
 							case '8':
 							case '9':
-								throw new Error("TODO");
+								{
+									// Read all chars as octal
+									int x = Character.digit((char)c, 8);
+									int y = Character.digit((char)in.read(),
+										8);
+									int z = Character.digit((char)in.read(),
+										8);
+									
+									// If all are valid, use it
+									if (x >= 0 && y >= 0 && z >= 0)
+										return (x << 6) | (y << 3) | (z);
+									continue;
+								}
 							
 								// Unknown, ignore
 							default:
