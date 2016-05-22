@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: image-reader-all
+X-SquirrelJME-UUID: e7a143c2-f04b-4b58-95e2-b8d3799a9438
+X-SquirrelJME-Depends: image-reader
+X-SquirrelJME-Optional: image-reader-xpm
+LIBlet-Title: All Image Readers
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160522
+LIBlet-Description: This is a meta package which has optional
+  dependencies on all image formats that can be read.
+
