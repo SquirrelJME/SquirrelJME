@@ -18,7 +18,7 @@ package net.multiphasicapps.squirreljme.ui;
  *
  * @since 2016/05/20
  */
-public abstract class UIDisplay
+public final class UIDisplay
 {
 	/**
 	 * Returns {@code true} if this display is visible to the user, but not
@@ -33,7 +33,10 @@ public abstract class UIDisplay
 	 * @return {@code true} if the display is visible to the user.
 	 * @since 2016/05/20
 	 */
-	public abstract boolean isVisible();
+	public boolean isVisible()
+	{
+		throw new Error("TODO");
+	}
 	
 	/**
 	 * Sets whether or not this display is visible on the screen.
@@ -48,6 +51,9 @@ public abstract class UIDisplay
 	 * effect or if the display was already in the given visibility state.
 	 * @since 2016/05/21
 	 */
-	public abstract boolean setVisible(boolean __vis);
+	public boolean setVisible(boolean __vis)
+	{
+		throw new Error("TODO");
+	}
 }
 

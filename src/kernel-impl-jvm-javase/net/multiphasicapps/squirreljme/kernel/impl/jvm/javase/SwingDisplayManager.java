@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.ui.InternalDisplayManager;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
@@ -23,7 +24,7 @@ import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
  * @since 2016/05/20
  */
 public class SwingDisplayManager
-	extends UIDisplayManager
+	extends InternalDisplayManager
 {
 	/** The kernel which created this. */
 	protected final JVMJavaSEKernel kernel;
@@ -44,16 +45,6 @@ public class SwingDisplayManager
 		
 		// Set
 		this.kernel = __k;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/21
-	 */
-	@Override
-	public UIDisplay createDisplay()
-	{
-		throw new Error("TODO");
 	}
 }
 

@@ -30,7 +30,7 @@ public class JVMJavaSEKernel
 	extends AutoBootKernel
 {
 	/** The display manager which utilizes Swing. */
-	protected final SwingDisplayManager displaymanager;
+	protected final UIDisplayManager displaymanager;
 	
 	/**
 	 * This initializes the launcher which uses an existing full Java SE JVM.
@@ -45,7 +45,8 @@ public class JVMJavaSEKernel
 			__args = new String[0];
 		
 		// Setup the display manager
-		this.displaymanager = new SwingDisplayManager(this);
+		this.displaymanager = new UIDisplayManager(
+			new SwingDisplayManager(this));
 		
 		// Finished booting
 		bootFinished(JVMJavaSEKernel.class);

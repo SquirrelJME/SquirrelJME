@@ -19,22 +19,44 @@ package net.multiphasicapps.squirreljme.ui;
  * display, while on a mobile device there might only be just a single display
  * at a time.
  *
- * Generally at any time, there will be two distinct variants of the display
- * manager being used. One will be an implementation by the kernel
- * implementation to provide native integration, user space processes will
- * also have a UIDisplayManager which uses the kernel IPC system to interact
- * with the concrete implementation by an implementation.
+ * This wraps an {@link InternalDisplayManager} so that if it lacks
+ * specific functionality it can be emulated by the front layer set of classes.
  *
  * @since 2016/05/20
  */
-public abstract class UIDisplayManager
+public final class UIDisplayManager
 {
+	/** The internal display manager to wrap. */
+	protected final InternalDisplayManager internal;
+	
+	/**
+	 * Initializes the display manager which wraps the internal representation
+	 * of the user interface.
+	 *
+	 * @param __idm The internal display to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/21
+	 */
+	public UIDisplayManager(InternalDisplayManager __idm)
+		throws NullPointerException
+	{
+		// Check
+		if (__idm == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.internal = __idm;
+	}
+	
 	/**
 	 * Creates a new display.
 	 *
 	 * @return The newly created display.
 	 * @since 2016/05/21
 	 */
-	public abstract UIDisplay createDisplay();
+	public UIDisplay createDisplay()
+	{
+		throw new Error("TODO");
+	}
 }
 

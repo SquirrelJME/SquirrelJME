@@ -8,17 +8,26 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
-
-import net.multiphasicapps.squirreljme.ui.InternalDisplay;
-import net.multiphasicapps.squirreljme.ui.UIDisplay;
+package net.multiphasicapps.squirreljme.ui;
 
 /**
- * DESCRIBE THIS.
+ * This is the internal implementation of the display manager.
  *
+ * Internal classes are not meant to be used by the end user, but only by
+ * the implementation of a display manager.
+ *
+ * @see UIDisplayManager
  * @since 2016/05/21
  */
-public class SwingDisplay
+public abstract class InternalDisplayManager
 {
+	/**
+	 * Initializes the internal display manager.
+	 *
+	 * @since 2016/05/21
+	 */
+	public InternalDisplayManager()
+	{
+	}
 }
 
