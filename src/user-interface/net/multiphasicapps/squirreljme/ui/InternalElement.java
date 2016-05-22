@@ -61,5 +61,27 @@ public abstract class InternalElement<X extends UIElement>
 		// Have the display manager link back this element
 		displaymanager.__newElement(__ref, this);
 	}
+	
+	/**
+	 * Returns the referenced external element or throws an exception if it
+	 * was garbage collected.
+	 *
+	 * @return The external element.
+	 * @throws UIGarbageCollectedException If the external element was garbage
+	 * collected.
+	 * @since 2016/05/22
+	 */
+	public final X external()
+		throws UIGarbageCollectedException
+	{
+		X rv = externalelement.get();
+		
+		// {@squirreljme.error BD02 The element was garbage collected.}
+		if (rv == null)
+			throw new UIGarbageCollectedException("BD02");
+		
+		// Return it
+		return rv;
+	}
 }
 
