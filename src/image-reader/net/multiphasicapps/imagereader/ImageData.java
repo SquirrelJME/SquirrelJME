@@ -15,17 +15,45 @@ package net.multiphasicapps.imagereader;
  *
  * @since 2016/05/22
  */
-public class ImageData
+public abstract class ImageData
 {
+	/** The image width. */
+	protected final int width;
+	
+	/** The image height. */
+	protected final int height;
+	
+	/**
+	 * Initializes the base image with the given width and height.
+	 *
+	 * @param __w The image width.
+	 * @param __h The image height.
+	 * @throws IllegalArgumentException If the width and or height or zero
+	 * or negative.
+	 * @since 2016/05/22
+	 */
+	public ImageData(int __w, int __h)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BM01 The  (The image width; The image height)}
+		if (__w <= 0 || __h <= 0)
+			throw new IllegalArgumentException(String.format("BM01 %d %d",
+				__w, __h));
+		
+		// Set
+		this.width = __w;
+		this.height = __h;
+	}
+	
 	/**
 	 * Returns the height of the image.
 	 *
 	 * @return The image height.
 	 * @since 2016/05/22
 	 */
-	public int height()
+	public final int height()
 	{
-		throw new Error("TODO");
+		return this.height;
 	}
 	
 	/**
@@ -45,9 +73,9 @@ public class ImageData
 	 * @return The image width.
 	 * @since 2016/05/22
 	 */
-	public int width()
+	public final int width()
 	{
-		throw new Error("TODO");
+		return this.width;
 	}
 }
 

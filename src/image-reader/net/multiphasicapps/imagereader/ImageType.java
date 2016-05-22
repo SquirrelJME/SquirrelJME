@@ -17,7 +17,7 @@ package net.multiphasicapps.imagereader;
  */
 public enum ImageType
 {
-	/** Standard 8-bit channel alpha, red, green, and blue image. */
+	/** 8-bit channel alpha, red, green, and blue image stored as int. */
 	INT_ARGB,
 	
 	/** End. */
