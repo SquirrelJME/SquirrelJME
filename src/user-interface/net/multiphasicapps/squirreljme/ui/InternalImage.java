@@ -10,24 +10,25 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import java.lang.ref.Reference;
+
 /**
- * This represents a component which is the base for all widgets that are
- * used inside of a display.
+ * This is an internal representation of an image.
  *
  * @since 2016/05/22
  */
-public abstract class UIComponent
-	extends UIElement
+public abstract class InternalImage
+	extends InternalElement<UIImage>
 {
 	/**
-	 * Initializes the base component that is placed within a display.
+	 * Initializes the internal image.
 	 *
-	 * @param __dm The owning display manager.
+	 * @param __r The reference to the external image.
 	 * @since 2016/05/22
 	 */
-	UIComponent(UIDisplayManager __dm)
+	public InternalImage(Reference<UIImage> __r)
 	{
-		super(__dm);
+		super(__r);
 	}
 }
 

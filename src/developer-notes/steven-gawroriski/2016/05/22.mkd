@@ -44,3 +44,10 @@ as Palm OS, I believe there is a limit to the number of entries that are
 visible in a menu, so I will need to have a "More..." so to speak at the end
 of the menu so that all entries can still be accessed as desired.
 
+## 16:53
+
+The selection of JARs which are available for running can just be a list of
+icons. On Swing this would just be a list, while on other systems it would try
+to match the native means for showing icons and such if it cannot directly be
+used and such.
+

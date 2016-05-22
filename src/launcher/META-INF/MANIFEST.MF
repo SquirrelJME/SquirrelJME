@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: launcher
 X-SquirrelJME-UUID: 555e329e-1e75-493b-be03-c746e9ee0242
-X-SquirrelJME-Depends: user-interface, kernel
+X-SquirrelJME-Depends: user-interface, kernel,
+  squirreljme-mascot-xpm-low
 X-SquirrelJME-Error: BH
 LIBlet-Title: Launcher
 LIBlet-Vendor: Steven Gawroriski

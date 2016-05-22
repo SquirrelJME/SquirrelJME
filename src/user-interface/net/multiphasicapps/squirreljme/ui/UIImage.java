@@ -11,21 +11,28 @@
 package net.multiphasicapps.squirreljme.ui;
 
 /**
- * This represents a component which is the base for all widgets that are
- * used inside of a display.
+ * This is an image which may be shown by the user interface. The image may
+ * come in many formats and internally is usually backed by a buffer containing
+ * the image data. Due to the wide range of systems supported by SquirrelJME
+ * an input image may be associated with multiple actual images which represent
+ * the size of the image along with specific color details. The internal
+ * representation may choose an image of a specific type to be displayed. For
+ * example on low resolution systems, a 16x16 image may be chosen while on
+ * a system which a much higher pixel density might choose one that is of a
+ * higher resolution.
  *
  * @since 2016/05/22
  */
-public abstract class UIComponent
+public final class UIImage
 	extends UIElement
 {
 	/**
-	 * Initializes the base component that is placed within a display.
+	 * Initializes the image.
 	 *
 	 * @param __dm The owning display manager.
 	 * @since 2016/05/22
 	 */
-	UIComponent(UIDisplayManager __dm)
+	UIImage(UIDisplayManager __dm)
 	{
 		super(__dm);
 	}
