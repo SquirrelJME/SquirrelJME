@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
+import net.multiphasicapps.squirreljme.ui.UIImage;
 
 /**
  * This implemens the internal display in Swing.
@@ -66,6 +67,21 @@ public class SwingDisplay
 		synchronized (this.lock)
 		{
 			return this.frame.isVisible();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void setIcon(UIImage __icon)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
 		}
 	}
 	

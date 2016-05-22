@@ -90,5 +90,16 @@ public abstract class InternalElement<X extends UIElement>
 		// Return it
 		return rv;
 	}
+	
+	/**
+	 * Returns the owning display manager.
+	 *
+	 * @return The owning display manager.
+	 * @since 2016/05/22
+	 */
+	final UIDisplayManager __displayManager()
+	{
+		return this.displaymanager;
+	}
 }
 

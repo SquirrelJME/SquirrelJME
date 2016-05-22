@@ -47,6 +47,17 @@ public abstract class InternalDisplay
 		throws UIException;
 	
 	/**
+	 * Sets the icon to be used when displaying.
+	 *
+	 * @param __icon The icon to associate with the given display, {@code null}
+	 * removes any associated icon.
+	 * @throws UIException If the icon could not be set.
+	 * @since 2016/05/22
+	 */
+	public abstract void setIcon(UIImage __icon)
+		throws UIException;
+	
+	/**
 	 * Sets the title of the display.
 	 *
 	 * @param __nt The title to use for the display, {@code null} clears the

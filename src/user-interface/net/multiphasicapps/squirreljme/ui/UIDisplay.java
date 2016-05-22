@@ -23,6 +23,9 @@ public final class UIDisplay
 {
 	/** The title the display uses. */
 	private volatile String _title;
+	
+	/** The icon that the display uses. */
+	private volatile UIImage _icon;
 
 	/**
 	 * Initializes the display wrapper.
@@ -56,6 +59,45 @@ public final class UIDisplay
 		synchronized (this.lock)
 		{
 			return __internal().isVisible();
+		}
+	}
+	
+	/**
+	 * Sets the icon used to be displayed on the display.
+	 *
+	 * A display might not be capable of updating the icon if the image data
+	 * changes, thus this should be called when an icon is required to take
+	 * effect.
+	 *
+	 * @param __icon The image to use as the program icon, if {@code null} the
+	 * icon is removed.
+	 * @return The old icon.
+	 * @throws UIException If the icon could not be changed or if the icon
+	 * belongs to another display manager.
+	 * @since 2016/05/22
+	 */
+	public UIImage setIcon(UIImage __icon)
+		throws UIException
+	{
+		// {@squirreljme.error BD05 The image to use as the icon for a display
+		// belongs to another display manager.}
+		if (__icon != null && __icon.displayManager() != displayManager())
+			throw new UIException("BD05");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Get the old icon
+			UIImage rv = this._icon;
+			
+			// Set the new icon
+			__internal().setIcon(__icon);
+			
+			// Set as used
+			this._icon = __icon;
+			
+			// Return old
+			return rv;
 		}
 	}
 	
