@@ -142,10 +142,8 @@ public class LauncherInterface
 				if (is == null)
 					continue;
 				
-				// Read the image
-				ImageData id = irf.readImage("xpm", is);
-				
-				throw new Error("TODO");
+				// Read the image and register it with the image
+				icon.addImageData(irf.readImage("xpm", is));
 			}
 			
 			// Ignore read errors

@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import net.multiphasicapps.imagereader.ImageData;
+import net.multiphasicapps.imagereader.ImageType;
+
 /**
  * This is an image which may be shown by the user interface. The image may
  * come in many formats and internally is usually backed by a buffer containing
@@ -35,6 +38,24 @@ public final class UIImage
 	UIImage(UIDisplayManager __dm)
 	{
 		super(__dm);
+	}
+	
+	/**
+	 * Adds the specified image to be referenced by this image.
+	 *
+	 * @param __id The image data to reference.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UIException If the image could not be added.
+	 * @since 2016/05/22
+	 */
+	public void addImageData(ImageData __id)
+		throws NullPointerException, UIException
+	{
+		// Check
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
