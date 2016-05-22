@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.launcher;
 
 import java.io.Closeable;
+import java.io.InputStream;
+import java.io.IOException;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageReaderFactory;
 import net.multiphasicapps.imagereader.xpm.XPMImageReader;
@@ -126,7 +128,31 @@ public class LauncherInterface
 		int[] pis = displaymanager.preferredIconSizes();
 		int pisn = pis.length;
 		for (int i = 0; i < pisn; i += 2)
-			throw new Error("TODO");
+		{
+			// Get dimensions
+			int w = pis[i];
+			int h = pis[i + 1];
+			
+			// Try reading the XPM image data
+			try (InputStream is = getClass().getResourceAsStream(
+				"/net/multiphasicapps/squirreljme/mascot/xpm/low/head_" + w +
+				"x" + h + ".xpm"))
+			{
+				// If no image exists, ignore
+				if (is == null)
+					continue;
+				
+				// Read the image
+				ImageData id = irf.readImage("xpm", is);
+				
+				throw new Error("TODO");
+			}
+			
+			// Ignore read errors
+			catch (IOException e)
+			{
+			}
+		}
 		
 		// Set icon
 		maindisp.setIcon(icon);
