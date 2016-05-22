@@ -76,6 +76,10 @@ public class XPMImageReader
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
+		// Create character stripper
+		__CharStripper__ cs = new __CharStripper__(new InputStreamReader(__is,
+			"utf-8"));
+		
 		throw new Error("TODO");
 	}
 }
