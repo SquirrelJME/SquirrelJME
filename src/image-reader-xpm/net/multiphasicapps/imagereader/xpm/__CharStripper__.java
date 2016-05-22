@@ -170,7 +170,7 @@ class __CharStripper__
 					
 					// Start of a string?
 					else if (c == '"')
-						throw new Error("TODO");
+						this._instring = true;
 					
 					// Possible start of comment?
 					else if (c == '/')
@@ -193,6 +193,17 @@ class __CharStripper__
 						// Unknown, ignore
 						else
 							continue;
+					}
+					
+					// String separator
+					else if (c == ',')
+					{
+						// If in a bracket, return a special code
+						if (this._inbracket)
+							return END_OF_LINE;
+						
+						// Otherwise, ignore it
+						continue;
 					}
 					
 					// Unknown, ignore
