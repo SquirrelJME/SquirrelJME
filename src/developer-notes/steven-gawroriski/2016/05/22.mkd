@@ -18,3 +18,15 @@ internal element details.
 
 The internal and external displays should share locks.
 
+## 11:06
+
+One thing which I can use virtually for the first time so to speak is the
+system tray and icons. This is after I get some more basic things working. So
+for example if a UI does not support the system tray natively then the
+display manager will just create a new display which acts as a virtual
+system tray. This would then give me all the needed functionality for every
+platform. However, for specific platforms they would have to implement some
+kind of system tray. For PalmOS, I can just add a tray to the top right of
+the application so to speak, so when icons are tapped on they perform their
+required action and such.
+
