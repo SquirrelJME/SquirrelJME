@@ -35,5 +35,27 @@ public abstract class InternalDisplay
 	{
 		super(__ref);
 	}
+	
+	/**
+	 * Returns the visibility state of the internal display.
+	 *
+	 * @return {@code true} if the display is visible.
+	 * @throws UIException If the visibility state could not be determined.
+	 * @since 2016/05/22
+	 */
+	public abstract boolean isVisible()
+		throws UIException;
+	
+	/**
+	 * Sets the visibility state of the internal display, it is possible for
+	 * this operation to not change the visibility of the display.
+	 *
+	 * @param __vis If {@code true} then the display should be made visible.
+	 * @throws UIException If the visibility could not be changed because of
+	 * an error, not if it could not be changed for a normal reason.
+	 * @since 2016/05/22
+	 */
+	public abstract void setVisible(boolean __vis)
+		throws UIException;
 }
 

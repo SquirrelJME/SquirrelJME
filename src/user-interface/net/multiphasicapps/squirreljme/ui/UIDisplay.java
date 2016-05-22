@@ -43,11 +43,17 @@ public final class UIDisplay
 	 * ever be visible.
 	 *
 	 * @return {@code true} if the display is visible to the user.
+	 * @throws UIException If the visibility state could not be determined.
 	 * @since 2016/05/20
 	 */
 	public boolean isVisible()
+		throws UIException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			return __internal().isVisible();
+		}
 	}
 	
 	/**
@@ -61,11 +67,24 @@ public final class UIDisplay
 	 * the user, otherwise it should be hidden.
 	 * @return {@code true} if the visibility change was accepted and took
 	 * effect or if the display was already in the given visibility state.
+	 * @throws UIException If the visibility state could not be changed.
 	 * @since 2016/05/21
 	 */
 	public boolean setVisible(boolean __vis)
+		throws UIException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Obtain the old visibility state
+			boolean was = isVisible();
+			
+			// Set the new visibility state internally
+			__internal().setVisible(__vis);
+			
+			// Check if visibility changed
+			return was != isVisible();
+		}
 	}
 	
 	/**

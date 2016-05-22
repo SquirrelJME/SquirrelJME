@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import javax.swing.JFrame;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
+import net.multiphasicapps.squirreljme.ui.UIException;
 
 /**
  * This implemens the internal display in Swing.
@@ -41,6 +42,36 @@ public class SwingDisplay
 		// Create the frame
 		JFrame frame = new JFrame();
 		this.frame = frame;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public boolean isVisible()
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this.frame.isVisible();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
+	public void setVisible(boolean __vis)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this.frame.setVisible(__vis);
+		}
 	}
 }
 
