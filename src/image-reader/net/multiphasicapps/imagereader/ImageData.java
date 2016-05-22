@@ -23,6 +23,12 @@ public abstract class ImageData
 	/** The image height. */
 	protected final int height;
 	
+	/** X hotspot position. */
+	protected final int hotx;
+	
+	/** Y hotspot position. */
+	protected final int hoty;
+	
 	/**
 	 * Initializes the base image with the given width and height.
 	 *
@@ -35,6 +41,23 @@ public abstract class ImageData
 	public ImageData(int __w, int __h)
 		throws IllegalArgumentException
 	{
+		this(__w, __h, 0, 0);
+	}
+	
+	/**
+	 * Initializes the base image with the given width and height.
+	 *
+	 * @param __w The image width.
+	 * @param __h The image height.
+	 * @param __x Hot X position (for cursors).
+	 * @param __y Hot Y position (for cursors).
+	 * @throws IllegalArgumentException If the width and or height or zero
+	 * or negative.
+	 * @since 2016/05/22
+	 */
+	public ImageData(int __w, int __h, int __x, int __y)
+		throws IllegalArgumentException
+	{
 		// {@squirreljme.error BM01 The  (The image width; The image height)}
 		if (__w <= 0 || __h <= 0)
 			throw new IllegalArgumentException(String.format("BM01 %d %d",
@@ -43,6 +66,8 @@ public abstract class ImageData
 		// Set
 		this.width = __w;
 		this.height = __h;
+		this.hotx = __x;
+		this.hoty = __y;
 	}
 	
 	/**
@@ -54,6 +79,28 @@ public abstract class ImageData
 	public final int height()
 	{
 		return this.height;
+	}
+	
+	/**
+	 * Returns the X hotspot of the image.
+	 *
+	 * @return The x hotspot.
+	 * @since 2016/05/22
+	 */
+	public final int hotSpotX()
+	{
+		return this.hotx;
+	}
+	
+	/**
+	 * Returns the Y hotspot of the image.
+	 *
+	 * @return The y hotspot.
+	 * @since 2016/05/22
+	 */
+	public final int hotSpotY()
+	{
+		return this.hoty;
 	}
 	
 	/**

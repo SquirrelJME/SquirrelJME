@@ -80,6 +80,19 @@ public class XPMImageReader
 		__CharStripper__ cs = new __CharStripper__(new InputStreamReader(__is,
 			"utf-8"));
 		
+		// DEBUG
+		System.err.print("DEBUG -- XPM Chars: ");
+		for (;;)
+		{
+			int c = cs.read();
+			
+			if (c < 0)
+				break;
+			
+			System.err.print((char)c);
+		}
+		System.err.println();
+		
 		throw new Error("TODO");
 	}
 }

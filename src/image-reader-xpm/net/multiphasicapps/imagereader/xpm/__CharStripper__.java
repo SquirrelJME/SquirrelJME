@@ -19,6 +19,10 @@ import java.io.Reader;
  * return the character data that is between the first C string array
  * compatible type.
  *
+ * If a comma appears inside of the string array, then the character that would
+ * be returned in its place is a {@code '\n'} character. This is because XPM
+ * is a line based format.
+ *
  * @since 2016/05/22
  */
 class __CharStripper__
