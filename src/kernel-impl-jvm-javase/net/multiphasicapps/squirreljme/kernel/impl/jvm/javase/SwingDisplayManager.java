@@ -98,7 +98,16 @@ public class SwingDisplayManager
 	public int[] internalPreferredIconSizes()
 		throws UIException
 	{
-		throw new Error("TODO");
+		// Use common icon sizes used on desktop systems
+		return new int[]
+			{
+				16, 16,
+				20, 20,
+				32, 32,
+				40, 40,
+				48, 48,
+				64, 64
+			};
 	}
 }
 
