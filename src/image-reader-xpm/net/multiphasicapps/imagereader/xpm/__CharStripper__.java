@@ -15,19 +15,25 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- * This is a character stripper which is used to remove C/C++ comments and only
- * return the character data that is between the first C string array
- * compatible type.
+ * This is a character stripper which is used to remove C/C++ comments and
+ * return the series of strings between curly braces. This does not perform
+ * tokenization to remain as simple and as fast as possible, so XPM images
+ * which use the preprocessor will likely not load properly. The decoder
+ * generally assumes that the XPM is well formed.
  *
  * If a comma appears inside of the string array, then the character that would
- * be returned in its place is a {@code '\n'} character. This is because XPM
- * is a line based format.
+ * be returned in its place is {@link #END_OF_LINE} character. This is because
+ * XPM is a line based format.
  *
  * @since 2016/05/22
  */
 class __CharStripper__
 	extends Reader
 {
+	/** Special end of line code. */
+	public static final int END_OF_LINE =
+		Integer.MIN_VALUE;
+	
 	/** Lock to make sure there is a consistent state. */
 	protected final Object lock =
 		new Object();
@@ -79,7 +85,19 @@ class __CharStripper__
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Read loop to find a valid character
+			Reader in = this.in;
+			for (;;)
+			{
+				// Read single character
+				int c = in.read();
+				
+				// EOF?
+				if (c < 0)
+					return -1;
+				
+				throw new Error("TODO");
+			}
 		}
 	}
 	

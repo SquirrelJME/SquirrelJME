@@ -84,9 +84,11 @@ public class XPMImageReader
 		System.err.print("DEBUG -- XPM Chars: ");
 		for (;;)
 		{
+			// Read character
 			int c = cs.read();
+			boolean eol = (c == __CharStripper__.END_OF_LINE);
 			
-			if (c < 0)
+			if (c < 0 && !eol)
 				break;
 			
 			System.err.print((char)c);
