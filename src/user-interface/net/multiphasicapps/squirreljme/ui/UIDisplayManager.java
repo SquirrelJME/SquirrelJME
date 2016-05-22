@@ -92,6 +92,36 @@ public final class UIDisplayManager
 	}
 	
 	/**
+	 * Obtains an external element from an internal one.
+	 *
+	 * @param <E> The type of element to obtain.
+	 * @param __cl The type of element that is expected.
+	 * @param __e The internal element to get the external element for.
+	 * @return The external element or {@code null} if it was cleaned up or
+	 * was not found.
+	 * @throws ClassCastException If the external element is not of the
+	 * expected type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/22
+	 */
+	final <E extends UIElement> E __getExternal(Class<E> __cl,
+		InternalElement __e)
+		throws ClassCastException, NullPointerException
+	{
+		// Check
+		if (__cl == null || __e == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Map<Reference<? extends UIElement>, InternalElement> e =
+			this.elements;
+		synchronized (e)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Registers that a new element was created under the UI and adds it
 	 * and its reference to the internal mapping.
 	 *
