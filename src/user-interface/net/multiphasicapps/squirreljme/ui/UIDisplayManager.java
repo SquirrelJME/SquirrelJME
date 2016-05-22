@@ -44,6 +44,11 @@ public final class UIDisplayManager
 	protected final ReferenceQueue<? extends UIElement> rqueue =
 		new ReferenceQueue<>();
 	
+	/** The mapping between references and internal elements. */
+	protected final Map<Reference<? extends UIElement>, InternalElement>
+		elements =
+		new HashMap<>();
+	
 	/**
 	 * Initializes the display manager which wraps the internal representation
 	 * of the user interface.
@@ -84,6 +89,33 @@ public final class UIDisplayManager
 		throws UIException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Registers that a new element was created under the UI and adds it
+	 * and its reference to the internal mapping.
+	 *
+	 * @param __ref The reference to the external element.
+	 * @param __ie The internal element representation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/22
+	 */
+	final void __newElement(Reference<? extends UIElement> __ref,
+		InternalElement __ie)
+		throws NullPointerException
+	{
+		// Check
+		if (__ref == null || __ie == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Map<Reference<? extends UIElement>, InternalElement> e =
+			this.elements;
+		synchronized (e)
+		{
+			// Add it
+			e.put(__ref, __ie);
+		}
 	}
 	
 	/**
