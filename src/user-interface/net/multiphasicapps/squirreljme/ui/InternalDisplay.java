@@ -47,6 +47,17 @@ public abstract class InternalDisplay
 		throws UIException;
 	
 	/**
+	 * Sets the title of the display.
+	 *
+	 * @param __nt The title to use for the display, {@code null} clears the
+	 * title.
+	 * @throws UIException If the title could not be set.
+	 * @since 2016/05/22
+	 */
+	public abstract void setTitle(String __nt)
+		throws UIException;
+	
+	/**
 	 * Sets the visibility state of the internal display, it is possible for
 	 * this operation to not change the visibility of the display.
 	 *

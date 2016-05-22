@@ -21,6 +21,9 @@ package net.multiphasicapps.squirreljme.ui;
 public final class UIDisplay
 	extends UIElement
 {
+	/** The title the display uses. */
+	private volatile String _title;
+
 	/**
 	 * Initializes the display wrapper.
 	 *
@@ -53,6 +56,34 @@ public final class UIDisplay
 		synchronized (this.lock)
 		{
 			return __internal().isVisible();
+		}
+	}
+	
+	/**
+	 * Sets the title of the display.
+	 *
+	 * @param __nt The new title to display, if {@code null} it is removed.
+	 * @return The old title.
+	 * @throws UIException If the title could not be set.
+	 * @since 2016/05/22
+	 */
+	public String setTitle(String __nt)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Get the old title
+			String rv = this._title;
+			
+			// Set new title
+			__internal().setTitle(__nt);
+			
+			// Set used title
+			this._title = __nt;
+			
+			// Return old
+			return rv;
 		}
 	}
 	

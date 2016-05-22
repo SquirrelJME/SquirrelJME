@@ -74,6 +74,21 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
+	public void setTitle(String __nt)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this.frame.setTitle((__nt == null ? "" : __nt));
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/22
+	 */
+	@Override
 	public void setVisible(boolean __vis)
 		throws UIException
 	{

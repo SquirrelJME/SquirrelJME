@@ -109,6 +109,9 @@ public class LauncherInterface
 		UIDisplay maindisp = displaymanager.createDisplay();
 		this._maindisp = maindisp;
 		
+		// Set title
+		maindisp.setTitle("SquirrelJME");
+		
 		// Done, make it visible
 		maindisp.setVisible(true);
 	}
