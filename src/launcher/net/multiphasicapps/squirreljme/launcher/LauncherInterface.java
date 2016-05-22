@@ -15,8 +15,6 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
-import net.multiphasicapps.squirreljme.ui.ipc.client.UIDisplayManagerClient;
-import net.multiphasicapps.squirreljme.ui.ipc.DMServiceID;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
@@ -31,7 +29,7 @@ import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
  * @since 2016/05/20
  */
 public class LauncherInterface
-	implements Closeable, Runnable
+	implements Runnable
 {
 	/** The kernel to launch and control for. */
 	protected final Kernel kernel;
@@ -42,9 +40,6 @@ public class LauncherInterface
 	/** The display manager to use to interact with the user. */
 	protected final UIDisplayManager displaymanager;
 	
-	/** The used socket to the server. */
-	protected final KIOSocket socket;
-	
 	/** The primary display. */
 	private volatile UIDisplay _maindisp;
 	
@@ -52,63 +47,27 @@ public class LauncherInterface
 	 * Initializes the launcher interface.
 	 *
 	 * @param __k The kernel to provide a launcher for.
+	 * @param __dm The kernel display manager.
 	 * @throws IllegalStateException If the server could not be found or did
 	 * not permit a connection.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/20
 	 */
-	public LauncherInterface(Kernel __k)
+	public LauncherInterface(Kernel __k, UIDisplayManager __dm)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check
-		if (__k == null)
+		if (__k == null || __dm == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.kernel = __k;
 		KernelProcess kernelprocess = __k.kernelProcess();
 		this.kernelprocess = kernelprocess;
-		
-		// Find the display manager server.
-		try
-		{
-			// Find processes which provide the given service
-			KernelProcess[] svs = __k.locateServer(DMServiceID.SERVICE_ID);
-			
-			// {@squirreljme.error BH02 No process provides the display
-			// manager service.}
-			if (svs.length <= 0)
-				throw new IllegalStateException("BH02");
-			
-			// Connect to the server
-			KIOSocket sock = kernelprocess.connectSocket(
-				DMServiceID.SERVICE_ID, svs[0]);
-			this.socket = sock;
-			
-			// Initialize the display manager
-			this.displaymanager = new UIDisplayManagerClient(sock);
-		}
-		
-		// {@squirreljme.error BH01 Could not create the socket to the server.}
-		catch (KIOException e)
-		{
-			throw new IllegalStateException("BH01", e);
-		}
+		this.displaymanager = __dm;
 		
 		// Setup new launcher thread which runs under the kernel
 		kernelprocess.createThread(this);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/21
-	 */
-	@Override
-	public void close()
-		throws KIOException
-	{
-		// Close ehe socket
-		this.socket.close();
 	}
 	
 	/**
