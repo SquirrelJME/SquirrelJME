@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
 /**
  * This is the base class for all displayable elements.
  *
@@ -17,8 +21,15 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public abstract class UIElement
 {
+	/** Element lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The external display manager. */
 	protected final UIDisplayManager displaymanager;
+	
+	/** Link back to the internal element. */
+	private volatile InternalElement _internal;
 	
 	/**
 	 * Initializes the base element.
@@ -57,6 +68,54 @@ public abstract class UIElement
 	public final UIDisplayManager displayManager()
 	{
 		return this.displaymanager;
+	}
+	
+	/**
+	 * Returns the internal element which was linked to this external one.
+	 *
+	 * @param <E> The internal element type.
+	 * @param __cl The class for that element.
+	 * @return The internal element.
+	 * @since 2016/05/22
+	 */
+	final <E extends InternalElement<?>> E __internal(Class<E> __cl)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BD04 No internal element was linked to
+			// this external one.}
+			return __cl.cast(Objects.requireNonNull(this._internal, "BD04"));
+		}
+	}
+	
+	/**
+	 * Links back an internal element so that the external element may
+	 * reference it and perform other actions with it.
+	 *
+	 * @param __i The internal element to link back.
+	 * @throws IllegalStateException If there already is a link.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/22
+	 */
+	final void __linkBack(InternalElement __i)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BD03 Element has already been linked to an
+			// internal one.}
+			if (this._internal != null)
+				throw new IllegalStateException("BD03");
+			
+			// Set
+			this._internal = __i;
+		}
 	}
 }
 

@@ -54,12 +54,16 @@ public abstract class InternalElement<X extends UIElement>
 		// {@squirreljme.error BD01 Reference to the external UI element was
 		// garbage collected as it was created, this is a bug in the virtual
 		// machine.}
+		X disp = __ref.get();
 		UIDisplayManager displaymanager = Objects.<X>requireNonNull(
-			__ref.get(), "BD01").displayManager();
+			disp, "BD01").displayManager();
 		this.displaymanager = displaymanager;
 		
 		// Have the display manager link back this element
 		displaymanager.__newElement(__ref, this);
+		
+		// Link to the external element (a back pointer)
+		disp.__linkBack(this);
 	}
 	
 	/**
