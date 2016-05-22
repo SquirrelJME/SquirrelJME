@@ -41,6 +41,18 @@ class __CharStripper__
 	/** The input reader. */
 	protected final Reader in;
 	
+	/** The current comment type (0 = none, 1 = single, 2 = multi. */
+	private volatile int _comment;
+	
+	/** In a string literal? */
+	private volatile boolean _instring;
+	
+	/** In the XPM bracket data. */
+	private volatile boolean _inbracket;
+	
+	/** End of XPM? */
+	private volatile boolean _endxpm;
+	
 	/**
 	 * Initializes the character stripper.
 	 *
@@ -89,6 +101,10 @@ class __CharStripper__
 			Reader in = this.in;
 			for (;;)
 			{
+				// End of the XPM?
+				if (this._endxpm)
+					return -1;
+				
 				// Read single character
 				int c = in.read();
 				
@@ -96,7 +112,52 @@ class __CharStripper__
 				if (c < 0)
 					return -1;
 				
-				throw new Error("TODO");
+				// In a multi-line comment?
+				int comment = this._comment;
+				if (comment == 2)
+					throw new Error("TODO");
+				
+				// Single line comment
+				else if (comment == 1)
+					throw new Error("TODO");
+				
+				// In string?
+				if (this._instring)
+					throw new Error("TODO");
+				
+				// Outside a string
+				else
+				{
+					// Starting bracket
+					if (c == '{')
+					{
+						// Set in bracket
+						this._inbracket = true;
+					}
+					
+					// Ending brakcet
+					else if (c == '}')
+					{
+						// End the XPM but only if in a bracket
+						if (this._inbracket)
+						{
+							this._endxpm = true;
+							continue;
+						}
+					}
+					
+					// Start of a string?
+					else if (c == '"')
+						throw new Error("TODO");
+					
+					// Possible start of comment?
+					else if (c == '/')
+						throw new Error("TODO");
+					
+					// Unknown, ignore
+					else
+						continue;
+				}
 			}
 		}
 	}
