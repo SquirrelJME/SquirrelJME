@@ -14,6 +14,7 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.launcher.LauncherInterface;
+import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**
  * This is the autoboot kernel which instead of having the standard launcher
@@ -40,6 +41,15 @@ public abstract class AutoBootKernel
 	}
 	
 	/**
+	 * Returns the display manager to use when displaying the launcher
+	 * interface.
+	 *
+	 * @return The display manager to use.
+	 * @since 2016/05/21
+	 */
+	protected abstract UIDisplayManager getDisplayManager();
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/20
 	 */
@@ -50,33 +60,26 @@ public abstract class AutoBootKernel
 		super.bootFinishRunner();
 		
 		// Setup launcher
-		try (LauncherInterface li = new LauncherInterface(this))
-		{
-			// Block until all workers are terminated
-			for (;;)
-			{
-				// Kernel loop
-				try
-				{
-					untilProcessless();
-			
-					// Would normally terminate
-					return;
-				}
-			
-				// Interrupted, yield and retry
-				catch (InterruptedException e)
-				{
-					Thread.yield();
-				}
-			}
-		}
+		LauncherInterface li = new LauncherInterface(this,
+			getDisplayManager());
 		
-		// {@squirreljme.error BI01 Failed to initialize the launcher
-		// display socket.}
-		catch (KIOException e)
+		// Block until all workers are terminated
+		for (;;)
 		{
-			throw new RuntimeException("BI01", e);
+			// Kernel loop
+			try
+			{
+				untilProcessless();
+		
+				// Would normally terminate
+				return;
+			}
+		
+			// Interrupted, yield and retry
+			catch (InterruptedException e)
+			{
+				Thread.yield();
+			}
 		}
 	}
 }
