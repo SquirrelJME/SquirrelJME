@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import java.lang.ref.Reference;
+
 /**
  * This is the internal display which in essence acts like a standard window,
  * tab, or single screen to provide an interactive environment for the user.
@@ -26,10 +28,13 @@ public abstract class InternalDisplay
 	/**
 	 * Initializes the internal display.
 	 *
+	 * @param __ref The external element.
 	 * @since 2016/05/21
 	 */
-	public InternalDisplay()
+	public InternalDisplay(Reference<UIDisplay> __ref)
 	{
+		super(__ref);
+		
 		throw new Error("TODO");
 	}
 }

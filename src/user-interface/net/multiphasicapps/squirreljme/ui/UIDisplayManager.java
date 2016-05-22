@@ -40,38 +40,32 @@ public final class UIDisplayManager
 	/** The UI element cleanup thread. */
 	protected final Thread cleanupthread;
 	
-	/** Reference queue of external elements. */
-	private final ReferenceQueue<? extends UIElement> _rqueue =
+	/** The reference queue for element cleanup. */
+	protected final ReferenceQueue<? extends UIElement> rqueue =
 		new ReferenceQueue<>();
-	
-	/** A reference to self. */
-	protected final Reference<UIDisplayManager> refthis =
-		new WeakReference<UIDisplayManager>(this, this._rqueue);
-	
-	/** Hash map of internal elements. */
-	private final Map<ReferenceQueue<? extends UIElement>,
-		? extends InternalElement> _elements =
-		new HashMap<>();
 	
 	/**
 	 * Initializes the display manager which wraps the internal representation
 	 * of the user interface.
 	 *
-	 * @param __idm The internal display to wrap.
+	 * @param __f The factory which creates internal display managers.
 	 * @throws NullPointerException On null arguments.
 	 * @throws UIException If the display manager could not be created.
 	 * @since 2016/05/21
 	 */
-	public UIDisplayManager(InternalDisplayManager __idm)
+	public UIDisplayManager(Factory __f)
 		throws NullPointerException, UIException
 	{
+		super(null);
+		
 		// Check
-		if (__idm == null)
+		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.internal = __idm;
-		__idm.__setLink(this, new WeakReference<>(this));
+		// Create internal display manager
+		InternalDisplayManager internal = __f.create(
+			new WeakReference<>(this));
+		this.internal = internal;
 		
 		// Setup cleanup thread
 		Thread cleanupthread = new Thread(new __Cleanup__());
@@ -90,6 +84,26 @@ public final class UIDisplayManager
 		throws UIException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The factory interface for creating internal display managers.
+	 *
+	 * @since 2016/05/22
+	 */
+	public static interface Factory
+	{
+		/**
+		 * Creates a new internal display manager.
+		 *
+		 * @param __ref The reference to the display manager.
+		 * @return The newly created display manager.
+		 * @throws UIException If it could not be created.
+		 * @since 2016/05/22
+		 */
+		public abstract InternalDisplayManager create(
+			Reference<UIDisplayManager> __ref)
+			throws UIException;
 	}
 	
 	/**

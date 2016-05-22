@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.ui;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 /**
  * This is the base class for all internal elements and is used to link
@@ -27,49 +28,34 @@ public abstract class InternalElement<X extends UIElement>
 		new Object();
 	
 	/** The owning display manager. */
-	private volatile UIDisplayManager _owner;
+	protected final UIDisplayManager displaymanager;
 	
 	/** The linked display element (is a reference for cleanup). */
-	private volatile Reference<X> _link;
+	protected final Reference<X> externalelement;
 	
 	/**
 	 * Initializes the internal element.
 	 *
-	 * @since 2016/05/21
-	 */
-	InternalElement()
-	{
-	}
-	
-	/**
-	 * Links the display element to an external one.
-	 *
-	 * @param __o The display manager which owns this internal element.
-	 * @param __e The external element which is to link to this.
-	 * @throws IllegalStateException If this internal element has already been
-	 * linked to an external one.
+	 * @param __dm The owning display manager.
+	 * @param __ref The external element.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/21
 	 */
-	final void __setLink(UIDisplayManager __o, Reference<X> __x)
-		throws IllegalStateException, NullPointerException
+	InternalElement(Reference<X> __ref)
+		throws NullPointerException
 	{
 		// Check
-		if (__o == null || __x == null)
+		if (__ref == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error BD01 The internal element has
-			// already been linked to an external element.
-			if (this._link != null)
-				throw new IllegalStateException("BD01");
-			
-			// Set
-			this._owner = __o;
-			this._link = __x;
-		}
+		// Set
+		this.externalelement = __ref;
+		
+		// {@squirreljme.error BD01 Reference to the external UI element was
+		// garbage collected as it was created, this is a bug in the virtual
+		// machine.}
+		this.displaymanager = Objects.<X>requireNonNull(__ref.get(), "BD01").
+			displayManager();
 	}
 }
 

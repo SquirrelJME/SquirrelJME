@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
+import net.multiphasicapps.squirreljme.ui.InternalDisplayManager;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 
 /**
@@ -46,7 +48,19 @@ public class JVMJavaSEKernel
 		
 		// Setup the display manager
 		this.displaymanager = new UIDisplayManager(
-			new SwingDisplayManager(this));
+			new UIDisplayManager.Factory()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/05/22
+				 */
+				@Override
+				public InternalDisplayManager create(
+					Reference<UIDisplayManager> __r)
+				{
+					return new SwingDisplayManager(JVMJavaSEKernel.this, __r);
+				}
+			});
 		
 		// Finished booting
 		bootFinished(JVMJavaSEKernel.class);

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import java.lang.ref.Reference;
+
 /**
  * This is the internal implementation of the display manager.
  *
@@ -25,10 +27,14 @@ public abstract class InternalDisplayManager
 	/**
 	 * Initializes the internal display manager.
 	 *
+	 * @param __ref The external element.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/21
 	 */
-	public InternalDisplayManager()
+	public InternalDisplayManager(Reference<UIDisplayManager> __ref)
+		throws NullPointerException
 	{
+		super(__ref);
 	}
 }
 

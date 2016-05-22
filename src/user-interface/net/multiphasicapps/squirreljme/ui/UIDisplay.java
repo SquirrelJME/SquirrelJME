@@ -24,10 +24,12 @@ public final class UIDisplay
 	/**
 	 * Initializes the display wrapper.
 	 *
+	 * @param __dm The external display manager used.
 	 * @since 2016/05/21
 	 */
-	UIDisplay()
+	UIDisplay(UIDisplayManager __dm)
 	{
+		super(__dm);
 	}
 	
 	/**

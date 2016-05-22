@@ -17,13 +17,46 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public abstract class UIElement
 {
+	/** The external display manager. */
+	protected final UIDisplayManager displaymanager;
+	
 	/**
 	 * Initializes the base element.
 	 *
+	 * @param __dm The external display manager.
+	 * @throws NullPointerException On null arguments if this is not a display
+	 * manager.
 	 * @since 2016/05/21
 	 */
-	UIElement()
+	UIElement(UIDisplayManager __dm)
+		throws NullPointerException
 	{
+		// If this is a display manager then null is acceptable because the
+		// value to set is just this.
+		if (this instanceof UIDisplayManager)
+			this.displaymanager = (UIDisplayManager)this;
+		
+		// Otherwise this is some other element type.
+		else
+		{
+			// Check
+			if (__dm == null)
+				throw new NullPointerException("NARG");
+		
+			// Set
+			this.displaymanager = __dm;
+		}
+	}
+	
+	/**
+	 * Returns the external display manager owning this element.
+	 *
+	 * @return The owning display manager.
+	 * @since 2016/05/22
+	 */
+	public final UIDisplayManager displayManager()
+	{
+		return this.displaymanager;
 	}
 }
 

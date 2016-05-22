@@ -32,13 +32,17 @@ public class SwingDisplayManager
 	/**
 	 * Initializes the swing based display manager.
 	 *
-	 * @param The kernel which created this display manager.
+	 * @param __k The kernel which created this display manager.
+	 * @param __ref Reference to the external display manager.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/21
 	 */
-	public SwingDisplayManager(JVMJavaSEKernel __k)
+	public SwingDisplayManager(JVMJavaSEKernel __k,
+		Reference<UIDisplayManager> __ref)
 		throws NullPointerException
 	{
+		super(__ref);
+		
 		// Check
 		if (__k == null)
 			throw new NullPointerException("NARG");
