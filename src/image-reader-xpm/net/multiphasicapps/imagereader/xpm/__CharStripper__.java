@@ -115,11 +115,33 @@ class __CharStripper__
 				// In a multi-line comment?
 				int comment = this._comment;
 				if (comment == 2)
-					throw new Error("TODO");
+				{
+					// If an asterisk, possible end of multi-line	
+					if (c == '*')
+					{
+						c = in.read();
+						
+						// EOF?
+						if (c < 0)
+							return -1;
+						
+						// End of multi-line?
+						if (c == '/')
+							this._comment = 0;
+					}
+					
+					continue;
+				}
 				
 				// Single line comment
 				else if (comment == 1)
-					throw new Error("TODO");
+				{
+					// If \r or \n, end of comment
+					if (c == '\r' || c == '\n')
+						this._comment = 0;
+					
+					continue;
+				}
 				
 				// In string?
 				if (this._instring)
@@ -152,7 +174,26 @@ class __CharStripper__
 					
 					// Possible start of comment?
 					else if (c == '/')
-						throw new Error("TODO");
+					{
+						// Read next
+						c = in.read();
+						
+						// EOF?
+						if (c < 0)
+							return -1;
+						
+						// Single line comment?
+						if (c == '/')
+							this._comment = 1;
+						
+						// Multi-line comment?
+						else if (c == '*')
+							this._comment = 2;
+						
+						// Unknown, ignore
+						else
+							continue;
+					}
 					
 					// Unknown, ignore
 					else
