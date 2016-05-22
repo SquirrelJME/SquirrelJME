@@ -30,3 +30,17 @@ kind of system tray. For PalmOS, I can just add a tray to the top right of
 the application so to speak, so when icons are tapped on they perform their
 required action and such.
 
+## 11:17
+
+Actually, the launcher can become the display manager for applications. That is
+the launcher hosts the IPC server which clients connect to. The launcher wraps
+some of the client requests into its own thing. This way the launcher can setup
+a display list so that application views can just be switched to rather than
+just having unmanaged windows and just hoping the window is made visible. This
+would also mean that the display manager does not need to create its own
+window list somehow. Then the launcher can create a system tray icon which
+also provides a list of displays to be switched to. For limited systems such
+as Palm OS, I believe there is a limit to the number of entries that are
+visible in a menu, so I will need to have a "More..." so to speak at the end
+of the menu so that all entries can still be accessed as desired.
+
