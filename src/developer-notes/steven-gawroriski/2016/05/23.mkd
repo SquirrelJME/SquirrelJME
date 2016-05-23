@@ -174,3 +174,8 @@ The only error which remains is: `error: incompatible types: Reference<CAP#1>`
 But `UIMenu` was not extending `UIMenuItem`, so now it is fixed. Now I just
 hit TODOs similar to before.
 
+## 19:36
+
+Then for the images, they will be cached and managed by mapping the `ImageData`
+to a `BufferedImage` before they are used for example.
+
