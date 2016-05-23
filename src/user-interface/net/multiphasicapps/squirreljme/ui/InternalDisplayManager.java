@@ -72,6 +72,18 @@ public abstract class InternalDisplayManager
 		throws UIException;
 	
 	/**
+	 * Creates a new internal menu item.
+	 *
+	 * @param __ref The reference to the external menu item.
+	 * @return The internal menu item.
+	 * @throws UIException If the menu item could not be created.
+	 * @since 2016/05/23
+	 */
+	public abstract InternalMenuItem internalCreateMenuItem(
+		Reference<UIMenuItem> __ref)
+		throws UIException;
+	
+	/**
 	 * Returns an array with width/height pairs which indicates the preferred
 	 * sizes of the icons to use.
 	 *

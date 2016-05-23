@@ -38,3 +38,8 @@ simplicity, a single lock on the entire display.
 I suppose I shall do something similar to swing and have a UIMenuItem which
 can be given a picture and a label of text.
 
+## 15:25
+
+Once I have a basic user interface, I can go into finding archives and
+determining which applications I could launch for example.
+

@@ -19,6 +19,9 @@ package net.multiphasicapps.squirreljme.ui;
 public final class UIMenuItem
 	extends UIElement
 {
+	/** The menu which contains this item. */
+	private volatile UIMenu _parent;
+	
 	/**
 	 * Initializes the menu item.
 	 *

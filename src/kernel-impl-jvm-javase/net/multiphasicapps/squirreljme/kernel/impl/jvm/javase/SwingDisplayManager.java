@@ -107,6 +107,17 @@ public class SwingDisplayManager
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
+	public InternalMenuItem internalCreateMenuItem(Reference<UIMenuItem> __ref)
+		throws UIException
+	{
+		return new SwingMenuItem(__ref);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/22
 	 */
 	@Override

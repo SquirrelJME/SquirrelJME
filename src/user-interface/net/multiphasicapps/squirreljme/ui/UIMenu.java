@@ -37,13 +37,38 @@ public final class UIMenu
 	}
 	
 	/**
+	 * Adds a single item to the current menu.
+	 *
+	 * @param __item The item to add.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UIException If the item could not be added, possibly because it
+	 * is already associated to a menu (it must be removed first).
+	 * @since 2016/05/23
+	 */
+	public void add(UIMenuItem __item)
+		throws NullPointerException, UIException
+	{
+		// Check
+		if (__item == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Returns the display which is associated with this menu.
 	 *
 	 * @return The display which is associated with this menu or {@code null}
 	 * if there is no currently associated display.
+	 * @throws UIException If the display could not be obtained.
 	 * @since 2016/05/23
 	 */
 	public UIDisplay getDisplay()
+		throws UIException
 	{
 		// Lock
 		synchronized (this.lock)
