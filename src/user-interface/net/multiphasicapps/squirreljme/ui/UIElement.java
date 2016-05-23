@@ -46,7 +46,11 @@ public abstract class UIElement
 		if (this instanceof UIDisplayManager)
 		{
 			this.displaymanager = (UIDisplayManager)this;
-			this.lock = ((UIDisplayManager)this).__lock();
+			
+			// This lock is shared by all elements managed by this display
+			// manager. Although there is a speed and concurrency loss, it
+			// makes the UI stable.
+			this.lock = new Object();
 		}
 		
 		// Otherwise this is some other element type.

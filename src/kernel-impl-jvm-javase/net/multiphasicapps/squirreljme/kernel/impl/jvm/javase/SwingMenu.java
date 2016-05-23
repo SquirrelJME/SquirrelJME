@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
 import java.lang.ref.Reference;
+import javax.swing.JMenu;
 import net.multiphasicapps.squirreljme.ui.InternalMenu;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
@@ -33,6 +34,20 @@ public class SwingMenu
 	public SwingMenu(Reference<UIMenu> __ref)
 	{
 		super(__ref);
+	}
+	
+	/**
+	 * Creates a JMenu for this given menu.
+	 *
+	 * @return The created menu.
+	 * @since 2016/05/23
+	 */
+	final JMenu __createJMenu()
+	{
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 

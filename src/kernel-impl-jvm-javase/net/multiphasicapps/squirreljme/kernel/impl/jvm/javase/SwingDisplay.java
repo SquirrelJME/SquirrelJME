@@ -166,7 +166,7 @@ public class SwingDisplay
 			}
 			
 			// Get the internal bar representation
-			SwingMenu sm = ((SwingMenu)internalDisplayManager()).
+			SwingMenu sm = ((SwingDisplayManager)internalDisplayManager()).
 				<SwingMenu>__getInternal(SwingMenu.class, __menu);
 			
 			// Do nothing if it was collected or similar
