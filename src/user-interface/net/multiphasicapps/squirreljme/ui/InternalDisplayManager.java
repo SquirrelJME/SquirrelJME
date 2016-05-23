@@ -57,8 +57,18 @@ public abstract class InternalDisplayManager
 	 * @throws UIException If the image could not be created.
 	 * @since 2016/05/22
 	 */
-	public abstract InternalImage internalCreateImage(
-		Reference<UIImage> __ref)
+	public abstract InternalImage internalCreateImage(Reference<UIImage> __ref)
+		throws UIException;
+	
+	/**
+	 * Creates a new internal menu.
+	 *
+	 * @param __ref The reference to the external menu.
+	 * @return The internal menu.
+	 * @throws UIException If the menu could not be created.
+	 * @since 2016/05/23
+	 */
+	public abstract InternalMenu internalCreateMenu(Reference<UIMenu> __ref)
 		throws UIException;
 	
 	/**

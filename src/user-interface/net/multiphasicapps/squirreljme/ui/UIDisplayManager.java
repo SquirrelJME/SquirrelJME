@@ -133,6 +133,30 @@ public final class UIDisplayManager
 	}
 	
 	/**
+	 * Creates a new menu which may be associated with a given display.
+	 *
+	 * @return The newly created menu.
+	 * @throws UIException If the menu could not be created.
+	 * @since 2016/05/23
+	 */
+	public UIMenu createMenu()
+	{
+		try
+		{
+			UIMenu rv = new UIMenu(this);
+			this.internal.internalCreateMenu(
+				new WeakReference<UIMenu>(rv, this.rqueue));
+			return rv;
+		}
+		
+		// {@squirreljme.error BD09 Ran out of memory creating menu.}
+		catch (OutOfMemoryError e)
+		{
+			throw new UIException("BD09");
+		}
+	}
+	
+	/**
 	 * Returns an array with width/height pairs which indicates the preferred
 	 * sizes of the icons to use.
 	 *

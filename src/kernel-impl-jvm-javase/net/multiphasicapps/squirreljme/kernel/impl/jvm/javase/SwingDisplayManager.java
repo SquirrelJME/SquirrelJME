@@ -19,11 +19,13 @@ import net.multiphasicapps.squirreljme.ui.InternalDisplay;
 import net.multiphasicapps.squirreljme.ui.InternalDisplayManager;
 import net.multiphasicapps.squirreljme.ui.InternalElement;
 import net.multiphasicapps.squirreljme.ui.InternalImage;
+import net.multiphasicapps.squirreljme.ui.InternalMenu;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 import net.multiphasicapps.squirreljme.ui.UIElement;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
+import net.multiphasicapps.squirreljme.ui.UIMenu;
 
 /**
  * This is a display manager which interfaces with Java's Swing and uses it
@@ -90,6 +92,17 @@ public class SwingDisplayManager
 		throws UIException
 	{
 		return new SwingImage(__ref);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
+	public InternalMenu internalCreateMenu(Reference<UIMenu> __ref)
+		throws UIException
+	{
+		return new SwingMenu(__ref);
 	}
 	
 	/**
