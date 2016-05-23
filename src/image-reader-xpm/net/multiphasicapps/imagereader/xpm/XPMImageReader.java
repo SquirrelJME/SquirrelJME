@@ -88,11 +88,8 @@ public class XPMImageReader
 		__CharStripper__ cs = new __CharStripper__(new InputStreamReader(__is,
 			"utf-8"));
 		
-		// Read XPM header
-		int[] header = new int[7];
-		for (int i = 0;; i++)
-			if (__readInt(cs, header, Math.min(6, i)))
-				break;
+		// Read the XPM header
+		int[] header = __readHeader(cs);
 		
 		// Get dimensional data
 		int width = Math.max(header[0], 1);
@@ -102,63 +99,10 @@ public class XPMImageReader
 		int hotx = header[4];
 		int hoty = header[5];
 		
-		// Decode the color palette
-		StringBuilder sb = new StringBuilder();
+		// Read the color table
 		int[] codes = new int[numcolors];
 		int[] palette = new int[numcolors];
-		for (int i = 0; i < numcolors; i++)
-		{
-			// Read new input string
-			sb.setLength(0);
-			__readLine(cs, sb);
-			
-			// Ignore really short lines
-			int n = sb.length();
-			if (n < pxchars)
-				continue;
-			
-			// Set code to the given sequence
-			int cx = 0;
-			if (pxchars >= 1)
-				cx |= (int)sb.charAt(0);
-			if (pxchars >= 2)
-				cx |= ((int)sb.charAt(1)) << 16;
-			
-			// Find the last color key value
-			int s, e = n - 1;
-			while (e >= pxchars && sb.charAt(e) <= ' ')
-			{
-				e--;
-				continue;
-			}
-			
-			// Find the start of the color key
-			s = e -1;
-			while (s >= pxchars && sb.charAt(s) > ' ')
-			{
-				s--;
-				continue;
-			}
-			
-			// Decode the color
-			int col = __decodeColor(sb.subSequence(s + 1, e + 1));
-			
-			// Find the position to place the code at
-			int at = Arrays.binarySearch(codes, 0, i, cx);
-			if (at < 0)
-				at = -(at + 1);
-			
-			// Move all values up
-			for (int j = i; j > at; j--)
-			{
-				codes[j] = codes[j - 1];
-				palette[j] = palette[j - 1];
-			}
-			
-			// Set the value
-			codes[at] = cx;
-			palette[at] = col;
-		}
+		__readColorTable(cs, codes, palette, numcolors, pxchars);
 		
 		// Target array
 		int area = width * height;
@@ -285,6 +229,99 @@ __outer:
 		if (at >= 0)
 			return __pal[at];
 		return 0;
+	}
+	
+	/**
+	 * Reads the color table of the XPM.
+	 *
+	 * @param __cs The source characters.
+	 * @param __codes The output color codes.
+	 * @param __palette The output color palette.
+	 * @param __numcolors The number of colors used.
+	 * @param __pxchars The number of characters per pixel.
+	 * @throws IOException On read errors.
+	 * @since 2016/05/22
+	 */
+	private void __readColorTable(Reader __cs, int[] __codes, int[] __palette,
+		int __numcolors, int __pxchars)
+		throws IOException
+	{
+		// Decode the color palette
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < __numcolors; i++)
+		{
+			// Read new input string
+			sb.setLength(0);
+			__readLine(__cs, sb);
+			
+			// Ignore really short lines
+			int n = sb.length();
+			if (n < __pxchars)
+				continue;
+			
+			// Set code to the given sequence
+			int cx = 0;
+			if (__pxchars >= 1)
+				cx |= (int)sb.charAt(0);
+			if (__pxchars >= 2)
+				cx |= ((int)sb.charAt(1)) << 16;
+			
+			// Find the last color key value
+			int s, e = n - 1;
+			while (e >= __pxchars && sb.charAt(e) <= ' ')
+			{
+				e--;
+				continue;
+			}
+			
+			// Find the start of the color key
+			s = e -1;
+			while (s >= __pxchars && sb.charAt(s) > ' ')
+			{
+				s--;
+				continue;
+			}
+			
+			// Decode the color
+			int col = __decodeColor(sb.subSequence(s + 1, e + 1));
+			
+			// Find the position to place the code at
+			int at = Arrays.binarySearch(__codes, 0, i, cx);
+			if (at < 0)
+				at = -(at + 1);
+			
+			// Move all values up
+			for (int j = i; j > at; j--)
+			{
+				__codes[j] = __codes[j - 1];
+				__palette[j] = __palette[j - 1];
+			}
+			
+			// Set the value
+			__codes[at] = cx;
+			__palette[at] = col;
+		}
+	}
+	
+	/**
+	 * Reads the XPM image heder.
+	 *
+	 * @param __r The source characters.
+	 * @retun The header values.
+	 * @throws On read errors.
+	 * @since 2016/05/22
+	 */
+	private int[] __readHeader(Reader __r)
+		throws IOException
+	{
+		// Read XPM header
+		int[] header = new int[7];
+		for (int i = 0;; i++)
+			if (__readInt(__r, header, Math.min(6, i)))
+				break;
+		
+		// Return it
+		return header;
 	}
 	
 	/**
