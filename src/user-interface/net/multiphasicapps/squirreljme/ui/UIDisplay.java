@@ -82,11 +82,6 @@ public class UIDisplay
 	public UIImage setIcon(UIImage __icon)
 		throws UIException
 	{
-		// {@squirreljme.error BD05 The image to use as the icon for a display
-		// belongs to another display manager.}
-		if (__icon != null && __icon.displayManager() != displayManager())
-			throw new UIException("BD05");
-		
 		// Lock
 		synchronized (this.lock)
 		{

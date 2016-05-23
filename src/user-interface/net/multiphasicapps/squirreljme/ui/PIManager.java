@@ -44,8 +44,7 @@ public abstract class PIManager
 	 * @throws UIException If it could not be created.
 	 * @since 2016/05/22
 	 */
-	public abstract PIDisplay createDisplay(
-		Reference<UIDisplay> __ref)
+	public abstract PIDisplay createDisplay(Reference<UIDisplay> __ref)
 		throws UIException;
 	
 	/**
@@ -67,8 +66,7 @@ public abstract class PIManager
 	 * @throws UIException If the menu item could not be created.
 	 * @since 2016/05/23
 	 */
-	public abstract PIMenuItem createMenuItem(
-		Reference<UIMenuItem> __ref)
+	public abstract PIMenuItem createMenuItem(Reference<UIMenuItem> __ref)
 		throws UIException;
 	
 	/**

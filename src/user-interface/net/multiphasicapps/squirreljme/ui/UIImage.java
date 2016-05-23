@@ -35,8 +35,11 @@ import net.multiphasicapps.imagereader.ImageType;
  * @since 2016/05/22
  */
 public class UIImage
-	extends UIBase
 {
+	/** Internal lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The available concrete images. */
 	protected final List<ImageData> images =
 		new LinkedList<>();
@@ -48,12 +51,10 @@ public class UIImage
 	/**
 	 * Initializes the image.
 	 *
-	 * @param __dm The owning display manager.
 	 * @since 2016/05/22
 	 */
-	UIImage(UIManager __dm)
+	UIImage()
 	{
-		super(__dm);
 	}
 	
 	/**

@@ -98,7 +98,10 @@ public class UIManager
 	{
 		try
 		{
-			throw new Error("TODO");
+			UIDisplay rv = new UIDisplay(this);
+			rv.__registerPlatform(this.pimanager.createDisplay(
+				new WeakReference<UIDisplay>(rv)));
+			return rv;
 		}
 		
 		// {@squirreljme.error BD07 Ran out of memory creating display.}
@@ -120,7 +123,7 @@ public class UIManager
 	{
 		try
 		{
-			throw new Error("TODO");
+			return new UIImage();
 		}
 		
 		// {@squirreljme.error BD06 Ran out of memory creating image.}
@@ -142,7 +145,10 @@ public class UIManager
 	{
 		try
 		{
-			throw new Error("TODO");
+			UIMenu rv = new UIMenu(this);
+			rv.__registerPlatform(this.pimanager.createMenu(
+				new WeakReference<UIMenu>(rv)));
+			return rv;
 		}
 		
 		// {@squirreljme.error BD09 Ran out of memory creating menu.}
@@ -164,7 +170,10 @@ public class UIManager
 	{
 		try
 		{
-			throw new Error("TODO");
+			UIMenuItem rv = new UIMenuItem(this);
+			rv.__registerPlatform(this.pimanager.createMenuItem(
+				new WeakReference<UIMenuItem>(rv)));
+			return rv;
 		}
 		
 		// {@squirreljme.error BD09 Ran out of memory creating menu.}
