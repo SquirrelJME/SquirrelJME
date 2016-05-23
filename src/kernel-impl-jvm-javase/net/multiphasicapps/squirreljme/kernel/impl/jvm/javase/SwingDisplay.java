@@ -223,6 +223,9 @@ public class SwingDisplay
 			JFrame frame = this.frame;
 			frame.setVisible(__vis);
 			
+			// Pack the frame so it fits better
+			frame.pack();
+			
 			// Center it
 			frame.setLocationRelativeTo(null);
 		}
