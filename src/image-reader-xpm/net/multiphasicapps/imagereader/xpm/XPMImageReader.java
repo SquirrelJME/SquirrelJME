@@ -255,7 +255,6 @@ public class XPMImageReader
 				continue;
 			}
 			
-			// Decode the color
 			int col = __decodeColor(sb.subSequence(s + 1, e + 1));
 			
 			// Find the position to place the code at
@@ -402,6 +401,8 @@ public class XPMImageReader
 		throws IOException
 	{
 		// Read the XPM image data for each rows
+		int lastcode = -1;
+		int lastpall = -1;
 __outer:
 		for (int y = 0; y < __height; y++)
 			for (int x = 0, z = (y * __width);; x++)
@@ -430,8 +431,19 @@ __outer:
 						code |= (c & 0xFFFF) << 16;
 				}
 				
+				// Used this color just before? In solidly linear areas, this
+				// reduces the need for constant binary searches and increases
+				// the parsing speed slightly.
+				if (code == lastcode)
+					__data[z++] = lastpall;
+				
 				// Find the code used
-				__data[z++] = __locateCode(code, __codes, __palette);
+				else
+				{
+					lastpall = __locateCode((lastcode = code), __codes,
+						__palette);
+					__data[z++] = lastpall;
+				}
 			}
 	}
 }
