@@ -22,6 +22,7 @@ import java.util.Objects;
  * @since 2016/05/21
  */
 public abstract class InternalElement<X extends UIElement>
+	implements InternalBaseElement<X>
 {
 	/** Lock. */
 	protected final Object lock;
