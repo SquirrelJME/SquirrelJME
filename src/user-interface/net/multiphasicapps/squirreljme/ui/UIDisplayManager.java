@@ -39,7 +39,7 @@ public final class UIDisplayManager
 		new int[0];
 	
 	/** The internal display manager to wrap. */
-	protected final InternalDisplayManager internal;
+	final InternalDisplayManager internal;
 	
 	/** The UI element cleanup thread. */
 	protected final Thread cleanupthread;

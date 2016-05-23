@@ -17,9 +17,11 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
 import net.multiphasicapps.squirreljme.ui.InternalDisplayManager;
+import net.multiphasicapps.squirreljme.ui.InternalElement;
 import net.multiphasicapps.squirreljme.ui.InternalImage;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
+import net.multiphasicapps.squirreljme.ui.UIElement;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 
@@ -109,6 +111,21 @@ public class SwingDisplayManager
 				48, 48,
 				64, 64
 			};
+	}
+	
+	/**
+	 * Obtains an internal element from an external one.
+	 *
+	 * @param <E> The type of element to obtain.
+	 * @param __cl The type of element that is expected.
+	 * @param __e The internal element to get the external element for.
+	 * @return The internal element or {@code null}.
+	 * @since 2016/05/22
+	 */
+	final <E extends InternalElement> E __getInternal(Class<E> __cl,
+		UIElement __e)
+	{
+		return super.<E>getInternal(__cl, __e);
 	}
 }
 

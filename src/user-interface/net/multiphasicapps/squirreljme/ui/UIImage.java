@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.LinkedList;
@@ -37,6 +39,10 @@ public final class UIImage
 {
 	/** The available concrete images. */
 	protected final List<ImageData> images =
+		new LinkedList<>();
+	
+	/** Virtually created images (if creation was desired). */
+	private final List<Reference<ImageData>> _virt =
 		new LinkedList<>();
 	
 	/**
@@ -98,6 +104,34 @@ public final class UIImage
 			
 			// Add to the end otherwise
 			it.add(__id);
+		}
+	}
+	
+	/**
+	 * Obtains an image which matches the specified width, height, and type
+	 * of color information. Optionally if one is not found, it may be created.
+	 *
+	 * @param __w The width of the image.
+	 * @param __h The height of the image.
+	 * @param __t The type of image to obtain.
+	 * @param __cr If {@code true}, an image is created which matches the
+	 * associated information.
+	 * @return The associated image data or {@code null} if it was not found
+	 * and {@code __cr} was {@code false}.
+	 * @throws UIException If an image could not be obtained.
+	 * @since 2016/05/23
+	 */
+	public ImageData getImage(int __w, int __h, ImageType __t, boolean __cr)
+		throws UIException
+	{
+		// Negative or zero width/height will never be found
+		if (__w <= 0 || __h <= 0)
+			return null;
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
 		}
 	}
 }

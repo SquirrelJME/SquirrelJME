@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.ui.InternalDisplay;
 import net.multiphasicapps.squirreljme.ui.InternalImage;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
+import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 
 /**
@@ -82,6 +83,14 @@ public class SwingDisplay
 		// Lock
 		synchronized (this.lock)
 		{
+			// Obtain the internal image for the icon
+			SwingImage si = ((SwingDisplayManager)internalDisplayManager()).
+				<SwingImage>__getInternal(SwingImage.class, __icon);
+			
+			// {@squirreljme.error AZ02 Could not find an internal image.}
+			if (si == null)
+				throw new UIException("AZ02");
+			
 			throw new Error("TODO");
 		}
 	}

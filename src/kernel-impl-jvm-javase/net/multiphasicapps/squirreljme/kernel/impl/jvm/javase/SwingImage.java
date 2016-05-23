@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
 import net.multiphasicapps.squirreljme.ui.InternalImage;
 import net.multiphasicapps.squirreljme.ui.UIImage;

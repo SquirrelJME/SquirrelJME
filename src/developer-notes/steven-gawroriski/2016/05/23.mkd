@@ -4,3 +4,10 @@
 
 I should keep images sorted to find them better and such.
 
+## 09:41
+
+Images should probably be sorted by type first, so that black and white images
+appear before color ones for example. Although it really does not matter much.
+If I request a ARGB image and there are monochrome images, then one could
+be virtually created and used instead.
+

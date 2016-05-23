@@ -75,5 +75,21 @@ public abstract class InternalDisplayManager
 	 */
 	public abstract int[] internalPreferredIconSizes()
 		throws UIException;
+		
+	/**
+	 * Obtains an internal element from an external one.
+	 *
+	 * @param <E> The type of element to obtain.
+	 * @param __cl The type of element that is expected.
+	 * @param __e The internal element to get the external element for.
+	 * @return The internal element or {@code null} if the external element
+	 * does not exist in this manager or was garbage collected.
+	 * @since 2016/05/23
+	 */
+	protected final <E extends InternalElement> E getInternal(Class<E> __cl,
+		UIElement __e)
+	{
+		return this.displaymanager.<E>__getInternal(__cl, __e);
+	}
 }
 
