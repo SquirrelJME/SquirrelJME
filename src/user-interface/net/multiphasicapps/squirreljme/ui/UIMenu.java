@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import java.util.ArrayList;
+import java.util.Iterable;
+import java.util.List;
+
 /**
  * This represents a menu which contains items and other menus and is used as
  * a quick means to select specific options when needed.

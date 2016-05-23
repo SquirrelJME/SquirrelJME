@@ -43,3 +43,21 @@ can be given a picture and a label of text.
 Once I have a basic user interface, I can go into finding archives and
 determining which applications I could launch for example.
 
+## 16:11
+
+Probably going to clean up the NARF code some, move things around so that
+everything does not start with "native-compiler".
+
+## 16:13
+
+Menus can contain sub-menus, so I need to either extend JMenu off JMenuItem or
+have a new base class. Having JMenu be a JMenuItem might be the easiest.
+However, I would run into the base class issue. A `SwingMenuItem` would not be
+a `SwingMenu` which is problematic.
+
+## 16:17
+
+However, the adding code would handle these cases. I would have to do something
+similar for components also. So the base class for `SwingMenu` and
+`SwingMenuItem` would likely contain duplicate code.
+
