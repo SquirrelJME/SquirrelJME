@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.ui;
 
 import java.util.ArrayList;
-import java.util.Iterable;
+import java.util.Iterator;
 import java.util.List;
 
 /**
