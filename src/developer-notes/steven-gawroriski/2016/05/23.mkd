@@ -138,3 +138,9 @@ would keep track of native forms of the image for example.
 Also the managers being actual elements themselves is a bit ugly, so that is a
 no go.
 
+## 18:27
+
+Then this means that instead of the `PI*` classes linking back in their
+base constructors, the `UIManager` performs the linking after the objects
+are constructed.
+

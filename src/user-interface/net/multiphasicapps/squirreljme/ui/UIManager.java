@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 /**
  * This is a class which provides the ability to create {@link UIDisplay}s as
@@ -26,7 +27,7 @@ import java.util.Set;
  * display, while on a mobile device there might only be just a single display
  * at a time.
  *
- * This wraps an {@link InternalDisplayManager} so that if it lacks
+ * This wraps a {@link PIManager} so that if it lacks
  * specific functionality it can be emulated by the front layer set of classes.
  *
  * @since 2016/05/20
