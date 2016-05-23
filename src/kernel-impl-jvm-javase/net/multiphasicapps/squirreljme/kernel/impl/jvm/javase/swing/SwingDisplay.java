@@ -26,7 +26,6 @@ import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.ui.PIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
-import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 
@@ -97,15 +96,15 @@ public class SwingDisplay
 		synchronized (this.lock)
 		{
 			// Obtain the internal image for the icon
-			SwingImage si = ((SwingManager)internalDisplayManager()).
-				<SwingImage>__getInternal(SwingImage.class, __icon);
+			SwingImage si = platformManager().
+				<SwingImage>internal(SwingImage.class, __icon);
 			
 			// {@squirreljme.error AZ02 Could not find an internal image.}
 			if (si == null)
 				throw new UIException("AZ02");
 			
 			// Get the preferred icon sizes to use
-			int[] pis = this.displaymanager.preferredIconSizes();
+			int[] pis = platformManager().preferredIconSizes();
 			int pisn = pis.length;
 			
 			// Load all icons
@@ -133,7 +132,7 @@ public class SwingDisplay
 				}
 			
 				// Ignore
-				catch (UIException|UIGarbageCollectedException e)
+				catch (UIException e)
 				{
 				}
 			}
@@ -170,8 +169,8 @@ public class SwingDisplay
 			}
 			
 			// Get the internal bar representation
-			SwingMenu sm = ((SwingManager)internalDisplayManager()).
-				<SwingMenu>__getInternal(SwingMenu.class, __menu);
+			SwingMenu sm = platformManager().
+				<SwingMenu>internal(SwingMenu.class, __menu);
 			
 			// Do nothing if it was collected or similar
 			if (sm == null)

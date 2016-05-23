@@ -87,6 +87,26 @@ public abstract class PIManager
 		throws UIException;
 	
 	/**
+	 * Returns an internal platform interface object from an external one.
+	 *
+	 * @param <P> The type of internal to fine.
+	 * @param __cl The class type of that internal.
+	 * @return The internal which belongs to the specified external, or
+	 * {@code null} if it was garbage collected or does not exist.
+	 * @throws ClassCastException If the internal is not of the given type.
+	 * @throws UIException On other errors.
+	 */
+	public final <P extends PIBase> P internal(Class<P> __cl, UIBase __x)
+		throws ClassCastException, NullPointerException, UIException
+	{
+		// Check
+		if (__cl == null || __x == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * This returns the global locking object which is used for the entire
 	 * display state.
 	 *

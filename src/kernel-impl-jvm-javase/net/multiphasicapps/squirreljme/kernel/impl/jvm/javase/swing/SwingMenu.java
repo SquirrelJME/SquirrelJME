@@ -16,7 +16,6 @@ import javax.swing.JMenuItem;
 import net.multiphasicapps.squirreljme.ui.PIMenu;
 import net.multiphasicapps.squirreljme.ui.PIMenuItem;
 import net.multiphasicapps.squirreljme.ui.UIException;
-import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 /**

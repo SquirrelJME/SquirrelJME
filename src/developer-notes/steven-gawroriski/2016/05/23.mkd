@@ -155,3 +155,7 @@ Right now I have an object based lock, however when it comes to the platform
 interfaces, they need to extend some base class to provide some lock.
 However that might not be an issue at all.
 
+## 19:08
+
+Definitely can feel the code being much cleaner now.
+
