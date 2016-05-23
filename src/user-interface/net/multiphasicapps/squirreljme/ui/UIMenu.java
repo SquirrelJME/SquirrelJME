@@ -21,7 +21,7 @@ import java.util.List;
  * @since 2016/05/23
  */
 public class UIMenu
-	extends UIBase
+	extends UIMenuItem
 {
 	/** The display this is associated with. */
 	private volatile UIDisplay _display;

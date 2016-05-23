@@ -164,3 +164,13 @@ Definitely can feel the code being much cleaner now.
 Then images could just be managed internally and such rather than requiring
 a `PIImage` as I have previously stated.
 
+## 19:17
+
+The only error which remains is: `error: incompatible types: Reference<CAP#1>`
+`cannot be converted to Reference<? extends UIMenuItem>`.
+
+## 19:19
+
+But `UIMenu` was not extending `UIMenuItem`, so now it is fixed. Now I just
+hit TODOs similar to before.
+
