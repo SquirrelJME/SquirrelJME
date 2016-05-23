@@ -111,3 +111,8 @@ external or getting the display manager would be the same except the `NUI`
 implementations would handle all that information. So the `UI` code would
 just map and call into the interfaces.
 
+## 17:18
+
+Then when it comes to base classes, since everything is an interface it would
+not really matter much and `SwingMenu` could extend `SwingMenuItem` easily now.
+
