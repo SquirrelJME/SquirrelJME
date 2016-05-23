@@ -143,7 +143,15 @@ public class LauncherInterface
 					continue;
 				
 				// Read the image and register it with the image
-				icon.addImageData(irf.readImage("xpm", is));
+				try
+				{
+					icon.addImageData(irf.readImage("xpm", is));
+				}
+				
+				// Ignore loading icon if it would cause this
+				catch (OutOfMemoryError e)
+				{
+				}
 			}
 			
 			// Ignore read errors

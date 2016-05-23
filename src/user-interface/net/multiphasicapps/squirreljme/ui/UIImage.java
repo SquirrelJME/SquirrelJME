@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import java.util.List;
+import java.util.ListIterator;
+import java.util.LinkedList;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageType;
 
@@ -24,11 +27,18 @@ import net.multiphasicapps.imagereader.ImageType;
  * a system which a much higher pixel density might choose one that is of a
  * higher resolution.
  *
+ * If an image is requested and it is not available then it may be created from
+ * basic input images and such.
+ *
  * @since 2016/05/22
  */
 public final class UIImage
 	extends UIElement
 {
+	/** The available concrete images. */
+	protected final List<ImageData> images =
+		new LinkedList<>();
+	
 	/**
 	 * Initializes the image.
 	 *
@@ -55,7 +65,40 @@ public final class UIImage
 		if (__id == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get image details
+		int w = __id.width();
+		int h = __id.height();
+		ImageType t = __id.type();
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Make iterator
+			List<ImageData> images = this.images;
+			ListIterator<ImageData> it = images.listIterator();
+			
+			// Go through all images to locate the position
+			while (it.hasNext())
+			{
+				// Get the next image
+				ImageData id = it.next();
+				
+				// Determine if it is to be placed here
+				int comp = __id.compareTo(id);
+				if (comp <= 0)
+				{
+					// Place before the current marker
+					if (comp < 0)
+						it.previous();
+					
+					it.add(__id);
+					return;
+				}
+			}
+			
+			// Add to the end otherwise
+			it.add(__id);
+		}
 	}
 }
 

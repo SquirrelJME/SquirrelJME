@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.imagereader;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This is the base class for all image containers.
  *
@@ -38,6 +41,9 @@ public abstract class ImageData
 	
 	/** Y hotspot position. */
 	protected final int hoty;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the base image with the given width and height.
@@ -151,6 +157,26 @@ public abstract class ImageData
 	public final int hotSpotY()
 	{
 		return this.hoty;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
+	public String toString()
+	{
+		// Get
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Create?
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = this.width + "x" +
+				this.height + "@" + this.type));
+		
+		// Return
+		return rv;
 	}
 	
 	/**
