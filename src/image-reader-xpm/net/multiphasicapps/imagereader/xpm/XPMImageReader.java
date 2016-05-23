@@ -142,28 +142,39 @@ public class XPMImageReader
 			
 			// Decode the color
 			palette[i] = __decodeColor(sb.subSequence(s + 1, e + 1));
-			
-			System.err.printf("DEBUG -- Read color: `%08x` `%s` %12x%n", cx,
-				sb.subSequence(s + 1, e + 1), palette[i]);
 		}
 		
-		// DEBUG
-		System.err.print("DEBUG -- XPM Chars: ");
-		for (;;)
-		{
-			// Read character
-			int c = cs.read();
-			boolean eol = (c == __CharStripper__.END_OF_LINE);
-			
-			if (c < 0 && !eol)
-				break;
-			
-			if (eol)
-				System.err.println();
-			else
-				System.err.print((char)c);
-		}
-		System.err.println();
+		// Read the XPM image data for each rows
+__outer:
+		for (int y = 0; y < height; y++)
+			for (int x = 0;; x++)
+			{
+				// Read color code
+				int code = 0;
+				for (int i = 0; i < pxchars; i++)
+				{
+					// Read
+					int c = cs.read();
+					
+					// Next row?
+					if (c == __CharStripper__.END_OF_LINE)
+						continue __outer;
+					
+					// EOF?
+					else if (c < 0)
+						break __outer;
+					
+					// First read?
+					if (i == 0)
+						code = (c & 0xFFFF);
+					
+					// Second read?
+					else if (i == 1)
+						code |= (c & 0xFFFF) << 16;
+				}
+				
+				throw new Error("TODO");
+			}
 		
 		throw new Error("TODO");
 	}
