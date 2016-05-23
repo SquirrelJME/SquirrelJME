@@ -98,7 +98,7 @@ public class SwingDisplay
 		synchronized (this.lock)
 		{
 			// Obtain the internal image for the icon
-			SwingImage si = ((SwingDisplayManager)internalDisplayManager()).
+			SwingImage si = ((SwingManager)internalDisplayManager()).
 				<SwingImage>__getInternal(SwingImage.class, __icon);
 			
 			// {@squirreljme.error AZ02 Could not find an internal image.}
@@ -171,7 +171,7 @@ public class SwingDisplay
 			}
 			
 			// Get the internal bar representation
-			SwingMenu sm = ((SwingDisplayManager)internalDisplayManager()).
+			SwingMenu sm = ((SwingManager)internalDisplayManager()).
 				<SwingMenu>__getInternal(SwingMenu.class, __menu);
 			
 			// Do nothing if it was collected or similar
