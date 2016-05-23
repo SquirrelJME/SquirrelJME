@@ -51,7 +51,7 @@ public class UIImage
 	 * @param __dm The owning display manager.
 	 * @since 2016/05/22
 	 */
-	UIImage(UIDisplayManager __dm)
+	UIImage(UIManager __dm)
 	{
 		super(__dm);
 	}

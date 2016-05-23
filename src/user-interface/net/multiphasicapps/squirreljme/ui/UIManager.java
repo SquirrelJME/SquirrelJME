@@ -15,6 +15,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -295,6 +296,18 @@ public class UIManager
 			// Not found
 			return null;
 		}
+	}
+	
+	/**
+	 * Returns the lock of the external element, this is used so that internal
+	 * elements and internal elements share the same lock.
+	 *
+	 * @return The locking object that the external element uses.
+	 * @since 2016/05/22
+	 */
+	final Object __lock()
+	{
+		return this.lock;
 	}
 	
 	/**

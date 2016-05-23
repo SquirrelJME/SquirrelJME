@@ -36,7 +36,7 @@ public class UIDisplay
 	 * @param __dm The external display manager used.
 	 * @since 2016/05/21
 	 */
-	UIDisplay(UIDisplayManager __dm)
+	UIDisplay(UIManager __dm)
 	{
 		super(__dm);
 	}

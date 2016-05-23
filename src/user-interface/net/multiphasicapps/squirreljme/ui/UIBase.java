@@ -25,7 +25,7 @@ public class UIBase
 	protected final Object lock;
 	
 	/** The external display manager. */
-	protected final UIDisplayManager displaymanager;
+	protected final UIManager manager;
 	
 	/** Link back to the internal element. */
 	private volatile PIBase _internal;
@@ -34,36 +34,19 @@ public class UIBase
 	 * Initializes the base element.
 	 *
 	 * @param __dm The external display manager.
-	 * @throws NullPointerException On null arguments if this is not a display
-	 * manager.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/21
 	 */
-	UIBase(UIDisplayManager __dm)
+	UIBase(UIManager __dm)
 		throws NullPointerException
 	{
-		// If this is a display manager then null is acceptable because the
-		// value to set is just this.
-		if (this instanceof UIDisplayManager)
-		{
-			this.displaymanager = (UIDisplayManager)this;
-			
-			// This lock is shared by all elements managed by this display
-			// manager. Although there is a speed and concurrency loss, it
-			// makes the UI stable.
-			this.lock = new Object();
-		}
-		
-		// Otherwise this is some other element type.
-		else
-		{
-			// Check
-			if (__dm == null)
-				throw new NullPointerException("NARG");
-		
-			// Set
-			this.displaymanager = __dm;
-			this.lock = __dm.__lock();
-		}
+		// Check
+		if (__dm == null)
+			throw new NullPointerException("NARG");
+	
+		// Set
+		this.manager = __dm;
+		this.lock = __dm.__lock();
 	}
 	
 	/**
@@ -72,9 +55,9 @@ public class UIBase
 	 * @return The owning display manager.
 	 * @since 2016/05/22
 	 */
-	public final UIDisplayManager displayManager()
+	public final UIManager displayManager()
 	{
-		return this.displaymanager;
+		return this.manager;
 	}
 	
 	/**
@@ -123,18 +106,6 @@ public class UIBase
 			// Set
 			this._internal = __i;
 		}
-	}
-	
-	/**
-	 * Returns the lock of the external element, this is used so that internal
-	 * elements and internal elements share the same lock.
-	 *
-	 * @return The locking object that the external element uses.
-	 * @since 2016/05/22
-	 */
-	final Object __lock()
-	{
-		return this.lock;
 	}
 }
 

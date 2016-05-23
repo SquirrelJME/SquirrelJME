@@ -35,7 +35,7 @@ public class UIMenuItem
 	 * @param __dm The display manager owning this.
 	 * @since 2016/05/23
 	 */
-	UIMenuItem(UIDisplayManager __dm)
+	UIMenuItem(UIManager __dm)
 	{
 		super(__dm);
 	}

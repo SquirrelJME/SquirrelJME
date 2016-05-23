@@ -25,7 +25,7 @@ public class UIComponent
 	 * @param __dm The owning display manager.
 	 * @since 2016/05/22
 	 */
-	UIComponent(UIDisplayManager __dm)
+	UIComponent(UIManager __dm)
 	{
 		super(__dm);
 	}

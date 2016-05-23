@@ -35,7 +35,7 @@ public class UIMenu
 	 * @param __dm The owning display manager.
 	 * @since 2016/05/23
 	 */
-	UIMenu(UIDisplayManager __dm)
+	UIMenu(UIManager __dm)
 	{
 		super(__dm);
 	}
