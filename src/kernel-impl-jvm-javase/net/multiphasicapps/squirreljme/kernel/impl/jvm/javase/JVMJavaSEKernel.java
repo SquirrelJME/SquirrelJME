@@ -17,13 +17,13 @@ import java.util.Collections;
 import java.util.List;
 import net.multiphasicapps.squirreljme.kernel.impl.autoboot.AutoBootKernel;
 import net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing.
-	SwingDisplayManager;
+	SwingManager;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
-import net.multiphasicapps.squirreljme.ui.InternalDisplayManager;
-import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
+import net.multiphasicapps.squirreljme.ui.PIManager;
+import net.multiphasicapps.squirreljme.ui.UIManager;
 
 /**
  * This contains the launcher used by the host Java SE system.
@@ -34,7 +34,7 @@ public class JVMJavaSEKernel
 	extends AutoBootKernel
 {
 	/** The display manager which utilizes Swing. */
-	protected final UIDisplayManager displaymanager;
+	protected final UIManager displaymanager;
 	
 	/**
 	 * This initializes the launcher which uses an existing full Java SE JVM.
@@ -49,20 +49,7 @@ public class JVMJavaSEKernel
 			__args = new String[0];
 		
 		// Setup the display manager
-		this.displaymanager = new UIDisplayManager(
-			new UIDisplayManager.Factory()
-			{
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/05/22
-				 */
-				@Override
-				public InternalDisplayManager create(
-					Reference<UIDisplayManager> __r)
-				{
-					return new SwingDisplayManager(JVMJavaSEKernel.this, __r);
-				}
-			});
+		this.displaymanager = new UIManager(new SwingManager(this));
 		
 		// Finished booting
 		bootFinished(JVMJavaSEKernel.class);
@@ -73,7 +60,7 @@ public class JVMJavaSEKernel
 	 * @since 2016/05/21
 	 */
 	@Override
-	protected UIDisplayManager getDisplayManager()
+	protected UIManager getDisplayManager()
 	{
 		return this.displaymanager;
 	}

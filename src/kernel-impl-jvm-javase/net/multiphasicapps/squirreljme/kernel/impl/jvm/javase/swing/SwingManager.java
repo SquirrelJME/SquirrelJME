@@ -16,17 +16,16 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.JVMJavaSEKernel;
-import net.multiphasicapps.squirreljme.ui.InternalDisplay;
-import net.multiphasicapps.squirreljme.ui.InternalDisplayManager;
-import net.multiphasicapps.squirreljme.ui.InternalElement;
-import net.multiphasicapps.squirreljme.ui.InternalImage;
-import net.multiphasicapps.squirreljme.ui.InternalMenu;
-import net.multiphasicapps.squirreljme.ui.InternalMenuItem;
+import net.multiphasicapps.squirreljme.ui.PIBase;
+import net.multiphasicapps.squirreljme.ui.PIDisplay;
+import net.multiphasicapps.squirreljme.ui.PIManager;
+import net.multiphasicapps.squirreljme.ui.PIMenu;
+import net.multiphasicapps.squirreljme.ui.PIMenuItem;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
-import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 import net.multiphasicapps.squirreljme.ui.UIElement;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
+import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 
@@ -36,8 +35,8 @@ import net.multiphasicapps.squirreljme.ui.UIMenuItem;
  *
  * @since 2016/05/20
  */
-public class SwingDisplayManager
-	extends InternalDisplayManager
+public class SwingManager
+	extends PIManager
 {
 	/** The kernel which created this. */
 	protected final JVMJavaSEKernel kernel;
@@ -46,16 +45,12 @@ public class SwingDisplayManager
 	 * Initializes the swing based display manager.
 	 *
 	 * @param __k The kernel which created this display manager.
-	 * @param __ref Reference to the external display manager.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/21
 	 */
-	public SwingDisplayManager(JVMJavaSEKernel __k,
-		Reference<UIDisplayManager> __ref)
+	public SwingManager(JVMJavaSEKernel __k)
 		throws NullPointerException
 	{
-		super(__ref);
-		
 		// Check
 		if (__k == null)
 			throw new NullPointerException("NARG");
@@ -69,7 +64,7 @@ public class SwingDisplayManager
 	 * @since 2016/05/22
 	 */
 	@Override
-	public InternalDisplay internalCreateDisplay(Reference<UIDisplay> __ref)
+	public PIDisplay createDisplay(Reference<UIDisplay> __ref)
 		throws UIException
 	{
 		// Create it
@@ -87,22 +82,10 @@ public class SwingDisplayManager
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/05/22
-	 */
-	@Override
-	public InternalImage internalCreateImage(
-		Reference<UIImage> __ref)
-		throws UIException
-	{
-		return new SwingImage(__ref);
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2016/05/23
 	 */
 	@Override
-	public InternalMenu internalCreateMenu(Reference<UIMenu> __ref)
+	public PIMenu createMenu(Reference<UIMenu> __ref)
 		throws UIException
 	{
 		return new SwingMenu(__ref);
@@ -113,7 +96,7 @@ public class SwingDisplayManager
 	 * @since 2016/05/23
 	 */
 	@Override
-	public InternalMenuItem internalCreateMenuItem(Reference<UIMenuItem> __ref)
+	public PIMenuItem createMenuItem(Reference<UIMenuItem> __ref)
 		throws UIException
 	{
 		return new SwingMenuItem(__ref);
@@ -124,7 +107,7 @@ public class SwingDisplayManager
 	 * @since 2016/05/22
 	 */
 	@Override
-	public int[] internalPreferredIconSizes()
+	public int[] preferredIconSizes()
 		throws UIException
 	{
 		// Use common icon sizes used on desktop systems
@@ -149,7 +132,7 @@ public class SwingDisplayManager
 	 * @return The internal element or {@code null}.
 	 * @since 2016/05/22
 	 */
-	final <E extends InternalElement> E __getInternal(Class<E> __cl,
+	final <E extends PIBase> E __getInternal(Class<E> __cl,
 		UIElement __e)
 	{
 		return super.<E>getInternal(__cl, __e);
