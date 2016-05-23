@@ -131,6 +131,25 @@ public final class UIImage
 		// Lock
 		synchronized (this.lock)
 		{
+			// Make iterator
+			List<ImageData> images = this.images;
+			ListIterator<ImageData> it = images.listIterator();
+			
+			// Find the matching image
+			while (it.hasNext())
+			{
+				ImageData rv = it.next();
+				
+				// Exact match?
+				if (__w == rv.width() && __h == rv.height() &&
+					__t == rv.type())
+					return rv;
+			}
+			
+			// Not creating? stop
+			if (!__cr)
+				return null;
+			
 			throw new Error("TODO");
 		}
 	}
