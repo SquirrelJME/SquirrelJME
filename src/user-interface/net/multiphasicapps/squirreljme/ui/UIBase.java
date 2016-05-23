@@ -27,9 +27,6 @@ public class UIBase
 	/** The external display manager. */
 	protected final UIManager manager;
 	
-	/** Link back to the internal element. */
-	private volatile PIBase _internal;
-	
 	/**
 	 * Initializes the base element.
 	 *
@@ -61,21 +58,20 @@ public class UIBase
 	}
 	
 	/**
-	 * Returns the internal element which was linked to this external one.
+	 * Returns the platform interface element which was linked to this external
+	 * one.
 	 *
 	 * @param <E> The internal element type.
 	 * @param __cl The class for that element.
 	 * @return The internal element.
 	 * @since 2016/05/22
 	 */
-	final <E extends PIBase<?>> E __internal(Class<E> __cl)
+	protected final <P extends PIBase> P platform(Class<P> __cl)
 	{
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error BD04 No internal element was linked to
-			// this external one.}
-			return __cl.cast(Objects.requireNonNull(this._internal, "BD04"));
+			throw new Error("TODO");
 		}
 	}
 	
@@ -98,13 +94,7 @@ public class UIBase
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error BD03 Element has already been linked to an
-			// internal one.}
-			if (this._internal != null)
-				throw new IllegalStateException("BD03");
-			
-			// Set
-			this._internal = __i;
+			throw new Error("TODO");
 		}
 	}
 }

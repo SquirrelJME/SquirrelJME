@@ -59,7 +59,7 @@ public class UIMenuItem
 			UIImage rv = this._icon;
 			
 			// Set the new icon
-			__internal().internalSetIcon(__icon);
+			this.<PIMenuItem>platform(PIMenuItem.class).setIcon(__icon);
 			this._icon = __icon;
 			
 			// Return the old one
@@ -90,23 +90,12 @@ public class UIMenuItem
 			String rv = this._text;
 			
 			// Set the new text
-			__internal().setText(__text);
+			this.<PIMenuItem>platform(PIMenuItem.class).setText(__text);
 			this._text = __text;
 			
 			// Return it
 			return rv;
 		}
-	}
-	
-	/**
-	 * Returns the internal menu item.
-	 *
-	 * @return The internal menu item.
-	 * @since 2016/05/23
-	 */
-	final PIMenuItem __internal()
-	{
-		throw new Error("TODO");
 	}
 }
 

@@ -61,7 +61,7 @@ public class UIDisplay
 		// Lock
 		synchronized (this.lock)
 		{
-			return __internal().internalIsVisible();
+			return this.<PIDisplay>platform(PIDisplay.class).isVisible();
 		}
 	}
 	
@@ -94,7 +94,7 @@ public class UIDisplay
 			UIImage rv = this._icon;
 			
 			// Set the new icon
-			__internal().internalSetIcon(__icon);
+			this.<PIDisplay>platform(PIDisplay.class).setIcon(__icon);
 			
 			// Set as used
 			this._icon = __icon;
@@ -140,11 +140,14 @@ public class UIDisplay
 					return __menu;
 				else
 					disp.setMenu(null);
+			
+			// Get our platform display
+			PIDisplay pi = this.<PIDisplay>platform(PIDisplay.class);
 				
 			// Before a new menu can be set, the old menu must be cleared away
 			if (rv != null)
 			{
-				__internal().internalSetMenu(null);
+				pi.setMenu(null);
 				this._menu = null;
 				rv.__setDisplay(null);
 			}
@@ -152,7 +155,7 @@ public class UIDisplay
 			// Set the new menu
 			if (__menu != null)
 			{
-				__internal().internalSetMenu(__menu);
+				pi.setMenu(__menu);
 				this._menu = __menu;
 				__menu.__setDisplay(this);
 			}
@@ -180,7 +183,7 @@ public class UIDisplay
 			String rv = this._title;
 			
 			// Set new title
-			__internal().internalSetTitle(__nt);
+			this.<PIDisplay>platform(PIDisplay.class).setTitle(__nt);
 			
 			// Set used title
 			this._title = __nt;
@@ -214,22 +217,11 @@ public class UIDisplay
 			boolean was = isVisible();
 			
 			// Set the new visibility state internally
-			__internal().internalSetVisible(__vis);
+			this.<PIDisplay>platform(PIDisplay.class).setVisible(__vis);
 			
 			// Check if visibility changed
 			return was != isVisible();
 		}
-	}
-	
-	/**
-	 * Returns the internal display.
-	 *
-	 * @return The internal display.
-	 * @since 2016/05/22
-	 */
-	final InternalDisplay __internal()
-	{
-		return super.<InternalDisplay>__internal(InternalDisplay.class);
 	}
 }
 
