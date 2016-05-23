@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.ui;
 
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageType;
 
@@ -22,6 +25,10 @@ import net.multiphasicapps.imagereader.ImageType;
 public abstract class InternalImage
 	extends InternalElement<UIImage>
 {
+	/** Internal image mappings. */
+	private final Map<ImageData, Reference<Object>> _imap =
+		new WeakHashMap<>();
+	
 	/**
 	 * Initializes the internal image.
 	 *
@@ -67,7 +74,29 @@ public abstract class InternalImage
 		ImageType __t, boolean __cr)
 		throws UIException, UIGarbageCollectedException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Obtain the internal image
+			ImageData id = internalGetImage(__w, __h, __t, __cr);
+			
+			// If not found, ignore
+			if (id == null)
+				return null;
+			
+			// Is the image in the map?
+			Map<ImageData, Reference<Object>> imap = this._imap;
+			Reference<Object> ref = imap.get(id);
+			Object rv;
+			
+			// Need to map it?
+			if (ref == null || null == (rv = ref.get()))
+				imap.put(id,
+					new WeakReference<>((rv = internalCreateMapping(id))));
+			
+			// Return it
+			return __cl.cast(rv);
+		}
 	}
 	
 	/**
@@ -89,7 +118,11 @@ public abstract class InternalImage
 		boolean __cr)
 		throws UIException, UIGarbageCollectedException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
