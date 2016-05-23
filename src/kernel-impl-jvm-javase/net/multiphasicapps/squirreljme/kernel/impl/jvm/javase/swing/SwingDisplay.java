@@ -23,8 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageType;
-import net.multiphasicapps.squirreljme.ui.InternalDisplay;
-import net.multiphasicapps.squirreljme.ui.InternalImage;
+import net.multiphasicapps.squirreljme.ui.PIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
@@ -39,8 +38,8 @@ import net.multiphasicapps.squirreljme.ui.UIMenu;
  * @since 2016/05/21
  */
 public class SwingDisplay
-	extends InternalDisplay
-	implements WindowListener
+	extends SwingBase
+	implements PIDisplay, WindowListener
 {
 	/** The frame for the display. */
 	protected final JFrame frame;
@@ -76,7 +75,7 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
-	public boolean internalIsVisible()
+	public boolean isVisible()
 		throws UIException
 	{
 		// Lock
@@ -91,7 +90,7 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
-	public void internalSetIcon(UIImage __icon)
+	public void setIcon(UIImage __icon)
 		throws UIException
 	{
 		// Lock
@@ -149,7 +148,7 @@ public class SwingDisplay
 	 * @since 201605/23
 	 */
 	@Override
-	public void internalSetMenu(UIMenu __menu)
+	public void setMenu(UIMenu __menu)
 		throws UIException
 	{
 		// Lock
@@ -198,7 +197,7 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
-	public void internalSetTitle(String __nt)
+	public void setTitle(String __nt)
 		throws UIException
 	{
 		// Lock
@@ -213,7 +212,7 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
-	public void internalSetVisible(boolean __vis)
+	public void setVisible(boolean __vis)
 		throws UIException
 	{
 		// Lock

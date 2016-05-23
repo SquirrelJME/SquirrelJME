@@ -13,8 +13,8 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 import java.lang.ref.Reference;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import net.multiphasicapps.squirreljme.ui.InternalMenu;
-import net.multiphasicapps.squirreljme.ui.InternalMenuItem;
+import net.multiphasicapps.squirreljme.ui.PIMenu;
+import net.multiphasicapps.squirreljme.ui.PIMenuItem;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
@@ -26,7 +26,8 @@ import net.multiphasicapps.squirreljme.ui.UIMenuItem;
  * @since 2016/05/23
  */
 public class SwingMenu
-	extends InternalMenu
+	extends SwingMenuItem
+	implements PIMenu
 {
 	/** The current menu representation. */
 	protected final JMenu jmenu =

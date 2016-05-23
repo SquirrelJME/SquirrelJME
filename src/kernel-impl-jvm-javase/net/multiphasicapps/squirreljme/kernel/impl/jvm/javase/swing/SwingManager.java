@@ -21,8 +21,8 @@ import net.multiphasicapps.squirreljme.ui.PIDisplay;
 import net.multiphasicapps.squirreljme.ui.PIManager;
 import net.multiphasicapps.squirreljme.ui.PIMenu;
 import net.multiphasicapps.squirreljme.ui.PIMenuItem;
+import net.multiphasicapps.squirreljme.ui.UIBase;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
-import net.multiphasicapps.squirreljme.ui.UIElement;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIManager;
@@ -133,7 +133,7 @@ public class SwingManager
 	 * @since 2016/05/22
 	 */
 	final <E extends PIBase> E __getInternal(Class<E> __cl,
-		UIElement __e)
+		UIBase __e)
 	{
 		return super.<E>getInternal(__cl, __e);
 	}

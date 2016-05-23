@@ -149,3 +149,9 @@ are constructed.
 The factory is ugly, I will just do a bind to the native platform kind of
 thing.
 
+## 18:54
+
+Right now I have an object based lock, however when it comes to the platform
+interfaces, they need to extend some base class to provide some lock.
+However that might not be an issue at all.
+
