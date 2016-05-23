@@ -73,3 +73,11 @@ stuff would be if all of the `Internal` classes became interfaces. Then the
 internal stuff would just extend `InternalElement` which has those helpers and
 the locks.
 
+## 16:59
+
+However, taking what I have and changing it to interfaces would be a bit ugly.
+Right now there are two sets of classes. The Internal classes are layered on
+top of the external ones. With a slight re-engineering with the usage of
+`protected` and such I can have base classes to extend. However I still run
+into the single base class issue.
+
