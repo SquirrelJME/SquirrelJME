@@ -22,6 +22,13 @@ public final class UIMenuItem
 	/** The menu which contains this item. */
 	private volatile UIMenu _parent;
 	
+	/** The current menu text. */
+	private volatile String _text =
+		"";
+	
+	/** The current icon used. */
+	private volatile UIImage _icon;
+	
 	/**
 	 * Initializes the menu item.
 	 *
@@ -48,7 +55,15 @@ public final class UIMenuItem
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Get old
+			UIImage rv = this._icon;
+			
+			// Set the new icon
+			__internal().internalSetIcon(__icon);
+			this._icon = __icon;
+			
+			// Return the old one
+			return rv;
 		}
 	}
 	
@@ -71,8 +86,27 @@ public final class UIMenuItem
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Get old
+			String rv = this._text;
+			
+			// Set the new text
+			__internal().internalSetText(__text);
+			this._text = __text;
+			
+			// Return it
+			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the internal menu item.
+	 *
+	 * @return The internal menu item.
+	 * @since 2016/05/23
+	 */
+	final InternalMenuItem __internal()
+	{
+		return super.<InternalMenuItem>__internal(InternalMenuItem.class);
 	}
 }
 

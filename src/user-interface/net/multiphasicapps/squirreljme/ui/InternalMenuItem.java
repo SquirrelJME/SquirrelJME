@@ -30,5 +30,25 @@ public abstract class InternalMenuItem
 	{
 		super(__ref);
 	}
+	
+	/**
+	 * Sets the icon of the menu item.
+	 *
+	 * @param __icon The icon to set.
+	 * @throws UIException If the icon could not be set.
+	 * @since 2016/05/23
+	 */
+	public abstract void internalSetIcon(UIImage __icon)
+		throws UIException;
+	
+	/**
+	 * Sets the text of the menu item.
+	 *
+	 * @param __text The text to set.
+	 * @throws UIException If the text could not be set.
+	 * @since 2016/05/23
+	 */
+	public abstract void internalSetText(String __text)
+		throws UIException;
 }
 

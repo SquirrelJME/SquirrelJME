@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.ui.InternalMenu;
 import net.multiphasicapps.squirreljme.ui.InternalMenuItem;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
+import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 
@@ -28,6 +29,10 @@ import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 public class SwingMenuItem
 	extends InternalMenuItem
 {
+	/** The Swing menu item. */
+	protected final JMenuItem menuitem =
+		new JMenuItem();
+	
 	/**
 	 * Initializes the swing based menu item.
 	 *
@@ -37,6 +42,40 @@ public class SwingMenuItem
 	public SwingMenuItem(Reference<UIMenuItem> __ref)
 	{
 		super(__ref);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
+	public void internalSetIcon(UIImage __icon)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
+	public void internalSetText(String __text)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			JMenuItem menuitem = this.menuitem;
+			
+			// Update the text
+			menuitem.setText(__text);
+			menuitem.invalidate();
+		}
 	}
 }
 
