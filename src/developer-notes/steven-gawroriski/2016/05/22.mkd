@@ -51,3 +51,11 @@ icons. On Swing this would just be a list, while on other systems it would try
 to match the native means for showing icons and such if it cannot directly be
 used and such.
 
+## 21:20
+
+An idea for a demo program, a RPG which is like _The Legend of Zelda:_
+_Link's Awakening_. Except this would be proceduraly and randomly generated
+levels and dungeons, item order, shops and towns, trade sequences, etc. There
+would just be a basic set of generally non-random monsters which may have
+a specific randomized trait that they all share.
+
