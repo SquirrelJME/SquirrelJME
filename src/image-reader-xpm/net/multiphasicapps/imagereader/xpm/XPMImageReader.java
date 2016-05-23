@@ -21,6 +21,13 @@ import net.multiphasicapps.imagereader.ImageType;
 /**
  * This class is able to read XPM images.
  *
+ * If the XPM is invalid then the read image data will not be correct.
+ *
+ * There are also limitations to the reader, only the last color key will be
+ * used and it will be treated as a RGB hexadecimal color. Also the pixels
+ * per character has a limit of 2 characters, any pixels with characters
+ * codes beyond 2 character will only use the first 2.
+ *
  * @since 2016/05/08
  */
 public class XPMImageReader
@@ -96,16 +103,48 @@ public class XPMImageReader
 		
 		// Decode the color palette
 		StringBuilder sb = new StringBuilder();
-		String[] codes = new String[numcolors];
-		int[] pallette = new int[numcolors];
+		int[] codes = new int[numcolors];
+		int[] palette = new int[numcolors];
 		for (int i = 0; i < numcolors; i++)
 		{
 			// Read new input string
 			sb.setLength(0);
 			__readLine(cs, sb);
 			
-			System.err.printf("DEBUG -- Read color: `%s`%n", sb);
-			//throw new Error("TODO");
+			// Ignore really short lines
+			int n = sb.length();
+			if (n < pxchars)
+				continue;
+			
+			// Set code to the given sequence
+			int cx = 0;
+			if (pxchars >= 1)
+				cx |= (int)sb.charAt(0);
+			if (pxchars >= 2)
+				cx |= ((int)sb.charAt(0)) << 16;
+			codes[i] = cx;
+			
+			// Find the last color key value
+			int s, e = n - 1;
+			while (e >= pxchars && sb.charAt(e) <= ' ')
+			{
+				e--;
+				continue;
+			}
+			
+			// Find the start of the color key
+			s = e -1;
+			while (s >= pxchars && sb.charAt(s) > ' ')
+			{
+				s--;
+				continue;
+			}
+			
+			// Decode the color
+			palette[i] = __decodeColor(sb.subSequence(s + 1, e + 1));
+			
+			System.err.printf("DEBUG -- Read color: `%08x` `%s` %12x%n", cx,
+				sb.subSequence(s + 1, e + 1), palette[i]);
 		}
 		
 		// DEBUG
@@ -127,6 +166,76 @@ public class XPMImageReader
 		System.err.println();
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Decodes a color key value.
+	 *
+	 * @param __cs The input key value characters.
+	 * @return The decoded color value.
+	 * @since 2016/05/22
+	 */
+	private int __decodeColor(CharSequence __cs)
+	{
+		// Too short?
+		int n = __cs.length();
+		if (n <= 0)
+			return 0x00_000000;
+		
+		// Must start with '#'
+		if (__cs.charAt(0) != '#')
+			return 0x00_000000;
+		
+		// Decode the first 8 digits
+		int[] dig = new int[8];
+		for (int i = 0, j = 1; i < 8 && j < n; i++, j++)
+			dig[i] = Math.max(0, Character.digit(__cs.charAt(j), 16));
+		
+		// #rgb
+		if (n == 4)
+			return 0xFF_000000 |
+				(dig[0] << 20) |
+				(dig[0] << 16) |
+				(dig[1] << 12) |
+				(dig[1] << 8) |
+				(dig[2] << 4) |
+				(dig[2]);
+		
+		// #argb
+		else if (n == 5)
+			return (dig[0] << 28) |
+				(dig[0] << 24) |
+				(dig[1] << 20) |
+				(dig[1] << 16) |
+				(dig[2] << 12) |
+				(dig[2] << 8) |
+				(dig[3] << 4) |
+				(dig[3]);
+		
+		// #rrggbb
+		else if (n == 7)
+			return 0xFF_000000 |
+				(dig[0] << 20) |
+				(dig[1] << 16) |
+				(dig[2] << 12) |
+				(dig[3] << 8) |
+				(dig[4] << 4) |
+				(dig[5]);
+		
+		// #aarrggbb
+		else if (n == 9)
+			return (dig[0] << 28) |
+				(dig[1] << 24) |
+				(dig[2] << 20) |
+				(dig[3] << 16) |
+				(dig[4] << 12) |
+				(dig[5] << 8) |
+				(dig[6] << 4) |
+				(dig[7]);
+		
+		// Unknown
+		else
+			return 0x00_000000;
 	}
 	
 	/**
