@@ -13,10 +13,15 @@ package net.multiphasicapps.imagereader;
 /**
  * This is the base class for all image containers.
  *
+ * All images use linear RGB, not sRGB.
+ *
  * @since 2016/05/22
  */
 public abstract class ImageData
 {
+	/** The type of image stored here. */
+	protected final ImageType type;
+	
 	/** The image width. */
 	protected final int width;
 	
@@ -32,38 +37,47 @@ public abstract class ImageData
 	/**
 	 * Initializes the base image with the given width and height.
 	 *
+	 * @param __t The type of data stored in the image.
 	 * @param __w The image width.
 	 * @param __h The image height.
+	 * @throws NullPointerException On null arguments.
 	 * @throws IllegalArgumentException If the width and or height or zero
 	 * or negative.
 	 * @since 2016/05/22
 	 */
-	public ImageData(int __w, int __h)
-		throws IllegalArgumentException
+	public ImageData(ImageType __t, int __w, int __h)
+		throws IllegalArgumentException, NullPointerException
 	{
-		this(__w, __h, 0, 0);
+		this(__t, __w, __h, 0, 0);
 	}
 	
 	/**
 	 * Initializes the base image with the given width and height.
 	 *
+	 * @param __t The type of data stored in the image.
 	 * @param __w The image width.
 	 * @param __h The image height.
 	 * @param __x Hot X position (for cursors).
 	 * @param __y Hot Y position (for cursors).
 	 * @throws IllegalArgumentException If the width and or height or zero
 	 * or negative.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/22
 	 */
-	public ImageData(int __w, int __h, int __x, int __y)
-		throws IllegalArgumentException
+	public ImageData(ImageType __t, int __w, int __h, int __x, int __y)
+		throws IllegalArgumentException, NullPointerException
 	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error BM01 The  (The image width; The image height)}
 		if (__w <= 0 || __h <= 0)
 			throw new IllegalArgumentException(String.format("BM01 %d %d",
 				__w, __h));
 		
 		// Set
+		this.type = __t;
 		this.width = __w;
 		this.height = __h;
 		this.hotx = __x;
@@ -111,7 +125,7 @@ public abstract class ImageData
 	 */
 	public ImageType type()
 	{
-		throw new Error("TODO");
+		return this.type;
 	}
 	
 	/**

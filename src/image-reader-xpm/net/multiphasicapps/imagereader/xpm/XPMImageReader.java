@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
 import net.multiphasicapps.imagereader.ImageData;
+import net.multiphasicapps.imagereader.ImageDataInt;
 import net.multiphasicapps.imagereader.ImageReader;
 import net.multiphasicapps.imagereader.ImageType;
 
@@ -111,8 +112,9 @@ public class XPMImageReader
 		// Read pixels
 		__readPixels(cs, width, height, data, pxchars, codes, palette);
 		
-		
-		throw new Error("TODO");
+		// Create image
+		return new ImageDataInt(data, ImageType.INT_ARGB, width, height,
+			hotx, hoty);
 	}
 	
 	/**

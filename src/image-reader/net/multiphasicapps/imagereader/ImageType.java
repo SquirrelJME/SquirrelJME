@@ -18,9 +18,30 @@ package net.multiphasicapps.imagereader;
 public enum ImageType
 {
 	/** 8-bit channel alpha, red, green, and blue image stored as int. */
-	INT_ARGB,
+	INT_ARGB(int.class),
 	
 	/** End. */
 	;
+	
+	/** The primitive image type. */
+	final Class<?> _prim;
+	
+	/**
+	 * Initializes the image type with the expected primitive type.
+	 *
+	 * @param __cl The expected primitive type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/23
+	 */
+	private ImageType(Class<?> __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// The primitive type
+		_prim = __cl;
+	}
 }
 
