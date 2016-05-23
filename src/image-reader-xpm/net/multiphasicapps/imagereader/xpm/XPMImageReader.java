@@ -108,38 +108,9 @@ public class XPMImageReader
 		int area = width * height;
 		int[] data = new int[area];
 		
-		// Read the XPM image data for each rows
-__outer:
-		for (int y = 0; y < height; y++)
-			for (int x = 0, z = (y * width);; x++)
-			{
-				// Read color code
-				int code = 0;
-				for (int i = 0; i < pxchars; i++)
-				{
-					// Read
-					int c = cs.read();
-					
-					// Next row?
-					if (c == __CharStripper__.END_OF_LINE)
-						continue __outer;
-					
-					// EOF?
-					else if (c < 0)
-						break __outer;
-					
-					// First read?
-					if (i == 0)
-						code = (c & 0xFFFF);
-					
-					// Second read?
-					else if (i == 1)
-						code |= (c & 0xFFFF) << 16;
-				}
-				
-				// Find the code used
-				data[z++] = __locateCode(code, codes, palette);
-			}
+		// Read pixels
+		__readPixels(cs, width, height, data, pxchars, codes, palette);
+		
 		
 		throw new Error("TODO");
 	}
@@ -409,6 +380,57 @@ __outer:
 			// Append
 			__sb.append((char)c);
 		}
+	}
+	
+	/**
+	 * Reads the pixels from the XPM image.
+	 *
+	 * @param __cs The character source.
+	 * @param __width The image width.
+	 * @param __height The image height.
+	 * @param __data The output data.
+	 * @param __pxchars The characters per pixel.
+	 * @param __codes The character codes.
+	 * @param __palette The color palette.
+	 * @throws IOException On read errors.
+	 * @since 2016/05/22
+	 */
+	private void __readPixels(Reader __cs, int __width, int __height,
+		int[] __data, int __pxchars, int[] __codes, int[] __palette)
+		throws IOException
+	{
+		// Read the XPM image data for each rows
+__outer:
+		for (int y = 0; y < __height; y++)
+			for (int x = 0, z = (y * __width);; x++)
+			{
+				// Read color code
+				int code = 0;
+				for (int i = 0; i < __pxchars; i++)
+				{
+					// Read
+					int c = __cs.read();
+					
+					// Next row?
+					if (c == __CharStripper__.END_OF_LINE)
+						continue __outer;
+					
+					// EOF?
+					else if (c < 0)
+						break __outer;
+					
+					// First read?
+					if (i == 0)
+						code = (c & 0xFFFF);
+					
+					// Second read?
+					else if (i == 1)
+						code |= (c & 0xFFFF) << 16;
+				}
+				
+				// Find the code used
+				__data[z++] = __locateCode(code, __codes, __palette);
+			}
 	}
 }
 
