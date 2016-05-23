@@ -22,6 +22,9 @@ public final class UIMenu
 	/** The display this is associated with. */
 	private volatile UIDisplay _display;
 	
+	/** The parent menu (if this is a sub-menu. */
+	private volatile UIMenu _parent;
+	
 	/**
 	 * This initializes the menu.
 	 *
@@ -46,6 +49,22 @@ public final class UIMenu
 		synchronized (this.lock)
 		{
 			return this._display;
+		}
+	}
+	
+	/**
+	 * Returns the parent menu if this is a sub-menu of another menu.
+	 *
+	 * @return The menu which is the parent of this menu or {@code null} if
+	 * this is a top level menu.
+	 * @since 2016/05/23
+	 */
+	public UIMenu getParent()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._parent;
 		}
 	}
 	

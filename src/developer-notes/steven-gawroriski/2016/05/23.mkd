@@ -16,3 +16,9 @@ be virtually created and used instead.
 In the image loading, I need a way to specify the color mask or similar. Or
 just change the XPM color name to None instead of having magenta.
 
+## 14:51
+
+It would probably be simpler, albiet a bit slower if all the display elements
+used a single lock which matches the display manager. This means that the
+entire state of the display would be very stateful.
+

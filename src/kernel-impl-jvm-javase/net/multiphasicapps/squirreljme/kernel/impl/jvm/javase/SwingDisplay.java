@@ -18,6 +18,9 @@ import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
@@ -41,6 +44,9 @@ public class SwingDisplay
 {
 	/** The frame for the display. */
 	protected final JFrame frame;
+	
+	/** The current menu bar being used to display the menu. */
+	private volatile JMenuBar _menubar;
 	
 	/**
 	 * Initializes the swing display.
@@ -148,7 +154,34 @@ public class SwingDisplay
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Clearing the menu?
+			if (__menu == null)
+			{
+				// Clear the menu bar
+				this.frame.setJMenuBar(null);
+				this._menubar = null;
+				
+				// Done
+				return;
+			}
+			
+			// Get the internal bar representation
+			SwingMenu sm = ((SwingMenu)internalDisplayManager()).
+				<SwingMenu>__getInternal(SwingMenu.class, __menu);
+			
+			// Do nothing if it was collected or similar
+			if (sm == null)
+				return;
+			
+			// Create a new menu bar
+			JMenuBar menubar = new JMenuBar();
+			
+			// Create the single menu
+			JMenu symmenu = sm.__createJMenu();
+			
+			// Set the frame bar
+			this._menubar = menubar;
+			this.frame.setJMenuBar(menubar);
 		}
 	}
 	
