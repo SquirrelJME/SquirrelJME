@@ -59,3 +59,15 @@ levels and dungeons, item order, shops and towns, trade sequences, etc. There
 would just be a basic set of generally non-random monsters which may have
 a specific randomized trait that they all share.
 
+## 21:32
+
+Using a binary search to find colors will increase speed a bit because a image
+an could be quite large with a large number of colors. A linear search would
+be at least _O(w * h * c)_ while binary search for colors means just
+_O(w * h * log2(c))_ searches. What I can do next though is have a cache of
+the last color, so if the same color is used for awhile then it could quickly
+be found. I should also move the color table reading and the pixel reading
+to other methods to make it easier on the compiler to compile the XPM reader
+effectively.
+
+

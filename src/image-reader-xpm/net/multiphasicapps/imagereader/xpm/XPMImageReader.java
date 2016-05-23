@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageReader;
 import net.multiphasicapps.imagereader.ImageType;
@@ -121,8 +122,7 @@ public class XPMImageReader
 			if (pxchars >= 1)
 				cx |= (int)sb.charAt(0);
 			if (pxchars >= 2)
-				cx |= ((int)sb.charAt(0)) << 16;
-			codes[i] = cx;
+				cx |= ((int)sb.charAt(1)) << 16;
 			
 			// Find the last color key value
 			int s, e = n - 1;
@@ -141,13 +141,37 @@ public class XPMImageReader
 			}
 			
 			// Decode the color
-			palette[i] = __decodeColor(sb.subSequence(s + 1, e + 1));
+			int col = __decodeColor(sb.subSequence(s + 1, e + 1));
+			
+			// Find the position to place the code at
+			int at = Arrays.binarySearch(codes, 0, i, cx);
+			if (at < 0)
+				at = -(at + 1);
+			
+			// Move all values up
+			for (int j = i - 1; j > at; j--)
+			{
+				codes[j] = codes[j - 1];
+				palette[j] = palette[j - 1];
+			}
+			
+			// Set the value
+			codes[at] = cx;
+			palette[at] = col;
 		}
+		
+		for (int i = 0; i < numcolors; i++)
+			System.err.printf("DEBUG -- %d: %08x %08x%n", i, codes[i],
+				palette[i]);
+		
+		// Target array
+		int area = width * height;
+		int[] data = new int[area];
 		
 		// Read the XPM image data for each rows
 __outer:
 		for (int y = 0; y < height; y++)
-			for (int x = 0;; x++)
+			for (int x = 0, z = (y * width);; x++)
 			{
 				// Read color code
 				int code = 0;
@@ -173,7 +197,8 @@ __outer:
 						code |= (c & 0xFFFF) << 16;
 				}
 				
-				throw new Error("TODO");
+				// Find the code used
+				data[z++] = __locateCode(code, codes, palette);
 			}
 		
 		throw new Error("TODO");
@@ -247,6 +272,23 @@ __outer:
 		// Unknown
 		else
 			return 0x00_000000;
+	}
+	
+	/**
+	 * Locates a color for a given color.
+	 *
+	 * @param __c The code to find the color for.
+	 * @param __codes The array of codes.
+	 * @param __pal The color palette.
+	 * @return The color code used.
+	 * @since 2016/05/22
+	 */
+	private int __locateCode(int __c, int[] __codes, int[] __pal)
+	{
+		int at = Arrays.binarySearch(__codes, __c);
+		if (at >= 0)
+			return __pal[at];
+		return 0;
 	}
 	
 	/**

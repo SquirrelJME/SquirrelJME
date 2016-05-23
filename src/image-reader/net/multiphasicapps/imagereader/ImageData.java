@@ -11,7 +11,7 @@
 package net.multiphasicapps.imagereader;
 
 /**
- * This class is used to store the actual data of the image.
+ * This is the base class for all image containers.
  *
  * @since 2016/05/22
  */
