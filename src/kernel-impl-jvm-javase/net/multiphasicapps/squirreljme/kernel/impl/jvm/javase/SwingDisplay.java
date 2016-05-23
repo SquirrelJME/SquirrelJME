@@ -126,7 +126,7 @@ public class SwingDisplay
 				}
 			
 				// Ignore
-				catch (UIGarbageCollectedException e)
+				catch (UIException|UIGarbageCollectedException e)
 				{
 				}
 			}
