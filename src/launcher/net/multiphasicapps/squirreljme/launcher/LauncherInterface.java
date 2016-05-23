@@ -22,6 +22,7 @@ import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
+import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 
 /**
