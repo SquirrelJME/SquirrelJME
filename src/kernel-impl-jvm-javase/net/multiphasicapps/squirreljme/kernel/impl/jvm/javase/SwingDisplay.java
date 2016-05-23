@@ -12,8 +12,12 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
 import javax.swing.JFrame;
+import net.multiphasicapps.imagereader.ImageData;
+import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
 import net.multiphasicapps.squirreljme.ui.InternalImage;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
