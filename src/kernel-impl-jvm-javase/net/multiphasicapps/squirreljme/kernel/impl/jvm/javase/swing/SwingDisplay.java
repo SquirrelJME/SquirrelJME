@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
+package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;

@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import net.multiphasicapps.squirreljme.kernel.impl.autoboot.AutoBootKernel;
+import net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing.
+	SwingDisplayManager;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;

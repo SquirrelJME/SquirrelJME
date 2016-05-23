@@ -8,24 +8,27 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
+package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
 import java.awt.AWTError;
 import java.awt.HeadlessException;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.JVMJavaSEKernel;
 import net.multiphasicapps.squirreljme.ui.InternalDisplay;
 import net.multiphasicapps.squirreljme.ui.InternalDisplayManager;
 import net.multiphasicapps.squirreljme.ui.InternalElement;
 import net.multiphasicapps.squirreljme.ui.InternalImage;
 import net.multiphasicapps.squirreljme.ui.InternalMenu;
+import net.multiphasicapps.squirreljme.ui.InternalMenuItem;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 import net.multiphasicapps.squirreljme.ui.UIElement;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
+import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 
 /**
  * This is a display manager which interfaces with Java's Swing and uses it

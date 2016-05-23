@@ -8,15 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
+package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
 import java.lang.ref.Reference;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import net.multiphasicapps.squirreljme.ui.InternalMenu;
+import net.multiphasicapps.squirreljme.ui.InternalMenuItem;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
-
+import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 /**
  * This represents the internal representation of a menu as it is used in
  * Swing.
