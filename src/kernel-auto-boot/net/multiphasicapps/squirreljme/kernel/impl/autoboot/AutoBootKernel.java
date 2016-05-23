@@ -14,7 +14,7 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.launcher.LauncherInterface;
-import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
+import net.multiphasicapps.squirreljme.ui.UIManager;
 
 /**
  * This is the autoboot kernel which instead of having the standard launcher
@@ -47,7 +47,7 @@ public abstract class AutoBootKernel
 	 * @return The display manager to use.
 	 * @since 2016/05/21
 	 */
-	protected abstract UIDisplayManager getDisplayManager();
+	protected abstract UIManager getDisplayManager();
 	
 	/**
 	 * {@inheritDoc}
