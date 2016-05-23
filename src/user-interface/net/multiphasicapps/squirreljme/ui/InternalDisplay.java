@@ -43,7 +43,7 @@ public abstract class InternalDisplay
 	 * @throws UIException If the visibility state could not be determined.
 	 * @since 2016/05/22
 	 */
-	public abstract boolean isVisible()
+	public abstract boolean internalIsVisible()
 		throws UIException;
 	
 	/**
@@ -54,7 +54,17 @@ public abstract class InternalDisplay
 	 * @throws UIException If the icon could not be set.
 	 * @since 2016/05/22
 	 */
-	public abstract void setIcon(UIImage __icon)
+	public abstract void internalSetIcon(UIImage __icon)
+		throws UIException;
+	
+	/**
+	 * Sets the menu to be used for the display.
+	 *
+	 * @param __menu The menu to use, if {@code null} then it is removed.
+	 * @throws UIException If the menu could not be set.
+	 * @since 2016/05/23
+	 */
+	public abstract void internalSetMenu(UIMenu __menu)
 		throws UIException;
 	
 	/**
@@ -65,7 +75,7 @@ public abstract class InternalDisplay
 	 * @throws UIException If the title could not be set.
 	 * @since 2016/05/22
 	 */
-	public abstract void setTitle(String __nt)
+	public abstract void internalSetTitle(String __nt)
 		throws UIException;
 	
 	/**
@@ -77,7 +87,7 @@ public abstract class InternalDisplay
 	 * an error, not if it could not be changed for a normal reason.
 	 * @since 2016/05/22
 	 */
-	public abstract void setVisible(boolean __vis)
+	public abstract void internalSetVisible(boolean __vis)
 		throws UIException;
 }
 

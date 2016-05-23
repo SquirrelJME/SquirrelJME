@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
+import net.multiphasicapps.squirreljme.ui.UIMenu;
 
 /**
  * This implemens the internal display in Swing.
@@ -68,7 +69,7 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
-	public boolean isVisible()
+	public boolean internalIsVisible()
 		throws UIException
 	{
 		// Lock
@@ -83,7 +84,7 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
-	public void setIcon(UIImage __icon)
+	public void internalSetIcon(UIImage __icon)
 		throws UIException
 	{
 		// Lock
@@ -138,10 +139,25 @@ public class SwingDisplay
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 201605/23
+	 */
+	@Override
+	public void internalSetMenu(UIMenu __menu)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/22
 	 */
 	@Override
-	public void setTitle(String __nt)
+	public void internalSetTitle(String __nt)
 		throws UIException
 	{
 		// Lock
@@ -156,7 +172,7 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
-	public void setVisible(boolean __vis)
+	public void internalSetVisible(boolean __vis)
 		throws UIException
 	{
 		// Lock

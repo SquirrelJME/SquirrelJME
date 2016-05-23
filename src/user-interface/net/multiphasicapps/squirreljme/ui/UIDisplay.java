@@ -26,6 +26,9 @@ public final class UIDisplay
 	
 	/** The icon that the display uses. */
 	private volatile UIImage _icon;
+	
+	/** The menu that the display uses. */
+	private volatile UIMenu _menu;
 
 	/**
 	 * Initializes the display wrapper.
@@ -58,7 +61,7 @@ public final class UIDisplay
 		// Lock
 		synchronized (this.lock)
 		{
-			return __internal().isVisible();
+			return __internal().internalIsVisible();
 		}
 	}
 	
@@ -91,10 +94,57 @@ public final class UIDisplay
 			UIImage rv = this._icon;
 			
 			// Set the new icon
-			__internal().setIcon(__icon);
+			__internal().internalSetIcon(__icon);
 			
 			// Set as used
 			this._icon = __icon;
+			
+			// Return old
+			return rv;
+		}
+	}
+	
+	/**
+	 * Sets the menu that the display uses.
+	 *
+	 * @param __menu The menu to use, if {@code null} then no menu is used.
+	 * @return The old menu which was used.
+	 * @throws UIException If the menu could not be set.
+	 * @since 2016/05/23
+	 */
+	public UIMenu setMenu(UIMenu __menu)
+		throws UIException
+	{
+		// {@squirreljme.error BD08 The menu to be associated with a display
+		// belongs to another display manager.}
+		if (__menu != null && __menu.displayManager() != displayManager())
+			throw new UIException("BD08");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Get the old menu
+			UIMenu rv = this._menu;
+			
+			// Get the display that owns this menu and remove it from another
+			// display, since menus are only associated with a single display.
+			UIDisplay disp = __menu.getDisplay();
+			if (disp != null)
+				if (disp == this)
+					return __menu;
+				else
+					disp.setMenu(null);
+				
+			// Before a new menu can be set, the old menu must be cleared away
+			if (rv != null)
+			{
+				__internal().internalSetMenu(null);
+				this._menu = null;
+			}
+			
+			// Set the new menu
+			__internal().internalSetMenu(__menu);
+			this._menu = __menu;
 			
 			// Return old
 			return rv;
@@ -119,7 +169,7 @@ public final class UIDisplay
 			String rv = this._title;
 			
 			// Set new title
-			__internal().setTitle(__nt);
+			__internal().internalSetTitle(__nt);
 			
 			// Set used title
 			this._title = __nt;
@@ -153,7 +203,7 @@ public final class UIDisplay
 			boolean was = isVisible();
 			
 			// Set the new visibility state internally
-			__internal().setVisible(__vis);
+			__internal().internalSetVisible(__vis);
 			
 			// Check if visibility changed
 			return was != isVisible();

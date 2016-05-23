@@ -29,5 +29,21 @@ public final class UIMenu
 	{
 		super(__dm);
 	}
+	
+	/**
+	 * Returns the display which is associated with this menu.
+	 *
+	 * @return The display which is associated with this menu or {@code null}
+	 * if there is no currently associated display.
+	 * @since 2016/05/23
+	 */
+	public UIDisplay getDisplay()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
 }
 
