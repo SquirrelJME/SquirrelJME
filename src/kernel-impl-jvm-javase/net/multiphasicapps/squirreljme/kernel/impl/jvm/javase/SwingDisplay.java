@@ -115,7 +115,7 @@ public class SwingDisplay
 				{
 					// Load internal image
 					bi = si.<BufferedImage>internalMapImage(
-						BufferedImage.class, w, h, ImageType.INT_ARGB, true);
+						BufferedImage.class, w, h, ImageType.INT_ARGB, false);
 				
 					// No image? Ignore
 					if (bi == null)

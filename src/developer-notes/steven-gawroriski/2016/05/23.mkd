@@ -11,3 +11,8 @@ appear before color ones for example. Although it really does not matter much.
 If I request a ARGB image and there are monochrome images, then one could
 be virtually created and used instead.
 
+## 12:18
+
+In the image loading, I need a way to specify the color mask or similar. Or
+just change the XPM color name to None instead of having magenta.
+
