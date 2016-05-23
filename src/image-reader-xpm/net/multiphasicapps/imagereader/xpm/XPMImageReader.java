@@ -86,10 +86,27 @@ public class XPMImageReader
 			if (__readInt(cs, header, Math.min(6, i)))
 				break;
 		
-		System.err.print("DEBUG -- XPM header: ");
-		for (int i = 0; i < header.length; i++)
-			System.err.printf("%d ", header[i]);
-		System.err.println();
+		// Get dimensional data
+		int width = Math.max(header[0], 1);
+		int height = Math.max(header[1], 1);
+		int numcolors = Math.max(header[2], 1);
+		int pxchars = Math.max(header[3], 1);
+		int hotx = header[4];
+		int hoty = header[5];
+		
+		// Decode the color palette
+		StringBuilder sb = new StringBuilder();
+		String[] codes = new String[numcolors];
+		int[] pallette = new int[numcolors];
+		for (int i = 0; i < numcolors; i++)
+		{
+			// Read new input string
+			sb.setLength(0);
+			__readLine(cs, sb);
+			
+			System.err.printf("DEBUG -- Read color: `%s`%n", sb);
+			//throw new Error("TODO");
+		}
 		
 		// DEBUG
 		System.err.print("DEBUG -- XPM Chars: ");
@@ -170,6 +187,32 @@ public class XPMImageReader
 			// Shift up and add
 			val *= 10;
 			val += dig;
+		}
+	}
+	
+	/**
+	 * Reads a single line into the given string builder.
+	 *
+	 * @param __r The stream to source characters from.
+	 * @param __sb The buffer to store the temporary string data.
+	 * @throws IOException On read errors.
+	 * @since 2015/06/22
+	 */
+	private void __readLine(Reader __r, StringBuilder __sb)
+		throws IOException
+	{
+		// Read until the end
+		for (;;)
+		{
+			// Read character
+			int c = __r.read();
+			
+			// End of stream or line?
+			if (c < 0)
+				return;
+			
+			// Append
+			__sb.append((char)c);
 		}
 	}
 }
