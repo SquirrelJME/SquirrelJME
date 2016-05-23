@@ -81,3 +81,16 @@ top of the external ones. With a slight re-engineering with the usage of
 `protected` and such I can have base classes to extend. However I still run
 into the single base class issue.
 
+## 17:05
+
+I have grown used to the clouds visible outside my window moving from right to
+left, however now they are moving from left to right. What I can do instead is
+completely remove the `Internal` family of methods and then have a kind of
+adapter attached to the `UI` classes. Basically the `UI` is the state of the
+the user interface with icons, menus, and more. Then the code which provides
+the UI to the end user duplicates that state. However an issue with this route
+is that generic functionality (for example if menus are not supported) would
+be lost and the provider would have to simulate the standard behavior in a
+duplicated means. Another thing is if the UI is updated, there will need to be
+a series of callbacks made in order for the state to be updated.
+
