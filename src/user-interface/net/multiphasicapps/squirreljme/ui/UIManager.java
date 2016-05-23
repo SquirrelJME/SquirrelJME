@@ -229,76 +229,6 @@ public class UIManager
 	}
 	
 	/**
-	 * Obtains an external element from an internal one.
-	 *
-	 * @param <E> The type of element to obtain.
-	 * @param __cl The type of element that is expected.
-	 * @param __e The internal element to get the external element for.
-	 * @return The external element or {@code null} if it was cleaned up or
-	 * was not found.
-	 * @throws ClassCastException If the external element is not of the
-	 * expected type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/22
-	 */
-	final <E extends UIBase> E __getExternal(Class<E> __cl,
-		PIBase __e)
-		throws ClassCastException, NullPointerException
-	{
-		// Check
-		if (__cl == null || __e == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		Map<Reference<? extends UIBase>, PIBase> e =
-			this.elements;
-		synchronized (e)
-		{
-			throw new Error("TODO");
-		}
-	}
-	
-	/**
-	 * Obtains an internal element from an external one.
-	 *
-	 * @param <E> The type of element to obtain.
-	 * @param __cl The type of element that is expected.
-	 * @param __e The internal element to get the external element for.
-	 * @return The internal element or {@code null} if the external element
-	 * does not exist in this manager or was garbage collected.
-	 * @throws ClassCastException If the internal element is not of the
-	 * expected type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/22
-	 */
-	final <E extends PIBase> E __getInternal(Class<E> __cl,
-		UIBase __e)
-		throws ClassCastException, NullPointerException
-	{
-		// Check
-		if (__cl == null || __e == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		Map<Reference<? extends UIBase>, PIBase> m =
-			this.elements;
-		synchronized (m)
-		{
-			// Go through all entries
-			for (Map.Entry<Reference<? extends UIBase>, PIBase> e :
-				m.entrySet())
-			{
-				// Compare key
-				if (e.getKey().get() == __e)
-					return __cl.cast(e.getValue());
-			}
-			
-			// Not found
-			return null;
-		}
-	}
-	
-	/**
 	 * Returns the lock of the external element, this is used so that internal
 	 * elements and internal elements share the same lock.
 	 *
@@ -308,33 +238,6 @@ public class UIManager
 	final Object __lock()
 	{
 		return this.lock;
-	}
-	
-	/**
-	 * Registers that a new element was created under the UI and adds it
-	 * and its reference to the internal mapping.
-	 *
-	 * @param __ref The reference to the external element.
-	 * @param __ie The internal element representation.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/22
-	 */
-	final void __newElement(Reference<? extends UIBase> __ref,
-		PIBase __ie)
-		throws NullPointerException
-	{
-		// Check
-		if (__ref == null || __ie == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		Map<Reference<? extends UIBase>, PIBase> e =
-			this.elements;
-		synchronized (e)
-		{
-			// Add it
-			e.put(__ref, __ie);
-		}
 	}
 	
 	/**

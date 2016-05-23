@@ -74,28 +74,5 @@ public class UIBase
 			throw new Error("TODO");
 		}
 	}
-	
-	/**
-	 * Links back an internal element so that the external element may
-	 * reference it and perform other actions with it.
-	 *
-	 * @param __i The internal element to link back.
-	 * @throws IllegalStateException If there already is a link.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/22
-	 */
-	final void __linkBack(PIBase __i)
-		throws IllegalStateException, NullPointerException
-	{
-		// Check
-		if (__i == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			throw new Error("TODO");
-		}
-	}
 }
 
