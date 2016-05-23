@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
-import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
+import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
@@ -47,7 +47,7 @@ public class LauncherInterface
 	protected final KernelProcess kernelprocess;
 	
 	/** The display manager to use to interact with the user. */
-	protected final UIDisplayManager displaymanager;
+	protected final UIManager displaymanager;
 	
 	/** The primary display. */
 	private volatile UIDisplay _maindisp;
@@ -62,7 +62,7 @@ public class LauncherInterface
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/20
 	 */
-	public LauncherInterface(Kernel __k, UIDisplayManager __dm)
+	public LauncherInterface(Kernel __k, UIManager __dm)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check
@@ -115,7 +115,7 @@ public class LauncherInterface
 	public void setup()
 	{
 		// Create new display to be shown to the user
-		UIDisplayManager displaymanager = this.displaymanager;
+		UIManager displaymanager = this.displaymanager;
 		UIDisplay maindisp = displaymanager.createDisplay();
 		this._maindisp = maindisp;
 		
