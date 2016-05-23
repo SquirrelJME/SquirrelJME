@@ -18,7 +18,18 @@ package net.multiphasicapps.imagereader;
 public enum ImageType
 {
 	/** 8-bit channel alpha, red, green, and blue image stored as int. */
-	INT_ARGB(int.class),
+	INT_ARGB(int.class)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/23
+		 */
+		@Override
+		int __atARGB(Object __buf, int __dx)
+		{
+			return ((int[])__buf)[__dx];
+		}
+	},
 	
 	/** End. */
 	;
@@ -43,5 +54,16 @@ public enum ImageType
 		// The primitive type
 		_prim = __cl;
 	}
+	
+	/**
+	 * Returns the linear ARGB value in the given buffer at the specified
+	 * index.
+	 *
+	 * @param __buf The buffer to read from.
+	 * @param __dx The linear pixel to read.
+	 * @return The linear ARGB value.
+	 * @since 2016/05/23
+	 */
+	abstract int __atARGB(Object __buf, int __dx);
 }
 

@@ -16,7 +16,8 @@ import java.lang.ref.WeakReference;
 /**
  * This is the base class for all image containers.
  *
- * All images use linear RGB, not sRGB.
+ * All images use linear RGB, not sRGB. An alpha value of {@code 0xFF} is
+ * fully opaque and an alpha value of {@code 0x00} is fully transparent.
  *
  * The buffers passed to the image can be obtained and potentially modified.
  *
@@ -94,6 +95,18 @@ public abstract class ImageData
 		this.hotx = __x;
 		this.hoty = __y;
 	}
+	
+	/**
+	 * Returns the linear ARGB color at the given coordinate.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @return The linear ARGB value at this coordinate.
+	 * @throws IndexOutOfBoundsException If the pixel is out of bounds.
+	 * @since 2016/05/23
+	 */
+	public abstract int atARGB(int __x, int __y)
+		throws IndexOutOfBoundsException;
 	
 	/**
 	 * {@inheritDoc}

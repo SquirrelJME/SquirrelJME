@@ -89,5 +89,26 @@ public class ImageDataInt
 			this.buffer = __buf;
 		}
 	}
+	
+	/**
+	 * Returns the linear ARGB color at the given coordinate.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @return The linear ARGB value at this coordinate.
+	 * @throws IndexOutOfBoundsException If the pixel is out of bounds.
+	 * @since 2016/05/23
+	 */
+	public int atARGB(int __x, int __y)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error BM04 Pixel out of image bounds.}
+		int w = this.width;
+		if (__x < 0 || __y < 0 || __x >= w || __y >= this.height)
+			throw new IndexOutOfBoundsException("BM04");
+		
+		// Calculate the color here
+		return this.type.__atARGB(this.buffer, (__y * w) + __x);
+	}
 }
 

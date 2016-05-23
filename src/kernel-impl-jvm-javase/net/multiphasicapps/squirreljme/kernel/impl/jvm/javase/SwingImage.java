@@ -73,7 +73,7 @@ public class SwingImage
 					// Copy pixel by pixel
 					for (int y = 0; y < height; y++)
 						for (int x = 0; x < width; x++)
-							throw new Error("TODO");
+							rv.setRGB(x, y, __id.atARGB(x, y));
 					
 					// Return it
 					return rv;
