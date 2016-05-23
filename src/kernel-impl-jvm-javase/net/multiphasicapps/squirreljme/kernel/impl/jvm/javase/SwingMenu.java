@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import javax.swing.JMenu;
 import net.multiphasicapps.squirreljme.ui.InternalMenu;
 import net.multiphasicapps.squirreljme.ui.UIException;
+import net.multiphasicapps.squirreljme.ui.UIGarbageCollectedException;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 
 /**
@@ -25,6 +26,10 @@ import net.multiphasicapps.squirreljme.ui.UIMenu;
 public class SwingMenu
 	extends InternalMenu
 {
+	/** The current menu representation. */
+	protected final JMenu jmenu =
+		new JMenu();
+	
 	/**
 	 * Initializes the swing based menu.
 	 *
@@ -40,13 +45,43 @@ public class SwingMenu
 	 * Creates a JMenu for this given menu.
 	 *
 	 * @return The created menu.
+	 * @throws UIException If the menu could not be created.
 	 * @since 2016/05/23
 	 */
 	final JMenu __createJMenu()
+		throws UIException
 	{
+		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// The current menu
+			JMenu jmenu = this.jmenu;
+			
+			// Obtain the external menu first
+			UIMenu external;
+			try
+			{
+				external = external();
+			}
+			
+			// {@squirreljme.error AZ03 The external menu was garbage
+			// collected.}
+			catch (UIGarbageCollectedException e)
+			{
+				throw new UIException("AZ03", e);
+			}
+			
+			// Is this a sub-menu?
+			UIMenu parent = external.getParent();
+			if (parent != null)
+				throw new Error("TODO");
+			
+			// This is a top-level menu, set it to a simple string
+			else
+				jmenu.setText("Menu");
+			
+			// Return the menu
+			return jmenu;
 		}
 	}
 }

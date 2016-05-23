@@ -46,7 +46,8 @@ public class SwingDisplay
 	protected final JFrame frame;
 	
 	/** The current menu bar being used to display the menu. */
-	private volatile JMenuBar _menubar;
+	protected final JMenuBar menubar =
+		new JMenuBar();
 	
 	/**
 	 * Initializes the swing display.
@@ -154,12 +155,16 @@ public class SwingDisplay
 		// Lock
 		synchronized (this.lock)
 		{
+			// Get the bar
+			JMenuBar menubar = this.menubar;
+			JFrame frame = this.frame;
+			
 			// Clearing the menu?
 			if (__menu == null)
 			{
 				// Clear the menu bar
-				this.frame.setJMenuBar(null);
-				this._menubar = null;
+				frame.setJMenuBar(null);
+				menubar.removeAll();
 				
 				// Done
 				return;
@@ -173,15 +178,18 @@ public class SwingDisplay
 			if (sm == null)
 				return;
 			
-			// Create a new menu bar
-			JMenuBar menubar = new JMenuBar();
-			
 			// Create the single menu
 			JMenu symmenu = sm.__createJMenu();
 			
+			// Clear the old menu and use the new one
+			menubar.removeAll();
+			menubar.add(symmenu);
+			
 			// Set the frame bar
-			this._menubar = menubar;
-			this.frame.setJMenuBar(menubar);
+			frame.setJMenuBar(menubar);
+			
+			// Invalidate the frame to update everything
+			frame.revalidate();
 		}
 	}
 	
