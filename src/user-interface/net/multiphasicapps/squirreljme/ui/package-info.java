@@ -17,6 +17,8 @@
  * output interface (to show the stdout/stderr of programs), and the MIDP LCD
  * UI using standard interfaces.
  *
+ * The entire user interface shares a lock.
+ *
  * @since 2016/05/20
  */
 

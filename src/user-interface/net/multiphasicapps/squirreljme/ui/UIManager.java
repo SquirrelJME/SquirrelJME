@@ -32,14 +32,17 @@ import java.util.WeakHashMap;
  *
  * @since 2016/05/20
  */
-public final class UIManager
+public class UIManager
 {
 	/** Zero sized integer array. */
 	private static final int[] _ZERO_SIZE_INT_ARRAY =
 		new int[0];
 	
-	/** The internal display manager to wrap. */
-	final InternalDisplayManager internal;
+	/** The global lock. */
+	protected final Object lock;
+	
+	/** The platform interface manager. */
+	protected final PIManager pimanager;
 	
 	/** The UI element cleanup thread. */
 	protected final Thread cleanupthread;
@@ -49,32 +52,32 @@ public final class UIManager
 		new ReferenceQueue<>();
 	
 	/** The mapping between references and internal elements. */
-	protected final Map<Reference<? extends UIBase>, PIBase>
-		elements =
+	protected final Map<Reference<? extends UIBase>, PIBase> elements =
 		new HashMap<>();
 	
 	/**
 	 * Initializes the display manager which wraps the internal representation
 	 * of the user interface.
 	 *
-	 * @param __f The factory which creates internal display managers.
+	 * @param __pi The platform interface which provides direct access to
+	 * the native widget system of the host.
 	 * @throws NullPointerException On null arguments.
 	 * @throws UIException If the display manager could not be created.
 	 * @since 2016/05/21
 	 */
-	public UIManager(Factory __f)
+	public UIManager(PIManager __pi)
 		throws NullPointerException, UIException
 	{
-		super(null);
-		
 		// Check
-		if (__f == null)
+		if (__pi == null)
 			throw new NullPointerException("NARG");
 		
-		// Create internal display manager
-		InternalDisplayManager internal = __f.create(
-			new WeakReference<>(this));
-		this.internal = internal;
+		// Set
+		this.pimanager = __pi;
+		
+		// {@squirreljme.error BD0b The platform interface does not define a
+		// lock.}
+		this.lock = Objects.requireNonNull(__pi.lock(), "BD0b");
 		
 		// Setup cleanup thread
 		Thread cleanupthread = new Thread(new __Cleanup__());
@@ -94,10 +97,7 @@ public final class UIManager
 	{
 		try
 		{
-			UIDisplay rv = new UIDisplay(this);
-			this.internal.internalCreateDisplay(
-				new WeakReference<UIDisplay>(rv, this.rqueue));
-			return rv;
+			throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error BD07 Ran out of memory creating display.}
@@ -119,10 +119,7 @@ public final class UIManager
 	{
 		try
 		{
-			UIImage rv = new UIImage(this);
-			this.internal.internalCreateImage(
-				new WeakReference<UIImage>(rv, this.rqueue));
-			return rv;
+			throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error BD06 Ran out of memory creating image.}
@@ -144,10 +141,7 @@ public final class UIManager
 	{
 		try
 		{
-			UIMenu rv = new UIMenu(this);
-			this.internal.internalCreateMenu(
-				new WeakReference<UIMenu>(rv, this.rqueue));
-			return rv;
+			throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error BD09 Ran out of memory creating menu.}
@@ -169,10 +163,7 @@ public final class UIManager
 	{
 		try
 		{
-			UIMenuItem rv = new UIMenuItem(this);
-			this.internal.internalCreateMenuItem(
-				new WeakReference<UIMenuItem>(rv, this.rqueue));
-			return rv;
+			throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error BD09 Ran out of memory creating menu.}
@@ -196,7 +187,7 @@ public final class UIManager
 		try
 		{
 			// Get icons
-			int[] rv = this.internal.internalPreferredIconSizes();
+			int[] rv = this.pimanager.preferredIconSizes();
 		
 			// No preferred size, no icons
 			if (rv == null || rv.length <= 1)
@@ -331,26 +322,6 @@ public final class UIManager
 			// Add it
 			e.put(__ref, __ie);
 		}
-	}
-	
-	/**
-	 * The factory interface for creating internal display managers.
-	 *
-	 * @since 2016/05/22
-	 */
-	public static interface Factory
-	{
-		/**
-		 * Creates a new internal display manager.
-		 *
-		 * @param __ref The reference to the display manager.
-		 * @return The newly created display manager.
-		 * @throws UIException If it could not be created.
-		 * @since 2016/05/22
-		 */
-		public abstract InternalDisplayManager create(
-			Reference<UIManager> __ref)
-			throws UIException;
 	}
 	
 	/**

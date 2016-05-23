@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.ui;
  *
  * @since 2016/05/23
  */
-public final class UIMenuItem
+public class UIMenuItem
 	extends UIBase
 {
 	/** The menu which contains this item. */
@@ -90,7 +90,7 @@ public final class UIMenuItem
 			String rv = this._text;
 			
 			// Set the new text
-			__internal().internalSetText(__text);
+			__internal().setText(__text);
 			this._text = __text;
 			
 			// Return it
@@ -104,9 +104,9 @@ public final class UIMenuItem
 	 * @return The internal menu item.
 	 * @since 2016/05/23
 	 */
-	final InternalMenuItem __internal()
+	final PIMenuItem __internal()
 	{
-		return super.<InternalMenuItem>__internal(InternalMenuItem.class);
+		throw new Error("TODO");
 	}
 }
 

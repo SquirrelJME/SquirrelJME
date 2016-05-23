@@ -19,7 +19,7 @@ import java.util.Objects;
  *
  * @since 2016/05/21
  */
-public abstract class UIBase
+public class UIBase
 {
 	/** Element lock. */
 	protected final Object lock;

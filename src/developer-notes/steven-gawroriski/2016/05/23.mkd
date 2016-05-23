@@ -144,3 +144,8 @@ Then this means that instead of the `PI*` classes linking back in their
 base constructors, the `UIManager` performs the linking after the objects
 are constructed.
 
+## 18:32
+
+The factory is ugly, I will just do a bind to the native platform kind of
+thing.
+

@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.ui;
  *
  * @since 2016/05/22
  */
-public abstract class UIComponent
+public class UIComponent
 	extends UIBase
 {
 	/**

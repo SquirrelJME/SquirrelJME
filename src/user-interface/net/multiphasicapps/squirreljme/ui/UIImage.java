@@ -34,7 +34,7 @@ import net.multiphasicapps.imagereader.ImageType;
  *
  * @since 2016/05/22
  */
-public final class UIImage
+public class UIImage
 	extends UIBase
 {
 	/** The available concrete images. */

@@ -23,6 +23,10 @@ import java.lang.ref.Reference;
  */
 public abstract class PIManager
 {
+	/** The global state lock. */
+	protected final Object lock =
+		new Object();
+	
 	/**
 	 * Initializes the internal display manager.
 	 *
@@ -107,6 +111,18 @@ public abstract class PIManager
 		UIElement __e)
 	{
 		return this.displaymanager.<E>__getInternal(__cl, __e);
+	}
+	
+	/**
+	 * This returns the global locking object which is used for the entire
+	 * display state.
+	 *
+	 * @return The used locking object.
+	 * @since 2016/05/23
+	 */
+	public final Object lock()
+	{
+		return this.lock;
 	}
 }
 

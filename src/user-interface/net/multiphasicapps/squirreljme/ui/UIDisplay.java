@@ -18,7 +18,7 @@ package net.multiphasicapps.squirreljme.ui;
  *
  * @since 2016/05/20
  */
-public final class UIDisplay
+public class UIDisplay
 	extends UIBase
 {
 	/** The title the display uses. */

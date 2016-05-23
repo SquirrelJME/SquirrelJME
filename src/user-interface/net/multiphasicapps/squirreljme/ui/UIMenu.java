@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @since 2016/05/23
  */
-public final class UIMenu
+public class UIMenu
 	extends UIBase
 {
 	/** The display this is associated with. */
