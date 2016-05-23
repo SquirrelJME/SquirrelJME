@@ -94,3 +94,16 @@ be lost and the provider would have to simulate the standard behavior in a
 duplicated means. Another thing is if the UI is updated, there will need to be
 a series of callbacks made in order for the state to be updated.
 
+## 17:12
+
+Actually, I can do something similar to what I am doing now. There would be
+the UI elements which do everything and can handle many things. However, there
+would instead of `InternalElement`, it would be `StateTracker<U>`. This would
+be an interface and not an abstract class. The display manager would have a
+factory which can create state trackers and such for the given `U`. Then
+when an element changes and such, methods can call into the `StateTracker`.
+For certain elements, there would be variants of the `StateTracker` for example
+a `MenuStateTracker`. Then a `SwingMenu` would implement this interface. I
+could also just use the term `NUI` instead for native user interface. So it
+would be very similar to my existing classes.
+
