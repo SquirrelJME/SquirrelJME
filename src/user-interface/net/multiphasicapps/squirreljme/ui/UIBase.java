@@ -27,6 +27,9 @@ public class UIBase
 	/** The external display manager. */
 	protected final UIManager manager;
 	
+	/** The linked platform interface. */
+	private volatile PIBase _platform;
+	
 	/**
 	 * Initializes the base element.
 	 *
@@ -64,14 +67,56 @@ public class UIBase
 	 * @param <E> The internal element type.
 	 * @param __cl The class for that element.
 	 * @return The internal element.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UIException If no platform interface was registered.
 	 * @since 2016/05/22
 	 */
 	protected final <P extends PIBase> P platform(Class<P> __cl)
+		throws NullPointerException, UIException
 	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// {@squirreljme.error BD01 The platform interface was never
+			// bound to the user interface base.}
+			PIBase rv = this._platform;
+			if (rv == null)
+				throw new UIException("BD01");
+			
+			// Cast
+			return __cl.cast(rv);
+		}
+	}
+	
+	/**
+	 * Registers the platform interface with this user interface.
+	 *
+	 * @param __pi The native platform interface type.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UIException If one was already registered.
+	 * @since 2016/05/23
+	 */
+	final void __registerPlatform(PIBase __pi)
+		throws NullPointerException, UIException
+	{
+		// Check
+		if (__pi == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BD02 A native platform interface was
+			// already registered with this user interface base.}
+			if (this._platform != null)
+				throw new UIException("BD02");
+			
+			// Set
+			this._platform = __pi;
 		}
 	}
 }
