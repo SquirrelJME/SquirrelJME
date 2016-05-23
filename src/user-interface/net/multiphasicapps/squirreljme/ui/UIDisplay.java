@@ -123,6 +123,12 @@ public final class UIDisplay
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BD0a Cannot add a menu which is a sub-menu
+			// of another menu to be the top-level menu of a display.}
+			UIMenu parent = __menu.getParent();
+			if (parent != null)
+				throw new UIException("BD0a");
+			
 			// Get the old menu
 			UIMenu rv = this._menu;
 			
