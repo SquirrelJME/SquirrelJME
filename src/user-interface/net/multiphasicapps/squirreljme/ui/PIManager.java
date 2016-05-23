@@ -21,20 +21,15 @@ import java.lang.ref.Reference;
  * @see UIDisplayManager
  * @since 2016/05/21
  */
-public abstract class InternalDisplayManager
-	extends InternalElement<UIDisplayManager>
+public abstract class PIManager
 {
 	/**
 	 * Initializes the internal display manager.
 	 *
-	 * @param __ref The external element.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/21
 	 */
-	public InternalDisplayManager(Reference<UIDisplayManager> __ref)
-		throws NullPointerException
+	public PIManager()
 	{
-		super(__ref);
 	}
 	
 	/**

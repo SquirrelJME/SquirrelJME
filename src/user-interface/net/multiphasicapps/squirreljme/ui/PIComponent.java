@@ -13,22 +13,13 @@ package net.multiphasicapps.squirreljme.ui;
 import java.lang.ref.Reference;
 
 /**
- * This is the base for classes which act as components within a display.
+ * This is the base for classes which act as components within a display,
+ * components have the ability to be placed within a {@link PIContainer}.
  *
  * @since 2016/05/22
  */
-public abstract class InternalComponent
-	extends InternalElement<UIComponent>
+public interface PIComponent
+	extends PIBase
 {
-	/**
-	 * Initializes the internal component.
-	 *
-	 * @param __r The reference to the external component.
-	 * @since 2016/05/22
-	 */
-	public InternalComponent(Reference<UIComponent> __r)
-	{
-		super(__r);
-	}
 }
 

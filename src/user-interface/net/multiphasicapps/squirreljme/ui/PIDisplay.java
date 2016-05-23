@@ -22,20 +22,9 @@ import java.lang.ref.Reference;
  * @see UIDisplay
  * @since 2016/05/21
  */
-public abstract class InternalDisplay
-	extends InternalElement<UIDisplay>
+public interface PIDisplay
+	extends PIContainer
 {
-	/**
-	 * Initializes the internal display.
-	 *
-	 * @param __ref The external element.
-	 * @since 2016/05/21
-	 */
-	public InternalDisplay(Reference<UIDisplay> __ref)
-	{
-		super(__ref);
-	}
-	
 	/**
 	 * Returns the visibility state of the internal display.
 	 *
@@ -43,7 +32,7 @@ public abstract class InternalDisplay
 	 * @throws UIException If the visibility state could not be determined.
 	 * @since 2016/05/22
 	 */
-	public abstract boolean internalIsVisible()
+	public abstract boolean isVisible()
 		throws UIException;
 	
 	/**
@@ -54,7 +43,7 @@ public abstract class InternalDisplay
 	 * @throws UIException If the icon could not be set.
 	 * @since 2016/05/22
 	 */
-	public abstract void internalSetIcon(UIImage __icon)
+	public abstract void setIcon(UIImage __icon)
 		throws UIException;
 	
 	/**
@@ -64,7 +53,7 @@ public abstract class InternalDisplay
 	 * @throws UIException If the menu could not be set.
 	 * @since 2016/05/23
 	 */
-	public abstract void internalSetMenu(UIMenu __menu)
+	public abstract void setMenu(UIMenu __menu)
 		throws UIException;
 	
 	/**
@@ -75,7 +64,7 @@ public abstract class InternalDisplay
 	 * @throws UIException If the title could not be set.
 	 * @since 2016/05/22
 	 */
-	public abstract void internalSetTitle(String __nt)
+	public abstract void setTitle(String __nt)
 		throws UIException;
 	
 	/**
@@ -87,7 +76,7 @@ public abstract class InternalDisplay
 	 * an error, not if it could not be changed for a normal reason.
 	 * @since 2016/05/22
 	 */
-	public abstract void internalSetVisible(boolean __vis)
+	public abstract void setVisible(boolean __vis)
 		throws UIException;
 }
 

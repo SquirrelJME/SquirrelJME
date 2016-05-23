@@ -17,18 +17,8 @@ import java.lang.ref.Reference;
  *
  * @since 2016/05/23
  */
-public abstract class InternalMenu
-	extends InternalElement<UIMenu>
+public interface PIMenu
+	extends PIMenuItem
 {
-	/**
-	 * Initializes the internal menu representation.
-	 *
-	 * @param __ref The reference to the external menu.
-	 * @since 2016/05/23
-	 */
-	public InternalMenu(Reference<UIMenu> __ref)
-	{
-		super(__ref);
-	}
 }
 

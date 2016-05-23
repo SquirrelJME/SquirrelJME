@@ -10,34 +10,13 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
-import java.lang.ref.Reference;
-
 /**
- * This is an internal representation of a menu item.
+ * This is a container which stores other primitive elements.
  *
  * @since 2016/05/23
  */
-public interface PIMenuItem
+public interface PIContainer
 	extends PIBase
 {
-	/**
-	 * Sets the icon of the menu item.
-	 *
-	 * @param __icon The icon to set.
-	 * @throws UIException If the icon could not be set.
-	 * @since 2016/05/23
-	 */
-	public abstract void setIcon(UIImage __icon)
-		throws UIException;
-	
-	/**
-	 * Sets the text of the menu item.
-	 *
-	 * @param __text The text to set.
-	 * @throws UIException If the text could not be set.
-	 * @since 2016/05/23
-	 */
-	public abstract void setText(String __text)
-		throws UIException;
 }
 

@@ -18,100 +18,28 @@ import java.util.Objects;
 /**
  * This is the base class for all internal elements and is used to link
  *
- * @param <X> The external element type used.
  * @since 2016/05/21
  */
-public abstract class InternalElement<X extends UIElement>
-	implements InternalBaseElement<X>
+public interface PIBase
 {
-	/** Lock. */
-	protected final Object lock;
-	
-	/** The owning display manager. */
-	protected final UIDisplayManager displaymanager;
-	
-	/** The linked display element (is a reference for cleanup). */
-	protected final Reference<X> externalelement;
-	
 	/**
-	 * Initializes the internal element.
+	 * Cleans up this platform interface item so that it does not consume
+	 * any graphical resources on the native platform.
 	 *
-	 * @param __dm The owning display manager.
-	 * @param __ref The external element.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/21
-	 */
-	InternalElement(Reference<X> __ref)
-		throws NullPointerException
-	{
-		// Check
-		if (__ref == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error BD01 Reference to the external UI element was
-		// garbage collected as it was created, this is a bug in the virtual
-		// machine.}
-		X disp = Objects.<X>requireNonNull(__ref.get(), "BD01");
-		
-		// Share the same lock as the external element
-		this.lock = disp.__lock();
-		
-		// Set
-		this.externalelement = __ref;
-		
-		// Owned by this display manager
-		UIDisplayManager displaymanager = disp.displayManager();
-		this.displaymanager = displaymanager;
-		
-		// Have the display manager link back this element
-		displaymanager.__newElement(__ref, this);
-		
-		// Link to the external element (a back pointer)
-		disp.__linkBack(this);
-	}
-	
-	/**
-	 * Returns the referenced external element or throws an exception if it
-	 * was garbage collected.
-	 *
-	 * @return The external element.
-	 * @throws UIGarbageCollectedException If the external element was garbage
-	 * collected.
-	 * @since 2016/05/22
-	 */
-	public final X external()
-		throws UIGarbageCollectedException
-	{
-		X rv = externalelement.get();
-		
-		// {@squirreljme.error BD02 The element was garbage collected.}
-		if (rv == null)
-			throw new UIGarbageCollectedException("BD02");
-		
-		// Return it
-		return rv;
-	}
-	
-	/**
-	 * Returns the internal display manager.
-	 *
-	 * @return The internal display manager.
+	 * @throws UIException If cleanup failed.
 	 * @since 2016/05/23
 	 */
-	protected final InternalDisplayManager internalDisplayManager()
-	{
-		return this.displaymanager.internal;
-	}
+	public abstract void cleanup()
+		throws UIException;
 	
 	/**
-	 * Returns the owning display manager.
+	 * Returns the manager for the current platform.
 	 *
-	 * @return The owning display manager.
-	 * @since 2016/05/22
+	 * @return The native platform manager which owns this base.
+	 * @throws UIException If the manager could not be obtained. 
+	 * @since 2016/05/23
 	 */
-	final UIDisplayManager __displayManager()
-	{
-		return this.displaymanager;
-	}
+	public abstract PIManager platformManager()
+		throws UIException;
 }
 

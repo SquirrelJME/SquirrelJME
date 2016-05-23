@@ -122,3 +122,19 @@ Perhaps a better prefix instead of `NUI`. Well, I suppose it does not really
 matter much. Another alternative is instead just `PI` for platform interface,
 but that can work.
 
+## 18:19
+
+Also, `PIBase` will not have a generic type attached, it will be handled by
+a class cast instead.
+
+## 18:24
+
+`PIImage` does not make much sense, `UIImage` could just use the manager to
+create the right kind of native image to be displayed. So the `PIManager`
+would keep track of native forms of the image for example.
+
+## 18:26
+
+Also the managers being actual elements themselves is a bit ugly, so that is a
+no go.
+

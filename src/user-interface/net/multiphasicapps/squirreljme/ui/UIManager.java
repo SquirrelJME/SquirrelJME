@@ -31,8 +31,7 @@ import java.util.Set;
  *
  * @since 2016/05/20
  */
-public final class UIDisplayManager
-	extends UIElement
+public final class UIManager
 {
 	/** Zero sized integer array. */
 	private static final int[] _ZERO_SIZE_INT_ARRAY =
@@ -62,7 +61,7 @@ public final class UIDisplayManager
 	 * @throws UIException If the display manager could not be created.
 	 * @since 2016/05/21
 	 */
-	public UIDisplayManager(Factory __f)
+	public UIManager(Factory __f)
 		throws NullPointerException, UIException
 	{
 		super(null);
@@ -349,7 +348,7 @@ public final class UIDisplayManager
 		 * @since 2016/05/22
 		 */
 		public abstract InternalDisplayManager create(
-			Reference<UIDisplayManager> __ref)
+			Reference<UIManager> __ref)
 			throws UIException;
 	}
 	
