@@ -140,12 +140,38 @@ public final class UIDisplayManager
 	 * @since 2016/05/23
 	 */
 	public UIMenu createMenu()
+		throws UIException
 	{
 		try
 		{
 			UIMenu rv = new UIMenu(this);
 			this.internal.internalCreateMenu(
 				new WeakReference<UIMenu>(rv, this.rqueue));
+			return rv;
+		}
+		
+		// {@squirreljme.error BD09 Ran out of memory creating menu.}
+		catch (OutOfMemoryError e)
+		{
+			throw new UIException("BD09");
+		}
+	}
+	
+	/**
+	 * Creates a new menu item which may be assigned to a menu.
+	 *
+	 * @return The newly created menu item.
+	 * @throws UIException If the menu item could not be created.
+	 * @since 2016/05/23
+	 */
+	public UIMenuItem createMenuItem()
+		throws UIException
+	{
+		try
+		{
+			UIMenuItem rv = new UIMenuItem(this);
+			this.internal.internalCreateMenuItem(
+				new WeakReference<UIMenuItem>(rv, this.rqueue));
 			return rv;
 		}
 		

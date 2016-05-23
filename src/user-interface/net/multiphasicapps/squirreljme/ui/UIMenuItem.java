@@ -32,5 +32,47 @@ public final class UIMenuItem
 	{
 		super(__dm);
 	}
+	
+	/**
+	 * Sets the icon that this menu item should use when it is displayed.
+	 *
+	 * @param __icon The image to use for the item, {@code null} removes the
+	 * set icon.
+	 * @return The old icon which was previously used.
+	 * @throws UIException If the icon could not be set.
+	 * @since 2016/05/23
+	 */
+	public UIImage setIcon(UIImage __icon)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Sets the text of the menu item.
+	 *
+	 * @param __text The text to display for the menu item, {@code null} is
+	 * treated as a blank string.
+	 * @return The old text which was previously used.
+	 * @throws UIException If the text could not be set.
+	 * @since 2016/05/23
+	 */
+	public String setText(String __text)
+		throws UIException
+	{
+		// If null, becomes blank
+		if (__text == null)
+			__text = "";
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
 }
 

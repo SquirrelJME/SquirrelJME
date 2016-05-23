@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.ui.UIDisplayManager;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
+import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 
 /**
  * This class is the standard launcher which is used to run list programs,
@@ -160,6 +161,11 @@ public class LauncherInterface
 		
 		// Setup menu
 		UIMenu mainmenu = displaymanager.createMenu();
+		
+		// Quit item
+		UIMenuItem quititem = displaymanager.createMenuItem();
+		quititem.setText("Quit");
+		mainmenu.add(quititem);
 		
 		// Use the menu
 		maindisp.setMenu(mainmenu);
