@@ -149,7 +149,7 @@ public class XPMImageReader
 				at = -(at + 1);
 			
 			// Move all values up
-			for (int j = i - 1; j > at; j--)
+			for (int j = i; j > at; j--)
 			{
 				codes[j] = codes[j - 1];
 				palette[j] = palette[j - 1];
@@ -159,10 +159,6 @@ public class XPMImageReader
 			codes[at] = cx;
 			palette[at] = col;
 		}
-		
-		for (int i = 0; i < numcolors; i++)
-			System.err.printf("DEBUG -- %d: %08x %08x%n", i, codes[i],
-				palette[i]);
 		
 		// Target array
 		int area = width * height;
