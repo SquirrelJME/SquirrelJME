@@ -22,3 +22,14 @@ It would probably be simpler, albiet a bit slower if all the display elements
 used a single lock which matches the display manager. This means that the
 entire state of the display would be very stateful.
 
+## 14:53
+
+Well, perhaps I do not.
+
+## 14:54
+
+Well, perhaps I should, especially in the future when it comes to the IPC and
+such. There could quite possibly be a state where an action of one messes up
+a result of another command, which would be difficult to debug. So for
+simplicity, a single lock on the entire display.
+

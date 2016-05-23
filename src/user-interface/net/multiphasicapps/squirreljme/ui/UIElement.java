@@ -22,8 +22,7 @@ import java.util.Objects;
 public abstract class UIElement
 {
 	/** Element lock. */
-	protected final Object lock =
-		new Object();
+	protected final Object lock;
 	
 	/** The external display manager. */
 	protected final UIDisplayManager displaymanager;
@@ -45,7 +44,10 @@ public abstract class UIElement
 		// If this is a display manager then null is acceptable because the
 		// value to set is just this.
 		if (this instanceof UIDisplayManager)
+		{
 			this.displaymanager = (UIDisplayManager)this;
+			this.lock = ((UIDisplayManager)this).__lock();
+		}
 		
 		// Otherwise this is some other element type.
 		else
@@ -56,6 +58,7 @@ public abstract class UIElement
 		
 			// Set
 			this.displaymanager = __dm;
+			this.lock = __dm.__lock();
 		}
 	}
 	
