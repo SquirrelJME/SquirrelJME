@@ -91,7 +91,21 @@ public class SwingDisplay
 			if (si == null)
 				throw new UIException("AZ02");
 			
-			throw new Error("TODO");
+			// Find an internal buffered image
+			BufferedImage bi;
+			try
+			{
+				bi = si.<BufferedImage>internalMapImage(BufferedImage.class,
+					0, 0, ImageType.INT_ARGB, true);
+			
+				throw new Error("TODO");
+			}
+			
+			// {@squirreljme.error BD08 The image was garbage collected.}
+			catch (UIGarbageCollectedException e)
+			{
+				throw new UIException("BD08", e);
+			}
 		}
 	}
 	
