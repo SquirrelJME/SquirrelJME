@@ -49,17 +49,6 @@ public abstract class PIManager
 		throws UIException;
 	
 	/**
-	 * Creates a new internal image.
-	 *
-	 * @param __ref The reference to the external image.
-	 * @return The internal image.
-	 * @throws UIException If the image could not be created.
-	 * @since 2016/05/22
-	 */
-	public abstract PIImage createImage(Reference<UIImage> __ref)
-		throws UIException;
-	
-	/**
 	 * Creates a new internal menu.
 	 *
 	 * @param __ref The reference to the external menu.
@@ -96,22 +85,6 @@ public abstract class PIManager
 	 */
 	public abstract int[] preferredIconSizes()
 		throws UIException;
-		
-	/**
-	 * Obtains an internal element from an external one.
-	 *
-	 * @param <E> The type of element to obtain.
-	 * @param __cl The type of element that is expected.
-	 * @param __e The internal element to get the external element for.
-	 * @return The internal element or {@code null} if the external element
-	 * does not exist.
-	 * @since 2016/05/22
-	 */
-	protected final <E extends InternalElement> E getInternal(Class<E> __cl,
-		UIElement __e)
-	{
-		return this.displaymanager.<E>__getInternal(__cl, __e);
-	}
 	
 	/**
 	 * This returns the global locking object which is used for the entire
