@@ -61,3 +61,15 @@ However, the adding code would handle these cases. I would have to do something
 similar for components also. So the base class for `SwingMenu` and
 `SwingMenuItem` would likely contain duplicate code.
 
+## 16:19
+
+Actually, the how the UI and Internal elements are managed will not work very
+well with this current layout. After writing the menus I would likely go into
+the component code next. The current means of doing things works, but the
+class hiearchy can be a bit complicated. Right now most of my internal code is
+just abstract methods. The concrete methods are helpers such as getting the
+associated external element. So the only way to move forward and fixing my
+stuff would be if all of the `Internal` classes became interfaces. Then the
+internal stuff would just extend `InternalElement` which has those helpers and
+the locks.
+
