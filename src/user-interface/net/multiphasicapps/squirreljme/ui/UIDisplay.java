@@ -19,7 +19,7 @@ package net.multiphasicapps.squirreljme.ui;
  * @since 2016/05/20
  */
 public final class UIDisplay
-	extends UIElement
+	extends UIBase
 {
 	/** The title the display uses. */
 	private volatile String _title;

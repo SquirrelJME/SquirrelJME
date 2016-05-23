@@ -45,11 +45,11 @@ public final class UIManager
 	protected final Thread cleanupthread;
 	
 	/** The reference queue for element cleanup. */
-	protected final ReferenceQueue<UIElement> rqueue =
+	protected final ReferenceQueue<UIBase> rqueue =
 		new ReferenceQueue<>();
 	
 	/** The mapping between references and internal elements. */
-	protected final Map<Reference<? extends UIElement>, InternalElement>
+	protected final Map<Reference<? extends UIBase>, PIBase>
 		elements =
 		new HashMap<>();
 	
@@ -249,8 +249,8 @@ public final class UIManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/22
 	 */
-	final <E extends UIElement> E __getExternal(Class<E> __cl,
-		InternalElement __e)
+	final <E extends UIBase> E __getExternal(Class<E> __cl,
+		PIBase __e)
 		throws ClassCastException, NullPointerException
 	{
 		// Check
@@ -258,7 +258,7 @@ public final class UIManager
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		Map<Reference<? extends UIElement>, InternalElement> e =
+		Map<Reference<? extends UIBase>, PIBase> e =
 			this.elements;
 		synchronized (e)
 		{
@@ -279,8 +279,8 @@ public final class UIManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/22
 	 */
-	final <E extends InternalElement> E __getInternal(Class<E> __cl,
-		UIElement __e)
+	final <E extends PIBase> E __getInternal(Class<E> __cl,
+		UIBase __e)
 		throws ClassCastException, NullPointerException
 	{
 		// Check
@@ -288,12 +288,12 @@ public final class UIManager
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		Map<Reference<? extends UIElement>, InternalElement> m =
+		Map<Reference<? extends UIBase>, PIBase> m =
 			this.elements;
 		synchronized (m)
 		{
 			// Go through all entries
-			for (Map.Entry<Reference<? extends UIElement>, InternalElement> e :
+			for (Map.Entry<Reference<? extends UIBase>, PIBase> e :
 				m.entrySet())
 			{
 				// Compare key
@@ -315,8 +315,8 @@ public final class UIManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/22
 	 */
-	final void __newElement(Reference<? extends UIElement> __ref,
-		InternalElement __ie)
+	final void __newElement(Reference<? extends UIBase> __ref,
+		PIBase __ie)
 		throws NullPointerException
 	{
 		// Check
@@ -324,7 +324,7 @@ public final class UIManager
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		Map<Reference<? extends UIElement>, InternalElement> e =
+		Map<Reference<? extends UIBase>, PIBase> e =
 			this.elements;
 		synchronized (e)
 		{

@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.ui;
  * @since 2016/05/22
  */
 public abstract class UIComponent
-	extends UIElement
+	extends UIBase
 {
 	/**
 	 * Initializes the base component that is placed within a display.

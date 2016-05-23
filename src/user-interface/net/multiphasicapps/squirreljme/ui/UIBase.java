@@ -19,7 +19,7 @@ import java.util.Objects;
  *
  * @since 2016/05/21
  */
-public abstract class UIElement
+public abstract class UIBase
 {
 	/** Element lock. */
 	protected final Object lock;
@@ -28,7 +28,7 @@ public abstract class UIElement
 	protected final UIDisplayManager displaymanager;
 	
 	/** Link back to the internal element. */
-	private volatile InternalElement _internal;
+	private volatile PIBase _internal;
 	
 	/**
 	 * Initializes the base element.
@@ -38,7 +38,7 @@ public abstract class UIElement
 	 * manager.
 	 * @since 2016/05/21
 	 */
-	UIElement(UIDisplayManager __dm)
+	UIBase(UIDisplayManager __dm)
 		throws NullPointerException
 	{
 		// If this is a display manager then null is acceptable because the
@@ -85,7 +85,7 @@ public abstract class UIElement
 	 * @return The internal element.
 	 * @since 2016/05/22
 	 */
-	final <E extends InternalElement<?>> E __internal(Class<E> __cl)
+	final <E extends PIBase<?>> E __internal(Class<E> __cl)
 	{
 		// Lock
 		synchronized (this.lock)
@@ -105,7 +105,7 @@ public abstract class UIElement
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/22
 	 */
-	final void __linkBack(InternalElement __i)
+	final void __linkBack(PIBase __i)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check

@@ -40,7 +40,7 @@ public abstract class PIManager
 	 * @throws UIException If it could not be created.
 	 * @since 2016/05/22
 	 */
-	public abstract InternalDisplay internalCreateDisplay(
+	public abstract PIDisplay createDisplay(
 		Reference<UIDisplay> __ref)
 		throws UIException;
 	
@@ -52,7 +52,7 @@ public abstract class PIManager
 	 * @throws UIException If the image could not be created.
 	 * @since 2016/05/22
 	 */
-	public abstract InternalImage internalCreateImage(Reference<UIImage> __ref)
+	public abstract PIImage createImage(Reference<UIImage> __ref)
 		throws UIException;
 	
 	/**
@@ -63,7 +63,7 @@ public abstract class PIManager
 	 * @throws UIException If the menu could not be created.
 	 * @since 2016/05/23
 	 */
-	public abstract InternalMenu internalCreateMenu(Reference<UIMenu> __ref)
+	public abstract PIMenu createMenu(Reference<UIMenu> __ref)
 		throws UIException;
 	
 	/**
@@ -74,7 +74,7 @@ public abstract class PIManager
 	 * @throws UIException If the menu item could not be created.
 	 * @since 2016/05/23
 	 */
-	public abstract InternalMenuItem internalCreateMenuItem(
+	public abstract PIMenuItem createMenuItem(
 		Reference<UIMenuItem> __ref)
 		throws UIException;
 	
@@ -90,7 +90,7 @@ public abstract class PIManager
 	 * @throws UIException If the preferred sizes could not be determined.
 	 * @since 2016/05/22
 	 */
-	public abstract int[] internalPreferredIconSizes()
+	public abstract int[] preferredIconSizes()
 		throws UIException;
 		
 	/**
