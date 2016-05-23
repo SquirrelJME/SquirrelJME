@@ -15,9 +15,14 @@ package net.multiphasicapps.imagereader;
  *
  * All images use linear RGB, not sRGB.
  *
+ * The buffers passed to the image can be obtained and potentially modified.
+ *
+ * Images are compared to by type, width, and height.
+ *
  * @since 2016/05/22
  */
 public abstract class ImageData
+	implements Comparable<ImageData>
 {
 	/** The type of image stored here. */
 	protected final ImageType type;
@@ -82,6 +87,37 @@ public abstract class ImageData
 		this.height = __h;
 		this.hotx = __x;
 		this.hoty = __y;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
+	public final int compareTo(ImageData __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Compare the area of the image, so larger images appear first
+		int aw = this.width, bw = __o.width;
+		int a = aw * this.height,
+			b = bw * __o.height;
+		if (a < b)
+			return -1;
+		else if (a > b)
+			return 1;
+		
+		// If the area is the same, smaller widths are first
+		if (aw < bw)
+			return -1;
+		else if (aw > bw)
+			return 1;
+		
+		// Compare the type
+		return this.type.compareTo(__o.type);
 	}
 	
 	/**
