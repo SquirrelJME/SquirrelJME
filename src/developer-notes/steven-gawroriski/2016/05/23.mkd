@@ -116,3 +116,9 @@ just map and call into the interfaces.
 Then when it comes to base classes, since everything is an interface it would
 not really matter much and `SwingMenu` could extend `SwingMenuItem` easily now.
 
+## 18:12
+
+Perhaps a better prefix instead of `NUI`. Well, I suppose it does not really
+matter much. Another alternative is instead just `PI` for platform interface,
+but that can work.
+
