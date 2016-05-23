@@ -13,7 +13,10 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
+import net.multiphasicapps.imagereader.ImageData;
+import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.ui.InternalImage;
+import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 
 /**
@@ -33,6 +36,21 @@ public class SwingImage
 	public SwingImage(Reference<UIImage> __ref)
 	{
 		super(__ref);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
+	protected Object internalCreateMapping(ImageData __id)
+		throws UIException
+	{
+		// Check
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

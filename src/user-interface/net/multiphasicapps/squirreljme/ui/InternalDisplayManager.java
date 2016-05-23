@@ -83,8 +83,8 @@ public abstract class InternalDisplayManager
 	 * @param __cl The type of element that is expected.
 	 * @param __e The internal element to get the external element for.
 	 * @return The internal element or {@code null} if the external element
-	 * does not exist in this manager or was garbage collected.
-	 * @since 2016/05/23
+	 * does not exist.
+	 * @since 2016/05/22
 	 */
 	protected final <E extends InternalElement> E getInternal(Class<E> __cl,
 		UIElement __e)
