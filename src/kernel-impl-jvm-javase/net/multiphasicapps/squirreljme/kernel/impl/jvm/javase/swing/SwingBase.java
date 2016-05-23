@@ -31,7 +31,7 @@ public abstract class SwingBase
 	protected final SwingManager manager;
 	
 	/** The external element. */
-	protected final Reference<UIBase> external;
+	protected final Reference<? extends UIBase> external;
 	
 	/**
 	 * Intiailizes the swing base.
@@ -41,7 +41,7 @@ public abstract class SwingBase
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/23
 	 */
-	public SwingBase(SwingManager __sm, Reference<UIBase> __ext)
+	public SwingBase(SwingManager __sm, Reference<? extends UIBase> __ext)
 		throws NullPointerException
 	{
 		// Check
@@ -51,6 +51,7 @@ public abstract class SwingBase
 		// Set
 		this.manager = __sm;
 		this.external = __ext;
+		this.lock = __sm.lock();
 	}
 	
 	/**
@@ -62,6 +63,21 @@ public abstract class SwingBase
 	@Override
 	public void cleanup()
 		throws UIException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the external element associated with this base.
+	 *
+	 * @param __cl The class type to cast to.
+	 * @return The external element this internal one points to, or
+	 * {@code null} if it was cleaned up and garbage collected.
+	 * @throws ClassCastException If the class type is not correct.
+	 * @throws NullPointerException On null arguments.
+	 */
+	public final <U extends UIBase> U external(Class<U> __cl)
+		throws ClassCastException, NullPointerException
 	{
 		throw new Error("TODO");
 	}

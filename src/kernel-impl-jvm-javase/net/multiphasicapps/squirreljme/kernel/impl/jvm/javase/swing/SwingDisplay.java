@@ -50,12 +50,14 @@ public class SwingDisplay
 	/**
 	 * Initializes the swing display.
 	 *
+	 * @param __sm The Swing manager.
 	 * @param __ref The external reference.
 	 * @since 2016/05/22
 	 */
-	public SwingDisplay(Reference<UIDisplay> __ref)
+	public SwingDisplay(SwingManager __sm,
+		Reference<? extends UIDisplay> __ref)
 	{
-		super(__ref);
+		super(__sm, __ref);
 		
 		// Create the frame
 		JFrame frame = new JFrame();
@@ -95,6 +97,8 @@ public class SwingDisplay
 		// Lock
 		synchronized (this.lock)
 		{
+			throw new Error("TODO");
+			/*
 			// Obtain the internal image for the icon
 			SwingImage si = platformManager().
 				<SwingImage>internal(SwingImage.class, __icon);
@@ -139,6 +143,7 @@ public class SwingDisplay
 			
 			// Set the icon for the frame
 			this.frame.setIconImages(icons);
+			*/
 		}
 	}
 	

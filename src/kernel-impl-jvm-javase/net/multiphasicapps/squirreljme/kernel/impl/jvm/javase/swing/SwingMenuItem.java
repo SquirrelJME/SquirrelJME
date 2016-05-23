@@ -36,12 +36,14 @@ public class SwingMenuItem
 	/**
 	 * Initializes the swing based menu item.
 	 *
+	 * @param __sm The swing manager.
 	 * @param __ref The external reference.
 	 * @since 2016/05/23d
 	 */
-	public SwingMenuItem(Reference<UIMenuItem> __ref)
+	public SwingMenuItem(SwingManager __sm,
+		Reference<? extends UIMenuItem> __ref)
 	{
-		super(__ref);
+		super(__sm, __ref);
 	}
 	
 	/**

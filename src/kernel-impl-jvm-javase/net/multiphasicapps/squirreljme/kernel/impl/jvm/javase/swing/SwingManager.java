@@ -70,7 +70,7 @@ public class SwingManager
 		// Create it
 		try
 		{
-			return new SwingDisplay(__ref);
+			return new SwingDisplay(this, __ref);
 		}
 		
 		// {@squirreljme.error AZ01 Could not create a display.}
@@ -88,7 +88,7 @@ public class SwingManager
 	public PIMenu createMenu(Reference<UIMenu> __ref)
 		throws UIException
 	{
-		return new SwingMenu(__ref);
+		return new SwingMenu(this, __ref);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class SwingManager
 	public PIMenuItem createMenuItem(Reference<UIMenuItem> __ref)
 		throws UIException
 	{
-		return new SwingMenuItem(__ref);
+		return new SwingMenuItem(this, __ref);
 	}
 	
 	/**
@@ -121,21 +121,6 @@ public class SwingManager
 				48, 48,
 				64, 64
 			};
-	}
-	
-	/**
-	 * Obtains an internal element from an external one.
-	 *
-	 * @param <E> The type of element to obtain.
-	 * @param __cl The type of element that is expected.
-	 * @param __e The internal element to get the external element for.
-	 * @return The internal element or {@code null}.
-	 * @since 2016/05/22
-	 */
-	final <E extends PIBase> E __getInternal(Class<E> __cl,
-		UIBase __e)
-	{
-		return super.<E>getInternal(__cl, __e);
 	}
 }
 

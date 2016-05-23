@@ -35,12 +35,13 @@ public class SwingMenu
 	/**
 	 * Initializes the swing based menu.
 	 *
+	 * @param __sm The swing manager.
 	 * @param __ref The external reference.
 	 * @since 2016/05/23
 	 */
-	public SwingMenu(Reference<UIMenu> __ref)
+	public SwingMenu(SwingManager __sm, Reference<? extends UIMenu> __ref)
 	{
-		super(__ref);
+		super(__sm, __ref);
 	}
 	
 	/**
@@ -60,18 +61,7 @@ public class SwingMenu
 			JMenu jmenu = this.jmenu;
 			
 			// Obtain the external menu first
-			UIMenu external;
-			try
-			{
-				external = external();
-			}
-			
-			// {@squirreljme.error AZ03 The external menu was garbage
-			// collected.}
-			catch (UIGarbageCollectedException e)
-			{
-				throw new UIException("AZ03", e);
-			}
+			UIMenu external = super.<UIMenu>external(UIMenu.class);
 			
 			// Is this a sub-menu?
 			UIMenu parent = external.getParent();

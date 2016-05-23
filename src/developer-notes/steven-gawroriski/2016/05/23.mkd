@@ -159,3 +159,8 @@ However that might not be an issue at all.
 
 Definitely can feel the code being much cleaner now.
 
+## 19:15
+
+Then images could just be managed internally and such rather than requiring
+a `PIImage` as I have previously stated.
+
