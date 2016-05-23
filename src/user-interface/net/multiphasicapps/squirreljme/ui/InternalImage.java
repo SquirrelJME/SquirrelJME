@@ -121,7 +121,7 @@ public abstract class InternalImage
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			return external().getImage(__w, __h, __t, __cr);
 		}
 	}
 }

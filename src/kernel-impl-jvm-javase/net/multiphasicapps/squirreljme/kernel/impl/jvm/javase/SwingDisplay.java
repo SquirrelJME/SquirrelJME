@@ -15,6 +15,8 @@ import java.awt.event.WindowListener;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageType;
@@ -95,21 +97,42 @@ public class SwingDisplay
 			if (si == null)
 				throw new UIException("AZ02");
 			
-			// Find an internal buffered image
-			BufferedImage bi;
-			try
-			{
-				bi = si.<BufferedImage>internalMapImage(BufferedImage.class,
-					0, 0, ImageType.INT_ARGB, true);
+			// Get the preferred icon sizes to use
+			int[] pis = this.displaymanager.preferredIconSizes();
+			int pisn = pis.length;
 			
-				throw new Error("TODO");
+			// Load all icons
+			List<Image> icons = new ArrayList<>();
+			for (int i = 0; i < pisn; i += 2)
+			{
+				// Size
+				int w = pis[i];
+				int h = pis[i + 1];
+				
+				// Find an internal buffered image
+				BufferedImage bi;
+				try
+				{
+					// Load internal image
+					bi = si.<BufferedImage>internalMapImage(
+						BufferedImage.class, w, h, ImageType.INT_ARGB, true);
+				
+					// No image? Ignore
+					if (bi == null)
+						continue;
+					
+					// Add it
+					icons.add(bi);
+				}
+			
+				// Ignore
+				catch (UIGarbageCollectedException e)
+				{
+				}
 			}
 			
-			// {@squirreljme.error BD08 The image was garbage collected.}
-			catch (UIGarbageCollectedException e)
-			{
-				throw new UIException("BD08", e);
-			}
+			// Set the icon for the frame
+			this.frame.setIconImages(icons);
 		}
 	}
 	
