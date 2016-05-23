@@ -19,6 +19,9 @@ package net.multiphasicapps.squirreljme.ui;
 public final class UIMenu
 	extends UIElement
 {
+	/** The display this is associated with. */
+	private volatile UIDisplay _display;
+	
 	/**
 	 * This initializes the menu.
 	 *
@@ -42,7 +45,26 @@ public final class UIMenu
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			return this._display;
+		}
+	}
+	
+	/**
+	 * Sets the new display that this menu is associated with.
+	 *
+	 * @param __disp The display to associate with, if {@code null} then the
+	 * association is removed.
+	 * @return The old display this was associated with.
+	 * @since 2016/05/23
+	 */
+	UIDisplay __setDisplay(UIDisplay __disp)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			UIDisplay rv = this._display;
+			this._display = __disp;
+			return rv;
 		}
 	}
 }

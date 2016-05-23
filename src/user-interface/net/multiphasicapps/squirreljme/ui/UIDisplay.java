@@ -140,11 +140,16 @@ public final class UIDisplay
 			{
 				__internal().internalSetMenu(null);
 				this._menu = null;
+				rv.__setDisplay(null);
 			}
 			
 			// Set the new menu
-			__internal().internalSetMenu(__menu);
-			this._menu = __menu;
+			if (__menu != null)
+			{
+				__internal().internalSetMenu(__menu);
+				this._menu = __menu;
+				__menu.__setDisplay(this);
+			}
 			
 			// Return old
 			return rv;
