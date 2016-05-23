@@ -219,7 +219,12 @@ public class SwingDisplay
 		// Lock
 		synchronized (this.lock)
 		{
-			this.frame.setVisible(__vis);
+			// Make it shown
+			JFrame frame = this.frame;
+			frame.setVisible(__vis);
+			
+			// Center it
+			frame.setLocationRelativeTo(null);
 		}
 	}
 	
