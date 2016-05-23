@@ -424,11 +424,11 @@ __outer:
 					
 					// First read?
 					if (i == 0)
-						code = (c & 0xFFFF);
+						code = c;
 					
 					// Second read?
 					else if (i == 1)
-						code |= (c & 0xFFFF) << 16;
+						code |= c << 16;
 				}
 				
 				// Used this color just before? In solidly linear areas, this
