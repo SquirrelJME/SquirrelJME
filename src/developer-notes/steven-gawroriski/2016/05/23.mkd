@@ -105,5 +105,9 @@ when an element changes and such, methods can call into the `StateTracker`.
 For certain elements, there would be variants of the `StateTracker` for example
 a `MenuStateTracker`. Then a `SwingMenu` would implement this interface. I
 could also just use the term `NUI` instead for native user interface. So it
-would be very similar to my existing classes.
+would be very similar to my existing classes. There would be binding for the
+native UI elements which control what things do. The mapping of internal and
+external or getting the display manager would be the same except the `NUI`
+implementations would handle all that information. So the `UI` code would
+just map and call into the interfaces.
 
