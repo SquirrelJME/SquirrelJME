@@ -238,11 +238,21 @@ public final class UIDisplayManager
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		Map<Reference<? extends UIElement>, InternalElement> e =
+		Map<Reference<? extends UIElement>, InternalElement> m =
 			this.elements;
-		synchronized (e)
+		synchronized (m)
 		{
-			throw new Error("TODO");
+			// Go through all entries
+			for (Map.Entry<Reference<? extends UIElement>, InternalElement> e :
+				m.entrySet())
+			{
+				// Compare key
+				if (e.getKey().get() == __e)
+					return __cl.cast(e.getValue());
+			}
+			
+			// Not found
+			return null;
 		}
 	}
 	
