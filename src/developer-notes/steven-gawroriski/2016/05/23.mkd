@@ -33,3 +33,8 @@ such. There could quite possibly be a state where an action of one messes up
 a result of another command, which would be difficult to debug. So for
 simplicity, a single lock on the entire display.
 
+## 15:18
+
+I suppose I shall do something similar to swing and have a UIMenuItem which
+can be given a picture and a label of text.
+
