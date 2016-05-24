@@ -41,6 +41,22 @@ public class UIMenuItem
 	}
 	
 	/**
+	 * Returns the parent menu if this is a sub-menu of another menu.
+	 *
+	 * @return The menu which is the parent of this menu or {@code null} if
+	 * this is a top level menu.
+	 * @since 2016/05/23
+	 */
+	public final UIMenu getParent()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._parent;
+		}
+	}
+	
+	/**
 	 * Sets the icon that this menu item should use when it is displayed.
 	 *
 	 * @param __icon The image to use for the item, {@code null} removes the
@@ -49,7 +65,7 @@ public class UIMenuItem
 	 * @throws UIException If the icon could not be set.
 	 * @since 2016/05/23
 	 */
-	public UIImage setIcon(UIImage __icon)
+	public final UIImage setIcon(UIImage __icon)
 		throws UIException
 	{
 		// Lock
@@ -76,7 +92,7 @@ public class UIMenuItem
 	 * @throws UIException If the text could not be set.
 	 * @since 2016/05/23
 	 */
-	public String setText(String __text)
+	public final String setText(String __text)
 		throws UIException
 	{
 		// If null, becomes blank
