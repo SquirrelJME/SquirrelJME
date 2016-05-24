@@ -1,0 +1,7 @@
+# 2016/05/24
+
+## 07:42
+
+I suppose today will be getting a component displayed which would show which
+JARs are available and such.
+
