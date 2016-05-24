@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a class which manages the containing of elements in a common manner
  * to prevent code duplication across anything which can contain components.
@@ -29,6 +32,10 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	
 	/** The container element. */
 	protected final U container;
+	
+	/** The list of items contained in this container. */
+	private final List<UIComponent> _components =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the container.
@@ -52,14 +59,11 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	}
 	
 	/**
-	 * Adds an element to be contained by this container.
-	 *
-	 * @param __c The component to add to the container.
-	 * @throws NullPointerException On null arguments.
-	 * @throws UIException If it could not be added.
+	 * {@inheritDoc}
 	 * @since 2016/05/24
 	 */
-	public void add(UIComponent __c)
+	@Override
+	public void add(UIComponent __c, int __i)
 		throws NullPointerException, UIException
 	{
 		// Check
@@ -69,7 +73,41 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BD0e Cannot add component to this container
+			// because it is already inside of another container.}
+			if (__c.inContainer() != null)
+				throw new UIException("BD0e");
+			
+			// Add it to the internal list
+			List<UIComponent> components = this._components;
+			try
+			{
+				components.add(__i, __c);
+			}
+			
+			// {@squirreljme.error BD0f Could not add the component to the
+			// container.}
+			catch (IndexOutOfBoundsException|OutOfMemoryError e)
+			{
+				throw new UIException("BD0f", e);
+			}
+			
 			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public int numComponents()
+		throws UIException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			return this._components.size();
 		}
 	}
 }

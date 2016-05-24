@@ -178,7 +178,7 @@ public class LauncherInterface
 		// The list which contains the programs which are available to run
 		UIList programlist = displaymanager.createList();
 		this._programlist = programlist;
-		maindisp.add(programlist);
+		maindisp.add(programlist, maindisp.numComponents());
 		
 		// Done, make it visible
 		maindisp.setVisible(true);

@@ -51,10 +51,10 @@ public class UIDisplay
 	 * @since 2016/05/24
 	 */
 	@Override
-	public final void add(UIComponent __uic)
+	public final void add(UIComponent __uic, int __i)
 		throws NullPointerException, UIException
 	{
-		this._container.add(__uic);
+		this._container.add(__uic, __i);
 	}
 	
 	/**
@@ -79,6 +79,17 @@ public class UIDisplay
 		{
 			return this.<PIDisplay>__platform(PIDisplay.class).isVisible();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public final int numComponents()
+		throws UIException
+	{
+		return this._container.numComponents();
 	}
 	
 	/**
