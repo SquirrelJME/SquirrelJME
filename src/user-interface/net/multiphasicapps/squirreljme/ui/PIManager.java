@@ -51,6 +51,17 @@ public abstract class PIManager
 		throws UIException;
 	
 	/**
+	 * Creates a new platform dependent list.
+	 *
+	 * @param __ref The reference to the external list.
+	 * @return The platform list.
+	 * @throws UIException If it could not be created.
+	 * @since 2016/05/24
+	 */
+	public abstract PIList createList(Reference<UIList> __ref)
+		throws UIException;
+	
+	/**
 	 * Creates a new internal menu.
 	 *
 	 * @param __ref The reference to the external menu.

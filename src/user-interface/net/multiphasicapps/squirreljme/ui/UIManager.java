@@ -137,6 +137,33 @@ public class UIManager
 	}
 	
 	/**
+	 * Creates a new list which contains elements to be displayed.
+	 *
+	 * @return The newly created list.
+	 * @throws UIException If the list could not created.
+	 * @since 2016/05/24
+	 */
+	public UIList createList()
+		throws UIException
+	{
+		try
+		{
+			UIList rv = new UIList(this);
+			Reference<UIList> ref = new WeakReference<UIList>(rv,
+				this._queue);
+			PIBase in = this.pimanager.createList(ref);
+			__register(ref, in);
+			return rv;
+		}
+		
+		// {@squirreljme.error BD0c Ran out of memory creating list.}
+		catch (OutOfMemoryError e)
+		{
+			throw new UIException("BD0c");
+		}
+	}
+	
+	/**
 	 * Creates a new menu which may be associated with a given display.
 	 *
 	 * @return The newly created menu.
