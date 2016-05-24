@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
+import net.multiphasicapps.squirreljme.ui.UILabel;
 import net.multiphasicapps.squirreljme.ui.UIList;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 import net.multiphasicapps.squirreljme.ui.UIMenuItem;
@@ -178,7 +179,7 @@ public class LauncherInterface
 		// The list which contains the programs which are available to run
 		UIList programlist = displaymanager.createList();
 		this._programlist = programlist;
-		maindisp.addComponent(programlist, maindisp.numComponents());
+		maindisp.add(maindisp.size(), programlist);
 		
 		// Done, make it visible
 		maindisp.setVisible(true);

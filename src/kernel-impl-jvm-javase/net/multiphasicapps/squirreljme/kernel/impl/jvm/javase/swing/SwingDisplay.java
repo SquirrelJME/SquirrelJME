@@ -105,11 +105,11 @@ public class SwingDisplay
 			panel.removeAll();
 			
 			// Start adding them again
-			int n = disp.numComponents();
+			int n = disp.size();
 			for (int i = 0; i < n; i++)
 			{
 				// Get component
-				UIComponent ui = disp.getComponent(i);
+				UIComponent ui = disp.get(i);
 				JComponent comp = platformManager().<SwingComponent>internal(
 					SwingComponent.class, ui).getComponent();
 				

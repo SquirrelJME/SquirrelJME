@@ -46,5 +46,15 @@ public class SwingList
 		// Force a minimum size
 		this.list.setMinimumSize(new Dimension(100, 100));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public void containeesChanged()
+	{
+		throw new Error("TODO");
+	}
 }
 
