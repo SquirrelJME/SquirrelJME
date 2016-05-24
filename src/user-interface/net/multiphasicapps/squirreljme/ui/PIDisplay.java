@@ -23,7 +23,7 @@ import java.lang.ref.Reference;
  * @since 2016/05/21
  */
 public interface PIDisplay
-	extends PIContainer
+	extends PIBase, PIContainer
 {
 	/**
 	 * Returns the visibility state of the internal display.
