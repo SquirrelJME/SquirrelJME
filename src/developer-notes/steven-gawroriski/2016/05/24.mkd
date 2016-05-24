@@ -11,3 +11,15 @@ Actually, the icon box although nice and would be natively integrated (such as
 on Palm OS) it could just complicate things a bit. If it keep it just to a list
 then it can remain simpler.
 
+## 11:27
+
+Thinking about it, I will potentially need a font manager for some platforms.
+Well, if a platform does not support a specific set of characters then they
+natively cannot be used at all. Simulated support may be possible for these
+character sets by utilizing customized drawing, if possible. One thing that
+I will need is a font drawing system. Purely non-native UIs (which would be
+used for example on game consoles) where all the drawing and event handling is
+pretty much purely in software will use the font library. The font drawing
+library would have to be small and have the ability to handle the various
+scripts and codepoints in Unicode.
+
