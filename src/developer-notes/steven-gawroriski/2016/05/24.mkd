@@ -51,3 +51,9 @@ C one. Perhaps possibly later I could implement my own `fossil` and have it
 written in Java. Then with an IDE and that, development could be done
 regardless of the host system for the most part.
 
+## 16:55
+
+For the native icon set I was thinking about, I can just extend `UIList`. If
+in the event there is no native `PIIcons` for a `UIIcons` then the `UIIcons`
+can just utilize a `PIList` because the icon set would just be a list anyway.
+
