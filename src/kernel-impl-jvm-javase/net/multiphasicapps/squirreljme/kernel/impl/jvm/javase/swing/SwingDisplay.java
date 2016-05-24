@@ -252,7 +252,7 @@ public class SwingDisplay
 	 * @since 2016/05/22
 	 */
 	@Override
-	public void setTitle(String __nt)
+	public void setText(String __nt)
 		throws UIException
 	{
 		// Lock

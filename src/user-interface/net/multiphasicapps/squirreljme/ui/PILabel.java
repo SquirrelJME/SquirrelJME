@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.ui;
  * @since 2016/05/24
  */
 public interface PILabel
-	extends PIComponent
+	extends PIComponent, PIIconAndText
 {
 }
 

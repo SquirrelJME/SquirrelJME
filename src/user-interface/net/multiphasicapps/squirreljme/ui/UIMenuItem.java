@@ -18,16 +18,14 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public class UIMenuItem
 	extends UIBase
+	implements UIIconAndText
 {
+	/** Icon and text data. */
+	private final __IconText__ _it =
+		new __IconText__(this);
+	
 	/** The menu which contains this item. */
 	private volatile UIMenu _parent;
-	
-	/** The current menu text. */
-	private volatile String _text =
-		"";
-	
-	/** The current icon used. */
-	private volatile UIImage _icon;
 	
 	/**
 	 * Initializes the menu item.
@@ -57,61 +55,45 @@ public class UIMenuItem
 	}
 	
 	/**
-	 * Sets the icon that this menu item should use when it is displayed.
-	 *
-	 * @param __icon The image to use for the item, {@code null} removes the
-	 * set icon.
-	 * @return The old icon which was previously used.
-	 * @throws UIException If the icon could not be set.
-	 * @since 2016/05/23
+	 * {@inheritDoc}
+	 * @since 2016/05/24
 	 */
-	public final UIImage setIcon(UIImage __icon)
-		throws UIException
+	@Override
+	public final UIImage getIcon()
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// Get old
-			UIImage rv = this._icon;
-			
-			// Set the new icon
-			this.<PIMenuItem>__platform(PIMenuItem.class).setIcon(__icon);
-			this._icon = __icon;
-			
-			// Return the old one
-			return rv;
-		}
+		return this._it.getIcon();
 	}
 	
 	/**
-	 * Sets the text of the menu item.
-	 *
-	 * @param __text The text to display for the menu item, {@code null} is
-	 * treated as a blank string.
-	 * @return The old text which was previously used.
-	 * @throws UIException If the text could not be set.
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public final String getText()
+	{
+		return this._it.getText();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/23
 	 */
+	@Override
+	public final UIImage setIcon(UIImage __icon)
+		throws UIException
+	{
+		return this._it.setIcon(__icon);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
 	public final String setText(String __text)
 		throws UIException
 	{
-		// If null, becomes blank
-		if (__text == null)
-			__text = "";
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			// Get old
-			String rv = this._text;
-			
-			// Set the new text
-			this.<PIMenuItem>__platform(PIMenuItem.class).setText(__text);
-			this._text = __text;
-			
-			// Return it
-			return rv;
-		}
+		return this._it.setText(__text);
 	}
 	
 	/**

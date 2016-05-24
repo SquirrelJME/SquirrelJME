@@ -125,7 +125,7 @@ public class LauncherInterface
 		this._maindisp = maindisp;
 		
 		// Set title
-		maindisp.setTitle("SquirrelJME");
+		maindisp.setText("SquirrelJME");
 		
 		// Setup image which acts as the icon
 		UIImage icon = displaymanager.createImage();

@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import javax.swing.JLabel;
 import net.multiphasicapps.squirreljme.ui.PILabel;
 import net.multiphasicapps.squirreljme.ui.UIException;
+import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UILabel;
 
 /**
@@ -41,6 +42,28 @@ public class SwingLabel
 		
 		// Set
 		this.label = (JLabel)this.component;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public void setIcon(UIImage __icon)
+		throws UIException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public void setText(String __text)
+		throws UIException
+	{
+		throw new Error("TODO");
 	}
 }
 

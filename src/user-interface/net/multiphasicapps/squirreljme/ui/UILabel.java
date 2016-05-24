@@ -17,7 +17,12 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public class UILabel
 	extends UIComponent
+	implements UIIconAndText
 {
+	/** Icon and text data. */
+	private final __IconText__ _it =
+		new __IconText__(this);
+	
 	/**
 	 * Initializes the label.
 	 *
@@ -27,6 +32,50 @@ public class UILabel
 	public UILabel(UIManager __dm)
 	{
 		super(__dm);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public UIImage getIcon()
+		throws UIException
+	{
+		return this._it.getIcon();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public String getText()
+		throws UIException
+	{
+		return this._it.getText();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public UIImage setIcon(UIImage __icon)
+		throws UIException
+	{
+		return this._it.setIcon(__icon);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public String setText(String __text)
+		throws UIException
+	{
+		return this._it.setText(__text);
 	}
 }
 

@@ -20,14 +20,15 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public class UIDisplay
 	extends UIBase
-	implements UIContainer<UIComponent>
+	implements UIContainer<UIComponent>, UIIconAndText
 {
 	/** This handles the containerization of components. */
 	private final __Container__<UIDisplay, PIDisplay, UIComponent> _container =
 		new __Container__<>(this.manager, this, UIComponent.class);
 	
 	/** The title the display uses. */
-	private volatile String _title;
+	private volatile String _title =
+		"";
 	
 	/** The icon that the display uses. */
 	private volatile UIImage _icon;
@@ -69,6 +70,20 @@ public class UIDisplay
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public UIImage getIcon()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._icon;
+		}
+	}
+	
+	/**
 	 * Returns the menu which is associated with this display.
 	 *
 	 * @return The menu associated with this display or {@code null} if there
@@ -83,6 +98,20 @@ public class UIDisplay
 		synchronized (this.lock)
 		{
 			return this._menu;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public String getText()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._title;
 		}
 	}
 	
@@ -111,19 +140,10 @@ public class UIDisplay
 	}
 	
 	/**
-	 * Sets the icon used to be displayed on the display.
-	 *
-	 * A display might not be capable of updating the icon if the image data
-	 * changes, thus this should be called when an icon is required to take
-	 * effect.
-	 *
-	 * @param __icon The image to use as the program icon, if {@code null} the
-	 * icon is removed.
-	 * @return The old icon.
-	 * @throws UIException If the icon could not be changed or if the icon
-	 * belongs to another display manager.
+	 * {@inheritDoc}
 	 * @since 2016/05/22
 	 */
+	@Override
 	public final UIImage setIcon(UIImage __icon)
 		throws UIException
 	{
@@ -206,14 +226,11 @@ public class UIDisplay
 	}
 	
 	/**
-	 * Sets the title of the display.
-	 *
-	 * @param __nt The new title to display, if {@code null} it is removed.
-	 * @return The old title.
-	 * @throws UIException If the title could not be set.
+	 * {@inheritDoc}
 	 * @since 2016/05/22
 	 */
-	public final String setTitle(String __nt)
+	@Override
+	public final String setText(String __nt)
 		throws UIException
 	{
 		// Lock
@@ -223,7 +240,7 @@ public class UIDisplay
 			String rv = this._title;
 			
 			// Set new title
-			this.<PIDisplay>__platform(PIDisplay.class).setTitle(__nt);
+			this.<PIDisplay>__platform(PIDisplay.class).setText(__nt);
 			
 			// Set used title
 			this._title = __nt;

@@ -57,3 +57,8 @@ For the native icon set I was thinking about, I can just extend `UIList`. If
 in the event there is no native `PIIcons` for a `UIIcons` then the `UIIcons`
 can just utilize a `PIList` because the icon set would just be a list anyway.
 
+## 17:09
+
+Labels and menu items have icons and text in common, so they will get
+interfaces for that.
+

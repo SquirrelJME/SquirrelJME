@@ -23,7 +23,7 @@ import java.lang.ref.Reference;
  * @since 2016/05/21
  */
 public interface PIDisplay
-	extends PIBase, PIContainer
+	extends PIBase, PIContainer, PIIconAndText
 {
 	/**
 	 * Returns the visibility state of the internal display.
@@ -36,17 +36,6 @@ public interface PIDisplay
 		throws UIException;
 	
 	/**
-	 * Sets the icon to be used when displaying.
-	 *
-	 * @param __icon The icon to associate with the given display, {@code null}
-	 * removes any associated icon.
-	 * @throws UIException If the icon could not be set.
-	 * @since 2016/05/22
-	 */
-	public abstract void setIcon(UIImage __icon)
-		throws UIException;
-	
-	/**
 	 * Sets the menu to be used for the display.
 	 *
 	 * @param __menu The menu to use, if {@code null} then it is removed.
@@ -54,17 +43,6 @@ public interface PIDisplay
 	 * @since 2016/05/23
 	 */
 	public abstract void setMenu(UIMenu __menu)
-		throws UIException;
-	
-	/**
-	 * Sets the title of the display.
-	 *
-	 * @param __nt The title to use for the display, {@code null} clears the
-	 * title.
-	 * @throws UIException If the title could not be set.
-	 * @since 2016/05/22
-	 */
-	public abstract void setTitle(String __nt)
 		throws UIException;
 	
 	/**
