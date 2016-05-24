@@ -19,6 +19,7 @@ package net.multiphasicapps.squirreljme.ui;
  * @since 2016/05/24
  */
 final class __Container__<U extends UIContainer, P extends PIContainer>
+	implements UIContainer
 {
 	/** The locking object. */
 	protected final Object lock;
