@@ -63,7 +63,7 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	 * @since 2016/05/24
 	 */
 	@Override
-	public void addComponent(UIComponent __c, int __i)
+	public final void addComponent(UIComponent __c, int __i)
 		throws NullPointerException, UIException
 	{
 		// Check
@@ -107,11 +107,35 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	 * @since 2016/05/24
 	 */
 	@Override
-	public int numComponents()
+	public final UIComponent getComponent(int __i)
 		throws UIException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
+		{
+			try
+			{
+				return this._components.get(__i);
+			}
+			
+			// {@squirreljme.error BD0g Could not obtain the component.}
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new UIException("BD0g", e);
+			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public final int numComponents()
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
 		{
 			return this._components.size();
 		}

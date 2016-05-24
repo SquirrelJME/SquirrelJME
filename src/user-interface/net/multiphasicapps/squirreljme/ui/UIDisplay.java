@@ -58,6 +58,17 @@ public class UIDisplay
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public final UIComponent getComponent(int __i)
+		throws UIException
+	{
+		return this._container.getComponent(__i);
+	}
+	
+	/**
 	 * Returns {@code true} if this display is visible to the user, but not
 	 * necessarily seen by the user.
 	 *

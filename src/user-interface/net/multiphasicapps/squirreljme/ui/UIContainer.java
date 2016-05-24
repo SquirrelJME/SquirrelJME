@@ -29,6 +29,17 @@ public interface UIContainer
 		throws UIException;
 	
 	/**
+	 * Obtains the given component from the container.
+	 *
+	 * @param __i The index of the component to get.
+	 * @return The component at the given index.
+	 * @throws UIException If it could not be obtained.
+	 * @since 2016/05/24
+	 */
+	public abstract UIComponent getComponent(int __i)
+		throws UIException;
+	
+	/**
 	 * Returns the number of components in this container.
 	 *
 	 * @return The component count.
