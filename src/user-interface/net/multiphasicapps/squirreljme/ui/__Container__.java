@@ -63,7 +63,7 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	 * @since 2016/05/24
 	 */
 	@Override
-	public void add(UIComponent __c, int __i)
+	public void addComponent(UIComponent __c, int __i)
 		throws NullPointerException, UIException
 	{
 		// Check
@@ -92,7 +92,13 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 				throw new UIException("BD0f", e);
 			}
 			
-			throw new Error("TODO");
+			// Set component parent
+			UIContainer container = this.container;
+			__c.__setContainer(container);
+			
+			// Cause an update
+			((UIBase)container).<PIContainer>__platform(PIContainer.class).
+				containeesChanged();
 		}
 	}
 	

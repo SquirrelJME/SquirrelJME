@@ -25,7 +25,7 @@ public interface UIContainer
 	 * @throws UIException If it could not be added.
 	 * @since 2016/05/24
 	 */
-	public abstract void add(UIComponent __uic, int __i)
+	public abstract void addComponent(UIComponent __uic, int __i)
 		throws UIException;
 	
 	/**

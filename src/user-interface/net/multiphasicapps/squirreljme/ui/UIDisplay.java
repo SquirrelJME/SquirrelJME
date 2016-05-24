@@ -51,10 +51,10 @@ public class UIDisplay
 	 * @since 2016/05/24
 	 */
 	@Override
-	public final void add(UIComponent __uic, int __i)
+	public final void addComponent(UIComponent __uic, int __i)
 		throws NullPointerException, UIException
 	{
-		this._container.add(__uic, __i);
+		this._container.addComponent(__uic, __i);
 	}
 	
 	/**
