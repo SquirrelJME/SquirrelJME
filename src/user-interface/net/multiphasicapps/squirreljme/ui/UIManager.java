@@ -43,10 +43,10 @@ public class UIManager
 	protected final Object lock;
 	
 	/** The platform interface manager. */
-	protected final PIManager pimanager;
+	final PIManager _pimanager;
 	
 	/** The UI element cleanup thread. */
-	protected final Thread cleanupthread;
+	private final Thread _cleanupthread;
 	
 	/** The reference queue for element cleanup. */
 	private final ReferenceQueue<UIBase> _queue =
@@ -74,7 +74,7 @@ public class UIManager
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.pimanager = __pi;
+		this._pimanager = __pi;
 		__pi.__chain(this);
 		
 		// {@squirreljme.error BD0b The platform interface does not define a
@@ -82,9 +82,9 @@ public class UIManager
 		this.lock = Objects.requireNonNull(__pi.lock(), "BD0b");
 		
 		// Setup cleanup thread
-		Thread cleanupthread = new Thread(new __Cleanup__());
-		this.cleanupthread = cleanupthread;
-		cleanupthread.start();
+		Thread _cleanupthread = new Thread(new __Cleanup__());
+		this._cleanupthread = _cleanupthread;
+		_cleanupthread.start();
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public class UIManager
 	 * @throws UIException If the display could not be created.
 	 * @since 2016/05/21
 	 */
-	public UIDisplay createDisplay()
+	public final UIDisplay createDisplay()
 		throws UIException
 	{
 		try
@@ -102,7 +102,7 @@ public class UIManager
 			UIDisplay rv = new UIDisplay(this);
 			Reference<UIDisplay> ref = new WeakReference<UIDisplay>(rv,
 				this._queue);
-			PIBase in = this.pimanager.createDisplay(ref);
+			PIBase in = this._pimanager.createDisplay(ref);
 			__register(ref, in);
 			return rv;
 		}
@@ -121,7 +121,7 @@ public class UIManager
 	 * @throws UIException If the image could not be created.
 	 * @since 2016/05/22
 	 */
-	public UIImage createImage()
+	public final UIImage createImage()
 		throws UIException
 	{
 		try
@@ -143,7 +143,7 @@ public class UIManager
 	 * @throws UIException If the list could not created.
 	 * @since 2016/05/24
 	 */
-	public UIList createList()
+	public final UIList createList()
 		throws UIException
 	{
 		try
@@ -151,7 +151,7 @@ public class UIManager
 			UIList rv = new UIList(this);
 			Reference<UIList> ref = new WeakReference<UIList>(rv,
 				this._queue);
-			PIBase in = this.pimanager.createList(ref);
+			PIBase in = this._pimanager.createList(ref);
 			__register(ref, in);
 			return rv;
 		}
@@ -170,7 +170,7 @@ public class UIManager
 	 * @throws UIException If the menu could not be created.
 	 * @since 2016/05/23
 	 */
-	public UIMenu createMenu()
+	public final UIMenu createMenu()
 		throws UIException
 	{
 		try
@@ -178,7 +178,7 @@ public class UIManager
 			UIMenu rv = new UIMenu(this);
 			Reference<UIMenu> ref = new WeakReference<UIMenu>(rv,
 				this._queue);
-			PIBase in = this.pimanager.createMenu(ref);
+			PIBase in = this._pimanager.createMenu(ref);
 			__register(ref, in);
 			return rv;
 		}
@@ -197,7 +197,7 @@ public class UIManager
 	 * @throws UIException If the menu item could not be created.
 	 * @since 2016/05/23
 	 */
-	public UIMenuItem createMenuItem()
+	public final UIMenuItem createMenuItem()
 		throws UIException
 	{
 		try
@@ -205,7 +205,7 @@ public class UIManager
 			UIMenuItem rv = new UIMenuItem(this);
 			Reference<UIMenuItem> ref = new WeakReference<UIMenuItem>(rv,
 				this._queue);
-			PIBase in = this.pimanager.createMenuItem(ref);
+			PIBase in = this._pimanager.createMenuItem(ref);
 			__register(ref, in);
 			return rv;
 		}
@@ -225,13 +225,13 @@ public class UIManager
 	 * @throws UIException If the preferred sizes could not be determined.
 	 * @since 2016/05/22
 	 */
-	public int[] preferredIconSizes()
+	public final int[] preferredIconSizes()
 		throws UIException
 	{
 		try
 		{
 			// Get icons
-			int[] rv = this.pimanager.preferredIconSizes();
+			int[] rv = this._pimanager.preferredIconSizes();
 		
 			// No preferred size, no icons
 			if (rv == null || rv.length <= 1)

@@ -53,7 +53,7 @@ public class UIImage
 	 *
 	 * @since 2016/05/22
 	 */
-	UIImage()
+	public UIImage()
 	{
 	}
 	
@@ -65,7 +65,7 @@ public class UIImage
 	 * @throws UIException If the image could not be added.
 	 * @since 2016/05/22
 	 */
-	public void addImageData(ImageData __id)
+	public final void addImageData(ImageData __id)
 		throws NullPointerException, UIException
 	{
 		// Check
@@ -122,7 +122,8 @@ public class UIImage
 	 * @throws UIException If an image could not be obtained.
 	 * @since 2016/05/23
 	 */
-	public ImageData getImage(int __w, int __h, ImageType __t, boolean __cr)
+	public final ImageData getImage(int __w, int __h, ImageType __t,
+		boolean __cr)
 		throws UIException
 	{
 		// Negative or zero width/height will never be found

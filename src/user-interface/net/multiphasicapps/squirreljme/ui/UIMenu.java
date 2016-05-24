@@ -36,7 +36,7 @@ public class UIMenu
 	 * @param __dm The owning display manager.
 	 * @since 2016/05/23
 	 */
-	UIMenu(UIManager __dm)
+	public UIMenu(UIManager __dm)
 	{
 		super(__dm);
 	}
@@ -80,7 +80,7 @@ public class UIMenu
 				__item.__setParent(this);
 				
 				// Update the internal representation
-				this.<PIMenu>platform(PIMenu.class).updatedItems();
+				this.<PIMenu>__platform(PIMenu.class).updatedItems();
 			}
 			
 			// {@squirreljme.error BD05 Ran out of memory adding menu item

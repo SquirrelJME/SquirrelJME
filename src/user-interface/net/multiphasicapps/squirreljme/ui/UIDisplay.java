@@ -41,7 +41,7 @@ public class UIDisplay
 	 * @param __dm The external display manager used.
 	 * @since 2016/05/21
 	 */
-	UIDisplay(UIManager __dm)
+	public UIDisplay(UIManager __dm)
 	{
 		super(__dm);
 	}
@@ -51,7 +51,7 @@ public class UIDisplay
 	 * @since 2016/05/24
 	 */
 	@Override
-	public void add(UIComponent __uic)
+	public final void add(UIComponent __uic)
 		throws NullPointerException, UIException
 	{
 		this._container.add(__uic);
@@ -71,13 +71,13 @@ public class UIDisplay
 	 * @throws UIException If the visibility state could not be determined.
 	 * @since 2016/05/20
 	 */
-	public boolean isVisible()
+	public final boolean isVisible()
 		throws UIException
 	{
 		// Lock
 		synchronized (this.lock)
 		{
-			return this.<PIDisplay>platform(PIDisplay.class).isVisible();
+			return this.<PIDisplay>__platform(PIDisplay.class).isVisible();
 		}
 	}
 	
@@ -95,7 +95,7 @@ public class UIDisplay
 	 * belongs to another display manager.
 	 * @since 2016/05/22
 	 */
-	public UIImage setIcon(UIImage __icon)
+	public final UIImage setIcon(UIImage __icon)
 		throws UIException
 	{
 		// Lock
@@ -105,7 +105,7 @@ public class UIDisplay
 			UIImage rv = this._icon;
 			
 			// Set the new icon
-			this.<PIDisplay>platform(PIDisplay.class).setIcon(__icon);
+			this.<PIDisplay>__platform(PIDisplay.class).setIcon(__icon);
 			
 			// Set as used
 			this._icon = __icon;
@@ -123,7 +123,7 @@ public class UIDisplay
 	 * @throws UIException If the menu could not be set.
 	 * @since 2016/05/23
 	 */
-	public UIMenu setMenu(UIMenu __menu)
+	public final UIMenu setMenu(UIMenu __menu)
 		throws UIException
 	{
 		// {@squirreljme.error BD08 The menu to be associated with a display
@@ -153,7 +153,7 @@ public class UIDisplay
 					disp.setMenu(null);
 			
 			// Get our platform display
-			PIDisplay pi = this.<PIDisplay>platform(PIDisplay.class);
+			PIDisplay pi = this.<PIDisplay>__platform(PIDisplay.class);
 				
 			// Before a new menu can be set, the old menu must be cleared away
 			if (rv != null)
@@ -184,7 +184,7 @@ public class UIDisplay
 	 * @throws UIException If the title could not be set.
 	 * @since 2016/05/22
 	 */
-	public String setTitle(String __nt)
+	public final String setTitle(String __nt)
 		throws UIException
 	{
 		// Lock
@@ -194,7 +194,7 @@ public class UIDisplay
 			String rv = this._title;
 			
 			// Set new title
-			this.<PIDisplay>platform(PIDisplay.class).setTitle(__nt);
+			this.<PIDisplay>__platform(PIDisplay.class).setTitle(__nt);
 			
 			// Set used title
 			this._title = __nt;
@@ -218,7 +218,7 @@ public class UIDisplay
 	 * @throws UIException If the visibility state could not be changed.
 	 * @since 2016/05/21
 	 */
-	public boolean setVisible(boolean __vis)
+	public final boolean setVisible(boolean __vis)
 		throws UIException
 	{
 		// Lock
@@ -228,7 +228,7 @@ public class UIDisplay
 			boolean was = isVisible();
 			
 			// Set the new visibility state internally
-			this.<PIDisplay>platform(PIDisplay.class).setVisible(__vis);
+			this.<PIDisplay>__platform(PIDisplay.class).setVisible(__vis);
 			
 			// Check if visibility changed
 			return was != isVisible();

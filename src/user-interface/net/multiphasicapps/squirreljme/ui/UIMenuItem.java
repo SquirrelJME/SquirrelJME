@@ -35,7 +35,7 @@ public class UIMenuItem
 	 * @param __dm The display manager owning this.
 	 * @since 2016/05/23
 	 */
-	UIMenuItem(UIManager __dm)
+	public UIMenuItem(UIManager __dm)
 	{
 		super(__dm);
 	}
@@ -75,7 +75,7 @@ public class UIMenuItem
 			UIImage rv = this._icon;
 			
 			// Set the new icon
-			this.<PIMenuItem>platform(PIMenuItem.class).setIcon(__icon);
+			this.<PIMenuItem>__platform(PIMenuItem.class).setIcon(__icon);
 			this._icon = __icon;
 			
 			// Return the old one
@@ -106,7 +106,7 @@ public class UIMenuItem
 			String rv = this._text;
 			
 			// Set the new text
-			this.<PIMenuItem>platform(PIMenuItem.class).setText(__text);
+			this.<PIMenuItem>__platform(PIMenuItem.class).setText(__text);
 			this._text = __text;
 			
 			// Return it

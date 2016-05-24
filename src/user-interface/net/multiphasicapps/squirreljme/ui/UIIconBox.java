@@ -29,7 +29,7 @@ public class UIIconBox
 	 * @param __dm The owning display manager.
 	 * @since 2016/05/24
 	 */
-	UIIconBox(UIManager __dm)
+	public UIIconBox(UIManager __dm)
 	{
 		super(__dm);
 	}

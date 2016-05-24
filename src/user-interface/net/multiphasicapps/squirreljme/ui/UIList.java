@@ -25,7 +25,7 @@ public class UIList
 	 * @param __dm The owning display manager.
 	 * @since 2016/05/24
 	 */
-	UIList(UIManager __dm)
+	public UIList(UIManager __dm)
 	{
 		super(__dm);
 	}

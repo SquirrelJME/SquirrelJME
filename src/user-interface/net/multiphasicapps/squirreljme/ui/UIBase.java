@@ -37,7 +37,7 @@ public abstract class UIBase
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/21
 	 */
-	UIBase(UIManager __dm)
+	public UIBase(UIManager __dm)
 		throws NullPointerException
 	{
 		// Check
@@ -71,7 +71,7 @@ public abstract class UIBase
 	 * @throws UIException If no platform interface was registered.
 	 * @since 2016/05/22
 	 */
-	protected final <P extends PIBase> P platform(Class<P> __cl)
+	final <P extends PIBase> P __platform(Class<P> __cl)
 		throws NullPointerException, UIException
 	{
 		// Check
