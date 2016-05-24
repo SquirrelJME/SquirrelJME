@@ -37,7 +37,7 @@ public class SwingMenuItem
 	 *
 	 * @param __sm The swing manager.
 	 * @param __ref The external reference.
-	 * @since 2016/05/23d
+	 * @since 2016/05/23
 	 */
 	public SwingMenuItem(SwingManager __sm,
 		Reference<? extends UIMenuItem> __ref)
