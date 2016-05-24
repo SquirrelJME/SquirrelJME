@@ -161,6 +161,7 @@ public class LauncherInterface
 		
 		// Setup menu
 		UIMenu mainmenu = displaymanager.createMenu();
+		mainmenu.setText("Menu");
 		
 		// Quit item
 		UIMenuItem quititem = displaymanager.createMenuItem();

@@ -181,7 +181,7 @@ public class SwingDisplay
 				return;
 			
 			// Create the single menu
-			JMenu symmenu = sm.__createJMenu();
+			JMenu symmenu = (JMenu)sm.__getJMenuItem();
 			
 			// Clear the old menu and use the new one
 			menubar.removeAll();
