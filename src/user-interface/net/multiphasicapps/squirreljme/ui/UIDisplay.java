@@ -69,6 +69,24 @@ public class UIDisplay
 	}
 	
 	/**
+	 * Returns the menu which is associated with this display.
+	 *
+	 * @return The menu associated with this display or {@code null} if there
+	 * is no assigned menu.
+	 * @throws UIException If the menu could not be obtained.
+	 * @since 2016/05/24
+	 */
+	public final UIMenu getMenu()
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._menu;
+		}
+	}
+	
+	/**
 	 * Returns {@code true} if this display is visible to the user, but not
 	 * necessarily seen by the user.
 	 *

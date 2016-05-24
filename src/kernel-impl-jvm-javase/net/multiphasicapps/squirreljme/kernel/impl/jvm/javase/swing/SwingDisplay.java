@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
+import java.awt.Component;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.Image;
@@ -17,13 +18,16 @@ import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.ui.PIDisplay;
+import net.multiphasicapps.squirreljme.ui.UIComponent;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
@@ -47,6 +51,10 @@ public class SwingDisplay
 	protected final JMenuBar menubar =
 		new JMenuBar();
 	
+	/** The panel contains all of the components used in the display. */
+	protected final JPanel panel =
+		new JPanel();
+	
 	/**
 	 * Initializes the swing display.
 	 *
@@ -62,6 +70,9 @@ public class SwingDisplay
 		// Create the frame
 		JFrame frame = new JFrame();
 		this.frame = frame;
+		
+		// Add the panel
+		frame.add(panel);
 		
 		// The frame may have a close callback event attached to it, so the
 		// window cannot be normally closed unles disposed.
@@ -82,7 +93,29 @@ public class SwingDisplay
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// External
+			UIDisplay disp = this.<UIDisplay>external(UIDisplay.class);
+			
+			// Remove all components
+			JPanel panel = this.panel;
+			panel.removeAll();
+			
+			// Start adding them again
+			int n = disp.numComponents();
+			for (int i = 0; i < n; i++)
+			{
+				// Get component
+				UIComponent ui = disp.getComponent(i);
+				JComponent comp = platformManager().<SwingComponent>internal(
+					SwingComponent.class, ui).getComponent();
+				
+				// Add it
+				panel.add(comp);
+			}
+			
+			// Repack and invalidate
+			panel.invalidate();
+			this.frame.pack();
 		}
 	}
 	

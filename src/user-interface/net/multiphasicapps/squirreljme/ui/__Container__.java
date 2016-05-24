@@ -73,6 +73,11 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BD0h The component to add belongs to another
+			// user interface manager.}
+			if (this.manager != __c.displayManager())
+				throw new UIException("BD0h");
+			
 			// {@squirreljme.error BD0e Cannot add component to this container
 			// because it is already inside of another container.}
 			if (__c.inContainer() != null)

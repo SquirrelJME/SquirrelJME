@@ -5,3 +5,9 @@
 I suppose today will be getting a component displayed which would show which
 JARs are available and such.
 
+## 10:48
+
+Actually, the icon box although nice and would be natively integrated (such as
+on Palm OS) it could just complicate things a bit. If it keep it just to a list
+then it can remain simpler.
+

@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
 import java.lang.ref.Reference;
+import javax.swing.JList;
 import net.multiphasicapps.squirreljme.ui.PIList;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIList;
@@ -24,6 +25,9 @@ public class SwingList
 	extends SwingComponent
 	implements PIList
 {
+	/** The list component. */
+	protected final JList list;
+	
 	/**
 	 * Initializes the swing list.
 	 *
@@ -33,7 +37,10 @@ public class SwingList
 	 */
 	public SwingList(SwingManager __sm, Reference<? extends UIList> __ref)
 	{
-		super(__sm, __ref);
+		super(__sm, __ref, new JList());
+		
+		// Set
+		this.list = (JList)this.component;
 	}
 }
 
