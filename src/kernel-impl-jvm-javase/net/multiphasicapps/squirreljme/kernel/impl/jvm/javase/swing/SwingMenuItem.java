@@ -101,5 +101,16 @@ public class SwingMenuItem
 			menuitem.invalidate();
 		}
 	}
+	
+	/**
+	 * Returns the menu item for the menu.
+	 *
+	 * @return The swing menu item.
+	 * @since 2016/05/23
+	 */
+	final JMenuItem __getJMenuItem()
+	{
+		return this.menuitem;
+	}
 }
 

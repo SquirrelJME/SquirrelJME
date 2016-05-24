@@ -64,6 +64,12 @@ public class SwingMenu
 			if (xmenu == null)
 				return;
 			
+			// Get the primitive menu
+			JMenu jmenu = this.menu;
+			
+			// Clear all the items in it
+			jmenu.removeAll();
+			
 			// Go through all items
 			int n = xmenu.size();
 			for (int i = 0; i < n; i++)
@@ -73,10 +79,12 @@ public class SwingMenu
 				SwingMenuItem in = platformManager().<SwingMenuItem>internal(
 					SwingMenuItem.class, ex);
 				
-				throw new Error("TODO");
+				// Add the menu item
+				jmenu.add(in.__getJMenuItem());
 			}
 			
-			throw new Error("TODO");
+			// Revalidate it
+			jmenu.revalidate();
 		}
 	}
 	
