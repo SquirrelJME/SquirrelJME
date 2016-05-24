@@ -49,11 +49,11 @@ public class UIManager
 	protected final Thread cleanupthread;
 	
 	/** The reference queue for element cleanup. */
-	protected final ReferenceQueue<UIBase> rqueue =
+	private final ReferenceQueue<UIBase> _queue =
 		new ReferenceQueue<>();
 	
 	/** The mapping between references and internal elements. */
-	protected final Map<Reference<? extends UIBase>, PIBase> elements =
+	private final Map<Reference<? extends UIBase>, PIBase> _xtoi =
 		new HashMap<>();
 	
 	/**
@@ -75,6 +75,7 @@ public class UIManager
 		
 		// Set
 		this.pimanager = __pi;
+		__pi.__chain(this);
 		
 		// {@squirreljme.error BD0b The platform interface does not define a
 		// lock.}
@@ -99,8 +100,10 @@ public class UIManager
 		try
 		{
 			UIDisplay rv = new UIDisplay(this);
-			rv.__registerPlatform(this.pimanager.createDisplay(
-				new WeakReference<UIDisplay>(rv)));
+			Reference<UIDisplay> ref = new WeakReference<UIDisplay>(rv,
+				this._queue);
+			PIBase in = this.pimanager.createDisplay(ref);
+			__register(ref, in);
 			return rv;
 		}
 		
@@ -146,8 +149,10 @@ public class UIManager
 		try
 		{
 			UIMenu rv = new UIMenu(this);
-			rv.__registerPlatform(this.pimanager.createMenu(
-				new WeakReference<UIMenu>(rv)));
+			Reference<UIMenu> ref = new WeakReference<UIMenu>(rv,
+				this._queue);
+			PIBase in = this.pimanager.createMenu(ref);
+			__register(ref, in);
 			return rv;
 		}
 		
@@ -171,8 +176,10 @@ public class UIManager
 		try
 		{
 			UIMenuItem rv = new UIMenuItem(this);
-			rv.__registerPlatform(this.pimanager.createMenuItem(
-				new WeakReference<UIMenuItem>(rv)));
+			Reference<UIMenuItem> ref = new WeakReference<UIMenuItem>(rv,
+				this._queue);
+			PIBase in = this.pimanager.createMenuItem(ref);
+			__register(ref, in);
 			return rv;
 		}
 		
@@ -234,6 +241,68 @@ public class UIManager
 		catch (OutOfMemoryError|UIException e)
 		{
 			return _ZERO_SIZE_INT_ARRAY;
+		}
+	}
+	
+	/**
+	 * Returns an internal platform interface object from an external one.
+	 *
+	 * @param <P> The type of internal to fine.
+	 * @param __cl The class type of that internal.
+	 * @return The internal which belongs to the specified external, or
+	 * {@code null} if it was garbage collected or does not exist.
+	 * @throws ClassCastException If the internal is not of the given type.
+	 * @throws UIException On other errors.
+	 * @since 2016/05/23
+	 */
+	final <P extends PIBase> P __internal(Class<P> __cl, UIBase __x)
+		throws ClassCastException, NullPointerException, UIException
+	{
+		// Check
+		if (__cl == null || __x == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Look in the element mapping
+			Map<Reference<? extends UIBase>, PIBase> xtoi =
+				this._xtoi;
+			for (Map.Entry<Reference<? extends UIBase>, PIBase> e :
+				xtoi.entrySet())
+			{
+				if (e.getKey().get() == __x)
+					return __cl.cast(e.getValue());
+			}
+			
+			// Not found or GCed
+			return null;
+		}
+	}
+	
+	/**
+	 * Registers the external element to an internal one.
+	 *
+	 * @param __x The reference to the external element.
+	 * @param __i The internal element.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/23
+	 */
+	final void __register(Reference<? extends UIBase> __x, PIBase __i)
+		throws NullPointerException
+	{
+		// Check
+		if (__x == null || __i == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Register the base
+			__x.get().__registerPlatform(__i);
+			
+			// Add to the mapping
+			this._xtoi.put(__x, __i);
 		}
 	}
 	

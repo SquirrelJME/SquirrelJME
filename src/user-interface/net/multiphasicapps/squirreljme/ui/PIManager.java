@@ -27,6 +27,9 @@ public abstract class PIManager
 	protected final Object lock =
 		new Object();
 	
+	/** The externally linked UI manager. */
+	private volatile UIManager _uimanager;
+	
 	/**
 	 * Initializes the internal display manager.
 	 *
@@ -93,6 +96,7 @@ public abstract class PIManager
 	 * {@code null} if it was garbage collected or does not exist.
 	 * @throws ClassCastException If the internal is not of the given type.
 	 * @throws UIException On other errors.
+	 * @since 2016/05/23
 	 */
 	public final <P extends PIBase> P internal(Class<P> __cl, UIBase __x)
 		throws ClassCastException, NullPointerException, UIException
@@ -101,7 +105,11 @@ public abstract class PIManager
 		if (__cl == null || __x == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._uimanager.<P>__internal(__cl, __x);
+		}
 	}
 	
 	/**
@@ -114,6 +122,34 @@ public abstract class PIManager
 	public final Object lock()
 	{
 		return this.lock;
+	}
+	
+	/**
+	 * Chains an external manager to this internal one.
+	 *
+	 * @param __uim The external manager to chain to.
+	 * @throws IllegalStateException If an external manager was already
+	 * chained.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/23
+	 */
+	final void __chain(UIManager __uim)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__uim == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BD03 }
+			if (null != this._uimanager)
+				throw new IllegalStateException("BD03");
+			
+			// Set
+			this._uimanager = __uim;
+		}
 	}
 }
 

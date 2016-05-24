@@ -79,7 +79,7 @@ public abstract class SwingBase
 	public final <U extends UIBase> U external(Class<U> __cl)
 		throws ClassCastException, NullPointerException
 	{
-		throw new Error("TODO");
+		return __cl.cast(external.get());
 	}
 	
 	/**
