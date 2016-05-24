@@ -29,8 +29,7 @@ public class SwingMenu
 	implements PIMenu
 {
 	/** The current menu representation. */
-	protected final JMenu jmenu =
-		new JMenu();
+	protected final JMenu menu;
 	
 	/**
 	 * Initializes the swing based menu.
@@ -41,7 +40,10 @@ public class SwingMenu
 	 */
 	public SwingMenu(SwingManager __sm, Reference<? extends UIMenu> __ref)
 	{
-		super(__sm, __ref);
+		super(__sm, __ref, new JMenu());
+		
+		// Set menu
+		this.menu = (JMenu)this.menuitem;
 	}
 	
 	/**
@@ -58,7 +60,7 @@ public class SwingMenu
 		synchronized (this.lock)
 		{
 			// The current menu
-			JMenu jmenu = this.jmenu;
+			JMenu menu = this.menu;
 			
 			// Obtain the external menu first
 			UIMenu external = super.<UIMenu>external(UIMenu.class);
@@ -68,12 +70,15 @@ public class SwingMenu
 			if (parent != null)
 				throw new Error("TODO");
 			
-			// This is a top-level menu, set it to a simple string
+			// This is a top-level menu
 			else
-				jmenu.setText("Menu");
+			{
+				if (true)
+					throw new Error("TODO");
+			}
 			
 			// Return the menu
-			return jmenu;
+			return menu;
 		}
 	}
 }

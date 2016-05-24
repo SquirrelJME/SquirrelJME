@@ -30,8 +30,7 @@ public class SwingMenuItem
 	implements PIMenuItem
 {
 	/** The Swing menu item. */
-	protected final JMenuItem menuitem =
-		new JMenuItem();
+	protected final JMenuItem menuitem;
 	
 	/**
 	 * Initializes the swing based menu item.
@@ -43,7 +42,30 @@ public class SwingMenuItem
 	public SwingMenuItem(SwingManager __sm,
 		Reference<? extends UIMenuItem> __ref)
 	{
+		this(__sm, __ref, new JMenuItem());
+	}
+	
+	/**
+	 * Initailizes the swing based menu item with the given Swing object.
+	 *
+	 * @param __sm The swing manager.
+	 * @param __ref The external reference.
+	 * @param __jmi The menu object to use.
+	 * @throws NullPointerException If {@code __jmi} is null.
+	 * @since 2016/05/23
+	 */
+	protected SwingMenuItem(SwingManager __sm,
+		Reference<? extends UIMenuItem> __ref, JMenuItem __jmi)
+		throws NullPointerException
+	{
 		super(__sm, __ref);
+		
+		// Check
+		if (__jmi == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.menuitem = __jmi;
 	}
 	
 	/**

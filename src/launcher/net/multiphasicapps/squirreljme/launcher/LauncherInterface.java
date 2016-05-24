@@ -165,7 +165,7 @@ public class LauncherInterface
 		// Quit item
 		UIMenuItem quititem = displaymanager.createMenuItem();
 		quititem.setText("Quit");
-		//mainmenu.add(quititem);
+		mainmenu.add(quititem);
 		
 		// Use the menu
 		maindisp.setMenu(mainmenu);

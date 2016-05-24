@@ -179,3 +179,8 @@ hit TODOs similar to before.
 Then for the images, they will be cached and managed by mapping the `ImageData`
 to a `BufferedImage` before they are used for example.
 
+## 20:44
+
+So that refactor is done. Now that it is finished I can continue and work on
+adding menu items to a menu.
+
