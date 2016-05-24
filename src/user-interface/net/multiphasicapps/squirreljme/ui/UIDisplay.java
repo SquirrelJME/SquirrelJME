@@ -22,6 +22,10 @@ public class UIDisplay
 	extends UIBase
 	implements UIContainer
 {
+	/** This handles the containerization of components. */
+	private final __Container__<UIDisplay, PIDisplay> _container =
+		new __Container__<>(this.manager, this);
+	
 	/** The title the display uses. */
 	private volatile String _title;
 	
@@ -50,15 +54,7 @@ public class UIDisplay
 	public void add(UIComponent __uic)
 		throws NullPointerException, UIException
 	{
-		// Check
-		if (__uic == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			throw new Error("TODO");
-		}
+		this._container.add(__uic);
 	}
 	
 	/**
