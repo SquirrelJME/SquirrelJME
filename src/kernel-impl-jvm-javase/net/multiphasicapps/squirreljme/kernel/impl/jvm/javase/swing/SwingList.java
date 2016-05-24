@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 import java.awt.Dimension;
 import java.lang.ref.Reference;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import net.multiphasicapps.squirreljme.ui.PIList;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIList;
@@ -38,10 +40,18 @@ public class SwingList
 	 */
 	public SwingList(SwingManager __sm, Reference<? extends UIList> __ref)
 	{
-		super(__sm, __ref, new JList());
+		super(__sm, __ref, new JScrollPane(
+			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		
 		// Set
-		this.list = (JList)this.component;
+		JList list;
+		this.list = (list = new JList());
+		JScrollPane pane = (JScrollPane)this.component;
+		pane.getViewport().setView(list);
+		
+		// Vertical scroll only
+		list.setLayoutOrientation(JList.VERTICAL);
 		
 		// Force a minimum size
 		this.list.setMinimumSize(new Dimension(100, 100));
