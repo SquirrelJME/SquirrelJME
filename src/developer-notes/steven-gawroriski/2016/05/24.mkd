@@ -36,3 +36,18 @@ text. Each label could only be placed in a single list for example. Then for
 special usage, UI elements could potentially be mapped to items and such by
 whatever uses the IU.
 
+## 15:38
+
+I have this idea for a virtual POSIX interface, which when used would create
+a mini POSIX compatible environment within Java ME. Java ME 8 is powerful
+enough to provide such an interface since NIO was added. Basically it would
+use LUI and act as a terminal. The environment would have built in commands
+along with a C compiler. The use of such an environment is to allow for
+intermediate self hosting ability (so I can run `fossil` inside of the
+environment). `fossil` would be the first target goal, so that way I can
+commit inside of the environment, which would be handy if for example I am
+running on a Palm OS PDA which has no sane POSIX environment nor even a sane
+C one. Perhaps possibly later I could implement my own `fossil` and have it
+written in Java. Then with an IDE and that, development could be done
+regardless of the host system for the most part.
+
