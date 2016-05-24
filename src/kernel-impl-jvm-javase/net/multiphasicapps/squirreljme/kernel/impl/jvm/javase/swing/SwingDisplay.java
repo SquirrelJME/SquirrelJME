@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.Image;
@@ -73,6 +74,9 @@ public class SwingDisplay
 		
 		// Add the panel
 		frame.add(panel);
+		
+		// Force a minimum size
+		frame.setMinimumSize(new Dimension(300, 180));
 		
 		// The frame may have a close callback event attached to it, so the
 		// window cannot be normally closed unles disposed.

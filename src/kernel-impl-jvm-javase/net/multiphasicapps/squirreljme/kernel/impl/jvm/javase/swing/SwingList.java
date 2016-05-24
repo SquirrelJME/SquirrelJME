@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
+import java.awt.Dimension;
 import java.lang.ref.Reference;
 import javax.swing.JList;
 import net.multiphasicapps.squirreljme.ui.PIList;
@@ -41,6 +42,9 @@ public class SwingList
 		
 		// Set
 		this.list = (JList)this.component;
+		
+		// Force a minimum size
+		this.list.setMinimumSize(new Dimension(100, 100));
 	}
 }
 
