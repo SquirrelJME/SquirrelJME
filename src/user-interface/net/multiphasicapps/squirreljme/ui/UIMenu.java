@@ -93,6 +93,30 @@ public class UIMenu
 	}
 	
 	/**
+	 * Returns the menu item at the given index.
+	 *
+	 * @param __i The index of the menu item.
+	 * @return The menu item at the given index.
+	 * @throws IndexOutOfBoundsException If the index is not within the range
+	 * of valid menu items.
+	 * @throws UIException If the menu item could not be obtained.
+	 * @since 2016/05/23
+	 */
+	public final UIMenuItem get(int __i)
+		throws IndexOutOfBoundsException, UIException
+	{
+		// Check
+		if (__i < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._items.get(__i);
+		}
+	}
+	
+	/**
 	 * Returns the display which is associated with this menu.
 	 *
 	 * @return The display which is associated with this menu or {@code null}
@@ -107,6 +131,23 @@ public class UIMenu
 		synchronized (this.lock)
 		{
 			return this._display;
+		}
+	}
+	
+	/**
+	 * Returns the number of menu items in this menu.
+	 *
+	 * @return The number of items in this menu.
+	 * @throws UIException If the number of items could not be determined.
+	 * @since 2016/05/23
+	 */
+	public final int size()
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._items.size();
 		}
 	}
 	

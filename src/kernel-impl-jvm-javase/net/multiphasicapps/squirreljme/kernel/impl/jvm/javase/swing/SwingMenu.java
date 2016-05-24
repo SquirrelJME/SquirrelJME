@@ -54,7 +54,30 @@ public class SwingMenu
 	public void updatedItems()
 		throws UIException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (lock)
+		{
+			// Get the external
+			UIMenu xmenu = this.<UIMenu>external(UIMenu.class);
+			
+			// Ignore if GCed
+			if (xmenu == null)
+				return;
+			
+			// Go through all items
+			int n = xmenu.size();
+			for (int i = 0; i < n; i++)
+			{
+				// Get item and its internal representation
+				UIMenuItem ex = xmenu.get(i);
+				SwingMenuItem in = platformManager().<SwingMenuItem>internal(
+					SwingMenuItem.class, ex);
+				
+				throw new Error("TODO");
+			}
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
