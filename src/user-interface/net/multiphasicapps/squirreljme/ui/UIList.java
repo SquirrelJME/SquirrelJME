@@ -29,5 +29,55 @@ public class UIList
 	{
 		super(__dm);
 	}
+	
+	/**
+	 * Obtains the item at the specified index.
+	 *
+	 * @param __i The index to get the item for.
+	 * @return The item at the given position.
+	 * @throws UIException If the item could not be obtained.
+	 * @since 2016/05/24
+	 */
+	public final Object get(int __i)
+		throws UIException
+	{
+		// {@squirreljme.error BD0i Request for a list item which has a
+		// negative index.}
+		if (__i < 0)
+			throw new UIException("BD0i");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			try
+			{
+				throw new Error("TODO");
+			}
+			
+			// {@squirreljme.error BD0j Request for a list item which exceeds
+			// the bounds of the list.}
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new UIException("BD0j", e);
+			}
+		}
+	}
+	
+	/**
+	 * Returns the number of elements in the list.
+	 *
+	 * @return The elements in the list.
+	 * @throws UIException If the size could not be determined.
+	 * @since 2016/05/24
+	 */
+	public final int size()
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
 }
 

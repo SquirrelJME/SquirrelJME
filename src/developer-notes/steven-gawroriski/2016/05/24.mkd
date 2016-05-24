@@ -23,3 +23,16 @@ pretty much purely in software will use the font library. The font drawing
 library would have to be small and have the ability to handle the various
 scripts and codepoints in Unicode.
 
+## 15:08
+
+Items in the list would have to be list specific items, or the list could not
+be smart.
+
+## 15:11
+
+Or instead, lists could just be containers which can only contain labels. The
+lists would have a selection interface, and labels would have an icon and
+text. Each label could only be placed in a single list for example. Then for
+special usage, UI elements could potentially be mapped to items and such by
+whatever uses the IU.
+
