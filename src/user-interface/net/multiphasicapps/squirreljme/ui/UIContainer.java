@@ -17,5 +17,14 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public interface UIContainer
 {
+	/**
+	 * Adds a component to the current container.
+	 *
+	 * @param __uic The component to add to the container.
+	 * @throws UIException If it could not be added.
+	 * @since 2016/05/24
+	 */
+	public abstract void add(UIComponent __uic)
+		throws UIException;
 }
 

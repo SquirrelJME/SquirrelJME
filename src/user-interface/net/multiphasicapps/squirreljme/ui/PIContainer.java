@@ -18,5 +18,14 @@ package net.multiphasicapps.squirreljme.ui;
 public interface PIContainer
 	extends PIBase
 {
+	/**
+	 * This is called when the elements of a container have changed and they
+	 * must be updated.
+	 *
+	 * @throws UIException If a platform update failed.
+	 * @since 2016/05/24
+	 */
+	public abstract void containeesChanged()
+		throws UIException;
 }
 

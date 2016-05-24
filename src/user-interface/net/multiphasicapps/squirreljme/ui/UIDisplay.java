@@ -20,6 +20,7 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public class UIDisplay
 	extends UIBase
+	implements UIContainer
 {
 	/** The title the display uses. */
 	private volatile String _title;
@@ -39,6 +40,25 @@ public class UIDisplay
 	UIDisplay(UIManager __dm)
 	{
 		super(__dm);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public void add(UIComponent __uic)
+		throws NullPointerException, UIException
+	{
+		// Check
+		if (__uic == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
+import net.multiphasicapps.squirreljme.ui.UIList;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 
@@ -51,6 +52,9 @@ public class LauncherInterface
 	
 	/** The primary display. */
 	private volatile UIDisplay _maindisp;
+	
+	/** The list which contains programs to launch. */
+	private volatile UIList _programlist;
 	
 	/**
 	 * Initializes the launcher interface.
@@ -170,6 +174,11 @@ public class LauncherInterface
 		
 		// Use the menu
 		maindisp.setMenu(mainmenu);
+		
+		// The list which contains the programs which are available to run
+		UIList programlist = displaymanager.createList();
+		this._programlist = programlist;
+		maindisp.add(programlist);
 		
 		// Done, make it visible
 		maindisp.setVisible(true);

@@ -73,6 +73,21 @@ public class SwingDisplay
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public void containeesChanged()
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/22
 	 */
 	@Override
