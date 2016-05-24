@@ -28,6 +28,7 @@ import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.JVMJavaSEKernel;
 import net.multiphasicapps.squirreljme.ui.PIBase;
 import net.multiphasicapps.squirreljme.ui.PIDisplay;
+import net.multiphasicapps.squirreljme.ui.PILabel;
 import net.multiphasicapps.squirreljme.ui.PIList;
 import net.multiphasicapps.squirreljme.ui.PIManager;
 import net.multiphasicapps.squirreljme.ui.PIMenu;
@@ -36,6 +37,7 @@ import net.multiphasicapps.squirreljme.ui.UIBase;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
+import net.multiphasicapps.squirreljme.ui.UILabel;
 import net.multiphasicapps.squirreljme.ui.UIList;
 import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
@@ -94,6 +96,16 @@ public class SwingManager
 		{
 			throw new UIException("AZ01", e);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public PILabel createLabel(Reference<UILabel> __ref)
+	{
+		return new SwingLabel(this, __ref);
 	}
 	
 	/**

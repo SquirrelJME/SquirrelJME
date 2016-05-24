@@ -20,6 +20,10 @@ public class UIList
 	extends UIComponent
 	implements UIContainer<UILabel>
 {
+	/** This handles the containerization of labels. */
+	private final __Container__<UIList, PIList, UILabel> _container =
+		new __Container__<>(this.manager, this, UILabel.class);
+	
 	/**
 	 * Initializes the icon box.
 	 *
@@ -38,7 +42,7 @@ public class UIList
 	@Override
 	public final void add(int __i, UILabel __l)
 	{
-		throw new Error("TODO");
+		this._container.add(__i, __l);
 	}
 	
 	/**
@@ -49,7 +53,7 @@ public class UIList
 	public final UILabel get(int __i)
 		throws UIException
 	{
-		throw new Error("TODO");
+		return this._container.get(__i);
 	}
 	
 	/**
@@ -60,7 +64,7 @@ public class UIList
 	public final int size()
 		throws UIException
 	{
-		throw new Error("TODO");
+		return this._container.size();
 	}
 }
 

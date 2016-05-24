@@ -51,6 +51,17 @@ public abstract class PIManager
 		throws UIException;
 	
 	/**
+	 * Creates a new label which displays an icon and text.
+	 *
+	 * @param __ref The reference to the external label.
+	 * @retrun The internal label.
+	 * @throws UIException If it could not be created.
+	 * @since 2016/05/24
+	 */
+	public abstract PILabel createLabel(Reference<UILabel> __ref)
+		throws UIException;
+	
+	/**
 	 * Creates a new platform dependent list.
 	 *
 	 * @param __ref The reference to the external list.

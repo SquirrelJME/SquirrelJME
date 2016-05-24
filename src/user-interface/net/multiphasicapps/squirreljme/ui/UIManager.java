@@ -137,6 +137,33 @@ public class UIManager
 	}
 	
 	/**
+	 * Creates a new label.
+	 *
+	 * @return The newly created label.
+	 * @throws UIException If the label could not be created.
+	 * @since 2016/05/24
+	 */
+	public final UILabel createLabel()
+		throws UIException
+	{
+		try
+		{
+			UILabel rv = new UILabel(this);
+			Reference<UILabel> ref = new WeakReference<UILabel>(rv,
+				this._queue);
+			PIBase in = this._pimanager.createLabel(ref);
+			__register(ref, in);
+			return rv;
+		}
+		
+		// {@squirreljme.error BD0i Ran out of memory creating label.}
+		catch (OutOfMemoryError e)
+		{
+			throw new UIException("BD0i");
+		}
+	}
+	
+	/**
 	 * Creates a new list which contains elements to be displayed.
 	 *
 	 * @return The newly created list.
