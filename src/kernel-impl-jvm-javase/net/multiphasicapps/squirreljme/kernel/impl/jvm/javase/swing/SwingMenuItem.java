@@ -79,6 +79,9 @@ public class SwingMenuItem
 		// Lock
 		synchronized (this.lock)
 		{
+			JMenuItem menuitem = this.menuitem;
+			
+			// Update the icon
 			throw new Error("TODO");
 		}
 	}
