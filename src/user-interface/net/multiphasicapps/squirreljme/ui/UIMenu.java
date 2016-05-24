@@ -23,6 +23,10 @@ import java.util.List;
 public class UIMenu
 	extends UIMenuItem
 {
+	/** Items within this display. */
+	private final List<UIMenuItem> _items =
+		new ArrayList<>();
+	
 	/** The display this is associated with. */
 	private volatile UIDisplay _display;
 	
@@ -53,10 +57,38 @@ public class UIMenu
 		if (__item == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.errro BD0c Cannot add menu item to the menu because
+		// it belongs to another manager.}
+		if (__item != null && displayManager() != __item.displayManager())
+			throw new UIException("BD0c");
+		
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// {@squirreljme.error BD04 Cannot add a menu item which is
+			// inside of another menu.}
+			UIMenu parent = __item.getParent();
+			if (parent != null)
+				throw new UIException("BD04");
+			
+			// Could fail
+			try
+			{
+				// Add to the item list
+				List<UIMenuItem> items = this._items;
+				items.add(__item);
+				__item.__setParent(this);
+				
+				// Update the internal representation
+				this.<PIMenu>platform(PIMenu.class).updatedItems();
+			}
+			
+			// {@squirreljme.error BD05 Ran out of memory adding menu item
+			// to a menu.}
+			catch (OutOfMemoryError e)
+			{
+				throw new UIException("BD05", e);
+			}
 		}
 	}
 	

@@ -184,3 +184,22 @@ to a `BufferedImage` before they are used for example.
 So that refactor is done. Now that it is finished I can continue and work on
 adding menu items to a menu.
 
+## 22:01
+
+I see a bright object in the sky. It is in the southern direction, has a slight
+twinkle, is between beige and orange. It is possible that it is Jupiter,
+although it could also be Mars.
+
+## 22:05
+
+Looking at a star map, the light is Jupiter. I remember seeing a similar light
+around last week or so also. So Jupiter shines on me while I program, although
+at its distance very dimly.
+
+## 22:11
+
+When I do the actual collections and such, I should program it in a way that
+albiet it would not be thread safe, that in the event of failure the resulting
+state would be at least consistent. This would also help when it is used by
+multiple threads which modify an unsynchronized list.
+

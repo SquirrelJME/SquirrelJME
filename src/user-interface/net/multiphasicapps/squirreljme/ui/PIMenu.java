@@ -20,5 +20,14 @@ import java.lang.ref.Reference;
 public interface PIMenu
 	extends PIMenuItem
 {
+	/**
+	 * This is called when the items within a menu have changed and the menu
+	 * has to be updated.
+	 *
+	 * @throws UIException If the update could not be performed.
+	 * @since 2016/05/23
+	 */
+	public abstract void updatedItems()
+		throws UIException;
 }
 

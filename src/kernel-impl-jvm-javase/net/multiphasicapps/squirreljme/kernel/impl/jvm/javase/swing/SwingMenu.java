@@ -47,6 +47,17 @@ public class SwingMenu
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/23
+	 */
+	@Override
+	public void updatedItems()
+		throws UIException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Creates a JMenu for this given menu.
 	 *
 	 * @return The created menu.

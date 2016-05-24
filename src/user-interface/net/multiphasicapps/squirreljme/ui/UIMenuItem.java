@@ -113,5 +113,23 @@ public class UIMenuItem
 			return rv;
 		}
 	}
+	
+	/**
+	 * Sets the parent for this menu item.
+	 *
+	 * @param __p The parent menu, {@code null} clears it.
+	 * @return The old parent.
+	 * @since 2016/05/23
+	 */
+	final UIMenu __setParent(UIMenu __p)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			UIMenu rv = this._parent;
+			this._parent = __p;
+			return rv;
+		}
+	}
 }
 
