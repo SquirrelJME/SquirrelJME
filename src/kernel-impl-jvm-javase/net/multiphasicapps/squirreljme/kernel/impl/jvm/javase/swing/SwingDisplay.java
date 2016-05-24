@@ -97,15 +97,12 @@ public class SwingDisplay
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
-			/*
-			// Obtain the internal image for the icon
-			SwingImage si = platformManager().
-				<SwingImage>internal(SwingImage.class, __icon);
-			
-			// {@squirreljme.error AZ02 Could not find an internal image.}
-			if (si == null)
-				throw new UIException("AZ02");
+			// No icon to set?
+			if (__icon == null)
+			{
+				this.frame.setIconImage(null);
+				return;
+			}
 			
 			// Get the preferred icon sizes to use
 			int[] pis = platformManager().preferredIconSizes();
@@ -120,16 +117,19 @@ public class SwingDisplay
 				int h = pis[i + 1];
 				
 				// Find an internal buffered image
-				BufferedImage bi;
 				try
 				{
-					// Load internal image
-					bi = si.<BufferedImage>internalMapImage(
-						BufferedImage.class, w, h, ImageType.INT_ARGB, false);
-				
-					// No image? Ignore
-					if (bi == null)
+					// Is there an image available?
+					ImageData id = __icon.getImage(w, h, ImageType.INT_ARGB,
+						false);
+					
+					// Ignore if not found
+					if (id == null)
 						continue;
+					
+					// Load internal image
+					BufferedImage bi = platformManager().
+						imageDataToBufferedImage(id);
 					
 					// Add it
 					icons.add(bi);
@@ -143,7 +143,6 @@ public class SwingDisplay
 			
 			// Set the icon for the frame
 			this.frame.setIconImages(icons);
-			*/
 		}
 	}
 	

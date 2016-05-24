@@ -11,10 +11,20 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
 import java.awt.AWTError;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.Transparency;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
+import net.multiphasicapps.imagereader.ImageData;
+import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.JVMJavaSEKernel;
 import net.multiphasicapps.squirreljme.ui.PIBase;
 import net.multiphasicapps.squirreljme.ui.PIDisplay;
@@ -40,6 +50,10 @@ public class SwingManager
 {
 	/** The kernel which created this. */
 	protected final JVMJavaSEKernel kernel;
+	
+	/** Cache of image datas to buffered images. */
+	private final Map<ImageData, BufferedImage> _bicache =
+		new WeakHashMap<>();
 	
 	/**
 	 * Initializes the swing based display manager.
@@ -100,6 +114,63 @@ public class SwingManager
 		throws UIException
 	{
 		return new SwingMenuItem(this, __ref);
+	}
+	
+	/**
+	 * Checks in the cache or translates and caches the given {@link ImageData}
+	 * as a Swing {@link BufferedImage}.
+	 *
+	 * @param __id The image data to convert.
+	 * @return The specified image as a {@link BufferedImage}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/23
+	 */
+	public BufferedImage imageDataToBufferedImage(ImageData __id)
+		throws NullPointerException
+	{
+		// Check
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			Map<ImageData, BufferedImage> bicache = this._bicache;
+			BufferedImage rv = bicache.get(__id);
+			
+			// Needs creation?
+			if (rv == null)
+			{
+				// Get details
+				int width = __id.width();
+				int height = __id.height();
+		
+				// Depends on the image type
+				switch (__id.type())
+				{
+						// Unknown, use a slow means of creating a mapping copy
+					default:
+						{
+							// Create compatible image
+							rv = GraphicsEnvironment.
+								getLocalGraphicsEnvironment().
+								getDefaultScreenDevice().
+								getDefaultConfiguration().
+								createCompatibleImage(width, height,
+									Transparency.TRANSLUCENT);
+					
+							// Copy pixel by pixel
+							for (int y = 0; y < height; y++)
+								for (int x = 0; x < width; x++)
+									rv.setRGB(x, y, __id.atARGB(x, y));
+						}
+						break;
+				}
+			}
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
