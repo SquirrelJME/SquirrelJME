@@ -21,8 +21,9 @@ import java.util.List;
  * @param <P> The platform container type.
  * @since 2016/05/24
  */
-final class __Container__<U extends UIContainer, P extends PIContainer>
-	implements UIContainer
+final class __Container__<U extends UIContainer, P extends PIContainer,
+	E extends UIComponent>
+	implements UIContainer<E>
 {
 	/** The locking object. */
 	protected final Object lock;
@@ -33,8 +34,11 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	/** The container element. */
 	protected final U container;
 	
+	/** The component type. */
+	protected final Class<E> type;
+	
 	/** The list of items contained in this container. */
-	private final List<UIComponent> _components =
+	private final List<E> _components =
 		new ArrayList<>();
 	
 	/**
@@ -42,20 +46,22 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	 *
 	 * @param __dm The owning display manager.
 	 * @param __u The container which owns this.
+	 * @param __cl The component type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/24
 	 */
-	__Container__(UIManager __dm, U __u)
+	__Container__(UIManager __dm, U __u, Class<E> __cl)
 		throws NullPointerException
 	{
 		// Check
-		if (__dm == null || __u == null)
+		if (__dm == null || __u == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.manager = __dm;
 		this.lock = __dm.__lock();
 		this.container = __u;
+		this.type = __cl;
 	}
 	
 	/**
@@ -63,7 +69,7 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	 * @since 2016/05/24
 	 */
 	@Override
-	public final void addComponent(UIComponent __c, int __i)
+	public final void add(int __i, E __c)
 		throws NullPointerException, UIException
 	{
 		// Check
@@ -84,15 +90,16 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 				throw new UIException("BD0e");
 			
 			// Add it to the internal list
-			List<UIComponent> components = this._components;
+			List<E> components = this._components;
 			try
 			{
-				components.add(__i, __c);
+				components.add(__i, this.type.cast(__c));
 			}
 			
 			// {@squirreljme.error BD0f Could not add the component to the
 			// container.}
-			catch (IndexOutOfBoundsException|OutOfMemoryError e)
+			catch (ClassCastException|IndexOutOfBoundsException|
+				OutOfMemoryError e)
 			{
 				throw new UIException("BD0f", e);
 			}
@@ -112,7 +119,7 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	 * @since 2016/05/24
 	 */
 	@Override
-	public final UIComponent getComponent(int __i)
+	public final E get(int __i)
 		throws UIException
 	{
 		// Lock
@@ -120,7 +127,7 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 		{
 			try
 			{
-				return this._components.get(__i);
+				return this.type.cast(this._components.get(__i));
 			}
 			
 			// {@squirreljme.error BD0g Could not obtain the component.}
@@ -136,7 +143,7 @@ final class __Container__<U extends UIContainer, P extends PIContainer>
 	 * @since 2016/05/24
 	 */
 	@Override
-	public final int numComponents()
+	public final int size()
 		throws UIException
 	{
 		// Lock

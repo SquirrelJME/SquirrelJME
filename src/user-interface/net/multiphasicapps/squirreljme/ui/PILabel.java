@@ -11,12 +11,12 @@
 package net.multiphasicapps.squirreljme.ui;
 
 /**
- * This provides the platform based interface for items placed in a list.
+ * This is a native platform representation of a label.
  *
  * @since 2016/05/24
  */
-public interface PIList
-	extends PIComponent, PIContainer
+public interface PILabel
+	extends PIComponent
 {
 }
 

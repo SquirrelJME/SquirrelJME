@@ -13,19 +13,20 @@ package net.multiphasicapps.squirreljme.ui;
 /**
  * This is an interface which singifies that it can contain other components.
  *
+ * @param <T> The component type to store.
  * @since 2016/05/24
  */
-public interface UIContainer
+public interface UIContainer<T extends UIComponent>
 {
 	/**
 	 * Adds a component to the current container.
 	 *
-	 * @param __uic The component to add to the container.
 	 * @param __i The index to add the component at.
+	 * @param __uic The component to add to the container.
 	 * @throws UIException If it could not be added.
 	 * @since 2016/05/24
 	 */
-	public abstract void addComponent(UIComponent __uic, int __i)
+	public abstract void add(int __i, T __uic)
 		throws UIException;
 	
 	/**
@@ -36,7 +37,7 @@ public interface UIContainer
 	 * @throws UIException If it could not be obtained.
 	 * @since 2016/05/24
 	 */
-	public abstract UIComponent getComponent(int __i)
+	public abstract T get(int __i)
 		throws UIException;
 	
 	/**
@@ -46,7 +47,7 @@ public interface UIContainer
 	 * @throws UIException If it could not be determined.
 	 * @since 2016/05/24
 	 */
-	public abstract int numComponents()
+	public abstract int size()
 		throws UIException;
 }
 

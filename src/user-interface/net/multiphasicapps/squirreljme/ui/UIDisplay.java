@@ -20,11 +20,11 @@ package net.multiphasicapps.squirreljme.ui;
  */
 public class UIDisplay
 	extends UIBase
-	implements UIContainer
+	implements UIContainer<UIComponent>
 {
 	/** This handles the containerization of components. */
-	private final __Container__<UIDisplay, PIDisplay> _container =
-		new __Container__<>(this.manager, this);
+	private final __Container__<UIDisplay, PIDisplay, UIComponent> _container =
+		new __Container__<>(this.manager, this, UIComponent.class);
 	
 	/** The title the display uses. */
 	private volatile String _title;
@@ -51,10 +51,10 @@ public class UIDisplay
 	 * @since 2016/05/24
 	 */
 	@Override
-	public final void addComponent(UIComponent __uic, int __i)
+	public final void add(int __i, UIComponent __uic)
 		throws NullPointerException, UIException
 	{
-		this._container.addComponent(__uic, __i);
+		this._container.add(__i, __uic);
 	}
 	
 	/**
@@ -62,10 +62,10 @@ public class UIDisplay
 	 * @since 2016/05/24
 	 */
 	@Override
-	public final UIComponent getComponent(int __i)
+	public final UIComponent get(int __i)
 		throws UIException
 	{
-		return this._container.getComponent(__i);
+		return this._container.get(__i);
 	}
 	
 	/**
@@ -108,17 +108,6 @@ public class UIDisplay
 		{
 			return this.<PIDisplay>__platform(PIDisplay.class).isVisible();
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/24
-	 */
-	@Override
-	public final int numComponents()
-		throws UIException
-	{
-		return this._container.numComponents();
 	}
 	
 	/**
@@ -273,6 +262,17 @@ public class UIDisplay
 			// Check if visibility changed
 			return was != isVisible();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/24
+	 */
+	@Override
+	public final int size()
+		throws UIException
+	{
+		return this._container.size();
 	}
 }
 
