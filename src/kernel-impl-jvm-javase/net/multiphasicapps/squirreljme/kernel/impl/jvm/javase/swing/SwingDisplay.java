@@ -10,10 +10,13 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
@@ -56,6 +59,14 @@ public class SwingDisplay
 	protected final JPanel panel =
 		new JPanel();
 	
+	/** Layout used for the panel. */
+	protected final GridBagLayout layout =
+		new GridBagLayout();
+	
+	/** Constraints. */
+	protected final GridBagConstraints cons =
+		new GridBagConstraints();
+	
 	/**
 	 * Initializes the swing display.
 	 *
@@ -73,7 +84,8 @@ public class SwingDisplay
 		this.frame = frame;
 		
 		// Add the panel
-		frame.add(panel);
+		JPanel panel = this.panel;
+		frame.add(panel, BorderLayout.PAGE_START);
 		
 		// Force a minimum size
 		frame.setMinimumSize(new Dimension(300, 180));
@@ -84,6 +96,9 @@ public class SwingDisplay
 		
 		// Handle events
 		frame.addWindowListener(this);
+		
+		// Use grid bag layout
+		panel.setLayout(this.layout);
 	}
 	
 	/**
@@ -100,26 +115,46 @@ public class SwingDisplay
 			// External
 			UIDisplay disp = this.<UIDisplay>external(UIDisplay.class);
 			
+			// Setup layout
+			int n = disp.size();
+			GridBagConstraints cons = this.cons;
+			cons.gridwidth = 1;
+			cons.gridheight = n;
+			cons.fill = GridBagConstraints.HORIZONTAL;
+			cons.gridx = 0;
+			cons.gridy = GridBagConstraints.RELATIVE;
+			cons.weightx = 1.0D;
+			//cons.weighty = 0.0D;
+			cons.anchor = GridBagConstraints.PAGE_START;
+			
 			// Remove all components
 			JPanel panel = this.panel;
 			panel.removeAll();
 			
+			// Set layout
+			GridBagLayout layout = this.layout;
+			panel.setLayout(layout);
+			
 			// Start adding them again
-			int n = disp.size();
 			for (int i = 0; i < n; i++)
 			{
+				// Setup Y position
+				cons.gridx = 1;
+				cons.gridy = i;
+				
 				// Get component
 				UIComponent ui = disp.get(i);
 				JComponent comp = platformManager().<SwingComponent>internal(
 					SwingComponent.class, ui).getComponent();
 				
 				// Add it
-				panel.add(comp);
+				panel.add(comp, cons);
 			}
 			
-			// Repack and invalidate
-			panel.invalidate();
+			// Fixes
 			this.frame.pack();
+			panel.revalidate();
+			panel.repaint();
 		}
 	}
 	

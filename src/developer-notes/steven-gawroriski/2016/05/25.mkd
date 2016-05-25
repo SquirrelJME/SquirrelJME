@@ -20,3 +20,8 @@ would not make any sense.
 
 Well the label works outside of the list, which is nice.
 
+## 11:09
+
+`GridBagLayout` is a pain to use when it does not work as one desires. I want
+the components to stretch horizontally and be stacked on each other.
+

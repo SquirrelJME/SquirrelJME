@@ -194,6 +194,18 @@ public class LauncherInterface
 		lab.setText("Goodbye world!");
 		programlist.add(1, lab);
 		
+		// Test
+		lab = displaymanager.createLabel();
+		lab.setIcon(icon);
+		lab.setText("After!");
+		maindisp.add(maindisp.size(), lab);
+		
+		// Test
+		lab = displaymanager.createLabel();
+		lab.setIcon(icon);
+		lab.setText("Before!");
+		maindisp.add(0, lab);
+		
 		// Done, make it visible
 		maindisp.setVisible(true);
 	}
