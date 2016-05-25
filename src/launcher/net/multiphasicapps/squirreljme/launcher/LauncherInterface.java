@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageReaderFactory;
+import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.imagereader.xpm.XPMImageReader;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
@@ -180,6 +181,12 @@ public class LauncherInterface
 		UIList programlist = displaymanager.createList();
 		this._programlist = programlist;
 		maindisp.add(maindisp.size(), programlist);
+		
+		// Test
+		UILabel lab = displaymanager.createLabel();
+		lab.setIcon(icon);
+		lab.setText("Hello world!");
+		programlist.add(0, lab);
 		
 		// Done, make it visible
 		maindisp.setVisible(true);
