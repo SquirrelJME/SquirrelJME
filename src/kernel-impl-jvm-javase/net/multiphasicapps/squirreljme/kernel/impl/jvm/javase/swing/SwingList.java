@@ -10,10 +10,13 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.lang.ref.Reference;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
 import net.multiphasicapps.squirreljme.ui.PIList;
 import net.multiphasicapps.squirreljme.ui.UIException;
@@ -29,7 +32,7 @@ public class SwingList
 	implements PIList
 {
 	/** The list component. */
-	protected final JList list;
+	protected final JList<JLabel> list;
 	
 	/**
 	 * Initializes the swing list.
@@ -45,8 +48,8 @@ public class SwingList
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		
 		// Set
-		JList list;
-		this.list = (list = new JList());
+		JList<JLabel> list;
+		this.list = (list = new JList<>());
 		JScrollPane pane = (JScrollPane)this.component;
 		pane.getViewport().setView(list);
 		
@@ -54,7 +57,22 @@ public class SwingList
 		list.setLayoutOrientation(JList.VERTICAL);
 		
 		// Force a minimum size
-		this.list.setMinimumSize(new Dimension(100, 100));
+		list.setMinimumSize(new Dimension(100, 100));
+		
+		// Use custom renderer which uses labels instead
+		list.setCellRenderer(new ListCellRenderer<JLabel>()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/05/25
+				 */
+				@Override
+				public Component getListCellRendererComponent(JList __jl,
+					JLabel __v, int __dx, boolean __is, boolean __fo)
+				{
+					return __v;
+				}
+			});
 	}
 	
 	/**
@@ -64,7 +82,28 @@ public class SwingList
 	@Override
 	public void containeesChanged()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Get
+			JList<JLabel> list = this.list;
+			
+			// Clear list
+			list.removeAll();
+			
+			// Add all
+			SwingManager sm = platformManager();
+			UIList xlist = this.<UIList>external(UIList.class);
+			int n = xlist.size();
+			for (int i = 0; i < n; i++)
+			{
+				list.add(sm.<SwingLabel>internal(SwingLabel.class,
+					xlist.get(i)).getComponent());
+			}
+			
+			// revalidate
+			list.revalidate();
+		}
 	}
 }
 
