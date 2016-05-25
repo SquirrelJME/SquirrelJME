@@ -11,7 +11,10 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 
 import java.lang.ref.Reference;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import net.multiphasicapps.imagereader.ImageData;
+import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.ui.PILabel;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
@@ -52,7 +55,20 @@ public class SwingLabel
 	public void setIcon(UIImage __icon)
 		throws UIException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Clearing the icon?
+			JLabel label = this.label;
+			if (__icon == null)
+				label.setIcon(null);
+			
+			// Use one
+			else
+				label.setIcon(new ImageIcon(platformManager().
+					imageDataToBufferedImage(__icon.getImage(16, 16,
+						ImageType.INT_ARGB, true))));
+		}
 	}
 	
 	/**
@@ -63,7 +79,11 @@ public class SwingLabel
 	public void setText(String __text)
 		throws UIException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this.label.setText(__text);
+		}
 	}
 }
 
