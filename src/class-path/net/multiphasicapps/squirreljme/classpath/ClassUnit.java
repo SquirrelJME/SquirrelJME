@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.classpath;
 
+import net.multiphasicapps.narf.classinterface.NCIClass;
+
 /**
  * This is a class unit which is a collection of classes and resources such as
  * those contained within a single JAR.

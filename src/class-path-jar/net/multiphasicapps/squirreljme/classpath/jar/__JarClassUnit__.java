@@ -10,19 +10,16 @@
 
 package net.multiphasicapps.squirreljme.classpath.jar;
 
-import java.nio.channels.SeekableByteChannel;
 import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 
 /**
- * This is the base class for any facility which needs to provide class units
- * as JAR files. This class must be extended and the sub-classes must implement
- * the required methods needed to locate {@link SeekableByteChannel}s.
+ * This provides access to classes from a JAR file.
  *
  * @since 2016/05/25
  */
-public abstract class JarClassUnitProvider
-	extends ClassUnitProvider
+final class __JarClassUnit__
+	extends ClassUnit
 {
 }
 
