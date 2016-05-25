@@ -215,8 +215,29 @@ public class LauncherInterface
 		lab.setText("Before!");
 		maindisp.add(0, lab);
 		
+		// Refresh the program list
+		refresh();
+		
 		// Done, make it visible
 		maindisp.setVisible(true);
+	}
+	
+	/**
+	 * Refreshes the program list to display all the class units that are
+	 * potentially available for execution.
+	 *
+	 * @since 2016/05/25
+	 */
+	public void refresh()
+	{
+		// Lock
+		UIList list = this._programlist;
+		synchronized (list)
+		{
+			// Clear the list
+			while (list.size() > 0)
+				list.remove(0);
+		}
 	}
 }
 

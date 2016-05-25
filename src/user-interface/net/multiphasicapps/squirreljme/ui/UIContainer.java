@@ -41,6 +41,17 @@ public interface UIContainer<T extends UIComponent>
 		throws UIException;
 	
 	/**
+	 * Removes the component at the given position from this container.
+	 *
+	 * @param __i The index to remove.
+	 * @return The element which was removed.
+	 * @throws UIException If the element could not removed.
+	 * @since 2016/05/25
+	 */
+	public abstract T remove(int __i)
+		throws UIException;
+	
+	/**
 	 * Returns the number of components in this container.
 	 *
 	 * @return The component count.

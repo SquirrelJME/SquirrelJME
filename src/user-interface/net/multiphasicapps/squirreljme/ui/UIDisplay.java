@@ -141,6 +141,17 @@ public class UIDisplay
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/25
+	 */
+	@Override
+	public final UIComponent remove(int __i)
+		throws UIException
+	{
+		return this._container.remove(__i);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/22
 	 */
 	@Override

@@ -140,6 +140,38 @@ final class __Container__<U extends UIContainer, P extends PIContainer,
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/25
+	 */
+	@Override
+	public final E remove(int __i)
+		throws UIException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			try
+			{
+				// The component to remove
+				E rv = this.type.cast(this._components.remove(__i));
+				
+				// Cause an update
+				((UIBase)container).<PIContainer>__platform(PIContainer.class).
+					containeesChanged();
+				
+				// Return it
+				return rv;
+			}
+			
+			// {@squirreljme.error BD0j Could not remove the component.}
+			catch (IndexOutOfBoundsException e)
+			{
+				throw new UIException("BD0j", e);
+			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/24
 	 */
 	@Override
