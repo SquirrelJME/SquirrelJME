@@ -25,3 +25,8 @@ Well the label works outside of the list, which is nice.
 `GridBagLayout` is a pain to use when it does not work as one desires. I want
 the components to stretch horizontally and be stacked on each other.
 
+## 11:15
+
+Actually, `gridwidth`/`gridheight` are the number of cells that are used for
+the component, not the total number of items in the table.
+

@@ -119,12 +119,11 @@ public class SwingDisplay
 			int n = disp.size();
 			GridBagConstraints cons = this.cons;
 			cons.gridwidth = 1;
-			cons.gridheight = n;
+			cons.gridheight = 1;
 			cons.fill = GridBagConstraints.HORIZONTAL;
 			cons.gridx = 0;
 			cons.gridy = GridBagConstraints.RELATIVE;
 			cons.weightx = 1.0D;
-			//cons.weighty = 0.0D;
 			cons.anchor = GridBagConstraints.PAGE_START;
 			
 			// Remove all components
@@ -132,14 +131,13 @@ public class SwingDisplay
 			panel.removeAll();
 			
 			// Set layout
-			GridBagLayout layout = this.layout;
-			panel.setLayout(layout);
+			//GridBagLayout layout = this.layout;
+			//panel.setLayout(layout);
 			
 			// Start adding them again
 			for (int i = 0; i < n; i++)
 			{
 				// Setup Y position
-				cons.gridx = 1;
 				cons.gridy = i;
 				
 				// Get component
