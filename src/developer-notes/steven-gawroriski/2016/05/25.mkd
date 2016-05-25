@@ -30,3 +30,11 @@ the components to stretch horizontally and be stacked on each other.
 Actually, `gridwidth`/`gridheight` are the number of cells that are used for
 the component, not the total number of items in the table.
 
+## 16:11
+
+Even before events are handled, I now have enough to be able to search for
+programs to be executed by the launcher. So as such I now need to write the
+archive finder interface and such, similar to before but better. I can use
+the service loader to provide all possible JARs that could be used. Ones that
+are internal to ones which are on a filesystem.
+
