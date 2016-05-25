@@ -38,3 +38,13 @@ archive finder interface and such, similar to before but better. I can use
 the service loader to provide all possible JARs that could be used. Ones that
 are internal to ones which are on a filesystem.
 
+## 18:32
+
+Once I get an application list of sorts, potentially the first idea which I
+have is for an interpreter that is deterministic especially when it comes to
+cycles and threads. I can also have it so everything is deterministic for the
+most part, except for UI access. I could provide a GUI for internals of
+threads such as which objects are allocated. I can also potentially have the
+ability to record and replay execution. This would be for debugging purposes
+to make sure programs run correctly and such.
+
