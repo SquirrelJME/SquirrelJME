@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.lang.ref.Reference;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -33,6 +34,10 @@ public class SwingList
 {
 	/** The list component. */
 	protected final JList<JLabel> list;
+	
+	/** The list model. */
+	protected final DefaultListModel<JLabel> model =
+		new DefaultListModel<>();
 	
 	/**
 	 * Initializes the swing list.
@@ -58,6 +63,9 @@ public class SwingList
 		
 		// Force a minimum size
 		list.setMinimumSize(new Dimension(100, 100));
+		
+		// Set model to use
+		list.setModel(this.model);
 		
 		// Use custom renderer which uses labels instead
 		list.setCellRenderer(new ListCellRenderer<JLabel>()
@@ -87,9 +95,10 @@ public class SwingList
 		{
 			// Get
 			JList<JLabel> list = this.list;
+			DefaultListModel<JLabel> model = this.model;
 			
 			// Clear list
-			list.removeAll();
+			model.clear();
 			
 			// Add all
 			SwingManager sm = platformManager();
@@ -97,8 +106,9 @@ public class SwingList
 			int n = xlist.size();
 			for (int i = 0; i < n; i++)
 			{
-				list.add(sm.<SwingLabel>internal(SwingLabel.class,
+				model.add(i, (JLabel)sm.<SwingLabel>internal(SwingLabel.class,
 					xlist.get(i)).getComponent());
+				System.err.printf("DEBUG -- %s%n", model.get(i));
 			}
 			
 			// revalidate
