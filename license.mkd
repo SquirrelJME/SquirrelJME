@@ -20,6 +20,10 @@ The mascot is under the **Creative Commons CC-BY-SA 4.0 With Additional**
    "Runs on SquirrelJME".
  * That the SquirrelJME mascot is trademarked by _Steven Gawroriski_ and
    _Multi-Phasic Applications_.
+ * The high-resolution mascot was drawn by:
+   "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
+ * The low resolution mascot (below 128x128) was drawn by _Steven Gawroriski_
+   using the high-resolution mascot as a base.
 
 ## GNU Affero General Public License v3 or Later
 
