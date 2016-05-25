@@ -16,10 +16,19 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
   * [GNU Affero General Public License, Version 3 or later](license.mkd)
 
+## Repository
+
+  * [Online repository](http://multiphasicapps.net/)
+    * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
+    * The repository may be cloned with
+      `fossil clone http://multiphasicapps.net/ squirreljme.fossil`
+    * Trunk Source Snapshot
+      * [TAR.GZ](../../tarball/squirreljme-trunk.tar.gz?uuid=trunk)
+      * [ZIP](../../zip/squirreljme-trunk.zip?uuid=trunk)
+
 ## Links
 
   * [Why?](src/squirreljme-manual/user/why.mkd)
-  * [Online repository](http://multiphasicapps.net/)
   * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
   * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
   * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)

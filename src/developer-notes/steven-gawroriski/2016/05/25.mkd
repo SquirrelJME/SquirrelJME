@@ -1,0 +1,7 @@
+# 2016/05/25
+
+## 08:03
+
+One thing I should add to the readme is how to actually obtain the
+repository. Also perhaps a tarball or ZIP of the latest trunk.
+
