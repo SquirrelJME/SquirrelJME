@@ -48,3 +48,22 @@ threads such as which objects are allocated. I can also potentially have the
 ability to record and replay execution. This would be for debugging purposes
 to make sure programs run correctly and such.
 
+## 18:40
+
+What I need however, is a name for the archive system. Effectively though the
+code would be used as a classpath and consist of class path elements and such.
+They would be class path providers. So I suppose class path is the way to go.
+
+## 18:46
+
+The classpath would also in a way replace the locator bits. There can also be
+verification in actual existing class paths. So basically, I will have class
+path element providers which provide singular class path units. Then these
+units would be combined into multiple class paths. So for standardness, I
+would say `ClassUnit` being a single collection of classes while `ClassPath`
+being multiple `ClassUnit`s which make up a class path. Also, if multiple
+programs are using a shared but not exactly the same set of `ClassUnit`s then
+they can share commonly cached information and basic class verification. If
+two programs have the same exact class path they can share the same `ClassPath`
+object.
+
