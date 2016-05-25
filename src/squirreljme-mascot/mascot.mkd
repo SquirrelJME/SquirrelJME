@@ -5,6 +5,8 @@ This package contains the mascot for this software.
   * The SquirrelJME Mascot was drawn by...
     * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
 
+For licensing information, see the license used for SquirrelJME.
+
 # High Resolution Usage
 
 For display purposes and on high resolution systems, the mascot as it currently
