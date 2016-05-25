@@ -10,3 +10,9 @@ repository. Also perhaps a tarball or ZIP of the latest trunk.
 I should also put the non-code resources under the CC-BY-SA 4.0 since that
 makes sense.
 
+## 09:07
+
+And now that is cleaned up. As for all the header files, since they are source
+code I will not be putting down the CC-BY-SA 4.0 in them at all since it
+would not make any sense.
+
