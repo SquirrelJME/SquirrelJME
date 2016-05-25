@@ -17,6 +17,9 @@ import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageReaderFactory;
 import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.imagereader.xpm.XPMImageReader;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
+import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
@@ -52,6 +55,9 @@ public class LauncherInterface
 	/** The display manager to use to interact with the user. */
 	protected final UIManager displaymanager;
 	
+	/** Class unit providers. */
+	private final ClassUnitProvider[] _cups;
+	
 	/** The primary display. */
 	private volatile UIDisplay _maindisp;
 	
@@ -63,16 +69,18 @@ public class LauncherInterface
 	 *
 	 * @param __k The kernel to provide a launcher for.
 	 * @param __dm The kernel display manager.
+	 * @param __cup The class unit providers which are available.
 	 * @throws IllegalStateException If the server could not be found or did
 	 * not permit a connection.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/20
 	 */
-	public LauncherInterface(Kernel __k, UIManager __dm)
+	public LauncherInterface(Kernel __k, UIManager __dm,
+		ClassUnitProvider... __cups)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check
-		if (__k == null || __dm == null)
+		if (__k == null || __dm == null || __cups == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -80,6 +88,7 @@ public class LauncherInterface
 		KernelProcess kernelprocess = __k.kernelProcess();
 		this.kernelprocess = kernelprocess;
 		this.displaymanager = __dm;
+		this._cups = __cups.clone();
 		
 		// Setup new launcher thread which runs under the kernel
 		kernelprocess.createThread(this);

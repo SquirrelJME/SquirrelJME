@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: class-path-jar-fs
+X-SquirrelJME-UUID: 2a72ed4a-764c-425f-81f7-5a3b0b2ceeca
+X-SquirrelJME-Depends: javame-cldc-full,
+  class-path-jar
+X-SquirrelJME-Error: BP
+LIBlet-Title: Class Path Filesystem JAR Support
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160525
+LIBlet-Description: This provides support for reading JAR
+  files off the host file system.
+

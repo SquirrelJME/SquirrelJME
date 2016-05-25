@@ -11,10 +11,13 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase;
 
 import java.lang.ref.Reference;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.impl.autoboot.AutoBootKernel;
 import net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing.
 	SwingManager;
@@ -53,6 +56,20 @@ public class JVMJavaSEKernel
 		
 		// Finished booting
 		bootFinished(JVMJavaSEKernel.class);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/25
+	 */
+	@Override
+	protected ClassUnitProvider[] classUnitProviders()
+	{
+		return new ClassUnitProvider[]
+			{
+				new FSJarClassUnitProvider(
+					Paths.get(System.getProperty("user.dir")))
+			};
 	}
 	
 	/**

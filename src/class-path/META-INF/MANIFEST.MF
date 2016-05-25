@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: class-path
 X-SquirrelJME-UUID: 0741d032-1505-4df4-9545-463cb8ef64f9
 X-SquirrelJME-Depends: javame-cldc-compact,
+  native-compiler-class-interface
 X-SquirrelJME-Error: BN
 LIBlet-Title: Class Path Base Support
 LIBlet-Vendor: Steven Gawroriski

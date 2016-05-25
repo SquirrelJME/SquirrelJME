@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.autoboot;
 
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
@@ -41,6 +42,15 @@ public abstract class AutoBootKernel
 	}
 	
 	/**
+	 * Returns the array of class unit provides which are available for
+	 * usage.
+	 *
+	 * @return The array of class unit provides.
+	 * @since 2016/06/25
+	 */
+	protected abstract ClassUnitProvider[] classUnitProviders();
+	
+	/**
 	 * Returns the display manager to use when displaying the launcher
 	 * interface.
 	 *
@@ -61,7 +71,7 @@ public abstract class AutoBootKernel
 		
 		// Setup launcher
 		LauncherInterface li = new LauncherInterface(this,
-			getDisplayManager());
+			getDisplayManager(), classUnitProviders());
 		
 		// Block until all workers are terminated
 		for (;;)
