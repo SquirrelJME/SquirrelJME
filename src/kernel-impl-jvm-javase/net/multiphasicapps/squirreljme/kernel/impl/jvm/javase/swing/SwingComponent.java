@@ -49,6 +49,9 @@ public class SwingComponent
 		
 		// Set
 		this.component = __jc;
+		
+		// Make all components opaque
+		__jc.setOpaque(true);
 	}
 	
 	/**

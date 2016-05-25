@@ -188,6 +188,12 @@ public class LauncherInterface
 		lab.setText("Hello world!");
 		programlist.add(0, lab);
 		
+		// Test
+		lab = displaymanager.createLabel();
+		lab.setIcon(icon);
+		lab.setText("Goodbye world!");
+		programlist.add(1, lab);
+		
 		// Done, make it visible
 		maindisp.setVisible(true);
 	}

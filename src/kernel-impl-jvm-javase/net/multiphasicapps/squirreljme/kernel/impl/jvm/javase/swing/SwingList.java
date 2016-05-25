@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import net.multiphasicapps.squirreljme.ui.PIList;
 import net.multiphasicapps.squirreljme.ui.UIException;
@@ -67,6 +68,9 @@ public class SwingList
 		// Set model to use
 		list.setModel(this.model);
 		
+		// Only allow selecting single items
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		// Use custom renderer which uses labels instead
 		list.setCellRenderer(new ListCellRenderer<JLabel>()
 			{
@@ -78,6 +82,13 @@ public class SwingList
 				public Component getListCellRendererComponent(JList __jl,
 					JLabel __v, int __dx, boolean __is, boolean __fo)
 				{
+					// Make it so the label is colorized if it is selected or
+					// not
+					__v.setForeground((__is ? __jl.getSelectionForeground() :
+						__jl.getForeground()));
+					__v.setBackground((__is ? __jl.getSelectionBackground() :
+						__jl.getBackground()));
+					
 					return __v;
 				}
 			});
@@ -108,7 +119,6 @@ public class SwingList
 			{
 				model.add(i, (JLabel)sm.<SwingLabel>internal(SwingLabel.class,
 					xlist.get(i)).getComponent());
-				System.err.printf("DEBUG -- %s%n", model.get(i));
 			}
 			
 			// revalidate
