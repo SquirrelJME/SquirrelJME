@@ -5,3 +5,8 @@
 One thing I should add to the readme is how to actually obtain the
 repository. Also perhaps a tarball or ZIP of the latest trunk.
 
+## 08:24
+
+I should also put the non-code resources under the CC-BY-SA 4.0 since that
+makes sense.
+
