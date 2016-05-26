@@ -72,7 +72,9 @@ public class SwingList
 		list.setMinimumSize(new Dimension(100, 100));
 		
 		// Set model to use
-		list.setModel(new __Model__());
+		__Model__ m = new __Model__();
+		list.setModel(m);
+		__ld.addDataChangeListener(m);
 		
 		// Only allow selecting single items
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -88,6 +90,7 @@ public class SwingList
 	 */
 	private final class __Model__
 		extends AbstractListModel<Object>
+		implements UIListData.DataChangeListener
 	{
 		/**
 		 * {@inheritDoc}
@@ -107,6 +110,16 @@ public class SwingList
 		public int getSize()
 		{
 			return SwingList.this.data.size();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/26
+		 */
+		@Override
+		public void listDataChanged()
+		{
+			fireContentsChanged(this, 0, SwingList.this.data.size());
 		}
 	}
 	

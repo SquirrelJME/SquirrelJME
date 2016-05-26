@@ -13,10 +13,13 @@ package net.multiphasicapps.squirreljme.ui;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
+import java.util.Set;
 
 /**
  * This class is used to internally provide a representation of data to be
@@ -39,6 +42,10 @@ public class UIListData<E>
 	/** The internal storage area. */
 	private final List<E> _internal =
 		new ArrayList<>();
+	
+	/** Data change listeners. */
+	private final Set<DataChangeListener> _listeners =
+		new HashSet<>();
 	
 	/**
 	 * Initializes the base list storage.
@@ -88,9 +95,7 @@ public class UIListData<E>
 		// Lock
 		synchronized (this)
 		{
-			// Add
 			this._internal.add(__i, this.type.cast(__e));
-			
 			__changed();
 		}
 	}
@@ -110,6 +115,28 @@ public class UIListData<E>
 			for (E e : __c)
 				rv |= add(e);
 			return rv;
+		}
+	}
+	
+	/**
+	 * Adds a data change listener to be notified when the list has changed
+	 * information.
+	 *
+	 * @param __dcl The data change listener to register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/26
+	 */
+	public final void addDataChangeListener(DataChangeListener __dcl)
+		throws NullPointerException
+	{
+		// Check
+		if (__dcl == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this)
+		{
+			this._listeners.add(__dcl);
 		}
 	}
 	
@@ -578,6 +605,12 @@ public class UIListData<E>
 	 */
 	private final void __changed()
 	{
+		// Lock
+		synchronized (this)
+		{
+			for (DataChangeListener dcl : this._listeners)
+				dcl.listDataChanged();
+		}
 	}
 	
 	/**
@@ -589,6 +622,21 @@ public class UIListData<E>
 	final Class<E> __type()
 	{
 		return this.type;
+	}
+	
+	/**
+	 * This is called when the data within the list has been changed.
+	 *
+	 * @since 2016/05/26
+	 */
+	public static interface DataChangeListener
+	{
+		/**
+		 * This is called when the list data information has changed.
+		 *
+		 * @since 2016/05/26
+		 */
+		public abstract void listDataChanged();
 	}
 }
 
