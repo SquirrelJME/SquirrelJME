@@ -65,11 +65,13 @@ public abstract class PIManager
 	 * Creates a new platform dependent list.
 	 *
 	 * @param __ref The reference to the external list.
+	 * @param __ld The used list data.
 	 * @return The platform list.
 	 * @throws UIException If it could not be created.
 	 * @since 2016/05/24
 	 */
-	public abstract PIList createList(Reference<? extends UIList<?>> __ref)
+	public abstract PIList createList(Reference<? extends UIList<?>> __ref,
+		UIListData<?> __ld)
 		throws UIException;
 	
 	/**

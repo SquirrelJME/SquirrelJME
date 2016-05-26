@@ -35,6 +35,7 @@ import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UILabel;
 import net.multiphasicapps.squirreljme.ui.UIList;
+import net.multiphasicapps.squirreljme.ui.UIListData;
 import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 import net.multiphasicapps.squirreljme.ui.UIMenuItem;
@@ -61,24 +62,15 @@ public class LauncherInterface
 	/** The display manager to use to interact with the user. */
 	protected final UIManager displaymanager;
 	
+	/** Items in the program list. */
+	protected final ProgramListData programlistdata =
+		new ProgramListData();
+	
 	/** Class unit providers. */
 	private final ClassUnitProvider[] _cups;
 	
-	/**
-	 * This is the mapping of currently active class units and their interfaces
-	 * for providing labels and launching information.
-	 */
-	private final Map<ClassUnit, ClassUnitInterface> _units =
-		new HashMap<>();
-	
 	/** The primary display. */
 	private volatile UIDisplay _maindisp;
-	
-	/** The list which contains programs to launch. */
-	private volatile UIList _programlist;
-	
-	/** Mapped indices to units. */
-	private volatile ClassUnitInterface[] _listmap;
 	
 	/**
 	 * Initializes the launcher interface.
@@ -214,14 +206,9 @@ public class LauncherInterface
 		maindisp.setMenu(mainmenu);
 		
 		// The list which contains the programs which are available to run
-		UIList programlist = displaymanager.createList();
-		this._programlist = programlist;
+		UIList programlist = displaymanager.createList(ClassUnit.class,
+			this.programlistdata);
 		maindisp.add(maindisp.size(), programlist);
-		
-		programlist.add(0, displaymanager.createLabel());
-		programlist.add(0, displaymanager.createLabel());
-		programlist.add(0, displaymanager.createLabel());
-		programlist.add(0, displaymanager.createLabel());
 		
 		// Refresh the program list
 		//refresh();
@@ -239,57 +226,28 @@ public class LauncherInterface
 	public void refresh()
 	{
 		// Lock
-		UIList list = this._programlist;
-		Map<ClassUnit, ClassUnitInterface> units = this._units;
-		synchronized (units)
+		ProgramListData programlistdata = this.programlistdata;
+		synchronized (programlistdata)
 		{
-			// Clear the list
-			while (list.size() > 0)
-				list.remove(0);
-			
-			// Class unit interfaces which have "stuck"
-			Set<ClassUnit> stuck = new HashSet<>();
+			// Get the current list size
+			int n = programlistdata.size();
 			
 			// Go through class units
+			int at = 0;
 			ClassUnitProvider[] cups = this._cups;
 			for (ClassUnitProvider cup : cups)
 				for (ClassUnit cu : cup)
-				{
-					// Use cache always
-					ClassUnitInterface cui = units.get(cu);
-					
-					// Does not exist?
-					if (cui == null)
-						units.put(cu, new ClassUnitInterface(this, cu));
-					
-					// Make it stick
-					stuck.add(cu);
-				}
+					if (at < n)
+						programlistdata.set(at++, cu);
+					else
+						programlistdata.add(cu);
 			
-			// Setup array to sort interfaces with
-			int max = units.size();
-			ClassUnitInterface[] sort = new ClassUnitInterface[max];
-			
-			// Go through the unit set and remove any interfaces for items
-			Iterator<Map.Entry<ClassUnit, ClassUnitInterface>> it =
-				units.entrySet().iterator();
-			int act = 0;
-			while (it.hasNext())
+			// Remove extra items at the end
+			while (at < n)
 			{
-				Map.Entry<ClassUnit, ClassUnitInterface> e = it.next();
-				if (!stuck.contains(e.getKey()))
-					it.remove();
-				else
-					sort[act++] = e.getValue();
+				programlistdata.remove(at);
+				n--;
 			}
-			
-			// Setup new list mappings
-			ClassUnitInterface[] lm = new ClassUnitInterface[act];
-			this._listmap = lm;
-			
-			// Add labels to the list
-			for (int i = 0; i < act; i++)
-				list.add(i, (lm[i] = sort[i]).label());
 		}
 	}
 }

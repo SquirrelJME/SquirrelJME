@@ -203,7 +203,7 @@ public class UIManager
 			UIList<E> rv = new UIList<>(this, __cl, __ld);
 			Reference<UIList<E>> ref = new WeakReference<UIList<E>>(rv,
 				this._queue);
-			PIBase in = this._pimanager.createList(ref);
+			PIBase in = this._pimanager.createList(ref, __ld);
 			__register(ref, in);
 			return rv;
 		}

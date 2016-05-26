@@ -59,16 +59,5 @@ public class UIList<E>
 		this.type = __cl;
 		this.data = __ld;
 	}
-	
-	/**
-	 * Returns the list data that is associated with this list.
-	 *
-	 * @return The data set which is used by the list.
-	 * @since 2016/05/26
-	 */
-	public final UIListData<E> getListData()
-	{
-		return this.data;
-	}
 }
 
