@@ -40,5 +40,28 @@ public abstract class ClassUnit
 	 */
 	@Override
 	public abstract String toString();
+	
+	/**
+	 * This represents the type of class unit that this provides.
+	 *
+	 * @since 2016/05/26
+	 */
+	public static enum Type
+	{
+		/** A standard Java console application. */
+		CONSOLE,
+		
+		/** A LIBlet. */
+		LIBRARY,
+		
+		/** A MIDlet. */
+		APPLICATION,
+		
+		/** Multiple types. */
+		MULTIPLE,
+		
+		/** End. */
+		;
+	}
 }
 
