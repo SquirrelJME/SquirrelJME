@@ -166,17 +166,42 @@ public class UIManager
 	/**
 	 * Creates a new list which contains elements to be displayed.
 	 *
+	 * @param <E> The type of value to store in the list.
+	 * @param __cl The type of values to store in the list.
 	 * @return The newly created list.
+	 * @throws NullPointerException On null arguments.
 	 * @throws UIException If the list could not created.
 	 * @since 2016/05/24
 	 */
-	public final UIList createList()
-		throws UIException
+	public final <E> UIList<E> createList(Class<E> __cl)
+		throws NullPointerException, UIException
 	{
+		return this.<E>createList(__cl, new UIListData<E>(__cl));
+	}
+	
+	/**
+	 * Creates a new list which contains elements to be displayed using the
+	 * specified data storage.
+	 *
+	 * @param <E> The type of value to store in the list.
+	 * @param __cl The type of values to store in the list.
+	 * @param __ld The list data to use when storing information.
+	 * @return The newly created list.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UIException If the list could not created.
+	 * @since 2016/05/24
+	 */
+	public final <E> UIList<E> createList(Class<E> __cl, UIListData<E> __ld)
+		throws NullPointerException, UIException
+	{
+		// Check
+		if (__cl == null || __ld == null)
+			throw new NullPointerException("NARG");
+		
 		try
 		{
-			UIList rv = new UIList(this);
-			Reference<UIList> ref = new WeakReference<UIList>(rv,
+			UIList<E> rv = new UIList<>(this, __cl, __ld);
+			Reference<UIList<E>> ref = new WeakReference<UIList<E>>(rv,
 				this._queue);
 			PIBase in = this._pimanager.createList(ref);
 			__register(ref, in);

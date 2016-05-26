@@ -69,7 +69,7 @@ public abstract class PIManager
 	 * @throws UIException If it could not be created.
 	 * @since 2016/05/24
 	 */
-	public abstract PIList createList(Reference<UIList> __ref)
+	public abstract PIList createList(Reference<? extends UIList<?>> __ref)
 		throws UIException;
 	
 	/**

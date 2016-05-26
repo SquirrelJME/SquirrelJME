@@ -576,8 +576,19 @@ public class UIListData<E>
 	 *
 	 * @since 2016/05/25
 	 */
-	private void __changed()
+	private final void __changed()
 	{
+	}
+	
+	/**
+	 * Returns the type of data to be stored in the list.
+	 *
+	 * @return The type of data to store in the list.
+	 * @since 2016/05/26
+	 */
+	final Class<E> __type()
+	{
+		return this.type;
 	}
 }
 
