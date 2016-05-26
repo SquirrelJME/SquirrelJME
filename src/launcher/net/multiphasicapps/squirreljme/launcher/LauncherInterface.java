@@ -210,14 +210,8 @@ public class LauncherInterface
 			this.programlistdata);
 		maindisp.add(maindisp.size(), programlist);
 		
-		// DEBUG
-		for (int i = 0; i < 16; i++)
-			this.programlistdata.add(new ClassUnit()
-				{
-				});
-		
 		// Refresh the program list
-		//refresh();
+		refresh();
 		
 		// Done, make it visible
 		maindisp.setVisible(true);
