@@ -13,11 +13,13 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.lang.ref.Reference;
+import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import net.multiphasicapps.imagereader.ImageType;
@@ -41,10 +43,6 @@ public class SwingList
 	
 	/** The list data. */
 	protected final UIListData<Object> data;
-	
-	/** The list model. */
-	protected final DefaultListModel<Object> model =
-		new DefaultListModel<>();
 	
 	/**
 	 * Initializes the swing list.
@@ -74,13 +72,42 @@ public class SwingList
 		list.setMinimumSize(new Dimension(100, 100));
 		
 		// Set model to use
-		list.setModel(this.model);
+		list.setModel(new __Model__());
 		
 		// Only allow selecting single items
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		// Use custom renderer which uses labels instead
 		list.setCellRenderer(new __Renderer__());
+	}
+	
+	/**
+	 * This implements the list model for viewing over the internal list data.
+	 *
+	 * @since 2016/05/26
+	 */
+	private final class __Model__
+		extends AbstractListModel<Object>
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/26
+		 */
+		@Override
+		public Object getElementAt(int __i)
+		{
+			return SwingList.this.data.get(__i);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/26
+		 */
+		@Override
+		public int getSize()
+		{
+			return SwingList.this.data.size();
+		}
 	}
 	
 	/**

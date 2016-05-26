@@ -211,7 +211,7 @@ public class LauncherInterface
 		maindisp.add(maindisp.size(), programlist);
 		
 		// DEBUG
-		for (int i = 0; i < 128; i++)
+		for (int i = 0; i < 16; i++)
 			this.programlistdata.add(new ClassUnit()
 				{
 				});
