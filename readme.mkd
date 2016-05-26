@@ -68,6 +68,7 @@ help the purchase of various hardware:
     litecoin:LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi)
   * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
     dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
+  * [FreedomSponsors](https://freedomsponsors.org/user/mpasteven/)
 
 ## Reporting Bugs
 
