@@ -23,14 +23,26 @@ import net.multiphasicapps.squirreljme.ui.UIListData;
 public class ProgramListData
 	extends UIListData<ClassUnit>
 {
+	/** The launcher which owns this list. */
+	protected final LauncherInterface launcher;
+	
 	/**
 	 * Initialize the program list data.
 	 *
+	 * @param __li The launcher which owns this list.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/26
 	 */
-	public ProgramListData()
+	public ProgramListData(LauncherInterface __li)
 	{
 		super(ClassUnit.class);
+		
+		// Check
+		if (__li == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.launcher = __li;
 	}
 }
 

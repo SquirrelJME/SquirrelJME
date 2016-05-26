@@ -64,7 +64,7 @@ public class LauncherInterface
 	
 	/** Items in the program list. */
 	protected final ProgramListData programlistdata =
-		new ProgramListData();
+		new ProgramListData(this);
 	
 	/** Class unit providers. */
 	private final ClassUnitProvider[] _cups;
