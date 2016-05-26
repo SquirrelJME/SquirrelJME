@@ -218,8 +218,13 @@ public class LauncherInterface
 		this._programlist = programlist;
 		maindisp.add(maindisp.size(), programlist);
 		
+		programlist.add(0, displaymanager.createLabel());
+		programlist.add(0, displaymanager.createLabel());
+		programlist.add(0, displaymanager.createLabel());
+		programlist.add(0, displaymanager.createLabel());
+		
 		// Refresh the program list
-		refresh();
+		//refresh();
 		
 		// Done, make it visible
 		maindisp.setVisible(true);
