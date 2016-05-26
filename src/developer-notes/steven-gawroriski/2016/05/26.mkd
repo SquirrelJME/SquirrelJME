@@ -39,3 +39,13 @@ Today has been a bit of a slow day.
 I should move the program list manager and such to another class rather than
 having it in the main launcher code and such.
 
+## 18:42
+
+Next would be having a selection callback in the list. If the callback is made
+on a selected item, a new display is created which shows the many ways that the
+given program could be launched. Basically it would be another list saying:
+_MIDlet Launch_ (if it uses a midlet main) or _Classic Launch_ (if it has a
+main class). Additionally one that will always appear would be a custom launch
+which basically allows a user to input a class that has a main method to be
+started for example.
+
