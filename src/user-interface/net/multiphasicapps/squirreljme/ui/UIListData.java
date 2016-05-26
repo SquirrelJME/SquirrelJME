@@ -76,11 +76,12 @@ public class UIListData<E>
 		synchronized (this)
 		{
 			// Add
+			int on = size();
 			boolean rv = this._internal.add(this.type.cast(__e));
 			
 			// Did change?
 			if (rv)
-				__changed();
+				__changed(on, on + 1);
 			return rv;
 		}
 	}
@@ -96,7 +97,7 @@ public class UIListData<E>
 		synchronized (this)
 		{
 			this._internal.add(__i, this.type.cast(__e));
-			__changed();
+			__changed(__i, size());
 		}
 	}
 	
@@ -150,9 +151,9 @@ public class UIListData<E>
 		// Lock
 		synchronized (this)
 		{
+			int n = size();
 			this._internal.clear();
-			
-			__changed();
+			__changed(0, n);
 		}
 	}
 	
@@ -346,7 +347,7 @@ public class UIListData<E>
 						synchronized (UIListData.this)
 						{
 							this.source.add(__e);
-							__changed();
+							__changed(0, UIListData.this.size());
 						}
 					}
 					
@@ -438,7 +439,7 @@ public class UIListData<E>
 						synchronized (UIListData.this)
 						{
 							this.source.remove();
-							__changed();
+							__changed(0, UIListData.this.size());
 						}
 					}
 					
@@ -452,7 +453,7 @@ public class UIListData<E>
 						synchronized (UIListData.this)
 						{
 							this.source.set(UIListData.this.type.cast(__e));
-							__changed();
+							__changed(0, UIListData.this.size());
 						}
 					}
 				};
@@ -469,8 +470,9 @@ public class UIListData<E>
 		// Lock
 		synchronized (this)
 		{
+			int n = size();
 			E rv = this._internal.remove(__i);
-			__changed();
+			__changed(__i, n);
 			return rv;
 		}
 	}
@@ -485,10 +487,18 @@ public class UIListData<E>
 		// Lock
 		synchronized (this)
 		{
-			boolean rv = this._internal.remove(__o);
-			if (rv)
-				__changed();
-			return rv;
+			// Locate it first
+			int dx = this._internal.indexOf(__o);
+			
+			// Not in the list
+			if (dx < 0)
+				return false;
+				
+			// Remove it
+			int n = size();
+			this._internal.remove(dx);
+			__changed(dx, n);
+			return true;
 		}
 	}
 	
@@ -502,9 +512,10 @@ public class UIListData<E>
 		// Lock
 		synchronized (this)
 		{
+			int n = size();
 			boolean rv = this._internal.removeAll(__c);
 			if (rv)
-				__changed();
+				__changed(0, n);
 			return rv;
 		}
 	}
@@ -519,9 +530,10 @@ public class UIListData<E>
 		// Lock
 		synchronized (this)
 		{
+			int n = size();
 			boolean rv = this._internal.retainAll(__c);
 			if (rv)
-				__changed();
+				__changed(0, n);
 			return rv;
 		}
 	}
@@ -537,7 +549,7 @@ public class UIListData<E>
 		synchronized (this)
 		{
 			E rv = this._internal.set(__i, this.type.cast(__e));
-			__changed();
+			__changed(__i, __i);
 			return rv;
 		}
 	}
@@ -601,15 +613,18 @@ public class UIListData<E>
 	/**
 	 * This is called whenever the list has been changed.
 	 *
+	 * @param __from The inclusive start of the change.
+	 * @param __to The inclusive end of the change.
 	 * @since 2016/05/25
 	 */
-	private final void __changed()
+	private final void __changed(int __from, int __to)
 	{
 		// Lock
 		synchronized (this)
 		{
+			int n = size();
 			for (DataChangeListener dcl : this._listeners)
-				dcl.listDataChanged();
+				dcl.listDataChanged(__from, __to);
 		}
 	}
 	
@@ -634,9 +649,14 @@ public class UIListData<E>
 		/**
 		 * This is called when the list data information has changed.
 		 *
+		 * The indices may exceed the bounds of the list, especially if
+		 * elements were removed.
+		 *
+		 * @param __from The starting index.
+		 * @param __to The ending index.
 		 * @since 2016/05/26
 		 */
-		public abstract void listDataChanged();
+		public abstract void listDataChanged(int __from, int __to);
 	}
 }
 

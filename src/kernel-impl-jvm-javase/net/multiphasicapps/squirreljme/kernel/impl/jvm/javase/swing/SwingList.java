@@ -117,9 +117,9 @@ public class SwingList
 		 * @since 2016/05/26
 		 */
 		@Override
-		public void listDataChanged()
+		public void listDataChanged(int __from, int __to)
 		{
-			fireContentsChanged(this, 0, SwingList.this.data.size());
+			fireContentsChanged(this, __from, __to);
 		}
 	}
 	
