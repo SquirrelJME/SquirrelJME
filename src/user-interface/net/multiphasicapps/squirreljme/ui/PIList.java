@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.ui;
  * @since 2016/05/24
  */
 public interface PIList
-	extends PIComponent, PIContainer
+	extends PIComponent
 {
 }
 
