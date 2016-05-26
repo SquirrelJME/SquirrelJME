@@ -65,9 +65,8 @@ public class LauncherInterface
 	/** The display manager to use to interact with the user. */
 	protected final UIManager displaymanager;
 	
-	/** Items in the program list. */
-	protected final ProgramListData programlistdata =
-		new ProgramListData(this);
+	/** The list manager. */
+	private final __ClassUnitList__ _cul;
 	
 	/** Class unit providers. */
 	private final ClassUnitProvider[] _cups;
@@ -100,6 +99,7 @@ public class LauncherInterface
 		this.kernelprocess = kernelprocess;
 		this.displaymanager = __dm;
 		this._cups = __cups.clone();
+		this._cul = new __ClassUnitList__(this);
 		
 		// Setup new launcher thread which runs under the kernel
 		kernelprocess.createThread(this);
@@ -209,60 +209,25 @@ public class LauncherInterface
 		maindisp.setMenu(mainmenu);
 		
 		// The list which contains the programs which are available to run
-		UIList programlist = displaymanager.createList(ClassUnit.class,
-			this.programlistdata);
-		maindisp.add(maindisp.size(), programlist);
+		__ClassUnitList__ cul = this._cul;
+		maindisp.add(maindisp.size(), cul.getUIList());
 		
 		// Refresh the program list
-		refresh();
+		cul.refresh();
 		
 		// Done, make it visible
 		maindisp.setVisible(true);
 	}
 	
 	/**
-	 * Refreshes the program list to display all the class units that are
-	 * potentially available for execution.
+	 * Returns the class unit providers which are currently available.
 	 *
-	 * @since 2016/05/25
+	 * @return the class unit providers.
+	 * @since 2016/05/26
 	 */
-	public void refresh()
+	final ClassUnitProvider[] __cups()
 	{
-		// Lock
-		ProgramListData programlistdata = this.programlistdata;
-		synchronized (programlistdata)
-		{
-			// Get the current list size
-			int n = programlistdata.size();
-			
-			// Temporary list used for sorting
-			List<ClassUnit> st = new ArrayList<>();
-			
-			// Go through class units
-			ClassUnitProvider[] cups = this._cups;
-			for (ClassUnitProvider cup : cups)
-				for (ClassUnit cu : cup.classUnits())
-					st.add(cu);
-			
-			// Sort it
-			Collections.sort(st);
-			
-			// Add entries to the program list data
-			int at;
-			int sn = st.size();
-			for (at = 0; at < sn; at++)
-				if (at < n)
-					programlistdata.set(at, st.get(at));
-				else
-					programlistdata.add(st.get(at));
-			
-			// Remove extra items at the end
-			while (at < n)
-			{
-				programlistdata.remove(n - 1);
-				n--;
-			}
-		}
+		return this._cups;
 	}
 }
 
