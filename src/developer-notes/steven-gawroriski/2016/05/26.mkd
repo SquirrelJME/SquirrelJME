@@ -11,3 +11,17 @@ entire state at once for example however.
 I actually never stored `BufferedImage` into the image cache, so for each image
 request it recreated a new image always.
 
+## 11:45
+
+Appears that Java generics are Turing complete, however it would be a feature
+of the compiler for the most part. One thing that is a downfall is that during
+compilation there is no real way to get the output of the program and it uses
+an immense amount of memory to calculate.
+
+## 12:15
+
+Having an `Iterator` for the `ClassUnit`s would require complex locking to be
+performed with the potential for there to be partial states and such. So I
+believe it should just return an array so that there is no need to constantly
+acquire locks to iterate through the units.
+
