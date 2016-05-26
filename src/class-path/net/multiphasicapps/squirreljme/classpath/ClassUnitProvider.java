@@ -14,9 +14,12 @@ package net.multiphasicapps.squirreljme.classpath;
  * This is a provider for {@link ClassUnit}s which are then constructed into
  * {@link ClassPath}s used for execution.
  *
+ * If a class unit does not change, then it must use the same reference.
+ *
  * @since 2016/05/25
  */
-public abstract class ClassUnitProvider
+public interface ClassUnitProvider
+	extends Iterable<ClassUnit>
 {
 }
 

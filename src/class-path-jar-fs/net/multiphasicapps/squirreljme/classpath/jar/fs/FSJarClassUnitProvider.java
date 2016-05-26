@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.classpath.jar.fs;
 
 import java.nio.file.Path;
+import java.util.Iterator;
+import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnitProvider;
 
 /**

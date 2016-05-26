@@ -13,6 +13,12 @@ package net.multiphasicapps.squirreljme.launcher;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageReaderFactory;
 import net.multiphasicapps.imagereader.ImageType;
@@ -25,11 +31,11 @@ import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KIOException;
 import net.multiphasicapps.squirreljme.kernel.KIOSocket;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
-import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UILabel;
 import net.multiphasicapps.squirreljme.ui.UIList;
+import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 import net.multiphasicapps.squirreljme.ui.UIMenuItem;
 
@@ -58,11 +64,21 @@ public class LauncherInterface
 	/** Class unit providers. */
 	private final ClassUnitProvider[] _cups;
 	
+	/**
+	 * This is the mapping of currently active class units and their interfaces
+	 * for providing labels and launching information.
+	 */
+	private final Map<ClassUnit, ClassUnitInterface> _units =
+		new HashMap<>();
+	
 	/** The primary display. */
 	private volatile UIDisplay _maindisp;
 	
 	/** The list which contains programs to launch. */
 	private volatile UIList _programlist;
+	
+	/** Mapped indices to units. */
+	private volatile ClassUnitInterface[] _listmap;
 	
 	/**
 	 * Initializes the launcher interface.
@@ -92,6 +108,17 @@ public class LauncherInterface
 		
 		// Setup new launcher thread which runs under the kernel
 		kernelprocess.createThread(this);
+	}
+	
+	/**
+	 * Returns the used display manager.
+	 *
+	 * @return The used display manager.
+	 * @since 2016/05/25
+	 */
+	public UIManager manager()
+	{
+		return this.displaymanager;
 	}
 	
 	/**
@@ -127,7 +154,7 @@ public class LauncherInterface
 	 *
 	 * @since 2016/05/21
 	 */
-	public void setup()
+	protected void setup()
 	{
 		// Create new display to be shown to the user
 		UIManager displaymanager = this.displaymanager;
@@ -191,30 +218,6 @@ public class LauncherInterface
 		this._programlist = programlist;
 		maindisp.add(maindisp.size(), programlist);
 		
-		// Test
-		UILabel lab = displaymanager.createLabel();
-		lab.setIcon(icon);
-		lab.setText("Hello world!");
-		programlist.add(0, lab);
-		
-		// Test
-		lab = displaymanager.createLabel();
-		lab.setIcon(icon);
-		lab.setText("Goodbye world!");
-		programlist.add(1, lab);
-		
-		// Test
-		lab = displaymanager.createLabel();
-		lab.setIcon(icon);
-		lab.setText("After!");
-		maindisp.add(maindisp.size(), lab);
-		
-		// Test
-		lab = displaymanager.createLabel();
-		lab.setIcon(icon);
-		lab.setText("Before!");
-		maindisp.add(0, lab);
-		
 		// Refresh the program list
 		refresh();
 		
@@ -232,11 +235,56 @@ public class LauncherInterface
 	{
 		// Lock
 		UIList list = this._programlist;
-		synchronized (list)
+		Map<ClassUnit, ClassUnitInterface> units = this._units;
+		synchronized (units)
 		{
 			// Clear the list
 			while (list.size() > 0)
 				list.remove(0);
+			
+			// Class unit interfaces which have "stuck"
+			Set<ClassUnit> stuck = new HashSet<>();
+			
+			// Go through class units
+			ClassUnitProvider[] cups = this._cups;
+			for (ClassUnitProvider cup : cups)
+				for (ClassUnit cu : cup)
+				{
+					// Use cache always
+					ClassUnitInterface cui = units.get(cu);
+					
+					// Does not exist?
+					if (cui == null)
+						units.put(cu, new ClassUnitInterface(this, cu));
+					
+					// Make it stick
+					stuck.add(cu);
+				}
+			
+			// Setup array to sort interfaces with
+			int max = units.size();
+			ClassUnitInterface[] sort = new ClassUnitInterface[max];
+			
+			// Go through the unit set and remove any interfaces for items
+			Iterator<Map.Entry<ClassUnit, ClassUnitInterface>> it =
+				units.entrySet().iterator();
+			int act = 0;
+			while (it.hasNext())
+			{
+				Map.Entry<ClassUnit, ClassUnitInterface> e = it.next();
+				if (!stuck.contains(e.getKey()))
+					it.remove();
+				else
+					sort[act++] = e.getValue();
+			}
+			
+			// Setup new list mappings
+			ClassUnitInterface[] lm = new ClassUnitInterface[act];
+			this._listmap = lm;
+			
+			// Add labels to the list
+			for (int i = 0; i < act; i++)
+				list.add(i, (lm[i] = sort[i]).label());
 		}
 	}
 }

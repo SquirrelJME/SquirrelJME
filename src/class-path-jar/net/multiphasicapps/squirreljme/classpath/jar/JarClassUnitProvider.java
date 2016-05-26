@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.classpath.jar;
 
 import java.nio.channels.SeekableByteChannel;
+import java.util.Iterator;
 import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 
 /**
@@ -22,7 +24,15 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
  * @since 2016/05/25
  */
 public abstract class JarClassUnitProvider
-	extends ClassUnitProvider
+	implements ClassUnitProvider
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/25
+	 */
+	public final Iterator<ClassUnit> iterator()
+	{
+		throw new Error("TODO");
+	}
 }
 
