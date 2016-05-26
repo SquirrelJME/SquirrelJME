@@ -13,8 +13,10 @@ package net.multiphasicapps.squirreljme.launcher;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIList;
 import net.multiphasicapps.squirreljme.ui.UIListData;
 import net.multiphasicapps.squirreljme.ui.UIManager;
@@ -39,6 +41,9 @@ class __ClassUnitList__
 	/** Items in the program list. */
 	protected final ProgramListData listdata;
 	
+	/** The images used for the types that programs may be. */
+	protected final UIImage[] typeicons;
+	
 	/**
 	 * Initializes the class unit list.
 	 *
@@ -55,12 +60,55 @@ class __ClassUnitList__
 		
 		// Set
 		this.launcher = __li;
-		this.listdata = new ProgramListData(__li);
+		this.listdata = new ProgramListData(__li, this);
 		UIManager dm = __li.manager();
 		this.displaymanager = dm;
 		
 		// Create new list
 		this.list = dm.createList(ClassUnit.class, listdata);
+		
+		// Load type icons
+		ClassUnit.Type[] ts = ClassUnit.Type.values();
+		int n = ts.length;
+		UIImage[] typeicons = new UIImage[n];
+		this.typeicons = typeicons;
+		for (ClassUnit.Type t : ClassUnit.Type.values())
+		{
+			UIImage ii = dm.createImage();
+			
+			// Determine the name
+			String name;
+			switch (t)
+			{
+					// Console application
+				case CONSOLE:
+					name = "type_console.xpm";
+					break;
+					
+					// Liblet
+				case LIBRARY:
+					name = "type_library.xpm";
+					break;
+					
+					// Multiple
+				case MULTIPLE:
+					name = "type_multi.xpm";
+					break;
+							
+					// Unknown
+				default:
+					name = "type_unknown.xpm";
+					break;
+			}
+			
+			// Load and associate
+			ImageData id = __li.loadImage(name);
+			if (id != null)
+				ii.addImageData(id);
+			
+			// Store it
+			typeicons[t.ordinal()] = ii;
+		}
 	}
 	
 	/**
@@ -72,6 +120,23 @@ class __ClassUnitList__
 	public UIList getUIList()
 	{
 		return this.list;
+	}
+	
+	/**
+	 * Returns the icon which is used for the given program type.
+	 *
+	 * @param __t The type of program to use.
+	 * @return The icon for the given program type.
+	 * @since 2016/05/26
+	 */
+	public UIImage iconForType(ClassUnit.Type __t)
+	{
+		// Make it always valid.
+		if (__t == null)
+			__t = ClassUnit.Type.UNKNOWN;
+			
+		// Return it
+		return this.typeicons[__t.ordinal()];
 	}
 	
 	/**

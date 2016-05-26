@@ -26,23 +26,29 @@ public class ProgramListData
 	/** The launcher which owns this list. */
 	protected final LauncherInterface launcher;
 	
+	/** The class unit list interface. */
+	protected final __ClassUnitList__ unitlist;
+	
 	/**
 	 * Initialize the program list data.
 	 *
 	 * @param __li The launcher which owns this list.
+	 * @param __cul The class unit list.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/26
 	 */
-	public ProgramListData(LauncherInterface __li)
+	public ProgramListData(LauncherInterface __li, __ClassUnitList__ __cul)
+		throws NullPointerException
 	{
 		super(ClassUnit.class);
 		
 		// Check
-		if (__li == null)
+		if (__li == null || __cul == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.launcher = __li;
+		this.unitlist = __cul;
 	}
 }
 

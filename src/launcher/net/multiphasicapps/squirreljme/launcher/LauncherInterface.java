@@ -106,12 +106,45 @@ public class LauncherInterface
 	}
 	
 	/**
+	 * Loads an image from the given resource.
+	 *
+	 * @param __res The resource name to load.
+	 * @return The read image data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/26
+	 */
+	protected final ImageData loadImage(String __res)
+		throws NullPointerException
+	{
+		// Check
+		if (__res == null)
+			throw new NullPointerException("NARG");
+		
+		// Try reading the XPM image data
+		try (InputStream is = getClass().getResourceAsStream(__res))
+		{
+			// If no image exists, ignore
+			if (is == null)
+				return null;
+			
+			// Read the image data
+			return ImageReaderFactory.instance().readImage("xpm", is);
+		}
+		
+		// Ignore read errors
+		catch (OutOfMemoryError|UIException|IOException e)
+		{
+			return null;
+		}
+	}
+	
+	/**
 	 * Returns the used display manager.
 	 *
 	 * @return The used display manager.
 	 * @since 2016/05/25
 	 */
-	public UIManager manager()
+	public final UIManager manager()
 	{
 		return this.displaymanager;
 	}
@@ -162,9 +195,6 @@ public class LauncherInterface
 		// Setup image which acts as the icon
 		UIImage icon = displaymanager.createImage();
 		
-		// Get image factory
-		ImageReaderFactory irf = ImageReaderFactory.instance();
-		
 		// Load all preferred icon sizes
 		int[] pis = displaymanager.preferredIconSizes();
 		int pisn = pis.length;
@@ -174,23 +204,13 @@ public class LauncherInterface
 			int w = pis[i];
 			int h = pis[i + 1];
 			
-			// Try reading the XPM image data
-			try (InputStream is = getClass().getResourceAsStream(
-				"/net/multiphasicapps/squirreljme/mascot/xpm/low/head_" + w +
-				"x" + h + ".xpm"))
-			{
-				// If no image exists, ignore
-				if (is == null)
-					continue;
-				
-				// Read the image and register it with the image
-				icon.addImageData(irf.readImage("xpm", is));
-			}
+			// Load
+			ImageData id = loadImage("/net/multiphasicapps/squirreljme/" +
+				"mascot/xpm/low/head_" + w + "x" + h + ".xpm");
 			
-			// Ignore read errors
-			catch (OutOfMemoryError|UIException|IOException e)
-			{
-			}
+			// Add if loaded
+			if (id != null)
+				icon.addImageData(id);
 		}
 		
 		// Set icon
