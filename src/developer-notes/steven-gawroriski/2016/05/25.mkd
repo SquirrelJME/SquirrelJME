@@ -67,3 +67,18 @@ they can share commonly cached information and basic class verification. If
 two programs have the same exact class path they can share the same `ClassPath`
 object.
 
+## 22:42
+
+With the way the program will work and UIs may be written, having `UIList` be
+a container which contains `UILabel`s is going to be very ugly. What I need to
+do is make `UIList` not a container for one. Then after that I need a kind of
+list data view which can be assigned to a `UIList` or created from it. The
+data storage would be of the actual list class so it can be used like a normal
+collection. If the list changes, then it tells the UIList that it changed.
+Another consideration is giving it the ability to generate an icon possibly
+along with the text to be displayed. So instead of a `ClassUnitInterface` it
+is just a specialized version of the list data, which can extract the icon and
+program name from the code. When all the programs are read in, they would
+be stored into this list. The number of elements in the list would
+automatically be determined and rendered accordingly.
+
