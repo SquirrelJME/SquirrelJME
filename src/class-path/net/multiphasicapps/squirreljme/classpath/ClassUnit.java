@@ -19,6 +19,26 @@ import net.multiphasicapps.narf.classinterface.NCIClass;
  * @since 2016/05/25
  */
 public abstract class ClassUnit
+	implements Comparable<ClassUnit>
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/26
+	 */
+	@Override
+	public int compareTo(ClassUnit __cu)
+	{
+		return toString().compareTo(__cu.toString());
+	}
+	
+	/**
+	 * Returns the name of the JAR file which is used for the given class
+	 * unit.
+	 *
+	 * @return The class unit key.
+	 * @since 2016/05/26
+	 */
+	@Override
+	public abstract String toString();
 }
 

@@ -46,5 +46,15 @@ final class __JarClassUnit__
 		this.provider = __jcup;
 		this.key = __k;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/26
+	 */
+	@Override
+	public String toString()
+	{
+		return this.key;
+	}
 }
 

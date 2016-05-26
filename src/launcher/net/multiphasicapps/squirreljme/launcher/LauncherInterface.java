@@ -13,10 +13,13 @@ package net.multiphasicapps.squirreljme.launcher;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.imagereader.ImageData;
@@ -232,20 +235,31 @@ public class LauncherInterface
 			// Get the current list size
 			int n = programlistdata.size();
 			
+			// Temporary list used for sorting
+			List<ClassUnit> st = new ArrayList<>();
+			
 			// Go through class units
-			int at = 0;
 			ClassUnitProvider[] cups = this._cups;
 			for (ClassUnitProvider cup : cups)
 				for (ClassUnit cu : cup.classUnits())
-					if (at < n)
-						programlistdata.set(at++, cu);
-					else
-						programlistdata.add(cu);
+					st.add(cu);
+			
+			// Sort it
+			Collections.sort(st);
+			
+			// Add entries to the program list data
+			int at;
+			int sn = st.size();
+			for (at = 0; at < sn; at++)
+				if (at < n)
+					programlistdata.set(at, st.get(at));
+				else
+					programlistdata.add(st.get(at));
 			
 			// Remove extra items at the end
 			while (at < n)
 			{
-				programlistdata.remove(at);
+				programlistdata.remove(n - 1);
 				n--;
 			}
 		}
