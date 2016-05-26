@@ -136,6 +136,16 @@ public class SwingList
 			new JLabel();
 		
 		/**
+		 * Basic initialization.
+		 *
+		 * @since 2016/05/26
+		 */
+		{
+			// Force the background to appear
+			label.setOpaque(true);
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2016/05/25
 		 */
