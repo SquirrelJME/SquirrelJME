@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.launcher;
 
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.squirreljme.ui.UIException;
+import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIList;
 import net.multiphasicapps.squirreljme.ui.UIListData;
 
@@ -49,6 +51,17 @@ public class ProgramListData
 		// Set
 		this.launcher = __li;
 		this.unitlist = __cul;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/26
+	 */
+	@Override
+	public UIImage generateIcon(int __dx, ClassUnit __v)
+		throws UIException
+	{
+		return this.unitlist.iconForType(ClassUnit.Type.UNKNOWN);
 	}
 }
 
