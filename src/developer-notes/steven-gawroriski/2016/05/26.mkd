@@ -25,3 +25,8 @@ performed with the potential for there to be partial states and such. So I
 believe it should just return an array so that there is no need to constantly
 acquire locks to iterate through the units.
 
+## 13:05
+
+It might be best for the Jar provider implementations to also use arrays or
+similar collections. Collections may be safer however.
+

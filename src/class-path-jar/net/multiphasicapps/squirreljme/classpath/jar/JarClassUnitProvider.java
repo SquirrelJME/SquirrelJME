@@ -10,8 +10,17 @@
 
 package net.multiphasicapps.squirreljme.classpath.jar;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.channels.SeekableByteChannel;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.narf.classinterface.NCIClass;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
@@ -21,6 +30,10 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
  * as JAR files. This class must be extended and the sub-classes must implement
  * the required methods needed to locate {@link SeekableByteChannel}s.
  *
+ * The implementation of this class uses keys to create and maintain references
+ * to JAR files without requiring that they be opened while the object exists
+ * and is referenced in memory.
+ *
  * @since 2016/05/25
  */
 public abstract class JarClassUnitProvider
@@ -29,6 +42,18 @@ public abstract class JarClassUnitProvider
 	/** Lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** Mapping of class unit keys to actual class units. */
+	private final Map<String, Reference<__JarClassUnit__>> _cache =
+		new HashMap<>();
+	
+	/**
+	 * Returns the collection of keys which are available.
+	 *
+	 * @return The collection of available keys.
+	 * @since 2016/05/26
+	 */
+	protected abstract Collection<String> keyCollection();
 	
 	/**
 	 * {@inheritDoc}
@@ -40,7 +65,49 @@ public abstract class JarClassUnitProvider
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Obtian all the possible keys
+			Collection<String> keys = keyCollection();
+			
+			// The output array of JAR units
+			List<__JarClassUnit__> units = new LinkedList<>();
+			
+			// Go through the map and remove any collected references
+			Map<String, Reference<__JarClassUnit__>> cache = this._cache;
+			Iterator<Map.Entry<String, Reference<__JarClassUnit__>>> it =
+				cache.entrySet().iterator();
+			while (it.hasNext())
+			{
+				// Get key and value
+				Map.Entry<String, Reference<__JarClassUnit__>> e = it.next();
+				String k = e.getKey();
+				Reference<__JarClassUnit__> v = e.getValue();
+				
+				// In the target mapping?
+				boolean want = keys.contains(k);
+				
+				// If the reference was cleared, remove the key
+				__JarClassUnit__ ju;
+				if (v == null || null == (ju = v.get()))
+					it.remove();
+				
+				// Otherwise if it is wanted, add to the output
+				else if (want)
+					units.add(ju);
+			}
+			
+			// Go through all keys to find entries which were not in the
+			// original map.
+			for (String k : keys)
+				if (!cache.containsKey(k))
+				{
+					__JarClassUnit__ v = new __JarClassUnit__(this, k);
+					units.add(v);
+					cache.put(k, new WeakReference<>(v));
+				}
+			
+			// Return the list as an array
+			return units.<__JarClassUnit__>toArray(
+				new __JarClassUnit__[units.size()]);
 		}
 	}
 }

@@ -10,8 +10,14 @@
 
 package net.multiphasicapps.squirreljme.classpath.jar.fs;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnitProvider;
@@ -44,6 +50,40 @@ public class FSJarClassUnitProvider
 		
 		// Set
 		this.path = __p;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/26
+	 */
+	@Override
+	protected Collection<String> keyCollection()
+	{
+		// Output keys
+		Set<String> rv = new HashSet<>();
+		
+		// Go through all directories and get the info
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(path))
+		{
+			// Build keys
+			for (Path p : ds)
+			{
+				// Ignore directories
+				if (Files.isDirectory(p))
+					continue;
+				
+				// Add otherwise
+				rv.add(p.getFileName().toString());
+			}
+		}
+		
+		// Ignore
+		catch (IOException e)
+		{
+		}
+		
+		// Return the set
+		return rv;
 	}
 }
 
