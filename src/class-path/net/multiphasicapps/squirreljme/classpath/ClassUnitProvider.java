@@ -19,7 +19,13 @@ package net.multiphasicapps.squirreljme.classpath;
  * @since 2016/05/25
  */
 public interface ClassUnitProvider
-	extends Iterable<ClassUnit>
 {
+	/**
+	 * Returns the array of class units which are available by this provider.
+	 *
+	 * @return The array of class units.
+	 * @since 2016/05/25
+	 */
+	public abstract ClassUnit[] classUnits();
 }
 

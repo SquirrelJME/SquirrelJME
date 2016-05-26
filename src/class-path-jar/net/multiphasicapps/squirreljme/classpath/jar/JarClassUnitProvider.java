@@ -34,9 +34,14 @@ public abstract class JarClassUnitProvider
 	 * {@inheritDoc}
 	 * @since 2016/05/25
 	 */
-	public final Iterator<ClassUnit> iterator()
+	@Override
+	public final ClassUnit[] classUnits()
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 

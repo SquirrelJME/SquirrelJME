@@ -236,7 +236,7 @@ public class LauncherInterface
 			int at = 0;
 			ClassUnitProvider[] cups = this._cups;
 			for (ClassUnitProvider cup : cups)
-				for (ClassUnit cu : cup)
+				for (ClassUnit cu : cup.classUnits())
 					if (at < n)
 						programlistdata.set(at++, cu);
 					else
