@@ -20,9 +20,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.ui.PIList;
 import net.multiphasicapps.squirreljme.ui.UIException;
+import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UIList;
+import net.multiphasicapps.squirreljme.ui.UIListData;
 
 /**
  * This is the swing representation of a list.
@@ -34,10 +37,13 @@ public class SwingList
 	implements PIList
 {
 	/** The list component. */
-	protected final JList<JLabel> list;
+	protected final JList<Object> list;
+	
+	/** The list data. */
+	protected final UIListData<Object> data;
 	
 	/** The list model. */
-	protected final DefaultListModel<JLabel> model =
+	protected final DefaultListModel<Object> model =
 		new DefaultListModel<>();
 	
 	/**
@@ -47,14 +53,16 @@ public class SwingList
 	 * @param __ref The external reference.
 	 * @since 2016/05/24
 	 */
-	public SwingList(SwingManager __sm, Reference<? extends UIList> __ref)
+	public SwingList(SwingManager __sm, Reference<UIList<Object>> __ref,
+		UIListData<Object> __ld)
 	{
 		super(__sm, __ref, new JScrollPane(
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		
 		// Set
-		JList<JLabel> list;
+		this.data = __ld;
+		JList<Object> list;
 		this.list = (list = new JList<>());
 		JScrollPane pane = (JScrollPane)this.component;
 		pane.getViewport().setView(list);
@@ -72,57 +80,53 @@ public class SwingList
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		// Use custom renderer which uses labels instead
-		list.setCellRenderer(new ListCellRenderer<JLabel>()
-			{
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/05/25
-				 */
-				@Override
-				public Component getListCellRendererComponent(JList __jl,
-					JLabel __v, int __dx, boolean __is, boolean __fo)
-				{
-					// Make it so the label is colorized if it is selected or
-					// not
-					__v.setForeground((__is ? __jl.getSelectionForeground() :
-						__jl.getForeground()));
-					__v.setBackground((__is ? __jl.getSelectionBackground() :
-						__jl.getBackground()));
-					
-					return __v;
-				}
-			});
+		list.setCellRenderer(new __Renderer__());
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/24
+	 * This is the renderer for list items.
+	 *
+	 * @since 2016/05/26
 	 */
-	@Override
-	public void containeesChanged()
+	private final class __Renderer__
+		implements ListCellRenderer<Object>
 	{
-		// Lock
-		synchronized (this.lock)
+		/** The label used for drawing. */
+		protected final JLabel label =
+			new JLabel();
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/25
+		 */
+		@Override
+		public Component getListCellRendererComponent(JList __jl,
+			Object __v, int __dx, boolean __is, boolean __fo)
 		{
-			// Get
-			JList<JLabel> list = this.list;
-			DefaultListModel<JLabel> model = this.model;
+			// Get label
+			JLabel label = this.label;
+			UIListData<Object> data = SwingList.this.data;
 			
-			// Clear list
-			model.clear();
+			// Set the text of the label to the generated text
+			label.setText(data.generateText(__dx, __v));
 			
-			// Add all
-			SwingManager sm = platformManager();
-			UIList xlist = this.<UIList>external(UIList.class);
-			int n = xlist.size();
-			for (int i = 0; i < n; i++)
-			{
-				model.add(i, (JLabel)sm.<SwingLabel>internal(SwingLabel.class,
-					xlist.get(i)).getComponent());
-			}
+			// Possibly get the icon to use
+			UIImage ico = data.generateIcon(__dx, __v);
+			if (ico == null)
+				label.setIcon(null);
+			else
+				label.setIcon(SwingList.this.manager.imageDataToImageIcon(
+					ico.getImage(16, 16, ImageType.INT_ARGB, true)));
 			
-			// revalidate
-			list.revalidate();
+			// Make it so the label is colorized if it is selected or
+			// not
+			label.setForeground((__is ? __jl.getSelectionForeground() :
+				__jl.getForeground()));
+			label.setBackground((__is ? __jl.getSelectionBackground() :
+				__jl.getBackground()));
+			
+			// Use the label
+			return label;
 		}
 	}
 }

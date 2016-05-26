@@ -191,6 +191,7 @@ public class UIManager
 	 * @throws UIException If the list could not created.
 	 * @since 2016/05/24
 	 */
+	@SuppressWarnings({"unchecked"})
 	public final <E> UIList<E> createList(Class<E> __cl, UIListData<E> __ld)
 		throws NullPointerException, UIException
 	{
@@ -203,7 +204,9 @@ public class UIManager
 			UIList<E> rv = new UIList<>(this, __cl, __ld);
 			Reference<UIList<E>> ref = new WeakReference<UIList<E>>(rv,
 				this._queue);
-			PIBase in = this._pimanager.createList(ref, __ld);
+			PIBase in = this._pimanager.createList(
+				(Reference<UIList<Object>>)((Object)ref),
+				UIListData.class.cast(__ld));
 			__register(ref, in);
 			return rv;
 		}

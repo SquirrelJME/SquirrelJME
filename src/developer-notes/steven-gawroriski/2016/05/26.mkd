@@ -6,3 +6,8 @@ I would suppose that each list is unique for every `UIList` in a way. I could
 also have the ability to dynamically relist lists just by changing their
 entire state at once for example however.
 
+## 09:11
+
+I actually never stored `BufferedImage` into the image cache, so for each image
+request it recreated a new image always.
+

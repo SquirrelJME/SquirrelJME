@@ -23,6 +23,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
+import javax.swing.ImageIcon;
 import net.multiphasicapps.imagereader.ImageData;
 import net.multiphasicapps.imagereader.ImageType;
 import net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.JVMJavaSEKernel;
@@ -39,6 +40,7 @@ import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
 import net.multiphasicapps.squirreljme.ui.UILabel;
 import net.multiphasicapps.squirreljme.ui.UIList;
+import net.multiphasicapps.squirreljme.ui.UIListData;
 import net.multiphasicapps.squirreljme.ui.UIManager;
 import net.multiphasicapps.squirreljme.ui.UIMenu;
 import net.multiphasicapps.squirreljme.ui.UIMenuItem;
@@ -57,6 +59,10 @@ public class SwingManager
 	
 	/** Cache of image datas to buffered images. */
 	private final Map<ImageData, BufferedImage> _bicache =
+		new WeakHashMap<>();
+	
+	/** ImageIcon wrapping of the buffered images. */
+	private final Map<ImageData, ImageIcon> _iicache =
 		new WeakHashMap<>();
 	
 	/**
@@ -113,10 +119,11 @@ public class SwingManager
 	 * @since 2016/05/24
 	 */
 	@Override
-	public PIList createList(Reference<UIList> __ref)
+	public PIList createList(Reference<UIList<Object>> __ref,
+		UIListData<Object> __ld)
 		throws UIException
 	{
-		return new SwingList(this, __ref);
+		return new SwingList(this, __ref, __ld);
 	}
 	
 	/**
@@ -191,7 +198,42 @@ public class SwingManager
 						}
 						break;
 				}
+				
+				// Store into the cache
+				bicache.put(__id, rv);
 			}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * This translates image data to an {@link ImageIcon} which is used in
+	 * labels and such.
+	 *
+	 * @param __id The image data to wrap.
+	 * @return The wrapped image as an {@link ImageIcon}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/26
+	 */
+	public ImageIcon imageDataToImageIcon(ImageData __id)
+		throws NullPointerException
+	{
+		// Check
+		if (__id == null)
+			throw new NullPointerException("NARG");
+			
+		// Lock
+		synchronized (this.lock)
+		{
+			Map<ImageData, ImageIcon> iicache = this._iicache;
+			ImageIcon rv = iicache.get(__id);
+			
+			// Needs creation?
+			if (rv == null)
+				iicache.put(__id,
+					(rv = new ImageIcon(imageDataToBufferedImage(__id))));
 			
 			// Return it
 			return rv;
