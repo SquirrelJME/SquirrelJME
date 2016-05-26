@@ -48,6 +48,9 @@ public abstract class ClassUnit
 	 */
 	public static enum Type
 	{
+		/** Unknown. */
+		UNKNOWN,
+		
 		/** A standard Java console application. */
 		CONSOLE,
 		
