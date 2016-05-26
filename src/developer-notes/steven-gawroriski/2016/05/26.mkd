@@ -1,2 +1,8 @@
 # 2016/05/26
 
+## 00:14
+
+I would suppose that each list is unique for every `UIList` in a way. I could
+also have the ability to dynamically relist lists just by changing their
+entire state at once for example however.
+
