@@ -266,7 +266,7 @@ public class UIListData<E>
 	@Override
 	public final Iterator<E> iterator()
 	{
-		throw new Error("TODO");
+		return listIterator();
 	}
 	
 	/**
@@ -298,9 +298,138 @@ public class UIListData<E>
 	 * @since 2016/05/25
 	 */
 	@Override
-	public final ListIterator<E> listIterator(int __i)
+	public final ListIterator<E> listIterator(final int __i)
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this)
+		{
+			return new ListIterator<E>()
+				{
+					/** The source iterator. */
+					protected final ListIterator<E> source =
+						UIListData.this._internal.listIterator(__i);
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public void add(E __e)
+					{
+						synchronized (UIListData.this)
+						{
+							this.source.add(__e);
+							__changed();
+						}
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public boolean hasNext()
+					{
+						synchronized (UIListData.this)
+						{
+							return this.source.hasNext();
+						}
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public boolean hasPrevious()
+					{
+						synchronized (UIListData.this)
+						{
+							return this.source.hasPrevious();
+						}
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public E next()
+					{
+						synchronized (UIListData.this)
+						{
+							return this.source.next();
+						}
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public int nextIndex()
+					{
+						synchronized (UIListData.this)
+						{
+							return this.source.nextIndex();
+						}
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public E previous()
+					{
+						synchronized (UIListData.this)
+						{
+							return this.source.previous();
+						}
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public int previousIndex()
+					{
+						synchronized (UIListData.this)
+						{
+							return this.source.previousIndex();
+						}
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public void remove()
+					{
+						synchronized (UIListData.this)
+						{
+							this.source.remove();
+							__changed();
+						}
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/05/26
+					 */
+					@Override
+					public void set(E __e)
+					{
+						synchronized (UIListData.this)
+						{
+							this.source.set(UIListData.this.type.cast(__e));
+							__changed();
+						}
+					}
+				};
+		}
 	}
 	
 	/**
