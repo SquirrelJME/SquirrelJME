@@ -71,6 +71,9 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
+		// Create test kernel
+		JVMTestKernel jtk = new JVMTestKernel();
+		
 		throw new Error("TODO");
 		/*
 		// Force arguments to exist
