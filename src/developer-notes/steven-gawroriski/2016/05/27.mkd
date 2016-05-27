@@ -37,3 +37,12 @@ I have before except it has no launcher interface.
 
 Going to remove the base NARF exception stuff soon.
 
+## 10:56
+
+Right now a bunch of code has been commented out and such and prefixed with
+a TODO. The test kernel would initialize a kernel, and an interpreter while
+parsing the command line to determine what to do. Then once the kernel and
+interpreter it initialized, it will setup a `ClassPath` and then give that to
+the kernel to be executed and such. The kernel implementation would then take
+it and create a stand-alone interpreter instance which is linked to the kernel.
+
