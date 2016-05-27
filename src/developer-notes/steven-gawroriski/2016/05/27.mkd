@@ -19,3 +19,12 @@ completely and not require it at all. Something I also need is a rename where
 I can use regular expressions, so instead of renaming all the classes one by
 one manually, I can use sed to do it.
 
+## 10:19
+
+The interpreter will come in a core portion which just has simple logic. Then
+there would be extensions and implementations of the core which have the
+actual interpreter loops. This way the same code can be shared and plugged in.
+Also the verification of classes and such will be given to the `class-path`
+package. Verification only makes sense when entire classes have been loaded
+for the most part.
+
