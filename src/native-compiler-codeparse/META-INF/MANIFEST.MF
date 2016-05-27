@@ -3,7 +3,7 @@ X-SquirrelJME-Name: native-compiler-codeparse
 X-SquirrelJME-UUID: 6bb0b8c1-01da-4a8b-999f-dce8cb34f4a1
 X-SquirrelJME-Depends: javame-cldc-compact, native-compiler,
  extra-util-unmodifiable,
- native-compiler-byte-code,
+ java-byte-code,
  native-compiler-program
 X-SquirrelJME-Error: AR
 LIBlet-Title: Java Byte Code Parser

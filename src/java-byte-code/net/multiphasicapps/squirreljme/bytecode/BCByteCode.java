@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -19,16 +19,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.narf.classinterface.NCIAccessibleFlags;
-import net.multiphasicapps.narf.classinterface.NCIAccessibleObject;
-import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIClassFlags;
-import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCILookup;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
-import net.multiphasicapps.narf.classinterface.NCIPool;
+import net.multiphasicapps.squirreljme.ci.NCIAccessibleFlags;
+import net.multiphasicapps.squirreljme.ci.NCIAccessibleObject;
+import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.NCIClass;
+import net.multiphasicapps.squirreljme.ci.NCIClassFlags;
+import net.multiphasicapps.squirreljme.ci.NCICodeAttribute;
+import net.multiphasicapps.squirreljme.ci.NCIException;
+import net.multiphasicapps.squirreljme.ci.NCILookup;
+import net.multiphasicapps.squirreljme.ci.NCIMethod;
+import net.multiphasicapps.squirreljme.ci.NCIPool;
 import net.multiphasicapps.util.empty.EmptyMap;
 import net.multiphasicapps.util.singleton.SingletonMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -38,8 +38,8 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  *
  * @since 2016/05/11
  */
-public final class NBCByteCode
-	extends AbstractList<NBCOperation>
+public final class BCByteCode
+	extends AbstractList<BCOperation>
 {
 	/** The containing method. */
 	protected final NCIMethod method;
@@ -57,13 +57,13 @@ public final class NBCByteCode
 	protected final int count;
 	
 	/** Explicit verification states. */
-	protected final Map<Integer, NBCStateVerification> verification;
+	protected final Map<Integer, BCStateVerification> verification;
 	
 	/** The positions for all logical operations. */
 	private final int[] _logpos;
 	
 	/** Byte code operation cache. */
-	private final Reference<NBCOperation>[] _bops;
+	private final Reference<BCOperation>[] _bops;
 	
 	/**
 	 * Initilizes the byte code representation.
@@ -72,7 +72,7 @@ public final class NBCByteCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	public NBCByteCode(NCILookup __lu, NCIMethod __m)
+	public BCByteCode(NCILookup __lu, NCIMethod __m)
 		throws NullPointerException
 	{
 		// Check
@@ -112,8 +112,8 @@ public final class NBCByteCode
 		
 		// None used
 		else
-			verification = UnmodifiableMap.<Integer, NBCStateVerification>of(
-				new SingletonMap<>(0, new NBCStateVerification(__m)));
+			verification = UnmodifiableMap.<Integer, BCStateVerification>of(
+				new SingletonMap<>(0, new BCStateVerification(__m)));
 	}
 	
 	/**
@@ -134,13 +134,13 @@ public final class NBCByteCode
 	 *
 	 * @param __ao The object to check access against.
 	 * @return {@code true} if the object can be accessed.
-	 * @throws NBCException If the class has no set access flag type or is
+	 * @throws BCException If the class has no set access flag type or is
 	 * a class which eventually extends itself.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
 	public final boolean canAccess(NCIAccessibleObject __ao)
-		throws NBCException, NullPointerException
+		throws BCException, NullPointerException
 	{
 		// Could fail
 		try
@@ -152,7 +152,7 @@ public final class NBCByteCode
 		// another.}
 		catch (NCIException e)
 		{
-			throw new NBCException(NBCException.Issue.ACCESS_ERROR, "AX11", e);
+			throw new BCException(BCException.Issue.ACCESS_ERROR, "AX11", e);
 		}
 	}
 	
@@ -185,7 +185,7 @@ public final class NBCByteCode
 	 * @return The mapping of explicit verifications.
 	 * @since 2016/05/12
 	 */
-	public Map<Integer, NBCStateVerification> explicitVerification()
+	public Map<Integer, BCStateVerification> explicitVerification()
 	{
 		return verification;
 	}
@@ -195,24 +195,24 @@ public final class NBCByteCode
 	 * @since 2016/05/11
 	 */
 	@Override
-	public NBCOperation get(int __i)
+	public BCOperation get(int __i)
 	{
 		// Check
 		if (__i < 0 || __i >= count)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Lock on the bops
-		Reference<NBCOperation>[] bops = _bops;
+		Reference<BCOperation>[] bops = _bops;
 		synchronized (bops)
 		{
 			// Get
-			Reference<NBCOperation> ref = bops[__i];
-			NBCOperation rv;
+			Reference<BCOperation> ref = bops[__i];
+			BCOperation rv;
 			
 			// Check
 			if (ref == null || null == (rv = ref.get()))
 				bops[__i] = new WeakReference<>(
-					(rv = new NBCOperation(this, code, __i)));
+					(rv = new BCOperation(this, code, __i)));
 			
 			// Return it
 			return rv;
@@ -313,9 +313,9 @@ public final class NBCByteCode
 	 * @since 2016/05/11
 	 */
 	@SuppressWarnings({"unchecked"})
-	private static Reference<NBCOperation>[] __makeBops(int __n)
+	private static Reference<BCOperation>[] __makeBops(int __n)
 	{
-		return (Reference<NBCOperation>[])((Object)new Reference[__n]);
+		return (Reference<BCOperation>[])((Object)new Reference[__n]);
 	}
 }
 

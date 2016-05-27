@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 import net.multiphasicapps.descriptors.FieldSymbol;
 
@@ -17,7 +17,7 @@ import net.multiphasicapps.descriptors.FieldSymbol;
  *
  * @since 2016/05/12
  */
-public enum NBCVariableType
+public enum BCVariableType
 {
 	/** 32-bit Integer. */
 	INTEGER(false),
@@ -49,7 +49,7 @@ public enum NBCVariableType
 	 * @param __w If {@code true} then the type consumes two spaces.
 	 * @since 2016/05/12
 	 */
-	private NBCVariableType(boolean __w)
+	private BCVariableType(boolean __w)
 	{
 		iswide = __w;
 	}
@@ -70,12 +70,12 @@ public enum NBCVariableType
 	 *
 	 * @param __sym The symbol to use for the variable.
 	 * @return The variable which is associated with the given symbol.
-	 * @throws NBCException If the type is not known.
+	 * @throws BCException If the type is not known.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/23
 	 */
-	public static NBCVariableType bySymbol(FieldSymbol __sym)
-		throws NBCException, NullPointerException
+	public static BCVariableType bySymbol(FieldSymbol __sym)
+		throws BCException, NullPointerException
 	{
 		// Check
 		if (__sym == null)
@@ -105,7 +105,7 @@ public enum NBCVariableType
 			default:
 				// {@squirreljme.error AX09 The specified field symbol
 				// cannot be mapped to a variable type. (The field symbol)}
-				throw new NBCException(NBCException.Issue.UNKNOWN_FIELD_TYPE,
+				throw new BCException(BCException.Issue.UNKNOWN_FIELD_TYPE,
 					String.format("AX09 %s", __sym));
 		}
 	}

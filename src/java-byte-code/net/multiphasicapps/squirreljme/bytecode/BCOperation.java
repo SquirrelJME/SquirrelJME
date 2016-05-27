@@ -8,24 +8,24 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
 
 /**
  * This represents a single operation in the byte code.
  *
  * @since 2016/05/11
  */
-public final class NBCOperation
+public final class BCOperation
 {
 	/** The owning byte code. */
-	protected final NBCByteCode owner;
+	protected final BCByteCode owner;
 	
 	/** The logical position. */
 	protected final int logicaladdress;
@@ -40,19 +40,19 @@ public final class NBCOperation
 	protected final List<Object> arguments;
 	
 	/** The local variables which are accessed. */
-	protected final List<NBCLocalAccess> localaccess;
+	protected final List<BCLocalAccess> localaccess;
 	
 	/** Variables types which are popped from the stack. */
-	protected final List<NBCVariableType> stackpop;
+	protected final List<BCVariableType> stackpop;
 	
 	/** Variable types which are pushed to the stack. */
-	protected final List<NBCVariablePush> stackpush;
+	protected final List<BCVariablePush> stackpush;
 	
 	/** The verification state of this operation. */
-	protected final NBCStateVerification verification;
+	protected final BCStateVerification verification;
 	
 	/** The continued result of verification. */
-	protected final NBCStateVerification verifresult;
+	protected final BCStateVerification verifresult;
 	
 	/** The string representation of this operation. */
 	private volatile Reference<String> _string;
@@ -66,7 +66,7 @@ public final class NBCOperation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	NBCOperation(NBCByteCode __bc, NCIByteBuffer __bb, int __lp)
+	BCOperation(BCByteCode __bc, NCIByteBuffer __bb, int __lp)
 		throws NullPointerException
 	{
 		// Check
@@ -80,14 +80,14 @@ public final class NBCOperation
 		// Read opcode
 		int phy = __bc.logicalToPhysical(__lp);
 		int opcode = __bb.readUnsignedByte(phy);
-		if (opcode == NBCInstructionID.WIDE)
+		if (opcode == BCInstructionID.WIDE)
 			opcode = (opcode << 8) | __bb.readUnsignedByte(phy, 1);
 		
 		// Set
 		this.instructionid = opcode;
 		
 		// Determine the entry verification state
-		NBCStateVerification expv = __bc.explicitVerification().get(__lp);
+		BCStateVerification expv = __bc.explicitVerification().get(__lp);
 		if (expv != null)
 			verification = expv;
 		
@@ -100,31 +100,31 @@ public final class NBCOperation
 		__OpInitData__ out = new __OpInitData__(this);
 		switch (opcode)
 		{
-			case NBCInstructionID.DUP: __OpInit__.dup(out); break;
+			case BCInstructionID.DUP: __OpInit__.dup(out); break;
 				
-			case NBCInstructionID.INVOKEINTERFACE:
-				__OpInit__.invoke(out, NBCInvokeType.INTERFACE);
+			case BCInstructionID.INVOKEINTERFACE:
+				__OpInit__.invoke(out, BCInvokeType.INTERFACE);
 				break;
 			
-			case NBCInstructionID.INVOKESPECIAL:
-				__OpInit__.invoke(out, NBCInvokeType.SPECIAL);
+			case BCInstructionID.INVOKESPECIAL:
+				__OpInit__.invoke(out, BCInvokeType.SPECIAL);
 				break;
 				
-			case NBCInstructionID.INVOKESTATIC:
-				__OpInit__.invoke(out, NBCInvokeType.STATIC);
+			case BCInstructionID.INVOKESTATIC:
+				__OpInit__.invoke(out, BCInvokeType.STATIC);
 				break;
 				
-			case NBCInstructionID.INVOKEVIRTUAL:
-				__OpInit__.invoke(out, NBCInvokeType.VIRTUAL);
+			case BCInstructionID.INVOKEVIRTUAL:
+				__OpInit__.invoke(out, BCInvokeType.VIRTUAL);
 				break;
 				
-			case NBCInstructionID.NEW: __OpInit__.new_(out); break;
+			case BCInstructionID.NEW: __OpInit__.new_(out); break;
 				
 				// {@squirreljme.error AX05 The instruction identifier for the
 				// specified position is not valid or is not yet supported.
 				// (The logical instruction position; The operation code)}
 			default:
-				throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+				throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
 					String.format("AX05 %d %d", __lp, opcode));
 		}
 		
@@ -185,7 +185,7 @@ public final class NBCOperation
 	 * @return The local variable access list.
 	 * @since 2016/05/12
 	 */
-	public List<NBCLocalAccess> localAccesses()
+	public List<BCLocalAccess> localAccesses()
 	{
 		return this.localaccess;
 	}
@@ -196,7 +196,7 @@ public final class NBCOperation
 	 * @return The operation owner.
 	 * @since 2016/05/13
 	 */
-	public NBCByteCode owner()
+	public BCByteCode owner()
 	{
 		return this.owner;
 	}
@@ -219,7 +219,7 @@ public final class NBCOperation
 	 * @return The type of values to pop.
 	 * @since 2016/05/12
 	 */
-	public List<NBCVariableType> stackPops()
+	public List<BCVariableType> stackPops()
 	{
 		return this.stackpop;
 	}
@@ -231,7 +231,7 @@ public final class NBCOperation
 	 * @return The push types and value assignment used.
 	 * @since 2016/05/12
 	 */
-	public List<NBCVariablePush> stackPushes()
+	public List<BCVariablePush> stackPushes()
 	{
 		return this.stackpush;
 	}
@@ -265,7 +265,7 @@ public final class NBCOperation
 	 * @return The verification state.
 	 * @since 2016/05/12
 	 */
-	public NBCStateVerification verificationInput()
+	public BCStateVerification verificationInput()
 	{
 		return this.verification;
 	}
@@ -277,7 +277,7 @@ public final class NBCOperation
 	 * @return The resulting verification state.
 	 * @since 2016/05/12
 	 */
-	public NBCStateVerification verificationOutput()
+	public BCStateVerification verificationOutput()
 	{
 		return this.verifresult;
 	}

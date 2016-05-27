@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 /**
  * This represents the type of method to invoke.
  *
  * @since 2016/05/13
  */
-public enum NBCInvokeType
+public enum BCInvokeType
 {
 	/** Static. */
 	STATIC,

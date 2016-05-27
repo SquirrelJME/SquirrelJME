@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 /**
  * This contains a large number of static field constants which identify the
@@ -16,7 +16,7 @@ package net.multiphasicapps.narf.bytecode;
  *
  * @since 2016/05/12
  */
-public interface NBCInstructionID
+public interface BCInstructionID
 {
 	/** NOP. */
 	public static final int NOP =
@@ -861,7 +861,7 @@ public interface NBCInstructionID
 	 *
 	 * Values are popped from the stack in a specific order and their values
 	 * are temporarily copied. Pushing of values uses stack value reference
-	 * variety of {@link NBCVariablePush} ({@link NBCVariablePush#popIndex()})
+	 * variety of {@link BCVariablePush} ({@link BCVariablePush#popIndex()})
 	 * which refers to the specified order that instruction were popped from
 	 * the lowest pop index to the highest (a pop index of zero is the zeroth
 	 * element of the pop value types, not the last).

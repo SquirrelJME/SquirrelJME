@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -17,15 +17,15 @@ import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.squirreljme.ci.NCICodeAttribute;
+import net.multiphasicapps.squirreljme.ci.NCIMethod;
 
 /**
  * This represents a single verification state.
  *
  * @since 2016/05/12
  */
-public final class NBCStateVerification
+public final class BCStateVerification
 {
 	/** Local variables. */
 	protected final Locals locals;
@@ -43,7 +43,7 @@ public final class NBCStateVerification
 	 * @throws NullPointerException On null arguments.
 	 * @sicne 2016/05/12
 	 */
-	public NBCStateVerification(NCIMethod __m)
+	public BCStateVerification(NCIMethod __m)
 		throws NullPointerException
 	{
 		// Check
@@ -62,7 +62,7 @@ public final class NBCStateVerification
 		this.locals = locals;
 		
 		// Raw array access
-		NBCVariableType[] ls = locals.storage;
+		BCVariableType[] ls = locals.storage;
 		
 		// Could fail
 		MethodSymbol desc = __m.nameAndType().type();
@@ -73,21 +73,21 @@ public final class NBCStateVerification
 			
 			// If the method is not static then the first local is the instance
 			if (!__m.flags().isStatic())
-				ls[at++] = NBCVariableType.OBJECT;
+				ls[at++] = BCVariableType.OBJECT;
 			
 			// Go through the list of method arguments
 			int n = desc.argumentCount();
 			for (int i = 0; i < n; i++)
 			{
 				// Determine the variable type
-				NBCVariableType vt = NBCVariableType.bySymbol(desc.get(i));
+				BCVariableType vt = BCVariableType.bySymbol(desc.get(i));
 				
 				// Store it
 				ls[at++] = vt;
 				
 				// If wide, add top
 				if (vt.isWide())
-					ls[at++] = NBCVariableType.TOP;
+					ls[at++] = BCVariableType.TOP;
 			}
 		}
 		
@@ -96,7 +96,7 @@ public final class NBCStateVerification
 		// static?)}
 		catch (IndexOutOfBoundsException e)
 		{
-			throw new NBCException(NBCException.Issue.NOT_ENOUGH_LOCALS,
+			throw new BCException(BCException.Issue.NOT_ENOUGH_LOCALS,
 				String.format("AX08 %s", desc, __m.flags().isStatic()), e);
 		}
 	}
@@ -109,7 +109,7 @@ public final class NBCStateVerification
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/13
 	 */
-	private NBCStateVerification(Locals __l, Stack __s)
+	private BCStateVerification(Locals __l, Stack __s)
 		throws NullPointerException
 	{
 		// Check
@@ -126,23 +126,23 @@ public final class NBCStateVerification
 	 *
 	 * @param __op The operation to derive a state for.
 	 * @return The derived verification state.
-	 * @throws NBCException If a local variable read is incorrect; if a written
+	 * @throws BCException If a local variable read is incorrect; if a written
 	 * local variable is not valid; If a stack pop is not valid; If the stack
 	 * overflows or underflows.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/13
 	 */
-	public NBCStateVerification derive(NBCOperation __op)
-		throws NBCException, NullPointerException
+	public BCStateVerification derive(BCOperation __op)
+		throws BCException, NullPointerException
 	{
 		// Check
 		if (__op == null)
 			throw new NullPointerException("NARG");
 		
 		// Get operation details
-		List<NBCLocalAccess> la = __op.localAccesses();
-		List<NBCVariableType> so = __op.stackPops();
-		List<NBCVariablePush> su = __op.stackPushes();
+		List<BCLocalAccess> la = __op.localAccesses();
+		List<BCVariableType> so = __op.stackPops();
+		List<BCVariablePush> su = __op.stackPushes();
 		
 		// Get current stuff
 		Locals locals = this.locals;
@@ -156,7 +156,7 @@ public final class NBCStateVerification
 		for (int i = n - 1; i >= 0; i--)
 		{
 			// Simulated pop
-			NBCVariableType vt = so.get(i);
+			BCVariableType vt = so.get(i);
 			boolean iswide;
 			newtop -= ((iswide = vt.isWide()) ? 2 : 1);
 			
@@ -164,22 +164,22 @@ public final class NBCStateVerification
 			// derivation. (The source stack; The pop operations; The push
 			// operations)}
 			if (newtop < 0)
-				throw new NBCException(NBCException.Issue.STACK_UNDERFLOW,
+				throw new BCException(BCException.Issue.STACK_UNDERFLOW,
 					String.format("AX0g %s %s %s", stack, so, su));
 			
 			// {@squirreljme.error AX0i Unexpected type on stack while popping
 			// values. (The source stack; The pop operations)}
-			NBCVariableType oops;
+			BCVariableType oops;
 			if ((oops = stack.get(newtop)) != vt)
-				throw new NBCException(NBCException.Issue.INCORRECT_STACK,
+				throw new BCException(BCException.Issue.INCORRECT_STACK,
 					String.format("AX0i %s %s", stack, so));
 			
 			// {@squirreljme.error AX0j Expected top of long or double to
 			// follow a pop of long or double. (The source stack; The pop
 			// operations)}
 			if (iswide &&
-				(oops = stack.get(newtop + 1)) != NBCVariableType.TOP)
-				throw new NBCException(NBCException.Issue.INCORRECT_STACK,
+				(oops = stack.get(newtop + 1)) != BCVariableType.TOP)
+				throw new BCException(BCException.Issue.INCORRECT_STACK,
 					String.format("AX0j %s %s", stack, so));
 		}
 		
@@ -191,22 +191,22 @@ public final class NBCStateVerification
 		for (int i = 0; i < n; i++)
 		{
 			// Simulated push
-			NBCVariableType vt = su.get(i).pushType();
+			BCVariableType vt = su.get(i).pushType();
 			newtop += (vt.isWide() ? 2 : 1);
 			
 			// {@squirreljme.error AX0h Stack overflow pushing variabels for
 			// derivation. (The source stack; The pop operations; The push
 			// operations})
 			if (newtop > maxstack)
-				throw new NBCException(NBCException.Issue.STACK_OVERFLOW,
+				throw new BCException(BCException.Issue.STACK_OVERFLOW,
 					String.format("AX0h %s %s %s", stack, so, su));
 		}
 		
 		// Check local variable read/writes
-		for (NBCLocalAccess a : la)
+		for (BCLocalAccess a : la)
 		{
 			// Get the type
-			NBCVariableType vt = a.type();
+			BCVariableType vt = a.type();
 			boolean iswide = vt.isWide();
 			
 			// {@squirreljme.error AX0k Access of a local variable which is
@@ -214,7 +214,7 @@ public final class NBCStateVerification
 			// local variables; The variables accessed; The current variable)}
 			int dx = a.getIndex();
 			if (dx < 0 || (dx + (iswide ? 1 : 0)) >= maxlocals)
-				throw new NBCException(NBCException.Issue.ILLEGAL_LOCAL,
+				throw new BCException(BCException.Issue.ILLEGAL_LOCAL,
 					String.format("AX0k %s %s", locals, la, a));
 			
 			// If read from, check the type
@@ -225,9 +225,9 @@ public final class NBCStateVerification
 				// (The current local variables; The variables to access; The
 				// current variable to check; The type that it was; The
 				// expected type)}
-				NBCVariableType was = locals.get(dx);
+				BCVariableType was = locals.get(dx);
 				if (was != vt)
-					throw new NBCException(NBCException.Issue.ILLEGAL_LOCAL,
+					throw new BCException(BCException.Issue.ILLEGAL_LOCAL,
 						String.format("AX0l %s %s %s %s", locals, la, a,
 						was, vt));
 				
@@ -240,8 +240,8 @@ public final class NBCStateVerification
 					// variables to access; The current variable to check; The
 					// type that it was; The expected type)}
 					was = locals.get(dx + 1);
-					if (was != NBCVariableType.TOP)
-						throw new NBCException(NBCException.Issue.
+					if (was != BCVariableType.TOP)
+						throw new BCException(BCException.Issue.
 							ILLEGAL_LOCAL, String.format("AX0m %s %s %s %s",
 							locals, la, a, was, vt));
 				}
@@ -253,12 +253,12 @@ public final class NBCStateVerification
 		Stack ss = new Stack(maxstack, newtop);
 		
 		// Get target storage
-		NBCVariableType[] mll = ll.storage;
-		NBCVariableType[] mss = ss.storage;
+		BCVariableType[] mll = ll.storage;
+		BCVariableType[] mss = ss.storage;
 		
 		// And source storage
-		NBCVariableType[] zll = locals.storage;
-		NBCVariableType[] zss = stack.storage;
+		BCVariableType[] zll = locals.storage;
+		BCVariableType[] zss = stack.storage;
 		
 		// Base copy locals
 		for (int i = 0; i < maxlocals; i++)
@@ -269,17 +269,17 @@ public final class NBCStateVerification
 			mss[i] = zss[i];
 		
 		// Write local variables
-		for (NBCLocalAccess a : la)
+		for (BCLocalAccess a : la)
 			if (a.isWritten())
 			{
 				// Get the type to write
-				NBCVariableType vt = a.type();
+				BCVariableType vt = a.type();
 				int dx;
 				mll[(dx = a.getIndex())] = vt;
 				
 				// Add top
 				if (vt.isWide())
-					mll[dx + 1] = NBCVariableType.TOP;
+					mll[dx + 1] = BCVariableType.TOP;
 			}
 		
 		// Write target stack
@@ -287,18 +287,18 @@ public final class NBCStateVerification
 		for (int i = 0, at = bottom; i < n; i++)
 		{
 			// Actual push
-			NBCVariableType vt = su.get(i).pushType();
+			BCVariableType vt = su.get(i).pushType();
 			
 			// Write here
 			mss[at++] = vt;
 			
 			// Add top if wide
 			if (vt.isWide())
-				mss[at++] = NBCVariableType.TOP;
+				mss[at++] = BCVariableType.TOP;
 		}
 		
 		// Return it
-		return new NBCStateVerification(ll, ss);
+		return new BCStateVerification(ll, ss);
 	}
 	
 	/**
@@ -380,11 +380,11 @@ public final class NBCStateVerification
 		 *
 		 * @param __n The number of items in the stack.
 		 * @param __top The top of the stack.
-		 * @throws NBCException If the top of the stack is out of bounds.
+		 * @throws BCException If the top of the stack is out of bounds.
 		 * @since 2016/05/12
 		 */
 		private Stack(int __n, int __top)
-			throws NBCException
+			throws BCException
 		{
 			super(__n);
 			
@@ -392,7 +392,7 @@ public final class NBCStateVerification
 			// or underflows the number of stack entries. (The position of the
 			// top of the stack; The number of entries on the stack)}
 			if (__top < 0 || __top > __n)
-				throw new NBCException(NBCException.Issue.STACK_OVERFLOW,
+				throw new BCException(BCException.Issue.STACK_OVERFLOW,
 					String.format("AX06 %d %d", __top, __n));
 			
 			// Set
@@ -417,14 +417,14 @@ public final class NBCStateVerification
 	 * @since 2016/05/12
 	 */
 	private static abstract class __Tread__
-		extends AbstractList<NBCVariableType>
+		extends AbstractList<BCVariableType>
 		implements RandomAccess
 	{
 		/** The number of entries in the tread. */
 		protected final int count;
 		
 		/** The variable storage area. */
-		protected final NBCVariableType[] storage;
+		protected final BCVariableType[] storage;
 		
 		/**
 		 * Initializes the base tread.
@@ -436,7 +436,7 @@ public final class NBCStateVerification
 		{
 			// Initialize
 			count = __n;
-			storage = new NBCVariableType[__n];
+			storage = new BCVariableType[__n];
 		}
 		
 		/**
@@ -444,7 +444,7 @@ public final class NBCStateVerification
 		 * @since 2016/05/12
 		 */
 		@Override
-		public final NBCVariableType get(int __i)
+		public final BCVariableType get(int __i)
 		{
 			return storage[__i];
 		}

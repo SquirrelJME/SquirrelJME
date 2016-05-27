@@ -8,18 +8,18 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.narf.classinterface.NCIAccessibleObject;
-import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIClassFlags;
-import net.multiphasicapps.narf.classinterface.NCIClassReference;
-import net.multiphasicapps.narf.classinterface.NCILookup;
-import net.multiphasicapps.narf.classinterface.NCIPool;
+import net.multiphasicapps.squirreljme.ci.NCIAccessibleObject;
+import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.NCIClass;
+import net.multiphasicapps.squirreljme.ci.NCIClassFlags;
+import net.multiphasicapps.squirreljme.ci.NCIClassReference;
+import net.multiphasicapps.squirreljme.ci.NCILookup;
+import net.multiphasicapps.squirreljme.ci.NCIPool;
 import net.multiphasicapps.util.empty.EmptyList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
@@ -31,19 +31,19 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 final class __OpInitData__
 {
 	/** The operation to modify. */
-	final NBCOperation operation;
+	final BCOperation operation;
 	
 	/** Arguments of the operation. */
 	private volatile List<Object> _arguments;
 	
 	/** The local variables which are accessed. */
-	private volatile List<NBCLocalAccess> _localaccess;
+	private volatile List<BCLocalAccess> _localaccess;
 	
 	/** Variables types which are popped from the stack. */
-	private volatile List<NBCVariableType> _stackpop;
+	private volatile List<BCVariableType> _stackpop;
 	
 	/** Variable types which are pushed to the stack. */
-	private volatile List<NBCVariablePush> _stackpush;
+	private volatile List<BCVariablePush> _stackpush;
 	
 	/** Rewritten operation. */
 	private volatile int _rewrite;
@@ -58,7 +58,7 @@ final class __OpInitData__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/13
 	 */
-	__OpInitData__(NBCOperation __op)
+	__OpInitData__(BCOperation __op)
 		throws NullPointerException
 	{
 		// Check
@@ -112,9 +112,9 @@ final class __OpInitData__
 	 * @return The accessed local variables.
 	 * @since 2016/05/13
 	 */
-	public List<NBCLocalAccess> getLocalAccess()
+	public List<BCLocalAccess> getLocalAccess()
 	{
-		List<NBCLocalAccess> rv = this._localaccess;
+		List<BCLocalAccess> rv = this._localaccess;
 		if (rv == null)
 			return setLocalAccess();
 		return rv;
@@ -137,9 +137,9 @@ final class __OpInitData__
 	 * @return The popped stack values.
 	 * @since 2016/05/13
 	 */
-	public List<NBCVariableType> getStackPop()
+	public List<BCVariableType> getStackPop()
 	{
-		List<NBCVariableType> rv = this._stackpop;
+		List<BCVariableType> rv = this._stackpop;
 		if (rv == null)
 			return setStackPop();
 		return rv;
@@ -151,9 +151,9 @@ final class __OpInitData__
 	 * @return The popped stack values.
 	 * @since 2016/05/13
 	 */
-	public List<NBCVariablePush> getStackPush()
+	public List<BCVariablePush> getStackPush()
 	{
-		List<NBCVariablePush> rv = this._stackpush;
+		List<BCVariablePush> rv = this._stackpush;
 		if (rv == null)
 			return setStackPush();
 		return rv;
@@ -252,7 +252,7 @@ final class __OpInitData__
 	 * @throws IllegalStateException If the value are already set.
 	 * @since 2016/05/12
 	 */
-	public List<NBCLocalAccess> setLocalAccess(NBCLocalAccess... __a)
+	public List<BCLocalAccess> setLocalAccess(BCLocalAccess... __a)
 		throws IllegalStateException
 	{
 		// {@squirreljme.error AX0q Local access already set.}
@@ -260,9 +260,9 @@ final class __OpInitData__
 			throw new IllegalStateException("AX0q");
 		
 		if (__a == null || __a.length <= 0)
-			return EmptyList.<NBCLocalAccess>empty();
-		return (this._localaccess = UnmodifiableList.<NBCLocalAccess>of(
-			Arrays.<NBCLocalAccess>asList(__a)));
+			return EmptyList.<BCLocalAccess>empty();
+		return (this._localaccess = UnmodifiableList.<BCLocalAccess>of(
+			Arrays.<BCLocalAccess>asList(__a)));
 	}
 	
 	/**
@@ -273,7 +273,7 @@ final class __OpInitData__
 	 * @throws IllegalStateException If the value are already set.
 	 * @since 2016/05/12
 	 */
-	public List<NBCVariableType> setStackPop(NBCVariableType... __a)
+	public List<BCVariableType> setStackPop(BCVariableType... __a)
 		throws IllegalStateException
 	{
 		// {@squirreljme.error AX0r Stack pop already set.}
@@ -281,9 +281,9 @@ final class __OpInitData__
 			throw new IllegalStateException("AX0r");
 		
 		if (__a == null || __a.length <= 0)
-			return EmptyList.<NBCVariableType>empty();
-		return (this._stackpop = UnmodifiableList.<NBCVariableType>of(
-			Arrays.<NBCVariableType>asList(__a)));
+			return EmptyList.<BCVariableType>empty();
+		return (this._stackpop = UnmodifiableList.<BCVariableType>of(
+			Arrays.<BCVariableType>asList(__a)));
 	}
 	
 	/**
@@ -294,7 +294,7 @@ final class __OpInitData__
 	 * @throws IllegalStateException If the value are already set.
 	 * @since 2016/05/12
 	 */
-	public List<NBCVariablePush> setStackPush(NBCVariablePush... __a)
+	public List<BCVariablePush> setStackPush(BCVariablePush... __a)
 		throws IllegalStateException
 	{
 		// {@squirreljme.error AX0s Stack push already set.}
@@ -302,9 +302,9 @@ final class __OpInitData__
 			throw new IllegalStateException("AX0s");
 		
 		if (__a == null || __a.length <= 0)
-			return EmptyList.<NBCVariablePush>empty();
-		return (this._stackpush = UnmodifiableList.<NBCVariablePush>of(
-			Arrays.<NBCVariablePush>asList(__a)));
+			return EmptyList.<BCVariablePush>empty();
+		return (this._stackpush = UnmodifiableList.<BCVariablePush>of(
+			Arrays.<BCVariablePush>asList(__a)));
 	}
 	
 	/**
@@ -313,7 +313,7 @@ final class __OpInitData__
 	 * @return The verification input.
 	 * @since 2016/05/13
 	 */
-	public NBCStateVerification verificationInput()
+	public BCStateVerification verificationInput()
 	{
 		return this.operation.verificationInput();
 	}

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -19,14 +19,14 @@ import java.util.List;
  *
  * @since 2016/05/12
  */
-public final class NBCVariablePush
+public final class BCVariablePush
 {
 	/** A new object. */
-	private static final NBCVariablePush _NEW_OBJECT =
-		new NBCVariablePush(NBCVariableType.OBJECT);
+	private static final BCVariablePush _NEW_OBJECT =
+		new BCVariablePush(BCVariableType.OBJECT);
 	
 	/** The type of value to push. */
-	protected final NBCVariableType pushtype;
+	protected final BCVariableType pushtype;
 	
 	/** The value to use when popping. */
 	protected final int popindex;
@@ -41,7 +41,7 @@ public final class NBCVariablePush
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	NBCVariablePush(NBCVariableType __t)
+	BCVariablePush(BCVariableType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -61,7 +61,7 @@ public final class NBCVariablePush
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	NBCVariablePush(NBCLocalAccess __l)
+	BCVariablePush(BCLocalAccess __l)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -80,7 +80,7 @@ public final class NBCVariablePush
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	NBCVariablePush(List<NBCVariableType> __pops, int __i)
+	BCVariablePush(List<BCVariableType> __pops, int __i)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -134,7 +134,7 @@ public final class NBCVariablePush
 	 * @return The push value type.
 	 * @since 2016/05/13
 	 */
-	public NBCVariableType pushType()
+	public BCVariableType pushType()
 	{
 		return this.pushtype;
 	}
@@ -184,7 +184,7 @@ public final class NBCVariablePush
 	 * @return A push representation which specifies a new object value.
 	 * @since 2016/05/12
 	 */
-	public static NBCVariablePush newObject()
+	public static BCVariablePush newObject()
 	{
 		return _NEW_OBJECT;
 	}

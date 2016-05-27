@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 /**
  * This is used to describe how a local variable is accessed.
  *
  * @since 2016/05/12
  */
-public final class NBCLocalAccess
+public final class BCLocalAccess
 {
 	/** The index to read or write. */
 	protected final int index;
@@ -24,7 +24,7 @@ public final class NBCLocalAccess
 	protected final boolean write;
 	
 	/** The type of variable to read or write. */
-	protected final NBCVariableType type;
+	protected final BCVariableType type;
 	
 	/**
 	 * Initailizes the local variable access.
@@ -35,7 +35,7 @@ public final class NBCLocalAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	NBCLocalAccess(int __dx, boolean __write, NBCVariableType __t)
+	BCLocalAccess(int __dx, boolean __write, BCVariableType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -117,7 +117,7 @@ public final class NBCLocalAccess
 	 * @return The type of value to read or write.
 	 * @since 2016/05/13
 	 */
-	public NBCVariableType type()
+	public BCVariableType type()
 	{
 		return this.type;
 	}

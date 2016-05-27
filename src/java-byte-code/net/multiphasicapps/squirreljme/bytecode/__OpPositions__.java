@@ -8,9 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
-import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
 
 /**
  * This calculates the position of all operations.
@@ -63,7 +63,7 @@ final class __OpPositions__
 			// {@squirreljme.error AX04 The size of the current operation is
 			// zero or negative. (The opcode position; The size of it)}
 			if (sz <= 0)
-				throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+				throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
 					String.format("AX04 %d %d", i, sz));
 			
 			// Current operation is here
@@ -92,12 +92,12 @@ final class __OpPositions__
 	 *
 	 * @param __pos The position of the instruction.
 	 * @return The size of the given instruction.
-	 * @throws NBCException If the instruction runs off the code block
+	 * @throws BCException If the instruction runs off the code block
 	 * or it is unknown or invalid.
 	 * @since 2016/03/29
 	 */
 	int __sizeOf(int __pos)
-		throws NBCException
+		throws BCException
 	{
 		// Get the buffer
 		NCIByteBuffer buffer = this.buffer;
@@ -142,7 +142,7 @@ final class __OpPositions__
 				// value. (The position of the current operation; The
 				// low byte; The high byte)}
 				if (lo > hi)
-					throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+					throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
 						String.format("AX01 %d %d %d", __pos, lo, hi));
 				
 				// Calculate the size
@@ -162,7 +162,7 @@ final class __OpPositions__
 				// has a zero or negative pair count. (The position of the
 				// current operation; The pair count)}
 				if (np <= 0)
-					throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+					throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
 						String.format("AX02 %d %d", __pos, np));
 				
 				// Calculate the size
@@ -212,7 +212,7 @@ final class __OpPositions__
 
 			// {@squirreljme.error AX07 Method byte code contains an illegal
 			// opcode. (The opcode)}
-			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+			throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
 				String.format("AX07 %d", opcode));
 		}
 		
@@ -221,7 +221,7 @@ final class __OpPositions__
 		{
 			// {@squirreljme.error AX03 While decoding an operation, the bounds
 			// of the program were exceeded. (The current opcode)}
-			throw new NBCException(NBCException.Issue.ILLEGAL_OPCODE,
+			throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
 				String.format("AX03 %d", opcode), e);
 		}
 	}

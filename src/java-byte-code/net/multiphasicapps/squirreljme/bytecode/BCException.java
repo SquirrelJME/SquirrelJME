@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 import net.multiphasicapps.narf.exception.NARFException;
 
@@ -18,7 +18,7 @@ import net.multiphasicapps.narf.exception.NARFException;
  *
  * @since 2016/05/11
  */
-public class NBCException
+public class BCException
 	extends NARFException
 {
 	/**
@@ -26,7 +26,7 @@ public class NBCException
 	 *
 	 * @since 2016/05/11
 	 */
-	public NBCException(Issue __i)
+	public BCException(Issue __i)
 	{
 		super(__i);
 	}
@@ -37,7 +37,7 @@ public class NBCException
 	 * @param __msg The exception message.
 	 * @since 2016/05/11
 	 */
-	public NBCException(Issue __i, String __msg)
+	public BCException(Issue __i, String __msg)
 	{
 		super(__i, __msg);
 	}
@@ -49,7 +49,7 @@ public class NBCException
 	 * @param __c The cause.
 	 * @since 2016/05/11
 	 */
-	public NBCException(Issue __i, String __msg, Throwable __c)
+	public BCException(Issue __i, String __msg, Throwable __c)
 	{
 		super(__i, __msg, __c);
 	}
@@ -60,7 +60,7 @@ public class NBCException
 	 * @param __c The cause of the exception.
 	 * @since 2016/05/11
 	 */
-	public NBCException(Issue __i, Throwable __c)
+	public BCException(Issue __i, Throwable __c)
 	{
 		super(__i, __c);
 	}

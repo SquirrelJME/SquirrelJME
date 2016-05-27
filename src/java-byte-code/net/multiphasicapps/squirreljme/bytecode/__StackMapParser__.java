@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.bytecode;
+package net.multiphasicapps.squirreljme.bytecode;
 
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.narf.classinterface.NCIByteBuffer;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
+import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.NCIMethod;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
@@ -37,10 +37,10 @@ class __StackMapParser__
 	protected final NCIByteBuffer in;
 	
 	/** The owning code attribute. */
-	protected final NBCByteCode code;
+	protected final BCByteCode code;
 	
 	/** The output verification map. */
-	protected final Map<Integer, NBCStateVerification> outputmap =
+	protected final Map<Integer, BCStateVerification> outputmap =
 		new HashMap<>();
 	
 	/**
@@ -52,7 +52,7 @@ class __StackMapParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	__StackMapParser__(boolean __m, NCIByteBuffer __in, NBCByteCode __code)
+	__StackMapParser__(boolean __m, NCIByteBuffer __in, BCByteCode __code)
 		throws NullPointerException
 	{
 		// Check
@@ -73,9 +73,9 @@ class __StackMapParser__
 	 * @return The result of verification.
 	 * @since 2016/05/12
 	 */
-	public Map<Integer, NBCStateVerification> result()
+	public Map<Integer, BCStateVerification> result()
 	{
-		return UnmodifiableMap.<Integer, NBCStateVerification>of(outputmap);
+		return UnmodifiableMap.<Integer, BCStateVerification>of(outputmap);
 	}
 }
 

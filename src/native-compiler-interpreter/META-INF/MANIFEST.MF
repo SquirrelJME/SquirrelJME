@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: javame-cldc-full, native-compiler,
  class-interface-standard,
  native-compiler-program,
  native-compiler-codeparse,
- native-compiler-byte-code
+ java-byte-code
 X-SquirrelJME-Error: AN
 Main-Class: net.multiphasicapps.narf.interpreter.Main
 LIBlet-Title: Native Compiler Interpreter
