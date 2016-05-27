@@ -69,3 +69,34 @@ initializes the interpreter using said factory.
 Also the path separator could support multiple characters, just use `indexOf`
 for strings for splitting.
 
+## 14:23
+
+The question is, how permissive are the magical kernel calls to be? I could
+check the permissions and such in the kernel. However there may be some cases
+where inline assembly must be generated and such for something to be performed.
+So that the native compiler does not help generate code which contains native
+code which could be used for exploitation. Actually, a way to prevent this is
+that before assembly is executed, there is a check to see if code is running
+in kernel mode (or as the kernel process). So basically before the raw
+assembly, there will be a condition and a branch. One thing to consider however
+is that assembly code might be needed in cases where the kernel has to do
+something. The main library for stuff such as using system calls or getting the
+class type of a class would potentially require assembly code. So ideally I can
+perform the same thing. If raw assembly is used and a point is a jump target
+then the check would be performed again. However, specific access to objects
+could be handled by the kernel as a system call anyway. So say for example if
+`java.lang.Object` wants the identity hash code for an object, the assembly
+can just create a system call to obtain it. That system call jumps to the
+kernel which is permitted to use assembly code. While in the interpreter, there
+would be no native assembly so the magical stuff is handled by the interpreter
+engine. There would also have to be a means of having a standard raw access
+mechanism that can be used by drivers to access block devices for example. I
+could also have a mapped region which is simulated as a `byte` array for
+example. So that would mean for any kind of arrays, there is the reference
+which specifies the class type and the array length. However, the actual array
+data is elsewhere in memory as another block and the array just points to that
+data. So if that data is raw memory, this would provide a safe means for
+native processes to access areas of memory. This would also enable the drivers
+and such to operate without resorting to `ByteBuffer` magic (even though that
+has no mapping mechanism anyway).
+
