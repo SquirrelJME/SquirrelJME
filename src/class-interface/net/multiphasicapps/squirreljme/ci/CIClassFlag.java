@@ -8,12 +8,41 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * These are flags which modify how a class is accessed and is behaved.
+ *
+ * @since 2016/04/23
+ */
+public enum CIClassFlag
+	implements CIFlag
+{
+	/** Public access. */
+	PUBLIC,
+	
+	/** Final. */
+	FINAL,
+	
+	/** Super. */
+	SUPER,
+	
+	/** Interface. */
+	INTERFACE,
+	
+	/** Abstract. */
+	ABSTRACT,
+	
+	/** Synthetic. */
+	SYNTHETIC,
+	
+	/** Annotation. */
+	ANNOTATION,
+	
+	/** Enumeration. */
+	ENUM,
+	
+	/** End. */
+	;
+}
 

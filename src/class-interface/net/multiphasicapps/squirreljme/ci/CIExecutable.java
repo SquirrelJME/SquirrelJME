@@ -8,12 +8,22 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * This interface is used for interfaces and classes which implement executable
+ * code for a single method.
+ *
+ * @since 2016/05/20
+ */
+public interface CIExecutable
+{
+	/**
+	 * Returns the method which owns this native code.
+	 *
+	 * @return The containing method.
+	 * @since 2016/05/20
+	 */
+	public abstract CIMethod method();
+}
 

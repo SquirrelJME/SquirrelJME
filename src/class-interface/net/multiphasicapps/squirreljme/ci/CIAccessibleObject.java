@@ -8,12 +8,30 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * This describes objects which .
+ *
+ * @since 2016/05/12
+ */
+public interface CIAccessibleObject
+{
+	/**
+	 * Returns flags which are appropriate for access checking.
+	 *
+	 * @return Flags which are capable of being access checked.
+	 * @since 2016/05/12
+	 */
+	public abstract CIAccessibleFlags flags();
+	
+	/**
+	 * Returns the class which contains this accessible object or {@code this}
+	 * if this is a class.
+	 *
+	 * @return The containing class or {@code this} if this is a class.
+	 * @since 2016/05/12
+	 */
+	public abstract CIClass outerClass();
+}
 

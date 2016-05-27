@@ -8,12 +8,16 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * This interface represents native code which may be attached to a method in
+ * a class.
+ *
+ * @since 2016/05/20
+ */
+public interface CINativeCode
+	extends CIExecutable
+{
+}
 

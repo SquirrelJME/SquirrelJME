@@ -8,12 +8,53 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * DESCRIBE THIS.
+ *
+ * @since 2016/04/23
+ */
+public enum CIMethodFlag
+	implements CIMemberFlag
+{
+	/** Public method. */
+	PUBLIC,
+	
+	/** Private method. */
+	PRIVATE,
+	
+	/** Protected method. */
+	PROTECTED,
+	
+	/** Static method. */
+	STATIC,
+	
+	/** Final method. */
+	FINAL,
+	
+	/** Synchronized method. */
+	SYNCHRONIZED,
+	
+	/** Bridge method. */
+	BRIDGE,
+	
+	/** Variable argument method. */
+	VARARGS,
+	
+	/** Native method. */
+	NATIVE,
+	
+	/** Abstract method. */
+	ABSTRACT,
+	
+	/** Strict floating point method. */
+	STRICT,
+	
+	/** Synthetic method. */
+	SYNTHETIC,
+	
+	/** End. */
+	;
+}
 

@@ -8,12 +8,44 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * These are flags which are associated with class fields.
+ *
+ * @since 2016/04/23
+ */
+public enum CIFieldFlag
+	implements CIMemberFlag
+{
+	/** Public field. */
+	PUBLIC,
+	
+	/** Private field. */
+	PRIVATE,
+	
+	/** Protected field. */
+	PROTECTED,
+	
+	/** Static field. */
+	STATIC,
+	
+	/** Final field. */
+	FINAL,
+	
+	/** Volatile field. */
+	VOLATILE,
+	
+	/** Transient field. */
+	TRANSIENT,
+	
+	/** Synthetic field. */
+	SYNTHETIC,
+	
+	/** Enumeration. */
+	ENUM,
+	
+	/** End. */
+	;
+}
 

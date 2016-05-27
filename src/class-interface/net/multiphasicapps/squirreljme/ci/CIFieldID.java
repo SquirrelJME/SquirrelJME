@@ -8,12 +8,29 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
+
+/**
+ * This identifies a field by its name and type.
+ *
+ * @since 2016/04/22
+ */
+public final class CIFieldID
+	extends CIMemberID<FieldSymbol>
+{
+	/**
+	 * Initializes the field identifer.
+	 *
+	 * @param __n The name of this field.
+	 * @param __t The type that the field is.
+	 * @since 2016/04/22
+	 */
+	public CIFieldID(IdentifierSymbol __n, FieldSymbol __t)
+	{
+		super(__n, __t);
+	}
+}
 

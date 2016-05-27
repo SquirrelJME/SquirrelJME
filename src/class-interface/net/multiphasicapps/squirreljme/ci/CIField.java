@@ -8,12 +8,24 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+import net.multiphasicapps.descriptors.FieldSymbol;
+
+/**
+ * This represents a field.
+ *
+ * @since 2016/04/22
+ */
+public interface CIField
+	extends CIMember<CIFieldID, CIFieldFlags>, CIAccessibleObject
+{
+	/**
+	 * Returns the constant value of this field.
+	 *
+	 * @return The field constant value or {@code null} if there is none.
+	 * @since 2016/04/26
+	 */
+	public abstract Object constantValue();
+}
 

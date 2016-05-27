@@ -8,12 +8,21 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * This interface is used to flag the types used for flags.
+ *
+ * @since 2016/04/23
+ */
+public interface CIFlag
+{
+	/**
+	 * Returns the flag ordinal.
+	 *
+	 * @return The ordinal of the flag.
+	 * @since 2016/04/23
+	 */
+	public abstract int ordinal();
+}
 

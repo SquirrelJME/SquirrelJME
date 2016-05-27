@@ -8,12 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * This is a flagging interface for flags which are associated with members.
+ *
+ * @since 2016/04/23
+ */
+public interface CIMemberFlag
+	extends CIFlag
+{
+}
 

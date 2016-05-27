@@ -8,12 +8,21 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains the class library interface which is used by the compiler to
- * locate classes and obtain method code and such.
- *
- * @since 2016/04/20
- */
-
 package net.multiphasicapps.squirreljme.ci;
+
+/**
+ * This interface is used to represent constant pool entries.
+ *
+ * @since 2016/04/24
+ */
+public interface CIPoolEntry
+{
+	/**
+	 * Returns the tag of the entry.
+	 *
+	 * @return The constant pool tag.
+	 * @since 2016/04/24
+	 */
+	public abstract CIPoolTag tag();
+}
 
