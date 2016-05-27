@@ -46,3 +46,9 @@ interpreter it initialized, it will setup a `ClassPath` and then give that to
 the kernel to be executed and such. The kernel implementation would then take
 it and create a stand-alone interpreter instance which is linked to the kernel.
 
+## 10:58
+
+I could also remove the old console and the IPC UI since due to the changes in
+the UI code and my future potential changes, they no longer compile properly
+or even fit with the current code base.
+
