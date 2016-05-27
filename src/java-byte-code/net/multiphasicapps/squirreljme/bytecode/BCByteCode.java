@@ -26,7 +26,6 @@ import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIClassFlags;
 import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
 import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CILookup;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIPool;
 import net.multiphasicapps.util.empty.EmptyMap;
@@ -43,9 +42,6 @@ public final class BCByteCode
 {
 	/** The containing method. */
 	protected final CIMethod method;
-	
-	/** The lookup for other classes (and fields/methods). */
-	protected final CILookup lookup;
 	
 	/** The code attribute. */
 	protected final CICodeAttribute attribute;
@@ -72,15 +68,14 @@ public final class BCByteCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	public BCByteCode(CILookup __lu, CIMethod __m)
+	public BCByteCode(CIMethod __m)
 		throws NullPointerException
 	{
 		// Check
-		if (__lu == null || __m == null)
+		if (__m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.lookup = __lu;
 		this.method = __m;
 		
 		// Extract code data
@@ -139,20 +134,22 @@ public final class BCByteCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
+	@Deprecated
 	public final boolean canAccess(CIAccessibleObject __ao)
 		throws BCException, NullPointerException
 	{
 		// Could fail
 		try
 		{
-			return lookup.canAccess(this.method, __ao);
+			throw new Error("TODO");
+			/*return lookup.canAccess(this.method, __ao);*/
 		}
 		
 		// {@squirreljme.error AX11 Could not check the access of an object to
 		// another.}
 		catch (CIException e)
 		{
-			throw new BCException(BCException.Issue.ACCESS_ERROR, "AX11", e);
+			throw new BCException("AX11", e);
 		}
 	}
 	
@@ -236,17 +233,6 @@ public final class BCByteCode
 		
 		// Directly represented
 		return pp[__l];
-	}
-	
-	/**
-	 * Returns the class interface lookup.
-	 *
-	 * @return The lookup for classes.
-	 * @since 2016/05/12
-	 */
-	public CILookup lookup()
-	{
-		return this.lookup;
 	}
 	
 	/**

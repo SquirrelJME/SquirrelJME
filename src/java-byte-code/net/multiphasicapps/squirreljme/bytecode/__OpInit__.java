@@ -17,7 +17,6 @@ import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIClassFlags;
 import net.multiphasicapps.squirreljme.ci.CIClassReference;
-import net.multiphasicapps.squirreljme.ci.CILookup;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodReference;
 import net.multiphasicapps.squirreljme.ci.CIPool;
@@ -55,15 +54,13 @@ class __OpInit__
 		// {@squirreljme.error AX0t Stack underflow duplicating top-most
 		// stack entry.}
 		if (top <= 0)
-			throw new BCException(BCException.Issue.STACK_UNDERFLOW,
-				"AX0t");
+			throw new BCException("AX0t");
 		
 		// {@squirreljme.error AX0u Cannot duplicate wide types. (The top most
 		// entry)}
 		BCVariableType vt = stack.get(top - 1);
 		if (vt.isWide() || vt == BCVariableType.TOP)
-			throw new BCException(BCException.Issue.INCORRECT_STACK,
-				String.format("AX0u %s", vt));
+			throw new BCException(String.format("AX0u %s", vt));
 		
 		// Add it to the pop
 		List<BCVariableType> pops = __id.setStackPop(vt);
@@ -102,16 +99,16 @@ class __OpInit__
 		// {@squirreljme.error AX0x Invocation of an interface method does not
 		// refer to the interface method reference. (The method reference)}
 		if (__it == BCInvokeType.INTERFACE && !ref.isInterface())
-			throw new BCException(BCException.Issue.NOT_INTERFACE_METHOD,
-				String.format("AX0x %s", ref));
+			throw new BCException(String.format("AX0x %s", ref));
 		
 		// {@squirreljme.error AX10 The specified method could not be located.
 		// (The method reference)}
+		throw new Error("TODO");
+		/*
 		CILookup look = __id.lookup();
 		CIMethod m = look.lookupMethod(ref);
 		if (m == null)
-			throw new BCException(BCException.Issue.MISSING_METHOD,
-				String.format("AX10 %s", ref));
+			throw new BCException(String.format("AX10 %s", ref));
 		
 		// Get the containing class
 		CIClass ncl = m.outerClass();
@@ -119,10 +116,9 @@ class __OpInit__
 		// {@squirreljme.error AX0z Cannot access the class which was
 		// referenced for a method invocation. (The method reference)}
 		if (!__id.canAccess(ncl))
-			throw new BCException(BCException.Issue.CANNOT_ACCESS_CLASS,
-				String.format("AX0z %s", ref));
+			throw new BCException(String.format("AX0z %s", ref));
 		
-		throw new Error("TODO");
+		throw new Error("TODO");*/
 	}
 	
 	/**
@@ -148,22 +144,19 @@ class __OpInit__
 		// {@squirreljme.error AX0a Byte code refers to a class to be
 		// allocated, however it does not exist. (The class name)}
 		if (ncl == null)
-			throw new BCException(BCException.Issue.MISSING_CLASS,
-				String.format("AX0a %s", ref));
+			throw new BCException(String.format("AX0a %s", ref));
 		
 		// {@squirreljme.error AX0b The byte code would have attempted to
 		// allocate a class which was either abstract or an interface.
 		// (The class name; The class flags)}
 		CIClassFlags fl = ncl.flags();
 		if (fl.isAbstract() || fl.isInterface())
-			throw new BCException(BCException.Issue.INIT_ABSTRACT_CLASS,
-				String.format("AX0b %s %s", ref, fl));
+			throw new BCException(String.format("AX0b %s %s", ref, fl));
 		
 		// {@squirreljme.error AX0f The specified class cannot be accessed
 		// and cannot be allocated. (The class to access)}
 		if (!__id.canAccess(ncl))
-			throw new BCException(BCException.Issue.CANNOT_ACCESS_CLASS,
-				String.format("AX0f %s", ncl.thisName()));
+			throw new BCException(String.format("AX0f %s", ncl.thisName()));
 		
 		// A new object is pushed
 		__id.setStackPush(BCVariablePush.newObject());

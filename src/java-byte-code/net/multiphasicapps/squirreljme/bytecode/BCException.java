@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.bytecode;
 
-import net.multiphasicapps.narf.exception.NARFException;
-
 /**
  * This represents an exception which may be thrown if the Java byte code is
  * not valid or does not verify correctly.
@@ -19,16 +17,16 @@ import net.multiphasicapps.narf.exception.NARFException;
  * @since 2016/05/11
  */
 public class BCException
-	extends NARFException
+	extends RuntimeException
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
 	 * @since 2016/05/11
 	 */
-	public BCException(Issue __i)
+	public BCException()
 	{
-		super(__i);
+		super();
 	}
 	
 	/**
@@ -37,9 +35,9 @@ public class BCException
 	 * @param __msg The exception message.
 	 * @since 2016/05/11
 	 */
-	public BCException(Issue __i, String __msg)
+	public BCException(String __msg)
 	{
-		super(__i, __msg);
+		super(__msg);
 	}
 	
 	/**
@@ -49,9 +47,9 @@ public class BCException
 	 * @param __c The cause.
 	 * @since 2016/05/11
 	 */
-	public BCException(Issue __i, String __msg, Throwable __c)
+	public BCException(String __msg, Throwable __c)
 	{
-		super(__i, __msg, __c);
+		super(__msg, __c);
 	}
 	
 	/**
@@ -60,66 +58,9 @@ public class BCException
 	 * @param __c The cause of the exception.
 	 * @since 2016/05/11
 	 */
-	public BCException(Issue __i, Throwable __c)
+	public BCException(Throwable __c)
 	{
-		super(__i, __c);
-	}
-	
-	/**
-	 * This is the reason for failure.
-	 *
-	 * @since 2016/05/11
-	 */
-	public static enum Issue
-		implements BaseIssue
-	{
-		/** An operation is not valid. */
-		ILLEGAL_OPCODE,
-		
-		/** The stack overflows or underflows. */
-		STACK_OVERFLOW,
-		
-		/** Not enough local variables for method call. */
-		NOT_ENOUGH_LOCALS,
-		
-		/** The field type is not known. */
-		UNKNOWN_FIELD_TYPE,
-		
-		/** A reference was made to a class which does not exit. */
-		MISSING_CLASS,
-		
-		/** An attempt would be made to initialize an abstract class. */
-		INIT_ABSTRACT_CLASS,
-		
-		/** Accessible object has impossible access flags. */
-		ILLEGAL_ACCESS_FLAGS,
-		
-		/** A class eventually is a superclass of itself. */
-		CIRCULAR_EXTENDS,
-		
-		/** Cannot access the class. */
-		CANNOT_ACCESS_CLASS,
-		
-		/** The stack underflows. */
-		STACK_UNDERFLOW,
-		
-		/** The stack is not correct. */
-		INCORRECT_STACK,
-		
-		/** A local variable is not correct. */
-		ILLEGAL_LOCAL,
-		
-		/** The method to invoke is not an interface. */
-		NOT_INTERFACE_METHOD,
-		
-		/** The method could not be found. */
-		MISSING_METHOD,
-		
-		/** Could not check the specified access. */
-		ACCESS_ERROR,
-		
-		/** End. */
-		;
+		super(__c);
 	}
 }
 

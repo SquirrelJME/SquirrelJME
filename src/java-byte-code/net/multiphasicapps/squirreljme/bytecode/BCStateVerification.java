@@ -96,8 +96,8 @@ public final class BCStateVerification
 		// static?)}
 		catch (IndexOutOfBoundsException e)
 		{
-			throw new BCException(BCException.Issue.NOT_ENOUGH_LOCALS,
-				String.format("AX08 %s", desc, __m.flags().isStatic()), e);
+			throw new BCException(String.format("AX08 %s", desc,
+				__m.flags().isStatic()), e);
 		}
 	}
 	
@@ -164,23 +164,21 @@ public final class BCStateVerification
 			// derivation. (The source stack; The pop operations; The push
 			// operations)}
 			if (newtop < 0)
-				throw new BCException(BCException.Issue.STACK_UNDERFLOW,
-					String.format("AX0g %s %s %s", stack, so, su));
+				throw new BCException(String.format("AX0g %s %s %s", stack, so,
+					su));
 			
 			// {@squirreljme.error AX0i Unexpected type on stack while popping
 			// values. (The source stack; The pop operations)}
 			BCVariableType oops;
 			if ((oops = stack.get(newtop)) != vt)
-				throw new BCException(BCException.Issue.INCORRECT_STACK,
-					String.format("AX0i %s %s", stack, so));
+				throw new BCException(String.format("AX0i %s %s", stack, so));
 			
 			// {@squirreljme.error AX0j Expected top of long or double to
 			// follow a pop of long or double. (The source stack; The pop
 			// operations)}
 			if (iswide &&
 				(oops = stack.get(newtop + 1)) != BCVariableType.TOP)
-				throw new BCException(BCException.Issue.INCORRECT_STACK,
-					String.format("AX0j %s %s", stack, so));
+				throw new BCException(String.format("AX0j %s %s", stack, so));
 		}
 		
 		// Remember the base bottom
@@ -198,8 +196,8 @@ public final class BCStateVerification
 			// derivation. (The source stack; The pop operations; The push
 			// operations})
 			if (newtop > maxstack)
-				throw new BCException(BCException.Issue.STACK_OVERFLOW,
-					String.format("AX0h %s %s %s", stack, so, su));
+				throw new BCException(String.format("AX0h %s %s %s", stack, so,
+					su));
 		}
 		
 		// Check local variable read/writes
@@ -214,8 +212,8 @@ public final class BCStateVerification
 			// local variables; The variables accessed; The current variable)}
 			int dx = a.getIndex();
 			if (dx < 0 || (dx + (iswide ? 1 : 0)) >= maxlocals)
-				throw new BCException(BCException.Issue.ILLEGAL_LOCAL,
-					String.format("AX0k %s %s", locals, la, a));
+				throw new BCException(String.format("AX0k %s %s", locals, la,
+					a));
 			
 			// If read from, check the type
 			if (a.isRead())
@@ -227,9 +225,8 @@ public final class BCStateVerification
 				// expected type)}
 				BCVariableType was = locals.get(dx);
 				if (was != vt)
-					throw new BCException(BCException.Issue.ILLEGAL_LOCAL,
-						String.format("AX0l %s %s %s %s", locals, la, a,
-						was, vt));
+					throw new BCException(String.format("AX0l %s %s %s %s",
+						locals, la, a, was, vt));
 				
 				// If wide, the next must be top
 				if (vt.isWide())
@@ -241,8 +238,7 @@ public final class BCStateVerification
 					// type that it was; The expected type)}
 					was = locals.get(dx + 1);
 					if (was != BCVariableType.TOP)
-						throw new BCException(BCException.Issue.
-							ILLEGAL_LOCAL, String.format("AX0m %s %s %s %s",
+						throw new BCException(String.format("AX0m %s %s %s %s",
 							locals, la, a, was, vt));
 				}
 			}
@@ -392,8 +388,7 @@ public final class BCStateVerification
 			// or underflows the number of stack entries. (The position of the
 			// top of the stack; The number of entries on the stack)}
 			if (__top < 0 || __top > __n)
-				throw new BCException(BCException.Issue.STACK_OVERFLOW,
-					String.format("AX06 %d %d", __top, __n));
+				throw new BCException(String.format("AX06 %d %d", __top, __n));
 			
 			// Set
 			top = __top;

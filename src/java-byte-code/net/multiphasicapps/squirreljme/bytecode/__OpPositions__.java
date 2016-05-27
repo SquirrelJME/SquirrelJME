@@ -63,8 +63,7 @@ final class __OpPositions__
 			// {@squirreljme.error AX04 The size of the current operation is
 			// zero or negative. (The opcode position; The size of it)}
 			if (sz <= 0)
-				throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
-					String.format("AX04 %d %d", i, sz));
+				throw new BCException(String.format("AX04 %d %d", i, sz));
 			
 			// Current operation is here
 			build[a++] = i;
@@ -142,8 +141,8 @@ final class __OpPositions__
 				// value. (The position of the current operation; The
 				// low byte; The high byte)}
 				if (lo > hi)
-					throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
-						String.format("AX01 %d %d %d", __pos, lo, hi));
+					throw new BCException(String.format("AX01 %d %d %d", __pos,
+						lo, hi));
 				
 				// Calculate the size
 				return (ppos - __pos) + 12 + (4 * ((hi - lo) + 1));
@@ -162,8 +161,8 @@ final class __OpPositions__
 				// has a zero or negative pair count. (The position of the
 				// current operation; The pair count)}
 				if (np <= 0)
-					throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
-						String.format("AX02 %d %d", __pos, np));
+					throw new BCException(String.format("AX02 %d %d", __pos,
+						np));
 				
 				// Calculate the size
 				return (ppos - __pos) + 8 + (8 * np);
@@ -212,8 +211,7 @@ final class __OpPositions__
 
 			// {@squirreljme.error AX07 Method byte code contains an illegal
 			// opcode. (The opcode)}
-			throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
-				String.format("AX07 %d", opcode));
+			throw new BCException(String.format("AX07 %d", opcode));
 		}
 		
 		// Out of bounds instruction
@@ -221,8 +219,7 @@ final class __OpPositions__
 		{
 			// {@squirreljme.error AX03 While decoding an operation, the bounds
 			// of the program were exceeded. (The current opcode)}
-			throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
-				String.format("AX03 %d", opcode), e);
+			throw new BCException(String.format("AX03 %d", opcode), e);
 		}
 	}
 }

@@ -124,8 +124,8 @@ public final class BCOperation
 				// specified position is not valid or is not yet supported.
 				// (The logical instruction position; The operation code)}
 			default:
-				throw new BCException(BCException.Issue.ILLEGAL_OPCODE,
-					String.format("AX05 %d %d", __lp, opcode));
+				throw new BCException(String.format("AX05 %d %d", __lp,
+					opcode));
 		}
 		
 		// Set

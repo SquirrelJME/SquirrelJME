@@ -18,7 +18,6 @@ import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIClassFlags;
 import net.multiphasicapps.squirreljme.ci.CIClassReference;
-import net.multiphasicapps.squirreljme.ci.CILookup;
 import net.multiphasicapps.squirreljme.ci.CIPool;
 import net.multiphasicapps.util.empty.EmptyList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
@@ -160,26 +159,17 @@ final class __OpInitData__
 	}
 	
 	/**
-	 * Returns the class lookup.
-	 *
-	 * @return The lookup for classes.
-	 * @since 2016/05/14
-	 */
-	public CILookup lookup()
-	{
-		return this.operation.owner().lookup();
-	}
-	
-	/**
 	 * Finds the class by the given class name.
 	 *
 	 * @param __cl The class to find.
 	 * @return The discovered class or {@code null} if not found.
 	 * @since 2016/05/13
 	 */
+	@Deprecated
 	public CIClass lookup(ClassNameSymbol __cl)
 	{
-		return lookup().lookupClass(__cl);
+		throw new Error("TODO");
+		/*return lookup().lookupClass(__cl);*/
 	}
 	
 	/**

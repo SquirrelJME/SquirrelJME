@@ -105,8 +105,7 @@ public enum BCVariableType
 			default:
 				// {@squirreljme.error AX09 The specified field symbol
 				// cannot be mapped to a variable type. (The field symbol)}
-				throw new BCException(BCException.Issue.UNKNOWN_FIELD_TYPE,
-					String.format("AX09 %s", __sym));
+				throw new BCException(String.format("AX09 %s", __sym));
 		}
 	}
 }
