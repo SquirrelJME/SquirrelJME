@@ -3,7 +3,7 @@ X-SquirrelJME-Name: native-compiler-byte-code
 X-SquirrelJME-UUID: d2e4c743-4047-4e20-8aaf-dff98bd9981a
 X-SquirrelJME-Depends: javame-cldc-compact,
   native-compiler-exception,
-  native-compiler-class-interface,
+  class-interface,
   extra-util-empty, extra-util-singleton
 X-SquirrelJME-Error: AX
 LIBlet-Title: Java Byte Code Representation

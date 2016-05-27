@@ -3,7 +3,7 @@ X-SquirrelJME-Name: native-compiler-program
 X-SquirrelJME-UUID: a047f5d4-7d56-41ff-bea0-50c236d1f016
 X-SquirrelJME-Depends: javame-cldc-compact,
  native-compiler-exception,
- native-compiler-class-interface
+ class-interface
 X-SquirrelJME-Error: AW
 LIBlet-Title: NARF SSA Representation
 LIBlet-Vendor: Steven Gawroriski
