@@ -47,6 +47,17 @@ public class JVMTestKernel
 	 * @since 2016/05/27
 	 */
 	@Override
+	protected void bootFinishRunner()
+	{
+		// Call super code first
+		super.bootFinishRunner();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/27
+	 */
+	@Override
 	public void quitKernel()
 	{
 		System.exit(0);

@@ -79,7 +79,25 @@ public class Main
 		// Create test kernel
 		JVMTestKernel jtk = new JVMTestKernel(terp);
 		
-		throw new Error("TODO");
+		// Block until all workers are terminated
+		for (;;)
+		{
+			// Kernel loop
+			try
+			{
+				jtk.untilProcessless();
+		
+				// Would normally terminate
+				return;
+			}
+		
+			// Interrupted, yield and retry
+			catch (InterruptedException e)
+			{
+				Thread.yield();
+			}
+		}
+		
 		/*
 		// Force arguments to exist
 		if (__args == null)

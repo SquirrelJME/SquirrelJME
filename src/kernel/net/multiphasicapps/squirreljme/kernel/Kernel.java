@@ -290,18 +290,27 @@ public abstract class Kernel
 			{
 				// Go through all processes
 				Iterator<KernelProcess> it = processes.iterator();
+				boolean nonkhit = false;
 				while (it.hasNext())
 				{
 					KernelProcess p = it.next();
+					
+					// Ignore the process if it is the kernel
+					if (p.isKernelProcess())
+						continue;
 					
 					// If all threads in the process are dead, then remove
 					// the process.
 					if (!p.areAnyThreadsAlive())
 						it.remove();
+					
+					// Non-kernel process hit
+					else
+						nonkhit = true;
 				}
 				
 				// Empty?
-				if (processes.isEmpty())
+				if (processes.isEmpty() || !nonkhit)
 				{
 					// Trace finish
 					this._trace.noMoreProcesses();
