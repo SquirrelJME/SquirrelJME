@@ -97,8 +97,8 @@ public final class CICodeAttribute
 		int codelen = abuffer.readInt(4);
 		this.codelen = codelen;
 		if (codelen < 0 || codelen > MAXIMUM_CODE_LENGTH)
-			throw new CIException(CIException.Issue.LARGE_CODE,
-				String.format("AO0y %s %d", method.nameAndType(), codelen));
+			throw new CIException(String.format("AO0y %s %d",
+				method.nameAndType(), codelen));
 		
 		// Setup code buffer
 		cbuffer = abuffer.window(8, codelen);
@@ -127,8 +127,7 @@ public final class CICodeAttribute
 			// {@squirreljme.error AO02 An attribute in the code attribute
 			// has a size larger than 2GiB. (The length)}
 			if (len < 0)
-				throw new CIException(CIException.Issue.LARGE_ATTRIBUTE,
-					String.format("AO02 %d", len));
+				throw new CIException(String.format("AO02 %d", len));
 			
 			// New stack map?
 			if (attr.equals("StackMapTable"))
@@ -137,8 +136,7 @@ public final class CICodeAttribute
 				// appears multiple times, there must only be a single
 				// attribute. (The attribute name)}
 				if (snew != null)
-					throw new CIException(CIException.Issue.DUPLICATE_ATTR,
-						String.format("AO07 %s", attr));
+					throw new CIException(String.format("AO07 %s", attr));
 				
 				// Create window
 				snew = abuffer.window(pp + 6, len);
@@ -151,8 +149,7 @@ public final class CICodeAttribute
 				// appears multiple times, there must only be a single
 				// attribute. (The attribute name)}
 				if (sold != null)
-					throw new CIException(CIException.Issue.DUPLICATE_ATTR,
-						String.format("AO08 %s", attr));
+					throw new CIException(String.format("AO08 %s", attr));
 				
 				// Create window
 				sold = abuffer.window(pp + 6, len);

@@ -52,3 +52,8 @@ I could also remove the old console and the IPC UI since due to the changes in
 the UI code and my future potential changes, they no longer compile properly
 or even fit with the current code base.
 
+## 11:02
+
+Also going to remove the issue codes from the exceptions which came from the
+NARF code.
+

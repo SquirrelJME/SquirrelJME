@@ -103,8 +103,7 @@ public final class CIPool
 		{
 			// {@squirreljme.error AO1h The entry at the given index is not of
 			// the expected type. (The index; The expected type)}
-			throw new CIException(CIException.Issue.WRONG_CONSTANT,
-				String.format("AO1h %d %s", __i, __t), e);
+			throw new CIException(String.format("AO1h %d %s", __i, __t), e);
 		}
 	}
 	
@@ -127,8 +126,7 @@ public final class CIPool
 		// {@squirreljme.error AO1i The entry at the given index is null.
 		// (The index; The expected type)}
 		if (rv == null)
-			throw new CIException(CIException.Issue.WRONG_CONSTANT,
-				String.format("AO1i %d %s", __i, __t));
+			throw new CIException(String.format("AO1i %d %s", __i, __t));
 		
 		// Return it
 		return rv;

@@ -168,15 +168,13 @@ public class CIClassFlags
 			// {@squirreljme.error AO03 An interface must also be abstract.
 			// (The class flags}}
 			if (!isAbstract())
-				throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-					String.format("AO03 %s", this));
+				throw new CIException(String.format("AO03 %s", this));
 			
 			// {@squirreljme.error AO04 An interface cannot be {@code final} or
 			// {@code enum} and it must not have the special flag set. (The
 			// class flags)}
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-					String.format("AO04 %s", this));
+				throw new CIException(String.format("AO04 %s", this));
 		}
 		
 		// Normal class
@@ -185,14 +183,12 @@ public class CIClassFlags
 			// {@squirreljme.error AO05 Annotations must be interfaces. (The
 			// class flags)}
 			if (isAnnotation())
-				throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-					String.format("AO05 %s", this));
+				throw new CIException(String.format("AO05 %s", this));
 				
 			// {@squirreljme.error AO06 A class cannot be both {@code abstract}
 			// and {@code final}. (The class flags)}
 			if (isAbstract() && isFinal())
-				throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-					String.format("AO06 %s", this));
+				throw new CIException(String.format("AO06 %s", this));
 		}
 	}
 }

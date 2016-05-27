@@ -158,8 +158,7 @@ public final class CIFieldFlags
 		// {@squirreljme.error AO0r A field cannot be both {@code final} and
 		// {@code volatile}. (The field flags)}
 		if (isFinal() && isVolatile())
-			throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-				String.format("AO0r %s", this));
+			throw new CIException(String.format("AO0r %s", this));
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.flags().isInterface())
@@ -178,8 +177,7 @@ public final class CIFieldFlags
 				// {@squirreljme.error AO1t Flags for interface field has an
 				// incorrect set of flags. (The field flags)}
 				if (must != has && !maybe)
-					throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-						String.format("AO1t %s", this));
+					throw new CIException(String.format("AO1t %s", this));
 			}
 	}
 }

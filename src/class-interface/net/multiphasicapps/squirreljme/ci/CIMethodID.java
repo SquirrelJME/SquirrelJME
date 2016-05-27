@@ -37,8 +37,7 @@ public class CIMethodID
 		// {@squirreljme.error AO20 The specified name is not a valid name for
 		// a method. (The name of the method)}
 		if (!name.isValidMethod())
-			throw new CIException(CIException.Issue.INVALID_METHOD_NAME,
-				String.format("AO20", __n));
+			throw new CIException(String.format("AO20", __n));
 	}
 }
 

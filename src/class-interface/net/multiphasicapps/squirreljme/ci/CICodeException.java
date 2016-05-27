@@ -56,8 +56,7 @@ public final class CICodeException
 		// the end is at or before the start. (The start address; The end
 		// address; The handler address)}
 		if (__spc < 0 || __epc < 0 || __hpc < 0 || __epc <= __spc)
-			throw new CIException(CIException.Issue.
-				INVALID_EXCEPTION_ADDRESS, String.format("AO01 %d %d %d",
+			throw new CIException(String.format("AO01 %d %d %d",
 				__spc, __epc, __hpc));
 		
 		// Set

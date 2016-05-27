@@ -189,7 +189,7 @@ public final class CIMethodFlags
 		// {@squirreljme.error AO0z Native methods are not supported in Java ME
 		// and as such, methods must not be {@code native}.}
 		if (isNative())
-			throw new CIException(CIException.Issue.NATIVE_METHOD, "AO0z");
+			throw new CIException("AO0z");
 		
 		// {@squirreljme.error AO10 An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
@@ -198,8 +198,7 @@ public final class CIMethodFlags
 		if (isAbstract())
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
-				throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-					String.format("AO10 %s", this));
+				throw new CIException(String.format("AO10 %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.flags().isInterface())
@@ -219,8 +218,7 @@ public final class CIMethodFlags
 				// {@squirreljme.error AO1x Flags for interface method has an
 				// incorrect set of flags. (The method flags)}
 				if (must != has && !maybe)
-					throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-						String.format("AO1x %s", this));
+					throw new CIException(String.format("AO1x %s", this));
 			}
 	}
 }

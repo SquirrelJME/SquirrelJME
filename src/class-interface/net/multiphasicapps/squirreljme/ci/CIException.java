@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.ci;
 
-import net.multiphasicapps.narf.exception.NARFException;
-
 /**
  * This is thrown when a class is attempted to be read however it cannot be
  * read properly because of a disk error or it is malformed.
@@ -19,16 +17,15 @@ import net.multiphasicapps.narf.exception.NARFException;
  * @since 2016/04/21
  */
 public class CIException
-	extends NARFException
+	extends RuntimeException
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
 	 * @since 2016/04/21
 	 */
-	public CIException(Issue __i)
+	public CIException()
 	{
-		super(__i);
 	}
 	
 	/**
@@ -37,9 +34,9 @@ public class CIException
 	 * @param __msg The exception message.
 	 * @since 2016/04/21
 	 */
-	public CIException(Issue __i, String __msg)
+	public CIException(String __msg)
 	{
-		super(__i, __msg);
+		super(__msg);
 	}
 	
 	/**
@@ -49,9 +46,9 @@ public class CIException
 	 * @param __c The cause.
 	 * @since 2016/04/21
 	 */
-	public CIException(Issue __i, String __msg, Throwable __c)
+	public CIException(String __msg, Throwable __c)
 	{
-		super(__i, __msg, __c);
+		super(__msg, __c);
 	}
 	
 	/**
@@ -60,129 +57,9 @@ public class CIException
 	 * @param __c The cause of the exception.
 	 * @since 2016/04/21
 	 */
-	public CIException(Issue __i, Throwable __c)
+	public CIException(Throwable __c)
 	{
-		super(__i, __c);
-	}
-	
-	/**
-	 * This represents 
-	 *
-	 * @since 2016/04/23
-	 */
-	public static enum Issue
-		implements BaseIssue
-	{
-		/** Unspecified issue. */
-		UNSPECIFIED,
-		
-		/** A class was not found. */
-		CLASS_NOT_FOUND,
-		
-		/** Class failed to be read. */
-		READ_ERROR,
-		
-		/** Illegal flags. */
-		ILLEGAL_FLAGS,
-		
-		/** Native method. */
-		NATIVE_METHOD,
-		
-		/** Illegal class magic number. */
-		BAD_MAGIC_NUMBER,
-		
-		/** The class version is not supported or correct. */
-		BAD_CLASS_VERSION,
-		
-		/** The constant pool has an invalid size. */
-		INVALID_POOL_SIZE,
-		
-		/** Illegal constant pool tag. */
-		ILLEGAL_TAG,
-		
-		/** Invokedynamic is used. */
-		INVOKEDYNAMIC,
-		
-		/** Illegal modified UTF-8 sequence. */
-		ILLEGAL_MUTF,
-		
-		/** A constant pool entry is not valid. */
-		ILLEGAL_CONSTANT,
-		
-		/** The wrong constant is here. */
-		WRONG_CONSTANT,
-		
-		/** The name of a class is not valid. */
-		BAD_CLASS_NAME,
-		
-		/** Expected the end of the class, however there is still data. */
-		NOT_EOC,
-		
-		/** Attribute length is negative. */
-		NEGATIVE_ATTRIBUTE,
-		
-		/** Field has multiple constant values. */
-		DOUBLE_CONST,
-		
-		/** The constant of a field is not valid. */
-		BAD_CONSTANT,
-		
-		/** The method has multiple code attributes. */
-		DOUBLE_CODE,
-		
-		/** Class has a duplicated field. */
-		DUPLICATE_FIELD,
-		
-		/** Class has a duplicated method. */
-		DUPLICATE_METHOD,
-		
-		/** Short read of the code attribute. */
-		SHORT_CODE,
-		
-		/** Abstract/Native method has code. */
-		ABSTRACT_CODE,
-		
-		/** Non-abstract/non-native method is missing code. */
-		MISSING_CODE,
-		
-		/** The name for a method is not valid. */
-		INVALID_METHOD_NAME,
-		
-		/** The amount of byte code is too large. */
-		LARGE_CODE,
-		
-		/** A given exception handler address it not valid. */
-		INVALID_EXCEPTION_ADDRESS,
-		
-		/** An attribute is quite large. */
-		LARGE_ATTRIBUTE,
-		
-		/** An attribute is illegally duplicated. */
-		DUPLICATE_ATTR,
-		
-		/** Class eventually extends itself. */
-		CIRCULAR_EXTENDS,
-		
-		/** A class is missing. */
-		MISSING_CLASS,
-		
-		/** Class or accessible object has illegal access flags. */
-		ILLEGAL_ACCESS_FLAGS,
-		
-		/** The object class has a superclass. */
-		OBJECT_HAS_SUPERCLASS,
-		
-		/** The non-Object class has no superclass. */
-		CLASS_NO_SUPERCLASS,
-		
-		/** Extends final class. */
-		EXTENDS_FINAL,
-		
-		/** Access to the given object is not permitted. */
-		ACCESS_DENIED,
-		
-		/** End. */
-		;
+		super(__c);
 	}
 }
 
