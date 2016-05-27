@@ -44,7 +44,7 @@ public abstract class JarClassUnitProvider
 		new Object();
 	
 	/** Mapping of class unit keys to actual class units. */
-	private final Map<String, Reference<__JarClassUnit__>> _cache =
+	private final Map<String, Reference<JarClassUnit>> _cache =
 		new HashMap<>();
 	
 	/**
@@ -69,24 +69,24 @@ public abstract class JarClassUnitProvider
 			Collection<String> keys = keyCollection();
 			
 			// The output array of JAR units
-			List<__JarClassUnit__> units = new LinkedList<>();
+			List<JarClassUnit> units = new LinkedList<>();
 			
 			// Go through the map and remove any collected references
-			Map<String, Reference<__JarClassUnit__>> cache = this._cache;
-			Iterator<Map.Entry<String, Reference<__JarClassUnit__>>> it =
+			Map<String, Reference<JarClassUnit>> cache = this._cache;
+			Iterator<Map.Entry<String, Reference<JarClassUnit>>> it =
 				cache.entrySet().iterator();
 			while (it.hasNext())
 			{
 				// Get key and value
-				Map.Entry<String, Reference<__JarClassUnit__>> e = it.next();
+				Map.Entry<String, Reference<JarClassUnit>> e = it.next();
 				String k = e.getKey();
-				Reference<__JarClassUnit__> v = e.getValue();
+				Reference<JarClassUnit> v = e.getValue();
 				
 				// In the target mapping?
 				boolean want = keys.contains(k);
 				
 				// If the reference was cleared, remove the key
-				__JarClassUnit__ ju;
+				JarClassUnit ju;
 				if (v == null || null == (ju = v.get()))
 					it.remove();
 				
@@ -100,14 +100,14 @@ public abstract class JarClassUnitProvider
 			for (String k : keys)
 				if (!cache.containsKey(k))
 				{
-					__JarClassUnit__ v = new __JarClassUnit__(this, k);
+					JarClassUnit v = new JarClassUnit(this, k);
 					units.add(v);
 					cache.put(k, new WeakReference<>(v));
 				}
 			
 			// Return the list as an array
-			return units.<__JarClassUnit__>toArray(
-				new __JarClassUnit__[units.size()]);
+			return units.<JarClassUnit>toArray(
+				new JarClassUnit[units.size()]);
 		}
 	}
 }

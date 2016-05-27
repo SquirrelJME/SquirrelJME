@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
  *
  * @since 2016/05/25
  */
-final class __JarClassUnit__
+public final class JarClassUnit
 	extends ClassUnit
 {
 	/** The provider for the class unit. */
@@ -37,7 +37,7 @@ final class __JarClassUnit__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/25
 	 */
-	public __JarClassUnit__(JarClassUnitProvider __jcup, String __k)
+	public JarClassUnit(JarClassUnitProvider __jcup, String __k)
 		throws NullPointerException
 	{
 		// Check
