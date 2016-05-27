@@ -100,3 +100,8 @@ native processes to access areas of memory. This would also enable the drivers
 and such to operate without resorting to `ByteBuffer` magic (even though that
 has no mapping mechanism anyway).
 
+## 14:42
+
+I also should move the magical code down to a much lower package where it is
+easier to find, but still reserved in a way.
+
