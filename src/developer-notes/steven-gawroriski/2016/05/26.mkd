@@ -49,3 +49,34 @@ main class). Additionally one that will always appear would be a custom launch
 which basically allows a user to input a class that has a main method to be
 started for example.
 
+## 19:32
+
+It somewhat feels like the UI code how it is will not work out quite too well.
+Everything is arbitrated through the manager and bounced off that. Component
+creation and linkage is done by the manager itself. Instead of using the
+manager to create components and such, they can just be `new`ed with the
+display manager to use. Then that has the appropriate communication with the
+native code and such. So all of the manager `createFoo` methods would be
+removed and the UI classes would be instantiated directly by code that uses it.
+I can however still use a similar model for cleanup and such which would not
+be affected. The instantiation of components would instead just be done in
+the UI fragments.
+
+## 19:38
+
+Another issue is the future shared state of display managers. Essentially with
+the current design, every program that runs would use the same exact display
+manager. Although there would be a memory reduced shared state, there would be
+a problem with separation.
+
+## 19:42
+
+So, there would be a display manager which could potentially run in the kernel
+space which is used by the launcher to run programs. Any vulnerability in the
+way the manager works and the IPC backends which clients would use to access
+the display would be quite bad. There still has to be a kind of integration
+between them however. For example, on limited systems where there is a single
+screen and all components must be laid out, multiple display managers would
+have to fight to stay around for the user. Some global resources such as
+system tray icons would have to cooperate in a native interface and such.
+
