@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,8 @@ import java.util.StringTokenizer;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
 import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
 import net.multiphasicapps.squirreljme.terp.pure.PureInterpreter;
 
@@ -175,6 +178,17 @@ public class Main
 		// {@squirreljme.error BC04 No main class was specified.}
 		if (pmain == null)
 			throw new IllegalArgumentException("BC04");
+		
+		// Load JAR classunit providers with all of the given 
+		int numcp = cp.size();
+		ClassUnitProvider[] provs = new ClassUnitProvider[numcp];
+		Iterator<String> cpit = cp.iterator();
+		for (int i = 0; i < numcp; i++)
+			provs[i] = new FSJarClassUnitProvider(Paths.get(cpit.next()));
+		cpit = null;
+		
+		if (true)
+			throw new Error("TODO");
 		
 		// Initialization may fail
 		JVMTestKernel jtk = null;
