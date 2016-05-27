@@ -75,6 +75,8 @@ public class TerpMethod
 	public Object program()
 		throws TerpException
 	{
+		throw new Error("TODO");
+		/*
 		// {@squirreljme.error AN0k Attempted to invoke an abstract method.
 		// (The method to invoke)}
 		if (flags().isAbstract())
@@ -128,6 +130,7 @@ public class TerpMethod
 			
 			return rv;
 		}
+		*/
 	}
 }
 

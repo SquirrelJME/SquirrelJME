@@ -29,10 +29,6 @@ public class TerpThread
 	/** Special thread? */
 	protected final boolean isspecial;
 	
-	/** The interpreter call stack. */
-	protected final Deque<TerpInterpreter> callstack =
-		new ArrayDeque<>();
-	
 	/**
 	 * Initializes the interpreter thread which maps a thread to the specified
 	 * thread. This is used for the method initalization since it needs a
@@ -105,6 +101,8 @@ public class TerpThread
 		if (__m == null || __args == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+		/*
 		// {@squirreljme.error AN0n Attempted to invoke a method which is
 		// across the context of a thread.}
 		if (core.thread(thread) != this)
@@ -151,6 +149,7 @@ public class TerpThread
 				throw new TerpException(this.core, TerpException.Issue.WRONG_STACK,
 					String.format("AN0p %s %s", terp, xi));
 		}
+		*/
 	}
 }
 
