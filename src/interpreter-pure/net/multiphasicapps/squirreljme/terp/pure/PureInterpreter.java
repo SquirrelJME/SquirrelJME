@@ -31,24 +31,6 @@ import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
 public class PureInterpreter
 	implements TerpInterpreter
 {
-	/** The code to be interpreted. */
-	protected final BCByteCode program;
-	
-	/** The code attribute used. */
-	protected final CICodeAttribute attribute;
-	
-	/** Local variable data. */
-	private final Object[] _locals;
-	
-	/** Stack variable data. */
-	private final Object[] _stack;
-	
-	/** The current instruction address. */
-	private volatile int _pcaddr;
-	
-	/** The top of the stack. */
-	private volatile int _top;
-	
 	/**
 	 * Initializes the interpreter which uses the direct byte code.
 	 *
@@ -58,24 +40,6 @@ public class PureInterpreter
 	public PureInterpreter()
 		throws NullPointerException
 	{
-		throw new Error("TODO");
-		/*
-		super(__t);
-		
-		// Check
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.program = __p;
-		CICodeAttribute attr;
-		this.attribute = (attr = __p.attribute());
-		
-		// Setup storage
-		this._top = 0;
-		this._locals = new Object[attr.maxLocals()];
-		this._stack = new Object[attr.maxStack()];
-		*/
 	}
 	
 	/**
