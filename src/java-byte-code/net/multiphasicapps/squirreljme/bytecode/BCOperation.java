@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
 
 /**
  * This represents a single operation in the byte code.
@@ -66,7 +66,7 @@ public final class BCOperation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	BCOperation(BCByteCode __bc, NCIByteBuffer __bb, int __lp)
+	BCOperation(BCByteCode __bc, CIByteBuffer __bb, int __lp)
 		throws NullPointerException
 	{
 		// Check

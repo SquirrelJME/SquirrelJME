@@ -13,13 +13,13 @@ package net.multiphasicapps.squirreljme.bytecode;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.ci.NCIAccessibleObject;
-import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
-import net.multiphasicapps.squirreljme.ci.NCIClass;
-import net.multiphasicapps.squirreljme.ci.NCIClassFlags;
-import net.multiphasicapps.squirreljme.ci.NCIClassReference;
-import net.multiphasicapps.squirreljme.ci.NCILookup;
-import net.multiphasicapps.squirreljme.ci.NCIPool;
+import net.multiphasicapps.squirreljme.ci.CIAccessibleObject;
+import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.ci.CILookup;
+import net.multiphasicapps.squirreljme.ci.CIPool;
 import net.multiphasicapps.util.empty.EmptyList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
@@ -75,7 +75,7 @@ final class __OpInitData__
 	 * @return The code buffer data.
 	 * @since 2016/05/13
 	 */
-	public NCIByteBuffer byteBuffer()
+	public CIByteBuffer byteBuffer()
 	{
 		return this.operation.owner().codeBuffer();
 	}
@@ -87,7 +87,7 @@ final class __OpInitData__
 	 * @return {@code true} if it can be accessed.
 	 * @since 2016/05/13
 	 */
-	public boolean canAccess(NCIAccessibleObject __ao)
+	public boolean canAccess(CIAccessibleObject __ao)
 	{
 		return this.operation.owner().canAccess(__ao);
 	}
@@ -165,7 +165,7 @@ final class __OpInitData__
 	 * @return The lookup for classes.
 	 * @since 2016/05/14
 	 */
-	public NCILookup lookup()
+	public CILookup lookup()
 	{
 		return this.operation.owner().lookup();
 	}
@@ -177,7 +177,7 @@ final class __OpInitData__
 	 * @return The discovered class or {@code null} if not found.
 	 * @since 2016/05/13
 	 */
-	public NCIClass lookup(ClassNameSymbol __cl)
+	public CIClass lookup(ClassNameSymbol __cl)
 	{
 		return lookup().lookupClass(__cl);
 	}
@@ -199,7 +199,7 @@ final class __OpInitData__
 	 * @return The constant pool of the byte code.
 	 * @since 2016/05/13
 	 */
-	public NCIPool pool()
+	public CIPool pool()
 	{
 		return this.operation.owner().constantPool();
 	}

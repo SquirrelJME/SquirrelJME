@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
-import net.multiphasicapps.squirreljme.ci.NCIMethod;
+import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
@@ -34,7 +34,7 @@ class __StackMapParser__
 	protected final boolean modern;
 	
 	/** The input source. */
-	protected final NCIByteBuffer in;
+	protected final CIByteBuffer in;
 	
 	/** The owning code attribute. */
 	protected final BCByteCode code;
@@ -52,7 +52,7 @@ class __StackMapParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	__StackMapParser__(boolean __m, NCIByteBuffer __in, BCByteCode __code)
+	__StackMapParser__(boolean __m, CIByteBuffer __in, BCByteCode __code)
 		throws NullPointerException
 	{
 		// Check

@@ -873,7 +873,7 @@ public interface BCInstructionID
 	 * Synthetic: Specific instance invocation, using the exact method that
 	 * was given.
 	 *
-	 * The first argument is a reference to the method (NCIMethod) to invoke.
+	 * The first argument is a reference to the method (CIMethod) to invoke.
 	 *
 	 * An object along with the arguments to the call are popped to the stack.
 	 *
@@ -885,7 +885,7 @@ public interface BCInstructionID
 	/**
 	 * Synthetic: Virtual instance invocation.
 	 *
-	 * The first argument is a reference to the method (NCIMethod) to invoke.
+	 * The first argument is a reference to the method (CIMethod) to invoke.
 	 * If the class has a sub-class then the topmost virtual method should be
 	 * used.
 	 *

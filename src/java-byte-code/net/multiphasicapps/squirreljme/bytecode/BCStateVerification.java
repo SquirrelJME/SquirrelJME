@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.squirreljme.ci.NCICodeAttribute;
-import net.multiphasicapps.squirreljme.ci.NCIMethod;
+import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
 
 /**
  * This represents a single verification state.
@@ -43,7 +43,7 @@ public final class BCStateVerification
 	 * @throws NullPointerException On null arguments.
 	 * @sicne 2016/05/12
 	 */
-	public BCStateVerification(NCIMethod __m)
+	public BCStateVerification(CIMethod __m)
 		throws NullPointerException
 	{
 		// Check
@@ -51,7 +51,7 @@ public final class BCStateVerification
 			throw new NullPointerException("NARG");
 		
 		// Obtain the code attribute
-		NCICodeAttribute attribute = __m.code();
+		CICodeAttribute attribute = __m.code();
 		
 		// The stack is empty
 		this.stack = new Stack(attribute.maxStack(), 0);

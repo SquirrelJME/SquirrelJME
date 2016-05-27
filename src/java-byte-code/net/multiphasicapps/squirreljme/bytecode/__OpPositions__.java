@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.bytecode;
 
-import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
 
 /**
  * This calculates the position of all operations.
@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
 final class __OpPositions__
 {
 	/** The code buffer. */
-	protected final NCIByteBuffer buffer;
+	protected final CIByteBuffer buffer;
 	
 	/**
 	 * Initializes the position calculator.
@@ -29,7 +29,7 @@ final class __OpPositions__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/08
 	 */
-	__OpPositions__(NCIByteBuffer __bb)
+	__OpPositions__(CIByteBuffer __bb)
 		throws NullPointerException
 	{
 		// Check
@@ -49,7 +49,7 @@ final class __OpPositions__
 	public int[] get()
 	{
 		// Setup initial buffer which matches the number of bytes
-		NCIByteBuffer buffer = this.buffer;
+		CIByteBuffer buffer = this.buffer;
 		int len = buffer.length();
 		int[] build = new int[len];
 		
@@ -100,7 +100,7 @@ final class __OpPositions__
 		throws BCException
 	{
 		// Get the buffer
-		NCIByteBuffer buffer = this.buffer;
+		CIByteBuffer buffer = this.buffer;
 		int len = buffer.length();
 		
 		// Could be out of bounds

@@ -13,14 +13,14 @@ package net.multiphasicapps.squirreljme.bytecode;
 import java.util.List;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
-import net.multiphasicapps.squirreljme.ci.NCIClass;
-import net.multiphasicapps.squirreljme.ci.NCIClassFlags;
-import net.multiphasicapps.squirreljme.ci.NCIClassReference;
-import net.multiphasicapps.squirreljme.ci.NCILookup;
-import net.multiphasicapps.squirreljme.ci.NCIMethod;
-import net.multiphasicapps.squirreljme.ci.NCIMethodReference;
-import net.multiphasicapps.squirreljme.ci.NCIPool;
+import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.ci.CILookup;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodReference;
+import net.multiphasicapps.squirreljme.ci.CIPool;
 
 /**
  * This initializes operation data.
@@ -91,12 +91,12 @@ class __OpInit__
 			throw new NullPointerException("NARG");
 		
 		// Get the byte buffer
-		NCIByteBuffer bb = __id.byteBuffer();
+		CIByteBuffer bb = __id.byteBuffer();
 		int phy = __id.physicalAddress();
 		
 		// Get the method which was referenced
-		NCIMethodReference ref = __id.pool().<NCIMethodReference>requiredAs(
-			bb.readUnsignedShort(phy, 1), NCIMethodReference.class);
+		CIMethodReference ref = __id.pool().<CIMethodReference>requiredAs(
+			bb.readUnsignedShort(phy, 1), CIMethodReference.class);
 		__id.setArguments(ref);
 		
 		// {@squirreljme.error AX0x Invocation of an interface method does not
@@ -107,14 +107,14 @@ class __OpInit__
 		
 		// {@squirreljme.error AX10 The specified method could not be located.
 		// (The method reference)}
-		NCILookup look = __id.lookup();
-		NCIMethod m = look.lookupMethod(ref);
+		CILookup look = __id.lookup();
+		CIMethod m = look.lookupMethod(ref);
 		if (m == null)
 			throw new BCException(BCException.Issue.MISSING_METHOD,
 				String.format("AX10 %s", ref));
 		
 		// Get the containing class
-		NCIClass ncl = m.outerClass();
+		CIClass ncl = m.outerClass();
 		
 		// {@squirreljme.error AX0z Cannot access the class which was
 		// referenced for a method invocation. (The method reference)}
@@ -134,16 +134,16 @@ class __OpInit__
 	public static void new_(__OpInitData__ __id)
 	{
 		// Get the byte buffer
-		NCIByteBuffer bb = __id.byteBuffer();
+		CIByteBuffer bb = __id.byteBuffer();
 		int phy = __id.physicalAddress();
 		
 		// Get the type of class to allocate
-		NCIClassReference ref = __id.pool().<NCIClassReference>requiredAs(
-			bb.readUnsignedShort(phy, 1), NCIClassReference.class);
+		CIClassReference ref = __id.pool().<CIClassReference>requiredAs(
+			bb.readUnsignedShort(phy, 1), CIClassReference.class);
 		__id.setArguments(ref);
 		
 		// Lookup the class
-		NCIClass ncl = __id.lookup(ref.get());
+		CIClass ncl = __id.lookup(ref.get());
 		
 		// {@squirreljme.error AX0a Byte code refers to a class to be
 		// allocated, however it does not exist. (The class name)}
@@ -154,7 +154,7 @@ class __OpInit__
 		// {@squirreljme.error AX0b The byte code would have attempted to
 		// allocate a class which was either abstract or an interface.
 		// (The class name; The class flags)}
-		NCIClassFlags fl = ncl.flags();
+		CIClassFlags fl = ncl.flags();
 		if (fl.isAbstract() || fl.isInterface())
 			throw new BCException(BCException.Issue.INIT_ABSTRACT_CLASS,
 				String.format("AX0b %s %s", ref, fl));

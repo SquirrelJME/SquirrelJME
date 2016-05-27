@@ -19,16 +19,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.ci.NCIAccessibleFlags;
-import net.multiphasicapps.squirreljme.ci.NCIAccessibleObject;
-import net.multiphasicapps.squirreljme.ci.NCIByteBuffer;
-import net.multiphasicapps.squirreljme.ci.NCIClass;
-import net.multiphasicapps.squirreljme.ci.NCIClassFlags;
-import net.multiphasicapps.squirreljme.ci.NCICodeAttribute;
-import net.multiphasicapps.squirreljme.ci.NCIException;
-import net.multiphasicapps.squirreljme.ci.NCILookup;
-import net.multiphasicapps.squirreljme.ci.NCIMethod;
-import net.multiphasicapps.squirreljme.ci.NCIPool;
+import net.multiphasicapps.squirreljme.ci.CIAccessibleFlags;
+import net.multiphasicapps.squirreljme.ci.CIAccessibleObject;
+import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CILookup;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIPool;
 import net.multiphasicapps.util.empty.EmptyMap;
 import net.multiphasicapps.util.singleton.SingletonMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -42,16 +42,16 @@ public final class BCByteCode
 	extends AbstractList<BCOperation>
 {
 	/** The containing method. */
-	protected final NCIMethod method;
+	protected final CIMethod method;
 	
 	/** The lookup for other classes (and fields/methods). */
-	protected final NCILookup lookup;
+	protected final CILookup lookup;
 	
 	/** The code attribute. */
-	protected final NCICodeAttribute attribute;
+	protected final CICodeAttribute attribute;
 	
 	/** The actual byte code. */
-	protected final NCIByteBuffer code;
+	protected final CIByteBuffer code;
 	
 	/** The instruction count. */
 	protected final int count;
@@ -72,7 +72,7 @@ public final class BCByteCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	public BCByteCode(NCILookup __lu, NCIMethod __m)
+	public BCByteCode(CILookup __lu, CIMethod __m)
 		throws NullPointerException
 	{
 		// Check
@@ -84,9 +84,9 @@ public final class BCByteCode
 		this.method = __m;
 		
 		// Extract code data
-		NCICodeAttribute attribute = __m.code();
+		CICodeAttribute attribute = __m.code();
 		this.attribute = attribute;
-		NCIByteBuffer code = attribute.code();
+		CIByteBuffer code = attribute.code();
 		this.code = code;
 		
 		// Setup logical positions
@@ -99,8 +99,8 @@ public final class BCByteCode
 		_bops = __makeBops(n);
 		
 		// Decode the stack map table
-		NCIByteBuffer os = attribute.stackMapOld();
-		NCIByteBuffer ns = attribute.stackMapNew();
+		CIByteBuffer os = attribute.stackMapOld();
+		CIByteBuffer ns = attribute.stackMapNew();
 		
 		// Old states
 		if (os != null)
@@ -123,7 +123,7 @@ public final class BCByteCode
 	 * @return The code attribute this represents byte code for.
 	 * @since 2016/05/13
 	 */
-	public final NCICodeAttribute attribute()
+	public final CICodeAttribute attribute()
 	{
 		return this.attribute;
 	}
@@ -139,7 +139,7 @@ public final class BCByteCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public final boolean canAccess(NCIAccessibleObject __ao)
+	public final boolean canAccess(CIAccessibleObject __ao)
 		throws BCException, NullPointerException
 	{
 		// Could fail
@@ -150,7 +150,7 @@ public final class BCByteCode
 		
 		// {@squirreljme.error AX11 Could not check the access of an object to
 		// another.}
-		catch (NCIException e)
+		catch (CIException e)
 		{
 			throw new BCException(BCException.Issue.ACCESS_ERROR, "AX11", e);
 		}
@@ -162,7 +162,7 @@ public final class BCByteCode
 	 * @return The code buffer.
 	 * @since 2016/05/13
 	 */
-	public NCIByteBuffer codeBuffer()
+	public CIByteBuffer codeBuffer()
 	{
 		return this.code;
 	}
@@ -173,7 +173,7 @@ public final class BCByteCode
 	 * @return The associated constant pool.
 	 * @since 2016/05/12
 	 */
-	public NCIPool constantPool()
+	public CIPool constantPool()
 	{
 		return this.method.outerClass().constantPool();
 	}
@@ -244,7 +244,7 @@ public final class BCByteCode
 	 * @return The lookup for classes.
 	 * @since 2016/05/12
 	 */
-	public NCILookup lookup()
+	public CILookup lookup()
 	{
 		return this.lookup;
 	}
