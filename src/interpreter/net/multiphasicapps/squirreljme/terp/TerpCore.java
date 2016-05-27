@@ -19,10 +19,8 @@ import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.narf.bytecode.NBCException;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CILookup;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
 
 /**

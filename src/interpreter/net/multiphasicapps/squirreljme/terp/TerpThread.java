@@ -12,8 +12,6 @@ package net.multiphasicapps.squirreljme.terp;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import net.multiphasicapps.narf.bytecode.NBCByteCode;
-import net.multiphasicapps.narf.program.NRProgram;
 
 /**
  * This represents a thread which runs inside of the interpreter.

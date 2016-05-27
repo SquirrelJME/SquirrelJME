@@ -13,16 +13,10 @@ package net.multiphasicapps.squirreljme.terp;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.narf.bytecode.NBCByteCode;
-import net.multiphasicapps.narf.bytecode.NBCException;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CILookup;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
-import net.multiphasicapps.narf.codeparse.NCPCodeParser;
-import net.multiphasicapps.narf.codeparse.NCPException;
-import net.multiphasicapps.narf.program.NRException;
-import net.multiphasicapps.narf.program.NRProgram;
 
 /**
  * This represents a method which exists within a class.
