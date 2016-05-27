@@ -71,6 +71,8 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
+		throw new Error("TODO");
+		/*
 		// Force arguments to exist
 		if (__args == null)
 			__args = new String[0];
@@ -206,6 +208,7 @@ __outer_loop:
 		// solid.
 		while (ic.isRunning())
 			Thread.yield();
+		*/
 	}
 }
 
