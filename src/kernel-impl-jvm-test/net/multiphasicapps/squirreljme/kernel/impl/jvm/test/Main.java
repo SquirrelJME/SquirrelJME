@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
@@ -72,6 +73,14 @@ public class Main
 			for (String a : __args)
 				args.offerLast(a);
 		
+		// Loaded classpath
+		boolean didcp = false;
+		Set<String> cp = new LinkedHashSet<>();
+		
+		// Program main and arguments to send to main
+		ClassLoaderNameSymbol pmain = null;
+		List<String> pargs = new LinkedList<>();
+		
 		// Handle all arguments
 		while (!args.isEmpty())
 		{
@@ -80,13 +89,65 @@ public class Main
 			
 			// Load classes from JAR file
 			if (arg.equals("-jar"))
-				throw new Error("TODO");
+			{
+				// {@squirreljme.error BC02 -jar cannot be specified with
+				// -cp or -classpath.}
+				if (didcp)
+					throw new IllegalArgumentException("BC02");	
+				
+				if (true)
+					throw new Error("TODO");
+				
+				// Copy program arguments
+				while (!args.isEmpty())
+					pargs.add(args.pollFirst());
+			}
 			
 			// Command line switch
 			else if (arg.startsWith("-"))
 			{
+				// Class path specified
 				if (arg.equals("-cp") || arg.equals("-classpath"))
-					throw new Error("TODO");
+				{
+					// {@squirreljme.error BC03 -cp or -classpath has already
+					// been specified on the command line.}
+					if (didcp)
+						throw new IllegalArgumentException("BC03");
+					
+					// Only once
+					didcp = true;
+					
+					// {@squirreljme.error BC05 Expected an argument to follow
+					// -cp or -classpath.}
+					String parse = args.pollFirst();
+					if (parse == null)
+						throw new IllegalArgumentException("BC05");
+					
+					// Read all path fragments
+					int n = parse.length();
+					for (int i = 0; i < n;)
+					{
+						// Find the next instance of the path separator
+						int ps = parse.indexOf(PATH_SEPARATOR, i);
+						
+						// This is the last set?
+						if (ps < 0)
+						{
+							String v = parse.substring(i);
+							if (v.length() > 0)
+								cp.add(parse.substring(i));
+							break;
+						}
+						
+						// Add fragment
+						String v = parse.substring(i, ps);
+						if (v.length() > 0)
+							cp.add(v);
+						
+						// Skip to next fragment
+						i = ps + PATH_SEPARATOR.length();
+					}
+				}
 				
 				// {@squirreljme.error BC01 Unknown command line switch. (The
 				// command line switch)}
@@ -95,10 +156,21 @@ public class Main
 						arg));
 			}
 			
-			// Main class otherwise
+			// Main class followed by arguments
 			else
-				throw new Error("TODO");
+			{
+				// Setup main class
+				pmain = ClassLoaderNameSymbol.of(arg);
+				
+				// Copy program arguments
+				while (!args.isEmpty())
+					pargs.add(args.pollFirst());
+			}
 		}
+		
+		// {@squirreljme.error BC04 No main class was specified.}
+		if (pmain == null)
+			throw new IllegalArgumentException("BC04");
 		
 		// Initialization may fail
 		JVMTestKernel jtk = null;
