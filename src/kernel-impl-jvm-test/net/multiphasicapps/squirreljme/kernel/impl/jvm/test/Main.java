@@ -106,8 +106,12 @@ public class Main
 			// Command line switch
 			else if (arg.startsWith("-"))
 			{
+				// {@squirreljme.error BC06 Ignoring unknown -X or -J option.}
+				if (arg.startsWith("-X") || arg.startsWith("-J"))
+					System.err.printf("BC06 %s", arg);
+				
 				// Class path specified
-				if (arg.equals("-cp") || arg.equals("-classpath"))
+				else if (arg.equals("-cp") || arg.equals("-classpath"))
 				{
 					// {@squirreljme.error BC03 -cp or -classpath has already
 					// been specified on the command line.}
