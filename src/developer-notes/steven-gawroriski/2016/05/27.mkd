@@ -57,3 +57,15 @@ or even fit with the current code base.
 Also going to remove the issue codes from the exceptions which came from the
 NARF code.
 
+## 11:17
+
+Now that the code compilation and the TODOs are in place, I just have to go
+back and reimplement those bits using the newly planned route. The test kernel
+creates a new kernel and setups up the pure interpreter factory and then
+initializes the interpreter using said factory.
+
+## 11:26
+
+Also the path separator could support multiple characters, just use `indexOf`
+for strings for splitting.
+
