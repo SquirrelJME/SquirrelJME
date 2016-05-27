@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: kernel-impl-jvm-test
 X-SquirrelJME-UUID: 943e3838-3223-4e46-80dc-edfd1006796e
-X-SquirrelJME-Depends: javame-cldc-full, interpreter-pure, kernel
+X-SquirrelJME-Depends: javame-cldc-full, interpreter-pure, kernel,
+  class-path-jar-fs
 X-SquirrelJME-Error: BC
 Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.test.Main
 LIBlet-Title: Kernel (JVM: Test)

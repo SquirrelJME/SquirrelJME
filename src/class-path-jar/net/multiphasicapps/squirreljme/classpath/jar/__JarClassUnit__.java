@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.classpath.jar;
 
-import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 
 /**

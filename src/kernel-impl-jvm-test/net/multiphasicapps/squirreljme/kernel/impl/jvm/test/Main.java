@@ -72,30 +72,49 @@ public class Main
 	 * @since 2016/04/20
 	 */
 	public static void main(String... __args)
+		throws Throwable
 	{
-		// Setup interpreter
-		TerpInterpreter terp = new PureInterpreter();
-		
-		// Create test kernel
-		JVMTestKernel jtk = new JVMTestKernel(terp);
-		
-		// Block until all workers are terminated
-		for (;;)
+		// Initialization may fail
+		JVMTestKernel jtk = null;
+		try
 		{
-			// Kernel loop
-			try
-			{
-				jtk.untilProcessless();
+			// Setup interpreter
+			TerpInterpreter terp = new PureInterpreter();
 		
-				// Would normally terminate
-				return;
-			}
+			// Create test kernel
+			jtk = new JVMTestKernel(terp);
 		
-			// Interrupted, yield and retry
-			catch (InterruptedException e)
+			// Block until all workers are terminated
+			for (;;)
 			{
-				Thread.yield();
+				// Kernel loop
+				try
+				{
+					jtk.untilProcessless();
+		
+					// Would normally terminate
+					return;
+				}
+		
+				// Interrupted, yield and retry
+				catch (InterruptedException e)
+				{
+					Thread.yield();
+				}
 			}
+		}
+		
+		// Fall out of main
+		catch (Throwable t)
+		{
+			// Print the stack trace
+			t.printStackTrace(System.err);
+			
+			// Attempt to quit the kernel
+			jtk.quitKernel();
+			
+			// Rethrow if quit failed
+			throw t;
 		}
 		
 		/*
