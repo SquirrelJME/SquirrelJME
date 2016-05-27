@@ -28,3 +28,8 @@ Also the verification of classes and such will be given to the `class-path`
 package. Verification only makes sense when entire classes have been loaded
 for the most part.
 
+## 10:25
+
+The user of the pure interpreter would be the test kernel, so similar to what
+I have before except it has no launcher interface.
+
