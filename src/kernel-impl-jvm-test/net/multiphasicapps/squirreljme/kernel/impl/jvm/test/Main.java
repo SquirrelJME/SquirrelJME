@@ -85,7 +85,7 @@ public class Main
 		while (!args.isEmpty())
 		{
 			// Get next argument
-			String arg = args.pollFirst();
+			String arg = args.removeFirst();
 			
 			// Load classes from JAR file
 			if (arg.equals("-jar"))
@@ -100,7 +100,7 @@ public class Main
 				
 				// Copy program arguments
 				while (!args.isEmpty())
-					pargs.add(args.pollFirst());
+					pargs.add(args.removeFirst());
 			}
 			
 			// Command line switch
@@ -123,7 +123,7 @@ public class Main
 					
 					// {@squirreljme.error BC05 Expected an argument to follow
 					// -cp or -classpath.}
-					String parse = args.pollFirst();
+					String parse = args.removeFirst();
 					if (parse == null)
 						throw new IllegalArgumentException("BC05");
 					
@@ -168,7 +168,7 @@ public class Main
 				
 				// Copy program arguments
 				while (!args.isEmpty())
-					pargs.add(args.pollFirst());
+					pargs.add(args.removeFirst());
 			}
 		}
 		
