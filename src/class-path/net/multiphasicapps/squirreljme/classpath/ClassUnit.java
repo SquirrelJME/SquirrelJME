@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.classpath;
 
-import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.squirreljme.ci.CIClass;
 
 /**
  * This is a class unit which is a collection of classes and resources such as
