@@ -5,4 +5,17 @@
 Ok, so going to take a break from the UI and launcher code and instead perform
 a refactor and moving around of all the stuff under `native-compiler`.
 
+## 08:11
+
+For the basic interpreter in the tests during the cleanup, I can have it base
+off the kernel so that way I can develop a native interface which normal
+programs would use and such. So calling `interpreter-tests` would create a
+kernel process to launch applications with for example. This way I can still
+work on the kernel and the native interfaces without worrying about the UI
+layer. Once I get execution of code in place, I can use that to determine how
+code should be started and such (the classpath loading and such). So calling
+something such as `interpreter-tests` would just bypass the launcher
+completely and not require it at all. Something I also need is a rename where
+I can use regular expressions, so instead of renaming all the classes one by
+one manually, I can use sed to do it.
 
