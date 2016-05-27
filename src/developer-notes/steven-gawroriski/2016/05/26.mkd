@@ -80,3 +80,13 @@ screen and all components must be laid out, multiple display managers would
 have to fight to stay around for the user. Some global resources such as
 system tray icons would have to cooperate in a native interface and such.
 
+## 20:25
+
+So I need to rethink some things.
+
+## 20:34
+
+I believe I will go back to the compiler, writing some of the UI interfaces
+and the class unit stuff has given be the information I need for a refactor
+of that code to fit better with the code I would end up with.
+
