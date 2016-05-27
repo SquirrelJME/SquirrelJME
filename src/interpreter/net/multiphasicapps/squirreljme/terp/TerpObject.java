@@ -69,20 +69,19 @@ public class TerpObject
 		// {@squirreljme.error AN0j An attempt was made to allocate an array
 		// for a class which is not an array. (The class)}
 		if (__al != 0 && !__cl.isArray())
-			throw new TerpException(__c, TerpException.Issue.NOT_AN_ARRAY,
-				String.format("AN0j %s", __cl.thisName()));
+			throw new TerpException(__c, String.format("AN0j %s",
+				__cl.thisName()));
 		
 		// {@squirreljme.error AN0i Attempted to allocate an array with a
 		// negative length. (The array length)}
 		if (__al < 0)
-			throw new TerpException(__c, TerpException.Issue.NEGATIVE_ARRAY_LENGTH,
-				String.format("AN0i %d", __al));
+			throw new TerpException(__c, String.format("AN0i %d", __al));
 		
 		// {@squirreljme.error AN0h Attempted to initialize an object which
 		// is an instance of an abstract class. (The class)}
 		if (__cl.flags().isAbstract())
-			throw new TerpException(__c, TerpException.Issue.NEW_ABSTRACT,
-				String.format("AN0h %s", __cl.thisName()));
+			throw new TerpException(__c, String.format("AN0h %s",
+				__cl.thisName()));
 		
 		// Set
 		this.core = __c;

@@ -14,7 +14,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CILookup;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
 

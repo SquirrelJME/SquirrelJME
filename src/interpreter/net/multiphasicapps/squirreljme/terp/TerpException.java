@@ -10,15 +10,13 @@
 
 package net.multiphasicapps.squirreljme.terp;
 
-import net.multiphasicapps.narf.exception.NARFException;
-
 /**
  * This is the base for exceptions which may be thrown by the interpreter.
  *
  * @since 2016/04/22
  */
 public class TerpException
-	extends NARFException
+	extends RuntimeException
 {
 	/**
 	 * Initializes the exception with no message.
@@ -28,11 +26,9 @@ public class TerpException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public TerpException(TerpCore __ic, Issue __t)
+	public TerpException(TerpCore __ic)
 		throws NullPointerException
 	{
-		super(__t);
-		
 		// Check
 		if (__ic == null)
 			throw new NullPointerException("NARG");
@@ -47,10 +43,10 @@ public class TerpException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public TerpException(TerpCore __ic, Issue __t, String __msg)
+	public TerpException(TerpCore __ic, String __msg)
 		throws NullPointerException
 	{
-		super(__t, __msg);
+		super(__msg);
 		
 		// Check
 		if (__ic == null)
@@ -67,11 +63,11 @@ public class TerpException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public TerpException(TerpCore __ic, Issue __t, String __msg,
+	public TerpException(TerpCore __ic, String __msg,
 		Throwable __c)
 		throws NullPointerException
 	{
-		super(__t, __msg, __c);
+		super(__msg, __c);
 		
 		// Check
 		if (__ic == null)
@@ -87,80 +83,14 @@ public class TerpException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public TerpException(TerpCore __ic, Issue __t, Throwable __c)
+	public TerpException(TerpCore __ic, Throwable __c)
 		throws NullPointerException
 	{
-		super(__t, __c);
+		super(__c);
 		
 		// Check
 		if (__ic == null)
 			throw new NullPointerException("NARG");
-	}
-	
-	/**
-	 * The exception type.
-	 *
-	 * @since 2016/04/22
-	 */
-	public static enum Issue
-		implements BaseIssue
-	{
-		/** Missing class definition. */
-		MISSING_CLASS,
-		
-		/** The name of a class mismatches the one which was read. */
-		CLASS_NAME_MISMATCH,
-		
-		/** The class extends or implements itself eventually. */
-		CLASS_CIRCULARITY,
-		
-		/** A class does not implement an abstract method. */
-		ABSTRACT_NOT_IMPLEMENTED,
-		
-		/** A method does not exist. */
-		METHOD_DOES_NOT_EXIST,
-		
-		/** An attempt was made to {@code new} an abstract class. */
-		NEW_ABSTRACT,
-		
-		/** Attempted to allocate an array for a class which is not one. */
-		NOT_AN_ARRAY,
-		
-		/** Attempted to allocate an array of negative length. */
-		NEGATIVE_ARRAY_LENGTH,
-		
-		/** Attempt to invoke a method across a context. */
-		CROSS_CONTEXT,
-		
-		/** Attempt to invoke an abstract method. */
-		INVOKE_ABSTRACT,
-		
-		/** Method could not correctly be read. */
-		METHOD_LOAD_ERROR,
-		
-		/** Popped the wrong item on the stack. */
-		WRONG_STACK,
-		
-		/** An illegal opcode was attempted to be executed. */
-		ILLEGAL_OPCODE,
-		
-		/** Class failed to initialize properly. */
-		CLASS_ITerpT_FAILURE,
-		
-		/** Illegal push of value. */
-		ILLEGAL_PUSH,
-		
-		/** A final method was replaced. */
-		FINAL_REPLACED,
-		
-		/** Extends final class. */
-		EXTENDS_FINAL,
-		
-		/** The class has no superclass. */
-		CLASS_NO_SUPERCLASS,
-		
-		/** End. */
-		;
 	}
 }
 

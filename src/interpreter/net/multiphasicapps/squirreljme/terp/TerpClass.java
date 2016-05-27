@@ -92,8 +92,8 @@ public class TerpClass
 		// requested class)}
 		thisname = __base.thisName();
 		if (!__cns.equals(thisname))
-			throw new TerpException(core, TerpException.Issue.CLASS_NAME_MISMATCH,
-				String.format("AN0b %s %s", thisname, __cns));
+			throw new TerpException(core, String.format("AN0b %s %s", thisname,
+				__cns));
 		
 		// DEBUG
 		System.err.printf("DEBUG -- Init class %s%n", thisname);
@@ -119,23 +119,21 @@ public class TerpClass
 			// {@squirreljme.error AN0v The current class eventually extends
 			// a final class. (This class; The final class)}
 			if (rover.flags().isFinal())
-				throw new TerpException(core, TerpException.Issue.EXTENDS_FINAL,
-					String.format("AN0v %s %s", thisname, rover));
+				throw new TerpException(core, String.format("AN0v %s %s",
+					thisname, rover));
 			
 			// {@squirreljme.error AN0c The current class eventually extends
 			// itself. (The name of this class)}
 			if (rover == this)
-				throw new TerpException(core,
-					TerpException.Issue.CLASS_CIRCULARITY,
-					String.format("AN0c %s", thisname));
+				throw new TerpException(core, String.format("AN0c %s",
+					thisname));
 			
 			// {@squirreljme.error AN0d The current class eventually implements
 			// itself. (The name of this name; The class implementing this)}
 			for (TerpClass impl : rover.interfaceclasses)
 				if (impl == this)
-					throw new TerpException(core,
-						TerpException.Issue.CLASS_CIRCULARITY,
-						String.format("AN0d %s %s", thisname, rover.thisname));
+					throw new TerpException(core, String.format("AN0d %s %s",
+						thisname, rover.thisname));
 		}
 		
 		// Create methods for all of the current class methods
@@ -173,9 +171,8 @@ public class TerpClass
 					// abstract and it does not implement an abstract method.
 					// (The method identifier)}
 					if (iv == null || iv.flags().isAbstract())
-						throw new TerpException(core,
-							TerpException.Issue.ABSTRACT_NOT_IMPLEMENTED,
-							String.format("AN0e %s", k));
+						throw new TerpException(core, String.format("AN0e %s",
+							k));
 				}
 				
 				// Never replace methods in a sub-class with the superclass
@@ -186,9 +183,8 @@ public class TerpClass
 					// replaced. (The method identifier; The super class; The
 					// current class)}
 					if (v.flags().isFinal())
-						throw new TerpException(core, TerpException.Issue.
-							FINAL_REPLACED, String.format("AN0u %s %s %s", k,
-								rover, this));
+						throw new TerpException(core, String.format(
+							"AN0u %s %s %s", k, rover, this));
 					
 					// Do not add
 					continue;
@@ -222,7 +218,6 @@ public class TerpClass
 						CIMethodID k = e.getKey();
 						if (!methods.containsKey(k))
 							throw new TerpException(core,
-								TerpException.Issue.ABSTRACT_NOT_IMPLEMENTED,
 								String.format("AN0f %s %s", k, base.thisName(),
 									interf.base.thisName()));
 						
