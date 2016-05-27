@@ -13,13 +13,15 @@ package net.multiphasicapps.squirreljme.terp.pure;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.narf.bytecode.NBCByteCode;
-import net.multiphasicapps.narf.bytecode.NBCInstructionID;
-import net.multiphasicapps.narf.bytecode.NBCOperation;
-import net.multiphasicapps.narf.bytecode.NBCVariablePush;
-import net.multiphasicapps.narf.bytecode.NBCVariableType;
+import net.multiphasicapps.squirreljme.bytecode.BCByteCode;
+import net.multiphasicapps.squirreljme.bytecode.BCInstructionID;
+import net.multiphasicapps.squirreljme.bytecode.BCOperation;
+import net.multiphasicapps.squirreljme.bytecode.BCVariablePush;
+import net.multiphasicapps.squirreljme.bytecode.BCVariableType;
 import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
 import net.multiphasicapps.squirreljme.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.terp.TerpException;
+import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
 
 /**
  * This is the pure interpreter which takes byte code directly for execution.
@@ -27,10 +29,10 @@ import net.multiphasicapps.squirreljme.ci.CIClassReference;
  * @since 2016/05/12
  */
 public class PureInterpreter
-	extends TerpInterpreter
+	implements TerpInterpreter
 {
 	/** The code to be interpreted. */
-	protected final NBCByteCode program;
+	protected final BCByteCode program;
 	
 	/** The code attribute used. */
 	protected final CICodeAttribute attribute;
@@ -50,14 +52,14 @@ public class PureInterpreter
 	/**
 	 * Initializes the interpreter which uses the direct byte code.
 	 *
-	 * @param __t The thread of execution.
-	 * @param __p The byte code to interpret.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public PureInterpreter(TerpThread __t, NBCByteCode __p)
+	public PureInterpreter()
 		throws NullPointerException
 	{
+		throw new Error("TODO");
+		/*
 		super(__t);
 		
 		// Check
@@ -73,15 +75,18 @@ public class PureInterpreter
 		this._top = 0;
 		this._locals = new Object[attr.maxLocals()];
 		this._stack = new Object[attr.maxStack()];
+		*/
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/12
 	 */
-	@Override
+	@Deprecated
 	public Object interpret(Object... __args)
 	{
+		throw new Error("TODO");
+		/*
 		// Setup local variables
 		int n = __args.length;
 		for (int i = 0; i < n; i++)
@@ -92,7 +97,7 @@ public class PureInterpreter
 		List<Object> _DEBUGSTACK = Arrays.<Object>asList(_stack);
 		
 		// Execution loop
-		NBCByteCode program = this.program;
+		BCByteCode program = this.program;
 		for (int pcaddr = 0;;)
 		{
 			// Debug
@@ -100,7 +105,7 @@ public class PureInterpreter
 				_DEBUGSTACK);
 			
 			// Get the current operation
-			NBCOperation op = program.get(pcaddr);
+			BCOperation op = program.get(pcaddr);
 			
 			// Debug
 			System.err.printf("DEBUG -- Exec: %s%n", op);
@@ -110,12 +115,12 @@ public class PureInterpreter
 			switch (code)
 			{
 					// Allocate new object
-				case NBCInstructionID.NEW:
+				case BCInstructionID.NEW:
 					pcaddr = __new(op);
 					break;
 					
 					// Shuffle entries on the stack
-				case NBCInstructionID.SYNTHETIC_STACK_SHUFFLE:
+				case BCInstructionID.SYNTHETIC_STACK_SHUFFLE:
 					pcaddr = __stackShuffle(op);
 					break;
 				
@@ -131,6 +136,7 @@ public class PureInterpreter
 			// Set the new address
 			this._pcaddr = pcaddr;
 		}
+		*/
 	}
 	
 	/**
@@ -140,8 +146,11 @@ public class PureInterpreter
 	 * @return The next instruction pointer address.
 	 * @since 2016/05/13
 	 */
-	private int __new(NBCOperation __op)
+	@Deprecated
+	private int __new(BCOperation __op)
 	{
+		throw new Error("TODO");
+		/*
 		// Lookup the class
 		ClassNameSymbol csn = ((CIClassReference)__op.arguments().get(0)).
 			get();
@@ -158,6 +167,7 @@ public class PureInterpreter
 		
 		// Next address
 		return __op.address() + 1;
+		*/
 	}
 	
 	/**
@@ -167,10 +177,13 @@ public class PureInterpreter
 	 * @return The next address.
 	 * @since 2016/05/13
 	 */
-	private int __stackShuffle(NBCOperation __op)
+	@Deprecated
+	private int __stackShuffle(BCOperation __op)
 	{
+		throw new Error("TODO");
+		/*
 		// Get the operations to pop
-		List<NBCVariableType> pops = __op.stackPops();
+		List<BCVariableType> pops = __op.stackPops();
 		int n = pops.size();
 		
 		// For pop storage for later pushing
@@ -182,7 +195,7 @@ public class PureInterpreter
 		for (int i = n - 1; i >= 0; i--)
 		{
 			// Get the type to pop
-			NBCVariableType vt = pops.get(i);
+			BCVariableType vt = pops.get(i);
 			
 			// If wide, clear top
 			if (vt.isWide())
@@ -194,14 +207,14 @@ public class PureInterpreter
 		}
 		
 		// Get values to push
-		List<NBCVariablePush> pushes = __op.stackPushes();
+		List<BCVariablePush> pushes = __op.stackPushes();
 		int m = pushes.size();
 		
 		// Push all values
 		for (int i = 0; i < m; i++)
 		{
 			// Get push ID
-			NBCVariablePush pu = pushes.get(i);
+			BCVariablePush pu = pushes.get(i);
 			
 			// {@squirreljme.error AN0t The value to push to the stack from
 			// and input pop operation is not valid. (The index)}
@@ -223,6 +236,7 @@ public class PureInterpreter
 		
 		// Next address
 		return __op.address() + 1;
+		*/
 	}
 }
 

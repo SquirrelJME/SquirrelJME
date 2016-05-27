@@ -33,3 +33,7 @@ for the most part.
 The user of the pure interpreter would be the test kernel, so similar to what
 I have before except it has no launcher interface.
 
+## 10:54
+
+Going to remove the base NARF exception stuff soon.
+

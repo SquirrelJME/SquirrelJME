@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: interpreter-pure
 X-SquirrelJME-UUID: fe565de4-ee82-4711-9803-03b5e7f36042
-X-SquirrelJME-Depends: interpreter
+X-SquirrelJME-Depends: interpreter, java-byte-code
 X-SquirrelJME-Error: BA
 LIBlet-Title: Pure Interpreter
 LIBlet-Vendor: Steven Gawroriski
