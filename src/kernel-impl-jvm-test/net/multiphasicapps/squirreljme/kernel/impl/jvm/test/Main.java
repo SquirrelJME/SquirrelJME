@@ -20,6 +20,8 @@ import java.util.StringTokenizer;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
+import net.multiphasicapps.squirreljme.terp.pure.PureInterpreter;
 
 /**
  * This is the main entry point for the JVM based test kernel for running the
@@ -71,8 +73,11 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
+		// Setup interpreter
+		TerpInterpreter terp = new PureInterpreter();
+		
 		// Create test kernel
-		JVMTestKernel jtk = new JVMTestKernel();
+		JVMTestKernel jtk = new JVMTestKernel(terp);
 		
 		throw new Error("TODO");
 		/*
