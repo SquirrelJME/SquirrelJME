@@ -52,17 +52,9 @@ public class Main
 		if (spps != null)
 			PATH_SEPARATOR = spps;
 		
-		// Otherwise, assume UTerpX
+		// Otherwise, assume UNIX line separators
 		else
 			PATH_SEPARATOR = ":";
-		
-		// Big problems if it is multiple characters long
-		// {@squirreljme.error AN07 The local interpreter does not support path
-		// separators which are more than one character long. (The path
-		// separater; The property to set)}
-		if (PATH_SEPARATOR.length() != 1)
-			throw new RuntimeException(String.format("AN07 %s %s",
-				PATH_SEPARATOR, PATH_SEPARATOR_PROPERTY));
 	}
 	
 	/**
@@ -74,6 +66,40 @@ public class Main
 	public static void main(String... __args)
 		throws Throwable
 	{
+		// Put all arguments into the queue
+		Deque<String> args = new LinkedList<>();
+		if (__args != null)
+			for (String a : __args)
+				args.offerLast(a);
+		
+		// Handle all arguments
+		while (!args.isEmpty())
+		{
+			// Get next argument
+			String arg = args.pollFirst();
+			
+			// Load classes from JAR file
+			if (arg.equals("-jar"))
+				throw new Error("TODO");
+			
+			// Command line switch
+			else if (arg.startsWith("-"))
+			{
+				if (arg.equals("-cp") || arg.equals("-classpath"))
+					throw new Error("TODO");
+				
+				// {@squirreljme.error BC01 Unknown command line switch. (The
+				// command line switch)}
+				else
+					throw new IllegalArgumentException(String.format("BC01 %s",
+						arg));
+			}
+			
+			// Main class otherwise
+			else
+				throw new Error("TODO");
+		}
+		
 		// Initialization may fail
 		JVMTestKernel jtk = null;
 		try
