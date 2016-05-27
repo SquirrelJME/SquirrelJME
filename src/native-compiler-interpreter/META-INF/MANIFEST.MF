@@ -3,7 +3,7 @@ X-SquirrelJME-Name: native-compiler-interpreter
 X-SquirrelJME-UUID: 6bb0b8c1-01da-4a8b-999f-dce8cb34f4a1
 X-SquirrelJME-Depends: javame-cldc-full, native-compiler,
  zip-compression, extra-util-unmodifiable,
- native-compiler-class-file,
+ class-interface-standard,
  native-compiler-program,
  native-compiler-codeparse,
  native-compiler-byte-code

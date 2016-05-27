@@ -15,5 +15,5 @@
  * @since 2016/04/24
  */
 
-package net.multiphasicapps.narf.classfile;
+package net.multiphasicapps.squirreljme.ci.standard;
 

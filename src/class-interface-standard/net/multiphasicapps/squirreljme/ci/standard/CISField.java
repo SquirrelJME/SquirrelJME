@@ -8,22 +8,22 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.classfile;
+package net.multiphasicapps.squirreljme.ci.standard;
 
 import net.multiphasicapps.descriptors.FieldSymbol;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCIField;
-import net.multiphasicapps.narf.classinterface.NCIFieldFlags;
-import net.multiphasicapps.narf.classinterface.NCIFieldID;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIField;
+import net.multiphasicapps.squirreljme.ci.CIFieldFlags;
+import net.multiphasicapps.squirreljme.ci.CIFieldID;
 
 /**
  * This represents a class which is contained within a class file.
  *
  * @since 2016/04/26
  */
-public final class NCFField
-	extends NCFMember<NCIFieldID, NCIFieldFlags>
-	implements NCIField
+public final class CISField
+	extends CISMember<CIFieldID, CIFieldFlags>
+	implements CIField
 {
 	/** The field constant value. */
 	protected final Object constant;
@@ -37,7 +37,7 @@ public final class NCFField
 	 * @param __cv The constant value of the field.
 	 * @since 2016/04/26
 	 */
-	NCFField(NCFClass __oc, NCIFieldID __id, NCIFieldFlags __fl, Object __cv)
+	CISField(CISClass __oc, CIFieldID __id, CIFieldFlags __fl, Object __cv)
 	{
 		super(__oc, __id, __fl);
 		
@@ -59,7 +59,7 @@ public final class NCFField
 				(fs.equals("F") && !(__cv instanceof Float)) ||
 				(fs.equals("D") && !(__cv instanceof Double)) ||
 				(fs.equals("Ljava/lang/String;") && !(__cv instanceof String)))
-				throw new NCIException(NCIException.Issue.BAD_CONSTANT,
+				throw new CIException(CIException.Issue.BAD_CONSTANT,
 					String.format("AQ0o %s", __cv.getClass()));
 		}
 	}

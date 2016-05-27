@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: native-compiler-class-file
+X-SquirrelJME-Name: class-interface-standard
 X-SquirrelJME-UUID: 8e1bb3de-ac70-4e63-ae1e-ce94f8c5e339
 X-SquirrelJME-Depends: javame-cldc-compact, 
  java-descriptors, extra-io-region,
  class-interface
 X-SquirrelJME-Error: AQ
-LIBlet-Title: Native Compiler Java Class Support
+LIBlet-Title: Standard Class File Support
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160424
 LIBlet-Description: This contains support for the Java class file format by

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.classfile;
+package net.multiphasicapps.squirreljme.ci.standard;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -19,19 +19,19 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.narf.classinterface.NCIClassReference;
-import net.multiphasicapps.narf.classinterface.NCIConstantDouble;
-import net.multiphasicapps.narf.classinterface.NCIConstantFloat;
-import net.multiphasicapps.narf.classinterface.NCIConstantInteger;
-import net.multiphasicapps.narf.classinterface.NCIConstantLong;
-import net.multiphasicapps.narf.classinterface.NCIConstantString;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCIFieldReference;
-import net.multiphasicapps.narf.classinterface.NCIMemberNameAndType;
-import net.multiphasicapps.narf.classinterface.NCIMethodReference;
-import net.multiphasicapps.narf.classinterface.NCIPool;
-import net.multiphasicapps.narf.classinterface.NCIPoolEntry;
-import net.multiphasicapps.narf.classinterface.NCIUTF;
+import net.multiphasicapps.squirreljme.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.ci.CIConstantDouble;
+import net.multiphasicapps.squirreljme.ci.CIConstantFloat;
+import net.multiphasicapps.squirreljme.ci.CIConstantInteger;
+import net.multiphasicapps.squirreljme.ci.CIConstantLong;
+import net.multiphasicapps.squirreljme.ci.CIConstantString;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIFieldReference;
+import net.multiphasicapps.squirreljme.ci.CIMemberNameAndType;
+import net.multiphasicapps.squirreljme.ci.CIMethodReference;
+import net.multiphasicapps.squirreljme.ci.CIPool;
+import net.multiphasicapps.squirreljme.ci.CIPoolEntry;
+import net.multiphasicapps.squirreljme.ci.CIUTF;
 
 /**
  * This decodes the constant pool of a class.
@@ -97,13 +97,13 @@ class __PoolDecoder__
 		18;
 	
 	/** The outer class. */
-	protected final NCFClass outerclass;
+	protected final CISClass outerclass;
 	
 	/** The input data stream. */
 	protected final DataInputStream das;
 	
 	/** The target pool list. */
-	protected final NCIPoolEntry[] entries;
+	protected final CIPoolEntry[] entries;
 	
 	/**
 	 * Initializes the constant pool decoder.
@@ -114,7 +114,7 @@ class __PoolDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/24
 	 */
-	__PoolDecoder__(NCFClass __oc, DataInputStream __das)
+	__PoolDecoder__(CISClass __oc, DataInputStream __das)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -131,11 +131,11 @@ class __PoolDecoder__
 		// {@squirreljme.errr CF0k Class has a constant pool with a negative
 		// number of entries.}
 		if (numentries <= 0)
-			throw new NCIException(NCIException.Issue.INVALID_POOL_SIZE,
+			throw new CIException(CIException.Issue.INVALID_POOL_SIZE,
 				"AQ0k");
 		
 		// Setup target array
-		entries = new NCIPoolEntry[numentries];
+		entries = new CIPoolEntry[numentries];
 	}
 	
 	/**
@@ -145,7 +145,7 @@ class __PoolDecoder__
 	 * @throws IOException On read errors.
 	 * @since 2016/04/24
 	 */
-	public NCIPool get()
+	public CIPool get()
 		throws IOException
 	{
 		// Some entries refer to other entries
@@ -164,7 +164,7 @@ class __PoolDecoder__
 					// Read
 					try
 					{
-						entries[i] = new NCIUTF(das.readUTF());
+						entries[i] = new CIUTF(das.readUTF());
 					}
 		
 					// Malformed sequence
@@ -173,29 +173,29 @@ class __PoolDecoder__
 						// {@squirreljme.error AQ0j The string which makes up a
 						// UTF-8 constant string is not a correctly formatted
 						// modified UTF-8 string.}
-						throw new NCIException(NCIException.Issue.ILLEGAL_MUTF,
+						throw new CIException(CIException.Issue.ILLEGAL_MUTF,
 							"AQ0j", utfdfe);
 					}
 					break;
 					
 					// Integer constant
 				case TAG_INTEGER:
-					entries[i] = new NCIConstantInteger(das.readInt());
+					entries[i] = new CIConstantInteger(das.readInt());
 					break;
 					
 					// Float constant
 				case TAG_FLOAT:
-					entries[i] = new NCIConstantFloat(das.readFloat());
+					entries[i] = new CIConstantFloat(das.readFloat());
 					break;
 					
 					// Long constant
 				case TAG_LONG:
-					entries[i++] = new NCIConstantLong(das.readLong());
+					entries[i++] = new CIConstantLong(das.readLong());
 					break;
 					
 					// Double constant
 				case TAG_DOUBLE:
-					entries[i++] = new NCIConstantDouble(das.readDouble());
+					entries[i++] = new CIConstantDouble(das.readDouble());
 					break;
 					
 					// Single reference
@@ -219,14 +219,14 @@ class __PoolDecoder__
 				case TAG_INVOKEDYNAMIC:
 					// {@squirreljme.error AQ0l {@code invokedynamic} is not
 					// supported in Java ME.}
-					throw new NCIException(NCIException.Issue.INVOKEDYNAMIC,
+					throw new CIException(CIException.Issue.INVOKEDYNAMIC,
 						"AQ0l");
 					
 					// Unknown
 				default:
 					// {@squirreljme.error AQ0m The specified constant pool
 					// tag is not valid. (The illegal constant pool tag).}
-					throw new NCIException(NCIException.Issue.ILLEGAL_TAG,
+					throw new CIException(CIException.Issue.ILLEGAL_TAG,
 						String.format("AQ0m %d", tag));
 			}
 		}
@@ -255,8 +255,8 @@ class __PoolDecoder__
 					
 						// String
 					case TAG_STRING:
-						entries[i] = new NCIConstantString(
-							((NCIUTF)entries[refs[1]]).toString());
+						entries[i] = new CIConstantString(
+							((CIUTF)entries[refs[1]]).toString());
 						break;
 					
 						// Name and type
@@ -269,16 +269,16 @@ class __PoolDecoder__
 					case TAG_METHODREF:
 					case TAG_INTERFACEMETHODREF:
 						ClassNameSymbol cl = __class(dref, refs[1]).get();
-						NCIMemberNameAndType nat = __nat(dref, refs[2]);
+						CIMemberNameAndType nat = __nat(dref, refs[2]);
 						
 						// A field
 						if (tag == TAG_FIELDREF)
-							entries[i] = new NCIFieldReference(cl, nat.name(),
+							entries[i] = new CIFieldReference(cl, nat.name(),
 								nat.type().asField());
 						
 						// Methods
 						else
-							entries[i] = new NCIMethodReference(
+							entries[i] = new CIMethodReference(
 								tag != TAG_METHODREF, cl, nat.name(),
 								nat.type().asMethod());
 						break;
@@ -298,14 +298,14 @@ class __PoolDecoder__
 				// constant which is not valid. (The tag; Reference A;
 				// Reference B)}
 				int q = refs.length;
-				throw new NCIException(NCIException.Issue.ILLEGAL_CONSTANT,
+				throw new CIException(CIException.Issue.ILLEGAL_CONSTANT,
 					String.format("AQ1g %d %d %d", tag, (1 < q ? refs[1] : -1),
 					(2 < q ? refs[2] : -1)), e);
 			}
 		}
 		
 		// Build it
-		return new NCIPool(entries);
+		return new CIPool(entries);
 	}
 	
 	/**
@@ -317,7 +317,7 @@ class __PoolDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/24
 	 */
-	private NCIClassReference __class(int[][] __refs, int __ei)
+	private CIClassReference __class(int[][] __refs, int __ei)
 		throws NullPointerException
 	{
 		// Check
@@ -325,17 +325,17 @@ class __PoolDecoder__
 			throw new NullPointerException("NARG");
 		
 		// Get entry set
-		NCIPoolEntry ents[] = entries;
+		CIPoolEntry ents[] = entries;
 		
 		// Already here?
-		NCIPoolEntry erv;
+		CIPoolEntry erv;
 		if ((erv = ents[__ei]) != null)
-			return (NCIClassReference)erv;
+			return (CIClassReference)erv;
 		
 		// Construct it
 		int[] refs = __refs[__ei];
-		NCIClassReference rv = new NCIClassReference((
-			((NCIUTF)entries[refs[1]]).asClassName()));
+		CIClassReference rv = new CIClassReference((
+			((CIUTF)entries[refs[1]]).asClassName()));
 		
 		// Set and return it
 		ents[__ei] = rv;
@@ -351,7 +351,7 @@ class __PoolDecoder__
 	 * @throws NullPointerException On null arguments
 	 * @since 2016/04/24
 	 */
-	private NCIMemberNameAndType __nat(int[][] __refs, int __ei)
+	private CIMemberNameAndType __nat(int[][] __refs, int __ei)
 		throws NullPointerException
 	{
 		// Check
@@ -359,18 +359,18 @@ class __PoolDecoder__
 			throw new NullPointerException("NARG");
 		
 		// Get entry set
-		NCIPoolEntry ents[] = entries;
+		CIPoolEntry ents[] = entries;
 		
 		// Already here?
-		NCIPoolEntry erv;
+		CIPoolEntry erv;
 		if ((erv = ents[__ei]) != null)
-			return (NCIMemberNameAndType)erv;
+			return (CIMemberNameAndType)erv;
 		
 		// Need to construct it
 		int[] refs = __refs[__ei];
-		NCIMemberNameAndType rv = new NCIMemberNameAndType(
-			(((NCIUTF)ents[refs[1]]).asIdentifier()),
-			(((NCIUTF)ents[refs[2]]).asMember()));
+		CIMemberNameAndType rv = new CIMemberNameAndType(
+			(((CIUTF)ents[refs[1]]).asIdentifier()),
+			(((CIUTF)ents[refs[2]]).asMember()));
 		
 		// Set it
 		ents[__ei] = rv;

@@ -8,17 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.classfile;
+package net.multiphasicapps.squirreljme.ci.standard;
 
 import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIClassFlag;
-import net.multiphasicapps.narf.classinterface.NCIClassFlags;
-import net.multiphasicapps.narf.classinterface.NCIFieldFlag;
-import net.multiphasicapps.narf.classinterface.NCIFieldFlags;
-import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
-import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIClassFlag;
+import net.multiphasicapps.squirreljme.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.ci.CIFieldFlag;
+import net.multiphasicapps.squirreljme.ci.CIFieldFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
 
 /**
  * This decodes class flags.
@@ -43,44 +43,44 @@ final class __FlagDecoder__
 	 * @param __i The input flag field.
 	 * @since 2016/04/23
 	 */
-	static NCIClassFlags __class(int __i)
+	static CIClassFlags __class(int __i)
 	{
-		Set<NCIClassFlag> fl = new HashSet<>();
+		Set<CIClassFlag> fl = new HashSet<>();
 		
 		// Public?
 		if (0 != (__i & 0x0001))
-			fl.add(NCIClassFlag.PUBLIC);
+			fl.add(CIClassFlag.PUBLIC);
 		
 		// Final?
 		if (0 != (__i & 0x0010))
-			fl.add(NCIClassFlag.FINAL);
+			fl.add(CIClassFlag.FINAL);
 		
 		// Super?
 		if (0 != (__i & 0x0020))
-			fl.add(NCIClassFlag.SUPER);
+			fl.add(CIClassFlag.SUPER);
 		
 		// Interface?
 		if (0 != (__i & 0x0200))
-			fl.add(NCIClassFlag.INTERFACE);
+			fl.add(CIClassFlag.INTERFACE);
 		
 		// Abstract?
 		if (0 != (__i & 0x0400))
-			fl.add(NCIClassFlag.ABSTRACT);
+			fl.add(CIClassFlag.ABSTRACT);
 		
 		// Synthetic?
 		if (0 != (__i & 0x1000))
-			fl.add(NCIClassFlag.SYNTHETIC);
+			fl.add(CIClassFlag.SYNTHETIC);
 		
 		// Annotation?
 		if (0 != (__i & 0x2000))
-			fl.add(NCIClassFlag.ANNOTATION);
+			fl.add(CIClassFlag.ANNOTATION);
 		
 		// Enumeration?
 		if (0 != (__i & 0x4000))
-			fl.add(NCIClassFlag.ENUM);
+			fl.add(CIClassFlag.ENUM);
 		
 		// Build it
-		return new NCIClassFlags(fl);
+		return new CIClassFlags(fl);
 	}
 	
 	/**
@@ -91,49 +91,49 @@ final class __FlagDecoder__
 	 * @return The field flags.
 	 * @since 2016/04/26
 	 */
-	static NCIFieldFlags __field(NCIClass __oc, int __bits)
+	static CIFieldFlags __field(CIClass __oc, int __bits)
 	{
 		// Target set
-		Set<NCIFieldFlag> ff = new HashSet<>();
+		Set<CIFieldFlag> ff = new HashSet<>();
 		
 		// Enumeration?
 		if (0 != (__bits & 0x4000))
-			ff.add(NCIFieldFlag.ENUM);
+			ff.add(CIFieldFlag.ENUM);
 		
 		// Final?
 		if (0 != (__bits & 0x0010))
-			ff.add(NCIFieldFlag.FINAL);
+			ff.add(CIFieldFlag.FINAL);
 		
 		// Private?
 		if (0 != (__bits & 0x0002))
-			ff.add(NCIFieldFlag.PRIVATE);
+			ff.add(CIFieldFlag.PRIVATE);
 		
 		// Protected?
 		if (0 != (__bits & 0x0004))
-			ff.add(NCIFieldFlag.PROTECTED);
+			ff.add(CIFieldFlag.PROTECTED);
 		
 		// Public?
 		if (0 != (__bits & 0x0001))
-			ff.add(NCIFieldFlag.PUBLIC);
+			ff.add(CIFieldFlag.PUBLIC);
 		
 		// Static?
 		if (0 != (__bits & 0x0008))
-			ff.add(NCIFieldFlag.STATIC);
+			ff.add(CIFieldFlag.STATIC);
 		
 		// Synthetic?
 		if (0 != (__bits & 0x1000))
-			ff.add(NCIFieldFlag.SYNTHETIC);
+			ff.add(CIFieldFlag.SYNTHETIC);
 		
 		// Transient?
 		if (0 != (__bits & 0x0080))
-			ff.add(NCIFieldFlag.TRANSIENT);
+			ff.add(CIFieldFlag.TRANSIENT);
 		
 		// Volatile?
 		if (0 != (__bits & 0x0040))
-			ff.add(NCIFieldFlag.VOLATILE);
+			ff.add(CIFieldFlag.VOLATILE);
 		
 		// Build flags
-		return new NCIFieldFlags(__oc, ff);
+		return new CIFieldFlags(__oc, ff);
 	}
 	/**
 	 * Parses the flags for a method.
@@ -143,61 +143,61 @@ final class __FlagDecoder__
 	 * @return The method flags.
 	 * @since 2016/04/26
 	 */
-	static NCIMethodFlags __method(NCIClass __oc, int __bits)
+	static CIMethodFlags __method(CIClass __oc, int __bits)
 	{
 		// Target set
-		Set<NCIMethodFlag> ff = new HashSet<>();
+		Set<CIMethodFlag> ff = new HashSet<>();
 		
 		// Public method.
 		if (0 != (__bits & 0x0001))
-			ff.add(NCIMethodFlag.PUBLIC);
+			ff.add(CIMethodFlag.PUBLIC);
 	
 		// Private method.
 		if (0 != (__bits & 0x0002))
-			ff.add(NCIMethodFlag.PRIVATE);
+			ff.add(CIMethodFlag.PRIVATE);
 	
 		// Protected method.
 		if (0 != (__bits & 0x0004))
-			ff.add(NCIMethodFlag.PROTECTED);
+			ff.add(CIMethodFlag.PROTECTED);
 	
 		// Static method.
 		if (0 != (__bits & 0x0008))
-			ff.add(NCIMethodFlag.STATIC);
+			ff.add(CIMethodFlag.STATIC);
 	
 		// Final method.
 		if (0 != (__bits & 0x0010))
-			ff.add(NCIMethodFlag.FINAL);
+			ff.add(CIMethodFlag.FINAL);
 	
 		// Synchronized method.
 		if (0 != (__bits & 0x0020))
-			ff.add(NCIMethodFlag.SYNCHRONIZED);
+			ff.add(CIMethodFlag.SYNCHRONIZED);
 	
 		// Bridge method.
 		if (0 != (__bits & 0x0040))
-			ff.add(NCIMethodFlag.BRIDGE);
+			ff.add(CIMethodFlag.BRIDGE);
 	
 		// Variable argument method.
 		if (0 != (__bits & 0x0080))
-			ff.add(NCIMethodFlag.VARARGS);
+			ff.add(CIMethodFlag.VARARGS);
 	
 		// Native method.
 		if (0 != (__bits & 0x0100))
-			ff.add(NCIMethodFlag.NATIVE);
+			ff.add(CIMethodFlag.NATIVE);
 	
 		// Abstract method.
 		if (0 != (__bits & 0x0400))
-			ff.add(NCIMethodFlag.ABSTRACT);
+			ff.add(CIMethodFlag.ABSTRACT);
 	
 		// Strict floating point method.
 		if (0 != (__bits & 0x0800))
-			ff.add(NCIMethodFlag.STRICT);
+			ff.add(CIMethodFlag.STRICT);
 	
 		// Synthetic method.
 		if (0 != (__bits & 0x1000))
-			ff.add(NCIMethodFlag.SYNTHETIC);
+			ff.add(CIMethodFlag.SYNTHETIC);
 	
 		// Build flags
-		return new NCIMethodFlags(__oc, ff);
+		return new CIMethodFlags(__oc, ff);
 	}
 }
 

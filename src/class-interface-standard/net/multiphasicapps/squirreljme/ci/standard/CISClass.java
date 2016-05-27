@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.classfile;
+package net.multiphasicapps.squirreljme.ci.standard;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
@@ -20,17 +20,17 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IllegalSymbolException;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIClassFlag;
-import net.multiphasicapps.narf.classinterface.NCIClassFlags;
-import net.multiphasicapps.narf.classinterface.NCIClassReference;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCIField;
-import net.multiphasicapps.narf.classinterface.NCIFieldID;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
-import net.multiphasicapps.narf.classinterface.NCIMethodID;
-import net.multiphasicapps.narf.classinterface.NCIPool;
-import net.multiphasicapps.narf.classinterface.NCIVersion;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIClassFlag;
+import net.multiphasicapps.squirreljme.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIField;
+import net.multiphasicapps.squirreljme.ci.CIFieldID;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.ci.CIPool;
+import net.multiphasicapps.squirreljme.ci.CIVersion;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
@@ -39,21 +39,21 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  *
  * @since 2016/04/24
  */
-public final class NCFClass
-	implements NCIClass
+public final class CISClass
+	implements CIClass
 {
 	/** The class file magic number. */
 	protected static final int MAGIC_NUMBER =
 		0xCAFE_BABE;
 	
 	/** The class version number. */
-	protected final NCIVersion version;
+	protected final CIVersion version;
 	
 	/** The constant pool of the class. */
-	protected final NCIPool constantpool;
+	protected final CIPool constantpool;
 	
 	/** The class flags. */
-	protected final NCIClassFlags flags;
+	protected final CIClassFlags flags;
 	
 	/** The name of this class. */
 	protected final ClassNameSymbol thisname;
@@ -65,22 +65,22 @@ public final class NCFClass
 	protected final Set<ClassNameSymbol> interfacenames;
 	
 	/** Class fields. */
-	protected final Map<NCIFieldID, NCIField> fields;
+	protected final Map<CIFieldID, CIField> fields;
 	
 	/** Class methods. */
-	protected final Map<NCIMethodID, NCIMethod> methods;
+	protected final Map<CIMethodID, CIMethod> methods;
 	
 	/**
 	 * Initializes the class.
 	 *
 	 * @param __in The class data source.
 	 * @throws IOException On read errors.
-	 * @throws NCIException On class format errors.
+	 * @throws CIException On class format errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/24
 	 */
-	public NCFClass(InputStream __in)
-		throws IOException, NCIException, NullPointerException
+	public CISClass(InputStream __in)
+		throws IOException, CIException, NullPointerException
 	{
 		// Check
 		if (__in == null)
@@ -95,7 +95,7 @@ public final class NCFClass
 		// however the given magic number was specified.}
 		int clmagic;
 		if (MAGIC_NUMBER != (clmagic = das.readInt()))
-			throw new NCIException(NCIException.Issue.BAD_MAGIC_NUMBER,
+			throw new CIException(CIException.Issue.BAD_MAGIC_NUMBER,
 				String.format("AQ17 %08x", clmagic));
 		
 		// Read the class version number, this modifies if certain
@@ -104,13 +104,13 @@ public final class NCFClass
 		// @{squirreljme.error AQ18 The input class file version is either too
 		// new or too old. The specified class file version must be within the
 		// specified range.}
-		version = NCIVersion.findVersion(
+		version = CIVersion.findVersion(
 			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
-		if (version.compareTo(NCIVersion.MAX_VERSION) > 0 ||
-			version.compareTo(NCIVersion.MIN_VERSION) < 0)
-			throw new NCIException(NCIException.Issue.BAD_CLASS_VERSION,
+		if (version.compareTo(CIVersion.MAX_VERSION) > 0 ||
+			version.compareTo(CIVersion.MIN_VERSION) < 0)
+			throw new CIException(CIException.Issue.BAD_CLASS_VERSION,
 				String.format("AQ18 %s != [%s, %s]", version,
-				NCIVersion.MIN_VERSION, NCIVersion.MAX_VERSION));
+				CIVersion.MIN_VERSION, CIVersion.MAX_VERSION));
 		
 		// Decode the constant pool
 		constantpool = new __PoolDecoder__(this, das).get();
@@ -121,13 +121,13 @@ public final class NCFClass
 		try
 		{
 			// Read class name
-			thisname = constantpool.<NCIClassReference>requiredAs(
-				das.readUnsignedShort(), NCIClassReference.class).get().
+			thisname = constantpool.<CIClassReference>requiredAs(
+				das.readUnsignedShort(), CIClassReference.class).get().
 				asBinaryName().asClassName();
 		
 			// Read super name
-			NCIClassReference scr = constantpool.<NCIClassReference>nullableAs(
-				das.readUnsignedShort(), NCIClassReference.class);
+			CIClassReference scr = constantpool.<CIClassReference>nullableAs(
+				das.readUnsignedShort(), CIClassReference.class);
 			if (scr != null)
 				supername = scr.get().asBinaryName().asClassName();
 			else
@@ -137,8 +137,8 @@ public final class NCFClass
 			int ni = das.readUnsignedShort();
 			Set<ClassNameSymbol> in = new LinkedHashSet<>();
 			for (int i = 0; i < ni; i++)
-				in.add(constantpool.<NCIClassReference>requiredAs(
-					das.readUnsignedShort(), NCIClassReference.class).get().
+				in.add(constantpool.<CIClassReference>requiredAs(
+					das.readUnsignedShort(), CIClassReference.class).get().
 					asBinaryName().asClassName());
 			
 			// Set
@@ -149,25 +149,25 @@ public final class NCFClass
 		catch (IllegalSymbolException e)
 		{
 			// {@squirreljme.error AQ1j The name of the current, super, or
-			// an NCIClassimplemented interface is not a valid binary name.}
-			throw new NCIException(NCIException.Issue.BAD_CLASS_NAME, "AQ1j",
+			// an CIClassimplemented interface is not a valid binary name.}
+			throw new CIException(CIException.Issue.BAD_CLASS_NAME, "AQ1j",
 				e);
 		}
 		
 		// Read in fields
 		int nf = das.readUnsignedShort();
-		Map<NCIFieldID, NCIField> of = new HashMap<>();
+		Map<CIFieldID, CIField> of = new HashMap<>();
 		for (int i = 0; i < nf; i++)
 			__ReadMember__.__field(this, das, of);
-		fields = UnmodifiableMap.<NCIFieldID, NCIField>of(of);
+		fields = UnmodifiableMap.<CIFieldID, CIField>of(of);
 		
 		
 		// Read in methods
 		int nm = das.readUnsignedShort();
-		Map<NCIMethodID, NCIMethod> om = new HashMap<>();
+		Map<CIMethodID, CIMethod> om = new HashMap<>();
 		for (int i = 0; i < nm; i++)
 			__ReadMember__.__method(this, das, om);
-		methods = UnmodifiableMap.<NCIMethodID, NCIMethod>of(om);
+		methods = UnmodifiableMap.<CIMethodID, CIMethod>of(om);
 		
 		// Skip attributes
 		int na = das.readUnsignedShort();
@@ -180,7 +180,7 @@ public final class NCFClass
 			// negative size.}
 			int len = das.readInt();
 			if (len < 0)
-				throw new NCIException(NCIException.Issue.NEGATIVE_ATTRIBUTE,
+				throw new CIException(CIException.Issue.NEGATIVE_ATTRIBUTE,
 					"AQ1w");
 			
 			// Skip the length
@@ -190,7 +190,7 @@ public final class NCFClass
 		// {@squirreljme.error AQ1o Extra bytes follow the end of the class
 		// file data which is illegal.}
 		if (das.read() >= 0)
-			throw new NCIException(NCIException.Issue.NOT_EOC, "AQ1o");
+			throw new CIException(CIException.Issue.NOT_EOC, "AQ1o");
 	}
 	
 	/**
@@ -198,7 +198,7 @@ public final class NCFClass
 	 * @since 2016/04/24
 	 */
 	@Override
-	public NCIPool constantPool()
+	public CIPool constantPool()
 	{
 		return constantpool;
 	}
@@ -208,7 +208,7 @@ public final class NCFClass
 	 * @since 2016/04/24
 	 */
 	@Override
-	public Map<NCIFieldID, NCIField> fields()
+	public Map<CIFieldID, CIField> fields()
 	{
 		return fields;
 	}
@@ -218,7 +218,7 @@ public final class NCFClass
 	 * @since 2016/04/24
 	 */
 	@Override
-	public NCIClassFlags flags()
+	public CIClassFlags flags()
 	{
 		return flags;
 	}
@@ -238,7 +238,7 @@ public final class NCFClass
 	 * @since 2016/04/24
 	 */
 	@Override
-	public Map<NCIMethodID, NCIMethod> methods()
+	public Map<CIMethodID, CIMethod> methods()
 	{
 		return methods;
 	}
@@ -248,7 +248,7 @@ public final class NCFClass
 	 * @since 2016/05/12
 	 */
 	@Override
-	public NCIClass outerClass()
+	public CIClass outerClass()
 	{
 		return this;
 	}
@@ -278,7 +278,7 @@ public final class NCFClass
 	 * @since 2016/04/24
 	 */
 	@Override
-	public NCIVersion version()
+	public CIVersion version()
 	{
 		return version;
 	}

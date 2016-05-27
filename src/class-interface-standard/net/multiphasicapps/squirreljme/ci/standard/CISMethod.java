@@ -8,33 +8,33 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.classfile;
+package net.multiphasicapps.squirreljme.ci.standard;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
-import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
-import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
-import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
-import net.multiphasicapps.narf.classinterface.NCIMethodID;
-import net.multiphasicapps.narf.classinterface.NCINativeCode;
+import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.ci.CINativeCode;
 
 /**
  * This represents a method which is contained within a class file.
  *
  * @since 2016/04/26
  */
-public final class NCFMethod
-	extends NCFMember<NCIMethodID, NCIMethodFlags>
-	implements NCIMethod
+public final class CISMethod
+	extends CISMember<CIMethodID, CIMethodFlags>
+	implements CIMethod
 {
 	/** Raw code attribute. */
 	protected final byte[] code;
 	
 	/** Cached code attribute data. */
-	private volatile Reference<NCICodeAttribute> _ca;
+	private volatile Reference<CICodeAttribute> _ca;
 	
 	/**
 	 * Initializes the class method.
@@ -43,24 +43,24 @@ public final class NCFMethod
 	 * @param __id The identifier of the method.
 	 * @param __fl The method flags.
 	 * @param __ca The code attribute of this method.
-	 * @throws NCIException If a native/abstract has code or there is no code
+	 * @throws CIException If a native/abstract has code or there is no code
 	 * and those flags are not set.
 	 * @since 2016/04/26
 	 */
-	NCFMethod(NCFClass __oc, NCIMethodID __id, NCIMethodFlags __fl,
+	CISMethod(CISClass __oc, CIMethodID __id, CIMethodFlags __fl,
 		byte[] __ca)
-		throws NCIException
+		throws CIException
 	{
 		super(__oc, __id, __fl);
 		
 		// {@squirreljme.error AQ1x The specified method is either native or
 		// abstract and has a code attribute or is not native or abstract and
 		// does not have a code attribute. (The method ID; The flags)}
-		NCIMethodFlags f = flags();
+		CIMethodFlags f = flags();
 		boolean abs;
 		if ((abs = (f.isNative() || f.isAbstract())) != (__ca == null))
-			throw new NCIException((abs ? NCIException.Issue.ABSTRACT_CODE :
-				NCIException.Issue.MISSING_CODE),
+			throw new CIException((abs ? CIException.Issue.ABSTRACT_CODE :
+				CIException.Issue.MISSING_CODE),
 				String.format("AQ1x %s %s", __id, f));
 		
 		// Set
@@ -74,14 +74,14 @@ public final class NCFMethod
 		// {@squirreljme.error AQ20 Instance and static initializers have
 		// additional requirements as to which flags may be set. (The method
 		// ID; The flags)}
-		if ((in && (f.contains(NCIMethodFlag.STATIC) ||
-			f.contains(NCIMethodFlag.FINAL) ||
-			f.contains(NCIMethodFlag.SYNCHRONIZED) ||
-			f.contains(NCIMethodFlag.BRIDGE) ||
-			f.contains(NCIMethodFlag.NATIVE) ||
-			f.contains(NCIMethodFlag.ABSTRACT))) ||
-			(cl && (!f.contains(NCIMethodFlag.STATIC))))
-			throw new NCIException(NCIException.Issue.ILLEGAL_FLAGS,
+		if ((in && (f.contains(CIMethodFlag.STATIC) ||
+			f.contains(CIMethodFlag.FINAL) ||
+			f.contains(CIMethodFlag.SYNCHRONIZED) ||
+			f.contains(CIMethodFlag.BRIDGE) ||
+			f.contains(CIMethodFlag.NATIVE) ||
+			f.contains(CIMethodFlag.ABSTRACT))) ||
+			(cl && (!f.contains(CIMethodFlag.STATIC))))
+			throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
 				String.format("AQ20 %s %s", __id, f));
 	}
 	
@@ -90,15 +90,15 @@ public final class NCFMethod
 	 * @since 2016/04/27
 	 */
 	@Override
-	public NCICodeAttribute code()
+	public CICodeAttribute code()
 	{
 		// Obtain the attribute
-		Reference<NCICodeAttribute> ref = _ca;
-		NCICodeAttribute rv;
+		Reference<CICodeAttribute> ref = _ca;
+		CICodeAttribute rv;
 		
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))
-			_ca = new WeakReference<>((rv = new NCICodeAttribute(this, code)));
+			_ca = new WeakReference<>((rv = new CICodeAttribute(this, code)));
 		
 		// Return it
 		return rv;
@@ -109,7 +109,7 @@ public final class NCFMethod
 	 * @since 2016/05/20
 	 */
 	@Override
-	public NCINativeCode nativeCode()
+	public CINativeCode nativeCode()
 	{
 		// Class files do not have native code
 		return null;

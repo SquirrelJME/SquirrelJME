@@ -8,12 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.classfile;
+package net.multiphasicapps.squirreljme.ci.standard;
 
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIMember;
-import net.multiphasicapps.narf.classinterface.NCIMemberFlags;
-import net.multiphasicapps.narf.classinterface.NCIMemberID;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIMember;
+import net.multiphasicapps.squirreljme.ci.CIMemberFlags;
+import net.multiphasicapps.squirreljme.ci.CIMemberID;
 
 /**
  * This is the base class for .
@@ -22,12 +22,12 @@ import net.multiphasicapps.narf.classinterface.NCIMemberID;
  * @param <F> The flags used for the member.
  * @since 2016/04/26
  */
-public abstract class NCFMember<I extends NCIMemberID,
-	F extends NCIMemberFlags>
-	implements NCIMember<I, F>
+public abstract class CISMember<I extends CIMemberID,
+	F extends CIMemberFlags>
+	implements CIMember<I, F>
 {
 	/** The class containing this member. */
-	protected final NCIClass outerclass;
+	protected final CIClass outerclass;
 	
 	/** The identifier and type of this member. */
 	protected final I id;
@@ -44,7 +44,7 @@ public abstract class NCFMember<I extends NCIMemberID,
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/26
 	 */
-	NCFMember(NCFClass __oc, I __id, F __fl)
+	CISMember(CISClass __oc, I __id, F __fl)
 		throws NullPointerException
 	{
 		// Check
@@ -82,7 +82,7 @@ public abstract class NCFMember<I extends NCIMemberID,
 	 * @since 2016/04/26
 	 */
 	@Override
-	public NCIClass outerClass()
+	public CIClass outerClass()
 	{
 		return outerclass;
 	}

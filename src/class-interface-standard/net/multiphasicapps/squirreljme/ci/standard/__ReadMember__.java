@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.classfile;
+package net.multiphasicapps.squirreljme.ci.standard;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -18,18 +18,18 @@ import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.io.region.BufferAreaInputStream;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIConstantValue;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCIField;
-import net.multiphasicapps.narf.classinterface.NCIFieldFlag;
-import net.multiphasicapps.narf.classinterface.NCIFieldFlags;
-import net.multiphasicapps.narf.classinterface.NCIFieldID;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
-import net.multiphasicapps.narf.classinterface.NCIMethodFlag;
-import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
-import net.multiphasicapps.narf.classinterface.NCIMethodID;
-import net.multiphasicapps.narf.classinterface.NCIUTF;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIConstantValue;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIField;
+import net.multiphasicapps.squirreljme.ci.CIFieldFlag;
+import net.multiphasicapps.squirreljme.ci.CIFieldFlags;
+import net.multiphasicapps.squirreljme.ci.CIFieldID;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.ci.CIUTF;
 
 /**
  * This reads class members.
@@ -57,8 +57,8 @@ class __ReadMember__
 	 * @throws IOException On read errors.
 	 * @sicne 2016/04/26
 	 */
-	static void __field(NCFClass __oc, DataInputStream __das,
-		Map<NCIFieldID, NCIField> __into)
+	static void __field(CISClass __oc, DataInputStream __das,
+		Map<CIFieldID, CIField> __into)
 		throws IOException
 	{
 		// Read flags
@@ -69,7 +69,7 @@ class __ReadMember__
 		FieldSymbol type = __readType(__oc, __das).asField();
 		
 		// Setup ID
-		NCIFieldID id = new NCIFieldID(name, type);
+		CIFieldID id = new CIFieldID(name, type);
 		
 		// Read in attributes
 		Object constval = null;
@@ -77,14 +77,14 @@ class __ReadMember__
 		for (int i = 0; i < na; i++)
 		{
 			// Read kind
-			String kind = __oc.constantPool().<NCIUTF>requiredAs(
-				__das.readUnsignedShort(), NCIUTF.class).toString();
+			String kind = __oc.constantPool().<CIUTF>requiredAs(
+				__das.readUnsignedShort(), CIUTF.class).toString();
 			int len = __das.readInt();
 			
 			// {@squirreljme.error AQ1q Field attribute has negative length.
 			// (The field id)}
 			if (len < 0)
-				throw new NCIException(NCIException.Issue.NEGATIVE_ATTRIBUTE,
+				throw new CIException(CIException.Issue.NEGATIVE_ATTRIBUTE,
 					String.format("AQ1q", id));
 			
 			// Setup area
@@ -100,22 +100,22 @@ class __ReadMember__
 					// {@squirreljme.error AQ1r Field already has a constant
 					// value. (The field ID)}
 					if (constval != null)
-						throw new NCIException(NCIException.Issue.DOUBLE_CONST,
+						throw new CIException(CIException.Issue.DOUBLE_CONST,
 							String.format("AQ1r", id));
 					
 					// Reads the constant field value
-					constval = __oc.constantPool().<NCIConstantValue>
+					constval = __oc.constantPool().<CIConstantValue>
 						requiredAs(dais.readUnsignedShort(),
-						NCIConstantValue.class).get();
+						CIConstantValue.class).get();
 				}
 			}
 		}
 		
 		// {@squirreljme.error AQ1s Duplicate field in class. (The field ID)}
-		NCIField old = __into.put(id, new NCFField(__oc,
+		CIField old = __into.put(id, new CISField(__oc,
 			id, __FlagDecoder__.__field(__oc, flags), constval));
 		if (old != null)
-			throw new NCIException(NCIException.Issue.DUPLICATE_FIELD,
+			throw new CIException(CIException.Issue.DUPLICATE_FIELD,
 				String.format("AQ1s", id));
 	}
 	
@@ -128,8 +128,8 @@ class __ReadMember__
 	 * @throws IOException On read errors.
 	 * @sicne 2016/04/26
 	 */
-	static void __method(NCFClass __oc, DataInputStream __das,
-		Map<NCIMethodID, NCIMethod> __into)
+	static void __method(CISClass __oc, DataInputStream __das,
+		Map<CIMethodID, CIMethod> __into)
 		throws IOException
 	{
 		// Read flags
@@ -140,7 +140,7 @@ class __ReadMember__
 		MethodSymbol type = __readType(__oc, __das).asMethod();
 		
 		// Setup ID
-		NCIMethodID id = new NCIMethodID(name, type);
+		CIMethodID id = new CIMethodID(name, type);
 		
 		// Read in attributes
 		byte[] code = null;
@@ -148,14 +148,14 @@ class __ReadMember__
 		for (int i = 0; i < na; i++)
 		{
 			// Read kind
-			String kind = __oc.constantPool().<NCIUTF>requiredAs(
-				__das.readUnsignedShort(), NCIUTF.class).toString();
+			String kind = __oc.constantPool().<CIUTF>requiredAs(
+				__das.readUnsignedShort(), CIUTF.class).toString();
 			int len = __das.readInt();
 			
 			// {@squirreljme.error AQ1w Method attribute has negative length.
 			// (The method id)}
 			if (len < 0)
-				throw new NCIException(NCIException.Issue.NEGATIVE_ATTRIBUTE,
+				throw new CIException(CIException.Issue.NEGATIVE_ATTRIBUTE,
 					String.format("AQ1w", id));
 			
 			// Setup area
@@ -171,24 +171,24 @@ class __ReadMember__
 					// {@squirreljme.error AQ1y Method already has a code
 					// attribute. (The method ID)}
 					if (code != null)
-						throw new NCIException(NCIException.Issue.DOUBLE_CODE,
+						throw new CIException(CIException.Issue.DOUBLE_CODE,
 							String.format("AQ1y", id));
 					
 					// {@squirreljme.error AQ1z Did not read the entire code
 					// attribute for a method. (The method ID)}
 					code = new byte[len];
 					if (len != dais.read(code))
-						throw new NCIException(NCIException.Issue.SHORT_CODE,
+						throw new CIException(CIException.Issue.SHORT_CODE,
 							String.format("AQ1z", id));
 				}
 			}
 		}
 		
 		// {@squirreljme.error AQ1u Duplicate field in class. (The field ID)}
-		NCIMethod old = __into.put(id, new NCFMethod(__oc,
+		CIMethod old = __into.put(id, new CISMethod(__oc,
 			id, __FlagDecoder__.__method(__oc, flags), code));
 		if (old != null)
-			throw new NCIException(NCIException.Issue.DUPLICATE_METHOD,
+			throw new CIException(CIException.Issue.DUPLICATE_METHOD,
 				String.format("AQ1u", id));
 	}
 	
@@ -201,12 +201,12 @@ class __ReadMember__
 	 * @throws IOException On read errors.
 	 * @since 2016/04/26
 	 */
-	private static IdentifierSymbol __readIdentifier(NCFClass __oc,
+	private static IdentifierSymbol __readIdentifier(CISClass __oc,
 		DataInputStream __das)
 		throws IOException
 	{
-		return __oc.constantPool().<NCIUTF>requiredAs(
-			__das.readUnsignedShort(), NCIUTF.class).asIdentifier();
+		return __oc.constantPool().<CIUTF>requiredAs(
+			__das.readUnsignedShort(), CIUTF.class).asIdentifier();
 	}
 	
 	/**
@@ -218,12 +218,12 @@ class __ReadMember__
 	 * @throws IOException On read errors.
 	 * @since 2016/04/26
 	 */
-	private static MemberTypeSymbol __readType(NCFClass __oc,
+	private static MemberTypeSymbol __readType(CISClass __oc,
 		DataInputStream __das)
 		throws IOException
 	{
-		return __oc.constantPool().<NCIUTF>requiredAs(
-			__das.readUnsignedShort(), NCIUTF.class).asMember();
+		return __oc.constantPool().<CIUTF>requiredAs(
+			__das.readUnsignedShort(), CIUTF.class).asMember();
 	}
 	
 	/**
@@ -248,7 +248,7 @@ class __ReadMember__
 			// {@squirreljme.error AQ1p End of file reached while skipping
 			// the class attributes.}
 			if (total >= nt)
-				throw new NCIException(NCIException.Issue.READ_ERROR,
+				throw new CIException(CIException.Issue.READ_ERROR,
 					"AQ1p");
 			
 			// Set new total
