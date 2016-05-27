@@ -10,6 +10,16 @@
 
 package net.multiphasicapps.squirreljme.classpath;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIException;
+
 /**
  * This is a class path, it contains multiple {@link ClassUnit}s and provides
  * a uniform view of the classes and resources which are available to a
@@ -19,5 +29,99 @@ package net.multiphasicapps.squirreljme.classpath;
  */
 public final class ClassPath
 {
+	/** The class unitss which are available for usage. */
+	private final ClassUnit[] _units;
+	
+	/** The cache of classes which have already been loaded. */
+	private final Map<ClassNameSymbol, Reference<CIClass>> _cache =
+		new HashMap<>();
+	
+	/**
+	 * The queue of classes which have loaded properly but have yet to be
+	 * properly verified.
+	 */
+	private final Map<ClassNameSymbol, CIClass> _inverif =
+		new HashMap<>();
+	
+	/**
+	 * Initializes the class path using the given class units to
+	 * locate classes and resources.
+	 *
+	 * @param __cus The class units to use.
+	 * @throw NullPointerException On null arguments.
+	 * @since 2016/05/27
+	 */
+	public ClassPath(ClassUnit... __cus)
+		throws NullPointerException
+	{
+		// Check
+		if (__cus == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		__cus = __cus.clone();
+		this._units = __cus;
+		for (ClassUnit cup : __cus)
+			if (cup == null)
+				throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * Locates the given class by the specified name and verifies that it is
+	 * well formed before it is returned.
+	 *
+	 * @param __cns The name of the class to locate.
+	 * @return The located class.
+	 * @throws CIException If the class could not be found or it could not
+	 * properly be loaded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/27
+	 */
+	public CIClass locateClass(ClassNameSymbol __cns)
+		throws CIException, NullPointerException
+	{
+		// Check
+		if (__cns == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		ClassUnit[] units = this._units;
+		synchronized (units)
+		{
+			// Get the cache
+			Map<ClassNameSymbol, Reference<CIClass>> cache = this._cache;
+			Reference<CIClass> ref = cache.get(__cns);
+			CIClass rv;
+			
+			// Needs to be cached?
+			if (ref == null || null == (rv = ref.get()))
+			{
+				// Check if the class is in the verification stage (it has
+				// already been partially loaded)
+				Map<ClassNameSymbol, CIClass> inverif = this._inverif;
+				CIClass ver = inverif.get(__cns);
+				
+				// In verification step, so return it
+				if (ver != null)
+					return null;
+				
+				// Load the class to be returned from the first unit that
+				// has it.
+				int n = units.length;
+				for (int i = 0; i < n; i++)
+					if (null != (rv = units[i].locateClass(__cns)))
+						break;
+				
+				// {@squirreljme.error BN01 The specified class does not exist
+				// in any class unit. (The name of the class)}
+				if (__cns == null)
+					throw new CIException(String.format("BN01 %s", __cns));
+				
+				throw new Error("TODO");
+			}
+			
+			throw new Error("TODO");
+		}
+	}
 }
 

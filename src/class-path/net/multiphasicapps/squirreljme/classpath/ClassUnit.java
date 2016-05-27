@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.classpath;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 
 /**
@@ -30,6 +32,19 @@ public abstract class ClassUnit
 	{
 		return toString().compareTo(__cu.toString());
 	}
+	
+	/**
+	 * Locates a class using the given class name in this unit and possibly
+	 * returns it if this unit has such a class available.
+	 *
+	 * @param __cns The class name symbol to locate a class for, or
+	 * {@code null} if it is not available in this unit.
+	 * @return The class associated with the given class name.
+	 * @throws CIException If the class could not be loaded.
+	 * @since 2016/05/27
+	 */
+	public abstract CIClass locateClass(ClassNameSymbol __cns)
+		throws CIException;
 	
 	/**
 	 * Returns the name of the JAR file which is used for the given class

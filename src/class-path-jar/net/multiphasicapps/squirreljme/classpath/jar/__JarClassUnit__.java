@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.classpath.jar;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 
 /**
@@ -45,6 +47,21 @@ final class __JarClassUnit__
 		// Set
 		this.provider = __jcup;
 		this.key = __k;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/27
+	 */
+	@Override
+	public CIClass locateClass(ClassNameSymbol __cns)
+		throws CIException, NullPointerException
+	{
+		// Check
+		if (__cns == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

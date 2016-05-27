@@ -21,7 +21,10 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
+import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
 import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
@@ -187,8 +190,17 @@ public class Main
 			provs[i] = new FSJarClassUnitProvider(Paths.get(cpit.next()));
 		cpit = null;
 		
-		if (true)
-			throw new Error("TODO");
+		// Setup the class path
+		ClassPath classpath = new ClassPath(provs);
+		
+		// Locate the main class
+		CIClass maincl = classpath.locateClass(pmain.asClassName());
+		
+		// {@squirreljme.error BC07 The main class was not found in the class
+		// path to be used for execution. (The main class)}
+		if (maincl == null)
+			throw new IllegalArgumentException(String.format("BC07 %s",
+				pmain));
 		
 		// Initialization may fail
 		JVMTestKernel jtk = null;

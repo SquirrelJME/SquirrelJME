@@ -105,3 +105,7 @@ has no mapping mechanism anyway).
 I also should move the magical code down to a much lower package where it is
 easier to find, but still reserved in a way.
 
+## 17:33
+
+I actually need to make the JAR class unit public.
+
