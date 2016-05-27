@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.terp;
+package net.multiphasicapps.squirreljme.terp.pure;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +26,7 @@ import net.multiphasicapps.squirreljme.ci.CIClassReference;
  *
  * @since 2016/05/12
  */
-public class TerpInterpreterPure
+public class PureInterpreter
 	extends TerpInterpreter
 {
 	/** The code to be interpreted. */
@@ -55,7 +55,7 @@ public class TerpInterpreterPure
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public TerpInterpreterPure(TerpThread __t, NBCByteCode __p)
+	public PureInterpreter(TerpThread __t, NBCByteCode __p)
 		throws NullPointerException
 	{
 		super(__t);
