@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,22 +18,22 @@ import net.multiphasicapps.narf.bytecode.NBCInstructionID;
 import net.multiphasicapps.narf.bytecode.NBCOperation;
 import net.multiphasicapps.narf.bytecode.NBCVariablePush;
 import net.multiphasicapps.narf.bytecode.NBCVariableType;
-import net.multiphasicapps.narf.classinterface.NCICodeAttribute;
-import net.multiphasicapps.narf.classinterface.NCIClassReference;
+import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
+import net.multiphasicapps.squirreljme.ci.CIClassReference;
 
 /**
  * This is the pure interpreter which takes byte code directly for execution.
  *
  * @since 2016/05/12
  */
-public class NIInterpreterPure
-	extends NIInterpreter
+public class TerpInterpreterPure
+	extends TerpInterpreter
 {
 	/** The code to be interpreted. */
 	protected final NBCByteCode program;
 	
 	/** The code attribute used. */
-	protected final NCICodeAttribute attribute;
+	protected final CICodeAttribute attribute;
 	
 	/** Local variable data. */
 	private final Object[] _locals;
@@ -55,7 +55,7 @@ public class NIInterpreterPure
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public NIInterpreterPure(NIThread __t, NBCByteCode __p)
+	public TerpInterpreterPure(TerpThread __t, NBCByteCode __p)
 		throws NullPointerException
 	{
 		super(__t);
@@ -66,7 +66,7 @@ public class NIInterpreterPure
 		
 		// Set
 		this.program = __p;
-		NCICodeAttribute attr;
+		CICodeAttribute attr;
 		this.attribute = (attr = __p.attribute());
 		
 		// Setup storage
@@ -123,7 +123,7 @@ public class NIInterpreterPure
 					// known. (The instruction address; The instruction ID; The
 					// operation itself)}
 				default:
-					throw new NIException(this.core, NIException.Issue.
+					throw new TerpException(this.core, TerpException.Issue.
 						ILLEGAL_OPCODE, String.format("AN0q %d %d %s",
 						pcaddr, code, op));
 			}
@@ -143,13 +143,13 @@ public class NIInterpreterPure
 	private int __new(NBCOperation __op)
 	{
 		// Lookup the class
-		ClassNameSymbol csn = ((NCIClassReference)__op.arguments().get(0)).
+		ClassNameSymbol csn = ((CIClassReference)__op.arguments().get(0)).
 			get();
-		NICore core = this.core;
-		NIClass cl = core.initClass(csn);
+		TerpCore core = this.core;
+		TerpClass cl = core.initClass(csn);
 		
 		// Allocate object (arrays are allocated to zero length using new)
-		NIObject obj = new NIObject(core, cl, 0);
+		TerpObject obj = new TerpObject(core, cl, 0);
 		
 		// Set the topmost stack entry to the new object
 		int top = _top;
@@ -207,7 +207,7 @@ public class NIInterpreterPure
 			// and input pop operation is not valid. (The index)}
 			int dx = pu.popIndex();
 			if (dx < 0 || dx >= n)
-				throw new NIException(core, NIException.Issue.ILLEGAL_PUSH,
+				throw new TerpException(core, TerpException.Issue.ILLEGAL_PUSH,
 					String.format("AN0t %d", dx));
 			
 			// Direct copy

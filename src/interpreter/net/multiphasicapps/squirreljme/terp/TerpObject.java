@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,13 +18,13 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/04/27
  */
-public class NIObject
+public class TerpObject
 {
 	/** The owning core. */
-	protected final NICore core;
+	protected final TerpCore core;
 	
 	/** The associated class type used. */
-	protected final NIClass niclass;
+	protected final TerpClass niclass;
 	
 	/** The object's internal hash code. */
 	protected final int hashcode;
@@ -38,12 +38,12 @@ public class NIObject
 	 *
 	 * @param __c The owning core of the given object.
 	 * @param __cl The class to initialize the object for.
-	 * @throws NIException If the object could not be initialized.
+	 * @throws TerpException If the object could not be initialized.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/27
 	 */
-	public NIObject(NICore __c, NIClass __cl)
-		throws NIException, NullPointerException
+	public TerpObject(TerpCore __c, TerpClass __cl)
+		throws TerpException, NullPointerException
 	{
 		this(__c, __cl, 0);
 	}
@@ -55,12 +55,12 @@ public class NIObject
 	 * @param __c The owning core of the given object.
 	 * @param __cl The class to initialize the object for.
 	 * @param __al The length of the array.
-	 * @throws NIException If the object could not be initialized.
+	 * @throws TerpException If the object could not be initialized.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/27
 	 */
-	public NIObject(NICore __c, NIClass __cl, int __al)
-		throws NIException, NullPointerException
+	public TerpObject(TerpCore __c, TerpClass __cl, int __al)
+		throws TerpException, NullPointerException
 	{
 		// Check
 		if (__c == null || __cl == null)
@@ -69,19 +69,19 @@ public class NIObject
 		// {@squirreljme.error AN0j An attempt was made to allocate an array
 		// for a class which is not an array. (The class)}
 		if (__al != 0 && !__cl.isArray())
-			throw new NIException(__c, NIException.Issue.NOT_AN_ARRAY,
+			throw new TerpException(__c, TerpException.Issue.NOT_AN_ARRAY,
 				String.format("AN0j %s", __cl.thisName()));
 		
 		// {@squirreljme.error AN0i Attempted to allocate an array with a
 		// negative length. (The array length)}
 		if (__al < 0)
-			throw new NIException(__c, NIException.Issue.NEGATIVE_ARRAY_LENGTH,
+			throw new TerpException(__c, TerpException.Issue.NEGATIVE_ARRAY_LENGTH,
 				String.format("AN0i %d", __al));
 		
 		// {@squirreljme.error AN0h Attempted to initialize an object which
 		// is an instance of an abstract class. (The class)}
 		if (__cl.flags().isAbstract())
-			throw new NIException(__c, NIException.Issue.NEW_ABSTRACT,
+			throw new TerpException(__c, TerpException.Issue.NEW_ABSTRACT,
 				String.format("AN0h %s", __cl.thisName()));
 		
 		// Set

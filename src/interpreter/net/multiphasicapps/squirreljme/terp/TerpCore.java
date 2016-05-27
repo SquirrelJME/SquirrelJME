@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -20,10 +20,10 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.bytecode.NBCException;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCILookup;
-import net.multiphasicapps.narf.classinterface.NCIMethodID;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CILookup;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 
 /**
  * This is the core of the interpreter, this dispatches and maintains all of
@@ -31,21 +31,21 @@ import net.multiphasicapps.narf.classinterface.NCIMethodID;
  *
  * @since 2016/04/21
  */
-public class NICore
+public class TerpCore
 {
 	/** The string class. */
 	public static final ClassNameSymbol STRING_CLASS =
 		ClassNameSymbol.of("java/lang/String");
 	
 	/** The library which contains classes to load. */
-	protected final NILibrary classlib;
+	protected final TerpLibrary classlib;
 	
 	/** The mapping of real threads to interpreter threads. */
-	protected final Map<Thread, NIThread> threadmap =
+	protected final Map<Thread, TerpThread> threadmap =
 		new HashMap<>();
 	
 	/** Already loaded binary classes? */
-	protected final Map<ClassNameSymbol, Reference<NIClass>> loaded =
+	protected final Map<ClassNameSymbol, Reference<TerpClass>> loaded =
 		new HashMap<>();
 	
 	/** Hash code generator function. */
@@ -53,8 +53,8 @@ public class NICore
 		new Random(0x590144E723E_1989L);
 	
 	/** Virtual machine statistics. */
-	protected final NIStatistics stats =
-		new NIStatistics();
+	protected final TerpStatistics stats =
+		new TerpStatistics();
 	
 	/** Is the virtual machine running? */
 	private volatile boolean _isrunning;
@@ -66,7 +66,7 @@ public class NICore
 	 * @param __main The main class.
 	 * @param __args Main program arguments.
 	 */
-	public NICore(NILibrary __cl,
+	public TerpCore(TerpLibrary __cl,
 		ClassLoaderNameSymbol __main, String... __args)
 		throws NullPointerException
 	{
@@ -81,10 +81,10 @@ public class NICore
 		// Java ME lacks daemon threads, the interpreter internally will need
 		// a thread so it can determine where execution is being performed.
 		Thread mt = Thread.currentThread();
-		threadmap.put(mt, new NIThread(this, mt));
+		threadmap.put(mt, new TerpThread(this, mt));
 		
 		// Locate the main class
-		NIClass maincl = initClass(__main.asClassName());
+		TerpClass maincl = initClass(__main.asClassName());
 		
 		// {@squirreljme.error AN0m The main class could not be found.
 		// (The main class)}
@@ -93,7 +93,7 @@ public class NICore
 				__main));
 		
 		// Find the main method
-		NIMethod mainme = maincl.methods().get(new NCIMethodID(
+		TerpMethod mainme = maincl.methods().get(new CIMethodID(
 			IdentifierSymbol.of("main"),
 			MethodSymbol.of("([Ljava/lang/String;)V")));
 		
@@ -101,19 +101,19 @@ public class NICore
 		// method which take a string argument, returns void, and is called
 		// "main". (The main class)}
 		if (mainme == null || !mainme.flags().isStatic())
-			throw new NIException(this,
-				NIException.Issue.METHOD_DOES_NOT_EXIST, String.format(
+			throw new TerpException(this,
+				TerpException.Issue.METHOD_DOES_NOT_EXIST, String.format(
 				"AN0g %s", __main));
 		
 		// Is running
 		_isrunning = true;
 		
 		// Locate the string class
-		NIClass strclass = initClass(STRING_CLASS);
+		TerpClass strclass = initClass(STRING_CLASS);
 		
 		// Allocate an array for the input arguments
 		int an = __args.length;
-		NIObject argarr = new NIObject(this, strclass, an);
+		TerpObject argarr = new TerpObject(this, strclass, an);
 		
 		// Wrap the passed arguments to the target VM
 		for (int i = 0; i < an; i++)
@@ -130,7 +130,7 @@ public class NICore
 	 * @return The interpreter thread for the current thread.
 	 * @since 2016/05/12
 	 */
-	public NIThread currentThread()
+	public TerpThread currentThread()
 	{
 		return thread(Thread.currentThread());
 	}
@@ -143,7 +143,7 @@ public class NICore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public NIClass initClass(ClassNameSymbol __cn)
+	public TerpClass initClass(ClassNameSymbol __cn)
 		throws NullPointerException
 	{
 		// Check
@@ -151,28 +151,28 @@ public class NICore
 			throw new NullPointerException("NARG");
 		
 		// Lock on the loaded classes
-		Map<ClassNameSymbol, Reference<NIClass>> map = loaded;
+		Map<ClassNameSymbol, Reference<TerpClass>> map = loaded;
 		synchronized (map)
 		{
 			// Get ref
-			Reference<NIClass> ref = map.get(__cn);
-			NIClass rv;
+			Reference<TerpClass> ref = map.get(__cn);
+			TerpClass rv;
 			
 			// Needs to be loaded?
 			if (ref == null || null == (rv = ref.get()))
 				try
 				{
-					rv = new NIClass(this,
+					rv = new TerpClass(this,
 						classlib.lookupClass(__cn.asBinaryName()), __cn, map);
 				}
 				
 				// Failed to load properly
-				catch (NBCException|NCIException e)
+				catch (NBCException|CIException e)
 				{
 					// {@squirreljme.error AN0r Failed to initialize the
 					// given class. (The name of the class)}
-					throw new NIException(this, NIException.Issue.
-						CLASS_INIT_FAILURE, String.format("AN0r %s", __cn), e);
+					throw new TerpException(this, TerpException.Issue.
+						CLASS_ITerpT_FAILURE, String.format("AN0r %s", __cn), e);
 				}
 			
 			// Return it
@@ -198,7 +198,7 @@ public class NICore
 	 * @return The class library interface.
 	 * @since 2016/04/22
 	 */
-	public NILibrary library()
+	public TerpLibrary library()
 	{
 		return classlib;
 	}
@@ -224,7 +224,7 @@ public class NICore
 	 * @return The virtual machine statistics.
 	 * @since 2016/05/14
 	 */
-	public NIStatistics statistics()
+	public TerpStatistics statistics()
 	{
 		return this.stats;
 	}
@@ -238,7 +238,7 @@ public class NICore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public NIThread thread(Thread __t)
+	public TerpThread thread(Thread __t)
 		throws NullPointerException
 	{
 		// Check
@@ -246,7 +246,7 @@ public class NICore
 			throw new NullPointerException("NARG");
 		
 		// Lock on the thread map
-		Map<Thread, NIThread> tm = threadmap;
+		Map<Thread, TerpThread> tm = threadmap;
 		synchronized (tm)
 		{
 			return tm.get(__t);
@@ -262,7 +262,7 @@ public class NICore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/27
 	 */
-	NICore __registerThread(Thread __t, NIThread __it)
+	TerpCore __registerThread(Thread __t, TerpThread __it)
 		throws NullPointerException
 	{
 		// Check
@@ -270,7 +270,7 @@ public class NICore
 			throw new NullPointerException("NARG");
 				
 		// Lock on the thread map
-		Map<Thread, NIThread> tm = threadmap;
+		Map<Thread, TerpThread> tm = threadmap;
 		synchronized (tm)
 		{
 			tm.put(__t, __it);

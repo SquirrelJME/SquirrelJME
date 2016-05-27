@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -20,10 +20,10 @@ import net.multiphasicapps.narf.program.NRProgram;
  *
  * @since 2016/04/21
  */
-public class NIThread
+public class TerpThread
 {
 	/** The owning core. */
-	protected final NICore core;
+	protected final TerpCore core;
 	
 	/** The thread this executes from. */
 	protected final Thread thread;
@@ -32,7 +32,7 @@ public class NIThread
 	protected final boolean isspecial;
 	
 	/** The interpreter call stack. */
-	protected final Deque<NIInterpreter> callstack =
+	protected final Deque<TerpInterpreter> callstack =
 		new ArrayDeque<>();
 	
 	/**
@@ -45,7 +45,7 @@ public class NIThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	public NIThread(NICore __c, Thread __xt)
+	public TerpThread(TerpCore __c, Thread __xt)
 		throws NullPointerException
 	{
 		// Check
@@ -68,7 +68,7 @@ public class NIThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/27
 	 */
-	public NIThread(NICore __c, NIMethod __m, Object... __args)
+	public TerpThread(TerpCore __c, TerpMethod __m, Object... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -84,7 +84,7 @@ public class NIThread
 	 * @return The interpreter core.
 	 * @since 2016/05/12
 	 */
-	public NICore core()
+	public TerpCore core()
 	{
 		return this.core;
 	}
@@ -95,13 +95,13 @@ public class NIThread
 	 * @param __m The method to invoke.
 	 * @param __args The method arguments.
 	 * @return The return value of the invoked method.
-	 * @throws NIException If the thread of execution is not this thread or
+	 * @throws TerpException If the thread of execution is not this thread or
 	 * the method is abstract.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/27
 	 */
-	public Object invoke(NIMethod __m, Object... __args)
-		throws NIException, NullPointerException
+	public Object invoke(TerpMethod __m, Object... __args)
+		throws TerpException, NullPointerException
 	{
 		// Check
 		if (__m == null || __args == null)
@@ -110,27 +110,27 @@ public class NIThread
 		// {@squirreljme.error AN0n Attempted to invoke a method which is
 		// across the context of a thread.}
 		if (core.thread(thread) != this)
-			throw new NIException(core, NIException.Issue.CROSS_CONTEXT,
+			throw new TerpException(core, TerpException.Issue.CROSS_CONTEXT,
 				"AN0n");
 		
 		// Obtain the method program
 		Object rawprg = __m.program();
-		NIInterpreter terp;
+		TerpInterpreter terp;
 		
 		// Use pure interpreter
 		if (rawprg instanceof NBCByteCode)
-			terp = new NIInterpreterPure(this, (NBCByteCode)rawprg);
+			terp = new TerpInterpreterPure(this, (NBCByteCode)rawprg);
 		
 		// Optimized program
 		else if (rawprg instanceof NRProgram)
-			terp = new NIInterpreterCompiler(this, (NRProgram)rawprg);
+			terp = new TerpInterpreterCompiler(this, (NRProgram)rawprg);
 		
 		// Unknown
 		else
 			throw new RuntimeException("WTFX");
 		
 		// Setup interpreter on the stack
-		Deque<NIInterpreter> stack = this.callstack;
+		Deque<TerpInterpreter> stack = this.callstack;
 		synchronized (stack)
 		{
 			stack.offerLast(terp);
@@ -148,9 +148,9 @@ public class NIThread
 			// {@squirreljme.error AN0p Incorrect stack frame when
 			// interpretation has finished. (The expected stack frame; The
 			// frame which was at the top)}
-			NIInterpreter xi;
+			TerpInterpreter xi;
 			if (terp != (xi = stack.removeLast()))
-				throw new NIException(this.core, NIException.Issue.WRONG_STACK,
+				throw new TerpException(this.core, TerpException.Issue.WRONG_STACK,
 					String.format("AN0p %s %s", terp, xi));
 		}
 	}

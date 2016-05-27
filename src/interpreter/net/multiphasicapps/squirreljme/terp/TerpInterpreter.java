@@ -8,51 +8,47 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
-
-import net.multiphasicapps.narf.program.NRProgram;
+package net.multiphasicapps.squirreljme.terp;
 
 /**
- * This is the interpreter which uses {@link NRProgram}, the general result is
- * that interpretation is faster.
+ * This is the base class for interpretation engines.
  *
  * @since 2016/05/12
  */
-public class NIInterpreterCompiler
-	extends NIInterpreter
+public abstract class TerpInterpreter
 {
-	/** The code to be interpreted. */
-	protected final NRProgram program;
+	/** The thread of execution. */
+	protected final TerpThread thread;
+	
+	/** The core manager. */
+	protected final TerpCore core;
 	
 	/**
-	 * Initializes the interpreter which uses compiler programs.
+	 * Initializes the base interpreter.
 	 *
 	 * @param __t The thread of execution.
-	 * @param __p The program to interpret.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/12
 	 */
-	public NIInterpreterCompiler(NIThread __t, NRProgram __p)
+	public TerpInterpreter(TerpThread __t)
 		throws NullPointerException
 	{
-		super(__t);
-		
 		// Check
-		if (__p == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.program = __p;
+		this.thread = __t;
+		this.core = __t.core();
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Performs interpretation as required.
+	 *
+	 * @param __args The arguments to the method.
+	 * @return The return value of the call.
 	 * @since 2016/05/12
 	 */
-	@Override
-	public Object interpret(Object... __args)
-	{
-		throw new Error("TODO");
-	}
+	public abstract Object interpret(Object... __args);
 }
 

@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.MemberTypeSymbol;
-import net.multiphasicapps.narf.classinterface.NCIMember;
-import net.multiphasicapps.narf.classinterface.NCIMemberFlags;
-import net.multiphasicapps.narf.classinterface.NCIMemberID;
+import net.multiphasicapps.squirreljme.ci.CIMember;
+import net.multiphasicapps.squirreljme.ci.CIMemberFlags;
+import net.multiphasicapps.squirreljme.ci.CIMemberID;
 
 /**
  * This represents a member which exists within a class.
@@ -23,13 +23,13 @@ import net.multiphasicapps.narf.classinterface.NCIMemberID;
  * @param <M> The base member type
  * @since 2016/04/22
  */
-public abstract class NIMember<M extends NCIMember>
+public abstract class TerpMember<M extends CIMember>
 {
 	/** The execution core. */
-	protected final NICore core;
+	protected final TerpCore core;
 	
 	/** The owning class. */
-	protected final NIClass outerclass;
+	protected final TerpClass outerclass;
 	
 	/** The base member data. */
 	protected final M base;
@@ -45,7 +45,7 @@ public abstract class NIMember<M extends NCIMember>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIMember(NIClass __oc, M __m)
+	public TerpMember(TerpClass __oc, M __m)
 		throws NullPointerException
 	{
 		// Check
@@ -64,7 +64,7 @@ public abstract class NIMember<M extends NCIMember>
 	 * @return The member flags.
 	 * @since 2016/04/26
 	 */
-	public abstract NCIMemberFlags flags();
+	public abstract CIMemberFlags flags();
 	
 	/**
 	 * Returns the base member.
@@ -89,7 +89,7 @@ public abstract class NIMember<M extends NCIMember>
 		String rv;
 		
 		// Needs caching?
-		NCIMemberID nat = base.nameAndType();
+		CIMemberID nat = base.nameAndType();
 		if (ref == null || null == (rv = ref.get()))
 			_string = new WeakReference<>((rv = outerclass.thisName() + "::" +
 				nat.name() + ":" + nat.type()));

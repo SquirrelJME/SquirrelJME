@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
-import net.multiphasicapps.narf.classinterface.NCIClass;
+import net.multiphasicapps.squirreljme.ci.CIClass;
 
 /**
  * This is the main entry point for the NARF interpreter, it handles a standard
@@ -51,7 +51,7 @@ public class Main
 		if (spps != null)
 			PATH_SEPARATOR = spps;
 		
-		// Otherwise, assume UNIX
+		// Otherwise, assume UTerpX
 		else
 			PATH_SEPARATOR = ":";
 		
@@ -194,10 +194,10 @@ __outer_loop:
 			throw new IllegalArgumentException((didjar ? "AN01" : "AN02"));
 		
 		// Setup the class library
-		NILibrary ilib = new NILibrary(bootclasspath, classpath);
+		TerpLibrary ilib = new TerpLibrary(bootclasspath, classpath);
 		
 		// Setup the interpreter core
-		NICore ic = new NICore(ilib, ClassLoaderNameSymbol.of(mainclass),
+		TerpCore ic = new TerpCore(ilib, ClassLoaderNameSymbol.of(mainclass),
 			hargs.<String>toArray(new String[hargs.size()]));
 		
 		// If the VM is still running, yield the current thread. Although they

@@ -8,17 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.narf.bytecode.NBCByteCode;
 import net.multiphasicapps.narf.bytecode.NBCException;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCILookup;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
-import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CILookup;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
 import net.multiphasicapps.narf.codeparse.NCPCodeParser;
 import net.multiphasicapps.narf.codeparse.NCPException;
 import net.multiphasicapps.narf.program.NRException;
@@ -29,18 +29,18 @@ import net.multiphasicapps.narf.program.NRProgram;
  *
  * @since 2016/04/22
  */
-public class NIMethod
-	extends NIMember<NCIMethod>
+public class TerpMethod
+	extends TerpMember<CIMethod>
 {
 	/**
-	 * {@squirreljme.property net.multiphasicapps.narf.interpreter.pure
+	 * {@squirreljme.property net.multiphasicapps.squirreljme.terp.pure
 	 * If this is set to {@code true} then the interpreter execution path is
 	 * pure and does not run the code which would be used by the native
 	 * compiler. In general it is not recommended to use this unless for
 	 * testing purposes.}
 	 */
 	public static final boolean PURE_INTERPRETER =
-		Boolean.getBoolean("net.multiphasicapps.narf.interpreter.pure");
+		Boolean.getBoolean("net.multiphasicapps.squirreljme.terp.pure");
 	
 	/** Internal lock. */
 	protected final Object lock =
@@ -56,7 +56,7 @@ public class NIMethod
 	 * @param __m The base method.
 	 * @since 2016/04/22
 	 */
-	public NIMethod(NIClass __oc, NCIMethod __m)
+	public TerpMethod(TerpClass __oc, CIMethod __m)
 	{
 		super(__oc, __m);
 	}
@@ -66,7 +66,7 @@ public class NIMethod
 	 * @since 2016/04/26
 	 */
 	@Override
-	public NCIMethodFlags flags()
+	public CIMethodFlags flags()
 	{
 		return base.flags();
 	}
@@ -75,16 +75,16 @@ public class NIMethod
 	 * Returns the program which describes the current method.
 	 *
 	 * @return The decoded program.
-	 * @throws NIException If the program is not valid.
+	 * @throws TerpException If the program is not valid.
 	 * @since 2016/04/27
 	 */
 	public Object program()
-		throws NIException
+		throws TerpException
 	{
 		// {@squirreljme.error AN0k Attempted to invoke an abstract method.
 		// (The method to invoke)}
 		if (flags().isAbstract())
-			throw new NIException(core, NIException.Issue.INVOKE_ABSTRACT,
+			throw new TerpException(core, TerpException.Issue.INVOKE_ABSTRACT,
 				String.format("AN0k %s", this));
 		
 		// Get reference
@@ -107,7 +107,7 @@ public class NIMethod
 				try
 				{
 					// Load the byte code program
-					NCILookup lu = core.library();
+					CILookup lu = core.library();
 					NBCByteCode bc = new NBCByteCode(lu, base);
 					
 					// If pure, use that
@@ -123,12 +123,12 @@ public class NIMethod
 				}
 				
 				// Failed to load properly
-				catch (NBCException|NCIException|NCPException|NRException e)
+				catch (NBCException|CIException|NCPException|NRException e)
 				{
 					// {@squirreljme.error AN0o Could not generate the program
 					// for the byte code for the specified method. (The method
 					// which failed to load)}
-					throw new NIException(core, NIException.Issue.
+					throw new TerpException(core, TerpException.Issue.
 						METHOD_LOAD_ERROR, String.format("AN0o %s", this), e);
 				}
 			

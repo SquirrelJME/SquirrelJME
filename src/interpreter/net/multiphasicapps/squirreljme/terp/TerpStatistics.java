@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 /**
  * This class is used to keep statistics on the virtual machine.
  *
  * @since 2016/05/14
  */
-public class NIStatistics
+public class TerpStatistics
 {
 	/** Lock on the statistics. */
 	protected final Object lock =
@@ -26,7 +26,7 @@ public class NIStatistics
 	 *
 	 * @since 2016/05/14
 	 */
-	public NIStatistics()
+	public TerpStatistics()
 	{
 	}
 }

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -19,11 +19,11 @@ import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIClassFlags;
-import net.multiphasicapps.narf.classinterface.NCIMethod;
-import net.multiphasicapps.narf.classinterface.NCIMethodFlags;
-import net.multiphasicapps.narf.classinterface.NCIMethodID;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
@@ -32,11 +32,11 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  *
  * @since 2016/04/21
  */
-public class NIClass
+public class TerpClass
 {
 	/** The static initializer method key. */
-	public static final NCIMethodID STATIC_INITIALIZER =
-		new NCIMethodID(IdentifierSymbol.of("<clinit>"),
+	public static final CIMethodID STATIC_ITerpTIALIZER =
+		new CIMethodID(IdentifierSymbol.of("<clinit>"),
 		MethodSymbol.of("()V"));
 	
 	/** No argument array. */
@@ -44,10 +44,10 @@ public class NIClass
 		new Object[0];
 	
 	/** The interpreter core. */
-	protected final NICore core;
+	protected final TerpCore core;
 	
 	/** The based class (if {@code null} is a virtual class). */
-	protected final NCIClass base;
+	protected final CIClass base;
 	
 	/** Is this class fully loaded? */
 	protected final boolean loaded;
@@ -56,13 +56,13 @@ public class NIClass
 	protected final ClassNameSymbol thisname;
 	
 	/** The super class of this class. */
-	protected final NIClass superclass;
+	protected final TerpClass superclass;
 	
 	/** The interfaces this class implements. */
-	protected final Set<NIClass> interfaceclasses;
+	protected final Set<TerpClass> interfaceclasses;
 	
 	/** The mapped methods for this class. */
-	protected final Map<NCIMethodID, NIMethod> methods;
+	protected final Map<CIMethodID, TerpMethod> methods;
 	
 	/**
 	 * Initializes an interpreted class.
@@ -74,9 +74,9 @@ public class NIClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	NIClass(NICore __core, NCIClass __base,
+	TerpClass(TerpCore __core, CIClass __base,
 		ClassNameSymbol __cns,
-		Map<ClassNameSymbol, Reference<NIClass>> __tm)
+		Map<ClassNameSymbol, Reference<TerpClass>> __tm)
 		throws NullPointerException
 	{
 		// Check
@@ -92,7 +92,7 @@ public class NIClass
 		// requested class)}
 		thisname = __base.thisName();
 		if (!__cns.equals(thisname))
-			throw new NIException(core, NIException.Issue.CLASS_NAME_MISMATCH,
+			throw new TerpException(core, TerpException.Issue.CLASS_NAME_MISMATCH,
 				String.format("AN0b %s %s", thisname, __cns));
 		
 		// DEBUG
@@ -106,58 +106,58 @@ public class NIClass
 		superclass = (sn == null ? null : __core.initClass(sn));
 		
 		// Obtain class interfaces
-		Set<NIClass> in = new LinkedHashSet<>();
+		Set<TerpClass> in = new LinkedHashSet<>();
 		for (ClassNameSymbol cns : __base.interfaceNames())
 			in.add(__core.initClass(cns));
-		interfaceclasses = UnmodifiableSet.<NIClass>of(in);
+		interfaceclasses = UnmodifiableSet.<TerpClass>of(in);
 		
 		// Make sure the class does not eventually extend or implement itself
 		// If it does then the class definition is circular
-		for (NIClass rover = superclass; rover != null;
+		for (TerpClass rover = superclass; rover != null;
 			rover = rover.superclass)
 		{
 			// {@squirreljme.error AN0v The current class eventually extends
 			// a final class. (This class; The final class)}
 			if (rover.flags().isFinal())
-				throw new NIException(core, NIException.Issue.EXTENDS_FINAL,
+				throw new TerpException(core, TerpException.Issue.EXTENDS_FINAL,
 					String.format("AN0v %s %s", thisname, rover));
 			
 			// {@squirreljme.error AN0c The current class eventually extends
 			// itself. (The name of this class)}
 			if (rover == this)
-				throw new NIException(core,
-					NIException.Issue.CLASS_CIRCULARITY,
+				throw new TerpException(core,
+					TerpException.Issue.CLASS_CIRCULARITY,
 					String.format("AN0c %s", thisname));
 			
 			// {@squirreljme.error AN0d The current class eventually implements
 			// itself. (The name of this name; The class implementing this)}
-			for (NIClass impl : rover.interfaceclasses)
+			for (TerpClass impl : rover.interfaceclasses)
 				if (impl == this)
-					throw new NIException(core,
-						NIException.Issue.CLASS_CIRCULARITY,
+					throw new TerpException(core,
+						TerpException.Issue.CLASS_CIRCULARITY,
 						String.format("AN0d %s %s", thisname, rover.thisname));
 		}
 		
 		// Create methods for all of the current class methods
-		Map<NCIMethodID, NIMethod> mm = new HashMap<>();
-		for (Map.Entry<NCIMethodID, NCIMethod> e : base.methods().entrySet())
-			mm.put(e.getKey(), new NIMethod(this, e.getValue()));
+		Map<CIMethodID, TerpMethod> mm = new HashMap<>();
+		for (Map.Entry<CIMethodID, CIMethod> e : base.methods().entrySet())
+			mm.put(e.getKey(), new TerpMethod(this, e.getValue()));
 		
 		// Bind all superclass methods which are not static, are initializers,
 		// or are constructors to the current method if they are not set (this
 		// is for faster virtual handling)
 		boolean selfabs = flags().isAbstract();
-		for (NIClass rover = superclass; rover != null;
+		for (TerpClass rover = superclass; rover != null;
 			rover = rover.superclass)
-			for (Map.Entry<NCIMethodID, NIMethod> e : rover.methods.
+			for (Map.Entry<CIMethodID, TerpMethod> e : rover.methods.
 				entrySet())
 			{
 				// Get key and value
-				NCIMethodID k = e.getKey();
-				NIMethod v = e.getValue();
+				CIMethodID k = e.getKey();
+				TerpMethod v = e.getValue();
 				
 				// Get flags
-				NCIMethodFlags mf = v.flags();
+				CIMethodFlags mf = v.flags();
 				
 				// Ignore static, initializers, and private methods
 				if (mf.isStatic() || k.name().isConstructor() ||
@@ -166,15 +166,15 @@ public class NIClass
 				
 				// If abstract, it must be implemented (it must be contained
 				// in the map and not be abstract)
-				NIMethod iv = mm.get(k);
+				TerpMethod iv = mm.get(k);
 				if (!selfabs && mf.isAbstract())
 				{
 					// {@squirreljme.error AN0e The top-level class is not
 					// abstract and it does not implement an abstract method.
 					// (The method identifier)}
 					if (iv == null || iv.flags().isAbstract())
-						throw new NIException(core,
-							NIException.Issue.ABSTRACT_NOT_IMPLEMENTED,
+						throw new TerpException(core,
+							TerpException.Issue.ABSTRACT_NOT_IMPLEMENTED,
 							String.format("AN0e %s", k));
 				}
 				
@@ -186,7 +186,7 @@ public class NIClass
 					// replaced. (The method identifier; The super class; The
 					// current class)}
 					if (v.flags().isFinal())
-						throw new NIException(core, NIException.Issue.
+						throw new TerpException(core, TerpException.Issue.
 							FINAL_REPLACED, String.format("AN0u %s %s %s", k,
 								rover, this));
 					
@@ -199,17 +199,17 @@ public class NIClass
 			}
 		
 		// Lock in
-		methods = UnmodifiableMap.<NCIMethodID, NIMethod>of(mm);
+		methods = UnmodifiableMap.<CIMethodID, TerpMethod>of(mm);
 		
 		// Check that interface methods are implemented
 		if (!selfabs)
-			for (NIClass rover = this; rover != null; rover = rover.superclass)
-				for (NIClass interf : rover.interfaceclasses)
-					for (Map.Entry<NCIMethodID, NIMethod> e : interf.methods.
+			for (TerpClass rover = this; rover != null; rover = rover.superclass)
+				for (TerpClass interf : rover.interfaceclasses)
+					for (Map.Entry<CIMethodID, TerpMethod> e : interf.methods.
 						entrySet())
 					{
 						// Get target method
-						NIMethod v = e.getValue();
+						TerpMethod v = e.getValue();
 					
 						// Only check abstract methods
 						if (!v.flags().isAbstract())
@@ -219,21 +219,21 @@ public class NIClass
 						// implement an abstract interface method. (The
 						// unimplemented method; The current class name;
 						// The interface name)}
-						NCIMethodID k = e.getKey();
+						CIMethodID k = e.getKey();
 						if (!methods.containsKey(k))
-							throw new NIException(core,
-								NIException.Issue.ABSTRACT_NOT_IMPLEMENTED,
+							throw new TerpException(core,
+								TerpException.Issue.ABSTRACT_NOT_IMPLEMENTED,
 								String.format("AN0f %s %s", k, base.thisName(),
 									interf.base.thisName()));
 						
 					}
 		
 		// Obtain the static initializer
-		NIMethod sinit = methods.get(STATIC_INITIALIZER);
+		TerpMethod sinit = methods.get(STATIC_ITerpTIALIZER);
 		if (sinit != null && sinit.flags().isStatic())
 		{
 			// Get the current thread so that execution may be performed on it
-			NIThread tt = core.thread(Thread.currentThread());
+			TerpThread tt = core.thread(Thread.currentThread());
 			
 			// Debug
 			System.err.printf("DEBUG -- Static init %s.%n", base.thisName());
@@ -252,7 +252,7 @@ public class NIClass
 	 * @return The interpreter core.
 	 * @since 2016/04/27
 	 */
-	public NICore core()
+	public TerpCore core()
 	{
 		return core;
 	}
@@ -263,7 +263,7 @@ public class NIClass
 	 * @return The class flags.
 	 * @since 2016/04/26
 	 */
-	public NCIClassFlags flags()
+	public CIClassFlags flags()
 	{
 		return base.flags();
 	}
@@ -307,7 +307,7 @@ public class NIClass
 	 * @return The mapping of methods for this class.
 	 * @since 2016/04/26
 	 */
-	public Map<NCIMethodID, NIMethod> methods()
+	public Map<CIMethodID, TerpMethod> methods()
 	{
 		return methods;
 	}

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -28,9 +28,9 @@ import java.util.Set;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.narf.classfile.NCFClass;
-import net.multiphasicapps.narf.classinterface.NCIClass;
-import net.multiphasicapps.narf.classinterface.NCIException;
-import net.multiphasicapps.narf.classinterface.NCILookup;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CILookup;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.StandardZIPFile;
@@ -41,8 +41,8 @@ import net.multiphasicapps.zips.StandardZIPFile;
  *
  * @since 2016/04/20
  */
-public class NILibrary
-	extends NCILookup
+public class TerpLibrary
+	extends CILookup
 {
 	/** The boot classpath. */
 	protected final Set<Path> bootpath;
@@ -64,7 +64,7 @@ public class NILibrary
 	 * @param __cp The program classpath.
 	 * @since 2016/04/20
 	 */
-	public NILibrary(Set<Path> __bootcp, Set<Path> __cp)
+	public TerpLibrary(Set<Path> __bootcp, Set<Path> __cp)
 		throws NullPointerException
 	{
 		// Check
@@ -137,15 +137,15 @@ public class NILibrary
 	 * @since 2016/04/21
 	 */
 	@Override
-	protected NCIClass internalClassLookup(BinaryNameSymbol __bn)
-		throws NCIException, NullPointerException
+	protected CIClass internalClassLookup(BinaryNameSymbol __bn)
+		throws CIException, NullPointerException
 	{
 		// Check
 		if (__bn == null)
 			throw new NullPointerException("NARG");
 		
 		// Use the bootclasspath
-		NCIClass rv;
+		CIClass rv;
 		if (null != (rv = __loadClass(__bn, bootpath, true)))
 			return rv;
 		
@@ -161,13 +161,13 @@ public class NILibrary
 	 * @param __boot If {@code true} then this is looking in the boot class
 	 * path.
 	 * @return The loaded class or {@code null} if it does not exist.
-	 * @throws NCIException If it failed to be read.
+	 * @throws CIException If it failed to be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/21
 	 */
-	private NCIClass __loadClass(BinaryNameSymbol __bn, Set<Path> __paths,
+	private CIClass __loadClass(BinaryNameSymbol __bn, Set<Path> __paths,
 		boolean __boot)
-		throws NCIException, NullPointerException
+		throws CIException, NullPointerException
 	{
 		// Check
 		if (__bn == null || __paths == null)
@@ -248,11 +248,11 @@ public class NILibrary
 			}
 			
 			// Failed read or other exception
-			catch (NCIException|IOException e)
+			catch (CIException|IOException e)
 			{
 				// {@squirreljme.error AN0a Failed to read a class from the
 				// given path. (The binary name; The path read from)}
-				throw new NCIException(NCIException.Issue.READ_ERROR,
+				throw new CIException(CIException.Issue.READ_ERROR,
 					String.format("AN0a %s %s", __bn, p), e);
 			}
 		}

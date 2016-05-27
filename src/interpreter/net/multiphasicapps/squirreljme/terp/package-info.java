@@ -20,5 +20,5 @@
  * @since 2016/04/20
  */
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 

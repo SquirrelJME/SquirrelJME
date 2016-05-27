@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.narf.interpreter;
+package net.multiphasicapps.squirreljme.terp;
 
 import net.multiphasicapps.narf.exception.NARFException;
 
@@ -17,7 +17,7 @@ import net.multiphasicapps.narf.exception.NARFException;
  *
  * @since 2016/04/22
  */
-public class NIException
+public class TerpException
 	extends NARFException
 {
 	/**
@@ -28,7 +28,7 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIException(NICore __ic, Issue __t)
+	public TerpException(TerpCore __ic, Issue __t)
 		throws NullPointerException
 	{
 		super(__t);
@@ -47,7 +47,7 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIException(NICore __ic, Issue __t, String __msg)
+	public TerpException(TerpCore __ic, Issue __t, String __msg)
 		throws NullPointerException
 	{
 		super(__t, __msg);
@@ -67,7 +67,7 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIException(NICore __ic, Issue __t, String __msg,
+	public TerpException(TerpCore __ic, Issue __t, String __msg,
 		Throwable __c)
 		throws NullPointerException
 	{
@@ -87,7 +87,7 @@ public class NIException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/22
 	 */
-	public NIException(NICore __ic, Issue __t, Throwable __c)
+	public TerpException(TerpCore __ic, Issue __t, Throwable __c)
 		throws NullPointerException
 	{
 		super(__t, __c);
@@ -145,7 +145,7 @@ public class NIException
 		ILLEGAL_OPCODE,
 		
 		/** Class failed to initialize properly. */
-		CLASS_INIT_FAILURE,
+		CLASS_ITerpT_FAILURE,
 		
 		/** Illegal push of value. */
 		ILLEGAL_PUSH,
