@@ -1,0 +1,8 @@
+# 2016/05/27
+
+## 08:04
+
+Ok, so going to take a break from the UI and launcher code and instead perform
+a refactor and moving around of all the stuff under `native-compiler`.
+
+
