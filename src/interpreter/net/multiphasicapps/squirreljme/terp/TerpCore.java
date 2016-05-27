@@ -22,6 +22,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
 /**
  * This is the core of the interpreter, this dispatches and maintains all of
@@ -35,9 +36,6 @@ public class TerpCore
 	public static final ClassNameSymbol STRING_CLASS =
 		ClassNameSymbol.of("java/lang/String");
 	
-	/** The library which contains classes to load. */
-	protected final TerpLibrary classlib;
-	
 	/** The mapping of real threads to interpreter threads. */
 	protected final Map<Thread, TerpThread> threadmap =
 		new HashMap<>();
@@ -50,24 +48,26 @@ public class TerpCore
 	protected final Random hashcodegen =
 		new Random(0x590144E723E_1989L);
 	
-	/** Virtual machine statistics. */
-	protected final TerpStatistics stats =
-		new TerpStatistics();
-	
 	/** Is the virtual machine running? */
 	private volatile boolean _isrunning;
 	
 	/**
 	 * This initializes the interpreter.
 	 *
-	 * @param __cl The library which contains classes.
-	 * @param __main The main class.
-	 * @param __args Main program arguments.
+	 * @param __cp The classpath to use when searching for classes.
+	 * @param __ti The interpreter to use in the interpretation loops.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/04/21
 	 */
-	public TerpCore(TerpLibrary __cl,
-		ClassLoaderNameSymbol __main, String... __args)
+	public TerpCore(ClassPath __cp, TerpInterpreter __ti)
 		throws NullPointerException
 	{
+		// Check
+		if (__cp == null || __ti == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+		/*
 		// Check
 		if (__cl == null || __main == null || __args == null)
 			throw new NullPointerException("NARG");
@@ -119,6 +119,7 @@ public class TerpCore
 		
 		if (true)
 			throw new Error("TODO");
+		*/
 	}
 	
 	/**
@@ -148,6 +149,8 @@ public class TerpCore
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+		/*
 		// Lock on the loaded classes
 		Map<ClassNameSymbol, Reference<TerpClass>> map = loaded;
 		synchronized (map)
@@ -175,7 +178,7 @@ public class TerpCore
 			
 			// Return it
 			return rv;
-		}
+		}*/
 	}
 	
 	/**
@@ -187,18 +190,6 @@ public class TerpCore
 	public boolean isRunning()
 	{
 		return _isrunning;
-	}
-	
-	/**
-	 * Returns the class library interface which is used to obtain classes for
-	 * initialization.
-	 *
-	 * @return The class library interface.
-	 * @since 2016/04/22
-	 */
-	public TerpLibrary library()
-	{
-		return classlib;
 	}
 	
 	/**
@@ -214,17 +205,6 @@ public class TerpCore
 		{
 			return r.nextInt();
 		}
-	}
-	
-	/**
-	 * Returns the statistics of the virtual machine.
-	 *
-	 * @return The virtual machine statistics.
-	 * @since 2016/05/14
-	 */
-	public TerpStatistics statistics()
-	{
-		return this.stats;
 	}
 	
 	/**

@@ -11,44 +11,12 @@
 package net.multiphasicapps.squirreljme.terp;
 
 /**
- * This is the base class for interpretation engines.
+ * This is the interface which is used by implementations of the interpreter to
+ * create interpretation instances.
  *
- * @since 2016/05/12
+ * @since 2016/05/27
  */
-public abstract class TerpInterpreter
+public interface TerpInterpreter
 {
-	/** The thread of execution. */
-	protected final TerpThread thread;
-	
-	/** The core manager. */
-	protected final TerpCore core;
-	
-	/**
-	 * Initializes the base interpreter.
-	 *
-	 * @param __t The thread of execution.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/12
-	 */
-	public TerpInterpreter(TerpThread __t)
-		throws NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.thread = __t;
-		this.core = __t.core();
-	}
-	
-	/**
-	 * Performs interpretation as required.
-	 *
-	 * @param __args The arguments to the method.
-	 * @return The return value of the call.
-	 * @since 2016/05/12
-	 */
-	public abstract Object interpret(Object... __args);
 }
 
