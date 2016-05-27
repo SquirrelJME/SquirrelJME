@@ -87,7 +87,7 @@ public class Build
 	/** This is the name of the interpreter that is used. */
 	public static final String INTERPRETER_NAME =
 		Objects.toString(System.getProperty("net.multiphasicapps.interpreter"),
-			"native-compiler-interpreter");
+			"kernel-impl-jvm-test");
 	
 	/** Build JARs with no compression? */
 	private static volatile boolean _nocompression;

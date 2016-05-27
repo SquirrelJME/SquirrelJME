@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: kernel-impl-jvm-test
+X-SquirrelJME-UUID: 943e3838-3223-4e46-80dc-edfd1006796e
+X-SquirrelJME-Depends: javame-cldc-full, interpreter-pure, kernel
+X-SquirrelJME-Error: BC
+Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.test.Main
+LIBlet-Title: Kernel (JVM: Test)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160527
+LIBlet-Description: This contains the test kernel which uses the
+  pure interpreter to run programs in for the purpose of testing.
+
