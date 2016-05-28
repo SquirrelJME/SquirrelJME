@@ -271,7 +271,7 @@ public abstract class JarClassUnit
 	 *
 	 * @since 2016/05/28
 	 */
-	private final __CountedInputStream__
+	private final class __CountedInputStream__
 		extends InputStream
 	{
 		/** The wrapped stream. */
@@ -297,6 +297,65 @@ public abstract class JarClassUnit
 			// Set
 			this._base = __base;
 			this._count = new __Counter__();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/28
+		 */
+		@Override
+		public int available()
+			throws IOException
+		{
+			return this._base.available();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/28
+		 */
+		@Override
+		public void close()
+			throws IOException
+		{
+			// Close the counter
+			this._count.close();
+			
+			// And the wrapped stream
+			this._base.close();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/28
+		 */
+		@Override
+		public int read()
+			throws IOException
+		{
+			return this._base.read();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/28
+		 */
+		@Override
+		public int read(byte[] __b)
+			throws IOException
+		{
+			return this._base.read(__b);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/28
+		 */
+		@Override
+		public int read(byte[] __b, int __o, int __l)
+			throws IOException
+		{
+			return this._base.read(__b, __o, __l);
 		}
 	}
 	
