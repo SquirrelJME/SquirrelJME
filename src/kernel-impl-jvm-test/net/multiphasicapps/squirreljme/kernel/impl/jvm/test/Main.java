@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnit;
 import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
 import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
 import net.multiphasicapps.squirreljme.terp.pure.PureInterpreter;
@@ -184,14 +185,14 @@ public class Main
 		
 		// Load JAR classunit providers with all of the given 
 		int numcp = cp.size();
-		ClassUnitProvider[] provs = new ClassUnitProvider[numcp];
+		ClassUnit[] units = new ClassUnit[numcp];
 		Iterator<String> cpit = cp.iterator();
 		for (int i = 0; i < numcp; i++)
-			provs[i] = new FSJarClassUnitProvider(Paths.get(cpit.next()));
+			units[i] = new FSJarClassUnit(Paths.get(cpit.next()));
 		cpit = null;
 		
 		// Setup the class path
-		ClassPath classpath = new ClassPath(provs);
+		ClassPath classpath = new ClassPath(units);
 		
 		// Locate the main class
 		CIClass maincl = classpath.locateClass(pmain.asClassName());

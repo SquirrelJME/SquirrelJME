@@ -100,7 +100,9 @@ public abstract class JarClassUnitProvider
 			for (String k : keys)
 				if (!cache.containsKey(k))
 				{
-					JarClassUnit v = new JarClassUnit(this, k);
+					if (true)
+						throw new Error("TODO");
+					JarClassUnit v = null;
 					units.add(v);
 					cache.put(k, new WeakReference<>(v));
 				}

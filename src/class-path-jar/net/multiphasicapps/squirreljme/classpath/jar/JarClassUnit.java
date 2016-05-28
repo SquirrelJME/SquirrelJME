@@ -20,32 +20,27 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
  *
  * @since 2016/05/25
  */
-public final class JarClassUnit
+public abstract class JarClassUnit
 	extends ClassUnit
 {
-	/** The provider for the class unit. */
-	protected final JarClassUnitProvider provider;
-	
 	/** The key this is associated with. */
 	protected final String key;
 	
 	/**
 	 * This represents a single class unit which is provided within a JAR.
 	 *
-	 * @param __jcup The provider for class units.
 	 * @param __k The key this maps to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/25
 	 */
-	public JarClassUnit(JarClassUnitProvider __jcup, String __k)
+	public JarClassUnit(String __k)
 		throws NullPointerException
 	{
 		// Check
-		if (__jcup == null || __k == null)
+		if (__k == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.provider = __jcup;
 		this.key = __k;
 	}
 	
@@ -54,7 +49,7 @@ public final class JarClassUnit
 	 * @since 2016/05/27
 	 */
 	@Override
-	public CIClass locateClass(ClassNameSymbol __cns)
+	public final CIClass locateClass(ClassNameSymbol __cns)
 		throws CIException, NullPointerException
 	{
 		// Check
@@ -69,7 +64,7 @@ public final class JarClassUnit
 	 * @since 2016/05/26
 	 */
 	@Override
-	public String toString()
+	public final String toString()
 	{
 		return this.key;
 	}
