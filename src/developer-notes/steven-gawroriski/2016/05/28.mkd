@@ -29,3 +29,15 @@ two accessible objects. So this code can just go into the accessible object
 however `static` in `interface`s is not supported. So there could just be an
 accessibility checker and such.
 
+## 18:45
+
+Personally, I wish fossil had a grep of sorts, however if I go back into the
+past far enough I should be able to find a `canAccess` variant. It should be
+in the lookup actually.
+
+## 18:49
+
+It cannot go into the class interface, it has to be in `ClassPath`. There is
+a need to lookup classes for protected and such to determine if something is
+an instance.
+

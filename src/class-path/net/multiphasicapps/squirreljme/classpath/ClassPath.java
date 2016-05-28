@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.ci.CIAccessibleFlags;
+import net.multiphasicapps.squirreljme.ci.CIAccessibleObject;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
 
@@ -67,6 +69,100 @@ public final class ClassPath
 	}
 	
 	/**
+	 * Checks whether the current byte code (the method that contains this byte
+	 * code) can access the specified accessible object.
+	 *
+	 * @param __from The object to act as the check source.
+	 * @param __ao The object to check access against.
+	 * @return {@code true} if the object can be accessed.
+	 * @throws CIException If the class has no set access flag type or is
+	 * a class which eventually extends itself.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/12
+	 */
+	public final boolean canAccess(CIAccessibleObject __from,
+		CIAccessibleObject __ao)
+		throws CIException, NullPointerException
+	{
+		// Check
+		if (__from == null || __ao == null)
+			throw new NullPointerException("NARG");
+		
+		// Check the access for the class first
+		CIClass otherouter = __ao.outerClass();
+		if (!(__ao instanceof CIClass))
+			if (!canAccess(__from, otherouter))
+				return false;
+		
+		// Target flags
+		CIAccessibleFlags af = __ao.flags();
+		
+		// If public, always OK
+		if (af.isPublic())
+			return true;
+		
+		// Get the name of our class and the object
+		CIClass myclass = __from.outerClass();
+		ClassNameSymbol tname = myclass.thisName(),
+			oname = otherouter.thisName();
+		
+		// If this is the same exact class then no checks have to be performed
+		if (tname.equals(oname))
+			return true;
+		
+		// Otherwise these are never accessible
+		else if (af.isPrivate())
+			return false;
+		
+		// Otherwise the package must match
+		else if (af.isPackagePrivate())
+			return tname.parentPackage().equals(oname.parentPackage());
+		
+		// The other class must be a super class or the same as this class
+		else if (af.isProtected())
+		{
+			// Detect potential class recursion here
+			Set<ClassNameSymbol> didclass = new HashSet<>();
+			didclass.add(tname);
+			
+			// Go through super classes
+			for (CIClass rover = myclass;;)
+			{
+				// Go to the super class
+				ClassNameSymbol scn = rover.superName();
+				
+				// If out of classes then it cannot be implemented
+				if (scn == null)
+					return false;
+				
+				// {@squirreljme.error AO0c The specified class eventually
+				// extends itself. (The name of the current class)}
+				if (didclass.contains(scn))
+					throw new CIException(String.format("AO0c %s", tname));
+				
+				// Go to that class
+				rover = locateClass(scn);
+				
+				// {@squirreljme.error AO0a Cannot check protected access
+				// against a super class if it does not exist. (The name of the
+				// super class)}
+				if (rover == null)
+					throw new CIException(String.format("AO0a %s", scn));
+				
+				// Same name?
+				if (tname.equals(scn))
+					return true;
+			}
+		}
+		
+		// {@squirreljme.error AO0b The accessible object to check access
+		// against has an impossible flag combination. (The accessible object;
+		// The accessible object flags)}
+		else
+			throw new CIException(String.format("AO0b %s", __ao, af));
+	}
+	
+	/**
 	 * Locates the given class by the specified name and verifies that it is
 	 * well formed before it is returned.
 	 *
@@ -77,7 +173,7 @@ public final class ClassPath
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/27
 	 */
-	public CIClass locateClass(ClassNameSymbol __cns)
+	public final CIClass locateClass(ClassNameSymbol __cns)
 		throws CIException, NullPointerException
 	{
 		// Check
