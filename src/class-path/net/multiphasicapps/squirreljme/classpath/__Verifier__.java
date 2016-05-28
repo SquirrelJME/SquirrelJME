@@ -215,7 +215,18 @@ class __Verifier__
 			CIMethod v = e.getValue();
 			CIMethodFlags f = v.flags();
 			
-			throw new Error("TODO");
+			// Ignore static
+			if (f.isStatic())
+				continue;
+			
+			// {@squirreljme.error BN0c Non-abstract class contains an abstract
+			// method. (This class; The method identifier; The method flags)}
+			if (!visabs && f.isAbstract())
+				throw new CIException(String.format("BN0c %s %s %s",
+					this.thisname, k, f));
+			
+			// Add it
+			toplevel.put(k, v);
 		}
 		
 		// Go through all classes
