@@ -64,6 +64,9 @@ class __Verifier__
 		List<CIClass> supers = new LinkedList<>();
 		List<CIClass> inters = new LinkedList<>();
 		__circularity(supers, inters);
+		
+		// Check method implementations
+		__methods(supers, inters);
 	}
 	
 	/**
@@ -79,7 +82,7 @@ class __Verifier__
 	}
 	
 	/**
-	 * Checks if the class circularly depends on itself
+	 * Checks if the class circularly depends on itself.
 	 *
 	 * @param __supers The output super classes.
 	 * @param __inters the output interfaces.
@@ -173,6 +176,33 @@ class __Verifier__
 			
 			// Get next super class
 			sn = scl.superName();
+		}
+	}
+	
+	/**
+	 * Checks that non-private final methods are not overridden, that
+	 * abstract methods are implemented (if the class is not abstract), and
+	 * that methods in higher classes do not 
+	 *
+	 * @param __supers The output super classes.
+	 * @param __inters the output interfaces.
+	 * @since 2016/05/28
+	 */
+	private void __methods(List<CIClass> __supers,
+		List<CIClass> __inters)
+	{
+		// Cache
+		ClassPath classpath = this.classpath;
+		CIClass verify = this.verify;
+		
+		// Go through all classes
+		int ns = __supers.size(), ni = __inters.size(), n = ns + ni;
+		for (int i = 0; i < n; i++)
+		{
+			// Get the super class
+			CIClass scl = (i < ns ? __supers.get(i) : __inters.get(i - ns));
+			
+			throw new Error("TODO");
 		}
 	}
 }
