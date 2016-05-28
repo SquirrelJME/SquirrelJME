@@ -22,7 +22,12 @@ import java.util.StringTokenizer;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
@@ -201,6 +206,23 @@ public class Main
 		// path to be used for execution. (The main class)}
 		if (maincl == null)
 			throw new IllegalArgumentException(String.format("BC07 %s",
+				pmain));
+		
+		// Find the main method in the given class
+		CIMethod mainentry = maincl.methods().get(new CIMethodID(
+			IdentifierSymbol.of("main"),
+			MethodSymbol.of("([Ljava/lang/String;)V")));
+		
+		// {@squirreljme.error BC08 The main method in the main class does not
+		// exist. (The main class)}
+		if (mainentry == null)
+			throw new IllegalArgumentException(String.format("BC08 %s",
+				pmain));
+		
+		// {@squirreljme.error BC09 The main method in the main class exists
+		// however it is not static. (The main class)}
+		if (!mainentry.flags().isStatic())
+			throw new IllegalArgumentException(String.format("BC09 %s",
 				pmain));
 		
 		// Initialization may fail
