@@ -102,9 +102,13 @@ public abstract class JarClassUnit
 				try (InputStream is = locateResource(
 					__cns.toString() + ".class"))
 				{
+					// Not found?
+					if (is == null)
+						return null;
+					
 					// Load in class data and cache it
 					cache.put(__cns, new WeakReference<>(
-						(rv = new CISClass(is)));
+						(rv = new CISClass(is))));
 				}
 				
 				// {@squirreljme.error BD03 Could not load the specified class
@@ -142,9 +146,48 @@ public abstract class JarClassUnit
 		try (__Counter__ counter = __count())
 		{
 			// Load the ZIP
-			StandardZIPFile zip = this._zip
+			StandardZIPFile zip = this._zip;
 			
-			throw new Error("TODO");
+			// See if the zip contains the given entry
+			StandardZIPFile.FileEntry ent = zip.get(__res);
+			
+			// Does not exist?
+			if (ent == null)
+				return null;
+			
+			InputStream rv = null;
+			try
+			{
+				// Try opening an input stream for the given resource
+				rv = ent.open();
+				
+				throw new Error("TODO");
+			}
+			
+			// Open failed
+			catch (IOException|Error|RuntimeException e)
+			{
+				// Make sure it is closed
+				try
+				{
+					rv.close();
+				}
+				
+				// Suppress it
+				catch (Throwable t)
+				{
+					e.addSuppressed(t);
+				}
+				
+				// Rethrow
+				throw e;
+			}
+		}
+		
+		// Ignore
+		catch (IOException e)
+		{
+			return null;
 		}
 	}
 	

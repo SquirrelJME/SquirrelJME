@@ -55,13 +55,13 @@ public final class CISMethod
 		
 		// {@squirreljme.error AQ1x The specified method is either native or
 		// abstract and has a code attribute or is not native or abstract and
-		// does not have a code attribute. (The method ID; The flags)}
+		// does not have a code attribute. (The method ID; The flags; If the
+		// method is abstract or not)}
 		CIMethodFlags f = flags();
 		boolean abs;
 		if ((abs = (f.isNative() || f.isAbstract())) != (__ca == null))
-			throw new CIException((abs ? CIException.Issue.ABSTRACT_CODE :
-				CIException.Issue.MISSING_CODE),
-				String.format("AQ1x %s %s", __id, f));
+			throw new CIException(String.format("AQ1x %s %s %d", __id, f,
+				abs));
 		
 		// Set
 		code = __ca;
@@ -81,8 +81,7 @@ public final class CISMethod
 			f.contains(CIMethodFlag.NATIVE) ||
 			f.contains(CIMethodFlag.ABSTRACT))) ||
 			(cl && (!f.contains(CIMethodFlag.STATIC))))
-			throw new CIException(CIException.Issue.ILLEGAL_FLAGS,
-				String.format("AQ20 %s %s", __id, f));
+			throw new CIException(String.format("AQ20 %s %s", __id, f));
 	}
 	
 	/**

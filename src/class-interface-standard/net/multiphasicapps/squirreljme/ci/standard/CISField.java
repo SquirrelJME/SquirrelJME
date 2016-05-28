@@ -59,8 +59,8 @@ public final class CISField
 				(fs.equals("F") && !(__cv instanceof Float)) ||
 				(fs.equals("D") && !(__cv instanceof Double)) ||
 				(fs.equals("Ljava/lang/String;") && !(__cv instanceof String)))
-				throw new CIException(CIException.Issue.BAD_CONSTANT,
-					String.format("AQ0o %s", __cv.getClass()));
+				throw new CIException(String.format("AQ0o %s",
+					__cv.getClass()));
 		}
 	}
 	

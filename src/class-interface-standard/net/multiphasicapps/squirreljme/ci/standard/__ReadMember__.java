@@ -84,8 +84,7 @@ class __ReadMember__
 			// {@squirreljme.error AQ1q Field attribute has negative length.
 			// (The field id)}
 			if (len < 0)
-				throw new CIException(CIException.Issue.NEGATIVE_ATTRIBUTE,
-					String.format("AQ1q", id));
+				throw new CIException(String.format("AQ1q", id));
 			
 			// Setup area
 			try (BufferAreaInputStream bais = new BufferAreaInputStream(__das,
@@ -100,8 +99,7 @@ class __ReadMember__
 					// {@squirreljme.error AQ1r Field already has a constant
 					// value. (The field ID)}
 					if (constval != null)
-						throw new CIException(CIException.Issue.DOUBLE_CONST,
-							String.format("AQ1r", id));
+						throw new CIException(String.format("AQ1r", id));
 					
 					// Reads the constant field value
 					constval = __oc.constantPool().<CIConstantValue>
@@ -115,8 +113,7 @@ class __ReadMember__
 		CIField old = __into.put(id, new CISField(__oc,
 			id, __FlagDecoder__.__field(__oc, flags), constval));
 		if (old != null)
-			throw new CIException(CIException.Issue.DUPLICATE_FIELD,
-				String.format("AQ1s", id));
+			throw new CIException(String.format("AQ1s", id));
 	}
 	
 	/**
@@ -155,8 +152,7 @@ class __ReadMember__
 			// {@squirreljme.error AQ1w Method attribute has negative length.
 			// (The method id)}
 			if (len < 0)
-				throw new CIException(CIException.Issue.NEGATIVE_ATTRIBUTE,
-					String.format("AQ1w", id));
+				throw new CIException(String.format("AQ1w", id));
 			
 			// Setup area
 			try (BufferAreaInputStream bais = new BufferAreaInputStream(__das,
@@ -171,15 +167,13 @@ class __ReadMember__
 					// {@squirreljme.error AQ1y Method already has a code
 					// attribute. (The method ID)}
 					if (code != null)
-						throw new CIException(CIException.Issue.DOUBLE_CODE,
-							String.format("AQ1y", id));
+						throw new CIException(String.format("AQ1y", id));
 					
 					// {@squirreljme.error AQ1z Did not read the entire code
 					// attribute for a method. (The method ID)}
 					code = new byte[len];
 					if (len != dais.read(code))
-						throw new CIException(CIException.Issue.SHORT_CODE,
-							String.format("AQ1z", id));
+						throw new CIException(String.format("AQ1z", id));
 				}
 			}
 		}
@@ -188,8 +182,7 @@ class __ReadMember__
 		CIMethod old = __into.put(id, new CISMethod(__oc,
 			id, __FlagDecoder__.__method(__oc, flags), code));
 		if (old != null)
-			throw new CIException(CIException.Issue.DUPLICATE_METHOD,
-				String.format("AQ1u", id));
+			throw new CIException(String.format("AQ1u", id));
 	}
 	
 	/**
@@ -248,8 +241,7 @@ class __ReadMember__
 			// {@squirreljme.error AQ1p End of file reached while skipping
 			// the class attributes.}
 			if (total >= nt)
-				throw new CIException(CIException.Issue.READ_ERROR,
-					"AQ1p");
+				throw new CIException("AQ1p");
 			
 			// Set new total
 			total = nt;

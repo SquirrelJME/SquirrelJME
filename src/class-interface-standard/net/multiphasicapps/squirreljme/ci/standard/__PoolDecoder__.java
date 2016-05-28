@@ -131,8 +131,7 @@ class __PoolDecoder__
 		// {@squirreljme.errr CF0k Class has a constant pool with a negative
 		// number of entries.}
 		if (numentries <= 0)
-			throw new CIException(CIException.Issue.INVALID_POOL_SIZE,
-				"AQ0k");
+			throw new CIException("AQ0k");
 		
 		// Setup target array
 		entries = new CIPoolEntry[numentries];
@@ -173,8 +172,7 @@ class __PoolDecoder__
 						// {@squirreljme.error AQ0j The string which makes up a
 						// UTF-8 constant string is not a correctly formatted
 						// modified UTF-8 string.}
-						throw new CIException(CIException.Issue.ILLEGAL_MUTF,
-							"AQ0j", utfdfe);
+						throw new CIException("AQ0j", utfdfe);
 					}
 					break;
 					
@@ -219,15 +217,13 @@ class __PoolDecoder__
 				case TAG_INVOKEDYNAMIC:
 					// {@squirreljme.error AQ0l {@code invokedynamic} is not
 					// supported in Java ME.}
-					throw new CIException(CIException.Issue.INVOKEDYNAMIC,
-						"AQ0l");
+					throw new CIException("AQ0l");
 					
 					// Unknown
 				default:
 					// {@squirreljme.error AQ0m The specified constant pool
 					// tag is not valid. (The illegal constant pool tag).}
-					throw new CIException(CIException.Issue.ILLEGAL_TAG,
-						String.format("AQ0m %d", tag));
+					throw new CIException(String.format("AQ0m %d", tag));
 			}
 		}
 		
@@ -298,9 +294,8 @@ class __PoolDecoder__
 				// constant which is not valid. (The tag; Reference A;
 				// Reference B)}
 				int q = refs.length;
-				throw new CIException(CIException.Issue.ILLEGAL_CONSTANT,
-					String.format("AQ1g %d %d %d", tag, (1 < q ? refs[1] : -1),
-					(2 < q ? refs[2] : -1)), e);
+				throw new CIException(String.format("AQ1g %d %d %d", tag,
+					(1 < q ? refs[1] : -1), (2 < q ? refs[2] : -1)), e);
 			}
 		}
 		

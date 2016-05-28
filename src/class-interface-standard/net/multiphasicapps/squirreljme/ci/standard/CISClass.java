@@ -95,8 +95,7 @@ public final class CISClass
 		// however the given magic number was specified.}
 		int clmagic;
 		if (MAGIC_NUMBER != (clmagic = das.readInt()))
-			throw new CIException(CIException.Issue.BAD_MAGIC_NUMBER,
-				String.format("AQ17 %08x", clmagic));
+			throw new CIException(String.format("AQ17 %08x", clmagic));
 		
 		// Read the class version number, this modifies if certain
 		// instructions are handled and how they are verified (StackMap vs
@@ -108,8 +107,7 @@ public final class CISClass
 			das.readUnsignedShort() | (das.readUnsignedShort() << 16));
 		if (version.compareTo(CIVersion.MAX_VERSION) > 0 ||
 			version.compareTo(CIVersion.MIN_VERSION) < 0)
-			throw new CIException(CIException.Issue.BAD_CLASS_VERSION,
-				String.format("AQ18 %s != [%s, %s]", version,
+			throw new CIException(String.format("AQ18 %s != [%s, %s]", version,
 				CIVersion.MIN_VERSION, CIVersion.MAX_VERSION));
 		
 		// Decode the constant pool
@@ -150,8 +148,7 @@ public final class CISClass
 		{
 			// {@squirreljme.error AQ1j The name of the current, super, or
 			// an CIClassimplemented interface is not a valid binary name.}
-			throw new CIException(CIException.Issue.BAD_CLASS_NAME, "AQ1j",
-				e);
+			throw new CIException("AQ1j", e);
 		}
 		
 		// Read in fields
@@ -180,8 +177,7 @@ public final class CISClass
 			// negative size.}
 			int len = das.readInt();
 			if (len < 0)
-				throw new CIException(CIException.Issue.NEGATIVE_ATTRIBUTE,
-					"AQ1w");
+				throw new CIException("AQ1w");
 			
 			// Skip the length
 			__ReadMember__.__skipBytes(das, len);
@@ -190,7 +186,7 @@ public final class CISClass
 		// {@squirreljme.error AQ1o Extra bytes follow the end of the class
 		// file data which is illegal.}
 		if (das.read() >= 0)
-			throw new CIException(CIException.Issue.NOT_EOC, "AQ1o");
+			throw new CIException("AQ1o");
 	}
 	
 	/**
