@@ -19,7 +19,7 @@ package java.lang.annotation;
  * This only affects classes which use an annotation with this annotation, as
  * such interfaces are excluded.
  *
- * @since k8 2014/10/13
+ * @since 2014/10/13
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})

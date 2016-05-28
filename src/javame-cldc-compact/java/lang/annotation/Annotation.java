@@ -17,7 +17,7 @@ package java.lang.annotation;
  * If a random class or interface implements this interface and it is not an
  * annotation type, then it is not an annotation.
  *
- * @since k8 2014/10/13
+ * @since 2014/10/13
  */
 public interface Annotation
 {
@@ -25,7 +25,7 @@ public interface Annotation
 	 * Returns the annotation type used for this annotation.
 	 *
 	 * @return The annotation type.
-	 * @since k8 2014/10/13
+	 * @since 2014/10/13
 	 */
 	public abstract Class<? extends Annotation> annotationType();
 	
@@ -48,7 +48,7 @@ public interface Annotation
 	 *
 	 * @param __o The other object to check against.
 	 * @return {@code true} if they are logically equivalent.
-	 * @since k8 2014/10/13
+	 * @since 2014/10/13
 	 */
 	public abstract boolean equals(Object __o);
 	
@@ -65,7 +65,7 @@ public interface Annotation
 	 * normal hashCode of the specified value.
 	 *
 	 * @return The hash code for this annotation.
-	 * @since k8 2014/10/13
+	 * @since 2014/10/13
 	 */
 	public abstract int hashCode();
 	
@@ -74,7 +74,7 @@ public interface Annotation
 	 * annotation and all of its values.
 	 *
 	 * @return The string representation of this annotation.
-	 * @since k8 2014/10/13
+	 * @since 2014/10/13
 	 */
 	public abstract String toString();
 }

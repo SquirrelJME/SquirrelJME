@@ -14,7 +14,7 @@ package java.lang.annotation;
  * Specifies how far through compilation and running of code that an annotation
  * should be visible.
  *
- * @since k8 2014/10/13
+ * @since 2014/10/13
  */
 public enum RetentionPolicy
 {

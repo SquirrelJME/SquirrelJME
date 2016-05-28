@@ -14,7 +14,7 @@ package java.lang.annotation;
  * This indicates that the specified annotation should be documented by the
  * Java documentation tool whenever it is used.
  *
- * @since k8 2014/10/13
+ * @since 2014/10/13
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})

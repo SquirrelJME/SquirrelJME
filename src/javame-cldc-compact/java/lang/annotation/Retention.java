@@ -14,7 +14,7 @@ package java.lang.annotation;
  * This is used to indicate how far into the compilation and runtime process
  * should keep a visible mark on an annotation.
  *
- * @since k8 2014/10/13
+ * @since 2014/10/13
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE})
@@ -26,7 +26,7 @@ public @interface Retention
 	 *
 	 * @return The storage of the annotation.
 	 * @see RetentionPolicy
-	 * @since k8 2014/10/13
+	 * @since 2014/10/13
 	 */
 	RetentionPolicy value();
 }

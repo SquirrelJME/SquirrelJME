@@ -14,7 +14,7 @@ package java.lang.annotation;
  * Specifies the type of element that the annotation is permitted to be
  * attached to in the source code.
  *
- * @since k8 2014/10/13
+ * @since 2014/10/13
  */
 public enum ElementType
 {

@@ -40,7 +40,7 @@ package java.lang;
  * }
  *
  * @see Closeable
- * @since k8 2015/03/23
+ * @since 2015/03/23
  */
 public interface AutoCloseable
 {
@@ -60,7 +60,7 @@ public interface AutoCloseable
 	 * nothing when closed" behavior of {@link java.io.Closeable}.
 	 *
 	 * @throws Exception If there was an error closing the specified object.
-	 * @since k8 2015/03/23
+	 * @since 2015/03/23
 	 */
 	public abstract void close()
 		throws Exception;
