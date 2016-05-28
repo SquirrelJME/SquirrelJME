@@ -15,3 +15,8 @@ done. Other things would also be done also.
 
 I could actually use JavaDoc for every single class and package.
 
+## 15:31
+
+Private method invocations use `invokespecial` because private methods are not
+inherited.
+
