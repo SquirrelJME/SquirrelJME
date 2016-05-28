@@ -11,3 +11,7 @@ much of a problem at all. Generally the verification process will load other
 classes and make sure that stuff such as circular extends and such are not
 done. Other things would also be done also.
 
+## 11:17
+
+I could actually use JavaDoc for every single class and package.
+
