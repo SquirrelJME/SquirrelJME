@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.ci.CIAccessibleFlags;
+import net.multiphasicapps.squirreljme.ci.CIAccessibleObject;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIClassFlags;
 import net.multiphasicapps.squirreljme.ci.CIException;
@@ -218,8 +220,8 @@ class __Verifier__
 			CIMethod v = e.getValue();
 			CIMethodFlags f = v.flags();
 			
-			// Ignore static
-			if (f.isStatic())
+			// Ignore static and constructors
+			if (f.isStatic() || k.isConstructor())
 				continue;
 			
 			// {@squirreljme.error BN0c Non-abstract class contains an abstract
@@ -246,14 +248,66 @@ class __Verifier__
 				CIMethodID k = e.getKey();
 				CIMethod v = e.getValue();
 				CIMethodFlags f = v.flags();
+				
+				// Also get top-level details
+				CIMethod tlv = toplevel.get(k);
 			
-				// Ignore static
-				if (f.isStatic())
+				// Ignore static and constructors
+				if (f.isStatic() || k.isConstructor())
 					continue;
+				
+				// If top-level class does not have the given method then add
+				// the implementation of it
+				if (tlv == null)
+					toplevel.put(k, (tlv = v));
+				
+				// Get flags for top level
+				CIMethodFlags tlf = tlv.flags();
+				
+				// Compare flags for the methods
+				int fcomp = __Verifier__.<CIMethodFlags>__compare(f, tlf);
+				
+				// {@squirreljme.error BN0d Top-level method has more strict
+				// access compared to super-method. (Super method flags;
+				// Top-level method flags)}
+				if (fcomp > 0)
+					throw new CIException(String.format("BN0d %s %s", f, tlf));
 				
 				throw new Error("TODO");
 			}
 		}
+	}
+	
+	/**
+	 * Compares access flags in the order of private, package private,
+	 * protected, then public.
+	 *
+	 * @param <F> The accessible flag type.
+	 * @param __sao Flags used in a super-class version of this.
+	 * @param __tao Flags used in the current class version of this.
+	 * @return The 
+	 * @throws
+	 */
+	private static <F extends CIAccessibleFlags> int __compare(F __sao,
+		F __tao)
+		throws NullPointerException
+	{
+		// Check
+		if (__sao == null || __tao == null)
+			throw new NullPointerException("NARG");
+		
+		// Get access level of each
+		int sl = (__sao.isPublic() ? 4 : (__sao.isProtected() ? 3 :
+				(__sao.isPackagePrivate() ? 2 : 1))),
+			tl = (__tao.isPublic() ? 4 : (__tao.isProtected() ? 3 :
+				(__tao.isPackagePrivate() ? 2 : 1)));
+		
+		// Compare these
+		if (sl < tl)
+			return -1;
+		else if (sl > tl)
+			return 1;
+		return 0;
 	}
 }
 
