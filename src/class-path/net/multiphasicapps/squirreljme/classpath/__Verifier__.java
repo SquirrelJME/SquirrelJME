@@ -236,7 +236,20 @@ class __Verifier__
 			// Get the super class
 			CIClass scl = (i < ns ? __supers.get(i) : __inters.get(i - ns));
 			
-			throw new Error("TODO");
+			// Go through the methods in this class
+			for (Map.Entry<CIMethodID, CIMethod> e : scl.methods().entrySet())
+			{
+				// Get key, value, and flags
+				CIMethodID k = e.getKey();
+				CIMethod v = e.getValue();
+				CIMethodFlags f = v.flags();
+			
+				// Ignore static
+				if (f.isStatic())
+					continue;
+				
+				throw new Error("TODO");
+			}
 		}
 	}
 }
