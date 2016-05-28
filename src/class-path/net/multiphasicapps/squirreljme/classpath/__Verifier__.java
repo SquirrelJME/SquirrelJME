@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIClassFlags;
 import net.multiphasicapps.squirreljme.ci.CIException;
 
 /**
@@ -90,28 +91,89 @@ class __Verifier__
 		// Cache
 		ClassPath classpath = this.classpath;
 		CIClass verify = this.verify;
+		ClassNameSymbol thisname = this.thisname;
 		
 		// Make sure all interfaces are actually interfaces
 		Set<ClassNameSymbol> ints = new HashSet<>();
 		for (ClassNameSymbol in : verify.interfaceNames())
 		{
+			// {@squirreljme.error BN08 Class implements itself. (This class;
+			// The interface)}
+			if (in.equals(thisname))
+				throw new CIException(String.format("BN08 %s %s",
+					thisname, in));
+			
 			// {@squirreljme.error BN02 Could not find the class which the
 			// current class implements. (This class; The interface)}
 			CIClass inc = classpath.locateClass(in);
 			if (inc == null)
 				throw new CIException(String.format("BN02 %s %s",
-					this.thisname, in));
+					thisname, in));
 			
-			// {@squirreljme.error BN03 (This class; The interface)}
+			// {@squirreljme.error BN03 Class does not implement an interface.
+			// (This class; The interface)}
 			if (!inc.flags().isInterface())
 				throw new CIException(String.format("BN03 %s %s",
-					this.thisname, in));
+					thisname, in));
+			
+			// {@squirreljme.error BN04 Class already implements the given
+			// interface. (This class; The interface)}
+			if (__inters.contains(inc))
+				throw new CIException(String.format("BN04 %s %s",
+					thisname, in));
 			
 			// Add to interface list
 			__inters.add(inc);
 		}
 		
-		throw new Error("TODO");
+		// Get the super class
+		ClassNameSymbol dsn = verify.superName();
+		
+		// {@squirreljme.error BN09 java.lang.Object cannot extend another
+		// class and must be the root of the class tree. (This class; The super
+		// class it should not extend)}
+		boolean isobj = thisname.equals("java/lang/Object");
+		if (isobj && dsn != null)
+			throw new CIException(String.format("BN09 %s %s", thisname,
+				dsn));
+		
+		// {@squirreljme.error BN0a Non-java.lang.Object class does not extend
+		// a class. (This class)}
+		else if (!isobj && dsn == null)
+			throw new CIException(String.format("BN0a %s", thisname));
+		
+		// {@squirreljme.error BN0b Interfaces must extend java.lang.Object.
+		// (This class; The super class)}
+		else if (!isobj && verify.flags().isInterface() &&
+			!dsn.equals("java/lang/Object"))
+			throw new CIException(String.format("BN0b %s %s", thisname, dsn));
+		
+		// Make sure classes do not eventually extend self
+		for (ClassNameSymbol sn = dsn; sn != null;)
+		{
+			// {@squirreljme.error BN07 Class eventually extends itself.
+			// (This class; The super class)}
+			if (sn.equals(thisname))
+				throw new CIException(String.format("BN07 %s %s", thisname,
+					sn));
+			
+			// {@squirreljme.error BN05 Could not locate the super class of
+			// the current class. (This class; The super class)}
+			CIClass scl = classpath.locateClass(sn);
+			if (scl == null)
+				throw new CIException(String.format("BN05 %s %s",
+					thisname, sn));
+			
+			// {@squirreljme.error BN06 Class extends an interface or a final
+			// class. (This class; The super class; The super class flags)}
+			CIClassFlags scf = scl.flags();
+			if (scf.isInterface() || scf.isFinal())
+				throw new CIException(String.format("BN06 %s %s %s",
+					thisname, sn, scf));
+			
+			// Get next super class
+			sn = scl.superName();
+		}
 	}
 }
 
