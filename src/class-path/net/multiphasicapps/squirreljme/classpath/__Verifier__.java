@@ -172,6 +172,9 @@ class __Verifier__
 				throw new CIException(String.format("BN05 %s %s",
 					thisname, sn));
 			
+			// Add to list of super-classes
+			__supers.add(scl);
+			
 			// {@squirreljme.error BN06 Class extends an interface or a final
 			// class. (This class; The super class; The super class flags)}
 			CIClassFlags scf = scl.flags();
