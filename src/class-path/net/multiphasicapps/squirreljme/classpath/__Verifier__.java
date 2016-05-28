@@ -12,13 +12,18 @@ package net.multiphasicapps.squirreljme.classpath;
 
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIClassFlags;
 import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 
 /**
  * This verifies that the specified class is properly laid out in the structure
@@ -194,6 +199,24 @@ class __Verifier__
 		// Cache
 		ClassPath classpath = this.classpath;
 		CIClass verify = this.verify;
+		CIClassFlags vflags = verify.flags();
+		
+		// Is this class abstract?
+		boolean visabs = vflags.isAbstract();
+		
+		// Start with methods that are at the top-most level to check against
+		// all the methods that may be replaced
+		Map<CIMethodID, CIMethod> toplevel =
+			new HashMap<>();
+		for (Map.Entry<CIMethodID, CIMethod> e : verify.methods().entrySet())
+		{
+			// Get key, value, and flags
+			CIMethodID k = e.getKey();
+			CIMethod v = e.getValue();
+			CIMethodFlags f = v.flags();
+			
+			throw new Error("TODO");
+		}
 		
 		// Go through all classes
 		int ns = __supers.size(), ni = __inters.size(), n = ns + ni;

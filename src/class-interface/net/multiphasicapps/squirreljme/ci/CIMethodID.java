@@ -18,7 +18,7 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  *
  * @since 2016/04/22
  */
-public class CIMethodID
+public final class CIMethodID
 	extends CIMemberID<MethodSymbol>
 {
 	/**
@@ -36,8 +36,36 @@ public class CIMethodID
 		
 		// {@squirreljme.error AO20 The specified name is not a valid name for
 		// a method. (The name of the method)}
-		if (!name.isValidMethod())
-			throw new CIException(String.format("AO20", __n));
+		if (!this.name.isValidMethod())
+			throw new CIException(String.format("AO20 %s", __n));
+		
+		// {@squirreljme.error AO09 The static initializer for a class must
+		// take no arguments and return void. (The type of the method method)}
+		if (isStaticInitializer() && __t.equals("()V"))
+			throw new CIException(String.format("AO09 s%", __t));
+	}
+	
+	/**
+	 * Returns true if this method is named for a constructor of a class.
+	 *
+	 * @return {@code true} if this is a constructor.
+	 * @since 2016/05/28
+	 */
+	public final boolean isConstructor()
+	{
+		return this.name.isConstructor();
+	}
+	
+	/**
+	 * Returns true if this method is named for the static initializer of a
+	 * class.
+	 *
+	 * @return {@code true} if this is the static initializer.
+	 * @since 2016/05/28
+	 */
+	public final boolean isStaticInitializer()
+	{
+		return this.name.isStaticInitializer();
 	}
 }
 
