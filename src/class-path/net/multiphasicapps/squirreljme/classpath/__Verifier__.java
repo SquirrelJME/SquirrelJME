@@ -273,7 +273,12 @@ class __Verifier__
 				if (fcomp > 0)
 					throw new CIException(String.format("BN0d %s %s", f, tlf));
 				
-				throw new Error("TODO");
+				// {@squirreljme.error BN0e A final method in a super-class
+				// cannot be overridden. (This class; The method name and
+				// type)}
+				if (tlv != v && f.isFinal())
+					throw new CIException(String.format("BN0e %s %s",
+						this.thisname, k));
 			}
 		}
 	}
