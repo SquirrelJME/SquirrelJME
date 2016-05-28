@@ -281,6 +281,13 @@ class __Verifier__
 						this.thisname, k));
 			}
 		}
+		
+		// {@squirreljme.error BN0f A method in the given class is abstract
+		// and has no implementation. (This class; The method)}
+		for (Map.Entry<CIMethodID, CIMethod> e : toplevel.entrySet())
+			if (e.getValue().flags().isAbstract())
+				throw new CIException(String.format("BN0f %s %s",
+					this.thisname, e.getKey()));
 	}
 	
 	/**
