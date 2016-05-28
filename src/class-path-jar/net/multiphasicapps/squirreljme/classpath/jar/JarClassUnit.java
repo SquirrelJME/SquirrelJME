@@ -158,10 +158,8 @@ public abstract class JarClassUnit
 			InputStream rv = null;
 			try
 			{
-				// Try opening an input stream for the given resource
-				rv = ent.open();
-				
-				throw new Error("TODO");
+				// Return a wrapped input stream which uses a counter
+				return new __CountedInputStream__(ent.open());
 			}
 			
 			// Open failed
@@ -269,6 +267,40 @@ public abstract class JarClassUnit
 	}
 	
 	/**
+	 * This wraps an input stream and provides counting for it.
+	 *
+	 * @since 2016/05/28
+	 */
+	private final __CountedInputStream__
+		extends InputStream
+	{
+		/** The wrapped stream. */
+		private final InputStream _base;
+		
+		/** The counter. */
+		private final __Counter__ _count;
+		
+		/**
+		 * Initializes the counted input stream.
+		 *
+		 * @param __base The stream to wrap.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/05/28
+		 */
+		private __CountedInputStream__(InputStream __base)
+			throws NullPointerException
+		{
+			// Check
+			if (__base == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this._base = __base;
+			this._count = new __Counter__();
+		}
+	}
+	
+	/**
 	 * This is used for counting how many resources are currently open within
 	 * the JAR.
 	 *
@@ -310,7 +342,7 @@ public abstract class JarClassUnit
 					return;
 				
 				// Reduce count
-				JarClassUnit.this._count--;
+				int newcount = --JarClassUnit.this._count;
 				
 				// Mark as closed
 				_didclose = true;

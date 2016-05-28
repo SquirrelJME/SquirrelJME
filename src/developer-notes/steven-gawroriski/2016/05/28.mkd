@@ -1,2 +1,6 @@
 # 2016/05/28
 
+## 09:50
+
+Appears this class unit code will work out nicely for its purpose.
+
