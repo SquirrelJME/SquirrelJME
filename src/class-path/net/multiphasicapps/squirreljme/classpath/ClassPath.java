@@ -135,19 +135,19 @@ public final class ClassPath
 				if (scn == null)
 					return false;
 				
-				// {@squirreljme.error AO0c The specified class eventually
+				// {@squirreljme.error BN0g The specified class eventually
 				// extends itself. (The name of the current class)}
 				if (didclass.contains(scn))
-					throw new CIException(String.format("AO0c %s", tname));
+					throw new CIException(String.format("BN0g %s", tname));
 				
 				// Go to that class
 				rover = locateClass(scn);
 				
-				// {@squirreljme.error AO0a Cannot check protected access
+				// {@squirreljme.error BN0h Cannot check protected access
 				// against a super class if it does not exist. (The name of the
 				// super class)}
 				if (rover == null)
-					throw new CIException(String.format("AO0a %s", scn));
+					throw new CIException(String.format("BN0h %s", scn));
 				
 				// Same name?
 				if (tname.equals(scn))
@@ -155,11 +155,11 @@ public final class ClassPath
 			}
 		}
 		
-		// {@squirreljme.error AO0b The accessible object to check access
+		// {@squirreljme.error BN0i The accessible object to check access
 		// against has an impossible flag combination. (The accessible object;
 		// The accessible object flags)}
 		else
-			throw new CIException(String.format("AO0b %s", __ao, af));
+			throw new CIException(String.format("BN0i %s", __ao, af));
 	}
 	
 	/**

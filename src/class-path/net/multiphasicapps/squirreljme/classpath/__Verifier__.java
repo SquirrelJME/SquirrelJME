@@ -132,6 +132,13 @@ class __Verifier__
 				throw new CIException(String.format("BN04 %s %s",
 					thisname, in));
 			
+			// {@squirreljme.error BN0j The current cannot cannot implement the
+			// given interface because it is not accessible to this class.
+			// (This class; The interface)}
+			if (!classpath.canAccess(verify, inc))
+				throw new CIException(String.format("BN0j %s %s", thisname,
+					in));
+			
 			// Add to interface list
 			__inters.add(inc);
 		}
@@ -174,8 +181,12 @@ class __Verifier__
 				throw new CIException(String.format("BN05 %s %s",
 					thisname, sn));
 			
-			// Add to list of super-classes
-			__supers.add(scl);
+			// {@squirreljme.error BN0k The current cannot cannot extend the
+			// given classs because it is not accessible to this class.
+			// (This class; The class being extended)}
+			if (sn.equals(dsn) && !classpath.canAccess(verify, scl))
+				throw new CIException(String.format("BN0k %s %s", thisname,
+					sn));
 			
 			// {@squirreljme.error BN06 Class extends an interface or a final
 			// class. (This class; The super class; The super class flags)}
@@ -183,6 +194,9 @@ class __Verifier__
 			if (scf.isInterface() || scf.isFinal())
 				throw new CIException(String.format("BN06 %s %s %s",
 					thisname, sn, scf));
+			
+			// Add to list of super-classes
+			__supers.add(scl);
 			
 			// Get next super class
 			sn = scl.superName();
