@@ -10,10 +10,13 @@
 
 package net.multiphasicapps.squirreljme.classpath.jar;
 
+import java.io.IOException;
+import java.nio.channels.SeekableByteChannel;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.zips.StandardZIPFile;
 
 /**
  * This provides access to classes from a JAR file.
@@ -25,6 +28,16 @@ public abstract class JarClassUnit
 {
 	/** The key this is associated with. */
 	protected final String key;
+	
+	/** The lock on the close count. */
+	private final Object _lock =
+		new Object();
+	
+	/** The currently opened ZIP file. */
+	private volatile StandardZIPFile _zip;
+	
+	/** The current count. */
+	private volatile int _count;
 	
 	/**
 	 * This represents a single class unit which is provided within a JAR.
@@ -45,6 +58,16 @@ public abstract class JarClassUnit
 	}
 	
 	/**
+	 * Obtains the channel which is used to access the ZIP file data.
+	 *
+	 * @return The channel for the current class unit.
+	 * @throws IOException If it could not be contained due to a read error.
+	 * @since 2016/05/28
+	 */
+	protected abstract SeekableByteChannel obtainChannel()
+		throws IOException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/27
 	 */
@@ -56,7 +79,11 @@ public abstract class JarClassUnit
 		if (__cns == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Count
+		try (__Counter__ counter = __count())
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -67,6 +94,89 @@ public abstract class JarClassUnit
 	public final String toString()
 	{
 		return this.key;
+	}
+	
+	/**
+	 * Creates a closeable reference counter for the ZIP file access.
+	 *
+	 * @return The counter for the ZIP.
+	 * @since 2016/05/28
+	 */
+	private final __Counter__ __count()
+	{
+		// Lock
+		synchronized (this._lock)
+		{
+			// Already loaded? Make a counter
+			if (this._zip != null)
+				return new __Counter__();
+			
+			// Otherwise obtain the channel
+			SeekableByteChannel chan;
+			try
+			{
+				chan = obtainChannel();
+			}
+			
+			// {@squirreljme.error BO01 Could not obtain the seekable byte
+			// channel for the given JAR unit. (The JAR key)}
+			catch (IOException e)
+			{
+				throw new CIException(String.format("BO01 %s", this.key), e);
+			}
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * This is used for counting how many resources are currently open within
+	 * the JAR.
+	 *
+	 * @since 2016/05/28
+	 */
+	private final class __Counter__
+		implements AutoCloseable
+	{
+		/** Already closed? */
+		private volatile boolean _didclose;
+		
+		/**
+		 * This initializes the counter.
+		 *
+		 * @since 2016/05/28
+		 */
+		private __Counter__()
+		{
+			// Lock
+			synchronized (JarClassUnit.this._lock)
+			{
+				// Increase count
+				JarClassUnit.this._count++;
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/05/28
+		 */
+		@Override
+		public void close()
+		{
+			// Lock
+			synchronized (JarClassUnit.this._lock)
+			{
+				// If already closed, do nothing
+				if (_didclose)
+					return;
+				
+				// Reduce count
+				JarClassUnit.this._count--;
+				
+				// Mark as closed
+				_didclose = true;
+			}
+		}
 	}
 }
 

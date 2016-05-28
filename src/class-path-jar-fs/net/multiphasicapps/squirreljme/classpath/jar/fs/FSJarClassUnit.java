@@ -10,7 +10,11 @@
 
 package net.multiphasicapps.squirreljme.classpath.jar.fs;
 
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnit;
@@ -41,6 +45,17 @@ public class FSJarClassUnit
 		
 		// Set
 		this.path = __p;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/28
+	 */
+	@Override
+	protected SeekableByteChannel obtainChannel()
+		throws IOException
+	{
+		return FileChannel.open(path, StandardOpenOption.READ);
 	}
 }
 

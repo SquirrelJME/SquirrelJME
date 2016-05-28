@@ -12,7 +12,6 @@ package net.multiphasicapps.squirreljme.classpath.jar;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.nio.channels.SeekableByteChannel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
