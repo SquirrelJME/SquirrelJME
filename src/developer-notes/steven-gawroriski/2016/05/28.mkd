@@ -20,3 +20,12 @@ I could actually use JavaDoc for every single class and package.
 Private method invocations use `invokespecial` because private methods are not
 inherited.
 
+## 18:34
+
+The **can access** check can likely go into `ClassPath` or similar. It needs
+every single class to be visible for the most part before access checks can
+be performed and such however. Well, generally the access check would be given
+two accessible objects. So this code can just go into the accessible object
+however `static` in `interface`s is not supported. So there could just be an
+accessibility checker and such.
+
