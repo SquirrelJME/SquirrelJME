@@ -125,7 +125,41 @@ public abstract class JarClassUnit
 				throw new CIException(String.format("BO01 %s", this.key), e);
 			}
 			
-			throw new Error("TODO");
+			// Setup ZIP
+			try
+			{
+				// Open ZIP
+				StandardZIPFile zip = StandardZIPFile.open(chan);
+				
+				// Associate it
+				this._zip = zip;
+				
+				// Setup counter
+				return new __Counter__();
+			}
+			
+			// Failed to handle the ZIP
+			catch (IOException|RuntimeException|Error e)
+			{
+				// Make sure the channel is closed
+				try
+				{
+					chan.close();
+				}
+				
+				// Add more exception if they occur
+				catch (Throwable t)
+				{
+					e.addSuppressed(t);
+				}
+				
+				// Clear reference always
+				this._zip = null;
+				
+				// {@squirreljme.error BD02 Failed to handle the given file
+				// as a ZIP file (it likely is not one). (The JAR key)}
+				throw new CIException(String.format("BO02 %s", this.key), e);
+			}
 		}
 	}
 	
