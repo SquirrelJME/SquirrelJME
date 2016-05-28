@@ -18,6 +18,7 @@ import java.io.OutputStream;
  *
  * @since 2016/04/16
  */
+@Deprecated
 final class __StdOutOutputStream__
 	extends OutputStream
 {
@@ -26,6 +27,7 @@ final class __StdOutOutputStream__
 	 *
 	 * @since 2016/04/16
 	 */
+	@Deprecated
 	__StdOutOutputStream__()
 	{
 	}
@@ -35,6 +37,7 @@ final class __StdOutOutputStream__
 	 * @since 2016/04/16
 	 */
 	@Override
+	@Deprecated
 	public void write(int __b)
 	{
 		throw new ForbiddenMagicError();

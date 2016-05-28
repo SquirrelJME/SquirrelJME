@@ -21,13 +21,16 @@ import java.io.OutputStream;
  *
  * @since 2016/03/02
  */
+@Deprecated
 public abstract class Magic
 {
 	/** Standard output stream. */
+	@Deprecated
 	private static final __StdOutOutputStream__ _stdout =
 		new __StdOutOutputStream__();
 	
 	/** Standard error stream. */
+	@Deprecated
 	private static final __StdErrOutputStream__ _stderr =
 		new __StdErrOutputStream__();
 	
@@ -36,6 +39,7 @@ public abstract class Magic
 	 *
 	 * @since 2016/03/02
 	 */
+	@Deprecated
 	private Magic()
 	{
 		throw new RuntimeException("WTFX");
@@ -47,6 +51,7 @@ public abstract class Magic
 	 * @return The package which called the method calling this.
 	 * @since 2016/03/02
 	 */
+	@Deprecated
 	public static String callingPackage()
 	{
 		throw new ForbiddenMagicError();
@@ -62,6 +67,7 @@ public abstract class Magic
 	 * one.
 	 * @since 2016/03/02
 	 */
+	@Deprecated
 	public static Class<?> componentType(Class<?> __ct)
 	{
 		throw new ForbiddenMagicError();
@@ -83,6 +89,7 @@ public abstract class Magic
 	 * no internal string was found.
 	 * @since 2016/04/02
 	 */
+	@Deprecated
 	public static String matchInternalString(String __s)
 	{
 		throw new ForbiddenMagicError();
@@ -94,6 +101,7 @@ public abstract class Magic
 	 * @return The class for it.
 	 * @since 2016/03/31
 	 */
+	@Deprecated
 	public static Class<Boolean> primitiveBooleanClass()
 	{
 		throw new ForbiddenMagicError();
@@ -105,6 +113,7 @@ public abstract class Magic
 	 * @return The class for it.
 	 * @since 2016/03/31
 	 */
+	@Deprecated
 	public static Class<Byte> primitiveByteClass()
 	{
 		throw new ForbiddenMagicError();
@@ -116,6 +125,7 @@ public abstract class Magic
 	 * @return The class for it.
 	 * @since 2016/03/31
 	 */
+	@Deprecated
 	public static Class<Character> primitiveCharacterClass()
 	{
 		throw new ForbiddenMagicError();
@@ -127,6 +137,7 @@ public abstract class Magic
 	 * @return The class for it.
 	 * @since 2016/03/31
 	 */
+	@Deprecated
 	public static Class<Double> primitiveDoubleClass()
 	{
 		throw new ForbiddenMagicError();
@@ -138,6 +149,7 @@ public abstract class Magic
 	 * @return The class for it.
 	 * @since 2016/03/31
 	 */
+	@Deprecated
 	public static Class<Float> primitiveFloatClass()
 	{
 		throw new ForbiddenMagicError();
@@ -149,6 +161,7 @@ public abstract class Magic
 	 * @return The class for it.
 	 * @since 2016/03/31
 	 */
+	@Deprecated
 	public static Class<Integer> primitiveIntegerClass()
 	{
 		throw new ForbiddenMagicError();
@@ -160,6 +173,7 @@ public abstract class Magic
 	 * @return The class for it.
 	 * @since 2016/03/31
 	 */
+	@Deprecated
 	public static Class<Long> primitiveLongClass()
 	{
 		throw new ForbiddenMagicError();
@@ -171,6 +185,7 @@ public abstract class Magic
 	 * @return The class for it.
 	 * @since 2016/03/31
 	 */
+	@Deprecated
 	public static Class<Short> primitiveShortClass()
 	{
 		throw new ForbiddenMagicError();
@@ -182,6 +197,7 @@ public abstract class Magic
 	 * @return The stream attached to standard error.
 	 * @since 2016/03/17
 	 */
+	@Deprecated
 	public static OutputStream stdErr()
 	{
 		return _stderr;
@@ -193,6 +209,7 @@ public abstract class Magic
 	 * @return The stream attached to standard output.
 	 * @since 2016/03/17
 	 */
+	@Deprecated
 	public static OutputStream stdOut()
 	{
 		return _stdout;

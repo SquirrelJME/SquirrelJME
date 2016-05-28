@@ -17,6 +17,7 @@ package net.multiphasicapps.squirreljme.magic;
  *
  * @since 2016/03/17
  */
+@Deprecated
 public final class ForbiddenMagicError
 	extends Error
 {
@@ -25,6 +26,7 @@ public final class ForbiddenMagicError
 	 *
 	 * @since 2016/03/17
 	 */
+	@Deprecated
 	ForbiddenMagicError()
 	{
 		super();

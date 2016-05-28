@@ -18,9 +18,11 @@ package net.multiphasicapps.squirreljme.magic;
  *
  * @since 2016/04/05
  */
+@Deprecated
 public final class IVMCharSequence
 {
 	/** The internally wrapped sequence, this will be used as a key. */
+	@Deprecated
 	protected final Object internal =
 		null;
 	
@@ -29,6 +31,7 @@ public final class IVMCharSequence
 	 *
 	 * @since 2016/04/05
 	 */
+	@Deprecated
 	private IVMCharSequence()
 	{
 	}
@@ -40,6 +43,7 @@ public final class IVMCharSequence
 	 * @return The character at the given position.
 	 * @since 2016/04/05
 	 */
+	@Deprecated
 	public char charAt(int __i)
 	{	
 		throw new ForbiddenMagicError();
@@ -51,6 +55,7 @@ public final class IVMCharSequence
 	 * @return The string length.
 	 * @since 2016/04/05
 	 */
+	@Deprecated
 	public int length()
 	{	
 		throw new ForbiddenMagicError();

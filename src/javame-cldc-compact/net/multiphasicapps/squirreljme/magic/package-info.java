@@ -19,5 +19,6 @@
  * @since 2016/04/12
  */
 
+@Deprecated
 package net.multiphasicapps.squirreljme.magic;
 
