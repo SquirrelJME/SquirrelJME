@@ -123,7 +123,8 @@ public final class ClassPath
 					// Add to classes being verified
 					inverif.put(__cns, rv);
 					
-					throw new Error("TODO");
+					// Verifiy
+					new __Verifier__(this, rv);
 				}
 				
 				// Remove from the verification regardless
