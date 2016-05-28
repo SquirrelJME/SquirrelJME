@@ -32,6 +32,7 @@ public class TerpMethod
 	 * compiler. In general it is not recommended to use this unless for
 	 * testing purposes.}
 	 */
+	@Deprecated
 	public static final boolean PURE_INTERPRETER =
 		Boolean.getBoolean("net.multiphasicapps.squirreljme.terp.pure");
 	
@@ -40,6 +41,7 @@ public class TerpMethod
 		new Object();
 	
 	/** The cached program or byte code. */
+	@Deprecated
 	private volatile Reference<Object> _program;
 
 	/**
@@ -71,6 +73,7 @@ public class TerpMethod
 	 * @throws TerpException If the program is not valid.
 	 * @since 2016/04/27
 	 */
+	@Deprecated
 	public Object program()
 		throws TerpException
 	{
