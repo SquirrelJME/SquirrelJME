@@ -11,7 +11,8 @@
 package net.multiphasicapps.squirreljme.ci;
 
 /**
- * This describes objects which .
+ * This describes class interfaces which have access flags associated with them
+ * (such as private, protected, or public).
  *
  * @since 2016/05/12
  */
