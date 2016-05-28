@@ -9,13 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This packages contains the NARF interpreter which uses the native compiler
- * system to expose and test that code generation works properly.
- *
- * It must be possible to run the interpreter on top of the interpreter.
- *
- * The interpreter permits access to the local filesystem if required by the
- * running program.
+ * This package contains the base classes which make up the abstract
+ * interpreter. Since this interpreter is abstract, it provides no actual
+ * executive elements. Thus before an interpreter may truly be used it must
+ * obtain an implementation of the execution core provided by
+ * {@link TerpInterpreter}.
  *
  * @since 2016/04/20
  */
