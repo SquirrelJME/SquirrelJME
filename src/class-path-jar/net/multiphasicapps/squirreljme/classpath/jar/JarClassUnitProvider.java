@@ -48,6 +48,19 @@ public abstract class JarClassUnitProvider
 		new HashMap<>();
 	
 	/**
+	 * Creates a new class unit using the given key.
+	 *
+	 * @param __k The key to use for the class unit, {@code null} keys are not
+	 * valid.
+	 * @return The class unit which is associated with the given key,
+	 * {@code null} may be returned if the key is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/28
+	 */
+	protected abstract JarClassUnit createClassUnit(String __k)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the collection of keys which are available.
 	 *
 	 * @return The collection of available keys.
@@ -100,9 +113,12 @@ public abstract class JarClassUnitProvider
 			for (String k : keys)
 				if (!cache.containsKey(k))
 				{
-					if (true)
-						throw new Error("TODO");
-					JarClassUnit v = null;
+					// Create unit
+					JarClassUnit v = createClassUnit(k);
+					if (v == null)
+						continue;
+					
+					// Add it
 					units.add(v);
 					cache.put(k, new WeakReference<>(v));
 				}

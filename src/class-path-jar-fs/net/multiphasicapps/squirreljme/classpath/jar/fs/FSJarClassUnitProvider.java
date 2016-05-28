@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnit;
 import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnitProvider;
 
 /**
@@ -50,6 +51,22 @@ public class FSJarClassUnitProvider
 		
 		// Set
 		this.path = __p;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/28
+	 */
+	@Override
+	protected JarClassUnit createClassUnit(String __k)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		return new FSJarClassUnit(this.path.resolve(__k));
 	}
 	
 	/**
