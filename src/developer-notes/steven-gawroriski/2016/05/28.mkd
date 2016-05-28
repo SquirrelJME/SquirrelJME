@@ -4,3 +4,10 @@
 
 Appears this class unit code will work out nicely for its purpose.
 
+## 10:30
+
+Now I just need to verify classes before they are used, which should not be
+much of a problem at all. Generally the verification process will load other
+classes and make sure that stuff such as circular extends and such are not
+done. Other things would also be done also.
+
