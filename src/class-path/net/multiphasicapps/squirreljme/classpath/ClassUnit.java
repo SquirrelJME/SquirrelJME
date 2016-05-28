@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.classpath;
 
+import java.io.InputStream;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIClass;
@@ -45,6 +46,17 @@ public abstract class ClassUnit
 	 */
 	public abstract CIClass locateClass(ClassNameSymbol __cns)
 		throws CIException;
+	
+	/**
+	 * Locates a resource using the given absolute name.
+	 *
+	 * @param __res The absolute name of the resource to find, this must not
+	 * start with a forward slash.
+	 * @return The input stream which is associated with the given resource or
+	 * {@code null} if it was not found.
+	 * @since 2016/05/28
+	 */
+	public abstract InputStream locateResource(String __res);
 	
 	/**
 	 * Returns the name of the JAR file which is used for the given class

@@ -10,11 +10,17 @@
 
 package net.multiphasicapps.squirreljme.classpath.jar;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.channels.SeekableByteChannel;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.standard.CISClass;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.zips.StandardZIPFile;
 
@@ -32,6 +38,10 @@ public abstract class JarClassUnit
 	/** The lock on the close count. */
 	private final Object _lock =
 		new Object();
+	
+	/** The loaded cache of classes. */
+	private final Map<ClassNameSymbol, Reference<CIClass>> _cache =
+		new HashMap<>();
 	
 	/** The currently opened ZIP file. */
 	private volatile StandardZIPFile _zip;
@@ -79,9 +89,61 @@ public abstract class JarClassUnit
 		if (__cns == null)
 			throw new NullPointerException("NARG");
 		
+		// Lock on the cache of classes
+		Map<ClassNameSymbol, Reference<CIClass>> cache = this._cache;
+		synchronized (cache)
+		{
+			// Get
+			Reference<CIClass> ref = cache.get(__cns);
+			CIClass rv;
+			
+			// Load the class?
+			if (ref == null || null == (rv = ref.get()))
+				try (InputStream is = locateResource(
+					__cns.toString() + ".class"))
+				{
+					// Load in class data and cache it
+					cache.put(__cns, new WeakReference<>(
+						(rv = new CISClass(is)));
+				}
+				
+				// {@squirreljme.error BD03 Could not load the specified class
+				// because there was an error during read. (The JAR key; The
+				// class being read)}
+				catch (IOException e)
+				{
+					throw new CIException(String.format("BO03 %s %s", this.key,
+						__cns));
+				}
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * Locates a resource using the given absolute name.
+	 *
+	 * @param __res The absolute name of the resource to find, this must not
+	 * start with a forward slash.
+	 * @return The input stream which is associated with the given resource or
+	 * {@code null} if it was not found.
+	 * @since 2016/05/28
+	 */
+	@Override
+	public final InputStream locateResource(String __res)
+		throws NullPointerException
+	{
+		// Check
+		if (__res == null)
+			throw new NullPointerException("NARG");
+		
 		// Count
 		try (__Counter__ counter = __count())
 		{
+			// Load the ZIP
+			StandardZIPFile zip = this._zip
+			
 			throw new Error("TODO");
 		}
 	}
@@ -156,7 +218,7 @@ public abstract class JarClassUnit
 				// Clear reference always
 				this._zip = null;
 				
-				// {@squirreljme.error BD02 Failed to handle the given file
+				// {@squirreljme.error BO02 Failed to handle the given file
 				// as a ZIP file (it likely is not one). (The JAR key)}
 				throw new CIException(String.format("BO02 %s", this.key), e);
 			}
