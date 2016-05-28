@@ -18,7 +18,7 @@ import java.io.PrintStream;
  * change final values. Due to the potential to have extremely aggressive
  * optimization and romization, having it not do this would be dangerous
  * because in fully optimized code, the finals will NEVER change regardless
- * of how many stream setting is called.
+ * of how many times stream setting is called.
  *
  * @since 2016/03/17
  */
