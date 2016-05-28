@@ -99,10 +99,10 @@ public final class ClassPath
 				// Check if the class is in the verification stage (it has
 				// already been partially loaded)
 				Map<ClassNameSymbol, CIClass> inverif = this._inverif;
-				CIClass ver = inverif.get(__cns);
+				rv = inverif.get(__cns);
 				
 				// In verification step, so return it
-				if (ver != null)
+				if (rv != null)
 					return null;
 				
 				// Load the class to be returned from the first unit that
@@ -117,10 +117,24 @@ public final class ClassPath
 				if (__cns == null)
 					throw new CIException(String.format("BN01 %s", __cns));
 				
-				throw new Error("TODO");
+				// Is only in the verification stage temporarily
+				try
+				{
+					// Add to classes being verified
+					inverif.put(__cns, rv);
+					
+					throw new Error("TODO");
+				}
+				
+				// Remove from the verification regardless
+				finally
+				{
+					inverif.remove(__cns);
+				}
 			}
 			
-			throw new Error("TODO");
+			// Return the already verified class
+			return rv;
 		}
 	}
 }
