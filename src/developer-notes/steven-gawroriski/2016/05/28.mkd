@@ -65,3 +65,16 @@ the `KernelThread` would have `Thread` internally, but for certain systems
 say perhaps the NES the `KernelThread` will be specially formed for the given
 system.
 
+## 20:24
+
+So to the `Kernel` there would be no `Thread` at all used anywhere except
+potentially used in the implementation. This means I will need a
+`KernelThreadManager` although the kernel could do it itself for example in a
+kind of `createThread` for a process or similar. It would have to be figured
+out. Then this would mean that the `currentThread` call would have to determine
+the actual current thread being used using implementation specific means. So
+since `KernelProcess` is `final`, this means the `Kernel` gets all of the stuff
+needed for threads. Then with this, my potential delemma for handling threads
+and such is solved.
+
+
