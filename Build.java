@@ -84,10 +84,14 @@ public class Build
 	/** Path separator. */
 	public static final String PATH_SEPARATOR;
 	
-	/** This is the name of the interpreter that is used. */
+	/**
+	 * {@squirreljme.property project.interpreter This is the package that
+	 * should be built and launched when a request to made to run on the
+	 * interpreter.}
+	 */
 	public static final String INTERPRETER_NAME =
-		Objects.toString(System.getProperty("net.multiphasicapps.interpreter"),
-			"kernel-impl-jvm-test");
+		Objects.toString(System.getProperty("project.interpreter"),
+			"kernel-impl-jvm");
 	
 	/** Build JARs with no compression? */
 	private static volatile boolean _nocompression;

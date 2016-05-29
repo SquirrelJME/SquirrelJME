@@ -3,7 +3,7 @@ X-SquirrelJME-Name: kernel-impl-jvm-javase
 X-SquirrelJME-UUID: 2e0c53a9-e82c-4c5a-9bac-8026b3966909
 X-SquirrelJME-Depends: kernel, extra-io-hex,
  squirreljme-mascot-png-low, user-interface,
- launcher, kernel-auto-boot, class-path-jar-fs
+ launcher, kernel-impl-jvm, class-path-jar-fs
 X-SquirrelJME-HostClassPath: true
 X-SquirrelJME-Error: AZ
 Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.
