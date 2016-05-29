@@ -8,6 +8,7 @@ X-SquirrelJME-Optional:
  test-extra-util-dynbuffer,
  test-extra-util-huffmantree,
  test-javame-cldc-compact
+Main-Class: net.multiphasicapps.tests.TestCaller
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160303
