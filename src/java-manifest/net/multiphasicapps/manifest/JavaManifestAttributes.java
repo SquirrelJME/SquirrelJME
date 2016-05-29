@@ -11,6 +11,7 @@
 package net.multiphasicapps.manifest;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -28,10 +29,17 @@ public final class JavaManifestAttributes
 	/**
 	 * Initializes the manifest attributes.
 	 *
+	 * @param __from The map to copy from.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/20
 	 */
-	JavaManifestAttributes()
+	JavaManifestAttributes(Map<JavaManifestKey, String> __from)
+		throws NullPointerException
 	{
+		// Check
+		if (__from == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	

@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
  * This contains decoders for the standard Java manifest format.
@@ -50,6 +51,9 @@ public final class JavaManifest
 	/** Potentially may be a continuation of a line. */
 	private static final int _STAGE_VALUE_MIGHT_CONTINUE =
 		4;
+	
+	/** The attributes defined in this manifest file. */
+	protected final Map<String, JavaManifestAttributes> attributes;
 	
 	/**
 	 * Decodes the manifest from the given input stream, it is treated as
@@ -85,7 +89,11 @@ public final class JavaManifest
 		String curname = "";
 		StringBuilder curkey = new StringBuilder();
 		StringBuilder curval = new StringBuilder();
-		Map<String, String> working = new HashMap<>();
+		Map<JavaManifestKey, String> working = new HashMap<>();
+		
+		// The target backing map
+		Map<String, JavaManifestAttributes> backing =
+			new HashMap<>();
 		
 		// Read all input characters
 		int stage = _STAGE_KEY;
@@ -125,10 +133,29 @@ public final class JavaManifest
 					curkey.setLength(0);
 					curval.setLength(0);
 					
-					if (true)
-						throw new Error("TODO");
+					// If this is the name key, then there is a new entire
+					// grouping that is used
+					if (sk.equals("name"))
+					{
+						// Setup a copy of the working map
+						JavaManifestAttributes back =
+							new JavaManifestAttributes(working);
+						
+						// Clear it
+						working.clear();
+						
+						// Add it to the backing map
+						backing.put(curname, back);
+						
+						// Set new name to the value
+						curname = sv;
+					}
 					
-					// Set as key and read it
+					// Otherwise it is just added to the map
+					else
+						working.put(sk, sv);
+					
+					// Start reading keys again
 					stage = _STAGE_KEY;
 				}
 			}
@@ -220,7 +247,39 @@ public final class JavaManifest
 			}
 		}
 		
-		throw new Error("TODO");
+		// {@squirreljme.error BB05 End of file reached while reading a
+		// partial key value.}
+		if (stage == _STAGE_KEY && curkey.length() != 0)
+			throw new IOException("BB05");
+		
+		// Key and value waiting to be added to the working map?
+		if (curkey.length() != 0)
+		{
+			// Generate values
+			JavaManifestKey sk = new JavaManifestKey(
+				curkey.toString());
+			String sv = curval.toString();
+			
+			// Add to working set
+			working.put(sk, sv);
+		}
+		
+		// Add the current key to the target map
+		backing.put(curname, new JavaManifestAttributes(working));
+		
+		// Lock in the backing map
+		this.attributes = UnmodifiableMap.<String, JavaManifestAttributes>
+			of(backing);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/20
+	 */
+	@Override
+	public boolean containsKey(Object __k)
+	{
+		return this.attributes.containsKey(__k);
 	}
 	
 	/**
@@ -230,7 +289,38 @@ public final class JavaManifest
 	@Override
 	public Set<Map.Entry<String, JavaManifestAttributes>> entrySet()
 	{
-		throw new Error("TODO");
+		return this.attributes.entrySet();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/20
+	 */
+	@Override
+	public JavaManifestAttributes get(Object __k)
+	{
+		return this.attributes.get(__k);
+	}
+	
+	/**
+	 * Returns the mapping of main attributes.
+	 *
+	 * @return The main attribute mapping.
+	 * @since 2016/05/29
+	 */
+	public JavaManifestAttributes getMainAttributes()
+	{
+		return this.attributes.get("");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/20
+	 */
+	@Override
+	public int size()
+	{
+		return this.attributes.size();
 	}
 	
 	/**
