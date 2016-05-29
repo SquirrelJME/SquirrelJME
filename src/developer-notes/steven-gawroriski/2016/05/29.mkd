@@ -18,3 +18,8 @@ to be done.
 Then processes running on the kernel could be purely managed by the kernel for
 the most part, how it currently is done except much cleaner.
 
+## 09:15
+
+Processes would not work if they were final, they have to be managed by the
+implementation.
+
