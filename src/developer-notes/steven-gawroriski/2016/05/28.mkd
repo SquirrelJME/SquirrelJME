@@ -77,4 +77,26 @@ since `KernelProcess` is `final`, this means the `Kernel` gets all of the stuff
 needed for threads. Then with this, my potential delemma for handling threads
 and such is solved.
 
+## 20:53
+
+With this, I have to actually change how the sockets and the kernel processes
+work. With everything purely in an interpreter, locks on Objects are useless
+and do not really do anything at all. The sockets and such will have to be
+split off into userspace sockets in `__squirreljme` and such. The sockets when
+it comes to the kernel however would need to handle client side sockets. So
+the kernel socket code must be split away and such partially to handle these
+cases. Otherwise with the deterministic interpreter, there would need to be
+a complex interpretation setup to handle lock in the kernel itself. However,
+in the end this would be better because this means that user-space processes
+would not share Objects that the kernel has (even though they could be
+garbage collected together, sort of). A separation of objects in general
+would be more secure and can handle `static` things better. So really, an
+interpreter like the one I would have put into the Java SE kernel would not
+work at all. Then with the kernel interfaces for user space usage in
+`__squirreljme` the packets sent between processes can somewhat be recorded
+depending on the situation. The one issue I will run into however is, well
+actually it is not an issue. I was going to say that running the kernel might
+not be possible because code running on a host JVM could use `__squirreljme`
+classes, but if that was the case then that means the JVM and the interpreter
+to run is running on SquirrelJME itself.
 
