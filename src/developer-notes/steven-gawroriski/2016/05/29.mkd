@@ -56,3 +56,9 @@ needlessly between the pure and deterministic interpreter.
 So this means that there is no pure interpreter, both are pure but they differ
 in execution model. One is multi-threaded while one would be step threaded.
 
+## 10:28
+
+Actually I am going to rename some classes around a bit and such. The
+deterministic interpreter will become "rerecord" then I can use `RR` as a
+prefix and such.
+
