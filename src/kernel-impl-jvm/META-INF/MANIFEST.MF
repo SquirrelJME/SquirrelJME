@@ -2,7 +2,9 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: kernel-impl-jvm
 X-SquirrelJME-UUID: 943e3838-3223-4e46-80dc-edfd1006796e
 X-SquirrelJME-Depends: javame-cldc-full, interpreter, kernel,
-  class-path-jar-fs
+ class-path-jar-fs
+X-SquirrelJME-Optional: interpreter-standard,
+ interpreter-deterministic
 X-SquirrelJME-Error: BC
 Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.
  BootInterpreter
