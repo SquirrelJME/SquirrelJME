@@ -43,3 +43,16 @@ Then I will have to rehandle `Main` and potentially have any of its stuff be
 made common. The deterministic emulator would load the JAR codes but it would
 start the kernel a bit differently and such.
 
+## 09:50
+
+The base interpreter cores could be the same, just with potentially different
+execution models. So basically the interpreter would have a means for creating
+a thread along with how it should be interpreted. This way the interpreter
+logic such as stack shuffling and what not can remain shared and not duplicated
+needlessly between the pure and deterministic interpreter.
+
+## 09:53
+
+So this means that there is no pure interpreter, both are pure but they differ
+in execution model. One is multi-threaded while one would be step threaded.
+
