@@ -100,3 +100,8 @@ not be possible because code running on a host JVM could use `__squirreljme`
 classes, but if that was the case then that means the JVM and the interpreter
 to run is running on SquirrelJME itself.
 
+## 21:46
+
+And right now the light reflecting off Jupiter shines through my window. I do
+wonder though how long I will see the planet for.
+
