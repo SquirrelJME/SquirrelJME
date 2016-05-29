@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.test;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
 
 /**
@@ -44,13 +45,22 @@ public class JVMTestKernel
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/05/27
+	 * @since 2016/05/29
 	 */
 	@Override
-	protected void bootFinishRunner()
+	protected KernelThread internalCreateThread()
 	{
-		// Call super code first
-		super.bootFinishRunner();
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/29
+	 */
+	@Override
+	protected KernelThread internalCurrentThread()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
