@@ -13,10 +13,12 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm.test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
@@ -97,6 +99,10 @@ public class Main
 		ClassLoaderNameSymbol pmain = null;
 		List<String> pargs = new LinkedList<>();
 		
+		// X options passed to the virtual machine (possible that the
+		// interpreter would use these).
+		Map<String, String> xoptions = new HashMap<String, String>();
+		
 		// {@squirreljme.property net.multiphasicapps.interpreter This is the
 		// class which should be used as the interpreter for the code which
 		// runs in the test kernel.}
@@ -130,15 +136,30 @@ public class Main
 			// Command line switch
 			else if (arg.startsWith("-"))
 			{
-				// {@squirreljme.error BC06 Ignoring unknown -X or -J option.}
-				if (arg.startsWith("-X") || arg.startsWith("-J"))
+				// {@squirreljme.error BC06 Ignoring unknown -J option.}
+				boolean isx;
+				if ((isx = arg.startsWith("-X")) || arg.startsWith("-J"))
 				{
 					// Choose another interpreter core?
 					if (arg.startsWith("-Xsquirreljme-interpreter="))
 						useterp = arg.substring("-Xsquirreljme-interpreter=".
 							length());
 					
-					// Unknown
+					// X option, add to X option mapping
+					else if (isx)
+					{
+						// Has equal sign?
+						int eq = arg.indexOf('=');
+						if (eq >= 0)
+							xoptions.put(arg.substring(1, eq),
+								arg.substring(eq + 1));
+						
+						// Does not
+						else
+							xoptions.put(arg.substring(1), "");	
+					}
+					
+					// Unknown -J option
 					else
 						System.err.printf("BC06 %s", arg);
 				}
