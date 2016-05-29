@@ -38,8 +38,15 @@ public abstract class Kernel
 	private final LinkedList<KernelThread> _threads =
 		new LinkedList<>();
 	
+	/** Processes in the kernel, this list must remain sorted by ID. */
+	private final List<KernelProcess> _processes =
+		new LinkedList<>();
+	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
+	
+	/** The next process ID to use. */
+	private volatile int _nextprocessid;
 	
 	/**
 	 * Initializes the base kernel interface.
@@ -139,6 +146,72 @@ public abstract class Kernel
 	}
 	
 	/**
+	 * Finds the next free ID that is available for usage.
+	 *
+	 * @param __idl The list of identifiable to find an ID for.
+	 * @throws KernelException If an ID could not be found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/29
+	 */
+	private final int __nextIdentifiableId(
+		List<? extends __Identifiable__> __idl)
+		throws KernelException, NullPointerException
+	{
+		// Check
+		if (__idl == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all the sorted IDs to find an unused ID
+		int at = 0;
+		for (Iterator<? extends __Identifiable__> it = __idl.iterator();
+			it.hasNext();)
+		{
+			// Obtain the given identifiable ID
+			int tid = it.next().id();
+			
+			// Place here?
+			if (at < tid)
+				return at;
+			
+			// Try the next ID
+			at++;
+		}
+		
+		// {@squirreljme.error AY06 Could not find a free ID that
+		// is available for usage.}
+		throw new KernelException("AY06");
+	}
+	
+	/**
+	 * Returns the next available process ID that is free for usage by a new
+	 * process.
+	 *
+	 * @return The next process ID.
+	 * @since 2016/05/29
+	 */
+	final int __nextProcessId()
+	{
+		// Lock on threads
+		List<KernelProcess> processes = this._processes;
+		synchronized (processes)
+		{
+			// Determine the next value
+			int next = _nextprocessid;
+			
+			// Overflows? Find an ID that is positive and not used
+			if (next < 0 || next == Integer.MAX_VALUE)
+				return __nextIdentifiableId(processes);
+			
+			// Set next to use next time
+			else
+				_nextprocessid = next + 1;
+			
+			// Use it
+			return next;
+		}
+	}
+	
+	/**
 	 * Returns the next thread ID to use for a newly created thread.
 	 *
 	 * @return The next ID to use.
@@ -147,7 +220,7 @@ public abstract class Kernel
 	final int __nextThreadId()
 	{
 		// Lock on threads
-		LinkedList<KernelThread> threads = this._threads;
+		List<KernelThread> threads = this._threads;
 		synchronized (threads)
 		{
 			// Determine the next value
@@ -155,27 +228,7 @@ public abstract class Kernel
 			
 			// Overflows? Find an ID that is positive and not used
 			if (next < 0 || next == Integer.MAX_VALUE)
-			{
-				// Go through all the sorted threads to find an unused ID
-				int at = 0;
-				for (Iterator<KernelThread> it = threads.iterator();
-					it.hasNext();)
-				{
-					// Obtain the given thread ID
-					int tid = it.next().id();
-					
-					// Place here?
-					if (at < tid)
-						return at;
-					
-					// Try the next ID
-					at++;
-				}
-				
-				// {@squirreljme.error AY06 Could not find a thread ID that
-				// is available for usage.}
-				throw new KernelException("AY06");
-			}
+				return __nextIdentifiableId(threads);
 			
 			// Set next to use next time
 			else

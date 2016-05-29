@@ -17,6 +17,7 @@ package net.multiphasicapps.squirreljme.kernel;
  * @since 2016/05/28
  */
 public abstract class KernelThread
+	implements __Identifiable__
 {
 	/** The kernel which owns this thread. */
 	protected final Kernel kernel;
@@ -44,11 +45,10 @@ public abstract class KernelThread
 	}
 	
 	/**
-	 * Returns the ID of the current thread.
-	 *
-	 * @return The ID of this thread.
+	 * {@inheritDoc}
 	 * @since 2016/05/29
 	 */
+	@Override
 	public final int id()
 	{
 		return this.id;
