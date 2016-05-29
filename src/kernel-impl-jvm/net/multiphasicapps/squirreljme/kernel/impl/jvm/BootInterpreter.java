@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +45,7 @@ import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
  *
  * @since 2016/05/27
  */
-public class Main
+public class BootInterpreter
 {
 	/** The property to use for the path separator. */
 	public static final String PATH_SEPARATOR_PROPERTY =
@@ -56,6 +57,19 @@ public class Main
 	/** The default interpreter core. */
 	public static final String DEFAULT_INTERPRETER =
 		"net.multiphasicapps.squirreljme.terp.pure.PureInterpreter";
+	
+	/** X options which were handled by the interpreter. */
+	protected final Map<String, String> xoptions =
+		new LinkedHashMap<>();
+	
+	/** The claspath which is associated with the interpreter. */
+	protected final ClassPath classpath;
+	
+	/** The main class to use. */
+	protected final CIClass maincl;
+	
+	/** The main entry method. */
+	protected final CIMethod mainentry;
 	
 	/**
 	 * Determines some details.
@@ -77,13 +91,13 @@ public class Main
 	}
 	
 	/**
-	 * This is the main entry point for the NARF interpreter.
+	 * This initializes the information that is needed to start a guest
+	 * virtual such as handling its options and its class path.
 	 *
-	 * @param __args Program arguments.
-	 * @since 2016/04/20
+	 * @param __args Arguments to the virtual machine.
+	 * @sicne 2016/05/29
 	 */
-	public static void main(String... __args)
-		throws Throwable
+	public BootInterpreter(String... __args)
 	{
 		// Put all arguments into the queue
 		Deque<String> args = new LinkedList<>();
@@ -107,15 +121,7 @@ public class Main
 		
 		// X options passed to the virtual machine (possible that the
 		// interpreter would use these).
-		Map<String, String> xoptions = new HashMap<String, String>();
-		
-		// {@squirreljme.property net.multiphasicapps.interpreter This is the
-		// class which should be used as the interpreter for the code which
-		// runs in the test kernel.}
-		String useterp = System.getProperty(
-			"net.multiphasicapps.squirreljme.interpreter");
-		if (useterp == null)
-			useterp = DEFAULT_INTERPRETER;
+		Map<String, String> xoptions = this.xoptions;
 		
 		// Handle all arguments
 		while (!args.isEmpty())
@@ -146,13 +152,8 @@ public class Main
 				boolean isx;
 				if ((isx = arg.startsWith("-X")) || arg.startsWith("-J"))
 				{
-					// Choose another interpreter core?
-					if (arg.startsWith("-Xsquirreljme-interpreter="))
-						useterp = arg.substring("-Xsquirreljme-interpreter=".
-							length());
-					
 					// X option, add to X option mapping
-					else if (isx)
+					if (isx)
 					{
 						// Has equal sign?
 						int eq = arg.indexOf('=');
@@ -220,7 +221,7 @@ public class Main
 						arg));
 			}
 			
-			// Main class followed by arguments
+			// BootInterpreter class followed by arguments
 			else
 			{
 				// Setup main class
@@ -246,9 +247,11 @@ public class Main
 		
 		// Setup the class path
 		ClassPath classpath = new ClassPath(units);
+		this.classpath = classpath;
 		
 		// Locate the main class
 		CIClass maincl = classpath.locateClass(pmain.asClassName());
+		this.maincl = maincl;
 		
 		// {@squirreljme.error BC07 The main class was not found in the class
 		// path to be used for execution. (The main class)}
@@ -260,6 +263,7 @@ public class Main
 		CIMethod mainentry = maincl.methods().get(new CIMethodID(
 			IdentifierSymbol.of("main"),
 			MethodSymbol.of("([Ljava/lang/String;)V")));
+		this.mainentry = mainentry;
 		
 		// {@squirreljme.error BC08 The main method in the main class does not
 		// exist. (The main class)}
@@ -272,6 +276,44 @@ public class Main
 		if (!mainentry.flags().isStatic())
 			throw new IllegalArgumentException(String.format("BC09 %s",
 				pmain));
+	}
+	
+	/**
+	 * Returns the X options which are used by the boot interpreter.
+	 *
+	 * @return The mapping of X options.
+	 * @since 2016/05/29
+	 */
+	public Map<String, String> xOptions()
+	{
+		return this.xoptions;
+	}
+	
+	/**
+	 * This is the main entry point for the NARF interpreter.
+	 *
+	 * @param __args Program arguments.
+	 * @since 2016/04/20
+	 */
+	public static void main(String... __args)
+		throws Throwable
+	{
+		// {@squirreljme.property net.multiphasicapps.interpreter This is the
+		// class which should be used as the interpreter for the code which
+		// runs in the test kernel.}
+		String useterp = System.getProperty(
+			"net.multiphasicapps.squirreljme.interpreter");
+		if (useterp == null)
+			useterp = DEFAULT_INTERPRETER;
+		
+		// Setup the boot interpreter
+		BootInterpreter bi = new BootInterpreter(__args);
+		
+		// Choose another interpreter core?
+		Map<String, String> xoptions = bi.xOptions();
+		String altterp = xoptions.get("squirreljme-interpreter");
+		if (altterp != null)
+			useterp = altterp;
 		
 		throw new Error("TODO");
 	}

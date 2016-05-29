@@ -4,7 +4,8 @@ X-SquirrelJME-UUID: 943e3838-3223-4e46-80dc-edfd1006796e
 X-SquirrelJME-Depends: javame-cldc-full, interpreter, kernel,
   class-path-jar-fs
 X-SquirrelJME-Error: BC
-Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.Main
+Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.
+ BootInterpreter
 LIBlet-Title: Kernel (JVM)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160527
