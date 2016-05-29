@@ -1,0 +1,15 @@
+# 2016/05/29
+
+## 07:52
+
+Ok so, the threads will be managed by the kernel instead of the processes. This
+would likely make it easier to find threads that belong to processes and such.
+They would also be slightly decoupled. With the notes I have written yesterday
+this means that for code executing in the kernel would be strictly kernel space
+although locks would still be needed for synchronization and such.
+
+## 07:55
+
+It might be best to clear the kernel related code and redo it with how it is
+to be done.
+
