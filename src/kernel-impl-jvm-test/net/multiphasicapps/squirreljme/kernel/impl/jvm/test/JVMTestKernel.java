@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.test;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
 
@@ -41,6 +42,16 @@ public class JVMTestKernel
 		
 		// Set
 		this.interpreter = __terp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/29
+	 */
+	@Override
+	protected KernelProcess internalCreateProcess()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**

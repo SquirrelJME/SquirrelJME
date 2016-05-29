@@ -274,48 +274,7 @@ public class Main
 			throw new IllegalArgumentException(String.format("BC09 %s",
 				pmain));
 		
-		// Initialization may fail
-		JVMTestKernel jtk = null;
-		try
-		{
-			// Setup interpreter
-			TerpInterpreter terp = new PureInterpreter();
-		
-			// Create test kernel
-			jtk = new JVMTestKernel(terp);
-		
-			// Block until all workers are terminated
-			for (;;)
-			{
-				// Kernel loop
-				try
-				{
-					jtk.untilProcessless();
-		
-					// Would normally terminate
-					return;
-				}
-		
-				// Interrupted, yield and retry
-				catch (InterruptedException e)
-				{
-					Thread.yield();
-				}
-			}
-		}
-		
-		// Fall out of main
-		catch (Throwable t)
-		{
-			// Print the stack trace
-			t.printStackTrace(System.err);
-			
-			// Attempt to quit the kernel
-			jtk.quitKernel();
-			
-			// Rethrow if quit failed
-			throw t;
-		}
+		throw new Error("TODO");
 	}
 }
 
