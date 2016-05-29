@@ -51,6 +51,10 @@ public class Main
 	/** The separator for paths. */
 	public static final String PATH_SEPARATOR;
 	
+	/** The default interpreter core. */
+	public static final String DEFAULT_INTERPRETER =
+		"net.multiphasicapps.squirreljme.terp.pure.PureInterpreter";
+	
 	/**
 	 * Determines some details.
 	 *
@@ -93,6 +97,14 @@ public class Main
 		ClassLoaderNameSymbol pmain = null;
 		List<String> pargs = new LinkedList<>();
 		
+		// {@squirreljme.property net.multiphasicapps.interpreter This is the
+		// class which should be used as the interpreter for the code which
+		// runs in the test kernel.}
+		String useterp = System.getProperty(
+			"net.multiphasicapps.squirreljme.interpreter");
+		if (useterp == null)
+			useterp = DEFAULT_INTERPRETER;
+		
 		// Handle all arguments
 		while (!args.isEmpty())
 		{
@@ -120,7 +132,16 @@ public class Main
 			{
 				// {@squirreljme.error BC06 Ignoring unknown -X or -J option.}
 				if (arg.startsWith("-X") || arg.startsWith("-J"))
-					System.err.printf("BC06 %s", arg);
+				{
+					// Choose another interpreter core?
+					if (arg.startsWith("-Xsquirreljme-interpreter="))
+						useterp = arg.substring("-Xsquirreljme-interpreter=".
+							length());
+					
+					// Unknown
+					else
+						System.err.printf("BC06 %s", arg);
+				}
 				
 				// Class path specified
 				else if (arg.equals("-cp") || arg.equals("-classpath"))

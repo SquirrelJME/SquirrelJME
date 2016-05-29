@@ -41,3 +41,8 @@ It cannot go into the class interface, it has to be in `ClassPath`. There is
 a need to lookup classes for protected and such to determine if something is
 an instance.
 
+## 20:10
+
+Thinking about the kernel for the test interpreter. Does the kernel run outside
+of the interpreter or does it run inside of it?
+
