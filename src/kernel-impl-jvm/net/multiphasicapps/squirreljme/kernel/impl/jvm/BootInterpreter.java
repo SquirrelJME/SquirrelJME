@@ -465,7 +465,6 @@ public class BootInterpreter
 		
 		// Choose another interpreter core?
 		Map<String, String> xoptions = bi.xOptions();
-		System.err.println(xoptions);
 		String altterp = xoptions.get("squirreljme-interpreter");
 		if (altterp != null)
 			if (altterp.equals("rerecord"))
