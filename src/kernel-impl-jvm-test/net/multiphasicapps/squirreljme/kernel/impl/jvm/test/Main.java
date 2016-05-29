@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.test;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Deque;
@@ -94,6 +95,12 @@ public class Main
 		// Loaded classpath
 		boolean didcp = false;
 		Set<String> cp = new LinkedHashSet<>();
+		
+		// If these JARs exist, always add them
+		for (String s : new String[]{"javame-cldc-compact.jar",
+			"javame-cldc-full.jar"})
+			if (Files.exists(Paths.get(s)))
+				cp.add(s);
 		
 		// Program main and arguments to send to main
 		ClassLoaderNameSymbol pmain = null;
