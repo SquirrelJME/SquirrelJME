@@ -46,3 +46,22 @@ an instance.
 Thinking about the kernel for the test interpreter. Does the kernel run outside
 of the interpreter or does it run inside of it?
 
+## 20:18
+
+The interpreter remains on the outside. I also had a previous idea about having
+a deterministic interpreter. The deterministic interpreter could record and
+replay execution sessions. The interpreter would basically operate in lock-step
+with processes. The maximum number of JIPS would be _maxJIPS * numThreads_.
+Or there could just be a single area where code is executed and such. Access
+that goes outside of the interpreter into the host kernel would have to get
+recorded results, so this means that the kernel cannot generally do anything
+fancy with objects being executed (such as changing a local variable value).
+This means that all calls that go into the kernel (via the magic interfaces)
+would have given and returned values as such. Supporting such a thing would
+then require that the kernel use a different means and such for representing
+threads which do not use the host system based threads. Basically, to the
+running system a `Thread` would map to this `KernelThread`. On a JVM host
+the `KernelThread` would have `Thread` internally, but for certain systems
+say perhaps the NES the `KernelThread` will be specially formed for the given
+system.
+
