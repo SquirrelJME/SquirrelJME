@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
-import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
+import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
  * This is the kernel which runs on an existing JVM.
@@ -24,7 +24,7 @@ public class JVMKernel
 	extends Kernel
 {
 	/** The interpreter to use when executing user processes. */
-	protected final TerpInterpreter interpreter;
+	protected final Interpreter interpreter;
 	
 	/**
 	 * Initializes the kernel.
@@ -33,7 +33,7 @@ public class JVMKernel
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/27
 	 */
-	public JVMKernel(TerpInterpreter __terp)
+	public JVMKernel(Interpreter __terp)
 		throws NullPointerException
 	{
 		// Check

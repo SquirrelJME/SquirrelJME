@@ -37,7 +37,7 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnit;
 import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
-import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
+import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
  * This is the main entry point for the JVM based test kernel for running the
@@ -59,8 +59,8 @@ public class BootInterpreter
 		"net.multiphasicapps.squirreljme.terp.std.StandardInterpreter";
 	
 	/** The deterministic interpreter. */
-	public static final String DETERM_INTERPRETER =
-		"net.multiphasicapps.squirreljme.terp.det.DetInterpreter";
+	public static final String RR_INTERPRETER =
+		"net.multiphasicapps.squirreljme.terp.rr.RRInterpreter";
 	
 	/** X options which were handled by the interpreter. */
 	protected final Map<String, String> xoptions =
@@ -317,8 +317,8 @@ public class BootInterpreter
 		Map<String, String> xoptions = bi.xOptions();
 		String altterp = xoptions.get("squirreljme-interpreter");
 		if (altterp != null)
-			if (altterp.equals("deterministic"))
-				useterp = DETERM_INTERPRETER;
+			if (altterp.equals("rerecord"))
+				useterp = RR_INTERPRETER;
 			else
 				useterp = altterp;
 		

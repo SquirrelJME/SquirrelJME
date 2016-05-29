@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: interpreter-deterministic
+X-SquirrelJME-Name: interpreter-rerecord
 X-SquirrelJME-UUID: 39b7421d-dc63-44bd-ba0c-66eca8ec922a
 X-SquirrelJME-Depends: interpreter, java-byte-code
 X-SquirrelJME-Error: BQ
-LIBlet-Title: Deterministic Interpreter
+LIBlet-Title: Re-Recording Interpreter
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160528
 LIBlet-Description: This contains the deterministic

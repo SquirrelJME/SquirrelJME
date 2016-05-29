@@ -11,12 +11,12 @@
 package net.multiphasicapps.squirreljme.terp;
 
 /**
- * This is the interface which is used by implementations of the interpreter to
- * create interpretation instances.
+ * This is the base class which is used by implementations of the interpreter
+ * to handle and managed interpretation.
  *
  * @since 2016/05/27
  */
-public interface TerpInterpreter
+public abstract class Interpreter
 {
 }
 

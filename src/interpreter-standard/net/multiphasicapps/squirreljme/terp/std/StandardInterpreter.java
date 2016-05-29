@@ -19,7 +19,7 @@ import net.multiphasicapps.squirreljme.terp.Interpreter;
  * @since 2016/05/12
  */
 public class StandardInterpreter
-	implements Interpreter
+	extends Interpreter
 {
 	/**
 	 * Initializes the interpreter which uses the direct byte code.
