@@ -225,11 +225,6 @@ public final class JavaManifest
 						// End of line data
 						if (__isNewline(c))
 						{
-							// {@squirreljme.error BB04 The value in a key
-							// value pair consists of no characters.}
-							if (curval.length() <= 0)
-								throw new IOException("BB04");
-							
 							// Possibly may continue on
 							stage = _STAGE_VALUE_MIGHT_CONTINUE;
 							continue;

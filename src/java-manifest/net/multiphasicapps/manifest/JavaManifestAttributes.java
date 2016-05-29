@@ -75,6 +75,8 @@ public final class JavaManifestAttributes
 	@Override
 	public String get(Object __o)
 	{
+		if (__o instanceof String)
+			return this.pairs.get(new JavaManifestKey((String)__o));
 		return this.pairs.get(__o);
 	}
 	

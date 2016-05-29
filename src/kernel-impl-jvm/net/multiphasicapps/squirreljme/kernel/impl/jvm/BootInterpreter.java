@@ -258,7 +258,7 @@ public class BootInterpreter
 			
 			// Recursively load all the required JARs
 			Map<String, ClassUnit> depmaps = new LinkedHashMap<>();
-			String[] mainclass = new String[0];
+			String[] mainclass = new String[1];
 			__recursiveLoad(cup.classUnits(), depmaps, jarkey, mainclass);
 			
 			// Use the main class
@@ -383,10 +383,9 @@ public class BootInterpreter
 				
 				// Parse the manifest data
 				JavaManifest jarman = new JavaManifest(jaris);
-				System.err.printf("DEBUG -- Manifest: %s%n", jarman);
 				
 				// Get the main attributes
-				JavaManifestAttributes mainman = jarman.get("");
+				JavaManifestAttributes mainman = jarman.getMainAttributes();
 				
 				// Specify main class?
 				if (__m[0] == null)
