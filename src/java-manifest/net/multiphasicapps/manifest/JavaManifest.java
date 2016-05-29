@@ -34,6 +34,18 @@ public final class JavaManifest
 	private static final int _STAGE_KEY =
 		0;
 	
+	/** Read a value (start). */
+	private static final int _STAGE_VALUE_START =
+		1;
+	
+	/** Read a value (padding). */
+	private static final int _STAGE_VALUE_PADDING =
+		2;
+	
+	/** Read a value (length). */
+	private static final int _STAGE_VALUE_LINE =
+		3;
+	
 	/**
 	 * Decodes the manifest from the given input stream, it is treated as
 	 * UTF-8 as per the JAR specification.
@@ -91,6 +103,13 @@ public final class JavaManifest
 						// Just started reading the key?
 						boolean js = (curkey.length() <= 0);
 						
+						// End of key and reading value?
+						if (c == ':')
+						{
+							stage = _STAGE_VALUE_START;
+							continue;
+						}
+						
 						// {@squirreljme.error BB02 The specified character is
 						// not a valid key character. (The character)}
 						if ((!js && !__isKeyChar(c)) ||
@@ -98,6 +117,40 @@ public final class JavaManifest
 							throw new IOException(String.format("BB02 %c",
 								c));
 						
+						// Add to key
+						curkey.append(c);
+					}
+					break;
+					
+					// Read spaces following :
+				case _STAGE_VALUE_START:
+				case _STAGE_VALUE_PADDING:
+					{
+						// Skip spaces, but change the stage
+						if (__isSpace(c))
+						{
+							stage = _STAGE_VALUE_PADDING;
+							continue;
+						}
+						
+						// {@squirreljme.error BB03 Expected a space to follow
+						// the colon following the start of the key.}
+						if (stage == _STAGE_VALUE_START)
+							throw new IOException("BB03");
+						
+						// Otherwise start reading line data
+						else
+							stage = _STAGE_VALUE_LINE;
+					}
+				
+					// Lots of spaces
+					if (stage != _STAGE_VALUE_LINE &&
+						stage != _STAGE_VALUE_PADDING)
+						break;
+					
+					// Read of actual value
+				case _STAGE_VALUE_LINE:
+					{
 						if (true)
 							throw new Error("TODO");
 					}
@@ -149,6 +202,18 @@ public final class JavaManifest
 	private static boolean __isKeyChar(char __c)
 	{
 		return __isAlphaNum(__c) || __c == '_' || __c == '-';
+	}
+	
+	/**
+	 * Is the specified character a space character?
+	 *
+	 * @param __c The character to check.
+	 * @return {@code true} if it is a space character.
+	 * @since 2016/05/29
+	 */
+	private static boolean __isSpace(char __c)
+	{
+		return __c == ' ' || __c == '\t';
 	}
 }
 
