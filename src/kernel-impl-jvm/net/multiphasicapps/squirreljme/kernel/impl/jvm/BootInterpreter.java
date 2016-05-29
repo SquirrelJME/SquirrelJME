@@ -56,7 +56,11 @@ public class BootInterpreter
 	
 	/** The default interpreter core. */
 	public static final String DEFAULT_INTERPRETER =
-		"net.multiphasicapps.squirreljme.terp.pure.PureInterpreter";
+		"net.multiphasicapps.squirreljme.terp.std.StandardInterpreter";
+	
+	/** The deterministic interpreter. */
+	public static final String DETERM_INTERPRETER =
+		"net.multiphasicapps.squirreljme.terp.det.DetInterpreter";
 	
 	/** X options which were handled by the interpreter. */
 	protected final Map<String, String> xoptions =
@@ -313,7 +317,10 @@ public class BootInterpreter
 		Map<String, String> xoptions = bi.xOptions();
 		String altterp = xoptions.get("squirreljme-interpreter");
 		if (altterp != null)
-			useterp = altterp;
+			if (altterp.equals("deterministic"))
+				useterp = DETERM_INTERPRETER;
+			else
+				useterp = altterp;
 		
 		throw new Error("TODO");
 	}
