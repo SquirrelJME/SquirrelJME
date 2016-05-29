@@ -411,6 +411,9 @@ public class Build
 			// Make sure manifest version is specified
 			jattr.put(Attributes.Name.MANIFEST_VERSION, "1.0");
 			
+			// Add created-by
+			jattr.putValue("Created-By", "SquirrelJME");
+			
 			// Walk through dependencies
 			StringBuilder jcp = new StringBuilder();
 			int libnum = 1;

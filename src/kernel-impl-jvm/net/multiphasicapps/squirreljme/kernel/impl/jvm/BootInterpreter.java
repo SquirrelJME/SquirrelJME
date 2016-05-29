@@ -255,6 +255,10 @@ public class BootInterpreter
 			// Load the JAR
 			ClassUnit jarcu = new FSJarClassUnit(Paths.get(jarkey));
 			
+			// Recursive dependency JAR mappings
+			Map<String, ClassUnit> depmaps = new LinkedHashMap<>();
+			depmaps.put(jarkey, jarcu);
+			
 			// Find the manifest
 			try (InputStream jaris =
 				jarcu.locateResource("META-INF/MANIFEST.MF"))
@@ -269,7 +273,18 @@ public class BootInterpreter
 				// Parse the manifest data
 				JavaManifest jarman = new JavaManifest(jaris);
 				
-				throw new Error("TODO");
+				// Get the main attributes
+				JavaManifestAttributes mainman = jarman.get("");
+				
+				// Find the main class
+				String jmain = mainman.get("Main-Class");
+				if (jmain != null)
+					pmain = ClassLoaderNameSymbol.of(jmain);
+				
+				// Load any class path dependencies
+				String cpd = mainman.get("Class-Path");
+				if (cpd != null)
+					throw new Error("TODO");
 			}
 			
 			// {@squirreljme.error BC0c Failed to read the manifest that is
@@ -279,6 +294,9 @@ public class BootInterpreter
 				throw new IllegalArgumentException(String.format("BC0c %s",
 					jarkey), e);
 			}
+			
+			// Add all calculated dependencies
+			units.addAll(depmaps.values());
 		}
 		
 		// Normal classpath determination
@@ -398,6 +416,26 @@ public class BootInterpreter
 		// Run kernel cycles
 		for (;; Thread.yield())
 			kernel.runCycle();
+	}
+	
+	/**
+	 * Loads the manifest for every dependency and then finds all of them.
+	 *
+	 * @param __cups The output dependency map.
+	 * @param __cu The class units used.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/29
+	 */
+	private static final __findDeps(Map<String, ClassUnit> __cups,
+		ClassUnit __cu)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__cups == null || __cu == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
