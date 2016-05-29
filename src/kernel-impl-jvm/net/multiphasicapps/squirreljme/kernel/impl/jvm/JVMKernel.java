@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.impl.jvm.test;
+package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
@@ -16,24 +16,24 @@ import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
 
 /**
- * This is the Java virtual machine test kernel.
+ * This is the kernel which runs on an existing JVM.
  *
  * @since 2016/05/27
  */
-public class JVMTestKernel
+public class JVMKernel
 	extends Kernel
 {
 	/** The interpreter to use when executing user processes. */
 	protected final TerpInterpreter interpreter;
 	
 	/**
-	 * Initializes the test kernel.
+	 * Initializes the kernel.
 	 *
 	 * @param __terp The interpreter backend to use for execution.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/27
 	 */
-	public JVMTestKernel(TerpInterpreter __terp)
+	public JVMKernel(TerpInterpreter __terp)
 		throws NullPointerException
 	{
 		// Check

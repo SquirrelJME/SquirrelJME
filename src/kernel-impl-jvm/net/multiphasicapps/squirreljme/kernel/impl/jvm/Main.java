@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.impl.jvm.test;
+package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

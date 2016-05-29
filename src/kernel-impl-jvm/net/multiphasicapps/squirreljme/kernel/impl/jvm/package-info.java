@@ -9,11 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the test implementation of the test kernel and the
- * interpreter (which may be changed for testing).
+ * This package contains the test implementation of the kernel which runs on
+ * JVMs.
  *
  * @since 2016/05/27
  */
 
-package net.multiphasicapps.squirreljme.kernel.impl.jvm.test;
+package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
