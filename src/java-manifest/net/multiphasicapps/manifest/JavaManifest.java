@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.AbstractMap;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,10 @@ public final class JavaManifest
 	/** Read a value (length). */
 	private static final int _STAGE_VALUE_LINE =
 		3;
+	
+	/** Potentially may be a continuation of a line. */
+	private static final int _STAGE_VALUE_MIGHT_CONTINUE =
+		4;
 	
 	/**
 	 * Decodes the manifest from the given input stream, it is treated as
@@ -77,7 +82,7 @@ public final class JavaManifest
 			throw new NullPointerException("NARG");
 		
 		// Map which stores read attributes
-		StringBuilder curname = new StringBuilder("");
+		String curname = "";
 		StringBuilder curkey = new StringBuilder();
 		StringBuilder curval = new StringBuilder();
 		Map<String, String> working = new HashMap<>();
@@ -94,6 +99,40 @@ public final class JavaManifest
 			if (ci < 0)
 				break;
 			
+			// Line might continue?
+			if (stage == _STAGE_VALUE_MIGHT_CONTINUE)
+			{
+				// Ignore newlines
+				if (__isNewline(c))
+					continue;
+				
+				// If a space, eat it and enter padding mode next
+				if (__isSpace(c))
+				{
+					stage = _STAGE_VALUE_PADDING;
+					continue;
+				}
+				
+				// Otherwise it is a key
+				else
+				{
+					// Build strings for key and value pair
+					JavaManifestKey sk = new JavaManifestKey(
+						curkey.toString());
+					String sv = curval.toString();
+					
+					// Clear old key/value
+					curkey.setLength(0);
+					curval.setLength(0);
+					
+					if (true)
+						throw new Error("TODO");
+					
+					// Set as key and read it
+					stage = _STAGE_KEY;
+				}
+			}
+			
 			// Depends on the stage
 			switch (stage)
 			{
@@ -102,6 +141,11 @@ public final class JavaManifest
 					{
 						// Just started reading the key?
 						boolean js = (curkey.length() <= 0);
+						
+						// Read nothing and just newline, skip otherwise the
+						// parser will fail on blank lines
+						if (js && __isNewline(c))
+							continue;
 						
 						// End of key and reading value?
 						if (c == ':')
@@ -151,8 +195,21 @@ public final class JavaManifest
 					// Read of actual value
 				case _STAGE_VALUE_LINE:
 					{
-						if (true)
-							throw new Error("TODO");
+						// End of line data
+						if (__isNewline(c))
+						{
+							// {@squirreljme.error BB04 The value in a key
+							// value pair consists of no characters.}
+							if (curval.length() <= 0)
+								throw new IOException("BB04");
+							
+							// Possibly may continue on
+							stage = _STAGE_VALUE_MIGHT_CONTINUE;
+							continue;
+						}
+						
+						// Add it to the line data
+						curval.append(c);
 					}
 					break;
 				
@@ -205,6 +262,19 @@ public final class JavaManifest
 	}
 	
 	/**
+	 * Returns {@code true} if the character is specified to be a newline
+	 * character.
+	 *
+	 * @param __c The character to check.
+	 * @return {@code true} if the character specifies the next line.
+	 * @since 2016/05/29
+	 */
+	private static boolean __isNewline(char __c)
+	{
+		return __c == '\r' || __c == '\n';
+	}
+	
+	/**
 	 * Is the specified character a space character?
 	 *
 	 * @param __c The character to check.
@@ -213,7 +283,7 @@ public final class JavaManifest
 	 */
 	private static boolean __isSpace(char __c)
 	{
-		return __c == ' ' || __c == '\t';
+		return __c == ' ';
 	}
 }
 

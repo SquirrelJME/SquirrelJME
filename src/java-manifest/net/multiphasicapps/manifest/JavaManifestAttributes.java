@@ -23,7 +23,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  * @since 2016/05/20
  */
 public final class JavaManifestAttributes
-	extends AbstractMap<String, String>
+	extends AbstractMap<JavaManifestKey, String>
 {
 	/**
 	 * Initializes the manifest attributes.
@@ -40,7 +40,7 @@ public final class JavaManifestAttributes
 	 * @since 2016/05/20
 	 */
 	@Override
-	public Set<Map.Entry<String, String>> entrySet()
+	public Set<Map.Entry<JavaManifestKey, String>> entrySet()
 	{
 		throw new Error("TODO");
 	}
