@@ -407,7 +407,28 @@ public class BootInterpreter
 				// Load any class path dependencies
 				String cpd = mainman.get("Class-Path");
 				if (cpd != null)
-					throw new Error("TODO");
+				{
+					int n = cpd.length();
+					for (int i = 0; i < n; i++)
+					{
+						// Skip spaces
+						if (cpd.charAt(i) <= ' ')
+							continue;
+						
+						// Find the next space from this location
+						int ns;
+						for (ns = i; ns < n; ns++)
+							if (cpd.charAt(i) <= ' ')
+								break;
+						
+						// Recursive with this fragment
+						__recursiveLoad(__cus, __map, cpd.substring(i, ns),
+							__m);
+						
+						// Skip this for next time
+						i = ns;
+					}
+				}
 			}
 		}
 		
