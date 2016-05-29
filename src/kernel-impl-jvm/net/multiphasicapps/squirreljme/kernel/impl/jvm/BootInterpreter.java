@@ -302,9 +302,9 @@ public class BootInterpreter
 	public static void main(String... __args)
 		throws Throwable
 	{
-		// {@squirreljme.property net.multiphasicapps.interpreter This is the
-		// class which should be used as the interpreter for the code which
-		// runs in the test kernel.}
+		// {@squirreljme.property net.multiphasicapps.squirreljme.interpreter
+		// This is the class which should be used as the interpreter for the
+		// code which runs in the JVM based kernel.}
 		String useterp = System.getProperty(
 			"net.multiphasicapps.squirreljme.interpreter");
 		if (useterp == null)
