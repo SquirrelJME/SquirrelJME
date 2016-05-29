@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -111,7 +112,9 @@ public class BootInterpreter
 		
 		// Loaded classpath
 		boolean didcp = false;
+		boolean didjar = false;
 		Set<String> cp = new LinkedHashSet<>();
+		String jarkey = null;
 		
 		// If these JARs exist, always add them
 		for (String s : new String[]{"javame-cldc-compact.jar",
@@ -141,8 +144,11 @@ public class BootInterpreter
 				if (didcp)
 					throw new IllegalArgumentException("BC02");	
 				
-				if (true)
-					throw new Error("TODO");
+				// Did JAR
+				didjar = true;
+				
+				// Set the JAR file to use
+				jarkey = args.removeFirst();
 				
 				// Copy program arguments
 				while (!args.isEmpty())
@@ -237,21 +243,31 @@ public class BootInterpreter
 			}
 		}
 		
+		// If a JAR is to be launched, the dependencies listed in the manifest
+		// must be handled and the main class extracted from the specified JAR.
+		List<ClassUnit> units = new ArrayList<>();
+		if (didjar)
+		{
+			throw new Error("TODO");
+		}
+		
+		// Normal classpath determination
+		else
+		{
+			// Load JAR classunit providers with all of the given units
+			Iterator<String> cpit = cp.iterator();
+			while (cpit.hasNext())
+				units.add(new FSJarClassUnit(Paths.get(cpit.next())));
+		}
+		
+		// Setup the class path
+		ClassPath classpath = new ClassPath(units.<ClassUnit>toArray(
+			new ClassUnit[units.size()]));
+		this.classpath = classpath;
+		
 		// {@squirreljme.error BC04 No main class was specified.}
 		if (pmain == null)
 			throw new IllegalArgumentException("BC04");
-		
-		// Load JAR classunit providers with all of the given 
-		int numcp = cp.size();
-		ClassUnit[] units = new ClassUnit[numcp];
-		Iterator<String> cpit = cp.iterator();
-		for (int i = 0; i < numcp; i++)
-			units[i] = new FSJarClassUnit(Paths.get(cpit.next()));
-		cpit = null;
-		
-		// Setup the class path
-		ClassPath classpath = new ClassPath(units);
-		this.classpath = classpath;
 		
 		// Locate the main class
 		CIClass maincl = classpath.locateClass(pmain.asClassName());
@@ -302,6 +318,9 @@ public class BootInterpreter
 	public static void main(String... __args)
 		throws Throwable
 	{
+		// Setup the boot interpreter
+		BootInterpreter bi = new BootInterpreter(__args);
+		
 		// {@squirreljme.property net.multiphasicapps.squirreljme.interpreter
 		// This is the class which should be used as the interpreter for the
 		// code which runs in the JVM based kernel.}
@@ -312,11 +331,9 @@ public class BootInterpreter
 		else if (useterp.equals("rerecord"))
 			useterp = RR_INTERPRETER;
 		
-		// Setup the boot interpreter
-		BootInterpreter bi = new BootInterpreter(__args);
-		
 		// Choose another interpreter core?
 		Map<String, String> xoptions = bi.xOptions();
+		System.err.println(xoptions);
 		String altterp = xoptions.get("squirreljme-interpreter");
 		if (altterp != null)
 			if (altterp.equals("rerecord"))
