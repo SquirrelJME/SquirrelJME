@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -248,7 +250,30 @@ public class BootInterpreter
 		List<ClassUnit> units = new ArrayList<>();
 		if (didjar)
 		{
-			throw new Error("TODO");
+			// Load the JAR
+			ClassUnit jarcu = new FSJarClassUnit(Paths.get(jarkey));
+			
+			// Find the manifest
+			try (InputStream jaris =
+				jarcu.locateResource("META-INF/MANIFEST.MF"))
+			{
+				// {@squirreljme.error BC0b The specified JAR does not have a
+				// a manifest. (The -jar which was specified on the command
+				// line)}
+				if (jaris == null)
+					throw new IllegalArgumentException(String.format(
+						"BC0b %s", jarkey));
+				
+				throw new Error("TODO");
+			}
+			
+			// {@squirreljme.error BC0c Failed to read the manifest that is
+			// contained in the JAR file. (The specified JAR passed via -jar)}
+			catch (IOException e)
+			{
+				throw new IllegalArgumentException(String.format("BC0c %s",
+					jarkey), e);
+			}
 		}
 		
 		// Normal classpath determination
