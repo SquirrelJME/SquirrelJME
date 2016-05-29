@@ -391,7 +391,6 @@ public class BootInterpreter
 				if (__m[0] == null)
 				{
 					// Find the main class
-					System.err.printf("DEBUG -- %s%n", mainman);
 					String jmain = mainman.get("Main-Class");
 					
 					// {@squirreljme.error BC0d The JAR does not specify the
@@ -419,7 +418,7 @@ public class BootInterpreter
 						// Find the next space from this location
 						int ns;
 						for (ns = i; ns < n; ns++)
-							if (cpd.charAt(i) <= ' ')
+							if (cpd.charAt(ns) <= ' ')
 								break;
 						
 						// Recursive with this fragment

@@ -1079,7 +1079,7 @@ public class Build
 				if (srct != Long.MIN_VALUE)
 					return (srct > jartime);
 				
-				// Get the oldest file in the source tree
+				// Get the newest date in the source tree
 				walk(root, new Processor<Path>()
 					{
 						/**
