@@ -383,6 +383,7 @@ public class BootInterpreter
 				
 				// Parse the manifest data
 				JavaManifest jarman = new JavaManifest(jaris);
+				System.err.printf("DEBUG -- Manifest: %s%n", jarman);
 				
 				// Get the main attributes
 				JavaManifestAttributes mainman = jarman.get("");
@@ -437,7 +438,7 @@ public class BootInterpreter
 		catch (IOException e)
 		{
 			throw new IllegalArgumentException(String.format("BC0c %s",
-				__k));
+				__k), e);
 		}
 	}
 	
