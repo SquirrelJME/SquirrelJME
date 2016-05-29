@@ -37,7 +37,6 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnit;
 import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
 import net.multiphasicapps.squirreljme.terp.TerpInterpreter;
-import net.multiphasicapps.squirreljme.terp.pure.PureInterpreter;
 
 /**
  * This is the main entry point for the JVM based test kernel for running the

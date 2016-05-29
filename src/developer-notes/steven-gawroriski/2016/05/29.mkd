@@ -37,3 +37,9 @@ kernel compared to a standard interpreter. For example, process creation would
 have to be checked to make sure the IDs and such are created at the expected
 cycle time.
 
+## 09:30
+
+Then I will have to rehandle `Main` and potentially have any of its stuff be
+made common. The deterministic emulator would load the JAR codes but it would
+start the kernel a bit differently and such.
+
