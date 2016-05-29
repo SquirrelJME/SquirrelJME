@@ -74,6 +74,27 @@ public abstract class Kernel
 	}
 	
 	/**
+	 * Internally creates a new thread which may be executed.
+	 *
+	 * @return A kernel based thread which is implementation specific.
+	 * @throws KernelException If the thread could not be created.
+	 * @since 2016/05/28
+	 */
+	protected final KernelThread internalCreateThread()
+		throws KernelException;
+	
+	/**
+	 * Internally determines the current kernel thread which has called this
+	 * method.
+	 *
+	 * @return The current kernel thread which called this method.
+	 * @throws KernelException If the current thread could not be determined.
+	 * @since 2016/05/28
+	 */
+	protected final KernelThread internalCurrentThread()
+		throws KernelException;
+	
+	/**
 	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing
 	 * happens.
 	 *
