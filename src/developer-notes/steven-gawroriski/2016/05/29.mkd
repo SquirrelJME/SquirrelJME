@@ -68,3 +68,7 @@ Having the kernel run a single cycle at a time and having a loop that runs the
 cycles would make it so timing can be managed by the implementation's entry
 point.
 
+## 14:15
+
+The `-jar` and `-classpath` should likely use actual JAR providers as such.
+

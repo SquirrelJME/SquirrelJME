@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
@@ -45,6 +46,39 @@ public class FSJarClassUnit
 		
 		// Set
 		this.path = __p;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/29
+	 */
+	@Override
+	public final int compareTo(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Get both paths
+		Path a = this.path;
+		Path b = Paths.get(__s);
+		
+		// If A is absolute and B is relative, relativize A
+		if (a.isAbsolute() && !b.isAbsolute())
+			b = b.toAbsolutePath().normalize();
+		
+		// If A is relative and B is absolute, make A absolute
+		else if (!a.isAbsolute() && b.isAbsolute())
+			a = a.toAbsolutePath().normalize();
+		
+		// Represents the same path? return 0
+		if (a.equals(b))
+			return 0;
+		
+		// Use the filesystem to compare against, because these class units
+		// could be on case insensitive and locale specific filesystems.
+		return a.compareTo(b);
 	}
 	
 	/**

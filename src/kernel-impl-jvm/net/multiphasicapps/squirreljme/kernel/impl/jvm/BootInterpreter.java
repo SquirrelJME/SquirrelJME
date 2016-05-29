@@ -252,48 +252,18 @@ public class BootInterpreter
 		List<ClassUnit> units = new ArrayList<>();
 		if (didjar)
 		{
-			// Load the JAR
-			ClassUnit jarcu = new FSJarClassUnit(Paths.get(jarkey));
+			// -jar uses the current directory to locate JAR files and such
+			ClassUnitProvider cup = new FSJarClassUnitProvider(
+				Paths.get(System.getProperty("user.dir")));
 			
-			// Recursive dependency JAR mappings
+			// Recursively load all the required JARs
 			Map<String, ClassUnit> depmaps = new LinkedHashMap<>();
-			depmaps.put(jarkey, jarcu);
+			String[] mainclass = new String[0];
+			__recursiveLoad(cup.classUnits(), depmaps, jarkey, mainclass);
 			
-			// Find the manifest
-			try (InputStream jaris =
-				jarcu.locateResource("META-INF/MANIFEST.MF"))
-			{
-				// {@squirreljme.error BC0b The specified JAR does not have a
-				// a manifest. (The -jar which was specified on the command
-				// line)}
-				if (jaris == null)
-					throw new IllegalArgumentException(String.format(
-						"BC0b %s", jarkey));
-				
-				// Parse the manifest data
-				JavaManifest jarman = new JavaManifest(jaris);
-				
-				// Get the main attributes
-				JavaManifestAttributes mainman = jarman.get("");
-				
-				// Find the main class
-				String jmain = mainman.get("Main-Class");
-				if (jmain != null)
-					pmain = ClassLoaderNameSymbol.of(jmain);
-				
-				// Load any class path dependencies
-				String cpd = mainman.get("Class-Path");
-				if (cpd != null)
-					throw new Error("TODO");
-			}
-			
-			// {@squirreljme.error BC0c Failed to read the manifest that is
-			// contained in the JAR file. (The specified JAR passed via -jar)}
-			catch (IOException e)
-			{
-				throw new IllegalArgumentException(String.format("BC0c %s",
-					jarkey), e);
-			}
+			// Use the main class
+			if (mainclass[0] != null)
+				pmain = ClassLoaderNameSymbol.of(mainclass[0]);
 			
 			// Add all calculated dependencies
 			units.addAll(depmaps.values());
@@ -358,6 +328,99 @@ public class BootInterpreter
 	}
 	
 	/**
+	 * Loads the manifest for every dependency and then finds all of them.
+	 *
+	 * @param __cus The available class units.
+	 * @param __map The mapping of keys to units.
+	 * @param __k The JAR to load.
+	 * @param __m The main class attribute.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/29
+	 */
+	private final void __recursiveLoad(ClassUnit[] __cus,
+		Map<String, ClassUnit> __map, String __k, String[] __m)
+		throws NullPointerException
+	{
+		// Check
+		if (__cus == null || __map == null || __k == null || __m == null)
+			throw new NullPointerException("NARG");
+		
+		// If the key is in the map, do not bother
+		if (__map.containsKey(__k))
+			return;
+		
+		// Could fail
+		try
+		{
+			// Go through the class units in the provider
+			ClassUnit found = null;
+			for (ClassUnit cu : __cus)
+				if (0 == cu.compareTo(__k))
+				{
+					found = cu;
+					break;
+				}
+			
+			// {@squirreljme.error BC0e The specified JAR could not be found
+			// in the class path. (The JAR)}
+			if (found == null)
+				throw new IllegalArgumentException(String.format("BC0e %s",
+					__k));
+			
+			// Add to the JAR mapping
+			__map.put(__k, found);
+			
+			// Find the manifest
+			try (InputStream jaris =
+				found.locateResource("META-INF/MANIFEST.MF"))
+			{
+				// {@squirreljme.error BC0b The specified JAR does not have a
+				// a manifest. (The -jar which was specified on the command
+				// line)}
+				if (jaris == null)
+					throw new IllegalArgumentException(String.format(
+						"BC0b %s", __k));
+				
+				// Parse the manifest data
+				JavaManifest jarman = new JavaManifest(jaris);
+				
+				// Get the main attributes
+				JavaManifestAttributes mainman = jarman.get("");
+				
+				// Specify main class?
+				if (__m[0] == null)
+				{
+					// Find the main class
+					String jmain = mainman.get("Main-Class");
+					
+					// {@squirreljme.error BC0d The JAR does not specify the
+					// main class to be used on entry. (The JAR missing the
+					// "Main-Class" attribute)}
+					if (jmain == null)
+						throw new IllegalArgumentException(String.format(
+							"BC0d %s", __k));
+					
+					// Set
+					__m[0] = jmain;
+				}
+				
+				// Load any class path dependencies
+				String cpd = mainman.get("Class-Path");
+				if (cpd != null)
+					throw new Error("TODO");
+			}
+		}
+		
+		// {@squirreljme.error BC0c Could not load the specified JAR key.
+		// (The JAR key)}
+		catch (IOException e)
+		{
+			throw new IllegalArgumentException(String.format("BC0c %s",
+				__k));
+		}
+	}
+	
+	/**
 	 * This is the main entry point for the NARF interpreter.
 	 *
 	 * @param __args Program arguments.
@@ -416,26 +479,6 @@ public class BootInterpreter
 		// Run kernel cycles
 		for (;; Thread.yield())
 			kernel.runCycle();
-	}
-	
-	/**
-	 * Loads the manifest for every dependency and then finds all of them.
-	 *
-	 * @param __cups The output dependency map.
-	 * @param __cu The class units used.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/29
-	 */
-	private static final __findDeps(Map<String, ClassUnit> __cups,
-		ClassUnit __cu)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__cups == null || __cu == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
 	}
 }
 

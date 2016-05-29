@@ -25,14 +25,15 @@ public abstract class ClassUnit
 	implements Comparable<ClassUnit>
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/26
+	 * Compares the key of the class unit to the given key.
+	 *
+	 * @param __k The key to compare against.
+	 * @return The result of comparison.
+	 * @throws NullPointerException If the key is null.
+	 * @since 2016/05/29
 	 */
-	@Override
-	public int compareTo(ClassUnit __cu)
-	{
-		return toString().compareTo(__cu.toString());
-	}
+	public abstract int compareTo(String __k)
+		throws NullPointerException;
 	
 	/**
 	 * Locates a class using the given class name in this unit and possibly
@@ -67,6 +68,26 @@ public abstract class ClassUnit
 	 */
 	@Override
 	public abstract String toString();
+	
+	/**
+	 * Compares the key of this class unit to the key of the other.
+	 *
+	 * @param __cu The class unit to obtain a key from and then compare
+	 * against.
+	 * @return The result of comparison.
+	 * @throws NullPointerException On null arugments.
+	 * @since 2016/05/29 
+	 */
+	@Override
+	public final int compareTo(ClassUnit __cu)
+		throws NullPointerException
+	{
+		// Check
+		if (__cu == null)
+			throw new NullPointerException("NARG");
+		
+		return compareTo(__cu.toString());
+	}
 	
 	/**
 	 * This represents the type of class unit that this provides.
