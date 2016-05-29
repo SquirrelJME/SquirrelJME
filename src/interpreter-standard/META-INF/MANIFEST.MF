@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: interpreter-pure
+X-SquirrelJME-Name: interpreter-standard
 X-SquirrelJME-UUID: fe565de4-ee82-4711-9803-03b5e7f36042
 X-SquirrelJME-Depends: interpreter, java-byte-code
 X-SquirrelJME-Error: BA
 LIBlet-Title: Pure Interpreter
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160527
-LIBlet-Description: This contains an implementation of the
-  interpreter which is for the most part pure and generally
-  performs no optimizations when code is executed.
+LIBlet-Description: This contains the standard multi-threaded
+  interpreter which is non-deterministic and is generally
+  faster.
 
