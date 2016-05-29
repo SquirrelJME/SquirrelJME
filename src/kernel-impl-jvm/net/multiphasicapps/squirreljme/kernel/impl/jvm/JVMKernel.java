@@ -69,6 +69,16 @@ public class JVMKernel
 	 * @since 2016/05/29
 	 */
 	@Override
+	protected void internalRunCycle()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/29
+	 */
+	@Override
 	protected KernelThread internalCurrentThread()
 	{
 		throw new Error("TODO");

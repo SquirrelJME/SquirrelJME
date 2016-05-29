@@ -89,6 +89,13 @@ public abstract class Kernel
 		throws KernelException;
 	
 	/**
+	 * Runs an internal cycle within the kernel.
+	 *
+	 * @since 2016/05/29
+	 */
+	protected abstract void internalRunCycle();
+	
+	/**
 	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing
 	 * happens.
 	 *
@@ -153,6 +160,16 @@ public abstract class Kernel
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Runs an a single cycle within the kernel.
+	 *
+	 * @since 2016/05/29
+	 */
+	public final void runCycle()
+	{
+		internalRunCycle();
 	}
 	
 	/**

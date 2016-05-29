@@ -342,7 +342,12 @@ public class BootInterpreter
 			throw new RuntimeException("BC0a", e);
 		}
 		
-		throw new Error("TODO");
+		// Setup kernel using the given interpreter
+		JVMKernel kernel = new JVMKernel(terp);
+		
+		// Run kernel cycles
+		for (;; Thread.yield())
+			kernel.runCycle();
 	}
 }
 

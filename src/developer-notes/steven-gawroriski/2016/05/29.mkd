@@ -62,3 +62,9 @@ Actually I am going to rename some classes around a bit and such. The
 deterministic interpreter will become "rerecord" then I can use `RR` as a
 prefix and such.
 
+## 11:10
+
+Having the kernel run a single cycle at a time and having a loop that runs the
+cycles would make it so timing can be managed by the implementation's entry
+point.
+
