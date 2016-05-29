@@ -13,3 +13,8 @@ although locks would still be needed for synchronization and such.
 It might be best to clear the kernel related code and redo it with how it is
 to be done.
 
+## 07:58
+
+Then processes running on the kernel could be purely managed by the kernel for
+the most part, how it currently is done except much cleaner.
+
