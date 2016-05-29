@@ -8,11 +8,26 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the pure interpreter.
- *
- * @since 2016/05/27
- */
+package net.multiphasicapps.squirreljme.terp.std;
 
-package net.multiphasicapps.squirreljme.terp.pure;
+import net.multiphasicapps.squirreljme.terp.Interpreter;
+
+/**
+ * This is the standard interpreter which uses normal threads for each
+ * interpreter thread.
+ *
+ * @since 2016/05/12
+ */
+public class StandardInterpreter
+	implements Interpreter
+{
+	/**
+	 * Initializes the interpreter which uses the direct byte code.
+	 *
+	 * @since 2016/05/12
+	 */
+	public StandardInterpreter()
+	{
+	}
+}
 

@@ -17,5 +17,5 @@
  * @since 2016/05/28
  */
 
-package net.multiphasicapps.squirreljme.terp.det;
+package net.multiphasicapps.squirreljme.terp.rr;
 
