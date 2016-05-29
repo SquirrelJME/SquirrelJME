@@ -26,6 +26,9 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 public final class JavaManifestAttributes
 	extends AbstractMap<JavaManifestKey, String>
 {
+	/** The key value pairs. */
+	protected final Map<JavaManifestKey, String> pairs;
+	
 	/**
 	 * Initializes the manifest attributes.
 	 *
@@ -40,7 +43,19 @@ public final class JavaManifestAttributes
 		if (__from == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Copy
+		this.pairs = UnmodifiableMap.<JavaManifestKey, String>of(
+			new HashMap<>(__from));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/20
+	 */
+	@Override
+	public boolean containsKey(Object __o)
+	{
+		return this.pairs.containsKey(__o);
 	}
 	
 	/**
@@ -50,7 +65,27 @@ public final class JavaManifestAttributes
 	@Override
 	public Set<Map.Entry<JavaManifestKey, String>> entrySet()
 	{
-		throw new Error("TODO");
+		return this.pairs.entrySet();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/20
+	 */
+	@Override
+	public String get(Object __o)
+	{
+		return this.pairs.get(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/20
+	 */
+	@Override
+	public int size()
+	{
+		return this.pairs.size();
 	}
 }
 
