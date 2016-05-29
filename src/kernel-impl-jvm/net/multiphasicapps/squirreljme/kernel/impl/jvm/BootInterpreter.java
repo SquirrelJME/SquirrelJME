@@ -31,6 +31,8 @@ import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.manifest.JavaManifest;
+import net.multiphasicapps.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
@@ -263,6 +265,9 @@ public class BootInterpreter
 				if (jaris == null)
 					throw new IllegalArgumentException(String.format(
 						"BC0b %s", jarkey));
+				
+				// Parse the manifest data
+				JavaManifest jarman = new JavaManifest(jaris);
 				
 				throw new Error("TODO");
 			}
