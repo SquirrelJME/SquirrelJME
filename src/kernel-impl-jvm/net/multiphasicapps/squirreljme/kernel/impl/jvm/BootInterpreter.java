@@ -172,12 +172,12 @@ public class BootInterpreter
 						// Has equal sign?
 						int eq = arg.indexOf('=');
 						if (eq >= 0)
-							xoptions.put(arg.substring(1, eq),
+							xoptions.put(arg.substring(2, eq),
 								arg.substring(eq + 1));
 						
 						// Does not
 						else
-							xoptions.put(arg.substring(1), "");	
+							xoptions.put(arg.substring(2), "");	
 					}
 					
 					// Unknown -J option
