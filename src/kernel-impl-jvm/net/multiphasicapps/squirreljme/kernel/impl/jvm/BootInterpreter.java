@@ -309,6 +309,8 @@ public class BootInterpreter
 			"net.multiphasicapps.squirreljme.interpreter");
 		if (useterp == null)
 			useterp = DEFAULT_INTERPRETER;
+		else if (useterp.equals("rerecord"))
+			useterp = RR_INTERPRETER;
 		
 		// Setup the boot interpreter
 		BootInterpreter bi = new BootInterpreter(__args);
@@ -321,6 +323,24 @@ public class BootInterpreter
 				useterp = RR_INTERPRETER;
 			else
 				useterp = altterp;
+		
+		// Create an instance of the interpreter
+		Interpreter terp;
+		try
+		{
+			// Find it
+			Class<?> terpcl = Class.forName(useterp);
+			
+			// Initialize it
+			terp = (Interpreter)terpcl.newInstance();
+		}
+		
+		// {@squirreljme.error BC0a Could not initialize the interpreter.
+		catch (ClassCastException|ClassNotFoundException|
+			IllegalAccessException|InstantiationException e)
+		{
+			throw new RuntimeException("BC0a", e);
+		}
 		
 		throw new Error("TODO");
 	}
