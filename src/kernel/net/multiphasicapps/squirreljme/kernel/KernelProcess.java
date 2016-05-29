@@ -24,9 +24,12 @@ import java.util.Set;
  * This represents a process within the kernel which where
  * {@link KernelThread}s are assigned to for performing work.
  *
+ * Processes may be assigned memory maps and other details, as such the
+ * implementation of the kernel must implement processes.
+ *
  * @since 2016/05/16
  */
-public final class KernelProcess
+public abstract class KernelProcess
 	implements __Identifiable__
 {
 	/** The owning kernel. */
@@ -42,7 +45,7 @@ public final class KernelProcess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/29
 	 */
-	KernelProcess(Kernel __k)
+	public KernelProcess(Kernel __k)
 		throws NullPointerException
 	{
 		// Check

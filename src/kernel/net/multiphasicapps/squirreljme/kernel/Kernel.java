@@ -58,6 +58,16 @@ public abstract class Kernel
 	}
 	
 	/**
+	 * Internally creates a new process which may be executed.
+	 *
+	 * @return The newly created process which is implementation specific.
+	 * @throws KernelException If the process could not be created.
+	 * @sicne 2016/05/29
+	 */
+	protected abstract KernelProcess internalCreateProcess()
+		throws KernelException;
+	
+	/**
 	 * Internally creates a new thread which may be executed.
 	 *
 	 * @return A kernel based thread which is implementation specific.
