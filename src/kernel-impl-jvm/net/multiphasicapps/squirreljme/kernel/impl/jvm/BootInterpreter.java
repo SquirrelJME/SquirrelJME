@@ -342,6 +342,9 @@ public class BootInterpreter
 			throw new RuntimeException("BC0a", e);
 		}
 		
+		// Handle X options in the interpreter, if applicable
+		terp.handleXOptions(xoptions);
+		
 		// Setup kernel using the given interpreter
 		JVMKernel kernel = new JVMKernel(terp);
 		

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.terp.std;
 
+import java.util.Map;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
@@ -28,6 +29,19 @@ public class StandardInterpreter
 	 */
 	public StandardInterpreter()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/29
+	 */
+	@Override
+	public void handleXOptions(Map<String, String> __xo)
+		throws NullPointerException
+	{
+		// Check
+		if (__xo == null)
+			throw new NullPointerException("NARG");
 	}
 }
 

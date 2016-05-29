@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.terp;
 
+import java.util.Map;
+
 /**
  * This is the base class which is used by implementations of the interpreter
  * to handle and managed interpretation.
@@ -18,5 +20,16 @@ package net.multiphasicapps.squirreljme.terp;
  */
 public abstract class Interpreter
 {
+	/** The interpreter lock, if required. */
+	protected final Object lock =
+		new Object();
+	
+	/**
+	 * Handles the X options which may be passed to the interpreter.
+	 *
+	 * @param __xo The X options to handle.
+	 * @since 2016/05/29
+	 */
+	public abstract void handleXOptions(Map<String, String> __xo);
 }
 
