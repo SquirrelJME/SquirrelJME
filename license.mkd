@@ -25,6 +25,12 @@ The mascot is under the **Creative Commons CC-BY-SA 4.0 With Additional**
  * The low resolution mascot (below 128x128) was drawn by _Steven Gawroriski_
    using the high-resolution mascot as a base.
 
+Contributors must agree to the contributor license before their code may be
+accepted.
+
+Additionally, if the **GNU AGPLv3** and **CC-BY-SA 4.0** are not desirable a
+proprietary license may be purchased for a negotiable fee.
+
 ## GNU Affero General Public License v3 or Later
 
 		                GNU AFFERO GENERAL PUBLIC LICENSE
@@ -1113,4 +1119,72 @@ The mascot is under the **Creative Commons CC-BY-SA 4.0 With Additional**
 	
 	Creative Commons may be contacted at creativecommons.org.
 
+## Contributor License
+
+**ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING LICENSE BEFORE THEIR CODE WILL**
+**BE ACCEPTED IN THE PROJECT. IF THE DEVELOPER IS EMPLOYED AND DEVELOPS THE**
+**CODE "ON THE CLOCK" OR UNDER CONTRACT, THEN THAT DEVELOPER MUST SEEK THE**
+**PERMISSION OF THE EMPLOYER.**
+
+	You grant Multi-Phasic Applications and Steven Gawroriski an irrevocable
+	license that:
+	
+	 1. Grants a patent license, as per the GNU AGPLv3.
+	 2. The ability to re-license the contributing code under any license.
+
+## Multi-Phasic Applications: SquirrelJME Proprietary License
+
+**THIS LICENSE MAY ONLY BE USED BY ENTITIES WHICH HAVE PURCHASED THIS**
+**SPECIFIC LICENSE. GENERALLY LICENSES WOULD BE GRANTED ON ALL PLATFORMS**
+**FOR SPECIFIC RELEASES OF SQUIRRELJME, HOWEVER IF ONLY A SMALL SUBSET OF**
+**PLATFORMS ARE DESIRED THEN THE PRICE MAY BE LOWERED TO A MORE DESIRABLE**
+**AMOUNT. GENERALLY YOU SHOULD USE THE GNU AGPLV3 LICENSE SOFTWARE, HOWEVER**
+**THIS MIGHT NOT BE POSSIBLE. GNUPG IS REQUIRED BEFORE A LICENSE MAY BE**
+**PURCHASED.**
+
+One can read <https://www.fsf.org/blogs/rms/selling-exceptions>, which is
+something that I agree with since it does not harm the main program. Any
+profits made from licenses may be used to purchase hardware and to keep
+the primary developers alive.
+
+	GNUPG Key:
+		To protect the licensee and the licensor, information about the
+		licensor will be kept in the official SquirrelJME repository. The
+		information will remain encrypted in the official repository. The
+		purpose of the information is to protect licensors from false GPL
+		violations while exposing licensors which truly violate the GPL.
+		1. The licensor information will be placed into a file by the licensee.
+		2. The licensee will randomly pad portions of the file using randomized
+		   data.
+		3. The licensee will encrypt the data into ASCII armored form.
+		4. The licensor will sign the ASCII armored encrypted data.
+		5. The licensor will take the ASCII armored original encrypted file,
+		   along with the signed ASCII armored form of the encrypted file,
+		   and randomized data and place into a single file.
+		6. That file will be encrypted and ASCII armored.
+		7. The result is to be placed in the repository.
+	
+	Claim of Development:
+		The licensor must not specify that they themselves have developed
+		SquirrelJME. A licensor is not required to state that they have
+		licensed the software.
+	
+	Copyright, Logo/Mascot Visibility:
+		<TWO OPTIONS ARE AVAILABLE>
+		1. The copyright and logo/mascot must be displayed prominently such as
+		   on a splash screen or similar that a user will see at the start of
+		   execution. No detail may be modified except that the GNU AGPLv3
+		   statement is replaced by "SquirrelJME licensed from
+		   Multi-Phasic Applications <http://multiphasicapps.net/>".
+		2. The copyrights and logo/mascot do not have to be displayed.
+	
+	Patents:
+		A patent grant is given, however the patent grant only covers
+		SquirrelJME and not any other portion of software or proprietary
+		modifications of SquirrelJME.
+	
+	THIS SOFTWARE COMES WITH NO WARRANTY EITHER EXPRESSED OR IMPLIED. ANY
+	DAMAGE THAT IS DIRECTLY OR INDIRECTLY CAUSED BY THIS SOFTWARE IS THE
+	RESPONSIBILITY OF THE LICENSEE. THE LICENSEE MAY ADD A WARRANTY ON THE
+	SOFTWARE IF DESIRED.
 
