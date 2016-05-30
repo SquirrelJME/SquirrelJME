@@ -117,3 +117,17 @@ most likely have more complex scenarios. However, displays should only be
 locked to themselves and not others. Displays could be running as the server
 or there could be a client interface which is used.
 
+## 19:39
+
+One problem though is the difference in client and server IPC interfaces.
+I would have to duplicate both of them. However what I can do is have IPC have
+the ability to be used with a kind of alternative socket backend. If one is
+specified, instead of calling the statics which would equate to system calls,
+the others are used instead. This would then allow me to share the IPC client
+and server in `__squirreljme` yet have a variant which can handle being in the
+kernel. Then I can have a `UIServer` and a `UIClient` which use the sockets
+accordingly. Then UI elements would be bridged by a client and utilized by
+a server to display what the client desires in most cases. This would allow
+for just a single set of classes to be used. A server specific drawing
+interface could just read from a `UIServer` it hosts to display widgets.
+
