@@ -72,3 +72,8 @@ point.
 
 The `-jar` and `-classpath` should likely use actual JAR providers as such.
 
+## 23:11
+
+Wrote up a potential proprietary license which may be purchased, since it would
+be beneficial to the project.
+

@@ -1147,6 +1147,8 @@ something that I agree with since it does not harm the main program. Any
 profits made from licenses may be used to purchase hardware and to keep
 the primary developers alive.
 
+	Multi-Phasic Applications: SquirrelJME Proprietary License
+	
 	GNUPG Key:
 		To protect the licensee and the licensor, information about the
 		licensor will be kept in the official SquirrelJME repository. The
@@ -1164,6 +1166,10 @@ the primary developers alive.
 		6. That file will be encrypted and ASCII armored.
 		7. The result is to be placed in the repository.
 	
+	Usage:
+		The software may only be used under the following terms: 
+		<USAGE TERMS>
+	
 	Claim of Development:
 		The licensor must not specify that they themselves have developed
 		SquirrelJME. A licensor is not required to state that they have
@@ -1174,7 +1180,7 @@ the primary developers alive.
 		1. The copyright and logo/mascot must be displayed prominently such as
 		   on a splash screen or similar that a user will see at the start of
 		   execution. No detail may be modified except that the GNU AGPLv3
-		   statement is replaced by "SquirrelJME licensed from
+		   statement is replaced by "SquirrelJME is licensed from
 		   Multi-Phasic Applications <http://multiphasicapps.net/>".
 		2. The copyrights and logo/mascot do not have to be displayed.
 	
@@ -1182,6 +1188,17 @@ the primary developers alive.
 		A patent grant is given, however the patent grant only covers
 		SquirrelJME and not any other portion of software or proprietary
 		modifications of SquirrelJME.
+	
+	Open Sourcing:
+		If the licensor desires to open source their licensed copy, then their
+		only choice is to use the license that SquirrelJME is under (the GNU
+		AGPLv3). Otherwise, source code must not be released and be kept
+		confidential.
+	
+	Updates:
+		The licensor may remain with only a single release version, although
+		any security updates and bug fixes that are applied to a release branch
+		may be used.
 	
 	THIS SOFTWARE COMES WITH NO WARRANTY EITHER EXPRESSED OR IMPLIED. ANY
 	DAMAGE THAT IS DIRECTLY OR INDIRECTLY CAUSED BY THIS SOFTWARE IS THE
