@@ -85,3 +85,13 @@ resolution of the device. This means that the super massive 4K displays
 would be supported also (since they have a higher pixel density). Then for
 Palm PDAs, the high density displays will accordingly be handled also.
 
+## 14:12
+
+This means I must define the IPC interface in `__squirreljme`. Then the
+launcher would use this interface accordingly while it is interpreted itself.
+The launcher would have its own display, but it would be given the power to
+launch other processes. That could be handled by the IPC interface too, so
+in the event that the launcher is running on a rerecord with a differently
+ordered set of JARs with more or less, provided all the JARs are there with the
+given keys they would still be found.
+
