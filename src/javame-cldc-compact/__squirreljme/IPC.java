@@ -46,7 +46,7 @@ public abstract class IPC
 	 * @see __socketListen(int)
 	 * @since 2016/05/30
 	 */
-	static final int __socketAccept(int __sock)
+	static final int socketAccept(int __sock)
 	{
 		// {@squirreljme.error ZZ07 Pure virtual call of IPC accept.}
 		throw new IPCException("ZZ07");
@@ -61,7 +61,7 @@ public abstract class IPC
 	 * @return The socket identifier or a negative value on error.
 	 * @since 2016/05/30
 	 */
-	static final int __socketConnect(int __host, int __service)
+	static final int socketConnect(int __host, int __service)
 	{
 		// {@squirreljme.error ZZ05 Pure virtual call of IPC connect.}
 		throw new IPCException("ZZ05");
@@ -76,7 +76,7 @@ public abstract class IPC
 	 * @see __socketAccept(int)
 	 * @since 2016/05/30
 	 */
-	static final int __socketListen(int __port)
+	static final int socketListen(int __port)
 	{
 		// {@squirreljme.error ZZ03 Pure virtual call of IPC listen.}
 		throw new IPCException("ZZ03");
@@ -91,7 +91,7 @@ public abstract class IPC
 	 * negative return values indicate error.
 	 * @since 2016/05/30
 	 */
-	static final int __socketReady(int __sock)
+	static final int socketReady(int __sock)
 	{
 		// {@squirreljme.error ZZ06 Pure virtual call of IPC ready.}
 		throw new IPCException("ZZ06");
@@ -108,7 +108,7 @@ public abstract class IPC
 	 * @return The number of bytes read, a negative value indicates an error.
 	 * @since 2016/05/30
 	 */
-	static final int __socketReceive(int __sock, byte[] __b,
+	static final int socketReceive(int __sock, byte[] __b,
 		int __o, int __l)
 	{
 		// {@squirreljme.error ZZ01 Pure virtual call of IPC receive.}
@@ -125,7 +125,7 @@ public abstract class IPC
 	 * @return Zero on success, a negative value indicates an error.
 	 * @since 2016/05/30
 	 */
-	static final int __socketSend(int __sock, byte[] __b, int __o,
+	static final int socketSend(int __sock, byte[] __b, int __o,
 		int __l)
 	{
 		// {@squirreljme.error ZZ02 Pure virtual call of IPC send.}
