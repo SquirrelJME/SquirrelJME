@@ -532,6 +532,10 @@ public class BootInterpreter
 		// Setup kernel using the given interpreter
 		JVMKernel kernel = new JVMKernel(terp);
 		
+		// Load the initial program to be started into the kernel
+		if (true)
+			throw new Error("TODO");
+		
 		// Run kernel cycles
 		for (;; Thread.yield())
 			kernel.runCycle();
