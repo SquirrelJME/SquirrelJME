@@ -36,6 +36,13 @@ public abstract class Interpreter
 	public abstract void handleXOptions(Map<String, String> __xo);
 	
 	/**
+	 * This runs a single cycle in the interpreter.
+	 *
+	 * @since 2016/05/30
+	 */
+	public abstract void runCycle();
+	
+	/**
 	 * This adjusts the program to start on initial launch.
 	 *
 	 * @param __cp The {@link ClassPath} to adjust.

@@ -143,7 +143,10 @@ public class BootInterpreter
 			// Get next argument
 			String arg = args.removeFirst();
 			
-			// Load classes from JAR file
+			// {@squirreljme.cmdline -jar (jarfile) This loads the specified
+			// JAR file and any of its dependencies and determines the main
+			// method to invoke based on the "Main-Class" attribute which is
+			// specified in the JAR file.}
 			if (arg.equals("-jar"))
 			{
 				// {@squirreljme.error BC02 -jar cannot be specified with
@@ -188,7 +191,10 @@ public class BootInterpreter
 						System.err.printf("BC06 %s", arg);
 				}
 				
-				// Class path specified
+				// {@squirreljme.cmdline -classpath (path) This is a path-like
+				// set of JAR files which are to be treated as the JARs to use
+				// when executing programs.}
+				// {@squirreljme.cmdline -cp (path) See -classpath.}
 				else if (arg.equals("-cp") || arg.equals("-classpath"))
 				{
 					// {@squirreljme.error BC03 -cp or -classpath has already
@@ -469,7 +475,10 @@ public class BootInterpreter
 		else if (useterp.equals("rerecord"))
 			useterp = RR_INTERPRETER;
 		
-		// Choose another interpreter core?
+		// {@squirreljme.cmdline -Xsquirreljme-interpreter=(class) This
+		// specifies the name of the class which should be used as the
+		// interpreter instead of the default. If "rerecord" is specified then
+		// the class name of the rerecording interpreter is used instead.}
 		Map<String, String> xoptions = bi.xOptions();
 		String altterp = xoptions.get("squirreljme-interpreter");
 		if (altterp != null)

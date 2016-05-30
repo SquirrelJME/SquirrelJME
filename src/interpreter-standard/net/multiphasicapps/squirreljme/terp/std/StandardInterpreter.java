@@ -43,5 +43,15 @@ public class StandardInterpreter
 		if (__xo == null)
 			throw new NullPointerException("NARG");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/30
+	 */
+	@Override
+	public void runCycle()
+	{
+		throw new Error("TODO");
+	}
 }
 

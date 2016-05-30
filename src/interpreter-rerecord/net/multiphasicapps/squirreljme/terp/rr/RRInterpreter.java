@@ -117,6 +117,16 @@ public class RRInterpreter
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/30
+	 */
+	@Override
+	public void runCycle()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Sets the number of Java instructions that are executed in a single
 	 * second.
 	 *
