@@ -91,7 +91,7 @@ public class Build
 	 */
 	public static final String INTERPRETER_NAME =
 		Objects.toString(System.getProperty("project.interpreter"),
-			"kernel-impl-jvm");
+			"kernel-impl-jvm-swing");
 	
 	/** Build JARs with no compression? */
 	private static volatile boolean _nocompression;
@@ -233,7 +233,7 @@ public class Build
 				
 				// Run SquirrelJME launcher
 			case "squirreljme":
-				__launch(0, getProject("kernel-impl-jvm-javase"), __args);
+				__launch(0, getProject("kernel-impl-jvm-swing"), __args);
 				break;
 				
 				// Build a project

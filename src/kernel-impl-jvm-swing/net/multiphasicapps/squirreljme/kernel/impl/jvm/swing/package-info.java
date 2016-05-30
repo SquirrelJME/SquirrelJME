@@ -15,5 +15,5 @@
  * @since 2016/05/14
  */
 
-package net.multiphasicapps.squirreljme.kernel.jvm.javase;
+package net.multiphasicapps.squirreljme.kernel.jvm.swing;
 

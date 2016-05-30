@@ -457,6 +457,7 @@ public class BootInterpreter
 	 * This is the main entry point for the NARF interpreter.
 	 *
 	 * @param __args Program arguments.
+	 * @throws Throwable On any exception.
 	 * @since 2016/04/20
 	 */
 	public static void main(String... __args)

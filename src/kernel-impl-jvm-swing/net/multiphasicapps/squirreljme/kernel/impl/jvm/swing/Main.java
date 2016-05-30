@@ -8,11 +8,29 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the Swing based {@link UIDisplayManager}.
- *
- * @since 2016/05/23
- */
+package net.multiphasicapps.squirreljme.kernel.impl.jvm.swing;
 
-package net.multiphasicapps.squirreljme.kernel.impl.jvm.javase.swing;
+import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.impl.jvm.BootInterpreter;
+
+/**
+ * Main entry point for the Java SE JVM launcher interface kernel.
+ *
+ * @since 2016/05/14
+ */
+public class Main
+{
+	/**
+	 * Main entry point.
+	 *
+	 * @param __args Program arguments.
+	 * @since 2016/05/14
+	 */
+	public static void main(String... __args)
+		throws Throwable
+	{
+		// Fowarded main call
+		BootInterpreter.main(__args);
+	}
+}
 
