@@ -65,4 +65,10 @@ that specifies the use and potentially the protocol of the IPC service.
 
 	{@squirreljme.serviceid 1 shortname The description of the service.}
 
+## Command Line Options
+
+If a command line option is made available then the following must be used:
+
+	{@squirreljme.cmdline -foo=(bar) The description of the command line
+	switch.}
 

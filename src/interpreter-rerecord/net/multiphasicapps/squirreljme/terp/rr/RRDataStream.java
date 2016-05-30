@@ -20,6 +20,7 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;

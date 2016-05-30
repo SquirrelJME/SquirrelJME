@@ -100,7 +100,9 @@ public class RRInterpreter
 		
 		String v;
 		
-		// Set new JIPS?
+		// {@squirreljme.cmdline -Xsquirreljme-rerecord-jips=(int) This
+		// specifies the number of Java instructions which should be executed
+		// in a single second.}
 		v = __xo.get("squirreljme-rerecord-jips");
 		if (v != null)
 			try
