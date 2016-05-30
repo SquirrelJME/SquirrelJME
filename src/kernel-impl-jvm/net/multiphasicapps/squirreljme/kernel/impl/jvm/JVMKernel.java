@@ -71,7 +71,8 @@ public class JVMKernel
 	@Override
 	protected void internalRunCycle()
 	{
-		throw new Error("TODO");
+		// Run a single interpreter cycle
+		interpreter.runCycle();
 	}
 	
 	/**

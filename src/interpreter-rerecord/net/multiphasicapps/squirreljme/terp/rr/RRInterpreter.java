@@ -10,7 +10,12 @@
 
 package net.multiphasicapps.squirreljme.terp.rr;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
+import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
@@ -24,6 +29,10 @@ public class RRInterpreter
 	/** Java instructions per second. */
 	public static final int DEFAULT_JIPS =
 		1_000_000;
+	
+	/** The data stream to source data from and such. */
+	protected final RRDataStream datastream =
+		new RRDataStream(this, this.lock);
 	
 	/** The current JIPS. */
 	private volatile int _jips;
@@ -40,6 +49,41 @@ public class RRInterpreter
 	{
 		// Set default timing
 		setJIPS(DEFAULT_JIPS);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/30
+	 */
+	@Override
+	public void adjustProgramStart(ClassPath[] __cp, CIMethod[] __mm,
+		String[][] __args)
+		throws NullPointerException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Potential super adjustments
+			super.adjustProgramStart(__cp, __mm, __args);
+			
+			// This either records it or plays the program start back
+			this.datastream.adjustProgramStart(__cp, __mm, __args);
+		}
+	}
+	
+	/**
+	 * Returns the current Java instructions per second.
+	 *
+	 * @return The Java instructions per second used.
+	 * @since 2016/05/30
+	 */
+	public int getJIPS()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return _jips;
+		}
 	}
 	
 	/**
@@ -90,7 +134,7 @@ public class RRInterpreter
 				__jips));
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			// Set new values
 			this._jips = __jips;
