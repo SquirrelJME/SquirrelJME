@@ -24,3 +24,26 @@ begin with anyway. However, once it is written I can write and implement the
 entire class library which will take some time. However, I have a base layout
 used for the rerecording interpreter.
 
+## 13:32
+
+Thinking about the UI code, I believe I will simplify it. Instead of having
+native widgets and such, I will just draw and handle events in a framebuffer
+or text console for example. The basic UI drawer will be very simple, but
+there could be the potential for custom UI drawers and such. So displays would
+be created, but there would then just be a plain framebuffer with my own
+drawing code. Then if an interface supports it, it can take all of the stuff
+within the framebuffer and provide an overlay drawing which makes it appear
+more native for example. So the drawers will be basically be just: `simple`,
+`console`, and `native`. So displays as before would be used and such. Widgets
+could be added to displays and displays could be made displayable on the screen
+also. The only issue would be menus and such on Mac OS and Mac OS X, however
+that case could be handled. Thinking about it however, menus would be purely
+handled by the native interface (unless it does not support menus). If menus
+are not supported and menus are used then a menu bar would appear at the top
+of the display.
+
+## 13:42
+
+So the native feel would only be created by a customized drawer or interface
+over the widgets.
+
