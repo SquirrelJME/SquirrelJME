@@ -45,5 +45,43 @@ of the display.
 ## 13:42
 
 So the native feel would only be created by a customized drawer or interface
-over the widgets.
+over the widgets. I would then have a consistent user interface across
+platforms.
+
+## 13:51
+
+This display interface may have to be exposed either via IPC or via
+`__squirreljme`. Having it under IPC would be cleaner for example. Due to the
+various differences in screen size across devices, I will need to potentially
+use a floating point based pixel layout. Likely just float however. The units
+I suppose would be either _cm_ or _mm_. A display would be requested with a
+given amount in _cm_, so I suppose _cm_ would be the most consistent when it
+comes to widget placement. When it comes to the deterministic interpreter,
+what it displayed on the screen must be deterministic. So this means that the
+UI manager would have to be a process which is interpreted also. When it comes
+to the deterministic interpreter, the idea is that system calls are recorded
+in the stream and their values are returned. So really the UI part can be
+somewhat native. However, separation would best be done. The launcher would
+have to run as an interpreted process. However, actual display surfaces which
+provide pixel level access could be created and exposed over `__squirreljme`.
+So instead, displays are actual drivers which may expose terminals or
+graphical displays. So instead of just IPC, drivers could be polled by any
+program running, then depending on their permissions they could interact with
+the driver. I suppose for a common sharing, the IPC and driver set could be
+merged together in a way. So an IPC socket would be created to a driver which
+would be provided by the kernel, in this case it would create a video display
+and use `float` _cm_ to measure everything. Anything sent over the IPC in the
+standard interpreter would be passed as is. Under the rerecording interpreter
+the messages sent will be sent as is, but the received messages would be as
+they were recorded previously. So the kernel driver would act upon the client
+IPC but the client processes would completely just ignore anything that was
+sent back.
+
+## 14:10
+
+With no potential for pixels amounts and only _cm_ amounts to be transferred,
+this means rerecord playbacks will generally appear the same varying on the
+resolution of the device. This means that the super massive 4K displays
+would be supported also (since they have a higher pixel density). Then for
+Palm PDAs, the high density displays will accordingly be handled also.
 
