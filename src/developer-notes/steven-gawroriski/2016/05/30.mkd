@@ -6,3 +6,13 @@ One thing is, should the interpreter just be an execution engine or should
 the kernel be associated with it so it may do things. I would suppose that
 it should just be an execution engine for the most part.
 
+## 07:54
+
+I believe the recording file should likely be in ASCII rather than binary,
+this way it is easier to look at for example. It could also be manually
+adjusted at the risk of causing desynchronization.
+
+## 07:58
+
+However, ASCII would make it less dense.
+

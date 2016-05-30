@@ -114,6 +114,21 @@ public class RRInterpreter
 			catch (NumberFormatException e)
 			{
 			}
+		
+		// {@squirreljme.cmdline -Xsquirreljme-rerecord-replay=(path) This
+		// is file file which should be played back from a previously
+		// recorded session.}
+		v = __xo.get("squirreljme-rerecord-replay");
+		if (v != null)
+			datastream.streamInput(Paths.get(v));
+		
+		// {@squirreljme.cmdline -Xsquirreljme-rerecord-record=(path) This is
+		// the file where events should be recorded into. If the file already
+		// exists then it is not overwritten and the interpreter throws an
+		// exception.}
+		v = __xo.get("squirreljme.rerecord-record");
+		if (v != null)
+			datastream.streamOutput(Paths.get(v));
 	}
 	
 	/**
