@@ -126,7 +126,7 @@ public class RRInterpreter
 		// the file where events should be recorded into. If the file already
 		// exists then it is not overwritten and the interpreter throws an
 		// exception.}
-		v = __xo.get("squirreljme.rerecord-record");
+		v = __xo.get("squirreljme-rerecord-record");
 		if (v != null)
 			datastream.streamOutput(Paths.get(v));
 	}
