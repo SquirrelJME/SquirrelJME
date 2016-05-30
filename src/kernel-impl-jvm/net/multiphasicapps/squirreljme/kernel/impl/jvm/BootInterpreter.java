@@ -80,6 +80,9 @@ public class BootInterpreter
 	/** The main entry method. */
 	protected final CIMethod mainentry;
 	
+	/** Main entry arguments. */
+	protected final String[] mainargs;
+	
 	/**
 	 * Determines some details.
 	 *
@@ -314,6 +317,9 @@ public class BootInterpreter
 		if (!mainentry.flags().isStatic())
 			throw new IllegalArgumentException(String.format("BC09 %s",
 				pmain));
+		
+		// Setup main arguments
+		this.mainargs = pargs.<String>toArray(new String[pargs.size()]);
 	}
 	
 	/**
@@ -492,6 +498,27 @@ public class BootInterpreter
 		
 		// Handle X options in the interpreter, if applicable
 		terp.handleXOptions(xoptions);
+		
+		// The interpreter may adjust the input arguments used to launch the
+		// kernel and such
+		ClassPath usecp;
+		CIMethod usemm;
+		String[] useargs;
+		{
+			// May be modified
+			ClassPath[] adjcp = new ClassPath[]{bi.classpath};
+			CIMethod[] adjmm = new CIMethod[]{bi.mainentry};
+			String[][] adjargs = new String[][]{bi.mainargs};
+			
+			// The interpreter may adjust the execution (perhaps if a replay
+			// is playing back)
+			terp.adjustProgramStart(adjcp, adjmm, adjargs);
+			
+			// Set
+			usecp = adjcp[0];
+			usemm = adjmm[0];
+			useargs = adjargs[0];
+		}
 		
 		// Setup kernel using the given interpreter
 		JVMKernel kernel = new JVMKernel(terp);

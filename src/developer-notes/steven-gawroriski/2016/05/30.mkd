@@ -1,0 +1,8 @@
+# 2016/05/30
+
+## 07:11
+
+One thing is, should the interpreter just be an execution engine or should
+the kernel be associated with it so it may do things. I would suppose that
+it should just be an execution engine for the most part.
+

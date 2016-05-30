@@ -234,5 +234,17 @@ public final class ClassPath
 			return rv;
 		}
 	}
+	
+	/**
+	 * Returns an array containing the class units which are used in this
+	 * class path.
+	 *
+	 * @return The copy of class units which this class uses.
+	 * @since 2016/05/30
+	 */
+	public final ClassUnit[] units()
+	{
+		return this._units.clone();
+	}
 }
 
