@@ -31,8 +31,6 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
-import net.multiphasicapps.squirreljme.kernel.KIOException;
-import net.multiphasicapps.squirreljme.kernel.KIOSocket;
 import net.multiphasicapps.squirreljme.ui.UIDisplay;
 import net.multiphasicapps.squirreljme.ui.UIException;
 import net.multiphasicapps.squirreljme.ui.UIImage;
@@ -95,6 +93,8 @@ public class LauncherInterface
 		
 		// Set
 		this.kernel = __k;
+		throw new Error("TODO");
+		/*
 		KernelProcess kernelprocess = __k.kernelProcess();
 		this.kernelprocess = kernelprocess;
 		this.displaymanager = __dm;
@@ -103,6 +103,7 @@ public class LauncherInterface
 		
 		// Setup new launcher thread which runs under the kernel
 		kernelprocess.createThread(this);
+		*/
 	}
 	
 	/**
