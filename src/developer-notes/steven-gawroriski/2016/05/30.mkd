@@ -111,5 +111,9 @@ for widgets as described before.
 Thinking about it, only the launcher would be run as a given process. What I
 need however is a callback which can be assigned to a kernel before it starts
 which initializes the display server socket that the launcher and normal
-programs would use for example.
+programs would use for example. For simplicity the display will just have a
+single set of widgets to it which may be added for example. Although I should
+most likely have more complex scenarios. However, displays should only be
+locked to themselves and not others. Displays could be running as the server
+or there could be a client interface which is used.
 
