@@ -106,3 +106,10 @@ Setting up of the launcher can be performed by the actual launcher code. Then
 the user interface can become a simple display server with the potential
 for widgets as described before.
 
+## 19:31
+
+Thinking about it, only the launcher would be run as a given process. What I
+need however is a callback which can be assigned to a kernel before it starts
+which initializes the display server socket that the launcher and normal
+programs would use for example.
+
