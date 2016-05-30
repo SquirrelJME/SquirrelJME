@@ -100,3 +100,9 @@ given keys they would still be found.
 The `getResourceAsStream` could also be done via the IPC interface too for
 simplicity.
 
+## 15:56
+
+Setting up of the launcher can be performed by the actual launcher code. Then
+the user interface can become a simple display server with the potential
+for widgets as described before.
+
