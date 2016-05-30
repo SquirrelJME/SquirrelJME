@@ -16,3 +16,11 @@ adjusted at the risk of causing desynchronization.
 
 However, ASCII would make it less dense.
 
+## 08:42
+
+Before I go into the rerecording interpreter, I should instead write the
+standard interpreter first. The standard interpreter would be much faster to
+begin with anyway. However, once it is written I can write and implement the
+entire class library which will take some time. However, I have a base layout
+used for the rerecording interpreter.
+
