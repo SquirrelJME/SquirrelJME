@@ -27,6 +27,10 @@ public abstract class IPC
 	public static final int ERROR_CONNECTION_REFUSED =
 		-2147483647;
 	
+	/** The service is already being hosted by this process. */
+	public static final int ERROR_SERVICE_IN_USE =
+		-2147483646;
+	
 	/**
 	 * Initializes the base IPC information.
 	 *
