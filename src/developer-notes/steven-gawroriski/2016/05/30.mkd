@@ -95,3 +95,8 @@ in the event that the launcher is running on a rerecord with a differently
 ordered set of JARs with more or less, provided all the JARs are there with the
 given keys they would still be found.
 
+## 14:26
+
+The `getResourceAsStream` could also be done via the IPC interface too for
+simplicity.
+
