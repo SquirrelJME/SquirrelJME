@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2016/05/31
  */
-public class KernelIPCServer
+public final class KernelIPCServer
 	extends KernelIPCSocket
 {
 	/** The service identifier. */
@@ -31,7 +31,7 @@ public class KernelIPCServer
 	 * or negative.
 	 * @since 2016/05/31
 	 */
-	public KernelIPCServer(int __id, int __svid)
+	KernelIPCServer(int __id, int __svid)
 		throws IllegalArgumentException
 	{
 		super(__id);
@@ -44,6 +44,17 @@ public class KernelIPCServer
 		
 		// Set
 		this.serviceid = __svid;
+	}
+	
+	/**
+	 * Returns the service ID of this socket.
+	 *
+	 * @return The socket's service ID.
+	 * @since 2016/05/31
+	 */
+	public int serviceId()
+	{
+		return this.serviceid;
 	}
 }
 

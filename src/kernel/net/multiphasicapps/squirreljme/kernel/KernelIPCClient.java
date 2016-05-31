@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.kernel;
  *
  * @since 2016/05/31
  */
-public class KernelIPCClient
+public final class KernelIPCClient
 	extends KernelIPCSocket
 {
 	/**

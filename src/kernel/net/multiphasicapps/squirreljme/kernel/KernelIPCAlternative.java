@@ -22,8 +22,6 @@ import __squirreljme.IPCAlternative;
  * JVM an exception will be thrown, while running on SquirrelJME it would
  * attempt to interact with actual processes running outside of the guest JVM.
  *
- * Locking is performed on the alternative itself for simplicity.
- *
  * @since 2016/05/31
  */
 public class KernelIPCAlternative
@@ -70,8 +68,15 @@ public class KernelIPCAlternative
 			return IPC.ERROR_INVALID_SERVICE_ID;
 		
 		// Lock
-		synchronized (this)
+		List<KernelIPCSocket> sockets = this._sockets;
+		synchronized (sockets)
 		{
+			// Detect if a given service is already provided
+			for (KernelIPCSocket s : sockets)
+				if (s instanceof KernelIPCServer)
+					if (((KernelIPCServer)s).serviceId() == __svid)
+						return IPC.ERROR_SERVICE_IN_USE;
+			
 			throw new Error("TODO");
 		}
 	}
