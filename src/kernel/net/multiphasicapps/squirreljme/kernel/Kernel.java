@@ -117,8 +117,8 @@ public abstract class Kernel
 		
 		// Search for the launcher and determine the launcher dependencies
 		// so that a user interface may be provided
-		if (true)
-			throw new Error("TODO");
+		ClassUnit[] cus = locateClassUnits(cups, uselauncher, true);
+		ClassUnit lcu = locateClassUnit(cus, uselauncher);
 		
 		// Initialize the kernel IPC interface that the launcher will use
 		// to launch programs.
@@ -248,6 +248,78 @@ public abstract class Kernel
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Locates the given package from the specified array
+	 *
+	 * @param __cus The class units which are available for usage.
+	 * @param __pk The package to locate.
+	 * @return The single class unit which was found or {@code null} if it
+	 * does not exist.
+	 * @throws KernelException If there was an issue searching the array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/31
+	 */
+	public final ClassUnit locateClassUnit(ClassUnit[] __cus, String __pk)
+		throws KernelException, NullPointerException
+	{
+		// Check
+		if (__cus == null || __pk == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Locates the class unit from the specified providers with the specified
+	 * package name along with their dependencies.
+	 *
+	 * @param __cus The class units which are available for usage.
+	 * @param __pk The package to locate.
+	 * @param __deps If {@code true} then dependencies are returned also.
+	 * @return The class units and optionally their dependencies if they were
+	 * requested.
+	 * @throws KernelException If the class unit or a dependency could not
+	 * be found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/31
+	 */
+	public final ClassUnit[] locateClassUnits(ClassUnit[] __cus,
+		String __pk, boolean __deps)
+		throws KernelException, NullPointerException
+	{
+		// Check
+		if (__cus == null || __pk == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Locates the class unit from the specified providers with the specified
+	 * package name along with their dependencies.
+	 *
+	 * @param __cups The class units providers which give class units for
+	 * usage.
+	 * @param __pk The package to locate.
+	 * @param __deps If {@code true} then dependencies are returned also.
+	 * @return The class units and optionally their dependencies if they were
+	 * requested.
+	 * @throws KernelException If the class unit or a dependency could not
+	 * be found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/31
+	 */
+	public final ClassUnit[] locateClassUnits(ClassUnitProvider[] __cups,
+		String __pk, boolean __deps)
+		throws KernelException, NullPointerException
+	{
+		// Check
+		if (__cups == null || __pk == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
