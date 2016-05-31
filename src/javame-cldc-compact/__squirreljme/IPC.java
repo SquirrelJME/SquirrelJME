@@ -39,6 +39,10 @@ public abstract class IPC
 	public static final int ERROR_INVALID_SERVICE_ID =
 		-2147483644;
 	
+	/** General error. */
+	public static final int ERROR_GENERAL_ERROR =
+		-2147483643;
+	
 	/** The alternative implementation to use. */
 	final IPCAlternative _alternative;
 	

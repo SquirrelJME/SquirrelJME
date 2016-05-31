@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import __squirreljme.IPCException;
+
 /**
  * This is the base class for both client and server socket types.
  *
@@ -25,17 +27,16 @@ public abstract class KernelIPCSocket
 	 * Initializes the base socket.
 	 *
 	 * @param __id The handle that the socket uses to identify itself.
-	 * @throws IllegalArgumentException If the socket identifier is negative.
+	 * @throws IPCException If the socket identifier is negative.
 	 * @since 2016/05/31
 	 */
 	KernelIPCSocket(int __id)
-		throws IllegalArgumentException
+		throws IPCException
 	{
 		// {@squirreljme.error AY09 The handle ID for a connected socket cannot
 		// be zero or negative. (The primary handle; The secondary handle)}
 		if (__id <= 0)
-			throw new IllegalArgumentException(String.format("AY09 %d",
-				__id));
+			throw new IPCException(String.format("AY09 %d", __id));
 		
 		// Set
 		this.id = __id;

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import __squirreljme.IPC;
 import __squirreljme.IPCAlternative;
+import __squirreljme.IPCException;
 
 /**
  * This class provides the alternative implementation of SquirrelJME's IPC
@@ -77,7 +78,21 @@ public class KernelIPCAlternative
 					if (((KernelIPCServer)s).serviceId() == __svid)
 						return IPC.ERROR_SERVICE_IN_USE;
 			
-			throw new Error("TODO");
+			// Could fail
+			try
+			{
+				// Create a new socket for this service
+				KernelIPCServer sock = new KernelIPCServer(this._socketsidgen.
+					__next(), __svid);
+			
+				throw new Error("TODO");
+			}
+			
+			// Handles error codes
+			catch (IPCException e)
+			{
+				return e.toErrorCode();
+			}
 		}
 	}
 }

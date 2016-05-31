@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import __squirreljme.IPCException;
+
 /**
  * This represents a client socket, it acts as a buffer between two endpoints.
  *
@@ -22,11 +24,11 @@ public final class KernelIPCClient
 	 * Initializes the kernel based IPC client.
 	 *
 	 * @param __id The socket identifier.
-	 * @throws IllegalArgumentException If socket handle is negative.
+	 * @throws IPCException If socket handle is negative.
 	 * @since 2016/05/31
 	 */
 	KernelIPCClient(int __id)
-		throws IllegalArgumentException
+		throws IPCException
 	{
 		super(__id);
 	}

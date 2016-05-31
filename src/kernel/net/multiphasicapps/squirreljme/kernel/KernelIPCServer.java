@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import __squirreljme.IPCException;
+
 /**
  * This represents the server for an IPC socket which is only capable of
  * accepting sockets and initializing them.
@@ -27,19 +29,19 @@ public final class KernelIPCServer
 	 *
 	 * @param __id The handle for the server socket.
 	 * @param __svid The service ID that this hosts.
-	 * @throws IllegalArgumentException If the handle or service ID are zero
+	 * @throws IPCException If the handle or service ID are zero
 	 * or negative.
 	 * @since 2016/05/31
 	 */
 	KernelIPCServer(int __id, int __svid)
-		throws IllegalArgumentException
+		throws IPCException
 	{
 		super(__id);
 		
 		// {@squirreljme.error AY0a The service ID cannot be zero
 		// or negative. (The service ID)}
 		if (__svid <= 0)
-			throw new IllegalArgumentException(String.format("AY0a %d",
+			throw new IPCException(String.format("AY0a %d",
 				__svid));
 		
 		// Set

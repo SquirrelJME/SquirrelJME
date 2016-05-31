@@ -42,6 +42,40 @@ public class IPCException
 	}
 	
 	/**
+	 * Converts this IPC exception to an error code.
+	 *
+	 * @return The error code version of this exception.
+	 * @since 2016/05/31
+	 */
+	public int toErrorCode()
+	{
+		// If there is no message, use a general code
+		String msg = getMessage();
+		if (msg == null)
+			return IPC.ERROR_GENERAL_ERROR;
+		
+		// Try converting to base36
+		try
+		{
+			// If the message is short, directly use it
+			int n = msg.length();
+			if (n < 4)
+				return (Integer.valueOf(msg, 36) & 0x3FFF_FFFF) | 0x8000_0000;
+			
+			// Otherwise use the 2nd, 3rd, and 4th characters.
+			else
+				return (Integer.valueOf(msg.substring(1, 4), 36) &
+					0x3FFF_FFFF) | 0x8000_0000;
+		}
+		
+		// Failed to do that
+		catch (NumberFormatException e)
+		{
+			return IPC.ERROR_GENERAL_ERROR;
+		}
+	}
+	
+	/**
 	 * Translates the given error code to a string.
 	 *
 	 * @param __i The input error code.
@@ -54,6 +88,13 @@ public class IPCException
 		if (__i >= 0)
 			return "ZZ0d";
 		
+		// {@squirreljme.error ZZ0k An unspecified error code was returned.
+		// (The error code)}
+		if (0 == (__i & 0x4000_0000))
+			return String.format("ZZ0k %s",
+				Integer.toString((__i & 0x3FFF_FFFF), 36));
+		
+		// Depends on the code
 		switch (__i)
 		{
 				// {@squirreljme.error ZZ0f The IPC socket has been closed.}
