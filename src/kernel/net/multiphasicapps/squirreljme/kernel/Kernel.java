@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
+import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import __squirreljme.IPCAlternative;
 import __squirreljme.IPCException;
@@ -78,12 +80,45 @@ public abstract class Kernel
 		// the execution core stuff).
 		this.executioncore = __exec;
 		
+		// Start the services which the kernel uses (such as the filesystem or
+		// display server)
 		// {@squirreljme.error AY02 The implementation of the kernel never
 		// called the super-class startServices() method.}
 		startServices();
 		if (!_svstarted)
 			throw new KernelException("AY02");
+		
+		// Get the list of class unit providers
+		if (true)
+			throw new Error("TODO");
+		
+		// Search for the launcher and determine the launcher dependencies
+		// so that a user interface may be provided
+		if (true)
+			throw new Error("TODO");
+		
+		// Initialize the kernel IPC interface that the launcher will use
+		// to launch programs.
+		if (true)
+			throw new Error("TODO");
+		
+		// Start the launcher which will automatically pickup the main
+		// arguments passed to the kernel along with other details
+		if (true)
+			throw new Error("TODO");
 	}
+	
+	/**
+	 * Returns the class unit providers which are available for this kernel so
+	 * that classes may be loaded.
+	 *
+	 * @return The array of class unit providers.
+	 * @throws KernelException If the class unit providers could not be
+	 * obtained.
+	 * @since 2016/05/30
+	 */
+	protected abstract ClassUnitProvider[] internalClassUnitProviders()
+		throws KernelException;
 	
 	/**
 	 * Internally creates a new process which may be executed.
@@ -119,9 +154,11 @@ public abstract class Kernel
 	/**
 	 * Runs an internal cycle within the kernel.
 	 *
+	 * @throws KernelException If the cycle could not be ran.
 	 * @since 2016/05/29
 	 */
-	protected abstract void internalRunCycle();
+	protected abstract void internalRunCycle()
+		throws KernelException;
 	
 	/**
 	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing

@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.kernel.KernelException;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
@@ -42,10 +44,22 @@ public class JVMKernel
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/05/30
+	 */
+	@Override
+	protected ClassUnitProvider[] internalClassUnitProviders()
+		throws KernelException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/29
 	 */
 	@Override
 	protected KernelProcess internalCreateProcess()
+		throws KernelException
 	{
 		throw new Error("TODO");
 	}
@@ -56,6 +70,18 @@ public class JVMKernel
 	 */
 	@Override
 	protected KernelThread internalCreateThread()
+		throws KernelException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/29
+	 */
+	@Override
+	protected KernelThread internalCurrentThread()
+		throws KernelException
 	{
 		throw new Error("TODO");
 	}
@@ -66,19 +92,10 @@ public class JVMKernel
 	 */
 	@Override
 	protected void internalRunCycle()
+		throws KernelException
 	{
 		// Run a single interpreter cycle
 		interpreter().runCycle();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/29
-	 */
-	@Override
-	protected KernelThread internalCurrentThread()
-	{
-		throw new Error("TODO");
 	}
 	
 	/**
