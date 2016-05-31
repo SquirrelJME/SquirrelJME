@@ -74,10 +74,12 @@ public abstract class Kernel
 		new ArrayList<>();
 	
 	/** The next thread ID to use. */
-	private volatile int _nextthreadid;
+	private volatile int _nextthreadid =
+		1;
 	
 	/** The next process ID to use. */
-	private volatile int _nextprocessid;
+	private volatile int _nextprocessid =
+		1;
 	
 	/** Services started at the root? */
 	private volatile boolean _svstarted;
@@ -529,7 +531,7 @@ public abstract class Kernel
 			throw new NullPointerException("NARG");
 		
 		// Go through all the sorted IDs to find an unused ID
-		int at = 0;
+		int at = 1;
 		for (Iterator<? extends __Identifiable__> it = __idl.iterator();
 			it.hasNext();)
 		{
