@@ -29,3 +29,17 @@ the implementation and would also remove the need to have a single lock for
 every socket that exists. This way when there are many threads communicating
 with each other, they do not have to block each other.
 
+## 10:32
+
+When it comes to the sockets, they can be shared between different
+alternatives. So for example when one alternative connects to another, they
+both just have a single `KernelIPCSocket` which they share for communication
+between each other. One issue however are the socket ID numbers, they would
+need to handle having multiple IDs depending if they are the client or the
+server. However, technically the socket IDs are only needed with cross
+communication. There are also 2 billion socket IDs available. For simplicity
+the client and server can share the same socket ID. However, each side needs
+its own receive and send buffers anyway. Also sharing IDs could cause
+confusion when it comes to the side which is receiving its data. So as a rule,
+the sockets cannot have the same handle number used on the client or server.
+

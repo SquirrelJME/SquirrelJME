@@ -66,5 +66,16 @@ public abstract class KernelProcess
 	{
 		return this.id;
 	}
+	
+	/**
+	 * Returns the alternative socket implementation that this process uses.
+	 *
+	 * @return The alternative socket implementation.
+	 * @since 2016/05/31
+	 */
+	public final KernelIPCAlternative ipcAlternative()
+	{
+		throw new Error("TODO");
+	}
 }
 
