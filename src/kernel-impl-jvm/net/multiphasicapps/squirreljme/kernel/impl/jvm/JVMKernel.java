@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
+import java.nio.file.Paths;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelException;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
@@ -25,6 +27,10 @@ import net.multiphasicapps.squirreljme.terp.Interpreter;
 public class JVMKernel
 	extends Kernel
 {
+	/** The JVM locates JAR files using a single provider. */
+	protected final FSJarClassUnitProvider cuprovider =
+		new FSJarClassUnitProvider(Paths.get(System.getProperty("user.dir")));
+	
 	/**
 	 * Initializes the kernel.
 	 *
@@ -50,7 +56,9 @@ public class JVMKernel
 	protected ClassUnitProvider[] internalClassUnitProviders()
 		throws KernelException
 	{
-		throw new Error("TODO");
+		// There is only a single provider, which is the current directory on
+		// the filesystem
+		return new ClassUnitProvider[]{this.cuprovider};
 	}
 	
 	/**
