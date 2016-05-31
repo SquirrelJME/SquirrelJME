@@ -43,3 +43,14 @@ its own receive and send buffers anyway. Also sharing IDs could cause
 confusion when it comes to the side which is receiving its data. So as a rule,
 the sockets cannot have the same handle number used on the client or server.
 
+## 10:43
+
+Then the server itself for server sockets and just use a new `KernelIPCServer`
+since servers do not have any send or receive logic at all. Then I need an
+interface which will handle the client and server handles.
+
+## 10:52
+
+Actually the connected socket does not even need to know if its a client or
+server, it just needs to know if it is primary or secondary socket.
+

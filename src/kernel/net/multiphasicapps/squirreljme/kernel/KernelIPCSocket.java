@@ -16,33 +16,60 @@ package net.multiphasicapps.squirreljme.kernel;
  * @since 2016/05/31
  */
 public class KernelIPCSocket
+	implements KernelIPCHandles
 {
-	/** The client handle. */
-	protected final int clienth;
+	/** The primary handle. */
+	protected final int ahandle;
 	
-	/** The server handle. */
-	protected final int serverh;
+	/** The secondary handle. */
+	protected final int bhandle;
 	
 	/**
 	 * Initializes the kernel based IPC socket.
 	 *
-	 * @param __clh The client handle.
-	 * @param __svh The server handle.
-	 * @throws IllegalArgumentException If the client or server handle are
+	 * @param __ah The primary handle.
+	 * @param __bh The secondary handle.
+	 * @throws IllegalArgumentException If the primary or secondary handles are
 	 * zero or negative.
 	 * @since 2016/05/31
 	 */
-	KernelIPCSocket(int __clh, int __svh)
+	KernelIPCSocket(int __ah, int __bh)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AY09 (The client handle; The server handle)}
-		if (__clh <= 0 || __svh <= 0)
+		// {@squirreljme.error AY09 The handle ID for a connected socket cannot
+		// be zero or negative. (The primary handle; The secondary handle)}
+		if (__ah <= 0 || __bh <= 0)
 			throw new IllegalArgumentException(String.format("AY09 %d %d",
-				__clh, __svh));
+				__ah, __bh));
+		
+		// {@squirreljme.error AY0b The primary and secondary handle cannot
+		// be the same value. (The primary and secondary handle)}
+		if (__ah == __bh)
+			throw new IllegalArgumentException(String.format("AY0b %d", __ah));
 		
 		// Set
-		this.clienth = __clh;
-		this.serverh = __svh;
+		this.ahandle = __ah;
+		this.bhandle = __bh;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/31
+	 */
+	@Override
+	public int getPrimaryHandle()
+	{
+		return this.ahandle;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/31
+	 */
+	@Override
+	public int getSecondaryHandle()
+	{
+		return this.bhandle;
 	}
 }
 

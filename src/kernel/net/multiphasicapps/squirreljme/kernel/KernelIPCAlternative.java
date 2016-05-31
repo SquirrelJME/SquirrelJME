@@ -20,6 +20,8 @@ import __squirreljme.IPCAlternative;
  * JVM an exception will be thrown, while running on SquirrelJME it would
  * attempt to interact with actual processes running outside of the guest JVM.
  *
+ * Locking is performed on the alternative itself for simplicity.
+ *
  * @since 2016/05/31
  */
 public class KernelIPCAlternative
@@ -27,7 +29,7 @@ public class KernelIPCAlternative
 {
 	/** The lock used to synchronize communications. */
 	protected final Object lock =
-		new Object();;
+		this;
 	
 	/** The owning kernel. */
 	protected final Kernel kernel;
