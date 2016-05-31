@@ -25,6 +25,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.manifest.JavaManifest;
 import net.multiphasicapps.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
@@ -62,6 +64,9 @@ public abstract class Kernel
 	
 	/** Alternative IPC implementation. */
 	protected final KernelIPCAlternative altipc;
+	
+	/** The launcher process. */
+	protected final KernelProcess launcher;
 	
 	/** The kernel controller interface. */
 	private final KernelController _controller;
@@ -147,6 +152,12 @@ public abstract class Kernel
 		ClassUnit[] cus = locateClassUnits(cups, uselauncher, true);
 		ClassUnit lcu = locateClassUnit(cus, uselauncher);
 		
+		// {@squirreljme.error AY0d The launcher does not have a main entry
+		// point.}
+		ClassNameSymbol lmain = lcu.getMainClass();
+		if (lmain == null)
+			throw new KernelException("AY0d");
+		
 		// Initialize the kernel IPC interface that the launcher will use
 		// to launch programs.
 		KernelController controller = new KernelController(this);
@@ -154,8 +165,8 @@ public abstract class Kernel
 		
 		// Start the launcher which will automatically pickup the main
 		// arguments passed to the kernel along with other details
-		if (true)
-			throw new Error("TODO");
+		ClassPath lcp = new ClassPath(cus);
+		this.launcher = createProcess(lcp, lmain, __args);
 	}
 	
 	/**
@@ -217,6 +228,39 @@ public abstract class Kernel
 	 * @since 2016/05/18
 	 */
 	public abstract void quitKernel();
+	
+	/**
+	 * Creates a new processes and initializes a thread
+	 *
+	 * @param __cp The class path to use.
+	 * @param __mcl The main class to start execution in.
+	 * @param __args The arguments to the main method.
+	 * @return The newly created process.
+	 * @throws KernelException If the process could not be created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/31
+	 */
+	public final KernelProcess createProcess(ClassPath __cp,
+		ClassNameSymbol __mcl, String... __args)
+		throws KernelException, NullPointerException
+	{
+		// Check
+		if (__cp == null || __mcl == null)
+			throw new NullPointerException("NARG");
+		
+		// Defensive copy
+		if (__args == null)
+			__args = new String[0];
+		else
+			__args = __args.clone();
+		
+		// Lock on processes
+		List<KernelProcess> processes = this._processes;
+		synchronized (processes)
+		{
+			throw new Error("TODO");
+		}
+	}
 	
 	/**
 	 * This creates a new thread which is to be managed by the kernel.

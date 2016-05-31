@@ -82,3 +82,18 @@ Alternatively the best choice would be to always return immediately. In general
 most users and myself would want non-blocking sockets for IPC since that is
 in the general case faster, although the locks can be a bit spinny.
 
+## 16:21
+
+Actually what I can do is after a server socket is connected, the server can
+be closed. If the clients remain connected without being closed when the server
+closes means that I only have to accept once and not have a accept closing
+means. If a client connects and the server closes the socket before a connect
+happens then the connection would just fail. Also for clearing I will need a
+not a socket kind of thing to occur. Alternatively if a socket does not exist
+the returned error code could be connection refused or just connection closed.
+So if the user-space tries a raw socket read of a random socket number it will
+just report it as closed. The only issue with this is that the client could
+open 2 billion sockets, close a very early one which is then reused on
+overflow. To the kernel this should have no effect, but to the running
+userspace program things could get weird.
+

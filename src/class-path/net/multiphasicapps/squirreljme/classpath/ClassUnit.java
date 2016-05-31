@@ -14,8 +14,10 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.manifest.JavaManifest;
+import net.multiphasicapps.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 
@@ -109,6 +111,41 @@ public abstract class ClassUnit
 		
 		// Otherwise only this object is used.
 		return __o == this;
+	}
+	
+	/**
+	 * Returns the name of the main class.
+	 *
+	 * @return The main class name.
+	 * @since 2016/05/31
+	 */
+	public final ClassNameSymbol getMainClass()
+	{
+		// Could fail
+		try
+		{
+			// Load the manifest
+			JavaManifest man = manifest();
+			if (man == null)
+				return null;
+			
+			// Get main attributes
+			JavaManifestAttributes attr = man.getMainAttributes();
+			
+			// Get the main class
+			String mval = attr.get("Main-Class");
+			if (mval == null)
+				return null;
+			
+			// Obtain it
+			return ClassLoaderNameSymbol.of(mval).asClassName();
+		}
+		
+		// Failed to read the manifest, treat as no main
+		catch (IOException e)
+		{
+			return null;
+		}
 	}
 	
 	/**
