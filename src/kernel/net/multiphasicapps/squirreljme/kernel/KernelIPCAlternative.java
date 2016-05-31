@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import __squirreljme.IPC;
 import __squirreljme.IPCAlternative;
@@ -84,8 +85,22 @@ public class KernelIPCAlternative
 				// Create a new socket for this service
 				KernelIPCServer sock = new KernelIPCServer(this._socketsidgen.
 					__next(), __svid);
-			
-				throw new Error("TODO");
+				
+				// Add to the list
+				int at = Collections.<Object>binarySearch(sockets, sock,
+					__IdentifierGenerator__._COMPARATOR);
+				
+				// {@squirreljme.error AY0c The socket using a given ID is
+				// already taken. (The socket ID; The location of it)}
+				if (at >= 0)
+					throw new KernelException(String.format("AY0c %d %d",
+						sock.id(), at));
+				
+				// Add it
+				sockets.add(-(at + 1), sock);
+				
+				// Return the identifier
+				return sock.id();
 			}
 			
 			// Handles error codes

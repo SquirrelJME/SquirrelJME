@@ -244,7 +244,7 @@ public abstract class Kernel
 				throw new KernelException(String.format("AY0b %d", bat));
 			
 			// Place it
-			threads.add((-bat) + 1, rv);
+			threads.add(-(bat + 1), rv);
 			
 			// Return it
 			return rv;
