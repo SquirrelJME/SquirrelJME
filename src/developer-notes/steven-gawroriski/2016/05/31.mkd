@@ -54,3 +54,21 @@ interface which will handle the client and server handles.
 Actually the connected socket does not even need to know if its a client or
 server, it just needs to know if it is primary or secondary socket.
 
+## 14:07
+
+Thinking about it, having primary and secondary IDs for sockets could be a bit
+confusing. I could limit the total number of sockets to 32,768 although that
+would be a bit bad. It would just be simpler for the client sockets to instead
+use a single identifier.
+
+## 14:12
+
+Having the primary and secondary identifiers would also complicate things when
+processes are removed as there would be a shared set of handles which can
+cause issues if lots of sockets are created.
+
+## 14:23
+
+Also, duplicating the identifier generation code for the third time, so it
+becomes a class now.
+

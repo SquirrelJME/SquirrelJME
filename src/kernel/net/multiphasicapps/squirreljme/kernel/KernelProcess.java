@@ -54,7 +54,7 @@ public abstract class KernelProcess
 		
 		// Set
 		this.kernel = __k;
-		this.id = __k.__nextProcessId();
+		this.id = __k._processesidgen.__next();
 	}
 	
 	/**

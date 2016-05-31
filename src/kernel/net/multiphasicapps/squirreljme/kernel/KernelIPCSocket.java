@@ -11,45 +11,34 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This represents a kernel socket, it acts as a buffer between two endpoints.
+ * This is the base class for both client and server socket types.
  *
  * @since 2016/05/31
  */
-public class KernelIPCSocket
-	implements KernelIPCHandles
+public abstract class KernelIPCSocket
+	implements __Identifiable__
 {
-	/** The primary handle. */
-	protected final int ahandle;
-	
-	/** The secondary handle. */
-	protected final int bhandle;
+	/** The socket identifier. */
+	protected final int id;
 	
 	/**
-	 * Initializes the kernel based IPC socket.
+	 * Initializes the base socket.
 	 *
-	 * @param __ah The primary handle.
-	 * @param __bh The secondary handle.
-	 * @throws IllegalArgumentException If the primary or secondary handles are
-	 * zero or negative.
+	 * @param __id The handle that the socket uses to identify itself.
+	 * @throws IllegalArgumentException If the socket identifier is negative.
 	 * @since 2016/05/31
 	 */
-	KernelIPCSocket(int __ah, int __bh)
+	KernelIPCSocket(int __id)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AY09 The handle ID for a connected socket cannot
 		// be zero or negative. (The primary handle; The secondary handle)}
-		if (__ah <= 0 || __bh <= 0)
-			throw new IllegalArgumentException(String.format("AY09 %d %d",
-				__ah, __bh));
-		
-		// {@squirreljme.error AY0b The primary and secondary handle cannot
-		// be the same value. (The primary and secondary handle)}
-		if (__ah == __bh)
-			throw new IllegalArgumentException(String.format("AY0b %d", __ah));
+		if (__id <= 0)
+			throw new IllegalArgumentException(String.format("AY09 %d",
+				__id));
 		
 		// Set
-		this.ahandle = __ah;
-		this.bhandle = __bh;
+		this.id = __id;
 	}
 	
 	/**
@@ -57,19 +46,9 @@ public class KernelIPCSocket
 	 * @since 2016/05/31
 	 */
 	@Override
-	public int getPrimaryHandle()
+	public int id()
 	{
-		return this.ahandle;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/31
-	 */
-	@Override
-	public int getSecondaryHandle()
-	{
-		return this.bhandle;
+		return this.id;
 	}
 }
 

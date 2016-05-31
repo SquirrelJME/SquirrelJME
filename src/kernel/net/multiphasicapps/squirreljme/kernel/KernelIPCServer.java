@@ -17,55 +17,33 @@ package net.multiphasicapps.squirreljme.kernel;
  * @since 2016/05/31
  */
 public class KernelIPCServer
-	implements KernelIPCHandles
+	extends KernelIPCSocket
 {
-	/** The handle of this socket. */
-	protected final int handle;
-	
 	/** The service identifier. */
 	protected final int serviceid;
 	
 	/**
 	 * Initializes the kernel IPC server.
 	 *
-	 * @param __handle The handle for the server socket.
+	 * @param __id The handle for the server socket.
 	 * @param __svid The service ID that this hosts.
 	 * @throws IllegalArgumentException If the handle or service ID are zero
 	 * or negative.
 	 * @since 2016/05/31
 	 */
-	public KernelIPCServer(int __handle, int __svid)
+	public KernelIPCServer(int __id, int __svid)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AY0a The handle or service IDs cannot be zero
-		// or negative. (The handle ID; The service ID)}
-		if (__handle <= 0 || __svid <= 0)
-			throw new IllegalArgumentException(String.format("AY0a %d %d",
-				__handle, __svid));
+		super(__id);
+		
+		// {@squirreljme.error AY0a The service ID cannot be zero
+		// or negative. (The service ID)}
+		if (__svid <= 0)
+			throw new IllegalArgumentException(String.format("AY0a %d",
+				__svid));
 		
 		// Set
-		this.handle = __handle;
 		this.serviceid = __svid;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/31
-	 */
-	@Override
-	public int getPrimaryHandle()
-	{
-		return this.handle;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/31
-	 */
-	@Override
-	public int getSecondaryHandle()
-	{
-		return this.handle;
 	}
 }
 

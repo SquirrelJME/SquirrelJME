@@ -11,27 +11,24 @@
 package net.multiphasicapps.squirreljme.kernel;
 
 /**
- * This interface describes a client connected socket or a server socket its
- * handle.
+ * This represents a client socket, it acts as a buffer between two endpoints.
  *
  * @since 2016/05/31
  */
-public interface KernelIPCHandles
+public class KernelIPCClient
+	extends KernelIPCSocket
 {
 	/**
-	 * Returns the primary handle.
+	 * Initializes the kernel based IPC client.
 	 *
-	 * @return The primary handle.
+	 * @param __id The socket identifier.
+	 * @throws IllegalArgumentException If socket handle is negative.
 	 * @since 2016/05/31
 	 */
-	public abstract int getPrimaryHandle();
-	
-	/**
-	 * Returns the secondary handle.
-	 *
-	 * @retrun The secondary handle.
-	 * @since 2016/05/31
-	 */
-	public abstract int getSecondaryHandle();
+	KernelIPCClient(int __id)
+		throws IllegalArgumentException
+	{
+		super(__id);
+	}
 }
 

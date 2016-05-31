@@ -41,7 +41,7 @@ public abstract class KernelThread
 		
 		// Set
 		this.kernel = __k;
-		this.id = __k.__nextThreadId();
+		this.id = __k._threadidgen.__next();
 	}
 	
 	/**

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.ArrayList;
+import java.util.List;
 import __squirreljme.IPC;
 import __squirreljme.IPCAlternative;
 
@@ -27,12 +29,16 @@ import __squirreljme.IPCAlternative;
 public class KernelIPCAlternative
 	implements IPCAlternative
 {
-	/** The lock used to synchronize communications. */
-	protected final Object lock =
-		this;
-	
 	/** The owning kernel. */
 	protected final Kernel kernel;
+	
+	/** The sockets which are currently used. */
+	private final List<KernelIPCSocket> _sockets =
+		new ArrayList<>();
+	
+	/** The socket identifier generator. */
+	private final __IdentifierGenerator__ _socketsidgen =
+		new __IdentifierGenerator__(this._sockets);
 	
 	/**
 	 * This initializes the alternative IPC interface for usage by the kernel.
@@ -63,7 +69,11 @@ public class KernelIPCAlternative
 		if (__svid <= 0)
 			return IPC.ERROR_INVALID_SERVICE_ID;
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
