@@ -40,6 +40,13 @@ import __squirreljme.IPCServer;
  */
 public abstract class Kernel
 {
+	/**
+	 * This is the class unit which should be used by default for the
+	 * launcher.
+	 */
+	public static final String DEFAULT_LAUNCHER =
+		"launcher.jar";
+	
 	/** The implementation specific execution core (optional). */
 	protected final Object executioncore;
 	
@@ -89,8 +96,21 @@ public abstract class Kernel
 			throw new KernelException("AY02");
 		
 		// Get the list of class unit providers
-		if (true)
-			throw new Error("TODO");
+		ClassUnitProvider[] cups = internalClassUnitProviders();
+		
+		// Determine if there is a chance the user wants to use an alternative
+		// launcher interface
+		String uselauncher = DEFAULT_LAUNCHER;
+		for (String a : __args)
+		{
+			// Stop on main class or JAR
+			if (!a.startsWith("-") || a.startsWith("-jar"))
+				break;
+			
+			// Alternative launcher used?
+			if (a.startsWith("-Xsquirreljme-launcher="))
+				uselauncher = a.substring("-Xsquirreljme-launcher=".length());
+		}
 		
 		// Search for the launcher and determine the launcher dependencies
 		// so that a user interface may be provided
