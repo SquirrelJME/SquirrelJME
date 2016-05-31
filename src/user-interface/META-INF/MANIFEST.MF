@@ -1,8 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: user-interface
 X-SquirrelJME-UUID: ddc44f6a-bb6b-4059-9595-cbfe8fa5a340
-X-SquirrelJME-Depends: javame-cldc-compact,
-  image-reader
+X-SquirrelJME-Depends: javame-cldc-compact, image-reader
 X-SquirrelJME-Error: BD
 LIBlet-Title: User Interface Support
 LIBlet-Vendor: Steven Gawroriski

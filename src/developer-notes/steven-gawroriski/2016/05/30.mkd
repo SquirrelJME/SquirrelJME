@@ -164,3 +164,12 @@ This then means that the launcher does not even need to depend on the kernel
 at all. It also does not need the class-path project either because the units
 which are made available are provided by the kernel.
 
+## 20:36
+
+Then this also means that command line handling is also associated with the
+kernel and that handles command line switches. This also means that for
+specific systems where there might not be a command line normally, it can now
+be specified in a general means. Then with this, the `BootInterpreter` class
+is not needed at all, `Main` will just initialize the kernel and then run the
+cycles on it.
+
