@@ -28,8 +28,7 @@ public class JVMKernel
 	extends Kernel
 {
 	/** The JVM locates JAR files using a single provider. */
-	protected final FSJarClassUnitProvider cuprovider =
-		new FSJarClassUnitProvider(Paths.get(System.getProperty("user.dir")));
+	private volatile ClassUnitProvider _cuprovider;
 	
 	/**
 	 * Initializes the kernel.
@@ -56,9 +55,21 @@ public class JVMKernel
 	protected ClassUnitProvider[] internalClassUnitProviders()
 		throws KernelException
 	{
+		// Need to load the class unit provider?
+		ClassUnitProvider use;
+		synchronized (this.lock)
+		{
+			use = this._cuprovider;
+			
+			// Load it?
+			if (use == null)
+				this._cuprovider = use = new FSJarClassUnitProvider(
+					Paths.get(System.getProperty("user.dir")));
+		}
+		
 		// There is only a single provider, which is the current directory on
 		// the filesystem
-		return new ClassUnitProvider[]{this.cuprovider};
+		return new ClassUnitProvider[]{use};
 	}
 	
 	/**

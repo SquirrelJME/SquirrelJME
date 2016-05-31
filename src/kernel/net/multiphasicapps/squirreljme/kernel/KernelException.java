@@ -37,5 +37,17 @@ public class KernelException
 	{
 		super(__m);
 	}
+	
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message to use.
+	 * @param __c The cause of this exception.
+	 * @since 2016/05/31
+	 */
+	public KernelException(String __m, Throwable __c)
+	{
+		super(__m, __c);
+	}
 }
 

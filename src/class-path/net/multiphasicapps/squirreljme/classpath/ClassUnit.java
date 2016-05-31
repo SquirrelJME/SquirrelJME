@@ -11,7 +11,11 @@
 package net.multiphasicapps.squirreljme.classpath;
 
 import java.io.InputStream;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 
@@ -24,6 +28,9 @@ import net.multiphasicapps.squirreljme.ci.CIClass;
 public abstract class ClassUnit
 	implements Comparable<ClassUnit>
 {
+	/** The cached manifest. */
+	private volatile Reference<JavaManifest> _manifest;
+	
 	/**
 	 * Compares the key of the class unit to the given key.
 	 *
@@ -87,6 +94,55 @@ public abstract class ClassUnit
 			throw new NullPointerException("NARG");
 		
 		return compareTo(__cu.toString());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/31
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		// Compare with string
+		if (__o instanceof String)
+			return 0 == compareTo((String)__o);
+		
+		// Otherwise only this object is used.
+		return __o == this;
+	}
+	
+	/**
+	 * Returns the manifest for this class unit.
+	 *
+	 * @return The manifest for the class unit or {@code null} if not found.
+	 * @throws IOException If the manifest was found, however it could not be
+	 * read properly.
+	 * @since 2016/05/31
+	 */
+	public final JavaManifest manifest()
+		throws IOException
+	{
+		// Get ref
+		Reference<JavaManifest> ref = _manifest;
+		JavaManifest rv;
+		
+		// Needs loading?
+		if (ref == null || null == (rv = ref.get()))
+			try (InputStream is = locateResource("META-INF/MANIFEST.MF"))
+			{
+				// Not found
+				if (is == null)
+					return null;
+				
+				// Load it
+				rv = new JavaManifest(is);
+				
+				// Cache it
+				_manifest = new WeakReference<>(rv);
+			}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

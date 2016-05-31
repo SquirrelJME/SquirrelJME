@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
@@ -23,6 +24,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import net.multiphasicapps.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
@@ -48,6 +50,10 @@ public abstract class Kernel
 	 */
 	public static final String DEFAULT_LAUNCHER =
 		"launcher.jar";
+	
+	/** A locking object if needed. */
+	protected final Object lock =
+		new Object();
 	
 	/** The implementation specific execution core (optional). */
 	protected final Object executioncore;
@@ -370,8 +376,22 @@ public abstract class Kernel
 			rv.add(found);
 			
 			// Load the manifest for the given module
-			if (true)
-				throw new Error("TODO");
+			JavaManifest man;
+			try
+			{
+				man = found.manifest();
+				
+				// If not found, ignore the next stage
+				if (man == null)
+					continue;
+			}
+			
+			// {@squirreljme.error AY07 Failed to load the manifest for the
+			// given module. (The module)}
+			catch (IOException e)
+			{
+				throw new KernelException(String.format("AY07 %s", want), e);
+			}
 			
 			// Parse the manifest "Class-Path" dependencies and add them into
 			// the queue so that they dependencies are added.
