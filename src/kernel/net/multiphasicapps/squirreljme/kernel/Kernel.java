@@ -107,7 +107,10 @@ public abstract class Kernel
 			if (!a.startsWith("-") || a.startsWith("-jar"))
 				break;
 			
-			// Alternative launcher used?
+			// {@squirreljme.cmdline -Xsquirreljme-launcher=(jar) This is the
+			// alternative JAR file which should be loaded and initialized for
+			// the launcher interface. This option would be specified if for
+			// example the default launcher is not desired for usage.}
 			if (a.startsWith("-Xsquirreljme-launcher="))
 				uselauncher = a.substring("-Xsquirreljme-launcher=".length());
 		}
