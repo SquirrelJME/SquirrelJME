@@ -5,3 +5,10 @@
 Thinking about it, package is probably better called module so it does not
 conflict with the meaning of Java's package.
 
+## 08:42
+
+Next thing to do is to start the IPC that the launcher will use to control
+the kernel. Then following that is starting the actual launcher. Then once
+the launcher is started, it will then start the main program if one was
+requested.
+
