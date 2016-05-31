@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.kernel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -232,44 +233,18 @@ public abstract class Kernel
 			// Internally create a thread
 			KernelThread rv = internalCreateThread();
 			
-			// Easily place the thread at the end?
+			// Determine where it should be placed
 			int id = rv.id();
-			if (threads.isEmpty() || threads.get(threads.size() - 1).id() < id)
-				threads.add(rv);
+			int bat = Collections.<Object>binarySearch(threads,
+				id, __IdentifierGenerator__._COMPARATOR);
 			
-			// Otherwise go through the list to find where it is inserted
-			else
-			{
-				// Add into the position that
-				ListIterator<KernelThread> it = threads.listIterator();
-				boolean ok = false;
-				while (it.hasNext())
-				{
-					// Get the ID here
-					int tid = it.next().id();
-					
-					// Passed placement ID, place before this one
-					if (tid > id)
-					{
-						it.previous();
-						it.add(rv);
-						ok = true;
-						break;
-					}
-					
-					// {@squirreljme.error AY08 Attempted to create a thread
-					// which shares an ID with another thread. (The shared
-					// thread ID)}
-					else if (tid == id)
-						throw new KernelException(String.format("AY08 %d",
-							id));
-				}
-				
-				// {@squirreljme.error AY01 Did not add a newly created thread
-				// into the thread list.}
-				if (!ok)
-					throw new KernelException("AY01");
-			}
+			// {@squirreljme.error AY0b There is a thread with a duplicate
+			// identifier. (The duplicate ID)}
+			if (bat >= 0)
+				throw new KernelException(String.format("AY0b %d", bat));
+			
+			// Place it
+			threads.add((-bat) + 1, rv);
 			
 			// Return it
 			return rv;

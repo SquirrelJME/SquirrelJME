@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -21,6 +22,32 @@ import java.util.ListIterator;
  */
 final class __IdentifierGenerator__<I extends __Identifiable__>
 {
+	/** Compares things which may be identified. */
+	static final Comparator<Object> _COMPARATOR =
+		new Comparator<Object>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/05/31
+			 */
+			@Override
+			public int compare(Object __a, Object __b)
+			{
+				int a = ((__a instanceof __Identifiable__) ?
+					((__Identifiable__)__a).id() :
+					((Number)__a).intValue());
+				int b = ((__b instanceof __Identifiable__) ?
+					((__Identifiable__)__b).id() :
+					((Number)__b).intValue());
+				
+				if (a < b)
+					return -1;
+				else if (a > b)
+					return 1;
+				return 0;
+			}
+		};
+	
 	/** The identifier list. */
 	private final List<I> _idlist;
 	
