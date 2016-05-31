@@ -158,3 +158,9 @@ and process management. This IPC bridge would then allow the launcher to
 easily be interpreted and would not require magical kernel interfaces to be
 implemented.
 
+## 20:32
+
+This then means that the launcher does not even need to depend on the kernel
+at all. It also does not need the class-path project either because the units
+which are made available are provided by the kernel.
+

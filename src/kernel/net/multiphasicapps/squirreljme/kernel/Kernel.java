@@ -23,6 +23,10 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import __squirreljme.IPCAlternative;
+import __squirreljme.IPCException;
+import __squirreljme.IPCClient;
+import __squirreljme.IPCServer;
 
 /**
  * This is the base class for the kernel interfaces which are defined by
@@ -169,6 +173,7 @@ public abstract class Kernel
 	 */
 	public final void runCycle()
 	{
+		// Perform internal cycling as required
 		internalRunCycle();
 	}
 	
