@@ -30,6 +30,43 @@ public final class IPCServer
 	public IPCServer(int __service)
 		throws IllegalArgumentException, IPCException
 	{
+		this(false, null, __service);
+	}
+	/**
+	 * This creates a new server socket which is used by clients which want
+	 * to access a service that the current process provides.
+	 *
+	 * @param __alt Alternative socket implementation to use instead of the
+	 * kernel based interface.
+	 * @param __service The service identifier to provide.
+	 * @throws IllegalArgumentException If the service identifier is negative.
+	 * @throws IPCException If the service could not be hosted.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/05/30
+	 */
+	public IPCServer(IPCAlternative __alt, int __service)
+		throws IllegalArgumentException, IPCException, NullPointerException
+	{
+		this(true, __alt, __service);
+	}
+	
+	/**
+	 * This creates a new server socket which is used by clients which want
+	 * to access a service that the current process provides.
+	 *
+	 * @param __ua Use alternative implementation?
+	 * @param __alt Alternative socket implementation to use instead of the
+	 * kernel based interface.
+	 * @param __service The service identifier to provide.
+	 * @throws IllegalArgumentException If the service identifier is negative.
+	 * @throws IPCException If the service could not be hosted.
+	 * @since 2016/05/30
+	 */
+	IPCServer(boolean __ua, IPCAlternative __alt, int __service)
+		throws IllegalArgumentException, IPCException
+	{
+		super(__ua, __alt);
+		
 		// {@squirreljme.error ZZ09 Negative service IDs are not permitted.}
 		if (__service < 0)
 			throw new IllegalArgumentException("ZZ09");

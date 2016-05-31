@@ -31,13 +31,27 @@ public abstract class IPC
 	public static final int ERROR_SERVICE_IN_USE =
 		-2147483646;
 	
+	/** The alternative implementation to use. */
+	final IPCAlternative _alternate;
+	
 	/**
 	 * Initializes the base IPC information.
 	 *
+	 * @param __ua Use alternative implementation?
+	 * @param __alt The alternative implementation to use.
+	 * @throws NullPointerException If an alternative is being used and one
+	 * was not specified.
 	 * @since 2016/05/30
 	 */
-	IPC()
+	IPC(boolean __ua, IPCAlternative __alt)
+		throws NullPointerException
 	{
+		// Check
+		if (__ua && __alt == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._alternate = __alt;
 	}
 	
 	/**
