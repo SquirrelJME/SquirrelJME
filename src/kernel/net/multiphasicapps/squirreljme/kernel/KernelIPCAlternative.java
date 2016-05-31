@@ -25,6 +25,10 @@ import __squirreljme.IPCAlternative;
 public class KernelIPCAlternative
 	implements IPCAlternative
 {
+	/** The lock used to synchronize communications. */
+	protected final Object lock =
+		new Object();;
+	
 	/** The owning kernel. */
 	protected final Kernel kernel;
 	

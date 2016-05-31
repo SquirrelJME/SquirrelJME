@@ -22,3 +22,10 @@ search instead of a linear search.
 
 I must disallow thread and process IDs of zero.
 
+## 10:25
+
+Each process can have its own `KernelIPCAlternative`. This would simplify
+the implementation and would also remove the need to have a single lock for
+every socket that exists. This way when there are many threads communicating
+with each other, they do not have to block each other.
+
