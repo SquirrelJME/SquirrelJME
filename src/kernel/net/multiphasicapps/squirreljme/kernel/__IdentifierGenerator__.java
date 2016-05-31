@@ -19,10 +19,10 @@ import java.util.ListIterator;
  *
  * @since 2016/05/31
  */
-final class __IdentifierGenerator__
+final class __IdentifierGenerator__<I extends __Identifiable__>
 {
 	/** The identifier list. */
-	private final List<? extends __Identifiable__> _idlist;
+	private final List<I> _idlist;
 	
 	/** The initial ID. */
 	private volatile int _id =
@@ -35,7 +35,7 @@ final class __IdentifierGenerator__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/31
 	 */
-	__IdentifierGenerator__(List<? extends __Identifiable__> __l)
+	__IdentifierGenerator__(List<I> __l)
 		throws NullPointerException
 	{
 		// Check
@@ -55,7 +55,7 @@ final class __IdentifierGenerator__
 	 * @since 2016/05/29
 	 */
 	private final int __nextIdentifiableId(
-		List<? extends __Identifiable__> __idl)
+		List<I> __idl)
 		throws KernelException, NullPointerException
 	{
 		// Check
@@ -64,7 +64,7 @@ final class __IdentifierGenerator__
 		
 		// Go through all the sorted IDs to find an unused ID
 		int at = 1;
-		for (Iterator<? extends __Identifiable__> it = __idl.iterator();
+		for (Iterator<I> it = __idl.iterator();
 			it.hasNext();)
 		{
 			// Obtain the given identifiable ID
@@ -92,7 +92,7 @@ final class __IdentifierGenerator__
 	final int __next()
 	{
 		// Lock on list
-		List<? extends __Identifiable__> idlist = this._idlist;
+		List<I> idlist = this._idlist;
 		synchronized (idlist)
 		{
 			// Determine the next value

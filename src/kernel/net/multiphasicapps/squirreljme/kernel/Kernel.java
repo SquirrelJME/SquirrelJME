@@ -74,12 +74,12 @@ public abstract class Kernel
 		new ArrayList<>();
 	
 	/** The identifier generator for threads. */
-	final __IdentifierGenerator__ _threadidgen =
-		new __IdentifierGenerator__(this._threads);
+	final __IdentifierGenerator__<KernelThread> _threadidgen =
+		new __IdentifierGenerator__<>(this._threads);
 	
 	/** The identifier generator for processes. */
-	final __IdentifierGenerator__ _processesidgen =
-		new __IdentifierGenerator__(this._processes);
+	final __IdentifierGenerator__<KernelProcess> _processesidgen =
+		new __IdentifierGenerator__<>(this._processes);
 	
 	/** Services started at the root? */
 	private volatile boolean _svstarted;

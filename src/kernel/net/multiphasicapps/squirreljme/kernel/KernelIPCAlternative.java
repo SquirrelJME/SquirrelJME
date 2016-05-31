@@ -37,8 +37,8 @@ public class KernelIPCAlternative
 		new ArrayList<>();
 	
 	/** The socket identifier generator. */
-	private final __IdentifierGenerator__ _socketsidgen =
-		new __IdentifierGenerator__(this._sockets);
+	private final __IdentifierGenerator__<KernelIPCSocket> _socketsidgen =
+		new __IdentifierGenerator__<>(this._sockets);
 	
 	/**
 	 * This initializes the alternative IPC interface for usage by the kernel.
