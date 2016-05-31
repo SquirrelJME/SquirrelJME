@@ -4,6 +4,7 @@ X-SquirrelJME-UUID: 555e329e-1e75-493b-be03-c746e9ee0242
 X-SquirrelJME-Depends: user-interface,
   squirreljme-mascot-xpm-low, image-reader-all,
 X-SquirrelJME-Error: BH
+Main-Class: net.multiphasicapps.squirreljme.launcher.Main
 LIBlet-Title: Launcher
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160520
