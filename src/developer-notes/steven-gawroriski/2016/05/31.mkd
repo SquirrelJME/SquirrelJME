@@ -72,3 +72,13 @@ cause issues if lots of sockets are created.
 Also, duplicating the identifier generation code for the third time, so it
 becomes a class now.
 
+## 14:51
+
+An idea to have so that socket read operations do not block forever, would be
+to have a sleep in them for the amount of time left for reading, but when data
+is received there could be an interrupt of sleep performed. However, this would
+affect everything that sleeps even when it is not waiting on the data.
+Alternatively the best choice would be to always return immediately. In general
+most users and myself would want non-blocking sockets for IPC since that is
+in the general case faster, although the locks can be a bit spinny.
+
