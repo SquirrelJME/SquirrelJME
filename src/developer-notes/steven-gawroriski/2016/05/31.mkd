@@ -12,3 +12,13 @@ the kernel. Then following that is starting the actual launcher. Then once
 the launcher is started, it will then start the main program if one was
 requested.
 
+## 09:52
+
+The process and thread list would likely best be an `ArrayList` so that
+when processes or threads are looked up by their ID, they can used a binary
+search instead of a linear search.
+
+## 09:57
+
+I must disallow thread and process IDs of zero.
+

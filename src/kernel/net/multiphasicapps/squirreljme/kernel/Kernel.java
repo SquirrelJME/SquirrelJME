@@ -59,13 +59,19 @@ public abstract class Kernel
 	/** The implementation specific execution core (optional). */
 	protected final Object executioncore;
 	
+	/** Alternative IPC implementation. */
+	protected final KernelIPCAlternative altipc;
+	
+	/** The kernel controller interface. */
+	private final KernelController _controller;
+	
 	/** Threads in the kernel, this list must remain sorted by ID. */
-	private final LinkedList<KernelThread> _threads =
-		new LinkedList<>();
+	private final List<KernelThread> _threads =
+		new ArrayList<>();
 	
 	/** Processes in the kernel, this list must remain sorted by ID. */
 	private final List<KernelProcess> _processes =
-		new LinkedList<>();
+		new ArrayList<>();
 	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
@@ -95,6 +101,9 @@ public abstract class Kernel
 		// constructors of sub-classes run AFTER this constructor which needs
 		// the execution core stuff).
 		this.executioncore = __exec;
+		
+		// Setup alternative IPC interface
+		this.altipc = new KernelIPCAlternative(this);
 		
 		// Determine if there is a chance the user wants to use an alternative
 		// launcher interface
@@ -137,8 +146,8 @@ public abstract class Kernel
 		
 		// Initialize the kernel IPC interface that the launcher will use
 		// to launch programs.
-		if (true)
-			throw new Error("TODO");
+		KernelController controller = new KernelController(this);
+		this._controller = controller;
 		
 		// Start the launcher which will automatically pickup the main
 		// arguments passed to the kernel along with other details
@@ -215,7 +224,7 @@ public abstract class Kernel
 	public final KernelThread createThread()
 	{
 		// Lock on threads
-		LinkedList<KernelThread> threads = this._threads;
+		List<KernelThread> threads = this._threads;
 		synchronized (threads)
 		{
 			// Internally create a thread
@@ -223,8 +232,8 @@ public abstract class Kernel
 			
 			// Easily place the thread at the end?
 			int id = rv.id();
-			if (threads.isEmpty() || threads.getLast().id() < id)
-				threads.addLast(rv);
+			if (threads.isEmpty() || threads.get(threads.size() - 1).id() < id)
+				threads.add(rv);
 			
 			// Otherwise go through the list to find where it is inserted
 			else
@@ -263,6 +272,18 @@ public abstract class Kernel
 			// Return it
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the kernel's alternative IPC implementation which handles the
+	 * IPC interface on the kernel side.
+	 *
+	 * @return The kernel's alternative IPC implementation.
+	 * @sicne 2016/05/31
+	 */
+	public final KernelIPCAlternative ipcAlternative()
+	{
+		return this.altipc;
 	}
 	
 	/**
