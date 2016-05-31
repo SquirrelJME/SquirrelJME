@@ -40,7 +40,7 @@ public class JVMKernel
 	public JVMKernel(Interpreter __terp, String... __args)
 		throws NullPointerException
 	{
-		super(__terp, __args);
+		super(new InterpreterExecutionEngine(__terp), __args);
 		
 		// Check
 		if (__terp == null)
@@ -125,7 +125,7 @@ public class JVMKernel
 	 */
 	protected Interpreter interpreter()
 	{
-		return (Interpreter)this.executioncore;
+		return ((InterpreterExecutionEngine)this.executioncore).interpreter();
 	}
 	
 	/**

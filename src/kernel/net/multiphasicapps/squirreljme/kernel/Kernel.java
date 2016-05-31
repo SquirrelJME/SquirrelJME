@@ -60,7 +60,7 @@ public abstract class Kernel
 		new Object();
 	
 	/** The implementation specific execution core (optional). */
-	protected final Object executioncore;
+	protected final KernelExecutionEngine executioncore;
 	
 	/** Alternative IPC implementation. */
 	protected final KernelIPCAlternative altipc;
@@ -93,12 +93,15 @@ public abstract class Kernel
 	/**
 	 * Initializes the base kernel interface.
 	 *
+	 * @param __exec The execution engine to use when executing code.
 	 * @param __args Arguments which match the Java standard which specifies
 	 * the potential initial program to launch once the kernel has been
 	 * initialized.
+	 * @throws NullPointerException If no execution engine was specified.
 	 * @since 2016/05/16
 	 */
-	public Kernel(Object __exec, String... __args)
+	public Kernel(KernelExecutionEngine __exec, String... __args)
+		throws NullPointerException
 	{
 		// Must always exist
 		if (__args == null)
