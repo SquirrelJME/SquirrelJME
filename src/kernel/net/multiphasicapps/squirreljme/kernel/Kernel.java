@@ -268,7 +268,13 @@ public abstract class Kernel
 		if (__cus == null || __pk == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through the array
+		for (ClassUnit cu : __cus)
+			if (cu.equals(__pk))
+				return cu;
+		
+		// Not found
+		return null;
 	}
 	
 	/**
@@ -319,7 +325,17 @@ public abstract class Kernel
 		if (__cups == null || __pk == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Setup target where return values are placed
+		List<ClassUnit> rv = new LinkedList<>();
+		
+		// Place all values there
+		for (ClassUnitProvider cup : __cups)
+			for (ClassUnit cu : cup.classUnits())
+				rv.add(cu);
+		
+		// Use the other method which operates using an array
+		return locateClassUnits(rv.<ClassUnit>toArray(
+			new ClassUnit[rv.size()]), __pk, __deps);
 	}
 	
 	/**
