@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import __squirreljme.IPC;
 import __squirreljme.IPCAlternative;
 
 /**
@@ -43,6 +44,20 @@ public class KernelIPCAlternative
 		
 		// Set
 		this.kernel = __k;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/05/31
+	 */
+	@Override
+	public int listen(int __svid)
+	{
+		// Check
+		if (__svid <= 0)
+			return IPC.ERROR_INVALID_SERVICE_ID;
+		
+		throw new Error("TODO");
 	}
 }
 

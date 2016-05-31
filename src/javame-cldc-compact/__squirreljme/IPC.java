@@ -31,8 +31,16 @@ public abstract class IPC
 	public static final int ERROR_SERVICE_IN_USE =
 		-2147483646;
 	
+	/** Permission denied. */
+	public static final int ERROR_PERMISSION_DENIED =
+		-2147483645;
+	
+	/** Requested to use an invalid service ID. */
+	public static final int ERROR_INVALID_SERVICE_ID =
+		-2147483644;
+	
 	/** The alternative implementation to use. */
-	final IPCAlternative _alternate;
+	final IPCAlternative _alternative;
 	
 	/**
 	 * Initializes the base IPC information.
@@ -51,7 +59,7 @@ public abstract class IPC
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this._alternate = __alt;
+		this._alternative = __alt;
 	}
 	
 	/**
@@ -96,8 +104,8 @@ public abstract class IPC
 	 */
 	static final int socketListen(int __port)
 	{
-		// {@squirreljme.error ZZ03 Pure virtual call of IPC listen.}
-		throw new IPCException("ZZ03");
+		// {@squirreljme.error ZZ0c Pure virtual call of IPC listen.}
+		throw new IPCException("ZZ0c");
 	}
 	
 	/**
@@ -129,8 +137,8 @@ public abstract class IPC
 	static final int socketReceive(int __sock, byte[] __b,
 		int __o, int __l)
 	{
-		// {@squirreljme.error ZZ01 Pure virtual call of IPC receive.}
-		throw new IPCException("ZZ01");
+		// {@squirreljme.error ZZ0a Pure virtual call of IPC receive.}
+		throw new IPCException("ZZ0a");
 	}
 	
 	/**
@@ -146,8 +154,8 @@ public abstract class IPC
 	static final int socketSend(int __sock, byte[] __b, int __o,
 		int __l)
 	{
-		// {@squirreljme.error ZZ02 Pure virtual call of IPC send.}
-		throw new IPCException("ZZ02");
+		// {@squirreljme.error ZZ0b Pure virtual call of IPC send.}
+		throw new IPCException("ZZ0b");
 	}
 }
 

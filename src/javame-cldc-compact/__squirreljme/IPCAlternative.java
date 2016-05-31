@@ -18,5 +18,14 @@ package __squirreljme;
  */
 public interface IPCAlternative
 {
+	/**
+	 * Listens on the given socket and returns a socket identifier.
+	 *
+	 * @param __svid The service ID to listen on.
+	 * @return The socket identifer on success or a negative value if the
+	 * socket could not be created.
+	 * @since 2016/05/31
+	 */
+	public abstract int listen(int __svid);
 }
 

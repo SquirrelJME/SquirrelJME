@@ -18,6 +18,9 @@ package __squirreljme;
 public final class IPCServer
 	extends IPC
 {
+	/** Server socket handle. */
+	private final int _handle;
+	
 	/**
 	 * This creates a new server socket which is used by clients which want
 	 * to access a service that the current process provides.
@@ -71,7 +74,12 @@ public final class IPCServer
 		if (__service < 0)
 			throw new IllegalArgumentException("ZZ09");
 		
-		throw new Error("TODO");
+		// Initialize the server side socket
+		int handle = (__ua ? __alt.listen(__service) :
+			IPC.socketListen(__service));
+		if (handle < 0)
+			throw new IPCException(handle);
+		this._handle = handle;
 	}
 }
 
