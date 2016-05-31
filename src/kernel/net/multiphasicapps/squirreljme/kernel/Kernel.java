@@ -89,25 +89,20 @@ public abstract class Kernel
 		// the execution core stuff).
 		this.executioncore = __exec;
 		
-		// Start the services which the kernel uses (such as the filesystem or
-		// display server)
-		// {@squirreljme.error AY02 The implementation of the kernel never
-		// called the super-class startServices() method.}
-		startServices();
-		if (!_svstarted)
-			throw new KernelException("AY02");
-		
-		// Get the list of class unit providers
-		ClassUnitProvider[] cups = internalClassUnitProviders();
-		
 		// Determine if there is a chance the user wants to use an alternative
 		// launcher interface
+		// Also obtain all the arguments which may be used by the services
+		// such as any X option.
 		String uselauncher = DEFAULT_LAUNCHER;
+		List<String> stdargs = new LinkedList<>();
 		for (String a : __args)
 		{
 			// Stop on main class or JAR
 			if (!a.startsWith("-") || a.startsWith("-jar"))
 				break;
+			
+			// Add to standard argument list
+			stdargs.add(a);
 			
 			// {@squirreljme.cmdline -Xsquirreljme-launcher=(jar) This is the
 			// alternative JAR file which should be loaded and initialized for
@@ -116,6 +111,17 @@ public abstract class Kernel
 			if (a.startsWith("-Xsquirreljme-launcher="))
 				uselauncher = a.substring("-Xsquirreljme-launcher=".length());
 		}
+		
+		// Start the services which the kernel uses (such as the filesystem or
+		// display server)
+		// {@squirreljme.error AY02 The implementation of the kernel never
+		// called the super-class startServices() method.}
+		startServices(stdargs.<String>toArray(new String[stdargs.size()]));
+		if (!_svstarted)
+			throw new KernelException("AY02");
+		
+		// Get the list of class unit providers
+		ClassUnitProvider[] cups = internalClassUnitProviders();
 		
 		// Search for the launcher and determine the launcher dependencies
 		// so that a user interface may be provided
@@ -253,26 +259,26 @@ public abstract class Kernel
 	}
 	
 	/**
-	 * Locates the given package from the specified array
+	 * Locates the given module from the specified array
 	 *
 	 * @param __cus The class units which are available for usage.
-	 * @param __pk The package to locate.
+	 * @param __md The module to locate.
 	 * @return The single class unit which was found or {@code null} if it
 	 * does not exist.
 	 * @throws KernelException If there was an issue searching the array.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/31
 	 */
-	public final ClassUnit locateClassUnit(ClassUnit[] __cus, String __pk)
+	public final ClassUnit locateClassUnit(ClassUnit[] __cus, String __md)
 		throws KernelException, NullPointerException
 	{
 		// Check
-		if (__cus == null || __pk == null)
+		if (__cus == null || __md == null)
 			throw new NullPointerException("NARG");
 		
 		// Go through the array
 		for (ClassUnit cu : __cus)
-			if (cu.equals(__pk))
+			if (cu.equals(__md))
 				return cu;
 		
 		// Not found
@@ -281,13 +287,13 @@ public abstract class Kernel
 	
 	/**
 	 * Locates the class unit from the specified providers with the specified
-	 * package name along with their dependencies.
+	 * module name along with their dependencies.
 	 *
 	 * This only supports classical Java applications which have a Main-Class
 	 * attribute and Class-Path attributes.
 	 *
 	 * @param __cus The class units which are available for usage.
-	 * @param __pk The package to locate.
+	 * @param __md The module to locate.
 	 * @param __deps If {@code true} then dependencies are returned also.
 	 * @return The class units and optionally their dependencies if they were
 	 * requested.
@@ -297,23 +303,24 @@ public abstract class Kernel
 	 * @since 2016/05/31
 	 */
 	public final ClassUnit[] locateClassUnits(ClassUnit[] __cus,
-		String __pk, boolean __deps)
+		String __md, boolean __deps)
 		throws KernelException, NullPointerException
 	{
 		// Check
-		if (__cus == null || __pk == null)
+		if (__cus == null || __md == null)
 			throw new NullPointerException("NARG");
 		
-		// 
+		// If only desiring a single unit with no dependencies then use the
+		// other method instead
 		if (!__deps)
 		{
 			// Use single locate
-			ClassUnit rv = locateClassUnit(__cus, __pk);
+			ClassUnit rv = locateClassUnit(__cus, __md);
 			
-			// {@squirreljme.error AY03 The specified package could not be
-			// located. (The package)}
+			// {@squirreljme.error AY03 The specified module could not be
+			// located. (The module)}
 			if (rv == null)
-				throw new KernelException(String.format("AY03 %s", __pk));
+				throw new KernelException(String.format("AY03 %s", __md));
 			
 			// Wrap
 			return new ClassUnit[]{rv};
@@ -322,9 +329,24 @@ public abstract class Kernel
 		// Target return value
 		Set<ClassUnit> rv = new LinkedHashSet<>();
 		
+		// Add the CLDC class libraries which are required for running first
+		ClassUnit cldcclib = locateClassUnit(__cus, "javame-cldc-compact.jar");
+		ClassUnit cldcflib = locateClassUnit(__cus, "javame-cldc-full.jar");
+		
+		// {@squirreljme.error AY05 The compact Java ME 8 CLDC module could not
+		// be found, execution cannot continue.}
+		if (cldcclib == null)
+			throw new KernelException("AY05");
+		
+		// Add the compact library and the full one if it exists, the full one
+		// is only needed if a filesystem is desired.
+		rv.add(cldcclib);
+		if (cldcflib != null)
+			rv.add(cldcflib);
+		
 		// Go through the units recursively to find
 		Deque<String> pq = new LinkedList<>();
-		pq.offerLast(__pk);
+		pq.offerLast(__md);
 		while (!pq.isEmpty())
 		{
 			// The dependency which is desired
@@ -335,14 +357,26 @@ public abstract class Kernel
 				continue;
 			
 			// Otherwise search for it in the unit list
-			ClassUnit found = locateClassUnit(__cus, want)
+			ClassUnit found = locateClassUnit(__cus, want);
 			
-			// {@squirreljme.error AY04 Could not find the dependency package
-			// of the given package. (The input package; The package which is
+			// {@squirreljme.error AY04 Could not find the dependency module
+			// of the given module. (The input module; The module which is
 			// missing)}.
 			if (found == null)
-				throw new KernelException(String.format("AY04 %s %s", __pk,
+				throw new KernelException(String.format("AY04 %s %s", __md,
 					want));
+			
+			// Add it to the return list
+			rv.add(found);
+			
+			// Load the manifest for the given module
+			if (true)
+				throw new Error("TODO");
+			
+			// Parse the manifest "Class-Path" dependencies and add them into
+			// the queue so that they dependencies are added.
+			if (true)
+				throw new Error("TODO");
 			
 			throw new Error("TODO");
 		}
@@ -353,11 +387,11 @@ public abstract class Kernel
 	
 	/**
 	 * Locates the class unit from the specified providers with the specified
-	 * package name along with their dependencies.
+	 * module name along with their dependencies.
 	 *
 	 * @param __cups The class units providers which give class units for
 	 * usage.
-	 * @param __pk The package to locate.
+	 * @param __md The module to locate.
 	 * @param __deps If {@code true} then dependencies are returned also.
 	 * @return The class units and optionally their dependencies if they were
 	 * requested.
@@ -367,11 +401,11 @@ public abstract class Kernel
 	 * @since 2016/05/31
 	 */
 	public final ClassUnit[] locateClassUnits(ClassUnitProvider[] __cups,
-		String __pk, boolean __deps)
+		String __md, boolean __deps)
 		throws KernelException, NullPointerException
 	{
 		// Check
-		if (__cups == null || __pk == null)
+		if (__cups == null || __md == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup target where return values are placed
@@ -384,7 +418,7 @@ public abstract class Kernel
 		
 		// Use the other method which operates using an array
 		return locateClassUnits(rv.<ClassUnit>toArray(
-			new ClassUnit[rv.size()]), __pk, __deps);
+			new ClassUnit[rv.size()]), __md, __deps);
 	}
 	
 	/**
@@ -404,9 +438,11 @@ public abstract class Kernel
 	 *
 	 * Calling of the super class must be performed!
 	 *
+	 * @param __args Kernel starting arguments which may potentially be used to
+	 * modify how services are started, do not modify this array.
 	 * @since 2016/05/30
 	 */
-	protected void startServices()
+	protected void startServices(String... __args)
 	{
 		// Set as started
 		_svstarted = true;
