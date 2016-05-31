@@ -38,6 +38,9 @@ import __squirreljme.IPCServer;
  */
 public abstract class Kernel
 {
+	/** The implementation specific execution core (optional). */
+	protected final Object executioncore;
+	
 	/** Threads in the kernel, this list must remain sorted by ID. */
 	private final LinkedList<KernelThread> _threads =
 		new LinkedList<>();
@@ -52,13 +55,34 @@ public abstract class Kernel
 	/** The next process ID to use. */
 	private volatile int _nextprocessid;
 	
+	/** Services started at the root? */
+	private volatile boolean _svstarted;
+	
 	/**
 	 * Initializes the base kernel interface.
 	 *
+	 * @param __args Arguments which match the Java standard which specifies
+	 * the potential initial program to launch once the kernel has been
+	 * initialized.
 	 * @since 2016/05/16
 	 */
-	public Kernel()
+	public Kernel(Object __exec, String... __args)
 	{
+		// Must always exist
+		if (__args == null)
+			__args = new String[0];
+		
+		// Set the optional execution core which may be used as a single
+		// parameter that an implementation may require (since the
+		// constructors of sub-classes run AFTER this constructor which needs
+		// the execution core stuff).
+		this.executioncore = __exec;
+		
+		// {@squirreljme.error AY02 The implementation of the kernel never
+		// called the super-class startServices() method.}
+		startServices();
+		if (!_svstarted)
+			throw new KernelException("AY02");
 	}
 	
 	/**
@@ -175,6 +199,20 @@ public abstract class Kernel
 	{
 		// Perform internal cycling as required
 		internalRunCycle();
+	}
+	
+	/**
+	 * This may be used to start services which are provided by implementations
+	 * of the kernel.
+	 *
+	 * Calling of the super class must be performed!
+	 *
+	 * @since 2016/05/30
+	 */
+	protected void startServices()
+	{
+		// Set as started
+		_svstarted = true;
 	}
 	
 	/**

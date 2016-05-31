@@ -5,8 +5,7 @@ X-SquirrelJME-Depends: javame-cldc-full, interpreter, kernel,
  class-path-jar-fs, java-manifest, launcher
 X-SquirrelJME-Optional: interpreter-standard, interpreter-rerecord
 X-SquirrelJME-Error: BC
-Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.
- BootInterpreter
+Main-Class: net.multiphasicapps.squirreljme.kernel.impl.jvm.BasicMain
 LIBlet-Title: Kernel (JVM)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160527

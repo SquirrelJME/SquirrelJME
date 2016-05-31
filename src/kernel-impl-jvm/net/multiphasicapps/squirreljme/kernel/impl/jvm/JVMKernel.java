@@ -23,9 +23,6 @@ import net.multiphasicapps.squirreljme.terp.Interpreter;
 public class JVMKernel
 	extends Kernel
 {
-	/** The interpreter to use when executing user processes. */
-	protected final Interpreter interpreter;
-	
 	/**
 	 * Initializes the kernel.
 	 *
@@ -33,15 +30,14 @@ public class JVMKernel
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/27
 	 */
-	public JVMKernel(Interpreter __terp)
+	public JVMKernel(Interpreter __terp, String... __args)
 		throws NullPointerException
 	{
+		super(__terp, __args);
+		
 		// Check
 		if (__terp == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		this.interpreter = __terp;
 	}
 	
 	/**
@@ -72,7 +68,7 @@ public class JVMKernel
 	protected void internalRunCycle()
 	{
 		// Run a single interpreter cycle
-		interpreter.runCycle();
+		interpreter().runCycle();
 	}
 	
 	/**
@@ -83,6 +79,17 @@ public class JVMKernel
 	protected KernelThread internalCurrentThread()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the interpreter being used.
+	 *
+	 * @return The interpreter to use.
+	 * @since 2016/05/30
+	 */
+	protected Interpreter interpreter()
+	{
+		return (Interpreter)this.executioncore;
 	}
 	
 	/**
