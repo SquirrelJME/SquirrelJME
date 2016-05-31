@@ -97,3 +97,24 @@ open 2 billion sockets, close a very early one which is then reused on
 overflow. To the kernel this should have no effect, but to the running
 userspace program things could get weird.
 
+## 16:46
+
+So the question is now, how do I want to handle setting up the interpreter so
+that processes and then threads can be created for execution? Each created
+instance of the interpreter should act as its own process since each
+process needs to be garbage collected and such. There also has to be hooks to
+the kernel potentially so that garbage collection can be performed and such.
+However, there is one major difference between the standard interpreter and
+the rerecording one. The standard interpreter can just use the host garbage
+collector and references for the most part. The rerecording one will have to
+keep the objects ordered and have garbage collection performed at known
+locations such as when `System.gc()` is called or when memory is expired. I
+would suppose there would be two kinds of garbage collection. `System.gc()`
+would only touch objects which have no references to them at all, but will
+keep `WeakReference`. A full one could remove `WeakReference`es also. However
+this may complicate things so it might be best to just have a single garbage
+collector. This GC would be stop everything since it makes sense. The GC could
+affect all objects within the execution engine. So then the kernel class which
+is currently just Object for the execution engine should be an interface
+instead which has stuff such as garbage collection.
+
