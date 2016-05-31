@@ -1,2 +1,7 @@
 # 2016/05/31
 
+## 08:08
+
+Thinking about it, package is probably better called module so it does not
+conflict with the meaning of Java's package.
+

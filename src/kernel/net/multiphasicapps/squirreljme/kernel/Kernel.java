@@ -12,9 +12,11 @@ package net.multiphasicapps.squirreljme.kernel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -281,6 +283,9 @@ public abstract class Kernel
 	 * Locates the class unit from the specified providers with the specified
 	 * package name along with their dependencies.
 	 *
+	 * This only supports classical Java applications which have a Main-Class
+	 * attribute and Class-Path attributes.
+	 *
 	 * @param __cus The class units which are available for usage.
 	 * @param __pk The package to locate.
 	 * @param __deps If {@code true} then dependencies are returned also.
@@ -299,7 +304,51 @@ public abstract class Kernel
 		if (__cus == null || __pk == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// 
+		if (!__deps)
+		{
+			// Use single locate
+			ClassUnit rv = locateClassUnit(__cus, __pk);
+			
+			// {@squirreljme.error AY03 The specified package could not be
+			// located. (The package)}
+			if (rv == null)
+				throw new KernelException(String.format("AY03 %s", __pk));
+			
+			// Wrap
+			return new ClassUnit[]{rv};
+		}
+		
+		// Target return value
+		Set<ClassUnit> rv = new LinkedHashSet<>();
+		
+		// Go through the units recursively to find
+		Deque<String> pq = new LinkedList<>();
+		pq.offerLast(__pk);
+		while (!pq.isEmpty())
+		{
+			// The dependency which is desired
+			String want = pq.removeFirst();
+			
+			// If it is in the target, skip it
+			if (rv.contains(want))
+				continue;
+			
+			// Otherwise search for it in the unit list
+			ClassUnit found = locateClassUnit(__cus, want)
+			
+			// {@squirreljme.error AY04 Could not find the dependency package
+			// of the given package. (The input package; The package which is
+			// missing)}.
+			if (found == null)
+				throw new KernelException(String.format("AY04 %s %s", __pk,
+					want));
+			
+			throw new Error("TODO");
+		}
+		
+		// Build it
+		return rv.<ClassUnit>toArray(new ClassUnit[rv.size()]);
 	}
 	
 	/**
