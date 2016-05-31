@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import net.multiphasicapps.manifest.JavaManifest;
+import net.multiphasicapps.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
@@ -395,10 +396,32 @@ public abstract class Kernel
 			
 			// Parse the manifest "Class-Path" dependencies and add them into
 			// the queue so that they dependencies are added.
-			if (true)
-				throw new Error("TODO");
-			
-			throw new Error("TODO");
+			JavaManifestAttributes mainattr = man.getMainAttributes();
+			String cpath = mainattr.get("Class-Path");
+			if (cpath != null)
+			{
+				int n = cpath.length();
+				
+				// Go through all fragments
+				for (int i = 0; i < n; i++)
+				{
+					// Ignore starting spaces
+					if (cpath.charAt(i) <= ' ')
+						continue;
+					
+					// Find where this sequence ends
+					int ns = i;
+					for (; ns < n; ns++)
+						if (cpath.charAt(ns) <= ' ')
+							break;
+					
+					// Add to the handling queue
+					pq.offerLast(cpath.substring(i, ns));
+					
+					// End at the given sequence
+					i = ns;
+				}
+			}
 		}
 		
 		// Build it
