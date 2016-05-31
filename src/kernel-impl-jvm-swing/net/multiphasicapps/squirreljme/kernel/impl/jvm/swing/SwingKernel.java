@@ -10,55 +10,28 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm.swing;
 
-import net.multiphasicapps.squirreljme.kernel.impl.jvm.BasicMain;
 import net.multiphasicapps.squirreljme.kernel.impl.jvm.JVMKernel;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
- * Main entry point for the Java SE JVM launcher interface kernel.
+ * This is the swing based kernel which essentially just provides the display
+ * server so that the user can interact with the running virtual machine.
  *
- * @since 2016/05/14
+ * @since 2016/05/30
  */
-public class Main
-	extends BasicMain
+public class SwingKernel
+	extends JVMKernel
 {
 	/**
-	 * Initializes the main kernel.
+	 * Initializes the swing based kernel.
 	 *
-	 * @param __args Kernel arguments.
+	 * @param __terp The interpreter to use.
+	 * @param __args The kernel arguments.
 	 * @since 2016/05/30
 	 */
-	public Main(String... __args)
+	public SwingKernel(Interpreter __terp, String... __args)
 	{
-		super(__args);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/30
-	 */
-	@Override
-	protected JVMKernel createKernel(Interpreter __terp, String... __args)
-		throws NullPointerException
-	{
-		// Check
-		if (__terp == null)
-			throw new NullPointerException("NARG");
-		
-		// Create it
-		return new SwingKernel(__terp, __args);
-	}
-	
-	/**
-	 * Main entry point.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2016/05/14
-	 */
-	public static void main(String... __args)
-	{
-		// Set it up
-		new Main(__args).run();
+		super(__terp, __args);
 	}
 }
 
