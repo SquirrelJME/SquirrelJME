@@ -258,7 +258,14 @@ public abstract class Kernel
 		List<KernelProcess> processes = this._processes;
 		synchronized (processes)
 		{
-			throw new Error("TODO");
+			// Create a new process
+			KernelProcess kp = internalCreateProcess();
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// Return it
+			return kp;
 		}
 	}
 	
