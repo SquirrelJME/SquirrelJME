@@ -131,3 +131,30 @@ a server to display what the client desires in most cases. This would allow
 for just a single set of classes to be used. A server specific drawing
 interface could just read from a `UIServer` it hosts to display widgets.
 
+## 20:19
+
+What I need though is a good way to specify services which should be started
+by the kernel before code runs and such. The code may need to for example
+start the filesystem server or the UI server for example. Also the
+`BootInterpreter` class could also potentially be commonized into the launcher
+code. The launcher will need those details to launch applications anyway in
+the kernel. If the system specific stuff just concentrates on starting the
+launcher then I can have a single common handler for stuff such as the command
+line. So the launcher would be initialized in the executive environment. The
+launcher which is being interpreted or natively executed can then listen on
+an IPC socket which provides a launching service to run other programs and
+such. So the launcher would be given then command line arguments for
+parsing. It then looks at the classpath provides which were associated with
+the kernel. The class unit providers would have to be added as an argument
+that could be used. Another alternative is for the kernel to listen to a socket
+and then the first connection would be the launcher, once that is connected it
+would accept no other connections. This would then be the direct interface that
+the launcher uses to have the kernel start programs, UIs, and such. So it would
+act as an early boot interface of sorts. Then with it done this way, the
+launcher can remain a user-space process which does not have elevated powers.
+This would be far better in terms of security and stability. This would also
+mean that the kernel would be mostly just a pass through interface with thread
+and process management. This IPC bridge would then allow the launcher to
+easily be interpreted and would not require magical kernel interfaces to be
+implemented.
+
