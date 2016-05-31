@@ -20,6 +20,14 @@ import net.multiphasicapps.squirreljme.terp.Interpreter;
 public class BasicMain
 	implements Runnable
 {
+	/** The default interpreter core. */
+	public static final String DEFAULT_INTERPRETER =
+		"net.multiphasicapps.squirreljme.terp.std.StandardInterpreter";
+	
+	/** The deterministic interpreter. */
+	public static final String RR_INTERPRETER =
+		"net.multiphasicapps.squirreljme.terp.rr.RRInterpreter";
+	
 	/** The kernel being used. */
 	protected final JVMKernel kernel;
 	
@@ -32,8 +40,63 @@ public class BasicMain
 	 */
 	public BasicMain(String... __args)
 	{
+		// {@squirreljme.property net.multiphasicapps.squirreljme.interpreter
+		// This is the class which should be used as the interpreter for the
+		// code which runs in the JVM based kernel.}
+		String useterp = System.getProperty(
+			"net.multiphasicapps.squirreljme.interpreter");
+		if (useterp == null)
+			useterp = DEFAULT_INTERPRETER;
+		else if (useterp.equals("rerecord"))
+			useterp = RR_INTERPRETER;
+		
+		// {@squirreljme.cmdline -Xsquirreljme-interpreter=(class) This
+		// specifies the name of the class which should be used as the
+		// interpreter instead of the default. If "rerecord" is specified then
+		// the class name of the rerecording interpreter is used instead.}
+		String altterp = null;
+		for (String a : __args)
+		{
+			// If it does not start with a dash, it is the main class
+			// Also stop on -jar because everything after is handled specially
+			if (!a.startsWith("-") || a.equals("-jar"))
+				break;
+			
+			// Is the interpreter option?
+			if (a.startsWith("-Xsquirreljme-interpreter="))
+			{
+				altterp = a.substring("-Xsquirreljme-interpreter=".length());
+				break;
+			}
+		}
+		
+		// Use alternative based on the command line?
+		if (altterp != null)
+			if (altterp.equals("rerecord"))
+				useterp = RR_INTERPRETER;
+			else
+				useterp = altterp;
+		
+		// Create an instance of the interpreter
+		Interpreter terp;
+		try
+		{
+			// Find it
+			Class<?> terpcl = Class.forName(useterp);
+			
+			// Initialize it
+			terp = (Interpreter)terpcl.newInstance();
+		}
+		
+		// {@squirreljme.error BC0a Could not initialize the interpreter.
+		catch (ClassCastException|ClassNotFoundException|
+			IllegalAccessException|InstantiationException e)
+		{
+			throw new RuntimeException("BC0a", e);
+		}
+		
 		// Create the kernel to use
-		this.kernel = createKernel(null, __args);
+		this.kernel = createKernel(terp, __args);
 		
 		// {@squirreljme.error BC01 The kernel was never created.}
 		if (this.kernel == null)
