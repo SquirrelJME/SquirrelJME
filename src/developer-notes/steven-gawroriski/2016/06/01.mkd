@@ -154,3 +154,9 @@ primitive types or String.
 
 The method and arguments can be handled by the implementation specfic kernel.
 
+## 11:13
+
+So for the interpreter when it comes to processes, there would be a core that
+acts as a kind of memory space for execution. Threads would use this memory
+space for objects and such.
+
