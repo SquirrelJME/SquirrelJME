@@ -157,13 +157,12 @@ public class RRDataPacket
 		// Get old
 		Object rv = get(__i);
 		
-		
 		// Get size
 		List<Object> data = this._data;
 		int n;
 		
 		// Too short? Pad with nulls
-		while ((n = data.size()) < __i)
+		while ((n = data.size()) <= __i)
 			data.add(null);
 		
 		// In range? Set it
