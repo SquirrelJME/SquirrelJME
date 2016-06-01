@@ -36,6 +36,10 @@ public class JVMKernelProcess
 		
 		// Set
 		this.jvmkernel = (JVMKernel)this.kernel;
+		
+		// Setup interpreter process
+		if (true)
+			throw new Error("TODO");
 	}
 }
 
