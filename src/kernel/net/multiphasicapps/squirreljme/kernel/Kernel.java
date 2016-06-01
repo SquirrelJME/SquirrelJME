@@ -27,10 +27,15 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.manifest.JavaManifest;
 import net.multiphasicapps.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
@@ -259,11 +264,24 @@ public abstract class Kernel
 		else
 			__args = __args.clone();
 		
-		// Load the main class
+		// Load the main class and locate the main method
 		CIClass maincl;
+		CIMethod mainmethod;
 		try
 		{
+			// Load the class
 			maincl = __cp.locateClass(__mcl);
+			
+			// Locate the main method
+			CIMethodID mainid = new CIMethodID(IdentifierSymbol.of("main"),
+				MethodSymbol.of("([Ljava/lang/String;)V"));
+			mainmethod = maincl.methods().get(mainid);
+			
+			// {@squirreljme.error AY0g Could not find the main method in the
+			// given clas. (The main class; The main method)}
+			if (mainmethod == null)
+				throw new KernelException(String.format("AY0g %s %s", __mcl,
+					mainid));
 		}
 		
 		// {@squirreljme.error AY0f Could not load the main class.}
