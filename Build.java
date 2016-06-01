@@ -1015,6 +1015,12 @@ public class Build
 			// Add dependencies
 			for (Project dep : depends)
 			{
+				// If the dependency is optional, do not include it in
+				// compilation. The optional projects should be able to be
+				// removed and not break running code.
+				if (this.optional.contains(dep))
+					continue;
+				
 				// Add dependency JAR
 				__cp.add(dep.jarname);
 				
