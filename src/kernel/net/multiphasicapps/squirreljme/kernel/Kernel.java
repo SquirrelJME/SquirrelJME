@@ -288,10 +288,10 @@ public abstract class Kernel
 					mainid));
 			
 			// {@squirreljme.error AY0h The entry method for a process is not
-			// static. (The method identifier)}
+			// static. (The main class)}
 			if (!mainmethod.flags().isStatic())
 				throw new KernelException(String.format("AY0k %s",
-					mainmethod.nameAndType()));
+					__mcl));
 		}
 		
 		// {@squirreljme.error AY0f Could not load the main class.}
