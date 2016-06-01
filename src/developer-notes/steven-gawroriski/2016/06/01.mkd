@@ -160,3 +160,13 @@ So for the interpreter when it comes to processes, there would be a core that
 acts as a kind of memory space for execution. Threads would use this memory
 space for objects and such.
 
+## 15:21
+
+Actually the interpreter data stream will have to be structured. If it is not
+structured then it will be difficult to handle details. I would suppose to keep
+it simple there will be input and output arrays for commands. There will be a
+command code written along with the passed arguments types in some input
+array. Then when read a command the reverse could be done to reinitialize
+values and such. So I need a command data set which stores commands to write to
+the stream along with the type of command.
+
