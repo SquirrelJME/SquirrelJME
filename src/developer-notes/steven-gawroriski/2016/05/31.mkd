@@ -123,6 +123,6 @@ instead which has stuff such as garbage collection.
 I have this idea to write simulators to test the system. Another idea I have is
 writing hypervisors so native code can be run. I could have for example a
 virtual machine of sorts running. I do wonder though about the Nintendo 64.
-Since it uses MIPS and that is Pompek and Golderg capable (it should be anyway)
-it might be possible to do synchronized online multiplayer N64 gaming.
+Since it uses MIPS and that is Pompek and Goldberg capable (it should be
+anyway) it might be possible to do synchronized online multiplayer N64 gaming.
 

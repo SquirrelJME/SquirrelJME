@@ -80,7 +80,12 @@ public class JVMKernel
 	protected KernelProcess internalCreateProcess()
 		throws KernelException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Create new process
+			return new JVMKernelProcess(this);
+		}
 	}
 	
 	/**
