@@ -286,6 +286,12 @@ public abstract class Kernel
 			if (mainmethod == null)
 				throw new KernelException(String.format("AY0g %s %s", __mcl,
 					mainid));
+			
+			// {@squirreljme.error AY0h The entry method for a process is not
+			// static. (The method identifier)}
+			if (!mainmethod.flags().isStatic())
+				throw new KernelException(String.format("AY0k %s",
+					mainmethod.nameAndType()));
 		}
 		
 		// {@squirreljme.error AY0f Could not load the main class.}
