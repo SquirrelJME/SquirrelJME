@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: launcher
 X-SquirrelJME-UUID: 555e329e-1e75-493b-be03-c746e9ee0242
-X-SquirrelJME-Depends: user-interface,
-  squirreljme-mascot-xpm-low, image-reader-all,
+X-SquirrelJME-Depends: user-interface, image-reader-all,
+X-SquirrelJME-Optional: squirreljme-mascot-xpm-low
 X-SquirrelJME-Error: BH
 Main-Class: net.multiphasicapps.squirreljme.launcher.Main
 LIBlet-Title: Launcher
