@@ -131,3 +131,14 @@ anyway) it might be possible to do synchronized online multiplayer N64 gaming.
 The 64Drive allows write access to the cartridge ROM, the 64Drive is also 64MiB
 in size. So this means that any unused ROM area could be used as extra RAM.
 
+## 22:35
+
+The month is almost over. I will have to do a synopsis of what has been done
+over this current month. The past week or more I have been getting in more
+commits. I suppose a better sleep cycle works wonders when programming. I still
+do not have an interpreter yet however. But with the multiple refactors the
+code is far cleaner than what it would have been. It would also work much
+better compared to before. So generally there has been a great improvement.
+I did implement manifests and PNG support however. But the major thing that
+occured was that the code is now much cleaner and much better.
+
