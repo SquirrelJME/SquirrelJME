@@ -126,3 +126,8 @@ virtual machine of sorts running. I do wonder though about the Nintendo 64.
 Since it uses MIPS and that is Pompek and Goldberg capable (it should be
 anyway) it might be possible to do synchronized online multiplayer N64 gaming.
 
+## 20:27
+
+The 64Drive allows write access to the cartridge ROM, the 64Drive is also 64MiB
+in size. So this means that any unused ROM area could be used as extra RAM.
+
