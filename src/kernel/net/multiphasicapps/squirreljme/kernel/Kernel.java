@@ -262,13 +262,26 @@ public abstract class Kernel
 		synchronized (processes)
 		{
 			// Create a new process
-			KernelProcess kp = internalCreateProcess();
+			KernelProcess rv = internalCreateProcess();
+			
+			// Determine where it should be placed
+			int id = rv.id();
+			int bat = Collections.<Object>binarySearch(processes,
+				id, __IdentifierGenerator__._COMPARATOR);
+			
+			// {@squirreljme.error AY0e There is a process with a duplicate
+			// identifier. (The duplicate ID)}
+			if (bat >= 0)
+				throw new KernelException(String.format("AY0e %d", bat));
 			
 			if (true)
 				throw new Error("TODO");
 			
+			// Before it is returned, place it into the process list
+			processes.add(-(bat + 1), rv);
+			
 			// Return it
-			return kp;
+			return rv;
 		}
 	}
 	
