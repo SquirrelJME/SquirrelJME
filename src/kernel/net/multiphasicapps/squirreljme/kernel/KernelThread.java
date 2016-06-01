@@ -22,6 +22,9 @@ public abstract class KernelThread
 	/** The kernel which owns this thread. */
 	protected final Kernel kernel;
 	
+	/** The owning process. */
+	protected final KernelProcess process;
+	
 	/** The thread ID. */
 	protected final int id;
 	
@@ -29,10 +32,11 @@ public abstract class KernelThread
 	 * Initializes the base kernel thread.
 	 *
 	 * @param __k The owning kernel.
+	 * @param __proc The owning process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/28
 	 */
-	public KernelThread(Kernel __k)
+	public KernelThread(Kernel __k, KernelProcess __proc)
 		throws NullPointerException
 	{
 		// Check
@@ -41,6 +45,7 @@ public abstract class KernelThread
 		
 		// Set
 		this.kernel = __k;
+		this.process = __proc;
 		this.id = __k._threadidgen.__next();
 	}
 	

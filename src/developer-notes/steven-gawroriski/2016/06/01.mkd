@@ -150,3 +150,7 @@ be given a process, with the method to invoke, and the arguments to that
 method in boxed form. That is the kernel can only use arguments which are of
 primitive types or String.
 
+## 10:43
+
+The method and arguments can be handled by the implementation specfic kernel.
+

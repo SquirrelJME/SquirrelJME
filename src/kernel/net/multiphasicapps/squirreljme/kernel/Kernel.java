@@ -204,11 +204,15 @@ public abstract class Kernel
 	/**
 	 * Internally creates a new thread which may be executed.
 	 *
+	 * @param __proc The process which owns the thread.
+	 * @param __mm The main method.
+	 * @param __args The arguments to pass to the method.
 	 * @return A kernel based thread which is implementation specific.
 	 * @throws KernelException If the thread could not be created.
 	 * @since 2016/05/28
 	 */
-	protected abstract KernelThread internalCreateThread()
+	protected abstract KernelThread internalCreateThread(KernelProcess __proc,
+		CIMethod __mm, Object... __args)
 		throws KernelException;
 	
 	/**
@@ -297,6 +301,9 @@ public abstract class Kernel
 			// Create a new process
 			KernelProcess rv = internalCreateProcess();
 			
+			// Create main thread for the process
+			KernelThread maint = createThread(rv, mainmethod, (Object)__args);
+			
 			// Determine where it should be placed
 			int id = rv.id();
 			int bat = Collections.<Object>binarySearch(processes,
@@ -306,9 +313,6 @@ public abstract class Kernel
 			// identifier. (The duplicate ID)}
 			if (bat >= 0)
 				throw new KernelException(String.format("AY0e %d", bat));
-			
-			if (true)
-				throw new Error("TODO");
 			
 			// Before it is returned, place it into the process list
 			processes.add(-(bat + 1), rv);
@@ -321,17 +325,69 @@ public abstract class Kernel
 	/**
 	 * This creates a new thread which is to be managed by the kernel.
 	 *
+	 * @param __proc The process to create the thread for.
+	 * @param __mm The main method.
+	 * @param __args The arguments to the method, must be {@link String},
+	 * boxed primitive types, arrays of {@String}, or arrays of primitive
+	 * types.
 	 * @return The newly created thread.
+	 * @throws ClassCastException If the arguments are not of a valid type.
+	 * @throws KernelException If the method is not static or there are not
+	 * enough arguments to pass to the main entry point.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/29
 	 */
-	public final KernelThread createThread()
+	public final KernelThread createThread(KernelProcess __proc,
+		CIMethod __mm, Object... __args)
+		throws ClassCastException, KernelException, NullPointerException
 	{
+		// Check
+		if (__proc == null || __mm == null)
+			throw new NullPointerException("NARG");
+		
+		// Defensive copy
+		if (__args == null)
+			__args = new Object[0];
+		else
+			__args = __args.clone();
+		
+		// {@squirreljme.error AY0h The entry method for a thread is not
+		// static. (The method identifier)}
+		if (!__mm.flags().isStatic())
+			throw new KernelException(String.format("AY0h %s",
+				__mm.nameAndType()));
+		
+		// {@squirreljme.error AY0i An argument with the given class type
+		// cannot be passed to a thread's initial arguments. (The class of the
+		// argument)}
+		for (Object a : __args)
+			if (a != null &&
+				!(a instanceof String) && !(a instanceof Boolean) &&
+				!(a instanceof Byte) && !(a instanceof Short) &&
+				!(a instanceof Character) && !(a instanceof Integer) &&
+				!(a instanceof Long) && !(a instanceof Float) &&
+				!(a instanceof Double) && !(a instanceof String[]) &&
+				!(a instanceof boolean[]) && !(a instanceof byte[]) &&
+				!(a instanceof short[]) && !(a instanceof char[]) &&
+				!(a instanceof int[]) && !(a instanceof long[]) &&
+				!(a instanceof float[]) && !(a instanceof double[]))
+			throw new ClassCastException(String.format("AY0i %s",
+				a.getClass()));
+		
+		// {@squirreljme.error AY0j The number of arguments the method accepts
+		// and the number of arguments(The wanted argument count; The number of
+		// arguments available)}
+		int wac;
+		if ((wac = __mm.nameAndType().type().argumentCount()) != __args.length)
+			throw new KernelException(String.format("AY0j %d %d",
+				wac, __args.length));
+		
 		// Lock on threads
 		List<KernelThread> threads = this._threads;
 		synchronized (threads)
 		{
 			// Internally create a thread
-			KernelThread rv = internalCreateThread();
+			KernelThread rv = internalCreateThread(__proc, __mm, __args);
 			
 			// Determine where it should be placed
 			int id = rv.id();

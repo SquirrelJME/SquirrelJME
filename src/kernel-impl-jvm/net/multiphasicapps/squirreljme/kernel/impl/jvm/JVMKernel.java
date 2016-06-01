@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
 import java.nio.file.Paths;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
@@ -93,10 +94,16 @@ public class JVMKernel
 	 * @since 2016/05/29
 	 */
 	@Override
-	protected KernelThread internalCreateThread()
+	protected KernelThread internalCreateThread(KernelProcess __proc,
+		CIMethod __mm, Object... __args)
 		throws KernelException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			return new JVMKernelThread(this, (JVMKernelProcess)__proc, __mm,
+				__args);
+		}
 	}
 	
 	/**
