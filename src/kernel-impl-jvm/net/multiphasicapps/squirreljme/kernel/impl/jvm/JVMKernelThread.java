@@ -14,6 +14,7 @@ import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
+import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
  * This represents a single thread which runs in the kernel, this is tied
@@ -51,6 +52,9 @@ public class JVMKernelThread
 		// Set
 		this.jvmkernel = (JVMKernel)this.kernel;
 		this.jvmprocess = (JVMKernelProcess)this.process;
+		
+		// Get the used interpreter
+		Interpreter terp = this.jvmkernel.interpreter();
 		
 		throw new Error("TODO");
 	}

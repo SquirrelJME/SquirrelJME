@@ -52,26 +52,6 @@ public class RRInterpreter
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/30
-	 */
-	@Override
-	public void adjustProgramStart(ClassPath[] __cp, CIMethod[] __mm,
-		String[][] __args)
-		throws NullPointerException
-	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// Potential super adjustments
-			super.adjustProgramStart(__cp, __mm, __args);
-			
-			// This either records it or plays the program start back
-			this.datastream.adjustProgramStart(__cp, __mm, __args);
-		}
-	}
-	
-	/**
 	 * Returns the current Java instructions per second.
 	 *
 	 * @return The Java instructions per second used.

@@ -80,30 +80,6 @@ public class RRDataStream
 	}
 	
 	/**
-	 * This adjusts the program to start on initial launch.
-	 *
-	 * @param __cp The {@link ClassPath} to adjust.
-	 * @param __mm The The main method to adjust.
-	 * @param __args The program arguments to adjust.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/30
-	 */
-	public void adjustProgramStart(ClassPath[] __cp, CIMethod[] __mm,
-		String[][] __args)
-		throws NullPointerException
-	{
-		// Check
-		if (__cp == null || __mm == null || __args == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			throw new Error("TODO");
-		}
-	}
-	
-	/**
 	 * Specifies that the given path should be used as input for a playback
 	 * session.
 	 *
@@ -113,6 +89,9 @@ public class RRDataStream
 	 */
 	public void streamInput(Path __p)
 	{
+		// The Interpreter
+		RRInterpreter terp = this.interpreter;
+		
 		// Lock
 		synchronized (this.lock)
 		{
@@ -161,6 +140,9 @@ public class RRDataStream
 				// Set the re-record count as one above the previous value
 				this._rerecordcount = dis.readInt() + 1;
 				
+				// Set the JIP count
+				terp.setJIPS(dis.readInt());
+				
 				// Set
 				this._replay = dis;
 			}
@@ -194,6 +176,9 @@ public class RRDataStream
 	 */
 	public void streamOutput(Path __p)
 	{
+		// The Interpreter
+		RRInterpreter terp = this.interpreter;
+		
 		// Lock
 		synchronized (this.lock)
 		{
@@ -234,6 +219,9 @@ public class RRDataStream
 				
 				// Write the current rerecord count
 				dos.writeInt(this._rerecordcount);
+				
+				// Write the number of JIPS
+				dos.writeInt(terp.getJIPS());
 				
 				// Set
 				this._record = dos;
