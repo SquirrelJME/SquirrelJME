@@ -377,8 +377,8 @@ public abstract class Kernel
 				!(a instanceof short[]) && !(a instanceof char[]) &&
 				!(a instanceof int[]) && !(a instanceof long[]) &&
 				!(a instanceof float[]) && !(a instanceof double[]))
-			throw new ClassCastException(String.format("AY0i %s",
-				a.getClass()));
+				throw new ClassCastException(String.format("AY0i %s",
+					a.getClass()));
 		
 		// {@squirreljme.error AY0j The number of arguments the method accepts
 		// and the number of arguments(The wanted argument count; The number of

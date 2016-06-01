@@ -24,6 +24,9 @@ public enum RRDataCommand
 	/** End. */
 	;
 	
+	/** Is this command asynchronous? */
+	protected final boolean async;
+	
 	/**
 	 * Initializes the data command.
 	 *
