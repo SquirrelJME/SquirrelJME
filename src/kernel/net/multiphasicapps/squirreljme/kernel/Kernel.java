@@ -29,6 +29,8 @@ import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.manifest.JavaManifest;
 import net.multiphasicapps.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
@@ -256,6 +258,19 @@ public abstract class Kernel
 			__args = new String[0];
 		else
 			__args = __args.clone();
+		
+		// Load the main class
+		CIClass maincl;
+		try
+		{
+			maincl = __cp.locateClass(__mcl);
+		}
+		
+		// {@squirreljme.error AY0f Could not load the main class.}
+		catch (CIException e)
+		{
+			throw new KernelException("AY0f", e);
+		}
 		
 		// Lock on processes
 		List<KernelProcess> processes = this._processes;
