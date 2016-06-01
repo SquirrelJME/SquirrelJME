@@ -21,6 +21,9 @@ public enum RRDataCommand
 	/** Set the Java instructions per second. */
 	SET_JIPS(true),
 	
+	/** Set the rerecord count. */
+	SET_RERECORDS(true),
+	
 	/** End. */
 	;
 	

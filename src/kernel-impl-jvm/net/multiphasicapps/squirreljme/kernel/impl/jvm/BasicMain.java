@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
@@ -55,6 +57,7 @@ public class BasicMain
 		// interpreter instead of the default. If "rerecord" is specified then
 		// the class name of the rerecording interpreter is used instead.}
 		String altterp = null;
+		Map<String, String> xops = new LinkedHashMap<>();
 		for (String a : __args)
 		{
 			// If it does not start with a dash, it is the main class
@@ -62,13 +65,22 @@ public class BasicMain
 			if (!a.startsWith("-") || a.equals("-jar"))
 				break;
 			
-			// Is the interpreter option?
-			if (a.startsWith("-Xsquirreljme-interpreter="))
+			// Is this an X option?
+			if (a.startsWith("-X"))
 			{
-				altterp = a.substring("-Xsquirreljme-interpreter=".length());
-				break;
+				// Has an equal sign?
+				int eq = a.indexOf('=');
+				if (eq >= 0)
+					xops.put(a.substring(2, eq), a.substring(eq + 1));
+				
+				// Does not, use a blank string
+				else
+					xops.put(a.substring(2), "");
 			}
 		}
+		
+		// Change the interpreter?
+		altterp = xops.get("squirreljme-interpreter");
 		
 		// Use alternative based on the command line?
 		if (altterp != null)
@@ -94,6 +106,9 @@ public class BasicMain
 		{
 			throw new RuntimeException("BC0a", e);
 		}
+		
+		// Handle X options which sets up interpreter details
+		terp.handleXOptions(xops);
 		
 		// Create the kernel to use
 		this.kernel = createKernel(terp, __args);
