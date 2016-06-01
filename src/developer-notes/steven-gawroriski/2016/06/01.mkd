@@ -142,3 +142,11 @@ things up. The number of lines in the source code also went down.
 
 So I would say that I got much work done.
 
+## 10:41
+
+Ok so, what I need to do is determine the best way to setup a process which
+would be given a thread and an entry point. I suppose `createThread()` should
+be given a process, with the method to invoke, and the arguments to that
+method in boxed form. That is the kernel can only use arguments which are of
+primitive types or String.
+
