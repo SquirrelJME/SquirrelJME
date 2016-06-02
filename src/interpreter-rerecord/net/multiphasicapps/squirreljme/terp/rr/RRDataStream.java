@@ -163,6 +163,10 @@ public class RRDataStream
 			// Could fail
 			try
 			{
+				// Read the packet command and length
+				RRDataCommand cmd = __pk.getCommand();
+				int len = __pk.length();
+				
 				if (false)
 					throw new IOException("TODO");
 				throw new Error("TODO");
