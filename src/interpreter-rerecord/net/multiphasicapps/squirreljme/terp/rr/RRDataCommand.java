@@ -54,6 +54,10 @@ public enum RRDataCommand
 	private RRDataCommand(boolean __async)
 	{
 		this.async = __async;
+		
+		// {@squirreljme.error BC0e Only 255 data command codes are supported.}
+		if (ordinal() > 255)
+			throw new RuntimeException("BC0e");
 	}
 	
 	/**

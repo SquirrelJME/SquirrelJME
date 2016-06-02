@@ -100,6 +100,10 @@ public enum RRDataType
 	{
 		// Set
 		this.type = __cl;
+		
+		// {@squirreljme.error BC0f Only 255 type codes are supported.}
+		if (ordinal() > 255)
+			throw new RuntimeException("BC0f");
 	}
 	
 	/**
