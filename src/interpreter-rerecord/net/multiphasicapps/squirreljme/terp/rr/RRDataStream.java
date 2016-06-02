@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.terp.rr;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
@@ -21,6 +23,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
@@ -39,6 +43,10 @@ public class RRDataStream
 	
 	/** The owning interpreter. */
 	protected final RRInterpreter interpreter;
+	
+	/** Packet queue which is used for reading and writing. */
+	private final Deque<Reference<RRDataPacket>> _packetq =
+		new LinkedList<>();
 	
 	/** The playback file. */
 	private volatile DataInputStream _replay;
@@ -70,6 +78,57 @@ public class RRDataStream
 	}
 	
 	/**
+	 * Creates a new data packet, the returned packet may be recycled from
+	 * a previous call. To finish with a packet it can be closed and as such
+	 * packets can be used with try-with-resources.
+	 *
+	 * @param __com The command to use.
+	 * @param __l The length of the packet.
+	 * @throws IllegalArgumentException If the length is negative or exceeds
+	 * the packet field limit.
+	 * @throws NullPointerException On null arguments.
+	 */
+	public final RRDataPacket createPacket(RRDataCommand __com, int __l)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__com == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BC02 Cannot request a data packet which exceeds
+		// the length limitation or is negative. (The requested length)}
+		if (__l < 0 || __l >= RRDataPacket.MAX_FIELD_LENGTH)
+			throw new IllegalArgumentException(String.format("BC02 %d", __l));
+		
+		// Lock
+		Deque<Reference<RRDataPacket>> packetq = this._packetq;
+		synchronized (packetq)
+		{
+			// Check the queue
+			RRDataPacket rv = null;
+			for (;;)
+			{
+				// Is there something in the queue?
+				Reference<RRDataPacket> ref = packetq.pollFirst();
+				
+				// Use it
+				if (ref != null && null != (rv = ref.get()))
+					break;
+			}
+			
+			// Create a new one?
+			if (rv == null)
+				rv = new RRDataPacket(this);
+			
+			// Initialize the data
+			rv.__clear(__com, __l);
+			
+			// Return it
+			return rv;
+		}
+	}
+	
+	/**
 	 * Specifies that the given path should be used as input for a playback
 	 * session.
 	 *
@@ -77,7 +136,7 @@ public class RRDataStream
 	 * stops.
 	 * @since 2016/05/30
 	 */
-	public void streamInput(Path __p)
+	public final void streamInput(Path __p)
 	{
 		// The Interpreter
 		RRInterpreter terp = this.interpreter;
@@ -95,7 +154,7 @@ public class RRDataStream
 	 * @param __p The file to write a recorded session to.
 	 * @since 2016/05/30
 	 */
-	public void streamOutput(Path __p)
+	public final void streamOutput(Path __p)
 	{
 		// The Interpreter
 		RRInterpreter terp = this.interpreter;

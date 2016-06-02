@@ -170,3 +170,8 @@ array. Then when read a command the reverse could be done to reinitialize
 values and such. So I need a command data set which stores commands to write to
 the stream along with the type of command.
 
+## 19:56
+
+The data commands would work better if they could be closed and reused as
+needed. Then if they are not needed, they can be garbage collected.
+
