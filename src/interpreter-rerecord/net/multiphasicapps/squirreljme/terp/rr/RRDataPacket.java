@@ -184,16 +184,7 @@ public class RRDataPacket
 	{
 		// {@squirreljme.error BC07 Cannot set the field of a data packet to
 		// the specified class type. (The class of the argument)}
-		if (__v != null &&
-			!(__v instanceof String) && !(__v instanceof Boolean) &&
-			!(__v instanceof Byte) && !(__v instanceof Short) &&
-			!(__v instanceof Character) && !(__v instanceof Integer) &&
-			!(__v instanceof Long) && !(__v instanceof Float) &&
-			!(__v instanceof Double) && !(__v instanceof String[]) &&
-			!(__v instanceof boolean[]) && !(__v instanceof byte[]) &&
-			!(__v instanceof short[]) && !(__v instanceof char[]) &&
-			!(__v instanceof int[]) && !(__v instanceof long[]) &&
-			!(__v instanceof float[]) && !(__v instanceof double[]))
+		if (!RRDataType.isValidObject(__v))
 			throw new ClassCastException(String.format("BC07 %s",
 				__v.getClass()));
 		
