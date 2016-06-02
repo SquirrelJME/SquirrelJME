@@ -335,17 +335,18 @@ public class RRDataStream
 				pk.set(0, MAGIC_NUMBER_A);
 				pk.set(1, MAGIC_NUMBER_B);
 				
-				if (true)
-					throw new Error("TODO");
+				// Record it
+				record(pk);
 			}
 			
 			// Set the Java instructions per second
 			try (RRDataPacket pk = createPacket(RRDataCommand.SET_JIPS, 1))
 			{
-				pk.set(0, this._rerecordcount);
+				// Increase it by 1
+				pk.set(0, this._rerecordcount + 1);
 				
-				if (true)
-					throw new Error("TODO");
+				// Record it
+				record(pk);
 			}
 		}
 	}
