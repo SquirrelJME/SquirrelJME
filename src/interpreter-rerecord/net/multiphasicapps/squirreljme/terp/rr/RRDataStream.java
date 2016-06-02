@@ -138,14 +138,57 @@ public class RRDataStream
 	}
 	
 	/**
+	 * Records the given packet to the output recording stream.
+	 *
+	 * @param __pk The packet to record.
+	 * @throws RRDataStreamException If there was an error writing the data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/01
+	 */
+	public final void record(RRDataPacket __pk)
+		throws RRDataStreamException, NullPointerException
+	{
+		// Check
+		if (__pk == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BC0b The stream is not in recording mode.}
+			DataOutputStream dos = this._record;
+			if (dos == null)
+				throw new RRNotRecordingException("BC0b");
+			
+			// Could fail
+			try
+			{
+				if (false)
+					throw new IOException("TODO");
+				throw new Error("TODO");
+			}
+			
+			// {@squirreljme.error BC0a Failed to record the packet to the
+			// output stream.}
+			catch (IOException e)
+			{
+				throw new RRDataStreamException("BC0a", e);
+			}
+		}
+	}
+	
+	/**
 	 * Specifies that the given path should be used as input for a playback
 	 * session.
 	 *
 	 * @param __p The source replay to run, if {@code null} then playback
 	 * stops.
+	 * @throws RRDataStreamException If the stream could not be opened for
+	 * replaying.
 	 * @since 2016/05/30
 	 */
 	public final void streamInput(Path __p)
+		throws RRDataStreamException
 	{
 		// The Interpreter
 		RRInterpreter terp = this.interpreter;
@@ -153,6 +196,62 @@ public class RRDataStream
 		// Lock
 		synchronized (this.lock)
 		{
+			// Stop existing stream?
+			if (__p == null)
+			{
+				// Stop reading from the given replay
+				DataInputStream replay = this._replay;
+				if (replay != null)
+					try
+					{
+						replay.close();
+					}
+					catch (IOException e)
+					{
+						// Ignore
+					}
+				this._replay = null;
+				
+				// Do not continue
+				return;
+			}
+			
+			// Attempt opening the output
+			FileChannel chan = null;
+			try
+			{
+				// Open the channel
+				chan = FileChannel.open(__p,
+					StandardOpenOption.READ);
+				
+				// Setup input data
+				DataInputStream dis = new DataInputStream(
+					Channels.newInputStream(chan));
+				
+				// Set
+				this._replay = dis;
+			}
+			
+			// {@squirreljme.error BC0d Could not open the input stream for
+			// replaying back. (The playback path)}
+			catch (IOException e)
+			{
+				// Close the channel if it is open
+				if (chan != null)
+					try
+					{
+						chan.close();
+					}
+					catch (Throwable t)
+					{
+						e.addSuppressed(t);
+					}
+				
+				// Throw
+				throw new RRDataStreamException(String.format("BC0d %s", __p),
+					e);
+			}
+			
 			throw new Error("TODO");
 		}
 	}
@@ -161,9 +260,11 @@ public class RRDataStream
 	 * Starts recording to the specified output stream.
 	 *
 	 * @param __p The file to write a recorded session to.
+	 * @throws RRDataStreamException If the stream could not be opened.
 	 * @since 2016/05/30
 	 */
 	public final void streamOutput(Path __p)
+		throws RRDataStreamException
 	{
 		// The Interpreter
 		RRInterpreter terp = this.interpreter;
@@ -171,6 +272,62 @@ public class RRDataStream
 		// Lock
 		synchronized (this.lock)
 		{
+			// Stop existing stream?
+			if (__p == null)
+			{
+				// Stop recording
+				DataOutputStream record = this._record;
+				if (record != null)
+					try
+					{
+						record.close();
+					}
+					catch (IOException e)
+					{
+						// Ignore
+					}
+				this._record = null;
+				
+				// Do not continue
+				return;
+			}
+			
+			// Attempt opening the output
+			FileChannel chan = null;
+			try
+			{
+				// Open the channel
+				chan = FileChannel.open(__p,
+					StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW);
+				
+				// Setup output data
+				DataOutputStream dos = new DataOutputStream(
+					Channels.newOutputStream(chan));
+				
+				// Set
+				this._record = dos;
+			}
+			
+			// {@squirreljme.error BC0c Could not open the output path for
+			// recording. (The output path)}
+			catch (IOException e)
+			{
+				// Close the channel if it is open
+				if (chan != null)
+					try
+					{
+						chan.close();
+					}
+					catch (Throwable t)
+					{
+						e.addSuppressed(t);
+					}
+				
+				// Throw
+				throw new RRDataStreamException(String.format("BC0c %s", __p),
+					e);
+			}
+			
 			// Write the magic number
 			try (RRDataPacket pk = createPacket(RRDataCommand.MAGIC_NUMBER, 2))
 			{
