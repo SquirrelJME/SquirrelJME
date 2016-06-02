@@ -175,3 +175,7 @@ the stream along with the type of command.
 The data commands would work better if they could be closed and reused as
 needed. Then if they are not needed, they can be garbage collected.
 
+## 20:28
+
+This data packet code is much cleaner.
+

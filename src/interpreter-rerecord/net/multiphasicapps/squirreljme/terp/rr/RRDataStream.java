@@ -38,6 +38,14 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
  */
 public class RRDataStream
 {
+	/** The primary magic number. */
+	public static final long MAGIC_NUMBER_A =
+		0x537175697272656CL;
+	
+	/** The secondary magic number. */
+	public static final long MAGIC_NUMBER_B =
+		0x4A4D45214147504CL;
+	
 	/** The lock to use. */
 	protected final Object lock;
 	
@@ -54,8 +62,9 @@ public class RRDataStream
 	/** The recording file. */
 	private volatile DataOutputStream _record;
 	
-	/** The current re-record count. */
-	private volatile int _rerecordcount;
+	/** The current re-record count (starts at -1 so next record is zero). */
+	private volatile int _rerecordcount =
+		-1;
 	
 	/**
 	 * Initializes the data stream.
@@ -106,7 +115,7 @@ public class RRDataStream
 		{
 			// Check the queue
 			RRDataPacket rv = null;
-			for (;;)
+			while (!packetq.isEmpty())
 			{
 				// Is there something in the queue?
 				Reference<RRDataPacket> ref = packetq.pollFirst();
@@ -162,7 +171,25 @@ public class RRDataStream
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Write the magic number
+			try (RRDataPacket pk = createPacket(RRDataCommand.MAGIC_NUMBER, 2))
+			{
+				// Record the magic number
+				pk.set(0, MAGIC_NUMBER_A);
+				pk.set(1, MAGIC_NUMBER_B);
+				
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Set the Java instructions per second
+			try (RRDataPacket pk = createPacket(RRDataCommand.SET_JIPS, 1))
+			{
+				pk.set(0, this._rerecordcount);
+				
+				if (true)
+					throw new Error("TODO");
+			}
 		}
 	}
 	

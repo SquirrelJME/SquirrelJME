@@ -169,43 +169,6 @@ public class RRDataPacket
 	}
 	
 	/**
-	 * Clears the data packet and associates it with a new command and length.
-	 *
-	 * The packet is opened following this command.
-	 *
-	 * @param __cmd The command to use.
-	 * @param __len The length of the command.
-	 * @throws NullPointerException If no command was specified.
-	 * @since 2016/06/01
-	 */
-	final void __clear(RRDataCommand __cmd, int __len)
-		throws NullPointerException
-	{
-		// Check
-		if (__cmd == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			// Change it
-			this._command = __cmd;
-		
-			// Set length to the given length
-			__setLength(__len);
-		
-			// Clear all data fields
-			List<Object> data = this._data;
-			int n = data.size();
-			for (int i = 0; i < n; i++)
-				data.set(i, null);
-			
-			// Set as open
-			this._closed = false;
-		}
-	}
-	
-	/**
 	 * Sets the value of a field in the command.
 	 *
 	 * @param __i The index to set.
@@ -216,7 +179,7 @@ public class RRDataPacket
 	 * bounds.
 	 * @since 2016/06/01
 	 */
-	final Object __set(int __i, Object __v)
+	public final Object set(int __i, Object __v)
 		throws ClassCastException, IndexOutOfBoundsException
 	{
 		// {@squirreljme.error BC07 Cannot set the field of a data packet to
@@ -254,6 +217,55 @@ public class RRDataPacket
 		
 			// Return old
 			return rv;
+		}
+	}
+	
+	/**
+	 * Clears the data packet and associates it with a new command and length.
+	 *
+	 * The packet is opened following this command.
+	 *
+	 * @param __cmd The command to use.
+	 * @param __len The length of the command.
+	 * @throws NullPointerException If no command was specified.
+	 * @since 2016/06/01
+	 */
+	final void __clear(RRDataCommand __cmd, int __len)
+		throws NullPointerException
+	{
+		// Check
+		if (__cmd == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Could fail
+			try
+			{
+				// Set as open
+				this._closed = false;
+			
+				// Change it
+				this._command = __cmd;
+		
+				// Set length to the given length
+				__setLength(__len);
+		
+				// Clear all data fields
+				List<Object> data = this._data;
+				int n = data.size();
+				for (int i = 0; i < n; i++)
+					data.set(i, null);
+			}
+			
+			// Could not set some detail (perhaps out of memory) so mark
+			// as closed and rethrow the exception
+			catch (RuntimeException|Error e)
+			{
+				this._closed = true;
+				throw e;
+			}
 		}
 	}
 	

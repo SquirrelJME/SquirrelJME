@@ -10,14 +10,24 @@
 
 package net.multiphasicapps.squirreljme.terp.rr;
 
+import java.util.Arrays;
+import java.util.List;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
+
 /**
  * This represents a command that is used for the re-recorded interpreter
  * replay data stream.
+ *
+ * Note that the ordinal of commands is significant, if the order is not kept
+ * then previous rerecords may desynchronize.
  *
  * @since 2016/06/01
  */
 public enum RRDataCommand
 {
+	/** Magic number. */
+	MAGIC_NUMBER(false),
+	
 	/** Set the Java instructions per second. */
 	SET_JIPS(true),
 	
@@ -26,6 +36,11 @@ public enum RRDataCommand
 	
 	/** End. */
 	;
+	
+	/** The command which are available for quick lookup. */
+	public static final List<RRDataCommand> COMMANDS =
+		UnmodifiableList.<RRDataCommand>of(
+			Arrays.<RRDataCommand>asList(values()));
 	
 	/** Is this command asynchronous? */
 	protected final boolean async;
