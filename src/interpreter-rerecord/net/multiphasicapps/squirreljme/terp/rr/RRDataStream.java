@@ -165,5 +165,27 @@ public class RRDataStream
 			throw new Error("TODO");
 		}
 	}
+	
+	/**
+	 * Closes the given packet and places it within the queue.
+	 *
+	 * @param __pk The packet to close.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/01
+	 */
+	final void __close(RRDataPacket __pk)
+		throws NullPointerException
+	{
+		// Check
+		if (__pk == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Deque<Reference<RRDataPacket>> packetq = this._packetq;
+		synchronized (packetq)
+		{
+			packetq.offerLast(new WeakReference<>(__pk));
+		}
+	}
 }
 

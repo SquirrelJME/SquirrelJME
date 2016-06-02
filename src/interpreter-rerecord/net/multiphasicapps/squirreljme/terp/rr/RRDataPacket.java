@@ -47,6 +47,10 @@ public class RRDataPacket
 	/** The number of elements in the packet. */
 	private volatile int _length;
 	
+	/** Is the packet closed? */
+	private volatile boolean _closed =
+		true;
+	
 	/**
 	 * Initializes the data packet.
 	 *
@@ -74,7 +78,15 @@ public class RRDataPacket
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// If already closed, stop
+			if (this._closed)
+				return;
+			
+			// Set closed
+			this._closed = true;
+			
+			// Mark closed in the stream
+			this.stream.__close(this);
 		}
 	}
 	
@@ -83,14 +95,20 @@ public class RRDataPacket
 	 *
 	 * @param __i The index to get data for.
 	 * @return The data at the specified index.
+	 * @throws IllegalStateException If the packet is closed.
 	 * @throws IndexOutOfBoundsException If the index it outside of bounds.
 	 * @since 2016/06/01
 	 */
 	public final Object get(int __i)
-		throws IndexOutOfBoundsException
+		throws IllegalStateException, IndexOutOfBoundsException
 	{
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BC03 Cannot obtain data from the packet
+			// because it is closed.}
+			if (this._closed)
+				throw new IllegalStateException("BC03");
+			
 			// {@squirreljme.error BC06 Index of field is not within the packet
 			// bounds.}
 			int c = this._length;
@@ -121,6 +139,11 @@ public class RRDataPacket
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BC04 Cannot obtain the command from the
+			// packet because it is closed.}
+			if (this._closed)
+				throw new IllegalStateException("BC04");
+			
 			return this._command;
 		}
 	}
@@ -136,12 +159,19 @@ public class RRDataPacket
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BC08 Cannot obtain the length from the
+			// packet because it is closed.}
+			if (this._closed)
+				throw new IllegalStateException("BC08");
+			
 			return this._length;
 		}
 	}
 	
 	/**
 	 * Clears the data packet and associates it with a new command and length.
+	 *
+	 * The packet is opened following this command.
 	 *
 	 * @param __cmd The command to use.
 	 * @param __len The length of the command.
@@ -169,6 +199,9 @@ public class RRDataPacket
 			int n = data.size();
 			for (int i = 0; i < n; i++)
 				data.set(i, null);
+			
+			// Set as open
+			this._closed = false;
 		}
 	}
 	
@@ -243,6 +276,11 @@ public class RRDataPacket
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BC09 Cannot set the length of the
+			// packet because it is closed.}
+			if (this._closed)
+				throw new IllegalStateException("BC09");
+			
 			// Set
 			this._length = __i;
 		
