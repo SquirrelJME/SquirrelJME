@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
@@ -48,7 +49,7 @@ public class JVMKernelThread
 	 * @since 2016/06/01
 	 */
 	public JVMKernelThread(JVMKernel __k, JVMKernelProcess __proc,
-		ClassNameSymbol __mc, CIMethod __mm, Object... __args)
+		ClassNameSymbol __mc, CIMethodID __mm, Object... __args)
 	{
 		super(__k, __proc, __mc, __mm, __args);
 		
@@ -67,7 +68,40 @@ public class JVMKernelThread
 		InterpreterProcess iproc = this.jvmprocess.interpreterProcess();
 		
 		// Setup new thread
+		if (true)
+			throw new Error("TODO");
 		this.ithread = terp.createThread(iproc, __mc, __mm, __args);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	protected Object[] adjustMainArguments(Object... __args)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	protected ClassNameSymbol adjustMainClass(ClassNameSymbol __mc)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	protected CIMethodID adjustMainMethod(CIMethodID __mm)
+	{
+		throw new Error("TODO");
 	}
 }
 

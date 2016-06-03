@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
 import java.nio.file.Paths;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
@@ -97,7 +98,7 @@ public class JVMKernel
 	 */
 	@Override
 	protected KernelThread internalCreateThread(KernelProcess __proc,
-		ClassNameSymbol __mc, CIMethod __mm, Object... __args)
+		ClassNameSymbol __mc, CIMethodID __mm, Object... __args)
 		throws KernelException
 	{
 		// Lock
