@@ -28,6 +28,9 @@ public enum RRDataCommand
 	/** Magic number. */
 	MAGIC_NUMBER(false),
 	
+	/** Notes. */
+	NOTES(true),
+	
 	/** Set the Java instructions per second. */
 	SET_JIPS(true),
 	

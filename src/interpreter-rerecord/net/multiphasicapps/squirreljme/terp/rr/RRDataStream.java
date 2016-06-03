@@ -373,6 +373,65 @@ public class RRDataStream
 				// Record it
 				record(pk);
 			}
+			
+			// Write some notes
+			try (RRDataPacket pk = createPacket(RRDataCommand.NOTES, 1))
+			{
+				// Add some notes
+				pk.set(0, new String[]
+					{
+						"microedition.platform",
+						System.getProperty("microedition.platform"),
+						
+						"microedition.encoding",
+						System.getProperty("microedition.encoding"),
+						
+						"microedition.configuration",
+						System.getProperty("microedition.configuration"),
+						
+						"microedition.profiles",
+						System.getProperty("microedition.profiles"),
+						
+						"java.version",
+						System.getProperty("java.version"),
+						
+						"java.vendor",
+						System.getProperty("java.vendor"),
+						
+						"java.vendor.url",
+						System.getProperty("java.vendor.url"),
+						
+						"java.vm.name",
+						System.getProperty("java.vm.name"),
+						
+						"java.vm.version",
+						System.getProperty("java.vm.version"),
+						
+						"java.vm.vendor",
+						System.getProperty("java.vm.vendor"),
+						
+						"os.name",
+						System.getProperty("os.name"),
+						
+						"os.arch",
+						System.getProperty("os.arch"),
+						
+						"os.version",
+						System.getProperty("os.version"),
+						
+						"line.separator",
+						System.getProperty("line.separator"),
+						
+						"path.separator",
+						System.getProperty("path.separator"),
+						
+						"file.separator",
+						System.getProperty("file.separator"),
+					});
+				
+				// Record it
+				record(pk);
+			}
 		}
 	}
 	
