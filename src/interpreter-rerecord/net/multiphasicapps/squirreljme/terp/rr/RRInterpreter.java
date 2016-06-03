@@ -82,7 +82,7 @@ public class RRInterpreter
 	 * @return The interpreter data stream.
 	 * @since 2016/06/03
 	 */
-	public RRDataStream getDataStream()
+	public RRDataStream dataStream()
 	{
 		return this.datastream;
 	}

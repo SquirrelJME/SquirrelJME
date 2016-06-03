@@ -39,7 +39,7 @@ public class RRProcess
 		this.rrinterpreter = rri;
 		
 		// Lock the data stream for synchronization details
-		RRDataStream rds = rri.getDataStream();
+		RRDataStream rds = rri.dataStream();
 		synchronized (rds)
 		{
 			// If playing back, process creation must happen

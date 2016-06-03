@@ -57,7 +57,12 @@ public class RRThread
 		if (__terp == null || __m == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get the data stream
+		RRDataStream rds = __terp.dataStream();
+		synchronized (rds)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -78,7 +83,12 @@ public class RRThread
 		if (__terp == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get the data stream
+		RRDataStream rds = __terp.dataStream();
+		synchronized (rds)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
