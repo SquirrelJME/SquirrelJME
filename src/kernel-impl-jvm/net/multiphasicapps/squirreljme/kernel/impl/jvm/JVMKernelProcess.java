@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
+import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
 
 /**
  * This is the implementation of processes which act as a bridge to the
@@ -24,6 +25,9 @@ public class JVMKernelProcess
 {
 	/** The owning JVM kernel. */
 	protected final JVMKernel jvmkernel;
+	
+	/** The interpreter process. */
+	protected final InterpreterProcess iprocess;
 	
 	/**
 	 * Initializes the kernel process.
@@ -43,8 +47,7 @@ public class JVMKernelProcess
 		Interpreter terp = jvmkernel.interpreter();
 		
 		// Setup interpreter process
-		if (true)
-			throw new Error("TODO");
+		this.iprocess = terp.createProcess();
 	}
 }
 

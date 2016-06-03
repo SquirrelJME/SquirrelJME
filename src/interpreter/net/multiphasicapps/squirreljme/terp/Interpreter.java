@@ -23,9 +23,14 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
  */
 public abstract class Interpreter
 {
-	/** The interpreter lock, if required. */
-	protected final Object lock =
-		new Object();
+	/**
+	 * Creates a new process in the interpreter for storing object states
+	 * for a group of threads.
+	 *
+	 * @return The new interpreter process.
+	 * @since 2016/06/03
+	 */
+	public abstract InterpreterProcess createProcess();
 	
 	/**
 	 * Handles the X options which may be passed to the interpreter.

@@ -46,9 +46,6 @@ public class RRDataStream
 	public static final long MAGIC_NUMBER_B =
 		0x4A4D45214147504CL;
 	
-	/** The lock to use. */
-	protected final Object lock;
-	
 	/** The owning interpreter. */
 	protected final RRInterpreter interpreter;
 	
@@ -69,21 +66,19 @@ public class RRDataStream
 	/**
 	 * Initializes the data stream.
 	 *
-	 * @param __i The owning interpreter.
-	 * @param __lk The interpreter lock.
+	 * @param __i The owning interpreter, which is also locked on.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/30
 	 */
-	public RRDataStream(RRInterpreter __i, Object __lk)
+	public RRDataStream(RRInterpreter __i)
 		throws NullPointerException
 	{
 		// Check
-		if (__i == null || __lk == null)
+		if (__i == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.interpreter = __i;
-		this.lock = __lk;
 	}
 	
 	/**
@@ -138,6 +133,36 @@ public class RRDataStream
 	}
 	
 	/**
+	 * Returns {@code true} if a replay is currently being replayed.
+	 *
+	 * @return {@code true} if a replay is being performed.
+	 * @since 2016/06/03
+	 */
+	public final boolean isPlaying()
+	{
+		// Lock
+		synchronized (this.interpreter)
+		{
+			return this._replay != null;
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if the stream is currently recording.
+	 *
+	 * @return {@code true} if the stream is recording.
+	 * @since 2016/06/03
+	 */
+	public final boolean isRecording()
+	{
+		// Lock
+		synchronized (this.interpreter)
+		{
+			return this._record != null;
+		}
+	}
+	
+	/**
 	 * Records the given packet to the output recording stream.
 	 *
 	 * @param __pk The packet to record.
@@ -153,7 +178,7 @@ public class RRDataStream
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		synchronized (this.lock)
+		synchronized (this.interpreter)
 		{
 			// {@squirreljme.error BC0b The stream is not in recording mode.}
 			DataOutputStream dos = this._record;
@@ -219,7 +244,7 @@ public class RRDataStream
 		RRInterpreter terp = this.interpreter;
 		
 		// Lock
-		synchronized (this.lock)
+		synchronized (this.interpreter)
 		{
 			// Stop existing stream?
 			if (__p == null)
@@ -295,7 +320,7 @@ public class RRDataStream
 		RRInterpreter terp = this.interpreter;
 		
 		// Lock
-		synchronized (this.lock)
+		synchronized (this.interpreter)
 		{
 			// Stop existing stream?
 			if (__p == null)

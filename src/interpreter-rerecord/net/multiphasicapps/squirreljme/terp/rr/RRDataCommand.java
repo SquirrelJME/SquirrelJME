@@ -37,6 +37,9 @@ public enum RRDataCommand
 	/** Set the rerecord count. */
 	SET_RERECORDS(true),
 	
+	/** A process is created in the VM. */
+	CREATE_PROCESS(false),
+	
 	/** End. */
 	;
 	

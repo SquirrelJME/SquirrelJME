@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.terp.std;
 
 import java.util.Map;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
+import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
 
 /**
  * This is the standard interpreter which uses normal threads for each
@@ -29,6 +30,16 @@ public class StandardInterpreter
 	 */
 	public StandardInterpreter()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	public InterpreterProcess createProcess()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**

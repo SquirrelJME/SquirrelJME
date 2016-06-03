@@ -32,7 +32,7 @@ public class RRInterpreter
 	
 	/** The data stream to source data from and such. */
 	protected final RRDataStream datastream =
-		new RRDataStream(this, this.lock);
+		new RRDataStream(this);
 	
 	/** The current JIPS. */
 	private volatile int _jips;
@@ -52,6 +52,27 @@ public class RRInterpreter
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	public RRProcess createProcess()
+	{
+		return new RRProcess(this);
+	}
+	
+	/**
+	 * Returns the data stream of the rerecording interpreter.
+	 *
+	 * @return The interpreter data stream.
+	 * @since 2016/06/03
+	 */
+	public RRDataStream getDataStream()
+	{
+		return this.datastream;
+	}
+	
+	/**
 	 * Returns the current Java instructions per second.
 	 *
 	 * @return The Java instructions per second used.
@@ -60,7 +81,7 @@ public class RRInterpreter
 	public int getJIPS()
 	{
 		// Lock
-		synchronized (this.lock)
+		synchronized (this)
 		{
 			return _jips;
 		}
@@ -141,7 +162,7 @@ public class RRInterpreter
 				__jips));
 		
 		// Lock
-		synchronized (this.lock)
+		synchronized (this)
 		{
 			// Set new values
 			this._jips = __jips;
