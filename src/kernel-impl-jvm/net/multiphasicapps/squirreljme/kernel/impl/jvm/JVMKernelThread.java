@@ -81,7 +81,8 @@ public class JVMKernelThread
 	@Override
 	protected Object[] adjustMainArguments(Object... __args)
 	{
-		throw new Error("TODO");
+		return ((JVMKernel)(this.kernel)).interpreter().
+			adjustMainArguments(__args);
 	}
 	
 	/**
@@ -91,7 +92,8 @@ public class JVMKernelThread
 	@Override
 	protected ClassNameSymbol adjustMainClass(ClassNameSymbol __mc)
 	{
-		throw new Error("TODO");
+		return ((JVMKernel)(this.kernel)).interpreter().
+			adjustMainClass(__mc);
 	}
 	
 	/**
@@ -101,7 +103,8 @@ public class JVMKernelThread
 	@Override
 	protected CIMethodID adjustMainMethod(CIMethodID __mm)
 	{
-		throw new Error("TODO");
+		return ((JVMKernel)(this.kernel)).interpreter().
+			adjustMainMethod(__mm);
 	}
 }
 

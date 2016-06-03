@@ -70,5 +70,41 @@ public abstract class Interpreter
 	 * @since 2016/05/30
 	 */
 	public abstract void runCycle();
+	
+	/**
+	 * Potentially adjusts the arguments to be used by a thread.
+	 *
+	 * @param __args The original arguments.
+	 * @return The adjusted arguments.
+	 * @since 2016/06/03
+	 */
+	public Object[] adjustMainArguments(Object... __args)
+	{
+		return __args;
+	}
+	
+	/**
+	 * Potentially adjusts the main entry class to be used by a thread.
+	 *
+	 * @param __mc The original class.
+	 * @return The adjusted main class.
+	 * @since 2016/06/03
+	 */
+	public ClassNameSymbol adjustMainClass(ClassNameSymbol __mc)
+	{
+		return __mc;
+	}
+	
+	/**
+	 * Potentially adjusts the main entry method to be used by a thread.
+	 *
+	 * @param __mm The original method.
+	 * @return The adjusted main method.
+	 * @since 2016/06/03
+	 */
+	public CIMethodID adjustMainMethod(CIMethodID __mm)
+	{
+		return __mm;
+	}
 }
 

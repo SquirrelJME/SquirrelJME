@@ -61,6 +61,90 @@ public class RRInterpreter
 	 * @since 2016/06/03
 	 */
 	@Override
+	public Object[] adjustMainArguments(Object... __args)
+	{
+		// Check
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the data stream
+		RRDataStream rds = dataStream();
+		synchronized (rds)
+		{
+			// If playing, change the class
+			if (rds.isPlaying())
+				throw new Error("TODO");
+			
+			// Record the class
+			if (rds.isRecording())
+				throw new Error("TODO");
+		}
+		
+		// Return the input, which may have changed
+		return __args;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	public ClassNameSymbol adjustMainClass(ClassNameSymbol __mc)
+	{
+		// Check
+		if (__mc == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the data stream
+		RRDataStream rds = dataStream();
+		synchronized (rds)
+		{
+			// If playing, change the class
+			if (rds.isPlaying())
+				throw new Error("TODO");
+			
+			// Record the class
+			if (rds.isRecording())
+				throw new Error("TODO");
+		}
+		
+		// Return the input, which may have changed
+		return __mc;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	public CIMethodID adjustMainMethod(CIMethodID __mm)
+	{
+		// Check
+		if (__mm == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the data stream
+		RRDataStream rds = dataStream();
+		synchronized (rds)
+		{
+			// If playing, change the method
+			if (rds.isPlaying())
+				throw new Error("TODO");
+			
+			// Record the method
+			if (rds.isRecording())
+				throw new Error("TODO");
+		}
+		
+		// Return the input, which may have changed
+		return __mm;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
 	public RRProcess createProcess(ClassPath __cp)
 	{
 		return new RRProcess(this, __cp);
