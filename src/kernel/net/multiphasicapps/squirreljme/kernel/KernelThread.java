@@ -81,7 +81,23 @@ public abstract class KernelThread
 			Objects.<Object[]>requireNonNull(
 			(__args = adjustMainArguments(__args))).clone()));
 		
-		throw new Error("TODO");
+		// Make sure the arguments are valid
+		// {@squirreljme.error AY0i An argument with the given class type
+		// cannot be passed to a thread's initial arguments. (The class of the
+		// argument)}
+		for (Object a : this.mainargs)
+			if (a != null &&
+				!(a instanceof String) && !(a instanceof Boolean) &&
+				!(a instanceof Byte) && !(a instanceof Short) &&
+				!(a instanceof Character) && !(a instanceof Integer) &&
+				!(a instanceof Long) && !(a instanceof Float) &&
+				!(a instanceof Double) && !(a instanceof String[]) &&
+				!(a instanceof boolean[]) && !(a instanceof byte[]) &&
+				!(a instanceof short[]) && !(a instanceof char[]) &&
+				!(a instanceof int[]) && !(a instanceof long[]) &&
+				!(a instanceof float[]) && !(a instanceof double[]))
+				throw new ClassCastException(String.format("AY0i %s",
+					a.getClass()));
 	}
 	
 	/**
