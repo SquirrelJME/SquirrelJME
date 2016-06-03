@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.terp.rr;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.terp.InterpreterThread;
 
 /**
@@ -26,40 +28,88 @@ public class RRThread
 	 *
 	 * @param __terp The owning interpreter.
 	 * @param __ip The owning process.
-	 * @param __m The starting method.
+	 * @param __mc The starting class.
+	 * @param __mm The starting method.
 	 * @param __args The arguments to the thread.
 	 * @since 2016/06/03
 	 */
-	public RRThread(RRInterpreter __terp,
-		RRProcess __ip, CIMethod __m, Object... __args)
+	public RRThread(RRInterpreter __terp, RRProcess __ip, ClassNameSymbol __mc,
+		CIMethodID __mm, Object... __args)
 	{
-		super(__terp, __ip, (__m = __rewriteEntryMethod(__terp, __ip, __m)),
-			(__args = __rewriteEntryArgs(__terp, __ip, __args)));
+		super(__terp, __ip, __mc, __mm, __args);
 		
 		throw new Error("TODO");
 	}
 	
 	/**
-	 * Rewrites the entry method when replaying a stream then writes the
-	 * entry method if recording.
-	 *
-	 * @param __terp The interpreter.
-	 * @param __ip The owning process.
-	 * @param __m The original entry method.
-	 * @return The rewritten entry method.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2016/06/03
 	 */
-	private static final CIMethod __rewriteEntryMethod(RRInterpreter __terp,
-		RRProcess __ip, CIMethod __m)
-		throws NullPointerException
+	@Override
+	protected Object[] adjustMainArguments(Object... __args)
 	{
 		// Check
-		if (__terp == null || __m == null || __ip == null)
+		if (__args == null)
 			throw new NullPointerException("NARG");
 		
 		// Get the data stream
-		RRDataStream rds = __terp.dataStream();
+		RRDataStream rds = ((RRInterpreter)this.interpreter).dataStream();
+		synchronized (rds)
+		{
+			// If playing, change the class
+			if (rds.isPlaying())
+				throw new Error("TODO");
+			
+			// Record the class
+			if (rds.isRecording())
+				throw new Error("TODO");
+		}
+		
+		// Return the input, which may have changed
+		return __args;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	protected ClassNameSymbol adjustMainClass(ClassNameSymbol __mc)
+	{
+		// Check
+		if (__mc == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the data stream
+		RRDataStream rds = ((RRInterpreter)this.interpreter).dataStream();
+		synchronized (rds)
+		{
+			// If playing, change the class
+			if (rds.isPlaying())
+				throw new Error("TODO");
+			
+			// Record the class
+			if (rds.isRecording())
+				throw new Error("TODO");
+		}
+		
+		// Return the input, which may have changed
+		return __mc;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	protected CIMethodID adjustMainMethod(CIMethodID __mm)
+	{
+		// Check
+		if (__mm == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the data stream
+		RRDataStream rds = ((RRInterpreter)this.interpreter).dataStream();
 		synchronized (rds)
 		{
 			// If playing, change the method
@@ -72,46 +122,7 @@ public class RRThread
 		}
 		
 		// Return the input, which may have changed
-		return __m;
-	}
-	
-	/**
-	 * Rewrites the entry arguments when replaying a stream then writes the
-	 * entry arguments if recording.
-	 *
-	 * @param __terp The interpreter.
-	 * @param __ip The owning process.
-	 * @param __args The original entry arguments.
-	 * @return The rewritten entry arguments.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/03
-	 */
-	private static final Object[] __rewriteEntryArgs(RRInterpreter __terp,
-		RRProcess __ip, Object... __args)
-		throws NullPointerException
-	{
-		// Check
-		if (__terp == null || __args == null || __ip == null)
-			throw new NullPointerException("NARG");
-		
-		// Defensive copy
-		__args = __args.clone();
-		
-		// Get the data stream
-		RRDataStream rds = __terp.dataStream();
-		synchronized (rds)
-		{
-			// If playing, change the arguments
-			if (rds.isPlaying())
-				throw new Error("TODO");
-			
-			// Record arguments
-			if (rds.isRecording())
-				throw new Error("TODO");
-		}
-		
-		// Return the input
-		return __args;
+		return __mm;
 	}
 }
 

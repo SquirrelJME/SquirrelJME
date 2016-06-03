@@ -13,7 +13,9 @@ package net.multiphasicapps.squirreljme.terp.rr;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
@@ -70,10 +72,10 @@ public class RRInterpreter
 	 */
 	@Override
 	public InterpreterThread createThread(InterpreterProcess __ip,
-		CIMethod __m, Object... __args)
+		ClassNameSymbol __mc, CIMethodID __mm, Object... __args)
 		throws InterpreterException, NullPointerException
 	{
-		return new RRThread(this, (RRProcess)__ip, __m, __args);
+		return new RRThread(this, (RRProcess)__ip, __mc, __mm, __args);
 	}
 	
 	/**

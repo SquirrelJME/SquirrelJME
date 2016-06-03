@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 import net.multiphasicapps.squirreljme.terp.InterpreterProcess;

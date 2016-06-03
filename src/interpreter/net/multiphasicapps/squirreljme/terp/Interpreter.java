@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.terp;
 
 import java.util.Map;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 
@@ -40,7 +42,8 @@ public abstract class Interpreter
 	 * the specified method and uses the given arguments.
 	 *
 	 * @param __ip The process which owns the thread.
-	 * @param __m The starting method to start execution in, must be static.
+	 * @param __mc The main class of the thread.
+	 * @param __mm The main method of the thread.
 	 * @param __args The initial arguments which are passed to the starting
 	 * method.
 	 * @throws InterpreterException If the method is not static or an input
@@ -50,7 +53,7 @@ public abstract class Interpreter
 	 * @since 2016/06/03
 	 */
 	public abstract InterpreterThread createThread(InterpreterProcess __ip,
-		CIMethod __m, Object... __args)
+		ClassNameSymbol __mc, CIMethodID __mm, Object... __args)
 		throws InterpreterException, NullPointerException;
 	
 	/**

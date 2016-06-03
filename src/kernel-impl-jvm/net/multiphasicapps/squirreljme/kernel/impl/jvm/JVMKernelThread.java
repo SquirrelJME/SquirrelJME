@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
@@ -41,14 +42,15 @@ public class JVMKernelThread
 	 *
 	 * @param __k The owning kernel.
 	 * @param __proc The owning process.
+	 * @param __mc The main class.
 	 * @param __mm The main method.
 	 * @param __args The method arguments.
 	 * @since 2016/06/01
 	 */
 	public JVMKernelThread(JVMKernel __k, JVMKernelProcess __proc,
-		CIMethod __mm, Object... __args)
+		ClassNameSymbol __mc, CIMethod __mm, Object... __args)
 	{
-		super(__k, __proc);
+		super(__k, __proc, __mc, __mm, __args);
 		
 		// Check
 		if (__mm == null || __args == null)
@@ -65,7 +67,7 @@ public class JVMKernelThread
 		InterpreterProcess iproc = this.jvmprocess.interpreterProcess();
 		
 		// Setup new thread
-		this.ithread = terp.createThread(iproc, __mm, __args);
+		this.ithread = terp.createThread(iproc, __mc, __mm, __args);
 	}
 }
 

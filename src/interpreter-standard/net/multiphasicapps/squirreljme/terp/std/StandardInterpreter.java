@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.terp.std;
 
 import java.util.Map;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 import net.multiphasicapps.squirreljme.terp.InterpreterException;
@@ -52,7 +54,7 @@ public class StandardInterpreter
 	 */
 	@Override
 	public InterpreterThread createThread(InterpreterProcess __ip,
-		CIMethod __m, Object... __args)
+		ClassNameSymbol __mc, CIMethodID __mm, Object... __args)
 		throws InterpreterException, NullPointerException
 	{
 		throw new Error("TODO");
