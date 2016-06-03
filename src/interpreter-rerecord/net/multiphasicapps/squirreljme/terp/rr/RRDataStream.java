@@ -66,7 +66,7 @@ public class RRDataStream
 	/**
 	 * Initializes the data stream.
 	 *
-	 * @param __i The owning interpreter, which is also locked on.
+	 * @param __i The owning interpreter.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/30
 	 */
@@ -141,7 +141,7 @@ public class RRDataStream
 	public final boolean isPlaying()
 	{
 		// Lock
-		synchronized (this.interpreter)
+		synchronized (this)
 		{
 			return this._replay != null;
 		}
@@ -156,7 +156,7 @@ public class RRDataStream
 	public final boolean isRecording()
 	{
 		// Lock
-		synchronized (this.interpreter)
+		synchronized (this)
 		{
 			return this._record != null;
 		}
@@ -178,7 +178,7 @@ public class RRDataStream
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		synchronized (this.interpreter)
+		synchronized (this)
 		{
 			// {@squirreljme.error BC0b The stream is not in recording mode.}
 			DataOutputStream dos = this._record;
@@ -244,7 +244,7 @@ public class RRDataStream
 		RRInterpreter terp = this.interpreter;
 		
 		// Lock
-		synchronized (this.interpreter)
+		synchronized (this)
 		{
 			// Stop existing stream?
 			if (__p == null)
@@ -320,7 +320,7 @@ public class RRDataStream
 		RRInterpreter terp = this.interpreter;
 		
 		// Lock
-		synchronized (this.interpreter)
+		synchronized (this)
 		{
 			// Stop existing stream?
 			if (__p == null)
