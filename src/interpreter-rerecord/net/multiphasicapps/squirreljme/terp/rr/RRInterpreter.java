@@ -61,6 +61,50 @@ public class RRInterpreter
 	 * @since 2016/06/03
 	 */
 	@Override
+	public ClassPath adjustClassPath(ClassPath __cp)
+	{
+		// Check
+		if (__cp == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the data stream
+		RRDataStream rds = dataStream();
+		synchronized (rds)
+		{
+			// If playing, change the class path
+			if (rds.isPlaying())
+				throw new Error("TODO");
+			
+			// Record the class path
+			if (rds.isRecording())
+			{
+				// Get all the class units
+				ClassUnit[] cus = __cp.units();
+				int n = cus.length;
+				
+				// Record it
+				try (RRDataPacket pk = rds.createPacket(
+					RRDataCommand.ADJUST_CLASS_PATH, n))
+				{
+					// Store all unit names
+					for (int i = 0; i < n; i++)
+						pk.set(i, cus[i].toString());
+					
+					// Record it
+					rds.record(pk);
+				}
+			}
+		}
+		
+		// Return the input, which may have changed
+		return __cp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
 	public Object[] adjustMainArguments(Object... __args)
 	{
 		// Check
@@ -71,11 +115,11 @@ public class RRInterpreter
 		RRDataStream rds = dataStream();
 		synchronized (rds)
 		{
-			// If playing, change the class
+			// If playing, change the arguments
 			if (rds.isPlaying())
 				throw new Error("TODO");
 			
-			// Record the class
+			// Record the arguments
 			int n;
 			if (rds.isRecording())
 				try (RRDataPacket pk = rds.createPacket(

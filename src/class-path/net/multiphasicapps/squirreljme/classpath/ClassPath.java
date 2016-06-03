@@ -163,6 +163,17 @@ public final class ClassPath
 	}
 	
 	/**
+	 * Returns the number of class units which are used.
+	 *
+	 * @return The number of class units.
+	 * @since 2016/06/03
+	 */
+	public final int count()
+	{
+		return this._units.length;
+	}
+	
+	/**
 	 * Locates the given class by the specified name and verifies that it is
 	 * well formed before it is returned.
 	 *

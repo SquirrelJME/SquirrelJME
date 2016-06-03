@@ -42,7 +42,7 @@ public abstract class KernelThread
 	protected final CIMethodID mainmethod;
 	
 	/** The main arguments. */
-	protected final List<Object> mainarguments;
+	protected final List<Object> mainargs;
 	
 	/**
 	 * Initializes the base kernel thread.
@@ -77,7 +77,7 @@ public abstract class KernelThread
 			(__mc = adjustMainClass(__mc)), "NARG");
 		this.mainmethod = Objects.<CIMethodID>requireNonNull(
 			(__mm = adjustMainMethod(__mm)), "NARG");
-		this.mainarguments = UnmodifiableList.<Object>of(Arrays.<Object>asList(
+		this.mainargs = UnmodifiableList.<Object>of(Arrays.<Object>asList(
 			Objects.<Object[]>requireNonNull(
 			(__args = adjustMainArguments(__args))).clone()));
 		

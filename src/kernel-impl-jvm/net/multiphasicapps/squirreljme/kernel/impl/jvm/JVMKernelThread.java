@@ -68,9 +68,8 @@ public class JVMKernelThread
 		InterpreterProcess iproc = this.jvmprocess.interpreterProcess();
 		
 		// Setup new thread
-		if (true)
-			throw new Error("TODO");
-		this.ithread = terp.createThread(iproc, __mc, __mm, __args);
+		this.ithread = terp.createThread(iproc, this.mainclass,
+			this.mainmethod, this.mainargs.toArray());
 	}
 	
 	

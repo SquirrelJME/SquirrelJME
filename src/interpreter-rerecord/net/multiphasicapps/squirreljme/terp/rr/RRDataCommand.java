@@ -40,13 +40,16 @@ public enum RRDataCommand
 	/** A process is created in the VM. */
 	CREATE_PROCESS(false),
 	
-	/** Adjusts the main class. */
+	/** Adjusts the class path for a process. */
+	ADJUST_CLASS_PATH(false),
+	
+	/** Adjusts the main class for a thread. */
 	ADJUST_MAIN_CLASS(false),
 	
-	/** Adjusts the main method. */
+	/** Adjusts the main method for a thread. */
 	ADJUST_MAIN_METHOD(false),
 	
-	/** Adjusts the main arguments. */
+	/** Adjusts the main arguments for a thread. */
 	ADJUST_MAIN_ARGUMENTS(false),
 	
 	/** End. */

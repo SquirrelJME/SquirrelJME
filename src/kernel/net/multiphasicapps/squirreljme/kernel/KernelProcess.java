@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
@@ -61,7 +62,20 @@ public abstract class KernelProcess
 		// Set
 		this.kernel = __k;
 		this.id = __k._processesidgen.__next();
-		this.classpath = __cp;
+		this.classpath = (__cp = Objects.<ClassPath>requireNonNull(
+			adjustClassPath(__cp)));
+	}
+	
+	/**
+	 * Adjusts the class path to be used by the process.
+	 *
+	 * @param __cp The class path to use.
+	 * @return The adjusted class path.
+	 * @since 2016/06/03
+	 */
+	protected ClassPath adjustClassPath(ClassPath __cp)
+	{
+		return __cp;
 	}
 	
 	/**

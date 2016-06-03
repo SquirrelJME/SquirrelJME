@@ -53,6 +53,17 @@ public class JVMKernelProcess
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	protected ClassPath adjustClassPath(ClassPath __cp)
+	{
+		return ((JVMKernel)(this.kernel)).interpreter().
+			adjustClassPath(__cp);
+	}
+	
+	/**
 	 * Returns the process which is associated with the interpreter.
 	 *
 	 * @return The interpreter based process.

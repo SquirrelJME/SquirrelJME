@@ -72,6 +72,18 @@ public abstract class Interpreter
 	public abstract void runCycle();
 	
 	/**
+	 * Adjusts the class path to be used by a process.
+	 *
+	 * @param __cp The class path to use.
+	 * @return The adjusted class path.
+	 * @since 2016/06/03
+	 */
+	public ClassPath adjustClassPath(ClassPath __cp)
+	{
+		return __cp;
+	}
+	
+	/**
 	 * Potentially adjusts the arguments to be used by a thread.
 	 *
 	 * @param __args The original arguments.
