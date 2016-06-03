@@ -5,3 +5,10 @@
 The `ClassPath` has to be associated with processes in order to find new ones
 to execute.
 
+## 19:34
+
+Putting the process details such as the class path and main class in processes
+and threads is a bit convoluted, especially when it comes to the interpreter.
+However, after the thread is initialized and the thread arguments are checked,
+the interpreter thread would be created then.
+
