@@ -27,10 +27,13 @@ public abstract class Interpreter
 	 * Creates a new process in the interpreter for storing object states
 	 * for a group of threads.
 	 *
+	 * @param __cp The classpath that the process uses.
 	 * @return The new interpreter process.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/03
 	 */
-	public abstract InterpreterProcess createProcess();
+	public abstract InterpreterProcess createProcess(ClassPath __cp)
+		throws NullPointerException;
 	
 	/**
 	 * Creates a new thread within the interpreter which starts execution at

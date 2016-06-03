@@ -194,17 +194,19 @@ public abstract class Kernel
 	/**
 	 * Internally creates a new process which may be executed.
 	 *
+	 * @param __cp The classpath used for object lookup.
 	 * @return The newly created process which is implementation specific.
 	 * @throws KernelException If the process could not be created.
 	 * @sicne 2016/05/29
 	 */
-	protected abstract KernelProcess internalCreateProcess()
+	protected abstract KernelProcess internalCreateProcess(ClassPath __cp)
 		throws KernelException;
 	
 	/**
 	 * Internally creates a new thread which may be executed.
 	 *
 	 * @param __proc The process which owns the thread.
+	 * @param __mc The main class.
 	 * @param __mm The main method.
 	 * @param __args The arguments to pass to the method.
 	 * @return A kernel based thread which is implementation specific.
@@ -212,7 +214,7 @@ public abstract class Kernel
 	 * @since 2016/05/28
 	 */
 	protected abstract KernelThread internalCreateThread(KernelProcess __proc,
-		CIMethod __mm, Object... __args)
+		ClassNameSymbol __mc, CIMethodID __mm, Object... __args)
 		throws KernelException;
 	
 	/**
@@ -268,47 +270,18 @@ public abstract class Kernel
 		else
 			__args = __args.clone();
 		
-		// Load the main class and locate the main method
-		CIClass maincl;
-		CIMethod mainmethod;
-		try
-		{
-			// Load the class
-			maincl = __cp.locateClass(__mcl);
-			
-			// Locate the main method
-			CIMethodID mainid = new CIMethodID(IdentifierSymbol.of("main"),
-				MethodSymbol.of("([Ljava/lang/String;)V"));
-			mainmethod = maincl.methods().get(mainid);
-			
-			// {@squirreljme.error AY0g Could not find the main method in the
-			// given clas. (The main class; The main method)}
-			if (mainmethod == null)
-				throw new KernelException(String.format("AY0g %s %s", __mcl,
-					mainid));
-			
-			// {@squirreljme.error AY0h The entry method for a process is not
-			// static. (The main class)}
-			if (!mainmethod.flags().isStatic())
-				throw new KernelException(String.format("AY0k %s",
-					__mcl));
-		}
-		
-		// {@squirreljme.error AY0f Could not load the main class.}
-		catch (CIException e)
-		{
-			throw new KernelException("AY0f", e);
-		}
-		
 		// Lock on processes
 		List<KernelProcess> processes = this._processes;
 		synchronized (processes)
 		{
 			// Create a new process
-			KernelProcess rv = internalCreateProcess();
+			KernelProcess rv = internalCreateProcess(__cp);
 			
 			// Create main thread for the process
-			KernelThread maint = createThread(rv, mainmethod, (Object)__args);
+			KernelThread maint = createThread(rv, __mcl,
+				new CIMethodID(IdentifierSymbol.of("main"),
+					MethodSymbol.of("([Ljava/lang/String;)V")),
+					(Object)__args);
 			
 			// Determine where it should be placed
 			int id = rv.id();
@@ -332,6 +305,7 @@ public abstract class Kernel
 	 * This creates a new thread which is to be managed by the kernel.
 	 *
 	 * @param __proc The process to create the thread for.
+	 * @param __mc The main class.
 	 * @param __mm The main method.
 	 * @param __args The arguments to the method, must be {@link String},
 	 * boxed primitive types, arrays of {@String}, or arrays of primitive
@@ -344,7 +318,7 @@ public abstract class Kernel
 	 * @since 2016/05/29
 	 */
 	public final KernelThread createThread(KernelProcess __proc,
-		CIMethod __mm, Object... __args)
+		ClassNameSymbol __mc, CIMethodID __mm, Object... __args)
 		throws ClassCastException, KernelException, NullPointerException
 	{
 		// Check
@@ -356,12 +330,6 @@ public abstract class Kernel
 			__args = new Object[0];
 		else
 			__args = __args.clone();
-		
-		// {@squirreljme.error AY0h The entry method for a thread is not
-		// static. (The method identifier)}
-		if (!__mm.flags().isStatic())
-			throw new KernelException(String.format("AY0h %s",
-				__mm.nameAndType()));
 		
 		// {@squirreljme.error AY0i An argument with the given class type
 		// cannot be passed to a thread's initial arguments. (The class of the
@@ -380,20 +348,12 @@ public abstract class Kernel
 				throw new ClassCastException(String.format("AY0i %s",
 					a.getClass()));
 		
-		// {@squirreljme.error AY0j The number of arguments the method accepts
-		// and the number of arguments(The wanted argument count; The number of
-		// arguments available)}
-		int wac;
-		if ((wac = __mm.nameAndType().type().argumentCount()) != __args.length)
-			throw new KernelException(String.format("AY0j %d %d",
-				wac, __args.length));
-		
 		// Lock on threads
 		List<KernelThread> threads = this._threads;
 		synchronized (threads)
 		{
 			// Internally create a thread
-			KernelThread rv = internalCreateThread(__proc, __mm, __args);
+			KernelThread rv = internalCreateThread(__proc, __mc, __mm, __args);
 			
 			// Determine where it should be placed
 			int id = rv.id();

@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.terp.std;
 
 import java.util.Map;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 import net.multiphasicapps.squirreljme.terp.InterpreterException;
 import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
@@ -40,7 +41,7 @@ public class StandardInterpreter
 	 * @since 2016/06/03
 	 */
 	@Override
-	public InterpreterProcess createProcess()
+	public InterpreterProcess createProcess(ClassPath __cp)
 	{
 		throw new Error("TODO");
 	}

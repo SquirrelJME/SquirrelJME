@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
 /**
  * This represents a process within the kernel which where
@@ -39,23 +40,28 @@ public abstract class KernelProcess
 	/** The process ID. */
 	protected final int id;
 	
+	/** The classpath used for the process. */
+	protected final ClassPath classpath;
+	
 	/**
 	 * Initializes the kernel process.
 	 *
 	 * @param __k The owning kernel.
+	 * @param __cp The classpath used for class lookup.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/29
 	 */
-	public KernelProcess(Kernel __k)
+	public KernelProcess(Kernel __k, ClassPath __cp)
 		throws NullPointerException
 	{
 		// Check
-		if (__k == null)
+		if (__k == null || __cp == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.kernel = __k;
 		this.id = __k._processesidgen.__next();
+		this.classpath = __cp;
 	}
 	
 	/**

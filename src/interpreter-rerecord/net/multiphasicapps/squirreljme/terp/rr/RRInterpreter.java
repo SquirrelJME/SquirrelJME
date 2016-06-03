@@ -59,9 +59,9 @@ public class RRInterpreter
 	 * @since 2016/06/03
 	 */
 	@Override
-	public RRProcess createProcess()
+	public RRProcess createProcess(ClassPath __cp)
 	{
-		return new RRProcess(this);
+		return new RRProcess(this, __cp);
 	}
 	
 	/**

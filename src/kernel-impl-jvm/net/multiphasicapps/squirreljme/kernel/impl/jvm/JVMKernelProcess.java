@@ -33,11 +33,12 @@ public class JVMKernelProcess
 	 * Initializes the kernel process.
 	 *
 	 * @param __k The owning kernel.
+	 * @param __cp The classpath for object lookup.
 	 * @since 2016/05/31
 	 */
-	JVMKernelProcess(JVMKernel __k)
+	JVMKernelProcess(JVMKernel __k, ClassPath __cp)
 	{
-		super(__k);
+		super(__k, __cp);
 		
 		// Set
 		JVMKernel jvmkernel = (JVMKernel)this.kernel;
@@ -47,7 +48,7 @@ public class JVMKernelProcess
 		Interpreter terp = jvmkernel.interpreter();
 		
 		// Setup interpreter process
-		this.iprocess = terp.createProcess();
+		this.iprocess = terp.createProcess(this.classpath);
 	}
 	
 	/**

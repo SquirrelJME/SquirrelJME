@@ -1,2 +1,7 @@
 # 2016/06/03
 
+## 18:37
+
+The `ClassPath` has to be associated with processes in order to find new ones
+to execute.
+

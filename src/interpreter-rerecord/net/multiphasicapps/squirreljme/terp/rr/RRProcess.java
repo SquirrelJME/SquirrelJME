@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.terp.rr;
 
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
 
 /**
@@ -28,11 +29,12 @@ public class RRProcess
 	 * Initializes the process which runs under the rerecording interpreter.
 	 *
 	 * @param __terp The owning interpreter.
+	 * @param __cp The classpath for class lookup.
 	 * @since 2016/06/03
 	 */
-	public RRProcess(RRInterpreter __terp)
+	public RRProcess(RRInterpreter __terp, ClassPath __cp)
 	{
-		super(__terp);
+		super(__terp, __cp);
 		
 		// Set
 		RRInterpreter rri = (RRInterpreter)this.interpreter;

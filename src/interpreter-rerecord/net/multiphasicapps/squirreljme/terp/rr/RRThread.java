@@ -33,8 +33,8 @@ public class RRThread
 	public RRThread(RRInterpreter __terp,
 		RRProcess __ip, CIMethod __m, Object... __args)
 	{
-		super(__terp, __ip, (__m = __rewriteEntryMethod(__terp, __m)),
-			(__args = __rewriteEntryArgs(__terp, __args)));
+		super(__terp, __ip, (__m = __rewriteEntryMethod(__terp, __ip, __m)),
+			(__args = __rewriteEntryArgs(__terp, __ip, __args)));
 		
 		throw new Error("TODO");
 	}
@@ -44,25 +44,35 @@ public class RRThread
 	 * entry method if recording.
 	 *
 	 * @param __terp The interpreter.
+	 * @param __ip The owning process.
 	 * @param __m The original entry method.
 	 * @return The rewritten entry method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/03
 	 */
 	private static final CIMethod __rewriteEntryMethod(RRInterpreter __terp,
-		CIMethod __m)
+		RRProcess __ip, CIMethod __m)
 		throws NullPointerException
 	{
 		// Check
-		if (__terp == null || __m == null)
+		if (__terp == null || __m == null || __ip == null)
 			throw new NullPointerException("NARG");
 		
 		// Get the data stream
 		RRDataStream rds = __terp.dataStream();
 		synchronized (rds)
 		{
-			throw new Error("TODO");
+			// If playing, change the method
+			if (rds.isPlaying())
+				throw new Error("TODO");
+			
+			// Record the method
+			if (rds.isRecording())
+				throw new Error("TODO");
 		}
+		
+		// Return the input, which may have changed
+		return __m;
 	}
 	
 	/**
@@ -70,25 +80,38 @@ public class RRThread
 	 * entry arguments if recording.
 	 *
 	 * @param __terp The interpreter.
+	 * @param __ip The owning process.
 	 * @param __args The original entry arguments.
 	 * @return The rewritten entry arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/03
 	 */
 	private static final Object[] __rewriteEntryArgs(RRInterpreter __terp,
-		Object... __args)
+		RRProcess __ip, Object... __args)
 		throws NullPointerException
 	{
 		// Check
-		if (__terp == null || __args == null)
+		if (__terp == null || __args == null || __ip == null)
 			throw new NullPointerException("NARG");
+		
+		// Defensive copy
+		__args = __args.clone();
 		
 		// Get the data stream
 		RRDataStream rds = __terp.dataStream();
 		synchronized (rds)
 		{
-			throw new Error("TODO");
+			// If playing, change the arguments
+			if (rds.isPlaying())
+				throw new Error("TODO");
+			
+			// Record arguments
+			if (rds.isRecording())
+				throw new Error("TODO");
 		}
+		
+		// Return the input
+		return __args;
 	}
 }
 

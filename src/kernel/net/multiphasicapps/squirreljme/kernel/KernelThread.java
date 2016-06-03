@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.kernel;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
+
 /**
  * This is an abstract representation of a thread which runs within the kernel
  * that is implemented using native means.
@@ -28,6 +31,12 @@ public abstract class KernelThread
 	/** The thread ID. */
 	protected final int id;
 	
+	/** The main class. */
+	protected final ClassNameSymbol mainclass;
+	
+	/** The main method. */
+	protected final CIMethodID mainmethod;
+	
 	/**
 	 * Initializes the base kernel thread.
 	 *
@@ -36,17 +45,22 @@ public abstract class KernelThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/28
 	 */
-	public KernelThread(Kernel __k, KernelProcess __proc)
+	public KernelThread(Kernel __k, KernelProcess __proc, ClassNameSymbol __mc,
+		CIMethodID __mm)
 		throws NullPointerException
 	{
 		// Check
-		if (__k == null)
+		if (__k == null || __proc == null || __mc == null || __mm == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.kernel = __k;
 		this.process = __proc;
 		this.id = __k._threadidgen.__next();
+		this.mainclass = __mc;
+		this.mainmethod = __mm;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
