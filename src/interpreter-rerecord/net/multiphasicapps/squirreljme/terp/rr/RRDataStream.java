@@ -167,9 +167,30 @@ public class RRDataStream
 				RRDataCommand cmd = __pk.getCommand();
 				int len = __pk.length();
 				
-				if (false)
-					throw new IOException("TODO");
-				throw new Error("TODO");
+				// Write the command code and the length
+				dos.writeByte((byte)cmd.ordinal());
+				dos.writeShort((short)len);
+				
+				// Go through all packet values and write them
+				for (int i = 0; i < len; i++)
+				{
+					// Get the type of data stored here
+					Object v = __pk.get(i);
+					RRDataType dt = RRDataType.of(v);
+					
+					// {@squirreljme.error BC0g Could not obtain the data type
+					// to be used for the given argument of a given class.
+					// (The index; The class type)}
+					if (dt == null)
+						throw new RRDataStreamException(String.format("BC0g",
+							i, v.getClass()));
+					
+					// Write the value code
+					dos.writeByte((byte)dt.ordinal());
+					
+					// Write its actual value storage
+					dt.write(dos, v);
+				}
 			}
 			
 			// {@squirreljme.error BC0a Failed to record the packet to the
