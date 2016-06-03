@@ -76,8 +76,18 @@ public class RRInterpreter
 				throw new Error("TODO");
 			
 			// Record the class
+			int n;
 			if (rds.isRecording())
-				throw new Error("TODO");
+				try (RRDataPacket pk = rds.createPacket(
+					RRDataCommand.ADJUST_MAIN_ARGUMENTS, (n = __args.length)))
+				{
+					// Store all arguments
+					for (int i = 0; i < n; i++)
+						pk.set(i, __args[i]);
+					
+					// Record it
+					rds.record(pk);
+				}
 		}
 		
 		// Return the input, which may have changed
@@ -105,7 +115,15 @@ public class RRInterpreter
 			
 			// Record the class
 			if (rds.isRecording())
-				throw new Error("TODO");
+				try (RRDataPacket pk = rds.createPacket(
+					RRDataCommand.ADJUST_MAIN_CLASS, 1))
+				{
+					// Store class
+					pk.set(0, __mc.toString());
+					
+					// Record it
+					rds.record(pk);
+				}
 		}
 		
 		// Return the input, which may have changed
@@ -133,7 +151,16 @@ public class RRInterpreter
 			
 			// Record the method
 			if (rds.isRecording())
-				throw new Error("TODO");
+				try (RRDataPacket pk = rds.createPacket(
+					RRDataCommand.ADJUST_MAIN_METHOD, 2))
+				{
+					// Store name and type
+					pk.set(0, __mm.name().toString());
+					pk.set(1, __mm.type().toString());
+					
+					// Record it
+					rds.record(pk);
+				}
 		}
 		
 		// Return the input, which may have changed

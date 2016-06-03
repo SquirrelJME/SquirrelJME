@@ -40,6 +40,15 @@ public enum RRDataCommand
 	/** A process is created in the VM. */
 	CREATE_PROCESS(false),
 	
+	/** Adjusts the main class. */
+	ADJUST_MAIN_CLASS(false),
+	
+	/** Adjusts the main method. */
+	ADJUST_MAIN_METHOD(false),
+	
+	/** Adjusts the main arguments. */
+	ADJUST_MAIN_ARGUMENTS(false),
+	
 	/** End. */
 	;
 	
