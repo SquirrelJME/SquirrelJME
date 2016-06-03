@@ -189,7 +189,29 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			String[] v = (String[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+			{
+				String q = v[i];
+				
+				// Strings may be null
+				if (q == null)
+					__dos.writeByte(0);
+				
+				// Otherwise write it
+				else
+				{
+					__dos.writeByte(1);
+					__dos.writeUTF(q);
+				}
+			}
 		}
 	},
 	
@@ -204,7 +226,16 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			boolean[] v = (boolean[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+				__dos.writeByte((v[i] ? 1 : 0));
 		}
 	},
 	
@@ -219,7 +250,16 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			byte[] v = (byte[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+				__dos.writeByte(v[i]);
 		}
 	},
 	
@@ -234,7 +274,16 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			short[] v = (short[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+				__dos.writeShort(v[i]);
 		}
 	},
 	
@@ -249,7 +298,16 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			char[] v = (char[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+				__dos.writeChar(v[i]);
 		}
 	},
 	
@@ -264,7 +322,16 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			int[] v = (int[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+				__dos.writeInt(v[i]);
 		}
 	},
 	
@@ -279,7 +346,16 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			long[] v = (long[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+				__dos.writeLong(v[i]);
 		}
 	},
 	
@@ -294,7 +370,16 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			float[] v = (float[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+				__dos.writeFloat(v[i]);
 		}
 	},
 	
@@ -309,7 +394,16 @@ public enum RRDataType
 		public void write(DataOutputStream __dos, Object __v)
 			throws ClassCastException, IOException, NullPointerException
 		{
-			throw new Error("TODO");
+			// Array could be empty
+			if (__dos == null)
+				throw new NullPointerException("NARG");
+			
+			// Write array elements
+			double[] v = (double[])__v;
+			int n = v.length;
+			__dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+				__dos.writeDouble(v[i]);
 		}
 	},
 	
