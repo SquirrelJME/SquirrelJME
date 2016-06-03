@@ -49,5 +49,16 @@ public class JVMKernelProcess
 		// Setup interpreter process
 		this.iprocess = terp.createProcess();
 	}
+	
+	/**
+	 * Returns the process which is associated with the interpreter.
+	 *
+	 * @return The interpreter based process.
+	 * @since 2016/06/03
+	 */
+	public final InterpreterProcess interpreterProcess()
+	{
+		return this.iprocess;
+	}
 }
 

@@ -33,6 +33,24 @@ public abstract class Interpreter
 	public abstract InterpreterProcess createProcess();
 	
 	/**
+	 * Creates a new thread within the interpreter which starts execution at
+	 * the specified method and uses the given arguments.
+	 *
+	 * @param __ip The process which owns the thread.
+	 * @param __m The starting method to start execution in, must be static.
+	 * @param __args The initial arguments which are passed to the starting
+	 * method.
+	 * @throws InterpreterException If the method is not static or an input
+	 * argument is not of the expected type.
+	 * @throws NullPointerException If the process or method were not
+	 * specified.
+	 * @since 2016/06/03
+	 */
+	public abstract InterpreterThread createThread(InterpreterProcess __ip,
+		CIMethod __m, Object... __args)
+		throws InterpreterException, NullPointerException;
+	
+	/**
 	 * Handles the X options which may be passed to the interpreter.
 	 *
 	 * @param __xo The X options to handle.

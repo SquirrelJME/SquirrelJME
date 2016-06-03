@@ -15,6 +15,8 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
+import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
+import net.multiphasicapps.squirreljme.terp.InterpreterThread;
 
 /**
  * This represents a single thread which runs in the kernel, this is tied
@@ -30,6 +32,9 @@ public class JVMKernelThread
 	
 	/** The owning process. */
 	protected final JVMKernelProcess jvmprocess;
+	
+	/** The interpreter based thread. */
+	protected final InterpreterThread ithread;
 	
 	/**
 	 * Initializes the JVM interpreter based thread.
@@ -56,7 +61,11 @@ public class JVMKernelThread
 		// Get the used interpreter
 		Interpreter terp = this.jvmkernel.interpreter();
 		
-		throw new Error("TODO");
+		// Get the process
+		InterpreterProcess iproc = this.jvmprocess.interpreterProcess();
+		
+		// Setup new thread
+		this.ithread = terp.createThread(iproc, __mm, __args);
 	}
 }
 

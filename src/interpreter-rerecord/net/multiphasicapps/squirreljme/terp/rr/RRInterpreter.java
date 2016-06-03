@@ -17,6 +17,9 @@ import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
+import net.multiphasicapps.squirreljme.terp.InterpreterException;
+import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
+import net.multiphasicapps.squirreljme.terp.InterpreterThread;
 
 /**
  * This contains the interpreter which is used for re-recording.
@@ -59,6 +62,18 @@ public class RRInterpreter
 	public RRProcess createProcess()
 	{
 		return new RRProcess(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/03
+	 */
+	@Override
+	public InterpreterThread createThread(InterpreterProcess __ip,
+		CIMethod __m, Object... __args)
+		throws InterpreterException, NullPointerException
+	{
+		return new RRThread(this, (RRProcess)__ip, __m, __args);
 	}
 	
 	/**
