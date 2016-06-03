@@ -374,12 +374,15 @@ public class RRDataStream
 				record(pk);
 			}
 			
-			// Write some notes
-			try (RRDataPacket pk = createPacket(RRDataCommand.NOTES, 1))
+			// Write virtual machine configuration details
+			try (RRDataPacket pk = createPacket(RRDataCommand.HOST_VM, 1))
 			{
 				// Add some notes
 				pk.set(0, new String[]
 					{
+						"SquirrelJME",
+						"http://multiphasicapps.net/",
+						
 						"microedition.platform",
 						System.getProperty("microedition.platform"),
 						

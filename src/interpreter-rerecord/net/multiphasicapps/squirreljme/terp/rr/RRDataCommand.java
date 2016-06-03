@@ -28,8 +28,8 @@ public enum RRDataCommand
 	/** Magic number. */
 	MAGIC_NUMBER(false),
 	
-	/** Notes. */
-	NOTES(true),
+	/** Host virtual machine information (for debugging). */
+	HOST_VM(true),
 	
 	/** Set the Java instructions per second. */
 	SET_JIPS(true),
