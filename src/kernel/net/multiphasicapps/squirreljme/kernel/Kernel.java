@@ -277,6 +277,11 @@ public abstract class Kernel
 			// Create a new process
 			KernelProcess rv = internalCreateProcess(__cp);
 			
+			// {@squirreljme.error AY0k The created process was assigned to
+			// another kernel.}
+			if (rv.kernel() != this)
+				throw new KernelException("AY0k");
+			
 			// Create main thread for the process
 			KernelThread maint = createThread(rv, __mcl,
 				new CIMethodID(IdentifierSymbol.of("main"),
@@ -312,6 +317,7 @@ public abstract class Kernel
 	 * types.
 	 * @return The newly created thread.
 	 * @throws ClassCastException If the arguments are not of a valid type.
+	 * @throws IllegalStateException If the process belongs to another kernel.
 	 * @throws KernelException If the method is not static or there are not
 	 * enough arguments to pass to the main entry point.
 	 * @throws NullPointerException On null arguments.
@@ -319,11 +325,17 @@ public abstract class Kernel
 	 */
 	public final KernelThread createThread(KernelProcess __proc,
 		ClassNameSymbol __mc, CIMethodID __mm, Object... __args)
-		throws ClassCastException, KernelException, NullPointerException
+		throws ClassCastException, IllegalStateException, KernelException,
+			NullPointerException
 	{
 		// Check
 		if (__proc == null || __mm == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY0j The process to own the new thread is owned
+		// by another kernel.}
+		if (__proc.kernel() != this)
+			throw new IllegalStateException("AY0j");
 		
 		// Defensive copy
 		if (__args == null)
@@ -337,6 +349,16 @@ public abstract class Kernel
 		{
 			// Internally create a thread
 			KernelThread rv = internalCreateThread(__proc, __mc, __mm, __args);
+			
+			// {@squirreljme.error AY0g The created thread was assigned to
+			// another kernel.}
+			if (rv.kernel() != this)
+				throw new KernelException("AY0g");
+			
+			// {@squirreljme.error AY0h The created thread was assigned to
+			// another kernel.}
+			if (rv.process() != __proc)
+				throw new KernelException("AY0h");
 			
 			// Determine where it should be placed
 			int id = rv.id();

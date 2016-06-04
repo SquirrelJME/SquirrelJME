@@ -52,17 +52,23 @@ public abstract class KernelThread
 	 * @param __mc The main class.
 	 * @param __mm The main method.
 	 * @param __args The arguments to the thread.
+	 * @throws IllegalStateException If the owning process belongs to another
+	 * kernel.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/28
 	 */
 	public KernelThread(Kernel __k, KernelProcess __proc, ClassNameSymbol __mc,
 		CIMethodID __mm, Object... __args)
-		throws NullPointerException
+		throws IllegalStateException, NullPointerException
 	{
 		// Check
 		if (__k == null || __proc == null || __mc == null || __mm == null ||
 			__args == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AY0f The process belongs to another kernel.}
+		if (__proc.kernel() != __k)
+			throw new IllegalStateException("AY0f");
 		
 		// Set
 		this.kernel = __k;
@@ -144,6 +150,28 @@ public abstract class KernelThread
 	public final int id()
 	{
 		return this.id;
+	}
+	
+	/**
+	 * Returns the owning kernel.
+	 *
+	 * @return The owning kernel.
+	 * @since 2016/06/03
+	 */
+	public final Kernel kernel()
+	{
+		return this.kernel;
+	}
+	
+	/**
+	 * Returns the owning process.
+	 *
+	 * @return The owning process.
+	 * @since 2016/06/03
+	 */
+	public final KernelProcess process()
+	{
+		return this.process;
 	}
 }
 

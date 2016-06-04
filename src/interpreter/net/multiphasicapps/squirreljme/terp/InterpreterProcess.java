@@ -45,5 +45,16 @@ public abstract class InterpreterProcess
 		this.interpreter = __terp;
 		this.classpath = __cp;
 	}
+	
+	/**
+	 * Returns the owning interpreter of this process.
+	 *
+	 * @return The owning interpreter.
+	 * @since 2016/06/03
+	 */
+	public final Interpreter interpreter()
+	{
+		return this.interpreter;
+	}
 }
 

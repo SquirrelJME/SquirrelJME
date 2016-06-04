@@ -98,5 +98,16 @@ public abstract class KernelProcess
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Returns the kernel which owns this process.
+	 *
+	 * @return The owning kernel.
+	 * @since 2016/06/03
+	 */
+	public final Kernel kernel()
+	{
+		return this.kernel;
+	}
 }
 
