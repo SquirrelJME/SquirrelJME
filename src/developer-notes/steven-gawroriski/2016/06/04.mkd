@@ -46,3 +46,21 @@ This way, objects which are not in the reference zone do not have to be checked
 at all to determine if they point to objects. So due to this, any reference
 which is set to an object will have to be placed in the reference zone.
 
+## 09:20
+
+The garbage collector will need to have a generic object window kind of thing.
+Basically it is an interface which acts as a rover over the objects which
+are currently allocated. One window would go over the objects which are
+associated with variables running in methods. Another window would go over the
+static fields inside of a class. There would just be these two windows as that
+is all that is needed. If the window reaches an Object, it would potentially
+have fields. If a class has object fields, then they are scanned with the
+mark and sweep algorithm. Generally any field which is not strongly reached
+by a variable or static field can be garbage collected. I would have to handle
+cases where a field refers to `this`. In these cases the object must not be
+marked, otherwise any objects could just not be garbage collected by just
+referring to themselves. However cyclic references with one or more objects
+will not be garbage collected unless no class static or local points to those
+given objects. Another rover that would be needed would be one that can go
+over arrays of objects also.
+
