@@ -75,3 +75,18 @@ objects that exist.
 For the queue, I should make it concrete and then have associated object
 providers and such which are implemented by providers of objects.
 
+## 16:28
+
+When it comes to object allocation, I should have differing allocators
+potentially or just an interface and a standard one. I would propose that the
+standard and rerecording interpreters use the allocators themselves. In fact
+the allocators could act as access to object memory spaces. So rather than
+having a bunch of discrete actual objects in the interpreter, there is really
+just a pool that is used and such. The size of the memory pool could be fixed
+or it could grow along with the application. However to be friendly to other
+systems, the allocator would have to be able to detect system memory usage and
+the amount of memory that the VM is using so that GCs happen when system memory
+gets a bit low. This way another program for example can claim that memory.
+Also, if a system supports it there could even be garbage collection callbacks
+performed.
+
