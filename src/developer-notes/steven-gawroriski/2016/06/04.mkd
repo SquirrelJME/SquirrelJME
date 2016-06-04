@@ -64,3 +64,9 @@ will not be garbage collected unless no class static or local points to those
 given objects. Another rover that would be needed would be one that can go
 over arrays of objects also.
 
+## 10:59
+
+I could also probably use a kind of allocation scheme of sorts. This way there
+can be a completely shared interface which is used to access any and all
+objects that exist.
+

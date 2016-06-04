@@ -11,24 +11,24 @@
 package net.multiphasicapps.squirreljme.gc;
 
 /**
- * This is an iterator which allows traversal over garbage collected objects.
+ * This is a queue which permits access to objects
  *
  * @since 2016/06/04
  */
-public interface GCObjectIterator
+public interface GCObjectQueue
 {
 	/**
-	 * Frees the object that is currently under this iterator so that its
+	 * Frees the object that is currently selected in this queue so that its
 	 * used memory is available for other threads to use.
 	 *
-	 * @throws GCException If there is no object currently under this iterator.
+	 * @throws GCException If there is no object currently under this queue.
 	 * @since 2016/06/04
 	 */
 	public abstract void free()
 		throws GCException;
 	
 	/**
-	 * Moves the iterator to the next object.
+	 * Moves the queue to the next object.
 	 *
 	 * @return {@code true} if a new object was visited, otherwise
 	 * {@code false} if there are no more objects to visit.
@@ -40,11 +40,11 @@ public interface GCObjectIterator
 		throws GCException;
 	
 	/**
-	 * Marks the current object under this iterator as visited by increasing
+	 * Marks the current object under this queue as visited by increasing
 	 * the visit type.
 	 *
 	 * @param __vt The type of visit where this object was referenced
-	 * @throws GCException If there is no object currently under this iterator.
+	 * @throws GCException If there is no object currently under this queue.
 	 * @throws NullPointerException If no type was specified.
 	 * @since 2016/06/04
 	 */
@@ -52,11 +52,21 @@ public interface GCObjectIterator
 		throws GCException, NullPointerException;
 	
 	/**
+	 * Visits all objects which are referenced by this object.
+	 *
+	 * @return An queue over the references which this object visits.
+	 * @throws GCException If there is no object currently under this queue.
+	 * @since 2016/06/04
+	 */
+	public abstract GCObjectQueue visitObjects()
+		throws GCException;
+	
+	/**
 	 * Returns the visit type of this object, any objects which are not
 	 * visited or weakly visited may be garbage collected.
 	 *
 	 * @return The type of visit that was previously performed.
-	 * @throws GCException If there is no object currently under this iterator.
+	 * @throws GCException If there is no object currently under this queue.
 	 * @since 2016/06/04
 	 */
 	public abstract GCVisitType visitType()
