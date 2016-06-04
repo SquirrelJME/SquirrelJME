@@ -100,3 +100,11 @@ and not as available, it can alert the launcher that it may be time for a
 garbage collection. This way in the rerecording interpreter the GC events and
 such can be recorded by the launcher and executed from there.
 
+## 16:34
+
+What I then need object representation access, some pointers, other ranges, and
+other kind of memory regions that could be used. The memory interface would
+need to handle cases where the layout of memory is dynamic and potentially
+where code and data are stored in differing regions. There would also have to
+be a compact and generic means to modify memory bytes, values, and such.
+
