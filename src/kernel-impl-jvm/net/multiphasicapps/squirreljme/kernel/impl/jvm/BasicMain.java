@@ -86,6 +86,8 @@ public class BasicMain
 		if (altterp != null)
 			if (altterp.equals("rerecord"))
 				useterp = RR_INTERPRETER;
+			else if (altterp.equals("standard"))
+				useterp = DEFAULT_INTERPRETER;
 			else
 				useterp = altterp;
 		

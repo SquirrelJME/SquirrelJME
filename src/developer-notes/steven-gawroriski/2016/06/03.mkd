@@ -12,3 +12,22 @@ and threads is a bit convoluted, especially when it comes to the interpreter.
 However, after the thread is initialized and the thread arguments are checked,
 the interpreter thread would be created then.
 
+## 20:52
+
+So for the rerecording interpreter I will need a decent object representation
+that would allow objects which are active in memory to be deterministic. The
+allocation and order counts for objects would have to be the same in every case
+for the most part. The garbage collector can be made deterministic. Thinking
+about it, the ID association (one that determines the ID of things at least
+for the kernel), could be made a bit more public so that the interpreter
+could use it. I could also move it off to a new project and have code just
+depend on it for example. So it would be virtually the same, except that it
+could be shared in more places. Then I could adjust it so that when IDs are
+exhausted, they can start from the start, a binary search would be performed,
+and if there is a collision then the list would iterate upwards. It would
+attempt to find an ID which is not used at all. If the backing list is not
+random accessed, then it can use another means. This of course would only
+be performed once all of the IDs have been exhausted. However, finding a free
+ID can just reset the next ID which would be binary searched and may be a bit
+faster.
+
