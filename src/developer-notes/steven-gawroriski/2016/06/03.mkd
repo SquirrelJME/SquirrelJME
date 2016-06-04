@@ -31,3 +31,24 @@ be performed once all of the IDs have been exhausted. However, finding a free
 ID can just reset the next ID which would be binary searched and may be a bit
 faster.
 
+## 21:00
+
+So for the rerecording interpreter, perhaps a singular growable list could
+be used for objects. Any new object which is allocated is placed near the end.
+I should however be able to have common code between the interpreters such as
+the garbage collector and such. There would also have to be a maximal bound on
+the garbage collector also. For the standard interpreter the host VM garbage
+system can be used with `Reference`s and such in most cases. However the
+rerecording interpreter will need the entire storage state to be deterministic.
+So I would say that there would have to be a specified standard GC trigger
+point, which when reached goes through every object stopping all kinds of
+execution and sees which objects can be garbage collected. Due to circular
+references, it would have to be mark and sweep and such. However, I would
+basically be writing a garbage collector 3 times. One for each interpreter and
+then the real garbage collector on real hardware. I must write a standard
+garbage collection class and use them for all three, regardless of their slight
+differences. Otherwise 3 garbage collectors would be difficult to keep
+synchronized and maintained. Also, the same garbage collector would make it
+more consistent across implementations. Any bugs discovered while writing the
+interpreters with regards to the garbage collector can be fixed up as required.
+
