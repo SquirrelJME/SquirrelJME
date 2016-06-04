@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 
 /**
  * This is the base class which is used by implementations of the interpreter
@@ -74,11 +75,13 @@ public abstract class Interpreter
 	/**
 	 * Adjusts the class path to be used by a process.
 	 *
+	 * @param __cups Class unit providers.
 	 * @param __cp The class path to use.
 	 * @return The adjusted class path.
 	 * @since 2016/06/03
 	 */
-	public ClassPath adjustClassPath(ClassPath __cp)
+	public ClassPath adjustClassPath(ClassUnitProvider[] __cups,
+		ClassPath __cp)
 	{
 		return __cp;
 	}

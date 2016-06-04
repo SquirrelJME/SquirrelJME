@@ -59,8 +59,9 @@ public class JVMKernelProcess
 	@Override
 	protected ClassPath adjustClassPath(ClassPath __cp)
 	{
-		return ((JVMKernel)(this.kernel)).interpreter().
-			adjustClassPath(__cp);
+		JVMKernel jk = ((JVMKernel)(this.kernel));
+		return jk.interpreter().adjustClassPath(
+			jk.__internalClassUnitProviders(), __cp);
 	}
 	
 	/**

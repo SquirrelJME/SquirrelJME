@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 import net.multiphasicapps.squirreljme.terp.InterpreterException;
 import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
@@ -61,7 +62,8 @@ public class RRInterpreter
 	 * @since 2016/06/03
 	 */
 	@Override
-	public ClassPath adjustClassPath(ClassPath __cp)
+	public ClassPath adjustClassPath(ClassUnitProvider[] __cups,
+		ClassPath __cp)
 	{
 		// Check
 		if (__cp == null)
@@ -73,7 +75,12 @@ public class RRInterpreter
 		{
 			// If playing, change the class path
 			if (rds.isPlaying())
+			{
+				// Defensive copy
+				__cups = __cups.clone();
+				
 				throw new Error("TODO");
+			}
 			
 			// Record the class path
 			if (rds.isRecording())

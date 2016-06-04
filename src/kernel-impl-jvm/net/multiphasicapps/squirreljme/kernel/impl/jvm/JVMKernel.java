@@ -152,5 +152,18 @@ public class JVMKernel
 	{
 		System.exit(0);
 	}
+	
+	/**
+	 * Returns the internal class unit providers which are needed by the
+	 * interpreter to find alternative class units if they do need to be
+	 * adjusted.
+	 *
+	 * @return The array of class unit providers.
+	 * @since 2016/06/03
+	 */
+	final ClassUnitProvider[] __internalClassUnitProviders()
+	{
+		return internalClassUnitProviders();
+	}
 }
 
