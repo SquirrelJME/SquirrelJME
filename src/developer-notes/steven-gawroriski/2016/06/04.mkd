@@ -5,3 +5,44 @@
 Ok, so there will be a garbage collector interface and some classes, and then
 another project will have the actual implementation.
 
+## 09:01
+
+One thing that will be complex though, is when threads are active and running
+that local variables can point to objects. Due to this, going through the
+call stack will be extremely complex and potentially a very expensive
+sequence because objects would have to be checked for each potential position
+in the stack to make sure that the given integers are objects.
+
+## 09:05
+
+As for native object layout and references, there will be a singular chain
+of positions which contain object information. There would then be a pointer
+to the actual object data (and array elements). Although doubly referenced
+this would allow all the objects to easily be traversed (because they would
+be in a chain) and would also allow the objects to be compacted if they are
+not "locked". Compaction however, could be a complex process. Before an object
+is accessed (such as to determine if it is an instance of a class) a flag can
+be set to indicate that it should not be moved elsewhere (the data pointer
+of the reference). When the operation completes, the flag is cleared so the
+object may be moved around. Actual interaction in this case is very short so
+the flag should only be set for short durations. Due to multi-threading however
+and context switching, there would need to be an atomic update to the usage
+count of an object before its pointer can safely be used. There would also have
+to be a usage count. If there is an error and the usage count is never
+decremented then the object may never get garbage collected, so there will have
+to be some kind of guard regardless of kernel/program exceptions being thrown
+so that the count lowers.
+
+## 09:12
+
+Back to what I was previously writing, I could have two stacks: one for objects
+and the other for everything else. However that would complicate memory
+allocation and require another set of registers. So it would be best if it
+were kept to a single stack. So, instead there could be a reference zone which
+is used to store references that are in a given position. The stack would be
+structured in a way where it can easily be scanned. The start of the stack
+would indicate its length and the number of references in the reference zone.
+This way, objects which are not in the reference zone do not have to be checked
+at all to determine if they point to objects. So due to this, any reference
+which is set to an object will have to be placed in the reference zone.
+
