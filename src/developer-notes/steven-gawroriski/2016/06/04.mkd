@@ -90,3 +90,13 @@ gets a bit low. This way another program for example can claim that memory.
 Also, if a system supports it there could even be garbage collection callbacks
 performed.
 
+## 16:32
+
+One thing to consider however is that when it comes to the rerecording
+allocator, that it must be deterministic. I would suppose then that the
+garbage collector that would run on the allocator would run when requested by a
+running program. When the allocator determines that memory is a bit shrinking
+and not as available, it can alert the launcher that it may be time for a
+garbage collection. This way in the rerecording interpreter the GC events and
+such can be recorded by the launcher and executed from there.
+
