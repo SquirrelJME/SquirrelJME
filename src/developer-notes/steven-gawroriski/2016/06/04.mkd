@@ -70,3 +70,8 @@ I could also probably use a kind of allocation scheme of sorts. This way there
 can be a completely shared interface which is used to access any and all
 objects that exist.
 
+## 11:27
+
+For the queue, I should make it concrete and then have associated object
+providers and such which are implemented by providers of objects.
+

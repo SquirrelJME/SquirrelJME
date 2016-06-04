@@ -52,16 +52,6 @@ public interface GCObjectQueue
 		throws GCException, NullPointerException;
 	
 	/**
-	 * Visits all objects which are referenced by this object.
-	 *
-	 * @return An queue over the references which this object visits.
-	 * @throws GCException If there is no object currently under this queue.
-	 * @since 2016/06/04
-	 */
-	public abstract GCObjectQueue visitObjects()
-		throws GCException;
-	
-	/**
 	 * Returns the visit type of this object, any objects which are not
 	 * visited or weakly visited may be garbage collected.
 	 *
