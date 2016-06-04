@@ -1,0 +1,7 @@
+# 2016/06/04
+
+## 08:52
+
+Ok, so there will be a garbage collector interface and some classes, and then
+another project will have the actual implementation.
+

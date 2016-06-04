@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: gc-standard
+X-SquirrelJME-UUID: 99362e42-77ca-4271-a315-91d9641a72d2
+X-SquirrelJME-Depends: gc
+X-SquirrelJME-Error: BS
+LIBlet-Title: Standard Garbage Collector
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160604
+LIBlet-Description: This is an implementation of a standard
+  garbage collector which is mark and sweep, and is also
+  stop the world. This garbage collector is designed for
+  simplicity and speed (because it needs to run on limited
+  systems).
+

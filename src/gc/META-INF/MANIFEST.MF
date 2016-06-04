@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: gc
+X-SquirrelJME-UUID: c32c5904-fca1-460e-9a31-4e403cc24228
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: BR
+LIBlet-Title: Garbage Collector Interfaces
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160604
+LIBlet-Description: This project contains the core interfaces
+  which are used by implementations of the kernel (or any
+  interpreter) to provide garbage collection for any objects
+  which must be cleaned up.
+
