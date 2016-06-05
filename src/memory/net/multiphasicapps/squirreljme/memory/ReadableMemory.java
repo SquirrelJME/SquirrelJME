@@ -17,5 +17,221 @@ package net.multiphasicapps.squirreljme.memory;
  */
 public interface ReadableMemory
 {
+	/**
+	 * Reads a single byte value.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @return The read value.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @since 2016/06/05
+	 */
+	public abstract byte readByte(long __addr, boolean __at)
+		throws MemoryIOException;
+	
+	/**
+	 * Reads multiple byte values.
+	 * 
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @param __v The destination value array.
+	 * @param __o The starting offset to read values into.
+	 * @param __l The number of values to read.
+	 * @throws IndexOutOfBoundsException If the offset and/or the length are
+	 * negative or exceed the destination array length.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @throws NullPointerException If no destination array was specified.
+	 * @since 2016/06/05
+	 */
+	public abstract void readBytes(long __addr, boolean __at, byte[] __v,
+		int __o, int __l)
+		throws IndexOutOfBoundsException, MemoryIOException,
+			NullPointerException;
+	
+	/**
+	 * Reads a single char value.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @return The read value.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @since 2016/06/05
+	 */
+	public abstract char readChar(long __addr, boolean __at)
+		throws MemoryIOException;
+	
+	/**
+	 * Reads multiple char values.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @param __v The destination value array.
+	 * @param __o The starting offset to read values into.
+	 * @param __l The number of values to read.
+	 * @throws IndexOutOfBoundsException If the offset and/or the length are
+	 * negative or exceed the destination array length.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @throws NullPointerException If no destination array was specified.
+	 * @since 2016/06/05
+	 */
+	public abstract void readChars(long __addr, boolean __at, char[] __v,
+		int __o, int __l)
+		throws IndexOutOfBoundsException, MemoryIOException,
+			NullPointerException;
+	
+	/**
+	 * Reads a single double value.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @return The read value.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @since 2016/06/05
+	 */
+	public abstract double readDouble(long __addr, boolean __at)
+		throws MemoryIOException;
+	
+	/**
+	 * Reads multiple double values.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @param __v The destination value array.
+	 * @param __o The starting offset to read values into.
+	 * @param __l The number of values to read.
+	 * @throws IndexOutOfBoundsException If the offset and/or the length are
+	 * negative or exceed the destination array length.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @throws NullPointerException If no destination array was specified.
+	 * @since 2016/06/05
+	 */
+	public abstract void readDoubles(long __addr, boolean __at, double[] __v,
+		int __o, int __l)
+		throws IndexOutOfBoundsException, MemoryIOException,
+			NullPointerException;
+	
+	/**
+	 * Reads a single float value.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @return The read value.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @since 2016/06/05
+	 */
+	public abstract float readFloat(long __addr, boolean __at)
+		throws MemoryIOException;
+	
+	/**
+	 * Reads multiple float values.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @param __v The destination value array.
+	 * @param __o The starting offset to read values into.
+	 * @param __l The number of values to read.
+	 * @throws IndexOutOfBoundsException If the offset and/or the length are
+	 * negative or exceed the destination array length.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @throws NullPointerException If no destination array was specified.
+	 * @since 2016/06/05
+	 */
+	public abstract void readFloats(long __addr, boolean __at, float[] __v,
+		int __o, int __l)
+		throws IndexOutOfBoundsException, MemoryIOException,
+			NullPointerException;
+	
+	/**
+	 * Reads a single int value.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @return The read value.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @since 2016/06/05
+	 */
+	public abstract int readInt(long __addr, boolean __at)
+		throws MemoryIOException;
+	
+	/**
+	 * Reads multiple int values.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @param __v The destination value array.
+	 * @param __o The starting offset to read values into.
+	 * @param __l The number of values to read.
+	 * @throws IndexOutOfBoundsException If the offset and/or the length are
+	 * negative or exceed the destination array length.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @throws NullPointerException If no destination array was specified.
+	 * @since 2016/06/05
+	 */
+	public abstract void readInts(long __addr, boolean __at, int[] __v,
+		int __o, int __l)
+		throws IndexOutOfBoundsException, MemoryIOException,
+			NullPointerException;
+	
+	/**
+	 * Reads a single long value.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @return The read value.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @since 2016/06/05
+	 */
+	public abstract long readLong(long __addr, boolean __at)
+		throws MemoryIOException;
+	
+	/**
+	 * Reads multiple long values.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @param __v The destination value array.
+	 * @param __o The starting offset to read values into.
+	 * @param __l The number of values to read.
+	 * @throws IndexOutOfBoundsException If the offset and/or the length are
+	 * negative or exceed the destination array length.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @throws NullPointerException If no destination array was specified.
+	 * @since 2016/06/05
+	 */
+	public abstract void readLongs(long __addr, boolean __at, long[] __v,
+		int __o, int __l)
+		throws IndexOutOfBoundsException, MemoryIOException,
+			NullPointerException;
+	
+	/**
+	 * Reads a single short value.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @return The read value.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @since 2016/06/05
+	 */
+	public abstract short readShort(long __addr, boolean __at)
+		throws MemoryIOException;
+	
+	/**
+	 * Reads multiple short values.
+	 *
+	 * @param __addr The address to read to.
+	 * @param __at If {@code true} then the read is atomic.
+	 * @param __v The destination value array.
+	 * @param __o The starting offset to read values into.
+	 * @param __l The number of values to read.
+	 * @throws IndexOutOfBoundsException If the offset and/or the length are
+	 * negative or exceed the destination array length.
+	 * @throws MemoryIOException If the memory could not be read from.
+	 * @throws NullPointerException If no destination array was specified.
+	 * @since 2016/06/05
+	 */
+	public abstract void readShorts(long __addr, boolean __at, short[] __v,
+		int __o, int __l)
+		throws IndexOutOfBoundsException, MemoryIOException,
+			NullPointerException;
 }
 
