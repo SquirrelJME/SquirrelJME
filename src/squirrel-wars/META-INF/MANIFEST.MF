@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: squirrel-wars
+X-SquirrelJME-UUID: 9908b960-1f71-4927-b614-23f88723316c
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: BU
+LIBlet-Title: Squirrel Wars
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160605
+LIBlet-Description: This is a turned based strategy game.
+

@@ -4,3 +4,14 @@
 
 So what I need is a memory interface.
 
+## 18:25
+
+Have not done much in the past few days.
+
+## 18:45
+
+There is nothing to refactor, since all code has been refactored. Perhaps I
+can clone a video game and use it as a sample project. A game that would work
+great using the LUI and LCDUI (in the future). Personally I alway wanted to
+write my own Advance Wars clone, so I suppose I shall do that.
+
