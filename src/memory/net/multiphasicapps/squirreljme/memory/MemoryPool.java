@@ -19,5 +19,12 @@ package net.multiphasicapps.squirreljme.memory;
 public interface MemoryPool
 	extends ReadableMemory, WritableMemory
 {
+	/**
+	 * Returns the number of bytes which are available in this pool.
+	 *
+	 * @return The number of available bytes.
+	 * @since 2016/06/05
+	 */
+	public abstract long size();
 }
 
