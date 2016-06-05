@@ -11,13 +11,11 @@
 package net.multiphasicapps.squirreljme.memory;
 
 /**
- * This interface represents a standard memory pool which is used by a manager
- * to provide access to areas of memory.
+ * This is used by anything which provides read access to memory.
  *
  * @since 2016/06/05
  */
-public interface MemoryPool
-	extends ReadableMemory, WritableMemory
+public interface ReadableMemory
 {
 }
 
