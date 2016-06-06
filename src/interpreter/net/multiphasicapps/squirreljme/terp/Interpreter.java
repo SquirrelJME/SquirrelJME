@@ -26,6 +26,21 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
  */
 public abstract class Interpreter
 {
+	/** Memory pool defaults to 24MiB. */
+	public static final long DEFAULT_MEMORY_POOL_SIZE =
+		25_165_824;
+	
+	/** Memory pool access lock. */
+	private final Object _mempoollock =
+		new Object();
+	
+	/** The memory pool of the interpreter. */
+	private volatile InterpreterMemoryPool _mempool;
+	
+	/** The current size of the memory pool. */
+	private volatile long _mempoolsize =
+		DEFAULT_MEMORY_POOL_SIZE;
+	
 	/**
 	 * Creates a new process in the interpreter for storing object states
 	 * for a group of threads.
@@ -120,6 +135,62 @@ public abstract class Interpreter
 	public CIMethodID adjustMainMethod(CIMethodID __mm)
 	{
 		return __mm;
+	}
+	
+	/**
+	 * Obtains the memory pool or creates it if it does not exist.
+	 *
+	 * @return The memory pool that all processes use to store data.
+	 * @since 2016/06/06
+	 */
+	public final InterpreterMemoryPool getMemoryPool()
+	{
+		// Lock
+		synchronized (this._mempoollock)
+		{
+			// Get
+			InterpreterMemoryPool rv = this._mempool;
+			
+			// Create?
+			if (rv == null)
+				this._mempool = (rv = new InterpreterMemoryPool(
+					(int)this._mempoolsize));
+			
+			// Return
+			return rv;
+		}
+	}
+	
+	/**
+	 * Sets the size of the memory pool.
+	 *
+	 * @param __sz The memory pool size to use.
+	 * @throws IllegalArgumentException If the size is zero, negative, not a
+	 * power of two, or is greater than 2GiB.
+	 * @throws IllegalStateException If a memory pool was already created and
+	 * its size cannot be changed.
+	 * @since 2016/06/06
+	 */
+	public final void setMemoryPoolSize(long __sz)
+		throws IllegalArgumentException, IllegalStateException
+	{
+		// {@squirreljme.error AN05 The requested size of the memory pool is
+		// zero, negative, not a power of two, or exceeds 2GiB. (The requested
+		// size)}
+		if (__sz <= 0 || __sz > Integer.MAX_VALUE || Long.bitCount(__sz) != 1)
+			throw new IllegalArgumentException(String.format("AN05 %d", __sz));
+		
+		// Lock
+		synchronized (this._mempoollock)
+		{
+			// {@squirreljme.error AN06 The memory pool was already created
+			// which means the size cannot be set.}
+			if (this._mempool != null)
+				throw new IllegalStateException("AN06");
+			
+			// Set new size
+			this._mempoolsize = __sz;
+		}
 	}
 }
 
