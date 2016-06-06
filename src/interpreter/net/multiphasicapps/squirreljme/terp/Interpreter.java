@@ -73,14 +73,6 @@ public abstract class Interpreter
 		throws InterpreterException, NullPointerException;
 	
 	/**
-	 * Handles the X options which may be passed to the interpreter.
-	 *
-	 * @param __xo The X options to handle.
-	 * @since 2016/05/29
-	 */
-	public abstract void handleXOptions(Map<String, String> __xo);
-	
-	/**
 	 * This runs a single cycle in the interpreter.
 	 *
 	 * @since 2016/05/30
@@ -159,6 +151,63 @@ public abstract class Interpreter
 			// Return
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the size of the memory pool that all processes within the
+	 * interpreter use.
+	 *
+	 * @return The memory pool size.
+	 * @since 2016/06/06
+	 */
+	public final long getMemoryPoolSize()
+	{
+		// Lock
+		synchronized (this._mempoollock)
+		{
+			// If the pool was already allocated then use the actual size
+			InterpreterMemoryPool rv = this._mempool;
+			if (rv != null)
+				return rv.size();
+			
+			// Otherwise use the virtual value
+			return this._mempoolsize;
+		}
+	}
+	
+	/**
+	 * Handles the X options which may be passed to the interpreter.
+	 *
+	 * Sub-classes should call the super-class method so that more common
+	 * options are handled.
+	 *
+	 * @param __xo The X options to handle.
+	 * @since 2016/05/29
+	 */
+	public void handleXOptions(Map<String, String> __xo)
+	{
+		// Check
+		if (__xo == null)
+			throw new NullPointerException("NARG");
+		
+		String v;
+		
+		// {@squirreljme.cmdline -Xsquirreljme-interpreter-mempool=bytes The
+		// size of the memory pool which is shared by all processes running
+		// within the interpreter.}
+		if ((v = __xo.get("squirreljme-interpreter-mempool")) != null)
+			try
+			{
+				setMemoryPoolSize(Long.decode(v));
+			}
+			
+			// {@squirreljme.error AN07 The number of bytes to allocate to the
+			// interpreter memory pool could not be decoded. (The non-number)}
+			catch (NumberFormatException e)
+			{
+				throw new IllegalArgumentException(String.format("AN07 %s", v),
+					e);
+			}
 	}
 	
 	/**

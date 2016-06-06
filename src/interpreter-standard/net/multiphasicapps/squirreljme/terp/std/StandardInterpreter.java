@@ -68,6 +68,9 @@ public class StandardInterpreter
 	public void handleXOptions(Map<String, String> __xo)
 		throws NullPointerException
 	{
+		// Super call
+		super.handleXOptions(__xo);
+		
 		// Check
 		if (__xo == null)
 			throw new NullPointerException("NARG");

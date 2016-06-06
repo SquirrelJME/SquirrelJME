@@ -274,6 +274,9 @@ public class RRInterpreter
 	public void handleXOptions(Map<String, String> __xo)
 		throws NullPointerException
 	{
+		// Super-call first
+		super.handleXOptions(__xo);
+		
 		// Check
 		if (__xo == null)
 			throw new NullPointerException("NARG");
@@ -283,8 +286,7 @@ public class RRInterpreter
 		// {@squirreljme.cmdline -Xsquirreljme-rerecord-jips=(int) This
 		// specifies the number of Java instructions which should be executed
 		// in a single second.}
-		v = __xo.get("squirreljme-rerecord-jips");
-		if (v != null)
+		if ((v = __xo.get("squirreljme-rerecord-jips")) != null)
 			try
 			{
 				setJIPS(Integer.decode(v));
@@ -298,16 +300,14 @@ public class RRInterpreter
 		// {@squirreljme.cmdline -Xsquirreljme-rerecord-replay=(path) This
 		// is file file which should be played back from a previously
 		// recorded session.}
-		v = __xo.get("squirreljme-rerecord-replay");
-		if (v != null)
+		if ((v = __xo.get("squirreljme-rerecord-replay")) != null)
 			datastream.streamInput(Paths.get(v));
 		
 		// {@squirreljme.cmdline -Xsquirreljme-rerecord-record=(path) This is
 		// the file where events should be recorded into. If the file already
 		// exists then it is not overwritten and the interpreter throws an
 		// exception.}
-		v = __xo.get("squirreljme-rerecord-record");
-		if (v != null)
+		if ((v = __xo.get("squirreljme-rerecord-record")) != null)
 			datastream.streamOutput(Paths.get(v));
 	}
 	

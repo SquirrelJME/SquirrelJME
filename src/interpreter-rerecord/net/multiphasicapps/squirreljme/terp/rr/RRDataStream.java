@@ -302,6 +302,22 @@ public class RRDataStream
 					e);
 			}
 			
+			// Parse the magic number
+			if (true)
+				throw new Error("TODO");
+			
+			// Parse the memory pool size
+			if (true)
+				throw new Error("TODO");
+			
+			// Read the JIPS
+			if (true)
+				throw new Error("TODO");
+			
+			// Read the rerecord count
+			if (true)
+				throw new Error("TODO");
+			
 			throw new Error("TODO");
 		}
 	}
@@ -389,8 +405,30 @@ public class RRDataStream
 				record(pk);
 			}
 			
+			// Write the memory pool size
+			try (RRDataPacket pk = createPacket(RRDataCommand.SET_POOL_SIZE,
+				1))
+			{
+				// Use the size that the interpreter specified
+				pk.set(0, terp.getMemoryPoolSize());
+				
+				// Record
+				record(pk);
+			}
+			
 			// Set the Java instructions per second
 			try (RRDataPacket pk = createPacket(RRDataCommand.SET_JIPS, 1))
+			{
+				// Record it
+				pk.set(0, terp.getJIPS());
+				
+				// Record it
+				record(pk);
+			}
+			
+			// Record the rerecord count
+			try (RRDataPacket pk = createPacket(RRDataCommand.SET_RERECORDS,
+				1))
 			{
 				// Increase it by 1
 				pk.set(0, this._rerecordcount + 1);

@@ -32,10 +32,13 @@ public enum RRDataCommand
 	HOST_VM(true),
 	
 	/** Set the Java instructions per second. */
-	SET_JIPS(true),
+	SET_JIPS(false),
 	
 	/** Set the rerecord count. */
-	SET_RERECORDS(true),
+	SET_RERECORDS(false),
+	
+	/** Sets the memory pool size. */
+	SET_POOL_SIZE(false),
 	
 	/** A process is created in the VM. */
 	CREATE_PROCESS(false),
