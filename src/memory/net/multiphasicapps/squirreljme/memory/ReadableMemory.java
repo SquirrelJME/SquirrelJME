@@ -222,8 +222,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException If no destination array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void readShorts(long __addr, short[] __v,
-		int __o, int __l)
+	public abstract void readShorts(long __addr, short[] __v, int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
 }

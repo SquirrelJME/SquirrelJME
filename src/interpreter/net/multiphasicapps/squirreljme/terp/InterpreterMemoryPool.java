@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.memory.MemoryPool;
  * @since 2016/06/05
  */
 public class InterpreterMemoryPool
-	implements MemoryPool
+	extends AbstractMemoryPool
 {
 	/** The bytes which make up the active memory. */
 	protected final byte[] memory;
@@ -55,16 +55,123 @@ public class InterpreterMemoryPool
 		// Check
 		__checkRange(__addr, 1);
 		
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
 		// Atomic?
 		if (__at)
-			synchronized (this)
+			synchronized (memory)
 			{
-				return this.memory[(int)__addr];
+				return memory[addr];
 			}
 		
 		// Not atomic?
 		else
-			return this.memory[(int)__addr];
+			return memory[addr];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/06
+	 */
+	@Override
+	public int readInt(long __addr, boolean __at)
+		throws MemoryIOException
+	{
+		// Check
+		__checkRange(__addr, 4);
+		
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Atomic?
+		if (__at)
+			synchronized (this)
+			{
+				return ((memory[addr] << 24) |
+					((memory[addr + 1] & 0xFF) << 16) |
+					((memory[addr + 2] & 0xFF) << 8) |
+					((memory[addr + 3] & 0xFF)));
+			}
+		
+		// Not atomic?
+		else
+			return ((memory[addr] << 24) |
+				((memory[addr + 1] & 0xFF) << 16) |
+				((memory[addr + 2] & 0xFF) << 8) |
+				((memory[addr + 3] & 0xFF)));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/06
+	 */
+	@Override
+	public long readLong(long __addr, boolean __at)
+		throws MemoryIOException
+	{
+		// Check
+		__checkRange(__addr, 8);
+		
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Atomic?
+		if (__at)
+			synchronized (this)
+			{
+				return (long)((memory[addr] << 56) |
+					(long)((memory[addr + 1] & 0xFF) << 48) |
+					(long)((memory[addr + 2] & 0xFF) << 40) |
+					(long)((memory[addr + 3] & 0xFF) << 32) |
+					((memory[addr + 4] & 0xFF) << 24) |
+					((memory[addr + 5] & 0xFF) << 16) |
+					((memory[addr + 6] & 0xFF) << 8) |
+					((memory[addr + 7] & 0xFF)));
+			}
+		
+		// Not atomic?
+		else
+			return (long)((memory[addr] << 56) |
+				(long)((memory[addr + 1] & 0xFF) << 48) |
+				(long)((memory[addr + 2] & 0xFF) << 40) |
+				(long)((memory[addr + 3] & 0xFF) << 32) |
+				((memory[addr + 4] & 0xFF) << 24) |
+				((memory[addr + 5] & 0xFF) << 16) |
+				((memory[addr + 6] & 0xFF) << 8) |
+				((memory[addr + 7] & 0xFF)));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/06
+	 */
+	@Override
+	public short readShort(long __addr, boolean __at)
+		throws MemoryIOException
+	{
+		// Check
+		__checkRange(__addr, 2);
+		
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Atomic?
+		if (__at)
+			synchronized (this)
+			{
+				return (short)((memory[addr] << 8) |
+					(memory[addr + 1] & 0xFF));
+			}
+		
+		// Not atomic?
+		else
+			return (short)((memory[addr] << 8) |
+				(memory[addr + 1] & 0xFF));
 	}
 	
 	/**
@@ -75,6 +182,142 @@ public class InterpreterMemoryPool
 	public final long size()
 	{
 		return this.memory.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/06
+	 */
+	@Override
+	public void writeByte(long __addr, boolean __at, byte __v)
+		throws MemoryIOException
+	{
+		// Check
+		__checkRange(__addr, 1);
+		
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Atomic?
+		if (__at)
+			synchronized (this)
+			{
+				memory[addr] = __v;
+			}
+		
+		// Not atomic?
+		else
+			memory[addr] = __v;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/06
+	 */
+	@Override
+	public void writeInt(long __addr, boolean __at, int __v)
+		throws MemoryIOException
+	{
+		// Check
+		__checkRange(__addr, 4);
+		
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Atomic?
+		if (__at)
+			synchronized (this)
+			{
+				memory[addr] = (byte)(__v >>> 24);
+				memory[addr + 1] = (byte)(__v >>> 16);
+				memory[addr + 2] = (byte)(__v >>> 8);
+				memory[addr + 3] = (byte)__v;
+			}
+		
+		// Not atomic?
+		else
+		{
+			memory[addr] = (byte)(__v >>> 24);
+			memory[addr + 1] = (byte)(__v >>> 16);
+			memory[addr + 2] = (byte)(__v >>> 8);
+			memory[addr + 3] = (byte)__v;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/06
+	 */
+	@Override
+	public void writeLong(long __addr, boolean __at, long __v)
+		throws MemoryIOException
+	{
+		// Check
+		__checkRange(__addr, 8);
+		
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Atomic?
+		if (__at)
+			synchronized (this)
+			{
+				memory[addr] = (byte)(__v >>> 56);
+				memory[addr + 1] = (byte)(__v >>> 48);
+				memory[addr + 2] = (byte)(__v >>> 40);
+				memory[addr + 3] = (byte)(__v >>> 32);
+				memory[addr + 4] = (byte)(__v >>> 24);
+				memory[addr + 5] = (byte)(__v >>> 16);
+				memory[addr + 6] = (byte)(__v >>> 8);
+				memory[addr + 7] = (byte)__v;
+			}
+		
+		// Not atomic?
+		else
+		{
+			memory[addr] = (byte)(__v >>> 56);
+			memory[addr + 1] = (byte)(__v >>> 48);
+			memory[addr + 2] = (byte)(__v >>> 40);
+			memory[addr + 3] = (byte)(__v >>> 32);
+			memory[addr + 4] = (byte)(__v >>> 24);
+			memory[addr + 5] = (byte)(__v >>> 16);
+			memory[addr + 6] = (byte)(__v >>> 8);
+			memory[addr + 7] = (byte)__v;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/06
+	 */
+	@Override
+	public void writeShort(long __addr, boolean __at, short __v)
+		throws MemoryIOException
+	{
+		// Check
+		__checkRange(__addr, 2);
+		
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Atomic?
+		if (__at)
+			synchronized (this)
+			{
+				memory[addr] = (byte)(__v >>> 8);
+				memory[addr + 1] = (byte)__v;
+			}
+		
+		// Not atomic?
+		else
+		{
+			memory[addr] = (byte)(__v >>> 8);
+			memory[addr + 1] = (byte)__v;
+		}
 	}
 	
 	/**

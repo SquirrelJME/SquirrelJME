@@ -122,8 +122,7 @@ public abstract class AbstractMemoryPool
 	 * @since 2016/06/05
 	 */
 	@Override
-	public void readLongs(long __addr, long[] __v,
-		int __o, int __l)
+	public void readLongs(long __addr, long[] __v, int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException
 	{
@@ -135,8 +134,7 @@ public abstract class AbstractMemoryPool
 	 * @since 2016/06/05
 	 */
 	@Override
-	public void readShorts(long __addr, short[] __v,
-		int __o, int __l)
+	public void readShorts(long __addr, short[] __v, int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException
 	{
@@ -148,8 +146,7 @@ public abstract class AbstractMemoryPool
 	 * @since 2016/06/05
 	 */
 	@Override
-	public void writeBytes(long __addr, byte[] __v,
-		int __o, int __l)
+	public void writeBytes(long __addr, byte[] __v, int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException
 	{
