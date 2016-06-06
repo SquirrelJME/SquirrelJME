@@ -19,3 +19,9 @@ write my own Advance Wars clone, so I suppose I shall do that.
 
 One thing I lack however is the means to actually run the code.
 
+## 19:52
+
+Having atomic bulk read/write operations would be difficult and potentially
+very costly. I am also not sure of any CPU that has atomic operations that are
+more than a given word size or similar.
+

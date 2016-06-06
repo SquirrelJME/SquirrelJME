@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.terp;
 
+import net.multiphasicapps.squirreljme.memory.AbstractMemoryPool;
 import net.multiphasicapps.squirreljme.memory.MemoryPool;
 
 /**

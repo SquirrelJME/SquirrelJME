@@ -33,7 +33,6 @@ public interface ReadableMemory
 	 * Reads multiple byte values.
 	 * 
 	 * @param __addr The address to read to.
-	 * @param __at If {@code true} then the read is atomic.
 	 * @param __v The destination value array.
 	 * @param __o The starting offset to read values into.
 	 * @param __l The number of values to read.
@@ -43,7 +42,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException If no destination array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void readBytes(long __addr, boolean __at, byte[] __v,
+	public abstract void readBytes(long __addr, byte[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -64,7 +63,6 @@ public interface ReadableMemory
 	 * Reads multiple char values.
 	 *
 	 * @param __addr The address to read to.
-	 * @param __at If {@code true} then the read is atomic.
 	 * @param __v The destination value array.
 	 * @param __o The starting offset to read values into.
 	 * @param __l The number of values to read.
@@ -74,7 +72,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException If no destination array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void readChars(long __addr, boolean __at, char[] __v,
+	public abstract void readChars(long __addr, char[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -95,7 +93,6 @@ public interface ReadableMemory
 	 * Reads multiple double values.
 	 *
 	 * @param __addr The address to read to.
-	 * @param __at If {@code true} then the read is atomic.
 	 * @param __v The destination value array.
 	 * @param __o The starting offset to read values into.
 	 * @param __l The number of values to read.
@@ -105,7 +102,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException If no destination array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void readDoubles(long __addr, boolean __at, double[] __v,
+	public abstract void readDoubles(long __addr, double[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -126,7 +123,6 @@ public interface ReadableMemory
 	 * Reads multiple float values.
 	 *
 	 * @param __addr The address to read to.
-	 * @param __at If {@code true} then the read is atomic.
 	 * @param __v The destination value array.
 	 * @param __o The starting offset to read values into.
 	 * @param __l The number of values to read.
@@ -136,7 +132,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException If no destination array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void readFloats(long __addr, boolean __at, float[] __v,
+	public abstract void readFloats(long __addr, float[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -157,7 +153,6 @@ public interface ReadableMemory
 	 * Reads multiple int values.
 	 *
 	 * @param __addr The address to read to.
-	 * @param __at If {@code true} then the read is atomic.
 	 * @param __v The destination value array.
 	 * @param __o The starting offset to read values into.
 	 * @param __l The number of values to read.
@@ -167,7 +162,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException If no destination array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void readInts(long __addr, boolean __at, int[] __v,
+	public abstract void readInts(long __addr, int[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -188,7 +183,6 @@ public interface ReadableMemory
 	 * Reads multiple long values.
 	 *
 	 * @param __addr The address to read to.
-	 * @param __at If {@code true} then the read is atomic.
 	 * @param __v The destination value array.
 	 * @param __o The starting offset to read values into.
 	 * @param __l The number of values to read.
@@ -198,7 +192,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException If no destination array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void readLongs(long __addr, boolean __at, long[] __v,
+	public abstract void readLongs(long __addr, long[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -219,7 +213,6 @@ public interface ReadableMemory
 	 * Reads multiple short values.
 	 *
 	 * @param __addr The address to read to.
-	 * @param __at If {@code true} then the read is atomic.
 	 * @param __v The destination value array.
 	 * @param __o The starting offset to read values into.
 	 * @param __l The number of values to read.
@@ -229,7 +222,7 @@ public interface ReadableMemory
 	 * @throws NullPointerException If no destination array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void readShorts(long __addr, boolean __at, short[] __v,
+	public abstract void readShorts(long __addr, short[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;

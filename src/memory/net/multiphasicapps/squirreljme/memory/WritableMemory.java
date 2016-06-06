@@ -33,7 +33,6 @@ public interface WritableMemory
 	 * Writes multiple byte values.
 	 * 
 	 * @param __addr The address to write to.
-	 * @param __at If {@code true} then the write is atomic.
 	 * @param __v The values to write.
 	 * @param __o The starting offset to read values from.
 	 * @param __l The number of values to write.
@@ -43,7 +42,7 @@ public interface WritableMemory
 	 * @throws NullPointerException If no source array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void writeBytes(long __addr, boolean __at, byte[] __v,
+	public abstract void writeBytes(long __addr, byte[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -64,7 +63,6 @@ public interface WritableMemory
 	 * Writes multiple char values.
 	 *
 	 * @param __addr The address to write to.
-	 * @param __at If {@code true} then the write is atomic.
 	 * @param __v The values to write.
 	 * @param __o The starting offset to read values from.
 	 * @param __l The number of values to write.
@@ -74,7 +72,7 @@ public interface WritableMemory
 	 * @throws NullPointerException If no source array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void writeChars(long __addr, boolean __at, char[] __v,
+	public abstract void writeChars(long __addr, char[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -95,7 +93,6 @@ public interface WritableMemory
 	 * Writes multiple double values.
 	 *
 	 * @param __addr The address to write to.
-	 * @param __at If {@code true} then the write is atomic.
 	 * @param __v The values to write.
 	 * @param __o The starting offset to read values from.
 	 * @param __l The number of values to write.
@@ -105,7 +102,7 @@ public interface WritableMemory
 	 * @throws NullPointerException If no source array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void writeDoubles(long __addr, boolean __at, double[] __v,
+	public abstract void writeDoubles(long __addr, double[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -126,7 +123,6 @@ public interface WritableMemory
 	 * Writes multiple float values.
 	 *
 	 * @param __addr The address to write to.
-	 * @param __at If {@code true} then the write is atomic.
 	 * @param __v The values to write.
 	 * @param __o The starting offset to read values from.
 	 * @param __l The number of values to write.
@@ -136,7 +132,7 @@ public interface WritableMemory
 	 * @throws NullPointerException If no source array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void writeFloats(long __addr, boolean __at, float[] __v,
+	public abstract void writeFloats(long __addr, float[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -157,7 +153,6 @@ public interface WritableMemory
 	 * Writes multiple int values.
 	 *
 	 * @param __addr The address to write to.
-	 * @param __at If {@code true} then the write is atomic.
 	 * @param __v The values to write.
 	 * @param __o The starting offset to read values from.
 	 * @param __l The number of values to write.
@@ -167,7 +162,7 @@ public interface WritableMemory
 	 * @throws NullPointerException If no source array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void writeInts(long __addr, boolean __at, int[] __v,
+	public abstract void writeInts(long __addr, int[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -188,7 +183,6 @@ public interface WritableMemory
 	 * Writes multiple long values.
 	 *
 	 * @param __addr The address to write to.
-	 * @param __at If {@code true} then the write is atomic.
 	 * @param __v The values to write.
 	 * @param __o The starting offset to read values from.
 	 * @param __l The number of values to write.
@@ -198,7 +192,7 @@ public interface WritableMemory
 	 * @throws NullPointerException If no source array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void writeLongs(long __addr, boolean __at, long[] __v,
+	public abstract void writeLongs(long __addr, long[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
@@ -219,7 +213,6 @@ public interface WritableMemory
 	 * Writes multiple short values.
 	 *
 	 * @param __addr The address to write to.
-	 * @param __at If {@code true} then the write is atomic.
 	 * @param __v The values to write.
 	 * @param __o The starting offset to read values from.
 	 * @param __l The number of values to write.
@@ -229,7 +222,7 @@ public interface WritableMemory
 	 * @throws NullPointerException If no source array was specified.
 	 * @since 2016/06/05
 	 */
-	public abstract void writeShorts(long __addr, boolean __at, short[] __v,
+	public abstract void writeShorts(long __addr, short[] __v,
 		int __o, int __l)
 		throws IndexOutOfBoundsException, MemoryIOException,
 			NullPointerException;
