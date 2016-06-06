@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.terp;
 
 import net.multiphasicapps.squirreljme.memory.AbstractMemoryPool;
+import net.multiphasicapps.squirreljme.memory.MemoryIOException;
 import net.multiphasicapps.squirreljme.memory.MemoryPool;
 
 /**
@@ -48,9 +49,52 @@ public class InterpreterMemoryPool
 	 * @since 2016/06/05
 	 */
 	@Override
+	public byte readByte(long __addr, boolean __at)
+		throws MemoryIOException
+	{
+		// Check
+		__checkRange(__addr, 1);
+		
+		// Atomic?
+		if (__at)
+			synchronized (this)
+			{
+				return this.memory[(int)__addr];
+			}
+		
+		// Not atomic?
+		else
+			return this.memory[(int)__addr];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/05
+	 */
+	@Override
 	public final long size()
 	{
 		return this.memory.length;
+	}
+	
+	/**
+	 * Checks the range of the address and the length to make sure that it is
+	 * a valid operation.
+	 *
+	 * @param __addr The address to read from.
+	 * @param __long The number of bytes to read.
+	 * @throws MemoryIOException If the address is out of range.
+	 * @since 2016/06/05
+	 */
+	private void __checkRange(long __addr, int __len)
+		throws MemoryIOException
+	{
+		// {@squirreljme.error AN04 Access of address by reading/writing the
+		// given length is not within range. (The address; The length)}
+		if (__addr < 0L || __len <= 0L ||
+			(__addr + __len) >= (long)this.memory.length)
+			throw new MemoryIOException(String.format("AN04 %d", __addr,
+				__len));
 	}
 }
 
