@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.terp.rr;
 
+import java.util.List;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
@@ -37,6 +38,11 @@ public class RRThread
 		CIMethodID __mm, Object... __args)
 	{
 		super(__terp, __ip, __mc, __mm, __args);
+		
+		// Get starting point details
+		ClassNameSymbol mainclass = this.mainclass;
+		CIMethodID mainmethod = this.mainmethod;
+		List<Object> mainargs = this.mainargs;
 		
 		throw new Error("TODO");
 	}
