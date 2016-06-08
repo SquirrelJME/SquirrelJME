@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: interpreter
 X-SquirrelJME-UUID: 6bb0b8c1-01da-4a8b-999f-dce8cb34f4a1
 X-SquirrelJME-Depends: javame-cldc-compact, extra-util-unmodifiable,
- class-interface, java-byte-code, class-path, gc,
+ class-interface, java-byte-code, class-path, gc, object-manager
 X-SquirrelJME-Optional: gc-standard
 X-SquirrelJME-Error: AN
 LIBlet-Title: Interpreter Core
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160420
-LIBlet-Description: This the core of the interpreted execution
-  engine which is used for testing and determining how the virtual
+LIBlet-Description: This the core of the interpreted execution 
+  engine which is used for testing and determining how the virtual 
   machine should run.
 
