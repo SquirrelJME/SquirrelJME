@@ -77,3 +77,11 @@ is. This would at least be using JamVM.
 The stack sizes are dependent on the VM itself however. From all of the
 overflows they are all essentially happening in the class loader.
 
+## 17:05
+
+What I can do however, is if the stack is too small, it can be extended to
+be used in another allocated region (which would be locked). So really the
+object manager would be more than just objects and arrays, it would also have
+to handle stacks and possibly temporary executable code fragments (which were
+natively compiled).
+
