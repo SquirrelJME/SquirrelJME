@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: simulator
+X-SquirrelJME-UUID: 1f5dde20-1581-4679-9314-0938706a460b
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: BV
+LIBlet-Title: Simulator
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160607
+LIBlet-Description: This provides base support for userspace
+  simulators to simulate running of target SquirrelJME for
+  testing and debugging purposes. Although there is potential
+  for programs other than SquirrelJME to run, that is not the
+  intended goal for the simulator and it is not fully
+  supported.
+
