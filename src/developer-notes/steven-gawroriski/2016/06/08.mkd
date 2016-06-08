@@ -18,3 +18,8 @@ interpreter potentially.
 I need a package which can handle comparison and other operations of unsigned
 values.
 
+## 10:53
+
+For the memory pool, it should be used by the manager and then associated with
+the kernel potentially.
+

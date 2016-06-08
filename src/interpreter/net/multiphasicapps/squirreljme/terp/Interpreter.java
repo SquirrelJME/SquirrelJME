@@ -39,7 +39,7 @@ public abstract class Interpreter
 		new Object();
 	
 	/** The memory pool of the interpreter. */
-	private volatile InterpreterMemoryPool _mempool;
+	private volatile InterpreterMemoryPoolManager _mempool;
 	
 	/** The current size of the memory pool. */
 	private volatile long _mempoolsize =
@@ -139,17 +139,17 @@ public abstract class Interpreter
 	 * @return The memory pool that all processes use to store data.
 	 * @since 2016/06/06
 	 */
-	public final InterpreterMemoryPool getMemoryPool()
+	public final InterpreterMemoryPoolManager getMemoryPoolManager()
 	{
 		// Lock
 		synchronized (this._mempoollock)
 		{
 			// Get
-			InterpreterMemoryPool rv = this._mempool;
+			InterpreterMemoryPoolManager rv = this._mempool;
 			
 			// Create?
 			if (rv == null)
-				this._mempool = (rv = new InterpreterMemoryPool(
+				this._mempool = (rv = new InterpreterMemoryPoolManager(
 					(int)this._mempoolsize, MEMORY_POOL_BASE_ADDRESS));
 			
 			// Return
@@ -170,7 +170,7 @@ public abstract class Interpreter
 		synchronized (this._mempoollock)
 		{
 			// If the pool was already allocated then use the actual size
-			InterpreterMemoryPool rv = this._mempool;
+			InterpreterMemoryPoolManager rv = this._mempool;
 			if (rv != null)
 				return rv.size();
 			

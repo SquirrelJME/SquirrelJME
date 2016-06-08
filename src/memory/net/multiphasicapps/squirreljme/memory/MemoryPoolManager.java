@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import net.multiphasicapps.util.unsigned.UnsignedLong;
 
 /**
  * This class is used for managing pools of memory which may be available for
@@ -34,13 +35,18 @@ public abstract class MemoryPoolManager
 			@Override
 			public int compare(MemoryPool __a, MemoryPool __b)
 			{
-				throw new Error("TODO");
+				return UnsignedLong.compareUnsignedUnsigned(__a.baseAddress(),
+					__b.baseAddress());
 			}
 		};
 	
 	/** The object to lock on when using the pool manager. */
 	protected final Object lock =
 		new Object();
+	
+	/** The memory pools which are available. */
+	private final List<MemoryPool> _pools =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the memory pool manager.
@@ -72,6 +78,40 @@ public abstract class MemoryPoolManager
 	public final Object obtainLock()
 	{
 		return this.lock;
+	}
+	
+	/**
+	 * Returns the size of all memory pools which are managed by this manager.
+	 *
+	 * @return The total memory pool size.
+	 * @since 2016/06/08
+	 */
+	public final long size()
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// Count the total bytes in the pool
+			long total = 0L;
+			for (MemoryPool mp : this._pools)
+			{
+				// Do not accept negative sizes
+				long sz = mp.size();
+				if (sz >= 0)
+				{
+					// Never exceed 8 EiB
+					long next = total + sz;
+					if (next < total)
+						total = Long.MAX_VALUE;
+				
+					// Set new total
+					total = next;
+				}
+			}
+			
+			// Return
+			return total;
+		}
 	}
 }
 
