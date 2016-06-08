@@ -41,3 +41,8 @@ Actually that would be a bad idea. The memory pool should just be a memory
 pool which can be read and written to. An object manager can reserve space and
 such. This way the memory pools can shared with the simulator and such.
 
+## 12:23
+
+The atomic operations also cannot be in the abstract pool either because the
+reserved bytes are gone now.
+

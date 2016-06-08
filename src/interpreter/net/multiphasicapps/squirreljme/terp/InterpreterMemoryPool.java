@@ -62,6 +62,37 @@ public class InterpreterMemoryPool
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/06/08
+	 */
+	@Override
+	public boolean compareAndSetInt(long __addr, int __d, int __v)
+		throws MemoryIOException
+	{
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Lock
+		synchronized (memory)
+		{
+			// Read integer value
+			int was = readInt(__addr, false);
+			
+			// Is the value?
+			if (was == __d)
+			{
+				writeInt(__addr, true, __v);
+				return true;
+			}
+			
+			// Was not
+			else
+				return false;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/06/05
 	 */
 	@Override
