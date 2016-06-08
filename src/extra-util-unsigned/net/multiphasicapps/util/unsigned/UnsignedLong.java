@@ -43,6 +43,13 @@ public final class UnsignedLong
 		// value is "negative" then the first is always lower
 		if (__a < 0 || __b < 0)
 			return -1;
+		
+		// Normal comparison
+		if (__a < __b)
+			return -1;
+		else if (__a > __b)
+			return 1;
+		return 0;
 	}
 	
 	/**
@@ -60,6 +67,13 @@ public final class UnsignedLong
 		// Or if the first value is "negative"
 		if (__b < 0 || __a < 0)
 			return 1;
+		
+		// Normal comparison
+		if (__a < __b)
+			return -1;
+		else if (__a > __b)
+			return 1;
+		return 0;
 	}
 	
 	/**
@@ -86,19 +100,59 @@ public final class UnsignedLong
 		
 		// A is much smaller than B
 		else if (!na && nb)
+			return -1;
+		
+		// Both values are positive/negative
+		else
+		{
+			// 0xFFFF (65536) > 0x0 (0)
+			// 0xFFFFFFFFF (-1) > 0x80000000 (-2147483648)
+			if (__a > __b)
+				return 1;
+			
+			// Lower value
+			else if (__a < __b)
+				return -1;
+			
+			// Equal
 			return 0;
+		}
+	}
+	
+	/**
+	 * Converts an unsigned byte to an unsigned long.
+	 *
+	 * @param __v The input byte value.
+	 * @return The unsigned long value.
+	 * @since 2016/06/08
+	 */
+	public static long fromUnsignedByte(byte __v)
+	{
+		return ((long)__v) & 0xFFL;
 	}
 	
 	/**
 	 * Converts an unsigned int to an unsigned long.
 	 *
-	 * @param __i The input integer value.
+	 * @param __v The input integer value.
 	 * @return The unsigned long value.
 	 * @since 2016/06/08
 	 */
-	public static long fromUnsignedInt(int __i)
+	public static long fromUnsignedInt(int __v)
 	{
-		return ((long)__i) & 0xFFFF_FFFFL;
+		return ((long)__v) & 0xFFFF_FFFFL;
+	}
+	
+	/**
+	 * Converts an unsigned short to an unsigned long.
+	 *
+	 * @param __v The input short value.
+	 * @return The unsigned long value.
+	 * @since 2016/06/08
+	 */
+	public static long fromUnsignedShort(short __v)
+	{
+		return ((long)__v) & 0xFFFFL;
 	}
 }
 
