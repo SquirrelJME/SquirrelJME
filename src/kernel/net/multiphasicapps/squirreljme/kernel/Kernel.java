@@ -40,6 +40,7 @@ import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
+import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
 import __squirreljme.IPCAlternative;
 import __squirreljme.IPCException;
 import __squirreljme.IPCClient;
@@ -236,6 +237,14 @@ public abstract class Kernel
 	 */
 	protected abstract void internalRunCycle()
 		throws KernelException;
+	
+	/**
+	 * Returns the memory pool that the kernel uses for user-space processes.
+	 *
+	 * @return The memory pool manager that the kernel uses.
+	 * @since 2016/06/08
+	 */
+	public abstract MemoryPoolManager memoryPoolManager();
 	
 	/**
 	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing

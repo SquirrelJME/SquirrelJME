@@ -134,30 +134,6 @@ public abstract class Interpreter
 	}
 	
 	/**
-	 * Obtains the memory pool or creates it if it does not exist.
-	 *
-	 * @return The memory pool that all processes use to store data.
-	 * @since 2016/06/06
-	 */
-	public final InterpreterMemoryPoolManager getMemoryPoolManager()
-	{
-		// Lock
-		synchronized (this._mempoollock)
-		{
-			// Get
-			InterpreterMemoryPoolManager rv = this._mempool;
-			
-			// Create?
-			if (rv == null)
-				this._mempool = (rv = new InterpreterMemoryPoolManager(
-					(int)this._mempoolsize, MEMORY_POOL_BASE_ADDRESS));
-			
-			// Return
-			return rv;
-		}
-	}
-	
-	/**
 	 * Returns the size of the memory pool that all processes within the
 	 * interpreter use.
 	 *
@@ -212,6 +188,30 @@ public abstract class Interpreter
 				throw new IllegalArgumentException(String.format("AN07 %s", v),
 					e);
 			}
+	}
+	
+	/**
+	 * Obtains the memory pool or creates it if it does not exist.
+	 *
+	 * @return The memory pool that all processes use to store data.
+	 * @since 2016/06/06
+	 */
+	public final InterpreterMemoryPoolManager memoryPoolManager()
+	{
+		// Lock
+		synchronized (this._mempoollock)
+		{
+			// Get
+			InterpreterMemoryPoolManager rv = this._mempool;
+			
+			// Create?
+			if (rv == null)
+				this._mempool = (rv = new InterpreterMemoryPoolManager(
+					(int)this._mempoolsize, MEMORY_POOL_BASE_ADDRESS));
+			
+			// Return
+			return rv;
+		}
 	}
 	
 	/**
