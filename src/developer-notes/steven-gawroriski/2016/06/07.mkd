@@ -4,3 +4,14 @@
 
 Probably not going to get much done this day.
 
+## 22:41
+
+Have this idea for a simulator. Basically it will emulate a CPU and provide
+a virtual filesystem so that programs designed for other OSes would run on the
+JVM. It would be slow, but it would be for testing SquirrelJME to make sure
+that it still runs potentially on target systems. Being a user-space simulator
+it would not accurately emulate the hardware, but only what is expected when it
+comes to user programs. So for example if Palm OS were simulated, it would not
+use any proprietary ROMs and if for example a memory address were read it
+would not have the same effect as if it were running on real hardware.
+
