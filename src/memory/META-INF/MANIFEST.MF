@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: memory
 X-SquirrelJME-UUID: b75e41e0-ed94-4d7d-9177-5524cf55e0e1
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: javame-cldc-compact, extra-util-unsigned
 X-SquirrelJME-Error: BT
 LIBlet-Title: Memory Interfaces
 LIBlet-Vendor: Steven Gawroriski

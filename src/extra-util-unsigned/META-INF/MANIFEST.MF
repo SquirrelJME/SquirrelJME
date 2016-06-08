@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: extra-util-unsigned
-X-SquirrelJME-UUID: c6d0507c-f9cb-43d9-ab02-09e4fb502b60
+X-SquirrelJME-UUID: 2f2903c8-c1b6-40bd-8978-2e2df00b743f
 X-SquirrelJME-Depends: javame-cldc-compact
 LIBlet-Title: Unsigned Operations
 LIBlet-Vendor: Steven Gawroriski
