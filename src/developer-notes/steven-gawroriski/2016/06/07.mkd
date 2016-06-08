@@ -15,3 +15,9 @@ comes to user programs. So for example if Palm OS were simulated, it would not
 use any proprietary ROMs and if for example a memory address were read it
 would not have the same effect as if it were running on real hardware.
 
+## 22:44
+
+Also, the simulator can use the memory pool stuff to manage memory so to speak,
+which can reduce the need to have duplicate implementations and such. The
+pool would however have to support big and little endian however.
+
