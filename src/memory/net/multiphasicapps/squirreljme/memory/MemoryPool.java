@@ -20,6 +20,14 @@ public interface MemoryPool
 	extends ReadableMemory, WritableMemory
 {
 	/**
+	 * Returns the base address and location of this memory pool.
+	 *
+	 * @retrun The pool's base address.
+	 * @since 2016/06/08
+	 */
+	public abstract long baseAddress();
+	
+	/**
 	 * Returns the number of bytes which are available in this pool.
 	 *
 	 * @return The number of available bytes.

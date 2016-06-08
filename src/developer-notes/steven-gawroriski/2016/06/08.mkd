@@ -1,0 +1,8 @@
+# 2016/06/08
+
+## 09:21
+
+For the memory pool manager I can have multiple base addresses. The base
+address would be used as a means to determine the address where data is
+placed and would be used for pointers in objects for example.
+
