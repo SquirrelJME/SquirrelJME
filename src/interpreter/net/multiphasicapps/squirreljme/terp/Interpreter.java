@@ -219,6 +219,39 @@ public abstract class Interpreter
 				throw new IllegalArgumentException(String.format("AN07 %s", v),
 					e);
 			}
+		
+		// {@squirreljme.cmdline -Xsquirreljme-interpreter-pointertype=type The
+		// Java data type to use for pointer values. Note that the pointer type
+		// sets the maximum upper limit on the amount of memory which is
+		// available for usage. The current possible values are: short/16,
+		// int/32, or long/64. Either a data type or integer value may be
+		// specified.}
+		if ((v = __xo.get("squirreljme-interpreter-pointertype")) != null)
+		{
+			switch (v)
+			{
+				case "short":
+				case "16":
+					setPointerType(PointerType.SHORT);
+					break;
+				
+				case "int":
+				case "32":
+					setPointerType(PointerType.INTEGER);
+					break;
+				
+				case "long":
+				case "64":
+					setPointerType(PointerType.LONG);
+					break;
+				
+					// {@squirreljme.error AN0a Unknown pointer type to use
+					// in the interpreter. (The desired type)}
+				default:
+					throw new IllegalArgumentException(String.format("AN0a %s",
+						v));
+			}
+		}
 	}
 	
 	/**
