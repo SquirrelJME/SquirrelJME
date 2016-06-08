@@ -53,3 +53,12 @@ thing to consider is that this would limit the interpreter's maximum amount
 of memory. Each instance of a loaded class for each virtual machine would need
 the `Class` object allocated for classes along with their static fields.
 
+## 16:55
+
+So the question is, do I allocate stacks used in the interpreter using the
+memory pool? If I do then that means saving the current state of execution is
+virtually just limited to storing the PC address in the currently executing
+method, the stack pointers, and a few other details. With this model, there
+actually could be no local variables used and where the code executes in a way
+where everything is on the stack. Local variables as in registers.
+
