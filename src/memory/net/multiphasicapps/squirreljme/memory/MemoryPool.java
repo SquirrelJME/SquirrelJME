@@ -22,7 +22,10 @@ public interface MemoryPool
 	/**
 	 * Returns the base address and location of this memory pool.
 	 *
-	 * @retrun The pool's base address.
+	 * The value returned here must be treated as an unsigned value.
+	 *
+	 * @retrun The pool's base address, the handling of this value is not
+	 * signed.
 	 * @since 2016/06/08
 	 */
 	public abstract long baseAddress();

@@ -25,14 +25,19 @@ public class InterpreterMemoryPool
 	/** The bytes which make up the active memory. */
 	protected final byte[] memory;
 	
+	/** The base address of this pool. */
+	protected final long baseaddr;
+	
 	/**
 	 * Initializes the memory pool to use the given number of bytes.
 	 *
 	 * @param __bytes The bytes to use.
+	 * @param __baseaddr The base address of the memory pool, this value is
+	 * unsigned.
 	 * @throws IllegalArgumentException On null arguments.
 	 * @since 2016/06/05
 	 */
-	public InterpreterMemoryPool(int __bytes)
+	public InterpreterMemoryPool(int __bytes, long __baseaddr)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AN03 The number of bytes to use in the memory
@@ -42,6 +47,17 @@ public class InterpreterMemoryPool
 		
 		// Allocate backing buffer
 		this.memory = new byte[__bytes];
+		this.baseaddr = __baseaddr;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/08
+	 */
+	@Override
+	public long baseAddress()
+	{
+		return this.baseaddr;
 	}
 	
 	/**

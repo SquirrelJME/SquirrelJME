@@ -30,6 +30,10 @@ public abstract class Interpreter
 	public static final long DEFAULT_MEMORY_POOL_SIZE =
 		25_165_824;
 	
+	/** The base address of the interpreter memory pool. */
+	public static final long MEMORY_POOL_BASE_ADDRESS =
+		0x8000_0000L;
+	
 	/** Memory pool access lock. */
 	private final Object _mempoollock =
 		new Object();
@@ -146,7 +150,7 @@ public abstract class Interpreter
 			// Create?
 			if (rv == null)
 				this._mempool = (rv = new InterpreterMemoryPool(
-					(int)this._mempoolsize));
+					(int)this._mempoolsize, MEMORY_POOL_BASE_ADDRESS));
 			
 			// Return
 			return rv;
