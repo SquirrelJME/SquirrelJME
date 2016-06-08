@@ -35,3 +35,9 @@ Hopefully 16 bytes reserved at the start of the memory pool is sufficient to
 handle virtualized atomic operations and such (in case there is no native
 support for it).
 
+## 12:21
+
+Actually that would be a bad idea. The memory pool should just be a memory
+pool which can be read and written to. An object manager can reserve space and
+such. This way the memory pools can shared with the simulator and such.
+
