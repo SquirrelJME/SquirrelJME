@@ -8,21 +8,21 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.objman;
+package net.multiphasicapps.squirreljme.sm;
 
 import net.multiphasicapps.squirreljme.memory.MemoryIOException;
 import net.multiphasicapps.squirreljme.memory.MemoryPool;
 import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
 
 /**
- * This is the manager which manages all allocated objects.
+ * This is the manager which manages all allocated structures.
  *
  * This is shared by all implementations of SquirrelJME so that they have a
- * uniform object layout structure.
+ * uniform structure across all architectures and platforms.
  *
  * @since 2016/06/08
  */
-public class ObjectManager
+public class StructureManager
 {
 	/** The used memory pool. */
 	protected final MemoryPoolManager poolman;
@@ -38,7 +38,7 @@ public class ObjectManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/08
 	 */
-	public ObjectManager(MemoryPoolManager __pm, PointerType __pt)
+	public StructureManager(MemoryPoolManager __pm, PointerType __pt)
 		throws NullPointerException
 	{
 		// Check

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.objman;
+package net.multiphasicapps.squirreljme.sm;
 
 /**
  * This is the Java type that is used to store pointer values.

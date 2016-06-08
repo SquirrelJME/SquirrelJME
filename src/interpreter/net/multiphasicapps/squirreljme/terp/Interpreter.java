@@ -17,8 +17,8 @@ import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
-import net.multiphasicapps.squirreljme.objman.ObjectManager;
-import net.multiphasicapps.squirreljme.objman.PointerType;
+import net.multiphasicapps.squirreljme.sm.StructureManager;
+import net.multiphasicapps.squirreljme.sm.PointerType;
 
 /**
  * This is the base class which is used by implementations of the interpreter
@@ -41,7 +41,7 @@ public abstract class Interpreter
 		new Object();
 	
 	/** The interpreter object manager. */
-	private volatile ObjectManager _objman;
+	private volatile StructureManager _objman;
 	
 	/** The type of pointers to use in the interpreter. */
 	private volatile PointerType _pointertype =
@@ -177,7 +177,7 @@ public abstract class Interpreter
 		synchronized (this._mempoollock)
 		{
 			// If the object manager was initialized, use that
-			ObjectManager rv = this._objman;
+			StructureManager rv = this._objman;
 			if (rv != null)
 				return rv.pointerType();
 			
@@ -285,17 +285,17 @@ public abstract class Interpreter
 	 * @return The object manager.
 	 * @since 2016/06/08
 	 */
-	public final ObjectManager objectManager()
+	public final StructureManager StructureManager()
 	{
 		// Lock
 		synchronized (this._mempoollock)
 		{
 			// Get
-			ObjectManager rv = this._objman;
+			StructureManager rv = this._objman;
 			
 			// Create?
 			if (rv == null)
-				this._objman = (rv = new ObjectManager(memoryPoolManager(),
+				this._objman = (rv = new StructureManager(memoryPoolManager(),
 					this._pointertype));
 			
 			// Return

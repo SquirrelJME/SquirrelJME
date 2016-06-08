@@ -41,7 +41,7 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
-import net.multiphasicapps.squirreljme.objman.ObjectManager;
+import net.multiphasicapps.squirreljme.sm.StructureManager;
 import __squirreljme.IPCAlternative;
 import __squirreljme.IPCException;
 import __squirreljme.IPCClient;
@@ -254,7 +254,7 @@ public abstract class Kernel
 	 * @return The object manager for the kernel.
 	 * @since 2016/06/08
 	 */
-	public abstract ObjectManager objectManager();
+	public abstract StructureManager StructureManager();
 	
 	/**
 	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing

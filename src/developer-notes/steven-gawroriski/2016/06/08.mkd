@@ -85,3 +85,17 @@ object manager would be more than just objects and arrays, it would also have
 to handle stacks and possibly temporary executable code fragments (which were
 natively compiled).
 
+## 17:13
+
+Stack growing across extensions would technically allow stacks that are really
+low in the execution space to be moved around and potentially swapped away or
+compressed. That could be a bonus for speed usage. Due to the way Java works
+no other method refers to another method's stack entries. So this can actually
+be used as a memory based optimization. Also 6K is not enough to run the Java
+compiler. 8K works until the kernel has to be built. When GC is performed
+however, the stacks will need to be swapped in, decompressed, and locked to
+determine which objects exist on it. Using the previous plan of having a
+duplicated object storage space would make determining which objects are
+actually referenced quite simple rather than finding out another way of a value
+that contains an `int` value points to an actual object.
+

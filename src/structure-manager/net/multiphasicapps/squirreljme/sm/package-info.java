@@ -9,11 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the object manager which is used to manage which
- * objects are allocated and such.
+ * This package contains the structure manager which is used to manage which
+ * objects are allocated along with any other needed data structures.
  *
  * @since 2016/06/08
  */
 
-package net.multiphasicapps.squirreljme.objman;
+package net.multiphasicapps.squirreljme.sm;
 

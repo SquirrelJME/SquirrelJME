@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: interpreter
 X-SquirrelJME-UUID: 6bb0b8c1-01da-4a8b-999f-dce8cb34f4a1
 X-SquirrelJME-Depends: javame-cldc-compact, extra-util-unmodifiable,
- class-interface, java-byte-code, class-path, gc, object-manager
+ class-interface, java-byte-code, class-path, gc, structure-manager
 X-SquirrelJME-Optional: gc-standard
 X-SquirrelJME-Error: AN
 LIBlet-Title: Interpreter Core
