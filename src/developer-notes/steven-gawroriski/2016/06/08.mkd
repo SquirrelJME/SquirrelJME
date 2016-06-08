@@ -23,3 +23,9 @@ values.
 For the memory pool, it should be used by the manager and then associated with
 the kernel potentially.
 
+## 11:20
+
+Going to need a common and generic object manager. Monitors and locks can be
+managed by atomic read/writes of values. So the memory pool will also need
+compare and set/test or similar for the native types.
+
