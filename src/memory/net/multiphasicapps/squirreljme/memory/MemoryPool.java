@@ -17,8 +17,24 @@ package net.multiphasicapps.squirreljme.memory;
  * @since 2016/06/05
  */
 public interface MemoryPool
-	extends ReadableMemory, WritableMemory
+	extends AtomicOperations, ReadableMemory, WritableMemory
 {
+	/**
+	 * This is the number of bytes which are reserved at the start of every
+	 * memory pool. The reserved space is used for fallback atomic operations
+	 * in the event that they are not supported. The space is also used to
+	 * indicate the number of object handles have been allocated.
+	 *
+	 * 0 : Pool atomic flag. If a native atomic operation is not supported then
+	 *     this value will be used to implement it.
+	 * 4 : Not used.
+	 * 8 : The number of locks on the pool (atomically modified and used also
+	 *     by the garbage collector).
+	 * 12: The object allocation count.
+	 */
+	public static final long RESERVED_SPACE =
+		16L;
+	
 	/**
 	 * Returns the base address and location of this memory pool.
 	 *

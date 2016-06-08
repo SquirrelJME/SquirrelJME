@@ -21,6 +21,17 @@ public abstract class AbstractMemoryPool
 {
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/06/08
+	 */
+	@Override
+	public boolean compareAndSetInt(long __addr, int __d, int __v)
+		throws MemoryIOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/06/05
 	 */
 	@Override

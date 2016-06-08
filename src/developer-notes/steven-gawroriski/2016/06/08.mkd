@@ -29,3 +29,9 @@ Going to need a common and generic object manager. Monitors and locks can be
 managed by atomic read/writes of values. So the memory pool will also need
 compare and set/test or similar for the native types.
 
+## 11:43
+
+Hopefully 16 bytes reserved at the start of the memory pool is sufficient to
+handle virtualized atomic operations and such (in case there is no native
+support for it).
+
