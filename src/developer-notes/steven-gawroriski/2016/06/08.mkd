@@ -62,3 +62,18 @@ method, the stack pointers, and a few other details. With this model, there
 actually could be no local variables used and where the code executes in a way
 where everything is on the stack. Local variables as in registers.
 
+## 17:00
+
+I wonder what the maximum stack size I can run my current code instance in with
+is. This would at least be using JamVM.
+
+ * 2K: Crashes before start
+ * 4K: Overflows at net.multiphasicapps.squirreljme.kernel.impl.jvm.JVMKernel.
+       internalClassUnitProviders(JVMKernel.java:72)
+ * 5K: Overflows at net.multiphasicapps.util.huffmantree.HuffmanTree.traverser
+       (HuffmanTree.java:405)
+ * 6K: Works
+
+The stack sizes are dependent on the VM itself however. From all of the
+overflows they are all essentially happening in the class loader.
+
