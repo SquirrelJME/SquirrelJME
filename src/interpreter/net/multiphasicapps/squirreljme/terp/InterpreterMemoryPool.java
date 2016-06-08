@@ -76,7 +76,7 @@ public class InterpreterMemoryPool
 		synchronized (memory)
 		{
 			// Read integer value
-			int was = readInt(__addr, false);
+			int was = readInt(__addr, true);
 			
 			// Is the value?
 			if (was == __d)
@@ -88,6 +88,32 @@ public class InterpreterMemoryPool
 			// Was not
 			else
 				return false;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/08
+	 */
+	@Override
+	public int fetchAndAddInt(long __addr, int __v)
+		throws MemoryIOException
+	{
+		// Get
+		byte[] memory = this.memory;
+		int addr = (int)__addr;
+		
+		// Lock
+		synchronized (memory)
+		{
+			// Read integer value
+			int was = readInt(__addr, true);
+			
+			// Add the value
+			writeInt(__addr, true, was + __v);
+			
+			// Return old value
+			return was;
 		}
 	}
 	

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: object-manager
+X-SquirrelJME-UUID: ede0fa1a-7b98-4f34-873a-a39de101e562
+X-SquirrelJME-Depends: javame-cldc-compact, memory
+X-SquirrelJME-Error: BW
+LIBlet-Title: Object Manager
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160608
+LIBlet-Description: This manages objects in memory pools and 
+  maintains the required logic for object data storage.
+

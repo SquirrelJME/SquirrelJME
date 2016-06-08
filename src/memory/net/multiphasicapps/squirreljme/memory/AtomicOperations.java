@@ -32,5 +32,18 @@ public interface AtomicOperations
 	 */
 	public abstract boolean compareAndSetInt(long __addr, int __d, int __v)
 		throws MemoryIOException;
+	
+	/**
+	 * Atomically reads a value at a given location and adds a value to it and
+	 * returns the old value. 
+	 *
+	 * @param __addr The address to operate on.
+	 * @param __v The value to add.
+	 * @return The old value.
+	 * @throws MemoryIOException If the operation could not be performed.
+	 * @since 2016/06/08
+	 */
+	public abstract int fetchAndAddInt(long __addr, int __v)
+		throws MemoryIOException;
 }
 
