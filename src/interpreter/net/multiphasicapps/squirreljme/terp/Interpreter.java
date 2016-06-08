@@ -17,6 +17,8 @@ import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.objman.ObjectManager;
+import net.multiphasicapps.squirreljme.objman.PointerType;
 
 /**
  * This is the base class which is used by implementations of the interpreter
@@ -32,11 +34,18 @@ public abstract class Interpreter
 	
 	/** The base address of the interpreter memory pool. */
 	public static final long MEMORY_POOL_BASE_ADDRESS =
-		0x8000_0000L;
+		0x0000_0000L;
 	
 	/** Memory pool access lock. */
 	private final Object _mempoollock =
 		new Object();
+	
+	/** The interpreter object manager. */
+	private volatile ObjectManager _objman;
+	
+	/** The type of pointers to use in the interpreter. */
+	private volatile PointerType _pointertype =
+		PointerType.INTEGER;
 	
 	/** The memory pool of the interpreter. */
 	private volatile InterpreterMemoryPoolManager _mempool;
@@ -156,6 +165,28 @@ public abstract class Interpreter
 	}
 	
 	/**
+	 * Obtains the pointer type which is used by the interpreter's object
+	 * manager.
+	 *
+	 * @return The data type to use for pointer values.
+	 * @since 2016/06/08
+	 */
+	public final PointerType getPointerType()
+	{
+		// Lock
+		synchronized (this._mempoollock)
+		{
+			// If the object manager was initialized, use that
+			ObjectManager rv = this._objman;
+			if (rv != null)
+				return rv.pointerType();
+			
+			// Otherwise use the future to set value
+			return this._pointertype;
+		}
+	}
+	
+	/**
 	 * Handles the X options which may be passed to the interpreter.
 	 *
 	 * Sub-classes should call the super-class method so that more common
@@ -215,6 +246,31 @@ public abstract class Interpreter
 	}
 	
 	/**
+	 * Obtains the manager which manages allocated memory and provides object
+	 * based interaction.
+	 *
+	 * @return The object manager.
+	 * @since 2016/06/08
+	 */
+	public final ObjectManager objectManager()
+	{
+		// Lock
+		synchronized (this._mempoollock)
+		{
+			// Get
+			ObjectManager rv = this._objman;
+			
+			// Create?
+			if (rv == null)
+				this._objman = (rv = new ObjectManager(memoryPoolManager(),
+					this._pointertype));
+			
+			// Return
+			return rv;
+		}
+	}
+	
+	/**
 	 * Sets the size of the memory pool.
 	 *
 	 * @param __sz The memory pool size to use.
@@ -243,6 +299,37 @@ public abstract class Interpreter
 			
 			// Set new size
 			this._mempoolsize = __sz;
+		}
+	}
+	
+	/**
+	 * Sets the data type to use for storing pointer values which refer to
+	 * other memory addresses.
+	 *
+	 * @param __pt The data type to use for pointer based values.
+	 * @throws IllegalStateException If the object manager was already
+	 * initialized.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/08
+	 */
+	public final void setPointerType(PointerType __pt)
+		throws IllegalStateException, NullPointerException
+	{
+		// Check
+		if (__pt == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this._mempoollock)
+		{
+			// {@squirreljme.error AN09 Cannot set the specified pointer type
+			// because the object manager has already been initialized. (The
+			// pointer type)}
+			if (null != this._objman)
+				throw new IllegalStateException(String.format("AN09 %s",
+					__pt));
+			
+			this._pointertype = __pt;
 		}
 	}
 }

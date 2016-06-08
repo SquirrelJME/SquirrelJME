@@ -49,5 +49,16 @@ public class ObjectManager
 		this.poolman = __pm;
 		this.pointertype = __pt;
 	}
+	
+	/**
+	 * Returns the data type to use for pointer based values.
+	 *
+	 * @return The pointer data type to use.
+	 * @since 2016/06/08
+	 */
+	public final PointerType pointerType()
+	{
+		return this.pointertype;
+	}
 }
 

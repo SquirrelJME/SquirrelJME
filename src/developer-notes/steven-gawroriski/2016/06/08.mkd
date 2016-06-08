@@ -46,3 +46,10 @@ such. This way the memory pools can shared with the simulator and such.
 The atomic operations also cannot be in the abstract pool either because the
 reserved bytes are gone now.
 
+## 14:46
+
+I can test differently sized pointer values in the interpreter. However one
+thing to consider is that this would limit the interpreter's maximum amount
+of memory. Each instance of a loaded class for each virtual machine would need
+the `Class` object allocated for classes along with their static fields.
+

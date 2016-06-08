@@ -22,6 +22,7 @@ import net.multiphasicapps.squirreljme.kernel.KernelException;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
+import net.multiphasicapps.squirreljme.objman.ObjectManager;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
@@ -152,6 +153,16 @@ public class JVMKernel
 	public MemoryPoolManager memoryPoolManager()
 	{
 		return interpreter().memoryPoolManager();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/08
+	 */
+	@Override
+	public ObjectManager objectManager()
+	{
+		return interpreter().objectManager();
 	}
 	
 	/**

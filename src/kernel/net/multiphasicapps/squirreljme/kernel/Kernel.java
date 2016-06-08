@@ -41,6 +41,7 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
+import net.multiphasicapps.squirreljme.objman.ObjectManager;
 import __squirreljme.IPCAlternative;
 import __squirreljme.IPCException;
 import __squirreljme.IPCClient;
@@ -245,6 +246,15 @@ public abstract class Kernel
 	 * @since 2016/06/08
 	 */
 	public abstract MemoryPoolManager memoryPoolManager();
+	
+	/**
+	 * Returns the object manager which is used by the kernel for managing
+	 * allocated objects.
+	 *
+	 * @return The object manager for the kernel.
+	 * @since 2016/06/08
+	 */
+	public abstract ObjectManager objectManager();
 	
 	/**
 	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing
