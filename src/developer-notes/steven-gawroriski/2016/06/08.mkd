@@ -6,3 +6,15 @@ For the memory pool manager I can have multiple base addresses. The base
 address would be used as a means to determine the address where data is
 placed and would be used for pointers in objects for example.
 
+## 09:31
+
+I was thinking of having the memory pool manager handle object allocations
+and such, however I believe instead that should be placed in another project.
+This way the object in memory management can be shared by the kernel and the
+interpreter potentially.
+
+## 09:36
+
+I need a package which can handle comparison and other operations of unsigned
+values.
+
