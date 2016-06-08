@@ -40,6 +40,9 @@ public enum RRDataCommand
 	/** Sets the memory pool size. */
 	SET_POOL_SIZE(false),
 	
+	/** Sets the pointer type to use when interpreting. */
+	SET_POINTER_TYPE(false),
+	
 	/** A process is created in the VM. */
 	CREATE_PROCESS(false),
 	

@@ -310,6 +310,10 @@ public class RRDataStream
 			if (true)
 				throw new Error("TODO");
 			
+			// Read the pointer type
+			if (true)
+				throw new Error("TODO");
+			
 			// Read the JIPS
 			if (true)
 				throw new Error("TODO");
@@ -416,10 +420,21 @@ public class RRDataStream
 				record(pk);
 			}
 			
+			// Write the pointer type to use
+			try (RRDataPacket pk = createPacket(RRDataCommand.SET_POINTER_TYPE,
+				1))
+			{
+				// Set
+				pk.set(0, terp.getPointerType().ordinal());
+				
+				// Record it
+				record(pk);
+			}
+			
 			// Set the Java instructions per second
 			try (RRDataPacket pk = createPacket(RRDataCommand.SET_JIPS, 1))
 			{
-				// Record it
+				// Set
 				pk.set(0, terp.getJIPS());
 				
 				// Record it
