@@ -232,3 +232,12 @@ are any memory leaks.
 I can keep the structure manager which can use an allocator for a native system
 and such.
 
+## 18:27
+
+Actually thinking about it, instead of the interpreter creating the memory pool
+and the required information from it, it can be assigned a memory pool by the
+kernel instead. This would make it possible to run the interpreter to run some
+code on the real kernel where it could flow into natively compiled code for
+example. Although it would be slow, there could be a practical application
+for this.
+
