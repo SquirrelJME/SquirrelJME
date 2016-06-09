@@ -21,6 +21,30 @@ import net.multiphasicapps.squirreljme.memory.NoSuchMemoryPoolException;
  * This is shared by all implementations of SquirrelJME so that they have a
  * uniform structure across all architectures and platforms.
  *
+ * The start of the memory pool which is managed by this structure manager
+ * contains the following fields:
+ *
+ * 1. int -- The atomic lock on the pool, 1 means an active lock (uses compare
+ *           and swap).
+ *           0 = Not locked.
+ *           1 = Locked, a thread is checking this pool for allocation.
+ * 2. int -- The number of times the garbage collector has been run. For every
+ *           run of the garbage collector, this is used by other threads to
+ *           detect if a GC event has occurred so that it must restart
+ *           allocation.
+ * 3. int -- The atomic lock on the garbage collector. Only the first pool's
+ *           lock is considered for the garbage collector.
+ *           0 = Not locked.
+ *           1 = Locked, a thread is not garbage collecting but is locking a
+ *               pool so it may be checked.
+ *           2 = A garbage collector is running. If a lock from 0 to 1 fails
+ *               then the GC count will be checked against the entry value to
+ *               determine if a GC has ran. This check will be done in a yield
+ *               loop. If a GC is needed then any thread that is allocating
+ *               will attempt to CAS from 0 to 2. Any threads that detect an
+ *               increase in the GC count must restart their allocations.
+ * 4. int -- The number of table entries which exist in this pool.
+ *
  * @since 2016/06/08
  */
 public class StructureManager

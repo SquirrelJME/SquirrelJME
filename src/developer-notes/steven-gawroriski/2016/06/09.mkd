@@ -74,3 +74,44 @@ which is duplicated in the high and low places. This may be enough for Java ME
 since there is hopefully not going to be more than 65,000 objects at any one
 time.
 
+## 12:41
+
+If multiple pools are available then pools which cannot be locked are ignored
+for allocation attempts. So if multiple threads are allocating at the same time
+in a multi-pool scenario they can freely manage their own pools so to speak.
+One thing to consider however is that there needs to be a latch for the garbage
+collector (which needs to lock all pools). There would be a lock collision if
+the GC attempts to lock all pools. So I suppose that the first memory pool
+should have a special flag be used that is compared and swap to indicate that
+a garbage collector is running. An allocation would first compare and swap the
+GC lock to prevent a GC from being run, then it would lock the current pool,
+if that fails it would unlock the GC lock and try another pool. If the pool
+lock succeeds then the pool remains locked and the GC lock is cleared. In the
+event that two threads are allocating in a pool and they both determine that
+the GC has to run, they will then both CAS the GC lock. Whichever one gets the
+true condition performs the garbage collection. The one which fails getting the
+garbage collector will yield-spin until the GC lock becomes available again.
+Since another thread performed garbage collection it would start the allocation
+cycle all over again.
+
+## 12:50
+
+So the allocator would keep a reference to the first pool for the GC lock and
+then use the other pools accordingly. Actually if two threads were to hit the
+GC at the same time.
+
+## 12:56
+
+Actually I can compare and swap the same value. Use for example
+`compareAndSwapInt(a, 0, 0)`. Although thinking about it, since the flags are
+quite simple it might be best if it were a pointer instead. However that would
+complicate the math because it would need to be stored the positions of the
+fields rather than being pure constants.
+
+## 12:59
+
+Actually if two threads are running and both hit the garbage collector lock
+then flagging the other to determine if a GC ran would be simply just comparing
+the value against the GC is running value. If that value was detected then the
+allocation algorithm restarts at the beginning.
+

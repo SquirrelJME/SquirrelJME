@@ -73,8 +73,11 @@ public abstract class MemoryPoolManager
 	 * Returns a memory pool which is associated with the given linear sequence
 	 * starting from zero.
 	 *
-	 * It is permittable for different memory pools to be returned with each
-	 * given index, this may happen in the event that a memory pool is freed.
+	 * It is permittable for different memory pools beyond the first (index 0)
+	 * to be returned with each given index, this may happen in the event that
+	 * a memory pool is freed. The first memory pool must never be freed and
+	 * must always remain the same pool regardless if it were completely
+	 * emptied.
 	 *
 	 * @param __i The index to get.
 	 * @return The memory pool at the given index.
