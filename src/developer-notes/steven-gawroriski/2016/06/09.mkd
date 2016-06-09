@@ -216,3 +216,8 @@ separate (such as in the JVM) where code might not even be readable.
 
 Since doubles and floats can be accessed via int/long I will not have them.
 
+## 17:29
+
+Actually having the memory access having a block would be very ugly. It would
+be best if the memory space were kept as flat as possible.
+
