@@ -115,3 +115,20 @@ then flagging the other to determine if a GC ran would be simply just comparing
 the value against the GC is running value. If that value was detected then the
 allocation algorithm restarts at the beginning.
 
+## 13:10
+
+One thing to consider however is cache coherency when it comes to data
+allocation.
+
+## 13:19
+
+One major problem though is false sharing. Since all of the table data is at
+the start and very close to each other, when one thread allocates data the
+other threads's CPUs will have to throw out their object information caches.
+
+## 13:24
+
+The current model I plan would work a bit better on older CPUs and such
+however. Also thinking about it, the memory pool information would be falsely
+shared also due to the locks so to speak.
+
