@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: mmu
+X-SquirrelJME-UUID: e6e6cf66-bd98-499b-937c-03d27637f1df
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: BX
+LIBlet-Title: Structure Manager
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160609
+LIBlet-Description: This provides an interface which is
+  implemented kernel so that it provides programmatical access
+  to the raw memory that is available in a system.
+

@@ -198,3 +198,17 @@ So if a MMU is available, when code is generated I can instead catch the
 exception potentially rather than checking against a null pointer so to speak.
 Although that would be a bit ugly personally.
 
+## 14:51
+
+Something that is interesting is that there is a reflection of a reflection
+of my eye and my iris/pupils in my glasses. That is light comes in, reflects
+off my eye, and then reflects off my glasses. The whites of the eye is a very
+dark purple while where the pupil and iris are completely black.
+
+## 14:53
+
+Due to the varying memory models on CPUs, there are not completely linear
+memory models. Some portions of memory could also be banked switched, there
+could be paging also. Then for certain architectures, code and data is kept
+separate (such as in the JVM) where code might not even be readable.
+
