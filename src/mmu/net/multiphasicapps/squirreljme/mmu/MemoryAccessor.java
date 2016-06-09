@@ -27,49 +27,89 @@ public interface MemoryAccessor
 	/**
 	 * Reads a single byte value.
 	 *
-	 * @param __bl The block to read from.
 	 * @param __addr The address to read to.
 	 * @return The read value.
 	 * @throws MemoryReadException If the memory could not be read from.
 	 * @since 2016/06/09
 	 */
-	public abstract byte readByte(int __bl, long __addr)
+	public abstract byte readByte(long __addr)
 		throws MemoryReadException;
 	
 	/**
 	 * Reads a single int value.
 	 *
-	 * @param __bl The block to read from.
 	 * @param __addr The address to read to.
 	 * @return The read value.
 	 * @throws MemoryReadException If the memory could not be read from.
 	 * @since 2016/06/09
 	 */
-	public abstract int readInt(int __bl, long __addr)
+	public abstract int readInt(long __addr)
 		throws MemoryReadException;
 	
 	/**
 	 * Reads a single long value.
 	 *
-	 * @param __bl The block to read from.
 	 * @param __addr The address to read to.
 	 * @return The read value.
 	 * @throws MemoryReadException If the memory could not be read from.
 	 * @since 2016/06/09
 	 */
-	public abstract long readLong(int __bl, long __addr)
+	public abstract long readLong(long __addr)
 		throws MemoryReadException;
 	
 	/**
 	 * Reads a single short value.
 	 *
-	 * @param __bl The block to read from.
 	 * @param __addr The address to read to.
 	 * @return The read value.
 	 * @throws MemoryReadException If the memory could not be read from.
 	 * @since 2016/06/09
 	 */
-	public abstract short readShort(int __bl, long __addr)
+	public abstract short readShort(long __addr)
 		throws MemoryReadException;
+	
+	/**
+	 * Writes a single byte value.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @throws MemoryWriteException If the memory could not be written to.
+	 * @since 2016/06/09
+	 */
+	public abstract void writeByte(long __addr, byte __v)
+		throws MemoryWriteException;
+	
+	/**
+	 * Writes a single int value.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @throws MemoryWriteException If the memory could not be written to.
+	 * @since 2016/06/09
+	 */
+	public abstract void writeInt(long __addr, int __v)
+		throws MemoryWriteException;
+	
+	/**
+	 * Writes a single long value.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @throws MemoryWriteException If the memory could not be written to.
+	 * @since 2016/06/09
+	 */
+	public abstract void writeLong(long __addr, long __v)
+		throws MemoryWriteException;
+	
+	/**
+	 * Writes a single short value.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @throws MemoryWriteException If the memory could not be written to.
+	 * @since 2016/06/09
+	 */
+	public abstract void writeShort(long __addr, short __v)
+		throws MemoryWriteException;
 }
 
