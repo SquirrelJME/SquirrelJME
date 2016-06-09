@@ -132,3 +132,49 @@ The current model I plan would work a bit better on older CPUs and such
 however. Also thinking about it, the memory pool information would be falsely
 shared also due to the locks so to speak.
 
+## 13:29
+
+One way would be to add a get and set operation in the memory pool manager.
+There would be a configuration pool so to speak which would have a pointer to
+the last allocated object. When a new object is allocated it will atomically be
+compared and set to the new allocated object. Then the current object's back
+chain will point to the object that was allocated before it.
+
+	.       1 ( --- 2 ( --- 3
+
+Then the garbage collector would perform a global lock and then go through
+all threads and would mark any objects which can be reached. Then once that
+stage is done the object chain is walked down which destroys any objects
+which were not marked as visited and their chains reset accordingly.
+
+## 13:39
+
+However that would remove the capability of having compaction and would make
+it more difficult on lower memory systems. Also, when ordering fields, I need
+to have finals first with their alignment which is then followed by any
+volatiles or writable fields. This way there may potentially be a reduction in
+the amount of false sharing when reading field values that will never change
+in value.
+
+## 13:48
+
+When it comes to the memory allocator with this scheme, it just would not scale
+well.
+
+## 14:00
+
+Hypothetically, the table indexes would have to be at the minimum the size of
+a cache line. So depending on the architecture that is running, there would
+potentially be a bunch of wasted space in the starting table data.
+
+## 14:06
+
+So for the JIT to possibly generate better code for a target system, will need
+to have CPU metrics and such that can vary at run-time to adjust for how a
+system runs. So ideally, precompiled code will be generated exactly the same
+for the most part, however the layout of actual objects would vary depending
+on the host system. So despite having the same code, the cache line size could
+be 32 on one system and 64 on another, so table entries would be rounded up to
+this given size. This would also need to be the barrier between final and
+fields which are mutable and then ones which are volatile.
+
