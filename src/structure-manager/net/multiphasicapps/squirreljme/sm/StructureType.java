@@ -20,11 +20,14 @@ public enum StructureType
 	/** Free space. */
 	FREE,
 	
-	/** An object. */
+	/** An object that may be garbage collected. */
 	OBJECT,
 	
-	/** An object but one that is constant and cannot be GCed. */
-	CONSTANT_OBJECT,
+	/**
+	 * Unspecified structure which is not an object and cannot be garbage
+	 * collected.
+	 */
+	UNSPECIFIED,
 	
 	/** End. */
 	;
