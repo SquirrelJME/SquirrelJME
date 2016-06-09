@@ -187,3 +187,14 @@ is is a bad idea and will not work out at all. It should instead be a class
 which acts as a memory allocator. Then the structure manager could be managed
 on top of base memory manager implementations.
 
+## 14:45
+
+Ok so, currently my memory manager is a bit too high level. The kernel and
+drivers may need to actually access the address space of the host on a fashion
+that the infamous `Unsafe` would do. So to the kernel, this would provide
+basically access to the entire address space using a common interface and
+such. I can also provide a similar interface for the MMUs that CPUs use also.
+So if a MMU is available, when code is generated I can instead catch the
+exception potentially rather than checking against a null pointer so to speak.
+Although that would be a bit ugly personally.
+
