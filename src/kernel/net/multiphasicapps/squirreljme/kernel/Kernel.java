@@ -41,6 +41,8 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
+import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
+import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
 import net.multiphasicapps.squirreljme.sm.StructureManager;
 import __squirreljme.IPCAlternative;
 import __squirreljme.IPCException;
@@ -240,11 +242,25 @@ public abstract class Kernel
 		throws KernelException;
 	
 	/**
+	 * Returns the memory accessor which is used to obtain information from
+	 * a given region.
+	 *
+	 * @param __mt The type of region to provide a memory accessor for.
+	 * @return The memory accessor for the given region, this may be
+	 * {@code null} if there is none.
+	 * @throws KernelException If the memory region could not be obtained.
+	 * @since 2016/06/09
+	 */
+	public abstract MemoryAccessor memoryAccessor(MemoryRegionType __mt)
+		throws KernelException;
+	
+	/**
 	 * Returns the memory pool that the kernel uses for user-space processes.
 	 *
 	 * @return The memory pool manager that the kernel uses.
 	 * @since 2016/06/08
 	 */
+	@Deprecated
 	public abstract MemoryPoolManager memoryPoolManager();
 	
 	/**
@@ -254,6 +270,7 @@ public abstract class Kernel
 	 * @return The object manager for the kernel.
 	 * @since 2016/06/08
 	 */
+	@Deprecated
 	public abstract StructureManager StructureManager();
 	
 	/**
