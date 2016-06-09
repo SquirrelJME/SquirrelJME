@@ -49,6 +49,26 @@ import net.multiphasicapps.squirreljme.memory.NoSuchMemoryPoolException;
  */
 public class StructureManager
 {
+	/** The address of the pool's atomic lock. */
+	public static final long POOL_LOCK_ADDRESS =
+		0L;
+	
+	/** The address of the pool's GC count. */
+	public static final long POOL_GC_COUNT_ADDRESS =
+		4L;
+	
+	/** The address of the GC lock. */
+	public static final long POOL_GC_LOCK_ADDRESS =
+		8L;
+	
+	/** The number of entries in the pool. */
+	public static final long POOL_TABLE_COUNT_ADDRESS =
+		12L;
+	
+	/** The start of table entry data. */
+	public static final long POOL_TABLE_START_ADDRESS =
+		16L;
+	
 	/** The used memory pool. */
 	protected final MemoryPoolManager poolman;
 	
