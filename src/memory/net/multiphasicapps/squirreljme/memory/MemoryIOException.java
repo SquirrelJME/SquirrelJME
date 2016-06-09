@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.memory;
  *
  * @since 2016/06/05
  */
+@Deprecated
 public class MemoryIOException
 	extends RuntimeException
 {

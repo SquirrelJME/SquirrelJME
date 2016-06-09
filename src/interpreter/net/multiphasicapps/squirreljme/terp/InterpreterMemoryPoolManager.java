@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
  *
  * @since 2016/06/08
  */
+@Deprecated
 public class InterpreterMemoryPoolManager
 	extends MemoryPoolManager
 {

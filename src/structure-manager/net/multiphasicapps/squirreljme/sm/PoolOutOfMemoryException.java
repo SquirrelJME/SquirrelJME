@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.sm;
  *
  * @since 2016/06/09
  */
+@Deprecated
 public class PoolOutOfMemoryException
 	extends RuntimeException
 {

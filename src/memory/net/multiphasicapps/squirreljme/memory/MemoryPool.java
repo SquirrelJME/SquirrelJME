@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.memory;
  *
  * @since 2016/06/05
  */
+@Deprecated
 public interface MemoryPool
 	extends AtomicOperations, ReadableMemory, WritableMemory
 {

@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.sm;
  *
  * @since 2016/06/08
  */
+@Deprecated
 public enum PointerType
 {
 	/** 16-bit pointers. */

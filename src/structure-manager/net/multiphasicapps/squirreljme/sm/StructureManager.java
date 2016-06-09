@@ -46,38 +46,48 @@ import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
  *
  * @since 2016/06/08
  */
+@Deprecated
 public class StructureManager
 {
 	/** The address of the pool's atomic lock. */
+	@Deprecated
 	public static final long POOL_LOCK_ADDRESS =
 		0L;
 	
 	/** The address of the pool's GC count. */
+	@Deprecated
 	public static final long POOL_GC_COUNT_ADDRESS =
 		4L;
 	
 	/** The address of the GC lock. */
+	@Deprecated
 	public static final long POOL_GC_LOCK_ADDRESS =
 		8L;
 	
 	/** The number of entries in the pool. */
+	@Deprecated
 	public static final long POOL_TABLE_COUNT_ADDRESS =
 		12L;
 	
 	/** The start of table entry data. */
+	@Deprecated
 	public static final long POOL_TABLE_START_ADDRESS =
 		16L;
 	
 	/** The used memory pool. */
+	@Deprecated
 	protected final MemoryPoolManager poolman;
 	
 	/** The type used for pointers. */
+	@Deprecated
 	protected final PointerType pointertype;
 	
 	/** The number of bytes in a pointer. */
+	@Deprecated
 	protected final long pointerbytes;
 	
 	/** The pointer mask. */
+	@Deprecated
 	protected final long pointermask;
 	
 	/**
@@ -88,6 +98,7 @@ public class StructureManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/08
 	 */
+	@Deprecated
 	public StructureManager(MemoryPoolManager __pm, PointerType __pt)
 		throws NullPointerException
 	{
@@ -115,6 +126,7 @@ public class StructureManager
 	 * the memory pool.
 	 * @since 2016/06/09
 	 */
+	@Deprecated
 	public final long allocate(long __b)
 		throws IllegalArgumentException, PoolOutOfMemoryException
 	{
@@ -140,6 +152,7 @@ public class StructureManager
 	 * @return The pointer data type to use.
 	 * @since 2016/06/08
 	 */
+	@Deprecated
 	public final PointerType pointerType()
 	{
 		return this.pointertype;

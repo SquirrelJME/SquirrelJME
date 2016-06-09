@@ -15,5 +15,6 @@
  * @since 2016/06/08
  */
 
+@Deprecated
 package net.multiphasicapps.squirreljme.sm;
 

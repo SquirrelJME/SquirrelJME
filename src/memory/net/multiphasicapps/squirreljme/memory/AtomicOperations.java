@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.memory;
  *
  * @since 2016/06/08
  */
+@Deprecated
 public interface AtomicOperations
 {
 	/**

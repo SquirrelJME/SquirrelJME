@@ -23,6 +23,7 @@ import net.multiphasicapps.util.unsigned.UnsignedLong;
  *
  * @since 2016/06/05
  */
+@Deprecated
 public abstract class MemoryPoolManager
 {
 	/** This is used for comparing the base address of memory pools. */
