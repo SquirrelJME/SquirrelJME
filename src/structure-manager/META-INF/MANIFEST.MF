@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: structure-manager
 X-SquirrelJME-UUID: ede0fa1a-7b98-4f34-873a-a39de101e562
-X-SquirrelJME-Depends: javame-cldc-compact, memory
+X-SquirrelJME-Depends: javame-cldc-compact, mmu
 X-SquirrelJME-Error: BW
 LIBlet-Title: Structure Manager
 LIBlet-Vendor: Steven Gawroriski

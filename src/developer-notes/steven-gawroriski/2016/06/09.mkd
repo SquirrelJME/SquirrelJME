@@ -227,3 +227,8 @@ When it comes to memory management, some of it could be managed by the OS (if
 there is one). Hypothetically, `valgrind` could be used to determine if there
 are any memory leaks.
 
+## 18:22
+
+I can keep the structure manager which can use an allocator for a native system
+and such.
+

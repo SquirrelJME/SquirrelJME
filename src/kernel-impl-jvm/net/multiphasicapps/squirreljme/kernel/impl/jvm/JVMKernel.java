@@ -21,7 +21,8 @@ import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelException;
 import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
-import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
+import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
+import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
 import net.multiphasicapps.squirreljme.sm.StructureManager;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 
@@ -147,22 +148,17 @@ public class JVMKernel
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/06/08
+	 * @since 2016/06/09
 	 */
 	@Override
-	public MemoryPoolManager memoryPoolManager()
+	public MemoryAccessor memoryAccessor(MemoryRegionType __mt)
+		throws KernelException
 	{
-		return interpreter().memoryPoolManager();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/08
-	 */
-	@Override
-	public StructureManager StructureManager()
-	{
-		return interpreter().StructureManager();
+		// Check
+		if (__mt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

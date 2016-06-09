@@ -414,7 +414,7 @@ public class RRDataStream
 				1))
 			{
 				// Use the size that the interpreter specified
-				pk.set(0, terp.getMemoryPoolSize());
+				pk.set(0, terp.getMemorySize());
 				
 				// Record
 				record(pk);

@@ -47,9 +47,6 @@ public abstract class Interpreter
 	private volatile PointerType _pointertype =
 		PointerType.INTEGER;
 	
-	/** The memory pool of the interpreter. */
-	private volatile InterpreterMemoryPoolManager _mempool;
-	
 	/** The current size of the memory pool. */
 	private volatile long _mempoolsize =
 		DEFAULT_MEMORY_POOL_SIZE;
@@ -149,15 +146,14 @@ public abstract class Interpreter
 	 * @return The memory pool size.
 	 * @since 2016/06/06
 	 */
-	public final long getMemoryPoolSize()
+	public final long getMemorySize()
 	{
 		// Lock
 		synchronized (this._mempoollock)
 		{
 			// If the pool was already allocated then use the actual size
-			InterpreterMemoryPoolManager rv = this._mempool;
-			if (rv != null)
-				return rv.size();
+			if (true)
+				throw new Error("TODO");
 			
 			// Otherwise use the virtual value
 			return this._mempoolsize;
@@ -209,7 +205,7 @@ public abstract class Interpreter
 		if ((v = __xo.get("squirreljme-interpreter-mempool")) != null)
 			try
 			{
-				setMemoryPoolSize(Long.decode(v));
+				setMemorySize(Long.decode(v));
 			}
 			
 			// {@squirreljme.error AN07 The number of bytes to allocate to the
@@ -255,30 +251,6 @@ public abstract class Interpreter
 	}
 	
 	/**
-	 * Obtains the memory pool or creates it if it does not exist.
-	 *
-	 * @return The memory pool that all processes use to store data.
-	 * @since 2016/06/06
-	 */
-	public final InterpreterMemoryPoolManager memoryPoolManager()
-	{
-		// Lock
-		synchronized (this._mempoollock)
-		{
-			// Get
-			InterpreterMemoryPoolManager rv = this._mempool;
-			
-			// Create?
-			if (rv == null)
-				this._mempool = (rv = new InterpreterMemoryPoolManager(
-					(int)this._mempoolsize, MEMORY_POOL_BASE_ADDRESS));
-			
-			// Return
-			return rv;
-		}
-	}
-	
-	/**
 	 * Obtains the manager which manages allocated memory and provides object
 	 * based interaction.
 	 *
@@ -295,8 +267,13 @@ public abstract class Interpreter
 			
 			// Create?
 			if (rv == null)
+			{
+				throw new Error("TODO");
+				/*
 				this._objman = (rv = new StructureManager(memoryPoolManager(),
 					this._pointertype));
+				*/
+			}
 			
 			// Return
 			return rv;
@@ -313,7 +290,7 @@ public abstract class Interpreter
 	 * its size cannot be changed.
 	 * @since 2016/06/06
 	 */
-	public final void setMemoryPoolSize(long __sz)
+	public final void setMemorySize(long __sz)
 		throws IllegalArgumentException, IllegalStateException
 	{
 		// {@squirreljme.error AN05 The requested size of the memory pool is
@@ -327,7 +304,9 @@ public abstract class Interpreter
 		{
 			// {@squirreljme.error AN06 The memory pool was already created
 			// which means the size cannot be set.}
-			if (this._mempool != null)
+			if (true)
+				throw new Error("TODO");
+			if (true)
 				throw new IllegalStateException("AN06");
 			
 			// Set new size

@@ -40,7 +40,6 @@ import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
 import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
 import net.multiphasicapps.squirreljme.sm.StructureManager;
@@ -253,25 +252,6 @@ public abstract class Kernel
 	 */
 	public abstract MemoryAccessor memoryAccessor(MemoryRegionType __mt)
 		throws KernelException;
-	
-	/**
-	 * Returns the memory pool that the kernel uses for user-space processes.
-	 *
-	 * @return The memory pool manager that the kernel uses.
-	 * @since 2016/06/08
-	 */
-	@Deprecated
-	public abstract MemoryPoolManager memoryPoolManager();
-	
-	/**
-	 * Returns the object manager which is used by the kernel for managing
-	 * allocated objects.
-	 *
-	 * @return The object manager for the kernel.
-	 * @since 2016/06/08
-	 */
-	@Deprecated
-	public abstract StructureManager StructureManager();
 	
 	/**
 	 * Attempts to quit the kernel, if the kernel cannot be quit then nothing
