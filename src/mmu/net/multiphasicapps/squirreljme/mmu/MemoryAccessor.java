@@ -13,17 +13,31 @@ package net.multiphasicapps.squirreljme.mmu;
 /**
  * This is an interface which is used to access memory.
  *
- * Memory is split into 4 billion blocks/pages/banks with an address space for
- * each of them having 64-bit access. For example on an NES where code and data
- * may be banked, the block number is used to access data that exists in
- * another bank. Another example on the 286 would be segmented memory, although
- * the address space is only 16-bits wide, segments can allow access to more
- * memory.
+ * Addresses which exist in a system might not be comparable to each other (for
+ * example if they belong to another bank or segment). However to the view of
+ * SquirrelJME, all pointers are a maximum of 64-bits. Comparison of pointers
+ * not using the pointer comparison method is undefined. Additionally, adding
+ * or subtracting a number of bytes to the raw {@code long} value is
+ * undefined, the add/subtract operations should be used instead.
+ *
+ * For example on the NES there is bank switching. A memory address that
+ * exists within a bank cannot be compared to another pointer that is outside
+ * of the bank or is in a separate bank.
  *
  * @since 2016/06/09
  */
 public interface MemoryAccessor
 {
+	/**
+	 * Compares two addresses in an implementation defined manner.
+	 *
+	 * @param __a The first address.
+	 * @param __b The second address.
+	 * @return The comparison result of the two pointers.
+	 * @since 2016/06/09
+	 */
+	public abstract PointerComparison compareAddress(long __a, long __b);
+	
 	/**
 	 * Reads a single byte value.
 	 *

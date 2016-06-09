@@ -221,3 +221,9 @@ Since doubles and floats can be accessed via int/long I will not have them.
 Actually having the memory access having a block would be very ugly. It would
 be best if the memory space were kept as flat as possible.
 
+## 17:39
+
+When it comes to memory management, some of it could be managed by the OS (if
+there is one). Hypothetically, `valgrind` could be used to determine if there
+are any memory leaks.
+
