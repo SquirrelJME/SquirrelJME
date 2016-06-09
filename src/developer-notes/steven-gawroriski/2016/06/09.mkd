@@ -37,3 +37,40 @@ For arrays the type and length could be determined by the table index
 information. Then with this, I can have byte arrays which are mapped to
 specific regions of memory that are outside of the allocated memory zone.
 
+## 12:07
+
+For simplicity, the memory table contents will only pertain to their own
+pool region. This way I can have multiple pools where their table data is not
+placed in another pool.
+
+## 12:23
+
+I suppose the given allocation strategy shall be used:
+
+ 1. Go through all memory pools
+    1. Try to allocate a given amount of bytes.
+    2. Check to see if compacting all of the data within a single pool would be
+       enough to allocate the given number of bytes (without performing the
+       compaction).
+       * If there is enough room, then everything in the pool is compacted
+         until a large enough area of free space is available.
+ 2. Try to allocate another memory pool, if it works run the steps for _1_ for
+    that given pool.
+ 3. Garbage collect all memory pools and clear weak/unreferenced objects.
+ 4. Run step _1_ again.
+ 5. To the running program, an `OutOfMemoryError` is thrown.
+
+The compaction would have to consider also objects it cannot move (because they
+may be locked by a thread).
+
+## 12:34
+
+I suppose for simplicity and some debugging, the identity hash code of an
+object will be the table reference index. However a random value would likely
+be a better choice. Many of the references would have very close values with
+the same higher bits which would make it harder on hash maps. Random would
+be the best choice. However, the identity hash code could be a 16-bit value
+which is duplicated in the high and low places. This may be enough for Java ME
+since there is hopefully not going to be more than 65,000 objects at any one
+time.
+

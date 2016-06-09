@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.sm;
 import net.multiphasicapps.squirreljme.memory.MemoryIOException;
 import net.multiphasicapps.squirreljme.memory.MemoryPool;
 import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
+import net.multiphasicapps.squirreljme.memory.NoSuchMemoryPoolException;
 
 /**
  * This is the manager which manages all allocated structures.
@@ -79,7 +80,11 @@ public class StructureManager
 		if (__b <= 0)
 			throw new IllegalArgumentException("BW01");
 		
-		throw new Error("TODO");
+		// Go through all pools and look for a candidate
+		try
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

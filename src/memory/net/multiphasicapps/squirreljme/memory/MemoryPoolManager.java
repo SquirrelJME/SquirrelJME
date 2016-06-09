@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.util.unsigned.UnsignedLong;
 
 /**
@@ -69,8 +70,56 @@ public abstract class MemoryPoolManager
 		throws MemoryIOException;
 	
 	/**
-	 * Returns the locking object to use in the memory pool (the object to
-	 * lock on).
+	 * Returns a memory pool which is associated with the given linear sequence
+	 * starting from zero.
+	 *
+	 * It is permittable for different memory pools to be returned with each
+	 * given index, this may happen in the event that a memory pool is freed.
+	 *
+	 * @param __i The index to get.
+	 * @return The memory pool at the given index.
+	 * @throws NoSuchMemoryPoolException If no pool is associated with the
+	 * given index.
+	 * @since 2016/06/09
+	 */
+	public final MemoryPool get(int __i)
+		throws NoSuchMemoryPoolException
+	{
+		// {@squirreljme.error BT01 Negative indices have no associated pool.}
+		if (__i < 0)
+			throw new NoSuchMemoryPoolException("BT01");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Loop to clear out any potentially removed pools.
+			List<MemoryPool> pools = this._pools;
+			for (;;)
+			{
+				// {@squirreljme.error BT02 No pools exceed the given index.}
+				int n = pools.size();
+				if (__i >= n)
+					throw new NoSuchMemoryPoolException("BT02");
+			
+				// Return the pool at the index
+				MemoryPool rv = pools.get(__i);
+				
+				// If the pool was removed then remove the pool at this index
+				if (rv == null)
+				{
+					pools.remove(__i);
+					continue;
+				}
+				
+				// Use it
+				return rv;
+			}
+		}
+	}
+	
+	/**
+	 * Returns the locking object to use in the memory pool manager (the object
+	 * to lock on).
 	 *
 	 * @return The locking object.
 	 * @since 2016/06/08
