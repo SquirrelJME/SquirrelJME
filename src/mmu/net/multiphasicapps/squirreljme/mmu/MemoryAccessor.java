@@ -24,19 +24,55 @@ package net.multiphasicapps.squirreljme.mmu;
  * exists within a bank cannot be compared to another pointer that is outside
  * of the bank or is in a separate bank.
  *
+ * All addresses are unsigned.
+ *
  * @since 2016/06/09
  */
 public interface MemoryAccessor
 {
 	/**
+	 * Adds the given offset number of bytes to the given base address and
+	 * returns it. It is possible for the resulting address to not be valid, if
+	 * this is the case then an exception is thrown.
+	 *
+	 * @param __base The base address to add the offset into, this is treated
+	 * as an unsigned value.
+	 * @param __off The offset to add to the base, this is treated as a
+	 * signed value.
+	 * @return The newly transformed address.
+	 * @throws MemoryAddressOperationException If the resulting address has no
+	 * representation, likely because it overflows a given bound.
+	 * @since 2016/06/09
+	 */
+	public abstract long addAddress(long __base, long __off)
+		throws MemoryAddressOperationException;
+	
+	/**
 	 * Compares two addresses in an implementation defined manner.
 	 *
-	 * @param __a The first address.
-	 * @param __b The second address.
+	 * @param __a The first address, this is unsigned.
+	 * @param __b The second address, this is unsigned.
 	 * @return The comparison result of the two pointers.
 	 * @since 2016/06/09
 	 */
 	public abstract PointerComparison compareAddress(long __a, long __b);
+	
+	/**
+	 * Calculates the number of bytes that the other address is offset from
+	 * the base address.
+	 *
+	 * @param __base The base address to get the offset to another address
+	 * from, this value is unsigned.
+	 * @param __other The address to calculate the offset of using the base
+	 * address, this value is unsigned.
+	 * @return The signed offset from the base address.
+	 * @throws MemoryAddressOperationException If the offset cannot be
+	 * calculated because it exceeds the maximum signed long value or the two
+	 * addresses cannot compare to each other.
+	 * @since 2016/06/09
+	 */
+	public abstract long offsetFrom(long __base, long __other)
+		throws MemoryAddressOperationException;
 	
 	/**
 	 * Reads a single byte value.
