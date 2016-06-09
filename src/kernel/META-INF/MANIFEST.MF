@@ -3,7 +3,7 @@ X-SquirrelJME-Name: kernel
 X-SquirrelJME-UUID: abb39a12-7deb-433c-a2d6-4c2f5ede429f
 X-SquirrelJME-Depends: javame-cldc-compact, memory,
   class-interface, java-manifest, gc, class-path,
-  structure-manager
+  structure-manager, mmu
 X-SquirrelJME-Optional: gc-standard
 X-SquirrelJME-Error: AY
 LIBlet-Title: Kernel

@@ -212,3 +212,7 @@ memory models. Some portions of memory could also be banked switched, there
 could be paging also. Then for certain architectures, code and data is kept
 separate (such as in the JVM) where code might not even be readable.
 
+## 16:48
+
+Since doubles and floats can be accessed via int/long I will not have them.
+

@@ -13,7 +13,6 @@ package net.multiphasicapps.squirreljme.sm;
 import net.multiphasicapps.squirreljme.memory.MemoryIOException;
 import net.multiphasicapps.squirreljme.memory.MemoryPool;
 import net.multiphasicapps.squirreljme.memory.MemoryPoolManager;
-import net.multiphasicapps.squirreljme.memory.NoSuchMemoryPoolException;
 
 /**
  * This is the manager which manages all allocated structures.
@@ -128,6 +127,10 @@ public class StructureManager
 		try
 		{
 			throw new Error("TODO");
+		}
+		
+		finally
+		{
 		}
 	}
 	

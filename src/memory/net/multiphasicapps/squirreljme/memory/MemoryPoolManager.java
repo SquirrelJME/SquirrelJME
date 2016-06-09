@@ -81,16 +81,16 @@ public abstract class MemoryPoolManager
 	 *
 	 * @param __i The index to get.
 	 * @return The memory pool at the given index.
-	 * @throws NoSuchMemoryPoolException If no pool is associated with the
+	 * @throws RuntimeException If no pool is associated with the
 	 * given index.
 	 * @since 2016/06/09
 	 */
 	public final MemoryPool get(int __i)
-		throws NoSuchMemoryPoolException
+		throws RuntimeException
 	{
 		// {@squirreljme.error BT01 Negative indices have no associated pool.}
 		if (__i < 0)
-			throw new NoSuchMemoryPoolException("BT01");
+			throw new RuntimeException("BT01");
 		
 		// Lock
 		synchronized (this.lock)
@@ -102,7 +102,7 @@ public abstract class MemoryPoolManager
 				// {@squirreljme.error BT02 No pools exceed the given index.}
 				int n = pools.size();
 				if (__i >= n)
-					throw new NoSuchMemoryPoolException("BT02");
+					throw new RuntimeException("BT02");
 			
 				// Return the pool at the index
 				MemoryPool rv = pools.get(__i);
