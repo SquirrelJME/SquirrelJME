@@ -48,6 +48,54 @@ public interface MemoryAccessor
 		throws MemoryAddressOperationException;
 	
 	/**
+	 * Atomically reads the given address and compares it with the expected
+	 * value, if the value matches then it is set and {@code true} is returned.
+	 * Otherwise, the address is not changed and {@code false} is returned.
+	 *
+	 * @param __a The address to perform the operation at.
+	 * @param __exp The expected value, if this is matched then {@code __set}
+	 * is placed at the given location.
+	 * @param __set If the value is the expected value then it is set to this
+	 * value.
+	 * @return {@code true} if the address was of the expected value and it was
+	 * atomically set to a new value.
+	 * @throws MemoryReadException If the memory could not be read from.
+	 * @throws MemoryWriteException if the memory could not be written to.
+	 * @since 2016/06/09
+	 */
+	public abstract boolean atomicCompareAndSetInt(long __a, int __exp,
+		int __set)
+		throws MemoryReadException, MemoryWriteException;
+	
+	/**
+	 * Atomically obtains the value at the given address then adds the given
+	 * value to the location and returns the old value.
+	 *
+	 * @param __a The address to perform the operation at.
+	 * @param __v The value to add to the value at the given address.
+	 * @return The old value at this address.
+	 * @throws MemoryReadException If the memory could not be read from.
+	 * @throws MemoryWriteException if the memory could not be written to.
+	 * @since 2016/06/09
+	 */
+	public abstract int atomicGetAndAddInt(long __a, int __val)
+		throws MemoryReadException, MemoryWriteException;
+	
+	/**
+	 * Atomically obtains the value at the given address and returns it, after
+	 * the operation the address is atomically set to a new value.
+	 *
+	 * @param __a The address to perform the operation at.
+	 * @param __v The value to set the given address to.
+	 * @return The old value at this address.
+	 * @throws MemoryReadException If the memory could not be read from.
+	 * @throws MemoryWriteException if the memory could not be written to.
+	 * @since 2016/06/09
+	 */
+	public abstract int atomicGetAndSetInt(long __a, int __val)
+		throws MemoryReadException, MemoryWriteException;
+	
+	/**
 	 * This returns the size of the cache line which is used on the CPU.
 	 *
 	 * @return The cache line size used in the CPU, if the CPU does not have a
