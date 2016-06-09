@@ -31,3 +31,9 @@ atomic operations performed on it. When it comes to the class type that an
 object is, or the length of the array that can be placed in the data pointer
 information.
 
+## 11:42
+
+For arrays the type and length could be determined by the table index
+information. Then with this, I can have byte arrays which are mapped to
+specific regions of memory that are outside of the allocated memory zone.
+
