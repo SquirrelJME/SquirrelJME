@@ -1,0 +1,7 @@
+# 2016/06/09
+
+## 09:33
+
+Ok so, what I need to do is create actual threads and work on the structure
+manager.
+
