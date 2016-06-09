@@ -178,3 +178,12 @@ be 32 on one system and 64 on another, so table entries would be rounded up to
 this given size. This would also need to be the barrier between final and
 fields which are mutable and then ones which are volatile.
 
+## 14:24
+
+Currently reading an academic paper on Hoard. Technically I could use it since
+it is GPLv2+, however it is either C or C++ which when translated to Java does
+not really work well at all. So thinking about it, the current memory pool as
+is is a bad idea and will not work out at all. It should instead be a class
+which acts as a memory allocator. Then the structure manager could be managed
+on top of base memory manager implementations.
+
