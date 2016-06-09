@@ -30,6 +30,12 @@ public class StructureManager
 	/** The type used for pointers. */
 	protected final PointerType pointertype;
 	
+	/** The number of bytes in a pointer. */
+	protected final long pointerbytes;
+	
+	/** The pointer mask. */
+	protected final long pointermask;
+	
 	/**
 	 * Intializes the object manager.
 	 *
@@ -48,6 +54,32 @@ public class StructureManager
 		// Set
 		this.poolman = __pm;
 		this.pointertype = __pt;
+		this.pointerbytes = __pt.bytes();
+		this.pointermask = __pt.mask();
+	}
+	
+	/**
+	 * Attempts to allocate the given amount of bytes and returns 
+	 *
+	 * @param __b The number of bytes to allocate.
+	 * @return The pointer to the table pointer (or object), information such
+	 * as the actually used data pointer address can be obtained from the
+	 * table pointer data.
+	 * @throws IllegalArgumentException If the number of bytes to allocate is
+	 * zero or negative.
+	 * @throws PoolOutOfMemoryException If there is no more free space within
+	 * the memory pool.
+	 * @since 2016/06/09
+	 */
+	public final long allocate(long __b)
+		throws IllegalArgumentException, PoolOutOfMemoryException
+	{
+		// {@squirreljme.error BW01 Cannot allocate zero or a negative number
+		// of bytes.}
+		if (__b <= 0)
+			throw new IllegalArgumentException("BW01");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

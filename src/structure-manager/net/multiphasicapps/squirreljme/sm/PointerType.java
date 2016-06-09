@@ -67,6 +67,17 @@ public enum PointerType
 	}
 	
 	/**
+	 * Returns the number of bytes the pointer value consumes.
+	 *
+	 * @return The number of bytes the pointer uses.
+	 * @since 2016/06/09
+	 */
+	public final int bytes()
+	{
+		return this.bits >>> 3;
+	}
+	
+	/**
 	 * Returns the mask which specifies which bits of a 64-bit value is valid
 	 * for address usage.
 	 *

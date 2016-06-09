@@ -5,3 +5,29 @@
 Ok so, what I need to do is create actual threads and work on the structure
 manager.
 
+## 10:48
+
+An idea that I have for the structure manager is that partitioning free space
+that is available would cost a bunch of memory. So instead of having an
+active partition table, I will have two regions. The region at the start of the
+lowest available memory would be the allocation table. This region specifies
+basic object information and the regions of memory which are actually used. So
+basically there would be a handle table at the start for every allocation. At
+the start, the memory would be initialized to contain an intial table of a
+given size and a large contigious free chunk. Each allocation chunk would then
+have information such as its type, where its pointer is allocated, some GC
+information, and basically that would be it. It would have to be small so that
+lower memory systems are not insanely pressured into it. There would also need
+to be size information also. So right now if a 32-bit field is used for type
+and GC flags, then that means two pointer sized fields are used for the
+data pointer and the size.
+
+ * 16-bit: 4 + 2 + 2 = 8
+ * 32-bit: 4 + 4 + 4 = 12
+ * 64-bit: 4 + 8 + 8 = 20
+
+I could actually split the start 32-bit field into other fields which may have
+atomic operations performed on it. When it comes to the class type that an
+object is, or the length of the array that can be placed in the data pointer
+information.
+
