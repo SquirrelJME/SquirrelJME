@@ -48,6 +48,16 @@ public interface MemoryAccessor
 		throws MemoryAddressOperationException;
 	
 	/**
+	 * This returns the size of the cache line which is used on the CPU.
+	 *
+	 * @return The cache line size used in the CPU, if the CPU does not have a
+	 * cache or in situations this is not defined then this must return
+	 * {@code 1}.
+	 * @since 2016/06/09
+	 */
+	public abstract int cacheLineSize();
+	
+	/**
 	 * Compares two addresses in an implementation defined manner.
 	 *
 	 * @param __a The first address, this is unsigned.
