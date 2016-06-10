@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.terp;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -67,9 +68,11 @@ public abstract class Interpreter
 	 */
 	public Interpreter(StructureManager __sm, String... __args)
 	{
-		// Must exist
+		// Defensive copy
 		if (__args == null)
 			__args = new String[0];
+		else
+			__args = __args.clone();
 		
 		// Set the optional structure manager
 		this._sm = __sm;
@@ -105,11 +108,28 @@ public abstract class Interpreter
 				}
 			}
 			
-			if (true)
+			// Freeze options
+			xops = UnmodifiableMap.<String, String>of(xops);
+			
+			// Early handle arguments?
+			if (early)
+			{
+				// The input options may be changed
+				String[] ch = earlyHandleOptions(xops, __args.clone());
+				
+				// Set new one?
+				if (ch != null)
+					__args = ch.clone();
+			}
+			
+			// Normal interpreter option handling
+			else
 				throw new Error("TODO");
 		}
 		
-		throw new Error("TODO");
+		// Store initial interpreter initialization arguments
+		this.initargs = UnmodifiableList.<String>of(
+			Arrays.<String>asList(__args));
 	}
 	
 	/**
@@ -201,6 +221,26 @@ public abstract class Interpreter
 	}
 	
 	/**
+	 * This is used to potentially parse some options earlier before the
+	 * interpreter is initialized so that the input command arguments may
+	 * be changed.
+	 *
+	 * @param __xo The input X options.
+	 * @param __args The originally passed arguments.
+	 * @return {@code null} if the input arguments should be used, otherwise
+	 * if not-{@code null} then the second option initialization pass uses the
+	 * specified arguments for the interpreter.
+	 * @throws IllegalArgumentException If the input arguments are not valid.
+	 * @since 2016/06/09
+	 */
+	protected String[] earlyHandleOptions(Map<String, String> __xo,
+		String... __args)
+		throws IllegalArgumentException
+	{
+		return __args;
+	}
+	
+	/**
 	 * Returns the initial arguments which were passed to this interpreter.
 	 *
 	 * @return The list of initial arguments.
@@ -208,7 +248,7 @@ public abstract class Interpreter
 	 */
 	public final List<String> getInitialArguments()
 	{
-		throw new Error("TODO");
+		return this.initargs;
 	}
 	
 	/**

@@ -259,6 +259,18 @@ public class RRInterpreter
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/09
+	 */
+	@Override
+	protected String[] earlyHandleOptions(Map<String, String> __xo,
+		String... __args)
+		throws IllegalArgumentException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the current Java instructions per second.
 	 *
 	 * @return The Java instructions per second used.
