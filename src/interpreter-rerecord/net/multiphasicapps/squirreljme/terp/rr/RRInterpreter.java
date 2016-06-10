@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.sm.StructureManager;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 import net.multiphasicapps.squirreljme.terp.InterpreterException;
 import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
@@ -41,7 +42,8 @@ public class RRInterpreter
 		new RRDataStream(this);
 	
 	/** The current JIPS. */
-	private volatile int _jips;
+	private volatile int _jips =
+		Integer.MIN_VALUE;
 	
 	/** Nanoseconds that pass per JIP. */
 	private volatile long _nanosperjip;
@@ -49,12 +51,17 @@ public class RRInterpreter
 	/**
 	 * initializes the re-recording interpreter.
 	 *
+	 * @param __sm Pre-existing optional structure manager.
+	 * @param __args Interpreter initialization arguments.
 	 * @since 2016/05/29
 	 */
-	public RRInterpreter()
+	public RRInterpreter(StructureManager __sm, String... __args)
 	{
-		// Set default timing
-		setJIPS(DEFAULT_JIPS);
+		super(__sm, __args);
+		
+		// Set default timing if it was never set
+		if (this._jips == Integer.MIN_VALUE)
+			setJIPS(DEFAULT_JIPS);
 	}
 	
 	/**

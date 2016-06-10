@@ -421,6 +421,9 @@ public class RRDataStream
 			}
 			
 			// Write the pointer type to use
+			if (true)
+				throw new Error("TODO");
+			/*
 			try (RRDataPacket pk = createPacket(RRDataCommand.SET_POINTER_TYPE,
 				1))
 			{
@@ -430,6 +433,7 @@ public class RRDataStream
 				// Record it
 				record(pk);
 			}
+			*/
 			
 			// Set the Java instructions per second
 			try (RRDataPacket pk = createPacket(RRDataCommand.SET_JIPS, 1))
