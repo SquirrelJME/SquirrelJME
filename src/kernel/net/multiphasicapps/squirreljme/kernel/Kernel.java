@@ -130,9 +130,13 @@ public abstract class Kernel
 		this.altipc = new KernelIPCAlternative(this);
 		
 		// Setup structured memory manager
-		this.structman = null;
-		if (true)
-			throw new Error("TODO");
+		StructureManager sm = internalStructureManager();
+		this.structman = sm;
+		
+		// {@squirreljme.error AY0l No structure manager was provided by the
+		// implementing kernel.}
+		if (sm == null)
+			throw new KernelException("AY0l");
 		
 		// Determine if there is a chance the user wants to use an alternative
 		// launcher interface
