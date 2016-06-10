@@ -289,3 +289,16 @@ When it comes to the memory regions, perhaps instead everything should be
 hidden behind the structure manager. Instead of the kernel directly accessing
 the `MemoryAccessor` interface, it can take it from the `StructureManager`.
 
+## 22:26
+
+Also the pointer type can be decoupled from the structure manager and placed in
+memory instead.
+
+## 22:29
+
+Then for memory regions (code, data, etc.) it can be utilized via the access
+manager by having it indicating the type of information it provides. So for
+example if the memory accessor has combined data and code it would indicate
+as such. If it had non-executable data and non-readable code then it could
+require two memory accessors to be used for each.
+

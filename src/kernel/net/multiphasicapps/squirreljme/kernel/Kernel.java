@@ -130,6 +130,7 @@ public abstract class Kernel
 		this.altipc = new KernelIPCAlternative(this);
 		
 		// Setup structured memory manager
+		this.structman = null;
 		if (true)
 			throw new Error("TODO");
 		
@@ -248,16 +249,14 @@ public abstract class Kernel
 		throws KernelException;
 	
 	/**
-	 * Returns the memory accessor which is used to obtain information from
-	 * a given region.
+	 * Returns the internal structure manager which is used for the management
+	 * of objects.
 	 *
-	 * @param __mt The type of region to provide a memory accessor for.
-	 * @return The memory accessor for the given region, this may be
-	 * {@code null} if there is none.
-	 * @throws KernelException If the memory region could not be obtained.
+	 * @return The structure manager to use.
+	 * @throws KernelException If the structure manager could not be obtained.
 	 * @since 2016/06/09
 	 */
-	public abstract MemoryAccessor memoryAccessor(MemoryRegionType __mt)
+	protected abstract StructureManager internalStructureManager()
 		throws KernelException;
 	
 	/**

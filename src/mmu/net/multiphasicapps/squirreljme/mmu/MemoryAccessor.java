@@ -186,6 +186,15 @@ public interface MemoryAccessor
 		throws MemoryReadException;
 	
 	/**
+	 * Returns the region type that this accessor provides access to based on
+	 * if it is for executable code, non-executable data, or both.
+	 *
+	 * @return The region type provided by this accessor.
+	 * @since 2016/06/09
+	 */
+	public abstract MemoryRegionType regionType();
+	
+	/**
 	 * Writes a single byte value.
 	 *
 	 * @param __addr The address to write to.

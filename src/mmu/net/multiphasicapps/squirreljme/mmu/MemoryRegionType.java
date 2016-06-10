@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.mmu;
 /**
  * This represents the type of memory that a region may be under.
  *
- * Note that on most systems {@link #CODE} and {@link #DATA} will return the
+ * Note that on most systems {@link #CODE} and {@link #DATA} will be the
  * same region, while on others they may be completely different. Code in the
  * kernel, garbage collector, and otherwise should not depend on the
  * assumption that the CPU is capable of executing code from the {@link #DATA}
@@ -23,11 +23,17 @@ package net.multiphasicapps.squirreljme.mmu;
  */
 public enum MemoryRegionType
 {
-	/** Executable code. */
+	/** Not defined. */
+	UNDEFINED,
+	
+	/** Executable code (01). */
 	CODE,
 	
-	/** Memory (for reading and writing). */
+	/** Memory (for reading and writing) (10). */
 	DATA,
+	
+	/** Executable and data storage. (11). */
+	BOTH,
 	
 	/** End. */
 	;
