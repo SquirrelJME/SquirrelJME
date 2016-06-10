@@ -283,3 +283,9 @@ passed to the kernel. Alone, the interpreter would do nothing and as such
 anything that wants to use it must then take its initialization arguments and
 do what it needs to with it.
 
+## 22:18
+
+When it comes to the memory regions, perhaps instead everything should be
+hidden behind the structure manager. Instead of the kernel directly accessing
+the `MemoryAccessor` interface, it can take it from the `StructureManager`.
+
