@@ -136,6 +136,17 @@ public class JVMKernel
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/10
+	 */
+	@Override
+	protected StructureManager internalStructureManager()
+		throws KernelException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the interpreter being used.
 	 *
 	 * @return The interpreter to use.
@@ -144,21 +155,6 @@ public class JVMKernel
 	protected Interpreter interpreter()
 	{
 		return ((InterpreterExecutionEngine)this.executioncore).interpreter();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/09
-	 */
-	@Override
-	public MemoryAccessor memoryAccessor(MemoryRegionType __mt)
-		throws KernelException
-	{
-		// Check
-		if (__mt == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
 	}
 	
 	/**
