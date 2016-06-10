@@ -37,10 +37,12 @@ public abstract class Interpreter
 	private final StructureManager _sm;
 	
 	/** Memory pool access lock. */
+	@Deprecated
 	private final Object _mempoollock =
 		new Object();
 	
 	/** The interpreter object manager. */
+	@Deprecated
 	private volatile StructureManager _objman;
 	
 	/** The type of pointers to use in the interpreter. */
@@ -48,6 +50,7 @@ public abstract class Interpreter
 		PointerType.INTEGER;
 	
 	/** The current size of the memory pool. */
+	@Deprecated
 	private volatile long _mempoolsize =
 		DEFAULT_MEMORY_POOL_SIZE;
 	

@@ -268,3 +268,18 @@ before they are passed to the kernel. Then this way the kernel does not have to
 use the argument rewriting (although it could still exist, just the `JVMKernel`
 can do nothing with it now).
 
+## 20:24
+
+A difficulty with that is the constructor, since I can only use a default
+no-arg constructor. This means a factory must be used instead.
+
+## 20:27
+
+The interpreter would handle the arguments and such, there would be an early
+argument handling method which could potentially adjust the remaining set of
+arguments (or pass them through untouched). Then the arguments that the
+interpreter gives (which may be modified if rerecording is enabled) will be
+passed to the kernel. Alone, the interpreter would do nothing and as such
+anything that wants to use it must then take its initialization arguments and
+do what it needs to with it.
+
