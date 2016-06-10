@@ -69,7 +69,7 @@ public class StandardInterpreter
 	 * @since 2016/05/29
 	 */
 	@Override
-	public void handleXOptions(Map<String, String> __xo)
+	protected void handleXOptions(Map<String, String> __xo)
 		throws NullPointerException
 	{
 		// Super call

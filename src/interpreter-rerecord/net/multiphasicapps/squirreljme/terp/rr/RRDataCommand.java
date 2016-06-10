@@ -28,20 +28,14 @@ public enum RRDataCommand
 	/** Magic number. */
 	MAGIC_NUMBER(false),
 	
-	/** Host virtual machine information (for debugging). */
-	HOST_VM(true),
+	/** Command line arguments. */
+	COMMAND_LINE(false),
 	
-	/** Set the Java instructions per second. */
-	SET_JIPS(false),
+	/** Host virtual machine information (for debugging). */
+	HOST_VM(false),
 	
 	/** Set the rerecord count. */
 	SET_RERECORDS(false),
-	
-	/** Sets the memory pool size. */
-	SET_POOL_SIZE(false),
-	
-	/** Sets the pointer type to use when interpreting. */
-	SET_POINTER_TYPE(false),
 	
 	/** A process is created in the VM. */
 	CREATE_PROCESS(false),

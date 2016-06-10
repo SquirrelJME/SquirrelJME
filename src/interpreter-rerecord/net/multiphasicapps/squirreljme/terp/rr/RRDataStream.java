@@ -233,11 +233,12 @@ public class RRDataStream
 	 *
 	 * @param __p The source replay to run, if {@code null} then playback
 	 * stops.
+	 * @return Command line arguments that should be used instead.
 	 * @throws RRDataStreamException If the stream could not be opened for
 	 * replaying.
 	 * @since 2016/05/30
 	 */
-	public final void streamInput(Path __p)
+	public final String[] streamInput(Path __p)
 		throws RRDataStreamException
 	{
 		// The Interpreter
@@ -263,7 +264,7 @@ public class RRDataStream
 				this._replay = null;
 				
 				// Do not continue
-				return;
+				return null;
 			}
 			
 			// Attempt opening the output
@@ -306,19 +307,15 @@ public class RRDataStream
 			if (true)
 				throw new Error("TODO");
 			
-			// Parse the memory pool size
-			if (true)
-				throw new Error("TODO");
-			
-			// Read the pointer type
-			if (true)
-				throw new Error("TODO");
-			
-			// Read the JIPS
-			if (true)
-				throw new Error("TODO");
-			
 			// Read the rerecord count
+			if (true)
+				throw new Error("TODO");
+			
+			// Read command line arguments
+			if (true)
+				throw new Error("TODO");
+			
+			// Read but skip the last recording host information
 			if (true)
 				throw new Error("TODO");
 			
@@ -330,12 +327,18 @@ public class RRDataStream
 	 * Starts recording to the specified output stream.
 	 *
 	 * @param __p The file to write a recorded session to.
+	 * @param __args The command line arguments passed to the interpreter.
+	 * @throws NullPointerException On null arguments.
 	 * @throws RRDataStreamException If the stream could not be opened.
 	 * @since 2016/05/30
 	 */
-	public final void streamOutput(Path __p)
-		throws RRDataStreamException
+	public final void streamOutput(Path __p, String[] __args)
+		throws NullPointerException, RRDataStreamException
 	{
+		// Check
+		if (__args == null)
+			throw new NullPointerException("NARG");
+		
 		// The Interpreter
 		RRInterpreter terp = this.interpreter;
 		
@@ -409,48 +412,25 @@ public class RRDataStream
 				record(pk);
 			}
 			
-			// Write the memory pool size
-			try (RRDataPacket pk = createPacket(RRDataCommand.SET_POOL_SIZE,
-				1))
-			{
-				// Use the size that the interpreter specified
-				pk.set(0, terp.getMemorySize());
-				
-				// Record
-				record(pk);
-			}
-			
-			// Write the pointer type to use
-			if (true)
-				throw new Error("TODO");
-			/*
-			try (RRDataPacket pk = createPacket(RRDataCommand.SET_POINTER_TYPE,
-				1))
-			{
-				// Set
-				pk.set(0, terp.getPointerType().ordinal());
-				
-				// Record it
-				record(pk);
-			}
-			*/
-			
-			// Set the Java instructions per second
-			try (RRDataPacket pk = createPacket(RRDataCommand.SET_JIPS, 1))
-			{
-				// Set
-				pk.set(0, terp.getJIPS());
-				
-				// Record it
-				record(pk);
-			}
-			
 			// Record the rerecord count
 			try (RRDataPacket pk = createPacket(RRDataCommand.SET_RERECORDS,
 				1))
 			{
 				// Increase it by 1
 				pk.set(0, this._rerecordcount + 1);
+				
+				// Record it
+				record(pk);
+			}
+			
+			// Record the command line arguments
+			int na = __args.length;
+			try (RRDataPacket pk = createPacket(RRDataCommand.COMMAND_LINE,
+				na))
+			{
+				// Record all of them
+				for (int i = 0; i < na; i++)
+					pk.set(i, __args[i]);
 				
 				// Record it
 				record(pk);

@@ -38,8 +38,7 @@ public class RRInterpreter
 		1_000_000;
 	
 	/** The data stream to source data from and such. */
-	protected final RRDataStream datastream =
-		new RRDataStream(this);
+	private volatile RRDataStream _datastream;
 	
 	/** The current JIPS. */
 	private volatile int _jips =
@@ -255,7 +254,7 @@ public class RRInterpreter
 	 */
 	public RRDataStream dataStream()
 	{
-		return this.datastream;
+		return this._datastream;
 	}
 	
 	/**
@@ -265,9 +264,39 @@ public class RRInterpreter
 	@Override
 	protected String[] earlyHandleOptions(Map<String, String> __xo,
 		String... __args)
-		throws IllegalArgumentException
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__xo == null)
+			throw new NullPointerException("NARG");
+		
+		String v;
+		
+		// The data stream must be created here
+		RRDataStream rds = new RRDataStream(this);
+		this._datastream = rds;
+		
+		// {@squirreljme.cmdline -Xsquirreljme-rerecord-replay=(path) This
+		// is file file which should be played back from a previously
+		// recorded session.}
+		String[] altargs = null;
+		if ((v = __xo.get("squirreljme-rerecord-replay")) != null)
+		{
+			// Options can quite possibly change
+			altargs = rds.streamInput(Paths.get(v));
+			if (altargs != null)
+				__args = altargs;
+		}
+		
+		// {@squirreljme.cmdline -Xsquirreljme-rerecord-record=(path) This is
+		// the file where events should be recorded into. If the file already
+		// exists then it is not overwritten and the interpreter throws an
+		// exception.}
+		if ((v = __xo.get("squirreljme-rerecord-record")) != null)
+			rds.streamOutput(Paths.get(v), __args);
+		
+		// If the arguments changed, the variable would have been set
+		return __args;
 	}
 	
 	/**
@@ -290,7 +319,7 @@ public class RRInterpreter
 	 * @since 2016/05/29
 	 */
 	@Override
-	public void handleXOptions(Map<String, String> __xo)
+	protected void handleXOptions(Map<String, String> __xo)
 		throws NullPointerException
 	{
 		// Super-call first
@@ -315,19 +344,6 @@ public class RRInterpreter
 			catch (NumberFormatException e)
 			{
 			}
-		
-		// {@squirreljme.cmdline -Xsquirreljme-rerecord-replay=(path) This
-		// is file file which should be played back from a previously
-		// recorded session.}
-		if ((v = __xo.get("squirreljme-rerecord-replay")) != null)
-			datastream.streamInput(Paths.get(v));
-		
-		// {@squirreljme.cmdline -Xsquirreljme-rerecord-record=(path) This is
-		// the file where events should be recorded into. If the file already
-		// exists then it is not overwritten and the interpreter throws an
-		// exception.}
-		if ((v = __xo.get("squirreljme-rerecord-record")) != null)
-			datastream.streamOutput(Paths.get(v));
 	}
 	
 	/**

@@ -124,7 +124,7 @@ public abstract class Interpreter
 			
 			// Normal interpreter option handling
 			else
-				throw new Error("TODO");
+				handleXOptions(xops);
 		}
 		
 		// Store initial interpreter initialization arguments
@@ -281,10 +281,11 @@ public abstract class Interpreter
 	 * options are handled.
 	 *
 	 * @param __xo The X options to handle.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/29
 	 */
-	@Deprecated
-	public void handleXOptions(Map<String, String> __xo)
+	protected void handleXOptions(Map<String, String> __xo)
+		throws NullPointerException
 	{
 		// Check
 		if (__xo == null)
