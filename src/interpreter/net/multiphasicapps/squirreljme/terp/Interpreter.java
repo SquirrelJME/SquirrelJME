@@ -351,7 +351,7 @@ public abstract class Interpreter
 	 * @return The object manager.
 	 * @since 2016/06/08
 	 */
-	public final StructureManager StructureManager()
+	public final StructureManager structureManager()
 	{
 		// Lock
 		synchronized (this._smlock)
@@ -398,9 +398,7 @@ public abstract class Interpreter
 		{
 			// {@squirreljme.error AN06 The memory pool was already created
 			// which means the size cannot be set.}
-			if (true)
-				throw new Error("TODO");
-			if (true)
+			if (null != this._sm)
 				throw new IllegalStateException("AN06");
 			
 			// Set new size

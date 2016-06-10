@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.sm;
 
+import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
+
 /**
  * This is the manager which manages all allocated structures.
  *
@@ -47,6 +49,17 @@ public class StructureManager
 		
 		if (true)
 			throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the memory accessor which is associated with the manager.
+	 *
+	 * @return The memory accessor this structure manager uses.
+	 * @since 2016/06/09
+	 */
+	public final MemoryAccessor memoryAccessor()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
