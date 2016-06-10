@@ -78,6 +78,9 @@ public abstract class Kernel
 	/** The launcher process. */
 	protected final KernelProcess launcher;
 	
+	/** The structure manager for allocated structures. */
+	protected final StructureManager structman;
+	
 	/** The kernel controller interface. */
 	private final KernelController _controller;
 	
@@ -125,6 +128,10 @@ public abstract class Kernel
 		
 		// Setup alternative IPC interface
 		this.altipc = new KernelIPCAlternative(this);
+		
+		// Setup structured memory manager
+		if (true)
+			throw new Error("TODO");
 		
 		// Determine if there is a chance the user wants to use an alternative
 		// launcher interface
