@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.sm;
 
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
+import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
 
 /**
  * This is the manager which manages all allocated structures.
@@ -19,58 +20,29 @@ import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
  */
 public class StructureManager
 {
-	/** The type used for pointers. */
-	protected final PointerType pointertype;
-	
-	/** The number of bytes in a pointer. */
-	protected final long pointerbytes;
-	
-	/** The pointer mask. */
-	protected final long pointermask;
-	
 	/**
 	 * Intializes the object manager.
 	 *
-	 * @param __pt The type of values used for pointers.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/08
 	 */
-	public StructureManager(PointerType __pt)
+	public StructureManager()
 		throws NullPointerException
-	{
-		// Check
-		if (__pt == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.pointertype = __pt;
-		this.pointerbytes = __pt.bytes();
-		this.pointermask = __pt.mask();
-		
-		if (true)
-			throw new Error("TODO");
-	}
-	
-	/**
-	 * Returns the memory accessor which is associated with the manager.
-	 *
-	 * @return The memory accessor this structure manager uses.
-	 * @since 2016/06/09
-	 */
-	public final MemoryAccessor memoryAccessor()
 	{
 		throw new Error("TODO");
 	}
 	
 	/**
-	 * Returns the data type to use for pointer based values.
+	 * Returns the memory accessor which is associated with the manager.
 	 *
-	 * @return The pointer data type to use.
-	 * @since 2016/06/08
+	 * @param __rt The type of region to find a match for.
+	 * @return The memory accessor this structure manager uses for the given
+	 * region type.
+	 * @since 2016/06/09
 	 */
-	public final PointerType pointerType()
+	public final MemoryAccessor memoryAccessor(MemoryRegionType __rt)
 	{
-		return this.pointertype;
+		throw new Error("TODO");
 	}
 }
 

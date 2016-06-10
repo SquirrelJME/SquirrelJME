@@ -22,8 +22,8 @@ import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
+import net.multiphasicapps.squirreljme.mmu.MemoryPointerType;
 import net.multiphasicapps.squirreljme.sm.StructureManager;
-import net.multiphasicapps.squirreljme.sm.PointerType;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
@@ -50,8 +50,8 @@ public abstract class Interpreter
 	private volatile StructureManager _sm;
 	
 	/** The data type which is used for a pointer in the intepreter. */
-	private volatile PointerType _pointertype =
-		PointerType.INTEGER;
+	private volatile MemoryPointerType _pointertype =
+		MemoryPointerType.INTEGER;
 	
 	/** The initial number of bytes to use for the interpreter's memory. */
 	private volatile long _initmemsize =
@@ -322,17 +322,17 @@ public abstract class Interpreter
 			{
 				case "short":
 				case "16":
-					setPointerType(PointerType.SHORT);
+					setPointerType(MemoryPointerType.SHORT);
 					break;
 				
 				case "int":
 				case "32":
-					setPointerType(PointerType.INTEGER);
+					setPointerType(MemoryPointerType.INTEGER);
 					break;
 				
 				case "long":
 				case "64":
-					setPointerType(PointerType.LONG);
+					setPointerType(MemoryPointerType.LONG);
 					break;
 				
 					// {@squirreljme.error AN0a Unknown pointer type to use
@@ -416,7 +416,7 @@ public abstract class Interpreter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/08
 	 */
-	public final void setPointerType(PointerType __pt)
+	public final void setPointerType(MemoryPointerType __pt)
 		throws IllegalStateException, NullPointerException
 	{
 		// Check
