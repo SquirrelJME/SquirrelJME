@@ -11,8 +11,11 @@
 package net.multiphasicapps.squirreljme.kernel.impl.jvm;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
+import net.multiphasicapps.squirreljme.terp.InterpreterFactory;
 
 /**
  * This provides the basic initialize of a JVM based kernel.
@@ -24,11 +27,7 @@ public class BasicMain
 {
 	/** The default interpreter core. */
 	public static final String DEFAULT_INTERPRETER =
-		"net.multiphasicapps.squirreljme.terp.std.StandardInterpreter";
-	
-	/** The deterministic interpreter. */
-	public static final String RR_INTERPRETER =
-		"net.multiphasicapps.squirreljme.terp.rr.RRInterpreter";
+		"standard";
 	
 	/** The kernel being used. */
 	protected final JVMKernel kernel;
@@ -43,21 +42,17 @@ public class BasicMain
 	public BasicMain(String... __args)
 	{
 		// {@squirreljme.property net.multiphasicapps.squirreljme.interpreter
-		// This is the class which should be used as the interpreter for the
-		// code which runs in the JVM based kernel.}
+		// This is the interpreter which should be used by the the JVM based
+		// interpretive virtual machine.}
 		String useterp = System.getProperty(
 			"net.multiphasicapps.squirreljme.interpreter");
 		if (useterp == null)
 			useterp = DEFAULT_INTERPRETER;
-		else if (useterp.equals("rerecord"))
-			useterp = RR_INTERPRETER;
 		
-		// {@squirreljme.cmdline -Xsquirreljme-interpreter=(class) This
-		// specifies the name of the class which should be used as the
-		// interpreter instead of the default. If "rerecord" is specified then
-		// the class name of the rerecording interpreter is used instead.}
-		String altterp = null;
-		Map<String, String> xops = new LinkedHashMap<>();
+		// {@squirreljme.cmdline -Xsquirreljme-interpreter=(name) This
+		// specifies the name of the interpreter which should be used as the
+		// interpreter instead of the default. If "rerecording" is specified
+		// then the rerecording interpreter is used instead.}
 		for (String a : __args)
 		{
 			// If it does not start with a dash, it is the main class
@@ -65,55 +60,42 @@ public class BasicMain
 			if (!a.startsWith("-") || a.equals("-jar"))
 				break;
 			
-			// Is this an X option?
-			if (a.startsWith("-X"))
+			// Interpreter name?
+			if (a.startsWith("-Xsquirreljme-interpreter="))
+				useterp = a.substring("-Xsquirreljme-interpreter=".length());
+		}
+		
+		// Find the interpreter service
+		ServiceLoader<InterpreterFactory> ld =
+			ServiceLoader.<InterpreterFactory>load(InterpreterFactory.class);
+		InterpreterFactory usefact = null;
+		for (InterpreterFactory fact : ld)
+			if (fact.toString().equalsIgnoreCase(useterp))
 			{
-				// Has an equal sign?
-				int eq = a.indexOf('=');
-				if (eq >= 0)
-					xops.put(a.substring(2, eq), a.substring(eq + 1));
-				
-				// Does not, use a blank string
-				else
-					xops.put(a.substring(2), "");
+				usefact = fact;
+				break;
 			}
-		}
 		
-		// Change the interpreter?
-		altterp = xops.get("squirreljme-interpreter");
+		// {@squirreljme.error BC02 The interpreter with the specified name
+		// does not exist. (The requested interpreter)}
+		if (usefact == null)
+			throw new IllegalArgumentException(String.format("BC02 %s",
+				useterp));
 		
-		// Use alternative based on the command line?
-		if (altterp != null)
-			if (altterp.equals("rerecord"))
-				useterp = RR_INTERPRETER;
-			else if (altterp.equals("standard"))
-				useterp = DEFAULT_INTERPRETER;
-			else
-				useterp = altterp;
+		// Create the interpreter
+		Interpreter terp = usefact.createInterpreter(null, __args);
 		
-		// Create an instance of the interpreter
-		Interpreter terp;
-		try
-		{
-			// Find it
-			Class<?> terpcl = Class.forName(useterp);
-			
-			// Initialize it
-			terp = (Interpreter)terpcl.newInstance();
-		}
+		// {@squirreljme.error BC03 The interpreter factory did not produce
+		// the interpreter with the specified name. (The requested
+		// interpreter)}
+		if (terp == null)
+			throw new IllegalArgumentException(String.format("BC03 %s",
+				useterp));
 		
-		// {@squirreljme.error BC0a Could not initialize the interpreter.
-		catch (ClassCastException|ClassNotFoundException|
-			IllegalAccessException|InstantiationException e)
-		{
-			throw new RuntimeException("BC0a", e);
-		}
-		
-		// Handle X options which sets up interpreter details
-		terp.handleXOptions(xops);
-		
-		// Create the kernel to use
-		this.kernel = createKernel(terp, __args);
+		// Create the kernel to use (use the interpreter arguments)
+		List<String> initargs = terp.getInitialArguments();
+		this.kernel = createKernel(terp,
+			initargs.<String>toArray(new String[initargs.size()]));
 		
 		// {@squirreljme.error BC01 The kernel was never created.}
 		if (this.kernel == null)

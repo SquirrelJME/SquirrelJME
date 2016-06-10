@@ -177,6 +177,17 @@ public abstract class Interpreter
 	}
 	
 	/**
+	 * Returns the initial arguments which were passed to this interpreter.
+	 *
+	 * @return The list of initial arguments.
+	 * @since 2016/06/09
+	 */
+	public final List<String> getInitialArguments()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the total number of bytes which may be allocated.
 	 *
 	 * @return The total size of memory.
@@ -208,6 +219,7 @@ public abstract class Interpreter
 	 * @param __xo The X options to handle.
 	 * @since 2016/05/29
 	 */
+	@Deprecated
 	public void handleXOptions(Map<String, String> __xo)
 	{
 		// Check
