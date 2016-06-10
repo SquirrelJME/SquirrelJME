@@ -258,3 +258,13 @@ what I can do instead of a `Interpreter` is have an object which has
 interpreter configuration details. The configuration details would have the
 ability to create a structure manager and memory accessor.
 
+## 20:20
+
+The `JVMKernel` can also use the configuration system. Actually, instead the
+stuff can be kept in the interpreter. However the kernel itself it initialized
+with settings that the interpreter was initialized with. So basically the
+interpreter would take the argument list and it could potentially modify them
+before they are passed to the kernel. Then this way the kernel does not have to
+use the argument rewriting (although it could still exist, just the `JVMKernel`
+can do nothing with it now).
+
