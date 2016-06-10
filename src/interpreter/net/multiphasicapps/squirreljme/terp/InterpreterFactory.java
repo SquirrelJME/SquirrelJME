@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.terp;
 
 import java.util.Map;
+import net.multiphasicapps.squirreljme.sm.StructureManager;
 
 /**
  * This is a factory which is used to initialize an interpreter.
@@ -24,12 +25,15 @@ public interface InterpreterFactory
 	/**
 	 * Creates an instance of the interpreter with the given arguments.
 	 *
+	 * @param __sm An optional structure manager which is used to manage and
+	 * call the garbage collector on virtual machine objects.
 	 * @param __args The arguments to pass to the interpreter.
 	 * @return The created interpreter instance which uses the given arguments.
 	 * @throws IllegalArgumentException If the input arguments are not valid.
 	 * @since 2016/06/09
 	 */
-	public abstract Interpreter createInterpreter(String... __args)
+	public abstract Interpreter createInterpreter(StructureManager __sm,
+		String... __args)
 		throws IllegalArgumentException;
 	
 	/**

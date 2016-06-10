@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.terp.std;
 
+import net.multiphasicapps.squirreljme.sm.StructureManager;
 import net.multiphasicapps.squirreljme.terp.InterpreterFactory;
 
 /**
@@ -26,9 +27,10 @@ public class StandardInterpreterFactory
 	 * @since 2016/06/09
 	 */
 	@Override
-	public StandardInterpreter createInterpreter(String... __args)
+	public StandardInterpreter createInterpreter(StructureManager __sm,
+		String... __args)
 	{
-		return new StandardInterpreter(__args);
+		return new StandardInterpreter(__sm, __args);
 	}
 	
 	/**

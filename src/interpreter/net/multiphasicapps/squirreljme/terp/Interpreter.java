@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.terp;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
@@ -20,6 +22,8 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
 import net.multiphasicapps.squirreljme.sm.StructureManager;
 import net.multiphasicapps.squirreljme.sm.PointerType;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
  * This is the base class which is used by implementations of the interpreter
@@ -29,30 +33,60 @@ import net.multiphasicapps.squirreljme.sm.PointerType;
  */
 public abstract class Interpreter
 {
+	/** Memory defaults to 24MiB in size. */
+	public static final long DEFAULT_MEMORY_SIZE =
+		25_165_824;
+	
+	/** Interpreter initialization arguments. */
+	protected final List<String> initargs;
+	
 	/** The structure manager lock. */
 	private final Object _smlock =
 		new Object();
 	
 	/** The structure manager for memory allocation. */
-	private final StructureManager _sm;
+	private volatile StructureManager _sm;
 	
-	/** Memory pool access lock. */
-	@Deprecated
-	private final Object _mempoollock =
-		new Object();
-	
-	/** The interpreter object manager. */
-	@Deprecated
-	private volatile StructureManager _objman;
-	
-	/** The type of pointers to use in the interpreter. */
+	/** The data type which is used for a pointer in the intepreter. */
 	private volatile PointerType _pointertype =
 		PointerType.INTEGER;
 	
-	/** The current size of the memory pool. */
-	@Deprecated
-	private volatile long _mempoolsize =
-		DEFAULT_MEMORY_POOL_SIZE;
+	/** The initial number of bytes to use for the interpreter's memory. */
+	private volatile long _initmemsize =
+		DEFAULT_MEMORY_SIZE;
+	
+	/**
+	 * Initializes the base interpreter with the given arguments.
+	 *
+	 * @param __sm An optional structure manager which is used instead of
+	 * the default. This may be used in the event that one that interacts with
+	 * an existing kernel object system rather than being independent.
+	 * @param __args Arguments to pass to the interpreter.
+	 * @since 2016/06/09
+	 */
+	public Interpreter(StructureManager __sm, String... __args)
+	{
+		// Must exist
+		if (__args == null)
+			__args = new String[0];
+		
+		// Set the optional structure manager
+		this._sm = __sm;
+		
+		// Argument initialization is a two stage process, the input arguments
+		// are passed to an early handler. The early handler can return a
+		// completely new set of arguments which are used instead. This may
+		// be used by the rerecording interpreter to use the originally
+		// recorded command line arguments.
+		int z = 0;
+		for (boolean early = true; z < 2; z++, early = false)
+		{
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		throw new Error("TODO");
+	}
 	
 	/**
 	 * Creates a new process in the interpreter for storing object states
@@ -143,45 +177,25 @@ public abstract class Interpreter
 	}
 	
 	/**
-	 * Returns the size of the memory pool that all processes within the
-	 * interpreter use.
+	 * Returns the total number of bytes which may be allocated.
 	 *
-	 * @return The memory pool size.
-	 * @since 2016/06/06
+	 * @return The total size of memory.
+	 * @since 2016/06/09
 	 */
 	public final long getMemorySize()
 	{
 		// Lock
-		synchronized (this._mempoollock)
+		synchronized (this._smlock)
 		{
-			// If the pool was already allocated then use the actual size
-			if (true)
+			// Get
+			StructureManager rv = this._sm;
+			
+			// Use the size provided by the structure manager?
+			if (rv != null)
 				throw new Error("TODO");
 			
-			// Otherwise use the virtual value
-			return this._mempoolsize;
-		}
-	}
-	
-	/**
-	 * Obtains the pointer type which is used by the interpreter's object
-	 * manager.
-	 *
-	 * @return The data type to use for pointer values.
-	 * @since 2016/06/08
-	 */
-	public final PointerType getPointerType()
-	{
-		// Lock
-		synchronized (this._mempoollock)
-		{
-			// If the object manager was initialized, use that
-			StructureManager rv = this._objman;
-			if (rv != null)
-				return rv.pointerType();
-			
-			// Otherwise use the future to set value
-			return this._pointertype;
+			// Use the specified size
+			return this._initmemsize;
 		}
 	}
 	
@@ -263,10 +277,10 @@ public abstract class Interpreter
 	public final StructureManager StructureManager()
 	{
 		// Lock
-		synchronized (this._mempoollock)
+		synchronized (this._smlock)
 		{
 			// Get
-			StructureManager rv = this._objman;
+			StructureManager rv = this._sm;
 			
 			// Create?
 			if (rv == null)
@@ -303,7 +317,7 @@ public abstract class Interpreter
 			throw new IllegalArgumentException(String.format("AN05 %d", __sz));
 		
 		// Lock
-		synchronized (this._mempoollock)
+		synchronized (this._smlock)
 		{
 			// {@squirreljme.error AN06 The memory pool was already created
 			// which means the size cannot be set.}
@@ -313,7 +327,7 @@ public abstract class Interpreter
 				throw new IllegalStateException("AN06");
 			
 			// Set new size
-			this._mempoolsize = __sz;
+			this._initmemsize = __sz;
 		}
 	}
 	
@@ -335,12 +349,12 @@ public abstract class Interpreter
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		synchronized (this._mempoollock)
+		synchronized (this._smlock)
 		{
 			// {@squirreljme.error AN09 Cannot set the specified pointer type
 			// because the object manager has already been initialized. (The
 			// pointer type)}
-			if (null != this._objman)
+			if (null != this._sm)
 				throw new IllegalStateException(String.format("AN09 %s",
 					__pt));
 			
