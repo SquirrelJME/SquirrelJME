@@ -133,6 +133,15 @@ public interface MemoryAccessor
 		throws MemoryAddressOperationException;
 	
 	/**
+	 * Returns the pointer type which is capable of storing the value for
+	 * all valid addresses which can be accessed by this interface.
+	 *
+	 * @return The pointer type which can store all pointer values.
+	 * @since 2016/06/09
+	 */
+	public abstract MemoryPointerType pointerType();
+	
+	/**
 	 * Reads a single byte value.
 	 *
 	 * @param __addr The address to read to.

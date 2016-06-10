@@ -8,14 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.sm;
+package net.multiphasicapps.squirreljme.mmu;
 
 /**
- * This is the Java type that is used to store pointer values.
+ * This is used to represent one of the Java types which is capable of storing
+ * all pointer values that can be addressed from the memory accessor.
  *
  * @since 2016/06/08
  */
-public enum PointerType
+public enum MemoryPointerType
 {
 	/** 16-bit pointers. */
 	SHORT(short.class, 16),
@@ -43,7 +44,7 @@ public enum PointerType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/07
 	 */
-	private PointerType(Class<?> __cl, int __b)
+	private MemoryPointerType(Class<?> __cl, int __b)
 		throws NullPointerException
 	{
 		// Check
