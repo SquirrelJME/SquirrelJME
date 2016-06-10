@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.terp;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,29 @@ public abstract class Interpreter
 		int z = 0;
 		for (boolean early = true; z < 2; z++, early = false)
 		{
+			// Parse options to find all of the X options
+			Map<String, String> xops = new LinkedHashMap<>();
+			for (String a : __args)
+			{
+				// If it does not start with a dash, it is the main class or
+				// a JAR was specified
+				if (!a.startsWith("-") || a.equals("-jar"))
+					break;
+				
+				// Split off X option?
+				if (a.startsWith("-X"))
+				{
+					// X option has a value
+					int eq;
+					if ((eq = a.indexOf('=')) >= 0)
+						xops.put(a.substring(2, eq), a.substring(eq + 1));
+					
+					// No value
+					else
+						xops.put(a.substring(2), "");
+				}
+			}
+			
 			if (true)
 				throw new Error("TODO");
 		}
