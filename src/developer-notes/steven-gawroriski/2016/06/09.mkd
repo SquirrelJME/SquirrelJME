@@ -241,3 +241,20 @@ code on the real kernel where it could flow into natively compiled code for
 example. Although it would be slow, there could be a practical application
 for this.
 
+## 18:33
+
+To handle the rerecording interpreter however I would need a way to determine
+the type and size of the allocated memory space. Memory allocation would also
+need to be deterministic, but in these cases it would be deterministic anyway.
+
+## 20:16
+
+One thing I must rethink is how to integrate the interpreter memory with the
+kernel memory. At the start, the interpreter would have used the kernel
+memory but that was switched to the kernel uses the interpreter memory. The
+current method makes it easier for the re-recording interpreter to handle
+re-recording. Since both states can potentially be very complex, I suppose
+what I can do instead of a `Interpreter` is have an object which has
+interpreter configuration details. The configuration details would have the
+ability to create a structure manager and memory accessor.
+

@@ -34,6 +34,10 @@ import net.multiphasicapps.squirreljme.terp.Interpreter;
 public class JVMKernel
 	extends Kernel
 {
+	/** Memory defaults to 24MiB in size. */
+	public static final long DEFAULT_MEMORY_SIZE =
+		25_165_824;
+	
 	/** The JVM locates JAR files using a single provider. */
 	private volatile ClassUnitProvider _cuprovider;
 	

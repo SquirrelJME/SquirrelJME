@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
 import net.multiphasicapps.squirreljme.sm.StructureManager;
 import net.multiphasicapps.squirreljme.sm.PointerType;
 
@@ -28,13 +29,12 @@ import net.multiphasicapps.squirreljme.sm.PointerType;
  */
 public abstract class Interpreter
 {
-	/** Memory pool defaults to 24MiB. */
-	public static final long DEFAULT_MEMORY_POOL_SIZE =
-		25_165_824;
+	/** The structure manager lock. */
+	private final Object _smlock =
+		new Object();
 	
-	/** The base address of the interpreter memory pool. */
-	public static final long MEMORY_POOL_BASE_ADDRESS =
-		0x0000_0000L;
+	/** The structure manager for memory allocation. */
+	private final StructureManager _sm;
 	
 	/** Memory pool access lock. */
 	private final Object _mempoollock =
