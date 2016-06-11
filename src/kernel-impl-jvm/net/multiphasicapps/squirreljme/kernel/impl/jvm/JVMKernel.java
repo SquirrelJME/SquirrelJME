@@ -143,7 +143,7 @@ public class JVMKernel
 	protected StructureManager internalStructureManager()
 		throws KernelException
 	{
-		throw new Error("TODO");
+		return interpreter().structureManager();
 	}
 	
 	/**
