@@ -492,11 +492,9 @@ public abstract class Interpreter
 				InterpreterMemoryAccessor ima = new InterpreterMemoryAccessor(
 					this._initmemsize, this._cachelinesize, this._pointertype);
 				
-				throw new Error("TODO");
-				/*
-				this._objman = (rv = new StructureManager(memoryPoolManager(),
-					this._pointertype));
-				*/
+				// Setupt the structure manager
+				rv = new StructureManager(ima);
+				this._sm = rv;
 			}
 			
 			// Return
