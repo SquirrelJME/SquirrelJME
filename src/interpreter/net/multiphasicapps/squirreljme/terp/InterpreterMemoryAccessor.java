@@ -26,6 +26,9 @@ import net.multiphasicapps.squirreljme.mmu.MemoryWriteException;
  * address zero and extends to higher addresses. This means that the
  * interpreter could have a theoretical maximum of 8GiB.
  *
+ * Since the backing accessor uses {@code int}, access of these kind of values
+ * will not have a reduction in speed.
+ *
  * @since 2016/06/11
  */
 public class InterpreterMemoryAccessor
@@ -37,20 +40,33 @@ public class InterpreterMemoryAccessor
 	/** The cache line size, generally not used except for alignment. */
 	protected final int cls;
 	
+	/** The type of pointer used. */
+	protected final MemoryPointerType pointertype;
+	
 	/**
 	 * Initializes the interpreter memory accessor which is backed on an
 	 * integer array.
 	 *
 	 * @param __bytes The number of bytes to use
 	 * @param __cls The cache line size, this has a minimal cap of 1.
+	 * @param __pt The type of pointer used.
 	 * @throws IllegalArgumentException If the number of bytes is zero,
 	 * negative, is not a multiple of four, or if divided by 4 exceeds the
 	 * max size of an array.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/11
 	 */
-	public InterpreterMemoryAccessor(long __bytes, int __cls)
-		throws IllegalArgumentException
+	public InterpreterMemoryAccessor(long __bytes, int __cls,
+		MemoryPointerType __pt)
+		throws IllegalArgumentException, NullPointerException
 	{
+		// Check
+		if (__pt == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.pointertype = __pt;
+		
 		// {@squirreljme.error AN0b The number of requested bytes must be a
 		// multiple of 4 and cannot be zero or negative. Also, the number of
 		// bytes divided by 4 cannot exceed the max 32-bit integer value. (The
@@ -64,8 +80,6 @@ public class InterpreterMemoryAccessor
 		// Allocate memory
 		this.memory = new int[(int)ints];
 		this.cls = Math.max(1, __cls);
-		
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -73,7 +87,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public long addAddress(long __base, long __off)
+	public final long addAddress(long __base, long __off)
 		throws MemoryAddressOperationException
 	{
 		throw new Error("TODO");
@@ -84,7 +98,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public boolean atomicCompareAndSetInt(long __a, int __exp,
+	public final boolean atomicCompareAndSetInt(long __a, int __exp,
 		int __set)
 		throws MemoryReadException, MemoryWriteException
 	{
@@ -96,7 +110,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public int atomicGetAndAddInt(long __a, int __val)
+	public final int atomicGetAndAddInt(long __a, int __val)
 		throws MemoryReadException, MemoryWriteException
 	{
 		throw new Error("TODO");
@@ -107,7 +121,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public int atomicGetAndSetInt(long __a, int __val)
+	public final int atomicGetAndSetInt(long __a, int __val)
 		throws MemoryReadException, MemoryWriteException
 	{
 		throw new Error("TODO");
@@ -118,7 +132,17 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public int cacheLineSize()
+	public final int cacheLineSize()
+	{
+		return this.cls;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/11
+	 */
+	@Override
+	public final MemoryPointerComparison compareAddress(long __a, long __b)
 	{
 		throw new Error("TODO");
 	}
@@ -128,17 +152,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public MemoryPointerComparison compareAddress(long __a, long __b)
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/11
-	 */
-	@Override
-	public long offsetFrom(long __base, long __other)
+	public final long offsetFrom(long __base, long __other)
 		throws MemoryAddressOperationException
 	{
 		throw new Error("TODO");
@@ -149,9 +163,9 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public MemoryPointerType pointerType()
+	public final MemoryPointerType pointerType()
 	{
-		throw new Error("TODO");
+		return this.pointertype;
 	}
 	
 	/**
@@ -159,7 +173,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public byte readByte(long __addr)
+	public final byte readByte(long __addr)
 		throws MemoryReadException
 	{
 		throw new Error("TODO");
@@ -170,7 +184,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public int readInt(long __addr)
+	public final int readInt(long __addr)
 		throws MemoryReadException
 	{
 		throw new Error("TODO");
@@ -181,7 +195,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public long readLong(long __addr)
+	public final long readLong(long __addr)
 		throws MemoryReadException
 	{
 		throw new Error("TODO");
@@ -192,7 +206,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public short readShort(long __addr)
+	public final short readShort(long __addr)
 		throws MemoryReadException
 	{
 		throw new Error("TODO");
@@ -203,9 +217,11 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public MemoryRegionType regionType()
+	public final MemoryRegionType regionType()
 	{
-		throw new Error("TODO");
+		// Java is a harvard architecture where the execution environment
+		// does not generally have access to static code data. Sort of anyway
+		return MemoryRegionType.DATA;
 	}
 	
 	/**
@@ -213,7 +229,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public void writeByte(long __addr, byte __v)
+	public final void writeByte(long __addr, byte __v)
 		throws MemoryWriteException
 	{
 		throw new Error("TODO");
@@ -224,7 +240,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public void writeInt(long __addr, int __v)
+	public final void writeInt(long __addr, int __v)
 		throws MemoryWriteException
 	{
 		throw new Error("TODO");
@@ -235,7 +251,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public void writeLong(long __addr, long __v)
+	public final void writeLong(long __addr, long __v)
 		throws MemoryWriteException
 	{
 		throw new Error("TODO");
@@ -246,7 +262,7 @@ public class InterpreterMemoryAccessor
 	 * @since 2016/06/11
 	 */
 	@Override
-	public void writeShort(long __addr, short __v)
+	public final void writeShort(long __addr, short __v)
 		throws MemoryWriteException
 	{
 		throw new Error("TODO");

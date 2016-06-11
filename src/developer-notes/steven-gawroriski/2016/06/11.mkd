@@ -11,3 +11,17 @@ The stucture manager would also need to be given some kind of native allocation
 scheme, which uses some kind of native information to allocate from the given
 pool for example.
 
+## 15:00
+
+I have been playing in a video game tournament against humans and AI. The AI is
+very difficult and so far my only win was by sheer luck. However, playing
+against the AI makes me want to clone the game and write my own AI that can
+work in both environments.
+
+## 15:01
+
+I do wonder if I should have an array of objects that match the cache line
+size for synchronization. That would be faster but it would result in having
+lots of objects being used. I suppose when it comes to atomic it will lock the
+entire memory region in the interpreter.
+
