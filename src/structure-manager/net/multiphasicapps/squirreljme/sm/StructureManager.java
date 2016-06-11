@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.sm;
 
+import java.util.Arrays;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
 import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
 
@@ -40,8 +41,17 @@ public class StructureManager
 		
 		// Map all input regions to accessors (for code/data)
 		int nb = MemoryRegionType.usedBits();
-		
-		throw new Error("TODO");
+		MemoryAccessor[] acs = new MemoryAccessor[nb];
+		int n = __ma.length;
+		for (int i = 0; i < n; i++)
+		{
+			MemoryAccessor ma = __ma[i];
+			for (int j = 0; j < nb; j++)
+				if (((ma.regionType().ordinal()) & (1 << j)) != 0)
+					if (acs[j] == null)
+						acs[j] = ma;
+		}
+		this._accessors = acs;
 	}
 	
 	/**
