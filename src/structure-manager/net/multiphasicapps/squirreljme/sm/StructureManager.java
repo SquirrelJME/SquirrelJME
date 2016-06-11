@@ -65,18 +65,23 @@ public class StructureManager
 		
 		// {@squirreljme.error BY01 The ordinal for the requested region type
 		// has zero or more than one bit. (The requested region type)}
-		if (Integer.bitCount(__rt.ordinal()) != 1)
+		int ord;
+		if (Integer.bitCount((ord = __rt.ordinal())) != 1)
 			throw new IllegalArgumentException(String.format("BY01 %s", __rt));
+		
+		// log2(ord)
+		ord = Integer.numberOfTrailingZeros(ord);
 		
 		// Go through all regions and return the one associated with the
 		// given type.
 		MemoryAccessor[] mas = this._accessors;
 		int n = mas.length;
 		for (int i = 0; i < n; i++)
-			if (true)
-				throw new Error("TODO");
+			if (ord == i)
+				return mas[i];
 		
-		throw new Error("TODO");
+		// Not specified
+		return null;
 	}
 }
 

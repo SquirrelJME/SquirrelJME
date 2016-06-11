@@ -44,7 +44,7 @@ public enum MemoryRegionType
 	
 	/** The number of bits which have a representation. */
 	private static final int _MAX_BITS =
-		Integer.bitCount(Integer.highestOneBit(this._VALUES) - 1);
+		Integer.bitCount(Integer.highestOneBit(_VALUES.length) - 1);
 	
 	/** Bits to region mappings. */
 	private static final MemoryRegionType[] _BITS;
@@ -59,7 +59,7 @@ public enum MemoryRegionType
 		// Load
 		MemoryRegionType[] vals = _VALUES;
 		int n = vals.length;
-		int nb = MAX_BITS;
+		int nb = _MAX_BITS;
 		
 		// Set singular bit locations
 		MemoryRegionType[] bb = new MemoryRegionType[nb];
@@ -98,7 +98,7 @@ public enum MemoryRegionType
 			return null;
 		
 		// Oversized
-		int n = _MAX_BITS:
+		int n = _MAX_BITS;
 		if (__i >= n)
 			return null;
 		
