@@ -39,6 +39,10 @@ public abstract class Interpreter
 	public static final long DEFAULT_MEMORY_SIZE =
 		25_165_824;
 	
+	/** The default cache line size. */
+	public static final int DEFAULT_CACHE_LINE_SIZE =
+		32;
+	
 	/** Interpreter initialization arguments. */
 	protected final List<String> initargs;
 	
@@ -56,6 +60,10 @@ public abstract class Interpreter
 	/** The initial number of bytes to use for the interpreter's memory. */
 	private volatile long _initmemsize =
 		DEFAULT_MEMORY_SIZE;
+	
+	/** The initial cache line size to use. */
+	private volatile int _cachelinesize =
+		DEFAULT_CACHE_LINE_SIZE;
 	
 	/**
 	 * Initializes the base interpreter with the given arguments.
@@ -310,6 +318,26 @@ public abstract class Interpreter
 					e);
 			}
 		
+		// {@squirreljme.cmdline -Xsquirreljme-interpreter-cachelinesize=bytes
+		// The cache line size to use which helps determines the minimal
+		// structure alignment to use in the interpreter. Generally this has
+		// no effect inside of the interpreter however it may increase
+		// execution speed on the host.}
+		if ((v = __xo.get("squirreljme-interpreter-cachelinesize")) != null)
+			try
+			{
+				setCacheLineSize(Integer.decode(v));
+			}
+			
+			// {@squirreljme.error AN0e Cannot set the cache line size because
+			// the input value could not be decoded as a number. (The
+			// non-number)}
+			catch (NumberFormatException e)
+			{
+				throw new IllegalArgumentException(String.format("AN0e %s", v),
+					e);
+			}
+		
 		// {@squirreljme.cmdline -Xsquirreljme-interpreter-pointertype=type The
 		// Java data type to use for pointer values. Note that the pointer type
 		// sets the maximum upper limit on the amount of memory which is
@@ -345,32 +373,36 @@ public abstract class Interpreter
 	}
 	
 	/**
-	 * Obtains the manager which manages allocated memory and provides object
-	 * based interaction.
+	 * This sets the size of the cache line size which affects the minimum
+	 * alignment of objects and allocation fields. Note that to the interpreter
+	 * this setting has no true effect internally, however if the backing
+	 * array is aligned to the cache line size by the host virtual machine then
+	 * accesses performed by the interpreter may be faster.
 	 *
-	 * @return The object manager.
-	 * @since 2016/06/08
+	 * @param __cls Sets the cache line size to use.
+	 * @throws IllegalArgumentException If the cache line size is zero or
+	 * negative.
+	 * @throws IllegalStateException If memory has already been initialized and
+	 * the cache line size could not be set.
+	 * @since 2016/06/11
 	 */
-	public final StructureManager structureManager()
+	public final void setCacheLineSize(int __cls)
+		throws IllegalArgumentException, IllegalStateException
 	{
+		// {@squirreljme.error AN0d Zero or negative cache line size.}
+		if (__cls <= 0)
+			throw new IllegalArgumentException("AN0d");
+		
 		// Lock
 		synchronized (this._smlock)
 		{
-			// Get
-			StructureManager rv = this._sm;
+			// {@squirreljme.error AN0c Cannot set the cache line size because
+			// memory has already been initialized.}
+			if (null != this._sm)
+				throw new IllegalStateException("AN0c");
 			
-			// Create?
-			if (rv == null)
-			{
-				throw new Error("TODO");
-				/*
-				this._objman = (rv = new StructureManager(memoryPoolManager(),
-					this._pointertype));
-				*/
-			}
-			
-			// Return
-			return rv;
+			// Set it
+			this._cachelinesize = __cls;
 		}
 	}
 	
@@ -435,6 +467,40 @@ public abstract class Interpreter
 					__pt));
 			
 			this._pointertype = __pt;
+		}
+	}
+	
+	/**
+	 * Obtains the manager which manages allocated memory and provides object
+	 * based interaction.
+	 *
+	 * @return The object manager.
+	 * @since 2016/06/08
+	 */
+	public final StructureManager structureManager()
+	{
+		// Lock
+		synchronized (this._smlock)
+		{
+			// Get
+			StructureManager rv = this._sm;
+			
+			// Create?
+			if (rv == null)
+			{
+				// Setup memory accessor that the structure manager uses
+				InterpreterMemoryAccessor ima = new InterpreterMemoryAccessor(
+					this._initmemsize, this._cachelinesize, this._pointertype);
+				
+				throw new Error("TODO");
+				/*
+				this._objman = (rv = new StructureManager(memoryPoolManager(),
+					this._pointertype));
+				*/
+			}
+			
+			// Return
+			return rv;
 		}
 	}
 }
