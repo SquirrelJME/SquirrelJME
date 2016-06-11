@@ -1,2 +1,7 @@
 # 2016/06/11
 
+## 09:39
+
+The interpreter could use up to 8GiB of memory although the command line
+switch limits that to 2GiB, that should be changed.
+

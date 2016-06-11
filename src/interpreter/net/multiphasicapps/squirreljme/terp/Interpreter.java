@@ -379,7 +379,7 @@ public abstract class Interpreter
 	 *
 	 * @param __sz The memory pool size to use.
 	 * @throws IllegalArgumentException If the size is zero, negative, not a
-	 * power of two, or is greater than 2GiB.
+	 * power of two, or is greater than 8GiB.
 	 * @throws IllegalStateException If a memory pool was already created and
 	 * its size cannot be changed.
 	 * @since 2016/06/06
@@ -388,9 +388,10 @@ public abstract class Interpreter
 		throws IllegalArgumentException, IllegalStateException
 	{
 		// {@squirreljme.error AN05 The requested size of the memory pool is
-		// zero, negative, not a power of two, or exceeds 2GiB. (The requested
+		// zero, negative, not a power of two, or exceeds 8GiB. (The requested
 		// size)}
-		if (__sz <= 0 || __sz > Integer.MAX_VALUE || Long.bitCount(__sz) != 1)
+		if (__sz <= 0 || __sz > ((long)Integer.MAX_VALUE) * 4L ||
+			Long.bitCount(__sz) != 1)
 			throw new IllegalArgumentException(String.format("AN05 %d", __sz));
 		
 		// Lock
