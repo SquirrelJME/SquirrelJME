@@ -5,3 +5,9 @@
 The interpreter could use up to 8GiB of memory although the command line
 switch limits that to 2GiB, that should be changed.
 
+## 09:50
+
+The stucture manager would also need to be given some kind of native allocation
+scheme, which uses some kind of native information to allocate from the given
+pool for example.
+
