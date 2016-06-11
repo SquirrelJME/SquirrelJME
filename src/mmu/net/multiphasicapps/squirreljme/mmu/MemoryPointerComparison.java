@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.mmu;
  *
  * @since 2016/06/09
  */
-public enum PointerComparison
+public enum MemoryPointerComparison
 {
 	/** The two pointers cannot be compared. */
 	NOT_COMPARABLE,

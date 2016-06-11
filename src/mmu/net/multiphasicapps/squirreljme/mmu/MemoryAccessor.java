@@ -113,7 +113,7 @@ public interface MemoryAccessor
 	 * @return The comparison result of the two pointers.
 	 * @since 2016/06/09
 	 */
-	public abstract PointerComparison compareAddress(long __a, long __b);
+	public abstract MemoryPointerComparison compareAddress(long __a, long __b);
 	
 	/**
 	 * Calculates the number of bytes that the other address is offset from
