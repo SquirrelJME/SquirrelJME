@@ -33,3 +33,8 @@ a pool would be best. One thing to consider for native systems is that the
 kernel and all of its starting classes will need to be initialized. Perhaps in
 this case I would have a bootstrap initializer.
 
+## 20:27
+
+The bootstrap initializer could then set the structure manager used by the
+kernel to the bootstrap structure manager so to speak.
+
