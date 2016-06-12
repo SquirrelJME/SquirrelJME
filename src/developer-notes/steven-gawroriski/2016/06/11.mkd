@@ -25,3 +25,11 @@ size for synchronization. That would be faster but it would result in having
 lots of objects being used. I suppose when it comes to atomic it will lock the
 entire memory region in the interpreter.
 
+## 20:10
+
+So what I need now is an allocator for memory regions. It could either be
+pool based or explicit pointers. I would suppose for memory purposes, being
+a pool would be best. One thing to consider for native systems is that the
+kernel and all of its starting classes will need to be initialized. Perhaps in
+this case I would have a bootstrap initializer.
+
