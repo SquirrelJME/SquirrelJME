@@ -486,13 +486,26 @@ public final class String
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns the value of the given object as a string.
+	 *
+	 * @param __a The object to get the string value of, if {@code null} then
+	 * the string {@code "null"} is returned.
+	 * @return The string value of the given object or {@code "null"}
+	 * @since 2016/06/13
+	 */
 	public static String valueOf(Object __a)
 	{
 		// The value is a string already
 		if (__a instanceof String)
 			return (String)__a;
 		
-		throw new Error("TODO");
+		// If null use null
+		if (__a == null)
+			return "null";
+		
+		// Just return the toString of the given object.
+		return __a.toString();
 	}
 	
 	public static String valueOf(char[] __a)
