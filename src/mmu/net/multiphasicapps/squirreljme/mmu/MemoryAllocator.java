@@ -18,6 +18,7 @@ package net.multiphasicapps.squirreljme.mmu;
  *
  * @since 2016/06/12
  */
+@Deprecated
 public interface MemoryAllocator
 {
 	/**

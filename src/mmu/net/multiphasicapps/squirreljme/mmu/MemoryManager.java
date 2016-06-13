@@ -20,6 +20,7 @@ package net.multiphasicapps.squirreljme.mmu;
  *
  * @since 2016/06/13
  */
+@Deprecated
 public class MemoryManager
 {
 	/**
