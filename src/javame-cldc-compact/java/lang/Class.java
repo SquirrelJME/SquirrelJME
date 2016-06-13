@@ -60,9 +60,19 @@ public final class Class<T>
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns whether or not assertions should be enabled in the specified
+	 * class, this is used internally by the virtual machine to determine if
+	 * assertions should fail or not.
+	 *
+	 * In SquirrelJME, this always returns {@code true}.
+	 *
+	 * @return In SquirrelJME, always returns {@code true}.
+	 * @since 2016/06/13
+	 */
 	public boolean desiredAssertionStatus()
 	{
-		throw new Error("TODO");
+		return true;
 	}
 	
 	public String getName()
