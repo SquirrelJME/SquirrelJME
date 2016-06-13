@@ -25,13 +25,38 @@ public final class Class<T>
 	{
 	}
 	
-	public <U> Class<? extends U> asSubclass(Class<U> __a)
+	/**
+	 * This checks whether the specified input class extends this class or
+	 * implements an interface and then returns this class object which is
+	 * "cast" to the specified type. Note that this does not change the
+	 * returned value.
+	 *
+	 * @param <U> The sub-class to cast this class object to.
+	 * @param __cl A class which is checked to see if it extends or implements
+	 * this class.
+	 * @return {@code this} except cast to the specified sub-class
+	 * @throws ClassCastException If the specified class is not a sub-class of
+	 * this class type.
+	 * @throws NullPointerException On null arguments.
+	 * @sicne 2016/06/13
+	 */
+	@SuppressWarnings({"unchecked"})
+	public <U> Class<? extends U> asSubclass(Class<U> __cl)
+		throws ClassCastException, NullPointerException
 	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
-	public T cast(Object __a)
+	public T cast(Object __o)
 	{
+		// Null always casts OK
+		if (__o == null)
+			return null;
+		
 		throw new Error("TODO");
 	}
 	
