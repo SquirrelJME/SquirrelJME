@@ -11,3 +11,7 @@ The information of what a current class is and the identity hash code will not
 be special outside details, they will just be standard fields within a class
 that are initialized to values on allocation.
 
+## 15:16
+
+`String` has `valueOf` and `copyValueOf`.
+

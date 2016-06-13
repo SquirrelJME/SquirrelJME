@@ -455,14 +455,30 @@ public final class String
 		return substring(s, e + 1);
 	}
 	
-	public static String copyValueOf(char[] __a, int __b, int __c)
+	/**
+	 * Invokes {@code String.valueOf(__c, __o, __l)}.
+	 *
+	 * @param __c The input character array to copy.
+	 * @param __o The starting offset.
+	 * @param __l The number of characters to copy.
+	 * @return The result of the other call.
+	 * @since 2016/06/13
+	 */
+	public static String copyValueOf(char[] __c, int __o, int __l)
 	{
-		throw new Error("TODO");
+		return String.valueOf(__c, __o, __l);
 	}
 	
-	public static String copyValueOf(char[] __a)
+	/**
+	 * Invokes {@code String.valueOf(__a)}.
+	 *
+	 * @param __c The input character array to copy.
+	 * @return The result of the other call.
+	 * @since 2016/06/13
+	 */
+	public static String copyValueOf(char[] __c)
 	{
-		throw new Error("TODO");
+		return String.valueOf(__c);
 	}
 	
 	public static String format(String __a, Object... __b)
