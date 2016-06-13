@@ -5,3 +5,9 @@
 I need an efficient way to describe the structure of classes and objects so
 that they may be allocated by the structure manager.
 
+## 13:43
+
+The information of what a current class is and the identity hash code will not
+be special outside details, they will just be standard fields within a class
+that are initialized to values on allocation.
+
