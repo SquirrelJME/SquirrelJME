@@ -29,6 +29,8 @@ import net.multiphasicapps.squirreljme.mmu.MemoryWriteException;
  * Since the backing accessor uses {@code int}, access of these kind of values
  * will not have a reduction in speed.
  *
+ * The address space is flat and linear.
+ *
  * @since 2016/06/11
  */
 public class InterpreterMemoryAccessor
@@ -145,6 +147,18 @@ public class InterpreterMemoryAccessor
 	public final MemoryPointerComparison compareAddress(long __a, long __b)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the number of bytes which were allocated for the interpreter to
+	 * use.
+	 *
+	 * @return The number of bytes allocated to the interpreter.
+	 * @since 2016/06/13
+	 */
+	public final long interpreterMemorySize()
+	{
+		return (long)this.memory.length * 4L;
 	}
 	
 	/**
