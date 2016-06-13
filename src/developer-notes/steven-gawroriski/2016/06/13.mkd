@@ -1,2 +1,7 @@
 # 2016/06/13
 
+## 13:37
+
+I need an efficient way to describe the structure of classes and objects so
+that they may be allocated by the structure manager.
+

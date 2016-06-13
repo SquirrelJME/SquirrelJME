@@ -17,6 +17,12 @@ package java.lang;
  */
 public class Object
 {
+	/** The type of class this object is. */
+	final Class<?> __classobj;
+	
+	/** The identity hash code of this object. */
+	final short __idhashcode;
+	
 	/**
 	 * Clones the current copy creating a shallow copy of it if
 	 * {@code Cloneable} is implemented, unless this method is overridden to
@@ -59,7 +65,7 @@ public class Object
 	 */
 	public final Class<?> getClass()
 	{
-		throw new Error("TODO");
+		return this.__classobj;
 	}
 	
 	/**
@@ -73,7 +79,7 @@ public class Object
 	 */
 	public int hashCode()
 	{
-		throw new Error("TODO");
+		return __identityHashCode();
 	}
 	
 	/**
@@ -176,6 +182,20 @@ public class Object
 			InterruptedException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the identity hash code of this object.
+	 *
+	 * @return The identity hash code of this object.
+	 * @since 2016/06/13
+	 */
+	final int __identityHashCode()
+	{
+		// The hashcode is just a random value which is duplicated to the
+		// higher value
+		int lo = this.__idhashcode;
+		return lo | (lo << 16);
 	}
 }
 

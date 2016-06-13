@@ -73,7 +73,7 @@ public final class Class<T>
 	{
 		// Check
 		if (__name == null)
-			throw new NullPointerException();
+			throw new NullPointerException("NARG");
 		
 		// Get the real component type of this class
 		Class<?> real = Magic.componentType(this);
@@ -105,10 +105,11 @@ public final class Class<T>
 				throw new Error("TODO");
 		}
 		
-		// Sanity check
+		// {@squirreljme.error ZZ0l A request for a resource was made which
+		// does not start with a leading slash. (The name of the requested
+		//resource)}
 		if (!__name.startsWith("/"))
-			throw new AssertionError("Requested a resource " +
-				"which resulted in a non-absolute path '" + __name + "'.");
+			throw new AssertionError(String.format("ZZ0l %s", __name));
 		
 		throw new Error("TODO");
 	}

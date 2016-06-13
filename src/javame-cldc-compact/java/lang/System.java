@@ -165,7 +165,8 @@ public final class System
 		if (__a == null)
 			return 0;
 		
-		throw new Error("TODO");
+		// Use object hash code data
+		return __a.__identityHashCode();
 	}
 	
 	public static long nanoTime()
