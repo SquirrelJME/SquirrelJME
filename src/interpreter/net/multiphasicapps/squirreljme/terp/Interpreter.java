@@ -492,8 +492,9 @@ public abstract class Interpreter
 				InterpreterMemoryAccessor ima = new InterpreterMemoryAccessor(
 					this._initmemsize, this._cachelinesize, this._pointertype);
 				
-				// Setupt the structure manager
-				rv = new StructureManager(ima);
+				// Setup the structure manager
+				rv = new StructureManager(new InterpreterMemoryAllocator(ima),
+					ima);
 				this._sm = rv;
 			}
 			
