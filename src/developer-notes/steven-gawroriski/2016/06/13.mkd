@@ -38,3 +38,16 @@ It is a `MemoryManager` but does not manage pages, I suppose for that instead
 there could be something called a `pmmu` for managing memory pages that extend
 beyond the standard allocator and such.
 
+## 15:43
+
+However, having an extra class is rather ugly. The accessor may be tightly
+bound to an allocator however. So do I have an allocator that is returned by
+the accessor? Do I have the memory accessor perform primitive memory management
+in chunks? I can do the later however, since it may actually work out better.
+The accessor is very specific to a system anyway and there might be a system
+specific means of allocating chunks of memory. However instead of it just being
+allocation, it will be reserving for the most part or similar. The structure
+manager can have a slightly better accessor which can manage memory better
+anyway and the that can be used instead (ideally a new MemoryAccessor wrapper
+would be used with the given logic).
+
