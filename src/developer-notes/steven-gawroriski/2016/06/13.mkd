@@ -15,3 +15,20 @@ that are initialized to values on allocation.
 
 `String` has `valueOf` and `copyValueOf`.
 
+## 15:25
+
+In general, the representation of objects will be shared such as classes and
+their sizes and field alignments.
+
+## 15:28
+
+The question is though, an effective way to represent code and data sections.
+There would potentially need to be two object allocation schemes. One that is
+in the data section while another is in the code section. There is no reason
+that a Harvard architecture has to be unmodifiable. So I suppose what I need
+then is a memory space which is given an allocator and an accessor and then
+pass that to the `StructureManager`. Otherwise the structure manager will
+only ever be capable of allocating structures in the data space which means
+that Harvard architectures with separated code and data will never be able to
+use a JIT.
+
