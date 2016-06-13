@@ -16,8 +16,6 @@ import java.lang.ref.WeakReference;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import net.multiphasicapps.squirreljme.magic.IVMCharSequence;
-import net.multiphasicapps.squirreljme.magic.Magic;
 
 public final class String
 	implements Comparable<String>, CharSequence
@@ -94,22 +92,6 @@ public final class String
 		throws NullPointerException
 	{
 		this(__a.toString());
-	}
-	
-	/**
-	 * Constructs a new string which uses the specified virtual machine
-	 * internal character sequence as a data source. The characters of this
-	 * string would be sourced from the input object since it has no
-	 * presence in the running virtual machine. In most cases, this would only
-	 * be used by the interpreter.
-	 *
-	 * @param __ivmcs The internal virtual machine character sequence, this
-	 * data is not copied.
-	 * @since 2016/04/05
-	 */
-	private String(IVMCharSequence __ivmcs)
-	{
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -274,10 +256,11 @@ public final class String
 			return getBytes(System.getProperty("microedition.encoding"));
 		}
 		
-		// Should not occur
+		// {@squirreljme.error ZZ0o The default encoding is not supported by
+		// the virtual machine.}
 		catch (UnsupportedEncodingException uee)
 		{
-			throw new RuntimeException("WTFX", uee);
+			throw new AssertionError("ZZ0o");
 		}
 	}
 	
@@ -325,31 +308,7 @@ public final class String
 	 */
 	public String intern()
 	{
-		// Strings may be placed within an array which is internal to the
-		// precompiled virtual machine into a native binary. Thus string
-		// objects just as these would always exist. Thus for example, the
-		// built in string array should contain a string called "intern" since
-		// it is the name of a method.despite not being an actual string. It is
-		// this way because
-		String im = Magic.matchInternalString(this);
-		if (im != null)
-			return im;
-		
-		// Lock on the map
-		Map<String, Reference<String>> map = _INTERNS;
-		synchronized (map)
-		{
-			// In a reference?
-			Reference<String> ref = map.get(this);
-			String rv;
-			
-			// Needs map placement?
-			if (ref == null || null == (rv = ref.get()))
-				map.put(this, new WeakReference<>((rv = this)));
-			
-			// Return it
-			return rv;
-		}
+		throw new Error("TODO");
 	}
 	
 	public boolean isEmpty()
