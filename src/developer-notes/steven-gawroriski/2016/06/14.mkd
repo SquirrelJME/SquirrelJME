@@ -152,3 +152,17 @@ be used instead of having the test system specify the required command line
 arguments. This would in a way greatly simplify setting up the simulator and
 would allow for it to be extended by the configuration.
 
+## 13:13
+
+One thing which I should support is multiple processes that run under the
+simulator. It may be required by some programs that a new process is created
+or a fork is performed of an existing process. So I should support such a
+thing along with multi-threading.
+
+## 13:30
+
+Actually, the simulator is more like an emulator for the most part. However the
+environment that would be running in it would not be a drop-in replacement
+because Java ME for example lacks stdin which some systems have and may rely
+on.
+
