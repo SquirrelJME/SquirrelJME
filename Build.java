@@ -266,10 +266,14 @@ public class Build
 		if (__p == null)
 			throw new NullPointerException();
 		
-		// Build dependencies first! But ignore optional ones until after this
-		// is built
+		// Enter the build state
+		__p.inbuild = true;
+		
+		// Build dependencies first! However due to the potential of recursive
+		// optional dependencies, do not recurse if the dependency is in the
+		// build state
 		for (Project dep : __p.depends)
-			if (!__p.optional.contains(dep))
+			if (!dep.inbuild)
 				__build(dep);
 		
 		// If the project is not out of date then do not build it
@@ -890,6 +894,9 @@ public class Build
 		/** Use the host class path? */
 		protected final boolean hostclasspath;
 		
+		/** Is this project in the build state? */
+		protected volatile boolean inbuild;
+		
 		/** Source code date. */
 		private volatile long _sourcedate =
 			Long.MIN_VALUE;
@@ -1026,17 +1033,10 @@ public class Build
 			// Add dependencies
 			for (Project dep : depends)
 			{
-				// If the dependency is optional, do not include it in
-				// compilation. The optional projects should be able to be
-				// removed and not break running code.
-				if (this.optional.contains(dep))
-					continue;
-				
-				// Add dependency JAR
-				__cp.add(dep.jarname);
-				
-				// Recurse
-				dep.classPath(__cp);
+				// Add dependency JAR, if it was added then recursive go into
+				// that
+				if (__cp.add(dep.jarname))
+					dep.classPath(__cp);
 			}
 			
 			// Add self
