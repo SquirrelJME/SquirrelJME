@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirrelsim;
 
+import java.io.IOException;
+import java.io.Reader;
+
 /**
  * This class contains a mutable configuration that the simulator will use
  * when it comes to initialization.
@@ -18,5 +21,33 @@ package net.multiphasicapps.squirrelsim;
  */
 public class SimulatorConfiguration
 {
+	/**
+	 * Initializes the simulator configuration which uses all defaults.
+	 *
+	 * @since 2016/06/14
+	 */
+	public SimulatorConfiguration()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * This initializes the simulator configuration using the given
+	 * configuration file.
+	 *
+	 * @param __r The configuration file to source from.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/14
+	 */
+	public SimulatorConfiguration(Reader __r)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 

@@ -10,8 +10,17 @@
 
 package net.multiphasicapps.squirrelsim;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedHashMap;
@@ -34,98 +43,46 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		// Enqueue all arguments for handling
-		Deque<String> aq = new LinkedList<>();
-		for (String a : __args)
-			aq.add(a);
+		// Must exist
+		if (__args == null)
+			__args = new String[0];
 		
-		// Handle them all
-		String wantcpu = null;
-		String wantos = null;
-		Map<String, Path> roots = new LinkedHashMap<>();
-		List<String> wantprogram = new ArrayList<>();
-		boolean gotend = false;
-		while (!aq.isEmpty())
-		{
-			// Get next
-			String a = aq.removeFirst();
-			
-			// End of arguments?
-			if (a.equals("--"))
-			{
-				// Correct command line
-				gotend = true;
-				
-				// Fill the desired program arguments
-				while (!aq.isEmpty())
-					wantprogram.add(aq.removeFirst());
-				
-				// Stop
-				break;
-			}
-			
-			// {@squirreljme.cmdline -C(arch) Select CPU to simulate.}
-			if (a.startsWith("-C"))
-			{
-				// {@squirreljme.error BV05 The CPU was already specified.}
-				if (wantcpu != null)
-					throw new IllegalArgumentException("BV05");
-				
-				wantcpu = a.substring(2);
-			}
-			
-			// {@squirreljme.cmdline -O(os) Select operating system to
-			// simulate.}
-			else if (a.startsWith("-O"))
-			{
-				// {@squirreljme.error BV06 The operating system was already
-				// specified.}
-				if (wantos != null)
-					throw new IllegalArgumentException("BV06");
-				
-				wantos = a.substring(2);
-			}
-			
-			// {@squirreljme.cmdline -R(name=(mode)=(over)=(path)) Adds a root
-			// filesystem to the simulated machine. The name specifies the name
-			// of the root (such as {@code /} or {@code C}. Not all simulators
-			// support multiple roots or incorrectly named roots. The mode
-			// determines how the root is to be treated.
-			// "{@code w}" makes the root writable, otherwise it is read-only.
-			// The overlay is optional and if it is not used then it must be
-			// blank. The overlay is used so that any modifications to the
-			// filesystem performed by the simulator are performed, they are
-			// placed in the given root instead. If the overlay is not used
-			// then all writes (assuming the filesystem is writable) go
-			// to the actual filesystem.
-			// The path specifies the source of which files make up the given
-			// root filesystem. This may be a ZIP or ISO file so that a common
-			// base for pre-existing files may be used for simpler debugging.
-			// Note that for write support when using ZIP/ISO an overlay must
-			// be specified.}
-			else if (a.startsWith("-R"))
-			{
-				throw new Error("TODO");
-			}
-			
-			// {@squirreljme.error BV02 Unknown command line argument. (The
-			// command line switch)}
-			else
-				throw new IllegalArgumentException(String.format("BV02 %s",
-					a));
-		}
-		
-		// {@squirreljme.error Expected to be given the program to launch.}
-		if (!gotend)
+		// {@squirreljme.error BV01 Expected configuration files to be used
+		// for the simulators.}
+		int n;
+		if ((n = __args.length) <= 0)
 			throw new IllegalArgumentException("BV01");
 		
-		// {@squirreljme.error BV03 No CPU was specified.}
-		if (wantcpu == null)
-			throw new IllegalArgumentException("BV03");
-		
-		// {@squirreljme.error BV04 No operating system was specified.}
-		if (wantos == null)
-			throw new IllegalArgumentException("BV04");
+		// Setup simulator configurations for all systems
+		SimulatorConfiguration[] configs = new SimulatorConfiguration[n];
+		for (int i = 0; i < n; i++)
+		{
+			// Get configuration name
+			String conf = __args[i];
+			
+			// See if it exists in the filesystem
+			try
+			{
+				// Get path
+				Path p = Paths.get(conf);
+				
+				// Try to use it
+				try (FileChannel fc = FileChannel.open(p,
+					StandardOpenOption.READ);
+					Reader r = new InputStreamReader(
+						Channels.newInputStream(fc)))
+				{
+					configs[i] = new SimulatorConfiguration(r);
+				}
+			}
+			
+			// Ignore
+			catch (InvalidPathException|IOException e)
+			{
+			}
+			
+			throw new Error("TODO");
+		}
 		
 		throw new Error("TODO");
 	}

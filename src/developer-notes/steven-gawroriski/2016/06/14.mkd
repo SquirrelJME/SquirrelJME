@@ -166,3 +166,16 @@ environment that would be running in it would not be a drop-in replacement
 because Java ME for example lacks stdin which some systems have and may rely
 on.
 
+## 13:36
+
+Also, the system would be able to operate with no ROMs and generally will
+perform high level emulation of well behaved systems.
+
+## 13:46
+
+One thing I can also have is simulator groups. For example, I might want to
+test communication between a DOS system and a Linux system over a virtual
+serial port possibly, so as such the two systems should be able to
+communicate to each other in the simulated environment. There could also be
+a combined networking system connected to each system.
+
