@@ -117,6 +117,10 @@ public class Main
 			}
 		}
 		
+		// Setup simulation group which uses the specified configurations to
+		// initialize simulations with.
+		SimulationGroup sg = new SimulationGroup(configs);
+		
 		throw new Error("TODO");
 	}
 }
