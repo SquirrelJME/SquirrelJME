@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.terp;
 
 import java.util.Map;
-import net.multiphasicapps.squirreljme.sm.StructureManager;
+import net.multiphasicapps.squirreljme.rtobj.RuntimeObjectManager;
 
 /**
  * This is a factory which is used to initialize an interpreter.
@@ -32,7 +32,7 @@ public interface InterpreterFactory
 	 * @throws IllegalArgumentException If the input arguments are not valid.
 	 * @since 2016/06/09
 	 */
-	public abstract Interpreter createInterpreter(StructureManager __sm,
+	public abstract Interpreter createInterpreter(RuntimeObjectManager __sm,
 		String... __args)
 		throws IllegalArgumentException;
 	

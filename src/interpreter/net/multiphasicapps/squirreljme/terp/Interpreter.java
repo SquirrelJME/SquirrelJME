@@ -23,7 +23,7 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
 import net.multiphasicapps.squirreljme.mmu.MemoryPointerType;
-import net.multiphasicapps.squirreljme.sm.StructureManager;
+import net.multiphasicapps.squirreljme.rtobj.RuntimeObjectManager;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
@@ -51,7 +51,7 @@ public abstract class Interpreter
 		new Object();
 	
 	/** The structure manager for memory allocation. */
-	private volatile StructureManager _sm;
+	private volatile RuntimeObjectManager _sm;
 	
 	/** The data type which is used for a pointer in the intepreter. */
 	private volatile MemoryPointerType _pointertype =
@@ -74,7 +74,7 @@ public abstract class Interpreter
 	 * @param __args Arguments to pass to the interpreter.
 	 * @since 2016/06/09
 	 */
-	public Interpreter(StructureManager __sm, String... __args)
+	public Interpreter(RuntimeObjectManager __sm, String... __args)
 	{
 		// Defensive copy
 		if (__args == null)
@@ -271,7 +271,7 @@ public abstract class Interpreter
 		synchronized (this._smlock)
 		{
 			// Get
-			StructureManager rv = this._sm;
+			RuntimeObjectManager rv = this._sm;
 			
 			// Use the size provided by the structure manager?
 			if (rv != null)
@@ -477,13 +477,13 @@ public abstract class Interpreter
 	 * @return The object manager.
 	 * @since 2016/06/08
 	 */
-	public final StructureManager structureManager()
+	public final RuntimeObjectManager RuntimeObjectManager()
 	{
 		// Lock
 		synchronized (this._smlock)
 		{
 			// Get
-			StructureManager rv = this._sm;
+			RuntimeObjectManager rv = this._sm;
 			
 			// Create?
 			if (rv == null)
@@ -493,7 +493,7 @@ public abstract class Interpreter
 					this._initmemsize, this._cachelinesize, this._pointertype);
 				
 				// Setup the structure manager
-				rv = new StructureManager(ima);
+				rv = new RuntimeObjectManager(ima);
 				this._sm = rv;
 			}
 			

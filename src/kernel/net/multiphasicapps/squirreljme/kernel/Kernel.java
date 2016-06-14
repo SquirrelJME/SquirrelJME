@@ -42,7 +42,7 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
 import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
-import net.multiphasicapps.squirreljme.sm.StructureManager;
+import net.multiphasicapps.squirreljme.rtobj.RuntimeObjectManager;
 import __squirreljme.IPCAlternative;
 import __squirreljme.IPCException;
 import __squirreljme.IPCClient;
@@ -79,7 +79,7 @@ public abstract class Kernel
 	protected final KernelProcess launcher;
 	
 	/** The structure manager for allocated structures. */
-	protected final StructureManager structman;
+	protected final RuntimeObjectManager structman;
 	
 	/** The kernel controller interface. */
 	private final KernelController _controller;
@@ -130,7 +130,7 @@ public abstract class Kernel
 		this.altipc = new KernelIPCAlternative(this);
 		
 		// Setup structured memory manager
-		StructureManager sm = internalStructureManager();
+		RuntimeObjectManager sm = internalRuntimeObjectManager();
 		this.structman = sm;
 		
 		// {@squirreljme.error AY0l No structure manager was provided by the
@@ -260,7 +260,7 @@ public abstract class Kernel
 	 * @throws KernelException If the structure manager could not be obtained.
 	 * @since 2016/06/09
 	 */
-	protected abstract StructureManager internalStructureManager()
+	protected abstract RuntimeObjectManager internalRuntimeObjectManager()
 		throws KernelException;
 	
 	/**
