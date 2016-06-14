@@ -125,3 +125,8 @@ One thing that is needed would be a binary format support library for ELF, a
 PowerPC execution engine, and a Linux system handler (handles system calls and
 file system details).
 
+## 10:04
+
+I need to handle a recursive optional dependency and make sure that is not
+included.
+

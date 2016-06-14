@@ -236,6 +236,11 @@ public class Build
 				__launch(0, getProject("kernel-impl-jvm-swing"), __args);
 				break;
 				
+				// Run the simualtor
+			case "simulator":
+				__launch(0, getProject("simulator"), __args);
+				break;
+				
 				// Build a project
 			case "build":
 				__build(getProject(__args.removeFirst()));
@@ -924,6 +929,10 @@ public class Build
 			// Get project name
 			name = Objects.<String>requireNonNull(
 				attr.getValue("X-SquirrelJME-Name"), "Missing package name.");
+			
+			// Add to the global project mapping to allow for recursive
+			// optional dependencies
+			Build.this.projects.put(name, this);
 			
 			// Required dependencies
 			Set<Project> xdeps = new HashSet<>();
