@@ -123,8 +123,28 @@ public class SimulatorConfiguration
 		// Depends on the option
 		switch (__k)
 		{
-			// {@squirreljme.error BV06 Cannot set the given key and value
-			// because it is not known. (The key; The value)}
+				// The architecture to simulate
+			case "system.arch";
+				throw new Error("TODO");
+				
+				// The operating system to simulate
+			case "system.os";
+				throw new Error("TODO");
+				
+				// The amount of memory which is available
+			case "system.memory";
+				throw new Error("TODO");
+				
+				// The instructions per second for the given system
+			case "system.ips";
+				throw new Error("TODO");
+				
+				// The hostname of the simulated system
+			case "system.hostname";
+				throw new Error("TODO");
+			
+				// {@squirreljme.error BV06 Cannot set the given key and value
+				// because it is not known. (The key; The value)}
 			default:
 				throw new IllegalArgumentException(String.format("BV06 %s %s",
 					__k, __v));
