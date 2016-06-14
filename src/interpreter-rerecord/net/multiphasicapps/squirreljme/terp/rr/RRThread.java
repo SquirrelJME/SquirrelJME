@@ -14,6 +14,7 @@ import java.util.List;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.rtobj.RuntimeObjectManager;
 import net.multiphasicapps.squirreljme.terp.InterpreterThread;
 
 /**
@@ -43,6 +44,9 @@ public class RRThread
 		ClassNameSymbol mainclass = this.mainclass;
 		CIMethodID mainmethod = this.mainmethod;
 		List<Object> mainargs = this.mainargs;
+		
+		// Obtain the object manager
+		RuntimeObjectManager rtom = __terp.runtimeObjectManager();
 		
 		throw new Error("TODO");
 	}
