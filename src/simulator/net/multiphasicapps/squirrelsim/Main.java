@@ -61,12 +61,25 @@ public class Main
 			
 			// {@squirreljme.cmdline -C(arch) Select CPU to simulate.}
 			if (a.startsWith("-C"))
-				throw new Error("TODO");
+			{
+				// {@squirreljme.error BV05 The CPU was already specified.}
+				if (wantcpu != null)
+					throw new IllegalArgumentException("BV05");
+				
+				wantcpu = a.substring(2);
+			}
 			
 			// {@squirreljme.cmdline -O(os) Select operating system to
 			// simulate.}
 			else if (a.startsWith("-O"))
-				throw new Error("TODO");
+			{
+				// {@squirreljme.error BV06 The operating system was already
+				// specified.}
+				if (wantos != null)
+					throw new IllegalArgumentException("BV06");
+				
+				wantos = a.substring(2);
+			}
 			
 			// {@squirreljme.error BV02 Unknown command line argument. (The
 			// command line switch)}
