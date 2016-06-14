@@ -12,7 +12,6 @@ package net.multiphasicapps.squirreljme.sm;
 
 import java.util.Arrays;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
-import net.multiphasicapps.squirreljme.mmu.MemoryAllocator;
 import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
 
 /**
@@ -22,30 +21,23 @@ import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
  */
 public class StructureManager
 {
-	/** The allocator for memory. */
-	private final MemoryAllocator _alloc;
-	
 	/** Accessors for each memory region type. */
 	private final MemoryAccessor[] _accessors;
 	
 	/**
 	 * Intializes the object manager.
 	 *
-	 * @param __alloc The allocator for memory.
 	 * @param __ma The memory accessor which are used to access the system
 	 * memory space.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/08
 	 */
-	public StructureManager(MemoryAllocator __alloc, MemoryAccessor... __ma)
+	public StructureManager(MemoryAccessor... __ma)
 		throws NullPointerException
 	{
 		// Check
-		if (__alloc == null || __ma == null)
+		if (__ma == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		this._alloc = __alloc;
 		
 		// Map all input regions to accessors (for code/data)
 		int nb = MemoryRegionType.usedBits();

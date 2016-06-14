@@ -493,8 +493,7 @@ public abstract class Interpreter
 					this._initmemsize, this._cachelinesize, this._pointertype);
 				
 				// Setup the structure manager
-				rv = new StructureManager(new InterpreterMemoryAllocator(ima),
-					ima);
+				rv = new StructureManager(ima);
 				this._sm = rv;
 			}
 			
