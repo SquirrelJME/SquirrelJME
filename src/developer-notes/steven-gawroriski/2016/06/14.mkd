@@ -31,3 +31,28 @@ a `ClassUnit` is shared amongst multiple processes, the information such as its
 field alignments will already be known. The one thing that is not known however
 would be the class base offset (for super classes).
 
+## 08:54
+
+So to think of it, perhaps when it comes to the kernel, the kernel should not
+have a `RuntimeObjectManager` at all. The kernel can be completely oblivious
+for the most part about how objects are laid out in memory. It just needs a
+way to call the garbage requester when requested.
+
+## 08:58
+
+However, when it comes to the current layout the interpreter and the kernel
+which uses the interpreter are completely separated. However the object
+spaces are pretty much the same. So perhaps instead the `RuntimeObjectManager`
+is given `ClassPath`. I remembers the class unit which contained a class. There
+could then be a hierarchical layout to it. The kernel gets the root `ROM` and
+then the processes get their own `ROM` as I stated before. However, to reduce
+the duplication of `ClassUnit`s in `ClassPath` they need to be shared.
+Otherwise there can be pointless duplication of `ClassUnit`s.
+
+## 09:05
+
+`ClassPath`s however can be combined from `ClassUnit`s in a way where two
+class paths could have a similarly named `ClassUnit` from a different provider.
+The only way to tell them apart is if they are a different object (they are not
+`==` to each other).
+
