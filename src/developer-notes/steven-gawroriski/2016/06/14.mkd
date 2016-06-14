@@ -140,3 +140,15 @@ quickly be memory mapped. So a very large file attempting to be memory mapped
 will cause the file to be recreated on the virtual system or using some other
 means.
 
+## 13:06
+
+Some operating systems rely on block devices to provide filesystems, while
+others can use virtual file systems quite easily. Having a command line based
+configuration for a simulation sequence can get quite complex. So the question
+is, I need an easy to use configuration system that can provide the program
+and the required arguments to the simulator. This way when it comes to testing
+natively compiled SquirrelJME on the simulator a number of configurations can
+be used instead of having the test system specify the required command line
+arguments. This would in a way greatly simplify setting up the simulator and
+would allow for it to be extended by the configuration.
+
