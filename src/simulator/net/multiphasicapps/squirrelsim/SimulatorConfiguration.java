@@ -124,23 +124,23 @@ public class SimulatorConfiguration
 		switch (__k)
 		{
 				// The architecture to simulate
-			case "system.arch";
+			case "system.arch":
 				throw new Error("TODO");
 				
 				// The operating system to simulate
-			case "system.os";
+			case "system.os":
 				throw new Error("TODO");
 				
 				// The amount of memory which is available
-			case "system.memory";
+			case "system.memory":
 				throw new Error("TODO");
 				
 				// The instructions per second for the given system
-			case "system.ips";
+			case "system.ips":
 				throw new Error("TODO");
 				
 				// The hostname of the simulated system
-			case "system.hostname";
+			case "system.hostname":
 				throw new Error("TODO");
 			
 				// {@squirreljme.error BV06 Cannot set the given key and value
