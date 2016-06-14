@@ -8,18 +8,19 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.sm;
+package net.multiphasicapps.squirreljme.rtobj;
 
 import java.util.Arrays;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
 import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
 
 /**
- * This is the manager which manages all allocated structures.
+ * This is the manager which allocates and manages objects along with any
+ * class data which is needed for the virtual machine to run properly.
  *
  * @since 2016/06/08
  */
-public class StructureManager
+public class RuntimeObjectManager
 {
 	/** Accessors for each memory region type. */
 	private final MemoryAccessor[] _accessors;
@@ -32,7 +33,7 @@ public class StructureManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/08
 	 */
-	public StructureManager(MemoryAccessor... __ma)
+	public RuntimeObjectManager(MemoryAccessor... __ma)
 		throws NullPointerException
 	{
 		// Check

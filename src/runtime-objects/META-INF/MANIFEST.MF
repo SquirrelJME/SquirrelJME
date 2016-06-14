@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: structure-manager
+X-SquirrelJME-Name: runtime-objects
 X-SquirrelJME-UUID: ede0fa1a-7b98-4f34-873a-a39de101e562
 X-SquirrelJME-Depends: javame-cldc-compact, mmu
 X-SquirrelJME-Error: BW
-LIBlet-Title: Structure Manager
+LIBlet-Title: Runtime Object Manager
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160608
-LIBlet-Description: This manages objects and other structures 
- in memory pools and maintains the required logic for object 
- data storage.
+LIBlet-Description: This is used to manage objects and classes 
+ in memory so that they may be used by the virtual machine.
 

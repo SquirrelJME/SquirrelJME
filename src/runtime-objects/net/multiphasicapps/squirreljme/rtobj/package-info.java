@@ -8,28 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.sm;
-
 /**
- * This represents the type of structure that the current table references.
+ * This package contains the run-time support for classes and objects so that
+ * the virtual machine may execute them as required.
  *
- * @since 2016/06/09
+ * @since 2016/06/08
  */
-public enum StructureType
-{
-	/** Free space. */
-	FREE,
-	
-	/** An object that may be garbage collected. */
-	OBJECT,
-	
-	/**
-	 * Unspecified structure which is not an object and cannot be garbage
-	 * collected.
-	 */
-	UNSPECIFIED,
-	
-	/** End. */
-	;
-}
+
+package net.multiphasicapps.squirreljme.rtobj;
 

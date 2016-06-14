@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: gc
 X-SquirrelJME-UUID: c32c5904-fca1-460e-9a31-4e403cc24228
 X-SquirrelJME-Depends: javame-cldc-compact, mmu,
- structure-manager
+ runtime-objects
 X-SquirrelJME-Error: BR
 LIBlet-Title: Garbage Collector Interfaces
 LIBlet-Vendor: Steven Gawroriski
