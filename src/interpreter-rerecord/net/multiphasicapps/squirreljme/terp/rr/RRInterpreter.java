@@ -19,7 +19,7 @@ import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
-import net.multiphasicapps.squirreljme.sm.StructureManager;
+import net.multiphasicapps.squirreljme.rtobj.RuntimeObjectManager;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 import net.multiphasicapps.squirreljme.terp.InterpreterException;
 import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
@@ -50,11 +50,11 @@ public class RRInterpreter
 	/**
 	 * initializes the re-recording interpreter.
 	 *
-	 * @param __sm Pre-existing optional structure manager.
+	 * @param __sm Pre-existing optional runtime object manager.
 	 * @param __args Interpreter initialization arguments.
 	 * @since 2016/05/29
 	 */
-	public RRInterpreter(StructureManager __sm, String... __args)
+	public RRInterpreter(RuntimeObjectManager __sm, String... __args)
 	{
 		super(__sm, __args);
 		

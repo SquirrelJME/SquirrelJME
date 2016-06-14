@@ -23,7 +23,7 @@ import net.multiphasicapps.squirreljme.kernel.KernelProcess;
 import net.multiphasicapps.squirreljme.kernel.KernelThread;
 import net.multiphasicapps.squirreljme.mmu.MemoryAccessor;
 import net.multiphasicapps.squirreljme.mmu.MemoryRegionType;
-import net.multiphasicapps.squirreljme.sm.StructureManager;
+import net.multiphasicapps.squirreljme.rtobj.RuntimeObjectManager;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 
 /**
@@ -140,10 +140,10 @@ public class JVMKernel
 	 * @since 2016/06/10
 	 */
 	@Override
-	protected StructureManager internalStructureManager()
+	protected RuntimeObjectManager internalRuntimeObjectManager()
 		throws KernelException
 	{
-		return interpreter().structureManager();
+		return interpreter().runtimeObjectManager();
 	}
 	
 	/**

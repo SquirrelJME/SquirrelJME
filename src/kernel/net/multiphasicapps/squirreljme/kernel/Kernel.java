@@ -78,8 +78,8 @@ public abstract class Kernel
 	/** The launcher process. */
 	protected final KernelProcess launcher;
 	
-	/** The structure manager for allocated structures. */
-	protected final RuntimeObjectManager structman;
+	/** Manages run-time objects. */
+	protected final RuntimeObjectManager rtobjman;
 	
 	/** The kernel controller interface. */
 	private final KernelController _controller;
@@ -131,7 +131,7 @@ public abstract class Kernel
 		
 		// Setup structured memory manager
 		RuntimeObjectManager sm = internalRuntimeObjectManager();
-		this.structman = sm;
+		this.rtobjman = sm;
 		
 		// {@squirreljme.error AY0l No structure manager was provided by the
 		// implementing kernel.}

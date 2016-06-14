@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.terp.rr;
 
-import net.multiphasicapps.squirreljme.sm.StructureManager;
+import net.multiphasicapps.squirreljme.rtobj.RuntimeObjectManager;
 import net.multiphasicapps.squirreljme.terp.InterpreterFactory;
 
 /**
@@ -26,7 +26,7 @@ public class RRInterpreterFactory
 	 * @since 2016/06/09
 	 */
 	@Override
-	public RRInterpreter createInterpreter(StructureManager __sm,
+	public RRInterpreter createInterpreter(RuntimeObjectManager __sm,
 		String... __args)
 	{
 		return new RRInterpreter(__sm, __args);

@@ -15,7 +15,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
-import net.multiphasicapps.squirreljme.sm.StructureManager;
+import net.multiphasicapps.squirreljme.rtobj.RuntimeObjectManager;
 import net.multiphasicapps.squirreljme.terp.Interpreter;
 import net.multiphasicapps.squirreljme.terp.InterpreterException;
 import net.multiphasicapps.squirreljme.terp.InterpreterProcess;
@@ -33,11 +33,11 @@ public class StandardInterpreter
 	/**
 	 * Initializes the interpreter which uses the direct byte code.
 	 *
-	 * @param __sm Pre-existing optional structure manager.
+	 * @param __sm Pre-existing optional runtime object manager.
 	 * @param __args Interpreter initialization arguments.
 	 * @since 2016/05/12
 	 */
-	public StandardInterpreter(StructureManager __sm, String... __args)
+	public StandardInterpreter(RuntimeObjectManager __sm, String... __args)
 	{
 		super(__sm, __args);
 	}

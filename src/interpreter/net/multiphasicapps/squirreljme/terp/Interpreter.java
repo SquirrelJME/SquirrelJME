@@ -47,11 +47,11 @@ public abstract class Interpreter
 	protected final List<String> initargs;
 	
 	/** The structure manager lock. */
-	private final Object _smlock =
+	private final Object _rtolock =
 		new Object();
 	
 	/** The structure manager for memory allocation. */
-	private volatile RuntimeObjectManager _sm;
+	private volatile RuntimeObjectManager _rto;
 	
 	/** The data type which is used for a pointer in the intepreter. */
 	private volatile MemoryPointerType _pointertype =
@@ -68,13 +68,13 @@ public abstract class Interpreter
 	/**
 	 * Initializes the base interpreter with the given arguments.
 	 *
-	 * @param __sm An optional structure manager which is used instead of
+	 * @param __rto An optional structure manager which is used instead of
 	 * the default. This may be used in the event that one that interacts with
 	 * an existing kernel object system rather than being independent.
 	 * @param __args Arguments to pass to the interpreter.
 	 * @since 2016/06/09
 	 */
-	public Interpreter(RuntimeObjectManager __sm, String... __args)
+	public Interpreter(RuntimeObjectManager __rto, String... __args)
 	{
 		// Defensive copy
 		if (__args == null)
@@ -83,7 +83,7 @@ public abstract class Interpreter
 			__args = __args.clone();
 		
 		// Set the optional structure manager
-		this._sm = __sm;
+		this._rto = __rto;
 		
 		// Argument initialization is a two stage process, the input arguments
 		// are passed to an early handler. The early handler can return a
@@ -268,10 +268,10 @@ public abstract class Interpreter
 	public final long getMemorySize()
 	{
 		// Lock
-		synchronized (this._smlock)
+		synchronized (this._rtolock)
 		{
 			// Get
-			RuntimeObjectManager rv = this._sm;
+			RuntimeObjectManager rv = this._rto;
 			
 			// Use the size provided by the structure manager?
 			if (rv != null)
@@ -373,6 +373,38 @@ public abstract class Interpreter
 	}
 	
 	/**
+	 * Obtains the manager which manages allocated memory and provides object
+	 * based interaction.
+	 *
+	 * @return The object manager.
+	 * @since 2016/06/08
+	 */
+	public final RuntimeObjectManager runtimeObjectManager()
+	{
+		// Lock
+		synchronized (this._rtolock)
+		{
+			// Get
+			RuntimeObjectManager rv = this._rto;
+			
+			// Create?
+			if (rv == null)
+			{
+				// Setup memory accessor that the structure manager uses
+				InterpreterMemoryAccessor ima = new InterpreterMemoryAccessor(
+					this._initmemsize, this._cachelinesize, this._pointertype);
+				
+				// Setup the structure manager
+				rv = new RuntimeObjectManager(ima);
+				this._rto = rv;
+			}
+			
+			// Return
+			return rv;
+		}
+	}
+	
+	/**
 	 * This sets the size of the cache line size which affects the minimum
 	 * alignment of objects and allocation fields. Note that to the interpreter
 	 * this setting has no true effect internally, however if the backing
@@ -394,11 +426,11 @@ public abstract class Interpreter
 			throw new IllegalArgumentException("AN0d");
 		
 		// Lock
-		synchronized (this._smlock)
+		synchronized (this._rtolock)
 		{
 			// {@squirreljme.error AN0c Cannot set the cache line size because
 			// memory has already been initialized.}
-			if (null != this._sm)
+			if (null != this._rto)
 				throw new IllegalStateException("AN0c");
 			
 			// Set it
@@ -427,11 +459,11 @@ public abstract class Interpreter
 			throw new IllegalArgumentException(String.format("AN05 %d", __sz));
 		
 		// Lock
-		synchronized (this._smlock)
+		synchronized (this._rtolock)
 		{
 			// {@squirreljme.error AN06 The memory pool was already created
 			// which means the size cannot be set.}
-			if (null != this._sm)
+			if (null != this._rto)
 				throw new IllegalStateException("AN06");
 			
 			// Set new size
@@ -457,48 +489,16 @@ public abstract class Interpreter
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		synchronized (this._smlock)
+		synchronized (this._rtolock)
 		{
 			// {@squirreljme.error AN09 Cannot set the specified pointer type
 			// because the object manager has already been initialized. (The
 			// pointer type)}
-			if (null != this._sm)
+			if (null != this._rto)
 				throw new IllegalStateException(String.format("AN09 %s",
 					__pt));
 			
 			this._pointertype = __pt;
-		}
-	}
-	
-	/**
-	 * Obtains the manager which manages allocated memory and provides object
-	 * based interaction.
-	 *
-	 * @return The object manager.
-	 * @since 2016/06/08
-	 */
-	public final RuntimeObjectManager RuntimeObjectManager()
-	{
-		// Lock
-		synchronized (this._smlock)
-		{
-			// Get
-			RuntimeObjectManager rv = this._sm;
-			
-			// Create?
-			if (rv == null)
-			{
-				// Setup memory accessor that the structure manager uses
-				InterpreterMemoryAccessor ima = new InterpreterMemoryAccessor(
-					this._initmemsize, this._cachelinesize, this._pointertype);
-				
-				// Setup the structure manager
-				rv = new RuntimeObjectManager(ima);
-				this._sm = rv;
-			}
-			
-			// Return
-			return rv;
 		}
 	}
 }
