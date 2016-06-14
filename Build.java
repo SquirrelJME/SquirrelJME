@@ -266,9 +266,11 @@ public class Build
 		if (__p == null)
 			throw new NullPointerException();
 		
-		// Build dependencies first!
+		// Build dependencies first! But ignore optional ones until after this
+		// is built
 		for (Project dep : __p.depends)
-			__build(dep);
+			if (!__p.optional.contains(dep))
+				__build(dep);
 		
 		// If the project is not out of date then do not build it
 		if (!__p.isOutOfDate())
@@ -1058,6 +1060,10 @@ public class Build
 			// Add dependencies
 			for (Project dep : depends)
 			{
+				// Ignore optionals
+				if (this.optional.contains(dep))
+					continue;
+				
 				// Add dependency JAR
 				__cp.add(dep.jarname.toFile());
 				
@@ -1147,6 +1153,10 @@ public class Build
 			// Otherwise look in depedencides
 			for (Project dep : depends)
 			{
+				// Ignore optionals
+				if (this.optional.contains(dep))
+					continue;
+				
 				// Does it have it?
 				main = dep.mainClass();
 				if (main != null)

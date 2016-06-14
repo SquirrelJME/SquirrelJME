@@ -4,6 +4,7 @@ X-SquirrelJME-UUID: 1f5dde20-1581-4679-9314-0938706a460b
 X-SquirrelJME-Depends: javame-cldc-compact, mmu
 X-SquirrelJME-Optional: simulator-os-linux
 X-SquirrelJME-Error: BV
+Main-Class: net.multiphasicapps.squirrelsim.Main
 LIBlet-Title: Simulator
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160607
