@@ -255,6 +255,9 @@ public class Build
 	/**
 	 * Builds the given project.
 	 *
+	 * This wraps the actual builder so that recursive optional dependencies
+	 * are correctly handled.
+	 *
 	 * @param __p The project to build.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/21
@@ -262,24 +265,57 @@ public class Build
 	private void __build(final Project __p)
 		throws NullPointerException
 	{
+		// Ignore if in the build state
+		if (__p.inbuild)
+			return;
+		
+		// Must clear the in build state on completion
+		__p.inbuild = true;
+		try
+		{
+			// Ignore optional dependencies
+			for (Project dep : __p.depends)
+				if (!__p.optional.contains(dep))
+					__buildActual(dep);
+			
+			// Build the actual given project
+			__build(__p);
+			
+			// Build optional dependencies now
+			for (Project dep : __p.depends)
+				if (__p.optional.contains(dep))
+					__buildActual(dep);
+		}
+		
+		// Done
+		finally
+		{
+			__p.inbuild = false;
+		}
+	}
+	
+	/**
+	 * Actually builds the given project.
+	 *
+	 * @param __p The project to build.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/14
+	 */
+	private void __buildActual(final Project __p)
+		throws NullPointerException
+	{
 		// Check
 		if (__p == null)
 			throw new NullPointerException();
 		
-		// Enter the build state
-		__p.inbuild = true;
-		
-		// Build dependencies first! However due to the potential of recursive
-		// optional dependencies, do not recurse if the dependency is in the
-		// build state
+		// Build dependencies
 		for (Project dep : __p.depends)
-			if (!dep.inbuild)
-				__build(dep);
+			__build(dep);
 		
 		// If the project is not out of date then do not build it
 		if (!__p.isOutOfDate())
 			return;
-			
+		
 		// Use the system's Java compiler
 		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
 		if (javac == null)
