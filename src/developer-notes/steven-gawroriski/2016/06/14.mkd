@@ -1,2 +1,18 @@
 # 2016/06/14
 
+## 08:34
+
+I would suppose that processes should have their own unique structure manager
+which is derived from the top level structure manager provided by the kernel or
+interpreter. This way it is easier to tell which objects belong to a given
+process along with having each process have their own set of objects which can
+completley cleared when a process exits. The kernel itself can just use the
+host object manager for the most part.
+
+## 08:39
+
+However when it comes to objects and the kernel itself, there can be a kind of
+circularity so to speak. The field positions within objects are needed by the
+dynamic compiler and the static compiler to know where fields and methods
+are in relation to an object or class.
+
