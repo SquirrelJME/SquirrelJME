@@ -184,6 +184,58 @@ public interface MemoryAccessor
 	 */
 	public abstract short readShort(long __addr)
 		throws MemoryReadException;
+	/**
+	 * Allocates the given number of bytes and returns the address of the
+	 * allocation.
+	 *
+	 * @param __mp The placement strategy of the memory region, if {@code null}
+	 * then the allocator may choose any desirable amount.
+	 * @param __bytes The minimum number of bytes to allocate a region of
+	 * memory for.
+	 * @return The address to the allocated region of memory.
+	 * @throws IllegalArgumentException If the number of bytes to allocate is
+	 * zero or negative.
+	 * @throws MemoryAllocatException If the memory could not be allocated.
+	 * @since 2016/06/12
+	 */
+	public abstract long regionClaim(MemoryPlacementType __mp, long __bytes)
+		throws IllegalArgumentException, MemoryAllocateException;
+	
+	/**
+	 * Frees a given memory region that was previously allocated.
+	 *
+	 * @param __addr The address of the previously allocated region.
+	 * @throws MemoryAllocateException If the specified address could not be
+	 * freed such as if the specified address was never returned by a previous
+	 * allocation.
+	 * @since 2016/06/12
+	 */
+	public abstract void regionFree(long __addr)
+		throws MemoryAllocateException;
+	
+	/**
+	 * This changes the size of an allocated region. If the resize operation
+	 * cannot be performed (not enough memory supported, or it is not
+	 * supported by an underlying allocator), then it must handle resize by
+	 * allocating a new region, copying the old data, then free the old
+	 * region.
+	 *
+	 * This does not relocate the allocated data, this only shrinks or
+	 * potentially grows an allocated block of memory. If a growing resize
+	 * operation fails then the methods using the allocator should either fail
+	 * or instead reallocate a new region of memory and copy the data.
+	 *
+	 * @param __addr The previously allocated pointer to resize.
+	 * @param __bytes The number of bytes the region should be.
+	 * @throws IllegalArgumentException If the specified number of bytes is
+	 * zero or negative.
+	 * @throws MemoryAllocateException If the specified address was not
+	 * previously returned by this allocator or if the region could not be
+	 * increased or decreased in size.
+	 * @since 2016/06/12
+	 */
+	public abstract void regionResize(long __addr, long __bytes)
+		throws IllegalArgumentException, MemoryAllocateException;
 	
 	/**
 	 * Returns the region type that this accessor provides access to based on
