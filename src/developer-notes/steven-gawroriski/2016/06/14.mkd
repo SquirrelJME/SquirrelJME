@@ -104,4 +104,17 @@ will be combined into a single `ClassUnit` which returns them depending on the
 requested class. Then when it comes to the alignment information, the same
 thing will be done. These virtual classes would contain said information.
 
+## 09:26
+
+So basically, having the interpreter (even if it rerecords) appears to be the
+incorrect route to take. The interpreter and its object space is completely
+incompatible with native object spaces and how it actually exists. So I suppose
+what I need instead is to write a simulator and then target that simulator with
+the native compiler. Then when it comes to interpretation, completely ignore
+the interpreter and drop it completely. Details of classes and such are already
+fully handled to my knowledge. However, since I am on Linux PowerPC, I should
+write a simulator which can run PowerPC Linux programs (such as say `nethack`)
+first because there are simple binaries that can be tested. Once simple
+programs are supported I can then go onto the native compiler, compile some
+classes, then run the code in the simulator.
 
