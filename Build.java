@@ -1127,9 +1127,11 @@ public class Build
 				long jartime = dateOf(jarname);
 				
 				// Check if a dependency is newer than this JAR
+				// But ignore optionals
 				for (Project dep : depends)
-					if (dateOf(dep.jarname) > jartime)
-						return true;
+					if (!this.optional.contains(dep))
+						if (dateOf(dep.jarname) > jartime)
+							return true;
 				
 				// Cached source code time?
 				long srct = _sourcedate;
