@@ -51,3 +51,15 @@ manager can have a slightly better accessor which can manage memory better
 anyway and the that can be used instead (ideally a new MemoryAccessor wrapper
 would be used with the given logic).
 
+## 20:39
+
+When it comes to the structure manager, I will need a representation for
+classes.
+
+## 20:40
+
+The structure manager is really a run-time assistance library for the most
+part. The kernel and the interpreter would use the same structure manager for
+the most part when it comes to objects. So I suppose it should be called as
+such. Runtime objects perhaps.
+
