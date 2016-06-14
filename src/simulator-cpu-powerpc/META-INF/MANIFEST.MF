@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: simulator-cpu-powerpc
+X-SquirrelJME-UUID: 505bca1b-7185-441f-893d-52b4f4c31cec
+X-SquirrelJME-Depends: simulator
+X-SquirrelJME-Error: CB
+LIBlet-Title: Simulator PowerPC CPU Support
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160614
+LIBlet-Description: This provides support for simulating 
+ the Power ISA instruction set which includes PowerPC and
+ POWER.

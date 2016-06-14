@@ -118,3 +118,10 @@ first because there are simple binaries that can be tested. Once simple
 programs are supported I can then go onto the native compiler, compile some
 classes, then run the code in the simulator.
 
+## 09:51
+
+Instead of a rerecording interpreter, the simulator can support that instead.
+One thing that is needed would be a binary format support library for ELF, a
+PowerPC execution engine, and a Linux system handler (handles system calls and
+file system details).
+
