@@ -67,21 +67,54 @@ public class Main
 				Path p = Paths.get(conf);
 				
 				// Try to use it
-				try (FileChannel fc = FileChannel.open(p,
-					StandardOpenOption.READ);
-					Reader r = new InputStreamReader(
-						Channels.newInputStream(fc)))
+				if (Files.exists(p))
+					try (FileChannel fc = FileChannel.open(p,
+						StandardOpenOption.READ);
+						InputStream is = Channels.newInputStream(fc);
+						Reader r = new InputStreamReader(is))
+					{
+						configs[i] = new SimulatorConfiguration(r);
+					
+						// Do not try a resource next
+						continue;
+					}
+			}
+			
+			// Treat as if it did not exist
+			catch (InvalidPathException e)
+			{
+			}
+			
+			// {@squirreljme.error BV03 Could not read the configuration file
+			// at the specified file system path. (The configuration path)}
+			catch (IOException e)
+			{
+				throw new IllegalArgumentException(String.format("BV03 %s",
+					conf), e);
+			}
+			
+			// Try from a JAR resource
+			try (InputStream is = Main.class.getResourceAsStream(conf))
+			{
+				// {@squirreljme.error BV04 No file or resource exists with
+				// the given name.}
+				if (is == null)
+					throw new IOException("BV04");
+				
+				// Treat as UTF-8
+				try (Reader r = new InputStreamReader(is, "utf-8"))
 				{
 					configs[i] = new SimulatorConfiguration(r);
 				}
 			}
 			
-			// Ignore
-			catch (InvalidPathException|IOException e)
+			// {@squirreljme.error BV02 Could not read configuration from the
+			// JAR resource. (The resource name)}
+			catch (IOException e)
 			{
+				throw new IllegalArgumentException(String.format("BV02 %s",
+					conf), e);
 			}
-			
-			throw new Error("TODO");
 		}
 		
 		throw new Error("TODO");
