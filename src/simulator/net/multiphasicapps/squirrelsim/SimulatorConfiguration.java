@@ -109,17 +109,97 @@ public class SimulatorConfiguration
 	 *
 	 * @param __k The key to use.
 	 * @param __v The value to use.
+	 * @throws IllegalArgumentException If the option is not known.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/14
 	 */
 	public void set(String __k, String __v)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__k == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Depends on the option
+		switch (__k)
+		{
+			// {@squirreljme.error BV06 Cannot set the given key and value
+			// because it is not known. (The key; The value)}
+			default:
+				throw new IllegalArgumentException(String.format("BV06 %s %s",
+					__k, __v));
+		}
+	}
+	
+	/**
+	 * Decode a string which has an si suffix.
+	 *
+	 * @param __s The string to decode.
+	 * @return The input value.
+	 * @throws IllegalArgumentException If the specified input is not a number.
+	 * @throws NullPointerException On null arguments.
+	 */
+	private static long __decodeSiLong(String __s)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Could be a bad number
+		try
+		{
+			// Multiplier
+			long mul = 1L;
+			
+			// Input fragment
+			String frag;
+			
+			// The length must be at least 2 for there to be a prefix
+			int n = __s.length();
+			if (n >= 2)
+			{
+				// Keep only the numerical part
+				frag = __s.substring(0, n - 1);
+				
+				// Depends on the suffix
+				char x;
+				switch ((x = __s.charAt(n - 1)))
+				{
+					case 'h': mul = 10L; break;
+					case 'k': mul = 1_000L; break;
+					case 'M': mul = 1_000_000L; break;
+					case 'G': mul = 1_000_000_000L; break;
+					case 'T': mul = 1_000_000_000_000L; break;
+					case 'P': mul = 1_000_000_000_000_000L; break;
+					case 'E': mul = 1_000_000_000_000_000_000L; break;
+					
+						// {@squirreljme.error BV08 Unknown integral SI suffix.
+						// (The suffix)}
+					default:
+						throw new IllegalArgumentException(
+							String.format("BV08 %c", x));
+				}
+			}
+			
+			// A plain number with no prefix
+			else
+			{
+				mul = 1L;
+				frag = __s;
+			}
+			
+			// Decode and multiply
+			return Long.decode(frag) * mul;
+		}
+		
+		// {@squirreljme.error BV07 The input value is not a number. (The
+		// input value)}
+		catch (NumberFormatException e)
+		{
+			throw new IllegalArgumentException(String.format("BV07 %s", __s),
+				e);
+		}
 	}
 }
 
