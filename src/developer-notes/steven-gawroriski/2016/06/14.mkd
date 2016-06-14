@@ -130,3 +130,13 @@ file system details).
 I need to handle a recursive optional dependency and make sure that is not
 included.
 
+## 10:58
+
+I would suppose that the root in the simulator could also be a ZIP file which
+can be used to access files. This way on systems where it is not possible to
+represent a given host filesystem, it can at least be placed in a ZIP. However
+a file would have to completely be read in due to compression and cannot
+quickly be memory mapped. So a very large file attempting to be memory mapped
+will cause the file to be recreated on the virtual system or using some other
+means.
+
