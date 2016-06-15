@@ -18,3 +18,8 @@ For a mutable variant I can just use a kind of builder.
 I need better names for the CPUs in the builder. I will go with the planned
 variants.
 
+## 08:39
+
+So when it comes to building, I need a JIT that could cache and provide native
+executable code fragments for classes and such.
+

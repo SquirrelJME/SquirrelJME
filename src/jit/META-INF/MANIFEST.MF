@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: jit
+X-SquirrelJME-UUID: 39deb90c-0593-4351-a1bb-c9d3f257bbd5
+X-SquirrelJME-Depends: 
+X-SquirrelJME-Error: CD
+LIBlet-Title: Just In Time Compiler
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160615
+LIBlet-Description: This contains the base for the Just In 
+ Time (JIT) compiler which translates Java byte code into 
+ native machine code for faster execution.
+
