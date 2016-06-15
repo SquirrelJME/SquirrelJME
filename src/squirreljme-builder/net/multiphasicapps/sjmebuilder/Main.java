@@ -31,24 +31,10 @@ public class Main
 	public static void main(String... __args)
 	{
 		// Must exist
-		if (__args == null || __args.length < 2)
-			throw new IllegalArgumentException(
-				"Usage: (Output Dir) (Source Dir) [Target OS] [Target CPU]");
+		if (__args == null)
+			__args = new String[0];
 		
-		// {@squirreljme.error CC01 No output directory specified.}
-		Path outdir = Paths.get(Objects.<String>requireNonNull(__args[0],
-			"CC01"));
-		
-		// {@squirreljme.error CC02 No source directory specified.}
-		Path srcdir = Paths.get(Objects.<String>requireNonNull(__args[1],
-			"CC02"));
-		
-		// Get target OS and CPU
-		String targos = __guessOS(__args);
-		String targcpu = __guessCPU(__args);
-		
-		// Setup builder and build
-		new SquirrelJMEBuilder(outdir, srcdir, targos, targcpu).build();
+		throw new Error("TODO");
 	}
 	
 	/**
