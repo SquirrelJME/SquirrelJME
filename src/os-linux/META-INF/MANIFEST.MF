@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: os-linux
+X-SquirrelJME-UUID: eaa29b95-cc96-4250-8815-a0ed65a838fe
+X-SquirrelJME-Depends: os
+X-SquirrelJME-Error: CG
+LIBlet-Title: Linux OS Support
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160615
+LIBlet-Description: This provides support for the Linux
+ operating system.
+
