@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: squirreljme-builder
 X-SquirrelJME-UUID: 3c06605e-a4ff-4172-9a38-b03b1c7cb88c
 X-SquirrelJME-Depends: javame-cldc-full, zip-compression,
- java-manifest, jit, class-interface-standard
+ java-manifest, jit, class-interface-standard,
+ extra-util-unmodifiable
 X-SquirrelJME-Optional: jit-powerpc,
  os-linux
 X-SquirrelJME-Error: CC
