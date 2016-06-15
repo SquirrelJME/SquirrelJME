@@ -45,5 +45,17 @@ public class Simulation
 		this.group = __grp;
 		this.config = __conf;
 	}
+	
+	/**
+	 * Runs a simulation cycle.
+	 *
+	 * @return If {@code true} the simulation still exists, otherwise if
+	 * {@code false} then the simulation has ended.
+	 * @since 2016/06/15
+	 */
+	public final boolean runCycle()
+	{
+		throw new Error("TODO");
+	}
 }
 

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirrelsim;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
@@ -24,7 +25,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 public class SimulationGroup
 {
 	/** The set of simulations which are available for running. */
-	protected final List<Simulation> simulations;
+	private final List<Simulation> _simulations;
 	
 	/**
 	 * Initializes the simulation group.
@@ -43,15 +44,42 @@ public class SimulationGroup
 		
 		// Load all simulations
 		int n = __confs.length;
-		Simulation[] sims = new Simulation[n];
+		List<Simulation> sims = new ArrayList<>(n);
 		for (int i = 0; i < n; i++)
-			sims[i] = new Simulation(this, __confs[i]);
+			sims.add(new Simulation(this, __confs[i]));
 		
 		// Lock in
-		this.simulations = UnmodifiableList.<Simulation>of(
-			Arrays.<Simulation>asList(sims));
-		
-		throw new Error("TODO");
+		this._simulations = sims;
+	}
+	
+	/**
+	 * Goes through all simulations and runs a single cycle.
+	 *
+	 * @return {@code true} if there are simulations still running.
+	 * @since 2016/06/15
+	 */
+	public final boolean runCycle()
+	{
+		// Infinite loop mostly
+		List<Simulation> sims = this._simulations;
+		synchronized (sims)
+		{
+			// Stop if no simulations remain
+			int n = sims.size();
+			if (n <= 0)
+				return false;
+			
+			// Go through all simulations
+			for (int i = 0; i < n; i++)
+				if (!sims.get(i).runCycle())
+				{
+					sims.remove(i--);
+					n -= 1;
+				}
+			
+			// Keep going
+			return true;
+		}
 	}
 }
 

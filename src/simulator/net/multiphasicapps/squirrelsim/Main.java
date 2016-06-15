@@ -121,7 +121,9 @@ public class Main
 		// initialize simulations with.
 		SimulationGroup sg = new SimulationGroup(configs);
 		
-		throw new Error("TODO");
+		// Run cycles until complete
+		while (sg.runCycle())
+			;
 	}
 }
 
