@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.sjmebuilder;
 
+import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +31,9 @@ public class SquirrelJMEBuilder
 	
 	/** The directory which contains source code. */
 	protected final Path srcdir;
+	
+	/** The packages which are available. */
+	protected final PackageList packagelist;
 	
 	/**
 	 * Initializes the builder.
@@ -65,14 +69,30 @@ public class SquirrelJMEBuilder
 		}
 		
 		// {@squirreljme.cmdline jar.path=(path) The path which contains all
-		// of the prebuilt JAR files.}
-		this.jardir = Paths.get(Objects.toString(options.get("jar.path"),
-			System.getProperty("user.dir")));
+		// of the prebuilt JAR files. If not specified this defaults to the
+		// current directory.}
+		Path jd;
+		this.jardir = (jd = Paths.get(Objects.toString(options.get("jar.path"),
+			System.getProperty("user.dir"))));
 		
 		// {@squirreljme.cmdline source.path=(path) The path where SquirrelJME
-		// projects are placed for optional building.}
-		this.srcdir = Paths.get(Objects.toString(options.get("source.path"),
-			System.getProperty("user.dir")));
+		// projects are placed for optional building. If not specified this
+		// defaults to the current directory.}
+		Path sd;
+		this.srcdir = (sd = Paths.get(Objects.toString(options.get(
+			"source.path"), System.getProperty("user.dir"))));
+		
+		// Setup packages
+		try
+		{
+			this.packagelist = new PackageList(jd, sd);
+		}
+		
+		// {@squirreljme.error CC01 Could not build the package list.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("CC01", e);
+		}
 	}
 	
 	/**
