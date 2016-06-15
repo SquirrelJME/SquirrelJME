@@ -212,7 +212,7 @@ public class Build
 				terptarget++;
 			case "target":
 				// Build hairball
-				__build((pp = getProject("hairball")));
+				__build((pp = getProject("squirreljme-builder")));
 				
 				// Add output and source directories
 				__args.offerFirst(PROJECT_ROOT.resolve("src").toString());
@@ -279,7 +279,7 @@ public class Build
 					__buildActual(dep);
 			
 			// Build the actual given project
-			__build(__p);
+			__buildActual(__p);
 			
 			// Build optional dependencies now
 			for (Project dep : __p.depends)
