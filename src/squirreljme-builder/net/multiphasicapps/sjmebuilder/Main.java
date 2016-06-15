@@ -35,21 +35,20 @@ public class Main
 			throw new IllegalArgumentException(
 				"Usage: (Output Dir) (Source Dir) [Target OS] [Target CPU]");
 		
-		// Get locations
+		// {@squirreljme.error CC01 No output directory specified.}
 		Path outdir = Paths.get(Objects.<String>requireNonNull(__args[0],
-			"No output directory specified."));
+			"CC01"));
+		
+		// {@squirreljme.error CC02 No source directory specified.}
 		Path srcdir = Paths.get(Objects.<String>requireNonNull(__args[1],
-			"No source directory specified."));
+			"CC02"));
 		
 		// Get target OS and CPU
 		String targos = __guessOS(__args);
 		String targcpu = __guessCPU(__args);
 		
-		// Inform the decision
-		System.out.printf("Target OS : %s%n", targos);
-		System.out.printf("Target CPU: %s%n", targcpu);
-		
-		throw new Error("TODO");
+		// Setup builder and build
+		new SquirrelJMEBuilder(outdir, srcdir, targos, targcpu).build();
 	}
 	
 	/**
@@ -162,7 +161,7 @@ public class Main
 				// m68k
 			case "68000":
 			case "68k":
-				return "m68k:";
+				return "m68k";
 			
 				// Use the input
 			default:
