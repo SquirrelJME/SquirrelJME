@@ -50,3 +50,9 @@ for a system and provide alternative control and featuresets.
 
 The manifest code needs a new exception.
 
+## 18:05
+
+The package code should be placed in another location for the most part. Then
+thinking about it, I can adjust the build system (`Build.java`) so that it
+uses the package code rather than duplicating it and such.
+
