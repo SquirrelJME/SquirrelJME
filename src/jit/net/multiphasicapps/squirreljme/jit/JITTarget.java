@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This is the place class for CPUs that the JIT may target.
+ * This is the base class for CPUs that the JIT may target.
+ *
+ * These are accessed via the service loader.
  *
  * @since 2016/06/15
  */

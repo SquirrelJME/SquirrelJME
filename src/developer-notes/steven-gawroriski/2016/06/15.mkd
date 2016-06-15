@@ -35,3 +35,8 @@ So is the JIT on a per class basis or a per method basis? Classes are together
 in a group, so it would likely be better optimized to compile classes all at
 the same time.
 
+## 09:55
+
+A configuration system for configuring builds would be the best rather than
+just a CPU and OS target.
+
