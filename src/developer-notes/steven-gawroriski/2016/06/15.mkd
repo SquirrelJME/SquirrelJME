@@ -1,0 +1,15 @@
+# 2016/06/15
+
+## 07:48
+
+The configuration would best be immutable for the most part. This way it could
+more easily be used when threads and such need to be created.
+
+## 07:50
+
+However, perhaps just an immutable class that can be initialized.
+
+## 07:55
+
+For a mutable variant I can just use a kind of builder.
+

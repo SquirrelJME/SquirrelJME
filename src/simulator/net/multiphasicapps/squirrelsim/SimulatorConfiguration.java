@@ -21,7 +21,7 @@ import java.util.ServiceLoader;
  *
  * @since 2016/06/14
  */
-public class SimulatorConfiguration
+public final class SimulatorConfiguration
 {
 	/** The default system hostname. */
 	public static final String DEFAULT_HOSTNAME =
@@ -145,7 +145,7 @@ public class SimulatorConfiguration
 				throw new IOException(String.format("BV05 %s", ln));
 			
 			// Set key and value pair
-			set(ln.substring(0, eq).trim(), ln.substring(eq + 1).trim());
+			__set(ln.substring(0, eq).trim(), ln.substring(eq + 1).trim());
 		}
 	}
 	
@@ -158,7 +158,7 @@ public class SimulatorConfiguration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/14
 	 */
-	public void set(String __k, String __v)
+	private void __set(String __k, String __v)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -196,7 +196,7 @@ public class SimulatorConfiguration
 							"BV09 %s", __v));
 					
 					// Set
-					setCPU(cp, xvar);
+					__setCPU(cp, xvar);
 				}
 				break;
 				
@@ -223,23 +223,23 @@ public class SimulatorConfiguration
 							"BV0a %s", __v));
 					
 					// Set
-					setOS(op, xvar);
+					__setOS(op, xvar);
 				}
 				break;
 				
 				// The amount of memory which is available
 			case "system.memory":
-				setMemorySize(__decodeBytesLong(__v));
+				__setMemorySize(__decodeBytesLong(__v));
 				break;
 				
 				// The instructions per second for the given system
 			case "system.ips":
-				setIPS(__decodeSiLong(__v));
+				__setIPS(__decodeSiLong(__v));
 				break;
 				
 				// The hostname of the simulated system
 			case "system.hostname":
-				setHostName(__v);
+				__setHostName(__v);
 				break;
 			
 				// {@squirreljme.error BV06 Cannot set the given key and value
@@ -247,136 +247,6 @@ public class SimulatorConfiguration
 			default:
 				throw new IllegalArgumentException(String.format("BV06 %s %s",
 					__k, __v));
-		}
-	}
-	
-	/**
-	 * Sets the CPU which is to be simulated.
-	 *
-	 * @param __o The CPU to use.
-	 * @param __v The variant of the CPU.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/14
-	 */
-	public void setCPU(CPUProvider __o, String __v)
-		throws NullPointerException
-	{
-		// Check
-		if (__o == null || __v == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			this._cpu = __o;
-			this._cpuvar = __v;
-		}
-	}
-	
-	/**
-	 * Sets the hostname of the system being simulated.
-	 *
-	 * @param __v The simulated hostname.
-	 * @return The old hostname
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/14
-	 */
-	public String setHostName(String __v)
-		throws NullPointerException
-	{
-		// Check
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			String rv = this._hostname;
-			
-			this._hostname = __v;
-			
-			return rv;
-		}
-	}
-	
-	/**
-	 * This sets the logical number of instructions which execute within a
-	 * single second.
-	 *
-	 * @param __v The number of instructions that execute in a second.
-	 * @return The former instructions per second.
-	 * @throws IllegalArgumentException If the requested number of instructions
-	 * to execute in a single second is zero or negative.
-	 * @since 2016/06/14
-	 */
-	public long setIPS(long __v)
-		throws IllegalArgumentException
-	{
-		// {@squirreljme.error BV0f Cannot execute zero or negative number of
-		// instructions per second. (The requested number of instructions per
-		// second)}
-		if (__v <= 0)
-			throw new IllegalArgumentException(String.format("BV0f %d", __v));
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			long rv = this._ips;
-			
-			this._ips = __v;
-			
-			return rv;
-		}
-	}
-	
-	/**
-	 * Sets the number of bytes to use for programs which are running.
-	 *
-	 * @param __b The number of bytes to use per program.
-	 * @return The former memory size.
-	 * @throws IllegalArgumentException If the size of memory is zero or
-	 * negative.
-	 * @since 2016/06/14
-	 */
-	public long setMemorySize(long __b)
-		throws IllegalArgumentException
-	{
-		// {@squirreljme.error BV0e The size of memory cannot be zero or
-		// negative. (The requested size of memory)}
-		if (__b <= 0)
-			throw new IllegalArgumentException(String.format("BV0e %d", __b));
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			long rv = this._memory;
-			
-			this._memory = __b;
-			
-			return rv;
-		}
-	}
-	
-	/**
-	 * Sets the operating which is to be simulated.
-	 *
-	 * @param __o The operating system to use.
-	 * @param __v The variant of the operating system.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/14
-	 */
-	public void setOS(OSProvider __o, String __v)
-		throws NullPointerException
-	{
-		// Check
-		if (__o == null || __v == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			this._os = __o;
-			this._osvar = __v;
 		}
 	}
 	
@@ -554,6 +424,136 @@ public class SimulatorConfiguration
 		{
 			throw new IllegalArgumentException(String.format("BV07 %s", __s),
 				e);
+		}
+	}
+	
+	/**
+	 * Sets the CPU which is to be simulated.
+	 *
+	 * @param __o The CPU to use.
+	 * @param __v The variant of the CPU.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/14
+	 */
+	private void __setCPU(CPUProvider __o, String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._cpu = __o;
+			this._cpuvar = __v;
+		}
+	}
+	
+	/**
+	 * Sets the hostname of the system being simulated.
+	 *
+	 * @param __v The simulated hostname.
+	 * @return The old hostname
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/14
+	 */
+	private String __setHostName(String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			String rv = this._hostname;
+			
+			this._hostname = __v;
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * This sets the logical number of instructions which execute within a
+	 * single second.
+	 *
+	 * @param __v The number of instructions that execute in a second.
+	 * @return The former instructions per second.
+	 * @throws IllegalArgumentException If the requested number of instructions
+	 * to execute in a single second is zero or negative.
+	 * @since 2016/06/14
+	 */
+	private long __setIPS(long __v)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BV0f Cannot execute zero or negative number of
+		// instructions per second. (The requested number of instructions per
+		// second)}
+		if (__v <= 0)
+			throw new IllegalArgumentException(String.format("BV0f %d", __v));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			long rv = this._ips;
+			
+			this._ips = __v;
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Sets the number of bytes to use for programs which are running.
+	 *
+	 * @param __b The number of bytes to use per program.
+	 * @return The former memory size.
+	 * @throws IllegalArgumentException If the size of memory is zero or
+	 * negative.
+	 * @since 2016/06/14
+	 */
+	private long __setMemorySize(long __b)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BV0e The size of memory cannot be zero or
+		// negative. (The requested size of memory)}
+		if (__b <= 0)
+			throw new IllegalArgumentException(String.format("BV0e %d", __b));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			long rv = this._memory;
+			
+			this._memory = __b;
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Sets the operating which is to be simulated.
+	 *
+	 * @param __o The operating system to use.
+	 * @param __v The variant of the operating system.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/14
+	 */
+	private void __setOS(OSProvider __o, String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._os = __o;
+			this._osvar = __v;
 		}
 	}
 }

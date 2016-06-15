@@ -21,7 +21,10 @@ public class Simulation
 {
 	/** The group which owns this simulation. */
 	protected final SimulationGroup group;
-
+	
+	/** The simulator configuration */
+	protected final SimulatorConfiguration config;
+	
 	/**
 	 * This initializes a simulation which exists as part of a simulation
 	 * group and is initialized with the given configuration.
@@ -40,8 +43,7 @@ public class Simulation
 		
 		// Set
 		this.group = __grp;
-		
-		throw new Error("TODO");
+		this.config = __conf;
 	}
 }
 
