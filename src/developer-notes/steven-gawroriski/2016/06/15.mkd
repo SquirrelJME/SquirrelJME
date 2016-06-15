@@ -23,3 +23,9 @@ variants.
 So when it comes to building, I need a JIT that could cache and provide native
 executable code fragments for classes and such.
 
+## 08:43
+
+I believe the simulator with multiple simulations, groups, and otherwise would
+be a bit complex. I will just have a single simulation process that runs and
+executes until it completes.
+
