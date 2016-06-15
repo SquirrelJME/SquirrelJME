@@ -77,6 +77,13 @@ public class PackageInfo
 		
 		// Get main attributes
 		JavaManifestAttributes main = __man.getMainAttributes();
+		
+		// {@squirreljme.error CC04 The package manifest does not specify the
+		// package name, it is likely not a package. (The path to the package)}
+		String rname = main.get("X-SquirrelJME-Name");
+		if (rname == null)
+			throw new InvalidPackageException(String.format("CC04 %s", __p));
+		
 		throw new Error("TODO");
 	}
 	
