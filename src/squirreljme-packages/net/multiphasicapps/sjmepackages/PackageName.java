@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.sjmebuilder;
+package net.multiphasicapps.sjmepackages;
 
 /**
  * This class represents the name of a package, which is case insensitive.

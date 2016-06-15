@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.sjmebuilder;
+package net.multiphasicapps.sjmepackages;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;

@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import net.multiphasicapps.sjmepackages.PackageList;
 
 /**
  * This class performs the actual building of SquirrelJME depending on the
