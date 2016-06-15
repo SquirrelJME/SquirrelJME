@@ -13,6 +13,7 @@ package net.multiphasicapps.squirrelsim;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ServiceLoader;
 
 /**
  * This class contains a mutable configuration that the simulator will use
@@ -22,9 +23,29 @@ import java.io.Reader;
  */
 public class SimulatorConfiguration
 {
+	/** CPU providers which are available for usage. */
+	private static final ServiceLoader<CPUProvider> _CPU_SERVICES =
+		ServiceLoader.<CPUProvider>load(CPUProvider.class);
+	
+	/** OS providers which may be used. */
+	private static final ServiceLoader<OSProvider> _OS_SERVICES =
+		ServiceLoader.<OSProvider>load(OSProvider.class);
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** The current OS to use. */
+	private volatile OSProvider _os;
+	
+	/** The OS variant. */
+	private volatile String _osvar;
+	
+	/** The current architecture to use. */
+	private volatile CPUProvider _cpu;
+	
+	/** The CPU variant. */
+	private volatile String _cpuvar;
 	
 	/**
 	 * Initializes the simulator configuration which uses all defaults.
@@ -120,16 +141,75 @@ public class SimulatorConfiguration
 		if (__k == null || __v == null)
 			throw new NullPointerException("NARG");
 		
+		// Split provider and variant
+		int vcol = __v.indexOf(':');
+		String xpro = (vcol >= 0 ? __v.substring(0, vcol) : __v);
+		String xvar = (vcol >= 0 ? __v.substring(vcol + 1) : "");
+		
 		// Depends on the option
+		Object lock = this.lock;
 		switch (__k)
 		{
 				// The architecture to simulate
 			case "system.arch":
-				throw new Error("TODO");
+				{
+					// Find service
+					CPUProvider cp = null;
+					ServiceLoader<CPUProvider> cpusvl = _CPU_SERVICES;
+					synchronized (cpusvl)
+					{
+						for (CPUProvider x : cpusvl)
+							if (x.name().equals(xpro))
+							{
+								cp = x;
+								break;
+							}
+					}
+					
+					// {@squirreljme.error BV09 Unknown CPU. (The CPU name)}
+					if (cp == null)
+						throw new IllegalArgumentException(String.format(
+							"BV09 %s", __v));
+					
+					// Set
+					synchronized (lock)
+					{
+						this._cpu = cp;
+						this._cpuvar = xvar;
+					}
+				}
+				break;
 				
 				// The operating system to simulate
 			case "system.os":
-				throw new Error("TODO");
+				{
+					// Find service
+					OSProvider op = null;
+					ServiceLoader<OSProvider> ossvl = _OS_SERVICES;
+					synchronized (ossvl)
+					{
+						for (OSProvider x : ossvl)
+							if (x.name().equals(xpro))
+							{
+								op = x;
+								break;
+							}
+					}
+					
+					// {@squirreljme.error BV0a Unknown operating system.
+					// (The operating system name)}
+					if (op == null)
+						throw new IllegalArgumentException(String.format(
+							"BV0a %s", __v));
+					
+					// Set
+					synchronized (lock)
+					{
+						this._os = op;
+						this._osvar = xvar;
+					}
+				}
+				break;
 				
 				// The amount of memory which is available
 			case "system.memory":

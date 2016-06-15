@@ -18,5 +18,12 @@ package net.multiphasicapps.squirrelsim;
  */
 public interface BaseProvider
 {
+	/**
+	 * Returns the name of this provider.
+	 *
+	 * @return The provider name.
+	 * @since 2016/06/14
+	 */
+	public abstract String name();
 }
 
