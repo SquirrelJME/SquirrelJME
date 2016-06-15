@@ -29,3 +29,9 @@ I believe the simulator with multiple simulations, groups, and otherwise would
 be a bit complex. I will just have a single simulation process that runs and
 executes until it completes.
 
+## 08:45
+
+So is the JIT on a per class basis or a per method basis? Classes are together
+in a group, so it would likely be better optimized to compile classes all at
+the same time.
+
