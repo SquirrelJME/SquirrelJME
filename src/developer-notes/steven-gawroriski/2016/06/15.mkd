@@ -13,3 +13,8 @@ However, perhaps just an immutable class that can be initialized.
 
 For a mutable variant I can just use a kind of builder.
 
+## 08:22
+
+I need better names for the CPUs in the builder. I will go with the planned
+variants.
+

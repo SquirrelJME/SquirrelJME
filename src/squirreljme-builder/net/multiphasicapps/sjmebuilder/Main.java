@@ -122,28 +122,28 @@ public class Main
 			case "ppceb":
 			case "ppc32eb":
 			case "powerpc32":
-				return "powerpc32eb";
+				return "powerpc::32:big";
 				
 				// PowerPC 32-bit little endian
 			case "ppcel":
 			case "ppc32el":
-				return "powerpc32el";
+				return "powerpc::32:little";
 				
 				// PowerPC 64-bit Big Endian
 			case "ppc64":
 			case "ppc64eb":
 			case "powerpc64":
-				return "powerpc64eb";
+				return "powerpc::64:big";
 				
 				// PowerPC 64-bit little endian
 			case "ppc64el":
-				return "powerpc64el";
+				return "powerpc::64:little";
 			
 				// ia16
 			case "i286":
 			case "x86_16":
 			case "x86-16":
-				return "ia16";
+				return "x86::16";
 			
 				// ia32
 			case "i386":
@@ -152,17 +152,17 @@ public class Main
 			case "i686":
 			case "x86_32":
 			case "x86-32":
-				return "ia32";
+				return "x86::32";
 			
 				// amd64
 			case "x86_64":
 			case "x86-64":
-				return "amd64";
+				return "x86::64";
 			
 				// m68k
 			case "68000":
 			case "68k":
-				return "m68k";
+				return "m68k:";
 			
 				// Use the input
 			default:
@@ -192,7 +192,7 @@ public class Main
 		
 		// Use a predefined default
 		if (guess == null || guess.isEmpty())
-			guess = "palmos";
+			guess = "palmos:5";
 		
 		// Force lowercase
 		guess = __asciiLowerCase(guess);
@@ -202,7 +202,7 @@ public class Main
 		{
 				// Palm OS
 			case "palm os":
-				return "palmos";
+				return "palmos:5";
 				
 				// 16-bit Windows
 			case "windows 3.1":
