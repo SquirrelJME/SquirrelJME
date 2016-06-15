@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import net.multiphasicapps.manifest.JavaManifest;
+import net.multiphasicapps.manifest.JavaManifestAttributes;
 import net.multiphasicapps.manifest.JavaManifestException;
 import net.multiphasicapps.zips.StandardZIPFile;
 
@@ -74,6 +75,8 @@ public class PackageInfo
 		this.iszip = __zz;
 		this.manifest = __man;
 		
+		// Get main attributes
+		JavaManifestAttributes main = __man.getMainAttributes();
 		throw new Error("TODO");
 	}
 	

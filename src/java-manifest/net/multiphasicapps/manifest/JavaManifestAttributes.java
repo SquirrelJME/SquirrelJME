@@ -55,6 +55,8 @@ public final class JavaManifestAttributes
 	@Override
 	public boolean containsKey(Object __o)
 	{
+		if (__o instanceof String)
+			return this.pairs.containsKey(new JavaManifestKey((String)__o));
 		return this.pairs.containsKey(__o);
 	}
 	
