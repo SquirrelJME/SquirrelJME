@@ -46,3 +46,7 @@ I would suppose that I have base OS support and then a front end that could
 work on the OS to provide an interface for the user. The front end could vary
 for a system and provide alternative control and featuresets.
 
+## 17:56
+
+The manifest code needs a new exception.
+

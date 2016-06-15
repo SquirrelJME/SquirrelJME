@@ -61,11 +61,12 @@ public final class JavaManifest
 	 *
 	 * @param __is The input stream for the manifest data.
 	 * @throws IOException On read errors.
+	 * @throws JavaManifestException If the manifest is malformed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/20
 	 */
 	public JavaManifest(InputStream __is)
-		throws IOException, NullPointerException
+		throws IOException, JavaManifestException, NullPointerException
 	{
 		this(new InputStreamReader(__is, "utf-8"));
 	}
@@ -75,11 +76,12 @@ public final class JavaManifest
 	 *
 	 * @param __r The characters which make up the manifest.
 	 * @throws IOException On read errors.
+	 * @throws JavaManifestException If the manifest is malformed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/20
 	 */
 	public JavaManifest(Reader __r)
-		throws IOException, NullPointerException
+		throws IOException, JavaManifestException, NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -185,8 +187,8 @@ public final class JavaManifest
 						// not a valid key character. (The character)}
 						if ((!js && !__isKeyChar(c)) ||
 							(js && !__isAlphaNum(c)))
-							throw new IOException(String.format("BB02 %c",
-								c));
+							throw new JavaManifestException(
+								String.format("BB02 %c", c));
 						
 						// Add to key
 						curkey.append(c);
@@ -207,7 +209,7 @@ public final class JavaManifest
 						// {@squirreljme.error BB03 Expected a space to follow
 						// the colon following the start of the key.}
 						if (stage == _STAGE_VALUE_START)
-							throw new IOException("BB03");
+							throw new JavaManifestException("BB03");
 						
 						// Otherwise start reading line data
 						else
@@ -238,14 +240,15 @@ public final class JavaManifest
 					// {@squirreljme.error BB01 Unknown manifest parse stage.
 					// (The stage identifier)}
 				default:
-					throw new IOException(String.format("BB01 %d", stage));
+					throw new JavaManifestException(
+						String.format("BB01 %d", stage));
 			}
 		}
 		
 		// {@squirreljme.error BB05 End of file reached while reading a
 		// partial key value.}
 		if (stage == _STAGE_KEY && curkey.length() != 0)
-			throw new IOException("BB05");
+			throw new JavaManifestException("BB05");
 		
 		// Key and value waiting to be added to the working map?
 		if (curkey.length() != 0)

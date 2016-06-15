@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import net.multiphasicapps.manifest.JavaManifest;
+import net.multiphasicapps.manifest.JavaManifestException;
 import net.multiphasicapps.zips.StandardZIPFile;
 
 /**
@@ -115,6 +116,12 @@ public class PackageInfo
 		try (InputStream is = ent.open())
 		{
 			return new JavaManifest(is);
+		}
+		
+		// {@squirreljme.error CC03 The manifest is not correctly formed.}
+		catch (JavaManifestException e)
+		{
+			throw new InvalidPackageException("CC03", e);
 		}
 	}
 }
