@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: squirreljme-builder
 X-SquirrelJME-UUID: 3c06605e-a4ff-4172-9a38-b03b1c7cb88c
-X-SquirrelJME-Depends: javame-cldc-full, zip-compression
+X-SquirrelJME-Depends: javame-cldc-full, zip-compression,
+ java-manifest
 Main-Class: net.multiphasicapps.sjmebuilder.Main
 LIBlet-Title: SquirrelJME Builder
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160228
-LIBlet-Description: This is the build system which is used to
-  cross compile SquirrelJME to targets to be ran on.
+LIBlet-Description: This is the build system which is used to 
+ cross compile SquirrelJME to targets to be ran on.
 

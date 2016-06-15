@@ -49,21 +49,41 @@ public class Main
 		System.out.printf("Target OS : %s%n", targos);
 		System.out.printf("Target CPU: %s%n", targcpu);
 		
-		// Could fail
-		try
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Performs an ASCII lowercase on the given string.
+	 *
+	 * @param __in Input string to lowercase.
+	 * @return The lowercased string using only ASCII data.
+	 * @since 2016/02/28
+	 */
+	static final String __asciiLowerCase(String __in)
+		throws NullPointerException
+	{
+		// Check
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Output
+		StringBuilder sb = new StringBuilder();
+		
+		// Go through input string and lowercase
+		int n = __in.length();
+		for (int i = 0; i < n; i++)
 		{
-			// Build package list
-			PackageList pl = new PackageList(outdir, srcdir);
-			System.out.printf("%d packages are available.%n", pl.size());
+			char c = __in.charAt(i);
 			
-			throw new Error("TODO");
+			// Lower it
+			if (c >= 'A' && c <= 'Z')
+				c = (char)('a' + (c - 'A'));
+			
+			sb.append(c);
 		}
 		
-		// Could not read or compile package
-		catch (IOException ioe)
-		{
-			throw new RuntimeException(ioe);
-		}
+		// Build it
+		return sb.toString();
 	}
 	
 	/**
@@ -91,7 +111,7 @@ public class Main
 			guess = "m68k";
 		
 		// Force lowercase
-		guess = PackageInfo.__asciiLowerCase(guess);
+		guess = __asciiLowerCase(guess);
 		
 		// Depends on the input
 		switch (guess)
@@ -175,7 +195,7 @@ public class Main
 			guess = "palmos";
 		
 		// Force lowercase
-		guess = PackageInfo.__asciiLowerCase(guess);
+		guess = __asciiLowerCase(guess);
 		
 		// Depends on the input
 		switch (guess)
