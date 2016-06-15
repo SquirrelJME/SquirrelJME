@@ -10,7 +10,12 @@
 
 package net.multiphasicapps.sjmebuilder;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class performs the actual building of SquirrelJME depending on the
@@ -20,40 +25,54 @@ import java.nio.file.Path;
  */
 public class SquirrelJMEBuilder
 {
-	/** The output JAR directory (and where the SquirrelJME binary goes). */
-	protected final Path outdir;
+	/** The directory where JAR files are placed. */
+	protected final Path jardir;
 	
 	/** The directory which contains source code. */
 	protected final Path srcdir;
 	
-	/** The target operating system. */
-	protected final String targos;
-	
-	/** The target CPU. */
-	protected final String targcpu;
-	
 	/**
 	 * Initializes the builder.
 	 *
-	 * @param __jd The directory containing the output JAR files.
-	 * @param __sd The source code root.
-	 * @param __os The operating system to target.
-	 * @parma __cpu The CPU to target.
-	 * @throws NullPointerException On null arguments.
+	 * @param __args The arguments to use for the build.
+	 * @throws IllegalArgumentException If the input arguments are not valid.
 	 * @since 2016/06/15
 	 */
-	public SquirrelJMEBuilder(Path __jd, Path __sd, String __os, String __cpu)
-		throws NullPointerException
+	public SquirrelJMEBuilder(String... __args)
 	{
-		// Check
-		if (__jd == null || __sd == null || __os == null || __cpu == null)
-			throw new NullPointerException("NARG");
+		// Must exist
+		if (__args == null)
+			__args = new String[0];
 		
-		// Set
-		this.outdir = __jd;
-		this.srcdir = __sd;
-		this.targos = __os;
-		this.targcpu = __cpu;
+		// Extract options and their values
+		Map<String, String> options = new LinkedHashMap<>();
+		int n = __args.length;
+		for (int i = 0; i < n; i++)
+		{
+			// Get
+			String sw = __args[i];
+			
+			// Find equal sign
+			int eq = sw.indexOf('=');
+			
+			// No sign?
+			if (eq < 0)
+				options.put(sw, "");
+			
+			// There is one
+			else
+				options.put(sw.substring(0, eq), sw.substring(eq + 1));
+		}
+		
+		// {@squirreljme.cmdline jar.path=(path) The path which contains all
+		// of the prebuilt JAR files.}
+		this.jardir = Paths.get(Objects.toString(options.get("jar.path"),
+			System.getProperty("user.dir")));
+		
+		// {@squirreljme.cmdline source.path=(path) The path where SquirrelJME
+		// projects are placed for optional building.}
+		this.srcdir = Paths.get(Objects.toString(options.get("source.path"),
+			System.getProperty("user.dir")));
 	}
 	
 	/**

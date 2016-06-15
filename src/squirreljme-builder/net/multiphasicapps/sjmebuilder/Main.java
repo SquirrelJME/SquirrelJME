@@ -34,7 +34,7 @@ public class Main
 		if (__args == null)
 			__args = new String[0];
 		
-		throw new Error("TODO");
+		new SquirrelJMEBuilder(__args).build();
 	}
 	
 	/**

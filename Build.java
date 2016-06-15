@@ -215,8 +215,10 @@ public class Build
 				__build((pp = getProject("squirreljme-builder")));
 				
 				// Add output and source directories
-				__args.offerFirst("-S" + PROJECT_ROOT.resolve("src"));
-				__args.offerFirst("-J" + System.getProperty("user.dir"));
+				__args.offerFirst("source.path=" +
+					PROJECT_ROOT.resolve("src"));
+				__args.offerFirst("jar.path=" +
+					System.getProperty("user.dir"));
 				
 				// Launch it
 				__launch(terptarget, pp, __args);
