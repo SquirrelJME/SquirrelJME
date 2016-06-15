@@ -192,7 +192,7 @@ public class Main
 		
 		// Use a predefined default
 		if (guess == null || guess.isEmpty())
-			guess = "palmos:5";
+			guess = "palmos:garnet";
 		
 		// Force lowercase
 		guess = __asciiLowerCase(guess);
@@ -202,7 +202,7 @@ public class Main
 		{
 				// Palm OS
 			case "palm os":
-				return "palmos:5";
+				return "palmos:garnet";
 				
 				// 16-bit Windows
 			case "windows 3.1":
