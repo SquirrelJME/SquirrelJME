@@ -78,13 +78,14 @@ public class PackageInfo
 		// Get main attributes
 		JavaManifestAttributes main = __man.getMainAttributes();
 		
-		// {@squirreljme.error CC04 The package manifest does not specify the
+		// {@squirreljme.error CI04 The package manifest does not specify the
 		// package name, it is likely not a package. (The path to the package)}
 		String rname = main.get("X-SquirrelJME-Name");
 		if (rname == null)
-			throw new InvalidPackageException(String.format("CC04 %s", __p));
+			throw new InvalidPackageException(String.format("CI04 %s", __p));
 		
-		throw new Error("TODO");
+		// Set name
+		this.name = new PackageName(rname);
 	}
 	
 	/**
@@ -118,9 +119,9 @@ public class PackageInfo
 		// Find manifest file
 		StandardZIPFile.FileEntry ent = __zip.get("META-INF/MANIFEST.MF");
 		
-		// {@squirreljme.error CC02 No manifest exists in the JAR.}
+		// {@squirreljme.error CI02 No manifest exists in the JAR.}
 		if (ent == null)
-			throw new InvalidPackageException("CC02");
+			throw new InvalidPackageException("CI02");
 		
 		// Open input stream
 		try (InputStream is = ent.open())
@@ -128,10 +129,10 @@ public class PackageInfo
 			return new JavaManifest(is);
 		}
 		
-		// {@squirreljme.error CC03 The manifest is not correctly formed.}
+		// {@squirreljme.error CI03 The manifest is not correctly formed.}
 		catch (JavaManifestException e)
 		{
-			throw new InvalidPackageException("CC03", e);
+			throw new InvalidPackageException("CI03", e);
 		}
 	}
 }
