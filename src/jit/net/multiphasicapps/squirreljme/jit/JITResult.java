@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2016/06/15
  */
-public class JITResult
+public final class JITResult
 {
 }
 

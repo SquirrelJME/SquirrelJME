@@ -11,12 +11,11 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This class provides access to the JIT, it is given a class, a set of target
- * instructions and provides a result which contains native code.
+ * This is the place class for CPUs that the JIT may target.
  *
  * @since 2016/06/15
  */
-public final class JIT
+public abstract class JITTarget
 {
 }
 
