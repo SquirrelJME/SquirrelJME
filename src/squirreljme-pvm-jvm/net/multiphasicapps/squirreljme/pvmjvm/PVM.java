@@ -11,28 +11,13 @@
 package net.multiphasicapps.squirreljme.pvmjvm;
 
 /**
- * This represents a process from within the paravirtual machine.
+ * This is the primary paravirtual machine controller, it bridges with the
+ * host JVM's reflection libraries and other such things to provide the
+ * virtualized environment.
  *
  * @since 2016/06/16
  */
-public class PVMProcess
+public class PVM
 {
-	/**
-	 * Initializes the para-virtual machine process.
-	 *
-	 * @param __pvm The owning process.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/16
-	 */
-	public PVMProcess(PVM __pvm)
-		throws NullPointerException
-	{
-		// Check
-		if (__pvm == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.pvm = __pvm;
-	}
 }
 
