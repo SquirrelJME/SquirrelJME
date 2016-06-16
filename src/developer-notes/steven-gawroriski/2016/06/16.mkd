@@ -1,0 +1,7 @@
+# 2016/06/16
+
+## 11:06
+
+When it comes to `VMInterface`, there can be one that exists per process and
+they could communicate with each other as such.
+

@@ -187,6 +187,18 @@ public final class System
 		return __a.__identityHashCode();
 	}
 	
+	/**
+	 * Returns the number of nanoseconds which have passed from a previously
+	 * unspecified time. The returned value might not be accurate to the
+	 * nanosecond. This clock is monotonic and does not suffer from time
+	 * shifts caused by clock adjustments.
+	 *
+	 * The value returned here is specific to the current virtual machine and
+	 * cannot be used elsewhere.
+	 *
+	 * @return The number of nanoseconds which have passed.
+	 * @since 2016/06/16
+	 */
 	public static long nanoTime()
 	{
 		return VMInterface.INSTANCE.nanoTime();
