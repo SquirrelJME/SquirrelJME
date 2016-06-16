@@ -85,9 +85,13 @@ public final class Class<T>
 	
 	/**
 	 * Obtains a resource from the classpath which exists within a JAR file,
-	 * inside of a directory, or in a prepacked resource.
+	 * inside of a directory, or in a prepacked resource. If a resource needs
+	 * to be obtain from another class which exists in another JAR file then
+	 * this method must be called from a class in that JAR.
 	 *
 	 * Relative names are based on the method which called this method.
+	 * Instances of {@code /./} will be translated to {@code /} and
+	 * {@code /foo/../} will be translated to {@code /}.
 	 *
 	 * In the Java ME environment, one should not rely on getting resources
 	 * which are executable class files (files ending in .class). These class
@@ -141,6 +145,7 @@ public final class Class<T>
 			// So if a called was made from the package "foo.bar" and a
 			// resource called "orange/lime.lemon" was requested, the full path
 			// will be "/foo/bar/orange/lime.lemon".
+			// 
 			else
 				throw new Error("TODO");
 		}
