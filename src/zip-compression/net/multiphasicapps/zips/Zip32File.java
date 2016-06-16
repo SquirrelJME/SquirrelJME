@@ -36,8 +36,8 @@ import net.multiphasicapps.io.region.SizeLimitedInputStream;
  *
  * @since 2016/03/02
  */
-public class StandardZIP32File
-	extends StandardZIPFile
+public class Zip32File
+	extends ZipFile
 {
 	/** Maximum version. */
 	protected static final int MAX_CENTRAL_DIR_VERSION =
@@ -90,7 +90,7 @@ public class StandardZIP32File
 	 * @throws ZIPFormatException If this is not a valid ZIP file.
 	 * @since 2016/03/02
 	 */
-	public StandardZIP32File(SeekableByteChannel __sbc)
+	public Zip32File(SeekableByteChannel __sbc)
 		throws IOException, ZIPFormatException
 	{
 		super(__sbc);

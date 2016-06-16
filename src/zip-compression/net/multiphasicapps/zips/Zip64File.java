@@ -20,8 +20,8 @@ import java.nio.channels.SeekableByteChannel;
  *
  * @since 2016/03/02
  */
-public class StandardZIP64File
-	extends StandardZIPFile
+public class Zip64File
+	extends ZipFile
 {
 	/**
 	 * Initializes a 64-bit ZIP file.
@@ -31,7 +31,7 @@ public class StandardZIP64File
 	 * @throws ZIPFormatException If this is not a valid ZIP file.
 	 * @since 2016/03/02
 	 */
-	public StandardZIP64File(SeekableByteChannel __sbc)
+	public Zip64File(SeekableByteChannel __sbc)
 		throws IOException, ZIPFormatException
 	{
 		super(__sbc);

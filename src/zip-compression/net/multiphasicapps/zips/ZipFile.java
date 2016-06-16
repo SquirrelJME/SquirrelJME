@@ -37,8 +37,8 @@ import java.util.Set;
  *
  * @since 2016/02/26
  */
-public abstract class StandardZIPFile
-	implements Iterable<StandardZIPFile.FileEntry>
+public abstract class ZipFile
+	implements Iterable<ZipFile.FileEntry>
 {
 	/** Internal lock. */
 	protected final Object lock =
@@ -67,7 +67,7 @@ public abstract class StandardZIPFile
 	 * @throws ZIPFormatException If this is not a valid ZIP file.
 	 * @since 2016/02/26
 	 */
-	public StandardZIPFile(SeekableByteChannel __sbc)
+	public ZipFile(SeekableByteChannel __sbc)
 		throws IOException, NullPointerException, ZIPFormatException
 	{
 		// Check
@@ -532,7 +532,7 @@ public abstract class StandardZIPFile
 	 * @throws ZIPFormatException If the ZIP was not valid.
 	 * @since 2016/03/02
 	 */
-	public static StandardZIPFile open(SeekableByteChannel __sbc)
+	public static ZipFile open(SeekableByteChannel __sbc)
 		throws IOException, NullPointerException, ZIPFormatException
 	{
 		// Check
@@ -542,7 +542,7 @@ public abstract class StandardZIPFile
 		// Try opening as a 64-bit ZIP
 		try
 		{
-			return new StandardZIP64File(__sbc);
+			return new Zip64File(__sbc);
 		}
 		
 		// Not a ZIP64
@@ -551,7 +551,7 @@ public abstract class StandardZIPFile
 			// Try treating it as a 32-bit ZIP
 			try
 			{
-				return new StandardZIP32File(__sbc);
+				return new Zip32File(__sbc);
 			}
 			
 			// Not a ZIP32 either
