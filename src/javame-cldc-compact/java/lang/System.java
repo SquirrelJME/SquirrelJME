@@ -194,7 +194,16 @@ public final class System
 	 * shifts caused by clock adjustments.
 	 *
 	 * The value returned here is specific to the current virtual machine and
-	 * cannot be used elsewhere.
+	 * cannot be used elsewhere. Even two virtual machines running on the
+	 * same system can use completely different values.
+	 *
+	 * After about 292 years (2 to the 63rd power nanoseconds) using signed
+	 * comparison to calculate the amount of time that has passed will no
+	 * longer function properly. For extremely long running processes it is
+	 * recommended to treat the values as unsigned to extend past this limit
+	 * or handle the overflow of the time value to represent any time
+	 * quantity, this of course requires that time be checked every 292 or
+	 * 584 years).
 	 *
 	 * @return The number of nanoseconds which have passed.
 	 * @since 2016/06/16
