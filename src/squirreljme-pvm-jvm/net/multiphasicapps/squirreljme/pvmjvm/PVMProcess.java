@@ -17,6 +17,9 @@ package net.multiphasicapps.squirreljme.pvmjvm;
  */
 public class PVMProcess
 {
+	/** The owning paravirtual machine. */
+	protected final PVM pvm;
+	
 	/**
 	 * Initializes the para-virtual machine process.
 	 *

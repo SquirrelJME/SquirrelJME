@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -32,9 +33,18 @@ public class Main
 		if (__args == null)
 			__args = new String[0];
 		
-		// Initialize the virtual machine
+		// Some messages
+		PrintStream out = System.out;
+		out.println("SquirrelJME Paravirtual Machine");
+		out.println(" Copyright (C) 2013-2016 Steven Gawroriski " +
+			"<steven@multiphasicapps.net>");
+		out.println(" Copyright (C) 2013-2016 Multi-Phasic Applications " +
+			"<multiphasicapps.net>");
+		out.println("SquirrelJME is under the GNU AGPLv3 or later.");
+		out.println();
 		
-		throw new Error("TODO");
+		// Initialize the virtual machine
+		PVM pvm = new PVM(Paths.get(System.getProperty("user.dir")));
 	}
 }
 

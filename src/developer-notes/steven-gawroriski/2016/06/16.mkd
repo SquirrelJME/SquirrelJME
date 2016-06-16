@@ -124,3 +124,8 @@ worry about having the native interfaces intermingled. It would duplicate the
 native port however, although by that time it would give me enough information
 to reliably create a good interface for natively compiled systems.
 
+## 18:26
+
+I saw something in the SWM interfaces about daemon applications. That could
+be useful in a way.
+
