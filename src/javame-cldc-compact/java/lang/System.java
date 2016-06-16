@@ -13,6 +13,7 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
+import net.multiphasicapps.squirreljme.unsafe.VMInterface;
 
 public final class System
 {
@@ -38,7 +39,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		throw new Error("TODO");
+		return VMInterface.INSTANCE.utcMillis();
 	}
 	
 	public static void exit(int __a)
@@ -188,7 +189,7 @@ public final class System
 	
 	public static long nanoTime()
 	{
-		throw new Error("TODO");
+		return VMInterface.INSTANCE.nanoTime();
 	}
 	
 	/**
