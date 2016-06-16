@@ -13,7 +13,7 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
-import net.multiphasicapps.squirreljme.unsafe.VMInterface;
+import net.multiphasicapps.squirreljme.unsafe.VM;
 
 public final class System
 {
@@ -39,7 +39,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return VMInterface.INSTANCE.time.utcMillis();
+		return VM.INSTANCE.time.utcMillis();
 	}
 	
 	public static void exit(int __a)
@@ -181,15 +181,15 @@ public final class System
 				
 				// Device specific UUID
 			case "microedition.deviceid.uuid":
-				return VMInterface.INSTANCE.environment.deviceUUID();
+				return VM.INSTANCE.environment.deviceUUID();
 			
 				// The host name of this device.
 			case "microedition.hostname":
-				return VMInterface.INSTANCE.environment.osHostName();
+				return VM.INSTANCE.environment.osHostName();
 				
 				// The platform SquirrelJME is running on.
 			case "microedition.platform":
-				return VMInterface.INSTANCE.environment.osPlatform();
+				return VM.INSTANCE.environment.osPlatform();
 				
 				// Returns the version of SquirrelJME that this library
 				// pertains to
@@ -202,15 +202,15 @@ public final class System
 				
 				// The architecture this VM runs on
 			case "os.arch":
-				return VMInterface.INSTANCE.environment.osArch();
+				return VM.INSTANCE.environment.osArch();
 				
 				// The OS this VM runs on
 			case "os.name":
-				return VMInterface.INSTANCE.environment.osName();
+				return VM.INSTANCE.environment.osName();
 				
 				// The version of the OS
 			case "os.version":
-				return VMInterface.INSTANCE.environment.osVersion();
+				return VM.INSTANCE.environment.osVersion();
 			
 				// Unknown, use default handling
 			default:
@@ -283,7 +283,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return VMInterface.INSTANCE.time.nanoTime();
+		return VM.INSTANCE.time.nanoTime();
 	}
 	
 	/**

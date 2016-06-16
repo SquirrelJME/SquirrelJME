@@ -106,3 +106,11 @@ It will be called `VM` instead.
 
 I dislike large thunderstorms.
 
+## 17:47
+
+The power failed and it seems the battery attached to my UPS has not held a
+significant charge (it is 6 years old however). The battery generally should
+last about 10 years however, so hopefully it is not a lost cause. However with
+battery powered laptops, I am still able to program. Just program in silence
+for the most part.
+

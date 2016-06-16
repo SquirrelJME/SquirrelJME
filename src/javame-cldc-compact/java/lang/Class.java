@@ -11,7 +11,7 @@
 package java.lang;
 
 import java.io.InputStream;
-import net.multiphasicapps.squirreljme.unsafe.VMInterface;
+import net.multiphasicapps.squirreljme.unsafe.VM;
 
 public final class Class<T>
 {
@@ -147,15 +147,15 @@ public final class Class<T>
 		}
 		
 		// Locate the resource in the JAR that this class resides in
-		VMInterface vmi = VMInterface.INSTANCE;
-		String found = vmi.findResource(this, res);
+		VM vmi = VM.INSTANCE;
+		String found = vmi.jar.findResource(this, res);
 		
 		// Not found?
 		if (found == null)
 			return null;
 		
 		// Open it
-		return vmi.openResource(found);
+		return vmi.jar.openResource(found);
 	}
 	
 	/**

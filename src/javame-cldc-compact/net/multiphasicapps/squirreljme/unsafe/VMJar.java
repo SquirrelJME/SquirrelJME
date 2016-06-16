@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.unsafe;
 
-import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Virtual machine JAR control, provides access to resources and such.

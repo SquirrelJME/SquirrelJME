@@ -33,7 +33,7 @@ public abstract class VM
 	
 	/** The environment. */
 	public final VMEnvironment environment =
-		initailizeVMEnvironment();
+		initializeVMEnvironment();
 	
 	/** JAR controller. */
 	public final VMJar jar =
@@ -45,7 +45,7 @@ public abstract class VM
 	
 	/** Time based control. */
 	public final VMTime time =
-		initailizeVMTime();
+		initializeVMTime();
 	
 	/**
 	 * Initializes the virtual machine application interface.

@@ -12,7 +12,7 @@ package java.lang;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.unsafe.VMInterface;
+import net.multiphasicapps.squirreljme.unsafe.VM;
 
 /**
  * This wraps the standard default output stream.
@@ -29,7 +29,7 @@ final class __StandardOutput__
 	@Override
 	public void write(int __b)
 	{
-		VMInterface.INSTANCE.stdOut((byte)__b);
+		VM.INSTANCE.standardio.stdOut((byte)__b);
 	}
 }
 
