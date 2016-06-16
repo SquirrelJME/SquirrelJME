@@ -19,3 +19,9 @@ an original class. Then this way I can have a somewhat shared means of finding
 images to use. The base resource lookup class can even handle decoding the
 hexadecimal data and providing a binary stream.
 
+## 13:33
+
+Mascot images could actually be provided with the `ServiceLoader` so that a
+format as required can be specified and such. Then the instances of the service
+will be in the JAR so that `getResourceAsStream` would work there.
+
