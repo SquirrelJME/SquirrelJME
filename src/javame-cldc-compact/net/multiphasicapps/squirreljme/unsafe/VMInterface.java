@@ -11,16 +11,17 @@
 package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This contains the interface to the host operating system.
+ * This contains the interface to the host virtual machine which handles
+ * operating system specific details.
  *
  * Operating systems in general will implement this interface which would then
  * be used to provide the required native functionality.
  *
  * @since 2016/06/15
  */
-public abstract class OSInterface
+public abstract class VMInterface
 {
-	public static final OSInterface INSTANCE =
+	public static final VMInterface INSTANCE =
 		__getInstance();
 	
 	/**
@@ -30,7 +31,7 @@ public abstract class OSInterface
 	 * @return {@link #INSTANCE}.
 	 * @since 2016/06/15
 	 */
-	private static OSInterface __getInstance()
+	private static VMInterface __getInstance()
 	{
 		return INSTANCE;
 	}
