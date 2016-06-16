@@ -11,24 +11,12 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This class provides access to the JIT, it is given a class, a set of target
- * instructions and provides a result which contains native code.
- *
- * For code generation performed by the JIT, this class is basically a factory
- * class which initializes the {@link JITTask}s which produce
- * {@link JITResult}s.
+ * This represents a single task within the JIT which is used to recompile
+ * byte code for an input class.
  *
  * @since 2016/06/15
  */
-public final class JIT
+public class JITTask
 {
-	/**
-	 * Initializes the JIT with the given settings.
-	 *
-	 * @since 2016/06/15
-	 */
-	public JIT()
-	{
-	}
 }
 

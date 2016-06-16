@@ -112,3 +112,10 @@ availability class that the JIT uses and such.
 So the JIT needs a `JITCPUProvider` which provides support for generating code
 for a given CPU.
 
+## 20:47
+
+As for the internal `__squirreljme` magic, the kernel can translate magical
+calls while the JIT which would run on the target would not translate them (so
+that they throw exceptions). All programs would source their classes from the
+built-in class path anyway.
+
