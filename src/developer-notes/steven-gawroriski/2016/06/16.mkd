@@ -173,3 +173,9 @@ So I want to get this down to perhaps 2s to read all of the package lists. If
 it takes 7 seconds on this (decade old) system then it might take 30 seconds
 on an even weaker system.
 
+## 18:53
+
+I can also rename the classes, so instead of `StandardZIPFile`, it is just
+`ZipFile` instead. I can also move off the inner classes and place them
+outside of the interface also.
+
