@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: javame-meep-event
+X-SquirrelJME-UUID: a4f80eca-c186-420b-b160-e47e612695a1
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: DI
+LIBlet-Title: MEEP Event Management
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160616
+LIBlet-Description: This provides an interface which allows 
+ an application to receive events from the system along with
+ sending events to other running applications.
+

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: javame-meep-liblets
+X-SquirrelJME-UUID: aa14fb14-9806-40b6-9e27-6cc15cc2b457
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: DL
+LIBlet-Title: MEEP Application Suites and LIBlets
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160616
+LIBlet-Description: This provides support for application suites 
+ and LIBlets.
+

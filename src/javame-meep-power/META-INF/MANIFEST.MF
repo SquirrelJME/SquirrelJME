@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: javame-meep-power
+X-SquirrelJME-UUID: 0962c312-3747-4111-8cae-1f133045cec6
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: DJ
+LIBlet-Title: MEEP Power Management
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160616
+LIBlet-Description: This provides support for quering the 
+ current electrical state of the device along with the 
+ setting of potential new power modes.
+

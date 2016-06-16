@@ -34,3 +34,15 @@ resorting.
 
 I kind of just want to work on MEEP for a bit.
 
+## 15:17
+
+Then I can have some kind of interaction and I can take a break with
+Squirrel Quarrel when desired.
+
+## 15:27
+
+Actually going into this, the application management services does exactly
+what the launcher would need to do for the most part. So this means that my
+previous launcher idea was a bit flawed anyway. So for the most part with these
+interfaces, I will have to integrate them as such.
+

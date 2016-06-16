@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: javame-meep-rms
+X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: DC
+LIBlet-Title: MEEP Record Management System
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160616
+LIBlet-Description: This contains the implementation of the 
+ record management system which is used to manage records which
+ may be used instead of the filesystem (if a filesystem is not
+ supported).
+

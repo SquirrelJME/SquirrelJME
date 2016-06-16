@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: javame-meep-key
+X-SquirrelJME-UUID: 90e52d37-a976-4f38-a194-9c65d34b6615
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: DB
+LIBlet-Title: MEEP Key Events
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160616
+LIBlet-Description: This contains classes for handling key 
+ and other user input events.
+
