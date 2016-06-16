@@ -31,9 +31,17 @@ public abstract class VM
 	public final VMApplication application =
 		initializeVMApplication();
 	
+	/** The environment. */
+	public final VMEnvironment environment =
+		initailizeVMEnvironment();
+	
 	/** JAR controller. */
 	public final VMJar jar =
 		initializeVMJar();
+	
+	/** The standard I/O interfaces. */
+	public final VMStandardIO standardio =
+		initializeVMStandardIO();
 	
 	/** Time based control. */
 	public final VMTime time =
@@ -48,6 +56,14 @@ public abstract class VM
 	protected abstract VMApplication initializeVMApplication();
 	
 	/**
+	 * Initializes the virtual machine environment.
+	 *
+	 * @return The virtual machine environment.
+	 * @since 2016/06/16
+	 */
+	protected abstract VMEnvironment initializeVMEnvironment();
+	
+	/**
 	 * Initializes the JAR controlling interfaces.
 	 *
 	 * @return The JAR controller interface.
@@ -56,96 +72,20 @@ public abstract class VM
 	protected abstract VMJar initializeVMJar();
 	
 	/**
+	 * Initializes the standard I/O interfaces.
+	 *
+	 * @return The standard I/O interface.
+	 * @since 2016/06/16
+	 */
+	protected abstract VMStandardIO initializeVMStandardIO();
+	
+	/**
 	 * Initializes the virtual machine timing interface.
 	 *
 	 * @return The virtual machine time interface.
 	 * @since 2016/06/16
 	 */
 	protected abstract VMTime initializeVMTime();
-	
-	
-	
-	/**
-	 * Returns the unique identifier which identifies this device.
-	 *
-	 * @return The device unique identifier.
-	 * @since 2016/06/16
-	 */
-	public abstract String deviceUUID();
-	
-	/**
-	 * Returns the architecture that this virtual machine is running on.
-	 *
-	 * @return The architecture name.
-	 * @since 2016/06/16
-	 */
-	public abstract String osArch();
-	
-	/**
-	 * Returns the name of the operating system that this virtual machine is
-	 * running on.
-	 *
-	 * @return The operating system name.
-	 * @since 2016/06/16
-	 */
-	public abstract String osName();
-	
-	/**
-	 * Returns the name of the device that SquirrelJME is running on, this may
-	 * be the name of the operating system or the name of the actual hardware
-	 * running underneath.
-	 *
-	 * The format for the returned value is:
-	 * {@code (Manufacturer)(DeviceModelNumber)[/version[/comments]]}.
-	 *
-	 * @return The platform SquirrelJME is running on.
-	 * @since 2016/06/15
-	 */
-	public abstract String osPlatform();
-	
-	/**
-	 * Returns the version of the operating system this is running on.
-	 *
-	 * @return The operating system version.
-	 * @since 2016/06/16
-	 */
-	public abstract String osVersion();
-	
-	/**
-	 * Returns the host name of this system as it appears on the network to
-	 * other systems.
-	 *
-	 * @return The host name of this system.
-	 * @since 2016/06/16
-	 */
-	public String osHostName()
-	{
-		return "localhost";
-	}
-	
-	/**
-	 * Writes a byte to standard error.
-	 *
-	 * @param __b The byte to write.
-	 * @since 2016/06/16
-	 */
-	public void stdErr(byte __b)
-	{
-		// The default implementation drops all characters output to the native
-		// console since it might not be supported
-	}
-	
-	/**
-	 * Writes a byte to standard output.
-	 *
-	 * @param __b The byte to write.
-	 * @since 2016/06/16
-	 */
-	public void stdOut(byte __b)
-	{
-		// The default implementation drops all characters output to the native
-		// console since it might not be supported
-	}
 	
 	/**
 	 * The OS interface is magically pre-initialized to a given value, so to
