@@ -62,5 +62,15 @@ Thinking about it, I suppose operating system support should be a part of the
 JIT. However generally not. The JIT will need to translate special method
 calls into some other form. Calling the special magical methods could just be
 transformed to a call to another class. However the ABI for the OS must be
-matched, otherwise using native debuggers would be much more difficult.
+matched, otherwise using native debuggers would be much more difficult. So in
+generally, I suppose a class which is needed would be a system description
+class. However it needs to be able to support multiple architectures and such
+also. However, when it comes to the classes it could be automatic somewhat.
+
+## 20:32
+
+One thing though is that I will need to support variants which could overload
+pre-existing definitions. Basically these would be front ends and backends.
+Perhaps multiple backends could be supported at once, but that would be
+complex.
 
