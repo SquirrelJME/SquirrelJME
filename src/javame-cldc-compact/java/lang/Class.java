@@ -11,12 +11,17 @@
 package java.lang;
 
 import java.io.InputStream;
+import net.multiphasicapps.squirreljme.unsafe.VMInterface;
 
 public final class Class<T>
 {
 	/** If this is an array then this will be the component type. */
 	private final Class<?> _componenttype =
 		__getComponentType();
+	
+	/** The binary name of this class. */
+	private final String _binaryname =
+		__getBinaryName();
 	
 	/**
 	 * This method may or may not be called internally by the virtual machine
@@ -117,46 +122,31 @@ public final class Class<T>
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// Get the real component type of this class
-		if (true)
+		// If this is an array then perform the resource lookup on the
+		// component type.
+		Class<?> comp = this._componenttype;
+		if (comp != null)
+			return comp.getResourceAsStream(__name);
+		
+		// A fully resolved full path?
+		String res;
+		if (__name.startsWith("/"))
+			res = __name.substring(1);
+		
+		// Relative name
+		else
 			throw new Error("TODO");
-		Class<?> real = null;/*Magic.componentType(this);*/
 		
-		// If not absolute, make it absolute
-		if (!__name.startsWith("/"))
-		{
-			// If this class represents a primitive type, then primitive types
-			// are considered to be in the default package. In this case, a
-			// slash is just prepended to it.
-			// This is from observed behavior from OpenJDK on the desktop,
-			// which is the reference implementation.
-			if (real == boolean.class ||
-				real == byte.class ||
-				real == short.class ||
-				real == char.class ||
-				real == int.class ||
-				real == long.class ||
-				real == float.class ||
-				real == double.class)
-				__name = '/' + __name;
-			
-			// Otherwise base the resource based on the class this code is
-			// being called from (the method directly above this one).
-			// So if a called was made from the package "foo.bar" and a
-			// resource called "orange/lime.lemon" was requested, the full path
-			// will be "/foo/bar/orange/lime.lemon".
-			// 
-			else
-				throw new Error("TODO");
-		}
+		// Locate the
+		VMInterface vmi = VMInterface.INSTANCE;
+		String found = vmi.findResource(this, res);
 		
-		// {@squirreljme.error ZZ0l A request for a resource was made which
-		// does not start with a leading slash. (The name of the requested
-		//resource)}
-		if (!__name.startsWith("/"))
-			throw new AssertionError(String.format("ZZ0l %s", __name));
+		// Not found?
+		if (found == null)
+			return null;
 		
-		throw new Error("TODO");
+		// Open it
+		return vmi.openResource(found);
 	}
 	
 	/**
@@ -228,6 +218,21 @@ public final class Class<T>
 			throw new NullPointerException();
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * This returns the field as it was initialized by the virtual machine.
+	 *
+	 * @return The binary name of this class.
+	 * @since 2016/06/16
+	 */
+	private final String __getBinaryName()
+	{
+		// {@squirreljme.error ZZ0q The binary name of the class was not set.}
+		String rv = this._binaryname;
+		if (rv == null)
+			throw new VirtualMachineError("ZZ0q");
+		return rv;
 	}
 	
 	/**

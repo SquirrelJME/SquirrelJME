@@ -200,7 +200,7 @@ public class Object
 		// type of an object.}
 		Class<?> rv = this._classobj;
 		if (rv == null)
-			throw new AssertionError("ZZ0m");
+			throw new VirtualMachineError("ZZ0m");
 		return rv;
 	}
 	
@@ -217,7 +217,7 @@ public class Object
 		// identity hash code of an object.}
 		short rv = this._idhashcode;
 		if (rv == 0)
-			throw new AssertionError("ZZ0n");
+			throw new VirtualMachineError("ZZ0n");
 		return rv;
 	}
 	
