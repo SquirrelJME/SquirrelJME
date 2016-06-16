@@ -104,17 +104,27 @@ public final class System
 	 * @param __k The system property value to obtain.
 	 * @return The value of the system property or {@code null} if it is not
 	 * does not exist.
+	 * @throws IllegalArgumentException If the key is empty.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SecurityException If the current process is not permitted to
 	 * access system properties or obtain the value of a specific property.
 	 * @since 2016/05/21
 	 */
 	public static String getProperty(String __k)
-		throws NullPointerException, SecurityException
+		throws IllegalArgumentException, NullPointerException,
+			SecurityException
 	{
 		// Check
 		if (__k == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ0p Cannot request a system property which has
+		// a blank key.}
+		if (__k.equals(""))
+			throw new IllegalArgumentException("ZZ0p");
+		
+		// Not allowed to do this?
+		getSecurityManager().checkPropertyAccess(__k);
 		
 		// Fixed values
 		switch (__k)
@@ -137,8 +147,16 @@ public final class System
 	}
 	
 	public static String getProperty(String __k, String __d)
+		throws IllegalArgumentException, NullPointerException,
+			SecurityException
 	{
-		throw new Error("TODO");
+		// Get it
+		String rv = getProperty(__k);
+		
+		// If not set, return the default, otherwise the read value
+		if (rv == null)
+			return __d;
+		return rv;
 	}
 	
 	public static SecurityManager getSecurityManager()
