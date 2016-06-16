@@ -8,28 +8,31 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.magic;
+package net.multiphasicapps.squirreljme.unsafe;
 
 /**
- * This is thrown when magic is called when it is forbidden to use it.
+ * This contains the interface to the host operating system.
  *
- * There is no {@code sun.misc.Unsafe} exploitation here.
+ * Operating systems in general will implement this interface which would then
+ * be used to provide the required native functionality.
  *
- * @since 2016/03/17
+ * @since 2016/06/15
  */
-@Deprecated
-public final class ForbiddenMagicError
-	extends Error
+public abstract class OSInterface
 {
+	public static final OSInterface INSTANCE =
+		__getInstance();
+	
 	/**
-	 * Initializes the exception with a hidden message.
+	 * The OS interface is magically pre-initialized to a given value, so to
+	 * make it Java compilation friendly the value of the field is returned.
 	 *
-	 * @since 2016/03/17
+	 * @return {@link #INSTANCE}.
+	 * @since 2016/06/15
 	 */
-	@Deprecated
-	ForbiddenMagicError()
+	private static OSInterface __getInstance()
 	{
-		super();
+		return INSTANCE;
 	}
 }
 

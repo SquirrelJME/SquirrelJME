@@ -8,11 +8,29 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.squirreljme.unsafe;
+
 /**
- * This package contains the bridge between Java code that runs and the kernel.
+ * This exception is thrown when the check to see if the code is currently
+ * executing in kernel space fails before a block of assembly code is
+ * executed.
+ *
+ * This error could potentially be handled in driver code in situations where
+ * if assembly code is not available it can fallback to another means of
+ * execution.
  *
  * @since 2016/05/27
  */
-
-package __squirreljme;
+public class PrivilegedAssemblyError
+	extends Error
+{
+	/**
+	 * Initializes the exception.
+	 *
+	 * @since 2016/05/27
+	 */
+	public PrivilegedAssemblyError()
+	{
+	}
+}
 

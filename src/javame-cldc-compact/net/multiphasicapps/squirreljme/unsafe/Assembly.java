@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package __squirreljme;
+package net.multiphasicapps.squirreljme.unsafe;
 
 /**
  * This class contains special static methods which are translated by the

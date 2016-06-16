@@ -143,3 +143,9 @@ target system's initialization will magically set the value of a static field
 so that the interface is initialized and useable. That way, any calls made into
 the singleton will instead go to the operating system specific support library.
 
+## 21:04
+
+The `__squirreljme` package is literally just `unsafe` stuff, so instead of the
+special package I could just place it in
+`net.multiphasicapps.squirreljme.unsafe`.
+

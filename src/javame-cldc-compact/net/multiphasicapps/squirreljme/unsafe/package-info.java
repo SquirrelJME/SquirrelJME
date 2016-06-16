@@ -9,16 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package provides internal virtual machine logic. When the compiler
- * detects that one of these methods are performed it replaces the method call
- * with special logic to perform the needed operation.
+ * This package contains the bridge between Java code that runs and the kernel.
  *
- * All of the classes here are specific to this virtual machine and are not
- * portable. Calling magical methods will always result in an exception.
- *
- * @since 2016/04/12
+ * @since 2016/05/27
  */
 
-@Deprecated
-package net.multiphasicapps.squirreljme.magic;
+package net.multiphasicapps.squirreljme.unsafe;
 
