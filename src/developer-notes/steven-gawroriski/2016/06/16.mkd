@@ -56,3 +56,12 @@ Due to the requirement of there needing separated execution states, input JARs
 would be read and their classes modified so that they are in their own unique
 per-process (classpath) package.
 
+## 16:00
+
+This could actually work, it would be a kind of Para-Virtual Java Virtual
+Machine which would run on Java SE systems. It could theoretically run on Java
+5 however the code uses try-with-resources so that would not work much. The
+PVM could implement SquirrelJME and I can work on it through that. Then once
+the class library is complete I can perform native ports. The ports would need
+minimal code to be implemented, so in theory I should never run into a TODO.
+
