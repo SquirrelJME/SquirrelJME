@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: squirreljme-mascot
 X-SquirrelJME-UUID: 4e961d3f-5a7a-40af-a947-81d108fdce05
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: javame-cldc-compact, extra-io-hex
 LIBlet-Title: SquirrelJME Mascot
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160507

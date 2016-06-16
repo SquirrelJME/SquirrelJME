@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the Windows icon.
+ * This contains the base classes which are used for the mascot.
  *
  * @since 2016/06/16
  */
 
-package net.multiphasicapps.squirreljme.mascot.ico;
+package net.multiphasicapps.squirreljme.mascot;
 
