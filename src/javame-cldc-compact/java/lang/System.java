@@ -39,7 +39,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return VMInterface.INSTANCE.utcMillis();
+		return VMInterface.INSTANCE.time.utcMillis();
 	}
 	
 	public static void exit(int __a)
@@ -181,15 +181,15 @@ public final class System
 				
 				// Device specific UUID
 			case "microedition.deviceid.uuid":
-				return VMInterface.INSTANCE.deviceUUID();
+				return VMInterface.INSTANCE.environment.deviceUUID();
 			
 				// The host name of this device.
 			case "microedition.hostname":
-				return VMInterface.INSTANCE.osHostName();
+				return VMInterface.INSTANCE.environment.osHostName();
 				
 				// The platform SquirrelJME is running on.
 			case "microedition.platform":
-				return VMInterface.INSTANCE.osPlatform();
+				return VMInterface.INSTANCE.environment.osPlatform();
 				
 				// Returns the version of SquirrelJME that this library
 				// pertains to
@@ -202,15 +202,15 @@ public final class System
 				
 				// The architecture this VM runs on
 			case "os.arch":
-				return VMInterface.INSTANCE.osArch();
+				return VMInterface.INSTANCE.environment.osArch();
 				
 				// The OS this VM runs on
 			case "os.name":
-				return VMInterface.INSTANCE.osName();
+				return VMInterface.INSTANCE.environment.osName();
 				
 				// The version of the OS
 			case "os.version":
-				return VMInterface.INSTANCE.osVersion();
+				return VMInterface.INSTANCE.environment.osVersion();
 			
 				// Unknown, use default handling
 			default:
@@ -283,7 +283,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return VMInterface.INSTANCE.nanoTime();
+		return VMInterface.INSTANCE.time.nanoTime();
 	}
 	
 	/**
