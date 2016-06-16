@@ -135,9 +135,18 @@ public final class Class<T>
 		
 		// Relative name
 		else
-			throw new Error("TODO");
+		{
+			// Need to build a new name due to . and .. components
+			StringBuilder sb = new StringBuilder();
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// Use it
+			res = sb.toString();
+		}
 		
-		// Locate the
+		// Locate the resource in the JAR that this class resides in
 		VMInterface vmi = VMInterface.INSTANCE;
 		String found = vmi.findResource(this, res);
 		
