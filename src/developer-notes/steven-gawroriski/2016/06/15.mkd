@@ -119,3 +119,19 @@ calls while the JIT which would run on the target would not translate them (so
 that they throw exceptions). All programs would source their classes from the
 built-in class path anyway.
 
+## 20:55
+
+I suppose there would be multiple support layers the build system would use to
+determine how to target a given system. `jit-powerpc` would be the basic
+PowerPC support while `jit-powerpc-linux` would be the variant that works on
+Linux. Then the `os-*` packages would just contain operating system support
+code such as file system accesses and system calls. There would also need to
+be architecture specific operating system information. So I would also need a
+`os-linux-powerpc`. So `jit-powerpc-linux` would help indicate code that is
+friendly to the Linux OS while `os-linux-powerpc` would contain the
+architecture specific Linux support code. I suppose when it comes to the
+run-time there is a base abstract class which is primitive OS handling and
+interfaces, abstract where appropriate. Although this would likely best be in
+`__squirreljme`. It could work at this position. I can use faked global init
+of sorts.
+
