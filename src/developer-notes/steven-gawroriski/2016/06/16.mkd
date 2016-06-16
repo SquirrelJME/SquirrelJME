@@ -114,3 +114,13 @@ last about 10 years however, so hopefully it is not a lost cause. However with
 battery powered laptops, I am still able to program. Just program in silence
 for the most part.
 
+## 18:19
+
+Alternatively I can design the system interfaces first and get away with what
+ever I want with the PVM. Then when it comes to native ports, I can determine
+the best way everything fits together, such as having the kernel previously.
+This way I can design it comfortably when it comes to the PVM and instead no
+worry about having the native interfaces intermingled. It would duplicate the
+native port however, although by that time it would give me enough information
+to reliably create a good interface for natively compiled systems.
+
