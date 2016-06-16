@@ -94,6 +94,16 @@ public class SquirrelJMEBuilder
 		{
 			throw new RuntimeException("CC01", e);
 		}
+		
+		// {@squirreljme.cmdline os.name=(name) The name of the operating
+		// system that SquirrelJME should be cross compiled for.}
+		// {@squirreljme.error CC02 Target operating system name has not been
+		// specified.}
+		String osname = options.get("os.name");
+		if (osname == null)
+			throw new IllegalArgumentException("CC02");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
