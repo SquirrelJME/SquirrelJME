@@ -56,3 +56,11 @@ The package code should be placed in another location for the most part. Then
 thinking about it, I can adjust the build system (`Build.java`) so that it
 uses the package code rather than duplicating it and such.
 
+## 20:27
+
+Thinking about it, I suppose operating system support should be a part of the
+JIT. However generally not. The JIT will need to translate special method
+calls into some other form. Calling the special magical methods could just be
+transformed to a call to another class. However the ABI for the OS must be
+matched, otherwise using native debuggers would be much more difficult.
+
