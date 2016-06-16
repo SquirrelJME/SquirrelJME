@@ -147,3 +147,29 @@ a single ZIP then they must fight for the buffered data.
 will have to be locked to prevent multiple threads from changing the position
 during a read.
 
+## 18:47
+
+If I do remove all the structure information and instead just use straight
+arrays and such, then reading should be a bit faster. What I could do in
+general is have it where pre-wrapped `ByteBuffer`s are available to be used
+and read depending on the size that they are. However previously I did not very
+large arrays and chunks to be allocated because they could be wasted. However
+using `Reference` and try-with-resources can give me a buffer of what I need.
+So it would essentially be a wrapped `ByteBuffer` in a way. Then hopefully ZIPs
+will be read a bit faster. If I also perform bulk reads instead of individual
+reads then there would be less locking being performed.
+
+## 18:50
+
+So the time it takes to run everything before:
+
+ * 7.6s
+ * 7.5s
+ * 7.7s
+ * 7.6s
+ * 7.6s
+
+So I want to get this down to perhaps 2s to read all of the package lists. If
+it takes 7 seconds on this (decade old) system then it might take 30 seconds
+on an even weaker system.
+
