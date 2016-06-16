@@ -25,6 +25,30 @@ public abstract class VMInterface
 		__getInstance();
 	
 	/**
+	 * Writes a byte to standard error.
+	 *
+	 * @param __b The byte to write.
+	 * @since 2016/06/16
+	 */
+	public void stdErr(byte __b)
+	{
+		// The default implementation drops all characters output to the native
+		// console since it might not be supported
+	}
+	
+	/**
+	 * Writes a byte to standard output.
+	 *
+	 * @param __b The byte to write.
+	 * @since 2016/06/16
+	 */
+	public void stdOut(byte __b)
+	{
+		// The default implementation drops all characters output to the native
+		// console since it might not be supported
+	}
+	
+	/**
 	 * The OS interface is magically pre-initialized to a given value, so to
 	 * make it Java compilation friendly the value of the field is returned.
 	 *

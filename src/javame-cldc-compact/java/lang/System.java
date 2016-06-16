@@ -13,17 +13,16 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
-import net.multiphasicapps.squirreljme.magic.Magic;
 
 public final class System
 {
 	/** Standard error stream (stderr). */
 	public static final PrintStream err =
-		new __CanSetPrintStream__(new PrintStream(Magic.stdErr()));
+		new __CanSetPrintStream__(new PrintStream(new __StandardError__()));
 	
 	/** Standard output stream (stdout). */
 	public static final PrintStream out =
-		new __CanSetPrintStream__(new PrintStream(Magic.stdOut()));
+		new __CanSetPrintStream__(new PrintStream(new __StandardOutput__()));
 	
 	private System()
 	{

@@ -11,10 +11,13 @@
 package java.lang;
 
 import java.io.InputStream;
-import net.multiphasicapps.squirreljme.magic.Magic;
 
 public final class Class<T>
 {
+	/** If this is an array then this will be the component type. */
+	private final Class<?> _componenttype =
+		__getComponentType();
+	
 	/**
 	 * This method may or may not be called internally by the virtual machine
 	 * when it initializes a new class object for a given class type.
@@ -111,7 +114,9 @@ public final class Class<T>
 			throw new NullPointerException("NARG");
 		
 		// Get the real component type of this class
-		Class<?> real = Magic.componentType(this);
+		if (true)
+			throw new Error("TODO");
+		Class<?> real = null;/*Magic.componentType(this);*/
 		
 		// If not absolute, make it absolute
 		if (!__name.startsWith("/"))
@@ -149,9 +154,15 @@ public final class Class<T>
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Returns {@code true} if this class represents an array type.
+	 *
+	 * @return {@code true} if this class represents an array type.
+	 * @since 2016/06/16
+	 */
 	public boolean isArray()
 	{
-		throw new Error("TODO");
+		return this._componenttype != null;
 	}
 	
 	public boolean isAssignableFrom(Class<?> __a)
@@ -208,6 +219,17 @@ public final class Class<T>
 			throw new NullPointerException();
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The component type field is initialized by the virtual machine.
+	 *
+	 * @return The component type, or {@code null} if not an array.
+	 * @since 2016/06/16
+	 */
+	private final Class<?> __getComponentType()
+	{
+		return this._componenttype;
 	}
 }
 

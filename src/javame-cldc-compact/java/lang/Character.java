@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.magic.Magic;
-
 public final class Character
 	implements Comparable<Character>
 {
@@ -31,7 +29,7 @@ public final class Character
 		16;
 	
 	public static final Class<Character> TYPE =
-		Magic.primitiveCharacterClass();
+		__getType();
 	
 	public Character(char __a)
 	{
@@ -124,6 +122,17 @@ public final class Character
 	public static Character valueOf(char __a)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 *
+	 * @return {@link #TYPE}.
+	 * @since 2016/06/16
+	 */
+	private static Class<Character> __getType()
+	{
+		return TYPE;
 	}
 }
 
