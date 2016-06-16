@@ -5,3 +5,9 @@
 When it comes to `VMInterface`, there can be one that exists per process and
 they could communicate with each other as such.
 
+## 11:57
+
+The `Class.getResourceAsStream()` operates on the JAR of the specified class.
+This means that I need a dummy class in classes where resources exist so
+that I can read the actual resources.
+
