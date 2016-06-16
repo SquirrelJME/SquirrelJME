@@ -21,10 +21,10 @@ import java.io.InputStream;
  *
  * @since 2016/06/15
  */
-public abstract class VMInterface
+public abstract class VM
 {
 	/** The single virtual machine instance. */
-	public static final VMInterface INSTANCE =
+	public static final VM INSTANCE =
 		__getInstance();
 	
 	/** Are fake milliseconds being used? */
@@ -209,7 +209,7 @@ public abstract class VMInterface
 	 * @return {@link #INSTANCE}.
 	 * @since 2016/06/15
 	 */
-	private static VMInterface __getInstance()
+	private static VM __getInstance()
 	{
 		return INSTANCE;
 	}
