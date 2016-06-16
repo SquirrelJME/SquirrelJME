@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.squirreljme.mascot.aa.low;
 
-import java.io.InputStream;
 import net.multiphasicapps.squirreljme.mascot.MascotResources;
 
 /**

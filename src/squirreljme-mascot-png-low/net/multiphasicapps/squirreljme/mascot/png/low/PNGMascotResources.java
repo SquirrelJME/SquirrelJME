@@ -8,37 +8,26 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.mascot.xpm.low;
+package net.multiphasicapps.squirreljme.mascot.png.low;
 
-import java.io.InputStream;
+import net.multiphasicapps.squirreljme.mascot.MascotResources;
 
 /**
- * This is used as a base class to provide access.
+ * Lookup for the PNG based low resolution mascot images.
  *
  * @since 2016/06/16
  */
-public final class XPMMascot
+public class PNGMascotResources
+	extends MascotResources
 {
 	/**
-	 * Not used.
+	 * Initializes the lookup.
 	 *
 	 * @since 2016/06/16
 	 */
-	private XPMMascot()
+	public PNGMascotResources()
 	{
-	}
-	
-	/**
-	 * Returns the input stream for the head icon of a given size.
-	 *
-	 * @param __w The width of the image.
-	 * @param __h The height of the image.
-	 * @return The resource as an input stream or {@code null} if not found.
-	 * @since 2016/06/16
-	 */
-	public static InputStream head(int __w, int __h)
-	{
-		return XPMMascot.class.getResourceAsStream("head_%dx%d.xpm", __w, __h);
+		super("png", true);
 	}
 }
 

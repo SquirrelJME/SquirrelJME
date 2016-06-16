@@ -8,16 +8,16 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.mascot.original;
+package net.multiphasicapps.squirreljme.mascot.xpm.low;
 
 import net.multiphasicapps.squirreljme.mascot.MascotResources;
 
 /**
- * This contains the lookup for the originally sized mascot.
+ * Lookup for the original low resolution mascot XPM images.
  *
  * @since 2016/06/16
  */
-public class OriginalMascotResources
+public class XPMMascotResources
 	extends MascotResources
 {
 	/**
@@ -25,8 +25,9 @@ public class OriginalMascotResources
 	 *
 	 * @since 2016/06/16
 	 */
-	public OriginalMascotResources()
+	public XPMMascotResources()
 	{
-		super("png", true);
+		super("xpm", true);
 	}
 }
+
