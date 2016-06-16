@@ -11,3 +11,11 @@ The `Class.getResourceAsStream()` operates on the JAR of the specified class.
 This means that I need a dummy class in classes where resources exist so
 that I can read the actual resources.
 
+## 12:23
+
+I should have a general mascot service of sorts. All the mascots will extend
+the base class however the original high resolution images would be placed in
+an original class. Then this way I can have a somewhat shared means of finding
+images to use. The base resource lookup class can even handle decoding the
+hexadecimal data and providing a binary stream.
+
