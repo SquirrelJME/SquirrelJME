@@ -72,5 +72,32 @@ also. However, when it comes to the classes it could be automatic somewhat.
 One thing though is that I will need to support variants which could overload
 pre-existing definitions. Basically these would be front ends and backends.
 Perhaps multiple backends could be supported at once, but that would be
-complex.
+complex. Thinking about new code layout, I may want to remove the following
+projects:
+
+ * `event-manager`: Could be replaced with something better and be implemented
+   when actual UI comes into play.
+ * `gc`, `gc-standard`: Rework these interfaces.
+ * `interpreter*`: Remove these and do not support interpretation at all,
+   interpretation is slow. However for a simulated build environment I could
+   instead use a JIT of perhaps say MIPS or MMIX and then run it in a simulator
+   to act as an interpreter. The hypothetical IDE I have had an idea of could
+   just compile to a specific machine and then run the produced binary in the
+   simulated environment. This could also be used to check for bugs also.
+ * `kernel-*`: The kernel is somewhat nice with processes and threads, although
+   there are some complex details. What is generally just needed when it comes
+   to the virtual machine is the launcher interface, but a kind of IPC between
+   running sub-VMs. Instead of system specific kernels, the support for a given
+   system can instead be provided by the `os-*` packages. Threads and
+   processes would just use differing object spaces within the same process
+   memory space.
+ * `mmu-*`: The `MemoryAccessor` interface is nice to have. One thing to
+   consider is that I could move it into `__squirreljme` and make it available
+   and dynamically translated by the JIT. If a constant pointer is read it can
+   potentially translate it directly. A requirement of `__squirreljme` would
+   be that all method calls would be rewritten into other locations. So when
+   it comes to the JIT and OS variants, there could be code that just overrides
+   which method gets executed.
+ * `runtime-objects`: This would be consolidated to a new object manager and GC
+   in one.
 
