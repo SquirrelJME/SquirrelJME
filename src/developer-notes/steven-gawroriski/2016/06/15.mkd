@@ -101,3 +101,9 @@ projects:
  * `runtime-objects`: This would be consolidated to a new object manager and GC
    in one.
 
+## 20:42
+
+So I suppose when it comes to the JIT, I just do a straight translation and in
+general just replace magical calls as required. I can have a common register
+availability class that the JIT uses and such.
+
