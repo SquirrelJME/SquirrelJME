@@ -29,3 +29,8 @@ will be in the JAR so that `getResourceAsStream` would work there.
 
 Never figured that I would have refactored the mascot projects other than
 resorting.
+
+## 15:10
+
+I kind of just want to work on MEEP for a bit.
+

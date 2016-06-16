@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: javame-meep-8
+X-SquirrelJME-UUID: 31661f3a-c2a4-46bb-aac7-06fbf7480cab
+X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Error: CK
+LIBlet-Title: JavaME 8 MEEP 8.0
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160616
+LIBlet-Description: This project contains the implementation 
+ of the MEEP 8 APIs. This includes means for generating sound
+ along with a console line based interface.
+
