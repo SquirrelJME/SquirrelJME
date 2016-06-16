@@ -133,3 +133,17 @@ be useful in a way.
 
 The loading of all the package information takes a bit on my system.
 
+## 18:40
+
+I can likely make the ZIP code faster by removing the structure bits. The
+structure is a nice and a bit faster way to read ZIP data. Also the singular
+read buffer could be replaced by a cached group of temporary buffers so that
+reading is a bit more efficient than usual. If multiple threads are reading
+a single ZIP then they must fight for the buffered data.
+
+## 18:43
+
+`FileChannel` supports reading from any position, while `SeekableByteChannel`
+will have to be locked to prevent multiple threads from changing the position
+during a read.
+

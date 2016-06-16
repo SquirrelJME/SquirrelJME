@@ -198,6 +198,7 @@ public interface ZIPStructureElement
 		 *
 		 * @param __bb The buffer to read bytes from.
 		 * @throws NullPointerException On null arguments.
+		 * @since 2016/03/08
 		 */
 		public abstract long read(ByteBuffer __bb)
 			throws NullPointerException;
