@@ -107,3 +107,8 @@ So I suppose when it comes to the JIT, I just do a straight translation and in
 general just replace magical calls as required. I can have a common register
 availability class that the JIT uses and such.
 
+## 20:45
+
+So the JIT needs a `JITCPUProvider` which provides support for generating code
+for a given CPU.
+
