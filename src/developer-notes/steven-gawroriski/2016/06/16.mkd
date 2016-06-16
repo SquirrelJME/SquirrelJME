@@ -90,3 +90,11 @@ This means that `javame-meep-swm` instead will need to wrap some kind of common
 interface which manages applications. These would definitely have to use the
 unsafe interfaces and classes.
 
+## 16:57
+
+Ok, so when it comes to applications and such, there will be a `VMInterface`
+which provides a list of all JAR files which are available. This would be using
+a system specific means of providing built-in and other such JARs. Another
+thing that I need to do is make it so the `VMInterface` is split and just does
+not have a few hundred methods of varying function.
+
