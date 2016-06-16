@@ -37,53 +37,56 @@ public class PackageList
 	/**
 	 * This initializes the package list.
 	 *
-	 * @param __j The directory containing pre-built JAR files.
-	 * @param __s The directory containing source packages.
+	 * @param __j The directory containing pre-built JAR files, if {@code null}
+	 * then binary packages are not available.
+	 * @param __s The directory containing source packages, if {@code null}
+	 * then source packages are not available.
 	 * @throws IOException If there is an error reading the package list.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException If both arguments are null
 	 * @since 2016/06/15
 	 */
 	public PackageList(Path __j, Path __s)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__j == null || __s == null)
+		if (__j == null && __s == null)
 			throw new NullPointerException("NARG");
 		
 		// The target map
 		Map<PackageName, PackageInfo> target = new HashMap<>();
 		
 		// Go through binary JAR files
-		try (DirectoryStream<Path> ds = Files.newDirectoryStream(__j))
-		{
-			// Go through all files
-			for (Path p : ds)
+		if (__j != null)
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(__j))
 			{
-				// Ignore directories
-				if (Files.isDirectory(p))
-					continue;
-				
-				// Open file
-				try (FileChannel fc = FileChannel.open(p,
-					StandardOpenOption.READ))
+				// Go through all files
+				for (Path p : ds)
 				{
-					// Open as ZIP
-					StandardZIPFile zip = StandardZIPFile.open(fc);
-					
-					// Load package information
-					PackageInfo pi = new PackageInfo(p, zip);
-					
-					// Add to mapping
-					target.put(pi.name(), pi);
-				}
+					// Ignore directories
+					if (Files.isDirectory(p))
+						continue;
 				
-				// Not a valid ZIP or package, ignore
-				catch (IOException|InvalidPackageException e)
-				{
-					continue;
+					// Open file
+					try (FileChannel fc = FileChannel.open(p,
+						StandardOpenOption.READ))
+					{
+						// Open as ZIP
+						StandardZIPFile zip = StandardZIPFile.open(fc);
+					
+						// Load package information
+						PackageInfo pi = new PackageInfo(p, zip);
+					
+						// Add to mapping
+						target.put(pi.name(), pi);
+					}
+				
+					// Not a valid ZIP or package, ignore
+					catch (IOException|InvalidPackageException e)
+					{
+						continue;
+					}
 				}
 			}
-		}
 		
 		// Lock
 		this.packages = UnmodifiableMap.<PackageName, PackageInfo>of(target);
