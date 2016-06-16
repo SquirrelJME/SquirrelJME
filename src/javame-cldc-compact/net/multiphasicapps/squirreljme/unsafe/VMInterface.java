@@ -32,6 +32,14 @@ public abstract class VMInterface
 	private volatile long _basenano;
 	
 	/**
+	 * Returns the unique identifier which identifies this device.
+	 *
+	 * @return The device unique identifier.
+	 * @since 2016/06/16
+	 */
+	public abstract String deviceUUID();
+	
+	/**
 	 * Returns the approximate number of nanoseconds which have passed since
 	 * an unspecified start time.
 	 *
@@ -39,6 +47,56 @@ public abstract class VMInterface
 	 * @since 2016/06/16
 	 */
 	public abstract long nanoTime();
+	
+	/**
+	 * Returns the architecture that this virtual machine is running on.
+	 *
+	 * @return The architecture name.
+	 * @since 2016/06/16
+	 */
+	public abstract String osArch();
+	
+	/**
+	 * Returns the name of the operating system that this virtual machine is
+	 * running on.
+	 *
+	 * @return The operating system name.
+	 * @since 2016/06/16
+	 */
+	public abstract String osName();
+	
+	/**
+	 * Returns the name of the device that SquirrelJME is running on, this may
+	 * be the name of the operating system or the name of the actual hardware
+	 * running underneath.
+	 *
+	 * The format for the returned value is:
+	 * {@code (Manufacturer)(DeviceModelNumber)[/version[/comments]]}.
+	 *
+	 * @return The platform SquirrelJME is running on.
+	 * @since 2016/06/15
+	 */
+	public abstract String osPlatform();
+	
+	/**
+	 * Returns the version of the operating system this is running on.
+	 *
+	 * @return The operating system version.
+	 * @since 2016/06/16
+	 */
+	public abstract String osVersion();
+	
+	/**
+	 * Returns the host name of this system as it appears on the network to
+	 * other systems.
+	 *
+	 * @return The host name of this system.
+	 * @since 2016/06/16
+	 */
+	public String osHostName()
+	{
+		return "localhost";
+	}
 	
 	/**
 	 * Writes a byte to standard error.

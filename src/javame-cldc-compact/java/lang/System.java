@@ -57,9 +57,30 @@ public final class System
 	 * its value. System properties are declared by the system and are used
 	 * by applications to potentially modify their behavior.
 	 *
-	 * {@squirreljme.property microedition.platform This is the name of the
-	 * device which SquirrelJME is running on. The name of the device is
-	 * determined }
+	 * {@squirreljme.property java.io.tmpdir This is the temporary directory
+	 * which indicates where temporary files (those that are deleted after
+	 * an unspecified duration) are to be placed. If there is no filesystem
+	 * on the device then a blank string will always be returned.}
+	 * {@squirreljme.property java.version This is the version of the virtual
+	 * machine which the environment runs under.}
+	 * {@squirreljme.property java.vendor This is the vendor of the virtual
+	 * machine and specifies who wrote it.}
+	 * {@squirreljme.property java.vendor.url This is a URL which usually
+	 * points to the website of the vendor.}
+	 * {@squirreljme.property line.separator This represents the line
+	 * separation sequence that the host operating system uses for its native
+	 * files. Generally it would either be {@code '\n'}, {@code '\r'}, or
+	 * {@code "\r\n"), however retro-systems might use a different line ending
+	 * sequence.}
+	 * {@squirreljme.property microedition.configuration This is the current
+	 * configuration of CLDC library which indicates which primary classes
+	 * are available to it. The values will either be {@code "CLDC-1.8"} for
+	 * the complete set of APIs and {@code "CLDC-1.8-Compact"} for the compact
+	 * set of APIs.}
+	 * {@squirreljme.property microedition.deviceid.uuid This is the unique
+	 * identifier to the current device that regardless of the number of
+	 * reboots and reinitializations that occur, this should return the same
+	 * value.}
 	 * {@squirreljme.property microedition.encoding This is the character
 	 * encoding that is used by default for specific methods when one has not
 	 * been specified. On modern systems this is likely to be {@code "UTF-8},
@@ -67,40 +88,31 @@ public final class System
 	 * encoding starting with {@code "x-squirreljme"}. Please note that the
 	 * default encoding might not be compatible with UTF-8 (and may possibly
 	 * well be EBCDIC).}
-	 * {@squirreljme.property microedition.configuration This is the current
-	 * configuration of CLDC library which indicates which primary classes
-	 * are available to it. The values will either be {@code "CLDC-1.8"} for
-	 * the complete set of APIs and {@code "CLDC-1.8-Compact"} for the compact
-	 * set of APIs.}
-	 * {@squirreljme.property java.version This is the version of the virtual
-	 * machine which the environment runs under.}
-	 * {@squirreljme.property java.vendor This is the vendor of the virtual
-	 * machine and specifies who wrote it.}
-	 * {@squirreljme.property java.vendor.url This is a URL which usually
-	 * points to the website of the vendor.}
-	 * {@squirreljme.property os.name This is the name of the operating system
-	 * that SquirrelJME is running on, if SquirrelJME is the operating itself
-	 * then this value will be {@code "squirreljme"}.}
+	 * {@squirreljme.property microedition.hostname The host name of the
+	 * current system that the virtual machine is running on as it appears
+	 * to other machines on the network.}
+	 * {@squirreljme.property microedition.platform This is the device that
+	 * SquirrelJME is running on. It is in the format of
+	 * {@code (Manufacturer)(DeviceModelNumber)[/version[/comments]]}. The
+	 * manufacturer and device model number are concatenated with no spaces.}
+	 * {@squirreljme.property microedition.profiles This is a space separated
+	 * list of profiles which are supported by the run-time, an example
+	 * value that may be returned is MIDP-3.0 representing that that specified
+	 * standard is implemented.}
 	 * {@squirreljme.property os.arch This is the architecture of the hardware
 	 * that SquirrelJME is running on, the value is dependent on the platform
 	 * itself. Note that architecture names use standard SquirrelJME
 	 * architecture names.}
+	 * {@squirreljme.property os.name This is the name of the operating system
+	 * that SquirrelJME is running on, if SquirrelJME is the operating itself
+	 * then this value will be {@code "squirreljme"}.}
 	 * {@squirreljme.property os.version This is the version number of the
 	 * host operating system. The returned value might not be a number and may
 	 * be a string representing the host.}
-	 * {@squirreljme.property line.separator This represents the line
-	 * separation sequence that the host operating system uses for its native
-	 * files. Generally it would either be {@code '\n'}, {@code '\r'}, or
-	 * {@code "\r\n"), however retro-systems might use a different line ending
-	 * sequence.}
 	 * {@squirreljme.property user.dir This is the current working directory
 	 * which indicates the location where non-absolute file paths are derived
 	 * from. If there is no filesystem on the device then a blank string will
 	 * always be returned.}
-	 * {@squirreljme.property java.io.tmpdir This is the temporary directory
-	 * which indicates where temporary files (those that are deleted after
-	 * an unspecified duration) are to be placed. If there is no filesystem
-	 * on the device then a blank string will always be returned.}
 	 *
 	 * @param __k The system property value to obtain.
 	 * @return The value of the system property or {@code null} if it is not
@@ -130,14 +142,75 @@ public final class System
 		// Fixed values
 		switch (__k)
 		{
+				// Java Version
 			case "java.version":
 				return "1.8";
 			
+				// The vendor of the VM
 			case "java.vendor":
-				return "Multi-Phasic Applications";
+				return "Steven Gawroriski (Multi-Phasic Applications)";
 			
+				// The URL to the website
 			case "java.vendor.url":
 				return "http://multiphasicapps.net/";
+			
+				// The configuration and which classes are available for usage
+				// This actually looks up a number of classes which only
+				// appear in the full configuration. Note that this is just an
+				// approximation and is not fully accurate.
+			case "microedition.configuration":
+				try
+				{
+					// Try getting a number of classes
+					Class.forName("java.nio.channels.ClosedChannelException");
+					Class.forName("java.nio.file.FileStore");
+					Class.forName("java.nio.file.FileSystem");
+					Class.forName("java.nio.file.Path");
+					Class.forName("java.util.logging.Level");
+					Class.forName("java.util.logging.Logger");
+					
+					// At this point, assume the full library is being used
+					return "CLDC-1.8";
+				}
+				
+				// Classes not found, assume compact
+				catch (ClassNotFoundException e)
+				{
+					return "CLDC-1.8-Compact";
+				}
+				
+				// Device specific UUID
+			case "microedition.deviceid.uuid":
+				return VMInterface.INSTANCE.deviceUUID();
+			
+				// The host name of this device.
+			case "microedition.hostname":
+				return VMInterface.INSTANCE.osHostName();
+				
+				// The platform SquirrelJME is running on.
+			case "microedition.platform":
+				return VMInterface.INSTANCE.osPlatform();
+				
+				// Returns the version of SquirrelJME that this library
+				// pertains to
+			case "net.multiphasicapps.squirreljme.version":
+				return "1.8.19890706";
+				
+				// Is the virtual machine running on squirrels?
+			case "net.multiphasicapps.squirreljme.squirrels":
+				return "true";
+				
+				// The architecture this VM runs on
+			case "os.arch":
+				return VMInterface.INSTANCE.osArch();
+				
+				// The OS this VM runs on
+			case "os.name":
+				return VMInterface.INSTANCE.osName();
+				
+				// The version of the OS
+			case "os.version":
+				return VMInterface.INSTANCE.osVersion();
 			
 				// Unknown, use default handling
 			default:
