@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.mascot;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import net.multiphasicapps.io.hex.HexInputStream;
 
 /**
@@ -54,7 +57,19 @@ public enum DataEncoding
 			if (__is == null)
 				throw new NullPointerException("NARG");
 			
-			return new HexInputStream(__is);
+			// Should not fail, but it may
+			try
+			{
+				return new HexInputStream(
+					new InputStreamReader(__is, "utf-8"));
+			}
+			
+			// {@squirreljme.error CJ01 Could not decode hexadecimal stream
+			// because UTF-8 is not supported by this virtual machine.}
+			catch (UnsupportedEncodingException e)
+			{
+				throw new RuntimeException("CJ01", e);
+			}
 		}
 	},
 	
