@@ -44,7 +44,9 @@ public class PVM
 		// Setup package list
 		try
 		{
+			System.err.print("Loading package lists...");
 			this.packagelist = new PackageList(__jd, null);
+			System.err.println("Done!");
 		}
 		
 		// {@squirreljme.error CL01 Could not initialize the package list.}

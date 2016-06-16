@@ -129,3 +129,7 @@ to reliably create a good interface for natively compiled systems.
 I saw something in the SWM interfaces about daemon applications. That could
 be useful in a way.
 
+## 18:34
+
+The loading of all the package information takes a bit on my system.
+
