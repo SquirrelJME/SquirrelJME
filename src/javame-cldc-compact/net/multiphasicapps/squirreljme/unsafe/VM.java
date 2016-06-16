@@ -27,11 +27,43 @@ public abstract class VM
 	public static final VM INSTANCE =
 		__getInstance();
 	
-	/** Are fake milliseconds being used? */
-	private volatile boolean _fakemillis;
+	/** Application level control. */
+	public final VMApplication application =
+		initializeVMApplication();
 	
-	/** The base nano time. */
-	private volatile long _basenano;
+	/** JAR controller. */
+	public final VMJar jar =
+		initializeVMJar();
+	
+	/** Time based control. */
+	public final VMTime time =
+		initailizeVMTime();
+	
+	/**
+	 * Initializes the virtual machine application interface.
+	 *
+	 * @return The virtual machine application interface.
+	 * @since 2016/06/16
+	 */
+	protected abstract VMApplication initializeVMApplication();
+	
+	/**
+	 * Initializes the JAR controlling interfaces.
+	 *
+	 * @return The JAR controller interface.
+	 * @since 2016/06/16
+	 */
+	protected abstract VMJar initializeVMJar();
+	
+	/**
+	 * Initializes the virtual machine timing interface.
+	 *
+	 * @return The virtual machine time interface.
+	 * @since 2016/06/16
+	 */
+	protected abstract VMTime initializeVMTime();
+	
+	
 	
 	/**
 	 * Returns the unique identifier which identifies this device.
@@ -85,15 +117,6 @@ public abstract class VM
 	 */
 	public abstract InputStream openResource(String __res)
 		throws NullPointerException;
-	
-	/**
-	 * Returns the approximate number of nanoseconds which have passed since
-	 * an unspecified start time.
-	 *
-	 * @return The number of nanoseconds which have passed.
-	 * @since 2016/06/16
-	 */
-	public abstract long nanoTime();
 	
 	/**
 	 * Returns the architecture that this virtual machine is running on.
@@ -167,39 +190,6 @@ public abstract class VM
 	{
 		// The default implementation drops all characters output to the native
 		// console since it might not be supported
-	}
-	
-	/**
-	 * Returns the number of milliseconds that have passed since the UTC Java
-	 * epoch.
-	 *
-	 * The Java epoch is UTC 00:00 (midnight) on January 1, 1970.
-	 *
-	 * @return The number of passed milliseconds.
-	 * @since 2016/06/16
-	 */
-	public long utcMillis()
-	{
-		// It is possible that a real time clock is not implemented, so as such
-		// virtualize the passage of time using the nanosecond clock from a
-		// given starting point.
-		long base, now = nanoTime();
-		if (!this._fakemillis)
-		{
-			this._fakemillis = true;
-			base = now;
-		}
-		
-		// Use the previous base time
-		else
-			base = _basenano;
-		
-		// Determine the number of nanoseconds which have passed and convert
-		// that to milliseconds
-		long passed = (now - base) / 1_000_000L;
-		
-		// Use an unspecified epoch
-		return 615_729_600_305L + passed;
 	}
 	
 	/**
