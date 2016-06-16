@@ -17,6 +17,7 @@ package __squirreljme;
  *
  * @since 2016/05/30
  */
+@Deprecated
 public abstract class IPC
 {
 	/** The connection to the remote end was closed. */

@@ -16,6 +16,7 @@ package __squirreljme;
  *
  * @since 2016/05/30
  */
+@Deprecated
 public class IPCException
 	extends RuntimeException
 {
