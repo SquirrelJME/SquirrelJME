@@ -25,3 +25,7 @@ Mascot images could actually be provided with the `ServiceLoader` so that a
 format as required can be specified and such. Then the instances of the service
 will be in the JAR so that `getResourceAsStream` would work there.
 
+## 14:23
+
+Never figured that I would have refactored the mascot projects other than
+resorting.
