@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: squirreljme-mascot-png-low
-X-SquirrelJME-UUID: 2478a41f-300e-45ce-82e1-14a6e32df3d0
+X-SquirrelJME-Name: squirreljme-mascot-aa-low
+X-SquirrelJME-UUID: 69035f38-5f5d-47ba-9ed7-32990cf3c58a
 X-SquirrelJME-Depends: squirreljme-mascot
-LIBlet-Title: SquirrelJME Mascot (Low Res PNG)
+LIBlet-Title: SquirrelJME Mascot (Low Res ASCII Art)
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160517
+LIBlet-Version: 1.8.0.20160616
 LIBlet-Description: This package contains the low resolution
-  versions of the mascot as encoded PNG images.
+  versions of the mascot as ASCII art.
   NOTE THAT THE LOW RESOLUTION XPM IMAGES ARE THE ACTUAL
   SOURCE IMAGES, NOT THE OTHER WAY AROUND.
 
