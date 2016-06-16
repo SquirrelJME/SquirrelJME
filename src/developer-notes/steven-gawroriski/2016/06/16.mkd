@@ -46,3 +46,13 @@ what the launcher would need to do for the most part. So this means that my
 previous launcher idea was a bit flawed anyway. So for the most part with these
 interfaces, I will have to integrate them as such.
 
+## 15:45
+
+Actually one thing that I can do is have a host virtual environment. Unlike the
+kernel, this would run the bytecode on the host system. It would not be
+interpreted and use the pre-existing JVM. This would be a system that could be
+used for testing or having a basic feel of the entire system as a whole.
+Due to the requirement of there needing separated execution states, input JARs
+would be read and their classes modified so that they are in their own unique
+per-process (classpath) package.
+
