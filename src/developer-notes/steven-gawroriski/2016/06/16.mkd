@@ -78,3 +78,15 @@ a process this would mean that they have their own set of static globals and
 otherwise. Since all classes would be erased and replaced with the process
 specific classes they cannot see this fact at all.
 
+## 16:15
+
+One thing I have to consider is that application management such as which
+JARs are available and such has to be common so that I can simply use the
+same code when it comes time for a native port.
+
+## 16:17
+
+This means that `javame-meep-swm` instead will need to wrap some kind of common
+interface which manages applications. These would definitely have to use the
+unsafe interfaces and classes.
+

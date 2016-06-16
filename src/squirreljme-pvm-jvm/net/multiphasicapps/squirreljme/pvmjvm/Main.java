@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * This is the main class for the para-virtual machine.
  *
@@ -28,6 +31,8 @@ public class Main
 		// Must exist
 		if (__args == null)
 			__args = new String[0];
+		
+		// Initialize the virtual machine
 		
 		throw new Error("TODO");
 	}
