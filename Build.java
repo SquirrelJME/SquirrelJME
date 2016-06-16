@@ -243,6 +243,11 @@ public class Build
 				__launch(0, getProject("simulator"), __args);
 				break;
 				
+				// Run the paravirtual JVM
+			case "pvmjvm":
+				__launch(0, getProject("squirreljme-pvm-jvm"), __args);
+				break;
+				
 				// Build a project
 			case "build":
 				__build(getProject(__args.removeFirst()));

@@ -65,3 +65,16 @@ PVM could implement SquirrelJME and I can work on it through that. Then once
 the class library is complete I can perform native ports. The ports would need
 minimal code to be implemented, so in theory I should never run into a TODO.
 
+## 16:09
+
+To think of it, with some adjustments on how classes are loaded the JVM has the
+Pompek and Goldberg requirements for virtualization. The only thing that needs
+adjusting is the classes which are used. When a class is loaded, the loader
+will essentially rewrite all classes in the JAR so that instead are prefixed
+with say for example `__squirreljme.pvm.processid.` where `processid` is a
+specifier for a given process. Each process has its own `ClassLoader` which
+performs the translation as required. Since each class would be duplicated in
+a process this would mean that they have their own set of static globals and
+otherwise. Since all classes would be erased and replaced with the process
+specific classes they cannot see this fact at all.
+
