@@ -135,3 +135,11 @@ interfaces, abstract where appropriate. Although this would likely best be in
 `__squirreljme`. It could work at this position. I can use faked global init
 of sorts.
 
+## 20:59
+
+Basically there will be an abstract class which has a static instance which
+allows the standard run-time to communicate with the OS as required. Then the
+target system's initialization will magically set the value of a static field
+so that the interface is initialized and useable. That way, any calls made into
+the singleton will instead go to the operating system specific support library.
+
