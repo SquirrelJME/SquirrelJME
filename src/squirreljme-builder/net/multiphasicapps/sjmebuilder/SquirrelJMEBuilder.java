@@ -103,6 +103,14 @@ public class SquirrelJMEBuilder
 		if (osname == null)
 			throw new IllegalArgumentException("CC02");
 		
+		// {@squirreljme.cmdline os.arch=(name) The name of the architecture
+		// that SquirrelJME should be cross compiled for.}
+		// {@squirreljme.error CC03 The target architecture has not been
+		// specified.}
+		String archname = options.get("os.arch");
+		if (archname == null)
+			throw new IllegalArgumentException("CC03");
+		
 		throw new Error("TODO");
 	}
 	
