@@ -177,6 +177,10 @@ public final class Class<T>
 	
 	public boolean isInstance(Object __o)
 	{
+		// Null will never be an instance
+		if (__o == null)
+			return false;
+		
 		throw new Error("TODO");
 	}
 	
