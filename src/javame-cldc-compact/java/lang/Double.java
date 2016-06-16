@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.magic.Magic;
-
 public final class Double
 	extends Number
 	implements Comparable<Double>
@@ -44,7 +42,7 @@ public final class Double
 		64;
 	
 	public static final Class<Double> TYPE =
-		Magic.primitiveDoubleClass();
+		__getType();
 	
 	public Double(double __a)
 	{
@@ -183,6 +181,17 @@ public final class Double
 	public static Double valueOf(double __a)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 *
+	 * @return {@link #TYPE}.
+	 * @since 2016/06/16
+	 */
+	private static Class<Double> __getType()
+	{
+		return TYPE;
 	}
 }
 

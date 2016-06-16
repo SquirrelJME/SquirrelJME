@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.magic.Magic;
-
 public final class Float
 	extends Number
 	implements Comparable<Float>
@@ -44,7 +42,7 @@ public final class Float
 		32;
 	
 	public static final Class<Float> TYPE =
-		Magic.primitiveFloatClass();
+		__getType();
 	
 	public Float(float __a)
 	{
@@ -189,6 +187,17 @@ public final class Float
 	public static Float valueOf(float __a)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 *
+	 * @return {@link #TYPE}.
+	 * @since 2016/06/16
+	 */
+	private static Class<Float> __getType()
+	{
+		return TYPE;
 	}
 }
 

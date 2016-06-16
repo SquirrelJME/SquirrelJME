@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.magic.Magic;
-
 public final class Long
 	extends Number
 	implements Comparable<Long>
@@ -26,7 +24,7 @@ public final class Long
 		64;
 	
 	public static final Class<Long> TYPE =
-		Magic.primitiveLongClass();
+		__getType();
 	
 	public Long(long __a)
 	{
@@ -239,6 +237,17 @@ public final class Long
 	public static Long valueOf(long __a)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 *
+	 * @return {@link #TYPE}.
+	 * @since 2016/06/16
+	 */
+	private static Class<Long> __getType()
+	{
+		return TYPE;
 	}
 }
 

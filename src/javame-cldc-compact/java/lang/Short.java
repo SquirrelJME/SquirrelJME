@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.magic.Magic;
-
 public final class Short
 	extends Number
 	implements Comparable<Short>
@@ -26,7 +24,7 @@ public final class Short
 		16;
 	
 	public static final Class<Short> TYPE =
-		Magic.primitiveShortClass();
+		__getType();
 	
 	public Short(short __a)
 	{
@@ -154,6 +152,17 @@ public final class Short
 	public static Short valueOf(short __a)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 *
+	 * @return {@link #TYPE}.
+	 * @since 2016/06/16
+	 */
+	private static Class<Short> __getType()
+	{
+		return TYPE;
 	}
 }
 

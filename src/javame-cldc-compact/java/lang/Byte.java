@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.magic.Magic;
-
 public final class Byte
 	extends Number
 	implements Comparable<Byte>
@@ -26,7 +24,7 @@ public final class Byte
 		8;
 	
 	public static final Class<Byte> TYPE =
-		Magic.primitiveByteClass();
+		__getType();
 	
 	public Byte(byte __a)
 	{
@@ -154,6 +152,17 @@ public final class Byte
 		if (false)
 			throw new NumberFormatException();
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 *
+	 * @return {@link #TYPE}.
+	 * @since 2016/06/16
+	 */
+	private static Class<Byte> __getType()
+	{
+		return TYPE;
 	}
 }
 

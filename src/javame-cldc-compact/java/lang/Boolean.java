@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.magic.Magic;
-
 public final class Boolean
 	implements Comparable<Boolean>
 {
@@ -22,7 +20,7 @@ public final class Boolean
 		new Boolean(true);
 	
 	public static final Class<Boolean> TYPE =
-		Magic.primitiveBooleanClass();
+		__getType();
 	
 	public Boolean(boolean __a)
 	{
@@ -99,6 +97,17 @@ public final class Boolean
 		if (__a != null && __a.equalsIgnoreCase("true"))
 			return TRUE;
 		return FALSE;
+	}
+	
+	/**
+	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 *
+	 * @return {@link #TYPE}.
+	 * @since 2016/06/16
+	 */
+	private static Class<Boolean> __getType()
+	{
+		return TYPE;
 	}
 }
 

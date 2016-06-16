@@ -10,8 +10,6 @@
 
 package java.lang;
 
-import net.multiphasicapps.squirreljme.magic.Magic;
-
 public final class Integer
 	extends Number
 	implements Comparable<Integer>
@@ -26,7 +24,7 @@ public final class Integer
 		32;
 	
 	public static final Class<Integer> TYPE =
-		Magic.primitiveIntegerClass();
+		__getType();
 	
 	public Integer(int __a)
 	{
@@ -214,6 +212,17 @@ public final class Integer
 	public static Integer valueOf(int __a)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 *
+	 * @return {@link #TYPE}.
+	 * @since 2016/06/16
+	 */
+	private static Class<Integer> __getType()
+	{
+		return TYPE;
 	}
 }
 
