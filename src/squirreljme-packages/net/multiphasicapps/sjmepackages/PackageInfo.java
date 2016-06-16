@@ -89,6 +89,17 @@ public class PackageInfo
 	}
 	
 	/**
+	 * Returns the manifest of this package.
+	 *
+	 * @return The package manifest.
+	 * @since 2016/06/15
+	 */
+	public final JavaManifest manifest()
+	{
+		return this.manifest;
+	}
+	
+	/**
 	 * Returns the name of this package.
 	 *
 	 * @return The package name.
