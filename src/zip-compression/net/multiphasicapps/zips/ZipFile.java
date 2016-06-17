@@ -323,6 +323,7 @@ public abstract class ZipFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/08
 	 */
+	@Deprecated
 	protected final long readStruct(long __pos, ZIPStructureElement __se)
 		throws IOException, NullPointerException
 	{
@@ -341,6 +342,7 @@ public abstract class ZipFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/08
 	 */
+	@Deprecated
 	protected final long readStruct(long __pos, ZIPStructureElement __se,
 		int __ai)
 		throws IOException, NullPointerException

@@ -17,6 +17,7 @@ package net.multiphasicapps.zips;
  * @param <L> The class extending this.
  * @since 2016/03/08
  */
+@Deprecated
 public abstract class AbstractZIPStructureElement
 	<L extends AbstractZIPStructureElement>
 	implements ZIPStructureElement

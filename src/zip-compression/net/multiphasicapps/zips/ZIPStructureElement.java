@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
  *
  * @since 2016/03/08
  */
+@Deprecated
 public interface ZIPStructureElement
 {
 	/**

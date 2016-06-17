@@ -15,6 +15,7 @@ package net.multiphasicapps.zips;
  *
  * @since 2016/03/09
  */
+@Deprecated
 public class ZIP32Descriptor
 	extends AbstractZIPStructureElement<ZIP32Descriptor>
 {
