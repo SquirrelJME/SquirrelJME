@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import net.multiphasicapps.manifest.JavaManifest;
 import net.multiphasicapps.manifest.JavaManifestAttributes;
 import net.multiphasicapps.manifest.JavaManifestException;
-import net.multiphasicapps.zips.StandardZIPFile;
+import net.multiphasicapps.zips.ZipFile;
 
 /**
  * This contains information about a single binary or source package.
@@ -47,7 +47,7 @@ public class PackageInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	public PackageInfo(Path __p, StandardZIPFile __zip)
+	public PackageInfo(Path __p, ZipFile __zip)
 		throws InvalidPackageException, IOException, NullPointerException
 	{
 		this(__p, true, __loadManifestFromZIP(__zip));
@@ -120,7 +120,7 @@ public class PackageInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	private static JavaManifest __loadManifestFromZIP(StandardZIPFile __zip)
+	private static JavaManifest __loadManifestFromZIP(ZipFile __zip)
 		throws InvalidPackageException, IOException, NullPointerException
 	{
 		// Check
@@ -128,7 +128,7 @@ public class PackageInfo
 			throw new NullPointerException("NARG");
 		
 		// Find manifest file
-		StandardZIPFile.FileEntry ent = __zip.get("META-INF/MANIFEST.MF");
+		ZipFile.FileEntry ent = __zip.get("META-INF/MANIFEST.MF");
 		
 		// {@squirreljme.error CI02 No manifest exists in the JAR.}
 		if (ent == null)

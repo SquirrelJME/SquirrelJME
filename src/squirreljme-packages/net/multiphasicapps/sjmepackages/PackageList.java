@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
-import net.multiphasicapps.zips.StandardZIPFile;
+import net.multiphasicapps.zips.ZipFile;
 
 /**
  * This contains a mapping of every package which is available to SquirrelJME.
@@ -71,7 +71,7 @@ public class PackageList
 						StandardOpenOption.READ))
 					{
 						// Open as ZIP
-						StandardZIPFile zip = StandardZIPFile.open(fc);
+						ZipFile zip = ZipFile.open(fc);
 					
 						// Load package information
 						PackageInfo pi = new PackageInfo(p, zip);
