@@ -45,7 +45,7 @@ public abstract class ZipDirectory
 		// {@squirreljme.error AM04 The ZIP directory has a negative
 		// number of entries. (The negative count)}
 		if (__ne < 0)
-			throw new ZIPFormatException(String.format("AM04 %d", __ne));
+			throw new ZipFormatException(String.format("AM04 %d", __ne));
 		
 		// Initialize offset table
 		offsets = new long[__ne];
@@ -110,7 +110,7 @@ public abstract class ZipDirectory
 		// {@squirreljme.error AM06 The file entry has a negative offset.
 		// (The index of the entry)}
 		if (off < 0L)
-			throw new ZIPFormatException(String.format("AM05 %d", __i));
+			throw new ZipFormatException(String.format("AM05 %d", __i));
 		
 		// Lock on the entry cache so it is a sort of volatile
 		synchronized (_entrycache)

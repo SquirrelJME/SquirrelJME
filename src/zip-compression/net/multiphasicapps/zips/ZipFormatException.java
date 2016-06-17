@@ -18,7 +18,7 @@ import java.io.IOException;
  *
  * @since 2016/03/02
  */
-public class ZIPFormatException
+public class ZipFormatException
 	extends IOException
 {
 	/**
@@ -26,7 +26,7 @@ public class ZIPFormatException
 	 *
 	 * @since 2016/03/02
 	 */
-	public ZIPFormatException()
+	public ZipFormatException()
 	{
 		super();
 	}
@@ -37,7 +37,7 @@ public class ZIPFormatException
 	 * @param __msg The exception message.
 	 * @since 2016/03/02
 	 */
-	public ZIPFormatException(String __msg)
+	public ZipFormatException(String __msg)
 	{
 		super(__msg);
 	}
@@ -49,7 +49,7 @@ public class ZIPFormatException
 	 * @param __c The cause.
 	 * @since 2016/03/02
 	 */
-	public ZIPFormatException(String __msg, Throwable __c)
+	public ZipFormatException(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}

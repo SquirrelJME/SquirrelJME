@@ -64,11 +64,11 @@ public abstract class ZipFile
 	 * @param __sbc The source channel to read from.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @throws ZIPFormatException If this is not a valid ZIP file.
+	 * @throws ZipFormatException If this is not a valid ZIP file.
 	 * @since 2016/02/26
 	 */
 	public ZipFile(SeekableByteChannel __sbc)
-		throws IOException, NullPointerException, ZIPFormatException
+		throws IOException, NullPointerException, ZipFormatException
 	{
 		// Check
 		if (__sbc == null)
@@ -361,7 +361,7 @@ public abstract class ZipFile
 			// {@squirreljme.error AM01 The given structure entry is not
 			// variable. (The structure index)}
 			if (__ai != 0 && varf == null)
-				throw new ZIPFormatException(String.format("AM01 %d", __ai));
+				throw new ZipFormatException(String.format("AM01 %d", __ai));
 			
 			// Otherwise check the bounds of the read
 			else if (varf != null)
@@ -372,7 +372,7 @@ public abstract class ZipFile
 				// {@squirreljme.error AM02 Read of array index which is not
 				// within the array bounds. (The structure index; The count})
 				if (__ai < 0 || (long)__ai >= ec)
-					throw new ZIPFormatException(String.format("AM02 %d %d",
+					throw new ZipFormatException(String.format("AM02 %d %d",
 						__ai, ec));
 			}
 			
@@ -457,7 +457,7 @@ public abstract class ZipFile
 			// {@squirreljme.error AM03 Did not read all the bytes. (The length
 			// to read; The actual length read)}
 			if (rc < __len)
-				throw new ZIPFormatException(String.format("AM03 %d %d",
+				throw new ZipFormatException(String.format("AM03 %d %d",
 					__len, rc));
 		
 			// Flip the buffer
@@ -529,11 +529,11 @@ public abstract class ZipFile
 	 * @param __sbc The channel to attempt an open as a ZIP with.
 	 * @throws IOException If the channel could not be read from.
 	 * @throws NullPointerException On null arguments.
-	 * @throws ZIPFormatException If the ZIP was not valid.
+	 * @throws ZipFormatException If the ZIP was not valid.
 	 * @since 2016/03/02
 	 */
 	public static ZipFile open(SeekableByteChannel __sbc)
-		throws IOException, NullPointerException, ZIPFormatException
+		throws IOException, NullPointerException, ZipFormatException
 	{
 		// Check
 		if (__sbc == null)
@@ -546,7 +546,7 @@ public abstract class ZipFile
 		}
 		
 		// Not a ZIP64
-		catch (ZIPFormatException zfe)
+		catch (ZipFormatException zfe)
 		{
 			// Try treating it as a 32-bit ZIP
 			try
@@ -555,7 +555,7 @@ public abstract class ZipFile
 			}
 			
 			// Not a ZIP32 either
-			catch (ZIPFormatException zfeb)
+			catch (ZipFormatException zfeb)
 			{
 				zfeb.addSuppressed(zfe);
 				throw zfeb;

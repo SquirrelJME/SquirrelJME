@@ -28,15 +28,15 @@ public class Zip64File
 	 *
 	 * @param __sbc The source channel to read from.
 	 * @throws IOException On read errors.
-	 * @throws ZIPFormatException If this is not a valid ZIP file.
+	 * @throws ZipFormatException If this is not a valid ZIP file.
 	 * @since 2016/03/02
 	 */
 	public Zip64File(SeekableByteChannel __sbc)
-		throws IOException, ZIPFormatException
+		throws IOException, ZipFormatException
 	{
 		super(__sbc);
 		
-		throw new ZIPFormatException("TODO");
+		throw new ZipFormatException("TODO");
 	}
 	
 	/**

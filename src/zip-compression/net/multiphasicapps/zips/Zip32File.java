@@ -87,11 +87,11 @@ public class Zip32File
 	 *
 	 * @param __sbc The source channel to read from.
 	 * @throws IOException On read errors.
-	 * @throws ZIPFormatException If this is not a valid ZIP file.
+	 * @throws ZipFormatException If this is not a valid ZIP file.
 	 * @since 2016/03/02
 	 */
 	public Zip32File(SeekableByteChannel __sbc)
-		throws IOException, ZIPFormatException
+		throws IOException, ZipFormatException
 	{
 		super(__sbc);
 		
@@ -124,7 +124,7 @@ public class Zip32File
 		// {@squirreljme.error AM06 Could not detect a 32-bit end of central
 		// directory.} 
 		if (idi < 0L)
-			throw new ZIPFormatException("AM06");
+			throw new ZipFormatException("AM06");
 		
 		// Position is here
 		enddirpos = idi;
@@ -194,7 +194,7 @@ public class Zip32File
 				// magic number. (The illegal magic value; The value it should
 				// be)}
 				if (cdmag != ZIP32CentralDirectory.MAGIC_NUMBER_VALUE)
-					throw new ZIPFormatException(
+					throw new ZipFormatException(
 						String.format("AM0f %08x %08x",
 						cdmag, ZIP32CentralDirectory.MAGIC_NUMBER_VALUE));
 				
@@ -208,7 +208,7 @@ public class Zip32File
 				// {@squirreljme.error AM08 Newer ZIP version is not
 				// supported. (The version; The max supported version)}
 				if (ver > MAX_CENTRAL_DIR_VERSION)
-					throw new ZIPFormatException(String.format("AM08 %d %d",
+					throw new ZipFormatException(String.format("AM08 %d %d",
 						ver, MAX_CENTRAL_DIR_VERSION));
 				
 				// Read variable length attributes
@@ -227,7 +227,7 @@ public class Zip32File
 			// entries in the ZIP. (The number of read entries; The number of
 			// specified entries)}
 			if (readcount != numentries)
-				throw new ZIPFormatException(String.format("AM09 %d %d",
+				throw new ZipFormatException(String.format("AM09 %d %d",
 					readcount, numentries));
 		}
 		
@@ -299,7 +299,7 @@ public class Zip32File
 			// header is not correct. (The read magic number; The value it
 			// should be)}
 			if (lhm != ZIP32LocalFile.MAGIC_NUMBER_VALUE)
-				throw new ZIPFormatException(String.format("AM07 %08x %08x",
+				throw new ZipFormatException(String.format("AM07 %08x %08x",
 					lhm, ZIP32LocalFile.MAGIC_NUMBER_VALUE));
 		}
 		
@@ -411,7 +411,7 @@ public class Zip32File
 			// {@squirreljme.error AM0a Directories cannot be opened. (The name
 			// of the entry)}
 			if (n.endsWith("/"))
-				throw new ZIPFormatException(String.format("AM0a %s", n));
+				throw new ZipFormatException(String.format("AM0a %s", n));
 			
 			// Obtain the compression method
 			int method = (int)readStruct(localheaderpos,
@@ -420,7 +420,7 @@ public class Zip32File
 			// {@squirreljme.error AM0b Entry uses an unknown compression
 			// method. (The name of the entry; The compression method it uses)}
 			if (method != METHOD_STORED && method != METHOD_DEFLATED)
-				throw new ZIPFormatException(String.format("AM0b %s %d", n,
+				throw new ZipFormatException(String.format("AM0b %s %d", n,
 					method));
 			
 			// CRC and data sizes
@@ -479,7 +479,7 @@ public class Zip32File
 			
 			// Unknown method
 			else
-				throw new ZIPFormatException(String.format("AM0b %s %d", n,
+				throw new ZipFormatException(String.format("AM0b %s %d", n,
 					method));
 		}
 	}
