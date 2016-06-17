@@ -14,7 +14,7 @@ Hopefully the more direct approach will end up being faster and not require
 all the structure information to be in memory, since it is only needed when
 the structures need to be read.
 
-##n 10:57
+## 10:57
 
 Actually my battery is getting a bit low. In the future when there are native
 SquirrelJME ports, I could quite literally work on this on my PDA despite it
