@@ -1,0 +1,10 @@
+# 2016/06/17
+
+## 10:32
+
+Still no electric, running on battery power. Luckily for me I can mount my PDA
+and sync against it so that the most up top date code is on my PDA. I have
+about an hour of battery. So my plan yesterday was no refactor the ZIP code
+so that it is a bit faster and does not rely on the structures and the reading
+in general is a bit faster and more multi-threaded friendly.
+
