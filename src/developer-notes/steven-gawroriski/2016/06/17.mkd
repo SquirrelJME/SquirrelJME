@@ -14,3 +14,17 @@ Hopefully the more direct approach will end up being faster and not require
 all the structure information to be in memory, since it is only needed when
 the structures need to be read.
 
+##n 10:57
+
+Actually my battery is getting a bit low. In the future when there are native
+SquirrelJME ports, I could quite literally work on this on my PDA despite it
+being small. The PDA although slower uses far less battery. However, that would
+be months away. I suppose what I can do is think of the PVM JVM. Once all
+the interfaces are setup, I can cleanly determine the best route to take when
+it comes to native code generation. I will have to fixup and change the
+java-byte-code behavior so that it is exactly as is represented in the byte
+code. Rather than adjusting or performing slight optimization, being exact
+will allow me to more easily map code when the PVM JVM needs to change all
+the class references to process prefixed ones. One problem of the PVM JVM is
+that it will cost much memory.
+
