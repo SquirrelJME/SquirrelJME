@@ -22,7 +22,8 @@ import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.standard.CISClass;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
-import net.multiphasicapps.zips.StandardZIPFile;
+import net.multiphasicapps.zips.ZipEntry;
+import net.multiphasicapps.zips.ZipFile;
 
 /**
  * This provides access to classes from a JAR file.
@@ -44,7 +45,7 @@ public abstract class JarClassUnit
 		new HashMap<>();
 	
 	/** The currently opened ZIP file. */
-	private volatile StandardZIPFile _zip;
+	private volatile ZipFile _zip;
 	
 	/** The current count. */
 	private volatile int _count;
@@ -146,10 +147,10 @@ public abstract class JarClassUnit
 		try (__Counter__ counter = __count())
 		{
 			// Load the ZIP
-			StandardZIPFile zip = this._zip;
+			ZipFile zip = this._zip;
 			
 			// See if the zip contains the given entry
-			StandardZIPFile.FileEntry ent = zip.get(__res);
+			ZipEntry ent = zip.get(__res);
 			
 			// Does not exist?
 			if (ent == null)
@@ -232,7 +233,7 @@ public abstract class JarClassUnit
 			try
 			{
 				// Open ZIP
-				StandardZIPFile zip = StandardZIPFile.open(chan);
+				ZipFile zip = ZipFile.open(chan);
 				
 				// Associate it
 				this._zip = zip;
