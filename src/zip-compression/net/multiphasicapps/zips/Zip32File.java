@@ -155,10 +155,10 @@ public class Zip32File
 	 * @since 2016/03/05
 	 */
 	@Override
-	protected Directory readDirectory()
+	protected ZipDirectory readDirectory()
 		throws IOException
 	{
-		return new Directory32();
+		return new ZipDirectory32();
 	}
 	
 	/**
@@ -166,8 +166,8 @@ public class Zip32File
 	 *
 	 * @since 2016/03/05
 	 */
-	protected class Directory32
-		extends Directory
+	protected class ZipDirectory32
+		extends ZipDirectory
 	{
 		/**
 		 * Initializes the 32-bit directory.
@@ -175,7 +175,7 @@ public class Zip32File
 		 * @throws IOException On read/write errors.
 		 * @since 2016/03/05
 		 */
-		protected Directory32()
+		protected ZipDirectory32()
 			throws IOException
 		{
 			super(numentries);
@@ -236,10 +236,10 @@ public class Zip32File
 		 * @since 2016/03/06
 		 */
 		@Override
-		protected FileEntry readEntry(int __dx, long __off)
+		protected ZipEntry readEntry(int __dx, long __off)
 			throws IOException
 		{
-			return new FileEntry32(this, __dx, __off);
+			return new ZipEntry32(this, __dx, __off);
 		}
 	}
 	
@@ -248,11 +248,11 @@ public class Zip32File
 	 *
 	 * @since 2016/03/06
 	 */
-	protected class FileEntry32
-		extends FileEntry
+	protected class ZipEntry32
+		extends ZipEntry
 	{
 		/** The owning central directory. */
-		protected final Directory32 directory;
+		protected final ZipDirectory32 directory;
 		
 		/** Index. */
 		protected final int index;
@@ -275,7 +275,7 @@ public class Zip32File
 		 * @throws IOException On read errors.
 		 * @since 2016/03/06
 		 */
-		protected FileEntry32(Directory32 __dir, int __dx, long __off)
+		protected ZipEntry32(ZipDirectory32 __dir, int __dx, long __off)
 			throws IOException, NullPointerException
 		{
 			// Check

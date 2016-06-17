@@ -44,7 +44,7 @@ public class Zip64File
 	 * @since 2016/03/05
 	 */
 	@Override
-	protected Directory readDirectory()
+	protected ZipDirectory readDirectory()
 		throws IOException
 	{
 		throw new Error("TODO");

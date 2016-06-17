@@ -38,7 +38,7 @@ import java.util.Set;
  * @since 2016/02/26
  */
 public abstract class ZipFile
-	implements Iterable<ZipFile.FileEntry>
+	implements Iterable<ZipEntry>
 {
 	/** Internal lock. */
 	protected final Object lock =
@@ -55,7 +55,7 @@ public abstract class ZipFile
 		ByteBuffer.allocateDirect(8);
 	
 	/** The directory cache. */
-	private volatile Reference<Directory> _directory;
+	private volatile Reference<ZipDirectory> _directory;
 	
 	/**
 	 * Initializes the zip file using the given byte channel which contains
@@ -92,7 +92,7 @@ public abstract class ZipFile
 	 * @throws IOException On read errors.
 	 * @since 2016/03/05
 	 */
-	protected abstract Directory readDirectory()
+	protected abstract ZipDirectory readDirectory()
 		throws IOException;
 	
 	/**
@@ -105,7 +105,7 @@ public abstract class ZipFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/05
 	 */
-	public final FileEntry get(String __n)
+	public final ZipEntry get(String __n)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -125,7 +125,7 @@ public abstract class ZipFile
 	 * @throws IOException On read errors.
 	 * @since 2016/03/05
 	 */
-	public final FileEntry get(int __dx)
+	public final ZipEntry get(int __dx)
 		throws IOException
 	{
 		// Negative is always null
@@ -142,7 +142,7 @@ public abstract class ZipFile
 	 * @throws IllegalStateException If the directory could not be read.
 	 * @since 2016/03/05
 	 */
-	public final Directory getDirectory()
+	public final ZipDirectory getDirectory()
 		throws IllegalStateException
 	{
 		// Lock so that if multiple threads are accessing the ZIP file they do
@@ -151,8 +151,8 @@ public abstract class ZipFile
 		synchronized (lock)
 		{
 			// Check cache
-			Reference<Directory> ref = _directory;
-			Directory rv = null;
+			Reference<ZipDirectory> ref = _directory;
+			ZipDirectory rv = null;
 		
 			// In the reference?
 			if (ref != null)
@@ -163,7 +163,7 @@ public abstract class ZipFile
 				try
 				{
 					_directory = new WeakReference<>(
-						Objects.<Directory>requireNonNull((
+						Objects.<ZipDirectory>requireNonNull((
 						rv = readDirectory())));
 				}
 				
@@ -186,7 +186,7 @@ public abstract class ZipFile
 	 * @since 2016/03/05
 	 */
 	@Override
-	public final Iterator<FileEntry> iterator()
+	public final Iterator<ZipEntry> iterator()
 		throws IllegalStateException
 	{
 		return getDirectory().iterator();
@@ -564,19 +564,6 @@ public abstract class ZipFile
 	}
 	
 	/**
-	 * Makes the reference array.
-	 *
-	 * @param __ne Number of elements,
-	 * @return The file entry reference array
-	 * @since 2016/03/06
-	 */
-	@SuppressWarnings({"unchecked"})
-	private static final Reference<FileEntry>[] __makeRefArray(int __ne)
-	{
-		return (Reference<FileEntry>[])new Reference[__ne];
-	}
-	
-	/**
 	 * This is a stream which provides an input stream over the contents of
 	 * a portion of the ZIP file.
 	 *
@@ -656,276 +643,6 @@ public abstract class ZipFile
 				
 				// Return it
 				return rv;
-			}
-		}
-	}
-	
-	/**
-	 * This provides a cached directory of the ZIP file contents.
-	 *
-	 * @since 2016/03/05
-	 */
-	protected abstract class Directory
-		implements Iterable<FileEntry>
-	{
-		/** The offsets of all the entry directories. */
-		protected final long offsets[];
-		
-		/** The cache of entries. */
-		private final Reference<FileEntry> _entrycache[];
-		
-		/**
-		 * Initializes the directory.
-		 *
-		 * @param __ne The number of entries in the ZIP.
-		 * @throws IOException On I/O errors.
-		 * @since 2016/03/05
-		 */
-		protected Directory(int __ne)
-			throws IOException
-		{
-			// {@squirreljme.error AM04 The ZIP directory has a negative
-			// number of entries. (The negative count)}
-			if (__ne < 0)
-				throw new ZIPFormatException(String.format("AM04 %d", __ne));
-			
-			// Initialize offset table
-			offsets = new long[__ne];
-			Arrays.fill(offsets, -1L);
-			
-			// Entry cache
-			_entrycache = __makeRefArray(__ne);
-		}
-		
-		/**
-		 * Reads an entry in the directory.
-		 *
-		 * @param __dx The entry to read.
-		 * @param __off The offset of the entry data in the central index.
-		 * @return The read entry.
-		 * @throws IOException On read errors.
-		 * @since 2016/03/06
-		 */
-		protected abstract FileEntry readEntry(int __dx, long __off)
-			throws IOException;
-		
-		/**
-		 * Obtains the entry with the given name.
-		 *
-		 * @param __n The entry to get which has this name.
-		 * @return The entry with the given name or {@code null} if not found.
-		 * @since 2016/03/05
-		 */
-		public final FileEntry get(String __n)
-			throws IOException, NullPointerException
-		{
-			// Check
-			if (__n == null)
-				throw new NullPointerException("NARG");
-			
-			// Go through self
-			for (FileEntry fe : this)
-				if (__n.equals(fe.toString()))
-					return fe;
-			
-			// Not found
-			return null;
-		}
-		
-		/**
-		 * Obtains the entry at this given position.
-		 *
-		 * @param __i The index to get the entry at.
-		 * @return The entry at the given index.
-		 * @since 2016/03/05
-		 */
-		public final FileEntry get(int __i)
-			throws IOException
-		{
-			// If out of bounds, always null
-			if (__i < 0 || __i >= offsets.length)
-				return null;
-			
-			// Get the directory offset for this entry
-			long off = offsets[__i];
-			
-			// {@squirreljme.error AM06 The file entry has a negative offset.
-			// (The index of the entry)}
-			if (off < 0L)
-				throw new ZIPFormatException(String.format("AM05 %d", __i));
-			
-			// Lock on the entry cache so it is a sort of volatile
-			synchronized (_entrycache)
-			{
-				// Get reference here, which might not exist
-				Reference<FileEntry> ref = _entrycache[__i];
-				FileEntry rv = null;
-				
-				// In reference?
-				if (ref != null)
-					rv = ref.get();
-				
-				// Needs creation?
-				if (rv == null)
-					ref = new WeakReference<>((rv = readEntry(__i, off)));
-				
-				// Return it
-				return Objects.<FileEntry>requireNonNull(rv);
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/05
-		 */
-		@Override
-		public final Iterator<FileEntry> iterator()
-		{
-			return new __Iterator__();
-		}
-		
-		/**
-		 * Returns the number of entries in the directory.
-		 *
-		 * @return The number of entries in the directory.
-		 * @since 2016/03/05
-		 */
-		public final int size()
-		{
-			return offsets.length;
-		}
-		
-		/**
-		 * This is the iterator over entries.
-		 *
-		 * @since 2016/03/05
-		 */
-		private final class __Iterator__
-			implements Iterator<FileEntry>
-		{
-			/** The current index. */
-			private volatile int _dx =
-				0;
-			
-			/**
-			 * Initializes the iterator.
-			 *
-			 * @since 2016/03/05
-			 */
-			private __Iterator__()
-			{
-			}
-			
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/03/05
-			 */
-			@Override
-			public boolean hasNext()
-			{
-				return _dx < offsets.length;
-			}
-			
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/03/05
-			 */
-			@Override
-			public FileEntry next()
-			{
-				// Ran out?
-				if (!hasNext())
-					throw new NoSuchElementException("NSEE");
-				
-				// Might not be able to read it
-				try
-				{
-					return get(_dx++);
-				}
-				
-				// Failed to read
-				catch (IOException ioe)
-				{
-					// {@squirreljme.error AM0d Failed to read the file entry.}
-					throw new IllegalStateException("AM0d", ioe);
-				}
-			}
-			
-			/**
-			 * {@inheritDoc}
-			 * @since 2016/03/05
-			 */
-			@Override
-			public void remove()
-			{
-				throw new UnsupportedOperationException("RORO");
-			}
-		}
-	}
-	
-	/**
-	 * This represents an entry within a standard ZIP file.
-	 *
-	 * @since 2016/02/03
-	 */
-	public abstract class FileEntry
-	{
-		/**
-		 * Initializes the file entry.
-		 *
-		 * @throws IOException On read errors.
-		 * @since 2016/03/05
-		 */
-		protected FileEntry()
-			throws IOException
-		{
-		}
-		
-		/**
-		 * Returns the index of this entry.
-		 *
-		 * @return The ZIP file entry index.
-		 * @since 2016/03/06
-		 */
-		public abstract int index();
-		
-		/**
-		 * Opens an input stream of the ZIP file data.
-		 *
-		 * @return A stream which reads the deflated or stored data.
-		 * @throws IOException On read errors.
-		 * @since 2016/03/06
-		 */
-		public abstract InputStream open()
-			throws IOException;
-		
-		/**
-		 * Returns the name of the file.
-		 *
-		 * @return The file name.
-		 * @throws IOException On read errors.
-		 * @since 2016/03/06
-		 */
-		public abstract String name()
-			throws IOException;
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/03/06
-		 */
-		@Override
-		public final String toString()
-		{
-			// Possible that the name could not be read
-			try
-			{
-				return name();
-			}
-			
-			// Could not read the name
-			catch (IOException ioe)
-			{
-				return "<IOException>";
 			}
 		}
 	}
