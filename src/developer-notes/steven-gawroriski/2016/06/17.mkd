@@ -28,3 +28,8 @@ will allow me to more easily map code when the PVM JVM needs to change all
 the class references to process prefixed ones. One problem of the PVM JVM is
 that it will cost much memory.
 
+## 14:38
+
+And the electric is back again, so I do not have to worry about battery life
+as much anymore.
+
