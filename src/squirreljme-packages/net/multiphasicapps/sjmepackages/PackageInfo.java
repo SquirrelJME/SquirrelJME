@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import net.multiphasicapps.manifest.JavaManifest;
 import net.multiphasicapps.manifest.JavaManifestAttributes;
 import net.multiphasicapps.manifest.JavaManifestException;
+import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
 
 /**
@@ -128,7 +129,7 @@ public class PackageInfo
 			throw new NullPointerException("NARG");
 		
 		// Find manifest file
-		ZipFile.FileEntry ent = __zip.get("META-INF/MANIFEST.MF");
+		ZipEntry ent = __zip.get("META-INF/MANIFEST.MF");
 		
 		// {@squirreljme.error CI02 No manifest exists in the JAR.}
 		if (ent == null)
