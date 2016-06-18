@@ -95,7 +95,7 @@ public final class SpecialIntArraySort
 		// used, The stack hold low and high values.
 		// Need an extra stack entry for the starting point
 		int maxstack = ((Integer.numberOfTrailingZeros(
-			Integer.highestOneBit(n)) + 1) * 2;
+			Integer.highestOneBit(n)) + 1)) * 2;
 		int[] stack = new int[maxstack];
 		int at = 0;
 		
@@ -108,7 +108,9 @@ public final class SpecialIntArraySort
 		stack[at++] = n >>> 1;
 		
 		// Perform an in place merge sort starting at the top region
-		for (;;)
+		// If the stack ever gets only a single start/end pair then the
+		// sort operation is complete.
+		for (; at >= 2;)
 		{
 			// Get the stack region before this one
 			int befs = stack[at - 4],
