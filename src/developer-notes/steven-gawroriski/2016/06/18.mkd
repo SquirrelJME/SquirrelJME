@@ -51,3 +51,12 @@ get the following results:
 
 So this is a definite 1 second faster than before.
 
+## 10:06
+
+When it comes to sorted entries, I suppose it should depend on how many entries
+are within the ZIP and if a request threshold was reached I suppose. However
+that would complicate things a bit, it would likely be best to just sort them
+all at the start. However, if ZIPs are just thrown away then the sorting will
+not matter at all. So I suppose for the package list that ZIPs should remain
+open?
+
