@@ -104,6 +104,19 @@ public class TestChecker
 	}
 	
 	/**
+	 * Checks that both integer array are equal to each other.
+	 *
+	 * @param __exp The expected value.
+	 * @param __was The value that it was.
+	 * @sicne 2016/06/18
+	 */
+	public void checkEquals(int[] __exp, int[] __was)
+	{
+		__passFail(Arrays.equals(__exp, __was),
+			__intArrayToString(__exp), __intArrayToString(__was));
+	}
+	
+	/**
 	 * Indicates that an exception was thrown.
 	 *
 	 * @param __t The exception which was thrown.
@@ -376,6 +389,37 @@ public class TestChecker
 			byte b = __b[i];
 			cha[x++] = Character.forDigit((b & 0xF0) >>> 4, 16);
 			cha[x++] = Character.forDigit((b & 0x0F), 16);
+		}
+		
+		// Make string
+		return new String(cha);
+	}
+	
+	/**
+	 * Outputs an integer array to a string.
+	 *
+	 * @param __v The input array.
+	 * @return The integer array as a string.
+	 * @since 2016/06/18
+	 */
+	private static String __intArrayToString(int... __v)
+	{
+		// Is converted to hex
+		int n = __v.length;
+		char cha[] = new char[n * 8];
+		
+		// Convert
+		for (int i = 0, x = 0; i < n; i++)
+		{
+			int v = __v[i];
+			cha[x++] = Character.forDigit((v >>> 28) & 0xF, 16);
+			cha[x++] = Character.forDigit((v >>> 24) & 0xF, 16);
+			cha[x++] = Character.forDigit((v >>> 20) & 0xF, 16);
+			cha[x++] = Character.forDigit((v >>> 16) & 0xF, 16);
+			cha[x++] = Character.forDigit((v >>> 12) & 0xF, 16);
+			cha[x++] = Character.forDigit((v >>> 8) & 0xF, 16);
+			cha[x++] = Character.forDigit((v >>> 4) & 0xF, 16);
+			cha[x++] = Character.forDigit(v & 0xF, 16);
 		}
 		
 		// Make string
