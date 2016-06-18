@@ -163,8 +163,11 @@ public final class IndexedSort
 					fuln = lefn + rign;
 				
 				// Perform the merge
-				if (true)
-					throw new Error("TODO");
+				for (int ll = 0, rr = 0; ll < lefn && rr < rign;)
+				{
+					if (true)
+						throw new Error("TODO");
+				}
 				
 				// Remove stack entry
 				at -= 2;
