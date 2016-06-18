@@ -32,6 +32,9 @@ public abstract class ZipDirectory
 	/** The cache of entries. */
 	private final Reference<ZipEntry> _entrycache[];
 	
+	/** The cache of strings. */
+	private final Reference<String> _namecache[];
+	
 	/**
 	 * Initializes the directory.
 	 *
@@ -52,7 +55,8 @@ public abstract class ZipDirectory
 		Arrays.fill(offsets, -1L);
 		
 		// Entry cache
-		_entrycache = __makeRefArray(__ne);
+		_entrycache = ZipDirectory.<ZipEntry>__makeRefArray(__ne);
+		_namecache = ZipDirectory.<String>__makeRefArray(__ne);
 	}
 	
 	/**
@@ -65,6 +69,18 @@ public abstract class ZipDirectory
 	 * @since 2016/03/06
 	 */
 	protected abstract ZipEntry readEntry(int __dx, long __off)
+		throws IOException;
+	
+	/**
+	 * Reads the name of an entry.
+	 *
+	 * @param __dx The entry to read.
+	 * @param __off The offset to the given entry.
+	 * @return The read entry.
+	 * @throws IOException On read errors.
+	 * @since 2016/06/18
+	 */
+	protected abstract String readEntryName(int __dx, long __off)
 		throws IOException;
 	
 	/**
@@ -117,22 +133,20 @@ public abstract class ZipDirectory
 			throw new ZipFormatException(String.format("AM05 %d", __i));
 		
 		// Lock on the entry cache so it is a sort of volatile
-		synchronized (_entrycache)
+		Reference<ZipEntry>[] entrycache = this._entrycache;
+		synchronized (entrycache)
 		{
 			// Get reference here, which might not exist
-			Reference<ZipEntry> ref = _entrycache[__i];
-			ZipEntry rv = null;
+			Reference<ZipEntry> ref = entrycache[__i];
+			ZipEntry rv;
 			
-			// In reference?
-			if (ref != null)
-				rv = ref.get();
+			// Create?
+			if (ref == null || null == (rv = ref.get()))
+				entrycache[__i] = new WeakReference<>(
+					(rv = readEntry(__i, off)));
 			
-			// Needs creation?
-			if (rv == null)
-				ref = new WeakReference<>((rv = readEntry(__i, off)));
-			
-			// Return it
-			return Objects.<ZipEntry>requireNonNull(rv);
+			// {@squirreljme.error AM0h Did not read an entry.}
+			return Objects.<ZipEntry>requireNonNull(rv, "AM0h");
 		}
 	}
 	
@@ -143,6 +157,7 @@ public abstract class ZipDirectory
 	 * @return The file name of the specified entry.
 	 * @throws IndexOutOfBoundsException if the index is not within the bounds
 	 * of the entry table.
+	 * @throws IOException On read errors.
 	 * @since 2016/06/18
 	 */
 	public final String getEntryName(int __i)
@@ -153,7 +168,30 @@ public abstract class ZipDirectory
 		if (__i < 0 || __i >= offsets.length)
 			throw new IndexOutOfBoundsException(String.format("IOOB %d", __i));
 		
-		throw new Error("TODO");
+		// Get the directory offset for this entry
+		long off = offsets[__i];
+		
+		// {@squirreljme.error AM0g The file entry has a negative offset.
+		// (The index of the entry)}
+		if (off < 0L)
+			throw new ZipFormatException(String.format("AM0g %d", __i));
+		
+		// Lock
+		Reference<String>[] namecache = this._namecache;
+		synchronized (namecache)
+		{
+			// Get reference here, which might not exist
+			Reference<String> ref = namecache[__i];
+			String rv;
+			
+			// Create?
+			if (ref == null || null == (rv = ref.get()))
+				namecache[__i] = new WeakReference<>(
+					(rv = readEntryName(__i, off)));
+			
+			// {@squirreljme.error AM0j Did not read an entry name.}
+			return Objects.<String>requireNonNull(rv, "AM0j");
+		}
 	}
 	
 	/**
@@ -181,13 +219,13 @@ public abstract class ZipDirectory
 	 * Makes the reference array.
 	 *
 	 * @param __ne Number of elements,
-	 * @return The file entry reference array
+	 * @return The reference array
 	 * @since 2016/03/06
 	 */
 	@SuppressWarnings({"unchecked"})
-	private static final Reference<ZipEntry>[] __makeRefArray(int __ne)
+	private static final <W> Reference<W>[] __makeRefArray(int __ne)
 	{
-		return (Reference<ZipEntry>[])new Reference[__ne];
+		return (Reference<W>[])new Reference[__ne];
 	}
 	
 	/**

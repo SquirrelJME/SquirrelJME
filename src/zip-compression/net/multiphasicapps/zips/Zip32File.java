@@ -233,6 +233,17 @@ public class Zip32File
 		
 		/**
 		 * {@inheritDoc}
+		 * @since 2016/06/18
+		 */
+		@Override
+		protected String readEntryName(int __dx, long __off)
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
 		 * @since 2016/03/06
 		 */
 		@Override

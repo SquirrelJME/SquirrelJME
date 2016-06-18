@@ -33,3 +33,8 @@ have to initialize all of them, it just has to read their name. So this would
 reduce the number of allocations and parsing performed since creation of
 `ZipEntry` would be avoided.
 
+## 09:45
+
+Seems I never cached read entries, so they were never placed in the array to be
+used again, so on every get of an entry they were reinitialized.
+
