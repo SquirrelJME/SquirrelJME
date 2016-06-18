@@ -17,14 +17,14 @@ package net.multiphasicapps.squirreljme.cldc;
  *
  * @since 2016/06/18
  */
-public final class SpecialIntArraySort
+public final class IndexedSort
 {
 	/**
 	 * Not used.
 	 *
 	 * @since 2016/06/18
 	 */
-	private SpecialIntArraySort()
+	private IndexedSort()
 	{
 	}
 	
@@ -46,7 +46,7 @@ public final class SpecialIntArraySort
 	 * @since 2016/06/18
 	 */
 	public static <Q> int[] sort(Q __q, int __from, int __to,
-		SpecialComparator<Q> __comp)
+		IndexedComparator<Q> __comp)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -126,27 +126,6 @@ public final class SpecialIntArraySort
 		
 		// Return the sorted result
 		return rv;
-	}
-	
-	/**
-	 * This is the the comparator which is used for comparing two values
-	 * by their index.
-	 *
-	 * @param <Q> The original data, may be an array or collection.
-	 * @since 2016/06/18
-	 */
-	public static interface SpecialComparator<Q>
-	{
-		/**
-		 * Compares to values based on their index number.
-		 *
-		 * @param __q The potential data source.
-		 * @param __a The first index.
-		 * @param __b The second index.
-		 * @return The comparison index.
-		 * @since 2016/06/18
-		 */
-		public abstract int compare(Q __q, int __a, int __b);
 	}
 }
 

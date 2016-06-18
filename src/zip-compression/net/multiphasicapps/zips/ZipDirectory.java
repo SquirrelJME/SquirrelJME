@@ -17,7 +17,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.cldc.SpecialIntArraySort;
+import net.multiphasicapps.squirreljme.cldc.IndexedComparator;
+import net.multiphasicapps.squirreljme.cldc.IndexedSort;
 
 /**
  * This provides a cached directory of the ZIP file contents.
@@ -238,7 +239,7 @@ public abstract class ZipDirectory
 				names[i] = readEntryName(i, offsets[i]);
 			
 			// Perform the sort
-			/* SpecialIntArraySort SpecialIntArraySort.SpecialComparator */
+			/* IndexedSort IndexedComparator */
 			if (true)
 				throw new Error("TODO");
 			
