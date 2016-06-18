@@ -124,4 +124,8 @@ it works properly.
 
 Actually, the class should have a shorter name.
 
+## 15:41
+
+I believe I have a merge sort now.
+
 

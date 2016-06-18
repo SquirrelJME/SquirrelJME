@@ -110,7 +110,9 @@ public final class IndexedSort
 		// Perform an in place merge sort starting at the top region
 		// If the stack ever gets only a single start/end pair then the
 		// sort operation is complete.
-		for (; at >= 2;)
+		boolean mergeup = false;
+		boolean maybemerge = false;
+		for (; at >= 4;)
 		{
 			// Get the stack region before this one
 			int befs = stack[at - 4],
@@ -122,13 +124,87 @@ public final class IndexedSort
 				nowe = stack[at - 1];
 			int nown = nowe - nows;
 			
-			System.err.printf("DEBUG -- %d:%d (%d) %d:%d (%d)%n",
+			System.err.printf(
+				"DEBUG -- @%3d %c%c %3d:%3d (%3d) || %3d:%3d (%3d)%n",
+				at, (mergeup ? '^' : ' '), (maybemerge ? 'M' : ' '),
 				befs, befe, befn, nows, nowe, nown);
+			
+			// Maybe merge up?
+			if (maybemerge)
+			{
+				// If the end is at the before end, merge up more
+				if (nowe == befe)
+					mergeup = true;
+				
+				// Otherwise switch to the right side
+				else
+				{
+					stack[at - 2] = nowe;
+					stack[at - 1] = befe;
+				}
+				
+				// If not merging, continue
+				maybemerge = false;
+				if (!mergeup)
+					continue;
+			}
+			
+			// Perform a merge
+			if (mergeup)
+			{
+				// Get the left side
+				int lefs = befs,
+					lefe = nows,
+					lefn = lefe - lefs;
+				
+				// And the right side
+				int rigs = nows,
+					rige = nowe,
+					rign = nown;
+				
+				// The full merge range
+				int fuls = lefs,
+					fule = rige,
+					fuln = lefn + rign;
+				
+				System.err.printf(
+					"DEBUG -- MERGE %3d:%3d (%3d) %3d:%3d (%3d) " +
+					"--> %3d:%3d (%3d)%n",
+					lefs, lefe, lefn, rigs, rige, rign, fuls, fule, fuln);
+				
+				// Remove stack entry
+				at -= 2;
+				
+				// Maybe merge again, possibly
+				mergeup = false;
+				maybemerge = true;
+				continue;
+			}
 			
 			// Down to two entries? Sort them, either merge up if this is
 			// the trailing end or decend into the second side if this is not.
-			if (nown == 2)
-				throw new Error("TODO");
+			// Also a single entry, if odd
+			if (nown <= 2)
+			{
+				// Only sort for two entries, this can happen if the
+				// input array is of an odd size
+				if (nown == 2)
+					;
+				
+				/*if (true)
+					throw new Error("TODO");*/
+				
+				// Merge up?
+				if (befe == nowe)
+					mergeup = true;
+				
+				// Sort the right side
+				else
+				{
+					stack[at - 2] = nowe;
+					stack[at - 1] = befe;
+				}
+			}
 			
 			// Otherwise, descend the left side
 			else

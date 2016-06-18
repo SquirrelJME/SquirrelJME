@@ -27,7 +27,7 @@ public class TestIndexedSort
 {
 	/** The size of the array to test. */
 	public static final int TEST_SIZE =
-		4096;
+		32;
 	
 	/** The first random seed to try. */
 	public static final long RANDOM_SEED_A =
