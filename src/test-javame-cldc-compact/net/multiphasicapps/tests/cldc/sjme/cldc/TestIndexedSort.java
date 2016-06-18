@@ -12,6 +12,8 @@ package net.multiphasicapps.tests.cldc.sjme.cldc;
 
 import java.util.Arrays;
 import java.util.Random;
+import net.multiphasicapps.squirreljme.cldc.IndexedComparator;
+import net.multiphasicapps.squirreljme.cldc.IndexedSort;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 
@@ -23,6 +25,10 @@ import net.multiphasicapps.tests.TestInvoker;
 public class TestIndexedSort
 	implements TestInvoker
 {
+	/** The size of the array to test. */
+	public static final int TEST_SIZE =
+		4096;
+	
 	/** The first random seed to try. */
 	public static final long RANDOM_SEED_A =
 		0xCAFE_F00DL;
@@ -75,7 +81,38 @@ public class TestIndexedSort
 		}
 		
 		// Initialize generator
-		Random ran = new Random(seed);
+		Random rand = new Random(seed);
+		
+		// Create array using the test size and fill it with random data
+		int n = TEST_SIZE;
+		int[] test = new int[n];
+		for (int i = 0; i < n; i++)
+			test[i] = rand.nextInt();
+		
+		// Run the sorting algorithm on it to get the index order
+		int[] dxo = IndexedSort.<int[]>sort(test, 0, n,
+			new IndexedComparator<int[]>()
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2016/06/18
+				 */
+				@Override
+				public int compare(int[] __q, int __a, int __b)
+				{
+					// Get A and B values
+					int a = __q[__a];
+					int b = __q[__b];
+					
+					// Compare
+					if (a < b)
+						return -1;
+					else if (a > b)
+						return 1;
+					else
+						return 0;
+				}
+			});
 		
 		throw new Error("TODO");
 	}
