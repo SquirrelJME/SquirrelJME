@@ -60,3 +60,12 @@ all at the start. However, if ZIPs are just thrown away then the sorting will
 not matter at all. So I suppose for the package list that ZIPs should remain
 open?
 
+## 10:23
+
+If the ZIP remains open then a binary search would be better. However in the
+long run, ZIPs will remain open due to being used as resources. When a ZIP
+is read into the class path, it will pretty much never close as long as a
+resource or class will need to be looked up (in general cases, this would be
+common). So a sorted list by name would definitely be faster when it comes to
+searching by name.
+
