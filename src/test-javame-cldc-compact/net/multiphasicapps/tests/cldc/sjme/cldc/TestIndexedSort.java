@@ -114,7 +114,31 @@ public class TestIndexedSort
 				}
 			});
 		
-		throw new Error("TODO");
+		// Go through the sorted indices to make sure the values
+		// are in sequential order
+		int last = Integer.MIN_VALUE;
+		boolean failed = false;
+		int[] act = new int[n];
+		for (int i = 0; i < n; i++)
+		{
+			// Get value here
+			int v = test[dxo[i]];
+			act[i] = v;
+			
+			// Bad?
+			failed = (v < last);
+			
+			// Store current
+			last = v;
+		}
+		
+		// Failed?
+		if (failed)
+			__tc.checkEquals(test, act);
+		
+		// Success!
+		else
+			__tc.checkEquals(n, n);
 	}
 }
 
