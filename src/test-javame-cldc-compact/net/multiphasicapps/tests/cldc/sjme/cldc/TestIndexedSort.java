@@ -61,6 +61,22 @@ public class TestIndexedSort
 	public void runTest(TestChecker __tc, String __st)
 		throws NullPointerException
 	{
+		// Decode the seed to use
+		long seed;
+		try
+		{
+			seed = Long.decode(__st);
+		}
+		
+		// Bad number
+		catch (NumberFormatException e)
+		{
+			return new RuntimeException(e);
+		}
+		
+		// Initialize generator
+		Random ran = new Random(seed);
+		
 		throw new Error("TODO");
 	}
 }
