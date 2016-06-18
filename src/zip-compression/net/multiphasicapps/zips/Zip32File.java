@@ -67,6 +67,18 @@ public class Zip32File
 	protected static final int CRC_PRECONDITION =
 		0xFFFFFFFF;
 	
+	/** The offset to the general purpose flags. */
+	protected static final int OFFSET_OF_GENERAL_PURPOSE_FLAGS =
+		6;
+	
+	/** The offset to the file name length. */
+	protected static final int OFFSET_OF_FILE_NAME_LENGTH =
+		26;
+	
+	/** The offset to the file name. */
+	protected static final int OFFSET_OF_FILE_NAME =
+		30;
+	
 	/** The byte offset of the central directory. */
 	protected final long cdirbase;
 	
@@ -239,7 +251,25 @@ public class Zip32File
 		protected String readEntryName(int __dx, long __off)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Get length of file name
+			int flen = readUnsignedShort(__off + OFFSET_OF_FILE_NAME_LENGTH);
+			
+			// Read the input byte array
+			byte barr[] = new byte[flen];
+			readByteArray(__off + OFFSET_OF_FILE_NAME, barr, 0, flen);
+			
+			// Read flags
+			int bits = (int)readUnsignedShort(__off +
+				OFFSET_OF_GENERAL_PURPOSE_FLAGS);
+			
+			// If UTF-8 then use internal handling
+			if (0 != (bits & GPF_ENCODING_UTF8))
+				return new String(barr, 0, flen, "utf-8");
+			
+			// Otherwise use codepage handling, Java ME only has two
+			// character sets available
+			else
+				return IBM437CodePage.toString(barr, 0, flen);
 		}
 		
 		/**
@@ -361,41 +391,7 @@ public class Zip32File
 		public String name()
 			throws IOException
 		{
-			// Get reference
-			Reference<String> ref = _name;
-			String rv = null;
-			
-			// In reference?
-			if (ref != null)
-				rv = ref.get();
-			
-			// Needs decoding
-			if (rv == null)
-			{
-				// Get length of file name
-				int flen = (int)readStruct(localheaderpos,
-					ZIP32LocalFile.FILE_NAME_LENGTH);
-				
-				// Read the input byte array
-				byte barr[] = new byte[flen];
-				readByteArray(localheaderpos +
-					ZIP32LocalFile.FILE_NAME.offset(), barr, 0, flen);
-				
-				// If UTF-8 then use internal handling
-				if (isLanguageUTF8())
-					rv = new String(barr, 0, flen, "utf-8");
-				
-				// Otherwise use codepage handling, Java ME only has two
-				// character sets available
-				else
-					rv = IBM437CodePage.toString(barr, 0, flen);
-				
-				// Cache it
-				_name = new WeakReference<>(rv);
-			}
-			
-			// Return it
-			return rv;
+			return this.directory.getEntryName(index);
 		}
 		
 		/**

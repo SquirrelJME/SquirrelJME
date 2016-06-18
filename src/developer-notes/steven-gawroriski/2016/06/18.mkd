@@ -38,3 +38,16 @@ reduce the number of allocations and parsing performed since creation of
 Seems I never cached read entries, so they were never placed in the array to be
 used again, so on every get of an entry they were reinitialized.
 
+## 10:03
+
+Ok, so after these changes (and the caching of entries which was an error) I
+get the following results:
+
+ * 1.8s
+ * 1.0s
+ * 1.0s
+ * 2.0s
+ * 1.0s
+
+So this is a definite 1 second faster than before.
+
