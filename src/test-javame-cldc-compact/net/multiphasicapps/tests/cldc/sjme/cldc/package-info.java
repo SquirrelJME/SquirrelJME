@@ -15,5 +15,5 @@
  * @since 2016/06/18
  */
 
-package net.multiphasicapps.tests.cldc.net.multiphasicapps.squirreljme.cldc;
+package net.multiphasicapps.tests.cldc.sjme.cldc;
 
