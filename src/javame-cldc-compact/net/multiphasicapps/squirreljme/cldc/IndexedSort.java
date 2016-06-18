@@ -130,7 +130,8 @@ public final class IndexedSort
 			// Otherwise, descend the left side
 			else
 			{
-				throw new Error("TODO");
+				stack[at++] = nows;
+				stack[at++] = nows + (nown >>> 1);
 			}
 		}
 		
