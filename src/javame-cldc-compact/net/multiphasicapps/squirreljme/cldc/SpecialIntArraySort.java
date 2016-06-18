@@ -92,9 +92,9 @@ public final class SpecialIntArraySort
 			rv[i] = j++;
 		
 		// Calculate the stack size, the number of divisions that would be
-		// used
-		int maxstack = Integer.numberOfTrailingZeros(
-			Integer.highestOneBit(n));
+		// used, The stack hold low and high values.
+		int maxstack = (Integer.numberOfTrailingZeros(
+			Integer.highestOneBit(n)) * 2;
 		int[] stack = new int[maxstack];
 		
 		// Perform an in place merge sort
