@@ -183,7 +183,23 @@ public final class IndexedSort
 				// Only sort for two entries, this can happen if the
 				// input array is of an odd size
 				if (nown == 2)
-					throw new Error("TODO");
+				{
+					// Get the left and right indexes
+					int ndx = nows + 1;
+					int left = rv[nows],
+						right = rv[ndx];
+					
+					// Compare them
+					int comp = __comp.compare(__q, left, right);
+					
+					// If the one on the right is lower, switch them
+					if (comp < 0)
+					{
+						int was = rv[nows];
+						rv[nows] = rv[ndx];
+						rv[ndx] = was;
+					}
+				}
 				
 				// Merge up?
 				if (befe == nowe)
