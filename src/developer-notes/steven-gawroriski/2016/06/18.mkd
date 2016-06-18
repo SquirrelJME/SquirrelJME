@@ -14,3 +14,22 @@ while right now due to a reboot my built package cache has been cleared.
 So due to there being less packages, it is definitely much faster. However two
 seconds is still a bit slow.
 
+## 08:42
+
+One thing that could speed up searching ZIP entries would be if the hashcode
+of the entries were stored. However that would be a bit ugly. What I actually
+could do is binary sort all of the filenames using the String comparator. This
+way when searching for an entry it happens at a faster rate. This would reduce
+the number of searches and would find them faster.
+
+## 08:49
+
+That however requires being able to read the filename of the directory entries.
+So perhaps instead of initializing a new file for every pass of the entry,
+instead what is done is that there is a `getEntryName` which returns a string
+of the given index. That way the entry names can be cached and then used to
+initialize the entries also. Then with this, searching through entries does not
+have to initialize all of them, it just has to read their name. So this would
+reduce the number of allocations and parsing performed since creation of
+`ZipEntry` would be avoided.
+

@@ -81,10 +81,11 @@ public abstract class ZipDirectory
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Go through self
-		for (ZipEntry fe : this)
-			if (__n.equals(fe.toString()))
-				return fe;
+		// Find a matching name
+		int n = size();
+		for (int i = 0; i < n; i++)
+			if (getEntryName(i).equals(__n))
+				return get(i);
 		
 		// Not found
 		return null;
@@ -95,12 +96,15 @@ public abstract class ZipDirectory
 	 *
 	 * @param __i The index to get the entry at.
 	 * @return The entry at the given index.
+	 * @throws IndexOutOfBoundsException if the index is not within the bounds
+	 * of the entry table.
 	 * @since 2016/03/05
 	 */
 	public final ZipEntry get(int __i)
-		throws IOException
+		throws IndexOutOfBoundsException, IOException
 	{
 		// If out of bounds, always null
+		long[] offsets = this.offsets;
 		if (__i < 0 || __i >= offsets.length)
 			return null;
 		
@@ -130,6 +134,26 @@ public abstract class ZipDirectory
 			// Return it
 			return Objects.<ZipEntry>requireNonNull(rv);
 		}
+	}
+	
+	/**
+	 * This returns the name of the file that is associated with this entry.
+	 *
+	 * @param __i The index to get the file name of.
+	 * @return The file name of the specified entry.
+	 * @throws IndexOutOfBoundsException if the index is not within the bounds
+	 * of the entry table.
+	 * @since 2016/06/18
+	 */
+	public final String getEntryName(int __i)
+		throws IndexOutOfBoundsException, IOException
+	{
+		// Out of bounds?
+		long[] offsets = this.offsets;
+		if (__i < 0 || __i >= offsets.length)
+			throw new IndexOutOfBoundsException(String.format("IOOB %d", __i));
+		
+		throw new Error("TODO");
 	}
 	
 	/**
