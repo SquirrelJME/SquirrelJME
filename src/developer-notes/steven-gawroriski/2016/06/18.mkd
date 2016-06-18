@@ -74,3 +74,25 @@ searching by name.
 Big-O wise, binary search beats linear search every time, so I will go for a
 binary search when a ZIP is initialized.
 
+## 10:55
+
+I need a way to sort the arrays while also remember their original indices and
+such. The `Comparator` and sort operation has to go through all entries,
+however it passes only a string so the entry order is not known. What I could
+do instead of strings is sort by hashcode. I would have to handle cases where
+there are duplicate entries since it is unspecified which index is returned if
+there are duplicates.
+
+## 10:59
+
+Alternatively, I could sort a fake list sort of. I can have an array of
+`Integer` and then use a `Comparator` on it. The comparator will read the value
+and then compare the original strings instead. I could alternatively make a
+merge sort which takes the index based approach and uses that. Basically
+instead an array of indexes in their sorted order is used. Then once the values
+are properly sorted, they are moved back into place from the original depending
+on the actual index position. So the initial array is just an index from _0_
+through _n_. This would require all the strings be created but would not need
+a number of temporary integers to be created. However, I could not use a built
+in sorting algorithm. So for simplicity, it will be merge sort.
+

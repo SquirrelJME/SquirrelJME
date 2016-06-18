@@ -35,6 +35,9 @@ public abstract class ZipDirectory
 	/** The cache of strings. */
 	private final Reference<String> _namecache[];
 	
+	/** Are entries sorted by name? */
+	private final boolean _namesorted;
+	
 	/**
 	 * Initializes the directory.
 	 *
@@ -97,11 +100,18 @@ public abstract class ZipDirectory
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Find a matching name
+		// Use binary search if the names are sorted
 		int n = size();
-		for (int i = 0; i < n; i++)
-			if (getEntryName(i).equals(__n))
-				return get(i);
+		if (this._namesorted)
+			throw new Error("TODO");
+		
+		// Use linear search instead
+		else
+		{
+			for (int i = 0; i < n; i++)
+				if (getEntryName(i).equals(__n))
+					return get(i);
+		}
 		
 		// Not found
 		return null;
@@ -191,6 +201,60 @@ public abstract class ZipDirectory
 			
 			// {@squirreljme.error AM0j Did not read an entry name.}
 			return Objects.<String>requireNonNull(rv, "AM0j");
+		}
+	}
+	
+	/**
+	 * Sorts all entries by their name so that a name lookup which uses a
+	 * binary search algorithm is used for entry lookup. The sorting cost at
+	 * the start should offset the long term speed for ZIPs which have been
+	 * opened for awhile.
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2016/06/18
+	 */
+	protected final void internalSortEntries()
+		throws IOException
+	{
+		// ignore if already sorted
+		if (this._namesorted)
+			return;
+		
+		// This could be running on low memory systems, so if a sort fails
+		// due to being out of memory then just keep it linear.
+		try
+		{
+			// Get all the input fields
+			long[] offsets = this.offsets;
+			int n = offsets.length;
+		
+			// Read all entry names
+			String[] names = new String[n];
+			for (int i = 0; i < n; i++)
+				names[i] = readEntryName(i, offsets[i]);
+			
+			/** The cache of entries. */
+			private final Reference<ZipEntry> _entrycache[];
+	
+			/** The cache of strings. */
+			private final Reference<String> _namecache[];
+		
+			if (true)
+				throw new Error("TODO");
+		
+			// Clear the entry cache because after sorting, all indices are
+			// invalid
+			Reference<ZipEntry>[] entrycache = this._entrycache;
+			for (int i = 0; i < n; i++)
+				entrycache[i] = null;
+		
+			// Set as sorted
+			this._namesorted = true;
+		}
+		
+		// Ran out of memory
+		catch (OutOfMemoryError e)
+		{
 		}
 	}
 	

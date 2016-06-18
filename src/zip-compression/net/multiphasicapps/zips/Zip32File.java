@@ -241,6 +241,9 @@ public class Zip32File
 			if (readcount != numentries)
 				throw new ZipFormatException(String.format("AM09 %d %d",
 					readcount, numentries));
+			
+			// Sort every entry by their name
+			internalSortEntries();
 		}
 		
 		/**
