@@ -36,7 +36,7 @@ public abstract class ZipDirectory
 	private final Reference<String> _namecache[];
 	
 	/** Are entries sorted by name? */
-	private final boolean _namesorted;
+	private volatile boolean _namesorted;
 	
 	/**
 	 * Initializes the directory.
@@ -227,26 +227,49 @@ public abstract class ZipDirectory
 			// Get all the input fields
 			long[] offsets = this.offsets;
 			int n = offsets.length;
+			
+			// The target offset, allocate now in case it cannot fit within
+			// memory.
+			long[] toffs = new long[n];
 		
 			// Read all entry names
 			String[] names = new String[n];
 			for (int i = 0; i < n; i++)
 				names[i] = readEntryName(i, offsets[i]);
 			
-			/** The cache of entries. */
-			private final Reference<ZipEntry> _entrycache[];
-	
-			/** The cache of strings. */
-			private final Reference<String> _namecache[];
-		
-			if (true)
-				throw new Error("TODO");
-		
+			// Sort all entries and return the original indices.
+			int[] sorted = __sortNames(names);
+			
+			// Setup target offsets and new cache names
+			Reference<String>[] namecache = this._namecache;
+			for (int i = 0; i < n; i++)
+			{
+				// Set new offset
+				int sdx = sorted[i];
+				toffs[i] = offsets[sdx];
+				
+				// The name was already loaded, so try to cache it.
+				try
+				{
+					namecache[i] = new WeakReference<>(names[sdx]);
+				}
+				
+				// Ignore and remove any previous cache
+				catch (OutOfMemoryError e)
+				{
+					namecache[i] = null;
+				}
+			}
+			
 			// Clear the entry cache because after sorting, all indices are
 			// invalid
 			Reference<ZipEntry>[] entrycache = this._entrycache;
 			for (int i = 0; i < n; i++)
 				entrycache[i] = null;
+			
+			// Overlay the sorted offsets over the original
+			for (int i = 0; i < n; i++)
+				offsets[i] = toffs[i];
 		
 			// Set as sorted
 			this._namesorted = true;

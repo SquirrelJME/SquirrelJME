@@ -96,3 +96,9 @@ through _n_. This would require all the strings be created but would not need
 a number of temporary integers to be created. However, I could not use a built
 in sorting algorithm. So for simplicity, it will be merge sort.
 
+## 11:10
+
+Alternatively instead of sorting names, I can just have a sort index of
+references instead. The name search can just go by these indexes instead of
+using a linear search.
+
