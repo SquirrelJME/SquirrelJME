@@ -115,3 +115,8 @@ really do not have to have 9 merge sort algorithm copies for (all primitives,
 integer array with the input elements, then sort them using a special
 `Comparator`.
 
+## 12:44
+
+I am actually going to have to test the sorting algorithm, so make sure that
+it works properly.
+
