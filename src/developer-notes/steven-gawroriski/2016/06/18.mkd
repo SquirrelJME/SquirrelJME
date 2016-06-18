@@ -69,3 +69,8 @@ resource or class will need to be looked up (in general cases, this would be
 common). So a sorted list by name would definitely be faster when it comes to
 searching by name.
 
+## 10:35
+
+Big-O wise, binary search beats linear search every time, so I will go for a
+binary search when a ZIP is initialized.
+
