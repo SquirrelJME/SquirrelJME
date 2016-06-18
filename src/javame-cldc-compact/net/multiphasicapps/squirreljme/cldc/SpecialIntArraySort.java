@@ -38,12 +38,59 @@ public final class SpecialIntArraySort
 	 * @param __from The inclusive starting index.
 	 * @param __to The exclusive ending index.
 	 * @param __comp The special comparator for the input data.
-	 * @return The array of indices in their sorted order.
+	 * @return The array of indices in their sorted order, the indices in the
+	 * array start from {@code __from} and end at {@code __to}.
+	 * @throws IllegalArgumentException If the from and/or to index are
+	 * negative, or the to index is before the from index.
+	 * @throws NullPointerException If no comparator was specified.
 	 * @since 2016/06/18
 	 */
 	public static <Q> int[] sort(Q __q, int __from, int __to,
 		SpecialComparator<Q> __comp)
+		throws IllegalArgumentException, NullPointerException
 	{
+		// Check
+		if (__comp == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error The from or to index to sort is either negative
+		// or the to index is before the from index.}
+		if (__from < 0 || __to < 0 || __to < __from)
+			throw new IllegalArgumentException("ZZ0r");
+		
+		// Not sorting anything?
+		int n = __from - __to;
+		if (n == 0)
+			return new int[0];
+		
+		// Only sorting a single element
+		else if (n == 1)
+			return new int[]{__from};
+		
+		// Comparing only two elements
+		else if (n == 2)
+		{
+			// Get indices
+			int ax = __from,
+				bx = __from + 1;
+			
+			// Compare them
+			int comp = __comp.compare(__q, ax, bx);
+			
+			// A is higher?
+			if (comp > 0)
+				return new int[]{bx, ax};
+			
+			// Otherwise keep the same
+			else
+				return new int[]{ax, bx};
+		}
+		
+		// Setup target array with sorted index entries
+		int rv[] = new int[n];
+		for (int i = 0, j = __from; i < n; i++)
+			rv[i] = j++;
+		
 		throw new Error("TODO");
 	}
 	
