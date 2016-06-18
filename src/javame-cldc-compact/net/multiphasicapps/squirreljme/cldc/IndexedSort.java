@@ -115,13 +115,23 @@ public final class IndexedSort
 			// Get the stack region before this one
 			int befs = stack[at - 4],
 				befe = stack[at - 3];
+			int befn = befe - befs;
 			
 			// Get the stack region that is currently being looked at
 			int nows = stack[at - 2],
 				nowe = stack[at - 1];
+			int nown = nowe - nows;
 			
-			if (true)
+			// Down to two entries? Sort them, either merge up if this is
+			// the trailing end or decend into the second side if this is not.
+			if ((nows + 1) == nowe)
 				throw new Error("TODO");
+			
+			// Otherwise, descend the left side
+			else
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		// Return the sorted result
