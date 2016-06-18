@@ -102,3 +102,16 @@ Alternatively instead of sorting names, I can just have a sort index of
 references instead. The name search can just go by these indexes instead of
 using a linear search.
 
+## 11:24
+
+I am likely to implement the sorting algorithm many times over especially in
+the CLDC libraries. Therefor I should have generic code be declared and then
+use the internal sorting code. Internally the sorting of any type of data can
+just be done with a single integer array of indexes and a special method.
+Although there would be a slight speed penalty due to method calls, all of the
+sorting algorithm code would result in no duplicated sorting algorithms. I
+really do not have to have 9 merge sort algorithm copies for (all primitives,
+`Object`, and `List`s). The internal sorting algorithm will create a copy
+integer array with the input elements, then sort them using a special
+`Comparator`.
+
