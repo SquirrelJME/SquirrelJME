@@ -134,7 +134,15 @@ public class TestIndexedSort
 		
 		// Failed?
 		if (failed)
+		{
+			// If they are equal then invert the first entry so that there
+			// is not an erronous PASS.
+			if (act[0] == test[0])
+				act[0] ^= 0xFFFF_FFFF;	
+			
+			// Check
 			__tc.checkEquals(test, act);
+		}
 		
 		// Success!
 		else
