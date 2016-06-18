@@ -59,7 +59,7 @@ public final class IndexedSort
 			throw new IllegalArgumentException("ZZ0r");
 		
 		// Not sorting anything?
-		int n = __from - __to;
+		int n = __to - __from;
 		if (n == 0)
 			return new int[0];
 		
