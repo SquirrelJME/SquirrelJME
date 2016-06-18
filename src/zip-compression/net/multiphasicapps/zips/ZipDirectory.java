@@ -36,7 +36,7 @@ public abstract class ZipDirectory
 	private final Reference<String> _namecache[];
 	
 	/** Are entries sorted by name? */
-	private volatile boolean _namesorted;
+	private volatile int[] _sorteddx;
 	
 	/**
 	 * Initializes the directory.
@@ -102,8 +102,11 @@ public abstract class ZipDirectory
 		
 		// Use binary search if the names are sorted
 		int n = size();
-		if (this._namesorted)
+		int[] sorteddx = this._sorteddx;
+		if (sorteddx != null)
+		{
 			throw new Error("TODO");
+		}
 		
 		// Use linear search instead
 		else
@@ -217,62 +220,28 @@ public abstract class ZipDirectory
 		throws IOException
 	{
 		// ignore if already sorted
-		if (this._namesorted)
+		if (this._sorteddx != null)
 			return;
 		
 		// This could be running on low memory systems, so if a sort fails
 		// due to being out of memory then just keep it linear.
 		try
 		{
-			// Get all the input fields
-			long[] offsets = this.offsets;
-			int n = offsets.length;
+			// Setup target sort index list
+			int n = size();
+			int[] sorted = new int[n];
 			
-			// The target offset, allocate now in case it cannot fit within
-			// memory.
-			long[] toffs = new long[n];
-		
 			// Read all entry names
 			String[] names = new String[n];
 			for (int i = 0; i < n; i++)
 				names[i] = readEntryName(i, offsets[i]);
 			
-			// Sort all entries and return the original indices.
-			int[] sorted = __sortNames(names);
+			// Perform the sort
+			if (true)
+				throw new Error("TODO");
 			
-			// Setup target offsets and new cache names
-			Reference<String>[] namecache = this._namecache;
-			for (int i = 0; i < n; i++)
-			{
-				// Set new offset
-				int sdx = sorted[i];
-				toffs[i] = offsets[sdx];
-				
-				// The name was already loaded, so try to cache it.
-				try
-				{
-					namecache[i] = new WeakReference<>(names[sdx]);
-				}
-				
-				// Ignore and remove any previous cache
-				catch (OutOfMemoryError e)
-				{
-					namecache[i] = null;
-				}
-			}
-			
-			// Clear the entry cache because after sorting, all indices are
-			// invalid
-			Reference<ZipEntry>[] entrycache = this._entrycache;
-			for (int i = 0; i < n; i++)
-				entrycache[i] = null;
-			
-			// Overlay the sorted offsets over the original
-			for (int i = 0; i < n; i++)
-				offsets[i] = toffs[i];
-		
-			// Set as sorted
-			this._namesorted = true;
+			// Set sorted details
+			this._sorteddx = sorted;
 		}
 		
 		// Ran out of memory
