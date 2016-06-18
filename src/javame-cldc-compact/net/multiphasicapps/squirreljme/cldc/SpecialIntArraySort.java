@@ -91,7 +91,18 @@ public final class SpecialIntArraySort
 		for (int i = 0, j = __from; i < n; i++)
 			rv[i] = j++;
 		
-		throw new Error("TODO");
+		// Calculate the stack size, the number of divisions that would be
+		// used
+		int maxstack = Integer.numberOfTrailingZeros(
+			Integer.highestOneBit(n));
+		int[] stack = new int[maxstack];
+		
+		// Perform an in place merge sort
+		if (true)
+			throw new Error("TODO");
+		
+		// Return the sorted result
+		return rv;
 	}
 	
 	/**
