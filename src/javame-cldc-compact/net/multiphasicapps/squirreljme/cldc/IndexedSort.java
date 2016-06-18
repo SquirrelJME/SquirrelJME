@@ -122,9 +122,12 @@ public final class IndexedSort
 				nowe = stack[at - 1];
 			int nown = nowe - nows;
 			
+			System.err.printf("DEBUG -- %d:%d (%d) %d:%d (%d)%n",
+				befs, befe, befn, nows, nowe, nown);
+			
 			// Down to two entries? Sort them, either merge up if this is
 			// the trailing end or decend into the second side if this is not.
-			if ((nows + 1) == nowe)
+			if (nown == 2)
 				throw new Error("TODO");
 			
 			// Otherwise, descend the left side
