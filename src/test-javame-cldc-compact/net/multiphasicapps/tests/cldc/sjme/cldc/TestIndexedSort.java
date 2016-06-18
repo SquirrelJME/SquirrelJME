@@ -71,7 +71,7 @@ public class TestIndexedSort
 		// Bad number
 		catch (NumberFormatException e)
 		{
-			return new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		
 		// Initialize generator
