@@ -93,13 +93,34 @@ public final class SpecialIntArraySort
 		
 		// Calculate the stack size, the number of divisions that would be
 		// used, The stack hold low and high values.
-		int maxstack = (Integer.numberOfTrailingZeros(
-			Integer.highestOneBit(n)) * 2;
+		// Need an extra stack entry for the starting point
+		int maxstack = ((Integer.numberOfTrailingZeros(
+			Integer.highestOneBit(n)) + 1) * 2;
 		int[] stack = new int[maxstack];
+		int at = 0;
 		
-		// Perform an in place merge sort
-		if (true)
-			throw new Error("TODO");
+		// The first entry in the stack is the fully sorted list
+		stack[at++] = 0;
+		stack[at++] = n;
+		
+		// The second entry is the left side of that sort
+		stack[at++] = 0;
+		stack[at++] = n >>> 1;
+		
+		// Perform an in place merge sort starting at the top region
+		for (;;)
+		{
+			// Get the stack region before this one
+			int befs = stack[at - 4],
+				befe = stack[at - 3];
+			
+			// Get the stack region that is currently being looked at
+			int nows = stack[at - 2],
+				nowe = stack[at - 1];
+			
+			if (true)
+				throw new Error("TODO");
+		}
 		
 		// Return the sorted result
 		return rv;
