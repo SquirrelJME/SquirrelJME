@@ -124,11 +124,6 @@ public final class IndexedSort
 				nowe = stack[at - 1];
 			int nown = nowe - nows;
 			
-			System.err.printf(
-				"DEBUG -- @%3d %c%c %3d:%3d (%3d) || %3d:%3d (%3d)%n",
-				at, (mergeup ? '^' : ' '), (maybemerge ? 'M' : ' '),
-				befs, befe, befn, nows, nowe, nown);
-			
 			// Maybe merge up?
 			if (maybemerge)
 			{
@@ -167,10 +162,9 @@ public final class IndexedSort
 					fule = rige,
 					fuln = lefn + rign;
 				
-				System.err.printf(
-					"DEBUG -- MERGE %3d:%3d (%3d) %3d:%3d (%3d) " +
-					"--> %3d:%3d (%3d)%n",
-					lefs, lefe, lefn, rigs, rige, rign, fuls, fule, fuln);
+				// Perform the merge
+				if (true)
+					throw new Error("TODO");
 				
 				// Remove stack entry
 				at -= 2;
@@ -189,10 +183,7 @@ public final class IndexedSort
 				// Only sort for two entries, this can happen if the
 				// input array is of an odd size
 				if (nown == 2)
-					;
-				
-				/*if (true)
-					throw new Error("TODO");*/
+					throw new Error("TODO");
 				
 				// Merge up?
 				if (befe == nowe)
