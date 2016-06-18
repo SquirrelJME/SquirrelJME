@@ -1,0 +1,16 @@
+# 2016/06/18
+
+## 08:37
+
+Actually my previous times are invalid because I had more packages available
+while right now due to a reboot my built package cache has been cleared.
+
+ * 4.0s
+ * 2.4s
+ * 2.3s
+ * 2.4s
+ * 2.4s
+
+So due to there being less packages, it is definitely much faster. However two
+seconds is still a bit slow.
+
