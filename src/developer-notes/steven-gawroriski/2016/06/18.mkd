@@ -136,3 +136,8 @@ I believe I have a merge sort now.
 
 And it fails for a given case.
 
+## 21:34
+
+Seems for this one merge case, one value is never merged in. It is perhaps the
+result of a merge of sorts.
+

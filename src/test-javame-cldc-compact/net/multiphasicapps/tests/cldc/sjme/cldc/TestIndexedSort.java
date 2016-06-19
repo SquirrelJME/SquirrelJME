@@ -108,7 +108,7 @@ public class TestIndexedSort
 		// are in sequential order
 		int last = Integer.MIN_VALUE;
 		boolean failed = false;
-		int[] act = new int[n];
+		int[] act = new int[n + 1];
 		for (int i = 0; i < n; i++)
 		{
 			// Get value here
@@ -122,18 +122,9 @@ public class TestIndexedSort
 			last = v;
 		}
 		
-		// Failed?
+		// Failed? The actual results will have an extra element at the end
 		if (failed)
-		{
-			// If they are equal then invert the first entry so that there
-			// is not an erronous PASS.
-			if (act[0] == test[0])
-				act[0] ^= 0xFFFF_FFFF;	
-			
-			// Check
 			__tc.checkEquals(test, act);
-			__tc.checkEquals(n, failed);
-		}
 		
 		// Success!
 		else
