@@ -201,8 +201,7 @@ public final class IndexedSort
 						else
 						{
 							// Start from the top and move all values down
-							for (int i = 0, mov = pee - 1; i < bn &&
-								mov > out; bn++, mov--)
+							for (int mov = pee - 1; mov > out; mov--)
 							{
 								// Does the previous index collide with the
 								// input right side?
