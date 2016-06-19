@@ -160,32 +160,19 @@ public final class IndexedSort
 					{
 						// Has right?
 						boolean hasr = (rr < ree);
-						int lx, rx, comp;
+						int comp;
 						
-						// Has both sides
+						// Has both sides, insert the lower value
 						if (hasl && hasr)
-						{
-							// Get the low and high values
-							lx = rv[ll];
-							rx = rv[rr];
-						
-							// Compare them
-							comp = __comp.compare(__q, lx, rx);
-						}
+							comp = __comp.compare(__q, rv[ll], rv[rr]);
 						
 						// Has only left
 						else if (hasl)
-						{
-							lx = rx = rv[ll];
 							comp = -1;
-						}
 						
 						// Has only right
 						else
-						{
-							lx = rx = rv[rr];
 							comp = 1;
-						}	
 						
 						// If the left is lower (or the same), insert that
 						int use;
@@ -206,9 +193,25 @@ public final class IndexedSort
 						{
 							// Move all entries down
 							int base = pss + out;
-							for (int mov = pee - 1; mov > base; mov--)
+							for (int mov = use; mov > base; mov--)
 							{
 								int prev = mov - 1;
+								
+								// Move the left partition over?
+								if (prev == ll && prev != base && ll < lpe)
+								{
+									ll++;
+									lpe++;
+								}
+							
+								// Move the right partition over?
+								if (prev == rr && prev != base && rr < rpe)
+								{
+									rr++;
+									rpe++;
+								}
+								
+								// Move data
 								rv[mov] = rv[prev];
 							}
 							
