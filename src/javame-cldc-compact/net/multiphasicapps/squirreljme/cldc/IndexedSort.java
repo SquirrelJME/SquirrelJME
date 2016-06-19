@@ -88,8 +88,8 @@ public final class IndexedSort
 		
 		// Setup target array with sorted index entries
 		int rv[] = new int[n];
-		for (int i = 0, j = __from; i < n; i++)
-			rv[i] = j++;
+		for (int i = 0, j = __from; i < n; i++, j++)
+			rv[i] = j;
 		
 		// Calculate the stack size, the number of divisions that would be
 		// used, The stack hold low and high values.
@@ -198,6 +198,8 @@ public final class IndexedSort
 					else
 						swappy = rrdx++;
 					
+					System.err.printf("DEBUG -- %3d ~~ %3d%n", out, swappy);
+					
 					// No change?
 					if (swappy == out)
 						continue;
@@ -233,6 +235,9 @@ public final class IndexedSort
 					
 					// Compare them
 					int comp = __comp.compare(__q, left, right);
+					
+					System.err.printf("DEBUG -- Pair %+d = %d ? %d%n",
+						comp, left, right);
 					
 					// If the one on the right is lower, switch them
 					if (comp > 0)

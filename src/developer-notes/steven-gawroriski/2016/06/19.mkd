@@ -1,0 +1,7 @@
+# 2016/06/19
+
+## 08:15
+
+I believe I know what is wrong with my merge sort. I am swapping the output
+with the lowest sorted value then I skip over it. I must not do that.
+
