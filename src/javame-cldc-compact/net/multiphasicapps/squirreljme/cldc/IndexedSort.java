@@ -101,6 +101,9 @@ public final class IndexedSort
 		stack[at++] = 0;
 		stack[at++] = n;
 		
+		// Temporary storage
+		int[] store = new int[n];
+		
 		// Keep merging values
 		for (; at > 0;)
 		{
@@ -116,6 +119,10 @@ public final class IndexedSort
 			{
 				// Invert to get normal value
 				ree = -ree;
+				
+				// Nothing left to merge
+				if (at < 4)
+					break;
 				
 				// Get the previous range
 				int pss = stack[at - 4],
@@ -133,19 +140,66 @@ public final class IndexedSort
 				{
 					// Determine the entire breadth size, use temporary storage
 					int bn = pee - pss;
-					int[] store = new int[bn];
 					
 					// Go through both sides
-					boolean hasl, hasr;
-					for (int ll = pss, rr = rss;
-						(hasl = (ll < rss)) || (hasr = (rr < pee));)
+					boolean hasl;
+					for (int ll = pss, rr = rss, out = 0;
+						(hasl = (ll < rss)) || rr < pee;)
 					{
-						throw new Error("TODO");
+						// Has right?
+						boolean hasr = (rr < pee);
+						int lx, rx, comp;
+						
+						// Has both sides
+						if (hasl && hasr)
+						{
+							// Get the low and high values
+							lx = rv[ll];
+							rx = rv[rr];
+						
+							// Compare them
+							comp = __comp.compare(__q, lx, rx);
+						}
+						
+						// Has only left
+						else if (hasl)
+						{
+							lx = rx = rv[ll];
+							comp = -1;
+						}
+						
+						// Has only right
+						else
+						{
+							lx = rx = rv[rr];
+							comp = 1;
+						}	
+						
+						// If the left is lower (or the same), insert that
+						if (comp <= 0)
+						{
+							store[out++] = lx;
+							ll++;
+						}
+						
+						// Otherwise use the right
+						else
+						{
+							store[out++] = rx;
+							rr++;
+						}
 					}
 					
 					// Replace values
 					for (int i = 0, out = pss; i < bn; i++, out++)
 						rv[out] = store[i];
+					
+					// Pop from the stack
+					at -= 2;
+					
+					// Switch or merge up the one above this
+					if (at > 0)
+						stack[at - 1] = -stack[at - 1];
 				}
 			}
 			
