@@ -60,7 +60,33 @@ public final class IndexedBinarySearch
 		if (__from < 0 || __to < 0 || __to < __from)
 			throw new IllegalArgumentException("ZZ0s");
 		
-		throw new Error("TODO");
+		// Nothing to search? Insert at the first location
+		int n = __to - __from;
+		if (n == 0)
+			return -1;
+		
+		// Only a single entry?
+		else if (n == 1)
+		{
+			int comp = __comp.binaryCompare(__q, __match, __from);
+			
+			// Insert before?
+			if (comp < 0)
+				return -1;
+			
+			// Insert after?
+			else if (comp > 0)
+				return -2;
+			
+			// Is this entry
+			return 0;
+		}
+		
+		// Search
+		for (int ls = __from, pv = ls + (n >>> 1), rs = __to;;)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
