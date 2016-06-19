@@ -56,3 +56,9 @@ So with binary searching, I now have the following times:
 So basically no real difference to being up to a second slower. However, the
 slight loss in speed will benefit later runs.
 
+## 12:39
+
+Along with process setup, I will need to implement a launcher that uses the
+LUI initially. Then develop the means of communication the LUI uses to the
+host system.
+
