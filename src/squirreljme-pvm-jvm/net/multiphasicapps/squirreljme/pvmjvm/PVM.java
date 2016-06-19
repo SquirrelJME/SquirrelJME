@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.sjmepackages.PackageName;
 
 /**
  * This is the primary paravirtual machine controller, it bridges with the
@@ -25,8 +26,8 @@ import net.multiphasicapps.sjmepackages.PackageList;
 public class PVM
 {
 	/** The launcher to use for the user interface. */
-	public static final String LAUNCHER_PROJECT =
-		"launcher-lui";
+	public static final PackageName LAUNCHER_PROJECT =
+		new PackageName("launcher-lui");
 	
 	/** The list of packages which are available. */
 	protected final PackageList packagelist;

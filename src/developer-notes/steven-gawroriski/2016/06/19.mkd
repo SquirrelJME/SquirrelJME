@@ -67,3 +67,11 @@ host system.
 I do wonder if I should remove the class path so to speak and just stick with
 class units.
 
+## 18:37
+
+Appears the entry name reader is incorrect.
+
+## 18:40
+
+The file name was being read from the wrong structure.
+

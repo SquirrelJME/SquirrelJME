@@ -73,11 +73,11 @@ public class Zip32File
 	
 	/** The offset to the file name length. */
 	protected static final int OFFSET_OF_FILE_NAME_LENGTH =
-		26;
+		28;
 	
 	/** The offset to the file name. */
 	protected static final int OFFSET_OF_FILE_NAME =
-		30;
+		46;
 	
 	/** The byte offset of the central directory. */
 	protected final long cdirbase;

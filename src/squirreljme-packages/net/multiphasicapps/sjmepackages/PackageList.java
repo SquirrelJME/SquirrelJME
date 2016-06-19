@@ -83,6 +83,7 @@ public class PackageList
 					// Not a valid ZIP or package, ignore
 					catch (IOException|InvalidPackageException e)
 					{
+						e.printStackTrace();
 						continue;
 					}
 				}
@@ -90,6 +91,19 @@ public class PackageList
 		
 		// Lock
 		this.packages = UnmodifiableMap.<PackageName, PackageInfo>of(target);
+		System.err.println(target);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/19
+	 */
+	@Override
+	public boolean containsKey(Object __o)
+	{
+		if (__o instanceof String)
+			return this.packages.containsKey(new PackageName((String)__o));
+		return this.packages.containsKey(__o);
 	}
 	
 	/**
@@ -99,7 +113,29 @@ public class PackageList
 	@Override
 	public Set<Map.Entry<PackageName, PackageInfo>> entrySet()
 	{
-		throw new Error("TODO");
+		return this.packages.entrySet();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/19
+	 */
+	@Override
+	public PackageInfo get(Object __o)
+	{
+		if (__o instanceof String)
+			return this.packages.get(new PackageName((String)__o));
+		return this.packages.get(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/19
+	 */
+	@Override
+	public int size()
+	{
+		return this.packages.size();
 	}
 }
 

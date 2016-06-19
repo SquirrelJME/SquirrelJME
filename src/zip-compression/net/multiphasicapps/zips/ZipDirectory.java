@@ -229,7 +229,7 @@ public abstract class ZipDirectory
 			if (ref == null || null == (rv = ref.get()))
 				namecache[__i] = new WeakReference<>(
 					(rv = readEntryName(__i, off)));
-			
+			System.err.printf("DEBUG -- Ent name: %s%n", rv);
 			// {@squirreljme.error AM0j Did not read an entry name.}
 			return Objects.<String>requireNonNull(rv, "AM0j");
 		}
@@ -269,6 +269,12 @@ public abstract class ZipDirectory
 			
 			// Setup binary comparator
 			this._bincomp = new __BinaryCompare__();
+			
+			System.err.println("DEBUG -- vvvvvvvvvvvvvvvvvvvvv");
+			for (int i = 0; i < n; i++)
+				System.err.printf("DEBUG -- %s%n", getEntryName(
+					this._sorteddx[i]));
+			System.err.println("DEBUG -- ^^^^^^^^^^^^^^^^^^^^^");
 		}
 		
 		// Ran out of memory
