@@ -63,28 +63,34 @@ public final class IndexedBinarySearch
 		// Nothing to search? Insert at the first location
 		int n = __to - __from;
 		if (n == 0)
-			return -1;
+			return -(__from) - 1;
+		
+		// Compare against the highest value to see if it is off the end
+		int comp = __comp.binaryCompare(__q, __match, __to - 1);
+		if (comp > 0)
+			return -(__to) - 1;
+		
+		// And then the lowest
+		comp = __comp.binaryCompare(__q, __match, __from);
+		if (comp < 0)
+			return -(__from) - 1;
 		
 		// Only a single entry?
-		else if (n == 1)
-		{
-			int comp = __comp.binaryCompare(__q, __match, __from);
-			
-			// Insert before?
-			if (comp < 0)
-				return -1;
-			
-			// Insert after?
-			else if (comp > 0)
-				return -2;
-			
-			// Is this entry
-			return 0;
-		}
+		if (n == 1)
+			return __from;
 		
 		// Search
 		for (int ls = __from, pv = ls + (n >>> 1), rs = __to;;)
 		{
+			// Compare against the pivot
+			comp = __comp.binaryCompare(__q, __match, pv);
+			
+			// Matched?
+			if (comp == 0)
+				return pv;
+			
+			
+			
 			throw new Error("TODO");
 		}
 	}
