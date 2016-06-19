@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: squirreljme-pvm-jvm
 X-SquirrelJME-UUID: 15dc908b-b7fe-40b9-bf4c-e7b0fd716078
-X-SquirrelJME-Depends: javame-cldc-full, squirreljme-packages
+X-SquirrelJME-Depends: javame-cldc-full, squirreljme-packages,
+ java-byte-code, class-interface-standard
 X-SquirrelJME-Error: CL
 X-SquirrelJME-HostClassPath: true
 Main-Class: net.multiphasicapps.squirreljme.pvmjvm.Main
