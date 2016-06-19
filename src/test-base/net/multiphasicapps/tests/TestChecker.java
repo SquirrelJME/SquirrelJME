@@ -381,7 +381,7 @@ public class TestChecker
 		
 		// Is converted to hex
 		int n = __b.length;
-		char cha[] = new char[n * 2];
+		char cha[] = new char[Math.max(0, (n * 3) - 1)];
 		
 		// Convert
 		for (int i = 0, x = 0; i < n; i++)
@@ -389,6 +389,10 @@ public class TestChecker
 			byte b = __b[i];
 			cha[x++] = Character.forDigit((b & 0xF0) >>> 4, 16);
 			cha[x++] = Character.forDigit((b & 0x0F), 16);
+			
+			// Separator to make reading easier
+			if (i + 1 < n)
+				cha[x++] = '.';
 		}
 		
 		// Make string
@@ -406,7 +410,7 @@ public class TestChecker
 	{
 		// Is converted to hex
 		int n = __v.length;
-		char cha[] = new char[n * 8];
+		char cha[] = new char[Math.max(0, (n * 9) - 1)];
 		
 		// Convert
 		for (int i = 0, x = 0; i < n; i++)
@@ -420,6 +424,10 @@ public class TestChecker
 			cha[x++] = Character.forDigit((v >>> 8) & 0xF, 16);
 			cha[x++] = Character.forDigit((v >>> 4) & 0xF, 16);
 			cha[x++] = Character.forDigit(v & 0xF, 16);
+			
+			// Separator to make reading easier
+			if (i + 1 < n)
+				cha[x++] = '.';
 		}
 		
 		// Make string
