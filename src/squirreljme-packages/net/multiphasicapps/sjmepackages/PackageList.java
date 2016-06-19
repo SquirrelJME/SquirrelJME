@@ -83,7 +83,6 @@ public class PackageList
 					// Not a valid ZIP or package, ignore
 					catch (IOException|InvalidPackageException e)
 					{
-						e.printStackTrace();
 						continue;
 					}
 				}
@@ -91,7 +90,6 @@ public class PackageList
 		
 		// Lock
 		this.packages = UnmodifiableMap.<PackageName, PackageInfo>of(target);
-		System.err.println(target);
 	}
 	
 	/**
