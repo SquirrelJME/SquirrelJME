@@ -105,7 +105,7 @@ public final class IndexedSort
 		int[] store = null;
 		try
 		{
-			store = null;//new int[n];
+			store = new int[n];
 		}
 		
 		// No room for the second array, use insertion sort when merging down
