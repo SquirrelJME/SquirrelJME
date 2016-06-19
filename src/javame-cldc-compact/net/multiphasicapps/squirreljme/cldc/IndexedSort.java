@@ -152,10 +152,10 @@ public final class IndexedSort
 					// Go through both sides
 					boolean hasl;
 					for (int ll = pss, rr = rss, out = 0;
-						(hasl = (ll < rss)) || rr < pee;)
+						(hasl = (ll < rss)) || rr < ree;)
 					{
 						// Has right?
-						boolean hasr = (rr < pee);
+						boolean hasr = (rr < ree);
 						int lx, rx, comp;
 						
 						// Has both sides
@@ -200,11 +200,36 @@ public final class IndexedSort
 						// Otherwise use something similar to insertion sort
 						else
 						{
-							throw new Error("TODO");
+							// Start from the top and move all values down
+							for (int i = 0, mov = pee - 1; i < bn &&
+								mov > out; bn++, mov--)
+							{
+								// Does the previous index collide with the
+								// input right side?
+								int prev = mov - 1;
+								if (prev == rr)
+								{
+									rr++;
+									ree++;
+								}
+								
+								// Collides with left side
+								if (prev == ll)
+								{
+									ll++;
+									rss++;
+								}
+								
+								// Move lower to higher
+								rv[mov] = rv[prev];
+							}
+							
+							// Place inserted value
+							rv[pss + (out++)] = val;
 						}
 					}
 					
-					// If using double memory, reinster
+					// If using double memory, overwrite
 					if (store != null)
 					{
 						// Replace values

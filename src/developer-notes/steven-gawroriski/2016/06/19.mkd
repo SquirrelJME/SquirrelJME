@@ -32,3 +32,10 @@ I believe for the built-in sorting algorithm that `Arrays` and `Collections`
 will use will just be a value based in place merge sort or similar. I can
 still have minimal duplicated code by using a special interface.
 
+## 09:54
+
+Technically, the `IndexedSort` could use this `ValueSort` since an interface
+method takes care of the comparison. The value sorter will just have a set and
+get of a specific index so that it can sort it properly along with a standard
+comparison by extending `IndexedComparator`.
+
