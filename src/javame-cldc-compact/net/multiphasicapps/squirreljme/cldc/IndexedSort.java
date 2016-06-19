@@ -102,7 +102,18 @@ public final class IndexedSort
 		stack[at++] = n;
 		
 		// Temporary storage
-		int[] store = new int[n];
+		int[] store = null;
+		try
+		{
+			/*store = new int[n];*/
+		}
+		
+		// No room for the second array, use insertion sort when merging down
+		// instead. Technically since this uses a temporary int array with
+		// indices this uses potentially triple the memory.
+		catch (OutOfMemoryError e)
+		{
+		}
 		
 		// Keep merging values
 		for (; at > 0;)
@@ -173,30 +184,40 @@ public final class IndexedSort
 						}	
 						
 						// If the left is lower (or the same), insert that
+						int use;
 						if (comp <= 0)
-						{
-							store[out++] = lx;
-							ll++;
-						}
+							use = ll++;
+						else
+							use = rr++;
 						
-						// Otherwise use the right
+						// Get the value to insert
+						int val = rv[use];
+						
+						// Using storage?
+						if (store != null)
+							store[out++] = val;
+						
+						// Otherwise use something similar to insertion sort
 						else
 						{
-							store[out++] = rx;
-							rr++;
+							throw new Error("TODO");
 						}
 					}
 					
-					// Replace values
-					for (int i = 0, out = pss; i < bn; i++, out++)
-						rv[out] = store[i];
+					// If using double memory, reinster
+					if (store != null)
+					{
+						// Replace values
+						for (int i = 0, out = pss; i < bn; i++, out++)
+							rv[out] = store[i];
 					
-					// Pop from the stack
-					at -= 2;
+						// Pop from the stack
+						at -= 2;
 					
-					// Switch or merge up the one above this
-					if (at > 0)
-						stack[at - 1] = -stack[at - 1];
+						// Switch or merge up the one above this
+						if (at > 0)
+							stack[at - 1] = -stack[at - 1];
+					}
 				}
 			}
 			
