@@ -26,3 +26,9 @@ So right now I have a working double memory merge sort, I can later turn it
 into a single memory merge sort at the cost of speed. Potentially if allocating
 the second array fails, I can fall back to using insertion to sort it.
 
+## 09:49
+
+I believe for the built-in sorting algorithm that `Arrays` and `Collections`
+will use will just be a value based in place merge sort or similar. I can
+still have minimal duplicated code by using a special interface.
+
