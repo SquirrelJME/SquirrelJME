@@ -105,7 +105,7 @@ public final class IndexedSort
 		int[] store = null;
 		try
 		{
-			/*store = new int[n];*/
+			store = null;//new int[n];
 		}
 		
 		// No room for the second array, use insertion sort when merging down
@@ -149,10 +149,14 @@ public final class IndexedSort
 					// Determine the entire breadth size, use temporary storage
 					int bn = pee - pss;
 					
+					// The lower and higher partition end
+					int lpe = rss,
+						rpe = ree;
+					
 					// Go through both sides
 					boolean hasl;
 					for (int ll = pss, rr = rss, out = 0;
-						(hasl = (ll < rss)) || rr < ree;)
+						(hasl = (ll < lpe)) || rr < rpe;)
 					{
 						// Has right?
 						boolean hasr = (rr < ree);
@@ -200,31 +204,17 @@ public final class IndexedSort
 						// Otherwise use something similar to insertion sort
 						else
 						{
-							// Start from the top and move all values down
-							for (int mov = pee - 1; mov > out; mov--)
+							// Move all entries down
+							int base = pss + out;
+							for (int mov = pee - 1; mov > base; mov--)
 							{
-								// Does the previous index collide with the
-								// input right side?
 								int prev = mov - 1;
-								if (prev == rr)
-								{
-									rr++;
-									ree++;
-								}
-								
-								// Collides with left side
-								if (prev == ll)
-								{
-									ll++;
-									rss++;
-								}
-								
-								// Move lower to higher
 								rv[mov] = rv[prev];
 							}
 							
-							// Place inserted value
-							rv[pss + (out++)] = val;
+							// Store at first position
+							rv[base] = val;
+							out++;
 						}
 					}
 					
@@ -234,14 +224,14 @@ public final class IndexedSort
 						// Replace values
 						for (int i = 0, out = pss; i < bn; i++, out++)
 							rv[out] = store[i];
-					
-						// Pop from the stack
-						at -= 2;
-					
-						// Switch or merge up the one above this
-						if (at > 0)
-							stack[at - 1] = -stack[at - 1];
 					}
+					
+					// Pop from the stack
+					at -= 2;
+				
+					// Switch or merge up the one above this
+					if (at > 0)
+						stack[at - 1] = -stack[at - 1];
 				}
 			}
 			
