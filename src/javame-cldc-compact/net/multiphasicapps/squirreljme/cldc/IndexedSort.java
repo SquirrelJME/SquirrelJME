@@ -112,11 +112,12 @@ public final class IndexedSort
 		// sort operation is complete.
 		boolean mergeup = false;
 		boolean maybemerge = false;
-		for (; at >= 4;)
+		for (; at >= 2;)
 		{
 			// Get the stack region before this one
-			int befs = stack[at - 4],
-				befe = stack[at - 3];
+			boolean lim = (at >= 4);
+			int befs = (lim ? stack[at - 4] : 0),
+				befe = (lim ? stack[at - 3] : n);
 			int befn = befe - befs;
 			
 			// Get the stack region that is currently being looked at
