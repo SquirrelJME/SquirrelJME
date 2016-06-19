@@ -69,14 +69,14 @@ public final class IndexedBinarySearch
 		int comp = __comp.binaryCompare(__q, __match, __to - 1);
 		if (comp > 0)
 			return -(__to) - 1;
+		else if (comp == 0)
+			return __to - 1;
 		
 		// And then the lowest
 		comp = __comp.binaryCompare(__q, __match, __from);
 		if (comp < 0)
 			return -(__from) - 1;
-		
-		// Only a single entry?
-		if (n == 1)
+		else if (comp == 0 || n == 1)
 			return __from;
 		
 		// Search
