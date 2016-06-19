@@ -104,23 +104,10 @@ public class TestIndexedSort
 				}
 			});
 		
-		// Go through the sorted indices to make sure the values
-		// are in sequential order
-		int last = Integer.MIN_VALUE;
-		boolean failed = false;
+		// Obtain actual values
 		int[] act = new int[n];
 		for (int i = 0; i < n; i++)
-		{
-			// Get value here
-			int v = test[dxo[i]];
-			act[i] = v;
-			
-			// Bad?
-			failed = (v < last);
-			
-			// Store current
-			last = v;
-		}
+			act[i] = test[dxo[i]];
 		
 		// Selection sort, which is rather slow
 		int[] sortedtest = new int[n];
