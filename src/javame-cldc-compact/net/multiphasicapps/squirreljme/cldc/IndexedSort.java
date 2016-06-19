@@ -235,7 +235,7 @@ public final class IndexedSort
 					int comp = __comp.compare(__q, left, right);
 					
 					// If the one on the right is lower, switch them
-					if (comp < 0)
+					if (comp > 0)
 					{
 						int was = rv[nows];
 						rv[nows] = rv[ndx];
