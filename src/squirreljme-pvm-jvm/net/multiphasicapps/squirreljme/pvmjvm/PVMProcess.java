@@ -43,10 +43,22 @@ public class PVMProcess
 		
 		// Set
 		this.pvm = __pvm;
+		this.pid = __pid;
 		
 		// Setup class loader
 		PVMClassLoader pcl = new PVMClassLoader(this);
 		this.classloader = pcl;
+	}
+	
+	/**
+	 * Returns the process ID of this process.
+	 *
+	 * @return The process ID of this process.
+	 * @since 2016/06/19
+	 */
+	public final int pid()
+	{
+		return this.pid;
 	}
 }
 

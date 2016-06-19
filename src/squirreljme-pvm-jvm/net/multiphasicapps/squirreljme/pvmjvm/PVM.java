@@ -32,6 +32,13 @@ public class PVM
 	/** The list of packages which are available. */
 	protected final PackageList packagelist;
 	
+	/** Lock on the next process ID. */
+	private final Object _nextpidlock =
+		new Object();
+	
+	/** The next process ID to use. */
+	private volatile int _nextpid;
+	
 	/**
 	 * Initializes the paravirtual machine.
 	 *
@@ -94,6 +101,13 @@ public class PVM
 		// Check
 		if (__info == null)
 			throw new NullPointerException("NARG");
+		
+		// Determine the pid of the process
+		int pid;
+		synchronized (this._nextpidlock)
+		{
+			pid = this._nextpid++;
+		}
 		
 		throw new Error("TODO");
 	}
