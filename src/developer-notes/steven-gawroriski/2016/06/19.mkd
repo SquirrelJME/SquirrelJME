@@ -10,3 +10,7 @@ with the lowest sorted value then I skip over it. I must not do that.
 The merge sort with the stack that I have is a bit complex, it can really just
 be done with a single pivot that splits the left and right sides.
 
+## 08:57
+
+Pivots would be even more complex.
+

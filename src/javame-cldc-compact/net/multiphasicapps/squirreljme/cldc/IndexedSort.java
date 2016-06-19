@@ -91,14 +91,68 @@ public final class IndexedSort
 		for (int i = 0, j = __from; i < n; i++, j++)
 			rv[i] = j;
 		
-		// Calculate the stack size, the number of divisions that would be
-		// used, The stack hold low and high values.
-		// Need an extra stack entry for the starting point
+		// Calculate the stack size, the stack stores the ranges
 		int maxstack = ((Integer.numberOfTrailingZeros(
 			Integer.highestOneBit(n)) + 1)) * 2;
 		int[] stack = new int[maxstack];
 		int at = 0;
 		
+		// Start at input list size
+		stack[at++] = 0;
+		stack[at++] = n;
+		
+		// Keep merging values
+		for (; at > 0;)
+		{
+			// Get start and end
+			int rss = stack[at - 2],
+				ree = stack[at - 1];
+			
+			System.err.printf("DEBUG -- Range %3d - %3d (%3d)%n", rss, ree,
+				ree - rss);
+			
+			// Merge up or switch to right side?
+			if (ree < 0)
+			{
+				// Invert to get normal value
+				ree = -ree;
+				
+				// Get the previous range
+				int pss = stack[at - 4],
+					pee = stack[at - 3];
+				
+				// Switch to the right side
+				if (ree != pee)
+				{
+					stack[at - 2] = ree;
+					stack[at - 1] = pee;
+				}
+				
+				// Merge
+				else
+					throw new Error("TODO");
+			}
+			
+			// Otherwise split down.
+			else
+			{
+				// Get the length of this range
+				int len = (ree - rss);
+				
+				// Merge up?
+				if (len == 1)
+					stack[at - 1] = -stack[at - 1];
+				
+				// Split
+				else
+				{
+					stack[at++] = rss;
+					stack[at++] = rss + (len >>> 1);
+				}
+			}
+		}
+		
+		/*
 		// The first entry in the stack is the fully sorted list
 		stack[at++] = 0;
 		stack[at++] = n;
@@ -240,10 +294,10 @@ public final class IndexedSort
 					// Set the output value
 					rv[out] = ival;
 					
-					/*// Remember the swap point index
+					*//*// Remember the swap point index
 					int temp = rv[out];
 					rv[out] = rv[insert];
-					rv[insert] = temp;*/
+					rv[insert] = temp;*//*
 				}
 				
 				// Remove stack entry
@@ -299,7 +353,7 @@ public final class IndexedSort
 				stack[at++] = nows;
 				stack[at++] = nows + (nown >>> 1);
 			}
-		}
+		}*/
 		
 		// Return the sorted result
 		return rv;
