@@ -25,18 +25,6 @@ import net.multiphasicapps.tests.TestInvoker;
 public class TestIndexedSort
 	implements TestInvoker
 {
-	/** The size of the array to test. */
-	public static final int TEST_SIZE =
-		32;
-	
-	/** The first random seed to try. */
-	public static final long RANDOM_SEED_A =
-		0xCAFE_F00DL;
-	
-	/** The second random seed to try. */
-	public static final long RANDOM_SEED_B =
-		0xF00D_CAFEL;
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/06/18
@@ -54,8 +42,9 @@ public class TestIndexedSort
 	@Override
 	public Iterable<String> invokerTests()
 	{
-		return Arrays.<String>asList(Long.toString(RANDOM_SEED_A),
-			Long.toString(RANDOM_SEED_B));
+		return Arrays.<String>asList(Long.toString(0xCAFE_F00DL),
+			Long.toString(0xF00D_CAFEL),
+			Long.toString(0x19890706));
 	}
 	
 	
@@ -84,7 +73,7 @@ public class TestIndexedSort
 		Random rand = new Random(seed);
 		
 		// Create array using the test size and fill it with random data
-		int n = TEST_SIZE;
+		int n = 32 + rand.nextInt(32);
 		int[] test = new int[n];
 		for (int i = 0; i < n; i++)
 			test[i] = rand.nextInt();
@@ -142,6 +131,7 @@ public class TestIndexedSort
 			
 			// Check
 			__tc.checkEquals(test, act);
+			__tc.checkEquals(n, failed);
 		}
 		
 		// Success!
