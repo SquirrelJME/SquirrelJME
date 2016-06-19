@@ -20,3 +20,9 @@ Actually my merge may have not worked due to `&&` and not `||`. The merge
 was only performed if both sides had values. This would work if values were
 shifted over however.
 
+## 09:20
+
+So right now I have a working double memory merge sort, I can later turn it
+into a single memory merge sort at the cost of speed. Potentially if allocating
+the second array fails, I can fall back to using insertion to sort it.
+
