@@ -163,10 +163,49 @@ public final class IndexedSort
 					fuln = lefn + rign;
 				
 				// Perform the merge
-				for (int ll = 0, rr = 0; ll < lefn && rr < rign;)
+				boolean hasl, hasr;
+				for (int out = fuls, lldx = lefs, rrdx = rigs;
+					(hasl = (lldx < lefe)) && (hasr = (rrdx < rige));)
 				{
-					if (true)
-						throw new Error("TODO");
+					// The index to place next
+					int swappy = -1;
+					
+					// Has left side?
+					if (hasl)
+					{
+						// Has right side also
+						if (hasr)
+						{
+							// Compare the left and the right
+							int adx = rv[lldx],
+								bdx = rv[rrdx];
+							
+							// Left side is lower?
+							if (__comp.compare(__q, adx, bdx) < 0)
+								swappy = lldx++;
+							
+							// Right is lower (or equal)
+							else
+								swappy = rrdx++;
+						}
+						
+						// Only left
+						else
+							swappy = lldx++;
+					}
+					
+					// Only has right side
+					else
+						swappy = rrdx++;
+					
+					// No change?
+					if (swappy == out)
+						continue;
+					
+					// Swap the indices
+					int temp = rv[out];
+					rv[out] = rv[swappy];
+					rv[swappy] = temp;
 				}
 				
 				// Remove stack entry
