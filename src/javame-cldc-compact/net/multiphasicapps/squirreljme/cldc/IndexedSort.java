@@ -93,7 +93,7 @@ public final class IndexedSort
 		
 		// Calculate the stack size, the stack stores the ranges
 		int maxstack = ((Integer.numberOfTrailingZeros(
-			Integer.highestOneBit(n)) + 1)) * 2;
+			Integer.highestOneBit(n)) + 2)) * 2;
 		int[] stack = new int[maxstack];
 		int at = 0;
 		
@@ -130,7 +130,23 @@ public final class IndexedSort
 				
 				// Merge
 				else
-					throw new Error("TODO");
+				{
+					// Determine the entire breadth size, use temporary storage
+					int bn = pee - pss;
+					int[] store = new int[bn];
+					
+					// Go through both sides
+					boolean hasl, hasr;
+					for (int ll = pss, rr = rss;
+						(hasl = (ll < rss)) || (hasr = (rr < pee));)
+					{
+						throw new Error("TODO");
+					}
+					
+					// Replace values
+					for (int i = 0, out = pss; i < bn; i++, out++)
+						rv[out] = store[i];
+				}
 			}
 			
 			// Otherwise split down.

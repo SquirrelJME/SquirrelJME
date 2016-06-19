@@ -14,3 +14,9 @@ be done with a single pivot that splits the left and right sides.
 
 Pivots would be even more complex.
 
+## 09:16
+
+Actually my merge may have not worked due to `&&` and not `||`. The merge
+was only performed if both sides had values. This would work if values were
+shifted over however.
+
