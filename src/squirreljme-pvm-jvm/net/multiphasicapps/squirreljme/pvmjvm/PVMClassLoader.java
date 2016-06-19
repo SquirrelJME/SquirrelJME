@@ -11,42 +11,36 @@
 package net.multiphasicapps.squirreljme.pvmjvm;
 
 /**
- * This represents a process from within the paravirtual machine.
+ * This is used to wrap the class loader which paravirtualizes all classes in
+ * a process by prefixing and creating virtual classes so that all class
+ * access done by a process is handled by this loader.
  *
- * @since 2016/06/16
+ * @since 2016/06/19
  */
-public class PVMProcess
+public class PVMClassLoader
+	extends ClassLoader
 {
-	/** The owning paravirtual machine. */
-	protected final PVM pvm;
-	
-	/** The class loader for this process. */
-	protected final PVMClassLoader classloader;
-	
-	/** The process identifier. */
-	protected final int pid;
+	/** The process which owns this class loader. */
+	protected final PVMProcess process;
 	
 	/**
-	 * Initializes the para-virtual machine process.
+	 * Initializes the class loader.
 	 *
-	 * @param __pvm The owning process.
-	 * @param __pid The identifier of this process.
+	 * @param __proc The owning process.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/16
+	 * @since 2016/06/19
 	 */
-	public PVMProcess(PVM __pvm, int __pid)
+	public PVMClassLoader(PVMProcess __proc)
 		throws NullPointerException
 	{
 		// Check
-		if (__pvm == null)
+		if (__proc == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.pvm = __pvm;
+		this.process = __proc;
 		
-		// Setup class loader
-		PVMClassLoader pcl = new PVMClassLoader(this);
-		this.classloader = pcl;
+		throw new Error("TODO");
 	}
 }
 

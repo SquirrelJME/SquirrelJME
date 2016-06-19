@@ -75,3 +75,10 @@ Appears the entry name reader is incorrect.
 
 The file name was being read from the wrong structure.
 
+## 19:39
+
+Byte code instructions that have to be replaced with static methods would be
+anything relating to arrays. Another consideration is that changing
+instructions will need jump target and exception handler rewriting for
+adjusted instructions (such as replacing `arraylength` with `invokestatic`.
+
