@@ -108,7 +108,7 @@ public class TestIndexedSort
 		// are in sequential order
 		int last = Integer.MIN_VALUE;
 		boolean failed = false;
-		int[] act = new int[n + 1];
+		int[] act = new int[n];
 		for (int i = 0; i < n; i++)
 		{
 			// Get value here
@@ -122,13 +122,27 @@ public class TestIndexedSort
 			last = v;
 		}
 		
-		// Failed? The actual results will have an extra element at the end
-		if (failed)
-			__tc.checkEquals(test, act);
+		// Selection sort, which is rather slow
+		int[] sortedtest = new int[n];
+		boolean[] inserted = new boolean[n];
+		for (int i = 0; i < n; i++)
+		{
+			// Find the lowest non-inserted value
+			int j, tv, y = Integer.MAX_VALUE, q = -1;
+			for (j = 0; j < n; j++)
+				if (!inserted[j] && (tv = test[j]) < y)
+				{
+					y = tv;
+					q = j;
+				}
+			
+			// Insert
+			inserted[q] = true;
+			sortedtest[i] = y;
+		}
 		
-		// Success!
-		else
-			__tc.checkEquals(n, n);
+		// Check that the sorted values match
+		__tc.checkEquals(sortedtest, act);
 	}
 }
 
