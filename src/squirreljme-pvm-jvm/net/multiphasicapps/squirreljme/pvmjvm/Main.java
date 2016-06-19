@@ -44,7 +44,7 @@ public class Main
 		out.println();
 		
 		// Initialize the virtual machine
-		PVM pvm = new PVM(Paths.get(System.getProperty("user.dir")));
+		PVM pvm = new PVM(Paths.get(System.getProperty("user.dir")), __args);
 	}
 }
 
