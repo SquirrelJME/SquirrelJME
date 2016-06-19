@@ -132,4 +132,7 @@ Actually, the class should have a shorter name.
 
 I believe I have a merge sort now.
 
+## 21:29
+
+And it fails for a given case.
 

@@ -44,7 +44,8 @@ public class TestIndexedSort
 	{
 		return Arrays.<String>asList(Long.toString(0xCAFE_F00DL),
 			Long.toString(0xF00D_CAFEL),
-			Long.toString(0x19890706));
+			Long.toString(0x19890706L),
+			Long.toString(0x201606182129L));
 	}
 	
 	
