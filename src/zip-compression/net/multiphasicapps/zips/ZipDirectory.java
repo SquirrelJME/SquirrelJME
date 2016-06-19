@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.cldc.IndexedBinaryComparator;
+import net.multiphasicapps.squirreljme.cldc.IndexedBinarySearch;
 import net.multiphasicapps.squirreljme.cldc.IndexedComparator;
 import net.multiphasicapps.squirreljme.cldc.IndexedSort;
 
@@ -28,6 +30,21 @@ import net.multiphasicapps.squirreljme.cldc.IndexedSort;
 public abstract class ZipDirectory
 	implements Iterable<ZipEntry>
 {
+	/** The comparator used when ZIP entries are to be sorted. */
+	private static final IndexedComparator<String[]> _SORT_COMPARATOR =
+		new IndexedComparator<String[]>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/06/19
+			 */
+			@Override
+			public int compare(String[] __q, int __a, int __b)
+			{
+				return __q[__a].compareTo(__q[__b]);
+			}
+		};
+	
 	/** The offsets of all the entry directories. */
 	protected final long offsets[];
 	
@@ -39,6 +56,9 @@ public abstract class ZipDirectory
 	
 	/** Are entries sorted by name? */
 	private volatile int[] _sorteddx;
+	
+	/** The binary comparator for this directory. */
+	private volatile IndexedBinaryComparator<int[], String> _bincomp;
 	
 	/**
 	 * Initializes the directory.
@@ -107,7 +127,13 @@ public abstract class ZipDirectory
 		int[] sorteddx = this._sorteddx;
 		if (sorteddx != null)
 		{
-			throw new Error("TODO");
+			int rv = IndexedBinarySearch.<int[], String>search(sorteddx,
+				__n, 0, n, this._bincomp);
+			
+			// Return the entry or null if not found
+			if (rv < 0)
+				return null;
+			return get(rv);
 		}
 		
 		// Use linear search instead
@@ -231,7 +257,6 @@ public abstract class ZipDirectory
 		{
 			// Setup target sort index list
 			int n = size();
-			int[] sorted = new int[n];
 			
 			// Read all entry names
 			String[] names = new String[n];
@@ -239,12 +264,11 @@ public abstract class ZipDirectory
 				names[i] = readEntryName(i, offsets[i]);
 			
 			// Perform the sort
-			/* IndexedSort IndexedComparator */
-			if (true)
-				throw new Error("TODO");
+			this._sorteddx = IndexedSort.<String[]>sort(names, 0, n,
+				_SORT_COMPARATOR);
 			
-			// Set sorted details
-			this._sorteddx = sorted;
+			// Setup binary comparator
+			this._bincomp = new __BinaryCompare__();
 		}
 		
 		// Ran out of memory
@@ -285,6 +309,35 @@ public abstract class ZipDirectory
 	private static final <W> Reference<W>[] __makeRefArray(int __ne)
 	{
 		return (Reference<W>[])new Reference[__ne];
+	}
+	
+	/**
+	 * This is used in the binary search algorithm to find the index of a
+	 * given string.
+	 *
+	 * @since 2016/06/19
+	 */
+	private final class __BinaryCompare__
+		implements IndexedBinaryComparator<int[], String>
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/06/19
+		 */
+		@Override
+		public int binaryCompare(int[] __q, String __a, int __b)
+		{
+			try
+			{
+				return __a.compareTo(getEntryName(__b));
+			}
+			
+			// {@squirreljme.error AM0k Could not read the entry name.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("AM0k", e);
+			}
+		}
 	}
 	
 	/**

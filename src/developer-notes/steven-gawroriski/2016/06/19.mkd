@@ -39,3 +39,7 @@ method takes care of the comparison. The value sorter will just have a set and
 get of a specific index so that it can sort it properly along with a standard
 comparison by extending `IndexedComparator`.
 
+## 11:14
+
+Now that I have a sorting algorithm, I can sort the JAR entries.
+

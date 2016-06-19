@@ -53,8 +53,8 @@ public final class IndexedSort
 		if (__comp == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error The from or to index to sort is either negative
-		// or the to index is before the from index.}
+		// {@squirreljme.error ZZ0r The from or to index to sort is either
+		// negative or the to index is before the from index.}
 		if (__from < 0 || __to < 0 || __to < __from)
 			throw new IllegalArgumentException("ZZ0r");
 		
