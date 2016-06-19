@@ -62,3 +62,8 @@ Along with process setup, I will need to implement a launcher that uses the
 LUI initially. Then develop the means of communication the LUI uses to the
 host system.
 
+## 15:36
+
+I do wonder if I should remove the class path so to speak and just stick with
+class units.
+

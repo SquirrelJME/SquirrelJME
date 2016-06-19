@@ -112,6 +112,17 @@ public class PackageInfo
 	}
 	
 	/**
+	 * Returns the path to this package.
+	 *
+	 * @return The package path.
+	 * @since 2016/06/19
+	 */
+	public final Path path()
+	{
+		return this.path;
+	}
+	
+	/**
 	 * Loads a manifest from the given ZIP file.
 	 *
 	 * @parma __zip The ZIP to load the manifest from.
