@@ -168,7 +168,7 @@ public final class IndexedSort
 					(hasl = (lldx < lefe)) && (hasr = (rrdx < rige));)
 				{
 					// The index to place next
-					int swappy = -1;
+					int swappy;
 					
 					// Has left side?
 					if (hasl)
