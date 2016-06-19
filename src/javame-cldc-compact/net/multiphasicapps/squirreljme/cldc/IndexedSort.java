@@ -168,7 +168,7 @@ public final class IndexedSort
 					(hasl = (lldx < lefe)) && (hasr = (rrdx < rige));)
 				{
 					// The index to place next
-					int swappy;
+					int insert;
 					
 					// Has left side?
 					if (hasl)
@@ -176,38 +176,73 @@ public final class IndexedSort
 						// Has right side also
 						if (hasr)
 						{
-							// Compare the left and the right
-							int adx = rv[lldx],
+							// Compare the left, the right, and the output
+							int odx = rv[out],
+								adx = rv[lldx],
 								bdx = rv[rrdx];
 							
-							// Left side is lower?
-							if (__comp.compare(__q, adx, bdx) < 0)
-								swappy = lldx++;
+							// Compare sides against the output
+							boolean lowl = (__comp.compare(__q, odx, adx) > 0),
+								lowr = (__comp.compare(__q, odx, bdx) > 0);
 							
-							// Right is lower (or equal)
+							// Both are low? use the lower side
+							if (lowl && lowr)
+							{
+								// Left side is lower?
+								if (__comp.compare(__q, adx, bdx) < 0)
+									insert = lldx++;
+						
+								// Right is lower (or equal)
+								else
+									insert = rrdx++;
+							}
+							
+							// Only the left is lower
+							else if (lowl)
+								insert = lldx++;
+							
+							// Only the right is lower
+							else if (lowr)
+								insert = rrdx++;
+							
+							// Neither are lower
 							else
-								swappy = rrdx++;
+								insert = (hasl ? lldx++ : rrdx++);
 						}
 						
 						// Only left
 						else
-							swappy = lldx++;
+							insert = lldx++;
 					}
 					
 					// Only has right side
 					else
-						swappy = rrdx++;
+						insert = rrdx++;
 					
-					System.err.printf("DEBUG -- %3d ~~ %3d%n", out, swappy);
+					// Insert insertion index down
+					boolean shift = false;
+					int ival = rv[out];
+					for (int z = fule - 1; z > out; z--)
+					{
+						// Is this the the insertion index?
+						if (z == insert)
+						{
+							ival = rv[z];
+							shift = true;
+						}
+						
+						// Shift the value before this one up
+						if (shift)
+							rv[z] = rv[z - 1];
+					}
 					
-					// No change?
-					if (swappy == out)
-						continue;
+					// Set the output value
+					rv[out] = ival;
 					
-					// Swap the indices
+					/*// Remember the swap point index
 					int temp = rv[out];
-					rv[out] = rv[swappy];
-					rv[swappy] = temp;
+					rv[out] = rv[insert];
+					rv[insert] = temp;*/
 				}
 				
 				// Remove stack entry
@@ -235,9 +270,6 @@ public final class IndexedSort
 					
 					// Compare them
 					int comp = __comp.compare(__q, left, right);
-					
-					System.err.printf("DEBUG -- Pair %+d = %d ? %d%n",
-						comp, left, right);
 					
 					// If the one on the right is lower, switch them
 					if (comp > 0)
