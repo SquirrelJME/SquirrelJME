@@ -43,3 +43,16 @@ comparison by extending `IndexedComparator`.
 
 Now that I have a sorting algorithm, I can sort the JAR entries.
 
+## 12:32
+
+So with binary searching, I now have the following times:
+
+ * 1.0s
+ * 2.0s
+ * 1.7s
+ * 1.8s
+ * 1.0s
+
+So basically no real difference to being up to a second slower. However, the
+slight loss in speed will benefit later runs.
+
