@@ -198,14 +198,14 @@ public final class IndexedSort
 								int prev = mov - 1;
 								
 								// Move the left partition over?
-								if (prev == ll && prev != base && ll < lpe)
+								if (prev == ll && ll < lpe)
 								{
 									ll++;
 									lpe++;
 								}
 							
 								// Move the right partition over?
-								if (prev == rr && prev != base && rr < rpe)
+								if (prev == rr && rr < rpe)
 								{
 									rr++;
 									rpe++;
