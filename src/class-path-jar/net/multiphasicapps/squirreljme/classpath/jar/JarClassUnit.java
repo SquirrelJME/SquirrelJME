@@ -99,7 +99,6 @@ public abstract class JarClassUnit
 			CIClass rv;
 			
 			// Load the class?
-			System.err.printf("DEBUG -- WANT %s (%s)%n", __cns, key);
 			if (ref == null || null == (rv = ref.get()))
 				try (InputStream is = locateResource(
 					__cns.toString() + ".class"))

@@ -84,8 +84,7 @@ public final class IndexedBinarySearch
 		{
 			// Compare against the pivot
 			comp = __comp.binaryCompare(__q, __match, pv);
-			System.err.printf("DEBUG -- BS [%3d-%3d-%3d] %s ? %d = %d%n",
-				ls, pv, rs, __match, pv, comp);
+			
 			// Matched?
 			if (comp == 0)
 				return pv;
