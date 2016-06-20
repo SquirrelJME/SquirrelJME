@@ -11,7 +11,11 @@
 package net.multiphasicapps.squirreljme.classpath;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This is a provider for {@link ClassUnit}s which are then constructed into
@@ -52,9 +56,17 @@ public abstract class ClassUnitProvider
 		// Obtain all the units
 		ClassUnit[] units = classUnits();
 		
-		// Go through all inputs
+		// The units to be processed and ones already determined/added
+		Deque<String> inq = new LinkedList<>();
+		Set<String> did = new HashSet<>();
+		
+		// Add inputs to the queue
 		List<ClassUnit> rv = new ArrayList<>();
 		for (String s : __un)
+			inq.add(s);
+		
+		// Process anything in the queue
+		while (!inq.isEmpty())
 		{
 			if (true)
 				throw new Error("TODO");
