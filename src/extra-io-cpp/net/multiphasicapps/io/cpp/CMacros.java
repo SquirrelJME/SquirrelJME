@@ -11,6 +11,7 @@
 package net.multiphasicapps.io.cpp;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,8 +30,8 @@ public class CMacros
 {
 	/** The set of macros. */
 	protected final Map<String, CMacro> map =
-		CheckedMap.<String, CMacro>covariant(new HashMap<>(), String.class,
-		CMacro.class);
+		CheckedMap.<String, CMacro>covariant(new HashMap<String, CMacro>(),
+		String.class, CMacro.class);
 	
 	/**
 	 * {@inheritDoc}

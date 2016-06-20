@@ -11,6 +11,7 @@
 package net.multiphasicapps.checked;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,16 @@ public class CheckedMap<K, V>
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/20
+	 */
+	@Override
+	public Set<Map.Entry<K, V>> entrySet()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns a checked map where inserted keys and values must be of the
 	 * given class type or a super-class of it.
 	 *
@@ -48,7 +59,7 @@ public class CheckedMap<K, V>
 	 * @throws NullPointerException If no map was specified.
 	 * @since 2016/05/08
 	 */
-	public <K, V> CheckedMap<? super K, ? super V> contravariant(
+	public static <K, V> CheckedMap<? super K, ? super V> contravariant(
 		Map<K, V> __base, Class<K> __k, Class<V> __v)
 		throws NullPointerException
 	{
@@ -72,8 +83,8 @@ public class CheckedMap<K, V>
 	 * @throws NullPointerException If no map was specified.
 	 * @since 2016/05/08
 	 */
-	public <K, V> CheckedMap<K, V> covariant(Map<K, V> __base, Class<K> __k,
-		Class<V> __v)
+	public static <K, V> CheckedMap<K, V> covariant(Map<K, V> __base,
+		Class<K> __k, Class<V> __v)
 		throws NullPointerException
 	{
 		// Check
@@ -100,7 +111,7 @@ public class CheckedMap<K, V>
 	 * @throws NullPointerException If no map was specified.
 	 * @since 2016/05/08
 	 */
-	public <K, V> CheckedMap<K, V> exact(Map<K, V> __base, Class<K> __k,
+	public static <K, V> CheckedMap<K, V> exact(Map<K, V> __base, Class<K> __k,
 		Class<V> __v)
 		throws NullPointerException
 	{

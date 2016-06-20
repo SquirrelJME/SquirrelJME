@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: simulator
 X-SquirrelJME-UUID: 1f5dde20-1581-4679-9314-0938706a460b
-X-SquirrelJME-Depends: javame-cldc-full, mmu,
+X-SquirrelJME-Depends: javame-cldc-full,
  extra-util-unmodifiable
 X-SquirrelJME-Optional: simulator-os-linux
 X-SquirrelJME-Error: BV
