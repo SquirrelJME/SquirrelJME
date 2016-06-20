@@ -46,14 +46,6 @@ public class PVMClassLoader
 		// Set
 		this.process = __proc;
 		this.mangledprefix = "__squirreljme#" + __proc.pid();
-		
-		for (String s : new String[]{
-				"Ljava/lang/Class;",
-				"I",
-				"[[[[[[J"
-			})
-			System.err.printf("DEBUG -- %s -> %s%n", s,
-				fieldMangle(FieldSymbol.of(s)));
 	}
 	
 	/**

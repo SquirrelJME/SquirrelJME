@@ -96,3 +96,11 @@ That would be a bit complex however, I just need something that can replace the
 special characters which change the meaning of a class. Identifiers cannot have
 `.`, `;`, `[`, `/`. I really just need to escape these with a special sequence.
 
+## 23:02
+
+As an example, the given array `[[[[[[J` mangles to
+`L__squirreljme#0/?(?(?(?(?(?(J;`. This should make it to easy to determine
+that it is an array which was requested. Also when I suppose it comes to stuff
+such as `anewarray`, I can create a virtual class just for creating an array
+of a given class.
+
