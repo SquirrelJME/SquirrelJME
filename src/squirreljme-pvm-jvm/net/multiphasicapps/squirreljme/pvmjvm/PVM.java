@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.pvmjvm;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -80,6 +81,7 @@ public class PVM
 		// {@squirreljme.error CL02 The launcher JAR could not be located.
 		// (The JAR to use for the launcher)}
 		ClassPath cp = cup.getStandardClassPath(LAUNCHER_PROJECT);
+		System.err.printf("DEBUG -- PVM CP %s%n", Arrays.asList(cp.units()));
 		
 		// Get the main class unit
 		ClassUnit lcu = cp.locateUnit(LAUNCHER_PROJECT);
