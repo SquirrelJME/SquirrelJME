@@ -216,7 +216,7 @@ public final class ClassPath
 				
 				// In verification step, so return it
 				if (rv != null)
-					return null;
+					return rv;
 				
 				// Load the class to be returned from the first unit that
 				// has it.
