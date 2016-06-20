@@ -227,7 +227,7 @@ public final class ClassPath
 				
 				// {@squirreljme.error BN01 The specified class does not exist
 				// in any class unit. (The name of the class)}
-				if (__cns == null)
+				if (rv == null)
 					throw new CIException(String.format("BN01 %s", __cns));
 				
 				// Is only in the verification stage temporarily
