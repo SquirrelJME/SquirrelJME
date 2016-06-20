@@ -125,6 +125,62 @@ public class PVMClassLoader
 	}
 	
 	/**
+	 * Locates the given virtualized class.
+	 *
+	 * @param __cl The class to find.
+	 * @return The virtual representation of the given class.
+	 * @throws ClassNotFoundException If the class was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	public final Class<?> virtualFindClass(ClassNameSymbol __cl)
+		throws ClassNotFoundException, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Use as field
+		return virtualFindClass(__cl.asField());
+	}
+	
+	/**
+	 * Locates the given virtualized class which represents the given field
+	 * type.
+	 *
+	 * @param __f The field type to locate.
+	 * @return The virtual representation of the given field.
+	 * @throws ClassNotFoundException If the class was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	public final Class<?> virtualFindClass(FieldSymbol __f)
+		throws ClassNotFoundException, NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Mangle it
+		FieldSymbol mangled = fieldMangle(__f);
+		
+		// {@squirreljme.error CL04 Cannot load a class which represents a
+		// primitive type. (The mangled class)}
+		if (mangled.isPrimitive())
+			throw new ClassNotFoundException(String.format("CL04 %s",
+				mangled));
+		
+		// Get the class loading name form
+		String actual = mangled.asClassName().asClassLoaderName().toString();
+		
+		// Lock
+		synchronized (getClassLoadingLock(actual))
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Mangles the given character.
 	 *
 	 * @param __mangle If {@code true} then the character is to be mangled,

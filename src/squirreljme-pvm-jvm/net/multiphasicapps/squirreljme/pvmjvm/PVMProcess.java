@@ -67,6 +67,17 @@ public class PVMProcess
 	}
 	
 	/**
+	 * Returns the class loader that this process uses for virtualization.
+	 *
+	 * @return The virtualized class loader.
+	 * @since 2016/06/20
+	 */
+	public final PVMClassLoader classLoader()
+	{
+		return this.classloader;
+	}
+	
+	/**
 	 * Creates a new thread which starts at the given point in the program.
 	 *
 	 * @param __main The main point for the thread.

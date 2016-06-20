@@ -269,6 +269,17 @@ public final class FieldSymbol
 	}
 	
 	/**
+	 * Is this a primitive type?
+	 *
+	 * @return {@code true} if it is a primitive type.
+	 * @since 2016/06/20
+	 */
+	public boolean isPrimitive()
+	{
+		return primitiveType() != null;
+	}
+	
+	/**
 	 * Returns {@code true} if this is a reference type.
 	 *
 	 * @return {@code true} if a reference type, otherwise {@code false} if

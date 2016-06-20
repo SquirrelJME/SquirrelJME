@@ -29,6 +29,9 @@ public class PVMThread
 	/** The ID of this thread. */
 	protected final int tid;
 	
+	/** The real backing host JVM thread. */
+	protected final Thread realthread;
+	
 	/**
 	 * Initializes the thread.
 	 *
@@ -55,6 +58,24 @@ public class PVMThread
 		this.process = __owner;
 		this.pvm = __owner.pvm();
 		this.tid = __tid;
+		
+		// Locate the main class in the class loader
+		PVMClassLoader pcl = __owner.classLoader();
+		Class<?> maincl;
+		try
+		{
+			maincl = pcl.virtualFindClass(__main);
+		}
+		
+		// {@squirreljme.error CL03 Could not locate the main class. (The name
+		// of the main class)}
+		catch (ClassNotFoundException e)
+		{
+			throw new IllegalArgumentException(String.format("CL03 %s",
+				__main));
+		}
+		
+		throw new Error("TODO");
 	}
 	
 	/**
