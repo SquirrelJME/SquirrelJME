@@ -21,4 +21,10 @@ on referencing.
 
 Only a single JAR gets placed in the class path.
 
+## 15:13
+
+What I need now is a class file writer, one that can be given information and
+byte code and write it to an output array of sorts. Although not going to the
+disk, the written classes will be used by the `PVMClassLoader` to load the
+virtualized classes.
 
