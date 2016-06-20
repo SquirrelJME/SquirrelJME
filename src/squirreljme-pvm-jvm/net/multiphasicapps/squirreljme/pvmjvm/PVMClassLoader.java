@@ -36,7 +36,7 @@ public class PVMClassLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/19
 	 */
-	public PVMClassLoader(PVMProcess __proc)
+	PVMClassLoader(PVMProcess __proc)
 		throws NullPointerException
 	{
 		// Check

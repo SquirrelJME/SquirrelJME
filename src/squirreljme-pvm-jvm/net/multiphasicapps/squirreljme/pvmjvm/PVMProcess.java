@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+
 /**
  * This represents a process from within the paravirtual machine.
  *
@@ -26,6 +31,17 @@ public class PVMProcess
 	/** The process identifier. */
 	protected final int pid;
 	
+	/** The thread mappings. */
+	private final Map<Integer, PVMThread> _threads =
+		new TreeMap<>();
+	
+	/** The next thread ID lock. */
+	private final Object _newtidlock =
+		new Object();
+	
+	/** The next thread ID. */
+	private volatile int _newtid;
+	
 	/**
 	 * Initializes the para-virtual machine process.
 	 *
@@ -34,7 +50,7 @@ public class PVMProcess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/16
 	 */
-	public PVMProcess(PVM __pvm, int __pid)
+	PVMProcess(PVM __pvm, int __pid)
 		throws NullPointerException
 	{
 		// Check
@@ -48,6 +64,48 @@ public class PVMProcess
 		// Setup class loader
 		PVMClassLoader pcl = new PVMClassLoader(this);
 		this.classloader = pcl;
+	}
+	
+	/**
+	 * Creates a new thread which starts at the given point in the program.
+	 *
+	 * @param __main The main point for the thread.
+	 * @param __args The arguments to pass to the thread main.
+	 * @return The newly created thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	public final PVMThread createThread(ClassNameSymbol __main,
+		Object... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__main == null)
+			throw new NullPointerException("NARG");
+		
+		// Always must exist
+		if (__args == null)
+			__args = new Object[0];
+		
+		// Get next thread ID
+		int tid;
+		synchronized (this._newtidlock)
+		{
+			tid = this._newtid++;
+		}
+		
+		// Create thread
+		PVMThread rv = new PVMThread(this, tid, __main, (Object[])__args);
+		
+		// Add to mapping
+		Map<Integer, PVMThread> threads = this._threads;
+		synchronized (threads)
+		{
+			threads.put(tid, rv);
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

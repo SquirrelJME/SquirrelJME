@@ -91,7 +91,7 @@ public class PVM
 			throw new RuntimeException(String.format("CL02 %s",
 				LAUNCHER_PROJECT));
 		createProcess(luil, ClassLoaderNameSymbol.of(luil.mainClass()).
-			asClassName(), __args);
+			asClassName(), (String[])__args);
 	}
 	
 	/**
@@ -124,17 +124,31 @@ public class PVM
 		// Setup new process
 		PVMProcess rv = new PVMProcess(this, pid);
 		
-		// Add to process map
-		Map<Integer, PVMProcess> process = this._processes;
-		synchronized (process)
+		Map<Integer, PVMProcess> processes = this._processes;
+		try
 		{
-			process.put(pid, rv);
+			// Add to process map
+			synchronized (processes)
+			{
+				processes.put(pid, rv);
+			}
+		
+			// Create initial thread
+			PVMThread thr = rv.createThread(__main, (Object[])__args);
+			thr.start();
 		}
 		
-		
-		// Create new thread
-		if (true)
-			throw new Error("TODO");
+		// Failed, remove from the process map
+		catch (RuntimeException|Error e)
+		{
+			synchronized (processes)
+			{
+				processes.remove(pid);
+			}
+			
+			// Rethrow
+			throw e;
+		}
 		
 		// Return it
 		return rv;
