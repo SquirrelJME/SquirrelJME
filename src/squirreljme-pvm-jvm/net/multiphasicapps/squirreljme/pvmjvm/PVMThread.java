@@ -20,6 +20,9 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
  */
 public class PVMThread
 {
+	/** The owning virtual machine. */
+	protected final PVM pvm;
+	
 	/** The owning process. */
 	protected final PVMProcess process;
 	
@@ -50,6 +53,7 @@ public class PVMThread
 		
 		// Set
 		this.process = __owner;
+		this.pvm = __owner.pvm();
 		this.tid = __tid;
 	}
 	

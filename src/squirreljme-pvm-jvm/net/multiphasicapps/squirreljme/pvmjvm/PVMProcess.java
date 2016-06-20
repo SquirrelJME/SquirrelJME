@@ -118,5 +118,16 @@ public class PVMProcess
 	{
 		return this.pid;
 	}
+	
+	/**
+	 * Returns the owning virtual machine.
+	 *
+	 * @return The owning virtual machine.
+	 * @since 2016/06/20
+	 */
+	public final PVM pvm()
+	{
+		return this.pvm;
+	}
 }
 
