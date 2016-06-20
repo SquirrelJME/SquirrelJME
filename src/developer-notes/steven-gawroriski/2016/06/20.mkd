@@ -9,3 +9,11 @@ The PVM would likely be better just using the FS Jar ClassUnit provider.
 The `ClassUnitProvider` is best an abstract class so that I can have common
 functionality declared within it.
 
+## 12:12
+
+Methods that match the descriptors of those in `Object` and are final will
+need to be replaced in definition so that they do not conflict at all. Since
+all objects extend `Object` this means any method calls performed on the
+`final` methods that cannot be replaced must be wrapped somehow on load and
+on referencing.
+

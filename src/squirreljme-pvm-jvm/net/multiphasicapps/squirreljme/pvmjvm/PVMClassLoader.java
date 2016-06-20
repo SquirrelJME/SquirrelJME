@@ -60,11 +60,12 @@ public class PVMClassLoader
 	 *
 	 * @param __f The field symbol to demangle.
 	 * @return The original unmangle field.
+	 * @throws IllegalArgumentException If the symbol is not mangled.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/19
 	 */
 	public FieldSymbol fieldDemangle(FieldSymbol __f)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__f == null)
@@ -73,6 +74,21 @@ public class PVMClassLoader
 		// Primitives go through unchanged
 		if (__f.primitiveType() != null)
 			return __f;
+		
+		// Get the class name of the given symbol
+		ClassNameSymbol cns = __f.asClassName();
+		String form = cns.toString();
+		
+		// {@squirreljme.error CL01 The input field symbol is not mangled for
+		// this process. (The not-mangled field)}
+		String mp = this.mangledprefix;
+		if (!form.startsWith(mp) || form.length() < mp.length() + 1 ||
+			form.charAt(mp.length()) != '/')
+			throw new IllegalArgumentException(String.format("CL01 %s", __f));
+		
+		// Remove the prefix
+		form = form.substring(mp.length() + 1);
+		System.err.printf("DEBUG -- Demangle %s%n", form);
 		
 		throw new Error("TODO");
 	}
@@ -150,6 +166,7 @@ public class PVMClassLoader
 		// Demangle
 		FieldSymbol demang = fieldDemangle(
 			ClassLoaderNameSymbol.of(__name).asClassName().asField());
+		System.err.printf("DEBUG -- Load %s -> %s%n", __name, demang);
 		
 		// Lock
 		synchronized (getClassLoadingLock(__name))
