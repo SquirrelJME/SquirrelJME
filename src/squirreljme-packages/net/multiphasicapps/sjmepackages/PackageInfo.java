@@ -90,6 +90,18 @@ public class PackageInfo
 	}
 	
 	/**
+	 * Returns the main entry class for a general Java program.
+	 *
+	 * @return The main class to enter the program at or {@code null} if not
+	 * found.
+	 * @since 2016/06/20
+	 */
+	public final String mainClass()
+	{
+		return this.manifest.getMainAttributes().get("Main-Class");
+	}
+	
+	/**
 	 * Returns the manifest of this package.
 	 *
 	 * @return The package manifest.

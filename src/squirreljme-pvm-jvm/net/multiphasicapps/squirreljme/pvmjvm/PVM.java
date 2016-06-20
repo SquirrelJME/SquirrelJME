@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
+import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
@@ -88,7 +90,8 @@ public class PVM
 		if (luil == null)
 			throw new RuntimeException(String.format("CL02 %s",
 				LAUNCHER_PROJECT));
-		createProcess(luil, __args);
+		createProcess(luil, ClassLoaderNameSymbol.of(luil.mainClass()).
+			asClassName(), __args);
 	}
 	
 	/**
@@ -97,16 +100,18 @@ public class PVM
 	 * available.
 	 *
 	 * @param __info The package to launch.
+	 * @param __main The main class.
 	 * @param __args The arguments to the program.
 	 * @return The newly created process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/19
 	 */
-	public final PVMProcess createProcess(PackageInfo __info, String... __args)
-		throws NullPointerException
+	public final PVMProcess createProcess(PackageInfo __info,
+		ClassNameSymbol __main, String... __args)
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
-		if (__info == null)
+		if (__main == null || __info == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine the pid of the process
@@ -126,6 +131,8 @@ public class PVM
 			process.put(pid, rv);
 		}
 		
+		
+		// Create new thread
 		if (true)
 			throw new Error("TODO");
 		
