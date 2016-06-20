@@ -46,6 +46,14 @@ public class PVMClassLoader
 		// Set
 		this.process = __proc;
 		this.mangledprefix = "__squirreljme#" + __proc.pid();
+		
+		for (String s : new String[]{
+				"Ljava/lang/Class;",
+				"I",
+				"[[[[[[J"
+			})
+			System.err.printf("DEBUG -- %s -> %s%n", s,
+				fieldMangle(FieldSymbol.of(s)));
 	}
 	
 	/**
@@ -108,9 +116,9 @@ public class PVMClassLoader
 				case ';':
 				case '[':
 				case '/':
-				case 0x0080:
-					sb.append(0x0080);
-					sb.append((char)(0x0080 + c));
+				case '?':
+					sb.append('?');
+					sb.append(__charMangle(true, c));
 					break;
 				
 					// Normal
@@ -122,6 +130,49 @@ public class PVMClassLoader
 		
 		// As a class
 		return ClassNameSymbol.of(sb.toString()).asField();
+	}
+	
+	/**
+	 * Mangles the given character.
+	 *
+	 * @param __mangle If {@code true} then the character is to be mangled,
+	 * otherwise it is unmangled.
+	 * @param __c The character to mangle or unmangle.
+	 * @return The mangled or unmangled variant of the character, or the
+	 * original character if the mangle is not valid.
+	 * @since 2016/06/19
+	 */
+	private static char __charMangle(boolean __mangle, char __c)
+	{
+		// Mangling
+		if (__mangle)
+			switch (__c)
+			{
+				case '.': return ':';
+				case ';': return ',';
+				case '[': return '(';
+				case '/': return '|';
+				case '?': return '!';
+				
+					// Unknown
+				default:
+					return __c;
+			}
+		
+		// Unmangling
+		else
+			switch (__c)
+			{
+				case ':': return '.';
+				case ',': return ';';
+				case '(': return '[';
+				case '|': return '/';
+				case '!': return '?';
+				
+					// Unknown
+				default:
+					return __c;
+			}
 	}
 }
 
