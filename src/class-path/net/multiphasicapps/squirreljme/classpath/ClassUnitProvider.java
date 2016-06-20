@@ -10,12 +10,15 @@
 
 package net.multiphasicapps.squirreljme.classpath;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.manifest.JavaManifest;
+import net.multiphasicapps.manifest.JavaManifestAttributes;
 
 /**
  * This is a provider for {@link ClassUnit}s which are then constructed into
@@ -85,8 +88,71 @@ public abstract class ClassUnitProvider
 			if (!did.add(cu))
 				continue;
 			
-			if (true)
-				throw new Error("TODO");
+			// Get the manifest for the unit
+			JavaManifest man;
+			try
+			{
+				man = cu.manifest();
+			}
+			
+			// {@squirreljme.error BN0p Failed to read the manifest of a given
+			// class unit. (The class unit where the manifest could not be
+			// read)}
+			catch (IOException e)
+			{
+				throw new MissingClassUnitException(String.format("BN0p %s",
+					cu), e);
+			}
+			
+			// {@squirreljme.error BN0n A class unit was processed however it
+			// does not have a manifest. (The class unit)}
+			if (man == null)
+				throw new MissingClassUnitException(String.format("BN0n %s",
+					cu.toString()));
+			
+			// Get main attributes
+			JavaManifestAttributes ma = man.getMainAttributes();
+			
+			// Get the class path
+			String classpath = ma.get("class-path");
+			if (classpath != null)
+			{
+				// Go through the dependencies and use them all
+				int n = classpath.length();
+				for (int i = 0; i < n; i++)
+				{
+					char c = classpath.charAt(i);
+					
+					// Ignore whitespace
+					if (c <= ' ')
+						continue;
+					
+					// Find the next whitespace character
+					int j;
+					for (j = i + 1; j < n; j++)
+						if (classpath.charAt(j) <= ' ')
+							break;
+					
+					// Split off
+					String spl = classpath.substring(i, j);
+					
+					// Set next
+					i = j;
+					
+					// Locate the dependencies
+					ClassUnit dep = __locate(units, spl);
+					
+					// {@squirreljme.error BN0o A dependency of a given class
+					// unit does not exist. (The source class unit; The class
+					// unit it depends on)}
+					if (dep == null)
+						throw new MissingClassUnitException(String.format(
+							"BN0o %s %s", cu, spl));
+					
+					// Add it to be processed
+					inq.offerLast(dep);
+				}
+			}
 		}
 		
 		// Build it
