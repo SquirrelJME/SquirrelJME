@@ -88,9 +88,23 @@ public class PVMClassLoader
 		
 		// Remove the prefix
 		form = form.substring(mp.length() + 1);
-		System.err.printf("DEBUG -- Demangle %s%n", form);
 		
-		throw new Error("TODO");
+		// Target class name
+		StringBuilder sb = new StringBuilder();
+		int n = form.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = form.charAt(i);
+			
+			// Demangle?
+			if (c == '?')
+				c = __charMangle(false, form.charAt(++i));
+			
+			sb.append(c);
+		}
+		
+		// Return it
+		return FieldSymbol.of(sb.toString());
 	}
 	
 	/**
