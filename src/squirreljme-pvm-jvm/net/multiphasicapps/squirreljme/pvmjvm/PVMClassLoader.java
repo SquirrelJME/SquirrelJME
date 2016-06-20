@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
+import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
 /**
  * This is used to wrap the class loader which paravirtualizes all classes in
@@ -28,6 +30,9 @@ public class PVMClassLoader
 	
 	/** The prefix for mangled field types. */
 	protected final String mangledprefix;
+	
+	/** The class path of the process. */
+	protected final ClassPath classpath;
 	
 	/**
 	 * Initializes the class loader.
@@ -46,6 +51,7 @@ public class PVMClassLoader
 		// Set
 		this.process = __proc;
 		this.mangledprefix = "__squirreljme#" + __proc.pid();
+		this.classpath = __proc.classPath();
 	}
 	
 	/**
@@ -122,6 +128,34 @@ public class PVMClassLoader
 		
 		// As a class
 		return ClassNameSymbol.of(sb.toString()).asField();
+	}
+	
+	/**
+	 * Locates the given class by the specified name, the name should be in
+	 * the mangled form.
+	 *
+	 * @param __name The name of the class to locate.
+	 * @return The class by the given name.
+	 * @throws ClassNotFoundException If the class was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	protected Class<?> findClass(String __name)
+		throws ClassNotFoundException, NullPointerException
+	{
+		// Check
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Demangle
+		FieldSymbol demang = fieldDemangle(
+			ClassLoaderNameSymbol.of(__name).asClassName().asField());
+		
+		// Lock
+		synchronized (getClassLoadingLock(__name))
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

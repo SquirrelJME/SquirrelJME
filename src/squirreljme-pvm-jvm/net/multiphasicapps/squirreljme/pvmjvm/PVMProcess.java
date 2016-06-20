@@ -84,6 +84,17 @@ public class PVMProcess
 	}
 	
 	/**
+	 * Returns the class path used by the current process.
+	 *
+	 * @return The process class path.
+	 * @since 2016/06/20
+	 */
+	public final ClassPath classPath()
+	{
+		return this.classpath;
+	}
+	
+	/**
 	 * Creates a new thread which starts at the given point in the program.
 	 *
 	 * @param __main The main point for the thread.
