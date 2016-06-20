@@ -26,6 +26,9 @@ public class PVMClassLoader
 	/** The process which owns this class loader. */
 	protected final PVMProcess process;
 	
+	/** The prefix for mangled field types. */
+	protected final String mangledprefix;
+	
 	/**
 	 * Initializes the class loader.
 	 *
@@ -42,6 +45,7 @@ public class PVMClassLoader
 		
 		// Set
 		this.process = __proc;
+		this.mangledprefix = "__squirreljme#" + __proc.pid();
 	}
 	
 	/**
@@ -87,7 +91,37 @@ public class PVMClassLoader
 		if (__f.primitiveType() != null)
 			return __f;
 		
-		throw new Error("TODO");
+		// The target string
+		StringBuilder sb = new StringBuilder(this.mangledprefix);
+		sb.append('/');
+		
+		// Transform field characters
+		String s = __f.toString();
+		int n = s.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = s.charAt(i);
+			switch (c)
+			{
+					// Must be escaped
+				case '.':
+				case ';':
+				case '[':
+				case '/':
+				case 0x0080:
+					sb.append(0x0080);
+					sb.append((char)(0x0080 + c));
+					break;
+				
+					// Normal
+				default:
+					sb.append(c);
+					break;
+			}
+		}
+		
+		// As a class
+		return ClassNameSymbol.of(sb.toString()).asField();
 	}
 }
 
