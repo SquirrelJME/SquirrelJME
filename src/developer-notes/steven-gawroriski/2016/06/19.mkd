@@ -82,3 +82,17 @@ anything relating to arrays. Another consideration is that changing
 instructions will need jump target and exception handler rewriting for
 adjusted instructions (such as replacing `arraylength` with `invokestatic`.
 
+## 22:17
+
+The moon is full.
+
+## 22:26
+
+I can either have verification done myself (recommended) then I do not have to
+worry about illegal accesses being performed. When it comes to translated
+classes, I can really just place them in a single package in a kind of
+modified UTF-8 form of sorts. It would essentially be UTF-8 on top of UTF-8.
+That would be a bit complex however, I just need something that can replace the
+special characters which change the meaning of a class. Identifiers cannot have
+`.`, `;`, `[`, `/`. I really just need to escape these with a special sequence.
+
