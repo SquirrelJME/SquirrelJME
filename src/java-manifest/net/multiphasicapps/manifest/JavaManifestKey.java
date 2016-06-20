@@ -35,8 +35,11 @@ public final class JavaManifestKey
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		string = __s;
+		// Lower-case all letters
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0, n = __s.length(); i < n; i++)
+			sb.append(__toLower(__s.charAt(i)));
+		this.string = sb.toString();
 	}
 	
 	/**

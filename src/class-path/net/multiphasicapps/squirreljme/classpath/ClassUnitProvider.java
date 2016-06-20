@@ -118,7 +118,7 @@ public abstract class ClassUnitProvider
 			
 			// Get the class path
 			String classpath = ma.get("class-path");
-			if (classpath != null)
+			//if (classpath != null)
 			{
 				// Go through the dependencies and use them all
 				int n = classpath.length();
