@@ -196,7 +196,7 @@ public abstract class ClassUnitProvider
 		
 		// Go through the array and find a match
 		for (ClassUnit cu : __uns)
-			if (cu.compareTo(__un) == 0)
+			if (cu.equals(__un))
 				return cu;
 		
 		// Not found

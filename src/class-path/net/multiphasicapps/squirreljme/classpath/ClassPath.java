@@ -254,14 +254,24 @@ public final class ClassPath
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/20
 	 */
-	public final ClassUnit locateUnit(String... __un)
+	public final ClassUnit locateUnit(String __un)
 		throws NullPointerException
 	{
 		// Check
 		if (__un == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through units
+		ClassUnit[] units = this._units;
+		synchronized (units)
+		{
+			for (ClassUnit cu : units)
+				if (cu.equals(__un))
+					return cu;
+		}
+		
+		// Not found
+		return null;
 	}
 	
 	/**
@@ -273,7 +283,11 @@ public final class ClassPath
 	 */
 	public final ClassUnit[] units()
 	{
-		return this._units.clone();
+		ClassUnit[] units = this._units;
+		synchronized (units)
+		{
+			return units.clone();
+		}
 	}
 }
 
