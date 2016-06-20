@@ -129,7 +129,16 @@ public final class FieldSymbol
 				case "Z": rv = ClassNameSymbol.BOOLEAN; break;
 				
 					// General
-				default: rv = ClassNameSymbol.of(ss); break;
+				default:
+					// Is a class?
+					if (ss.startsWith("L"))
+						rv = ClassNameSymbol.of(ss.substring(1,
+							ss.length() - 1));
+					
+					// An array?
+					else
+						rv = ClassNameSymbol.of(ss);
+					break;
 			}
 			
 			// Cache it
