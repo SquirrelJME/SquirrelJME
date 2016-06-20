@@ -129,7 +129,7 @@ public abstract class ZipDirectory
 		{
 			int rv = IndexedBinarySearch.<int[], String>search(sorteddx,
 				__n, 0, n, this._bincomp);
-			
+			System.err.printf("DEBUG -- %s @ %d %d%n", __n, rv, -(rv + 1));
 			// Return the entry or null if not found
 			if (rv < 0)
 				return null;
