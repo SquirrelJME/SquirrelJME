@@ -185,6 +185,11 @@ public class PVMClassLoader
 		// Lock
 		synchronized (getClassLoadingLock(__name))
 		{
+			// If an array a virtual class must be created that represents and
+			// stores the array data.
+			if (demang.isArray())
+				throw new Error("TODO");
+			
 			throw new Error("TODO");
 		}
 	}
