@@ -88,6 +88,9 @@ public abstract class ClassUnitProvider
 			if (!did.add(cu))
 				continue;
 			
+			// Add to return value
+			rv.add(cu);
+			
 			// Get the manifest for the unit
 			JavaManifest man;
 			try

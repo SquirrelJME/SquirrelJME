@@ -50,11 +50,12 @@ public final class ClassPath
 	 * locate classes and resources.
 	 *
 	 * @param __cus The class units to use.
-	 * @throw NullPointerException On null arguments.
+	 * @throws IllegalArgumentException If there are no class units.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/27
 	 */
 	public ClassPath(ClassUnit... __cus)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__cus == null)
@@ -66,6 +67,11 @@ public final class ClassPath
 		for (ClassUnit cup : __cus)
 			if (cup == null)
 				throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BN0q Attempt to initialize a class path with
+		// no actual class units.}
+		if (__cus.length <= 0)
+			throw new IllegalArgumentException("BN0q");
 	}
 	
 	/**
