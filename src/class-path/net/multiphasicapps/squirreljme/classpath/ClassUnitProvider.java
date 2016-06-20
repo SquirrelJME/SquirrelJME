@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.classpath;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a provider for {@link ClassUnit}s which are then constructed into
  * {@link ClassPath}s used for execution.
@@ -49,7 +52,16 @@ public abstract class ClassUnitProvider
 		// Obtain all the units
 		ClassUnit[] units = classUnits();
 		
-		throw new Error("TODO");
+		// Go through all inputs
+		List<ClassUnit> rv = new ArrayList<>();
+		for (String s : __un)
+		{
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Build it
+		return new ClassPath(rv.<ClassUnit>toArray(new ClassUnit[rv.size()]));
 	}
 	
 	/**
