@@ -46,6 +46,9 @@ public abstract class ClassUnitProvider
 		if (__un == null || __un.length <= 0)
 			throw new IllegalArgumentException("BN0l");
 		
+		// Obtain all the units
+		ClassUnit[] units = classUnits();
+		
 		throw new Error("TODO");
 	}
 	
@@ -63,6 +66,25 @@ public abstract class ClassUnitProvider
 	{
 		// Check
 		if (__un == null)
+			throw new NullPointerException("NARG");
+		
+		return __locate(classUnits(), __un);
+	}
+	
+	/**
+	 * Locates the given class unit within an array of class units.
+	 *
+	 * @param __uns The class units to look in.
+	 * @param __un The class unit to find.
+	 * @return The located class unit or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	private static final ClassUnit __locate(ClassUnit[] __uns, String __un)
+		throws NullPointerException
+	{
+		// Check
+		if (__uns == null || __un == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
