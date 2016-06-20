@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.pvmjvm;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.squirreljme.ci.CIClass;
+import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
 /**
@@ -182,6 +184,9 @@ public class PVMClassLoader
 			ClassLoaderNameSymbol.of(__name).asClassName().asField());
 		System.err.printf("DEBUG -- Load %s -> %s%n", __name, demang);
 		
+		// The class path
+		ClassPath cp = this.classpath;
+		
 		// Lock
 		synchronized (getClassLoadingLock(__name))
 		{
@@ -189,6 +194,26 @@ public class PVMClassLoader
 			// stores the array data.
 			if (demang.isArray())
 				throw new Error("TODO");
+			
+			// Get the represented class name
+			ClassNameSymbol cn = demang.asClassName();
+			
+			// Could fail to load or not find at all
+			CIClass cic;
+			try
+			{
+				cic = cp.locateClass(cn);
+			}
+			
+			// {@squirreljme.error CL05 Could not find a class in the class
+			// path with the specified name, or the class is not correctly
+			// formed and failed to be verified. (The name of the requested
+			// class)}
+			catch (CIException e)
+			{
+				throw new ClassNotFoundException(String.format("CL05 %s", cn),
+					e);
+			}
 			
 			throw new Error("TODO");
 		}
