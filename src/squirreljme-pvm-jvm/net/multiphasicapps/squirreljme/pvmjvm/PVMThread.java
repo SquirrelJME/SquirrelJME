@@ -72,7 +72,7 @@ public class PVMThread
 		catch (ClassNotFoundException e)
 		{
 			throw new IllegalArgumentException(String.format("CL03 %s",
-				__main));
+				__main), e);
 		}
 		
 		throw new Error("TODO");

@@ -176,7 +176,7 @@ public class PVMClassLoader
 		// Lock
 		synchronized (getClassLoadingLock(actual))
 		{
-			throw new Error("TODO");
+			return loadClass(actual, true);
 		}
 	}
 	
