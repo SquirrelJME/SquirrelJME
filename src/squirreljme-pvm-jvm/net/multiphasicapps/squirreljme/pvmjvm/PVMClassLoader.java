@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
+import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.descriptors.FieldSymbol;
+
 /**
  * This is used to wrap the class loader which paravirtualizes all classes in
  * a process by prefixing and creating virtual classes so that all class
@@ -39,6 +42,50 @@ public class PVMClassLoader
 		
 		// Set
 		this.process = __proc;
+	}
+	
+	/**
+	 * Demangles the given mangled field symbol so that the actual class (to
+	 * the process itself) is obtained.
+	 *
+	 * @param __f The field symbol to demangle.
+	 * @return The original unmangle field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/19
+	 */
+	public FieldSymbol fieldDemangle(FieldSymbol __f)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Primitives go through unchanged
+		if (__f.primitiveType() != null)
+			return __f;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Mangles the given field symbol to the field symbol that should be used
+	 * in this process.
+	 *
+	 * @param __f The field symbol to mangle.
+	 * @return The class which represents the mangled field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/19
+	 */
+	public FieldSymbol fieldMangle(FieldSymbol __f)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Primitives go through unchanged
+		if (__f.primitiveType() != null)
+			return __f;
 		
 		throw new Error("TODO");
 	}

@@ -12,6 +12,9 @@ package net.multiphasicapps.squirreljme.pvmjvm;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
@@ -31,6 +34,10 @@ public class PVM
 	
 	/** The list of packages which are available. */
 	protected final PackageList packagelist;
+	
+	/** Processes that currently exist. */
+	private final Map<Integer, PVMProcess> _processes =
+		new TreeMap<>();
 	
 	/** Lock on the next process ID. */
 	private final Object _nextpidlock =
@@ -95,7 +102,7 @@ public class PVM
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/19
 	 */
-	public PVMProcess createProcess(PackageInfo __info, String... __args)
+	public final PVMProcess createProcess(PackageInfo __info, String... __args)
 		throws NullPointerException
 	{
 		// Check
@@ -109,7 +116,21 @@ public class PVM
 			pid = this._nextpid++;
 		}
 		
-		throw new Error("TODO");
+		// Setup new process
+		PVMProcess rv = new PVMProcess(this, pid);
+		
+		// Add to process map
+		Map<Integer, PVMProcess> process = this._processes;
+		synchronized (process)
+		{
+			process.put(pid, rv);
+		}
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Return it
+		return rv;
 	}
 }
 
