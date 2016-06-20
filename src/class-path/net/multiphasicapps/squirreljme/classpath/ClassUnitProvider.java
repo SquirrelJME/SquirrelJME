@@ -57,17 +57,34 @@ public abstract class ClassUnitProvider
 		ClassUnit[] units = classUnits();
 		
 		// The units to be processed and ones already determined/added
-		Deque<String> inq = new LinkedList<>();
-		Set<String> did = new HashSet<>();
+		Deque<ClassUnit> inq = new LinkedList<>();
+		Set<ClassUnit> did = new HashSet<>();
 		
 		// Add inputs to the queue
-		List<ClassUnit> rv = new ArrayList<>();
+		List<ClassUnit> rv = new LinkedList<>();
 		for (String s : __un)
-			inq.add(s);
+		{
+			// Find the class unit
+			ClassUnit cu = __locate(units, s);
+			
+			// {@squirreljme.error BN0m An input class unit was not available.
+			// (The requested input class unit)}
+			if (cu == null)
+				throw new MissingClassUnitException(String.format("BN0m %s",
+					s));
+			
+			// Add it
+			inq.add(cu);
+		}
 		
 		// Process anything in the queue
 		while (!inq.isEmpty())
 		{
+			// Process the given package?
+			ClassUnit cu = inq.removeFirst();
+			if (!did.add(cu))
+				continue;
+			
 			if (true)
 				throw new Error("TODO");
 		}
@@ -111,7 +128,13 @@ public abstract class ClassUnitProvider
 		if (__uns == null || __un == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through the array and find a match
+		for (ClassUnit cu : __uns)
+			if (cu.compareTo(__un) == 0)
+				return cu;
+		
+		// Not found
+		return null;
 	}
 }
 
