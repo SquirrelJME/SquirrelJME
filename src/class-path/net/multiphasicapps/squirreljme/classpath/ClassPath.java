@@ -247,6 +247,24 @@ public final class ClassPath
 	}
 	
 	/**
+	 * Locates the given class unit.
+	 *
+	 * @param __un The unit to locate.
+	 * @return The found class unit or {@code null} if not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	public final ClassUnit locateUnit(String... __un)
+		throws NullPointerException
+	{
+		// Check
+		if (__un == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns an array containing the class units which are used in this
 	 * class path.
 	 *

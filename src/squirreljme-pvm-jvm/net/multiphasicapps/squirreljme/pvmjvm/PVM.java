@@ -20,6 +20,10 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
+import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
 
 /**
  * This is the primary paravirtual machine controller, it bridges with the
@@ -31,11 +35,11 @@ import net.multiphasicapps.sjmepackages.PackageName;
 public class PVM
 {
 	/** The launcher to use for the user interface. */
-	public static final PackageName LAUNCHER_PROJECT =
-		new PackageName("launcher-lui");
+	public static final String LAUNCHER_PROJECT =
+		"launcher-lui.jar";
 	
-	/** The list of packages which are available. */
-	protected final PackageList packagelist;
+	/** The provider for class units. */
+	protected final ClassUnitProvider cup;
 	
 	/** Processes that currently exist. */
 	private final Map<Integer, PVMProcess> _processes =
@@ -69,29 +73,22 @@ public class PVM
 			__args = new String[0];
 		
 		// Setup package list
-		PackageList plist;
-		try
-		{
-			System.err.print("Loading package lists...");
-			this.packagelist = plist = new PackageList(__jd, null);
-			System.err.println("Done!");
-		}
-		
-		// {@squirreljme.error CL01 Could not initialize the package list.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("CL01", e);
-		}
+		ClassUnitProvider cup = new FSJarClassUnitProvider(__jd);
+		this.cup = cup;
 		
 		// Start the line based user interface
-		// {@squirreljme.error CL02 The launcher project could not be located.
-		// (The project to use for the launcher)}
-		PackageInfo luil = plist.get(LAUNCHER_PROJECT);
-		if (luil == null)
+		// {@squirreljme.error CL02 The launcher JAR could not be located.
+		// (The JAR to use for the launcher)}
+		ClassPath cp = cup.getStandardClassPath(LAUNCHER_PROJECT);
+		
+		// Get the main class unit
+		ClassUnit lcu = cp.locateUnit(LAUNCHER_PROJECT);
+		if (lcu == null)
 			throw new RuntimeException(String.format("CL02 %s",
 				LAUNCHER_PROJECT));
-		createProcess(luil, ClassLoaderNameSymbol.of(luil.mainClass()).
-			asClassName(), (String[])__args);
+		
+		// Create process and pass all input arguments to it
+		createProcess(cp, lcu.mainClass(), (String[])__args);
 	}
 	
 	/**
@@ -99,19 +96,19 @@ public class PVM
 	 * package and its dependencies and optional dependencies if they are
 	 * available.
 	 *
-	 * @param __info The package to launch.
+	 * @param __cp The class path to use.
 	 * @param __main The main class.
 	 * @param __args The arguments to the program.
 	 * @return The newly created process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/19
 	 */
-	public final PVMProcess createProcess(PackageInfo __info,
+	public final PVMProcess createProcess(ClassPath __cp,
 		ClassNameSymbol __main, String... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
-		if (__main == null || __info == null)
+		if (__main == null || __cp == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine the pid of the process
@@ -122,7 +119,7 @@ public class PVM
 		}
 		
 		// Setup new process
-		PVMProcess rv = new PVMProcess(this, pid);
+		PVMProcess rv = new PVMProcess(this, __cp, pid);
 		
 		Map<Integer, PVMProcess> processes = this._processes;
 		try

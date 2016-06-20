@@ -36,7 +36,7 @@ import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
  * @since 2016/05/25
  */
 public abstract class JarClassUnitProvider
-	implements ClassUnitProvider
+	extends ClassUnitProvider
 {
 	/** Lock. */
 	protected final Object lock =

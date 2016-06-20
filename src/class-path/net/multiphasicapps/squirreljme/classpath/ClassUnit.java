@@ -119,7 +119,7 @@ public abstract class ClassUnit
 	 * @return The main class name.
 	 * @since 2016/05/31
 	 */
-	public final ClassNameSymbol getMainClass()
+	public final ClassNameSymbol mainClass()
 	{
 		// Could fail
 		try

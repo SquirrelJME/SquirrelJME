@@ -18,7 +18,7 @@ package net.multiphasicapps.squirreljme.classpath;
  *
  * @since 2016/05/25
  */
-public interface ClassUnitProvider
+public abstract class ClassUnitProvider
 {
 	/**
 	 * Returns the array of class units which are available by this provider.
@@ -27,5 +27,45 @@ public interface ClassUnitProvider
 	 * @since 2016/05/25
 	 */
 	public abstract ClassUnit[] classUnits();
+	
+	/**
+	 * This loads the given units from this given provider and creates a
+	 * {@link ClassPath} which allows for verification and resource lookup.
+	 *
+	 * @param __un The name of the units to load along with all of their
+	 * dependencies.
+	 * @return The classpath with the given unit and its dependencies.
+	 * @throws IllegalArgumentException If no units were specified.
+	 * @throws MissingClassUnitException If a required dependency is missing.
+	 * @since 2016/06/20
+	 */
+	public final ClassPath getStandardClassPath(String... __un)
+		throws IllegalArgumentException, MissingClassUnitException
+	{
+		// {@squirreljme.error BN0l No class unit names were specified.}
+		if (__un == null || __un.length <= 0)
+			throw new IllegalArgumentException("BN0l");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Locates a single class unit using the specified name.
+	 *
+	 * @param __un The unit to locate.
+	 * @return The class unit with the given name, or {@code null} if not
+	 * found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	public final ClassUnit locateClassUnit(String __un)
+		throws NullPointerException
+	{
+		// Check
+		if (__un == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 

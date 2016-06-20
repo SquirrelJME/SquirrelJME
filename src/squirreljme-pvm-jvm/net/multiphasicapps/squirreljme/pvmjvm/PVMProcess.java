@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
 /**
  * This represents a process from within the paravirtual machine.
@@ -31,6 +32,9 @@ public class PVMProcess
 	/** The process identifier. */
 	protected final int pid;
 	
+	/** The class path to use. */
+	protected final ClassPath classpath;
+	
 	/** The thread mappings. */
 	private final Map<Integer, PVMThread> _threads =
 		new TreeMap<>();
@@ -46,19 +50,21 @@ public class PVMProcess
 	 * Initializes the para-virtual machine process.
 	 *
 	 * @param __pvm The owning process.
+	 * @param __cp The class path to use for the process.
 	 * @param __pid The identifier of this process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/16
 	 */
-	PVMProcess(PVM __pvm, int __pid)
+	PVMProcess(PVM __pvm, ClassPath __cp, int __pid)
 		throws NullPointerException
 	{
 		// Check
-		if (__pvm == null)
+		if (__pvm == null || __cp == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.pvm = __pvm;
+		this.classpath = __cp;
 		this.pid = __pid;
 		
 		// Setup class loader

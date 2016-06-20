@@ -1,2 +1,11 @@
 # 2016/06/20
 
+## 09:13
+
+The PVM would likely be better just using the FS Jar ClassUnit provider.
+
+## 09:23
+
+The `ClassUnitProvider` is best an abstract class so that I can have common
+functionality declared within it.
+
