@@ -9,3 +9,8 @@ Going to need a means of creating method descriptors from fields.
 The prefix should probably be shortened, although I consider really long
 class names to be a bug.
 
+## 11:47
+
+I also need a byte code writer and one that can generate the required
+`StackMapTable` attribute along with other details.
+
