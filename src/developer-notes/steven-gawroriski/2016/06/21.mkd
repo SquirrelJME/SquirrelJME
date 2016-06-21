@@ -1,2 +1,6 @@
 # 2016/06/21
 
+## 08:34
+
+Going to need a means of creating method descriptors from fields.
+

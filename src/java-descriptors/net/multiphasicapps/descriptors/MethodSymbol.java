@@ -266,6 +266,43 @@ public final class MethodSymbol
 	}
 	
 	/**
+	 * Creates a method symbol using the specified return value and arguments
+	 * to the method.
+	 *
+	 * @param __rv The return value, if {@code null} then {@code void} is used.
+	 * @param __args The arguments to the method.
+	 * @return The method symbol using the return value specified and its
+	 * arguments.
+	 * @throws NullPointerException If an argument contains a null field.
+	 * @since 2016/06/21
+	 */
+	public static MethodSymbol of(FieldSymbol __rv, FieldSymbol... __args)
+		throws NullPointerException
+	{
+		// Defensive copy
+		__args = (__args != null ? __args.clone() : new FieldSymbol[0]);
+		
+		// Build
+		StringBuilder sb = new StringBuilder("(");
+		for (FieldSymbol fs : __args)
+		{
+			// Check
+			if (fs == null)
+				throw new NullPointerException("NARG");
+			
+			// Append it
+			sb.append(fs);
+		}
+		
+		// Return value
+		sb.append(')');
+		sb.append((__rv != null ? __rv : "V"));
+		
+		// Build it
+		return of(sb.toString());
+	}
+	
+	/**
 	 * Used to prevent {@link SuppressWarnings} where it is not needed.
 	 *
 	 * @param __n The number of elements in the array.
