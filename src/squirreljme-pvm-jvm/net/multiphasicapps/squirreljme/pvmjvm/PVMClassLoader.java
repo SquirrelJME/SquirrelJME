@@ -439,8 +439,8 @@ public class PVMClassLoader
 			IdentifierSymbol mname = methodNameMangle(name);
 			MethodSymbol mtype = methodTypeMangle(type);
 			
-			System.err.printf("DEBUG -- %s %s -> %s %s%n", name, mname,
-				type, mtype);
+			System.err.printf("DEBUG -- %s %s -> %s %s%n", name,
+				type, mname, mtype);
 			
 			throw new Error("TOOD");
 		}
