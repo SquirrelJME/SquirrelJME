@@ -13,7 +13,9 @@ package net.multiphasicapps.classwriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
@@ -38,6 +40,10 @@ public class OutputClass
 	/** The interfaces this class implements. */
 	private final Set<BinaryNameSymbol> _interfacenames = 
 		new LinkedHashSet<>();
+	
+	/** Methods in the class. */
+	private final Map<CIMethodID, OutputMethod> _methods =
+		new LinkedHashMap<>();
 	
 	/** The class version number. */
 	private volatile OutputVersion _version;
@@ -66,6 +72,30 @@ public class OutputClass
 		synchronized (this.lock)
 		{
 			this._interfacenames.add(__bn);
+		}
+	}
+	
+	/**
+	 * Adds a method to the class to be written.
+	 *
+	 * @param __id The name and type of the method.
+	 * @return The newly created method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/21
+	 */
+	public final OutputMethod addMethod(CIMethodID __id)
+		throws NullPointerException
+	{
+		// Check
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			OutputMethod rv;
+			this._methods.put(__id, (rv = new OutputMethod(this, __id)));
+			return rv;
 		}
 	}
 	
@@ -168,6 +198,9 @@ public class OutputClass
 			// Interfaces
 			Set<BinaryNameSymbol> interfacenames = this._interfacenames;
 			
+			// Methods
+			Map<CIMethodID, OutputMethod> methods = this._methods;
+			
 			if (true)
 				throw new Error("TODO");
 			
@@ -182,6 +215,17 @@ public class OutputClass
 			if (true)
 				throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Returns the global class locking object.
+	 *
+	 * @return The class lock object.
+	 * @since 2016/06/21
+	 */
+	final Object __lock()
+	{
+		return this.lock;
 	}
 }
 

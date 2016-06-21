@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classwriter.OutputClass;
+import net.multiphasicapps.classwriter.OutputMethod;
 import net.multiphasicapps.classwriter.OutputVersion;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
@@ -442,7 +443,13 @@ public class PVMClassLoader
 			System.err.printf("DEBUG -- %s %s -> %s %s%n", name,
 				type, mname, mtype);
 			
-			throw new Error("TOOD");
+			// Create method
+			OutputMethod om = __oc.addMethod(new CIMethodID(mname, mtype));
+			
+			// Copy flags
+			om.setFlags(meth.flags());
+			
+			throw new Error("TODO");
 		}
 	}
 	

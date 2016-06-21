@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classwriter;
 
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
 
 /**
@@ -18,7 +19,7 @@ import net.multiphasicapps.squirreljme.ci.CIMethodID;
  * @since 2016/06/21
  */
 public final class OutputMethod
-	extends OutputMember<CIMethodID>
+	extends OutputMember<CIMethodID, CIMethodFlags>
 {
 	/**
 	 * Initializes the output method.
@@ -29,7 +30,7 @@ public final class OutputMethod
 	 */
 	OutputMethod(OutputClass __oc, CIMethodID __id)
 	{
-		super(__oc, __id);
+		super(__oc, __id, CIMethodFlags.class);
 	}
 }
 
