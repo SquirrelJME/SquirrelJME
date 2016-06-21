@@ -15,7 +15,7 @@ package net.multiphasicapps.classwriter;
  *
  * @since 2016/06/20
  */
-public class ClassWriter
+public class OutputClass
 {
 }
 
