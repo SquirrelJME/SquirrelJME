@@ -21,6 +21,9 @@ import net.multiphasicapps.squirreljme.ci.CIMethodID;
 public final class OutputMethod
 	extends OutputMember<CIMethodID, CIMethodFlags>
 {
+	/** The current code the method uses. */
+	private volatile OutputCode _code;
+	
 	/**
 	 * Initializes the output method.
 	 *
@@ -31,6 +34,25 @@ public final class OutputMethod
 	OutputMethod(OutputClass __oc, CIMethodID __id)
 	{
 		super(__oc, __id, CIMethodFlags.class);
+	}
+	
+	/**
+	 * Creates a new block of mutable and output byte code that the method
+	 * uses during execution.
+	 *
+	 * @return The output code attribute.
+	 * @since 2016/06/21
+	 */
+	public final OutputCode createCode()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			OutputCode rv = this._code;
+			if (rv == null)
+				this._code = (rv = new OutputCode(this));
+			return rv;
+		}
 	}
 }
 

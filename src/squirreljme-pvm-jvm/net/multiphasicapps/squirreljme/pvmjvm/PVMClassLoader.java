@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classwriter.OutputClass;
+import net.multiphasicapps.classwriter.OutputCode;
 import net.multiphasicapps.classwriter.OutputMethod;
 import net.multiphasicapps.classwriter.OutputVersion;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
@@ -448,6 +449,9 @@ public class PVMClassLoader
 			
 			// Copy flags
 			om.setFlags(meth.flags());
+			
+			// Translate and virtualize input code to the output code
+			OutputCode ocode = om.createCode();
 			
 			throw new Error("TODO");
 		}
