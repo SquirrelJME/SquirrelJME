@@ -16,6 +16,9 @@ import java.io.OutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 
 /**
  * This class is used to write standard Java class files.
