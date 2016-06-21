@@ -20,6 +20,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIField;
@@ -252,6 +253,34 @@ public class PVMClassLoader
 					e);
 			}
 		}
+	}
+	
+	/**
+	 * Mangles the given method symbol.
+	 *
+	 * @param __ms The method symbol to mangle.
+	 * @return The mangled form of the method symbol.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/21
+	 */
+	public final MethodSymbol methodMangle(MethodSymbol __ms)
+		throws NullPointerException
+	{
+		// Check
+		if (__ms == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the return value
+		FieldSymbol rv = __ms.returnValue();
+		
+		// Go through all fields
+		int n = __ms.argumentCount();
+		FieldSymbol[] args = new FieldSymbol[n];
+		for (int i = 0; i < n; i++)
+			args[i] = fieldMangle(__ms.get(i));
+		
+		// Build it
+		return MethodSymbol.of(rv, args);
 	}
 	
 	/**
