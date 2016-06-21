@@ -29,6 +29,7 @@ import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIField;
 import net.multiphasicapps.squirreljme.ci.CIFieldID;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
@@ -448,12 +449,14 @@ public class PVMClassLoader
 			OutputMethod om = __oc.addMethod(new CIMethodID(mname, mtype));
 			
 			// Copy flags
-			om.setFlags(meth.flags());
+			CIMethodFlags mf;
+			om.setFlags((mf = meth.flags()));
 			
-			// Translate and virtualize input code to the output code
-			OutputCode ocode = om.createCode();
-			
-			throw new Error("TODO");
+			// Translate and virtualize input code to the output code if
+			// the method is not abstract or native
+			if (!mf.isNative() && !mf.isAbstract())
+				new PVMCodeTranslator(this, meth.code(), om.createCode()).
+					translate();
 		}
 	}
 	
