@@ -20,6 +20,7 @@ import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
@@ -39,6 +40,10 @@ import net.multiphasicapps.squirreljme.classpath.ClassPath;
 public class PVMClassLoader
 	extends ClassLoader
 {
+	/** The prefix used for mangled method names. */
+	public static final String MANGLED_METHOD_NAME_PREFIX =
+		"__sjme##";
+	
 	/** The process which owns this class loader. */
 	protected final PVMProcess process;
 	
@@ -256,6 +261,46 @@ public class PVMClassLoader
 	}
 	
 	/**
+	 * Mangles the symbol used for the name of a method
+	 *
+	 * @param __id The method name.
+	 * @return The mangled form of the name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/21
+	 */
+	public final IdentifierSymbol methodNameMangle(IdentifierSymbol __id)
+		throws NullPointerException
+	{
+		// Check
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the string
+		String s = __id.toString();
+		switch (s)
+		{
+				// finals in Object
+				// finalize is also handled despite not being final and just
+				// protected because a class might have a private finalize or
+				// one that is a bit different which would break verification.
+			case "getClass":
+			case "notify":
+			case "notifyAll":
+			case "wait":
+			case "finalize":
+				return IdentifierSymbol.of(MANGLED_METHOD_NAME_PREFIX + s);
+			
+				// Keep the same, however detect if mangled names were used
+				// on input and mangle those
+			default:
+				if (s.startsWith(MANGLED_METHOD_NAME_PREFIX))
+					return IdentifierSymbol.of(MANGLED_METHOD_NAME_PREFIX +
+						s);
+				return __id;
+		}
+	}
+	
+	/**
 	 * Mangles the given method symbol.
 	 *
 	 * @param __ms The method symbol to mangle.
@@ -263,7 +308,7 @@ public class PVMClassLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/21
 	 */
-	public final MethodSymbol methodMangle(MethodSymbol __ms)
+	public final MethodSymbol methodTypeMangle(MethodSymbol __ms)
 		throws NullPointerException
 	{
 		// Check
@@ -384,6 +429,19 @@ public class PVMClassLoader
 		// Methods need their byte code translated
 		for (Map.Entry<CIMethodID, CIMethod> e : __ic.methods().entrySet())
 		{
+			// Get vlaues
+			CIMethodID id = e.getKey();
+			IdentifierSymbol name = id.name();
+			MethodSymbol type = id.type();
+			CIMethod meth = e.getValue();
+			
+			// Mangle the name and type
+			IdentifierSymbol mname = methodNameMangle(name);
+			MethodSymbol mtype = methodTypeMangle(type);
+			
+			System.err.printf("DEBUG -- %s %s -> %s %s%n", name, mname,
+				type, mtype);
+			
 			throw new Error("TOOD");
 		}
 	}

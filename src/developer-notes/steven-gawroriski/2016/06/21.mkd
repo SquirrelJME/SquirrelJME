@@ -4,3 +4,8 @@
 
 Going to need a means of creating method descriptors from fields.
 
+## 08:43
+
+The prefix should probably be shortened, although I consider really long
+class names to be a bug.
+
