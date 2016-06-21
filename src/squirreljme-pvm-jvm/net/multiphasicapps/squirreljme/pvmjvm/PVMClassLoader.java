@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import net.multiphasicapps.classwriter.OutputClass;
+import net.multiphasicapps.classwriter.OutputVersion;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
@@ -180,8 +184,9 @@ public class PVMClassLoader
 			throw new NullPointerException("NARG");
 		
 		// Demangle
-		FieldSymbol demang = fieldDemangle(
-			ClassLoaderNameSymbol.of(__name).asClassName().asField());
+		FieldSymbol mangled = ClassLoaderNameSymbol.of(__name).asClassName().
+			asField();
+		FieldSymbol demang = fieldDemangle(mangled);
 		System.err.printf("DEBUG -- Load %s -> %s%n", __name, demang);
 		
 		// The class path
@@ -215,7 +220,30 @@ public class PVMClassLoader
 					e);
 			}
 			
-			throw new Error("TODO");
+			// Setup the output class writer
+			OutputClass oc = new OutputClass();
+			
+			// Convert the class data
+			__virtualizeClass(oc, cic);
+			
+			// Write it out
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+			{
+				// Write to the output
+				oc.write(baos);
+				
+				// Define the class
+				byte[] buf = baos.toByteArray();
+				return defineClass(__name, buf, 0, buf.length);
+			}
+			
+			// {@squirreljme.error CL06 Failed to generate a translated class
+			// file. (The class to generate)}
+			catch (IOException|RuntimeException e)
+			{
+				throw new ClassNotFoundException(String.format("CL06 %s", cn),
+					e);
+			}
 		}
 	}
 	
@@ -273,6 +301,27 @@ public class PVMClassLoader
 		{
 			return loadClass(actual, true);
 		}
+	}
+	
+	/**
+	 * Virtualizes the given class.
+	 *
+	 * @param __oc The output class.
+	 * @param __ic The input class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	private final void __virtualizeClass(OutputClass __oc, CIClass __ic)
+		throws NullPointerException
+	{
+		// Check
+		if (__oc == null || __ic == null)
+			throw new NullPointerException("NARG");
+		
+		// Set version
+		__oc.setVersion(OutputVersion.CLDC_8);
+		
+		throw new Error("TODO");
 	}
 	
 	/**
