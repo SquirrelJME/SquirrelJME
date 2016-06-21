@@ -335,6 +335,11 @@ public class PVMClassLoader
 		else
 			__oc.setSuperName(BinaryNameSymbol.of("java/lang/Object"));
 		
+		// Wrap interfaces
+		for (ClassNameSymbol ic : __ic.interfaceNames())
+			__oc.addInterface(fieldMangle(ic.asField()).asClassName().
+				asBinaryName());
+		
 		throw new Error("TODO");
 	}
 	

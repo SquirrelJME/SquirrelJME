@@ -13,6 +13,8 @@ package net.multiphasicapps.classwriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
 
 /**
@@ -30,6 +32,10 @@ public class OutputClass
 	protected final Object lock =
 		new Object();
 	
+	/** The interfaces this class implements. */
+	private final Set<BinaryNameSymbol> _interfacenames = 
+		new LinkedHashSet<>();
+	
 	/** The class version number. */
 	private volatile OutputVersion _version;
 	
@@ -38,6 +44,27 @@ public class OutputClass
 	
 	/** The name of the super class. */
 	private volatile BinaryNameSymbol _supername;
+	
+	/**
+	 * Adds an interface that the class should implement.
+	 *
+	 * @param __bn The class that this implements.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/1
+	 */
+	public final void addInterface(BinaryNameSymbol __bn)
+		throws NullPointerException
+	{
+		// Check
+		if (__bn == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._interfacenames.add(__bn);
+		}
+	}
 	
 	/**
 	 * Sets the name of the super class that this extends.
@@ -134,6 +161,9 @@ public class OutputClass
 			
 			// Superclass is optional
 			BinaryNameSymbol supername = this._supername;
+			
+			// Interfaces
+			Set<BinaryNameSymbol> interfacenames = this._interfacenames;
 			
 			if (true)
 				throw new Error("TODO");
