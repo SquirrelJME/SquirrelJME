@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.pvmjvm;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classwriter.OutputClass;
 import net.multiphasicapps.classwriter.OutputVersion;
 import net.multiphasicapps.descriptors.BinaryNameSymbol;
@@ -20,6 +22,10 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIField;
+import net.multiphasicapps.squirreljme.ci.CIFieldID;
+import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
 /**
@@ -340,7 +346,17 @@ public class PVMClassLoader
 			__oc.addInterface(fieldMangle(ic.asField()).asClassName().
 				asBinaryName());
 		
-		throw new Error("TODO");
+		// Fields storage types need to be mangled
+		for (Map.Entry<CIFieldID, CIField> e : __ic.fields().entrySet())
+		{
+			throw new Error("TODO");
+		}
+		
+		// Methods need their byte code translated
+		for (Map.Entry<CIMethodID, CIMethod> e : __ic.methods().entrySet())
+		{
+			throw new Error("TOOD");
+		}
 	}
 	
 	/**
