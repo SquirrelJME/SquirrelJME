@@ -14,3 +14,11 @@ class names to be a bug.
 I also need a byte code writer and one that can generate the required
 `StackMapTable` attribute along with other details.
 
+## 19:48
+
+When it comes to array virtualization, I would suppose that I would use a
+proxy interface in the PVM environment where access is then virtualized by a
+common outer class to internal array data. Arrays in the virtual machine have
+to extend Object. So I suppose then for arrays, I will have to create all of
+the byte code manually so that the extension conditions are met.
+
