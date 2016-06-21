@@ -33,6 +33,30 @@ public class OutputClass
 	/** The class version number. */
 	private volatile OutputVersion _version;
 	
+	/** The name of the current class. */
+	private volatile BinaryNameSymbol _thisname;
+	
+	/**
+	 * Sets the name of the current class.
+	 *
+	 * @param __tn The name of this class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/20
+	 */
+	public final void setThisName(BinaryNameSymbol __tn)
+		throws NullPointerException
+	{
+		// Check
+		if (__tn == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._thisname = __tn;
+		}
+	}
+	
 	/**
 	 * Sets the version of the class.
 	 *
@@ -41,7 +65,7 @@ public class OutputClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/20
 	 */
-	public void setVersion(OutputVersion __ver)
+	public final void setVersion(OutputVersion __ver)
 		throws NullPointerException
 	{
 		// Check
@@ -65,7 +89,7 @@ public class OutputClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/20
 	 */
-	public void write(OutputStream __os)
+	public final void write(OutputStream __os)
 		throws IllegalStateException, IOException, NullPointerException
 	{
 		// Check
@@ -83,6 +107,12 @@ public class OutputClass
 			OutputVersion version = this._version;
 			if (version == null)
 				throw new IllegalStateException("CO01");
+			
+			// {@squirreljme.error CO02 The name of the current class was not
+			// specified.}
+			BinaryNameSymbol thisname = this._thisname;
+			if (thisname == null)
+				throw new IllegalStateException("CO02");
 			
 			if (true)
 				throw new Error("TODO");

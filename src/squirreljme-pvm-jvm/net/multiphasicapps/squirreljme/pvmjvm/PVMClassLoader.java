@@ -321,6 +321,10 @@ public class PVMClassLoader
 		// Set version
 		__oc.setVersion(OutputVersion.CLDC_8);
 		
+		// Set class name
+		__oc.setThisName(fieldMangle(__ic.thisName().asField()).asClassName().
+			asBinaryName());
+		
 		throw new Error("TODO");
 	}
 	
