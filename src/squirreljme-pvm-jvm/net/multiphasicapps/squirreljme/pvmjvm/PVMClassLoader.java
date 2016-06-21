@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import net.multiphasicapps.classwriter.OutputClass;
 import net.multiphasicapps.classwriter.OutputVersion;
+import net.multiphasicapps.descriptors.BinaryNameSymbol;
 import net.multiphasicapps.descriptors.ClassLoaderNameSymbol;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
@@ -324,6 +325,15 @@ public class PVMClassLoader
 		// Set class name
 		__oc.setThisName(fieldMangle(__ic.thisName().asField()).asClassName().
 			asBinaryName());
+		
+		// Get the super class name, either use the mangled form of it or if it
+		// is null then it must extend Object.
+		ClassNameSymbol sc = __ic.superName();
+		if (sc != null)
+			__oc.setSuperName(fieldMangle(sc.asField()).asClassName().
+				asBinaryName());
+		else
+			__oc.setSuperName(BinaryNameSymbol.of("java/lang/Object"));
 		
 		throw new Error("TODO");
 	}

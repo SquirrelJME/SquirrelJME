@@ -36,6 +36,24 @@ public class OutputClass
 	/** The name of the current class. */
 	private volatile BinaryNameSymbol _thisname;
 	
+	/** The name of the super class. */
+	private volatile BinaryNameSymbol _supername;
+	
+	/**
+	 * Sets the name of the super class that this extends.
+	 *
+	 * @param __sn The super class this extends.
+	 * @since 2016/06/21
+	 */
+	public final void setSuperName(BinaryNameSymbol __sn)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._supername = __sn;
+		}
+	}
+	
 	/**
 	 * Sets the name of the current class.
 	 *
@@ -113,6 +131,9 @@ public class OutputClass
 			BinaryNameSymbol thisname = this._thisname;
 			if (thisname == null)
 				throw new IllegalStateException("CO02");
+			
+			// Superclass is optional
+			BinaryNameSymbol supername = this._supername;
 			
 			if (true)
 				throw new Error("TODO");
