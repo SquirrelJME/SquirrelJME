@@ -147,6 +147,9 @@ public final class BCStateVerification
 		if (__op == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+		/*
+		
 		// Get operation details
 		List<BCLocalAccess> la = __op.localAccesses();
 		List<BCVariableType> so = __op.stackPops();
@@ -303,6 +306,7 @@ public final class BCStateVerification
 		
 		// Return it
 		return new BCStateVerification(ll, ss);
+		*/
 	}
 	
 	/**

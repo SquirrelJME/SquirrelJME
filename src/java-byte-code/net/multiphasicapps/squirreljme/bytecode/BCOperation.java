@@ -37,26 +37,6 @@ public final class BCOperation
 	/** The instruction ID. */
 	protected final int instructionid;
 	
-	/** Arguments of the operation. */
-	@Deprecated
-	protected final List<Object> arguments;
-	
-	/** The local variables which are accessed. */
-	@Deprecated
-	protected final List<BCLocalAccess> localaccess;
-	
-	/** Variables types which are popped from the stack. */
-	@Deprecated
-	protected final List<BCVariableType> stackpop;
-	
-	/** Variable types which are pushed to the stack. */
-	@Deprecated
-	protected final List<BCVariablePush> stackpush;
-	
-	/** The verification state of this operation. */
-	@Deprecated
-	protected final BCStateVerification verification;
-	
 	/** The continued result of verification. */
 	protected final BCStateVerification verifresult;
 	
@@ -176,17 +156,6 @@ public final class BCOperation
 	}
 	
 	/**
-	 * Returns the arguments to this instruction.
-	 *
-	 * @return The list of arguments.
-	 * @since 2016/05/12
-	 */
-	public List<Object> arguments()
-	{
-		return this.arguments;
-	}
-	
-	/**
 	 * Returns the instruction ID of this instruction.
 	 *
 	 * @return The instruction ID.
@@ -195,29 +164,6 @@ public final class BCOperation
 	public int instructionId()
 	{
 		return this.instructionid;
-	}
-	
-	/**
-	 * Returns the list of local variables which are accessed by this
-	 * operation.
-	 *
-	 * @return The local variable access list.
-	 * @since 2016/05/12
-	 */
-	public List<BCLocalAccess> localAccesses()
-	{
-		return this.localaccess;
-	}
-	
-	/**
-	 * Returns the owner of of this operation.
-	 *
-	 * @return The operation owner.
-	 * @since 2016/05/13
-	 */
-	public BCByteCode owner()
-	{
-		return this.owner;
 	}
 	
 	/**
@@ -265,6 +211,17 @@ public final class BCOperation
 	}
 	
 	/**
+	 * Returns the owner of of this operation.
+	 *
+	 * @return The operation owner.
+	 * @since 2016/05/13
+	 */
+	public BCByteCode owner()
+	{
+		return this.owner;
+	}
+	
+	/**
 	 * Returns the physical address of the operation.
 	 *
 	 * @return The operation physical address.
@@ -276,27 +233,14 @@ public final class BCOperation
 	}
 	
 	/**
-	 * Returns the list of variable types which are popped from this
-	 * instruction.
+	 * Returns the raw operation data.
 	 *
-	 * @return The type of values to pop.
-	 * @since 2016/05/12
+	 * @return The raw operation data.
+	 * @since 2016/06/22
 	 */
-	public List<BCVariableType> stackPops()
+	public BCRawOperation rawOperation()
 	{
-		return this.stackpop;
-	}
-	
-	/**
-	 * Returns the list of variable types and value changes which are to be
-	 * pushed to the stack.
-	 *
-	 * @return The push types and value assignment used.
-	 * @since 2016/05/12
-	 */
-	public List<BCVariablePush> stackPushes()
-	{
-		return this.stackpush;
+		return this.rop;
 	}
 	
 	/**
@@ -313,9 +257,8 @@ public final class BCOperation
 		// Needs caching?
 		if (ref == null || null == (rv = ref.get()))
 			_string = new WeakReference<>((rv = "(id=" + instructionId() +
-				", args=" + arguments() +
-				", la=" + localAccesses() + ", pop=" + stackPops() +
-				", push=" + stackPushes() + ", iv=" + verificationInput() +
+				", rop=" + rawOperation() +
+				", iv=" + verificationInput() +
 				", ov=" + verificationOutput() + ")"));
 		
 		// Return it
