@@ -46,6 +46,11 @@ public final class BCRawOperation
 		this.owner = __bc;
 		this.logicaladdress = __lp;
 		
+		// Determine the physical address
+		int phy = __bc.logicalToPhysical(__lp);
+		
+		// Read the opcode ID
+		
 		throw new Error("TODO");
 	}
 	
