@@ -34,10 +34,7 @@ public final class BCOperation
 	protected final int logicaladdress;
 	
 	/** The instruction ID. */
-	protected final int instructionid;
-	
-	/** Rewritten instruction ID. */
-	protected final int rwinstructionid;
+	protected final int instructionid
 	
 	/** Arguments of the operation. */
 	protected final List<Object> arguments;
@@ -79,6 +76,8 @@ public final class BCOperation
 		this.owner = __bc;
 		this.rop = __rop;
 		this.logicaladdress = __rop.logicalAddress();
+		
+		// Depends on the instruction ID
 		
 		throw new Error("TODO");
 		/*
@@ -175,12 +174,6 @@ public final class BCOperation
 	 */
 	public int instructionId()
 	{
-		// Could be rewritten
-		int rv = rwinstructionid;
-		if (rv != 0)
-			return rv;
-		
-		// Otherwise use the original instruction
 		return this.instructionid;
 	}
 	
