@@ -138,6 +138,8 @@ class __OpInit__
 			bb.readUnsignedShort(phy, 1), CIClassReference.class);
 		__id.setArguments(ref);
 		
+		throw new Error("TODO");
+		/*
 		// Lookup the class
 		CIClass ncl = __id.lookup(ref.get());
 		
@@ -160,6 +162,7 @@ class __OpInit__
 		
 		// A new object is pushed
 		__id.setStackPush(BCVariablePush.newObject());
+		*/
 	}
 }
 

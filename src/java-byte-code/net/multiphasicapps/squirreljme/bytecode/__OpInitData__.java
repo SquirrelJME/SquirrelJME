@@ -80,18 +80,6 @@ final class __OpInitData__
 	}
 	
 	/**
-	 * Forwards access check.
-	 *
-	 * @param __ao The object to check access against.
-	 * @return {@code true} if it can be accessed.
-	 * @since 2016/05/13
-	 */
-	public boolean canAccess(CIAccessibleObject __ao)
-	{
-		return this.operation.owner().canAccess(__ao);
-	}
-	
-	/**
 	 * Returns the operation arguments.
 	 *
 	 * @return The operation arguments.
@@ -156,20 +144,6 @@ final class __OpInitData__
 		if (rv == null)
 			return setStackPush();
 		return rv;
-	}
-	
-	/**
-	 * Finds the class by the given class name.
-	 *
-	 * @param __cl The class to find.
-	 * @return The discovered class or {@code null} if not found.
-	 * @since 2016/05/13
-	 */
-	@Deprecated
-	public CIClass lookup(ClassNameSymbol __cl)
-	{
-		throw new Error("TODO");
-		/*return lookup().lookupClass(__cl);*/
 	}
 	
 	/**

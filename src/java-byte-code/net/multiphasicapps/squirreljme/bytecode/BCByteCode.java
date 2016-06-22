@@ -124,36 +124,6 @@ public final class BCByteCode
 	}
 	
 	/**
-	 * Checks whether the current byte code (the method that contains this byte
-	 * code) can access the specified accessible object.
-	 *
-	 * @param __ao The object to check access against.
-	 * @return {@code true} if the object can be accessed.
-	 * @throws BCException If the class has no set access flag type or is
-	 * a class which eventually extends itself.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/12
-	 */
-	@Deprecated
-	public final boolean canAccess(CIAccessibleObject __ao)
-		throws BCException, NullPointerException
-	{
-		// Could fail
-		try
-		{
-			throw new Error("TODO");
-			/*return lookup.canAccess(this.method, __ao);*/
-		}
-		
-		// {@squirreljme.error AX11 Could not check the access of an object to
-		// another.}
-		catch (CIException e)
-		{
-			throw new BCException("AX11", e);
-		}
-	}
-	
-	/**
 	 * Returns the raw code buffer.
 	 *
 	 * @return The code buffer.
