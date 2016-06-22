@@ -78,6 +78,8 @@ public final class BCOperation
 		this.instructionid = iid;
 		
 		// Modify the verification state depending on the micro-operations
+		this.verifresult = verificationInput().derive(this);
+		
 		throw new Error("TODO");
 		
 		/*
