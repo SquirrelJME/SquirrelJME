@@ -11,27 +11,13 @@
 package net.multiphasicapps.squirreljme.bytecode;
 
 /**
- * This class is used to contain multiple micro-operations which perform work.
+ * This interface is used for micro-operation execution. Each operation in the
+ * byte code can cause these to be executed which provides a basic interpreter
+ * interface for running byte code.
  *
  * @since 2016/06/22
  */
-public class BCMicroOperations
+public interface BCMicroExecution
 {
-	/**
-	 * Initializes the micro operation data.
-	 *
-	 * @param __uops The micro operations to perform.
-	 * @throws BCException If a micro-operation is not valid.
-	 * @since 2016/06/22
-	 */
-	public BCMicroOperations(long... __uops)
-		throws BCException
-	{
-		// Must exist
-		if (__uops == null)
-			__uops = new long[0];
-		
-		throw new Error("TODO");
-	}
 }
 

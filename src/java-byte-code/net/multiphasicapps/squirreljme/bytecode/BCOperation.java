@@ -43,9 +43,6 @@ public final class BCOperation
 	/** The verification used on entry of this operation. */
 	private volatile Reference<BCStateVerification> _entryverif;
 	
-	/** Cached micro-operations this instruction performs. */
-	private volatile Reference<BCMicroOperations> _microps;
-	
 	/** The string representation of this operation. */
 	private volatile Reference<String> _string;
 	
@@ -75,7 +72,8 @@ public final class BCOperation
 		this.instructionid = iid;
 		
 		// Get micro operations to check verification state
-		BCMicroOperations microps = microOps();
+		if (true)
+			throw new Error("TODO");
 		
 		// Modify the verification state depending on the operations
 		throw new Error("TODO");
@@ -167,47 +165,42 @@ public final class BCOperation
 	}
 	
 	/**
-	 * Returns the micro-operations that this Java operation performs.
+	 * This method calls the appropriate methods within the specified microop
+	 * execution for the current operation.
 	 *
-	 * @return The list of micro operations.
+	 * @param __e The execution environment for micro operations.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/22
 	 */
-	public BCMicroOperations microOps()
+	public void microOpExecute(BCMicroExecution __e)
+		throws NullPointerException
 	{
-		// Get
-		Reference<BCMicroOperations> ref = this._microps;
-		BCMicroOperations rv;
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
 		
-		// Needs creation?
-		if (ref == null || null == (rv = ref.get()))
+		// Need to know the verification state of this instruction, either
+		// this one or the one before it. This is used to perform basic checks
+		// that the byte code is well formed and to know the size of the input
+		// stack for example.
+		BCStateVerification entv = verificationInput();
+		
+		// Depends on the instruction
+		int iid = this.instructionid;
+		switch (iid)
 		{
-			// Need to know the verification state of this instruction, either
-			// this one or the one before it
-			BCStateVerification entv = verificationInput();
+				// Allocate new object
+			case BCInstructionID.NEW:
+				if (true)
+					throw new Error("TODO");
+				break;
 			
-			// Depends on the instruction
-			int iid = this.instructionid;
-			switch (iid)
-			{
-					// Allocate new object
-				case BCInstructionID.NEW:
-					if (true)
-						throw new Error("TODO");
-					break;
-				
-					// {@squirreljme.error AX11 The specified operation cannot
-					// be handled because it is not known. (The instruction
-					// opcode)}
-				default:
-					throw new BCException(String.format("AX11 %d", iid));
-			}
-			
-			// Store
-			this._microps = new WeakReference<>(rv);
+				// {@squirreljme.error AX11 The specified operation cannot
+				// be handled because it is not known. (The instruction
+				// opcode)}
+			default:
+				throw new BCException(String.format("AX11 %d", iid));
 		}
-		
-		// Return
-		return rv;
 	}
 	
 	/**

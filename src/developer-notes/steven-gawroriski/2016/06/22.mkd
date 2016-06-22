@@ -43,3 +43,9 @@ micro operations also.
 I suppose for micro operations, object would be used instead of integer
 values since that would be a bit more expressive.
 
+## 17:25
+
+Alternatively instead of micro operations, there are instead micro-executions.
+If a concrete representitive form is needed then that can always be created
+from the executions.
+
