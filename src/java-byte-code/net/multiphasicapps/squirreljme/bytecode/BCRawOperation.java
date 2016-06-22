@@ -50,6 +50,7 @@ public final class BCRawOperation
 		int phy = __bc.logicalToPhysical(__lp);
 		
 		// Read the opcode ID
+		int opid = __bb.readByte(phy, 0);
 		
 		throw new Error("TODO");
 	}
