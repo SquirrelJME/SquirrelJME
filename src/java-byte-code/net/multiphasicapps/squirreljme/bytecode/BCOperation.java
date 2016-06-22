@@ -62,11 +62,12 @@ public final class BCOperation
 	 *
 	 * @param __bc The owning byte code.
 	 * @param __bb The buffer which contains code.
+	 * @throws BCException If the operation is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
 	BCOperation(BCByteCode __bc, BCRawOperation __rop)
-		throws NullPointerException
+		throws BCException, NullPointerException
 	{
 		// Check
 		if (__bc == null || __rop == null)
@@ -78,6 +79,15 @@ public final class BCOperation
 		this.logicaladdress = __rop.logicalAddress();
 		
 		// Depends on the instruction ID
+		int iid = (int)__rop.get(0);
+		this.instructionid = iid;
+		switch (iid)
+		{
+				// {@squirreljme.error AX11 The specified operation cannot be
+				// handled because it is not known. (The instruction opcode)}
+			default:
+				throw new BCException(String.format("AX11 %d", iid));
+		}
 		
 		throw new Error("TODO");
 		/*

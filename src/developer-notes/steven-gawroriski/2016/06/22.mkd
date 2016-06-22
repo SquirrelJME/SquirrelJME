@@ -19,3 +19,16 @@ interpreter.
 I can switch the explicit verification states to use an array where the states
 are binary searched instead of using a map.
 
+## 13:56
+
+Perhaps what I can use in the byte code is some kind of pseudo operation
+definition of sorts. What really is needed though for the operations is just
+the logic that states how it modifies the stack, if it accesses any local
+variables, and other things.
+
+## 13:59
+
+So it would basically be a micro operation that defines what a byte code
+instruction does. The compiler could actually in a way optimize a program
+based on the micro operations rather than the whole operations.
+
