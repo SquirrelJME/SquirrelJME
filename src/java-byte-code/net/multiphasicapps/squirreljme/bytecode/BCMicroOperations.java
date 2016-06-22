@@ -24,12 +24,12 @@ public class BCMicroOperations
 	 * @throws BCException If a micro-operation is not valid.
 	 * @since 2016/06/22
 	 */
-	public BCMicroOperations(int... __uops)
+	public BCMicroOperations(long... __uops)
 		throws BCException
 	{
 		// Must exist
 		if (__uops == null)
-			__uops = new int[0];
+			__uops = new long[0];
 		
 		throw new Error("TODO");
 	}

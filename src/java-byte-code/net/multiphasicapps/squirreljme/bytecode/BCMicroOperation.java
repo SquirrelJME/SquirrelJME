@@ -11,14 +11,15 @@
 package net.multiphasicapps.squirreljme.bytecode;
 
 /**
- * This is used to create and potentially execute micro-operations.
+ * This is the base class for micro operations that code may perform in
+ * single individual steps.
  *
  * @since 2016/06/22
  */
-public final class BCMicroOperation
+public abstract class BCMicroOperation
 {
 	/**
-	 * Not used.
+	 * Initializes the base micro operation.
 	 *
 	 * @since 2016/06/22
 	 */

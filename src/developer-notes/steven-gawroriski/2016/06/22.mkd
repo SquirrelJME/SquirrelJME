@@ -38,3 +38,8 @@ Then stack verification would use the microoperations to determine the input
 and output state. An interpreter could also be purely based on the more simpler
 micro operations also.
 
+## 17:22
+
+I suppose for micro operations, object would be used instead of integer
+values since that would be a bit more expressive.
+
