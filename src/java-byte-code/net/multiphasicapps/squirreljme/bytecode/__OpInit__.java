@@ -46,6 +46,8 @@ class __OpInit__
 	 */
 	public static void dup(__OpInitData__ __id)
 	{
+		throw new Error("TODO");
+		/*
 		// Get input and the stack
 		BCStateVerification vin = __id.verificationInput();
 		BCStateVerification.Stack stack = vin.stack();
@@ -71,6 +73,7 @@ class __OpInit__
 		
 		// Rewrite the operation
 		__id.rewrite(BCInstructionID.SYNTHETIC_STACK_SHUFFLE);
+		*/
 	}
 	
 	/**

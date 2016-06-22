@@ -838,62 +838,52 @@ public interface BCInstructionID
 	public static final int IMPDEP2 =
 		255;
 	
-	/**
-	 * Synthetic: Push value to stack.
-	 *
-	 * The first argument contains the value to push.
-	 */
-	public static final int SYNTHETIC_PUSH_VALUE =
-		65536;
+	/** WIDE_ALOAD. */
+	public static final int WIDE_ALOAD =
+		0xC425;
 	
-	/**
-	 * Synthetic: Check null on stack, push value to stack.
-	 *
-	 * An object is popped from the stack and checked against null.
-	 *
-	 * The first argument contains the value to push.
-	 */
-	public static final int SYNTHETIC_CHECK_NULL_PUSH_VALUE =
-		65537;
+	/** WIDE_ASTORE. */
+	public static final int WIDE_ASTORE =
+		0xC458;
 	
-	/**
-	 * Synthetic: Shuffle items on the stack.
-	 *
-	 * Values are popped from the stack in a specific order and their values
-	 * are temporarily copied. Pushing of values uses stack value reference
-	 * variety of {@link BCVariablePush} ({@link BCVariablePush#popIndex()})
-	 * which refers to the specified order that instruction were popped from
-	 * the lowest pop index to the highest (a pop index of zero is the zeroth
-	 * element of the pop value types, not the last).
-	 */
-	public static final int SYNTHETIC_STACK_SHUFFLE =
-		65538;
+	/** WIDE_DLOAD. */
+	public static final int WIDE_DLOAD =
+		0xC424;
 	
-	/**
-	 * Synthetic: Specific instance invocation, using the exact method that
-	 * was given.
-	 *
-	 * The first argument is a reference to the method (CIMethod) to invoke.
-	 *
-	 * An object along with the arguments to the call are popped to the stack.
-	 *
-	 * The instance method should be checked for {@code null}.
-	 */
-	public static final int SYNTHETIC_INSTANCE_INVOKE_EXACT =
-		65539;
+	/** WIDE_DSTORE. */
+	public static final int WIDE_DSTORE =
+		0xC457;
 	
-	/**
-	 * Synthetic: Virtual instance invocation.
-	 *
-	 * The first argument is a reference to the method (CIMethod) to invoke.
-	 * If the class has a sub-class then the topmost virtual method should be
-	 * used.
-	 *
-	 * An object along with the arguments to the call are popped to the stack.
-	 *
-	 * The instance method should be checked for {@code null}.
-	 */
-	public static final int SYNTHETIC_INSTANCE_INVOKE_VIRTUAL =
-		65540;
+	/** WIDE_FLOAD. */
+	public static final int WIDE_FLOAD =
+		0xC423;
+	
+	/** WIDE_FSTORE. */
+	public static final int WIDE_FSTORE =
+		0xC456;
+	
+	/** WIDE_IINC. */
+	public static final int WIDE_IINC =
+		0xC484;
+	
+	/** WIDE_ILOAD. */
+	public static final int WIDE_ILOAD =
+		0xC421;
+	
+	/** WIDE_ISTORE. */
+	public static final int WIDE_ISTORE =
+		0xC454;
+	
+	/** WIDE_LLOAD. */
+	public static final int WIDE_LLOAD =
+		0xC422;
+	
+	/** WIDE_LSTORE. */
+	public static final int WIDE_LSTORE =
+		0xC455;
+	
+	/** WIDE_RET. */
+	public static final int WIDE_RET =
+		0xC4A9;
 }
 
