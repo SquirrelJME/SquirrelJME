@@ -198,6 +198,11 @@ public final class BCOperation
 			// The owning constant pool
 			CIPool pool = this.owner.constantPool();
 			
+			// Setup basic long copies
+			// Remember that the first value is the operation code
+			for (int i = 0; i < n; i++)
+				vals[i] = Long.valueOf(rop.get(i));
+			
 			// Depends on the instruction
 			int iid = this.instructionid;
 			switch (iid)
@@ -209,8 +214,8 @@ public final class BCOperation
 				case BCInstructionID.NEW:
 					try
 					{
-						vals[0] = pool.<CIClassReference>requiredAs(
-							(int)rop.get(0), CIClassReference.class);
+						vals[1] = pool.<CIClassReference>requiredAs(
+							(int)rop.get(1), CIClassReference.class);
 					}
 					
 					// {@squirreljme.error AX12 Expected the referenced
@@ -221,10 +226,8 @@ public final class BCOperation
 					}
 					break;
 				
-					// Unknown, copy long values
+					// Unknown, keep copies
 				default:
-					for (int i = 0; i < n; i++)
-						vals[i] = Long.valueOf(rop.get(i));
 					break;
 			}
 		}
@@ -278,6 +281,9 @@ public final class BCOperation
 		// that the byte code is well formed and to know the size of the input
 		// stack for example.
 		BCStateVerification entv = verificationInput();
+		BCStateVerification.Locals locals = entv.locals();
+		BCStateVerification.Stack stack = entv.stack();
+		int top = stack.top();
 		
 		// Depends on the instruction
 		int iid = this.instructionid;
@@ -286,9 +292,15 @@ public final class BCOperation
 				// Allocate new object
 			case BCInstructionID.NEW:
 				{
+					// Activate the class
+					__e.activateClass(((CIClassReference)getArgument(1)).
+						get());
 					
-					if (true)
-						throw new Error("TODO");
+					// Allocate it into the top of the stack
+					__e.allocateClass((-top) - 1);
+					
+					// Set new stack top
+					__e.adjustStackTop(1);
 				}
 				break;
 			

@@ -101,5 +101,25 @@ class __MiniVerifExec__
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/22
+	 */
+	@Override
+	public void allocateClass(int __reg)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/22
+	 */
+	@Override
+	public void adjustStackTop(int __dif)
+	{
+		throw new Error("TODO");
+	}
 }
 

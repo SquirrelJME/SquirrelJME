@@ -20,9 +20,10 @@ import net.multiphasicapps.descriptors.MethodSymbol;
  * byte code can cause these to be executed which provides a basic interpreter
  * interface for running byte code.
  *
- * There are 2 billion registers that may be used to store 32-bit integer or
+ * There are 4 billion registers that may be used to store 32-bit integer or
  * 32-bit float values. 64-bit values take up two register positions similar to
- * the Java virtual machine.
+ * the Java virtual machine. Registers which are negative are considered to
+ * be the temporary stack registers.
  *
  * There is a single activation register which is given a class, field, or
  * method which may be operated on with specific operations. When said types
@@ -68,5 +69,24 @@ public interface BCMicroExecution
 	 */
 	public abstract void activateMethod(boolean __static, ClassNameSymbol __c,
 		IdentifierSymbol __n, FieldSymbol __t);
+	
+	/**
+	 * Allocates the class which is currently activated and stores it in a
+	 * given register.
+	 *
+	 * @param __reg The target register where the allocated active class
+	 * is placed.
+	 * @since 2016/06/22
+	 */
+	public abstract void allocateClass(int __reg);
+	
+	/**
+	 * Adjusts the top of the stack.
+	 *
+	 * @param __dif The amount to adjust the top of the stack with, positive
+	 * values increase the stack size while negative values reduce it.
+	 * @since 2016/06/22
+	 */
+	public abstract void adjustStackTop(int __dif);
 }
 
