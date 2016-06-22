@@ -38,22 +38,30 @@ public final class BCOperation
 	protected final int instructionid;
 	
 	/** Arguments of the operation. */
+	@Deprecated
 	protected final List<Object> arguments;
 	
 	/** The local variables which are accessed. */
+	@Deprecated
 	protected final List<BCLocalAccess> localaccess;
 	
 	/** Variables types which are popped from the stack. */
+	@Deprecated
 	protected final List<BCVariableType> stackpop;
 	
 	/** Variable types which are pushed to the stack. */
+	@Deprecated
 	protected final List<BCVariablePush> stackpush;
 	
 	/** The verification state of this operation. */
+	@Deprecated
 	protected final BCStateVerification verification;
 	
 	/** The continued result of verification. */
 	protected final BCStateVerification verifresult;
+	
+	/** The verification used on entry of this operation. */
+	private volatile Reference<BCStateVerification> _entryverif;
 	
 	/** Cached micro-operations this instruction performs. */
 	private volatile Reference<BCMicroOperations> _microps;
@@ -227,6 +235,10 @@ public final class BCOperation
 		// Needs creation?
 		if (ref == null || null == (rv = ref.get()))
 		{
+			// Need to know the verification state of this instruction, either
+			// this one or the one before it
+			BCStateVerification entv = verificationInput();
+			
 			// Depends on the instruction
 			int iid = this.instructionid;
 			switch (iid)
@@ -318,7 +330,31 @@ public final class BCOperation
 	 */
 	public BCStateVerification verificationInput()
 	{
-		return this.verification;
+		// Check
+		Reference<BCStateVerification> ref = this._entryverif;
+		BCStateVerification rv;
+		
+		// Locate it?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// An explicit one is used?
+			BCByteCode owner = this.owner;
+			int la = this.logicaladdress;
+			BCStateVerification expv = owner.explicitVerification(la);
+			if (expv != null)
+				rv = expv;
+		
+			// Otherwise, the entry state is derived from the source operation
+			// (the operation which precedes this one during execution)
+			else
+				rv = (expv = owner.get(la - 1).verificationOutput());
+			
+			// Cache
+			this._entryverif = new WeakReference<>(rv);
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

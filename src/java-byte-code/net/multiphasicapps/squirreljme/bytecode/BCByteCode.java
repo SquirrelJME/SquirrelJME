@@ -62,7 +62,7 @@ public final class BCByteCode
 				
 				if (a < b)
 					return -1;
-				else if (1 > b)
+				else if (a > b)
 					return 1;
 				return 0;
 			}
