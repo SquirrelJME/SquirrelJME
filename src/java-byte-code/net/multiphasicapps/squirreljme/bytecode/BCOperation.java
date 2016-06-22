@@ -46,6 +46,9 @@ public final class BCOperation
 	/** The string representation of this operation. */
 	private volatile Reference<String> _string;
 	
+	/** Object based arguments. */
+	private volatile Reference<Object[]> _niceargs;
+	
 	/**
 	 * Initializes the operation data.
 	 *
@@ -154,6 +157,73 @@ public final class BCOperation
 	}
 	
 	/**
+	 * Returns the number of arguments that this instruction uses.
+	 *
+	 * @return The argument count.
+	 * @since 2016/06/22
+	 */
+	public int argumentCount()
+	{
+		return this.rop.size();
+	}
+	
+	/**
+	 * Returns a specialized argument based on the raw value of a given
+	 * instruction.
+	 *
+	 * @param __i The argument to get the specialized value for.
+	 * @return The specialized value for the given argument.
+	 * @throws BCException If the value cannot be obtained because it would
+	 * not be valid.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @since 2016/06/22
+	 */
+	public Object getArgument(int __i)
+		throws BCException, IndexOutOfBoundsException
+	{
+		// Get
+		Reference<Object[]> ref = this._niceargs;
+		Object[] vals;
+		int n = argumentCount();
+		
+		// Cache?
+		if (ref == null || null == (vals = ref.get()))
+		{
+			// Setup values based on the size
+			vals = new Object[n];
+			BCRawOperation rop = this.rop;
+			
+			// Depends on the instruction
+			int iid = this.instructionid;
+			switch (iid)
+			{
+					// Unknown, copy long values
+				default:
+					for (int i = 0; i < n; i++)
+						vals[i] = Long.valueOf(rop.get(i));
+					break;
+			}
+		}
+		
+		// Get
+		return vals[__i];
+	}
+	
+	/**
+	 * Gets the raw argument value.
+	 *
+	 * @param __i The argument to get the raw value for.
+	 * @return The raw value.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds.
+	 * @since 2016/06/22
+	 */
+	public long getRawArgument(int __i)
+		throws IndexOutOfBoundsException
+	{
+		return this.rop.get(__i);
+	}
+	
+	/**
 	 * Returns the instruction ID of this instruction.
 	 *
 	 * @return The instruction ID.
@@ -191,8 +261,11 @@ public final class BCOperation
 		{
 				// Allocate new object
 			case BCInstructionID.NEW:
-				if (true)
-					throw new Error("TODO");
+				{
+					
+					if (true)
+						throw new Error("TODO");
+				}
 				break;
 			
 				// {@squirreljme.error AX11 The specified operation cannot

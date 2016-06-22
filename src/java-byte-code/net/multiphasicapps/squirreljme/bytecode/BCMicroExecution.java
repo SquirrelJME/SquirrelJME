@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.bytecode;
 
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
-import net.multiphasicapps.descriptors.IdentiferSymbol;
+import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
 
 /**
