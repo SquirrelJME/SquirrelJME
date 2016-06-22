@@ -35,6 +35,8 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 /**
  * This class contains the main representation of Java byte code.
  *
+ * This class is immutable.
+ *
  * @since 2016/05/11
  */
 public final class BCByteCode
@@ -133,7 +135,7 @@ public final class BCByteCode
 	 * @return The code buffer.
 	 * @since 2016/05/13
 	 */
-	public CIByteBuffer codeBuffer()
+	public final CIByteBuffer codeBuffer()
 	{
 		return this.code;
 	}
@@ -144,7 +146,7 @@ public final class BCByteCode
 	 * @return The associated constant pool.
 	 * @since 2016/05/12
 	 */
-	public CIPool constantPool()
+	public final CIPool constantPool()
 	{
 		return this.method.outerClass().constantPool();
 	}
@@ -156,7 +158,7 @@ public final class BCByteCode
 	 * @return The mapping of explicit verifications.
 	 * @since 2016/05/12
 	 */
-	public Map<Integer, BCStateVerification> explicitVerification()
+	public final Map<Integer, BCStateVerification> explicitVerification()
 	{
 		return verification;
 	}
@@ -166,7 +168,8 @@ public final class BCByteCode
 	 * @since 2016/05/11
 	 */
 	@Override
-	public BCOperation get(int __i)
+	public final BCOperation get(int __i)
+		throws IndexOutOfBoundsException
 	{
 		// Check
 		if (__i < 0 || __i >= count)
@@ -183,9 +186,44 @@ public final class BCByteCode
 			// Check
 			if (ref == null || null == (rv = ref.get()))
 				bops[__i] = new WeakReference<>(
-					(rv = new BCOperation(this, code, __i)));
+					(rv = new BCOperation(this, getRaw(__i))));
 			
 			// Return it
+			return rv;
+		}
+	}
+	
+	/**
+	 * Obtains the raw operation which just contains the operation code and
+	 * any arguments that are passed to the given operation.
+	 *
+	 * @param __i The logical index of the instruction to get.
+	 * @return The raw operation for the given instruction.
+	 * @throws IndexOutOfBoundsException If the instruction is not within
+	 * bounds.
+	 * @since 2016/06/22
+	 */
+	public final BCRawOperation getRaw(int __i)
+		throws IndexOutOfBoundsException
+	{
+		// Check
+		if (__i < 0 || __i >= count)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Lock
+		Reference<BCRawOperation>[] rops = this._rops;
+		synchronized (rops)
+		{
+			// Get
+			Reference<BCRawOperation> ref = rops[__i];
+			BCRawOperation rv;
+			
+			// Cache?
+			if (ref == null || null == (rv = ref.get()))
+				rops[__i] = new WeakReference<>(
+					(rv = new BCRawOperation(this, this.code, __i)));
+			
+			// Return
 			return rv;
 		}
 	}
@@ -198,7 +236,7 @@ public final class BCByteCode
 	 * instruction.
 	 * @since 2016/05/08
 	 */
-	public int logicalToPhysical(int __l)
+	public final int logicalToPhysical(int __l)
 	{
 		// Would never match
 		int[] pp = _logpos;
@@ -217,7 +255,7 @@ public final class BCByteCode
 	 * instruction.
 	 * @since 2016/05/08
 	 */
-	public int physicalToLogical(int __p)
+	public final int physicalToLogical(int __p)
 	{
 		// Would never match
 		int[] pp = _logpos;
@@ -260,7 +298,7 @@ public final class BCByteCode
 	 * @since 2016/05/11
 	 */
 	@Override
-	public int size()
+	public final int size()
 	{
 		return count;
 	}

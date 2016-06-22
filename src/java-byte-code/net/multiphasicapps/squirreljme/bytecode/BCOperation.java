@@ -27,6 +27,9 @@ public final class BCOperation
 	/** The owning byte code. */
 	protected final BCByteCode owner;
 	
+	/** The raw operation data. */
+	protected final BCRawOperation rop;
+	
 	/** The logical position. */
 	protected final int logicaladdress;
 	
@@ -62,21 +65,23 @@ public final class BCOperation
 	 *
 	 * @param __bc The owning byte code.
 	 * @param __bb The buffer which contains code.
-	 * @param __lp The logical position of the operation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11
 	 */
-	BCOperation(BCByteCode __bc, CIByteBuffer __bb, int __lp)
+	BCOperation(BCByteCode __bc, BCRawOperation __rop)
 		throws NullPointerException
 	{
 		// Check
-		if (__bc == null || __bb == null)
+		if (__bc == null || __rop == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.owner = __bc;
-		this.logicaladdress = __lp;
+		this.rop = __rop;
+		this.logicaladdress = __rop.logicalAddress();
 		
+		throw new Error("TODO");
+		/*
 		// Read opcode
 		int phy = __bc.logicalToPhysical(__lp);
 		int opcode = __bb.readUnsignedByte(phy);
@@ -137,6 +142,7 @@ public final class BCOperation
 		
 		// Determine the result of this operation for targets if applicable
 		verifresult = expv.derive(this);
+		*/
 	}
 	
 	/**

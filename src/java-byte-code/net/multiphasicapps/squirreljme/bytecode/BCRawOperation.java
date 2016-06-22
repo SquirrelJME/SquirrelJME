@@ -48,5 +48,16 @@ public final class BCRawOperation
 		
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Returns the logical address where this instruction is located.
+	 *
+	 * @return The instruction's logical address.
+	 * @since 2016/06/22
+	 */
+	public final int logicalAddress()
+	{
+		return this.logicaladdress;
+	}
 }
 
