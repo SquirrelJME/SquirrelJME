@@ -78,7 +78,8 @@ public final class BCOperation
 		this.instructionid = iid;
 		
 		// Modify the verification state depending on the micro-operations
-		this.verifresult = verificationInput().derive(this);
+		__MiniVerifExec__ mve = new __MiniVerifExec__(verificationInput(),
+			this);
 		
 		throw new Error("TODO");
 		

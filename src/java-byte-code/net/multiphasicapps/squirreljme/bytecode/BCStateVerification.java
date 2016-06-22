@@ -122,191 +122,14 @@ public final class BCStateVerification
 		if (__l == null || __s == null)
 			throw new NullPointerException("NARG");
 		
+		// Undefined
+		this.logicaladdress = -1;
+		
 		// Set
 		this.locals = __l;
 		this.stack = __s;
 		
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Derives a verification state for the given operation.
-	 *
-	 * @param __op The operation to derive a state for.
-	 * @return The derived verification state.
-	 * @throws BCException If a local variable read is incorrect; if a written
-	 * local variable is not valid; If a stack pop is not valid; If the stack
-	 * overflows or underflows.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/13
-	 */
-	public BCStateVerification derive(BCOperation __op)
-		throws BCException, NullPointerException
-	{
-		// Check
-		if (__op == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-		/*
-		
-		// Get operation details
-		List<BCLocalAccess> la = __op.localAccesses();
-		List<BCVariableType> so = __op.stackPops();
-		List<BCVariablePush> su = __op.stackPushes();
-		
-		// Get current stuff
-		Locals locals = this.locals;
-		Stack stack = this.stack;
-		int maxlocals = locals.size();
-		int maxstack = stack.size();
-		
-		// Calculate the top of the stack
-		int newtop = stack.top();
-		int n = so.size();
-		for (int i = n - 1; i >= 0; i--)
-		{
-			// Simulated pop
-			BCVariableType vt = so.get(i);
-			boolean iswide;
-			newtop -= ((iswide = vt.isWide()) ? 2 : 1);
-			
-			// {@squirreljme.error AX0g Stack underflow popping variables for
-			// derivation. (The source stack; The pop operations; The push
-			// operations)}
-			if (newtop < 0)
-				throw new BCException(String.format("AX0g %s %s %s", stack, so,
-					su));
-			
-			// {@squirreljme.error AX0i Unexpected type on stack while popping
-			// values. (The source stack; The pop operations)}
-			BCVariableType oops;
-			if ((oops = stack.get(newtop)) != vt)
-				throw new BCException(String.format("AX0i %s %s", stack, so));
-			
-			// {@squirreljme.error AX0j Expected top of long or double to
-			// follow a pop of long or double. (The source stack; The pop
-			// operations)}
-			if (iswide &&
-				(oops = stack.get(newtop + 1)) != BCVariableType.TOP)
-				throw new BCException(String.format("AX0j %s %s", stack, so));
-		}
-		
-		// Remember the base bottom
-		int bottom = newtop;
-		
-		// Now push entries to the stack
-		n = su.size();
-		for (int i = 0; i < n; i++)
-		{
-			// Simulated push
-			BCVariableType vt = su.get(i).pushType();
-			newtop += (vt.isWide() ? 2 : 1);
-			
-			// {@squirreljme.error AX0h Stack overflow pushing variabels for
-			// derivation. (The source stack; The pop operations; The push
-			// operations})
-			if (newtop > maxstack)
-				throw new BCException(String.format("AX0h %s %s %s", stack, so,
-					su));
-		}
-		
-		// Check local variable read/writes
-		for (BCLocalAccess a : la)
-		{
-			// Get the type
-			BCVariableType vt = a.type();
-			boolean iswide = vt.isWide();
-			
-			// {@squirreljme.error AX0k Access of a local variable which is
-			// not within the bounds of the local variable tread. (The current
-			// local variables; The variables accessed; The current variable)}
-			int dx = a.getIndex();
-			if (dx < 0 || (dx + (iswide ? 1 : 0)) >= maxlocals)
-				throw new BCException(String.format("AX0k %s %s", locals, la,
-					a));
-			
-			// If read from, check the type
-			if (a.isRead())
-			{
-				// {@squirreljme.error AX0l Expected the read local variable to
-				// be of the given type, however it was not the specified type.
-				// (The current local variables; The variables to access; The
-				// current variable to check; The type that it was; The
-				// expected type)}
-				BCVariableType was = locals.get(dx);
-				if (was != vt)
-					throw new BCException(String.format("AX0l %s %s %s %s",
-						locals, la, a, was, vt));
-				
-				// If wide, the next must be top
-				if (vt.isWide())
-				{
-					// {@squirreljme.error AX0m Expected the read wide local
-					// variable to have a top following it, however that was
-					// not the case. (The current local variables; The
-					// variables to access; The current variable to check; The
-					// type that it was; The expected type)}
-					was = locals.get(dx + 1);
-					if (was != BCVariableType.TOP)
-						throw new BCException(String.format("AX0m %s %s %s %s",
-							locals, la, a, was, vt));
-				}
-			}
-		}
-		
-		// Setup return value
-		Locals ll = new Locals(maxlocals);
-		Stack ss = new Stack(maxstack, newtop);
-		
-		// Get target storage
-		BCVariableType[] mll = ll.storage;
-		BCVariableType[] mss = ss.storage;
-		
-		// And source storage
-		BCVariableType[] zll = locals.storage;
-		BCVariableType[] zss = stack.storage;
-		
-		// Base copy locals
-		for (int i = 0; i < maxlocals; i++)
-			mll[i] = zll[i];
-		
-		// Copy stack to the base
-		for (int i = 0; i < bottom; i++)
-			mss[i] = zss[i];
-		
-		// Write local variables
-		for (BCLocalAccess a : la)
-			if (a.isWritten())
-			{
-				// Get the type to write
-				BCVariableType vt = a.type();
-				int dx;
-				mll[(dx = a.getIndex())] = vt;
-				
-				// Add top
-				if (vt.isWide())
-					mll[dx + 1] = BCVariableType.TOP;
-			}
-		
-		// Write target stack
-		n = su.size();
-		for (int i = 0, at = bottom; i < n; i++)
-		{
-			// Actual push
-			BCVariableType vt = su.get(i).pushType();
-			
-			// Write here
-			mss[at++] = vt;
-			
-			// Add top if wide
-			if (vt.isWide())
-				mss[at++] = BCVariableType.TOP;
-		}
-		
-		// Return it
-		return new BCStateVerification(ll, ss);
-		*/
 	}
 	
 	/**
@@ -323,7 +146,8 @@ public final class BCStateVerification
 	/**
 	 * Returns the logical address of the operation this verifies against.
 	 *
-	 * @return The logical address this defines a state for.
+	 * @return The logical address this defines a state for, if this address
+	 * is not defined then a negative value will be returned.
 	 * @since 2016/06/22
 	 */
 	public int logicalAddress()
