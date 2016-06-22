@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
  * This represents a single operation in the byte code.
@@ -34,7 +35,7 @@ public final class BCOperation
 	protected final int logicaladdress;
 	
 	/** The instruction ID. */
-	protected final int instructionid
+	protected final int instructionid;
 	
 	/** Arguments of the operation. */
 	protected final List<Object> arguments;
@@ -53,6 +54,9 @@ public final class BCOperation
 	
 	/** The continued result of verification. */
 	protected final BCStateVerification verifresult;
+	
+	/** Cached micro-operations this instruction performs. */
+	private volatile Reference<BCMicroOperations> _microps;
 	
 	/** The string representation of this operation. */
 	private volatile Reference<String> _string;
@@ -78,18 +82,16 @@ public final class BCOperation
 		this.rop = __rop;
 		this.logicaladdress = __rop.logicalAddress();
 		
-		// Depends on the instruction ID
+		// Set the instruction ID
 		int iid = (int)__rop.get(0);
 		this.instructionid = iid;
-		switch (iid)
-		{
-				// {@squirreljme.error AX11 The specified operation cannot be
-				// handled because it is not known. (The instruction opcode)}
-			default:
-				throw new BCException(String.format("AX11 %d", iid));
-		}
 		
+		// Get micro operations to check verification state
+		BCMicroOperations microps = microOps();
+		
+		// Modify the verification state depending on the operations
 		throw new Error("TODO");
+		
 		/*
 		// Read opcode
 		int phy = __bc.logicalToPhysical(__lp);
@@ -208,6 +210,46 @@ public final class BCOperation
 	public BCByteCode owner()
 	{
 		return this.owner;
+	}
+	
+	/**
+	 * Returns the micro-operations that this Java operation performs.
+	 *
+	 * @return The list of micro operations.
+	 * @since 2016/06/22
+	 */
+	public BCMicroOperations microOps()
+	{
+		// Get
+		Reference<BCMicroOperations> ref = this._microps;
+		BCMicroOperations rv;
+		
+		// Needs creation?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Depends on the instruction
+			int iid = this.instructionid;
+			switch (iid)
+			{
+					// Allocate new object
+				case BCInstructionID.NEW:
+					if (true)
+						throw new Error("TODO");
+					break;
+				
+					// {@squirreljme.error AX11 The specified operation cannot
+					// be handled because it is not known. (The instruction
+					// opcode)}
+				default:
+					throw new BCException(String.format("AX11 %d", iid));
+			}
+			
+			// Store
+			this._microps = new WeakReference<>(rv);
+		}
+		
+		// Return
+		return rv;
 	}
 	
 	/**

@@ -32,3 +32,9 @@ So it would basically be a micro operation that defines what a byte code
 instruction does. The compiler could actually in a way optimize a program
 based on the micro operations rather than the whole operations.
 
+## 14:02
+
+Then stack verification would use the microoperations to determine the input
+and output state. An interpreter could also be purely based on the more simpler
+micro operations also.
+
