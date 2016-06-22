@@ -61,6 +61,9 @@ public final class BCByteCode
 	/** Byte code operation cache. */
 	private final Reference<BCOperation>[] _bops;
 	
+	/** Raw byte code operation cache. */
+	private final Reference<BCRawOperation>[] _rops;
+	
 	/**
 	 * Initilizes the byte code representation.
 	 *
@@ -91,7 +94,8 @@ public final class BCByteCode
 		// Setup output byte operations
 		int n = logpos.length;
 		count = n;
-		_bops = __makeBops(n);
+		_bops = BCByteCode.<BCOperation>__makeBops(n);
+		_rops = BCByteCode.<BCRawOperation>__makeBops(n);
 		
 		// Decode the stack map table
 		CIByteBuffer os = attribute.stackMapOld();
@@ -269,9 +273,9 @@ public final class BCByteCode
 	 * @since 2016/05/11
 	 */
 	@SuppressWarnings({"unchecked"})
-	private static Reference<BCOperation>[] __makeBops(int __n)
+	private static <V> Reference<V>[] __makeBops(int __n)
 	{
-		return (Reference<BCOperation>[])((Object)new Reference[__n]);
+		return (Reference<V>[])((Object)new Reference[__n]);
 	}
 }
 

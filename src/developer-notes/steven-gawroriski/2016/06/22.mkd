@@ -1,2 +1,16 @@
 # 2016/06/22
 
+## 08:39
+
+The operations will need a list of externals that it accesses.
+
+## 08:41
+
+What could help is a raw operation map which just has the operation code and
+the input values passed to it.
+
+## 08:45
+
+Then I can use interpretations of the raw argument data with a kind of data
+interpreter.
+
