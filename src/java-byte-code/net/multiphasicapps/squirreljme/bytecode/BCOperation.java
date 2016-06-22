@@ -296,11 +296,11 @@ public final class BCOperation
 					__e.activateClass(((CIClassReference)getArgument(1)).
 						get());
 					
-					// Allocate it into the top of the stack
-					__e.allocateClass((-top) - 1);
-					
 					// Set new stack top
 					__e.adjustStackTop(1);
+					
+					// Allocate it into the top of the stack
+					__e.allocateClass((-top) - 1);
 				}
 				break;
 			

@@ -77,7 +77,7 @@ class __MiniVerifExec__
 	@Override
 	public void activateClass(ClassNameSymbol __c)
 	{
-		throw new Error("TODO");
+		// The last active class need not be remembered
 	}
 	
 	/**
@@ -109,7 +109,7 @@ class __MiniVerifExec__
 	@Override
 	public void allocateClass(int __reg)
 	{
-		throw new Error("TODO");
+		__write(BCVariableType.OBJECT, __reg);
 	}
 	
 	/**
@@ -119,7 +119,72 @@ class __MiniVerifExec__
 	@Override
 	public void adjustStackTop(int __dif)
 	{
-		throw new Error("TODO");
+		// Get
+		BCVariableType[] stack = this._stack;
+		int top = this._top;
+		
+		// Adjust
+		int old = top;
+		top += __dif;
+		
+		// {@squirreljme.error AX13 The new top of the stack exceeds the bounds
+		// of the stack. (The adjusted size; The maximum stack size; The
+		// previous unadjusted size)}
+		if (top < 0 || top > stack.length)
+			throw new BCException(String.format("AX13 %d %d %d", top,
+				stack.length, old));
+		
+		// Set
+		this._top = top;
+		
+		// Wipe variables on the stack
+		for (int i = old; i < top; i++)
+		{
+			// {@squirreljme.error AX14 Top of a long/double was clipped during
+			// a stack top adjustment.}
+			if (i > 0)
+			{
+				BCVariableType was = stack[i - 1];
+				if (was != null && was.isWide())
+					throw new BCException("AX14");
+			}
+			
+			// Clear it
+			stack[i] = null;
+		}
+	}
+	
+	/**
+	 * Writes the given type at the given location.
+	 *
+	 * @param __vt The type to write.
+	 * @param __reg The location to write it.
+	 * @throws BCException If it could not be written to.
+	 * @since 2016/06/22
+	 */
+	private void __write(BCVariableType __vt, int __reg)
+	{
+		// On the stack?
+		if (__reg < 0)
+		{
+			// Correct
+			__reg = -(__reg + 1);
+			
+			// Get
+			BCVariableType[] stack = this._stack;
+			int top = this._top;
+			
+			// {@squirreljme.error AX15 Write to given variable is off the
+			// current size of the stack. (The type to write;
+			// The stack location; The current stack top)}
+			if (__reg < 0 || __reg >= top)
+				throw new BCException(String.format("AX15 %s %d", __vt,
+					__reg, top));
+		}
+		
+		// Local
+		else
+			throw new Error("TODO");
 	}
 }
 
