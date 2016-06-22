@@ -66,7 +66,8 @@ class __MiniVerifExec__
 		this._stack = stack;
 		this._top = is.top();
 		
-		throw new Error("TODO");
+		// Perform execution
+		__op.microOpExecute(this);
 	}
 	
 	/**
