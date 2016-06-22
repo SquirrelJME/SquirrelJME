@@ -33,6 +33,9 @@ public final class BCStateVerification
 	/** Stack variables. */
 	protected final Stack stack;
 	
+	/** The logical address this verifies against. */
+	protected final int logicaladdress;
+	
 	/** The string cache. */
 	private volatile Reference<String> _string;
 	
@@ -55,6 +58,9 @@ public final class BCStateVerification
 		
 		// The stack is empty
 		this.stack = new Stack(attribute.maxStack(), 0);
+		
+		// Starts at adress zero
+		this.logicaladdress = 0;
 		
 		// Locals depends on the input arguments
 		int maxlocals = attribute.maxLocals();
@@ -119,6 +125,8 @@ public final class BCStateVerification
 		// Set
 		this.locals = __l;
 		this.stack = __s;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -306,6 +314,17 @@ public final class BCStateVerification
 	public Locals locals()
 	{
 		return locals;
+	}
+	
+	/**
+	 * Returns the logical address of the operation this verifies against.
+	 *
+	 * @return The logical address this defines a state for.
+	 * @since 2016/06/22
+	 */
+	public int logicalAddress()
+	{
+		return this.logicaladdress;
 	}
 	
 	/**

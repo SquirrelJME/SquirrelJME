@@ -73,9 +73,9 @@ class __StackMapParser__
 	 * @return The result of verification.
 	 * @since 2016/05/12
 	 */
-	public Map<Integer, BCStateVerification> result()
+	public BCStateVerification[] result()
 	{
-		return UnmodifiableMap.<Integer, BCStateVerification>of(outputmap);
+		throw new Error("TODO");
 	}
 }
 

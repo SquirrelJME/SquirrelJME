@@ -14,3 +14,8 @@ the input values passed to it.
 Then I can use interpretations of the raw argument data with a kind of data
 interpreter.
 
+## 11:36
+
+I can switch the explicit verification states to use an array where the states
+are binary searched instead of using a map.
+

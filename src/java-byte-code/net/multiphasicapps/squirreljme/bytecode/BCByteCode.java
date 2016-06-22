@@ -28,6 +28,8 @@ import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 import net.multiphasicapps.squirreljme.ci.CIPool;
+import net.multiphasicapps.squirreljme.cldc.IndexedBinaryComparator;
+import net.multiphasicapps.squirreljme.cldc.IndexedBinarySearch;
 import net.multiphasicapps.util.empty.EmptyMap;
 import net.multiphasicapps.util.singleton.SingletonMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -42,6 +44,30 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 public final class BCByteCode
 	extends AbstractList<BCOperation>
 {
+	/** The comparator for finding verification states. */
+	private static final IndexedBinaryComparator<BCStateVerification[],
+		Integer> _VERIFY_SEARCH =
+		new IndexedBinaryComparator<BCStateVerification[], Integer>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/06/22
+			 */
+			@Override
+			public int binaryCompare(BCStateVerification[] __q, Integer __a,
+				int __b)
+			{
+				int a = __a.intValue();
+				int b = __q[__b].logicalAddress();
+				
+				if (a < b)
+					return -1;
+				else if (1 > b)
+					return 1;
+				return 0;
+			}
+		};
+	
 	/** The containing method. */
 	protected final CIMethod method;
 	
@@ -55,7 +81,7 @@ public final class BCByteCode
 	protected final int count;
 	
 	/** Explicit verification states. */
-	protected final Map<Integer, BCStateVerification> verification;
+	private final BCStateVerification[] _xverif;
 	
 	/** The positions for all logical operations. */
 	private final int[] _logpos;
@@ -105,16 +131,18 @@ public final class BCByteCode
 		
 		// Old states
 		if (os != null)
-			verification = new __StackMapParser__(false, os, this).result();
+			this._xverif = new __StackMapParser__(false, os, this).result();
 		
 		// New States
 		else if (ns != null)
-			verification = new __StackMapParser__(true, ns, this).result();
+			this._xverif = new __StackMapParser__(true, ns, this).result();
 		
 		// None used
 		else
-			verification = UnmodifiableMap.<Integer, BCStateVerification>of(
-				new SingletonMap<>(0, new BCStateVerification(__m)));
+			this._xverif = new BCStateVerification[]
+				{
+					new BCStateVerification(__m)
+				};
 	}
 	
 	/**
@@ -152,15 +180,24 @@ public final class BCByteCode
 	}
 	
 	/**
-	 * Returns the explicit verification state as determined by the stack map
-	 * attributes.
+	 * Returns the explicit verification state which is defined for an input
+	 * logical address.
 	 *
-	 * @return The mapping of explicit verifications.
+	 * @return The explicit verification for the given logical address or
+	 * {@code null} if it does not use one.
 	 * @since 2016/05/12
 	 */
-	public final Map<Integer, BCStateVerification> explicitVerification()
+	public final BCStateVerification explicitVerification(int __l)
 	{
-		return verification;
+		// Search for it
+		BCStateVerification[] xverif = this._xverif;
+		int dx = IndexedBinarySearch.<BCStateVerification[], Integer>
+			search(xverif, __l, 0, xverif.length, _VERIFY_SEARCH);
+		
+		// Was it found?
+		if (dx >= 0)
+			return xverif[dx];
+		return null;
 	}
 	
 	/**
