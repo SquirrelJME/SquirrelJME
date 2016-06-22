@@ -16,6 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.ci.CIPool;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
@@ -74,11 +77,7 @@ public final class BCOperation
 		int iid = (int)__rop.get(0);
 		this.instructionid = iid;
 		
-		// Get micro operations to check verification state
-		if (true)
-			throw new Error("TODO");
-		
-		// Modify the verification state depending on the operations
+		// Modify the verification state depending on the micro-operations
 		throw new Error("TODO");
 		
 		/*
@@ -193,10 +192,32 @@ public final class BCOperation
 			vals = new Object[n];
 			BCRawOperation rop = this.rop;
 			
+			// The owning constant pool
+			CIPool pool = this.owner.constantPool();
+			
 			// Depends on the instruction
 			int iid = this.instructionid;
 			switch (iid)
 			{
+					// First argument refers to class
+				case BCInstructionID.ANEWARRAY:
+				case BCInstructionID.CHECKCAST:
+				case BCInstructionID.INSTANCEOF:
+				case BCInstructionID.NEW:
+					try
+					{
+						vals[0] = pool.<CIClassReference>requiredAs(
+							(int)rop.get(0), CIClassReference.class);
+					}
+					
+					// {@squirreljme.error AX12 Expected the referenced
+					// constant pool entry to be a class reference.}
+					catch (CIException e)
+					{
+						throw new BCException("AX12", e);
+					}
+					break;
+				
 					// Unknown, copy long values
 				default:
 					for (int i = 0; i < n; i++)

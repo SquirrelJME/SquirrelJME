@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.bytecode;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
 
 /**
@@ -29,6 +31,9 @@ public final class BCRawOperation
 	
 	/** The values for the operations. */
 	private final long[] _values;
+	
+	/** String cache. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the raw operation.
@@ -284,6 +289,44 @@ public final class BCRawOperation
 	public final int size()
 	{
 		return this._values.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/22
+	 */
+	@Override
+	public String toString()
+	{
+		// Get
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			StringBuilder sb = new StringBuilder("[");
+			
+			// Add values
+			boolean com = false;
+			for (long v : this._values)
+			{
+				// Add comma
+				if (com)
+					sb.append(", ");
+				com = true;
+				
+				// Add it
+				sb.append(v);
+			}
+			
+			// Finish
+			sb.append(']');
+			_string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		// Return
+		return rv;
 	}
 }
 
