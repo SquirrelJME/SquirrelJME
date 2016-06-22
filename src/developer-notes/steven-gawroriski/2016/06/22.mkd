@@ -49,3 +49,14 @@ Alternatively instead of micro operations, there are instead micro-executions.
 If a concrete representitive form is needed then that can always be created
 from the executions.
 
+## 18:52
+
+One thing to consider however are conditional operations. I suppose I should
+have explicit jumps at the end of every operation that points to the
+instruction that should be jumped to unconditionally. So after the bulk of
+instructions, there will just be an unconditional jump to the next instruction.
+This could then be used to build a tree or some other structure used by the
+compiler to determine how the program flows for potential optimization. Also
+the micro-executions should make native code generation simpler.
+
+
