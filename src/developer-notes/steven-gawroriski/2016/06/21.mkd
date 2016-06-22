@@ -28,3 +28,14 @@ Actually, the PVM could support rerecording at the increased cost of extreme
 complexity by making class loading determinstic. However that would be too
 complex of a task.
 
+## 21:43
+
+I have not touched the byte code reading code in quite some time.
+
+## 21:45
+
+It would be best to decouple the verification of byte code, well code that
+has explicit externals from being verified. So it is up to some other code to
+make sure that a given method for example exists when a class and its code is
+loaded at run-time.
+
