@@ -22,3 +22,9 @@ common outer class to internal array data. Arrays in the virtual machine have
 to extend Object. So I suppose then for arrays, I will have to create all of
 the byte code manually so that the extension conditions are met.
 
+## 21:37
+
+Actually, the PVM could support rerecording at the increased cost of extreme
+complexity by making class loading determinstic. However that would be too
+complex of a task.
+

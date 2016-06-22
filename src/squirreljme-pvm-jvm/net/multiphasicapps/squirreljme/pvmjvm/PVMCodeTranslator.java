@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
+import net.multiphasicapps.squirreljme.bytecode.BCByteCode;
+import net.multiphasicapps.squirreljme.bytecode.BCOperation;
+import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
 import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
 import net.multiphasicapps.classwriter.OutputCode;
 
@@ -30,8 +33,8 @@ public class PVMCodeTranslator
 	/** The class loader which owns this code translator. */
 	protected final PVMClassLoader classloader;
 	
-	/** The input code attribute. */
-	protected final CICodeAttribute codeattribute;
+	/** The input code. */
+	protected final BCByteCode input;
 	
 	/** The output code. */
 	protected final OutputCode output;
@@ -45,7 +48,7 @@ public class PVMCodeTranslator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/21
 	 */
-	public PVMCodeTranslator(PVMClassLoader __cl, CICodeAttribute __ic,
+	public PVMCodeTranslator(PVMClassLoader __cl, BCByteCode __ic,
 		OutputCode __oc)
 		throws NullPointerException
 	{
@@ -55,7 +58,7 @@ public class PVMCodeTranslator
 		
 		// Set
 		this.classloader = __cl;
-		this.codeattribute = __ic;
+		this.input = __ic;
 		this.output = __oc;
 	}
 	
@@ -66,10 +69,20 @@ public class PVMCodeTranslator
 	 */
 	public void translate()
 	{
-		// Get the output
+		// Get the input and output
+		BCByteCode input = this.input;
 		OutputCode output = this.output;
 		
-		throw new Error("TODO");
+		// Translate all instructions
+		int n = input.size();
+		for (int i = 0; i < n; i++)
+		{
+			BCOperation bop = input.get(i);
+			
+			System.err.printf("DEBUG -- Op %d: %s%n", i, bop);
+			
+			throw new Error("TODO");
+		}
 	}
 }
 

@@ -24,6 +24,7 @@ import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
 import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.squirreljme.bytecode.BCByteCode;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIField;
@@ -455,8 +456,8 @@ public class PVMClassLoader
 			// Translate and virtualize input code to the output code if
 			// the method is not abstract or native
 			if (!mf.isNative() && !mf.isAbstract())
-				new PVMCodeTranslator(this, meth.code(), om.createCode()).
-					translate();
+				new PVMCodeTranslator(this, new BCByteCode(meth),
+					om.createCode()).translate();
 		}
 	}
 	
