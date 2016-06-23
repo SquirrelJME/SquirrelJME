@@ -21,7 +21,44 @@ package net.multiphasicapps.uri;
 public final class URI
 	implements Comparable<URI>
 {
-	public URI(String __a)
+	/** The encoded scheme. */
+	protected final String scheme;
+	
+	/** The scheme specific part. */
+	protected final String schemepart;
+	
+	/** The encoded authority. */
+	protected final String authority;
+	
+	/** The encoded path. */
+	protected final String path;
+	
+	/** The encoded query. */
+	protected final String query;
+	
+	/** The encoded fragment. */
+	protected final String fragment;
+	
+	/** The port. */
+	protected final int port;
+	
+	/** The user information. */
+	protected final String userinfo;
+	
+	/** The host. */
+	protected final String host;
+	
+	/**
+	 * Parses the given string as a URI.
+	 *
+	 * The input URI must be well formed where all input characters are
+	 * already encoded.
+	 *
+	 * @param __uri The URI to parse.
+	 * @throws URISyntaxException If the URI is malformed.
+	 * @since 2016/06/23
+	 */
+	public URI(String __uri)
 		throws URISyntaxException
 	{
 		super();
@@ -58,15 +95,23 @@ public final class URI
 		throw new Error("TODO");
 	}
 	
-	public URI(String __a, String __b, String __c)
+	/**
+	 * Initializes a URI using the given optional scheme, scheme specific part,
+	 * and fragment.
+	 *
+	 * @param __scheme The scheme.
+	 * @param __ssp The scheme specific part.
+	 * @param __frag The fragment.
+	 * @throws URISyntaxException If the resulting URI is not valid.
+	 * @since 2016/06/23
+	 */
+	public URI(String __scheme, String __ssp, String __frag)
 		throws URISyntaxException
 	{
-		super();
-		if (false)
-			throw new URISyntaxException(null, null);
-		throw new Error("TODO");
+		this(__construct(__scheme, __ssp, __frag));
 	}
 	
+	@Override
 	public int compareTo(URI __a)
 	{
 		throw new Error("TODO");
@@ -210,6 +255,60 @@ public final class URI
 	
 	public static URI create(String __a)
 	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Builds a string which is used during construction.
+	 *
+	 * @param __scheme The scheme.
+	 * @param __ssp The scheme specific part.
+	 * @param __frag The fragment.
+	 * @throws URISyntaxException If the resulting URI is not valid.
+	 * @since 2016/06/23
+	 */
+	private static String __construct(String __scheme, String __ssp,
+		String __frag)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		// Add the scheme?
+		if (__scheme != null)
+		{
+			sb.append(__encodeScheme(__scheme));
+			sb.append(':');
+		}
+		
+		// Add the scheme specific part?
+		if (__ssp != null)
+			sb.append(__encodeSchemeSpecificPart(__ssp));
+		
+		// Add the fragment?
+		if (__frag != null)
+		{
+			sb.append('#');
+			sb.append(__encodeFragment(__frag));
+		}
+		
+		// Build
+		return sb.toString();
+	}
+	
+	/**
+	 * Encodes the given string so that the scheme is valid.
+	 *
+	 * @param __s The string to encode.
+	 * @return The result of encoding.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/23
+	 */
+	private static String __encodeScheme(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__sch == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 }
