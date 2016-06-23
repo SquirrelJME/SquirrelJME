@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: class-writer
 X-SquirrelJME-UUID: 87443962-089e-4470-a93e-558a6af15f1b
 X-SquirrelJME-Depends: javame-cldc-compact, symbols,
- class-interface, java-byte-code
+ class-interface, byte-code
 X-SquirrelJME-Error: CO
 LIBlet-Title: Class File Writer
 LIBlet-Vendor: Steven Gawroriski
