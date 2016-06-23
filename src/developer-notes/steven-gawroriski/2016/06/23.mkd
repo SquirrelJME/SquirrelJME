@@ -44,3 +44,22 @@ from scratch.
 Heard what sounded like a gun shot and the power failed, that would likely be
 a transformer.
 
+## 09:28
+
+I believe for the filesystem, regardless of the OS I will use the same
+structure. The `@` will be the root specifier, followed by the name of the
+root. The directory separator would be `/`. All filesystems that exist on the
+host along with virtual ones will exist under this scheme. This would simplify
+the very different file system handling across various systems. So for
+example on Linux the UNIX root would just `@root/` while on Windows `C:` would
+be called `@c/`. The roots would be case insensitive.
+
+## 09:36
+
+Not sure about the modules, but it should work.
+
+## 09:59
+
+Actually for the device I/O, I should use the device I/O interfaces and such.
+This way I do not invent my own.
+
