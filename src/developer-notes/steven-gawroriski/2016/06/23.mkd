@@ -26,3 +26,9 @@ management is not handled by the JVM at all but by the implementation.
 Then using the filesystem module, class units that use that filesystem
 interface can be used.
 
+## 04:46
+
+The JVM would be given main arguments, setup the launcher, and then just
+provide an interface for things. So the `JVM` would be similar to the kernel
+except that it would be far simpler and more modular.
+
