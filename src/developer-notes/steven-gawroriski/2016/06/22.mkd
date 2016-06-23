@@ -88,3 +88,9 @@ system can be shared inside and outside of SquirrelJME.
 Also, I likely do not need to prefix my packages with `squirreljme` since this
 is SquirrelJME.
 
+## 21:02
+
+Doing a refactor of the source code layout and packages that code exists in.
+One thing I can do is remove all of the `extra` before the io and util
+packages.
+
