@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: squirreljme-mascot-aa-low
+X-SquirrelJME-Name: mascot-aa-low
 X-SquirrelJME-UUID: 69035f38-5f5d-47ba-9ed7-32990cf3c58a
-X-SquirrelJME-Depends: squirreljme-mascot
+X-SquirrelJME-Depends: mascot
 LIBlet-Title: SquirrelJME Mascot (Low Res ASCII Art)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160616

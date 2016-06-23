@@ -60,7 +60,7 @@ such drivers to be shared across ports.
 __Update 2016/05/07:__
 
 SquirrelJME now has a mascot! He resides in a base64 encoded PNG (because
-binary files are a bad idea in version control) at `src/squirreljme-mascot/`.
+binary files are a bad idea in version control) at `src/mascot/`.
 He has no name currently however.
 
 __Update 2016/04/26:__

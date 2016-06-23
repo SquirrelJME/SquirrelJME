@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: squirreljme-mascot
+X-SquirrelJME-Name: mascot
 X-SquirrelJME-UUID: 4e961d3f-5a7a-40af-a947-81d108fdce05
 X-SquirrelJME-Depends: javame-cldc-compact, extra-io-hex
 X-SquirrelJME-Error: CJ

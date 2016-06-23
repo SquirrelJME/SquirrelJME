@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: squirreljme-packages
+X-SquirrelJME-Name: package-manager
 X-SquirrelJME-UUID: ae182ee0-9e2d-49cf-b15a-015fb18bdd7d
 X-SquirrelJME-Depends: javame-cldc-full, java-manifest,
  zip-compression, extra-util-unmodifiable
