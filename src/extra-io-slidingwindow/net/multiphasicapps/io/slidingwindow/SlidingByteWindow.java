@@ -190,7 +190,7 @@ public class SlidingByteWindow
 	 * amount of available history; the distance back exceeds the maximum
 	 * window size; or the distance back exceeds the total amount of history.
 	 * @throws NullPointerException On null arguments.
-	 * @ince 2016/03/13
+	 * @since 2016/03/13
 	 */
 	public SlidingByteWindow get(int __ago, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException

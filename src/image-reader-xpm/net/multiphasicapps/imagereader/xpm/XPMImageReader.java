@@ -279,7 +279,7 @@ public class XPMImageReader
 	 * Reads the XPM image heder.
 	 *
 	 * @param __r The source characters.
-	 * @retun The header values.
+	 * @return The header values.
 	 * @throws On read errors.
 	 * @since 2016/05/22
 	 */

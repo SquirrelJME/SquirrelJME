@@ -941,7 +941,7 @@ public class InflateDataPipe
 	 *
 	 * @param __lens The input code lengths.
 	 * @param __o The starting offset.
-	 * @param __len The number of lengths to decode.
+	 * @param __l The number of lengths to decode.
 	 * @return A huffman tree from the code length input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/28

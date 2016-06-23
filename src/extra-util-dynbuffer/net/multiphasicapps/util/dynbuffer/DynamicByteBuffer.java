@@ -731,8 +731,7 @@ public class DynamicByteBuffer
 		/**
 		 * Gets the byte at the given position.
 		 *
-		 * @param __i The real position to set.
-		 * @param __v The The value to write.
+		 * @param __i The real position to get.
 		 * @return {@code this}.
 		 * @throws IndexOutOfBoundsException If the computed logical position
 		 * does not belong in this chunk.
@@ -778,8 +777,7 @@ public class DynamicByteBuffer
 		/**
 		 * Remove a byte within the buffer and returns it.
 		 *
-		 * @param __i The real position to set.
-		 * @param __v The The value to write.
+		 * @param __i The real position to remove.
 		 * @return {@code this}.
 		 * @throws IndexOutOfBoundsException If the computed logical position
 		 * does not belong in this chunk.

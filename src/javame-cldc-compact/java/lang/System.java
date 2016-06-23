@@ -71,7 +71,7 @@ public final class System
 	 * separation sequence that the host operating system uses for its native
 	 * files. Generally it would either be {@code '\n'}, {@code '\r'}, or
 	 * {@code "\r\n"), however retro-systems might use a different line ending
-	 * sequence.}
+	 * sequence.}}
 	 * {@squirreljme.property microedition.configuration This is the current
 	 * configuration of CLDC library which indicates which primary classes
 	 * are available to it. The values will either be {@code "CLDC-1.8"} for
