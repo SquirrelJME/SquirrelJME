@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: java-descriptors
+X-SquirrelJME-Name: symbols
 X-SquirrelJME-UUID: c51c05cc-565e-409e-b71c-642470bdf24e
 X-SquirrelJME-Depends: javame-cldc-compact
 X-SquirrelJME-Error: AL
