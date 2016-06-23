@@ -100,7 +100,8 @@ public final class URI
 	
 	/**
 	 * Initializes a URI using the given optional scheme, scheme specific part,
-	 * and fragment.
+	 * and fragment. Each part of the URI is encoded even if there are already
+	 * encoded characters in the URI.
 	 *
 	 * @param __scheme The scheme.
 	 * @param __ssp The scheme specific part.
@@ -313,7 +314,45 @@ public final class URI
 		if (__uc == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Output
+		StringBuilder sb = new StringBuilder();
+		
+		// Go through the input string
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+		{
+			// Get
+			char c = __s.charAt(i);
+			
+			// If not valid? Encode as UTF-8
+			if (!__uc.isValid(i, c))
+			{
+				// Add percent sign
+				sb.append('%');
+				
+				// Lower ASCII? simple addition
+				if (c <= 0x7F)
+				{
+					sb.append((char)('A' + ((c >>> 4) & 0xF)));
+					sb.append((char)('A' + (c & 0xF)));
+				}
+				
+				// Otherwise decompose into UTF-8
+				else
+					throw new Error("TODO");
+			}
+			
+			// Lowercase before adding?
+			if (__uc.doLowerCase() && c >= 'A' && c <= 'Z')
+				sb.append('a' + (c - 'A'));
+			
+			// Keep as-is
+			else
+				sb.append(c);
+		}
+		
+		// Finish
+		return sb.toString();
 	}
 }
 
