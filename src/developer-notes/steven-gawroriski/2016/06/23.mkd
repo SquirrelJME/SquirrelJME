@@ -15,3 +15,9 @@ Basically the virtual machine is initialized and it searches for modules in
 the class path. The modules can provide filesystem access and such for example.
 The modules could also provide execution environments also possibly.
 
+## 04:40
+
+The JVM at its base can be abstract, where implementations could implement
+native CPU support and such. So for example process creation and memory
+management is not handled by the JVM at all but by the implementation.
+
