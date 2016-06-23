@@ -73,3 +73,20 @@ that exist on the disk somewhere. Processes running on the JVM would be
 standalone in that they cannot access each other, except through networking,
 IPC, and the filesystem for example.
 
+## 13:00
+
+Ok, so I have decided that for now `JVM` will just have default provided class
+unit providers. However, another thing I have decided on is having a URI
+scheme when it comes to class units. Instead of being identified by a string
+they are identified by a URI. The scheme would be the name of the provider.
+So for example if the default provider is called `default` then `foo.jar`
+would be represented as `default:foo.jar`. When JARs are requested as such
+when they are needed for dependencies for example the `JVM` will search all
+registered providers if a namespace is not specified. So if `foo.jar` is in
+the _Class-Path_ attribute then it will search for `default:foo.jar`. However
+if `orange:foo.jar` was specified then it will look for a provider called
+`orange` and then attempt to get a class unit for `foo.jar`, which could fail.
+Using this scheme, it is possible to have special class units which can be
+used for standards and the names of liblets for example. So something such
+as `liblet:Name%20Of%20LIBlet` could be performed perhaps.
+
