@@ -98,7 +98,8 @@ __findpkname()
 		if [ "$__want" -eq "0" ]
 		then
 			# Has repository file right above this path
-			if [ -f "$__indir/../license.mkd" ] || [ -f "$__indir/../HALT" ]
+			if [ -f "$__indir/../steven-gawroriski.gpg" ] || \
+				[ -f "$__indir/../../steven-gawroriski.gpg" ]
 			then
 				__pkout="$__chop"
 				break
@@ -108,7 +109,7 @@ __findpkname()
 		elif [ "$__want" -eq "1" ]
 		then
 			# If repository file in same dir
-			if [ -f "$__indir/license.mkd" ] || [ -f "$__indir/HALT" ]
+			if [ -f "$__indir/steven-gawroriski.gpg" ]
 			then
 				echo "$__chop" | \
 					sed 's/^\([a-zA-Z0-9-]\{1,\}\)[^a-zA-Z0-9-]*.*/\1/'
