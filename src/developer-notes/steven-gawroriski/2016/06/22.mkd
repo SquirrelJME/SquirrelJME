@@ -94,3 +94,7 @@ Doing a refactor of the source code layout and packages that code exists in.
 One thing I can do is remove all of the `extra` before the io and util
 packages.
 
+## 22:31
+
+Also, the `javame` prefix could be removed also.
+
