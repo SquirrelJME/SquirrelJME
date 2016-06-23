@@ -8,3 +8,10 @@ A rather large thunderstorm is closing in.
 
 A _very_ large thunderstorm.
 
+## 04:32
+
+Taking yesterday's idea, I can have a module based Java virtual machine.
+Basically the virtual machine is initialized and it searches for modules in
+the class path. The modules can provide filesystem access and such for example.
+The modules could also provide execution environments also possibly.
+
