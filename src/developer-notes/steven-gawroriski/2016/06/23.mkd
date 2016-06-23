@@ -63,3 +63,13 @@ Not sure about the modules, but it should work.
 Actually for the device I/O, I should use the device I/O interfaces and such.
 This way I do not invent my own.
 
+## 11:26
+
+Thinking about it, I am definitely going to need the JVM to depend on the full
+CLDC. Well actually, not really. I just need a nice design of the upper layers
+that is not very complex. For example, there could be built-in JARs such as
+in the `class-path` package that are purely native, there could also be ones
+that exist on the disk somewhere. Processes running on the JVM would be
+standalone in that they cannot access each other, except through networking,
+IPC, and the filesystem for example.
+
