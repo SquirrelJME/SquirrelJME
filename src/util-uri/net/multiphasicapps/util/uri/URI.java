@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.util.uri;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This is a representation of standard URIs and allows information that is
  * contained within a URI to be obtained and modified.
@@ -72,7 +75,64 @@ public final class URI
 		// Debug
 		System.err.printf("DEBUG -- Check URI `%s`%n", __uri);
 		
-		throw new Error("TODO");
+		// There are two primary URI forms:
+		// foo://example.com:8042/over/there?name=ferret#nose
+		// urn:example:animal:ferret:nose
+		// /absolute/path
+		// relative-path
+		int n = __uri.length();
+		
+		// First colon position?
+		int fcol = __uri.indexOf(':');
+		
+		// Starts with a slash?
+		boolean sslash = __uri.startsWith("/");
+		
+		// Colon followed by //?
+		boolean isheir = (fcol >= 0 && !sslash && fcol + 3 <= n &&
+			__uri.substring(fcol, fcol + 3).equals("://"));
+		
+		System.err.printf("DEBUG -- n=%d fcol=%d sslash=%s isheir=%s%n",
+			n, fcol, sslash, isheir);
+		
+		// Scheme specific URI
+		if (fcol >= 0 && !sslash && !isheir)
+		{
+			// Decode scheme up to the colon
+			this.scheme = __decode(__URIChars__.SCHEME,
+				__uri.substring(0, fcol));
+			
+			// May have a fragment
+			int frag = __uri.indexOf(fcol + 1, '#');
+			if (frag >= 0)
+			{
+				this.schemepart = __decode(__URIChars__.PATH,
+					__uri.substring(fcol + 1, frag));
+				this.fragment = __decode(__URIChars__.FRAGMENT,
+					__uri.substring(frag + 1));
+			}
+			
+			// No fragment, the entire thing is the scheme specific part
+			else
+			{
+				this.schemepart = __decode(__URIChars__.PATH,
+					__uri.substring(fcol + 1));
+				this.fragment = null;
+			}
+			
+			// Not used
+			this.authority = null;
+			this.path = null;
+			this.query = null;
+			this.port = -1;
+			this.userinfo = null;
+			this.host = null;
+		}
+		
+		// {@squirreljme.error DU02 The given URI is not valid.
+		// (The input URI)}
+		else
+			throw new URISyntaxException(String.format("DU02 %s", __uri));
 	}
 	
 	public URI(String __a, String __b, String __c, int __d, String __e,
@@ -134,32 +194,32 @@ public final class URI
 	
 	public String getAuthority()
 	{
-		throw new Error("TODO");
+		return this.authority;
 	}
 	
 	public String getFragment()
 	{
-		throw new Error("TODO");
+		return this.fragment;
 	}
 	
 	public String getHost()
 	{
-		throw new Error("TODO");
+		return this.host;
 	}
 	
 	public String getPath()
 	{
-		throw new Error("TODO");
+		return this.path;
 	}
 	
 	public int getPort()
 	{
-		throw new Error("TODO");
+		return this.port;
 	}
 	
 	public String getQuery()
 	{
-		throw new Error("TODO");
+		return this.query;
 	}
 	
 	public String getRawAuthority()
@@ -194,17 +254,17 @@ public final class URI
 	
 	public String getScheme()
 	{
-		throw new Error("TODO");
+		return this.scheme;
 	}
 	
 	public String getSchemeSpecificPart()
 	{
-		throw new Error("TODO");
+		return this.schemepart;
 	}
 	
 	public String getUserInfo()
 	{
-		throw new Error("TODO");
+		return this.userinfo;
 	}
 	
 	@Override
@@ -301,6 +361,28 @@ public final class URI
 		
 		// Build
 		return sb.toString();
+	}
+	
+	/**
+	 * Decodes the given string checking the input characters against the
+	 * permitted set and performing decoding of hexadecimal sequences.
+	 *
+	 * @param __uc The valid character set.
+	 * @param __s The input string to be decoded.
+	 * @return The decoded form of the given input string.
+	 * @throws NullPointerException On null arguments.
+	 * @throws URISyntaxException If an illegal character or other sequence
+	 * is specified.
+	 * @since 2016/06/23
+	 */
+	private static String __decode(__URIChars__ __uc, String __s)
+		throws NullPointerException, URISyntaxException
+	{
+		// Check
+		if (__uc == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
