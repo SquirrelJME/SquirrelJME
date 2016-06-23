@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.pvmjvm;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
 /**

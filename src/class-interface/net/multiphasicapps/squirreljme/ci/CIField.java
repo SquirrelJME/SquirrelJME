@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.ci;
 
-import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 
 /**
  * This represents a field.

@@ -12,10 +12,10 @@ package net.multiphasicapps.squirreljme.ci;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.descriptors.BinaryNameSymbol;
-import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.descriptors.IdentifierSymbol;
-import net.multiphasicapps.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
 
 /**
  * This represents a UTF-8 constant entry.

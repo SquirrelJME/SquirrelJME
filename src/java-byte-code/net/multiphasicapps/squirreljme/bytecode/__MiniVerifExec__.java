@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.descriptors.FieldSymbol;
-import net.multiphasicapps.descriptors.IdentifierSymbol;
-import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 
 /**
  * This is a miniature verification state calculator which can execute micro

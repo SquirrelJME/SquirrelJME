@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.descriptors;
+package net.multiphasicapps.squirreljme.java.symbols;
 
 /**
  * This is a symbol which is used as a type for a field or a method.

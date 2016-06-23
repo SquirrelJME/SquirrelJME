@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.descriptors;
+package net.multiphasicapps.squirreljme.java.symbols;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

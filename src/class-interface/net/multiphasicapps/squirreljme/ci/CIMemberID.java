@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.ci;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.descriptors.IdentifierSymbol;
-import net.multiphasicapps.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
 
 /**
  * This is used to identify a member by its name and its type.

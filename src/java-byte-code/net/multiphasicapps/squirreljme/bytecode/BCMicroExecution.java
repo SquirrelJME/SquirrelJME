@@ -10,10 +10,10 @@
 
 package net.multiphasicapps.squirreljme.bytecode;
 
-import net.multiphasicapps.descriptors.ClassNameSymbol;
-import net.multiphasicapps.descriptors.FieldSymbol;
-import net.multiphasicapps.descriptors.IdentifierSymbol;
-import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 
 /**
  * This interface is used for micro-operation execution. Each operation in the

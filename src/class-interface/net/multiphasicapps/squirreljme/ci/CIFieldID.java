@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ci;
 
-import net.multiphasicapps.descriptors.IdentifierSymbol;
-import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 
 /**
  * This identifies a field by its name and type.

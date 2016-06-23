@@ -16,5 +16,5 @@
  * @since 2016/03/14
  */
 
-package net.multiphasicapps.descriptors;
+package net.multiphasicapps.squirreljme.java.symbols;
 

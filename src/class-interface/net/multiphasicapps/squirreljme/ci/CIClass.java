@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.ci;
 
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
  * This represents information about a class such as its access flags and any

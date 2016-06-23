@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.ci;
 
-import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
  * This refers to another class.

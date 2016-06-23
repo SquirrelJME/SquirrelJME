@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
-import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
  * This represents a single thread which is owned by a process in the virtual

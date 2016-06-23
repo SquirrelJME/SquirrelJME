@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.ci.standard;
 
-import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIField;
 import net.multiphasicapps.squirreljme.ci.CIFieldFlags;

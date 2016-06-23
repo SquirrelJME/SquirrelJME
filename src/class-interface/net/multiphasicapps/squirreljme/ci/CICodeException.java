@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.ci;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.descriptors.BinaryNameSymbol;
-import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
  * This describes a single exception that is handled by the byte code.

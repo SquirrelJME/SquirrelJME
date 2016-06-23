@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.descriptors.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIAccessibleFlags;
 import net.multiphasicapps.squirreljme.ci.CIAccessibleObject;
 import net.multiphasicapps.squirreljme.ci.CIClass;

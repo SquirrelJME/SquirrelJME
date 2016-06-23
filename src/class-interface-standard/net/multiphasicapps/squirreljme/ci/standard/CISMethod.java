@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.ci.standard;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.descriptors.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIMethod;

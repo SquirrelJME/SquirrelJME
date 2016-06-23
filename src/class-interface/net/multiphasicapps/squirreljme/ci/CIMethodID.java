@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ci;
 
-import net.multiphasicapps.descriptors.IdentifierSymbol;
-import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 
 /**
  * This identifies a method by its name and type.

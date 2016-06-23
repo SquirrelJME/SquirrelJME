@@ -15,8 +15,8 @@ import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
-import net.multiphasicapps.descriptors.FieldSymbol;
-import net.multiphasicapps.descriptors.MethodSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
 import net.multiphasicapps.squirreljme.ci.CIMethod;
 

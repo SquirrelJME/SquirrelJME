@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.bytecode;
 
-import net.multiphasicapps.descriptors.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 
 /**
  * This represents the type of value which is stored in a variable.

@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
 import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
 import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
 import net.multiphasicapps.squirreljme.ci.CIMethodID;

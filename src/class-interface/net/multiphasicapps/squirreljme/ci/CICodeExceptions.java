@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.ci;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
-import net.multiphasicapps.descriptors.BinaryNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.BinaryNameSymbol;
 
 /**
  * This describes all of the exceptions that are handled in the specified

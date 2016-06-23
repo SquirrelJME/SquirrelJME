@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.ci;
 
-import net.multiphasicapps.descriptors.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
 
 /**
  * This interface is used to represent members.
