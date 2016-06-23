@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: java-manifest
+X-SquirrelJME-Name: manifest
 X-SquirrelJME-UUID: fb9af740-e959-43c5-b405-fb001edd09c5
 X-SquirrelJME-Depends: javame-cldc-compact,
  extra-util-unmodifiable
