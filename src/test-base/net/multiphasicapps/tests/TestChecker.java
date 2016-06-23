@@ -108,7 +108,7 @@ public class TestChecker
 	 *
 	 * @param __exp The expected value.
 	 * @param __was The value that it was.
-	 * @sicne 2016/06/18
+	 * @since 2016/06/18
 	 */
 	public void checkEquals(int[] __exp, int[] __was)
 	{

@@ -44,7 +44,7 @@ public final class BCStateVerification
 	 *
 	 * @param __m The method to initialize verification state for.
 	 * @throws NullPointerException On null arguments.
-	 * @sicne 2016/05/12
+	 * @since 2016/05/12
 	 */
 	public BCStateVerification(CIMethod __m)
 		throws NullPointerException

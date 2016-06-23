@@ -56,7 +56,7 @@ public final class BCOperation
 	 * Initializes the operation data.
 	 *
 	 * @param __bc The owning byte code.
-	 * @param __bb The buffer which contains code.
+	 * @param __rop The raw operation data.
 	 * @throws BCException If the operation is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/11

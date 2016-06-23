@@ -55,7 +55,7 @@ class __ReadMember__
 	 * @param __das The input data source.
 	 * @param __into The target mappings.
 	 * @throws IOException On read errors.
-	 * @sicne 2016/04/26
+	 * @since 2016/04/26
 	 */
 	static void __field(CISClass __oc, DataInputStream __das,
 		Map<CIFieldID, CIField> __into)
@@ -123,7 +123,7 @@ class __ReadMember__
 	 * @param __das The input data source.
 	 * @param __into The target mappings.
 	 * @throws IOException On read errors.
-	 * @sicne 2016/04/26
+	 * @since 2016/04/26
 	 */
 	static void __method(CISClass __oc, DataInputStream __das,
 		Map<CIMethodID, CIMethod> __into)

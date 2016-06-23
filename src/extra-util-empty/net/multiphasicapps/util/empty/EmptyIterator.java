@@ -29,7 +29,7 @@ public final class EmptyIterator
 	/**
 	 * Initializes the empty iterator.
 	 *
-	 * @sicne 2016/04/10
+	 * @since 2016/04/10
 	 */
 	private EmptyIterator()
 	{

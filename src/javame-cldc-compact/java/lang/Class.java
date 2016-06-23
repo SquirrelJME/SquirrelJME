@@ -46,7 +46,7 @@ public final class Class<T>
 	 * @throws ClassCastException If the specified class is not a sub-class of
 	 * this class type.
 	 * @throws NullPointerException On null arguments.
-	 * @sicne 2016/06/13
+	 * @since 2016/06/13
 	 */
 	@SuppressWarnings({"unchecked"})
 	public <U> Class<? extends U> asSubclass(Class<U> __cl)

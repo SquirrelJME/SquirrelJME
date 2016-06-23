@@ -41,7 +41,7 @@ public class MissingClassUnitException
 	/**
 	 * Initializes the exception with the given message and cause.
 	 *
-	 * @param __m The message to use.
+	 * @param __s The message to use.
 	 * @param __c The cause to use.
 	 * @since 2016/06/20
 	 */
