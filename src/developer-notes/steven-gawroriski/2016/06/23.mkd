@@ -32,3 +32,10 @@ The JVM would be given main arguments, setup the launcher, and then just
 provide an interface for things. So the `JVM` would be similar to the kernel
 except that it would be far simpler and more modular.
 
+## 05:06
+
+So `JVM` and family will just be similar to the kernel, then I can move some
+of the `PVM` code over it. This way there are somewhat common interfaces used
+and duplicated code for native implementations would be completely rewritten
+from scratch.
+
