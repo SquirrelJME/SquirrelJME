@@ -154,3 +154,19 @@ register access, saving states, resuming states, and some other details such
 as memory maps potentially. However, some systems may need a slightly different
 way to manage memory.
 
+## 23:11
+
+I would also want variants. Say on Linux there could be a X based interface
+while another could use GTK directly. These would have to be split into
+multiple projects. However, a basic OS interface could implement the required
+details. So essentially they will need to be overridden. So I suppose there
+would need to be a dispatching interface of sorts. There would be the base
+interace operating systems and variants would use. Then the dispatcher just
+chooses one with the most score. Since some systems might get complex, the
+variant support should be split across multiple interfaces. This way filesystem
+access can be plugged in on top of an existing variant or similar. A variant
+could also optionally call the variant with the next lower priority. So this
+way if I just need to change the graphical system I can just switch the
+class to be used while keeping stuff such as the filesystem.
+
+
