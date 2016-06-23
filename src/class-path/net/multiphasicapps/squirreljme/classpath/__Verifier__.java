@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.ci.CIAccessibleFlags;
-import net.multiphasicapps.squirreljme.ci.CIAccessibleObject;
-import net.multiphasicapps.squirreljme.ci.CIClass;
-import net.multiphasicapps.squirreljme.ci.CIClassFlags;
-import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CIMethod;
-import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
-import net.multiphasicapps.squirreljme.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.java.ci.CIAccessibleFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIAccessibleObject;
+import net.multiphasicapps.squirreljme.java.ci.CIClass;
+import net.multiphasicapps.squirreljme.java.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIMethod;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodID;
 
 /**
  * This verifies that the specified class is properly laid out in the structure

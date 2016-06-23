@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci;
+package net.multiphasicapps.squirreljme.java.ci;
 
 /**
  * These are flags which modify how a class is accessed and is behaved.

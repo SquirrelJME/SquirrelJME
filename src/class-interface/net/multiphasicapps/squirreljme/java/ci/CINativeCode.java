@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci;
+package net.multiphasicapps.squirreljme.java.ci;
 
 /**
  * This interface represents native code which may be attached to a method in

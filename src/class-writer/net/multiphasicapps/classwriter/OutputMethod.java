@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.classwriter;
 
-import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
-import net.multiphasicapps.squirreljme.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodID;
 
 /**
  * This is used to describe an output method.

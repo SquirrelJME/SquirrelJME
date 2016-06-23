@@ -8,12 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.standard;
 
-import net.multiphasicapps.squirreljme.ci.CIClass;
-import net.multiphasicapps.squirreljme.ci.CIMember;
-import net.multiphasicapps.squirreljme.ci.CIMemberFlags;
-import net.multiphasicapps.squirreljme.ci.CIMemberID;
+import net.multiphasicapps.squirreljme.java.ci.CIClass;
+import net.multiphasicapps.squirreljme.java.ci.CIMember;
+import net.multiphasicapps.squirreljme.java.ci.CIMemberFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIMemberID;
 
 /**
  * This is the base class for .

@@ -17,10 +17,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.ci.CIAccessibleFlags;
-import net.multiphasicapps.squirreljme.ci.CIAccessibleObject;
-import net.multiphasicapps.squirreljme.ci.CIClass;
-import net.multiphasicapps.squirreljme.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIAccessibleFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIAccessibleObject;
+import net.multiphasicapps.squirreljme.java.ci.CIClass;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
 
 /**
  * This is a class path, it contains multiple {@link ClassUnit}s and provides

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci;
+package net.multiphasicapps.squirreljme.java.ci;
 
 /**
  * This is a flagging interface for flags which are associated with members.

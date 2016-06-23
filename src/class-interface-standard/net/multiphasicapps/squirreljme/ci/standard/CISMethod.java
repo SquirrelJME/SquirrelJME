@@ -8,18 +8,18 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.standard;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
-import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CIMethod;
-import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
-import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
-import net.multiphasicapps.squirreljme.ci.CIMethodID;
-import net.multiphasicapps.squirreljme.ci.CINativeCode;
+import net.multiphasicapps.squirreljme.java.ci.CICodeAttribute;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIMethod;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlag;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.java.ci.CINativeCode;
 
 /**
  * This represents a method which is contained within a class file.

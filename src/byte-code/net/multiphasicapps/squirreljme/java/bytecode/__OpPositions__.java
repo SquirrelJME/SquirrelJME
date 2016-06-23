@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.squirreljme.java.bytecode;
 
-import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.java.ci.CIByteBuffer;
 
 /**
  * This calculates the position of all operations.

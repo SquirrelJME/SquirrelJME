@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci;
+package net.multiphasicapps.squirreljme.java.ci;
 
 /**
  * This represents the type of tag that a constant pool entry may be.

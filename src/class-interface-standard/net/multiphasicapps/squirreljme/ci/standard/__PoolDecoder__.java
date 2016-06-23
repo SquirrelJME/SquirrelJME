@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.standard;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -19,19 +19,19 @@ import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IllegalSymbolException;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.ci.CIClassReference;
-import net.multiphasicapps.squirreljme.ci.CIConstantDouble;
-import net.multiphasicapps.squirreljme.ci.CIConstantFloat;
-import net.multiphasicapps.squirreljme.ci.CIConstantInteger;
-import net.multiphasicapps.squirreljme.ci.CIConstantLong;
-import net.multiphasicapps.squirreljme.ci.CIConstantString;
-import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CIFieldReference;
-import net.multiphasicapps.squirreljme.ci.CIMemberNameAndType;
-import net.multiphasicapps.squirreljme.ci.CIMethodReference;
-import net.multiphasicapps.squirreljme.ci.CIPool;
-import net.multiphasicapps.squirreljme.ci.CIPoolEntry;
-import net.multiphasicapps.squirreljme.ci.CIUTF;
+import net.multiphasicapps.squirreljme.java.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.java.ci.CIConstantDouble;
+import net.multiphasicapps.squirreljme.java.ci.CIConstantFloat;
+import net.multiphasicapps.squirreljme.java.ci.CIConstantInteger;
+import net.multiphasicapps.squirreljme.java.ci.CIConstantLong;
+import net.multiphasicapps.squirreljme.java.ci.CIConstantString;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldReference;
+import net.multiphasicapps.squirreljme.java.ci.CIMemberNameAndType;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodReference;
+import net.multiphasicapps.squirreljme.java.ci.CIPool;
+import net.multiphasicapps.squirreljme.java.ci.CIPoolEntry;
+import net.multiphasicapps.squirreljme.java.ci.CIUTF;
 
 /**
  * This decodes the constant pool of a class.

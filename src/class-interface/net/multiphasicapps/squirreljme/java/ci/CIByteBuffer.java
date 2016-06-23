@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci;
+package net.multiphasicapps.squirreljme.java.ci;
 
 /**
  * This is a data buffer which provides raw read access to the specified byte

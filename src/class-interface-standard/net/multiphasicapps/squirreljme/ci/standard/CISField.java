@@ -8,13 +8,13 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.standard;
 
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
-import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CIField;
-import net.multiphasicapps.squirreljme.ci.CIFieldFlags;
-import net.multiphasicapps.squirreljme.ci.CIFieldID;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIField;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldID;
 
 /**
  * This represents a class which is contained within a class file.

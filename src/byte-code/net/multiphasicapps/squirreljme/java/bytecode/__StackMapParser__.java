@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
-import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.java.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.java.ci.CIMethod;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 

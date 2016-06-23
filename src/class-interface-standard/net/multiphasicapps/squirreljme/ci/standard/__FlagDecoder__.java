@@ -8,17 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.standard;
 
 import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.ci.CIClass;
-import net.multiphasicapps.squirreljme.ci.CIClassFlag;
-import net.multiphasicapps.squirreljme.ci.CIClassFlags;
-import net.multiphasicapps.squirreljme.ci.CIFieldFlag;
-import net.multiphasicapps.squirreljme.ci.CIFieldFlags;
-import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
-import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIClass;
+import net.multiphasicapps.squirreljme.java.ci.CIClassFlag;
+import net.multiphasicapps.squirreljme.java.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldFlag;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlag;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlags;
 
 /**
  * This decodes class flags.

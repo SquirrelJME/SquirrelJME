@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.java.bytecode;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.java.ci.CIByteBuffer;
 
 /**
  * This represents a raw byte code operation, it only contains integral field

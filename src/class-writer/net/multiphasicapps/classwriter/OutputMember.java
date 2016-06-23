@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.classwriter;
 
-import net.multiphasicapps.squirreljme.ci.CIMemberFlags;
-import net.multiphasicapps.squirreljme.ci.CIMemberID;
+import net.multiphasicapps.squirreljme.java.ci.CIMemberFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIMemberID;
 
 /**
  * This is the base class for output members.

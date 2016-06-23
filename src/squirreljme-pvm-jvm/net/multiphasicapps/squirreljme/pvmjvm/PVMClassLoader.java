@@ -25,13 +25,13 @@ import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.java.bytecode.BCByteCode;
-import net.multiphasicapps.squirreljme.ci.CIClass;
-import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CIField;
-import net.multiphasicapps.squirreljme.ci.CIFieldID;
-import net.multiphasicapps.squirreljme.ci.CIMethod;
-import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
-import net.multiphasicapps.squirreljme.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.java.ci.CIClass;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIField;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldID;
+import net.multiphasicapps.squirreljme.java.ci.CIMethod;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodID;
 import net.multiphasicapps.squirreljme.classpath.ClassPath;
 
 /**

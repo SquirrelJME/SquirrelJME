@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.standard;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
@@ -20,17 +20,17 @@ import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IllegalSymbolException;
-import net.multiphasicapps.squirreljme.ci.CIClass;
-import net.multiphasicapps.squirreljme.ci.CIClassFlag;
-import net.multiphasicapps.squirreljme.ci.CIClassFlags;
-import net.multiphasicapps.squirreljme.ci.CIClassReference;
-import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CIField;
-import net.multiphasicapps.squirreljme.ci.CIFieldID;
-import net.multiphasicapps.squirreljme.ci.CIMethod;
-import net.multiphasicapps.squirreljme.ci.CIMethodID;
-import net.multiphasicapps.squirreljme.ci.CIPool;
-import net.multiphasicapps.squirreljme.ci.CIVersion;
+import net.multiphasicapps.squirreljme.java.ci.CIClass;
+import net.multiphasicapps.squirreljme.java.ci.CIClassFlag;
+import net.multiphasicapps.squirreljme.java.ci.CIClassFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIField;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldID;
+import net.multiphasicapps.squirreljme.java.ci.CIMethod;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.java.ci.CIPool;
+import net.multiphasicapps.squirreljme.java.ci.CIVersion;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 

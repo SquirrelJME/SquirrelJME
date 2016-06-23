@@ -15,10 +15,10 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
-import net.multiphasicapps.squirreljme.ci.CIClassReference;
-import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CIPool;
+import net.multiphasicapps.squirreljme.java.ci.CIByteBuffer;
+import net.multiphasicapps.squirreljme.java.ci.CIClassReference;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIPool;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**

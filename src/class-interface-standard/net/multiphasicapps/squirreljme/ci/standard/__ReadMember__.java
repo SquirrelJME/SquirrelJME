@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.standard;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -18,18 +18,18 @@ import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.io.region.BufferAreaInputStream;
-import net.multiphasicapps.squirreljme.ci.CIClass;
-import net.multiphasicapps.squirreljme.ci.CIConstantValue;
-import net.multiphasicapps.squirreljme.ci.CIException;
-import net.multiphasicapps.squirreljme.ci.CIField;
-import net.multiphasicapps.squirreljme.ci.CIFieldFlag;
-import net.multiphasicapps.squirreljme.ci.CIFieldFlags;
-import net.multiphasicapps.squirreljme.ci.CIFieldID;
-import net.multiphasicapps.squirreljme.ci.CIMethod;
-import net.multiphasicapps.squirreljme.ci.CIMethodFlag;
-import net.multiphasicapps.squirreljme.ci.CIMethodFlags;
-import net.multiphasicapps.squirreljme.ci.CIMethodID;
-import net.multiphasicapps.squirreljme.ci.CIUTF;
+import net.multiphasicapps.squirreljme.java.ci.CIClass;
+import net.multiphasicapps.squirreljme.java.ci.CIConstantValue;
+import net.multiphasicapps.squirreljme.java.ci.CIException;
+import net.multiphasicapps.squirreljme.java.ci.CIField;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldFlag;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIFieldID;
+import net.multiphasicapps.squirreljme.java.ci.CIMethod;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlag;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodFlags;
+import net.multiphasicapps.squirreljme.java.ci.CIMethodID;
+import net.multiphasicapps.squirreljme.java.ci.CIUTF;
 
 /**
  * This reads class members.

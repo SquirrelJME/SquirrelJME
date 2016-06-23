@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
-import net.multiphasicapps.squirreljme.ci.CIMethod;
+import net.multiphasicapps.squirreljme.java.ci.CICodeAttribute;
+import net.multiphasicapps.squirreljme.java.ci.CIMethod;
 
 /**
  * This represents a single verification state.
