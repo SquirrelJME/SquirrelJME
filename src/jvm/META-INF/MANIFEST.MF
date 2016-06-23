@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: jvm
 X-SquirrelJME-UUID: 84b29db8-c2c3-47ce-8276-fe2ce1a7fd6d
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Depends: cldc-compact, dio
 X-SquirrelJME-Error: CQ
 LIBlet-Title: Java Virtual Machine
 LIBlet-Vendor: Steven Gawroriski

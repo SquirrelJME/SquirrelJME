@@ -3,7 +3,7 @@ X-SquirrelJME-Name: squirreljme-pvm-jvm
 X-SquirrelJME-UUID: 15dc908b-b7fe-40b9-bf4c-e7b0fd716078
 X-SquirrelJME-Depends: cldc-full, package-manager,
  byte-code, class-interface-standard, launcher,
- class-path-jar-fs, class-writer
+ class-path-jar-fs, class-writer, jvm
 X-SquirrelJME-Optional: launcher-lui
 X-SquirrelJME-Error: CL
 X-SquirrelJME-HostClassPath: true

@@ -2,6 +2,19 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: dio
 X-SquirrelJME-UUID: b45e9ac9-53bc-4e2a-9265-b5b5bca3d482
 X-SquirrelJME-Depends: cldc-full
+X-SquirrelJME-Optional: dio-adc,
+ dio-atcmd,
+ dio-counter,
+ dio-dac,
+ dio-generic,
+ dio-gpio,
+ dio-i2cbus,
+ dio-mmio,
+ dio-modem,
+ dio-pwm,
+ dio-spibus,
+ dio-uart,
+ dio-watchdog
 X-SquirrelJME-Error: CR
 LIBlet-Title: JavaME 8 Device I/O
 LIBlet-Vendor: Steven Gawroriski
