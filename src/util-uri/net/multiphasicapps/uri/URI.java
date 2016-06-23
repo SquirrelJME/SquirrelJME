@@ -275,19 +275,19 @@ public final class URI
 		// Add the scheme?
 		if (__scheme != null)
 		{
-			sb.append(__encodeScheme(__scheme));
+			sb.append(__encode(__URIChars__.SCHEME, __scheme));
 			sb.append(':');
 		}
 		
 		// Add the scheme specific part?
 		if (__ssp != null)
-			sb.append(__encodeSchemeSpecificPart(__ssp));
+			sb.append(__encode(__URIChars__.PATH, __ssp));
 		
 		// Add the fragment?
 		if (__frag != null)
 		{
 			sb.append('#');
-			sb.append(__encodeFragment(__frag));
+			sb.append(__encode(__URIChars__.FRAGMENT, __frag));
 		}
 		
 		// Build
@@ -297,16 +297,17 @@ public final class URI
 	/**
 	 * Encodes the given string so that the scheme is valid.
 	 *
+	 * @param __uc The type of charactes to use.
 	 * @param __s The string to encode.
 	 * @return The result of encoding.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/23
 	 */
-	private static String __encodeScheme(String __s)
+	private static String __encode(__URIChars__ __uc, String __s)
 		throws NullPointerException
 	{
 		// Check
-		if (__sch == null)
+		if (__uc == null || __s == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
