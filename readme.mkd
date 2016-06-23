@@ -31,11 +31,11 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
 ## Links
 
-  * [Why?](src/squirreljme-manual/user/why.mkd)
+  * [Why?](src/manual/user/why.mkd)
   * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
   * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
   * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
-  * [Manual](src/squirreljme-manual/index.mkd)
+  * [Manual](src/manual/index.mkd)
   * [Developer Notes](src/developer-notes/index.mkd)
 
 ## Goals
