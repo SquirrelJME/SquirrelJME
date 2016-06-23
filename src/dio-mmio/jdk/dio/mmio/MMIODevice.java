@@ -10,6 +10,12 @@
 
 package jdk.dio.mmio;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import jdk.dio.ClosedDeviceException;
+import jdk.dio.Device;
+import jdk.dio.UnavailableDeviceException;
+
 public interface MMIODevice
 	extends Device<MMIODevice>
 {
@@ -17,10 +23,6 @@ public interface MMIODevice
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
 	public abstract RawBlock getBlock(String __n)
-		throws ClosedDeviceException, IOException, UnavailableDeviceException;
-	
-	@Deprecated
-	public abstract int getByteOrder()
 		throws ClosedDeviceException, IOException, UnavailableDeviceException;
 	
 	public abstract void setMMIOEventListener(int __evid, int __cdx,

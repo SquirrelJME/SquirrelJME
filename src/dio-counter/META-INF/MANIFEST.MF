@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: dio-counter
 X-SquirrelJME-UUID: be0423c3-2f29-4dec-abf1-d6385cdfd723
-X-SquirrelJME-Depends: dio
+X-SquirrelJME-Depends: dio, dio-gpio
 X-SquirrelJME-Error: DQ
 LIBlet-Title: JavaME 8 Device I/O (Counters)
 LIBlet-Vendor: Steven Gawroriski

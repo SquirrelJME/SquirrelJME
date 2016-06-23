@@ -10,6 +10,8 @@
 
 package jdk.dio.mmio;
 
+import jdk.dio.DeviceEventListener;
+
 public interface MMIOEventListener
 	extends DeviceEventListener
 {
