@@ -104,3 +104,53 @@ I should and must have a base class for SquirrelJME itself, then the PVM JVM
 can be based on that class. Initialization code and other things could be
 shared and as such it would be similar to the kernel for the most part.
 
+## 22:53
+
+Then instead the PVM JVM could use a jit which just uses Java code as its
+output instead. So I could effectively work on the JIT at the same time as the
+PVM JVM. The JIT would potentially need the facilities to handle Java byte
+code translation.
+
+## 22:56
+
+I would suppose that I will use something similar to GCC's triplets. Except
+that it would be quadruplets. `arch-vendor-os-variant`. So some examples:
+
+ * jvm-oracle-jvm-javase
+ * mips-nintendo-n64-64drive
+ * m68k-palm-palmos-unknown
+ * powerpc-unknown-linux-gnux
+
+Although alternatively it could be hardware instead of `vendor`.
+
+ * jvm-jvm-jvm-javase
+ * mips-nintendo64-none-64drive
+ * m68k-generic-palmos-4
+ * powerpc-generic-linux-gnu
+
+Then there could be a sub-variant of sorts using '_'. This could simplify
+things a bit.
+
+ * mips_32-nintendo64-none-64drive
+ * mips_64-nintendo64-none-64drive
+
+## 23:03
+
+However, the architecture would either be generic or support either one or
+both 32-bit or 64-bit (or any other mode). I could also have a unique name for
+each individual CPU. Support for specific operating systems, output JITs,
+variants, and otherwise should be pluggable. So one could say attempt to
+mix and match impossible scenarios such as:
+
+ * powerpc-nintendo64-linux-javase
+ 
+The operating system is an important level along with the architecture. The
+architecture could have ABI information but that could be changed by the
+operating system. So I suppose when it comes to the ABI selection used by the
+JIT, it can have prepackaged supported ABIs. Then the OS just says that it
+uses one of the ABIs that are available. This way the architecture and OS
+interfaces generally would not touch. The architecture API would just handle
+register access, saving states, resuming states, and some other details such
+as memory maps potentially. However, some systems may need a slightly different
+way to manage memory.
+
