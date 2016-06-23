@@ -90,3 +90,16 @@ Using this scheme, it is possible to have special class units which can be
 used for standards and the names of liblets for example. So something such
 as `liblet:Name%20Of%20LIBlet` could be performed perhaps.
 
+## 13:07
+
+However, doing that would be a bit complicated since when looking for a liblet
+of a given name it can be cached or have it where the manifests are searched.
+But, I must implement URIs since those would be very handy to have, and Java ME
+sadly lacks URIs.
+
+## 13:14
+
+When it comes to URIs, I need to handle IPv6 and the inconsistent zoneID.
+However when it comes to parsing a string, if something is a IPv6 literal then
+it can sanitize the zone ID.
+
