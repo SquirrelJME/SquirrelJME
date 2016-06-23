@@ -75,3 +75,16 @@ which are co-dependencies do not get class files generated in the output. Then
 this way I can have source code depend on each other as such yet not require
 a special algorithm be used to filter out co-dependencies.
 
+## 20:35
+
+I can also then have a generic build interface that can be given an interface
+which can be used with a compiler or run-time system. In the event such a
+system would run on SquirrelJME itself the interface will instead map to a Java
+compiler which I have written along with an interpreter. Then this way, a build
+system can be shared inside and outside of SquirrelJME.
+
+## 20:37
+
+Also, I likely do not need to prefix my packages with `squirreljme` since this
+is SquirrelJME.
+
