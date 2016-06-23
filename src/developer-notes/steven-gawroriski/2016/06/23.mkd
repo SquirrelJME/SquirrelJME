@@ -115,3 +115,10 @@ Once the URI testing is complete and URIs appear to work I can then switch
 the test system to use URIs instead. The URI could be in the form of say
 `test://package/test-name?anything-extra`.
 
+## 18:09
+
+There could also actually be a standard query and argument set of things that
+is decoded for a requested test. So when a test is performed, the query and
+its fields will be read into a map of key/value pairs and passed along with
+the name of the test to perform.
+

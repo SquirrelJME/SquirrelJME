@@ -13,6 +13,7 @@ package net.multiphasicapps.tests.util.uri;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
+import net.multiphasicapps.util.uri.URI;
 
 /**
  * This tests that the URI library operates correctly.
@@ -39,7 +40,8 @@ public class URITests
 	@Override
 	public Iterable<String> invokerTests()
 	{
-		return Arrays.<String>asList();
+		// After URIs are implemented, the test system will switch to URIs
+		return Arrays.<String>asList("general");
 	}
 	
 	/**
@@ -54,7 +56,9 @@ public class URITests
 		if (__tc == null || __st == null)
 			throw new NullPointerException();
 		
-		throw new Error("TODO");
+		// These tests are to make sure that URIs operate properly for the
+		// most part. When URI support is complete, all tests will transition
+		// to using URIs instead of Strings.
 	}
 }
 
