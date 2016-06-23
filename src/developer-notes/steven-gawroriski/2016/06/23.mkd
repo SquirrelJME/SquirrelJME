@@ -103,3 +103,15 @@ When it comes to URIs, I need to handle IPv6 and the inconsistent zoneID.
 However when it comes to parsing a string, if something is a IPv6 literal then
 it can sanitize the zone ID.
 
+## 18:03
+
+Thinking about it, the test system could actually use URIs to refer to tests.
+Then I can pass arguments to tests and in general permit default tests to
+contain more information. Then I would also not need to have test specific
+areas be specific. So say that a test requires user input when it comes to
+validity, that can just be passed to say the query component for example.
+However before I can switch to URIs, I have to implement the URI test first.
+Once the URI testing is complete and URIs appear to work I can then switch
+the test system to use URIs instead. The URI could be in the form of say
+`test://package/test-name?anything-extra`.
+
