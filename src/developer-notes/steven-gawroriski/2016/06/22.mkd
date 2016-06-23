@@ -66,4 +66,12 @@ the binary sort code in another package along with the SquirrelJME JVM specific
 classes. This way javame-cldc-compact can be kept clear of SquirrelJME specific
 classes.
 
+## 20:27
+
+Actually before I do that, I should have a new build system of sorts which
+uses code that exists in the project directory as a kind of bootstrap of sorts.
+When it comes to the compiler, I can use `-implicit:none` so that classes
+which are co-dependencies do not get class files generated in the output. Then
+this way I can have source code depend on each other as such yet not require
+a special algorithm be used to filter out co-dependencies.
 
