@@ -98,3 +98,9 @@ packages.
 
 Also, the `javame` prefix could be removed also.
 
+## 22:48
+
+I should and must have a base class for SquirrelJME itself, then the PVM JVM
+can be based on that class. Initialization code and other things could be
+shared and as such it would be similar to the kernel for the most part.
+
