@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.tests.util.uri;
 
+import java.util.Arrays;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
@@ -59,6 +60,9 @@ public class URITests
 		// These tests are to make sure that URIs operate properly for the
 		// most part. When URI support is complete, all tests will transition
 		// to using URIs instead of Strings.
+		__tc.checkEquals(new URI("ScHeMe::", "very%21Special/##????",
+			"Hello World! How are you?").toString(),
+			"<TODO>");
 	}
 }
 

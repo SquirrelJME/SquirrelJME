@@ -14,5 +14,5 @@
  * @since 2016/06/23
  */
 
-package net.multiphasicapps.uri;
+package net.multiphasicapps.util.uri;
 

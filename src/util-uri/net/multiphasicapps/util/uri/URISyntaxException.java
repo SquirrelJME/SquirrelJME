@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.uri;
+package net.multiphasicapps.util.uri;
 
 /**
  * This is thrown when an attempt is made to create a URI which is incorrectly

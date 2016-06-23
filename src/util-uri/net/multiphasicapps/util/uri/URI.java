@@ -8,13 +8,16 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.uri;
+package net.multiphasicapps.util.uri;
 
 /**
  * This is a representation of standard URIs and allows information that is
  * contained within a URI to be obtained and modified.
  *
  * This class is immutable and thread safe.
+ *
+ * Note that this class is not fully compatible with Java SE's URI class. This
+ * implementation is more strict and more conforming generally.
  *
  * @since 2016/06/23
  */

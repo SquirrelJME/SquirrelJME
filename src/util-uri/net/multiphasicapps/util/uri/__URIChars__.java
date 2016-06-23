@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.uri;
+package net.multiphasicapps.util.uri;
 
 /**
  * This is used to specify which characters are valid.
