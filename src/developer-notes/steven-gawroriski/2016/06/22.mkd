@@ -59,4 +59,11 @@ This could then be used to build a tree or some other structure used by the
 compiler to determine how the program flows for potential optimization. Also
 the micro-executions should make native code generation simpler.
 
+## 20:20
+
+Something which I can use are co-dependencies in a way. Have it so I can have
+the binary sort code in another package along with the SquirrelJME JVM specific
+classes. This way javame-cldc-compact can be kept clear of SquirrelJME specific
+classes.
+
 
