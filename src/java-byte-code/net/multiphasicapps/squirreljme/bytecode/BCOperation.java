@@ -81,6 +81,15 @@ public final class BCOperation
 		__MiniVerifExec__ mve = new __MiniVerifExec__(verificationInput(),
 			this);
 		
+		// Get state to use
+		BCVariableType[] tloc = mve._locals;
+		BCVariableType[] tsta = mve._stack;
+		int ttop = mve._top;
+		
+		// Go through all jumps
+		for (int i : mve._targets)
+			throw new Error("TODO");
+		
 		throw new Error("TODO");
 		
 		/*
@@ -285,6 +294,10 @@ public final class BCOperation
 		BCStateVerification.Stack stack = entv.stack();
 		int top = stack.top();
 		
+		// The address of this instruction
+		int log = this.logicaladdress;
+		int phy = this.owner.logicalToPhysical(log);
+		
 		// Depends on the instruction
 		int iid = this.instructionid;
 		switch (iid)
@@ -301,6 +314,9 @@ public final class BCOperation
 					
 					// Allocate it into the top of the stack
 					__e.allocateClass((-top) - 1);
+					
+					// Jump to next instruction
+					__e.unconditionalJump(log + 1);
 				}
 				break;
 			

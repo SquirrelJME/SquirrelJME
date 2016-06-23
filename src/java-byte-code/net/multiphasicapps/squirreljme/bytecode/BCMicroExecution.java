@@ -88,5 +88,13 @@ public interface BCMicroExecution
 	 * @since 2016/06/22
 	 */
 	public abstract void adjustStackTop(int __dif);
+	
+	/**
+	 * Unconditionally jumps to the specified logical address.
+	 *
+	 * @param __la The logical address to jump to.
+	 * @since 2016/06/22
+	 */
+	public abstract void unconditionalJump(int __la);
 }
 

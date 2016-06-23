@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.bytecode;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import net.multiphasicapps.descriptors.ClassNameSymbol;
 import net.multiphasicapps.descriptors.FieldSymbol;
 import net.multiphasicapps.descriptors.IdentifierSymbol;
@@ -26,13 +30,17 @@ class __MiniVerifExec__
 	implements BCMicroExecution
 {
 	/** Local variables. */
-	private final BCVariableType[] _locals;
+	final BCVariableType[] _locals;
 	
 	/** Stack variables. */
-	private final BCVariableType[] _stack;
+	final BCVariableType[] _stack;
+	
+	/** Jump targets. */
+	final Set<Integer> _targets =
+		new HashSet<>();
 	
 	/** The top of the stack. */
-	private volatile int _top;
+	volatile int _top;
 	
 	/**
 	 * Intializes the microoperation based next verification state.
@@ -152,6 +160,16 @@ class __MiniVerifExec__
 			// Clear it
 			stack[i] = null;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/22
+	 */
+	@Override
+	public void unconditionalJump(int __la)
+	{
+		_targets.add(__la);
 	}
 	
 	/**
