@@ -58,15 +58,20 @@ public final class URI
 	 * already encoded.
 	 *
 	 * @param __uri The URI to parse.
+	 * @throws NullPointerException On null arguments.
 	 * @throws URISyntaxException If the URI is malformed.
 	 * @since 2016/06/23
 	 */
 	public URI(String __uri)
-		throws URISyntaxException
+		throws NullPointerException, URISyntaxException
 	{
-		super();
-		if (false)
-			throw new URISyntaxException(null, null);
+		// Check
+		if (__uri == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- Check URI `%s`%n", __uri);
+		
 		throw new Error("TODO");
 	}
 	
@@ -333,8 +338,8 @@ public final class URI
 				// Lower ASCII? simple addition
 				if (c <= 0x7F)
 				{
-					sb.append((char)('A' + ((c >>> 4) & 0xF)));
-					sb.append((char)('A' + (c & 0xF)));
+					sb.append(__hexDigit((c >>> 4) & 0xF));
+					sb.append(__hexDigit(c & 0xF));
 				}
 				
 				// Otherwise decompose into UTF-8
@@ -343,16 +348,41 @@ public final class URI
 			}
 			
 			// Lowercase before adding?
-			if (__uc.doLowerCase() && c >= 'A' && c <= 'Z')
-				sb.append('a' + (c - 'A'));
+			else if (__uc.doLowerCase() && c >= 'A' && c <= 'Z')
+				sb.append((char)('a' + (c - 'A')));
 			
 			// Keep as-is
 			else
-				sb.append(c);
+				sb.append((char)c);
 		}
 		
 		// Finish
 		return sb.toString();
+	}
+	
+	/**
+	 * Returns the hexadecimal digit for the given value.
+	 *
+	 * @param __d The digit to convert.
+	 * @return The representing character.
+	 * @throws IllegalArgumentException If the digit is out of range.
+	 * @since 2016/06/23
+	 */
+	private static char __hexDigit(int __d)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error DU01 The specified digit is out of range for
+		// a hexadecimal value. (The digit)}
+		if (__d < 0 || __d >= 16)
+			throw new IllegalArgumentException(String.format("DU01 %d", __d));
+		
+		// Number?
+		if (__d < 10)
+			return (char)('0' + __d);
+		
+		// Letter
+		else
+			return (char)('A' + (__d - 10));
 	}
 }
 
