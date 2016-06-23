@@ -15,5 +15,5 @@
  * @since 2016/05/11
  */
 
-package net.multiphasicapps.squirreljme.bytecode;
+package net.multiphasicapps.squirreljme.java.bytecode;
 

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.bytecode;
+package net.multiphasicapps.squirreljme.java.bytecode;
 
 /**
  * This contains a large number of static field constants which identify the

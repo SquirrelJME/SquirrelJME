@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.bytecode;
+package net.multiphasicapps.squirreljme.java.bytecode;
 
 /**
  * This represents an exception which may be thrown if the Java byte code is

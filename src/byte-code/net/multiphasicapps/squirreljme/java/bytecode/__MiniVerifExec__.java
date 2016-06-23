@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.bytecode;
+package net.multiphasicapps.squirreljme.java.bytecode;
 
 import java.util.ArrayList;
 import java.util.List;

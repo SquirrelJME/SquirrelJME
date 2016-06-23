@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.bytecode;
+package net.multiphasicapps.squirreljme.java.bytecode;
 
 /**
  * This represents the type of method to invoke.

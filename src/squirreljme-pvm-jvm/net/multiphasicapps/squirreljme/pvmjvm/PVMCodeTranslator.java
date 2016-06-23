@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.squirreljme.pvmjvm;
 
-import net.multiphasicapps.squirreljme.bytecode.BCByteCode;
-import net.multiphasicapps.squirreljme.bytecode.BCOperation;
+import net.multiphasicapps.squirreljme.java.bytecode.BCByteCode;
+import net.multiphasicapps.squirreljme.java.bytecode.BCOperation;
 import net.multiphasicapps.squirreljme.ci.CIByteBuffer;
 import net.multiphasicapps.squirreljme.ci.CICodeAttribute;
 import net.multiphasicapps.classwriter.OutputCode;
