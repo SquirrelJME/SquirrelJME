@@ -15,5 +15,5 @@
  * @since 2016/04/24
  */
 
-package net.multiphasicapps.squirreljme.java.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.std;
 

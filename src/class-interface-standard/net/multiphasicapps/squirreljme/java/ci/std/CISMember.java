@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.std;
 
 import net.multiphasicapps.squirreljme.java.ci.CIClass;
 import net.multiphasicapps.squirreljme.java.ci.CIMember;

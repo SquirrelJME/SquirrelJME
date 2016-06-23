@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.java.ci.standard;
+package net.multiphasicapps.squirreljme.java.ci.std;
 
 import java.util.HashSet;
 import java.util.Set;

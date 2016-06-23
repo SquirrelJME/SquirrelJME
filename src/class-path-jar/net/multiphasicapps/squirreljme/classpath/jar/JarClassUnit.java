@@ -20,7 +20,7 @@ import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.ci.CIClass;
 import net.multiphasicapps.squirreljme.java.ci.CIException;
-import net.multiphasicapps.squirreljme.java.ci.standard.CISClass;
+import net.multiphasicapps.squirreljme.java.ci.std.CISClass;
 import net.multiphasicapps.squirreljme.classpath.ClassUnit;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
