@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-cpp
+X-SquirrelJME-Name: io-cpp
 X-SquirrelJME-UUID: 88a544a1-a838-479f-9108-87e351d47ea1
-X-SquirrelJME-Depends: javame-cldc-compact, extra-util-checked
+X-SquirrelJME-Depends: javame-cldc-compact, util-checked
 X-SquirrelJME-Error: AU
 LIBlet-Title: C Preprocessor
 LIBlet-Vendor: Steven Gawroriski

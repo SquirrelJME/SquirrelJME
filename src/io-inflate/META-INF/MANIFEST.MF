@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-inflate
+X-SquirrelJME-Name: io-inflate
 X-SquirrelJME-UUID: b0ee8a43-da57-4fcd-834a-64d0327c457b
-X-SquirrelJME-Depends: extra-io-datapipe,
- extra-util-huffmantree,
- extra-io-slidingwindow,
- extra-io-bits
+X-SquirrelJME-Depends: io-datapipe,
+ util-huffmantree,
+ io-slidingwindow,
+ io-bits
 X-SquirrelJME-Error: AF
 LIBlet-Title: Extra IO Inflate Algorithm
 LIBlet-Vendor: Steven Gawroriski

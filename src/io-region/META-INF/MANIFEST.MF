@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-region
+X-SquirrelJME-Name: io-region
 X-SquirrelJME-UUID: e6cc1f54-fd8e-4fb2-bbc4-c7f41499181b
 X-SquirrelJME-Depends: javame-cldc-compact
 X-SquirrelJME-Error: AP

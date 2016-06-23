@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: class-interface
 X-SquirrelJME-UUID: c6d0507c-f9cb-43d9-ab02-09e4fb502b60
 X-SquirrelJME-Depends: javame-cldc-compact,
- symbols, extra-util-unmodifiable
+ symbols, util-unmodifiable
 X-SquirrelJME-Error: AO
 LIBlet-Title: Class Interface
 LIBlet-Vendor: Steven Gawroriski

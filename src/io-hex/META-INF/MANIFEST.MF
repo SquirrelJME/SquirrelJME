@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-hex
+X-SquirrelJME-Name: io-hex
 X-SquirrelJME-UUID: 226209db-938b-44b1-b347-a49a24d2c01d
 X-SquirrelJME-Depends: javame-cldc-compact
 LIBlet-Title: Hexadecimal Input Stream

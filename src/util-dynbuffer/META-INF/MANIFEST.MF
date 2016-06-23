@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-util-dynbuffer
+X-SquirrelJME-Name: util-dynbuffer
 X-SquirrelJME-UUID: 233abe2b-3eca-443d-88fd-a63ac0c95f3e
 X-SquirrelJME-Depends: javame-cldc-compact
 X-SquirrelJME-Error: AD

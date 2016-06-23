@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-datafaucet
+X-SquirrelJME-Name: io-datafaucet
 X-SquirrelJME-UUID: 32a36ca2-ddc1-4b7e-8e0b-b7984aa68e3b
-X-SquirrelJME-Depends: javame-cldc-compact, extra-util-datadeque
+X-SquirrelJME-Depends: javame-cldc-compact, util-datadeque
 X-SquirrelJME-Error: AB
 LIBlet-Title: Extra IO Data Faucet
 LIBlet-Vendor: Steven Gawroriski

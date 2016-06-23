@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: zip-compression
 X-SquirrelJME-UUID: 71331290-14ad-490a-b0ed-139ec86b1767
 X-SquirrelJME-Depends: javame-cldc-full,
- extra-io-inflate, extra-io-region
+ io-inflate, io-region
 X-SquirrelJME-Error: AM
 LIBlet-Title: ZIP Compression
 LIBlet-Vendor: Steven Gawroriski

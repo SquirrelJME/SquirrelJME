@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: test-extra-util-huffmantree
+X-SquirrelJME-Name: test-util-huffmantree
 X-SquirrelJME-UUID: 8ac53406-fbdb-459b-bf83-b5948143455f
-X-SquirrelJME-Depends: test-base, extra-util-huffmantree,
- extra-io-bits
+X-SquirrelJME-Depends: test-base, util-huffmantree,
+ io-bits
 LIBlet-Title: Huffman Tree Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160430

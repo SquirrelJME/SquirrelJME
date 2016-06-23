@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-util-unmodifiable
+X-SquirrelJME-Name: util-unmodifiable
 X-SquirrelJME-UUID: ad15f3c2-9063-4981-810f-30570d07055d
 X-SquirrelJME-Depends: javame-cldc-compact
 LIBlet-Title: Unmodifiable Collections

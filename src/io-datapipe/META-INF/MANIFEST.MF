@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-datapipe
+X-SquirrelJME-Name: io-datapipe
 X-SquirrelJME-UUID: 558ba8fd-4a7c-4e47-a4d7-f3a315564944
-X-SquirrelJME-Depends: extra-io-datasink, extra-io-datafaucet
+X-SquirrelJME-Depends: io-datasink, io-datafaucet
 X-SquirrelJME-Error: AC
 LIBlet-Title: Extra IO Data Pipe
 LIBlet-Vendor: Steven Gawroriski

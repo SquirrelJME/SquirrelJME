@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-util-checked
+X-SquirrelJME-Name: util-checked
 X-SquirrelJME-UUID: f7b8eaaf-688b-4889-926f-c2ba1936aa04
 X-SquirrelJME-Depends: javame-cldc-compact
 X-SquirrelJME-Error: AV

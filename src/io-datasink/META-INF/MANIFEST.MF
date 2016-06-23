@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-datasink
+X-SquirrelJME-Name: io-datasink
 X-SquirrelJME-UUID: e6e78b78-39ac-4a05-a14c-4e2c1323070b
-X-SquirrelJME-Depends: javame-cldc-compact, extra-util-datadeque
+X-SquirrelJME-Depends: javame-cldc-compact, util-datadeque
 X-SquirrelJME-Error: AA
 LIBlet-Title: Extra IO Data Sink
 LIBlet-Vendor: Steven Gawroriski

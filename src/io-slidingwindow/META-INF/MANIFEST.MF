@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-slidingwindow
+X-SquirrelJME-Name: io-slidingwindow
 X-SquirrelJME-UUID: 4a4eac91-13ec-4385-980f-3ed23c1346bb
 X-SquirrelJME-Depends: javame-cldc-compact,
- extra-util-dynbuffer
+ util-dynbuffer
 X-SquirrelJME-Error: AI
 LIBlet-Title: Extra IO Sliding Window
 LIBlet-Vendor: Steven Gawroriski

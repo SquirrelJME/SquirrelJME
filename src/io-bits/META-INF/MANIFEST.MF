@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-io-bits
+X-SquirrelJME-Name: io-bits
 X-SquirrelJME-UUID: c45a0724-653e-4a54-b43f-35d00ac1cb32
 X-SquirrelJME-Depends: javame-cldc-compact
 X-SquirrelJME-Error: AH

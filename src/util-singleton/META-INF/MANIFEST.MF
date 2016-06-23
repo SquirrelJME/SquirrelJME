@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: extra-util-singleton
+X-SquirrelJME-Name: util-singleton
 X-SquirrelJME-UUID: a86563c1-84bb-4cd2-b1e7-7d968c36ae19
 X-SquirrelJME-Depends: javame-cldc-compact
 LIBlet-Title: Singleton Collections

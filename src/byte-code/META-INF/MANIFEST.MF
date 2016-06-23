@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: byte-code
 X-SquirrelJME-UUID: d2e4c743-4047-4e20-8aaf-dff98bd9981a
 X-SquirrelJME-Depends: javame-cldc-compact,
-  class-interface, extra-util-empty, extra-util-singleton
+  class-interface, util-empty, util-singleton
 X-SquirrelJME-Error: AX
 LIBlet-Title: Java Byte Code Representation
 LIBlet-Vendor: Steven Gawroriski
