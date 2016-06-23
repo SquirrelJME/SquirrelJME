@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classpath.jar;
+package net.multiphasicapps.squirreljme.java.cp.jar;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.ci.CIClass;
 import net.multiphasicapps.squirreljme.java.ci.CIException;
 import net.multiphasicapps.squirreljme.java.ci.std.CISClass;
-import net.multiphasicapps.squirreljme.classpath.ClassUnit;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnit;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
 

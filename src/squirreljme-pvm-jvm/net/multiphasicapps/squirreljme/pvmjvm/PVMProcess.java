@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.classpath.ClassPath;
+import net.multiphasicapps.squirreljme.java.cp.ClassPath;
 
 /**
  * This represents a process from within the paravirtual machine.

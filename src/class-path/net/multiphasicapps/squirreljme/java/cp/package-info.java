@@ -14,5 +14,5 @@
  * @since 2016/05/25
  */
 
-package net.multiphasicapps.squirreljme.classpath;
+package net.multiphasicapps.squirreljme.java.cp;
 

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classpath.jar;
+package net.multiphasicapps.squirreljme.java.cp.jar;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.ci.CIClass;
-import net.multiphasicapps.squirreljme.classpath.ClassUnit;
-import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnit;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnitProvider;
 
 /**
  * This is the base class for any facility which needs to provide class units

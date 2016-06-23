@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classpath.jar.fs;
+package net.multiphasicapps.squirreljme.java.cp.jar.fs;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -18,10 +18,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.classpath.ClassUnit;
-import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
-import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnit;
-import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnitProvider;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnit;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.java.cp.jar.JarClassUnit;
+import net.multiphasicapps.squirreljme.java.cp.jar.JarClassUnitProvider;
 
 /**
  * This provides access to JARs which exist on the file system.

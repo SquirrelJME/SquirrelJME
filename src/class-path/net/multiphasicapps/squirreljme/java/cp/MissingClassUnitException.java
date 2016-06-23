@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classpath;
+package net.multiphasicapps.squirreljme.java.cp;
 
 /**
  * This is thrown when a required class unit is missing.

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.classpath.jar.fs;
+package net.multiphasicapps.squirreljme.java.cp.jar.fs;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -16,10 +16,10 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import net.multiphasicapps.squirreljme.classpath.ClassUnit;
-import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
-import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnit;
-import net.multiphasicapps.squirreljme.classpath.jar.JarClassUnitProvider;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnit;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.java.cp.jar.JarClassUnit;
+import net.multiphasicapps.squirreljme.java.cp.jar.JarClassUnitProvider;
 
 /**
  * This contains a provider for JAR based class units.

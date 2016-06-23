@@ -32,7 +32,7 @@ import net.multiphasicapps.squirreljme.java.ci.CIFieldID;
 import net.multiphasicapps.squirreljme.java.ci.CIMethod;
 import net.multiphasicapps.squirreljme.java.ci.CIMethodFlags;
 import net.multiphasicapps.squirreljme.java.ci.CIMethodID;
-import net.multiphasicapps.squirreljme.classpath.ClassPath;
+import net.multiphasicapps.squirreljme.java.cp.ClassPath;
 
 /**
  * This is used to wrap the class loader which paravirtualizes all classes in

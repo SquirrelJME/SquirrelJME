@@ -21,10 +21,10 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
-import net.multiphasicapps.squirreljme.classpath.ClassPath;
-import net.multiphasicapps.squirreljme.classpath.ClassUnit;
-import net.multiphasicapps.squirreljme.classpath.ClassUnitProvider;
-import net.multiphasicapps.squirreljme.classpath.jar.fs.FSJarClassUnitProvider;
+import net.multiphasicapps.squirreljme.java.cp.ClassPath;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnit;
+import net.multiphasicapps.squirreljme.java.cp.ClassUnitProvider;
+import net.multiphasicapps.squirreljme.java.cp.jar.fs.FSJarClassUnitProvider;
 
 /**
  * This is the primary paravirtual machine controller, it bridges with the
