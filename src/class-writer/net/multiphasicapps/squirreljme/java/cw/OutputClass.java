@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classwriter;
+package net.multiphasicapps.squirreljme.java.cw;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

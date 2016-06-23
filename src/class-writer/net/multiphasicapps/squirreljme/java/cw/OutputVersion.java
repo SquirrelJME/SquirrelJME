@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classwriter;
+package net.multiphasicapps.squirreljme.java.cw;
 
 /**
  * This represents the version number that a class file may be.

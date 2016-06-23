@@ -8,34 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classwriter;
-
 /**
- * This represents byte code that may be output when a class is written to.
+ * This package contains the facilities used to write standard Java class
+ * files.
  *
- * @since 2016/06/21
+ * @since 2016/06/20
  */
-public class OutputCode
-{
-	/** The owning method. */
-	protected final OutputMethod method;
-	
-	/**
-	 * Initializes the code output.
-	 *
-	 * @param __m The method that uses the given code.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/21
-	 */
-	OutputCode(OutputMethod __m)
-		throws NullPointerException
-	{
-		// Check
-		if (__m == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.method = __m;
-	}
-}
+
+package net.multiphasicapps.squirreljme.java.cw;
 

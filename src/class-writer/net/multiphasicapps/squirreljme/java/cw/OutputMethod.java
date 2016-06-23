@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classwriter;
+package net.multiphasicapps.squirreljme.java.cw;
 
 import net.multiphasicapps.squirreljme.java.ci.CIMethodFlags;
 import net.multiphasicapps.squirreljme.java.ci.CIMethodID;

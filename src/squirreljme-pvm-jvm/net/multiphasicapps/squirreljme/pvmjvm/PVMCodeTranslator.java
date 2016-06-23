@@ -14,7 +14,7 @@ import net.multiphasicapps.squirreljme.java.bytecode.BCByteCode;
 import net.multiphasicapps.squirreljme.java.bytecode.BCOperation;
 import net.multiphasicapps.squirreljme.java.ci.CIByteBuffer;
 import net.multiphasicapps.squirreljme.java.ci.CICodeAttribute;
-import net.multiphasicapps.classwriter.OutputCode;
+import net.multiphasicapps.squirreljme.java.cw.OutputCode;
 
 /**
  * This is a translator which is used to translate byte code so that it
