@@ -16,8 +16,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.java.symbols.ClassLoaderNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.manifest.JavaManifest;
-import net.multiphasicapps.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.ci.CIException;
 import net.multiphasicapps.squirreljme.ci.CIClass;
 

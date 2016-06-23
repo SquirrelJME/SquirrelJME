@@ -14,5 +14,5 @@
  * @since 2016/05/20
  */
 
-package net.multiphasicapps.manifest;
+package net.multiphasicapps.squirreljme.java.manifest;
 

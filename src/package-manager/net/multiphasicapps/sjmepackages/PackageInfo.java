@@ -13,9 +13,9 @@ package net.multiphasicapps.sjmepackages;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import net.multiphasicapps.manifest.JavaManifest;
-import net.multiphasicapps.manifest.JavaManifestAttributes;
-import net.multiphasicapps.manifest.JavaManifestException;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
 

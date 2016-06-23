@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.manifest;
+package net.multiphasicapps.squirreljme.java.manifest;
 
 /**
  * This is thrown when the manifest is not valid.

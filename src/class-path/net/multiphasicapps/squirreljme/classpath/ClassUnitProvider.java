@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.manifest.JavaManifest;
-import net.multiphasicapps.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 
 /**
  * This is a provider for {@link ClassUnit}s which are then constructed into
