@@ -21,3 +21,8 @@ The JVM at its base can be abstract, where implementations could implement
 native CPU support and such. So for example process creation and memory
 management is not handled by the JVM at all but by the implementation.
 
+## 04:43
+
+Then using the filesystem module, class units that use that filesystem
+interface can be used.
+
