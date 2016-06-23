@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: class-path-jar
 X-SquirrelJME-UUID: c35a5165-0795-424e-aca9-00b180303f7c
-X-SquirrelJME-Depends: javame-cldc-full,
+X-SquirrelJME-Depends: cldc-full,
   class-path, zip-compression, class-interface-standard
 X-SquirrelJME-Error: BO
 LIBlet-Title: Class Path JAR Support

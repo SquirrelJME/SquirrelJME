@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: javame-meep-swm
+X-SquirrelJME-Name: meep-swm
 X-SquirrelJME-UUID: 30e471c6-3fd7-4c78-b97e-0d6e3af8d0e1
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DG
 LIBlet-Title: MEEP Application Management System
 LIBlet-Vendor: Steven Gawroriski

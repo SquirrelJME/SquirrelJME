@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: launcher-lui
 X-SquirrelJME-UUID: 5ee74e69-0c4d-465e-acea-dc50507a1b19
-X-SquirrelJME-Depends: launcher, javame-meep-lui
+X-SquirrelJME-Depends: launcher, meep-lui
 X-SquirrelJME-Error: CN
 Main-Class: net.multiphasicapps.squirreljme.launcher.lui.Main
 LIBlet-Title: Launcher (Line User Interface)

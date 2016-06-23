@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: javame-meep-media
+X-SquirrelJME-Name: meep-media
 X-SquirrelJME-UUID: f322ae8a-3077-43e6-835f-08642e048a24
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DD
 LIBlet-Title: MEEP Media and Sound
 LIBlet-Vendor: Steven Gawroriski

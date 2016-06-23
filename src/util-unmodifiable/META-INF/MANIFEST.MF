@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: util-unmodifiable
 X-SquirrelJME-UUID: ad15f3c2-9063-4981-810f-30570d07055d
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 LIBlet-Title: Unmodifiable Collections
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160501

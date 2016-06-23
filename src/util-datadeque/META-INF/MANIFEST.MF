@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: util-datadeque
 X-SquirrelJME-UUID: 82c221db-c5d8-4aad-a8e4-ac1a2a91d17c
-X-SquirrelJME-Depends: javame-cldc-compact,
+X-SquirrelJME-Depends: cldc-compact,
  util-dynbuffer
 X-SquirrelJME-Error: AE
 LIBlet-Title: Extra Util Byte Deques

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: javame-meep-provisioning
+X-SquirrelJME-Name: meep-provisioning
 X-SquirrelJME-UUID: 98ab129b-9ad6-4546-9782-9ef69c8f237a
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DM
 LIBlet-Title: MEEP Provisioning
 LIBlet-Vendor: Steven Gawroriski

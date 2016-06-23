@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: javame-meep-securityframework
+X-SquirrelJME-Name: meep-securityframework
 X-SquirrelJME-UUID: f0dbaace-ab99-4e1c-b967-959d8fa4b70a
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DO
 LIBlet-Title: MEEP Security Framework
 LIBlet-Vendor: Steven Gawroriski

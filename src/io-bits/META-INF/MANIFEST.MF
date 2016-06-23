@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: io-bits
 X-SquirrelJME-UUID: c45a0724-653e-4a54-b43f-35d00ac1cb32
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: AH
 LIBlet-Title: Extra IO Bits
 LIBlet-Vendor: Steven Gawroriski

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: test-base
 X-SquirrelJME-UUID: a37f7c7f-1b0e-4312-8be3-913f3c3e4b6c
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: AG
 LIBlet-Title: Test Base
 LIBlet-Vendor: Steven Gawroriski

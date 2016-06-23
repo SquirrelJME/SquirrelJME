@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: jit
 X-SquirrelJME-UUID: 39deb90c-0593-4351-a1bb-c9d3f257bbd5
-X-SquirrelJME-Depends: javame-cldc-compact, class-interface,
+X-SquirrelJME-Depends: cldc-compact, class-interface,
  os
 X-SquirrelJME-Error: CD
 LIBlet-Title: Just In Time Compiler

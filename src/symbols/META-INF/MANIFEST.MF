@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: symbols
 X-SquirrelJME-UUID: c51c05cc-565e-409e-b71c-642470bdf24e
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: AL
 LIBlet-Title: Java Descriptors
 LIBlet-Vendor: Steven Gawroriski

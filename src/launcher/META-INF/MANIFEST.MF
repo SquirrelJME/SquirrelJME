@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: launcher
 X-SquirrelJME-UUID: 6ace2255-222e-43d6-9330-cb6918c00f8f
-X-SquirrelJME-Depends: javame-cldc-compact, javame-meep-lui
+X-SquirrelJME-Depends: cldc-compact, meep-lui
 X-SquirrelJME-Error: CM
 LIBlet-Title: Base Launcher
 LIBlet-Vendor: Steven Gawroriski

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: javame-meep-rms
+X-SquirrelJME-Name: meep-rms
 X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DC
 LIBlet-Title: MEEP Record Management System
 LIBlet-Vendor: Steven Gawroriski

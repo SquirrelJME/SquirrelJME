@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: javame-meep-power
+X-SquirrelJME-Name: meep-power
 X-SquirrelJME-UUID: 0962c312-3747-4111-8cae-1f133045cec6
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DJ
 LIBlet-Title: MEEP Power Management
 LIBlet-Vendor: Steven Gawroriski

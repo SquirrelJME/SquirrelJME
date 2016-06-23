@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: javame-meep-lui
+X-SquirrelJME-Name: meep-lui
 X-SquirrelJME-UUID: 67a3561d-4c0d-495e-b4b6-6ec07a9ed71b
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DA
 LIBlet-Title: MEEP Line Based Interface
 LIBlet-Vendor: Steven Gawroriski

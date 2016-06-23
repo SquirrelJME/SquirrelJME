@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: squirrel-quarrel
 X-SquirrelJME-UUID: 5eccffd6-d51f-4576-a84d-7e53fc292ace
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: BY
 LIBlet-Title: Squirrel Quarrel
 LIBlet-Vendor: Steven Gawroriski

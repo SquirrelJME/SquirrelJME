@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: javame-meep-event
+X-SquirrelJME-Name: meep-event
 X-SquirrelJME-UUID: a4f80eca-c186-420b-b160-e47e612695a1
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DI
 LIBlet-Title: MEEP Event Management
 LIBlet-Vendor: Steven Gawroriski

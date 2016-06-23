@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: io-hex
 X-SquirrelJME-UUID: 226209db-938b-44b1-b347-a49a24d2c01d
-X-SquirrelJME-Depends: javame-cldc-compact
+X-SquirrelJME-Depends: cldc-compact
 LIBlet-Title: Hexadecimal Input Stream
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160515

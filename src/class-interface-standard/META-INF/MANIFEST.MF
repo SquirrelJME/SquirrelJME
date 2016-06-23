@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: class-interface-standard
 X-SquirrelJME-UUID: 8e1bb3de-ac70-4e63-ae1e-ce94f8c5e339
-X-SquirrelJME-Depends: javame-cldc-compact, 
+X-SquirrelJME-Depends: cldc-compact, 
  symbols, io-region,
  class-interface
 X-SquirrelJME-Error: AQ

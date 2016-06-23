@@ -7,7 +7,7 @@ X-SquirrelJME-Optional:
  test-io-slidingwindow,
  test-util-dynbuffer,
  test-util-huffmantree,
- test-javame-cldc-compact
+ test-cldc-compact
 Main-Class: net.multiphasicapps.tests.TestCaller
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
