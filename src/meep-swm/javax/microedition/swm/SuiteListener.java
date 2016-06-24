@@ -32,7 +32,7 @@ public interface SuiteListener
 	 * @param __state The new state of the suite.
 	 * @since 2016/06/24
 	 */
-	public abstract notifySuiteStateChanged(SuiteManagementTracker __track,
-		SuiteState __state);
+	public abstract void notifySuiteStateChanged(
+		SuiteManagementTracker __track, SuiteState __state);
 }
 
