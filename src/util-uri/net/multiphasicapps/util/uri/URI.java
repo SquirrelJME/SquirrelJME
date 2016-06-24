@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.util.uri;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -399,7 +400,7 @@ public final class URI
 			
 			// Hexadecimal sequence?
 			if (c == '%')
-				throw new Error("TODO");
+				i += (__decodeHex(__s, i, sb)) - 1;
 			
 			// Otherwise a non-"quoted" character
 			else
@@ -418,6 +419,85 @@ public final class URI
 		
 		// Finish
 		return sb.toString();
+	}
+	
+	/**
+	 * Decodes UTF-8 hexdecimal sequences.
+	 *
+	 * @param __s The input string.
+	 * @param __pos The position to decode from.
+	 * @param __sb The output buffer.
+	 * @return The number of input characters to skip due to the decode.
+	 * @throws NullPointerException On null arguments.
+	 * @throws URISyntaxException If a hex sequence is not valid.
+	 * @since 2016/06/23
+	 */
+	private static int __decodeHex(String __s, int __pos, StringBuilder __sb)
+		throws NullPointerException, URISyntaxException
+	{
+		// Check
+		if (__s == null || __sb == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine the number of sequences that are available
+		int sc = 0;
+		int n = __s.length();
+		for (int i = __pos; i < n; i += 3)
+		{
+			// Must be percent sign
+			char a = __s.charAt(i);
+			
+			// Stop if not one
+			if (a != '%')
+				break;
+			
+			// {@squirreljme.error DU05 A hexadecimal sequence in the input is
+			// too short. (The input string; The position the short sequence is
+			// located at)}
+			if (i + 3 > n)
+				throw new URISyntaxException(String.format("DU05 %s %d", __s,
+					i));
+			
+			// Must be hex digits
+			int dh = Character.digit(__s.charAt(i + 1), 16),
+				dl = Character.digit(__s.charAt(i + 2), 16);
+			
+			// {@squirreljme.error DU06 The hexadecimal sequence contains
+			// invalid characters. (The input string; The position of the
+			// illegal sequence)}
+			if (dh < 0 || dl < 0)
+				throw new URISyntaxException(String.format("DU06 %s %d", __s,
+					i));
+			
+			// Increase count
+			sc++;
+		}
+		
+		// nothing to convert?
+		if (sc == 0)
+			return 0;
+		
+		// The bytes are in UTF-8, so use standard Java conversion
+		byte[] temp = new byte[sc];
+		for (int t = 0, i = __pos; t < sc; t++, i += 3)
+			temp[t] = (byte)((Character.digit(__s.charAt(i + 1), 16) << 4) |
+				Character.digit(__s.charAt(i + 2), 16));
+		
+		// Add converted sequence
+		try
+		{
+			__sb.append(new String(temp, "utf-8"));
+		}
+		
+		// {@squirreljme.error DU07 The Java environment does not support
+		// UTF-8, which means the environment is incorrect.}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new RuntimeException("DU07", e);
+		}
+		
+		// Return the sequence count
+		return sc * 3;
 	}
 	
 	/**
