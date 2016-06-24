@@ -55,6 +55,9 @@ public final class URI
 	/** The host. */
 	protected final String host;
 	
+	/** The full URI form. */
+	private volatile Reference<String> _full;
+	
 	/**
 	 * Parses the given string as a URI.
 	 *
@@ -104,7 +107,7 @@ public final class URI
 				__uri.substring(0, fcol));
 			
 			// May have a fragment
-			int frag = __uri.indexOf(fcol + 1, '#');
+			int frag = __uri.indexOf('#', fcol + 1);
 			if (frag >= 0)
 			{
 				this.schemepart = __decode(__URIChars__.PATH,
@@ -317,10 +320,54 @@ public final class URI
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/23
+	 */
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<String> ref = _full;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Rebuild full URI
+			StringBuilder sb = new StringBuilder();
+		
+			// Scheme?
+			String scheme = this.scheme;
+			if (scheme != null)
+			{
+				sb.append(__encode(__URIChars__.SCHEME, scheme));
+				sb.append(':');
+			}
+		
+			// Scheme specific?
+			String schemepart = this.schemepart;
+			if (schemepart != null)
+				sb.append(__encode(__URIChars__.PATH, schemepart));
+		
+			// Some kind of path
+			else
+				throw new Error("TODO");
+		
+			// Fragment?
+			String fragment = this.fragment;
+			if (fragment != null)
+			{
+				sb.append('#');
+				sb.append(__encode(__URIChars__.FRAGMENT, fragment));
+			}
+		
+			// Finish
+			this._full = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		// Return
+		return rv;
 	}
 	
 	public static URI create(String __a)
