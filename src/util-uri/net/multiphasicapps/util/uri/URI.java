@@ -382,7 +382,42 @@ public final class URI
 		if (__uc == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Output
+		StringBuilder sb = new StringBuilder();
+		
+		// Go through each character
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// {@squirreljme.error DU03 Only ASCII characters are permitted
+			// in URIs. (The URI piece; The non-ASCII character)}
+			if (c >= 0x7F)
+				throw new URISyntaxException(String.format("DU03 %s %d", __s,
+					(int)c));
+			
+			// Hexadecimal sequence?
+			if (c == '%')
+				throw new Error("TODO");
+			
+			// Otherwise a non-"quoted" character
+			else
+			{
+				// {@squirreljme.error DU04 The specified character is not a
+				// valid part of the specified sequence in a URI. (The URI
+				// piece; The character; The URI part being decoded)}
+				if (!__uc.isValid(i, c))
+					throw new URISyntaxException(String.format("DU04 %s %d %s",
+						__s, (int)c, __uc));
+				
+				// Add to the output
+				sb.append((char)c);
+			}
+		}
+		
+		// Finish
+		return sb.toString();
 	}
 	
 	/**
