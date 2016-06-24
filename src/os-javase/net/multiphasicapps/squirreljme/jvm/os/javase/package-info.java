@@ -8,24 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jvm;
-
 /**
- * This class provides the basic control for the Java Virtual Machine.
+ * This package contains the virtual machine which runs on the Java virtual
+ * machine.
  *
- * @since 2016/06/23
+ * @since 2016/06/24
  */
-public abstract class JVM
-{
-	/**
-	 * Initializes the base virtual machine.
-	 *
-	 * @param __args Arguments to be passed to the launcher.
-	 * @since 2016/06/23
-	 */
-	public JVM(String... __args)
-	{
-		throw new Error("TODO");
-	}
-}
+
+package net.multiphasicapps.squirreljme.jvm.os.javase;
 

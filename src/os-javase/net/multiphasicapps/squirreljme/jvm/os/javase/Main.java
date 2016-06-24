@@ -8,22 +8,23 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jvm;
+package net.multiphasicapps.squirreljme.jvm.os.javase;
 
 /**
- * This class provides the basic control for the Java Virtual Machine.
+ * This class is the main entry point for the JVM which runs on Java SE
+ * Java virtual machines.
  *
- * @since 2016/06/23
+ * @since 2016/06/24
  */
-public abstract class JVM
+public class Main
 {
 	/**
-	 * Initializes the base virtual machine.
+	 * Main entry point.
 	 *
-	 * @param __args Arguments to be passed to the launcher.
-	 * @since 2016/06/23
+	 * @param __args Program arguments.
+	 * @since 2016/06/24
 	 */
-	public JVM(String... __args)
+	public static void Main(String... __args)
 	{
 		throw new Error("TODO");
 	}

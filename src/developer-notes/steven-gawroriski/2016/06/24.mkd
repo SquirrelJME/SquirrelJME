@@ -11,3 +11,15 @@ future proofed. `java.net.URI` has really non-conforming URI layouts and some
 of the constructors are very simple and just paste strings together rather
 than encoding them as they should.
 
+## 11:57
+
+Actually the JVM could be backed using the standard MEEP interfaces. Instead of
+having `class-path`, I just instead have an implementation of the
+`SuiteManager` and `TaskManager`. The base would act as a kind of kernel of
+sorts.
+
+## 12:00
+
+So there would be basically two levels. A JVM would run as the kernel which
+then manages sub-JVMs running at lower ends.
+

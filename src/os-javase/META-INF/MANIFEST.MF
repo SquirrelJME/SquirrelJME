@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: os-javase
+X-SquirrelJME-UUID: 65ff17d6-3eb5-42ae-9389-fbedf81123b7
+X-SquirrelJME-Depends: jvm
+X-SquirrelJME-Error: CV
+Main-Class: net.multiphasicapps.squirreljme.jvm.os.javase.Main
+LIBlet-Title: Java Virtual Machine (OS: Java SE)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160624
+LIBlet-Description: This is the implementation of the Java 
+ virtual machine which runs on a host Java SE JVM.
+
