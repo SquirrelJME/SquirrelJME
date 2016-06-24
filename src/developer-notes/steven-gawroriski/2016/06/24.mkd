@@ -43,3 +43,8 @@ the JVM itself. However, due to some of the varying needs that might not exist
 (such as a filesystem), suites should still be installable by passing the raw
 JAR bytes for example (after a download or other unpack).
 
+## 12:46
+
+I will need to implement the classes used in the suite manager since they do
+not exist and I have no templates to base from.
+
