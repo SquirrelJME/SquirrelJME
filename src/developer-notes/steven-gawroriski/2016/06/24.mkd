@@ -4,3 +4,10 @@
 
 Based on the URI specification, the scheme specific part is always the path.
 
+## 11:48
+
+Actually a class path system based on URIs could be complex although rather
+future proofed. `java.net.URI` has really non-conforming URI layouts and some
+of the constructors are very simple and just paste strings together rather
+than encoding them as they should.
+
