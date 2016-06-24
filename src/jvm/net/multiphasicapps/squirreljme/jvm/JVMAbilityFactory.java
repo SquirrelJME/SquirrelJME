@@ -18,6 +18,15 @@ package net.multiphasicapps.squirreljme.jvm;
  * implemented there can be default fall-back behavior ability interfaces used
  * instead.
  *
+ * It is recommended that the methods in this class not be {@code final} and
+ * that consideration be made that classes in the ability factory heirarchy
+ * can be replaced and extended upon. For example, suppose that there is an
+ * ability factory for operating system "Foo". Perhaps "Foo" is incapable of
+ * performing specific actions. Then in the future there is a "Foo" comapatible
+ * OS with specific extensions and is called "Foo 2". Instead of writing a
+ * completely new interface for "Foo 2", instead "Foo 2" can extend the
+ * ability factory of "Foo" to provide slightly altered and new functionality.
+ *
  * @since 2016/06/24
  */
 public abstract class JVMAbilityFactory
