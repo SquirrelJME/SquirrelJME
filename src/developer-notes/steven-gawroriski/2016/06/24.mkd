@@ -58,3 +58,9 @@ user space process and not the kernel. Otherwise when it comes to suite
 management the kernel can get confused if it is running a virtual enviroment
 on SquirrelJME or another Java ME implementation.
 
+## 14:48
+
+Especially since `Task` is `final` that means it cannot be used at all. So
+SWM is completely client side. However after manually typing out the classes
+I have a feel of how it would work.
+
