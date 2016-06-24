@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: os-java
+X-SquirrelJME-UUID: 5c0bfad8-6bb1-4dd7-bbcb-47b72512619f
+X-SquirrelJME-Depends: jvm
+X-SquirrelJME-Error: CW
+LIBlet-Title: OS (Basic Java Support)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160624
+LIBlet-Description: This provides base support for running on 
+ existing Java virtual machines.
+

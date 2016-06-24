@@ -15,8 +15,11 @@ package net.multiphasicapps.squirreljme.jvm;
  *
  * @since 2016/06/23
  */
-public abstract class JVM
+public final class JVM
 {
+	/** The ability factory of the JVM. */
+	protected final JVMAbilityFactory abilityfactory;
+	
 	/**
 	 * Initializes the base virtual machine.
 	 *
@@ -32,6 +35,9 @@ public abstract class JVM
 		// Check
 		if (__af == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.abilityfactory = __af;
 		
 		throw new Error("TODO");
 	}

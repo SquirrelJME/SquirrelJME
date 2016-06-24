@@ -8,12 +8,30 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
+package net.multiphasicapps.squirreljme.jvm.os.java.se;
+
+import net.multiphasicapps.squirreljme.jvm.JVM;
+
 /**
- * This package contains the virtual machine which runs on the Java virtual
- * machine.
+ * This class is the main entry point for the JVM which runs on Java SE
+ * Java virtual machines.
  *
  * @since 2016/06/24
  */
-
-package net.multiphasicapps.squirreljme.jvm.os.javase;
+public class Main
+{
+	/**
+	 * Main entry point.
+	 *
+	 * @param __args Program arguments.
+	 * @since 2016/06/24
+	 */
+	public static void main(String... __args)
+	{
+		// Initialize a new JVM
+		JVM jvm = new JVM(new JavaSEAbilityFactory(), __args);
+		
+		throw new Error("TODO");
+	}
+}
 

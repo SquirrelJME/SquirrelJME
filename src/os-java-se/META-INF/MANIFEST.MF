@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: os-javase
+X-SquirrelJME-Name: os-java-se
 X-SquirrelJME-UUID: 65ff17d6-3eb5-42ae-9389-fbedf81123b7
-X-SquirrelJME-Depends: jvm
+X-SquirrelJME-Depends: os-java
 X-SquirrelJME-Error: CV
-Main-Class: net.multiphasicapps.squirreljme.jvm.os.javase.Main
-LIBlet-Title: Java Virtual Machine (OS: Java SE)
+X-SquirrelJME-HostClassPath: true
+Main-Class: net.multiphasicapps.squirreljme.jvm.os.java.se.Main
+LIBlet-Title: OS (Java SE)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160624
 LIBlet-Description: This is the implementation of the Java 

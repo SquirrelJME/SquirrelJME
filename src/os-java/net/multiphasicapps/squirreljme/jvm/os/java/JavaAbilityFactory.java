@@ -8,25 +8,21 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jvm.os.javase;
+package net.multiphasicapps.squirreljme.jvm.os.java;
+
+import net.multiphasicapps.squirreljme.jvm.JVMAbilityFactory;
 
 /**
- * This class is the main entry point for the JVM which runs on Java SE
- * Java virtual machines.
+ * This provides a base for any implementation which uses a Java virtual
+ * machine to create a SquirrelJME environment.
+ *
+ * This should be the base class used for the ability factorys for Java ME and
+ * Java SE virtual machines.
  *
  * @since 2016/06/24
  */
-public class Main
+public class JavaAbilityFactory
+	extends JVMAbilityFactory
 {
-	/**
-	 * Main entry point.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2016/06/24
-	 */
-	public static void main(String... __args)
-	{
-		throw new Error("TODO");
-	}
 }
 
