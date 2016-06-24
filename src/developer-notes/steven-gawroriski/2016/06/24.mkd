@@ -86,3 +86,23 @@ code and such. However the `JVM` itself can still use some of the MEEP flags
 and states such as the enumerations. So there will essentially just be a JVM
 side of the MEEP code that `unsafe` bridges to.
 
+## 15:37
+
+Ok so since including all of the verification details and class transformation
+would be difficult in the `JVM`, perhaps the launcher can perform all the
+details. When an application requests to download a JAR from the internet it
+can instead forward the request through to the launcher. So basically the
+installation system of a JAR is purely handled by the launcher. The JVM would
+have a full permissions mode which is used by the launcher. When it comes to
+the JVM's set of suites, there will just be a basic install output stream of
+sorts. This would assume that the launcher verified all the details and such.
+So the JVM's default suite (to replace the class path stuff) will just
+contain a simple interface means of accessing built-in suites that are
+pre-installed. In the event of native code, these JAR suites would be
+completely built into the executable (and not be in other JARs). However in the
+case of the JVM based one, it will just treat all JARs in the current
+directory as preinstalled. Then with it done this way, this would mean that
+native binaries just come alone with precompiled code and suite setups. The
+access to preinstalled suites will just basically be `getResourceAsStream`
+and likely another interface such as an executable class context.
+
