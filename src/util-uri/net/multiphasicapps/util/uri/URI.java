@@ -370,11 +370,6 @@ public final class URI
 		return rv;
 	}
 	
-	public static URI create(String __a)
-	{
-		throw new Error("TODO");
-	}
-	
 	/**
 	 * Builds a string which is used during construction.
 	 *
