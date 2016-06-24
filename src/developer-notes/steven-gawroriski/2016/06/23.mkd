@@ -133,5 +133,8 @@ make resolution easier.
 Reading up on paths, they can be escaped which means any character is valid in
 a path for the most part. When it coems to the filesystem along with the
 `@` stuff I can use percent encoding also. Then this way regardless of the OS
-the files on the disk can be named according to their names and such.
+the files on the disk can be named according to their names and such. However
+if a system does not support a given character then it would fail to be
+created however.
+
 

@@ -63,6 +63,9 @@ public class URITests
 		__tc.checkEquals(new URI("ScHeMe::", "very%21Special/##????",
 			"Hello World! How are you?").toString(),
 			"<TODO>");
+		
+		__tc.checkEquals(new URI("http://multiphasicapps.net:80/tarball/" +
+			"squirreljme-trunk.tar.gz?uuid=trunk").toString(), "<TODO>");
 	}
 }
 

@@ -56,7 +56,7 @@ public final class URI
 	protected final boolean absolutepath;
 	
 	/** The encoded path (in each element part). */
-	private final String[] path;
+	private final String[] _path;
 	
 	/** The full URI form. */
 	private volatile Reference<String> _full;
@@ -143,26 +143,21 @@ public final class URI
 			throw new URISyntaxException(String.format("DU02 %s", __uri));
 	}
 	
-	public URI(String __a, String __b, String __c, int __d, String __e,
-		String __f, String __g)
-		throws URISyntaxException
-	{
-		super();
-		if (false)
-			throw new URISyntaxException(null, null);
-		throw new Error("TODO");
-	}
-	
-	public URI(String __a, String __b, String __c, String __d, String __e)
-		throws URISyntaxException
-	{
-		super();
-		if (false)
-			throw new URISyntaxException(null, null);
-		throw new Error("TODO");
-	}
-	
-	public URI(String __a, String __b, String __c, String __d)
+	/**
+	 * Initializes a URI using the given inputs.
+	 *
+	 * @param __scheme The scheme.
+	 * @param __user The user information.
+	 * @param __host The host.
+	 * @param __port The port number.
+	 * @param __path The path.
+	 * @param __query The query.
+	 * @param __frag The fragment.
+	 * @throws URISyntaxException If the resulting URI is not valid.
+	 * @since 2016/06/24
+	 */
+	public URI(String __scheme, String __user, String __host, int __port,
+		String __path, String __query, String __frag)
 		throws URISyntaxException
 	{
 		super();
@@ -172,8 +167,29 @@ public final class URI
 	}
 	
 	/**
+	 * Initializes a URI using the given scheme, host, path, and fragment.
+	 *
+	 * Each part of the URI is encoded even if there are already
+	 * encoded characters in the URI.
+	 *
+	 * @param __scheme The scheme.
+	 * @param __host The host.
+	 * @param __path The path to the file.
+	 * @param __frag The fragment.
+	 * @throws URISyntaxException If the resulting URI is not valid.
+	 * @since 2016/06/23
+	 */
+	public URI(String __scheme, String __host, String __path, String __frag)
+		throws URISyntaxException
+	{
+		this(scheme, null, __host, -1, path, null, __frag);
+	}
+	
+	/**
 	 * Initializes a URI using the given optional scheme, scheme specific part,
-	 * and fragment. Each part of the URI is encoded even if there are already
+	 * and fragment.
+	 *
+	 * Each part of the URI is encoded even if there are already
 	 * encoded characters in the URI.
 	 *
 	 * @param __scheme The scheme.
@@ -217,7 +233,7 @@ public final class URI
 	
 	public String getPath()
 	{
-		return this._path;
+		throw new Error("TODO");
 	}
 	
 	public int getPort()
