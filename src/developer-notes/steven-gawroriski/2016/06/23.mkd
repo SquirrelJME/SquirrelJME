@@ -122,3 +122,16 @@ is decoded for a requested test. So when a test is performed, the query and
 its fields will be read into a map of key/value pairs and passed along with
 the name of the test to perform.
 
+## 23:36
+
+For paths in URIs, they should be fragmented and split into units and marked if
+a path is absolute rather than having a single group for paths. This would
+make resolution easier.
+
+## 23:40
+
+Reading up on paths, they can be escaped which means any character is valid in
+a path for the most part. When it coems to the filesystem along with the
+`@` stuff I can use percent encoding also. Then this way regardless of the OS
+the files on the disk can be named according to their names and such.
+

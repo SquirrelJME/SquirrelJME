@@ -37,9 +37,6 @@ public final class URI
 	/** The encoded authority. */
 	protected final String authority;
 	
-	/** The encoded path. */
-	protected final String path;
-	
 	/** The encoded query. */
 	protected final String query;
 	
@@ -54,6 +51,12 @@ public final class URI
 	
 	/** The host. */
 	protected final String host;
+	
+	/** Is this path absolute? */
+	protected final boolean absolutepath;
+	
+	/** The encoded path (in each element part). */
+	private final String[] path;
 	
 	/** The full URI form. */
 	private volatile Reference<String> _full;
@@ -126,11 +129,12 @@ public final class URI
 			
 			// Not used
 			this.authority = null;
-			this.path = null;
+			this._path = null;
 			this.query = null;
 			this.port = -1;
 			this.userinfo = null;
 			this.host = null;
+			this.absolutepath = false;
 		}
 		
 		// {@squirreljme.error DU02 The given URI is not valid.
@@ -213,7 +217,7 @@ public final class URI
 	
 	public String getPath()
 	{
-		return this.path;
+		return this._path;
 	}
 	
 	public int getPort()
@@ -279,12 +283,12 @@ public final class URI
 	
 	public boolean isAbsolute()
 	{
-		throw new Error("TODO");
+		return getScheme() != null;
 	}
 	
 	public boolean isOpaque()
 	{
-		throw new Error("TODO");
+		return isAbsolute() && !this.absolutepath;
 	}
 	
 	public URI normalize()
@@ -311,11 +315,6 @@ public final class URI
 	}
 	
 	public URI resolve(String __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	public String toASCIIString()
 	{
 		throw new Error("TODO");
 	}
