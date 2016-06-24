@@ -257,7 +257,7 @@ public class Suite
 	{
 		// Ignore
 		if (__f == null)
-			return null;
+			return;
 		
 		// {@squirreljme.error DG02 The current suite has been removed.}
 		if (!isInstalled())
