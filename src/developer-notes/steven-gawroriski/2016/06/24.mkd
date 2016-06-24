@@ -72,3 +72,8 @@ information if a class can even be constructed at all. I am going to guess that
 the constructors are private or package private. The classes that exist are
 just stubs which even lack constructors.
 
+## 15:29
+
+And with that the entire MEEP SWM has been implemented. That took about 3 hours
+or so to complete.
+

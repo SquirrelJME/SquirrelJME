@@ -10,32 +10,35 @@
 
 package javax.microedition.swm;
 
+import java.io.IOException;
+
 /**
- * This represents a flag which may be associated with a suite.
+ * This is thrown when a suite cannot be removed, either because it is not
+ * permitted or it is currently in use.
  *
  * @since 2016/06/24
  */
-public enum SuiteStateFlag
+public class SuiteLockedException
+	extends IOException
 {
-	/** Available. */
-	AVAILABLE,
+	/**
+	 * Initializes the exception with no message.
+	 *
+	 * @since 2016/06/24
+	 */
+	public SuiteLockedException()
+	{
+	}
 	
-	/** Enabled, the application or library may be used. */
-	ENABLED,
-	
-	/** The application or library is pre-installed with the system. */
-	PREINSTALLED,
-	
-	/** Remove is not supported. */
-	REMOVE_DENIED,
-	
-	/** A suite provided by the system. */
-	SYSTEM,
-	
-	/** The suite cannot be updated. */
-	UPDATE_DENIED,
-	
-	/** End. */
-	;
+	/**
+	 * Initializes the exception with the given message.
+	 *
+	 * @param __s The message to use.
+	 * @since 2016/06/24
+	 */
+	public SuiteLockedException(String __s)
+	{
+		super(__s);
+	}
 }
 

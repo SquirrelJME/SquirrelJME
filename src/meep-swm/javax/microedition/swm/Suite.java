@@ -78,7 +78,7 @@ public class Suite
 	 */
 	public Iterator<String> getAttributes()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class Suite
 	 */
 	public String getAttributeValue(String __a)
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class Suite
 	 */
 	public Iterator<Suite> getDependencies()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class Suite
 	 */
 	public String getDownloadUrl()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -131,7 +131,7 @@ public class Suite
 	 */
 	public Iterator<String> getMIDlets()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class Suite
 	 */
 	public String getName()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -165,7 +165,7 @@ public class Suite
 	 */
 	public String getVendor()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -176,7 +176,7 @@ public class Suite
 	 */
 	public String getVersion()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -202,7 +202,7 @@ public class Suite
 	 */
 	public boolean isInstalled()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -234,7 +234,7 @@ public class Suite
 	 */
 	public boolean isTrusted()
 	{
-		throw new Error("TODO")
+		throw new Error("TODO");
 	}
 	
 	/**

@@ -15,7 +15,7 @@ package javax.microedition.swm;
  *
  * @since 2016/06/24
  */
-public class SuiteState
+public enum SuiteState
 {
 	/** Installation failed. */
 	INSTALLATION_FAILED,

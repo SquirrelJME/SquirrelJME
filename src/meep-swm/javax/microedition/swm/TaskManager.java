@@ -10,6 +10,8 @@
 
 package javax.microedition.swm;
 
+import java.util.List;
+
 /**
  * This is an interface which is used to manage tasks. Tasks allow multiple
  * suites to be ran at the same time.
