@@ -24,7 +24,7 @@ public class Main
 	 * @param __args Program arguments.
 	 * @since 2016/06/24
 	 */
-	public static void Main(String... __args)
+	public static void main(String... __args)
 	{
 		throw new Error("TODO");
 	}
