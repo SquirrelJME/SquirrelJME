@@ -48,3 +48,13 @@ JAR bytes for example (after a download or other unpack).
 I will need to implement the classes used in the suite manager since they do
 not exist and I have no templates to base from.
 
+## 14:31
+
+I wonder why `SuiteInstaller` and stuff such as `Suite` are classes instead
+of interfaces. I suppose the intention that despite there being many managers
+that there will just be a set few when it comes to suites? Regardless, the
+suite managers and such will instead be an artifact that is used in the
+user space process and not the kernel. Otherwise when it comes to suite
+management the kernel can get confused if it is running a virtual enviroment
+on SquirrelJME or another Java ME implementation.
+
