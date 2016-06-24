@@ -77,3 +77,12 @@ just stubs which even lack constructors.
 And with that the entire MEEP SWM has been implemented. That took about 3 hours
 or so to complete.
 
+## 15:29
+
+So what I need to do when it comes to the `JVM` since SWM is application side
+(and not JVM side) is just provide access to the available suites via the
+`unsafe` classes. So the suite code and such will just call into the system
+code and such. However the `JVM` itself can still use some of the MEEP flags
+and states such as the enumerations. So there will essentially just be a JVM
+side of the MEEP code that `unsafe` bridges to.
+
