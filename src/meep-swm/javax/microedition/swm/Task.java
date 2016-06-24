@@ -23,6 +23,16 @@ import java.util.Objects;
 public final class Task
 {
 	/**
+	 * The constructor of this class is assumed to be internal use.
+	 *
+	 * @since 2016/06/24
+	 */
+	private Task()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Checks if this task is the same as another task, tasks are equal if
 	 * they share the same name.
 	 *

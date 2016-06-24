@@ -64,3 +64,11 @@ Especially since `Task` is `final` that means it cannot be used at all. So
 SWM is completely client side. However after manually typing out the classes
 I have a feel of how it would work.
 
+## 14:58
+
+Unless the `Suite` and `Task` have package private or private constructors that
+do not exist in the documentation. JavaDoc really should have included
+information if a class can even be constructed at all. I am going to guess that
+the constructors are private or package private. The classes that exist are
+just stubs which even lack constructors.
+

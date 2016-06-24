@@ -18,6 +18,16 @@ package javax.microedition.swm;
 public class SuiteInstaller
 {
 	/**
+	 * The constructor of this class is assumed to be internal use.
+	 *
+	 * @since 2016/06/24
+	 */
+	private SuiteInstaller()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Adds a suite installation listener which can be given status updates
 	 * when a suite's installation status has changed.
 	 *

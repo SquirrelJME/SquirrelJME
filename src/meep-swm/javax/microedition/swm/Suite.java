@@ -38,12 +38,13 @@ public class Suite
 	private volatile int _state;
 	
 	/**
-	 * Initializes the base suite information.
+	 * The constructor of this class is assumed to be internal use.
 	 *
 	 * @since 2016/06/24
 	 */
-	public Suite()
+	private Suite()
 	{
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -77,7 +78,7 @@ public class Suite
 	 */
 	public Iterator<String> getAttributes()
 	{
-		return EmptyIterator.<String>empty();
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public class Suite
 	 */
 	public String getAttributeValue(String __a)
 	{
-		return null;
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -102,7 +103,7 @@ public class Suite
 	 */
 	public Iterator<Suite> getDependencies()
 	{
-		return EmptyIterator.<Suite>empty();
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -116,7 +117,7 @@ public class Suite
 	 */
 	public String getDownloadUrl()
 	{
-		return null;
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -130,7 +131,7 @@ public class Suite
 	 */
 	public Iterator<String> getMIDlets()
 	{
-		return EmptyIterator.<String>empty();
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -141,7 +142,7 @@ public class Suite
 	 */
 	public String getName()
 	{
-		return null;
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -164,7 +165,7 @@ public class Suite
 	 */
 	public String getVendor()
 	{
-		return null;
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -175,7 +176,7 @@ public class Suite
 	 */
 	public String getVersion()
 	{
-		return null;
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -201,7 +202,7 @@ public class Suite
 	 */
 	public boolean isInstalled()
 	{
-		return false;
+		throw new Error("TODO")
 	}
 	
 	/**
@@ -233,7 +234,7 @@ public class Suite
 	 */
 	public boolean isTrusted()
 	{
-		return false;
+		throw new Error("TODO")
 	}
 	
 	/**
