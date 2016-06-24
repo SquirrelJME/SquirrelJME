@@ -64,8 +64,9 @@ public class URITests
 			"Hello World! How are you?").toString(),
 			"<TODO>");
 		
-		__tc.checkEquals(new URI("http://multiphasicapps.net:80/tarball/" +
-			"squirreljme-trunk.tar.gz?uuid=trunk").toString(), "<TODO>");
+		__tc.checkEquals(new URI("http://foo:bar@multiphasicapps.net:80/" +
+			"tarball/squirreljme-trunk.tar.gz?uuid=trunk#hello").toString(),
+			"<TODO>");
 	}
 }
 

@@ -1,2 +1,6 @@
 # 2016/06/24
 
+## 11:39
+
+Based on the URI specification, the scheme specific part is always the path.
+

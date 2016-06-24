@@ -137,52 +137,35 @@ public final class URI
 			this.absolutepath = false;
 		}
 		
+		// A path based URI with potential authority
+		else if (sslash || isheir || fcol < 0)
+		{
+			// Never has a scheme specific part
+			this.schemepart = null;
+			
+			// Has a scheme?
+			String rest;
+			if (fcol >= 0)
+			{
+				this.scheme = __decode(__URIChars__.SCHEME,
+					__uri.substring(0, fcol));
+				rest = __uri.substring(fcol + 1);
+			}
+			
+			// Does not
+			else
+			{
+				this.scheme = null;
+				rest = __uri;
+			}
+			
+			throw new Error("TODO");
+		}
+		
 		// {@squirreljme.error DU02 The given URI is not valid.
 		// (The input URI)}
 		else
 			throw new URISyntaxException(String.format("DU02 %s", __uri));
-	}
-	
-	/**
-	 * Initializes a URI using the given inputs.
-	 *
-	 * @param __scheme The scheme.
-	 * @param __user The user information.
-	 * @param __host The host.
-	 * @param __port The port number.
-	 * @param __path The path.
-	 * @param __query The query.
-	 * @param __frag The fragment.
-	 * @throws URISyntaxException If the resulting URI is not valid.
-	 * @since 2016/06/24
-	 */
-	public URI(String __scheme, String __user, String __host, int __port,
-		String __path, String __query, String __frag)
-		throws URISyntaxException
-	{
-		super();
-		if (false)
-			throw new URISyntaxException(null, null);
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Initializes a URI using the given scheme, host, path, and fragment.
-	 *
-	 * Each part of the URI is encoded even if there are already
-	 * encoded characters in the URI.
-	 *
-	 * @param __scheme The scheme.
-	 * @param __host The host.
-	 * @param __path The path to the file.
-	 * @param __frag The fragment.
-	 * @throws URISyntaxException If the resulting URI is not valid.
-	 * @since 2016/06/23
-	 */
-	public URI(String __scheme, String __host, String __path, String __frag)
-		throws URISyntaxException
-	{
-		this(scheme, null, __host, -1, path, null, __frag);
 	}
 	
 	/**
