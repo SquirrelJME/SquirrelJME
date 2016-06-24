@@ -31,9 +31,6 @@ public final class URI
 	/** The encoded scheme. */
 	protected final String scheme;
 	
-	/** The scheme specific part. */
-	protected final String schemepart;
-	
 	/** The encoded authority. */
 	protected final String authority;
 	
@@ -113,8 +110,7 @@ public final class URI
 			int frag = __uri.indexOf('#', fcol + 1);
 			if (frag >= 0)
 			{
-				this.schemepart = __decode(__URIChars__.PATH,
-					__uri.substring(fcol + 1, frag));
+				this._path = __decodePath(__uri.substring(fcol + 1, frag));
 				this.fragment = __decode(__URIChars__.FRAGMENT,
 					__uri.substring(frag + 1));
 			}
@@ -122,14 +118,12 @@ public final class URI
 			// No fragment, the entire thing is the scheme specific part
 			else
 			{
-				this.schemepart = __decode(__URIChars__.PATH,
-					__uri.substring(fcol + 1));
+				this._path = __decodePath(__uri.substring(fcol + 1));
 				this.fragment = null;
 			}
 			
 			// Not used
 			this.authority = null;
-			this._path = null;
 			this.query = null;
 			this.port = -1;
 			this.userinfo = null;
@@ -140,9 +134,6 @@ public final class URI
 		// A path based URI with potential authority
 		else if (sslash || isheir || fcol < 0)
 		{
-			// Never has a scheme specific part
-			this.schemepart = null;
-			
 			// Has a scheme?
 			String rest;
 			if (fcol >= 0)
@@ -264,11 +255,6 @@ public final class URI
 		return this.scheme;
 	}
 	
-	public String getSchemeSpecificPart()
-	{
-		return this.schemepart;
-	}
-	
 	public String getUserInfo()
 	{
 		return this.userinfo;
@@ -343,13 +329,9 @@ public final class URI
 				sb.append(':');
 			}
 		
-			// Scheme specific?
-			String schemepart = this.schemepart;
-			if (schemepart != null)
-				sb.append(__encode(__URIChars__.PATH, schemepart));
-		
-			// Some kind of path
-			else
+			// Path?
+			String[] path = this._path;
+			if (path != null)
 				throw new Error("TODO");
 		
 			// Fragment?
@@ -459,6 +441,18 @@ public final class URI
 		
 		// Finish
 		return sb.toString();
+	}
+	
+	/**
+	 * Decodes URI path elements.
+	 *
+	 * @param __s The string to decode.
+	 * @return The resulting path elements.
+	 * @since 2016/06/24
+	 */
+	private static String[] __decodePath(String __s)
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
