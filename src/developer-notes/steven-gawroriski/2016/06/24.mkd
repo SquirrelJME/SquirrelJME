@@ -30,3 +30,16 @@ implementation specific factory be used. At least with an implementation
 specific factory there can be fallbacks in the event new features are added
 to the JVM. If something is missing then there would be a fallback.
 
+## 12:32
+
+So the first thing to do for the ability factory is provide an interface that
+would be used with the Suite manager to find the launcher JAR. Then once the
+JAR is located a task should be created and then switched to.
+
+## 12:38
+
+The JVM's suite manager should have only a single implementation managed by
+the JVM itself. However, due to some of the varying needs that might not exist
+(such as a filesystem), suites should still be installable by passing the raw
+JAR bytes for example (after a download or other unpack).
+
