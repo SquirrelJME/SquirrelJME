@@ -11,29 +11,16 @@
 package net.multiphasicapps.squirreljme.jvm;
 
 /**
- * This class provides the basic control for the Java Virtual Machine.
+ * This is a factory class which is used to provide the JVM the ability to
+ * perform actions such as interacting with the user or loading classes.
  *
- * @since 2016/06/23
+ * This is an abstract class so that if in the event an ability is not
+ * implemented there can be default fall-back behavior ability interfaces used
+ * instead.
+ *
+ * @since 2016/06/24
  */
-public abstract class JVM
+public abstract class JVMAbilityFactory
 {
-	/**
-	 * Initializes the base virtual machine.
-	 *
-	 * @param __af The ability factory which provides classes that provide the
-	 * standard JVM interfaces.
-	 * @param __args Arguments to be passed to the launcher.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/23
-	 */
-	public JVM(JVMAbilityFactory __af, String... __args)
-		throws NullPointerException
-	{
-		// Check
-		if (__af == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
 }
 

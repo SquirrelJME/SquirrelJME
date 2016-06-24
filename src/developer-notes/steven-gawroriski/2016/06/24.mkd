@@ -23,3 +23,10 @@ sorts.
 So there would be basically two levels. A JVM would run as the kernel which
 then manages sub-JVMs running at lower ends.
 
+## 12:15
+
+Perhaps the `JVM` can be `final`. Then it can either be constructor or an
+implementation specific factory be used. At least with an implementation
+specific factory there can be fallbacks in the event new features are added
+to the JVM. If something is missing then there would be a fallback.
+
