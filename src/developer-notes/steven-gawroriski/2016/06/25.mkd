@@ -26,3 +26,11 @@ that for interaction. The archive would just be a flat binary for the most part
 consisting of classes or resources in separated tables. I can then use a
 modified UTF-8 comparison of sorts against a `String`.
 
+## 13:24
+
+So now that I have basic output, I must work on the SSJIT which takes an input
+class and outputs a native blob. There will need to be some kind of
+architecture generation class that the SSJIT can use. Since this can vary on
+the system, I would suppose that the manifest should contain the class which
+is the JIT to be used.
+
