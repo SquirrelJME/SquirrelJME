@@ -43,6 +43,10 @@ public class GlobbedJar
 	protected final Map<String, Path> resources =
 		new HashMap<>();
 	
+	/** Class file blobs. */
+	protected final Map<String, Path> classes =
+		new HashMap<>();
+	
 	/** The JAR name. */
 	protected final String name;
 	
@@ -70,46 +74,80 @@ public class GlobbedJar
 	}
 	
 	/**
+	 * Creates a class which would be placed in the class table of this
+	 * globbed JAR.
+	 *
+	 * @param __name The name of the class being written.
+	 * @return An output stream to write class blobs.
+	 * @throws IOException On file creation errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/25
+	 */
+	public OutputStream createClass(String __name)
+		throws IOException, NullPointerException
+	{
+		return __create(__name, this.classes);
+	}
+	
+	/**
 	 * Creates a resource that will be placed in this globbed JAR.
 	 *
 	 * @param __name The name of the given resource.
 	 * @return An output stream which writes to a temporary file where the
 	 * resource data is placed before globbed Jar construction.
-	 * @throws IOException On read/write errors.
+	 * @throws IOException On file creation errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
 	public OutputStream createResource(String __name)
 		throws IOException, NullPointerException
 	{
+		return __create(__name, this.resources);
+	}
+	
+	/**
+	 * Since classes and resources generally share the same code for output
+	 * use this.
+	 *
+	 * @param __name The file name.
+	 * @param __target The target map to place data.
+	 * @throws IOException On file creation errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/25
+	 */
+	private OutputStream __create(String __name, Map<String, Path> __target)
+		throws IOException, NullPointerException
+	{
 		// Check
-		if (__name == null)
+		if (__name == null || __target == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup output
-		Map<String, Path> resources = this.resources;
-		try
+		synchronized (__target)
 		{
-			// Setup temporary file
-			Path p = Files.createTempFile(this.tempdir, this.name,
-				__name.replace('/', '_'));
+			try
+			{
+				// Setup temporary file
+				Path p = Files.createTempFile(this.tempdir, this.name,
+					__name.replace('/', '_'));
 			
-			// Record it
-			resources.put(__name, p);
+				// Record it
+				__target.put(__name, p);
 			
-			// Open the file
-			return Channels.newOutputStream(FileChannel.open(p,
-				StandardOpenOption.WRITE));
-		}
+				// Open the file
+				return Channels.newOutputStream(FileChannel.open(p,
+					StandardOpenOption.WRITE));
+			}
 		
-		// Failed to create, remove from the mapping
-		catch (IOException|RuntimeException|Error e)
-		{
-			// Remove
-			resources.remove(__name);
+			// Failed to create, remove from the mapping
+			catch (IOException|RuntimeException|Error e)
+			{
+				// Remove
+				__target.remove(__name);
 			
-			// Retoss
-			throw e;
+				// Retoss
+				throw e;
+			}
 		}
 	}
 }

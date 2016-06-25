@@ -294,7 +294,17 @@ public class Builder
 		if (__gj == null || __e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Determine the name of the class
+		String ename = __e.name();
+		String classname = ename.substring(0,
+			ename.length() - ".class".length());
+		
+		// Open a resource to be placed in the globbed jar
+		try (InputStream is = __e.open();
+			OutputStream os = __gj.createClass(classname))
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
