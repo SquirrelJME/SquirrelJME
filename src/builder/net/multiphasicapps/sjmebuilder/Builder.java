@@ -11,6 +11,10 @@
 package net.multiphasicapps.sjmebuilder;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -132,12 +136,53 @@ public class Builder
 	public void build()
 		throws IOException
 	{
-		// Go through all dependencies and dynamically compile every class file
-		// in them.
-		for (PackageInfo pi : this.topdepends)
-			throw new Error("TODO");
+		// Need temporary directory
+		Path tempdir = null;
+		try
+		{
+			// Create temporary directory
+			tempdir = Files.createTempDirectory("squirreljme-native-build");
+			
+			// Go through all dependencies and dynamically compile every class
+			// file in them.
+			for (PackageInfo pi : this.topdepends)
+				throw new Error("TODO");
 		
-		throw new Error("TODO");
+			throw new Error("TODO");
+		}
+		
+		// Delete temporary directory
+		finally
+		{
+			// Delete if it exists
+			if (tempdir != null)
+				try
+				{
+					// Delete all files in the directory
+					try (DirectoryStream<Path> ds = Files.
+						newDirectoryStream(tempdir))
+					{
+						for (Path p : ds)
+							try
+							{
+								Files.delete(p);
+							}
+							
+							// Ignore
+							catch (IOException e)
+							{
+							}
+					}
+					
+					// Delete the directory
+					Files.delete(tempdir);
+				}
+				
+				// Ignore
+				catch (IOException e)
+				{
+				}
+		}
 	}
 	
 	/**

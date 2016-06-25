@@ -1,2 +1,11 @@
 # 2016/06/25
 
+## 09:04
+
+I would need temporary filesystem usage for output blobs and other resources.
+
+## 10:54
+
+To reduce the binary size I can have a single shared global index that contains
+constants and other references as such.
+
