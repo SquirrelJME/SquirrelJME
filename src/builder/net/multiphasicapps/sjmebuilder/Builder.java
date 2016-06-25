@@ -132,6 +132,11 @@ public class Builder
 	public void build()
 		throws IOException
 	{
+		// Go through all dependencies and dynamically compile every class file
+		// in them.
+		for (PackageInfo pi : this.topdepends)
+			throw new Error("TODO");
+		
 		throw new Error("TODO");
 	}
 	
