@@ -210,7 +210,19 @@ public class Builder
 			StandardOpenOption.READ);
 			ZipFile zip = ZipFile.open(fc))
 		{
-			throw new Error("TODO");
+			// Go through all entries
+			for (ZipEntry e : zip)
+			{
+				String name = e.name();
+				
+				// If a class file, recompile it
+				if (name.endsWith(".class"))
+					throw new Error("TODO");
+				
+				// A JAR resource, output the data
+				else
+					throw new Error("TODO");
+			}
 		}
 	}
 	
