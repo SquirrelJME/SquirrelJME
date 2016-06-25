@@ -9,3 +9,9 @@ I would need temporary filesystem usage for output blobs and other resources.
 To reduce the binary size I can have a single shared global index that contains
 constants and other references as such.
 
+## 11:14
+
+With combined blob tables however, all classes would have to use this given
+table. However, when it comes to using individual classes everything that
+exists in the table structure might not even be needed.
+
