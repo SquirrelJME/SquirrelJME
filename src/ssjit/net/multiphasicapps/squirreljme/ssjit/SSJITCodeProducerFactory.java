@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.ssjit;
 
+import java.io.OutputStream;
+
 /**
  * This is the factory for a code producer which is capable of generating the
  * code producer that is required for native code generation for a given
@@ -64,7 +66,8 @@ public abstract class SSJITCodeProducerFactory
 	/**
 	 * This returns the array of possible variants that are available for usage
 	 * for a given architecture. A variant is used in the case where a specific
-	 * CPU needs to be targetted.
+	 * CPU needs to be targetted. It is recommended although not required that
+	 * there be a "generic" variant with the highest level of support.
 	 *
 	 * @return An array of target variants.
 	 * @since 2016/06/25
@@ -80,6 +83,30 @@ public abstract class SSJITCodeProducerFactory
 	public final String architecture()
 	{
 		return this.architecture;
+	}
+	
+	/**
+	 * Returns the variant which is associated with the given variant name.
+	 *
+	 * @param __var The variant to check.
+	 * @return The variant matching the given name or {@code null} if there
+	 * is no such variant.
+	 * @since 2016/06/25
+	 */
+	public final Variant getVariant(String __var)
+		throws NullPointerException
+	{
+		// Check
+		if (__var == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through variants
+		for (Variant v : variants())
+			if (__var.equals(v.variant()))
+				return v;
+		
+		// Does not
+		return null;
 	}
 	
 	/**
@@ -99,7 +126,7 @@ public abstract class SSJITCodeProducerFactory
 	 *
 	 * @since 2016/06/25
 	 */
-	public static final interface Variant
+	public static interface Variant
 	{
 		/**
 		 * Returns the name of the variant.

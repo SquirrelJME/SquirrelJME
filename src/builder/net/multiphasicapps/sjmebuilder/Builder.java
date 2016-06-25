@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
@@ -31,6 +32,7 @@ import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.ssjit.SSJIT;
+import net.multiphasicapps.squirreljme.ssjit.SSJITCodeProducerFactory;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
@@ -52,6 +54,9 @@ public class Builder
 	/** The target architecture. */
 	protected final String arch;
 	
+	/** The target variant of the architecture. */
+	protected final String archvariant;
+	
 	/** The target operating system. */
 	protected final String os;
 	
@@ -60,6 +65,9 @@ public class Builder
 	
 	/** The triplet. */
 	protected final String triplet;
+	
+	/** The target OS triplet. */
+	protected final String targettriplet;
 	
 	/** The package that implements the JVM for the target triplet. */
 	protected final PackageInfo toppackage;
@@ -70,6 +78,12 @@ public class Builder
 	/** The globbed JARs which are available. */
 	protected final Map<PackageInfo, GlobbedJar> globjars =
 		new HashMap<>();
+	
+	/** The code producer factory to use during generation. */
+	protected final SSJITCodeProducerFactory factory;
+	
+	/** The variant to be used during generation. */
+	protected final SSJITCodeProducerFactory.Variant factoryvariant;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -91,15 +105,34 @@ public class Builder
 		if (__pl == null || __arch == null || __os == null || __var == null)
 			throw new NullPointerException("NARG");
 		
+		// Does the architecture have a variant?
+		int hplu = __arch.indexOf('+');
+		String archvar;
+		if (hplu >= 0)
+		{
+			this.archvariant = (archvar = __arch.substring(hplu + 1));
+			this.arch = (__arch = __arch.substring(0, hplu));
+		}
+		
+		// Does not, assume generic support
+		else
+		{
+			this.arch = __arch;
+			this.archvariant = (archvar = "generic");
+		}
+		
 		// Set
 		this.plist = __pl;
-		this.arch = __arch;
 		this.os = __os;
 		this.variant = __var;
 		
 		// Build triplet
-		String triplet;
-		this.triplet = (triplet = __arch + "." + __os + "." + __var);
+		String triplet = __arch + "+" + archvar + "." + __os + "." + __var;
+		String targettriplet = __arch + "." + __os + "." + __var;
+		this.triplet = triplet;
+		this.targettriplet = targettriplet;
+		
+		System.err.printf("DEBUG -- Target: %s%n", triplet);
 		
 		// Go through all of the packages to find the one that specifies that
 		// it is the JVM for the given triplet
@@ -121,7 +154,7 @@ public class Builder
 			String pott = attr.get("X-SquirrelJME-Target-OS");
 			
 			// Matches?
-			if (triplet.equals(pott))
+			if (targettriplet.equals(pott))
 			{
 				tpk = pi;
 				break;
@@ -141,6 +174,44 @@ public class Builder
 		Set<PackageInfo> pis = new LinkedHashSet<>();
 		__getDependencies(pis, tpk);
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
+		
+		// Find the service that generates for this given system
+		ServiceLoader<SSJITCodeProducerFactory> sl =
+			ServiceLoader.<SSJITCodeProducerFactory>load(
+				SSJITCodeProducerFactory.class);
+		SSJITCodeProducerFactory fallback = null;
+		SSJITCodeProducerFactory hit = null;
+		SSJITCodeProducerFactory.Variant fbvar = null;
+		for (SSJITCodeProducerFactory pf : sl)
+		{
+			// Matches the architecture? and variant?
+			if (arch.equals(pf.architecture()))
+				if (null != (fbvar = pf.getVariant(archvar)))
+				{
+					// Always set a fallback
+					fallback = pf;
+					
+					// Is it meant for this OS?
+					if (os.equals(pf.operatingSystem()))
+					{
+						hit = pf;
+						break;
+					}
+				}
+		}
+		
+		// If not hit, fallback
+		if (hit == null)
+			hit = fallback;
+		
+		// {@squirreljme.error DW08 Could not find a code generator which is
+		// capable of targetting the given triplet. (The target triplet)}
+		if (hit == null)
+			throw new RuntimeException(String.format("DW08 %s", triplet));
+		
+		// Set
+		this.factory = hit;
+		this.factoryvariant = fbvar;
 	}
 	
 	/**
