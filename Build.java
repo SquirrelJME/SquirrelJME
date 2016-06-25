@@ -200,6 +200,11 @@ public class Build
 		int terptarget = 0;
 		switch (command)
 		{
+				// Compile native SquirrelJME and possibly simulate 
+			case "native":
+				__launch(terptarget, getProject("builder"), __args);
+				break;
+			
 				// Run tests on the host or interpreter
 			case "interpreter-interpreter-tests":
 				terptarget++;
