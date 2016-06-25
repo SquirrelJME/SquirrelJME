@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -58,6 +59,10 @@ public class Builder
 	
 	/** All the packages that are dependencies of the top level package. */
 	protected final Set<PackageInfo> topdepends;
+	
+	/** The globbed JARs which are available. */
+	protected final Map<PackageInfo, GlobbedJar> globjars =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -205,6 +210,10 @@ public class Builder
 		if (__td == null || __pi == null)
 			throw new NullPointerException("NARG");
 		
+		// Setup globbed JAR for this package
+		GlobbedJar gj = new GlobbedJar(__td, __pi);
+		this.globjars.put(__pi, gj);
+		
 		// Open ZIP
 		try (FileChannel fc = FileChannel.open(__pi.path(),
 			StandardOpenOption.READ);
@@ -217,11 +226,11 @@ public class Builder
 				
 				// If a class file, recompile it
 				if (name.endsWith(".class"))
-					__handleClass(__td, __pi, e);
+					__handleClass(gj, e);
 				
 				// A JAR resource, output the data
 				else
-					__handleResource(__td, __pi, e);
+					__handleResource(gj, e);
 			}
 		}
 	}
@@ -261,18 +270,17 @@ public class Builder
 	/**
 	 * Handles compilation of a class.
 	 *
-	 * @param __td The temporary directory.
-	 * @param __pi The source package information.
+	 * @param __gj The output globbed JAR.
 	 * @param __e The entry in the package.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	private void __handleClass(Path __td, PackageInfo __pi, ZipEntry __e)
+	private void __handleClass(GlobbedJar __gj, ZipEntry __e)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__td == null || __pi == null || __e == null)
+		if (__gj == null || __e == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
@@ -281,18 +289,17 @@ public class Builder
 	/**
 	 * Handles a JAR resource.
 	 *
-	 * @param __td The temporary directory.
-	 * @param __pi The source package information.
+	 * @param __gj The output globbed JAR.
 	 * @param __e The entry in the package.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	private void __handleResource(Path __td, PackageInfo __pi, ZipEntry __e)
+	private void __handleResource(GlobbedJar __gj, ZipEntry __e)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__td == null || __pi == null || __e == null)
+		if (__gj == null || __e == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");

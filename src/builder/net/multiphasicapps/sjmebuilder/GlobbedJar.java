@@ -10,6 +10,14 @@
 
 package net.multiphasicapps.sjmebuilder;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import net.multiphasicapps.sjmepackages.PackageInfo;
+
 /**
  * This represents an entire JAR which is full of class blobs and resource
  * blobs.
@@ -20,5 +28,30 @@ package net.multiphasicapps.sjmebuilder;
  */
 public class GlobbedJar
 {
+	/** The path to the temporary directory. */
+	protected final Path tempdir;
+	
+	/** The associated package information. */
+	protected final PackageInfo pinfo;
+	
+	/**
+	 * Initializes the globbed JAR.
+	 *
+	 * @param __td The temporary output directory.
+	 * @param __pi The package that it belongs to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/25
+	 */
+	public GlobbedJar(Path __td, PackageInfo __pi)
+		throws NullPointerException
+	{
+		// Check
+		if (__pi == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.tempdir = __td;
+		this.pinfo = __pi;
+	}
 }
 
