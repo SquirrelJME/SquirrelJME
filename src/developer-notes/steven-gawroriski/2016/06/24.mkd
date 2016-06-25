@@ -158,3 +158,30 @@ for now. So I suppose the current limit I can impose is 12KiB. When writing the
 JARs for a distribution I can strip the debugging information anyway since
 SquirrelJME would likely not be capable of line based debugging.
 
+## 21:08
+
+So I need the JIT to be as small and as fast as possible while using the least
+amount of memory. This would then equal faster than interpretation on limited
+systems. Due to the lack of reflection and invokedynamic I do need to perform
+some checks. I would suppose that the code generated in a class should be
+together as one. At the end of a class chunk there can be symbol information
+which contains information on any classes which are referenced along with
+methods. Then with this, blobs can be independent. The only major concern are
+that symbol references can be quite long. So I suppose a UTF-8 form
+is used so that characters take up a byte instead of a char in the file. I
+can have special String handling for UTF-8 strings with non ASCII characters in
+it. However in the general case this will never be the situation because when
+it comes to class names and such, there will generally never be characters
+beyond the basic ASCII range.
+
+## 21:15
+
+Another consideration is that there can be symbolic special names which use
+a preset dictionary to refer to classes. There can even be prefixed forms of
+these too. So if I limit strings to be 32768 bytes then that means I can use
+the upper bit for a string prefix. The `String` class can handle these special
+prefixed data. I would also have to memory map the class constant data area
+also by using `byte[]` which write to actual addresses. Using handles as I
+plan to do means I need not worry about it. When it comes to a prefix I can
+support 127 of them, then 255 bytes can be used for remaining UTF-8 data.
+
