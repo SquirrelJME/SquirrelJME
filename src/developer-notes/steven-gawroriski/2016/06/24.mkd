@@ -150,3 +150,11 @@ lower limits I can go for is 4KiB. If a class exceeds that size then it is
 way too large. The larger a class, the more difficult it is to handle as the
 more memory it consumes.
 
+## 20:59
+
+4KiB might be a little too low, especially if there is debug information in
+the JARs. However, debugging information is rather useful to have at least
+for now. So I suppose the current limit I can impose is 12KiB. When writing the
+JARs for a distribution I can strip the debugging information anyway since
+SquirrelJME would likely not be capable of line based debugging.
+

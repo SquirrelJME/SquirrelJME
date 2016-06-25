@@ -78,6 +78,10 @@ import javax.tools.ToolProvider;
  */
 public class Build
 {
+	/** The recommended maximum size that a class may be. */
+	public static final int SIZE_LIMIT =
+		4096 * 3;
+	
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
 	
@@ -514,7 +518,15 @@ public class Build
 					for (Map.Entry<String, Path> e : zipup.entrySet())
 					{
 						// Make entry for it
-						ZipEntry ze = new ZipEntry(e.getKey());
+						String ek = e.getKey();
+						ZipEntry ze = new ZipEntry(ek);
+						
+						// Get the size of the file
+						long filesz = Files.size(e.getValue());
+						if (ek.endsWith(".class") && filesz >= SIZE_LIMIT)
+							System.err.printf("WARNING!!! File `%s` size " +
+								" %d bytes exceeds %d byte limit.%n", ek,
+								filesz, SIZE_LIMIT);
 						
 						// When using STORED, some details about the file
 						// needs to be set
