@@ -45,3 +45,24 @@ sub-variants of architectures (for example `powerpc32+g4` for a PowerMac G4).
 
 I kind of dislike inner classes.
 
+## 19:01
+
+One thing I can do for producers is allow there to be a potential branch when
+it comes to a producer. For example I will have the base PowerPC producer
+and then an operating system specific producer. This wrapper class will in the
+event its methods are not overridden, will instead the code generator of a
+variant instead to handle actions. The only consideration however is that it
+is possible for a code generator to call a method which is not implemented at
+all in the base class. So I could add this functionality to the base generator
+so it can perform an alternative generation path. I would likely need an
+interface and a class that has the same methods as the producer. Enabling this
+action will allow operating system producers to modify the behavior slightly
+for a given architecture. This can complicate and slow things down a bit since
+it would have to check if a given method has been replaced. One alternative
+however is to have a number of interfaces. Each interface would define
+something. In the base producer, basically what will be done is that it will
+implement every interface. Then instead classes can be placed which implement
+one of the given interfaces. If one object implements the interface then that
+is called, if it does not it goes to the next. If nothing implements it then
+the operation fails or falls back to a default.
+
