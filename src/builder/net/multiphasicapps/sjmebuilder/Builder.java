@@ -188,15 +188,21 @@ public class Builder
 			if (arch.equals(pf.architecture()))
 				if (null != (fbvar = pf.getVariant(archvar)))
 				{
-					// Always set a fallback
-					fallback = pf;
-					
-					// Is it meant for this OS?
-					if (os.equals(pf.operatingSystem()))
+					// Only accept a direct hit if a factory provides support
+					// for the deisred operating system.
+					String pfos = pf.operatingSystem();
+					if (pfos != null && os.equals(pfos))
 					{
-						hit = pf;
+						fallback = hit = pf;
 						break;
 					}
+					
+					// Otherwise if no operating system was specified (this
+					// is a generic generator) fallback on it. However do not
+					// fallback onto a generator that is for a specific OS
+					// since it might not work.
+					else if (pfos == null)
+						fallback = pf;
 				}
 		}
 		
