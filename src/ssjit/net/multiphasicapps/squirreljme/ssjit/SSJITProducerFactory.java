@@ -19,7 +19,7 @@ import java.io.OutputStream;
  *
  * @since 2016/06/25
  */
-public abstract class SSJITCodeProducerFactory
+public abstract class SSJITProducerFactory
 {
 	/** The target architecture. */
 	protected final String architecture;
@@ -37,7 +37,7 @@ public abstract class SSJITCodeProducerFactory
 	 * @throws NullPointerException If no architecture was specified.
 	 * @since 2016/06/25
 	 */
-	public SSJITCodeProducerFactory(String __arch, String __os)
+	public SSJITProducerFactory(String __arch, String __os)
 		throws NullPointerException
 	{
 		// Check
@@ -60,7 +60,7 @@ public abstract class SSJITCodeProducerFactory
 	 * the given optional variant.
 	 * @sicne 2016/06/25
 	 */
-	public abstract SSJITCodeProducer createProducer(OutputStream __os,
+	public abstract SSJITProducer createProducer(OutputStream __os,
 		Variant __v);
 	
 	/**

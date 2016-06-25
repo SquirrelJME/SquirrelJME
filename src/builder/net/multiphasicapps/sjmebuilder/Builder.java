@@ -32,7 +32,7 @@ import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.ssjit.SSJIT;
-import net.multiphasicapps.squirreljme.ssjit.SSJITCodeProducerFactory;
+import net.multiphasicapps.squirreljme.ssjit.SSJITProducerFactory;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
@@ -80,10 +80,10 @@ public class Builder
 		new HashMap<>();
 	
 	/** The code producer factory to use during generation. */
-	protected final SSJITCodeProducerFactory factory;
+	protected final SSJITProducerFactory factory;
 	
 	/** The variant to be used during generation. */
-	protected final SSJITCodeProducerFactory.Variant factoryvariant;
+	protected final SSJITProducerFactory.Variant factoryvariant;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -176,13 +176,13 @@ public class Builder
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
 		
 		// Find the service that generates for this given system
-		ServiceLoader<SSJITCodeProducerFactory> sl =
-			ServiceLoader.<SSJITCodeProducerFactory>load(
-				SSJITCodeProducerFactory.class);
-		SSJITCodeProducerFactory fallback = null;
-		SSJITCodeProducerFactory hit = null;
-		SSJITCodeProducerFactory.Variant fbvar = null;
-		for (SSJITCodeProducerFactory pf : sl)
+		ServiceLoader<SSJITProducerFactory> sl =
+			ServiceLoader.<SSJITProducerFactory>load(
+				SSJITProducerFactory.class);
+		SSJITProducerFactory fallback = null;
+		SSJITProducerFactory hit = null;
+		SSJITProducerFactory.Variant fbvar = null;
+		for (SSJITProducerFactory pf : sl)
 		{
 			// Matches the architecture? and variant?
 			if (arch.equals(pf.architecture()))

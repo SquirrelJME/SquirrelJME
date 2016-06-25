@@ -24,7 +24,7 @@ import java.io.OutputStream;
  *
  * @since 2016/06/25
  */
-public abstract class SSJITCodeProducer
+public abstract class SSJITProducer
 {
 	/**
 	 * Initializes the code producer.
@@ -33,7 +33,7 @@ public abstract class SSJITCodeProducer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	SSJITCodeProducer(OutputStream __os)
+	SSJITProducer(OutputStream __os)
 		throws NullPointerException
 	{
 		// Check
