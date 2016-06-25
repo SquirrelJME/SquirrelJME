@@ -58,7 +58,7 @@ public abstract class SSJITProducerFactory
 	 * the most compatible generic producer should be used.
 	 * @return A code producer which outputs to the given stream and uses
 	 * the given optional variant.
-	 * @sicne 2016/06/25
+	 * @since 2016/06/25
 	 */
 	public abstract SSJITProducer createProducer(OutputStream __os,
 		Variant __v);

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: ssjit-powerpc32
 X-SquirrelJME-UUID: 3bf9e60f-5f71-4455-ae9d-21b82454565a
-X-SquirrelJME-Depends: ssjit
+X-SquirrelJME-Depends: ssjit-powerpc
 X-SquirrelJME-Error: DZ
 LIBlet-Title: SSJIT (32-bit PowerPC)
 LIBlet-Vendor: Steven Gawroriski
