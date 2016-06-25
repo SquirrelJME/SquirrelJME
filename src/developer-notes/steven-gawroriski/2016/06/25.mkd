@@ -66,3 +66,14 @@ one of the given interfaces. If one object implements the interface then that
 is called, if it does not it goes to the next. If nothing implements it then
 the operation fails or falls back to a default.
 
+## 19:06
+
+So basically the ProducerFactory will just have an internal generator for the
+most part which can create a class which implements the interfaces as much as
+it can. Then this means that each method would have to be given the producer
+as the first argument so it knows how to call other methods for example. This
+would be quite flexible but it should allow slightly modified behavior which
+may be required. Since modifying the base producer for a given architecture
+can be complex and may interfere with any operating system, this would be
+a viable choice.
+
