@@ -30,6 +30,13 @@ public class SSJIT
 	/** The code producer. */
 	protected final SSJITProducer producer;
 	
+	/** Internal once lock. */
+	private final Object _once =
+		new Object();
+	
+	/** Internal did? */
+	private volatile boolean _did;
+	
 	/**
 	 * This intializes the single stage JIT compiler.
 	 *
@@ -54,6 +61,32 @@ public class SSJIT
 		// Create producer
 		SSJITProducer producer = __pf.createProducer(__ob, __pfv);
 		this.producer = producer;
+	}
+	
+	/**
+	 * Performs actual JIT compilation.
+	 *
+	 * @throws IllegalStateException If JIT compilation is currently being
+	 * performed or is being performed.
+	 * @throws IOException On read/write errors.
+	 * @throws SSJITException If JIT compilation fails.
+	 * @since 2016/06/25
+	 */
+	public final void performJit()
+		throws IllegalStateException, IOException, SSJITException
+	{
+		// {@squirreljme.error DV01 JIT Compilation has already been
+		// performed.}
+		if (this._did)
+			throw new IllegalStateException("DV01");
+		
+		// Only once can things be JITted
+		synchronized (this._once)
+		{
+			if (this._did)
+				throw new IllegalStateException("DV01");
+			this._did = true;
+		}
 		
 		throw new Error("TODO");
 	}

@@ -384,7 +384,8 @@ public class Builder
 			// Setup JIT
 			SSJIT jit = new SSJIT(is, os, this.factory, this.factoryvariant);
 			
-			throw new Error("TODO");
+			// Run the JIT
+			jit.performJit();
 		}
 	}
 	
