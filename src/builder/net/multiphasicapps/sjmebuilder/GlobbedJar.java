@@ -13,9 +13,14 @@ package net.multiphasicapps.sjmebuilder;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 
 /**
@@ -33,6 +38,13 @@ public class GlobbedJar
 	
 	/** The associated package information. */
 	protected final PackageInfo pinfo;
+	
+	/** The resources that are a part of this JAR. */
+	protected final Map<String, Path> resources =
+		new HashMap<>();
+	
+	/** The JAR name. */
+	protected final String name;
 	
 	/**
 	 * Initializes the globbed JAR.
@@ -52,6 +64,53 @@ public class GlobbedJar
 		// Set
 		this.tempdir = __td;
 		this.pinfo = __pi;
+		
+		// Determine the name used
+		this.name = __pi.name().toString();
+	}
+	
+	/**
+	 * Creates a resource that will be placed in this globbed JAR.
+	 *
+	 * @param __name The name of the given resource.
+	 * @return An output stream which writes to a temporary file where the
+	 * resource data is placed before globbed Jar construction.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/25
+	 */
+	public OutputStream createResource(String __name)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup output
+		Map<String, Path> resources = this.resources;
+		try
+		{
+			// Setup temporary file
+			Path p = Files.createTempFile(this.tempdir, this.name,
+				__name.replace('/', '_'));
+			
+			// Record it
+			resources.put(__name, p);
+			
+			// Open the file
+			return Channels.newOutputStream(FileChannel.open(p,
+				StandardOpenOption.WRITE));
+		}
+		
+		// Failed to create, remove from the mapping
+		catch (IOException|RuntimeException|Error e)
+		{
+			// Remove
+			resources.remove(__name);
+			
+			// Retoss
+			throw e;
+		}
 	}
 }
 

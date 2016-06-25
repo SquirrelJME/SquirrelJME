@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.sjmebuilder;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -39,6 +41,10 @@ import net.multiphasicapps.zips.ZipFile;
  */
 public class Builder
 {
+	/** The size of the resource buffer. */
+	public static final int RESOURCE_BUFFER_SIZE =
+		4096;
+	
 	/** The package list to use. */
 	protected final PackageList plist;
 	
@@ -174,6 +180,8 @@ public class Builder
 						for (Path p : ds)
 							try
 							{
+								System.err.printf("DEBUG -- Delete `%s`%n",
+									p);
 								Files.delete(p);
 							}
 							
@@ -222,9 +230,12 @@ public class Builder
 			// Go through all entries
 			for (ZipEntry e : zip)
 			{
-				String name = e.name();
+				// Ignore directories
+				if (e.isDirectory())
+					continue;
 				
 				// If a class file, recompile it
+				String name = e.name();
 				if (name.endsWith(".class"))
 					__handleClass(gj, e);
 				
@@ -302,7 +313,26 @@ public class Builder
 		if (__gj == null || __e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Open a resource to be placed in the globbed jar
+		try (InputStream is = __e.open();
+			OutputStream os = __gj.createResource(__e.name()))
+		{
+			// Copy all the data
+			int sz = RESOURCE_BUFFER_SIZE;
+			byte[] buf = new byte[sz];
+			for (;;)
+			{
+				// Read in data
+				int rc = is.read(buf, 0, sz);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				// Write
+				os.write(buf, 0, rc);
+			}
+		}
 	}
 }
 

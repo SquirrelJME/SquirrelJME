@@ -60,6 +60,22 @@ public abstract class ZipEntry
 		throws IOException;
 	
 	/**
+	 * Returns {@code true} if this is a directory.
+	 *
+	 * Unless overridden, an entry is considered a directory if it ends in
+	 * a forward slash.
+	 *
+	 * @return {@code true} if a directory.
+	 * @throws IOException On read errors.
+	 * @since 2016/06/25
+	 */
+	public boolean isDirectory()
+		throws IOException
+	{
+		return name().endsWith("/");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/06
 	 */
