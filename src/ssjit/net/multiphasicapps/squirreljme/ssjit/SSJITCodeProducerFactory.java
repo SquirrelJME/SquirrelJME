@@ -48,13 +48,23 @@ public abstract class SSJITCodeProducerFactory
 	}
 	
 	/**
+	 * This creates a new producer which targets the given operating system
+	 * with an optional variant.
+	 *
+	 * @param __os The stream to be passed to the code producer.
+	 * @param __v The variant to target, if {@code null} then a default and
+	 * the most compatible generic producer should be used.
+	 * @return A code producer which outputs to the given stream and uses
+	 * the given optional variant.
+	 * @sicne 2016/06/25
+	 */
+	public abstract SSJITCodeProducer createProducer(OutputStream __os,
+		Variant __v);
+	
+	/**
 	 * This returns the array of possible variants that are available for usage
 	 * for a given architecture. A variant is used in the case where a specific
 	 * CPU needs to be targetted.
-	 *
-	 * It is required that there always be at least one variant which is
-	 * entitled "generic" which should act as a most common set support for a
-	 * given CPU.
 	 *
 	 * @return An array of target variants.
 	 * @since 2016/06/25
