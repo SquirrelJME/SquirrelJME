@@ -226,6 +226,16 @@ public class PackageInfo
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/25
+	 */
+	@Override
+	public String toString()
+	{
+		return this.name.toString();
+	}
+	
+	/**
 	 * Loads a manifest from the given ZIP file.
 	 *
 	 * @parma __zip The ZIP to load the manifest from.
