@@ -38,6 +38,17 @@ public abstract class PowerPCProducerFactory
 	 * @since 2016/06/25
 	 */
 	@Override
+	public Variant genericVariant()
+	{
+		// Default to ancient PowerPC systems
+		return DefaultPowerPCVariant.G1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/25
+	 */
+	@Override
 	public Variant[] variants()
 	{
 		// Just use the enumeration

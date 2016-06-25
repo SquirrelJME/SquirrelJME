@@ -64,6 +64,14 @@ public abstract class SSJITProducerFactory
 		Variant __v);
 	
 	/**
+	 * Returns the generic variant.
+	 *
+	 * @return The generic variant.
+	 * @since 2016/06/25
+	 */
+	public abstract Variant genericVariant();
+	
+	/**
 	 * This returns the array of possible variants that are available for usage
 	 * for a given architecture. A variant is used in the case where a specific
 	 * CPU needs to be targetted. It is recommended although not required that
@@ -99,6 +107,10 @@ public abstract class SSJITProducerFactory
 		// Check
 		if (__var == null)
 			throw new NullPointerException("NARG");
+		
+		// If generic, use the generic one
+		if (__var.equals("generic"))
+			return genericVariant();
 		
 		// Go through variants
 		for (Variant v : variants())
