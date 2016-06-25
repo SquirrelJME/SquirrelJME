@@ -30,6 +30,7 @@ import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.ssjit.SSJIT;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
@@ -303,6 +304,9 @@ public class Builder
 		try (InputStream is = __e.open();
 			OutputStream os = __gj.createClass(classname))
 		{
+			// Setup JIT
+			SSJIT jit = new SSJIT(is, os);
+			
 			throw new Error("TODO");
 		}
 	}
