@@ -8,20 +8,23 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ssjit.powerpc;
-
-import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
+package net.multiphasicapps.squirreljme.ssjit;
 
 /**
- * This is a variant of a PowerPC CPU.
- *
- * This is an interface because third party libraries could add support for
- * new variants.
+ * This interface is used in the specification of variants. A variant may
+ * change how code is generated slightly by providing an alternative means of
+ * code generation depending on the variant.
  *
  * @since 2016/06/25
  */
-public interface PowerPCVariant
-	extends SSJITVariant
+public interface SSJITVariant
 {
+	/**
+	 * Returns the name of the variant.
+	 *
+	 * @return The variant name.
+	 * @since 2016/06/25
+	 */
+	public abstract String variant();
 }
 

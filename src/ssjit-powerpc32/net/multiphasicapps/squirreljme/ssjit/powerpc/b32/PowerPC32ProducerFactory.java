@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.ssjit.powerpc.PowerPCProducerFactory;
 import net.multiphasicapps.squirreljme.ssjit.SSJITProducer;
 import net.multiphasicapps.squirreljme.ssjit.SSJITProducerFactory;
+import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
 
 /**
  * This targets 32-bit PowerPC systems.
@@ -49,7 +50,7 @@ public class PowerPC32ProducerFactory
 	 * @since 2016/06/25
 	 */
 	@Override
-	public SSJITProducer createProducer(OutputStream __os, Variant __v)
+	public SSJITProducer createProducer(OutputStream __os, SSJITVariant __v)
 		throws NullPointerException
 	{
 		// Check

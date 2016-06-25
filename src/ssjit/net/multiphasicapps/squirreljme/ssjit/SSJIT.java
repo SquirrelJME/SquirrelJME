@@ -48,7 +48,7 @@ public class SSJIT
 	 * @since 2016/06/24
 	 */
 	public SSJIT(InputStream __ic, OutputStream __ob,
-		SSJITProducerFactory __pf, SSJITProducerFactory.Variant __pfv)
+		SSJITProducerFactory __pf, SSJITVariant __pfv)
 		throws NullPointerException
 	{
 		// Check

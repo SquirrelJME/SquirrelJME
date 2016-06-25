@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.ssjit.powerpc;
 
 import net.multiphasicapps.squirreljme.ssjit.SSJITProducerFactory;
+import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
 
 /**
  * This is the base class for producers which target PowerPC.
@@ -38,7 +39,7 @@ public abstract class PowerPCProducerFactory
 	 * @since 2016/06/25
 	 */
 	@Override
-	public Variant genericVariant()
+	public SSJITVariant genericVariant()
 	{
 		// Default to ancient PowerPC systems
 		return DefaultPowerPCVariant.G1;
@@ -49,7 +50,7 @@ public abstract class PowerPCProducerFactory
 	 * @since 2016/06/25
 	 */
 	@Override
-	public Variant[] variants()
+	public SSJITVariant[] variants()
 	{
 		// Just use the enumeration
 		return DefaultPowerPCVariant.values();

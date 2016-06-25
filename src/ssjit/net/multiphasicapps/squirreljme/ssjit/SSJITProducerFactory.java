@@ -61,7 +61,7 @@ public abstract class SSJITProducerFactory
 	 * @since 2016/06/25
 	 */
 	public abstract SSJITProducer createProducer(OutputStream __os,
-		Variant __v);
+		SSJITVariant __v);
 	
 	/**
 	 * Returns the generic variant.
@@ -69,7 +69,7 @@ public abstract class SSJITProducerFactory
 	 * @return The generic variant.
 	 * @since 2016/06/25
 	 */
-	public abstract Variant genericVariant();
+	public abstract SSJITVariant genericVariant();
 	
 	/**
 	 * This returns the array of possible variants that are available for usage
@@ -80,7 +80,7 @@ public abstract class SSJITProducerFactory
 	 * @return An array of target variants.
 	 * @since 2016/06/25
 	 */
-	public abstract Variant[] variants();
+	public abstract SSJITVariant[] variants();
 	
 	/**
 	 * Returns the architecture that this factory exists for.
@@ -101,7 +101,7 @@ public abstract class SSJITProducerFactory
 	 * is no such variant.
 	 * @since 2016/06/25
 	 */
-	public final Variant getVariant(String __var)
+	public final SSJITVariant getVariant(String __var)
 		throws NullPointerException
 	{
 		// Check
@@ -113,7 +113,7 @@ public abstract class SSJITProducerFactory
 			return genericVariant();
 		
 		// Go through variants
-		for (Variant v : variants())
+		for (SSJITVariant v : variants())
 			if (__var.equals(v.variant()))
 				return v;
 		
@@ -131,22 +131,6 @@ public abstract class SSJITProducerFactory
 	public final String operatingSystem()
 	{
 		return this.operatingsystem;
-	}
-	
-	/**
-	 * This interface is used in the specification of variants.
-	 *
-	 * @since 2016/06/25
-	 */
-	public static interface Variant
-	{
-		/**
-		 * Returns the name of the variant.
-		 *
-		 * @return The variant name.
-		 * @since 2016/06/25
-		 */
-		public abstract String variant();
 	}
 }
 

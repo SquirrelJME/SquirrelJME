@@ -33,6 +33,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.ssjit.SSJIT;
 import net.multiphasicapps.squirreljme.ssjit.SSJITProducerFactory;
+import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
@@ -83,7 +84,7 @@ public class Builder
 	protected final SSJITProducerFactory factory;
 	
 	/** The variant to be used during generation. */
-	protected final SSJITProducerFactory.Variant factoryvariant;
+	protected final SSJITVariant factoryvariant;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -181,7 +182,7 @@ public class Builder
 				SSJITProducerFactory.class);
 		SSJITProducerFactory fallback = null;
 		SSJITProducerFactory hit = null;
-		SSJITProducerFactory.Variant fbvar = null;
+		SSJITVariant fbvar = null;
 		for (SSJITProducerFactory pf : sl)
 		{
 			// Matches the architecture? and variant?

@@ -27,7 +27,7 @@ import java.io.OutputStream;
 public abstract class SSJITProducer
 {
 	/** The target system variant. */
-	protected final SSJITProducerFactory.Variant variant;
+	protected final SSJITVariant variant;
 	
 	/**
 	 * Initializes the code producer.
@@ -37,7 +37,7 @@ public abstract class SSJITProducer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	SSJITProducer(OutputStream __os, SSJITProducerFactory.Variant __var)
+	SSJITProducer(OutputStream __os, SSJITVariant __var)
 		throws NullPointerException
 	{
 		// Check
@@ -56,7 +56,7 @@ public abstract class SSJITProducer
 	 * @return The producer variant.
 	 * @since 2016/06/25
 	 */
-	public final SSJITProducerFactory.Variant variant()
+	public final SSJITVariant variant()
 	{
 		return this.variant;
 	}
