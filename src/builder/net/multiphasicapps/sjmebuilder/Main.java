@@ -128,15 +128,26 @@ public class Main
 			throw new RuntimeException("DW01", e);
 		}
 		
-		// Setup builder
-		out.println("Setting up build...");
-		Builder b = new Builder(plist, arch, os, var);
+		// Could fail on perhaps a bad disk or malformed file
+		try
+		{
+			// Setup builder
+			out.println("Setting up build...");
+			Builder b = new Builder(plist, arch, os, var);
 		
-		// Perform the build
-		out.println("Building...");
-		b.build();
+			// Perform the build
+			out.println("Building...");
+			b.build();
 		
-		throw new Error("TODO");
+			throw new Error("TODO");
+		}
+		
+		// {@squirreljme.error DW07 Failed to build for the target due to an
+		// IOException.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("DW07", e);
+		}
 	}
 }
 
