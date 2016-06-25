@@ -121,10 +121,6 @@ public class Builder
 		Set<PackageInfo> pis = new LinkedHashSet<>();
 		__getDependencies(pis, tpk);
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
-		
-		System.err.printf("DEBUG -- Depends: %s%n", pis);
-		
-		throw new Error("TODO");
 	}
 	
 	/**
