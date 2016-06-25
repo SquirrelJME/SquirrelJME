@@ -117,3 +117,36 @@ placed on the list of applications to quickly switch to JARs which are
 available. There could still be a single SquirrelJME process running with the
 VM however.
 
+## 20:40
+
+Well actually the JVM has the native compiler and not the launcher, however
+when it comes to native execution of code the JVM could recompile any classes
+that need to be recompiled if they have not be cached or similar.
+
+## 20:45
+
+Due to my goal of supporting very limited systems, perhaps my handling of the
+classes is completely wrong. Right now when it comes to compilation I will
+basically load everything about the class into memory. Then that gets
+natively compiled. If I can make it so a Java class file can be put into an
+input stream which is passed to compiler. It performs some basic verifications
+that it can perform at the given stage along with basic stack map details and
+such. It will basically just fly through the code attribute as is and perform
+compilation in a single pass, perhaps without even loading the exception table
+and stack map table attribute. Then the code can pass through the micro
+operations execution-like system for each operation. Then that would be
+output to the JIT which produces native code for a method. Once all of the
+native code has been compiled it will then package it in an executable blob
+that will be loaded into memory or become part of global blob in an executable.
+If the blob route is taken then executables can just be made out of a bunch
+of executable blobs with some initialization code (so the `JVM` can load).
+Having a JIT on systems with as small as 64KiB could potentially be done using
+this method. It would also be very fast. The ZIP code requires a sliding
+window however, so as long as the classes remain small they should work on
+a multitude of systems. So classes need to have not many methods and be within
+a given size. I would suppose in the build system I can warn if a class
+exceeds a given size (so I can trim it). I would suppose that the lowest of
+lower limits I can go for is 4KiB. If a class exceeds that size then it is
+way too large. The larger a class, the more difficult it is to handle as the
+more memory it consumes.
+
