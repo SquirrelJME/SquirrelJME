@@ -26,21 +26,39 @@ import java.io.OutputStream;
  */
 public abstract class SSJITProducer
 {
+	/** The target system variant. */
+	protected final SSJITProducerFactory.Variant variant;
+	
 	/**
 	 * Initializes the code producer.
 	 *
 	 * @param __os The output stream where data is to be written.
+	 * @param __var The variant of the target system.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	SSJITProducer(OutputStream __os)
+	SSJITProducer(OutputStream __os, SSJITProducerFactory.Variant __var)
 		throws NullPointerException
 	{
 		// Check
-		if (__os == null)
+		if (__os == null || __var == null)
 			throw new NullPointerException("NARG");
 		
+		// Set
+		this.variant = __var;
+		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the variant that is used for this producer.
+	 *
+	 * @return The producer variant.
+	 * @since 2016/06/25
+	 */
+	public final SSJITProducerFactory.Variant variant()
+	{
+		return this.variant;
 	}
 }
 

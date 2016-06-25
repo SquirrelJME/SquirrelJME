@@ -50,7 +50,12 @@ public class PowerPC32ProducerFactory
 	 */
 	@Override
 	public SSJITProducer createProducer(OutputStream __os, Variant __v)
+		throws NullPointerException
 	{
+		// Check
+		if (__os == null || __v == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 }
