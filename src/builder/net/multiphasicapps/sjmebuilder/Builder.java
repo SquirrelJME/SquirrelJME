@@ -11,10 +11,12 @@
 package net.multiphasicapps.sjmebuilder;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -26,6 +28,8 @@ import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
+import net.multiphasicapps.zips.ZipEntry;
+import net.multiphasicapps.zips.ZipFile;
 
 /**
  * This is the builder for native binaries.
@@ -146,7 +150,7 @@ public class Builder
 			// Go through all dependencies and dynamically compile every class
 			// file in them.
 			for (PackageInfo pi : this.topdepends)
-				throw new Error("TODO");
+				__buildPackage(tempdir, pi);
 		
 			throw new Error("TODO");
 		}
@@ -182,6 +186,31 @@ public class Builder
 				catch (IOException e)
 				{
 				}
+		}
+	}
+	
+	/**
+	 * Builds the specified package.
+	 *
+	 * @param __td The temporary directory.
+	 * @param __pi The package to build.
+	 * @throws IOException On read or write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/25
+	 */
+	private void __buildPackage(Path __td, PackageInfo __pi)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__td == null || __pi == null)
+			throw new NullPointerException("NARG");
+		
+		// Open ZIP
+		try (FileChannel fc = FileChannel.open(__pi.path(),
+			StandardOpenOption.READ);
+			ZipFile zip = ZipFile.open(fc))
+		{
+			throw new Error("TODO");
 		}
 	}
 	

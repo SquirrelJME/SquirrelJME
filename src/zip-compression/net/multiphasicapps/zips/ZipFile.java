@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.zips;
 
+import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -38,7 +39,7 @@ import java.util.Set;
  * @since 2016/02/26
  */
 public abstract class ZipFile
-	implements Iterable<ZipEntry>
+	implements Closeable, Iterable<ZipEntry>
 {
 	/** Internal lock. */
 	protected final Object lock =
@@ -94,6 +95,17 @@ public abstract class ZipFile
 	 */
 	protected abstract ZipDirectory readDirectory()
 		throws IOException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/25
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		this.channel.close();
+	}
 	
 	/**
 	 * Obtains an entry by its name.
