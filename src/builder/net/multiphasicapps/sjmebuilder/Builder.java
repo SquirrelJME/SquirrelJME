@@ -11,7 +11,9 @@
 package net.multiphasicapps.sjmebuilder;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
@@ -108,15 +110,21 @@ public class Builder
 		// Set
 		this.toppackage = tpk;
 		
+		// Go through all of the dependencies of the package and include them
+		// for compilation
+		Set<PackageInfo> pis = new LinkedHashSet<>();
+		
 		throw new Error("TODO");
 	}
 	
 	/**
 	 * Performs the actual build step.
 	 *
+	 * @throws IOException On read/write errors.
 	 * @since 2016/06/24
 	 */
 	public void build()
+		throws IOException
 	{
 		throw new Error("TODO");
 	}
