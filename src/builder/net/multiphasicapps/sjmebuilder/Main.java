@@ -66,7 +66,7 @@ public class Main
 			else
 			{
 				// Set
-				target = a;
+				target = a.trim();
 				
 				// {@squirreljme.error DW03 No arguments must follow the
 				// target when not simulating.}
@@ -94,6 +94,24 @@ public class Main
 		
 		System.err.printf("DEBUG -- %s %s %s%n", dosim, target, simargs);
 		
+		// Split the triplet
+		int deca = target.indexOf('.');
+		int decb = (deca >= 0 ? target.indexOf('.', deca + 1) : -1);
+		
+		// {@squirreljme.error DW05 The twin or triplet must be in the form
+		// of {@code arch.os} or {@code arch.os.variant}. (The input target)}
+		if (deca < 0)
+			throw new IllegalArgumentException(String.format("DW05 %s",
+				target));
+		
+		// Split
+		String arch = target.substring(0, deca).trim(),
+			os = target.substring(deca + 1,
+				(decb >= 0 ? decb : target.length())).trim(),
+			var = (decb >= 0 ? target.substring(decb + 1) : "generic");
+		
+		System.err.printf("DEBUG -- %s %s %s%n", arch, os, var);
+		
 		// Load the package list
 		PrintStream out = System.out;
 		PackageList plist;
@@ -109,6 +127,14 @@ public class Main
 		{
 			throw new RuntimeException("DW01", e);
 		}
+		
+		// Setup builder
+		out.println("Setting up build...");
+		Builder b = new Builder(plist, arch, os, var);
+		
+		// Perform the build
+		out.println("Building...");
+		b.build();
 		
 		throw new Error("TODO");
 	}
