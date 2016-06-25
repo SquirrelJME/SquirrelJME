@@ -106,3 +106,14 @@ native binaries just come alone with precompiled code and suite setups. The
 access to preinstalled suites will just basically be `getResourceAsStream`
 and likely another interface such as an executable class context.
 
+## 20:26
+
+One thing I can do is potential native integration of sorts. Have the
+SquirrelJME executable. For each installed program a new binary appears. This
+binary is just a wrapper which then calls SquirrelJME with the program that
+it represents. The program would just launch and provide an icon for the
+most part. So for example on Palm OS native applications can be created and
+placed on the list of applications to quickly switch to JARs which are
+available. There could still be a single SquirrelJME process running with the
+VM however.
+
