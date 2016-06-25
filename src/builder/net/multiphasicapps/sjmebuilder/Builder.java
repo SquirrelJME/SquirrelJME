@@ -11,7 +11,9 @@
 package net.multiphasicapps.sjmebuilder;
 
 import java.io.IOException;
+import java.util.Deque;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
@@ -19,6 +21,7 @@ import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This is the builder for native binaries.
@@ -44,6 +47,9 @@ public class Builder
 	
 	/** The package that implements the JVM for the target triplet. */
 	protected final PackageInfo toppackage;
+	
+	/** All the packages that are dependencies of the top level package. */
+	protected final Set<PackageInfo> topdepends;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -113,6 +119,10 @@ public class Builder
 		// Go through all of the dependencies of the package and include them
 		// for compilation
 		Set<PackageInfo> pis = new LinkedHashSet<>();
+		__getDependencies(pis, tpk);
+		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
+		
+		System.err.printf("DEBUG -- Depends: %s%n", pis);
 		
 		throw new Error("TODO");
 	}
@@ -127,6 +137,38 @@ public class Builder
 		throws IOException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Gets the dependencies of all packages and places them in the given set.
+	 *
+	 * @param __pis The target set for packages.
+	 * @param __pi The top-level package to start at.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/25
+	 */
+	private void __getDependencies(Set<PackageInfo> __pis, PackageInfo __pi)
+		throws NullPointerException
+	{
+		// Check
+		if (__pis == null || __pi == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup queue
+		Deque<PackageInfo> q = new LinkedList<>();
+		q.offerLast(__pi);
+		
+		// Drain the queue
+		while (!q.isEmpty())
+		{
+			// Remove
+			PackageInfo i = q.removeFirst();
+			
+			// Add any dependencies of the package if it was not added
+			if (__pis.add(i))
+				for (PackageInfo p : i.dependencies())
+					q.offerLast(p);
+		}
 	}
 }
 

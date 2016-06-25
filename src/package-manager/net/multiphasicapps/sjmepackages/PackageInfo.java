@@ -12,10 +12,15 @@ package net.multiphasicapps.sjmepackages;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
 
@@ -26,6 +31,9 @@ import net.multiphasicapps.zips.ZipFile;
  */
 public class PackageInfo
 {
+	/** The owning package list. */
+	protected final PackageList plist;
+	
 	/** The package manifest. */
 	protected final JavaManifest manifest;
 	
@@ -38,25 +46,30 @@ public class PackageInfo
 	/** The name of this package. */
 	protected final PackageName name;
 	
+	/** The dependencies of this package. */
+	private volatile Reference<Set<PackageInfo>> _depends;
+	
 	/**
 	 * Initializes the package information from the given ZIP.
 	 *
-	 * @parma __p The path to the package.
+	 * @param __l The package list which contains this package.
+	 * @param __p The path to the package.
 	 * @param __zip The ZIP file for the package data.
 	 * @throws InvalidPackageException If this is not a valid package.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	public PackageInfo(Path __p, ZipFile __zip)
+	public PackageInfo(PackageList __l, Path __p, ZipFile __zip)
 		throws InvalidPackageException, IOException, NullPointerException
 	{
-		this(__p, true, __loadManifestFromZIP(__zip));
+		this(__l, __p, true, __loadManifestFromZIP(__zip));
 	}
 	
 	/**
 	 * Initializes the package information using the given manifest.
 	 *
+	 * @param __l The package list which contains this package.
 	 * @param __p The path to the package.
 	 * @param __zz Is this a ZIP file?
 	 * @param __man The manifest data.
@@ -64,14 +77,16 @@ public class PackageInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/15
 	 */
-	private PackageInfo(Path __p, boolean __zz, JavaManifest __man)
+	private PackageInfo(PackageList __l, Path __p, boolean __zz,
+		JavaManifest __man)
 		throws InvalidPackageException, NullPointerException
 	{
 		// Check
-		if (__p == null || __man == null)
+		if (__l == null || __p == null || __man == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.plist = __l;
 		this.path = __p;
 		this.iszip = __zz;
 		this.manifest = __man;
@@ -87,6 +102,82 @@ public class PackageInfo
 		
 		// Set name
 		this.name = new PackageName(rname);
+	}
+	
+	/**
+	 * Returns all of the packages that this package depends on.
+	 *
+	 * @return The set of packages this package depends on.
+	 * @throws IllegalStateException If a dependency is missing.
+	 * @since 2016/06/25
+	 */
+	public final Set<PackageInfo> dependencies()
+		throws IllegalStateException
+	{
+		// Get
+		Reference<Set<PackageInfo>> ref = this._depends;
+		Set<PackageInfo> rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Target
+			Set<PackageInfo> deps = new LinkedHashSet<>();
+			
+			// Read the manifest
+			JavaManifest man = manifest();
+			JavaManifestAttributes attr = man.getMainAttributes();
+			
+			// Get the dependency field
+			String pids = attr.get("X-SquirrelJME-Depends");
+			PackageList plist = this.plist;
+			if (pids != null)
+			{
+				int n = pids.length();
+				for (int i = 0; i < n; i++)
+				{
+					char c = pids.charAt(i);
+					
+					// Ignore whitespace
+					if (c <= ' ')
+						continue;
+					
+					// Find the next comma
+					int j;
+					for (j = i + 1; j < n; j++)
+					{
+						char d = pids.charAt(j);
+						
+						if (d == ',')
+							break;
+					}
+					
+					// Split string
+					String spl = pids.substring(i, j).trim();
+					
+					// {@squirreljme.error CI01 A required dependency of a
+					// package does not exist. (This package; The missing
+					// dependency)}
+					PackageInfo ddd = plist.get(spl);
+					if (ddd == null)
+						throw new IllegalStateException(String.format(
+							"CI01 %s %s", this.name, spl));
+					
+					// Add it
+					deps.add(ddd);
+					
+					// Skip
+					i = j;
+				}
+			}
+			
+			// Lock
+			rv = UnmodifiableSet.<PackageInfo>of(deps);
+			this._depends = new WeakReference<>(rv);
+		}
+		
+		// Return
+		return rv;
 	}
 	
 	/**

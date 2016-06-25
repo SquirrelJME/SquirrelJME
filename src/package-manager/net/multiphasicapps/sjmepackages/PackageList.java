@@ -74,7 +74,7 @@ public class PackageList
 						ZipFile zip = ZipFile.open(fc);
 					
 						// Load package information
-						PackageInfo pi = new PackageInfo(p, zip);
+						PackageInfo pi = new PackageInfo(this, p, zip);
 					
 						// Add to mapping
 						target.put(pi.name(), pi);
