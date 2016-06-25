@@ -34,3 +34,10 @@ architecture generation class that the SSJIT can use. Since this can vary on
 the system, I would suppose that the manifest should contain the class which
 is the JIT to be used.
 
+## 17:17
+
+Actually, what I need is that interface that acts as a factory for a given
+architecture. The `CodeProducerFactory` will be associated with an OS where it
+extends a base factory for the architecture. Then this way, I can have
+sub-variants of architectures (for example `powerpc32+g4` for a PowerMac G4).
+
