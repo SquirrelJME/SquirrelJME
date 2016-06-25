@@ -217,11 +217,11 @@ public class Builder
 				
 				// If a class file, recompile it
 				if (name.endsWith(".class"))
-					throw new Error("TODO");
+					__handleClass(__td, __pi, e);
 				
 				// A JAR resource, output the data
 				else
-					throw new Error("TODO");
+					__handleResource(__td, __pi, e);
 			}
 		}
 	}
@@ -256,6 +256,46 @@ public class Builder
 				for (PackageInfo p : i.dependencies())
 					q.offerLast(p);
 		}
+	}
+	
+	/**
+	 * Handles compilation of a class.
+	 *
+	 * @param __td The temporary directory.
+	 * @param __pi The source package information.
+	 * @param __e The entry in the package.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/25
+	 */
+	private void __handleClass(Path __td, PackageInfo __pi, ZipEntry __e)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__td == null || __pi == null || __e == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Handles a JAR resource.
+	 *
+	 * @param __td The temporary directory.
+	 * @param __pi The source package information.
+	 * @param __e The entry in the package.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/25
+	 */
+	private void __handleResource(Path __td, PackageInfo __pi, ZipEntry __e)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__td == null || __pi == null || __e == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
