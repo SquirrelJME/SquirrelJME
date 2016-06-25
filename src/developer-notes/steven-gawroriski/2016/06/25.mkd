@@ -15,3 +15,14 @@ With combined blob tables however, all classes would have to use this given
 table. However, when it comes to using individual classes everything that
 exists in the table structure might not even be needed.
 
+## 11:35
+
+I would suppose that a blob of blobs containing class blobs and resources
+should be used. This archive would just be a part of the executable. It would
+essentially be a giant table of resource data and natively compiled classes
+in sorted order. The bootstrapping system would setup a base JVM which can
+run `JVM`, then `JVM` would setup a task for the launcher and the user uses
+that for interaction. The archive would just be a flat binary for the most part
+consisting of classes or resources in separated tables. I can then use a
+modified UTF-8 comparison of sorts against a `String`.
+
