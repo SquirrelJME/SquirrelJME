@@ -48,7 +48,7 @@ public class SSJIT
 	 * @since 2016/06/24
 	 */
 	public SSJIT(InputStream __ic, OutputStream __ob,
-		SSJITVariant __pfv, SSJITFunctionProvider... __fps)
+		String __pfv, SSJITFunctionProvider... __fps)
 		throws NullPointerException
 	{
 		// Check

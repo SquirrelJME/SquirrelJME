@@ -32,7 +32,7 @@ import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.ssjit.SSJIT;
-import net.multiphasicapps.squirreljme.ssjit.SSJITProducerFactory;
+import net.multiphasicapps.squirreljme.ssjit.SSJITFunctionProvider;
 import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
@@ -80,11 +80,8 @@ public class Builder
 	protected final Map<PackageInfo, GlobbedJar> globjars =
 		new HashMap<>();
 	
-	/** The code producer factory to use during generation. */
-	protected final SSJITProducerFactory factory;
-	
-	/** The variant to be used during generation. */
-	protected final SSJITVariant factoryvariant;
+	/** Function providers that target the given system. */
+	protected final SSJITFunctionProvider[] providers;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -176,49 +173,17 @@ public class Builder
 		__getDependencies(pis, tpk);
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
 		
-		// Find the service that generates for this given system
-		ServiceLoader<SSJITProducerFactory> sl =
-			ServiceLoader.<SSJITProducerFactory>load(
-				SSJITProducerFactory.class);
-		SSJITProducerFactory fallback = null;
-		SSJITProducerFactory hit = null;
-		SSJITVariant fbvar = null;
-		for (SSJITProducerFactory pf : sl)
-		{
-			// Matches the architecture? and variant?
-			if (arch.equals(pf.architecture()))
-				if (null != (fbvar = pf.getVariant(archvar)))
-				{
-					// Only accept a direct hit if a factory provides support
-					// for the deisred operating system.
-					String pfos = pf.operatingSystem();
-					if (pfos != null && os.equals(pfos))
-					{
-						fallback = hit = pf;
-						break;
-					}
-					
-					// Otherwise if no operating system was specified (this
-					// is a generic generator) fallback on it. However do not
-					// fallback onto a generator that is for a specific OS
-					// since it might not work.
-					else if (pfos == null)
-						fallback = pf;
-				}
-		}
+		// Find the function providers for the desired targets
+		SSJITFunctionProvider[] providers = SSJITFunctionProvider.lookup(
+			arch, archvar, os);
 		
-		// If not hit, fallback
-		if (hit == null)
-			hit = fallback;
-		
-		// {@squirreljme.error DW08 Could not find a code generator which is
+		// {@squirreljme.error DW08 Could not find functions which are
 		// capable of targetting the given triplet. (The target triplet)}
-		if (hit == null)
+		if (providers == null || providers.length <= 0)
 			throw new RuntimeException(String.format("DW08 %s", triplet));
 		
 		// Set
-		this.factory = hit;
-		this.factoryvariant = fbvar;
+		this.providers = providers;
 	}
 	
 	/**
@@ -383,7 +348,7 @@ public class Builder
 			OutputStream os = __gj.createClass(classname))
 		{
 			// Setup JIT
-			SSJIT jit = new SSJIT(is, os, this.factory, this.factoryvariant);
+			SSJIT jit = new SSJIT(is, os, this.archvariant, this.providers);
 			
 			// Run the JIT
 			jit.performJit();

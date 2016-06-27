@@ -37,16 +37,13 @@ public final class SSJITProducer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	SSJITProducer(OutputStream __os, SSJITVariant __var,
+	SSJITProducer(OutputStream __os, String __var,
 		SSJITFunctionProvider... __fps)
 		throws NullPointerException
 	{
 		// Check
 		if (__os == null || __var == null || __fps == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		this.variant = __var;
 		
 		throw new Error("TODO");
 	}
