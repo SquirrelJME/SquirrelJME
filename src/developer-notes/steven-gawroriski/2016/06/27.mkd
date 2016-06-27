@@ -1,0 +1,34 @@
+# 2016/06/27
+
+## 07:31
+
+Sunday was a stressful day, so yesterday I spent the time healing up. So
+hopefully I can get some work done today.
+
+## 09:00
+
+When it comes to generation, my plan for the compiler was to have it segmented
+into interfaces that provide specific functionality. This would allow the most
+patchable code generator which may be needed for specific systems. Essentially
+there would be a basic PowerPC generator interface. Thinking about it, with
+the service loader I would then not require that the compiler bits are even
+extending off each other. So essentially the compilers would be sorted by
+architecture (and their variant). The base class would be a final
+`SSJITProducer`. The producer would be given interfaces which all extend from
+a base interface. Following this, the producer factory would have a
+contributing generator fragment which implements a number of interfaces for
+added functionality. When the generator is called to generate some code, it
+will then call through premapped interfaces that perform actual code generation
+for the most part. Then this way there can be a base PowerPC provider. Then
+there would be a Linux variant for PowerPC (likely sysv). The Linux variant
+would just extend `SSJITProducerFactory` for the factory and the actual
+generator with its implemented interfaces would implement `SSJITProducer`.
+
+## 09:09
+
+Actually, the producer is final so the factory would provide the set of
+interfaces. The interface set would then have a bind to the given producer.
+This way when something needs to be done, it can call into the given producer
+so that if there is another potential variant that it can be handled
+properly.
+

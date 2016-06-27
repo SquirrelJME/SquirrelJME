@@ -258,3 +258,7 @@
    [steven-gawroriski](steven-gawroriski/2016/06/24.mkd)
  * 25: 
    [steven-gawroriski](steven-gawroriski/2016/06/25.mkd)
+ * 26: 
+   [steven-gawroriski](steven-gawroriski/2016/06/26.mkd)
+ * 27: 
+   [steven-gawroriski](steven-gawroriski/2016/06/27.mkd)
