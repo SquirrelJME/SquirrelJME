@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.ssjit;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * This is a provider for functions that may be associated with a code
@@ -21,6 +24,10 @@ import java.io.OutputStream;
  */
 public abstract class SSJITFunctionProvider
 {
+	/** This is a shared service lookup for function providers. */
+	private static final ServiceLoader<SSJITFunctionProvider> _SERVICES =
+		ServiceLoader.<SSJITFunctionProvider>load(SSJITFunctionProvider.class);
+	
 	/** The target architecture. */
 	protected final String architecture;
 	
@@ -117,6 +124,32 @@ public abstract class SSJITFunctionProvider
 	public final String operatingSystem()
 	{
 		return this.operatingsystem;
+	}
+	
+	/**
+	 * This looks up and returns function providers which support the given
+	 * architecture along with the optionally specified operating system.
+	 *
+	 * @param __arch The architecture to return a function provider for.
+	 * @param __archvar The variant of a given architecture, this is optional.
+	 * @param __os The operating system to provide functions for.
+	 * @throws NullPointerException If no architecture was specified.
+	 * @since 2016/06/27
+	 */
+	public static SSJITFunctionProvider[] lookup(String __arch,
+		String __archvar, String __os)
+		throws NullPointerException
+	{
+		// Check
+		if (__arch == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		ServiceLoader<SSJITFunctionProvider> services = _SERVICES;
+		synchronized (services)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
