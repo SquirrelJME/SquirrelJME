@@ -14,17 +14,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * This is the base class associated with the JIT code generator which is able
- * to generate native machine code for a given target.
- *
- * The base class handles data output, however it is up to the extending
- * classes to provide the generators for operations.
+ * This is the base class for code producers, this class is given a number of
+ * interfaces which implement the required functionality that is needed to
+ * generate actual output code.
  *
  * Code producers are not to be reused across multiple methods.
  *
  * @since 2016/06/25
  */
-public abstract class SSJITProducer
+public final class SSJITProducer
 {
 	/** The target system variant. */
 	protected final SSJITVariant variant;
