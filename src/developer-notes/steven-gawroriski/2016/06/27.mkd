@@ -32,3 +32,30 @@ This way when something needs to be done, it can call into the given producer
 so that if there is another potential variant that it can be handled
 properly.
 
+## 09:14
+
+These interfaces would be called functions. I can either share them between
+or have them completely alone. Being alone would add to the memory cost and
+increase garbage collection costs, however it would simplify code generation
+because each instance of a function could have its own set of variables.
+
+## 09:18
+
+Then this means that `SSJITProducerFactory` is renamed and turned into
+`SSJITFunctionFactory`.
+
+## 09:20
+
+So this also means that in the event of floating point, I can have a fallback
+software floating point factory which can actually be enforced. So even if the
+PowerPC function set would natively support floating point, the factory can
+just be given a software floating point function that has higher priority.
+
+## 09:22
+
+For 8-bit and 16-bit systems, I can even have a function that handles higher
+bit operations by wrapping them in the smaller operation functions. So instead
+of rewriting 32-bit/64-bit math functions in each set of functions, I only
+have to do it once. However, I could just have a base class that handles these
+operations natively.
+
