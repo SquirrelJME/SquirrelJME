@@ -59,3 +59,10 @@ of rewriting 32-bit/64-bit math functions in each set of functions, I only
 have to do it once. However, I could just have a base class that handles these
 operations natively.
 
+## 09:34
+
+Also, this means that CPU variants can more easily be supported. Very old
+PowerPC CPUs do not support SIMD operations. So on variants that support
+AltiVec for example, I can have a standard PowerPC function returned along with
+an AltiVec function.
+
