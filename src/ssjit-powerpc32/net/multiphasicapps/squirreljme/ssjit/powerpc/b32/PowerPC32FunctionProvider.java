@@ -11,9 +11,9 @@
 package net.multiphasicapps.squirreljme.ssjit.powerpc.b32;
 
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.ssjit.powerpc.PowerPCProducerFactory;
+import net.multiphasicapps.squirreljme.ssjit.powerpc.PowerPCFunctionProvider;
 import net.multiphasicapps.squirreljme.ssjit.SSJITProducer;
-import net.multiphasicapps.squirreljme.ssjit.SSJITProducerFactory;
+import net.multiphasicapps.squirreljme.ssjit.SSJITFunctionProvider;
 import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
 
 /**
@@ -21,43 +21,28 @@ import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
  *
  * @since 2016/06/25
  */
-public class PowerPC32ProducerFactory
-	extends PowerPCProducerFactory
+public class PowerPC32FunctionProvider
+	extends PowerPCFunctionProvider
 {
 	/**
-	 * Initializes the producer factory with no operating system.
+	 * Initializes the function provider with no operating system.
 	 *
 	 * @since 2016/06/25
 	 */
-	public PowerPC32ProducerFactory()
+	public PowerPC32FunctionProvider()
 	{
 		super("powerpc32", null);
 	}
 	
 	/**
-	 * Initializes the producer factory with an optional operating system.
+	 * Initializes the function provider with an optional operating system.
 	 *
 	 * @param __os The operating system to use.
 	 * @since 2016/06/25
 	 */
-	public PowerPC32ProducerFactory(String __os)
+	public PowerPC32FunctionProvider(String __os)
 	{
 		super("powerpc32", __os);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/25
-	 */
-	@Override
-	public SSJITProducer createProducer(OutputStream __os, SSJITVariant __v)
-		throws NullPointerException
-	{
-		// Check
-		if (__os == null || __v == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
 	}
 }
 

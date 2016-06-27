@@ -42,24 +42,24 @@ public class SSJIT
 	 *
 	 * @param __ic The input class stream.
 	 * @param __ob The output binary which contains native code.
-	 * @param __pf The code producer factory.
 	 * @param __pfv The variant to use for the code generator.
+	 * @param __fps The factories to provide functions to this JIT compiler.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
 	public SSJIT(InputStream __ic, OutputStream __ob,
-		SSJITProducerFactory __pf, SSJITVariant __pfv)
+		SSJITVariant __pfv, SSJITFunctionProvider... __fps)
 		throws NullPointerException
 	{
 		// Check
-		if (__ic == null || __ob == null || __pf == null || __pfv == null)
+		if (__ic == null || __ob == null || __fps == null || __pfv == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.input = new DataInputStream(__ic);
 		
 		// Create producer
-		SSJITProducer producer = __pf.createProducer(__ob, __pfv);
+		SSJITProducer producer = new SSJITProducer(__ob, __pfv, __fps);
 		this.producer = producer;
 	}
 	

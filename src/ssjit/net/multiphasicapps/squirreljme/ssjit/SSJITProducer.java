@@ -32,14 +32,17 @@ public final class SSJITProducer
 	 *
 	 * @param __os The output stream where data is to be written.
 	 * @param __var The variant of the target system.
+	 * @param __fps Function providers that provide the needed functionality
+	 * for generating specific fragments of native code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	SSJITProducer(OutputStream __os, SSJITVariant __var)
+	SSJITProducer(OutputStream __os, SSJITVariant __var,
+		SSJITFunctionProvider... __fps)
 		throws NullPointerException
 	{
 		// Check
-		if (__os == null || __var == null)
+		if (__os == null || __var == null || __fps == null)
 			throw new NullPointerException("NARG");
 		
 		// Set

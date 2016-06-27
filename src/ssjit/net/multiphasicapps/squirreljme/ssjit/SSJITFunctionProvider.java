@@ -13,31 +13,31 @@ package net.multiphasicapps.squirreljme.ssjit;
 import java.io.OutputStream;
 
 /**
- * This is the factory for a code producer which is capable of generating the
- * code producer that is required for native code generation for a given
- * target.
+ * This is a provider for functions that may be associated with a code
+ * producer so that support for architectures and operating systems are
+ * plugable and can easily be patched.
  *
  * @since 2016/06/25
  */
-public abstract class SSJITProducerFactory
+public abstract class SSJITFunctionProvider
 {
 	/** The target architecture. */
 	protected final String architecture;
 	
-	/** The operationg system the factory targets. */
+	/** The operationg system the provider targets. */
 	protected final String operatingsystem;
 	
 	/**
-	 * This initializes the base factory.
+	 * This initializes the base provider.
 	 *
-	 * @param __arch The architecture this acts as a factory form.
-	 * @param __os The operating system this factory is defined for, if
-	 * {@code null} then it is a base factory not intended for any operating
+	 * @param __arch The architecture that this provider supports.
+	 * @param __os The operating system this provider is defined for, if
+	 * {@code null} then it is a base provider not intended for any operating
 	 * system.
 	 * @throws NullPointerException If no architecture was specified.
 	 * @since 2016/06/25
 	 */
-	public SSJITProducerFactory(String __arch, String __os)
+	public SSJITFunctionProvider(String __arch, String __os)
 		throws NullPointerException
 	{
 		// Check
@@ -48,20 +48,6 @@ public abstract class SSJITProducerFactory
 		this.architecture = __arch;
 		this.operatingsystem = __os;
 	}
-	
-	/**
-	 * This creates a new producer which targets the given operating system
-	 * with an optional variant.
-	 *
-	 * @param __os The stream to be passed to the code producer.
-	 * @param __v The variant to target, if {@code null} then a default and
-	 * the most compatible generic producer should be used.
-	 * @return A code producer which outputs to the given stream and uses
-	 * the given optional variant.
-	 * @since 2016/06/25
-	 */
-	public abstract SSJITProducer createProducer(OutputStream __os,
-		SSJITVariant __v);
 	
 	/**
 	 * Returns the generic variant.

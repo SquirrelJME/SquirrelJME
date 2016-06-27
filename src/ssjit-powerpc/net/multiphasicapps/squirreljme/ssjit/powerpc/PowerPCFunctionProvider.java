@@ -10,26 +10,26 @@
 
 package net.multiphasicapps.squirreljme.ssjit.powerpc;
 
-import net.multiphasicapps.squirreljme.ssjit.SSJITProducerFactory;
+import net.multiphasicapps.squirreljme.ssjit.SSJITFunctionProvider;
 import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
 
 /**
- * This is the base class for producers which target PowerPC.
+ * This is the base class for functions which target PowerPC.
  *
  * @since 2016/06/25
  */
-public abstract class PowerPCProducerFactory
-	extends SSJITProducerFactory
+public abstract class PowerPCFunctionProvider
+	extends SSJITFunctionProvider
 {
 	/**
-	 * Initializes the producer factory with the given architecture and an
+	 * Initializes the function provider with the given architecture and an
 	 * optional operating system.
 	 *
 	 * @param __arch The architecture to use.
 	 * @param __os The operating system to use.
 	 * @since 2016/06/25
 	 */
-	public PowerPCProducerFactory(String __arch, String __os)
+	public PowerPCFunctionProvider(String __arch, String __os)
 	{
 		super(__arch, __os);
 	}
