@@ -57,7 +57,7 @@ public class LinuxPPC32FunctionProvider
 	public SSJITFunction[] functions(SSJITVariant __var)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		return new SSJITFunction[]{};
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class LinuxPPC32FunctionProvider
 	@Override
 	public SSJITVariant[] variants()
 	{
-		return new SSJITFunction[]{};
+		return new SSJITVariant[]{};
 	}
 }
 
