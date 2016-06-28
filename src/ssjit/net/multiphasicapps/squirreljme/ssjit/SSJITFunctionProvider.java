@@ -37,6 +37,9 @@ public abstract class SSJITFunctionProvider
 	/**
 	 * This initializes the base provider.
 	 *
+	 * Architecture and operating system names should only use lowercase
+	 * alphanumeric characters.
+	 *
 	 * @param __arch The architecture that this provider supports.
 	 * @param __os The operating system this provider is defined for, if
 	 * {@code null} then it is a base provider not intended for any operating
@@ -131,8 +134,12 @@ public abstract class SSJITFunctionProvider
 	 * architecture along with the optionally specified operating system.
 	 *
 	 * @param __arch The architecture to return a function provider for.
-	 * @param __archvar The variant of a given architecture, this is optional.
+	 * @param __archvar The variant of a given architecture, this is required
+	 * although if it is not to be considered then "generic" should be used.
 	 * @param __os The operating system to provide functions for.
+	 * @return An empty array if there are no function providers available,
+	 * otherwise at least one provider for the specified architecture and its
+	 * variant, followed by a provider for a given operating system.
 	 * @throws NullPointerException If no architecture was specified.
 	 * @since 2016/06/27
 	 */
@@ -141,15 +148,75 @@ public abstract class SSJITFunctionProvider
 		throws NullPointerException
 	{
 		// Check
-		if (__arch == null)
+		if (__arch == null || __archvar == null)
 			throw new NullPointerException("NARG");
+		
+		// The base non-OS match and the architecture match
+		SSJITFunctionProvider ar = null;
+		SSJITFunctionProvider os = null;
+		
+		// The architecture variant for operating systems is generally
+		// ignored, however it may be specified (and if it does exist it will
+		// be chosen instead).
+		boolean oshasvar = false;
 		
 		// Lock
 		ServiceLoader<SSJITFunctionProvider> services = _SERVICES;
 		synchronized (services)
 		{
-			throw new Error("TODO");
+			// Go through all services
+			for (SSJITFunctionProvider fp : services)
+			{
+				// Does not match the requested architecture?
+				if (!__arch.equals(fp.architecture()))
+					continue;
+				
+				// Get supported operating system, which could be null
+				String fpos = fp.operatingSystem();
+				
+				// Is the variant supported?
+				SSJITVariant var = fp.getVariant(__archvar);
+				
+				// If there is no operating system then treat this as a generic
+				// function provider provided the variant matches
+				if (fpos == null)
+				{
+					if (var != null)
+						ar = fp;
+				}
+				
+				// Otherwise, the operating system must match
+				else
+				{
+					if (fpos.equals(__os))
+					{
+						// Use this regardless of a variant match but never
+						// replace
+						if (var == null && os == null)
+							os = fp;
+						
+						// Otherwise, the one with a variant has higher
+						// priority
+						else if (var != null && (os == null || !oshasvar))
+						{
+							os = fp;
+							oshasvar = true;
+						}
+					}
+				}
+			}
 		}
+		
+		// No match
+		if (ar == null)
+			return null;
+		
+		// Architecture only
+		else if (os == null)
+			return new SSJITFunctionProvider[]{ar};
+		
+		// Both
+		return new SSJITFunctionProvider[]{ar, os};
 	}
 }
 
