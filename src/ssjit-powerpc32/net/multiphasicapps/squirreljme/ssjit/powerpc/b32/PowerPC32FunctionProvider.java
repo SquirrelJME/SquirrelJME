@@ -53,7 +53,7 @@ public class PowerPC32FunctionProvider
 	public SSJITFunction[] functions(SSJITVariant __var)
 		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		return new SSJITFunction[]{};
 	}
 }
 

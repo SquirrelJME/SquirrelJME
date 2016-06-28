@@ -77,7 +77,7 @@ public class LinuxPPC32FunctionProvider
 	@Override
 	public SSJITVariant[] variants()
 	{
-		return new SSJITVariant[]{};
+		return new SSJITFunction[]{};
 	}
 }
 
