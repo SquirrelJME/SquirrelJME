@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.squirreljme.ssjit.powerpc.b32;
 
-import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.ssjit.powerpc.PowerPCFunctionProvider;
 import net.multiphasicapps.squirreljme.ssjit.SSJITProducer;
 import net.multiphasicapps.squirreljme.ssjit.SSJITFunction;

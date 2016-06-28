@@ -86,6 +86,9 @@ public abstract class SSJITFunctionProvider
 	 *
 	 * The generic variant must always exist.
 	 *
+	 * Any variants that are returned are specific to this specific function
+	 * provider.
+	 *
 	 * @return The generic variant.
 	 * @since 2016/06/25
 	 */
@@ -96,6 +99,9 @@ public abstract class SSJITFunctionProvider
 	 * for a given architecture. A variant is used in the case where a specific
 	 * CPU needs to be targetted. It is recommended although not required that
 	 * there be a "generic" variant with the highest level of support.
+	 *
+	 * Any variants that are returned are specific to this specific function
+	 * provider.
 	 *
 	 * @return An array of target variants.
 	 * @since 2016/06/25
