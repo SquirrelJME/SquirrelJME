@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.ssjit.powerpc.b32;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.ssjit.powerpc.PowerPCFunctionProvider;
 import net.multiphasicapps.squirreljme.ssjit.SSJITProducer;
+import net.multiphasicapps.squirreljme.ssjit.SSJITFunction;
 import net.multiphasicapps.squirreljme.ssjit.SSJITFunctionProvider;
 import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
 
@@ -43,6 +44,17 @@ public class PowerPC32FunctionProvider
 	public PowerPC32FunctionProvider(String __os)
 	{
 		super("powerpc32", __os);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/27
+	 */
+	@Override
+	public SSJITFunction[] functions(SSJITVariant __var)
+		throws IllegalArgumentException
+	{
+		throw new Error("TODO");
 	}
 }
 

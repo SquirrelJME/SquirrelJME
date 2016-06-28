@@ -60,7 +60,31 @@ public abstract class SSJITFunctionProvider
 	}
 	
 	/**
+	 * Returns an array of functions that should be used for code generation.
+	 *
+	 * Elements with a higher index are considered to have higher priority.
+	 *
+	 * The variant "generic" must always exist.
+	 *
+	 * @param __var The variant for the given architecture.
+	 * @return An array of functions which provide the capability to generate
+	 * code for the given architecture and operating system. It is permissable
+	 * for this to return an empty array (although the base code generation
+	 * functions must be returned by at least one provider which might not
+	 * be this one).
+	 * @throws IllegalArgumentException If the specified variant is not valid,
+	 * if this function provider is associated with an operating system then
+	 * this should not be thrown as operating system generators should work
+	 * with all sets of functions.
+	 * @since 2016/06/27
+	 */
+	public abstract SSJITFunction[] functions(SSJITVariant __var)
+		throws IllegalArgumentException;
+	
+	/**
 	 * Returns the generic variant.
+	 *
+	 * The generic variant must always exist.
 	 *
 	 * @return The generic variant.
 	 * @since 2016/06/25

@@ -25,13 +25,14 @@ import java.io.OutputStream;
 public final class SSJITProducer
 {
 	/** The target system variant. */
-	protected final SSJITVariant variant;
+	protected final String variant;
 	
 	/**
 	 * Initializes the code producer.
 	 *
 	 * @param __os The output stream where data is to be written.
-	 * @param __var The variant of the target system.
+	 * @param __var The variant of the target system, if a variant is not
+	 * supported then the default variant will be used instead.
 	 * @param __fps Function providers that provide the needed functionality
 	 * for generating specific fragments of native code.
 	 * @throws NullPointerException On null arguments.
@@ -45,7 +46,26 @@ public final class SSJITProducer
 		if (__os == null || __var == null || __fps == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.variant = __var;
+		
+		// Go through all function providers to create and bind sub-functions
+		for (SSJITFunctionProvider fp : __fps.clone())
+		{
+			// Locate variant
+			SSJITVariant var = fp.getVariant(__var);
+			
+			// Fallback to default?
+			if (var == null)
+				var = fp.genericVariant();
+			
+			// Go through functions and bind them
+			for (SSJITFunction func : fp.functions(var))
+			{
+				// Bind to the producer
+				func.bind(this);
+			}
+		}
 	}
 	
 	/**
@@ -54,7 +74,7 @@ public final class SSJITProducer
 	 * @return The producer variant.
 	 * @since 2016/06/25
 	 */
-	public final SSJITVariant variant()
+	public final String variant()
 	{
 		return this.variant;
 	}
