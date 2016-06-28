@@ -20,6 +20,10 @@ import java.io.IOException;
  */
 final class __ClassDecoder__
 {
+	/** The magic number of the class file. */
+	public static final int MAGIC_NUMBER =
+		0xCAFE_BABE;
+	
 	/** The owning JIT. */
 	protected final SSJIT jit;
 	
@@ -54,8 +58,17 @@ final class __ClassDecoder__
 	 * @since 2016/06/28
 	 */
 	final void __decode()
-		throws SSJITException
+		throws IOException, SSJITException
 	{
+		DataInputStream input = this.input;
+		
+		// {@squirreljme.error DV02 The magic number of the input data stream
+		// does not match that of the Java class file. (The magic number which
+		// was read)}
+		int fail;
+		if ((fail = input.readInt()) != MAGIC_NUMBER)
+			throw new SSJITException(String.format("DV02 %08x", fail));
+		
 		throw new Error("TODO");
 	}
 }
