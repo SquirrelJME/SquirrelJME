@@ -28,6 +28,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
     * Trunk Source Snapshot
       * [TAR.GZ](../../tarball/squirreljme-trunk.tar.gz?uuid=trunk)
       * [ZIP](../../zip/squirreljme-trunk.zip?uuid=trunk)
+    * Read-Only Mirror at <http://github.com/mpasteven/SquirrelJME/>
 
 ## Links
 
