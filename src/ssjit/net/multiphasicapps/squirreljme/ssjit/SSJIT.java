@@ -88,6 +88,10 @@ public class SSJIT
 			this._did = true;
 		}
 		
+		// Perform decoding
+		__ClassDecoder__ dec = new __ClassDecoder__(this, this.input);
+		dec.__decode();
+		
 		throw new Error("TODO");
 	}
 }
