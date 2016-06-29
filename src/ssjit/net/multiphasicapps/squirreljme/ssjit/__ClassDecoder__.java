@@ -30,6 +30,9 @@ final class __ClassDecoder__
 	/** The input data source. */
 	protected final DataInputStream input;
 	
+	/** The version of this class file. */
+	private volatile __ClassVersion__ _version;
+	
 	/**
 	 * This initializes the decoder for classes.
 	 *
@@ -68,6 +71,15 @@ final class __ClassDecoder__
 		int fail;
 		if ((fail = input.readInt()) != MAGIC_NUMBER)
 			throw new SSJITException(String.format("DV02 %08x", fail));
+		
+		// {@squirreljme.error DV03 The version number of the input class file
+		// is not valid. (The version number)}
+		int cver = input.readShort() | (input.readShort() << 16);
+		__ClassVersion__ version = __ClassVersion__.findVersion(cver);
+		this._version = version;
+		if (version == null)
+			throw new SSJITException(String.format("DV03 %d.%d", cver >>> 16,
+				(cvar & 0xFFFF));
 		
 		throw new Error("TODO");
 	}
