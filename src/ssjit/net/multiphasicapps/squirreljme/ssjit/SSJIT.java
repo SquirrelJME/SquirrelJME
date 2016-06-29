@@ -68,12 +68,11 @@ public class SSJIT
 	 *
 	 * @throws IllegalStateException If JIT compilation is currently being
 	 * performed or is being performed.
-	 * @throws IOException On read/write errors.
 	 * @throws SSJITException If JIT compilation fails.
 	 * @since 2016/06/25
 	 */
 	public final void performJit()
-		throws IllegalStateException, IOException, SSJITException
+		throws IllegalStateException, SSJITException
 	{
 		// {@squirreljme.error DV01 JIT Compilation has already been
 		// performed.}
@@ -89,8 +88,18 @@ public class SSJIT
 		}
 		
 		// Perform decoding
-		__ClassDecoder__ dec = new __ClassDecoder__(this, this.input);
-		dec.__decode();
+		__ClassDecoder__ dec;
+		try
+		{
+			dec = new __ClassDecoder__(this, this.input);
+			dec.__decode();
+		}
+		
+		// {@squirreljme.error DV04 Could not read the input class file.}
+		catch (IOException e)
+		{
+			throw new SSJITException("DV04", e);
+		}
 		
 		throw new Error("TODO");
 	}

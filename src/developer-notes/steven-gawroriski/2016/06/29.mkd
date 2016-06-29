@@ -1,2 +1,7 @@
 # 2016/06/29
 
+## 19:14
+
+It would be best that the JIT streaming code does not throw `IOException` if
+a class file could not be read.
+

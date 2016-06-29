@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: ssjit
 X-SquirrelJME-UUID: e1282db0-143a-419b-89c6-7477d7696e85
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Depends: cldc-compact, symbols
 X-SquirrelJME-Error: DV
 LIBlet-Title: Single Stage Just In Time Compiler
 LIBlet-Vendor: Steven Gawroriski

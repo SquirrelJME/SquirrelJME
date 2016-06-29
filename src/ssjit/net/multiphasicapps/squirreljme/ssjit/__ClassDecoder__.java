@@ -33,6 +33,9 @@ final class __ClassDecoder__
 	/** The version of this class file. */
 	private volatile __ClassVersion__ _version;
 	
+	/** The constant pool of the class. */
+	private volatile __ClassPool__ _pool;
+	
 	/**
 	 * This initializes the decoder for classes.
 	 *
@@ -79,7 +82,11 @@ final class __ClassDecoder__
 		this._version = version;
 		if (version == null)
 			throw new SSJITException(String.format("DV03 %d.%d", cver >>> 16,
-				(cvar & 0xFFFF)));
+				(cver & 0xFFFF)));
+		
+		// Decode the constant pool
+		__ClassPool__ pool = new __ClassPool__(input);
+		this._pool = pool;
 		
 		throw new Error("TODO");
 	}
