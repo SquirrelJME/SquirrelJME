@@ -79,7 +79,7 @@ final class __ClassDecoder__
 		this._version = version;
 		if (version == null)
 			throw new SSJITException(String.format("DV03 %d.%d", cver >>> 16,
-				(cvar & 0xFFFF));
+				(cvar & 0xFFFF)));
 		
 		throw new Error("TODO");
 	}
