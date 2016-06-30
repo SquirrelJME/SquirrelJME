@@ -18,13 +18,13 @@ package net.multiphasicapps.squirreljme.ssjit;
 enum __ClassVersion__
 {
 	/** CLDC 1.0 (JSR 30). */
-	CLDC_1((45 << 16) + 3, false, false, false),
+	CLDC_1((45 << 16) + 3, (47 << 16) - 1, false, false, false),
 	
 	/** CLDC 1.1 (JSR 139). */
-	CLDC_1_1((47 << 16), true, false, false),
+	CLDC_1_1((47 << 16), (51 << 16) - 1, true, false, false),
 	
 	/** CLDC 8 (aka Java 7). */
-	CLDC_8((51 << 16), true, false, true),
+	CLDC_8((51 << 16), (52 << 16), true, false, true),
 	
 	/** End. */
 	;
@@ -40,6 +40,9 @@ enum __ClassVersion__
 	/** The version ID. */
 	protected final int version;
 	
+	/** The maximum range of the version. */
+	protected final int maxversion;
+	
 	/** Has floating point support? */
 	protected final boolean hasfloat;
 	
@@ -53,17 +56,19 @@ enum __ClassVersion__
 	 * Initializes the version data.
 	 *
 	 * @param __vid The version ID.
+	 * @param __vmx The max version identifier.
 	 * @param __undef Is this version information undefined?
 	 * @param __float Is floating point supported?
 	 * @param __hasid Has invoke dynamic support?
 	 * @param __usesmt Should the StackMapTable attribute be used?
 	 * @since 2016/03/13
 	 */
-	private __ClassVersion__(int __vid,
+	private __ClassVersion__(int __vid, int __vmx,
 		boolean __float, boolean __hasid, boolean __usesmt)
 	{
 		// Set
 		version = __vid;
+		maxversion = __vmx;
 		hasfloat = __float;
 		hasinvokedynamic = __hasid;
 		usestackmaptable = __usesmt;
@@ -118,7 +123,7 @@ enum __ClassVersion__
 		// Go through all versions, find the best
 		__ClassVersion__ best = null;
 		for (__ClassVersion__ v : values())
-			if (v.version >= __vid)
+			if (__vid >= v.version && __vid <= v.maxversion)
 				if (best == null || v.version > best.version)
 					best = v;
 		
