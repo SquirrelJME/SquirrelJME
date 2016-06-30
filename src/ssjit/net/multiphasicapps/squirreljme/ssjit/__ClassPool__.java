@@ -77,6 +77,12 @@ class __ClassPool__
 	public static final int TAG_INVOKEDYNAMIC =
 		18;
 	
+	/** Constant pool tags used. */
+	private final byte[] _tags;
+	
+	/** Constant pool initialized data. */
+	private final Object[] _data;
+	
 	/**
 	 * Decodes the constant pool of an input class file.
 	 *
@@ -99,8 +105,11 @@ class __ClassPool__
 		if (count <= 0)
 			throw new SSJITException("DV05");
 		
+		// The set of pool tags
+		byte[] tags = new byte[count];
+		
 		// Decode all entry data
-		for (int i = 0; i < count; i++)
+		for (int i = 1; i < count; i++)
 		{
 			// Read the tag
 			int tag = __dis.readUnsignedByte();
@@ -111,8 +120,24 @@ class __ClassPool__
 				tag == TAG_INVOKEDYNAMIC)
 				throw new SSJITException("DV06");
 			
-			throw new Error("TODO");
+			// Store tag
+			tags[i] = (byte)tag;
+			
+			// UTF-8 String
+			if (tag == TAG_UTF8)
+			{
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// {@squirreljme.error DV07 Unknown constant pool tag. (The tag of
+			// the constant pool entry)}
+			else
+				throw new SSJITException(String.format("DV07 %d", tag));
 		}
+		
+		// Set
+		this._tags = tags;
 		
 		throw new Error("TODO");
 	}
