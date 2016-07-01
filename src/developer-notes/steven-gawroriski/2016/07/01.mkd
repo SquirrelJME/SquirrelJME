@@ -1,0 +1,7 @@
+# 2016/07/01
+
+## 09:23
+
+Today is a new month. I did not get much work done the last month due to being
+a bit busy. I still have a plan to work on the single pass JIT however.
+
