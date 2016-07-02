@@ -4,3 +4,9 @@
 
 This weeken is holiday weekend, with Monday being the 4th of July.
 
+## 12:03
+
+I should rework the documentation a bit and have a completely standalone port
+section of sorts. Then I can have user and developer bits in their specific
+sections.
+
