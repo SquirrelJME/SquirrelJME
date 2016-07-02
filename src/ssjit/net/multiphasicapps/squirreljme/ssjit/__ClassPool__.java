@@ -109,6 +109,9 @@ class __ClassPool__
 		// The set of pool tags
 		byte[] tags = new byte[count];
 		
+		// Setup data
+		Object[] data = new Object[count];
+		
 		// Decode all entry data
 		for (int i = 1; i < count; i++)
 		{
@@ -130,9 +133,7 @@ class __ClassPool__
 				// Read the string data
 				try
 				{
-					String s = __dis.readUTF();
-					if (true)
-						throw new Error("TODO");
+					data[i] = __dis.readUTF();
 				}
 				
 				// {@squirreljme.error DV08 The modified UTF-8 data string in
@@ -143,20 +144,62 @@ class __ClassPool__
 				}
 			}
 			
-			// Method reference
-			else if (tag == TAG_METHODREF)
-				throw new Error("TODO");
+			// Field and Method references, Name and type
+			else if (tag == TAG_FIELDREF || tag == TAG_METHODREF ||
+				tag == TAG_INTERFACEMETHODREF || tag == TAG_NAMEANDTYPE)
+				data[i] = new int[]
+					{
+						__dis.readUnsignedShort(),
+						__dis.readUnsignedShort()
+					};
+			
+			// Class reference, string
+			else if (tag == TAG_CLASS || tag == TAG_STRING)
+				data[i] = new int[]
+					{
+						__dis.readUnsignedShort()
+					};
+			
+			// Integer
+			else if (tag == TAG_INTEGER)
+				data[i] = Integer.valueOf(__dis.readInt());
+			
+			// Long
+			else if (tag == TAG_LONG)
+				data[i] = Long.valueOf(__dis.readLong());
+			
+			// Float
+			else if (tag == TAG_FLOAT)
+				data[i] = Float.valueOf(__dis.readFloat());
+			
+			// Double
+			else if (tag == TAG_DOUBLE)
+				data[i] = Double.valueOf(__dis.readDouble());
 			
 			// {@squirreljme.error DV07 Unknown constant pool tag. (The tag of
 			// the constant pool entry)}
 			else
 				throw new SSJITException(String.format("DV07 %d", tag));
+			
+			// Double up?
+			if (tag == TAG_LONG || tag == TAG_DOUBLE)
+				i++;
 		}
 		
 		// Set
 		this._tags = tags;
-		
-		throw new Error("TODO");
+		this._data = data;
+	}
+	
+	/**
+	 * Returns the size of the constant pool.
+	 *
+	 * @return The constant pool size.
+	 * @since 2016/07/02
+	 */
+	public int size()
+	{
+		return this._tags.length;
 	}
 }
 
