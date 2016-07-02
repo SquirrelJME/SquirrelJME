@@ -35,14 +35,14 @@ operation of this software.
    * [Limitations](user/limits.mkd)
    * [Reddit Updates](user/reddit_notes.mkd)
    * [Supported Character Encodings](user/encodings.mkd)
-   * [Supported Platforms](user/platforms.mkd)
    * [Why Use This?](user/why.mkd)
+ * Ports (User and Developer Manuals)
+   * [Port Index](ports/ports.mkd)
  * Developer's Manual
    * [Differences between Java SE and Java ME](developer/differences.mkd)
    * [Pitfalls](developer/pitfalls.mkd)
  * Maintainer's Manual
    * [Consistency Guidelines](maintainer/consistency.mkd)
    * [Mascot Requirements](maintainer/mascot_req.mkd)
-   * [Ports](maintainer/ports.mkd)
    * [Style Requirements](maintainer/style.mkd)
 
