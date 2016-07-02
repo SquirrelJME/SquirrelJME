@@ -10,29 +10,17 @@
 
 package net.multiphasicapps.squirreljme.jit.asm;
 
+import java.io.IOException;
+
 /**
- * This class represents the base of the assembler which is used to ultimately
- * generate native machine code.
+ * This is an output stream which is used to write the result of assembly
+ * operations to a given output stream. Unlike a normal {@link OutputStream},
+ * this stream is capable of writing both little and big endian data types
+ * along with special methods which may align the output.
  *
  * @since 2016/07/02
  */
-public class Assembler
+public class AssemblerOutputStream
 {
-	/**
-	 * Initializes the assembler instance.
-	 *
-	 * @param __ac The configuration used for basic assembly operations.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/02
-	 */
-	public Assembler(AssemblerConfig __ac)
-		throws NullPointerException
-	{
-		// Check
-		if (__ac == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
 }
 
