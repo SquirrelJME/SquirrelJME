@@ -8,17 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.powerpc32;
 
-import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.jit.JIT;
 
 /**
- * This factory is used to create instances of the JIT compiler which reads an
- * input class and produces output from them.
+ * This is a JIT which outputs 32-bit PowerPC machine code.
  *
  * @since 2016/07/02
  */
-public abstract class JITFactory
+public class PowerPC32JIT
+	extends JIT
 {
 }
 
