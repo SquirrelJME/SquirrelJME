@@ -65,7 +65,7 @@ abstract class __SymbolReference__<S extends MemberTypeSymbol>
 	 * @since 2016/07/02
 	 */
 	@Override
-	public final boolean equals(Object __o)
+	public boolean equals(Object __o)
 	{
 		// Must be the same
 		if (!(__o instanceof __SymbolReference__))
@@ -84,7 +84,7 @@ abstract class __SymbolReference__<S extends MemberTypeSymbol>
 	 * @since 2016/07/02
 	 */
 	@Override
-	public final int hashCode()
+	public int hashCode()
 	{
 		return this.hashcode;
 	}
@@ -172,6 +172,30 @@ abstract class __SymbolReference__<S extends MemberTypeSymbol>
 			super(__cn, __mn, __mt);
 			
 			this.isinterface = __i;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/02
+		 */
+		@Override
+		public boolean equals(Object __o)
+		{
+			if (!(__o instanceof __Method__) || !super.equals(__o))
+				return false;
+			
+			// Check
+			return this.isinterface == ((__Method__)__o).isinterface;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/02
+		 */
+		@Override
+		public int hashCode()
+		{
+			return super.hashCode() ^ (this.isinterface ? 1 : 0);
 		}
 		
 		/**
