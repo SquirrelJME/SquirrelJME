@@ -95,3 +95,10 @@ So `SSJIT` is given a `NCGManager`. That `NCGManager` will then create any
 associated output with a given state and singular set of instances for
 functions.
 
+## 17:11
+
+Also going to place anything related to the JIT in
+`net.multiphasicapps.squirreljme.jit`, then branch from that for example. The
+code generators will be a bit higher level. I would suppose below the
+code generator there would be the assembler.
+
