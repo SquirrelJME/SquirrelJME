@@ -352,7 +352,10 @@ public class Builder
 			OutputStream os = __gj.createClass(classname))
 		{
 			// Setup JIT
-			SSJIT jit = new SSJIT(is, os, this.archvariant, this.providers);
+			if (true)
+				throw new Error("TODO");
+			SSJIT jit = new SSJIT(is, null/*os*/, this.archvariant,
+				this.providers);
 			
 			// Run the JIT
 			jit.performJit();

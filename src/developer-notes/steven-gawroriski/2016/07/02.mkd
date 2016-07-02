@@ -129,3 +129,8 @@ variant would just choose a set of flags to use. So I suppose for simplicity,
 a given CPU could have their variants mapped to enumeration entries
 potentially as a kind of additive set of extra variants and such.
 
+## 17:28
+
+I would suppose instead of this, that I should have an assembler configuration
+which is used to initialize the assembler.
+
