@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.asm;
 
+import java.io.IOException;
+
 /**
  * This class represents the base of the assembler which is used to ultimately
  * generate native machine code.
@@ -33,6 +35,27 @@ public final class Assembler
 	{
 		// Check
 		if (__ac == null || __aos == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Selects the destination register where the given value is placed and
+	 * optionally read from.
+	 *
+	 * @param __t The destination type.
+	 * @param __n The name of the destination register.
+	 * @throws AssemblerException If the destination register is not valid.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/02
+	 */
+	public Assembler dest(AssemblerRegisterType __t, String __n)
+		throws AssemblerException, IOException, NullPointerException
+	{
+		// Check
+		if (__t == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
