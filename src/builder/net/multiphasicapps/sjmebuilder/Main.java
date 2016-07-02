@@ -18,8 +18,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -209,8 +212,6 @@ public class Main
 			__ps.println(os);
 		}
 		__ps.println();
-		
-		throw new Error("TODO");
 	}
 }
 
