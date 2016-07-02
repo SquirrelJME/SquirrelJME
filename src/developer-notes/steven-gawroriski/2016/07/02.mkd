@@ -63,3 +63,10 @@ together as a single unit. So in this case, entire JARs will be merged into a
 single fragment. However, I will need to devise a means where there can be
 multiple namespaces within the output (for multi-JAR support).
 
+## 16:01
+
+For example, for the ELF format all symbols and such will be generated and
+placed in an output ELF file. Although doing this within an ELF may be complex
+because there may be some things which are unknown (such as how large a given
+section is).
+
