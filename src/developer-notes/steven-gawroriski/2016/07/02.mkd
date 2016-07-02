@@ -218,3 +218,9 @@ have the class decoder be external and call into the JIT.
 
 Actually a single instance `JIT` would be very ugly.
 
+## 18:55
+
+I can have a slight JIT modifier be used which if found will be passed a JIT.
+It can then see which instance the JIT is and possibly perform register banning
+or other minor tweaks.
+
