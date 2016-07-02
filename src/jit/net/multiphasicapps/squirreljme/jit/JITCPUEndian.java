@@ -10,28 +10,20 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.ServiceLoader;
-
 /**
- * This factory is used to create instances of the JIT compiler which reads an
- * input class and produces output from them.
+ * This indicates the endianess of a given CPU.
  *
  * @since 2016/07/02
  */
-public abstract class JITFactory
+public enum JITCPUEndian
 {
-	/** Service for JIT factory lookup. */
-	private static final ServiceLoader<JITFactory> _SERVICES =
-		ServiceLoader.<JITFactory>load(JITFactory.class);
+	/** Big endian (most significant bit first). */
+	BIG,
 	
-	/**
-	 * Returns the name of the architecture this compiles for.
-	 *
-	 * @return The name of the architecture.
-	 * @since 2016/07/02
-	 */
-	public abstract String architectureName();
+	/** Little endian (least significant bit first). */
+	LITTLE,
+	
+	/** End. */
+	;
 }
 

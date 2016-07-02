@@ -10,28 +10,19 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.ServiceLoader;
-
 /**
- * This factory is used to create instances of the JIT compiler which reads an
- * input class and produces output from them.
+ * This is a variant of a CPU.
  *
  * @since 2016/07/02
  */
-public abstract class JITFactory
+public interface JITCPUVariant
 {
-	/** Service for JIT factory lookup. */
-	private static final ServiceLoader<JITFactory> _SERVICES =
-		ServiceLoader.<JITFactory>load(JITFactory.class);
-	
 	/**
-	 * Returns the name of the architecture this compiles for.
+	 * Returns the name of the variant.
 	 *
-	 * @return The name of the architecture.
+	 * @return The name of the variant.
 	 * @since 2016/07/02
 	 */
-	public abstract String architectureName();
+	public abstract String name();
 }
 

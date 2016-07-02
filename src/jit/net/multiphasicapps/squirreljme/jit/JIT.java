@@ -24,5 +24,11 @@ import java.io.IOException;
  */
 public abstract class JIT
 {
+	/** One time lock. */
+	private final Object _oncelock =
+		new Object();
+	
+	/** One time only. */
+	private volatile boolean _once;
 }
 

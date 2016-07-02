@@ -20,5 +20,14 @@ import net.multiphasicapps.squirreljme.jit.JITFactory;
 public class PowerPC32JITFactory
 	extends JITFactory
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/02
+	 */
+	@Override
+	public String architectureName()
+	{
+		return "powerpc32";
+	}
 }
 
