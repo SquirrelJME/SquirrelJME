@@ -89,3 +89,9 @@ and associated with a state tracker. This way there is a single instance, if
 multiple functions need to interact with the same state, they can use the
 passed state tracker instead.
 
+## 17:07
+
+So `SSJIT` is given a `NCGManager`. That `NCGManager` will then create any
+associated output with a given state and singular set of instances for
+functions.
+
