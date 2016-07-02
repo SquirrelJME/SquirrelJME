@@ -24,3 +24,18 @@ I should have a class which can be given a byte buffer or some other class
 which is used to read from say an `int[]` or `byte[]` array to access the
 details within a blob.
 
+## 15:36
+
+As alternative to a table of contents kind of thing, I can have a linked list
+of sorts through the executable. However, backlinks would not operate at all.
+I would say that for simplicity, the blob can be directly memory mapped and
+have its structure accessed directly. Also it may be reasonable to have a case
+where there are two binaries, one which contains the raw data and another
+which contains the table of contents. If the table of contents remains apart
+from the executable code they can be linked into the binary using different
+means. Alternatively, instead of an `OutputStream` passed into the SSJIT,
+there is instead a result of a compilation. So this "smarter" class would have
+stuff such as "create new field" and other such things. Then an implementation
+of the given writer can be used. Then this way the `SSJIT` is not locked to
+a single output format but one which could be wrapped using multiple means.
+
