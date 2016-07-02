@@ -70,3 +70,10 @@ placed in an output ELF file. Although doing this within an ELF may be complex
 because there may be some things which are unknown (such as how large a given
 section is).
 
+## 16:06
+
+So I suppose for simplicity, keep with the blobs and instead of a container.
+Ther container would be the ELF which loads and initializes the classes
+stored within the blob. But still allow for multiple JARs and resources to be
+namespaces in a single blob.
+
