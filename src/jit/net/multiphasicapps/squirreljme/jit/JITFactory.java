@@ -11,7 +11,8 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This factory is used to create instances of the JIT compiler.
+ * This factory is used to create instances of the JIT compiler which reads an
+ * input class and produces output from them.
  *
  * @since 2016/07/02
  */

@@ -10,8 +10,15 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * This contains the just in time compiler.
+ *
+ * A JIT may only be used once for any input class, however the output of the
+ * JIT may be used multiple times so that multiple JARs may be combined into
+ * a single binary.
  *
  * @since 2016/07/02
  */

@@ -214,3 +214,7 @@ the actual JIT class to provide the native functionality. To keep internal
 details hidden, package private will be used in many places. This way I can
 have the class decoder be external and call into the JIT.
 
+## 18:39
+
+Actually a single instance `JIT` would be very ugly.
+
