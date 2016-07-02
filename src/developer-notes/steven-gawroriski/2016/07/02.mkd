@@ -145,3 +145,11 @@ destination. Then following that, there will be an execution which performs the
 operation (such as an `add`). The native part of the assembler can check if the
 given operation is valid between two given registers.
 
+## 17:55
+
+I will also need some kind of native assembly provider functions, ones that
+could be given a single instance, where they are given the `Assembler` where
+options can be read from (such as the selected source/dest registers), the
+configuration, and the output stream. However the constant handling of this
+would be a bit ugly in a way.
+
