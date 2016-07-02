@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.ssjit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.UTFDataFormatException;
 
 /**
  * This represents the constant pool of a class which has been read, this is
@@ -126,8 +127,20 @@ class __ClassPool__
 			// UTF-8 String
 			if (tag == TAG_UTF8)
 			{
-				if (true)
-					throw new Error("TODO");
+				// Read the string data
+				try
+				{
+					String s = __dis.readUTF();
+					if (true)
+						throw new Error("TODO");
+				}
+				
+				// {@squirreljme.error DV08 The modified UTF-8 data string in
+				// the constant pool is malformed.}
+				catch (UTFDataFormatException e)
+				{
+					throw new SSJITException("DV08", e);
+				}
 			}
 			
 			// {@squirreljme.error DV07 Unknown constant pool tag. (The tag of
