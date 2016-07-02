@@ -39,3 +39,27 @@ stuff such as "create new field" and other such things. Then an implementation
 of the given writer can be used. Then this way the `SSJIT` is not locked to
 a single output format but one which could be wrapped using multiple means.
 
+## 15:46
+
+Then if the output format is not that nice, it can completely be replaced with
+a better one without changing any code. So I could literally have an output
+which writes ELF binaries.
+
+## 15:51
+
+Essentially what could happen for example when it comes to Linux, is that
+classes could be compiled to ELFs, then when they need to be opened they can
+be linked in as such. Although, I am not sure if Linux supports dynamic linking
+of libraries that exist only in memory. Looking into it, it does not. So when
+it comes to generation, I will need to use blobs and such.
+
+## 15:58
+
+When it comes to the output, I should support multiple classes being output
+into a single `SSJITOutput`. This way when working with the initial SquirrelJME
+binary which the user would use, all classes exist and are pre-merged into it.
+The native code would have to be generated in a way where all code acts
+together as a single unit. So in this case, entire JARs will be merged into a
+single fragment. However, I will need to devise a means where there can be
+multiple namespaces within the output (for multi-JAR support).
+

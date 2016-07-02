@@ -47,7 +47,7 @@ public class SSJIT
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	public SSJIT(InputStream __ic, OutputStream __ob,
+	public SSJIT(InputStream __ic, SSJITOutput __ob,
 		String __pfv, SSJITFunctionProvider... __fps)
 		throws NullPointerException
 	{

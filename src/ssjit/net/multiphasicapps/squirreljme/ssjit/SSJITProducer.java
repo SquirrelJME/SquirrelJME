@@ -27,10 +27,13 @@ public final class SSJITProducer
 	/** The target system variant. */
 	protected final String variant;
 	
+	/** Where the output machine code is placed. */
+	protected final SSJITOutput output;
+	
 	/**
 	 * Initializes the code producer.
 	 *
-	 * @param __os The output stream where data is to be written.
+	 * @param __os The output where produced code is to be placed.
 	 * @param __var The variant of the target system, if a variant is not
 	 * supported then the default variant will be used instead.
 	 * @param __fps Function providers that provide the needed functionality
@@ -38,7 +41,7 @@ public final class SSJITProducer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	SSJITProducer(OutputStream __os, String __var,
+	SSJITProducer(SSJITOutput __os, String __var,
 		SSJITFunctionProvider... __fps)
 		throws NullPointerException
 	{
@@ -48,6 +51,7 @@ public final class SSJITProducer
 		
 		// Set
 		this.variant = __var;
+		this.output = __os;
 		
 		// Go through all function providers to create and bind sub-functions
 		for (SSJITFunctionProvider fp : __fps.clone())
