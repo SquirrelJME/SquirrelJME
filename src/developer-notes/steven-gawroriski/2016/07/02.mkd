@@ -75,5 +75,17 @@ section is).
 So I suppose for simplicity, keep with the blobs and instead of a container.
 Ther container would be the ELF which loads and initializes the classes
 stored within the blob. But still allow for multiple JARs and resources to be
-namespaces in a single blob.
+namespaced in a single blob.
+
+## 17:03
+
+Thinking about it, when it comes to generating the bootstrap code, it will be
+very difficult to have a split apart JIT when it comes to building the initial
+binary which would generate the machine code. Another consideration is the
+number of objects that will need to be initialized for every class. So I
+suppose I need a separated native code generator, which there is a single
+instance for (with functions as I currently have it) where it is then attached
+and associated with a state tracker. This way there is a single instance, if
+multiple functions need to interact with the same state, they can use the
+passed state tracker instead.
 
