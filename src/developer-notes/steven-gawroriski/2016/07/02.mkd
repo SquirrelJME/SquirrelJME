@@ -134,3 +134,14 @@ potentially as a kind of additive set of extra variants and such.
 I would suppose instead of this, that I should have an assembler configuration
 which is used to initialize the assembler.
 
+## 17:48
+
+Actually, having it where the assembler has add operations with types and such
+will be a bit complex. What I could have instead is a kind of pipeline of
+sorts similar to Java 8's streams. So basically there will be register
+selection, essentially something such as `source(RegisterType.INT, "r1")` which
+will act as the source register. Then there will be the same for the
+destination. Then following that, there will be an execution which performs the
+operation (such as an `add`). The native part of the assembler can check if the
+given operation is valid between two given registers.
+
