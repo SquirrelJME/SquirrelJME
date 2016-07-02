@@ -43,6 +43,7 @@ operation of this software.
    * [Pitfalls](developer/pitfalls.mkd)
  * Maintainer's Manual
    * [Consistency Guidelines](maintainer/consistency.mkd)
+   * [Executable Blob Format](maintainer/blob_format.mkd)
    * [Mascot Requirements](maintainer/mascot_req.mkd)
    * [Style Requirements](maintainer/style.mkd)
 

@@ -10,3 +10,17 @@ I should rework the documentation a bit and have a completely standalone port
 section of sorts. Then I can have user and developer bits in their specific
 sections.
 
+## 14:28
+
+One thing I need when it comes to the class file decoder is remembering and
+storing the class flags for potential usage later. I will need to document
+the blob format in a way where it allows blobs to be output without needing
+future details. So as such this means that the table of contents in a blob will
+be last.
+
+## 14:36
+
+I should have a class which can be given a byte buffer or some other class
+which is used to read from say an `int[]` or `byte[]` array to access the
+details within a blob.
+
