@@ -10,9 +10,9 @@ it is the simulator which runs on Windows and uses DLLs for native libraries.
 
 There are two supported architectures in PalmOS:
 
- * [m68k](plat_m68k_palmos.mkd)
+ * [m68k](m68k_palmos_generic__dev.mkd)
    * All Palm OS versions up to 4.
- * [ARM](plat_arm_palmos.mkd)
+ * [ARM](arm32_palmos_generic__dev.mkd)
    * Palm OS 5.
    * m68k is run on an emulator which integrates quite well, however it has
      limitations on what it can do.

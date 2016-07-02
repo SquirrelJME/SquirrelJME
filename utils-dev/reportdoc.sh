@@ -57,7 +57,7 @@ do
 	__vari="$(echo "$__line" | cut -d '.' -f 3)"
 	__type="$(echo "$__line" | cut -d '.' -f 4)"
 	
-	# Revert generic
+	# Change generic back
 	if [ "$__arch" = "000generic" ]
 	then
 		__arch="generic"
@@ -71,5 +71,44 @@ do
 	
 	# Repass
 	echo "$__arch.$__name.$__vari.$__type"
+done | while read __line
+do
+	# Extract bits
+	__arch="$(echo "$__line" | cut -d '.' -f 1)"
+	__name="$(echo "$__line" | cut -d '.' -f 2)"
+	__vari="$(echo "$__line" | cut -d '.' -f 3)"
+	__type="$(echo "$__line" | cut -d '.' -f 4)"
+	
+	# Split triplet
+	__trip="$__arch.$__name.$__vari"
+	
+	# The base file form
+	__xfil="${__arch}_${__name}_${__vari}"
+	
+	# Change generic to an asterisk to represent any
+	if [ "$__arch" = "generic" ]
+	then
+		__disarch="*"
+	else
+		__disarch="$__arch"
+	fi
+	
+	# New header
+	if [ "$__last" != "$__trip" ]
+	then
+		echo " * _$__disarch.$__name.${__vari}_"
+		__last="$__trip"
+	fi
+	
+	# Depends on the type
+	case "$__type" in
+		"dev")
+			echo "   * [Developer](${__xfil}__dev.mkd)"
+			;;
+		
+		"user")
+			echo "   * [User](${__xfil}__user.mkd)"
+			;;
+	esac
 done
 

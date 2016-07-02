@@ -3,7 +3,10 @@
 # Cooperative or Preemptive?
 
 I do know that Palm OS 5 is preemptive, however I do not know about older
-versions of Palm OS.
+versions of Palm OS. However I believe older versions of Palm OS are
+cooperative with some interrupts for non-cooperative callbacks. Palm OS
+will essentially freeze if a program handles the event loop incorrectly or
+does not give the OS a chance to perform work.
 
 # Alarms
 
