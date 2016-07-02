@@ -102,3 +102,15 @@ Also going to place anything related to the JIT in
 code generators will be a bit higher level. I would suppose below the
 code generator there would be the assembler.
 
+## 17:14
+
+Then this way, when it comes to generating native code I can have similar means
+of generating. I will have variants, but instead of operating system
+modifications of functions, I instead will have modifications of the code
+generator. The assembler, code generator, and JIT should at best be of a single
+state which will enable only a single assembler or other instance to exist at
+a time. This would reduce the allocation count. I will suppose that for the
+assembler, it will be given an output stream. The only consideration is that
+there may be the potential for sub-variants of variants (such as big endian
+and such).
+
