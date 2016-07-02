@@ -15,10 +15,15 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 
 /**
  * This is the main entry point for the builder.
@@ -83,6 +88,22 @@ public class Main
 			}
 		}
 		
+		// Load the package list
+		PrintStream out = System.out;
+		PackageList plist;
+		try
+		{
+			out.println("Loading the package lists...");
+			plist = new PackageList(Paths.get(System.getProperty("user.dir")),
+				null);
+		}
+		
+		// {@squirreljme.error DW01 Failed to load the package list.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("DW01", e);
+		}
+		
 		// {@squirreljme.error DW04 Usage: [-S] (target) [simulator arguments];
 		// The target is the arch.os.variant to build a native executable for.
 		// The -S switch may
@@ -90,7 +111,15 @@ public class Main
 		// case the arguments to the simulator may be passed following the
 		// target.}
 		if (target == null)
+		{
+			// Print all detected targets and architectures (with their
+			// variants)
+			out.println();
+			__printDetected(plist, out);
+			
+			// Fail
 			throw new IllegalArgumentException("DW04");
+		}
 		
 		System.err.printf("DEBUG -- %s %s %s%n", dosim, target, simargs);
 		
@@ -112,22 +141,6 @@ public class Main
 		
 		System.err.printf("DEBUG -- %s %s %s%n", arch, os, var);
 		
-		// Load the package list
-		PrintStream out = System.out;
-		PackageList plist;
-		try
-		{
-			out.println("Loading the package lists...");
-			plist = new PackageList(Paths.get(System.getProperty("user.dir")),
-				null);
-		}
-		
-		// {@squirreljme.error DW01 Failed to load the package list.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("DW01", e);
-		}
-		
 		// Could fail on perhaps a bad disk or malformed file
 		try
 		{
@@ -148,6 +161,56 @@ public class Main
 		{
 			throw new RuntimeException("DW07", e);
 		}
+	}
+	
+	/**
+	 * Prints the detected target architectures and operating systems to
+	 * the given output stream.
+	 *
+	 * @param __plist The list of available packages.
+	 * @param __ps The output print stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/01
+	 */
+	private static void __printDetected(PackageList __plist, PrintStream __ps)
+		throws NullPointerException
+	{
+		// Check
+		if (__plist == null || __ps == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through every package and extract available operating systems
+		// and OS variants
+		List<String> availos = new ArrayList<>();
+		for (PackageInfo pi : __plist.values())
+		{
+			// Get the manifest
+			JavaManifest man = pi.manifest();
+			if (man == null)
+				continue;
+			
+			// See if the OS key exists
+			JavaManifestAttributes attr = man.getMainAttributes();
+			String vkey = attr.get(Builder.TARGET_OS_KEY);
+			
+			// Add to list if it does
+			if (vkey != null)
+				availos.add(vkey.trim());
+		}
+		
+		// Sort by name
+		Collections.<String>sort(availos);
+		
+		// Print
+		__ps.println("Available Targets:");
+		for (String os : availos)
+		{
+			__ps.print(" * ");
+			__ps.println(os);
+		}
+		__ps.println();
+		
+		throw new Error("TODO");
 	}
 }
 

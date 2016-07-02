@@ -49,6 +49,10 @@ public class Builder
 	public static final int RESOURCE_BUFFER_SIZE =
 		4096;
 	
+	/** Target operating system key. */
+	public static final String TARGET_OS_KEY =
+		"X-SquirrelJME-Target-OS";
+	
 	/** The package list to use. */
 	protected final PackageList plist;
 	
@@ -149,7 +153,7 @@ public class Builder
 			JavaManifestAttributes attr = man.getMainAttributes();
 			
 			// See if the triplet properly exists
-			String pott = attr.get("X-SquirrelJME-Target-OS");
+			String pott = attr.get(TARGET_OS_KEY);
 			
 			// Matches?
 			if (targettriplet.equals(pott))
