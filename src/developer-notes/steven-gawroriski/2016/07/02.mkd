@@ -151,5 +151,8 @@ I will also need some kind of native assembly provider functions, ones that
 could be given a single instance, where they are given the `Assembler` where
 options can be read from (such as the selected source/dest registers), the
 configuration, and the output stream. However the constant handling of this
-would be a bit ugly in a way.
+would be a bit ugly in a way. So I suppose the assembler becomes abstract.
+However a problem with this is for each architecture I could only ever have a
+single assembler. The assembler would never be patchable and third parties
+would never be able to add support for an unsupported CPU.
 
