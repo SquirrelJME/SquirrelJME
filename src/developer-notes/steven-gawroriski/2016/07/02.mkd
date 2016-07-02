@@ -185,3 +185,11 @@ support for native architectures I can have a generator class and a set of
 registers which are supported by a given CPU. The operating system variant
 could change how registers are used and such. Although it is still complex.
 
+## 18:14
+
+One thing I do not want to have is a few thousand different implementations of
+the native JIT for a given CPU. I can have an architecture specific one for
+a given operating system however. But generally I only want a single for
+each architecture, so the PowerPC one would target only PowerPC and there would
+be no other implementation of a PowerPC assembler.
+
