@@ -88,6 +88,8 @@ final class __ClassDecoder__
 		__ClassPool__ pool = new __ClassPool__(input);
 		this._pool = pool;
 		
+		// Read the flags for this class
+		
 		throw new Error("TODO");
 	}
 }
