@@ -193,3 +193,24 @@ a given operating system however. But generally I only want a single for
 each architecture, so the PowerPC one would target only PowerPC and there would
 be no other implementation of a PowerPC assembler.
 
+## 18:16
+
+Ultimately I could support only a single CPU variant and potentially if it has
+floating point or not. I could ignore vectorization (that is a whole complex
+another subject anyway). So generated code for `PowerPC` would quite literally
+target the _G1 (603)_ processor for the most part (the original). However some
+CPU architecture have better instructions in later generations or have
+removed older ones.
+
+## 18:19
+
+So right now I am going in circles. I want a small and fast JIT, but one that
+is simple to write and does not consist of overly complex code. So basically
+something similar to `SSJIT` except there is one instance of it and it is
+given an input class to transform (instead of one instance per class). It
+would not be multi-threaded capable. I would also say that support for a given
+CPU and its variant can be used. Support for a given architecture would extend
+the actual JIT class to provide the native functionality. To keep internal
+details hidden, package private will be used in many places. This way I can
+have the class decoder be external and call into the JIT.
+
