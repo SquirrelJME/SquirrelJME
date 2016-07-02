@@ -143,6 +143,10 @@ class __ClassPool__
 				}
 			}
 			
+			// Method reference
+			else if (tag == TAG_METHODREF)
+				throw new Error("TODO");
+			
 			// {@squirreljme.error DV07 Unknown constant pool tag. (The tag of
 			// the constant pool entry)}
 			else
