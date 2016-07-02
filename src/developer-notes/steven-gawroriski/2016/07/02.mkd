@@ -156,3 +156,32 @@ However a problem with this is for each architecture I could only ever have a
 single assembler. The assembler would never be patchable and third parties
 would never be able to add support for an unsupported CPU.
 
+## 17:59
+
+So I suppose something similar as I have previously talked about. Basically I
+will have an `ASMGenlet` which would be an interface. Multiple genlets could be
+created and have a given priority. The first argument to the genlet would be
+the assembler itself. However, that would create much complexity. There would
+be multiple instances of genlets created for every method. This definitely
+would not be fast. Then genlets in every case would have to check which CPU
+was selected for code generation. So when it comes to code generation, it will
+definitely not be small, nor will it be fast, nor will it be simple. I suppose
+I am thinking of far too complex of a solution. So instead, just have an
+`Assembler` with the source and destination as I have thought up of. If done
+correctly, I can even have it where a single assembler could be created and
+shared across all JIT instances (there would need to be a state reset). Since
+some operations might not be supported by a given CPU, I would need to have
+failure cases that throw an unsupported assembly operation.
+
+## 18:08
+
+I can then layer the code generator on top which performs virtualized
+operations in the event the assembler does not support it (so if hardware float
+is not supported, then it will be handled using software instead by replacing
+the code with method calls potentially). However, the layering of the JIT goes
+deep through all levels. Having three levels will keep things complicated. So
+instead of three things, the JIT should be merged into one. When it comes to
+support for native architectures I can have a generator class and a set of
+registers which are supported by a given CPU. The operating system variant
+could change how registers are used and such. Although it is still complex.
+
