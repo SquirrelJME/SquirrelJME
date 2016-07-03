@@ -41,6 +41,68 @@ public abstract class JITFactory
 	public abstract String architectureName();
 	
 	/**
+	 * Returns the default variant to use when targetting a given architecture.
+	 *
+	 * @return The default variant to use.
+	 * @since 2016/07/03
+	 */
+	public abstract JITCPUVariant defaultArchitectureVariant();
+	
+	/**
+	 * Returns the default endianess for this factory.
+	 *
+	 * @return The default endianess for this factory.
+	 * @since 2016/07/03
+	 */
+	public abstract JITCPUEndian defaultEndianess();
+	
+	/**
+	 * Checks whether the given endianess is supported.
+	 *
+	 * @param __end The endianess to check support for.
+	 * @return {@code true} if the specified endianess is supported.
+	 * @since 2016/07/03
+	 */
+	public abstract boolean supportsEndianess(JITCPUEndian __end);
+	
+	/**
+	 * Returns an array of variants which are supported by a given CPU.
+	 *
+	 * @return The array of variants supported by the given CPU.
+	 * @since 2016/07/03
+	 */
+	public abstract JITCPUVariant[] variants();
+	
+	/**
+	 * Locates the given variant using the specified name.
+	 *
+	 * @param __s The name of the variant to find, if {@code "generic"} is
+	 * used then the default variant is selected.
+	 * @return The variant using the given name or {@code null} if it was not
+	 * found.
+	 * @since 2016/07/03
+	 */
+	public final JITCPUVariant getVariant(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// If generic, use default
+		if (__s.equals("generic"))
+			return defaultArchitectureVariant();
+		
+		// Go through all
+		for (JITCPUVariant v : variants())
+			if (__s.equals(v.variantName()))
+				return v;
+		
+		// Unknown
+		return null;
+	}
+	
+	/**
 	 * Creates a producer which is capable of creating the requested JIT to
 	 * be used during class compilation.
 	 *
@@ -60,24 +122,12 @@ public abstract class JITFactory
 		if (__arch == null || __archvar == null || __os == null)
 			throw new NullPointerException("NARG");
 		
-		// Look for a JIT service for the given architecture+variant
-		JITFactory fact = null;
-		ServiceLoader<JITFactory> jitservices = _JIT_SERVICES;
-		synchronized (jitservices)
-		{
-			// Go through all JITs for architectures
-			for (JITFactory jf : jitservices)
-				if (__arch.equals(jf.architectureName()))
-				{
-					// Set it
-					if (fact == null)
-						fact = jf;
-				}
-		}
-		
-		// Not found, fail
-		if (fact == null)
-			return null;
+		// Does the architecture variant have an endian specified?
+		int avc = __archvar.indexOf(',');
+		JITCPUEndian endian = (avc >= 0 ? JITCPUEndian.of(
+			__archvar.substring(avc + 1)) : null);
+		if (avc >= 0)
+			__archvar = __archvar.substring(0, avc);
 		
 		// Look for the operating system service for the requested OS
 		JITOSModifier josm = null;
@@ -89,7 +139,43 @@ public abstract class JITFactory
 					__os.equals(os.operatingSystemName()))
 				{
 					if (josm == null)
+					{
 						josm = os;
+						break;
+					}
+				}
+		}
+		
+		// Look for a JIT service for the given architecture+variant
+		JITFactory fact = null;
+		ServiceLoader<JITFactory> jitservices = _JIT_SERVICES;
+		synchronized (jitservices)
+		{
+			// Go through all JITs for architectures
+			for (JITFactory jf : jitservices)
+				if (__arch.equals(jf.architectureName()))
+				{
+					// Supports the given variant?
+					String wantvar = (__archvar.equals("generic") ?
+						josm.defaultArchitectureVariant() :
+						jf.defaultArchitectureVariant().variantName());
+					JITCPUVariant var = jf.getVariant(wantvar);
+					if (var == null)
+						continue;
+					
+					// Supports the requested endianess?
+					JITCPUEndian wantend = (endian != null ? endian :
+						(josm != null ? josm.defaultEndianess() :
+						jf.defaultEndianess()));
+					if (!jf.supportsEndianess(wantend))
+						continue;
+					
+					// Set it
+					if (fact == null)
+					{
+						fact = jf;
+						break;
+					}
 				}
 		}
 		

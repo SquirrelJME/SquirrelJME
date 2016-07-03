@@ -25,5 +25,34 @@ public enum JITCPUEndian
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the endianess which is associated with the given string.
+	 *
+	 * @param __s The string to get the endian for.
+	 * @return The endian associated with the given string.
+	 * @throws IllegalArgumentException If the input string is not known.
+	 * @since 2016/07/03
+	 */
+	public static JITCPUEndian of(String __s)
+		throws IllegalArgumentException
+	{
+		switch (__s)
+		{
+				// Big endian
+			case "big":
+				return JITCPUEndian.BIG;
+			
+				// Little endian
+			case "little":
+				return JITCPUEndian.LITTLE;
+				
+				// {@squirreljme.error ED01 Unknown endian.
+				// (The endian string)}
+			default:
+				throw new IllegalArgumentException(String.format("ED01 %s",
+					__s));
+		}
+	}
 }
 

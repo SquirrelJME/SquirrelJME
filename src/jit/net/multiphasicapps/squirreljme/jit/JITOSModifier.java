@@ -51,6 +51,14 @@ public abstract class JITOSModifier
 	}
 	
 	/**
+	 * Returns the default endianess for the given OS.
+	 *
+	 * @return The default endianess to use.
+	 * @since 2016/07/03
+	 */
+	public abstract JITCPUEndian defaultEndianess();
+	
+	/**
 	 * Returns the name of the architecture this modifies.
 	 *
 	 * @return The modifying architecture name.
@@ -59,6 +67,19 @@ public abstract class JITOSModifier
 	public final String architectureName()
 	{
 		return this.arch;
+	}
+	
+	/**
+	 * Returns the default variant of a given architecture.
+	 *
+	 * If this is not overridden then {@code "generic"} is used.
+	 *
+	 * @return The default CPU variant.
+	 * @since 2016/07/03
+	 */
+	public String defaultArchitectureVariant()
+	{
+		return "generic";
 	}
 	
 	/**
