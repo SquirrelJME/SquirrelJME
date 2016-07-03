@@ -19,3 +19,7 @@ classes.
 
 So a full triplet would appear as: `powerpc32+g1,big.linux.generic`.
 
+## 17:32
+
+Appears `StringBuilder` was missing some methods.
+

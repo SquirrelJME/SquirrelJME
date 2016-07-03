@@ -118,6 +118,16 @@ public final class StringBuilder
 		throw new Error("TODO");
 	}
 	
+	public void ensureCapacity(int __a)
+	{
+		throw new Error("TODO");
+	}
+	
+	public void getChars(int __a, int __b, char[] __c, int __d)
+	{
+		throw new Error("TODO");
+	}
+	
 	public int indexOf(String __a)
 	{
 		throw new Error("TODO");
@@ -240,6 +250,11 @@ public final class StringBuilder
 	}
 	
 	public String toString()
+	{
+		throw new Error("TODO");
+	}
+	
+	public void trimToSize()
 	{
 		throw new Error("TODO");
 	}
