@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ssjit;
+package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -90,11 +90,11 @@ class __ClassPool__
 	 * @param __dis The input stream to read for class files.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @throws SSJITException If the constant pool is malformed.
+	 * @throws JITException If the constant pool is malformed.
 	 * @since 2016/06/29
 	 */
 	__ClassPool__(DataInputStream __dis)
-		throws IOException, NullPointerException, SSJITException
+		throws IOException, NullPointerException, JITException
 	{
 		// Check
 		if (__dis == null)
@@ -104,7 +104,7 @@ class __ClassPool__
 		// pool.}
 		int count = __dis.readUnsignedShort();
 		if (count <= 0)
-			throw new SSJITException("DV05");
+			throw new JITException("DV05");
 		
 		// The set of pool tags
 		byte[] tags = new byte[count];
@@ -122,7 +122,7 @@ class __ClassPool__
 			// invocation (such as method handles or lambda expressions).}
 			if (tag == TAG_METHODHANDLE || tag == TAG_METHODTYPE ||
 				tag == TAG_INVOKEDYNAMIC)
-				throw new SSJITException("DV06");
+				throw new JITException("DV06");
 			
 			// Store tag
 			tags[i] = (byte)tag;
@@ -140,7 +140,7 @@ class __ClassPool__
 				// the constant pool is malformed.}
 				catch (UTFDataFormatException e)
 				{
-					throw new SSJITException("DV08", e);
+					throw new JITException("DV08", e);
 				}
 			}
 			
@@ -179,7 +179,7 @@ class __ClassPool__
 			// {@squirreljme.error DV07 Unknown constant pool tag. (The tag of
 			// the constant pool entry)}
 			else
-				throw new SSJITException(String.format("DV07 %d", tag));
+				throw new JITException(String.format("DV07 %d", tag));
 			
 			// Double up?
 			if (tag == TAG_LONG || tag == TAG_DOUBLE)

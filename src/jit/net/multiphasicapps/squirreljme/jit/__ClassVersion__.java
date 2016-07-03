@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ssjit;
+package net.multiphasicapps.squirreljme.jit;
 
 /**
  * This represents the class verion that a class may be.

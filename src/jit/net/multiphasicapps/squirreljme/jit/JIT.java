@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -83,8 +84,12 @@ public abstract class JIT
 		// Perform the JIT by running and parsing the class file.
 		try
 		{
-			if (true)
-				throw new IOException("TODO");	
+			// Setup data stream
+			DataInputStream dis = new DataInputStream(this._input);
+			
+			// Start decoding the class
+			__ClassDecoder__ cd = new __ClassDecoder__(this, dis);
+			cd.__decode();
 			
 			throw new Error("TODO");
 		}

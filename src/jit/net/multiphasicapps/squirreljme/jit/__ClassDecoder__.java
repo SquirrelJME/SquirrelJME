@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.ssjit;
+package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -25,7 +25,7 @@ final class __ClassDecoder__
 		0xCAFE_BABE;
 	
 	/** The owning JIT. */
-	protected final SSJIT jit;
+	protected final JIT jit;
 	
 	/** The input data source. */
 	protected final DataInputStream input;
@@ -44,7 +44,7 @@ final class __ClassDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
-	__ClassDecoder__(SSJIT __jit, DataInputStream __dis)
+	__ClassDecoder__(JIT __jit, DataInputStream __dis)
 		throws NullPointerException
 	{
 		// Check
@@ -60,11 +60,11 @@ final class __ClassDecoder__
 	 * This performs the actual decoding of the class file.
 	 *
 	 * @throws IOException On read errors.
-	 * @throws SSJITException If the class file format is not correct.
+	 * @throws JITException If the class file format is not correct.
 	 * @since 2016/06/28
 	 */
 	final void __decode()
-		throws IOException, SSJITException
+		throws IOException, JITException
 	{
 		DataInputStream input = this.input;
 		
@@ -73,7 +73,7 @@ final class __ClassDecoder__
 		// was read)}
 		int fail;
 		if ((fail = input.readInt()) != MAGIC_NUMBER)
-			throw new SSJITException(String.format("DV02 %08x", fail));
+			throw new JITException(String.format("DV02 %08x", fail));
 		
 		// {@squirreljme.error DV03 The version number of the input class file
 		// is not valid. (The version number)}
@@ -81,7 +81,7 @@ final class __ClassDecoder__
 		__ClassVersion__ version = __ClassVersion__.findVersion(cver);
 		this._version = version;
 		if (version == null)
-			throw new SSJITException(String.format("DV03 %d.%d", cver >>> 16,
+			throw new JITException(String.format("DV03 %d.%d", cver >>> 16,
 				(cver & 0xFFFF)));
 		
 		// Decode the constant pool
