@@ -70,7 +70,7 @@ public class GlobbedJar
 		this.pinfo = __pi;
 		
 		// Determine the name used
-		this.name = __pi.name().toString();
+		this.name = __pi.name().toString() + ".jar";
 	}
 	
 	/**
@@ -103,6 +103,17 @@ public class GlobbedJar
 		throws IOException, NullPointerException
 	{
 		return __create(__name, this.resources);
+	}
+	
+	/**
+	 * Returns the name of the namespace.
+	 *
+	 * @return The namespace name of this JAR.
+	 * @since 2016/07/03
+	 */
+	public String name()
+	{
+		return this.name;
 	}
 	
 	/**

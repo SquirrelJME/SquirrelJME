@@ -79,17 +79,19 @@ public abstract class JITFactory
 		/**
 		 * Creates a JIT which reads the given input class
 		 *
+		 * @param __ns The namespace where the class resides, this should be
+		 * the name of a JAR file.
 		 * @param __is The class to produce code for.
 		 * @return The JIT for this given class.
 		 * @throws IOException On read/write errors.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/07/03
 		 */
-		public final JIT produce(InputStream __is)
+		public final JIT produce(String __ns, InputStream __is)
 			throws IOException, NullPointerException
 		{
 			// Check
-			if (__is == null)
+			if (__ns == null || __is == null)
 				throw new NullPointerException("NARG");
 			
 			throw new Error("TODO");

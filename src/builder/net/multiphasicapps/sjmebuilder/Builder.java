@@ -351,7 +351,7 @@ public class Builder
 			OutputStream os = __gj.createClass(classname))
 		{
 			// Setup JIT
-			JIT jit = this.producer.produce(is);
+			JIT jit = this.producer.produce(__gj.name(), is);
 			
 			// Run the JIT
 			jit.run();

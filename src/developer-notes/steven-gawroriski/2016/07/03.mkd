@@ -4,3 +4,9 @@
 
 The producer should simplify creating instances of the JIT.
 
+## 10:08
+
+The producer will need the ability to have namespaced classes for shared
+output. This way the default set of built-in packages all can share the same
+table of contents and reduce used space.
+
