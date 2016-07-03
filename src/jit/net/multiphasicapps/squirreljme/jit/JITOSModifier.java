@@ -24,5 +24,52 @@ import java.util.ServiceLoader;
  */
 public abstract class JITOSModifier
 {
+	/** The architecture this modifies. */
+	protected final String arch;
+	
+	/** The operating system this is for. */
+	protected final String os;
+	
+	/**
+	 * Initializes the base modifier for a given operating system.
+	 *
+	 * @param __arch The architecture to modify.
+	 * @param __os The operating system this is for.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/03
+	 */
+	public JITOSModifier(String __arch, String __os)
+		throws NullPointerException
+	{
+		// Check
+		if (__arch == null || __os == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.arch = __arch;
+		this.os = __os;
+	}
+	
+	/**
+	 * Returns the name of the architecture this modifies.
+	 *
+	 * @return The modifying architecture name.
+	 * @since 2016/07/03
+	 */
+	public final String architectureName()
+	{
+		return this.arch;
+	}
+	
+	/**
+	 * Returns the name of the operating system this modifies.
+	 *
+	 * @return The operating system this modifies.
+	 * @since 2016/07/03
+	 */
+	public final String operatingSystemName()
+	{
+		return this.os;
+	}
 }
 
