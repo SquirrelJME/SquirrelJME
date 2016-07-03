@@ -31,9 +31,8 @@ import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
-import net.multiphasicapps.squirreljme.ssjit.SSJIT;
-import net.multiphasicapps.squirreljme.ssjit.SSJITFunctionProvider;
-import net.multiphasicapps.squirreljme.ssjit.SSJITVariant;
+import net.multiphasicapps.squirreljme.jit.JIT;
+import net.multiphasicapps.squirreljme.jit.JITFactory;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
@@ -84,8 +83,8 @@ public class Builder
 	protected final Map<PackageInfo, GlobbedJar> globjars =
 		new HashMap<>();
 	
-	/** Function providers that target the given system. */
-	protected final SSJITFunctionProvider[] providers;
+	/** The producer for jits. */
+	protected final JITFactory.Producer producer;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -178,16 +177,16 @@ public class Builder
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
 		
 		// Find the function providers for the desired targets
-		SSJITFunctionProvider[] providers = SSJITFunctionProvider.lookup(
+		JITFactory.Producer producer = JITFactory.createProducer(
 			arch, archvar, os);
 		
-		// {@squirreljme.error DW08 Could not find functions which are
-		// capable of targetting the given triplet. (The target triplet)}
-		if (providers == null || providers.length <= 0)
+		// {@squirreljme.error DW08 Could not find a producer which generates
+		// code for a given target. (The target triplet)}
+		if (producer == null)
 			throw new RuntimeException(String.format("DW08 %s", triplet));
 		
 		// Set
-		this.providers = providers;
+		this.producer = producer;
 	}
 	
 	/**
@@ -352,13 +351,10 @@ public class Builder
 			OutputStream os = __gj.createClass(classname))
 		{
 			// Setup JIT
-			if (true)
-				throw new Error("TODO");
-			SSJIT jit = new SSJIT(is, null/*os*/, this.archvariant,
-				this.providers);
+			JIT jit = this.producer.produce(is);
 			
 			// Run the JIT
-			jit.performJit();
+			jit.run();
 		}
 	}
 	

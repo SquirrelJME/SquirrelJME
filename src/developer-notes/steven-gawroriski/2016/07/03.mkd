@@ -1,2 +1,6 @@
 # 2016/07/03
 
+## 10:01
+
+The producer should simplify creating instances of the JIT.
+

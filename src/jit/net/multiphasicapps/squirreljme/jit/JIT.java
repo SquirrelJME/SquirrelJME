@@ -23,6 +23,7 @@ import java.io.IOException;
  * @since 2016/07/02
  */
 public abstract class JIT
+	implements Runnable
 {
 	/** One time lock. */
 	private final Object _oncelock =
@@ -30,5 +31,16 @@ public abstract class JIT
 	
 	/** One time only. */
 	private volatile boolean _once;
+	
+	/**
+	 * Runs the JIT compilation.
+	 *
+	 * @since 2016/07/03
+	 */
+	@Override
+	public final void run()
+	{
+		throw new Error("TODO");
+	}
 }
 
