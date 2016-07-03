@@ -59,6 +59,15 @@ public abstract class JITOSModifier
 	public abstract JITCPUEndian defaultEndianess();
 	
 	/**
+	 * Modifies the specified JIT to match better with this operating
+	 * system.
+	 *
+	 * @param __jit The JIT to modify.
+	 * @since 2016/07/03
+	 */
+	protected abstract void modify(JIT __jit);
+	
+	/**
 	 * Returns the name of the architecture this modifies.
 	 *
 	 * @return The modifying architecture name.
@@ -91,6 +100,23 @@ public abstract class JITOSModifier
 	public final String operatingSystemName()
 	{
 		return this.os;
+	}
+	
+	/**
+	 * Modifies the JIT for a given operating system.
+	 *
+	 * @param __jit the JIT to modify.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/03
+	 */
+	final void __modifyJIT(JIT __jit)
+		throws NullPointerException
+	{
+		// Check
+		if (__jit == null)
+			throw new NullPointerException("NARG");
+		
+		modify(__jit);
 	}
 }
 

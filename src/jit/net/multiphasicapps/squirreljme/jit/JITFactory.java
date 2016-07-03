@@ -321,6 +321,17 @@ public abstract class JITFactory
 		}
 		
 		/**
+		 * Returns the operating system modifiers.
+		 *
+		 * @return The operating system modifier.
+		 * @since 2016/07/03
+		 */
+		public final JITOSModifier operatingSystemModifier()
+		{
+			return this.os;
+		}
+		
+		/**
 		 * Creates a JIT which reads the given input class
 		 *
 		 * @param __ns The namespace where the class resides, this should be

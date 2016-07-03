@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.squirreljme.os.linux.powerpc32;
 
+import net.multiphasicapps.squirreljme.jit.JIT;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOSModifier;
 import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.powerpc32.PPCJIT;
 
 /**
  * Modifies the JIT for 32-bit PowerPC systems.
@@ -39,6 +42,25 @@ public class LinuxPPCModifier
 	public JITCPUEndian defaultEndianess()
 	{
 		return JITCPUEndian.BIG;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/03
+	 */
+	@Override
+	protected void modify(JIT __jit)
+		throws NullPointerException
+	{
+		// Check
+		if (__jit == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error DX01 Only a specific PowerPC JIT may be
+		// modified.}
+		if (!(__jit instanceof PPCJIT))
+			throw new JITException("DX01");
+		PPCJIT jit = (PPCJIT)__jit;
 	}
 }
 

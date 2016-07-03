@@ -35,6 +35,9 @@ public abstract class JIT
 	private final Object _oncelock =
 		new Object();
 	
+	/** The input source. */
+	private final InputStream _input;
+	
 	/** One time only. */
 	private volatile boolean _once;
 	
@@ -62,7 +65,11 @@ public abstract class JIT
 		this.endian = __fp.endian();
 		this.cpuvariant = __fp.architectureVariant();
 		
-		throw new Error("TODO");
+		// Set
+		this._input = __ic;
+		
+		// Modify this JIT for a given OS
+		__fp.operatingSystemModifier().__modifyJIT(this);
 	}
 	
 	/**
@@ -73,7 +80,20 @@ public abstract class JIT
 	@Override
 	public final void run()
 	{
-		throw new Error("TODO");
+		// Perform the JIT by running and parsing the class file.
+		try
+		{
+			if (true)
+				throw new IOException("TODO");	
+			
+			throw new Error("TODO");
+		}
+		
+		// {@squirreljme.error ED02 Failed to read the class file.}
+		catch (IOException e)
+		{
+			throw new JITException("ED02", e);
+		}
 	}
 }
 
