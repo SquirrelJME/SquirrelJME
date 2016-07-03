@@ -61,20 +61,41 @@ public abstract class JITFactory
 			throw new NullPointerException("NARG");
 		
 		// Look for a JIT service for the given architecture+variant
+		JITFactory fact = null;
 		ServiceLoader<JITFactory> jitservices = _JIT_SERVICES;
 		synchronized (jitservices)
 		{
-			if (true)
-				throw new Error("TODO");
+			// Go through all JITs for architectures
+			for (JITFactory jf : jitservices)
+				if (__arch.equals(jf.architectureName()))
+				{
+					// Set it
+					if (fact == null)
+						fact = jf;
+				}
 		}
 		
+		// Not found, fail
+		if (fact == null)
+			return null;
+		
 		// Look for the operating system service for the requested OS
+		JITOSModifier josm = null;
 		ServiceLoader<JITOSModifier> osservices = _OS_SERVICES;
 		synchronized (osservices)
 		{
-			if (true)
-				throw new Error("TODO");
+			for (JITOSModifier os : osservices)
+				if (__arch.equals(os.architectureName()) &&
+					__os.equals(os.operatingSystemName()))
+				{
+					if (josm == null)
+						josm = os;
+				}
 		}
+		
+		// Not found, fail
+		if (fact == null)
+			return null;
 		
 		throw new Error("TODO");
 	}

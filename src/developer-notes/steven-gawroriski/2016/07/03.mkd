@@ -10,3 +10,8 @@ The producer will need the ability to have namespaced classes for shared
 output. This way the default set of built-in packages all can share the same
 table of contents and reduce used space.
 
+## 11:56
+
+Actually what I can do is have a freeform JIT where there are no associated
+classes.
+
