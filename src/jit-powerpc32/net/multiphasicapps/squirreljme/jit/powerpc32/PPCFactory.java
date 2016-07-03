@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.powerpc32;
 
+import java.io.InputStream;
+import net.multiphasicapps.squirreljme.jit.JIT;
 import net.multiphasicapps.squirreljme.jit.JITFactory;
 import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
@@ -50,6 +52,17 @@ public class PPCFactory
 	public JITCPUEndian defaultEndianess()
 	{
 		return JITCPUEndian.BIG;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/03
+	 */
+	@Override
+	protected JIT produceJIT(JITFactory.Producer __fp,
+		String __ns, InputStream __src)
+	{
+		return new PPCJIT(__fp, __ns, __src);
 	}
 	
 	/**

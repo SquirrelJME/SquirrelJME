@@ -70,6 +70,18 @@ public abstract class JITFactory
 	public abstract JITCPUEndian defaultEndianess();
 	
 	/**
+	 * Produces a JIT which derives details from the given producer.
+	 *
+	 * @param __fp The producer for the JIT.
+	 * @param __ns The class namespace.
+	 * @param __src The source class file to JIT on.
+	 * @return The JIT for the given producer.
+	 * @since 2016/07/03
+	 */
+	protected abstract JIT produceJIT(JITFactory.Producer __fp,
+		String __ns, InputStream __src);
+	
+	/**
 	 * Checks whether the given endianess is supported.
 	 *
 	 * @param __end The endianess to check support for.
@@ -275,6 +287,17 @@ public abstract class JITFactory
 		}
 		
 		/**
+		 * Returns the architecture variant to target.
+		 *
+		 * @return The architecture variant used.
+		 * @since 2016/07/03
+		 */
+		public final JITCPUVariant architectureVariant()
+		{
+			return this.archvar;
+		}
+		
+		/**
 		 * Returns the dublet of the target, which does not contain the
 		 * operating system variant.
 		 *
@@ -284,6 +307,17 @@ public abstract class JITFactory
 		public final String doublet()
 		{
 			return this.doublet;
+		}
+		
+		/**
+		 * Returns the endian to target.
+		 *
+		 * @return The target endianess.
+		 * @since 2016/07/03
+		 */
+		public final JITCPUEndian endian()
+		{
+			return this.endian;
 		}
 		
 		/**
@@ -304,7 +338,8 @@ public abstract class JITFactory
 			if (__ns == null || __is == null)
 				throw new NullPointerException("NARG");
 			
-			throw new Error("TODO");
+			// Create it
+			return this.factory.produceJIT(this, __ns, __is);
 		}
 	}
 }
