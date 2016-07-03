@@ -32,13 +32,26 @@ public abstract class JITFactory
 	private static final ServiceLoader<JITOSModifier> _OS_SERVICES =
 		ServiceLoader.<JITOSModifier>load(JITOSModifier.class);
 	
+	/** The name of the architecture. */
+	protected final String archname;
+	
 	/**
-	 * Returns the name of the architecture this compiles for.
+	 * Initializes the base factory.
 	 *
-	 * @return The name of the architecture.
-	 * @since 2016/07/02
+	 * @param __arch The name of the architecture this targets.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/03
 	 */
-	public abstract String architectureName();
+	public JITFactory(String __arch)
+		throws NullPointerException
+	{
+		// Check
+		if (__arch == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.archname = __arch;
+	}
 	
 	/**
 	 * Returns the default variant to use when targetting a given architecture.
@@ -61,9 +74,11 @@ public abstract class JITFactory
 	 *
 	 * @param __end The endianess to check support for.
 	 * @return {@code true} if the specified endianess is supported.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/03
 	 */
-	public abstract boolean supportsEndianess(JITCPUEndian __end);
+	public abstract boolean supportsEndianess(JITCPUEndian __end)
+		throws NullPointerException;
 	
 	/**
 	 * Returns an array of variants which are supported by a given CPU.
@@ -72,6 +87,17 @@ public abstract class JITFactory
 	 * @since 2016/07/03
 	 */
 	public abstract JITCPUVariant[] variants();
+	
+	/**
+	 * Returns the name of the architecture this compiles for.
+	 *
+	 * @return The name of the architecture.
+	 * @since 2016/07/02
+	 */
+	public final String architectureName()
+	{
+		return this.archname;
+	}
 	
 	/**
 	 * Locates the given variant using the specified name.

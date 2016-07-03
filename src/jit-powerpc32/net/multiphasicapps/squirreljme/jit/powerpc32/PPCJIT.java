@@ -17,7 +17,7 @@ import net.multiphasicapps.squirreljme.jit.JIT;
  *
  * @since 2016/07/02
  */
-public class PowerPC32JIT
+public class PPCJIT
 	extends JIT
 {
 }

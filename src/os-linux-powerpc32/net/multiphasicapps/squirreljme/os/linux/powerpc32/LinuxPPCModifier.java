@@ -8,26 +8,37 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.powerpc32;
+package net.multiphasicapps.squirreljme.os.linux.powerpc32;
 
-import net.multiphasicapps.squirreljme.jit.JITFactory;
+import net.multiphasicapps.squirreljme.jit.JITOSModifier;
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 
 /**
- * This factory produces JITs which generate 32-bit PowerPC code.
+ * Modifies the JIT for 32-bit PowerPC systems.
  *
- * @since 2016/07/02
+ * @since 2016/07/03
  */
-public class PowerPC32JITFactory
-	extends JITFactory
+public class LinuxPPCModifier
+	extends JITOSModifier
 {
 	/**
+	 * Initializes the modifier.
+	 *
+	 * @since 2016/07/03
+	 */
+	public LinuxPPCModifier()
+	{
+		super("powerpc32", "linux");
+	}
+	
+	/**
 	 * {@inheritDoc}
-	 * @since 2016/07/02
+	 * @since 2016/07/03
 	 */
 	@Override
-	public String architectureName()
+	public JITCPUEndian defaultEndianess()
 	{
-		return "powerpc32";
+		return JITCPUEndian.BIG;
 	}
 }
 
