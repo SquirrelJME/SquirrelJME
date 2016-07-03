@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: os-linux-powerpc32
 X-SquirrelJME-UUID: 5f510056-3e18-445d-baf3-fb4456687c78
-X-SquirrelJME-Depends: os-linux, ssjit-powerpc32, jit-powerpc32
+X-SquirrelJME-Depends: os-linux, jit-powerpc32
 X-SquirrelJME-Error: DX
 X-SquirrelJME-Target-OS: powerpc32.linux.generic
 LIBlet-Title: Linux OS Support (PowerPC)
