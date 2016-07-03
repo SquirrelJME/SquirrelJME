@@ -172,8 +172,14 @@ public abstract class JITFactory
 				}
 		}
 		
+		// Missing?
+		if (josm == null)
+			return null;
+		
 		// Look for a JIT service for the given architecture+variant
 		JITFactory fact = null;
+		JITCPUVariant var = null;
+		JITCPUEndian endy = null;
 		ServiceLoader<JITFactory> jitservices = _JIT_SERVICES;
 		synchronized (jitservices)
 		{
@@ -185,7 +191,7 @@ public abstract class JITFactory
 					String wantvar = (__archvar.equals("generic") ?
 						josm.defaultArchitectureVariant() :
 						jf.defaultArchitectureVariant().variantName());
-					JITCPUVariant var = jf.getVariant(wantvar);
+					var = jf.getVariant(wantvar);
 					if (var == null)
 						continue;
 					
@@ -195,6 +201,7 @@ public abstract class JITFactory
 						jf.defaultEndianess()));
 					if (!jf.supportsEndianess(wantend))
 						continue;
+					endy = wantend;
 					
 					// Set it
 					if (fact == null)
@@ -209,7 +216,8 @@ public abstract class JITFactory
 		if (fact == null)
 			return null;
 		
-		throw new Error("TODO");
+		// Setup producer
+		return new Producer(josm, fact, var, endy);
 	}
 	
 	/**
@@ -220,13 +228,62 @@ public abstract class JITFactory
 	 */
 	public static final class Producer
 	{
+		/** The target operating system. */
+		protected final JITOSModifier os;
+		
+		/** The factory to use. */
+		protected final JITFactory factory;
+		
+		/** The architecture variant. */
+		protected final JITCPUVariant archvar;
+		
+		/** The endian of the CPU. */
+		protected final JITCPUEndian endian;
+		
+		/** The basic doublet. */
+		protected final String doublet;
+		
 		/**
 		 * Initializes the producer.
 		 *
+		 * @param __os The operating system used.
+		 * @param __fact The factory to create a JIT for.
+		 * @param __var The CPU variant to use.
+		 * @param __end The endianess of the CPU.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2016/07/03
 		 */
-		private Producer()
+		private Producer(JITOSModifier __os, JITFactory __fact,
+			JITCPUVariant __var, JITCPUEndian __end)
+			throws NullPointerException
 		{
+			// Check
+			if (__os == null || __fact == null || __var == null ||
+				__end == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.os = __os;
+			this.factory = __fact;
+			this.archvar = __var;
+			this.endian = __end;
+			
+			// Setup the double
+			this.doublet = __fact.architectureName() + "+" +
+				__var.variantName() + "," + __end.endianName() + "." +
+				__os.operatingSystemName();
+		}
+		
+		/**
+		 * Returns the dublet of the target, which does not contain the
+		 * operating system variant.
+		 *
+		 * @return The doublet.
+		 * @since 2016/07/03
+		 */
+		public final String doublet()
+		{
+			return this.doublet;
 		}
 		
 		/**

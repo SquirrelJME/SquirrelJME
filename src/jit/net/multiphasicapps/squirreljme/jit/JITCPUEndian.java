@@ -18,13 +18,45 @@ package net.multiphasicapps.squirreljme.jit;
 public enum JITCPUEndian
 {
 	/** Big endian (most significant bit first). */
-	BIG,
+	BIG("big"),
 	
 	/** Little endian (least significant bit first). */
-	LITTLE,
+	LITTLE("little"),
 	
 	/** End. */
 	;
+	
+	/** The name of the endian. */
+	protected final String name;
+	
+	/**
+	 * Sets the name of the endianess.
+	 *
+	 * @param __n The endian name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/03
+	 */
+	private JITCPUEndian(String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.name = __n;
+	}
+	
+	/**
+	 * Returns the name of the endianess.
+	 *
+	 * @return The endianess name.
+	 * @since 2016/07/03
+	 */
+	public final String endianName()
+	{
+		return this.name;
+	}
 	
 	/**
 	 * Returns the endianess which is associated with the given string.

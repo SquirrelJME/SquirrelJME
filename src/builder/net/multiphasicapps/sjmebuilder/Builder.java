@@ -67,6 +67,9 @@ public class Builder
 	/** The target variant. */
 	protected final String variant;
 	
+	/** The doublet. */
+	protected final String doublet;
+	
 	/** The triplet. */
 	protected final String triplet;
 	
@@ -130,8 +133,6 @@ public class Builder
 		// Build triplet
 		String triplet = __arch + "+" + archvar + "." + __os + "." + __var;
 		String targettriplet = __arch + "." + __os + "." + __var;
-		this.triplet = triplet;
-		this.targettriplet = targettriplet;
 		
 		System.err.printf("DEBUG -- Target: %s%n", triplet);
 		
@@ -187,6 +188,15 @@ public class Builder
 		
 		// Set
 		this.producer = producer;
+		
+		// Finalize doublet and trplet
+		String doublet = producer.doublet();
+		this.doublet = doublet;
+		this.triplet = doublet + "." + __var;
+		this.targettriplet = targettriplet;
+		
+		// Debug
+		System.err.printf("DEBUG -- %s > %s%n", this.doublet, this.triplet);
 	}
 	
 	/**
