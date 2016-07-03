@@ -23,6 +23,6 @@ public interface JITCPUVariant
 	 * @return The name of the variant.
 	 * @since 2016/07/02
 	 */
-	public abstract String name();
+	public abstract String variantName();
 }
 
