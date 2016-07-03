@@ -25,8 +25,12 @@ import java.util.ServiceLoader;
 public abstract class JITFactory
 {
 	/** Service for JIT factory lookup. */
-	private static final ServiceLoader<JITFactory> _SERVICES =
+	private static final ServiceLoader<JITFactory> _JIT_SERVICES =
 		ServiceLoader.<JITFactory>load(JITFactory.class);
+	
+	/** OS modifiers. */
+	private static final ServiceLoader<JITOSModifier> _OS_SERVICES =
+		ServiceLoader.<JITOSModifier>load(JITOSModifier.class);
 	
 	/**
 	 * Returns the name of the architecture this compiles for.
@@ -55,6 +59,22 @@ public abstract class JITFactory
 		// Check
 		if (__arch == null || __archvar == null || __os == null)
 			throw new NullPointerException("NARG");
+		
+		// Look for a JIT service for the given architecture+variant
+		ServiceLoader<JITFactory> jitservices = _JIT_SERVICES;
+		synchronized (jitservices)
+		{
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Look for the operating system service for the requested OS
+		ServiceLoader<JITOSModifier> osservices = _OS_SERVICES;
+		synchronized (osservices)
+		{
+			if (true)
+				throw new Error("TODO");
+		}
 		
 		throw new Error("TODO");
 	}
