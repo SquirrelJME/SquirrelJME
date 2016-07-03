@@ -15,3 +15,7 @@ table of contents and reduce used space.
 Actually what I can do is have a freeform JIT where there are no associated
 classes.
 
+## 14:12
+
+So a full triplet would appear as: `powerpc32+g1,big.linux.generic`.
+
