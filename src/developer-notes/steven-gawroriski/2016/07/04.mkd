@@ -77,3 +77,11 @@ emulate hardware. I will write an actual emulator which could run operating
 systems and uses BIOSes. When it comes to the simulator, they will just be
 based on the emulator except that it would provide some high level wrapping.
 
+## 17:59
+
+Actually being a bit higher than userspace would be handy. So I suppose I
+should go for a high level system emulator. This way I can run Linux itself
+while I can drop down to lower levels and run Linux programs itself. So I
+suppose my initial goal should be running a Linux kernel or perhaps even the
+Mac OS X kernel.
+
