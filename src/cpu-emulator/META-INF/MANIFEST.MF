@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: cpu-emulator
+X-SquirrelJME-UUID: 5e806a4f-c1f7-4d21-8c1e-671572a7e4ce
+X-SquirrelJME-Depends: cldc-compact, jit
+X-SquirrelJME-Error: EF
+LIBlet-Title: CPU Emulator
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160704
+LIBlet-Description: This package contains the base for 
+ generic CPU emulators.
+
