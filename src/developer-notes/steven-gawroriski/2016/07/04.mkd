@@ -42,3 +42,9 @@ Simulation starting details would best be placed into a single object, this
 way I can add more potentially in the future without requiring massive
 simulator changes.
 
+## 16:32
+
+I likely do not need `EmulatedCPU` at all, it could really just fit within
+`SimulationThread` which is initialized and emulates a given CPU such as for
+PowerPC.
+
