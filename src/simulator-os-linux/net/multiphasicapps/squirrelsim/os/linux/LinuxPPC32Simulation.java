@@ -10,53 +10,30 @@
 
 package net.multiphasicapps.squirrelsim.os.linux;
 
-import java.nio.file.Path;
-import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
-import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
-import net.multiphasicapps.squirreljme.jit.powerpc32.PPCVariant;
 import net.multiphasicapps.squirrelsim.Simulation;
 import net.multiphasicapps.squirrelsim.SimulationGroup;
 import net.multiphasicapps.squirrelsim.SimulationStartConfig;
 import net.multiphasicapps.squirrelsim.SimulationStartException;
 
 /**
- * This provides support for simulating 32-bit PowerPC Linux systems.
+ * This simulates a 32-bit PowerPC Linux system.
  *
  * @since 2016/07/04
  */
-public class LinuxPPC32Provider
-	extends LinuxProvider
+public class LinuxPPC32Simulation
+	extends LinuxSimulation
 {
 	/**
-	 * Initializes the base 32-bit PowerPC Linux provider.
+	 * Initializes the Linux simulation.
 	 *
+	 * @param __sc The starting configuration.
+	 * @throws SimulationStartException If the simulation failed to start.
 	 * @since 2016/07/04
 	 */
-	public LinuxPPC32Provider()
+	public LinuxPPC32Simulation(SimulationStartConfig __sc)
+		throws SimulationStartException
 	{
-		this("generic");
-	}
-	
-	/**
-	 * Simulates a variant of a Linux system.
-	 *
-	 * @param __osvar The variant of Linux to use.
-	 * @since 2016/07/04
-	 */
-	public LinuxPPC32Provider(String __osvar)
-	{
-		super("powerpc32", __osvar);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/04
-	 */
-	@Override
-	public Simulation create(SimulationStartConfig __sc)
-		throws NullPointerException, SimulationStartException
-	{
-		return new LinuxPPC32Simulation(__sc);
+		super(__sc);
 	}
 }
 

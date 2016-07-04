@@ -26,23 +26,16 @@ public abstract class Simulation
 	/**
 	 * This initializes the base simulation.
 	 *
-	 * @param __grp The owning simulation group.
-	 * @param __prov The provider of the simulation.
-	 * @param __archvar The architecture variant.
-	 * @param __archend The endian of the CPU.
-	 * @param __prog The program to run.
-	 * @param __args The program arguments.
+	 * @param __sc The configuration used to start the simulation.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SimulationStartException If the simulation failed to start.
 	 * @since 2016/06/14
 	 */
-	public Simulation(SimulationGroup __grp, SimulationProvider __prov,
-		JITCPUVariant __archvar, JITCPUEndian __archend, Path __prog,
-		String... __args)
-		throws NullPointerException
+	public Simulation(SimulationStartConfig __sc)
+		throws NullPointerException, SimulationStartException
 	{
 		// Check
-		if (__grp == null || __prov == null || __archvar == null ||
-			__archend == null || __prog == null || __args == null)
+		if (__sc == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
