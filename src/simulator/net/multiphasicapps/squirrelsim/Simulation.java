@@ -53,15 +53,6 @@ public abstract class Simulation
 		try
 		{
 			this.executablebytes = __sc.executableBytes();
-			
-			// Debug
-			byte[] eb = this.executablebytes;
-			System.err.printf("DEBUG -- %d %02x%02x%02x%02x%n",
-				eb.length,
-				(eb.length > 0 ? eb[0] : 0),
-				(eb.length > 1 ? eb[1] : 0),
-				(eb.length > 2 ? eb[2] : 0),
-				(eb.length > 3 ? eb[3] : 0));
 		}
 		
 		// {@squirreljme.error BV05 Could not load the bytes which make up
