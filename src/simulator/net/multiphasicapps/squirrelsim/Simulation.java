@@ -61,8 +61,6 @@ public abstract class Simulation
 		{
 			throw new SimulationStartException("BV05", e);
 		}
-		
-		throw new Error("TODO");
 	}
 	
 	/**
