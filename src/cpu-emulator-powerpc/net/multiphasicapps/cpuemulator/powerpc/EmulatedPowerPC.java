@@ -23,13 +23,10 @@ import net.multiphasicapps.squirreljme.jit.powerpc32.PPCVariant;
 public class EmulatedPowerPC
 	extends EmulatedCPU
 {
-	/** The cached memory accessor. */
-	protected final CachedMemoryAccessor cachedaccessor;
-	
 	/**
 	 * Initializes the emulated PowerPC CPU.
 	 *
-	 * @param __cma The memory accessor which emulates a cache.
+	 * @param __ma Accessor to memory for the system.
 	 * @param __var The variant of the CPU.
 	 * @param __end The endianess of the CPU.
 	 * @param __bits The number of CPU bits.
@@ -38,18 +35,15 @@ public class EmulatedPowerPC
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/04
 	 */
-	public EmulatedPowerPC(CachedMemoryAccessor __cma, PPCVariant __var,
+	public EmulatedPowerPC(MemoryAccessor __ma, PPCVariant __var,
 		JITCPUEndian __end, int __bits)
 		throws NullPointerException
 	{
-		super(__cma);
+		super(__ma);
 		
 		// Check
 		if (__var == null || __end == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		this.cachedaccessor = __cma;
 		
 		throw new Error("TODO");
 	}

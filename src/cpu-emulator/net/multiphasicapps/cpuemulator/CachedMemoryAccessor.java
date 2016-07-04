@@ -19,15 +19,25 @@ package net.multiphasicapps.cpuemulator;
 public class CachedMemoryAccessor
 	extends MemoryAccessor
 {
+	/** The memory to access. */
+	protected final CPUMemory memory;
+	
 	/**
 	 * Initializes the cached memory accessor.
 	 *
 	 * @param __mem The memory to access.
+	 * @throws NullPointerException On null arguments
 	 * @since 2016/07/04
 	 */
 	public CachedMemoryAccessor(CPUMemory __mem)
+		throws NullPointerException
 	{
-		super(__mem);
+		// Check
+		if (__mem == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.memory = __mem;
 	}
 }
 

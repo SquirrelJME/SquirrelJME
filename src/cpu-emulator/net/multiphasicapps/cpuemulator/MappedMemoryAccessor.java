@@ -11,11 +11,25 @@
 package net.multiphasicapps.cpuemulator;
 
 /**
- * This is the base class for a memory accessor.
+ * This is an accessor which allows mapping of memory via .
  *
  * @since 2016/07/04
  */
-public abstract class MemoryAccessor
+public class MappedMemoryAccessor
+	extends MemoryAccessor
 {
+	/** The normal accessor to memory. */
+	protected final MemoryAccessor accessor;
+	
+	public MappedMemoryAccessor(MemoryAccessor __ma)
+		throws NullPointerException
+	{
+		// Check
+		if (__ma == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.accessor = __ma;
+	}
 }
 
