@@ -38,6 +38,29 @@ public class SimulationGroup
 	}
 	
 	/**
+	 * Creates a new simulation with the given triplet, program, and arguments
+	 * to the program. The created simulation is added to the simulation list.
+	 *
+	 * @param __triplet The triplet to use.
+	 * @param __program The program to use.
+	 * @param __args The program arguments.
+	 * @return The simulation.
+	 * @throws IllegalArgumentException If the triplet is unknown.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/04
+	 */
+	public final Simulation create(String __triplet, String __program,
+		String... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__triplet == null || __program == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Goes through all simulations and runs a single cycle.
 	 *
 	 * @return {@code true} if there are simulations still running.

@@ -48,15 +48,21 @@ public class Main
 		if (__args == null)
 			__args = new String[0];
 		
-		// {@squirreljme.error BV01 Usage: {@code -T(triplet) program
+		// {@squirreljme.error BV01 Usage: {@code triplet program
 		// [arguments...]}. The triplet is a SquirrelJME compatible target
 		// triplet which represents a given system.}
 		int n;
-		if ((n = __args.length) <= 0)
+		if ((n = __args.length) <= 1)
 			throw new IllegalArgumentException("BV01");
 		
 		// Setup simulation group
 		SimulationGroup sg = new SimulationGroup();
+		
+		// Start new simulation
+		String[] xargs = new String[n - 2];
+		for (int i = 0, j = 2; j < n; i++, j++)
+			xargs[i] = __args[j];
+		sg.create(__args[0], __args[1], xargs);
 		
 		// Run cycles until complete
 		while (sg.runCycle())
