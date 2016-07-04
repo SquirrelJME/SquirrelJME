@@ -48,3 +48,14 @@ I likely do not need `EmulatedCPU` at all, it could really just fit within
 `SimulationThread` which is initialized and emulates a given CPU such as for
 PowerPC.
 
+## 16:56
+
+However, I really need a single emulation core, otherwise I will end up
+writing many PowerPC CPU implementations. One thing I could use however is
+a generic CPU emulation framework. Not part of the simulator but completely
+different. The simualtor itself could use this emulation layer however. I could
+also have native emulators available so I can run other operating systems
+within them, for example Linux. I could use the emulators in a way where I
+could support specific systems in them. I could also just have a much stronger
+simulation core also.
+
