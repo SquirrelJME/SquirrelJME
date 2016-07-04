@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: emulator
+X-SquirrelJME-UUID: 440e4cd3-7a19-4717-9336-01a27b6a30e1
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: EH
+LIBlet-Title: Computer Emulator
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160704
+LIBlet-Description: This project contains an emulator 
+ which is capable of emulating system hardware.
+
