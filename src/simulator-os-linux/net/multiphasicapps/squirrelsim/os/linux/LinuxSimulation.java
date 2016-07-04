@@ -34,8 +34,6 @@ public abstract class LinuxSimulation
 		throws SimulationStartException
 	{
 		super(__sc);
-		
-		throw new Error("TODO");
 	}
 }
 

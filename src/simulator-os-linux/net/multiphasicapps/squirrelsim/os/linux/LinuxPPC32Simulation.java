@@ -34,8 +34,6 @@ public class LinuxPPC32Simulation
 		throws SimulationStartException
 	{
 		super(__sc);
-		
-		throw new Error("TODO");
 	}
 }
 
