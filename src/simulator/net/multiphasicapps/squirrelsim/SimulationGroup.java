@@ -130,7 +130,18 @@ public class SimulationGroup
 			for (SimulationProvider sp : services)
 				try
 				{
-					return sp.create(ssc);
+					// Create
+					Simulation sim = sp.create(ssc);
+					
+					// Add to simulation list
+					List<Simulation> simulations = _simulations;
+					synchronized (simulations)
+					{
+						simulations.add(sim);
+					}
+					
+					// Return
+					return sim;
 				}
 				catch (SimulationStartException e)
 				{
