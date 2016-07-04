@@ -1,0 +1,9 @@
+# 2016/07/04
+
+## 11:37
+
+I need to fix the simulator so that instead it is a service based interface
+which provides operating system support based on architectures and such
+instead of not as concrete sets of data. Get rid of all the providers and just
+have a `SimulationProvider` which can create simulations as such.
+
