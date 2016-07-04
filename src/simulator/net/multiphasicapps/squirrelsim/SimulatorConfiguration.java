@@ -29,35 +29,18 @@ public final class SimulatorConfiguration
 	
 	/** The default size of memory. */
 	public static final long DEFAULT_MEMORY_SIZE =
-		25_165_824L;
+		Long.MIN_VALUE;
 	
 	/** Default instructions per second. */
 	public static final long DEFAULT_IPS =
-		133_000_000L;
-	
-	/** CPU providers which are available for usage. */
-	private static final ServiceLoader<CPUProvider> _CPU_SERVICES =
-		ServiceLoader.<CPUProvider>load(CPUProvider.class);
-	
-	/** OS providers which may be used. */
-	private static final ServiceLoader<OSProvider> _OS_SERVICES =
-		ServiceLoader.<OSProvider>load(OSProvider.class);
+		Long.MIN_VALUE;
 	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
 	
-	/** The current OS to use. */
-	private volatile OSProvider _os;
-	
-	/** The OS variant. */
-	private volatile String _osvar;
-	
-	/** The current architecture to use. */
-	private volatile CPUProvider _cpu;
-	
-	/** The CPU variant. */
-	private volatile String _cpuvar;
+	/** The target triplet to simulate. */
+	private volatile String _triplet;
 	
 	/** The amount of memory to use. */
 	private volatile long _memory =
@@ -165,76 +148,25 @@ public final class SimulatorConfiguration
 		if (__k == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		// Split provider and variant
-		int vcol = __v.indexOf(':');
-		String xpro = (vcol >= 0 ? __v.substring(0, vcol) : __v);
-		String xvar = (vcol >= 0 ? __v.substring(vcol + 1) : "");
-		
 		// Depends on the option
 		Object lock = this.lock;
 		switch (__k)
 		{
 				// The architecture to simulate
-			case "system.arch":
-				{
-					// Find service
-					CPUProvider cp = null;
-					ServiceLoader<CPUProvider> cpusvl = _CPU_SERVICES;
-					synchronized (cpusvl)
-					{
-						for (CPUProvider x : cpusvl)
-							if (x.name().equals(xpro))
-							{
-								cp = x;
-								break;
-							}
-					}
-					
-					// {@squirreljme.error BV09 Unknown CPU. (The CPU name)}
-					if (cp == null)
-						throw new IllegalArgumentException(String.format(
-							"BV09 %s", __v));
-					
-					// Set
-					__setCPU(cp, xvar);
-				}
-				break;
-				
-				// The operating system to simulate
-			case "system.os":
-				{
-					// Find service
-					OSProvider op = null;
-					ServiceLoader<OSProvider> ossvl = _OS_SERVICES;
-					synchronized (ossvl)
-					{
-						for (OSProvider x : ossvl)
-							if (x.name().equals(xpro))
-							{
-								op = x;
-								break;
-							}
-					}
-					
-					// {@squirreljme.error BV0a Unknown operating system.
-					// (The operating system name)}
-					if (op == null)
-						throw new IllegalArgumentException(String.format(
-							"BV0a %s", __v));
-					
-					// Set
-					__setOS(op, xvar);
-				}
+			case "system.triplet":
+				__setTriplet(__v);
 				break;
 				
 				// The amount of memory which is available
 			case "system.memory":
-				__setMemorySize(__decodeBytesLong(__v));
+				__setMemorySize((__v.equals("default") ? DEFAULT_MEMORY_SIZE :
+					__decodeBytesLong(__v)));
 				break;
 				
 				// The instructions per second for the given system
 			case "system.ips":
-				__setIPS(__decodeSiLong(__v));
+				__setIPS((__v.equals("default") ? DEFAULT_IPS :
+					__decodeSiLong(__v)));
 				break;
 				
 				// The hostname of the simulated system
@@ -247,6 +179,111 @@ public final class SimulatorConfiguration
 			default:
 				throw new IllegalArgumentException(String.format("BV06 %s %s",
 					__k, __v));
+		}
+	}
+	
+	/**
+	 * Sets the hostname of the system being simulated.
+	 *
+	 * @param __v The simulated hostname.
+	 * @return The old hostname
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/06/14
+	 */
+	private String __setHostName(String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			String rv = this._hostname;
+			
+			this._hostname = __v;
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * This sets the logical number of instructions which execute within a
+	 * single second.
+	 *
+	 * @param __v The number of instructions that execute in a second.
+	 * @return The former instructions per second.
+	 * @throws IllegalArgumentException If the requested number of instructions
+	 * to execute in a single second is zero or negative.
+	 * @since 2016/06/14
+	 */
+	private long __setIPS(long __v)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BV0f Cannot execute zero or negative number of
+		// instructions per second. (The requested number of instructions per
+		// second)}
+		if (__v <= 0 && __v != DEFAULT_IPS)
+			throw new IllegalArgumentException(String.format("BV0f %d", __v));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			long rv = this._ips;
+			
+			this._ips = __v;
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Sets the number of bytes to use for programs which are running.
+	 *
+	 * @param __b The number of bytes to use per program.
+	 * @return The former memory size.
+	 * @throws IllegalArgumentException If the size of memory is zero or
+	 * negative.
+	 * @since 2016/06/14
+	 */
+	private long __setMemorySize(long __b)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BV0e The size of memory cannot be zero or
+		// negative. (The requested size of memory)}
+		if (__b <= 0 && __b != DEFAULT_MEMORY_SIZE)
+			throw new IllegalArgumentException(String.format("BV0e %d", __b));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			long rv = this._memory;
+			
+			this._memory = __b;
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Sets the triplet which is to be simulated.
+	 *
+	 * @param __t The triplet system to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/04
+	 */
+	private void __setTriplet(String __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._triplet = __t;
 		}
 	}
 	
@@ -424,136 +461,6 @@ public final class SimulatorConfiguration
 		{
 			throw new IllegalArgumentException(String.format("BV07 %s", __s),
 				e);
-		}
-	}
-	
-	/**
-	 * Sets the CPU which is to be simulated.
-	 *
-	 * @param __o The CPU to use.
-	 * @param __v The variant of the CPU.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/14
-	 */
-	private void __setCPU(CPUProvider __o, String __v)
-		throws NullPointerException
-	{
-		// Check
-		if (__o == null || __v == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			this._cpu = __o;
-			this._cpuvar = __v;
-		}
-	}
-	
-	/**
-	 * Sets the hostname of the system being simulated.
-	 *
-	 * @param __v The simulated hostname.
-	 * @return The old hostname
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/14
-	 */
-	private String __setHostName(String __v)
-		throws NullPointerException
-	{
-		// Check
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			String rv = this._hostname;
-			
-			this._hostname = __v;
-			
-			return rv;
-		}
-	}
-	
-	/**
-	 * This sets the logical number of instructions which execute within a
-	 * single second.
-	 *
-	 * @param __v The number of instructions that execute in a second.
-	 * @return The former instructions per second.
-	 * @throws IllegalArgumentException If the requested number of instructions
-	 * to execute in a single second is zero or negative.
-	 * @since 2016/06/14
-	 */
-	private long __setIPS(long __v)
-		throws IllegalArgumentException
-	{
-		// {@squirreljme.error BV0f Cannot execute zero or negative number of
-		// instructions per second. (The requested number of instructions per
-		// second)}
-		if (__v <= 0)
-			throw new IllegalArgumentException(String.format("BV0f %d", __v));
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			long rv = this._ips;
-			
-			this._ips = __v;
-			
-			return rv;
-		}
-	}
-	
-	/**
-	 * Sets the number of bytes to use for programs which are running.
-	 *
-	 * @param __b The number of bytes to use per program.
-	 * @return The former memory size.
-	 * @throws IllegalArgumentException If the size of memory is zero or
-	 * negative.
-	 * @since 2016/06/14
-	 */
-	private long __setMemorySize(long __b)
-		throws IllegalArgumentException
-	{
-		// {@squirreljme.error BV0e The size of memory cannot be zero or
-		// negative. (The requested size of memory)}
-		if (__b <= 0)
-			throw new IllegalArgumentException(String.format("BV0e %d", __b));
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			long rv = this._memory;
-			
-			this._memory = __b;
-			
-			return rv;
-		}
-	}
-	
-	/**
-	 * Sets the operating which is to be simulated.
-	 *
-	 * @param __o The operating system to use.
-	 * @param __v The variant of the operating system.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/14
-	 */
-	private void __setOS(OSProvider __o, String __v)
-		throws NullPointerException
-	{
-		// Check
-		if (__o == null || __v == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock
-		synchronized (this.lock)
-		{
-			this._os = __o;
-			this._osvar = __v;
 		}
 	}
 }
