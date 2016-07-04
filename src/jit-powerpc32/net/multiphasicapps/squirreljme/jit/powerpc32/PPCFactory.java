@@ -12,9 +12,9 @@ package net.multiphasicapps.squirreljme.jit.powerpc32;
 
 import java.io.InputStream;
 import net.multiphasicapps.squirreljme.jit.JIT;
-import net.multiphasicapps.squirreljme.jit.JITFactory;
 import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
+import net.multiphasicapps.squirreljme.jit.JITFactory;
 
 /**
  * This factory produces JITs which generate 32-bit PowerPC code.

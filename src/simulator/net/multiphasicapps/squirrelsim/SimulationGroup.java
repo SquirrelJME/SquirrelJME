@@ -13,6 +13,10 @@ package net.multiphasicapps.squirrelsim;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
+import net.multiphasicapps.squirreljme.jit.JITFactory;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 
 /**
@@ -81,10 +85,25 @@ public class SimulationGroup
 				__triplet));
 		
 		// Extract architecture target
-		String arch = fullarch.substring(0, aplu),
-			archvar = fullarch.substring(aplu + 1, acom),
-			archend = fullarch.substring(acom + 1);
+		String arch = fullarch.substring(0, aplu);
+		JITCPUEndian archend = JITCPUEndian.of(fullarch.substring(acom + 1));
 		
+		// Find the 
+		JITCPUVariant archvar = null;
+		String rawarchvar = fullarch.substring(aplu + 1, acom);
+		for (JITFactory jf : ServiceLoader.<JITFactory>load(JITFactory.class))
+			if (arch.equals(jf.architectureName()))
+				if (jf.supportsEndianess(archend))
+					if (null != (archvar = jf.getVariant(rawarchvar)))
+						break;
+		
+		// {@squirreljme.error BV03 No architecture variant is known by the
+		// JIT for the specified architecture, or the endianess is not
+		// supported by a JIT provider. (The triplet; The architecture
+		// variant)}
+		if (archvar == null)
+			throw new IllegalArgumentException(String.format("BV03 %s %s",
+				__triplet, rawarchvar));
 		
 		throw new Error("TODO");
 	}
