@@ -10,7 +10,11 @@
 
 package net.multiphasicapps.squirrelsim;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
 
@@ -81,6 +85,65 @@ public final class SimulationStartConfig
 		this.osvar = __os;
 		this.program = __prog;
 		this._args = (__args == null ? new String[0] : __args.clone());
+	}
+	
+	/**
+	 * Returns the simulation group which owns this simulation.
+	 *
+	 * @return The owning simulation group.
+	 * @since 2016/07/04
+	 */
+	public final SimulationGroup group()
+	{
+		return this.group;
+	}
+	
+	/**
+	 * Returns the bytes which make up the binary of the program to be
+	 * executed.
+	 *
+	 * @return The byte array of the program's bytes.
+	 * @throws IOException If they could not be read.
+	 * @since 2016/07/04
+	 */
+	public final byte[] executableBytes()
+		throws IOException
+	{
+		// Open it
+		try (FileChannel fc = FileChannel.open(this.program,
+			StandardOpenOption.READ))
+		{
+			// {@squirreljme.error BV06 The size of the executable program
+			// exceeds 2GiB.}
+			long sz = fc.size();
+			if (sz < 0 || sz > (long)Integer.MAX_VALUE)
+				throw new IOException(String.format("BV06 %d", sz));
+			
+			// Setup buffer which will contain a copy of the executable
+			int isz = (int)sz;
+			byte[] rv = new byte[isz];
+			ByteBuffer buf = ByteBuffer.allocateDirect(4096);
+			
+			// Load the data
+			for (int at = 0;;)
+			{
+				// Read
+				buf.clear();
+				int rc = fc.read(buf);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				// Write
+				buf.flip();
+				buf.get(rv, at, rc);
+				at += rc;
+			}
+			
+			// Return
+			return rv;
+		}
 	}
 }
 

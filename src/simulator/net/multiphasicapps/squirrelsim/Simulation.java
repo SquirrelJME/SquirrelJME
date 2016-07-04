@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirrelsim;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
@@ -23,6 +25,12 @@ import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
  */
 public abstract class Simulation
 {
+	/** The owning simulation group. */
+	protected final SimulationGroup group;
+	
+	/** The executable program bytes. */
+	protected final byte[] executablebytes;
+	
 	/**
 	 * This initializes the base simulation.
 	 *
@@ -37,6 +45,31 @@ public abstract class Simulation
 		// Check
 		if (__sc == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.group = __sc.group();
+		
+		// Load the executable's bytes which are needed before it may be ran
+		try
+		{
+			this.executablebytes = __sc.executableBytes();
+			
+			// Debug
+			byte[] eb = this.executablebytes;
+			System.err.printf("DEBUG -- %d %02x%02x%02x%02x%n",
+				eb.length,
+				(eb.length > 0 ? eb[0] : 0),
+				(eb.length > 1 ? eb[1] : 0),
+				(eb.length > 2 ? eb[2] : 0),
+				(eb.length > 3 ? eb[3] : 0));
+		}
+		
+		// {@squirreljme.error BV05 Could not load the bytes which make up
+		// the program.}
+		catch (IOException e)
+		{
+			throw new SimulationStartException("BV05", e);
+		}
 		
 		throw new Error("TODO");
 	}
