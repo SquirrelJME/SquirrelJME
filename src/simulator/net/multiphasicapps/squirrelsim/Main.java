@@ -48,79 +48,15 @@ public class Main
 		if (__args == null)
 			__args = new String[0];
 		
-		// {@squirreljme.error BV01 Expected configuration files to be used
-		// for the simulators.}
+		// {@squirreljme.error BV01 Usage: {@code -T(triplet) program
+		// [arguments...]}. The triplet is a SquirrelJME compatible target
+		// triplet which represents a given system.}
 		int n;
 		if ((n = __args.length) <= 0)
 			throw new IllegalArgumentException("BV01");
 		
-		// Setup simulator configurations for all systems
-		SimulatorConfiguration[] configs = new SimulatorConfiguration[n];
-		for (int i = 0; i < n; i++)
-		{
-			// Get configuration name
-			String conf = __args[i];
-			
-			// See if it exists in the filesystem
-			try
-			{
-				// Get path
-				Path p = Paths.get(conf);
-				
-				// Try to use it
-				if (Files.exists(p))
-					try (FileChannel fc = FileChannel.open(p,
-						StandardOpenOption.READ);
-						InputStream is = Channels.newInputStream(fc);
-						Reader r = new InputStreamReader(is))
-					{
-						configs[i] = new SimulatorConfiguration(r);
-					
-						// Do not try a resource next
-						continue;
-					}
-			}
-			
-			// Treat as if it did not exist
-			catch (InvalidPathException e)
-			{
-			}
-			
-			// {@squirreljme.error BV03 Could not read the configuration file
-			// at the specified file system path. (The configuration path)}
-			catch (IOException e)
-			{
-				throw new IllegalArgumentException(String.format("BV03 %s",
-					conf), e);
-			}
-			
-			// Try from a JAR resource
-			try (InputStream is = SimulationProvider.getResourceAsStream(conf))
-			{
-				// {@squirreljme.error BV04 No file or resource exists with
-				// the given name.}
-				if (is == null)
-					throw new IOException("BV04");
-				
-				// Treat as UTF-8
-				try (Reader r = new InputStreamReader(is, "utf-8"))
-				{
-					configs[i] = new SimulatorConfiguration(r);
-				}
-			}
-			
-			// {@squirreljme.error BV02 Could not read configuration from the
-			// JAR resource. (The resource name)}
-			catch (IOException e)
-			{
-				throw new IllegalArgumentException(String.format("BV02 %s",
-					conf), e);
-			}
-		}
-		
-		// Setup simulation group which uses the specified configurations to
-		// initialize simulations with.
-		SimulationGroup sg = new SimulationGroup(configs);
+		// Setup simulation group
+		SimulationGroup sg = new SimulationGroup();
 		
 		// Run cycles until complete
 		while (sg.runCycle())

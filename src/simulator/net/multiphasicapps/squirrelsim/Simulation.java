@@ -17,33 +17,28 @@ package net.multiphasicapps.squirrelsim;
  *
  * @since 2016/06/14
  */
-public class Simulation
+public abstract class Simulation
 {
 	/** The group which owns this simulation. */
 	protected final SimulationGroup group;
-	
-	/** The simulator configuration */
-	protected final SimulatorConfiguration config;
 	
 	/**
 	 * This initializes a simulation which exists as part of a simulation
 	 * group and is initialized with the given configuration.
 	 *
 	 * @param __grp The group owning this simulation.
-	 * @param __conf The configuration to initialize the simulation with.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/14
 	 */
-	public Simulation(SimulationGroup __grp, SimulatorConfiguration __conf)
+	public Simulation(SimulationGroup __grp)
 		throws NullPointerException
 	{
 		// Check
-		if (__grp == null || __conf == null)
+		if (__grp == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.group = __grp;
-		this.config = __conf;
 	}
 	
 	/**

@@ -25,31 +25,16 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 public class SimulationGroup
 {
 	/** The set of simulations which are available for running. */
-	private final List<Simulation> _simulations;
+	private final List<Simulation> _simulations =
+		new ArrayList<>(2);
 	
 	/**
 	 * Initializes the simulation group.
 	 *
-	 * @param __confs The configurations which are used to initialize the
-	 * simulation with.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/14
 	 */
-	public SimulationGroup(SimulatorConfiguration... __confs)
-		throws NullPointerException
+	public SimulationGroup()
 	{
-		// Check
-		if (__confs == null)
-			throw new NullPointerException("NARG");
-		
-		// Load all simulations
-		int n = __confs.length;
-		List<Simulation> sims = new ArrayList<>(n);
-		for (int i = 0; i < n; i++)
-			sims.add(new Simulation(this, __confs[i]));
-		
-		// Lock in
-		this._simulations = sims;
 	}
 	
 	/**
