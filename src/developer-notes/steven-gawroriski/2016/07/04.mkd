@@ -67,3 +67,13 @@ have a much simpler simulation system which is not complex at all. I could
 sacrifice some things such as multiple processes in a way (although I should
 not do that, since some processes may rely on it).
 
+## 17:35
+
+A problem is that with the CPU manager, I will need to wrap the TLBs and MMUs
+for some CPUs. This depends on the number of TLBs which are available to a CPU,
+although ones such as x86 use an address in memory to contain page information.
+So I suppose what I can do instead is have a high level emulator that can
+emulate hardware. I will write an actual emulator which could run operating
+systems and uses BIOSes. When it comes to the simulator, they will just be
+based on the emulator except that it would provide some high level wrapping.
+
