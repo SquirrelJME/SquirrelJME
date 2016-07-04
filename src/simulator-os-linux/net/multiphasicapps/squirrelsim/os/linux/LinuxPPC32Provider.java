@@ -8,17 +8,35 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelsim.bin.elf;
-
-import net.multiphasicapps.squirrelsim.BinaryExecutable;
+package net.multiphasicapps.squirrelsim.os.linux;
 
 /**
- * This is a generic handler for the ELF binary format.
+ * This provides support for simulating 32-bit PowerPC Linux systems.
  *
- * @since 2016/06/14
+ * @since 2016/07/04
  */
-public class ELFBinaryExecutable
-	extends BinaryExecutable
+public class LinuxPPC32Provider
+	extends LinuxProvider
 {
+	/**
+	 * Initializes the base 32-bit PowerPC Linux provider.
+	 *
+	 * @since 2016/07/04
+	 */
+	public LinuxPPC32Provider()
+	{
+		this("generic");
+	}
+	
+	/**
+	 * Simulates a variant of a Linux system.
+	 *
+	 * @param __osvar The variant of Linux to use.
+	 * @since 2016/07/04
+	 */
+	public LinuxPPC32Provider(String __osvar)
+	{
+		super("powerpc32", __osvar);
+	}
 }
 

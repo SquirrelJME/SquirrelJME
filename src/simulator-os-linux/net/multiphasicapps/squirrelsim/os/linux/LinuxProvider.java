@@ -10,25 +10,26 @@
 
 package net.multiphasicapps.squirrelsim.os.linux;
 
-import net.multiphasicapps.squirrelsim.OSProvider;
+import net.multiphasicapps.squirrelsim.SimulationProvider;
 
 /**
- * This provides an interface which is used for simulating a Linux based
- * user space application.
+ * This implements the base support needed for Linux simulation.
  *
- * @since 2016/06/14
+ * @since 2016/07/04
  */
-public class LinuxProvider
-	implements OSProvider
+public abstract class LinuxProvider
+	extends SimulationProvider
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/14
+	 * Initializes the base Linux support.
+	 *
+	 * @param __arch The architecture to simulate.
+	 * @param __osvar The operating system variant.
+	 * @since 2016/07/04
 	 */
-	@Override
-	public String name()
+	public LinuxProvider(String __arch, String __osvar)
 	{
-		return "linux";
+		super(__arch, "linux", __osvar);
 	}
 }
 
