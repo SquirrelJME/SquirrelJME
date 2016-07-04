@@ -13,6 +13,8 @@ package net.multiphasicapps.squirrelsim;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
 
@@ -25,11 +27,18 @@ import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
  */
 public abstract class Simulation
 {
+	/** The emulation configuration. */
+	protected final SimulationStartConfig config;
+
 	/** The owning simulation group. */
 	protected final SimulationGroup group;
 	
 	/** The executable program bytes. */
 	protected final byte[] executablebytes;
+	
+	/** Threads which are active in the simulated process. */
+	private final List<SimulationThread> _threads =
+		new ArrayList<>();
 	
 	/**
 	 * This initializes the base simulation.
@@ -47,6 +56,7 @@ public abstract class Simulation
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.config = __sc;
 		this.group = __sc.group();
 		
 		// Load the executable's bytes which are needed before it may be ran
@@ -72,7 +82,31 @@ public abstract class Simulation
 	 */
 	public final boolean runCycle()
 	{
-		throw new Error("TODO");
+		// Lock
+		int count = 0;
+		List<SimulationThread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Run all threads
+			int n = threads.size();
+			for (int i = 0; i < n; i++)
+			{
+				// Get
+				SimulationThread thr = threads.get(i);
+				
+				// Run cycle, clear if it ended
+				if (thr != null)
+				{
+					if (!thr.runCycle())
+						threads.set(i, null);
+					else
+						count++;
+				}
+			}
+			
+			// Stop if no threads ran
+			return (count != 0);
+		}
 	}
 }
 

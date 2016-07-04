@@ -133,11 +133,20 @@ public class SimulationGroup
 					// Create
 					Simulation sim = sp.create(ssc);
 					
-					// Add to simulation list
+					// Replace an existing null or add to the end of the
+					// simulation
 					List<Simulation> simulations = _simulations;
 					synchronized (simulations)
 					{
-						simulations.add(sim);
+						int n = simulations.size();
+						for (int i = 0; i <= n; i++)
+							if (i == n)
+								simulations.add(sim);
+							else if (simulations.get(i) == null)
+							{
+								simulations.set(i, sim);
+								break;
+							}
 					}
 					
 					// Return
@@ -168,6 +177,7 @@ public class SimulationGroup
 	public final boolean runCycle()
 	{
 		// Infinite loop mostly
+		int count = 0;
 		List<Simulation> sims = this._simulations;
 		synchronized (sims)
 		{
@@ -178,14 +188,22 @@ public class SimulationGroup
 			
 			// Go through all simulations
 			for (int i = 0; i < n; i++)
-				if (!sims.get(i).runCycle())
+			{
+				// Get
+				Simulation sim = sims.get(i);
+				
+				// Run cycle, remove if it has no threads left
+				if (sim != null)
 				{
-					sims.remove(i--);
-					n -= 1;
+					if (!sim.runCycle())
+						sims.set(i, null);
+					else
+						count++;
 				}
+			}
 			
 			// Keep going
-			return true;
+			return (count != 0);
 		}
 	}
 }
