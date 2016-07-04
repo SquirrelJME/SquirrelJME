@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirrelsim;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -104,6 +106,9 @@ public class SimulationGroup
 		if (archvar == null)
 			throw new IllegalArgumentException(String.format("BV03 %s %s",
 				__triplet, rawarchvar));
+		
+		// The program is the path
+		Path progpath = Paths.get(__program);
 		
 		throw new Error("TODO");
 	}

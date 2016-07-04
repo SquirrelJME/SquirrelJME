@@ -16,3 +16,23 @@ Today is just rain.
 The simulation such as architecture variants can be linked to the JIT for
 simplicity.
 
+## 13:16
+
+When it comes to simulating a root filesystem, the basic filesystem layout
+could be described in resources associated with JAR resources. This way when
+it comes to the binary, no other details have to actually exist. There could
+be a special filesystem specifier of sorts which describes the files which
+are available on the root. It would not be a simulation of a whole system,
+however it should be good enough to allow a basic system to operate
+properly. So essentially stuff such as `/bin/sh` for Linux at least would
+appear a resource which could use an internal special commands to execute a
+command which should be provided by the system (in the event of `system()`
+being called). This would also allow specific programs to be ran on the host
+without worrying about the host operating system at all. Certain details of
+the filesystem, such as block devices and character devices, can be implemented
+by classes. The current user directory could be mounted as a certain directory
+in the simulated system when applicable. Then this way, I do not have to
+worry about forwarding calls to the host system (if in the event the code is
+running on Linux). However, this would essentially permit a specific set of
+programs to run from any operating system.
+
