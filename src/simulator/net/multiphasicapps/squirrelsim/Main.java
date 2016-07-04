@@ -95,7 +95,7 @@ public class Main
 			}
 			
 			// Try from a JAR resource
-			try (InputStream is = Main.class.getResourceAsStream(conf))
+			try (InputStream is = SimulationProvider.getResourceAsStream(conf))
 			{
 				// {@squirreljme.error BV04 No file or resource exists with
 				// the given name.}
