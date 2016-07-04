@@ -118,19 +118,34 @@ public class SimulationGroup
 		// The program is the path
 		Path progpath = Paths.get(__program);
 		
+		// Setup start configuration
+		SimulationStartConfig ssc = new SimulationStartConfig(this, arch,
+			archvar, archend, os, osvar, progpath, __args);
+		
 		// Find the provider for this simulation and create it
 		ServiceLoader<SimulationProvider> services = _SERVICES;
+		SimulationStartException defer = null;
 		synchronized (services)
 		{
 			for (SimulationProvider sp : services)
-				if (sp.isGivenSystem(arch, archvar, archend, os, osvar))
-					return sp.create(this, archvar, archend, progpath, __args);
+				try
+				{
+					return sp.create(ssc);
+				}
+				catch (SimulationStartException e)
+				{
+					defer = e;
+				}
 		}
 		
 		// {@squirreljme.error BV04 No system simulates the given triplet.
 		// (The triplet)}
-		throw new IllegalArgumentException(String.format("BV04 %s",
-			__triplet));
+		if (defer != null)
+			throw new IllegalArgumentException(String.format("BV04 %s",
+				__triplet), defer);
+		else
+			throw new IllegalArgumentException(String.format("BV04 %s",
+				__triplet));
 	}
 	
 	/**

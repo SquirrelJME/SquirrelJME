@@ -66,32 +66,15 @@ public abstract class SimulationProvider
 	/**
 	 * Creates a new simulation to run the given system.
 	 *
-	 * @param __grp The simulation group.
-	 * @param __archvar The variant of the architecture.
-	 * @param __archend The endianess of the architecture.
-	 * @param __prog The path to the program to run.
-	 * @param __args The arguments to the program.
+	 * @param __sc The starting configuration.
 	 * @return The newly created simulation.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SimulationStartException If the given configuration is not
+	 * supported by this simulation.
 	 * @since 2016/07/04
 	 */
-	public abstract Simulation create(SimulationGroup __grp,
-		JITCPUVariant __archvar, JITCPUEndian __archend, Path __prog,
-		String... __args)
-		throws NullPointerException;
-	
-	/**
-	 * Is this a supported CPU variant and endian?
-	 *
-	 * @param __archvar The variant to check.
-	 * @param __archend The endianess.
-	 * @return {@code true} if it is supported.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/04
-	 */
-	public abstract boolean isGivenVariantAndEndian(JITCPUVariant __archvar,
-		JITCPUEndian __archend)
-		throws NullPointerException;
+	public abstract Simulation create(SimulationStartConfig __sc)
+		throws NullPointerException, SimulationStartException;
 	
 	/**
 	 * Returns the simulated architecture.
@@ -102,33 +85,6 @@ public abstract class SimulationProvider
 	public final String architectureName()
 	{
 		return this.architecture;
-	}
-	
-	/**
-	 * Is this a provider which supports the given system?
-	 *
-	 * @param __arch The input architecture.
-	 * @param __archvar The architecture variant.
-	 * @param __archend The endianess of the CPU.
-	 * @param __os The operating system.
-	 * @param __osvar The operating system variant.
-	 * @return {@code true} if the given system is simulated by this provider.
-	 * @since 2016/07/04
-	 */
-	public final boolean isGivenSystem(String __arch, JITCPUVariant __archvar,
-		JITCPUEndian __archend, String __os, String __osvar)
-		throws NullPointerException
-	{
-		// Check
-		if (__arch == null || __archvar == null || __archend == null ||
-			__os == null || __osvar == null)
-			throw new NullPointerException("NARG");
-		
-		// Must be the same
-		return this.architecture.equals(__arch) &&
-			this.operatingsystem.equals(__os) &&
-			this.operatingsystemvar.equals(__osvar) &&
-			isGivenVariantAndEndian(__archvar, __archend);
 	}
 	
 	/**
