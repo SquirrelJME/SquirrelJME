@@ -36,3 +36,9 @@ worry about forwarding calls to the host system (if in the event the code is
 running on Linux). However, this would essentially permit a specific set of
 programs to run from any operating system.
 
+## 13:42
+
+Simulation starting details would best be placed into a single object, this
+way I can add more potentially in the future without requiring massive
+simulator changes.
+

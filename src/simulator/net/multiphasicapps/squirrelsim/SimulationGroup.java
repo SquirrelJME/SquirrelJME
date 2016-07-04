@@ -26,10 +26,18 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
  * shared under the same group. Simulations that are within the same group
  * may communicate with each other.
  *
+ * Simulations part of the same group have the same "home" file system visible
+ * to them although they have differing root filesystems (which are read-only
+ * in most cases).
+ *
  * @since 2016/06/14
  */
 public class SimulationGroup
 {
+	/** Services which are available. */
+	private static final ServiceLoader<SimulationProvider> _SERVICES =
+		ServiceLoader.<SimulationProvider>load(SimulationProvider.class);
+	
 	/** The set of simulations which are available for running. */
 	private final List<Simulation> _simulations =
 		new ArrayList<>(2);
@@ -110,7 +118,19 @@ public class SimulationGroup
 		// The program is the path
 		Path progpath = Paths.get(__program);
 		
-		throw new Error("TODO");
+		// Find the provider for this simulation and create it
+		ServiceLoader<SimulationProvider> services = _SERVICES;
+		synchronized (services)
+		{
+			for (SimulationProvider sp : services)
+				if (sp.isGivenSystem(arch, archvar, archend, os, osvar))
+					return sp.create(this, archvar, archend, progpath, __args);
+		}
+		
+		// {@squirreljme.error BV04 No system simulates the given triplet.
+		// (The triplet)}
+		throw new IllegalArgumentException(String.format("BV04 %s",
+			__triplet));
 	}
 	
 	/**

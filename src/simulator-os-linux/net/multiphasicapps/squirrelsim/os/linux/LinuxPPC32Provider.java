@@ -10,6 +10,13 @@
 
 package net.multiphasicapps.squirrelsim.os.linux;
 
+import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
+import net.multiphasicapps.squirreljme.jit.powerpc32.PPCVariant;
+import net.multiphasicapps.squirrelsim.Simulation;
+import net.multiphasicapps.squirrelsim.SimulationGroup;
+
 /**
  * This provides support for simulating 32-bit PowerPC Linux systems.
  *
@@ -37,6 +44,33 @@ public class LinuxPPC32Provider
 	public LinuxPPC32Provider(String __osvar)
 	{
 		super("powerpc32", __osvar);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/04
+	 */
+	@Override
+	public Simulation create(SimulationGroup __grp,
+		JITCPUVariant __archvar, JITCPUEndian __archend, Path __prog,
+		String... __args)
+		throws NullPointerException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/04
+	 */
+	@Override
+	public boolean isGivenVariantAndEndian(JITCPUVariant __archvar,
+		JITCPUEndian __archend)
+		throws NullPointerException
+	{
+		return (__archvar instanceof PPCVariant) &&
+			(__archend == JITCPUEndian.BIG ||
+			__archend == JITCPUEndian.LITTLE);
 	}
 }
 

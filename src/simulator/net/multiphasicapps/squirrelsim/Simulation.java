@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirrelsim;
 
+import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
+
 /**
  * This contains a simulation which provides a simulated execution environment
  * for running simple programs and for testing and porting of SquirrelJME for
@@ -19,26 +23,29 @@ package net.multiphasicapps.squirrelsim;
  */
 public abstract class Simulation
 {
-	/** The group which owns this simulation. */
-	protected final SimulationGroup group;
-	
 	/**
-	 * This initializes a simulation which exists as part of a simulation
-	 * group and is initialized with the given configuration.
+	 * This initializes the base simulation.
 	 *
-	 * @param __grp The group owning this simulation.
+	 * @param __grp The owning simulation group.
+	 * @param __prov The provider of the simulation.
+	 * @param __archvar The architecture variant.
+	 * @param __archend The endian of the CPU.
+	 * @param __prog The program to run.
+	 * @param __args The program arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/14
 	 */
-	public Simulation(SimulationGroup __grp)
+	public Simulation(SimulationGroup __grp, SimulationProvider __prov,
+		JITCPUVariant __archvar, JITCPUEndian __archend, Path __prog,
+		String... __args)
 		throws NullPointerException
 	{
 		// Check
-		if (__grp == null)
+		if (__grp == null || __prov == null || __archvar == null ||
+			__archend == null || __prog == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.group = __grp;
+		throw new Error("TODO");
 	}
 	
 	/**
