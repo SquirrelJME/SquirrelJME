@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirrelsim.os.linux;
 
+import net.multiphasicapps.cpuemulator.CPUMemory;
+import net.multiphasicapps.cpuemulator.CachedMemoryAccessor;
 import net.multiphasicapps.squirrelsim.Simulation;
 import net.multiphasicapps.squirrelsim.SimulationGroup;
 import net.multiphasicapps.squirrelsim.SimulationStartConfig;
@@ -23,6 +25,9 @@ import net.multiphasicapps.squirrelsim.SimulationStartException;
 public abstract class LinuxSimulation
 	extends Simulation
 {
+	/** The memory the Linux process uses. */
+	protected final CPUMemory memory;
+	
 	/**
 	 * Initializes the Linux simulation.
 	 *
@@ -34,6 +39,9 @@ public abstract class LinuxSimulation
 		throws SimulationStartException
 	{
 		super(__sc);
+		
+		// Setup memory
+		this.memory = new CPUMemory();
 	}
 }
 

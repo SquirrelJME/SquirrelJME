@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirrelsim.os.linux;
 
+import net.multiphasicapps.cpuemulator.CPUMemory;
+import net.multiphasicapps.cpuemulator.CachedMemoryAccessor;
+import net.multiphasicapps.cpuemulator.powerpc.EmulatedPowerPC;
 import net.multiphasicapps.squirrelsim.Simulation;
 import net.multiphasicapps.squirrelsim.SimulationGroup;
 import net.multiphasicapps.squirrelsim.SimulationStartConfig;
