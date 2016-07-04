@@ -63,7 +63,7 @@ public class SimulationGroup
 		if (dota < 0)
 			throw new IllegalArgumentException(String.format("BV02 %s",
 				__triplet));
-		int dotb = __triplet.indexOf('.', dota);
+		int dotb = __triplet.indexOf('.', dota + 1);
 		if (dotb < 0)
 			throw new IllegalArgumentException(String.format("BV02 %s",
 				__triplet));
