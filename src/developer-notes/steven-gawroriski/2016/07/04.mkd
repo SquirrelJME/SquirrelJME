@@ -59,3 +59,11 @@ within them, for example Linux. I could use the emulators in a way where I
 could support specific systems in them. I could also just have a much stronger
 simulation core also.
 
+## 17:00
+
+However, the emulation sub-system could be used potentially with the actual
+run-time running as a kind of co-process potentially. Although, I could just
+have a much simpler simulation system which is not complex at all. I could
+sacrifice some things such as multiple processes in a way (although I should
+not do that, since some processes may rely on it).
+
