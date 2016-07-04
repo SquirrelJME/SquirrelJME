@@ -11,3 +11,8 @@ have a `SimulationProvider` which can create simulations as such.
 
 Today is just rain.
 
+## 12:33
+
+The simulation such as architecture variants can be linked to the JIT for
+simplicity.
+

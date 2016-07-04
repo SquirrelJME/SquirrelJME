@@ -51,11 +51,40 @@ public class SimulationGroup
 	 */
 	public final Simulation create(String __triplet, String __program,
 		String... __args)
-		throws NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
 		if (__triplet == null || __program == null || __args == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BV02 Triplet is not in the form of
+		// {@code arch+variant,endian.os.variant}.}
+		int dota = __triplet.indexOf('.');
+		if (dota < 0)
+			throw new IllegalArgumentException(String.format("BV02 %s",
+				__triplet));
+		int dotb = __triplet.indexOf('.', dota);
+		if (dotb < 0)
+			throw new IllegalArgumentException(String.format("BV02 %s",
+				__triplet));
+		
+		// Extract bits
+		String fullarch = __triplet.substring(0, dota),
+			os = __triplet.substring(dota + 1, dotb),
+			osvar = __triplet.substring(dotb + 1);
+		
+		// Determine the chosen architecture
+		int aplu = fullarch.indexOf('+'),
+			acom = fullarch.indexOf(',');
+		if (aplu < 0 || acom < 0 || acom < aplu)
+			throw new IllegalArgumentException(String.format("BV02 %s",
+				__triplet));
+		
+		// Extract architecture target
+		String arch = fullarch.substring(0, aplu),
+			archvar = fullarch.substring(aplu + 1, acom),
+			archend = fullarch.substring(acom + 1);
+		
 		
 		throw new Error("TODO");
 	}
