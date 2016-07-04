@@ -20,8 +20,32 @@ import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
  *
  * @since 2016/07/04
  */
-public class SimulationStartConfig
+public final class SimulationStartConfig
 {
+	/** The owning simulation group. */
+	protected final SimulationGroup group;
+	
+	/** The architecture to simulate. */
+	protected final String arch;
+	
+	/** The variant of the architecture to simulate. */
+	protected final JITCPUVariant archvar;
+	
+	/** The endianess of the architecture to simulate. */
+	protected final JITCPUEndian archend;
+	
+	/** The operating system to simulate. */
+	protected final String os;
+	
+	/** The variant of the operating system to simulate. */
+	protected final String osvar;
+	
+	/** The program to run. */
+	protected final Path program;
+	
+	/** The arguments to the program. */
+	private final String[] _args;
+	
 	/**
 	 * Creates a new starting configuration.
 	 *
@@ -42,7 +66,21 @@ public class SimulationStartConfig
 		String __osvar, Path __prog, String... __args)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__grp == null || __arch == null || __archvar == null ||
+			__archend == null || __os == null || __osvar == null ||
+			__prog == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.group = __grp;
+		this.arch = __arch;
+		this.archvar = __archvar;
+		this.archend = __archend;
+		this.os = __os;
+		this.osvar = __os;
+		this.program = __prog;
+		this._args = (__args == null ? new String[0] : __args.clone());
 	}
 }
 
