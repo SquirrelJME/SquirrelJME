@@ -26,12 +26,6 @@ import java.io.IOException;
 public final class JIT
 	implements Runnable
 {
-	/** The endian of the CPU. */
-	protected final JITCPUEndian endian;
-	
-	/** The variant of the CPU. */
-	protected final JITCPUVariant cpuvariant;
-	
 	/** One time lock. */
 	private final Object _oncelock =
 		new Object();
@@ -51,7 +45,6 @@ public final class JIT
 	 * This performs basic sanity checks before the actual compilation of a JIT
 	 * is performed.
 	 *
-	 * @param __fp The producer which generated this JIT.
 	 * @apram __ns The namespace of the class.
 	 * @param __ic The input stream of the class data.
 	 * @param __jo The output of the JIT.
@@ -59,24 +52,16 @@ public final class JIT
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/03
 	 */
-	public JIT(JITFactory.Producer __fp, String __ns, InputStream __ic,
-		JITOutput __jo)
+	public JIT(String __ns, InputStream __ic, JITOutput __jo)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__fp == null || __ns == null || __ic == null || __jo == null)
+		if (__ns == null || __ic == null || __jo == null)
 			throw new NullPointerException("NARG");
-		
-		// Get some details
-		this.endian = __fp.endian();
-		this.cpuvariant = __fp.architectureVariant();
 		
 		// Set
 		this._input = __ic;
 		this._output = __jo;
-		
-		// Modify this JIT for a given OS
-		__fp.operatingSystemModifier().__modifyJIT(this);
 	}
 	
 	/**
