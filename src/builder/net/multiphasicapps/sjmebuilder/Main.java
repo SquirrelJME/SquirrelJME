@@ -27,6 +27,7 @@ import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.jit.JITTriplet;
 
 /**
  * This is the main entry point for the builder.
@@ -124,32 +125,12 @@ public class Main
 			throw new IllegalArgumentException("DW04");
 		}
 		
-		System.err.printf("DEBUG -- %s %s %s%n", dosim, target, simargs);
-		
-		// Split the triplet
-		int deca = target.indexOf('.');
-		int decb = (deca >= 0 ? target.indexOf('.', deca + 1) : -1);
-		
-		// {@squirreljme.error DW05 The twin or triplet must be in the form
-		// of {@code arch.os} or {@code arch.os.variant}. (The input target)}
-		if (deca < 0)
-			throw new IllegalArgumentException(String.format("DW05 %s",
-				target));
-		
-		// Split
-		String arch = target.substring(0, deca).trim(),
-			os = target.substring(deca + 1,
-				(decb >= 0 ? decb : target.length())).trim(),
-			var = (decb >= 0 ? target.substring(decb + 1) : "generic");
-		
-		System.err.printf("DEBUG -- %s %s %s%n", arch, os, var);
-		
 		// Could fail on perhaps a bad disk or malformed file
 		try
 		{
 			// Setup builder
 			out.println("Setting up build...");
-			Builder b = new Builder(plist, arch, os, var);
+			Builder b = new Builder(plist, new JITTriplet(target));
 		
 			// Perform the build
 			out.println("Building...");

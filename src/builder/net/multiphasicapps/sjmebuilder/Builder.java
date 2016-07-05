@@ -33,6 +33,7 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.JIT;
 import net.multiphasicapps.squirreljme.jit.JITFactory;
+import net.multiphasicapps.squirreljme.jit.JITTriplet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
 import net.multiphasicapps.zips.ZipFile;
@@ -55,26 +56,8 @@ public class Builder
 	/** The package list to use. */
 	protected final PackageList plist;
 	
-	/** The target architecture. */
-	protected final String arch;
-	
-	/** The target variant of the architecture. */
-	protected final String archvariant;
-	
-	/** The target operating system. */
-	protected final String os;
-	
-	/** The target variant. */
-	protected final String variant;
-	
-	/** The doublet. */
-	protected final String doublet;
-	
-	/** The triplet. */
-	protected final String triplet;
-	
-	/** The target OS triplet. */
-	protected final String targettriplet;
+	/** The requested triplet. */
+	protected final JITTriplet triplet;
 	
 	/** The package that implements the JVM for the target triplet. */
 	protected final PackageInfo toppackage;
@@ -86,55 +69,28 @@ public class Builder
 	protected final Map<PackageInfo, GlobbedJar> globjars =
 		new HashMap<>();
 	
-	/** The producer for jits. */
-	protected final JITFactory.Producer producer;
-	
 	/**
 	 * Initializes the builder for a native target.
 	 *
 	 * @param __pl The package list to use.
-	 * @param __arch The target architecture.
-	 * @param __os The target operating system.
-	 * @param __var The target variant.
+	 * @param __trip The target triplet.
 	 * @throws IllegalArgumentException If no package exists for the given
 	 * triplet.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	public Builder(PackageList __pl, String __arch, String __os, String __var)
+	public Builder(PackageList __pl, JITTriplet __trip)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
 		// Check
-		if (__pl == null || __arch == null || __os == null || __var == null)
+		if (__pl == null || __trip == null)
 			throw new NullPointerException("NARG");
 		
-		// Does the architecture have a variant?
-		int hplu = __arch.indexOf('+');
-		String archvar;
-		if (hplu >= 0)
-		{
-			this.archvariant = (archvar = __arch.substring(hplu + 1));
-			this.arch = (__arch = __arch.substring(0, hplu));
-		}
-		
-		// Does not, assume generic support
-		else
-		{
-			this.arch = __arch;
-			this.archvariant = (archvar = "generic");
-		}
-		
 		// Set
-		this.plist = __pl;
-		this.os = __os;
-		this.variant = __var;
+		this.triplet = __trip;
 		
-		// Build triplet
-		String triplet = __arch + "+" + archvar + "." + __os + "." + __var;
-		String targettriplet = __arch + "." + __os + "." + __var;
-		
-		System.err.printf("DEBUG -- Target: %s%n", triplet);
+		System.err.printf("DEBUG -- Target: %s%n", __trip);
 		
 		// Go through all of the packages to find the one that specifies that
 		// it is the JVM for the given triplet
@@ -156,11 +112,14 @@ public class Builder
 			String pott = attr.get(TARGET_OS_KEY);
 			
 			// Matches?
+			if (true)
+				throw new Error("TODO");
+			/*
 			if (targettriplet.equals(pott))
 			{
 				tpk = pi;
 				break;
-			}
+			}*/
 		}
 		
 		// {@squirreljme.error DW06 No package (The used triplet)}
@@ -177,6 +136,8 @@ public class Builder
 		__getDependencies(pis, tpk);
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
 		
+		throw new Error("TODO");
+		/*
 		// Find the function providers for the desired targets
 		JITFactory.Producer producer = JITFactory.createProducer(
 			arch, archvar, os);
@@ -188,15 +149,7 @@ public class Builder
 		
 		// Set
 		this.producer = producer;
-		
-		// Finalize doublet and trplet
-		String doublet = producer.doublet();
-		this.doublet = doublet;
-		this.triplet = doublet + "." + __var;
-		this.targettriplet = targettriplet;
-		
-		// Debug
-		System.err.printf("DEBUG -- %s > %s%n", this.doublet, this.triplet);
+		*/
 	}
 	
 	/**
@@ -361,10 +314,13 @@ public class Builder
 			OutputStream os = __gj.createClass(classname))
 		{
 			// Setup JIT
+			throw new Error("TODO");
+			/*
 			JIT jit = this.producer.produce(__gj.name(), is);
 			
 			// Run the JIT
 			jit.run();
+			*/
 		}
 	}
 	
