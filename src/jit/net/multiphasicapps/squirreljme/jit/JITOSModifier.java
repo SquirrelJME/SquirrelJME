@@ -22,6 +22,7 @@ import java.util.ServiceLoader;
  *
  * @since 2016/07/02
  */
+@Deprecated
 public abstract class JITOSModifier
 {
 	/** The architecture this modifies. */
