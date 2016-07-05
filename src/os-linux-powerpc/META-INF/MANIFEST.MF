@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: os-linux-powerpc32
+X-SquirrelJME-Name: os-linux-powerpc
 X-SquirrelJME-UUID: 5f510056-3e18-445d-baf3-fb4456687c78
-X-SquirrelJME-Depends: os-linux, jit-powerpc32
+X-SquirrelJME-Depends: os-linux
 X-SquirrelJME-Error: DX
-X-SquirrelJME-Target-OS: powerpc32.linux.generic
+X-SquirrelJME-Target-OS: powerpc.linux.generic
 LIBlet-Title: Linux OS Support (PowerPC)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160624
 LIBlet-Description: This provides support for the Linux
- operating system on 32-bit PowerPC CPUs.
+ operating system on PowerPC CPUs.
 

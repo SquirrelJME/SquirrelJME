@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package provides suppor for Linux on 32-bit PowerPC systems.
+ * This package contains the JIT which outputs for Linux on PowerPC systems.
  *
- * @since 2016/06/27
+ * @since 2016/07/04
  */
 
-package net.multiphasicapps.squirreljme.os.linux.powerpc32;
+package net.multiphasicapps.squirreljme.jit.linux.powerpc;
 
