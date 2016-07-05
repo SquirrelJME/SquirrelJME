@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This class provides a representation of triplets so that they may be
  * encoded and decoded.
@@ -36,6 +39,9 @@ public final class JITTriplet
 	/** The variant of the operating system. */
 	protected final String osvar;
 	
+	/** The string representation. */
+	private volatile Reference<String> _string;
+	
 	/**
 	 * This decodes the given input string as a triplet.
 	 *
@@ -60,6 +66,11 @@ public final class JITTriplet
 		if (dotb < 0)
 			throw new IllegalArgumentException(String.format("ED03 %s", __t));
 		
+		// Split into three forms
+		String fullarch = __t.substring(0, dota),
+			os = __t.substring(dota + 1, dotb),
+			osvar = __t.substring(dotb + 1);
+		
 		throw new Error("TODO");
 	}
 	
@@ -70,6 +81,25 @@ public final class JITTriplet
 	@Override
 	public String toString()
 	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Checks that triplet fragments are well formed.
+	 *
+	 * @param __s The string to check.
+	 * @return {@code __s}, properly converted.
+	 * @throws IllegalArgumentException If it is not well formed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/05
+	 */
+	private static final String __check(String __s)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 }
