@@ -77,7 +77,45 @@ public final class JITTriplet
 		this.os = __check(__t.substring(dota + 1, dotb));
 		this.osvar = __check(__t.substring(dotb + 1));
 		
-		throw new Error("TODO");
+		// Find all symbol locations in the architecture
+		int pdas = fullarch.indexOf('-'),
+			pplu = fullarch.indexOf('+'),
+			pcom = fullarch.indexOf(',');
+		
+		// {@squirreljme.error ED06 Expected the architecture part to be in
+		// the form of {@code name-bits+variant,endianess}. (The input
+		// triplet)}
+		if (pdas < 0 || pplu < 0 || pcom < 0 || pdas > pplu || pdas > pcom ||
+			pplu > pcom)
+			throw new IllegalArgumentException(String.format("ED06 %s", __t));
+		
+		// Extract
+		this.architecture = __check(fullarch.substring(0, pdas));
+		this.cpuvar = __check(fullarch.substring(pplu + 1, pcom));
+		this.endianess = JITCPUEndian.of(__check(
+			fullarch.substring(pcom + 1)));
+		
+		// Decode bits
+		try
+		{
+			// {@squirreljme.error ED08 The specified word size in bits that
+			// the CPU uses is zero or negative. (The triplet; The bit count)}
+			int bits = Integer.decode(fullarch.substring(pdas + 1, pplu));
+			if (bits <= 0)
+				throw new IllegalArgumentException(String.format("ED08 %s %d",
+					__t, bits));
+			
+			// Ok
+			this.bits = bits;
+		}
+		
+		// {@squirreljme.error ED06 The word size of the CPU in bits is not
+		// a valid number. (The triplet)}
+		catch (NumberFormatException e)
+		{
+			throw new IllegalArgumentException(String.format("ED07 %s", __t),
+				e);
+		}
 	}
 	
 	/**
