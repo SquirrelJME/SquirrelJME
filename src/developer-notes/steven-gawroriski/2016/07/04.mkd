@@ -101,3 +101,20 @@ will not use a binary representation of classes at all. Each class would
 essentially just be a field and allocated objects would be files on the
 disk for the most part.
 
+## 22:01
+
+Ok, so having the JIT output to an output stream with some kind of binary
+writer does not make sense at all for certain targets. These targets would
+be an interpreter which runs on an existing JVM, and perhaps esoteric targets
+which do not target binary formats but some other strange format. So basically
+the output to the JIT would be similar to before except that when it comes to
+output it might output to a binary format, or it might not. I really should
+support a kind of JITted interpreter, so that way I can test the JIT and then
+the class library with minimal effort. Basically the JIT would output a
+`CompatibleExecutable` as a kind of interface. However there may be a case
+where the JIT would want to store the result to the disk (say with AOT) while
+in other cases it would want it directly in memory ready to be used. So what
+I propose when it comes to a JIT that it can output a ready to execute format
+or it can use an `OutputStream` to a cached form of the data. These forms
+would be very system specific.
+
