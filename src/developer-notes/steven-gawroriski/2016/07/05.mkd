@@ -25,3 +25,8 @@ instead.
 This means that the `JITOutputFactory` being associated with an operating
 system and architecture in the constructor makes no sense at all.
 
+## 19:53
+
+Using the configuration greatly simplifies finding a supporting output
+factory.
+

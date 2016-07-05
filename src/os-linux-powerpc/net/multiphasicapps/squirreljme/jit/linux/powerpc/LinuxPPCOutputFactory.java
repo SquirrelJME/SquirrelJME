@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.linux.powerpc;
 
+import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.JITOutput;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 
 /**
@@ -27,18 +30,36 @@ public class LinuxPPCOutputFactory
 	 */
 	public LinuxPPCOutputFactory()
 	{
-		this("generic");
 	}
 	
 	/**
-	 * A factory which targets a given variant of Linux.
-	 *
-	 * @param __var The variant to target.
-	 * @sine 2016/07/04
+	 * {@inheritDoc}
+	 * @since 2016/07/05
 	 */
-	public LinuxPPCOutputFactory(String __var)
+	@Override
+	public JITOutput create(JITOutputConfig.Immutable __config)
+		throws JITException, NullPointerException
 	{
-		super("powerpc", "linux", __var);
+		// Check
+		if (__config == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/05
+	 */
+	@Override
+	public boolean supportsConfig(JITOutputConfig.Immutable __config)
+		throws NullPointerException
+	{
+		// Check
+		if (__config == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

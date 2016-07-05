@@ -32,7 +32,9 @@ import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.JIT;
+import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITTriplet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
@@ -71,6 +73,9 @@ public class Builder
 	
 	/** JIT options. */
 	protected final JITOutputConfig.Immutable jitconfig;
+	
+	/** The JIT output. */
+	protected final JITOutput jitoutput;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -145,7 +150,11 @@ public class Builder
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
 		
 		// Finish
-		this.jitconfig = jitconfig.immutable();
+		JITOutputConfig.Immutable immut = jitconfig.immutable();
+		this.jitconfig = immut;
+		
+		// Find output factory
+		this.jitoutput = JITOutputFactory.createOutput(immut);
 		
 		throw new Error("TODO");
 		/*

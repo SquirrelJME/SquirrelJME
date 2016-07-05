@@ -28,36 +28,35 @@ public abstract class JITOutputFactory
 	private static final ServiceLoader<JITOutputFactory> _SERVICES =
 		ServiceLoader.<JITOutputFactory>load(JITOutputFactory.class);
 	
-	/** The architecture to target. */
-	protected final String architecture;
-	
-	/** The operating system to target. */
-	protected final String operatingsystem;
-	
-	/** The variant of the operating system to target. */
-	protected final String operatingsystemvariant;
-	
 	/**
 	 * Initializes the base factory which creates {@link JITOutput}s.
 	 *
-	 * @param __arch The target architecture.
-	 * @param __os The operating system to target.
-	 * @param __osvar The variant of the operating system.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/04
 	 */
-	public JITOutputFactory(String __arch, String __os, String __osvar)
-		throws NullPointerException
+	public JITOutputFactory()
 	{
-		// Check
-		if (__arch == null || __os == null || __osvar == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.architecture = __arch;
-		this.operatingsystem = __os;
-		this.operatingsystemvariant = __osvar;
 	}
+	
+	/**
+	 * This creates a new output which is used by JITs and uses the given
+	 * configuration.
+	 *
+	 * @param __config The configuration to create an output for.
+	 * @throws JITException If the output could not be created likely due to
+	 * an incompatible configuration.
+	 * @since 2016/07/05
+	 */
+	public abstract JITOutput create(JITOutputConfig.Immutable __config)
+		throws JITException;
+	
+	/**
+	 * Checks whether the factory supports the given configuration for output.
+	 *
+	 * @param __config The configuration to check support for.
+	 * @return {@code true} if the configuration is supported.
+	 * @since 2016/07/05
+	 */
+	public abstract boolean supportsConfig(JITOutputConfig.Immutable __config);
 	
 	/**
 	 * Creates an output which uses the given configuration, the output would
@@ -72,13 +71,25 @@ public abstract class JITOutputFactory
 	 * @since 2016/07/05
 	 */
 	public static JITOutput createOutput(JITOutputConfig.Immutable __config)
-		throws NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__config == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through all services and find one that supports the given
+		// configuration
+		ServiceLoader<JITOutputFactory> services = _SERVICES;
+		synchronized (services)
+		{
+			for (JITOutputFactory jof : services)
+				if (jof.supportsConfig(__config))
+					return jof.create(__config);
+		}
+		
+		// {@squirreljme.error ED0a No output factory supports the given
+		// configuration. (The used configuration)}
+		throw new JITException(String.format("ED0a %s", __config));
 	}
 }
 
