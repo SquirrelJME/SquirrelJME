@@ -68,20 +68,20 @@ final class __ClassDecoder__
 	{
 		DataInputStream input = this.input;
 		
-		// {@squirreljme.error DV02 The magic number of the input data stream
+		// {@squirreljme.error ED12 The magic number of the input data stream
 		// does not match that of the Java class file. (The magic number which
 		// was read)}
 		int fail;
 		if ((fail = input.readInt()) != MAGIC_NUMBER)
-			throw new JITException(String.format("DV02 %08x", fail));
+			throw new JITException(String.format("ED12 %08x", fail));
 		
-		// {@squirreljme.error DV03 The version number of the input class file
+		// {@squirreljme.error ED13 The version number of the input class file
 		// is not valid. (The version number)}
 		int cver = input.readShort() | (input.readShort() << 16);
 		__ClassVersion__ version = __ClassVersion__.findVersion(cver);
 		this._version = version;
 		if (version == null)
-			throw new JITException(String.format("DV03 %d.%d", cver >>> 16,
+			throw new JITException(String.format("ED13 %d.%d", cver >>> 16,
 				(cver & 0xFFFF)));
 		
 		// Decode the constant pool

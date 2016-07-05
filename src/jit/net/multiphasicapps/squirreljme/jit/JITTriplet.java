@@ -18,6 +18,24 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public final class JITTriplet
 {
+	/** The architecture. */
+	protected final String architecture;
+	
+	/** The number of bits used. */
+	protected final int bits;
+	
+	/** The variant of the CPU. */
+	protected final String cpuvar;
+	
+	/** The endianess of the CPU. */
+	protected final JITCPUEndian endianess;
+	
+	/** The operating system. */
+	protected final String os;
+	
+	/** The variant of the operating system. */
+	protected final String osvar;
+	
 	/**
 	 * This decodes the given input string as a triplet.
 	 *
@@ -32,6 +50,15 @@ public final class JITTriplet
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ED03 Expected two periods in the triplet.
+		// (The triplet)}
+		int dota = __t.indexOf('.');
+		if (dota < 0)
+			throw new IllegalArgumentException(String.format("ED03 %s", __t));
+		int dotb = __t.indexOf('.', dota + 1);
+		if (dotb < 0)
+			throw new IllegalArgumentException(String.format("ED03 %s", __t));
 		
 		throw new Error("TODO");
 	}

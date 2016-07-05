@@ -100,11 +100,11 @@ class __ClassPool__
 		if (__dis == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DV05 The input class has an empty constant
+		// {@squirreljme.error ED15 The input class has an empty constant
 		// pool.}
 		int count = __dis.readUnsignedShort();
 		if (count <= 0)
-			throw new JITException("DV05");
+			throw new JITException("ED15");
 		
 		// The set of pool tags
 		byte[] tags = new byte[count];
@@ -118,11 +118,11 @@ class __ClassPool__
 			// Read the tag
 			int tag = __dis.readUnsignedByte();
 			
-			// {@squirreljme.error DV06 Java ME does not support dynamic
+			// {@squirreljme.error ED16 Java ME does not support dynamic
 			// invocation (such as method handles or lambda expressions).}
 			if (tag == TAG_METHODHANDLE || tag == TAG_METHODTYPE ||
 				tag == TAG_INVOKEDYNAMIC)
-				throw new JITException("DV06");
+				throw new JITException("ED16");
 			
 			// Store tag
 			tags[i] = (byte)tag;
@@ -136,11 +136,11 @@ class __ClassPool__
 					data[i] = __dis.readUTF();
 				}
 				
-				// {@squirreljme.error DV08 The modified UTF-8 data string in
+				// {@squirreljme.error ED18 The modified UTF-8 data string in
 				// the constant pool is malformed.}
 				catch (UTFDataFormatException e)
 				{
-					throw new JITException("DV08", e);
+					throw new JITException("ED18", e);
 				}
 			}
 			
@@ -176,10 +176,10 @@ class __ClassPool__
 			else if (tag == TAG_DOUBLE)
 				data[i] = Double.valueOf(__dis.readDouble());
 			
-			// {@squirreljme.error DV07 Unknown constant pool tag. (The tag of
+			// {@squirreljme.error ED17 Unknown constant pool tag. (The tag of
 			// the constant pool entry)}
 			else
-				throw new JITException(String.format("DV07 %d", tag));
+				throw new JITException(String.format("ED17 %d", tag));
 			
 			// Double up?
 			if (tag == TAG_LONG || tag == TAG_DOUBLE)
