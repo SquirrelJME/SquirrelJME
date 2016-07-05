@@ -23,7 +23,7 @@ import java.io.IOException;
  *
  * @since 2016/07/02
  */
-public abstract class JIT
+public final class JIT
 	implements Runnable
 {
 	/** The endian of the CPU. */
@@ -39,6 +39,9 @@ public abstract class JIT
 	/** The input source. */
 	private final InputStream _input;
 	
+	/** The output of the JIT. */
+	private final JITOutput _output;
+	
 	/** One time only. */
 	private volatile boolean _once;
 	
@@ -51,15 +54,17 @@ public abstract class JIT
 	 * @param __fp The producer which generated this JIT.
 	 * @apram __ns The namespace of the class.
 	 * @param __ic The input stream of the class data.
+	 * @param __jo The output of the JIT.
 	 * @throws JITException If the class is not correctly formed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/03
 	 */
-	public JIT(JITFactory.Producer __fp, String __ns, InputStream __ic)
+	public JIT(JITFactory.Producer __fp, String __ns, InputStream __ic,
+		JITOutput __jo)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__fp == null || __ns == null || __ic == null)
+		if (__fp == null || __ns == null || __ic == null || __jo == null)
 			throw new NullPointerException("NARG");
 		
 		// Get some details
@@ -68,6 +73,7 @@ public abstract class JIT
 		
 		// Set
 		this._input = __ic;
+		this._output = __jo;
 		
 		// Modify this JIT for a given OS
 		__fp.operatingSystemModifier().__modifyJIT(this);

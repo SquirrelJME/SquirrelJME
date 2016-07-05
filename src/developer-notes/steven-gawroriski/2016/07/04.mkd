@@ -125,3 +125,19 @@ declare if it wants to output a cached form directly, or also a
 `CompatibleExecutable`. Basically the handles for all methods would need to
 handle output to be cached or a compatible executable for direct execution.
 
+## 22:15
+
+This means that the JIT output again becomes non-abstract.
+
+## 22:18
+
+So actually, I suppose that this instead removes `JITFactory` which then turns
+into a `JITOutputFactory` which creates `JITOutput`s which are associated with
+a `JIT`. The output factory is then given an architecture and a variant. When
+it comes to JIT generation fully handled triplet would be used in the factory.
+Then the `JITOutput` created will handle stuff such as writing to binary
+formats and such. So the factory creation method would then handle cases where
+output is to a cached form or directly executable form. Then when it comes to
+actual assembly code generation, there will just be a basic output for
+an architecture which uses a compatible interface.
+
