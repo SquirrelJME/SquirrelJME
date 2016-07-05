@@ -85,3 +85,8 @@ while I can drop down to lower levels and run Linux programs itself. So I
 suppose my initial goal should be running a Linux kernel or perhaps even the
 Mac OS X kernel.
 
+## 21:10
+
+With `unsafe` there is a way where I can get away with not having any
+binary stubs and assembly bits.
+
