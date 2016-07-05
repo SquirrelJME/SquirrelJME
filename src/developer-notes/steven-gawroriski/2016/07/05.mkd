@@ -8,3 +8,9 @@ essentially be `powerpc-32,big.linux.generic`. However since some packages
 might support some bits and others not, there would essentially be a list of
 stuff rather than just having single entries.
 
+## 17:06
+
+I looked at my site through my mobile phone, it renders the blueish color as a
+kind of grayscale. This looked quite nice, so I believe I will switch color
+schemes.
+
