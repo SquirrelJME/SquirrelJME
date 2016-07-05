@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
  * @since 2016/07/05
  */
 public final class JITTriplet
+	implements Comparable<JITTriplet>
 {
 	/** The architecture. */
 	protected final String architecture;
@@ -41,6 +42,9 @@ public final class JITTriplet
 	
 	/** The string representation. */
 	private volatile Reference<String> _string;
+	
+	/** The used hashcode. */
+	private volatile int _hashcode;
 	
 	/**
 	 * This decodes the given input string as a triplet.
@@ -74,6 +78,100 @@ public final class JITTriplet
 		this.osvar = __check(__t.substring(dotb + 1));
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/05
+	 */
+	@Override
+	public int compareTo(JITTriplet __b)
+		throws NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// The operating system name
+		int rv = this.os.compareTo(__b.os);
+		if (rv != 0)
+			return rv;
+		
+		// The variant of the operating system
+		rv = this.osvar.compareTo(__b.osvar);
+		if (rv != 0)
+			return rv;
+		
+		// The architecture
+		rv = this.architecture.compareTo(__b.architecture);
+		if (rv != 0)
+			return rv;
+		
+		// Then the bits
+		int ab = this.bits, bb = __b.bits;
+		if (ab < bb)
+			return -1;
+		else if (ab > bb)
+			return 1;
+		
+		// The CPU variant
+		rv = this.cpuvar.compareTo(__b.cpuvar);
+		if (rv != 0)
+			return rv;
+		
+		// The endianess
+		rv = this.endianess.compareTo(__b.endianess);
+		if (rv != 0)
+			return rv;
+		
+		// The same
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/05
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Check
+		if (__o instanceof JITTriplet)
+		{
+			JITTriplet o = (JITTriplet)__o;
+			
+			return this.architecture.equals(o.architecture) &&
+				this.bits == o.bits &&
+				this.cpuvar.equals(o.cpuvar) &&
+				this.endianess.equals(o.endianess) &&
+				this.os.equals(o.os) &&
+				this.osvar.equals(o.osvar);
+		}
+		
+		// String
+		else if (__o instanceof String)
+			return toString().equals(((String)__o));
+		
+		// Unknown
+		else
+			return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/05
+	 */
+	@Override
+	public int hashCode()
+	{
+		int rv = this._hashcode;
+		
+		// Calculate?
+		if (rv == 0)
+			this._hashcode = (rv = toString().hashCode());
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
