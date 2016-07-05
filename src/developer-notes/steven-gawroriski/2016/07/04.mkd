@@ -160,3 +160,11 @@ Probably something to simplify output would be a state that can be changed
 accordingly. It can be made immutable when work needs to be performed. So it
 would essentially be a configuration of sorts.
 
+## 22:47
+
+I would suppose when it comes to an interpreter JVM, that instead of creating a
+JVM it would just setup a JIT and start executing the JVM as it would in the
+instance. Any special calls would then just modify the state. This would
+provide a close execution environment. It would also allow me to design the
+`JVM` so that it is closer to how real environments would run.
+
