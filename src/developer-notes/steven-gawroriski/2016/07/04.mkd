@@ -154,3 +154,9 @@ is instead part of the variant, say `powerpc-32+g4,big`. Then stuff such as
 x86 would be `x86-16+286,little`. This way I do not have to have quite a number
 of variants which target similar things.
 
+## 22:40
+
+Probably something to simplify output would be a state that can be changed
+accordingly. It can be made immutable when work needs to be performed. So it
+would essentially be a configuration of sorts.
+
