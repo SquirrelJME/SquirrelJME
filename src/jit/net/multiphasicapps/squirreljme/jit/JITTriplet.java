@@ -67,9 +67,11 @@ public final class JITTriplet
 			throw new IllegalArgumentException(String.format("ED03 %s", __t));
 		
 		// Split into three forms
-		String fullarch = __t.substring(0, dota),
-			os = __t.substring(dota + 1, dotb),
-			osvar = __t.substring(dotb + 1);
+		String fullarch = __t.substring(0, dota);
+		
+		// Store operating system and its variant
+		this.os = __check(__t.substring(dota + 1, dotb));
+		this.osvar = __check(__t.substring(dotb + 1));
 		
 		throw new Error("TODO");
 	}
@@ -81,7 +83,18 @@ public final class JITTriplet
 	@Override
 	public String toString()
 	{
-		throw new Error("TODO");
+		Reference<String> ref = _string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			_string = new WeakReference<>((rv = this.architecture + "-" +
+				this.bits + "+" + this.cpuvar + "," +
+				this.endianess.endianName() + "." + this.os + "." +
+				this.osvar));
+		
+		// Return
+		return rv;
 	}
 	
 	/**
@@ -100,7 +113,48 @@ public final class JITTriplet
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error ED04 A fragment in a triplet cannot be empty.}
+		int n = __s.length();
+		if (n <= 0)
+			throw new IllegalArgumentException("ED04");
+		
+		// Check all characters
+		boolean upper = false;
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// {@squirreljme.error ED05 The fragment in the input triplet
+			// contains an illegal character. (The fragment; The illegal
+			// character)}
+			boolean hasupper = (c >= 'A' && c <= 'Z');
+			if (!((c >= 'a' && c <= 'z') || hasupper ||
+				(c >= '0' && c <= '9')))
+				throw new IllegalArgumentException(String.format("ED05 %s %c",
+					__s, c));
+			
+			// Uppercase?
+			upper |= hasupper;
+		}
+		
+		// No uppercase characters, keep
+		if (!upper)
+			return __s;
+		
+		// Make characters lowercase
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			if (c < 'A' || c > 'Z')
+				sb.append(c);
+			else
+				sb.append('a' + (c - 'A'));
+		}
+		
+		// Build it
+		return sb.toString();
 	}
 }
 
