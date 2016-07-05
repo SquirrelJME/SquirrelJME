@@ -14,3 +14,14 @@ I looked at my site through my mobile phone, it renders the blueish color as a
 kind of grayscale. This looked quite nice, so I believe I will switch color
 schemes.
 
+## 19:38
+
+Ok, so the `JIT` is to be completley decoupled from the `JITOutput` so the
+`JIT` will be `final` and the generation logic will be placed in `JITOutput`
+instead.
+
+## 19:44
+
+This means that the `JITOutputFactory` being associated with an operating
+system and architecture in the constructor makes no sense at all.
+

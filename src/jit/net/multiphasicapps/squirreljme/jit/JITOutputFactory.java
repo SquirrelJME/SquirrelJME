@@ -58,5 +58,27 @@ public abstract class JITOutputFactory
 		this.operatingsystem = __os;
 		this.operatingsystemvariant = __osvar;
 	}
+	
+	/**
+	 * Creates an output which uses the given configuration, the output would
+	 * then be used as part of the JIT for code generation.
+	 *
+	 * @param __config The configuration which specifies the system to target.
+	 * @return An output which targets the given system.
+	 * @throws JITException If the specified configuration cannot be used,
+	 * possibly because it is invalid or no {@link JITOutputFactory} supports
+	 * the given system.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/05
+	 */
+	public static JITOutput createOutput(JITOutputConfig.Immutable __config)
+		throws NullPointerException
+	{
+		// Check
+		if (__config == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 
