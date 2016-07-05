@@ -97,7 +97,8 @@ public class Builder
 		JITOutputConfig jitconfig = new JITOutputConfig();
 		jitconfig.setTriplet(__trip);
 		
-		System.err.printf("DEBUG -- Target: %s%n", __trip);
+		System.err.printf("DEBUG -- Target: %s %s%n", __trip,
+			__trip.toPackageTarget());
 		
 		// Go through all of the packages to find the one that specifies that
 		// it is the JVM for the given triplet

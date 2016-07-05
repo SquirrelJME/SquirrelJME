@@ -1,2 +1,10 @@
 # 2016/07/05
 
+## 13:09
+
+The JITTarget can use a simplified output which is matched to operating system
+packages. Instead of just say `powerpc32.linux.generic` the targets will
+essentially be `powerpc-32,big.linux.generic`. However since some packages
+might support some bits and others not, there would essentially be a list of
+stuff rather than just having single entries.
+

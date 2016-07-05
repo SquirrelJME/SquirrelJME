@@ -46,6 +46,9 @@ public final class JITTriplet
 	/** The used hashcode. */
 	private volatile int _hashcode;
 	
+	/** The package target. */
+	private volatile Reference<String> _package;
+	
 	/**
 	 * This decodes the given input string as a triplet.
 	 *
@@ -209,6 +212,29 @@ public final class JITTriplet
 			this._hashcode = (rv = toString().hashCode());
 		
 		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Returns the package based target name for a given operating system
+	 * which lacks the variant due to potentially variability. Thus the
+	 * resulting form is that of {@code arch-bits,endian.os.variant}.
+	 *
+	 * @return The package variant of the target.
+	 * @since 2016/07/05
+	 */
+	public String toPackageTarget()
+	{
+		Reference<String> ref = _package;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			_package = new WeakReference<>((rv = this.architecture + "-" +
+				this.bits + "," + this.endianess.endianName() + "." +
+				this.os + "." + this.osvar));
+		
+		// Return
 		return rv;
 	}
 	
