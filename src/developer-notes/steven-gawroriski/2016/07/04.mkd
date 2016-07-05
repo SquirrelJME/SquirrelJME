@@ -147,3 +147,10 @@ Then when it comes to the output factory, the variant could be supported or
 it might not be. The system specific output handler can see if a given variant
 and endianess is supported.
 
+## 22:27
+
+When it comes to the word size of the CPU, perhaps instead of `powerpc32` it
+is instead part of the variant, say `powerpc-32+g4,big`. Then stuff such as
+x86 would be `x86-16+286,little`. This way I do not have to have quite a number
+of variants which target similar things.
+
