@@ -118,3 +118,10 @@ I propose when it comes to a JIT that it can output a ready to execute format
 or it can use an `OutputStream` to a cached form of the data. These forms
 would be very system specific.
 
+## 22:06
+
+So, I would say it would be best kept to an interface. The interface can then
+declare if it wants to output a cached form directly, or also a
+`CompatibleExecutable`. Basically the handles for all methods would need to
+handle output to be cached or a compatible executable for direct execution.
+
