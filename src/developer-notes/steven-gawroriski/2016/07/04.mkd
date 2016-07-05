@@ -90,3 +90,14 @@ Mac OS X kernel.
 With `unsafe` there is a way where I can get away with not having any
 binary stubs and assembly bits.
 
+## 21:15
+
+Well, when it comes to the binary format, the loading of classes, with linking
+when it comes to fields and methods is system dependent. For example when
+it comes to ELFs the classes and such can be linked in the binary.
+Alternatively I can just have a bootstrap which sets up an executable region
+and then jumps into it. Some systems, say a hypothetical POSIX shell target
+will not use a binary representation of classes at all. Each class would
+essentially just be a field and allocated objects would be files on the
+disk for the most part.
+
