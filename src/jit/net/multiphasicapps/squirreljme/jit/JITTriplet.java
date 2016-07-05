@@ -82,12 +82,12 @@ public final class JITTriplet
 			pplu = fullarch.indexOf('+'),
 			pcom = fullarch.indexOf(',');
 		
-		// {@squirreljme.error ED06 Expected the architecture part to be in
+		// {@squirreljme.error ED07 Expected the architecture part to be in
 		// the form of {@code name-bits+variant,endianess}. (The input
 		// triplet)}
 		if (pdas < 0 || pplu < 0 || pcom < 0 || pdas > pplu || pdas > pcom ||
 			pplu > pcom)
-			throw new IllegalArgumentException(String.format("ED06 %s", __t));
+			throw new IllegalArgumentException(String.format("ED07 %s", __t));
 		
 		// Extract
 		this.architecture = __check(fullarch.substring(0, pdas));
@@ -113,7 +113,7 @@ public final class JITTriplet
 		// a valid number. (The triplet)}
 		catch (NumberFormatException e)
 		{
-			throw new IllegalArgumentException(String.format("ED07 %s", __t),
+			throw new IllegalArgumentException(String.format("ED06 %s", __t),
 				e);
 		}
 	}

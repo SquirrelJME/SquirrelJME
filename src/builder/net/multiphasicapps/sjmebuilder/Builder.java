@@ -32,7 +32,7 @@ import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.JIT;
-import net.multiphasicapps.squirreljme.jit.JITFactory;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITTriplet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zips.ZipEntry;
@@ -69,6 +69,9 @@ public class Builder
 	protected final Map<PackageInfo, GlobbedJar> globjars =
 		new HashMap<>();
 	
+	/** JIT options. */
+	protected final JITOutputConfig.Immutable jitconfig;
+	
 	/**
 	 * Initializes the builder for a native target.
 	 *
@@ -89,6 +92,10 @@ public class Builder
 		
 		// Set
 		this.triplet = __trip;
+		
+		// Setup configuration
+		JITOutputConfig jitconfig = new JITOutputConfig();
+		jitconfig.setTriplet(__trip);
 		
 		System.err.printf("DEBUG -- Target: %s%n", __trip);
 		
@@ -135,6 +142,9 @@ public class Builder
 		Set<PackageInfo> pis = new LinkedHashSet<>();
 		__getDependencies(pis, tpk);
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
+		
+		// Finish
+		this.jitconfig = jitconfig.immutable();
 		
 		throw new Error("TODO");
 		/*
