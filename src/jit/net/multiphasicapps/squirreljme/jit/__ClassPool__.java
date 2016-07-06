@@ -192,6 +192,116 @@ class __ClassPool__
 	}
 	
 	/**
+	 * Obtains the index at the specified position as the given type.
+	 *
+	 * @param <R> The type of value to get.
+	 * @param __dx The index of the entry.
+	 * @param __cl The expected class type.
+	 * @return The value at the given location.
+	 * @throws JITException If the input is not of the expected type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/06
+	 */
+	public <R> R get(int __dx, Class<R> __cl)
+		throws JITException, NullPointerException
+	{
+		// Get
+		R rv = this.<R>optional(__dx, __cl);
+		
+		// {@squirreljme.error ED0b No constant pool entry was defined at
+		// this position. (The index; The expected type)}
+		if (rv == null)
+			throw new JITException(String.format("ED0b %d %s", __dx, __cl));
+		
+		// Ok
+		return rv;
+	}
+	
+	/**
+	 * Obtains the index at the specified position as the given type, if the
+	 * index is zero then {@code null} is returned.
+	 *
+	 * @param <R> The type of value to get.
+	 * @param __dx The index of the entry, zero will return {@code null}.
+	 * @param __cl The expected class type.
+	 * @return The value at the given location or {@code null} if zero was
+	 * requested.
+	 * @throws JITException If the input is not of the expected type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/06
+	 */
+	public <R> R optional(int __dx, Class<R> __cl)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Zero is always null
+		if (__dx == 0)
+			return null;
+		
+		// {@squirreljme.error ED0c The requested index is not within the
+		// constant pool bounds. (The index)}
+		Object[] data = this._data;
+		int n = data.length;
+		if (__dx < 0 || __dx >= n)
+			throw new JITException(String.format("ED0c %d", __dx));
+		
+		// Get raw data
+		Object raw = data[__dx];
+		
+		// {@squirreljme.error ED0d The requested entry does not contain a
+		// value because it is the top of a long or double constant value.
+		// (The index)}
+		if (raw == null)
+			throw new JITException(String.format("ED0d %d", __dx));
+		
+		// If an integer array, requires conversion
+		if (raw instanceof int[])
+		{
+			// Get input fields
+			int[] fields = (int[])raw;
+			raw = null;
+			
+			// Depends on the tag
+			byte tag = this._tags[__dx];
+			switch (tag)
+			{
+					// Strings
+				case TAG_STRING:
+					raw = this.<String>get(fields[0], String.class);
+					break;
+					
+					// {@squirreljme.error ED0f Could not obtain the constant
+					// pool entry information because its tag data relation is
+					// not known. (The index; The tag type)}
+				default:
+					throw new JITException(String.format("ED0f %d %d", __dx,
+						tag));
+			}
+			
+			// {@squirreljme.error ED0g The field data was never translated
+			// to known useable data. (The index)}
+			if (raw == null)
+				throw new NullPointerException(String.format("ED0g %d", __dx));
+			
+			// Reset
+			data[__dx] = raw;
+		}
+		
+		// {@squirreljme.error ED0e The value at the given index was not of
+		// the expected class type. (The index; The expected type; The type
+		// that it was)}
+		if (!__cl.isInstance(raw))
+			throw new JITException(String.format("ED0e %d %s", __dx, __cl,
+				raw.getClass()));
+		
+		// Cast
+		return __cl.cast(raw);
+	}
+	
+	/**
 	 * Returns the size of the constant pool.
 	 *
 	 * @return The constant pool size.
