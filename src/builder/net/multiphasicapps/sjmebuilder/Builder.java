@@ -345,6 +345,10 @@ public class Builder
 		String classname = ename.substring(0,
 			ename.length() - ".class".length());
 		
+		// A notice
+		System.err.print("AOT ");
+		System.err.println(ename);
+		
 		// Open a resource to be placed in the globbed jar
 		try (InputStream is = __e.open();
 			OutputStream os = __gj.createClass(classname))
@@ -376,9 +380,14 @@ public class Builder
 		if (__gj == null || __e == null)
 			throw new NullPointerException("NARG");
 		
+		// A notice
+		String ename = __e.name();
+		System.err.print("RES ");
+		System.err.println(ename);
+		
 		// Open a resource to be placed in the globbed jar
 		try (InputStream is = __e.open();
-			OutputStream os = __gj.createResource(__e.name()))
+			OutputStream os = __gj.createResource(ename))
 		{
 			// Copy all the data
 			int sz = RESOURCE_BUFFER_SIZE;
