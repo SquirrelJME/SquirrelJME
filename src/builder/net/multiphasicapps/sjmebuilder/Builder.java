@@ -185,21 +185,6 @@ public class Builder
 		
 		// Find output factory
 		this.jitoutput = JITOutputFactory.createOutput(immut);
-		
-		throw new Error("TODO");
-		/*
-		// Find the function providers for the desired targets
-		JITFactory.Producer producer = JITFactory.createProducer(
-			arch, archvar, os);
-		
-		// {@squirreljme.error DW08 Could not find a producer which generates
-		// code for a given target. (The target triplet)}
-		if (producer == null)
-			throw new RuntimeException(String.format("DW08 %s", triplet));
-		
-		// Set
-		this.producer = producer;
-		*/
 	}
 	
 	/**
