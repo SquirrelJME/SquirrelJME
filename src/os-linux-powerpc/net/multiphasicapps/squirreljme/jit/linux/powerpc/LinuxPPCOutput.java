@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.linux.powerpc;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.JITClassWriter;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.powerpc.PPCLogicAcceptor;
@@ -36,6 +39,21 @@ public class LinuxPPCOutput
 		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/06
+	 */
+	@Override
+	public JITClassWriter beginClass(String __ns, ClassNameSymbol __cn)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__ns == null || __cn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
