@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.linux.powerpc;
 
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
+import net.multiphasicapps.squirreljme.jit.powerpc.PPCLogicAcceptor;
 
 /**
  * This is an output which generates either cached binaries or directly

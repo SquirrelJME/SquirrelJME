@@ -48,3 +48,17 @@ while if a test fails in just the simulator the simulator is incorrect.
 
 Well, Google never wished me a Happy Birthday, but Microsoft did.
 
+## 11:28
+
+When it comes to the new `JITLogicAcceptor`, I should only create it when it
+actually is needed when a method needs to get its logic handled. Before I was
+definitely going to clutter `JITOutput` with logical operations, but that
+would be nasty. However with the `JITLogicAcceptor` I can essentially have a
+multiplexer which can output to multiple logical acceptors with the same
+information. Then this way, I can handle caching and runtime JIT at the same
+time. Thinking about other things, I wonder if in the game of life it would
+be possible to create standalone simulations (not using the super cells that
+run the same simulation) but a way where I can create a glider and a few other
+objects at specific positions within the world. If that could be done then a
+JIT would be possible in the game of life.
+
