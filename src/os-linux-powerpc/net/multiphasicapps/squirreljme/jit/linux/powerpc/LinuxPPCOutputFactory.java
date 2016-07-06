@@ -49,10 +49,10 @@ public class LinuxPPCOutputFactory
 		// {@squirreljme.error DX01 The requested configuration is not
 		// supported by this output factory. (The configuration})
 		if (!supportsConfig(__config))
-			throw new JITException(String.format(String.format("DX01 %s",
-				__config));
+			throw new JITException(String.format("DX01 %s", __config));
 		
-		throw new Error("TODO");
+		// Create
+		return new LinuxPPCOutput(__config);
 	}
 	
 	/**
