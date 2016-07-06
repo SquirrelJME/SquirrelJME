@@ -10,10 +10,12 @@
 
 package net.multiphasicapps.squirreljme.jit.linux.powerpc;
 
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
+import net.multiphasicapps.squirreljme.jit.JITTriplet;
 
 /**
  * This output factory targets PowerPC Linux systems.
@@ -59,7 +61,18 @@ public class LinuxPPCOutputFactory
 		if (__config == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get the triplet
+		JITTriplet triplet = __config.triplet();
+		
+		// Only generic Linux on any PowerPC 32-bit or 64-bit system (big
+		// or little)
+		int bits = triplet.bits();
+		JITCPUEndian endian = triplet.endianess();
+		return triplet.architecture().equals("powerpc") &&
+			triplet.operatingSystem().equals("linux") &&
+			triplet.operatingSystemVariant().equals("generic") &&
+			(bits == 32 || bits == 64) &&
+			(endian == JITCPUEndian.BIG || endian == JITCPUEndian.LITTLE);
 	}
 }
 

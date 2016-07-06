@@ -122,11 +122,44 @@ public final class JITTriplet
 	}
 	
 	/**
+	 * Returns the associated architecture.
+	 *
+	 * @return The architecture to use.
+	 * @since 2016/07/05
+	 */
+	public final String architecture()
+	{
+		return this.architecture;
+	}
+	
+	/**
+	 * Returns the variant of the architecture.
+	 *
+	 * @return The architecture variant.
+	 * @since 2016/07/05
+	 */
+	public final String architectureVariant()
+	{
+		return this.cpuvar;
+	}
+	
+	/**
+	 * Returns the number of used CPU bits.
+	 *
+	 * @return The CPU bit count.
+	 * @since 2016/07/05
+	 */
+	public final int bits()
+	{
+		return this.bits;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/05
 	 */
 	@Override
-	public int compareTo(JITTriplet __b)
+	public final int compareTo(JITTriplet __b)
 		throws NullPointerException
 	{
 		// Check
@@ -170,11 +203,22 @@ public final class JITTriplet
 	}
 	
 	/**
+	 * Returns the endianess to target.
+	 *
+	 * @return The endianess to target.
+	 * @since 2016/07/05
+	 */
+	public final JITCPUEndian endianess()
+	{
+		return this.endianess;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/05
 	 */
 	@Override
-	public boolean equals(Object __o)
+	public final boolean equals(Object __o)
 	{
 		// Check
 		if (__o instanceof JITTriplet)
@@ -203,7 +247,7 @@ public final class JITTriplet
 	 * @since 2016/07/05
 	 */
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
 		int rv = this._hashcode;
 		
@@ -216,6 +260,28 @@ public final class JITTriplet
 	}
 	
 	/**
+	 * Returns the operating system.
+	 *
+	 * @return The operating system.
+	 * @since 2016/07/05
+	 */
+	public final String operatingSystem()
+	{
+		return this.os;
+	}
+	
+	/**
+	 * Returns the operating system variant.
+	 *
+	 * @return The operating system variant.
+	 * @since 2016/07/05
+	 */
+	public final String operatingSystemVariant()
+	{
+		return this.osvar;
+	}
+	
+	/**
 	 * Returns the package based target name for a given operating system
 	 * which lacks the variant due to potentially variability. Thus the
 	 * resulting form is that of {@code arch-bits,endian.os.variant}.
@@ -223,7 +289,7 @@ public final class JITTriplet
 	 * @return The package variant of the target.
 	 * @since 2016/07/05
 	 */
-	public String toPackageTarget()
+	public final String toPackageTarget()
 	{
 		Reference<String> ref = _package;
 		String rv;
@@ -243,7 +309,7 @@ public final class JITTriplet
 	 * @since 2016/07/05
 	 */
 	@Override
-	public String toString()
+	public final String toString()
 	{
 		Reference<String> ref = _string;
 		String rv;
