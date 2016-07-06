@@ -10,33 +10,12 @@
 
 package net.multiphasicapps.simulator;
 
-import net.multiphasicapps.squirreljme.jit.JITTriplet;
-
 /**
- * This is a mutable configuration which stores the input configuration for
- * a given simulator.
+ * Common getters for the simulator configuration.
  *
  * @since 2016/07/06
  */
-public final class SimulatorConfig
-	implements __CommonConfigGet__
+interface __CommonConfigGet__
 {
-	/** Set lock. */
-	protected final Object lock =
-		new Object();
-	
-	/** The triplet of the target system to simulate. */
-	private volatile JITTriplet _triplet;
-	
-	/**
-	 * This is an immutable snapshot of a given configuration which cannot be
-	 * changed.
-	 *
-	 * @since 2016/07/06
-	 */
-	public static final class Immutable
-		implements __CommonConfigGet__
-	{
-	}
 }
 
