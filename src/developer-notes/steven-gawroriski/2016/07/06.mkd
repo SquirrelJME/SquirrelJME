@@ -4,3 +4,8 @@
 
 Today is my birthday. Yay.
 
+## 07:46
+
+The immutable configuration should match getters with the mutable one for
+simplicity.
+
