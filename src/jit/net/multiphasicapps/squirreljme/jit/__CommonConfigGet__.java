@@ -18,6 +18,14 @@ package net.multiphasicapps.squirreljme.jit;
 interface __CommonConfigGet__
 {
 	/**
+	 * Returns the cache creator to use when writing to the disk cache.
+	 *
+	 * @return The cache creator, may return {@code null} if one is not set.
+	 * @since 2016/07/06
+	 */
+	public abstract JITCacheCreator cacheCreator();
+	
+	/**
 	 * Returns the triplet to target.
 	 *
 	 * @return The target triplet.

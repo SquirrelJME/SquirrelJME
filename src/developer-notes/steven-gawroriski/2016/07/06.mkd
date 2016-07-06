@@ -73,3 +73,22 @@ if it is a binary that could also be handled too. So then `JITOutput` gets a
 producing class. Finishing the class can be handled by whatever implements the
 interface accordingly.
 
+## 12:05
+
+I am going to have to have a creator interface for cached forms. The config
+will be given an interface which would create `OutputStream`s for writing to
+the disk. One thing that I could do on Linux, is create actual object files
+and then create a linker similar to `gcc` which can combine all of the object
+files together with a set entry point which performs the work. If I match the
+native format I could manually link all the classes together myself and set
+an entry point so to speak. Although this is not required at all. It would
+be interesting for hybrid programs however.
+
+## 12:10
+
+However for `JITCacheCreator` that can sort of be hidden in a way by the
+`JITOutput`. However, `JITCacheCreator` would be sent to the configuration. If
+it is sent then that means `JITOutput` should output to a cache. I just need
+the creator because the `JITOutput` has no means of determining exactly where
+to place the `OutputStream` and if it even wants to be stored on the disk.
+

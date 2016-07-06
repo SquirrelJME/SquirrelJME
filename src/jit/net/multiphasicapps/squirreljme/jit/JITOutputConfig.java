@@ -29,6 +29,9 @@ public final class JITOutputConfig
 	/** The triplet to target. */
 	private volatile JITTriplet _triplet;
 	
+	/** The output cache creator. */
+	private volatile JITCacheCreator _cache;
+	
 	/**
 	 * Initializes a blank configuration.
 	 *
@@ -36,6 +39,16 @@ public final class JITOutputConfig
 	 */
 	public JITOutputConfig()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/06
+	 */
+	@Override
+	public JITCacheCreator cacheCreator()
+	{
+		return this._cache;
 	}
 	
 	/**
@@ -53,6 +66,26 @@ public final class JITOutputConfig
 		synchronized (this.lock)
 		{
 			return new Immutable(this);
+		}
+	}
+	
+	/**
+	 * Sets or clears the cache creator which is used when the user of the JIT
+	 * requests that executables be written to the disk or some other
+	 * serialized cache rather than directly executable code in memory.
+	 *
+	 * @param __c The cache creator to use, if {@code null} then it is cleared.
+	 * @return The previously set cache creator, may be {@code null}.
+	 * @since 2016/07/06
+	 */
+	public JITCacheCreator setCacheCreator(JITCacheCreator __c)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			JITCacheCreator rv = this._cache;
+			this._cache = __c;
+			return rv;
 		}
 	}
 	
@@ -103,6 +136,9 @@ public final class JITOutputConfig
 		/** The target triplet. */
 		protected final JITTriplet triplet;
 		
+		/** The cache creator to use (optional). */
+		protected final JITCacheCreator cache;
+		
 		/**
 		 * Initializes an immutable configuration which does not change.
 		 *
@@ -126,7 +162,20 @@ public final class JITOutputConfig
 				if (triplet == null)
 					throw new IllegalArgumentException("ED09");
 				this.triplet = triplet;
+				
+				// The cache creator is optional
+				this.cache = __joc._cache;
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/06
+		 */
+		@Override
+		public final JITCacheCreator cacheCreator()
+		{
+			return this.cache;
 		}
 		
 		/**
