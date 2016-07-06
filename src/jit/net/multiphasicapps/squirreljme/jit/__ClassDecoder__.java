@@ -96,6 +96,7 @@ final class __ClassDecoder__
 		this._pool = pool;
 		
 		// Read the flags for this class
+		JITClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
 		
 		throw new Error("TODO");
 	}
