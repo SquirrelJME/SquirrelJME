@@ -26,15 +26,15 @@ import java.io.IOException;
 public final class JIT
 	implements Runnable
 {
+	/** The input source. */
+	protected final InputStream input;
+	
+	/** The output of the JIT. */
+	protected final JITOutput output;
+	
 	/** One time lock. */
 	private final Object _oncelock =
 		new Object();
-	
-	/** The input source. */
-	private final InputStream _input;
-	
-	/** The output of the JIT. */
-	private final JITOutput _output;
 	
 	/** One time only. */
 	private volatile boolean _once;
@@ -60,8 +60,8 @@ public final class JIT
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this._input = __ic;
-		this._output = __jo;
+		this.input = __ic;
+		this.output = __jo;
 	}
 	
 	/**
@@ -76,11 +76,11 @@ public final class JIT
 		try
 		{
 			// Setup data stream
-			DataInputStream dis = new DataInputStream(this._input);
+			DataInputStream dis = new DataInputStream(this.input);
 			
 			// Start decoding the class
 			__ClassDecoder__ cd = new __ClassDecoder__(this, dis);
-			cd.__decode();
+			cd.__decode(this.output);
 			
 			throw new Error("TODO");
 		}

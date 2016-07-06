@@ -59,13 +59,20 @@ final class __ClassDecoder__
 	/**
 	 * This performs the actual decoding of the class file.
 	 *
+	 * @param __jo The JIT output to use, when the name of the class is known
+	 * then will be opened and written to during the decoding process.
 	 * @throws IOException On read errors.
 	 * @throws JITException If the class file format is not correct.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
-	final void __decode()
-		throws IOException, JITException
+	final void __decode(JITOutput __jo)
+		throws IOException, JITException, NullPointerException
 	{
+		// Check
+		if (__jo == null)
+			throw new NullPointerException("NARG");
+		
 		DataInputStream input = this.input;
 		
 		// {@squirreljme.error ED12 The magic number of the input data stream
