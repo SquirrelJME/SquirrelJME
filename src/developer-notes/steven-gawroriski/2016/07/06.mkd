@@ -92,3 +92,20 @@ it is sent then that means `JITOutput` should output to a cache. I just need
 the creator because the `JITOutput` has no means of determining exactly where
 to place the `OutputStream` and if it even wants to be stored on the disk.
 
+## 13:21
+
+So I need to copy over the class flag code and use that in the decoder since
+that will be very important.
+
+## 13:28
+
+What I need though is a name. The CI code would basically be imported as-is
+for the most part, except with some slight changes. Well, perhaps not changed
+at all. The CI family will basically be going away with the new JIT since there
+is no need to really keep it around. A future Java compiler could just write
+the class data directly anyway.
+
+## 13:40
+
+JIT would not really work out well. `Class` would not work.
+
