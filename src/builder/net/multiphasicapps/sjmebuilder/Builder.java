@@ -101,9 +101,10 @@ public class Builder
 		// Setup configuration
 		JITOutputConfig jitconfig = new JITOutputConfig();
 		jitconfig.setTriplet(__trip);
+		String packagetrip = __trip.toPackageTarget();
 		
 		System.err.printf("DEBUG -- Target: %s %s%n", __trip,
-			__trip.toPackageTarget());
+			packagetrip);
 		
 		// Go through all of the packages to find the one that specifies that
 		// it is the JVM for the given triplet
@@ -123,16 +124,42 @@ public class Builder
 			
 			// See if the triplet properly exists
 			String pott = attr.get(TARGET_OS_KEY);
-			
-			// Matches?
-			if (true)
-				throw new Error("TODO");
-			/*
-			if (targettriplet.equals(pott))
+			if (pott != null)
 			{
-				tpk = pi;
-				break;
-			}*/
+				// The targets are split by space
+				boolean matched = false;
+				int n = pott.length();
+				for (int i = 0; i < n; i++)
+				{
+					// Ignore whitespace
+					char c = pott.charAt(i);
+					if (c <= ' ')
+						continue;
+					
+					// Find the next space or end
+					int j;
+					for (j = i + 1; j < n; j++)
+						if (pott.charAt(j) <= ' ')
+							break;
+					
+					// Matches?
+					if (packagetrip.equals(pott.substring(i, j)))
+					{
+						matched = true;
+						break;
+					}
+					
+					// Skip to next
+					i = j;
+				}
+				
+				// Matched? use it
+				if (matched)
+				{
+					tpk = pi;
+					break;
+				}
+			}
 		}
 		
 		// {@squirreljme.error DW06 No package (The used triplet)}
