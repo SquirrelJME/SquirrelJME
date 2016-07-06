@@ -354,13 +354,10 @@ public class Builder
 			OutputStream os = __gj.createClass(classname))
 		{
 			// Setup JIT
-			throw new Error("TODO");
-			/*
-			JIT jit = this.producer.produce(__gj.name(), is);
+			JIT jit = new JIT(__gj.name(), is, this.jitoutput);
 			
-			// Run the JIT
+			// Run it
 			jit.run();
-			*/
 		}
 	}
 	
