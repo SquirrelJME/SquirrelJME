@@ -32,6 +32,9 @@ public final class JIT
 	/** The output of the JIT. */
 	protected final JITOutput output;
 	
+	/** The namespace the class is in. */
+	protected final String namespace;
+	
 	/** One time lock. */
 	private final Object _oncelock =
 		new Object();
@@ -61,6 +64,7 @@ public final class JIT
 		
 		// Set
 		this.input = __ic;
+		this.namespace = __ns;
 		this.output = __jo;
 	}
 	
@@ -79,7 +83,8 @@ public final class JIT
 			DataInputStream dis = new DataInputStream(this.input);
 			
 			// Start decoding the class
-			__ClassDecoder__ cd = new __ClassDecoder__(this, dis);
+			__ClassDecoder__ cd = new __ClassDecoder__(this, this.namespace,
+				dis);
 			cd.__decode(this.output);
 			
 			throw new Error("TODO");

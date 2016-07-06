@@ -28,6 +28,9 @@ final class __ClassDecoder__
 	/** The owning JIT. */
 	protected final JIT jit;
 	
+	/** The namespace of the class. */
+	protected final String namespace;
+	
 	/** The input data source. */
 	protected final DataInputStream input;
 	
@@ -41,19 +44,21 @@ final class __ClassDecoder__
 	 * This initializes the decoder for classes.
 	 *
 	 * @param __jit The owning JIT.
+	 * @param __ns The class namespace.
 	 * @param __dis The source for data input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
-	__ClassDecoder__(JIT __jit, DataInputStream __dis)
+	__ClassDecoder__(JIT __jit, String __ns, DataInputStream __dis)
 		throws NullPointerException
 	{
 		// Check
-		if (__jit == null || __dis == null)
+		if (__jit == null || __ns == null || __dis == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.jit = __jit;
+		this.namespace = __ns;
 		this.input = __dis;
 	}
 	
@@ -103,8 +108,12 @@ final class __ClassDecoder__
 		ClassNameSymbol clname = pool.<ClassNameSymbol>get(
 			input.readUnsignedShort(), ClassNameSymbol.class);
 		
-		
-		throw new Error("TODO");
+		// There is enough "known" information (just the name) to start
+		// outputting a class
+		try (JITClassWriter cw = __jo.beginClass(this.namespace, clname))
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
