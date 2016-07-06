@@ -97,13 +97,14 @@ public class Builder
 		
 		// Set
 		this.triplet = __trip;
+		String normaltriplet = __trip.toString();
 		
 		// Setup configuration
 		JITOutputConfig jitconfig = new JITOutputConfig();
 		jitconfig.setTriplet(__trip);
 		String packagetrip = __trip.toPackageTarget();
 		
-		System.err.printf("DEBUG -- Target: %s %s%n", __trip,
+		System.err.printf("DEBUG -- Target: %s %s%n", normaltriplet,
 			packagetrip);
 		
 		// Go through all of the packages to find the one that specifies that
@@ -143,7 +144,9 @@ public class Builder
 							break;
 					
 					// Matches?
-					if (packagetrip.equals(pott.substring(i, j)))
+					String sub = pott.substring(i, j);
+					if (packagetrip.equals(sub) ||
+						normaltriplet.equals(sub))
 					{
 						matched = true;
 						break;
