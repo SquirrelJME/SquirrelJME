@@ -274,6 +274,12 @@ class __ClassPool__
 					raw = this.<String>get(fields[0], String.class);
 					break;
 					
+					// Class name
+				case TAG_CLASS:
+					raw = ClassNameSymbol.of(
+						this.<String>get(fields[0], String.class));
+					break;
+					
 					// {@squirreljme.error ED0f Could not obtain the constant
 					// pool entry information because its tag data relation is
 					// not known. (The index; The tag type)}
