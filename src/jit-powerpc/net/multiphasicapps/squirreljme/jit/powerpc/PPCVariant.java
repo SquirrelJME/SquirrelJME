@@ -21,40 +21,40 @@ public enum PPCVariant
 	implements JITCPUVariant
 {
 	/** PowerPC G1 (601). */
-	G1("g1"),
+	G1("g1", false),
 	
 	/** PowerPC G2 (603). */
-	G2("g2"),
+	G2("g2", false),
 	
 	/** PowerPC G3 (7xx). */
-	G3("g3"),
+	G3("g3", false),
 	
-	/** PowerPC G4. */
-	G4("g4"),
+	/** Pow, falseerPC G4. */
+	G4("g4", false),
 	
 	/** PowerPC G5 (IBM 970). */
-	G5("g5"),
+	G5("g5", true),
 	
 	/** Power ISA 2.02. */
-	POWER_ISA_2_02("isa202"),
+	POWER_ISA_2_02("isa202", true),
 	
 	/** Power ISA 2.03. */
-	POWER_ISA_2_03("isa203"),
+	POWER_ISA_2_03("isa203", true),
 	
 	/** Power ISA 2.04. */
-	POWER_ISA_2_04("isa204"),
+	POWER_ISA_2_04("isa204", true),
 	
 	/** Power ISA 2.05. */
-	POWER_ISA_2_05("isa205"),
+	POWER_ISA_2_05("isa205", true),
 	
 	/** Power ISA 2.06. */
-	POWER_ISA_2_06("isa206"),
+	POWER_ISA_2_06("isa206", true),
 	
 	/** Power ISA 2.07. */
-	POWER_ISA_2_07("isa207"),
+	POWER_ISA_2_07("isa207", true),
 	
 	/** Power ISA 3.00. */
-	POWER_ISA_3_00("isa300"),
+	POWER_ISA_3_00("isa300", true),
 	
 	/** End. */
 	;
@@ -62,14 +62,18 @@ public enum PPCVariant
 	/** The variant name. */
 	protected final String variant;
 	
+	/** Does this support 64-bit? */
+	protected final boolean sixtyfour;
+	
 	/**
 	 * Initializes the variant information.
 	 *
 	 * @param __v The name of the variant.
+	 * @param __sf Does this CPU support 64-bit computing?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/25
 	 */
-	private PPCVariant(String __v)
+	private PPCVariant(String __v, boolean __sf)
 		throws NullPointerException
 	{
 		// Check
@@ -78,6 +82,18 @@ public enum PPCVariant
 		
 		// Set
 		this.variant = __v;
+		this.sixtyfour = __sf;
+	}
+	
+	/**
+	 * Is 64-bit computing possible?
+	 *
+	 * @return {@code true} if the variant supports 64-bit.
+	 * @since 2016/07/06
+	 */
+	public boolean isSixtyFourBit()
+	{
+		return this.sixtyfour;
 	}
 	
 	/**
