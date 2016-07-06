@@ -44,3 +44,40 @@ interface which is bound to some kind of output.
 
 The triplet for the Nintendo 64 would be `mips-64+iii,big.nintendo64.64drive`.
 
+## 22:00
+
+Looking at a project written by someone else, they made a clone of a 2D kind
+of version of Minecraft. This would be interesting. However you would play as
+a squirrel and can go through caves and such. Lighting can be based on visible
+light and then heat. If there is enough visible light then heat-vision would
+not be used. Otherwise in very dark caves heat-vision would be used. Since you
+have no tools, heat would be very important in dark areas. Anything warm
+blooded generates heat so basically in a very small area you would be able to
+see the ground (as heat) from your own body heat. Very hot objects in
+heat-vision mode would be white to pink to red while very cold objects would
+be purple to blue to green. Yellow and orange could be in the middle so to
+speak. You would see yourself in heat-vision mode as a heat-colored blob. So
+bats flying around would for example also be heat colored sprites. Then they
+would light up with heat other areas. On the surface during the day, heat and
+visible light could be generated. At night the heat goes away and is just a
+varying amount of visible light (depending on the moon phase). The deeper you
+go into the Earth, the more heat is generated from blocks (due to pressure).
+So after a certain point deep enough you would be able to see where you are
+going due to the latent heat. Heat could transfer over all block types
+depending on their heat conductivity. Lava for example would be very hot. Any
+bodies of water would also match the temperature that they are. When it comes
+to sunlight the ground will heat up from the sunlight (assuming it is not
+in the shade). If the ground is thin then heat from the sun could light up
+the ceiling. Veins of lava that are in cave systems or in the ground can
+create local hotspots of heat for the most part. I just need to make sure 
+that squirrels can actually see heat (infra red). They do have good vision.
+Squirrels can actually see in color too. So I could match a color scheme
+similar to that. They can see blue and yellow, but any other colors are as good
+as invisible.
+
+## 22:21
+
+Well, Squirrels cannot see heat at all so they would essentially be running
+around a cave in the dark.
+
+
