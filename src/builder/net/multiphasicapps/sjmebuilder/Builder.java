@@ -110,6 +110,7 @@ public class Builder
 		// Go through all of the packages to find the one that specifies that
 		// it is the JVM for the given triplet
 		PackageInfo tpk = null;
+		this.plist = __pl;
 		for (Map.Entry<PackageName, PackageInfo> e : __pl.entrySet())
 		{
 			// Get the manifest
