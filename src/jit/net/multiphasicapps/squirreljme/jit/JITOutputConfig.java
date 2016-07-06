@@ -20,6 +20,7 @@ import java.util.Objects;
  * @since 2016/07/04
  */
 public final class JITOutputConfig
+	implements __CommonConfigGet__
 {
 	/** Internal consistency lock. */
 	protected final Object lock =
@@ -35,17 +36,6 @@ public final class JITOutputConfig
 	 */
 	public JITOutputConfig()
 	{
-	}
-	
-	/**
-	 * Returns the triplet to target.
-	 *
-	 * @return The target triplet, or {@code null} if it was never set.
-	 * @since 2016/07/05
-	 */
-	public JITTriplet getTriplet()
-	{
-		return this._triplet;
 	}
 	
 	/**
@@ -91,6 +81,16 @@ public final class JITOutputConfig
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/05
+	 */
+	@Override
+	public JITTriplet triplet()
+	{
+		return this._triplet;
+	}
+	
+	/**
 	 * This is an immutable copy of an output configuration which does not
 	 * change so that it may safely be used by the {@link JITOutputFactory}
 	 * without worrying about state changes.
@@ -98,6 +98,7 @@ public final class JITOutputConfig
 	 * @since 2016/07/04
 	 */
 	public static final class Immutable
+		implements __CommonConfigGet__
 	{
 		/** The target triplet. */
 		protected final JITTriplet triplet;
@@ -129,11 +130,10 @@ public final class JITOutputConfig
 		}
 		
 		/**
-		 * Returns the triplet to target.
-		 *
-		 * @return The target triplet.
+		 * {@inheritDoc}
 		 * @since 2016/07/05
 		 */
+		@Override
 		public final JITTriplet triplet()
 		{
 			return this.triplet;
