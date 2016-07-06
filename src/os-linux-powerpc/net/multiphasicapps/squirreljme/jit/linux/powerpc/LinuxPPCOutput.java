@@ -36,8 +36,6 @@ public class LinuxPPCOutput
 		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
 	}
 }
 
