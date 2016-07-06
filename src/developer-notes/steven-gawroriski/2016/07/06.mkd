@@ -9,3 +9,38 @@ Today is my birthday. Yay.
 The immutable configuration should match getters with the mutable one for
 simplicity.
 
+## 07:53
+
+The simulations can act as a group. Instead of having individual simulations
+there would just be a system simulation. If a system instance does not exist
+then it will be created. When a program is requested to run on a given system
+then it will be passed to it. So this way, multiple programs can run on any
+given system but they would essentially be very standalone in their own
+execution.
+
+## 07:58
+
+One thing to consider however is that the simulation could launch programs
+that exist in the simulated filesystem or from the real filesystem. I should
+likely just support it only from the simulated filesystem. With my current plan
+there would be a system filesystem and a home one. However, some operating
+systems may require a combined user based filesystem on top of a system based
+one. Also, some operating systems do not have a filesystem at all. For example
+Palm OS has a database filesystem while expansion cards act as traditional
+filesystems. The Nintendo 64 has only ROM and block based storage (although if
+a 64drive is used, the main cart can contain a filesystem). So having an
+external filesystem support could be slightly odd. However, for a Linux
+based system I should be able to run `fossil`. This way I can have a bootstrap
+build environment (assuming I can also get the Java compiler and interpreter
+also simulated). I will bump into a chicken and the egg problem however. Right
+now I have no class library and no graphical interfaces. For the simulator to
+work better, I need a graphical interface since for some systems such as
+Palm OS, everything uses graphics. However for testing, I can have a virtual
+serial port that the user can use which the operating system can output to
+perhaps for a given process. So on Linux, the test program would pipe its
+output to a virtual serial device, on Windows it would output via a COM1 or
+such. On the Nintendo 64's 64drive, it would output to its USB connection.
+This way I can have the test system output while being simulated be parseable
+for errors and such. If a test fails on a real system then that is incorrect,
+while if a test fails in just the simulator the simulator is incorrect.
+
