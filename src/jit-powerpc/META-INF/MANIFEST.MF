@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: jit-powerpc32
+X-SquirrelJME-Name: jit-powerpc
 X-SquirrelJME-UUID: 3340310c-5528-4c1c-8b98-b142d450e96f
 X-SquirrelJME-Depends: jit
 X-SquirrelJME-Error: EE
-LIBlet-Title: Just-In-Time Compiler (32-bit PowerPC)
+LIBlet-Title: Just-In-Time Compiler (PowerPC)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160702
-LIBlet-Description: This is the variant of the JIT which can 
- target 32-bit PowerPC systems.
+LIBlet-Description: This is used by operating system outputs 
+ to provide the capability of generating PowerPC code.
 

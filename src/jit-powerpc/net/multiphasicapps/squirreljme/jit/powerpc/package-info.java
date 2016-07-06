@@ -9,10 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the JIT which can target 32-bit PowerPC systems.
+ * This package contains the JIT which can target 32-bit and 64-bit PowerPC
+ * systems.
  *
  * @since 2016/07/02
  */
 
-package net.multiphasicapps.squirreljme.jit.powerpc32;
+package net.multiphasicapps.squirreljme.jit.powerpc;
 

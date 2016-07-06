@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.powerpc32;
+package net.multiphasicapps.squirreljme.jit.powerpc;
 
 import net.multiphasicapps.squirreljme.jit.JITCPUVariant;
 
