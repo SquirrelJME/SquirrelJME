@@ -30,3 +30,17 @@ system and architecture in the constructor makes no sense at all.
 Using the configuration greatly simplifies finding a supporting output
 factory.
 
+## 20:15
+
+This means the native code generators are decoupled from the JIT which means
+the JITCPUVariant does not need to exist. However, native code generators could
+still be part of the output in a way. I could very literally have virtualized
+`JITOutput` which either call one which generates instructions or calls another
+`JITOutput`. So there would need to be some kind of back bridging of sorts.
+Or the native code generators could be completely standalone as a kind of
+interface which is bound to some kind of output.
+
+## 20:17
+
+The triplet for the Nintendo 64 would be `mips-64+iii,big.nintendo64.64drive`.
+
