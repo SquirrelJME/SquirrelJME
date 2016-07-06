@@ -62,3 +62,14 @@ run the same simulation) but a way where I can create a glider and a few other
 objects at specific positions within the world. If that could be done then a
 JIT would be possible in the game of life.
 
+## 11:44
+
+Actually what I need is some kind of cache creator callback that could be
+specified in the output. So basically, there would be a (`Auto`)`Closeable`
+class writer of sorts. `JITOutput` would return this. It would essentially be
+a `beginClass` with the namespace and the name of the class. If the output is
+to be written to a cache then that can be handled by `JITOutput`. Otherwise
+if it is a binary that could also be handled too. So then `JITOutput` gets a
+producing class. Finishing the class can be handled by whatever implements the
+interface accordingly.
+
