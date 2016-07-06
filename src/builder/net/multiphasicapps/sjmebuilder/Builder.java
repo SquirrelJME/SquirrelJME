@@ -31,7 +31,9 @@ import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JIT;
+import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
@@ -46,6 +48,7 @@ import net.multiphasicapps.zips.ZipFile;
  * @since 2016/06/24
  */
 public class Builder
+	implements JITCacheCreator
 {
 	/** The size of the resource buffer. */
 	public static final int RESOURCE_BUFFER_SIZE =
@@ -180,6 +183,9 @@ public class Builder
 		__getDependencies(pis, tpk);
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
 		
+		// Setup cache creator for output, writes into the globbed jar
+		jitconfig.setCacheCreator(this);
+		
 		// Finish
 		JITOutputConfig.Immutable immut = jitconfig.immutable();
 		this.jitconfig = immut;
@@ -246,6 +252,42 @@ public class Builder
 				{
 				}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/06
+	 */
+	@Override
+	public OutputStream createCache(String __ns, ClassNameSymbol __cn)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__ns == null || __cn == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error DW05 The namespace does not end in .jar.
+		// (The namespace)}
+		if (!__ns.endsWith(".jar"))
+			throw new IllegalStateException(String.format("DW05 %s", __ns));
+		
+		// Remove the JAR
+		String jarless = __ns.substring(0, __ns.length() - ".jar".length());
+		
+		// {@squirreljme.error DW08 The namespace does not have an associated
+		// package. (The namespace)}
+		PackageInfo pi = this.plist.get(jarless);
+		if (pi == null)
+			throw new IllegalStateException(String.format("DW08 %s", __ns));
+		
+		// {@squirreljme.error DW09 The namespace does not have an associated
+		// globbed JAR. (The namespace)}
+		GlobbedJar gj = this.globjars.get(pi);
+		if (gj == null)
+			throw new IllegalStateException(String.format("DW09 %s", __ns));
+		
+		// Open class stream for it
+		return gj.createClass(__cn.toString());
 	}
 	
 	/**
@@ -350,8 +392,7 @@ public class Builder
 		System.err.println(ename);
 		
 		// Open a resource to be placed in the globbed jar
-		try (InputStream is = __e.open();
-			OutputStream os = __gj.createClass(classname))
+		try (InputStream is = __e.open())
 		{
 			// Setup JIT
 			JIT jit = new JIT(__gj.name(), is, this.jitoutput);
