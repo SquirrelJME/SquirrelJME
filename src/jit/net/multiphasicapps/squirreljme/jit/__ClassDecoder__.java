@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
  * This performs the decoding of the class file format.
@@ -97,6 +98,11 @@ final class __ClassDecoder__
 		
 		// Read the flags for this class
 		JITClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
+		
+		// Read class name
+		ClassNameSymbol clname = pool.<ClassNameSymbol>get(
+			input.readUnsignedShort(), ClassNameSymbol.class);
+		
 		
 		throw new Error("TODO");
 	}

@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
  * This represents the constant pool of a class which has been read, this is
