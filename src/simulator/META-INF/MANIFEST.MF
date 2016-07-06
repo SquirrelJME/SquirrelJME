@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: simulator
+X-SquirrelJME-UUID: 79330db6-208b-48f5-a0b0-09a23ca28a07
+X-SquirrelJME-Depends: cldc-compact, jit
+X-SquirrelJME-Error: AR
+LIBlet-Title: Simulator
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 1.8.0.20160706
+LIBlet-Description: This provides the base support for 
+ simulating programs running on a given operating system. 
+ This simulation is high level and is not intended to run 
+ all programs that may run on an operating system.
+
