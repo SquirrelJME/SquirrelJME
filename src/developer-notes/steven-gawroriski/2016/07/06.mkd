@@ -157,3 +157,11 @@ that. If all blobs have their size information, I could essentially just
 concatenate every single blob, setup a base linker script, and create a small
 wrapper program which initializes data from the blob.
 
+## 20:14
+
+So I would say then that blobs would be best which include their detailed
+information. With a backwards linking chain of sizes, pointers to classes
+could be created. Finding a class definition would be a bit slow, but there
+could be a generic large table at the end which points to every blob that
+exists similar to what I have thought up of before.
+
