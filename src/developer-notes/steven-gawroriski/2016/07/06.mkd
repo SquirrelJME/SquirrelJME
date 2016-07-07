@@ -217,3 +217,7 @@ a `beginClass` without a namespace. Since everything within a single JAR is
 visible to each other this namespace split makes sense. It would also make it
 easier for the launcher showing default namespaces JARs.
 
+## 20:55
+
+Then this also means that `JIT` gets `JITNamespaceWriter` to target namespaces.
+

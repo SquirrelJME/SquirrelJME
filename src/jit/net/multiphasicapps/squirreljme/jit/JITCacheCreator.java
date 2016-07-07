@@ -17,7 +17,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 /**
  * This is associated with a {@link JITOutputConfig} and if it exists, it
  * specifies that the {@link JITOutput} implementations should call the creator
- * to create output streams for class caching.
+ * to create output streams for namespace caching.
  *
  * @since 2016/07/06
  */
@@ -27,16 +27,14 @@ public interface JITCacheCreator
 	 * Returns an output stream which creates a serialized on-disk cache of
 	 * executable code for later linking or loading.
 	 *
-	 * @param __ns The namespace the class is in, this would be the name of the
-	 * JAR file.
-	 * @param __cn The name of the class to create a cache for.
+	 * @param __ns The namespace to create a cache for.
 	 * @return An output stream to the cache file.
 	 * @throws IOException If the output stream could not be created.
 	 * @throws JITException On other unknown reasons.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
-	public abstract OutputStream createCache(String __ns, ClassNameSymbol __cn)
+	public abstract OutputStream createCache(String __ns)
 		throws IOException, JITException, NullPointerException;
 }
 
