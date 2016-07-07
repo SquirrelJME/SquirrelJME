@@ -637,6 +637,17 @@ public class Builder
 				throw new JITException("DW0d", e);
 			}
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/07
+		 */
+		@Override
+		public InputStream open()
+			throws IOException
+		{
+			return this.entry.open();
+		}
 	}
 }
 

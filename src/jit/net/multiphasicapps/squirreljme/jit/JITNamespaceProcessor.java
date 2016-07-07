@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
@@ -24,6 +25,10 @@ import java.util.Iterator;
  */
 public class JITNamespaceProcessor
 {
+	/** Cache copy size. */
+	private static final int _CACHE_SIZE =
+		4096;
+	
 	/** The configuration to use. */
 	protected final JITOutputConfig.Immutable config;
 	
@@ -80,6 +85,9 @@ public class JITNamespaceProcessor
 		// Using a cache creator for output?
 		JITCacheCreator jcc = this.config.cacheCreator();
 		
+		// Setup output for a given namespace
+		JITNamespaceWriter nsw = this.output.beginNamespace(__ns);
+		
 		// Go through the directory for the given namespace
 		// Also create the cached output if it was requested
 		try (JITNamespaceContent.Directory dir =
@@ -87,23 +95,82 @@ public class JITNamespaceProcessor
 			OutputStream os = (jcc != null ? jcc.createCache(__ns) : null))
 		{
 			// Go through directory entries
+			byte[] buf = null;
 			for (JITNamespaceContent.Entry ent : dir)
 			{
 				// Determine if this is a class to recompile or not
 				String name = ent.name();
 				boolean isclass = name.endsWith(".class");
 				
-				// Recompiling class file with JIT?
-				if (isclass)
-					throw new Error("TODO");
+				// Open the input regardless
+				try (InputStream is = ent.open())
+				{
+					// Recompiling class file with JIT?
+					if (isclass)
+						throw new Error("TODO");
 				
-				// Copying resource data
-				else
-					throw new Error("TODO");
+					// Copying resource data
+					else
+						try (OutputStream ros = nsw.beginResource(name))
+						{
+							// Load buffer
+							buf = __buffer(buf);
+						
+							// Read loop
+							for (;;)
+							{
+								// Read
+								int rc = is.read(buf);
+								
+								// EOF?
+								if (rc < 0)
+									break;
+								
+								// Copy
+								ros.write(buf, 0, rc);
+							}
+						}
+				}
 			}
 			
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * If the specified buffer is not allocated then it is attempted to be
+	 * allocated and returned.
+	 *
+	 * There may be cases where the default buffer size is too large for a
+	 * given system, as such smaller buffer sizes will be attempted.
+	 *
+	 * @param __buf If {@code null} a buffer is allocated and returned.
+	 * @return Either {@code __buf} or a new buffer.
+	 * @throws JITException If there is not enough memory available to allocate
+	 * a buffer of any given size.
+	 * @since 2016/07/07
+	 */
+	private static byte[] __buffer(byte[] __buf)
+		throws JITException
+	{
+		// Already exists, use it
+		if (__buf != null)
+			return __buf;
+		
+		for (int sz = _CACHE_SIZE; sz >= 1; sz >>= 1)
+			try
+			{
+				// Attempt allocation using the given size
+				return new byte[sz];
+			}
+			catch (OutOfMemoryError e)
+			{
+				continue;
+			}
+		
+		// {@squirreljme.error ED0i Could not allocate enough memory for a
+		// temporary working buffer.}
+		throw new JITException("ED0i");
 	}
 }
 

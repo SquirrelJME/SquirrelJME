@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.Closeable;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -61,6 +62,16 @@ public interface JITNamespaceContent
 		 */
 		public abstract String name()
 			throws JITException;
+		
+		/**
+		 * Opens an input stream containing the entry data.
+		 *
+		 * @return An input stream to the entry data.
+		 * @throws IOException If the stream could not be opened.
+		 * @since 2016/07/07
+		 */
+		public abstract InputStream open()
+			throws IOException;
 	}
 }
 
