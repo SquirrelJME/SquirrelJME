@@ -484,7 +484,7 @@ public class Builder
 	 *
 	 * @since 2016/07/07
 	 */
-	public static BuildDirectory
+	public static class BuildDirectory
 		implements JITNamespaceContent.Directory
 	{
 		/**
@@ -524,12 +524,13 @@ public class Builder
 			
 			// Set
 			this.globbedjar = gj;
-			
+			throw new Error("TODO");
+			/*			
 			FileChannel fc = FileChannel.open(pi.path(),
 				StandardOpenOption.READ);
 		try (FileChannel fc = FileChannel.open(__pi.path(),
 			StandardOpenOption.READ);
-			ZipFile zip = ZipFile.open(fc))
+			ZipFile zip = ZipFile.open(fc))*/
 		}
 	}
 }
