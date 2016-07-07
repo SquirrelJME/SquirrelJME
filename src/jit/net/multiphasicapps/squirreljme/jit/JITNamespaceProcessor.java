@@ -86,7 +86,8 @@ public class JITNamespaceProcessor
 		JITCacheCreator jcc = this.config.cacheCreator();
 		
 		// Setup output for a given namespace
-		JITNamespaceWriter nsw = this.output.beginNamespace(__ns);
+		JITOutput output = this.output;
+		JITNamespaceWriter nsw = output.beginNamespace(__ns);
 		
 		// Go through the directory for the given namespace
 		// Also create the cached output if it was requested
@@ -107,33 +108,67 @@ public class JITNamespaceProcessor
 				{
 					// Recompiling class file with JIT?
 					if (isclass)
-						throw new Error("TODO");
+						__doClass(output, nsw, is);
 				
 					// Copying resource data
 					else
-						try (OutputStream ros = nsw.beginResource(name))
-						{
-							// Load buffer
-							buf = __buffer(buf);
-						
-							// Read loop
-							for (;;)
-							{
-								// Read
-								int rc = is.read(buf);
-								
-								// EOF?
-								if (rc < 0)
-									break;
-								
-								// Copy
-								ros.write(buf, 0, rc);
-							}
-						}
+					{
+						buf = __buffer(buf);
+						__doResource(buf, nsw, name, is);
+					}
 				}
 			}
-			
-			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Performs class recompilation.
+	 *
+	 * @param __output The output.
+	 * @param __nsw The namespace writer.
+	 * @param __is The input data stream.
+	 * @since 2016/07/07
+	 */
+	private void __doClass(JITOutput __output, JITNamespaceWriter __nsw,
+		InputStream __is)
+	{
+		// Setup new JIT
+		JIT jit = new JIT(__output, __nsw, __is);
+		
+		// Run the JIT
+		jit.run();
+	}
+	
+	/**
+	 * Performs resource copying.
+	 *
+	 * @param __buf The temporary buffer.
+	 * @param __nsw The namespace writer.
+	 * @param __name The entry name.
+	 * @param __is The input data stream.
+	 * @throws IOException On copy errors.
+	 * @since 2016/07/07
+	 */
+	private void __doResource(byte[] __buf, JITNamespaceWriter __nsw,
+		String __name, InputStream __is)
+		throws IOException
+	{
+		// Open output
+		try (OutputStream ros = __nsw.beginResource(__name))
+		{
+			// Read loop
+			for (;;)
+			{
+				// Read
+				int rc = __is.read(__buf);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				// Copy
+				ros.write(__buf, 0, rc);
+			}
 		}
 	}
 	
