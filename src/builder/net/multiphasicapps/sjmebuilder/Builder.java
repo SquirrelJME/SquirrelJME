@@ -321,7 +321,7 @@ public class Builder
 	 * @since 2016/06/25
 	 */
 	private void __buildPackage(Path __td, PackageInfo __pi)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__td == null || __pi == null)

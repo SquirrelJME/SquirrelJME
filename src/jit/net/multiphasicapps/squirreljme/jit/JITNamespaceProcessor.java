@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 /**
@@ -64,17 +65,23 @@ public class JITNamespaceProcessor
 	 * Performs namespace processing.
 	 *
 	 * @param __ns The namespace to process.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
 	public final void processNamespace(String __ns)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Go through the directory for the given namespace
+		try (JITNamespaceContent.Directory dir =
+			this.contents.directoryOf(__ns))
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 

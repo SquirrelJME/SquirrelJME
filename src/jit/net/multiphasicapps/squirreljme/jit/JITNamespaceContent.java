@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * This interface is used with {@link JITNamespaceProcessor} to provide the
@@ -25,12 +26,13 @@ public interface JITNamespaceContent
 	 *
 	 * @param __ns The namespace to get the directory of.
 	 * @return The directory for the given namespace.
+	 * @throws IOException On read errors.
 	 * @throws JITException If the directory does not exist.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
 	public abstract JITNamespaceContent.Directory directoryOf(String __ns)
-		throws JITException, NullPointerException;
+		throws IOException, JITException, NullPointerException;
 	
 	/**
 	 * This interface describes the directory of a given namespace.
