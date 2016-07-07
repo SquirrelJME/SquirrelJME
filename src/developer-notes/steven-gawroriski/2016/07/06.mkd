@@ -109,3 +109,26 @@ the class data directly anyway.
 
 JIT would not really work out well. `Class` would not work.
 
+## 19:55
+
+So basically what I need to determine now is how `beginClass` is to work. I
+have thought of it before. Currently I just have caching used. However with a
+multiplexing output for classes I would not need to worry about duplicating or
+having lots of branches. However what would essentially happen is that when
+class code is generated, the work would essentially be performed twice. One
+for being cached and the other if directly executed. Since that would be a bit
+of a waste I would suppose that there would be branched handlers for output.
+Generally when directly executed just some basic class details are needed.
+However the cached form can also be directly executed and placed in memory and
+initialized. So what I really could just do is have just a cached form writer
+for now. Also, with the generic operating system handling and such, it is
+very possible to compile for multiple systems at the same time although
+linking may be complicated by that fact. One consideration with the simulator
+is that I could directly feed it blobs. However it should be able to run actual
+OS code because that would need to be tested more than just the native machine
+code that is being executed. So one thing to consider at this point, for
+systems such as Linux, is if as noted before blobs should match the standard
+compilable object format. Then the blobs could be linked into a static binary
+and initialized with basic C code for now. However in my case, it would
+essentially just be a blob wrapped in an ELF file.
+
