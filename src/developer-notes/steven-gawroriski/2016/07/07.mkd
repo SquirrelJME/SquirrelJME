@@ -19,4 +19,8 @@ I would suppose for the Linux output with a given architecture that when it
 comes to general computing systems (nothing esoteric) that most of them are
 generally the same when it comes to code generation and execution.
 
+## 15:11
+
+Actually the simulator is an emulator more than a simulator, so I shall
+rename that.
 

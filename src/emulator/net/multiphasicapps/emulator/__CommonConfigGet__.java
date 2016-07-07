@@ -8,10 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.simulator;
+package net.multiphasicapps.emulator;
 
 /**
- * Common getters for the simulator configuration.
+ * Common getters for the emulator configuration.
  *
  * @since 2016/07/06
  */
