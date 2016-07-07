@@ -1,0 +1,6 @@
+# 2016/07/07
+
+## 09:21
+
+Ok, so I need to commonize JAR recompilation and packaging.
+
