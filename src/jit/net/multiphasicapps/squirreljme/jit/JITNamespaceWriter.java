@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.OutputStream;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
  * This class is used to write classes and resources that exist within a given

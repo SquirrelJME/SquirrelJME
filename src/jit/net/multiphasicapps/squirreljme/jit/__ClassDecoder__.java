@@ -28,8 +28,8 @@ final class __ClassDecoder__
 	/** The owning JIT. */
 	protected final JIT jit;
 	
-	/** The namespace of the class. */
-	protected final String namespace;
+	/** The namespace to write into. */
+	protected final JITNamespaceWriter namespace;
 	
 	/** The input data source. */
 	protected final DataInputStream input;
@@ -49,7 +49,7 @@ final class __ClassDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
-	__ClassDecoder__(JIT __jit, String __ns, DataInputStream __dis)
+	__ClassDecoder__(JIT __jit, JITNamespaceWriter __ns, DataInputStream __dis)
 		throws NullPointerException
 	{
 		// Check
@@ -110,7 +110,7 @@ final class __ClassDecoder__
 		
 		// There is enough "known" information (just the name) to start
 		// outputting a class
-		try (JITClassWriter cw = __jo.beginClass(this.namespace, clname))
+		try (JITClassWriter cw = this.namespace.beginClass(clname))
 		{
 			throw new Error("TODO");
 		}

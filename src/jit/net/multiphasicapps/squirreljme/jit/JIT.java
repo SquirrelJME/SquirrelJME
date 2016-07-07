@@ -32,8 +32,8 @@ public final class JIT
 	/** The output of the JIT. */
 	protected final JITOutput output;
 	
-	/** The namespace the class is in. */
-	protected final String namespace;
+	/** The namespace to write to. */
+	protected final JITNamespaceWriter namespace;
 	
 	/** One time lock. */
 	private final Object _oncelock =
@@ -48,24 +48,24 @@ public final class JIT
 	 * This performs basic sanity checks before the actual compilation of a JIT
 	 * is performed.
 	 *
-	 * @apram __ns The namespace of the class.
-	 * @param __ic The input stream of the class data.
 	 * @param __jo The output of the JIT.
+	 * @apram __ns The namespace writer to place classes into.
+	 * @param __ic The input stream of the class data.
 	 * @throws JITException If the class is not correctly formed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/03
 	 */
-	public JIT(String __ns, InputStream __ic, JITOutput __jo)
+	public JIT(JITOutput __jo, JITNamespaceWriter __ns, InputStream __ic)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__ns == null || __ic == null || __jo == null)
+		if (__jo == null || __ns == null || __ic == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.output = __jo;
 		this.input = __ic;
 		this.namespace = __ns;
-		this.output = __jo;
 	}
 	
 	/**
