@@ -400,6 +400,12 @@ public class Builder
 	public class BuildDirectory
 		implements JITNamespaceContent.Directory
 	{
+		/** The opened file channel. */
+		protected final FileChannel channel;
+		
+		/** The opened ZIP. */
+		protected final ZipFile zip;
+		
 		/**
 		 * Initializes the build directory.
 		 *
@@ -429,13 +435,50 @@ public class Builder
 			if (pi == null)
 				throw new IllegalStateException(String.format("DW08 %s", __ns));
 			
-			throw new Error("TODO");
-			/*			
-			FileChannel fc = FileChannel.open(pi.path(),
-				StandardOpenOption.READ);
-		try (FileChannel fc = FileChannel.open(__pi.path(),
-			StandardOpenOption.READ);
-			ZipFile zip = ZipFile.open(fc))*/
+			// Open 
+			FileChannel fc = null;
+			ZipFile zip = null;
+			try
+			{
+				// Open channel
+				fc = FileChannel.open(pi.path(),
+					StandardOpenOption.READ);
+				this.channel = fc;
+				
+				// Then the zip
+				zip = ZipFile.open(fc);
+				this.zip = zip;
+			}
+			
+			// Failed
+			catch (IOException|RuntimeException|Error e)
+			{
+				// Close ZIP
+				try
+				{
+					zip.close();
+				}
+				
+				catch (IOException f)
+				{
+					e.addSuppressed(f);
+				}
+				
+				// Close channel
+				try
+				{
+					fc.close();
+				}
+				
+				// Failed
+				catch (IOException f)
+				{
+					e.addSuppressed(f);
+				}
+				
+				// Rethrow
+				throw e;
+			}
 		}
 		
 		/**
@@ -446,7 +489,38 @@ public class Builder
 		public void close()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Close the channel
+			IOException fail = null;
+			try
+			{
+				this.channel.close();
+			}
+			
+			// {@squirreljme.error DW0a Failed to close the channel.}
+			catch (IOException e)
+			{
+				if (fail == null)
+					fail = new IOException("DW0a");
+				fail.addSuppressed(e);
+			}
+			
+			// Close the ZIP
+			try
+			{
+				this.zip.close();
+			}
+			
+			// {@squirreljme.error DW0b Failed to close the ZIP.}
+			catch (IOException e)
+			{
+				if (fail == null)
+					fail = new IOException("DW0b");
+				fail.addSuppressed(e);
+			}
+			
+			// Failed?
+			if (fail != null)
+				throw fail;
 		}
 		
 		/**
