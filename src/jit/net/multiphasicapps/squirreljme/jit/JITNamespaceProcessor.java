@@ -86,6 +86,10 @@ public class JITNamespaceProcessor
 			this.contents.directoryOf(__ns);
 			OutputStream os = (jcc != null ? jcc.createCache(__ns) : null))
 		{
+			// Go through directory entries
+			for (JITNamespaceContent.Entry ent : dir)
+				throw new Error("TODO");
+			
 			throw new Error("TODO");
 		}
 	}
