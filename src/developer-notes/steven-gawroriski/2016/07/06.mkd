@@ -203,5 +203,17 @@ also. This would also probably be the best result also. Since this is the
 more efficient route and has much constant deduplication I must take it.
 Wasting lots of space on the same copies of a string would be a waste.
 
+## 20:47
 
+So considering this, I should probably split the class and global tables to
+namespaces. This way, single blobs get their own namespace. Doing it this way
+would mean that `JITOutput` would not need to be closed. Any and all classes
+in the same namespace would be compiled together and use the same constant
+data. At least with it this way, when programs are running as user-space they
+do not need to have all the namespaces the kernel uses visible to the process.
+Only the `JVM` needs access to all of the default namespace areas. So
+basically then a `JITNamespaceWriter` is created which then has a `close` and
+a `beginClass` without a namespace. Since everything within a single JAR is
+visible to each other this namespace split makes sense. It would also make it
+easier for the launcher showing default namespaces JARs.
 
