@@ -617,6 +617,26 @@ public class Builder
 			// Set
 			this.entry = __ze;
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/07
+		 */
+		@Override
+		public String name()
+			throws JITException
+		{
+			try
+			{
+				return this.entry.name();
+			}
+			
+			// {@squirreljme.error DW0d Could not read the entry name.}
+			catch (IOException e)
+			{
+				throw new JITException("DW0d", e);
+			}
+		}
 	}
 }
 

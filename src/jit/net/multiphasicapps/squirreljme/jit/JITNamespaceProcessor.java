@@ -88,7 +88,19 @@ public class JITNamespaceProcessor
 		{
 			// Go through directory entries
 			for (JITNamespaceContent.Entry ent : dir)
-				throw new Error("TODO");
+			{
+				// Determine if this is a class to recompile or not
+				String name = ent.name();
+				boolean isclass = name.endsWith(".class");
+				
+				// Recompiling class file with JIT?
+				if (isclass)
+					throw new Error("TODO");
+				
+				// Copying resource data
+				else
+					throw new Error("TODO");
+			}
 			
 			throw new Error("TODO");
 		}

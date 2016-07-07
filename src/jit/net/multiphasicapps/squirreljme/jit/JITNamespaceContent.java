@@ -52,6 +52,15 @@ public interface JITNamespaceContent
 	 */
 	public static interface Entry
 	{
+		/**
+		 * Returns the name of the entry.
+		 *
+		 * @return The entry name.
+		 * @throws JITException If the name could not be determined.
+		 * @since 2016/07/07
+		 */
+		public abstract String name()
+			throws JITException;
 	}
 }
 
