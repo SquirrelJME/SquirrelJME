@@ -165,3 +165,43 @@ could be created. Finding a class definition would be a bit slow, but there
 could be a generic large table at the end which points to every blob that
 exists similar to what I have thought up of before.
 
+## 20:32
+
+So I will need a good way to have an output class format. However, since
+testing things will be a bit unknown while I have code generation, I should
+switch to working on an interpretive handling of classes. I would like the
+runtime classes to be purely interpreted (the JVM classes) in a kind of
+bootstrap state, however that would be very complex. However, an alternative
+would be to kind of target an abstract machine of sorts that can easily handle
+the logic. I could for example output to plain C code. This would in a way
+test how standalone the code is. While an intrepreter in Java will essentially
+be a `JVM` instance. However since `JVM` is essentially the kernel, it would
+need a way to setup sub-objects and processes. However the major issue is that
+the interpreter would be completely unable to call into the normal code and
+access kernel space objects as if they were user-space since the objects
+would be in completely different domains. However it could still work if the
+interpreter based machine is simple enough. The only initial problem is that
+the run-time kind of will expect all of the classes to exist and be built
+into the executable. Any dependencies would also be included too. There would
+just be enough classes to have a JIT and to run the launcher. I just hope that
+including all of them does not complicate and bloat it for some targets that
+are extremely limited in size. However, all my JARs are essentially just
+476KiB right now. For a wide range of systems that is enough. The actual size
+is 386KiB however (due to sector round up). Since the blobs would essentially
+have no debugging information, that would be a bit lighter. When running,
+each class in its compilation state will need to access a lookup table which
+refers to other classes and methods. One thing that would be very efficient
+would there to be a completely merged table. Otherwise there are going to
+be many instances to `java.lang.Object` for example. So I will say that when
+it comes to `JITOutput` that it always merge all possible classes and place
+it into a single index. Since `JITOutput` is initialized by something, the act
+of calling `close` on the output could finish off anything it needs to perform.
+Then this way to the JIT, all classes in a single namespace can be compiled at
+once and essentially a JITted JAR would be loaded 100% at-run time or at least
+memory mapped. Entire programs would be precompiled and resources included
+also. This would also probably be the best result also. Since this is the
+more efficient route and has much constant deduplication I must take it.
+Wasting lots of space on the same copies of a string would be a waste.
+
+
+
