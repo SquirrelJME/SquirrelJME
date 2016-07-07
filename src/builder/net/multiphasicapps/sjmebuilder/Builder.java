@@ -34,6 +34,9 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JIT;
 import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
+import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.JITNamespaceContent;
+import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
@@ -48,7 +51,7 @@ import net.multiphasicapps.zips.ZipFile;
  * @since 2016/06/24
  */
 public class Builder
-	implements JITCacheCreator
+	implements JITCacheCreator, JITNamespaceContent
 {
 	/** The size of the resource buffer. */
 	public static final int RESOURCE_BUFFER_SIZE =
@@ -77,8 +80,8 @@ public class Builder
 	/** JIT options. */
 	protected final JITOutputConfig.Immutable jitconfig;
 	
-	/** The JIT output. */
-	protected final JITOutput jitoutput;
+	/** The namespace processor. */
+	protected final JITNamespaceProcessor processsor;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -190,8 +193,8 @@ public class Builder
 		JITOutputConfig.Immutable immut = jitconfig.immutable();
 		this.jitconfig = immut;
 		
-		// Find output factory
-		this.jitoutput = JITOutputFactory.createOutput(immut);
+		// Setup processor
+		this.processor = new JITNamespaceProcessor(immut, this);
 	}
 	
 	/**
@@ -291,6 +294,21 @@ public class Builder
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/07
+	 */
+	@Override
+	public JITNamespaceContent.Directory directoryOf(String __ns)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__ns == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Builds the specified package.
 	 *
 	 * @param __td The temporary directory.
@@ -300,7 +318,7 @@ public class Builder
 	 * @since 2016/06/25
 	 */
 	private void __buildPackage(Path __td, PackageInfo __pi)
-		throws IOException, NullPointerException
+		throws NullPointerException
 	{
 		// Check
 		if (__td == null || __pi == null)
@@ -310,11 +328,17 @@ public class Builder
 		GlobbedJar gj = new GlobbedJar(__td, __pi);
 		this.globjars.put(__pi, gj);
 		
+		// Process this namespace
+		this.processor.process(gj.name());
+		/*
 		// Open ZIP
 		try (FileChannel fc = FileChannel.open(__pi.path(),
 			StandardOpenOption.READ);
 			ZipFile zip = ZipFile.open(fc))
 		{
+			// Process namespace
+			this.processor.process(gj.name(), );
+			
 			// Go through all entries
 			for (ZipEntry e : zip)
 			{
@@ -331,7 +355,7 @@ public class Builder
 				else
 					__handleResource(gj, e);
 			}
-		}
+		}*/
 	}
 	
 	/**
