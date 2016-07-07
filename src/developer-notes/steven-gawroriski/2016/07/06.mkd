@@ -221,3 +221,12 @@ easier for the launcher showing default namespaces JARs.
 
 Then this also means that `JIT` gets `JITNamespaceWriter` to target namespaces.
 
+## 21:02
+
+Then for the builder, since the `JVM` and the builder will generally take an
+input JAR and recompile all of it, I can instead have a generic class in `JIT`
+which has a basic common interface to all of the JAR handling so that
+namespace recompilation is handled using the same code. Because as it stands
+right now, I would need to duplicate that work in the `JVM` and any changes to
+it may change and potentially break apart.
+
