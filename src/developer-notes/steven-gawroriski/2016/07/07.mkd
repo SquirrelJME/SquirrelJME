@@ -8,3 +8,8 @@ Ok, so I need to commonize JAR recompilation and packaging.
 
 GlobbedJar is no longer needed in this case.
 
+## 13:05
+
+So I will need to implement the namespace writer currently. It would either
+write classes or copy resource data over. This depends generally.
+
