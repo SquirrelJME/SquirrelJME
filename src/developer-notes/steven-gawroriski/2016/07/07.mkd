@@ -13,3 +13,10 @@ GlobbedJar is no longer needed in this case.
 So I will need to implement the namespace writer currently. It would either
 write classes or copy resource data over. This depends generally.
 
+## 13:28
+
+I would suppose for the Linux output with a given architecture that when it
+comes to general computing systems (nothing esoteric) that most of them are
+generally the same when it comes to code generation and execution.
+
+
