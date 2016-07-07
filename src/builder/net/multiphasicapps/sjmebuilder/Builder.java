@@ -308,7 +308,8 @@ public class Builder
 		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create
+		return new BuildDirectory(__ns);
 	}
 	
 	/**
@@ -475,6 +476,61 @@ public class Builder
 			}
 		}
 		*/
+	}
+	
+	/**
+	 * This is the build directory used by the namespace builder to go through
+	 * the contents in a given namespace.
+	 *
+	 * @since 2016/07/07
+	 */
+	public static BuildDirectory
+		implements JITNamespaceContent.Directory
+	{
+		/**
+		 * Initializes the build directory.
+		 *
+		 * @param __ns The namespace to iterate through.
+		 * @throws IOException On open failures.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/07
+		 */
+		private BuildDirectory(String __ns)
+			throws IOException, NullPointerException
+		{
+			// Check
+			if (__ns == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error DW05 The namespace does not end in .jar.
+			// (The namespace)}
+			if (!__ns.endsWith(".jar"))
+				throw new IllegalStateException(String.format("DW05 %s", __ns));
+		
+			// Remove the JAR
+			String jarless = __ns.substring(0, __ns.length() - ".jar".length());
+		
+			// {@squirreljme.error DW08 The namespace does not have an
+			// associated package. (The namespace)}
+			PackageInfo pi = this.plist.get(jarless);
+			if (pi == null)
+				throw new IllegalStateException(String.format("DW08 %s", __ns));
+		
+			// {@squirreljme.error DW09 The namespace does not have an
+			// associated globbed JAR. (The namespace)}
+			GlobbedJar gj = this.globjars.get(pi);
+			if (gj == null)
+				throw new IllegalStateException(String.format("DW09 %s", __ns));
+			
+			// Set
+			this.globbedjar = gj;
+			
+			FileChannel fc = FileChannel.open(pi.path(),
+				StandardOpenOption.READ);
+		try (FileChannel fc = FileChannel.open(__pi.path(),
+			StandardOpenOption.READ);
+			ZipFile zip = ZipFile.open(fc))
+		}
 	}
 }
 

@@ -4,3 +4,7 @@
 
 Ok, so I need to commonize JAR recompilation and packaging.
 
+## 11:12
+
+GlobbedJar is no longer needed in this case.
+
