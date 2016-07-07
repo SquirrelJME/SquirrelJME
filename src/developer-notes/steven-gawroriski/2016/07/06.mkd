@@ -132,3 +132,28 @@ compilable object format. Then the blobs could be linked into a static binary
 and initialized with basic C code for now. However in my case, it would
 essentially just be a blob wrapped in an ELF file.
 
+## 20:05
+
+One thing to determine is if the ELF symbol table is unique to a given OS or
+if it is standard for the format. I believe symbol tables are non-standard.
+Appears that the symbol table is standard. One thing though is, if I can get
+away without needing a symbol table at all. However, going without one would
+be a bit ugly. However, at least with ELFs and symbol tables though I can kind
+of easily generate a binary even without linking. When it comes to system
+specific virtual machine calls (`unsafe`) then those calls can just be bound
+to special symbol names rather than their normally intended method. So
+instead of calling a mangled name for the method, it is instead just a call
+to say `__squirreljme_foo`. However likely it would be best to have an
+alternative static OS implementation somewhere where methods are bound to
+instead. So basically the JIT would turn `unsafe` calls into
+`foo.bar.ImplementingClass` with compatible signatures. Then this implementing
+class would have the magical code such as direct assembly access and such.
+This way assembly can stay out of the main libraries and exist only in a small
+portion of the code. One thing I need though is a kind of ELF output libary
+and a common name mangling scheme which would work in C for the most part.
+Technically I could just store everything in an ELF and then link the end
+result anyway. Alternatively, I can always have a blob to ELF converter for
+that. If all blobs have their size information, I could essentially just
+concatenate every single blob, setup a base linker script, and create a small
+wrapper program which initializes data from the blob.
+
