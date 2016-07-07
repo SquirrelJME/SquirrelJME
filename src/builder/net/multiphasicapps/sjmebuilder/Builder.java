@@ -549,7 +549,43 @@ public class Builder
 		@Override
 		public Iterator<JITNamespaceContent.Entry> iterator()
 		{
-			throw new Error("TODO");
+			return new Iterator<JITNamespaceContent.Entry>()
+				{
+					/** Base iterator for the ZIP. */
+					protected final Iterator<ZipEntry> base =
+						BuildDirectory.this.zip.iterator();
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/07/07
+					 */
+					@Override
+					public boolean hasNext()
+					{
+						return this.base.hasNext();
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/07/07
+					 */
+					@Override
+					public JITNamespaceContent.Entry next()
+					{
+						return new BuildEntry(this.base.next());
+					}
+					
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/07/07
+					 */
+					@Override
+					public void remove()
+					{
+						// {@squirreljme.error DW0c Cannot remove entries.}
+						throw new UnsupportedOperationException("DW0c");
+					}
+				};
 		}
 	}
 	
@@ -561,6 +597,26 @@ public class Builder
 	public class BuildEntry
 		implements JITNamespaceContent.Entry
 	{
+		/** The entry to use. */
+		protected final ZipEntry entry;
+		
+		/**
+		 * Initializes the build entry.
+		 *
+		 * @param __ze The entry to wrap.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/07
+		 */
+		private BuildEntry(ZipEntry __ze)
+			throws NullPointerException
+		{
+			// Check
+			if (__ze == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.entry = __ze;
+		}
 	}
 }
 
