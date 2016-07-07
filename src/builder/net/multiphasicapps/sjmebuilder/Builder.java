@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -73,15 +74,14 @@ public class Builder
 	/** All the packages that are dependencies of the top level package. */
 	protected final Set<PackageInfo> topdepends;
 	
-	/** The globbed JARs which are available. */
-	protected final Map<PackageInfo, GlobbedJar> globjars =
-		new HashMap<>();
-	
 	/** JIT options. */
 	protected final JITOutputConfig.Immutable jitconfig;
 	
 	/** The namespace processor. */
 	protected final JITNamespaceProcessor processor;
+	
+	/** The temporary output directory. */
+	private volatile Path _tempdir;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -212,6 +212,7 @@ public class Builder
 		{
 			// Create temporary directory
 			tempdir = Files.createTempDirectory("squirreljme-native-build");
+			this._tempdir = tempdir;
 			
 			// Go through all dependencies and dynamically compile every class
 			// file in them.
@@ -302,7 +303,7 @@ public class Builder
 	 */
 	@Override
 	public JITNamespaceContent.Directory directoryOf(String __ns)
-		throws JITException, NullPointerException
+		throws IOException, JITException, NullPointerException
 	{
 		// Check
 		if (__ns == null)
@@ -328,12 +329,8 @@ public class Builder
 		if (__td == null || __pi == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup globbed JAR for this package
-		GlobbedJar gj = new GlobbedJar(__td, __pi);
-		this.globjars.put(__pi, gj);
-		
 		// Process this namespace
-		this.processor.processNamespace(gj.name());
+		this.processor.processNamespace(__pi.name() + ".jar");
 		/*
 		// Open ZIP
 		try (FileChannel fc = FileChannel.open(__pi.path(),
@@ -395,96 +392,12 @@ public class Builder
 	}
 	
 	/**
-	 * Handles compilation of a class.
-	 *
-	 * @param __gj The output globbed JAR.
-	 * @param __e The entry in the package.
-	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/25
-	 */
-	private void __handleClass(GlobbedJar __gj, ZipEntry __e)
-		throws IOException, NullPointerException
-	{
-		throw new Error("TODO");
-		/*
-		// Check
-		if (__gj == null || __e == null)
-			throw new NullPointerException("NARG");
-		
-		// Determine the name of the class
-		String ename = __e.name();
-		String classname = ename.substring(0,
-			ename.length() - ".class".length());
-		
-		// A notice
-		System.err.print("AOT ");
-		System.err.println(ename);
-		
-		// Open a resource to be placed in the globbed jar
-		try (InputStream is = __e.open())
-		{
-			// Setup JIT
-			JIT jit = new JIT(__gj.name(), is, this.jitoutput);
-			
-			// Run it
-			jit.run();
-		}*/
-	}
-	
-	/**
-	 * Handles a JAR resource.
-	 *
-	 * @param __gj The output globbed JAR.
-	 * @param __e The entry in the package.
-	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/06/25
-	 */
-	private void __handleResource(GlobbedJar __gj, ZipEntry __e)
-		throws IOException, NullPointerException
-	{
-		throw new Error("TODO");
-		/*
-		// Check
-		if (__gj == null || __e == null)
-			throw new NullPointerException("NARG");
-		
-		// A notice
-		String ename = __e.name();
-		System.err.print("RES ");
-		System.err.println(ename);
-		
-		// Open a resource to be placed in the globbed jar
-		try (InputStream is = __e.open();
-			OutputStream os = __gj.createResource(ename))
-		{
-			// Copy all the data
-			int sz = RESOURCE_BUFFER_SIZE;
-			byte[] buf = new byte[sz];
-			for (;;)
-			{
-				// Read in data
-				int rc = is.read(buf, 0, sz);
-				
-				// EOF?
-				if (rc < 0)
-					break;
-				
-				// Write
-				os.write(buf, 0, rc);
-			}
-		}
-		*/
-	}
-	
-	/**
 	 * This is the build directory used by the namespace builder to go through
 	 * the contents in a given namespace.
 	 *
 	 * @since 2016/07/07
 	 */
-	public static class BuildDirectory
+	public class BuildDirectory
 		implements JITNamespaceContent.Directory
 	{
 		/**
@@ -512,18 +425,10 @@ public class Builder
 		
 			// {@squirreljme.error DW08 The namespace does not have an
 			// associated package. (The namespace)}
-			PackageInfo pi = this.plist.get(jarless);
+			PackageInfo pi = Builder.this.plist.get(jarless);
 			if (pi == null)
 				throw new IllegalStateException(String.format("DW08 %s", __ns));
-		
-			// {@squirreljme.error DW09 The namespace does not have an
-			// associated globbed JAR. (The namespace)}
-			GlobbedJar gj = this.globjars.get(pi);
-			if (gj == null)
-				throw new IllegalStateException(String.format("DW09 %s", __ns));
 			
-			// Set
-			this.globbedjar = gj;
 			throw new Error("TODO");
 			/*			
 			FileChannel fc = FileChannel.open(pi.path(),
@@ -532,6 +437,37 @@ public class Builder
 			StandardOpenOption.READ);
 			ZipFile zip = ZipFile.open(fc))*/
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/07
+		 */
+		@Override
+		public void close()
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/07
+		 */
+		@Override
+		public Iterator<JITNamespaceContent.Entry> iterator()
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * This represents an entry which exists within a directory.
+	 *
+	 * @since 2016/07/07
+	 */
+	public class BuildEntry
+		implements JITNamespaceContent.Entry
+	{
 	}
 }
 

@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * This interface is used with {@link JITNamespaceProcessor} to provide the
@@ -40,7 +41,7 @@ public interface JITNamespaceContent
 	 * @since 2016/07/07
 	 */
 	public static interface Directory
-		extends Closeable, Iterable<Entry>
+		extends Closeable, Iterable<JITNamespaceContent.Entry>
 	{
 	}
 	
