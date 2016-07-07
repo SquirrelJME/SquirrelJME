@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Iterator;
 
 /**
@@ -76,9 +77,14 @@ public class JITNamespaceProcessor
 		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
+		// Using a cache creator for output?
+		JITCacheCreator jcc = this.config.cacheCreator();
+		
 		// Go through the directory for the given namespace
+		// Also create the cached output if it was requested
 		try (JITNamespaceContent.Directory dir =
-			this.contents.directoryOf(__ns))
+			this.contents.directoryOf(__ns);
+			OutputStream os = (jcc != null ? jcc.createCache(__ns) : null))
 		{
 			throw new Error("TODO");
 		}

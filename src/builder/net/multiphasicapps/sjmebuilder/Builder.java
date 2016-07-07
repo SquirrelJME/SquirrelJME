@@ -13,6 +13,7 @@ package net.multiphasicapps.sjmebuilder;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -73,6 +74,10 @@ public class Builder
 	
 	/** All the packages that are dependencies of the top level package. */
 	protected final Set<PackageInfo> topdepends;
+	
+	/** Package information to namespace blobs. */
+	protected final Map<PackageInfo, Path> blobmap =
+		new HashMap<>();
 	
 	/** JIT options. */
 	protected final JITOutputConfig.Immutable jitconfig;
@@ -266,8 +271,6 @@ public class Builder
 	public OutputStream createCache(String __ns)
 		throws IOException, NullPointerException
 	{
-		throw new Error("TODO");
-		/*
 		// Check
 		if (__ns == null)
 			throw new NullPointerException("NARG");
@@ -286,15 +289,31 @@ public class Builder
 		if (pi == null)
 			throw new IllegalStateException(String.format("DW08 %s", __ns));
 		
-		// {@squirreljme.error DW09 The namespace does not have an associated
-		// globbed JAR. (The namespace)}
-		GlobbedJar gj = this.globjars.get(pi);
-		if (gj == null)
-			throw new IllegalStateException(String.format("DW09 %s", __ns));
+		// Create temporary output file where the stream goes
+		Path p = Files.createTempFile(this._tempdir,
+			"squirreljme-build", __ns);
 		
-		// Open class stream for it
-		return gj.createClass(__cn.toString());
-		*/
+		// Mark it
+		Map<PackageInfo, Path> blobmap = this.blobmap;
+		try
+		{
+			// Place
+			blobmap.put(pi, p);
+			
+			// Create output
+			return Channels.newOutputStream(FileChannel.open(p,
+				StandardOpenOption.WRITE));
+		}
+		
+		// Failed to open
+		catch (IOException|Error|RuntimeException e)
+		{
+			// Remove it
+			blobmap.remove(pi);
+			
+			// Rethrow
+			throw e;
+		}
 	}
 	
 	/**
