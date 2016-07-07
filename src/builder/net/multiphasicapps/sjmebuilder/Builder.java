@@ -81,7 +81,7 @@ public class Builder
 	protected final JITOutputConfig.Immutable jitconfig;
 	
 	/** The namespace processor. */
-	protected final JITNamespaceProcessor processsor;
+	protected final JITNamespaceProcessor processor;
 	
 	/**
 	 * Initializes the builder for a native target.
@@ -262,11 +262,13 @@ public class Builder
 	 * @since 2016/07/06
 	 */
 	@Override
-	public OutputStream createCache(String __ns, ClassNameSymbol __cn)
+	public OutputStream createCache(String __ns)
 		throws IOException, NullPointerException
 	{
+		throw new Error("TODO");
+		/*
 		// Check
-		if (__ns == null || __cn == null)
+		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error DW05 The namespace does not end in .jar.
@@ -291,6 +293,7 @@ public class Builder
 		
 		// Open class stream for it
 		return gj.createClass(__cn.toString());
+		*/
 	}
 	
 	/**
@@ -329,7 +332,7 @@ public class Builder
 		this.globjars.put(__pi, gj);
 		
 		// Process this namespace
-		this.processor.process(gj.name());
+		this.processor.processNamespace(gj.name());
 		/*
 		// Open ZIP
 		try (FileChannel fc = FileChannel.open(__pi.path(),
@@ -402,6 +405,8 @@ public class Builder
 	private void __handleClass(GlobbedJar __gj, ZipEntry __e)
 		throws IOException, NullPointerException
 	{
+		throw new Error("TODO");
+		/*
 		// Check
 		if (__gj == null || __e == null)
 			throw new NullPointerException("NARG");
@@ -423,7 +428,7 @@ public class Builder
 			
 			// Run it
 			jit.run();
-		}
+		}*/
 	}
 	
 	/**
@@ -438,6 +443,8 @@ public class Builder
 	private void __handleResource(GlobbedJar __gj, ZipEntry __e)
 		throws IOException, NullPointerException
 	{
+		throw new Error("TODO");
+		/*
 		// Check
 		if (__gj == null || __e == null)
 			throw new NullPointerException("NARG");
@@ -467,6 +474,7 @@ public class Builder
 				os.write(buf, 0, rc);
 			}
 		}
+		*/
 	}
 }
 
