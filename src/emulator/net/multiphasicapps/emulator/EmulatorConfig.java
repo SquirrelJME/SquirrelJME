@@ -8,24 +8,24 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.simulator;
+package net.multiphasicapps.emulator;
 
 import net.multiphasicapps.squirreljme.jit.JITTriplet;
 
 /**
  * This is a mutable configuration which stores the input configuration for
- * a given simulator.
+ * a given emulator.
  *
  * @since 2016/07/06
  */
-public final class SimulatorConfig
+public final class EmulatorConfig
 	implements __CommonConfigGet__
 {
 	/** Set lock. */
 	protected final Object lock =
 		new Object();
 	
-	/** The triplet of the target system to simulate. */
+	/** The triplet of the target system to emulate. */
 	private volatile JITTriplet _triplet;
 	
 	/**

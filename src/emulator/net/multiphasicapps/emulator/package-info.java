@@ -9,11 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the simulator which supports for simulating programs
+ * This package contains the emulator which supports for emulating programs
  * that run on a given operating system.
  *
  * @since 2016/07/06
  */
 
-package net.multiphasicapps.simulator;
+package net.multiphasicapps.emulator;
 
