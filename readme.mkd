@@ -39,6 +39,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
   * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
   * [Manual](src/manual/index.mkd)
   * [Developer Notes](src/developer-notes/index.mkd)
+  * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
 
 ## Goals
 
