@@ -40,3 +40,9 @@ and block. So basically...
 
 So what I need is namespace output.
 
+## 13:44
+
+I would suppose I would need a JIT that is traditional for traditional CPUs.
+These would be how CPUs for the past few decades have operated. This would be
+nothing non-standard such as esoteric systems or programming languages.
+
