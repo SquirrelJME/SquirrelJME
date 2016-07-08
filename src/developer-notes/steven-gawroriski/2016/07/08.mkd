@@ -7,3 +7,12 @@ implement standard liblet descriptions. This would be for standard
 functionality dependencies. However I cannot find any property which describes
 which standard something implements.
 
+## 09:44
+
+I suppose for other versions and such, I will just use a kind of release
+system I suppose. I would say that I will start at `0.0.0`. Once SquirrelJME
+is 100% compatible, this will become `1.0.0`. Minor versions in development
+will be even numbers such as 0, 2, 4. Although in this case I would ever only
+be able to perform 49 releases. So I suppose I will do this at the micro
+scale. So initially I will start at `0.0.2` so that it is not zero.
+
