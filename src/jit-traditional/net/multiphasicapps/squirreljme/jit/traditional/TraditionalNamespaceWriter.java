@@ -100,6 +100,7 @@ public abstract class TraditionalNamespaceWriter
 	@Override
 	public void close()
 	{
+		throw new Error("TODO");
 	}
 }
 
