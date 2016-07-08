@@ -46,3 +46,11 @@ I would suppose I would need a JIT that is traditional for traditional CPUs.
 These would be how CPUs for the past few decades have operated. This would be
 nothing non-standard such as esoteric systems or programming languages.
 
+## 17:46
+
+I would suppose that I could also have a traditional namespace writer also for
+specific systems too. Generally all of them will follow the same layout at
+least (a bunch of machine code, some tables, etc.). Anything esoteric would
+completely not fit at all. It would likely be best if the blobs for each and
+every architecture were exactly the same.
+
