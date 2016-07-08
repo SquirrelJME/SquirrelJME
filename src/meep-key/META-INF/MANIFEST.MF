@@ -3,6 +3,7 @@ X-SquirrelJME-Name: meep-key
 X-SquirrelJME-UUID: 90e52d37-a976-4f38-a194-9c65d34b6615
 X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DB
+X-SquirrelJME-StandardLib: microedition.key;0.0.0
 LIBlet-Title: MEEP Key Events
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160616

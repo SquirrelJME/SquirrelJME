@@ -3,6 +3,7 @@ X-SquirrelJME-Name: meep-provisioning
 X-SquirrelJME-UUID: 98ab129b-9ad6-4546-9782-9ef69c8f237a
 X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: DM
+X-SquirrelJME-StandardLib: microedition.provisioning;0.0.0
 LIBlet-Title: MEEP Provisioning
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160616

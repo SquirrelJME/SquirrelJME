@@ -3,6 +3,7 @@ X-SquirrelJME-Name: dio-atcmd
 X-SquirrelJME-UUID: e7560687-abe6-428c-88cd-ec2ab5aa7640
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CZ
+X-SquirrelJME-StandardLib: dio.atcmd;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (AT Device)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160623

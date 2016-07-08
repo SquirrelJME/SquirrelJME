@@ -3,6 +3,7 @@ X-SquirrelJME-Name: dio-watchdog
 X-SquirrelJME-UUID: 0b4cb53e-3479-4133-b6f3-9de977c1e8db
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: DP
+X-SquirrelJME-StandardLib: dio.watchdog;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (Watchdog)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160623

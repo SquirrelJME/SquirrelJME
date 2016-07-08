@@ -3,6 +3,7 @@ X-SquirrelJME-Name: meep-swm
 X-SquirrelJME-UUID: 30e471c6-3fd7-4c78-b97e-0d6e3af8d0e1
 X-SquirrelJME-Depends: cldc-compact, util-empty
 X-SquirrelJME-Error: DG
+X-SquirrelJME-StandardLib: microedition.swm;0.0.0
 LIBlet-Title: MEEP Application Management System
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160616

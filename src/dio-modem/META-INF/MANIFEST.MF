@@ -3,6 +3,7 @@ X-SquirrelJME-Name: dio-modem
 X-SquirrelJME-UUID: 7dd14ab6-78db-43ae-8d62-78f6b94103e2
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CY
+X-SquirrelJME-StandardLib: dio.modem;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (Modems)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160623

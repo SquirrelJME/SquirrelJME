@@ -3,6 +3,7 @@ X-SquirrelJME-Name: dio-mmio
 X-SquirrelJME-UUID: 2ca1c809-eca9-41ae-94d3-b4f850a6b14f
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: DT
+X-SquirrelJME-StandardLib: dio.mmio;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (MMIO)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160623

@@ -3,6 +3,7 @@ X-SquirrelJME-Name: dio-generic
 X-SquirrelJME-UUID: 8ea65d38-ad58-4ce8-9b02-1ca66a7d8adf
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: DS
+X-SquirrelJME-StandardLib: dio.generic;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (Generic)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160623

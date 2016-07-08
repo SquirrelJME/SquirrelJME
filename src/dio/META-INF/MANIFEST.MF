@@ -3,6 +3,7 @@ X-SquirrelJME-Name: dio
 X-SquirrelJME-UUID: b45e9ac9-53bc-4e2a-9265-b5b5bca3d482
 X-SquirrelJME-Depends: cldc-full
 X-SquirrelJME-Error: CR
+X-SquirrelJME-StandardLib: dio;1.0.1
 LIBlet-Title: JavaME 8 Device I/O
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160623

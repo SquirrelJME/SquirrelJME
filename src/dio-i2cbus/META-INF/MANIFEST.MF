@@ -3,6 +3,7 @@ X-SquirrelJME-Name: dio-i2cbus
 X-SquirrelJME-UUID: 0d788331-6b08-45b6-a506-bb61efe926a9
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CT
+X-SquirrelJME-StandardLib: dio.i2cbus;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (I2C)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160623

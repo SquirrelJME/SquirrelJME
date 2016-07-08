@@ -3,6 +3,7 @@ X-SquirrelJME-Name: dio-gpio
 X-SquirrelJME-UUID: 2edaf7ea-cdf1-497f-80d0-2a738759b21f
 X-SquirrelJME-Depends: dio
 X-SquirrelJME-Error: CS
+X-SquirrelJME-StandardLib: dio.gpio;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (GPIO)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 1.8.0.20160623
