@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.powerpc;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITLogicAcceptor;
+import net.multiphasicapps.squirreljme.jit.traditional.
+	TraditionalLogicAcceptor;
 
 /**
  * This accepts and performs logical operations which output PowerPC machine
@@ -21,7 +23,7 @@ import net.multiphasicapps.squirreljme.jit.JITLogicAcceptor;
  * @since 2016/07/06
  */
 public class PPCLogicAcceptor
-	implements JITLogicAcceptor
+	extends TraditionalLogicAcceptor
 {
 	/** The target variant. */
 	protected final PPCVariant variant;
