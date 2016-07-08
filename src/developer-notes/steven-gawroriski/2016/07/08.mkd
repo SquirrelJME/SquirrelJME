@@ -36,3 +36,7 @@ and block. So basically...
    point a prompt will appear waiting for a continue unless something
    requires some kind of input.
 
+## 12:14
+
+So what I need is namespace output.
+
