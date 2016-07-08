@@ -1,0 +1,9 @@
+# 2016/07/08
+
+## 09:24
+
+So I will need to fix all of the version information and figure out a way to
+implement standard liblet descriptions. This would be for standard
+functionality dependencies. However I cannot find any property which describes
+which standard something implements.
+
