@@ -19,4 +19,15 @@ I would suppose for the Linux output with a given architecture that when it
 comes to general computing systems (nothing esoteric) that most of them are
 generally the same when it comes to code generation and execution.
 
+## 23:56
+
+I misread the specification when it comes to versions. Versions may have 2 or
+3 fields separated by a decimal point. However each field may only have one
+or two digits in it. So my current `1.8.20160707` versioning is invalid.
+Since all releases will generally be compatible with each other (nothing will
+break and nothing can break as per the specification) a release/major version
+makes no sense. Since compatibility is also kept, a breaking version number
+would make no sense either. The only things that are added is support for
+new hardware once the implementation is complete. So I suppose I should go
+for a date format such as `(year - 2015).(month).(day)`.
 
