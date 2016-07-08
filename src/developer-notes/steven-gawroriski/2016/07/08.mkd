@@ -84,3 +84,13 @@ would essentially be stored. There then could be a stubbed code that acts as
 the virtual machine. It would setup some initial objects and then just call the
 JITted code.
 
+## 19:10
+
+The only consideration would be exception handling, would I have actual
+handling of exceptions or virtualized exception handling (a switch with a bunch
+of goto operations). This would be a rather complex first step however. I could
+have an output which generates C source code however. The `OutputStream` cache
+form would essentially be a TAR archive containing C source and header files.
+Header files would be last, then using preprocessor magic the normal code
+generation can occur.
+
