@@ -4,6 +4,6 @@ X-SquirrelJME-UUID: a4903bfc-7dbf-42de-8577-1ca671c24be8
 X-SquirrelJME-Depends: test-base, util-dynbuffer
 LIBlet-Title: Extra Buffer Tests
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160430
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains tests for the extra buffer
   code.

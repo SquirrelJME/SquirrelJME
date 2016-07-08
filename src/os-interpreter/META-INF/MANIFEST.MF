@@ -7,7 +7,7 @@ X-SquirrelJME-Target-OS: interpreter.interpreter.generic
 Main-Class: net.multiphasicapps.squirreljme.jit.interpreter.Main
 LIBlet-Title: JIT Interpreter Test
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160704
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains an interpreter which is 
  associated with a JIT. This is primarily used to test 
  whether the JIT operates correctly.

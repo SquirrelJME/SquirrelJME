@@ -12,7 +12,7 @@ X-SquirrelJME-Optional:
 Main-Class: net.multiphasicapps.tests.TestCaller
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160303
+LIBlet-Version: 0.0.2
 LIBlet-Description: This is a meta package which depends on all the
   available tests to make sure that everything works.
 

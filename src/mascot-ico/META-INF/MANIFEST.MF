@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: 17d41b4c-7469-4417-a702-30ab72dcd889
 X-SquirrelJME-Depends: mascot
 LIBlet-Title: SquirrelJME Mascot (Windows Icon)
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160517
+LIBlet-Version: 0.0.2
 LIBlet-Description: This package contains an encoded Windows
   or ReactOS compatible icon image.
   NOTE THAT THE LOW RESOLUTION XPM IMAGES ARE THE ACTUAL

@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: cldc-compact, symbols,
 X-SquirrelJME-Error: CO
 LIBlet-Title: Class File Writer
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160620
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides support for writing standard 
  Java class files.
 

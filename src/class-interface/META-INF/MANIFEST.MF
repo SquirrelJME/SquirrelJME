@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: cldc-compact,
 X-SquirrelJME-Error: AO
 LIBlet-Title: Class Interface
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160421
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides a generic interface which wraps
   representation of classes which may be backed by the standard
   class file format, a virtual representation, or a natively

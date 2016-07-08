@@ -6,7 +6,7 @@ X-SquirrelJME-Error: DK
 X-SquirrelJME-StandardLib: microedition.concurrency;0.0.0
 LIBlet-Title: MEEP Concurrency
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160616
+LIBlet-Version: 0.0.2
 LIBlet-Description: The concurrency APIs allows multiple 
  applications to run at the same time.
 

@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact, util-datadeque
 X-SquirrelJME-Error: AB
 LIBlet-Title: Extra IO Data Faucet
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160430
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains classes which generate data
   and do not consume data.
 

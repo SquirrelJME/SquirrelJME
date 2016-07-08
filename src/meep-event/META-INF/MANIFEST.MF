@@ -6,7 +6,7 @@ X-SquirrelJME-Error: DI
 X-SquirrelJME-StandardLib: microedition.event;0.0.0
 LIBlet-Title: MEEP Event Management
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160616
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides an interface which allows 
  an application to receive events from the system along with
  sending events to other running applications.

@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: io-datasink, io-datafaucet
 X-SquirrelJME-Error: AC
 LIBlet-Title: Extra IO Data Pipe
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160429
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains the base class for the
   data pipe interfaces which takes input bytes and
   translates them into an output.

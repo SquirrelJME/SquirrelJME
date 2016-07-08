@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: cldc-full,
 X-SquirrelJME-Error: BP
 LIBlet-Title: Class Path Filesystem JAR Support
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160525
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides support for reading JAR
   files off the host file system.
 

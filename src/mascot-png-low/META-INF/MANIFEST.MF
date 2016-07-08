@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: 2478a41f-300e-45ce-82e1-14a6e32df3d0
 X-SquirrelJME-Depends: mascot
 LIBlet-Title: SquirrelJME Mascot (Low Res PNG)
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160517
+LIBlet-Version: 0.0.2
 LIBlet-Description: This package contains the low resolution
   versions of the mascot as encoded PNG images.
   NOTE THAT THE LOW RESOLUTION XPM IMAGES ARE THE ACTUAL

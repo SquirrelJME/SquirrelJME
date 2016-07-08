@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact, jit
 X-SquirrelJME-Error: AR
 LIBlet-Title: Emulator
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160706
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides the base support for 
  emulating programs running on a given operating system. 
  This emulation is high level and is not intended to run 

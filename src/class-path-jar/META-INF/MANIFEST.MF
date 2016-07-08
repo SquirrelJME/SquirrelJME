@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: cldc-full,
 X-SquirrelJME-Error: BO
 LIBlet-Title: Class Path JAR Support
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160525
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides class units constructed
   from JAR files which may exist on a seekable byte medium. 
 

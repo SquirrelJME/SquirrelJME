@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact, meep-lui
 X-SquirrelJME-Error: CM
 LIBlet-Title: Base Launcher
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160619
+LIBlet-Version: 0.0.2
 LIBlet-Description: The project implements the base launcher 
  which the LUI and LCDUI based launchers extend to provide 
  a graphical interface above a standard implementation.

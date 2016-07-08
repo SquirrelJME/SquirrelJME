@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: 81c08ece-ed04-4607-a816-3d553bb2ba5c
 X-SquirrelJME-Depends: mascot
 LIBlet-Title: SquirrelJME Mascot (Origal Art)
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160616
+LIBlet-Version: 0.0.2
 LIBlet-Description: This project contains the original 
  images of the SquirrelJME mascot.
 

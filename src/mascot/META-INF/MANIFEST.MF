@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact, io-hex
 X-SquirrelJME-Error: CJ
 LIBlet-Title: SquirrelJME Mascot
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160507
+LIBlet-Version: 0.0.2
 LIBlet-Description: This package contains the mascot for
  SquirrelJME.
 

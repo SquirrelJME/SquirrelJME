@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: cldc-full,
 X-SquirrelJME-Error: AM
 LIBlet-Title: ZIP Compression
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160228
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains support for ZIP and JAR files due to
  the fact that JavaME lacks support for these in the form of a
  standard interface.

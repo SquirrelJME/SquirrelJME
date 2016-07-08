@@ -5,6 +5,6 @@ X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: BY
 LIBlet-Title: Squirrel Quarrel
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160611
+LIBlet-Version: 0.0.2
 LIBlet-Description: This is a real-time strategy game.
 

@@ -6,7 +6,7 @@ X-SquirrelJME-Error: CR
 X-SquirrelJME-StandardLib: dio;1.0.1
 LIBlet-Title: JavaME 8 Device I/O
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160623
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides the base support for devices that 
  may be provided by an implementation.
 

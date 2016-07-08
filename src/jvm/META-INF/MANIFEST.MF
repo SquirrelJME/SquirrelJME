@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact, meep-swm, jit
 X-SquirrelJME-Error: CQ
 LIBlet-Title: Java Virtual Machine
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160623
+LIBlet-Version: 0.0.2
 LIBlet-Description: This it the base project which act as the 
  core of the Java virtual machine.
 

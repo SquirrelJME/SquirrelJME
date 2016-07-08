@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: AV
 LIBlet-Title: Checked Collections
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160508
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides collections which are
   checked so that their value types are not violated.
 

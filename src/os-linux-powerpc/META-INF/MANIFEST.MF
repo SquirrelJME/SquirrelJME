@@ -9,7 +9,7 @@ X-SquirrelJME-Target-OS: powerpc-32,big.linux.generic
  powerpc-64,little.linux.generic
 LIBlet-Title: Linux OS Support (PowerPC)
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160624
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides support for the Linux
  operating system on PowerPC CPUs.
 

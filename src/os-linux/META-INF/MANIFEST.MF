@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: jvm
 X-SquirrelJME-Error: CG
 LIBlet-Title: Linux OS Support
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160615
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides support for the Linux
  operating system.
 

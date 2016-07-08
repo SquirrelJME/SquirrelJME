@@ -6,6 +6,6 @@ X-SquirrelJME-Error: CY
 X-SquirrelJME-StandardLib: dio.modem;1.0.1
 LIBlet-Title: JavaME 8 Device I/O (Modems)
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160623
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides access to dial-up modems.
 

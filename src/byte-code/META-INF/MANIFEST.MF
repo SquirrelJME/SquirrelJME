@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: cldc-compact,
 X-SquirrelJME-Error: AX
 LIBlet-Title: Java Byte Code Representation
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160510
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains the code which represents
   the byte code within a Java program.
 

@@ -6,7 +6,7 @@ X-SquirrelJME-Error: DJ
 X-SquirrelJME-StandardLib: microedition.power;0.0.0
 LIBlet-Title: MEEP Power Management
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160616
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides support for quering the 
  current electrical state of the device along with the 
  setting of potential new power modes.

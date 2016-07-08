@@ -4,7 +4,7 @@ X-SquirrelJME-UUID: 42ea1f43-65d1-4ce9-9507-8990f6181f14
 X-SquirrelJME-Depends: cldc-compact
 LIBlet-Title: Developer Nodes
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160403
+LIBlet-Version: 0.0.2
 LIBlet-Description: This package contains notes which are written by
   developers for the purpose of progressive documentation, feel, and
   reason for doing thing.

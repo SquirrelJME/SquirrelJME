@@ -5,6 +5,6 @@ X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: AJ
 LIBlet-Title: Empty Collections
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160501
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains empty collections.
 

@@ -8,7 +8,7 @@ X-SquirrelJME-Depends: io-datapipe,
 X-SquirrelJME-Error: AF
 LIBlet-Title: Extra IO Inflate Algorithm
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160429
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains the support for the
   inflation (decompression) of RFC1951 (deflated) streams
   of data.

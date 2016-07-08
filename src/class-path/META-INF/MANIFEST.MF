@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: cldc-compact,
 X-SquirrelJME-Error: BN
 LIBlet-Title: Class Path Base Support
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160525
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides base support for finding and
   locating collections of classes which act as the class path
   for software running on SquirrelJME.

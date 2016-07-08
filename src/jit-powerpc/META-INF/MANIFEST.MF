@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: jit
 X-SquirrelJME-Error: EE
 LIBlet-Title: Just-In-Time Compiler (PowerPC)
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160702
+LIBlet-Version: 0.0.2
 LIBlet-Description: This is used by operating system outputs 
  to provide the capability of generating PowerPC code.
 

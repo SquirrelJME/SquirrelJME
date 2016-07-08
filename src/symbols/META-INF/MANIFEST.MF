@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: AL
 LIBlet-Title: Java Descriptors
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160314
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains parsers and handlers which are able
  to read, provide, and construct information that is related to binary
  names, identifiers, method descriptors, and field descriptors.

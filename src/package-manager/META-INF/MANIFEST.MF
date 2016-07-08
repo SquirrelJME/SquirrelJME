@@ -6,7 +6,7 @@ X-SquirrelJME-Depends: cldc-full, manifest,
 X-SquirrelJME-Error: CI
 LIBlet-Title: SquirrelJME Packager
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160615
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides a standard interface to the 
  package system that SquirrelJME uses for
 

@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: AH
 LIBlet-Title: Extra IO Bits
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160430
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides bit based interfaces
   for the transferal of bits rather than bytes.
 

@@ -5,6 +5,6 @@ X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: BU
 LIBlet-Title: Squirrel Wars
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160605
+LIBlet-Version: 0.0.2
 LIBlet-Description: This is a turned based strategy game.
 

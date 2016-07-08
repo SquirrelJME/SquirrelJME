@@ -6,7 +6,7 @@ X-SquirrelJME-Error: DH
 X-SquirrelJME-StandardLib: microedition.cellular;0.0.0
 LIBlet-Title: MEEP Cellular Networking
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160616
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides an implementation which is 
  used to access cellular networks.
 

@@ -6,7 +6,7 @@ X-SquirrelJME-Error: DM
 X-SquirrelJME-StandardLib: microedition.provisioning;0.0.0
 LIBlet-Title: MEEP Provisioning
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160616
+LIBlet-Version: 0.0.2
 LIBlet-Description: This provides support for provisioning new 
  MIDlets and LIBlets which may exist on the network and can be
  seen in a way as a remote application downloader and installer

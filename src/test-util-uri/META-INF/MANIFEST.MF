@@ -4,6 +4,6 @@ X-SquirrelJME-UUID: 7ddfd1f0-7098-4f16-be60-66fec4f8ebc6
 X-SquirrelJME-Depends: test-base, util-uri
 LIBlet-Title: URI Tests
 LIBlet-Vendor: Steven Gawroriski
-LIBlet-Version: 1.8.0.20160623
+LIBlet-Version: 0.0.2
 LIBlet-Description: This contains tests which determines if 
  the URI handling code works properly.
