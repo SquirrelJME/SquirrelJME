@@ -60,3 +60,27 @@ Having the cache output stream created in the namespace processor does not
 make any sense. It should instead be created in the namespace writer if a file
 on the disk was requested.
 
+## 19:00
+
+I also have the option of JITting to something that is not a CPU but a
+language. I could compile to Javascript but handling of binary files really
+depends on the browser it is running on. Alternatively I can target POSIX
+shell (which would produce very slow code) or other languages such as Python
+(despite not knowing it). I could also target the JVM. Although for the JVM,
+entire namespaces are likely to not fit within a single class file. This
+would put a limit of 65534 unique constants with 65536 fields and 65536
+methods. Each namespace would pretty much have to be written to a JAR in a JIT
+like manner that allows for individual VM instances to exist. This would mean
+that all methods would essentially be static (since instances would not
+make as much sense). Objects passed around would be virtual object
+representations. Every method would have to have as a first parameter, a
+virtual machine interface of sorts. So targetting Java would be a bit
+feasible. At least stuff such as primitive types can be passed around
+as-is. However, all objects would be passed with a virtual object
+representation for the most part. Then since linear ZIPs are supported (similar
+to TAR archives) I can output a JAR like this, then at the end write the
+complete entry table. Since I lack an inflate compression algorithm, the data
+would essentially be stored. There then could be a stubbed code that acts as
+the virtual machine. It would setup some initial objects and then just call the
+JITted code.
+
