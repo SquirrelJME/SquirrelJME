@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.linux;
 
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.traditional.
 	TraditionalNamespaceWriter;
 
@@ -22,5 +24,16 @@ import net.multiphasicapps.squirreljme.jit.traditional.
 public abstract class LinuxNamespaceWriter
 	extends TraditionalNamespaceWriter
 {
+	/**
+	 * Initializes the Linux namespace writer.
+	 *
+	 * @param __ns The namespace being written.
+	 * @param __conf The output configuration.
+	 * @since 2016/07/08
+	 */
+	public LinuxNamespaceWriter(String __ns, JITOutputConfig.Immutable __conf)
+	{
+		super(__ns, __conf);
+	}
 }
 

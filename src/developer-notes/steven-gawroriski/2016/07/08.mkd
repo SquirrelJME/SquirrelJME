@@ -54,3 +54,9 @@ least (a bunch of machine code, some tables, etc.). Anything esoteric would
 completely not fit at all. It would likely be best if the blobs for each and
 every architecture were exactly the same.
 
+## 18:28
+
+Having the cache output stream created in the namespace processor does not
+make any sense. It should instead be created in the namespace writer if a file
+on the disk was requested.
+

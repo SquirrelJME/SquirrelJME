@@ -82,9 +82,6 @@ public class JITNamespaceProcessor
 		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
-		// Using a cache creator for output?
-		JITCacheCreator jcc = this.config.cacheCreator();
-		
 		// Setup output for a given namespace
 		JITOutput output = this.output;
 		JITNamespaceWriter nsw = output.beginNamespace(__ns);
@@ -92,8 +89,7 @@ public class JITNamespaceProcessor
 		// Go through the directory for the given namespace
 		// Also create the cached output if it was requested
 		try (JITNamespaceContent.Directory dir =
-			this.contents.directoryOf(__ns);
-			OutputStream os = (jcc != null ? jcc.createCache(__ns) : null))
+			this.contents.directoryOf(__ns))
 		{
 			// Go through directory entries
 			byte[] buf = null;

@@ -12,8 +12,11 @@ package net.multiphasicapps.squirreljme.jit.traditional;
 
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITTriplet;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
@@ -26,6 +29,48 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 public abstract class TraditionalNamespaceWriter
 	implements JITNamespaceWriter
 {
+	/** The output configuration. */
+	protected final JITOutputConfig.Immutable config;
+	
+	/** The target triplet. */
+	protected final JITTriplet triplet;
+	
+	/** The endianess of the CPU. */
+	protected final JITCPUEndian endian;
+	
+	/** The number of bits it uses. */
+	protected final int bits;
+	
+	/** The namespace being written. */
+	protected final String namespace;
+	
+	/**
+	 * This initializes the base traditional namespace writer.
+	 *
+	 * @param __ns The namespace being written.
+	 * @param __conf The output configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/08
+	 */
+	public TraditionalNamespaceWriter(String __ns,
+		JITOutputConfig.Immutable __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__ns == null || __conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Get triplet to determine CPU details
+		this.config = __conf;
+		JITTriplet triplet = __conf.triplet();
+		this.triplet = triplet;
+		
+		// Set
+		this.namespace = __ns;
+		this.endian = triplet.endianess();
+		this.bits = triplet.bits();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/08

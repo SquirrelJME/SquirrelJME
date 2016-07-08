@@ -27,6 +27,9 @@ import net.multiphasicapps.squirreljme.jit.powerpc.PPCLogicAcceptor;
 public class LinuxPPCOutput
 	implements JITOutput
 {
+	/** The configuration used. */
+	protected final JITOutputConfig.Immutable config;
+	
 	/**
 	 * Creates a new output which targets PowerPC systems.
 	 *
@@ -40,6 +43,9 @@ public class LinuxPPCOutput
 		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __conf;
 	}
 	
 	/**
@@ -54,7 +60,8 @@ public class LinuxPPCOutput
 		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create
+		return new LinuxPPCNamespaceWriter(__ns, this.config);
 	}
 }
 

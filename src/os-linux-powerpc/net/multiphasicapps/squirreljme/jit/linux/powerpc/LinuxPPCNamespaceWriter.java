@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.linux.powerpc;
 
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.linux.LinuxNamespaceWriter;
 
 /**
@@ -20,5 +22,17 @@ import net.multiphasicapps.squirreljme.jit.linux.LinuxNamespaceWriter;
 public class LinuxPPCNamespaceWriter
 	extends LinuxNamespaceWriter
 {
+	/**
+	 * Initializes the Linux namespace writer.
+	 *
+	 * @param __ns The namespace being written.
+	 * @param __conf The output configuration.
+	 * @since 2016/07/08
+	 */
+	public LinuxPPCNamespaceWriter(String __ns,
+		JITOutputConfig.Immutable __conf)
+	{
+		super(__ns, __conf);
+	}
 }
 
