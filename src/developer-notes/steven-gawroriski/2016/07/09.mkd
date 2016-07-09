@@ -33,3 +33,23 @@ if data just blindly matches the ZIP data (say a stored ZIP within a ZIP) that
 precedes it. That could be used to determine when an uncompressed streamed
 entry with unknown initail size is used.
 
+## 17:55
+
+Personally, I wonder if the supporting 64-bit ZIP files is worth it. Generally
+for Java ME I would only ever use 32-bit ZIPs. Supporting entries that are
+very large or ZIPs with lots of files would be more sane than not supporting
+it. However, I suppose initially I should have a means where I can read/write
+64-bit ZIPs but not yet support it for example.
+
+## 17:59
+
+I would suppose that the intended targets for Java ME and SquirrelJME in
+general, there would really be no need to support 64-bit ZIP files.
+
+## 18:57
+
+Generally my code itself would likely never operate with very gigantic files.
+Also lightening up the code would simplify things. Also one thing to consider
+is to remove the data pipe code and just have the deflate decompression be an
+input stream of sorts.
+

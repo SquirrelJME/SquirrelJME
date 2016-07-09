@@ -16,7 +16,7 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.lang.LangOutput;
 
 /**
- * This output generates C source code in TAR archives.
+ * This output generates C source code in ZIP archives.
  *
  * @since 2016/07/09
  */
