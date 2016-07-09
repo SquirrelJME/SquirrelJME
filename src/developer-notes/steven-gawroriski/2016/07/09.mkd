@@ -53,3 +53,15 @@ Also lightening up the code would simplify things. Also one thing to consider
 is to remove the data pipe code and just have the deflate decompression be an
 input stream of sorts.
 
+## 19:00
+
+I would suppose that my ZIP stream writer would be rather simple in its
+implementation. Generally just need compression or storing. Then I would also
+need a CRC32 calculator, but that can be generic in either being an output
+stream or an input stream. Right now for the most part I made the data pipe to
+allow for buffering and whatnot, however it might not actually be needed much
+at all. The only issue would be inflating on an output stream. As in, I write
+deflated data. So I suppose instead I could instead of a `DataPipe` would just
+be an input and output stream which is very similar. So something very similar
+but something very much more direct and less buffered.
+
