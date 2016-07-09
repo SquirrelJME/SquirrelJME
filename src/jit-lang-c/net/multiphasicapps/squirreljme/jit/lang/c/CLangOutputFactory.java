@@ -37,7 +37,13 @@ public class CLangOutputFactory
 		if (__config == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error BA01 The specified configuration is not
+		// supported by this JIT output factory. (The configuration)}
+		if (!supportsConfig(__config))
+			throw new JITException(String.format("BA01 %s", __config));
+		
+		// Create
+		return new CLangOutput(__config);
 	}
 	
 	/**
