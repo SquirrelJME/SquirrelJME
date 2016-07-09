@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: zip-writer-stream
+X-SquirrelJME-UUID: 30adac32-ff30-41c7-8406-3e0230a22ed0
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: BC
+LIBlet-Title: Stream ZIP Writer
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This allows writing of ZIP files using a 
+ stream based interface. The entries are written in the order 
+ that they are opened and streamed to the output one at a time. 
+ This is used to write ZIP files where the size of the contents 
+ is not known.
+
