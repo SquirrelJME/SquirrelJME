@@ -112,3 +112,9 @@ So yes, I shall work on a C code generator and ignore PowerPC on Linux for
 a bit. Then once I have the interfaces required for code generation I can more
 easily fit the PowerPC generator into it.
 
+## 20:58
+
+I suppose when it comes to languages the architecture will just be `language`,
+the variant will be `generic`, the operating system will be the target
+language. The operating system variant would just be `generic`.
+
