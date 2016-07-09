@@ -44,8 +44,8 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITTriplet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
-import net.multiphasicapps.zips.ZipEntry;
-import net.multiphasicapps.zips.ZipFile;
+import net.multiphasicapps.zip.blockreader.ZipEntry;
+import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
  * This is the builder for native binaries.

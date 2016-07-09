@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zips;
+package net.multiphasicapps.zip.blockreader;
 
 /**
  * This provides public fields which represent the structure of the central

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: os-interpreter
 X-SquirrelJME-UUID: bd5325b4-0c29-45c9-bc5b-a2d371eecb1f
-X-SquirrelJME-Depends: jit, zip-compression, package-manager, jvm
+X-SquirrelJME-Depends: jit, zip-reader-block, package-manager, jvm
 X-SquirrelJME-Error: EF
 X-SquirrelJME-Target-OS: interpreter.interpreter.generic
 Main-Class: net.multiphasicapps.squirreljme.jit.interpreter.Main

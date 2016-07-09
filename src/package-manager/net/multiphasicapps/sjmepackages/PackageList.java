@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
-import net.multiphasicapps.zips.ZipFile;
+import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
  * This contains a mapping of every package which is available to SquirrelJME.

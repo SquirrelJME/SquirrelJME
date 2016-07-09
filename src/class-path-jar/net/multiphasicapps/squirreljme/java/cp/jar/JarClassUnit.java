@@ -22,8 +22,8 @@ import net.multiphasicapps.squirreljme.java.ci.CIClass;
 import net.multiphasicapps.squirreljme.java.ci.CIException;
 import net.multiphasicapps.squirreljme.java.ci.std.CISClass;
 import net.multiphasicapps.squirreljme.java.cp.ClassUnit;
-import net.multiphasicapps.zips.ZipEntry;
-import net.multiphasicapps.zips.ZipFile;
+import net.multiphasicapps.zip.blockreader.ZipEntry;
+import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
  * This provides access to classes from a JAR file.

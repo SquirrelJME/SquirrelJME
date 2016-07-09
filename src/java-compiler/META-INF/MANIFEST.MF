@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: java-compiler
 X-SquirrelJME-UUID: c1cd0d27-74fe-4903-ba99-a35b6511a8ba
 X-SquirrelJME-Depends: cldc-full, 
- zip-compression
+ zip-reader-block
 LIBlet-Title: Java Compiler
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2

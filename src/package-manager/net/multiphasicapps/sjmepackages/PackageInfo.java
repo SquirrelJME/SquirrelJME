@@ -21,8 +21,8 @@ import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
-import net.multiphasicapps.zips.ZipEntry;
-import net.multiphasicapps.zips.ZipFile;
+import net.multiphasicapps.zip.blockreader.ZipEntry;
+import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
  * This contains information about a single binary or source package.

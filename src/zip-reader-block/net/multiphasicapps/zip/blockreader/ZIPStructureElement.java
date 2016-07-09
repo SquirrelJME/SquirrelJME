@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zips;
+package net.multiphasicapps.zip.blockreader;
 
 import java.nio.ByteBuffer;
 

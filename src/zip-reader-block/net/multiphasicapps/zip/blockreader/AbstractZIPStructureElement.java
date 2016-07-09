@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zips;
+package net.multiphasicapps.zip.blockreader;
 
 /**
  * This implements the interface for ZIP structure data and provides a class
