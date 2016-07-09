@@ -10,3 +10,16 @@ of classes in the given namespace. Then references to these classes are bound
 by these namespace lists. Built-in namespaces would be included in an internal
 list which then points to the namespace structure data.
 
+## 17:38
+
+A problem with TAR is that I need to know the size of the file before I can
+write it. I may have to instead use streamed ZIP files.
+
+## 17:43
+
+So basically this will be the ZIP file format then, since TAR would not work.
+At least for source code, I would not need permissions or execute bits set.
+However, my project called `zip-compression` would better be called `zip-file`
+instead. Then I can make a new project which is able to write ZIP files. Since
+I do not have any compression currently, I can always add that later.
+
