@@ -65,3 +65,12 @@ deflated data. So I suppose instead I could instead of a `DataPipe` would just
 be an input and output stream which is very similar. So something very similar
 but something very much more direct and less buffered.
 
+## 19:07
+
+Also one thing to consider is that with the builder, instead of using the
+block based ZIP reader I can use the stream based one instead. Since I have to
+go through all entries anyway, I do not need to wait for reading the index at
+all. However, I suppose for the package code I just need to read a single file.
+It may be faster assuming the entries in the ZIP contents have their sizes
+before the file starts (otherwise I would be forced to decompress to continue).
+
