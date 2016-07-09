@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.lang.c;
 
+import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -55,6 +56,7 @@ public class CLangOutputFactory
 		
 		// Only specific things are checked/supported
 		return "lang".equals(triplet.architecture()) &&
+			JITCPUEndian.UNDEFINED.equals(triplet.endianess()) &&
 			"c".equals(triplet.operatingSystem()) &&
 			"posix".equals(triplet.operatingSystemVariant());
 	}

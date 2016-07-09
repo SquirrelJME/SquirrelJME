@@ -23,6 +23,9 @@ public enum JITCPUEndian
 	/** Little endian (least significant bit first). */
 	LITTLE("little"),
 	
+	/** Undefined, endianess does not make any sense. */
+	UNDEFINED("undefined"),
+	
 	/** End. */
 	;
 	
@@ -78,6 +81,10 @@ public enum JITCPUEndian
 				// Little endian
 			case "little":
 				return JITCPUEndian.LITTLE;
+				
+				// Undefined
+			case "undefined":
+				return JITCPUEndian.UNDEFINED;
 				
 				// {@squirreljme.error ED01 Unknown endian.
 				// (The endian string)}
