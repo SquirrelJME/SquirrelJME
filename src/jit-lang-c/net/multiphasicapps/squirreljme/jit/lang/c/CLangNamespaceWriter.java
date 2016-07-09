@@ -10,43 +10,28 @@
 
 package net.multiphasicapps.squirreljme.jit.lang.c;
 
-import net.multiphasicapps.squirreljme.jit.JITException;
-import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.jit.lang.LangOutput;
+import net.multiphasicapps.squirreljme.jit.lang.LangNamespaceWriter;
 
 /**
- * This output generates C source code in TAR archives.
+ * This is a namespace writer which targets the C programming language.
  *
  * @since 2016/07/09
  */
-public class CLangOutput
-	extends LangOutput
+public class CLangNamespaceWriter
+	extends LangNamespaceWriter
 {
 	/**
-	 * Initializes the C language output system.
+	 * The namespace writer for C code.
 	 *
-	 * @param __config The used configuration.
+	 * @param __ns The namespace being written.
+	 * @param __config The configuration used.
 	 * @since 2016/07/09
 	 */
-	public CLangOutput(JITOutputConfig.Immutable __config)
+	public CLangNamespaceWriter(String __ns,
+		JITOutputConfig.Immutable __config)
 	{
-		super(__config);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/09
-	 */
-	@Override
-	public JITNamespaceWriter beginNamespace(String __ns)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__ns == null)
-			throw new NullPointerException("NARG");
-		
-		return new CLangNamespaceWriter(__ns, this.config);
+		super(__ns, __config);
 	}
 }
 

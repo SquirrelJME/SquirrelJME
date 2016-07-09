@@ -1,2 +1,12 @@
 # 2016/07/09
 
+## 14:57
+
+Since I have namespaces, objects and resources when writing to C must be
+prefixed by the namespace. However for namespace class exportation, I will
+need to have it where I can declare the classes which are in the specified
+namespace for global linkage. So essentially there will be a gigantic array
+of classes in the given namespace. Then references to these classes are bound
+by these namespace lists. Built-in namespaces would be included in an internal
+list which then points to the namespace structure data.
+
