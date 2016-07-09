@@ -94,3 +94,21 @@ form would essentially be a TAR archive containing C source and header files.
 Header files would be last, then using preprocessor magic the normal code
 generation can occur.
 
+## 19:36
+
+I suppose I can develop the JIT compiler by outputting to standard C code.
+
+## 19:50
+
+Then at least with C code, if the JIT compiler starts getting a bit ugly I
+can drop some things. Basically this compiler at first would have the potential
+for refactoring and being tossed out. I can just use a pre-existing compiler
+such as GCC to compile the C code and manually test if it works. Then I can
+have more flexibility.
+
+## 19:59
+
+So yes, I shall work on a C code generator and ignore PowerPC on Linux for
+a bit. Then once I have the interfaces required for code generation I can more
+easily fit the PowerPC generator into it.
+
