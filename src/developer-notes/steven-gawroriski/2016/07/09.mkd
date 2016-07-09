@@ -23,3 +23,13 @@ However, my project called `zip-compression` would better be called `zip-file`
 instead. Then I can make a new project which is able to write ZIP files. Since
 I do not have any compression currently, I can always add that later.
 
+## 17:46
+
+Actually it might be best if it were to become `zip-reader-block` for block
+based reading of ZIP files. Another variant could be `zip-reader-stream` for
+stream based reading. At least for uncompressed streamed data with no known
+size, a valid header detected along with a sane size and CRC would determine
+if data just blindly matches the ZIP data (say a stored ZIP within a ZIP) that
+precedes it. That could be used to determine when an uncompressed streamed
+entry with unknown initail size is used.
+
