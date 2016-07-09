@@ -74,3 +74,7 @@ all. However, I suppose for the package code I just need to read a single file.
 It may be faster assuming the entries in the ZIP contents have their sizes
 before the file starts (otherwise I would be forced to decompress to continue).
 
+## 19:17
+
+What I need is actually a little endian DataOutputStream for ZIP data.
+
