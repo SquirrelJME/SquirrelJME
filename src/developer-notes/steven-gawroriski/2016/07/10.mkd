@@ -24,3 +24,8 @@ explicitly binary. There are also some meaningless cases where the values of
 some tests do not make sense when compared for equality. Thus, I will add
 specific less than, equal, not equal, etc. conditions.
 
+## 14:08
+
+What I can do is have perhaps a per-class configuration for tests which may be
+used to provide extra functionality perhaps.
+
