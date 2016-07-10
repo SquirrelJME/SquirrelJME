@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: zip-writer-stream
 X-SquirrelJME-UUID: 30adac32-ff30-41c7-8406-3e0230a22ed0
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Depends: cldc-compact, io-data
 X-SquirrelJME-Error: BC
 LIBlet-Title: Stream ZIP Writer
 LIBlet-Vendor: Steven Gawroriski

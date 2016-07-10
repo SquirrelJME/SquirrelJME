@@ -11,30 +11,19 @@
 package net.multiphasicapps.io.data;
 
 /**
- * This is used by both data streams to indicate that they allow their default
- * endianess to be set and obtained.
+ * This is used to obtain the number of bytes which were read from or written
+ * to a given stream.
  *
  * @since 2016/07/10
  */
-public interface SettableEndianess
+public interface SizedStream
 {
 	/**
-	 * Obtains the current default endianess of the data.
+	 * Returns the number of written or read bytes.
 	 *
-	 * @return The current endianess.
+	 * @return The number of read or written bytes.
 	 * @since 2016/07/10
 	 */
-	public abstract DataEndianess getEndianess();
-	
-	/**
-	 * Sets the endianess of the data.
-	 *
-	 * @param __end The new default endianess to use.
-	 * @return The old endianess.
-	 * @throws NullPointerException If no endianess was specified.
-	 * @since 2016/07/10
-	 */
-	public abstract DataEndianess setEndianess(DataEndianess __end)
-		throws NullPointerException;
+	public abstract long size();
 }
 

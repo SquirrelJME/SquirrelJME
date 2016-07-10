@@ -25,7 +25,7 @@ import java.io.OutputStream;
  */
 public class ExtendedDataOutputStream
 	extends OutputStream
-	implements DataOutput, SettableEndianess
+	implements DataOutput, SettableEndianess, SizedStream
 {
 	/** The output data stream. */
 	protected final DataOutputStream output;
@@ -69,6 +69,190 @@ public class ExtendedDataOutputStream
 		throws IOException
 	{
 		this.output.flush();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public DataEndianess getEndianess()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public DataEndianess setEndianess(DataEndianess __end)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public long size()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void write(byte[] __b)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void write(byte[] __b, int __o, int __l)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void write(int __b)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeBoolean(boolean __v)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeByte(int __v)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeBytes(String __s)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeChar(int __v)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeChars(String __s)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeDouble(double __v)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeFloat(float __v)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeInt(int __v)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeLong(long __v)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeShort(int __v)
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void writeUTF(String __s)
+		throws IOException
+	{
+		throw new Error("TODO");
 	}
 }
 
