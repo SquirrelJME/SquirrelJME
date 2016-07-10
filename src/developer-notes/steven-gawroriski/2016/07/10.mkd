@@ -4,3 +4,8 @@
 
 I added a Bitbucket mirror also, since eggs are better in multiple baskets.
 
+## 13:20
+
+For tests I can have a similar test argument system using some kind of standard
+form, possibly escaped. This would be used instead of URIs.
+

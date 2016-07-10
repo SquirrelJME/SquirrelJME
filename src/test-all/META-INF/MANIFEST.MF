@@ -8,7 +8,8 @@ X-SquirrelJME-Optional:
  test-util-dynbuffer,
  test-util-huffmantree,
  test-util-uri,
- test-cldc-compact
+ test-cldc-compact,
+ test-zip-writer-stream
 Main-Class: net.multiphasicapps.tests.TestCaller
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski

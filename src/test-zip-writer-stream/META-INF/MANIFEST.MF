@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: test-zip-writer-stream
+X-SquirrelJME-UUID: 06df1fd1-832d-4c3c-bc92-f5243b0a1699
+X-SquirrelJME-Depends: test-base, zip-writer-stream, 
+ zip-reader-block, cldc-full
+LIBlet-Title: ZIP Stream Writer Tests
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains tests which makes 
+ sure ZIP streams are correctly written.
