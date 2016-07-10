@@ -29,3 +29,16 @@ specific less than, equal, not equal, etc. conditions.
 What I can do is have perhaps a per-class configuration for tests which may be
 used to provide extra functionality perhaps.
 
+## 17:57
+
+I need to design a good interface for test information.
+
+## 18:04
+
+I would suppose that when it comes to
+
+## 18:10
+
+test names I should have individual classes with the correct format and such
+used for test names.
+

@@ -12,7 +12,7 @@ package net.multiphasicapps.tests.zip.streamwriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.nio.channel.Channels;
+import java.nio.channels.Channels;
 import java.util.Arrays;
 import java.util.Random;
 import net.multiphasicapps.tests.InvalidTestException;
@@ -29,9 +29,6 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 public class ZipWriterStreamTest
 	implements TestInvoker
 {
-	/** The size of the internal data to read. */
-	protected final 
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/10
