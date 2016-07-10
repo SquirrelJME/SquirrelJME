@@ -11,6 +11,7 @@
 package net.multiphasicapps.io.data;
 
 import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -24,5 +25,37 @@ public class ExtendedDataInputStream
 	extends InputStream
 	implements DataInput
 {
+	/** The original input stream. */
+	protected final DataInputStream input;
+	
+	/**
+	 * Initializes the extended input stream.
+	 *
+	 * @param __is The stream to read data from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/10
+	 */
+	public ExtendedDataInputStream(InputStream __is)
+		throws NullPointerException
+	{
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.input = ((__is instanceof DataInputStream) ?
+			(DataInputStream)__is : new DataInputStream(__is));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		this.input.close();
+	}
 }
 

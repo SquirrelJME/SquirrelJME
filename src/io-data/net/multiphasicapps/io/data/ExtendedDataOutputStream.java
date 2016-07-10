@@ -11,6 +11,7 @@
 package net.multiphasicapps.io.data;
 
 import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -24,5 +25,48 @@ public class ExtendedDataOutputStream
 	extends OutputStream
 	implements DataOutput
 {
+	/** The output data stream. */
+	protected final DataOutputStream output;
+	
+	/**
+	 * Initializes the extended data output stream.
+	 *
+	 * @param __os The stream to write data to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/10
+	 */
+	public ExtendedDataOutputStream(OutputStream __os)
+		throws NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.output = ((__os instanceof DataOutputStream) ?
+			(DataOutputStream)__os : new DataOutputStream(__os));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		this.output.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public void flush()
+		throws IOException
+	{
+		this.output.flush();
+	}
 }
 
