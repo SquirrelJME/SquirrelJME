@@ -19,11 +19,13 @@ import java.io.OutputStream;
  * This is an extended output stream which is better suited to writing
  * general binaries compared to the standard {@link DataOutputStream}.
  *
+ * Streams default to big endian.
+ *
  * @since 2016/07/10
  */
 public class ExtendedDataOutputStream
 	extends OutputStream
-	implements DataOutput
+	implements DataOutput, SettableEndianess
 {
 	/** The output data stream. */
 	protected final DataOutputStream output;

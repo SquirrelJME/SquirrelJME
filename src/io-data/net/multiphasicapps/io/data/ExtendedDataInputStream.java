@@ -19,11 +19,13 @@ import java.io.IOException;
  * This is an extended input stream which is better suited for general binary
  * data file reading compared to the standard {@link DataInputStream}.
  *
+ * Streams default to big endian.
+ *
  * @since 2016/07/10
  */
 public class ExtendedDataInputStream
 	extends InputStream
-	implements DataInput
+	implements DataInput, SettableEndianess
 {
 	/** The original input stream. */
 	protected final DataInputStream input;
