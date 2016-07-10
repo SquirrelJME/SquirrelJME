@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.io.data;
 
-import java.io.DataOutputStream;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -22,7 +22,7 @@ import java.io.OutputStream;
  */
 public class ExtendedDataOutputStream
 	extends OutputStream
-	implements DataOutputStream
+	implements DataOutput
 {
 }
 
