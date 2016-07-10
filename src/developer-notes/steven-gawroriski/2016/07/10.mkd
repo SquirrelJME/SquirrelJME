@@ -1,0 +1,6 @@
+# 2016/07/10
+
+## 01:26
+
+I added a Bitbucket mirror also, since eggs are better in multiple baskets.
+
