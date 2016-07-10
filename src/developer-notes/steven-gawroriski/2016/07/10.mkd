@@ -9,3 +9,18 @@ I added a Bitbucket mirror also, since eggs are better in multiple baskets.
 For tests I can have a similar test argument system using some kind of standard
 form, possibly escaped. This would be used instead of URIs.
 
+## 13:31
+
+I actually will need a far better reporting system also. Currently I just have
+a test checker with a bunch of methods. The testing classes are a bit old and
+not that powerful. So I suppose before I continue writing the Zip writer
+tests that I would
+
+## 13:57
+
+Rewrite the testing system so that it is much stronger and so I can have actual
+sub-tests and such. Some tests generate some more information so they are not
+explicitly binary. There are also some meaningless cases where the values of
+some tests do not make sense when compared for equality. Thus, I will add
+specific less than, equal, not equal, etc. conditions.
+

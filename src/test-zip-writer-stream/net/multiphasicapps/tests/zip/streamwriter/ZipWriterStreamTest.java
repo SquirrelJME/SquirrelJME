@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.tests.zip.streamwriter;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.channel.Channels;
 import java.util.Arrays;
 import java.util.Random;
 import net.multiphasicapps.tests.InvalidTestException;
@@ -26,6 +29,9 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 public class ZipWriterStreamTest
 	implements TestInvoker
 {
+	/** The size of the internal data to read. */
+	protected final 
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/10
@@ -46,9 +52,9 @@ public class ZipWriterStreamTest
 		// Generate some random seeds
 		Random rand = new Random(0x1989_07_06);
 		
-		return Arrays.<String>asList(Long.toString(rand.nextInt()),
-			Long.toString(rand.nextInt()),
-			Long.toString(rand.nextInt()));
+		return Arrays.<String>asList(Long.toString(rand.nextLong()),
+			Long.toString(rand.nextLong()),
+			Long.toString(rand.nextLong()));
 	}
 	
 	/**
@@ -62,6 +68,9 @@ public class ZipWriterStreamTest
 		// Check
 		if (__tc == null || __st == null)
 			throw new NullPointerException();
+		
+		// Decode base random seed
+		long seed = Long.decode(__st);
 		
 		throw new Error("TODO");
 	}
