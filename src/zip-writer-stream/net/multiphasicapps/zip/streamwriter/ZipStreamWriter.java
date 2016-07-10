@@ -13,6 +13,7 @@ package net.multiphasicapps.zip.streamwriter;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
  * This class is used to write to ZIP files in an unknown and stream based
@@ -26,6 +27,16 @@ import java.io.OutputStream;
 public class ZipStreamWriter
 	implements Closeable
 {
+	/** Lock for safety. */
+	protected final Object lock =
+		new Object();
+	
+	/** The output stream to write to. */
+	protected final ExtendedDataOutputStream output;
+	
+	/** Was this stream closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * This initializes the stream for writing ZIP file data.
 	 *
@@ -40,7 +51,8 @@ public class ZipStreamWriter
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create stream
+		this.output = new ExtendedDataOutputStream(__os);
 	}
 	
 	/**
@@ -51,6 +63,10 @@ public class ZipStreamWriter
 	public void close()
 		throws IOException
 	{
+		// Do nothing if already closed
+		if (_closed)
+			return;
+		
 		throw new Error("TODO");
 	}
 }
