@@ -154,8 +154,8 @@ public class TestCaller
 				@Override
 				public int compare(TestInvoker __a, TestInvoker __b)
 				{
-					return __a.invokerName().compareToIgnoreCase(
-						__b.invokerName());
+					return __a.invokerName().toString().compareToIgnoreCase(
+						__b.invokerName().toString());
 				}
 			});
 		
@@ -170,7 +170,7 @@ public class TestCaller
 		for (TestInvoker ti : alltests)
 		{
 			// Is this a test which wants to be ran?
-			String name = __lower(ti.invokerName());
+			String name = __lower(ti.invokerName().toString());
 			if (specific)
 			{
 				// Must be a match
