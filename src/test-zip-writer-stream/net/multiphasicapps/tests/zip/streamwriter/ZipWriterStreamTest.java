@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Random;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -34,9 +35,10 @@ public class ZipWriterStreamTest
 	 * @since 2016/07/10
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "net.multiphasicapps.zip.streamwriter.ZipStreamWriter";
+		return new TestGroupName(
+			"net.multiphasicapps.zip.streamwriter.ZipStreamWriter");
 	}
 	
 	/**

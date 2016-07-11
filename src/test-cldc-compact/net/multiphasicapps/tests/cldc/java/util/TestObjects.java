@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 
 /**
@@ -29,9 +30,9 @@ public class TestObjects
 	 * @since 2016/04/12
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "java.util.Objects";
+		return new TestGroupName("java.util.Objects");
 	}
 	
 	/**

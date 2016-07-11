@@ -18,6 +18,7 @@ import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
+import net.multiphasicapps.tests.TestGroupName;
 
 /**
  * This class tests that the code chunk setup works correctly.
@@ -49,9 +50,10 @@ public class ChunkByteBufferTests
 	 * @since 2016/03/22
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "net.multiphasicapps.util.dynbuffer.DynamicByteBuffer";
+		return new TestGroupName(
+			"net.multiphasicapps.util.dynbuffer.DynamicByteBuffer");
 	}
 	
 	/**

@@ -11,6 +11,7 @@
 package net.multiphasicapps.tests.cldc.java.lang;
 
 import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 
 /**
@@ -26,9 +27,9 @@ public class TestLong
 	 * @since 2016/05/05
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "java.lang.Integer";
+		return new TestGroupName("java.lang.Integer");
 	}
 	
 	/**

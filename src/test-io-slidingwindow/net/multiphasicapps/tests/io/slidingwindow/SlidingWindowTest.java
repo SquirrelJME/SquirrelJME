@@ -16,6 +16,7 @@ import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
+import net.multiphasicapps.tests.TestGroupName;
 
 /**
  * This tests the sliding byte window to make sure that it can correctly
@@ -48,9 +49,10 @@ public class SlidingWindowTest
 	 * @since 2016/04/08
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "net.multiphasicapps.io.slidingwindow.SlidingByteWindow";
+		return new TestGroupName(
+			"net.multiphasicapps.io.slidingwindow.SlidingByteWindow");
 	}
 	
 	/**

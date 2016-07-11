@@ -13,6 +13,7 @@ package net.multiphasicapps.tests.util.uri;
 import java.util.Arrays;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.util.uri.URI;
 
@@ -29,9 +30,9 @@ public class URITests
 	 * @since 2016/03/28
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "net.multiphasicapps.util.uri.URI";
+		return new TestGroupName("net.multiphasicapps.util.uri.URI");
 	}
 	
 	/**

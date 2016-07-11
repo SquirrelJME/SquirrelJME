@@ -15,6 +15,7 @@ import java.util.Random;
 import net.multiphasicapps.squirreljme.cldc.IndexedComparator;
 import net.multiphasicapps.squirreljme.cldc.IndexedSort;
 import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 
 /**
@@ -30,9 +31,10 @@ public class TestIndexedSort
 	 * @since 2016/06/18
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "net.multiphasicapps.squirreljme.cldc.IndexedSort";
+		return new TestGroupName(
+			"net.multiphasicapps.squirreljme.cldc.IndexedSort");
 	}
 	
 	/**

@@ -24,6 +24,7 @@ import net.multiphasicapps.io.datapipe.DataPipeInputStream;
 import net.multiphasicapps.io.inflate.InflateDataPipe;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 
 /**
@@ -39,9 +40,10 @@ public class TestInflater
 	 * @since 2016/03/03
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "net.multiphasicapps.io.inflate.InflateDataPipe";
+		return new TestGroupName(
+			"net.multiphasicapps.io.inflate.InflateDataPipe");
 	}
 	
 	/**

@@ -18,6 +18,7 @@ import net.multiphasicapps.io.bits.BitCompactor;
 import net.multiphasicapps.io.bits.BitInputStream;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.util.huffmantree.HuffmanTree;
 
@@ -42,9 +43,10 @@ public class HuffmanTreeTests
 	 * @since 2016/03/28
 	 */
 	@Override
-	public String invokerName()
+	public TestGroupName invokerName()
 	{
-		return "net.multiphasicapps.util.huffmantree.HuffmanTree";
+		return new TestGroupName(
+			"net.multiphasicapps.util.huffmantree.HuffmanTree");
 	}
 	
 	/**
