@@ -31,6 +31,7 @@ operation of this software.
 # Table of Contents
 
  * User's Manual
+   * [Lex The SquirrelJME Mascot](usr/lex.mkd)
    * [Build Instructions](user/building.mkd)
    * [Limitations](user/limits.mkd)
    * [Reddit Updates](user/reddit_notes.mkd)
