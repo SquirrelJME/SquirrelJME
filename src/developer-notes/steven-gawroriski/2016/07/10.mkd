@@ -42,3 +42,9 @@ I would suppose that when it comes to
 test names I should have individual classes with the correct format and such
 used for test names.
 
+## 23:36
+
+So I suppose there should be a test configuration of sorts and then a result
+from a given test. Rather, pass the test result storing and have sub-tests
+and counts. Failure would be a percentage for the most part.
+
