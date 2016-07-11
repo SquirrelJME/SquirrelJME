@@ -10,9 +10,6 @@
 
 package net.multiphasicapps.tests;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This represents the group that a test is within.
  *
@@ -29,6 +26,7 @@ public final class TestGroupName
 	 *
 	 * @param __n The name of the group.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/10
 	 */
 	public TestGroupName(String __n)
 		throws NullPointerException

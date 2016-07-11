@@ -26,7 +26,7 @@ public interface TestInvoker
 	 * @return The test collection name.
 	 * @since 2016/03/03
 	 */
-	public abstract String invokerName();
+	public abstract TestGroupName invokerName();
 	
 	/**
 	 * Returns the name of all the sub-tests available in this interface.
