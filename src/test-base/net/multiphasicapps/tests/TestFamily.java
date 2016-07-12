@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.tests;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -27,6 +29,9 @@ public final class TestFamily
 	
 	/** The sub-tests in this group. */
 	private final TestSubName[] _subs;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes the test family.
@@ -139,6 +144,43 @@ public final class TestFamily
 					throw new UnsupportedOperationException("AG04");
 				}
 			};
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/12
+	 */
+	@Override
+	public final String toString()
+	{
+		// Get
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Build
+			StringBuilder sb = new StringBuilder(this.group.toString());
+			sb.append(":[");
+			boolean comma = false;
+			for (TestSubName s : this._subs)
+			{
+				if (comma)
+					sb.append(", ");
+				comma = true;
+				
+				// Add test
+				sb.append(s.toString());
+			}
+			sb.append(']');
+			
+			// Finish
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		// Return it
+		return rv;
 	}
 }
 
