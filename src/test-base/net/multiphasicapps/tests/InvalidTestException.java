@@ -37,5 +37,16 @@ public class InvalidTestException
 	{
 		super(__m);
 	}
+	
+	/**
+	 * Initializes the exception using the given individual test name.
+	 *
+	 * @param __t The test to use.
+	 * @since 2016/07/12
+	 */
+	public InvalidTestException(IndividualTest __t)
+	{
+		super((__t == null ? "null" : __t.toString()));
+	}
 }
 

@@ -60,11 +60,38 @@ public final class IndividualTest
 	 * @param __c The comparison to make.
 	 * @param __a The expected array.
 	 * @param __b The resulting array.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
 	public final void compareByteArrays(TestFragmentName __f,
 		TestComparison __c, byte[] __a, byte[] __b)
+		throws NullPointerException
 	{
+		// Check
+		if (__f == null || __c == null || __a == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Compares two int arrays to check how they compare to each other.
+	 *
+	 * @param __f The fragment name.
+	 * @param __c The comparison to make.
+	 * @param __a The expected array.
+	 * @param __b The resulting array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
+	 */
+	public final void compareIntArrays(TestFragmentName __f,
+		TestComparison __c, int[] __a, int[] __b)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null || __c == null || __a == null || __b == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
@@ -120,6 +147,16 @@ public final class IndividualTest
 	public final TestSubName subName()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/12
+	 */
+	@Override
+	public String toString()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**

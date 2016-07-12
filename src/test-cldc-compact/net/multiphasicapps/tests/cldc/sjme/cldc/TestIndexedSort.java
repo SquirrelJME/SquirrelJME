@@ -14,7 +14,10 @@ import java.util.Arrays;
 import java.util.Random;
 import net.multiphasicapps.squirreljme.cldc.IndexedComparator;
 import net.multiphasicapps.squirreljme.cldc.IndexedSort;
-import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.IndividualTest;
+import net.multiphasicapps.tests.TestComparison;
+import net.multiphasicapps.tests.TestFamily;
+import net.multiphasicapps.tests.TestFragmentName;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 
@@ -31,46 +34,15 @@ public class TestIndexedSort
 	 * @since 2016/06/18
 	 */
 	@Override
-	public TestGroupName invokerName()
+	public void runTest(IndividualTest __t)
+		throws NullPointerException, Throwable
 	{
-		return TestGroupName.of(
-			"net.multiphasicapps.squirreljme.cldc.IndexedSort");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/18
-	 */
-	@Override
-	public Iterable<String> invokerTests()
-	{
-		return Arrays.<String>asList(Long.toString(0xCAFE_F00DL),
-			Long.toString(0xF00D_CAFEL),
-			Long.toString(0x19890706L),
-			Long.toString(0x201606182129L));
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/18
-	 */
-	@Override
-	public void runTest(TestChecker __tc, String __st)
-		throws NullPointerException
-	{
-		// Decode the seed to use
-		long seed;
-		try
-		{
-			seed = Long.decode(__st);
-		}
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
 		
-		// Bad number
-		catch (NumberFormatException e)
-		{
-			throw new RuntimeException(e);
-		}
+		// Decode the seed to use
+		long seed = Long.decode(__t.subName().toString());
 		
 		// Initialize generator
 		Random rand = new Random(seed);
@@ -131,7 +103,23 @@ public class TestIndexedSort
 		}
 		
 		// Check that the sorted values match
-		__tc.checkEquals(sortedtest, act);
+		__t.compareIntArrays(TestFragmentName("data"), TestComparison.EQUALS,
+			sortedtest, act);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/18
+	 */
+	@Override
+	public TestFamily testFamily()
+	{
+		return new TestFamily(
+			"net.multiphasicapps.squirreljme.cldc.IndexedSort",
+			Long.toString(0xCAFE_F00DL),
+			Long.toString(0xF00D_CAFEL),
+			Long.toString(0x19890706L),
+			Long.toString(0x201606182129L)));
 	}
 }
 

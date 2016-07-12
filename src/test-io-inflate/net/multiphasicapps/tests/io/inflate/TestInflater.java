@@ -75,7 +75,7 @@ public class TestInflater
 		{
 			// Ends
 			if (ii == null || oo == null)
-				throw new InvalidTestException(__st);
+				throw new InvalidTestException(__t);
 			
 			// Read in both files to arrays
 			byte[] xi = __readToArray(new InputStreamReader(ii, "utf-8"));
@@ -123,7 +123,7 @@ public class TestInflater
 			}
 			
 			// Check the array
-			__t.compareByteArrays(TestFragmentName.of(""),
+			__t.compareByteArrays(TestFragmentName.of("decompression"),
 				TestComparison.EQUALS,
 				__out, out.toByteArray());
 		}
