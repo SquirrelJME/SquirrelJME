@@ -1,5 +1,2 @@
-net.multiphasicapps.tests.cldc.java.lang.TestInteger
-net.multiphasicapps.tests.cldc.java.lang.TestLong
-net.multiphasicapps.tests.cldc.java.util.TestObjects
 net.multiphasicapps.tests.cldc.sjme.cldc.TestIndexedSort
 

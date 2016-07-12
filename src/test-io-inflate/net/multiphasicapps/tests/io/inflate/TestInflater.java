@@ -22,10 +22,11 @@ import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.io.datapipe.DataPipeInputStream;
 import net.multiphasicapps.io.inflate.InflateDataPipe;
+import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
-import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
+import net.multiphasicapps.tests.TestFamily;
 
 /**
  * This contains tests for the extra IO inflate decompression algorithm.
@@ -40,46 +41,11 @@ public class TestInflater
 	 * @since 2016/03/03
 	 */
 	@Override
-	public TestGroupName invokerName()
+	public TestFamily testFamily()
 	{
-		return TestGroupName.of(
-			"net.multiphasicapps.io.inflate.InflateDataPipe");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/04
-	 */
-	@Override
-	public Iterable<String> invokerTests()
-	{
-		// Setup list based on found resources
-		List<String> rv = new LinkedList<>();
-		
-		// Go through samples, which are resources
-		for (char c = 'a'; c <= 'z'; c++)
-		{
-			// Sample names
-			String in = "test-" + c + ".in";
-			String on = "test-" + c + ".out";
-			
-			// Try opening resources for them
-			try (InputStream ii = getClass().getResourceAsStream(in);
-				InputStream oo = getClass().getResourceAsStream(on))
-			{
-				// If both files exist, then add it
-				if (ii != null && oo != null)
-					rv.add(Character.toString(c));
-			}
-			
-			// Ignore these
-			catch (IOException e)
-			{
-			}
-		}
-		
-		// Return it
-		return rv;
+		return new TestFamily(
+			"net.multiphasicapps.io.inflate.InflateDataPipe",
+			__defaultTests());
 	}
 	
 	/**
@@ -87,11 +53,11 @@ public class TestInflater
 	 * @since 2016/03/03
 	 */
 	@Override
-	public void runTest(TestChecker __tc, String __st)
+	public void runTest(IndividualTest __t)
 		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null || __st == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// Sample names
@@ -154,6 +120,43 @@ public class TestInflater
 			// Check the array
 			__tc.checkEquals(__out, out.toByteArray());
 		}
+	}
+	
+	/**
+	 * Returns an array of default tests to run.
+	 *
+	 * @return The tests to run.
+	 * @since 2016/05/04
+	 */
+	private String[] __defaultTests()
+	{
+		// Setup list based on found resources
+		List<String> rv = new LinkedList<>();
+		
+		// Go through samples, which are resources
+		for (char c = 'a'; c <= 'z'; c++)
+		{
+			// Sample names
+			String in = "test-" + c + ".in";
+			String on = "test-" + c + ".out";
+			
+			// Try opening resources for them
+			try (InputStream ii = getClass().getResourceAsStream(in);
+				InputStream oo = getClass().getResourceAsStream(on))
+			{
+				// If both files exist, then add it
+				if (ii != null && oo != null)
+					rv.add(Character.toString(c));
+			}
+			
+			// Ignore these
+			catch (IOException e)
+			{
+			}
+		}
+		
+		// Return it
+		return rv.toArray(new String[rv.size()]);
 	}
 	
 	/**

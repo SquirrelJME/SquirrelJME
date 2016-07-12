@@ -15,10 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
+import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
-import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.tests.TestGroupName;
+import net.multiphasicapps.tests.TestFamily;
 
 /**
  * This class tests that the code chunk setup works correctly.
@@ -50,32 +51,11 @@ public class ChunkByteBufferTests
 	 * @since 2016/03/22
 	 */
 	@Override
-	public TestGroupName invokerName()
-	{
-		return TestGroupName.of(
-			"net.multiphasicapps.util.dynbuffer.DynamicByteBuffer");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/05
-	 */
-	@Override
-	public Iterable<String> invokerTests()
-	{
-		return Arrays.<String>asList(Long.toString(INITIAL_SEED));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/22
-	 */
-	@Override
-	public void runTest(TestChecker __tc, String __st)
+	public void runTest(IndividualTest __t)
 		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null || __st == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// Extract the used seed
@@ -223,6 +203,18 @@ public class ChunkByteBufferTests
 		__tc.checkEquals(snail.size(), bunny.size());
 		__tc.checkEquals(slow, fast);
 		__tc.checkEquals(bunny.actualSize(), bunny.actualSize());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/22
+	 */
+	@Override
+	public TestFamily testFamily()
+	{
+		return new TestFamily(
+			"net.multiphasicapps.util.dynbuffer.DynamicByteBuffer",
+				Long.toString(INITIAL_SEED));
 	}
 }
 

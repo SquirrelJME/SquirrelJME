@@ -15,9 +15,10 @@ import java.io.ByteArrayOutputStream;
 import java.nio.channels.Channels;
 import java.util.Arrays;
 import java.util.Random;
+import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
-import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestGroupName;
+import net.multiphasicapps.tests.TestFamily;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -35,43 +36,30 @@ public class ZipWriterStreamTest
 	 * @since 2016/07/10
 	 */
 	@Override
-	public TestGroupName invokerName()
+	public void runTest(IndividualTest __t)
+		throws NullPointerException, Throwable
 	{
-		return TestGroupName.of(
-			"net.multiphasicapps.zip.streamwriter.ZipStreamWriter");
+		// Check
+		if (__t == null)
+			throw new NullPointerException();
+		
+		throw new Error("TODO");
 	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/10
 	 */
 	@Override
-	public Iterable<String> invokerTests()
+	public TestFamily testFamily()
 	{
 		// Generate some random seeds
 		Random rand = new Random(0x1989_07_06);
 		
-		return Arrays.<String>asList(Long.toString(rand.nextLong()),
+		return new TestFamily(
+			"net.multiphasicapps.zip.streamwriter.ZipStreamWriter",
+			Long.toString(rand.nextLong()),
 			Long.toString(rand.nextLong()),
 			Long.toString(rand.nextLong()));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void runTest(TestChecker __tc, String __st)
-		throws NullPointerException, Throwable
-	{
-		// Check
-		if (__tc == null || __st == null)
-			throw new NullPointerException();
-		
-		// Decode base random seed
-		long seed = Long.decode(__st);
-		
-		throw new Error("TODO");
 	}
 }
 

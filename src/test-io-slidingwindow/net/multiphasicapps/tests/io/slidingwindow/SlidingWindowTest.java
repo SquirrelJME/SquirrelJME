@@ -13,10 +13,11 @@ package net.multiphasicapps.tests.io.slidingwindow;
 import java.util.Arrays;
 import java.util.Random;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
+import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestChecker;
-import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.tests.TestGroupName;
+import net.multiphasicapps.tests.TestFamily;
 
 /**
  * This tests the sliding byte window to make sure that it can correctly
@@ -49,32 +50,11 @@ public class SlidingWindowTest
 	 * @since 2016/04/08
 	 */
 	@Override
-	public TestGroupName invokerName()
-	{
-		return TestGroupName.of(
-			"net.multiphasicapps.io.slidingwindow.SlidingByteWindow");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/04
-	 */
-	@Override
-	public Iterable<String> invokerTests()
-	{
-		return Arrays.<String>asList(Long.toString(RANDOM_SEED));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/04/08
-	 */
-	@Override
-	public void runTest(TestChecker __tc, String __st)
+	public void runTest(IndividualTest __t)
 		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null || __st == null)
+		if (__t == null)
 			throw new NullPointerException();
 		
 		// Extract the used seed
@@ -185,6 +165,18 @@ public class SlidingWindowTest
 		// Check all the bytes against the raw window
 		else
 			__tc.checkEquals(fulla, fullb);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/04/08
+	 */
+	@Override
+	public TestFamily testFamily()
+	{
+		return new TestFamily(
+			"net.multiphasicapps.io.slidingwindow.SlidingByteWindow",
+			Long.toString(RANDOM_SEED));
 	}
 	
 	/**
