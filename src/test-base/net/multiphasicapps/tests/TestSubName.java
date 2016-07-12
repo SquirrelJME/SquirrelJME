@@ -11,21 +11,21 @@
 package net.multiphasicapps.tests;
 
 /**
- * This represents the group that a test is within.
+ * This represents the name of a sub-test.
  *
- * @since 2016/07/10
+ * @since 2016/07/11
  */
-public final class TestGroupName
+public final class TestSubName
 	extends __BaseName__
-	implements Comparable<TestGroupName>
+	implements Comparable<TestSubName>
 {
 	/**
-	 * Initializes the test group name.
+	 * Initializes the sub-test name.
 	 *
-	 * @param __n The test group name.
+	 * @param __n The sub-test name.
 	 * @since 2016/07/11
 	 */
-	public TestGroupName(String __n)
+	public TestSubName(String __n)
 	{
 		super(__n);
 	}
@@ -35,7 +35,7 @@ public final class TestGroupName
 	 * @since 2016/07/11
 	 */
 	@Override
-	public final int compareTo(TestGroupName __o)
+	public final int compareTo(TestSubName __o)
 		throws NullPointerException
 	{
 		// Check
@@ -53,7 +53,7 @@ public final class TestGroupName
 	@Override
 	public final boolean equals(Object __o)
 	{
-		return super.equals(__o) && (__o instanceof TestGroupName);
+		return super.equals(__o) && (__o instanceof TestSubName);
 	}
 }
 
