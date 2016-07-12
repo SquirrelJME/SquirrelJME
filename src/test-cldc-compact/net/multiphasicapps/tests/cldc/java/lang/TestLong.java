@@ -29,7 +29,7 @@ public class TestLong
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName("java.lang.Integer");
+		return TestGroupName.of("java.lang.Integer");
 	}
 	
 	/**

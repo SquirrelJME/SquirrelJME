@@ -52,7 +52,7 @@ public class ChunkByteBufferTests
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName(
+		return TestGroupName.of(
 			"net.multiphasicapps.util.dynbuffer.DynamicByteBuffer");
 	}
 	

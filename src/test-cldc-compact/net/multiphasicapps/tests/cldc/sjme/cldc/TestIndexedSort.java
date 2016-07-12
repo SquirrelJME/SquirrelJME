@@ -33,7 +33,7 @@ public class TestIndexedSort
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName(
+		return TestGroupName.of(
 			"net.multiphasicapps.squirreljme.cldc.IndexedSort");
 	}
 	

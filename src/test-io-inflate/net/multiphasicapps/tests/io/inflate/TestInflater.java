@@ -42,7 +42,7 @@ public class TestInflater
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName(
+		return TestGroupName.of(
 			"net.multiphasicapps.io.inflate.InflateDataPipe");
 	}
 	

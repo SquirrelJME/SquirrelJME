@@ -32,7 +32,7 @@ public class URITests
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName("net.multiphasicapps.util.uri.URI");
+		return TestGroupName.of("net.multiphasicapps.util.uri.URI");
 	}
 	
 	/**

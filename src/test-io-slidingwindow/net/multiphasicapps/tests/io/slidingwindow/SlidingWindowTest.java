@@ -51,7 +51,7 @@ public class SlidingWindowTest
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName(
+		return TestGroupName.of(
 			"net.multiphasicapps.io.slidingwindow.SlidingByteWindow");
 	}
 	

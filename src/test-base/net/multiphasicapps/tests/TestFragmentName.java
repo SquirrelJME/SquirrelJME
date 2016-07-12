@@ -11,31 +11,31 @@
 package net.multiphasicapps.tests;
 
 /**
- * This represents the name of a sub-test.
+ * This represents the name of a fragment test.
  *
- * @since 2016/07/11
+ * @since 2016/07/12
  */
-public final class TestSubName
+public class TestFragmentName
 	extends __BaseName__
-	implements Comparable<TestSubName>
+	implements Comparable<TestFragmentName>
 {
 	/**
-	 * Initializes the sub-test name.
+	 * Initializes the sub-test fragment name.
 	 *
-	 * @param __n The sub-test name.
-	 * @since 2016/07/11
+	 * @param __n The name to use.
+	 * @since 2016/07/12
 	 */
-	private TestSubName(String __n)
+	private TestFragmentName(String __n)
 	{
 		super(__n);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/07/11
+	 * @since 2016/07/12
 	 */
 	@Override
-	public final int compareTo(TestSubName __o)
+	public final int compareTo(TestFragmentName __o)
 		throws NullPointerException
 	{
 		// Check
@@ -48,25 +48,25 @@ public final class TestSubName
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/07/11
+	 * @since 2016/07/12
 	 */
 	@Override
 	public final boolean equals(Object __o)
 	{
-		return super.equals(__o) && (__o instanceof TestSubName);
+		return super.equals(__o) && (__o instanceof TestFragmentName);
 	}
 	
 	/**
-	 * Creates or uses a cached sub name.
+	 * Creates or uses a cached fragment name.
 	 *
 	 * @param __n The test name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
-	public static TestSubName of(String __n)
+	public static TestFragmentName of(String __n)
 		throws NullPointerException
 	{
-		return new TestSubName(__n);
+		return new TestFragmentName(__n);
 	}
 }
 

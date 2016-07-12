@@ -45,7 +45,7 @@ public class HuffmanTreeTests
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName(
+		return TestGroupName.of(
 			"net.multiphasicapps.util.huffmantree.HuffmanTree");
 	}
 	

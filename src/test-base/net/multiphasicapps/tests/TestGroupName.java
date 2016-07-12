@@ -25,7 +25,7 @@ public final class TestGroupName
 	 * @param __n The test group name.
 	 * @since 2016/07/11
 	 */
-	public TestGroupName(String __n)
+	private TestGroupName(String __n)
 	{
 		super(__n);
 	}
@@ -54,6 +54,19 @@ public final class TestGroupName
 	public final boolean equals(Object __o)
 	{
 		return super.equals(__o) && (__o instanceof TestGroupName);
+	}
+	
+	/**
+	 * Creates or uses a cached group name.
+	 *
+	 * @param __n The test name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
+	 */
+	public static TestGroupName of(String __n)
+		throws NullPointerException
+	{
+		return new TestGroupName(__n);
 	}
 }
 

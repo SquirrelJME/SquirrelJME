@@ -37,7 +37,7 @@ public class ZipWriterStreamTest
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName(
+		return TestGroupName.of(
 			"net.multiphasicapps.zip.streamwriter.ZipStreamWriter");
 	}
 	

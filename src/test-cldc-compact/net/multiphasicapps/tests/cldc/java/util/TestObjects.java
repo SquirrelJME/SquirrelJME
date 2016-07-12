@@ -32,7 +32,7 @@ public class TestObjects
 	@Override
 	public TestGroupName invokerName()
 	{
-		return new TestGroupName("java.util.Objects");
+		return TestGroupName.of("java.util.Objects");
 	}
 	
 	/**
