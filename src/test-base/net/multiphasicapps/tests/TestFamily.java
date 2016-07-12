@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
  * @since 2016/07/12
  */
 public final class TestFamily
-	implements Iterable<TestSubName>
+	implements Comparable<TestFamily>, Iterable<TestSubName>
 {
 	/** The test group. */
 	protected final TestGroupName group;
@@ -32,6 +32,20 @@ public final class TestFamily
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
+	
+	/**
+	 * Initializes the test family names and details.
+	 *
+	 * @param __g The group of the test.
+	 * @param __s The sub-tests that are default for this family.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
+	 */
+	public TestFamily(String __g, String... __s)
+		throws NullPointerException
+	{
+		this(TestGroupName.of(__g), __stringArrayToSubs(__s));
+	}
 	
 	/**
 	 * Initializes the test family.
@@ -56,6 +70,37 @@ public final class TestFamily
 		for (TestSubName s : __s)
 			if (s == null)
 				throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/12
+	 */
+	@Override
+	public final int compareTo(TestFamily __b)
+	{
+		// Compare group first
+		int rv = this.group.compareTo(__b.group);
+		if (rv != 0)
+			return rv;
+		
+		// Then the subs
+		TestSubName[] a = this._subs, b = __b._subs;
+		int na = a.length, nb = b.length;
+		int min = Math.min(na, nb);
+		for (int i = 0; i < min; i++)
+		{
+			rv = a[i].compareTo(b[i]);
+			if (rv != 0)
+				return rv;
+		}
+		
+		// Compare size
+		if (na < nb)
+			return -1;
+		else if (na > nb)
+			return 1;
+		return 0;
 	}
 	
 	/**
@@ -178,6 +223,29 @@ public final class TestFamily
 			// Finish
 			this._string = new WeakReference<>((rv = sb.toString()));
 		}
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * Converts an array of string into an array of sub-tests.
+	 *
+	 * @param __s The string of input tests.
+	 * @return The array representation of sub-tests.
+	 * @since 2016/07/12
+	 */
+	private static TestSubName[] __stringArrayToSubs(String... __s)
+	{
+		// Not used
+		if (__s == null)
+			return null;
+		
+		// Setup new
+		int n = __s.length;
+		TestSubName[] rv = new TestSubName[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = TestSubName.of(__s[i]);
 		
 		// Return it
 		return rv;
