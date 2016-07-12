@@ -299,17 +299,6 @@ public class TestCaller
 	}
 	
 	/**
-	 * Prints how the test caller is used.
-	 *
-	 * @since 2016/05/04
-	 */
-	private static void __usage()
-	{
-		// Must faster
-		PrintStream o = System.err;
-	}
-	
-	/**
 	 * This class is used to test for matching tests.
 	 *
 	 * @since 2016/05/04

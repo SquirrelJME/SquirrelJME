@@ -44,9 +44,6 @@ public class DefaultTestCaller
 		output = __ps;
 		
 		// Handle some arguments?
-		boolean ignpass = false;
-		boolean ignfail = false;
-		boolean igntoss = false;
 		if (__args != null)
 			for (String arg : __args)
 				if (arg != null)
@@ -63,19 +60,19 @@ public class DefaultTestCaller
 						
 							// Ignore passes
 						case "-ip":
-							ignpass = true;
+							setOption(TestOption.IGNORE_PASS);
 							break;
 							
 							// Ignore failures
 						case "-if":
-							ignfail = true;
+							setOption(TestOption.IGNORE_FAIL);
 							break;
 							
 							// Ignore tossed exceptions
 						case "-ie":
 						case "-it":
 						case "-ix":
-							igntoss = true;
+							setOption(TestOption.IGNORE_EXCEPTION);
 							break;
 						
 							// Unknown, treat as test to run
@@ -89,11 +86,6 @@ public class DefaultTestCaller
 							matches.add(new TestMatch(__lower(arg)));
 							break;
 					}
-		
-		// Set
-		ignorepass = ignpass;
-		ignorefail = ignfail;
-		ignoretoss = igntoss;
 	}
 	
 	/**
@@ -120,6 +112,19 @@ public class DefaultTestCaller
 		
 		// Run tests
 		tc.runTests();
+	}
+	
+	/**
+	 * Prints how the test caller is used.
+	 *
+	 * @since 2016/05/04
+	 */
+	private static void __usage()
+	{
+		// Much faster
+		PrintStream o = System.err;
+		
+		throw new Error("TODO");
 	}
 }
 
