@@ -84,7 +84,7 @@ public class DefaultTestCaller
 									String.format("AG01 %s", arg));
 							
 							// Add match otherwise
-							super.addMatcher(new TestMatcher(__s));
+							super.addMatcher(new TestMatcher(arg));
 							break;
 					}
 	}
@@ -109,7 +109,7 @@ public class DefaultTestCaller
 	public static void main(String... __args)
 	{
 		// Create a new test caller
-		TestCaller tc = new TestCaller(System.out, __args);
+		DefaultTestCaller tc = new DefaultTestCaller(System.out, __args);
 		
 		// Run tests
 		tc.runTests();

@@ -24,7 +24,7 @@ public enum TestOption
 	IGNORE_PASS,
 	
 	/** Ignore exceptions. */
-	IGNORE_EXCEPTIONS,
+	IGNORE_EXCEPTION,
 	
 	/** End. */
 	;

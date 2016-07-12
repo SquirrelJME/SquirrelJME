@@ -23,6 +23,9 @@ import java.util.LinkedList;
  */
 public final class IndividualTest
 {
+	/** The group name. */
+	protected final TestGroupName group;
+	
 	/** The sub-test name. */
 	protected final TestSubName name;
 	
@@ -33,18 +36,20 @@ public final class IndividualTest
 	/**
 	 * Initializes the individual test with the given sub-name.
 	 *
+	 * @param __g The test group.
 	 * @param __n The sub-test name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
-	public IndividualTest(TestSubName __n)
+	IndividualTest(TestGroupName __g, TestSubName __n)
 		throws NullPointerException
 	{
 		// Check
-		if (__n == null)
+		if (__g == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.group = __g;
 		this.name = __n;
 	}
 	
