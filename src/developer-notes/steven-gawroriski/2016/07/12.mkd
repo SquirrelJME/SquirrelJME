@@ -1,0 +1,13 @@
+# 2016/07/12
+
+## 16:44
+
+Another day of not getting much done at all, I have been busy fixing a
+computer.
+
+## 16:49
+
+What I can do when it comes to the test caller is have a class which has a
+cached database of sorts when it comes to names. Although this might not be
+needed even though allocating names every time is a bit inefficient.
+
