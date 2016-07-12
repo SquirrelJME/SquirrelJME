@@ -8,4 +8,4 @@ LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This is the base interface for a test framework
  which is to make sure that things operate correctly.
-Main-Class: net.multiphasicapps.tests.TestCaller
+Main-Class: net.multiphasicapps.tests.DefaultTestCaller

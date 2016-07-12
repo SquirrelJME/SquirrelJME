@@ -32,102 +32,40 @@ public class TestCaller
 	protected final ServiceLoader<TestInvoker> serviceloader =
 		ServiceLoader.<TestInvoker>load(TestInvoker.class);
 	
-	/** Test results output. */
-	protected final PrintStream output;
-	
-	/** Ignoring passing tests? */
-	protected final boolean ignorepass;
-	
-	/** Ignoring failing tests? */
-	protected final boolean ignorefail;
-	
-	/** Ignoring tossed exceptions? */
-	protected final boolean ignoretoss;
-	
-	/** The acceptable test matches to perform. */
-	protected final Set<TestMatch> matches =
+	/** The test options. */
+	private final Set<TestOption> _options =
 		new HashSet<>();
 	
 	/**
 	 * Initializes the test caller.
 	 *
-	 * @param __ps The output where test results are placed.
-	 * @param __args Program arguments.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/03
 	 */
-	public TestCaller(PrintStream __ps, String... __args)
-		throws NullPointerException
+	public TestCaller()
 	{
-		// Check
-		if (__ps == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		output = __ps;
-		
-		// Handle some arguments?
-		boolean ignpass = false;
-		boolean ignfail = false;
-		boolean igntoss = false;
-		if (__args != null)
-			for (String arg : __args)
-				if (arg != null)
-					switch (arg)
-					{
-							// Print usage
-						case "-?":
-						case "-help":
-						case "--help":
-							__usage();
-							
-							// {@squirreljme.error AG02 Help was printed.}
-							throw new IllegalArgumentException("AG02");
-						
-							// Ignore passes
-						case "-ip":
-							ignpass = true;
-							break;
-							
-							// Ignore failures
-						case "-if":
-							ignfail = true;
-							break;
-							
-							// Ignore tossed exceptions
-						case "-ie":
-						case "-it":
-						case "-ix":
-							igntoss = true;
-							break;
-						
-							// Unknown, treat as test to run
-						default:
-							// {@squirreljme.error AG01 Unknown command line
-							// switch. (The unknown switch)}
-							if (arg.startsWith("-"))
-								throw new IllegalArgumentException(
-									String.format("AG01 %s", arg));
-							
-							matches.add(new TestMatch(__lower(arg)));
-							break;
-					}
-		
-		// Set
-		ignorepass = ignpass;
-		ignorefail = ignfail;
-		ignoretoss = igntoss;
 	}
 	
 	/**
-	 * Returns the target print stream.
+	 * Checks whether the given option is set.
 	 *
-	 * @return The target print stream.
-	 * @since 2016/03/03
+	 * @param __to The option to check.
+	 * @return {@code true} if it is set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
 	 */
-	public PrintStream printStream()
+	public final boolean hasOption(TestOption __to)
+		throws NullPointerException
 	{
-		return output;
+		// Check
+		if (__to == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Set<TestOption> options = _options;
+		synchronized (options)
+		{
+			return options.contains(__to);
+		}
 	}
 	
 	/**
@@ -282,18 +220,25 @@ public class TestCaller
 	}
 	
 	/**
-	 * Runs all tests by default using the command line interface.
+	 * Sets the specified test option.
 	 *
-	 * @param __args Program arguments.
-	 * @since 2016/03/03
+	 * @param __to The option to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
 	 */
-	public static void main(String... __args)
+	public final void setOption(TestOption __to)
+		throws NullPointerException
 	{
-		// Create a new test caller
-		TestCaller tc = new TestCaller(System.out, __args);
+		// Check
+		if (__to == null)
+			throw new NullPointerException("NARG");
 		
-		// Run tests
-		tc.runTests();
+		// Lock
+		Set<TestOption> options = _options;
+		synchronized (options)
+		{
+			options.add(__to);
+		}
 	}
 	
 	/**
