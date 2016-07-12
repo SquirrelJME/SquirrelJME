@@ -16,8 +16,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import net.multiphasicapps.io.bits.BitCompactor;
 import net.multiphasicapps.io.bits.BitInputStream;
+import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
-import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestComparison;
+import net.multiphasicapps.tests.TestFamily;
+import net.multiphasicapps.tests.TestFragmentName;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.util.huffmantree.HuffmanTree;
@@ -43,32 +46,11 @@ public class HuffmanTreeTests
 	 * @since 2016/03/28
 	 */
 	@Override
-	public TestGroupName invokerName()
-	{
-		return TestGroupName.of(
-			"net.multiphasicapps.util.huffmantree.HuffmanTree");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/05
-	 */
-	@Override
-	public Iterable<String> invokerTests()
-	{
-		return Arrays.<String>asList("huffman");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/28
-	 */
-	@Override
-	public void runTest(TestChecker __tc, String __st)
+	public void runTest(IndividualTest __t)
 		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null || __st == null)
+		if (__t == null)
 			throw new NullPointerException();
 		
 		// Setup base tree to store characters
@@ -89,9 +71,6 @@ public class HuffmanTreeTests
 		htree.add('Y', 0b11101, 0b11111);
 		htree.add('M', 0b11110, 0b11111);
 		htree.add('L', 0b11111, 0b11111);
-		
-		// Characters seem to have been added OK
-		__tc.checkEquals(true, true);
 		
 		// Encode a message with it
 		byte[] encodedas = null;
@@ -132,7 +111,8 @@ public class HuffmanTreeTests
 			encodedas = baos.toByteArray();
 			
 			// Test result
-			__tc.checkEquals(_ENCODED, encodedas);
+			__t.compareByteArrays(TestFragmentName.of("encoded"),
+				TestComparison.EQUALS, _ENCODED, encodedas);
 		}
 		
 		// Decode the message
@@ -175,7 +155,20 @@ public class HuffmanTreeTests
 		}
 		
 		// Check
-		__tc.checkEquals(MESSAGE, sb.toString());
+		__t.compareString(TestFragmentName.of("decoded"),
+			TestComparison.EQUALS, MESSAGE, sb.toString());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/03/28
+	 */
+	@Override
+	public TestFamily testFamily()
+	{
+		return new TestFamily(
+			"net.multiphasicapps.util.huffmantree.HuffmanTree",
+			"huffman");
 	}
 }
 

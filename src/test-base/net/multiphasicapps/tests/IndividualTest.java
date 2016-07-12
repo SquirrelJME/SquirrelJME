@@ -117,6 +117,48 @@ public final class IndividualTest
 	}
 	
 	/**
+	 * Compares two object values to check how they compare to each other.
+	 *
+	 * @param __f The fragment name.
+	 * @param __c The comparison to make.
+	 * @param __a The expected value.
+	 * @param __b The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
+	 */
+	public final void compareObject(TestFragmentName __f,
+		TestComparison __c, Object __a, Object __b)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null || __c == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Compares two string values to check how they compare to each other.
+	 *
+	 * @param __f The fragment name.
+	 * @param __c The comparison to make.
+	 * @param __a The expected value.
+	 * @param __b The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
+	 */
+	public final void compareString(TestFragmentName __f,
+		TestComparison __c, String __a, String __b)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null || __c == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the group name of the test.
 	 *
 	 * @return The group name.
