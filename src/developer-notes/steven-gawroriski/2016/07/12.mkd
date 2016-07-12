@@ -11,3 +11,12 @@ What I can do when it comes to the test caller is have a class which has a
 cached database of sorts when it comes to names. Although this might not be
 needed even though allocating names every time is a bit inefficient.
 
+## 17:17
+
+I could merge the test name and default test group for the most part.
+
+## 17:20
+
+Instead of two methods, one for the name and the default tests, they can be
+combined into one.
+
