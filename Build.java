@@ -40,6 +40,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -371,7 +372,7 @@ public class Build
 			jfm.setLocation(StandardLocation.CLASS_OUTPUT, tdfi);
 			
 			// The class path is that of the dependencies
-			Set<File> ccpath = new HashSet<>();
+			Set<File> ccpath = new LinkedHashSet<>();
 			
 			// If no classpath is defined, then use the source root
 			if (ccpath.isEmpty())
@@ -387,7 +388,7 @@ public class Build
 				jfm.setLocation(StandardLocation.PLATFORM_CLASS_PATH, ccpath);
 			
 			// Files to compile
-			final Set<JavaFileObject> compile = new HashSet<>();
+			final Set<JavaFileObject> compile = new LinkedHashSet<>();
 			
 			// Files to go in the ZIP
 			final Map<String, Path> zipup = new TreeMap<>();
@@ -923,6 +924,7 @@ public class Build
 	 * @since 2016/03/21
 	 */
 	public class Project
+		implements Comparable<Project>
 	{
 		/** The root directory of the project. */
 		protected final Path root;
@@ -1004,14 +1006,14 @@ public class Build
 			Build.this.projects.put(name, this);
 			
 			// Required dependencies
-			Set<Project> xdeps = new HashSet<>();
+			Set<Project> xdeps = new TreeSet<>();
 			String odeps = attr.getValue("X-SquirrelJME-Depends");
 			if (odeps != null)
 				for (String s : odeps.split(Pattern.quote(",")))
 					xdeps.add(getProject(s.trim()));
 			
 			// Optional depends
-			Set<Project> pdeps = new HashSet<>();
+			Set<Project> pdeps = new TreeSet<>();
 			String qdeps = attr.getValue("X-SquirrelJME-Optional");
 			if (qdeps != null)
 				for (String s : qdeps.split(Pattern.quote(",")))
@@ -1047,7 +1049,7 @@ public class Build
 		 */
 		public Set<Project> allProjects()
 		{
-			return allProjects(new LinkedHashSet<Project>());
+			return allProjects(new TreeSet<Project>());
 		}
 		
 		/**
@@ -1130,6 +1132,16 @@ public class Build
 				// Recurse
 				dep.classPathFile(__cp);
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/12
+		 */
+		@Override
+		public int compareTo(Project __p)
+		{
+			return this.name.compareTo(__p.name);
 		}
 		
 		/**
