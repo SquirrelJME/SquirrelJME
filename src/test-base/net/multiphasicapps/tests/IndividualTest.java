@@ -75,6 +75,27 @@ public final class IndividualTest
 	}
 	
 	/**
+	 * Compares two int values to check how they compare to each other.
+	 *
+	 * @param __f The fragment name.
+	 * @param __c The comparison to make.
+	 * @param __a The expected value.
+	 * @param __b The resulting value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
+	 */
+	public final void compareInt(TestFragmentName __f,
+		TestComparison __c, int __a, int __b)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null || __c == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Compares two int arrays to check how they compare to each other.
 	 *
 	 * @param __f The fragment name.
@@ -104,6 +125,23 @@ public final class IndividualTest
 	public final TestGroupName groupName()
 	{
 		return this.group;
+	}
+	
+	/**
+	 * Notes something that is neither a passing nor failing state.
+	 *
+	 * @param __f The fragment name.
+	 * @param __v The value to note.
+	 * @throws NullPointerException If no fragment name was specified.
+	 * @since 2016/07/12
+	 */
+	public final void note(TestFragmentName __f, Object __v)
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

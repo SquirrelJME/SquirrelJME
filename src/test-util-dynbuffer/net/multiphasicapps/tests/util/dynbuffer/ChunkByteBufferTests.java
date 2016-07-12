@@ -17,9 +17,11 @@ import java.util.Random;
 import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
+import net.multiphasicapps.tests.TestComparison;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestFamily;
+import net.multiphasicapps.tests.TestFragmentName;
 
 /**
  * This class tests that the code chunk setup works correctly.
@@ -59,17 +61,7 @@ public class ChunkByteBufferTests
 			throw new NullPointerException("NARG");
 		
 		// Extract the used seed
-		long seed;
-		try
-		{
-			seed = Long.decode(__st);
-		}
-		
-		// Illegal number
-		catch (NumberFormatException e)
-		{
-			throw new InvalidTestException();
-		}
+		long seed = Long.decode(__t.subName().toString());
 		
 		// A list containing bytes of stuff being added, along with the chunks
 		List<Byte> snail = new ArrayList<>();
@@ -131,13 +123,16 @@ public class ChunkByteBufferTests
 		// Build a unique key for comparisons
 		
 		// Check for size equality
-		__tc.checkEquals(snail.size(), bunny.size());
+		__t.compareInt(TestFragmentName.of("size"), TestComparison.EQUALS,
+			snail.size(), bunny.size());
 		
 		// Check that sets changed the same values
-		__tc.checkEquals(tset, kset);
+		__t.compareInt(TestFragmentName.of("sets"), TestComparison.EQUALS,
+			tset, kset);
 		
 		// Check that removals removed the same values
-		__tc.checkEquals(trem, krem);
+		__t.compareInt(TestFragmentName.of("removals"), TestComparison.EQUALS,
+			trem, krem);
 		
 		// Create byte arrays for both sets of code
 		byte[] slow = new byte[n];
@@ -151,7 +146,8 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check equality between them
-		__tc.checkEquals(slow, fast);
+		__t.compareByteArrays(TestFragmentName.of("data"),
+			TestComparison.EQUALS, slow, fast);
 		
 		// Now remove alot of random bytes from the stuff
 		for (int i = TEST_BUFFER_SIZE; i >= LOWER_LIMIT;)
@@ -171,10 +167,12 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check for size equality
-		__tc.checkEquals(snail.size(), bunny.size());
+		__t.compareInt(TestFragmentName.of("shufflesize"),
+			TestComparison.EQUALS, snail.size(), bunny.size());
 		
 		// Check that removals removed the same values
-		__tc.checkEquals(trem, krem);
+		__t.compareInt(TestFragmentName.of("shuffleremoves"),
+			TestComparison.EQUALS, trem, krem);
 		
 		// Create byte arrays for both sets of code
 		n = Math.min(snail.size(), bunny.size());
@@ -189,8 +187,10 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check equality between them
-		__tc.checkEquals(slow, fast);
-		__tc.checkEquals(bunny.actualSize(), bunny.actualSize());
+		__t.compareByteArrays(TestFragmentName.of("shuffledata"),
+			TestComparison.EQUALS, slow, fast);
+		__t.note(TestFragmentName.of("shuffledactualsize"),
+			bunny.actualSize());
 		
 		// Perform quick compaction
 		bunny.quickCompact();
@@ -200,9 +200,12 @@ public class ChunkByteBufferTests
 			fast[i] = bunny.get(i);
 		
 		// Check equality between them
-		__tc.checkEquals(snail.size(), bunny.size());
-		__tc.checkEquals(slow, fast);
-		__tc.checkEquals(bunny.actualSize(), bunny.actualSize());
+		__t.compareInt(TestFragmentName.of("compactsize"),
+			TestComparison.EQUALS, snail.size(), bunny.size());
+		__t.compareByteArrays(TestFragmentName.of("compactdata"),
+			TestComparison.EQUALS, slow, fast);
+		__t.note(TestFragmentName.of("compactactualsize"),
+			bunny.actualSize());
 	}
 	
 	/**
