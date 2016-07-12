@@ -16,9 +16,10 @@ import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestComparison;
-import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestFamily;
 import net.multiphasicapps.tests.TestFragmentName;
+import net.multiphasicapps.tests.TestGroupName;
+import net.multiphasicapps.tests.TestInvoker;
 
 /**
  * This tests the sliding byte window to make sure that it can correctly
@@ -59,7 +60,7 @@ public class SlidingWindowTest
 			throw new NullPointerException();
 		
 		// Extract the used seed
-		long seed = Long.decode(__st.subName().toString());
+		long seed = Long.decode(__t.subName().toString());
 		
 		// Create a sliding window and another buffer of a given size where
 		// bytes are to be written to.
