@@ -24,9 +24,11 @@ import net.multiphasicapps.io.datapipe.DataPipeInputStream;
 import net.multiphasicapps.io.inflate.InflateDataPipe;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
+import net.multiphasicapps.tests.TestComparison;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.tests.TestFamily;
+import net.multiphasicapps.tests.TestFragmentName;
 
 /**
  * This contains tests for the extra IO inflate decompression algorithm.
@@ -60,9 +62,12 @@ public class TestInflater
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Get the resource to use
+		String baseresname = __t.subName().toString();
+		
 		// Sample names
-		String in = "test-" + __st + ".in";
-		String on = "test-" + __st + ".out";
+		String in = "test-" + baseresname + ".in";
+		String on = "test-" + baseresname + ".out";
 			
 		// Try opening resources for them
 		try (InputStream ii = getClass().getResourceAsStream(in);
@@ -77,25 +82,25 @@ public class TestInflater
 			byte[] xo = __readToArray(new InputStreamReader(oo, "utf-8"));
 			
 			// Call checker
-			__check(__tc, xi, xo);
+			__check(__t, xi, xo);
 		}
 	}
 	
 	/**
 	 * Checks whether the inflater works for the given input.
 	 *
-	 * @param __tc The test checker.
+	 * @param __t The test.
 	 * @param __in The input bytes.
 	 * @param __out The output bytes.
 	 * @throws NullPointerException On null arguments.
 	 * @throws Throwable On any exception.
 	 * @since 2016/03/10
 	 */
-	private void __check(TestChecker __tc, byte[] __in, byte[] __out)
+	private void __check(IndividualTest __t, byte[] __in, byte[] __out)
 		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null || __in == null || __out == null)
+		if (__t == null || __in == null || __out == null)
 			throw new NullPointerException();
 		
 		// Open the input
@@ -118,7 +123,9 @@ public class TestInflater
 			}
 			
 			// Check the array
-			__tc.checkEquals(__out, out.toByteArray());
+			__t.compareByteArrays(TestFragmentName.of(""),
+				TestComparison.EQUALS,
+				__out, out.toByteArray());
 		}
 	}
 	

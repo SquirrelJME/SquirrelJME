@@ -15,7 +15,6 @@ import java.util.Random;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
-import net.multiphasicapps.tests.TestChecker;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestFamily;
 

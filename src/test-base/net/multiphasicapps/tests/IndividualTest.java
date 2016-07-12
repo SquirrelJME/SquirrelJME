@@ -54,6 +54,32 @@ public final class IndividualTest
 	}
 	
 	/**
+	 * Compares two byte arrays to check how they compare to each other.
+	 *
+	 * @param __f The fragment name.
+	 * @param __c The comparison to make.
+	 * @param __a The expected array.
+	 * @param __b The resulting array.
+	 * @since 2016/07/12
+	 */
+	public final void compareByteArrays(TestFragmentName __f,
+		TestComparison __c, byte[] __a, byte[] __b)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the group name of the test.
+	 *
+	 * @return The group name.
+	 * @since 2016/07/12
+	 */
+	public final TestGroupName groupName()
+	{
+		return this.group;
+	}
+	
+	/**
 	 * Initializes a new test result.
 	 *
 	 * @param __n The name of the test.
@@ -61,7 +87,7 @@ public final class IndividualTest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
-	public Result result(String __n)
+	public final Result result(String __n)
 		throws NullPointerException
 	{
 		return this.result(TestFragmentName.of(__n));
@@ -75,7 +101,7 @@ public final class IndividualTest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
-	public Result result(TestFragmentName __n)
+	public final Result result(TestFragmentName __n)
 		throws NullPointerException
 	{
 		// Check
@@ -83,6 +109,17 @@ public final class IndividualTest
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the sub-name of the test.
+	 *
+	 * @return The test sub-name.
+	 * @since 2016/07/12
+	 */
+	public final TestSubName subName()
+	{
+		return this.name;
 	}
 	
 	/**

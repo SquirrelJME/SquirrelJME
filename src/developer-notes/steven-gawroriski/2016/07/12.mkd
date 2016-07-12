@@ -24,3 +24,7 @@ combined into one.
 
 For specific test regions I can use try with resources.
 
+## 18:22
+
+Co-dependencies would definitely be useful.
+
