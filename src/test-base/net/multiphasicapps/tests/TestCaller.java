@@ -36,6 +36,10 @@ public class TestCaller
 	private final Set<TestOption> _options =
 		new HashSet<>();
 	
+	/** Test matchers to match against. */
+	private final Set<TestMatcher> _matchers =
+		new HashSet<>();
+	
 	/**
 	 * Initializes the test caller.
 	 *
@@ -43,6 +47,27 @@ public class TestCaller
 	 */
 	public TestCaller()
 	{
+	}
+	
+	/**
+	 * Adds a test matcher so that only a specific set of tests run.
+	 *
+	 * @param __tm The test matcher to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
+	 */
+	public final void addMatcher(TestMatcher __tm)
+		throws NullPointerException
+	{
+		if (__tm == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Set<TestMatcher> matcher = this._matchers;
+		synchronized (lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

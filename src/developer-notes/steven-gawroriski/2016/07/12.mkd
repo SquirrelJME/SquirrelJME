@@ -20,3 +20,7 @@ I could merge the test name and default test group for the most part.
 Instead of two methods, one for the name and the default tests, they can be
 combined into one.
 
+## 17:56
+
+For specific test regions I can use try with resources.
+

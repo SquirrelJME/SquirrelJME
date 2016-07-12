@@ -83,7 +83,8 @@ public class DefaultTestCaller
 								throw new IllegalArgumentException(
 									String.format("AG01 %s", arg));
 							
-							matches.add(new TestMatch(__lower(arg)));
+							// Add match otherwise
+							super.addMatcher(new TestMatcher(__s));
 							break;
 					}
 	}
