@@ -15,8 +15,10 @@ import java.util.Random;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
+import net.multiphasicapps.tests.TestComparison;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestFamily;
+import net.multiphasicapps.tests.TestFragmentName;
 
 /**
  * This tests the sliding byte window to make sure that it can correctly
@@ -57,17 +59,7 @@ public class SlidingWindowTest
 			throw new NullPointerException();
 		
 		// Extract the used seed
-		long seed;
-		try
-		{
-			seed = Long.decode(__st);
-		}
-		
-		// Illegal number
-		catch (NumberFormatException e)
-		{
-			throw new InvalidTestException();
-		}
+		long seed = Long.decode(__st.subName().toString());
 		
 		// Create a sliding window and another buffer of a given size where
 		// bytes are to be written to.
@@ -158,12 +150,12 @@ public class SlidingWindowTest
 		sbw.get(totalbytes, fullb, 0, totalbytes);
 		
 		// Check for no failures
-		if (checkfail != 0)
-			__tc.checkEquals(0, checkfail);
+		__t.compareInt(TestFragmentName.of("failures"),
+			TestComparison.EQUALS, 0, checkfail);
 		
-		// Check all the bytes against the raw window
-		else
-			__tc.checkEquals(fulla, fullb);
+		// Check bytes
+		__t.compareByteArrays(TestFragmentName.of("data"),
+			TestComparison.EQUALS, fulla, fullb);
 	}
 	
 	/**
