@@ -11,8 +11,11 @@
 package net.multiphasicapps.tests.util.uri;
 
 import java.util.Arrays;
+import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
-import net.multiphasicapps.tests.TestChecker;
+import net.multiphasicapps.tests.TestComparison;
+import net.multiphasicapps.tests.TestFamily;
+import net.multiphasicapps.tests.TestFragmentName;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.util.uri.URI;
@@ -27,47 +30,39 @@ public class URITests
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/03/28
+	 * @since 2016/06/23
 	 */
 	@Override
-	public TestGroupName invokerName()
-	{
-		return TestGroupName.of("net.multiphasicapps.util.uri.URI");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/05/05
-	 */
-	@Override
-	public Iterable<String> invokerTests()
-	{
-		// After URIs are implemented, the test system will switch to URIs
-		return Arrays.<String>asList("general");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/28
-	 */
-	@Override
-	public void runTest(TestChecker __tc, String __st)
+	public void runTest(IndividualTest __t)
 		throws NullPointerException, Throwable
 	{
 		// Check
-		if (__tc == null || __st == null)
+		if (__t == null)
 			throw new NullPointerException();
 		
 		// These tests are to make sure that URIs operate properly for the
 		// most part. When URI support is complete, all tests will transition
 		// to using URIs instead of Strings.
-		__tc.checkEquals(new URI("ScHeMe::", "very%21Special/##????",
+		__t.compareString(TestFragmentName.of("1"), TestComparison.EQUALS,
+			new URI("ScHeMe::", "very%21Special/##????",
 			"Hello World! How are you?").toString(),
 			"<TODO>");
 		
-		__tc.checkEquals(new URI("http://foo:bar@multiphasicapps.net:80/" +
+		__t.compareString(TestFragmentName.of("2"), TestComparison.EQUALS,
+			new URI("http://foo:bar@multiphasicapps.net:80/" +
 			"tarball/squirreljme-trunk.tar.gz?uuid=trunk#hello").toString(),
 			"<TODO>");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/06/23
+	 */
+	@Override
+	public TestFamily testFamily()
+	{
+		return new TestFamily("net.multiphasicapps.util.uri.URI",
+			"general");
 	}
 }
 
