@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * @since 2016/03/03
  */
-public class TestCaller
+public abstract class TestCaller
 {
 	/** Loader for tests. */
 	protected final ServiceLoader<TestInvoker> serviceloader =

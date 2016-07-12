@@ -28,3 +28,10 @@ For specific test regions I can use try with resources.
 
 Co-dependencies would definitely be useful.
 
+## 19:06
+
+So now I have a base refactor of the test interfaces, I just now need to
+implement them. Currently the new test interfaces are much better than before.
+Then with an abstract `TestCaller` I can have different means of test
+reporting.
+

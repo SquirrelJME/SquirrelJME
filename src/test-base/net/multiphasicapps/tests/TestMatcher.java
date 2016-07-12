@@ -13,6 +13,9 @@ package net.multiphasicapps.tests;
 /**
  * This is a matcher which is used to determine which tests to match against.
  *
+ * This also is used to indicate any non-default tests that should be run if
+ * there are no wildcards in the string.
+ *
  * @since 2016/07/12
  */
 public final class TestMatcher
