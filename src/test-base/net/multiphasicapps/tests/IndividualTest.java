@@ -96,7 +96,14 @@ public final class IndividualTest
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		List<Result> results = this._results;
+		synchronized (results)
+		{
+			Result rv;
+			results.add((rv = new Result(__n, __nextId())));
+			return rv;
+		}
 	}
 	
 	/**
@@ -151,29 +158,24 @@ public final class IndividualTest
 		/** The test ID. */
 		protected final int id;
 		
-		/** The test status. */
-		protected final Status status;
-		
 		/**
 		 * Initializes the result.
 		 *
 		 * @param __n The fragment name.
 		 * @param __dx The test number.
-		 * @param __st The test status.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/07/12
 		 */
-		private Result(TestFragmentName __n, int __dx, Status __st)
+		private Result(TestFragmentName __n, int __dx)
 			throws NullPointerException
 		{
 			// Check
-			if (__n == null || __st == null)
+			if (__n == null)
 				throw new NullPointerException("NARG");
 			
 			// Set
 			this.fragment = __n;
 			this.id = __dx;
-			this.status = __st;
 		}
 		
 		/**
@@ -344,7 +346,7 @@ public final class IndividualTest
 		 */
 		public final Status status()
 		{
-			return this.status;
+			throw new Error("TODO");
 		}
 		
 		/**
