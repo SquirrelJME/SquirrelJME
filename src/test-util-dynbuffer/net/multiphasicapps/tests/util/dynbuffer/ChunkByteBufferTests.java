@@ -123,15 +123,15 @@ public class ChunkByteBufferTests
 		// Build a unique key for comparisons
 		
 		// Check for size equality
-		__t.compareInt(TestFragmentName.of("size"), TestComparison.EQUALS,
+		__t.result("size").compareInt(TestComparison.EQUALS,
 			snail.size(), bunny.size());
 		
 		// Check that sets changed the same values
-		__t.compareInt(TestFragmentName.of("sets"), TestComparison.EQUALS,
+		__t.result("sets").compareInt(TestComparison.EQUALS,
 			tset, kset);
 		
 		// Check that removals removed the same values
-		__t.compareInt(TestFragmentName.of("removals"), TestComparison.EQUALS,
+		__t.result("removals").compareInt(TestComparison.EQUALS,
 			trem, krem);
 		
 		// Create byte arrays for both sets of code
@@ -146,7 +146,7 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check equality between them
-		__t.compareByteArrays(TestFragmentName.of("data"),
+		__t.result("data").compareByteArrays(
 			TestComparison.EQUALS, slow, fast);
 		
 		// Now remove alot of random bytes from the stuff
@@ -167,11 +167,11 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check for size equality
-		__t.compareInt(TestFragmentName.of("shufflesize"),
+		__t.result("shufflesize").compareInt(
 			TestComparison.EQUALS, snail.size(), bunny.size());
 		
 		// Check that removals removed the same values
-		__t.compareInt(TestFragmentName.of("shuffleremoves"),
+		__t.result("shuffleremoves").compareInt(
 			TestComparison.EQUALS, trem, krem);
 		
 		// Create byte arrays for both sets of code
@@ -187,9 +187,9 @@ public class ChunkByteBufferTests
 		}
 		
 		// Check equality between them
-		__t.compareByteArrays(TestFragmentName.of("shuffledata"),
+		__t.result("shuffledata").compareByteArrays(
 			TestComparison.EQUALS, slow, fast);
-		__t.note(TestFragmentName.of("shuffledactualsize"),
+		__t.result("shuffleactualsize").note(
 			bunny.actualSize());
 		
 		// Perform quick compaction
@@ -200,11 +200,11 @@ public class ChunkByteBufferTests
 			fast[i] = bunny.get(i);
 		
 		// Check equality between them
-		__t.compareInt(TestFragmentName.of("compactsize"),
+		__t.result("compactsize").compareInt(
 			TestComparison.EQUALS, snail.size(), bunny.size());
-		__t.compareByteArrays(TestFragmentName.of("compactdata"),
+		__t.result("compactdata").compareByteArrays(
 			TestComparison.EQUALS, slow, fast);
-		__t.note(TestFragmentName.of("compactactualsize"),
+		__t.result("compactactualsize").note(
 			bunny.actualSize());
 	}
 	

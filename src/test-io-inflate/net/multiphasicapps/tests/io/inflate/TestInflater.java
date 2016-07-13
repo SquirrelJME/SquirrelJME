@@ -123,7 +123,7 @@ public class TestInflater
 			}
 			
 			// Check the array
-			__t.compareByteArrays(TestFragmentName.of("decompression"),
+			__t.result("decompression").compareByteArrays(
 				TestComparison.EQUALS,
 				__out, out.toByteArray());
 		}

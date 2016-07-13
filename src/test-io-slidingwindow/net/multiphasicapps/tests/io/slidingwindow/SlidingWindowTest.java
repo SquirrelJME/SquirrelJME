@@ -151,11 +151,11 @@ public class SlidingWindowTest
 		sbw.get(totalbytes, fullb, 0, totalbytes);
 		
 		// Check for no failures
-		__t.compareInt(TestFragmentName.of("failures"),
+		__t.result("failures").compareInt(
 			TestComparison.EQUALS, 0, checkfail);
 		
 		// Check bytes
-		__t.compareByteArrays(TestFragmentName.of("data"),
+		__t.result("data").compareByteArrays(
 			TestComparison.EQUALS, fulla, fullb);
 	}
 	

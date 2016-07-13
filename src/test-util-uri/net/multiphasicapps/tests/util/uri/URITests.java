@@ -43,12 +43,12 @@ public class URITests
 		// These tests are to make sure that URIs operate properly for the
 		// most part. When URI support is complete, all tests will transition
 		// to using URIs instead of Strings.
-		__t.compareString(TestFragmentName.of("1"), TestComparison.EQUALS,
+		__t.result("1").compareString(TestComparison.EQUALS,
 			new URI("ScHeMe::", "very%21Special/##????",
 			"Hello World! How are you?").toString(),
 			"<TODO>");
 		
-		__t.compareString(TestFragmentName.of("2"), TestComparison.EQUALS,
+		__t.result("2").compareString(TestComparison.EQUALS,
 			new URI("http://foo:bar@multiphasicapps.net:80/" +
 			"tarball/squirreljme-trunk.tar.gz?uuid=trunk#hello").toString(),
 			"<TODO>");

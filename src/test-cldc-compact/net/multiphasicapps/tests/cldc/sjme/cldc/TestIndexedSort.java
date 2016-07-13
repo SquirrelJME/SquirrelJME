@@ -103,7 +103,7 @@ public class TestIndexedSort
 		}
 		
 		// Check that the sorted values match
-		__t.compareIntArrays(TestFragmentName.of("data"),
+		__t.result("data").compareIntArrays(
 			TestComparison.EQUALS, sortedtest, act);
 	}
 	

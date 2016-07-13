@@ -111,7 +111,7 @@ public class HuffmanTreeTests
 			encodedas = baos.toByteArray();
 			
 			// Test result
-			__t.compareByteArrays(TestFragmentName.of("encoded"),
+			__t.result("encoded").compareByteArrays(
 				TestComparison.EQUALS, _ENCODED, encodedas);
 		}
 		
@@ -155,7 +155,7 @@ public class HuffmanTreeTests
 		}
 		
 		// Check
-		__t.compareString(TestFragmentName.of("decoded"),
+		__t.result("decoded").compareString(
 			TestComparison.EQUALS, MESSAGE, sb.toString());
 	}
 	
