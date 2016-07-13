@@ -20,6 +20,18 @@ package net.multiphasicapps.tests;
  */
 public final class TestMatcher
 {
+	/** The group to match against. */
+	protected final TestGroupName group;
+	
+	/** The sub-test to match against. */
+	protected final TestSubName sub;
+	
+	/** Wildcard group type. */
+	protected final __WildType__ wildgroup;
+	
+	/** Wildcard sub type. */
+	protected final __WildType__ wildsub;
+	
 	/**
 	 * Initializes the test matcher.
 	 *
@@ -34,7 +46,99 @@ public final class TestMatcher
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// If there is an at sign then this includes a sub-test
+		int at = __m.indexOf('@');
+		if (at >= 0)
+		{
+			group = TestGroupName.of(__m.substring(0, at));
+			sub = TestSubName.of(__m.substring(at + 1));
+		}
+		
+		// Otherwise, it does not, use any match for sub-tests
+		else
+		{
+			group = TestGroupName.of(__m);
+			sub = TestSubName.of("*");
+		}
+		
+		// Wildcards?
+		wildgroup = __wildcard(group);
+		wildsub = __wildcard(sub);
+	}
+	
+	/**
+	 * Detects the type of wildcard to use.
+	 *
+	 * @param __bn The name to decode.
+	 * @return The wildcard type used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/12
+	 */
+	private static final __WildType__ __wildcard(__BaseName__ __bn)
+		throws NullPointerException
+	{
+		// Check
+		if (__bn == null)
+			throw new NullPointerException("NARG");
+		
+		// Get string length
+		String s = __bn.toString();
+		int n = s.length();
+		
+		// Empty is no match
+		if (n <= 0)
+			return __WildType__.NONE;
+		
+		// Single character is any if just *
+		char first = s.charAt(0);
+		boolean fstar = (first == '*');
+		if (n == 1 && fstar)
+			return __WildType__.ANY;
+		
+		// Otherwise find the last
+		char last = s.charAt(n - 1);
+		boolean lstar = (last == '*');
+		
+		// *foo*
+		if (fstar && lstar)
+			return __WildType__.CONTAINS;
+		
+		// *foo
+		else if (fstar)
+			return __WildType__.ENDS_WITH;
+		
+		// foo*
+		else if (lstar)
+			return __WildType__.STARTS_WITH;
+		
+		// No wildcard
+		return __WildType__.NONE;
+	}
+	
+	/**
+	 * The type of wildcard used.
+	 *
+	 * @since 2016/07/12
+	 */
+	private static enum __WildType__
+	{
+		/** No wildcard used. */
+		NONE,
+		
+		/** Any. */
+		ANY,
+		
+		/** Starts with. */
+		STARTS_WITH,
+		
+		/** Ends with. */
+		ENDS_WITH,
+		
+		/** Contains. */
+		CONTAINS,
+		
+		/** End. */
+		;
 	}
 }
 
