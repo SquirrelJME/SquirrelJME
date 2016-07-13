@@ -158,6 +158,16 @@ public final class IndividualTest
 		/** The test ID. */
 		protected final int id;
 		
+		/** Object to lock for test results. */
+		private final Object _lock =
+			new Object();
+		
+		/** The result of a given test. */
+		private volatile Status _status;
+		
+		/** Was a result given? */
+		private volatile boolean _done;
+		
 		/**
 		 * Initializes the result.
 		 *
@@ -185,7 +195,11 @@ public final class IndividualTest
 		@Override
 		public void close()
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 	
 		/**
@@ -205,11 +219,18 @@ public final class IndividualTest
 			if (__c == null || __a == null || __b == null)
 				throw new NullPointerException("NARG");
 			
-			if (true)
-				throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// Done
+				__setDone();
+				
+				if (true)
+					throw new Error("TODO");
 			
-			// No more results
-			close();
+				// No more results
+				close();
+			}
 		}
 	
 		/**
@@ -228,11 +249,18 @@ public final class IndividualTest
 			if (__c == null)
 				throw new NullPointerException("NARG");
 		
-			if (true)
-				throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// Done
+				__setDone();
+				
+				if (true)
+					throw new Error("TODO");
 			
-			// No more results
-			close();
+				// No more results
+				close();
+			}
 		}
 	
 		/**
@@ -252,11 +280,18 @@ public final class IndividualTest
 			if (__c == null || __a == null || __b == null)
 				throw new NullPointerException("NARG");
 		
-			if (true)
-				throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// Done
+				__setDone();
+				
+				if (true)
+					throw new Error("TODO");
 			
-			// No more results
-			close();
+				// No more results
+				close();
+			}
 		}
 	
 		/**
@@ -276,11 +311,18 @@ public final class IndividualTest
 			if (__c == null)
 				throw new NullPointerException("NARG");
 		
-			if (true)
-				throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// Done
+				__setDone();
+				
+				if (true)
+					throw new Error("TODO");
 			
-			// No more results
-			close();
+				// No more results
+				close();
+			}
 		}
 	
 		/**
@@ -300,11 +342,18 @@ public final class IndividualTest
 			if (__c == null)
 				throw new NullPointerException("NARG");
 		
-			if (true)
-				throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// Done
+				__setDone();
+				
+				if (true)
+					throw new Error("TODO");
 			
-			// No more results
-			close();
+				// No more results
+				close();
+			}
 		}
 		
 		/**
@@ -322,11 +371,18 @@ public final class IndividualTest
 			if (__t == null)
 				throw new NullPointerException("NARG");
 		
-			if (true)
-				throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// Done
+				__setDone();
+				
+				if (true)
+					throw new Error("TODO");
 			
-			// No more results
-			close();
+				// No more results
+				close();
+			}
 		}
 		
 		/**
@@ -359,22 +415,44 @@ public final class IndividualTest
 		 */
 		public final void note(Object __v)
 		{
-			if (true)
-				throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// Done
+				__setDone();
+				
+				if (true)
+					throw new Error("TODO");
 			
-			// No more results
-			close();
+				// No more results
+				close();
+			}
 		}
 		
 		/**
 		 * Returns the test status.
 		 *
 		 * @return The test status.
+		 * @throws IllegalStateException If the test has no result.
 		 * @since 2016/07/13
 		 */
 		public final Status status()
+			throws IllegalStateException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// {@squirreljme.error AG05 The result of the test is not
+				// known. (The test group; The sub-test; The test fragment)}
+				Status rv = this._status;
+				if (!this._done	|| rv == null)
+					throw new IllegalStateException(String.format(
+						"AG05 %s %s %s", IndividualTest.this.group,
+						IndividualTest.this.name, this.fragment));
+				
+				// Return it
+				return rv;
+			}
 		}
 		
 		/**
@@ -384,11 +462,43 @@ public final class IndividualTest
 		 */
 		public final void success()
 		{
-			if (true)
-				throw new Error("TODO");
+			// Lock
+			synchronized (this._lock)
+			{
+				// Done
+				__setDone();
+				
+				if (true)
+					throw new Error("TODO");
 			
-			// No more results
-			close();
+				// No more results
+				close();
+			}
+		}
+		
+		/**
+		 * Sets that the test is done.
+		 *
+		 * @throws IllegalStateException If it is already done.
+		 * @since 2016/07/13
+		 */
+		private final void __setDone()
+			throws IllegalStateException
+		{
+			// Lock
+			synchronized (this._lock)
+			{
+				// {@squirreljme.error AG06 A result for a given test fragment
+				// has already been performed. (The test group; The sub-test;
+				// The test fragment)}
+				if (this._done)
+					throw new IllegalStateException(String.format(
+						"AG06 %s %s %s", IndividualTest.this.group,
+						IndividualTest.this.name, this.fragment));
+				
+				// Mark done
+				this._done = true;
+			}
 		}
 	}
 	
@@ -399,6 +509,9 @@ public final class IndividualTest
 	 */
 	public static enum Status
 	{
+		/** Not passing or failing, but just a note. */
+		NOTE,
+		
 		/** Test passed. */
 		PASS,
 		
