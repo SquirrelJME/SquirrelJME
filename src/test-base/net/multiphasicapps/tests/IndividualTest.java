@@ -204,8 +204,12 @@ public final class IndividualTest
 			// Check
 			if (__c == null || __a == null || __b == null)
 				throw new NullPointerException("NARG");
-		
-			throw new Error("TODO");
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// No more results
+			close();
 		}
 	
 		/**
@@ -224,7 +228,11 @@ public final class IndividualTest
 			if (__c == null)
 				throw new NullPointerException("NARG");
 		
-			throw new Error("TODO");
+			if (true)
+				throw new Error("TODO");
+			
+			// No more results
+			close();
 		}
 	
 		/**
@@ -244,7 +252,11 @@ public final class IndividualTest
 			if (__c == null || __a == null || __b == null)
 				throw new NullPointerException("NARG");
 		
-			throw new Error("TODO");
+			if (true)
+				throw new Error("TODO");
+			
+			// No more results
+			close();
 		}
 	
 		/**
@@ -264,7 +276,11 @@ public final class IndividualTest
 			if (__c == null)
 				throw new NullPointerException("NARG");
 		
-			throw new Error("TODO");
+			if (true)
+				throw new Error("TODO");
+			
+			// No more results
+			close();
 		}
 	
 		/**
@@ -284,7 +300,11 @@ public final class IndividualTest
 			if (__c == null)
 				throw new NullPointerException("NARG");
 		
-			throw new Error("TODO");
+			if (true)
+				throw new Error("TODO");
+			
+			// No more results
+			close();
 		}
 		
 		/**
@@ -302,7 +322,11 @@ public final class IndividualTest
 			if (__t == null)
 				throw new NullPointerException("NARG");
 		
-			throw new Error("TODO");
+			if (true)
+				throw new Error("TODO");
+			
+			// No more results
+			close();
 		}
 		
 		/**
@@ -335,7 +359,11 @@ public final class IndividualTest
 		 */
 		public final void note(Object __v)
 		{
-			throw new Error("TODO");
+			if (true)
+				throw new Error("TODO");
+			
+			// No more results
+			close();
 		}
 		
 		/**
@@ -356,7 +384,11 @@ public final class IndividualTest
 		 */
 		public final void success()
 		{
-			throw new Error("TODO");
+			if (true)
+				throw new Error("TODO");
+			
+			// No more results
+			close();
 		}
 	}
 	
