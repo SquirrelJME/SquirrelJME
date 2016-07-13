@@ -113,15 +113,23 @@ public abstract class TestCaller
 		Set<TestMatcher> matchers = this._matchers;
 		synchronized (matchers)
 		{
+			// No matchers?
+			boolean nomatch = matchers.isEmpty();
+			
 			// Go through all services
 			for (TestInvoker ti : runtests)
 			{
 				// Cache family
 				TestFamily tf = ti.testFamily();
 				
+				// Just running all tests
+				if (nomatch)
+					throw new Error("TODO");
+				
 				// See if any test matcher matches
-				for (TestMatcher tm : matchers)
-					tm.__possiblyRunTests(this, ti, tf);
+				else
+					for (TestMatcher tm : matchers)
+						tm.__possiblyRunTests(this, ti, tf);
 			}
 		}
 	}

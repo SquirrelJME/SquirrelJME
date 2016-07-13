@@ -139,7 +139,7 @@ public final class TestMatcher
 		switch (__type)
 		{
 				// Exact match
-			case NONE:
+			case EXACT:
 				return to.equals(__self);
 				
 				// Always matches
@@ -185,6 +185,20 @@ public final class TestMatcher
 		if (!__matches(this.compgroup, this.wildgroup, __tf.groupName()))
 			return;
 		
+		// See if any sub-tests match
+		String compsub = this.compsub;
+		__WildType__ wildsub = this.wildsub;
+		for (TestSubName sn : __tf)
+		{
+			// Does not match?
+			if (!__matches(compsub, wildsub, sn))
+				continue;
+			
+			throw new Error("TODO");
+		}
+		
+		// If this point was reached then it could be an explicit sub-test
+		// which is not of a default one
 		throw new Error("TODO");
 	}
 	
@@ -209,7 +223,7 @@ public final class TestMatcher
 		
 		// Empty is no match
 		if (n <= 0)
-			return __WildType__.NONE;
+			return __WildType__.EXACT;
 		
 		// Single character is any if just *
 		char first = s.charAt(0);
@@ -234,7 +248,7 @@ public final class TestMatcher
 			return __WildType__.STARTS_WITH;
 		
 		// No wildcard
-		return __WildType__.NONE;
+		return __WildType__.EXACT;
 	}
 	
 	/**
@@ -245,7 +259,7 @@ public final class TestMatcher
 	private static enum __WildType__
 	{
 		/** No wildcard used. */
-		NONE,
+		EXACT,
 		
 		/** Any. */
 		ANY,
@@ -282,7 +296,7 @@ public final class TestMatcher
 			int n = s.length();
 			switch (this)
 			{
-				case NONE: return s;
+				case EXACT: return s;
 				case ANY: return "";
 				case STARTS_WITH: return s.substring(0, n - 1);
 				case ENDS_WITH: return s.substring(1);
