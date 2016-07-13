@@ -109,7 +109,16 @@ public abstract class TestCaller
 				runtests.add(ti);
 		}
 		
-		throw new Error("TODO");
+		// Prevent matchers from being changed
+		Set<TestMatcher> matchers = this._matchers;
+		synchronized (matchers)
+		{
+			// Go through all services
+			for (TestInvoker ti : runtests)
+			{
+				throw new Error("TODO");
+			}
+		}
 	}
 	
 	/**
