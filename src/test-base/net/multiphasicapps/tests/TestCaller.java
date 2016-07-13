@@ -63,10 +63,10 @@ public abstract class TestCaller
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		Set<TestMatcher> matcher = this._matchers;
-		synchronized (matcher)
+		Set<TestMatcher> matchers = this._matchers;
+		synchronized (matchers)
 		{
-			throw new Error("TODO");
+			matchers.add(__tm);
 		}
 	}
 	

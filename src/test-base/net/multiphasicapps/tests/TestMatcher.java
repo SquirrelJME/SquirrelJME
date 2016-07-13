@@ -67,6 +67,38 @@ public final class TestMatcher
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/12
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		// Check
+		if (!(__o instanceof TestMatcher))
+			return false;
+		
+		// Cast
+		TestMatcher o = (TestMatcher)__o;
+		return this.group.equals(o.group) &&
+			this.sub.equals(o.sub) &&
+			this.wildgroup.equals(o.wildgroup) &&
+			this.wildsub.equals(o.wildsub);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/12
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.group.hashCode() ^
+			this.sub.hashCode() ^
+			this.wildgroup.hashCode() ^
+			this.wildsub.hashCode();
+	}
+	
+	/**
 	 * Detects the type of wildcard to use.
 	 *
 	 * @param __bn The name to decode.
