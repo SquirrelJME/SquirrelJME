@@ -60,7 +60,7 @@ class __BaseName__
 				
 				// Lowercase uppers
 				if (c >= 'A' && c <= 'Z')
-					sb.append((char)('a' + (c - 'A')));
+					sb.append((char)(('a' + (c - 'A'))));
 				
 				// only keep valid
 				else if (__validChar(c))
@@ -118,7 +118,7 @@ class __BaseName__
 	private static boolean __validChar(char __c)
 	{
 		return __c == '.' || __c == '_' || (__c >= '0' && __c <= '9') ||
-			(__c >= 'a' && __c <= 'z');
+			(__c >= 'a' && __c <= 'z') || __c == '*';
 	}
 }
 

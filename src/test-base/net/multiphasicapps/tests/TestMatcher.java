@@ -198,7 +198,7 @@ public final class TestMatcher
 		}
 		
 		// If this point was reached then it could be an explicit sub-test
-		// which is not of a default one
+		// which is not of a default one.
 		throw new Error("TODO");
 	}
 	
