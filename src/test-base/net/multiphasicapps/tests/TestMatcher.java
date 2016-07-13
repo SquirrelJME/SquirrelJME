@@ -188,18 +188,24 @@ public final class TestMatcher
 		// See if any sub-tests match
 		String compsub = this.compsub;
 		__WildType__ wildsub = this.wildsub;
+		boolean rantest = false;
 		for (TestSubName sn : __tf)
 		{
 			// Does not match?
 			if (!__matches(compsub, wildsub, sn))
 				continue;
 			
-			throw new Error("TODO");
+			// A test has run so do not try running a non-default one
+			rantest = true;
+			
+			// Run test
+			__tc.__runTest(__ti, __tf, sn);
 		}
 		
 		// If this point was reached then it could be an explicit sub-test
 		// which is not of a default one.
-		throw new Error("TODO");
+		if (!rantest)
+			__tc.__runTest(__ti, __tf, this.sub);
 	}
 	
 	/**

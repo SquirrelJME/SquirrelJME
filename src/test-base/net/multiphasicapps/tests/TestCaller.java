@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,10 @@ public abstract class TestCaller
 	/** Test matchers to match against. */
 	private final Set<TestMatcher> _matchers =
 		new HashSet<>();
+	
+	/** Tests which have run. */
+	private final Deque<IndividualTest> _tests =
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the test caller.
@@ -153,6 +158,46 @@ public abstract class TestCaller
 		synchronized (options)
 		{
 			options.add(__to);
+		}
+	}
+	
+	/**
+	 * Runs a single test.
+	 *
+	 * @param __ti The test invoker.
+	 * @param __tf The input test family.
+	 * @param __sn The sub-test name to run.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/13
+	 */
+	final void __runTest(TestInvoker __ti, TestFamily __tf, TestSubName __sn)
+		throws NullPointerException
+	{
+		// Check
+		if (__ti == null || __tf == null || __sn == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup test
+		IndividualTest it = new IndividualTest(__tf.groupName(), __sn);
+		
+		// Need to catch all exceptions
+		try
+		{
+			__ti.runTest(it);
+		}
+		
+		// Any caught exceptions means failure
+		catch (Throwable t)
+		{
+			// Report it
+			it.failingException(TestFragmentName.of("*"), t);
+		}
+		
+		// Add to tests which have run
+		Deque<IndividualTest> tests = this._tests;
+		synchronized (tests)
+		{
+			tests.offerLast(it);
 		}
 	}
 }

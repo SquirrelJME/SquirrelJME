@@ -159,6 +159,25 @@ public final class IndividualTest
 	}
 	
 	/**
+	 * This is invoked when an exception is thrown where it should be
+	 * treated as failure (and not success).
+	 *
+	 * @param __f The fragment name.
+	 * @param __t The exception that caused failure.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/13
+	 */
+	public final void failingException(TestFragmentName __f, Throwable __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__f == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the group name of the test.
 	 *
 	 * @return The group name.
