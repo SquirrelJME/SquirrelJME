@@ -121,6 +121,17 @@ public final class TestFamily
 	}
 	
 	/**
+	 * Returns the test group name.
+	 *
+	 * @return The test group name.
+	 * @since 2016/07/13
+	 */
+	public final TestGroupName groupName()
+	{
+		return this.group;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/12
 	 */

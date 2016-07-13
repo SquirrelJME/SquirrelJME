@@ -116,7 +116,12 @@ public abstract class TestCaller
 			// Go through all services
 			for (TestInvoker ti : runtests)
 			{
-				throw new Error("TODO");
+				// Cache family
+				TestFamily tf = ti.testFamily();
+				
+				// See if any test matcher matches
+				for (TestMatcher tm : matchers)
+					tm.__possiblyRunTests(this, ti, tf);
 			}
 		}
 	}

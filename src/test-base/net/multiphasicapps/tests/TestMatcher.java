@@ -32,6 +32,12 @@ public final class TestMatcher
 	/** Wildcard sub type. */
 	protected final __WildType__ wildsub;
 	
+	/** Group comparison string. */
+	protected final String compgroup;
+	
+	/** Sub-test comparison string. */
+	protected final String compsub;
+	
 	/**
 	 * Initializes the test matcher.
 	 *
@@ -48,6 +54,8 @@ public final class TestMatcher
 		
 		// If there is an at sign then this includes a sub-test
 		int at = __m.indexOf('@');
+		TestGroupName group;
+		TestSubName sub;
 		if (at >= 0)
 		{
 			group = TestGroupName.of(__m.substring(0, at));
@@ -61,9 +69,17 @@ public final class TestMatcher
 			sub = TestSubName.of("*");
 		}
 		
+		// Set
+		this.group = group;
+		this.sub = sub;
+		
 		// Wildcards?
-		wildgroup = __wildcard(group);
-		wildsub = __wildcard(sub);
+		this.wildgroup = __wildcard(group);
+		this.wildsub = __wildcard(sub);
+		
+		// Setup comparison forms
+		this.compgroup = this.wildgroup.__base(group);
+		this.compsub = this.wildsub.__base(sub);
 	}
 	
 	/**
@@ -96,6 +112,80 @@ public final class TestMatcher
 			this.sub.hashCode() ^
 			this.wildgroup.hashCode() ^
 			this.wildsub.hashCode();
+	}
+	
+	/**
+	 * Checks whether the given name matches the given type and name.
+	 *
+	 * @param __self The actual string to compare with.
+	 * @param __type The current wildcard type.
+	 * @param __to The target comparison.
+	 * @return {@code true} if it matches.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/13
+	 */
+	final boolean __matches(String __self, __WildType__ __type,
+		__BaseName__ __to)
+		throws NullPointerException
+	{
+		// Check
+		if (__self == null || __type == null || __to == null)
+			throw new NullPointerException("NARG");
+		
+		// Get target string
+		String to = __to.toString();
+		
+		// Depends on the type
+		switch (__type)
+		{
+				// Exact match
+			case NONE:
+				return to.equals(__self);
+				
+				// Always matches
+			case ANY:
+				return true;
+				
+				// Starts with
+			case STARTS_WITH:
+				return to.startsWith(__self);
+				
+				// Ends with
+			case ENDS_WITH:
+				return to.endsWith(__self);
+				
+				// Contains
+			case CONTAINS:
+				return to.indexOf(__self) >= 0;
+			
+				// Unknown, fail
+			default:
+				throw new RuntimeException(String.format("WTFX %s", __type));
+		}
+	}
+	
+	/**
+	 * Checks whether the given test matches
+	 *
+	 * @param __tc The owning test caller.
+	 * @param __ti The test invoker.
+	 * @param __tf The test family to check.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/13
+	 */
+	final void __possiblyRunTests(TestCaller __tc, TestInvoker __ti,
+		TestFamily __tf)
+		throws NullPointerException
+	{
+		// Check
+		if (__tc == null || __ti == null || __tf == null)
+			throw new NullPointerException("NARG");
+		
+		// Not testing group?
+		if (!__matches(this.compgroup, this.wildgroup, __tf.groupName()))
+			return;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -171,6 +261,38 @@ public final class TestMatcher
 		
 		/** End. */
 		;
+		
+		/**
+		 * Returns the base for with the given comparison.
+		 *
+		 * @param __n The name to utilize.
+		 * @return The string to compare with.
+		 * @throws NullPointerException On null arguments
+		 * @since 2016/07/13
+		 */
+		private final String __base(__BaseName__ __n)
+			throws NullPointerException
+		{
+			// Check
+			if (__n == null)
+				throw new NullPointerException("NARG");
+			
+			// Depends
+			String s = __n.toString();
+			int n = s.length();
+			switch (this)
+			{
+				case NONE: return s;
+				case ANY: return "";
+				case STARTS_WITH: return s.substring(0, n - 1);
+				case ENDS_WITH: return s.substring(1);
+				case CONTAINS: return s.substring(1, n - 1);
+				
+					// Unknown
+				default:
+					throw new RuntimeException(String.format("WTFX %s", this));
+			}
+		}
 	}
 }
 
