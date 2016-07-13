@@ -181,16 +181,23 @@ public abstract class TestCaller
 		IndividualTest it = new IndividualTest(__tf.groupName(), __sn);
 		
 		// Need to catch all exceptions
-		try
+		try (IndividualTest.Result r = it.result("*exec*"))
 		{
-			__ti.runTest(it);
-		}
+			// Run the test
+			try
+			{
+				__ti.runTest(it);
+				
+				// Mark test run a success
+				r.success();
+			}
 		
-		// Any caught exceptions means failure
-		catch (Throwable t)
-		{
-			// Report it
-			it.failingException(TestFragmentName.of("*"), t);
+			// Any caught exceptions means failure
+			catch (Throwable t)
+			{
+				// Report failure
+				r.failingException(t);
+			}
 		}
 		
 		// Add to tests which have run

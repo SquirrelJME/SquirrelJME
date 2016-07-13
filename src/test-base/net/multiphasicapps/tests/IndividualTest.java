@@ -57,130 +57,6 @@ public final class IndividualTest
 	}
 	
 	/**
-	 * Compares two byte arrays to check how they compare to each other.
-	 *
-	 * @param __f The fragment name.
-	 * @param __c The comparison to make.
-	 * @param __a The expected array.
-	 * @param __b The resulting array.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/12
-	 */
-	public final void compareByteArrays(TestFragmentName __f,
-		TestComparison __c, byte[] __a, byte[] __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__f == null || __c == null || __a == null || __b == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Compares two int values to check how they compare to each other.
-	 *
-	 * @param __f The fragment name.
-	 * @param __c The comparison to make.
-	 * @param __a The expected value.
-	 * @param __b The resulting value.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/12
-	 */
-	public final void compareInt(TestFragmentName __f,
-		TestComparison __c, int __a, int __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__f == null || __c == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Compares two int arrays to check how they compare to each other.
-	 *
-	 * @param __f The fragment name.
-	 * @param __c The comparison to make.
-	 * @param __a The expected array.
-	 * @param __b The resulting array.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/12
-	 */
-	public final void compareIntArrays(TestFragmentName __f,
-		TestComparison __c, int[] __a, int[] __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__f == null || __c == null || __a == null || __b == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Compares two object values to check how they compare to each other.
-	 *
-	 * @param __f The fragment name.
-	 * @param __c The comparison to make.
-	 * @param __a The expected value.
-	 * @param __b The resulting value.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/12
-	 */
-	public final void compareObject(TestFragmentName __f,
-		TestComparison __c, Object __a, Object __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__f == null || __c == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * Compares two string values to check how they compare to each other.
-	 *
-	 * @param __f The fragment name.
-	 * @param __c The comparison to make.
-	 * @param __a The expected value.
-	 * @param __b The resulting value.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/12
-	 */
-	public final void compareString(TestFragmentName __f,
-		TestComparison __c, String __a, String __b)
-		throws NullPointerException
-	{
-		// Check
-		if (__f == null || __c == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * This is invoked when an exception is thrown where it should be
-	 * treated as failure (and not success).
-	 *
-	 * @param __f The fragment name.
-	 * @param __t The exception that caused failure.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/13
-	 */
-	public final void failingException(TestFragmentName __f, Throwable __t)
-		throws NullPointerException
-	{
-		// Check
-		if (__f == null || __t == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
-	
-	/**
 	 * Returns the group name of the test.
 	 *
 	 * @return The group name.
@@ -189,23 +65,6 @@ public final class IndividualTest
 	public final TestGroupName groupName()
 	{
 		return this.group;
-	}
-	
-	/**
-	 * Notes something that is neither a passing nor failing state.
-	 *
-	 * @param __f The fragment name.
-	 * @param __v The value to note.
-	 * @throws NullPointerException If no fragment name was specified.
-	 * @since 2016/07/12
-	 */
-	public final void note(TestFragmentName __f, Object __v)
-	{
-		// Check
-		if (__f == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -284,6 +143,7 @@ public final class IndividualTest
 	 * @since 2016/07/12
 	 */
 	public final class Result
+		implements AutoCloseable
 	{
 		/** The fragment name. */
 		protected final TestFragmentName fragment;
@@ -317,6 +177,133 @@ public final class IndividualTest
 		}
 		
 		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/13
+		 */
+		@Override
+		public void close()
+		{
+			throw new Error("TODO");
+		}
+	
+		/**
+		 * Compares two byte arrays to check how they compare to each other.
+		 *
+		 * @param __c The comparison to make.
+		 * @param __a The expected array.
+		 * @param __b The resulting array.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/12
+		 */
+		public final void compareByteArrays(TestComparison __c, byte[] __a,
+			byte[] __b)
+			throws NullPointerException
+		{
+			// Check
+			if (__c == null || __a == null || __b == null)
+				throw new NullPointerException("NARG");
+		
+			throw new Error("TODO");
+		}
+	
+		/**
+		 * Compares two int values to check how they compare to each other.
+		 *
+		 * @param __c The comparison to make.
+		 * @param __a The expected value.
+		 * @param __b The resulting value.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/12
+		 */
+		public final void compareInt(TestComparison __c, int __a, int __b)
+			throws NullPointerException
+		{
+			// Check
+			if (__c == null)
+				throw new NullPointerException("NARG");
+		
+			throw new Error("TODO");
+		}
+	
+		/**
+		 * Compares two int arrays to check how they compare to each other.
+		 *
+		 * @param __c The comparison to make.
+		 * @param __a The expected array.
+		 * @param __b The resulting array.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/12
+		 */
+		public final void compareIntArrays(TestComparison __c, int[] __a,
+			int[] __b)
+			throws NullPointerException
+		{
+			// Check
+			if (__c == null || __a == null || __b == null)
+				throw new NullPointerException("NARG");
+		
+			throw new Error("TODO");
+		}
+	
+		/**
+		 * Compares two object values to check how they compare to each other.
+		 *
+		 * @param __c The comparison to make.
+		 * @param __a The expected value.
+		 * @param __b The resulting value.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/12
+		 */
+		public final void compareObject(TestComparison __c, Object __a,
+			Object __b)
+			throws NullPointerException
+		{
+			// Check
+			if (__c == null)
+				throw new NullPointerException("NARG");
+		
+			throw new Error("TODO");
+		}
+	
+		/**
+		 * Compares two string values to check how they compare to each other.
+		 *
+		 * @param __c The comparison to make.
+		 * @param __a The expected value.
+		 * @param __b The resulting value.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/12
+		 */
+		public final void compareString(TestComparison __c, String __a,
+			String __b)
+			throws NullPointerException
+		{
+			// Check
+			if (__c == null)
+				throw new NullPointerException("NARG");
+		
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * This is invoked when an exception is thrown where it should be
+		 * treated as failure (and not success).
+		 *
+		 * @param __t The exception that caused failure.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/13
+		 */
+		public final void failingException(Throwable __t)
+			throws NullPointerException
+		{
+			// Check
+			if (__t == null)
+				throw new NullPointerException("NARG");
+		
+			throw new Error("TODO");
+		}
+		
+		/**
 		 * Returns the fragment name being used.
 		 *
 		 * @return The fragment name.
@@ -337,6 +324,17 @@ public final class IndividualTest
 		{
 			return this.id;
 		}
+	
+		/**
+		 * Notes something that is neither a passing nor failing state.
+		 *
+		 * @param __v The value to note.
+		 * @since 2016/07/12
+		 */
+		public final void note(Object __v)
+		{
+			throw new Error("TODO");
+		}
 		
 		/**
 		 * Returns the test status.
@@ -347,6 +345,16 @@ public final class IndividualTest
 		public final Status status()
 		{
 			return this.status;
+		}
+		
+		/**
+		 * Marks that the test was a success with no further information.
+		 *
+		 * @since 2016/07/13
+		 */
+		public final void success()
+		{
+			throw new Error("TODO");
 		}
 	}
 	
