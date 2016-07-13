@@ -198,7 +198,13 @@ public final class IndividualTest
 			// Lock
 			synchronized (this._lock)
 			{
-				throw new Error("TODO");
+				// {@squrreljme.error AG07 No status was associated with the
+				// given test. (The test group; The sub-test; The test
+				// fragment)}
+				if (this._status == null)
+					throw new IllegalStateException(String.format(
+						"AG07 %s %s %s", IndividualTest.this.group,
+						IndividualTest.this.name, this.fragment));
 			}
 		}
 	
