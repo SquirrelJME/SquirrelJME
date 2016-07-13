@@ -30,8 +30,11 @@ public final class IndividualTest
 	protected final TestSubName name;
 	
 	/** Test results. */
-	protected final List<Result> results =
+	private final List<Result> _results =
 		new ArrayList<>();
+	
+	/** Next test ID. */
+	private volatile int _nextid;
 	
 	/**
 	 * Initializes the individual test with the given sub-name.
@@ -259,6 +262,22 @@ public final class IndividualTest
 	}
 	
 	/**
+	 * Returns the next test ID to use.
+	 *
+	 * @return The next test ID.
+	 * @since 2016/07/13
+	 */
+	private final int __nextId()
+	{
+		// Lock
+		List<Result> results = this._results;
+		synchronized (results)
+		{
+			return this._nextid++;
+		}
+	}
+	
+	/**
 	 * This represents a result of a test fragment, since there may be a need
 	 * for multiple tests to exist for a given sub-test.
 	 *
@@ -269,22 +288,32 @@ public final class IndividualTest
 		/** The fragment name. */
 		protected final TestFragmentName fragment;
 		
+		/** The test ID. */
+		protected final int id;
+		
+		/** The test status. */
+		protected final Status status;
+		
 		/**
 		 * Initializes the result.
 		 *
 		 * @param __n The fragment name.
+		 * @param __dx The test number.
+		 * @param __st The test status.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/07/12
 		 */
-		private Result(TestFragmentName __n)
+		private Result(TestFragmentName __n, int __dx, Status __st)
 			throws NullPointerException
 		{
 			// Check
-			if (__n == null)
+			if (__n == null || __st == null)
 				throw new NullPointerException("NARG");
 			
 			// Set
 			this.fragment = __n;
+			this.id = __dx;
+			this.status = __st;
 		}
 		
 		/**
@@ -297,6 +326,45 @@ public final class IndividualTest
 		{
 			return this.fragment;
 		}
+		
+		/**
+		 * Returns the test identifier.
+		 *
+		 * @return The test identifier.
+		 * @since 2016/07/13
+		 */
+		public final int id()
+		{
+			return this.id;
+		}
+		
+		/**
+		 * Returns the test status.
+		 *
+		 * @return The test status.
+		 * @since 2016/07/13
+		 */
+		public final Status status()
+		{
+			return this.status;
+		}
+	}
+	
+	/**
+	 * This indicates the status of a given test.
+	 *
+	 * @since 2016/07/13
+	 */
+	public static enum Status
+	{
+		/** Test passed. */
+		PASS,
+		
+		/** Test failed. */
+		FAIL,
+		
+		/** End. */
+		;
 	}
 }
 
