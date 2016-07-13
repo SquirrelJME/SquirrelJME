@@ -26,7 +26,7 @@ public final class UnsignedLong
 	private UnsignedLong()
 		throws RuntimeException
 	{
-		throw new RuntimeException("WTFX");
+		throw new RuntimeException("OOPS");
 	}
 	
 	/**

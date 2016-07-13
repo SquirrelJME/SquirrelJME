@@ -45,7 +45,7 @@ class __ReadMember__
 	 */
 	private __ReadMember__()
 	{
-		throw new RuntimeException("WTFX");
+		throw new RuntimeException("OOPS");
 	}
 	
 	/**

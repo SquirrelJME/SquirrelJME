@@ -160,7 +160,7 @@ public final class TestMatcher
 			
 				// Unknown, fail
 			default:
-				throw new RuntimeException(String.format("WTFX %s", __type));
+				throw new RuntimeException(String.format("OOPS %s", __type));
 		}
 	}
 	
@@ -290,7 +290,7 @@ public final class TestMatcher
 				
 					// Unknown
 				default:
-					throw new RuntimeException(String.format("WTFX %s", this));
+					throw new RuntimeException(String.format("OOPS %s", this));
 			}
 		}
 	}

@@ -268,7 +268,7 @@ public class InflateDataPipe
 				
 				// Unknown
 			default:
-				throw new InflaterException("WTFX");
+				throw new InflaterException("OOPS");
 		}
 	}
 	

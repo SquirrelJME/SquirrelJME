@@ -194,7 +194,7 @@ public final class IBM437CodePage
 			
 				// Should not occur but in case it does
 			default:
-				throw new RuntimeException("WTFX");
+				throw new RuntimeException("OOPS");
 		}
 	}
 	

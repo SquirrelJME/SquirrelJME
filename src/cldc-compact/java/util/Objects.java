@@ -25,7 +25,7 @@ public final class Objects
 	 */
 	private Objects()
 	{
-		throw new RuntimeException("WTFX");
+		throw new RuntimeException("OOPS");
 	}
 	
 	/**

@@ -26,7 +26,7 @@ final class __InflateFixedHuffman__
 	 */
 	private __InflateFixedHuffman__()
 	{
-		throw new RuntimeException("WTFX");
+		throw new RuntimeException("OOPS");
 	}
 	
 	/**

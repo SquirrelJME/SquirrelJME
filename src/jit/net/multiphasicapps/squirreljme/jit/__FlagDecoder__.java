@@ -27,7 +27,7 @@ final class __FlagDecoder__
 	 */
 	private __FlagDecoder__()
 	{
-		throw new RuntimeException("WTFX");
+		throw new RuntimeException("OOPS");
 	}
 	
 	/**

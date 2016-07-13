@@ -281,7 +281,7 @@ class __PoolDecoder__
 					
 						// Unknown
 					default:
-						throw new RuntimeException(String.format("WTFX %d",
+						throw new RuntimeException(String.format("OOPS %d",
 							tag));
 				}
 			}

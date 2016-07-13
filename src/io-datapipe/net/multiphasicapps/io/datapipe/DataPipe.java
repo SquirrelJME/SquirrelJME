@@ -699,7 +699,7 @@ public abstract class DataPipe
 				
 				// Unknown
 				else
-					throw new RuntimeException("WTFX");
+					throw new RuntimeException("OOPS");
 			}
 			
 			// Did fail

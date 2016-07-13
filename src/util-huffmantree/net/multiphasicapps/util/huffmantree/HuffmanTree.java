@@ -198,7 +198,7 @@ public class HuffmanTree<T>
 			}
 			
 			// Should not occur
-			throw new RuntimeException("WTFX");
+			throw new RuntimeException("OOPS");
 		}
 	}
 	
