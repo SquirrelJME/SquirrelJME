@@ -183,7 +183,7 @@ public final class IndividualTest
 			new ArrayList<>(3);
 		
 		/** The result of a given test. */
-		private volatile Status _status;
+		private volatile TestPassState _status;
 		
 		/** Was a result given? */
 		private volatile boolean _done;
@@ -479,7 +479,7 @@ public final class IndividualTest
 				__setDone();
 				
 				// Force failure
-				this._status = Status.FAIL;
+				this._status = TestPassState.FAIL;
 				
 				// Set exception
 				this._exception = __t;
@@ -540,7 +540,7 @@ public final class IndividualTest
 		 * @throws IllegalStateException If the test has no result.
 		 * @since 2016/07/13
 		 */
-		public final Status status()
+		public final TestPassState status()
 			throws IllegalStateException
 		{
 			// Lock
@@ -548,7 +548,7 @@ public final class IndividualTest
 			{
 				// {@squirreljme.error AG05 The result of the test is not
 				// known. (The test group; The sub-test; The test fragment)}
-				Status rv = this._status;
+				TestPassState rv = this._status;
 				if (!this._done	|| rv == null)
 					throw new IllegalStateException(String.format(
 						"AG05 %s %s %s", IndividualTest.this.group,
@@ -604,26 +604,6 @@ public final class IndividualTest
 				this._done = true;
 			}
 		}
-	}
-	
-	/**
-	 * This indicates the status of a given test.
-	 *
-	 * @since 2016/07/13
-	 */
-	public static enum Status
-	{
-		/** Not passing or failing, but just a note. */
-		NOTE,
-		
-		/** Test passed. */
-		PASS,
-		
-		/** Test failed. */
-		FAIL,
-		
-		/** End. */
-		;
 	}
 }
 
