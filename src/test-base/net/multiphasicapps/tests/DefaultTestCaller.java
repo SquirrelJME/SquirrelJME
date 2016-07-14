@@ -164,7 +164,6 @@ public class DefaultTestCaller
 				output.printf(": ");
 				
 				// Print data in escaped form
-				output.print('\t');
 				__escape(output, data[i]);
 				output.println();
 			}

@@ -160,9 +160,23 @@ public class TestResult
 			// Done
 			__setDone();
 			
-			if (true)
-				throw new Error("TODO");
-		
+			// Compare
+			int comp;
+			if (__a < __b)
+				comp = -1;
+			else if (__a > __b)
+				comp = 1;
+			else
+				comp = 0;
+			
+			// Set status
+			this._status = __c.__passState(comp);
+				
+			// Add data points
+			data.add(__c);
+			data.add(__a);
+			data.add(__b);
+			
 			// No more results
 			close();
 		}
@@ -212,12 +226,16 @@ public class TestResult
 	/**
 	 * Compares two object values to check how they compare to each other.
 	 *
+	 * An input of {@code null} is considered less than a non-{@code null}
+	 * value.
+	 *
 	 * @param __c The comparison to make.
 	 * @param __a The expected value.
 	 * @param __b The resulting value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
+	@SuppressWarnings({"unchecked"})
 	public final void compareObject(TestComparison __c, Object __a,
 		Object __b)
 		throws NullPointerException
@@ -233,8 +251,57 @@ public class TestResult
 			// Done
 			__setDone();
 			
-			if (true)
-				throw new Error("TODO");
+			// Only a single side is null?
+			boolean na = (__a == null);
+			boolean nb = (__b == null);
+			int comp;
+			TestPassState autoset = null;
+			if (na && !nb)
+				comp = -1;
+			
+			// Right side is null
+			else if (!na && nb)
+				comp = 1;
+			
+			// Both sides are null
+			else if (!na && !nb)
+				comp = 0;
+			
+			// Requires more work
+			else
+			{
+				// Both sides are comparable
+				if (__a instanceof Comparable && __b instanceof Comparable)
+					comp = ((Comparable)__a).compareTo((Comparable)__b);
+				
+				// Equality only
+				else
+				{
+					// Automatically fail since the values cannot compare to
+					// each other.
+					if (__c != TestComparison.EQUALS &&
+						__c != TestComparison.NOT_EQUALS)
+					{
+						comp = Integer.MIN_VALUE;
+						autoset = TestPassState.FAIL;
+					}
+					
+					// Check equality
+					else
+						comp = (__a.equals(__b) ? 0 : -1);
+				}
+			}
+			
+			// Set status
+			if (autoset != null)
+				this._status = autoset;
+			else
+				this._status = __c.__passState(comp);
+				
+			// Add data points
+			data.add(__c);
+			data.add(__a);
+			data.add(__b);
 		
 			// No more results
 			close();
@@ -254,23 +321,7 @@ public class TestResult
 		String __b)
 		throws NullPointerException
 	{
-		// Check
-		if (__c == null)
-			throw new NullPointerException("NARG");
-	
-		// Lock
-		List<Object> data = this._data;
-		synchronized (this._lock)
-		{
-			// Done
-			__setDone();
-			
-			if (true)
-				throw new Error("TODO");
-		
-			// No more results
-			close();
-		}
+		compareObject(__c, __a, __b);
 	}
 	
 	/**
