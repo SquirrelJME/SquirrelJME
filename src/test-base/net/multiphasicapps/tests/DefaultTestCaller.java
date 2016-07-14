@@ -263,9 +263,12 @@ public class DefaultTestCaller
 		else if (__v instanceof boolean[])
 			__escapeBooleanArray(__ps, (boolean[])__v);
 		
+		// Byte array
+		else if (__v instanceof byte[])
+			__escapeByteArray(__ps, (byte[])__v);
+		
 		// Integral array
-		else if ((__v instanceof byte[]) ||
-			(__v instanceof short[]) || (__v instanceof char[]) ||
+		else if ((__v instanceof short[]) || (__v instanceof char[]) ||
 			(__v instanceof int[]) || (__v instanceof long[]))
 			throw new Error("TODO");
 		
@@ -298,9 +301,38 @@ public class DefaultTestCaller
 			throw new NullPointerException("NARG");
 		
 		// Print values
+		__ps.print('[');
 		int n = __v.length;
 		for (int i = 0; i < n; i++)
 			__ps.print((__v[i] ? 'T' : 'F'));
+		__ps.print(']');
+	}
+	
+	/**
+	 * Prints a byte array.
+	 *
+	 * @param __ps The target stream.
+	 * @param __v The array to print.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/14
+	 */
+	private static void __escapeByteArray(PrintStream __ps, byte[] __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__ps == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Print values
+		__ps.print('[');
+		int n = __v.length;
+		for (int i = 0; i < n; i++)
+		{
+			if (i > 0)
+				__ps.print('.');
+			__ps.printf("%02x", __v[i]);
+		}
+		__ps.print(']');
 	}
 	
 	/**
