@@ -4,7 +4,7 @@
 #     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
 #     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
-# SquirrelJME is under the GNU Affero General Public License v3, or later.
+# SquirrelJME is under the GNU General Public License v3, or later.
 # For more information see license.txt.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Checks for files which do no contain the valid ASCII range.
