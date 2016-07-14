@@ -168,6 +168,9 @@ public final class IndividualTest
 		/** Was a result given? */
 		private volatile boolean _done;
 		
+		/** The associated exception. */
+		private volatile Throwable _exception;
+		
 		/**
 		 * Initializes the result.
 		 *
@@ -383,8 +386,11 @@ public final class IndividualTest
 				// Done
 				__setDone();
 				
-				if (true)
-					throw new Error("TODO");
+				// Force failure
+				this._status = Status.FAIL;
+				
+				// Set exception
+				this._exception = __t;
 			
 				// No more results
 				close();
