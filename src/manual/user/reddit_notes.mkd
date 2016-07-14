@@ -32,6 +32,16 @@ __What has been done:__
 
 ===============================================================================
 
+__Update 2016/07/14:__
+
+Still working on this project, refactoring some parts of the code and making
+things more efficient so that the project in the future is not a giant mess.
+
+Also, I have decided to switch to the **GNU GPLv3** from the **GNU AGPLv3**,
+this means that there would be less restrictions to the code. I will slowly be
+changing the licenses in the files (since having a massive 700 file commit is
+a bit ugly).
+
 __Update 2016/05/17:__
 
 I updated my main site to be the repository for this software (rather than a
