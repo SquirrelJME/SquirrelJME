@@ -90,12 +90,22 @@ public class DefaultTestCaller
 	}
 	
 	/**
+	 * Prints the results of all tests to the initialized output stream.
+	 *
+	 * @since 2016/07/13
+	 */
+	public final void printResults()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the target print stream.
 	 *
 	 * @return The target print stream.
 	 * @since 2016/03/03
 	 */
-	public PrintStream printStream()
+	public final PrintStream printStream()
 	{
 		return output;
 	}
@@ -113,6 +123,9 @@ public class DefaultTestCaller
 		
 		// Run tests
 		tc.runTests();
+		
+		// Output test results
+		tc.printResults();
 	}
 	
 	/**
