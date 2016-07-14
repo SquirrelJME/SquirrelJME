@@ -159,9 +159,9 @@ public class DefaultTestCaller
 			for (int i = 0; i < nd; i++)
 			{
 				// Print header
-				output.print("\t@ ");
+				output.print("\t@");
 				output.print(i + 1);
-				output.printf(": ");
+				output.printf(":");
 				
 				// Print data in escaped form
 				__escape(output, data[i]);
@@ -413,7 +413,7 @@ public class DefaultTestCaller
 		// Could not convert object to a string representation
 		catch (Throwable t)
 		{
-			__ps.print("<CAUGHT EXCEPTION!>: ");
+			__ps.print("<EXCEPTION!>:");
 			__escapeNormal(__ps, t);
 			return;
 		}
