@@ -15,7 +15,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 ## Licenses
 
   * Source:
-    [GNU Affero General Public License, Version 3 or later](license.mkd)
+    [GNU General Public License, Version 3 or later](license.mkd)
   * Non-Source:
     [Creative Commons CC-BY-SA 4.0](license.mkd)
 
