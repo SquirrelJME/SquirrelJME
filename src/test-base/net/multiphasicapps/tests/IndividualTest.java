@@ -180,7 +180,7 @@ public final class IndividualTest
 		
 		/** Data points for a given test (there may be zero or more). */
 		private final List<Object> _data =
-			new ArrayList<>(2);
+			new ArrayList<>(3);
 		
 		/** The result of a given test. */
 		private volatile Status _status;
@@ -249,14 +249,24 @@ public final class IndividualTest
 				throw new NullPointerException("NARG");
 			
 			// Lock
+			List<Object> data = this._data;
 			synchronized (this._lock)
 			{
 				// Done
 				__setDone();
 				
+				// Clone both arrays
+				byte[] a = __a.clone();
+				byte[] b = __b.clone();
+				
 				if (true)
 					throw new Error("TODO");
 			
+				// Add data points
+				data.add(__c);
+				data.add(a);
+				data.add(b);
+				
 				// No more results
 				close();
 			}
@@ -279,6 +289,7 @@ public final class IndividualTest
 				throw new NullPointerException("NARG");
 		
 			// Lock
+			List<Object> data = this._data;
 			synchronized (this._lock)
 			{
 				// Done
@@ -310,13 +321,41 @@ public final class IndividualTest
 				throw new NullPointerException("NARG");
 		
 			// Lock
+			List<Object> data = this._data;
 			synchronized (this._lock)
 			{
 				// Done
 				__setDone();
 				
+				// Clone both arrays
+				int[] a = __a.clone();
+				int[] b = __b.clone();
+				
+				// Compare values
+				int na = a.length, nb = b.length, min = Math.min(na, nb);
+				for (int i = 0; i < min; i++)
+				{
+					// Compare both values
+					int va = a[i], vb = b[i];
+					int comp;
+					
+					if (va < vb)
+						comp = -1;
+					else if (va > vb)
+						comp = 1;
+					else
+						comp = 0;
+						
+					if (true)
+						throw new Error("TODO");
+				}
 				if (true)
 					throw new Error("TODO");
+				
+				// Add data points
+				data.add(__c);
+				data.add(a);
+				data.add(b);
 			
 				// No more results
 				close();
@@ -341,6 +380,7 @@ public final class IndividualTest
 				throw new NullPointerException("NARG");
 		
 			// Lock
+			List<Object> data = this._data;
 			synchronized (this._lock)
 			{
 				// Done
@@ -372,6 +412,7 @@ public final class IndividualTest
 				throw new NullPointerException("NARG");
 		
 			// Lock
+			List<Object> data = this._data;
 			synchronized (this._lock)
 			{
 				// Done
