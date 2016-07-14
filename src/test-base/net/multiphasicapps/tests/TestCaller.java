@@ -133,7 +133,8 @@ public abstract class TestCaller
 				
 				// Just running all tests
 				if (nomatch)
-					throw new Error("TODO");
+					for (TestSubName sn : tf)
+						__runTest(ti, tf, sn);
 				
 				// See if any test matcher matches
 				else
