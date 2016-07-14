@@ -126,6 +126,20 @@ public class DefaultTestCaller
 			output.print('#');
 			output.println(result.fragmentName());
 			
+			// Print data points associated with a given test
+			Object[] data = result.data();
+			int nd = data.length;
+			for (int i = 0; i < nd; i++)
+			{
+				// Print header
+				output.print("@@@ ");
+				output.println(i + 1);
+				
+				// Print data in escaped form
+				__escape(output, data[i]);
+				output.println();
+			}
+			
 			// Is there an associated exception?
 			// Print trace to find where the problem is better than guessing
 			Throwable t = result.exception();

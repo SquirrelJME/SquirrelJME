@@ -178,6 +178,10 @@ public final class IndividualTest
 		private final Object _lock =
 			new Object();
 		
+		/** Data points for a given test (there may be zero or more). */
+		private final List<Object> _data =
+			new ArrayList<>(2);
+		
 		/** The result of a given test. */
 		private volatile Status _status;
 		
@@ -378,6 +382,22 @@ public final class IndividualTest
 			
 				// No more results
 				close();
+			}
+		}
+		
+		/**
+		 * Returns any data which is associated with this test.
+		 *
+		 * @return The data points, may be an empty array if there is no data.
+		 * @since 2016/07/14
+		 */
+		public final Object[] data()
+		{
+			// Lock
+			List<Object> data = this._data;
+			synchronized (this._lock)
+			{
+				return data.<Object>toArray(new Object[data.size()]);
 			}
 		}
 		
