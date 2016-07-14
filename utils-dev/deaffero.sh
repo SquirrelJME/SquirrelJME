@@ -7,11 +7,22 @@
 # SquirrelJME is under the GNU General Public License v3, or later.
 # For more information see license.mkd.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Describe this.
+# DESCRIPTION: Removes the afferro moniker from a given number of files.
 
 # Force C locale
 export LC_ALL=C
 
 # Directory of this script
 __exedir="$(dirname -- "$0")"
+
+# Only change the first 25 files (to prevent massive commits)
+__from="GNU Affero General Public License v3"
+grep -rl -e 'GNU Affero General Public License v3\+\{1\}' | \
+	sort | head -n 25 | while read __file
+do
+	if sed "s/$__from/GNU General Public License v3/g" < "$__file" > /tmp/$$
+	then
+		mv /tmp/$$ "$__file"
+	fi
+done
 
