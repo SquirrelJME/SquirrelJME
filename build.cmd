@@ -4,7 +4,7 @@ REM Multi-Phasic Applications: SquirrelJME
 REM     Copyright (C) 2013-2016 Steven Gawroriski <steven@multiphasicapps.net>
 REM     Copyright (C) 2013-2016 Multi-Phasic Applications <multiphasicapps.net>
 REM ---------------------------------------------------------------------------
-REM SquirrelJME is under the GNU Affero General Public License v3, or later.
+REM SquirrelJME is under the GNU General Public License v3, or later.
 REM For more information see license.mkd.
 REM ---------------------------------------------------------------------------
 REM DESCRIPTION: Builds whatever is needed to support hairball and then invokes

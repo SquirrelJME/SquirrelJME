@@ -30,7 +30,7 @@ accepted.
 Additionally, if the **GNU AGPLv3** and **CC-BY-SA 4.0** are not desirable a
 proprietary license may be purchased for a negotiable fee.
 
-## GNU Affero General Public License v3 or Later
+## GNU General Public License v3 or Later
 
 		                GNU GENERAL PUBLIC LICENSE
 		                   Version 3, 29 June 2007
