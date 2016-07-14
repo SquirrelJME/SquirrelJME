@@ -1,2 +1,12 @@
 # 2016/07/14
 
+## 14:38
+
+I believe I am going to switch from the AGPLv3 to the GPLv3, the AGPLv3 is nice
+but the server including bits especially when it comes to a client does not
+make much sense and it can be difficult. For example, if I wrote a web browser
+then the web server provider has the right to ask for the source code that the
+client uses. I would need to have some exceptions in place. I also want to
+invade the IoT world and AGPLv3 may cause some issues there. I have no
+intention of leaving the GPLv3 however.
+
