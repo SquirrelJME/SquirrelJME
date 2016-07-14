@@ -18,7 +18,7 @@ __exedir="$(dirname -- "$0")"
 # Only change the first 25 files (to prevent massive commits)
 __from="GNU Affero General Public License v3"
 grep -rl -e 'GNU Affero General Public License v3\+\{1\}' | \
-	sort | head -n 25 | while read __file
+	sort | head -n 33 | while read __file
 do
 	if sed "s/$__from/GNU General Public License v3/g" < "$__file" > /tmp/$$
 	then
