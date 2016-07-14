@@ -382,6 +382,21 @@ public final class IndividualTest
 		}
 		
 		/**
+		 * Returns associated exception information.
+		 *
+		 * @return An associated exception or {@code null} if none was thrown.
+		 * @since 2016/07/14
+		 */
+		public final Throwable exception()
+		{
+			// Lock
+			synchronized (this._lock)
+			{
+				return this._exception;
+			}
+		}
+		
+		/**
 		 * This is invoked when an exception is thrown where it should be
 		 * treated as failure (and not success).
 		 *

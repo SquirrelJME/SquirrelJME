@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.tests;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -108,7 +113,7 @@ public class DefaultTestCaller
 		
 		// Go through all results
 		PrintStream output = this.output;
-		for (IndividualTest.Result[] result : __t.results())
+		for (IndividualTest.Result result : __t.results())
 		{
 			// Print test name and information
 			output.print(__t.groupName());
@@ -117,7 +122,48 @@ public class DefaultTestCaller
 			output.print('#');
 			output.print(result.fragmentName());
 			
-			throw new Error("TODO");
+			// Print the actual result
+			output.print(": ");
+			output.println(result.status());
+			
+			// Is there an associated exception?
+			// Print trace to find where the problem is better than guessing
+			Throwable t = result.exception();
+			if (t != null)
+				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					PrintStream st = new PrintStream(baos, true, "utf-8"))
+				{
+					// Print trace into the stream
+					t.printStackTrace(st);
+			
+					// Write 
+					try (BufferedReader br = new BufferedReader(
+						new InputStreamReader(
+							new ByteArrayInputStream(baos.toByteArray()),
+								"utf-8")))
+					{
+						for (;;)
+						{
+							// Get line
+							String ln = br.readLine();
+					
+							// EOF?
+							if (ln == null)
+								break;
+					
+							// Escape print it
+							output.print('\t');
+							__escape(output, ln.trim());
+							output.println();
+						}
+					}
+				}
+		
+				// Fail, but indicate it
+				catch (IOException ioe)
+				{
+					output.println("\t IOE-DURING-TRACE-PRINT");
+				}
 		}
 	}
 	
@@ -130,6 +176,81 @@ public class DefaultTestCaller
 	public final PrintStream printStream()
 	{
 		return output;
+	}
+	
+	/**
+	 * Escapes the string representation of the object. This is so that any
+	 * parsers that parse the pass/failure state need not worry about special
+	 * characters, especially if the input includes a newline or similar.
+	 *
+	 * @param __ps The print stream to write to.
+	 * @param __v The object to escape.
+	 * @throws NullPointerException If no print stream was specified.
+	 * @since 2016/03/03
+	 */
+	private void __escape(PrintStream __ps, Object __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__ps == null)
+			throw new NullPointerException("NARG");
+		
+		// Null is always null
+		if (__v == null)
+		{
+			__ps.print("null");
+			return;
+		}
+		
+		// Get as a string
+		String str = __v.toString();
+		
+		// Build escaped form
+		int n = str.length();
+		for (int i = 0; i < n; i++)
+		{
+			// Get character here
+			char c = str.charAt(i);
+			
+			// If normal ASCII, print it normal
+			if (c >= 0x21 && c <= 0x7F)
+				__ps.print(c);
+			
+			// Single slash escape space
+			else if (c == 0x20)
+				__ps.print("\\ ");
+			
+			// Newline?
+			else if (c == '\n')
+				__ps.print("\\n");
+			
+			// Carriage return?
+			else if (c == '\r')
+				__ps.print("\\r");
+			
+			// Tab?
+			else if (c == '\t')
+				__ps.print("\\t");
+			
+			// Compact hex form
+			else if (c <= 0xFF)
+			{
+				__ps.print("\\");
+				__ps.print(Character.forDigit((c & 0700) >>> 6, 8));
+				__ps.print(Character.forDigit((c & 0070) >>> 3, 8));
+				__ps.print(Character.forDigit((c & 0007), 8));
+			}
+			
+			// Long character form
+			else
+			{
+				__ps.print("\\u");
+				__ps.print(Character.forDigit((c & 0xF000) >>> 12, 16));
+				__ps.print(Character.forDigit((c & 0x0F00) >>> 8, 16));
+				__ps.print(Character.forDigit((c & 0x00F0) >>> 4, 16));
+				__ps.print(Character.forDigit((c & 0x000F), 16));
+			}
+		}
 	}
 	
 	/**
