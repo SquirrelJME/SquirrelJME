@@ -267,13 +267,24 @@ public class DefaultTestCaller
 		else if (__v instanceof byte[])
 			__escapeByteArray(__ps, (byte[])__v);
 		
-		// Integral array
-		else if ((__v instanceof short[]) || (__v instanceof char[]) ||
-			(__v instanceof int[]) || (__v instanceof long[]))
+		// Short array
+		else if (__v instanceof short[])
 			throw new Error("TODO");
 		
-		// Floating point array
-		else if ((__v instanceof float[]) || (__v instanceof double[]))
+		// Integer array
+		else if (__v instanceof int[])
+			__escapeIntArray(__ps, (int[])__v);
+		
+		// Long array
+		else if (__v instanceof long[])
+			throw new Error("TODO");
+		
+		// Float array
+		else if (__v instanceof float[])
+			throw new Error("TODO");
+		
+		// Double array
+		else if (__v instanceof double[])
 			throw new Error("TODO");
 		
 		// Object array
@@ -304,7 +315,12 @@ public class DefaultTestCaller
 		__ps.print('[');
 		int n = __v.length;
 		for (int i = 0; i < n; i++)
+		{
+			if (i > 0)
+				__ps.print(',');
+			
 			__ps.print((__v[i] ? 'T' : 'F'));
+		}
 		__ps.print(']');
 	}
 	
@@ -329,8 +345,45 @@ public class DefaultTestCaller
 		for (int i = 0; i < n; i++)
 		{
 			if (i > 0)
-				__ps.print('.');
-			__ps.printf("%02x", __v[i]);
+				__ps.print(',');
+			
+			__ps.print(Character.forDigit((__v[i] >>> 4) & 0xF, 16));
+			__ps.print(Character.forDigit(__v[i] & 0xF, 16));
+		}
+		__ps.print(']');
+	}
+	
+	/**
+	 * Prints an int array.
+	 *
+	 * @param __ps The target stream.
+	 * @param __v The array to print.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/14
+	 */
+	private static void __escapeIntArray(PrintStream __ps, int[] __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__ps == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Print values
+		__ps.print('[');
+		int n = __v.length;
+		for (int i = 0; i < n; i++)
+		{
+			if (i > 0)
+				__ps.print(',');
+			
+			__ps.print(Character.forDigit((__v[i] >>> 28) & 0xF, 16));
+			__ps.print(Character.forDigit((__v[i] >>> 24) & 0xF, 16));
+			__ps.print(Character.forDigit((__v[i] >>> 20) & 0xF, 16));
+			__ps.print(Character.forDigit((__v[i] >>> 16) & 0xF, 16));
+			__ps.print(Character.forDigit((__v[i] >>> 12) & 0xF, 16));
+			__ps.print(Character.forDigit((__v[i] >>> 8) & 0xF, 16));
+			__ps.print(Character.forDigit((__v[i] >>> 4) & 0xF, 16));
+			__ps.print(Character.forDigit(__v[i] & 0xF, 16));
 		}
 		__ps.print(']');
 	}
