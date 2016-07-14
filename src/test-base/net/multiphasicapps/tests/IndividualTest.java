@@ -30,7 +30,7 @@ public final class IndividualTest
 	protected final TestSubName name;
 	
 	/** Test results. */
-	private final List<Result> _results =
+	private final List<TestResult> _results =
 		new ArrayList<>();
 	
 	/** Next test ID. */
@@ -75,7 +75,7 @@ public final class IndividualTest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
-	public final Result result(String __n)
+	public final TestResult result(String __n)
 		throws NullPointerException
 	{
 		return this.result(TestFragmentName.of(__n));
@@ -89,7 +89,7 @@ public final class IndividualTest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/12
 	 */
-	public final Result result(TestFragmentName __n)
+	public final TestResult result(TestFragmentName __n)
 		throws NullPointerException
 	{
 		// Check
@@ -97,11 +97,12 @@ public final class IndividualTest
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		List<Result> results = this._results;
+		List<TestResult> results = this._results;
 		synchronized (results)
 		{
-			Result rv;
-			results.add((rv = new Result(__n, __nextId())));
+			TestResult rv;
+			results.add((rv = new TestResult(this.group, this.name,
+				__n, __nextId())));
 			return rv;
 		}
 	}
@@ -112,13 +113,13 @@ public final class IndividualTest
 	 * @return The test results.
 	 * @since 2016/07/14
 	 */
-	public final Result[] results()
+	public final TestResult[] results()
 	{
 		// Lock
-		List<Result> results = this._results;
+		List<TestResult> results = this._results;
 		synchronized (results)
 		{
-			return results.<Result>toArray(new Result[results.size()]);
+			return results.<TestResult>toArray(new TestResult[results.size()]);
 		}
 	}
 	
@@ -152,457 +153,10 @@ public final class IndividualTest
 	private final int __nextId()
 	{
 		// Lock
-		List<Result> results = this._results;
+		List<TestResult> results = this._results;
 		synchronized (results)
 		{
 			return this._nextid++;
-		}
-	}
-	
-	/**
-	 * This represents a result of a test fragment, since there may be a need
-	 * for multiple tests to exist for a given sub-test.
-	 *
-	 * @since 2016/07/12
-	 */
-	public final class Result
-		implements AutoCloseable
-	{
-		/** The fragment name. */
-		protected final TestFragmentName fragment;
-		
-		/** The test ID. */
-		protected final int id;
-		
-		/** Object to lock for test results. */
-		private final Object _lock =
-			new Object();
-		
-		/** Data points for a given test (there may be zero or more). */
-		private final List<Object> _data =
-			new ArrayList<>(3);
-		
-		/** The result of a given test. */
-		private volatile TestPassState _status;
-		
-		/** Was a result given? */
-		private volatile boolean _done;
-		
-		/** The associated exception. */
-		private volatile Throwable _exception;
-		
-		/**
-		 * Initializes the result.
-		 *
-		 * @param __n The fragment name.
-		 * @param __dx The test number.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/07/12
-		 */
-		private Result(TestFragmentName __n, int __dx)
-			throws NullPointerException
-		{
-			// Check
-			if (__n == null)
-				throw new NullPointerException("NARG");
-			
-			// Set
-			this.fragment = __n;
-			this.id = __dx;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/07/13
-		 */
-		@Override
-		public void close()
-		{
-			// Lock
-			synchronized (this._lock)
-			{
-				// {@squrreljme.error AG07 No status was associated with the
-				// given test. (The test group; The sub-test; The test
-				// fragment)}
-				if (this._status == null)
-					throw new IllegalStateException(String.format(
-						"AG07 %s %s %s", IndividualTest.this.group,
-						IndividualTest.this.name, this.fragment));
-			}
-		}
-	
-		/**
-		 * Compares two byte arrays to check how they compare to each other.
-		 *
-		 * @param __c The comparison to make.
-		 * @param __a The expected array.
-		 * @param __b The resulting array.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/07/12
-		 */
-		public final void compareByteArrays(TestComparison __c, byte[] __a,
-			byte[] __b)
-			throws NullPointerException
-		{
-			// Check
-			if (__c == null || __a == null || __b == null)
-				throw new NullPointerException("NARG");
-			
-			// Lock
-			List<Object> data = this._data;
-			synchronized (this._lock)
-			{
-				// Done
-				__setDone();
-				
-				// Clone both arrays
-				byte[] a = __a.clone();
-				byte[] b = __b.clone();
-				
-				if (true)
-					throw new Error("TODO");
-			
-				// Add data points
-				data.add(__c);
-				data.add(a);
-				data.add(b);
-				
-				// No more results
-				close();
-			}
-		}
-	
-		/**
-		 * Compares two int values to check how they compare to each other.
-		 *
-		 * @param __c The comparison to make.
-		 * @param __a The expected value.
-		 * @param __b The resulting value.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/07/12
-		 */
-		public final void compareInt(TestComparison __c, int __a, int __b)
-			throws NullPointerException
-		{
-			// Check
-			if (__c == null)
-				throw new NullPointerException("NARG");
-		
-			// Lock
-			List<Object> data = this._data;
-			synchronized (this._lock)
-			{
-				// Done
-				__setDone();
-				
-				if (true)
-					throw new Error("TODO");
-			
-				// No more results
-				close();
-			}
-		}
-	
-		/**
-		 * Compares two int arrays to check how they compare to each other.
-		 *
-		 * @param __c The comparison to make.
-		 * @param __a The expected array.
-		 * @param __b The resulting array.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/07/12
-		 */
-		public final void compareIntArrays(TestComparison __c, int[] __a,
-			int[] __b)
-			throws NullPointerException
-		{
-			// Check
-			if (__c == null || __a == null || __b == null)
-				throw new NullPointerException("NARG");
-		
-			// Lock
-			List<Object> data = this._data;
-			synchronized (this._lock)
-			{
-				// Done
-				__setDone();
-				
-				// Clone both arrays
-				int[] a = __a.clone();
-				int[] b = __b.clone();
-				
-				// Compare values
-				int na = a.length, nb = b.length, min = Math.min(na, nb);
-				for (int i = 0; i < min; i++)
-				{
-					// Compare both values
-					int va = a[i], vb = b[i];
-					int comp;
-					
-					if (va < vb)
-						comp = -1;
-					else if (va > vb)
-						comp = 1;
-					else
-						comp = 0;
-						
-					if (true)
-						throw new Error("TODO");
-				}
-				if (true)
-					throw new Error("TODO");
-				
-				// Add data points
-				data.add(__c);
-				data.add(a);
-				data.add(b);
-			
-				// No more results
-				close();
-			}
-		}
-	
-		/**
-		 * Compares two object values to check how they compare to each other.
-		 *
-		 * @param __c The comparison to make.
-		 * @param __a The expected value.
-		 * @param __b The resulting value.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/07/12
-		 */
-		public final void compareObject(TestComparison __c, Object __a,
-			Object __b)
-			throws NullPointerException
-		{
-			// Check
-			if (__c == null)
-				throw new NullPointerException("NARG");
-		
-			// Lock
-			List<Object> data = this._data;
-			synchronized (this._lock)
-			{
-				// Done
-				__setDone();
-				
-				if (true)
-					throw new Error("TODO");
-			
-				// No more results
-				close();
-			}
-		}
-	
-		/**
-		 * Compares two string values to check how they compare to each other.
-		 *
-		 * @param __c The comparison to make.
-		 * @param __a The expected value.
-		 * @param __b The resulting value.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/07/12
-		 */
-		public final void compareString(TestComparison __c, String __a,
-			String __b)
-			throws NullPointerException
-		{
-			// Check
-			if (__c == null)
-				throw new NullPointerException("NARG");
-		
-			// Lock
-			List<Object> data = this._data;
-			synchronized (this._lock)
-			{
-				// Done
-				__setDone();
-				
-				if (true)
-					throw new Error("TODO");
-			
-				// No more results
-				close();
-			}
-		}
-		
-		/**
-		 * Returns any data which is associated with this test.
-		 *
-		 * @return The data points, may be an empty array if there is no data.
-		 * @since 2016/07/14
-		 */
-		public final Object[] data()
-		{
-			// Lock
-			List<Object> data = this._data;
-			synchronized (this._lock)
-			{
-				return data.<Object>toArray(new Object[data.size()]);
-			}
-		}
-		
-		/**
-		 * Returns associated exception information.
-		 *
-		 * @return An associated exception or {@code null} if none was thrown.
-		 * @since 2016/07/14
-		 */
-		public final Throwable exception()
-		{
-			// Lock
-			synchronized (this._lock)
-			{
-				return this._exception;
-			}
-		}
-		
-		/**
-		 * This is invoked when an exception is thrown where it should be
-		 * treated as failure (and not success).
-		 *
-		 * @param __t The exception that caused failure.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/07/13
-		 */
-		public final void failingException(Throwable __t)
-			throws NullPointerException
-		{
-			// Check
-			if (__t == null)
-				throw new NullPointerException("NARG");
-		
-			// Lock
-			synchronized (this._lock)
-			{
-				// Done
-				__setDone();
-				
-				// Force failure
-				this._status = TestPassState.FAIL;
-				
-				// Set exception
-				this._exception = __t;
-			
-				// No more results
-				close();
-			}
-		}
-		
-		/**
-		 * Returns the fragment name being used.
-		 *
-		 * @return The fragment name.
-		 * @since 2016/07/12
-		 */
-		public final TestFragmentName fragmentName()
-		{
-			return this.fragment;
-		}
-		
-		/**
-		 * Returns the test identifier.
-		 *
-		 * @return The test identifier.
-		 * @since 2016/07/13
-		 */
-		public final int id()
-		{
-			return this.id;
-		}
-	
-		/**
-		 * Notes something that is neither a passing nor failing state.
-		 *
-		 * @param __v The value to note.
-		 * @since 2016/07/12
-		 */
-		public final void note(Object __v)
-		{
-			// Lock
-			synchronized (this._lock)
-			{
-				// Done
-				__setDone();
-				
-				if (true)
-					throw new Error("TODO");
-			
-				// No more results
-				close();
-			}
-		}
-		
-		/**
-		 * Returns the test status.
-		 *
-		 * @return The test status.
-		 * @throws IllegalStateException If the test has no result.
-		 * @since 2016/07/13
-		 */
-		public final TestPassState status()
-			throws IllegalStateException
-		{
-			// Lock
-			synchronized (this._lock)
-			{
-				// {@squirreljme.error AG05 The result of the test is not
-				// known. (The test group; The sub-test; The test fragment)}
-				TestPassState rv = this._status;
-				if (!this._done	|| rv == null)
-					throw new IllegalStateException(String.format(
-						"AG05 %s %s %s", IndividualTest.this.group,
-						IndividualTest.this.name, this.fragment));
-				
-				// Return it
-				return rv;
-			}
-		}
-		
-		/**
-		 * Marks that the test was a success with no further information.
-		 *
-		 * @since 2016/07/13
-		 */
-		public final void success()
-		{
-			// Lock
-			synchronized (this._lock)
-			{
-				// Done
-				__setDone();
-				
-				if (true)
-					throw new Error("TODO");
-			
-				// No more results
-				close();
-			}
-		}
-		
-		/**
-		 * Sets that the test is done.
-		 *
-		 * @throws IllegalStateException If it is already done.
-		 * @since 2016/07/13
-		 */
-		private final void __setDone()
-			throws IllegalStateException
-		{
-			// Lock
-			synchronized (this._lock)
-			{
-				// {@squirreljme.error AG06 A result for a given test fragment
-				// has already been performed. (The test group; The sub-test;
-				// The test fragment)}
-				if (this._done)
-					throw new IllegalStateException(String.format(
-						"AG06 %s %s %s", IndividualTest.this.group,
-						IndividualTest.this.name, this.fragment));
-				
-				// Mark done
-				this._done = true;
-			}
 		}
 	}
 }

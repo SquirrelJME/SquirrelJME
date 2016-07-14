@@ -113,7 +113,7 @@ public class DefaultTestCaller
 		
 		// Go through all results
 		PrintStream output = this.output;
-		for (IndividualTest.Result result : __t.results())
+		for (TestResult result : __t.results())
 		{
 			// Print status first
 			output.print(result.status());

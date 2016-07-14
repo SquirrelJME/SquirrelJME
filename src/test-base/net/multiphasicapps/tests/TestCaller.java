@@ -186,7 +186,7 @@ public abstract class TestCaller
 		IndividualTest it = new IndividualTest(__tf.groupName(), __sn);
 		
 		// Need to catch all exceptions
-		try (IndividualTest.Result r = it.result("*exec*"))
+		try (TestResult r = it.result("*exec*"))
 		{
 			// Run the test
 			try
