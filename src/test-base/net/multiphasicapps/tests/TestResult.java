@@ -124,9 +124,9 @@ public class TestResult
 			byte[] a = __a.clone();
 			byte[] b = __b.clone();
 			
-			if (true)
-				throw new Error("TODO");
-		
+			// Set status
+			this._status = __c.__passState(__byteArrayCompare(a, b));
+			
 			// Add data points
 			data.add(__c);
 			data.add(a);
@@ -367,13 +367,15 @@ public class TestResult
 	public final void note(Object __v)
 	{
 		// Lock
+		List<Object> data = this._data;
 		synchronized (this._lock)
 		{
 			// Done
 			__setDone();
 			
-			if (true)
-				throw new Error("TODO");
+			// Set note and associate data
+			this._status = TestPassState.NOTE;
+			data.add(__v);
 		
 			// No more results
 			close();
@@ -419,8 +421,8 @@ public class TestResult
 			// Done
 			__setDone();
 			
-			if (true)
-				throw new Error("TODO");
+			// Force success
+			this._status = TestPassState.PASS;
 		
 			// No more results
 			close();
@@ -445,14 +447,56 @@ public class TestResult
 	}
 	
 	/**
+	 * Compares two byte arrays to see how they relate.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return The result of the comparison.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/14
+	 */
+	private static int __byteArrayCompare(byte[] __a, byte[] __b)
+		throws NullPointerException
+	{
+		// Check
+		if (__a == null || __b == null)
+			throw new NullPointerException("NARG");	
+		
+		// Compare values
+		int na = __a.length, nb = __b.length, min = Math.min(na, nb);
+		for (int i = 0; i < min; i++)
+		{
+			// Compare both values
+			byte va = __a[i], vb = __b[i];
+			int comp;
+		
+			if (va < vb)
+				return -1;
+			else if (va > vb)
+				return 1;
+		}
+		
+		// Now compare the length
+		if (na < nb)
+			return -1;
+		else if (na > nb)
+			return 1;
+		
+		// Equal
+		return 0;
+	}
+	
+	/**
 	 * Compares two integer arrays to see how they relate.
 	 *
 	 * @param __a The first array.
 	 * @param __b The second array.
 	 * @return The result of the comparison.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/14
 	 */
 	private static int __intArrayCompare(int[] __a, int[] __b)
+		throws NullPointerException
 	{
 		// Check
 		if (__a == null || __b == null)

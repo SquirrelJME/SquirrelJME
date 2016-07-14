@@ -159,8 +159,9 @@ public class DefaultTestCaller
 			for (int i = 0; i < nd; i++)
 			{
 				// Print header
-				output.print("\t@@@ ");
-				output.println(i + 1);
+				output.print("\t@ ");
+				output.print(i + 1);
+				output.printf(": ");
 				
 				// Print data in escaped form
 				output.print('\t');
