@@ -10,5 +10,5 @@ LIBlet-Description: This is a specific programming language
  JIT which generates code to be compiled with a C compiler. 
  Although possible, it is not recommended to use the generated 
  code because any SquirrelJME support code placed in the output 
- would cause it to fall under the GNU AGPLv3.
+ would cause it to fall under the GNU GPLv3.
 

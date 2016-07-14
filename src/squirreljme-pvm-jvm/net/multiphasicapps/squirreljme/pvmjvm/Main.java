@@ -40,7 +40,7 @@ public class Main
 			"<steven@multiphasicapps.net>");
 		out.println(" Copyright (C) 2013-2016 Multi-Phasic Applications " +
 			"<multiphasicapps.net>");
-		out.println("SquirrelJME is under the GNU AGPLv3 or later.");
+		out.println("SquirrelJME is under the GNU GPLv3 or later.");
 		out.println();
 		
 		// Initialize the virtual machine

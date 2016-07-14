@@ -27,7 +27,7 @@ The mascot is under the **Creative Commons CC-BY-SA 4.0 With Additional**
 Contributors must agree to the contributor license before their code may be
 accepted.
 
-Additionally, if the **GNU AGPLv3** and **CC-BY-SA 4.0** are not desirable a
+Additionally, if the **GNU GPLv3** and **CC-BY-SA 4.0** are not desirable a
 proprietary license may be purchased for a negotiable fee.
 
 ## GNU General Public License v3 or Later
@@ -1140,7 +1140,7 @@ proprietary license may be purchased for a negotiable fee.
 	You grant Multi-Phasic Applications and Steven Gawroriski an irrevocable
 	license that:
 	
-	 1. Grants a patent license, as per the GNU AGPLv3.
+	 1. Grants a patent license, as per the GNU GPLv3.
 	 2. The ability to re-license the contributing code under any license.
 
 ## Multi-Phasic Applications: SquirrelJME Proprietary License
@@ -1149,7 +1149,7 @@ proprietary license may be purchased for a negotiable fee.
 **SPECIFIC LICENSE. GENERALLY LICENSES WOULD BE GRANTED ON ALL PLATFORMS**
 **FOR SPECIFIC RELEASES OF SQUIRRELJME, HOWEVER IF ONLY A SMALL SUBSET OF**
 **PLATFORMS ARE DESIRED THEN THE PRICE MAY BE LOWERED TO A MORE DESIRABLE**
-**AMOUNT. GENERALLY YOU SHOULD USE THE GNU AGPLV3 LICENSE SOFTWARE, HOWEVER**
+**AMOUNT. GENERALLY YOU SHOULD USE THE GNU GPLV3 LICENSE SOFTWARE, HOWEVER**
 **THIS MIGHT NOT BE POSSIBLE. GNUPG IS REQUIRED BEFORE A LICENSE MAY BE**
 **PURCHASED.**
 
@@ -1190,7 +1190,7 @@ the primary developers alive.
 		<TWO OPTIONS ARE AVAILABLE>
 		1. The copyright and logo/mascot must be displayed prominently such as
 		   on a splash screen or similar that a user will see at the start of
-		   execution. No detail may be modified except that the GNU AGPLv3
+		   execution. No detail may be modified except that the GNU GPLv3
 		   statement is replaced by "SquirrelJME is licensed from
 		   Multi-Phasic Applications <http://multiphasicapps.net/>".
 		2. The copyrights and logo/mascot do not have to be displayed.
@@ -1203,7 +1203,7 @@ the primary developers alive.
 	Open Sourcing:
 		If the licensor desires to open source their licensed copy, then their
 		only choice is to use the license that SquirrelJME is under (the GNU
-		AGPLv3). Otherwise, source code must not be released and be kept
+		GPLv3). Otherwise, source code must not be released and be kept
 		confidential.
 	
 	Updates:
