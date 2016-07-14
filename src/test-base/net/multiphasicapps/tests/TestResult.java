@@ -458,13 +458,10 @@ public class TestResult
 		// Lock
 		synchronized (this._lock)
 		{
-			// {@squirreljme.error AG05 The result of the test is not
-			// known. (The test group; The sub-test; The test fragment)}
+			// Auto-fail if not done or set
 			TestPassState rv = this._status;
 			if (!this._done	|| rv == null)
-				throw new IllegalStateException(String.format(
-					"AG05 %s %s %s", this.group,
-					this.sub, this.fragment));
+				return TestPassState.FAIL;
 			
 			// Return it
 			return rv;
