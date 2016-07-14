@@ -266,26 +266,42 @@ public class TestResult
 			// Requires more work
 			else
 			{
-				// Both sides are comparable
-				if (__a instanceof Comparable && __b instanceof Comparable)
-					comp = ((Comparable)__a).compareTo((Comparable)__b);
-				
-				// Equality only
-				else
+				// Comparing if two objects are equal could result in failure
+				// so detect for these cases so that the test system does not
+				// fall apart.
+				int xcomp = Integer.MIN_VALUE;
+				try
 				{
-					// Automatically fail since the values cannot compare to
-					// each other.
-					if (__c != TestComparison.EQUALS &&
-						__c != TestComparison.NOT_EQUALS)
-					{
-						comp = Integer.MIN_VALUE;
-						autoset = TestPassState.FAIL;
-					}
-					
-					// Check equality
+					// Both sides are comparable
+					if (__a instanceof Comparable && __b instanceof Comparable)
+						xcomp = ((Comparable)__a).compareTo((Comparable)__b);
+				
+					// Equality only
 					else
-						comp = (__a.equals(__b) ? 0 : -1);
+					{
+						// Automatically fail since the values cannot compare
+						// to each other.
+						if (__c != TestComparison.EQUALS &&
+							__c != TestComparison.NOT_EQUALS)
+						{
+							xcomp = Integer.MIN_VALUE;
+							autoset = TestPassState.FAIL;
+						}
+					
+						// Check equality
+						else
+							xcomp = (__a.equals(__b) ? 0 : -1);
+					}
 				}
+				
+				// Associate an exception
+				catch (Throwable t)
+				{
+					this._exception = t;
+				}
+				
+				// Set
+				comp = xcomp;
 			}
 			
 			// Set status
