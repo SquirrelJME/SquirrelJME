@@ -196,26 +196,8 @@ public class TestResult
 			int[] a = __a.clone();
 			int[] b = __b.clone();
 			
-			// Compare values
-			int na = a.length, nb = b.length, min = Math.min(na, nb);
-			for (int i = 0; i < min; i++)
-			{
-				// Compare both values
-				int va = a[i], vb = b[i];
-				int comp;
-				
-				if (va < vb)
-					comp = -1;
-				else if (va > vb)
-					comp = 1;
-				else
-					comp = 0;
-					
-				if (true)
-					throw new Error("TODO");
-			}
-			if (true)
-				throw new Error("TODO");
+			// Set status
+			this._status = __c.__passState(__intArrayCompare(a, b));
 			
 			// Add data points
 			data.add(__c);
@@ -457,17 +439,47 @@ public class TestResult
 		// Lock
 		synchronized (this._lock)
 		{
-			// {@squirreljme.error AG06 A result for a given test fragment
-			// has already been performed. (The test group; The sub-test;
-			// The test fragment)}
-			if (this._done)
-				throw new IllegalStateException(String.format(
-					"AG06 %s %s %s", this.group,
-					this.sub, this.fragment));
-			
 			// Mark done
 			this._done = true;
 		}
+	}
+	
+	/**
+	 * Compares two integer arrays to see how they relate.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return The result of the comparison.
+	 * @since 2016/07/14
+	 */
+	private static int __intArrayCompare(int[] __a, int[] __b)
+	{
+		// Check
+		if (__a == null || __b == null)
+			throw new NullPointerException("NARG");	
+		
+		// Compare values
+		int na = __a.length, nb = __b.length, min = Math.min(na, nb);
+		for (int i = 0; i < min; i++)
+		{
+			// Compare both values
+			int va = __a[i], vb = __b[i];
+			int comp;
+		
+			if (va < vb)
+				return -1;
+			else if (va > vb)
+				return 1;
+		}
+		
+		// Now compare the length
+		if (na < nb)
+			return -1;
+		else if (na > nb)
+			return 1;
+		
+		// Equal
+		return 0;
 	}
 }
 

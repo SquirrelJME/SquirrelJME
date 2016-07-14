@@ -115,8 +115,35 @@ public class DefaultTestCaller
 		PrintStream output = this.output;
 		for (TestResult result : __t.results())
 		{
+			// Ignore given status?
+			TestPassState status = result.status();
+			switch (status)
+			{
+					// Ignore passes?
+				case PASS:
+					if (hasOption(TestOption.IGNORE_PASS))
+						continue;
+					break;
+					
+					// Ignore failures?
+				case FAIL:
+					if (hasOption(TestOption.IGNORE_FAIL))
+						continue;
+					break;
+					
+					// Ignore notes?
+				case NOTE:
+					if (hasOption(TestOption.IGNORE_NOTE))
+						continue;
+					break;
+				
+					// Assume not ignored
+				default:
+					break;
+			}
+			
 			// Print status first
-			output.print(result.status());
+			output.print(status);
 			output.print(' ' );
 			
 			// Print test name and information
@@ -132,10 +159,11 @@ public class DefaultTestCaller
 			for (int i = 0; i < nd; i++)
 			{
 				// Print header
-				output.print("@@@ ");
+				output.print("\t@@@ ");
 				output.println(i + 1);
 				
 				// Print data in escaped form
+				output.print('\t');
 				__escape(output, data[i]);
 				output.println();
 			}
@@ -143,7 +171,7 @@ public class DefaultTestCaller
 			// Is there an associated exception?
 			// Print trace to find where the problem is better than guessing
 			Throwable t = result.exception();
-			if (t != null)
+			if (t != null && !hasOption(TestOption.IGNORE_NOTE))
 				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					PrintStream st = new PrintStream(baos, true, "utf-8"))
 				{

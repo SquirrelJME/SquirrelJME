@@ -37,5 +37,35 @@ public enum TestComparison
 	
 	/** End. */
 	;
+	
+	/**
+	 * Checks if the given comparison is passing or failing for this given
+	 * comparison.
+	 *
+	 * @param __comp The comparison to make.
+	 * @return Whether it passed or failed.
+	 * @since 2016/07/14
+	 */
+	final TestPassState __passState(int __comp)
+	{
+		// Depends on the check
+		boolean pass;
+		switch (this)
+		{
+			case EQUALS: pass = (__comp == 0); break;
+			case NOT_EQUALS: pass = (__comp != 0); break;
+			case LESS_THAN: pass = (__comp < 0); break;
+			case AT_MOST: pass = (__comp <= 0); break;
+			case GREATER_THAN: pass = (__comp > 0); break;
+			case AT_LEAST: pass = (__comp >= 0); break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException(String.format("OOPS %s", this));
+		}
+		
+		// Passed or failed?
+		return (pass ? TestPassState.PASS : TestPassState.FAIL);
+	}
 }
 

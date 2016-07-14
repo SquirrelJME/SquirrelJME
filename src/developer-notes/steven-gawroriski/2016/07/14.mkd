@@ -10,3 +10,7 @@ client uses. I would need to have some exceptions in place. I also want to
 invade the IoT world and AGPLv3 may cause some issues there. I have no
 intention of leaving the GPLv3 however.
 
+## 16:36
+
+My new testing code seems to be much faster now.
+
