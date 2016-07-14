@@ -90,11 +90,11 @@ public class DefaultTestCaller
 	}
 	
 	/**
-	 * Prints the results of all tests to the initialized output stream.
-	 *
-	 * @since 2016/07/13
+	 * {@inheritDoc}
+	 * @since 2016/07/14
 	 */
-	public final void printResults()
+	@Override
+	protected void finishedTest(IndividualTest __t)
 	{
 		throw new Error("TODO");
 	}
@@ -123,9 +123,6 @@ public class DefaultTestCaller
 		
 		// Run tests
 		tc.runTests();
-		
-		// Output test results
-		tc.printResults();
 	}
 	
 	/**

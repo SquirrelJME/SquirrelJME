@@ -107,6 +107,22 @@ public final class IndividualTest
 	}
 	
 	/**
+	 * Returns an array of all test results.
+	 *
+	 * @return The test results.
+	 * @since 2016/07/14
+	 */
+	public final Result[] results()
+	{
+		// Lock
+		List<Result> results = this._results;
+		synchronized (results)
+		{
+			return results.<Result>toArray(new Result[results.size()]);
+		}
+	}
+	
+	/**
 	 * Returns the sub-name of the test.
 	 *
 	 * @return The test sub-name.

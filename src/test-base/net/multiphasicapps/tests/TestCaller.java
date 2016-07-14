@@ -41,10 +41,6 @@ public abstract class TestCaller
 	private final Set<TestMatcher> _matchers =
 		new HashSet<>();
 	
-	/** Tests which have run. */
-	private final Deque<IndividualTest> _tests =
-		new LinkedList<>();
-	
 	/**
 	 * Initializes the test caller.
 	 *
@@ -53,6 +49,14 @@ public abstract class TestCaller
 	public TestCaller()
 	{
 	}
+	
+	/**
+	 * This is called after each test has finished running.
+	 *
+	 * @param __t The test which finished running.
+	 * @since 2016/07/14
+	 */
+	protected abstract void finishedTest(IndividualTest __t);
 	
 	/**
 	 * Adds a test matcher so that only a specific set of tests run.
@@ -200,12 +204,8 @@ public abstract class TestCaller
 			}
 		}
 		
-		// Add to tests which have run
-		Deque<IndividualTest> tests = this._tests;
-		synchronized (tests)
-		{
-			tests.offerLast(it);
-		}
+		// Finished
+		finishedTest(it);
 	}
 }
 
