@@ -204,8 +204,11 @@ public class DefaultTestCaller
 				// Fail, but indicate it
 				catch (IOException ioe)
 				{
-					output.println("\t IOE-DURING-TRACE-PRINT");
+					output.println("\tIOE-DURING-TRACE-PRINT");
 				}
+			
+			// Space to make things a bit easier to read
+			output.println();
 		}
 	}
 	
