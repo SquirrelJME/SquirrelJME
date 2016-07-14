@@ -115,16 +115,16 @@ public class DefaultTestCaller
 		PrintStream output = this.output;
 		for (IndividualTest.Result result : __t.results())
 		{
+			// Print status first
+			output.print(result.status());
+			output.print(' ' );
+			
 			// Print test name and information
 			output.print(__t.groupName());
 			output.print('@');
 			output.print(__t.subName());
 			output.print('#');
-			output.print(result.fragmentName());
-			
-			// Print the actual result
-			output.print(": ");
-			output.println(result.status());
+			output.println(result.fragmentName());
 			
 			// Is there an associated exception?
 			// Print trace to find where the problem is better than guessing
