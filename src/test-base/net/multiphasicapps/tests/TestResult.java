@@ -86,13 +86,9 @@ public class TestResult
 		// Lock
 		synchronized (this._lock)
 		{
-			// {@squrreljme.error AG07 No status was associated with the
-			// given test. (The test group; The sub-test; The test
-			// fragment)}
+			// Automatically fail if no state was given
 			if (this._status == null)
-				throw new IllegalStateException(String.format(
-					"AG07 %s %s %s", this.group,
-					this.sub, this.fragment));
+				this._status = TestPassState.FAIL;
 		}
 	}
 
