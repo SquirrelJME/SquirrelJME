@@ -259,8 +259,12 @@ public class DefaultTestCaller
 			return;
 		}
 		
+		// Boolean array
+		else if (__v instanceof boolean[])
+			__escapeBooleanArray(__ps, (boolean[])__v);
+		
 		// Integral array
-		else if ((__v instanceof boolean[]) || (__v instanceof byte[]) ||
+		else if ((__v instanceof byte[]) ||
 			(__v instanceof short[]) || (__v instanceof char[]) ||
 			(__v instanceof int[]) || (__v instanceof long[]))
 			throw new Error("TODO");
@@ -276,6 +280,27 @@ public class DefaultTestCaller
 		// Normal escaping
 		else
 			__escapeNormal(__ps, __v);
+	}
+	
+	/**
+	 * Prints a boolean array.
+	 *
+	 * @param __ps The target stream.
+	 * @param __v The array to print.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/14
+	 */
+	private static void __escapeBooleanArray(PrintStream __ps, boolean[] __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__ps == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Print values
+		int n = __v.length;
+		for (int i = 0; i < n; i++)
+			__ps.print((__v[i] ? 'T' : 'F'));
 	}
 	
 	/**
