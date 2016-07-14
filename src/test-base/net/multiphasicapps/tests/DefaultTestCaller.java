@@ -294,7 +294,19 @@ public class DefaultTestCaller
 			throw new NullPointerException("NARG");
 		
 		// Get as a string
-		String str = __v.toString();
+		String str;
+		try
+		{
+			str = __v.toString();
+		}
+		
+		// Could not convert object to a string representation
+		catch (Throwable t)
+		{
+			__ps.print("<CAUGHT EXCEPTION!>: ");
+			__escapeNormal(__ps, t);
+			return;
+		}
 		
 		// Build escaped form
 		int n = str.length();
