@@ -221,6 +221,21 @@ public class DefaultTestCaller
 	}
 	
 	/**
+	 * Runs all tests by default using the command line interface.
+	 *
+	 * @param __args Program arguments.
+	 * @since 2016/03/03
+	 */
+	public static void main(String... __args)
+	{
+		// Create a new test caller
+		DefaultTestCaller tc = new DefaultTestCaller(System.out, __args);
+		
+		// Run tests
+		tc.runTests();
+	}
+	
+	/**
 	 * Escapes the string representation of the object. This is so that any
 	 * parsers that parse the pass/failure state need not worry about special
 	 * characters, especially if the input includes a newline or similar.
@@ -230,7 +245,7 @@ public class DefaultTestCaller
 	 * @throws NullPointerException If no print stream was specified.
 	 * @since 2016/03/03
 	 */
-	private void __escape(PrintStream __ps, Object __v)
+	private static void __escape(PrintStream __ps, Object __v)
 		throws NullPointerException
 	{
 		// Check
@@ -243,6 +258,40 @@ public class DefaultTestCaller
 			__ps.print("null");
 			return;
 		}
+		
+		// Integral array
+		else if ((__v instanceof boolean[]) || (__v instanceof byte[]) ||
+			(__v instanceof short[]) || (__v instanceof char[]) ||
+			(__v instanceof int[]) || (__v instanceof long[]))
+			throw new Error("TODO");
+		
+		// Floating point array
+		else if ((__v instanceof float[]) || (__v instanceof double[]))
+			throw new Error("TODO");
+		
+		// Object array
+		else if (__v instanceof Object[])
+			throw new Error("TODO");
+		
+		// Normal escaping
+		else
+			__escapeNormal(__ps, __v);
+	}
+	
+	/**
+	 * Prints normal data escaping to the output.
+	 *
+	 * @param __ps The target stream.
+	 * @param __v The value to escape.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/14
+	 */
+	private static void __escapeNormal(PrintStream __ps, Object __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__ps == null)
+			throw new NullPointerException("NARG");
 		
 		// Get as a string
 		String str = __v.toString();
@@ -293,21 +342,6 @@ public class DefaultTestCaller
 				__ps.print(Character.forDigit((c & 0x000F), 16));
 			}
 		}
-	}
-	
-	/**
-	 * Runs all tests by default using the command line interface.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2016/03/03
-	 */
-	public static void main(String... __args)
-	{
-		// Create a new test caller
-		DefaultTestCaller tc = new DefaultTestCaller(System.out, __args);
-		
-		// Run tests
-		tc.runTests();
 	}
 	
 	/**
