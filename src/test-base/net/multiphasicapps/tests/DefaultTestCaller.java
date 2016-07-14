@@ -68,6 +68,11 @@ public class DefaultTestCaller
 							setOption(TestOption.IGNORE_FAIL);
 							break;
 							
+							// Ignore notes
+						case "-in":
+							setOption(TestOption.IGNORE_NOTE);
+							break;
+							
 							// Ignore tossed exceptions
 						case "-ie":
 						case "-it":
@@ -95,8 +100,25 @@ public class DefaultTestCaller
 	 */
 	@Override
 	protected void finishedTest(IndividualTest __t)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all results
+		PrintStream output = this.output;
+		for (IndividualTest.Result[] result : __t.results())
+		{
+			// Print test name and information
+			output.print(__t.groupName());
+			output.print('@');
+			output.print(__t.subName());
+			output.print('#');
+			output.print(result.fragmentName());
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

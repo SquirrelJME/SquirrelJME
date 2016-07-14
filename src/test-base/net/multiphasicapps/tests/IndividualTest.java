@@ -419,7 +419,7 @@ public final class IndividualTest
 		 * @return The fragment name.
 		 * @since 2016/07/12
 		 */
-		public final TestFragmentName fragment()
+		public final TestFragmentName fragmentName()
 		{
 			return this.fragment;
 		}

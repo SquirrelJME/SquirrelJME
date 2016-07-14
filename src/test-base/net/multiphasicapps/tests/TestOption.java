@@ -26,6 +26,9 @@ public enum TestOption
 	/** Ignore exceptions. */
 	IGNORE_EXCEPTION,
 	
+	/** Ignore notes. */
+	IGNORE_NOTE,
+	
 	/** End. */
 	;
 }
