@@ -246,11 +246,19 @@ public class ExtendedDataOutputStream
 		{
 				// Big
 			case BIG:
-				throw new Error("TODO");
+				writeByte(__v >>> 24);
+				writeByte(__v >>> 16);
+				writeByte(__v >>> 8);
+				writeByte(__v);
+				break;
 				
 				// Little
 			case LITTLE:
-				throw new Error("TODO");
+				writeByte(__v);
+				writeByte(__v >>> 8);
+				writeByte(__v >>> 16);
+				writeByte(__v >>> 24);
+				break;
 			
 				// Unknown
 			default:
