@@ -180,6 +180,7 @@ public class ZipStreamWriter
 			
 			// Setup inner stream (for compressed size)
 			__InnerOutputStream__ inner = new __InnerOutputStream__();
+			System.err.println("TODO -- Calculate output CRC.");
 			
 			// Wrap inner with the compression algorithm
 			OutputStream wrapped = __comp.outputStream(inner);
@@ -193,6 +194,38 @@ public class ZipStreamWriter
 			
 			// Return the outer stream
 			return outer;
+		}
+	}
+	
+	/**
+	 * Closes the current entry.
+	 *
+	 * @throws IOException If it could not be closed.
+	 * @since 2016/07/15
+	 */
+	private void __closeEntry()
+		throws IOException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BC09 Cannot close entry because a current
+			// one is not being used.}
+			if (this._inner != null || this._outer != null)
+				throw new IOException("BC09");
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// TODO
+			System.err.println("TODO -- Output calculated CRC.");
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// Clear streams to allow for next entry
+			this._inner = null;
+			this._outer = null;
 		}
 	}
 	
@@ -353,7 +386,11 @@ public class ZipStreamWriter
 			// Lock
 			synchronized (ZipStreamWriter.this.lock)
 			{
-				throw new Error("TODO");
+				// Ignore if already finished
+				if (this.finished)
+					return;
+				
+				ZipStreamWriter.this.__closeEntry();
 			}
 		}
 	}
