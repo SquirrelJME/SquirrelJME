@@ -40,9 +40,17 @@ public class ZipStreamWriter
 	private static final int _DATA_DESCRIPTOR_MAGIC_NUMBER =
 		0x08074B50;
 	
+	/** Central directory entry magic number. */
+	private static final int _CENTRAL_DIRECTORY_MAGIC_NUMBER =
+		0x02014B50;
+	
 	/** The maximum permitted file size. */
 	private static final long _MAX_FILE_SIZE =
 		0xFFFFFFFFL;
+	
+	/** General purpose flags for entries (use descriptor; UTF-8 names). */
+	private static final int _GENERAL_PURPOSE_FLAGS =
+		(1 << 3) | (1 << 11);
 	
 	/** Lock for safety. */
 	protected final Object lock =
@@ -109,6 +117,31 @@ public class ZipStreamWriter
 			// an entry is still being written.}
 			if (this._inner != null || this._outer != null)
 				throw new IOException("BC01");
+			
+			// Get output and the TOC entries
+			ExtendedDataOutputStream output = this.output;
+			LinkedList<__TOCEntry__> toc = this._toc;
+			
+			// The position where the central directory starts
+			long cdstart = output.size();
+			
+			// Write all entries
+			for (__TOCEntry__ entry : toc)
+			{
+				// The entry position
+				long epos = output.size();
+				
+				// Write directory header
+				output.writeInt(_CENTRAL_DIRECTORY_MAGIC_NUMBER);
+				
+				throw new Error("TODO");
+			}
+			
+			if (true)
+				throw new Error("TODO");
+			
+			// The position where it ends
+			long cdend = output.size();
 			
 			throw new Error("TODO");
 		}
@@ -181,8 +214,8 @@ public class ZipStreamWriter
 			// Extract version
 			output.writeShort(__comp.extractVersion());
 			
-			// General purpose flag (Unknown size, UTF-8 file names)
-			output.writeShort((1 << 3) | (1 << 11));
+			// General purpose flag
+			output.writeShort(_GENERAL_PURPOSE_FLAGS);
 			
 			// Method
 			output.writeShort(__comp.method());

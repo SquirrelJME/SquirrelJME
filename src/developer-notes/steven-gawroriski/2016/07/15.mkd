@@ -4,3 +4,7 @@
 
 I need to store the temporary information needed in the TOC for later.
 
+## 17:19
+
+So I just need to write the central directory right now.
+
