@@ -14,6 +14,8 @@ import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.zip.ZipCompressionType;
@@ -40,6 +42,10 @@ public class ZipStreamWriter
 	
 	/** The output stream to write to. */
 	protected final ExtendedDataOutputStream output;
+	
+	/** Table of contents. */
+	private final LinkedList<__TOCEntry__> _toc =
+		new LinkedList<>();
 	
 	/** Was this stream closed? */
 	private volatile boolean _closed;
@@ -130,6 +136,7 @@ public class ZipStreamWriter
 			throw new NullPointerException("NARG");
 		
 		// Lock
+		List<__TOCEntry__> toc = this._toc;
 		synchronized (this.lock)
 		{
 			// {@squirreljme.error BC04 Cannot write new entry because the ZIP
@@ -141,6 +148,22 @@ public class ZipStreamWriter
 			// because the previous entry has not be closed.}
 			if (this._inner != null || this._outer != null)
 				throw new IOException("BC02");
+			
+			// {@squirreljme.error BC0a A ZIP file cannot have more than
+			// 65536 entries.}
+			if (toc.size() >= 65535)
+				throw new IOException("BC0a");
+			
+			// {@squirreljme.error BC03 The length of the input file exceeds
+			// 65535 UTF-8 characters. (The filename length)}
+			byte[] utfname = __name.getBytes("utf-8");
+			int fnn;
+			if ((fnn = utfname.length) > 65535)
+				throw new IOException(String.format("BC03 %d", fnn));
+			
+			// Setup contents
+			__TOCEntry__ last = new __TOCEntry__(this.output.size(), utfname,
+				__comp);
 			
 			// Write ZIP header data
 			ExtendedDataOutputStream output = this.output;
@@ -164,12 +187,7 @@ public class ZipStreamWriter
 			output.writeInt(0);
 			output.writeInt(0);
 			
-			// {@squirreljme.error BC03 The length of the input file exceeds
-			// 65535 UTF-8 characters. (The filename length)}
-			byte[] utfname = __name.getBytes("utf-8");
-			int fnn;
-			if ((fnn = utfname.length) > 65535)
-				throw new IOException(String.format("BC03 %d", fnn));
+			// Write file name bytes
 			output.writeShort(fnn);
 			
 			// No extra field
@@ -207,12 +225,16 @@ public class ZipStreamWriter
 		throws IOException
 	{
 		// Lock
+		LinkedList<__TOCEntry__> toc = this._toc;
 		synchronized (this.lock)
 		{
 			// {@squirreljme.error BC09 Cannot close entry because a current
 			// one is not being used.}
 			if (this._inner != null || this._outer != null)
 				throw new IOException("BC09");
+			
+			// Need to fill the size information and CRC for later
+			__TOCEntry__ last = toc.getLast();
 			
 			if (true)
 				throw new Error("TODO");
