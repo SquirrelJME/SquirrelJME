@@ -12,6 +12,7 @@ package net.multiphasicapps.tests.zip.streamwriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import net.multiphasicapps.util.seekablearray.SeekableByteArrayChannel;
 import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This tests that ZIP files are correctly streamed and that any output ZIP
@@ -74,17 +76,22 @@ public class ZipWriterStreamTest
 				for (int f = 0; f < nf; f++)
 				{
 					// Random data used to write
-					Random fr = new Random(rand.nextLong());
+					long frseed = rand.nextLong();
 				
 					// Setup next ZIP entry
-					if (true)
-						throw new Error("TODO");
-					{
-						// Write bytes to the entry
-						for (int s = 0; s < fs; s++)
-							if (true)
-								throw new Error("TODO");
-					}
+					for (int q = 0; q < 2; q++)
+						try (OutputStream os = zsw.nextEntry((q == 0 ? "n" :
+							"c") + frseed, (q == 0 ?
+							ZipCompressionType.NO_COMPRESSION :
+							ZipCompressionType.DEFLATE)))
+						{
+							// Setup random
+							Random fr = new Random(frseed);
+							
+							// Write bytes to the entry
+							for (int s = 0; s < fs; s++)
+								os.write(fr.nextInt(255));
+						}
 				}
 			}
 			

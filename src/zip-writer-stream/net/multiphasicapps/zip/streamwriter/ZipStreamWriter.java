@@ -11,9 +11,11 @@
 package net.multiphasicapps.zip.streamwriter;
 
 import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This class is used to write to ZIP files in an unknown and stream based
@@ -25,7 +27,7 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
  * @since 2016/07/09
  */
 public class ZipStreamWriter
-	implements Closeable
+	implements Closeable, Flushable
 {
 	/** Lock for safety. */
 	protected final Object lock =
@@ -66,6 +68,38 @@ public class ZipStreamWriter
 		// Do nothing if already closed
 		if (_closed)
 			return;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/09
+	 */
+	@Override
+	public void flush()
+		throws IOException
+	{
+		this.output.flush();
+	}
+	
+	/**
+	 * Starts writing a new entry in the output ZIP.
+	 *
+	 * @param __name The name of the entry.
+	 * @param __comp The compression method used.
+	 * @return An {@link OutputStream} which is used to write the ZIP file
+	 * data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/15
+	 */
+	public OutputStream nextEntry(String __name, ZipCompressionType __comp)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__name == null || __comp == null)
+			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
 	}
