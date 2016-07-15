@@ -218,10 +218,14 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public void close()
+		public final void close()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		/**
@@ -229,10 +233,14 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public void flush()
+		public final void flush()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		/**
@@ -240,10 +248,14 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public void write(int __b)
+		public final void write(int __b)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		/**
@@ -251,10 +263,14 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public void write(byte[] __b, int __o, int __l)
+		public final void write(byte[] __b, int __o, int __l)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 	}
 	
@@ -292,10 +308,14 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public void close()
+		public final void close()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		/**
@@ -303,10 +323,14 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public void flush()
+		public final void flush()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		/**
@@ -314,10 +338,14 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public void write(int __b)
+		public final void write(int __b)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		/**
@@ -325,10 +353,14 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public void write(byte[] __b, int __o, int __l)
+		public final void write(byte[] __b, int __o, int __l)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 	}
 }
