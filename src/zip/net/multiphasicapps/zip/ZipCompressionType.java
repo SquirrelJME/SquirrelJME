@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.zip;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -91,6 +92,10 @@ public enum ZipCompressionType
 		// Depends on the compression
 		switch (this)
 		{
+				// No compression, just use a normally forwarding stream
+			case NO_COMPRESSION:
+				return new DataOutputStream(__os);
+			
 				// {@squirreljme.error BF01 Compressing using the given
 				// compression algorithm is not supported. (The compression
 				// algorithm)}
