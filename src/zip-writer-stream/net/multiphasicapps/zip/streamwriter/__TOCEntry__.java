@@ -29,6 +29,12 @@ class __TOCEntry__
 	/** The compression type. */
 	final ZipCompressionType _compression;
 	
+	/** The uncompressed size. */
+	volatile long _uncompressed;
+	
+	/** The compressed size. */
+	volatile long _compressed;
+	
 	/**
 	 * Initializes the table of contents entry.
 	 *

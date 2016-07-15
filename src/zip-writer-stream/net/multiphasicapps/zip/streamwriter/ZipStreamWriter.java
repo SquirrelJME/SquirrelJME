@@ -33,8 +33,16 @@ public class ZipStreamWriter
 	implements Closeable, Flushable
 {
 	/** The magic number for local files. */
-	public static final int LOCAL_FILE_MAGIC_NUMBER =
+	private static final int _LOCAL_FILE_MAGIC_NUMBER =
 		0x04034B50;
+	
+	/** Data descriptor magic. */
+	private static final int _DATA_DESCRIPTOR_MAGIC_NUMBER =
+		0x08074B50;
+	
+	/** The maximum permitted file size. */
+	private static final long _MAX_FILE_SIZE =
+		0xFFFFFFFFL;
 	
 	/** Lock for safety. */
 	protected final Object lock =
@@ -136,7 +144,7 @@ public class ZipStreamWriter
 			throw new NullPointerException("NARG");
 		
 		// Lock
-		List<__TOCEntry__> toc = this._toc;
+		LinkedList<__TOCEntry__> toc = this._toc;
 		synchronized (this.lock)
 		{
 			// {@squirreljme.error BC04 Cannot write new entry because the ZIP
@@ -164,16 +172,17 @@ public class ZipStreamWriter
 			// Setup contents
 			__TOCEntry__ last = new __TOCEntry__(this.output.size(), utfname,
 				__comp);
+			toc.addLast(last);
 			
 			// Write ZIP header data
 			ExtendedDataOutputStream output = this.output;
-			output.writeInt(LOCAL_FILE_MAGIC_NUMBER);
+			output.writeInt(_LOCAL_FILE_MAGIC_NUMBER);
 			
 			// Extract version
 			output.writeShort(__comp.extractVersion());
 			
-			// General purpose flag (UTF-8 file names)
-			output.writeShort((1 << 11));
+			// General purpose flag (Unknown size, UTF-8 file names)
+			output.writeShort((1 << 3) | (1 << 11));
 			
 			// Method
 			output.writeShort(__comp.method());
@@ -228,22 +237,44 @@ public class ZipStreamWriter
 		LinkedList<__TOCEntry__> toc = this._toc;
 		synchronized (this.lock)
 		{
+			__InnerOutputStream__ inner = this._inner;
+			__OuterOutputStream__ outer = this._outer;
+			
 			// {@squirreljme.error BC09 Cannot close entry because a current
 			// one is not being used.}
-			if (this._inner != null || this._outer != null)
+			if (inner == null || outer == null)
 				throw new IOException("BC09");
 			
 			// Need to fill the size information and CRC for later
 			__TOCEntry__ last = toc.getLast();
 			
-			if (true)
-				throw new Error("TODO");
+			// Get sizes
+			long uncomp = outer._size;
+			long comp = inner._size;
 			
-			// TODO
+			// {@squirreljme.error BC0b Either one or both of the compressed
+			// or uncompressed file sizes exceeds 4GiB. (The uncompressed size;
+			// The compressed size)}
+			if (uncomp >= _MAX_FILE_SIZE || comp >= _MAX_FILE_SIZE)
+				throw new IOException(String.format("BC0b %d %d", uncomp,
+					comp));
+			
+			// Store sizes
+			last._uncompressed = uncomp;
+			last._compressed = comp;
+			System.err.println("TODO -- Remember calculated CRC.");
+			
+			// The magic number of the data descriptor is not needed, however
+			// it helps prevent some abiguity when the input data stream is
+			// not compressed and contains a ZIP file.
+			ExtendedDataOutputStream output = this.output;
+			output.writeInt(_DATA_DESCRIPTOR_MAGIC_NUMBER);
+			
+			// Write CRC and sizes
 			System.err.println("TODO -- Output calculated CRC.");
-			
-			if (true)
-				throw new Error("TODO");
+			output.writeInt(0);
+			output.writeInt((int)comp);
+			output.writeInt((int)uncomp);
 			
 			// Clear streams to allow for next entry
 			this._inner = null;
@@ -266,7 +297,7 @@ public class ZipStreamWriter
 		protected volatile boolean finished;
 		
 		/** The decompressed size. */
-		private volatile int _size;
+		volatile int _size;
 		
 		/**
 		 * Initializes a new output stream for writing an entry.
@@ -412,7 +443,9 @@ public class ZipStreamWriter
 				if (this.finished)
 					return;
 				
+				// Close and finish
 				ZipStreamWriter.this.__closeEntry();
+				this.finished = true;
 			}
 		}
 	}
@@ -453,6 +486,7 @@ public class ZipStreamWriter
 				
 				// Close the wrapped stream
 				this.wrapped.close();
+				this.finished = true;
 			}
 		}
 	}
