@@ -21,6 +21,8 @@ import java.io.OutputStream;
  *
  * Streams default to big endian.
  *
+ * {@squirreljme.error BD01 Unhandled endianess. (The endianess)}
+ *
  * @since 2016/07/10
  */
 public class ExtendedDataOutputStream
@@ -80,7 +82,7 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public DataEndianess getEndianess()
+	public final DataEndianess getEndianess()
 	{
 		return this._endian;
 	}
@@ -90,7 +92,7 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public DataEndianess setEndianess(DataEndianess __end)
+	public final DataEndianess setEndianess(DataEndianess __end)
 		throws NullPointerException
 	{
 		// Check
@@ -108,7 +110,7 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public long size()
+	public final long size()
 	{
 		throw new Error("TODO");
 	}
@@ -118,7 +120,7 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public void write(byte[] __b)
+	public final void write(byte[] __b)
 		throws IOException
 	{
 		throw new Error("TODO");
@@ -129,7 +131,7 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public void write(byte[] __b, int __o, int __l)
+	public final void write(byte[] __b, int __o, int __l)
 		throws IOException
 	{
 		throw new Error("TODO");
@@ -140,7 +142,29 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public void write(int __b)
+	public final void write(int __b)
+		throws IOException
+	{
+		writeByte(__b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public final void writeBoolean(boolean __v)
+		throws IOException
+	{
+		writeByte((__v ? 1 : 0));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public final void writeByte(int __v)
 		throws IOException
 	{
 		throw new Error("TODO");
@@ -151,7 +175,7 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public void writeBoolean(boolean __v)
+	public final void writeBytes(String __s)
 		throws IOException
 	{
 		throw new Error("TODO");
@@ -162,7 +186,110 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public void writeByte(int __v)
+	public final void writeChar(int __v)
+		throws IOException
+	{
+		writeShort(__v);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public final void writeChars(String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Write all characters
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+			writeShort(__s.charAt(i));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public final void writeDouble(double __v)
+		throws IOException
+	{
+		writeLong(Double.doubleToRawLongBits(__v));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public final void writeFloat(float __v)
+		throws IOException
+	{
+		writeInt(Float.floatToRawIntBits(__v));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public final void writeInt(int __v)
+		throws IOException
+	{
+		// Depends on the endian
+		DataEndianess endian = this._endian;
+		switch (endian)
+		{
+				// Big
+			case BIG:
+				throw new Error("TODO");
+				
+				// Little
+			case LITTLE:
+				throw new Error("TODO");
+			
+				// Unknown
+			default:
+				throw new IOException(String.format("BD01", endian));
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public final void writeLong(long __v)
+		throws IOException
+	{
+		// Depends on the endian
+		DataEndianess endian = this._endian;
+		switch (endian)
+		{
+				// Big
+			case BIG:
+				throw new Error("TODO");
+				
+				// Little
+			case LITTLE:
+				throw new Error("TODO");
+			
+				// Unknown
+			default:
+				throw new IOException(String.format("BD01", endian));
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public final void writeShort(int __v)
 		throws IOException
 	{
 		throw new Error("TODO");
@@ -173,95 +300,7 @@ public class ExtendedDataOutputStream
 	 * @since 2016/07/10
 	 */
 	@Override
-	public void writeBytes(String __s)
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void writeChar(int __v)
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void writeChars(String __s)
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void writeDouble(double __v)
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void writeFloat(float __v)
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void writeInt(int __v)
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void writeLong(long __v)
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void writeShort(int __v)
-		throws IOException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public void writeUTF(String __s)
+	public final void writeUTF(String __s)
 		throws IOException
 	{
 		throw new Error("TODO");
