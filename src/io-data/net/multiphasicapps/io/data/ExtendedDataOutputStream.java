@@ -133,7 +133,7 @@ public class ExtendedDataOutputStream
 			throw new NullPointerException("NARG");
 		
 		// Forward
-		write(__b, 0, __b.length);
+		this.write(__b, 0, __b.length);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public class ExtendedDataOutputStream
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		int n = __b.length;
-		if (__o < 0 || __l < 0 || (__o + __l) >= n)
+		if (__o < 0 || __l < 0 || (__o + __l) > n)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Write
@@ -323,7 +323,26 @@ public class ExtendedDataOutputStream
 	public final void writeShort(int __v)
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Depends on the endian
+		DataEndianess endian = this._endian;
+		switch (endian)
+		{
+				// Big
+			case BIG:
+				writeByte(__v >>> 8);
+				writeByte(__v);
+				break;
+				
+				// Little
+			case LITTLE:
+				writeByte(__v);
+				writeByte(__v >>> 8);
+				break;
+			
+				// Unknown
+			default:
+				throw new IOException(String.format("BD01", endian));
+		}
 	}
 	
 	/**
