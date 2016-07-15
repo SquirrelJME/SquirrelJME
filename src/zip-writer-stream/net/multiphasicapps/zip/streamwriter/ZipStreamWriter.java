@@ -197,96 +197,18 @@ public class ZipStreamWriter
 	}
 	
 	/**
-	 * This is an output stream which is used when writing an entry.
+	 * The inner and outer streams are very similar.
 	 *
 	 * @since 2016/07/15
 	 */
-	private final class __InnerOutputStream__
-		extends OutputStream
-	{
-		/**
-		 * Initializes a new output stream for writing an entry.
-		 *
-		 * @since 2016/07/15
-		 */
-		private __InnerOutputStream__()
-		{
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/07/15
-		 */
-		@Override
-		public final void close()
-			throws IOException
-		{
-			// Lock
-			synchronized (ZipStreamWriter.this.lock)
-			{
-				throw new Error("TODO");
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/07/15
-		 */
-		@Override
-		public final void flush()
-			throws IOException
-		{
-			// Lock
-			synchronized (ZipStreamWriter.this.lock)
-			{
-				throw new Error("TODO");
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/07/15
-		 */
-		@Override
-		public final void write(int __b)
-			throws IOException
-		{
-			// Lock
-			synchronized (ZipStreamWriter.this.lock)
-			{
-				throw new Error("TODO");
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/07/15
-		 */
-		@Override
-		public final void write(byte[] __b, int __o, int __l)
-			throws IOException
-		{
-			// Lock
-			synchronized (ZipStreamWriter.this.lock)
-			{
-				throw new Error("TODO");
-			}
-		}
-	}
-	
-	/**
-	 * This is an output stream which is used when writing an entry.
-	 *
-	 * @since 2016/07/15
-	 */
-	private final class __OuterOutputStream__
+	private abstract class __BaseOutputStream__
 		extends OutputStream
 	{
 		/** The wrapped stream. */
 		protected final OutputStream wrapped;
 		
 		/** Is the outer side finished? */
-		private volatile boolean _finished;
+		protected volatile boolean finished;
 		
 		/** The decompressed size. */
 		private volatile int _size;
@@ -298,7 +220,7 @@ public class ZipStreamWriter
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/07/15
 		 */
-		private __OuterOutputStream__(OutputStream __os)
+		private __BaseOutputStream__(OutputStream __os)
 			throws NullPointerException
 		{
 			// Check
@@ -314,19 +236,8 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public final void close()
-			throws IOException
-		{
-			// Lock
-			synchronized (ZipStreamWriter.this.lock)
-			{
-				// Ignore if already finished
-				if (this._finished)
-					return;
-				
-				throw new Error("TODO");
-			}
-		}
+		public abstract void close()
+			throws IOException;
 		
 		/**
 		 * {@inheritDoc}
@@ -341,7 +252,7 @@ public class ZipStreamWriter
 			{
 				// Ignore if finished since the streams should be disconnected
 				// at this time
-				if (this._finished)
+				if (this.finished)
 					return;
 				
 				// Forward flush
@@ -362,7 +273,7 @@ public class ZipStreamWriter
 			{
 				// {@squirreljme.error BC05 Cannot write a single byte because
 				// the stream is closed.}
-				if (this._finished)
+				if (this.finished)
 					throw new IOException("BC05");
 				
 				// {@squirreljme.error BC08 Cannot write a single byte because
@@ -397,7 +308,7 @@ public class ZipStreamWriter
 			{
 				// {@squirreljme.error BC06 Cannot write multiple bytes because
 				// the stream is closed.}
-				if (this._finished)
+				if (this.finished)
 					throw new IOException("BC06");
 				
 				// {@squirreljme.error BC07 Cannot write multiple bytes because
@@ -409,6 +320,79 @@ public class ZipStreamWriter
 				// Write data and increase size
 				this.wrapped.write(__b, __o, __l);
 				this._size = newsize;
+			}
+		}
+	}
+	
+	/**
+	 * This is an output stream which is used when writing an entry.
+	 *
+	 * @since 2016/07/15
+	 */
+	private final class __InnerOutputStream__
+		extends __BaseOutputStream__
+	{
+		/**
+		 * Initializes a new output stream for writing an entry.
+		 *
+		 * @since 2016/07/15
+		 */
+		private __InnerOutputStream__()
+		{
+			super(ZipStreamWriter.this.output);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/15
+		 */
+		@Override
+		public final void close()
+			throws IOException
+		{
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				throw new Error("TODO");
+			}
+		}
+	}
+	
+	/**
+	 * This is an output stream which is used when writing an entry.
+	 *
+	 * @since 2016/07/15
+	 */
+	private final class __OuterOutputStream__
+		extends __BaseOutputStream__
+	{
+		/**
+		 * Initializes a new output stream for writing an entry.
+		 *
+		 * @param __os The output stream to wrap.
+		 * @since 2016/07/15
+		 */
+		private __OuterOutputStream__(OutputStream __os)
+		{
+			super(__os);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/15
+		 */
+		@Override
+		public final void close()
+			throws IOException
+		{
+			// Lock
+			synchronized (ZipStreamWriter.this.lock)
+			{
+				// Ignore if already finished
+				if (this.finished)
+					return;
+				
+				throw new Error("TODO");
 			}
 		}
 	}
