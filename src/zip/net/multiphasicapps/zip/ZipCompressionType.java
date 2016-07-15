@@ -88,7 +88,15 @@ public enum ZipCompressionType
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Depends on the compression
+		switch (this)
+		{
+				// {@squirreljme.error BF01 Compressing using the given
+				// compression algorithm is not supported. (The compression
+				// algorithm)}
+			default:
+				throw new IOException(String.format("BF01 %s", this));
+		}
 	}
 }
 
