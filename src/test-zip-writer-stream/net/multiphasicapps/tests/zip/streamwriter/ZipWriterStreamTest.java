@@ -39,6 +39,10 @@ import net.multiphasicapps.zip.ZipCompressionType;
 public class ZipWriterStreamTest
 	implements TestInvoker
 {
+	/** The compression types to use. */
+	private static final ZipCompressionType[] _COMPRESSION_TYPES =
+		new ZipCompressionType[]{ZipCompressionType.NO_COMPRESSION};
+	
 	/** The number of files to write uncompressed and compressed. */
 	public static final int NUM_FILES =
 		2;
@@ -79,11 +83,9 @@ public class ZipWriterStreamTest
 					long frseed = rand.nextLong();
 				
 					// Setup next ZIP entry
-					for (int q = 0; q < 2; q++)
-						try (OutputStream os = zsw.nextEntry((q == 0 ? "n" :
-							"c") + frseed, (q == 0 ?
-							ZipCompressionType.NO_COMPRESSION :
-							ZipCompressionType.DEFLATE)))
+					for (ZipCompressionType ct : _COMPRESSION_TYPES)
+						try (OutputStream os = zsw.nextEntry(ct.name() + "/" +
+							frseed, ct))
 						{
 							// Setup random
 							Random fr = new Random(frseed);
