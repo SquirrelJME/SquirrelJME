@@ -44,12 +44,11 @@ public class ZipStreamWriter
 	/** Was this stream closed? */
 	private volatile boolean _closed;
 	
-	/** The current entry output. */
-	private volatile __EntryOutputStream__ _entry;
+	/** The current entry output (the inner portion). */
+	private volatile __InnerOutputStream__ _inner;
 	
-	/** The current position. */
-	private volatile long _basepos =
-		Long.MIN_VALUE;
+	/** The current entry output (the outer portion). */
+	private volatile __OuterOutputStream__ _outer;
 	
 	/**
 	 * This initializes the stream for writing ZIP file data.
@@ -94,7 +93,7 @@ public class ZipStreamWriter
 			
 			// {@squirreljme.error BC01 Cannot close the ZIP writer because
 			// an entry is still being written.}
-			if (this._entry != null)
+			if (this._inner != null || this._outer != null)
 				throw new IOException("BC01");
 			
 			throw new Error("TODO");
@@ -130,14 +129,17 @@ public class ZipStreamWriter
 		if (__name == null || __comp == null)
 			throw new NullPointerException("NARG");
 		
-		// Only def
-		
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BC04 Cannot write new entry because the ZIP
+			// has been closed.}
+			if (this._closed)
+				throw new IOException("BC04");
+			
 			// {@squirreljme.error BC02 Cannot create a new entry for output
 			// because the previous entry has not be closed.}
-			if (this._entry != null)
+			if (this._inner != null || this._outer != null)
 				throw new IOException("BC02");
 			
 			// Write ZIP header data
@@ -176,10 +178,82 @@ public class ZipStreamWriter
 			// Write file name
 			output.write(utfname);
 			
-			// Set base file position so its (compressed) size can be
-			// determined later
-			this._basepos = output.size();
+			// Setup inner stream (for compressed size)
+			__InnerOutputStream__ inner = new __InnerOutputStream__();
 			
+			// Wrap inner with the compression algorithm
+			OutputStream wrapped = __comp.outputStream(inner);
+			
+			// Wrap that with the outer stream (uncompressed size)
+			__OuterOutputStream__ outer = new __OuterOutputStream__(wrapped);
+			
+			// Set
+			this._inner = inner;
+			this._outer = outer;
+			
+			// Return the outer stream
+			return outer;
+		}
+	}
+	
+	/**
+	 * This is an output stream which is used when writing an entry.
+	 *
+	 * @since 2016/07/15
+	 */
+	private final class __InnerOutputStream__
+		extends OutputStream
+	{
+		/**
+		 * Initializes a new output stream for writing an entry.
+		 *
+		 * @since 2016/07/15
+		 */
+		private __InnerOutputStream__()
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/15
+		 */
+		@Override
+		public void close()
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/15
+		 */
+		@Override
+		public void flush()
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/15
+		 */
+		@Override
+		public void write(int __b)
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/15
+		 */
+		@Override
+		public void write(byte[] __b, int __o, int __l)
+			throws IOException
+		{
 			throw new Error("TODO");
 		}
 	}
@@ -189,16 +263,28 @@ public class ZipStreamWriter
 	 *
 	 * @since 2016/07/15
 	 */
-	private final class __EntryOutputStream__
+	private final class __OuterOutputStream__
 		extends OutputStream
 	{
+		/** The wrapped stream. */
+		protected final OutputStream wrapped;
+		
 		/**
 		 * Initializes a new output stream for writing an entry.
 		 *
+		 * @param __os The output stream to wrap.
+		 * @throws NullPointerException On null arguments.
 		 * @since 2016/07/15
 		 */
-		private __EntryOutputStream__()
+		private __OuterOutputStream__(OutputStream __os)
+			throws NullPointerException
 		{
+			// Check
+			if (__os == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.wrapped = __os;
 		}
 		
 		/**

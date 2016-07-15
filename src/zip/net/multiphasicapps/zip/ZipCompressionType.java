@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.zip;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  * This represents the type of compression that is used in a ZIP file.
  *
@@ -65,6 +68,27 @@ public enum ZipCompressionType
 	public final int method()
 	{
 		return this.method;
+	}
+	
+	/**
+	 * Creates an output stream which wraps another for output which is used
+	 * to write the associated data.
+	 *
+	 * @param __os The output stream to write into.
+	 * @return An output stream for writing the data for this given compression
+	 * method.
+	 * @throws IOException If the stream could not be created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/15
+	 */
+	public final OutputStream outputStream(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
