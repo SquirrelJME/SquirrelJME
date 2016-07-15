@@ -285,6 +285,12 @@ public class ZipStreamWriter
 		/** The wrapped stream. */
 		protected final OutputStream wrapped;
 		
+		/** Is the outer side finished? */
+		private volatile boolean _finished;
+		
+		/** The decompressed size. */
+		private volatile int _size;
+		
 		/**
 		 * Initializes a new output stream for writing an entry.
 		 *
@@ -314,6 +320,10 @@ public class ZipStreamWriter
 			// Lock
 			synchronized (ZipStreamWriter.this.lock)
 			{
+				// Ignore if already finished
+				if (this._finished)
+					return;
+				
 				throw new Error("TODO");
 			}
 		}
@@ -329,7 +339,13 @@ public class ZipStreamWriter
 			// Lock
 			synchronized (ZipStreamWriter.this.lock)
 			{
-				throw new Error("TODO");
+				// Ignore if finished since the streams should be disconnected
+				// at this time
+				if (this._finished)
+					return;
+				
+				// Forward flush
+				this.wrapped.flush();
 			}
 		}
 		
@@ -344,7 +360,20 @@ public class ZipStreamWriter
 			// Lock
 			synchronized (ZipStreamWriter.this.lock)
 			{
-				throw new Error("TODO");
+				// {@squirreljme.error BC05 Cannot write a single byte because
+				// the stream is closed.}
+				if (this._finished)
+					throw new IOException("BC05");
+				
+				// {@squirreljme.error BC08 Cannot write a single byte because
+				// the ZIP entry would exceed 4GiB.}
+				int oldsize = this._size, newsize = oldsize + 1;
+				if (newsize < 0 || newsize < oldsize)
+					throw new IOException("BC08");
+				
+				// Write data and increase size
+				this.wrapped.write(__b);
+				this._size = newsize;
 			}
 		}
 		
@@ -354,12 +383,32 @@ public class ZipStreamWriter
 		 */
 		@Override
 		public final void write(byte[] __b, int __o, int __l)
-			throws IOException
+			throws IndexOutOfBoundsException, IOException, NullPointerException
 		{
+			// Check
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			int n = __b.length;
+			if (__o < 0 || __l < 0 || (__o + __l) > n)
+				throw new IndexOutOfBoundsException("IOOB");
+			
 			// Lock
 			synchronized (ZipStreamWriter.this.lock)
 			{
-				throw new Error("TODO");
+				// {@squirreljme.error BC06 Cannot write multiple bytes because
+				// the stream is closed.}
+				if (this._finished)
+					throw new IOException("BC06");
+				
+				// {@squirreljme.error BC07 Cannot write multiple bytes because
+				// the ZIP entry would exceed 4GiB.}
+				int oldsize = this._size, newsize = oldsize + __l;
+				if (newsize < 0 || newsize < oldsize)
+					throw new IOException("BC07");
+				
+				// Write data and increase size
+				this.wrapped.write(__b, __o, __l);
+				this._size = newsize;
 			}
 		}
 	}
