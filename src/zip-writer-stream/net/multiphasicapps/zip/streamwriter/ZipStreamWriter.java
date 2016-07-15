@@ -392,7 +392,8 @@ public class ZipStreamWriter
 				if (this.finished)
 					return;
 				
-				throw new Error("TODO");
+				// Close the wrapped stream
+				this.wrapped.close();
 			}
 		}
 	}
