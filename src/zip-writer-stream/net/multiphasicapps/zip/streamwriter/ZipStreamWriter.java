@@ -72,6 +72,10 @@ public class ZipStreamWriter
 	/** The current entry output (the outer portion). */
 	private volatile __OuterOutputStream__ _outer;
 	
+	/** The best version number. */
+	private volatile int _bestversion =
+		Math.max(20, ZipCompressionType.DEFLATE.extractVersion());
+	
 	/**
 	 * This initializes the stream for writing ZIP file data.
 	 *
@@ -126,6 +130,7 @@ public class ZipStreamWriter
 			long cdstart = output.size();
 			
 			// Write all entries
+			int bestversion = this._bestversion;
 			for (__TOCEntry__ entry : toc)
 			{
 				// The entry position
@@ -133,6 +138,28 @@ public class ZipStreamWriter
 				
 				// Write directory header
 				output.writeInt(_CENTRAL_DIRECTORY_MAGIC_NUMBER);
+				
+				// The created by version (use the highest version)
+				output.writeShort(bestversion);
+				
+				// Version needed to extract
+				ZipCompressionType ecomp = entry._compression;
+				output.writeShort(ecomp.extractVersion());
+				
+				// General purpose flags
+				output.writeShort(_GENERAL_PURPOSE_FLAGS);
+				
+				// Compression method
+				output.writeShort(ecomp.method());
+				
+				// Date/time not used
+				output.writeShort(0);
+				output.writeShort(0);
+				
+				// CRC and sizes
+				output.writeInt(entry._crc);
+				output.writeInt((int)entry._compressed);
+				output.writeInt((int)entry._uncompressed);
 				
 				throw new Error("TODO");
 			}
@@ -304,8 +331,7 @@ public class ZipStreamWriter
 			output.writeInt(_DATA_DESCRIPTOR_MAGIC_NUMBER);
 			
 			// Write CRC and sizes
-			System.err.println("TODO -- Output calculated CRC.");
-			output.writeInt(0);
+			output.writeInt((int)last._crc);
 			output.writeInt((int)comp);
 			output.writeInt((int)uncomp);
 			

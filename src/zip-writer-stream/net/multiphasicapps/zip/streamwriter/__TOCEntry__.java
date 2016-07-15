@@ -35,6 +35,9 @@ class __TOCEntry__
 	/** The compressed size. */
 	volatile long _compressed;
 	
+	/** The CRC32 of the entry. */
+	volatile int _crc;
+	
 	/**
 	 * Initializes the table of contents entry.
 	 *
