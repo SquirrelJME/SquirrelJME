@@ -21,6 +21,8 @@ import java.io.OutputStream;
  *
  * Streams default to big endian.
  *
+ * This class is not thread safe.
+ *
  * {@squirreljme.error BD01 Unhandled endianess. (The endianess)}
  *
  * @since 2016/07/10
@@ -35,6 +37,9 @@ public class ExtendedDataOutputStream
 	/** The target endianess. */
 	private volatile DataEndianess _endian =
 		DataEndianess.BIG;
+	
+	/** The current file size. */
+	private volatile long _size;
 	
 	/**
 	 * Initializes the extended data output stream.
@@ -112,7 +117,7 @@ public class ExtendedDataOutputStream
 	@Override
 	public final long size()
 	{
-		throw new Error("TODO");
+		return this._size;
 	}
 	
 	/**
@@ -121,9 +126,14 @@ public class ExtendedDataOutputStream
 	 */
 	@Override
 	public final void write(byte[] __b)
-		throws IOException
+		throws IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		write(__b, 0, __b.length);
 	}
 	
 	/**
@@ -132,9 +142,20 @@ public class ExtendedDataOutputStream
 	 */
 	@Override
 	public final void write(byte[] __b, int __o, int __l)
-		throws IOException
+		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int n = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) >= n)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Write
+		this.output.write(__b, __o, __l);
+		
+		// Add size
+		this._size += __l;
 	}
 	
 	/**
@@ -145,7 +166,8 @@ public class ExtendedDataOutputStream
 	public final void write(int __b)
 		throws IOException
 	{
-		writeByte(__b);
+		this.output.write(__b);
+		this._size++;
 	}
 	
 	/**
@@ -167,7 +189,8 @@ public class ExtendedDataOutputStream
 	public final void writeByte(int __v)
 		throws IOException
 	{
-		throw new Error("TODO");
+		this.output.write(__v);
+		this._size++;
 	}
 	
 	/**
