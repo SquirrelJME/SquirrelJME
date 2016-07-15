@@ -14,3 +14,11 @@ intention of leaving the GPLv3 however.
 
 My new testing code seems to be much faster now.
 
+## 19:58
+
+Now I can resume writing ZIP files and such.
+
+## 20:09
+
+I need a `SeekableByteChannel` which can wrap a byte array.
+

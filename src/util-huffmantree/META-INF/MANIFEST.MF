@@ -6,6 +6,6 @@ X-SquirrelJME-Error: AK
 LIBlet-Title: Extra Util Huffman Tree
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains an implementation of
-  the Huffman data tree.
+LIBlet-Description: This contains an implementation of 
+ the Huffman data tree.
 

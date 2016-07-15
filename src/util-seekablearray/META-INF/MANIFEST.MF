@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: util-seekablearray
+X-SquirrelJME-UUID: b594416b-385c-48ae-a821-4436c0b6fc61
+X-SquirrelJME-Depends: cldc-full
+X-SquirrelJME-Error: BE
+LIBlet-Title: SeekableByteChannel Byte Array Wrapper
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This provides an implementation of a 
+ SeekableByteChannel which wraps a byte array.
+
