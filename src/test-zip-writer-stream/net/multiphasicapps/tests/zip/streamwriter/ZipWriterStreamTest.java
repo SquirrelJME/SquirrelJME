@@ -22,6 +22,7 @@ import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestFamily;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.util.seekablearray.SeekableByteArrayChannel;
+import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -40,6 +41,10 @@ public class ZipWriterStreamTest
 	public static final int NUM_FILES =
 		2;
 	
+	/** The size of the files to write, does not have to be large. */
+	public static final int FILE_SIZE =
+		384;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/10
@@ -57,13 +62,30 @@ public class ZipWriterStreamTest
 		
 		// Create a ZIP with a bunch of random files
 		byte[] zipdata = null;
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ZipStreamWriter zsw = new ZipStreamWriter(baos))
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
-			int nf = NUM_FILES;
-			for (int i = 0; i < nf; i++)
+			// The stream must be closed before the byte array becomes a valid
+			// ZIP file
+			try (ZipStreamWriter zsw = new ZipStreamWriter(baos))
 			{
-				throw new Error("TODO");
+				// Write a number of files, one compressed and the other not
+				// compressed
+				int nf = NUM_FILES, fs = FILE_SIZE;
+				for (int f = 0; f < nf; f++)
+				{
+					// Random data used to write
+					Random fr = new Random(rand.nextLong());
+				
+					// Setup next ZIP entry
+					if (true)
+						throw new Error("TODO");
+					{
+						// Write bytes to the entry
+						for (int s = 0; s < fs; s++)
+							if (true)
+								throw new Error("TODO");
+					}
+				}
 			}
 			
 			// Get ZIP data
@@ -71,10 +93,13 @@ public class ZipWriterStreamTest
 		}
 		
 		// Read the input ZIP file that was created in memory and try to
-		// see if entries were written correctly.
+		// see if entries were written correctly. If the ZIP cannot be opened
+		// here then it is malformed.
 		try (ZipFile zip = ZipFile.open(new SeekableByteArrayChannel(zipdata)))
 		{
-			throw new Error("TODO");
+			// Go through all entries and check if they contain valid data
+			for (ZipEntry ze : zip)
+				throw new Error("TODO");
 		}
 	}
 	

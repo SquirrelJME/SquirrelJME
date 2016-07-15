@@ -22,3 +22,7 @@ Now I can resume writing ZIP files and such.
 
 I need a `SeekableByteChannel` which can wrap a byte array.
 
+## 20:31
+
+I also need some common ZIP classes such as compression type and other things.
+
