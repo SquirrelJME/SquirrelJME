@@ -30,6 +30,10 @@ public class ExtendedDataOutputStream
 	/** The output data stream. */
 	protected final DataOutputStream output;
 	
+	/** The target endianess. */
+	private volatile DataEndianess _endian =
+		DataEndianess.BIG;
+	
 	/**
 	 * Initializes the extended data output stream.
 	 *
@@ -78,7 +82,7 @@ public class ExtendedDataOutputStream
 	@Override
 	public DataEndianess getEndianess()
 	{
-		throw new Error("TODO");
+		return this._endian;
 	}
 	
 	/**
@@ -87,8 +91,16 @@ public class ExtendedDataOutputStream
 	 */
 	@Override
 	public DataEndianess setEndianess(DataEndianess __end)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__end == null)
+			throw new NullPointerException("NARG");
+		
+		// Get and set
+		DataEndianess rv = this._endian;
+		this._endian = __end;
+		return rv;
 	}
 	
 	/**
