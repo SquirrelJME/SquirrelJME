@@ -95,6 +95,25 @@ public class ZipWriterStreamTest
 				}
 			}
 			
+			// Caught an exception, just note the failing stream
+			catch (Throwable t)
+			{
+				// Could fail to note
+				try
+				{
+					__t.result("failpartialstream").note(baos.toByteArray());
+				}
+			
+				// Could not note it either
+				catch (Throwable x)
+				{
+					t.addSuppressed(x);
+				}
+			
+				// Rethrow
+				throw t;
+			}
+			
 			// Get ZIP data
 			zipdata = baos.toByteArray();
 		}
