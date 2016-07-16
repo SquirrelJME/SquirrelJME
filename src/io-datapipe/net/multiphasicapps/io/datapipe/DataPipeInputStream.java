@@ -24,7 +24,8 @@ import net.multiphasicapps.io.datasink.SinkProcessException;
  * @since 2016/03/11
  */
 public class DataPipeInputStream
-	extends Flushable, InputStream
+	extends InputStream
+	implements Flushable
 {
 	/** Lock. */
 	protected final Object lock;

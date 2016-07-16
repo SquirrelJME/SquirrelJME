@@ -30,4 +30,8 @@ although it does work for the most part. Although keeping a note of sizes could
 be a bit confusing, I would basically have something very similar anyway so
 there is no real sense in changing it.
 
+## 11:35
+
+I actually need a `DataPipeOutputStream` now. Actually the CRC code is not a
+data pipe, it is just a data faucet. Actually a sink.
 

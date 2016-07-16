@@ -16,8 +16,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.io.crc32.CRC32DataSink;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.io.data.DataEndianess;
+import net.multiphasicapps.io.datasink.DataSinkOutputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
@@ -462,7 +464,7 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public final void write(int __b)
+		public void write(int __b)
 			throws IOException
 		{
 			// Lock
@@ -490,7 +492,7 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public final void write(byte[] __b, int __o, int __l)
+		public void write(byte[] __b, int __o, int __l)
 			throws IndexOutOfBoundsException, IOException, NullPointerException
 		{
 			// Check
@@ -569,6 +571,14 @@ public class ZipStreamWriter
 	private final class __OuterOutputStream__
 		extends __BaseOutputStream__
 	{
+		/** CRC calculation. */
+		protected final CRC32DataSink crccalc =
+			new CRC32DataSink();
+		
+		/** CRC calculator stream. */
+		protected final DataSinkOutputStream crcout =
+			new DataSinkOutputStream(crccalc);
+		
 		/**
 		 * Initializes a new output stream for writing an entry.
 		 *
@@ -597,8 +607,39 @@ public class ZipStreamWriter
 				
 				// Close the wrapped stream
 				this.finished = true;
+				this.crcout.flush();
 				this.wrapped.close();
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/16
+		 */
+		@Override
+		public void write(int __b)
+			throws IOException
+		{
+			// Send to output
+			super.write(__b);
+			
+			// Calculate CRC
+			this.crcout.write(__b);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/16
+		 */
+		@Override
+		public void write(byte[] __b, int __o, int __l)
+			throws IndexOutOfBoundsException, IOException, NullPointerException
+		{
+			// Send to output
+			super.write(__b, __o, __l);
+			
+			// Calculate CRC
+			this.crcout.write(__b, __o, __l);
 		}
 	}
 }
