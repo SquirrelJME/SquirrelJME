@@ -74,3 +74,9 @@ So now that I can write ZIP files, I just need to finish the test and then make
 it so that I can go back to the C or Java compiling JIT (which outputs source
 code in a streamed ZIP).
 
+## 19:17
+
+The namespace writer will need to be given an output or a means of writing data
+to some output stream for the cached form. Right now the cache writer is just
+standalone and there is no binding of the `JITOutput` to the namespace writer.
+
