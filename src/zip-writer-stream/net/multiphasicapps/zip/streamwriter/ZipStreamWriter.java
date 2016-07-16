@@ -122,6 +122,10 @@ public class ZipStreamWriter
 			if (this._inner != null || this._outer != null)
 				throw new IOException("BC01");
 			
+			// Mark closed to prevent failing closes from writing multiple
+			// times
+			this._closed = true;
+			
 			// Get output and the TOC entries
 			ExtendedDataOutputStream output = this.output;
 			LinkedList<__TOCEntry__> toc = this._toc;
@@ -135,6 +139,9 @@ public class ZipStreamWriter
 			{
 				// The entry position
 				long epos = output.size();
+				
+				if (epos > _MAX_FILE_SIZE)
+					throw new IOException();
 				
 				// Write directory header
 				output.writeInt(_CENTRAL_DIRECTORY_MAGIC_NUMBER);
@@ -161,7 +168,28 @@ public class ZipStreamWriter
 				output.writeInt((int)entry._compressed);
 				output.writeInt((int)entry._uncompressed);
 				
-				throw new Error("TODO");
+				// Write name length
+				byte[] efn = entry._name;
+				output.writeShort(efn.length);
+				
+				// No extra data
+				output.writeShort(0);
+				
+				// No comment
+				output.writeShort(0);
+				
+				// Always the first disk
+				output.writeShort(0);
+				
+				// No iternal or external attributes
+				output.writeShort(0);
+				output.writeInt(0);
+				
+				// Relative offset to local header
+				output.writeInt((int)(epos - entry._localposition));
+				
+				// Write file name
+				output.write(efn);
 			}
 			
 			if (true)
@@ -503,8 +531,8 @@ public class ZipStreamWriter
 					return;
 				
 				// Close and finish
-				ZipStreamWriter.this.__closeEntry();
 				this.finished = true;
+				ZipStreamWriter.this.__closeEntry();
 			}
 		}
 	}
@@ -544,8 +572,8 @@ public class ZipStreamWriter
 					return;
 				
 				// Close the wrapped stream
-				this.wrapped.close();
 				this.finished = true;
+				this.wrapped.close();
 			}
 		}
 	}
