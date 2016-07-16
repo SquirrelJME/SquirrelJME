@@ -95,7 +95,13 @@ public class DataPipeInputStream
 		// Lock
 		synchronized (lock)
 		{
+			// Flush the pipe
 			this.processor.flush();
+			
+			// If the input stream supports, flushing then flush it
+			InputStream in = this.in;
+			if (in instanceof Flushable)
+				((Flushable)in).flush();
 		}
 	}
 	
