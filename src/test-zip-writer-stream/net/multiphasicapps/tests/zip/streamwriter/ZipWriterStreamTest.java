@@ -129,6 +129,25 @@ public class ZipWriterStreamTest
 			for (ZipEntry ze : zip)
 				throw new Error("TODO");
 		}
+			
+		// Caught an exception, dump the failing ZIP
+		catch (Throwable t)
+		{
+			// Could fail to note
+			try
+			{
+				__t.result("faildecodestream").note(zipdata);
+			}
+		
+			// Could not note it either
+			catch (Throwable x)
+			{
+				t.addSuppressed(x);
+			}
+		
+			// Rethrow
+			throw t;
+		}
 	}
 	
 	/**

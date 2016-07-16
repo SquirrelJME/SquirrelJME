@@ -1,2 +1,26 @@
 # 2016/07/16
 
+## 10:30
+
+Appears the ZIP I write is corrupt.
+
+## 10:37
+
+So I have ZIP files written or so it seems, however now I must calculate the
+CRC for the data.
+
+	extracting: NO_COMPRESSION/-6643291408912800396   bad CRC 190244c2
+		(should be 00000000)
+	extracting: NO_COMPRESSION/-1146679493194395133   bad CRC 4864d8cb
+		(should be 00000000)
+
+## 10:40
+
+I do know that when I am to read the ZIP file as a stream I will need to
+remember the last 16 bytes read, to possibly detect when the end of the data
+is reached without needing to look at it or decompress it. This would only have
+to be done however, if the size and such are unknown at the time of archival.
+So for unknown archives, this would be a bit slower than usual. The package
+manager could use it since it only needs to read a single file.
+
+

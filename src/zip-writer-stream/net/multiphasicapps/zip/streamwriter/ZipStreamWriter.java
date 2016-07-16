@@ -191,7 +191,7 @@ public class ZipStreamWriter
 				output.writeInt(0);
 				
 				// Relative offset to local header
-				output.writeInt((int)(epos - entry._localposition));
+				output.writeInt((int)entry._localposition);
 				
 				// Write file name
 				output.write(efn);
