@@ -62,6 +62,14 @@ public class ZipStreamWriter
 	private static final int _CRC_FINALXOR =
 		0xFFFFFFFF;
 	
+	/** Reflect the data? */
+	private static final boolean _CRC_REFLECT_DATA =
+		true;
+	
+	/** Reflect the remainder? */
+	private static final boolean _CRC_REFLECT_REMAINDER =
+		true;
+	
 	/** The maximum permitted file size. */
 	private static final long _MAX_FILE_SIZE =
 		0xFFFFFFFFL;
@@ -592,7 +600,8 @@ public class ZipStreamWriter
 	{
 		/** CRC calculation. */
 		protected final CRC32DataSink crccalc =
-			new CRC32DataSink(_CRC_POLYNOMIAL, _CRC_REMAINDER, _CRC_FINALXOR);
+			new CRC32DataSink(_CRC_REFLECT_DATA, _CRC_REFLECT_REMAINDER,
+				_CRC_POLYNOMIAL, _CRC_REMAINDER, _CRC_FINALXOR);
 		
 		/** CRC calculator stream. */
 		protected final DataSinkOutputStream crcout =

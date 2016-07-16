@@ -51,3 +51,7 @@ Ok, so now I have:
 
 Not too sure if the CRC is in the uncompressed data or the compressed data.
 
+## 16:09
+
+Looks like `Integer` was missing some methods.
+

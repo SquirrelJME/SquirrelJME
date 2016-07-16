@@ -163,6 +163,26 @@ public final class Integer
 		throw new Error("TODO");
 	}
 	
+	public static int reverse(int __i)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static int reverseBytes(int __i)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static int rotateLeft(int __i, int __d)
+	{
+		throw new Error("TODO");
+	}
+	
+	public static int rotateRight(int __i, int __d)
+	{
+		throw new Error("TODO");
+	}
+	
 	public static int signum(int __a)
 	{
 		throw new Error("TODO");

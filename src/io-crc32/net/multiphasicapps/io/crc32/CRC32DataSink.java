@@ -31,6 +31,12 @@ public class CRC32DataSink
 	/** The final XOR value. */
 	protected final int finalxor;
 	
+	/** Reflect the data? */
+	protected final boolean reflectdata;
+	
+	/** Reflect the remainder? */
+	protected final boolean reflectremainder;
+	
 	/** The CRC Table. */
 	final __CRC32Table__ _table;
 	
@@ -44,13 +50,19 @@ public class CRC32DataSink
 	/**
 	 * Initializes the CRC-32 data sink.
 	 *
+	 * @param __rdata Reflect the data?
+	 * @param __rrem Reflect the remainder?
 	 * @param __poly The polynomial.
 	 * @param __initrem The initial remainder.
+	 * @param __fxor The value to XOR the remainder with on return.
 	 * @since 2016/07/16
 	 */
-	public CRC32DataSink(int __poly, int __initrem, int __fxor)
+	public CRC32DataSink(boolean __rdata, boolean __rrem, int __poly,
+		int __initrem, int __fxor)
 	{
 		// Set
+		this.reflectdata = __rdata;
+		this.reflectremainder = __rrem;
 		this.polynomial = __poly;
 		this.finalxor = __fxor;
 		this._remainder = __initrem;
@@ -77,7 +89,9 @@ public class CRC32DataSink
 			super.flush();
 			
 			// Return the current CRC
-			return this._remainder ^ this.finalxor;
+			int rem = this._remainder;
+			return (this.reflectremainder ? Integer.reverse(rem) : rem) ^
+				this.finalxor;
 		}
 	}
 	
@@ -98,11 +112,19 @@ public class CRC32DataSink
 			return;
 		
 		// Handle crc
+		boolean reflectdata = this.reflectdata;
 		int remainder = this._remainder;
 		int[] table = this._table._table;
 		for (int i = 0; i < rc; i++)
 		{
-			int d = (work[i] ^ (remainder >>> 24)) & 0xFF;
+			// Read in data value
+			int val = work[i] & 0xFF;
+			
+			// Reflect the data?
+			if (reflectdata)
+				val = Integer.reverse(val) >>> 24;
+			
+			int d = (val ^ (remainder >>> 24)) & 0xFF;
 			remainder = table[d] ^ (remainder << 8);
 		}
 		
