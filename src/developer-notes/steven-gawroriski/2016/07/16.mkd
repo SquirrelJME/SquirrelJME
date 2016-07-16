@@ -40,3 +40,14 @@ data pipe, it is just a data faucet. Actually a sink.
 It would probably be best for `flush` in the data pipes to just do nothing
 instead of failing if the stream is closed.
 
+## 15:55
+
+Ok, so now I have:
+
+	extracting: NO_COMPRESSION/-6643291408912800396 bad CRC 190244c2
+		(should be 89d9b62d)
+	extracting: NO_COMPRESSION/-1146679493194395133 bad CRC 4864d8cb
+		(should be a7137455)
+
+Not too sure if the CRC is in the uncompressed data or the compressed data.
+
