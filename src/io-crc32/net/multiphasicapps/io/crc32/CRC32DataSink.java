@@ -21,22 +21,28 @@ import net.multiphasicapps.io.datasink.SinkProcessException;
 public class CRC32DataSink
 	extends DataSink
 {
-	/** The CRC magic number. */
-	protected final int magicnumber;
+	/** The polynomial to use. */
+	protected final int polynomial;
 	
-	/** The current CRC value. */
-	private volatile int _crc;
+	/** The final XOR value. */
+	protected final int finalxor;
+	
+	/** The current CRC value (remainder). */
+	private volatile int _remainder;
 	
 	/**
 	 * Initializes the CRC-32 data sink.
 	 *
-	 * @param __mn The CRC magic number.
+	 * @param __poly The polynomial.
+	 * @param __initrem The initial remainder.
 	 * @since 2016/07/16
 	 */
-	public CRC32DataSink(int __mn)
+	public CRC32DataSink(int __poly, int __initrem, int __fxor)
 	{
 		// Set
-		this.magicnumber = __mn;
+		this.polynomial = __poly;
+		this.finalxor = __fxor;
+		this._remainder = __initrem;
 	}
 	
 	/**
@@ -57,7 +63,7 @@ public class CRC32DataSink
 			super.flush();
 			
 			// Return the current CRC
-			return this._crc;
+			return this._remainder ^ this.finalxor;
 		}
 	}
 	
