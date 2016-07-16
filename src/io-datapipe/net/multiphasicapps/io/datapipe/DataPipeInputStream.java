@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.io.datapipe;
 
+import java.io.Flushable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -23,7 +24,7 @@ import net.multiphasicapps.io.datasink.SinkProcessException;
  * @since 2016/03/11
  */
 public class DataPipeInputStream
-	extends InputStream
+	extends Flushable, InputStream
 {
 	/** Lock. */
 	protected final Object lock;
@@ -80,6 +81,21 @@ public class DataPipeInputStream
 			
 			// Close the wrapped stream
 			in.close();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/16
+	 */
+	@Override
+	public void flush()
+		throws IOException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			this.processor.flush();
 		}
 	}
 	
