@@ -50,6 +50,10 @@ public class ZipStreamWriter
 	private static final int _END_DIRECTORY_MAGIC_NUMBER =
 		0x06054B50;
 	
+	/** The magic number for the CRC algorithm. */
+	private static final int _CRC_MAGIC_NUMBER =
+		0xDEBB20E3;
+	
 	/** The maximum permitted file size. */
 	private static final long _MAX_FILE_SIZE =
 		0xFFFFFFFFL;
@@ -573,7 +577,7 @@ public class ZipStreamWriter
 	{
 		/** CRC calculation. */
 		protected final CRC32DataSink crccalc =
-			new CRC32DataSink();
+			new CRC32DataSink(_CRC_MAGIC_NUMBER);
 		
 		/** CRC calculator stream. */
 		protected final DataSinkOutputStream crcout =

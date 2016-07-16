@@ -21,14 +21,19 @@ import net.multiphasicapps.io.datasink.SinkProcessException;
 public class CRC32DataSink
 	extends DataSink
 {
+	/** The CRC magic number. */
+	protected final int magicnumber;
+	
 	/**
 	 * Initializes the CRC-32 data sink.
 	 *
+	 * @param __mn The CRC magic number.
 	 * @since 2016/07/16
 	 */
-	public CRC32DataSink()
+	public CRC32DataSink(int __mn)
 	{
-		throw new Error("TODO");
+		// Set
+		this.magicnumber = __mn;
 	}
 	
 	/**
