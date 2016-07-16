@@ -21,6 +21,10 @@ import net.multiphasicapps.io.datasink.SinkProcessException;
 public class CRC32DataSink
 	extends DataSink
 {
+	/** Working buffer size. */
+	private static final int _WORK_BUFFER =
+		32;
+	
 	/** The polynomial to use. */
 	protected final int polynomial;
 	
@@ -29,6 +33,10 @@ public class CRC32DataSink
 	
 	/** The CRC Table. */
 	final __CRC32Table__ _table;
+	
+	/** The work buffer. */
+	private byte[] _work =
+		new byte[_WORK_BUFFER];
 	
 	/** The current CRC value (remainder). */
 	private volatile int _remainder;
@@ -81,7 +89,25 @@ public class CRC32DataSink
 	protected void process(int __n)
 		throws SinkProcessException
 	{
-		throw new Error("TODO");
+		// Read data into the work buffer
+		byte[] work = this._work;
+		int rc = accept(work);
+		
+		// Nothing to process?
+		if (rc <= 0)
+			return;
+		
+		// Handle crc
+		int remainder = this._remainder;
+		int[] table = this._table._table;
+		for (int i = 0; i < rc; i++)
+		{
+			int d = (work[i] ^ (remainder >>> 24)) & 0xFF;
+			remainder = table[d] ^ (remainder << 8);
+		}
+		
+		// Set new remainder
+		this._remainder = remainder;
 	}
 }
 
