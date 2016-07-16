@@ -39,18 +39,18 @@ final class __CRC32Table__
 	{
 		// Setup table;
 		int[] table = new int[256];
-		int remainder = 0;
 		for (int i = 0; i < 256; i++)
 		{
-			remainder = i << 24;
+			int remainder = i << 24;
 			
 			// Divide all bits possibly
-			for (int b = 8; b > 0; b--)
+			for (int b = 0; b < 8; b++)
 			{
+				int oldrem = remainder;
 				remainder <<= 1;
 				
 				// XOR in polynomial
-				if (0 != (remainder & 0x8000_0000))
+				if (0 != (oldrem & 0x8000_0000))
 					remainder ^= __poly;
 			}
 			

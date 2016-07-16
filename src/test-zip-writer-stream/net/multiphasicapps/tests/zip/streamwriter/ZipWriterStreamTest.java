@@ -12,6 +12,7 @@ package net.multiphasicapps.tests.zip.streamwriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.SeekableByteChannel;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.Random;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
+import net.multiphasicapps.tests.TestComparison;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestFamily;
 import net.multiphasicapps.tests.TestInvoker;
@@ -127,7 +129,47 @@ public class ZipWriterStreamTest
 		{
 			// Go through all entries and check if they contain valid data
 			for (ZipEntry ze : zip)
-				throw new Error("TODO");
+			{
+				// Get the name
+				String name = ze.name();
+				
+				// Split at the directory separator to determine the seed being
+				// used.
+				int slash = name.indexOf('/');
+				if (slash < 0)
+					__t.result("illegalname").note(name);
+				
+				// Decode the seed
+				long eseed = Long.decode(name.substring(slash + 1));
+				
+				// Setup random generator to check against
+				Random fr = new Random(eseed);
+				
+				// Read the entry data into a buffer
+				try (InputStream is = ze.open();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ByteArrayOutputStream barr = new ByteArrayOutputStream())
+				{
+					// Load file data and random data into buffers
+					for (;;)
+					{
+						// Read value
+						int val = is.read();
+					
+						// EOF?
+						if (val < 0)
+							break;
+						
+						// Write
+						barr.write(fr.nextInt(255));
+						baos.write(val);
+					}
+					
+					// Compare the data
+					__t.result("name").compareByteArrays(TestComparison.EQUALS,
+						barr.toByteArray(), baos.toByteArray());
+				}
+			}
 		}
 			
 		// Caught an exception, dump the failing ZIP

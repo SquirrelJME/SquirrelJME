@@ -59,3 +59,18 @@ Looks like `Integer` was missing some methods.
 
 Now I get `2e0311c7` and `1525fd52`.
 
+## 16:18
+
+The table generator appeared incorrect, now I get `c41fa162` and `aefb6a0e`.
+
+## 16:25
+
+Ok, so the polynomial is wrong, now it has been corrected and the CRC is
+properly calculated.
+
+## 16:27
+
+So now that I can write ZIP files, I just need to finish the test and then make
+it so that I can go back to the C or Java compiling JIT (which outputs source
+code in a streamed ZIP).
+

@@ -105,27 +105,30 @@ public class CRC32DataSink
 	{
 		// Read data into the work buffer
 		byte[] work = this._work;
-		int rc = accept(work);
-		
-		// Nothing to process?
-		if (rc <= 0)
-			return;
-		
-		// Handle crc
 		boolean reflectdata = this.reflectdata;
 		int remainder = this._remainder;
 		int[] table = this._table._table;
-		for (int i = 0; i < rc; i++)
+		for (;;)
 		{
-			// Read in data value
-			int val = work[i] & 0xFF;
+			int rc = accept(work);
+		
+			// Nothing to process?
+			if (rc <= 0)
+				break;
+		
+			// Handle crc
+			for (int i = 0; i < rc; i++)
+			{
+				// Read in data value
+				int val = work[i] & 0xFF;
 			
-			// Reflect the data?
-			if (reflectdata)
-				val = Integer.reverse(val) >>> 24;
+				// Reflect the data?
+				if (reflectdata)
+					val = Integer.reverse(val) >>> 24;
 			
-			int d = (val ^ (remainder >>> 24)) & 0xFF;
-			remainder = table[d] ^ (remainder << 8);
+				int d = (val ^ (remainder >>> 24));
+				remainder = table[d] ^ (remainder << 8);
+			}
 		}
 		
 		// Set new remainder

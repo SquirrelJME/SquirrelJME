@@ -52,7 +52,7 @@ public class ZipStreamWriter
 	
 	/** The polynomial for the CRC algorithm. */
 	private static final int _CRC_POLYNOMIAL =
-		0xDEBB20E3;
+		0x04C11DB7;//0xDEBB20E3;
 	
 	/** The initial CRC remainder. */
 	private static final int _CRC_REMAINDER =
