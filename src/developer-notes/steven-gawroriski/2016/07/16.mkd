@@ -55,3 +55,7 @@ Not too sure if the CRC is in the uncompressed data or the compressed data.
 
 Looks like `Integer` was missing some methods.
 
+## 16:12
+
+Now I get `2e0311c7` and `1525fd52`.
+

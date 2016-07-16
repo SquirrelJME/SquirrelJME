@@ -341,7 +341,6 @@ public class ZipStreamWriter
 			
 			// Setup inner stream (for compressed size)
 			__InnerOutputStream__ inner = new __InnerOutputStream__();
-			System.err.println("TODO -- Calculate output CRC.");
 			
 			// Wrap inner with the compression algorithm
 			OutputStream wrapped = __comp.outputStream(inner);
