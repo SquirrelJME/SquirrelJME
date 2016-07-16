@@ -28,8 +28,7 @@ public class CRC32DataSink
 	protected final int finalxor;
 	
 	/** The CRC Table. */
-	final __CRC32Table__ _table =
-		__CRC32Table__.__table();
+	final __CRC32Table__ _table;
 	
 	/** The current CRC value (remainder). */
 	private volatile int _remainder;
@@ -47,6 +46,9 @@ public class CRC32DataSink
 		this.polynomial = __poly;
 		this.finalxor = __fxor;
 		this._remainder = __initrem;
+		
+		// Setup table
+		this._table = __CRC32Table__.__table(__poly);
 	}
 	
 	/**
