@@ -23,6 +23,9 @@ final class __CRC32Table__
 	/** Static table reference. */
 	private static volatile Reference<__CRC32Table__> _TABLE;
 	
+	/** CRC table data. */
+	final int[] _table;
+	
 	/**
 	 * Initializes the table data.
 	 *
