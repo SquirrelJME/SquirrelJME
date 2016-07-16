@@ -23,7 +23,13 @@ public class SeekableByteArrayChannel
 	implements SeekableByteChannel
 {
 	/** The array to wrap. */
-	protected final byte[] array;	
+	protected final byte[] array;
+	
+	/** The size of the array. */
+	protected final long size;
+	
+	/** The current position. */
+	private volatile long _pos;	
 	
 	/**
 	 * Initializes the seekable byte array channel using the given byte array.
@@ -41,6 +47,7 @@ public class SeekableByteArrayChannel
 		
 		// Set
 		this.array = __d;
+		this.size = __d.length;
 	}
 	
 	/**
@@ -71,7 +78,7 @@ public class SeekableByteArrayChannel
 	@Override
 	public long position()
 	{
-		throw new Error("TODO");
+		return this._pos;
 	}
 	
 	/**
@@ -80,8 +87,16 @@ public class SeekableByteArrayChannel
 	 */
 	@Override
 	public SeekableByteChannel position(long __p)
+		throws IllegalArgumentException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error BE02 The position cannot be negative. (The
+		// position which was requested to be used)}
+		if (__p < 0)
+			throw new IllegalArgumentException(String.format("BE02 %d", __p));
+		
+		// Set and return
+		this._pos = __p;
+		return this;
 	}
 	
 	/**
@@ -90,8 +105,40 @@ public class SeekableByteArrayChannel
 	 */
 	@Override
 	public int read(ByteBuffer __dest)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__dest == null)
+			throw new NullPointerException("NARG");
+		
+		// The current position to read from
+		long position = this._pos;
+		long size = this.size;
+		byte[] array = this.array;
+		
+		// Read in bytes
+		int off = 0;
+		boolean eof = false;
+		while (__dest.hasRemaining())
+		{
+			// Calculate actual position
+			long act = position + off;
+			if (act < 0 || act >= size)
+			{
+				eof = true;
+				break;
+			}
+			
+			// Read in byte
+			__dest.put(array[(int)act]);
+			off++;
+		}
+		
+		// Set new position
+		this._pos = position + off;
+		
+		// Return number of bytes read or EOF
+		return (eof && off == 0 ? -1 : off);
 	}
 	
 	/**
@@ -101,7 +148,7 @@ public class SeekableByteArrayChannel
 	@Override
 	public long size()
 	{
-		throw new Error("TODO");
+		return this.size;
 	}
 	
 	/**
@@ -126,7 +173,12 @@ public class SeekableByteArrayChannel
 	 */
 	@Override
 	public int write(ByteBuffer __src)
+		throws NullPointerException
 	{
+		// Check
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 }
