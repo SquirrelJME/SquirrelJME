@@ -27,6 +27,10 @@ public class CRC32DataSink
 	/** The final XOR value. */
 	protected final int finalxor;
 	
+	/** The CRC Table. */
+	final __CRC32Table__ _table =
+		__CRC32Table__.__table();
+	
 	/** The current CRC value (remainder). */
 	private volatile int _remainder;
 	

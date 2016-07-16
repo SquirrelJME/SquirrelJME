@@ -30,6 +30,7 @@ final class __CRC32Table__
 	 */
 	private __CRC32Table__()
 	{
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -40,7 +41,16 @@ final class __CRC32Table__
 	 */
 	static final __CRC32Table__ __table()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<__CRC32Table__> ref = _TABLE;
+		__CRC32Table__ rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			_TABLE = new WeakReference<>((rv = new __CRC32Table__()));
+		
+		// Return
+		return rv;
 	}
 }
 
