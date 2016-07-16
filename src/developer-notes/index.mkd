@@ -301,3 +301,5 @@
    [steven-gawroriski](steven-gawroriski/2016/07/14.mkd)
  * 15: 
    [steven-gawroriski](steven-gawroriski/2016/07/15.mkd)
+ * 16: 
+   [steven-gawroriski](steven-gawroriski/2016/07/16.mkd)

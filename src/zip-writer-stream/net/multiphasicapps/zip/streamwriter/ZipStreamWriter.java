@@ -44,6 +44,10 @@ public class ZipStreamWriter
 	private static final int _CENTRAL_DIRECTORY_MAGIC_NUMBER =
 		0x02014B50;
 	
+	/** End of central directory magic number. */
+	private static final int _END_DIRECTORY_MAGIC_NUMBER =
+		0x06054B50;
+	
 	/** The maximum permitted file size. */
 	private static final long _MAX_FILE_SIZE =
 		0xFFFFFFFFL;
@@ -129,6 +133,7 @@ public class ZipStreamWriter
 			// Get output and the TOC entries
 			ExtendedDataOutputStream output = this.output;
 			LinkedList<__TOCEntry__> toc = this._toc;
+			int numtoc = toc.size();
 			
 			// The position where the central directory starts
 			long cdstart = output.size();
@@ -192,13 +197,28 @@ public class ZipStreamWriter
 				output.write(efn);
 			}
 			
-			if (true)
-				throw new Error("TODO");
-			
 			// The position where it ends
 			long cdend = output.size();
 			
-			throw new Error("TODO");
+			// Write magic number
+			output.writeInt(_END_DIRECTORY_MAGIC_NUMBER);
+			
+			// Only a single disk is written
+			output.writeShort(0);
+			output.writeShort(0);
+			
+			// Number of entries on this disk and in all of them
+			output.writeShort(numtoc);
+			output.writeShort(numtoc);
+			
+			// The size of the central directory
+			output.writeInt((int)(cdend - cdstart));
+			
+			// Offset to the central directory
+			output.writeInt((int)cdstart);
+			
+			// No comment
+			output.writeShort(0);
 		}
 	}
 	
@@ -230,6 +250,10 @@ public class ZipStreamWriter
 		// Check
 		if (__name == null || __comp == null)
 			throw new NullPointerException("NARG");
+		
+		// Force no compressiong
+		System.err.println("TODO -- Support other compression methods");
+		__comp = ZipCompressionType.NO_COMPRESSION;
 		
 		// Lock
 		LinkedList<__TOCEntry__> toc = this._toc;
