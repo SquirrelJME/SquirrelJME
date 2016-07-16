@@ -291,6 +291,10 @@ public abstract class DataFaucet
 		// Lock
 		synchronized (lock)
 		{
+			// Do not flush if the stream failed
+			if (this._didfail)
+				return;
+			
 			__process();
 		}
 	}

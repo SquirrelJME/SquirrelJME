@@ -201,6 +201,10 @@ public abstract class DataSink
 		// Lock
 		synchronized (lock)
 		{
+			// Ignore flushing if the stream failed
+			if (this._didfail)
+				return;
+			
 			__process();
 		}
 	}

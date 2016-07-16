@@ -35,3 +35,8 @@ there is no real sense in changing it.
 I actually need a `DataPipeOutputStream` now. Actually the CRC code is not a
 data pipe, it is just a data faucet. Actually a sink.
 
+## 12:22
+
+It would probably be best for `flush` in the data pipes to just do nothing
+instead of failing if the stream is closed.
+
