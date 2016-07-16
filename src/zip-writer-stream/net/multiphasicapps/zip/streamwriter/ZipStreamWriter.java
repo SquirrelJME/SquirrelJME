@@ -363,6 +363,10 @@ public class ZipStreamWriter
 			if (inner == null || outer == null)
 				throw new IOException("BC09");
 			
+			// Flush both sides
+			inner.flush();
+			outer.flush();
+			
 			// Need to fill the size information and CRC for later
 			__TOCEntry__ last = toc.getLast();
 			
@@ -380,7 +384,10 @@ public class ZipStreamWriter
 			// Store sizes
 			last._uncompressed = uncomp;
 			last._compressed = comp;
-			System.err.println("TODO -- Remember calculated CRC.");
+			
+			// Determine CRC
+			int crc = outer.crccalc.crc();
+			last._crc = crc;
 			
 			// The magic number of the data descriptor is not needed, however
 			// it helps prevent some abiguity when the input data stream is
@@ -389,7 +396,7 @@ public class ZipStreamWriter
 			output.writeInt(_DATA_DESCRIPTOR_MAGIC_NUMBER);
 			
 			// Write CRC and sizes
-			output.writeInt((int)last._crc);
+			output.writeInt((int)crc);
 			output.writeInt((int)comp);
 			output.writeInt((int)uncomp);
 			
@@ -447,7 +454,7 @@ public class ZipStreamWriter
 		 * @since 2016/07/15
 		 */
 		@Override
-		public final void flush()
+		public void flush()
 			throws IOException
 		{
 			// Lock
@@ -614,6 +621,20 @@ public class ZipStreamWriter
 				this.crcout.flush();
 				this.wrapped.close();
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/15
+		 */
+		@Override
+		public void flush()
+			throws IOException
+		{
+			super.flush();
+			
+			// Flush CRC also
+			this.crcout.flush();
 		}
 		
 		/**

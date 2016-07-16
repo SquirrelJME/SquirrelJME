@@ -24,6 +24,9 @@ public class CRC32DataSink
 	/** The CRC magic number. */
 	protected final int magicnumber;
 	
+	/** The current CRC value. */
+	private volatile int _crc;
+	
 	/**
 	 * Initializes the CRC-32 data sink.
 	 *
@@ -34,6 +37,28 @@ public class CRC32DataSink
 	{
 		// Set
 		this.magicnumber = __mn;
+	}
+	
+	/**
+	 * Returns the currently calculated CRC value.
+	 *
+	 * @return The current CRC value.
+	 * @throws SinkProcessException If the stream encountered an error during
+	 * processing.
+	 * @since 2016/07/16
+	 */
+	public int crc()
+		throws SinkProcessException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Flush to get the latest value
+			super.flush();
+			
+			// Return the current CRC
+			return this._crc;
+		}
 	}
 	
 	/**
