@@ -23,4 +23,11 @@ to be done however, if the size and such are unknown at the time of archival.
 So for unknown archives, this would be a bit slower than usual. The package
 manager could use it since it only needs to read a single file.
 
+## 10:45
+
+So I potentially now need a more direct approach when it comes to the DataPipe
+although it does work for the most part. Although keeping a note of sizes could
+be a bit confusing, I would basically have something very similar anyway so
+there is no real sense in changing it.
+
 
