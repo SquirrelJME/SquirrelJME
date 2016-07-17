@@ -127,6 +127,17 @@ public class CLangNamespaceWriter
 		// Done
 		return sb.toString();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/17
+	 */
+	@Override
+	public String extensionResource(String __n)
+		throws NullPointerException
+	{
+		return super.extensionResource(__n) + " .c";
+	}
 }
 
 

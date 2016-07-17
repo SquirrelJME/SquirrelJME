@@ -61,6 +61,8 @@ public class CResourceOutputStream
 		this.nswriter = __nsw;
 		this.name = __rname;
 		
+		System.err.printf("DEBUG -- Identifier: %s%n", __rname);
+		
 		// Always include global header
 		PrintStream output = this.output;
 		output.println("#include \"squirrel.h\"");
@@ -131,8 +133,6 @@ public class CResourceOutputStream
 		
 		// Store
 		this._count = count;
-		
-		throw new Error("TODO");
 	}
 }
 

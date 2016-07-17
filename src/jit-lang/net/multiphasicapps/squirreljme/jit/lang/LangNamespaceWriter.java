@@ -161,8 +161,8 @@ public abstract class LangNamespaceWriter
 			try
 			{
 				return createResourceOutputStream(rname, new PrintStream(
-					this.zipwriter.nextEntry(rname, DEFAULT_COMPRESSION), true,
-					"utf-8"));
+					this.zipwriter.nextEntry(extensionResource(rname),
+					DEFAULT_COMPRESSION), true, "utf-8"));
 			}
 			
 			// {@squirreljme.error AZ04 Failed to create resource output. (The
@@ -172,6 +172,26 @@ public abstract class LangNamespaceWriter
 				throw new JITException(String.format("AZ04 %s", __name), e);
 			}
 		}
+	}
+	
+	/**
+	 * Possibly appends or prepends an extension before placing it into the
+	 * ZIP so that it is named accordingly.
+	 *
+	 * @param __n The name to add an extension to.
+	 * @return The name as it should appear in the ZIP.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/17
+	 */
+	public String extensionResource(String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Do not modify
+		return __n;
 	}
 	
 	/**
