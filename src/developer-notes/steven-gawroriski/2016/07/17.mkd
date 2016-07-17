@@ -4,3 +4,10 @@
 
 I suppose today will be a break.
 
+## 14:26
+
+Ok, so previously I noted that the namespace writer would not work because
+the output is unknown. However it would work because there is config which
+contains the cache creator. For other JIT parts that are directly executable,
+the namespace can write using a similar means so to speak.
+
