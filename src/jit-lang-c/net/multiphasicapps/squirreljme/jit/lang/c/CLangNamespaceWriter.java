@@ -85,7 +85,47 @@ public class CLangNamespaceWriter
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Setup
+		StringBuilder sb = new StringBuilder();
+		
+		// Go through all characters
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// These are untouched
+			if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+				(i > 0 && (c >= '0' && c <= '9')))
+				sb.append(c);
+			
+			// Otherwise escape
+			else
+			{
+				// Underscore acts as escape character
+				sb.append('_');
+				
+				// If the character cannot fit within two base-32 characters
+				// then use a wide sequence.
+				boolean wide;
+				if ((wide = (c > 1023)))
+					sb.append('_');
+				
+				// Write upper bits?
+				if (wide)
+				{
+					sb.append(Character.forDigit(((c >>> 15) & 0x1F), 32));
+					sb.append(Character.forDigit(((c >>> 10) & 0x1F), 32));
+				}
+				
+				// Lower two chars
+				sb.append(Character.forDigit(((c >>> 5) & 0x1F), 32));
+				sb.append(Character.forDigit((c & 0x1F), 32));
+			}
+		}
+		
+		// Done
+		return sb.toString();
 	}
 }
 
