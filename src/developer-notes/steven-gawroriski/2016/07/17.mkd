@@ -11,3 +11,8 @@ the output is unknown. However it would work because there is config which
 contains the cache creator. For other JIT parts that are directly executable,
 the namespace can write using a similar means so to speak.
 
+## 15:17
+
+There is no `PrintWriter`, however `PrintStream` works the same except that
+special work is needed to prevent characters from being directly written.
+

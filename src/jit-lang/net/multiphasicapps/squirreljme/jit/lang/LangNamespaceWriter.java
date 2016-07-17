@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.lang;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -32,6 +35,14 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 public abstract class LangNamespaceWriter
 	implements JITNamespaceWriter
 {
+	/** The default compression method. */
+	public static final ZipCompressionType DEFAULT_COMPRESSION =
+		ZipCompressionType.DEFLATE;
+	
+	/** Internal lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The target configuration. */
 	protected final JITOutputConfig.Immutable config;
 	
@@ -88,6 +99,32 @@ public abstract class LangNamespaceWriter
 	}
 	
 	/**
+	 * Creates a resource output stream which is used to write namespace
+	 * resources which are available for a given language.
+	 *
+	 * @param __rname The file name of the resource.
+	 * @param __ps The target stream.
+	 * @return The resource output stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/17
+	 */
+	protected abstract ResourceOutputStream createResourceOutputStream(
+		String __rname, PrintStream __ps)
+		throws NullPointerException;
+	
+	/**
+	 * Before resources can be created, the name of the file must be created
+	 * first.
+	 *
+	 * @param __name The resource to name.
+	 * @return The file name to use when writing to the output ZIP.
+	 * @throws NullPointerException.
+	 * @since 2016/07/17
+	 */
+	public abstract String nameResource(String __name)
+		throws NullPointerException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/09
 	 */
@@ -114,7 +151,27 @@ public abstract class LangNamespaceWriter
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// The resource must be named first
+			String rname = nameResource(__name);
+			
+			// Create output
+			try
+			{
+				return createResourceOutputStream(rname, new PrintStream(
+					this.zipwriter.nextEntry(rname, DEFAULT_COMPRESSION), true,
+					"utf-8"));
+			}
+			
+			// {@squirreljme.error AZ04 Failed to create resource output. (The
+			// name of the resource)}
+			catch (IOException e)
+			{
+				throw new JITException(String.format("AZ04 %s", __name), e);
+			}
+		}
 	}
 	
 	/**
@@ -125,17 +182,21 @@ public abstract class LangNamespaceWriter
 	public final void close()
 		throws JITException
 	{
-		// Close the ZIP file
-		try
+		// Lock
+		synchronized (this.lock)
 		{
-			// Finish writing the ZIP.
-			this.zipwriter.close();
-		}
+			// Close the ZIP file
+			try
+			{
+				// Finish writing the ZIP.
+				this.zipwriter.close();
+			}
 		
-		// {@squirreljme.error AZ03 Failed to close the ZIP.}
-		catch (IOException e)
-		{
-			throw new JITException("AZ03", e);
+			// {@squirreljme.error AZ03 Failed to close the ZIP.}
+			catch (IOException e)
+			{
+				throw new JITException("AZ03", e);
+			}
 		}
 	}
 }
