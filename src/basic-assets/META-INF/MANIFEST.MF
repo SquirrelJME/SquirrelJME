@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: basic-assets
+X-SquirrelJME-UUID: a52b657c-532b-4bd7-939b-ab5638be70ad
+X-SquirrelJME-Depends: cldc-compact
+LIBlet-Title: SquirrelJME Basic Assets
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains basic assets which 
+ are common to all SquirrelJME installations.
+

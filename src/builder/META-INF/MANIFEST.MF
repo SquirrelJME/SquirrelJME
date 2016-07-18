@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: builder
 X-SquirrelJME-UUID: 69441fea-3864-4fd2-8716-0b0e355a4ced
 X-SquirrelJME-Depends: cldc-full, zip-reader-block, jvm,
- package-manager, util-unmodifiable, jit, emulator
+ package-manager, util-unmodifiable, jit, emulator,
+ basic-assets
 X-SquirrelJME-Optional: os-linux-powerpc,
  os-lang-c
 X-SquirrelJME-Error: DW
