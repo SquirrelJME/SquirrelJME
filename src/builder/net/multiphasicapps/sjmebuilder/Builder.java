@@ -227,11 +227,31 @@ public class Builder
 			
 			// Generate an output binary which is linked from the input sources
 			JITNamespaceProcessor nsproc = this.processor;
+			Path exename = Paths.get(nsproc.executableName());
 			try (OutputStream os = Channels.newOutputStream(
-				FileChannel.open(Paths.get(nsproc.executableName()),
+				FileChannel.open(exename, StandardOpenOption.CREATE_NEW,
 					StandardOpenOption.WRITE)))
 			{
 				nsproc.linkBinary(os);
+			}
+			
+			// Failed to write the output
+			catch (IOException|RuntimeException|Error e)
+			{
+				// Delete it
+				try
+				{
+					Files.delete(exename);
+				}
+				
+				// Suppressed
+				catch (IOException f)
+				{
+					e.addSuppressed(f);
+				}
+				
+				// Rethrow
+				throw e;
 			}
 		}
 		
