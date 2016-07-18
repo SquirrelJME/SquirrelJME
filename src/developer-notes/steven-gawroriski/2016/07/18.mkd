@@ -75,3 +75,7 @@ example. If the executable format is special, say an ISO then it would be
 very similar except the ZIP contains an ISO instead. Since now I can write
 actual ZIP files.
 
+## 17:30
+
+Appears my GPG expired, I must remember to not let it do so.
+
