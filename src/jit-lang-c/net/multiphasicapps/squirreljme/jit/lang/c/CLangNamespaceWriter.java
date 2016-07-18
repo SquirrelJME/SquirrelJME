@@ -10,12 +10,18 @@
 
 package net.multiphasicapps.squirreljme.jit.lang.c;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.lang.LangClassWriter;
 import net.multiphasicapps.squirreljme.jit.lang.LangNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.lang.ResourceOutputStream;
+import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * This is a namespace writer which targets the C programming language.
@@ -33,15 +39,52 @@ public class CLangNamespaceWriter
 	 *
 	 * @param __ns The namespace being written.
 	 * @param __config The configuration used.
+	 * @throws JITException If the namespace writer could not be initialized.
 	 * @since 2016/07/09
 	 */
 	public CLangNamespaceWriter(String __ns,
 		JITOutputConfig.Immutable __config)
+		throws JITException
 	{
 		super(__ns, __config);
 		
 		// Prefix for identifiers
 		this.idprefix = escapeToCIdentifier(__ns) + "___";
+		
+		// Need to copy the global header to the output ZIP, otherwise the
+		// code will just end up not compiling at all.
+		ZipStreamWriter zipwriter = this.zipwriter;
+		try (OutputStream en = zipwriter.nextEntry("squirrel.h",
+			ZipCompressionType.DEFAULT_COMPRESSION);
+			InputStream gh = this.getClass().getResourceAsStream("squirrel.h"))
+		{
+			// {@squirrejme.error BA03 Could not locate the global SquirrelJME
+			// header file.}
+			if (gh == null)
+				throw new IOException("BA03");
+			
+			// Copy all of the data
+			byte[] buf = new byte[64];
+			for (;;)
+			{
+				// Read
+				int rc = gh.read(buf);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				// Write
+				en.write(buf, 0, rc);
+			}
+		}
+		
+		// {@squirreljme.error BA04 Error copying the global SquirrelJME
+		// header to the output namespace.}
+		catch (IOException e)
+		{
+			throw new JITException("BA04", e);
+		}
 	}
 	
 	/**
@@ -130,6 +173,28 @@ public class CLangNamespaceWriter
 		throws NullPointerException
 	{
 		return this.idprefix + "R_" + escapeToCIdentifier(__name);
+	}
+	
+	/**
+	 * This prints the global header includes to the target stream.
+	 *
+	 * @param __ps Stream to print to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/17
+	 */
+	final void __globalHeader(PrintStream __ps)
+		throws NullPointerException
+	{
+		// Check
+		if (__ps == null)
+			throw new NullPointerException("NARG");
+		
+		// Write out headers
+		__ps.println("#include \"squirrel.h\"");
+		__ps.print("#include \"");
+		__ps.print(identifierPrefix());
+		__ps.println(".h\"");
+		__ps.println();
 	}
 	
 	/**

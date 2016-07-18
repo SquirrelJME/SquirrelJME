@@ -51,6 +51,10 @@ public class CLangClassWriter
 		
 		// Set
 		this.namespacewriter = __nsw;
+		
+		// Include global headers
+		PrintStream output = this.output;
+		__nsw.__globalHeader(output);
 	}
 	
 	/**

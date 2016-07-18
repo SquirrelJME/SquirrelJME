@@ -30,6 +30,10 @@ public enum ZipCompressionType
 	/** End. */
 	;
 	
+	/** The default compression algorithm to use. */
+	public static final ZipCompressionType DEFAULT_COMPRESSION =
+		DEFLATE;
+	
 	/** The version needed to extract. */
 	protected final int extractversion;
 	

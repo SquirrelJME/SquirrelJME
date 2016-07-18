@@ -65,11 +65,7 @@ public class CResourceOutputStream
 		
 		// Always include global headers
 		PrintStream output = this.output;
-		output.println("#include \"squirrel.h\"");
-		output.print("#include \"");
-		output.print(__nsw.identifierPrefix());
-		output.println(".h\"");
-		output.println();
+		__nsw.__globalHeader(output);
 		
 		// Start of type declaration
 		output.print("const uint8_t ");

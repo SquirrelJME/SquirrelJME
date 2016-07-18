@@ -112,6 +112,9 @@ final class __ClassDecoder__
 		// outputting a class
 		try (JITClassWriter cw = this.namespace.beginClass(clname))
 		{
+			// Send class flags
+			cw.classFlags(cf);
+			
 			throw new Error("TODO");
 		}
 	}

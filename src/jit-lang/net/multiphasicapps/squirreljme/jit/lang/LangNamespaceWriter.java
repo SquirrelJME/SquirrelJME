@@ -35,10 +35,6 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 public abstract class LangNamespaceWriter
 	implements JITNamespaceWriter
 {
-	/** The default compression method. */
-	public static final ZipCompressionType DEFAULT_COMPRESSION =
-		ZipCompressionType.DEFLATE;
-	
 	/** Internal lock. */
 	protected final Object lock =
 		new Object();
@@ -177,7 +173,7 @@ public abstract class LangNamespaceWriter
 				return createClassWriter(rname, __cn,
 					new PrintStream(new __DebugPrintStream__(
 					this.zipwriter.nextEntry(extensionClass(rname),
-					DEFAULT_COMPRESSION)), true, "utf-8"));
+					ZipCompressionType.DEFAULT_COMPRESSION)), true, "utf-8"));
 			}
 			
 			// {@squirreljme.error AZ05 Failed to create class output. (The
@@ -213,7 +209,7 @@ public abstract class LangNamespaceWriter
 				return createResourceOutputStream(rname,
 					new PrintStream(new __DebugPrintStream__(
 					this.zipwriter.nextEntry(extensionResource(rname),
-					DEFAULT_COMPRESSION)), true, "utf-8"));
+					ZipCompressionType.DEFAULT_COMPRESSION)), true, "utf-8"));
 			}
 			
 			// {@squirreljme.error AZ04 Failed to create resource output. (The
