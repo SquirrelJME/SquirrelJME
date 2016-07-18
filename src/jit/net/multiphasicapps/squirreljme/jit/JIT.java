@@ -90,8 +90,6 @@ public final class JIT
 			__ClassDecoder__ cd = new __ClassDecoder__(this, this.namespace,
 				dis);
 			cd.__decode(this.output);
-			
-			throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error ED02 Failed to read the class file.}
