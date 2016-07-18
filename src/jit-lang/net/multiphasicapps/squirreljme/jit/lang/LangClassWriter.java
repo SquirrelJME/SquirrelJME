@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
+import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
 
 /**
  * This class acts as the base for outputing class based code which uses
@@ -33,6 +34,9 @@ public abstract class LangClassWriter
 	
 	/** The name of the class to write. */
 	protected final ClassNameSymbol classname;
+	
+	/** The order of information passing. */
+	protected volatile JITCompilerOrder order;
 	
 	/**
 	 * Initializes the base writer support for classes.

@@ -24,5 +24,34 @@ public enum JITCompilerOrder
 	
 	/** End. */
 	;
+	
+	/** The first compiler piece to order. */
+	public static final JITCompilerOrder FIRST =
+		JITCompilerOrder.CLASS_FLAGS;
+	
+	/** Internal values to get the next ordering. */
+	private static final JITCompilerOrder[] _VALUES =
+		JITCompilerOrder.values();
+	
+	/**
+	 * Returns the next order, or {@code null} if processing is complete.
+	 *
+	 * @return The next order or {@code null} if processing is complete.
+	 * @since 2016/07/18
+	 */
+	public final JITCompilerOrder next()
+	{
+		// Get values
+		JITCompilerOrder[] values = _VALUES;
+		int n = values.length;
+		
+		// More orderings?
+		int i = ordinal() + 1;
+		if (i < n)
+			return values[i];
+		
+		// None are left
+		return null;
+	}
 }
 

@@ -13,6 +13,9 @@ package net.multiphasicapps.squirreljme.jit.lang.c;
 import java.io.IOException;
 import java.io.PrintStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.lang.LangClassWriter;
 
 /**
@@ -48,6 +51,24 @@ public class CLangClassWriter
 		
 		// Set
 		this.namespacewriter = __nsw;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/18
+	 */
+	@Override
+	public void classFlags(JITClassFlags __cf)
+		throws JITException, NullPointerException
+	{
+		// {@squirreljme.error BA02 Did not expect class flags to be written.
+		// (The current order)}
+		JITCompilerOrder order = this.order;
+		if (order != JITCompilerOrder.CLASS_FLAGS)
+			throw new JITException(String.format("BA02 %s", order));
+		this.order = order.next();
+		
+		throw new Error("TODO");
 	}
 }
 

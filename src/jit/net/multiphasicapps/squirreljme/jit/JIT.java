@@ -21,6 +21,10 @@ import java.io.IOException;
  * JIT may be used multiple times so that multiple JARs may be combined into
  * a single binary.
  *
+ * When the JIT processes a class, the information is always performed in the
+ * same order so that implementations of the JIT do not need to store as much
+ * information in extra memory before writing it into the cache or binary.
+ *
  * @since 2016/07/02
  */
 public final class JIT

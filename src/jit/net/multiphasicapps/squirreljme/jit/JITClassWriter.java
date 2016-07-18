@@ -34,7 +34,7 @@ public interface JITClassWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/18
 	 */
-	public abstract void classFlags(JITClassFlags __cf);
+	public abstract void classFlags(JITClassFlags __cf)
 		throws JITException, NullPointerException;
 }
 
