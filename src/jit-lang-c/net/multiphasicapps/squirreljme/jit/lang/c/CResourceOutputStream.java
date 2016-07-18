@@ -71,7 +71,10 @@ public class CResourceOutputStream
 		// Start of type declaration
 		output.print("const uint8_t ");
 		output.print(__rname);
-		output.println("[] =");
+		output.print("[");
+		output.print("SIZE_");
+		output.print(__rname);
+		output.println("] =");
 		output.println('{');
 		output.print('\t');
 	}
