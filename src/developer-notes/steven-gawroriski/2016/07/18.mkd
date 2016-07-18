@@ -64,3 +64,14 @@ can contain the needed classes which perform a final stage linking of all of
 the code into a blob potentially from any created cache that exists. So
 then the cache manager needs to have a way to iterate created caches then.
 
+## 17:14
+
+I am actually going to need some assets from the root such as the readme and
+the license. I suppose to reduce duplication that I can just use symlinks and
+create a special package for it. Personally I would like that the builder
+creates a ZIP file which contains the distribution as required. This way there
+is no need to worry about writing other scripts to package it manually for
+example. If the executable format is special, say an ISO then it would be
+very similar except the ZIP contains an ISO instead. Since now I can write
+actual ZIP files.
+

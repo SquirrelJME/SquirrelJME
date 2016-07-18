@@ -63,5 +63,24 @@ public class LinuxPPCOutput
 		// Create
 		return new LinuxPPCNamespaceWriter(__ns, this.config);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/18
+	 */
+	@Override
+	public String executableName()
+	{
+		// Always starts as SquirrelJME
+		StringBuilder sb = new StringBuilder("squirreljme");
+		
+		// Then just append the triplet since Linux supports the file name
+		// with no issues
+		sb.append('_');
+		sb.append(config.triplet().toString());
+		
+		// Finish
+		return sb.toString();
+	}
 }
 

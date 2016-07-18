@@ -13,6 +13,7 @@ package net.multiphasicapps.sjmebuilder;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -223,8 +224,15 @@ public class Builder
 			// file in them.
 			for (PackageInfo pi : this.topdepends)
 				__buildPackage(tempdir, pi);
-		
-			throw new Error("TODO");
+			
+			// Generate an output binary which is linked from the input sources
+			JITNamespaceProcessor nsproc = this.processor;
+			try (OutputStream os = Channels.newOutputStream(
+				FileChannel.open(Paths.get(nsproc.executableName()),
+					StandardOpenOption.WRITE)))
+			{
+				nsproc.linkBinary(os);
+			}
 		}
 		
 		// Delete temporary directory

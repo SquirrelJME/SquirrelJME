@@ -34,5 +34,13 @@ public interface JITOutput
 	 */
 	public abstract JITNamespaceWriter beginNamespace(String __ns)
 		throws JITException, NullPointerException;
+	
+	/**
+	 * Determines the name of the SquirrelJME binary which is compatible
+	 * with the target system.
+	 *
+	 * @since 2016/07/18
+	 */
+	public abstract String executableName();
 }
 

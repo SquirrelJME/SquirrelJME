@@ -68,6 +68,40 @@ public class JITNamespaceProcessor
 	}
 	
 	/**
+	 * This returns the name of the output executable which should be
+	 * compatible with the target system.
+	 *
+	 * @return An executable which is compatible with the target system.
+	 * @since 2016/07/18
+	 */
+	public final String executableName()
+	{
+		return this.output.executableName();
+	}
+	
+	/**
+	 * This links together any input namespaces which were processed and
+	 * produces a single binary which contains all of them linked together.
+	 *
+	 * Calling this is not required unless a binary which natively runs
+	 * SquirrelJME is desired.
+	 *
+	 * @param __os The stream where the binary is to be written.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/18
+	 */
+	public final void linkBinary(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Performs namespace processing.
 	 *
 	 * @param __ns The namespace to process.

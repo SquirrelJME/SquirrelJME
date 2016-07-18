@@ -48,5 +48,16 @@ public class CLangOutput
 		
 		return new CLangNamespaceWriter(__ns, this.config);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/18
+	 */
+	@Override
+	public String executableName()
+	{
+		// The output binary is always just a ZIP file
+		return "squirreljme_c.zip";
+	}
 }
 
