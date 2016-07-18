@@ -13,7 +13,6 @@ package net.multiphasicapps.sjmebuilder;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -53,7 +52,7 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  * @since 2016/06/24
  */
 public class Builder
-	implements JITCacheCreator, JITNamespaceContent
+	implements JITNamespaceContent
 {
 	/** The size of the resource buffer. */
 	public static final int RESOURCE_BUFFER_SIZE =
@@ -75,15 +74,14 @@ public class Builder
 	/** All the packages that are dependencies of the top level package. */
 	protected final Set<PackageInfo> topdepends;
 	
-	/** Package information to namespace blobs. */
-	protected final Map<PackageInfo, Path> blobmap =
-		new HashMap<>();
-	
 	/** JIT options. */
 	protected final JITOutputConfig.Immutable jitconfig;
 	
 	/** The namespace processor. */
 	protected final JITNamespaceProcessor processor;
+	
+	/** The cache builder. */
+	protected final BuilderCache buildercache;
 	
 	/** The temporary output directory. */
 	private volatile Path _tempdir;
@@ -192,7 +190,9 @@ public class Builder
 		this.topdepends = UnmodifiableSet.<PackageInfo>of(pis);
 		
 		// Setup cache creator for output, writes into the globbed jar
-		jitconfig.setCacheCreator(this);
+		BuilderCache buildercache = new BuilderCache(this);
+		this.buildercache = buildercache;
+		jitconfig.setCacheCreator(buildercache);
 		
 		// Finish
 		JITOutputConfig.Immutable immut = jitconfig.immutable();
@@ -265,59 +265,6 @@ public class Builder
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/07/06
-	 */
-	@Override
-	public OutputStream createCache(String __ns)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__ns == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error DW05 The namespace does not end in .jar.
-		// (The namespace)}
-		if (!__ns.endsWith(".jar"))
-			throw new IllegalStateException(String.format("DW05 %s", __ns));
-		
-		// Remove the JAR
-		String jarless = __ns.substring(0, __ns.length() - ".jar".length());
-		
-		// {@squirreljme.error DW08 The namespace does not have an associated
-		// package. (The namespace)}
-		PackageInfo pi = this.plist.get(jarless);
-		if (pi == null)
-			throw new IllegalStateException(String.format("DW08 %s", __ns));
-		
-		// Create temporary output file where the stream goes
-		Path p = Files.createTempFile(this._tempdir,
-			"squirreljme-build", __ns);
-		
-		// Mark it
-		Map<PackageInfo, Path> blobmap = this.blobmap;
-		try
-		{
-			// Place
-			blobmap.put(pi, p);
-			
-			// Create output
-			return Channels.newOutputStream(FileChannel.open(p,
-				StandardOpenOption.WRITE));
-		}
-		
-		// Failed to open
-		catch (IOException|Error|RuntimeException e)
-		{
-			// Remove it
-			blobmap.remove(pi);
-			
-			// Rethrow
-			throw e;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2016/07/07
 	 */
 	@Override
@@ -330,6 +277,28 @@ public class Builder
 		
 		// Create
 		return new BuildDirectory(__ns);
+	}
+	
+	/**
+	 * Returns the current package list being used.
+	 *
+	 * @return The current package list.
+	 * @since 2016/07/18
+	 */
+	public PackageList packageList()
+	{
+		return this.plist;
+	}
+	
+	/**
+	 * Returns the temporary directory.
+	 *
+	 * @return The temporary directory.
+	 * @since 2016/07/18
+	 */
+	public Path temporaryDirectory()
+	{
+		return this._tempdir;
 	}
 	
 	/**
@@ -350,32 +319,6 @@ public class Builder
 		
 		// Process this namespace
 		this.processor.processNamespace(__pi.name() + ".jar");
-		/*
-		// Open ZIP
-		try (FileChannel fc = FileChannel.open(__pi.path(),
-			StandardOpenOption.READ);
-			ZipFile zip = ZipFile.open(fc))
-		{
-			// Process namespace
-			this.processor.process(gj.name(), );
-			
-			// Go through all entries
-			for (ZipEntry e : zip)
-			{
-				// Ignore directories
-				if (e.isDirectory())
-					continue;
-				
-				// If a class file, recompile it
-				String name = e.name();
-				if (name.endsWith(".class"))
-					__handleClass(gj, e);
-				
-				// A JAR resource, output the data
-				else
-					__handleResource(gj, e);
-			}
-		}*/
 	}
 	
 	/**
