@@ -115,7 +115,10 @@ final class __ClassDecoder__
 			// Send class flags
 			cw.classFlags(cf);
 			
-			throw new Error("TODO");
+			// TODO
+			System.err.println("TODO -- Implement the class decoder.");
+			if (false)
+				throw new Error("TODO");
 		}
 	}
 }
