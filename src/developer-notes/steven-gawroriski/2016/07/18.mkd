@@ -10,3 +10,13 @@ engine to generate binaries (since the JIT engine utilizes memory access and
 such). Then with a standard library, it would be possible to write some
 homebrew games for consoles on the console itself.
 
+## 08:11
+
+So now I must work on the JIT compiler for generating actual classes. I suppose
+I should start with the initial class details and such.
+
+## 08:15
+
+One thing to consider is the JIT compilation order, I should have an
+enumeration which is used so that the order can be more well known.
+

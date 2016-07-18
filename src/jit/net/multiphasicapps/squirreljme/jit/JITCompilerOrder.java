@@ -11,30 +11,18 @@
 package net.multiphasicapps.squirreljme.jit;
 
 /**
- * This is used to write class details on output.
+ * The JIT compiler is very ordered and as such this may be used by
+ * implementation of the class writer to determine if such processing of the
+ * code is in the correct order.
  *
- * @since 2016/07/06
+ * @since 2016/07/18
  */
-public interface JITClassWriter
-	extends AutoCloseable
+public enum JITCompilerOrder
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/06
-	 */
-	@Override
-	public abstract void close()
-		throws JITException;
+	/** The flags for the class. */
+	CLASS_FLAGS,
 	
-	/**
-	 * Records the class flags.
-	 *
-	 * @param __cf The class flags.
-	 * @throws JITException If the flags could not be written.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/18
-	 */
-	public abstract void classFlags(JITClassFlags __cf);
-		throws JITException, NullPointerException;
+	/** End. */
+	;
 }
 
