@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.lang.c;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,6 +34,37 @@ public class CLangNamespaceWriter
 {
 	/** The prefix to identifiers. */
 	protected final String idprefix;
+	
+	/** Print stream which writes to the global header. */
+	protected final PrintStream namespaceheader;
+	
+	/** Second level global header which is written last. */
+	private final ByteArrayOutputStream _nshout =
+		new ByteArrayOutputStream();
+	
+	/** Was this writer closed? */
+	private volatile boolean _closed;
+	
+	/**
+	 * Initializes the global header printer.
+	 *
+	 * @since 2016/07/18
+	 */
+	{
+		// Wrap
+		try
+		{
+			this.namespaceheader = new PrintStream(this._nshout, true,
+				"utf-8");
+		}
+		
+		// {@squirreljme.error BA05 Could not initialize the global header
+		// printer.}
+		catch (IOException e)
+		{
+			throw new JITException("BA05");
+		}
+	}
 	
 	/**
 	 * The namespace writer for C code.
@@ -58,7 +90,7 @@ public class CLangNamespaceWriter
 			ZipCompressionType.DEFAULT_COMPRESSION);
 			InputStream gh = this.getClass().getResourceAsStream("squirrel.h"))
 		{
-			// {@squirrejme.error BA03 Could not locate the global SquirrelJME
+			// {@squirreljme.error BA03 Could not locate the global SquirrelJME
 			// header file.}
 			if (gh == null)
 				throw new IOException("BA03");
@@ -85,6 +117,48 @@ public class CLangNamespaceWriter
 		{
 			throw new JITException("BA04", e);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/18
+	 */
+	@Override
+	public void close()
+		throws JITException
+	{
+		// If not closed then write the global header
+		if (!this._closed)
+			try
+			{
+				// Close it
+				this._closed = true;
+			
+				// Flush before close
+				PrintStream namespaceheader = this.namespaceheader;
+				namespaceheader.flush();
+			
+				// Write output of the byte array to the ZIP
+				ByteArrayOutputStream baos = this._nshout;
+				try (OutputStream en = zipwriter.nextEntry(identifierPrefix(),
+					ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					baos.writeTo(en);
+				}
+			
+				// Close it
+				namespaceheader.close();
+			}
+			
+			// {@squirreljme.error BA06 Could not write the namespace header to
+			// the output ZIP.}
+			catch (IOException e)
+			{
+				throw new JITException("BA06", e);
+			}
+		
+		// Call super close
+		super.close();
 	}
 	
 	/**

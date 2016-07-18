@@ -36,7 +36,8 @@ public abstract class LangClassWriter
 	protected final ClassNameSymbol classname;
 	
 	/** The order of information passing. */
-	protected volatile JITCompilerOrder order;
+	protected volatile JITCompilerOrder order =
+		JITCompilerOrder.FIRST;
 	
 	/**
 	 * Initializes the base writer support for classes.

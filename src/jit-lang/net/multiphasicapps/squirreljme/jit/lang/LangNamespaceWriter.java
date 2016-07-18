@@ -222,6 +222,32 @@ public abstract class LangNamespaceWriter
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/09
+	 */
+	@Override
+	public void close()
+		throws JITException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Close the ZIP file
+			try
+			{
+				// Finish writing the ZIP.
+				this.zipwriter.close();
+			}
+		
+			// {@squirreljme.error AZ03 Failed to close the ZIP.}
+			catch (IOException e)
+			{
+				throw new JITException("AZ03", e);
+			}
+		}
+	}
+	
+	/**
 	 * Possibly appends or prepends an extension before to a class before
 	 * placing it into a ZIP so that it is named correctly.
 	 *
@@ -259,32 +285,6 @@ public abstract class LangNamespaceWriter
 		
 		// Do not modify
 		return __n;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/09
-	 */
-	@Override
-	public final void close()
-		throws JITException
-	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// Close the ZIP file
-			try
-			{
-				// Finish writing the ZIP.
-				this.zipwriter.close();
-			}
-		
-			// {@squirreljme.error AZ03 Failed to close the ZIP.}
-			catch (IOException e)
-			{
-				throw new JITException("AZ03", e);
-			}
-		}
 	}
 }
 
