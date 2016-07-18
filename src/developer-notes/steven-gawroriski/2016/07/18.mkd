@@ -40,3 +40,27 @@ worry about forward declarations and such.
 Need to determine a good way for strings to exist without being too much of
 a hassle.
 
+## 14:35
+
+I should work on the code that runs after the JIT has successfully completed
+so that during initial development I can potentially have partial results
+potentially working together. Potentially if a cache creator is used I need
+to copy the output somewhere before it is worked on. Ideally at this point the
+cached forms would have to potentially be linked (if applicable). However that
+might not be needed at all, I just need a way to extract the actual created
+namespaces into some potentially executable form.
+
+## 14:39
+
+The JIT only works with a single class at a time and depending on what is
+creating the JIT is is rather undefined what happens after a class is
+completed.
+
+## 14:45
+
+I suppose the final work would be done by the `JITNamespaceProcessor` which
+does create the JIT since it potentially knows everything. Then `JITOutput`
+can contain the needed classes which perform a final stage linking of all of
+the code into a blob potentially from any created cache that exists. So
+then the cache manager needs to have a way to iterate created caches then.
+
