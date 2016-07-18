@@ -31,6 +31,51 @@ extern "C"
 
 /****************************************************************************/
 
+#include "extradef.h"
+
+/**
+ * Flags which are associated with classes.
+ *
+ * @since 2016/07/18
+ */
+typedef enum SJME_ClassFlag
+{
+	/** Public access. */
+	SJME_CLASSFLAG_PUBLIC =
+		1,
+	
+	/** Final. */
+	SJME_CLASSFLAG_FINAL =
+		2,
+	
+	/** Super. */
+	SJME_CLASSFLAG_SUPER =
+		4,
+	
+	/** Interface. */
+	SJME_CLASSFLAG_INTERFACE =
+		8,
+	
+	/** Abstract. */
+	SJME_CLASSFLAG_ABSTRACT =
+		16,
+	
+	/** Synthetic. */
+	SJME_CLASSFLAG_SYNTHETIC =
+		32,
+	
+	/** Annotation. */
+	SJME_CLASSFLAG_ANNOTATION =
+		64,
+	
+	/** Enumeration. */
+	SJME_CLASSFLAG_ENUM =
+		128,
+	
+	/** End. */
+	NUM_SJME_CLASSFLAG
+} SJME_ClassFlag;
+
 /**
  * This enumeration is used to determine which kind of structure is being
  * declared so that its information can be parsed correctly.
@@ -65,6 +110,8 @@ typedef struct SJME_Class
 	/** The type of structure this is. */
 	SJME_StructureType structuretype;
 	
+	/** Class flags. */
+	uint16_t flags;
 } SJME_Class;
 
 /**

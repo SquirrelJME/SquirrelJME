@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.lang.c;
 import java.io.IOException;
 import java.io.PrintStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.JITClassFlag;
 import net.multiphasicapps.squirreljme.jit.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -29,6 +30,9 @@ public class CLangClassWriter
 {
 	/** The owning namespace writer. */
 	protected final CLangNamespaceWriter namespacewriter;
+	
+	/** Has this been closed? */
+	private volatile boolean _closed;
 	
 	/**
 	 * Initializes the base writer support for classes.
@@ -56,7 +60,14 @@ public class CLangClassWriter
 		PrintStream output = this.output;
 		__nsw.__globalHeader(output);
 		
-		// Write the structure used for the class information
+		// Write basic class storage information
+		output.print("SJME_Class ");
+		output.print(__nsw.identifierPrefix());
+		output.println(" =");
+		output.println("{");
+		
+		// Structure type is class
+		output.println("\tSJME_STRUCTURETYPE_CLASS,");
 	}
 	
 	/**
@@ -74,7 +85,44 @@ public class CLangClassWriter
 			throw new JITException(String.format("BA02 %s", order));
 		this.order = order.next();
 		
-		throw new Error("TODO");
+		// Print all flags
+		PrintStream output = this.output;
+		boolean spl = false;
+		output.print('\t');
+		if (__cf.isEmpty())
+			output.print('0');
+		else
+			for (JITClassFlag f : __cf)
+			{
+				// Split?
+				if (spl)
+					output.print(" | ");
+				spl = true;
+			
+				// Just use the enumeration
+				output.print("SJME_CLASSFLAG_");
+				output.print(f.name());
+			}
+		
+		// End the line
+		output.println(',');
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/18
+	 */
+	@Override
+	public void close()
+	{
+		if (!this._closed)
+		{
+			// Close
+			this._closed = true;
+		}
+		
+		// Close
+		super.close();
 	}
 }
 

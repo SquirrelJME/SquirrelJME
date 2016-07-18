@@ -38,8 +38,15 @@ public class CLangNamespaceWriter
 	/** Print stream which writes to the global header. */
 	protected final PrintStream namespaceheader;
 	
+	/** Print stream which writes to the namespace specific source file. */
+	protected final PrintStream namespacesource;
+	
 	/** Second level global header which is written last. */
 	private final ByteArrayOutputStream _nshout =
+		new ByteArrayOutputStream();
+	
+	/** Support source code. */
+	private final ByteArrayOutputStream _nscout =
 		new ByteArrayOutputStream();
 	
 	/** Was this writer closed? */
@@ -56,10 +63,12 @@ public class CLangNamespaceWriter
 		{
 			this.namespaceheader = new PrintStream(this._nshout, true,
 				"utf-8");
+			this.namespacesource = new PrintStream(this._nscout, true,
+				"utf-8");
 		}
 		
 		// {@squirreljme.error BA05 Could not initialize the global header
-		// printer.}
+		// and/oor namespace source printer.}
 		catch (IOException e)
 		{
 			throw new JITException("BA05");
@@ -82,6 +91,14 @@ public class CLangNamespaceWriter
 		
 		// Prefix for identifiers
 		this.idprefix = escapeToCIdentifier(__ns) + "___";
+		
+		// Header guards for the namespace header
+		PrintStream namespaceheader = this.namespaceheader;
+		String hguard = headerGuard();
+		namespaceheader.print("#ifndef ");
+		namespaceheader.println(hguard);
+		namespaceheader.print("#define ");
+		namespaceheader.println(hguard);
 		
 		// Need to copy the global header to the output ZIP, otherwise the
 		// code will just end up not compiling at all.
@@ -127,32 +144,46 @@ public class CLangNamespaceWriter
 	public void close()
 		throws JITException
 	{
-		// If not closed then write the global header
+		// If not closed then write the global header and source
 		if (!this._closed)
 			try
 			{
 				// Close it
 				this._closed = true;
+				
+				// Get streams
+				PrintStream namespaceheader = this.namespaceheader;
+				PrintStream namespacesource = this.namespacesource;
+				
+				// End header with header guard
+				namespaceheader.println("#endif");
+				namespaceheader.println();
 			
 				// Flush before close
-				PrintStream namespaceheader = this.namespaceheader;
 				namespaceheader.flush();
+				namespacesource.flush();
 			
 				// Write output of the byte array to the ZIP
-				ByteArrayOutputStream baos = this._nshout;
+				ByteArrayOutputStream baos = this._nshout,
+					caos = this._nscout;
 				try (OutputStream en = zipwriter.nextEntry(
-					identifierPrefix() + ".h",
-					ZipCompressionType.DEFAULT_COMPRESSION))
+						identifierPrefix() + ".h",
+						ZipCompressionType.DEFAULT_COMPRESSION);
+					OutputStream sn = zipwriter.nextEntry(
+						identifierPrefix() + ".c",
+						ZipCompressionType.DEFAULT_COMPRESSION))
 				{
 					baos.writeTo(en);
+					caos.writeTo(sn);
 				}
 			
 				// Close it
 				namespaceheader.close();
+				namespacesource.close();
 			}
 			
-			// {@squirreljme.error BA06 Could not write the namespace header to
-			// the output ZIP.}
+			// {@squirreljme.error BA06 Could not write the namespace header
+			// and/or the namespace source to the output ZIP.}
 			catch (IOException e)
 			{
 				throw new JITException("BA06", e);
@@ -215,6 +246,17 @@ public class CLangNamespaceWriter
 		throws NullPointerException
 	{
 		return super.extensionResource(__n) + ".c";
+	}
+	
+	/**
+	 * Returns the header guard macro.
+	 *
+	 * @return The header guard macro.
+	 * @since 2016/07/18
+	 */
+	public String headerGuard()
+	{
+		return identifierPrefix() + "__HEADER";
 	}
 	
 	/**
