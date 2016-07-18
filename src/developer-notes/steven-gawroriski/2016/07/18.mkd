@@ -20,3 +20,9 @@ I should start with the initial class details and such.
 One thing to consider is the JIT compilation order, I should have an
 enumeration which is used so that the order can be more well known.
 
+## 10:00
+
+I have not checked if the build system compiles and works on Windows for the
+past 4 months, I suppose I should check it real quick. Technically it would
+be Wine though.
+

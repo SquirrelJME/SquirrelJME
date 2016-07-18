@@ -45,7 +45,7 @@ if not exist %__HB_VCLS% (
 	echo Compiling the build system...
 	
 	REM Compile it
-	%JAVAC% -d . %__HB_VSRC%
+	%JAVAC% -source 1.7 -target 1.7 -d . %__HB_VSRC%
 	if %ERRORLEVEL% neq 0 (
 		REM Note it
 		echo Failed to compile the build system.

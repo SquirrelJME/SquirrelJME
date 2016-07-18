@@ -31,6 +31,72 @@ extern "C"
 
 /****************************************************************************/
 
+/**
+ * This enumeration is used to determine which kind of structure is being
+ * declared so that its information can be parsed correctly.
+ *
+ * @since 2016/07/18
+ */
+typedef enum SJME_StructureType
+{
+	/** Not defined. */
+	SJME_STRUCTURETYPE_UNDEFINED,
+	
+	/** A class. */
+	SJME_STRUCTURETYPE_CLASS,
+	
+	/** A resource. */
+	SJME_STRUCTURETYPE_RESOURCE,
+	
+	/** A namespace. */
+	SJME_STRUCTURETYPE_NAMESPACE,
+	
+	/** End. */
+	NUM_SJME_STRUCTURETYPE
+} SJME_StructureType;
+
+/**
+ * This represents a class which is available to SquirrelJME.
+ *
+ * @since 2016/07/18
+ */
+typedef struct SJME_Class
+{
+	/** The type of structure this is. */
+	SJME_StructureType structuretype;
+	
+} SJME_Class;
+
+/**
+ * This represents a resource which is available to a namespace.
+ *
+ * @since 2016/07/18
+ */
+typedef struct SJME_Resource
+{
+	/** The type of structure this is. */
+	SJME_StructureType structuretype;
+	
+	/** The resource data. */
+	const uint8_t* data;
+	
+	/** The length of the resource. */
+	const uint32_t length;
+} SJME_Resource;
+
+/**
+ * This represents a namespace which is available to the initialization and
+ * linking system.
+ *
+ * @since 2016/07/18
+ */
+typedef struct SJME_Namespace
+{
+	/** The type of structure this is. */
+	SJME_StructureType structuretype;
+	
+} SJME_Namespace;
+
 /****************************************************************************/
 
 /** Anti-C++. */
