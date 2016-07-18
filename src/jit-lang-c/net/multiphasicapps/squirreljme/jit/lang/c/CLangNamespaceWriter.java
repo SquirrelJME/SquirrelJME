@@ -137,6 +137,30 @@ public class CLangNamespaceWriter
 	}
 	
 	/**
+	 * Creates a structure for a given string and returns the identifier which
+	 * points to the given string.
+	 *
+	 * @param __s The string to create a structure for.
+	 * @return The macro which points to the string information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/18
+	 */
+	public String addString(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Convert string to identifier
+		String idof = "STRING_" + identifierPrefix() +
+			escapeToCIdentifier(__s);
+		
+		// Return the string identifier
+		return idof;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/18
 	 */

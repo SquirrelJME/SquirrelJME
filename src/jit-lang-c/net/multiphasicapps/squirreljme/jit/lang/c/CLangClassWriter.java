@@ -61,13 +61,25 @@ public class CLangClassWriter
 		__nsw.__globalHeader(output);
 		
 		// Write basic class storage information
+		String idprefix = __nsw.identifierPrefix();
 		output.print("SJME_Class ");
-		output.print(__nsw.identifierPrefix());
+		output.print(idprefix);
 		output.println(" =");
 		output.println("{");
 		
+		// Extern this structure in the header
+		PrintStream headerout = __nsw.namespaceHeader();
+		headerout.print("extern SJME_Class ");
+		headerout.print(idprefix);
+		headerout.println(';');
+		
 		// Structure type is class
 		output.println("\tSJME_STRUCTURETYPE_CLASS,");
+		
+		// Write the class name
+		output.print('\t');
+		output.print(__nsw.addString(__cn.toString()));
+		output.println(',');
 	}
 	
 	/**

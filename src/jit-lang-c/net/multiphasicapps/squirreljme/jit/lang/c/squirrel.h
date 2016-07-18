@@ -97,9 +97,29 @@ typedef enum SJME_StructureType
 	/** A namespace. */
 	SJME_STRUCTURETYPE_NAMESPACE,
 	
+	/** A string. */
+	SJME_STRUCTURETYPE_STRING,
+	
 	/** End. */
 	NUM_SJME_STRUCTURETYPE
 } SJME_StructureType;
+
+/**
+ * A UTF-16 String.
+ *
+ * @since 2016/07/18
+ */
+typedef struct SJME_String
+{
+	/** The type of structure this is. */
+	SJME_StructureType structuretype;
+	
+	/** The string length. */
+	uint32_t length;
+	
+	/** The UTF-16 characters. */
+	const uint16_t* chars;
+} SJME_String;
 
 /**
  * This represents a class which is available to SquirrelJME.
@@ -113,6 +133,9 @@ typedef struct SJME_Class
 	
 	/** Class flags. */
 	uint16_t flags;
+	
+	/** The name of the class. */
+	SJME_String* name;
 } SJME_Class;
 
 /**
