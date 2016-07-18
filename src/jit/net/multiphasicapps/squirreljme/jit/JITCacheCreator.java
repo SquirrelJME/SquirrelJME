@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
@@ -24,6 +25,17 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 public interface JITCacheCreator
 {
 	/**
+	 * This returns an array of all the namespaces which were previously
+	 * cached by this creator.
+	 *
+	 * @return An array of previously cached namespaces.
+	 * @throws JITException If it could not be obtained.
+	 * @since 2016/07/18
+	 */
+	public abstract String[] cachedNamespaces()
+		throws JITException;
+	
+	/**
 	 * Returns an output stream which creates a serialized on-disk cache of
 	 * executable code for later linking or loading.
 	 *
@@ -35,6 +47,22 @@ public interface JITCacheCreator
 	 * @since 2016/07/06
 	 */
 	public abstract OutputStream createCache(String __ns)
+		throws IOException, JITException, NullPointerException;
+	
+	/**
+	 * Attempts to open the previously cached content as an input stream.
+	 *
+	 * It is undefined what happens when a cache that is currently being
+	 * written is opened.
+	 *
+	 * @param __ns The name of a previously cached namespace.
+	 * @throws IOException If the cache could not be opened.
+	 * @throws JITException If the cache could not be opened for a non-I/O
+	 * related reason.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/18
+	 */
+	public abstract InputStream openCache(String __ns)
 		throws IOException, JITException, NullPointerException;
 }
 
