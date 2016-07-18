@@ -140,7 +140,8 @@ public class CLangNamespaceWriter
 			
 				// Write output of the byte array to the ZIP
 				ByteArrayOutputStream baos = this._nshout;
-				try (OutputStream en = zipwriter.nextEntry(identifierPrefix(),
+				try (OutputStream en = zipwriter.nextEntry(
+					identifierPrefix() + ".h",
 					ZipCompressionType.DEFAULT_COMPRESSION))
 				{
 					baos.writeTo(en);
