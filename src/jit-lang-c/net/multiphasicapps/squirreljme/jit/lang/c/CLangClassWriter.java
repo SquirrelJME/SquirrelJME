@@ -131,6 +131,14 @@ public class CLangClassWriter
 		{
 			// Close
 			this._closed = true;
+			
+			// End structure
+			PrintStream output = this.output;
+			
+			// Last element is zero
+			output.println("\t0");
+			output.println("};");
+			output.println();
 		}
 		
 		// Close

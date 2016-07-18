@@ -136,6 +136,9 @@ typedef struct SJME_Class
 	
 	/** The name of the class. */
 	SJME_String* name;
+	
+	/** Should always be zero. */
+	int zero;
 } SJME_Class;
 
 /**
