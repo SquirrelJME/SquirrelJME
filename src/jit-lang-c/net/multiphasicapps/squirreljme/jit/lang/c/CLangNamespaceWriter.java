@@ -295,11 +295,12 @@ public class CLangNamespaceWriter
 	/**
 	 * This returns the namespace header printer.
 	 *
+	 * @return The namespace header printer.
 	 * @since 2016/07/18
 	 */
 	public PrintStream namespaceHeader()
 	{
-		return this.namespaceheader();
+		return this.namespaceheader;
 	}
 	
 	/**
