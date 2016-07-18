@@ -26,3 +26,7 @@ I have not checked if the build system compiles and works on Windows for the
 past 4 months, I suppose I should check it real quick. Technically it would
 be Wine though.
 
+## 10:13
+
+Well, it appears that it works just fine.
+
