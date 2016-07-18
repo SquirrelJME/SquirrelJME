@@ -107,7 +107,7 @@ public class CLangNamespaceWriter
 	public String nameClass(ClassNameSymbol __name)
 		throws NullPointerException
 	{
-		return this.idprefix + escapeToCIdentifier(__name.toString());
+		return this.idprefix + "C_" + escapeToCIdentifier(__name.toString());
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public class CLangNamespaceWriter
 	public String nameResource(String __name)
 		throws NullPointerException
 	{
-		return this.idprefix + escapeToCIdentifier(__name);
+		return this.idprefix + "R_" + escapeToCIdentifier(__name);
 	}
 	
 	/**
