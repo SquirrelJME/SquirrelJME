@@ -55,6 +55,8 @@ public class CLangClassWriter
 		// Include global headers
 		PrintStream output = this.output;
 		__nsw.__globalHeader(output);
+		
+		// Write the structure used for the class information
 	}
 	
 	/**

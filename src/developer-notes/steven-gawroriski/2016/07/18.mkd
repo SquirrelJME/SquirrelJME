@@ -30,3 +30,8 @@ be Wine though.
 
 Well, it appears that it works just fine.
 
+## 11:42
+
+At least with C and the prototypes being in the header I do not need to
+worry about forward declarations and such.
+
