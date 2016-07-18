@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.jit.lang.c;
 
 import java.io.PrintStream;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.lang.LangClassWriter;
 import net.multiphasicapps.squirreljme.jit.lang.LangNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.lang.ResourceOutputStream;
 
@@ -47,6 +49,22 @@ public class CLangNamespaceWriter
 	 * @since 2016/07/17
 	 */
 	@Override
+	protected LangClassWriter createClassWriter(String __rname,
+		ClassNameSymbol __cn, PrintStream __ps)
+		throws NullPointerException
+	{
+		// Check
+		if (__rname == null || __cn == null || __ps == null)
+			throw new NullPointerException("NARG");
+		
+		return new CLangClassWriter(this, __rname, __cn, __ps);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/17
+	 */
+	@Override
 	protected ResourceOutputStream createResourceOutputStream(String __rname,
 		PrintStream __ps)
 		throws NullPointerException
@@ -57,6 +75,39 @@ public class CLangNamespaceWriter
 		
 		// Create
 		return new CResourceOutputStream(this, __rname, __ps);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/17
+	 */
+	@Override
+	public String extensionClass(String __n)
+		throws NullPointerException
+	{
+		return super.extensionClass(__n) + ".c";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/17
+	 */
+	@Override
+	public String extensionResource(String __n)
+		throws NullPointerException
+	{
+		return super.extensionResource(__n) + ".c";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/09
+	 */
+	@Override
+	public String nameClass(ClassNameSymbol __name)
+		throws NullPointerException
+	{
+		return this.idprefix + escapeToCIdentifier(__name.toString());
 	}
 	
 	/**
@@ -126,17 +177,6 @@ public class CLangNamespaceWriter
 		
 		// Done
 		return sb.toString();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/17
-	 */
-	@Override
-	public String extensionResource(String __n)
-		throws NullPointerException
-	{
-		return super.extensionResource(__n) + " .c";
 	}
 }
 

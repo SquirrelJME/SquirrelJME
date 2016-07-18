@@ -29,3 +29,9 @@ compile.
 I will need some base structure information so that namespace lookup and
 the basic initialization of the C machine works.
 
+## 20:28
+
+The `JITOutput` would likely need a kind of final link, so that it can be
+given a bunch of files which refer to namespace caches and determine what to
+do with them.
+

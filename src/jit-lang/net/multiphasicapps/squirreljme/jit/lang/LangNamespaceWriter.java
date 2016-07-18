@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -99,6 +99,21 @@ public abstract class LangNamespaceWriter
 	}
 	
 	/**
+	 * Creates a class writer which is used to generate source code which
+	 * matches the layout and logic of the input class.
+	 *
+	 * @param __rname The file name of the class.
+	 * @param __cn The class name.
+	 * @param __ps The output print stream to write source code.
+	 * @return A class writer for the given language.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/17
+	 */
+	protected abstract LangClassWriter createClassWriter(String __rname,
+		ClassNameSymbol __cn, PrintStream __ps)
+		throws NullPointerException;
+	
+	/**
 	 * Creates a resource output stream which is used to write namespace
 	 * resources which are available for a given language.
 	 *
@@ -113,12 +128,26 @@ public abstract class LangNamespaceWriter
 		throws NullPointerException;
 	
 	/**
+	 * Before classes are created in the output, they must be named using an
+	 * unspecified form which is usually compatible with the target language.
+	 *
+	 * @param __name The name of the class to translate.
+	 * @return A string which is compatible with ZIP file names and can be used
+	 * in the given language.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/17
+	 */
+	public abstract String nameClass(ClassNameSymbol __name)
+		throws NullPointerException;
+	
+	/**
 	 * Before resources can be created, the name of the file must be created
 	 * first.
 	 *
 	 * @param __name The resource to name.
-	 * @return The file name to use when writing to the output ZIP.
-	 * @throws NullPointerException.
+	 * @return A string which is compatible with ZIP file names and can be used
+	 * in the given language.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/17
 	 */
 	public abstract String nameResource(String __name)
@@ -136,7 +165,27 @@ public abstract class LangNamespaceWriter
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// The resource must be named first
+			String rname = nameClass(__cn);
+			
+			// Create output
+			try
+			{
+				return createClassWriter(rname, __cn, new PrintStream(
+					this.zipwriter.nextEntry(extensionClass(rname),
+					DEFAULT_COMPRESSION), true, "utf-8"));
+			}
+			
+			// {@squirreljme.error AZ05 Failed to create class output. (The
+			// name of the class)}
+			catch (IOException e)
+			{
+				throw new JITException(String.format("AZ05 %s", __cn), e);
+			}
+		}
 	}
 	
 	/**
@@ -175,8 +224,28 @@ public abstract class LangNamespaceWriter
 	}
 	
 	/**
-	 * Possibly appends or prepends an extension before placing it into the
-	 * ZIP so that it is named accordingly.
+	 * Possibly appends or prepends an extension before to a class before
+	 * placing it into a ZIP so that it is named correctly.
+	 *
+	 * @param __n The name to add an extension to.
+	 * @return The name as it should appear in the ZIP.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/17
+	 */
+	public String extensionClass(String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Do not modify
+		return __n;
+	}
+	
+	/**
+	 * Possibly appends or prepends an extension to a resource before placing
+	 * it into the ZIP so that it is named accordingly.
 	 *
 	 * @param __n The name to add an extension to.
 	 * @return The name as it should appear in the ZIP.
