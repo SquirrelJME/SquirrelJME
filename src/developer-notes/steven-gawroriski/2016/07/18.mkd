@@ -35,3 +35,8 @@ Well, it appears that it works just fine.
 At least with C and the prototypes being in the header I do not need to
 worry about forward declarations and such.
 
+## 14:03
+
+Need to determine a good way for strings to exist without being too much of
+a hassle.
+

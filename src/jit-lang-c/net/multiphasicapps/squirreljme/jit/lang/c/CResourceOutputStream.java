@@ -38,6 +38,9 @@ public class CResourceOutputStream
 	/** Using comma? */
 	private volatile boolean _comma;
 	
+	/** Was this closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes a resource which outputs to C code.
 	 *
@@ -86,12 +89,26 @@ public class CResourceOutputStream
 	public void close()
 		throws IOException
 	{
-		PrintStream output = this.output;
+		if (!this._closed)
+		{
+			// Prevent double close
+			this._closed = true;
+			
+			// Get output
+			PrintStream output = this.output;
 		
-		// End sequence
-		output.println();
-		output.println("};");
-		output.println();
+			// End sequence
+			output.println();
+			output.println("};");
+			output.println();
+			
+			// Define the size in the header
+			PrintStream nsheader = this.nswriter.namespaceHeader();
+			nsheader.print("#define SIZE_");
+			nsheader.print(this.name);
+			nsheader.print(' ');
+			nsheader.println(this._count);
+		}
 		
 		// Close super stream
 		super.close();

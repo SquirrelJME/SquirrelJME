@@ -31,7 +31,8 @@ extern "C"
 
 /****************************************************************************/
 
-#include "extradef.h"
+#include <stdlib.h>
+#include <stdint.h>
 
 /**
  * Flags which are associated with classes.

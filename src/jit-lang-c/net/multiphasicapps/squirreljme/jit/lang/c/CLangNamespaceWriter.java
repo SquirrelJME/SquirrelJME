@@ -293,6 +293,16 @@ public class CLangNamespaceWriter
 	}
 	
 	/**
+	 * This returns the namespace header printer.
+	 *
+	 * @since 2016/07/18
+	 */
+	public PrintStream namespaceHeader()
+	{
+		return this.namespaceheader();
+	}
+	
+	/**
 	 * This prints the global header includes to the target stream.
 	 *
 	 * @param __ps Stream to print to.
