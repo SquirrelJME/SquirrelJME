@@ -174,9 +174,10 @@ public abstract class LangNamespaceWriter
 			// Create output
 			try
 			{
-				return createClassWriter(rname, __cn, new PrintStream(
+				return createClassWriter(rname, __cn,
+					new PrintStream(new __DebugPrintStream__(
 					this.zipwriter.nextEntry(extensionClass(rname),
-					DEFAULT_COMPRESSION), true, "utf-8"));
+					DEFAULT_COMPRESSION)), true, "utf-8"));
 			}
 			
 			// {@squirreljme.error AZ05 Failed to create class output. (The
@@ -209,9 +210,10 @@ public abstract class LangNamespaceWriter
 			// Create output
 			try
 			{
-				return createResourceOutputStream(rname, new PrintStream(
+				return createResourceOutputStream(rname,
+					new PrintStream(new __DebugPrintStream__(
 					this.zipwriter.nextEntry(extensionResource(rname),
-					DEFAULT_COMPRESSION), true, "utf-8"));
+					DEFAULT_COMPRESSION)), true, "utf-8"));
 			}
 			
 			// {@squirreljme.error AZ04 Failed to create resource output. (The
