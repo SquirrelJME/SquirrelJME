@@ -100,6 +100,17 @@ public class CLangNamespaceWriter
 	}
 	
 	/**
+	 * Returns the used identifier prefix.
+	 *
+	 * @return The identifier prefix.
+	 * @since 2016/07/17
+	 */
+	public String identifierPrefix()
+	{
+		return this.idprefix;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/09
 	 */

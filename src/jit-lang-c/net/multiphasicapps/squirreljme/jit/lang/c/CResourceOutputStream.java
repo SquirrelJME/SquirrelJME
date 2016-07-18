@@ -63,9 +63,12 @@ public class CResourceOutputStream
 		
 		System.err.printf("DEBUG -- Identifier: %s%n", __rname);
 		
-		// Always include global header
+		// Always include global headers
 		PrintStream output = this.output;
 		output.println("#include \"squirrel.h\"");
+		output.print("#include \"");
+		output.print(__nsw.identifierPrefix());
+		output.println(".h\"");
 		output.println();
 		
 		// Start of type declaration
