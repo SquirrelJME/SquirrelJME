@@ -14,5 +14,5 @@
  * @since 2016/07/18
  */
 
-package net.multiphasicapps.squirrels.basicassets;
+package net.multiphasicapps.squirreljme.basicassets;
 
