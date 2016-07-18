@@ -24,7 +24,7 @@ public class CResourceOutputStream
 {
 	/** When to wrap bytes. */
 	public static final int WRAP_BYTES =
-		15;
+		12;
 	
 	/** The namespace writer. */
 	protected final CLangNamespaceWriter nswriter;
@@ -69,7 +69,7 @@ public class CResourceOutputStream
 		output.println();
 		
 		// Start of type declaration
-		output.print("const int8_t ");
+		output.print("const uint8_t ");
 		output.print(__rname);
 		output.println("[] =");
 		output.println('{');
@@ -111,16 +111,7 @@ public class CResourceOutputStream
 		if (this._comma)
 			output.print(", ");
 		
-		// Use comma next time
-		this._comma = true;
-		
-		// Print data
-		output.print("0x");
-		output.print(Character.forDigit(((__b >>> 4) & 0xF), 16));
-		output.print(Character.forDigit(((__b) & 0xF), 16));
-		
 		// Increase and potentially newline
-		count++;
 		if (count >= WRAP_BYTES)
 		{
 			// Make a new line
@@ -130,6 +121,15 @@ public class CResourceOutputStream
 			// Back to the start
 			count = 0;
 		}
+		count++;
+		
+		// Use comma next time
+		this._comma = true;
+		
+		// Print data
+		output.print("0x");
+		output.print(Character.forDigit(((__b >>> 4) & 0xF), 16));
+		output.print(Character.forDigit(((__b) & 0xF), 16));
 		
 		// Store
 		this._count = count;
