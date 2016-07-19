@@ -17,6 +17,7 @@ import net.multiphasicapps.io.crc32.CRC32DataSink;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
+import net.multiphasicapps.zip.IBM437CodePage;
 import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
@@ -215,6 +216,19 @@ public class ZipStreamReader
 				byte[] rawname = new byte[fnl];
 				if (fnl != input.read(rawname))
 					continue;
+				
+				// If UTF-8 then use internal handling
+				String filename;
+				if (utf)
+					filename = new String(rawname, 0, fnl, "utf-8");
+			
+				// Otherwise use codepage handling, Java ME only has two
+				// character sets available
+				else
+					filename = IBM437CodePage.toString(rawname, 0, fnl);
+				
+				// Debug
+				System.err.printf("DEBUG -- Stream: `%s`%n", filename);
 				
 				// Skip the comment
 				while (cml > 0)

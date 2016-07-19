@@ -23,6 +23,7 @@ import java.util.Objects;
 import net.multiphasicapps.io.datapipe.DataPipeInputStream;
 import net.multiphasicapps.io.inflate.InflateDataPipe;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
+import net.multiphasicapps.zip.IBM437CodePage;
 
 /**
  * This represents a standard ZIP file.
