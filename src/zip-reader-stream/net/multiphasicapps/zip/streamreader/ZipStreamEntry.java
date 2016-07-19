@@ -20,7 +20,7 @@ import net.multiphasicapps.zip.ZipCompressionType;
  *
  * @since 2016/07/19
  */
-public class ZipStreamEntry
+public final class ZipStreamEntry
 	extends InputStream
 {
 	/**

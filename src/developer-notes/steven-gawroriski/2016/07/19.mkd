@@ -38,3 +38,10 @@ a part of that history. This would be the most efficient means of writing the
 data. I can use the dynamic buffer code I previously wrote to manage the
 buffer and such.
 
+## 10:58
+
+When `nextEntry` is called, it searches for the next entry based on header and
+other file information. Then an entry is setup. Calling close on the entry for
+it to work will basically read every byte until EOF is reached for that
+specific entry before being marked as closed/finished.
+
