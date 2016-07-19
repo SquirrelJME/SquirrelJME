@@ -112,7 +112,8 @@ public class DynamicHistoryInputStream
 	 *
 	 * @param __a The position of the byte ahead of the current read position
 	 * to read.
-	 * @return The read value or a negative value on EOF.
+	 * @return The read value or a negative value if the byte to be read
+	 * exceeds the end of the stream.
 	 * @throws IndexOutOfBoundsException If the requested read ahead position
 	 * is negative.
 	 * @throws IOException On read errors.
@@ -121,7 +122,7 @@ public class DynamicHistoryInputStream
 	public int peek(int __a)
 		throws IndexOutOfBoundsException, IOException
 	{
-		// {@squirreljme.error BI01 Cannot peek bytes which have already been
+		// {@squirreljme.error BI01 Cannot a peek byte which have already been
 		// read. (The requested index)}
 		if (__a < 0)
 			throw new IndexOutOfBoundsException(String.format("BI01 %d", __a));
@@ -129,6 +130,11 @@ public class DynamicHistoryInputStream
 		// Lock
 		synchronized (this.lock)
 		{
+			// Grab bytes, stop if none are available
+			int avail = grab(__a + 1);
+			if (avail < __a)
+				return -1;
+			
 			throw new Error("TODO");
 		}
 	}
@@ -139,7 +145,8 @@ public class DynamicHistoryInputStream
 	 * @param __a The start position of the bytes ahead of the current read
 	 * position.
 	 * @param __b The array which receives the bytes being read.
-	 * @return The number of bytes read or a negative value on EOF.
+	 * @return The number of bytes read or a negative value if there are no
+	 * bytes to be read because they exceed the end of the stream.
 	 * @throws IndexOutOfBoundsException If the requested read ahead position
 	 * is negative.
 	 * @throws IOException On read errors.
@@ -160,7 +167,8 @@ public class DynamicHistoryInputStream
 	 * @param __b The array which receives the bytes being read.
 	 * @param __o The starting offset into the array to write into.
 	 * @param __l The number of bytes to read.
-	 * @return The number of bytes read or a negative value on EOF.
+	 * @return The number of bytes read or a negative value if there are no
+	 * bytes to be read because they exceed the end of the stream.
 	 * @throws IndexOutOfBoundsException If the requested read ahead position
 	 * is negative; or the offset and or length exceed the array size.
 	 * @throws IOException On read errors.
@@ -170,13 +178,30 @@ public class DynamicHistoryInputStream
 	public int peek(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
+		// {@squirreljme.error BI02 Cannot peek bytes which have already been
+		// read. (The requested index)}
+		if (__a < 0)
+			throw new IndexOutOfBoundsException(String.format("BI02 %d", __a));
+		
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
+		int n = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > n)
+			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Lock
 		synchronized (this.lock)
 		{
+			// Grab bytes, stop if none are available
+			int avail = grab(__a + __l);
+			if (avail < __a)
+				return -1;
+			
+			// Not reading anything?
+			if (__l < 0)
+				return 0;
+			
 			throw new Error("TODO");
 		}
 	}
@@ -192,6 +217,13 @@ public class DynamicHistoryInputStream
 		// Lock
 		synchronized (this.lock)
 		{
+			// Grab a single byte
+			int gc = grab(1);
+			
+			// Nothing left
+			if (gc <= 0)
+				return -1;
+			
 			throw new Error("TODO");
 		}
 	}
@@ -214,6 +246,18 @@ public class DynamicHistoryInputStream
 		// Lock
 		synchronized (this.lock)
 		{
+			// Grab multiple bytes
+			int gc = grab(__l);
+			
+			// Nothing left?
+			if (gc <= 0)
+				return -1;
+			
+			// No bytes to read?
+			int dc = Math.min(gc, __l);
+			if (dc <= 0)
+				return 0;
+			
 			throw new Error("TODO");
 		}
 	}
