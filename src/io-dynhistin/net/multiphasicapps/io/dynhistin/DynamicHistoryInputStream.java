@@ -100,9 +100,20 @@ public class DynamicHistoryInputStream
 	public int grab(int __i)
 		throws IndexOutOfBoundsException, IOException
 	{
+		// {@squirreljme.error BI03 A negative number of bytes cannot be
+		// grabbed. (The number of bytes to grab)}
+		if (__i < 0)
+			throw new IndexOutOfBoundsException(String.format("BI03 %s", __i));
+		
 		// Lock
+		DynamicByteBuffer buffer = this.buffer;
 		synchronized (this.lock)
 		{
+			// Already have this number of bytes grabbed
+			int cursize = buffer.size();
+			if (__i <= cursize)
+				return cursize;
+			
 			throw new Error("TODO");
 		}
 	}
