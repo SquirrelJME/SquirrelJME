@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.crc32.CRC32DataSink;
+import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
@@ -26,6 +27,10 @@ import net.multiphasicapps.zip.ZipCompressionType;
 public class ZipStreamReader
 	implements Closeable
 {
+	/** The maximum support version for extracting. */
+	private static final int _MAX_EXTRACT_VERSION =
+		20;
+	
 	/** The minumum size of the local header. */
 	private static final int _MINIMUM_HEADER_SIZE =
 		30;
@@ -71,7 +76,9 @@ public class ZipStreamReader
 		// Set
 		DynamicHistoryInputStream q;
 		this.input = (q = new DynamicHistoryInputStream(__is));
-		this.data = new ExtendedDataInputStream(q);
+		ExtendedDataInputStream d;
+		this.data = (d = new ExtendedDataInputStream(q));
+		d.setEndianess(DataEndianess.LITTLE);
 	}
 	
 	/**
@@ -154,9 +161,67 @@ public class ZipStreamReader
 					return null;
 				}
 				
+				// Check the version needed for extracting
+				int xver = __readUnsignedShort(4);
+				boolean deny = false;
+				deny |= (xver < 0 || xver >= _MAX_EXTRACT_VERSION);
+				
+				// Read bit flags
+				int gpfs = __readUnsignedShort(6);
+				if (true)
+					throw new Error("TODO");
+				
+				// Read the compression method
+				int cmeth = __readUnsignedShort(8);
+				if (true)
+					throw new Error("TODO");
+				
+				// Read CRC32
+				if (true)
+					throw new Error("TODO");
+				
+				// Read Compressed size
+				if (true)
+					throw new Error("TODO");
+				
+				// Uncompressed size
+				if (true)
+					throw new Error("TODO");
+				
+				// File name length
+				if (true)
+					throw new Error("TODO");
+				
+				// Comment length
+				if (true)
+					throw new Error("TODO");
+				
+				// If denying, read a single byte and try again, this could
+				// just be very ZIP-like data.
+				if (deny)
+				{
+					this.input.read();
+					continue;
+				}
+				
+				// Consume the input bytes and create an entry
 				throw new Error("TODO");
 			}
 		}
+	}
+	
+	/**
+	 * Reads an unsigned short from the given byte array.
+	 *
+	 * @param __b The byte array to read from.
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @since 2016/07/19
+	 */
+	private static int __readUnsignedShort(byte[] __b, int __p)
+	{
+		return (__b[__p] & 0xFF) |
+			((__b[__p + 1] & 0xFF) << 8);
 	}
 	
 	/**

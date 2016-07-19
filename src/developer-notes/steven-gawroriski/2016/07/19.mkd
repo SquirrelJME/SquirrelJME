@@ -57,3 +57,7 @@ loads the given number of bytes.
 `DynamicByteBuffer` could probably use a refactor to be much more efficient
 and much cleaner.
 
+## 16:41
+
+Now that my code detects the local file header, I must now read it.
+

@@ -17,8 +17,8 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.io.crc32.CRC32DataSink;
-import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.io.data.DataEndianess;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.io.datasink.DataSinkOutputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 

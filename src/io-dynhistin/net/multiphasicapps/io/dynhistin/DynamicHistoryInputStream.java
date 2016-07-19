@@ -151,6 +151,7 @@ public class DynamicHistoryInputStream
 			throw new IndexOutOfBoundsException(String.format("BI01 %d", __a));
 		
 		// Lock
+		DynamicByteBuffer buffer = this.buffer;
 		synchronized (this.lock)
 		{
 			// Grab bytes, stop if none are available
@@ -214,6 +215,7 @@ public class DynamicHistoryInputStream
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Lock
+		DynamicByteBuffer buffer = this.buffer;
 		synchronized (this.lock)
 		{
 			// Grab bytes, stop if none are available
@@ -222,10 +224,13 @@ public class DynamicHistoryInputStream
 				return -1;
 			
 			// Not reading anything?
-			if (__l < 0)
+			int rc = Math.min(__l, avail);
+			if (rc < 0)
 				return 0;
 			
-			throw new Error("TODO");
+			// Read from the buffer
+			buffer.get(__a, __b, __o, rc);
+			return rc;
 		}
 	}
 	
