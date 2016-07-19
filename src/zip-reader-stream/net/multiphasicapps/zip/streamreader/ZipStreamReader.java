@@ -30,6 +30,10 @@ public class ZipStreamReader
 	private static final int _MINIMUM_HEADER_SIZE =
 		30;
 	
+	/** The local header magic number. */
+	private static final int _LOCAL_HEADER_MAGIC =
+		0x04034B50;
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -129,18 +133,12 @@ public class ZipStreamReader
 				}
 			
 				// Does not match the magic number for local headers
-				byte lha = localheader[0], lhb = localheader[1],
-					lhc = localheader[2], lhd = localheader[3];
-				if (lha != 0x50 && lhb != 0x4B &&
-					lhc != 0x03 && lhd != 0x04)
+				int lhskip = __skipLocalHeader(localheader);
+				
+				// Not one
+				if (lhskip > 0)
 				{
-					// The header could just be a few bytes away, so instead
-					// of looping on single bytes skip a few if it is known
-					// there will never be a local header there.
-					input.read(localheader, 0,
-						(lhb == 0x50 && lhc == 0x4B && lhd == 0x03 ? 1 :
-						(lhc == 0x50 && lhd == 0x4B ? 2 :
-						(lhd == 0x50 ? 3 : 4))));
+					input.read(localheader, 0, lhskip);
 					continue;
 				}
 				
@@ -159,6 +157,39 @@ public class ZipStreamReader
 				throw new Error("TODO");
 			}
 		}
+	}
+	
+	/**
+	 * Checks if the specified buffer starts with the local header magic
+	 * number and if not returns the number of bytes to skip.
+	 *
+	 * @param __b The bytes to check, from the zero index.
+	 * @return Zero means this is the local header, otherwise a value up to 4.
+	 * @since 2016/07/19
+	 */
+	private static int __skipLocalHeader(byte[] __b)
+	{
+		// Read values
+		byte lha = __b[0], lhb = __b[1], lhc = __b[2], lhd = __b[3];
+		
+		// Is this the magic number?
+		if (lha == 0x50 && lhb == 0x4B && lhc == 0x03 && lhd == 0x04)
+			return 0;
+		
+		// Next byte over
+		else if (lhb == 0x50 && lhc == 0x4B && lhd == 0x03)
+			return 1;
+		
+		// Skip two bytes
+		else if (lhc == 0x50 && lhd == 0x4B)
+			return 2;
+		
+		// Last byte could be it
+		if (lhd == 0x50)
+			return 3;
+		
+		// None of them
+		return 4;
 	}
 }
 
