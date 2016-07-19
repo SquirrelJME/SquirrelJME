@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.lang.c;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -58,6 +61,22 @@ public class CLangOutput
 	{
 		// The output binary is always just a ZIP file
 		return "squirreljme_c.zip";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/18
+	 */
+	@Override
+	public void linkBinary(OutputStream __os, String[] __names,
+		InputStream[] __data)
+		throws IOException, JITException, NullPointerException
+	{
+		// Check
+		if (__os == null || __names == null || __data == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.linux.powerpc;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITException;
@@ -81,6 +84,22 @@ public class LinuxPPCOutput
 		
 		// Finish
 		return sb.toString();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/18
+	 */
+	@Override
+	public void linkBinary(OutputStream __os, String[] __names,
+		InputStream[] __data)
+		throws IOException, JITException, NullPointerException
+	{
+		// Check
+		if (__os == null || __names == null || __data == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
