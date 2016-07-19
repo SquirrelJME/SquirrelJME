@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zip.blockreader;
+package net.multiphasicapps.zip;
 
 /**
  * This contains methods for converting from the IBM 437 codepage to the UTF-16
