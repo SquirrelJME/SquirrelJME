@@ -273,6 +273,23 @@ public class DynamicByteBuffer
 	 * Obtains multiple bytes from this chunked byte buffer and places them
 	 * into the given destination byte array.
 	 *
+	 * @param __base The base index to read from.
+	 * @param __dest The destination buffer.
+	 * @throws IndexOutOfBoundsException If the base and the length exceeds the
+	 * buffer region.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/19
+	 */
+	public void get(int __base, byte[] __dest)
+		throws NullPointerException
+	{
+		get(__base, __dest, 0, __dest.length);
+	}
+	
+	/**
+	 * Obtains multiple bytes from this chunked byte buffer and places them
+	 * into the given destination byte array.
+	 *
 	 * @param __base The base index to start a read from.
 	 * @param __dest The destination buffer.
 	 * @param __o The offset into the target buffer.
