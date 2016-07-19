@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: io-dynhistin
+X-SquirrelJME-UUID: ca3eab81-73a3-4fdf-a23d-c0af445dc664
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: BI
+LIBlet-Title: Dynamic History InputStream
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project provides an InputStream 
+ which is buffered to a dynamic and changeable set of bytes 
+ to allow for reading for a limited set of history that the 
+ bytes which were just read.
+

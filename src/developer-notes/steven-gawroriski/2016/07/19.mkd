@@ -19,3 +19,22 @@ size, and uncompressed size. Basically since the descriptor header is optional
 I essentially have to check every byte ahead of the current read position to
 determine if the compressed, uncompressed size, and CRC match the given file.
 
+## 10:14
+
+Appears the standard ZIP utility included in my system does not support reading
+ZIPs from a pipe and working with their data.
+
+## 10:18
+
+Basically for every byte that is read, checks will have to be made to determine
+if the end of the single entry has been reached. This would be not be very
+efficient since there would be a large number of tests. If the data descriptor
+was not option this task would be a bit easier. Probably something that would
+be a bit more efficient would be a double queue on the input bytes. So
+essentially the dynamic history stream would read from the last set of history
+and then there can be a peek method which can read ahead from the source
+stream. There can then be a get which returns the current history or at least
+a part of that history. This would be the most efficient means of writing the
+data. I can use the dynamic buffer code I previously wrote to manage the
+buffer and such.
+
