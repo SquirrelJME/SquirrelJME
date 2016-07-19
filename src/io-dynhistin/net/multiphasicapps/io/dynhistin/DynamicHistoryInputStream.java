@@ -268,10 +268,11 @@ public class DynamicHistoryInputStream
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		int n = __b.length;
-		if (__o < 0 || __l < 0 || (__o + __l) >= n)
+		if (__o < 0 || __l < 0 || (__o + __l) > n)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Lock
+		DynamicByteBuffer buffer = this.buffer;
 		synchronized (this.lock)
 		{
 			// Grab multiple bytes
@@ -286,7 +287,9 @@ public class DynamicHistoryInputStream
 			if (dc <= 0)
 				return 0;
 			
-			throw new Error("TODO");
+			// Remove the early bytes
+			buffer.remove(0, __b, __o, dc);
+			return dc;
 		}
 	}
 }

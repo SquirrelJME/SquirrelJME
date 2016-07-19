@@ -174,7 +174,7 @@ public class ZipStreamReader
 				boolean undefinedsize = (0 != (gpfs & (1 << 3)));
 				
 				// Cannot read encrypted entries
-				deny |= (0 != (gpf & 1));
+				deny |= (0 != (gpfs & 1));
 				
 				// Read the compression method
 				ZipCompressionType cmeth = ZipCompressionType.forMethod(
@@ -194,13 +194,9 @@ public class ZipStreamReader
 				
 				// File name length
 				int fnl = __readUnsignedShort(localheader, 26);
-				if (true)
-					throw new Error("TODO");
 				
 				// Comment length
 				int cml = __readUnsignedShort(localheader, 28);
-				if (true)
-					throw new Error("TODO");
 				
 				// If denying, read a single byte and try again, this could
 				// just be very ZIP-like data or the local header number could
@@ -210,6 +206,31 @@ public class ZipStreamReader
 					// Skip 4 bytes because the header was already read
 					this.input.read(localheader, 0, 4);
 					continue;
+				}
+				
+				// Read the local header normally to consume it
+				input.read(localheader);
+				
+				// Read the file name, if EOF was reached then ignore
+				byte[] rawname = new byte[fnl];
+				if (fnl != input.read(rawname))
+					continue;
+				
+				// Skip the comment
+				while (cml > 0)
+				{
+					int rc = input.read(localheader, 0, Math.min(cml,
+						_MINIMUM_HEADER_SIZE));
+					
+					// EOF?
+					if (rc < 0)
+					{
+						this._eof = true;
+						return null;
+					}
+					
+					// Substract
+					cml -= rc;
 				}
 				
 				// Consume the input bytes and create an entry
