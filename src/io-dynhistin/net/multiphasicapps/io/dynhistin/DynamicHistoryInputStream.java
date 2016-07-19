@@ -114,7 +114,19 @@ public class DynamicHistoryInputStream
 			if (__i <= cursize)
 				return cursize;
 			
-			throw new Error("TODO");
+			// The number of bytes that need to be read
+			int diff = __i - cursize;
+			
+			// Read them from the input
+			byte[] qq = new byte[diff];
+			int rc = this.input.read(qq);
+			
+			// Add them to the end of the buffer
+			buffer.add(qq, 0, rc);
+			
+			// The number of available bytes is the current and the read
+			// count
+			return cursize + rc;
 		}
 	}
 	
