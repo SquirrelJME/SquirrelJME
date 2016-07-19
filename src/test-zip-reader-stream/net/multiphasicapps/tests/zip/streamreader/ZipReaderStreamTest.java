@@ -19,6 +19,8 @@ import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestFamily;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.tests.zip.streamwriter.ZipWriterStreamTest;
+import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
  * This contains the set of tests which test that reading of ZIP files works
@@ -45,9 +47,19 @@ public class ZipReaderStreamTest
 		byte[] zipdata = ZipWriterStreamTest.generateZipFile(__t);
 		
 		// See if the contents can be read correctly
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(zipdata))
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(zipdata);
+			ZipStreamReader zsr = new ZipStreamReader(bais))
 		{
-			throw new Error("TODO");
+			for (;;)
+				try (ZipStreamEntry ze = zsr.nextEntry())
+				{
+					// Stop if no more entries remain
+					if (ze == null)
+						break;
+					
+					// Make sure the entry matches
+					ZipWriterStreamTest.compareEntry(__t, ze, ze.name());
+				}
 		}
 	}
 	

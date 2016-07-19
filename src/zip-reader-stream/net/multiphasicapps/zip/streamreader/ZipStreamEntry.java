@@ -10,34 +10,26 @@
 
 package net.multiphasicapps.zip.streamreader;
 
-import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.io.crc32.CRC32DataSink;
 import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
- * This class supports stream based reading of input ZIP files.
+ * This provides an interface to interact with a single entry within a ZIP
+ * stream.
  *
  * @since 2016/07/19
  */
-public class ZipStreamReader
-	implements Closeable
+public class ZipStreamEntry
+	extends InputStream
 {
 	/**
-	 * Initializes the reader for input ZIP file data.
+	 * Initializes the entry.
 	 *
-	 * @param __is The input stream to source bytes from.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
-	public ZipStreamReader(InputStream __is)
-		throws NullPointerException
+	ZipStreamEntry()
 	{
-		// Check
-		if (__is == null)
-			throw new NullPointerException("NARG");
-		
 		throw new Error("TODO");
 	}
 	
@@ -53,14 +45,33 @@ public class ZipStreamReader
 	}
 	
 	/**
-	 * Returns the next entry in the streamed ZIP file for {@code null} if no
-	 * such entry exists.
+	 * Returns the compression type that the entry uses.
 	 *
-	 * @return The next entry or {@code null} if there is none.
-	 * @throws IOException On read errors.
+	 * @return The compression type.
 	 * @since 2016/07/19
 	 */
-	public ZipStreamEntry nextEntry()
+	public ZipCompressionType compressionType()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the name of the entry.
+	 *
+	 * @return The entry name.
+	 * @since 2016/07/19
+	 */
+	public String name()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/19
+	 */
+	@Override
+	public int read()
 		throws IOException
 	{
 		throw new Error("TODO");
