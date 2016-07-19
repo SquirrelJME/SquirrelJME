@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.lang;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.zip.ZipCompressionType;
