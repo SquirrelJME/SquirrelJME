@@ -84,3 +84,10 @@ Appears my GPG expired, I must remember to not let it do so.
 For the executable to be written, I will need to go through a ZIP as a stream
 so this means that I must support reading of streamed ZIPs.
 
+## 23:58
+
+So I am getting a bit closer to a JIT, although it was a couple of months that
+I could have had it earier. However, the older code was really bad and the
+current code is very workable. If I need to rewrite an output JIT I can just
+do that without worrying much about breaking other things.
+
