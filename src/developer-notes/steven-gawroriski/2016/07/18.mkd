@@ -79,3 +79,8 @@ actual ZIP files.
 
 Appears my GPG expired, I must remember to not let it do so.
 
+## 23:39
+
+For the executable to be written, I will need to go through a ZIP as a stream
+so this means that I must support reading of streamed ZIPs.
+

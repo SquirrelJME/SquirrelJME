@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class is used to process namespaces for JIT compilation and resource
@@ -37,6 +39,10 @@ public class JITNamespaceProcessor
 	
 	/** Contents for namespaces. */
 	protected final JITNamespaceContent contents;
+	
+	/** The list of processed namespaces. */
+	private final List<String> _processed =
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the namespace processor.
@@ -88,17 +94,53 @@ public class JITNamespaceProcessor
 	 *
 	 * @param __os The stream where the binary is to be written.
 	 * @throws IOException On read/write errors.
+	 * @throws JITException If the binary could not be linked.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/18
 	 */
 	public final void linkBinary(OutputStream __os)
-		throws IOException, NullPointerException
+		throws IOException, JITException, NullPointerException
 	{
 		// Check
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error ED0j No cache creator was associated with
+		// the configuration, thus binaries cannot be linked because they
+		// rely on cached data sets.}
+		JITCacheCreator jcc = this.config.cacheCreator();
+		if (jcc == null)
+			throw new JITException("ED0j");
+		
+		// Get processed namespace list
+		String[] procset;
+		List<String> processed = this._processed;
+		synchronized (processed)
+		{
+			procset = processed.<String>toArray(new String[processed.size()]);
+		}
+		
+		// Load input streams for all of the namespaces
+		int n = procset.length;
+		InputStream[] ins = new InputStream[n];
+		int i = 0;
+		for (String s : procset)
+		{
+			// {@squirreljme.error ED0k A null namespace was processed, this
+			// should not occur.}
+			if (s == null)
+				throw new NullPointerException("ED0k");
+			
+			// {@squirreljme.error ED0l No cache input stream was opened for
+			// the specified namespace. (The namespace)}
+			InputStream is;
+			ins[i++] = (is = jcc.openCache(s));
+			if (is == null)
+				throw new JITException(String.format("ED0l %s", s));
+		}
+		
+		// Perform linking
+		this.output.linkBinary(__os, procset, ins);
 	}
 	
 	/**
@@ -115,7 +157,7 @@ public class JITNamespaceProcessor
 		// Check
 		if (__ns == null)
 			throw new NullPointerException("NARG");
-		
+			
 		// Setup output for a given namespace
 		JITOutput output = this.output;
 		JITNamespaceWriter nsw = output.beginNamespace(__ns);
@@ -148,6 +190,13 @@ public class JITNamespaceProcessor
 					}
 				}
 			}
+		}
+		
+		// Add to processed list
+		List<String> processed = this._processed;
+		synchronized (processed)
+		{
+			processed.add(__ns);
 		}
 	}
 	
