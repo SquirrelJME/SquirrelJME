@@ -10,8 +10,13 @@
 
 package net.multiphasicapps.squirreljme.jit.lang;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * This provides generic language output support which places files within a
@@ -41,6 +46,35 @@ public abstract class LangOutput
 		
 		// Set
 		this.config = __config;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/18
+	 */
+	@Override
+	public void linkBinary(OutputStream __os, String[] __names,
+		InputStream[] __data)
+		throws IOException, JITException, NullPointerException
+	{
+		// Check
+		if (__os == null || __names == null || __data == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup output ZIP file which contains all the source code combined
+		try (ZipStreamWriter zsw = new ZipStreamWriter(__os))
+		{
+			// Go through all input files and add them to the output ZIP
+			int n = __names.length;
+			for (int i = 0; i < n; i++)
+			{
+				// Get details
+				String name = __names[i];
+				
+				// Stream the input ZIP and copy all entries
+				throw new Error("TODO");
+			}
+		}
 	}
 }
 

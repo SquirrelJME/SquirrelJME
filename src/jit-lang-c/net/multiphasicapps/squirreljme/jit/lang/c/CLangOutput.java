@@ -62,21 +62,5 @@ public class CLangOutput
 		// The output binary is always just a ZIP file
 		return "squirreljme_c.zip";
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/18
-	 */
-	@Override
-	public void linkBinary(OutputStream __os, String[] __names,
-		InputStream[] __data)
-		throws IOException, JITException, NullPointerException
-	{
-		// Check
-		if (__os == null || __names == null || __data == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
 }
 
