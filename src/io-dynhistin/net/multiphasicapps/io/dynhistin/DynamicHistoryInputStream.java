@@ -25,6 +25,10 @@ import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 public class DynamicHistoryInputStream
 	extends InputStream
 {
+	/** Internal lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The backing buffer. */
 	protected final DynamicByteBuffer buffer;
 	
@@ -75,11 +79,16 @@ public class DynamicHistoryInputStream
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
-	 * Peeks the specified unmber 
+	 * Grabs the specified number of bytes and loads them into an internal
+	 * queue where they may then be obtained using another method. 
 	 *
 	 * @param __i The number of bytes to read ahead and buffer.
 	 * @return The number of bytes which are available for input, this may
@@ -88,10 +97,88 @@ public class DynamicHistoryInputStream
 	 * @throws IOException On read errors.
 	 * @since 2016/07/19
 	 */
-	public int peek(int __i)
+	public int grab(int __i)
 		throws IndexOutOfBoundsException, IOException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Reads a single byte that is ahead of the current read position.
+	 *
+	 * @param __a The position of the byte ahead of the current read position
+	 * to read.
+	 * @return The read value or a negative value on EOF.
+	 * @throws IndexOutOfBoundsException If the requested read ahead position
+	 * is negative.
+	 * @throws IOException On read errors.
+	 * @since 2016/07/19
+	 */
+	public int peek(int __a)
+		throws IndexOutOfBoundsException, IOException
+	{
+		// {@squirreljme.error BI01 Cannot peek bytes which have already been
+		// read. (The requested index)}
+		if (__a < 0)
+			throw new IndexOutOfBoundsException(String.format("BI01 %d", __a));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Reads multiple bytes which are ahead of the current read position.
+	 *
+	 * @param __a The start position of the bytes ahead of the current read
+	 * position.
+	 * @param __b The array which receives the bytes being read.
+	 * @return The number of bytes read or a negative value on EOF.
+	 * @throws IndexOutOfBoundsException If the requested read ahead position
+	 * is negative.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/19
+	 */
+	public int peek(int __a, byte[] __b)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		return this.peek(__a, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Reads multiple bytes which are ahead of the current read position.
+	 *
+	 * @param __a The start position of the bytes ahead of the current read
+	 * position.
+	 * @param __b The array which receives the bytes being read.
+	 * @param __o The starting offset into the array to write into.
+	 * @param __l The number of bytes to read.
+	 * @return The number of bytes read or a negative value on EOF.
+	 * @throws IndexOutOfBoundsException If the requested read ahead position
+	 * is negative; or the offset and or length exceed the array size.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/19
+	 */
+	public int peek(int __a, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -102,7 +189,11 @@ public class DynamicHistoryInputStream
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -120,7 +211,11 @@ public class DynamicHistoryInputStream
 		if (__o < 0 || __l < 0 || (__o + __l) >= n)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 

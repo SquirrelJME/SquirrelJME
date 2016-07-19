@@ -45,3 +45,10 @@ other file information. Then an entry is setup. Calling close on the entry for
 it to work will basically read every byte until EOF is reached for that
 specific entry before being marked as closed/finished.
 
+## 12:46
+
+I suppose after a `peek` there is instead just `readAhead` although that could
+be confused with `read`. I suppose instead that peek will just return the
+actual requested in the future, then there can be another `grab` which just
+loads the given number of bytes.
+
