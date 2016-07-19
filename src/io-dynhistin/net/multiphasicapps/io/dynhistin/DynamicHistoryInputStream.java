@@ -35,6 +35,9 @@ public class DynamicHistoryInputStream
 	/** The source input stream. */
 	protected final InputStream input;
 	
+	/** Closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes a dynamic history stream which sources data from the given
 	 * input stream.
@@ -82,7 +85,14 @@ public class DynamicHistoryInputStream
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Close
+			this._closed = true;
+			
+			// Clear the buffer since it is not needed
+			this.buffer.clear();
+			
+			// Close wrapped stream
+			this.input.close();
 		}
 	}
 	
@@ -109,6 +119,11 @@ public class DynamicHistoryInputStream
 		DynamicByteBuffer buffer = this.buffer;
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BI04 Cannot grab bytes because the stream
+			// is closed.}
+			if (this._closed)
+				throw new IOException("BI04");
+			
 			// Already have this number of bytes grabbed
 			int cursize = buffer.size();
 			if (__i <= cursize)
@@ -154,6 +169,11 @@ public class DynamicHistoryInputStream
 		DynamicByteBuffer buffer = this.buffer;
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BI05 Cannot peek a single byte because the
+			// stream is closed.}
+			if (this._closed)
+				throw new IOException("BI05");
+			
 			// Grab bytes, stop if none are available
 			int avail = grab(__a + 1);
 			if (avail < __a)
@@ -218,6 +238,11 @@ public class DynamicHistoryInputStream
 		DynamicByteBuffer buffer = this.buffer;
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BI06 Cannot peek multiple bytes because
+			// the stream is closed.}
+			if (this._closed)
+				throw new IOException("BI06");
+			
 			// Grab bytes, stop if none are available
 			int avail = grab(__a + __l);
 			if (avail < __a)
@@ -245,6 +270,11 @@ public class DynamicHistoryInputStream
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BI07 Cannot read a single byte because the
+			// stream has been closed.}
+			if (this._closed)
+				throw new IOException("BI07");
+			
 			// Grab a single byte
 			int gc = grab(1);
 			
@@ -275,6 +305,11 @@ public class DynamicHistoryInputStream
 		DynamicByteBuffer buffer = this.buffer;
 		synchronized (this.lock)
 		{
+			// {@squirreljme BI08 Cannot read multiple bytes because the
+			// stream is closed.}
+			if (this._closed)
+				throw new IOException("BI08");
+			
 			// Grab multiple bytes
 			int gc = grab(__l);
 			
