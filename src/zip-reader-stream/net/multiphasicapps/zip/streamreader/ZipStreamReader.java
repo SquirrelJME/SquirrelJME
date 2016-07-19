@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.crc32.CRC32DataSink;
+import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 
@@ -27,6 +28,9 @@ public class ZipStreamReader
 {
 	/** The dynamic history stream. */
 	protected final DynamicHistoryInputStream input;
+	
+	/** This is used after an input structure is detected. */
+	protected final ExtendedDataInputStream data;
 	
 	/**
 	 * Initializes the reader for input ZIP file data.
@@ -43,7 +47,9 @@ public class ZipStreamReader
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.input = new DynamicHistoryInputStream(__is);
+		DynamicHistoryInputStream q;
+		this.input = (q = new DynamicHistoryInputStream(__is));
+		this.data = new ExtendedDataInputStream(q);
 	}
 	
 	/**
