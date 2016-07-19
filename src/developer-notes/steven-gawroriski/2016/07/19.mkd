@@ -52,3 +52,8 @@ be confused with `read`. I suppose instead that peek will just return the
 actual requested in the future, then there can be another `grab` which just
 loads the given number of bytes.
 
+## 13:52
+
+`DynamicByteBuffer` could probably use a refactor to be much more efficient
+and much cleaner.
+
