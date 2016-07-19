@@ -107,5 +107,26 @@ public enum ZipCompressionType
 				throw new IOException(String.format("BF01 %s", this));
 		}
 	}
+	
+	/**
+	 * Returns the compression method identified by the given value.
+	 *
+	 * @param __m The compression method identifier.
+	 * @return The compression type identifier for this method, or {@code null}
+	 * if it is unknown.
+	 * @since 2016/07/19
+	 */
+	public static ZipCompressionType forMethod(int __m)
+	{
+		switch (__m)
+		{
+			case 0: return ZipCompressionType.NO_COMPRESSION;
+			case 8: return ZipCompressionType.DEFLATE;
+			
+				// Unknown
+			default:
+				return null;
+		}
+	}
 }
 

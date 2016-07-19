@@ -22,6 +22,8 @@ import net.multiphasicapps.zip.ZipCompressionType;
 /**
  * This class supports stream based reading of input ZIP files.
  *
+ * Only files up to 2GiB in length are supported.
+ *
  * @since 2016/07/19
  */
 public class ZipStreamReader
@@ -162,45 +164,48 @@ public class ZipStreamReader
 				}
 				
 				// Check the version needed for extracting
-				int xver = __readUnsignedShort(4);
+				int xver = __readUnsignedShort(localheader, 4);
 				boolean deny = false;
 				deny |= (xver < 0 || xver >= _MAX_EXTRACT_VERSION);
 				
 				// Read bit flags
-				int gpfs = __readUnsignedShort(6);
+				int gpfs = __readUnsignedShort(localheader, 6);
 				if (true)
 					throw new Error("TODO");
 				
 				// Read the compression method
-				int cmeth = __readUnsignedShort(8);
-				if (true)
-					throw new Error("TODO");
+				ZipCompressionType cmeth = ZipCompressionType.forMethod(
+					__readUnsignedShort(localheader, 8));
+				deny |= (cmeth == null);
 				
 				// Read CRC32
-				if (true)
-					throw new Error("TODO");
+				int crc = __readInt(localheader, 14);
 				
 				// Read Compressed size
-				if (true)
-					throw new Error("TODO");
+				int csz = __readInt(localheader, 18);
+				deny |= (csz < 0);
 				
 				// Uncompressed size
-				if (true)
-					throw new Error("TODO");
+				int usz = __readInt(localheader, 22);
+				deny |= (usz < 0);
 				
 				// File name length
+				int fnl = __readUnsignedShort(localheader, 26);
 				if (true)
 					throw new Error("TODO");
 				
 				// Comment length
+				int cml = __readUnsignedShort(localheader, 28);
 				if (true)
 					throw new Error("TODO");
 				
 				// If denying, read a single byte and try again, this could
-				// just be very ZIP-like data.
+				// just be very ZIP-like data or the local header number could
+				// be a constant in an executable.
 				if (deny)
 				{
-					this.input.read();
+					// Skip 4 bytes because the header was already read
+					this.input.read(localheader, 0, 4);
 					continue;
 				}
 				
@@ -208,6 +213,22 @@ public class ZipStreamReader
 				throw new Error("TODO");
 			}
 		}
+	}
+	
+	/**
+	 * Reads an unsigned integer value.
+	 *
+	 * @param __b The byte array to read from.
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @since 2016/07/19
+	 */
+	private static int __readInt(byte[] __b, int __p)
+	{
+		return (__b[__p] & 0xFF) |
+			((__b[__p + 1] & 0xFF) << 8) |
+			((__b[__p + 2] & 0xFF) << 16) |
+			((__b[__p + 3] & 0xFF) << 24);
 	}
 	
 	/**
