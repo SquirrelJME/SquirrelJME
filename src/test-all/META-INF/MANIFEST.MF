@@ -9,11 +9,12 @@ X-SquirrelJME-Optional:
  test-util-huffmantree,
  test-util-uri,
  test-cldc-compact,
+ test-zip-reader-stream,
  test-zip-writer-stream
 Main-Class: net.multiphasicapps.tests.DefaultTestCaller
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is a meta package which depends on all the
-  available tests to make sure that everything works.
+LIBlet-Description: This is a meta package which depends on all 
+ the available tests to make sure that everything works.
 

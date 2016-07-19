@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: test-zip-reader-stream
+X-SquirrelJME-UUID: 1cee4bf5-d474-4ceb-8092-810ea640806e
+X-SquirrelJME-Depends: zip-reader-stream, test-zip-writer-stream
+X-SquirrelJME-Error: BH
+LIBlet-Title: ZIP Stream Reader Tests
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains tests which makes 
+ sure streamed ZIPs can correctly be read.
+
