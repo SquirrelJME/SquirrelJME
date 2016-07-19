@@ -137,8 +137,10 @@ public class ZipStreamReader
 					// The header could just be a few bytes away, so instead
 					// of looping on single bytes skip a few if it is known
 					// there will never be a local header there.
-					input.read(localheader, 0, (lhb == 0x50 ? 1 :
-						(lhc == 0x50 ? 2 : lhd == 0x50 ? 3 : 4)));
+					input.read(localheader, 0,
+						(lhb == 0x50 && lhc == 0x4B && lhd == 0x03 ? 1 :
+						(lhc == 0x50 && lhd == 0x4B ? 2 :
+						(lhd == 0x50 ? 3 : 4))));
 					continue;
 				}
 				
