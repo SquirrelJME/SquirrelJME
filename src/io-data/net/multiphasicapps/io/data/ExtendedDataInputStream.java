@@ -30,6 +30,10 @@ public class ExtendedDataInputStream
 	/** The original input stream. */
 	protected final DataInputStream input;
 	
+	/** The target endianess. */
+	private volatile DataEndianess _endian =
+		DataEndianess.BIG;
+	
 	/**
 	 * Initializes the extended input stream.
 	 *
@@ -78,7 +82,7 @@ public class ExtendedDataInputStream
 	@Override
 	public DataEndianess getEndianess()
 	{
-		throw new Error("TODO");
+		return this._endian;
 	}
 	
 	/**
@@ -295,7 +299,14 @@ public class ExtendedDataInputStream
 	@Override
 	public DataEndianess setEndianess(DataEndianess __end)
 	{
-		throw new Error("TODO");
+		// Check
+		if (__end == null)
+			throw new NullPointerException("NARG");
+		
+		// Get and set
+		DataEndianess rv = this._endian;
+		this._endian = __end;
+		return rv;
 	}
 	
 	/**
