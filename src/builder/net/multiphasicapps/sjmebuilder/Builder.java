@@ -31,6 +31,7 @@ import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.sjmepackages.PackageName;
+import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
@@ -256,6 +257,31 @@ public class Builder
 					ZipCompressionType.DEFAULT_COMPRESSION))
 				{
 					nsproc.linkBinary(os);
+				}
+				
+				// Add basic assets to the output stream
+				byte[] buf = new byte[64];
+				for (BasicAsset b : BasicAsset.getAssets())
+				{
+					String an = b.name();
+				
+					// Create entry
+					try (InputStream is = b.open();
+						OutputStream os = zip.nextEntry(an,
+							ZipCompressionType.DEFAULT_COMPRESSION))
+					{
+						for (;;)
+						{
+							int rc = is.read(buf);
+							
+							// EOF?
+							if (rc < 0)
+								break;
+							
+							// Write
+							os.write(buf, 0, rc);
+						}
+					}
 				}
 			}
 			
