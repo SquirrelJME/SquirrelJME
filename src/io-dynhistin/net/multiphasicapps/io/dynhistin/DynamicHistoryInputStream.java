@@ -282,7 +282,8 @@ public class DynamicHistoryInputStream
 			if (gc <= 0)
 				return -1;
 			
-			throw new Error("TODO");
+			// Read single byte
+			return (this.buffer.remove(0) & 0xFF);
 		}
 	}
 	
