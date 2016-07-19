@@ -1,2 +1,21 @@
 # 2016/07/19
 
+## 09:43
+
+So I need an efficient means of reading streamed ZIP files. It is possible
+though that actual entries are spaced out and potentially not next to each
+other as in a normal ZIP file.
+
+## 10:03
+
+I would suppose for stream based reading of ZIPs I will need a way to locate
+local file headers. So I need an adjustable buffered input stream where I can
+directly access the bytes in the buffer and know their actual positions. Once
+a local file header is reached I just then need to switch to a different
+size and detect the data descriptor if a uncompressed size was not specified.
+So generally something that would be a slight issue would potentially be ZIPs
+within ZIPs if they are placed correctly. However, I can calculate the CRC,
+size, and uncompressed size. Basically since the descriptor header is optional
+I essentially have to check every byte ahead of the current read position to
+determine if the compressed, uncompressed size, and CRC match the given file.
+
