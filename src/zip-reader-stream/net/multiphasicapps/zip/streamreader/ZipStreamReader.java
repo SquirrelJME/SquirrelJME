@@ -170,8 +170,11 @@ public class ZipStreamReader
 				
 				// Read bit flags
 				int gpfs = __readUnsignedShort(localheader, 6);
-				if (true)
-					throw new Error("TODO");
+				boolean utf = (0 != (gpfs & (1 << 11)));
+				boolean undefinedsize = (0 != (gpfs & (1 << 3)));
+				
+				// Cannot read encrypted entries
+				deny |= (0 != (gpf & 1));
 				
 				// Read the compression method
 				ZipCompressionType cmeth = ZipCompressionType.forMethod(
