@@ -13,6 +13,7 @@ package net.multiphasicapps.sjmebuilder;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
@@ -26,7 +27,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
@@ -60,6 +60,10 @@ public class Builder
 	/** The size of the resource buffer. */
 	public static final int RESOURCE_BUFFER_SIZE =
 		4096;
+	
+	/** The output ZIP file name. */
+	public static final Path OUTPUT_ZIP_NAME =
+		Paths.get("squirreljme.zip");
 	
 	/** Target operating system key. */
 	public static final String TARGET_OS_KEY =
@@ -227,23 +231,41 @@ public class Builder
 			for (PackageInfo pi : this.topdepends)
 				__buildPackage(tempdir, pi);
 			
-			// Generate an output binary which is linked from the input sources
-			JITNamespaceProcessor nsproc = this.processor;
-			Path exename = Paths.get(nsproc.executableName());
-			try (OutputStream os = Channels.newOutputStream(
-				FileChannel.open(exename, StandardOpenOption.CREATE_NEW,
-					StandardOpenOption.WRITE)))
+			// Create an output ZIP file which contains the executable and
+			// a few other files for usage.
+			try (OutputStream outzip = Channels.newOutputStream(
+				FileChannel.open(OUTPUT_ZIP_NAME,
+					StandardOpenOption.CREATE_NEW,
+					StandardOpenOption.WRITE));
+				ZipStreamWriter zip = new ZipStreamWriter(outzip))
 			{
-				nsproc.linkBinary(os);
+				// Write the triplet to a file in the ZIP to indicate what the
+				// executable was compiled for
+				try (OutputStream os = zip.nextEntry("target",
+					ZipCompressionType.DEFAULT_COMPRESSION);
+					PrintStream ps = new PrintStream(os, true, "utf-8"))
+				{
+					ps.println(this.triplet.toString());
+				}
+				
+				// Generate an output binary which is linked from the input
+				// sources
+				JITNamespaceProcessor nsproc = this.processor;
+				String exename = nsproc.executableName();
+				try (OutputStream os = zip.nextEntry(exename,
+					ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					nsproc.linkBinary(os);
+				}
 			}
 			
-			// Failed to write the output
+			// Failed to write the output ZIP, delete it
 			catch (IOException|RuntimeException|Error e)
 			{
 				// Delete it
 				try
 				{
-					Files.delete(exename);
+					Files.delete(OUTPUT_ZIP_NAME);
 				}
 				
 				// Suppressed
