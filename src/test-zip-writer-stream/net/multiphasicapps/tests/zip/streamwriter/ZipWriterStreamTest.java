@@ -65,11 +65,133 @@ public class ZipWriterStreamTest
 		if (__t == null)
 			throw new NullPointerException();
 		
+		// Create a ZIP with a bunch of random files
+		byte[] zipdata = ZipWriterStreamTest.generateZipFile(__t);
+		
+		// Read the input ZIP file that was created in memory and try to
+		// see if entries were written correctly. If the ZIP cannot be opened
+		// here then it is malformed.
+		try (ZipFile zip = ZipFile.open(new SeekableByteArrayChannel(zipdata)))
+		{
+			// Go through all entries and check if they contain valid data
+			for (ZipEntry ze : zip)
+				try (InputStream is = ze.open())
+				{
+					compareEntry(__t, is, ze.name());
+				}
+		}
+			
+		// Caught an exception, dump the failing ZIP
+		catch (Throwable t)
+		{
+			// Could fail to note
+			try
+			{
+				__t.result("faildecodestream").note(zipdata);
+			}
+		
+			// Could not note it either
+			catch (Throwable x)
+			{
+				t.addSuppressed(x);
+			}
+		
+			// Rethrow
+			throw t;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/10
+	 */
+	@Override
+	public TestFamily testFamily()
+	{
+		// Generate some random seeds
+		Random rand = new Random(0x1989_07_06);
+		
+		return new TestFamily(
+			"net.multiphasicapps.zip.streamwriter.ZipStreamWriter",
+			Long.toString(rand.nextLong()),
+			Long.toString(rand.nextLong()),
+			Long.toString(rand.nextLong()));
+	}
+	
+	/**
+	 * Tests that an entry within the ZIP matches the data that is expected.
+	 *
+	 * @param __t The individual test being run.
+	 * @param __in The input stream of ZIP entry data.
+	 * @param __name The name of the entry.
+	 * @throws Throwable On any exception.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/19
+	 */
+	public static void compareEntry(IndividualTest __t, InputStream __in,
+		String __name)
+		throws NullPointerException, Throwable
+	{
+		// Check
+		if (__t == null || __in == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// Split at the directory separator to determine the seed being
+		// used.
+		int slash = __name.indexOf('/');
+		if (slash < 0)
+			__t.result("illegalname").note(__name);
+		
+		// Decode the seed
+		long eseed = Long.decode(__name.substring(slash + 1));
+		
+		// Setup random generator to check against
+		Random fr = new Random(eseed);
+		
+		// Read the entry data into a buffer
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream barr = new ByteArrayOutputStream())
+		{
+			// Load file data and random data into buffers
+			for (;;)
+			{
+				// Read value
+				int val = __in.read();
+			
+				// EOF?
+				if (val < 0)
+					break;
+				
+				// Write
+				barr.write(fr.nextInt(255));
+				baos.write(val);
+			}
+			
+			// Compare the data
+			__t.result("name").compareByteArrays(TestComparison.EQUALS,
+				barr.toByteArray(), baos.toByteArray());
+		}
+	}
+	
+	/**
+	 * This generates a ZIP file and places it into a byte array for future
+	 * reading.
+	 *
+	 * @param __t The tests to source the file seeds from.
+	 * @throws Throwable On any exception.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/19
+	 */
+	public static byte[] generateZipFile(IndividualTest __t)
+		throws NullPointerException, Throwable
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
 		// Get random seed to generate some files with
 		Random rand = new Random(Long.decode(__t.subName().toString()));
 		
-		// Create a ZIP with a bunch of random files
-		byte[] zipdata = null;
+		// Generate a ZIP with a number of files in it
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
 			// The stream must be closed before the byte array becomes a valid
@@ -119,94 +241,8 @@ public class ZipWriterStreamTest
 			}
 			
 			// Get ZIP data
-			zipdata = baos.toByteArray();
+			return baos.toByteArray();
 		}
-		
-		// Read the input ZIP file that was created in memory and try to
-		// see if entries were written correctly. If the ZIP cannot be opened
-		// here then it is malformed.
-		try (ZipFile zip = ZipFile.open(new SeekableByteArrayChannel(zipdata)))
-		{
-			// Go through all entries and check if they contain valid data
-			for (ZipEntry ze : zip)
-			{
-				// Get the name
-				String name = ze.name();
-				
-				// Split at the directory separator to determine the seed being
-				// used.
-				int slash = name.indexOf('/');
-				if (slash < 0)
-					__t.result("illegalname").note(name);
-				
-				// Decode the seed
-				long eseed = Long.decode(name.substring(slash + 1));
-				
-				// Setup random generator to check against
-				Random fr = new Random(eseed);
-				
-				// Read the entry data into a buffer
-				try (InputStream is = ze.open();
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					ByteArrayOutputStream barr = new ByteArrayOutputStream())
-				{
-					// Load file data and random data into buffers
-					for (;;)
-					{
-						// Read value
-						int val = is.read();
-					
-						// EOF?
-						if (val < 0)
-							break;
-						
-						// Write
-						barr.write(fr.nextInt(255));
-						baos.write(val);
-					}
-					
-					// Compare the data
-					__t.result("name").compareByteArrays(TestComparison.EQUALS,
-						barr.toByteArray(), baos.toByteArray());
-				}
-			}
-		}
-			
-		// Caught an exception, dump the failing ZIP
-		catch (Throwable t)
-		{
-			// Could fail to note
-			try
-			{
-				__t.result("faildecodestream").note(zipdata);
-			}
-		
-			// Could not note it either
-			catch (Throwable x)
-			{
-				t.addSuppressed(x);
-			}
-		
-			// Rethrow
-			throw t;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/10
-	 */
-	@Override
-	public TestFamily testFamily()
-	{
-		// Generate some random seeds
-		Random rand = new Random(0x1989_07_06);
-		
-		return new TestFamily(
-			"net.multiphasicapps.zip.streamwriter.ZipStreamWriter",
-			Long.toString(rand.nextLong()),
-			Long.toString(rand.nextLong()),
-			Long.toString(rand.nextLong()));
 	}
 }
 

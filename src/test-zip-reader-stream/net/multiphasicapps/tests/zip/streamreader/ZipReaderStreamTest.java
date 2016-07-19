@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.tests.zip.streamreader;
 
+import java.io.ByteArrayInputStream;
+import java.util.Random;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestComparison;
@@ -39,7 +41,14 @@ public class ZipReaderStreamTest
 		if (__t == null)
 			throw new NullPointerException();
 		
-		throw new Error("TODO");
+		// Create a ZIP with a bunch of random files
+		byte[] zipdata = ZipWriterStreamTest.generateZipFile(__t);
+		
+		// See if the contents can be read correctly
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(zipdata))
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
