@@ -131,11 +131,11 @@ typedef struct SJME_Class
 	/** The type of structure this is. */
 	SJME_StructureType structuretype;
 	
-	/** Class flags. */
-	uint16_t flags;
-	
 	/** The name of the class. */
 	SJME_String* name;
+	
+	/** Class flags. */
+	uint16_t flags;
 	
 	/** Should always be zero. */
 	int zero;
