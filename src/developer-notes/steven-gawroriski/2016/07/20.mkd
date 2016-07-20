@@ -35,3 +35,9 @@ heavily undersized (they are given a size of 1). The class externs all refer
 to just the namespace and have no actual class details. I need to also
 implement string data writing and putting those externs somewhere.
 
+## 15:50
+
+Now I have compilable C code, although more stuff needs to be put into it for
+it to be more useful. Right now the file is 123KiB. It contains quite a number
+of symbols also.
+
