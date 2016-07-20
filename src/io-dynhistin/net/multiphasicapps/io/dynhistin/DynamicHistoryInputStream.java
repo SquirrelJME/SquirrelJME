@@ -38,6 +38,9 @@ public class DynamicHistoryInputStream
 	/** Closed? */
 	private volatile boolean _closed;
 	
+	/** EOF reached? */
+	private volatile boolean _eof;
+	
 	/**
 	 * Initializes a dynamic history stream which sources data from the given
 	 * input stream.
@@ -135,6 +138,11 @@ public class DynamicHistoryInputStream
 			// Read them from the input
 			byte[] qq = new byte[diff];
 			int rc = this.input.read(qq);
+			
+			// If no bytes or EOF was read, then just return the current
+			// buffer size
+			if (rc <= 0)
+				return cursize;
 			
 			// Add them to the end of the buffer
 			buffer.add(qq, 0, rc);
