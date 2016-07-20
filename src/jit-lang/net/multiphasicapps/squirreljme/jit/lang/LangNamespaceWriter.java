@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.lang;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -285,6 +287,72 @@ public abstract class LangNamespaceWriter
 		
 		// Do not modify
 		return __n;
+	}
+	
+	/**
+	 * Includes a file to the output ZIP using the given name.
+	 *
+	 * @param __n The name of the file.
+	 * @param __is The file data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/20
+	 */
+	protected final void includeFile(String __n, InputStream __is)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__n == null || __is == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		synchronized (this.lock)
+		{
+			try (OutputStream os = this.zipwriter.nextEntry(__n,
+				ZipCompressionType.DEFAULT_COMPRESSION))
+			{
+				// Copy all of the data
+				byte[] buf = new byte[64];
+				for (;;)
+				{
+					// Read
+					int rc = __is.read(buf);
+				
+					// EOF?
+					if (rc < 0)
+						break;
+				
+					// Write
+					os.write(buf, 0, rc);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Includes a file to the output ZIP using the given name.
+	 *
+	 * @param __n The name of the file.
+	 * @param __is The file data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/20
+	 */
+	protected final void includeFile(String __n, ByteArrayOutputStream __baos)
+	{
+		// Check
+		if (__n == null || __baos == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		synchronized (this.lock)
+		{
+			try (OutputStream os = this.zipwriter.nextEntry(__n,
+				ZipCompressionType.DEFAULT_COMPRESSION))
+			{
+				__baos.writeTo(os);
+			}
+		}
 	}
 }
 

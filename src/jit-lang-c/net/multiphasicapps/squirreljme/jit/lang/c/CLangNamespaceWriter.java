@@ -124,30 +124,10 @@ public class CLangNamespaceWriter
 		
 		// Need to copy the global header to the output ZIP, otherwise the
 		// code will just end up not compiling at all.
-		ZipStreamWriter zipwriter = this.zipwriter;
-		try (OutputStream en = zipwriter.nextEntry("squirrel.h",
-			ZipCompressionType.DEFAULT_COMPRESSION);
-			InputStream gh = this.getClass().getResourceAsStream("squirrel.h"))
+		try (InputStream is =
+			this.getClass().getResourceAsStream("squirrel.h"));
 		{
-			// {@squirreljme.error BA03 Could not locate the global SquirrelJME
-			// header file.}
-			if (gh == null)
-				throw new IOException("BA03");
-			
-			// Copy all of the data
-			byte[] buf = new byte[64];
-			for (;;)
-			{
-				// Read
-				int rc = gh.read(buf);
-				
-				// EOF?
-				if (rc < 0)
-					break;
-				
-				// Write
-				en.write(buf, 0, rc);
-			}
+			includeFile("squirrel.h", is);
 		}
 		
 		// {@squirreljme.error BA04 Error copying the global SquirrelJME
@@ -234,45 +214,31 @@ public class CLangNamespaceWriter
 	{
 		// If not closed then write the global header and source
 		if (!this._closed)
-			try
+			try (PrintStream namespaceheader = this.namespaceheader;
+				PrintStream namespacesource = this.namespacesource;
+				PrintStream namespacestrings = this.namespacestrings)
 			{
 				// Close it
 				this._closed = true;
 				
-				// Write the namespace header
-				try (PrintStream namespaceheader = this.namespaceheader;
-					OutputStream en = zipwriter.nextEntry(
-						identifierPrefix() + ".h",
-						ZipCompressionType.DEFAULT_COMPRESSION))
-				{
-					// End with header guard
-					namespaceheader.println("#endif");
-					namespaceheader.println();
-					
-					// Write to output
-					namespaceheader.flush();
-					this._nshout.writeTo(en);
-				}
+				// End with header guard
+				namespaceheader.println("#endif");
+				namespaceheader.println();
 				
-				// Then the source header
-				try (PrintStream namespacesource = this.namespacesource;
-					OutputStream sn = zipwriter.nextEntry(
-						identifierPrefix() + ".c",
-						ZipCompressionType.DEFAULT_COMPRESSION))
-				{
-					namespacesource.flush();
-					this._nscout.writeTo(sn);
-				}
+				// Flush all output
+				namespaceheader.flush();
+				namespacesource.flush();
+				namespacestrings.flush();
 				
-				// Write the string table
-				try (PrintStream namespacestrings = this.namespacestrings;
-					OutputStream sn = zipwriter.nextEntry(
-						"strings__" + identifierPrefix() + ".c",
-						ZipCompressionType.DEFAULT_COMPRESSION))
-				{
-					namespacestrings.flush();
-					this._nssout.writeTo(sn);
-				}
+				// Write other files
+				includeFile(identifierPrefix() + ".h", this._nshout);
+				
+				// Write source
+				includeFile(identifierPrefix() + ".c", this._nscout);
+				
+				// Write strings
+				includeFile("strings__" + identifierPrefix() + ".c",
+					this._nssout);
 			}
 			
 			// {@squirreljme.error BA06 Could not write the namespace header
