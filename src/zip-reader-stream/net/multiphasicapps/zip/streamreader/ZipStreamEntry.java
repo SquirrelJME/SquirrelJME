@@ -99,7 +99,8 @@ public final class ZipStreamEntry
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Close from the higher end
+			return this._higher.close();
 		}
 	}
 	
@@ -136,7 +137,7 @@ public final class ZipStreamEntry
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			return this._higher.read();
 		}
 	}
 	
@@ -158,7 +159,7 @@ public final class ZipStreamEntry
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			return this._higher.read(__b, __o, __l);
 		}
 	}
 	
