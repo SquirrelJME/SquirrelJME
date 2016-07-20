@@ -22,3 +22,9 @@ Appears the CRC is not correct.
 
 The namespace headers and sources are missing.
 
+## 14:30
+
+And I fixed that, although it appears everything that is written is in
+error. However the output ZIP is written and it does contain the basic files.
+So really all I need to for the C code is to actually write it now.
+
