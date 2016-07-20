@@ -244,6 +244,9 @@ public final class ZipStreamEntry
 		/** Has EOF been reached? */
 		private volatile boolean _eof;
 		
+		/** The current file size. */
+		private volatile int _size;
+		
 		/**
 		 * Initializes the higher stream.
 		 *
@@ -335,14 +338,20 @@ public final class ZipStreamEntry
 				// EOF?
 				if (rv < 0)
 				{
+					// Tell lower stream that EOF was reached in the data
 					if (!this._eof)
+					{	
+						this._eof = true;
 						ZipStreamEntry.this._lower.__eof();
-					this._eof = true;
+					}
+					
+					// EOF
 					return -1;
 				}
 				
 				// Calculate CRC
 				crcout.write(rv);
+				this._size += 1;
 				return rv;
 			}
 		}
@@ -377,7 +386,8 @@ public final class ZipStreamEntry
 				}
 				
 				// Calculate CRC
-				crcout.write(__b, __o, __l);
+				crcout.write(__b, __o, rc);
+				this._size += rc;
 				return rc;
 			}
 		}

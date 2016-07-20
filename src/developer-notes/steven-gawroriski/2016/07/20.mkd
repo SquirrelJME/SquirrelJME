@@ -14,3 +14,7 @@ In the future I will need to refactor the blocked base ZIP files.
 
 I have an infinite loop somewhere.
 
+## 13:34
+
+Appears the CRC is not correct.
+
