@@ -489,13 +489,14 @@ public final class ZipStreamEntry
 				// Undefined size, have to guess
 				if (this.undefined)
 				{
+					int count = this._count;
 					byte[] descbuf = this._descbuf;
 					DynamicHistoryInputStream input = this.input;
 					
 					// Read ahead to detect the descriptor
 					int act = input.peek(0, descbuf);
 					
-					// {@squirreljme.error BF04 Truncated ZIP file.}
+					// {@squirreljme.error BG04 Truncated ZIP file.}
 					if (act < _MAX_DESCRIPTOR_SIZE)
 						throw new IOException("BG04");
 					
@@ -506,7 +507,18 @@ public final class ZipStreamEntry
 					}
 					
 					// Read normal byte otherwise
-					return input.read();
+					int rv = input.read();
+					
+					// {@squirreljme.error BG05 Expected a byte and not EOF
+					// while reading an unknown size compressed entry.}
+					if (rv < 0)
+						throw new IOException("BG05");
+					
+					// Increase count
+					this._count = count + 1;
+					
+					// Return
+					return rv;
 				}
 				
 				// Size is known
