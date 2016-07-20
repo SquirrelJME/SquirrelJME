@@ -12,6 +12,8 @@ package net.multiphasicapps.zip.streamreader;
 
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.crc32.CRC32DataSink;
+import net.multiphasicapps.io.datasink.DataSinkOutputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 

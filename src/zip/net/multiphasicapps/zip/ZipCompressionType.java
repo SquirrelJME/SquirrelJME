@@ -10,9 +10,13 @@
 
 package net.multiphasicapps.zip;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.io.datapipe.DataPipeInputStream;
+import net.multiphasicapps.io.inflate.InflateDataPipe;
 
 /**
  * This represents the type of compression that is used in a ZIP file.
@@ -62,6 +66,42 @@ public enum ZipCompressionType
 	public final int extractVersion()
 	{
 		return this.extractversion;
+	}
+	
+	/**
+	 * Creates an input stream which wraps another for input which is used
+	 * to read the associated data.
+	 *
+	 * @param __is The input stream to read from.
+	 * @return An input stream for reading the data for this given
+	 * compression method.
+	 * @throws IOException If the stream could not be initialized.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/19
+	 */
+	public final InputStream inputStream(InputStream __is)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the compression
+		switch (this)
+		{
+				// Just use a data stream
+			case NO_COMPRESSION:
+				return new DataInputStream(__is);
+			
+				// Inflate
+			case DEFLATE:
+				return new DataPipeInputStream(__is, new InflateDataPipe());
+				
+				// {@squirreljme.error BF03 Decompressing using the given
+				// method is not supported. (The current compression method)}
+			default:
+				throw new IOException(String.format("BF03 %s", this));
+		}
 	}
 	
 	/**

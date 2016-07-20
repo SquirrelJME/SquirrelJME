@@ -61,3 +61,12 @@ and much cleaner.
 
 Now that my code detects the local file header, I must now read it.
 
+## 20:07
+
+When it comes to uncompressed data, there is potential that the decompressor
+could read a bit ahead. Also one thing I considered is that it is possible
+for the decompressor to use the historical stream to read in byte sequences
+so to speak for what it needs. However, for the reader, I need a lower level
+reader which is associated with the compressed size and that one performs the
+detection of the end of entry if the size is undefined.
+
