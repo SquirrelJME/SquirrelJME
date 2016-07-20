@@ -10,3 +10,7 @@ of the stream.
 
 In the future I will need to refactor the blocked base ZIP files.
 
+## 12:40
+
+I have an infinite loop somewhere.
+
