@@ -247,7 +247,12 @@ public final class ZipStreamEntry
 					// Do not do it again
 					this._closed = true;
 					
-					throw new Error("TODO");
+					// Read until EOF
+					while (read() >= 0)
+						;
+					
+					// Close the lower stream
+					ZipStreamEntry.this._lower.close();
 				}
 				
 				// Close the input
