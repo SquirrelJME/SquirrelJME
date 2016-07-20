@@ -23,8 +23,8 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
   * [Online repository](http://multiphasicapps.net/)
     * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
-    * The repository may be cloned with
-      `fossil clone http://multiphasicapps.net/ squirreljme.fossil`
+    * The repository may be cloned with:
+      `fossil clone http://multiphasicapps.net/ squirreljme.fossil`.
     * Trunk Source Snapshot (`fossil serve` only):
       * [TAR.GZ](../../tarball/squirreljme-trunk.tar.gz?uuid=trunk)
       * [ZIP](../../zip/squirreljme-trunk.zip?uuid=trunk)
@@ -32,6 +32,7 @@ Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
       * Bitbucket: <https://bitbucket.org/mpasteven/squirreljme>
       * GitHub: <http://github.com/mpasteven/SquirrelJME/>
       * Tor: <http://x3v3lxoxpxu3hitk.onion/>
+        (`fossil clone http://x3v3lxoxpxu3hitk.onion/ squirreljme.fossil`)
 
 ## Links
 
