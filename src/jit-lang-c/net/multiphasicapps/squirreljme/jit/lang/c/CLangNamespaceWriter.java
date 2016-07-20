@@ -120,7 +120,7 @@ public class CLangNamespaceWriter
 		namespacestrings.println("#include \"squirrel.h\"");
 		namespacestrings.print("#include \"");
 		namespacestrings.print(identifierPrefix());
-		namespacestrings.println('"');
+		namespacestrings.println(".h\"");
 		
 		// Need to copy the global header to the output ZIP, otherwise the
 		// code will just end up not compiling at all.
