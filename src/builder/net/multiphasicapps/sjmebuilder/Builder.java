@@ -17,6 +17,7 @@ import java.io.PrintStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,9 +67,17 @@ public class Builder
 	public static final Path OUTPUT_ZIP_NAME =
 		Paths.get("squirreljme.zip");
 	
+	/** The format used for duplicate output names. */
+	public static final String OUTPUT_ZIP_FORMAT =
+		"squirreljme-%d.zip";
+	
 	/** Target operating system key. */
 	public static final String TARGET_OS_KEY =
 		"X-SquirrelJME-Target-OS";
+	
+	/** The number of ZIPs to attempt to create before ultimately failing. */
+	private static final int _MAX_ZIP_TRIES =
+		1024;
 	
 	/** The package list to use. */
 	protected final PackageList plist;
@@ -234,10 +243,7 @@ public class Builder
 			
 			// Create an output ZIP file which contains the executable and
 			// a few other files for usage.
-			try (OutputStream outzip = Channels.newOutputStream(
-				FileChannel.open(OUTPUT_ZIP_NAME,
-					StandardOpenOption.CREATE_NEW,
-					StandardOpenOption.WRITE));
+			try (OutputStream outzip = __openOutputZip();
 				ZipStreamWriter zip = new ZipStreamWriter(outzip))
 			{
 				// Write the triplet to a file in the ZIP to indicate what the
@@ -428,6 +434,53 @@ public class Builder
 			if (__pis.add(i))
 				for (PackageInfo p : i.dependencies())
 					q.offerLast(p);
+		}
+	}
+	
+	/**
+	 * Attempts to create output ZIP files which target a given system.
+	 *
+	 * @return An output stream to the output ZIP.
+	 * @throws IOException If it could not created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/20
+	 */
+	private OutputStream __openOutputZip(Path[] __out)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		// Might already exist
+		try
+		{
+			__out[0] = OUTPUT_ZIP_NAME;
+			return Channels.newOutputStream(FileChannel.open(OUTPUT_ZIP_NAME,
+				StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE));
+		}
+		
+		// Try again
+		catch (FileAlreadyExistsException e)
+		{
+			for (int i = 0; i < _MAX_ZIP_TRIES; i++)
+				try
+				{
+					Path p = Paths.get(String.format(OUTPUT_ZIP_FORMAT, i));
+					__out[0] = p;
+					return Channels.newOutputStream(FileChannel.open(p,
+						StandardOpenOption.CREATE_NEW,
+						StandardOpenOption.WRITE));
+				}
+				
+				// Does not exist
+				catch (FileAlreadyExistsException e)
+				{
+					continue;
+				}
+			
+			// {@squirreljme.error DW0g Could not create output ZIP file.}
+			throw new IOException("DW0g");
 		}
 	}
 }
