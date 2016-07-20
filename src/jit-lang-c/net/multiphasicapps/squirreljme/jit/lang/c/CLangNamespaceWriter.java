@@ -124,10 +124,13 @@ public class CLangNamespaceWriter
 		
 		// Need to copy the global header to the output ZIP, otherwise the
 		// code will just end up not compiling at all.
-		try (InputStream is =
-			this.getClass().getResourceAsStream("squirrel.h"));
+		try (InputStream ish =
+			this.getClass().getResourceAsStream("squirrel.h");
+			InputStream isc =
+				this.getClass().getResourceAsStream("squirrel.c"))
 		{
-			includeFile("squirrel.h", is);
+			includeFile("squirrel.h", ish);
+			includeFile("squirrel.c", isc);
 		}
 		
 		// {@squirreljme.error BA04 Error copying the global SquirrelJME

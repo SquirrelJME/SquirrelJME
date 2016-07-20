@@ -339,6 +339,7 @@ public abstract class LangNamespaceWriter
 	 * @since 2016/07/20
 	 */
 	protected final void includeFile(String __n, ByteArrayOutputStream __baos)
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__n == null || __baos == null)
