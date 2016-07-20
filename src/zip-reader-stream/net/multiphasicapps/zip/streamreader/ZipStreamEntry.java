@@ -42,23 +42,11 @@ public final class ZipStreamEntry
 	/** The compression method. */
 	protected final ZipCompressionType method;
 	
-	/** The input source for bytes (and where to detect EOF). */
-	protected final DynamicHistoryInputStream input;
+	/** The lower stream. */
+	private final __LowerStream__ _lower;
 	
-	/** Is the CRC and size set undefined? */
-	protected final boolean undefined;
-	
-	/** The CRC. */
-	protected final int crc;
-	
-	/** The compressed size. */
-	protected final int compressedsize;
-	
-	/** The uncompressed size. */
-	protected final int uncompressedsize;
-	
-	/** If the size is undefined, then this is temporarily used. */
-	private final byte[] _descbuf;
+	/** The higher stream. */
+	private final __HigherStream__ _higher;
 	
 	/**
 	 * Initializes the entry.
@@ -91,17 +79,13 @@ public final class ZipStreamEntry
 		this.zipreader = __zsr;
 		this.filename = __fn;
 		this.method = __method;
-		this.input = __ins;
-		this.undefined = __undef;
-		this.crc = (__undef ? 0 : __crc);
-		this.compressedsize = (__undef ? -1 : __comp);
-		this.uncompressedsize = (__undef ? -1 : __uncomp);
 		
-		// Setup descriptor array if undefined
-		if (__undef)
-			this._descbuf = new byte[_MAX_DESCRIPTOR_SIZE];
-		else
-			this._descbuf = null;
+		// Setup lower stream
+		this._lower = new __LowerStream__(__ins, __undef, __comp);
+		
+		// Setup higher stream
+		this._higher = new __HigherStream__(__method.inputStream(this._lower),
+			__undef, __uncomp, __crc);
 	}
 	
 	/**
@@ -175,6 +159,217 @@ public final class ZipStreamEntry
 		synchronized (this.lock)
 		{
 			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * This is the higher stream which exposes the uncompressed data and
+	 * can calculate the CRC on it.
+	 *
+	 * @since 2016/07/19
+	 */
+	private final class __HigherStream__
+		extends InputStream
+	{
+		/** Lock. */
+		protected final Object lock =
+			ZipStreamEntry.this.lock;
+		
+		/** The source stream. */
+		protected final InputStream input;
+	
+		/** Is the CRC and size set undefined? */
+		protected final boolean undefined;
+	
+		/** The CRC. */
+		protected final int crc;
+	
+		/** The uncompressed size. */
+		protected final int uncompressedsize;
+		
+		/**
+		 * Initializes the higher stream.
+		 *
+		 * @param __ins The input stream for decompressed data.
+		 * @param __undef If {@code true} then the uncompressed size is
+		 * unknown.
+		 * @param __uncomp The uncompressed size.
+		 * @param __crc The CRC that the data must match.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/19
+		 */
+		private __HigherStream__(InputStream __ins, boolean __undef,
+			int __uncomp, int __crc)
+			throws NullPointerException
+		{
+			// Check
+			if (__ins == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.input = __ins;
+			this.undefined = __undef;
+			this.crc = (__undef ? 0 : __crc);
+			this.uncompressedsize = (__undef ? -1 : __uncomp);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/19
+		 */
+		@Override
+		public final void close()
+			throws IOException
+		{
+			// Lock
+			synchronized (this.lock)
+			{
+				throw new Error("TODO");
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/19
+		 */
+		@Override
+		public final int read()
+			throws IOException
+		{
+			// Lock
+			synchronized (this.lock)
+			{
+				throw new Error("TODO");
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/19
+		 */
+		@Override
+		public final int read(byte[] __b, int __o, int __l)
+			throws IndexOutOfBoundsException, IOException, NullPointerException
+		{
+			// Check
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			int n = __b.length;
+			if (__o < 0 || __l < 0 || (__o + __l) > n)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			// Lock
+			synchronized (this.lock)
+			{
+				throw new Error("TODO");
+			}
+		}
+	}
+	
+	/**
+	 * This is the lower stream which reads directory from the source data.
+	 *
+	 * @since 2016/07/19
+	 */
+	private final class __LowerStream__
+		extends InputStream
+	{
+		/** Lock. */
+		protected final Object lock =
+			ZipStreamEntry.this.lock;
+		
+		/** The input source for bytes (and where to detect EOF). */
+		protected final DynamicHistoryInputStream input;
+		
+		/** Is the CRC and size set undefined? */
+		protected final boolean undefined;
+	
+		/** The compressed size. */
+		protected final int compressedsize;
+	
+		/** If the size is undefined, then this is temporarily used. */
+		private final byte[] _descbuf;
+		
+		/**
+		 * Initializes the lower stream which detects the end of the actual
+		 * uncompressed data.
+		 *
+		 * @param __ins The input stream to source bytes from.
+		 * @param __undef If {@code true} then the compressed size is not
+		 * known.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/07/19
+		 */
+		private __LowerStream__(DynamicHistoryInputStream __ins,
+			boolean __undef, int __comp)
+			throws NullPointerException
+		{
+			// Check
+			if (__ins == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.input = __ins;
+			this.undefined = __undef;
+			this.compressedsize = (__undef ? -1 : __comp);
+			
+			// Setup descriptor array if undefined
+			if (__undef)
+				this._descbuf = new byte[_MAX_DESCRIPTOR_SIZE];
+			else
+				this._descbuf = null;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/19
+		 */
+		@Override
+		public final void close()
+			throws IOException
+		{
+			// Lock
+			synchronized (this.lock)
+			{
+				throw new Error("TODO");
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/19
+		 */
+		@Override
+		public final int read()
+			throws IOException
+		{
+			// Lock
+			synchronized (this.lock)
+			{
+				throw new Error("TODO");
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/19
+		 */
+		@Override
+		public final int read(byte[] __b, int __o, int __l)
+			throws IndexOutOfBoundsException, IOException, NullPointerException
+		{
+			// Check
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			int n = __b.length;
+			if (__o < 0 || __l < 0 || (__o + __l) > n)
+				throw new IndexOutOfBoundsException("IOOB"); 
+			
+			// Lock
+			synchronized (this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 	}
 }
