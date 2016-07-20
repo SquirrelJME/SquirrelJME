@@ -243,7 +243,8 @@ public class Builder
 			
 			// Create an output ZIP file which contains the executable and
 			// a few other files for usage.
-			try (OutputStream outzip = __openOutputZip();
+			Path[] outzippath = new Path[1];
+			try (OutputStream outzip = __openOutputZip(outzippath);
 				ZipStreamWriter zip = new ZipStreamWriter(outzip))
 			{
 				// Write the triplet to a file in the ZIP to indicate what the
@@ -297,7 +298,7 @@ public class Builder
 				// Delete it
 				try
 				{
-					Files.delete(OUTPUT_ZIP_NAME);
+					Files.delete(outzippath[0]);
 				}
 				
 				// Suppressed
@@ -474,7 +475,7 @@ public class Builder
 				}
 				
 				// Does not exist
-				catch (FileAlreadyExistsException e)
+				catch (FileAlreadyExistsException f)
 				{
 					continue;
 				}
