@@ -3,34 +3,47 @@
 This self post is to indicate the current project status and will be modified
 accordingly.
 
-If there are any questions, then a self post can be made.
+If there are any questions, then a self post can be made (in another thread).
 
-_Last Updated: 2016/05/17_
+_Last Updated: 2016/07/20_
 
 ----
 
 __Currently being worked on:__
 
- * Class Library
+ * Class library
    * Currently anything required to make the tests run properly
- * Compiler
- * Interpreter
- * Kernel
- * ZIP Read Support
-   * 64-bit ZIP
-   * Inflate64 algorithm
+ * Deflate algorithm
+ * Java Virtual Machine
+ * JIT compiler
+   * C Language source code
 
 ----
 
 __What has been done:__
 
- * ZIP Read Support
-   * Inflate algorithm (2016/04/08)
-   * 32-bit ZIP (2016/04/08)
- * Class File Support (2016/04/03, refactored 2016/04/26)
- * Basic Project Structure
+ * Basic distribution structure (2016/07/20)
+ * Basic target output (2016/07/20)
+ * Class file support (2016/04/03, refactored 2016/04/26)
+ * Inflate algorithm (2016/04/08)
+ * ZIP read support (2016/04/08)
+ * ZIP write support (2016/07/20)
 
 ===============================================================================
+
+__Update 2016/06/20:__
+
+I currently have a basic build output now. I am currently working on compiling
+Java byte code and all of the classes to C which can then be compiled using a
+modern C compiler. Targetting C currently will allow me to develop the JIT
+compiler and be able to easily test it on a host system. Then once the JIT is
+developed enough and there are enough classes implemented in the main library,
+I can then work on native machine code generation.
+
+Note that, even though C code could theoretically be used in other projects,
+because _SquirrelJME_ is under the **GNU GPLv3** other projects must be
+compatible with that license (and in effect will fall under that license). The
+output code relies on the main class library in order to function properly.
 
 __Update 2016/07/14:__
 
