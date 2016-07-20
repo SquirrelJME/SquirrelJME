@@ -17,6 +17,8 @@ import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -67,13 +69,41 @@ public abstract class LangOutput
 		{
 			// Go through all input files and add them to the output ZIP
 			int n = __names.length;
+			byte[] buf = new byte[128];
 			for (int i = 0; i < n; i++)
 			{
 				// Get details
 				String name = __names[i];
 				
 				// Stream the input ZIP and copy all entries
-				throw new Error("TODO");
+				try (ZipStreamReader zsr = new ZipStreamReader(__data[i]))
+				{
+					// Copy all entries
+					for (;;)
+						try (ZipStreamEntry ent = zsr.nextEntry())
+						{
+							// No entries remain
+							if (ent == null)
+								break;
+							
+							// Copy to the output
+							try (OutputStream copy = zsw.nextEntry(ent.name(),
+								ZipCompressionType.DEFAULT_COMPRESSION))
+							{
+								for (;;)
+								{
+									int rc = ent.read(buf);
+									
+									// EOF?
+									if (rc < 0)
+										break;
+									
+									// Write
+									copy.write(buf, 0, rc);
+								}
+							}
+						}
+				}
 			}
 		}
 	}

@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: jit-lang
 X-SquirrelJME-UUID: b1449e61-41bd-4c6c-9ffb-0b17ef9df6a6
-X-SquirrelJME-Depends: jit, zip-writer-stream, io-data
+X-SquirrelJME-Depends: jit, zip-writer-stream, io-data,
+ zip-reader-stream
 X-SquirrelJME-Error: AZ
 LIBlet-Title: Generic Language JIT
 LIBlet-Vendor: Steven Gawroriski

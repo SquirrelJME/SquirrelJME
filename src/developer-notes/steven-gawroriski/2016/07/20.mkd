@@ -6,3 +6,7 @@ I suppose for simplicity I will just force the data descriptor to exist for
 uncompressed data, otherwise it will be extremely difficult to detect the end
 of the stream.
 
+## 11:44
+
+In the future I will need to refactor the blocked base ZIP files.
+
