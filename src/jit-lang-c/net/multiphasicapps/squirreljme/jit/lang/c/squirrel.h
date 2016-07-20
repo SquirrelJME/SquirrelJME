@@ -118,7 +118,7 @@ typedef struct SJME_String
 	uint32_t length;
 	
 	/** The UTF-16 characters. */
-	const uint16_t* chars;
+	const uint16_t chars[];
 } SJME_String;
 
 /**
