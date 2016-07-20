@@ -258,6 +258,7 @@ public class Builder
 				
 				// Generate an output binary which is linked from the input
 				// sources
+				System.err.println("Linking binary...");
 				JITNamespaceProcessor nsproc = this.processor;
 				String exename = nsproc.executableName();
 				try (OutputStream os = zip.nextEntry(exename,
@@ -267,6 +268,7 @@ public class Builder
 				}
 				
 				// Add basic assets to the output stream
+				System.err.println("Adding basic assets...");
 				byte[] buf = new byte[64];
 				for (BasicAsset b : BasicAsset.getAssets())
 				{
