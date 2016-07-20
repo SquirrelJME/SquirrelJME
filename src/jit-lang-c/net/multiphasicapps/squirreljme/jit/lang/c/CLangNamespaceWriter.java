@@ -157,9 +157,15 @@ public class CLangNamespaceWriter
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Convert string to identifier
+		// Split the string in half
+		int n = __s.length();
+		String left = __s.substring(0, n >>> 1),
+			right = __s.substring(n >>> 1);
+		
+		// Convert string to identifier, use left side and right side hashcode
+		// with their lengths
 		String idof = "STRING_" + identifierPrefix() +
-			escapeToCIdentifier(__s);
+			"_l" + n + "_" + left.hashCode() + "_" + right.hashCode();
 		
 		// If the string was already output then do not output it again because
 		// multiple declarations are in error.
@@ -186,8 +192,7 @@ public class CLangNamespaceWriter
 		
 		// Write size
 		namespacestrings.print('\t');
-		int n;
-		namespacestrings.print((n = __s.length()));
+		namespacestrings.print(n);
 		namespacestrings.println(',');
 		
 		// Write characters
