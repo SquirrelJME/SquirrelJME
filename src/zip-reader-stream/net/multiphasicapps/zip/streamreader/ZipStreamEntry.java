@@ -272,7 +272,10 @@ public final class ZipStreamEntry
 				
 				// EOF?
 				if (rv < 0)
+				{
+					ZipStreamEntry.this._lower.__eof();
 					return -1;
+				}
 				
 				// Calculate CRC
 				crcout.write(rv);
@@ -304,7 +307,10 @@ public final class ZipStreamEntry
 				
 				// EOF?
 				if (rc < 0)
+				{
+					ZipStreamEntry.this._lower.__eof();
 					return -1;
+				}
 				
 				// Calculate CRC
 				crcout.write(__b, __o, __l);
@@ -342,6 +348,9 @@ public final class ZipStreamEntry
 		
 		/** Was this closed? */
 		private volatile boolean _closed;
+		
+		/** EOF reached in higher stream? */
+		private volatile boolean _eof;
 		
 		/**
 		 * Initializes the lower stream which detects the end of the actual
@@ -420,6 +429,10 @@ public final class ZipStreamEntry
 			// Lock
 			synchronized (this.lock)
 			{
+				// Higher stream EOFed
+				if (this._eof)
+					return -1;
+				
 				// Undefined size, have to guess
 				if (this.undefined)
 					throw new Error("TODO");
@@ -428,7 +441,7 @@ public final class ZipStreamEntry
 				else
 				{
 					// Get current count
-					count = this._count;
+					int count = this._count;
 					
 					// Reached end?
 					if (count >= this.compressedsize)
@@ -441,6 +454,9 @@ public final class ZipStreamEntry
 					// while reading compressed entry data.}
 					if (rv < 0)
 						throw new IOException("BG02");
+					
+					// Increase count
+					this._count = count + 1;
 					
 					// Return it
 					return rv;
@@ -466,6 +482,10 @@ public final class ZipStreamEntry
 			// Lock
 			synchronized (this.lock)
 			{
+				// Higher stream EOFed
+				if (this._eof)
+					return -1;	
+				
 				// Undefined size, have to guess
 				if (this.undefined)
 					throw new Error("TODO");
@@ -473,6 +493,20 @@ public final class ZipStreamEntry
 				// Size is known
 				else
 					throw new Error("TODO");
+			}
+		}
+		
+		/**
+		 * Marks that the end of the stream has been reached, the upper layer
+		 * calls this. If the descriptor matches, that also calls this.
+		 *
+		 * @since 2016/07/20
+		 */
+		final void __eof()
+		{
+			synchronized (this.lock)
+			{
+				this._eof = true;
 			}
 		}
 	}
