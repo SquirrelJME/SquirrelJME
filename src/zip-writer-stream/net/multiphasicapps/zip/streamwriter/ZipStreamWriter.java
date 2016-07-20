@@ -21,6 +21,7 @@ import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.io.datasink.DataSinkOutputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.ZipCRCConstants;
 
 /**
  * This class is used to write to ZIP files in an unknown and stream based
@@ -49,26 +50,6 @@ public class ZipStreamWriter
 	/** End of central directory magic number. */
 	private static final int _END_DIRECTORY_MAGIC_NUMBER =
 		0x06054B50;
-	
-	/** The polynomial for the CRC algorithm. */
-	private static final int _CRC_POLYNOMIAL =
-		0x04C11DB7;//0xDEBB20E3;
-	
-	/** The initial CRC remainder. */
-	private static final int _CRC_REMAINDER =
-		0xFFFFFFFF;
-	
-	/** The final XOR value. */
-	private static final int _CRC_FINALXOR =
-		0xFFFFFFFF;
-	
-	/** Reflect the data? */
-	private static final boolean _CRC_REFLECT_DATA =
-		true;
-	
-	/** Reflect the remainder? */
-	private static final boolean _CRC_REFLECT_REMAINDER =
-		true;
 	
 	/** The maximum permitted file size. */
 	private static final long _MAX_FILE_SIZE =
@@ -599,8 +580,10 @@ public class ZipStreamWriter
 	{
 		/** CRC calculation. */
 		protected final CRC32DataSink crccalc =
-			new CRC32DataSink(_CRC_REFLECT_DATA, _CRC_REFLECT_REMAINDER,
-				_CRC_POLYNOMIAL, _CRC_REMAINDER, _CRC_FINALXOR);
+			new CRC32DataSink(ZipCRCConstants.CRC_REFLECT_DATA,
+				ZipCRCConstants.CRC_REFLECT_REMAINDER,
+				ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
+				ZipCRCConstants.CRC_FINALXOR);
 		
 		/** CRC calculator stream. */
 		protected final DataSinkOutputStream crcout =

@@ -16,6 +16,7 @@ import net.multiphasicapps.io.crc32.CRC32DataSink;
 import net.multiphasicapps.io.datasink.DataSinkOutputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.ZipCRCConstants;
 
 /**
  * This provides an interface to interact with a single entry within a ZIP
@@ -100,7 +101,7 @@ public final class ZipStreamEntry
 		synchronized (this.lock)
 		{
 			// Close from the higher end
-			return this._higher.close();
+			this._higher.close();
 		}
 	}
 	
@@ -175,6 +176,13 @@ public final class ZipStreamEntry
 		/** Lock. */
 		protected final Object lock =
 			ZipStreamEntry.this.lock;
+		
+		/** CRC calculation. */
+		protected final CRC32DataSink crccalc =
+			new CRC32DataSink(ZipCRCConstants.CRC_REFLECT_DATA,
+				ZipCRCConstants.CRC_REFLECT_REMAINDER,
+				ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
+				ZipCRCConstants.CRC_FINALXOR);
 		
 		/** The source stream. */
 		protected final InputStream input;
