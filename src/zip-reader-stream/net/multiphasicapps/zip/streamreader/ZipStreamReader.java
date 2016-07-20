@@ -23,7 +23,9 @@ import net.multiphasicapps.zip.ZipCompressionType;
 /**
  * This class supports stream based reading of input ZIP files.
  *
- * Only files up to 2GiB in length are supported.
+ * Only files up to 2GiB in length are supported. If a data descriptor is
+ * specified for entries then they must have the optional descriptor magic
+ * number included.
  *
  * @since 2016/07/19
  */
@@ -263,7 +265,7 @@ public class ZipStreamReader
 	 * @return The read value.
 	 * @since 2016/07/19
 	 */
-	private static int __readInt(byte[] __b, int __p)
+	static int __readInt(byte[] __b, int __p)
 	{
 		return (__b[__p] & 0xFF) |
 			((__b[__p + 1] & 0xFF) << 8) |
@@ -279,7 +281,7 @@ public class ZipStreamReader
 	 * @return The read value.
 	 * @since 2016/07/19
 	 */
-	private static int __readUnsignedShort(byte[] __b, int __p)
+	static int __readUnsignedShort(byte[] __b, int __p)
 	{
 		return (__b[__p] & 0xFF) |
 			((__b[__p + 1] & 0xFF) << 8);

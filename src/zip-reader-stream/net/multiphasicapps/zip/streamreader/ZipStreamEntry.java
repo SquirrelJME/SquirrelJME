@@ -488,7 +488,26 @@ public final class ZipStreamEntry
 				
 				// Undefined size, have to guess
 				if (this.undefined)
-					throw new Error("TODO");
+				{
+					byte[] descbuf = this._descbuf;
+					DynamicHistoryInputStream input = this.input;
+					
+					// Read ahead to detect the descriptor
+					int act = input.peek(0, descbuf);
+					
+					// {@squirreljme.error BF04 Truncated ZIP file.}
+					if (act < _MAX_DESCRIPTOR_SIZE)
+						throw new IOException("BG04");
+					
+					// Is this the descriptor magic number?
+					if (ZipStreamReader.__readInt(descbuf, 0) == 0x08074B50)
+					{
+						throw new Error("TODO");
+					}
+					
+					// Read normal byte otherwise
+					return input.read();
+				}
 				
 				// Size is known
 				else
@@ -539,13 +558,23 @@ public final class ZipStreamEntry
 				if (this._eof)
 					return -1;	
 				
-				// Undefined size, have to guess
-				if (this.undefined)
-					throw new Error("TODO");
+				// For simplicity, use single byte read because the end may
+				// either be defined or undefined
+				int c = 0;
+				for (int i = 0, o = __o; i < __l; i++, o++)
+				{
+					int v = read();
+					
+					// EOF?
+					if (v < 0)
+						break;
+					
+					__b[o] = (byte)v;
+					c++;
+				}
 				
-				// Size is known
-				else
-					throw new Error("TODO");
+				// Return the read count
+				return c;
 			}
 		}
 		
