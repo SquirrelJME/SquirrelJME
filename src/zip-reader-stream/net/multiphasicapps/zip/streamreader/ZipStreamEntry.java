@@ -340,6 +340,9 @@ public final class ZipStreamEntry
 		/** The number of read bytes. */
 		private volatile int _count;
 		
+		/** Was this closed? */
+		private volatile boolean _closed;
+		
 		/**
 		 * Initializes the lower stream which detects the end of the actual
 		 * uncompressed data.
@@ -381,6 +384,27 @@ public final class ZipStreamEntry
 			// Lock
 			synchronized (this.lock)
 			{
+				// If not closed, seek to the end
+				if (!this._closed)
+				{
+					// Mark closed
+					this._closed = true;
+					
+					// Seek to the end
+					byte[] descbuf = this._descbuf;
+					if (descbuf == null)
+						descbuf = new byte[64];
+					for (;;)
+					{
+						int rc = read(descbuf);
+						
+						// EOF reached
+						if (rc < 0)
+							break;
+					}
+				}
+				
+				// Tell the stream reader that this is it
 				throw new Error("TODO");
 			}
 		}
@@ -396,7 +420,31 @@ public final class ZipStreamEntry
 			// Lock
 			synchronized (this.lock)
 			{
-				throw new Error("TODO");
+				// Undefined size, have to guess
+				if (this.undefined)
+					throw new Error("TODO");
+				
+				// Size is known
+				else
+				{
+					// Get current count
+					count = this._count;
+					
+					// Reached end?
+					if (count >= this.compressedsize)
+						return -1;
+					
+					// Read otherwise
+					int rv = this.input.read();
+					
+					// {@squirreljme.error BG02 Expected a byte and not EOF
+					// while reading compressed entry data.}
+					if (rv < 0)
+						throw new IOException("BG02");
+					
+					// Return it
+					return rv;
+				}
 			}
 		}
 		
@@ -418,7 +466,13 @@ public final class ZipStreamEntry
 			// Lock
 			synchronized (this.lock)
 			{
-				throw new Error("TODO");
+				// Undefined size, have to guess
+				if (this.undefined)
+					throw new Error("TODO");
+				
+				// Size is known
+				else
+					throw new Error("TODO");
 			}
 		}
 	}
