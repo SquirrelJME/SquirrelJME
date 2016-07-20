@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -43,6 +45,10 @@ public class CLangNamespaceWriter
 	
 	/** C Strings. */
 	protected final PrintStream namespacestrings;
+	
+	/** Strings which have been declared. */
+	private final Set<String> _usedstrings =
+		new HashSet<>();
 	
 	/** Second level global header which is written last. */
 	private final ByteArrayOutputStream _nshout =
@@ -109,6 +115,13 @@ public class CLangNamespaceWriter
 		namespaceheader.print("#define ");
 		namespaceheader.println(hguard);
 		
+		// Need to include the required headers for the strings
+		PrintStream namespacestrings = this.namespacestrings;
+		namespacestrings.println("#include \"squirrel.h\"");
+		namespacestrings.print("#include \"");
+		namespacestrings.print(identifierPrefix());
+		namespacestrings.println('"');
+		
 		// Need to copy the global header to the output ZIP, otherwise the
 		// code will just end up not compiling at all.
 		ZipStreamWriter zipwriter = this.zipwriter;
@@ -164,6 +177,13 @@ public class CLangNamespaceWriter
 		// Convert string to identifier
 		String idof = "STRING_" + identifierPrefix() +
 			escapeToCIdentifier(__s);
+		
+		// If the string was already output then do not output it again because
+		// multiple declarations are in error.
+		Set<String> usedstrings = this._usedstrings;
+		if (usedstrings.contains(idof))
+			return idof;
+		usedstrings.add(idof);
 		
 		// Add string to the global header
 		PrintStream namespaceheader = this.namespaceheader;

@@ -464,7 +464,7 @@ public class Builder
 		// Try again
 		catch (FileAlreadyExistsException e)
 		{
-			for (int i = 0; i < _MAX_ZIP_TRIES; i++)
+			for (int i = 1; i < _MAX_ZIP_TRIES; i++)
 				try
 				{
 					Path p = Paths.get(String.format(OUTPUT_ZIP_FORMAT, i));
