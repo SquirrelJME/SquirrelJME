@@ -165,7 +165,8 @@ public class CLangNamespaceWriter
 		// Convert string to identifier, use left side and right side hashcode
 		// with their lengths
 		String idof = "STRING_" + identifierPrefix() +
-			"_l" + n + "_" + left.hashCode() + "_" + right.hashCode();
+			"_l" + n + "_" + (((long)left.hashCode()) & 0xFFFFFFFFL) + "_" +
+			(((long)right.hashCode()) & 0xFFFFFFFFL);
 		
 		// If the string was already output then do not output it again because
 		// multiple declarations are in error.
