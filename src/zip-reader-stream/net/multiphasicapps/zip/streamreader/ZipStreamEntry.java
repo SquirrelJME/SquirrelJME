@@ -135,6 +135,9 @@ public final class ZipStreamEntry
 					(wascrc = higher.crccalc.crc()))
 					throw new IOException(String.format("BG03 %08x %08x",
 						wantcrc, wascrc));
+				
+				// Clear it
+				this.zipreader.__closeEntry(this);
 			}
 		}
 	}

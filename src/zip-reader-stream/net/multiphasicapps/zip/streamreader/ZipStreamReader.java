@@ -258,6 +258,33 @@ public class ZipStreamReader
 	}
 	
 	/**
+	 * Closes an entry so that the next one can be read.
+	 *
+	 * @param __ent The entry to close.
+	 * @throws IOException If it could not be closed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/20
+	 */
+	final void __closeEntry(ZipStreamEntry __ent)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__ent == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BG06 Close of an incorrect entry.}
+			if (this._entry != __ent)
+				throw new IOException("BG06");
+			
+			// Clear it
+			this._entry = null;
+		}
+	}
+	
+	/**
 	 * Reads an unsigned integer value.
 	 *
 	 * @param __b The byte array to read from.
