@@ -32,7 +32,7 @@ public class CResourceOutputStream
 	/** The name of the resource. */
 	protected final String name;
 	
-	/** The number of bytes written. */
+	/** Column counter. */
 	private volatile int _count;
 	
 	/** Using comma? */
@@ -40,6 +40,9 @@ public class CResourceOutputStream
 	
 	/** Was this closed? */
 	private volatile boolean _closed;
+	
+	/** Total number of bytes written. */
+	private volatile int _bytes;
 	
 	/**
 	 * Initializes a resource which outputs to C code.
@@ -107,7 +110,7 @@ public class CResourceOutputStream
 			nsheader.print("#define SIZE_");
 			nsheader.print(this.name);
 			nsheader.print(' ');
-			nsheader.println(this._count);
+			nsheader.println(this._bytes);
 		}
 		
 		// Close super stream
@@ -152,6 +155,9 @@ public class CResourceOutputStream
 		
 		// Store
 		this._count = count;
+		
+		// Increase byte count
+		this._bytes++;
 	}
 }
 

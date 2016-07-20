@@ -61,7 +61,7 @@ public class CLangClassWriter
 		__nsw.__globalHeader(output);
 		
 		// Write basic class storage information
-		String idprefix = __nsw.identifierPrefix();
+		String idprefix = __n;
 		output.print("SJME_Class ");
 		output.print(idprefix);
 		output.println(" =");

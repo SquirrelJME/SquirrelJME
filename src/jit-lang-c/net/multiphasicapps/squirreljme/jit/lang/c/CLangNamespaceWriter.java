@@ -41,12 +41,19 @@ public class CLangNamespaceWriter
 	/** Print stream which writes to the namespace specific source file. */
 	protected final PrintStream namespacesource;
 	
+	/** C Strings. */
+	protected final PrintStream namespacestrings;
+	
 	/** Second level global header which is written last. */
 	private final ByteArrayOutputStream _nshout =
 		new ByteArrayOutputStream();
 	
 	/** Support source code. */
 	private final ByteArrayOutputStream _nscout =
+		new ByteArrayOutputStream();
+	
+	/** String output. */
+	private final ByteArrayOutputStream _nssout =
 		new ByteArrayOutputStream();
 	
 	/** Was this writer closed? */
@@ -65,10 +72,12 @@ public class CLangNamespaceWriter
 				"utf-8");
 			this.namespacesource = new PrintStream(this._nscout, true,
 				"utf-8");
+			this.namespacestrings = new PrintStream(this._nssout, true,
+				"utf-8");
 		}
 		
 		// {@squirreljme.error BA05 Could not initialize the global header
-		// and/oor namespace source printer.}
+		// and/or namespace source printer.}
 		catch (IOException e)
 		{
 			throw new JITException("BA05");
@@ -156,6 +165,41 @@ public class CLangNamespaceWriter
 		String idof = "STRING_" + identifierPrefix() +
 			escapeToCIdentifier(__s);
 		
+		// Add string to the global header
+		PrintStream namespaceheader = this.namespaceheader;
+		namespaceheader.print("extern SJME_String ");
+		namespaceheader.print(idof);
+		namespaceheader.println(';');
+		
+		// Start type
+		PrintStream namespacestrings = this.namespacestrings;
+		namespacestrings.print("SJME_String ");
+		namespacestrings.print(idof);
+		namespacestrings.println(" =");
+		namespacestrings.println("{");
+		
+		// Structure type
+		namespacestrings.println("\tSJME_STRUCTURETYPE_STRING,");
+		
+		// Write size
+		namespacestrings.print('\t');
+		int n;
+		namespacestrings.print((n = __s.length()));
+		namespacestrings.println(',');
+		
+		// Write characters
+		namespacestrings.print("\t{");
+		for (int i = 0; i < n; i++)
+		{
+			if (i > 0)
+				namespacestrings.print(", ");
+			namespacestrings.print((int)__s.charAt(i));
+		}
+		namespacestrings.println("}");
+		
+		// End type
+		namespacestrings.println("};");
+		
 		// Return the string identifier
 		return idof;
 	}
@@ -175,39 +219,40 @@ public class CLangNamespaceWriter
 				// Close it
 				this._closed = true;
 				
-				// Get streams
-				PrintStream namespaceheader = this.namespaceheader;
-				PrintStream namespacesource = this.namespacesource;
-				
-				// End header with header guard
-				namespaceheader.println("#endif");
-				namespaceheader.println();
-			
-				// Flush before close
-				namespaceheader.flush();
-				namespacesource.flush();
-			
 				// Write the namespace header
-				ByteArrayOutputStream baos = this._nshout,
-					caos = this._nscout;
-				try (OutputStream en = zipwriter.nextEntry(
+				try (PrintStream namespaceheader = this.namespaceheader;
+					OutputStream en = zipwriter.nextEntry(
 						identifierPrefix() + ".h",
 						ZipCompressionType.DEFAULT_COMPRESSION))
 				{
-					baos.writeTo(en);
+					// End with header guard
+					namespaceheader.println("#endif");
+					namespaceheader.println();
+					
+					// Write to output
+					namespaceheader.flush();
+					this._nshout.writeTo(en);
 				}
 				
 				// Then the source header
-				try (OutputStream sn = zipwriter.nextEntry(
+				try (PrintStream namespacesource = this.namespacesource;
+					OutputStream sn = zipwriter.nextEntry(
 						identifierPrefix() + ".c",
 						ZipCompressionType.DEFAULT_COMPRESSION))
 				{
-					caos.writeTo(sn);
+					namespacesource.flush();
+					this._nscout.writeTo(sn);
 				}
-			
-				// Close it
-				namespaceheader.close();
-				namespacesource.close();
+				
+				// Write the string table
+				try (PrintStream namespacestrings = this.namespacestrings;
+					OutputStream sn = zipwriter.nextEntry(
+						"strings__" + identifierPrefix() + ".c",
+						ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					namespacestrings.flush();
+					this._nssout.writeTo(sn);
+				}
 			}
 			
 			// {@squirreljme.error BA06 Could not write the namespace header

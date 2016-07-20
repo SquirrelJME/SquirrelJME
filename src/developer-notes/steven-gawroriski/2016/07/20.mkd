@@ -28,3 +28,10 @@ And I fixed that, although it appears everything that is written is in
 error. However the output ZIP is written and it does contain the basic files.
 So really all I need to for the C code is to actually write it now.
 
+## 14:34
+
+So now I can test the C language output. Looking at it the resources are
+heavily undersized (they are given a size of 1). The class externs all refer
+to just the namespace and have no actual class details. I need to also
+implement string data writing and putting those externs somewhere.
+
