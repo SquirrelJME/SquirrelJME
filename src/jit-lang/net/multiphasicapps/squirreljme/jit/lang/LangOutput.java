@@ -86,10 +86,6 @@ public abstract class LangOutput
 							if (ent == null)
 								break;
 							
-							// Debug
-							System.err.printf("DEBUG -- Add: %s%n",
-								ent.name());
-							
 							// Copy to the output
 							try (OutputStream copy = zsw.nextEntry(ent.name(),
 								ZipCompressionType.DEFAULT_COMPRESSION))
