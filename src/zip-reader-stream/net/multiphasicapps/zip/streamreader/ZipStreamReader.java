@@ -187,11 +187,13 @@ public class ZipStreamReader
 				
 				// Read Compressed size
 				int csz = __readInt(localheader, 18);
-				deny |= (csz < 0);
+				if (!undefinedsize)
+					deny |= (csz < 0);
 				
 				// Uncompressed size
 				int usz = __readInt(localheader, 22);
-				deny |= (usz < 0);
+				if (!undefinedsize)
+					deny |= (usz < 0);
 				
 				// File name length
 				int fnl = __readUnsignedShort(localheader, 26);
@@ -227,9 +229,6 @@ public class ZipStreamReader
 				else
 					filename = IBM437CodePage.toString(rawname, 0, fnl);
 				
-				// Debug
-				System.err.printf("DEBUG -- Stream: `%s`%n", filename);
-				
 				// Skip the comment
 				while (cml > 0)
 				{
@@ -247,8 +246,11 @@ public class ZipStreamReader
 					cml -= rc;
 				}
 				
-				// Consume the input bytes and create an entry
-				throw new Error("TODO");
+				// Create entry so the data can actually be used
+				ZipStreamEntry rv = new ZipStreamEntry(this, filename,
+					undefinedsize, crc, csz, usz, cmeth, input, this.lock);
+				this._entry = rv;
+				return rv;
 			}
 		}
 	}
