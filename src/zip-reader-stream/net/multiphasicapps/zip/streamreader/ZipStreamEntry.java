@@ -184,6 +184,10 @@ public final class ZipStreamEntry
 				ZipCRCConstants.CRC_POLYNOMIAL, ZipCRCConstants.CRC_REMAINDER,
 				ZipCRCConstants.CRC_FINALXOR);
 		
+		/** CRC calculator stream. */
+		protected final DataSinkOutputStream crcout =
+			new DataSinkOutputStream(crccalc);
+		
 		/** The source stream. */
 		protected final InputStream input;
 	
@@ -195,6 +199,9 @@ public final class ZipStreamEntry
 	
 		/** The uncompressed size. */
 		protected final int uncompressedsize;
+		
+		/** Has this stream been closed? */
+		private volatile boolean _closed;
 		
 		/**
 		 * Initializes the higher stream.
@@ -231,9 +238,20 @@ public final class ZipStreamEntry
 			throws IOException
 		{
 			// Lock
+			InputStream input = this.input;
 			synchronized (this.lock)
 			{
-				throw new Error("TODO");
+				// Handle closing by reading the rest of the stream
+				if (!this._closed)
+				{
+					// Do not do it again
+					this._closed = true;
+					
+					throw new Error("TODO");
+				}
+				
+				// Close the input
+				input.close();
 			}
 		}
 		
@@ -246,9 +264,19 @@ public final class ZipStreamEntry
 			throws IOException
 		{
 			// Lock
+			InputStream input = this.input;
 			synchronized (this.lock)
 			{
-				throw new Error("TODO");
+				// Read a single byte from the input
+				int rv = input.read();
+				
+				// EOF?
+				if (rv < 0)
+					return -1;
+				
+				// Calculate CRC
+				crcout.write(rv);
+				return rv;
 			}
 		}
 		
@@ -268,9 +296,19 @@ public final class ZipStreamEntry
 				throw new IndexOutOfBoundsException("IOOB");
 			
 			// Lock
+			InputStream input = this.input;
 			synchronized (this.lock)
 			{
-				throw new Error("TODO");
+				// Read bytes from the input
+				int rc = input.read(__b, __o, __l);
+				
+				// EOF?
+				if (rc < 0)
+					return -1;
+				
+				// Calculate CRC
+				crcout.write(__b, __o, __l);
+				return rc;
 			}
 		}
 	}
