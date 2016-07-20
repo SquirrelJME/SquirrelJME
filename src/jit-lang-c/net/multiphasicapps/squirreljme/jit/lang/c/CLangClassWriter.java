@@ -77,7 +77,7 @@ public class CLangClassWriter
 		output.println("\tSJME_STRUCTURETYPE_CLASS,");
 		
 		// Write the class name
-		output.print('\t');
+		output.print("\t&");
 		output.print(__nsw.addString(__cn.toString()));
 		output.println(',');
 	}
