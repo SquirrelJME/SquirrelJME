@@ -132,7 +132,7 @@ public class ZipStreamReader
 			// Read until an entry is found
 			DynamicHistoryInputStream input = this.input;
 			byte[] localheader = this._localheader;
-			for (;;)
+			for (; !this._eof;)
 			{
 				// Peek the magic number
 				int rhcount = input.peek(0, localheader, 0, 4);
@@ -150,7 +150,8 @@ public class ZipStreamReader
 				// Not one
 				if (lhskip > 0)
 				{
-					input.read(localheader, 0, lhskip);
+					if (input.read(localheader, 0, lhskip) < 0)
+						this._eof = true;
 					continue;
 				}
 				
@@ -254,6 +255,10 @@ public class ZipStreamReader
 				this._entry = rv;
 				return rv;
 			}
+			
+			// No entry
+			this._eof = true;
+			return null;
 		}
 	}
 	

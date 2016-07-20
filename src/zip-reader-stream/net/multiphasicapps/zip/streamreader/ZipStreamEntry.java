@@ -241,6 +241,9 @@ public final class ZipStreamEntry
 		/** Has this stream been closed? */
 		private volatile boolean _closed;
 		
+		/** Has EOF been reached? */
+		private volatile boolean _eof;
+		
 		/**
 		 * Initializes the higher stream.
 		 *
@@ -322,13 +325,19 @@ public final class ZipStreamEntry
 			InputStream input = this.input;
 			synchronized (this.lock)
 			{
+				// if EOF read, read nothing
+				if (this._eof)
+					return -1;
+				
 				// Read a single byte from the input
 				int rv = input.read();
 				
 				// EOF?
 				if (rv < 0)
 				{
-					ZipStreamEntry.this._lower.__eof();
+					if (!this._eof)
+						ZipStreamEntry.this._lower.__eof();
+					this._eof = true;
 					return -1;
 				}
 				
@@ -514,6 +523,7 @@ public final class ZipStreamEntry
 								ZipStreamReader.__readInt(descbuf, 4);
 							
 							// No more bytes left
+							this._eof = true;
 							return -1;
 						}
 					
