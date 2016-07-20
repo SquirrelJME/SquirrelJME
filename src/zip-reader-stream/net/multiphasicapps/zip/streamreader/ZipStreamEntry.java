@@ -337,6 +337,9 @@ public final class ZipStreamEntry
 		/** If the size is undefined, then this is temporarily used. */
 		private final byte[] _descbuf;
 		
+		/** The number of read bytes. */
+		private volatile int _count;
+		
 		/**
 		 * Initializes the lower stream which detects the end of the actual
 		 * uncompressed data.

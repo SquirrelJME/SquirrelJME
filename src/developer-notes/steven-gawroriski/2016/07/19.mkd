@@ -70,3 +70,16 @@ so to speak for what it needs. However, for the reader, I need a lower level
 reader which is associated with the compressed size and that one performs the
 detection of the end of entry if the size is undefined.
 
+## 22:37
+
+One issue is that I need to know the CRC of the uncompressed output and
+potentially the uncompressed size of the stream before that information is
+known to detect the end of the data. This would be a somewhat complex endeaver
+especially with the fact that the descriptor is optional. Of course this would
+be that much of an issue if the CRC were associated with the compressed data
+instead of the uncompressed one. I can always test this however.
+
+## 22:45
+
+Saw a meteor in the sky outside my window, I wonder how common that is.
+
