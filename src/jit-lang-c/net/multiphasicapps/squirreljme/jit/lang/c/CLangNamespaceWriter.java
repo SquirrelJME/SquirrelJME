@@ -187,17 +187,21 @@ public class CLangNamespaceWriter
 				namespaceheader.flush();
 				namespacesource.flush();
 			
-				// Write output of the byte array to the ZIP
+				// Write the namespace header
 				ByteArrayOutputStream baos = this._nshout,
 					caos = this._nscout;
 				try (OutputStream en = zipwriter.nextEntry(
 						identifierPrefix() + ".h",
-						ZipCompressionType.DEFAULT_COMPRESSION);
-					OutputStream sn = zipwriter.nextEntry(
-						identifierPrefix() + ".c",
 						ZipCompressionType.DEFAULT_COMPRESSION))
 				{
 					baos.writeTo(en);
+				}
+				
+				// Then the source header
+				try (OutputStream sn = zipwriter.nextEntry(
+						identifierPrefix() + ".c",
+						ZipCompressionType.DEFAULT_COMPRESSION))
+				{
 					caos.writeTo(sn);
 				}
 			

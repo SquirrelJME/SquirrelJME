@@ -160,12 +160,12 @@ public class JITNamespaceProcessor
 			
 		// Setup output for a given namespace
 		JITOutput output = this.output;
-		JITNamespaceWriter nsw = output.beginNamespace(__ns);
 		
 		// Go through the directory for the given namespace
 		// Also create the cached output if it was requested
-		try (JITNamespaceContent.Directory dir =
-			this.contents.directoryOf(__ns))
+		try (JITNamespaceWriter nsw = output.beginNamespace(__ns);
+			JITNamespaceContent.Directory dir =
+				this.contents.directoryOf(__ns))
 		{
 			// Go through directory entries
 			byte[] buf = null;
