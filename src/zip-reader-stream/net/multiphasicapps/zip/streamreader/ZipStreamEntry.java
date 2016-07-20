@@ -500,11 +500,19 @@ public final class ZipStreamEntry
 					if (act < _MAX_DESCRIPTOR_SIZE)
 						throw new IOException("BG04");
 					
-					// Is this the descriptor magic number?
+					// Is this the descriptor magic number? If so then stop
+					// if the current read number of bytes matches the current
+					// size.
 					if (ZipStreamReader.__readInt(descbuf, 0) == 0x08074B50)
-					{
-						throw new Error("TODO");
-					}
+						if (ZipStreamReader.__readInt(descbuf, 8) == count)
+						{
+							// Read the desired CRC
+							ZipStreamEntry.this._wantcrc =
+								ZipStreamReader.__readInt(descbuf, 4);
+							
+							// No more bytes left
+							return -1;
+						}
 					
 					// Read normal byte otherwise
 					int rv = input.read();
