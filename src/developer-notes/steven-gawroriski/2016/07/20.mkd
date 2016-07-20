@@ -1,2 +1,8 @@
 # 2016/07/20
 
+## 10:22
+
+I suppose for simplicity I will just force the data descriptor to exist for
+uncompressed data, otherwise it will be extremely difficult to detect the end
+of the stream.
+

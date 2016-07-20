@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.zip.streamreader;
 
+import java.io.Flushable;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.crc32.CRC32DataSink;
@@ -49,6 +50,12 @@ public final class ZipStreamEntry
 	/** The higher stream. */
 	private final __HigherStream__ _higher;
 	
+	/** The expected CRC. */
+	private volatile int _wantcrc;
+	
+	/** Has this been closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes the entry.
 	 *
@@ -81,6 +88,10 @@ public final class ZipStreamEntry
 		this.filename = __fn;
 		this.method = __method;
 		
+		// Set expected CRC
+		if (!__undef)
+			this._wantcrc = __crc;
+		
 		// Setup lower stream
 		this._lower = new __LowerStream__(__ins, __undef, __comp);
 		
@@ -100,8 +111,31 @@ public final class ZipStreamEntry
 		// Lock
 		synchronized (this.lock)
 		{
-			// Close from the higher end
-			this._higher.close();
+			if (!this._closed)
+			{
+				// Mark closed
+				this._closed = true;
+				
+				// Read all the remaining bytes
+				while (read() >= 0)
+					;
+				
+				// Calculate the CRC
+				__HigherStream__ higher = this._higher;
+				higher.flush();
+				
+				// Close the higher end
+				this._higher.close();
+				
+				// {@squirreljme.error BG03 The expected CRC and the actual
+				// CRC do not match, the data is corrupt. (The expected CRC;
+				// The actual CRC)}
+				int wantcrc, wascrc;
+				if ((wantcrc = this._wantcrc) !=
+					(wascrc = higher.crccalc.crc()))
+					throw new IOException(String.format("BG03 %08x %08x",
+						wantcrc, wascrc));
+			}
 		}
 	}
 	
@@ -172,6 +206,7 @@ public final class ZipStreamEntry
 	 */
 	private final class __HigherStream__
 		extends InputStream
+		implements Flushable
 	{
 		/** Lock. */
 		protected final Object lock =
@@ -258,6 +293,18 @@ public final class ZipStreamEntry
 				// Close the input
 				input.close();
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/20
+		 */
+		@Override
+		public void flush()
+			throws IOException
+		{
+			this.crcout.flush();
+			this.crccalc.flush();
 		}
 		
 		/**
@@ -364,6 +411,7 @@ public final class ZipStreamEntry
 		 * @param __ins The input stream to source bytes from.
 		 * @param __undef If {@code true} then the compressed size is not
 		 * known.
+		 * @param __comp The compressed size.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/07/19
 		 */
@@ -416,10 +464,10 @@ public final class ZipStreamEntry
 						if (rc < 0)
 							break;
 					}
+					
+					// Call upper close
+					ZipStreamEntry.this.close();
 				}
-				
-				// Tell the stream reader that this is it
-				throw new Error("TODO");
 			}
 		}
 		
