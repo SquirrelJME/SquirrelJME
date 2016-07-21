@@ -175,6 +175,9 @@ typedef struct SJME_Namespace
 	/** The name of the namespace. */
 	SJME_String* name;
 	
+	/** Namespace contents. */
+	void** contents;
+	
 } SJME_Namespace;
 
 /**

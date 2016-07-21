@@ -46,6 +46,9 @@ public class CLangNamespaceWriter
 	/** C Strings. */
 	protected final PrintStream namespacestrings;
 	
+	/** The namespace base name. */
+	protected final String nsbasename;
+	
 	/** Strings which have been declared. */
 	private final Set<String> _usedstrings =
 		new HashSet<>();
@@ -105,7 +108,10 @@ public class CLangNamespaceWriter
 		super(__ns, __config);
 		
 		// Prefix for identifiers
-		this.idprefix = escapeToCIdentifier(__ns) + "___";
+		String nsbasename = escapeToCIdentifier(__ns);
+		this.nsbasename = nsbasename;
+		String idprefix = nsbasename + "___";
+		this.idprefix = idprefix;
 		
 		// Header guards for the namespace header
 		PrintStream namespaceheader = this.namespaceheader;
@@ -115,12 +121,22 @@ public class CLangNamespaceWriter
 		namespaceheader.print("#define ");
 		namespaceheader.println(hguard);
 		
-		// Need to include the required headers for the strings
-		PrintStream namespacestrings = this.namespacestrings;
-		namespacestrings.println("#include \"squirrel.h\"");
-		namespacestrings.print("#include \"");
-		namespacestrings.print(identifierPrefix());
-		namespacestrings.println(".h\"");
+		// Need to include the required headers for the strings and namespace
+		PrintStream src = this.namespacesource;
+		for (PrintStream ps : new PrintStream[]{this.namespacestrings, src})
+		{
+			ps.println("#include \"squirrel.h\"");
+			ps.print("#include \"");
+			ps.print(idprefix);
+			ps.println(".h\"");
+			ps.println();
+		}
+		
+		// Write contents of the namespace
+		src.print("const void* contents_");
+		src.print(idprefix);
+		src.println("[] = ");
+		src.println("{");
 		
 		// Need to copy the global header to the output ZIP, otherwise the
 		// code will just end up not compiling at all.
@@ -233,6 +249,26 @@ public class CLangNamespaceWriter
 				// End with header guard
 				namespaceheader.println("#endif");
 				namespaceheader.println();
+				
+				// End contents
+				namespacesource.println("\tNULL");
+				namespacesource.println("};");
+				namespacesource.println();
+				
+				// Setup namespace declaration
+				namespacesource.print("SJME_Namespace ");
+				namespacesource.print(this.nsbasename);
+				namespacesource.println(" =");
+				namespacesource.println("{");
+				namespacesource.println("\tSJME_STRUCTURETYPE_NAMESPACE,");
+				namespacesource.print("\t&");
+				namespacesource.print(addString(this.namespace));
+				namespacesource.println(',');
+				namespacesource.print("\tcontents_");
+				namespacesource.print(this.idprefix);
+				namespacesource.println(",");
+				namespacesource.println("};");
+				namespacesource.println();
 				
 				// Flush all output
 				namespaceheader.flush();
