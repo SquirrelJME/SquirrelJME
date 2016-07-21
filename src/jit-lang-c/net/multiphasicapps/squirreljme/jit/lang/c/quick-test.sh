@@ -70,7 +70,12 @@ then
 	if gcc -g3 -O0 -o squirreljme *.c
 	then
 		# Run it
-		gdb --args ./squirreljme $*
+		if which gdb > /dev/null
+		then
+			gdb --args ./squirreljme $*
+		else
+			./squirreljme $*
+		fi
 	fi
 	
 	# Delete
