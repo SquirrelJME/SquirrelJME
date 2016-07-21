@@ -107,13 +107,15 @@ public class CLangOutput
 			ps.println("const SJME_Namespaces initialNamespaces =");
 			ps.println("{");
 			ps.println("\tSJME_STRUCTURETYPE_NAMESPACES,\n");
+			ps.println("\t{");
 			for (int i = 0; i < n; i++)
 			{
-				ps.print("\t&");
+				ps.print("\t\t&");
 				ps.print(conv[i]);
 				ps.println(',');
 			}
-			ps.println("\tNULL");
+			ps.println("\t\tNULL");
+			ps.println("\t}");
 			ps.println("};");
 			ps.println();
 		}

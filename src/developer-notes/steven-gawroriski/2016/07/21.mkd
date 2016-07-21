@@ -19,3 +19,7 @@ logic and such.
 
 Did not figure I would be writing C code again.
 
+## 18:21
+
+I should add more things to the readme, such as my goals.
+

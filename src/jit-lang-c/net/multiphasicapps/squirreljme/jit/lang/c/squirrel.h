@@ -241,7 +241,7 @@ typedef struct SJME_VM
 	jint namespacecount;
 	
 	/** The set of namespaces. */
-	const SJME_Namespaces* namespaces;
+	const SJME_Namespaces* const* const namespaces;
 } SJME_VM;
 
 /**
