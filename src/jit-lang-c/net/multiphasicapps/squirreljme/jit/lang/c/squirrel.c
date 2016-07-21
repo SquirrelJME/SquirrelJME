@@ -38,14 +38,11 @@ int main(int __argc, char** __argv)
 	memset(&jvm, 0, sizeof(jvm));
 	jvm.structuretype = SJME_STRUCTURETYPE_VM;
 	
-	abort();
-#if 0
 	// Count the number of namespaces to initialize at once
-	jvm.namespaces = (SJME_Namespace**)initialNamespaces;
+	jvm.namespaces = &initialNamespaces;
 	for (jvm.namespacecount = 0;; jvm.namespacecount++)
-		if (jvm.namespaces[jvm.namespacecount] == NULL)
+		if (jvm.namespaces->namespaces[jvm.namespacecount] == NULL)
 			break;
-#endif
 	
 	// Find the starting class
 	cmain = SJME_locateClassDefC(&jvm, MAIN_CLASS);
@@ -106,6 +103,16 @@ const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 	{
 		abort();
 		return NULL;
+	}
+	
+	// Go through all namespaces
+	n = __vm->namespacecount;
+	for (i = 0; i < n; i++)
+	{
+		// Get
+		ns = __vm->namespaces->namespaces[i];
+		
+		abort();
 	}
 	
 	abort();
