@@ -96,7 +96,7 @@ const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 	jint i, n, j;
 	const SJME_Namespace* ns;
 	const SJME_Class* cl;
-	void* unkcont;
+	const void* unkcont;
 	
 	// Check
 	if (__vm == NULL || __s == NULL)
@@ -112,22 +112,10 @@ const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 		// Get
 		ns = __vm->namespaces->namespaces[i];
 		
-		abort();
-	}
-	
-	abort();
-#if 0
-	// Search all classes within every namespace and return the first match.
-	n = __vm->namespacecount;
-	for (i = 0; i < n; i++)
-	{
-		// Get
-		ns = __vm->namespaces[i];
-		
-		// Go through the namespace contents
+		// Go through all contents
 		for (j = 0;; j++)
 		{
-			unkcont = ns->contents[j];
+			unkcont = ns->contents->contents[j];
 			
 			// Stop on NULL
 			if (unkcont == NULL)
@@ -137,7 +125,7 @@ const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 			if ((*((SJME_StructureType*)unkcont)) == SJME_STRUCTURETYPE_CLASS)
 			{
 				// Cast
-				cl = (SJME_Class*)unkcont;
+				cl = (const SJME_Class*)unkcont;
 				
 				// Is this name?
 				if (0 == SJME_compareCStringToSJMEString(__s, cl->name))
@@ -145,7 +133,6 @@ const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 			}
 		}
 	}
-#endif
 	
 	// Not found
 	return NULL;
