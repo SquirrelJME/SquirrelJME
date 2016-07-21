@@ -173,7 +173,7 @@ public abstract class LangNamespaceWriter
 			try
 			{
 				return createClassWriter(rname, __cn,
-					new PrintStream(/*new __DebugPrintStream__*/(
+					new PrintStream(new __DebugPrintStream__(
 					this.zipwriter.nextEntry(extensionClass(rname),
 					ZipCompressionType.DEFAULT_COMPRESSION)), true, "utf-8"));
 			}
@@ -209,7 +209,7 @@ public abstract class LangNamespaceWriter
 			try
 			{
 				return createResourceOutputStream(rname,
-					new PrintStream(/*new __DebugPrintStream__*/(
+					new PrintStream(new __DebugPrintStream__(
 					this.zipwriter.nextEntry(extensionResource(rname),
 					ZipCompressionType.DEFAULT_COMPRESSION)), true, "utf-8"));
 			}
