@@ -151,6 +151,9 @@ typedef struct SJME_Resource
 	/** The type of structure this is. */
 	SJME_StructureType structuretype;
 	
+	/** The name of the resource. */
+	SJME_String* name;
+	
 	/** The resource data. */
 	const uint8_t* data;
 	

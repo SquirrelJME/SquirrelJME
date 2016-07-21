@@ -32,6 +32,9 @@ public class CResourceOutputStream
 	/** The name of the resource. */
 	protected final String name;
 	
+	/** The name of the file as it appears in the JAR. */
+	protected final String jarname;
+	
 	/** Column counter. */
 	private volatile int _count;
 	
@@ -49,25 +52,25 @@ public class CResourceOutputStream
 	 *
 	 * @param __nsw The owning namespace writer.
 	 * @param __rname The name of the resource.
+	 * @param __jname The name as it appears in the JAR.
 	 * @param __ps The stream to write to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/17
 	 */
 	public CResourceOutputStream(CLangNamespaceWriter __nsw, String __rname,
-		PrintStream __ps)
+		String __jname, PrintStream __ps)
 		throws NullPointerException
 	{
 		super(__ps);
 		
 		// Check
-		if (__nsw == null || __rname == null)
+		if (__nsw == null || __rname == null || __jname == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.nswriter = __nsw;
 		this.name = __rname;
-		
-		System.err.printf("DEBUG -- Identifier: %s%n", __rname);
+		this.jarname = __jname;
 		
 		// Always include global headers
 		PrintStream output = this.output;
@@ -106,11 +109,45 @@ public class CResourceOutputStream
 			output.println();
 			
 			// Define the size in the header
-			PrintStream nsheader = this.nswriter.namespaceHeader();
-			nsheader.print("#define SIZE_");
-			nsheader.print(this.name);
+			String name = this.name;
+			String sizedef = "SIZE_" + name;
+			CLangNamespaceWriter nsw = this.nswriter;
+			PrintStream nsheader = nsw.namespaceHeader();
+			nsheader.print("#define ");
+			nsheader.print(sizedef);
 			nsheader.print(' ');
 			nsheader.println(this._bytes);
+			
+			// And extern the resource definition
+			nsheader.print("extern SJME_Resource ");
+			nsheader.print(name);
+			nsheader.println(';');
+			
+			// Declare the resource
+			output.println();
+			output.print("SJME_Resource ");
+			output.print(name);
+			output.println(" =");
+			output.println("{");
+			output.println("\tSJME_STRUCTURETYPE_RESOURCE,");
+			
+			// Print name
+			output.print("\t&");
+			output.print(nsw.addString(this.jarname));
+			output.println(',');
+			
+			// Data pointer
+			output.print('\t');
+			output.print(name);
+			output.println(',');
+			
+			// Size
+			output.print('\t');
+			output.println(sizedef);
+			
+			// End
+			output.println("};");
+			output.println();
 		}
 		
 		// Close super stream

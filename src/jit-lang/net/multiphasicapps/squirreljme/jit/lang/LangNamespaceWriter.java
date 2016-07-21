@@ -116,13 +116,14 @@ public abstract class LangNamespaceWriter
 	 * resources which are available for a given language.
 	 *
 	 * @param __rname The file name of the resource.
+	 * @param __jname The name as it appears in the JAR file.
 	 * @param __ps The target stream.
 	 * @return The resource output stream.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/17
 	 */
 	protected abstract ResourceOutputStream createResourceOutputStream(
-		String __rname, PrintStream __ps)
+		String __rname, String __jname, PrintStream __ps)
 		throws NullPointerException;
 	
 	/**
@@ -208,8 +209,8 @@ public abstract class LangNamespaceWriter
 			// Create output
 			try
 			{
-				return createResourceOutputStream(rname,
-					new PrintStream(new __DebugPrintStream__(
+				return createResourceOutputStream(rname, __name,
+					new PrintStream(/*new __DebugPrintStream__*/(
 					this.zipwriter.nextEntry(extensionResource(rname),
 					ZipCompressionType.DEFAULT_COMPRESSION)), true, "utf-8"));
 			}

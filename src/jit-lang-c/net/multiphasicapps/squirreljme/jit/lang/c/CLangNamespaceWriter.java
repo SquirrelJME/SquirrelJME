@@ -283,15 +283,15 @@ public class CLangNamespaceWriter
 	 */
 	@Override
 	protected ResourceOutputStream createResourceOutputStream(String __rname,
-		PrintStream __ps)
+		String __jname, PrintStream __ps)
 		throws NullPointerException
 	{
 		// Check
-		if (__rname == null || __ps == null)
+		if (__rname == null || __jname == null || __ps == null)
 			throw new NullPointerException("NARG");
 		
 		// Create
-		return new CResourceOutputStream(this, __rname, __ps);
+		return new CResourceOutputStream(this, __rname, __jname, __ps);
 	}
 	
 	/**
