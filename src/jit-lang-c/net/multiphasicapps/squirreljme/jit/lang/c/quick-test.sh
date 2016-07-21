@@ -67,10 +67,10 @@ then
 	unzip -o "squirreljme_c.zip"
 	
 	# Compile everything
-	if gcc -o squirreljme *.c
+	if gcc -g3 -O0 -o squirreljme *.c
 	then
 		# Run it
-		./squirreljme $*
+		gdb --args ./squirreljme $*
 	fi
 	
 	# Delete

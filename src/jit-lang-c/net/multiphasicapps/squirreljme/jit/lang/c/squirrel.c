@@ -48,7 +48,7 @@ int main(int __argc, char** __argv)
 	cmain = SJME_locateClassDefC(&jvm, MAIN_CLASS);
 	if (cmain == NULL)
 	{
-		fprints(stderr, "Could not find the main class `%s`.\n", MAIN_CLASS);
+		fprintf(stderr, "Could not find the main class `%s`.\n", MAIN_CLASS);
 		abort();
 		return -1;
 	}
