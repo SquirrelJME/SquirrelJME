@@ -35,6 +35,13 @@ extern "C"
 #include <stdint.h>
 
 /**
+ * 32-bit integer.
+ *
+ * @since 2016/07/21
+ */
+typedef int32_t jint;
+
+/**
  * Flags which are associated with classes.
  *
  * @since 2016/07/18
@@ -100,6 +107,9 @@ typedef enum SJME_StructureType
 	/** A string. */
 	SJME_STRUCTURETYPE_STRING,
 	
+	/** Virtual machine. */
+	SJME_STRUCTURETYPE_VM,
+	
 	/** End. */
 	NUM_SJME_STRUCTURETYPE
 } SJME_StructureType;
@@ -138,7 +148,7 @@ typedef struct SJME_Class
 	uint16_t flags;
 	
 	/** Should always be zero. */
-	int zero;
+	jint zero;
 } SJME_Class;
 
 /**
@@ -181,11 +191,59 @@ typedef struct SJME_Namespace
 } SJME_Namespace;
 
 /**
+ * The current virtual machine instance and any control part of it.
+ *
+ * @since 2016/07/21
+ */
+typedef struct SJME_VM
+{
+	/** The type of structure this is. */
+	SJME_StructureType structuretype;
+	
+	/** The number of namespaces in the VM. */
+	jint namespacecount;
+	
+	/** The set of namespaces. */
+	SJME_Namespace** namespaces;
+};
+
+/**
  * Namespaces that make up the JVM classpath, this is {@code NULL} terminated.
  *
  * @since 2016/07/21
  */
 extern SJME_Namespace** initialNamespaces;
+
+/**
+ * Compares a C string to a VM string.
+ *
+ * @param __a The C string.
+ * @param __b The VM string.
+ * @return The comparison.
+ * @since 2016/07/21
+ */
+jint SJME_compareCStringToSJMEString(const char* const __a, SJME_String* __b);
+
+/**
+ * Compares a VM string to a C string.
+ *
+ * @param __a The VM string.
+ * @param __b The C string.
+ * @return The comparison.
+ * @since 2016/07/21
+ */
+jint SJME_compareSJMEStringToCString(SJME_String* __a, const char* const __b);
+
+/**
+ * Locates a class definition structure using the given binary name.
+ *
+ * @param __vm The virtual machine to locate in.
+ * @param __s The name of the class to locate.
+ * @return The pointer of the given class definition or {@code NULL} if not
+ * found.
+ * @since 2016/07/21
+ */
+SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s);
 
 /****************************************************************************/
 

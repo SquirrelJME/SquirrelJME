@@ -1,2 +1,17 @@
 # 2016/07/21
 
+## 13:57
+
+The OS specific support should not contain the JIT code but only the OS
+support code.
+
+## 13:58
+
+The question is though, when it comes to the OS initialization (so the JVM can
+be initialized), do I call a static method or create an instance? Static might
+be best despite everything not being potentially fully initialized. It can be
+thought up of as a kind of early bootstrap to jump into Java code, where that
+Java code then performs more initialization. So this means that JVM main entry
+points cannot rely on objects and must use lots of JIT magic to perform
+logic and such.
+
