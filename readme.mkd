@@ -12,7 +12,9 @@ strange and many other devices. That is, you would be able to have a Java
 environment on a wide range of _Internet of Things_ devices, older computers
 (such as the _Amiga_), embedded devices, and mobile devices from old to new.
 
-The source is written in pure Java.
+The source is written in pure Java and is designed to use small amounts of
+memory, where simplicity increases operation speed without sacrificing
+quality.
 
 Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
