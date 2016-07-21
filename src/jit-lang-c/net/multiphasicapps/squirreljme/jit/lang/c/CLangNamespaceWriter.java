@@ -133,10 +133,12 @@ public class CLangNamespaceWriter
 		}
 		
 		// Write contents of the namespace
-		src.print("const void* contents_");
+		src.print("const SJME_NamespaceContents contents_");
 		src.print(idprefix);
-		src.println("[] = ");
+		src.println(" = ");
 		src.println("{");
+		src.println("\tSJME_STRUCTURETYPE_NAMESPACECONTENTS,\n");
+		src.println("\t{");
 		
 		// Need to copy the global header to the output ZIP, otherwise the
 		// code will just end up not compiling at all.
@@ -193,13 +195,13 @@ public class CLangNamespaceWriter
 		
 		// Add string to the global header
 		PrintStream namespaceheader = this.namespaceheader;
-		namespaceheader.print("extern SJME_String ");
+		namespaceheader.print("extern const SJME_String ");
 		namespaceheader.print(idof);
 		namespaceheader.println(';');
 		
 		// Start type
 		PrintStream namespacestrings = this.namespacestrings;
-		namespacestrings.print("SJME_String ");
+		namespacestrings.print("const SJME_String ");
 		namespacestrings.print(idof);
 		namespacestrings.println(" =");
 		namespacestrings.println("{");
@@ -251,12 +253,13 @@ public class CLangNamespaceWriter
 				namespaceheader.println();
 				
 				// End contents
-				namespacesource.println("\tNULL");
+				namespacesource.println("\t\tNULL");
+				namespacesource.println("\t}");
 				namespacesource.println("};");
 				namespacesource.println();
 				
 				// Setup namespace declaration
-				namespacesource.print("SJME_Namespace ");
+				namespacesource.print("const SJME_Namespace ");
 				namespacesource.print(this.nsbasename);
 				namespacesource.println(" =");
 				namespacesource.println("{");
@@ -264,9 +267,8 @@ public class CLangNamespaceWriter
 				namespacesource.print("\t&");
 				namespacesource.print(addString(this.namespace));
 				namespacesource.println(',');
-				namespacesource.print("\tcontents_");
-				namespacesource.print(this.idprefix);
-				namespacesource.println(",");
+				namespacesource.print("\t&contents_");
+				namespacesource.println(this.idprefix);
 				namespacesource.println("};");
 				namespacesource.println();
 				

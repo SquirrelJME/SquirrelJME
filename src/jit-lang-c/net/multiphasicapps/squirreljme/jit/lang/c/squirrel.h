@@ -110,6 +110,12 @@ typedef enum SJME_StructureType
 	/** Virtual machine. */
 	SJME_STRUCTURETYPE_VM,
 	
+	/** Contents of a namespace. */
+	SJME_STRUCTURETYPE_NAMESPACECONTENTS,
+	
+	/** Namespaces. */
+	SJME_STRUCTURETYPE_NAMESPACES,
+	
 	/** End. */
 	NUM_SJME_STRUCTURETYPE
 } SJME_StructureType;
@@ -122,10 +128,10 @@ typedef enum SJME_StructureType
 typedef struct SJME_String
 {
 	/** The type of structure this is. */
-	SJME_StructureType structuretype;
+	const SJME_StructureType structuretype;
 	
 	/** The string length. */
-	uint32_t length;
+	const uint32_t length;
 	
 	/** The UTF-16 characters. */
 	const uint16_t chars[];
@@ -139,16 +145,16 @@ typedef struct SJME_String
 typedef struct SJME_Class
 {
 	/** The type of structure this is. */
-	SJME_StructureType structuretype;
+	const SJME_StructureType structuretype;
 	
 	/** The name of the class. */
-	SJME_String* name;
+	const SJME_String* const name;
 	
 	/** Class flags. */
-	uint16_t flags;
+	const uint16_t flags;
 	
 	/** Should always be zero. */
-	jint zero;
+	const jint zero;
 } SJME_Class;
 
 /**
@@ -159,17 +165,31 @@ typedef struct SJME_Class
 typedef struct SJME_Resource
 {
 	/** The type of structure this is. */
-	SJME_StructureType structuretype;
+	const SJME_StructureType structuretype;
 	
 	/** The name of the resource. */
-	SJME_String* name;
+	const SJME_String* const name;
 	
 	/** The resource data. */
-	const uint8_t* data;
+	const uint8_t* const data;
 	
 	/** The length of the resource. */
 	const uint32_t length;
 } SJME_Resource;
+
+/**
+ * Contents a namespace may have.
+ *
+ * @since 2016/07/21
+ */
+typedef struct SJME_NamespaceContents
+{
+	/** The type of structure this is. */
+	const SJME_StructureType structuretype;
+	
+	/** Contents in the namespace. */
+	const void* const contents[];
+} SJME_NamespaceContents;
 
 /**
  * This represents a namespace which is available to the initialization and
@@ -180,15 +200,29 @@ typedef struct SJME_Resource
 typedef struct SJME_Namespace
 {
 	/** The type of structure this is. */
-	SJME_StructureType structuretype;
+	const SJME_StructureType structuretype;
 	
 	/** The name of the namespace. */
-	SJME_String* name;
+	const SJME_String* const name;
 	
 	/** Namespace contents. */
-	const void** contents;
+	const SJME_NamespaceContents* const contents;
 	
 } SJME_Namespace;
+
+/**
+ * Represents all available namespaces.
+ *
+ * @since 2016/07/21
+ */
+typedef struct SJME_Namespaces
+{
+	/** The type of structure this is. */
+	const SJME_StructureType structuretype;
+	
+	/** Used namespaces. */
+	const SJME_Namespace* const namespaces[];
+} SJME_Namespaces;
 
 /**
  * The current virtual machine instance and any control part of it.
@@ -204,7 +238,7 @@ typedef struct SJME_VM
 	jint namespacecount;
 	
 	/** The set of namespaces. */
-	SJME_Namespace** namespaces;
+	const SJME_Namespaces* namespaces;
 } SJME_VM;
 
 /**

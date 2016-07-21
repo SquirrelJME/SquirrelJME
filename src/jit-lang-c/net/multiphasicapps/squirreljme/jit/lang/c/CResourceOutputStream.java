@@ -119,13 +119,13 @@ public class CResourceOutputStream
 			nsheader.println(this._bytes);
 			
 			// And extern the resource definition
-			nsheader.print("extern SJME_Resource ");
+			nsheader.print("extern const SJME_Resource ");
 			nsheader.print(name);
 			nsheader.println(';');
 			
 			// Declare the resource
 			output.println();
-			output.print("SJME_Resource ");
+			output.print("const SJME_Resource ");
 			output.print(name);
 			output.println(" =");
 			output.println("{");

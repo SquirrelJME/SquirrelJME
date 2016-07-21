@@ -62,14 +62,14 @@ public class CLangClassWriter
 		
 		// Write basic class storage information
 		String idprefix = __n;
-		output.print("SJME_Class ");
+		output.print("const SJME_Class ");
 		output.print(idprefix);
 		output.println(" =");
 		output.println("{");
 		
 		// Extern this structure in the header
 		PrintStream headerout = __nsw.namespaceHeader();
-		headerout.print("extern SJME_Class ");
+		headerout.print("extern const SJME_Class ");
 		headerout.print(idprefix);
 		headerout.println(';');
 		

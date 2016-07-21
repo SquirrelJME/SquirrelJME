@@ -120,7 +120,7 @@ SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 				break;
 			
 			// Only consider classes
-			if ((*((SJME_StructureType*)unkcont)) != SJME_STRUCTURETYPE_CLASS)
+			if ((*((SJME_StructureType*)unkcont)) == SJME_STRUCTURETYPE_CLASS)
 			{
 				// Cast
 				cl = (SJME_Class*)unkcont;
