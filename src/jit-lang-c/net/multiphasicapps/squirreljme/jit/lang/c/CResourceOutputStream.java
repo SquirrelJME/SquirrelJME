@@ -77,7 +77,7 @@ public class CResourceOutputStream
 		__nsw.__globalHeader(output);
 		
 		// Start of type declaration
-		output.print("const uint8_t ");
+		output.print("const uint8_t DATA_");
 		output.print(__rname);
 		output.print("[");
 		output.print("SIZE_");
@@ -137,7 +137,7 @@ public class CResourceOutputStream
 			output.println(',');
 			
 			// Data pointer
-			output.print('\t');
+			output.print("\tDATA_");
 			output.print(name);
 			output.println(',');
 			
