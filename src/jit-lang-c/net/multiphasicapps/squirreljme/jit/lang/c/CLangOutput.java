@@ -98,16 +98,15 @@ public class CLangOutput
 			// Include headers
 			for (int i = 0; i < n; i++)
 			{
-				ps.print("extern SJME_Namespace ");
+				ps.print("extern const SJME_Namespace ");
 				ps.print(conv[i]);
 				ps.println(';');
 			}
 			
 			// Set JVM namespace list
-			ps.print("SJME_Namespace* initialNamespaces_[");
-			ps.print(n);
-			ps.println("] =");
+			ps.println("const SJME_Namespaces initialNamespaces =");
 			ps.println("{");
+			ps.println("\tSJME_STRUCTURETYPE_NAMESPACES,\n");
 			for (int i = 0; i < n; i++)
 			{
 				ps.print("\t&");
@@ -116,10 +115,6 @@ public class CLangOutput
 			}
 			ps.println("\tNULL");
 			ps.println("};");
-			ps.println();
-			
-			ps.print("SJME_Namespace** initialNamespaces = ");
-			ps.println("initialNamespaces_;");
 			ps.println();
 		}
 	}

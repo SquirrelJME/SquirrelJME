@@ -116,6 +116,9 @@ typedef enum SJME_StructureType
 	/** Namespaces. */
 	SJME_STRUCTURETYPE_NAMESPACES,
 	
+	/** Bootstrap namespaces. */
+	SJME_STRUCTURETYPE_BOOTSTRAPNAMESPACES,
+	
 	/** End. */
 	NUM_SJME_STRUCTURETYPE
 } SJME_StructureType;
@@ -246,7 +249,7 @@ typedef struct SJME_VM
  *
  * @since 2016/07/21
  */
-extern SJME_Namespace** initialNamespaces;
+extern const SJME_Namespaces initialNamespaces;
 
 /**
  * Compares a C string to a VM string.
@@ -256,7 +259,8 @@ extern SJME_Namespace** initialNamespaces;
  * @return The comparison.
  * @since 2016/07/21
  */
-jint SJME_compareCStringToSJMEString(const char* const __a, SJME_String* __b);
+jint SJME_compareCStringToSJMEString(const char* const __a,
+	const SJME_String* const __b);
 
 /**
  * Compares a VM string to a C string.
@@ -266,7 +270,8 @@ jint SJME_compareCStringToSJMEString(const char* const __a, SJME_String* __b);
  * @return The comparison.
  * @since 2016/07/21
  */
-jint SJME_compareSJMEStringToCString(SJME_String* __a, const char* const __b);
+jint SJME_compareSJMEStringToCString(const SJME_String* const __a,
+	const char* const __b);
 
 /**
  * Locates a class definition structure using the given binary name.
@@ -277,7 +282,7 @@ jint SJME_compareSJMEStringToCString(SJME_String* __a, const char* const __b);
  * found.
  * @since 2016/07/21
  */
-SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s);
+const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s);
 
 /****************************************************************************/
 

@@ -32,19 +32,22 @@
 int main(int __argc, char** __argv)
 {
 	SJME_VM jvm;
-	SJME_Class* cmain;
+	const SJME_Class* cmain;
 	
 	// Setup base VM structure
 	memset(&jvm, 0, sizeof(jvm));
 	jvm.structuretype = SJME_STRUCTURETYPE_VM;
 	
+	abort();
+#if 0
 	// Count the number of namespaces to initialize at once
 	jvm.namespaces = (SJME_Namespace**)initialNamespaces;
 	for (jvm.namespacecount = 0;; jvm.namespacecount++)
 		if (jvm.namespaces[jvm.namespacecount] == NULL)
 			break;
+#endif
 	
-	// Find the 
+	// Find the starting class
 	cmain = SJME_locateClassDefC(&jvm, MAIN_CLASS);
 	if (cmain == NULL)
 	{
@@ -65,7 +68,8 @@ int main(int __argc, char** __argv)
  * @return The comparison.
  * @since 2016/07/21
  */
-jint SJME_compareCStringToSJMEString(const char* const __a, SJME_String* __b)
+jint SJME_compareCStringToSJMEString(const char* const __a,
+	const SJME_String* const __b)
 {
 	abort();
 	return -1;
@@ -79,7 +83,8 @@ jint SJME_compareCStringToSJMEString(const char* const __a, SJME_String* __b)
  * @return The comparison.
  * @since 2016/07/21
  */
-jint SJME_compareSJMEStringToCString(SJME_String* __a, const char* const __b)
+jint SJME_compareSJMEStringToCString(const SJME_String* const __a,
+	const char* const __b)
 {
 	// Same as above, but a reversed operation
 	return -SJME_compareCStringToSJMEString(__b, __a);
@@ -89,11 +94,11 @@ jint SJME_compareSJMEStringToCString(SJME_String* __a, const char* const __b)
  * {@inheritDoc}
  * @since 2016/07/21
  */
-SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
+const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 {
 	jint i, n, j;
-	SJME_Namespace* ns;
-	SJME_Class* cl;
+	const SJME_Namespace* ns;
+	const SJME_Class* cl;
 	void* unkcont;
 	
 	// Check
@@ -103,6 +108,8 @@ SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 		return NULL;
 	}
 	
+	abort();
+#if 0
 	// Search all classes within every namespace and return the first match.
 	n = __vm->namespacecount;
 	for (i = 0; i < n; i++)
@@ -131,6 +138,7 @@ SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 			}
 		}
 	}
+#endif
 	
 	// Not found
 	return NULL;
