@@ -23,3 +23,7 @@ Did not figure I would be writing C code again.
 
 I should add more things to the readme, such as my goals.
 
+## 18:23
+
+Now my C code compiles without errors and feels more typesafe.
+
