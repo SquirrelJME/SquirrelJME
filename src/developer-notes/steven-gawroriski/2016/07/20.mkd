@@ -41,3 +41,11 @@ Now I have compilable C code, although more stuff needs to be put into it for
 it to be more useful. Right now the file is 123KiB. It contains quite a number
 of symbols also.
 
+## 23:15
+
+Switched to `uxterm`, it definitely much faster than my previous terminal which
+was quite slow. Hopefully with a new terminal, I can work on things much
+easier now since before I was basically waiting for my terminal to draw the
+output. One thing I must get used to however, is the lack of tabs. However
+there is screen with some initial discomfort.
+
