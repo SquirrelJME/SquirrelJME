@@ -205,7 +205,7 @@ typedef struct SJME_VM
 	
 	/** The set of namespaces. */
 	SJME_Namespace** namespaces;
-};
+} SJME_VM;
 
 /**
  * Namespaces that make up the JVM classpath, this is {@code NULL} terminated.
