@@ -135,8 +135,10 @@ public class Main
 			// Perform the build
 			out.println("Building...");
 			b.build();
-		
-			throw new Error("TODO");
+			
+			// If simulating, run it in the simulator
+			if (dosim)
+				throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error DW07 Failed to build for the target due to an
