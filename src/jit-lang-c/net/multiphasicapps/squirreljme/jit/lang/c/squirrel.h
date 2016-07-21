@@ -172,7 +172,17 @@ typedef struct SJME_Namespace
 	/** The type of structure this is. */
 	SJME_StructureType structuretype;
 	
+	/** The name of the namespace. */
+	SJME_String* name;
+	
 } SJME_Namespace;
+
+/**
+ * Namespaces that make up the JVM classpath, this is {@code NULL} terminated.
+ *
+ * @since 2016/07/21
+ */
+extern SJME_Namespace** initialNamespaces;
 
 /****************************************************************************/
 

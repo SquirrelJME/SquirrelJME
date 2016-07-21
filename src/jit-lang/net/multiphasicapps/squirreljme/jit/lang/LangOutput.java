@@ -52,6 +52,21 @@ public abstract class LangOutput
 	}
 	
 	/**
+	 * Writes global entries that must exist in the ZIP for the link to
+	 * actually work correctly.
+	 *
+	 * @param __zsw The target writer.
+	 * @param __names The namespaces to write.
+	 * @throws IOException On read/write errors.
+	 * @throws JITException On other errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/21
+	 */
+	protected abstract void globalEntries(ZipStreamWriter __zsw,
+		String[] __names)
+		throws IOException, JITException, NullPointerException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/18
 	 */
@@ -67,6 +82,9 @@ public abstract class LangOutput
 		// Setup output ZIP file which contains all the source code combined
 		try (ZipStreamWriter zsw = new ZipStreamWriter(__os))
 		{
+			// Write global entries
+			globalEntries(zsw, __names);
+			
 			// Go through all input files and add them to the output ZIP
 			int n = __names.length;
 			byte[] buf = new byte[128];
