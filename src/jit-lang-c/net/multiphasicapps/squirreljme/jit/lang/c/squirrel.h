@@ -176,7 +176,7 @@ typedef struct SJME_Namespace
 	SJME_String* name;
 	
 	/** Namespace contents. */
-	void** contents;
+	const void** contents;
 	
 } SJME_Namespace;
 

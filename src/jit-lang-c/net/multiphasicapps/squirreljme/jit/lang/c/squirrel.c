@@ -14,6 +14,9 @@
  * @since 2016/07/20
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "squirrel.h"
 
 /**
@@ -25,6 +28,18 @@
  */
 int main(int __argc, char** __argv)
 {
+	SJME_Namespace** initns;
+	int namespacecount;
+	
+	// Count the number of namespaces to initialize at once
+	initns = initialNamespaces;
+	for (namespacecount = 0;; namespacecount++)
+		if (initns[namespacecount] == NULL)
+			break;
+	
+	// Debug
+	fprintf(stderr, "DEBUG -- Namespace count: %d\n", namespacecount);
+	
 	// Not yet implemented
 	abort();
 }
