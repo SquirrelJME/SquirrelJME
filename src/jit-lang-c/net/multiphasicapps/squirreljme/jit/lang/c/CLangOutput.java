@@ -104,7 +104,9 @@ public class CLangOutput
 			}
 			
 			// Set JVM namespace list
-			ps.println("SJME_Namespace** initialNamespaces =");
+			ps.print("SJME_Namespace* initialNamespaces_[");
+			ps.print(n);
+			ps.println("] =");
 			ps.println("{");
 			for (int i = 0; i < n; i++)
 			{
@@ -113,7 +115,12 @@ public class CLangOutput
 				ps.println(',');
 			}
 			ps.println("\tNULL");
-			ps.println("}");
+			ps.println("};");
+			ps.println();
+			
+			ps.print("SJME_Namespace** initialNamespaces = ");
+			ps.println("initialNamespaces_;");
+			ps.println();
 		}
 	}
 }
