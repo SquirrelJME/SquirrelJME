@@ -15,3 +15,7 @@ Java code then performs more initialization. So this means that JVM main entry
 points cannot rely on objects and must use lots of JIT magic to perform
 logic and such.
 
+## 14:31
+
+Did not figure I would be writing C code again.
+

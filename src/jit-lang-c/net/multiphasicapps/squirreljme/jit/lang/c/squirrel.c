@@ -91,7 +91,10 @@ jint SJME_compareSJMEStringToCString(SJME_String* __a, const char* const __b)
  */
 SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 {
-	jint i, n;
+	jint i, n, j;
+	SJME_Namespace* ns;
+	SJME_Class* cl;
+	void* unkcont;
 	
 	// Check
 	if (__vm == NULL || __s == NULL)
@@ -103,7 +106,31 @@ SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 	// Search all classes within every namespace and return the first match.
 	n = __vm->namespacecount;
 	for (i = 0; i < n; i++)
-		abort();
+	{
+		// Get
+		ns = __vm->namespaces[i];
+		
+		// Go through the namespace contents
+		for (j = 0;; j++)
+		{
+			unkcont = ns->contents[j];
+			
+			// Stop on NULL
+			if (unkcont == NULL)
+				break;
+			
+			// Only consider classes
+			if ((*((SJME_StructureType*)unkconst)) != SJME_STRUCTURETYPE_CLASS)
+			{
+				// Cast
+				cl = (SJME_Class*)unkcont;
+				
+				// Is this name?
+				if (0 == SJME_compareCStringToSJMEString(__s, cl->name))
+					return cl;
+			}
+		}
+	}
 	
 	// Not found
 	return NULL;
