@@ -102,7 +102,7 @@ SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 	
 	// Search all classes within every namespace and return the first match.
 	n = __vm->namespacecount;
-	for (jint i = 0; i < n; i++)
+	for (i = 0; i < n; i++)
 		abort();
 	
 	// Not found
