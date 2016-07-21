@@ -49,3 +49,9 @@ easier now since before I was basically waiting for my terminal to draw the
 output. One thing I must get used to however, is the lack of tabs. However
 there is screen with some initial discomfort.
 
+## 23:42
+
+One thing to do tomorrow would be to create resource structure and associate
+their data with them. Then after that I can ignore debugging them for the most
+part.
+
