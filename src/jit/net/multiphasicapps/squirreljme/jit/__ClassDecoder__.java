@@ -121,7 +121,7 @@ final class __ClassDecoder__
 			cw.classFlags(cf);
 			
 			// Read super class
-			ClassNameSymbol suname = pool.<ClassNameSymbol>get(
+			ClassNameSymbol suname = pool.<ClassNameSymbol>optional(
 				input.readUnsignedShort(), ClassNameSymbol.class);
 			
 			// {@squirreljme.error ED0m The Object class must have no super
