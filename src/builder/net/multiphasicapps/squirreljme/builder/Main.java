@@ -141,7 +141,7 @@ public class Main
 		}
 		
 		// Setup builder
-		NewBuilder nb = new NewBuilder(config, tb, plist);
+		NewBuilder nb = new NewBuilder(out, config, tb, plist);
 		
 		// Build
 		try

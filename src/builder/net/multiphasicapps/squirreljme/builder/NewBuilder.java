@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.builder;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 
@@ -21,6 +24,9 @@ import net.multiphasicapps.sjmepackages.PackageList;
  */
 public class NewBuilder
 {
+	/** Logging output. */
+	protected final PrintStream out;
+	
 	/** The configuration. */
 	protected final BuildConfig config;
 	
@@ -39,14 +45,16 @@ public class NewBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
-	public NewBuilder(BuildConfig __conf, TargetBuilder __tb, PackageList __pl)
+	public NewBuilder(PrintStream __out, BuildConfig __conf,
+		TargetBuilder __tb, PackageList __pl)
 		throws NullPointerException
 	{
 		// Check
-		if (__conf == null || __tb == null || __pl == null)
+		if (__out == null || __conf == null || __tb == null || __pl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.out = __out;
 		this.config = __conf;
 		this.targetbuilder = __tb;
 		this.packagelist = __pl;
@@ -61,7 +69,38 @@ public class NewBuilder
 	public void build()
 		throws IOException
 	{
+		PrintStream out = this.out;
+		
+		// Determine the packages to build
+		out.println("Selecting projects...");
+		Set<PackageInfo> buildprojects = __selectProjects();
+		
+		// Print them all
+		out.printf("Will compile %d project(s)...%n", buildprojects.size());
+		System.err.printf("DEBUG -- %s%n", buildprojects);
+		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Selects the projects that should be built.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/07/22
+	 */
+	private final Set<PackageInfo> __selectProjects()
+		throws IOException
+	{
+		// Setup
+		Set<PackageInfo> rv = new LinkedHashSet<>();
+		PackageList packagelist = this.packagelist;
+		
+		// Always add the JVM
+		PackageInfo jvmproj = packagelist.get("jvm");
+		rv.addAll(jvmproj.recursiveDependencies());
+		
+		// Return
+		return rv;
 	}
 }
 

@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
+import java.util.Deque;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -48,6 +50,9 @@ public class PackageInfo
 	
 	/** The dependencies of this package. */
 	private volatile Reference<Set<PackageInfo>> _depends;
+	
+	/** Recursive dependencies. */
+	private volatile Reference<Set<PackageInfo>> _rdepends;
 	
 	/**
 	 * Initializes the package information from the given ZIP.
@@ -223,6 +228,54 @@ public class PackageInfo
 	public final Path path()
 	{
 		return this.path;
+	}
+	
+	/**
+	 * Returns a set containing this package and every dependency of this
+	 * package and the dependencies of the dependencies.
+	 *
+	 * @return The set of all dependencies.
+	 * @since 2016/07/22
+	 */
+	public final Set<PackageInfo> recursiveDependencies()
+	{
+		// Get
+		Reference<Set<PackageInfo>> ref = this._rdepends;
+		Set<PackageInfo> rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Target
+			Set<PackageInfo> deps = new LinkedHashSet<>();
+			
+			// Start at the root
+			Deque<PackageInfo> deq = new LinkedList<>();
+			deq.offerLast(this);
+			
+			// Keep going
+			while (!deq.isEmpty())
+			{
+				// Ignore already calculated packages
+				PackageInfo pi = deq.pollFirst();
+				if (deps.contains(pi))
+					continue;
+				
+				// Add the current package
+				deps.add(pi);
+				
+				// Add all dependencies to the queue
+				for (PackageInfo z : pi.dependencies())
+					deq.offerLast(z);
+			}
+			
+			// Lock
+			rv = UnmodifiableSet.<PackageInfo>of(deps);
+			this._rdepends = new WeakReference<>(rv);
+		}
+		
+		// Return
+		return rv;
 	}
 	
 	/**
