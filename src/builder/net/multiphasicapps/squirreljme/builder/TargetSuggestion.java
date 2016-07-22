@@ -53,7 +53,7 @@ public final class TargetSuggestion
 	 */
 	public final String name()
 	{
-		return this.name();
+		return this.name;
 	}
 	
 	/**

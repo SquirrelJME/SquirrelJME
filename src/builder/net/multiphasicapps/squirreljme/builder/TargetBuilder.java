@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.builder;
 
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
  * This is the base class for builders which can generate binaries for a given
@@ -41,10 +42,9 @@ public abstract class TargetBuilder
 			this._suggestions = tss;
 			
 			// Fill suggestions
-			for (int i = 0; (i + 1) < n; i += 2)
-			{
-				throw new Error("TODO");
-			}
+			for (int i = 0, j = 0; (i + 1) < n; i += 2)
+				tss[j++] = new TargetSuggestion(new JITTriplet(__sugs[i]),
+					__sugs[i + 1]);
 		}
 		
 		// No suggestions

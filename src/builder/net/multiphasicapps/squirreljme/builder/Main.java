@@ -205,7 +205,8 @@ public class Main
 		for (TargetBuilder tb : ServiceLoader.<TargetBuilder>load(
 			TargetBuilder.class))
 			for (TargetSuggestion s : tb.suggestedTargets())
-				__ps.printf("%-40s %37s%n", s.triplet(), s.name());
+				__ps.printf("%-78s%n%78s%n", s.triplet(), s.name());
+		__ps.println();
 	}
 }
 

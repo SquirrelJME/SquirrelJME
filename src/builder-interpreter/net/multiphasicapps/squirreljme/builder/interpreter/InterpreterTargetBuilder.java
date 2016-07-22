@@ -20,5 +20,15 @@ import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 public class InterpreterTargetBuilder
 	extends TargetBuilder
 {
+	/**
+	 * Initializes the interpreter target builder.
+	 *
+	 * @since 2016/07/22
+	 */
+	public InterpreterTargetBuilder()
+	{
+		super("interpreter-32+interpreter,undefined.interpreter.interpreter",
+			"SquirrelJME Test Interpreter");
+	}
 }
 
