@@ -160,6 +160,29 @@ public class CLangNamespaceWriter
 	}
 	
 	/**
+	 * Adds a content to the list.
+	 *
+	 * @param __cn The content to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/21
+	 */
+	public void addContent(String __cn)
+		throws NullPointerException
+	{
+		// Check
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Get
+		PrintStream ps = this.namespacesource;
+		
+		// Add content
+		ps.print("\t\t&");
+		ps.print(__cn);
+		ps.println(",");
+	}
+	
+	/**
 	 * Creates a structure for a given string and returns the identifier which
 	 * points to the given string.
 	 *

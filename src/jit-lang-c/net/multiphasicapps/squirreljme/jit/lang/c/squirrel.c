@@ -96,6 +96,7 @@ const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 	jint i, n, j;
 	const SJME_Namespace* ns;
 	const SJME_Class* cl;
+	const SJME_NamespaceContents* contents;
 	const void* unkcont;
 	
 	// Check
@@ -113,9 +114,10 @@ const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 		ns = __vm->namespaces->namespaces[i];
 		
 		// Go through all contents
+		contents = ns->contents;
 		for (j = 0;; j++)
 		{
-			unkcont = ns->contents->contents[j];
+			unkcont = contents->contents[j];
 			
 			// Stop on NULL
 			if (unkcont == NULL)

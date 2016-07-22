@@ -123,6 +123,9 @@ public class CResourceOutputStream
 			nsheader.print(name);
 			nsheader.println(';');
 			
+			// Add content
+			nsw.addContent(name);
+			
 			// Declare the resource
 			output.println();
 			output.print("const SJME_Resource ");

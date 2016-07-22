@@ -73,6 +73,9 @@ public class CLangClassWriter
 		headerout.print(idprefix);
 		headerout.println(';');
 		
+		// Add content
+		__nsw.addContent(idprefix);
+		
 		// Structure type is class
 		output.println("\tSJME_STRUCTURETYPE_CLASS,");
 		
