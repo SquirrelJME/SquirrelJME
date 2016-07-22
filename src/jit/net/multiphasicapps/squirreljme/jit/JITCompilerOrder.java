@@ -25,6 +25,9 @@ public enum JITCompilerOrder
 	/** The super class name. */
 	SUPER_CLASS_NAME,
 	
+	/** Interface names. */
+	INTERFACE_CLASS_NAMES,
+	
 	/** End. */
 	;
 	

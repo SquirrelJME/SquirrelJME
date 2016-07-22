@@ -17,3 +17,38 @@ be going through the byte code. However once that is done I would have to
 delve into the initialization and then the class library. My first goal would
 be to write a simple string print.
 
+## 10:56
+
+I will need to implement virtual dispatching in C. So I would suppose that
+I would need a table associated with a VM for a given class. Actually thinking
+about it, if I target Java instead of C I would not need to worry about using
+extern or having potentially incompatible C and JVM execution. The end result
+would be pretty much the same. An issue with Java however would be the lack of
+pointers, although that is not really important. If I target Java ME (which I
+should) I could have a virtualized environment that could be built on J2ME
+devices. One thing though, is still virtual dispatch. Personally being able to
+compile to Java and build a J2ME program would be more valuable to me. if I
+target older virtual machines, that could form the basis for a kind of
+bootstrap project. Then with a compiler, I can run and test SquirrelJME on
+much older systems that do not support Java 7. With Java at least, namespaces
+can be stored in packages instead of being prefixed to the name. One issue
+though would be classes, although they would be static there would just be
+direct class references in a global namespace class so to speak. Resources
+could be included there also. Since Java ME lacks reflection (apart from
+finding classes), this means that all class objects when they are used have to
+be initialized (using `newInstance()`). A class would have actual methods,
+input arguments (as boxed classes). For a given virtual machine, the call stack
+and other such things need to be kept for the GC. So I would need an efficient
+means of storing this information that tries as much as possible to avoid
+allocating Objects. I could have an int tread and an Object tread, when a long,
+float, or double are read those can be handled using wrappers and such.
+
+## 11:09
+
+Since byte code can jump around in some places, I will need a means of jumping
+to other portions of the code without requiring such things.
+
+## 11:11
+
+Although in the end it might not matter as much.
+

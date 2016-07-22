@@ -40,6 +40,17 @@ public interface JITClassWriter
 		throws JITException, NullPointerException;
 	
 	/**
+	 * Records class interfaces.
+	 *
+	 * @param __ins The class interfaces.
+	 * @throws JITException If the interfaces could not be written.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/22
+	 */
+	public abstract void interfaceClasses(ClassNameSymbol... __ins)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * Records the name of the super-class of the class being decoded.
 	 *
 	 * @param __cn The name of the super class, may be {@code null} if there

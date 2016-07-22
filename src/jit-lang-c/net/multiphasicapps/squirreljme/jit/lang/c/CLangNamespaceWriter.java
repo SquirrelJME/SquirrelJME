@@ -433,6 +433,17 @@ public class CLangNamespaceWriter
 	}
 	
 	/**
+	 * Returns the namespace source code printer.
+	 *
+	 * @return The namespace source code printer.
+	 * @since 2016/07/22
+	 */
+	public PrintStream namespaceSource()
+	{
+		return this.namespacesource;
+	}
+	
+	/**
 	 * This prints the global header includes to the target stream.
 	 *
 	 * @param __ps Stream to print to.

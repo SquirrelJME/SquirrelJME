@@ -140,6 +140,16 @@ final class __ClassDecoder__
 			// Send
 			cw.superClass(suname);
 			
+			// Read in interfaces
+			int icount = input.readUnsignedShort();
+			ClassNameSymbol[] ifaces = new ClassNameSymbol[icount];
+			for (int i = 0; i < icount; i++)
+				ifaces[i] = pool.<ClassNameSymbol>get(
+					input.readUnsignedShort(), ClassNameSymbol.class);
+			
+			// Send
+			cw.interfaceClasses(ifaces);
+			
 			// TODO
 			System.err.println("TODO -- Implement the class decoder.");
 			if (false)

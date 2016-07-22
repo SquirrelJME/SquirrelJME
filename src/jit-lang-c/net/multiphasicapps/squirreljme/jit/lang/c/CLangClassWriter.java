@@ -31,6 +31,9 @@ public class CLangClassWriter
 	/** The owning namespace writer. */
 	protected final CLangNamespaceWriter namespacewriter;
 	
+	/** The class identifier prefix. */
+	protected final String idprefix;
+	
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
@@ -62,6 +65,7 @@ public class CLangClassWriter
 		
 		// Write basic class storage information
 		String idprefix = __n;
+		this.idprefix = idprefix;
 		output.print("const SJME_Class ");
 		output.print(idprefix);
 		output.println(" =");
@@ -93,6 +97,10 @@ public class CLangClassWriter
 	public void classFlags(JITClassFlags __cf)
 		throws JITException, NullPointerException
 	{
+		// Check
+		if (__cf == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error BA02 Did not expect class flags to be written.
 		// (The current order)}
 		JITCompilerOrder order = this.order;
@@ -146,6 +154,35 @@ public class CLangClassWriter
 		
 		// Close
 		super.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/22
+	 */
+	@Override
+	public void interfaceClasses(ClassNameSymbol... __ins)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__ins == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BA07 Did not expect the name of implemented
+		// interfaces to be written. (The current order)}
+		JITCompilerOrder order = this.order;
+		if (order != JITCompilerOrder.SUPER_CLASS_NAME)
+			throw new JITException(String.format("BA07 %s", order));
+		this.order = order.next();
+		
+		// Get string symbols for all interfaces
+		CLangNamespaceWriter nsw = this.namespacewriter;
+		int n = __ins.length;
+		String[] isym = new String[n];
+		for (int i = 0; i < n; i++)
+			isym[i] = nsw.addString(__ins[i].toString());
+		
+		throw new Error("TODO");
 	}
 	
 	/**
