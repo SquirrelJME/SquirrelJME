@@ -35,11 +35,28 @@ extern "C"
 #include <stdint.h>
 
 /**
+ * Java byte.
+ *
+ * @since 2016/07/21
+ */
+typedef int8_t jbyte;
+#define JBYTE_C(x) INT8_C(x)
+
+/**
+ * Java character.
+ *
+ * @since 2016/07/21
+ */
+typedef uint16_t jchar;
+#define JCHAR_C(x) UINT16_C(x)
+
+/**
  * 32-bit integer.
  *
  * @since 2016/07/21
  */
 typedef int32_t jint;
+#define JINT_C(x) INT32_C(x)
 
 /**
  * Flags which are associated with classes.
@@ -134,10 +151,10 @@ typedef struct SJME_String
 	const SJME_StructureType structuretype;
 	
 	/** The string length. */
-	const uint32_t length;
+	const jint length;
 	
 	/** The UTF-16 characters. */
-	const uint16_t chars[];
+	const jchar chars[];
 } SJME_String;
 
 /**
@@ -154,7 +171,7 @@ typedef struct SJME_Class
 	const SJME_String* const name;
 	
 	/** Class flags. */
-	const uint16_t flags;
+	const jint flags;
 	
 	/** Should always be zero. */
 	const jint zero;
@@ -174,10 +191,10 @@ typedef struct SJME_Resource
 	const SJME_String* const name;
 	
 	/** The resource data. */
-	const uint8_t* const data;
+	const jbyte* const data;
 	
 	/** The length of the resource. */
-	const uint32_t length;
+	const jint length;
 } SJME_Resource;
 
 /**
@@ -283,6 +300,17 @@ jint SJME_compareSJMEStringToCString(const SJME_String* const __a,
  * @since 2016/07/21
  */
 const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s);
+
+/**
+ * Returns the next C string character from a multi-byte sequence, modified
+ * UTF-8 form is used.
+ *
+ * @param __next The next character to obtain.
+ * @return The character code or a negative value if the end of the string was
+ * reached.
+ * @since 2016/07/21
+ */
+jint SJME_nextCStringChar(const char** const __next);
 
 /****************************************************************************/
 

@@ -68,8 +68,47 @@ int main(int __argc, char** __argv)
 jint SJME_compareCStringToSJMEString(const char* const __a,
 	const SJME_String* const __b)
 {
-	abort();
-	return -1;
+	jint bn, i, ac, bc;
+	const jchar* chars;
+	const char* rover;
+	
+	// Check
+	if (__a == NULL || __b == NULL)
+	{
+		abort();
+		return -1;
+	}
+	
+	// Get other string length and data
+	chars = __b->chars;
+	bn = __b->length;
+	
+	// Go through all characters
+	rover = __a;
+	for (i = 0; i < bn; i++)
+	{
+		// Get both characters
+		ac = SJME_nextCStringChar(&rover);
+		bc = chars[i]; 
+		
+		// End of the first? Smaller string
+		if (ac < 0)
+			return -1;
+		
+		// Compare characters
+		if (ac < bc)
+			return -1;
+		else if (ac > bc)
+			return 1;
+	}
+	
+	// Does the first string have length?
+	ac = (SJME_nextCStringChar(&rover) >= 0);
+	if (ac != 0)
+		return 1;
+	
+	// Same
+	return 0;
 }
 
 /**
@@ -138,5 +177,44 @@ const SJME_Class* SJME_locateClassDefC(SJME_VM* __vm, const char* const __s)
 	
 	// Not found
 	return NULL;
+}
+
+/**
+ * {@inheritDoc}
+ * @since 2016/07/21
+ */
+jint SJME_nextCStringChar(const char** const __next)
+{
+	// Check
+	if (__next == NULL)
+	{
+		abort();
+		return -1;
+	}
+	
+	// Keep stopped if NULL
+	if ((*__next) == NULL)
+		return -1;
+	
+	// Read character
+	char c = **__next;
+	
+	// End?
+	if (c == 0)
+	{
+		*__next = NULL;
+		return -1;
+	}
+	
+	// Lower-ASCII
+	if (c >= 0x00 && c <= 0x80)
+	{
+		(*__next)++;
+		return (((jint)c) & JCHAR_C(0xFFFF));
+	}
+	
+	// Multiple bytes
+	abort();
+	return -1;
 }
 
