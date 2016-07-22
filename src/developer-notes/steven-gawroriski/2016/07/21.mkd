@@ -27,3 +27,10 @@ I should add more things to the readme, such as my goals.
 
 Now my C code compiles without errors and feels more typesafe.
 
+## 22:26
+
+Need a way to setup good string placement and possible binding the generated
+C code, that is run-time linking using pointers. For fields and methods I
+will need a basic table of them for the most part. They are very similar though
+although methods have code associated with them also.
+
