@@ -125,6 +125,10 @@ public class NewBuilder
 		// Setup namespace processor
 		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jitconf, cache);
 		
+		// Process all packages to be built
+		for (PackageInfo pi : buildprojects)
+			jnp.processNamespace(pi.name() + ".jar");
+		
 		throw new Error("TODO");
 	}
 	
