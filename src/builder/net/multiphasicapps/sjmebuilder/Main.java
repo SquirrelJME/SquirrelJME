@@ -54,16 +54,16 @@ public class Main
 			args.offerLast(s);
 		
 		// Handle arguments
-		boolean dosim = false;
+		boolean doemu = false;
 		String target = null;
 		List<String> simargs = new ArrayList<>();
 		while (!args.isEmpty())
 		{
 			String a = args.removeFirst();
 			
-			// Simulate also?
-			if (a.equals("-S") || a.equals("-s"))
-				dosim = true;
+			// Emulate also?
+			if (a.equals("-E") || a.equals("-e"))
+				doemu = true;
 			
 			// {@squirreljme.error DW02 Unknown command line argument.
 			// (The argument)}
@@ -79,7 +79,7 @@ public class Main
 				
 				// {@squirreljme.error DW03 No arguments must follow the
 				// target when not simulating.}
-				if (!dosim && !args.isEmpty())
+				if (!doemu && !args.isEmpty())
 					throw new IllegalArgumentException("DW03");
 				
 				// Add remaining arguments to the simulator
@@ -108,11 +108,11 @@ public class Main
 			throw new RuntimeException("DW01", e);
 		}
 		
-		// {@squirreljme.error DW04 Usage: [-S] (target) [simulator arguments];
+		// {@squirreljme.error DW04 Usage: [-E] (target) [simulator arguments];
 		// The target is the arch.os.variant to build a native executable for.
-		// The -S switch may
-		// be specified to also simulate the output resulting binary in which
-		// case the arguments to the simulator may be passed following the
+		// The -E switch may
+		// be specified to also emulate the output resulting binary in which
+		// case the arguments to the emulator may be passed following the
 		// target.}
 		if (target == null)
 		{
@@ -137,7 +137,7 @@ public class Main
 			b.build();
 			
 			// If simulating, run it in the simulator
-			if (dosim)
+			if (doemu)
 				throw new Error("TODO");
 		}
 		
