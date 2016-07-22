@@ -52,3 +52,33 @@ to other portions of the code without requiring such things.
 
 Although in the end it might not matter as much.
 
+## 14:22
+
+Ok, so this is not going to work. There are targets which do not support the
+JIT, so having the JIT code included in them would be rather pointless. Also as
+a note, the `linkBinary` needs to be given system properties which are `final`
+in the linked binary (cannot be replaced) and are global. These would specify
+the class which contains the JIT, the target, and a few other properties (such
+as the build date). `Builder` needs an option called `-jit` which can specify
+an alternative class to use for the JIT or specify `none` for no JIT. Packages
+for an operating system, cannot depend on the JIT. They just get an optional
+dependency on a JIT. The `jit` gets split into `jit` and `jit-base` (where
+`jit` depends on `jit-base`. The base project just contains the triplet and a
+few other simple things. Then CPU specific targets will be prefixed with
+`jit-cpu-`. `os` will remain the same. Each `os` package would have a new
+manifest field which specifies the package which contains the JIT. Then the
+architecture specific JIT package defines the classes which implement a JIT to
+be used. If a JIT is not to be included, then the target binary would not
+compile the JIT code.
+
+## 14:28
+
+Another issue would be native executable output, I want architecture
+independent code. So basically, I create a new `exe` class which can output for
+a given binary type (such as ELF) then include some bootstrap code. Then to
+make it where the OS code is lighter, place the bootstrap code in another
+package and make it accessible via `getResourceAsStream()` on a class in the
+package. To reduce duplication everywhere, the ELF linker can be very generic.
+Then this way, the extra files which are used in the output do not have to
+needlessly be included in the namespace.
+
