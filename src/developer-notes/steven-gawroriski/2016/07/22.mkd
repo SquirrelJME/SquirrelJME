@@ -98,3 +98,7 @@ for SquirrelJME specific output, there would be `builder-os-arch` essentially
 (which would be optional dependencies also). Then this way, there would be no
 code at all that knows about linking the `os-` or the CPU JITs.
 
+## 15:35
+
+Then the way to invoke the emulator can be used with the builder support also.
+
