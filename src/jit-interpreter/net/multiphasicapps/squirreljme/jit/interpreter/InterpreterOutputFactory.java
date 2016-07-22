@@ -36,7 +36,8 @@ public class InterpreterOutputFactory
 		if (__config == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create
+		return new InterpreterOutput(__config);
 	}
 	
 	/**
