@@ -15,5 +15,5 @@
  * @since 2016/06/24
  */
 
-package net.multiphasicapps.sjmebuilder;
+package net.multiphasicapps.squirreljme.builder;
 

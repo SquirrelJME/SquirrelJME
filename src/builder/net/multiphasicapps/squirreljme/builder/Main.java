@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.sjmebuilder;
+package net.multiphasicapps.squirreljme.builder;
 
 import java.io.IOException;
 import java.io.PrintStream;
