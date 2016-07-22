@@ -96,7 +96,11 @@ public class NewBuilder
 		PackageList packagelist = this.packagelist;
 		
 		// Always add the JVM
+		// {@squirreljme.error DW0k Cannot build the target because the Java
+		// Virtual Machine project could not be found.}
 		PackageInfo jvmproj = packagelist.get("jvm");
+		if (jvmproj == null)
+			throw new IllegalStateException("DW0k");
 		rv.addAll(jvmproj.recursiveDependencies());
 		
 		// Return

@@ -275,6 +275,7 @@ public class PackageInfo
 		}
 		
 		// Return
+		System.err.printf("DEBUG -- %s%n", rv);
 		return rv;
 	}
 	
