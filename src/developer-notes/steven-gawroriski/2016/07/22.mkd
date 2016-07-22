@@ -107,3 +107,8 @@ Then the way to invoke the emulator can be used with the builder support also.
 Also, I suppose I will remove the PowerPC and Linux related stuff, none of
 that code exists yet and will just get in the way for the most part.
 
+## 17:15
+
+Actually, I do not need to scan the package list because the target builders
+can just suggest prefixes to try.
+

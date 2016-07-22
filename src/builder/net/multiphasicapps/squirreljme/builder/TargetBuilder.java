@@ -20,5 +20,47 @@ import java.util.ServiceLoader;
  */
 public abstract class TargetBuilder
 {
+	/** Suggestions. */
+	private final TargetSuggestion[] _suggestions;
+	
+	/**
+	 * Initializes the target builder.
+	 *
+	 * @param __sugs The suggested build targets, a triplet followed by a
+	 * short description.
+	 * @since 2016/07/22
+	 */
+	public TargetBuilder(String... __sugs)
+	{
+		// Setup suggestions
+		if (__sugs != null)
+		{
+			// Setup target
+			int n = __sugs.length;
+			TargetSuggestion[] tss = new TargetSuggestion[n];
+			this._suggestions = tss;
+			
+			// Fill suggestions
+			for (int i = 0; (i + 1) < n; i += 2)
+			{
+				throw new Error("TODO");
+			}
+		}
+		
+		// No suggestions
+		else
+			this._suggestions = new TargetSuggestion[0];
+	}
+	
+	/**
+	 * Returns the suggested targets.
+	 *
+	 * @return An array of suggested targets.
+	 * @since 2016/07/22
+	 */
+	public final TargetSuggestion[] suggestedTargets()
+	{
+		return this._suggestions.clone();
+	}
 }
 

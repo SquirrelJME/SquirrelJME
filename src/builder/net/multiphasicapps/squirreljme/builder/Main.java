@@ -20,6 +20,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -99,6 +100,18 @@ public class Main
 			}
 		}
 		
+		// Output
+		PrintStream out = System.out;
+		
+		// If no target, print usage
+		if (target == null)
+		{
+			__printUsage(out);
+			
+			// {@squirreljme.error DW0h Not enough arguments.}
+			throw new IllegalArgumentException("DW0h");
+		}
+		
 		// Setup build configuration
 		BuildConfig config = new BuildConfig(new JITTriplet(target), doemu,
 			emuargs.<String>toArray(new String[emuargs.size()]), !nojit,
@@ -107,7 +120,6 @@ public class Main
 		throw new Error("TODO");
 		/*
 		// Load the package list
-		PrintStream out = System.out;
 		PackageList plist;
 		try
 		{
@@ -167,51 +179,33 @@ public class Main
 	}
 	
 	/**
-	 * Prints the detected target architectures and operating systems to
-	 * the given output stream.
+	 * Prints usage information.
 	 *
-	 * @param __plist The list of available packages.
 	 * @param __ps The output print stream.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/01
+	 * @since 2016/07/22
 	 */
-	private static void __printDetected(PackageList __plist, PrintStream __ps)
+	private static void __printUsage(PrintStream __ps)
 		throws NullPointerException
 	{
 		// Check
-		if (__plist == null || __ps == null)
+		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		// Go through every package and extract available operating systems
-		// and OS variants
-		List<String> availos = new ArrayList<>();
-		for (PackageInfo pi : __plist.values())
-		{
-			// Get the manifest
-			JavaManifest man = pi.manifest();
-			if (man == null)
-				continue;
-			
-			// See if the OS key exists
-			JavaManifestAttributes attr = man.getMainAttributes();
-			String vkey = attr.get(Builder.TARGET_OS_KEY);
-			
-			// Add to list if it does
-			if (vkey != null)
-				availos.add(vkey.trim());
-		}
-		
-		// Sort by name
-		Collections.<String>sort(availos);
-		
-		// Print
-		__ps.println("Available Targets:");
-		for (String os : availos)
-		{
-			__ps.print(" * ");
-			__ps.println(os);
-		}
+		// Print header
+		__ps.println("Usage: [-e] [-n] [-t] (target) [emulator arguments...]");
 		__ps.println();
+		__ps.println("\t-e\tAfter building, emulate the target binary.");
+		__ps.println("\t-n\tDo not include a JIT.");
+		__ps.println("\t-t\nInclude tests.");
+		__ps.println();
+		
+		// Print suggested targets
+		__ps.println("Suggested targets:");
+		for (TargetBuilder tb : ServiceLoader.<TargetBuilder>load(
+			TargetBuilder.class))
+			for (TargetSuggestion s : tb.suggestedTargets())
+				__ps.printf("%-40s %37s%n", s.triplet(), s.name());
 	}
 }
 
