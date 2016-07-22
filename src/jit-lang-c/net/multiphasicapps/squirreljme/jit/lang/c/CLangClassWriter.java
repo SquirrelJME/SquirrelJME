@@ -147,5 +147,34 @@ public class CLangClassWriter
 		// Close
 		super.close();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/22
+	 */
+	@Override
+	public void superClass(ClassNameSymbol __cn)
+		throws JITException
+	{
+		// {@squirreljme.error BA03 Did not expect the name of the super class
+		// to be written. (The current order)}
+		JITCompilerOrder order = this.order;
+		if (order != JITCompilerOrder.SUPER_CLASS_NAME)
+			throw new JITException(String.format("BA03 %s", order));
+		this.order = order.next();
+		
+		// No super class
+		PrintStream output = this.output;
+		if (__cn == null)
+			output.println("\tNULL,");
+		
+		// There is one
+		else
+		{
+			output.print("\t&");
+			output.print(this.namespacewriter.addString(__cn.toString()));
+			output.println(',');
+		}
+	}
 }
 

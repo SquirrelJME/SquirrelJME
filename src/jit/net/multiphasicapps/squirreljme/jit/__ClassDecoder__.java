@@ -21,6 +21,10 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
  */
 final class __ClassDecoder__
 {
+	/** The object class. */
+	private static final ClassNameSymbol _OBJECT_CLASS =
+		ClassNameSymbol.of("java/lang/Object");
+	
 	/** The magic number of the class file. */
 	public static final int MAGIC_NUMBER =
 		0xCAFE_BABE;
@@ -107,6 +111,7 @@ final class __ClassDecoder__
 		// Read class name
 		ClassNameSymbol clname = pool.<ClassNameSymbol>get(
 			input.readUnsignedShort(), ClassNameSymbol.class);
+		boolean isobject = (clname.equals(_OBJECT_CLASS));
 		
 		// There is enough "known" information (just the name) to start
 		// outputting a class
@@ -114,6 +119,26 @@ final class __ClassDecoder__
 		{
 			// Send class flags
 			cw.classFlags(cf);
+			
+			// Read super class
+			ClassNameSymbol suname = pool.<ClassNameSymbol>get(
+				input.readUnsignedShort(), ClassNameSymbol.class);
+			
+			// {@squirreljme.error ED0m The Object class must have no super
+			// class and any non-Object class must have a super class.
+			// (The class name; The super-class name)}
+			if ((suname != null) == isobject)
+				throw new JITException(String.format("ED0m %s %s", clname,
+					suname));
+			
+			// {@squirreljme.error ED0n Interfaces must extend the Object
+			// class. (Class flags; The super-class name)}
+			if (cf.isInterface() && !suname.equals(_OBJECT_CLASS))
+				throw new JITException(String.format("ED0n %s %s", cf,
+					suname));
+			
+			// Send
+			cw.superClass(suname);
 			
 			// TODO
 			System.err.println("TODO -- Implement the class decoder.");

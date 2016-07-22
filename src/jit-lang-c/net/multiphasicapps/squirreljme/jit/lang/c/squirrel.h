@@ -173,6 +173,9 @@ typedef struct SJME_Class
 	/** Class flags. */
 	const jint flags;
 	
+	/** The super class name. */
+	const SJME_String* const superclass;
+	
 	/** Should always be zero. */
 	const jint zero;
 } SJME_Class;

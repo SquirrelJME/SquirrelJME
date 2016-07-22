@@ -22,6 +22,9 @@ public enum JITCompilerOrder
 	/** The flags for the class. */
 	CLASS_FLAGS,
 	
+	/** The super class name. */
+	SUPER_CLASS_NAME,
+	
 	/** End. */
 	;
 	

@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+
 /**
  * This is used to write class details on output.
  *
@@ -36,5 +38,16 @@ public interface JITClassWriter
 	 */
 	public abstract void classFlags(JITClassFlags __cf)
 		throws JITException, NullPointerException;
+	
+	/**
+	 * Records the name of the super-class of the class being decoded.
+	 *
+	 * @param __cn The name of the super class, may be {@code null} if there
+	 * is none.
+	 * @throws JITException If the super-class could not be written.
+	 * @since 2016/07/22
+	 */
+	public abstract void superClass(ClassNameSymbol __cn)
+		throws JITException;
 }
 
