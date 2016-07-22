@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.interpreter;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 
 /**
@@ -21,5 +23,19 @@ import net.multiphasicapps.squirreljme.jit.JITOutput;
 public class InterpreterOutput
 	implements JITOutput
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/06
+	 */
+	@Override
+	public JITNamespaceWriter beginNamespace(String __ns)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__ns == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 
