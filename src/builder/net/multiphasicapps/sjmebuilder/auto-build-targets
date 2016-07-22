@@ -1,2 +1,1 @@
-lang-32+generic,undefined.c.posix
-
+interpreter+32,undefined.interpreter.interpreter
