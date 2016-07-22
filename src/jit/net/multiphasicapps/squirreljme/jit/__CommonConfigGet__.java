@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+
 /**
  * Common getters for the mutable and immutable configuration.
  *

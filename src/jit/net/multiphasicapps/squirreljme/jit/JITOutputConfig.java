@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
  * This is used to configure the input and output of a JIT operation. This

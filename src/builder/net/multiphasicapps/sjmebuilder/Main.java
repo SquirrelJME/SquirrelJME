@@ -27,7 +27,7 @@ import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
-import net.multiphasicapps.squirreljme.jit.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
  * This is the main entry point for the builder.

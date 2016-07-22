@@ -8,21 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
-
 /**
- * This is a variant of a CPU.
+ * This package contains the base support for the JIT.
  *
- * @since 2016/07/02
+ * @since 2016/07/22
  */
-public interface JITCPUVariant
-{
-	/**
-	 * Returns the name of the variant.
-	 *
-	 * @return The name of the variant.
-	 * @since 2016/07/02
-	 */
-	public abstract String variantName();
-}
+
+package net.multiphasicapps.squirreljme.jit.base;
 

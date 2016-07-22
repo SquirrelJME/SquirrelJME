@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.emulator;
 
-import net.multiphasicapps.squirreljme.jit.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
  * This is a mutable configuration which stores the input configuration for

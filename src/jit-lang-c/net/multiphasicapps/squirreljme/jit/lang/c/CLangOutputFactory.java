@@ -14,7 +14,7 @@ import net.multiphasicapps.squirreljme.jit.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.jit.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.lang.LangOutputFactory;
 
 /**

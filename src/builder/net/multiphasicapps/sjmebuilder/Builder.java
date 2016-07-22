@@ -44,7 +44,7 @@ import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
-import net.multiphasicapps.squirreljme.jit.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;
