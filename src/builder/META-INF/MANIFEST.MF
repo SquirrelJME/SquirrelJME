@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: builder
 X-SquirrelJME-UUID: 69441fea-3864-4fd2-8716-0b0e355a4ced
-X-SquirrelJME-Depends: cldc-full, zip-reader-block, jvm,
- package-manager, util-unmodifiable, jit, emulator,
+X-SquirrelJME-Depends: cldc-full, zip-reader-block, jit,
+ package-manager, util-unmodifiable, emulator,
  basic-assets, zip-writer-stream
-X-SquirrelJME-Optional: os-linux-powerpc,
- os-interpreter
+X-SquirrelJME-Optional: builder-interpreter
 X-SquirrelJME-Error: DW
 Main-Class: net.multiphasicapps.sjmebuilder.Main
 LIBlet-Title: SquirrelJME Builder
