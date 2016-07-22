@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -126,8 +125,6 @@ public class Main
 			throw new IllegalArgumentException(String.format("DW0i %s",
 				config.triplet()));
 		
-		throw new Error("TODO");
-		/*
 		// Load the package list
 		PackageList plist;
 		try
@@ -143,48 +140,24 @@ public class Main
 			throw new RuntimeException("DW01", e);
 		}
 		
-		// {@squirreljme.error DW04 Usage: [-e] [-n] [-t] (target) [simulator
-		// arguments];
-		// The target is the arch.os.variant to build a native executable for.
-		// The -e switch may
-		// be specified to also emulate the output resulting binary in which
-		// case the arguments to the emulator may be passed following the
-		// target. The -n switch disables the JIT. The -t switch includes the
-		// tests.}
-		if (target == null)
-		{
-			// Print all detected targets and architectures (with their
-			// variants)
-			out.println();
-			__printDetected(plist, out);
-			
-			// Fail
-			throw new IllegalArgumentException("DW04");
-		}
+		// Setup builder
+		NewBuilder nb = new NewBuilder(config, tb, plist);
 		
-		// Could fail on perhaps a bad disk or malformed file
+		// Build
 		try
 		{
-			// Setup builder
-			out.println("Setting up build...");
-			Builder b = new Builder(plist, new JITTriplet(target));
-		
-			// Perform the build
-			out.println("Building...");
-			b.build();
-			
-			// If simulating, run it in the simulator
-			if (doemu)
-				throw new Error("TODO");
+			nb.build();
 		}
 		
-		// {@squirreljme.error DW07 Failed to build for the target due to an
-		// IOException.}
+		// {@squirreljme.error DW0j Read/write error.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("DW07", e);
+			throw new RuntimeException("DW0j", e);
 		}
-		*/
+		
+		// Emulate?
+		if (config.doEmulation())
+			throw new Error("TODO");
 	}
 	
 	/**

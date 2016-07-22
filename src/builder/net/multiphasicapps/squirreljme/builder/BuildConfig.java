@@ -62,6 +62,17 @@ public final class BuildConfig
 	}
 	
 	/**
+	 * Perform emulation after a successful build?
+	 *
+	 * @return {@code true} if emulation should be performed.
+	 * @since 2016/07/22
+	 */
+	public final boolean doEmulation()
+	{
+		return this.emulate;
+	}
+	
+	/**
 	 * Returns the triplet.
 	 *
 	 * @return The triplet.
