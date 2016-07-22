@@ -73,6 +73,17 @@ public final class BuildConfig
 	}
 	
 	/**
+	 * Include tests in the output?
+	 *
+	 * @return {@code true} if tests should be included.
+	 * @since 2016/07/22
+	 */
+	public final boolean includeTests()
+	{
+		return this.tests;
+	}
+	
+	/**
 	 * Returns the triplet.
 	 *
 	 * @return The triplet.

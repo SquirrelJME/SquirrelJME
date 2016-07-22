@@ -51,6 +51,9 @@ public class PackageInfo
 	/** The dependencies of this package. */
 	private volatile Reference<Set<PackageInfo>> _depends;
 	
+	/** Optional dependencies. */
+	private volatile Reference<Set<PackageInfo>> _odepends;
+	
 	/** Recursive dependencies. */
 	private volatile Reference<Set<PackageInfo>> _rdepends;
 	
@@ -119,8 +122,24 @@ public class PackageInfo
 	public final Set<PackageInfo> dependencies()
 		throws IllegalStateException
 	{
+		return dependencies(false);
+	}
+	
+	/**
+	 * Returns all of the packages that this package depends on.
+	 *
+	 * @param __opt Select optional dependencies instead.
+	 * @return The set of packages this package depends on. If optional
+	 * dependencies are specified, they are only included if they exist.
+	 * @throws IllegalStateException If a dependency is missing.
+	 * @since 2016/07/22
+	 */
+	public final Set<PackageInfo> dependencies(boolean __opt)
+		throws IllegalStateException
+	{
 		// Get
-		Reference<Set<PackageInfo>> ref = this._depends;
+		Reference<Set<PackageInfo>> ref = (__opt ? this._odepends :
+			this._depends);
 		Set<PackageInfo> rv;
 		
 		// Cache?
@@ -134,7 +153,8 @@ public class PackageInfo
 			JavaManifestAttributes attr = man.getMainAttributes();
 			
 			// Get the dependency field
-			String pids = attr.get("X-SquirrelJME-Depends");
+			String pids = attr.get((__opt ? "X-SquirrelJME-Optional" :
+				"X-SquirrelJME-Depends"));
 			PackageList plist = this.plist;
 			if (pids != null)
 			{
@@ -164,12 +184,13 @@ public class PackageInfo
 					// package does not exist. (This package; The missing
 					// dependency)}
 					PackageInfo ddd = plist.get(spl);
-					if (ddd == null)
+					if (!__opt && ddd == null)
 						throw new IllegalStateException(String.format(
 							"CI01 %s %s", this.name, spl));
 					
 					// Add it
-					deps.add(ddd);
+					else if (ddd != null)
+						deps.add(ddd);
 					
 					// Skip
 					i = j;
@@ -178,7 +199,11 @@ public class PackageInfo
 			
 			// Lock
 			rv = UnmodifiableSet.<PackageInfo>of(deps);
-			this._depends = new WeakReference<>(rv);
+			ref = new WeakReference<>(rv);
+			if (__opt)
+				this._odepends = ref;
+			else
+				this._depends = ref;
 		}
 		
 		// Return
@@ -275,7 +300,6 @@ public class PackageInfo
 		}
 		
 		// Return
-		System.err.printf("DEBUG -- %s%n", rv);
 		return rv;
 	}
 	

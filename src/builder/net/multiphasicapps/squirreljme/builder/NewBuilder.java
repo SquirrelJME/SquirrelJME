@@ -36,6 +36,9 @@ public class NewBuilder
 	/** The package list. */
 	protected final PackageList packagelist;
 	
+	/** The projects to use in the boot classpath (the JVM itself). */
+	private volatile Set<PackageInfo> _bootclasspath;
+	
 	/**
 	 * Initializes the new builder code.
 	 *
@@ -74,10 +77,13 @@ public class NewBuilder
 		// Determine the packages to build
 		out.println("Selecting projects...");
 		Set<PackageInfo> buildprojects = __selectProjects();
+		Set<PackageInfo> bootclasspath = this._bootclasspath;
 		
 		// Print them all
 		out.printf("Will compile %d project(s)...%n", buildprojects.size());
-		System.err.printf("DEBUG -- %s%n", buildprojects);
+		out.printf("JVM Classpath contains %d project(s)...%n",
+			bootclasspath.size());
+		System.err.printf("DEBUG -- %s %s%n", buildprojects, bootclasspath);
 		
 		throw new Error("TODO");
 	}
@@ -102,6 +108,22 @@ public class NewBuilder
 		if (jvmproj == null)
 			throw new IllegalStateException("DW0k");
 		rv.addAll(jvmproj.recursiveDependencies());
+		
+		// Tests do not need to be a part of the boot classpath, so the
+		// boot classpath is just what is currently in the build list
+		Set<PackageInfo> bootclasspath = new LinkedHashSet<>(rv);
+		this._bootclasspath = bootclasspath;
+		
+		// Include any test possible?
+		BuildConfig config = this.config;
+		if (config.includeTests())
+		{
+			// Only include if they were actually found
+			PackageInfo taproj = packagelist.get("test-all");
+			if (taproj != null)
+				for (PackageInfo pi : taproj.dependencies(true))
+					rv.addAll(pi.recursiveDependencies());
+		}
 		
 		// Return
 		return rv;
