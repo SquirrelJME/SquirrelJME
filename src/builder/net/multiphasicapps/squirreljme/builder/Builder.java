@@ -57,7 +57,7 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
  * @since 2016/06/24
  */
 public class Builder
-	implements JITNamespaceContent
+	implements BuilderCacheHelper, JITNamespaceContent
 {
 	/** The size of the resource buffer. */
 	public static final int RESOURCE_BUFFER_SIZE =

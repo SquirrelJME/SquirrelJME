@@ -112,3 +112,26 @@ that code exists yet and will just get in the way for the most part.
 Actually, I do not need to scan the package list because the target builders
 can just suggest prefixes to try.
 
+## 18:46
+
+Initially it would be best to not compile any tests so it completes as fast as
+possible.
+
+## 18:47
+
+I suppose following getting the projects to build would be getting the
+`JITOutputFactory` and such. However, at least now with the new builder setup
+it can be kept out of the way. So I essentially do not even have to build and
+compile the JIT itself. So this means faster generation. For sanity though,
+there will have to be an encodable JIT configuration which is used in a
+system property of sorts. I would like the actual JITs to have no operating
+system specific parts to them (which is easier with the current way of things).
+As such, an operating system builder will have to generate a `JITOutputConfig`
+that is to be used.
+
+## 18:56
+
+This also means that the JIT does not need `linkBinary` as that is an artifact
+of the builder itself. So this in essence simplifies the JIT and reduces
+useless code bloat because that method will only ever be called by the builder.
+

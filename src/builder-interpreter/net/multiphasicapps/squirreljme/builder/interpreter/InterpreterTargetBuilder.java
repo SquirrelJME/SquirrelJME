@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.builder.interpreter;
 
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
  * This is the builder which can target the interpreter.
@@ -31,6 +32,21 @@ public class InterpreterTargetBuilder
 		super(false,
 			"interpreter-32+interpreter,undefined.interpreter.interpreter",
 			"SquirrelJME Test Interpreter");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/22
+	 */
+	@Override
+	public void outputConfig(JITOutputConfig __conf, BuildConfig __bc)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null || __bc == null)
+			throw new NullPointerException("NARG");
+		
+		// Nothing needs to be done
 	}
 	
 	/**

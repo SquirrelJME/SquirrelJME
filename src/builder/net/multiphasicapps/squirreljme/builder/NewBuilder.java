@@ -12,10 +12,12 @@ package net.multiphasicapps.squirreljme.builder;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
  * This builds the given target configuration and generates a binary.
@@ -23,6 +25,7 @@ import net.multiphasicapps.sjmepackages.PackageList;
  * @since 2016/07/22
  */
 public class NewBuilder
+	implements BuilderCacheHelper
 {
 	/** Logging output. */
 	protected final PrintStream out;
@@ -36,24 +39,33 @@ public class NewBuilder
 	/** The package list. */
 	protected final PackageList packagelist;
 	
+	/** The temporary output directory. */
+	protected final Path tempdir;
+	
 	/** The projects to use in the boot classpath (the JVM itself). */
 	private volatile Set<PackageInfo> _bootclasspath;
+	
+	/** The cache creator. */
+	private volatile BuilderCache _cache;
 	
 	/**
 	 * Initializes the new builder code.
 	 *
+	 * @param __out The console output.
 	 * @param __conf The build configuration.
 	 * @param __tb The target builder.
 	 * @param __pl The package list.
+	 * @param __td The temporary cache storage directory.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
 	public NewBuilder(PrintStream __out, BuildConfig __conf,
-		TargetBuilder __tb, PackageList __pl)
+		TargetBuilder __tb, PackageList __pl, Path __td)
 		throws NullPointerException
 	{
 		// Check
-		if (__out == null || __conf == null || __tb == null || __pl == null)
+		if (__out == null || __conf == null || __tb == null || __pl == null ||
+			__td == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -61,6 +73,7 @@ public class NewBuilder
 		this.config = __conf;
 		this.targetbuilder = __tb;
 		this.packagelist = __pl;
+		this.tempdir = __td;
 	}
 	
 	/**
@@ -85,7 +98,50 @@ public class NewBuilder
 			bootclasspath.size());
 		System.err.printf("DEBUG -- %s %s%n", buildprojects, bootclasspath);
 		
+		// Get the JIT output configuration to use when compiling for the
+		// target
+		TargetBuilder targetbuilder = this.targetbuilder;
+		BuildConfig config = this.config;
+		JITOutputConfig mutjitconf = new JITOutputConfig();
+		targetbuilder.outputConfig(mutjitconf, config);
+		
+		// Add the triplet
+		mutjitconf.setTriplet(config.triplet());
+		
+		// Setup cache creator
+		BuilderCache cache = new BuilderCache(this);
+		this._cache = cache;
+		
+		// Lock
+		JITOutputConfig.Immutable jitconf = mutjitconf.immutable();
+		mutjitconf = null;
+		
+		// {@squirreljme.error DW0l Could not configure the JIT for compilation
+		// to the target. (The build configuration)}
+		if (jitconf == null)
+			throw new IllegalStateException(String.format("DW0l %s", config));
+		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/22
+	 */
+	@Override
+	public PackageList packageList()
+	{
+		return this.packagelist;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/22
+	 */
+	@Override
+	public Path temporaryDirectory()
+	{
+		return this.tempdir;
 	}
 	
 	/**

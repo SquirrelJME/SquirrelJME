@@ -58,6 +58,7 @@ public interface JITOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/18
 	 */
+	@Deprecated
 	public abstract void linkBinary(OutputStream __os, String[] __names,
 		InputStream[] __data)
 		throws IOException, JITException, NullPointerException;

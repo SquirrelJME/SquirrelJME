@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.builder;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -125,27 +127,23 @@ public class Main
 			throw new IllegalArgumentException(String.format("DW0i %s",
 				config.triplet()));
 		
-		// Load the package list
+		// Could fail
 		PackageList plist;
+		Path tempdir = null;
 		try
 		{
+			// Load the package list
 			out.println("Loading the package lists...");
 			plist = new PackageList(Paths.get(System.getProperty("user.dir")),
 				null);
-		}
-		
-		// {@squirreljme.error DW01 Failed to load the package list.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("DW01", e);
-		}
-		
-		// Setup builder
-		NewBuilder nb = new NewBuilder(out, config, tb, plist);
-		
-		// Build
-		try
-		{
+			
+			// Create temporary directory
+			tempdir = Files.createTempDirectory("squirreljme-native-build");
+			
+			// Setup
+			NewBuilder nb = new NewBuilder(out, config, tb, plist, tempdir);
+			
+			// Build
 			nb.build();
 		}
 		
@@ -153,6 +151,41 @@ public class Main
 		catch (IOException e)
 		{
 			throw new RuntimeException("DW0j", e);
+		}
+		
+		// Delete temporary directory
+		finally
+		{
+			// Delete if it exists
+			if (tempdir != null)
+				try
+				{
+					// Delete all files in the directory
+					try (DirectoryStream<Path> ds = Files.
+						newDirectoryStream(tempdir))
+					{
+						for (Path p : ds)
+							try
+							{
+								System.err.printf("DEBUG -- Delete `%s`%n",
+									p);
+								Files.delete(p);
+							}
+							
+							// Ignore
+							catch (IOException e)
+							{
+							}
+					}
+					
+					// Delete the directory
+					Files.delete(tempdir);
+				}
+				
+				// Ignore
+				catch (IOException e)
+				{
+				}
 		}
 		
 		// Emulate?

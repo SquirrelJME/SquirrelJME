@@ -36,7 +36,7 @@ public class BuilderCache
 	implements JITCacheCreator
 {
 	/** The owning builder. */
-	protected final Builder builder;
+	protected final BuilderCacheHelper builder;
 	
 	/** Package information to namespace blobs. */
 	protected final Map<PackageInfo, Path> blobmap =
@@ -49,7 +49,7 @@ public class BuilderCache
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/18
 	 */
-	public BuilderCache(Builder __b)
+	public BuilderCache(BuilderCacheHelper __b)
 		throws NullPointerException
 	{
 		// Check

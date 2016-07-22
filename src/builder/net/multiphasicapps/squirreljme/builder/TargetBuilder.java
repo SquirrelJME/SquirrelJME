@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.builder;
 
 import java.util.ServiceLoader;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
  * This is the base class for builders which can generate binaries for a given
@@ -62,6 +63,21 @@ public abstract class TargetBuilder
 		else
 			this._suggestions = new TargetSuggestion[0];
 	}
+	
+	/**
+	 * This potentially modifies and sets the initial configuration state which
+	 * is used for the JIT.
+	 *
+	 * After this is executed, the builder will associate a cache creator and
+	 * a triplet.
+	 *
+	 * @param __conf The target configuration to use.
+	 * @param __bc The build configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/22
+	 */
+	public abstract void outputConfig(JITOutputConfig __conf, BuildConfig __bc)
+		throws NullPointerException;
 	
 	/**
 	 * Is the given configuration supported?
