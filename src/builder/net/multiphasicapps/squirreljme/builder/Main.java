@@ -16,13 +16,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -55,15 +52,25 @@ public class Main
 		
 		// Handle arguments
 		boolean doemu = false;
+		boolean nojit = false;
+		boolean tests = false;
 		String target = null;
-		List<String> simargs = new ArrayList<>();
+		List<String> emuargs = new ArrayList<>();
 		while (!args.isEmpty())
 		{
 			String a = args.removeFirst();
 			
 			// Emulate also?
-			if (a.equals("-E") || a.equals("-e"))
+			if (a.equals("-e"))
 				doemu = true;
+			
+			// Do not include a JIT?
+			else if (a.equals("-n"))
+				nojit = true;
+			
+			// Include tests also?
+			else if (a.equals("-t"))
+				tests = true;
 			
 			// {@squirreljme.error DW02 Unknown command line argument.
 			// (The argument)}
@@ -85,13 +92,20 @@ public class Main
 				// Add remaining arguments to the simulator
 				else
 					while (!args.isEmpty())
-						simargs.add(args.removeFirst());
+						emuargs.add(args.removeFirst());
 				
 				// Stop
 				break;
 			}
 		}
 		
+		// Setup build configuration
+		BuildConfig config = new BuildConfig(new JITTriplet(target), doemu,
+			emuargs.<String>toArray(new String[emuargs.size()]), !nojit,
+			tests);
+		
+		throw new Error("TODO");
+		/*
 		// Load the package list
 		PrintStream out = System.out;
 		PackageList plist;
@@ -108,12 +122,14 @@ public class Main
 			throw new RuntimeException("DW01", e);
 		}
 		
-		// {@squirreljme.error DW04 Usage: [-E] (target) [simulator arguments];
+		// {@squirreljme.error DW04 Usage: [-e] [-n] [-t] (target) [simulator
+		// arguments];
 		// The target is the arch.os.variant to build a native executable for.
-		// The -E switch may
+		// The -e switch may
 		// be specified to also emulate the output resulting binary in which
 		// case the arguments to the emulator may be passed following the
-		// target.}
+		// target. The -n switch disables the JIT. The -t switch includes the
+		// tests.}
 		if (target == null)
 		{
 			// Print all detected targets and architectures (with their
@@ -147,6 +163,7 @@ public class Main
 		{
 			throw new RuntimeException("DW07", e);
 		}
+		*/
 	}
 	
 	/**
