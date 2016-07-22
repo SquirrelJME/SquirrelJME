@@ -135,3 +135,9 @@ This also means that the JIT does not need `linkBinary` as that is an artifact
 of the builder itself. So this in essence simplifies the JIT and reduces
 useless code bloat because that method will only ever be called by the builder.
 
+## 19:42
+
+This new code is far better than the old code. I just need to get back into the
+namespace writer. Before it was just output to the cache stream, I could just
+do that again for the most part.
+
