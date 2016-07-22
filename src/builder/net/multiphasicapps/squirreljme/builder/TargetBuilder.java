@@ -21,24 +21,31 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
  */
 public abstract class TargetBuilder
 {
+	/** Supports the JIT? */
+	protected final boolean canjit;
+	
 	/** Suggestions. */
 	private final TargetSuggestion[] _suggestions;
 	
 	/**
 	 * Initializes the target builder.
 	 *
+	 * @param __jit Is the JIT supported?
 	 * @param __sugs The suggested build targets, a triplet followed by a
 	 * short description.
 	 * @since 2016/07/22
 	 */
-	public TargetBuilder(String... __sugs)
+	public TargetBuilder(boolean __jit, String... __sugs)
 	{
+		// Set
+		this.canjit = __jit;
+		
 		// Setup suggestions
 		if (__sugs != null)
 		{
 			// Setup target
 			int n = __sugs.length;
-			TargetSuggestion[] tss = new TargetSuggestion[n];
+			TargetSuggestion[] tss = new TargetSuggestion[n >>> 1];
 			this._suggestions = tss;
 			
 			// Fill suggestions
@@ -50,6 +57,17 @@ public abstract class TargetBuilder
 		// No suggestions
 		else
 			this._suggestions = new TargetSuggestion[0];
+	}
+	
+	/**
+	 * Is the JIT supported for this target?
+	 *
+	 * @return {@code true} if the JIT is supported.
+	 * @since 2016/07/22
+	 */
+	public final boolean canJIT()
+	{
+		return this.canjit;
 	}
 	
 	/**

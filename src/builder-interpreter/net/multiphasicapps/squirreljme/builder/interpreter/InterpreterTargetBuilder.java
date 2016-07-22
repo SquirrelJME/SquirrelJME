@@ -27,7 +27,8 @@ public class InterpreterTargetBuilder
 	 */
 	public InterpreterTargetBuilder()
 	{
-		super("interpreter-32+interpreter,undefined.interpreter.interpreter",
+		super(false,
+			"interpreter-32+interpreter,undefined.interpreter.interpreter",
 			"SquirrelJME Test Interpreter");
 	}
 }

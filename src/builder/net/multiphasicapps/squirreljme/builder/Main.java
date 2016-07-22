@@ -117,6 +117,8 @@ public class Main
 			emuargs.<String>toArray(new String[emuargs.size()]), !nojit,
 			tests);
 		
+		// Find a target builder which is compatible with this configuration
+		
 		throw new Error("TODO");
 		/*
 		// Load the package list
@@ -200,12 +202,26 @@ public class Main
 		__ps.println("\t-t\nInclude tests.");
 		__ps.println();
 		
+		// Suggest target header
+		__ps.println("Suggested Triplets (Target):");
+		__ps.printf("%74s (?)", "Name of Suggestion");
+		__ps.println();
+		__ps.println();
+		
 		// Print suggested targets
-		__ps.println("Suggested targets:");
 		for (TargetBuilder tb : ServiceLoader.<TargetBuilder>load(
 			TargetBuilder.class))
 			for (TargetSuggestion s : tb.suggestedTargets())
-				__ps.printf("%-78s%n%78s%n", s.triplet(), s.name());
+			{
+				__ps.printf("%-78s%n%74s (%c)", s.triplet(), s.name(),
+					(tb.canJIT() ? '+' : '-'));
+				__ps.println();
+			}
+		__ps.println();
+		__ps.println(" (+) The JIT is supported.");
+		__ps.println(" (-) The JIT is not supported.");
+		
+		// End
 		__ps.println();
 	}
 }
