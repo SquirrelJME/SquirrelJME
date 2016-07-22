@@ -21,6 +21,10 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
  */
 public abstract class TargetBuilder
 {
+	/** Builder services. */
+	private static final ServiceLoader<TargetBuilder> _SERVICES =
+		ServiceLoader.<TargetBuilder>load(TargetBuilder.class);
+	
 	/** Supports the JIT? */
 	protected final boolean canjit;
 	
@@ -60,6 +64,17 @@ public abstract class TargetBuilder
 	}
 	
 	/**
+	 * Is the given configuration supported?
+	 *
+	 * @param __conf The configuration to target.
+	 * @return {@code true} if it is supported.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/22
+	 */
+	public abstract boolean supportsConfig(BuildConfig __conf)
+		throws NullPointerException;
+	
+	/**
 	 * Is the JIT supported for this target?
 	 *
 	 * @return {@code true} if the JIT is supported.
@@ -79,6 +94,36 @@ public abstract class TargetBuilder
 	public final TargetSuggestion[] suggestedTargets()
 	{
 		return this._suggestions.clone();
+	}
+	
+	/**
+	 * Goes through all builders to find one that supports the given
+	 * configuration.
+	 *
+	 * @param __conf The configuration to target.
+	 * @return The found builder or {@code null} if none was found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/22
+	 */
+	public static final TargetBuilder findBuilder(BuildConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		ServiceLoader<TargetBuilder> services = _SERVICES;
+		synchronized (services)
+		{
+			// Go through all of them
+			for (TargetBuilder tb : services)
+				if (tb.supportsConfig(__conf))
+					return tb;
+		}
+		
+		// Not found
+		return null;
 	}
 }
 

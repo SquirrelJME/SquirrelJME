@@ -118,6 +118,13 @@ public class Main
 			tests);
 		
 		// Find a target builder which is compatible with this configuration
+		TargetBuilder tb = TargetBuilder.findBuilder(config);
+		
+		// {@squirreljme.error DW0i No available builder targets the given
+		// triplet. (The triplet)}
+		if (tb == null)
+			throw new IllegalArgumentException(String.format("DW0i %s",
+				config.triplet()));
 		
 		throw new Error("TODO");
 		/*

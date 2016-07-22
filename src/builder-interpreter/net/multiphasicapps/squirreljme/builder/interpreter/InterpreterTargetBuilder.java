@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.builder.interpreter;
 
+import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 
 /**
@@ -30,6 +31,22 @@ public class InterpreterTargetBuilder
 		super(false,
 			"interpreter-32+interpreter,undefined.interpreter.interpreter",
 			"SquirrelJME Test Interpreter");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/22
+	 */
+	@Override
+	public boolean supportsConfig(BuildConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Just check the architecture
+		return __conf.triplet().architecture().equals("interpreter");
 	}
 }
 

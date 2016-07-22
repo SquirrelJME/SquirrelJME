@@ -60,5 +60,16 @@ public final class BuildConfig
 		this.jit = __jit;
 		this.tests = __tests;
 	}
+	
+	/**
+	 * Returns the triplet.
+	 *
+	 * @return The triplet.
+	 * @since 2016/07/22
+	 */
+	public final JITTriplet triplet()
+	{
+		return this.triplet;
+	}
 }
 
