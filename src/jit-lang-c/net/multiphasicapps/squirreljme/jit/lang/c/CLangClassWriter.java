@@ -171,7 +171,7 @@ public class CLangClassWriter
 		// {@squirreljme.error BA07 Did not expect the name of implemented
 		// interfaces to be written. (The current order)}
 		JITCompilerOrder order = this.order;
-		if (order != JITCompilerOrder.SUPER_CLASS_NAME)
+		if (order != JITCompilerOrder.INTERFACE_CLASS_NAMES)
 			throw new JITException(String.format("BA07 %s", order));
 		this.order = order.next();
 		
