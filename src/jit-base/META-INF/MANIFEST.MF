@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: jit-base
+X-SquirrelJME-UUID: 2d7eb289-8bec-4dbb-b1b0-7672c3472fbb
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: BQ
+LIBlet-Title: Just-In-Time Compiler (Base Support)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains base classes and 
+ interfaces which allow an output target to identify itself 
+ without actually including the JIT itself.
+
