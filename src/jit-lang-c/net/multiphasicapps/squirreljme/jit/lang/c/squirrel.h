@@ -35,6 +35,15 @@ extern "C"
 #include <stdint.h>
 
 /**
+ * Boolean.
+ *
+ * @since 2016/07/22
+ */
+typedef uint8_t jboolean;
+#define JFALSE UINT8_C(0)
+#define JTRUE UINT8_C(1)
+
+/**
  * Java byte.
  *
  * @since 2016/07/21
@@ -57,6 +66,14 @@ typedef uint16_t jchar;
  */
 typedef int32_t jint;
 #define JINT_C(x) INT32_C(x)
+
+/**
+ * 64-bt integer.
+ *
+ * @since 2016/07/22
+ */
+typedef int64_t jlong;
+#define JLONG_C(x) INT64_C(x)
 
 /**
  * Flags which are associated with classes.
@@ -136,6 +153,21 @@ typedef enum SJME_StructureType
 	/** Bootstrap namespaces. */
 	SJME_STRUCTURETYPE_BOOTSTRAPNAMESPACES,
 	
+	/** Implemented interfaces. */
+	SJME_STRUCTURETYPE_INTERFACES,
+	
+	/** Fields of a class. */
+	SJME_STRUCTURETYPE_FIELDS,
+	
+	/** Methods of a class. */
+	SJME_STRUCTURETYPE_METHODS,
+	
+	/** A single field. */
+	SJME_STRUCTURETYPE_FIELD,
+	
+	/** A single method. */
+	SJME_STRUCTURETYPE_METHOD,
+	
 	/** End. */
 	NUM_SJME_STRUCTURETYPE
 } SJME_StructureType;
@@ -158,6 +190,116 @@ typedef struct SJME_String
 } SJME_String;
 
 /**
+ * This represents the interfaces which are implemented by a class.
+ *
+ * @since 2016/07/22
+ */
+typedef struct SJME_Interfaces
+{
+	/** The type of structure this is. */
+	const SJME_StructureType structuretype;
+	
+	/** The number of implemented interfaces. */
+	const jint count;
+	
+	/** The implemented interfaces. */
+	const SJME_String interfaces[];
+} SJME_Interfaces;
+
+/**
+ * A field.
+ *
+ * @since 2016/07/22
+ */
+typedef struct SJME_Field
+{
+	/** The type of structure this is. */
+	const SJME_StructureType structuretype;
+	
+	/** Field flags. */
+	const jint flags;
+	
+	/** The name of the field. */
+	const SJME_String* const name;
+	
+	/** The type of the field. */
+	const SJME_String* const type;
+	
+	/** Is there a constant value? */
+	const jboolean hasconstant;
+	
+	/** The constant value of the field, if applicable. */
+	const jlong constantvalue;
+} SJME_Field;
+
+/**
+ * A method.
+ *
+ * @since 2016/07/22
+ */
+typedef struct SJME_Method
+{
+	/** The type of structure this is. */
+	const SJME_StructureType structuretype;
+	
+	/** Method flags. */
+	const jint flags;
+	
+	/** The name of the method. */
+	const SJME_String* const name;
+	
+	/** The type of the method. */
+	const SJME_String* const type;
+	
+	/** The code for this method, the first argument is the VM pointer. */
+	union
+	{
+		/** The call returns void. */
+		const void (*returnsvoid)();
+		
+		/** The call returns integer. */
+		const jint (*returnsjint)();
+		
+		/** The call returns long. */
+		const jlong (*returnsjlong)();
+	} code;
+} SJME_Method;
+
+/**
+ * Fields of a class.
+ *
+ * @since 2016/07/22
+ */
+typedef struct SJME_Fields
+{
+	/** The type of structure this is. */
+	const SJME_StructureType structuretype;
+	
+	/** The number of fields. */
+	const jint count;
+	
+	/** The fields. */
+	const SJME_Field* fields[];
+} SJME_Fields;
+
+/**
+ * Methods of a class.
+ *
+ * @since 2016/07/22
+ */
+typedef struct SJME_Methods
+{
+	/** The type of structure this is. */
+	const SJME_StructureType structuretype;
+	
+	/** The number of methods. */
+	const jint count;
+	
+	/** The methods. */
+	const SJME_Method* methods[];
+} SJME_Methods;
+
+/**
  * This represents a class which is available to SquirrelJME.
  *
  * @since 2016/07/18
@@ -175,6 +317,15 @@ typedef struct SJME_Class
 	
 	/** The super class name. */
 	const SJME_String* const superclass;
+	
+	/** Implemented interfaces. */
+	const SJME_Interfaces* const interfaces;
+	
+	/** Fields. */
+	const SJME_Fields* const fields;
+	
+	/** Methods. */
+	const SJME_Methods* const methods;
 	
 	/** Should always be zero. */
 	const jint zero;

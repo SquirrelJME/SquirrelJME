@@ -4,3 +4,16 @@
 
 Need to include some more class details.
 
+## 08:05
+
+When it comes to methods and fields, I should have precomposed descriptors for
+them so that they do not need to be parsed at the start. However for the C code
+and simplicity I will do that in C code.
+
+## 08:08
+
+That is pretty much it, there are just fields and methods. The main work will
+be going through the byte code. However once that is done I would have to
+delve into the initialization and then the class library. My first goal would
+be to write a simple string print.
+
