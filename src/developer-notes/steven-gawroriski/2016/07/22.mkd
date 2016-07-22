@@ -102,3 +102,8 @@ code at all that knows about linking the `os-` or the CPU JITs.
 
 Then the way to invoke the emulator can be used with the builder support also.
 
+## 15:36
+
+Also, I suppose I will remove the PowerPC and Linux related stuff, none of
+that code exists yet and will just get in the way for the most part.
+
