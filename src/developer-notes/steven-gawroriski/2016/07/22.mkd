@@ -82,3 +82,8 @@ package. To reduce duplication everywhere, the ELF linker can be very generic.
 Then this way, the extra files which are used in the output do not have to
 needlessly be included in the namespace.
 
+## 15:13
+
+I can also just remove the C based JIT output. Instead I can have a generic
+JIT serialization which could be used by an interpreter.
+

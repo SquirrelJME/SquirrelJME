@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: jit-traditional
+X-SquirrelJME-Name: jit-generic-traditional
 X-SquirrelJME-UUID: 47bb5db9-d0a5-479a-8e63-7ec5e214a64d
 X-SquirrelJME-Depends: jit
 X-SquirrelJME-Error: AW

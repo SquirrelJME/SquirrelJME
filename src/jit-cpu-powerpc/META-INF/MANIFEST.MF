@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: jit-powerpc
+X-SquirrelJME-Name: jit-cpu-powerpc
 X-SquirrelJME-UUID: 3340310c-5528-4c1c-8b98-b142d450e96f
-X-SquirrelJME-Depends: jit, jit-traditional
+X-SquirrelJME-Depends: jit, jit-generic-traditional
 X-SquirrelJME-Error: EE
 LIBlet-Title: Just-In-Time Compiler (PowerPC)
 LIBlet-Vendor: Steven Gawroriski
