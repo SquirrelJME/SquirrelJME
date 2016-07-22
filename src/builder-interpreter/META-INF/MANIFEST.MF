@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: builder-interpreter
 X-SquirrelJME-UUID: 7cc36759-6cd1-4672-b576-0f4046986aa6
-X-SquirrelJME-Depends: builder, os-interpreter
+X-SquirrelJME-Depends: builder, os-interpreter, jit-interpreter,
+ exe-interpreter
 X-SquirrelJME-Error: BT
 LIBlet-Title: Builder (Interpreter)
 LIBlet-Vendor: Steven Gawroriski
