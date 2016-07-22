@@ -37,7 +37,7 @@ public class BuildDirectory
 	protected final ZipFile zip;
 	
 	/** The owning builder. */
-	protected final Builder builder;
+	protected final BuilderCacheHelper builder;
 	
 	/**
 	 * Initializes the build directory.
@@ -48,7 +48,7 @@ public class BuildDirectory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	BuildDirectory(Builder __b, String __ns)
+	BuildDirectory(BuilderCacheHelper __b, String __ns)
 		throws IOException, NullPointerException
 	{
 		// Check

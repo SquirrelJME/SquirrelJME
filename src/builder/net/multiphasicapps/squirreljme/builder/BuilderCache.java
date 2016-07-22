@@ -25,6 +25,7 @@ import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.JITNamespaceContent;
 
 /**
  * This is the cache manager for builder blobs that are later compiled into
@@ -33,7 +34,7 @@ import net.multiphasicapps.squirreljme.jit.JITException;
  * @since 2016/07/18
  */
 public class BuilderCache
-	implements JITCacheCreator
+	implements JITCacheCreator, JITNamespaceContent
 {
 	/** The owning builder. */
 	protected final BuilderCacheHelper builder;
@@ -117,6 +118,22 @@ public class BuilderCache
 			// Rethrow
 			throw e;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/07
+	 */
+	@Override
+	public JITNamespaceContent.Directory directoryOf(String __ns)
+		throws IOException, JITException, NullPointerException
+	{
+		// Check
+		if (__ns == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		return new BuildDirectory(this.builder, __ns);
 	}
 	
 	/**

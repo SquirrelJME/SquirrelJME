@@ -28,7 +28,7 @@ public class BuildEntry
 	protected final ZipEntry entry;
 	
 	/** The owning builder. */
-	protected final Builder builder;
+	protected final BuilderCacheHelper builder;
 	
 	/**
 	 * Initializes the build entry.
@@ -38,7 +38,7 @@ public class BuildEntry
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	BuildEntry(Builder __b, ZipEntry __ze)
+	BuildEntry(BuilderCacheHelper __b, ZipEntry __ze)
 		throws NullPointerException
 	{
 		// Check

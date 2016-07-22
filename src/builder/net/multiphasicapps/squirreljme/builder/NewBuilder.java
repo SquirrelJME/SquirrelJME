@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
@@ -120,6 +121,9 @@ public class NewBuilder
 		// to the target. (The build configuration)}
 		if (jitconf == null)
 			throw new IllegalStateException(String.format("DW0l %s", config));
+		
+		// Setup namespace processor
+		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jitconf, cache);
 		
 		throw new Error("TODO");
 	}
