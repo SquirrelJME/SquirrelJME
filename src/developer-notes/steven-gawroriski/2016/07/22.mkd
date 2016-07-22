@@ -87,3 +87,14 @@ needlessly be included in the namespace.
 I can also just remove the C based JIT output. Instead I can have a generic
 JIT serialization which could be used by an interpreter.
 
+## 15:28
+
+The builder also needs a way to list all of the available systems, variants,
+and other such things. Since all stuff is included optionally that can simply
+be done by scanning the package list and then calling the JITs and output
+supports. So on that note, `os-` only contains operating system support. There
+may optionally be a JIT bound to the operating system (via `jit-base`). Then
+for SquirrelJME specific output, there would be `builder-os-arch` essentially
+(which would be optional dependencies also). Then this way, there would be no
+code at all that knows about linking the `os-` or the CPU JITs.
+
