@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: os-interpreter
 X-SquirrelJME-UUID: bd5325b4-0c29-45c9-bc5b-a2d371eecb1f
-X-SquirrelJME-Depends: jit, zip-reader-block, package-manager, jvm
+X-SquirrelJME-Depends: jit-base
 X-SquirrelJME-Error: EF
 X-SquirrelJME-Target-OS: interpreter.interpreter.generic
 Main-Class: net.multiphasicapps.squirreljme.jit.interpreter.Main
-LIBlet-Title: JIT Interpreter Test
+LIBlet-Title: Operating System (Interpreter)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains an interpreter which is 
- associated with a JIT. This is primarily used to test 
- whether the JIT operates correctly.
+LIBlet-Description: This contains an interpreter which can 
+ parse the output of a serial JIT for interpretation.
 

@@ -1,7 +1,9 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: os-linux
 X-SquirrelJME-UUID: eaa29b95-cc96-4250-8815-a0ed65a838fe
-X-SquirrelJME-Depends: jvm, jit-traditional
+X-SquirrelJME-Depends: jvm
+X-SquirrelJME-Optional: exe-elf
+X-SquirrelJME-Target-EXE: exe-elf
 X-SquirrelJME-Error: CG
 LIBlet-Title: Linux OS Support
 LIBlet-Vendor: Steven Gawroriski

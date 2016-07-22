@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: exe-elf
+X-SquirrelJME-UUID: d29593aa-8f4f-4222-bb76-cb92731ed22d
+X-SquirrelJME-Depends: exe
+X-SquirrelJME-Error: BS
+LIBlet-Title: Executable Linker (ELF)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains the executable linker 
+ which generates ELF binaries.
+

@@ -5,7 +5,7 @@ X-SquirrelJME-Depends: cldc-full, zip-reader-block, jvm,
  package-manager, util-unmodifiable, jit, emulator,
  basic-assets, zip-writer-stream
 X-SquirrelJME-Optional: os-linux-powerpc,
- os-lang-c
+ os-interpreter
 X-SquirrelJME-Error: DW
 Main-Class: net.multiphasicapps.sjmebuilder.Main
 LIBlet-Title: SquirrelJME Builder
