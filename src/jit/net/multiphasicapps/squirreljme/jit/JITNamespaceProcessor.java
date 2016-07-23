@@ -163,7 +163,7 @@ public class JITNamespaceProcessor
 		throws IOException
 	{
 		// Open output
-		try (OutputStream ros = __nsw.beginResource(__name))
+		try (JITResourceWriter ros = __nsw.beginResource(__name))
 		{
 			// Read loop
 			for (;;)

@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 
 /**
  * This writes the namespace which is later interpreted.
@@ -107,7 +108,7 @@ public class InterpreterNamespaceWriter
 	 * @since 2016/07/22
 	 */
 	@Override
-	public OutputStream beginResource(String __name)
+	public JITResourceWriter beginResource(String __name)
 		throws JITException, NullPointerException
 	{
 		// Check

@@ -53,7 +53,7 @@ public interface JITNamespaceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
-	public abstract OutputStream beginResource(String __name)
+	public abstract JITResourceWriter beginResource(String __name)
 		throws JITException, NullPointerException;
 	
 	/**
