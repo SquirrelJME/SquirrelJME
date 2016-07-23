@@ -21,6 +21,8 @@ import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
+import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessorProgress;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -336,13 +338,29 @@ public class NewBuilder
 			throw new IllegalStateException("DW0k");
 		rv.addAll(jvmproj.recursiveDependencies());
 		
+		// Include any target package groups in the JVM classpath
+		BuildConfig config = this.config;
+		String tpg = this.targetbuilder.targetPackageGroup(config);
+		for (PackageInfo pi : packagelist.values())
+		{
+			// Get manifest
+			JavaManifest man = pi.manifest();
+			if (man == null)
+				continue;
+			
+			// If the target set matches, include everything
+			JavaManifestAttributes attr = man.getMainAttributes();
+			String val = attr.get("X-SquirrelJME-Target");
+			if (val != null && val.trim().equals(tpg))
+				rv.addAll(pi.recursiveDependencies());
+		}
+		
 		// Tests do not need to be a part of the boot classpath, so the
 		// boot classpath is just what is currently in the build list
 		Set<PackageInfo> bootclasspath = new LinkedHashSet<>(rv);
 		this._bootclasspath = bootclasspath;
 		
 		// Include any test possible?
-		BuildConfig config = this.config;
 		if (config.includeTests())
 		{
 			// Only include if they were actually found

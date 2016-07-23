@@ -92,5 +92,21 @@ public class InterpreterTargetBuilder
 		// Just check the architecture
 		return __conf.triplet().architecture().equals("interpreter");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/23
+	 */
+	@Override
+	public String targetPackageGroup(BuildConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Always just interpreter
+		return "interpreter";
+	}
 }
 

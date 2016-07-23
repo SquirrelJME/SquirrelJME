@@ -113,6 +113,19 @@ public abstract class TargetBuilder
 		throws NullPointerException;
 	
 	/**
+	 * When determining the packages for inclusion, for a given configuration
+	 * always include packages that contain a matching
+	 * {@code X-SquirrelJME-Target} manifest key value.
+	 *
+	 * @param __conf The configuration to target.
+	 * @return The inclusion group to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/23
+	 */
+	public abstract String targetPackageGroup(BuildConfig __conf)
+		throws NullPointerException;
+	
+	/**
 	 * Is the JIT supported for this target?
 	 *
 	 * @return {@code true} if the JIT is supported.
