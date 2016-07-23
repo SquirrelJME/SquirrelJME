@@ -164,7 +164,15 @@ public class InterpreterClassWriter
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// {@squirreljme.error BV0b JIT invocation is not in order.
+			// (The order that was attempted to be used; The expected order)}
+			JITCompilerOrder order = this._order;
+			if (order != __exp)
+				throw new JITException(String.format("BV0b %s %s", __exp,
+					order));
+			
+			// Set next
+			this._order = order.next();
 		}
 	}
 }
