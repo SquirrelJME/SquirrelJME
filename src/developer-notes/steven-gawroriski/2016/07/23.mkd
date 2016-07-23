@@ -9,3 +9,13 @@ used by anything and it has no JIT reliance.
 
 `JITException` also belongs there also.
 
+## 10:12
+
+Just need to write the string table for the namespaces and the start of the
+contents. The output binary format is decoded from the end first to find
+contents. This makes it simple to output. Then after the stuff is written,
+despite having a partial class writer I can work on the base for the emulator
+which will decode the interpreted binary and then run it. This way I can test
+the output as I work on it. I would suppose for simplicity that the interpreter
+just parses everything and then dumps the binary.
+

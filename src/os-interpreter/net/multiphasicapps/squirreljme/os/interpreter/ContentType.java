@@ -23,6 +23,9 @@ public enum ContentType
 	/** A class. */
 	CLASS,
 	
+	/** The string table. */
+	STRING_TABLE,
+	
 	/** End. */
 	;
 }

@@ -93,6 +93,9 @@ public class InterpreterNamespaceWriter
 		{
 			throw new JITException("BV02", e);
 		}
+		
+		// There is always a blank string in the table
+		interpreterAddString("");
 	}
 	
 	/**
@@ -114,6 +117,11 @@ public class InterpreterNamespaceWriter
 			// existing namespace content is being written.}
 			if (this._now != null)
 				throw new JITException("BV04");
+			
+			// {@squirreljme.error BV0g Cannot begin a new class because the
+			// namespace writer is closed.}
+			if (this._closed)
+				throw new JITException("BV0g");
 			
 			// Setup writer
 			InterpreterClassWriter rv = new InterpreterClassWriter(this, __cn);
@@ -142,6 +150,11 @@ public class InterpreterNamespaceWriter
 			if (this._now != null)
 				throw new JITException("BV05");
 			
+			// {@squirreljme.error BV0h Cannot begin a new resource because the
+			// namespace writer is closed.}
+			if (this._closed)
+				throw new JITException("BV0h");
+			
 			// Setup writer
 			InterpreterResourceWriter rv = new InterpreterResourceWriter(this,
 				__name);
@@ -161,18 +174,40 @@ public class InterpreterNamespaceWriter
 		// Lock
 		synchronized (this.lock)
 		{
-			// Finish writing if not closed
-			if (!this._closed)
-			{
-				// Close
-				this._closed = true;
-				
-				throw new Error("TODO");
-			}
+			// {@squirreljme.error BV0i Cannot close the namespace writer
+			// because a content is being written.}
+			if (this._now != null)
+				throw new JITException("BV0i");
 			
-			// Close output
+			// Finish writing if not closed
+			DataOutputStream output = this.output;
 			try
 			{
+				// Write the string table
+				if (!this._closed)
+				{
+					// Close
+					this._closed = true;
+				
+					// Start of the string table
+					try (StringTableWriter stw = new StringTableWriter(this,
+						this._strings))
+					{
+						// Set current
+						this._now = stw;
+						
+						// Write this
+						stw.write();
+					}
+					
+					// Clear the now always
+					finally
+					{
+						this._now = null;
+					}
+				}
+				
+				// Close output
 				this.output.close();
 			}
 			

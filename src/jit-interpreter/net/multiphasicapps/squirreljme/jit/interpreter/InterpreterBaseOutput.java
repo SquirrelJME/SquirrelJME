@@ -125,7 +125,7 @@ public abstract class InterpreterBaseOutput
 					output.writeInt(nsw.interpreterAddString(this.name));
 					
 					// The type is just the ordinal value
-					output.writeByte(contenttype.ordinal());
+					output.writeInt(contenttype.ordinal());
 					
 					// Close on the upper end
 					nsw.__close(this);
