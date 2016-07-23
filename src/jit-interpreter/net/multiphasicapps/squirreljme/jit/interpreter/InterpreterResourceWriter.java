@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.interpreter;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 
@@ -22,9 +23,6 @@ public class InterpreterResourceWriter
 	extends InterpreterBaseOutput
 	implements JITResourceWriter
 {
-	/** The resource being written. */
-	protected final String resourcename;
-	
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
@@ -40,14 +38,7 @@ public class InterpreterResourceWriter
 		String __rn)
 		throws NullPointerException
 	{
-		super(__nsw);
-		
-		// Check
-		if (__rn == null)
-			throw new NullPointerException("NARG");
-		
-		// The resource name
-		this.resourcename = __rn;
+		super(__nsw, __rn);
 	}
 	
 	/**
@@ -83,10 +74,32 @@ public class InterpreterResourceWriter
 	public void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, JITException, NullPointerException
 	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int n = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > n)
+			throw new IndexOutOfBoundsException("IOOB");
+		
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO"); 
+			// {@squirreljme.error BV08 Write of resource after closed.}
+			if (isClosed())
+				throw new JITException("BV08");
+			
+			// Send in the data
+			try
+			{
+				super.output.write(__b, __o, __l);
+			}
+			
+			// {@squirreljme.error BV07 Failed to write the resource to the
+			// output.}
+			catch (IOException e)
+			{
+				throw new JITException("BV07", e);
+			}
 		}
 	}
 }

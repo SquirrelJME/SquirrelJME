@@ -34,6 +34,9 @@ public abstract class InterpreterBaseOutput
 	/** The position where the data starts. */
 	protected final int datastart;
 	
+	/** The name to write. */
+	protected final String name;
+	
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
@@ -41,14 +44,16 @@ public abstract class InterpreterBaseOutput
 	 * Initializes the base output.
 	 *
 	 * @param __nsw The owning namespace writer.
+	 * @param __name The name of thing being written.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
-	public InterpreterBaseOutput(InterpreterNamespaceWriter __nsw)
+	public InterpreterBaseOutput(InterpreterNamespaceWriter __nsw,
+		String __name)
 		throws NullPointerException
 	{
 		// Check
-		if (__nsw == null)
+		if (__nsw == null || __name == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -56,6 +61,7 @@ public abstract class InterpreterBaseOutput
 		this.lock = __nsw.interpreterLock();
 		DataOutputStream dos = __nsw.interpreterOutput();
 		this.output = dos;
+		this.name = __name;
 		
 		// Get starting point
 		synchronized (this.lock)
@@ -95,6 +101,17 @@ public abstract class InterpreterBaseOutput
 				throw new Error("TODO");
 			}
 		}
+	}
+	
+	/**
+	 * Is writing closed?
+	 *
+	 * @return {@code true} if writing is closed.
+	 * @since 2016/07/23
+	 */
+	public final boolean isClosed()
+	{
+		return this._closed;
 	}
 }
 

@@ -47,7 +47,7 @@ public class InterpreterClassWriter
 		ClassNameSymbol __cn)
 		throws NullPointerException
 	{
-		super(__nsw);
+		super(__nsw, String.valueOf(__cn));
 		
 		// Check
 		if (__cn == null)
