@@ -10,11 +10,14 @@
 
 package net.multiphasicapps.squirreljme.jit.interpreter;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITClassFlag;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.os.interpreter.ContentType;
 
 /**
@@ -76,7 +79,22 @@ public class InterpreterClassWriter
 			// Check order
 			interpreterOrder(JITCompilerOrder.CLASS_FLAGS);
 			
-			throw new Error("TODO"); 
+			// Build value
+			int v = 0;
+			for (JITClassFlag f : __cf)
+				v |= (1 << f.ordinal());
+			
+			// Write
+			try
+			{
+				this.output.writeInt(v);
+			}
+			
+			// {@squirreljme.error BV0c Failed to write the class flags.}
+			catch (IOException e)
+			{
+				throw new JITException("BV0c", e);
+			}
 		}
 	}
 	
@@ -97,7 +115,18 @@ public class InterpreterClassWriter
 				// Mark closed
 				this._closed = true;
 				
-				throw new Error("TODO");
+				// Write end of class
+				try
+				{
+					this.output.writeInt(-1);
+				}
+				
+				// {@squirreljme.error BV0d Failed to write the end of the
+				// class.}
+				catch (IOException e)
+				{
+					throw new JITException("BV0d", e);
+				}
 			}
 			
 			// Super handle
@@ -123,7 +152,27 @@ public class InterpreterClassWriter
 			// Check order
 			interpreterOrder(JITCompilerOrder.INTERFACE_CLASS_NAMES);
 			
-			throw new Error("TODO"); 
+			// Need to add many strings
+			InterpreterNamespaceWriter nsw = this.writer;
+			int n = __ins.length;
+			
+			// Number of interfaces
+			DataOutputStream output = this.output;
+			try
+			{
+				output.writeInt(n);
+			
+				// The interface string IDs
+				for (int i = 0; i < n; i++)
+					output.writeInt(nsw.interpreterAddString(
+						__ins[i].toString()));
+			}
+			
+			// {@squirreljme.error BV0e Failed to write the interfaces.}
+			catch (IOException e)
+			{
+				throw new JITException("BV0e", e);
+			}
 		}
 	}
 	
@@ -141,7 +190,25 @@ public class InterpreterClassWriter
 			// Check order
 			interpreterOrder(JITCompilerOrder.SUPER_CLASS_NAME);
 			
-			throw new Error("TODO"); 
+			try
+			{
+				// Write -1 if there is none, since zero could be a valid
+				// string index
+				DataOutputStream output = this.output;
+				if (__cn == null)
+					output.writeInt(-1);
+			
+				// Otherwise the string index
+				else
+					output.writeInt(this.writer.interpreterAddString(
+						__cn.toString()));
+			}
+			
+			// {@squirreljme.error BV0f Failed to write the super class.}
+			catch (IOException e)
+			{
+				throw new JITException("BV0f", e);
+			}
 		}
 	}
 	
