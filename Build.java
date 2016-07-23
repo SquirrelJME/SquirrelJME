@@ -194,7 +194,7 @@ public class Build
 		// Get the command to use
 		String command = __args.pollFirst();
 		if (command == null)
-			command = "target";
+			command = "native";
 		
 		// Depends on the command
 		Project pp;
@@ -215,25 +215,6 @@ public class Build
 				__launch(terptarget, getProject("test-all"), __args);
 				break;
 				
-				// Target a specific system (with optional interpreter)
-			case "interpreter-interpreter-target":
-				terptarget++;
-			case "interpreter-target":
-				terptarget++;
-			case "target":
-				// Build hairball
-				__build((pp = getProject("squirreljme-builder")));
-				
-				// Add output and source directories
-				__args.offerFirst("source.path=" +
-					PROJECT_ROOT.resolve("src"));
-				__args.offerFirst("jar.path=" +
-					System.getProperty("user.dir"));
-				
-				// Launch it
-				__launch(terptarget, pp, __args);
-				break;
-			
 				// Launch a program
 			case "interpreter-interpreter-launch":
 				terptarget++;
