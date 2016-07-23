@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.interpreter;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.os.interpreter.ContentType;
 
@@ -95,7 +96,8 @@ public abstract class InterpreterBaseOutput
 				
 				// Get the end position, to determine the size
 				int datastart = this.datastart;
-				int dataend = this.output.size();
+				DataOutputStream output = this.output;
+				int dataend = output.size();
 				
 				// {@squirreljme.error BV06 The size of a given content is
 				// negative. It either ends before it starts or the namespace
@@ -104,7 +106,37 @@ public abstract class InterpreterBaseOutput
 				if (datasize < 0)
 					throw new JITException(String.format("BV06 %s", datasize));
 				
-				throw new Error("TODO");
+				// Get content type
+				ContentType contenttype = this.contenttype;
+				
+				// Write content entry link
+				try
+				{
+					// Round to a multiple of 4
+					while ((output.size() & 3) != 0)
+						output.writeByte(0);
+					
+					// Write the content start and size
+					output.writeInt(datastart);
+					output.writeInt(datasize);
+					
+					// Write string
+					InterpreterNamespaceWriter nsw = this.writer;
+					output.writeInt(nsw.interpreterAddString(this.name));
+					
+					// The type is just the ordinal value
+					output.writeByte(contenttype.ordinal());
+					
+					// Close on the upper end
+					nsw.__close(this);
+				}
+				
+				// {@squirreljme.error BV09 Failed to write content entry
+				// link.}
+				catch (IOException e)
+				{
+					throw new JITException("BV09", e);
+				}
 			}
 		}
 	}

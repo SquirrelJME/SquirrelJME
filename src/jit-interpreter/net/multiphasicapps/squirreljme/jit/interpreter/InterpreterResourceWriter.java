@@ -58,8 +58,6 @@ public class InterpreterResourceWriter
 			{
 				// Mark closed
 				this._closed = true;
-				
-				throw new Error("TODO");
 			}
 			
 			// Super handle

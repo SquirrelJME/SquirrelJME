@@ -220,5 +220,33 @@ public class InterpreterNamespaceWriter
 	{
 		return this.output;
 	}
+	
+	/**
+	 * Closes the currently being written output.
+	 *
+	 * @param __ibo The output to close.
+	 * @throws JITException If the close could not be indicated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/23
+	 */
+	final void __close(InterpreterBaseOutput __ibo)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__ibo == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BV0a Could not close the current output.}
+			InterpreterBaseOutput now = this._now;
+			if (now != __ibo)
+				throw new JITException("BV0a");
+			
+			// Clear
+			this._now = null;
+		}
+	}
 }
 
