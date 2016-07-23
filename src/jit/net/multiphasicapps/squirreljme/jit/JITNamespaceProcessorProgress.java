@@ -17,5 +17,28 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public interface JITNamespaceProcessorProgress
 {
+	/**
+	 * Reports that a class is being procesed.
+	 *
+	 * @param __cl The class being processed.
+	 * @since 2016/07/23
+	 */
+	public abstract void progressClass(String __cl);
+	
+	/**
+	 * Reports that a namespace is being processed.
+	 *
+	 * @param __ns The namespace being processed.
+	 * @since 2016/07/23
+	 */
+	public abstract void progressNamespace(String __ns);
+	
+	/**
+	 * Reports that a resource is being processed.
+	 *
+	 * @param __rs The resource being processed.
+	 * @since 2016/07/23
+	 */
+	public abstract void progressResource(String __rs);
 }
 

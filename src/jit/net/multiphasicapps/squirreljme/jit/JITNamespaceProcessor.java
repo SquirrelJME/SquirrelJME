@@ -116,6 +116,11 @@ public class JITNamespaceProcessor
 		// Setup output for a given namespace
 		JITOutput output = this.output;
 		
+		// Progress
+		JITNamespaceProcessorProgress progress = this.progress;
+		if (progress != null)
+			progress.progressNamespace(__ns);
+		
 		// Go through the directory for the given namespace
 		// Also create the cached output if it was requested
 		try (JITNamespaceWriter nsw = output.beginNamespace(__ns);
@@ -135,7 +140,14 @@ public class JITNamespaceProcessor
 				{
 					// Recompiling class file with JIT?
 					if (isclass)
+					{
+						// Progress
+						if (progress != null)
+							progress.progressClass(name);
+						
+						// Handle it
 						__doClass(output, nsw, is);
+					}
 				
 					// Copying resource data
 					else
@@ -187,6 +199,11 @@ public class JITNamespaceProcessor
 		String __name, InputStream __is)
 		throws IOException
 	{
+		// Progress
+		JITNamespaceProcessorProgress progress = this.progress;
+		if (progress != null)
+			progress.progressResource(__name);
+		
 		// Open output
 		try (JITResourceWriter ros = __nsw.beginResource(__name))
 		{

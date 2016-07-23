@@ -18,6 +18,7 @@ import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
+import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessorProgress;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
@@ -26,7 +27,7 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
  * @since 2016/07/22
  */
 public class NewBuilder
-	implements BuilderCacheHelper
+	implements BuilderCacheHelper, JITNamespaceProcessorProgress
 {
 	/** Logging output. */
 	protected final PrintStream out;
@@ -124,7 +125,8 @@ public class NewBuilder
 			throw new IllegalStateException(String.format("DW0l %s", config));
 		
 		// Setup namespace processor
-		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jitconf, cache);
+		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jitconf, cache,
+			this);
 		
 		// Process all packages to be built
 		for (PackageInfo pi : buildprojects)
@@ -141,6 +143,42 @@ public class NewBuilder
 	public PackageList packageList()
 	{
 		return this.packagelist;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/23
+	 */
+	@Override
+	public void progressClass(String __cl)
+	{
+		// Print it
+		if (__cl != null)
+			this.out.println(__cl);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/23
+	 */
+	@Override
+	public void progressNamespace(String __ns)
+	{
+		// Print it
+		if (__ns != null)
+			this.out.println(__ns);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/23
+	 */
+	@Override
+	public void progressResource(String __rs)
+	{
+		// Print it
+		if (__rs != null)
+			this.out.println(__rs);
 	}
 	
 	/**
