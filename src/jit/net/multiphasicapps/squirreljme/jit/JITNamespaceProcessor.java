@@ -41,6 +41,9 @@ public class JITNamespaceProcessor
 	/** Contents for namespaces. */
 	protected final JITNamespaceContent contents;
 	
+	/** Progress indicator. */
+	protected final JITNamespaceProcessorProgress progress;
+	
 	/** The list of processed namespaces. */
 	private final List<String> _processed =
 		new LinkedList<>();
@@ -49,6 +52,7 @@ public class JITNamespaceProcessor
 	 * Initializes the namespace processor.
 	 *
 	 * @param __conf The JIT configuration to use.
+	 * @param __cont The content provider.
 	 * @throws JITException If no output could be created with the given
 	 * configuration.
 	 * @throws NullPointerException On null arguments.
@@ -58,6 +62,25 @@ public class JITNamespaceProcessor
 		JITNamespaceContent __cont)
 		throws JITException, NullPointerException
 	{
+		this(__conf, __cont, null);
+	}
+	
+	/**
+	 * Initializes the namespace processor.
+	 *
+	 * @param __conf The JIT configuration to use.
+	 * @param __cont The content provider.
+	 * @param __prog Progrress indicator for the processor.
+	 * @throws JITException If no output could be created with the given
+	 * configuration.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __prog}.
+	 * @since 2016/07/23
+	 */
+	public JITNamespaceProcessor(JITOutputConfig.Immutable __conf,
+		JITNamespaceContent __cont, JITNamespaceProcessorProgress __prog)
+		throws JITException, NullPointerException
+	{
 		// Check
 		if (__conf == null || __cont == null)
 			throw new NullPointerException("NARG");
@@ -65,6 +88,7 @@ public class JITNamespaceProcessor
 		// Set
 		this.config = __conf;
 		this.contents = __cont;
+		this.progress = __prog;
 		
 		// {@squirreljme.error ED0h No output could be created for the
 		// given configuration. (The configuration)}
