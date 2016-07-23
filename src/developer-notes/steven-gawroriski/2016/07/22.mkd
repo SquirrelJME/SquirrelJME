@@ -147,3 +147,13 @@ For the resource writer, I need to remove the `OutputStream` and instead use
 another interface which does the same thing. This way JITs can have base
 classes for output, which would be reasonable.
 
+## 22:56
+
+So reaching where I previously was (in the C code) should be quite simple. Also
+the new classes for writing are much cleaner. At least for the interpreter I
+do not need to worry about potential forward declaration due to late binding
+poentially being used. Namespace initialization would likely be in the order
+of last to first. At least when it comes to the interpreter, the emulator can
+handle everything. Then once I have enough to print a message, I will make a
+video and post it.
+
