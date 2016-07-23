@@ -149,9 +149,6 @@ public class NewBuilder
 		// Set
 		PrintStream out = this.out;
 		
-		// Note
-		out.println("Generating output distribution...");
-		
 		throw new Error("TODO");
 	}
 	
