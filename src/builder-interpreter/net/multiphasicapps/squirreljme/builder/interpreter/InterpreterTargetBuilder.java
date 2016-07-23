@@ -12,11 +12,13 @@ package net.multiphasicapps.squirreljme.builder.interpreter;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This is the builder which can target the interpreter.
@@ -52,8 +54,12 @@ public class InterpreterTargetBuilder
 			__conf == null)
 			throw new NullPointerException("NARG");
 		
-		//
-		throw new Error("TODO");
+		// Create binary
+		try (OutputStream os = __zsw.nextEntry("squirreljme.int",
+			ZipCompressionType.DEFAULT_COMPRESSION))
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

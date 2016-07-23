@@ -35,3 +35,8 @@ It would be best if the target builder wrote the extra ZIP entries it may need
 along with the binary rather than letting the `NewBuilder` do that. This way
 if a target requires more files they can be included.
 
+## 19:10
+
+I actually need to specify extra packages to be included, such as the actual
+operating system support code.
+
