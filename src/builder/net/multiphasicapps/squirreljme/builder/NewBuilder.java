@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessorProgress;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -196,8 +197,8 @@ public class NewBuilder
 					wns[i] = cache.openCache(name);
 				}
 				
-				if (true)
-					throw new Error("TODO");
+				// Generate
+				this.targetbuilder.linkBinary(zsw, nsns, wns, this.config);
 			}
 			
 			// Close everything
@@ -231,7 +232,30 @@ public class NewBuilder
 					throw fail;
 			}
 			
-			throw new Error("TODO");
+			// Include basic assets
+			byte[] buf = new byte[64];
+			for (BasicAsset b : BasicAsset.getAssets())
+			{
+				String an = b.name();
+			
+				// Create entry
+				try (InputStream is = b.open();
+					OutputStream os = zsw.nextEntry(an,
+						ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					for (;;)
+					{
+						int rc = is.read(buf);
+						
+						// EOF?
+						if (rc < 0)
+							break;
+						
+						// Write
+						os.write(buf, 0, rc);
+					}
+				}
+			}
 		}
 	}
 	
