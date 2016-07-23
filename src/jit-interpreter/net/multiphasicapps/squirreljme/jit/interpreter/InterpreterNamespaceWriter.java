@@ -107,7 +107,10 @@ public class InterpreterNamespaceWriter
 			if (this._now != null)
 				throw new JITException("BV04");
 			
-			throw new Error("TODO");
+			// Setup writer
+			InterpreterClassWriter rv = new InterpreterClassWriter(this, __cn);
+			this._now = rv;
+			return rv;
 		}
 	}
 	
@@ -131,7 +134,11 @@ public class InterpreterNamespaceWriter
 			if (this._now != null)
 				throw new JITException("BV05");
 			
-			throw new Error("TODO");
+			// Setup writer
+			InterpreterResourceWriter rv = new InterpreterResourceWriter(this,
+				__name);
+			this._now = rv;
+			return rv;
 		}
 	}
 	

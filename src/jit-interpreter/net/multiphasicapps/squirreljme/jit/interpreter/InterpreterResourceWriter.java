@@ -10,58 +10,44 @@
 
 package net.multiphasicapps.squirreljme.jit.interpreter;
 
-import java.io.DataOutputStream;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 
 /**
- * This class acts as the base for interpreter outputs to either classes or
- * resources.
+ * This write resources to the output.
  *
  * @since 2016/07/22
  */
-public abstract class InterpreterBaseOutput
-	implements AutoCloseable
+public class InterpreterResourceWriter
+	extends InterpreterBaseOutput
+	implements JITResourceWriter
 {
-	/** The owning namespace writer. */
-	protected final InterpreterNamespaceWriter writer;
-	
-	/** Lock. */
-	protected final Object lock;
-	
-	/** The output. */
-	protected final DataOutputStream output;
-	
-	/** The position where the data starts. */
-	protected final int datastart;
+	/** The resource being written. */
+	protected final String resourcename;
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
 	/**
-	 * Initializes the base output.
+	 * Initializes the resource writer.
 	 *
 	 * @param __nsw The owning namespace writer.
+	 * @param __rn The resource being written.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
-	public InterpreterBaseOutput(InterpreterNamespaceWriter __nsw)
+	public InterpreterResourceWriter(InterpreterNamespaceWriter __nsw,
+		String __rn)
 		throws NullPointerException
 	{
+		super(__nsw);
+		
 		// Check
-		if (__nsw == null)
+		if (__rn == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.writer = __nsw;
-		this.lock = __nsw.interpreterLock();
-		DataOutputStream dos = __nsw.interpreterOutput();
-		this.output = dos;
-		
-		// Get starting point
-		synchronized (this.lock)
-		{
-			this.datastart = dos.size();
-		}
+		// The resource name
+		this.resourcename = __rn;
 	}
 	
 	/**
@@ -78,11 +64,29 @@ public abstract class InterpreterBaseOutput
 			// Handle closing
 			if (!this._closed)
 			{
-				// Set closed
+				// Mark closed
 				this._closed = true;
 				
 				throw new Error("TODO");
 			}
+			
+			// Super handle
+			super.close();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/22
+	 */
+	@Override
+	public void write(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, JITException, NullPointerException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO"); 
 		}
 	}
 }

@@ -21,14 +21,6 @@ public interface JITClassWriter
 	extends AutoCloseable
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/06
-	 */
-	@Override
-	public abstract void close()
-		throws JITException;
-	
-	/**
 	 * Records the class flags.
 	 *
 	 * @param __cf The class flags.
@@ -38,6 +30,14 @@ public interface JITClassWriter
 	 */
 	public abstract void classFlags(JITClassFlags __cf)
 		throws JITException, NullPointerException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/06
+	 */
+	@Override
+	public abstract void close()
+		throws JITException;
 	
 	/**
 	 * Records class interfaces.
