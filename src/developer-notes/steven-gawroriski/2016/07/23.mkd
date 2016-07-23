@@ -19,3 +19,8 @@ which will decode the interpreted binary and then run it. This way I can test
 the output as I work on it. I would suppose for simplicity that the interpreter
 just parses everything and then dumps the binary.
 
+## 10:27
+
+Something that could be useful is a kind of number of classes written as a kind
+of feedback from the `JITNamespaceProcessor`.
+
