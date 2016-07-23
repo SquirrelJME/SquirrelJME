@@ -10,9 +10,13 @@
 
 package net.multiphasicapps.squirreljme.builder.interpreter;
 
+import java.io.InputStream;
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * This is the builder which can target the interpreter.
@@ -32,6 +36,24 @@ public class InterpreterTargetBuilder
 		super(false,
 			"interpreter-32+interpreter,undefined.interpreter.interpreter",
 			"SquirrelJME Test Interpreter");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/23
+	 */
+	@Override
+	public void linkBinary(ZipStreamWriter __zsw, String[] __names,
+		InputStream[] __blobs, BuildConfig __conf)
+		throws JITException, IOException, NullPointerException
+	{
+		// Check
+		if (__zsw == null || __names == null || __blobs == null ||
+			__conf == null)
+			throw new NullPointerException("NARG");
+		
+		//
+		throw new Error("TODO");
 	}
 	
 	/**

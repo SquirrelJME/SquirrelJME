@@ -10,9 +10,13 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * This is the base class for builders which can generate binaries for a given
@@ -63,6 +67,24 @@ public abstract class TargetBuilder
 		else
 			this._suggestions = new TargetSuggestion[0];
 	}
+	
+	/**
+	 * Links together a binary which is capable of running on the target and
+	 * places it into the given ZIP. Other files that are important to the
+	 * target system may also be included.
+	 *
+	 * @param __zsw The output ZIP file.
+	 * @param __names The names of the namespaces to write.
+	 * @param __blobs The namespace blob input streams.
+	 * @param __conf The build configuration.
+	 * @throws JITException On link errors.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/23
+	 */
+	public abstract void linkBinary(ZipStreamWriter __zsw, String[] __names,
+		InputStream[] __blobs, BuildConfig __conf)
+		throws JITException, IOException, NullPointerException;
 	
 	/**
 	 * This potentially modifies and sets the initial configuration state which
