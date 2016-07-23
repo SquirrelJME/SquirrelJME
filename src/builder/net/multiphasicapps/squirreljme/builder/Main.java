@@ -11,11 +11,16 @@
 package net.multiphasicapps.squirreljme.builder;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
@@ -27,6 +32,8 @@ import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * This is the main entry point for the builder.
@@ -35,6 +42,18 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
  */
 public class Main
 {
+	/** The output ZIP file name. */
+	public static final Path OUTPUT_ZIP_NAME =
+		Paths.get("squirreljme.zip");
+	
+	/** The format used for duplicate output names. */
+	public static final String OUTPUT_ZIP_FORMAT =
+		"squirreljme-%d.zip";
+	
+	/** The number of ZIPs to attempt to create before ultimately failing. */
+	private static final int _MAX_ZIP_TRIES =
+		1024;
+	
 	/**
 	 * Main entry point.
 	 *
@@ -130,6 +149,7 @@ public class Main
 		// Could fail
 		PackageList plist;
 		Path tempdir = null;
+		Path[] distoutpath = new Path[1];
 		try
 		{
 			// Load the package list
@@ -145,6 +165,14 @@ public class Main
 			
 			// Build
 			nb.build();
+			
+			// Indicate where the binary is
+			OutputStream distout = __openOutputZip(distoutpath);
+			out.printf("Generating distribution at `%s`...", distoutpath[0]);
+			nb.linkAndGeneratePackage(distout);
+			
+			if (true)
+				throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error DW0j Read/write error.}
@@ -191,6 +219,52 @@ public class Main
 		// Emulate?
 		if (config.doEmulation())
 			throw new Error("TODO");
+	}
+	/**
+	 * Attempts to create output ZIP files which target a given system.
+	 *
+	 * @return An output stream to the output ZIP.
+	 * @throws IOException If it could not created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/20
+	 */
+	private static OutputStream __openOutputZip(Path[] __out)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		// Might already exist
+		try
+		{
+			__out[0] = OUTPUT_ZIP_NAME;
+			return Channels.newOutputStream(FileChannel.open(OUTPUT_ZIP_NAME,
+				StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE));
+		}
+		
+		// Try again
+		catch (FileAlreadyExistsException e)
+		{
+			for (int i = 1; i < _MAX_ZIP_TRIES; i++)
+				try
+				{
+					Path p = Paths.get(String.format(OUTPUT_ZIP_FORMAT, i));
+					__out[0] = p;
+					return Channels.newOutputStream(FileChannel.open(p,
+						StandardOpenOption.CREATE_NEW,
+						StandardOpenOption.WRITE));
+				}
+				
+				// Does not exist
+				catch (FileAlreadyExistsException f)
+				{
+					continue;
+				}
+			
+			// {@squirreljme.error DW0m Could not create output ZIP file.}
+			throw new IOException("DW0m");
+		}
 	}
 	
 	/**

@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.builder;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
@@ -131,6 +132,25 @@ public class NewBuilder
 		// Process all packages to be built
 		for (PackageInfo pi : buildprojects)
 			jnp.processNamespace(pi.name() + ".jar");
+	}
+	
+	/**
+	 * Links together all of the namespaces and generates a distributable
+	 * package to be passed along to others.
+	 *
+	 * @param __os The stream where the ZIP should be written to.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/25
+	 */
+	public void linkAndGeneratePackage(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		// Set
+		PrintStream out = this.out;
+		
+		// Note
+		out.println("Generating output distribution...");
 		
 		throw new Error("TODO");
 	}
