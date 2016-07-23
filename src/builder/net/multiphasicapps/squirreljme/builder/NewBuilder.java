@@ -112,6 +112,7 @@ public class NewBuilder
 		// Setup cache creator
 		BuilderCache cache = new BuilderCache(this);
 		this._cache = cache;
+		mutjitconf.setCacheCreator(cache);
 		
 		// Lock
 		JITOutputConfig.Immutable jitconf = mutjitconf.immutable();
