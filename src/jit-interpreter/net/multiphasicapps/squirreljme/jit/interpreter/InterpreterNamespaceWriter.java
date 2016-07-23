@@ -13,6 +13,10 @@ package net.multiphasicapps.squirreljme.jit.interpreter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
@@ -41,6 +45,10 @@ public class InterpreterNamespaceWriter
 	
 	/** The output data. */
 	protected final DataOutputStream output;
+	
+	/** The output string table. */
+	private final Map<String, Integer> _strings =
+		new LinkedHashMap<>();
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
@@ -195,7 +203,21 @@ public class InterpreterNamespaceWriter
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Get string table and its size
+			Map<String, Integer> strings = this._strings;
+			int size = strings.size();
+			
+			// Is this string in the table?
+			Integer rv = strings.get(__s);
+			if (rv != null)
+				return rv;
+			
+			// Add it otherwise
+			rv = Integer.valueOf(size);
+			strings.put(__s, rv);
+			
+			// Return the old size
+			return size;
 		}
 	}
 	
