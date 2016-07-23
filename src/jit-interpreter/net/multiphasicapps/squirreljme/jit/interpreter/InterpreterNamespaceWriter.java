@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.interpreter;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
@@ -25,11 +28,21 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 public class InterpreterNamespaceWriter
 	implements JITNamespaceWriter
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The output configuration. */
 	protected final JITOutputConfig.Immutable config;
 	
 	/** The name of the namespace. */
 	protected final String namespace;
+	
+	/** The output data. */
+	protected final DataOutputStream output;
+	
+	/** Has this been closed? */
+	private volatile boolean _closed;
 	
 	/**
 	 * Initializes the interpreter output.
@@ -50,6 +63,24 @@ public class InterpreterNamespaceWriter
 		// Set
 		this.config = __conf;
 		this.namespace = __ns;
+		
+		// {@squirreljme.error BV01 No cache creator was associated with
+		// the given configuration.}
+		JITCacheCreator cc = __conf.cacheCreator();
+		if (cc == null)
+			throw new JITException("BV01");
+		
+		// Setup output
+		try
+		{
+			this.output = new DataOutputStream(cc.createCache(__ns));
+		}
+		
+		// {@squirreljme.error BV02 Could not create the cached output.}
+		catch (IOException e)
+		{
+			throw new JITException("BV02", e);
+		}
 	}
 	
 	/**
@@ -64,7 +95,11 @@ public class InterpreterNamespaceWriter
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -79,7 +114,11 @@ public class InterpreterNamespaceWriter
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -90,7 +129,64 @@ public class InterpreterNamespaceWriter
 	public void close()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Finish writing if not closed
+			if (!this._closed)
+			{
+				// Close
+				this._closed = true;
+				
+				throw new Error("TODO");
+			}
+			
+			// Close output
+			try
+			{
+				this.output.close();
+			}
+			
+			// {@squirreljme.error BV03 Could not close the output.}
+			catch (IOException e)
+			{
+				throw new JITException("BV03", e);
+			}
+		}
+	}
+	
+	/**
+	 * Adds a string to the interpreter blob and returns the index where the
+	 * string is located.
+	 *
+	 * @param __s The string to add.
+	 * @return The index of the string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/22
+	 */
+	public int interpreterAddString(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Returns the output from the interpreter.
+	 *
+	 * @return The interpreter output.
+	 * @since 2016/07/22
+	 */
+	public DataOutputStream interpreterOutput()
+	{
+		return this.output;
 	}
 }
 
