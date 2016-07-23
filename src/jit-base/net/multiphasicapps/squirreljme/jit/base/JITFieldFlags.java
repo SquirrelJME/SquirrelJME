@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.base;
 
 /**
  * This represent the set of flags for fields.
@@ -155,10 +155,10 @@ public final class JITFieldFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ED2r A field cannot be both {@code final} and
+		// {@squirreljme.error BQ05 A field cannot be both {@code final} and
 		// {@code volatile}. (The field flags)}
 		if (isFinal() && isVolatile())
-			throw new JITException(String.format("ED2r %s", this));
+			throw new JITException(String.format("BQ05 %s", this));
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.isInterface())
@@ -174,10 +174,10 @@ public final class JITFieldFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error ED2t Flags for interface field has an
+				// {@squirreljme.error BQ06 Flags for interface field has an
 				// incorrect set of flags. (The field flags)}
 				if (must != has && !maybe)
-					throw new JITException(String.format("ED2t %s", this));
+					throw new JITException(String.format("BQ06 %s", this));
 			}
 	}
 }

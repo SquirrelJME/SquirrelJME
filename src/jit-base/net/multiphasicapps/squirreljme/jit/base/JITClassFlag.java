@@ -8,15 +8,41 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.base;
 
 /**
- * This is a flagging interface for flags which are associated with members.
+ * These are flags which modify how a class is accessed and is behaved.
  *
  * @since 2016/04/23
  */
-public interface JITMemberFlag
-	extends JITFlag
+public enum JITClassFlag
+	implements JITFlag
 {
+	/** Public access. */
+	PUBLIC,
+	
+	/** Final. */
+	FINAL,
+	
+	/** Super. */
+	SUPER,
+	
+	/** Interface. */
+	INTERFACE,
+	
+	/** Abstract. */
+	ABSTRACT,
+	
+	/** Synthetic. */
+	SYNTHETIC,
+	
+	/** Annotation. */
+	ANNOTATION,
+	
+	/** Enumeration. */
+	ENUM,
+	
+	/** End. */
+	;
 }
 

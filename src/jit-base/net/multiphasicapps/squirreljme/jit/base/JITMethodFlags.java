@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.base;
 
 /**
  * This represents the set of flags for methods.
@@ -186,19 +186,19 @@ public final class JITMethodFlags
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ED2z Native methods are not supported in Java ME
+		// {@squirreljme.error BQ07 Native methods are not supported in Java ME
 		// and as such, methods must not be {@code native}.}
 		if (isNative())
-			throw new JITException("ED2z");
+			throw new JITException("BQ07");
 		
-		// {@squirreljme.error ED20 An {@code abstract} method cannot be
+		// {@squirreljme.error BQ08 An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
 		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
 		// method flags)}
 		if (isAbstract())
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
-				throw new JITException(String.format("ED20 %s", this));
+				throw new JITException(String.format("BQ08 %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.isInterface())
@@ -215,10 +215,10 @@ public final class JITMethodFlags
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error ED2x Flags for interface method has an
+				// {@squirreljme.error BQ09 Flags for interface method has an
 				// incorrect set of flags. (The method flags)}
 				if (must != has && !maybe)
-					throw new JITException(String.format("ED2x %s", this));
+					throw new JITException(String.format("BQ09 %s", this));
 			}
 	}
 }

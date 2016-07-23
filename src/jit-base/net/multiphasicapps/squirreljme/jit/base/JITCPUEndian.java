@@ -86,10 +86,10 @@ public enum JITCPUEndian
 			case "undefined":
 				return JITCPUEndian.UNDEFINED;
 				
-				// {@squirreljme.error ED01 Unknown endian.
+				// {@squirreljme.error BQ0g Unknown endian.
 				// (The endian string)}
 			default:
-				throw new IllegalArgumentException(String.format("ED01 %s",
+				throw new IllegalArgumentException(String.format("BQ0g %s",
 					__s));
 		}
 	}

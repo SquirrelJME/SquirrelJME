@@ -8,53 +8,21 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.base;
 
 /**
- * DESCRIBE THIS.
+ * This interface is used to flag the types used for flags.
  *
  * @since 2016/04/23
  */
-public enum JITMethodFlag
-	implements JITMemberFlag
+public interface JITFlag
 {
-	/** Public method. */
-	PUBLIC,
-	
-	/** Private method. */
-	PRIVATE,
-	
-	/** Protected method. */
-	PROTECTED,
-	
-	/** Static method. */
-	STATIC,
-	
-	/** Final method. */
-	FINAL,
-	
-	/** Synchronized method. */
-	SYNCHRONIZED,
-	
-	/** Bridge method. */
-	BRIDGE,
-	
-	/** Variable argument method. */
-	VARARGS,
-	
-	/** Native method. */
-	NATIVE,
-	
-	/** Abstract method. */
-	ABSTRACT,
-	
-	/** Strict floating point method. */
-	STRICT,
-	
-	/** Synthetic method. */
-	SYNTHETIC,
-	
-	/** End. */
-	;
+	/**
+	 * Returns the flag ordinal.
+	 *
+	 * @return The ordinal of the flag.
+	 * @since 2016/04/23
+	 */
+	public abstract int ordinal();
 }
 

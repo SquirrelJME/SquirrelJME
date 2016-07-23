@@ -64,14 +64,14 @@ public final class JITTriplet
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ED03 Expected two periods in the triplet.
+		// {@squirreljme.error BQ0a Expected two periods in the triplet.
 		// (The triplet)}
 		int dota = __t.indexOf('.');
 		if (dota < 0)
-			throw new IllegalArgumentException(String.format("ED03 %s", __t));
+			throw new IllegalArgumentException(String.format("BQ0a %s", __t));
 		int dotb = __t.indexOf('.', dota + 1);
 		if (dotb < 0)
-			throw new IllegalArgumentException(String.format("ED03 %s", __t));
+			throw new IllegalArgumentException(String.format("BQ0a %s", __t));
 		
 		// Split into three forms
 		String fullarch = __t.substring(0, dota);
@@ -85,12 +85,12 @@ public final class JITTriplet
 			pplu = fullarch.indexOf('+'),
 			pcom = fullarch.indexOf(',');
 		
-		// {@squirreljme.error ED07 Expected the architecture part to be in
+		// {@squirreljme.error BQ0b Expected the architecture part to be in
 		// the form of {@code name-bits+variant,endianess}. (The input
 		// triplet)}
 		if (pdas < 0 || pplu < 0 || pcom < 0 || pdas > pplu || pdas > pcom ||
 			pplu > pcom)
-			throw new IllegalArgumentException(String.format("ED07 %s", __t));
+			throw new IllegalArgumentException(String.format("BQ0b %s", __t));
 		
 		// Extract
 		this.architecture = __check(fullarch.substring(0, pdas));
@@ -101,22 +101,22 @@ public final class JITTriplet
 		// Decode bits
 		try
 		{
-			// {@squirreljme.error ED08 The specified word size in bits that
+			// {@squirreljme.error BQ0c The specified word size in bits that
 			// the CPU uses is zero or negative. (The triplet; The bit count)}
 			int bits = Integer.decode(fullarch.substring(pdas + 1, pplu));
 			if (bits <= 0)
-				throw new IllegalArgumentException(String.format("ED08 %s %d",
+				throw new IllegalArgumentException(String.format("BQ0c %s %d",
 					__t, bits));
 			
 			// Ok
 			this.bits = bits;
 		}
 		
-		// {@squirreljme.error ED06 The word size of the CPU in bits is not
+		// {@squirreljme.error BQ0d The word size of the CPU in bits is not
 		// a valid number. (The triplet)}
 		catch (NumberFormatException e)
 		{
-			throw new IllegalArgumentException(String.format("ED06 %s", __t),
+			throw new IllegalArgumentException(String.format("BQ0d %s", __t),
 				e);
 		}
 	}
@@ -341,10 +341,10 @@ public final class JITTriplet
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ED04 A fragment in a triplet cannot be empty.}
+		// {@squirreljme.error BQ0e A fragment in a triplet cannot be empty.}
 		int n = __s.length();
 		if (n <= 0)
-			throw new IllegalArgumentException("ED04");
+			throw new IllegalArgumentException("BQ0e");
 		
 		// Check all characters
 		boolean upper = false;
@@ -352,13 +352,13 @@ public final class JITTriplet
 		{
 			char c = __s.charAt(i);
 			
-			// {@squirreljme.error ED05 The fragment in the input triplet
+			// {@squirreljme.error BQ0f The fragment in the input triplet
 			// contains an illegal character. (The fragment; The illegal
 			// character)}
 			boolean hasupper = (c >= 'A' && c <= 'Z');
 			if (!((c >= 'a' && c <= 'z') || hasupper ||
 				(c >= '0' && c <= '9')))
-				throw new IllegalArgumentException(String.format("ED05 %s %c",
+				throw new IllegalArgumentException(String.format("BQ0f %s %c",
 					__s, c));
 			
 			// Uppercase?

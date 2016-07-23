@@ -1,2 +1,11 @@
 # 2016/07/23
 
+## 09:38
+
+The stuff such as `JITClassFlags` should be in the base because that could be
+used by anything and it has no JIT reliance.
+
+## 09:45
+
+`JITException` also belongs there also.
+

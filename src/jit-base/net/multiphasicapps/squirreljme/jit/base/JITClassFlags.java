@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.base;
 
 /**
  * This represents the flags which a class may be.
@@ -165,30 +165,30 @@ public class JITClassFlags
 		// Interface?
 		if (isInterface())
 		{
-			// {@squirreljme.error ED23 An interface must also be abstract.
+			// {@squirreljme.error BQ01 An interface must also be abstract.
 			// (The class flags}}
 			if (!isAbstract())
-				throw new JITException(String.format("ED23 %s", this));
+				throw new JITException(String.format("BQ01 %s", this));
 			
-			// {@squirreljme.error ED24 An interface cannot be {@code final} or
+			// {@squirreljme.error BQ02 An interface cannot be {@code final} or
 			// {@code enum} and it must not have the special flag set. (The
 			// class flags)}
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new JITException(String.format("ED24 %s", this));
+				throw new JITException(String.format("BQ02 %s", this));
 		}
 		
 		// Normal class
 		else
 		{
-			// {@squirreljme.error ED25 Annotations must be interfaces. (The
+			// {@squirreljme.error BQ03 Annotations must be interfaces. (The
 			// class flags)}
 			if (isAnnotation())
-				throw new JITException(String.format("ED25 %s", this));
+				throw new JITException(String.format("BQ03 %s", this));
 				
-			// {@squirreljme.error ED26 A class cannot be both {@code abstract}
+			// {@squirreljme.error BQ04 A class cannot be both {@code abstract}
 			// and {@code final}. (The class flags)}
 			if (isAbstract() && isFinal())
-				throw new JITException(String.format("ED26 %s", this));
+				throw new JITException(String.format("BQ04 %s", this));
 		}
 	}
 }

@@ -212,7 +212,7 @@ public class Main
 		__ps.println();
 		__ps.println("\t-e\tAfter building, emulate the target binary.");
 		__ps.println("\t-n\tDo not include a JIT.");
-		__ps.println("\t-t\nInclude tests.");
+		__ps.println("\t-t\tInclude tests.");
 		__ps.println();
 		
 		// Suggest target header
