@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This performs the decoding of the class file format.

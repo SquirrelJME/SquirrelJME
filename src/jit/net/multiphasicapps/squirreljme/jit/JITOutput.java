@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This interface is defined by anything that wishes to output from the JIT

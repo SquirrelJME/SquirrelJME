@@ -20,7 +20,7 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
-import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;

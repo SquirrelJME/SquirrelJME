@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.Objects;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**

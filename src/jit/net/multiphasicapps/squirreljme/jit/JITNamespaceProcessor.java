@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This class is used to process namespaces for JIT compilation and resource

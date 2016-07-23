@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.jit.interpreter;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.os.interpreter.ContentType;
 
 /**

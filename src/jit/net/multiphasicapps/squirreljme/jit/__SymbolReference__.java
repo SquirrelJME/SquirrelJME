@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This represents a link to another symbol.

@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.builder;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceContent;
 import net.multiphasicapps.zip.blockreader.ZipEntry;
 

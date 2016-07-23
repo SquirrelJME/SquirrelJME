@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+
 /**
  * This interface is used to write resources to the output namespace writer.
  *

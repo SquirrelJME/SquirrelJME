@@ -12,6 +12,13 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.util.HashSet;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.base.JITClassFlag;
+import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITFieldFlag;
+import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.JITMethodFlag;
+import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 
 /**
  * This decodes class flags.

@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This is a factory which is used to support an architecture, an operating

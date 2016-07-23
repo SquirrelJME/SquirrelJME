@@ -16,7 +16,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Iterator;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
-import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceContent;
 import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;

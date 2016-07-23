@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This interface is used with {@link JITNamespaceProcessor} to provide the

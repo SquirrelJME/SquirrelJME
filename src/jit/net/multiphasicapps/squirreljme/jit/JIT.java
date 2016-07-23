@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This contains the just in time compiler.

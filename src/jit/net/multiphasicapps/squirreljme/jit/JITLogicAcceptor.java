@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+
 /**
  * This is an interface which defines something which accepts logical
  * operations such as accessing memory, performing math, and other such

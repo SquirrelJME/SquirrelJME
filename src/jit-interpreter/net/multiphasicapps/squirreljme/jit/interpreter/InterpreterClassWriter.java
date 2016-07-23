@@ -10,10 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.interpreter;
 
-import net.multiphasicapps.squirreljme.jit.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
-import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.os.interpreter.ContentType;
 
