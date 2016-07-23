@@ -24,3 +24,8 @@ just parses everything and then dumps the binary.
 Something that could be useful is a kind of number of classes written as a kind
 of feedback from the `JITNamespaceProcessor`.
 
+## 17:07
+
+It would be best if all the arguments are unknown that it just assumes native
+was used since the first argument would either be a switch or a triplet.
+

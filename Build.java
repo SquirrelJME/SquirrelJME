@@ -198,45 +198,21 @@ public class Build
 		
 		// Depends on the command
 		Project pp;
-		int terptarget = 0;
 		switch (command)
 		{
 				// Compile native SquirrelJME and possibly simulate 
 			case "native":
-				__launch(terptarget, getProject("builder"), __args);
+				__launch(0, getProject("builder"), __args);
 				break;
 			
-				// Run tests on the host or interpreter
-			case "interpreter-interpreter-tests":
-				terptarget++;
-			case "interpreter-tests":
-				terptarget++;
+				// Run tests on the host
 			case "host-tests":
-				__launch(terptarget, getProject("test-all"), __args);
+				__launch(0, getProject("test-all"), __args);
 				break;
 				
 				// Launch a program
-			case "interpreter-interpreter-launch":
-				terptarget++;
-			case "interpreter-launch":
-				terptarget++;
 			case "launch":
-				__launch(terptarget, getProject(__args.removeFirst()), __args);
-				break;
-				
-				// Run SquirrelJME launcher
-			case "squirreljme":
-				__launch(0, getProject("kernel-impl-jvm-swing"), __args);
-				break;
-				
-				// Run the simualtor
-			case "simulator":
-				__launch(0, getProject("simulator"), __args);
-				break;
-				
-				// Run the paravirtual JVM
-			case "pvmjvm":
-				__launch(0, getProject("squirreljme-pvm-jvm"), __args);
+				__launch(0, getProject(__args.removeFirst()), __args);
 				break;
 				
 				// Build a project
@@ -244,9 +220,14 @@ public class Build
 				__build(getProject(__args.removeFirst()));
 				break;
 			
-				// Unknown
+				// Unknown, assume native was requested
 			default:
-				throw new IllegalArgumentException(command);
+				// Add the "command" back because it is a switch or a target.
+				__args.offerFirst(command);
+				
+				// Launch it
+				__launch(0, getProject("builder"), __args);
+				break;
 		}
 	}
 	
