@@ -168,7 +168,7 @@ public class Main
 			
 			// Indicate where the binary is
 			OutputStream distout = __openOutputZip(distoutpath);
-			out.printf("Generating distribution at `%s`...", distoutpath[0]);
+			out.printf("Generating distribution at `%s`...%n", distoutpath[0]);
 			nb.linkAndGeneratePackage(distout);
 			
 			if (true)
