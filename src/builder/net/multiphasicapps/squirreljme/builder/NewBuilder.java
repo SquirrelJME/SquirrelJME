@@ -10,10 +10,12 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageInfo;
@@ -21,6 +23,8 @@ import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessorProgress;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This builds the given target configuration and generates a binary.
@@ -44,6 +48,10 @@ public class NewBuilder
 	
 	/** The temporary output directory. */
 	protected final Path tempdir;
+	
+	/** The compiled set of namespaces. */
+	protected final Set<String> compiled =
+		new LinkedHashSet<>();
 	
 	/** The projects to use in the boot classpath (the JVM itself). */
 	private volatile Set<PackageInfo> _bootclasspath;
@@ -130,8 +138,16 @@ public class NewBuilder
 			this);
 		
 		// Process all packages to be built
+		Set<String> compiled = this.compiled;
 		for (PackageInfo pi : buildprojects)
-			jnp.processNamespace(pi.name() + ".jar");
+		{
+			// Add namespace to compilation set
+			String na = pi.name() + ".jar";
+			compiled.add(na);
+			
+			// Process
+			jnp.processNamespace(na);
+		}
 	}
 	
 	/**
@@ -149,7 +165,74 @@ public class NewBuilder
 		// Set
 		PrintStream out = this.out;
 		
-		throw new Error("TODO");
+		// Start writing the output ZIP
+		try (ZipStreamWriter zsw = new ZipStreamWriter(__os))
+		{
+			// Write the triplet to the ZIP
+			try (OutputStream os = zsw.nextEntry("target",
+				ZipCompressionType.DEFAULT_COMPRESSION);
+				PrintStream ps = new PrintStream(os, true, "utf-8"))
+			{
+				ps.println(this.config.triplet().toString());
+			}
+			
+			// Create linked binary and store it in the output
+			Set<String> compiled = this.compiled;
+			int n = compiled.size();
+			InputStream[] wns = new InputStream[n];
+			try
+			{
+				// Load in names and resources
+				String[] nsns = new String[n];
+				Iterator<String> nit = compiled.iterator();
+				BuilderCache cache = this._cache;
+				for (int i = 0; i < n; i++)
+				{
+					// Get and store name
+					String name = nit.next();
+					nsns[i] = name;
+					
+					// Open cached data
+					wns[i] = cache.openCache(name);
+				}
+				
+				if (true)
+					throw new Error("TODO");
+			}
+			
+			// Close everything
+			finally
+			{
+				// Failing exception?
+				IOException fail = null;
+				
+				// Close then all
+				for (InputStream os : wns)
+					if (os != null)
+						try
+						{
+							os.close();
+						}
+						
+						// Failed to close
+						catch (IOException e)
+						{
+							// {@squirreljme.error DW0n Failed to close the
+							// opened namespace cache output streams.}
+							if (fail == null)
+								fail = new IOException("DW0n");
+							
+							// Suppress it
+							fail.addSuppressed(e);
+						}
+				
+				// Failed?
+				if (fail != null)
+					throw fail;
+			}
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

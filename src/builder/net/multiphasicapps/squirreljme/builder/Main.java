@@ -167,9 +167,12 @@ public class Main
 			nb.build();
 			
 			// Indicate where the binary is
-			OutputStream distout = __openOutputZip(distoutpath);
-			out.printf("Generating distribution at `%s`...%n", distoutpath[0]);
-			nb.linkAndGeneratePackage(distout);
+			try (OutputStream distout = __openOutputZip(distoutpath))
+			{
+				out.printf("Generating distribution at `%s`...%n",
+					distoutpath[0]);
+				nb.linkAndGeneratePackage(distout);
+			}
 			
 			if (true)
 				throw new Error("TODO");
