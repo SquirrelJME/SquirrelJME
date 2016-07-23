@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.interpreter;
 
 import java.io.DataOutputStream;
 import net.multiphasicapps.squirreljme.jit.JITException;
+import net.multiphasicapps.squirreljme.os.interpreter.ContentType;
 
 /**
  * This class acts as the base for interpreter outputs to either classes or
@@ -37,6 +38,9 @@ public abstract class InterpreterBaseOutput
 	/** The name to write. */
 	protected final String name;
 	
+	/** The content type to use. */
+	protected final ContentType contenttype;
+	
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
@@ -45,11 +49,12 @@ public abstract class InterpreterBaseOutput
 	 *
 	 * @param __nsw The owning namespace writer.
 	 * @param __name The name of thing being written.
+	 * @param __ct The content type to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
 	public InterpreterBaseOutput(InterpreterNamespaceWriter __nsw,
-		String __name)
+		String __name, ContentType __ct)
 		throws NullPointerException
 	{
 		// Check
@@ -62,6 +67,7 @@ public abstract class InterpreterBaseOutput
 		DataOutputStream dos = __nsw.interpreterOutput();
 		this.output = dos;
 		this.name = __name;
+		this.contenttype = __ct;
 		
 		// Get starting point
 		synchronized (this.lock)

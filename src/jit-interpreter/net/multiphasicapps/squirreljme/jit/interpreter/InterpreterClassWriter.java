@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.os.interpreter.ContentType;
 
 /**
  * This writes classes to the output.
@@ -47,7 +48,7 @@ public class InterpreterClassWriter
 		ClassNameSymbol __cn)
 		throws NullPointerException
 	{
-		super(__nsw, String.valueOf(__cn));
+		super(__nsw, String.valueOf(__cn), ContentType.CLASS);
 		
 		// Check
 		if (__cn == null)

@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.interpreter;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.JITException;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
+import net.multiphasicapps.squirreljme.os.interpreter.ContentType;
 
 /**
  * This write resources to the output.
@@ -38,7 +39,7 @@ public class InterpreterResourceWriter
 		String __rn)
 		throws NullPointerException
 	{
-		super(__nsw, __rn);
+		super(__nsw, __rn, ContentType.RESOURCE);
 	}
 	
 	/**
