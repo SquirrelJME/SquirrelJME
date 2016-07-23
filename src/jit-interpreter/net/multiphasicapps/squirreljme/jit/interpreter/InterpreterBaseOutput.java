@@ -81,6 +81,17 @@ public abstract class InterpreterBaseOutput
 				// Set closed
 				this._closed = true;
 				
+				// Get the end position, to determine the size
+				int datastart = this.datastart;
+				int dataend = this.output.size();
+				
+				// {@squirreljme.error BV06 The size of a given content is
+				// negative. It either ends before it starts or the namespace
+				// exceeds 2GiB in size. (The content size)}
+				int datasize = dataend - datastart;
+				if (datasize < 0)
+					throw new JITException(String.format("BV06 %s", datasize));
+				
 				throw new Error("TODO");
 			}
 		}
