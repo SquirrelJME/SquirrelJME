@@ -45,6 +45,9 @@ public class InterpreterNamespaceWriter
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
+	/** The current thing being written (one at a time). */
+	private volatile InterpreterBaseOutput _now;
+	
 	/**
 	 * Initializes the interpreter output.
 	 *
@@ -99,6 +102,11 @@ public class InterpreterNamespaceWriter
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BV04 Cannot begin a new class because an
+			// existing namespace content is being written.}
+			if (this._now != null)
+				throw new JITException("BV04");
+			
 			throw new Error("TODO");
 		}
 	}
@@ -118,6 +126,11 @@ public class InterpreterNamespaceWriter
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BV05 Cannot begin a new resource because an
+			// existing namespace content is being written.}
+			if (this._now != null)
+				throw new JITException("BV05");
+			
 			throw new Error("TODO");
 		}
 	}
@@ -165,7 +178,7 @@ public class InterpreterNamespaceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
-	public int interpreterAddString(String __s)
+	public final int interpreterAddString(String __s)
 		throws NullPointerException
 	{
 		// Check
@@ -180,12 +193,23 @@ public class InterpreterNamespaceWriter
 	}
 	
 	/**
+	 * Returns the interpreter's lock.
+	 *
+	 * @return The locking object.
+	 * @since 2016/07/22
+	 */
+	public final Object interpreterLock()
+	{
+		return this.lock;
+	}
+	
+	/**
 	 * Returns the output from the interpreter.
 	 *
 	 * @return The interpreter output.
 	 * @since 2016/07/22
 	 */
-	public DataOutputStream interpreterOutput()
+	public final DataOutputStream interpreterOutput()
 	{
 		return this.output;
 	}
