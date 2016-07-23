@@ -141,3 +141,9 @@ This new code is far better than the old code. I just need to get back into the
 namespace writer. Before it was just output to the cache stream, I could just
 do that again for the most part.
 
+## 22:23
+
+For the resource writer, I need to remove the `OutputStream` and instead use
+another interface which does the same thing. This way JITs can have base
+classes for output, which would be reasonable.
+
