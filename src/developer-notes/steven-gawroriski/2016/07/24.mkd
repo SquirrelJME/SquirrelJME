@@ -25,3 +25,11 @@ handle it that way. But initially I just want the initial JVM to print a very
 basic message. Once it prints out that message I will create a video alpha
 video. At that point, the main library can be implemented and such.
 
+## 19:25
+
+All emulators should be capable of being used for TAS of games which would be
+handy for debugging. As such, there should be a unified input system from
+the console for example and unified output. There should be an emulation
+core which can be used to give unknowns to the target and be used for resuming
+previous recording sessions.
+
