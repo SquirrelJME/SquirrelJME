@@ -75,7 +75,9 @@ public class Main
 		boolean doemu = false;
 		boolean nojit = false;
 		boolean tests = false;
+		boolean skipbuild = false;
 		String target = null;
+		String outzipname = null;
 		List<String> emuargs = new ArrayList<>();
 		while (!args.isEmpty())
 		{
@@ -83,7 +85,7 @@ public class Main
 			
 			// Emulate also?
 			if (a.equals("-e"))
-				doemu = true;
+				doemu = tests = true;
 			
 			// Do not include a JIT?
 			else if (a.equals("-n"))
@@ -92,6 +94,10 @@ public class Main
 			// Include tests also?
 			else if (a.equals("-t"))
 				tests = true;
+			
+			// Skip building?
+			else if (a.equals("-s"))
+				skipbuild = true;
 			
 			// {@squirreljme.error DW02 Unknown command line argument.
 			// (The argument)}
@@ -105,15 +111,13 @@ public class Main
 				// Set
 				target = a.trim();
 				
-				// {@squirreljme.error DW03 No arguments must follow the
-				// target when not simulating.}
-				if (!doemu && !args.isEmpty())
-					throw new IllegalArgumentException("DW03");
+				// Get the output ZIP name.
+				if (args.size() == 1)
+					outzipname = args.removeFirst();
 				
-				// Add remaining arguments to the simulator
-				else
-					while (!args.isEmpty())
-						emuargs.add(args.removeFirst());
+				// {@squirreljme.error DW03 Extra arguments specified.}
+				else if (!args.isEmpty())
+					throw new IllegalArgumentException("DW03");
 				
 				// Stop
 				break;
@@ -167,7 +171,8 @@ public class Main
 			nb.build();
 			
 			// Indicate where the binary is
-			try (OutputStream distout = __openOutputZip(distoutpath))
+			try (OutputStream distout = __openOutputZip((outzipname != null ?
+				Paths.get(outzipname) : null), distoutpath))
 			{
 				out.printf("Generating distribution at `%s`...%n",
 					distoutpath[0]);
@@ -233,12 +238,14 @@ public class Main
 	/**
 	 * Attempts to create output ZIP files which target a given system.
 	 *
+	 * @param __oz Alternative ZIP output name to use.
+	 * @param __out The path that was written.
 	 * @return An output stream to the output ZIP.
 	 * @throws IOException If it could not created.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __oz}.
 	 * @since 2016/07/20
 	 */
-	private static OutputStream __openOutputZip(Path[] __out)
+	private static OutputStream __openOutputZip(Path __oz, Path[] __out)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -248,15 +255,19 @@ public class Main
 		// Might already exist
 		try
 		{
-			__out[0] = OUTPUT_ZIP_NAME;
-			return Channels.newOutputStream(FileChannel.open(OUTPUT_ZIP_NAME,
+			// Name to use
+			Path usepath = (__oz != null ? __oz : OUTPUT_ZIP_NAME);
+			
+			// Try it
+			__out[0] = usepath;
+			return Channels.newOutputStream(FileChannel.open(usepath,
 				StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE));
 		}
 		
 		// Try again
 		catch (FileAlreadyExistsException e)
 		{
-			for (int i = 1; i < _MAX_ZIP_TRIES; i++)
+			for (int i = 1; i < _MAX_ZIP_TRIES && __oz != null; i++)
 				try
 				{
 					Path p = Paths.get(String.format(OUTPUT_ZIP_FORMAT, i));
@@ -292,10 +303,14 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		// Print header
-		__ps.println("Usage: [-e] [-n] [-t] (target) [emulator arguments...]");
+		__ps.println("Usage: [-e] [-n] [-s] [-t] (target) [squirreljme.zip]");
 		__ps.println();
-		__ps.println("\t-e\tAfter building, emulate the target binary.");
+		__ps.println("\tThe output ZIP is optionally specified.");
+		__ps.println();
+		__ps.println("\t-e\tAfter building, emulate the target binary,");
+		__ps.println("\t\timplies -t.");
 		__ps.println("\t-n\tDo not include a JIT.");
+		__ps.println("\t-s\tSkip building and just emulate the ZIP.");
 		__ps.println("\t-t\tInclude tests.");
 		__ps.println();
 		
