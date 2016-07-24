@@ -199,8 +199,17 @@ public class NewBuilder
 					wns[i] = cache.openCache(name);
 				}
 				
+				// Need this
+				Set<PackageInfo> bootclasspath = this._bootclasspath;
+				int numbcp = bootclasspath.size();
+				String[] bootcp = new String[numbcp];
+				int cpi = 0;
+				for (PackageInfo pi : bootclasspath)
+					bootcp[cpi++] = pi.name() + ".jar";
+				
 				// Generate
-				this.targetbuilder.linkBinary(zsw, nsns, wns, this.config);
+				this.targetbuilder.linkBinary(zsw, nsns, wns, this.config,
+					bootcp);
 			}
 			
 			// Close everything

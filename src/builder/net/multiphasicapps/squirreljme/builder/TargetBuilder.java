@@ -83,13 +83,14 @@ public abstract class TargetBuilder
 	 * @param __names The names of the namespaces to write.
 	 * @param __blobs The namespace blob input streams.
 	 * @param __conf The build configuration.
+	 * @param __vmcp The virtual machine class path.
 	 * @throws JITException On link errors.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/23
 	 */
 	public abstract void linkBinary(ZipStreamWriter __zsw, String[] __names,
-		InputStream[] __blobs, BuildConfig __conf)
+		InputStream[] __blobs, BuildConfig __conf, String[] __vmcp)
 		throws JITException, IOException, NullPointerException;
 	
 	/**
@@ -218,6 +219,47 @@ public abstract class TargetBuilder
 		__eo.addSystemProperty("os.version",
 			triplet.operatingSystemVariant());
 	}
+	
+	/**
+	 * Adds the virtual machine classpath to the system property set.
+	 *
+	 * @param __conf The build configuration.
+	 * @param __eo The executable output to use.
+	 * @throws JITException If the classpath contains a NUL character.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/24
+	 */
+	public final void addVirtualMachineClassPath(BuildConfig __conf,
+		ExecutableOutput __eo, String[] __vmcp)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__conf == null || __eo == null || __vmcp == null)
+			throw new NullPointerException("NARG");
+		
+		// Build target string
+		int n = __vmcp.length;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < n; i++)
+		{
+			// {@squirreljme.error DW0s The VM classpath element contains the
+			// NUL character.}
+			String s = __vmcp[i];
+			if (s.indexOf((char)0) >= 0)
+				throw new JITException("DW0s");
+			
+			// Pad with NUL
+			if (i > 0)
+				sb.append((char)0);
+			
+			// Append
+			sb.append(s);
+		}
+		
+		// Add property
+		__eo.addSystemProperty("net.multiphasicapps.squirreljme.vmclasspath",
+			sb.toString());
+	}	
 	
 	/**
 	 * Is the JIT supported for this target?

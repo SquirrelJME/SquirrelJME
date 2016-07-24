@@ -123,9 +123,24 @@ public class InterpreterExecutableOutput
 			while ((dos.size() & 3) != 0)
 				dos.writeByte(0);
 			
+			// Write system properties
+			int propaddr = dos.size();
+			int propcount = properties.size();
+			for (Map.Entry<String, String> e : properties.entrySet())
+			{
+				dos.writeUTF(e.getKey());
+				dos.writeUTF(e.getValue());
+			}
+			
+			// Align to int
+			while ((dos.size() & 3) != 0)
+				dos.writeByte(0);
+			
 			// End the file with the last address point (points to the first
 			// namespace that has been blobbed)
 			dos.writeInt(lastaddr);
+			dos.writeInt(propaddr);
+			dos.writeInt(propcount);
 		}
 	}
 }

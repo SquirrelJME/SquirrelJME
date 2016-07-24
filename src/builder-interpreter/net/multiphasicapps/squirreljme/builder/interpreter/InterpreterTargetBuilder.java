@@ -49,12 +49,12 @@ public class InterpreterTargetBuilder
 	 */
 	@Override
 	public void linkBinary(ZipStreamWriter __zsw, String[] __names,
-		InputStream[] __blobs, BuildConfig __conf)
+		InputStream[] __blobs, BuildConfig __conf, String[] __vmcp)
 		throws JITException, IOException, NullPointerException
 	{
 		// Check
 		if (__zsw == null || __names == null || __blobs == null ||
-			__conf == null)
+			__conf == null || __vmcp == null)
 			throw new NullPointerException("NARG");
 		
 		// Create binary
@@ -67,6 +67,9 @@ public class InterpreterTargetBuilder
 			
 			// Add standard properties
 			addStandardSystemProperties(__conf, ieo);
+			
+			// Add VM paths
+			addVirtualMachineClassPath(__conf, ieo, __vmcp);
 			
 			// Link the binary together
 			ieo.linkBinary(os, __names, __blobs);
