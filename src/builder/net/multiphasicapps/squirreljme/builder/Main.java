@@ -150,85 +150,91 @@ public class Main
 			throw new IllegalArgumentException(String.format("DW0i %s",
 				config.triplet()));
 		
-		// Could fail
-		PackageList plist;
-		Path tempdir = null;
-		Path[] distoutpath = new Path[1];
-		try
+		// If not skipping the build then build
+		if (!skipbuild)
 		{
-			// Load the package list
-			out.println("Loading the package lists...");
-			plist = new PackageList(Paths.get(System.getProperty("user.dir")),
-				null);
-			
-			// Create temporary directory
-			tempdir = Files.createTempDirectory("squirreljme-native-build");
-			
-			// Setup
-			NewBuilder nb = new NewBuilder(out, config, tb, plist, tempdir);
-			
-			// Build
-			nb.build();
-			
-			// Indicate where the binary is
-			try (OutputStream distout = __openOutputZip((outzipname != null ?
-				Paths.get(outzipname) : null), distoutpath))
+			// Could fail
+			PackageList plist;
+			Path tempdir = null;
+			Path[] distoutpath = new Path[1];
+			try
 			{
-				out.printf("Generating distribution at `%s`...%n",
-					distoutpath[0]);
-				nb.linkAndGeneratePackage(distout);
-			}
-		}
-		
-		// {@squirreljme.error DW0j Read/write error.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("DW0j", e);
-		}
-		
-		// Delete temporary directory
-		finally
-		{
-			// Delete the failed output
-			if (distoutpath[0] != null)
-				try
-				{
-					Files.delete(distoutpath[0]);
-				}
-				
-				// Ignore
-				catch (IOException e)
-				{
-				}
+				// Load the package list
+				out.println("Loading the package lists...");
+				plist = new PackageList(Paths.get(
+					System.getProperty("user.dir")), null);
 			
-			// Delete if it exists
-			if (tempdir != null)
-				try
+				// Create temporary directory
+				tempdir = Files.createTempDirectory("squirreljme-build");
+			
+				// Setup
+				NewBuilder nb = new NewBuilder(out, config, tb, plist,
+					tempdir);
+			
+				// Build
+				nb.build();
+			
+				// Indicate where the binary is
+				try (OutputStream distout = __openOutputZip(
+					(outzipname != null ? Paths.get(outzipname) : null),
+					distoutpath))
 				{
-					// Delete all files in the directory
-					try (DirectoryStream<Path> ds = Files.
-						newDirectoryStream(tempdir))
+					out.printf("Generating distribution at `%s`...%n",
+						distoutpath[0]);
+					nb.linkAndGeneratePackage(distout);
+				}
+			}
+		
+			// {@squirreljme.error DW0j Read/write error.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("DW0j", e);
+			}
+		
+			// Delete temporary directory
+			finally
+			{
+				// Delete the failed output
+				if (distoutpath[0] != null)
+					try
 					{
-						for (Path p : ds)
-							try
-							{
-								Files.delete(p);
-							}
-							
-							// Ignore
-							catch (IOException e)
-							{
-							}
+						Files.delete(distoutpath[0]);
 					}
-					
-					// Delete the directory
-					Files.delete(tempdir);
-				}
 				
-				// Ignore
-				catch (IOException e)
-				{
-				}
+					// Ignore
+					catch (IOException e)
+					{
+					}
+			
+				// Delete if it exists
+				if (tempdir != null)
+					try
+					{
+						// Delete all files in the directory
+						try (DirectoryStream<Path> ds = Files.
+							newDirectoryStream(tempdir))
+						{
+							for (Path p : ds)
+								try
+								{
+									Files.delete(p);
+								}
+							
+								// Ignore
+								catch (IOException e)
+								{
+								}
+						}
+					
+						// Delete the directory
+						Files.delete(tempdir);
+					}
+				
+					// Ignore
+					catch (IOException e)
+					{
+					}
+			}
 		}
 		
 		// Emulate?
