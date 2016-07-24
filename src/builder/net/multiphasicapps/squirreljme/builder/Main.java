@@ -173,9 +173,6 @@ public class Main
 					distoutpath[0]);
 				nb.linkAndGeneratePackage(distout);
 			}
-			
-			if (true)
-				throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error DW0j Read/write error.}
@@ -187,6 +184,18 @@ public class Main
 		// Delete temporary directory
 		finally
 		{
+			// Delete the failed output
+			if (distoutpath[0] != null)
+				try
+				{
+					Files.delete(distoutpath[0]);
+				}
+				
+				// Ignore
+				catch (IOException e)
+				{
+				}
+			
 			// Delete if it exists
 			if (tempdir != null)
 				try
