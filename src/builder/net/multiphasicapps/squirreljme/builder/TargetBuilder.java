@@ -148,8 +148,9 @@ public abstract class TargetBuilder
 		// Some build properties
 		__eo.addSystemProperty("net.multiphasicapps.squirreljme.buildtime",
 			Long.toString(System.currentTimeMillis()));
+		JITTriplet triplet;
 		__eo.addSystemProperty("net.multiphasicapps.squirreljme.triplet",
-			__conf.triplet().toString());
+			(triplet = __conf.triplet()).toString());
 		__eo.addSystemProperty("net.multiphasicapps.squirreljme.hastests",
 			Boolean.toString(__conf.includeTests()));
 		
@@ -205,6 +206,15 @@ public abstract class TargetBuilder
 			"SquirrelJME");
 		__eo.addSystemProperty("java.runtime.version",
 			"1.8");
+		
+		// The OS arch, name, and version are derived from the triplet
+		// Although this might not be the best way, it is the simplet
+		__eo.addSystemProperty("os.arch",
+			triplet.architectureProperty());
+		__eo.addSystemProperty("os.name",
+			triplet.operatingSystem());
+		__eo.addSystemProperty("os.version",
+			triplet.operatingSystemVariant());
 	}
 	
 	/**

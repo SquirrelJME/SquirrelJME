@@ -49,6 +49,9 @@ public final class JITTriplet
 	/** The package target. */
 	private volatile Reference<String> _package;
 	
+	/** The architecture property. */
+	private volatile Reference<String> _archprop;
+	
 	/**
 	 * This decodes the given input string as a triplet.
 	 *
@@ -130,6 +133,28 @@ public final class JITTriplet
 	public final String architecture()
 	{
 		return this.architecture;
+	}
+	
+	/**
+	 * Returns the string which represents the architecture for usage in the
+	 * {@code os.arch} system property.
+	 *
+	 * @return The property value.
+	 * @since 2016/07/24
+	 */
+	public final String architectureProperty()
+	{
+		Reference<String> ref = _archprop;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			_archprop = new WeakReference<>((rv = this.architecture + "-" +
+				this.bits + "+" + this.cpuvar + "," +
+				this.endianess.endianName()));
+		
+		// Return
+		return rv;
 	}
 	
 	/**
