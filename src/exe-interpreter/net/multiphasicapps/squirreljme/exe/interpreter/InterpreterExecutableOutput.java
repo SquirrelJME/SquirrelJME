@@ -113,7 +113,15 @@ public class InterpreterExecutableOutput
 				
 				// Set last address to point
 				lastaddr = dataend;
+				
+				// Align to int
+				while ((dos.size() & 3) != 0)
+					dos.writeByte(0);
 			}
+			
+			// Align to int
+			while ((dos.size() & 3) != 0)
+				dos.writeByte(0);
 			
 			// End the file with the last address point (points to the first
 			// namespace that has been blobbed)
