@@ -151,12 +151,12 @@ public class Main
 				config.triplet()));
 		
 		// If not skipping the build then build
+		Path[] distoutpath = new Path[1];
 		if (!skipbuild)
 		{
 			// Could fail
 			PackageList plist;
 			Path tempdir = null;
-			Path[] distoutpath = new Path[1];
 			try
 			{
 				// Load the package list
@@ -236,6 +236,10 @@ public class Main
 					}
 			}
 		}
+		
+		// Get output ZIP file used
+		else
+			distoutpath[0] = Paths.get(outzipname);
 		
 		// Emulate?
 		if (config.doEmulation())
