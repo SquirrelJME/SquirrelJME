@@ -68,7 +68,8 @@ public class InterpreterTargetBuilder
 			// Add standard properties
 			addStandardSystemProperties(__conf, ieo);
 			
-			throw new Error("TODO");
+			// Link the binary together
+			ieo.linkBinary(os, __names, __blobs);
 		}
 	}
 	

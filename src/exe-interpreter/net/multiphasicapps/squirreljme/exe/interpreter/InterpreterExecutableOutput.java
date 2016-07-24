@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.exe.interpreter;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
@@ -48,6 +51,27 @@ public class InterpreterExecutableOutput
 		synchronized (lock)
 		{
 			properties.put(__k, __v);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/24
+	 */
+	@Override
+	public void linkBinary(OutputStream __os, String[] __names,
+		InputStream[] __blobs)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__os == null || __names == null || __blobs == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Map<String, String> properties = this.properties;
+		synchronized (lock)
+		{
+			throw new Error("TODO");
 		}
 	}
 }
