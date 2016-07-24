@@ -38,3 +38,12 @@ previous recording sessions.
 I will need to make use of CRC (simpler and faster than MD5) to determine if
 files have changed.
 
+## 19:32
+
+The only problem is that I cannot have console input, because Java ME cannot
+have that. The interpreter test will essentially be run-only. However the
+emulator that is ran by the interpreter should pretty much just run tests for
+the most part or at least give it that option. So then I would say that
+emulator arguments are to be removed and just have a headless test runner of
+sorts which is able to read the output of the emulator.
+
