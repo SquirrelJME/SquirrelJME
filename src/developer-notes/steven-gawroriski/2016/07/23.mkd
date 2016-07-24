@@ -40,3 +40,9 @@ if a target requires more files they can be included.
 I actually need to specify extra packages to be included, such as the actual
 operating system support code.
 
+## 19:35
+
+So what I need now is the executable linker. I would suppose the base would
+just be an interface which provides some basic methods. Most of everything
+else would be system specific.
+
