@@ -164,7 +164,7 @@ public abstract class TargetBuilder
 				Objects.toString(System.getProperty("os.name")) +
 				Objects.toString(System.getProperty("os.version"))).
 				hashCode()),
-			randd = new Random(System.identityHashCode(this));
+			randd = new Random(System.identityHashCode(new Object()));
 		__eo.addSystemProperty("net.multiphasicapps.squirreljme.cookie",
 			String.format("0x%08x%08x%08x%08x", randa.nextInt(),
 				randb.nextInt(), randc.nextInt(), randd.nextInt()));
