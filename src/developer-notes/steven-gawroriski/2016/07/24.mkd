@@ -11,3 +11,17 @@ This can also be used to determine which profiles are set and packages that
 are available. I just need a way to back into the package list and have it so
 that properties can properly be mapped and such.
 
+## 18:00
+
+Slow day today, however now I need to work on the emulator/interpreter engine.
+Then once the stuff can be loaded and initialized I can continue with the JIT
+output. Then parse that as I go along. I would suppose that the binary would
+use the standard Java stuff (aka `-jar` and `-D`) otherwise input arguments
+would be completely ignored. Since you cannot run individual classes anyway,
+`-jar` would be the way to go. I would suppose this would be passed to the
+launcher which initially starts, then that would start the actual program
+passed in the command line. I would have to parse the midlet information and
+handle it that way. But initially I just want the initial JVM to print a very
+basic message. Once it prints out that message I will create a video alpha
+video. At that point, the main library can be implemented and such.
+
