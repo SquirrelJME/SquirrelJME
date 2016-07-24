@@ -207,8 +207,6 @@ public class Main
 						for (Path p : ds)
 							try
 							{
-								System.err.printf("DEBUG -- Delete `%s`%n",
-									p);
 								Files.delete(p);
 							}
 							
