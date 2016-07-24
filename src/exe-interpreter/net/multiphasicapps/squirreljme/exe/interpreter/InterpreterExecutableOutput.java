@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.exe.interpreter;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 
 /**
@@ -21,6 +23,14 @@ import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 public class InterpreterExecutableOutput
 	implements ExecutableOutput
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
+	/** System properties. */
+	protected final Map<String, String> properties =
+		new HashMap<>();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/24
@@ -33,7 +43,12 @@ public class InterpreterExecutableOutput
 		if (__k == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		Map<String, String> properties = this.properties;
+		synchronized (lock)
+		{
+			properties.put(__k, __v);
+		}
 	}
 }
 
