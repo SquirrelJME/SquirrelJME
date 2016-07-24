@@ -46,3 +46,13 @@ So what I need now is the executable linker. I would suppose the base would
 just be an interface which provides some basic methods. Most of everything
 else would be system specific.
 
+## 19:38
+
+One consideration is universal binaries, such as ones for DOS and Windows and
+Mac OS X (PowerPC and Intel).
+
+## 20:04
+
+Although those could very well complicate the build process greatly. It may be
+best to ignore these since in practice these are not used much.
+
