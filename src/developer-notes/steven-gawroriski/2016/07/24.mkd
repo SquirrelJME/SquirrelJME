@@ -1,2 +1,13 @@
 # 2016/07/24
 
+## 11:33
+
+The standard methods could add system properties, then I can have an adding of
+standard system properties.
+
+## 11:41
+
+This can also be used to determine which profiles are set and packages that
+are available. I just need a way to back into the package list and have it so
+that properties can properly be mapped and such.
+

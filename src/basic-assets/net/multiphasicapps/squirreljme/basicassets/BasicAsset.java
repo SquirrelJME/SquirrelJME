@@ -91,6 +91,7 @@ public class BasicAsset
 			wrap.add(new BasicAsset("readme.mkd"));
 			wrap.add(new BasicAsset("license.mkd"));
 			wrap.add(new BasicAsset("steven-gawroriski.gpg"));
+			wrap.add(new BasicAsset("squirreljme-version"));
 			
 			// Wrap it
 			rv = UnmodifiableList.<BasicAsset>of(wrap);

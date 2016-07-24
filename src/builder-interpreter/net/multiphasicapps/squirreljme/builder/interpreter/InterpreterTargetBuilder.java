@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
+import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
+import net.multiphasicapps.squirreljme.exe.interpreter.
+	InterpreterExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -58,6 +61,13 @@ public class InterpreterTargetBuilder
 		try (OutputStream os = __zsw.nextEntry("squirreljme.int",
 			ZipCompressionType.DEFAULT_COMPRESSION))
 		{
+			// Create executable output
+			InterpreterExecutableOutput ieo =
+				new InterpreterExecutableOutput();
+			
+			// Add standard properties
+			addStandardSystemProperties(__conf, ieo);
+			
 			throw new Error("TODO");
 		}
 	}

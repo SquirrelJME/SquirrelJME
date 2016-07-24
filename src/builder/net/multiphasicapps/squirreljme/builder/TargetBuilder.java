@@ -12,7 +12,11 @@ package net.multiphasicapps.squirreljme.builder;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Objects;
+import java.util.Random;
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
+import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -126,6 +130,84 @@ public abstract class TargetBuilder
 		throws NullPointerException;
 	
 	/**
+	 * Adds standard system properties to the binary to be linked.
+	 *
+	 * @param __conf The build configuration.
+	 * @param __eo The executable output to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/24
+	 */
+	public final void addStandardSystemProperties(BuildConfig __conf,
+		ExecutableOutput __eo)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null || __eo == null)
+			throw new NullPointerException("NARG");
+		
+		// Some build properties
+		__eo.addSystemProperty("net.multiphasicapps.squirreljme.buildtime",
+			Long.toString(System.currentTimeMillis()));
+		__eo.addSystemProperty("net.multiphasicapps.squirreljme.triplet",
+			__conf.triplet().toString());
+		__eo.addSystemProperty("net.multiphasicapps.squirreljme.hastests",
+			Boolean.toString(__conf.includeTests()));
+		
+		// Generate a cookie
+		Random randa = new Random(System.currentTimeMillis()),
+			randb = new Random(System.nanoTime()),
+			randc = new Random((
+				Objects.toString(System.getProperty("os.name")) +
+				Objects.toString(System.getProperty("os.version"))).
+				hashCode()),
+			randd = new Random(System.identityHashCode(this));
+		__eo.addSystemProperty("net.multiphasicapps.squirreljme.cookie",
+			String.format("0x%08x%08x%08x%08x", randa.nextInt(),
+				randb.nextInt(), randc.nextInt(), randd.nextInt()));
+		
+		// Always prefer that UTF-8 be used regardless of the host OS
+		__eo.addSystemProperty("microedition.encoding", "utf-8");
+		
+		// Java VM details
+		__eo.addSystemProperty("java.version",
+			"1.8");
+		__eo.addSystemProperty("java.vendor",
+			"Steven Gawroriski (Multi-Phasic Applications)");
+		__eo.addSystemProperty("java.vendor.url",
+			"http://multiphasicapps.net/");
+		__eo.addSystemProperty("java.vm.version",
+			__readFirstLine("squirreljme-version"));
+		__eo.addSystemProperty("java.vm.vendor",
+			"Steven Gawroriski (Multi-Phasic Applications)");
+		__eo.addSystemProperty("java.vm.name",
+			"SquirrelJME");
+		__eo.addSystemProperty("java.vm.info",
+			"SquirrelJME");
+		
+		// VM Specification
+		__eo.addSystemProperty("java.vm.specification.name",
+			"Java Virtual Machine Specification");
+		__eo.addSystemProperty("java.vm.specification.version",
+			"1.7");
+		__eo.addSystemProperty("java.vm.specification.vendor",
+			"Oracle Corporation");
+		
+		// Runtime Specification
+		__eo.addSystemProperty("java.specification.name",
+			"JSR 360");
+		__eo.addSystemProperty("java.specification.vendor",
+			"Oracle Corporation");
+		__eo.addSystemProperty("java.specification.version",
+			"8.0");
+		
+		// Some libraries may depend on these
+		__eo.addSystemProperty("java.runtime.name",
+			"SquirrelJME");
+		__eo.addSystemProperty("java.runtime.version",
+			"1.8");
+	}
+	
+	/**
 	 * Is the JIT supported for this target?
 	 *
 	 * @return {@code true} if the JIT is supported.
@@ -175,6 +257,24 @@ public abstract class TargetBuilder
 		
 		// Not found
 		return null;
+	}
+	
+	/**
+	 * Reads the first line from a basic asset file.
+	 *
+	 * @param __asset The asset to read.
+	 * @return The first line of the asset.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/24
+	 */
+	private static String __readFirstLine(String __asset)
+		throws NullPointerException
+	{
+		// Check
+		if (__asset == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

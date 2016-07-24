@@ -21,5 +21,19 @@ import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 public class InterpreterExecutableOutput
 	implements ExecutableOutput
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/24
+	 */
+	@Override
+	public void addSystemProperty(String __k, String __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__k == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 
