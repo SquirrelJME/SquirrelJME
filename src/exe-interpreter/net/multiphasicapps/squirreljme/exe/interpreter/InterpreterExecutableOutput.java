@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.exe.interpreter;
 
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -71,7 +72,52 @@ public class InterpreterExecutableOutput
 		Map<String, String> properties = this.properties;
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Write output here
+			DataOutputStream dos = new DataOutputStream(__os);
+			
+			// Go through all namespaces and just write their data
+			int n = __names.length;
+			byte[] buf = new byte[128];
+			int lastaddr = -1;
+			for (int i = 0; i < n; i++)
+			{
+				// Start position
+				int datastart = dos.size();
+				
+				// Write data
+				for (InputStream is = __blobs[i];;)
+				{
+					// Read
+					int rc = is.read(buf);
+					
+					// EOF?
+					if (rc < 0)
+						break;
+					
+					// Write
+					dos.write(buf, 0, rc);
+				}
+				
+				// End position
+				int dataend = dos.size();
+				int datasize = dataend - datastart;
+				
+				// Write the last entry address along with the start and the
+				// size of the data
+				dos.writeInt(lastaddr);
+				dos.writeInt(datastart);
+				dos.writeInt(datasize);
+				
+				// Write the namespace name
+				dos.writeUTF(__names[i]);
+				
+				// Set last address to point
+				lastaddr = dataend;
+			}
+			
+			// End the file with the last address point (points to the first
+			// namespace that has been blobbed)
+			dos.writeInt(lastaddr);
 		}
 	}
 }
