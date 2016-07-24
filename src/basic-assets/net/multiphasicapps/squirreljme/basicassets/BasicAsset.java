@@ -73,6 +73,28 @@ public class BasicAsset
 	}
 	
 	/**
+	 * Obtains a single asset or return {@code null} if not found.
+	 *
+	 * @param __n The asset to locate.
+	 * @return The basic asset or {@code null} if not found.
+	 * @since 2016/07/24
+	 */
+	public static BasicAsset getAsset(String __n)
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all assets
+		for (BasicAsset ba : getAssets())
+			if (ba.name().equals(__n))
+				return ba;
+		
+		// Not found
+		return null;
+	}
+	
+	/**
 	 * Obtains all of the basic assets which are available.
 	 *
 	 * @return The iterable sequence of basic assets.

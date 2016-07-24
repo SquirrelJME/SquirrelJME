@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
@@ -274,17 +276,52 @@ public abstract class TargetBuilder
 	 *
 	 * @param __asset The asset to read.
 	 * @return The first line of the asset.
+	 * @throws JITException If the string could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/24
 	 */
 	private static String __readFirstLine(String __asset)
-		throws NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__asset == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error DW0o Could not locate the specified asset.
+		// (The asset name)}
+		BasicAsset ba = BasicAsset.getAsset(__asset);
+		if (ba == null)
+			throw new JITException(String.format("DW0o %s", __asset));
+		
+		// Opens the input asset
+		try (InputStream is = ba.open();
+			InputStreamReader isr = new InputStreamReader(is, "utf-8");
+			BufferedReader br = new BufferedReader(isr))
+		{
+			// Read a line
+			String rv = br.readLine();
+			
+			// {@squirreljme.error DW0q No line was read from the asset.
+			// (The asset name)}
+			if (rv == null)
+				throw new JITException(String.format("DW0q %s", __asset));
+			
+			// {@squirreljme.error DW0r The read line from the asset was
+			// blank. (The asset name)}
+			rv = rv.trim();
+			if (rv.length() <= 0)
+				throw new JITException(String.format("DW0r %s", __asset));
+			
+			// Use it
+			return rv;
+		}
+		
+		// {@squirreljme.error DW0p Could not read the first line of the
+		// given asset. (The asset name)}	
+		catch (IOException e)
+		{
+			throw new JITException(String.format("DW0p %s", __asset), e);
+		}
 	}
 }
 
