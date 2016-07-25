@@ -33,6 +33,10 @@ import net.multiphasicapps.zip.ZipCompressionType;
 public class InterpreterTargetBuilder
 	extends TargetBuilder
 {
+	/** One second in pico seconds. */
+	public static final long ONE_SECOND_IN_PICOSECONDS =
+		1_000_000_000_000L;
+	
 	/**
 	 * Initializes the interpreter target builder.
 	 *
@@ -57,10 +61,27 @@ public class InterpreterTargetBuilder
 		if (__conf == null || __p == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup emulator
-		EmulatorGroup eg = new EmulatorGroup(null, null);
+		// Could fail
+		try
+		{
+			// Setup emulator
+			EmulatorGroup eg = new EmulatorGroup(null, null);
+			
+			// Loop emulator until it has complete
+			for (;;)
+			{
+				// Run for a single virtual second
+				eg.run(ONE_SECOND_IN_PICOSECONDS);
+				
+				throw new Error("TODO");
+			}
+		}
 		
-		throw new Error("TODO");
+		// {@squirreljme.error BT01 The emulator threw an I/O exception.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BT01", e);
+		}
 	}
 	
 	/**

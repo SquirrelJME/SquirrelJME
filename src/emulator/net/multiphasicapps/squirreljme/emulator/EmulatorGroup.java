@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -33,8 +34,17 @@ public final class EmulatorGroup
 	protected final Object lock =
 		new Object();
 	
+	/** Playback stream. */
+	protected final DataInputStream playback;
+	
+	/** Recording stream. */
+	protected final DataOutputStream recording;
+	
 	/** The current time in picoseconds that has passed in the group. */
 	private volatile long _picotime;
+	
+	/** Has playback finished? */
+	private volatile boolean _playfinished;
 	
 	/**
 	 * Initializes an emulator group which may optionally playback a given
@@ -56,6 +66,32 @@ public final class EmulatorGroup
 		// Must exist
 		if (__flags == null)
 			__flags = new EmulatorPlayFlag[0];
+		
+		// Setup wrapped streams?
+		DataInputStream playback = (__is != null ? new DataInputStream(__is) :
+			null);
+		DataOutputStream recording = (__os != null ?
+			new DataOutputStream(__os) : null);
+		this.playback = playback;
+		this.recording = recording;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Runs emulation for the given amount of picoseconds.
+	 *
+	 * @param __picos The number of picoseconds to run emulation for.
+	 * @throws IllegalArgumentException If the amount is zero or negative.
+	 * @since 2016/07/25
+	 */
+	public final void run(long __picos)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AR01 Cannot run the emulator for zero or a
+		// negative number of picoseconds.}
+		if (__picos <= 0)
+			throw new IllegalArgumentException("AR01");
 		
 		throw new Error("TODO");
 	}
