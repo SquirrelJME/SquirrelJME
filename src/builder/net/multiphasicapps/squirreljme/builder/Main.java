@@ -243,7 +243,7 @@ public class Main
 		
 		// Emulate?
 		if (config.doEmulation())
-			throw new Error("TODO");
+			tb.emulate(config, distoutpath[0]);
 	}
 	/**
 	 * Attempts to create output ZIP files which target a given system.

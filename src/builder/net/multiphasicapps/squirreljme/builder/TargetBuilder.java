@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ServiceLoader;
@@ -73,6 +74,17 @@ public abstract class TargetBuilder
 		else
 			this._suggestions = new TargetSuggestion[0];
 	}
+	
+	/**
+	 * Emulates the specified ZIP using the emulator for this given target.
+	 *
+	 * @param __conf The configuration to use.
+	 * @param __zip The path to the ZIP to emulate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/25
+	 */
+	public abstract void emulate(BuildConfig __conf, Path __p)
+		throws NullPointerException;
 	
 	/**
 	 * Links together a binary which is capable of running on the target and

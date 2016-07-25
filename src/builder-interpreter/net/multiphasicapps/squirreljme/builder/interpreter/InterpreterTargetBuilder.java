@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.builder.interpreter;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
@@ -41,6 +42,21 @@ public class InterpreterTargetBuilder
 		super(false,
 			"interpreter-32+interpreter,undefined.interpreter.interpreter",
 			"SquirrelJME Test Interpreter");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/25
+	 */
+	@Override
+	public void emulate(BuildConfig __conf, Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null || __p == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
