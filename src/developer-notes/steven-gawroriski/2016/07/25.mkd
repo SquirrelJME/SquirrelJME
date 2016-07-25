@@ -25,3 +25,10 @@ after that extra instructions in the middle would cause some problems. So I
 suppose I should step it up to the next level and make it picoseconds. This
 way 1THz systems can reasonably be emulated.
 
+## 18:56
+
+This means I need to determine when the next event occurs so it can be timed
+and recorded properly. The only thing that has to really be stored in replays
+is unknown information that comes outside of the emulated environment. So
+this means when a system is created, its details must be stored as such.
+
