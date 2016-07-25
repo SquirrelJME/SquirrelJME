@@ -30,6 +30,10 @@ import java.io.OutputStream;
  */
 public final class EmulatorGroup
 {
+	/** The magic number for the recording files. */
+	private static final int _MAGIC_NUMBER =
+		0x534A4D45;
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -39,6 +43,9 @@ public final class EmulatorGroup
 	
 	/** Recording stream. */
 	protected final DataOutputStream recording;
+	
+	/** The rerecord count. */
+	protected final long rerecords;
 	
 	/** The current time in picoseconds that has passed in the group. */
 	private volatile long _picotime;
@@ -75,7 +82,34 @@ public final class EmulatorGroup
 		this.playback = playback;
 		this.recording = recording;
 		
-		throw new Error("TODO");
+		// Check replay header
+		long rerecords;
+		if (playback != null)
+		{
+			// {@squirreljme.error AR02 Invalid magic number in replay file.}
+			if (playback.readInt() != _MAGIC_NUMBER)
+				throw new IOException("AR02");
+			
+			// Read rerecord count
+			rerecords = playback.readLong();
+		}
+		
+		// Start rerecords at negative one
+		else
+			rerecords = -1;
+		
+		// Write replay header
+		if (recording != null)
+		{
+			// Write magic
+			recording.writeInt(_MAGIC_NUMBER);
+			
+			// Increase rerecords by one
+			recording.writeLong(++rerecords);
+		}
+		
+		// Store record count
+		this.rerecords = rerecords;
 	}
 	
 	/**
