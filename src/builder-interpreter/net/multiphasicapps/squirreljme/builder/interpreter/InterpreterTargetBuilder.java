@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
+import net.multiphasicapps.squirreljme.emulator.EmulatorGroup;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.exe.interpreter.
 	InterpreterExecutableOutput;
@@ -55,6 +56,9 @@ public class InterpreterTargetBuilder
 		// Check
 		if (__conf == null || __p == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup emulator
+		EmulatorGroup eg = new EmulatorGroup(null, null);
 		
 		throw new Error("TODO");
 	}
