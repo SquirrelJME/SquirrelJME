@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+
 /**
  * This is the root of all components on the system, components essentially
  * have time based events that may be executed if requested.
@@ -27,25 +32,41 @@ public abstract class EmulatorComponent
 	/** The name of the component. */
 	protected final String name;
 	
+	/** The input arguments. */
+	protected final Map<String, String> arguments;
+	
 	/**
 	 * Initializes the base component.
 	 *
 	 * @param __es The owning emulator system.
 	 * @param __n The name identity of the component.
+	 * @param __args Arguments to the component.
+	 * @throws IllegalArgumentException
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/26
 	 */
-	public EmulatorComponent(EmulatorSystem __es, String __n)
+	public EmulatorComponent(EmulatorSystem __es, String __n, String... __args)
 		throws NullPointerException
 	{
 		// Check
 		if (__es == null || __n == null)
 			throw new NullPointerException("NARG");
 		
+		// Defensive copy
+		__args = (__args != null ? __args.clone() : new String[0]);
+		
 		// Set
 		this.system = __es;
 		this.group = __es.group();
 		this.name = __n;
+		
+		// Copy arguments
+		int n = __args.length;
+		Map<String, String> args = new LinkedHashMap<>();
+		for (int i = 0; i < n; i += 2)
+			args.put(Objects.requireNonNull(__args[i], "NARG"),
+				Objects.requireNonNull(__args[i + 1], "NARG"));
+		this.arguments = UnmodifiableMap.<String, String>of(args);
 	}
 	
 	/**
