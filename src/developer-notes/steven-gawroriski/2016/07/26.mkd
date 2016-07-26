@@ -69,3 +69,8 @@ interpreter. So there would still be an interpreter, but it would just run
 MIPS code in my own faux `squirreljme.interpreter` operating system. This would
 be a bit more realistic than writing my own instruction format.
 
+## 19:45
+
+So I suppose this means that the `jit-interpreter` becomes `jit-mips` for the
+most part.
+

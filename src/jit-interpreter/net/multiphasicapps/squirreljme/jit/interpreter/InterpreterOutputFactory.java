@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.interpreter;
 
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
@@ -51,8 +52,11 @@ public class InterpreterOutputFactory
 		if (__config == null)
 			throw new NullPointerException("NARG");
 		
-		// Just check the architecture
-		return __config.triplet().architecture().equals("interpreter");
+		// Interpreted MIPS
+		JITTriplet triplet = __config.triplet();
+		return triplet.architecture().equals("mips") &&
+			triplet.operatingSystem().equals("squirreljme") &&
+			triplet.operatingSystemVariant().equals("interpreter");
 	}
 }
 

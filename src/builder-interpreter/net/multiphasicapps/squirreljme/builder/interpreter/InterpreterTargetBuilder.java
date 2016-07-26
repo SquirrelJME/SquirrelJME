@@ -134,7 +134,7 @@ public class InterpreterTargetBuilder
 		if (__conf == null)
 			throw new NullPointerException("NARG");
 		
-		// Just check the architecture
+		// Interpreted MIPS
 		JITTriplet triplet = __conf.triplet();
 		return triplet.architecture().equals("mips") &&
 			triplet.operatingSystem().equals("squirreljme") &&
