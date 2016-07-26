@@ -23,6 +23,9 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  */
 public abstract class EmulatorComponent
 {
+	/** Internal lock. */
+	protected final Object lock;
+	
 	/** The owning emulator group. */
 	protected final EmulatorGroup group;
 	
@@ -58,6 +61,7 @@ public abstract class EmulatorComponent
 		// Set
 		this.system = __es;
 		this.group = __es.group();
+		this.lock = __es.group()._lock;
 		this.name = __n;
 		
 		// Copy arguments
@@ -68,6 +72,15 @@ public abstract class EmulatorComponent
 				Objects.requireNonNull(__args[i + 1], "NARG"));
 		this.arguments = UnmodifiableMap.<String, String>of(args);
 	}
+	
+	/**
+	 * Returns the next event time.
+	 *
+	 * @return The next event time or {@code -1} if there are no events to
+	 * process.
+	 * @since 2016/07/26
+	 */
+	protected abstract long nextEventTime();
 	
 	/**
 	 * Returns the owning emulator group.
@@ -100,6 +113,22 @@ public abstract class EmulatorComponent
 	public final EmulatorSystem system()
 	{
 		return this.system;
+	}
+	
+	/**
+	 * Forwards the next event time call.
+	 *
+	 * @return The time of the next event or a negative value if none is to
+	 * be run.
+	 * @since 2016/07/26
+	 */
+	final long __nextEventTime()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this.nextEventTime();
+		}
 	}
 }
 

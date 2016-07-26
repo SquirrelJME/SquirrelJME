@@ -187,6 +187,9 @@ public final class EmulatorSystem
 		List<EmulatorComponent> components = this._components;
 		synchronized (this.lock)
 		{
+			long next = -1L;
+			EmulatorComponent usecomp = null;
+			
 			// Go through all
 			int n = components.size();
 			for (int i = 0; i < n; i++)
@@ -194,7 +197,22 @@ public final class EmulatorSystem
 				// Get component
 				EmulatorComponent bc = components.get(i);
 				
-				throw new Error("TODO");
+				// Get the next time
+				long maybe = bc.__nextEventTime();
+				
+				// Use this event
+				if (maybe >= 0 && (next < 0 || maybe < next))
+				{
+					next = maybe;
+					usecomp = bc;
+				}
+			}
+			
+			// Using an event
+			if (usecomp != null)
+			{
+				__nc[0] = usecomp;
+				return next;
 			}
 		}
 		

@@ -33,5 +33,19 @@ public class InterpreterCPU
 	{
 		super(__es, __id, __args);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/26
+	 */
+	@Override
+	protected long nextEventTime()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
 }
 

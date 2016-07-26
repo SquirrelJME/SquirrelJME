@@ -23,3 +23,8 @@ via factories. However the classes could be used. So the system would have an
 `addComponent` which takes a `Class`, `String` (id of component), and
 `String...`/`Object...` for the component properties.
 
+## 18:49
+
+So component creation can be stored in replays. Currently the class type is
+stored, so they cannot be changed at all.
+
