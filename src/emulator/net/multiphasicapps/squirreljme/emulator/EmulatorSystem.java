@@ -74,8 +74,9 @@ public final class EmulatorSystem
 	 * Adds a component to the current system.
 	 *
 	 * @param __bc The component to add.
-	 * @throws IllegalArgumentException If it belongs to another system or
-	 * was already included.
+	 * @throws IllegalArgumentException If it belongs to another system,
+	 * was already included in the component list, or has a name conflict with
+	 * another component.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/26
 	 */

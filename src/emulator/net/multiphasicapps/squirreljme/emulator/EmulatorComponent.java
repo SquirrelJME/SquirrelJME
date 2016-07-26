@@ -24,23 +24,28 @@ public abstract class EmulatorComponent
 	/** The owning emulator system. */
 	protected final EmulatorSystem system;
 	
+	/** The name of the component. */
+	protected final String name;
+	
 	/**
 	 * Initializes the base component.
 	 *
 	 * @param __es The owning emulator system.
+	 * @param __n The name identity of the component.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/26
 	 */
-	public EmulatorComponent(EmulatorSystem __es)
+	public EmulatorComponent(EmulatorSystem __es, String __n)
 		throws NullPointerException
 	{
 		// Check
-		if (__es == null)
+		if (__es == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.system = __es;
 		this.group = __es.group();
+		this.name = __n;
 	}
 	
 	/**
@@ -52,6 +57,17 @@ public abstract class EmulatorComponent
 	public final EmulatorGroup group()
 	{
 		return this.group;
+	}
+	
+	/**
+	 * Returns the name of the component.
+	 *
+	 * @return The component name.
+	 * @since 2016/07/26
+	 */
+	public final String name()
+	{
+		return this.name;
 	}
 	
 	/**
