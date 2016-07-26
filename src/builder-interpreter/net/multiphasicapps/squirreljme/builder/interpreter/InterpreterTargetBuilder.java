@@ -33,10 +33,6 @@ import net.multiphasicapps.zip.ZipCompressionType;
 public class InterpreterTargetBuilder
 	extends TargetBuilder
 {
-	/** One second in pico seconds. */
-	public static final long ONE_SECOND_IN_PICOSECONDS =
-		1_000_000_000_000L;
-	
 	/**
 	 * Initializes the interpreter target builder.
 	 *
@@ -54,7 +50,7 @@ public class InterpreterTargetBuilder
 	 * @since 2016/07/25
 	 */
 	@Override
-	public void emulate(BuildConfig __conf, Path __p)
+	public EmulatorGroup emulate(BuildConfig __conf, Path __p)
 		throws NullPointerException
 	{
 		// Check
@@ -67,14 +63,8 @@ public class InterpreterTargetBuilder
 			// Setup emulator
 			EmulatorGroup eg = new EmulatorGroup(null, null);
 			
-			// Loop emulator until it has complete
-			for (;;)
-			{
-				// Run for a single virtual second
-				eg.run(ONE_SECOND_IN_PICOSECONDS);
-				
-				throw new Error("TODO");
-			}
+			// Use it
+			return eg;
 		}
 		
 		// {@squirreljme.error BT01 The emulator threw an I/O exception.}

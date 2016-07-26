@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.squirreljme.emulator.EmulatorGroup;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -42,6 +43,14 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
  */
 public class Main
 {
+	/** One second in pico seconds. */
+	public static final long ONE_SECOND_IN_PICOSECONDS =
+		1_000_000_000_000L;
+	
+	/** One second in nano seconds. */
+	public static final long ONE_SECOND_IN_NANOSECONDS =
+		1_000_000_000L;
+	
 	/** The output ZIP file name. */
 	public static final Path OUTPUT_ZIP_NAME =
 		Paths.get("squirreljme.zip");
@@ -245,7 +254,18 @@ public class Main
 		if (config.doEmulation())
 		{
 			out.println("Emulating...");
-			tb.emulate(config, distoutpath[0]);
+			
+			// Get the emulator
+			EmulatorGroup eg = tb.emulate(config, distoutpath[0]);
+			
+			// Loop emulator until it has completed
+			for (;;)
+			{
+				// Run for a single virtual second
+				eg.run(ONE_SECOND_IN_PICOSECONDS);
+				
+				throw new Error("TODO");
+			}
 		}
 	}
 	/**
