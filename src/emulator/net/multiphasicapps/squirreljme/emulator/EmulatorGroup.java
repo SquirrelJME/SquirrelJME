@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * This is group of emulators which are able to interact with each other using
@@ -40,6 +41,11 @@ public final class EmulatorGroup
 	/** The replay file does not have an event ready. */
 	private static final long _REPLAY_NO_EVENT_TIME =
 		-1L;
+	
+	/** Service loader for component factories. */
+	private static final ServiceLoader<EmulatorComponentFactory> _COMP_SERV =
+		ServiceLoader.<EmulatorComponentFactory>load(
+			EmulatorComponentFactory.class);
 	
 	/** Lock. */
 	protected final Object lock =
@@ -249,6 +255,116 @@ public final class EmulatorGroup
 			
 			// Target reached
 			this._picotime = target;
+		}
+	}
+	
+	/**
+	 * Adds a component to the given system.
+	 *
+	 * @param <C> The type of component to add.
+	 * @param __es The system to add the component to.
+	 * @param __cl The class type of the component to add.
+	 * @param __id The component identity.
+	 * @param __args The arguments to the component.
+	 * @return The newly created component.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/26
+	 */
+	final <C extends EmulatorComponent> C __addComponent(EmulatorSystem __es,
+		Class<C> __cl, String __id, String... __args)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__es == null || __cl == null || __id == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Defensive copy
+		__args = __args.clone();
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error AR09 Cannot add a component to a system
+			// because a replay is currently being played.}
+			if (!this._playfinished)
+				throw new IllegalStateException("AR09");
+			
+			// Internal create
+			return this.<C>__internalAddComponent(__es, __cl, __id, __args);
+		}
+	}
+	
+	/**
+	 * Internally a component to the given system, this is called by the
+	 * replay code when the packet is reached.
+	 *
+	 * @param <C> The type of component to add.
+	 * @param __es The system to add the component to.
+	 * @param __cl The class type of the component to add.
+	 * @param __id The component identity.
+	 * @param __args The arguments to the component.
+	 * @return The newly created component.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/26
+	 */
+	final <C extends EmulatorComponent> C __internalAddComponent(
+		EmulatorSystem __es, Class<C> __cl, String __id, String... __args)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__es == null || __cl == null || __id == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Find matching factory
+		ServiceLoader<EmulatorComponentFactory> services = _COMP_SERV;
+		EmulatorComponentFactory usefact = null;
+		synchronized (services)
+		{
+			for (EmulatorComponentFactory ecf : services)
+				if (ecf.isComponentHandled(__cl))
+				{
+					usefact = ecf;
+					break;
+				}
+		}
+		
+		// {@squirreljme.error AR0a No factory creates the given component
+		// class type. (The class type)}
+		if (usefact == null)
+			throw new IllegalStateException(String.format("AR0a %s", __cl));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Write packet to output
+			long now = this._picotime;
+			DataOutputStream recording = this.recording;
+			if (recording != null)
+			{
+				recording.writeLong(now);
+				recording.writeByte(
+					EmulatorPacketType.ADD_COMPONENT.ordinal());
+				recording.writeInt(__es.index());
+				recording.writeUTF(__cl.getName());
+				recording.writeUTF(__id);
+				
+				// Write argument array
+				int n = __args.length;
+				recording.writeInt(n);
+				for (int i = 0; i < n; i++)
+					recording.writeUTF(__args[i]);
+			}
+			
+			// Create the component
+			C rv = usefact.createComponent(__cl, __es, __id, __args);
+			
+			// Send to the system
+			__es.__addComponent(rv);
+			
+			// Return it
+			return rv;
 		}
 	}
 	

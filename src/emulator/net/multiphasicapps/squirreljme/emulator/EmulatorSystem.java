@@ -84,7 +84,8 @@ public final class EmulatorSystem
 		if (__args == null)
 			__args = new String[0];
 		
-		throw new Error("TODO");
+		// Handled by the group
+		return this.group.<C>__addComponent(this, __cl, __id, __args);
 	}
 	
 	/**
@@ -96,6 +97,17 @@ public final class EmulatorSystem
 	public final EmulatorGroup group()
 	{
 		return this.group;
+	}
+	
+	/**
+	 * Returns the index of the system.
+	 *
+	 * @return The system index.
+	 * @since 2016/07/26
+	 */
+	public final int index()
+	{
+		return this.index;
 	}
 	
 	/**

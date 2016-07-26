@@ -24,6 +24,9 @@ public enum EmulatorPacketType
 	/** Create new system. */
 	CREATE_SYSTEM,
 	
+	/** Add a component to the system. */
+	ADD_COMPONENT,
+	
 	/** End. */
 	;
 }
