@@ -47,3 +47,9 @@ This means that is is really slow, too slow for the emulator to truly be
 viable for testing. Although cycle accurate is nice, it is far too
 undesirable.
 
+## 19:25
+
+So what I really need is a kind of deterministic emulator that does not
+run extremely slow. So I suppose what I need instead of running a single
+cycle for each method, I need a run to amount to occur instead or similar.
+
