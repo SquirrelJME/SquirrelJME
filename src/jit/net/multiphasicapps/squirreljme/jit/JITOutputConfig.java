@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -33,6 +35,9 @@ public final class JITOutputConfig
 	
 	/** The output cache creator. */
 	private volatile JITCacheCreator _cache;
+	
+	/** Cached string representation. */
+	private volatile Reference<String> _string;
 	
 	/**
 	 * Initializes a blank configuration.
@@ -114,6 +119,26 @@ public final class JITOutputConfig
 			return rv;
 		}
 	}
+		
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/26
+	 */
+	@Override
+	public final String toString()
+	{
+		// Get
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Create?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = __createString(this)));
+		
+		// Return
+		return rv;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -123,6 +148,18 @@ public final class JITOutputConfig
 	public JITTriplet triplet()
 	{
 		return this._triplet;
+	}
+	
+	/**
+	 * Common string creation.
+	 *
+	 * @param __ccg The common get configuration.
+	 * @return The string representation of it.
+	 * @since 2016/07/26
+	 */
+	private static String __createString(__CommonConfigGet__ __ccg)
+	{
+		return "{triplet=" + __ccg.triplet() + "}";
 	}
 	
 	/**
@@ -140,6 +177,9 @@ public final class JITOutputConfig
 		
 		/** The cache creator to use (optional). */
 		protected final JITCacheCreator cache;
+		
+		/** Cached string representation. */
+		private volatile Reference<String> _string;
 		
 		/**
 		 * Initializes an immutable configuration which does not change.
@@ -178,6 +218,26 @@ public final class JITOutputConfig
 		public final JITCacheCreator cacheCreator()
 		{
 			return this.cache;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/26
+		 */
+		@Override
+		public final String toString()
+		{
+			// Get
+			Reference<String> ref = this._string;
+			String rv;
+			
+			// Create?
+			if (ref == null || null == (rv = ref.get()))
+				this._string = new WeakReference<>(
+					(rv = __createString(this)));
+			
+			// Return
+			return rv;
 		}
 		
 		/**
