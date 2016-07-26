@@ -18,6 +18,9 @@ package net.multiphasicapps.squirreljme.emulator;
  */
 public enum EmulatorPacketType
 {
+	/** Not a valid packet type. */
+	INVALID_PACKET_TYPE,
+	
 	/** Create new system. */
 	CREATE_SYSTEM,
 	
