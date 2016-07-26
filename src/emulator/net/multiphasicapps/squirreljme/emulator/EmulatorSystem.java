@@ -22,6 +22,27 @@ package net.multiphasicapps.squirreljme.emulator;
  */
 public final class EmulatorSystem
 {
+	/** The owning group. */
+	protected final EmulatorGroup group;
+	
+	/**
+	 * Initializes the emulator system.
+	 *
+	 * @param __eg The owning group.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/26
+	 */
+	EmulatorSystem(EmulatorGroup __eg)
+		throws NullPointerException
+	{
+		// Check
+		if (__eg == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.group = __eg;
+	}
+	
 	/**
 	 * Calculates the time of the next event.
 	 *

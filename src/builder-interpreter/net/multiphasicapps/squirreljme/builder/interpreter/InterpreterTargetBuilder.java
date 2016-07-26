@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.emulator.EmulatorGroup;
+import net.multiphasicapps.squirreljme.emulator.EmulatorSystem;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.exe.interpreter.
 	InterpreterExecutableOutput;
@@ -51,27 +52,20 @@ public class InterpreterTargetBuilder
 	 */
 	@Override
 	public EmulatorGroup emulate(BuildConfig __conf, Path __p)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__conf == null || __p == null)
 			throw new NullPointerException("NARG");
 		
-		// Could fail
-		try
-		{
-			// Setup emulator
-			EmulatorGroup eg = new EmulatorGroup(null, null);
-			
-			// Use it
-			return eg;
-		}
+		// Setup emulator
+		EmulatorGroup eg = new EmulatorGroup(null, createLastRun());
 		
-		// {@squirreljme.error BT01 The emulator threw an I/O exception.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("BT01", e);
-		}
+		// Create new system for the interpreter
+		EmulatorSystem sys = eg.createSystem();
+		
+		// Use it
+		return eg;
 	}
 	
 	/**

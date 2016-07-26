@@ -131,6 +131,30 @@ public final class EmulatorGroup
 	}
 	
 	/**
+	 * Creates a new emulation system.
+	 *
+	 * @return The newly created emulation system.
+	 * @throws IllegalStateException If playback has not finished.
+	 * @throws IOException On read/write errors.
+	 * @since 2016/07/26
+	 */
+	public final EmulatorSystem createSystem()
+		throws IllegalStateException, IOException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error AR05 Cannot create a new system because
+			// a replay is currently being played.}
+			if (!this._playfinished)
+				throw new IllegalStateException("AR05");
+			
+			// Internally create
+			return __internalCreateSystem();
+		}
+	}
+	
+	/**
 	 * Runs emulation for the given amount of picoseconds.
 	 *
 	 * @param __picos The number of picoseconds to run emulation for.
@@ -213,6 +237,48 @@ public final class EmulatorGroup
 	}
 	
 	/**
+	 * Internally creates a new system.
+	 *
+	 * @return The newly created system.
+	 * @throws IOException On read/write errors.
+	 * @since 2016/07/26
+	 */
+	private final EmulatorSystem __internalCreateSystem()
+		throws IOException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Write packet to output
+			long now = this._picotime;
+			DataOutputStream recording = this.recording;
+			if (recording != null)
+			{
+				recording.writeLong(now);
+				recording.writeByte(
+					EmulatorPacketType.CREATE_SYSTEM.ordinal());
+			}
+			
+			// Create
+			EmulatorSystem rv = new EmulatorSystem(this);
+			
+			// Replace a null spot in the list
+			List<EmulatorSystem> systems = this.systems;
+			int n = systems.size();
+			for (int i = 0; i < n; i++)
+				if (systems.get(i) == null)
+				{
+					systems.set(i, rv);
+					return rv;
+				}
+			
+			// Add to the end
+			systems.add(rv);
+			return rv;
+		}
+	}
+	
+	/**
 	 * This reads from the replay and determins the next time index
 	 *
 	 * @throws IOException On read/write errors.
@@ -223,7 +289,7 @@ public final class EmulatorGroup
 		throws IOException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			// If not playing back, always returns nothing
 			DataInputStream playback = this.playback;

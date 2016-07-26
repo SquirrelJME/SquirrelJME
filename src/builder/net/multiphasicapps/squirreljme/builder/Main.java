@@ -252,22 +252,31 @@ public class Main
 		
 		// Emulate?
 		if (config.doEmulation())
-		{
-			out.println("Emulating...");
-			
-			// Get the emulator
-			EmulatorGroup eg = tb.emulate(config, distoutpath[0]);
-			
-			// Loop emulator until it has completed
-			for (;;)
+			try
 			{
-				// Run for a single virtual second
-				eg.run(ONE_SECOND_IN_PICOSECONDS);
+				out.println("Emulating...");
+			
+				// Get the emulator
+				EmulatorGroup eg = tb.emulate(config, distoutpath[0]);
+			
+				// Loop emulator until it has completed
+				for (;;)
+				{
+					// Run for a single virtual second
+					eg.run(ONE_SECOND_IN_PICOSECONDS);
 				
-				throw new Error("TODO");
+					throw new Error("TODO");
+				}
 			}
-		}
+			
+			// {@squirreljme.error DW0t Read/write error setting up the
+			// emulator or running it.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("DW0t", e);
+			}
 	}
+	
 	/**
 	 * Attempts to create output ZIP files which target a given system.
 	 *

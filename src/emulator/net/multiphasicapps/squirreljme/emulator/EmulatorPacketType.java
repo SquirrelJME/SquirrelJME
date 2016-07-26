@@ -16,8 +16,11 @@ package net.multiphasicapps.squirreljme.emulator;
  *
  * @since 2016/07/25
  */
-public enum EmulatorPacketID
+public enum EmulatorPacketType
 {
+	/** Create new system. */
+	CREATE_SYSTEM,
+	
 	/** End. */
 	;
 }

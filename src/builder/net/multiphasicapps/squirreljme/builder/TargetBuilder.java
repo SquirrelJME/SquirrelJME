@@ -14,7 +14,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ServiceLoader;
@@ -82,11 +87,12 @@ public abstract class TargetBuilder
 	 * @param __conf The configuration to use.
 	 * @param __zip The path to the ZIP to emulate.
 	 * @return The emulator which was setup.
+	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/25
 	 */
 	public abstract EmulatorGroup emulate(BuildConfig __conf, Path __p)
-		throws NullPointerException;
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Links together a binary which is capable of running on the target and
@@ -284,6 +290,21 @@ public abstract class TargetBuilder
 	public final boolean canJIT()
 	{
 		return this.canjit;
+	}
+	
+	/**
+	 * Creates a last run recording for use in debugging.
+	 *
+	 * @return The output stream of the last run.
+	 * @throws IOException On read/write errors.
+	 * @since 2016/07/26
+	 */
+	protected final OutputStream createLastRun()
+		throws IOException
+	{
+		return Channels.newOutputStream(FileChannel.open(
+			Paths.get("lastrun.rec"), StandardOpenOption.WRITE,
+			StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
 	}
 	
 	/**
