@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.emulator;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,6 +35,10 @@ public final class EmulatorGroup
 	private static final int _MAGIC_NUMBER =
 		0x534A4D45;
 	
+	/** The replay file does not have an event ready. */
+	private static final long _REPLAY_NO_EVENT_TIME =
+		-1L;
+	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
@@ -52,6 +57,10 @@ public final class EmulatorGroup
 	
 	/** Has playback finished? */
 	private volatile boolean _playfinished;
+	
+	/** The next unspecified event waiting in the replay. */
+	private volatile long _nextreplayevent =
+		_REPLAY_NO_EVENT_TIME;
 	
 	/**
 	 * Initializes an emulator group which may optionally playback a given
@@ -110,6 +119,9 @@ public final class EmulatorGroup
 		
 		// Store record count
 		this.rerecords = rerecords;
+		
+		// If not playing back then just say playback finished
+		this._playfinished = (playback == null);
 	}
 	
 	/**
@@ -117,17 +129,100 @@ public final class EmulatorGroup
 	 *
 	 * @param __picos The number of picoseconds to run emulation for.
 	 * @throws IllegalArgumentException If the amount is zero or negative.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/07/25
 	 */
 	public final void run(long __picos)
-		throws IllegalArgumentException
+		throws IOException, IllegalArgumentException
 	{
 		// {@squirreljme.error AR01 Cannot run the emulator for zero or a
 		// negative number of picoseconds.}
 		if (__picos <= 0)
 			throw new IllegalArgumentException("AR01");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// The target time to reach
+			long now = this._picotime;
+			long target = now + __picos;
+			
+			// {@squirreljme.error AR03 Cannot run the specified number of
+			// picoseconds because it overflows the maximum time index which is
+			// about 106 days. (The current time; The requested run time; The
+			// target time)}
+			if (target < now)
+				throw new IllegalStateException(String.format("AR03 %d %d %d",
+					now, __picos, target));
+			
+			// Keep running until the target time is reached
+			while (now < target)
+			{
+				// Determine the next event that is to be emulated
+				long nextevent = __nextReplayEvent();	
+				
+				throw new Error("TODO");
+			}
+			
+			// Target reached
+			this._picotime = target;
+		}
+	}
+	
+	/**
+	 * This reads from the replay and determins the next time index
+	 *
+	 * @throws IOException On read/write errors.
+	 * @return The time index where the next event in the replay happens.
+	 * @since 2016/07/25
+	 */
+	private final long __nextReplayEvent()
+		throws IOException
+	{
+		// Lock
+		synchronized (lock)
+		{
+			// If not playing back, always returns nothing
+			DataInputStream playback = this.playback;
+			if (this._playfinished || playback == null)
+				return _REPLAY_NO_EVENT_TIME;
+			
+			// Could reach the end of the replay
+			try
+			{
+				// If the replay contains an event already read then return it
+				long nextreplayevent = this._nextreplayevent;
+				if (nextreplayevent >= 0)
+					return nextreplayevent;
+				
+				// Read from the replay
+				long fromreplay = playback.readLong();
+				
+				// {@squirreljme.error AR04 The time index stored in the replay
+				// is in the past. (The time index in the replay; The current
+				// time index)}
+				long now = this._picotime;
+				if (fromreplay < now)
+					throw new IllegalStateException(String.format("AR04 %d %d",
+						fromreplay, now));
+				
+				// Set next event time
+				this._nextreplayevent = fromreplay;
+				
+				// Return it
+				return fromreplay;
+			}
+			
+			// Reached end of replay
+			catch (EOFException e)
+			{
+				// Set replay as finished
+				this._playfinished = true;
+				
+				// Invalid time
+				return _REPLAY_NO_EVENT_TIME;
+			}
+		}
 	}
 }
 

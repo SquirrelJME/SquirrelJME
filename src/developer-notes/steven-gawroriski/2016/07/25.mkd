@@ -32,3 +32,8 @@ and recorded properly. The only thing that has to really be stored in replays
 is unknown information that comes outside of the emulated environment. So
 this means when a system is created, its details must be stored as such.
 
+## 19:16
+
+Just realized that my data input (which is not implemented) does not have
+`EOFException`s, will need to remember that.
+
