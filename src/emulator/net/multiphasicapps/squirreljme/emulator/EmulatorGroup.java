@@ -232,7 +232,7 @@ public final class EmulatorGroup
 					
 					// If the system's next even time is lower
 					long systime = sys.__nextEventTime(nextcomp);
-					if (systime >= 0 && systime < nextevent)
+					if (systime >= 0 && (nextevent < 0 || systime < nextevent))
 					{
 						// Use this one instead
 						nextevent = systime;

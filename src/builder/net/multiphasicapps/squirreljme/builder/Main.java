@@ -264,8 +264,6 @@ public class Main
 				{
 					// Run for a single virtual second
 					eg.run(ONE_SECOND_IN_PICOSECONDS);
-				
-					throw new Error("TODO");
 				}
 			}
 			
