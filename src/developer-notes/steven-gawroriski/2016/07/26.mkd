@@ -4,3 +4,11 @@
 
 Hopefully today I can get to work on the emulator.
 
+## 15:29
+
+For the emulator, I thought about having it where I just load the binary and
+just start executing bytes in a specific region (perhaps the end). This would
+for the most part be how the real system is handled and such. So then this
+way I can have binary initialization be written in Java and be generic as
+possible. Compiler magic would handle most of the things.
+
