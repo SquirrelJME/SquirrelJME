@@ -54,6 +54,10 @@ public final class EmulatorGroup
 	/** The rerecord count. */
 	protected final long rerecords;
 	
+	/** Visible internal lock. */
+	final Object _lock =
+		this.lock;
+	
 	/** The systems to emulate. */
 	protected final List<EmulatorSystem> systems =
 		new ArrayList<>();

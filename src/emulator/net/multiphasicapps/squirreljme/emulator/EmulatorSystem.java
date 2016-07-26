@@ -22,6 +22,9 @@ package net.multiphasicapps.squirreljme.emulator;
  */
 public final class EmulatorSystem
 {
+	/** The group lock. */
+	protected final Object lock;
+	
 	/** The owning group. */
 	protected final EmulatorGroup group;
 	
@@ -41,6 +44,7 @@ public final class EmulatorSystem
 		
 		// Set
 		this.group = __eg;
+		this.lock = __eg._lock;
 	}
 	
 	/**
