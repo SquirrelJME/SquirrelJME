@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,33 @@ public final class EmulatorSystem
 		this.group = __eg;
 		this.lock = __eg._lock;
 		this.index = __dx;
+	}
+	
+	/**
+	 * Adds a component to the given system.
+	 *
+	 * @param <C> The type of component to add.
+	 * @param __cl The class type of the component to add.
+	 * @param __id The component identity.
+	 * @param __args The arguments to the component.
+	 * @return The newly created component.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/26
+	 */
+	public final <C extends EmulatorComponent> C addComponent(Class<C> __cl,
+		String __id, String... __args)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__cl == null || __id == null)
+			throw new NullPointerException("NARG");
+		
+		// Force to exist
+		if (__args == null)
+			__args = new String[0];
+		
+		throw new Error("TODO");
 	}
 	
 	/**
