@@ -53,3 +53,19 @@ So what I really need is a kind of deterministic emulator that does not
 run extremely slow. So I suppose what I need instead of running a single
 cycle for each method, I need a run to amount to occur instead or similar.
 
+## 19:27
+
+Also, each call essentially is done in a single method, every cycle has its
+own method call so there is much overhead. So bulk execution is definitely
+needed. There has to be a central loop somewhere which calls all the
+associated methods as required and does not cause a method to be called for
+each cycle. I suppose what I can do is instead change the emulator code to
+not use picotime and instead just have a generic run time amount. Real time
+on the system can be virtualized instead. Code to be ran by the CPU could be
+read into a buffer and bytes could be interpreted in a giant loop until the
+PC leaves the block or a given number of instructions were executed. Then
+something I can do is just implement JIT compiling for MIPS instead of the
+interpreter. So there would still be an interpreter, but it would just run
+MIPS code in my own faux `squirreljme.interpreter` operating system. This would
+be a bit more realistic than writing my own instruction format.
+
