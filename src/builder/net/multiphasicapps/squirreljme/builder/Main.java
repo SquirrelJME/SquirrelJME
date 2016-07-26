@@ -243,7 +243,10 @@ public class Main
 		
 		// Emulate?
 		if (config.doEmulation())
+		{
+			out.println("Emulating...");
 			tb.emulate(config, distoutpath[0]);
+		}
 	}
 	/**
 	 * Attempts to create output ZIP files which target a given system.

@@ -22,5 +22,15 @@ package net.multiphasicapps.squirreljme.emulator;
  */
 public final class EmulatorSystem
 {
+	/**
+	 * Calculates the time of the next event.
+	 *
+	 * @return The next event time index.
+	 * @since 2016/07/25
+	 */
+	final long __nextEventTime()
+	{
+		throw new Error("TODO");
+	}
 }
 

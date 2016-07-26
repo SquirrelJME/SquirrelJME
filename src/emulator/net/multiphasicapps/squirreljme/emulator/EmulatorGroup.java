@@ -16,6 +16,8 @@ import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is group of emulators which are able to interact with each other using
@@ -51,6 +53,10 @@ public final class EmulatorGroup
 	
 	/** The rerecord count. */
 	protected final long rerecords;
+	
+	/** The systems to emulate. */
+	protected final List<EmulatorSystem> systems =
+		new ArrayList<>();
 	
 	/** The current time in picoseconds that has passed in the group. */
 	private volatile long _picotime;
@@ -156,12 +162,49 @@ public final class EmulatorGroup
 					now, __picos, target));
 			
 			// Keep running until the target time is reached
+			List<EmulatorSystem> systems = this.systems;
 			while (now < target)
 			{
 				// Determine the next event that is to be emulated
-				long nextevent = __nextReplayEvent();	
+				long nextevent = __nextReplayEvent();
+				EmulatorSystem nextsys = null;
 				
-				throw new Error("TODO");
+				// Go through all systems and get the lowest next even time
+				int n = systems.size();
+				for (int i = 0; i < n; i++)
+				{
+					EmulatorSystem sys = systems.get(i);
+					
+					// If the system's next even time is lower
+					long systime = sys.__nextEventTime();
+					if (systime < nextevent)
+					{
+						// Use this one instead
+						nextevent = systime;
+						nextsys = sys;
+					}
+				}
+				
+				// No events will occur at all, do not bother doing anything
+				if (nextevent < 0)
+					break;
+				
+				// Run up to the event time for the given system
+				if (nextsys != null)
+				{
+					if (true)
+						throw new Error("TODO");
+				}
+				
+				// Otherwise read a command from the replay and execute it
+				else
+				{
+					if (true)
+						throw new Error("TODO");
+				}
+				
+				// Change current time
+				now = nextevent;
 			}
 			
 			// Target reached
