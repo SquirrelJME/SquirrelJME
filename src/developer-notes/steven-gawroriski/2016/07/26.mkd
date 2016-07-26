@@ -16,3 +16,10 @@ possible. Compiler magic would handle most of the things.
 
 I really just need components and that is it.
 
+## 16:52
+
+To support recording and replays, components have to be added and initialized
+via factories. However the classes could be used. So the system would have an
+`addComponent` which takes a `Class`, `String` (id of component), and
+`String...`/`Object...` for the component properties.
+
