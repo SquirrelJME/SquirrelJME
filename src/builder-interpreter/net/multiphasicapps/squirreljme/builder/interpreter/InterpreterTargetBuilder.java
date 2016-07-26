@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.emulator.EmulatorGroup;
 import net.multiphasicapps.squirreljme.emulator.EmulatorSystem;
+import net.multiphasicapps.squirreljme.emulator.interpreter.InterpreterCPU;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.exe.interpreter.
 	InterpreterExecutableOutput;
@@ -63,6 +64,10 @@ public class InterpreterTargetBuilder
 		
 		// Create new system for the interpreter
 		EmulatorSystem sys = eg.createSystem();
+		
+		// Add CPU component
+		InterpreterCPU cpu = sys.<InterpreterCPU>addComponent(
+			InterpreterCPU.class, "cpu", "clockrate", "8000000");
 		
 		// Use it
 		return eg;
