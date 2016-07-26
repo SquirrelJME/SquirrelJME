@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This represents a single system which is being emulated, each system has
  * their own filesystem representation and memory pool. All
@@ -28,14 +31,22 @@ public final class EmulatorSystem
 	/** The owning group. */
 	protected final EmulatorGroup group;
 	
+	/** The system index. */
+	protected final int index;
+	
+	/** Components which are part of the system. */
+	private final List<EmulatorComponent> _components =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the emulator system.
 	 *
 	 * @param __eg The owning group.
+	 * @param __dx The system index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/26
 	 */
-	EmulatorSystem(EmulatorGroup __eg)
+	EmulatorSystem(EmulatorGroup __eg, int __dx)
 		throws NullPointerException
 	{
 		// Check
@@ -45,17 +56,109 @@ public final class EmulatorSystem
 		// Set
 		this.group = __eg;
 		this.lock = __eg._lock;
+		this.index = __dx;
+	}
+	
+	/**
+	 * Returns the group which owns this system.
+	 *
+	 * @return The owning group.
+	 * @since 2016/07/26
+	 */
+	public final EmulatorGroup group()
+	{
+		return this.group;
+	}
+	
+	/**
+	 * Adds a component to the current system.
+	 *
+	 * @param __bc The component to add.
+	 * @throws IllegalArgumentException If it belongs to another system or
+	 * was already included.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/26
+	 */
+	final void __addComponent(EmulatorComponent __bc)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__bc == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AR07 Cannot add a component which belongs to
+		// another system.}
+		if (__bc.system() != this)
+			throw new IllegalArgumentException("AR07");
+		
+		// Lock
+		List<EmulatorComponent> components = this._components;
+		synchronized (this.lock)
+		{
+			// Go through all
+			int n = components.size();
+			int freeslot = -1;
+			for (int i = 0; i < n; i++)
+			{
+				// Get component here
+				EmulatorComponent comp = components.get(i);
+				
+				// Free slot?
+				if (comp == null)
+				{
+					if (freeslot < 0)
+						freeslot = i;
+				}
+				
+				// {@squirreljme.error AR08 The component to be added to the
+				// system is already in the component list.}
+				else if (comp == __bc)
+					throw new IllegalArgumentException("AR08");
+			}
+			
+			// Add to end?
+			if (freeslot < 0)
+				components.add(__bc);
+			
+			// Specific slot
+			else
+				components.set(freeslot, __bc);
+		}
 	}
 	
 	/**
 	 * Calculates the time of the next event.
 	 *
-	 * @return The next event time index.
+	 * @param __nc The next component which is to be ran on the system.
+	 * @return The next event time index, or a negative value if one is not
+	 * to be ran.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/25
 	 */
-	final long __nextEventTime()
+	final long __nextEventTime(EmulatorComponent[] __nc)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__nc == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		List<EmulatorComponent> components = this._components;
+		synchronized (this.lock)
+		{
+			// Go through all
+			int n = components.size();
+			for (int i = 0; i < n; i++)
+			{
+				// Get component
+				EmulatorComponent bc = components.get(i);
+				
+				throw new Error("TODO");
+			}
+		}
+		
+		// No events being ran
+		return -1L;
 	}
 }
 

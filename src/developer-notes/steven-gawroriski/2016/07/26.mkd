@@ -12,3 +12,7 @@ for the most part be how the real system is handled and such. So then this
 way I can have binary initialization be written in Java and be generic as
 possible. Compiler magic would handle most of the things.
 
+## 16:35
+
+I really just need components and that is it.
+

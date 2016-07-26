@@ -62,6 +62,10 @@ public final class EmulatorGroup
 	protected final List<EmulatorSystem> systems =
 		new ArrayList<>();
 	
+	/** Next component to run. */
+	private final EmulatorComponent[] _nextcomp =
+		new EmulatorComponent[1];
+	
 	/** The current time in picoseconds that has passed in the group. */
 	private volatile long _picotime;
 	
@@ -191,11 +195,13 @@ public final class EmulatorGroup
 			
 			// Keep running until the target time is reached
 			List<EmulatorSystem> systems = this.systems;
+			EmulatorComponent[] nextcomp = this._nextcomp;
 			while (now < target)
 			{
 				// Determine the next event that is to be emulated
 				long nextevent = __nextReplayEvent();
 				EmulatorSystem nextsys = null;
+				EmulatorComponent runcomp = null;
 				
 				// Go through all systems and get the lowest next even time
 				int n = systems.size();
@@ -204,12 +210,18 @@ public final class EmulatorGroup
 					EmulatorSystem sys = systems.get(i);
 					
 					// If the system's next even time is lower
-					long systime = sys.__nextEventTime();
-					if (systime < nextevent)
+					long systime = sys.__nextEventTime(nextcomp);
+					if (systime >= 0 && systime < nextevent)
 					{
 						// Use this one instead
 						nextevent = systime;
 						nextsys = sys;
+						runcomp = nextcomp[0];
+						
+						// {@squirreljme.error AR06 Running a system based
+						// event but it has no associated component.}
+						if (runcomp == null)
+							throw new IllegalStateException("AR06");
 					}
 				}
 				
@@ -263,21 +275,26 @@ public final class EmulatorGroup
 					EmulatorPacketType.CREATE_SYSTEM.ordinal());
 			}
 			
-			// Create
-			EmulatorSystem rv = new EmulatorSystem(this);
-			
 			// Replace a null spot in the list
 			List<EmulatorSystem> systems = this.systems;
 			int n = systems.size();
+			int freeslot = -1;
 			for (int i = 0; i < n; i++)
 				if (systems.get(i) == null)
 				{
-					systems.set(i, rv);
-					return rv;
+					freeslot = i;
+					break;
 				}
 			
-			// Add to the end
-			systems.add(rv);
+			// Create
+			EmulatorSystem rv = new EmulatorSystem(this, (freeslot > 0 ?
+				freeslot : n));
+			
+			// Set position of the system
+			if (freeslot > 0)
+				systems.set(freeslot, rv);
+			else
+				systems.add(rv);
 			return rv;
 		}
 	}
