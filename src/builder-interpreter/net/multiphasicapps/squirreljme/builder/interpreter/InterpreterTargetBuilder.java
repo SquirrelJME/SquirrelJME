@@ -23,6 +23,7 @@ import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.exe.interpreter.
 	InterpreterExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 import net.multiphasicapps.zip.ZipCompressionType;
@@ -43,7 +44,7 @@ public class InterpreterTargetBuilder
 	public InterpreterTargetBuilder()
 	{
 		super(false,
-			"interpreter-32+interpreter,undefined.interpreter.interpreter",
+			"mips-32+i,big.squirreljme.interpreter",
 			"SquirrelJME Test Interpreter");
 	}
 	
@@ -134,7 +135,10 @@ public class InterpreterTargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Just check the architecture
-		return __conf.triplet().architecture().equals("interpreter");
+		JITTriplet triplet = __conf.triplet();
+		return triplet.architecture().equals("mips") &&
+			triplet.operatingSystem().equals("squirreljme") &&
+			triplet.operatingSystemVariant().equals("interpreter");
 	}
 	
 	/**
