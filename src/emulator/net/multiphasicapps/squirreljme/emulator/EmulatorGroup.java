@@ -252,10 +252,7 @@ public final class EmulatorGroup
 				
 				// Run up to the event time for the given system
 				if (nextsys != null)
-				{
-					if (true)
-						throw new Error("TODO");
-				}
+					runcomp.__run();
 				
 				// Otherwise read a command from the replay and execute it
 				else

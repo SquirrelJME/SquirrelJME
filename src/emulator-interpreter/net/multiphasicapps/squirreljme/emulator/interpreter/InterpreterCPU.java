@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.emulator.interpreter;
 
+import java.io.IOException;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.emulator.EmulatorComponent;
 import net.multiphasicapps.squirreljme.emulator.EmulatorSystem;
@@ -27,6 +28,9 @@ public class InterpreterCPU
 	
 	/** Picoseconds per clock. */
 	protected final long picosperclock;
+	
+	/** The current cycle number. */
+	private volatile long _cyclecount;
 	
 	/** The next clock time index. */
 	private volatile long _nextclock;
@@ -87,6 +91,31 @@ public class InterpreterCPU
 		{
 			// Return the next clock pulse
 			return this._nextclock;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/26
+	 */
+	@Override
+	protected void run()
+		throws IOException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Get current clock
+			long clock = this._nextclock;
+			long cycle = this._cyclecount;
+			
+			if ((cycle % clockrate) == 0)
+				System.err.printf("DEBUG -- 1s at %d%n",
+					System.nanoTime());
+			
+			// Set next clock
+			this._nextclock = clock + this.picosperclock;
+			this._cyclecount = cycle + 1;
 		}
 	}
 }

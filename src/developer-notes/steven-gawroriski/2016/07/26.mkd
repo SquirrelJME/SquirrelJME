@@ -28,3 +28,22 @@ via factories. However the classes could be used. So the system would have an
 So component creation can be stored in replays. Currently the class type is
 stored, so they cannot be changed at all.
 
+## 19:18
+
+The interpreter runs at 8MHz internally (at least the one created by the
+interpreter target builder). 58122500000ps (0.0581225s) was done in about a
+minute of just mass printing text.
+
+## 19:22
+
+Currently my emulator is cycle accurate and extremely slow. It takes 13 seconds
+for a 8MHz cycle to complete.
+
+	DEBUG -- 1s at 2888363125743347
+	DEBUG -- 1s at 2888376866173501 (13740430154 or )
+	DEBUG -- 1s at 2888389859357080
+
+This means that is is really slow, too slow for the emulator to truly be
+viable for testing. Although cycle accurate is nice, it is far too
+undesirable.
+

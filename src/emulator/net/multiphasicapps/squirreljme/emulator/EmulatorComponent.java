@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -83,6 +84,15 @@ public abstract class EmulatorComponent
 	protected abstract long nextEventTime();
 	
 	/**
+	 * Runs the next event for the given component.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/07/26
+	 */
+	protected abstract void run()
+		throws IOException;
+	
+	/**
 	 * Returns the owning emulator group.
 	 *
 	 * @return The emulator group.
@@ -128,6 +138,22 @@ public abstract class EmulatorComponent
 		synchronized (this.lock)
 		{
 			return this.nextEventTime();
+		}
+	}
+	
+	/**
+	 * Forwards running the current event.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/07/26
+	 */
+	final void __run()
+		throws IOException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this.run();
 		}
 	}
 }
