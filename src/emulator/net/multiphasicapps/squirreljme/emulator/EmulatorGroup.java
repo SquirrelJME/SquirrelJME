@@ -169,6 +169,21 @@ public final class EmulatorGroup
 	}
 	
 	/**
+	 * Returns the current time index.
+	 *
+	 * @return The current time index.
+	 * @since 2016/07/26
+	 */
+	public final long currentTimeIndex()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			return this._picotime;
+		}
+	}
+	
+	/**
 	 * Runs emulation for the given amount of picoseconds.
 	 *
 	 * @param __picos The number of picoseconds to run emulation for.

@@ -190,6 +190,9 @@ public final class EmulatorSystem
 			long next = -1L;
 			EmulatorComponent usecomp = null;
 			
+			// Get group time
+			long gtime = this.group.currentTimeIndex();
+			
 			// Go through all
 			int n = components.size();
 			for (int i = 0; i < n; i++)
@@ -203,6 +206,14 @@ public final class EmulatorSystem
 				// Use this event
 				if (maybe >= 0 && (next < 0 || maybe < next))
 				{
+					// {@squirreljme.error AR0b The next event occurs in the
+					// past before the emulator's global time index. (The
+					// next event time; The global emulator time index)}
+					if (maybe < gtime)
+						throw new IllegalStateException(String.format(
+							"AR0b %d %d", maybe, gtime));
+					
+					// Use
 					next = maybe;
 					usecomp = bc;
 				}
