@@ -83,3 +83,10 @@ will remain the same as targets. So really the interpreter JIT code will be
 the same, except that once I get to actual byte code recompilation it will just
 generate MIPS code instead.
 
+## 19:59
+
+So I definitely need a simplification of the emulator, so despite moving to
+MIPS I really do not need to do anything much except change the emulator code.
+Then at least I would have a single target. So if the interpreter works out
+and gets code implemented, I could target Linux MIPS next.
+
