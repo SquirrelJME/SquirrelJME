@@ -90,3 +90,12 @@ MIPS I really do not need to do anything much except change the emulator code.
 Then at least I would have a single target. So if the interpreter works out
 and gets code implemented, I could target Linux MIPS next.
 
+## 20:05
+
+Thinking about it, although having an emulator which can support TAS would be
+nice, it would complicate things a bit. It would also potentially cause some
+slow down. So I would suppose that I should drop the very complex emulator
+which I plan to have and just go with something far simpler. Setup a basic
+machine, load a binary into memory, and just start executing it. Do not worry
+about being cycle accurate, just make sure the code runs.
+
