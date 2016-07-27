@@ -23,6 +23,9 @@ public final class GenericResourceWriter
 	extends __BaseWriter__
 	implements JITResourceWriter
 {
+	/** Has this been closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes the generic resource writer.
 	 *
@@ -43,7 +46,15 @@ public final class GenericResourceWriter
 	public void close()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Mark closed
+			this._closed = true;
+			
+			// Super close
+			super.close();
+		}
 	}
 	
 	/**
@@ -54,7 +65,27 @@ public final class GenericResourceWriter
 	public void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, JITException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Could fail
+		try
+		{
+			// Lock
+			synchronized (this.lock)
+			{
+				// {@squirreljme.error BA0d Cannot write resource bytes after
+				// the stream has been closed.}
+				if (this._closed)
+					throw new JITException("BA0d");
+				
+				// Write
+				this.rawoutput.write(__b, __o, __l);
+			}
+		}
+		
+		// {@squirreljme.error BA0e Failed to write the resource bytes.}
+		catch (IOException e)
+		{
+			throw new JITException("BA0e", e);
+		}
 	}
 }
 

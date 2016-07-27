@@ -25,6 +25,9 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 abstract class __BaseWriter__
 	implements AutoCloseable
 {
+	/** Internal lock. */
+	protected final Object lock;
+	
 	/** The owning namespace writer. */
 	protected final GenericNamespaceWriter owner;
 	
@@ -54,15 +57,19 @@ abstract class __BaseWriter__
 		
 		// Set
 		this.owner = __nsw;
+		this.lock = __nsw._lock;
 		this.contentname = __name;
 		
 		// Create raw output area
-		ExtendedDataOutputStream edos = __nsw.__output();
-		OutputStream rawoutput = new __RawOutput__(edos);
-		this.rawoutput = rawoutput;
-		
-		// Set start position
-		this.startpos = edos.size();
+		synchronized (this.lock)
+		{
+			ExtendedDataOutputStream edos = __nsw.__output();
+			OutputStream rawoutput = new __RawOutput__(edos);
+			this.rawoutput = rawoutput;
+	
+			// Set start position
+			this.startpos = edos.size();
+		}
 	}
 	
 	/**
@@ -120,8 +127,11 @@ abstract class __BaseWriter__
 			// Align to int
 			try
 			{
-				while ((__edos.size() & 3) != 0)
-					__edos.writeByte(0);
+				synchronized (__BaseWriter__.this.lock)
+				{
+					while ((__edos.size() & 3) != 0)
+						__edos.writeByte(0);
+				}
 			}
 			
 			// {@squirreljme.error BA0b Could not align the output.}

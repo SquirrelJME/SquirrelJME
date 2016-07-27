@@ -51,6 +51,10 @@ public final class GenericNamespaceWriter
 	/** The output data endianess. */
 	protected final DataEndianess endianess;
 	
+	/** Visible lock. */
+	final Object _lock =
+		this.lock;
+	
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	

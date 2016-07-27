@@ -58,3 +58,7 @@ this way I do not need to worry about initializing classes and objects for it
 since that would completely complicate the bootstrap process. There would
 however be method which can manage access to the internal VM structure.
 
+## 18:04
+
+The Creator CI40 will be shipping around next week, very exciting.
+
