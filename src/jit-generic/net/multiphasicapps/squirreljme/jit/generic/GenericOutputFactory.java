@@ -26,6 +26,19 @@ public abstract class GenericOutputFactory
 	extends JITOutputFactory
 {
 	/**
+	 * Internally creates a new generic output using the given configuration.
+	 *
+	 * @param __config The configuration to use.
+	 * @return The generic JIT output.
+	 * @throws JITException If the output could not created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/26
+	 */
+	protected abstract GenericOutput internalCreate(
+		JITOutputConfig.Immutable __config)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/26
 	 */
@@ -37,7 +50,8 @@ public abstract class GenericOutputFactory
 		if (__config == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create
+		return internalCreate(__config);
 	}
 }
 
