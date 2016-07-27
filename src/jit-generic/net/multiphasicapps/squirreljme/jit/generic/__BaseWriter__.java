@@ -18,7 +18,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  *
  * @since 2016/07/27
  */
-class __BaseWriter__
+abstract class __BaseWriter__
 	implements AutoCloseable
 {
 	/** The owning namespace writer. */

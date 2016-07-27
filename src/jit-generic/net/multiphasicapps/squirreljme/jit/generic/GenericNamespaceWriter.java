@@ -51,9 +51,8 @@ public final class GenericNamespaceWriter
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
-	/** The position the current entry starts at. */
-	private volatile long _curpos =
-		-1;
+	/** The current writer being written. */
+	private volatile __BaseWriter__ _current;
 	
 	/**
 	 * Initializes the generic namespace writer.
@@ -147,6 +146,11 @@ public final class GenericNamespaceWriter
 			if (this._closed)
 				throw new JITException("BA04");
 			
+			// {@squirreljme.error BA07 Cannot start writing a new class
+			// because another class or resource is being written.}
+			if (this._current != null)
+				throw new JITException("BA07");
+			
 			throw new Error("TODO");
 		}
 	}
@@ -170,6 +174,11 @@ public final class GenericNamespaceWriter
 			// current namespace writer is closed.}
 			if (this._closed)
 				throw new JITException("BA05");
+			
+			// {@squirreljme.error BA08 Cannot start writing a new resource
+			// because another class or resource is being written.}
+			if (this._current != null)
+				throw new JITException("BA08");
 			
 			throw new Error("TODO");
 		}
