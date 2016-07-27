@@ -99,3 +99,24 @@ which I plan to have and just go with something far simpler. Setup a basic
 machine, load a binary into memory, and just start executing it. Do not worry
 about being cycle accurate, just make sure the code runs.
 
+## 20:17
+
+So I suppose what I need in this case is a traditional JIT that outputs blobs
+to be used on standard modern systems with code and memory in a single address
+space, which means pretty much every CPU from classic 8-bits to modern 64-bits.
+Then I only need to write the JIT once. When the need come to have slightly
+different code generators (for architectures) they can just be created over the
+base class. So basically a traditional output system. The blobs would
+be the same for every architecture. The byte ordering can be determined by
+using the triplet easily. So this means that the initial MIPS could instead of
+being ELF will just be a proprietary format that is directly the blob format.
+Then this way, I really only need to write that code once since all of the
+architectures will end up creating the same format anyway. This simplifies
+things greatly.
+
+## 20:21
+
+Then the interpreter target could just support any CPU and not just MIPS. Then
+the interpreter will just have some special memory areas or system calls that
+do specific things.
+
