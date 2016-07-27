@@ -10,7 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.io.data.DataEndianess;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
  * This is the base class for class and resource writers, since they share
@@ -26,6 +30,12 @@ abstract class __BaseWriter__
 	
 	/** The name of this content entry. */
 	protected final String contentname;
+	
+	/** Raw data output. */
+	protected final OutputStream rawoutput;
+	
+	/** Start positon. */
+	protected final long startpos;
 	
 	/**
 	 * Initializes the base writer.
@@ -45,6 +55,14 @@ abstract class __BaseWriter__
 		// Set
 		this.owner = __nsw;
 		this.contentname = __name;
+		
+		// Create raw output area
+		ExtendedDataOutputStream edos = __nsw.__output();
+		OutputStream rawoutput = new __RawOutput__(edos);
+		this.rawoutput = rawoutput;
+		
+		// Set start position
+		this.startpos = edos.size();
 	}
 	
 	/**
@@ -55,7 +73,96 @@ abstract class __BaseWriter__
 	public void close()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Close the raw output instead
+		try
+		{
+			this.rawoutput.close();
+		}
+		
+		// {@squirreljme.error BA0c Failed to close the output.}
+		catch (IOException e)
+		{
+			throw new JITException("BA0c", e);
+		}
+	}
+	
+	/**
+	 * Raw output data.
+	 *
+	 * @since 2016/07/27
+	 */
+	private final class __RawOutput__
+		extends OutputStream
+	{
+		/** The actual output. */
+		protected final ExtendedDataOutputStream output;
+		
+		/** Has this been closed? */
+		private volatile boolean _closed;
+		
+		/**
+		 * Initializes the raw output.
+		 *
+		 * @param __edos The wrapped output stream.
+		 * @throws NullPointerException On null arguments
+		 * @since 2016/07/27
+		 */
+		private __RawOutput__(ExtendedDataOutputStream __edos)
+			throws NullPointerException
+		{
+			// Check
+			if (__edos == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.output = __edos;
+			
+			// Align to int
+			try
+			{
+				while ((__edos.size() & 3) != 0)
+					__edos.writeByte(0);
+			}
+			
+			// {@squirreljme.error BA0b Could not align the output.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0b", e);
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/26
+		 */
+		@Override
+		public void close()
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/27
+		 */
+		@Override
+		public void write(int __b)
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/27
+		 */
+		@Override
+		public void write(byte[] __b, int __o, int __l)
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 

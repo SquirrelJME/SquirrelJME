@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
  * This writes classes to the output namespace.
@@ -28,6 +29,9 @@ public final class GenericClassWriter
 {
 	/** The name of the class being written. */
 	protected final ClassNameSymbol classname;
+	
+	/** Where class data is written to. */
+	protected final ExtendedDataOutputStream output;
 	
 	/**
 	 * Initializes the generic class writer.
@@ -48,6 +52,12 @@ public final class GenericClassWriter
 		
 		// Set
 		this.classname = __cn;
+		
+		// Setup output
+		ExtendedDataOutputStream output = new ExtendedDataOutputStream(
+			this.rawoutput);
+		output.setEndianess(__nsw.__endianess());
+		this.output = output;
 		
 		// Write the class header
 		try

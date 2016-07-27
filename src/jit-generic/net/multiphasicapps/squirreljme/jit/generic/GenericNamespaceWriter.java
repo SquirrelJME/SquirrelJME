@@ -48,6 +48,9 @@ public final class GenericNamespaceWriter
 	/** Where data is to be written. */
 	protected final ExtendedDataOutputStream output;
 	
+	/** The output data endianess. */
+	protected final DataEndianess endianess;
+	
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
@@ -110,6 +113,7 @@ public final class GenericNamespaceWriter
 					throw new JITException(String.format("BA03 %s", jitend));
 			}
 			output.setEndianess(end);
+			this.endianess = end;
 			
 			// Write basic header so that blobs are identifiable
 			output.writeLong(GenericBlobConstants.FIRST_MAGIC);
@@ -230,6 +234,28 @@ public final class GenericNamespaceWriter
 				throw new JITException("BA06", e);
 			}
 		}
+	}
+	
+	/**
+	 * Returns the endianess of the output data.
+	 *
+	 * @return The output endianess.
+	 * @since 2016/07/27
+	 */
+	final DataEndianess __endianess()
+	{
+		return this.endianess;
+	}
+	
+	/**
+	 * Returns the output.
+	 *
+	 * @return The output.
+	 * @since 2016/07/27
+	 */
+	final ExtendedDataOutputStream __output()
+	{
+		return this.output;
 	}
 }
 

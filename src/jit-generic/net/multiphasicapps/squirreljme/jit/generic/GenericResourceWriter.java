@@ -33,8 +33,6 @@ public final class GenericResourceWriter
 	GenericResourceWriter(GenericNamespaceWriter __nsw, String __name)
 	{
 		super(__nsw, __name);
-		
-		throw new Error("TODO");
 	}
 	
 	/**
