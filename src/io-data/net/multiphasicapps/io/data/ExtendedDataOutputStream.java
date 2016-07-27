@@ -297,17 +297,38 @@ public class ExtendedDataOutputStream
 	public final void writeLong(long __v)
 		throws IOException
 	{
-		// Depends on the endian
+		// Split high and low values to work on integer values (saves on
+		// casting).
+		int hi = (int)(__v >>> 32L),
+			lo = (int)__v;
+		
+		// Depends on the endianess
 		DataEndianess endian = this._endian;
 		switch (endian)
 		{
 				// Big
 			case BIG:
-				throw new Error("TODO");
+				writeByte(hi >>> 24);
+				writeByte(hi >>> 16);
+				writeByte(hi >>> 8);
+				writeByte(hi);
+				writeByte(lo >>> 24);
+				writeByte(lo >>> 16);
+				writeByte(lo >>> 8);
+				writeByte(lo);
+				break;
 				
 				// Little
 			case LITTLE:
-				throw new Error("TODO");
+				writeByte(lo);
+				writeByte(lo >>> 8);
+				writeByte(lo >>> 16);
+				writeByte(lo >>> 24);
+				writeByte(hi);
+				writeByte(hi >>> 8);
+				writeByte(hi >>> 16);
+				writeByte(hi >>> 24);
+				break;
 			
 				// Unknown
 			default:
