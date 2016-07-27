@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 
@@ -26,11 +27,12 @@ public final class GenericResourceWriter
 	 * Initializes the generic resource writer.
 	 *
 	 * @param __nsw The owning namespace writer.
+	 * @param __name The name of this resource.
 	 * @since 2016/07/27
 	 */
-	GenericResourceWriter(GenericNamespaceWriter __nsw)
+	GenericResourceWriter(GenericNamespaceWriter __nsw, String __name)
 	{
-		super(__nsw);
+		super(__nsw, __name);
 		
 		throw new Error("TODO");
 	}

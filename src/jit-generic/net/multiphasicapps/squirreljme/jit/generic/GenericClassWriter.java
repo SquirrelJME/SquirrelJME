@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.io.IOException;
+import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -24,17 +26,42 @@ public final class GenericClassWriter
 	extends __BaseWriter__
 	implements JITClassWriter
 {
+	/** The name of the class being written. */
+	protected final ClassNameSymbol classname;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
 	 * @param __nsw The owning namespace writer.
+	 * @param __cn The class name.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	GenericClassWriter(GenericNamespaceWriter __nsw)
+	GenericClassWriter(GenericNamespaceWriter __nsw, ClassNameSymbol __cn)
+		throws NullPointerException
 	{
-		super(__nsw);
+		super(__nsw, Objects.toString(__cn));
 		
-		throw new Error("TODO");
+		// Check
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.classname = __cn;
+		
+		// Write the class header
+		try
+		{
+			if (false)
+				throw new IOException("TODO");
+			throw new Error("TODO");
+		}
+		
+		// {@squirreljme.error BA0a Failed to write the initial header.}
+		catch (IOException e)
+		{
+			throw new JITException("BA0a");
+		}
 	}
 	
 	/**

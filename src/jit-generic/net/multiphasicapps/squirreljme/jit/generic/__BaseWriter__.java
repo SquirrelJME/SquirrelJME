@@ -24,22 +24,27 @@ abstract class __BaseWriter__
 	/** The owning namespace writer. */
 	protected final GenericNamespaceWriter owner;
 	
+	/** The name of this content entry. */
+	protected final String contentname;
+	
 	/**
 	 * Initializes the base writer.
 	 *
 	 * @param __nsw The owning namespace writer.
+	 * @param __name The name of this content entry.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	__BaseWriter__(GenericNamespaceWriter __nsw)
+	__BaseWriter__(GenericNamespaceWriter __nsw, String __name)
 		throws NullPointerException
 	{
 		// Check
-		if (__nsw == null)
+		if (__nsw == null || __name == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.owner = __nsw;
+		this.contentname = __name;
 	}
 	
 	/**
