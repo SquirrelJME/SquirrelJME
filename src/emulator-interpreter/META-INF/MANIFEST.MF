@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: emulator-interpreter
 X-SquirrelJME-UUID: b532acc6-bc1a-447b-b7a0-d7dd24f0f55a
-X-SquirrelJME-Depends: emulator, os-interpreter
+X-SquirrelJME-Depends: emulator, os-interpreter, emulator-mips
 X-SquirrelJME-Error: BK
 LIBlet-Title: Emulator (Interpreter)
 LIBlet-Vendor: Steven Gawroriski

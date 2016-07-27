@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import net.multiphasicapps.sjmepackages.PackageList;
-import net.multiphasicapps.squirreljme.emulator.EmulatorGroup;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -255,16 +254,12 @@ public class Main
 			try
 			{
 				out.println("Emulating...");
-			
-				// Get the emulator
-				EmulatorGroup eg = tb.emulate(config, distoutpath[0]);
-			
-				// Loop emulator until it has completed
-				for (;;)
-				{
-					// Run for a single virtual second
-					eg.run(ONE_SECOND_IN_PICOSECONDS);
-				}
+				
+				if (false)
+					throw new IOException("TODO");
+				
+				// Setup emulator
+				throw new Error("TODO");
 			}
 			
 			// {@squirreljme.error DW0t Read/write error setting up the

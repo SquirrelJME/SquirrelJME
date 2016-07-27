@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.ServiceLoader;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
-import net.multiphasicapps.squirreljme.emulator.EmulatorGroup;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -91,7 +90,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/25
 	 */
-	public abstract EmulatorGroup emulate(BuildConfig __conf, Path __p)
+	public abstract Object emulate(BuildConfig __conf, Path __p)
 		throws IOException, NullPointerException;
 	
 	/**
