@@ -195,6 +195,11 @@ public final class GenericNamespaceWriter
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BA09 Cannot close the namespace writer
+			// because a class or resource is currently being written.}
+			if (this._current != null)
+				throw new JITException("BA09");
+			
 			// Could fail
 			try
 			{
