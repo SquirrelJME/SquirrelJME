@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: jit-interpreter
 X-SquirrelJME-UUID: f36090ae-35fc-421e-b22a-101094d21ee1
-X-SquirrelJME-Depends: jit, os-interpreter
+X-SquirrelJME-Depends: jit, os-interpreter, jit-generic
 X-SquirrelJME-Error: BV
 LIBlet-Title: JIT (Interpreter)
 LIBlet-Vendor: Steven Gawroriski
