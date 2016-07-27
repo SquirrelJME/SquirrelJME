@@ -120,3 +120,8 @@ Then the interpreter target could just support any CPU and not just MIPS. Then
 the interpreter will just have some special memory areas or system calls that
 do specific things.
 
+## 21:54
+
+I would suppose for some increased processing speed that strings could be sort
+of written inline or at least after the last output has been placed.
+
