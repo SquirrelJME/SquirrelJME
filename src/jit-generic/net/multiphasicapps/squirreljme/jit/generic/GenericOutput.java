@@ -59,7 +59,8 @@ public abstract class GenericOutput
 		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create
+		return new GenericNamespaceWriter(this, __ns);
 	}
 }
 
