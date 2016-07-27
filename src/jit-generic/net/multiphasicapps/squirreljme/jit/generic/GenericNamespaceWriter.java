@@ -32,6 +32,10 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 public final class GenericNamespaceWriter
 	implements JITNamespaceWriter
 {
+	/** Write lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** The output configuration. */
 	protected final JITOutputConfig.Immutable config;
 	
@@ -43,6 +47,13 @@ public final class GenericNamespaceWriter
 	
 	/** Where data is to be written. */
 	protected final ExtendedDataOutputStream output;
+	
+	/** Has this been closed? */
+	private volatile boolean _closed;
+	
+	/** The position the current entry starts at. */
+	private volatile long _curpos =
+		-1;
 	
 	/**
 	 * Initializes the generic namespace writer.
@@ -128,7 +139,16 @@ public final class GenericNamespaceWriter
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BA04 Cannot begin a new class because the
+			// current namespace writer is closed.}
+			if (this._closed)
+				throw new JITException("BA04");
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -143,7 +163,16 @@ public final class GenericNamespaceWriter
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BA05 Cannot begin a new resource because the
+			// current namespace writer is closed.}
+			if (this._closed)
+				throw new JITException("BA05");
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -154,7 +183,33 @@ public final class GenericNamespaceWriter
 	public void close()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Could fail
+			try
+			{
+				// Write final pieces before closing
+				ExtendedDataOutputStream output = this.output;
+				if (!this._closed)
+				{
+					// Mark closed
+					this._closed = true;
+			
+					throw new Error("TODO");
+				}
+		
+				// Close output
+				output.close();
+			}
+			
+			// {@squirreljme.error BA06 Failed to close the generic namespace
+			// writer.}
+			catch (IOException e)
+			{
+				throw new JITException("BA06", e);
+			}
+		}
 	}
 }
 
