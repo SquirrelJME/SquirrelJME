@@ -49,3 +49,12 @@ I may need an extra pointer to the classpath or namespace setup however and to
 remember it in every method. So this would be a global virtual machine pointer.
 The bootstrap would setup this virtual machine.
 
+## 11:35
+
+The function table could just be a reference from the VM table. Possibly the
+best way to do this would be to have the VM structure not be a Java object. It
+would have a raw representation and exist outside of the virtual machine. Then
+this way I do not need to worry about initializing classes and objects for it
+since that would completely complicate the bootstrap process. There would
+however be method which can manage access to the internal VM structure.
+
