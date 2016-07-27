@@ -149,7 +149,11 @@ abstract class __BaseWriter__
 		public void close()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (__BaseWriter__.this.lock)
+			{
+				throw new Error("TODO");
+			}
 		}
 		
 		/**
@@ -160,7 +164,17 @@ abstract class __BaseWriter__
 		public void write(int __b)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (__BaseWriter__.this.lock)
+			{
+				// {@squirreljme.error BA0f Cannot write a single byte after
+				// the stream has been closed.}
+				if (this._closed)
+					throw new IOException("BA0f");
+				
+				// Write
+				this.output.write(__b);
+			}
 		}
 		
 		/**
@@ -171,7 +185,17 @@ abstract class __BaseWriter__
 		public void write(byte[] __b, int __o, int __l)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (__BaseWriter__.this.lock)
+			{
+				// {@squirreljme.error BA0g Cannot write multiple bytes after
+				// the stream has been closed.}
+				if (this._closed)
+					throw new IOException("BA0g");
+				
+				// Write
+				this.output.write(__b, __o, __l);
+			}
 		}
 	}
 }
