@@ -151,7 +151,10 @@ public final class GenericNamespaceWriter
 			if (this._current != null)
 				throw new JITException("BA07");
 			
-			throw new Error("TODO");
+			// Create
+			GenericClassWriter rv = new GenericClassWriter(this, __cn);
+			this._current = rv;
+			return rv;
 		}
 	}
 	
@@ -180,7 +183,10 @@ public final class GenericNamespaceWriter
 			if (this._current != null)
 				throw new JITException("BA08");
 			
-			throw new Error("TODO");
+			// Create
+			GenericResourceWriter rv = new GenericResourceWriter(this, __name);
+			this._current = rv;
+			return rv;
 		}
 	}
 	
