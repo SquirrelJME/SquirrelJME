@@ -159,7 +159,8 @@ public final class JITOutputConfig
 	 */
 	private static String __createString(__CommonConfigGet__ __ccg)
 	{
-		return "{triplet=" + __ccg.triplet() + "}";
+		return "{triplet=" + __ccg.triplet() + ", cache=" +
+			(__ccg.cacheCreator() != null) + "}";
 	}
 	
 	/**

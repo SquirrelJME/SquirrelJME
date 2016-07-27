@@ -62,5 +62,16 @@ public abstract class GenericOutput
 		// Create
 		return new GenericNamespaceWriter(this, __ns);
 	}
+	
+	/**
+	 * Returns the configuration which is used to configure the JIT.
+	 *
+	 * @return The JIT configuration.
+	 * @since 2016/07/27
+	 */
+	public final JITOutputConfig.Immutable config()
+	{
+		return this.config;
+	}
 }
 
