@@ -39,19 +39,5 @@ public abstract class GenericOutputFactory
 		
 		throw new Error("TODO");
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/26
-	 */
-	@Override
-	public final boolean supportsConfig(JITOutputConfig.Immutable __config)
-	{
-		// Check
-		if (__config == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
-	}
 }
 

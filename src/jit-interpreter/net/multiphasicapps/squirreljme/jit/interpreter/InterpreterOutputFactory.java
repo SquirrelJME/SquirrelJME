@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.interpreter;
 
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.generic.GenericOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
@@ -23,24 +24,8 @@ import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
  * @since 2016/07/22
  */
 public class InterpreterOutputFactory
-	extends JITOutputFactory
+	extends GenericOutputFactory
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/22
-	 */
-	@Override
-	public JITOutput create(JITOutputConfig.Immutable __config)
-		throws JITException
-	{
-		// Check
-		if (__config == null)
-			throw new NullPointerException("NARG");
-		
-		// Create
-		return new InterpreterOutput(__config);
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/22
