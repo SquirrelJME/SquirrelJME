@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: mascot-svg
+X-SquirrelJME-UUID: 85332056-5650-4496-b018-79870c6f712f
+X-SquirrelJME-Depends: mascot
+LIBlet-Title: SquirrelJME Mascot (SVG Conversion)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains the original mascot 
+ manually converted to SVG.
+
