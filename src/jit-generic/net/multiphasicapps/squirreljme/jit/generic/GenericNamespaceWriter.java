@@ -258,6 +258,11 @@ public final class GenericNamespaceWriter
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BA0h The entry to be closed is not the
+			// current entry.}
+			if (this._current != __bw)
+				throw new JITException("BA0h");
+			
 			throw new Error("TODO");
 		}
 	}
