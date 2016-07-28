@@ -241,6 +241,28 @@ public final class GenericNamespaceWriter
 	}
 	
 	/**
+	 * Closes the given writer.
+	 *
+	 * @param __bw The writer to close.
+	 * @throws JITException If it could not be closed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/28
+	 */
+	final void __close(__BaseWriter__ __bw)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__bw == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Returns the endianess of the output data.
 	 *
 	 * @return The output endianess.

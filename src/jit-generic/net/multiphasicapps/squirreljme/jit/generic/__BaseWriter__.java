@@ -152,7 +152,15 @@ abstract class __BaseWriter__
 			// Lock
 			synchronized (__BaseWriter__.this.lock)
 			{
-				throw new Error("TODO");
+				// Close if not closed
+				if (!this._closed)
+				{
+					// mark closed
+					this._closed = true;
+					
+					// Close in the writer
+					__BaseWriter__.this.owner.__close(__BaseWriter__.this);
+				}
 			}
 		}
 		
