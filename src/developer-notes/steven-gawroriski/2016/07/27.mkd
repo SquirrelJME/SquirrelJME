@@ -67,3 +67,7 @@ The Creator CI40 will be shipping around next week, very exciting.
 Manually converting my mascot to SVG, this will take awhile but it should be
 optimized!
 
+## 20:19
+
+Inkscape is not too bad.
+
