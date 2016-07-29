@@ -37,3 +37,15 @@ change or add new members at the end without causing trouble.
 Actually, with the contents being written later, they can be sorted by name
 so that a binary search could be performed on load instead.
 
+## 18:49
+
+I completed the left arm.
+
+## 19:12
+
+Almost done, I just need to border the top part of the tunic.
+
+## 19:54
+
+The mascot is complete.
+
