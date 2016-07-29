@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.IOException;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITClassFlag;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
@@ -74,6 +75,9 @@ public final class GenericClassWriter
 		{
 			// Class magic number
 			output.writeInt(GenericBlobConstants.CLASS_MAGIC);
+			
+			// Output class name
+			output.writeInt(__nsw.__addString(__cn.toString()));
 		}
 		
 		// {@squirreljme.error BA0a Failed to write the initial header.}
@@ -99,9 +103,24 @@ public final class GenericClassWriter
 		synchronized (this.lock)
 		{
 			// Check order
-			interpreterOrder(JITCompilerOrder.CLASS_FLAGS);
+			__order(JITCompilerOrder.CLASS_FLAGS);
 			
-			throw new Error("TODO");
+			// Build value
+			int v = 0;
+			for (JITClassFlag f : __cf)
+				v |= (1 << f.ordinal());
+			
+			// Write
+			try
+			{
+				this.output.writeInt(v);
+			}
+			
+			// {@squirreljme.error BA0k Failed to write the class flags.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0k", e);
+			}
 		}
 	}
 	
@@ -144,7 +163,7 @@ public final class GenericClassWriter
 		synchronized (this.lock)
 		{
 			// Check order
-			interpreterOrder(JITCompilerOrder.INTERFACE_CLASS_NAMES);
+			__order(JITCompilerOrder.INTERFACE_CLASS_NAMES);
 			
 			throw new Error("TODO");
 		}
@@ -162,7 +181,7 @@ public final class GenericClassWriter
 		synchronized (this.lock)
 		{
 			// Check order
-			interpreterOrder(JITCompilerOrder.SUPER_CLASS_NAME);
+			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
 			throw new Error("TODO");
 		}

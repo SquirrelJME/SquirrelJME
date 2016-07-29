@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -52,6 +54,10 @@ public final class GenericNamespaceWriter
 	/** The output data endianess. */
 	protected final DataEndianess endianess;
 	
+	/** The string table. */
+	protected final Map<String, Integer> strings =
+		new LinkedHashMap<>();
+	
 	/** Visible lock. */
 	final Object _lock =
 		this.lock;
@@ -87,6 +93,9 @@ public final class GenericNamespaceWriter
 		this.namespace = __ns;
 		JITOutputConfig.Immutable config = __go.config();
 		this.config = config;
+		
+		// The blank string is always first
+		strings.put("", 0);
 		
 		// Get the cache creator because all generic output is to blobs
 		// {@squirreljme.error BA01 The JIT output configuration does not have
@@ -242,6 +251,43 @@ public final class GenericNamespaceWriter
 			{
 				throw new JITException("BA06", e);
 			}
+		}
+	}
+	
+	/**
+	 * Adds a string to the blob and returns the index where the string is
+	 * located in the string table.
+	 *
+	 * @param __s The string to add.
+	 * @return The index of the string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/22
+	 */
+	final int __addString(String __s)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+			
+		// Lock
+		synchronized (this.lock)
+		{
+			// Get string table and its size
+			Map<String, Integer> strings = this.strings;
+			int size = strings.size();
+			
+			// Is this string in the table?
+			Integer rv = strings.get(__s);
+			if (rv != null)
+				return rv;
+			
+			// Add it otherwise
+			rv = Integer.valueOf(size);
+			strings.put(__s, rv);
+			
+			// Return the old size
+			return size;
 		}
 	}
 	
