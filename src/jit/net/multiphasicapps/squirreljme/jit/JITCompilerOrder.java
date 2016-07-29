@@ -28,6 +28,9 @@ public enum JITCompilerOrder
 	/** Interface names. */
 	INTERFACE_CLASS_NAMES,
 	
+	/** The number of fields in a class. */
+	FIELD_COUNT,
+	
 	/** End. */
 	;
 	

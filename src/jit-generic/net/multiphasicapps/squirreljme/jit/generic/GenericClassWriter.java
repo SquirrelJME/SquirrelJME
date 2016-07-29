@@ -90,7 +90,18 @@ public final class GenericClassWriter
 	public void classFlags(JITClassFlags __cf)
 		throws JITException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__cf == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			interpreterOrder(JITCompilerOrder.CLASS_FLAGS);
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -124,7 +135,18 @@ public final class GenericClassWriter
 	public void interfaceClasses(ClassNameSymbol... __ins)
 		throws JITException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__ins == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			interpreterOrder(JITCompilerOrder.INTERFACE_CLASS_NAMES);
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
@@ -135,7 +157,14 @@ public final class GenericClassWriter
 	public void superClass(ClassNameSymbol __cn)
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			interpreterOrder(JITCompilerOrder.SUPER_CLASS_NAME);
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
