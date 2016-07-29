@@ -35,6 +35,9 @@ public final class GenericClassWriter
 	/** Where class data is written to. */
 	protected final ExtendedDataOutputStream output;
 	
+	/** Has this been closed? */
+	private volatile boolean _closed;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -93,7 +96,19 @@ public final class GenericClassWriter
 	public void close()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Close if not closed
+			if (!this._closed)
+			{
+				// Mark closed
+				this._closed = true;
+			}
+			
+			// Super close
+			super.close();
+		}
 	}
 	
 	/**
