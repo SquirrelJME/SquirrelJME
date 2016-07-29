@@ -22,4 +22,13 @@ Completed the right arm.
 
 Completed the belt.
 
+## 16:00
+
+It would likely be easiest if the counts for interfaces, fields, and methods
+was known before-hand. However that would complicate things. Something that
+would likely work better would there at the end be a kind of table which
+points to each field and method that is declared. This would then not require
+that the structures be iterated through to determine where things are. This
+would be faster and would allow for structures for fields and methods to
+change or add new members at the end without causing trouble.
 

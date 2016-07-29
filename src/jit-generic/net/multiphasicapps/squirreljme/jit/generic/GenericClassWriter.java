@@ -72,6 +72,7 @@ public final class GenericClassWriter
 		// Write the class header
 		try
 		{
+			// Class magic number
 			output.writeInt(GenericBlobConstants.CLASS_MAGIC);
 		}
 		

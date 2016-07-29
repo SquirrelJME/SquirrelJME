@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+
 /**
  * The JIT compiler is very ordered and as such this may be used by
  * implementation of the class writer to determine if such processing of the
@@ -27,9 +29,6 @@ public enum JITCompilerOrder
 	
 	/** Interface names. */
 	INTERFACE_CLASS_NAMES,
-	
-	/** The number of fields in a class. */
-	FIELD_COUNT,
 	
 	/** End. */
 	;
