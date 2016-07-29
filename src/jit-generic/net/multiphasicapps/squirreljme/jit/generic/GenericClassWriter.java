@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
+import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
@@ -34,6 +35,10 @@ public final class GenericClassWriter
 	
 	/** Where class data is written to. */
 	protected final ExtendedDataOutputStream output;
+	
+	/** The current order. */
+	private volatile JITCompilerOrder _order =
+		JITCompilerOrder.FIRST;
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
@@ -131,6 +136,37 @@ public final class GenericClassWriter
 		throws JITException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Checks that the current order is the given expected order and proceeds
+	 * to the next order.
+	 *
+	 * @param __exp The current order that is expected.
+	 * @throws JITException If the order is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/22
+	 */
+	private void __order(JITCompilerOrder __exp)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__exp == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BA0j JIT invocation is not in order.
+			// (The order that was attempted to be used; The expected order)}
+			JITCompilerOrder order = this._order;
+			if (order != __exp)
+				throw new JITException(String.format("BA0j %s %s", __exp,
+					order));
+			
+			// Set next
+			this._order = order.next();
+		}
 	}
 }
 
