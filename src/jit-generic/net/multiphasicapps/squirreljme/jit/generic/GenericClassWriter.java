@@ -44,6 +44,14 @@ public final class GenericClassWriter
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
+	/** The field count. */
+	private volatile int _fieldcount =
+		-1;
+	
+	/** The method count. */
+	private volatile int _methodcount =
+		-1;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -183,7 +191,25 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
-			throw new Error("TODO");
+			try
+			{
+				// Write -1 if there is none, since zero could be a valid
+				// string index
+				ExtendedDataOutputStream output = this.output;
+				if (__cn == null)
+					output.writeInt(-1);
+			
+				// Otherwise the string index
+				else
+					output.writeInt(this.owner.__addString(
+						__cn.toString()));
+			}
+			
+			// {@squirreljme.error BA0l Failed to write the super class.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0l", e);
+			}
 		}
 	}
 	
