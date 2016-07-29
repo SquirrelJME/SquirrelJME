@@ -6,3 +6,7 @@ It would probably be best if the counts for fields were considered also rather
 than just passing them with an unknown count. This way any initializers do not
 need to worry about having an unknown size.
 
+## 10:57
+
+Finished the left leg, now I need to work on the tail next.
+
