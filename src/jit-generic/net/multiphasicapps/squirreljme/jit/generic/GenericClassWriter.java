@@ -52,6 +52,12 @@ public final class GenericClassWriter
 	private volatile int _methodcount =
 		-1;
 	
+	/** Offsets to fields. */
+	private volatile int[] _fieldoffsets;
+	
+	/** Offsets to methods. */
+	private volatile int[] _methodoffsets;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -173,7 +179,28 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.INTERFACE_CLASS_NAMES);
 			
-			throw new Error("TODO");
+			// Need to add many strings
+			GenericNamespaceWriter nsw = this.owner;
+			int n = __ins.length;
+			
+			// Could fail
+			ExtendedDataOutputStream output = this.output;
+			try
+			{
+				// Write count
+				output.writeInt(n);
+			
+				// The interface string IDs
+				for (int i = 0; i < n; i++)
+					output.writeInt(nsw.__addString(
+						__ins[i].toString()));
+			}
+			
+			// {@squirreljme.error BA0m Failed to write the interfaces.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0m", e);
+			}
 		}
 	}
 	

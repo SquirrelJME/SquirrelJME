@@ -64,5 +64,16 @@ final class __Contents__
 		this.names.add(__cn);
 		this.positions.add((__sp << 32L) | (__ep));
 	}
+	
+	/**
+	 * Returns the number of contents that exist.
+	 *
+	 * @return The content count.
+	 * @since 2016/07/29
+	 */
+	public int size()
+	{
+		return this.types.size();
+	}
 }
 

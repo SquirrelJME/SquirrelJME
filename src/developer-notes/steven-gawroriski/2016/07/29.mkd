@@ -32,3 +32,8 @@ that the structures be iterated through to determine where things are. This
 would be faster and would allow for structures for fields and methods to
 change or add new members at the end without causing trouble.
 
+## 16:20
+
+Actually, with the contents being written later, they can be sorted by name
+so that a binary search could be performed on load instead.
+

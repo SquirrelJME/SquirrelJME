@@ -237,7 +237,14 @@ public final class GenericNamespaceWriter
 				{
 					// Mark closed
 					this._closed = true;
-			
+				
+					// The string table and the contents
+					Map<String, Integer> strings = this.strings;
+					__Contents__ contents = this._contents;
+					int numcontents = contents.size();
+					
+					// 
+					
 					throw new Error("TODO");
 				}
 		
