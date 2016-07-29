@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 
@@ -21,17 +23,11 @@ import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
  * @since 2016/07/29
  */
 final class __Contents__
+	extends AbstractList<__Contents__.__Entry__>
+	implements RandomAccess
 {
-	/** The content types. */
-	protected final List<BlobContentType> types =
-		new ArrayList<>();
-	
-	/** The content names. */
-	protected final List<String> names =
-		new ArrayList<>();
-	
-	/** The content position. */
-	protected final List<Long> positions =
+	/** Entry contents. */
+	protected final List<__Entry__> entries =
 		new ArrayList<>();
 	
 	/**
@@ -60,20 +56,69 @@ final class __Contents__
 			throw new JITException(String.format("BA0i %d %d", __sp, __ep));
 		
 		// Add
-		this.types.add(__ct);
-		this.names.add(__cn);
-		this.positions.add((__sp << 32L) | (__ep));
+		this.entries.add(new __Entry__(__ct, __cn, (int)__sp, (int)__ep));
 	}
 	
 	/**
-	 * Returns the number of contents that exist.
-	 *
-	 * @return The content count.
+	 * {@inheritDoc}
 	 * @since 2016/07/29
 	 */
+	@Override
+	public __Entry__ get(int __i)
+	{
+		return this.entries.get(__i);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/29
+	 */
+	@Override
 	public int size()
 	{
-		return this.types.size();
+		return this.entries.size();
+	}
+	
+	/**
+	 * A single content entry.
+	 *
+	 * @since 2016/07/29
+	 */
+	final class __Entry__
+	{
+		/** The type of entry this is. */
+		final BlobContentType _type;
+		
+		/** The name of this entry. */
+		final String _name;
+		
+		/** The start position. */
+		final int _startpos;
+		
+		/** The end position. */
+		final int _endpos;
+		
+		/**
+		 * Initializes the entry information.
+		 *
+		 * @param __t The content type.
+		 * @param __n The content name.
+		 * @param __s The start position.
+		 * @param __e The end position.
+		 * @since 2016/07/29
+		 */
+		private __Entry__(BlobContentType __t, String __n, int __s, int __e)
+		{
+			// Check
+			if (__t == null || __n == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this._type = __t;
+			this._name = __n;
+			this._startpos = __s;
+			this._endpos = __e;
+		}
 	}
 }
 
