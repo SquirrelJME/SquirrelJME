@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.RandomAccess;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -55,7 +56,7 @@ final class __Contents__
 		if (__ep < __sp || __sp > Integer.MAX_VALUE || __sp < 0)
 			throw new JITException(String.format("BA0i %d %d", __sp, __ep));
 		
-		// Add
+		// Create entry
 		this.entries.add(new __Entry__(__ct, __cn, (int)__sp, (int)__ep));
 	}
 	
@@ -80,11 +81,24 @@ final class __Contents__
 	}
 	
 	/**
+	 * Sorts all entries so that they are in order, this should be called
+	 * last to ensure that worst case binary insertion does not happen every
+	 * single time.
+	 *
+	 * @since 2016/07/29
+	 */
+	public void sortEntries()
+	{
+		Collections.<__Entry__>sort(this.entries);
+	}
+	
+	/**
 	 * A single content entry.
 	 *
 	 * @since 2016/07/29
 	 */
 	final class __Entry__
+		implements Comparable<__Entry__>
 	{
 		/** The type of entry this is. */
 		final BlobContentType _type;
@@ -118,6 +132,22 @@ final class __Contents__
 			this._name = __n;
 			this._startpos = __s;
 			this._endpos = __e;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/29
+		 */
+		@Override
+		public int compareTo(__Entry__ __o)
+			throws NullPointerException
+		{
+			// Check
+			if (__o == null)
+				throw new NullPointerException("NARG");
+			
+			// Compare
+			return this._name.compareTo(__o._name);
 		}
 	}
 }

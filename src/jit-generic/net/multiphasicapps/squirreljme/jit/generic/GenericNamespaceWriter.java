@@ -243,7 +243,12 @@ public final class GenericNamespaceWriter
 					__Contents__ contents = this._contents;
 					int numcontents = contents.size();
 					
-					// 
+					// Sort entries before being used (faster to do it now)
+					contents.sortEntries();
+					
+					// Add strings for all entry names
+					for (int i = 0; i < numcontents; i++)
+						__addString(contents.get(i)._name);
 					
 					throw new Error("TODO");
 				}
