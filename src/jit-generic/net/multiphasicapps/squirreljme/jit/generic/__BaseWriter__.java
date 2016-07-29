@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
@@ -38,27 +39,37 @@ abstract class __BaseWriter__
 	protected final OutputStream rawoutput;
 	
 	/** Start positon. */
-	protected final long startpos;
+	final long _startpos;
+	
+	/** The type of content here. */
+	final BlobContentType _contenttype;
+	
+	/** The name of the content. */
+	final String _contentname;
 	
 	/**
 	 * Initializes the base writer.
 	 *
 	 * @param __nsw The owning namespace writer.
 	 * @param __name The name of this content entry.
+	 * @param __ct The type of content to use for this entry.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	__BaseWriter__(GenericNamespaceWriter __nsw, String __name)
+	__BaseWriter__(GenericNamespaceWriter __nsw, String __name,
+		BlobContentType __ct)
 		throws NullPointerException
 	{
 		// Check
-		if (__nsw == null || __name == null)
+		if (__nsw == null || __name == null || __ct == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.owner = __nsw;
 		this.lock = __nsw._lock;
 		this.contentname = __name;
+		this._contenttype = __ct;
+		this._contentname = __name;
 		
 		// Create raw output area
 		synchronized (this.lock)
@@ -68,7 +79,7 @@ abstract class __BaseWriter__
 			this.rawoutput = rawoutput;
 	
 			// Set start position
-			this.startpos = edos.size();
+			this._startpos = edos.size();
 		}
 	}
 	

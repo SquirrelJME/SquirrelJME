@@ -19,6 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
+import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
@@ -54,6 +55,10 @@ public final class GenericNamespaceWriter
 	/** Visible lock. */
 	final Object _lock =
 		this.lock;
+	
+	/** Table of contents directory. */
+	private final __Contents__ _contents =
+		new __Contents__();
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
@@ -263,7 +268,12 @@ public final class GenericNamespaceWriter
 			if (this._current != __bw)
 				throw new JITException("BA0h");
 			
-			throw new Error("TODO");
+			// Add to contents directory
+			this._contents.__add(__bw._startpos, this.output.size(),
+				__bw._contenttype, __bw._contentname);
+			
+			// Clear
+			this._current = null;
 		}
 	}
 	

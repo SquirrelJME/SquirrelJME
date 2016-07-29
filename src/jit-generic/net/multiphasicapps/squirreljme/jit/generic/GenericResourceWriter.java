@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
+import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 
 /**
  * This writes resources to the output namespace.
@@ -35,7 +36,7 @@ public final class GenericResourceWriter
 	 */
 	GenericResourceWriter(GenericNamespaceWriter __nsw, String __name)
 	{
-		super(__nsw, __name);
+		super(__nsw, __name, BlobContentType.RESOURCE);
 	}
 	
 	/**

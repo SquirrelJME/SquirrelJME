@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
+import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
@@ -44,7 +45,7 @@ public final class GenericClassWriter
 	GenericClassWriter(GenericNamespaceWriter __nsw, ClassNameSymbol __cn)
 		throws NullPointerException
 	{
-		super(__nsw, Objects.toString(__cn));
+		super(__nsw, Objects.toString(__cn), BlobContentType.CLASS);
 		
 		// Check
 		if (__cn == null)
