@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
+import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
@@ -63,9 +64,7 @@ public final class GenericClassWriter
 		// Write the class header
 		try
 		{
-			if (false)
-				throw new IOException("TODO");
-			throw new Error("TODO");
+			output.writeInt(GenericBlobConstants.CLASS_MAGIC);
 		}
 		
 		// {@squirreljme.error BA0a Failed to write the initial header.}

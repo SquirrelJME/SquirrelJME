@@ -24,5 +24,9 @@ public interface GenericBlobConstants
 	/** The second magic number. */
 	public static final long SECOND_MAGIC =
 		0x564A4D455F4D5041L;
+	
+	/** Class file magic numbers. */
+	public static final int CLASS_MAGIC =
+		0xCAFED00D;
 }
 
