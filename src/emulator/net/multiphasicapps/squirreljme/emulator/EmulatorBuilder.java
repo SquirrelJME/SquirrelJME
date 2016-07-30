@@ -10,28 +10,36 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
-import java.io.IOException;
-
 /**
- * This interface is used by emulators to display output to the user which
- * may either be to a graphical device or a console.
+ * This class is used to construct new emulators since it is possible that new
+ * features may be added to the emulator.
+ *
+ * This class should ease when the emulator changes or adds/removes some new
+ * functionality
  *
  * @since 2016/07/30
  */
-public interface DisplayOutput
+public final class EmulatorBuilder
 {
+	/** Lock. */
+	final Object _lock =
+		new Object();
+	
 	/**
-	 * Writes the given bytes to standard output.
+	 * Builds the emulator instance for later emulation.
 	 *
-	 * @param __b The byte array.
-	 * @param __o The offset to the start.
-	 * @param __l The number of bytes to write.
-	 * @throws IndexOutOfBoundsException If the offset and/or length are
-	 * negative or exceed the array bounds.
-	 * @throws IOException On null arguments.
-	 * @since 2016/06/30
+	 * @return The instance of the emulator.
+	 * @throws IllegalStateException On null arguments.
+	 * @since 2016/07/30
 	 */
-	public abstract void stdOut(byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, IOException;
+	public final Emulator build()
+		throws IllegalStateException
+	{
+		// Lock
+		synchronized (this._lock)
+		{
+			return new Emulator(this);
+		}
+	}
 }
 

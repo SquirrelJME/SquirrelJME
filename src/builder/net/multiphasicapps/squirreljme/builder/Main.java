@@ -28,8 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -260,12 +260,10 @@ public class Main
 				out.println("Emulating...");
 				
 				// Setup the emulator
+				Emulator emu = tb.emulate(config, distoutpath[0]);
 				
-				if (false)
-					throw new IOException("TODO");
-				
-				// Setup emulator
-				throw new Error("TODO");
+				// Run until termination
+				emu.run();
 			}
 			
 			// {@squirreljme.error DW0t Read/write error setting up the

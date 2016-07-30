@@ -91,7 +91,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/25
 	 */
-	public abstract Object emulate(BuildConfig __conf, Path __p)
+	public abstract Emulator emulate(BuildConfig __conf, Path __p)
 		throws IOException, NullPointerException;
 	
 	/**

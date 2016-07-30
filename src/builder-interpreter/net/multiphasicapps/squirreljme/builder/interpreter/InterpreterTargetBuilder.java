@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
+import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.exe.interpreter.
 	InterpreterExecutableOutput;
@@ -50,7 +51,7 @@ public class InterpreterTargetBuilder
 	 * @since 2016/07/25
 	 */
 	@Override
-	public Object emulate(BuildConfig __conf, Path __p)
+	public Emulator emulate(BuildConfig __conf, Path __p)
 		throws IOException, NullPointerException
 	{
 		// Check

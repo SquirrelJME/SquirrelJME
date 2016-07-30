@@ -10,28 +10,39 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
-import java.io.IOException;
-
 /**
- * This interface is used by emulators to display output to the user which
- * may either be to a graphical device or a console.
+ * This class contains the main controller for a given emulator.
  *
  * @since 2016/07/30
  */
-public interface DisplayOutput
+public final class Emulator
+	implements Runnable
 {
 	/**
-	 * Writes the given bytes to standard output.
+	 * Initializes an emulator using the given builder.
 	 *
-	 * @param __b The byte array.
-	 * @param __o The offset to the start.
-	 * @param __l The number of bytes to write.
-	 * @throws IndexOutOfBoundsException If the offset and/or length are
-	 * negative or exceed the array bounds.
-	 * @throws IOException On null arguments.
-	 * @since 2016/06/30
+	 * @param __eb The emulator builder to grab initial state from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
 	 */
-	public abstract void stdOut(byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, IOException;
+	Emulator(EmulatorBuilder __eb)
+		throws NullPointerException
+	{
+		// Check
+		if (__eb == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Runs emulation until it terminates.
+	 *
+	 * @since 2016/07/30
+	 */
+	public void run()
+	{
+		throw new Error("TODO");
+	}
 }
 
