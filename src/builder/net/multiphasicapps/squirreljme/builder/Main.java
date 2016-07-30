@@ -276,8 +276,12 @@ public class Main
 				TargetEmulator te = tb.emulate(new TargetEmulatorArguments(
 					config, zip, altexename,
 					emuargs.<String>toArray(new String[emuargs.size()])));
-			
-				throw new Error("TODO");
+				
+				// Get an emulator
+				Emulator emu = te.emulator();
+				
+				// Run it
+				emu.run();
 			}
 			
 			// {@squirreljme.error DW0t I/O error while emulating.}

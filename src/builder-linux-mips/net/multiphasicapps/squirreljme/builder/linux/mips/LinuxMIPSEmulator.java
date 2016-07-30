@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirreljme.builder.linux.mips;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
+import net.multiphasicapps.squirreljme.emulator.Emulator;
 
 /**
  * This is used to emulate a target MIPS Linux system.
@@ -30,6 +32,17 @@ public class LinuxMIPSEmulator
 	public LinuxMIPSEmulator(TargetEmulatorArguments __args)
 	{
 		super(__args);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/30
+	 */
+	@Override
+	public Emulator emulator()
+		throws IOException
+	{
+		throw new Error("TODO");
 	}
 }
 

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 
 /**
@@ -39,5 +40,15 @@ public abstract class TargetEmulator
 		// Set
 		this.arguments = __args;
 	}
+	
+	/**
+	 * This sets up and returns the emulator capable of emulating SquirrelJME
+	 * for a given target.
+	 *
+	 * @return The target emulator, which is ready to be run.
+	 * @since 2016/07/30
+	 */
+	public abstract Emulator emulator()
+		throws IOException;
 }
 
