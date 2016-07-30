@@ -73,3 +73,16 @@ I believe for all targets that I make, I will always go with static and just
 directly system call the kernel. Static executables are easier to make and
 everything is standalone, there should never be a library issue at all.
 
+## 19:13
+
+I am going to actually need to write a filesystem path simulator setup (i.e.
+an emulated variant of `FileSystem`) for usage on the target system. This
+would be better than paths and such. I would suppose then that
+`EmulatedFileSystem` can be given mount points which point to something
+similar to the volume interfaces. Because messing with strings is going to be
+very very messy. However, there is essentially going to be duplicated code for
+the emulator and the real system. So not only would I need to write a path
+management system for the emulator but the target JVM running on real hardware
+too. The path management system does not need to worry about opening the files
+just handling the path information.
+
