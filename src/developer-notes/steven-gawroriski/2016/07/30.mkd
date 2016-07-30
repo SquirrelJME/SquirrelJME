@@ -16,3 +16,12 @@ run average programs that are not special in a way. Something I can do is make
 it where it can be handled like a normal Java method so to speak. So you can
 call main on a regular C method where it returns an `int`.
 
+## 13:37
+
+Ok, so what I can use is a `DeviceManager` which manages classes which act as
+`BasicDevice`. Perhaps `AttachmentManager` might work better. Basically there
+would be a generic manager which has device groups such as block devices,
+virtual file systems, and other such things. When the emulator is initialized
+it can setup a given manager. I would then suppose that there would be emulator
+managed attachments and user managed ones.
+
