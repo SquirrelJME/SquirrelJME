@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import net.multiphasicapps.zip.blockreader.ZipFile;
+
 /**
  * This class contains the arguments which are needed to setup a target
  * emulator for testing and other such things.
@@ -18,5 +20,31 @@ package net.multiphasicapps.squirreljme.builder;
  */
 public final class TargetEmulatorArguments
 {
+	/** The build configuration. */
+	protected final BuildConfig config;
+	
+	/** The bootstrap ZIP. */
+	protected final ZipFile zip;
+	
+	/**
+	 * Initializes the emulator arguments.
+	 *
+	 * @param __conf The build configuration.
+	 * @param __zip The ZIP which contains the SquirrelJME executable (or
+	 * another one).
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	public TargetEmulatorArguments(BuildConfig __conf, ZipFile __zip)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null || __zip == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __conf;
+		this.zip = __zip;
+	}
 }
 

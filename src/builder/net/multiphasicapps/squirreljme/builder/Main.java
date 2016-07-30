@@ -274,7 +274,8 @@ public class Main
 				ZipFile zip = ZipFile.open(fc))
 			{
 				// Get the target emulator
-				TargetEmulator te = tb.emulate(new TargetEmulatorArguments());
+				TargetEmulator te = tb.emulate(new TargetEmulatorArguments(
+					config, zip));
 			
 				throw new Error("TODO");
 			}
