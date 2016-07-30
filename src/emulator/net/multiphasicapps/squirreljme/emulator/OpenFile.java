@@ -11,15 +11,21 @@
 package net.multiphasicapps.squirreljme.emulator;
 
 import java.io.Closeable;
+import java.io.IOException;
 
 /**
- * This provides access to a single process within the emulator, this is so
- * that multiple processes can exist at once since it may be useful and/or
- * needed for testing.
+ * This represents a file that is currently open so that its data may be
+ * accessed as required.
+ *
+ * This interface does not know about file positioning, that is up to the
+ * emulation implementation to handle.
+ *
+ * It is recommended that open files be shared in a volume and that closing
+ * keeps a reference count.
  *
  * @since 2016/07/30
  */
-public interface Process
+public interface OpenFile
 	extends Closeable
 {
 }

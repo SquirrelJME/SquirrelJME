@@ -10,17 +10,20 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
-import java.io.Closeable;
-
 /**
- * This provides access to a single process within the emulator, this is so
- * that multiple processes can exist at once since it may be useful and/or
- * needed for testing.
+ * This determines how a file is to be accesed.
  *
  * @since 2016/07/30
  */
-public interface Process
-	extends Closeable
+public enum FileAccessMode
 {
+	/** Reading. */
+	READ,
+	
+	/** Reading/writing. */
+	READ_WRITE,
+	
+	/** End. */
+	;
 }
 

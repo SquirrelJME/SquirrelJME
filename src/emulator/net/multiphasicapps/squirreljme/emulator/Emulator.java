@@ -183,6 +183,31 @@ public abstract class Emulator
 	}
 	
 	/**
+	 * Attempts to open the given file.
+	 *
+	 * @param __p The path to the file.
+	 * @param __m The open mode of the file.
+	 * @return The opened file.
+	 * @throws EmulatorIOException If a non-fatal open error occured.
+	 * @throws IOException If the file could not be opened.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	public final OpenFile openFile(String __p, FileAccessMode __m)
+		throws EmulatorIOException, IOException, NullPointerException
+	{
+		// Check
+		if (__p == null || __m == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Resolves the path of a file in the virtual volume (which uses ZIP
 	 * compatible file names) to one that is valid on the filesystem.
 	 *
