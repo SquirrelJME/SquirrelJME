@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.paths;
  *
  * @since 2016/07/30
  */
-public abstract class NativePaths
+public interface NativePaths
 {
 	/**
 	 * Returns the separator which is used to separate file names from
