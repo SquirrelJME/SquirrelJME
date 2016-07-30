@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirreljme.emulator.interpreter;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.emulator.DisplayOutput;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
+import net.multiphasicapps.squirreljme.emulator.Volume;
 
 /**
  * This is the emulator which is able to parse and decode the binaries used
@@ -31,6 +33,21 @@ public class InterpreterEmulator
 	public InterpreterEmulator(DisplayOutput __do)
 	{
 		super(__do);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/30
+	 */
+	@Override
+	protected void internalMountVolume(String __id, Volume __v)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__id == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Not needed
 	}
 }
 

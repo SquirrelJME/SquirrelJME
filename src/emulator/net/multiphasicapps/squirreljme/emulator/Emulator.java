@@ -29,8 +29,20 @@ public abstract class Emulator
 	private static final String[] _EMPTY_STRINGS =
 		new String[0];
 	
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
 	/** Where display output is to be written. */
 	protected final DisplayOutput displayout;
+	
+	/** Mounted volumes. */
+	private final Map<String, Volume> _mounted =
+		new LinkedHashMap<>();
+	
+	/** Reverse volume name lookup. */
+	private final Map<Volume, String> _revmount =
+		new LinkedHashMap<>();
 	
 	/**
 	 * Initializes an emulator.
@@ -43,6 +55,18 @@ public abstract class Emulator
 		// The display output always exists.
 		this.displayout = (__do == null ? new DefaultDisplayOutput() : __do);
 	}
+	
+	/**
+	 * Internally mounts the specified volume to the given identifier.
+	 *
+	 * @param __id The identifier of the volume.
+	 * @param __v The volume for file access.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	protected abstract void internalMountVolume(String __id, Volume __v)
+		throws IOException, NullPointerException;
 	
 	/**
 	 * {@inheritDoc}
@@ -72,7 +96,25 @@ public abstract class Emulator
 		if (__id == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		Map<String, Volume> mounted = this._mounted;
+		Map<Volume, String> revmount = this._revmount;
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error AR01 The specified volume identifier is
+			// already in use. (The volume identifier)}
+			Volume v = mounted.get(__id);
+			String i = revmount.get(__v);
+			if (v != null || i != null)
+				throw new IOException(String.format("AR01 %s", __id));
+			
+			// Internally mount the volume
+			internalMountVolume(__id, __v);
+			
+			// Add volume
+			mounted.put(__id, __v);
+			revmount.put(__v, __id);
+		}
 	}
 	
 	/**
