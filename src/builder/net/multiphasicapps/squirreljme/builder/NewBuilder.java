@@ -212,7 +212,7 @@ public class NewBuilder
 					bootcp);
 			}
 			
-			// Close everything
+			// Delete everything
 			finally
 			{
 				// Failing exception?

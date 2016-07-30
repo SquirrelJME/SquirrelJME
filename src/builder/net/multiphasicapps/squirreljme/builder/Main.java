@@ -196,12 +196,6 @@ public class Main
 			// {@squirreljme.error DW0j Read/write error.}
 			catch (IOException e)
 			{
-				throw new RuntimeException("DW0j", e);
-			}
-		
-			// Delete temporary directory
-			finally
-			{
 				// Delete the failed output
 				if (distoutpath[0] != null)
 					try
@@ -210,10 +204,18 @@ public class Main
 					}
 				
 					// Ignore
-					catch (IOException e)
+					catch (IOException f)
 					{
+						e.addSuppressed(f);
 					}
-			
+				
+				// Toss
+				throw new RuntimeException("DW0j", e);
+			}
+		
+			// Delete temporary directory
+			finally
+			{
 				// Delete if it exists
 				if (tempdir != null)
 					try

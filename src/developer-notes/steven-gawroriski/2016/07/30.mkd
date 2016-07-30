@@ -4,3 +4,7 @@
 
 There should probably be a limit of 65,536 strings in a single namespace.
 
+## 00:58
+
+Seems no output ZIP is written, I suppose I have missed that.
+
