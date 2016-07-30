@@ -25,3 +25,9 @@ virtual file systems, and other such things. When the emulator is initialized
 it can setup a given manager. I would then suppose that there would be emulator
 managed attachments and user managed ones.
 
+## 13:40
+
+Emulators can have groups of processes so to speak and possibly switch between
+them manually or automatically. So what I need is essentially an interface
+that is used as a display output so to speak.
+
