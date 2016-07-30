@@ -41,3 +41,8 @@ of data of sorts without having lookup each time.
 I should make it so the emulator can run another binary and not the one that is
 in the distributed ZIP and with custom arguments.
 
+## 16:28
+
+Then this way, I can test arbitrary executables using the target emulation
+system without worrying about setting up another emulator interface.
+
