@@ -75,12 +75,20 @@ public class InterpreterExecutableOutput
 			// Write output here
 			DataOutputStream dos = new DataOutputStream(__os);
 			
+			// Namespace positions (for quick find)
+			int numnamespaces = __names.length;
+			int[] nspos = new int[numnamespaces];
+			
 			// Go through all namespaces and just write their data
 			int n = __names.length;
 			byte[] buf = new byte[128];
 			int lastaddr = -1;
 			for (int i = 0; i < n; i++)
 			{
+				// Align to int
+				while ((dos.size() & 3) != 0)
+					dos.writeByte(0xFC);
+				
 				// Start position
 				int datastart = dos.size();
 				
@@ -102,8 +110,13 @@ public class InterpreterExecutableOutput
 				int dataend = dos.size();
 				int datasize = dataend - datastart;
 				
+				// Align to int
+				while ((dos.size() & 3) != 0)
+					dos.writeByte(0xFC);
+				
 				// Write the last entry address along with the start and the
 				// size of the data
+				nspos[i] = dos.size();	// Points to this information
 				dos.writeInt(lastaddr);
 				dos.writeInt(datastart);
 				dos.writeInt(datasize);
@@ -113,15 +126,11 @@ public class InterpreterExecutableOutput
 				
 				// Set last address to point
 				lastaddr = dataend;
-				
-				// Align to int
-				while ((dos.size() & 3) != 0)
-					dos.writeByte(0);
 			}
 			
 			// Align to int
 			while ((dos.size() & 3) != 0)
-				dos.writeByte(0);
+				dos.writeByte(0xFC);
 			
 			// Write system properties
 			int propaddr = dos.size();
@@ -133,11 +142,27 @@ public class InterpreterExecutableOutput
 			}
 			
 			// Align to int
+			long ntablepos;
+			while (((ntablepos = dos.size()) & 3) != 0)
+				dos.writeByte(0xFC);
+			
+			// {@squirreljme.error BS01 The namespace table exceeds the range
+			// of 2GiB.}
+			if (ntablepos < 0 || ntablepos > Integer.MAX_VALUE)
+				throw new IOException("BS01");
+			
+			// Namespace lookup table
+			for (int i = 0; i < numnamespaces; i++)
+				dos.writeInt(nspos[i]);
+			
+			// Align to int
 			while ((dos.size() & 3) != 0)
-				dos.writeByte(0);
+				dos.writeByte(0xFC);
 			
 			// End the file with the last address point (points to the first
 			// namespace that has been blobbed)
+			dos.writeInt(numnamespaces);
+			dos.writeInt((int)ntablepos);
 			dos.writeInt(lastaddr);
 			dos.writeInt(propaddr);
 			dos.writeInt(propcount);
