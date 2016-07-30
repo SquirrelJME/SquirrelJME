@@ -19,11 +19,11 @@ public interface GenericBlobConstants
 {
 	/** The first magic number. */
 	public static final long FIRST_MAGIC =
-		0x005371756972726CL;
+		0x537175697272656CL;
 	
 	/** The second magic number. */
 	public static final long SECOND_MAGIC =
-		0x564A4D455F4D5041L;
+		0x4A4D45204C657821L;
 	
 	/** Class file magic numbers. */
 	public static final int CLASS_MAGIC =
