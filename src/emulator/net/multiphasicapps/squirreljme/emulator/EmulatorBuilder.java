@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
+import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class is used to construct new emulators since it is possible that new
  * features may be added to the emulator.
@@ -25,8 +29,34 @@ public final class EmulatorBuilder
 	final Object _lock =
 		new Object();
 	
+	/** Associated volumes. */
+	final Map<String, Volume> _volumes =
+		new LinkedHashMap<>();
+	
 	/** The current display output. */
 	volatile DisplayOutput _displayout;
+	
+	/**
+	 * Adds a volume where filesystem data may be accessed.
+	 *
+	 * @param __n The name of the volume.
+	 * @param __v The volume for data accessing.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	public final void addVolume(String __n, Volume __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this._lock)
+		{
+			this._volumes.put(__n, __v);
+		}
+	}
 	
 	/**
 	 * Builds the emulator instance for later emulation.

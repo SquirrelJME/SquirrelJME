@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
+import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
+
 /**
  * This class contains the main controller for a given emulator.
  *
@@ -20,6 +25,9 @@ public final class Emulator
 {
 	/** The display output to use when. */
 	final DisplayOutput _displayout;
+	
+	/** The volumes associated with the emulator. */
+	final Map<String, Volume> _volumes;
 	
 	/**
 	 * Initializes an emulator using the given builder.
@@ -41,7 +49,12 @@ public final class Emulator
 			displayout = new DefaultDisplayOutput();
 		this._displayout = displayout;
 		
-		throw new Error("TODO");
+		// Setup volumes
+		Map<String, Volume> volumes = new LinkedHashMap<>();
+		for (Map.Entry<String, Volume> e : __eb._volumes.entrySet())
+			volumes.put(e.getKey(), e.getValue());
+		volumes = UnmodifiableMap.<String, Volume>of(volumes);
+		this._volumes = volumes;
 	}
 	
 	/**
