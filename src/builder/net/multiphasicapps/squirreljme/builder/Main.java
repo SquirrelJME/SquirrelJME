@@ -33,6 +33,7 @@ import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -268,12 +269,21 @@ public class Main
 		
 		// Emulate?
 		if (config.doEmulation())
-		{
-			// Get the target emulator
-			TargetEmulator te = tb.emulate(config);
+			try (FileChannel fc = FileChannel.open(distoutpath[0],
+				StandardOpenOption.READ);
+				ZipFile zip = ZipFile.open(fc))
+			{
+				// Get the target emulator
+				TargetEmulator te = tb.emulate(new TargetEmulatorArguments());
 			
-			throw new Error("TODO");
-		}
+				throw new Error("TODO");
+			}
+			
+			// {@squirreljme.error DW0t I/O error while emulating.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("DW0t", e);
+			}
 	}
 	
 	/**

@@ -57,3 +57,9 @@ and performs any needed initialization, if it has been performed.
 However, the `TargetBuilder` is slightly ugly when it comes to the emulator, so
 I should make an entirely new class which can set it up and such.
 
+## 18:06
+
+To handle various arguments that could be added in the future, the new class
+can just get a structure which holds variables. This could also support being
+auto-closed so that the ZIP can be opened also without much worry.
+

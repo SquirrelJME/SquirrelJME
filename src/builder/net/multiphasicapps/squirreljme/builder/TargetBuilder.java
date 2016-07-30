@@ -300,17 +300,17 @@ public abstract class TargetBuilder
 	 * The default implementation throws an exception if emulation is not
 	 * supported.
 	 *
-	 * @param __conf The configuration to use.
+	 * @param __args Arguments to the emulator.
 	 * @return The emulator which was setup.
 	 * @throws IllegalArgumentException If emulation is not supported.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/25
 	 */
-	public TargetEmulator emulate(BuildConfig __conf)
+	public TargetEmulator emulate(TargetEmulatorArguments __args)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
-		if (__conf == null)
+		if (__args == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error DW0v Emulation is not supported for this

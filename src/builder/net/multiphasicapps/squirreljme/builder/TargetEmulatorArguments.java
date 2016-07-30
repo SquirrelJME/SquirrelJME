@@ -10,34 +10,13 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
-import net.multiphasicapps.squirreljme.emulator.Emulator;
-
 /**
- * This class is used to setup the target for emulation.
+ * This class contains the arguments which are needed to setup a target
+ * emulator for testing and other such things.
  *
  * @since 2016/07/30
  */
-public abstract class TargetEmulator
+public final class TargetEmulatorArguments
 {
-	/** Emulator arguments. */
-	protected final TargetEmulatorArguments arguments;
-	
-	/**
-	 * Initializes the base target emulator.
-	 *
-	 * @param __args The arguments to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/30
-	 */
-	public TargetEmulator(TargetEmulatorArguments __args)
-		throws NullPointerException
-	{
-		// Check
-		if (__args == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.arguments = __args;
-	}
 }
 
