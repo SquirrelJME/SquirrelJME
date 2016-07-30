@@ -81,7 +81,8 @@ public class InterpreterTargetBuilder
 			rv.mountVolume(Volume.CONTRIB_BINARIES, zfv);
 		
 			// Run the emulator
-			rv.startProcess(null, rv.resolvePath(zfv, "squirreljme.int"));
+			rv.startProcess(null, rv.resolvePath(zfv,
+				__executableName(__conf)));
 		
 			// Return it
 			return rv;
@@ -143,7 +144,7 @@ public class InterpreterTargetBuilder
 			throw new NullPointerException("NARG");
 		
 		// Create binary
-		try (OutputStream os = __zsw.nextEntry("squirreljme.int",
+		try (OutputStream os = __zsw.nextEntry(__executableName(__conf),
 			ZipCompressionType.DEFAULT_COMPRESSION))
 		{
 			// Create executable output
@@ -209,6 +210,28 @@ public class InterpreterTargetBuilder
 		
 		// Always just interpreter
 		return "interpreter";
+	}
+	
+	/**
+	 * Returns the executable name.
+	 *
+	 * @param __conf The configuration.
+	 * @return The name of the output executable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	private String __executableName(BuildConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Alternative is set?
+		String rv = __conf.alternativeExecutableName();
+		if (rv == null)
+			return "squirreljme.int";
+		return rv;
 	}
 }
 

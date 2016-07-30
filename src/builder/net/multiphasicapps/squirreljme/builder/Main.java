@@ -87,6 +87,7 @@ public class Main
 		boolean skipbuild = false;
 		String target = null;
 		String outzipname = null;
+		String altexename = null;
 		List<String> emuargs = new ArrayList<>();
 		while (!args.isEmpty())
 		{
@@ -107,6 +108,17 @@ public class Main
 			// Skip building?
 			else if (a.equals("-s"))
 				skipbuild = true;
+			
+			// Alternative executable name?
+			else if (a.equals("-x"))
+			{
+				altexename = args.removeFirst();
+				
+				// {@squirreljme.error DW0u The alternative executable name
+				// requires an argument.}
+				if (altexename == null)
+					throw new IllegalArgumentException("DW0u");
+			}
 			
 			// {@squirreljme.error DW02 Unknown command line argument.
 			// (The argument)}
@@ -148,7 +160,7 @@ public class Main
 		// Setup build configuration
 		BuildConfig config = new BuildConfig(new JITTriplet(target), doemu,
 			emuargs.<String>toArray(new String[emuargs.size()]), !nojit,
-			tests);
+			tests, altexename);
 		
 		// Find a target builder which is compatible with this configuration
 		TargetBuilder tb = TargetBuilder.findBuilder(config);
@@ -337,7 +349,8 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		// Print header
-		__ps.println("Usage: [-e] [-n] [-s] [-t] (target) [squirreljme.zip]");
+		__ps.println("Usage: [-e] [-n] [-s] [-t] [-x name]" +
+			"(target) [squirreljme.zip]");
 		__ps.println();
 		__ps.println("\tThe output ZIP is optionally specified.");
 		__ps.println();
@@ -346,6 +359,8 @@ public class Main
 		__ps.println("\t-n\tDo not include a JIT.");
 		__ps.println("\t-s\tSkip building and just emulate the ZIP.");
 		__ps.println("\t-t\tInclude tests.");
+		__ps.println("\t-x\tAlternative name for the binary executable");
+		__ps.println("\t\tinstead of using the default name.");
 		__ps.println();
 		
 		// Suggest target header

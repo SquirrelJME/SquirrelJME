@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.emulator.interpreter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import net.multiphasicapps.squirreljme.emulator.DisplayOutput;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.emulator.OpenFile;
@@ -80,6 +81,9 @@ public class InterpreterEmulator
 		// Check
 		if (__env == null || __args == null)
 			throw new NullPointerException("NARG");
+		
+		System.err.printf("DEBUG -- Start: %s%n",
+			Arrays.<String>asList(__args));
 		
 		// Create
 		return new InterpreterProcess(this, __env, __args);

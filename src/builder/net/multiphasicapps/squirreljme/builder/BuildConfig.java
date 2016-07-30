@@ -31,6 +31,9 @@ public final class BuildConfig
 	/** Should the tests be included? */
 	protected final boolean tests;
 	
+	/** Alternative executable name. */
+	protected final String altexename;
+	
 	/** Arguments to the emulator. */
 	private final String[] _emulatorargs;
 	
@@ -42,11 +45,14 @@ public final class BuildConfig
 	 * @param __args Arguments to the emulator.
 	 * @param __jit Include the JIT?
 	 * @param __tests Should the tests be included?
-	 * @throws NullPointerException On null arguments.
+	 * @param __altexe The alternative executable name in the output ZIP, this
+	 * is not required to be specified.
+	 * @throws NullPointerException On null arguments, except for optional
+	 * ones.
 	 * @since 2016/07/22
 	 */
 	BuildConfig(JITTriplet __trip, boolean __emu, String[] __args,
-		boolean __jit, boolean __tests)
+		boolean __jit, boolean __tests, String __altexe)
 		throws NullPointerException
 	{
 		// Check
@@ -59,6 +65,18 @@ public final class BuildConfig
 		this._emulatorargs = (__args != null ? __args.clone() : new String[0]);
 		this.jit = __jit;
 		this.tests = __tests;
+		this.altexename = __altexe;
+	}
+	
+	/**
+	 * Returns the alternative name for the executable to use.
+	 *
+	 * @return The alternatvie executable name, may be {@code null}.
+	 * @since 2016/07/30
+	 */
+	public final String alternativeExecutableName()
+	{
+		return this.altexename;
 	}
 	
 	/**
