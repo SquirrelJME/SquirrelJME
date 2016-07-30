@@ -36,6 +36,9 @@ public final class EmulatorBuilder
 	/** The current display output. */
 	volatile DisplayOutput _displayout;
 	
+	/** The system manager. */
+	volatile SystemManager _sm;
+	
 	/**
 	 * Adds a volume where filesystem data may be accessed.
 	 *
