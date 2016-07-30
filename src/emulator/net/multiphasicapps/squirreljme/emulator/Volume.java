@@ -23,5 +23,8 @@ import java.io.Closeable;
 public interface Volume
 	extends Closeable
 {
+	/** The name of the contributing binary paths. */
+	public static final String CONTRIB_BINARIES =
+		"contrib";
 }
 

@@ -77,6 +77,7 @@ public class InterpreterTargetBuilder
 			fc = FileChannel.open(__p, StandardOpenOption.READ);
 			zip = ZipFile.open(fc);
 			Volume zfv = new ZipFileVolume(zip);
+			eb.addVolume(Volume.CONTRIB_BINARIES, zfv);
 		
 			// Build the emulator
 			rv = eb.build();
