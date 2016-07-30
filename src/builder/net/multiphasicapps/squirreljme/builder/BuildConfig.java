@@ -22,9 +22,6 @@ public final class BuildConfig
 	/** The target triplet. */
 	protected final JITTriplet triplet;
 	
-	/** Emulate after building? */
-	protected final boolean emulate;
-	
 	/** Should the JIT be included? */
 	protected final boolean jit;
 	
@@ -34,15 +31,10 @@ public final class BuildConfig
 	/** Alternative executable name. */
 	protected final String altexename;
 	
-	/** Arguments to the emulator. */
-	private final String[] _emulatorargs;
-	
 	/**
 	 * Initializes the build configuration.
 	 *
 	 * @param __trip The target triplet.
-	 * @param __emu Should this system be emulated following the build?
-	 * @param __args Arguments to the emulator.
 	 * @param __jit Include the JIT?
 	 * @param __tests Should the tests be included?
 	 * @param __altexe The alternative executable name in the output ZIP, this
@@ -51,7 +43,7 @@ public final class BuildConfig
 	 * ones.
 	 * @since 2016/07/22
 	 */
-	BuildConfig(JITTriplet __trip, boolean __emu, String[] __args,
+	BuildConfig(JITTriplet __trip,
 		boolean __jit, boolean __tests, String __altexe)
 		throws NullPointerException
 	{
@@ -61,8 +53,6 @@ public final class BuildConfig
 		
 		// Set
 		this.triplet = __trip;
-		this.emulate = __emu;
-		this._emulatorargs = (__args != null ? __args.clone() : new String[0]);
 		this.jit = __jit;
 		this.tests = __tests;
 		this.altexename = __altexe;
@@ -77,28 +67,6 @@ public final class BuildConfig
 	public final String alternativeExecutableName()
 	{
 		return this.altexename;
-	}
-	
-	/**
-	 * Perform emulation after a successful build?
-	 *
-	 * @return {@code true} if emulation should be performed.
-	 * @since 2016/07/22
-	 */
-	public final boolean doEmulation()
-	{
-		return this.emulate;
-	}
-	
-	/**
-	 * Returns the arguments to the emulator.
-	 *
-	 * @return The emulator arguments.
-	 * @since 2016/07/30
-	 */
-	public final String[] emulatorArguments()
-	{
-		return this._emulatorargs.clone();
 	}
 	
 	/**

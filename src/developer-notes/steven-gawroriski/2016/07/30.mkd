@@ -63,3 +63,7 @@ To handle various arguments that could be added in the future, the new class
 can just get a structure which holds variables. This could also support being
 auto-closed so that the ZIP can be opened also without much worry.
 
+## 18:19
+
+This means `BuildConfig` can lose some things.
+
