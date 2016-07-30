@@ -141,7 +141,7 @@ abstract class __BaseWriter__
 				synchronized (__BaseWriter__.this.lock)
 				{
 					while ((__edos.size() & 3) != 0)
-						__edos.writeByte(0);
+						__edos.writeByte(0xFD);
 				}
 			}
 			

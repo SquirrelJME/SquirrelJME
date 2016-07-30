@@ -88,10 +88,10 @@ public final class GenericClassWriter
 		try
 		{
 			// Class magic number
-			output.writeInt(GenericBlobConstants.CLASS_MAGIC);
+			output.writeShort(GenericBlobConstants.CLASS_MAGIC);
 			
 			// Output class name
-			output.writeInt(__nsw.__addString(__cn.toString()));
+			output.writeShort(__nsw.__addString(__cn.toString()));
 		}
 		
 		// {@squirreljme.error BA0a Failed to write the initial header.}
@@ -192,7 +192,7 @@ public final class GenericClassWriter
 			
 				// The interface string IDs
 				for (int i = 0; i < n; i++)
-					output.writeInt(nsw.__addString(
+					output.writeShort(nsw.__addString(
 						__ins[i].toString()));
 			}
 			
@@ -228,7 +228,7 @@ public final class GenericClassWriter
 			
 				// Otherwise the string index
 				else
-					output.writeInt(this.owner.__addString(
+					output.writeShort(this.owner.__addString(
 						__cn.toString()));
 			}
 			

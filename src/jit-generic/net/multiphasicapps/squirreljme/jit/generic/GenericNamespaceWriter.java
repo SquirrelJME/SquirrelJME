@@ -255,7 +255,29 @@ public final class GenericNamespaceWriter
 					int numstrings = strings.size();
 					int stpos = __writeStringTable(output, strings);
 					
-					throw new Error("TODO");
+					// Align to 4
+					long contentp = 0;
+					while (((contentp = output.size()) & 3) != 0)
+						output.writeByte(0xFD);
+					
+					// {@squirreljme.error BA0r Pointer to table of contents
+					// is not within the range of 2GiB.}
+					if (contentp < 0 || contentp > Integer.MAX_VALUE)
+						throw new JITException("BA0r");
+					
+					// Write the contents table
+					if (true)
+						throw new Error("TODO");
+					
+					// Align to 4
+					while ((output.size() & 3) != 0)
+						output.writeByte(0xFD);
+					
+					// Write the string table and content pointer info
+					output.writeInt(stpos);
+					output.writeInt(numstrings);
+					output.writeInt((int)contentp);
+					output.writeInt(numcontents);
 				}
 		
 				// Close output
@@ -276,7 +298,7 @@ public final class GenericNamespaceWriter
 	 * located in the string table.
 	 *
 	 * @param __s The string to add.
-	 * @return The index of the string.
+	 * @return The index of the string, the value is an unsigned short.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
@@ -293,6 +315,11 @@ public final class GenericNamespaceWriter
 			// Get string table and its size
 			Map<String, Integer> strings = this.strings;
 			int size = strings.size();
+			
+			// {@squirreljme.error BA0q Namespaces are limited to 65,536
+			// strings.}
+			if (size > 65535)
+				throw new JITException("BA0q");
 			
 			// Is this string in the table?
 			Integer rv = strings.get(__s);
@@ -382,7 +409,7 @@ public final class GenericNamespaceWriter
 		
 		// Align to 4
 		while ((__edos.size() & 3) != 0)
-			__edos.writeByte(0);
+			__edos.writeByte(0xFD);
 		
 		// Write all strings
 		int numstrings = __strs.size(), q = 0;
@@ -407,7 +434,7 @@ public final class GenericNamespaceWriter
 			// Align to 4
 			long cp = 0;
 			while (((cp = __edos.size()) & 3) != 0)
-				__edos.writeByte(0);
+				__edos.writeByte(0xFD);
 			
 			// {@squirreljme.error BA0o String starts at address which is
 			// outside the range of 2GiB.}
@@ -438,7 +465,7 @@ public final class GenericNamespaceWriter
 		// Align to 4
 		long tpos = 0;
 		while (((tpos = __edos.size()) & 3) != 0)
-			__edos.writeByte(0);
+			__edos.writeByte(0xFD);
 		
 		// {@squirreljme.error BA0p String pointer table at address which is
 		// outside the range of 2GiB.}

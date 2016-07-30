@@ -27,6 +27,6 @@ public interface GenericBlobConstants
 	
 	/** Class file magic numbers. */
 	public static final int CLASS_MAGIC =
-		0xCAFED00D;
+		0xFFFFCAFE;
 }
 
