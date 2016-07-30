@@ -37,7 +37,7 @@ public interface NativePaths
 	 * @throws InvalidNativePathException If the path is not valid.
 	 * @since 2016/07/30
 	 */
-	protected abstract NativePath get(String __f, String... __r)
+	public abstract NativePath get(String __f, String... __r)
 		throws InvalidNativePathException;
 	
 	/**
@@ -47,6 +47,6 @@ public interface NativePaths
 	 * @return The path separator that the native path system uses.
 	 * @since 2016/07/30
 	 */
-	protected abstract String pathSeparator();
+	public abstract String pathSeparator();
 }
 

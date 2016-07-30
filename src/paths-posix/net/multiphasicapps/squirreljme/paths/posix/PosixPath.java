@@ -31,5 +31,15 @@ public class PosixPath
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/30
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		throw new Error("TODO");
+	}
 }
 

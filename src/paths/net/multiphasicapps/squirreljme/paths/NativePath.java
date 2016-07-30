@@ -19,7 +19,7 @@ package net.multiphasicapps.squirreljme.paths;
  * @since 2016/07/30
  */
 public interface NativePath
-	implements Comparable<NativePath>
+	extends Comparable<NativePath>
 {
 	/**
 	 * This compares two paths lexographically to determine the order in where

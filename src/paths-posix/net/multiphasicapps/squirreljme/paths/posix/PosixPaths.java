@@ -37,7 +37,7 @@ public class PosixPaths
 	 * @since 2016/07/30
 	 */
 	@Override
-	protected NativePath get(String __f, String... __r)
+	public NativePath get(String __f, String... __r)
 		throws InvalidNativePathException
 	{
 		throw new Error("TODO");
@@ -48,7 +48,7 @@ public class PosixPaths
 	 * @since 2016/07/30
 	 */
 	@Override
-	protected String pathSeparator()
+	public String pathSeparator()
 	{
 		return ":";
 	}
