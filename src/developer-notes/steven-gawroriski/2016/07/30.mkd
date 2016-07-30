@@ -8,3 +8,11 @@ There should probably be a limit of 65,536 strings in a single namespace.
 
 Seems no output ZIP is written, I suppose I have missed that.
 
+## 13:14
+
+I would like TAS-support in emulators, but perhaps I am thinking too much into
+it. The emulator should be as simple as possible but good enough where it could
+run average programs that are not special in a way. Something I can do is make
+it where it can be handled like a normal Java method so to speak. So you can
+call main on a regular C method where it returns an `int`.
+

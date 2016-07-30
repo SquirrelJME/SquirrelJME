@@ -23,6 +23,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;

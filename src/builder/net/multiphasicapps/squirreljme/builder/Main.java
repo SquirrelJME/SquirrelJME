@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
@@ -257,6 +258,8 @@ public class Main
 			try
 			{
 				out.println("Emulating...");
+				
+				// Setup the emulator
 				
 				if (false)
 					throw new IOException("TODO");
