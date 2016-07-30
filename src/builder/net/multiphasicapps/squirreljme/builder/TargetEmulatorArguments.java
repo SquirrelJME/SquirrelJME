@@ -26,16 +26,27 @@ public final class TargetEmulatorArguments
 	/** The bootstrap ZIP. */
 	protected final ZipFile zip;
 	
+	/** The optional alternative executable name. */
+	protected final String altexe;
+	
+	/** Emulator command arguments. */
+	protected final String[] args;
+	
 	/**
 	 * Initializes the emulator arguments.
 	 *
 	 * @param __conf The build configuration.
 	 * @param __zip The ZIP which contains the SquirrelJME executable (or
 	 * another one).
-	 * @throws NullPointerException On null arguments.
+	 * @param __altexe The alternative executable name, this argument is
+	 * optional.
+	 * @param __args Arguments to pass to the emulator.
+	 * @throws NullPointerException On null arguments, except for optional
+	 * ones.
 	 * @since 2016/07/30
 	 */
-	public TargetEmulatorArguments(BuildConfig __conf, ZipFile __zip)
+	public TargetEmulatorArguments(BuildConfig __conf, ZipFile __zip,
+		String __altexe, String[] __args)
 		throws NullPointerException
 	{
 		// Check
@@ -45,6 +56,8 @@ public final class TargetEmulatorArguments
 		// Set
 		this.config = __conf;
 		this.zip = __zip;
+		this.altexe = __altexe;
+		this.args = (__args == null ? new String[0] : __args.clone());
 	}
 }
 

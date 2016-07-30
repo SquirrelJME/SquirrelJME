@@ -159,9 +159,8 @@ public class Main
 		}
 		
 		// Setup build configuration
-		BuildConfig config = new BuildConfig(new JITTriplet(target), doemu,
-			emuargs.<String>toArray(new String[emuargs.size()]), !nojit,
-			tests, altexename);
+		BuildConfig config = new BuildConfig(new JITTriplet(target),
+			!nojit, tests, altexename);
 		
 		// Find a target builder which is compatible with this configuration
 		TargetBuilder tb = TargetBuilder.findBuilder(config);
@@ -268,14 +267,15 @@ public class Main
 				"squirreljme.zip"));
 		
 		// Emulate?
-		if (config.doEmulation())
+		if (doemu)
 			try (FileChannel fc = FileChannel.open(distoutpath[0],
 				StandardOpenOption.READ);
 				ZipFile zip = ZipFile.open(fc))
 			{
 				// Get the target emulator
 				TargetEmulator te = tb.emulate(new TargetEmulatorArguments(
-					config, zip));
+					config, zip, altexename,
+					emuargs.<String>toArray(new String[emuargs.size()])));
 			
 				throw new Error("TODO");
 			}
