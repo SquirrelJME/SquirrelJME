@@ -142,14 +142,9 @@ public class InterpreterExecutableOutput
 			}
 			
 			// Align to int
-			long ntablepos;
+			int ntablepos;
 			while (((ntablepos = dos.size()) & 3) != 0)
 				dos.writeByte(0xFC);
-			
-			// {@squirreljme.error BS01 The namespace table exceeds the range
-			// of 2GiB.}
-			if (ntablepos < 0 || ntablepos > Integer.MAX_VALUE)
-				throw new IOException("BS01");
 			
 			// Namespace lookup table
 			for (int i = 0; i < numnamespaces; i++)
