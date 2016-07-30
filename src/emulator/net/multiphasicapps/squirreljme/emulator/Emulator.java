@@ -18,49 +18,30 @@ import java.util.Map;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
- * This class contains the main controller for a given emulator.
+ * This is the base class for all instance of emulators.
  *
  * @since 2016/07/30
  */
-public final class Emulator
+public abstract class Emulator
 	implements Closeable, Runnable
 {
 	/** Empty array. */
 	private static final String[] _EMPTY_STRINGS =
 		new String[0];
 	
-	/** The display output to use when. */
-	final DisplayOutput _displayout;
-	
-	/** The volumes associated with the emulator. */
-	final Map<String, Volume> _volumes;
+	/** Where display output is to be written. */
+	protected final DisplayOutput displayout;
 	
 	/**
-	 * Initializes an emulator using the given builder.
+	 * Initializes an emulator.
 	 *
-	 * @param __eb The emulator builder to grab initial state from.
-	 * @throws NullPointerException On null arguments.
+	 * @param __do The display output to use.
 	 * @since 2016/07/30
 	 */
-	Emulator(EmulatorBuilder __eb)
-		throws NullPointerException
+	public Emulator(DisplayOutput __do)
 	{
-		// Check
-		if (__eb == null)
-			throw new NullPointerException("NARG");
-		
-		// Setup display output where console text goes
-		DisplayOutput displayout = __eb._displayout;
-		if (displayout == null)
-			displayout = new DefaultDisplayOutput();
-		this._displayout = displayout;
-		
-		// Setup volumes
-		Map<String, Volume> volumes = new LinkedHashMap<>();
-		for (Map.Entry<String, Volume> e : __eb._volumes.entrySet())
-			volumes.put(e.getKey(), e.getValue());
-		volumes = UnmodifiableMap.<String, Volume>of(volumes);
-		this._volumes = volumes;
+		// The display output always exists.
+		this.displayout = (__do == null ? new DefaultDisplayOutput() : __do);
 	}
 	
 	/**
@@ -75,12 +56,22 @@ public final class Emulator
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Mounts the given volume.
+	 *
+	 * @param __id The ID the volume should have in the target system.
+	 * @param __v The volume for file accessing.
+	 * @throws IOException On read/write errors or if the volume could not be
+	 * mounted.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/30
 	 */
-	@Override
-	public final void run()
+	public final void mountVolume(String __id, Volume __v)
+		throws IOException, NullPointerException
 	{
+		// Check
+		if (__id == null || __v == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
@@ -105,6 +96,16 @@ public final class Emulator
 		if (__v == null || __sp == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/30
+	 */
+	@Override
+	public final void run()
+	{
 		throw new Error("TODO");
 	}
 	

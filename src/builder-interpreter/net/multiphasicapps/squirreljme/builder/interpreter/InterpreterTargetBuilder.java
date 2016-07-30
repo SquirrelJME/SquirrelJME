@@ -19,7 +19,8 @@ import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
-import net.multiphasicapps.squirreljme.emulator.EmulatorBuilder;
+import net.multiphasicapps.squirreljme.emulator.interpreter.
+	InterpreterEmulator;
 import net.multiphasicapps.squirreljme.emulator.Volume;
 import net.multiphasicapps.squirreljme.emulator.ZipFileVolume;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
@@ -71,16 +72,13 @@ public class InterpreterTargetBuilder
 		try
 		{
 			// Setup emulator
-			EmulatorBuilder eb = new EmulatorBuilder();
+			rv = new InterpreterEmulator(null);
 		
 			// Setup the Zip file volume
 			fc = FileChannel.open(__p, StandardOpenOption.READ);
 			zip = ZipFile.open(fc);
 			Volume zfv = new ZipFileVolume(zip);
-			eb.addVolume(Volume.CONTRIB_BINARIES, zfv);
-		
-			// Build the emulator
-			rv = eb.build();
+			rv.mountVolume(Volume.CONTRIB_BINARIES, zfv);
 		
 			// Run the emulator
 			rv.startProcess(null, rv.resolvePath(zfv, "squirreljme.int"));
