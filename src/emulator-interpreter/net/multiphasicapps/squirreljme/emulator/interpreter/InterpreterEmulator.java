@@ -49,5 +49,21 @@ public class InterpreterEmulator
 		
 		// Not needed
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/30
+	 */
+	@Override
+	protected String internalResolvePath(Volume __v, String __sp)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__v == null || __sp == null)
+			throw new NullPointerException("NARG");
+		
+		// Just a simple appending
+		return "@" + getVolumeName(__v) + "/" + __sp;
+	}
 }
 

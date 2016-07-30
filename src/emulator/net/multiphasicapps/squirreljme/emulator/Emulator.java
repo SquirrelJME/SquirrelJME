@@ -69,6 +69,24 @@ public abstract class Emulator
 		throws IOException, NullPointerException;
 	
 	/**
+	 * Resolves the path of a file in the virtual volume (which uses ZIP
+	 * compatible file names) to one that is valid on the filesystem.
+	 *
+	 * The file to be resolved need not actually exist.
+	 *
+	 * @param __v The volume to get the real path for.
+	 * @param __sp The path in the volume to resolve a file for, the input
+	 * path must not be absolute.
+	 * @return The resolved path to the file as it appears to the emulated
+	 * system.
+	 * @throws IOException On read errors or if the path could not be resolved.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	protected abstract String internalResolvePath(Volume __v, String __sp)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/30
 	 */
@@ -77,6 +95,29 @@ public abstract class Emulator
 		throws IOException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the name of an input volume.
+	 *
+	 * @param __v The volume to get the name for.
+	 * @return The name of the volume or {@code null} if it was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	public final String getVolumeName(Volume __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Map<Volume, String> revmount = this._revmount;
+		synchronized (this.lock)
+		{
+			return revmount.get(__v);
+		}
 	}
 	
 	/**
@@ -95,6 +136,9 @@ public abstract class Emulator
 		// Check
 		if (__id == null || __v == null)
 			throw new NullPointerException("NARG");
+		
+		// Normalize the volume name
+		__id = __normalizeVolumeID(__id);
 		
 		// Lock
 		Map<String, Volume> mounted = this._mounted;
@@ -124,7 +168,8 @@ public abstract class Emulator
 	 * The file to be resolved need not actually exist.
 	 *
 	 * @param __v The volume to get the real path for.
-	 * @param __sp The path in the volume to resolve a file for.
+	 * @param __sp The path in the volume to resolve a file for, the input
+	 * path must not be absolute.
 	 * @return The resolved path to the file as it appears to the emulated
 	 * system.
 	 * @throws IOException On read errors or if the path could not be resolved.
@@ -138,7 +183,18 @@ public abstract class Emulator
 		if (__v == null || __sp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		Map<Volume, String> revmount = this._revmount;
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error AR02 Cannot resolve the given path to a
+			// volume because it is not mounted. (The path)}
+			if (revmount.get(__v) == null)
+				throw new IOException(String.format("AR02 %s", __sp));
+			
+			// Internal
+			return internalResolvePath(__v, __sp);
+		}
 	}
 	
 	/**
@@ -171,6 +227,51 @@ public abstract class Emulator
 			__args = _EMPTY_STRINGS;
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Normalizes the volume ID.
+	 *
+	 * @param __id The volume ID.
+	 * @return The normalized form of it.
+	 * @since 2016/07/30
+	 */
+	private static String __normalizeVolumeID(String __id)
+		throws NullPointerException
+	{
+		// Check
+		if (__id == null)
+			throw new NullPointerException("NARG");
+		
+		// Check all characters first
+		boolean donorm = false;
+		int n = __id.length();
+		for (int i = 0; i < n; i++)
+		{
+			// Normalize the given character?
+			char c = __id.charAt(i);
+			donorm |= (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
+				(c == '_')));
+		}
+		
+		// Is fine, keep
+		if (!donorm)
+			return __id;
+		
+		// Normalize it
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __id.charAt(i);
+			if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
+				(c == '_')))
+				sb.append('_');
+			else
+				sb.append(c);
+		}
+		
+		// Build
+		return sb.toString();
 	}
 }
 
