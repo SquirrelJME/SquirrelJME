@@ -13,17 +13,22 @@ package net.multiphasicapps.squirreljme.builder.interpreter;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.emulator.EmulatorBuilder;
+import net.multiphasicapps.squirreljme.emulator.Volume;
+import net.multiphasicapps.squirreljme.emulator.ZipFileVolume;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.exe.interpreter.
 	InterpreterExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 import net.multiphasicapps.zip.ZipCompressionType;
 
@@ -59,11 +64,69 @@ public class InterpreterTargetBuilder
 		if (__conf == null || __p == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup emulator
-		EmulatorBuilder eb = new EmulatorBuilder();
+		// The ZIP or other initialization could be bad
+		Emulator rv = null;
+		ZipFile zip = null;
+		FileChannel fc = null;
+		try
+		{
+			// Setup emulator
+			EmulatorBuilder eb = new EmulatorBuilder();
 		
-		// Build the emulator
-		return eb.build();
+			// Setup the Zip file volume
+			fc = FileChannel.open(__p, StandardOpenOption.READ);
+			zip = ZipFile.open(fc);
+			Volume zfv = new ZipFileVolume(zip);
+		
+			// Build the emulator
+			rv = eb.build();
+		
+			// Run the emulator
+			rv.startProcess(null, rv.resolvePath(zfv, "squirreljme.int"));
+		
+			// Return it
+			return rv;
+		}
+		
+		// Failed
+		catch (IOException|Error|RuntimeException e)
+		{
+			// Close the emulator
+			if (rv != null)
+				try
+				{
+					rv.close();
+				}
+				catch (IOException|Error|RuntimeException f)
+				{
+					e.addSuppressed(f);
+				}
+			
+			// Close the ZIP
+			if (zip != null)
+				try
+				{
+					zip.close();
+				}
+				catch (IOException|Error|RuntimeException f)
+				{
+					e.addSuppressed(f);
+				}
+			
+			// Close the channel
+			if (fc != null)
+				try
+				{
+					fc.close();
+				}
+				catch (IOException|Error|RuntimeException f)
+				{
+					e.addSuppressed(f);
+				}
+			
+			// Toss
+			throw e;
+		}
 	}
 	
 	/**

@@ -10,18 +10,14 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
-import java.io.Closeable;
-
 /**
- * This interface provides access to a volume which is used for accessing
- * files.
- *
- * All files in the volume are named similarly to ZIP files.
+ * This provides access to a single process within the emulator, this is so
+ * that multiple processes can exist at once since it may be useful and/or
+ * needed for testing.
  *
  * @since 2016/07/30
  */
-public interface Volume
-	extends Closeable
+public interface Process
 {
 }
 

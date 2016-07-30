@@ -255,13 +255,8 @@ public class Main
 		
 		// Emulate?
 		if (config.doEmulation())
-			try
+			try (Emulator emu = tb.emulate(config, distoutpath[0]))
 			{
-				out.println("Emulating...");
-				
-				// Setup the emulator
-				Emulator emu = tb.emulate(config, distoutpath[0]);
-				
 				// Run until termination
 				emu.run();
 			}
