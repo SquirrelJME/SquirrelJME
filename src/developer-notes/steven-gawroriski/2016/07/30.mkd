@@ -46,3 +46,9 @@ in the distributed ZIP and with custom arguments.
 Then this way, I can test arbitrary executables using the target emulation
 system without worrying about setting up another emulator interface.
 
+## 17:57
+
+Much of the emulator logic will be very much the same between all targets, so
+I should just have a generic emulation method that just creates the emulator
+and performs any needed initialization, if it has been performed.
+
