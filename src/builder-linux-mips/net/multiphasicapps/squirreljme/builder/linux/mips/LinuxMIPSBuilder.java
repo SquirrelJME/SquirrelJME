@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
-import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -43,21 +42,6 @@ public class LinuxMIPSBuilder
 				"Generic Linux MIPS (Little Endian)",
 			"mips-32+mips32,little.linux.gcwzero",
 				"GCW Zero");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/30
-	 */
-	@Override
-	public Emulator emulate(BuildConfig __conf, Path __p)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__conf == null || __p == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
 	}
 	
 	/**

@@ -18,11 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
-import net.multiphasicapps.squirreljme.emulator.Emulator;
-import net.multiphasicapps.squirreljme.emulator.interpreter.
-	InterpreterEmulator;
-import net.multiphasicapps.squirreljme.emulator.Volume;
-import net.multiphasicapps.squirreljme.emulator.ZipFileVolume;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.exe.interpreter.
 	InterpreterExecutableOutput;
@@ -51,89 +46,6 @@ public class InterpreterTargetBuilder
 		super(false,
 			"mips-32+i,big.squirreljme.interpreter",
 			"SquirrelJME Test Interpreter");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/25
-	 */
-	@Override
-	public Emulator emulate(BuildConfig __conf, Path __p)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__conf == null || __p == null)
-			throw new NullPointerException("NARG");
-		
-		// The ZIP or other initialization could be bad
-		Emulator rv = null;
-		ZipFile zip = null;
-		FileChannel fc = null;
-		try
-		{
-			// Setup emulator
-			rv = new InterpreterEmulator(null);
-		
-			// Setup the Zip file volume
-			fc = FileChannel.open(__p, StandardOpenOption.READ);
-			zip = ZipFile.open(fc);
-			Volume zfv = new ZipFileVolume(zip);
-			rv.mountVolume(Volume.CONTRIB_BINARIES, zfv);
-			
-			// Extra arguments?
-			String[] emuargs = __conf.emulatorArguments();
-			int ne = emuargs.length;
-			String[] pass = new String[ne + 1];
-			pass[0] = rv.resolvePath(zfv, __executableName(__conf));
-			for (int i = 0; i < ne; i++)
-				pass[i + 1] = emuargs[i];
-		
-			// Run the emulator
-			rv.startProcess(null, pass);
-		
-			// Return it
-			return rv;
-		}
-		
-		// Failed
-		catch (IOException|Error|RuntimeException e)
-		{
-			// Close the emulator
-			if (rv != null)
-				try
-				{
-					rv.close();
-				}
-				catch (IOException|Error|RuntimeException f)
-				{
-					e.addSuppressed(f);
-				}
-			
-			// Close the ZIP
-			if (zip != null)
-				try
-				{
-					zip.close();
-				}
-				catch (IOException|Error|RuntimeException f)
-				{
-					e.addSuppressed(f);
-				}
-			
-			// Close the channel
-			if (fc != null)
-				try
-				{
-					fc.close();
-				}
-				catch (IOException|Error|RuntimeException f)
-				{
-					e.addSuppressed(f);
-				}
-			
-			// Toss
-			throw e;
-		}
 	}
 	
 	/**

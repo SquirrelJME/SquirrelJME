@@ -268,18 +268,12 @@ public class Main
 		
 		// Emulate?
 		if (config.doEmulation())
-			try (Emulator emu = tb.emulate(config, distoutpath[0]))
-			{
-				// Run until termination
-				emu.run();
-			}
+		{
+			// Get the target emulator
+			TargetEmulator te = tb.emulate(config);
 			
-			// {@squirreljme.error DW0t Read/write error setting up the
-			// emulator or running it.}
-			catch (IOException e)
-			{
-				throw new RuntimeException("DW0t", e);
-			}
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

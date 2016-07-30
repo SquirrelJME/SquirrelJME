@@ -23,7 +23,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ServiceLoader;
-import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -80,19 +79,6 @@ public abstract class TargetBuilder
 		else
 			this._suggestions = new TargetSuggestion[0];
 	}
-	
-	/**
-	 * Emulates the specified ZIP using the emulator for this given target.
-	 *
-	 * @param __conf The configuration to use.
-	 * @param __zip The path to the ZIP to emulate.
-	 * @return The emulator which was setup.
-	 * @throws IOException On read/write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/25
-	 */
-	public abstract Emulator emulate(BuildConfig __conf, Path __p)
-		throws IOException, NullPointerException;
 	
 	/**
 	 * Links together a binary which is capable of running on the target and
@@ -305,6 +291,31 @@ public abstract class TargetBuilder
 		return Channels.newOutputStream(FileChannel.open(
 			Paths.get("lastrun.rec"), StandardOpenOption.WRITE,
 			StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
+	}
+	
+	/**
+	 * Sets up an target emulator builder which knows how to initialize an
+	 * emulator (if one is available).
+	 *
+	 * The default implementation throws an exception if emulation is not
+	 * supported.
+	 *
+	 * @param __conf The configuration to use.
+	 * @return The emulator which was setup.
+	 * @throws IllegalArgumentException If emulation is not supported.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/25
+	 */
+	public TargetEmulator emulate(BuildConfig __conf)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error DW0v Emulation is not supported for this
+		// target.}
+		throw new IllegalArgumentException("DW0v");
 	}
 	
 	/**
