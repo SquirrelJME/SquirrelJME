@@ -29,9 +29,10 @@ public interface DisplayOutput
 	 * @throws IndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws IOException On null arguments.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/30
 	 */
 	public abstract void stdOut(byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, IOException;
+		throws IndexOutOfBoundsException, IOException, NullPointerException;
 }
 

@@ -25,6 +25,9 @@ public final class EmulatorBuilder
 	final Object _lock =
 		new Object();
 	
+	/** The current display output. */
+	volatile DisplayOutput _displayout;
+	
 	/**
 	 * Builds the emulator instance for later emulation.
 	 *
@@ -39,6 +42,27 @@ public final class EmulatorBuilder
 		synchronized (this._lock)
 		{
 			return new Emulator(this);
+		}
+	}
+	
+	/**
+	 * Sets the display output to use.
+	 *
+	 * @param __do The output to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	public final void setDisplayOutput(DisplayOutput __do)
+		throws NullPointerException
+	{
+		// Check
+		if (__do == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this._lock)
+		{
+			this._displayout = __do;
 		}
 	}
 }

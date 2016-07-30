@@ -18,6 +18,9 @@ package net.multiphasicapps.squirreljme.emulator;
 public final class Emulator
 	implements Runnable
 {
+	/** The display output to use when. */
+	final DisplayOutput _displayout;
+	
 	/**
 	 * Initializes an emulator using the given builder.
 	 *
@@ -31,6 +34,12 @@ public final class Emulator
 		// Check
 		if (__eb == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup display output where console text goes
+		DisplayOutput displayout = __eb._displayout;
+		if (displayout == null)
+			displayout = new DefaultDisplayOutput();
+		this._displayout = displayout;
 		
 		throw new Error("TODO");
 	}

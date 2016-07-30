@@ -62,9 +62,6 @@ public class InterpreterTargetBuilder
 		// Setup emulator
 		EmulatorBuilder eb = new EmulatorBuilder();
 		
-		if (true)
-			throw new Error("TODO");
-		
 		// Build the emulator
 		return eb.build();
 	}
