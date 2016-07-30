@@ -52,3 +52,8 @@ Much of the emulator logic will be very much the same between all targets, so
 I should just have a generic emulation method that just creates the emulator
 and performs any needed initialization, if it has been performed.
 
+## 17:59
+
+However, the `TargetBuilder` is slightly ugly when it comes to the emulator, so
+I should make an entirely new class which can set it up and such.
+
