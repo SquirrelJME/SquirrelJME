@@ -263,7 +263,8 @@ public class Main
 		
 		// Get output ZIP file used
 		else
-			distoutpath[0] = Paths.get(outzipname);
+			distoutpath[0] = Paths.get((outzipname != null ? outzipname :
+				"squirreljme.zip"));
 		
 		// Emulate?
 		if (config.doEmulation())

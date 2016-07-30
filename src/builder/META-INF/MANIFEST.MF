@@ -4,7 +4,8 @@ X-SquirrelJME-UUID: 69441fea-3864-4fd2-8716-0b0e355a4ced
 X-SquirrelJME-Depends: cldc-full, zip-reader-block, jit,
  package-manager, util-unmodifiable, emulator, jvm,
  basic-assets, zip-writer-stream, test-all, exe
-X-SquirrelJME-Optional: builder-interpreter
+X-SquirrelJME-Optional: builder-interpreter,
+ builder-linux-mips
 X-SquirrelJME-Error: DW
 Main-Class: net.multiphasicapps.squirreljme.builder.Main
 LIBlet-Title: SquirrelJME Builder
