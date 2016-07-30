@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: paths
+X-SquirrelJME-UUID: f52927d4-294a-4753-a0ea-c2ce2d4e0b82
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: BL
+LIBlet-Title: Native Path Manager
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains the base interfaces which 
+ are used to manage file system paths for native systems. 
+ This project is used both by the native operating system 
+ support code and the emulator.
+

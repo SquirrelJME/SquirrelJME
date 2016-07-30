@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: paths-posix
+X-SquirrelJME-UUID: 6218877d-cdac-4fce-9189-0d1fc30eaf5f
+X-SquirrelJME-Depends: paths
+X-SquirrelJME-Error: BN
+LIBlet-Title: Native Path Manager (POSIX)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains the native path manager 
+ for POSIX based systems.
+
