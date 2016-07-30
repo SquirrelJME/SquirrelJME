@@ -112,6 +112,9 @@ final class __Contents__
 		/** The end position. */
 		final int _endpos;
 		
+		/** The size. */
+		final int _size;
+		
 		/**
 		 * Initializes the entry information.
 		 *
@@ -132,6 +135,7 @@ final class __Contents__
 			this._name = __n;
 			this._startpos = __s;
 			this._endpos = __e;
+			this._size = __e - __s;
 		}
 		
 		/**

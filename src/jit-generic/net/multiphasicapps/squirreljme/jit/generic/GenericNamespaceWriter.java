@@ -248,8 +248,9 @@ public final class GenericNamespaceWriter
 					contents.sortEntries();
 					
 					// Add strings for all entry names
+					int[] contstrid = new int[numcontents];
 					for (int i = 0; i < numcontents; i++)
-						__addString(contents.get(i)._name);
+						contstrid[i] = __addString(contents.get(i)._name);
 					
 					// Write the string table
 					int numstrings = strings.size();
@@ -266,8 +267,16 @@ public final class GenericNamespaceWriter
 						throw new JITException("BA0r");
 					
 					// Write the contents table
-					if (true)
-						throw new Error("TODO");
+					for (int i = 0; i < numcontents; i++)
+					{
+						__Contents__.__Entry__ e = contents.get(i);
+						
+						// Write
+						output.writeShort(e._type.ordinal());
+						output.writeShort(contstrid[i]);
+						output.writeInt(e._startpos);
+						output.writeInt(e._size);
+					}
 					
 					// Align to 4
 					while ((output.size() & 3) != 0)
