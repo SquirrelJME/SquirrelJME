@@ -304,7 +304,7 @@ public abstract class TargetBuilder
 	 * @return The emulator which was setup.
 	 * @throws IllegalArgumentException If emulation is not supported.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/25
+	 * @since 2016/07/30
 	 */
 	public TargetEmulator emulate(TargetEmulatorArguments __args)
 		throws IllegalArgumentException, NullPointerException

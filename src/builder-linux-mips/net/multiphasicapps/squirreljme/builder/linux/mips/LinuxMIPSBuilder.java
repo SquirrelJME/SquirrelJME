@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
+import net.multiphasicapps.squirreljme.builder.TargetEmulator;
+import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -42,6 +44,17 @@ public class LinuxMIPSBuilder
 				"Generic Linux MIPS (Little Endian)",
 			"mips-32+mips32,little.linux.gcwzero",
 				"GCW Zero");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/30
+	 */
+	@Override
+	public TargetEmulator emulate(TargetEmulatorArguments __args)
+		throws IllegalArgumentException, NullPointerException
+	{
+		return new LinuxMIPSEmulator(__args);
 	}
 	
 	/**
