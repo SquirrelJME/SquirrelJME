@@ -193,8 +193,9 @@ public class Main
 				}
 			}
 		
-			// {@squirreljme.error DW0j Read/write error.}
-			catch (IOException e)
+			// {@squirreljme.error DW0j There was an error building the
+			// output distribution ZIP file.}
+			catch (IOException|RuntimeException|Error e)
 			{
 				// Delete the failed output
 				if (distoutpath[0] != null)
