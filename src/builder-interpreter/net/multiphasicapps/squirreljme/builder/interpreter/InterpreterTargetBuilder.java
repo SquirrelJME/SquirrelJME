@@ -79,10 +79,17 @@ public class InterpreterTargetBuilder
 			zip = ZipFile.open(fc);
 			Volume zfv = new ZipFileVolume(zip);
 			rv.mountVolume(Volume.CONTRIB_BINARIES, zfv);
+			
+			// Extra arguments?
+			String[] emuargs = __conf.emulatorArguments();
+			int ne = emuargs.length;
+			String[] pass = new String[ne + 1];
+			pass[0] = rv.resolvePath(zfv, __executableName(__conf));
+			for (int i = 0; i < ne; i++)
+				pass[i + 1] = emuargs[i];
 		
 			// Run the emulator
-			rv.startProcess(null, rv.resolvePath(zfv,
-				__executableName(__conf)));
+			rv.startProcess(null, pass);
 		
 			// Return it
 			return rv;

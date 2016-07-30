@@ -91,6 +91,17 @@ public final class BuildConfig
 	}
 	
 	/**
+	 * Returns the arguments to the emulator.
+	 *
+	 * @return The emulator arguments.
+	 * @since 2016/07/30
+	 */
+	public final String[] emulatorArguments()
+	{
+		return this._emulatorargs.clone();
+	}
+	
+	/**
 	 * Include tests in the output?
 	 *
 	 * @return {@code true} if tests should be included.

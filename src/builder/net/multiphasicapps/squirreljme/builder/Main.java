@@ -133,12 +133,12 @@ public class Main
 				target = a.trim();
 				
 				// Get the output ZIP name.
-				if (args.size() == 1)
+				if (args.size() >= 1)
 					outzipname = args.removeFirst();
 				
-				// {@squirreljme.error DW03 Extra arguments specified.}
-				else if (!args.isEmpty())
-					throw new IllegalArgumentException("DW03");
+				// Add emulator arguments
+				while (!args.isEmpty())
+					emuargs.add(args.removeFirst());
 				
 				// Stop
 				break;
@@ -350,9 +350,11 @@ public class Main
 		
 		// Print header
 		__ps.println("Usage: [-e] [-n] [-s] [-t] [-x name]" +
-			"(target) [squirreljme.zip]");
+			"(target) [squirreljme.zip] [emulator arguments...]");
 		__ps.println();
-		__ps.println("\tThe output ZIP is optionally specified.");
+		__ps.println("\tThe output ZIP is optionally specified, however");
+		__ps.println("\tif emulator arguments are specified the ZIP must");
+		__ps.println("\talso be specified.");
 		__ps.println();
 		__ps.println("\t-e\tAfter building, emulate the target binary,");
 		__ps.println("\t\timplies -t.");
