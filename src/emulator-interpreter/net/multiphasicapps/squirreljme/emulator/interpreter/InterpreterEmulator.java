@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.emulator.interpreter;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.emulator.DisplayOutput;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
+import net.multiphasicapps.squirreljme.emulator.Process;
 import net.multiphasicapps.squirreljme.emulator.Volume;
 
 /**
@@ -64,6 +65,22 @@ public class InterpreterEmulator
 		
 		// Just a simple appending
 		return "@" + getVolumeName(__v) + "/" + __sp;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/07/30
+	 */
+	@Override
+	protected Process internalStartProcess(String[] __env,
+		String[] __args)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__env == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

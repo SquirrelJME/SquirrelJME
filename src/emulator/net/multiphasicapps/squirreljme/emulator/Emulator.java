@@ -12,8 +12,10 @@ package net.multiphasicapps.squirreljme.emulator;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
@@ -36,6 +38,10 @@ public abstract class Emulator
 	
 	/** Where display output is to be written. */
 	protected final DisplayOutput displayout;
+	
+	/** Processes that are running in the emulator. */
+	private final List<Process> _processes =
+		new ArrayList<>();
 	
 	/** Mounted volumes. */
 	private final Map<String, Volume> _mounted =
@@ -85,6 +91,20 @@ public abstract class Emulator
 	 * @since 2016/07/30
 	 */
 	protected abstract String internalResolvePath(Volume __v, String __sp)
+		throws IOException, NullPointerException;
+	
+	/**
+	 * Internally creates a new process.
+	 *
+	 * @param __env The environment to use, this a multiple of two and are
+	 * in key/value pairs.
+	 * @param __args The arguments to the process, this is system dependent.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	protected abstract Process internalStartProcess(String[] __env,
+		String[] __args)
 		throws IOException, NullPointerException;
 	
 	/**
@@ -205,7 +225,17 @@ public abstract class Emulator
 	@Override
 	public final void run()
 	{
-		throw new Error("TODO");
+		// Infinite loop
+		List<Process> processes = this._processes;
+		for (;;)
+			synchronized (this.lock)
+			{
+				// Stop?
+				if (processes.isEmpty())
+					return;
+				
+				throw new Error("TODO");
+			}
 	}
 	
 	/**
@@ -217,9 +247,11 @@ public abstract class Emulator
 	 * @param __args The arguments to the process, the first argument is the
 	 * name of the executable to be ran (if applicable).
 	 * @return The created process.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/07/30
 	 */
 	public final Process startProcess(String[] __env, String... __args)
+		throws IOException
 	{
 		// Use empty array if these are not set
 		if (__env == null)
@@ -227,10 +259,19 @@ public abstract class Emulator
 		if (__args == null)
 			__args = _EMPTY_STRINGS;
 		
-		System.err.printf("DEBUG -- Start process: %s %s%n",
-			Arrays.<String>asList(__env), Arrays.<String>asList(__args));
-		
-		throw new Error("TODO");
+		// Lock
+		List<Process> processes = this._processes;
+		synchronized (this.lock)
+		{
+			// Create process
+			Process rv = internalStartProcess(__env, __args);
+			
+			// Add it to the process list
+			processes.add(rv);
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**

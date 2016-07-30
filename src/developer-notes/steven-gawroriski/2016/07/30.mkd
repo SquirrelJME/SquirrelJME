@@ -31,3 +31,8 @@ Emulators can have groups of processes so to speak and possibly switch between
 them manually or automatically. So what I need is essentially an interface
 that is used as a display output so to speak.
 
+## 15:49
+
+I need a reverse resolution where I can open files and access them as blocks
+of data of sorts without having lookup each time.
+
