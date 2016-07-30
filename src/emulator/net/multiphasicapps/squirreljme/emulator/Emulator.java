@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.emulator;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -225,6 +226,9 @@ public abstract class Emulator
 			__env = _EMPTY_STRINGS;
 		if (__args == null)
 			__args = _EMPTY_STRINGS;
+		
+		System.err.printf("DEBUG -- Start process: %s %s%n",
+			Arrays.<String>asList(__env), Arrays.<String>asList(__args));
 		
 		throw new Error("TODO");
 	}
