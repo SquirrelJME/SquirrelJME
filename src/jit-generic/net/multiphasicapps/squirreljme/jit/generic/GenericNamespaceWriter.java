@@ -23,6 +23,7 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
+import net.multiphasicapps.squirreljme.os.generic.GenericStringType;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
@@ -250,6 +251,10 @@ public final class GenericNamespaceWriter
 					for (int i = 0; i < numcontents; i++)
 						__addString(contents.get(i)._name);
 					
+					// Write the string table
+					int numstrings = strings.size();
+					int stpos = __writeStringTable(output, strings);
+					
 					throw new Error("TODO");
 				}
 		
@@ -355,6 +360,97 @@ public final class GenericNamespaceWriter
 	final ExtendedDataOutputStream __output()
 	{
 		return this.output;
+	}
+	
+	/**
+	 * Writes the string table to the output namespace binary.
+	 *
+	 * @param __edos The output stream.
+	 * @param __strs The strings to write.
+	 * @return The string table position.
+	 * @throws IOException On null arguments.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	private int __writeStringTable(ExtendedDataOutputStream __edos,
+		Map<String, Integer> __strs)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__edos == null || __strs == null)
+			throw new NullPointerException("NARG");
+		
+		// Align to 4
+		while ((__edos.size() & 3) != 0)
+			__edos.writeByte(0);
+		
+		// Write all strings
+		int numstrings = __strs.size(), q = 0;
+		int[] stp = new int[numstrings];
+		for (String s : __strs.keySet())
+		{
+			// {@squirreljme.error BA0n String exceeds 65KiB. (The string
+			// length)}
+			int n = s.length();
+			if (n > 65535)
+				throw new JITException(String.format("BA0n %d", n));
+			
+			// Determine if the write is narrow or wide
+			boolean wide = false;
+			for (int i = 0; i < n; i++)
+				if (s.charAt(i) >= 0x100)
+				{
+					wide = true;
+					break;
+				}
+			
+			// Align to 4
+			long cp = 0;
+			while (((cp = __edos.size()) & 3) != 0)
+				__edos.writeByte(0);
+			
+			// {@squirreljme.error BA0o String starts at address which is
+			// outside the range of 2GiB.}
+			if (cp > Integer.MAX_VALUE || cp < 0)
+				throw new JITException("BA0o");
+			stp[q++] = (int)cp;
+			
+			// Write length
+			__edos.writeShort(n);
+			
+			// Narrow write?
+			if (!wide)
+			{
+				__edos.writeByte(GenericStringType.BYTE.ordinal());
+				for (int i = 0; i < n; i++)
+					__edos.writeByte(s.charAt(i));
+			}
+			
+			// Wide write
+			else
+			{
+				__edos.writeByte(GenericStringType.CHAR.ordinal());
+				for (int i = 0; i < n; i++)
+					__edos.writeChar(s.charAt(i));
+			}
+		}
+		
+		// Align to 4
+		long tpos = 0;
+		while (((tpos = __edos.size()) & 3) != 0)
+			__edos.writeByte(0);
+		
+		// {@squirreljme.error BA0p String pointer table at address which is
+		// outside the range of 2GiB.}
+		if (tpos > Integer.MAX_VALUE || tpos < 0)
+			throw new JITException("BA0p");
+		
+		// Write the string pointer data
+		for (int i = 0; i < numstrings; i++)
+			__edos.writeInt(stp[i]);
+		
+		// Return the table position
+		return (int)tpos;
 	}
 }
 

@@ -1,0 +1,6 @@
+# 2016/07/30
+
+## 00:42
+
+There should probably be a limit of 65,536 strings in a single namespace.
+

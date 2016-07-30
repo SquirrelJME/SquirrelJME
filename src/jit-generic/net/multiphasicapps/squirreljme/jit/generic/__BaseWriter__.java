@@ -77,7 +77,7 @@ abstract class __BaseWriter__
 			ExtendedDataOutputStream edos = __nsw.__output();
 			OutputStream rawoutput = new __RawOutput__(edos);
 			this.rawoutput = rawoutput;
-	
+			
 			// Set start position
 			this._startpos = edos.size();
 		}
