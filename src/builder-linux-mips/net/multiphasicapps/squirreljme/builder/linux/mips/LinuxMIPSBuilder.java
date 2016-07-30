@@ -54,7 +54,7 @@ public class LinuxMIPSBuilder
 	public TargetEmulator emulate(TargetEmulatorArguments __args)
 		throws IllegalArgumentException, NullPointerException
 	{
-		return new LinuxMIPSEmulator(__args);
+		return new LinuxMIPSTargetEmulator(__args);
 	}
 	
 	/**

@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.emulator.Emulator;
  *
  * @since 2016/07/30
  */
-public class LinuxMIPSEmulator
+public class LinuxMIPSTargetEmulator
 	extends TargetEmulator
 {
 	/**
@@ -29,7 +29,7 @@ public class LinuxMIPSEmulator
 	 * @param __args The arguments to the emulator.
 	 * @since 2016/07/30
 	 */
-	public LinuxMIPSEmulator(TargetEmulatorArguments __args)
+	public LinuxMIPSTargetEmulator(TargetEmulatorArguments __args)
 	{
 		super(__args);
 	}
@@ -42,6 +42,8 @@ public class LinuxMIPSEmulator
 	public Emulator emulator()
 		throws IOException
 	{
+		// Create the emulator
+		
 		throw new Error("TODO");
 	}
 }

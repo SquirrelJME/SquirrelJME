@@ -67,3 +67,9 @@ auto-closed so that the ZIP can be opened also without much worry.
 
 This means `BuildConfig` can lose some things.
 
+## 19:10
+
+I believe for all targets that I make, I will always go with static and just
+directly system call the kernel. Static executables are easier to make and
+everything is standalone, there should never be a library issue at all.
+
