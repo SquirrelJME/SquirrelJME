@@ -17,7 +17,9 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
@@ -193,12 +195,24 @@ public abstract class Emulator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/30
 	 */
-	public final OpenFile openFile(String __p, FileAccessMode __m)
+	public final OpenFile openFile(String __p, FileAccessMode... __m)
 		throws EmulatorIOException, IOException, NullPointerException
 	{
 		// Check
 		if (__p == null || __m == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup up bit flags
+		int bits = 0;
+		for (FileAccessMode fam : __m)
+			bits |= fam.mask();
+		
+		// {@squirreljme.error AR03 Append and/or truncate can only be
+		// specified when write is enabled.}
+		if (FileAccessMode.APPEND.isSet(bits) ||
+			FileAccessMode.TRUNCATE.isSet(bits))
+			if (!FileAccessMode.WRITE.isSet(bits))
+				throw new EmulatorIOException("AR03");
 		
 		// Lock
 		synchronized (this.lock)

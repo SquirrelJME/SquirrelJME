@@ -20,10 +20,38 @@ public enum FileAccessMode
 	/** Reading. */
 	READ,
 	
-	/** Reading/writing. */
-	READ_WRITE,
+	/** Writing. */
+	WRITE,
+	
+	/** Appending. */
+	APPEND,
+	
+	/** Truncating. */
+	TRUNCATE,
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns {@code true} if the flag is set in the given bit field.
+	 *
+	 * @return {@code true} if the flag is set in the bit field.
+	 * @since 2016/07/30
+	 */
+	public final boolean isSet(int __f)
+	{
+		return ((__f & mask()) != 0);
+	}
+	
+	/**
+	 * Returns the mask of the flag.
+	 *
+	 * @return The mask.
+	 * @since 2016/07/30
+	 */
+	public final int mask()
+	{
+		return 1 << ordinal();
+	}
 }
 

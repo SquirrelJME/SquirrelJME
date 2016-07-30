@@ -20,8 +20,9 @@ import java.io.IOException;
  * This interface does not know about file positioning, that is up to the
  * emulation implementation to handle.
  *
- * It is recommended that open files be shared in a volume and that closing
- * keeps a reference count.
+ * All instances of this class must be reference counted for opening and
+ * closing. On initial construction of this interface, the reference count
+ * is to be {@code 1}.
  *
  * @since 2016/07/30
  */
