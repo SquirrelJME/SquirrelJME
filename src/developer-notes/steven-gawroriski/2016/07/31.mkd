@@ -4,3 +4,9 @@
 
 Must refactor `DynamicByteBuffer` now.
 
+## 08:23
+
+I should also refactor and redo the `ZipFile` code also, drop plans for 64-bit
+ZIP files and remove the very slow structured reading code. Basically simplify
+everything so that it is much nicer.
+
