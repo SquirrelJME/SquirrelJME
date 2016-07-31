@@ -116,6 +116,9 @@ public class SlidingByteWindow
 			// Write byte and increase size
 			back.set(tail, __b);
 			this._total = Math.min(windowsize, total + 1);
+			
+			// Set next tail position
+			this._tail = nexttail;
 		}
 	}
 	
@@ -230,26 +233,26 @@ public class SlidingByteWindow
 			// Get backing buffer
 			DynamicByteBuffer back = this.backingbuffer;
 			
-			// Virtual tail end position
-			int vend = tail - __ago;
-			while (vend < 0)
-				vend += windowsize;
+			// Virtual head position
+			int vhead = (tail - __ago);
+			vhead %= windowsize;
+			if (vhead < 0)
+				vhead += windowsize;
 			
-			// Read would overflow off the far side of the buffer
-			if (vend > tail)
+			// Read from the head would fall off the right side
+			if (vhead > tail)
 			{
-				// The difference at the end of the buffer
-				int diff = tail - __l;
+				// Read the right side
+				int rlen;
+				back.get(vhead, __b, __o, (rlen = (windowsize - vhead)));
 				
-				// Read the tail to window start and place it at the end
-				back.get();
-				
-				throw new Error("TODO");
+				// Then the left side
+				back.get(0, __b, __o + rlen, __l - rlen);
 			}
 			
-			// Can read a direct linear sequence
+			// Can read in the middle
 			else
-				throw new Error("TODO");
+				back.get(vhead, __b, __o, __l);
 		}
 	}
 	
