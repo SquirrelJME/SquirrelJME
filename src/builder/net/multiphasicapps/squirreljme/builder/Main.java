@@ -278,10 +278,15 @@ public class Main
 					emuargs.<String>toArray(new String[emuargs.size()])));
 				
 				// Get an emulator
+				out.println("Setting up emulator...");
 				Emulator emu = te.emulator();
 				
 				// Run it
+				out.println("Entering emulation loop...");
 				emu.run();
+				
+				// Message
+				out.println("Emulation terminated!");
 			}
 			
 			// {@squirreljme.error DW0t I/O error while emulating.}

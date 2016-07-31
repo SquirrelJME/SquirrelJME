@@ -493,6 +493,18 @@ public class Zip32File
 				throw new ZipFormatException(String.format("AM0b %s %d", n,
 					method));
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/07/30
+		 */
+		@Override
+		public long size()
+			throws IOException
+		{
+			return readStruct(centraldirpos,
+				ZIP32CentralDirectory.UNCOMPRESSED_SIZE);
+		}
 	}
 }
 

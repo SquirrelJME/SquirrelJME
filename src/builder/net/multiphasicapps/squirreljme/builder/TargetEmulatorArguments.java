@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.builder;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
@@ -146,7 +147,40 @@ public final class TargetEmulatorArguments
 		if (__def == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Find the entry
+		String want;
+		ZipEntry e = this.zip.get((want = executableName(__def)));
+		
+		// {@squirreljme.error DW0w The executed to be read into a byte array
+		// does not exist. (The wanted executable)}
+		if (e == null)
+			throw new IOException(String.format("DW0w %s", want));
+		
+		// {@squirreljme.error DW0x The executable exceeds 2GiB in length or
+		// has a negative length. (The executable size)}
+		long lsize = e.size();
+		if (lsize < 0 || lsize > Integer.MAX_VALUE)
+			throw new IOException(String.format("DW0x %d", lsize));
+		int size = (int)lsize;
+		
+		// Setup target
+		byte[] rv = new byte[size];
+		
+		// Copy data
+		int copysize = 512;
+		try (InputStream is = e.open())
+		{
+			System.err.printf("DEBUG -- Bin Before %d%n", size);
+			for (int i = 0; i < size; i+= copysize)
+			{
+			System.err.printf("DEBUG -- During %d %d%n", i, size);
+				is.read(rv, i, copysize);
+			}
+			is.read(rv);System.err.println("DEBUG -- Bin After");
+		}
+		
+		// Return
+		return rv;
 	}
 	
 	/**

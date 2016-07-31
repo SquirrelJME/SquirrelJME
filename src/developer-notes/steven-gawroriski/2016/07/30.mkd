@@ -131,3 +131,13 @@ memory and then set the associated CPU state for execution.
 
 This code seems much cleaner so far and also far simpler to setup.
 
+## 22:02
+
+The ZIP block code never had a `size` method. Also reading a 1MiB entry from
+the ZIP all at once appears to be taking quite some time.
+
+## 22:05
+
+After about 32KiB it just starts to get seemingly exponentially slower. So it
+is likely the inflate algorithm that is extremely slow after awhile.
+

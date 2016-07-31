@@ -60,6 +60,16 @@ public abstract class ZipEntry
 		throws IOException;
 	
 	/**
+	 * Returns the size of the entry.
+	 *
+	 * @return The entry size.
+	 * @throws IOException On read errors.
+	 * @since 2016/07/30
+	 */
+	public abstract long size()
+		throws IOException;
+	
+	/**
 	 * Returns {@code true} if this is a directory.
 	 *
 	 * Unless overridden, an entry is considered a directory if it ends in
