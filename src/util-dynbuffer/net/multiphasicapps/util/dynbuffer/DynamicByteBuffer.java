@@ -205,7 +205,7 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			this._chunks.clear();
 		}
 	}
 	
