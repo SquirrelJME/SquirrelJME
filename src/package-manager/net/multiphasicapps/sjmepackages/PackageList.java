@@ -39,13 +39,13 @@ public class PackageList
 	 *
 	 * @param __j The directory containing pre-built JAR files, if {@code null}
 	 * then binary packages are not available.
-	 * @param __s The directory containing source packages, if {@code null}
+	 * @param __s The directories containing source packages, if {@code null}
 	 * then source packages are not available.
 	 * @throws IOException If there is an error reading the package list.
 	 * @throws NullPointerException If both arguments are null
 	 * @since 2016/06/15
 	 */
-	public PackageList(Path __j, Path __s)
+	public PackageList(Path __j, Path... __s)
 		throws IOException, NullPointerException
 	{
 		// Check
