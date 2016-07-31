@@ -213,22 +213,43 @@ public class SlidingByteWindow
 		// Lock
 		synchronized (lock)
 		{
-			// Total buffer size
-			int max = _total;
+			// Get variables
+			int windowsize = this.windowsize;
+			int total = this._total;
+			int head = this._head;
+			int tail = this._tail;
 			
 			// {@squirreljme.error AI03 Bulk read of window bytes would exceed
 			// the bounds of the window. (The bytes in the past to start the
 			// copy from; The number of bytes to read; The total number of
 			// bytes in the window)}
-			if (__ago <= 0 || (__ago - __l) > max)
+			if (__ago <= 0 || (__ago - __l) > total)
 				throw new IndexOutOfBoundsException(String.format(
-					"AI03 %d %d %d", __ago, __l, max));
+					"AI03 %d %d %d", __ago, __l, total));
 			
 			// Get backing buffer
 			DynamicByteBuffer back = this.backingbuffer;
 			
-			// Read from the buffer at a given position
-			throw new Error("TODO");
+			// Virtual tail end position
+			int vend = tail - __ago;
+			while (vend < 0)
+				vend += windowsize;
+			
+			// Read would overflow off the far side of the buffer
+			if (vend > tail)
+			{
+				// The difference at the end of the buffer
+				int diff = tail - __l;
+				
+				// Read the tail to window start and place it at the end
+				back.get();
+				
+				throw new Error("TODO");
+			}
+			
+			// Can read a direct linear sequence
+			else
+				throw new Error("TODO");
 		}
 	}
 	
