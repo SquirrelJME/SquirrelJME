@@ -95,3 +95,10 @@ sizes such as 32 (the current default) may be a bit inefficient.
 Any refactored ZIP file code should not rely on the full NIO classes so it can
 be used by lighter JVMs.
 
+## 17:22
+
+Something that could work is a contributory setup in a way. That is, similar to
+`src` I also have `contrib` where packages can be placed. This way extra
+packages which are not part of the _SquirrelJME_ source tree can be compiled as
+if they were part of it. This could be used for ports.
+
