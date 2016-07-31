@@ -46,26 +46,11 @@ public class DynamicHistoryInputStream
 	 * input stream.
 	 *
 	 * @param __is The stream to read data from.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/19
-	 */
-	public DynamicHistoryInputStream(InputStream __is)
-		throws NullPointerException
-	{
-		this(__is, DynamicByteBuffer.DEFAULT_CHUNK_SIZE);
-	}
-	
-	/**
-	 * Initializes a dynamic history stream which sources data from the given
-	 * input stream. An alternative chunk size for the backing
-	 * {@link DynamicByteBuffer} may also be specified.
-	 *
-	 * @param __is The stream to read data from.
 	 * @param __cs The chunk size to be used in the {@link DynamicByteBuffer}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
-	public DynamicHistoryInputStream(InputStream __is, int __cs)
+	public DynamicHistoryInputStream(InputStream __is)
 		throws NullPointerException
 	{
 		// Check
@@ -74,7 +59,7 @@ public class DynamicHistoryInputStream
 		
 		// Set
 		this.input = __is;
-		this.buffer = new DynamicByteBuffer(__cs);
+		this.buffer = new DynamicByteBuffer();
 	}
 	
 	/**

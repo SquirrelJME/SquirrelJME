@@ -81,8 +81,7 @@ public class SlidingByteWindow
 		windowsize = __wsz;
 		
 		// Setup backing store
-		backingbuffer = new DynamicByteBuffer(Math.max(1, Math.min(
-			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE)));
+		backingbuffer = new DynamicByteBuffer();
 	}
 	
 	/**

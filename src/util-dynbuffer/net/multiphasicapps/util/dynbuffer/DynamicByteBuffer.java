@@ -16,57 +16,25 @@ package net.multiphasicapps.util.dynbuffer;
  *
  * This class must be thread safe.
  *
- * {@squirreljme.error AD04 The input chunk size is negative. (The negative
- * chunk size)}
- *
  * @since 2016/03/22
  */
 public class DynamicByteBuffer
 {
-	/** The default individual chunk size. */
-	public static final int DEFAULT_CHUNK_SIZE =
-		32;
-	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
 	
-	/** The default chunk size to use. */
-	protected final int chunksize;
-	
 	/**
-	 * Initializes the code chunks using the default chunk size.
+	 * Initializes the byte buffers which does not copy from another buffer.
 	 *
 	 * @since 2016/03/22
 	 */
 	public DynamicByteBuffer()
 	{
-		this(DEFAULT_CHUNK_SIZE);
 	}
 	
 	/**
-	 * Initializes the code chunks with the given chunk size.
-	 *
-	 * @param __cs The chunk size to use for chunks.
-	 * @throws IllegalArgumentException If the chunk size is zero or negative.
-	 * @since 2016/03/22
-	 */
-	public DynamicByteBuffer(int __cs)
-		throws IllegalArgumentException
-	{
-		// Check
-		if (__cs <= 0)
-			throw new IllegalArgumentException(String.format("AD04 %d", __cs));
-		
-		// Set
-		chunksize = __cs;
-		
-		// Setup initial chunk
-		clear();
-	}
-	
-	/**
-	 * Initializes a new code chunk buffer from the given buffer.
+	 * Initializes a new buffer buffer from the given buffer.
 	 *
 	 * @param __from The data to copy data from.
 	 * @throws NullPointerException On null arguments.
@@ -75,32 +43,9 @@ public class DynamicByteBuffer
 	public DynamicByteBuffer(DynamicByteBuffer __from)
 		throws NullPointerException
 	{
-		this(DEFAULT_CHUNK_SIZE, __from);
-	}
-	
-	/**
-	 * Initializes a new code chunk buffer from the given buffer.
-	 *
-	 * @param __cs The chunk size to use for chunks.
-	 * @param __from The data to copy data from.
-	 * @throws IllegalArgumentException If the chunk size is zero or negative.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/22
-	 */
-	public DynamicByteBuffer(int __cs, DynamicByteBuffer __from)
-		throws IllegalArgumentException, NullPointerException
-	{
 		// Check
 		if (__from == null)
 			throw new NullPointerException("NARG");
-		if (__cs <= 0)
-			throw new IllegalArgumentException(String.format("AD04 %d", __cs));
-		
-		// Set
-		chunksize = __cs;
-		
-		// Setup initial chunk
-		clear();
 		
 		// Lock the other and copy the data
 		synchronized (__from.lock)
@@ -113,9 +58,22 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * Returns the actual code chunk size.
+	 * Initializes a new dynamic byte buffer using data from the given array.
 	 *
-	 * @return The actual bytes used to hold the code chunk data.
+	 * @param __from The array to copy data from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/31
+	 */
+	public DynamicByteBuffer(byte... __from)
+		throws NullPointerException
+	{
+		add(0, __from);
+	}
+	
+	/**
+	 * Returns the actual byte buffer size.
+	 *
+	 * @return The actual bytes used to hold the byte buffer data.
 	 * @since 2016/03/22
 	 */
 	public int actualSize()
@@ -128,7 +86,7 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * Adds a byte to the end of the chunk.
+	 * Adds a byte to the end of the buffer.
 	 *
 	 * @param __v The value to add.
 	 * @since 2016/03/22
@@ -143,7 +101,20 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * Bulk appending of bytes to the end of the chunk.
+	 * Bulk adding of bytes to the end of the buffer.
+	 *
+	 * @param __src The bytes to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/31
+	 */
+	public void add(byte[] __src)
+		throws NullPointerException
+	{
+		this.add(__src, 0, __src.length);
+	}
+	
+	/**
+	 * Bulk appending of bytes to the end of the buffer.
 	 *
 	 * @param __src The source byte array.
 	 * @param __o The base offset in the source array.
@@ -170,7 +141,7 @@ public class DynamicByteBuffer
 	 * @param __i The index to read the byte for.
 	 * @param __v The value to add.
 	 * @throws IndexOutOfBoundsException If the address is not within the
-	 * chunk bounds.
+	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
 	public void add(int __i, byte __v)
@@ -181,6 +152,14 @@ public class DynamicByteBuffer
 		{
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void add(int __base, byte[] __src)
+	{
+		this.add(__base, __src, 0, __src.length);
 	}
 	
 	/**
@@ -213,7 +192,7 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * Clears the code chunk and removes all bytes from it and sets the size
+	 * Clears the byte buffer and removes all bytes from it and sets the size
 	 * to zero.
 	 *
 	 * @since 2016/03/22
@@ -233,7 +212,7 @@ public class DynamicByteBuffer
 	 * @param __i The index to read the byte for.
 	 * @return The value of the byte at the given position.
 	 * @throws IndexOutOfBoundsException If the address is not within the
-	 * chunk bounds.
+	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
 	public byte get(int __i)
@@ -247,7 +226,7 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * Obtains multiple bytes from this chunked byte buffer and places them
+	 * Obtains multiple bytes from this buffered byte buffer and places them
 	 * into the given destination byte array.
 	 *
 	 * @param __base The base index to read from.
@@ -264,7 +243,7 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * Obtains multiple bytes from this chunked byte buffer and places them
+	 * Obtains multiple bytes from this buffered byte buffer and places them
 	 * into the given destination byte array.
 	 *
 	 * @param __base The base index to start a read from.
@@ -300,7 +279,7 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * Performs a quick compaction of all chunks to potentially reduce wasted
+	 * Performs a quick compaction of all buffers to potentially reduce wasted
 	 * allocation space.
 	 *
 	 * @return {@code this}.
@@ -321,7 +300,7 @@ public class DynamicByteBuffer
 	 * @param __i The index which contains the byte to remove.
 	 * @return The value which was at this position.
 	 * @throws IndexOutOfBoundsException If the address is not within the
-	 * chunk bounds.
+	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
 	public byte remove(int __i)
@@ -388,7 +367,7 @@ public class DynamicByteBuffer
 	 * @param __v The byte to write.
 	 * @return The old value.
 	 * @throws IndexOutOfBoundsException If the address is not within the
-	 * chunk bounds.
+	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
 	public byte set(int __i, byte __v)
@@ -402,7 +381,7 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * Returns the size of all the bytes in the chunk.
+	 * Returns the size of all the bytes in the buffer.
 	 *
 	 * @return The total byte count.
 	 * @since 2016/03/22

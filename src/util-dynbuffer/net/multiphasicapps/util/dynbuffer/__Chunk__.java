@@ -17,5 +17,14 @@ package net.multiphasicapps.util.dynbuffer;
  */
 final class __Chunk__
 {
+	/**
+	 * {@squirreljme.property
+	 * net.multiphasicapps.util.dynbuffer.chunksize=(size) This is used to
+	 * specify an alternative size ot be used for the default size of a chunk
+	 * within a dynamic buffer.}
+	 */
+	private static final int _DEFAULT_SIZE =
+		Math.max(Integer.getInteger(
+			"net.multiphasicapps.util.dynbuffer.chunksize", 128), 1);
 }
 
