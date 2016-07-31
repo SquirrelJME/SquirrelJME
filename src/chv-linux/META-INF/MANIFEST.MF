@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: chv-linux
+X-SquirrelJME-UUID: 0ae6ba1b-8d2f-4b98-93ca-791ab313e934
+X-SquirrelJME-Depends: emulator
+X-SquirrelJME-Error: CB
+LIBlet-Title: Common HypoVisor (Linux)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This acts as a base for all Linux 
+ emulating hypovisors.
+
