@@ -86,3 +86,13 @@ management system for the emulator but the target JVM running on real hardware
 too. The path management system does not need to worry about opening the files
 just handling the path information.
 
+## 20:07
+
+Actually instead of an `EmulatedFileSystem` I can instead have the same for
+the path system and have there be an actual lighter and more generic class.
+The processes running on the JVM would then communicate with the processes.
+This then new `NativeFileSystem` could then also be used by the emulator. Since
+the code would essentially be written twice, however the emulator would use a
+slightly different way to access the actual data on the disk (or a virtual
+representation of it).
+
