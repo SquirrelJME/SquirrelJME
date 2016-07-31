@@ -17,6 +17,10 @@ import java.util.List;
  * This class provides a dynamically sized array of bytes for efficient
  * insertion and removal of bytes in the middle of the entire virtual buffer.
  *
+ * Internally the class partitions area of the buffer into chunks. Data within
+ * the chunks is then partitioned so that when data is added or removed no
+ * other data must be moved around.
+ *
  * This class must be thread safe.
  *
  * @since 2016/03/22
@@ -177,7 +181,7 @@ public class DynamicByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/08
 	 */
-	public void add(int __base, byte[] __src, int __o, int __l)
+	public final void add(int __base, byte[] __src, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -200,7 +204,7 @@ public class DynamicByteBuffer
 	 *
 	 * @since 2016/03/22
 	 */
-	public void clear()
+	public final void clear()
 	{
 		// Lock
 		synchronized (this.lock)
@@ -218,7 +222,7 @@ public class DynamicByteBuffer
 	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
-	public byte get(int __i)
+	public final byte get(int __i)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
@@ -239,7 +243,7 @@ public class DynamicByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
-	public void get(int __base, byte[] __dest)
+	public final void get(int __base, byte[] __dest)
 		throws NullPointerException
 	{
 		get(__base, __dest, 0, __dest.length);
@@ -258,7 +262,7 @@ public class DynamicByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/08
 	 */
-	public void get(int __base, byte[] __dest, int __o, int __l)
+	public final void get(int __base, byte[] __dest, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -288,7 +292,7 @@ public class DynamicByteBuffer
 	 * @return {@code this}.
 	 * @since 2016/03/22
 	 */
-	public DynamicByteBuffer quickCompact()
+	public final DynamicByteBuffer quickCompact()
 	{
 		// Lock
 		synchronized (this.lock)
@@ -306,7 +310,7 @@ public class DynamicByteBuffer
 	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
-	public byte remove(int __i)
+	public final byte remove(int __i)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
@@ -326,7 +330,7 @@ public class DynamicByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int remove(int __i, byte[] __b)
+	public final int remove(int __i, byte[] __b)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		return remove(__i, __b, 0, __b.length);
@@ -345,7 +349,7 @@ public class DynamicByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int remove(int __i, byte[] __b, int __o, int __l)
+	public final int remove(int __i, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -373,7 +377,7 @@ public class DynamicByteBuffer
 	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
-	public byte set(int __i, byte __v)
+	public final byte set(int __i, byte __v)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
@@ -389,7 +393,7 @@ public class DynamicByteBuffer
 	 * @return The total byte count.
 	 * @since 2016/03/22
 	 */
-	public int size()
+	public final int size()
 	{
 		// Lock
 		synchronized (this.lock)
@@ -403,13 +407,36 @@ public class DynamicByteBuffer
 	 * @since 2016/03/22
 	 */
 	@Override
-	public String toString()
+	public final String toString()
 	{
 		// Lock
 		synchronized (this.lock)
 		{
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Locates the chunk that contains the specified position for a get
+	 * operation.
+	 *
+	 * @param __pos The position to get the chunk for.
+	 * @return The chunk for the given position.
+	 * @throws IndexOutOfBoundsException If the position is not within the
+	 * buffer bounds.
+	 * @since 2016/07/31
+	 */
+	private __Chunk__ __locateForGet(int __pos)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AD01 Could not locate the chunk for the given
+		// position. (The requested position)}
+		int size = this.size();
+		if (__pos < 0 || __pos >= size)
+			throw new IndexOutOfBoundsException(String.format("AD01 %d",
+				__pos));
+		
+		throw new Error("TODO");
 	}
 }
 

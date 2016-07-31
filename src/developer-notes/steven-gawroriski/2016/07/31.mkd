@@ -90,3 +90,8 @@ It might also best best for the default chunk size to be managed by the
 chunk manager itself (unless a system property is used). Using small chunk
 sizes such as 32 (the current default) may be a bit inefficient.
 
+## 13:56
+
+Any refactored ZIP file code should not rely on the full NIO classes so it can
+be used by lighter JVMs.
+

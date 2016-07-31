@@ -26,5 +26,8 @@ final class __Chunk__
 	private static final int _DEFAULT_SIZE =
 		Math.max(Integer.getInteger(
 			"net.multiphasicapps.util.dynbuffer.chunksize", 128), 1);
+	
+	/** The actual position of the chunk. */
+	volatile int _actpos;
 }
 
