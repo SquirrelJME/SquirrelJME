@@ -171,7 +171,8 @@ public class Build
 		catch (RuntimeException|Error e)
 		{
 			// Report it
-			System.err.println("Illegal Project: " + __n);
+			if (!(e instanceof NoSuchProjectException))
+				System.err.println("Illegal Project: " + __n);
 			
 			// Toss it
 			throw e;
@@ -1007,7 +1008,15 @@ public class Build
 			String qdeps = attr.getValue("X-SquirrelJME-Optional");
 			if (qdeps != null)
 				for (String s : qdeps.split(Pattern.quote(",")))
-					pdeps.add(getProject(s.trim()));
+					try
+					{
+						pdeps.add(getProject(s.trim()));
+					}
+					
+					// Do not add the missing optional dependency
+					catch (NoSuchProjectException e)
+					{
+					}
 			
 			// All force depends
 			xdeps.addAll(pdeps);
