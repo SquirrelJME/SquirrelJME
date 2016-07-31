@@ -45,6 +45,9 @@ public class DataPipeInputStream
 	/** Finished? */
 	private volatile boolean _done;
 	
+	/** Suppressed failing exception. */
+	private volatile Throwable _suppressed;
+	
 	/**
 	 * Initializes the pipe from the given input stream to the given processor.
 	 *
@@ -119,7 +122,7 @@ public class DataPipeInputStream
 		{
 			// {@squirreljme.error AC04 Previous read failed.}
 			if (_failed)
-				throw new IOException("AC04");
+				throw new IOException("AC04", _suppressed);
 			
 			// If closed then read nothing
 			if (_closed)
@@ -149,7 +152,9 @@ public class DataPipeInputStream
 					_failed = true; 
 					
 					// {@squirreljme.error AC05 Failed to drain from the pipe.}
-					throw new IOException("AC05", e);
+					IOException tt = new IOException("AC05", e);
+					this._suppressed = tt;
+					throw tt;
 				}
 				
 				// Output stalled, add more bytes to the input
@@ -177,6 +182,7 @@ public class DataPipeInputStream
 						_failed = true;
 						
 						// Rethrow
+						this._suppressed = f;
 						throw f;
 					}
 					
