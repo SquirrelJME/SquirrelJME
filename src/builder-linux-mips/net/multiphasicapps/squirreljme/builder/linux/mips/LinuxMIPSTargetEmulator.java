@@ -13,7 +13,10 @@ package net.multiphasicapps.squirreljme.builder.linux.mips;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
+import net.multiphasicapps.squirreljme.chv.linux.mips.LinuxMIPSHypoVisor;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
+import net.multiphasicapps.squirreljme.emulator.mips.MIPSEmulator;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
  * This is used to emulate a target MIPS Linux system.
@@ -42,8 +45,22 @@ public class LinuxMIPSTargetEmulator
 	public Emulator emulator()
 		throws IOException
 	{
-		// Start the initial process
-		throw new Error("TODO");
+		// Get triplet
+		JITTriplet triplet = this.arguments.triplet();
+		
+		// Create Linux hypervisor
+		LinuxMIPSHypoVisor hv = new LinuxMIPSHypoVisor();
+		
+		// "init" is the process to start (and becomes PID 1)
+		if (true)
+			throw new Error("TODO");
+		
+		// Setup emulator
+		MIPSEmulator rv = new MIPSEmulator(hv, triplet.bits(),
+			triplet.endianess(), triplet.architectureVariant());
+		
+		// Return it
+		return rv;
 	}
 }
 

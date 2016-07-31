@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
@@ -58,6 +59,17 @@ public final class TargetEmulatorArguments
 		this.zip = __zip;
 		this.altexe = __altexe;
 		this.args = (__args == null ? new String[0] : __args.clone());
+	}
+	
+	/**
+	 * Returns the target triplet.
+	 *
+	 * @return The target triplet.
+	 * @since 2016/07/30
+	 */
+	public JITTriplet triplet()
+	{
+		return this.config.triplet();
 	}
 }
 
