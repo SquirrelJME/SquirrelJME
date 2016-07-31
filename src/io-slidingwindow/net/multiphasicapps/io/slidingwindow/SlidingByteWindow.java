@@ -42,6 +42,12 @@ public class SlidingByteWindow
 	/** The total number of written bytes. */
 	private volatile int _total;
 	
+	/** The window head. */
+	private volatile int _head;
+	
+	/** The window tail. */
+	private volatile int _tail;
+	
 	/**
 	 * Sanity check.
 	 *
@@ -75,8 +81,8 @@ public class SlidingByteWindow
 		windowsize = __wsz;
 		
 		// Setup backing store
-		backingbuffer = new DynamicByteBuffer(Math.min(4, Math.max(1, Math.min(
-			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE))));
+		backingbuffer = new DynamicByteBuffer(Math.max(4, Math.min(
+			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE)));
 	}
 	
 	/**

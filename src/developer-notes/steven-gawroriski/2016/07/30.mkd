@@ -154,3 +154,11 @@ suppose that windows get created in a large number. I really just need a single
 dynamic buffer which acts as a ring buffer. Using it as a ring buffer would
 mean that after the allocations there will never need to be a removal.
 
+## 22:10
+
+Also the bulk operations are not performed in bulk.
+
+## 22:11
+
+Also appears the fragment size is 4.
+
