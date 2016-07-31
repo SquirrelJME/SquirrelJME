@@ -21,5 +21,23 @@ import net.multiphasicapps.squirreljme.emulator.HypoVisor;
 public abstract class LinuxHypoVisor
 	implements HypoVisor
 {
+	/**
+	 * Sets the init program to be ran when the emulator requests hypovisor
+	 * initial state setup.
+	 *
+	 * @param __elf The executable bytes.
+	 * @param __args The arguments to the executable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/30
+	 */
+	public final void setInit(byte[] __elf, String... __args)
+		throws NullPointerException
+	{
+		// Check
+		if (__elf == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 }
 

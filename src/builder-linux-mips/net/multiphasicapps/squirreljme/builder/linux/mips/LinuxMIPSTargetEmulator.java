@@ -46,14 +46,15 @@ public class LinuxMIPSTargetEmulator
 		throws IOException
 	{
 		// Get triplet
-		JITTriplet triplet = this.arguments.triplet();
+		TargetEmulatorArguments arguments = this.arguments;
+		JITTriplet triplet = arguments.triplet();
 		
 		// Create Linux hypervisor
 		LinuxMIPSHypoVisor hv = new LinuxMIPSHypoVisor();
 		
 		// "init" is the process to start (and becomes PID 1)
-		if (true)
-			throw new Error("TODO");
+		hv.setInit(arguments.loadExecutable("squirreljme"),
+			arguments.fullArguments("squirreljme"));
 		
 		// Setup emulator
 		MIPSEmulator rv = new MIPSEmulator(hv, triplet.bits(),

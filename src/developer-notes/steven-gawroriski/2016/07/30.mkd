@@ -127,3 +127,7 @@ basically be this interface. For emulation of systems, there would just be
 default ones such as ones for Linux which knows how to load binaries into
 memory and then set the associated CPU state for execution.
 
+## 21:50
+
+This code seems much cleaner so far and also far simpler to setup.
+
