@@ -239,9 +239,12 @@ public class SlidingByteWindow
 			if (vhead < 0)
 				vhead += windowsize;
 			
+			// Virtual tail position
+			int vtail = (vhead + __l) % windowsize;
+			
 			// Read from the head would fall off the right side
-			if (vhead > tail)
-			{System.err.println("DEBUG -- TODO: Correct sliding byte window.");
+			if (vhead > vtail)
+			{
 				// Read the right side
 				int rlen;
 				back.get(vhead, __b, __o, (rlen = (windowsize - vhead)));

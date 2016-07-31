@@ -162,3 +162,8 @@ Also the bulk operations are not performed in bulk.
 
 Also appears the fragment size is 4.
 
+## 23:04
+
+`SizeLimitedInputStream` could also potentially use a bulk read operation to
+speed things up also.
+
