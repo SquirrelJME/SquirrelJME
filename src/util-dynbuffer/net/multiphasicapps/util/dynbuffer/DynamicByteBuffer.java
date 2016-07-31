@@ -31,7 +31,7 @@ public class DynamicByteBuffer
 	protected final Object lock =
 		new Object();
 	
-	/** The chunk size to use. */
+	/** The default chunk size to use. */
 	protected final int chunksize;
 	
 	/**

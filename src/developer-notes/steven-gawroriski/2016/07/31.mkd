@@ -66,3 +66,27 @@ the same objects. If any bytes are removed then logical partitions that follow
 just get their positions shifted accordingly. So this would be like a hard
 disk filesystem.
 
+## 12:14
+
+To simplify things and not require renumbering on large buffers, each chunk's
+physical and logical positions would be to that chunk only. Then each chunk
+would have a note of the number of bytes that are in the chunk.
+
+## 12:23
+
+Each chunk would have then have an indicator which says where it is located.
+For simplicity all chunks will be linear physically, so a chunk at a higher
+index will always have a greater address. If insertion in the middle causes a
+chunk to be filled then a new chunk will be created in the middle. So with
+the partition scheme, if there are ever any removals a single value just has
+to be incremented or decremented (or a partition created). Since partitions can
+appear and disappear, it might be best to have a pool of partitions waiting to
+be used so they can be reassociated in a chunk. However, they should just
+remain to a single chunk.
+
+## 12:28
+
+It might also best best for the default chunk size to be managed by the
+chunk manager itself (unless a system property is used). Using small chunk
+sizes such as 32 (the current default) may be a bit inefficient.
+
