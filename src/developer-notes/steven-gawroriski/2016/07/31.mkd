@@ -51,3 +51,18 @@ a new one.
 The default block size could then just act as a minimum block size. Going to
 take a walk and figure something out hopefully.
 
+## 12:09
+
+Actually something that might work would be a partition list of sorts. A
+logical partition location and a physical partition location. Bytes could
+literally be written anywhere as long as there is free space somewhere. When
+bytes are added to a position, a new partition could be created if there is no
+free space anywhere. Then the logical partition information will just point to
+where it really is. Removal of bytes would just entail shifting the partition
+start/end over accordingly or splitting it. There would need to be two lists
+which point to the same partition data, each sorted for logical partitions
+and physical ones. However since the data is very much the same, they can share
+the same objects. If any bytes are removed then logical partitions that follow
+just get their positions shifted accordingly. So this would be like a hard
+disk filesystem.
+
