@@ -100,21 +100,22 @@ public class SlidingByteWindow
 			DynamicByteBuffer back = this.backingbuffer;
 			back.add(__b);
 			
-			// Increases by one byte
-			int vt = this._total + 1;
+			// Get variables
+			int windowsize = this.windowsize;
+			int total = this._total;
+			int head = this._head;
+			int tail = this._tail;
 			
-			throw new Error("TODO");
+			// Determine the new tail position
+			int nexttail = (tail + 1) % windowsize;
 			
-			/*
-			// Exceeds the window size? Remove the first byte
-			int max = windowsize;
-			if (vt > max)
-				back.remove(0);
+			// Runs into the head? Increase that by one (lose oldest bytes)
+			if (nexttail == head)
+				this._head = (head + 1) % windowsize;
 			
-			// Set total count
-			else
-				this._total = vt;
-			*/
+			// Write byte and increase size
+			back.set(tail, __b);
+			this._total = Math.min(windowsize, total + 1);
 		}
 	}
 	
@@ -157,9 +158,27 @@ public class SlidingByteWindow
 		if (__o < 0 || __l < __o || (__o + __l > __b.length))
 			throw new IndexOutOfBoundsException("BAOB");
 		
+		// If the number of bytes being written exceeds the window size then
+		// only write the last window size number of bytes.
+		int windowsize = this.windowsize;
+		int wszldiff = __l - windowsize;
+		if (wszldiff > 0)
+		{
+			__o += wszldiff;
+			__l -= wszldiff;
+		}
+		
 		// Lock
 		synchronized (lock)
 		{
+			// Get variables
+			int total = this._total;
+			int head = this._head;
+			int tail = this._tail;
+			
+			// 
+			int after = (head + 1) - windowsize;
+			
 			throw new Error("TODO");
 		}
 	}
