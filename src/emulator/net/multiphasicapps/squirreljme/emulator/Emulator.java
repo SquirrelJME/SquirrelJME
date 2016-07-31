@@ -23,29 +23,27 @@ import java.util.Set;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
- * This class is used as the core of the emulator so emulate other operating
- * systems.
+ * This class acts as the base for a given system and acts in a way as the
+ * process in a way address space. The emulator only understands memory and
+ * state as it sees it, behavior that is dependent on operating systems is
+ * implemented by a {@link HypoVisor}.
  *
  * @since 2016/07/30
  */
-public final class Emulator
+public abstract class Emulator
 	implements Runnable
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();
-	
-	/** The hypervisor controlling this emulator. */
-	protected final HyperVisor hypervisor;
+	/** The hypovisor used for external access. */
+	protected final HypoVisor hypovisor;
 	
 	/**
 	 * Initializes the emulator.
 	 *
-	 * @param __hv The hypervisor used to access the system.
+	 * @param __hv The hypovisor used to implement undefined behavior.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/30
 	 */
-	public Emulator(HyperVisor __hv)
+	public Emulator(HypoVisor __hv)
 		throws NullPointerException
 	{
 		// Check
@@ -53,7 +51,7 @@ public final class Emulator
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.hypervisor = __hv;
+		this.hypovisor = __hv;
 	}
 	
 	/**
@@ -61,7 +59,7 @@ public final class Emulator
 	 * @since 2016/07/30
 	 */
 	@Override
-	public void run()
+	public final void run()
 	{
 		throw new Error("TODO");
 	}

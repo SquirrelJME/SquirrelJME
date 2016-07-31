@@ -11,12 +11,14 @@
 package net.multiphasicapps.squirreljme.emulator;
 
 /**
- * The hypervisor provides a means for the emulated system to actually be
- * emulated along with interacting with the host system.
+ * This interface is passed to the emulator which specifies how certain
+ * undefined behavior for a given system is defined. Essentially this class can
+ * be seen as the trap manager for an emulator in that anything unknown by the
+ * emulator is handled by this interface.
  *
  * @since 2016/07/30
  */
-public abstract class HyperVisor
+public interface HypoVisor
 {
 }
 

@@ -11,8 +11,7 @@
 package net.multiphasicapps.squirreljme.emulator;
 
 /**
- * This represents an exception in the emulator which may be thrown and handled
- * without causing the emulator to terminate.
+ * This represents a problem that occurs in the emulator.
  *
  * @since 2016/07/30
  */
