@@ -141,3 +141,16 @@ the ZIP all at once appears to be taking quite some time.
 After about 32KiB it just starts to get seemingly exponentially slower. So it
 is likely the inflate algorithm that is extremely slow after awhile.
 
+## 22:06
+
+I am going to guess that it is the sliding byte window, since that has a size
+of 32KiB.
+
+## 22:08
+
+And my intuition was correct, the code I have there works but is very slow.
+Even though it should be handled good enough using the dynamic window, I
+suppose that windows get created in a large number. I really just need a single
+dynamic buffer which acts as a ring buffer. Using it as a ring buffer would
+mean that after the allocations there will never need to be a removal.
+
