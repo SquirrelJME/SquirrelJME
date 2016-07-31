@@ -33,3 +33,10 @@ build/
 *-baseline
 *-merge
 *-original
+/contrib/
+/contrib/*
+/contrib/*.*
+contrib/
+contrib/*
+contrib/*.*
+

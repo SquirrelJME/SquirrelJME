@@ -1,0 +1,7 @@
+# Contributing Un-Official Projects
+
+If the `contrib` directory is present in the source root, then it acts
+similarly to `src` in that it provides projects which are available for
+usage. Note that these projects are not considered official and are
+completely unsupported.
+
