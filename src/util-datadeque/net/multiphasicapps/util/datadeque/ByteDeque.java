@@ -111,6 +111,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// Exceeds capacity?
+			DynamicByteBuffer base = this.base;
 			int n = base.size();
 			if (n < 0 || n >= capacity)
 				throw new IllegalStateException("AE03");
@@ -162,6 +163,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// Exceeds capacity?
+			DynamicByteBuffer base = this.base;
 			int n = base.size();
 			int w = n + __l;
 			if (w < 0 || w > capacity)
@@ -187,6 +189,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// Exceeds capacity?
+			DynamicByteBuffer base = this.base;
 			int n = base.size();
 			if (n < 0 || n >= capacity)
 				throw new IllegalStateException("AE03");
@@ -238,6 +241,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// Exceeds capacity?
+			DynamicByteBuffer base = this.base;
 			int n = base.size();
 			int w = n + __l;
 			if (w < 0 || w > capacity)
@@ -277,6 +281,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// Check
+			DynamicByteBuffer base = this.base;
 			if (base.size() <= 0)
 				throw new NoSuchElementException("AE02");
 			
@@ -325,6 +330,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// Pointless if empty
+			DynamicByteBuffer base = this.base;
 			int n;
 			if ((n = base.size()) <= 0)
 				return 0;
@@ -350,6 +356,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// Check
+			DynamicByteBuffer base = this.base;
 			int n;
 			if ((n = base.size()) <= 0)
 				throw new NoSuchElementException("AE02");
@@ -399,6 +406,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// Pointless if empty
+			DynamicByteBuffer base = this.base;
 			int n;
 			if ((n = base.size()) <= 0)
 				return 0;
@@ -615,6 +623,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// No data available
+			DynamicByteBuffer base = this.base;
 			if (base.size() <= 0)
 				throw new NoSuchElementException("AE02");
 			
@@ -679,6 +688,7 @@ public class ByteDeque
 		synchronized (lock)
 		{
 			// No data available
+			DynamicByteBuffer base = this.base;
 			int n;
 			if ((n = base.size()) <= 0)
 				throw new NoSuchElementException("AE02");
@@ -726,6 +736,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
+			DynamicByteBuffer base = this.base;
 			return base.remove(Math.max(0, base.size() - __l), __b, __o, __l);
 		}
 	}

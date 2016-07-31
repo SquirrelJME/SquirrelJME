@@ -167,3 +167,17 @@ Also appears the fragment size is 4.
 `SizeLimitedInputStream` could also potentially use a bulk read operation to
 speed things up also.
 
+## 23:08
+
+Ok so now it does not get exponentially slower, it just remains slow now. So
+there is definitely a deficiency in the inflate code path somewhere. It appears
+the code is getting slower and slower a tiny bit each print iteration. So I
+would say that it is linearly getting slower.
+
+## 23:11
+
+So the next thing I would say is to refactor `DynamicByteBuffer` so that it
+works better and is faster. Perhaps before that, support bulk get in `SLIS`. It
+is likely it is the dynamic buffer code because that is used in the inflate
+code I believe along with all of the data queues eventually.
+
