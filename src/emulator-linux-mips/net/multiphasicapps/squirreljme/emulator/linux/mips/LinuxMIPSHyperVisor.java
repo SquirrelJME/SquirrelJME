@@ -8,12 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the emulator which acts as the standard reference
- * implementation interpreter.
- *
- * @since 2016/07/24
- */
+package net.multiphasicapps.squirreljme.emulator.linux.mips;
 
-package net.multiphasicapps.squirreljme.emulator.interpreter;
+import net.multiphasicapps.squirreljme.emulator.HyperVisor;
+
+/**
+ * This contains the Linux MIPS hypervisor.
+ *
+ * @since 2016/07/30
+ */
+public class LinuxMIPSHyperVisor
+	extends HyperVisor
+{
+}
 

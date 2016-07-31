@@ -14,6 +14,7 @@ import java.io.IOException;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
+import net.multiphasicapps.squirreljme.emulator.linux.mips.LinuxMIPSHyperVisor;
 
 /**
  * This is used to emulate a target MIPS Linux system.
@@ -43,7 +44,10 @@ public class LinuxMIPSTargetEmulator
 		throws IOException
 	{
 		// Create the emulator
+		Emulator rv = new Emulator(new LinuxMIPSHyperVisor(
+			));
 		
+		// Start the initial process
 		throw new Error("TODO");
 	}
 }

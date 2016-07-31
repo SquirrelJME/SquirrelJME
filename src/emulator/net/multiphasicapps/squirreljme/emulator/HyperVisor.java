@@ -10,24 +10,13 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 /**
- * This represents a file that is currently open so that its data may be
- * accessed as required.
- *
- * This interface does not know about file positioning, that is up to the
- * emulation implementation to handle.
- *
- * All instances of this class must be reference counted for opening and
- * closing. On initial construction of this interface, the reference count
- * is to be {@code 1}.
+ * The hypervisor provides a means for the emulated system to actually be
+ * emulated along with interacting with the host system.
  *
  * @since 2016/07/30
  */
-public interface OpenFile
-	extends Closeable
+public abstract class HyperVisor
 {
 }
 

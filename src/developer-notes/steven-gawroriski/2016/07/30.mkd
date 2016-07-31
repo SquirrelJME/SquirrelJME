@@ -106,3 +106,24 @@ file system would be bound to the native path system.
 Java SE uses `FileSystemProvider` to provide native stuff, while Java ME does
 not have this class.
 
+## 20:28
+
+Thinking about it, some of the emulator code would also be shared with a
+hyper visor.
+
+## 20:31
+
+Emulators are simple, but determining how to organize the code nicely can be
+a bit complex. Perhaps I am thinking too far into it. I suppose that the
+emulator should be as simple as possible. This means I would just have an
+emulator for example that emulates MIPS. These would just be `emulator-mips`
+and such. The `emulator` would just be a basic execute whatever it finds in
+memory emulator. Then the emulator would be able to be given a class which is
+basically a trap handler for a system. So say for example that MIPS code calls
+trap or an illegal instruction, when this occurs the interface will be called
+into. This would be how operating systems would be simulated. Then on top of
+the emulator would be the `HypoVisor` (pun intended). The hypovisor would
+basically be this interface. For emulation of systems, there would just be
+default ones such as ones for Linux which knows how to load binaries into
+memory and then set the associated CPU state for execution.
+
