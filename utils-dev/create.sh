@@ -81,6 +81,28 @@ __absolutepath()
 	"$__exedir/absolute.sh" "$1"
 }
 
+# Checks if the given input file is in the repository
+__inroot()
+{
+	__qq="$(dirname -- $(__absolutepath "$1"))"
+	
+	# Stop at the root
+	while [ "$__qq" != "/" ]
+	do
+		# Version marker?
+		if [ -f "$__qq/squirreljme-version" ]
+		then
+			return 0
+		fi
+		
+		# Go down
+		__qq="$(dirname -- "$__qq")"
+	done
+	
+	# Not found
+	return 1
+}
+
 # Find the name of the package (looks for the vmjar directory which contains
 # REPOSITORY).
 __findpkname()
@@ -198,6 +220,13 @@ do
 			__afile="$__tidir/$__tbase.$__tfext"
 		else
 			__afile="$__tidir/$__tbase"
+		fi
+		
+		# Make sure the file is in the repository
+		if ! __inroot "$__afile"
+		then
+			echo "Not creating $__afile"'!' 1>&2
+			continue
 		fi
 		
 		# Add to all files
