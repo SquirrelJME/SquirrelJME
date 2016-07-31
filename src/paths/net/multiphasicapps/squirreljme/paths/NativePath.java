@@ -25,13 +25,13 @@ public interface NativePath
 	 * This compares two paths lexographically to determine the order in where
 	 * it is used to sort files.
 	 *
-	 * @param __np The path to compare against.
+	 * @param __o The path to compare against.
 	 * @throws InvalidNativePathException If the other path is of another
 	 * path type (this is POSIX and the other is DOS).
 	 * @return An integer comparison.
 	 */
 	@Override
-	public abstract int compareTo(NativePath __np);
+	public abstract int compareTo(NativePath __o);
 	
 	/**
 	 * Checks if two paths are equal to each other. Native paths of different
