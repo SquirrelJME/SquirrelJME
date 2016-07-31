@@ -10,3 +10,44 @@ I should also refactor and redo the `ZipFile` code also, drop plans for 64-bit
 ZIP files and remove the very slow structured reading code. Basically simplify
 everything so that it is much nicer.
 
+## 09:30
+
+One issue with the chunks is that when a byte is added or removed, all of the
+chunks following must get their size recalculated. I do wonder if I can avoid
+doing that. I am thinking of a binary tree-like structure for this which just
+has relative size. It would very well have to remain sorted and well
+balanced. It would have to be perfectly balanced perhaps using a red/black
+tree. Then chunks would have to be placed in a way where they all represent
+a part of the file. However this would be a bit complex. Alternatively chunks
+in a given area could be for the part of the file they are a part of. The only
+issue with that is moving things over. So things will get complicated when it
+comes to buffer management. One thing however, is that there can be cards
+associated with a chunk of data. Each chunk has a head and tail for where data
+is stored. However since the position...
+
+## 09:40
+
+...is not known, cards can be used as a note to where data should be placed and
+keep that in a sorted list of sorts. Each card would be associated with a
+chunk. However this still complicates things in a way.
+
+## 10:34
+
+The big slow down would always be keeping the buffer positions valid. Inserting
+and removing of bytes would also add some issues. I like the buffer for quick
+insertion and removal of data. Perhaps what could be used is a kind of sub-
+partitioning scheme of sorts. Actually, I could have Chunks which just manage
+data which know nothing of their storage location. Basically, each junk would
+be associated with a partition map which does know the positioning. Something
+that might be a bit more efficient would be to have dynamically sized chunks.
+For example when a bulk write is performed at a location, if there is no room
+to store the data in the given chunk then the bulk operation just splits the
+chunk at the write position and then creates a new chunk with the bulk written
+data. It would write to the appropriate locations on two chunks before creating
+a new one.
+
+## 10:49
+
+The default block size could then just act as a minimum block size. Going to
+take a walk and figure something out hopefully.
+
