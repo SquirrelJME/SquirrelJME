@@ -86,6 +86,12 @@ public class Build
 	/** Project root directory. */
 	public static final Path PROJECT_ROOT;
 	
+	/** Source root. */
+	public static final Path SOURCE_ROOT;
+	
+	/** Contrib root. */
+	public static final Path CONTRIB_ROOT;
+	
 	/** Path separator. */
 	public static final String PATH_SEPARATOR;
 	
@@ -119,6 +125,10 @@ public class Build
 		
 		// Path separator
 		PATH_SEPARATOR = File.pathSeparator;
+		
+		// Resolve other paths
+		SOURCE_ROOT = PROJECT_ROOT.resolve("src");
+		CONTRIB_ROOT = PROJECT_ROOT.resolve("contrib");
 	}
 	
 	/**
@@ -154,8 +164,7 @@ public class Build
 		// Setup new project
 		try
 		{
-			projects.put(__n, (rv = new Project(PROJECT_ROOT.resolve("src").
-				resolve(__n))));
+			projects.put(__n, (rv = new Project(__n)));
 		}
 		
 		// Report a bad project
@@ -928,24 +937,43 @@ public class Build
 		/**
 		 * Initializes the project.
 		 *
-		 * @param __root The root directory of the project.
+		 * @param __sroot The root directory of the project.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/03/21
 		 */
-		private Project(Path __root)
+		private Project(String __sroot)
 			throws NullPointerException
 		{
 			// Check
-			if (__root == null)
+			if (__sroot == null)
 				throw new NullPointerException();
 			
+			// Try to find the manifest for a given project
+			Path usemanifest = null;
+			Path useroot = null;
+			for (Path base : new Path[]{
+				SOURCE_ROOT.resolve(__sroot), CONTRIB_ROOT.resolve(__sroot)})
+			{
+				// Does the manifest exist?
+				Path tryman = base.resolve("META-INF").resolve("MANIFEST.MF");
+				if (Files.exists(tryman))
+				{
+					usemanifest = tryman;
+					useroot = base;
+					break;
+				}
+			}
+			
+			// Does not exist
+			if (usemanifest == null)
+				throw new NoSuchProjectException(__sroot);
+			
 			// Set
-			root = __root;
+			root = useroot;
 			
 			// Load manifest
 			Manifest man;
-			try (InputStream is = new FileInputStream(root.
-				resolve("META-INF").resolve("MANIFEST.MF").toFile()))
+			try (InputStream is = new FileInputStream(usemanifest.toFile()))
 			{
 				man = new Manifest(is);
 			}
@@ -1220,6 +1248,26 @@ public class Build
 		 * @since 2016/03/21
 		 */
 		public abstract boolean process(X __p);
+	}
+	
+	/**
+	 * This is thrown when the project is not valid.
+	 *
+	 * @since 2016/07/31
+	 */
+	public static class NoSuchProjectException
+		extends RuntimeException
+	{
+		/**
+		 * Initializes the exception with the given message.
+		 *
+		 * @param __s The project name.
+		 * @since 2016/07/31
+		 */
+		public NoSuchProjectException(String __s)
+		{
+			super(__s);
+		}
 	}
 }
 
