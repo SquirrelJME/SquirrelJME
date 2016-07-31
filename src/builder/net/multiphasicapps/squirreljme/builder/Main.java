@@ -183,7 +183,7 @@ public class Main
 				// Load the package list
 				out.println("Loading the package lists...");
 				plist = new PackageList(Paths.get(
-					System.getProperty("user.dir")), null);
+					System.getProperty("user.dir")));
 			
 				// Create temporary directory
 				tempdir = Files.createTempDirectory("squirreljme-build");
