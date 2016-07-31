@@ -81,7 +81,7 @@ public class SlidingByteWindow
 		windowsize = __wsz;
 		
 		// Setup backing store
-		backingbuffer = new DynamicByteBuffer(Math.max(4, Math.min(
+		backingbuffer = new DynamicByteBuffer(Math.max(1, Math.min(
 			Integer.highestOneBit(windowsize), DEFAULT_FRAGMENT_SIZE)));
 	}
 	
@@ -89,21 +89,23 @@ public class SlidingByteWindow
 	 * Appends a single byte to the sliding window.
 	 *
 	 * @param __b The byte to add to the window.
-	 * @return {@code this}.
 	 * @since 2016/03/10
 	 */
-	public SlidingByteWindow append(byte __b)
+	public void append(byte __b)
 	{
 		// Lock
 		synchronized (lock)
 		{
 			// Add to the sliding window
-			DynamicByteBuffer back = backingbuffer;
+			DynamicByteBuffer back = this.backingbuffer;
 			back.add(__b);
 			
 			// Increases by one byte
-			int vt = _total + 1;
+			int vt = this._total + 1;
 			
+			throw new Error("TODO");
+			
+			/*
 			// Exceeds the window size? Remove the first byte
 			int max = windowsize;
 			if (vt > max)
@@ -111,39 +113,27 @@ public class SlidingByteWindow
 			
 			// Set total count
 			else
-				_total = vt;
+				this._total = vt;
+			*/
 		}
-		
-		// Self
-		return this;
 	}
 	
 	/**
 	 * Appends multiple bytes to the sliding window.
 	 *
 	 * @param __b Bytes to add to the sliding window.
-	 * @return {@code this}
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public SlidingByteWindow append(byte... __b)
+	public void append(byte... __b)
 		throws NullPointerException
 	{
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock to make semi-atomic
-		synchronized (lock)
-		{
-			// Append all bytes
-			int n = __b.length;
-			for (int i = 0; i < n; i++)
-				append(__b[i]);
-		}
-		
-		// Self
-		return this;
+		// Call other
+		this.append(__b, 0, __b.length);
 	}
 	
 	/**
@@ -153,13 +143,12 @@ public class SlidingByteWindow
 	 * @param __b Bytes to add to the sliding window.
 	 * @param __o Offset into the byte array.
 	 * @param __l The number of bytes to add.
-	 * @return {@code this}.
 	 * @throws IndexOutOfBoundsException If the offset or length are negative
 	 * or the offset and the length exceeds the array bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public SlidingByteWindow append(byte __b[], int __o, int __l)
+	public void append(byte __b[], int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -171,14 +160,8 @@ public class SlidingByteWindow
 		// Lock
 		synchronized (lock)
 		{
-			// Append
-			int n = __o + __l;
-			for (int i = __o; i < n; i++)
-				append(__b[i]);
+			throw new Error("TODO");
 		}
-		
-		// Self
-		return this;
 	}
 	
 	/**
@@ -198,7 +181,7 @@ public class SlidingByteWindow
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/13
 	 */
-	public SlidingByteWindow get(int __ago, byte[] __b, int __o, int __l)
+	public void get(int __ago, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -223,14 +206,11 @@ public class SlidingByteWindow
 					"AI03 %d %d %d", __ago, __l, max));
 			
 			// Get backing buffer
-			DynamicByteBuffer back = backingbuffer;
+			DynamicByteBuffer back = this.backingbuffer;
 			
 			// Read from the buffer at a given position
-			back.get(max - __ago, __b, __o, __l);
+			throw new Error("TODO");
 		}
-		
-		// Self
-		return this;
 	}
 	
 	/**
