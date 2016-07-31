@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.util.dynbuffer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class provides a dynamically sized array of bytes for efficient
  * insertion and removal of bytes in the middle of the entire virtual buffer.
@@ -23,6 +26,10 @@ public class DynamicByteBuffer
 	/** Lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** The chunks that are within this buffer. */
+	private final List<__Chunk__> _chunks =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the byte buffers which does not copy from another buffer.
@@ -76,7 +83,7 @@ public class DynamicByteBuffer
 	 * @return The actual bytes used to hold the byte buffer data.
 	 * @since 2016/03/22
 	 */
-	public int actualSize()
+	public final int actualSize()
 	{
 		// Lock
 		synchronized (this.lock)
@@ -91,13 +98,9 @@ public class DynamicByteBuffer
 	 * @param __v The value to add.
 	 * @since 2016/03/22
 	 */
-	public void add(byte __v)
+	public final void add(byte __v)
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			throw new Error("TODO");
-		}
+		this.add(size(), __v);
 	}
 	
 	/**
@@ -107,10 +110,10 @@ public class DynamicByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/31
 	 */
-	public void add(byte[] __src)
+	public final void add(byte[] __src)
 		throws NullPointerException
 	{
-		this.add(__src, 0, __src.length);
+		this.add(size(), __src, 0, __src.length);
 	}
 	
 	/**
@@ -124,14 +127,10 @@ public class DynamicByteBuffer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/08
 	 */
-	public void add(byte[] __src, int __o, int __l)
+	public final void add(byte[] __src, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			throw new Error("TODO");
-		}
+		this.add(size(), __src, __o, __l);
 	}
 	
 	/**
@@ -144,7 +143,7 @@ public class DynamicByteBuffer
 	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
-	public void add(int __i, byte __v)
+	public final void add(int __i, byte __v)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
@@ -155,9 +154,13 @@ public class DynamicByteBuffer
 	}
 	
 	/**
-	 * 
+	 * Adds multiple bytes to the specified position in the given chunk.
+	 *
+	 * @param __base The address where bytes are to be written.
+	 * @param __src The source buffer.
+	 * @since 2016/07/31
 	 */
-	public void add(int __base, byte[] __src)
+	public final void add(int __base, byte[] __src)
 	{
 		this.add(__base, __src, 0, __src.length);
 	}
