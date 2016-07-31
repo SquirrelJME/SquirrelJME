@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: fs
+X-SquirrelJME-UUID: 3ceefb3c-ef9e-4b01-9a9d-85e5f7088fcf
+X-SquirrelJME-Depends: paths
+X-SquirrelJME-Error: AZ
+LIBlet-Title: Native File System
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This provides classes for accessing the 
+ native file system. This is used by the JVM and the emulator.
+

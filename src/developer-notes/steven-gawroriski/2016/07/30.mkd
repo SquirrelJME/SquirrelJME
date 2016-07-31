@@ -96,3 +96,13 @@ the code would essentially be written twice, however the emulator would use a
 slightly different way to access the actual data on the disk (or a virtual
 representation of it).
 
+## 20:12
+
+I would suppose that this would be a class rather than an interface. Each
+file system would be bound to the native path system.
+
+## 20:15
+
+Java SE uses `FileSystemProvider` to provide native stuff, while Java ME does
+not have this class.
+
