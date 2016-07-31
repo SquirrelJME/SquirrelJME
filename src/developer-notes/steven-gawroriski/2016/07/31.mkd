@@ -1,0 +1,6 @@
+# 2016/07/31
+
+## 08:06
+
+Must refactor `DynamicByteBuffer` now.
+
