@@ -4,3 +4,31 @@
 
 A new month.
 
+## 10:07
+
+Ok, so I made 785 commits. I mostly just did JIT work last month. I wrote a
+JIT then got rid of it and rewrote it number of times. Currently the JIT how
+it is now is how I would like to continue with it. The same goes for the
+emulation system that I have planned. I just need to finish the refactoring of
+the dynamic byte buffer (by using partitions) and potentially speed up the
+sliding byte window class and support bulk read operations (since calling
+`read` over and over is slow). I added mirrors to other sites (using Git). I
+wrote ZIP reading and writing stream code. I will have to refactor the block
+based reader because the current one is quite bad and is pretty slow. I did
+a refactor of the test system since it was untouched for a few months. The
+current test system is quite nice and works out quite well. I also switched to
+the GPLv3 from the AGPLv3, this is more permissive as the AGPLv3 would
+complicate things when it comes to client browsers. I implemented the CRC32
+algorithm so ZIP entries can be checked and such. I added the base for the
+current JIT. Removed a bunch of old code. I also converted the mascot to SVG.
+So pretty much the main work that was done was in the JIT area.
+
+## 10:11
+
+So my current goal is to finish the refactor of the supporting classes then
+move back to the JIT and generate Linux MIPS binaries instead. Going straight
+for a real target will allow me to test the MIPS execution system and the
+base emulation. So in reality I am dropping the interpreter. Going the
+interpreter route as I planned before would just be more difficult since the
+target system does not exist, I will need to invent an ABI for it.
+
