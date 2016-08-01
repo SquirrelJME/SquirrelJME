@@ -35,6 +35,10 @@ public class DynamicByteBuffer
 	private final List<__Chunk__> _chunks =
 		new ArrayList<>();
 	
+	/** Array used for single byte add, since synchronized (not an issue). */
+	private final byte[] _solo =
+		new byte[1];
+	
 	/**
 	 * Initializes the byte buffers which does not copy from another buffer.
 	 *
@@ -153,7 +157,9 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			byte[] solo = _solo;
+			solo[0] = __v;
+			this.add(__i, solo, 0, 1);
 		}
 	}
 	
@@ -228,7 +234,9 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			byte[] solo = _solo;
+			this.get(__i, solo, 0, 1);
+			return solo[0];
 		}
 	}
 	
@@ -316,7 +324,9 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			byte[] solo = _solo;
+			this.remove(__i, solo, 0, 1);
+			return solo[0];
 		}
 	}
 	
@@ -414,29 +424,6 @@ public class DynamicByteBuffer
 		{
 			throw new Error("TODO");
 		}
-	}
-	
-	/**
-	 * Locates the chunk that contains the specified position for a get
-	 * operation.
-	 *
-	 * @param __pos The position to get the chunk for.
-	 * @return The chunk for the given position.
-	 * @throws IndexOutOfBoundsException If the position is not within the
-	 * buffer bounds.
-	 * @since 2016/07/31
-	 */
-	private __Chunk__ __locateForGet(int __pos)
-		throws IndexOutOfBoundsException
-	{
-		// {@squirreljme.error AD01 Could not locate the chunk for the given
-		// position. (The requested position)}
-		int size = this.size();
-		if (__pos < 0 || __pos >= size)
-			throw new IndexOutOfBoundsException(String.format("AD01 %d",
-				__pos));
-		
-		throw new Error("TODO");
 	}
 }
 
