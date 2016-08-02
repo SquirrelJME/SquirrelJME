@@ -436,5 +436,30 @@ public class DynamicByteBuffer
 			throw new Error("TODO");
 		}
 	}
+	
+	/**
+	 * This returns the chunk which is at the specified position for a chunk
+	 * operation to be performed.
+	 *
+	 * @param __pos The position to find a chunk for.
+	 * @return The chunk at the given position.
+	 * @throws IndexOutOfBoundsException If the position of the chunk is
+	 * negative or exceeds the size of the buffer.
+	 * @since 2016/08/01
+	 */
+	final __Chunk__ __ofPosition(int __pos)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AD01 Requested negative buffer position.}
+		if (__pos < 0)
+			throw new IndexOutOfBoundsException("AD01");
+		
+		// Lock
+		List<__Chunk__> chunks = this._chunks;
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
 }
 
