@@ -40,16 +40,6 @@ public class DynamicByteBuffer
 		new ArrayList<>();
 	
 	/**
-	 * This is the minimum index in the chunk array where the position value
-	 * is stale. When the position of a chunk is requested and it is after the
-	 * stale index, then all chunks down to the stale index will get their
-	 * position calculated until the stale index is at the given position.
-	 * This means for adding and removing bytes, that not all positions and
-	 * sizes need to be determined in the entire buffer at once.
-	 */
-	volatile int _staledx;
-	
-	/**
 	 * Initializes the byte buffers which does not copy from another buffer.
 	 *
 	 * @since 2016/03/22
@@ -210,6 +200,31 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
+			// If no logical partitions exist then nothing has yet been added
+			// to the buffer
+			List<__Partition__> logical = this._logical;
+			if (logical.isEmpty())
+			{
+				// {@squirreljme.error AD01 The dynamic byte buffer is empty,
+				// all additions must start at position zero. (The position
+				// which was attempted to be appended at)}
+				if (__base != 0)
+					throw new IndexOutOfBoundsException(
+						String.format("AD01 %d", __base));
+				
+				throw new Error("TODO");
+			}
+			
+			// Remaining bytes
+			int left = __l;
+			int wpos = __base;
+			while (left > 0)
+			{
+				// Find the logical partition associated with the given address
+				
+				throw new Error("TODO");
+			}
+			
 			throw new Error("TODO");
 		}
 	}
