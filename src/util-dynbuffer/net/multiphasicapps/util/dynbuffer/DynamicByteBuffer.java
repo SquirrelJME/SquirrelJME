@@ -17,10 +17,6 @@ import java.util.List;
  * This class provides a dynamically sized array of bytes for efficient
  * insertion and removal of bytes in the middle of the entire virtual buffer.
  *
- * Internally the class partitions area of the buffer into chunks. Data within
- * the chunks is then partitioned so that when data is added or removed no
- * other data must be moved around.
- *
  * This class must be thread safe.
  *
  * @since 2016/03/22
@@ -40,12 +36,24 @@ public class DynamicByteBuffer
 		new byte[1];
 	
 	/**
+	 * This is the minimum index in the chunk array where the position value
+	 * is stale. When the position of a chunk is requested and it is after the
+	 * stale index, then all chunks down to the stale index will get their
+	 * position calculated until the stale index is at the given position.
+	 * This means for adding and removing bytes, that not all positions and
+	 * sizes need to be determined in the entire buffer at once.
+	 */
+	volatile int _staledx;
+	
+	/**
 	 * Initializes the byte buffers which does not copy from another buffer.
 	 *
 	 * @since 2016/03/22
 	 */
 	public DynamicByteBuffer()
 	{
+		// Always have a single chunk
+		this._chunks.add(new __Chunk__(this));
 	}
 	
 	/**
@@ -215,7 +223,10 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			this._chunks.clear();
+			// Go back to using just a single chunk
+			List<__Chunk__> chunks = this._chunks;
+			chunks.clear();
+			chunks.add(new __Chunk__(this));
 		}
 	}
 	

@@ -32,3 +32,38 @@ base emulation. So in reality I am dropping the interpreter. Going the
 interpreter route as I planned before would just be more difficult since the
 target system does not exist, I will need to invent an ABI for it.
 
+## 20:16
+
+Did not do much at all today. What I can do for chunks so that they are not
+full of large partition tables, is to split each chunk into a fixed number of
+partitions and use those accordingly. Alternatively instead of having chunks,
+they can just really contain raw data so to speak. For example, a chunk can
+have no means of knowing where it is located, the dynamic buffer then just
+manages partitions that can point to various chunks. Perhaps I am thinking too
+much into it. Perhaps instead, chunks are statically sized. Each chunk is
+given a byte array, offset, and length. When a byte is removed from a chunk
+it is then split into two chunks (where the offset and length are adjusted
+accordingly, although they refer to the same array). Chunks could end up being
+split more as bytes are removed. However, if a byte being removed is at the
+end then the head/tail are just changed accordingly. The same would be true
+for insertion operations. This way when a chunk is split it only requires that
+the offset and length are changed. However do I make this information volatile
+or final? Going the volatile route would only require one extra allocation and
+a single insertion into the chunk list. It would also be easier as new
+references will not have to be managed after a split.
+
+## 20:29
+
+For some simplicity, I can have the head/tail position value inside of the
+chunk individually. One thing to consider would be locating a chunk for a given
+position. Having the positions recalculated every time a byte is written will
+be extremely slow. So I will need a back chain of positions and staleness. If
+a chunk is stale then its position is not valid. However a chunk which is
+stale at the current position needs to make all other chunks after it also
+stale. Doing a recursive stale check will not be very fast on every operation.
+So I propose an instead, stale after chunk index kind of thing. Basically if
+a position is requested and the chunk is after the stale base, then it will
+go to previous chunks before the stale base and calculate the position. Then
+this way simply adding bytes at the end will not require mass recalculation
+if it is easy to solve.
+
