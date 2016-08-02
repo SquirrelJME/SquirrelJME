@@ -79,3 +79,15 @@ does. However these three cases, they are all deques. So the
 `SlidingByteWindow` should instead use `ByteDeque`. DHIS also uses it, but
 again that is also a queue.
 
+## 19:46
+
+Seems I have a `NullPointerException` in the build system.
+
+## 19:52
+
+Now this is really strange.
+
+## 19:54
+
+Had a dependency named incorrectly.
+

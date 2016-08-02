@@ -276,6 +276,16 @@ public class Build
 					__buildActual(dep);
 		}
 		
+		// Failed to build
+		catch (RuntimeException|Error e)
+		{
+			// Fail, print it
+			System.err.printf("Failed to build %s!%n", __p.name);
+			
+			// Rethrow
+			throw e;
+		}
+		
 		// Done
 		finally
 		{
@@ -1001,7 +1011,16 @@ public class Build
 			String odeps = attr.getValue("X-SquirrelJME-Depends");
 			if (odeps != null)
 				for (String s : odeps.split(Pattern.quote(",")))
-					xdeps.add(getProject(s.trim()));
+					try
+					{
+						xdeps.add(getProject(s.trim()));
+					}
+					catch (NoSuchProjectException e)
+					{
+						throw new RuntimeException(String.format("The " +
+							"package `%s` is a required dependency of `%s`, " +
+							"however it does not exist.", s, name), e);
+					}
 			
 			// Optional depends
 			Set<Project> pdeps = new TreeSet<>();
@@ -1021,8 +1040,8 @@ public class Build
 			// All force depends
 			xdeps.addAll(pdeps);
 			
-			depends = Collections.<Project>unmodifiableSet(xdeps);
-			optional = Collections.<Project>unmodifiableSet(pdeps);
+			this.depends = Collections.<Project>unmodifiableSet(xdeps);
+			this.optional = Collections.<Project>unmodifiableSet(pdeps);
 			
 			// These must exist for all projects
 			libtitle = Objects.<String>requireNonNull(attr.getValue(
