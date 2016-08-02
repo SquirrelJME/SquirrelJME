@@ -18,6 +18,7 @@ package net.multiphasicapps.util.dynbuffer;
  *
  * @since 2016/08/02
  */
+@Deprecated
 final class __Partition__
 {
 }

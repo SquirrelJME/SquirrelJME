@@ -18,6 +18,7 @@ import java.util.List;
  *
  * @since 2016/08/02
  */
+@Deprecated
 final class __Region__
 {
 	/**

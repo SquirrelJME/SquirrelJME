@@ -66,3 +66,16 @@ are defragmented first then defragmenting the upper regions can be done with
 an array containing the current partition and a search for the lowest value
 compared to all the regions.
 
+## 18:33
+
+Thinking about it, the dynamic byte buffer only really works when the chunk
+size is rather large and is an actual significant source where it is randomly
+adjusted all the time. The general usage right now really just writes at the
+start and the end of the data. When it comes to lower memory systems, the
+dynamic byte buffer will likely end up using more memory than a plain
+buffer. So in general, probably not worth it. The dynamic history input stream
+uses it as a queue and so does `ByteDeque`. The `SlidingByteWindow` also
+does. However these three cases, they are all deques. So the
+`SlidingByteWindow` should instead use `ByteDeque`. DHIS also uses it, but
+again that is also a queue.
+

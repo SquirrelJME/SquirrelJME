@@ -21,6 +21,7 @@ import java.util.List;
  *
  * @since 2016/03/22
  */
+@Deprecated
 public class DynamicByteBuffer
 {
 	/** Lock. */
