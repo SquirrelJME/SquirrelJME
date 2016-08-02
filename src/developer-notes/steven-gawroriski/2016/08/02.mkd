@@ -1,2 +1,8 @@
 # 2016/08/02
 
+## 09:25
+
+`remove` is just a `get` followed by a `delete`. This way I need not worry
+about reading bytes. Then I can add `delete` which is capable of deleting a
+range of data without using it (could be useful).
+
