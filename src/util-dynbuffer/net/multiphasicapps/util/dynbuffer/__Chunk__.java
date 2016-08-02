@@ -94,6 +94,10 @@ final class __Chunk__
 	 */
 	final void __add(int __base, byte[] __b, int __o, int __l)
 	{
+		// Do not bother if adding nothing
+		if (__l <= 0)
+			return;
+		
 		// Physical end write position
 		int physend = __base + __l;
 		
@@ -207,6 +211,38 @@ final class __Chunk__
 		
 		// Otherwise get it
 		return this.owner._chunks.get(index - 1);
+	}
+	
+	/**
+	 * This removes bytes from the current chunk and potentially other nearby
+	 * chunks.
+	 *
+	 * @param __base The physical address to read from and remove.
+	 * @param __b The storage area for read bytes.
+	 * @param __o Offset into the array.
+	 * @param __l Number of bytes to read.
+	 * @return The number of removed bytes.
+	 * @since 2016/08/01
+	 */
+	final int __remove(int __base, byte[] __b, int __o, int __l)
+	{
+		// Do not bother if removing nothing
+		if (__l <= 0)
+			return;
+		
+		// Remove bytes until nothing remains or the required read count
+		// was reached.
+		boolean stale = false;
+		int left = __l;
+		while (left > 0)
+			throw new Error("TODO");
+		
+		// Make stale?
+		if (stale)
+			__maybeStale();
+		
+		// Return remove count
+		return (__l - left);
 	}
 	
 	/**

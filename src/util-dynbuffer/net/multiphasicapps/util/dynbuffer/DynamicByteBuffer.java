@@ -377,7 +377,8 @@ public class DynamicByteBuffer
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		int n = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > n)
 			throw new IndexOutOfBoundsException("BAOB");
 		if (__i < 0)
 			throw new IndexOutOfBoundsException("IOOB");
@@ -385,7 +386,8 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Remove bytes at the given chunk
+			return __ofPosition(__base).__remove(__base, __b, __o, __l);
 		}
 	}
 	
