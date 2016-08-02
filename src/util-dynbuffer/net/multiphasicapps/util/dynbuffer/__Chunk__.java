@@ -108,7 +108,15 @@ final class __Chunk__
 		
 		// Write at end of buffer and into the next block or split
 		if (logstart >= tail)
-			throw new Error("TODO");
+		{
+			// All of the data fits in the buffer
+			if (logend < dataend)
+				throw new Error("TODO");
+			
+			// Write past end of the buffer, need a new one
+			else
+				throw new Error("TODO");
+		}
 		
 		// Write at the start of the buffer and into the previous one or split
 		else if (logend < head)
