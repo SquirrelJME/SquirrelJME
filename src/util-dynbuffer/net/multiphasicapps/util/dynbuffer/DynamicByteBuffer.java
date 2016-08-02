@@ -453,15 +453,54 @@ public class DynamicByteBuffer
 	final __Chunk__ __ofPosition(int __pos)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AD01 Requested negative buffer position.}
+		// {@squirreljme.error AD01 Requested negative buffer position. (The
+		// requested position)}
 		if (__pos < 0)
-			throw new IndexOutOfBoundsException("AD01");
+			throw new IndexOutOfBoundsException(String.format("AD01 %d",
+				__pos));
 		
 		// Lock
 		List<__Chunk__> chunks = this._chunks;
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Binary search through chunks
+			int n = chunks.size();
+			for (int l = 0, p = (n >>> 1), r = n;;)
+			{
+				// Is this the last chunk?
+				boolean islast = (p == (n - 1));
+				
+				// Get chunk here and its position
+				__Chunk__ rv = chunks.get(p);
+				int start = rv.__position();
+				int end = rv.__endPosition();
+				
+				// The position is within this chunk?
+				// The last chunk is allowed to be overflowed by one for
+				// appending to operate correctly
+				if (__pos >= start && (islast ? __pos <= end : __pos < end))
+					return rv;
+				
+				// Go left
+				if (__pos < start)
+					r = p;
+				
+				// Go right
+				else
+					l = p;
+				
+				// End of search?
+				if (l == r)
+					break;
+				
+				// Pivot in the middle
+				p = l + (r >>> 1);
+			}
+			
+			// {@squirreljme.error AD02 The specified position is outside of
+			// the range of the buffer. (The requested position)}
+			throw new IndexOutOfBoundsException(String.format("AD02 %d",
+				__pos));
 		}
 	}
 }

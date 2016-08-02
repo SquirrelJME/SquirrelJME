@@ -55,5 +55,38 @@ final class __Chunk__
 		
 		this.owner = __dbb;
 	}
+	
+	/**
+	 * Returns the end position of this chunk.
+	 *
+	 * @return The end position.
+	 * @since 2016/08/01
+	 */
+	final int __endPosition()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the physical position associated with the start of the chunk.
+	 *
+	 * @return The chunk's physical starting position.
+	 * @since 2016/08/01
+	 */
+	final int __position()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the size of this chunk.
+	 *
+	 * @return The chunk size.
+	 * @since 2016/08/01
+	 */
+	final int __size()
+	{
+		throw new Error("TODO");
+	}
 }
 
