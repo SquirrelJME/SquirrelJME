@@ -219,7 +219,7 @@ final class __Chunk__
 				// And the remainder of the current chunk after that one
 				__Chunk__ after = new __Chunk__(owner, data, treadat,
 					dataend - treadat);
-				owner.__insert(into, index + 2);
+				owner.__insert(after, index + 2);
 				
 				// Stale before add is performed
 				__maybeStale();
