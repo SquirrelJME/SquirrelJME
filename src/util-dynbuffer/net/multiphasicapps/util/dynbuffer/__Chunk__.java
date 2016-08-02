@@ -84,6 +84,34 @@ final class __Chunk__
 	}
 	
 	/**
+	 * Initializes a chunk which uses pre-existing data.
+	 *
+	 * @param __dbb The owning dynamic buffer.
+	 * @param __b The byte array to base data for.
+	 * @param __o The offset of the data.
+	 * @param __l The length of the data area.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or they exceed the array size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/02
+	 */
+	__Chunk__(DynamicByteBuffer __dbb, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__dbb == null)
+			throw new NullPointerException("NARG");
+		int n = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > n)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Set
+		this.owner = __dbb;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Adds the specified bytes to the current chunk. If the data cannot fit
 	 * then nearby chunks are checked. If data cannot fit there, then a new
 	 * chunk is created.
@@ -137,7 +165,15 @@ final class __Chunk__
 		
 		// Write in the middle of the buffer, write into a split buffer
 		else
-			throw new Error("TODO");
+		{
+			// Add a chunk before or after
+			if (logend == head || logstart == tail)
+				throw new Error("TODO");
+			
+			// Split in the middle
+			else
+				throw new Error("TODO");
+		}
 		
 		// Need to recalculate the positions of every block following this
 		// one
