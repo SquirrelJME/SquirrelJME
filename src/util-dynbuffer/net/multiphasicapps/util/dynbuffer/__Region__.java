@@ -26,7 +26,7 @@ final class __Region__
 	 * byte buffer should consume.}
 	 */
 	private static final int _REGION_SIZE =
-		Integer.getProperty("net.multiphasicapps.util.dynbuffer.regionsize",
+		Integer.getInteger("net.multiphasicapps.util.dynbuffer.regionsize",
 		128);
 	
 	/** Physical partitions in this region. */
