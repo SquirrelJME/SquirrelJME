@@ -22,3 +22,13 @@ I suppose something which would be simple, would be writing to the tail until
 there is no space left. If there is a write in the middle of the chunk then it
 will be split and will start writing into another chunk.
 
+## 16:34
+
+Some bytes could very well get lost when chunks are split and then removed
+when empty. One could split all of the chunks causing a single byte to be
+used, then when they are removed they all go away and their space is just
+wasted. To remedy this, all I need is a list of which chunks are associated
+with a given byte array. When a chunk is removed it just goes away.
+Alternatively I can just not actually remove the chunks so that their memory
+is never freed, but that would just waste memory.
+

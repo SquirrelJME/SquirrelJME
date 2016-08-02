@@ -249,7 +249,35 @@ final class __Chunk__
 				// Debug
 				System.err.println("DEBUG -- xC");
 				
-				throw new Error("TODO");
+				// Determine the data position used
+				int atdp = head + (__base - nowpos);
+				
+				// Debug
+				System.err.printf("DEBUG -- Splice? %d %d %d%n",
+					head, atdp, tail);
+				
+				// Create chunk to follow this one
+				__Chunk__ next = new __Chunk__(owner);
+				
+				// And another chunk that has the remainder of the data after
+				// that
+				__Chunk__ after = new __Chunk__(owner, data, atdp,
+					dataend - atdp);
+				after._head = atdp;	// Starts at partition
+				after._tail = tail;	// Inherited
+				
+				// The current chunk ends at the split
+				after._dataend = atdp;
+				after._tail = atdp;
+				
+				// Insert
+				int index = now._index;
+				owner.__insert(next, index + 1);
+				owner.__insert(after, index + 2);
+				
+				// Write into the next block
+				now = next;
+				continue;
 			}
 		}
 	}
@@ -423,7 +451,7 @@ final class __Chunk__
 	{
 		// The last chunk does not have a next
 		List<__Chunk__> chunks = this.owner._chunks;
-		int index = this._calcpos + 1;
+		int index = this._index + 1;
 		if (index == chunks.size())
 			return null;
 		
@@ -440,7 +468,7 @@ final class __Chunk__
 	final int __position()
 	{
 		// The first chunk always returns zero
-		int index = this._calcpos;
+		int index = this._index;
 		if (index == 0)
 			return 0;
 		
@@ -450,7 +478,13 @@ final class __Chunk__
 		int pos = this._calcpos;
 		if (index >= staledx)
 		{
-			pos = __previous().__endPosition();
+			// There should always be a chunk before the first
+			__Chunk__ prev = this.__previous();
+			if (prev == null)
+				throw new RuntimeException("OOPS");
+			
+			// Based on previous position
+			pos = prev.__endPosition();
 			owner._staledx = index + 1;
 			this._calcpos = pos;
 		}
@@ -468,7 +502,7 @@ final class __Chunk__
 	final __Chunk__ __previous()
 	{
 		// The first chunk never has a previous one
-		int index = this._calcpos;
+		int index = this._index;
 		if (index == 0)
 			return null;
 		
