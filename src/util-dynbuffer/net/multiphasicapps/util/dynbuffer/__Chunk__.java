@@ -371,6 +371,10 @@ final class __Chunk__
 				throw new Error("TODO");
 			
 			// Deletes after the end but after the head
+			else if (pasttail)
+				throw new Error("TODO");
+			
+			// Deletes data in the middle of the chunk, splitting it
 			else
 				throw new Error("TODO");
 			
