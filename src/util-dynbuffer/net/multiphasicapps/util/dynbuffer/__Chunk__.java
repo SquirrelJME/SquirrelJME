@@ -150,31 +150,67 @@ final class __Chunk__
 		
 		// Write until all bytes have been placed
 		__Chunk__ now = this;
+		int at = __o;
 		int left = __l;
+		DynamicByteBuffer owner = this.owner;
 		while (left > 0)
 		{
-			// Detect if writing at the head
+			// Get a few variables
+			byte[] data = now._data;
 			int nowpos = now.__position();
 			int datastart = now._datastart;
+			int dataend = now._dataend;
 			int head = now._head;
 			int tail = now._tail;
+			int htrun = tail - head;
 			int headleft = head - datastart;
+			
+			// Detect if writing at the head (when the chunk is not empty)
 			if (head != tail && __base <= nowpos)
 			{
+				// Debug
+				System.err.println("DEBUG -- xA");
+				
 				// Enough room to write before the head
-				if (headleft < left)
-					throw new Error("TODO");
+				if (left < headleft)
+				{
+					// The real base to start write at
+					int basehead = head - left;
+					
+					// Write loop
+					int wpos = basehead;
+					while (left > 0)
+					{
+						data[wpos++] = __b[at++];
+						left--;
+					}
+					
+					// head is at the base now
+					now._head = basehead;
+				}
 				
 				// Not enough room in the head, add chunk before this one
 				else
-					throw new Error("TODO");
+				{
+					// Create new chunk
+					__Chunk__ slab = new __Chunk__(owner);
+					
+					// Add before this one (at this index)
+					owner.__insert(slab, now._index);
+					
+					// Switch to this chunk
+					now = slab;
+					continue;
+				}
 			}
 			
 			// Writing at the tail end
-			else
+			else if (__base >= (head + htrun))
 			{
+				// Debug
+				System.err.println("DEBUG -- xB");
+				
 				// No more room left?
-				int dataend = now._dataend;
 				if (dataend == tail)
 				{
 					// Get next chunk, if applicable
@@ -183,7 +219,6 @@ final class __Chunk__
 					// If no chunk, add one
 					if (into == null)
 					{
-						DynamicByteBuffer owner = this.owner;
 						int index = now._index;
 						now = new __Chunk__(owner);
 						owner.__insert(now, index + 1);
@@ -195,7 +230,24 @@ final class __Chunk__
 					
 					// Try again
 					continue;
-				}	
+				}
+				
+				// No need to loop on the outer end
+				while (left > 0 && tail < dataend)
+				{
+					data[tail++] = __b[at++];
+					left--;
+				}
+				
+				// Set new tail
+				now._tail = tail;
+			}
+			
+			// Split chunk for reading/writing
+			else
+			{
+				// Debug
+				System.err.println("DEBUG -- xC");
 				
 				throw new Error("TODO");
 			}

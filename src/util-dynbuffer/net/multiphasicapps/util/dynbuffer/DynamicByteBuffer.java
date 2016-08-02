@@ -554,6 +554,9 @@ public class DynamicByteBuffer
 		
 		// Correct
 		__correctIndices(__dx);
+		
+		// Use the lower of the stale values
+		this._staledx = Math.min(this._staledx, __dx);
 	}
 	
 	/**
@@ -580,8 +583,10 @@ public class DynamicByteBuffer
 		
 		// Binary search through chunks
 		int n = chunks.size();
-		for (int l = 0, r = n - 1, p = (r >>> 1);;)
+		for (int l = 0, r = n, p = (r >>> 1);;)
 		{
+			System.err.printf("DEBUG -- BST %d - %d - %d%n", l, p, r);
+			
 			// Is this the last chunk?
 			boolean islast = (p == (n - 1));
 			
@@ -609,7 +614,7 @@ public class DynamicByteBuffer
 				break;
 			
 			// Pivot in the middle
-			p = l + (r >>> 1);
+			p = l + ((r - l) >>> 1);
 		}
 		
 		// {@squirreljme.error AD02 The specified position is outside of
