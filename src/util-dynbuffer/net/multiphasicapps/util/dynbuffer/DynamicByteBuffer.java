@@ -31,6 +31,14 @@ public class DynamicByteBuffer
 	private final byte[] _solo =
 		new byte[1];
 	
+	/** Logical partitions. */
+	private final List<__Partition__> _logical =
+		new ArrayList<>();
+	
+	/** Physical regions. */
+	private final List<__Region__> _regions =
+		new ArrayList<>();
+	
 	/**
 	 * This is the minimum index in the chunk array where the position value
 	 * is stale. When the position of a chunk is requested and it is after the
