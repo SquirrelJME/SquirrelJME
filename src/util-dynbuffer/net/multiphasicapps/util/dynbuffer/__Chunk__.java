@@ -111,7 +111,14 @@ final class __Chunk__
 		{
 			// All of the data fits in the buffer
 			if (logend < dataend)
-				throw new Error("TODO");
+			{
+				// Copy from the buffer to the data storage
+				for (int i = __o, j = tail; i < __l; i++, j++)
+					data[j] = __b[i];
+				
+				// Data ends at the logical end position
+				this._tail = logend;
+			}
 			
 			// Write past end of the buffer, need a new one
 			else
@@ -125,6 +132,10 @@ final class __Chunk__
 		// Write in the middle of the buffer, write into a split buffer
 		else
 			throw new Error("TODO");
+		
+		// Need to recalculate the positions of every block following this
+		// one
+		__maybeStale();
 	}
 	
 	/**
@@ -136,6 +147,21 @@ final class __Chunk__
 	final int __endPosition()
 	{
 		return __position() + __size();
+	}
+	
+	/**
+	 * This makes it so that any block following this one becomes stale if
+	 * this block is before the current stale index.
+	 *
+	 * @since 2016/08/01
+	 */
+	final void __maybeStale()
+	{
+		// Force any blocks following this to become stale
+		DynamicByteBuffer owner = this.owner;
+		int index = this._index;
+		if (owner._staledx > index)
+			owner._staledx = index + 1;
 	}
 	
 	/**

@@ -420,7 +420,9 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// This is the end position of the last chunk
+			List<__Chunk__> chunks = this._chunks;
+			return chunks.get(chunks.size() - 1).__endPosition();
 		}
 	}
 	
