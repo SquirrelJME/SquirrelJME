@@ -27,10 +27,6 @@ public class DynamicByteBuffer
 	protected final Object lock =
 		new Object();
 	
-	/** The chunks that are within this buffer. */
-	final List<__Chunk__> _chunks =
-		new ArrayList<>();
-	
 	/** Array used for single byte add, since synchronized (not an issue). */
 	private final byte[] _solo =
 		new byte[1];
@@ -52,8 +48,6 @@ public class DynamicByteBuffer
 	 */
 	public DynamicByteBuffer()
 	{
-		// Always have a single chunk
-		this._chunks.add(new __Chunk__(this));
 	}
 	
 	/**
@@ -208,24 +202,7 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			// Debug
-			System.err.printf("DEBUG -- A Bef: %s%n", this._chunks);
-			
-			// Add bytes to the specified chunk at the given position)
-			__Chunk__ wb = __ofPosition(__base);
-			
-			// If a previous chunk exists then start writing from there instead
-			// so that way writes can always be done from the tail end rather
-			// than the head.
-			__Chunk__ prev = wb.__previous();
-			if (prev != null && prev._tail < prev._dataend)
-				wb = prev;
-				
-			// Add bytes
-			wb.__add(__base, __src, __o, __l);
-			
-			// Debug
-			System.err.printf("DEBUG -- A Aft: %s%n", this._chunks);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -240,10 +217,7 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			// Go back to using just a single chunk
-			List<__Chunk__> chunks = this._chunks;
-			chunks.clear();
-			chunks.add(new __Chunk__(this));
+			throw new Error("TODO");
 		}
 	}
 	
@@ -268,13 +242,7 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			// Debug
-			System.err.printf("DEBUG -- D Bef: %s%n", this._chunks);
-			
-			__ofPosition(__b).__delete(__b, __l);
-			
-			// Debug
-			System.err.printf("DEBUG -- D Aft: %s%n", this._chunks);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -349,7 +317,7 @@ public class DynamicByteBuffer
 					"IOOB %d %d %d", __base, __l, limit));
 			
 			// Get
-			__ofPosition(__base).__get(__base, __dest, __o, __l);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -434,22 +402,12 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			// Debug
-			System.err.printf("DEBUG -- R Bef: %s%n", this._chunks);
-			
 			// Cannot remove more bytes than exist (get must always be in
 			// range)
 			int count = Math.min(size(), __l);
 			
-			// Obtain the data that is to be removed
-			__Chunk__ c = __ofPosition(__i);
-			c.__get(__i, __b, __o, __l);
-			
-			// Delete the bytes here
-			c.__delete(__i, __l);
-			
-			// Debug
-			System.err.printf("DEBUG -- R Aft: %s%n", this._chunks);
+			if (true)
+				throw new Error("TODO");
 			
 			// Return removal count
 			return count;
@@ -528,7 +486,7 @@ public class DynamicByteBuffer
 					"IOOB %d %d %d", __base, __l, limit));
 			
 			// Get
-			__ofPosition(__base).__set(__base, __b, __o, __l);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -543,9 +501,7 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			// This is the end position of the last chunk
-			List<__Chunk__> chunks = this._chunks;
-			return chunks.get(chunks.size() - 1).__endPosition();
+			throw new Error("TODO");
 		}
 	}
 	
@@ -561,122 +517,6 @@ public class DynamicByteBuffer
 		{
 			throw new Error("TODO");
 		}
-	}
-	
-	/**
-	 * Corrects the index value within each chunk at and following the given
-	 * index.
-	 *
-	 * @param __dx The starting index.
-	 * @since 2016/08/02
-	 */
-	final void __correctIndices(int __dx)
-	{
-		// Correct them
-		List<__Chunk__> chunks = this._chunks;
-		int n = chunks.size();
-		for (int i = __dx; i < n; i++)
-			chunks.get(i)._index = i;
-	}
-	
-	/**
-	 * Inserts the specified chunk at the specified position.
-	 *
-	 * @param __c The chunk to insert.
-	 * @param __dx The index to insert the chunk at.
-	 * @throws IndexOutOfBoundsException If the index is outside of the chunk
-	 * array bounds.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/02
-	 */
-	final void __insert(__Chunk__ __c, int __dx)
-		throws IndexOutOfBoundsException, NullPointerException
-	{
-		// Check
-		if (__c == null)
-			throw new NullPointerException("NARG");
-		
-		// Get
-		List<__Chunk__> chunks = this._chunks;
-		int n = chunks.size();
-		
-		// {@squirreljme.error AD03 Insertion of a chunk that is outside of the
-		// chunk array bounds.}
-		if (__dx < 0 || __dx > n)
-			throw new IndexOutOfBoundsException("AD03");
-		
-		// Inset
-		chunks.add(__dx, __c);
-		
-		// Correct
-		__correctIndices(__dx);
-		
-		// Use the lower of the stale values
-		this._staledx = Math.min(this._staledx, __dx);
-	}
-	
-	/**
-	 * This returns the chunk which is at the specified position for a chunk
-	 * operation to be performed.
-	 *
-	 * @param __pos The position to find a chunk for.
-	 * @return The chunk at the given position.
-	 * @throws IndexOutOfBoundsException If the position of the chunk is
-	 * negative or exceeds the size of the buffer.
-	 * @since 2016/08/01
-	 */
-	final __Chunk__ __ofPosition(int __pos)
-		throws IndexOutOfBoundsException
-	{
-		// {@squirreljme.error AD01 Requested negative buffer position. (The
-		// requested position)}
-		if (__pos < 0)
-			throw new IndexOutOfBoundsException(String.format("AD01 %d",
-				__pos));
-		
-		// Lock
-		List<__Chunk__> chunks = this._chunks;
-		
-		// Binary search through chunks
-		int n = chunks.size();
-		for (int l = 0, r = n, p = (r >>> 1);;)
-		{
-			System.err.printf("DEBUG -- BST %d - %d - %d%n", l, p, r);
-			
-			// Is this the last chunk?
-			boolean islast = (p == (n - 1));
-			
-			// Get chunk here and its position
-			__Chunk__ rv = chunks.get(p);
-			int start = rv.__position();
-			int end = rv.__endPosition();
-			
-			// The position is within this chunk?
-			// The last chunk is allowed to be overflowed by one for
-			// appending to operate correctly
-			if (__pos >= start && (islast ? __pos <= end : __pos < end))
-				return rv;
-			
-			// Go left
-			if (__pos < start)
-				r = p;
-			
-			// Go right
-			else
-				l = p;
-			
-			// End of search?
-			if (l == r)
-				break;
-			
-			// Pivot in the middle
-			p = l + ((r - l) >>> 1);
-		}
-		
-		// {@squirreljme.error AD02 The specified position is outside of
-		// the range of the buffer. (The requested position; The buffer size)}
-		throw new IndexOutOfBoundsException(String.format("AD02 %d %d",
-			__pos, size()));
 	}
 }
 
