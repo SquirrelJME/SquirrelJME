@@ -208,6 +208,9 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
+			// Find chunk at the base
+			__Chunk__ chunk = __ofPosition(__base);
+			
 			throw new Error("TODO");
 		}
 	}
