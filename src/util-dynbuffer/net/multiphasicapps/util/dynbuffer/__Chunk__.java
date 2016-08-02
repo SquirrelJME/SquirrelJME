@@ -127,7 +127,7 @@ final class __Chunk__
 	public String toString()
 	{
 		return String.format("{i=%d, d=[%d, %d), p=%d, rw=[%d, %d]}",
-			this._index, this._datastart, this._dataend, this._calcpos,
+			this._index, this._datastart, this._dataend, this.__position(),
 			this._head, this._tail);
 	}
 	
@@ -148,86 +148,7 @@ final class __Chunk__
 		if (__l <= 0)
 			return;
 		
-		// Physical end write position
-		int physend = __base + __l;
-		
-		// Calculate the logical position
-		int logstart = __base - __position();
-		int logend = logstart + __l;
-		
-		// Get buffer info
-		byte[] data = this._data;
-		int datastart = this._datastart, dataend = this._dataend;
-		int head = this._head, tail = this._tail;
-		
-		// Where the data actually starts
-		int treadat = head + logstart;
-		int index = this._index;
-		
-		// Write at end of buffer and into the next block or split
-		if (logstart >= tail)
-		{
-			// All of the data fits in the buffer
-			if (logend < dataend)
-			{
-				// Debug
-				System.err.printf("DEBUG -- %s NORMAL %d %d %d (%d, %d %d) " +
-					"%d/%d%n", this, __base, __o, __l, tail, logend, dataend,
-					head, tail);
-				
-				// Copy from the buffer to the data storage
-				for (int i = __o, j = tail; i < __l; i++, j++)
-					data[j] = __b[i];
-				
-				// Data ends at the logical end position
-				this._tail = logend;
-				
-				// Positions are stale following this
-				__maybeStale();
-			}
-			
-			// Write past end of the buffer, write into the follow one or end
-			else
-				throw new Error("TODO");
-		}
-		
-		// Write at the start of the buffer and into the previous one or split
-		else if (logend <= head)
-			throw new Error("TODO");
-		
-		// Write in the middle of the buffer, write into a split buffer
-		else
-		{
-			// This should not occur at all
-			if (logend == head || logstart == tail)
-				throw new RuntimeException("OOPS");
-			
-			// Split in the middle
-			else
-			{System.err.printf("DEBUG -- %s MIDSPLIT %d %d %d (%d/%d,%d/%d)%n",
-				this, __base, __o, __l, head, tail, logstart, logend);
-				// The new tail and data end of this chunk will be where the
-				// write starts
-				this._dataend = treadat;
-				this._tail = treadat;
-				
-				// Create new chunk where data is to be written after this one
-				DynamicByteBuffer owner = this.owner;
-				__Chunk__ into = new __Chunk__(owner);
-				owner.__insert(into, index + 1);
-				
-				// And the remainder of the current chunk after that one
-				__Chunk__ after = new __Chunk__(owner, data, treadat,
-					dataend - treadat);
-				owner.__insert(after, index + 2);
-				
-				// Stale before add is performed
-				__maybeStale();
-				
-				// Write everything into that chunk
-				into.__add(__base, __b, __o, __l);
-			}
-		}
+		throw new Error("TODO");
 	}
 	
 	/**
