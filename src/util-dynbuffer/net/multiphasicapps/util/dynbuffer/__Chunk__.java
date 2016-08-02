@@ -338,6 +338,10 @@ final class __Chunk__
 				__l, trailc, pre, relstart, relend, head, tail, pasthead,
 				pasttail);
 			
+			// The previous chunk (before it gets deleted)
+			__Chunk__ goprev = trailc.__previous();
+			int tindex = trailc._index;
+			
 			// Deletes the entire chunk
 			if (pasthead && pasttail)
 			{
@@ -352,7 +356,14 @@ final class __Chunk__
 				
 				// Otherwise remove it
 				else
-					throw new Error("TODO");
+				{
+					System.err.println("TODO -- Efficient merge of chunks.");
+					
+					// Remove chunk here and make it stale
+					chunks.remove(tindex);
+					owner._staledx = Math.min(owner._staledx, tindex);
+					owner.__correctIndices(tindex);
+				}
 			}
 			
 			// Deletes before the start but before the tail
@@ -364,7 +375,7 @@ final class __Chunk__
 				throw new Error("TODO");
 			
 			// Go to the previous chunk
-			trailc = trailc.__previous();
+			trailc = goprev;
 		}
 		
 		// Data has changed
@@ -508,6 +519,50 @@ final class __Chunk__
 		
 		// Otherwise get it
 		return this.owner._chunks.get(index - 1);
+	}
+	
+	/**
+	 * This is similar to get except that it stores values into chunks
+	 * overwriting any previously set value.
+	 *
+	 * @param __base The physical address to write to.
+	 * @param __b The storage area for written bytes.
+	 * @param __o Offset into the array.
+	 * @param __l Number of bytes to write.
+	 * @since 2016/08/02
+	 */
+	final void __set(int __base, byte[] __b, int __o, int __l)
+	{
+		// Do not bother if getting nothing
+		if (__l <= 0)
+			return;
+		
+		// Remainder and position
+		int at = __o;
+		int left = __l;
+		
+		// Keep reading
+		__Chunk__ now = this;
+		while (left > 0 && now != null)
+		{
+			// Calculate the logical position
+			int logstart = now._head + (__base - now.__position());
+			int logend = Math.min(now._tail, logstart + left);
+			
+			// Copy values
+			byte[] data = now._data;
+			for (int i = logstart; i < logend; i++)
+				data[i] = __b[at++];
+			
+			// Next to write into
+			now = now.__next();
+			int did = logend - logstart;
+			left -= did;
+		}
+		
+		// {@squirreljme.error AD06 Did not set all bytes.}
+		if (left > 0)
+			throw new IllegalStateException("AD06");
 	}
 	
 	/**

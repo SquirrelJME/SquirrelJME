@@ -459,20 +459,76 @@ public class DynamicByteBuffer
 	/**
 	 * Sets the byte at the given position.
 	 *
-	 * @param __i The index to write the byte at.
+	 * @param __base The index to set the byte at.
 	 * @param __v The byte to write.
 	 * @return The old value.
 	 * @throws IndexOutOfBoundsException If the address is not within the
 	 * buffer bounds.
 	 * @since 2016/03/22
 	 */
-	public final byte set(int __i, byte __v)
+	public final byte set(int __base, byte __v)
 		throws IndexOutOfBoundsException
 	{
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			byte[] solo = _solo;
+			this.set(__base, solo, 0, 1);
+			return solo[0];
+		}
+	}
+	
+	/**
+	 * Sets multiple bytes at the given position to the specified values.
+	 *
+	 * @param __base The index to set the values at.
+	 * @param __b The values to set.
+	 * @throws IndexOutOfBoundsException If the base index is not within
+	 * the bounds of the buffer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/02
+	 */
+	public final void set(int __base, byte[] __b)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		get(__base, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Sets multiple bytes at the given position to the specified values.
+	 *
+	 * @param __base The index to set the values at.
+	 * @param __b The values to set.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to set.
+	 * @throws IndexOutOfBoundsException If the index is not within bounds or
+	 * the offset or length are negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/02
+	 */
+	public final void set(int __base, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int n = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > n)
+			throw new IndexOutOfBoundsException("BAOB");
+		if (__base < 0)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Source exceeds bounds?
+			int limit = size();
+			if (__base < 0 || (__base + __l) > limit)
+				throw new IndexOutOfBoundsException(String.format(
+					"IOOB %d %d %d", __base, __l, limit));
+			
+			// Get
+			__ofPosition(__base).__set(__base, __b, __o, __l);
 		}
 	}
 	
