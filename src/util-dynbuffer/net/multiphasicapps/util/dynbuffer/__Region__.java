@@ -20,6 +20,15 @@ import java.util.List;
  */
 final class __Region__
 {
+	/**
+	 * {@squirreljme.property net.multiphasicapps.util.dynbuffer.regionsize=n
+	 * This specifies the number of bytes that a single region in a dynamic
+	 * byte buffer should consume.}
+	 */
+	private static final int _REGION_SIZE =
+		Integer.getProperty("net.multiphasicapps.util.dynbuffer.regionsize",
+		128);
+	
 	/** Physical partitions in this region. */
 	final List<__Partition__> _physical =
 		new ArrayList<>();

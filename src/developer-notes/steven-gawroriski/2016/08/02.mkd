@@ -58,3 +58,11 @@ to implement. This means that the DBB class gets a list of logical partitions.
 Then there is a list of regions where sorting that does not really matter.
 Then physical partitions are listed in each region.
 
+## 17:24
+
+It is also quite possible for regions to be defragmented. Note that
+defragmenting the entire buffer would have a higher cost, but if regions
+are defragmented first then defragmenting the upper regions can be done with
+an array containing the current partition and a search for the lowest value
+compared to all the regions.
+
