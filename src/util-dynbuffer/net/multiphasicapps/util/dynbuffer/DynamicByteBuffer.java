@@ -208,8 +208,14 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
+			// Debug
+			System.err.printf("DEBUG -- A Bef: %s%n", this._chunks);
+			
 			// Add bytes to the specified chunk at the given position)
 			__ofPosition(__base).__add(__base, __src, __o, __l);
+			
+			// Debug
+			System.err.printf("DEBUG -- A Aft: %s%n", this._chunks);
 		}
 	}
 	
@@ -252,7 +258,13 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
+			// Debug
+			System.err.printf("DEBUG -- D Bef: %s%n", this._chunks);
+			
 			__ofPosition(__b).__delete(__b, __l);
+			
+			// Debug
+			System.err.printf("DEBUG -- D Aft: %s%n", this._chunks);
 		}
 	}
 	
@@ -412,6 +424,9 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
+			// Debug
+			System.err.printf("DEBUG -- R Bef: %s%n", this._chunks);
+			
 			// Cannot remove more bytes than exist (get must always be in
 			// range)
 			int count = Math.min(size(), __l);
@@ -422,6 +437,9 @@ public class DynamicByteBuffer
 			
 			// Delete the bytes here
 			c.__delete(__i, __l);
+			
+			// Debug
+			System.err.printf("DEBUG -- R Aft: %s%n", this._chunks);
 			
 			// Return removal count
 			return count;

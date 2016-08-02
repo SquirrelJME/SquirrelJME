@@ -120,6 +120,18 @@ final class __Chunk__
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/02
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("{i=%d, d=[%d, %d), p=%d, rw=[%d, %d]}",
+			this._index, this._datastart, this._dataend, this._calcpos,
+			this._head, this._tail);
+	}
+	
+	/**
 	 * Adds the specified bytes to the current chunk. If the data cannot fit
 	 * then nearby chunks are checked. If data cannot fit there, then a new
 	 * chunk is created.
@@ -157,8 +169,12 @@ final class __Chunk__
 		{
 			// All of the data fits in the buffer
 			if (logend < dataend)
-			{System.err.printf("DEBUG -- %s NORMAL %d %d %d (%d, %d %d)%n",
-				this, __base, __o, __l, tail, logend, dataend);
+			{
+				// Debug
+				System.err.printf("DEBUG -- %s NORMAL %d %d %d (%d, %d %d) " +
+					"%d/%d%n", this, __base, __o, __l, tail, logend, dataend,
+					head, tail);
+				
 				// Copy from the buffer to the data storage
 				for (int i = __o, j = tail; i < __l; i++, j++)
 					data[j] = __b[i];
@@ -196,6 +212,7 @@ final class __Chunk__
 				this._tail = treadat;
 				
 				// Create new chunk where data is to be written after this one
+				DynamicByteBuffer owner = this.owner;
 				__Chunk__ into = new __Chunk__(owner);
 				owner.__insert(into, index + 1);
 				
@@ -226,7 +243,80 @@ final class __Chunk__
 		if (__l <= 0)
 			return;
 		
-		throw new Error("TODO");
+		// The base chunk is this one
+		__Chunk__ pre = this.__previous();
+		__Chunk__ startc = this, trailc = this;
+		int left = __l;
+		while (left > 0)
+		{
+			// Calculate the logical position
+			int logstart = trailc._head + (__base - trailc.__position());
+			int logend = Math.min(trailc._tail, logstart + left);
+			
+			// Remove count
+			int did = logend - logstart;
+			left -= did;
+			
+			// Go to the next block?
+			if (left > 0)
+				trailc = trailc.__next();
+		}
+		
+		// Perform actual chunk removal
+		DynamicByteBuffer owner = this.owner;
+		List<__Chunk__> chunks = owner._chunks;
+		while (trailc != pre)
+		{
+			// Actuall data starts and end relative to the current head
+			int relstart = (__base - trailc.__position());
+			int relend = relstart + __l;
+			
+			// Head and tail positions
+			int head = trailc._head, tail = trailc._tail;
+			
+			// Are the values at or past the head and/or tail?
+			// This is used to determine if the entire chunk can just be
+			// dropped.
+			boolean pasthead = relstart <= head,
+				pasttail = relend >= tail;
+			
+			// Debug
+			System.err.printf("DEBUG -- Delete %d %d (in %s -> %s, " +
+				"%d - %d, %d %d, %s, %s)%n", __base,
+				__l, trailc, pre, relstart, relend, head, tail, pasthead,
+				pasttail);
+			
+			// Deletes the entire chunk
+			if (pasthead && pasttail)
+			{
+				// If this is the sole chunk in the buffer then just clear
+				// the head/tail
+				if (chunks.size() == 1)
+				{
+					int ds = trailc._datastart;
+					trailc._head = ds;
+					trailc._tail = ds;
+				}
+				
+				// Otherwise remove it
+				else
+					throw new Error("TODO");
+			}
+			
+			// Deletes before the start but before the tail
+			else if (pasthead)
+				throw new Error("TODO");
+			
+			// Deletes after the end but after the head
+			else
+				throw new Error("TODO");
+			
+			// Go to the previous chunk
+			trailc = trailc.__previous();
+		}
+		
+		// Data has changed
+		__maybeStale();
 	}
 	
 	/**
