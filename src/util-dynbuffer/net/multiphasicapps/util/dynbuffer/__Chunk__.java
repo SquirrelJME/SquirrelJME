@@ -214,6 +214,22 @@ final class __Chunk__
 	}
 	
 	/**
+	 * Deletes bytes at the given address.
+	 *
+	 * @param __base The position to start deletion from.
+	 * @param __l The number of bytes to delete.
+	 * @since 2016/08/02
+	 */
+	final void __delete(int __base, int __l)
+	{
+		// Deleting nothing?
+		if (__l <= 0)
+			return;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the end position of this chunk.
 	 *
 	 * @return The end position.
@@ -222,6 +238,25 @@ final class __Chunk__
 	final int __endPosition()
 	{
 		return __position() + __size();
+	}
+	
+	/**
+	 * This reads data from the current chunk while potentially moving to
+	 * later chunks.
+	 *
+	 * @param __base The physical address to read from.
+	 * @param __b The storage area for read bytes.
+	 * @param __o Offset into the array.
+	 * @param __l Number of bytes to read.
+	 * @since 2016/08/01
+	 */
+	final void __get(int __base, byte[] __b, int __o, int __l)
+	{
+		// Do not bother if getting nothing
+		if (__l <= 0)
+			return;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -300,81 +335,6 @@ final class __Chunk__
 		
 		// Otherwise get it
 		return this.owner._chunks.get(index - 1);
-	}
-	
-	/**
-	 * This removes bytes from the current chunk and potentially other nearby
-	 * chunks.
-	 *
-	 * @param __base The physical address to read from and remove.
-	 * @param __b The storage area for read bytes.
-	 * @param __o Offset into the array.
-	 * @param __l Number of bytes to read.
-	 * @return The number of removed bytes.
-	 * @since 2016/08/01
-	 */
-	final int __remove(int __base, byte[] __b, int __o, int __l)
-	{
-		// Do not bother if removing nothing
-		if (__l <= 0)
-			return 0;
-		
-		// Physical end write position
-		int physend = __base + __l;
-		
-		// Owner chunks
-		List<__Chunk__> chunks = this.owner._chunks;
-		
-		// Remove bytes until nothing remains or the required read count
-		// was reached.
-		boolean stale = false;
-		int at = __o;
-		int left = __l;
-		__Chunk__ now = this;
-		while (left > 0 && now != null)
-		{
-			// Calculate the logical position
-			int logstart = (__base - now.__position()) + (__l - left);
-			int logend = logstart + __l;
-			
-			System.err.printf("DEBUG -- %s REMOVE %d %d %d (%d %d)%n",
-				this, __base, __o, __l, logstart, logend);
-		
-			// Get buffer info
-			byte[] data = now._data;
-			int datastart = now._datastart, dataend = now._dataend;
-			int head = now._head, tail = now._tail;
-			
-			// Virtual tail position
-			int vtail = tail - head;
-			
-			// Max number of bytes to remove
-			int count = (logend > vtail ? vtail : logend);
-			
-			// Drain bytes
-			for (int i = 0, s = logstart; i < count; i++, s++)
-				__b[at++] = data[s];
-			
-			// Determine the next chunk
-			__Chunk__ next = __next();
-			
-			// Set the tail to the logical start position
-			now._tail = logstart;
-			
-			// Mark as stale
-			now.__maybeStale();
-			
-			// Removed all bytes in a chunk
-			if (head == logstart && chunks.size() > 1)
-				throw new Error("TODO");
-			
-			// Go to the next chunk
-			left -= count;
-			now = next;
-		}
-		
-		// Return write count
-		return (__l - left);
 	}
 	
 	/**

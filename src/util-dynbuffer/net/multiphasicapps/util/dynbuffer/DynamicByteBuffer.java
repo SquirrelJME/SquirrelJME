@@ -232,6 +232,31 @@ public class DynamicByteBuffer
 	}
 	
 	/**
+	 * Deletes bytes within the buffer.
+	 *
+	 * @param __b The position to start deletion at.
+	 * @param __l The number of bytes to delete.
+	 * @param IndexOutOfBoundsException If the position is negative or the
+	 * number of bytes to remove is negative.
+	 * @since 2016/08/02
+	 */
+	public final void delete(int __b, int __l)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AD04 Cannot delete bytes at a negative address
+		// or delete a negative amount of bytes. (The address; The length)}
+		if (__b < 0 || __l < 0)
+			throw new IndexOutOfBoundsException(String.format("AD04 %d %d",
+				__b, __l));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			__ofPosition(__b).__delete(__b, __l);
+		}
+	}
+	
+	/**
 	 * Gets the byte at the given index.
 	 *
 	 * @param __i The index to read the byte for.
@@ -301,7 +326,8 @@ public class DynamicByteBuffer
 				throw new IndexOutOfBoundsException(String.format(
 					"IOOB %d %d %d", __base, __l, limit));
 			
-			throw new Error("TODO");
+			// Get
+			__ofPosition(__base).__get(__base, __dest, __o, __l);
 		}
 	}
 	
@@ -386,8 +412,19 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			// Remove bytes at the given chunk
-			return __ofPosition(__i).__remove(__i, __b, __o, __l);
+			// Cannot remove more bytes than exist (get must always be in
+			// range)
+			int count = Math.min(size(), __l);
+			
+			// Obtain the data that is to be removed
+			__Chunk__ c = __ofPosition(__i);
+			c.__get(__i, __b, __o, __l);
+			
+			// Delete the bytes here
+			c.__delete(__i, __l);
+			
+			// Return removal count
+			return count;
 		}
 	}
 	
@@ -480,7 +517,7 @@ public class DynamicByteBuffer
 		int n = chunks.size();
 		
 		// {@squirreljme.error AD03 Insertion of a chunk that is outside of the
-		// chunk array bounds.
+		// chunk array bounds.}
 		if (__dx < 0 || __dx > n)
 			throw new IndexOutOfBoundsException("AD03");
 		

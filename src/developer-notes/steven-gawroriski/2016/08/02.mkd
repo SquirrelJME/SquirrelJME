@@ -6,3 +6,9 @@
 about reading bytes. Then I can add `delete` which is capable of deleting a
 range of data without using it (could be useful).
 
+## 09:32
+
+To make it so deletion is simpler and does not require position updates for
+each chunk, the deletion can be performed from the higher position to the
+lower one.
+
