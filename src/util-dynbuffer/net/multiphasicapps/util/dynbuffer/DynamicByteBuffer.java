@@ -387,7 +387,7 @@ public class DynamicByteBuffer
 		synchronized (this.lock)
 		{
 			// Remove bytes at the given chunk
-			return __ofPosition(__base).__remove(__base, __b, __o, __l);
+			return __ofPosition(__i).__remove(__i, __b, __o, __l);
 		}
 	}
 	

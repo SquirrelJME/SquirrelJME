@@ -228,7 +228,7 @@ final class __Chunk__
 	{
 		// Do not bother if removing nothing
 		if (__l <= 0)
-			return;
+			return 0;
 		
 		// Remove bytes until nothing remains or the required read count
 		// was reached.
