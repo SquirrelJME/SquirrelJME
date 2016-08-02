@@ -35,6 +35,15 @@ final class __Chunk__
 	/** The owning buffer. */
 	protected final DynamicByteBuffer owner;
 	
+	/** The buffer data. */
+	final byte[] _data;
+	
+	/** The data start position. */
+	final int _datastart;
+	
+	/** The data end position. */
+	volatile int _dataend;
+	
 	/** The chunk index, gets adjusted when chunks are added/removed. */
 	volatile int _index;
 	
@@ -62,7 +71,14 @@ final class __Chunk__
 		if (__dbb == null)
 			throw new NullPointerException("NARG");
 		
+		// Set
 		this.owner = __dbb;
+		
+		// Create buffer with the default size
+		int ds = _DEFAULT_SIZE;
+		this._data = new byte[ds];
+		this._datastart = 0;
+		this._dataend = ds;
 	}
 	
 	/**
@@ -78,10 +94,29 @@ final class __Chunk__
 	 */
 	final void __add(int __base, byte[] __b, int __o, int __l)
 	{
-		// Calculate the logical position
-		int logpos = __base - __position();
+		// Physical end write position
+		int physend = __base + __l;
 		
-		throw new Error("TODO");
+		// Calculate the logical position
+		int logstart = __base - __position();
+		int logend = logstart + __l;
+		
+		// Get buffer info
+		byte[] data = this._data;
+		int datastart = this._datastart, dataend = this._dataend;
+		int head = this._head, tail = this._tail;
+		
+		// Write at end of buffer and into the next block or split
+		if (logstart >= tail)
+			throw new Error("TODO");
+		
+		// Write at the start of the buffer and into the previous one or split
+		else if (logend < head)
+			throw new Error("TODO");
+		
+		// Write in the middle of the buffer, write into a split buffer
+		else
+			throw new Error("TODO");
 	}
 	
 	/**
