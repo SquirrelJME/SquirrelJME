@@ -459,6 +459,39 @@ public class DynamicByteBuffer
 	}
 	
 	/**
+	 * Inserts the specified chunk at the specified position.
+	 *
+	 * @param __c The chunk to insert.
+	 * @param __dx The index to insert the chunk at.
+	 * @throws IndexOutOfBoundsException If the index is outside of the chunk
+	 * array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/02
+	 */
+	final void __insert(__Chunk__ __c, int __dx)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Get
+		List<__Chunk__> chunks = this._chunks;
+		int n = chunks.size();
+		
+		// {@squirreljme.error AD03 Insertion of a chunk that is outside of the
+		// chunk array bounds.
+		if (__dx < 0 || __dx > n)
+			throw new IndexOutOfBoundsException("AD03");
+		
+		// Inset
+		chunks.add(__dx, __c);
+		
+		// Correct
+		__correctIndices(__dx);
+	}
+	
+	/**
 	 * This returns the chunk which is at the specified position for a chunk
 	 * operation to be performed.
 	 *
@@ -482,7 +515,7 @@ public class DynamicByteBuffer
 		
 		// Binary search through chunks
 		int n = chunks.size();
-		for (int l = 0, p = (n >>> 1), r = n;;)
+		for (int l = 0, r = n - 1, p = (r >>> 1);;)
 		{
 			// Is this the last chunk?
 			boolean islast = (p == (n - 1));
@@ -515,9 +548,9 @@ public class DynamicByteBuffer
 		}
 		
 		// {@squirreljme.error AD02 The specified position is outside of
-		// the range of the buffer. (The requested position)}
-		throw new IndexOutOfBoundsException(String.format("AD02 %d",
-			__pos));
+		// the range of the buffer. (The requested position; The buffer size)}
+		throw new IndexOutOfBoundsException(String.format("AD02 %d %d",
+			__pos, size()));
 	}
 }
 

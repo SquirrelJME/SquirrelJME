@@ -103,12 +103,20 @@ final class __Chunk__
 			throw new NullPointerException("NARG");
 		int n = __b.length;
 		if (__o < 0 || __l < 0 || (__o + __l) > n)
-			throw new IndexOutOfBoundsException("BAOB");
+			throw new IndexOutOfBoundsException(String.format("BAOB %d %d %d",
+				n, __o, __l));
 		
 		// Set
 		this.owner = __dbb;
 		
-		throw new Error("TODO");
+		// Set
+		this._data = __b;
+		this._datastart = __o;
+		this._dataend = __o + __l;
+		
+		// Head and tail are at the start
+		this._head = __o;
+		this._tail = __o;
 	}
 	
 	/**
@@ -140,6 +148,10 @@ final class __Chunk__
 		int datastart = this._datastart, dataend = this._dataend;
 		int head = this._head, tail = this._tail;
 		
+		// Where the data actually starts
+		int treadat = head + logstart;
+		int index = this._index;
+		
 		// Write at end of buffer and into the next block or split
 		if (logstart >= tail)
 		{
@@ -152,6 +164,9 @@ final class __Chunk__
 				
 				// Data ends at the logical end position
 				this._tail = logend;
+				
+				// Positions are stale following this
+				__maybeStale();
 			}
 			
 			// Write past end of the buffer, need a new one
@@ -172,12 +187,28 @@ final class __Chunk__
 			
 			// Split in the middle
 			else
-				throw new Error("TODO");
+			{
+				// The new tail and data end of this chunk will be where the
+				// write starts
+				this._dataend = treadat;
+				this._tail = treadat;
+				
+				// Create new chunk where data is to be written
+				__Chunk__ into = new __Chunk__(owner);
+				owner.__insert(into, index + 1);
+				
+				// And another chunk
+				__Chunk__ after = new __Chunk__(owner, data, treadat,
+					dataend - treadat);
+				owner.__insert(into, index + 2);
+				
+				// Stale before add is performed
+				__maybeStale();
+				
+				// Write everything into that chunk
+				into.__add(__base, __b, __o, __l);
+			}
 		}
-		
-		// Need to recalculate the positions of every block following this
-		// one
-		__maybeStale();
 	}
 	
 	/**
