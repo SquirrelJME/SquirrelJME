@@ -208,10 +208,8 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			// Find chunk at the base
-			__Chunk__ chunk = __ofPosition(__base);
-			
-			throw new Error("TODO");
+			// Add bytes to the specified chunk at the given position)
+			__ofPosition(__base).__add(__base, __src, __o, __l);
 		}
 	}
 	

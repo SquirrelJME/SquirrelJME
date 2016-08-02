@@ -66,6 +66,25 @@ final class __Chunk__
 	}
 	
 	/**
+	 * Adds the specified bytes to the current chunk. If the data cannot fit
+	 * then nearby chunks are checked. If data cannot fit there, then a new
+	 * chunk is created.
+	 *
+	 * @param __base The physical address to write to.
+	 * @param __b The bytes to write.
+	 * @param __o Offset into the array.
+	 * @param __l Number of bytes to write.
+	 * @since 2016/08/01
+	 */
+	final void __add(int __base, byte[] __b, int __o, int __l)
+	{
+		// Calculate the logical position
+		int logpos = __base - __position();
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the end position of this chunk.
 	 *
 	 * @return The end position.
