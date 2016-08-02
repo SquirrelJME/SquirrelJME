@@ -256,7 +256,32 @@ final class __Chunk__
 		if (__l <= 0)
 			return;
 		
-		throw new Error("TODO");
+		// Remainder and position
+		int at = __o;
+		int left = __l;
+		
+		// Keep reading
+		__Chunk__ now = this;
+		while (left > 0 && now != null)
+		{
+			// Calculate the logical position
+			int logstart = now._head + (__base - now.__position());
+			int logend = Math.min(now._tail, logstart + left);
+			
+			// Copy values
+			byte[] data = now._data;
+			for (int i = logstart; i < logend; i++)
+				__b[at++] = data[i];
+			
+			// Next read
+			now = now.__next();
+			int did = logend - logstart;
+			left -= did;
+		}
+		
+		// {@squirreljme.error AD05 Did not read all bytes.}
+		if (left > 0)
+			throw new IllegalStateException("AD05");
 	}
 	
 	/**
