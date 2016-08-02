@@ -12,3 +12,13 @@ To make it so deletion is simpler and does not require position updates for
 each chunk, the deletion can be performed from the higher position to the
 lower one.
 
+## 13:23
+
+Add should be as simple as remove and get.
+
+## 14:53
+
+I suppose something which would be simple, would be writing to the tail until
+there is no space left. If there is a write in the middle of the chunk then it
+will be split and will start writing into another chunk.
+

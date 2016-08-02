@@ -148,7 +148,58 @@ final class __Chunk__
 		if (__l <= 0)
 			return;
 		
-		throw new Error("TODO");
+		// Write until all bytes have been placed
+		__Chunk__ now = this;
+		int left = __l;
+		while (left > 0)
+		{
+			// Detect if writing at the head
+			int nowpos = now.__position();
+			int datastart = now._datastart;
+			int head = now._head;
+			int tail = now._tail;
+			int headleft = head - datastart;
+			if (head != tail && __base <= nowpos)
+			{
+				// Enough room to write before the head
+				if (headleft < left)
+					throw new Error("TODO");
+				
+				// Not enough room in the head, add chunk before this one
+				else
+					throw new Error("TODO");
+			}
+			
+			// Writing at the tail end
+			else
+			{
+				// No more room left?
+				int dataend = now._dataend;
+				if (dataend == tail)
+				{
+					// Get next chunk, if applicable
+					__Chunk__ into = now.__next();
+					
+					// If no chunk, add one
+					if (into == null)
+					{
+						DynamicByteBuffer owner = this.owner;
+						int index = now._index;
+						now = new __Chunk__(owner);
+						owner.__insert(now, index + 1);
+					}
+					
+					// Otherwise use it
+					else
+						now = into;
+					
+					// Try again
+					continue;
+				}	
+				
+				throw new Error("TODO");
+			}
+		}
 	}
 	
 	/**

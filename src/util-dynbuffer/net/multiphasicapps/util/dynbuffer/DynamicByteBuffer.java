@@ -212,7 +212,17 @@ public class DynamicByteBuffer
 			System.err.printf("DEBUG -- A Bef: %s%n", this._chunks);
 			
 			// Add bytes to the specified chunk at the given position)
-			__ofPosition(__base).__add(__base, __src, __o, __l);
+			__Chunk__ wb = __ofPosition(__base);
+			
+			// If a previous chunk exists then start writing from there instead
+			// so that way writes can always be done from the tail end rather
+			// than the head.
+			__Chunk__ prev = wb.__previous();
+			if (prev != null && prev._tail < prev._dataend)
+				wb = prev;
+				
+			// Add bytes
+			wb.__add(__base, __src, __o, __l);
 			
 			// Debug
 			System.err.printf("DEBUG -- A Aft: %s%n", this._chunks);
