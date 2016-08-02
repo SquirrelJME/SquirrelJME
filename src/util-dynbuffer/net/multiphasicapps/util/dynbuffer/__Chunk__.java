@@ -332,19 +332,24 @@ final class __Chunk__
 		int left = __l;
 		__Chunk__ now = this;
 		while (left > 0 && now != null)
-		{System.err.printf("DEBUG -- %s REMOVE %d %d %d%n",
-			this, __base, __o, __l);
+		{
 			// Calculate the logical position
 			int logstart = (__base - now.__position()) + (__l - left);
 			int logend = logstart + __l;
+			
+			System.err.printf("DEBUG -- %s REMOVE %d %d %d (%d %d)%n",
+				this, __base, __o, __l, logstart, logend);
 		
 			// Get buffer info
 			byte[] data = now._data;
 			int datastart = now._datastart, dataend = now._dataend;
 			int head = now._head, tail = now._tail;
 			
+			// Virtual tail position
+			int vtail = tail - head;
+			
 			// Max number of bytes to remove
-			int count = (logend > tail ? tail : logend);
+			int count = (logend > vtail ? vtail : logend);
 			
 			// Drain bytes
 			for (int i = 0, s = logstart; i < count; i++, s++)
