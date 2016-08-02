@@ -319,12 +319,15 @@ final class __Chunk__
 		List<__Chunk__> chunks = owner._chunks;
 		while (trailc != pre)
 		{
-			// Actuall data starts and end relative to the current head
+			// Actual data starts and end relative to the current head
 			int relstart = (__base - trailc.__position());
 			int relend = relstart + __l;
 			
 			// Head and tail positions
 			int head = trailc._head, tail = trailc._tail;
+			
+			// The head/tail positions for write
+			int vhead = head + relstart, vtail = tail + relend;
 			
 			// Are the values at or past the head and/or tail?
 			// This is used to determine if the entire chunk can just be
@@ -366,13 +369,13 @@ final class __Chunk__
 				}
 			}
 			
-			// Deletes before the start but before the tail
+			// Deletes everything at the head to the higher position
 			else if (pasthead)
-				throw new Error("TODO");
+				trailc._head = vtail;
 			
-			// Deletes after the end but after the head
+			// Deletes everything from the lower position to the tail
 			else if (pasttail)
-				throw new Error("TODO");
+				trailc._tail = vhead;
 			
 			// Deletes data in the middle of the chunk, splitting it
 			else
