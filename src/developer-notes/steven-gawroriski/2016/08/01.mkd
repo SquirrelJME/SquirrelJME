@@ -67,3 +67,8 @@ go to previous chunks before the stale base and calculate the position. Then
 this way simply adding bytes at the end will not require mass recalculation
 if it is easy to solve.
 
+## 21:35
+
+When all the bytes within a chunk are removed, then the chunk can be removed
+itself.
+

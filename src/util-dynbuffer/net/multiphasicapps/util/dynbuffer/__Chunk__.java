@@ -38,6 +38,15 @@ final class __Chunk__
 	/** The chunk index, gets adjusted when chunks are added/removed. */
 	volatile int _index;
 	
+	/** The calculated position of this chunk. */
+	volatile int _calcpos;
+	
+	/** The data head. */
+	volatile int _head;
+	
+	/** The data tail. */
+	volatile int _tail;
+	
 	/**
 	 * This initializes a blank chunk using the specified buffer as the
 	 * owner.
@@ -64,7 +73,7 @@ final class __Chunk__
 	 */
 	final int __endPosition()
 	{
-		throw new Error("TODO");
+		return __position() + __size();
 	}
 	
 	/**
@@ -75,7 +84,41 @@ final class __Chunk__
 	 */
 	final int __position()
 	{
-		throw new Error("TODO");
+		// The first chunk always returns zero
+		int index = this._calcpos;
+		if (index == 0)
+			return 0;
+		
+		// Check if the index is stale
+		DynamicByteBuffer owner = this.owner;
+		int staledx = owner._staledx;
+		int pos = this._calcpos;
+		if (index >= staledx)
+		{
+			pos = __previous().__endPosition();
+			owner._staledx = index + 1;
+			this._calcpos = pos;
+		}
+		
+		// Return position
+		return pos;
+	}
+	
+	/**
+	 * Returns the chunk that is before this one.
+	 *
+	 * @return The previous chunk.
+	 * @since 2016/08/01
+	 */
+	final __Chunk__ __previous()
+	{
+		// The first chunk never has a previous one
+		int index = this._calcpos;
+		if (index == 0)
+			return null;
+		
+		// Otherwise get it
+		return this.owner._chunks.get(index - 1);
 	}
 	
 	/**
@@ -86,7 +129,7 @@ final class __Chunk__
 	 */
 	final int __size()
 	{
-		throw new Error("TODO");
+		return this._tail - this._head;
 	}
 }
 

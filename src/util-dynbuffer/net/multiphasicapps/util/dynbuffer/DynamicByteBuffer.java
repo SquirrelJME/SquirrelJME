@@ -28,7 +28,7 @@ public class DynamicByteBuffer
 		new Object();
 	
 	/** The chunks that are within this buffer. */
-	private final List<__Chunk__> _chunks =
+	final List<__Chunk__> _chunks =
 		new ArrayList<>();
 	
 	/** Array used for single byte add, since synchronized (not an issue). */
