@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.util.dynbuffer;
 
+import java.util.List;
+
 /**
  * This represents a chunk of data within a buffer.
  *
@@ -169,6 +171,24 @@ final class __Chunk__
 	}
 	
 	/**
+	 * Returns the next chunk.
+	 *
+	 * @return The next chunk or {@code null} if this is the last.
+	 * @since 2016/08/02
+	 */
+	final __Chunk__ __next()
+	{
+		// The last chunk does not have a next
+		List<__Chunk__> chunks = this.owner._chunks;
+		int index = this._calcpos + 1;
+		if (index == chunks.size())
+			return null;
+		
+		// Otherwise get it
+		return chunks.get(index);
+	}
+	
+	/**
 	 * Returns the physical position associated with the start of the chunk.
 	 *
 	 * @return The chunk's physical starting position.
@@ -230,18 +250,55 @@ final class __Chunk__
 		if (__l <= 0)
 			return 0;
 		
+		// Physical end write position
+		int physend = __base + __l;
+		
+		// Owner chunks
+		List<__Chunk__> chunks = this.owner._chunks;
+		
 		// Remove bytes until nothing remains or the required read count
 		// was reached.
 		boolean stale = false;
+		int at = __o;
 		int left = __l;
-		while (left > 0)
-			throw new Error("TODO");
+		__Chunk__ now = this;
+		while (left > 0 && now != null)
+		{
+			// Calculate the logical position
+			int logstart = (__base - now.__position()) + (__l - left);
+			int logend = logstart + __l;
 		
-		// Make stale?
-		if (stale)
-			__maybeStale();
+			// Get buffer info
+			byte[] data = now._data;
+			int datastart = now._datastart, dataend = now._dataend;
+			int head = now._head, tail = now._tail;
+			
+			// Max number of bytes to remove
+			int count = (logend > tail ? tail : logend);
+			
+			// Drain bytes
+			for (int i = 0, s = logstart; i < count; i++, s++)
+				__b[at++] = data[s];
+			
+			// Determine the next chunk
+			__Chunk__ next = __next();
+			
+			// Set the tail to the logical start position
+			now._tail = logstart;
+			
+			// Mark as stale
+			now.__maybeStale();
+			
+			// Removed all bytes in a chunk
+			if (head == logstart && chunks.size() > 1)
+				throw new Error("TODO");
+			
+			// Go to the next chunk
+			left -= count;
+			now = next;
+		}
 		
-		// Return remove count
+		// Return write count
 		return (__l - left);
 	}
 	
