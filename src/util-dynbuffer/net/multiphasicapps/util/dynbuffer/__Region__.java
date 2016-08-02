@@ -26,11 +26,39 @@ final class __Region__
 	 * byte buffer should consume.}
 	 */
 	private static final int _REGION_SIZE =
-		Integer.getInteger("net.multiphasicapps.util.dynbuffer.regionsize",
-		128);
+		Math.max(Integer.getInteger(
+			"net.multiphasicapps.util.dynbuffer.regionsize", 128), 8);
+	
+	/** The owning buffer. */
+	protected final DynamicByteBuffer owner;
 	
 	/** Physical partitions in this region. */
 	final List<__Partition__> _physical =
 		new ArrayList<>();
+	
+	/** The region data. */
+	final byte[] _data =
+		new byte[_REGION_SIZE];
+	
+	/** The region index. */
+	volatile int _index;
+	
+	/**
+	 * Initializes the region.
+	 *
+	 * @param __owner The owning byte buffer.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/02
+	 */
+	__Region__(DynamicByteBuffer __owner)
+		throws NullPointerException
+	{
+		// Check
+		if (__owner == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.owner = __owner;
+	}
 }
 

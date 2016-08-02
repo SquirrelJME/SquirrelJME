@@ -200,10 +200,10 @@ public class DynamicByteBuffer
 		// Lock
 		synchronized (this.lock)
 		{
-			// If no logical partitions exist then nothing has yet been added
-			// to the buffer
+			// If no regions yet exist, create one
 			List<__Partition__> logical = this._logical;
-			if (logical.isEmpty())
+			List<__Region__> regions = this._regions;
+			if (regions.isEmpty())
 			{
 				// {@squirreljme.error AD01 The dynamic byte buffer is empty,
 				// all additions must start at position zero. (The position
@@ -212,7 +212,8 @@ public class DynamicByteBuffer
 					throw new IndexOutOfBoundsException(
 						String.format("AD01 %d", __base));
 				
-				throw new Error("TODO");
+				// Create a new region
+				__Region__ r = __createRegion();
 			}
 			
 			// Remaining bytes
@@ -540,6 +541,45 @@ public class DynamicByteBuffer
 		{
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Corrects the indices of regions that are at and follow the given
+	 * index.
+	 *
+	 * @param __dx The start index to correct at.
+	 * @since 2016/08/02
+	 */
+	final void __correctRegionIndices(int __dx)
+	{
+		// Correct them all
+		List<__Region__> regions = this._regions;
+		int n = regions.size();
+		for (int i = Math.max(0, __dx); i < n; i++)
+			regions.get(i)._index = i;
+	}
+	
+	/**
+	 * Creates a new region and returns it.
+	 *
+	 * @return The newly created region.
+	 * @since 2016/08/02
+	 */
+	final __Region__ __createRegion()
+	{
+		// Get regions
+		List<__Region__> regions = this._regions;
+		int dx = regions.size();
+		
+		// Add a new one
+		__Region__ rv;
+		regions.add((rv = new __Region__(this)));
+		
+		// Correct indices
+		__correctRegionIndices(dx);
+		
+		// Return it
+		return rv;
 	}
 }
 
