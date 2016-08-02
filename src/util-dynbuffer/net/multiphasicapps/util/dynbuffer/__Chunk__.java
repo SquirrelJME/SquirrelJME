@@ -364,7 +364,6 @@ final class __Chunk__
 					
 					// Remove chunk here and make it stale
 					chunks.remove(tindex);
-					owner._staledx = Math.min(owner._staledx, tindex);
 					owner.__correctIndices(tindex);
 				}
 			}
@@ -380,6 +379,9 @@ final class __Chunk__
 			// Deletes data in the middle of the chunk, splitting it
 			else
 				throw new Error("TODO");
+			
+			// Indices are stale
+			owner._staledx = Math.min(owner._staledx, tindex);
 			
 			// Go to the previous chunk
 			trailc = goprev;
