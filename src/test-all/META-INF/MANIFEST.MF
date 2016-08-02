@@ -5,7 +5,6 @@ X-SquirrelJME-Depends: test-base
 X-SquirrelJME-Optional: 
  test-io-inflate,
  test-io-slidingwindow,
- test-util-dynbuffer,
  test-util-huffmantree,
  test-util-uri,
  test-cldc-compact,
