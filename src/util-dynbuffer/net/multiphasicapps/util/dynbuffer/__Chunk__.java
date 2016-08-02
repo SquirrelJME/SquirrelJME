@@ -157,7 +157,8 @@ final class __Chunk__
 		{
 			// All of the data fits in the buffer
 			if (logend < dataend)
-			{
+			{System.err.printf("DEBUG -- %s NORMAL %d %d %d (%d, %d %d)%n",
+				this, __base, __o, __l, tail, logend, dataend);
 				// Copy from the buffer to the data storage
 				for (int i = __o, j = tail; i < __l; i++, j++)
 					data[j] = __b[i];
@@ -169,35 +170,36 @@ final class __Chunk__
 				__maybeStale();
 			}
 			
-			// Write past end of the buffer, need a new one
+			// Write past end of the buffer, write into the follow one or end
 			else
 				throw new Error("TODO");
 		}
 		
 		// Write at the start of the buffer and into the previous one or split
-		else if (logend < head)
+		else if (logend <= head)
 			throw new Error("TODO");
 		
 		// Write in the middle of the buffer, write into a split buffer
 		else
 		{
-			// Add a chunk before or after
+			// This should not occur at all
 			if (logend == head || logstart == tail)
-				throw new Error("TODO");
+				throw new RuntimeException("OOPS");
 			
 			// Split in the middle
 			else
-			{
+			{System.err.printf("DEBUG -- %s MIDSPLIT %d %d %d (%d/%d,%d/%d)%n",
+				this, __base, __o, __l, head, tail, logstart, logend);
 				// The new tail and data end of this chunk will be where the
 				// write starts
 				this._dataend = treadat;
 				this._tail = treadat;
 				
-				// Create new chunk where data is to be written
+				// Create new chunk where data is to be written after this one
 				__Chunk__ into = new __Chunk__(owner);
 				owner.__insert(into, index + 1);
 				
-				// And another chunk
+				// And the remainder of the current chunk after that one
 				__Chunk__ after = new __Chunk__(owner, data, treadat,
 					dataend - treadat);
 				owner.__insert(into, index + 2);
@@ -330,7 +332,8 @@ final class __Chunk__
 		int left = __l;
 		__Chunk__ now = this;
 		while (left > 0 && now != null)
-		{
+		{System.err.printf("DEBUG -- %s REMOVE %d %d %d%n",
+			this, __base, __o, __l);
 			// Calculate the logical position
 			int logstart = (__base - now.__position()) + (__l - left);
 			int logend = logstart + __l;
