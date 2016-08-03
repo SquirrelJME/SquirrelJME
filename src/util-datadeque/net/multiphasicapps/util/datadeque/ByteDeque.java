@@ -107,7 +107,7 @@ public class ByteDeque
 		throws IllegalStateException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			byte[] solo = _solo;
 			solo[0] = __b;
@@ -154,7 +154,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			throw new Error("TODO");
 		}
@@ -172,7 +172,7 @@ public class ByteDeque
 		throws IllegalStateException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			byte[] solo = _solo;
 			solo[0] = __b;
@@ -219,7 +219,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			throw new Error("TODO");
 		}
@@ -234,7 +234,21 @@ public class ByteDeque
 	public final int available()
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Clears the queue and every associated byte.
+	 *
+	 * @since 2016/08/02
+	 */
+	public final void clear()
+	{
+		// Lock
+		synchronized (this.lock)
 		{
 			throw new Error("TODO");
 		}
@@ -251,7 +265,7 @@ public class ByteDeque
 		throws NoSuchElementException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			byte[] solo = _solo;
 			getFirst(solo, 0, 1);
@@ -296,7 +310,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			throw new Error("TODO");
 		}
@@ -313,7 +327,7 @@ public class ByteDeque
 		throws NoSuchElementException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			byte[] solo = _solo;
 			getLast(solo, 0, 1);
@@ -358,7 +372,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			throw new Error("TODO");
 		}
@@ -565,7 +579,7 @@ public class ByteDeque
 		throws NoSuchElementException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			byte[] solo = _solo;
 			removeFirst(solo, 0, 1);
@@ -609,7 +623,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			throw new Error("TODO");
 		}
@@ -626,7 +640,7 @@ public class ByteDeque
 		throws NoSuchElementException
 	{
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			byte[] solo = _solo;
 			removeLast(solo, 0, 1);
@@ -670,7 +684,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
 			throw new Error("TODO");
 		}

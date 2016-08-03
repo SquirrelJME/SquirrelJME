@@ -12,7 +12,7 @@ package net.multiphasicapps.io.dynhistin;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This is an input stream which allows any future data in the stream to be
@@ -30,7 +30,7 @@ public class DynamicHistoryInputStream
 		new Object();
 	
 	/** The backing buffer. */
-	protected final DynamicByteBuffer buffer;
+	protected final ByteDeque buffer;
 	
 	/** The source input stream. */
 	protected final InputStream input;
@@ -46,7 +46,6 @@ public class DynamicHistoryInputStream
 	 * input stream.
 	 *
 	 * @param __is The stream to read data from.
-	 * @param __cs The chunk size to be used in the {@link DynamicByteBuffer}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/19
 	 */
@@ -59,7 +58,7 @@ public class DynamicHistoryInputStream
 		
 		// Set
 		this.input = __is;
-		this.buffer = new DynamicByteBuffer();
+		this.buffer = new ByteDeque();
 	}
 	
 	/**
@@ -104,7 +103,7 @@ public class DynamicHistoryInputStream
 			throw new IndexOutOfBoundsException(String.format("BI03 %s", __i));
 		
 		// Lock
-		DynamicByteBuffer buffer = this.buffer;
+		ByteDeque buffer = this.buffer;
 		synchronized (this.lock)
 		{
 			// {@squirreljme.error BI04 Cannot grab bytes because the stream
@@ -113,7 +112,7 @@ public class DynamicHistoryInputStream
 				throw new IOException("BI04");
 			
 			// Already have this number of bytes grabbed
-			int cursize = buffer.size();
+			int cursize = buffer.available();
 			if (__i <= cursize)
 				return cursize;
 			
@@ -130,7 +129,7 @@ public class DynamicHistoryInputStream
 				return cursize;
 			
 			// Add them to the end of the buffer
-			buffer.add(qq, 0, rc);
+			buffer.addLast(qq, 0, rc);
 			
 			// The number of available bytes is the current and the read
 			// count
@@ -159,7 +158,7 @@ public class DynamicHistoryInputStream
 			throw new IndexOutOfBoundsException(String.format("BI01 %d", __a));
 		
 		// Lock
-		DynamicByteBuffer buffer = this.buffer;
+		ByteDeque buffer = this.buffer;
 		synchronized (this.lock)
 		{
 			// {@squirreljme.error BI05 Cannot peek a single byte because the
@@ -228,7 +227,7 @@ public class DynamicHistoryInputStream
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Lock
-		DynamicByteBuffer buffer = this.buffer;
+		ByteDeque buffer = this.buffer;
 		synchronized (this.lock)
 		{
 			// {@squirreljme.error BI06 Cannot peek multiple bytes because
@@ -247,7 +246,9 @@ public class DynamicHistoryInputStream
 				return 0;
 			
 			// Read from the buffer
-			buffer.get(__a, __b, __o, rc);
+			if (true)
+				throw new Error("TODO");
+			/*buffer.get(__a, __b, __o, rc);*/
 			return rc;
 		}
 	}
@@ -276,7 +277,7 @@ public class DynamicHistoryInputStream
 				return -1;
 			
 			// Read single byte
-			return (this.buffer.remove(0) & 0xFF);
+			return (this.buffer.removeFirst() & 0xFF);
 		}
 	}
 	
@@ -296,7 +297,7 @@ public class DynamicHistoryInputStream
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Lock
-		DynamicByteBuffer buffer = this.buffer;
+		ByteDeque buffer = this.buffer;
 		synchronized (this.lock)
 		{
 			// {@squirreljme BI08 Cannot read multiple bytes because the
@@ -317,7 +318,7 @@ public class DynamicHistoryInputStream
 				return 0;
 			
 			// Remove the early bytes
-			buffer.remove(0, __b, __o, dc);
+			buffer.removeFirst(__b, __o, dc);
 			return dc;
 		}
 	}
