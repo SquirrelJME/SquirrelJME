@@ -376,6 +376,89 @@ public class ByteDeque
 	}
 	
 	/**
+	 * Gets a single byte offset from the start of the deque as if it were an
+	 * array.
+	 *
+	 * @param __a The index to get the byte value of.
+	 * @return The byte at the given position.
+	 * @throws IndexOutOfBoundsException If the address is not within bounds.
+	 * @since 2016/08/03
+	 */
+	public final byte get(int __a)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AE0a Request get at a negative index.}
+		if (__a < 0)
+			throw new IndexOutOfBoundsException("AE0a");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			byte[] solo = this._solo;
+			int rv = get(__a, solo, 0, 1);
+			if (rv == 1)
+				return solo[0];
+			
+			// {@squirreljme.error AE09 Could not get the byte at the
+			// given position because it exceeds the deque bounds. (The index)}
+			throw new IndexOutOfBoundsException(String.format("AE09 %d", __a));
+		}
+	}
+	
+	/**
+	 * Gets multiple bytes offset from the start of the deque as if it were
+	 * and array.
+	 *
+	 * @param __a The index to start reading values from.
+	 * @param __b The destination array for values.
+	 * @return The number of bytes read.
+	 * @throws IndexOutOfBoundsException If the address is not within the
+	 * bounds of the deque.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/03
+	 */
+	public final int get(int __a, byte[] __b)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		return this.get(__a, __b, 0, __b.length);
+	}
+	
+	/**
+	 * Gets multiple bytes offset from the start of the deque as if it were
+	 * and array.
+	 *
+	 * @param __a The index to start reading values from.
+	 * @param __b The destination array for values.
+	 * @param __o Where to start writing destination values.
+	 * @param __l The number of bytes to read.
+	 * @return The number of bytes read.
+	 * @throws IndexOutOfBoundsException If the address is not within the
+	 * bounds of the deque, the offset and/or length are negative, or the
+	 * offset and length exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/03
+	 */
+	public final int get(int __a, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// {@squirreljme.error AE0b Request get at a negative index.}
+		if (__a < 0)
+			throw new IndexOutOfBoundsException("AE0b");
+		
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * Obtains but does not remove the first byte.
 	 *
 	 * @return The value of the first byte.
@@ -393,7 +476,7 @@ public class ByteDeque
 			if (rv == 1)
 				return solo[0];
 			
-			// {@squirreljme.error AE07 Could not remove the first byte
+			// {@squirreljme.error AE07 Could not get the first byte
 			// because the deque is empty.}
 			throw new NoSuchElementException("AE07");
 		}
@@ -429,16 +512,11 @@ public class ByteDeque
 	public final int getFirst(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// Check
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new IndexOutOfBoundsException("BAOB");
-		
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// This is the same of an any position get at the start
+			return this.get(0, __b, __o, __l);
 		}
 	}
 	
@@ -496,16 +574,16 @@ public class ByteDeque
 	public final int getLast(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// Check
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+		// Check, the length is used so make sure it is positive
+		if (__l < 0)
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// This is the same of an any position get from the end
+			int total = this._total;
+			return this.get(Math.max(0, total - __l), __b, __o, __l);
 		}
 	}
 	
