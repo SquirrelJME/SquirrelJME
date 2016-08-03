@@ -18,3 +18,8 @@ Now to go out and do real life things, hopefully I can keep a clear mind.
 
 Looks like remove is off by one!
 
+## 19:38
+
+I am rather tired and have a slight headache, been making some errors. Luckily
+for me, I have tests which can help me sort of find where they are.
+
