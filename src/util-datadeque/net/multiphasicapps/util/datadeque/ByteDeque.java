@@ -196,6 +196,11 @@ public class ByteDeque
 			if (newtotal < 0 || newtotal > this.capacity)
 				throw new IllegalStateException("AE05");
 			
+			// Get some things
+			LinkedList<byte[]> blocks = this._blocks;
+			int nb = blocks.size();
+			int head = this._head, tail = this._tail;
+			
 			throw new Error("TODO");
 		}
 	}
@@ -272,7 +277,41 @@ public class ByteDeque
 			if (newtotal < 0 || newtotal > this.capacity)
 				throw new IllegalStateException("AE04");
 			
-			throw new Error("TODO");
+			// Get some things
+			LinkedList<byte[]> blocks = this._blocks;
+			int nb = blocks.size();
+			int head = this._head, tail = this._tail;
+			
+			// No data? Try to fill the first block as much as possible
+			int bs = _BLOCK_SIZE;
+			int left = __l;
+			int at = __o;
+			if (total == 0)
+			{
+				// Only can fit a single block
+				int limit = Math.min(bs, __l);
+				
+				byte[] bl = new byte[bs];
+				for (int i = 0; i < limit; i++)
+					bl[i] = __b[at++];
+				
+				// Add block
+				blocks.addLast(bl);
+				tail += limit;
+				
+				// Consume those bytes
+				left -= limit;
+			}
+			
+			// Keep adding in data
+			while (left > 0)
+			{
+				throw new Error("TODO");
+			}
+			
+			// Set new details
+			this._total = newtotal;
+			this._tail = tail;
 		}
 	}
 	
