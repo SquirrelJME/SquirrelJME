@@ -96,3 +96,22 @@ Had a dependency named incorrectly.
 For `SlidingByteWindow`, `ByteDeque` just needs an peek of data somewhere else
 in the queue.
 
+## 20:20
+
+For efficiency the sliding buffer ...
+
+## 20:30
+
+I would suppose for the `ByteDeque` I can keep it simple and have a list of
+byte arrays for the most part. They do not really need to be an `ArrayList` as
+a `LinkedList` could work just the same (and not require resize). The only
+issue would be that non-ended reads would be a slightly bit slower. However,
+it does not really matter as much. As for the head and tail positions, they
+can just be masked to the individual block size. So if the list has a size of
+3 blocks then the first and last only get their associated head/tail counted
+and the blocks in the middle count as whole blocks. However in reality, for
+the size I can just keep a note of the current size so that calculation is
+not required at all. So in essence the `ByteDeque` will be a bit faster and
+better on memory because `DynamicByteBuffer` was insanely complex and too
+featureful. If I need one in the future, I can always bring it back.
+
