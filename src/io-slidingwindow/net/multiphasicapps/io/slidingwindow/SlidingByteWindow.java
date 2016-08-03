@@ -141,8 +141,10 @@ public class SlidingByteWindow
 			if (overflow > 0)
 				throw new Error("TODO");
 			
-			// Append data to the start
-			deque.addFirst(__b, __o, __l);
+			// Add data to the end so that the single-byte insertion order
+			// would be the same as the multi-byte insertion.
+			// And so no shuffling is required
+			deque.addLast(__b, __o, __l);
 			this._total = newtotal;
 		}
 	}
