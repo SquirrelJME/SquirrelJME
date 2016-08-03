@@ -35,6 +35,9 @@ public class ByteDeque
 	private final byte[] _solo =
 		new byte[1];
 	
+	/** The number of bytes in the queue. */
+	private volatile int _total;
+	
 	/**
 	 * Initializes a byte deque.
 	 *
@@ -236,7 +239,7 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			return this._total;
 		}
 	}
 	
