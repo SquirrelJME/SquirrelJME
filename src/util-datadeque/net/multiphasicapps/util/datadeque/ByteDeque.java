@@ -757,7 +757,7 @@ public class ByteDeque
 				boolean lastbl = (blocks.size() == 1);
 				
 				// Determine the max number of bytes to read
-				int rc = Math.min((lastbl ? bs - tail : bs), limit);
+				int rc = Math.min((lastbl ? tail - head : bs - head), limit);
 				
 				// Read bytes into the target
 				for (int i = 0; i < rc; i++)
