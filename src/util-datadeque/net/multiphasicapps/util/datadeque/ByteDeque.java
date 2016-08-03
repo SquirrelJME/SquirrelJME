@@ -11,7 +11,6 @@
 package net.multiphasicapps.util.datadeque;
 
 import java.util.NoSuchElementException;
-import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
 
 /**
  * This is a byte buffer which provides bytes for input and output as a
@@ -29,12 +28,12 @@ public class ByteDeque
 	/** The lock to use. */
 	protected final Object lock;
 	
-	/** The buffer to base off. */
-	protected final DynamicByteBuffer base =
-		new DynamicByteBuffer();
-	
 	/** The maximum permitted capacity. */
 	protected final int capacity;
+	
+	/** Single byte (since it is synchronized). */
+	private final byte[] _solo =
+		new byte[1];
 	
 	/**
 	 * Initializes a byte deque.
@@ -110,14 +109,9 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// Exceeds capacity?
-			DynamicByteBuffer base = this.base;
-			int n = base.size();
-			if (n < 0 || n >= capacity)
-				throw new IllegalStateException("AE03");
-			
-			// Add to the start
-			base.add(0, __b);
+			byte[] solo = _solo;
+			solo[0] = __b;
+			addFirst(solo, 0, 1);
 		}
 	}
 	
@@ -162,15 +156,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// Exceeds capacity?
-			DynamicByteBuffer base = this.base;
-			int n = base.size();
-			int w = n + __l;
-			if (w < 0 || w > capacity)
-				throw new IllegalStateException("AE03");
-			
-			// Add to the start
-			base.add(0, __b, __o, __l);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -188,14 +174,9 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// Exceeds capacity?
-			DynamicByteBuffer base = this.base;
-			int n = base.size();
-			if (n < 0 || n >= capacity)
-				throw new IllegalStateException("AE03");
-			
-			// Add to the end
-			base.add(n, __b);
+			byte[] solo = _solo;
+			solo[0] = __b;
+			addLast(solo, 0, 1);
 		}
 	}
 	
@@ -240,15 +221,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// Exceeds capacity?
-			DynamicByteBuffer base = this.base;
-			int n = base.size();
-			int w = n + __l;
-			if (w < 0 || w > capacity)
-				throw new IllegalStateException("AE03");
-			
-			// Add to the end
-			base.add(n, __b, __o, __l);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -263,7 +236,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			return base.size();
+			throw new Error("TODO");
 		}
 	}
 	
@@ -280,13 +253,9 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// Check
-			DynamicByteBuffer base = this.base;
-			if (base.size() <= 0)
-				throw new NoSuchElementException("AE02");
-			
-			// Get
-			return base.get(0);
+			byte[] solo = _solo;
+			getFirst(solo, 0, 1);
+			return solo[0];
 		}
 	}
 	
@@ -329,16 +298,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// Pointless if empty
-			DynamicByteBuffer base = this.base;
-			int n;
-			if ((n = base.size()) <= 0)
-				return 0;
-			
-			// Get
-			int rv;
-			base.get(0, __b, __o, rv = Math.min(n, __l));
-			return rv;
+			throw new Error("TODO");
 		}
 	}
 	
@@ -355,14 +315,9 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// Check
-			DynamicByteBuffer base = this.base;
-			int n;
-			if ((n = base.size()) <= 0)
-				throw new NoSuchElementException("AE02");
-			
-			// Get
-			return base.get(n - 1);
+			byte[] solo = _solo;
+			getLast(solo, 0, 1);
+			return solo[0];
 		}
 	}
 	
@@ -405,17 +360,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// Pointless if empty
-			DynamicByteBuffer base = this.base;
-			int n;
-			if ((n = base.size()) <= 0)
-				return 0;
-			
-			// Get
-			int d = n - __l;
-			int rv;
-			base.get(Math.max(0, d), __b, __o, rv = Math.min(n, __l));
-			return rv;
+			throw new Error("TODO");
 		}
 	}
 	
@@ -622,13 +567,9 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// No data available
-			DynamicByteBuffer base = this.base;
-			if (base.size() <= 0)
-				throw new NoSuchElementException("AE02");
-			
-			// Remove the first item
-			return base.remove(0);
+			byte[] solo = _solo;
+			removeFirst(solo, 0, 1);
+			return solo[0];
 		}
 	}
 	
@@ -670,7 +611,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			return base.remove(0, __b, __o, __l);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -687,14 +628,9 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			// No data available
-			DynamicByteBuffer base = this.base;
-			int n;
-			if ((n = base.size()) <= 0)
-				throw new NoSuchElementException("AE02");
-			
-			// Remove the last item
-			return base.remove(n - 1);
+			byte[] solo = _solo;
+			removeLast(solo, 0, 1);
+			return solo[0];
 		}
 	}
 	
@@ -736,8 +672,7 @@ public class ByteDeque
 		// Lock
 		synchronized (lock)
 		{
-			DynamicByteBuffer base = this.base;
-			return base.remove(Math.max(0, base.size() - __l), __b, __o, __l);
+			throw new Error("TODO");
 		}
 	}
 }
