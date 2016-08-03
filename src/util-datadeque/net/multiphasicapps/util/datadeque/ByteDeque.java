@@ -103,7 +103,7 @@ public class ByteDeque
 	 * @throws IllegalStateException If the capacity is violated.
 	 * @since 2016/05/01
 	 */
-	public void addFirst(byte __b)
+	public final void addFirst(byte __b)
 		throws IllegalStateException
 	{
 		// Lock
@@ -124,7 +124,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public void addFirst(byte[] __b)
+	public final void addFirst(byte[] __b)
 		throws IllegalStateException, NullPointerException
 	{
 		addFirst(__b, 0, __b.length);
@@ -143,7 +143,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public void addFirst(byte[] __b, int __o, int __l)
+	public final void addFirst(byte[] __b, int __o, int __l)
 		throws IllegalStateException, IndexOutOfBoundsException,
 			NullPointerException
 	{
@@ -168,7 +168,7 @@ public class ByteDeque
 	 * @throws IllegalStateException If the capacity is violated.
 	 * @since 2016/05/01
 	 */
-	public void addLast(byte __b)
+	public final void addLast(byte __b)
 		throws IllegalStateException
 	{
 		// Lock
@@ -189,7 +189,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public void addLast(byte[] __b)
+	public final void addLast(byte[] __b)
 		throws IllegalStateException, NullPointerException
 	{
 		addLast(__b, 0, __b.length);
@@ -208,7 +208,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public void addLast(byte[] __b, int __o, int __l)
+	public final void addLast(byte[] __b, int __o, int __l)
 		throws IllegalStateException, IndexOutOfBoundsException,
 			NullPointerException
 	{
@@ -231,7 +231,7 @@ public class ByteDeque
 	 * @return The number of bytes in the queue.
 	 * @since 2016/05/01
 	 */
-	public int available()
+	public final int available()
 	{
 		// Lock
 		synchronized (lock)
@@ -247,7 +247,7 @@ public class ByteDeque
 	 * @throws NoSuchElementException If the deque is empty.
 	 * @since 2016/05/01
 	 */
-	public byte getFirst()
+	public final byte getFirst()
 		throws NoSuchElementException
 	{
 		// Lock
@@ -267,7 +267,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int getFirst(byte[] __b)
+	public final int getFirst(byte[] __b)
 		throws NullPointerException
 	{
 		return getFirst(__b, 0, __b.length);
@@ -286,7 +286,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int getFirst(byte[] __b, int __o, int __l)
+	public final int getFirst(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -309,7 +309,7 @@ public class ByteDeque
 	 * @throws NoSuchElementException If the deque is empty.
 	 * @since 2016/05/01
 	 */
-	public byte getLast()
+	public final byte getLast()
 		throws NoSuchElementException
 	{
 		// Lock
@@ -329,7 +329,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int getLast(byte[] __b)
+	public final int getLast(byte[] __b)
 		throws NullPointerException
 	{
 		return getLast(__b, 0, __b.length);
@@ -348,7 +348,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int getLast(byte[] __b, int __o, int __l)
+	public final int getLast(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -373,7 +373,7 @@ public class ByteDeque
 	 * added.
 	 * @since 2016/05/01
 	 */
-	public boolean offerFirst(byte __b)
+	public final boolean offerFirst(byte __b)
 	{
 		// May violate the capacity
 		try
@@ -399,7 +399,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public boolean offerFirst(byte[] __b)
+	public final boolean offerFirst(byte[] __b)
 		throws NullPointerException
 	{
 		return offerFirst(__b, 0, __b.length);
@@ -418,7 +418,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public boolean offerFirst(byte[] __b, int __o, int __l)
+	public final boolean offerFirst(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
 		// May violate the capacity
@@ -444,7 +444,7 @@ public class ByteDeque
 	 * added.
 	 * @since 2016/05/01
 	 */
-	public boolean offerLast(byte __b)
+	public final boolean offerLast(byte __b)
 	{
 		// May violate the capacity
 		try
@@ -470,7 +470,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public boolean offerLast(byte[] __b)
+	public final boolean offerLast(byte[] __b)
 		throws NullPointerException
 	{
 		return offerLast(__b, 0, __b.length);
@@ -489,7 +489,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public boolean offerLast(byte[] __b, int __o, int __l)
+	public final boolean offerLast(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
 		// May violate the capacity
@@ -514,7 +514,7 @@ public class ByteDeque
 	 * empty.
 	 * @since 2016/05/01
 	 */
-	public int peekFirst()
+	public final int peekFirst()
 		throws NoSuchElementException
 	{
 		// The deque could be empty
@@ -538,7 +538,7 @@ public class ByteDeque
 	 * empty.
 	 * @since 2016/05/01
 	 */
-	public int peekLast()
+	public final int peekLast()
 		throws NoSuchElementException
 	{
 		// The deque could be empty
@@ -561,7 +561,7 @@ public class ByteDeque
 	 * @throws NoSuchElementException If not a single byte is available.
 	 * @since 2016/05/01
 	 */
-	public byte removeFirst()
+	public final byte removeFirst()
 		throws NoSuchElementException
 	{
 		// Lock
@@ -581,7 +581,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int removeFirst(byte[] __b)
+	public final int removeFirst(byte[] __b)
 		throws NullPointerException
 	{
 		return removeFirst(__b, 0, __b.length);
@@ -599,7 +599,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int removeFirst(byte[] __b, int __o, int __l)
+	public final int removeFirst(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
@@ -622,7 +622,7 @@ public class ByteDeque
 	 * @throws NoSuchElementException If not a single byte is available.
 	 * @since 2016/05/01
 	 */
-	public byte removeLast()
+	public final byte removeLast()
 		throws NoSuchElementException
 	{
 		// Lock
@@ -642,7 +642,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int removeLast(byte[] __b)
+	public final int removeLast(byte[] __b)
 		throws NullPointerException
 	{
 		return removeLast(__b, 0, __b.length);
@@ -660,7 +660,7 @@ public class ByteDeque
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/01
 	 */
-	public int removeLast(byte[] __b, int __o, int __l)
+	public final int removeLast(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check

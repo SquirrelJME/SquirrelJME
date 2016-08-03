@@ -10,7 +10,7 @@
 
 package net.multiphasicapps.io.slidingwindow;
 
-import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This represents a sliding byte window.
@@ -25,19 +25,19 @@ import net.multiphasicapps.util.dynbuffer.DynamicByteBuffer;
  */
 public class SlidingByteWindow
 {
-	/** The default fragment size. */
-	public static final int DEFAULT_FRAGMENT_SIZE =
-		4;
-	
 	/** Lock. */
 	protected final Object lock =
 		new Object();
 	
 	/** The backing byte buffer. */
-	protected final DynamicByteBuffer backingbuffer;
+	protected final ByteDeque backingbuffer;
 	
 	/** The window size. */
 	protected final int windowsize;
+	
+	/** Single byte for forcing bulk operations. */
+	private final byte[] _solo =
+		new byte[1];
 	
 	/** The total number of written bytes. */
 	private volatile int _total;
@@ -47,20 +47,6 @@ public class SlidingByteWindow
 	
 	/** The window tail. */
 	private volatile int _tail;
-	
-	/**
-	 * Sanity check.
-	 *
-	 * @since 2016/03/12
-	 */
-	static
-	{
-		// {@squirreljme.error AI01 The default fragment size is not a power of
-		// two. (The default fragment size)}
-		if (Integer.bitCount(DEFAULT_FRAGMENT_SIZE) != 1)
-			throw new RuntimeException(String.format("AI01 %d",
-				DEFAULT_FRAGMENT_SIZE));
-	}
 	
 	/**
 	 * This initializes the sliding byte window.
@@ -81,7 +67,7 @@ public class SlidingByteWindow
 		windowsize = __wsz;
 		
 		// Setup backing store
-		backingbuffer = new DynamicByteBuffer();
+		backingbuffer = new ByteDeque(__wsz);
 	}
 	
 	/**
@@ -95,29 +81,9 @@ public class SlidingByteWindow
 		// Lock
 		synchronized (lock)
 		{
-			// Add to the sliding window
-			DynamicByteBuffer back = this.backingbuffer;
-			back.add(__b);
-			
-			// Get variables
-			int windowsize = this.windowsize;
-			int total = this._total;
-			int head = this._head;
-			int tail = this._tail;
-			
-			// Determine the new tail position
-			int nexttail = (tail + 1) % windowsize;
-			
-			// Runs into the head? Increase that by one (lose oldest bytes)
-			if (nexttail == head)
-				this._head = (head + 1) % windowsize;
-			
-			// Write byte and increase size
-			back.set(tail, __b);
-			this._total = Math.min(windowsize, total + 1);
-			
-			// Set next tail position
-			this._tail = nexttail;
+			byte[] solo = this._solo;
+			solo[0] = __b;
+			append(solo, 0, 1);
 		}
 	}
 	
@@ -128,7 +94,7 @@ public class SlidingByteWindow
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public void append(byte... __b)
+	public void append(byte[] __b)
 		throws NullPointerException
 	{
 		// Check
@@ -160,27 +126,9 @@ public class SlidingByteWindow
 		if (__o < 0 || __l < __o || (__o + __l > __b.length))
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// If the number of bytes being written exceeds the window size then
-		// only write the last window size number of bytes.
-		int windowsize = this.windowsize;
-		int wszldiff = __l - windowsize;
-		if (wszldiff > 0)
-		{
-			__o += wszldiff;
-			__l -= wszldiff;
-		}
-		
 		// Lock
 		synchronized (lock)
 		{
-			// Get variables
-			int total = this._total;
-			int head = this._head;
-			int tail = this._tail;
-			
-			// 
-			int after = (head + 1) - windowsize;
-			
 			throw new Error("TODO");
 		}
 	}
@@ -215,46 +163,7 @@ public class SlidingByteWindow
 		// Lock
 		synchronized (lock)
 		{
-			// Get variables
-			int windowsize = this.windowsize;
-			int total = this._total;
-			int head = this._head;
-			int tail = this._tail;
-			
-			// {@squirreljme.error AI03 Bulk read of window bytes would exceed
-			// the bounds of the window. (The bytes in the past to start the
-			// copy from; The number of bytes to read; The total number of
-			// bytes in the window)}
-			if (__ago <= 0 || (__ago - __l) > total)
-				throw new IndexOutOfBoundsException(String.format(
-					"AI03 %d %d %d", __ago, __l, total));
-			
-			// Get backing buffer
-			DynamicByteBuffer back = this.backingbuffer;
-			
-			// Virtual head position
-			int vhead = (tail - __ago);
-			vhead %= windowsize;
-			if (vhead < 0)
-				vhead += windowsize;
-			
-			// Virtual tail position
-			int vtail = (vhead + __l) % windowsize;
-			
-			// Read from the head would fall off the right side
-			if (vhead > vtail)
-			{
-				// Read the right side
-				int rlen;
-				back.get(vhead, __b, __o, (rlen = (windowsize - vhead)));
-				
-				// Then the left side
-				back.get(0, __b, __o + rlen, __l - rlen);
-			}
-			
-			// Can read in the middle
-			else
-				back.get(vhead, __b, __o, __l);
+			throw new Error("TODO");
 		}
 	}
 	
@@ -269,7 +178,7 @@ public class SlidingByteWindow
 		// lock
 		synchronized (lock)
 		{
-			return _total;
+			throw new Error("TODO");
 		}
 	}
 }

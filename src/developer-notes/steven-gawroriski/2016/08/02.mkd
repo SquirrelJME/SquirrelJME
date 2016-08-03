@@ -91,3 +91,8 @@ Now this is really strange.
 
 Had a dependency named incorrectly.
 
+## 20:13
+
+For `SlidingByteWindow`, `ByteDeque` just needs an peek of data somewhere else
+in the queue.
+
