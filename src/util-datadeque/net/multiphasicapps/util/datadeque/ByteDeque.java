@@ -318,7 +318,7 @@ public class ByteDeque
 			this._tail = tail;
 			
 			// Debug
-			__DEBUG();
+			__DEBUG(String.format("Add: o=%d l=%d", __o, __l));
 		}
 	}
 	
@@ -783,7 +783,8 @@ public class ByteDeque
 			this._tail = tail;
 			
 			// Debug
-			__DEBUG();
+			__DEBUG(String.format("Remove -- o=%d l=%d rv=%d", __o, __l,
+				limit));
 			
 			// Return the read count
 			return limit;
@@ -859,7 +860,7 @@ public class ByteDeque
 	 * @since 2016/08/03
 	 */
 	@Deprecated
-	private final void __DEBUG()
+	private final void __DEBUG(String __s)
 	{
 		System.err.printf("DEBUG -- T=%d h=%d t=%d%n", this._total,
 			this._head, this._tail);
@@ -885,6 +886,8 @@ public class ByteDeque
 			sb.append("]");
 		}
 		System.err.printf("DEBUG -- %s%n", sb);
+		if (__s != null)
+			System.err.printf("DEBUG -- %s%n", __s);
 	}
 }
 
