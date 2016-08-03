@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.util.datadeque;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -194,6 +195,9 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
+			// Debug
+			__DEBUG(true, "addFirst() ++++++++++++++++++++++++++++++++");
+			
 			// {@squirreljme.error AE05 Adding bytes to the start would exceed
 			// the capacity of the queue.}
 			int total = this._total;
@@ -275,6 +279,9 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
+			// Debug
+			__DEBUG(true, "addLast() ++++++++++++++++++++++++++++++++");
+			
 			// {@squirreljme.error AE04 Adding bytes to the end would exceed
 			// the capacity of the queue.}
 			int total = this._total;
@@ -341,7 +348,7 @@ public class ByteDeque
 			this._tail = tail;
 			
 			// Debug
-			__DEBUG(String.format("Add: o=%d l=%d", __o, __l));
+			__DEBUG(false, String.format("Add: o=%d l=%d", __o, __l));
 		}
 	}
 	
@@ -370,7 +377,16 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Reset variables
+			this._total = 0;
+			this._head = 0;
+			this._tail = 0;
+			
+			// Zero out all blocks (for security and better compression)
+			LinkedList<byte[]> blocks = this._blocks;
+			for (byte[] bl : blocks)
+				Arrays.fill(bl, (byte)0);
+			blocks.clear();
 		}
 	}
 	
@@ -754,6 +770,9 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
+			// Debug
+			__DEBUG(true, "removeFirst() ++++++++++++++++++++++++++++++++");
+			
 			// If the queue is empty do nothing
 			int total = this._total;
 			if (total == 0)
@@ -782,10 +801,21 @@ public class ByteDeque
 				// Determine the max number of bytes to read
 				int rc = Math.min((lastbl ? tail - head : bs - head), limit);
 				
+				// Should never occur, because that means the tail ended up
+				// lower than the head.
+				if (rc < 0)
+					throw new RuntimeException("OOPS");
+				
 				// Read bytes into the target
 				for (int i = 0; i < rc; i++)
 				{
-					__b[at++] = bl[(head = ((head + 1) & bm))];
+					// Set data
+					int was;
+					__b[at++] = bl[(head = ((was = head++) & bm))];
+					
+					// Erase the data for security/debug purposes (also zero
+					// bytes compress better)
+					bl[was] = 0;
 					
 					// If cycled, remove the first block
 					if (head == 0 || (lastbl && head == tail))
@@ -806,7 +836,7 @@ public class ByteDeque
 			this._tail = tail;
 			
 			// Debug
-			__DEBUG(String.format("Remove -- o=%d l=%d rv=%d", __o, __l,
+			__DEBUG(false, String.format("Remove -- o=%d l=%d rv=%d", __o, __l,
 				limit));
 			
 			// Return the read count
@@ -883,10 +913,10 @@ public class ByteDeque
 	 * @since 2016/08/03
 	 */
 	@Deprecated
-	private final void __DEBUG(String __s)
+	private final void __DEBUG(boolean __in, String __s)
 	{
-		System.err.printf("DEBUG -- %08x T=%d h=%d t=%d%n",
-			System.identityHashCode(this), this._total,
+		System.err.printf("DEBUG -- %08x in=%s T=%d h=%d t=%d%n",
+			System.identityHashCode(this), __in, this._total,
 			this._head, this._tail);
 		StringBuilder sb = new StringBuilder();
 		for (byte[] bl : this._blocks)
