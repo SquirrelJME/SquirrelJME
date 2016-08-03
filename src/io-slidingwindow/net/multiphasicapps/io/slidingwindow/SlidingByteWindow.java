@@ -30,7 +30,7 @@ public class SlidingByteWindow
 		new Object();
 	
 	/** The backing byte buffer. */
-	protected final ByteDeque backingbuffer;
+	protected final ByteDeque deque;
 	
 	/** The window size. */
 	protected final int windowsize;
@@ -41,12 +41,6 @@ public class SlidingByteWindow
 	
 	/** The total number of written bytes. */
 	private volatile int _total;
-	
-	/** The window head. */
-	private volatile int _head;
-	
-	/** The window tail. */
-	private volatile int _tail;
 	
 	/**
 	 * This initializes the sliding byte window.
@@ -67,7 +61,7 @@ public class SlidingByteWindow
 		windowsize = __wsz;
 		
 		// Setup backing store
-		backingbuffer = new ByteDeque(__wsz);
+		deque = new ByteDeque(__wsz);
 	}
 	
 	/**
@@ -129,7 +123,27 @@ public class SlidingByteWindow
 		// Lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			// Get
+			ByteDeque deque = this.deque;
+			int windowsize = this.windowsize;
+			int total = this._total;
+			
+			// Check if the new amount will overflow
+			int newtotal = total + __l;
+			int overflow = 0;
+			if (newtotal < 0 || newtotal > windowsize)
+			{
+				overflow = (newtotal - windowsize);
+				newtotal = windowsize;
+			}
+			
+			// Will overflow, delete last bytes
+			if (overflow > 0)
+				throw new Error("TODO");
+			
+			// Append data to the start
+			deque.addFirst(__b, __o, __l);
+			this._total = newtotal;
 		}
 	}
 	
