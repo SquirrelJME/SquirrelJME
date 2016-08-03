@@ -294,29 +294,11 @@ public class ByteDeque
 			int nb = blocks.size();
 			int head = this._head, tail = this._tail;
 			
-			// No data? Try to fill the first block as much as possible
+			// Keep adding in data
 			int bs = _BLOCK_SIZE;
 			int bm = _BLOCK_MASK;
 			int left = __l;
 			int at = __o;
-			if (total == 0)
-			{
-				// Only can fit a single block
-				int limit = Math.min(bs, __l);
-				
-				byte[] bl = new byte[bs];
-				for (int i = 0; i < limit; i++)
-					bl[i] = __b[at++];
-				
-				// Add block
-				blocks.addLast(bl);
-				tail = limit;
-				
-				// Consume those bytes
-				left -= limit;
-			}
-			
-			// Keep adding in data
 			while (left > 0)
 			{
 				// If the tail is at the start of the block then a new one
@@ -332,12 +314,15 @@ public class ByteDeque
 				else
 					bl = blocks.getLast();
 				
+				// Is this the last block?
+				boolean lastbl = (blocks.size() == 1);
+				
 				// Only can fit a single block
-				int limit = Math.min(bs, left);
+				int limit = Math.min(bs - tail, left);
 				
 				// Wrte data
 				for (int i = 0; i < limit; i++)
-					bl[(tail = (tail + limit) & bm)] = __b[at++];
+					bl[(tail = (tail + 1) & bm)] = __b[at++];
 				
 				// Consumed bytes
 				left -= limit;
