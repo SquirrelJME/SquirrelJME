@@ -585,8 +585,10 @@ public class ByteDeque
 		synchronized (this.lock)
 		{
 			byte[] solo = _solo;
-			removeFirst(solo, 0, 1);
-			return solo[0];
+			int rv = removeFirst(solo, 0, 1);
+			if (rv == 1)
+				return solo[0];
+			throw new NoSuchElementException("NSEE");
 		}
 	}
 	
@@ -626,7 +628,7 @@ public class ByteDeque
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// If nothing to remove, do nothing
-		if (__l < 0)
+		if (__l == 0)
 			return 0;
 		
 		// Lock
@@ -658,8 +660,10 @@ public class ByteDeque
 		synchronized (this.lock)
 		{
 			byte[] solo = _solo;
-			removeLast(solo, 0, 1);
-			return solo[0];
+			int rv = removeLast(solo, 0, 1);
+			if (rv == 1)
+				return solo[0];
+			throw new NoSuchElementException("NSEE");
 		}
 	}
 	

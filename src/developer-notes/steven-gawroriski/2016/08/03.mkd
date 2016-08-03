@@ -6,3 +6,7 @@ Somewhere the code is ignoring `Error`, likely it is the datapipe code. Also
 with the current code in place the decompression is a bit faster since it
 does nothing really.
 
+## 10:11
+
+However those handle such things.
+
