@@ -12,6 +12,7 @@ package net.multiphasicapps.util.datadeque;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -288,6 +289,7 @@ public class ByteDeque
 			
 			// No data? Try to fill the first block as much as possible
 			int bs = _BLOCK_SIZE;
+			int bm = _BLOCK_MASK;
 			int left = __l;
 			int at = __o;
 			if (total == 0)
@@ -310,7 +312,28 @@ public class ByteDeque
 			// Keep adding in data
 			while (left > 0)
 			{
-				throw new Error("TODO");
+				// If the tail is at the start of the block then a new one
+				// must be created
+				byte[] bl;
+				if (tail == 0)
+				{
+					bl = new byte[bs];
+					blocks.addLast(bl);
+				}
+				
+				// Otherwise get the last one
+				else
+					bl = blocks.getLast();
+				
+				// Only can fit a single block
+				int limit = Math.min(bs, left);
+				
+				// Wrte data
+				for (int i = 0; i < limit; i++)
+					bl[(tail = (tail + limit) & bm)] = __b[at++];
+				
+				// Consumed bytes
+				left -= limit;
 			}
 			
 			// Set new details
@@ -862,7 +885,8 @@ public class ByteDeque
 	@Deprecated
 	private final void __DEBUG(String __s)
 	{
-		System.err.printf("DEBUG -- T=%d h=%d t=%d%n", this._total,
+		System.err.printf("DEBUG -- %08x T=%d h=%d t=%d%n",
+			System.identityHashCode(this), this._total,
 			this._head, this._tail);
 		StringBuilder sb = new StringBuilder();
 		for (byte[] bl : this._blocks)
