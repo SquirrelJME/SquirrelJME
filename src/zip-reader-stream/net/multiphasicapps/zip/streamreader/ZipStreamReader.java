@@ -19,6 +19,7 @@ import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.IBM437CodePage;
 import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.ZipException;
 
 /**
  * This class supports stream based reading of input ZIP files.

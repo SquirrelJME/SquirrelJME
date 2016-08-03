@@ -18,6 +18,7 @@ import net.multiphasicapps.io.datasink.DataSinkOutputStream;
 import net.multiphasicapps.io.dynhistin.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipCRCConstants;
+import net.multiphasicapps.zip.ZipException;
 
 /**
  * This provides an interface to interact with a single entry within a ZIP
@@ -133,7 +134,7 @@ public final class ZipStreamEntry
 				int wantcrc, wascrc;
 				if ((wantcrc = this._wantcrc) !=
 					(wascrc = higher.crccalc.crc()))
-					throw new IOException(String.format("BG03 %08x %08x",
+					throw new ZipException(String.format("BG03 %08x %08x",
 						wantcrc, wascrc));
 				
 				// Clear it
@@ -520,7 +521,7 @@ public final class ZipStreamEntry
 					
 					// {@squirreljme.error BG04 Truncated ZIP file.}
 					if (act < _MAX_DESCRIPTOR_SIZE)
-						throw new IOException("BG04");
+						throw new ZipException("BG04");
 					
 					// Is this the descriptor magic number? If so then stop
 					// if the current read number of bytes matches the current
@@ -543,7 +544,7 @@ public final class ZipStreamEntry
 					// {@squirreljme.error BG05 Expected a byte and not EOF
 					// while reading an unknown size compressed entry.}
 					if (rv < 0)
-						throw new IOException("BG05");
+						throw new ZipException("BG05");
 					
 					// Increase count
 					this._count = count + 1;
@@ -568,7 +569,7 @@ public final class ZipStreamEntry
 					// {@squirreljme.error BG02 Expected a byte and not EOF
 					// while reading compressed entry data.}
 					if (rv < 0)
-						throw new IOException("BG02");
+						throw new ZipException("BG02");
 					
 					// Increase count
 					this._count = count + 1;

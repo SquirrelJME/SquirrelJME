@@ -8,25 +8,24 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zip.blockreader;
+package net.multiphasicapps.zip;
 
 import java.io.IOException;
 
 /**
- * This exception is thrown when the input ZIP file is not valid or is
- * malformed.
+ * This is thrown when there is a problem with a ZIP file.
  *
- * @since 2016/03/02
+ * @since 2016/08/02
  */
-public class ZipFormatException
+public class ZipException
 	extends IOException
 {
 	/**
 	 * Initializes exception with no message.
 	 *
-	 * @since 2016/03/02
+	 * @since 2016/08/02
 	 */
-	public ZipFormatException()
+	public ZipException()
 	{
 		super();
 	}
@@ -35,9 +34,9 @@ public class ZipFormatException
 	 * Initializes exception with the given message.
 	 *
 	 * @param __msg The exception message.
-	 * @since 2016/03/02
+	 * @since 2016/08/02
 	 */
-	public ZipFormatException(String __msg)
+	public ZipException(String __msg)
 	{
 		super(__msg);
 	}
@@ -47,9 +46,9 @@ public class ZipFormatException
 	 *
 	 * @param __msg The exception message.
 	 * @param __c The cause.
-	 * @since 2016/03/02
+	 * @since 2016/08/02
 	 */
-	public ZipFormatException(String __msg, Throwable __c)
+	public ZipException(String __msg, Throwable __c)
 	{
 		super(__msg, __c);
 	}

@@ -21,6 +21,7 @@ import net.multiphasicapps.squirreljme.cldc.IndexedBinaryComparator;
 import net.multiphasicapps.squirreljme.cldc.IndexedBinarySearch;
 import net.multiphasicapps.squirreljme.cldc.IndexedComparator;
 import net.multiphasicapps.squirreljme.cldc.IndexedSort;
+import net.multiphasicapps.zip.ZipException;
 
 /**
  * This provides a cached directory of the ZIP file contents.
@@ -73,7 +74,7 @@ public abstract class ZipDirectory
 		// {@squirreljme.error AM04 The ZIP directory has a negative
 		// number of entries. (The negative count)}
 		if (__ne < 0)
-			throw new ZipFormatException(String.format("AM04 %d", __ne));
+			throw new ZipException(String.format("AM04 %d", __ne));
 		
 		// Initialize offset table
 		offsets = new long[__ne];
@@ -171,7 +172,7 @@ public abstract class ZipDirectory
 		// {@squirreljme.error AM06 The file entry has a negative offset.
 		// (The index of the entry)}
 		if (off < 0L)
-			throw new ZipFormatException(String.format("AM05 %d", __i));
+			throw new ZipException(String.format("AM05 %d", __i));
 		
 		// Lock on the entry cache so it is a sort of volatile
 		Reference<ZipEntry>[] entrycache = this._entrycache;
@@ -215,7 +216,7 @@ public abstract class ZipDirectory
 		// {@squirreljme.error AM0g The file entry has a negative offset.
 		// (The index of the entry)}
 		if (off < 0L)
-			throw new ZipFormatException(String.format("AM0g %d", __i));
+			throw new ZipException(String.format("AM0g %d", __i));
 		
 		// Lock
 		Reference<String>[] namecache = this._namecache;
