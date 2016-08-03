@@ -403,9 +403,14 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			byte[] solo = _solo;
-			getFirst(solo, 0, 1);
-			return solo[0];
+			byte[] solo = this._solo;
+			int rv = getFirst(solo, 0, 1);
+			if (rv == 1)
+				return solo[0];
+			
+			// {@squirreljme.error AE07 Could not remove the first byte
+			// because the deque is empty.}
+			throw new NoSuchElementException("AE07");
 		}
 	}
 	
@@ -465,9 +470,14 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			byte[] solo = _solo;
-			getLast(solo, 0, 1);
-			return solo[0];
+			byte[] solo = this._solo;
+			int rv = getLast(solo, 0, 1);
+			if (rv == 0)
+				return solo[0];
+			
+			// {@squirreljme.error AE06 Could not remove the last byte because
+			// the deque is empty.}
+			throw new NoSuchElementException("AE06");
 		}
 	}
 	
@@ -717,14 +727,14 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			byte[] solo = _solo;
+			byte[] solo = this._solo;
 			int rv = removeFirst(solo, 0, 1);
 			if (rv == 1)
 				return solo[0];
 			
-			// {@squirreljme.error AE03 Did not read a single byte. (The
-			// read count)}
-			throw new NoSuchElementException(String.format("AE03 %d", rv));
+			// {@squirreljme.error AE03 Could not remove the first byte
+			// because the deque is empty.}
+			throw new NoSuchElementException("AE03");
 		}
 	}
 	
@@ -811,7 +821,7 @@ public class ByteDeque
 				{
 					// Set data
 					int was;
-					__b[at++] = bl[(head = ((was = head++) & bm))];
+					__b[at++] = bl[(head = (((was = head) + 1) & bm))];
 					
 					// Erase the data for security/debug purposes (also zero
 					// bytes compress better)
@@ -861,7 +871,10 @@ public class ByteDeque
 			int rv = removeLast(solo, 0, 1);
 			if (rv == 1)
 				return solo[0];
-			throw new NoSuchElementException("NSEE");
+			
+			// {@squirreljme.error AE08 Could not remove the last byte because
+			// the deque is empty.}
+			throw new NoSuchElementException("AE08");
 		}
 	}
 	
