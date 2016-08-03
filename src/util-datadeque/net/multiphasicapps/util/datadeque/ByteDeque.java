@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.util.datadeque;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -18,18 +20,28 @@ import java.util.NoSuchElementException;
  *
  * If the queue reaches full capacity then it is increased in size.
  *
- * {@squirreljme.error AE02 No bytes available.}
- * {@squirreljme.error AE03 Capacity reached.}
- *
  * @since 2016/03/11
  */
 public class ByteDeque
 {
+	/**
+	 * {@squirreljme.property net.multiphasicapps.util.datadeque.blocksize=n
+	 * The block size of individual arrays that make up the {@link ByteDeque}
+	 * class. The value must be a power of two.}
+	 */
+	private static final int _BLOCK_SIZE =
+		Math.max(8, Integer.getInteger(
+			"net.multiphasicapps.util.datadeque.blocksize", 64));
+	
 	/** The lock to use. */
 	protected final Object lock;
 	
 	/** The maximum permitted capacity. */
 	protected final int capacity;
+	
+	/** Blocks which make up the queue. */
+	private final LinkedList<byte[]> _blocks =
+		new LinkedList<>();
 	
 	/** Single byte (since it is synchronized). */
 	private final byte[] _solo =
@@ -37,6 +49,20 @@ public class ByteDeque
 	
 	/** The number of bytes in the queue. */
 	private volatile int _total;
+	
+	/** The relative position of the head in relation to the first block. */
+	private volatile int _head;
+	
+	/** The relative position of the tail in relation to the last block. */
+	private volatile int _tail;
+	
+	static
+	{
+		// {@squirreljme.error AE02 The block size of the data deque is not
+		// a power of two. (The specified block size)}
+		if (Integer.bitCount(_BLOCK_SIZE) != 1)
+			throw new RuntimeException(String.format("AE02 %d", _BLOCK_SIZE));
+	}
 	
 	/**
 	 * Initializes a byte deque.
@@ -156,9 +182,20 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
+		// No bytes to add, do nothing
+		if (__l == 0)
+			return;
+		
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error AE05 Adding bytes to the start would exceed
+			// the capacity of the queue.}
+			int total = this._total;
+			int newtotal = total + __l;
+			if (newtotal < 0 || newtotal > this.capacity)
+				throw new IllegalStateException("AE05");
+			
 			throw new Error("TODO");
 		}
 	}
@@ -221,9 +258,20 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
+		// No bytes to add, do nothing
+		if (__l == 0)
+			return;
+		
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error AE04 Adding bytes to the end would exceed
+			// the capacity of the queue.}
+			int total = this._total;
+			int newtotal = total + __l;
+			if (newtotal < 0 || newtotal > this.capacity)
+				throw new IllegalStateException("AE04");
+			
 			throw new Error("TODO");
 		}
 	}
