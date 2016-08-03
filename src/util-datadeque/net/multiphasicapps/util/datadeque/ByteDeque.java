@@ -33,6 +33,10 @@ public class ByteDeque
 		Math.max(8, Integer.getInteger(
 			"net.multiphasicapps.util.datadeque.blocksize", 64));
 	
+	/** The block size mask. */
+	private static final int _BLOCK_MASK =
+		_BLOCK_SIZE - 1;
+	
 	/** The lock to use. */
 	protected final Object lock;
 	
@@ -297,7 +301,7 @@ public class ByteDeque
 				
 				// Add block
 				blocks.addLast(bl);
-				tail += limit;
+				tail = limit;
 				
 				// Consume those bytes
 				left -= limit;
@@ -312,6 +316,9 @@ public class ByteDeque
 			// Set new details
 			this._total = newtotal;
 			this._tail = tail;
+			
+			// Debug
+			__DEBUG();
 		}
 	}
 	
@@ -675,7 +682,10 @@ public class ByteDeque
 			int rv = removeFirst(solo, 0, 1);
 			if (rv == 1)
 				return solo[0];
-			throw new NoSuchElementException("NSEE");
+			
+			// {@squirreljme.error AE03 Did not read a single byte. (The
+			// read count)}
+			throw new NoSuchElementException(String.format("AE03 %d", rv));
 		}
 	}
 	
@@ -727,9 +737,56 @@ public class ByteDeque
 				return 0;
 			
 			// Limit the number of bytes to read to the total
-			__l = Math.min(__l, total);
+			int limit = Math.min(__l, total);
+			int newtotal = total - limit;
 			
-			throw new Error("TODO");
+			// Get some things
+			LinkedList<byte[]> blocks = this._blocks;
+			int nb = blocks.size();
+			int head = this._head, tail = this._tail;
+			
+			// Write bytes into the target
+			int at = __o;
+			int left = limit;
+			int bs = _BLOCK_SIZE;
+			int bm = _BLOCK_MASK;
+			while (left > 0)
+			{
+				// Get the first block
+				byte[] bl = blocks.getFirst();
+				boolean lastbl = (blocks.size() == 1);
+				
+				// Determine the max number of bytes to read
+				int rc = Math.min((lastbl ? bs - tail : bs), limit);
+				
+				// Read bytes into the target
+				for (int i = 0; i < rc; i++)
+				{
+					__b[at++] = bl[(head = ((head + 1) & bm))];
+					
+					// If cycled, remove the first block
+					if (head == 0 || (lastbl && head == tail))
+						blocks.removeFirst();
+				}
+				
+				// Bytes were removed
+				left -= rc;
+			}
+			
+			// Emptied? Clear head/tail pointers
+			if (newtotal == 0)
+				head = tail = 0;
+			
+			// Set details
+			this._total = newtotal;
+			this._head = head;
+			this._tail = tail;
+			
+			// Debug
+			__DEBUG();
+			
+			// Return the read count
+			return limit;
 		}
 	}
 	
@@ -794,6 +851,40 @@ public class ByteDeque
 		{
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * DEBUG ONLY.
+	 *
+	 * @since 2016/08/03
+	 */
+	@Deprecated
+	private final void __DEBUG()
+	{
+		System.err.printf("DEBUG -- T=%d h=%d t=%d%n", this._total,
+			this._head, this._tail);
+		StringBuilder sb = new StringBuilder();
+		for (byte[] bl : this._blocks)
+		{
+			sb.append("[");
+			for (int i = 0; i < bl.length; i++)
+			{
+				if (i > 0)
+					sb.append(' ');
+				
+				if (i == this._tail && i == this._head)
+					sb.append('X');
+				else if (i == this._tail)
+					sb.append('T');
+				else if (i == this._head)
+					sb.append('H');
+				else
+					sb.append(' ');
+				sb.append(String.format("%02x", bl[i]));
+			}
+			sb.append("]");
+		}
+		System.err.printf("DEBUG -- %s%n", sb);
 	}
 }
 
