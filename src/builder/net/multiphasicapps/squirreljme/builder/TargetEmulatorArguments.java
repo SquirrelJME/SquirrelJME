@@ -167,7 +167,7 @@ public final class TargetEmulatorArguments
 		byte[] rv = new byte[size];
 		
 		// Copy data
-		int copysize = 512;
+		int copysize = 4096;
 		try (InputStream is = e.open())
 		{
 			System.err.printf("DEBUG -- Bin Before %d%n", size);

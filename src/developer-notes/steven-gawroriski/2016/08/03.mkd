@@ -1,2 +1,8 @@
 # 2016/08/03
 
+## 10:07
+
+Somewhere the code is ignoring `Error`, likely it is the datapipe code. Also
+with the current code in place the decompression is a bit faster since it
+does nothing really.
+

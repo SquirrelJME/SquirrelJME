@@ -625,9 +625,21 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
+		// If nothing to remove, do nothing
+		if (__l < 0)
+			return 0;
+		
 		// Lock
 		synchronized (this.lock)
 		{
+			// If the queue is empty do nothing
+			int total = this._total;
+			if (total == 0)
+				return 0;
+			
+			// Limit the number of bytes to read to the total
+			__l = Math.min(__l, total);
+			
 			throw new Error("TODO");
 		}
 	}
