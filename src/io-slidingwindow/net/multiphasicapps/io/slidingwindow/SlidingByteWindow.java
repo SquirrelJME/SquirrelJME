@@ -139,7 +139,7 @@ public class SlidingByteWindow
 			
 			// Will overflow, delete last bytes
 			if (overflow > 0)
-				throw new Error("TODO");
+				deque.deleteFirst(__l);
 			
 			// Add data to the end so that the single-byte insertion order
 			// would be the same as the multi-byte insertion.

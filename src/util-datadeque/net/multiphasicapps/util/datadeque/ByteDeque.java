@@ -326,8 +326,6 @@ public class ByteDeque
 			// Set new details
 			this._total = newtotal;
 			this._tail = tail;
-			
-			__DEBUG(false, "Added");
 		}
 	}
 	
@@ -366,6 +364,90 @@ public class ByteDeque
 			for (byte[] bl : blocks)
 				Arrays.fill(bl, (byte)0);
 			blocks.clear();
+		}
+	}
+	
+	/**
+	 * Deletes the specified number of bytes at the start of the deque.
+	 *
+	 * @param __l The number of bytes to delete.
+	 * @return The number of deleted bytes.
+	 * @throws IndexOutOfBoundsException If the number of bytes is negative.
+	 * @since 2016/08/04
+	 */
+	public final int deleteFirst(int __l)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error AE0d
+		if (__l < 0)
+			throw new IndexOutOfBoundsException("AE0d");
+		
+		// Do nothing
+		if (__l == 0)
+			return 0;
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// If the queue is empty do nothing
+			int total = this._total;
+			if (total == 0)
+				return 0;
+			
+			// Do not remove more bytes than there are available
+			int limit = Math.min(__l, total);
+			int newtotal = total - limit;
+			
+			// Get some things
+			LinkedList<byte[]> blocks = this._blocks;
+			int nb = blocks.size();
+			int head = this._head, tail = this._tail;
+			
+			// Write bytes into the target
+			int left = limit;
+			int bs = _BLOCK_SIZE;
+			int bm = _BLOCK_MASK;
+			while (left > 0)
+			{
+				// Get the first block
+				byte[] bl = blocks.getFirst();
+				boolean lastbl = (blocks.size() == 1);
+				
+				// Determine the max number of bytes to read
+				int vtail = (tail == 0 ? bs : tail);
+				int rc = Math.min((lastbl ? vtail - head : bs - head), limit);
+				
+				// Should never occur, because that means the vtail ended up
+				// lower than the head.
+				if (rc < 0)
+					throw new RuntimeException("OOPS");
+				
+				// Erase data
+				for (int i = 0; i < rc; i++)
+					bl[head++] = 0;
+				
+				// Mask the head to detect overflow
+				head &= bm;
+				
+				// If cycled, remove the first block
+				if (head == 0 || (lastbl && head == tail))
+					blocks.removeFirst();
+				
+				// Bytes were removed
+				left -= rc;
+			}
+			
+			// Emptied? Clear head/tail pointers
+			if (newtotal == 0)
+				head = tail = 0;
+			
+			// Set details
+			this._total = newtotal;
+			this._head = head;
+			this._tail = tail;
+			
+			// Return the erase count
+			return limit;
 		}
 	}
 	
@@ -535,9 +617,6 @@ public class ByteDeque
 					int limit = Math.min(left, be - baseread);
 					
 					// Copy them
-					System.err.printf("DEBUG -- at=%d __l=%d br=%d lim=%d " +
-						"left=%d%n",
-						at, __l, baseread, limit, left);
 					for (int i = 0, s = baseread; i < limit; i++)
 						__b[at++] = bl[s++];
 					
@@ -944,9 +1023,6 @@ public class ByteDeque
 			if (total == 0)
 				return 0;
 			
-			// Debug
-			__DEBUG(true, String.format("----- remove before l=%d", __l));
-			
 			// Do not read more bytes than there are available
 			int limit = Math.min(__l, total);
 			int newtotal = total - limit;
@@ -1007,9 +1083,6 @@ public class ByteDeque
 			this._total = newtotal;
 			this._head = head;
 			this._tail = tail;
-			
-			// Debug
-			__DEBUG(false, "++++++ remove after");
 			
 			// Return the read count
 			return limit;
@@ -1080,43 +1153,6 @@ public class ByteDeque
 		{
 			throw new Error("TODO");
 		}
-	}
-	
-	/**
-	 * DEBUG ONLY.
-	 *
-	 * @since 2016/08/03
-	 */
-	@Deprecated
-	private final void __DEBUG(boolean __in, String __s)
-	{
-		if (__s != null)
-			System.err.printf("DEBUG -- %s%n", __s);
-		System.err.printf("DEBUG -- %08x in=%s T=%d h=%d t=%d%n",
-			System.identityHashCode(this), __in, this._total,
-			this._head, this._tail);
-		StringBuilder sb = new StringBuilder();
-		for (byte[] bl : this._blocks)
-		{
-			sb.append("[");
-			for (int i = 0; i < bl.length; i++)
-			{
-				if (i > 0)
-					sb.append(' ');
-				
-				if (i == this._tail && i == this._head)
-					sb.append('X');
-				else if (i == this._tail)
-					sb.append('T');
-				else if (i == this._head)
-					sb.append('H');
-				else
-					sb.append(' ');
-				sb.append(String.format("%02x", bl[i]));
-			}
-			sb.append("]");
-		}
-		System.err.printf("DEBUG -- %s%n", sb);
 	}
 }
 
