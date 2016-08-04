@@ -189,7 +189,14 @@ public class SlidingByteWindow
 				throw new IndexOutOfBoundsException(String.format(
 					"AI03 %d %d %d", __ago, __l, total));
 			
-			throw new Error("TODO");
+			// {@squirreljme.error AI01 Get of a sliding window read did not
+			// read the expected number of bytes. (The expected number of bytes
+			// to read; The actual number read)}
+			int rv;
+			if ((rv = this.deque.get(Math.max(0, total - __ago), __b, __o,
+				__l)) != __l)
+				throw new IndexOutOfBoundsException(String.format(
+					"AI01 %d %d", __l, rv));
 		}
 	}
 	
@@ -204,7 +211,7 @@ public class SlidingByteWindow
 		// lock
 		synchronized (lock)
 		{
-			throw new Error("TODO");
+			return this._total;
 		}
 	}
 }
