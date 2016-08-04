@@ -41,3 +41,8 @@ And the block size of 16
 
 So now the data is consistent.
 
+## 10:32
+
+And now `removeFirst` should be fixed because the inflate algorithm works for
+a simple sequence, must check the others.
+

@@ -34,7 +34,7 @@ public class ByteDeque
 	 */
 	private static final int _BLOCK_SIZE =
 		Math.max(8, Integer.getInteger(
-			"net.multiphasicapps.util.datadeque.blocksize", 16));
+			"net.multiphasicapps.util.datadeque.blocksize", 8));
 	
 	/** The block size mask. */
 	private static final int _BLOCK_MASK =
@@ -941,7 +941,10 @@ public class ByteDeque
 			if (total == 0)
 				return 0;
 			
-			// Limit the number of bytes to read to the total
+			// Debug
+			__DEBUG(true, String.format("----- remove before l=%d", __l));
+			
+			// Do not read more bytes than there are available
 			int limit = Math.min(__l, total);
 			int newtotal = total - limit;
 			
@@ -975,16 +978,19 @@ public class ByteDeque
 				{
 					// Set data
 					int was;
-					__b[at++] = bl[(head = (((was = head) + 1) & bm))];
+					__b[at++] = bl[(was = head++)];
 					
 					// Erase the data for security/debug purposes (also zero
 					// bytes compress better)
 					bl[was] = 0;
-					
-					// If cycled, remove the first block
-					if (head == 0 || (lastbl && head == tail))
-						blocks.removeFirst();
 				}
+				
+				// Mask the head to detect overflow
+				head &= bm;
+				
+				// If cycled, remove the first block
+				if (head == 0 || (lastbl && head == tail))
+					blocks.removeFirst();
 				
 				// Bytes were removed
 				left -= rc;
@@ -998,6 +1004,9 @@ public class ByteDeque
 			this._total = newtotal;
 			this._head = head;
 			this._tail = tail;
+			
+			// Debug
+			__DEBUG(false, "++++++ remove after");
 			
 			// Return the read count
 			return limit;
