@@ -196,9 +196,6 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			// Debug
-			__DEBUG(true, "addFirst() ++++++++++++++++++++++++++++++++");
-			
 			// {@squirreljme.error AE05 Adding bytes to the start would exceed
 			// the capacity of the queue.}
 			int total = this._total;
@@ -280,9 +277,6 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			// Debug
-			__DEBUG(true, "addLast() ++++++++++++++++++++++++++++++++");
-			
 			// {@squirreljme.error AE04 Adding bytes to the end would exceed
 			// the capacity of the queue.}
 			int total = this._total;
@@ -323,7 +317,7 @@ public class ByteDeque
 				
 				// Wrte data
 				for (int i = 0; i < limit; i++)
-					bl[(tail = (tail + 1) & bm)] = __b[at++];
+					bl[(tail = ((tail + 1) & bm))] = __b[at++];
 				
 				// Consumed bytes
 				left -= limit;
@@ -332,9 +326,6 @@ public class ByteDeque
 			// Set new details
 			this._total = newtotal;
 			this._tail = tail;
-			
-			// Debug
-			__DEBUG(false, String.format("Add: o=%d l=%d", __o, __l));
 		}
 	}
 	
@@ -942,9 +933,6 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			// Debug
-			__DEBUG(true, "removeFirst() ++++++++++++++++++++++++++++++++");
-			
 			// If the queue is empty do nothing
 			int total = this._total;
 			if (total == 0)
@@ -1006,10 +994,6 @@ public class ByteDeque
 			this._total = newtotal;
 			this._head = head;
 			this._tail = tail;
-			
-			// Debug
-			__DEBUG(false, String.format("Remove -- o=%d l=%d rv=%d", __o, __l,
-				limit));
 			
 			// Return the read count
 			return limit;
@@ -1080,43 +1064,6 @@ public class ByteDeque
 		{
 			throw new Error("TODO");
 		}
-	}
-	
-	/**
-	 * DEBUG ONLY.
-	 *
-	 * @since 2016/08/03
-	 */
-	@Deprecated
-	private final void __DEBUG(boolean __in, String __s)
-	{
-		System.err.printf("DEBUG -- %08x in=%s T=%d h=%d t=%d%n",
-			System.identityHashCode(this), __in, this._total,
-			this._head, this._tail);
-		StringBuilder sb = new StringBuilder();
-		for (byte[] bl : this._blocks)
-		{
-			sb.append("[");
-			for (int i = 0; i < bl.length; i++)
-			{
-				if (i > 0)
-					sb.append(' ');
-				
-				if (i == this._tail && i == this._head)
-					sb.append('X');
-				else if (i == this._tail)
-					sb.append('T');
-				else if (i == this._head)
-					sb.append('H');
-				else
-					sb.append(' ');
-				sb.append(String.format("%02x", bl[i]));
-			}
-			sb.append("]");
-		}
-		System.err.printf("DEBUG -- %s%n", sb);
-		if (__s != null)
-			System.err.printf("DEBUG -- %s%n", __s);
 	}
 }
 

@@ -1,2 +1,7 @@
 # 2016/08/04
 
+## 08:27
+
+Looks like the tail is not being set properly for an add operation or after
+a remove. The tail points to valid data and not `00`.
+
