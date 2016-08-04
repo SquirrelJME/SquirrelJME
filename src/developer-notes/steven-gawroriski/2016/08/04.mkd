@@ -97,3 +97,19 @@ it. I need to see how fast the decompression algorithm runs. I do hope it is
 faster. And the result is that it is pretty much the same speed as before. It
 still remains as slow once 32KiB is reached.
 
+## 17:24
+
+Something that might work better is from getting from the end if the address is
+higher than half of the buffer.
+
+## 17:31
+
+Something that might work better is having an extra list (an `ArrayList`)
+which is then used to access the data. Basically, the `ArrayList` when a block
+is added at the end, can just be given the block which was added easily.
+However, when a block is removed from the start it requires recalculation.
+One issue with an `ArrayList` is moving values around in the list although
+when it is not linked it would be easier to work with and use less
+allocations. So I really just need a kind of virtual ring buffer of sorts.
+However on generic queue operations it can get complex.
+

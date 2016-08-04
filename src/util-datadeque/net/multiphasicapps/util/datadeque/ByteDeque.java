@@ -40,6 +40,10 @@ public class ByteDeque
 	private static final int _BLOCK_MASK =
 		_BLOCK_SIZE - 1;
 	
+	/** The shift to convert block based values. */
+	private static final int _BLOCK_SHIFT =
+		Integer.numberOfTrailingZeros(_BLOCK_SIZE);
+	
 	/** The lock to use. */
 	protected final Object lock;
 	
@@ -542,77 +546,11 @@ public class ByteDeque
 			if (total <= 0)
 				return 0;
 			
-			// Get some things
-			LinkedList<byte[]> blocks = this._blocks;
-			int nb = blocks.size();
-			int head = this._head, tail = this._tail;
-			
-			// Need to seek, then read the data
-			Iterator<byte[]> it = blocks.iterator();
-			int at = __o;
-			int left = __l;
-			int bls = _BLOCK_SIZE;
-			int rel = 0;
-			for (boolean firstbl = true; left > 0; firstbl = false)
-			{
-				// No more blocks?
-				if (!it.hasNext())
-					break;
-				
-				// Get block here
-				byte[] bl = it.next();
-				
-				// Last block?
-				boolean lastbl = !it.hasNext();
-				
-				// The first and the only block start from the head
-				int bs, be;
-				if (firstbl)
-					bs = head;
-				else
-					bs = 0;
-				
-				// The last and the only block ends at the tail
-				if (lastbl)
-					be = (tail == 0 ? bls : tail);
-				else
-					be = bls;
-				
-				// Bytes in the block
-				int bn = be - bs;
-				
-				// Determine the end of this block
-				int nextrel = rel + bn;
-				
-				// Reading data
-				if (nextrel > __a)
-				{
-					// Read offset from the block
-					int baseread;
-					if (__a >= rel && __a < nextrel)
-						baseread = bs + (__a - rel);
-				
-					// Data always starts at the block start
-					else
-						baseread = bs;
-					
-					// Bytes to read
-					int limit = Math.min(left, be - baseread);
-					
-					// Copy them
-					for (int i = 0, s = baseread; i < limit; i++)
-						__b[at++] = bl[s++];
-					
-					// Read these bytes
-					left -= limit;
-				}
-				
-				// Where the next block starts
-				rel = nextrel;
-			}
-			
-			// Return the read count
-			return (__l - left);
+			// If the address is within the starting half then seek from the
+			// start, otherwise start from the trailing end
+			/*if (__a < (total >> 1))
+				return __getViaFirst(__a, __b, __o, __l);*/
+			return __getViaLast(__a, __b, __o, __l);
 		}
 	}
 	
@@ -1084,6 +1022,181 @@ public class ByteDeque
 		{
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * Obtains bytes starting from the head side.
+	 *
+	 * @param __a The address to read.
+	 * @param __b The destination array.
+	 * @param __o The output offset into the array.
+	 * @param __l The number of bytes to read.
+	 * @return The number of bytes read.
+	 * @since 2016/08/04
+	 */
+	private final int __getViaFirst(int __a, byte[] __b, int __o, int __l)
+	{
+		// Get some things
+		int total = this._total;
+		LinkedList<byte[]> blocks = this._blocks;
+		int nb = blocks.size();
+		int head = this._head, tail = this._tail;
+		
+		// Need to seek, then read the data
+		Iterator<byte[]> it = blocks.iterator();
+		int at = __o;
+		int left = __l;
+		int bls = _BLOCK_SIZE;
+		int rel = 0;
+		for (boolean firstbl = true; left > 0; firstbl = false)
+		{
+			// No more blocks?
+			if (!it.hasNext())
+				break;
+			
+			// Get block here
+			byte[] bl = it.next();
+			
+			// Last block?
+			boolean lastbl = !it.hasNext();
+			
+			// The first and the only block start from the head
+			int bs, be;
+			if (firstbl)
+				bs = head;
+			else
+				bs = 0;
+			
+			// The last and the only block ends at the tail
+			if (lastbl)
+				be = (tail == 0 ? bls : tail);
+			else
+				be = bls;
+			
+			// Bytes in the block
+			int bn = be - bs;
+			
+			// Determine the end of this block
+			int nextrel = rel + bn;
+			
+			// Reading data
+			if (nextrel > __a)
+			{
+				// Read offset from the block
+				int baseread;
+				if (__a >= rel && __a < nextrel)
+					baseread = bs + (__a - rel);
+			
+				// Data always starts at the block start
+				else
+					baseread = bs;
+				
+				// Bytes to read
+				int limit = Math.min(left, be - baseread);
+				
+				// Copy them
+				for (int i = 0, s = baseread; i < limit; i++)
+					__b[at++] = bl[s++];
+				
+				// Read these bytes
+				left -= limit;
+			}
+			
+			// Where the next block starts
+			rel = nextrel;
+		}
+		
+		// Return the read count
+		return (__l - left);
+	}
+	
+	/**
+	 * Obtains bytes starting from the tail side.
+	 *
+	 * @param __a The address to read.
+	 * @param __b The destination array.
+	 * @param __o The output offset into the array.
+	 * @param __l The number of bytes to read.
+	 * @return The number of bytes read.
+	 * @since 2016/08/04
+	 */
+	private final int __getViaLast(int __a, byte[] __b, int __o, int __l)
+	{
+		// Get some things
+		int total = this._total;
+		LinkedList<byte[]> blocks = this._blocks;
+		int nb = blocks.size();
+		int head = this._head, tail = this._tail;
+		
+		// The number of bytes to actually read
+		int limit = Math.min(__l, total - __a);
+		
+		// Every byte in the array is offset by the head (so if the head is 2
+		// then byte 42 is at position 44).
+		int trueaddr = __a + head;
+		
+		// Determine the number of blocks to initially skip before this one
+		// is reached.
+		int bs = _BLOCK_SIZE;
+		int bm = _BLOCK_MASK;
+		int blskip = (total - trueaddr) >> _BLOCK_SHIFT;
+		int truehead = (trueaddr & bm);
+		
+		// Skip blocks to reach where the address starts off at, list iterate
+		// on the last block so `next` returns that block. If skipping at least
+		// one block then the block where data is read is .previous().next()
+		ListIterator<byte[]> it = blocks.listIterator(nb - 1);
+		for (int i = 0; i < blskip; i++)
+			it.previous();
+		
+		// Read in until no bytes remain
+		int left = limit;
+		int at = __o;
+		for (boolean firstread = true; left > 0; firstread = false)
+		{
+			// Get the block data here
+			byte[] bl = it.next();
+			
+			// Is this the first/last block in the chain?
+			boolean lastbl = !it.hasNext();
+			boolean firstbl = !it.hasPrevious();
+			boolean onlyblock = (lastbl | firstbl);
+			
+			// If this is the only block then the tail is significant as it
+			// indicates the end.
+			// The same goes for the last block in the chain
+			int rc;
+			int vtail = (tail == 0 ? bs : tail);
+			if (onlyblock || lastbl)
+				rc = vtail - truehead;
+			
+			// If this is the first block then read from the end to the true
+			// head position (which may be zero).
+			// Also if this is the first read then truehead will be important.
+			else
+				rc = bs - truehead;
+			
+			// Limit to the left over bytes
+			rc = Math.min(left, rc);
+			
+			// This should never occur
+			if (rc <= 0)
+				throw new RuntimeException("OOPS");
+			
+			// Read in data
+			for (int i = 0; i < rc; i++)
+				__b[at++] = bl[truehead++];
+			
+			// Clear true head for the next read, it initially gets the value
+			// but after the first read block it has no meaning.
+			truehead = 0;
+			
+			// Read these bytes, can ignore them
+			left -= rc;
+		}
+		
+		// Return the read byte count
+		return limit;
 	}
 }
 
