@@ -73,3 +73,20 @@ However test D for that revision fails.
 A block size of 16 also fails. However, a block size of 2 causes an exception
 so I must investigate this.
 
+## 17:16
+
+Took a rest. Check delete, that appears to be fine, it appears the problem is
+in get.
+
+	DEBUG -- GET 0 0 1 0b
+	DEBUG -- 98fd0c20 in=false T=11 h=0 t=3
+	DEBUG -- [H0b  49  2d T2e][Hc9  cc  4b T0f][H81  50  00 T00]
+	DEBUG -- GET 0 1 1 00
+	DEBUG -- 98fd0c20 in=false T=10 h=1 t=3
+	DEBUG -- [ 00 H49  2d T2e][ c9 Hcc  4b T0f][ 81 H50  00 T00]
+
+The second set, the vlaue should be 49 and not 00. The "useless" addition that
+I removed before actually has a purpose. And now it works. Interesting that
+the code worked for much longer after it was removed. So essentially it was
+correct code that caused the same thing to happen despite being incorrect.
+
