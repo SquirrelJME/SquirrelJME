@@ -455,8 +455,15 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			// If there are no bytes, all reads fail
+			// {@squirreljme.error AE0c The requested address is outside of
+			// the bounds of the queue. (The requested address; The number of
+			// bytes in the queue)}
 			int total = this._total;
+			if (__a < 0 || __a >= total)
+				throw new IndexOutOfBoundsException(String.format("AE0c %d %d",
+					__a, total));
+			
+			// If there are no bytes, all reads do nothing
 			if (total <= 0)
 				return 0;
 			
@@ -470,10 +477,50 @@ public class ByteDeque
 			int at = __o;
 			int left = __l;
 			int seek = 0;
+			boolean onlyblock = (blocks.size() == 1);
 			for (boolean firstbl = true; left > 0; firstbl = false)
 			{
 				// Last block?
 				boolean lastbl = !it.hasNext();
+				
+				// No more blocks?
+				if (!it.hasNext())
+					break;
+				
+				// Get block here
+				byte[] bl = it.next();
+				
+				// If this is the only block then use both head/tail
+				int bs, be;
+				if (onlyblock)
+				{
+					bs = head;
+					be = tail;
+				}
+				
+				// First block starts at th head to the end
+				else if (firstbl)
+				{
+					bs = head;
+					be = bs;
+				}
+				
+				// Last block starts from nothing and to the tail
+				else if (lastbl)
+				{
+					bs = 0;
+					be = tail;
+				}
+				
+				// Middle block
+				else
+				{
+					bs = 0;
+					be = bs;
+				}
+				
+				// Bytes in the block
+				int bn = be - bs;
 				
 				// Still seeking?
 				if (seek < __a)

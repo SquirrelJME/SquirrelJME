@@ -342,3 +342,5 @@
    [steven-gawroriski](steven-gawroriski/2016/08/02.mkd)
  * 03: 
    [steven-gawroriski](steven-gawroriski/2016/08/03.mkd)
+ * 04: 
+   [steven-gawroriski](steven-gawroriski/2016/08/04.mkd)
