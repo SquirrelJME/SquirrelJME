@@ -476,7 +476,6 @@ public class ByteDeque
 			Iterator<byte[]> it = blocks.iterator();
 			int at = __o;
 			int left = __l;
-			int seek = 0;
 			boolean onlyblock = (blocks.size() == 1);
 			int rel = 0;
 			for (boolean firstbl = true; left > 0; firstbl = false)
@@ -526,24 +525,18 @@ public class ByteDeque
 				// Determine the block end
 				int nextrel = rel + bn;
 				
-				// Still seeking and the block is in this region?
-				int baseread;
-				if (seek < __a && __a < nextrel)
-				{
-					// Start reading offset from the start
-					baseread = bs + (__a - rel);
-					
-					// End seeking
-					seek = __a;
-				}
-				
-				// Data always starts at the block start
-				else
-					baseread = bs;
-				
 				// Reading data
-				if (seek == __a)
+				if (nextrel >= __a)
 				{
+					// Read offset from the block
+					int baseread;
+					if (__a >= rel && __a < nextrel)
+						baseread = bs + (__a - rel);
+				
+					// Data always starts at the block start
+					else
+						baseread = bs;
+					
 					// Bytes to read
 					int limit = Math.min(left, bn);
 					
@@ -552,7 +545,7 @@ public class ByteDeque
 						__b[at++] = bl[s++];
 					
 					// Read these bytes
-					left -= left;
+					left -= limit;
 				}
 				
 				// Where the next block starts
