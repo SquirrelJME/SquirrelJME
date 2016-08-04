@@ -90,3 +90,10 @@ I removed before actually has a purpose. And now it works. Interesting that
 the code worked for much longer after it was removed. So essentially it was
 correct code that caused the same thing to happen despite being incorrect.
 
+## 17:21
+
+Now I need to determine if removing DBB and using BD for everything was worth
+it. I need to see how fast the decompression algorithm runs. I do hope it is
+faster. And the result is that it is pretty much the same speed as before. It
+still remains as slow once 32KiB is reached.
+
