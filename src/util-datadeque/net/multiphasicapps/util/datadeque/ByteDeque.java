@@ -525,7 +525,7 @@ public class ByteDeque
 					// Read offset from the block
 					int baseread;
 					if (__a >= rel && __a < nextrel)
-						baseread = bs + (__a - rel);
+						baseread = __a - rel;
 				
 					// Data always starts at the block start
 					else
@@ -535,6 +535,9 @@ public class ByteDeque
 					int limit = Math.min(left, bn);
 					
 					// Copy them
+					System.err.printf("DEBUG -- at=%d __l=%d br=%d lim=%d " +
+						"left=%d%n",
+						at, __l, baseread, limit, left);
 					for (int i = 0, s = baseread; i < limit; i++)
 						__b[at++] = bl[s++];
 					
