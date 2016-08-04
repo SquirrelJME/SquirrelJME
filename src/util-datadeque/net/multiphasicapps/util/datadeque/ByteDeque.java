@@ -478,6 +478,7 @@ public class ByteDeque
 			int left = __l;
 			int seek = 0;
 			boolean onlyblock = (blocks.size() == 1);
+			int rel = 0;
 			for (boolean firstbl = true; left > 0; firstbl = false)
 			{
 				// Last block?
@@ -522,13 +523,40 @@ public class ByteDeque
 				// Bytes in the block
 				int bn = be - bs;
 				
-				// Still seeking?
-				if (seek < __a)
-					throw new Error("TODO");
+				// Determine the block end
+				int nextrel = rel + bn;
+				
+				// Still seeking and the block is in this region?
+				int baseread;
+				if (seek < __a && __a < nextrel)
+				{
+					// Start reading offset from the start
+					baseread = bs + (__a - rel);
+					
+					// End seeking
+					seek = __a;
+				}
+				
+				// Data always starts at the block start
+				else
+					baseread = bs;
 				
 				// Reading data
-				else
-					throw new Error("TODO");
+				if (seek == __a)
+				{
+					// Bytes to read
+					int limit = Math.min(left, bn);
+					
+					// Copy them
+					for (int i = 0, s = baseread; i < limit; i++)
+						__b[at++] = bl[s++];
+					
+					// Read these bytes
+					left -= left;
+				}
+				
+				// Where the next block starts
+				rel = nextrel;
 			}
 			
 			// Return the read count
