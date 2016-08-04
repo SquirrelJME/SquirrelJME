@@ -470,8 +470,11 @@ public class ByteDeque
 			int at = __o;
 			int left = __l;
 			int seek = 0;
-			while (left > 0)
+			for (boolean firstbl = true; left > 0; firstbl = false)
 			{
+				// Last block?
+				boolean lastbl = !it.hasNext();
+				
 				// Still seeking?
 				if (seek < __a)
 					throw new Error("TODO");
