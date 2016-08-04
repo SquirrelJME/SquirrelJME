@@ -382,7 +382,8 @@ public class ByteDeque
 	public final int deleteFirst(int __l)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AE0d
+		// {@squirreljme.error AE0d Attempt to delete starting from a negative
+		// address.}
 		if (__l < 0)
 			throw new IndexOutOfBoundsException("AE0d");
 		
@@ -1179,9 +1180,16 @@ public class ByteDeque
 			// Limit to the left over bytes
 			rc = Math.min(left, rc);
 			
-			// This should never occur
+			// {@squirreljme.error AE0e A condition which should not occur
+			// has occurred. (The read count; The number of bytes left to
+			// read; Is this the fist block?; Is this the last block?; Is
+			// this the only block?; Is this the first block to read?;
+			// The true head position)}
 			if (rc <= 0)
-				throw new RuntimeException("OOPS");
+				throw new RuntimeException(String.format("AE0e %d %d %s %s " +
+					"%s %s %d",
+					rc, left, firstbl, lastbl, onlyblock, firstread,
+					truehead));
 			
 			// Read in data
 			for (int i = 0; i < rc; i++)
