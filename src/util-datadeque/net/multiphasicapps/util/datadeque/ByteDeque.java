@@ -489,7 +489,7 @@ public class ByteDeque
 				if (onlyblock)
 				{
 					bs = head;
-					be = tail;
+					be = (tail == 0 ? bls : tail);
 				}
 				
 				// First block starts at th head to the end
