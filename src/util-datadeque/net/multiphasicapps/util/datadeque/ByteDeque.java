@@ -959,9 +959,10 @@ public class ByteDeque
 				boolean lastbl = (blocks.size() == 1);
 				
 				// Determine the max number of bytes to read
-				int rc = Math.min((lastbl ? tail - head : bs - head), limit);
+				int vtail = (tail == 0 ? bs : tail);
+				int rc = Math.min((lastbl ? vtail - head : bs - head), limit);
 				
-				// Should never occur, because that means the tail ended up
+				// Should never occur, because that means the vtail ended up
 				// lower than the head.
 				if (rc < 0)
 					throw new RuntimeException("OOPS");
