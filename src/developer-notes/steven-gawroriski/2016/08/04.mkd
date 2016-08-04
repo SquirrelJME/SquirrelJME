@@ -51,3 +51,20 @@ a simple sequence, must check the others. D fails with an IOOB.
 Seems the sliding window get is off by 8 or so. While in the inflate test it
 is only off by 1. So likely the array-like get in `ByteDeque` is incorrect.
 
+## 14:20
+
+So the sliding byte window tests pass, but now the decompression code just
+returns a single byte.
+
+## 14:46
+
+Checking revision `f429555e874c7819c0fd8370f72bffd3df3ffb43`. Fossil's fuse
+feature is quite nice. That revision fails. Now checking
+`2d060afcff8466b373b4c246e7e9d723afee7894` and that revision works. The diff
+is quite simple. The code was replaced by two method calls, get followed
+by delete. The code is very much the same or the most part.
+
+## 14:53
+
+However test D for that revision fails.
+

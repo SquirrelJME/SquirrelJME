@@ -413,12 +413,12 @@ public class ByteDeque
 				byte[] bl = blocks.getFirst();
 				boolean lastbl = (blocks.size() == 1);
 				
-				// Determine the max number of bytes to read
+				// Determine the max number of bytes to delete
 				int rc = Math.min((lastbl ? (tail == 0 ? bs : tail) - head :
 					bs - head), left);
 				
-				// Should never occur, because that means the vtail ended up
-				// lower than the head.
+				// Should never occur, because that means the end is lower
+				// than the start
 				if (rc < 0)
 					throw new RuntimeException("OOPS");
 				
