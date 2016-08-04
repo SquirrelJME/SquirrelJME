@@ -414,8 +414,8 @@ public class ByteDeque
 				boolean lastbl = (blocks.size() == 1);
 				
 				// Determine the max number of bytes to read
-				int vtail = (tail == 0 ? bs : tail);
-				int rc = Math.min((lastbl ? vtail - head : bs - head), limit);
+				int rc = Math.min((lastbl ? (tail == 0 ? bs : tail) - head :
+					bs - head), left);
 				
 				// Should never occur, because that means the vtail ended up
 				// lower than the head.
@@ -1009,7 +1009,7 @@ public class ByteDeque
 			
 			// A remove is a get followed by a delete
 			int rva = get(0, __b, __o, __l);
-			int rvb = deleteFirst(rva);
+			int rvb = deleteFirst(__l);
 			
 			// If this occurs then the number of bytes deleted was not the
 			// same as the number of bytes which were read.
