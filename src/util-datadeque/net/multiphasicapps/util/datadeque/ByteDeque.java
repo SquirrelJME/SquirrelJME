@@ -1023,69 +1023,17 @@ public class ByteDeque
 			if (total == 0)
 				return 0;
 			
-			// Do not read more bytes than there are available
-			int limit = Math.min(__l, total);
-			int newtotal = total - limit;
+			// A remove is a get followed by a delete
+			int rva = get(0, __b, __o, __l);
+			int rvb = deleteFirst(rva);
 			
-			// Get some things
-			LinkedList<byte[]> blocks = this._blocks;
-			int nb = blocks.size();
-			int head = this._head, tail = this._tail;
-			
-			// Write bytes into the target
-			int at = __o;
-			int left = limit;
-			int bs = _BLOCK_SIZE;
-			int bm = _BLOCK_MASK;
-			while (left > 0)
-			{
-				// Get the first block
-				byte[] bl = blocks.getFirst();
-				boolean lastbl = (blocks.size() == 1);
-				
-				// Determine the max number of bytes to read
-				int vtail = (tail == 0 ? bs : tail);
-				int rc = Math.min((lastbl ? vtail - head : bs - head), limit);
-				
-				// Should never occur, because that means the vtail ended up
-				// lower than the head.
-				if (rc < 0)
-					throw new RuntimeException("OOPS");
-				
-				// Read bytes into the target
-				for (int i = 0; i < rc; i++)
-				{
-					// Set data
-					int was;
-					__b[at++] = bl[(was = head++)];
-					
-					// Erase the data for security/debug purposes (also zero
-					// bytes compress better)
-					bl[was] = 0;
-				}
-				
-				// Mask the head to detect overflow
-				head &= bm;
-				
-				// If cycled, remove the first block
-				if (head == 0 || (lastbl && head == tail))
-					blocks.removeFirst();
-				
-				// Bytes were removed
-				left -= rc;
-			}
-			
-			// Emptied? Clear head/tail pointers
-			if (newtotal == 0)
-				head = tail = 0;
-			
-			// Set details
-			this._total = newtotal;
-			this._head = head;
-			this._tail = tail;
+			// If this occurs then the number of bytes deleted was not the
+			// same as the number of bytes which were read.
+			if (rva != rvb)
+				throw new RuntimeException("OOPS");
 			
 			// Return the read count
-			return limit;
+			return rva;
 		}
 	}
 	
