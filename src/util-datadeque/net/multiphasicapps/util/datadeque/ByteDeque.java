@@ -389,8 +389,6 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			__DEBUG(true, String.format("<<< DEL %d", __l));
-			
 			// If the queue is empty do nothing
 			int total = this._total;
 			if (total == 0)
@@ -447,8 +445,6 @@ public class ByteDeque
 			this._total = newtotal;
 			this._head = head;
 			this._tail = tail;
-			
-			__DEBUG(false, String.format(">>> DEL %d", __l));
 			
 			// Return the erase count
 			return limit;
@@ -614,13 +610,6 @@ public class ByteDeque
 				// Where the next block starts
 				rel = nextrel;
 			}
-			
-			// Debug
-			StringBuilder sb = new StringBuilder();
-			for (int i = __o; i < __o + __l; i++)
-				sb.append(String.format("%02x", __b[i]));
-			__DEBUG(false, String.format("GET %d %d %d %s", __a, __o, __l,
-				sb));
 			
 			// Return the read count
 			return (__l - left);
@@ -1095,44 +1084,6 @@ public class ByteDeque
 		{
 			throw new Error("TODO");
 		}
-	}
-	
-	/**
-	 * DEBUG ONLY.
-	 *
-	 * @since 2016/08/03
-	 */
-	@Deprecated
-	private final void __DEBUG(boolean __in, String __s)
-	{
-		System.err.println("-----------------------------");
-		if (__s != null)
-			System.err.printf("DEBUG -- %s%n", __s);
-		System.err.printf("DEBUG -- %08x in=%s T=%d h=%d t=%d%n",
-			System.identityHashCode(this), __in, this._total,
-			this._head, this._tail);
-		StringBuilder sb = new StringBuilder();
-		for (byte[] bl : this._blocks)
-		{
-			sb.append("[");
-			for (int i = 0; i < bl.length; i++)
-			{
-				if (i > 0)
-					sb.append(' ');
-				
-				if (i == this._tail && i == this._head)
-					sb.append('X');
-				else if (i == this._tail)
-					sb.append('T');
-				else if (i == this._head)
-					sb.append('H');
-				else
-					sb.append(' ');
-				sb.append(String.format("%02x", bl[i]));
-			}
-			sb.append("]");
-		}
-		System.err.printf("DEBUG -- %s%n", sb);
 	}
 }
 
