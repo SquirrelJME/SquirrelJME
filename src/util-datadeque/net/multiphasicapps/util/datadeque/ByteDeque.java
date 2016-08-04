@@ -309,15 +309,15 @@ public class ByteDeque
 				else
 					bl = blocks.getLast();
 				
-				// Is this the last block?
-				boolean lastbl = (blocks.size() == 1);
-				
 				// Only can fit a single block
 				int limit = Math.min(bs - tail, left);
 				
-				// Wrte data
+				// Write data
 				for (int i = 0; i < limit; i++)
-					bl[(tail = ((tail + 1) & bm))] = __b[at++];
+					bl[(tail++) & bm] = __b[at++];
+				
+				// Mask tail
+				tail &= bm;
 				
 				// Consumed bytes
 				left -= limit;
