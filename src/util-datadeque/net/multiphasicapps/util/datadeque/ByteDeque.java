@@ -34,7 +34,7 @@ public class ByteDeque
 	 */
 	private static final int _BLOCK_SIZE =
 		Math.max(8, Integer.getInteger(
-			"net.multiphasicapps.util.datadeque.blocksize", 8));
+			"net.multiphasicapps.util.datadeque.blocksize", 16));
 	
 	/** The block size mask. */
 	private static final int _BLOCK_MASK =
@@ -314,9 +314,9 @@ public class ByteDeque
 				
 				// Write data
 				for (int i = 0; i < limit; i++)
-					bl[(tail++) & bm] = __b[at++];
+					bl[tail++] = __b[at++];
 				
-				// Mask tail
+				// Masking is only needed after the write
 				tail &= bm;
 				
 				// Consumed bytes

@@ -29,3 +29,15 @@ block is full and is the only block (there are exactly block size bytes in a
 block), then the tail would be zero. So if the head was also zero or greater
 than the tail, it could cause a negative value.
 
+## 10:21
+
+So now the first add is this (previously before the last one):
+
+	[H0b  49  2d T2e  c9  cc  4b  0f][H81  50  00 T00  00  00  00  00]
+
+And the block size of 16
+
+	[H0b  49  2d  2e  c9  cc  4b  0f  81  50  00 T00  00  00  00  00]
+
+So now the data is consistent.
+
