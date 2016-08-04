@@ -503,7 +503,7 @@ public class ByteDeque
 				else if (lastbl)
 				{
 					bs = 0;
-					be = tail;
+					be = (tail == 0 ? bls : tail);
 				}
 				
 				// Middle block
