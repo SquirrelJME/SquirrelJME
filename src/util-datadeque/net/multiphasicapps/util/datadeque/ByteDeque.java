@@ -33,8 +33,8 @@ public class ByteDeque
 	 * class. The value must be a power of two.}
 	 */
 	private static final int _BLOCK_SIZE =
-		Math.max(8, Integer.getInteger(
-			"net.multiphasicapps.util.datadeque.blocksize", 8));
+		Math.min(4, Integer.getInteger(
+			"net.multiphasicapps.util.datadeque.blocksize", 64));
 	
 	/** The block size mask. */
 	private static final int _BLOCK_MASK =
@@ -552,7 +552,6 @@ public class ByteDeque
 			int at = __o;
 			int left = __l;
 			int bls = _BLOCK_SIZE;
-			boolean onlyblock = (blocks.size() == 1 && total < bls);
 			int rel = 0;
 			for (boolean firstbl = true; left > 0; firstbl = false)
 			{
@@ -568,13 +567,13 @@ public class ByteDeque
 				
 				// The first and the only block start from the head
 				int bs, be;
-				if (onlyblock || firstbl)
+				if (firstbl)
 					bs = head;
 				else
 					bs = 0;
 				
 				// The last and the only block ends at the tail
-				if (onlyblock || lastbl)
+				if (lastbl)
 					be = (tail == 0 ? bls : tail);
 				else
 					be = bls;

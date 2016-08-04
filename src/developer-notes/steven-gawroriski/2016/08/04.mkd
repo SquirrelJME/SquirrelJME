@@ -68,3 +68,8 @@ by delete. The code is very much the same or the most part.
 
 However test D for that revision fails.
 
+## 14:58
+
+A block size of 16 also fails. However, a block size of 2 causes an exception
+so I must investigate this.
+
