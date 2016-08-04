@@ -185,8 +185,7 @@ public class SlidingByteWindow
 			// bytes in the window)}
 			int windowsize = this.windowsize;
 			int total = this._total;
-			int rightside = total - __ago;
-			if (__ago <= 0 || __l > rightside)
+			if (__ago <= 0 || ((total - __ago) + __l) > total)
 				throw new IndexOutOfBoundsException(String.format(
 					"AI03 %d %d %d", __ago, __l, total));
 			
