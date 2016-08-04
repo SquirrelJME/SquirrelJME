@@ -5,3 +5,27 @@
 Looks like the tail is not being set properly for an add operation or after
 a remove. The tail points to valid data and not `00`.
 
+## 09:57
+
+Ok so with a block size of 8:
+
+	[H6e  54  65  73 T74  69  6e  60][H00  6e  6e  6e T55  00  00  00]
+	
+And a block size of 16:
+
+	[H00  54  65  73  74  69  6e  67  54  54  65  73  74  69 T6e  00]
+
+I should probably avoid writing code when half asleep with a headache. So from
+the looks of it at the trailing block edge it gets erased to zero, perhaps
+with every read. Since I clear the data that should be the cause of losing a
+byte. Also, the sequence `6e 6e 6e` is kind of odd. So just in case a block
+size of 32 results in the same data as the one for 16. Notice how 6e is at the
+end of the other block.
+
+## 10:04
+
+Had some variable confusing checking the removal code. A case where the first
+block is full and is the only block (there are exactly block size bytes in a
+block), then the tail would be zero. So if the head was also zero or greater
+than the tail, it could cause a negative value.
+

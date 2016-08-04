@@ -34,7 +34,7 @@ public class ByteDeque
 	 */
 	private static final int _BLOCK_SIZE =
 		Math.max(8, Integer.getInteger(
-			"net.multiphasicapps.util.datadeque.blocksize", 64));
+			"net.multiphasicapps.util.datadeque.blocksize", 8));
 	
 	/** The block size mask. */
 	private static final int _BLOCK_MASK =
@@ -326,6 +326,8 @@ public class ByteDeque
 			// Set new details
 			this._total = newtotal;
 			this._tail = tail;
+			
+			__DEBUG(false, "Added");
 		}
 	}
 	
@@ -467,7 +469,8 @@ public class ByteDeque
 			Iterator<byte[]> it = blocks.iterator();
 			int at = __o;
 			int left = __l;
-			boolean onlyblock = (blocks.size() == 1);
+			int bls = _BLOCK_SIZE;
+			boolean onlyblock = (blocks.size() == 1 && total < bls);
 			int rel = 0;
 			for (boolean firstbl = true; left > 0; firstbl = false)
 			{
@@ -493,7 +496,7 @@ public class ByteDeque
 				else if (firstbl)
 				{
 					bs = head;
-					be = bs;
+					be = bls;
 				}
 				
 				// Last block starts from nothing and to the tail
@@ -507,7 +510,7 @@ public class ByteDeque
 				else
 				{
 					bs = 0;
-					be = bs;
+					be = bls;
 				}
 				
 				// Bytes in the block
@@ -1065,6 +1068,43 @@ public class ByteDeque
 		{
 			throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * DEBUG ONLY.
+	 *
+	 * @since 2016/08/03
+	 */
+	@Deprecated
+	private final void __DEBUG(boolean __in, String __s)
+	{
+		if (__s != null)
+			System.err.printf("DEBUG -- %s%n", __s);
+		System.err.printf("DEBUG -- %08x in=%s T=%d h=%d t=%d%n",
+			System.identityHashCode(this), __in, this._total,
+			this._head, this._tail);
+		StringBuilder sb = new StringBuilder();
+		for (byte[] bl : this._blocks)
+		{
+			sb.append("[");
+			for (int i = 0; i < bl.length; i++)
+			{
+				if (i > 0)
+					sb.append(' ');
+				
+				if (i == this._tail && i == this._head)
+					sb.append('X');
+				else if (i == this._tail)
+					sb.append('T');
+				else if (i == this._head)
+					sb.append('H');
+				else
+					sb.append(' ');
+				sb.append(String.format("%02x", bl[i]));
+			}
+			sb.append("]");
+		}
+		System.err.printf("DEBUG -- %s%n", sb);
 	}
 }
 
