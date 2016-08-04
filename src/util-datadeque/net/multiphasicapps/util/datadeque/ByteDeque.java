@@ -532,7 +532,7 @@ public class ByteDeque
 						baseread = bs;
 					
 					// Bytes to read
-					int limit = Math.min(left, bn);
+					int limit = Math.min(left, be - baseread);
 					
 					// Copy them
 					System.err.printf("DEBUG -- at=%d __l=%d br=%d lim=%d " +
