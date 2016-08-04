@@ -100,7 +100,8 @@ public class SlidingWindowTest
 				// The arrays must be equal
 				checknum++;
 				if (!Arrays.equals(a, b))
-					checkfail++;
+					__t.result("failure" + (++checkfail)).compareByteArrays(
+						TestComparison.EQUALS, a, b);
 				else
 					checkpass++;
 			}

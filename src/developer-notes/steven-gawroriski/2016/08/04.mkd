@@ -46,3 +46,8 @@ So now the data is consistent.
 And now `removeFirst` should be fixed because the inflate algorithm works for
 a simple sequence, must check the others. D fails with an IOOB.
 
+## 12:53
+
+Seems the sliding window get is off by 8 or so. While in the inflate test it
+is only off by 1. So likely the array-like get in `ByteDeque` is incorrect.
+
