@@ -474,15 +474,15 @@ public class ByteDeque
 			int rel = 0;
 			for (boolean firstbl = true; left > 0; firstbl = false)
 			{
-				// Last block?
-				boolean lastbl = !it.hasNext();
-				
 				// No more blocks?
 				if (!it.hasNext())
 					break;
 				
 				// Get block here
 				byte[] bl = it.next();
+				
+				// Last block?
+				boolean lastbl = !it.hasNext();
 				
 				// If this is the only block then use both head/tail
 				int bs, be;
