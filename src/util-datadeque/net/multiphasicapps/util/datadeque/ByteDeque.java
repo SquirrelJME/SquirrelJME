@@ -11,6 +11,7 @@
 package net.multiphasicapps.util.datadeque;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -454,7 +455,34 @@ public class ByteDeque
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// If there are no bytes, all reads fail
+			int total = this._total;
+			if (total <= 0)
+				return 0;
+			
+			// Get some things
+			LinkedList<byte[]> blocks = this._blocks;
+			int nb = blocks.size();
+			int head = this._head, tail = this._tail;
+			
+			// Need to seek, then read the data
+			Iterator<byte[]> it = blocks.iterator();
+			int at = __o;
+			int left = __l;
+			int seek = 0;
+			while (left > 0)
+			{
+				// Still seeking?
+				if (seek < __a)
+					throw new Error("TODO");
+				
+				// Reading data
+				else
+					throw new Error("TODO");
+			}
+			
+			// Return the read count
+			return (__l - left);
 		}
 	}
 	
