@@ -566,43 +566,27 @@ public class ByteDeque
 				// Last block?
 				boolean lastbl = !it.hasNext();
 				
-				// If this is the only block then use both head/tail
+				// The first and the only block start from the head
 				int bs, be;
-				if (onlyblock)
-				{
+				if (onlyblock || firstbl)
 					bs = head;
-					be = (tail == 0 ? bls : tail);
-				}
-				
-				// First block starts at th head to the end
-				else if (firstbl)
-				{
-					bs = head;
-					be = bls;
-				}
-				
-				// Last block starts from nothing and to the tail
-				else if (lastbl)
-				{
-					bs = 0;
-					be = (tail == 0 ? bls : tail);
-				}
-				
-				// Middle block
 				else
-				{
 					bs = 0;
+				
+				// The last and the only block ends at the tail
+				if (onlyblock || lastbl)
+					be = (tail == 0 ? bls : tail);
+				else
 					be = bls;
-				}
 				
 				// Bytes in the block
 				int bn = be - bs;
 				
-				// Determine the block end
+				// Determine the end of this block
 				int nextrel = rel + bn;
 				
 				// Reading data
-				if (nextrel >= __a)
+				if (nextrel > __a)
 				{
 					// Read offset from the block
 					int baseread;
