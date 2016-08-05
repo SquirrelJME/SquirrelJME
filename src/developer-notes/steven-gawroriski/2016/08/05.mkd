@@ -8,3 +8,9 @@ So the exception that is hit is this,
 
 Tail (3) minus the true head (3) is zero.
 
+## 11:44
+
+Well it does not occur when the block size is 64, but when it is 4. So it
+likely has to do with the block bounds and such. Perhaps related to the true
+offset of the data, how it is calculated that is.
+

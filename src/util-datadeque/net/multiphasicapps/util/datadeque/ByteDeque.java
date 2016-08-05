@@ -1167,9 +1167,8 @@ public class ByteDeque
 			// indicates the end.
 			// The same goes for the last block in the chain
 			int rc;
-			int vtail = (tail == 0 ? bs : tail);
 			if (onlyblock || lastbl)
-				rc = vtail - truehead;
+				rc = (tail == 0 ? bs : tail) - truehead;
 			
 			// If this is the first block then read from the end to the true
 			// head position (which may be zero).
@@ -1182,7 +1181,7 @@ public class ByteDeque
 			
 			// {@squirreljme.error AE0e A condition which should not occur
 			// has occurred. (The read count; The number of bytes left to
-			// read; Is this the fist block?; Is this the last block?; Is
+			// read; Is this the first block?; Is this the last block?; Is
 			// this the only block?; Is this the first block to read?;
 			// The true head position; The head; The tail; The deque size;
 			// The requested address)}
