@@ -96,3 +96,8 @@ the `ByteDeque` refactor the decompression of busybox is much faster now. I
 would say the decompression algorithm runs at about 8KiB/s, which is far better
 than 536B/s.
 
+## 18:20
+
+Now what I have is two classes: `BufferAreaInputStream` and
+`BufferAreaInputStream`.
+

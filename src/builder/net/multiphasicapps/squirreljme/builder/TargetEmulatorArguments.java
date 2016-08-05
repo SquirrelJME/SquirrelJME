@@ -170,13 +170,27 @@ public final class TargetEmulatorArguments
 		int copysize = 4096;
 		try (InputStream is = e.open())
 		{
+			// Debug
 			System.err.printf("DEBUG -- Bin Before %d%n", size);
-			for (int i = 0; i < size; i+= copysize)
+			
+			// Read in all the bytes
+			int left = size;
+			for (int at = 0; left > 0;)
 			{
-			System.err.printf("DEBUG -- During %d %d%n", i, size);
-				is.read(rv, i, copysize);
+				// Debug
+				System.err.printf("DEBUG -- During %d/%d%n", at, size);
+				
+				// Read in the data
+				int cc = Math.min(copysize, left);
+				int rc = is.read(rv, at, cc);
+				
+				// Adjust amounts
+				at += rc;
+				left -= rc;
 			}
-			is.read(rv);System.err.println("DEBUG -- Bin After");
+			
+			// Debug
+			System.err.println("DEBUG -- Bin After");
 		}
 		
 		// Return
