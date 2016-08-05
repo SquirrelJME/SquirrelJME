@@ -59,6 +59,10 @@ then now B works and A fails now. Using `-1` works for A, but fails for B.
 	for (int i = (tail == 0 ? 0 : -1); i < blskip; i++)
 	>
 
-However, it appears they both have a tail of zero and they do. 
+However, it appears they both have a tail of zero and they do.
+
+## 14:00
+
+I would say that then it is this `(head + (total - __a))` that is problematic.
 
 
