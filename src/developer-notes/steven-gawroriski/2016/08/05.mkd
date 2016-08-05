@@ -73,4 +73,26 @@ total. So I just did a simple `hasPrevious()` check for now. A, B, and C pass
 although D fails with what appears to be an off by one (likely the sliding
 window code).
 
+## 17:35
+
+Well, the inflate algorithm works properly, although the data which is
+referred to be a sliding window is not correct. if switching the block size
+back to 64 works without issue and gives the same result then it is the sliding
+window code. However when the block size is 64 an exception is thrown. And
+as a result of the first based code, reading is correct. The last going code
+ends up causing issues.
+
+## 17:44
+
+Oh wow, the decompression code is much faster although still a bit slow. But
+it is much improved now as it does not take a forever to do.
+
+## 18:!5
+
+I actually gave up on the problem and then suddenly the simplest solution came
+to me which works. I hope, because the solution was ifed out and at this point
+I am feeling a bit insane. And it works. So that was simple. So as a result of
+the `ByteDeque` refactor the decompression of busybox is much faster now. I
+would say the decompression algorithm runs at about 8KiB/s, which is far better
+than 536B/s.
 

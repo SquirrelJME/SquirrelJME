@@ -33,8 +33,8 @@ public class ByteDeque
 	 * class. The value must be a power of two.}
 	 */
 	private static final int _BLOCK_SIZE =
-		Math.min(4, Integer.getInteger(
-			"net.multiphasicapps.util.datadeque.blocksize", 64));
+		Math.max(8, Integer.getInteger(
+			"net.multiphasicapps.util.datadeque.blocksize", 128));
 	
 	/** The block size mask. */
 	private static final int _BLOCK_MASK =
@@ -1038,9 +1038,6 @@ public class ByteDeque
 	private final int __getVia(boolean __last, int __a, byte[] __b,
 		int __o, int __l)
 	{
-		// Debug, force last
-		__last = true;
-	
 		// Get some things
 		int total = this._total;
 		LinkedList<byte[]> blocks = this._blocks;
@@ -1049,40 +1046,31 @@ public class ByteDeque
 		int bs = _BLOCK_SIZE;
 		int bm = _BLOCK_MASK;
 		
+		// The number of bytes to read
+		int limit = Math.min(__l, total - __a);
+		
 		// Skip through the starting set of blocks since they are not
 		// needed at all
 		Iterator<byte[]> it;
-		if (__last)
+		int blskip = (head + __a) >> _BLOCK_SHIFT;
+		if (__last && nb > 1)
 		{
-			// Use list iterator since it must go backwards
-			// This in a way assumes that when specifying the offset as
-			// the size that LinkedList magically starts from the end
-			// rather than iterating through all of the initial entries.
-			ListIterator<byte[]> lit = blocks.listIterator(blocks.size());
+			// Start from the back and then go to the index where we are
+			// supposed to be at
+			ListIterator<byte[]> lit = blocks.listIterator(nb);
 			it = lit;
-			
-			// The number of blocks to skip is the difference between the
-			// end and the requested data.
-			// Since the iterator starts at the very end, an extra block
-			// must be skipped over so next works correctly.
-			// Never go below the start however
-			int blskip = (head + (total - __a)) >> _BLOCK_SHIFT;
-			for (int i = -1; i < blskip; i++)
-				if (lit.hasPrevious())
-					lit.previous();
+			int backskip = nb - blskip;
+			for (int i = 0; i < backskip; i++)
+				lit.previous();
 		}
 		
 		// Start from the head size (the front)
 		else
 		{
 			it = blocks.iterator();
-			int blskip = (head + __a) >> _BLOCK_SHIFT;
 			for (int i = 0; i < blskip; i++)
 				it.next();
 		}
-		
-		// The number of bytes to read
-		int limit = Math.min(__l, total - __a);
 		
 		// The initial read head starts where the actual data starts
 		// logicall in the buffer (if the head is 2 then address 42 is
