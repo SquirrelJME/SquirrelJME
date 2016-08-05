@@ -1158,6 +1158,11 @@ public class ByteDeque
 			// Get the block data here
 			byte[] bl = it.next();
 			
+			System.err.print("DEBUG -- ");
+			for (byte[] foo : blocks)
+				System.err.print((foo == bl) ? 'T' : 'F');
+			System.err.println();
+			
 			// Is this the first/last block in the chain?
 			boolean lastbl = !it.hasNext();
 			boolean firstbl = !it.hasPrevious();
@@ -1184,12 +1189,12 @@ public class ByteDeque
 			// has occurred. (The read count; The number of bytes left to
 			// read; Is this the fist block?; Is this the last block?; Is
 			// this the only block?; Is this the first block to read?;
-			// The true head position)}
+			// The true head position; The head; The tail; The deque size)}
 			if (rc <= 0)
 				throw new RuntimeException(String.format("AE0e %d %d %s %s " +
-					"%s %s %d",
+					"%s %s %d %d %d %d",
 					rc, left, firstbl, lastbl, onlyblock, firstread,
-					truehead));
+					truehead, head, tail, total));
 			
 			// Read in data
 			for (int i = 0; i < rc; i++)

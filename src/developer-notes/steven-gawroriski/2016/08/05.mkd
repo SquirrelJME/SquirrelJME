@@ -1,0 +1,10 @@
+# 2016/08/05
+
+## 08:15
+
+So the exception that is hit is this,
+
+	AE0e\ 0\ 1\ false\ true\ true\ true\ 3\ 3\ 3\ 4
+
+Tail (3) minus the true head (3) is zero.
+
