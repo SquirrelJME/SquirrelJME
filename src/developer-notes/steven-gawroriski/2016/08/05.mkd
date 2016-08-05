@@ -99,5 +99,10 @@ than 536B/s.
 ## 18:20
 
 Now what I have is two classes: `BufferAreaInputStream` and
-`BufferAreaInputStream`.
+`SizeLimitedInputStream`.
+
+## 18:24
+
+Let me see... The former is never used and the latter is only used once, so the
+former goes away.
 
