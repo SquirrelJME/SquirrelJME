@@ -14,3 +14,24 @@ Well it does not occur when the block size is 64, but when it is 4. So it
 likely has to do with the block bounds and such. Perhaps related to the true
 offset of the data, how it is calculated that is.
 
+## 12:18
+
+Seems when the data is even, the block skipping is not correct.
+
+## 12:20
+
+This seems off `(total - trueaddr)`. Since total is the number of bytes, it has
+to be corrected by the head value. So as such it is really
+`(total + head) - (__a + head)` or `__a + (total - __a)`.
+
+## 13:09
+
+I should probably use the ticket system more, but I am the only developer so
+to speak.
+
+## 13:38
+
+So I just threw out my get first reading now and rewrote it, and it works. I
+suppose trying to fix broken code was problematic.
+
+
