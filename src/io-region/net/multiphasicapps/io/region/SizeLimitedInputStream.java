@@ -158,5 +158,66 @@ public class SizeLimitedInputStream
 			return next;
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/05
+	 */
+	@Override
+	public int read(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (lock)
+		{
+			// If the limit was reached, stop
+			long current = this._current;
+			long limit = this.limit;
+			if (current >= limit)
+			{
+				// {@squirreljme.error AP02 Required an exact number of bytes
+				// however the limit was not yet reached. (The limit; The
+				// current position)}
+				if (exact && current != limit)
+					throw new IOException(String.format("AP02 %d %d",
+						limit, current));
+				
+				return -1;
+			}
+			
+			// Do not read more bytes after the limit
+			int cc = (int)Math.min(limit - current, __l);
+			
+			// Read the next few bytes
+			InputStream wrapped = this.wrapped;
+			int rc = wrapped.read(__b, __o, cc);
+			
+			// EOF?
+			if (rc < 0)
+			{
+				// {@squirreljme.error AP01 Required an exact number of bytes
+				// however the limit was not yet reached. (The limit; The
+				// current position)}
+				if (exact && current != limit)
+					throw new IOException(String.format("AP01 %d %d",
+						limit, current));
+				
+				// Just EOF
+				return -1;
+			}
+			
+			// Set the new current
+			this._current = current + rc;
+			
+			// Return the read count
+			return rc;
+		}
+	}
 }
 

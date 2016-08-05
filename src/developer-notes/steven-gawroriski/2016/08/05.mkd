@@ -106,3 +106,9 @@ Now what I have is two classes: `BufferAreaInputStream` and
 Let me see... The former is never used and the latter is only used once, so the
 former goes away.
 
+## 19:04
+
+Ok so, `SizeLimitedInputStream` bulk operation now makes reading the busybox
+binary faster. I would say perhaps it is going at 12KiB/s. Method overhead
+definitely cuts down on speed, bulk is always better.
+
