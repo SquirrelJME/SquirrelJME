@@ -65,4 +65,12 @@ However, it appears they both have a tail of zero and they do.
 
 I would say that then it is this `(head + (total - __a))` that is problematic.
 
+## 17:28
+
+Ok this case fails becuase it wants to read from the first address which in
+this case where the total is aligned. The block size is 4, there are 32 bytes
+total. So I just did a simple `hasPrevious()` check for now. A, B, and C pass
+although D fails with what appears to be an off by one (likely the sliding
+window code).
+
 

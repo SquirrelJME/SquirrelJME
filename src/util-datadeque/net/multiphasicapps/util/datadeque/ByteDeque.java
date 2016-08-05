@@ -1065,9 +1065,11 @@ public class ByteDeque
 			// end and the requested data.
 			// Since the iterator starts at the very end, an extra block
 			// must be skipped over so next works correctly.
+			// Never go below the start however
 			int blskip = (head + (total - __a)) >> _BLOCK_SHIFT;
 			for (int i = -1; i < blskip; i++)
-				lit.previous();
+				if (lit.hasPrevious())
+					lit.previous();
 		}
 		
 		// Start from the head size (the front)
