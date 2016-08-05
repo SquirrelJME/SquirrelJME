@@ -35,3 +35,19 @@ So I just threw out my get first reading now and rewrote it, and it works. I
 suppose trying to fix broken code was problematic.
 
 
+## 13:48
+
+It seems this system I am on now had the basic assets as regular files and
+not symlinks, since fossil was not picking them up I just forked. Since get
+via last and get via first are pretty much the same, I can just have a booolean
+for it.
+
+## 13:54
+
+Now I just need a slightly modified set for going through the list from the
+tail end.
+
+## 13:58
+
+Appears I have last working now, except in the case of B. A works however
+

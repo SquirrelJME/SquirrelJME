@@ -549,9 +549,7 @@ public class ByteDeque
 			
 			// If the address is within the starting half then seek from the
 			// start, otherwise start from the trailing end
-			if (__a < (total >> 1))
-				return __getViaFirst(__a, __b, __o, __l);
-			return __getViaLast(__a, __b, __o, __l);
+			return __getVia((__a < (total >> 1)), __a, __b, __o, __l);
 		}
 	}
 	
@@ -1026,8 +1024,10 @@ public class ByteDeque
 	}
 	
 	/**
-	 * Obtains bytes starting from the head side.
+	 * Obtains bytes starting from the head or tail side.
 	 *
+	 * @param __last If {@code true} then initial block traversal is done
+	 * from the tail end rather than the head end.
 	 * @param __a The address to read.
 	 * @param __b The destination array.
 	 * @param __o The output offset into the array.
@@ -1035,8 +1035,12 @@ public class ByteDeque
 	 * @return The number of bytes read.
 	 * @since 2016/08/04
 	 */
-	private final int __getViaFirst(int __a, byte[] __b, int __o, int __l)
+	private final int __getVia(boolean __last, int __a, byte[] __b,
+		int __o, int __l)
 	{
+		// Debug, force last
+		__last = true;
+	
 		// Get some things
 		int total = this._total;
 		LinkedList<byte[]> blocks = this._blocks;
@@ -1047,10 +1051,33 @@ public class ByteDeque
 		
 		// Skip through the starting set of blocks since they are not
 		// needed at all
-		Iterator<byte[]> it = blocks.iterator();
-		int blskip = (head + __a) >> _BLOCK_SHIFT;
-		for (int i = 0; i < blskip; i++)
-			it.next();
+		Iterator<byte[]> it;
+		if (__last)
+		{
+			// Use list iterator since it must go backwards
+			// This in a way assumes that when specifying the offset as
+			// the size that LinkedList magically starts from the end
+			// rather than iterating through all of the initial entries.
+			ListIterator<byte[]> lit = blocks.listIterator(blocks.size());
+			it = lit;
+			
+			// The number of blocks to skip is the difference between the
+			// end and the requested data.
+			// Since the iterator starts at the very end, an extra block
+			// must be skipped over so next works correctly.
+			int blskip = (head + (total - __a)) >> _BLOCK_SHIFT;
+			for (int i = -1; i < blskip; i++)
+				lit.previous();
+		}
+		
+		// Start from the head size (the front)
+		else
+		{
+			it = blocks.iterator();
+			int blskip = (head + __a) >> _BLOCK_SHIFT;
+			for (int i = 0; i < blskip; i++)
+				it.next();
+		}
 		
 		// The number of bytes to read
 		int limit = Math.min(__l, total - __a);
@@ -1088,21 +1115,6 @@ public class ByteDeque
 		
 		// Return the nymber of bytes read
 		return limit;
-	}
-	
-	/**
-	 * Obtains bytes starting from the tail side.
-	 *
-	 * @param __a The address to read.
-	 * @param __b The destination array.
-	 * @param __o The output offset into the array.
-	 * @param __l The number of bytes to read.
-	 * @return The number of bytes read.
-	 * @since 2016/08/04
-	 */
-	private final int __getViaLast(int __a, byte[] __b, int __o, int __l)
-	{
-		return __getViaFirst(__a, __b, __o, __l);
 	}
 }
 
