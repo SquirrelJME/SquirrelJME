@@ -49,5 +49,16 @@ tail end.
 
 ## 13:58
 
-Appears I have last working now, except in the case of B. A works however
+Appears I have last working now, except in the case of B. A works however.
+
+## 14:00
+
+It is likely the reason B fails is if the tail is at the edge of a block. So
+then now B works and A fails now. Using `-1` works for A, but fails for B.
+
+	for (int i = (tail == 0 ? 0 : -1); i < blskip; i++)
+	>
+
+However, it appears they both have a tail of zero and they do. 
+
 

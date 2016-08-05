@@ -1066,7 +1066,7 @@ public class ByteDeque
 			// Since the iterator starts at the very end, an extra block
 			// must be skipped over so next works correctly.
 			int blskip = (head + (total - __a)) >> _BLOCK_SHIFT;
-			for (int i = -1; i < blskip; i++)
+			for (int i = (tail == 0 ? -1 : -1); i < blskip; i++)
 				lit.previous();
 		}
 		
