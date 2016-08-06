@@ -23,5 +23,14 @@ package net.multiphasicapps.squirreljme.emulator;
  */
 public interface HypoVisor
 {
+	/**
+	 * Instructs the hypovisor to perform a system specific initialization.
+	 *
+	 * @param __e The emulator to initialize.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/06
+	 */
+	public abstract void init(Emulator __e)
+		throws NullPointerException;
 }
 

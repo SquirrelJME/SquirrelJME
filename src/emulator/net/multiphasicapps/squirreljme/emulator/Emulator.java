@@ -38,7 +38,8 @@ public abstract class Emulator
 	/** The hypovisor used for external access. */
 	protected final HypoVisor hypovisor;
 	
-	private 
+	/** Has the emulator been booted yet? */
+	private volatile boolean _booted;
 	
 	/**
 	 * Initializes the emulator.
@@ -75,6 +76,17 @@ public abstract class Emulator
 	@Override
 	public final void run()
 	{
+		// Boot the emulator?
+		HypoVisor hypovisor = this.hypovisor;
+		if (!this._booted)
+		{
+			// Set booted
+			this._booted = true;
+			
+			// Call hypervisor init
+			hypovisor.init(this);
+		}
+		
 		throw new Error("TODO");
 	}
 }

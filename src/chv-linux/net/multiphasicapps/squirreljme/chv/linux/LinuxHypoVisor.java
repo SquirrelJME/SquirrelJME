@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.chv.linux;
 
+import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.emulator.HypoVisor;
 
 /**
@@ -26,6 +27,21 @@ public abstract class LinuxHypoVisor
 	
 	/** The arguments to the starting program. */
 	protected volatile String[] _initargs;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/06
+	 */
+	@Override
+	public final void init(Emulator __e)
+		throws NullPointerException
+	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 	
 	/**
 	 * Sets the init program to be ran when the emulator requests hypovisor
