@@ -141,3 +141,16 @@ Technically I do not need a drain buffer, I can just use the array that was
 passed in with its limit and such, although that would be a bit risky and
 vulnerable to timing attacks.
 
+## 20:23
+
+So the next points for refactoring would be the ZIP file reading code. I could
+also refactor and speed up the inflater also. If I remove the need of using
+`BitCompactor` and `BitInputStream` when handling input data. Or at least
+increasing the speed of `BitInputStream` then things may be a bit better.
+
+## 20:27
+
+Also `readBitsInt` just calls `readBitsLong` and masks, this would add a slight
+casting value penalty and method call. The long version can just call the int
+version and OR the values as required.
+
