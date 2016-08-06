@@ -34,9 +34,9 @@ public class BitInputStream
 	/** Least significant bit first? */
 	protected final boolean lsb;
 	
-	/** The current inner bit position. */
-	private volatile int _inner =
-		8;
+	/** The current inner bit mask. */
+	private volatile int _mask =
+		0;
 	
 	/** The current read byte. */
 	private volatile byte _byte;
@@ -90,10 +90,12 @@ public class BitInputStream
 		synchronized (lock)
 		{
 			// Current bit to get
-			int curbit = _inner;
+			int mask = this._mask;
+			boolean lsb = this.lsb;
+			byte value;
 			
 			// Read in the next byte?
-			if (curbit == 8)
+			if (mask == 0)
 			{
 				// Read next byte
 				int val = wrapped.read();
@@ -103,29 +105,25 @@ public class BitInputStream
 					throw new EOFException("AH03");
 				
 				// Set active byte
-				_byte = (byte)val;
+				value = (byte)val;
+				this._byte = value;
 				
-				// Reset current bit
-				_inner = curbit = 0;
+				// Use lowest or highest
+				mask = (lsb ? 0x01 : 0x80);
 			}
 			
-			// Get currently active byte
-			byte act = _byte;
-			
-			// Least significant bit first
-			boolean rv;
-			if (lsb)
-				rv = (0 != (act & (1 << curbit)));
-			
-			// Most first
+			// Otherwise use the pre-existing value
 			else
-				rv = (0 != (act & (1 << (7 - curbit))));
+				value = this._byte;
 			
-			// Set next desired bit
-			_inner = curbit + 1;
+			// Shift the mask up or down?
+			if (lsb)
+				this._mask = (mask << 1);
+			else
+				this._mask = (mask >>> 1);
 			
-			// Return it
-			return rv;
+			// Return the value dependent on the mask
+			return (0 != (value & mask));
 		}
 	}
 	
