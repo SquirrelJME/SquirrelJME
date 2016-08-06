@@ -39,6 +39,10 @@ public class InflateDataPipe
 	protected static final int REQUIRED_BITS =
 		48;
 	
+	/** Thrown when the primary read loop should be done again. */
+	private static final PipeStalledException _RETRY =
+		new PipeStalledException();
+	
 	/** Shuffled bit values when reading values. */
 	private static final int[] _SHUFFLE_BITS =
 		new int[]
@@ -209,7 +213,8 @@ public class InflateDataPipe
 			try
 			{
 				// Depends on the action
-				switch (_task)
+				int task = this._task;
+				switch (task)
 				{
 						// Read the deflate header
 					case __TASK__READ_HEADER:
@@ -247,12 +252,23 @@ public class InflateDataPipe
 						__readDynamicHuffmanCompressed();
 						break;
 						
-						// Unknown
-					default:
 						// {@squirreljme.error AF03 Unknown task. (The task)}
+					default:
 						throw new PipeProcessException(String.format("AF03 %d",
-							_task));
+							task));
 				}
+			}
+			
+			// Stalled pipeline
+			catch (PipeStalledException e)
+			{
+				// Retry, do not throw the exception and just run the loop
+				// again rather than falling out.
+				if (e == _RETRY)
+					continue;
+				
+				// Otherwise, toss
+				throw e;
 			}
 		
 			// Short read
@@ -271,17 +287,23 @@ public class InflateDataPipe
 	 * @param __c The input code.
 	 * @param __len Length tree.
 	 * @param __dist Distance tree.
+	 * @return {@code true} if the loop should break.
 	 * @throws PipeProcessException On read/write error.s
 	 * @since 2016/03/12
 	 */
-	private void __handleCode(int __c, HuffmanTreeInt __len,
+	private boolean __handleCode(int __c, HuffmanTreeInt __len,
 		HuffmanTreeInt __dist)
 		throws PipeProcessException
 	{
 		// Literal byte value
 		BitCompactor compactor = this.compactor;
 		if (__c >= 0 && __c <= 255)
+		{
 			compactor.add(__c & 0xFF, 0xFF);
+			
+			// Do not break
+			return false;
+		}
 		
 		// Stop processing, use the waiting exception to break out of the state
 		// and go back to the header handler
@@ -293,9 +315,7 @@ public class InflateDataPipe
 			
 			// Go back to reading the header
 			_task = __TASK__READ_HEADER;
-			
-			// {@squirreljme.error AF07 Stalling after code stop.}
-			throw new PipeStalledException("AF07");
+			return true;
 		}
 		
 		// Window based result
@@ -335,6 +355,9 @@ public class InflateDataPipe
 			// length is greater than the current position
 			for (int i = 0; i < lent; i++)
 				compactor.add(winb[i % maxlen] & 0xFF, 0xFF);
+			
+			// Do not break the loop
+			return false;
 		}
 		
 		// {@squirreljme.error AF09 Illegal code. (The code.)}
@@ -640,9 +663,7 @@ public class InflateDataPipe
 					this._nexthlitdist = next;
 					
 					// Use a waiting exception to break from the loop
-					// {@squirreljme.error AF0g Stalling after huffman tree
-					// setup.}
-					throw new PipeStalledException("AF0g");
+					throw _RETRY;
 				}
 				
 				// Not enough bits to read code lengths?
@@ -702,7 +723,8 @@ public class InflateDataPipe
 			int code = __readTreeCode(thlit);
 			
 			// Handle it
-			__handleCode(code, thlit, tdist);
+			if (__handleCode(code, thlit, tdist));
+				break;
 		}
 	}
 	
@@ -766,7 +788,8 @@ public class InflateDataPipe
 			int code = __InflateFixedHuffman__.read(this);
 			
 			// Handle the code
-			__handleCode(code, null, null);
+			if (__handleCode(code, null, null))
+				break;
 		}
 	}
 	

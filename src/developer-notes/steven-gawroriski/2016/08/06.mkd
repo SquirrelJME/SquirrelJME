@@ -32,3 +32,8 @@ of methods called, so there is much overhead and such.
 
 Making it integer did not do much at all.
 
+## 15:46
+
+I suppose what I can do instead of stalling, would be to just retry in some
+conditions.
+
