@@ -185,12 +185,10 @@ public class BitCompactor
 		if (mask == 1)
 			return;
 		
-		// Pad it to a byte
-		while (mask != 0)
-		{
-			add(false);
-			mask <<= 1;
-		}
+		// Just send what is in the queue and reset the values
+		callback.ready(this._queue);
+		this._mask = 1;
+		this._queue = 0;
 	}
 	
 	/**

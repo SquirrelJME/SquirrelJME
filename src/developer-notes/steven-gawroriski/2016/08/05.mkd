@@ -160,3 +160,8 @@ Making `BitCompactor` not thread safe might improve some speed. It could also
 be associated with an output stream or a `DataPipe` instead of having a
 callback.
 
+## 21:50
+
+Optimizing `BitCompactor` gets me now 1.008s which is better than before. Not
+much of an improvement but it is getting there.
+
