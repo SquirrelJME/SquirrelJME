@@ -112,3 +112,18 @@ Ok so, `SizeLimitedInputStream` bulk operation now makes reading the busybox
 binary faster. I would say perhaps it is going at 12KiB/s. Method overhead
 definitely cuts down on speed, bulk is always better.
 
+## 19:40
+
+`DataPipeInputStream` only does single reads at a time also, so I should
+increase the speed of that by supporting such things. Since it is synchronized
+the single byte operation can turn into the bulk one.
+
+## 20:00
+
+Well I found a `__l < __o`, which is not good.
+
+## 20:03
+
+Adding bulk read for `DataPipeInputStream` has definitely increased the speed
+of it.
+

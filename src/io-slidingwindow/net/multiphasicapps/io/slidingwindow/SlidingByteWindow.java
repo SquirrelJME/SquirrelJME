@@ -117,7 +117,7 @@ public class SlidingByteWindow
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < __o || (__o + __l > __b.length))
+		if (__o < 0 || __l < 0 || (__o + __l > __b.length))
 			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
@@ -172,9 +172,8 @@ public class SlidingByteWindow
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < __o || (__o + __l > __b.length))
-			throw new IndexOutOfBoundsException(String.format("BAOB %d %d %d",
-				__b.length, __o, __l));
+		if (__o < 0 || __l < 0 || (__o + __l > __b.length))
+			throw new IndexOutOfBoundsException("BAOB");
 		
 		// Lock
 		synchronized (lock)

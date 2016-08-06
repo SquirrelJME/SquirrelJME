@@ -27,6 +27,16 @@ public class DataPipeInputStream
 	extends InputStream
 	implements Flushable
 {
+	/**
+	 * {@squirreljme.property net.multiphasicapps.io.datapipe.drainsize=n
+	 * When there is not enough data within the data pipe, then these many
+	 * bytes are attempted to be processed and placed into the output
+	 * processor.}
+	 */
+	private static final int _DRAIN_SIZE =
+		Math.max(8, Integer.getInteger(
+			"net.multiphasicapps.io.datapipe.drainsize", 64));
+	
 	/** Lock. */
 	protected final Object lock;
 	
@@ -35,6 +45,14 @@ public class DataPipeInputStream
 	
 	/** The data processor which handles input byte sources. */
 	protected final DataPipe processor;
+	
+	/** Single byte operation. */
+	private final byte[] _solo =
+		new byte[1];
+	
+	/** Drain array (so every drain does not new an array). */
+	private final byte[] _drain =
+		new byte[_DRAIN_SIZE];
 	
 	/** Threw some kind of exception? */
 	private volatile boolean _failed;
@@ -120,6 +138,44 @@ public class DataPipeInputStream
 		// Lock
 		synchronized (lock)
 		{
+			// Constantly try reading a single byte
+			byte[] solo = this._solo;
+			for (;;)
+			{
+				int rv = this.read(solo, 0, 1);
+				
+				// EOF?
+				if (rv < 0)
+					return -1;
+				
+				// Read a byte, return it
+				if (rv == 1)
+					break;
+			}
+			
+			// Return the read value
+			return (solo[0] & 0xFF);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/05
+	 */
+	@Override
+	public int read(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		int n = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > n)
+			throw new IndexOutOfBoundsException("BAOB");
+		
+		// Lock
+		synchronized (this.lock)
+		{
 			// {@squirreljme.error AC04 Previous read failed.}
 			if (_failed)
 				throw new IOException("AC04", _suppressed);
@@ -128,78 +184,90 @@ public class DataPipeInputStream
 			if (_closed)
 				return -1;
 			
-			// Constantly read input
-			for (;;)
+			// Could fail
+			try
 			{
-				// Try to read bytes from the output
-				try
+				DataPipe processor = this.processor;
+				
+				// Keep trying to drain bytes
+				int at = __o;
+				int rt = 0;
+				for (;;)
 				{
-					int rv = processor.drain();
+					//Drain bytes
+					int dc = processor.drain(__b, at, __l);
 					
-					// Nothing left?
-					if (rv < 0)
+					// Nothing left to drain
+					if (dc < 0)
 						return -1;
 					
-					// Return it
-					return rv;
-				}
-				
-				// Failed pipe read
-				catch (PipeProcessException|FaucetProcessException|
-					SinkProcessException e)
-				{
-					// Failed read
-					_failed = true; 
+					// Read something potentially, do not overwrite
+					at += dc;
+					rt += dc;
 					
-					// {@squirreljme.error AC05 Failed to drain from the pipe.}
-					IOException tt = new IOException("AC05", e);
-					this._suppressed = tt;
-					throw tt;
-				}
-				
-				// Output stalled, add more bytes to the input
-				catch (PipeStalledException e)
-				{
-					// If done, not going to read anything
-					if (_done)
-						continue;
-					
-					// Setup buffer
-					int ADD = 32;
-					byte[] bb = new byte[ADD];
-					
-					// Read some input
-					int rc;
-					try
+					// Stalled
+					if (dc == 0)
 					{
-						rc = in.read(bb);
-					}
+						// If done, not going to read anything
+						if (_done)
+							continue;
 					
-					// Failed to read some input
-					catch (IOException f)
-					{
-						// Mark it
-						_failed = true;
+						// Setup buffer
+						byte[] drain = this._drain;
+					
+						// Read some input
+						int rc;
+						try
+						{
+							// Drain
+							rc = in.read(drain);
+							
+							// EOF reached?
+							if (rc < 0)
+							{
+								// Mark done and complete the input
+								processor.completeInput();
+								_done = true;
 						
-						// Rethrow
-						this._suppressed = f;
-						throw f;
-					}
+								// Try draining
+								continue;
+							}
 					
-					// EOF reached?
-					if (rc < 0)
-					{
-						// Mark done and complete the input
-						processor.completeInput();
-						_done = true;
+							// Add to the input queue
+							processor.offer(drain, 0, rc);
 						
-						// Try draining
-						continue;
+							// Try again
+							continue;
+						}
+					
+						// Failed to read some input
+						catch (IOException f)
+						{
+							// Mark it
+							_failed = true;
+						
+							// Rethrow
+							this._suppressed = f;
+							throw f;
+						}
 					}
 					
-					// Add to the input queue
-					processor.offer(bb, 0, rc);
+					// Return the total number of drained bytes
+					return rt;
 				}
+			}
+			
+			// Failed pipe read
+			catch (PipeProcessException|FaucetProcessException|
+				SinkProcessException e)
+			{
+				// Failed read
+				_failed = true; 
+				
+				// {@squirreljme.error AC05 Failed to drain from the pipe.}
+				IOException tt = new IOException("AC05", e);
+				this._suppressed = tt;
+				throw tt;
 			}
 		}
 	}

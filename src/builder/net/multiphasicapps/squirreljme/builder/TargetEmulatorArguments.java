@@ -173,12 +173,19 @@ public final class TargetEmulatorArguments
 			// Debug
 			System.err.printf("DEBUG -- Bin Before %d%n", size);
 			
+			// Debug
+			int debuglast = 0;
+			
 			// Read in all the bytes
 			int left = size;
 			for (int at = 0; left > 0;)
 			{
 				// Debug
-				System.err.printf("DEBUG -- During %d/%d%n", at, size);
+				if (at > debuglast + copysize)
+				{
+					System.err.printf("DEBUG -- During %d/%d%n", at, size);
+					debuglast = at;
+				}
 				
 				// Read in the data
 				int cc = Math.min(copysize, left);
