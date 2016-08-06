@@ -178,18 +178,6 @@ public class DataPipeInputStream
 			int left = __l;
 			for (;;)
 			{
-				// Drain bytes
-				int dc = processor.drain(__b, at, left);
-				
-				// Nothing left to drain
-				if (dc < 0)
-					return (rt > 0 ? rt : -1);
-				
-				// Read something potentially, do not overwrite
-				at += dc;
-				rt += dc;
-				left -= dc;
-				
 				// Stalled
 				boolean done = this._done;
 				if (!done && rt < __l)
@@ -210,16 +198,11 @@ public class DataPipeInputStream
 							// Mark done and complete the input
 							processor.completeInput();
 							_done = true;
-					
-							// Try draining
-							continue;
 						}
 				
 						// Add to the input queue
-						processor.offer(drain, 0, rc);
-					
-						// Try again
-						continue;
+						else
+							processor.offer(drain, 0, rc);
 					}
 				
 					// Failed to read some input
@@ -233,6 +216,22 @@ public class DataPipeInputStream
 						throw f;
 					}
 				}
+				
+				// Drain bytes
+				int dc = processor.drain(__b, at, left);
+				
+				// Nothing left to drain
+				if (dc < 0)
+					return (rt > 0 ? rt : -1);
+				
+				// Read something potentially, do not overwrite
+				at += dc;
+				rt += dc;
+				left -= dc;
+				
+				// Try to keep filling
+				if (left > 0)
+					continue;
 				
 				// Return the total number of drained bytes
 				return rt;

@@ -4,3 +4,17 @@
 
 So now I have 1899912 in 95 seconds, which is about 20KiB/s which is a minor
 improvement.
+
+## 10:17
+
+What I can do for DPIS is make it so the bytes are offered first before
+reading. Currently it tries to read, then fills it. If I offer first then there
+would be less of a chance of the pipeline stalling.
+
+## 10:22
+
+Drain before gives me 100 seconds, I will run it again.
+
+## 10:27
+
+Now it gives 88 seconds which gives me about 22KiB/s.
