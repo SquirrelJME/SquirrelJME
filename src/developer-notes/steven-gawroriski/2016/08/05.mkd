@@ -165,3 +165,11 @@ callback.
 Optimizing `BitCompactor` gets me now 1.008s which is better than before. Not
 much of an improvement but it is getting there.
 
+## 22:04
+
+Running the code on HotSpot's VM, it decides to optimize the inflation code
+just before it finishes. After it does that, inflation goes by quickly. However
+the code is still far too slow to be practical. I should make more classes
+not thread safe, in general the classes are used in a single thread at a time
+generally.
+
