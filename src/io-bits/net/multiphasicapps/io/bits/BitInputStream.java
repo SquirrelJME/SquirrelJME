@@ -189,12 +189,23 @@ public class BitInputStream
 			// Output value
 			int rv = 0;
 			
-			// Read input bits
-			int an = (__msb ? -1 : 1);
-			for (int i = 0, at = (__msb ? __c - 1 : 0); i >= 0 && i < __c;
-				i++, at += an)
-				if (read())
-					rv |= (1 << at);
+			// Most significant bits first
+			if (__msb)
+			{
+				// Read input bits
+				for (int i = 0, at = __c - 1; i < __c; i++, at--)
+					if (read())
+						rv |= (1 << at);
+			}
+			
+			// Least significant bits first
+			else
+			{
+				// Read input bits
+				for (int i = 0, at = 0; i < __c; i++, at++)
+					if (read())
+						rv |= (1 << at);
+			}
 			
 			// Return it
 			return rv;
