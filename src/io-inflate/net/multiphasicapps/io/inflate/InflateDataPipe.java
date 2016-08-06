@@ -842,7 +842,7 @@ public class InflateDataPipe
 		throws PipeProcessException
 	{
 		// Get the current length
-		int curlen = _nocomplen;
+		int curlen = this._nocomplen;
 		
 		// If not yet initialized, set it up
 		if (curlen < 0)
@@ -871,18 +871,25 @@ public class InflateDataPipe
 					len, com));
 			
 			// Set it
-			_nocomplen = len;
+			this._nocomplen = len;
 		}
 		
 		// Otherwise read values
 		else
+		{
 			while (curlen > 0)
 			{
 				// Need at least a byte of input
 				// {@squirreljme.error AF0o Not enough bits to read a single
 				// value.}
 				if (!isInputComplete() && __zzAvailable() < 8)
+				{
+					// Store before stall
+					this._nocomplen = curlen;
+					
+					// Stall
 					throw new PipeStalledException("AF0o");
+				}
 				
 				// Read byte
 				int val = __zzReadInt(8);
@@ -892,15 +899,15 @@ public class InflateDataPipe
 				
 				// Decrement
 				curlen--;
-				_nocomplen = curlen;
-				
-				// End of sequence
-				if (curlen == 0)
-				{
-					_task = __TASK__READ_HEADER;
-					return;
-				}
 			}
+			
+			// End of sequence
+			if (curlen == 0)
+			{
+				_task = __TASK__READ_HEADER;
+				this._nocomplen = -1;
+			}
+		}
 	}
 	
 	/**
