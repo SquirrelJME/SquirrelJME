@@ -154,3 +154,9 @@ Also `readBitsInt` just calls `readBitsLong` and masks, this would add a slight
 casting value penalty and method call. The long version can just call the int
 version and OR the values as required.
 
+## 21:41
+
+Making `BitCompactor` not thread safe might improve some speed. It could also
+be associated with an output stream or a `DataPipe` instead of having a
+callback.
+

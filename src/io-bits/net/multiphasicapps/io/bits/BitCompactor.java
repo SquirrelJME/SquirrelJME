@@ -14,22 +14,21 @@ package net.multiphasicapps.io.bits;
  * This is a bit compactor which is given bits, when there are enough bits to
  * make a byte then a callback is called which is given the read byte value.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/03/10
  */
 public class BitCompactor
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();	
-	
 	/** The callback for when a bit is ready. */
 	protected final Callback callback;
 	
 	/** The queue bit. */
 	private volatile byte _queue;
 	
-	/** The current bit to write. */
-	private volatile int _at;
+	/** The current mask to use. */
+	private volatile byte _mask =
+		1;
 	
 	/**
 	 * Initializes the bit compactor with the given callback.
@@ -53,74 +52,59 @@ public class BitCompactor
 	 * Adds a single bit.
 	 *
 	 * @param __b The value of the bit to add.
-	 * @return {@code this}.
 	 * @since 2016/03/10
 	 */
-	public BitCompactor add(boolean __b)
+	public void add(boolean __b)
 	{
-		// Lock
-		synchronized (lock)
+		// Get the current mask
+		byte mask = this._mask;
+		
+		// OR in the mask, if the bit is set.
+		byte val = this._queue;
+		if (__b)
+			val |= mask;
+		
+		// Increase mask
+		mask <<= 1;
+		
+		// Push new value?
+		if (mask == 0)
 		{
-			// Get current position
-			int now = _at;
+			// Reset mask to base value and clear the value
+			this._mask = 1;
+			this._queue = 0;
 			
-			// Set it in the queue
-			byte val = _queue;
-			if (__b)
-				val |= (byte)(1 << now);
-			
-			// Increase it
-			now++;
-			
-			// Pushing new byte?
-			if (now == 8)
-			{
-				// Clear and wait for next
-				_queue = 0;
-				_at = 0;
-				
-				// Send it to the callback
-				callback.ready(val);
-			}
-			
-			// Rest at the next bit
-			else
-			{
-				_queue = val;
-				_at = now;
-			}
+			// Send it to the callback
+			callback.ready(val);
 		}
 		
-		// Self
-		return this;
+		// Not pushing
+		else
+		{
+			// Set otherwise
+			this._mask = mask;
+			this._queue = val;
+		}
 	}
 	
 	/**
 	 * Adds multiple bits to be compacted.
 	 *
 	 * @param __b The bits to add.
-	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public BitCompactor add(boolean... __b)
+	public void add(boolean... __b)
 		throws NullPointerException
 	{
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Go through the array
-			int n = __b.length;
-			for (int i = 0; i < n; i++)
-				add(__b[i]);
-		}
-		
-		// Self
-		return this;
+		// Go through the array
+		int n = __b.length;
+		for (int i = 0; i < n; i++)
+			add(__b[i]);
 	}
 	
 	/**
@@ -130,15 +114,14 @@ public class BitCompactor
 	 * @param __val The value to add.
 	 * @param __mask The mask for valid bits, only the least significant bits
 	 * should be set in sequence.
-	 * @return {@code this}.
 	 * @throws IllegalArgumentException If any bit is set that is not within
 	 * the mask, or the mask has a zero gap in it.
 	 * @since 2016/03/10
 	 */
-	public BitCompactor add(int __val, int __mask)
+	public void add(int __val, int __mask)
 		throws IllegalArgumentException
 	{
-		return add(__val, __mask, false);
+		add(__val, __mask, false);
 	}
 	
 	/**
@@ -149,12 +132,11 @@ public class BitCompactor
 	 * should be set in sequence.
 	 * @param __msb If {@code true} then bits are added from the most
 	 * significant value first.
-	 * @return {@code this}.
 	 * @throws IllegalArgumentException If any bit is set that is not within
 	 * the mask, or the mask has a zero gap in it.
 	 * @since 2016/03/10
 	 */
-	public BitCompactor add(int __val, int __mask, boolean __msb)
+	public void add(int __val, int __mask, boolean __msb)
 		throws IllegalArgumentException
 	{
 		// Number of bits in the mask
@@ -173,16 +155,10 @@ public class BitCompactor
 			throw new IllegalArgumentException(String.format("AH02 %x %x",
 				__val, __mask));
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Read input bits
-			int an = (__msb ? -1 : 1);
-			for (int at = (__msb ? ibm - 1 : 0); at >= 0 && at < ibm; at += an)
-				add(0 != (__val & (1 << at)));
-		}
-		
-		return this;
+		// Read input bits
+		int an = (__msb ? -1 : 1);
+		for (int at = (__msb ? ibm - 1 : 0); at >= 0 && at < ibm; at += an)
+			add(0 != (__val & (1 << at)));
 	}
 	
 	/**
@@ -193,36 +169,28 @@ public class BitCompactor
 	 */
 	public int nextBit()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _at;
-		}
+		return Integer.numberOfTrailingZeros(this._mask);
 	}
 	
 	/**
 	 * If there is at least 1 bit written of a byte (and not zero), then the
 	 * remaining byte will be filled with zeros then passed to the output.
 	 *
-	 * @return {@code this}.
 	 * @since 2016/03/12
 	 */
-	public BitCompactor zeroRemainder()
+	public void zeroRemainder()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// If at the start, do not bother
-			if (_at == 0)
-				return this;
-			
-			// Otherwise add until zero
-			while (_at != 0)
-				add(false);
-		}
+		// If writing the first value, do nothing
+		byte mask = this._mask;
+		if (mask == 1)
+			return;
 		
-		// Self
-		return this;
+		// Pad it to a byte
+		while (mask != 0)
+		{
+			add(false);
+			mask <<= 1;
+		}
 	}
 	
 	/**
