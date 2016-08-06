@@ -35,7 +35,7 @@ public class DataPipeInputStream
 	 */
 	private static final int _DRAIN_SIZE =
 		Math.max(8, Integer.getInteger(
-			"net.multiphasicapps.io.datapipe.drainsize", 64));
+			"net.multiphasicapps.io.datapipe.drainsize", 512));
 	
 	/** Lock. */
 	protected final Object lock;

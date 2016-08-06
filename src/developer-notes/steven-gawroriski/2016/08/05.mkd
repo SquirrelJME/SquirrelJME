@@ -127,3 +127,17 @@ Well I found a `__l < __o`, which is not good.
 Adding bulk read for `DataPipeInputStream` has definitely increased the speed
 of it.
 
+## 20:11
+
+So the code is a bit faster, but to decompress 1,899,912 bytes it takes about
+2 minutes, so that would be around 15KiB/s. The inflation tests take 3
+seconds to complete. In comparison, the code from July 1st takes 3 seconds
+also. But running it again, the new code's lowest time is 1.9 seconds or 2
+seconds. While the old code is 1.3 seconds.
+
+## 20:17
+
+Technically I do not need a drain buffer, I can just use the array that was
+passed in with its limit and such, although that would be a bit risky and
+vulnerable to timing attacks.
+
