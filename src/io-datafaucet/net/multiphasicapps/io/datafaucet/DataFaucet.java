@@ -17,6 +17,8 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
 /**
  * This is a data faucet which generates bytes.
  *
+ * This class is not thread safe.
+ *
  * {@squirreljme.error AB01 Cannot add bytes for draining when the output is
  * complete.}
  * {@squirreljme.error AB02 Cannot add bytes for draining when processing is
@@ -28,9 +30,6 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
 public abstract class DataFaucet
 	implements Flushable
 {
-	/** The internal lock. */
-	protected final Object lock;
-	
 	/** The output temporary buffer. */
 	private final ByteDeque _output;
 	
@@ -53,26 +52,6 @@ public abstract class DataFaucet
 	 */
 	public DataFaucet()
 	{
-		this(new Object());
-	}
-	
-	/**
-	 * Initializes the data faucet with the given lock.
-	 *
-	 * @param __lk The data lock to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/30
-	 */
-	public DataFaucet(Object __lk)
-		throws NullPointerException
-	{
-		// Check
-		if (__lk == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		lock = __lk;
-		
 		// Setup output buffer
 		_output = new ByteDeque(__lk);
 	}
@@ -98,32 +77,28 @@ public abstract class DataFaucet
 	public final int drain()
 		throws FaucetProcessException, NoSuchElementException
 	{
-		// Lock
-		synchronized (lock)
+		// Cannot drain during processing
+		if (_inproc)
+			throw new FaucetProcessException("AB05");
+		
+		// Process
+		__process();
+	
+		// Try to read a single byte
+		try
 		{
-			// Cannot drain during processing
-			if (_inproc)
-				throw new FaucetProcessException("AB05");
-			
-			// Process
-			__process();
+			return ((int)_output.removeFirst()) & 0xFF;
+		}
+	
+		// Byte not available
+		catch (NoSuchElementException e)
+		{
+			// If complete end it
+			if (_complete)
+				return -1;
 		
-			// Try to read a single byte
-			try
-			{
-				return ((int)_output.removeFirst()) & 0xFF;
-			}
-		
-			// Byte not available
-			catch (NoSuchElementException e)
-			{
-				// If complete end it
-				if (_complete)
-					return -1;
-			
-				// Otherwise, rethrow
-				throw e;
-			}
+			// Otherwise, rethrow
+			throw e;
 		}
 	}
 	
@@ -167,72 +142,59 @@ public abstract class DataFaucet
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Cannot drain during processing
-			if (_inproc)
-				throw new FaucetProcessException("AB05");
-			
-			// Process
-			__process();
-			
-			// Read many bytes
-			int rv = _output.removeFirst(__b, __o, __l);
-			
-			// No bytes read?
-			if (rv <= 0)
-				return (_complete ? -1 : 0);
-			
-			// Return the read count
-			return rv;
-		}
+		// Cannot drain during processing
+		if (_inproc)
+			throw new FaucetProcessException("AB05");
+		
+		// Process
+		__process();
+		
+		// Read many bytes
+		int rv = _output.removeFirst(__b, __o, __l);
+		
+		// No bytes read?
+		if (rv <= 0)
+			return (_complete ? -1 : 0);
+		
+		// Return the read count
+		return rv;
 	}
 	
 	/**
 	 * Adds data to be output via the drain.
 	 *
 	 * @param __b The single byte to add.
-	 * @return {@code this}.
 	 * @throws CompleteFaucetException If the faucet is complete.
 	 * @throws FaucetProcessException If filling is not called during
 	 * processing.
 	 * @since 2016/04/30
 	 */
-	protected final DataFaucet fill(byte __b)
+	protected void void fill(byte __b)
 		throws CompleteFaucetException, FaucetProcessException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Cannot fill when already complete
-			if (_complete)
-				throw new CompleteFaucetException("AB01");
-			
-			// Must be processing
-			if (!_inproc)
-				throw new FaucetProcessException("AB02");
-			
-			// Send in
-			_output.offerLast(__b);
-		}
+		// Cannot fill when already complete
+		if (_complete)
+			throw new CompleteFaucetException("AB01");
 		
-		// Self
-		return this;
+		// Must be processing
+		if (!_inproc)
+			throw new FaucetProcessException("AB02");
+		
+		// Send in
+		_output.offerLast(__b);
 	}
 	
 	/**
 	 * Adds data to be output via the drain.
 	 *
 	 * @param __b The bytes to add.
-	 * @return {@code this}.
 	 * @throws CompleteFaucetException If the faucet is complete.
 	 * @throws FaucetProcessException If filling is not called during
 	 * processing.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/30
 	 */
-	protected final DataFaucet fill(byte[] __b)
+	protected final void fill(byte[] __b)
 		throws CompleteFaucetException, FaucetProcessException,
 			NullPointerException
 	{
@@ -243,7 +205,6 @@ public abstract class DataFaucet
 	 * Adds data to be output via the drain.
 	 *
 	 * @param __b The bytes to add.
-	 * @return {@code this}.
 	 * @throws CompleteFaucetException If the faucet is complete.
 	 * @throws FaucetProcessException If filling is not called during
 	 * processing.
@@ -252,7 +213,7 @@ public abstract class DataFaucet
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/30
 	 */
-	protected final DataFaucet fill(byte[] __b, int __o, int __l)
+	protected final void fill(byte[] __b, int __o, int __l)
 		throws CompleteFaucetException, FaucetProcessException,
 			IndexOutOfBoundsException, NullPointerException
 	{
@@ -262,23 +223,16 @@ public abstract class DataFaucet
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Cannot fill when already complete
-			if (_complete)
-				throw new FaucetProcessException("AB01");
-			
-			// Must be processing
-			if (!_inproc)
-				throw new FaucetProcessException("AB02");
-			
-			// Send in
-			_output.offerLast(__b, __o, __l);
-		}
+		// Cannot fill when already complete
+		if (_complete)
+			throw new FaucetProcessException("AB01");
 		
-		// Self
-		return this;
+		// Must be processing
+		if (!_inproc)
+			throw new FaucetProcessException("AB02");
+		
+		// Send in
+		_output.offerLast(__b, __o, __l);
 	}
 	
 	/**
@@ -288,15 +242,11 @@ public abstract class DataFaucet
 	@Override
 	public final void flush()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Do not flush if the stream failed
-			if (this._didfail)
-				return;
-			
-			__process();
-		}
+		// Do not flush if the stream failed
+		if (this._didfail)
+			return;
+		
+		__process();
 	}
 	
 	/**
@@ -308,41 +258,29 @@ public abstract class DataFaucet
 	 */
 	public final boolean isComplete()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _complete;
-		}
+		return _complete;
 	}
 	
 	/**
 	 * Marks the faucet as complete.
 	 *
-	 * @return {@code this}.
 	 * @throws CompleteFaucetException If the faucet is already complete.
 	 * @throws FaucetProcessException If this was not called during processing.
 	 * @since 2016/04/30
 	 */
-	protected final DataFaucet setComplete()
+	protected final void setComplete()
 		throws FaucetProcessException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Must be processing
-			if (!_inproc)
-				throw new FaucetProcessException("AB02");
-			
-			// {@squirreljme.error AB06 The faucet is already complete.}
-			if (_complete)
-				throw new CompleteFaucetException("AB06");
-			
-			// Set
-			_complete = true;
-		}
+		// Must be processing
+		if (!_inproc)
+			throw new FaucetProcessException("AB02");
 		
-		// Self
-		return this;
+		// {@squirreljme.error AB06 The faucet is already complete.}
+		if (_complete)
+			throw new CompleteFaucetException("AB06");
+		
+		// Set
+		_complete = true;
 	}
 	
 	/**
@@ -353,10 +291,7 @@ public abstract class DataFaucet
 	 */
 	public final int waiting()
 	{
-		synchronized (lock)
-		{
-			return _output.available();
-		}
+		return _output.available();
 	}
 	
 	/**
@@ -368,67 +303,63 @@ public abstract class DataFaucet
 	private final void __process()
 		throws FaucetProcessException
 	{
-		// Lock
-		synchronized (lock)
+		// {@squirreljme.error AB03 The faucet previously threw an
+		// exception during processing.}
+		if (_didfail)
+			throw new FaucetProcessException("AB03");
+		
+		// {@squirreljme.error AB07 Double processing.}
+		if (_inproc)
+			throw new IllegalStateException("AB07");
+		
+		// Already complete, there will be no more bytes
+		boolean markfinish = false;
+		if (_complete)
 		{
-			// {@squirreljme.error AB03 The faucet previously threw an
-			// exception during processing.}
-			if (_didfail)
-				throw new FaucetProcessException("AB03");
+			// Need to process the final -1 bit
+			if (!_finished)
+				markfinish = true;
 			
-			// {@squirreljme.error AB07 Double processing.}
-			if (_inproc)
-				throw new IllegalStateException("AB07");
+			// Stop otherwise
+			else
+				return;
+		}
+		
+		// Could fail
+		try
+		{
+			// Set
+			_inproc = true;
 			
-			// Already complete, there will be no more bytes
-			boolean markfinish = false;
-			if (_complete)
-			{
-				// Need to process the final -1 bit
-				if (!_finished)
-					markfinish = true;
-				
-				// Stop otherwise
-				else
-					return;
-			}
+			// Call processor
+			process();
 			
-			// Could fail
-			try
-			{
-				// Set
-				_inproc = true;
-				
-				// Call processor
-				process();
-				
-				// Mark finished
-				if (markfinish)
-					_finished = true;
-			}
+			// Mark finished
+			if (markfinish)
+				_finished = true;
+		}
+		
+		// Failed
+		catch (Throwable t)
+		{
+			// Set failure
+			_didfail = true;
 			
-			// Failed
-			catch (Throwable t)
-			{
-				// Set failure
-				_didfail = true;
-				
-				// Throw as is
-				if (t instanceof RuntimeException)
-					throw (RuntimeException)t;
-				else if (t instanceof Error)
-					throw (Error)t;
-				
-				// {@squirreljme.error AB04 Caught another exception while
-				// processing the faucet.}
-				throw new FaucetProcessException("AB04", t);
-			}
+			// Throw as is
+			if (t instanceof RuntimeException)
+				throw (RuntimeException)t;
+			else if (t instanceof Error)
+				throw (Error)t;
 			
-			// Not in a processor run
-			finally
-			{
-				_inproc = false;
-			}
+			// {@squirreljme.error AB04 Caught another exception while
+			// processing the faucet.}
+			throw new FaucetProcessException("AB04", t);
+		}
+		
+		// Not in a processor run
+		finally
+		{
+			_inproc = false;
 		}
 	}
 }

@@ -173,3 +173,9 @@ the code is still far too slow to be practical. I should make more classes
 not thread safe, in general the classes are used in a single thread at a time
 generally.
 
+## 22:16
+
+Thinking about it, the data pipes and related classes should not be thread
+safe. They are generally intended to be very fast and versatile. External
+locking can always be performed when they are used.
+

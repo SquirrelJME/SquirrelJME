@@ -23,6 +23,8 @@ import java.util.NoSuchElementException;
  *
  * If the queue reaches full capacity then it is increased in size.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/03/11
  */
 public class ByteDeque
@@ -43,9 +45,6 @@ public class ByteDeque
 	/** The shift to convert block based values. */
 	private static final int _BLOCK_SHIFT =
 		Integer.numberOfTrailingZeros(_BLOCK_SIZE);
-	
-	/** The lock to use. */
-	protected final Object lock;
 	
 	/** The maximum permitted capacity. */
 	protected final int capacity;
@@ -95,43 +94,11 @@ public class ByteDeque
 	public ByteDeque(int __cap)
 		throws IllegalArgumentException
 	{
-		this(new Object(), __cap);
-	}
-	
-	/**
-	 * Initializes a byte deque with the given lock object.
-	 *
-	 * @param __lock The lock to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/11
-	 */
-	public ByteDeque(Object __lock)
-		throws NullPointerException
-	{
-		this(__lock, Integer.MAX_VALUE);
-	}
-	
-	/**
-	 * Initializes a byte deque with the given capacity and lock object.
-	 *
-	 * @param __lock The lock object to use.
-	 * @param __cap The maximum deque capacity.
-	 * @throws IllegalArgumentException If the capacity is negative.
-	 * @since 2016/05/01
-	 */
-	public ByteDeque(Object __lock, int __cap)
-		throws IllegalArgumentException, NullPointerException
-	{
-		// Check
-		if (__lock == null)
-			throw new NullPointerException("NARG");
-		
 		// {@squirreljme.error AE01 Negative deque capacity specified.}
 		if (__cap < 0)
 			throw new IllegalArgumentException("AE01");
 		
 		// Set
-		lock = __lock;
 		capacity = __cap;
 	}
 	
@@ -146,13 +113,9 @@ public class ByteDeque
 	public final void addFirst(byte __b)
 		throws IllegalStateException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			byte[] solo = _solo;
-			solo[0] = __b;
-			addFirst(solo, 0, 1);
-		}
+		byte[] solo = _solo;
+		solo[0] = __b;
+		addFirst(solo, 0, 1);
 	}
 	
 	/**
@@ -197,23 +160,19 @@ public class ByteDeque
 		if (__l == 0)
 			return;
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error AE05 Adding bytes to the start would exceed
-			// the capacity of the queue.}
-			int total = this._total;
-			int newtotal = total + __l;
-			if (newtotal < 0 || newtotal > this.capacity)
-				throw new IllegalStateException("AE05");
-			
-			// Get some things
-			LinkedList<byte[]> blocks = this._blocks;
-			int nb = blocks.size();
-			int head = this._head, tail = this._tail;
-			
-			throw new Error("TODO");
-		}
+		// {@squirreljme.error AE05 Adding bytes to the start would exceed
+		// the capacity of the queue.}
+		int total = this._total;
+		int newtotal = total + __l;
+		if (newtotal < 0 || newtotal > this.capacity)
+			throw new IllegalStateException("AE05");
+		
+		// Get some things
+		LinkedList<byte[]> blocks = this._blocks;
+		int nb = blocks.size();
+		int head = this._head, tail = this._tail;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -227,13 +186,9 @@ public class ByteDeque
 	public final void addLast(byte __b)
 		throws IllegalStateException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			byte[] solo = _solo;
-			solo[0] = __b;
-			addLast(solo, 0, 1);
-		}
+		byte[] solo = _solo;
+		solo[0] = __b;
+		addLast(solo, 0, 1);
 	}
 	
 	/**
@@ -278,59 +233,55 @@ public class ByteDeque
 		if (__l == 0)
 			return;
 		
-		// Lock
-		synchronized (this.lock)
+		// {@squirreljme.error AE04 Adding bytes to the end would exceed
+		// the capacity of the queue.}
+		int total = this._total;
+		int newtotal = total + __l;
+		if (newtotal < 0 || newtotal > this.capacity)
+			throw new IllegalStateException("AE04");
+		
+		// Get some things
+		LinkedList<byte[]> blocks = this._blocks;
+		int nb = blocks.size();
+		int head = this._head, tail = this._tail;
+		
+		// Keep adding in data
+		int bs = _BLOCK_SIZE;
+		int bm = _BLOCK_MASK;
+		int left = __l;
+		int at = __o;
+		while (left > 0)
 		{
-			// {@squirreljme.error AE04 Adding bytes to the end would exceed
-			// the capacity of the queue.}
-			int total = this._total;
-			int newtotal = total + __l;
-			if (newtotal < 0 || newtotal > this.capacity)
-				throw new IllegalStateException("AE04");
-			
-			// Get some things
-			LinkedList<byte[]> blocks = this._blocks;
-			int nb = blocks.size();
-			int head = this._head, tail = this._tail;
-			
-			// Keep adding in data
-			int bs = _BLOCK_SIZE;
-			int bm = _BLOCK_MASK;
-			int left = __l;
-			int at = __o;
-			while (left > 0)
+			// If the tail is at the start of the block then a new one
+			// must be created
+			byte[] bl;
+			if (tail == 0)
 			{
-				// If the tail is at the start of the block then a new one
-				// must be created
-				byte[] bl;
-				if (tail == 0)
-				{
-					bl = new byte[bs];
-					blocks.addLast(bl);
-				}
-				
-				// Otherwise get the last one
-				else
-					bl = blocks.getLast();
-				
-				// Only can fit a single block
-				int limit = Math.min(bs - tail, left);
-				
-				// Write data
-				for (int i = 0; i < limit; i++)
-					bl[tail++] = __b[at++];
-				
-				// Masking is only needed after the write
-				tail &= bm;
-				
-				// Consumed bytes
-				left -= limit;
+				bl = new byte[bs];
+				blocks.addLast(bl);
 			}
 			
-			// Set new details
-			this._total = newtotal;
-			this._tail = tail;
+			// Otherwise get the last one
+			else
+				bl = blocks.getLast();
+			
+			// Only can fit a single block
+			int limit = Math.min(bs - tail, left);
+			
+			// Write data
+			for (int i = 0; i < limit; i++)
+				bl[tail++] = __b[at++];
+			
+			// Masking is only needed after the write
+			tail &= bm;
+			
+			// Consumed bytes
+			left -= limit;
 		}
+		
+		// Set new details
+		this._total = newtotal;
+		this._tail = tail;
 	}
 	
 	/**
@@ -341,11 +292,7 @@ public class ByteDeque
 	 */
 	public final int available()
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			return this._total;
-		}
+		return this._total;
 	}
 	
 	/**
@@ -355,20 +302,16 @@ public class ByteDeque
 	 */
 	public final void clear()
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// Reset variables
-			this._total = 0;
-			this._head = 0;
-			this._tail = 0;
-			
-			// Zero out all blocks (for security and better compression)
-			LinkedList<byte[]> blocks = this._blocks;
-			for (byte[] bl : blocks)
-				Arrays.fill(bl, (byte)0);
-			blocks.clear();
-		}
+		// Reset variables
+		this._total = 0;
+		this._head = 0;
+		this._tail = 0;
+	
+		// Zero out all blocks (for security and better compression)
+		LinkedList<byte[]> blocks = this._blocks;
+		for (byte[] bl : blocks)
+			Arrays.fill(bl, (byte)0);
+		blocks.clear();
 	}
 	
 	/**
@@ -391,69 +334,65 @@ public class ByteDeque
 		if (__l == 0)
 			return 0;
 		
-		// Lock
-		synchronized (this.lock)
+		// If the queue is empty do nothing
+		int total = this._total;
+		if (total == 0)
+			return 0;
+		
+		// Do not remove more bytes than there are available
+		int limit = Math.min(__l, total);
+		int newtotal = total - limit;
+		
+		// Get some things
+		LinkedList<byte[]> blocks = this._blocks;
+		int nb = blocks.size();
+		int head = this._head, tail = this._tail;
+		
+		// Write bytes into the target
+		int left = limit;
+		int bs = _BLOCK_SIZE;
+		int bm = _BLOCK_MASK;
+		while (left > 0)
 		{
-			// If the queue is empty do nothing
-			int total = this._total;
-			if (total == 0)
-				return 0;
+			// Get the first block
+			byte[] bl = blocks.getFirst();
+			boolean lastbl = (blocks.size() == 1);
 			
-			// Do not remove more bytes than there are available
-			int limit = Math.min(__l, total);
-			int newtotal = total - limit;
+			// Determine the max number of bytes to delete
+			int rc = Math.min((lastbl ? (tail == 0 ? bs : tail) - head :
+				bs - head), left);
 			
-			// Get some things
-			LinkedList<byte[]> blocks = this._blocks;
-			int nb = blocks.size();
-			int head = this._head, tail = this._tail;
+			// Should never occur, because that means the end is lower
+			// than the start
+			if (rc < 0)
+				throw new RuntimeException("OOPS");
 			
-			// Write bytes into the target
-			int left = limit;
-			int bs = _BLOCK_SIZE;
-			int bm = _BLOCK_MASK;
-			while (left > 0)
-			{
-				// Get the first block
-				byte[] bl = blocks.getFirst();
-				boolean lastbl = (blocks.size() == 1);
-				
-				// Determine the max number of bytes to delete
-				int rc = Math.min((lastbl ? (tail == 0 ? bs : tail) - head :
-					bs - head), left);
-				
-				// Should never occur, because that means the end is lower
-				// than the start
-				if (rc < 0)
-					throw new RuntimeException("OOPS");
-				
-				// Erase data
-				for (int i = 0; i < rc; i++)
-					bl[head++] = 0;
-				
-				// Mask the head to detect overflow
-				head &= bm;
-				
-				// If cycled, remove the first block
-				if (head == 0 || (lastbl && head == tail))
-					blocks.removeFirst();
-				
-				// Bytes were removed
-				left -= rc;
-			}
+			// Erase data
+			for (int i = 0; i < rc; i++)
+				bl[head++] = 0;
 			
-			// Emptied? Clear head/tail pointers
-			if (newtotal == 0)
-				head = tail = 0;
+			// Mask the head to detect overflow
+			head &= bm;
 			
-			// Set details
-			this._total = newtotal;
-			this._head = head;
-			this._tail = tail;
+			// If cycled, remove the first block
+			if (head == 0 || (lastbl && head == tail))
+				blocks.removeFirst();
 			
-			// Return the erase count
-			return limit;
+			// Bytes were removed
+			left -= rc;
 		}
+		
+		// Emptied? Clear head/tail pointers
+		if (newtotal == 0)
+			head = tail = 0;
+		
+		// Set details
+		this._total = newtotal;
+		this._head = head;
+		this._tail = tail;
+		
+		// Return the erase count
+		return limit;
 	}
 	
 	/**
@@ -472,18 +411,14 @@ public class ByteDeque
 		if (__a < 0)
 			throw new IndexOutOfBoundsException("AE0a");
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			byte[] solo = this._solo;
-			int rv = get(__a, solo, 0, 1);
-			if (rv == 1)
-				return solo[0];
-			
-			// {@squirreljme.error AE09 Could not get the byte at the
-			// given position because it exceeds the deque bounds. (The index)}
-			throw new IndexOutOfBoundsException(String.format("AE09 %d", __a));
-		}
+		byte[] solo = this._solo;
+		int rv = get(__a, solo, 0, 1);
+		if (rv == 1)
+			return solo[0];
+		
+		// {@squirreljme.error AE09 Could not get the byte at the
+		// given position because it exceeds the deque bounds. (The index)}
+		throw new IndexOutOfBoundsException(String.format("AE09 %d", __a));
 	}
 	
 	/**
@@ -532,25 +467,21 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error AE0c The requested address is outside of
-			// the bounds of the queue. (The requested address; The number of
-			// bytes in the queue)}
-			int total = this._total;
-			if (__a < 0 || __a >= total)
-				throw new IndexOutOfBoundsException(String.format("AE0c %d %d",
-					__a, total));
-			
-			// If there are no bytes, all reads do nothing
-			if (total <= 0)
-				return 0;
-			
-			// If the address is within the starting half then seek from the
-			// start, otherwise start from the trailing end
-			return __getVia((__a < (total >> 1)), __a, __b, __o, __l);
-		}
+		// {@squirreljme.error AE0c The requested address is outside of
+		// the bounds of the queue. (The requested address; The number of
+		// bytes in the queue)}
+		int total = this._total;
+		if (__a < 0 || __a >= total)
+			throw new IndexOutOfBoundsException(String.format("AE0c %d %d",
+				__a, total));
+		
+		// If there are no bytes, all reads do nothing
+		if (total <= 0)
+			return 0;
+		
+		// If the address is within the starting half then seek from the
+		// start, otherwise start from the trailing end
+		return __getVia((__a < (total >> 1)), __a, __b, __o, __l);
 	}
 	
 	/**
@@ -563,18 +494,14 @@ public class ByteDeque
 	public final byte getFirst()
 		throws NoSuchElementException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			byte[] solo = this._solo;
-			int rv = getFirst(solo, 0, 1);
-			if (rv == 1)
-				return solo[0];
-			
-			// {@squirreljme.error AE07 Could not get the first byte
-			// because the deque is empty.}
-			throw new NoSuchElementException("AE07");
-		}
+		byte[] solo = this._solo;
+		int rv = getFirst(solo, 0, 1);
+		if (rv == 1)
+			return solo[0];
+		
+		// {@squirreljme.error AE07 Could not get the first byte
+		// because the deque is empty.}
+		throw new NoSuchElementException("AE07");
 	}
 	
 	/**
@@ -607,12 +534,8 @@ public class ByteDeque
 	public final int getFirst(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// This is the same of an any position get at the start
-			return this.get(0, __b, __o, __l);
-		}
+		// This is the same of an any position get at the start
+		return this.get(0, __b, __o, __l);
 	}
 	
 	/**
@@ -625,18 +548,14 @@ public class ByteDeque
 	public final byte getLast()
 		throws NoSuchElementException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			byte[] solo = this._solo;
-			int rv = getLast(solo, 0, 1);
-			if (rv == 0)
-				return solo[0];
-			
-			// {@squirreljme.error AE06 Could not remove the last byte because
-			// the deque is empty.}
-			throw new NoSuchElementException("AE06");
-		}
+		byte[] solo = this._solo;
+		int rv = getLast(solo, 0, 1);
+		if (rv == 0)
+			return solo[0];
+		
+		// {@squirreljme.error AE06 Could not remove the last byte because
+		// the deque is empty.}
+		throw new NoSuchElementException("AE06");
 	}
 	
 	/**
@@ -673,13 +592,9 @@ public class ByteDeque
 		if (__l < 0)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			// This is the same of an any position get from the end
-			int total = this._total;
-			return this.get(Math.max(0, total - __l), __b, __o, __l);
-		}
+		// This is the same of an any position get from the end
+		int total = this._total;
+		return this.get(Math.max(0, total - __l), __b, __o, __l);
 	}
 	
 	/**
@@ -882,18 +797,14 @@ public class ByteDeque
 	public final byte removeFirst()
 		throws NoSuchElementException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			byte[] solo = this._solo;
-			int rv = removeFirst(solo, 0, 1);
-			if (rv == 1)
-				return solo[0];
-			
-			// {@squirreljme.error AE03 Could not remove the first byte
-			// because the deque is empty.}
-			throw new NoSuchElementException("AE03");
-		}
+		byte[] solo = this._solo;
+		int rv = removeFirst(solo, 0, 1);
+		if (rv == 1)
+			return solo[0];
+		
+		// {@squirreljme.error AE03 Could not remove the first byte
+		// because the deque is empty.}
+		throw new NoSuchElementException("AE03");
 	}
 	
 	/**
@@ -935,26 +846,22 @@ public class ByteDeque
 		if (__l == 0)
 			return 0;
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			// If the queue is empty do nothing
-			int total = this._total;
-			if (total == 0)
-				return 0;
-			
-			// A remove is a get followed by a delete
-			int rva = get(0, __b, __o, __l);
-			int rvb = deleteFirst(__l);
-			
-			// If this occurs then the number of bytes deleted was not the
-			// same as the number of bytes which were read.
-			if (rva != rvb)
-				throw new RuntimeException("OOPS");
-			
-			// Return the read count
-			return rva;
-		}
+		// If the queue is empty do nothing
+		int total = this._total;
+		if (total == 0)
+			return 0;
+		
+		// A remove is a get followed by a delete
+		int rva = get(0, __b, __o, __l);
+		int rvb = deleteFirst(__l);
+		
+		// If this occurs then the number of bytes deleted was not the
+		// same as the number of bytes which were read.
+		if (rva != rvb)
+			throw new RuntimeException("OOPS");
+		
+		// Return the read count
+		return rva;
 	}
 	
 	/**
@@ -967,18 +874,14 @@ public class ByteDeque
 	public final byte removeLast()
 		throws NoSuchElementException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			byte[] solo = _solo;
-			int rv = removeLast(solo, 0, 1);
-			if (rv == 1)
-				return solo[0];
-			
-			// {@squirreljme.error AE08 Could not remove the last byte because
-			// the deque is empty.}
-			throw new NoSuchElementException("AE08");
-		}
+		byte[] solo = _solo;
+		int rv = removeLast(solo, 0, 1);
+		if (rv == 1)
+			return solo[0];
+		
+		// {@squirreljme.error AE08 Could not remove the last byte because
+		// the deque is empty.}
+		throw new NoSuchElementException("AE08");
 	}
 	
 	/**
@@ -1016,11 +919,7 @@ public class ByteDeque
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			throw new Error("TODO");
-		}
+		throw new Error("TODO");
 	}
 	
 	/**

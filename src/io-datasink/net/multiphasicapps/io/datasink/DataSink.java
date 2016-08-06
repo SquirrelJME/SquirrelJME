@@ -20,6 +20,8 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  * Bytes cannot be added to the sink while processing is being performed (that
  * is the processor cannot add more bytes).
  *
+ * This class is not thread safe.
+ *
  * {@squirreljme.error AA01 Cannot add more bytes because the input has been
  * completed.}
  * {@squirreljme.error AA02 Cannot add more bytes because the sink is
@@ -35,12 +37,6 @@ public abstract class DataSink
 	/** This is returned when there is no input and the source is complete. */
 	public static final int COMPLETED =
 		Integer.MIN_VALUE;
-	
-	/** Lock. */
-	protected final Object lock;
-	
-	/** Externally visible lock. */
-	final Object _lock;
 	
 	/** Data used for input to the data processor. */
 	private final ByteDeque _input;
@@ -111,26 +107,22 @@ public abstract class DataSink
 	protected final int accept()
 		throws NoSuchElementException, SinkProcessException
 	{
-		// Lock
-		synchronized (lock)
+		// Not being processed?
+		if (!_inproc)
+			throw new SinkProcessException("AA05");
+		
+		// Could have no data in the buffer
+		try
 		{
-			// Not being processed?
-			if (!_inproc)
-				throw new SinkProcessException("AA05");
-			
-			// Could have no data in the buffer
-			try
-			{
-				return ((int)((byte)(_input.removeFirst()))) & 0xFF;
-			}
-			
-			// No data read
-			catch (NoSuchElementException nsee)
-			{
-				if (_complete)
-					return COMPLETED;
-				throw nsee;
-			}
+			return ((int)((byte)(_input.removeFirst()))) & 0xFF;
+		}
+		
+		// No data read
+		catch (NoSuchElementException nsee)
+		{
+			if (_complete)
+				return COMPLETED;
+			throw nsee;
 		}
 	}
 	
@@ -172,23 +164,19 @@ public abstract class DataSink
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Not being processed?
-			if (!_inproc)
-				throw new SinkProcessException("AA05");
-			
-			// Read input bytes
-			int rv = _input.removeFirst(__b, __o, __l);
-			
-			// Nothing read?
-			if (rv <= 0)
-				return (_complete ? COMPLETED : 0);
-			
-			// Return the read count
-			return rv;
-		}
+		// Not being processed?
+		if (!_inproc)
+			throw new SinkProcessException("AA05");
+		
+		// Read input bytes
+		int rv = _input.removeFirst(__b, __o, __l);
+		
+		// Nothing read?
+		if (rv <= 0)
+			return (_complete ? COMPLETED : 0);
+		
+		// Return the read count
+		return rv;
 	}
 	
 	/**
@@ -198,15 +186,11 @@ public abstract class DataSink
 	@Override
 	public final void flush()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Ignore flushing if the stream failed
-			if (this._didfail)
-				return;
-			
-			__process();
-		}
+		// Ignore flushing if the stream failed
+		if (this._didfail)
+			return;
+		
+		__process();
 	}
 	
 	/**
@@ -218,64 +202,51 @@ public abstract class DataSink
 	 */
 	public final boolean isComplete()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _complete;
-		}
+		return _complete;
 	}
 	
 	/**
 	 * Offers a single byte for processing.
 	 *
 	 * @param __b The byte to offer.
-	 * @return {@code this}.
 	 * @throws CompleteSinkException If the input source is complete.
 	 * @throws SinkProcessException If bytes were attempted to be offered
 	 * during processing.
 	 * @since 2016/04/30
 	 */
-	public final DataSink offer(byte __b)
+	public final void offer(byte __b)
 		throws CompleteSinkException, SinkProcessException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Cannot add if complete
-			if (_complete)
-				throw new CompleteSinkException("AA01");
-			
-			// Cannot add if in process
-			if (_inproc)
-				throw new SinkProcessException("AA02");
-			
-			// Add to the input
-			_input.offerLast(__b);
-			
-			// Process data
-			__process();
-		}
+		// Cannot add if complete
+		if (_complete)
+			throw new CompleteSinkException("AA01");
 		
-		// Self
-		return this;
+		// Cannot add if in process
+		if (_inproc)
+			throw new SinkProcessException("AA02");
+		
+		// Add to the input
+		_input.offerLast(__b);
+		
+		// Process data
+		__process();
 	}
 	
 	/**
 	 * Offers multiple bytes for processing.
 	 *
 	 * @param __b The bytes to offer.
-	 * @return {@code this}.
 	 * @throws CompleteSinkException If the input source is complete.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SinkProcessException If bytes were attempted to be offered
 	 * during processing.
 	 * @since 2016/04/30
 	 */
-	public final DataSink offer(byte[] __b)
+	public final void offer(byte[] __b)
 		throws CompleteSinkException, NullPointerException,
 			SinkProcessException
 	{
-		return offer(__b, 0, __b.length);
+		offer(__b, 0, __b.length);
 	}
 	
 	/**
@@ -284,7 +255,6 @@ public abstract class DataSink
 	 * @param __b The bytes to offer.
 	 * @param __o The starting offset to read bytes from.
 	 * @param __l The number of bytes to buffer.
-	 * @return {@code this}.
 	 * @throws CompleteSinkException If the input source is complete.
 	 * @throws IndexOutOfBoundsException If the offset or length are negative
 	 * or they exceed the array bounds.
@@ -293,7 +263,7 @@ public abstract class DataSink
 	 * during processing.
 	 * @since 2016/04/30
 	 */
-	public final DataSink offer(byte[] __b, int __o, int __l)
+	public final void offer(byte[] __b, int __o, int __l)
 		throws CompleteSinkException, IndexOutOfBoundsException,
 			NullPointerException, SinkProcessException
 	{
@@ -303,57 +273,42 @@ public abstract class DataSink
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Cannot add if complete
-			if (_complete)
-				throw new CompleteSinkException("AA01");
-			
-			// Cannot add if in process
-			if (_inproc)
-				throw new SinkProcessException("AA02");
-			
-			// Add to the input
-			_input.offerLast(__b, __o, __l);
-			
-			// Process data
-			__process();
-		}
+		// Cannot add if complete
+		if (_complete)
+			throw new CompleteSinkException("AA01");
 		
-		// Self
-		return this;
+		// Cannot add if in process
+		if (_inproc)
+			throw new SinkProcessException("AA02");
+		
+		// Add to the input
+		_input.offerLast(__b, __o, __l);
+		
+		// Process data
+		__process();
 	}
 	
 	/**
 	 * Sets the flag which indicates that there will be no more bytes placed
 	 * into the sink.
 	 *
-	 * @return {@code this}.
 	 * @throws SinkProcessException If the sink is already complete.
 	 * @since 2016/04/30
 	 */
-	public final DataSink setComplete()
+	public final void setComplete()
 		throws SinkProcessException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// {@squirreljme.error AA0a The data sink cannot be set as complete
-			// during processing.}
-			if (_inproc)
-				throw new SinkProcessException("AA0a");
-			
-			// {@squirreljme.error AA06 The data sink is already complete}
-			if (_complete)
-				throw new SinkProcessException("AA06");
-			
-			// Set
-			_complete = true;
-		}
+		// {@squirreljme.error AA0a The data sink cannot be set as complete
+		// during processing.}
+		if (_inproc)
+			throw new SinkProcessException("AA0a");
 		
-		// Self
-		return this;
+		// {@squirreljme.error AA06 The data sink is already complete}
+		if (_complete)
+			throw new SinkProcessException("AA06");
+		
+		// Set
+		_complete = true;
 	}
 	
 	/**
@@ -377,11 +332,7 @@ public abstract class DataSink
 	 */
 	public final int waiting()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _input.available();
-		}
+		return _input.available();
 	}
 	
 	/**
@@ -393,72 +344,68 @@ public abstract class DataSink
 	private final void __process()
 		throws SinkProcessException
 	{
-		// Lock
-		synchronized (lock)
+		// {@squirreljme.error AA03 The sink previously threw an
+		// exception during processing.}
+		if (_didfail)
+			throw new SinkProcessException("AA03");
+		
+		// Obtain the number of available bytes
+		int count = _input.available();
+		
+		// if no bytes to process, do nothing
+		boolean markfinish = false;
+		if (count <= 0)
 		{
-			// {@squirreljme.error AA03 The sink previously threw an
-			// exception during processing.}
-			if (_didfail)
-				throw new SinkProcessException("AA03");
+			boolean co = _complete;
 			
-			// Obtain the number of available bytes
-			int count = _input.available();
+			// If completed yet not finished (the processed code did not
+			// read a -1 potentially, then use a zero count process
+			if (co && !_finished)
+				markfinish = true;
 			
-			// if no bytes to process, do nothing
-			boolean markfinish = false;
-			if (count <= 0)
-			{
-				boolean co = _complete;
-				
-				// If completed yet not finished (the processed code did not
-				// read a -1 potentially, then use a zero count process
-				if (co && !_finished)
-					markfinish = true;
-				
-				// Otherwise, stop
-				else
-					return;
-			}
+			// Otherwise, stop
+			else
+				return;
+		}
+		
+		// {@squirreljme.error AA07 Double processing.}
+		if (_inproc)
+			throw new IllegalStateException("AA07");
+		
+		try
+		{
+			// Now processing
+			_inproc = true;
 			
-			// {@squirreljme.error AA07 Double processing.}
-			if (_inproc)
-				throw new IllegalStateException("AA07");
+			// Run processor
+			process(count);
 			
-			try
-			{
-				// Now processing
-				_inproc = true;
-				
-				// Run processor
-				process(count);
-				
-				// If marking as finished, mark it
-				if (markfinish)
-					_finished = true;
-			}
+			// If marking as finished, mark it
+			if (markfinish)
+				_finished = true;
+		}
+		
+		// Sink processor has some issues
+		catch (Throwable e)
+		{
+			if (shouldFail(e))
+				_didfail = true;
 			
-			// Sink processor has some issues
-			catch (Throwable e)
-			{
-				if (shouldFail(e))
-					_didfail = true;
-				
-				// Rethrow it
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else if (e instanceof Error)
-					throw (Error)e;
-				
-				// {@squirreljme.error AA04 Caught another exception during
-				// processing.}
-				throw new SinkProcessException("AA04", e);
-			}
+			// Rethrow it
+			if (e instanceof RuntimeException)
+				throw (RuntimeException)e;
+			else if (e instanceof Error)
+				throw (Error)e;
 			
-			// Clear process bit
-			finally
-			{
-				_inproc = false;
-			}
+			// {@squirreljme.error AA04 Caught another exception during
+			// processing.}
+			throw new SinkProcessException("AA04", e);
+		}
+		
+		// Clear process bit
+		finally
+		{
+			_inproc = false;
 		}
 	}
 }
