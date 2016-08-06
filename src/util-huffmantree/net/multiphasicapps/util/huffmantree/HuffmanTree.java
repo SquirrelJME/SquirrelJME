@@ -103,14 +103,14 @@ public class HuffmanTree<T>
 		
 		// Find the spot to add it based on the bit depth
 		int at = 0;
-		for (int b = ibm - 1; b >= 0; b--)
+		for (int sh = (1 << (ibm - 1)); sh != 0; sh >>>= 1)
 		{
 			// Last bit set?
-			boolean last = (b == 0);
+			boolean last = (sh == 1);
 			
 			// The array index to look at for the current position depends
 			// on which bit is set
-			int q = (__sym >>> b) & 1;
+			int q = (((__sym & sh) != 0) ? 1 : 0);
 			
 			// Get the jump value
 			int jump = table[at + q];
