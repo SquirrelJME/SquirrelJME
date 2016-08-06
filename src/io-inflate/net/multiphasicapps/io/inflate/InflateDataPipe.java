@@ -107,6 +107,7 @@ public class InflateDataPipe
 		new SlidingByteWindow(SLIDING_WINDOW_SIZE);
 	
 	/** The bit compactor for queing added bits. */
+	@Deprecated
 	protected final BitCompactor compactor =
 		new BitCompactor(new BitCompactor.Callback()
 			{
@@ -278,6 +279,7 @@ public class InflateDataPipe
 		throws PipeProcessException
 	{
 		// Literal byte value
+		BitCompactor compactor = this.compactor;
 		if (__c >= 0 && __c <= 255)
 			compactor.add(__c & 0xFF, 0xFF);
 		
@@ -877,6 +879,7 @@ public class InflateDataPipe
 		// Otherwise read values
 		else
 		{
+			BitCompactor compactor = this.compactor;
 			while (curlen > 0)
 			{
 				// Need at least a byte of input
@@ -1050,19 +1053,6 @@ public class InflateDataPipe
 		// (The requested bit count)}
 		if (__b > _QUICK_WINDOW_BITS - 8)
 			throw new NoSuchElementException(String.format("AF0p %d", __b));
-		
-		///** Quick access window. */
-		//private final byte[] _qwin =
-		//	new byte[_QUICK_WINDOW_BYTES];
-		//  _QUICK_WINDOW_BITS
-		///** The current bit in the access window. */
-		//private volatile int _qbit;
-		//
-		///** The number of bits left in the window. */
-		//private volatile int _qwait;
-		//
-		///** The number of bits in the access window. */
-		//private volatile int _qwinsz;
 		
 		// Pre-cached bit count is waiting
 		int qwait = _qwait;
