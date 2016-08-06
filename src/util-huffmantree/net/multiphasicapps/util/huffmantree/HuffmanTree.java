@@ -371,9 +371,9 @@ public class HuffmanTree<T>
 	 * @return The traverser over the tree.
 	 * @since 2016/03/28
 	 */
-	public Traverser<T> traverser()
+	public HuffmanTreeTraverser<T> traverser()
 	{
-		return new Traverser<T>()
+		return new HuffmanTreeTraverser<T>()
 			{
 				/** The modification base. */
 				protected final int basemod = 
@@ -438,7 +438,7 @@ public class HuffmanTree<T>
 				 * @since 2016/03/28
 				 */
 				@Override
-				public Traverser<T> traverse(int __side)
+				public HuffmanTreeTraverser<T> traverse(int __side)
 					throws IllegalArgumentException, NoSuchElementException
 				{
 					// Check
@@ -592,48 +592,6 @@ public class HuffmanTree<T>
 		
 		// Not found
 		return -1L;
-	}
-	
-	/**
-	 * This is a traverser for the huffman table.
-	 *
-	 * @param <T> The type of value to return.
-	 * @since 2016/03/28
-	 */
-	public static interface Traverser<T>
-	{
-		/**
-		 * Returns the value at this position.
-		 *
-		 * @return The value at this node.
-		 * @throws NoSuchElementException If this is not a value node.
-		 * @since 2016/03/28
-		 */
-		public abstract T getValue()
-			throws NoSuchElementException;
-		
-		/**
-		 * Returns {@code true} if a value is stored here.
-		 *
-		 * @return {@code true} if a value is at this location, this will
-		 * return {@code false} if this is not a value node.
-		 * @since 2016/03/28
-		 */
-		public abstract boolean hasValue();
-		
-		/**
-		 * Traverses the given side, if the end of the value chain is reached
-		 * and a value is valid then this throws an exception.
-		 *
-		 * @param __side The side to traverse, must be zero or one.
-		 * @return {@code this}.
-		 * @throws IllegalArgumentException If the side is not zero or one.
-		 * @throws NoSuchElementException If an attempt was made to traverse
-		 * over a value.
-		 * @since 2016/03/28
-		 */
-		public abstract Traverser<T> traverse(int __side)
-			throws IllegalArgumentException, NoSuchElementException;
 	}
 }
 

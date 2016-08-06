@@ -24,6 +24,7 @@ import net.multiphasicapps.tests.TestFragmentName;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
 import net.multiphasicapps.util.huffmantree.HuffmanTree;
+import net.multiphasicapps.util.huffmantree.HuffmanTreeTraverser;
 
 /**
  * This contains tests for the huffman tree.
@@ -125,7 +126,7 @@ public class HuffmanTreeTests
 			BitInputStream bis = new BitInputStream(bais, false))
 		{
 			// Read until end of bits
-			for (HuffmanTree.Traverser<Character> trav = null;;)
+			for (HuffmanTreeTraverser<Character> trav = null;;)
 			{
 				// Need a new traverser?
 				if (trav == null)

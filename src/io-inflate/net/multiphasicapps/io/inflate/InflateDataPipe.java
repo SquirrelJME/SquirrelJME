@@ -18,6 +18,7 @@ import net.multiphasicapps.io.datapipe.PipeProcessException;
 import net.multiphasicapps.io.datapipe.PipeStalledException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
 import net.multiphasicapps.util.huffmantree.HuffmanTree;
+import net.multiphasicapps.util.huffmantree.HuffmanTreeTraverser;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
@@ -948,7 +949,7 @@ public class InflateDataPipe
 			throw new NullPointerException("NARG");
 		
 		// Start traversal in the tree
-		HuffmanTree.Traverser<Integer> trav = __codes.traverser();
+		HuffmanTreeTraverser<Integer> trav = __codes.traverser();
 		for (;;)
 		{
 			// Is a value reached?
