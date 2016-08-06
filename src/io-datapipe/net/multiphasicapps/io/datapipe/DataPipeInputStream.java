@@ -175,26 +175,25 @@ public class DataPipeInputStream
 			// Keep trying to drain bytes
 			int at = __o;
 			int rt = 0;
+			int left = __l;
 			for (;;)
 			{
-				//Drain bytes
-				int dc = processor.drain(__b, at, __l);
+				// Drain bytes
+				int dc = processor.drain(__b, at, left);
 				
 				// Nothing left to drain
 				if (dc < 0)
-					return -1;
+					return (rt > 0 ? rt : -1);
 				
 				// Read something potentially, do not overwrite
 				at += dc;
 				rt += dc;
+				left -= dc;
 				
 				// Stalled
-				if (dc == 0)
+				boolean done = this._done;
+				if (!done && rt < __l)
 				{
-					// If done, not going to read anything
-					if (_done)
-						continue;
-				
 					// Setup buffer
 					byte[] drain = this._drain;
 				
