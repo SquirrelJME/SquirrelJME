@@ -39,6 +39,13 @@ public class InflateDataPipe
 	protected static final int REQUIRED_BITS =
 		48;
 	
+	/** Shuffled bit values when reading values. */
+	private static final int[] _SHUFFLE_BITS =
+		new int[]
+		{
+			16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
+		};
+	
 	/** Quick access window size. */
 	private static final int _QUICK_WINDOW_BYTES =
 		(REQUIRED_BITS >> 3) + 2;
@@ -254,52 +261,6 @@ public class InflateDataPipe
 				// actually available.}
 				throw new PipeProcessException("AF04", nsee);
 			}
-		}
-	}
-	
-	/**
-	 * Code lengths are in swapped positions so that certain orders appear
-	 * before other ones.
-	 *
-	 * @param __c The current index to write
-	 * @return The actual position in the raw code length array to write to.
-	 * @throws PipeProcessException If the read position is out of range.
-	 * @since 2016/03/13
-	 */
-	private int __alphaSwap(int __c)
-		throws PipeProcessException
-	{
-		// {@squirreljme.error AF06 Alpha-shift out of range. (The shift)}
-		if (__c < 0 || __c >= 19)
-			throw new InflaterException(String.format("AF06 %d", __c));
-		
-		// Depends on the input value
-		switch (__c)
-		{
-				// The read order is shuffled a bit
-			case 0: return (16);
-			case 1: return (17);
-			case 2: return (18);
-			case 3: return (0);
-			case 4: return (8);
-			case 5: return (7); 
-			case 6: return (9);
-			case 7: return (6);
-			case 8: return (10);
-			case 9: return (5);
-			case 10: return (11);
-			case 11: return (4);
-			case 12: return (12);
-			case 13: return (3);
-			case 14: return (13);
-			case 15: return (2);
-			case 16: return (14);
-			case 17: return (1);
-			case 18: return (15);
-				
-				// Unknown
-			default:
-				throw new InflaterException("OOPS");
 		}
 	}
 	
@@ -578,28 +539,27 @@ public class InflateDataPipe
 			_rawcodelens = cll = new int[19];
 		
 		// Read code lengths
+		int[] hsbits = _SHUFFLE_BITS;
+		int next = this._readclnext;
 		for (;;)
 		{
-			// Next length to read
-			int next = _readclnext;
-			
 			// Read them all?
 			if (next >= clen)
 			{
 				// Read the literal table
-				_task = __TASK__DYNAMIC_HUFFMAN_ALPHABET_LITDIST;
+				this._task = __TASK__DYNAMIC_HUFFMAN_ALPHABET_LITDIST;
 				
 				// Load into tree
-				_clentree = __thunkCodeLengthTree(cll, 0, cll.length);
+				this._clentree = __thunkCodeLengthTree(cll, 0, cll.length);
 				
 				// Not needed anymore
-				_rawcodelens = null;
+				this._rawcodelens = null;
 				
 				// Setup for read
-				_nexthlitdist = 0;
-				_rawlitdistlens = null;
-				_treehlit = null;
-				_treedist = null;
+				this._nexthlitdist = 0;
+				this._rawlitdistlens = null;
+				this._treehlit = null;
+				this._treedist = null;
 				
 				// Done
 				return;
@@ -609,13 +569,20 @@ public class InflateDataPipe
 			// {@squirreljme.error AF0f Not enough input is available to read
 			// code length count.}
 			if (!isInputComplete() && __zzAvailable() < 3)
+			{
+				// Write value before stalling
+				this._readclnext = next;
+				
+				// Stall
 				throw new PipeStalledException("AF0f");
+			}
+			
+			// {@squirreljme.error AF06 Alpha-shift out of range. (The shift)}
+			if (next >= 19)
+				throw new InflaterException(String.format("AF06 %d", next));
 			
 			// Read three bits
-			cll[__alphaSwap(next)] = __zzReadInt(3);
-			
-			// Go to the next one
-			_readclnext = (next + 1);
+			cll[hsbits[next++]] = __zzReadInt(3);
 		}
 	}
 	
