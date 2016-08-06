@@ -90,16 +90,20 @@ public class BitCompactor
 	/**
 	 * Adds multiple bits to be compacted.
 	 *
+	 * @param __a The first boolean to add.
 	 * @param __b The bits to add.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	public void add(boolean... __b)
+	public void add(boolean __a, boolean... __b)
 		throws NullPointerException
 	{
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
+		
+		// Add the first
+		add(__a);
 		
 		// Go through the array
 		int n = __b.length;
