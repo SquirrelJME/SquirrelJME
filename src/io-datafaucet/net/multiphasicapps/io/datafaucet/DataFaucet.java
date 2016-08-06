@@ -53,7 +53,7 @@ public abstract class DataFaucet
 	public DataFaucet()
 	{
 		// Setup output buffer
-		_output = new ByteDeque(__lk);
+		_output = new ByteDeque();
 	}
 	
 	/**
@@ -169,7 +169,7 @@ public abstract class DataFaucet
 	 * processing.
 	 * @since 2016/04/30
 	 */
-	protected void void fill(byte __b)
+	protected final void fill(byte __b)
 		throws CompleteFaucetException, FaucetProcessException
 	{
 		// Cannot fill when already complete
@@ -198,7 +198,7 @@ public abstract class DataFaucet
 		throws CompleteFaucetException, FaucetProcessException,
 			NullPointerException
 	{
-		return fill(__b, 0, __b.length);
+		fill(__b, 0, __b.length);
 	}
 	
 	/**

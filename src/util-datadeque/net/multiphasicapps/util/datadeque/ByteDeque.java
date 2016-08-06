@@ -75,13 +75,13 @@ public class ByteDeque
 	}
 	
 	/**
-	 * Initializes a byte deque.
+	 * Initializes a byte deque with a 2GiB buffer size limit.
 	 *
 	 * @since 2016/03/11
 	 */
 	public ByteDeque()
 	{
-		this(new Object(), Integer.MAX_VALUE);
+		this(Integer.MAX_VALUE);
 	}
 	
 	/**

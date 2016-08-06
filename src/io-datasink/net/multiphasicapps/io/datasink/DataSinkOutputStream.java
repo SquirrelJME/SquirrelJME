@@ -17,6 +17,8 @@ import java.io.OutputStream;
  * This is an output stream which when given bytes, writes them to the given
  * data sink.
  *
+ * This class is not thread safe.
+ *
  * {@squirreljme.error AA0b Failed to write to the sink.}
  *
  * @since 2016/04/30
@@ -24,9 +26,6 @@ import java.io.OutputStream;
 public class DataSinkOutputStream
 	extends OutputStream
 {
-	/** Internal lock. */
-	protected final Object lock;
-	
 	/** The output sink. */
 	protected final DataSink sink;
 	
@@ -49,7 +48,6 @@ public class DataSinkOutputStream
 		
 		// Set
 		sink = __ds;
-		lock = __ds._lock;
 	}
 	
 	/**
@@ -62,29 +60,25 @@ public class DataSinkOutputStream
 	{
 		try
 		{
-			// Prevent race condition during close
-			synchronized (lock)
+			// Set as complete
+			boolean wascl = _closed;
+			_closed = true;
+		
+			// If closed already, do nothing
+			if (wascl)
+				return;
+			
+			// Set as complee
+			sink.setComplete();
+		
+			// Force all bytes to complete
+			while (sink.waiting() > 0)
 			{
-				// Set as complete
-				boolean wascl = _closed;
-				_closed = true;
+				// Flush as many bytes as possible
+				sink.flush();
 			
-				// If closed already, do nothing
-				if (wascl)
-					return;
-				
-				// Set as complee
-				sink.setComplete();
-			
-				// Force all bytes to complete
-				while (sink.waiting() > 0)
-				{
-					// Flush as many bytes as possible
-					sink.flush();
-				
-					// Let other threads get a chance
-					Thread.yield();
-				}
+				// Let other threads get a chance
+				Thread.yield();
 			}
 		}
 		
@@ -105,24 +99,20 @@ public class DataSinkOutputStream
 	public void flush()
 		throws IOException
 	{
-		// Lock
-		synchronized (lock)
+		// Check for close
+		__checkClose();
+	
+		// Could fail
+		try
 		{
-			// Check for close
-			__checkClose();
-		
-			// Could fail
-			try
-			{
-				sink.flush();
-			}
-		
-			// Failed to flush
-			catch (CompleteSinkException|SinkProcessException e)
-			{
-				// {@squirreljme.error AA0a Could not flush the stream}
-				throw new IOException("AA0a", e);
-			}
+			sink.flush();
+		}
+	
+		// Failed to flush
+		catch (CompleteSinkException|SinkProcessException e)
+		{
+			// {@squirreljme.error AA0a Could not flush the stream}
+			throw new IOException("AA0a", e);
 		}
 	}
 	
@@ -134,23 +124,19 @@ public class DataSinkOutputStream
 	public void write(int __b)
 		throws IOException
 	{
-		// Lock
-		synchronized (lock)
+		// Check for close
+		__checkClose();
+	
+		// Offer single byte
+		try
 		{
-			// Check for close
-			__checkClose();
-		
-			// Offer single byte
-			try
-			{
-				sink.offer((byte)__b);
-			}
-		
-			// Write failed
-			catch (CompleteSinkException|SinkProcessException e)
-			{
-				throw new IOException("AA0b", e);
-			}
+			sink.offer((byte)__b);
+		}
+	
+		// Write failed
+		catch (CompleteSinkException|SinkProcessException e)
+		{
+			throw new IOException("AA0b", e);
 		}
 	}
 	
@@ -162,23 +148,19 @@ public class DataSinkOutputStream
 	public void write(byte[] __b, int __o, int __l)
 		throws IOException
 	{
-		// Lock
-		synchronized (lock)
+		// Check for close
+		__checkClose();
+	
+		// Offer multiple bytes
+		try
 		{
-			// Check for close
-			__checkClose();
-		
-			// Offer multiple bytes
-			try
-			{
-				sink.offer(__b, __o, __l);
-			}
-		
-			// Write failed
-			catch (CompleteSinkException|SinkProcessException e)
-			{
-				throw new IOException("AA0b", e);
-			}
+			sink.offer(__b, __o, __l);
+		}
+	
+		// Write failed
+		catch (CompleteSinkException|SinkProcessException e)
+		{
+			throw new IOException("AA0b", e);
 		}
 	}
 	
@@ -191,13 +173,9 @@ public class DataSinkOutputStream
 	private final void __checkClose()
 		throws IOException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// {@squirreljme.error AA09 Stream has been closed.}
-			if (_closed)
-				throw new IOException("AA09");
-		}
+		// {@squirreljme.error AA09 Stream has been closed.}
+		if (_closed)
+			throw new IOException("AA09");
 	}
 }
 

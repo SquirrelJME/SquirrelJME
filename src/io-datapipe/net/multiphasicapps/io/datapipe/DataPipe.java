@@ -29,6 +29,8 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  * and state is available, that is if there is not enough input available it
  * can continue when there is input.
  *
+ * This class is not thread safe.
+ *
  * {@squirreljme.error AC01 The input end of the pipe is closed.}
  * {@squirreljme.error AC02 Cannot offer or remove pipe bytes during
  * processing.}
@@ -54,12 +56,6 @@ public abstract class DataPipe
 	private static final int _BOTH_MASK =
 		_FAUCET_MASK | _SINK_MASK;
 	
-	/** Lock. */
-	protected final Object lock;
-	
-	/** Visible lock. */
-	final Object _lock;
-	
 	/** The sink of input data. */
 	private final __Sink__ _input;
 	
@@ -79,27 +75,6 @@ public abstract class DataPipe
 	 */
 	public DataPipe()
 	{
-		this(new Object());
-	}
-	
-	/**
-	 * Initializes the data pipe with the given lock.
-	 *
-	 * @param __lk The object to use for locking.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/30
-	 */
-	public DataPipe(Object __lk)
-		throws NullPointerException
-	{
-		// Check
-		if (__lk == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		lock = __lk;
-		_lock = __lk;
-		
 		// Setup input and output
 		_input = new __Sink__();
 		_output = new __Faucet__();
@@ -122,76 +97,60 @@ public abstract class DataPipe
 	 * Completes the input end of the pipe indicating that no more bytes are
 	 * available for input.
 	 *
-	 * @return {@code this}.
 	 * @throws PipeInputClosedException If the input of the pipe is already
 	 * closed.
 	 * @throws PipeProcessException If this is called during processing.
 	 * @since 2016/04/30
 	 */
-	public final DataPipe completeInput()
+	public final void completeInput()
 		throws PipeInputClosedException, PipeProcessException
 	{
-		// Lock
-		synchronized (lock)
+		// {@squirreljme.error AC03 Cannot close the pipe input during
+		// processing.}
+		if (_inproc > 0)
+			throw new PipeProcessException("AC03");
+		
+		// Close the input
+		try
 		{
-			// {@squirreljme.error AC03 Cannot close the pipe input during
-			// processing.}
-			if (_inproc > 0)
-				throw new PipeProcessException("AC03");
-			
-			// Close the input
-			try
-			{
-				_input.setComplete();
-			}
-			
-			// Could not complete it
-			catch (CompleteSinkException e)
-			{
-				throw new PipeInputClosedException(e);
-			}
+			_input.setComplete();
 		}
 		
-		// Self
-		return this;
+		// Could not complete it
+		catch (CompleteSinkException e)
+		{
+			throw new PipeInputClosedException(e);
+		}
 	}
 	
 	/**
 	 * Indicates that processing is complete and that there is no more
 	 * output to be generated.
 	 *
-	 * @return {@code this}.
 	 * @throws PipeProcessException If the pipe is not in the special state
 	 * for output.
 	 * @since 2016/04/30
 	 */
-	protected final DataPipe completeOutput()
+	protected final void completeOutput()
 		throws PipeProcessException
 	{
-		// Lock
-		synchronized (lock)
+		// {@squirreljme.error AC0f Completion may only be performed on the
+		// output while the faucet is being filled.}
+		if (0 == (_inproc & _FAUCET_MASK))
+			throw new PipeProcessException("AC0f");
+		
+		// Complete the output
+		try
 		{
-			// {@squirreljme.error AC0f Completion may only be performed on the
-			// output while the faucet is being filled.}
-			if (0 == (_inproc & _FAUCET_MASK))
-				throw new PipeProcessException("AC0f");
-			
-			// Complete the output
-			try
-			{
-				_output.__setComplete();
-			}
-			
-			// Could not complete it
-			catch (CompleteFaucetException e)
-			{
-				// {@squirreljme.error AC0d The faucet is already completed.}
-				throw new PipeProcessException("AC0d", e);
-			}
+			_output.__setComplete();
 		}
 		
-		// Self
-		return this;
+		// Could not complete it
+		catch (CompleteFaucetException e)
+		{
+			// {@squirreljme.error AC0d The faucet is already completed.}
+			throw new PipeProcessException("AC0d", e);
+		}
 	}
 	
 	/**
@@ -208,24 +167,20 @@ public abstract class DataPipe
 	public final int drain()
 		throws PipeProcessException, PipeStalledException
 	{
-		// Lock
-		synchronized (lock)
+		// Cannot be processing
+		if (_inproc > 0)
+			throw new PipeProcessException("AC02");
+		
+		// Drain single byte
+		try
 		{
-			// Cannot be processing
-			if (_inproc > 0)
-				throw new PipeProcessException("AC02");
-			
-			// Drain single byte
-			try
-			{
-				return _output.drain();
-			}
-			
-			// Stalled
-			catch (NoSuchElementException e)
-			{
-				throw new PipeStalledException(e);
-			}
+			return _output.drain();
+		}
+		
+		// Stalled
+		catch (NoSuchElementException e)
+		{
+			throw new PipeStalledException(e);
 		}
 	}
 	
@@ -271,16 +226,12 @@ public abstract class DataPipe
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Cannot be processing
-			if (_inproc > 0)
-				throw new PipeProcessException("AC02");
-			
-			// Drain multiple bytes
-			return _output.drain(__b, __o, __l);
-		}
+		// Cannot be processing
+		if (_inproc > 0)
+			throw new PipeProcessException("AC02");
+		
+		// Drain multiple bytes
+		return _output.drain(__b, __o, __l);
 	}
 	
 	/**
@@ -290,13 +241,9 @@ public abstract class DataPipe
 	@Override
 	public final void flush()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Flush input and outputs
-			_input.flush();
-			_output.flush();
-		}
+		// Flush input and outputs
+		_input.flush();
+		_output.flush();
 	}
 	
 	/**
@@ -308,11 +255,7 @@ public abstract class DataPipe
 	 */
 	public final int inputWaiting()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _input.waiting();
-		}
+		return _input.waiting();
 	}
 	
 	/**
@@ -323,67 +266,54 @@ public abstract class DataPipe
 	 */
 	public final boolean isInputComplete()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _input.isComplete();
-		}
+		return _input.isComplete();
 	}
 	
 	/**
 	 * Offers a single byte to the pipe input.
 	 *
 	 * @param __b The byte to offer to the input.
-	 * @return {@code this}.
 	 * @throws PipeInputClosedException If the input side of the pipe is
 	 * closed.
 	 * @throws PipeProcessException If bytes are offered during processing.
 	 * @since 2016/04/30
 	 */
-	public final DataPipe offer(byte __b)
+	public final void offer(byte __b)
 		throws PipeInputClosedException, PipeProcessException
 	{
-		// Lock
-		synchronized (lock)
+		// Cannot be processing
+		if (_inproc > 0)
+			throw new PipeProcessException("AC02");
+		
+		// Offer input bytes
+		try
 		{
-			// Cannot be processing
-			if (_inproc > 0)
-				throw new PipeProcessException("AC02");
-			
-			// Offer input bytes
-			try
-			{
-				// Add bytes
-				_input.offer(__b);
-			}
-			
-			// The input is closed
-			catch (CompleteSinkException e)
-			{
-				throw new PipeInputClosedException("AC01", e);
-			}
+			// Add bytes
+			_input.offer(__b);
 		}
 		
-		// Self
-		return this;
+		// The input is closed
+		catch (CompleteSinkException e)
+		{
+			throw new PipeInputClosedException("AC01", e);
+		}
 	}
 	
 	/**
 	 * Offers multiple bytes to the pipe input.
 	 *
 	 * @param __b The bytes to offer to the input.
-	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @throws PipeInputClosedException If the input side of the pipe is
 	 * closed.
 	 * @throws PipeProcessException If bytes are offered during processing.
 	 * @since 2016/04/30
 	 */
-	public final DataPipe offer(byte[] __b)
+	public final void offer(byte[] __b)
 		throws NullPointerException, PipeInputClosedException,
 			PipeProcessException
 	{
-		return offer(__b, 0, __b.length);
+		offer(__b, 0, __b.length);
 	}
 	
 	/**
@@ -392,7 +322,6 @@ public abstract class DataPipe
 	 * @param __b The bytes to offer to the input.
 	 * @param __o The starting offset of the bytes to offer.
 	 * @param __l The number of bytes to offer.
-	 * @return {@code this}.
 	 * @throws IndexOutOfBoundsException If the offset or length are negative
 	 * or they exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
@@ -401,7 +330,7 @@ public abstract class DataPipe
 	 * @throws PipeProcessException If bytes are offered during processing.
 	 * @since 2016/04/30
 	 */
-	public final DataPipe offer(byte[] __b, int __o, int __l)
+	public final void offer(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException,
 			PipeInputClosedException, PipeProcessException
 	{
@@ -411,29 +340,22 @@ public abstract class DataPipe
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
+		// Cannot be processing
+		if (_inproc > 0)
+			throw new PipeProcessException("AC02");
+		
+		// Offer input bytes
+		try
 		{
-			// Cannot be processing
-			if (_inproc > 0)
-				throw new PipeProcessException("AC02");
-			
-			// Offer input bytes
-			try
-			{
-				// Add bytes
-				_input.offer(__b, __o, __l);
-			}
-			
-			// The input is closed
-			catch (CompleteSinkException e)
-			{
-				throw new PipeInputClosedException("AC01", e);
-			}
+			// Add bytes
+			_input.offer(__b, __o, __l);
 		}
 		
-		// Self
-		return this;
+		// The input is closed
+		catch (CompleteSinkException e)
+		{
+			throw new PipeInputClosedException("AC01", e);
+		}
 	}
 	
 	/**
@@ -444,11 +366,7 @@ public abstract class DataPipe
 	 */
 	public final int outputWaiting()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _output.waiting();
-		}
+		return _output.waiting();
 	}
 	
 	/**
@@ -464,39 +382,35 @@ public abstract class DataPipe
 	protected final int pipeInput()
 		throws PipeProcessException, PipeStalledException
 	{
-		// Lock
-		synchronized (lock)
+		// Not the dual state
+		if (_inproc != _BOTH_MASK)
 		{
-			// Not the dual state
-			if (_inproc != _BOTH_MASK)
-			{
-				// If the input is complete, then all reads are EOF
-				if (isInputComplete())
-					return -1;
-				
-				throw new PipeProcessException("AC0a");
-			}
+			// If the input is complete, then all reads are EOF
+			if (isInputComplete())
+				return -1;
 			
-			// Could stall
-			try
-			{
-				// Accept from the input
-				int rv = _input.__accept();
+			throw new PipeProcessException("AC0a");
+		}
+		
+		// Could stall
+		try
+		{
+			// Accept from the input
+			int rv = _input.__accept();
+		
+			// Complete?
+			if (rv < 0)
+				return -1;
 			
-				// Complete?
-				if (rv < 0)
-					return -1;
-				
-				// Return it
-				return rv;
-			}
-			
-			// Did stall
-			catch (NoSuchElementException e)
-			{
-				// {@squirreljme.error AC0b The pipeline input stalled.}
-				throw new PipeStalledException("AC0b", e);
-			}
+			// Return it
+			return rv;
+		}
+		
+		// Did stall
+		catch (NoSuchElementException e)
+		{
+			// {@squirreljme.error AC0b The pipeline input stalled.}
+			throw new PipeStalledException("AC0b", e);
 		}
 	}
 	
@@ -540,66 +454,53 @@ public abstract class DataPipe
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
+		// Not the dual state
+		if (_inproc != _BOTH_MASK)
 		{
-			// Not the dual state
-			if (_inproc != _BOTH_MASK)
-			{
-				// if the input is complete, then all reads are EOF
-				if (isInputComplete())
-					return -1;
-				
-				// Fail
-				throw new PipeProcessException("AC0a");
-			}
+			// if the input is complete, then all reads are EOF
+			if (isInputComplete())
+				return -1;
 			
-			// Read from the input
-			return _input.__accept(__b, __o, __l);
+			// Fail
+			throw new PipeProcessException("AC0a");
 		}
+		
+		// Read from the input
+		return _input.__accept(__b, __o, __l);
 	}
 	
 	/**
 	 * Pipes a single byte to the pipe's output.
 	 *
 	 * @param __b The byte to output.
-	 * @return {@code this}.
 	 * @throws PipeProcessException If the dual state of the pipeline is
 	 * not currently set.
 	 * @since 2016/04/30
 	 */
-	protected final DataPipe pipeOutput(byte __b)
+	protected final void pipeOutput(byte __b)
 		throws PipeProcessException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Not the dual state
-			if (_inproc != _BOTH_MASK)
-				throw new PipeProcessException("AC0a");
-			
-			// Write to the output
-			_output.__fill(__b);
-		}
+		// Not the dual state
+		if (_inproc != _BOTH_MASK)
+			throw new PipeProcessException("AC0a");
 		
-		// Self
-		return this;
+		// Write to the output
+		_output.__fill(__b);
 	}
 	
 	/**
 	 * Outputs multiple bytes to be drained in the future.
 	 *
 	 * @param __b The bytes to drain.
-	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @throws PipeProcessException If the pipe is not currently in the dual
 	 * state.
 	 * @since 2016/05/04
 	 */
-	protected final DataPipe pipeOutput(byte[] __b)
+	protected final void pipeOutput(byte[] __b)
 		throws NullPointerException, PipeProcessException
 	{
-		return pipeOutput(__b, 0, __b.length);
+		pipeOutput(__b, 0, __b.length);
 	}
 	
 	/**
@@ -608,7 +509,6 @@ public abstract class DataPipe
 	 * @param __b The bytes to drain.
 	 * @param __o The base offset to read bytes from.
 	 * @param __l The number of bytes to read for future draining.
-	 * @return {@code this}.
 	 * @throws IndexOutOfBoundsException If the offset or length are negative
 	 * or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
@@ -616,7 +516,7 @@ public abstract class DataPipe
 	 * state.
 	 * @since 2016/05/04
 	 */
-	protected final DataPipe pipeOutput(byte[] __b, int __o, int __l)
+	protected final void pipeOutput(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException,
 			PipeProcessException
 	{
@@ -626,19 +526,12 @@ public abstract class DataPipe
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// Not the dual state
-			if (_inproc != _BOTH_MASK)
-				throw new PipeProcessException("AC0a");
-			
-			// Write to the output
-			_output.__fill(__b, __o, __l);
-		}
+		// Not the dual state
+		if (_inproc != _BOTH_MASK)
+			throw new PipeProcessException("AC0a");
 		
-		// Self
-		return this;
+		// Write to the output
+		_output.__fill(__b, __o, __l);
 	}
 	
 	/**
@@ -652,83 +545,79 @@ public abstract class DataPipe
 	private final void __process(int __f)
 		throws PipeProcessException
 	{
-		// Lock
-		synchronized (lock)
+		// {@squirreljme.error AC09 A previous pipe operation failed.}
+		if (_failed)
+			throw new PipeProcessException("AC09");
+		
+		// {@squirreljme.error AC07 Processing is already being performed.
+		// (The mask)}
+		int ip = _inproc;
+		if (0 != (ip & __f))
+			throw new PipeProcessException(String.format("AC07 %d", __f));
+		
+		// Could fail
+		try
 		{
-			// {@squirreljme.error AC09 A previous pipe operation failed.}
-			if (_failed)
-				throw new PipeProcessException("AC09");
+			// Set the bit
+			_inproc |= __f;
 			
-			// {@squirreljme.error AC07 Processing is already being performed.
-			// (The mask)}
-			int ip = _inproc;
-			if (0 != (ip & __f))
-				throw new PipeProcessException(String.format("AC07 %d", __f));
-			
-			// Could fail
-			try
+			// Processing in the sink
+			if (__f == _SINK_MASK)
 			{
-				// Set the bit
-				_inproc |= __f;
-				
-				// Processing in the sink
-				if (__f == _SINK_MASK)
-				{
-					// If bytes were added to the sink but no output bytes
-					// were yet requested then do nothing.
-					if (0 == (ip & _FAUCET_MASK))
-						return;
-					
-					// Call the actual processor
-					DataPipe.this.process();
-				}
-				
-				// Processing in the faucet, just flush the input so that it is
-				// forced to be handled. This way when the sink processor is
-				// called and this method is entered again the actual data
-				// processor can be used to safely read the input and write
-				// the output faucet bytes.
-				else if (__f == _FAUCET_MASK)
-				{
-					_input.flush();
-					
-					// Process the pipe regardless if the input is complete
-					if (_input.isComplete())
-						DataPipe.this.process();
-				}
-				
-				// Unknown
-				else
-					throw new RuntimeException("OOPS");
-			}
-			
-			// Did fail
-			catch (Throwable t)
-			{
-				// Ignore stalling pipes
-				if (t instanceof PipeStalledException)
+				// If bytes were added to the sink but no output bytes
+				// were yet requested then do nothing.
+				if (0 == (ip & _FAUCET_MASK))
 					return;
 				
-				// Set failure
-				_failed = true;
-				
-				// Rethrow
-				if (t instanceof RuntimeException)
-					throw (RuntimeException)t;
-				else if (t instanceof Error)
-					throw (Error)t;
-				
-				// {@squirreljme.error AC08 Threw another exception during
-				// processing.}
-				throw new PipeProcessException("AC08", t);
+				// Call the actual processor
+				DataPipe.this.process();
 			}
 			
-			// Clear processing bit
-			finally
+			// Processing in the faucet, just flush the input so that it is
+			// forced to be handled. This way when the sink processor is
+			// called and this method is entered again the actual data
+			// processor can be used to safely read the input and write
+			// the output faucet bytes.
+			else if (__f == _FAUCET_MASK)
 			{
-				// Clear the bit
-				_inproc &= (~__f);
+				_input.flush();
+				
+				// Process the pipe regardless if the input is complete
+				if (_input.isComplete())
+					DataPipe.this.process();
 			}
+			
+			// Unknown
+			else
+				throw new RuntimeException("OOPS");
+		}
+		
+		// Did fail
+		catch (Throwable t)
+		{
+			// Ignore stalling pipes
+			if (t instanceof PipeStalledException)
+				return;
+			
+			// Set failure
+			_failed = true;
+			
+			// Rethrow
+			if (t instanceof RuntimeException)
+				throw (RuntimeException)t;
+			else if (t instanceof Error)
+				throw (Error)t;
+			
+			// {@squirreljme.error AC08 Threw another exception during
+			// processing.}
+			throw new PipeProcessException("AC08", t);
+		}
+		
+		// Clear processing bit
+		finally
+		{
+			// Clear the bit
+			_inproc &= (~__f);
 		}
 	}
 	
@@ -747,7 +636,7 @@ public abstract class DataPipe
 		 */
 		private __Faucet__()
 		{
-			super(DataPipe.this.lock);
+			super();
 		}
 		
 		/**
@@ -757,12 +646,8 @@ public abstract class DataPipe
 		@Override
 		protected final void process()
 		{
-			// Lock
-			synchronized (lock)
-			{
-				// Call the other processor
-				__process(_FAUCET_MASK);
-			}
+			// Call the other processor
+			__process(_FAUCET_MASK);
 		}
 		
 		/**
@@ -815,7 +700,7 @@ public abstract class DataPipe
 		 */
 		private __Sink__()
 		{
-			super(DataPipe.this.lock);
+			super();
 		}
 		
 		/**
@@ -825,12 +710,8 @@ public abstract class DataPipe
 		@Override
 		protected final void process(int __n)
 		{
-			// Lock
-			synchronized (lock)
-			{
-				// Call the other processor
-				__process(_SINK_MASK);
-			}
+			// Call the other processor
+			__process(_SINK_MASK);
 		}
 		
 		/**

@@ -60,29 +60,8 @@ public abstract class DataSink
 	 */
 	public DataSink()
 	{
-		this(new Object());
-	}
-	
-	/**
-	 * Initializes the data sink and uses the specified object as a lock.
-	 *
-	 * @param __lk The locking object to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/30
-	 */
-	public DataSink(Object __lk)
-		throws NullPointerException
-	{
-		// Check
-		if (__lk == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		lock = __lk;
-		_lock = __lk;
-		
 		// Setup input
-		_input = new ByteDeque(__lk);
+		_input = new ByteDeque();
 	}
 	
 	/**
