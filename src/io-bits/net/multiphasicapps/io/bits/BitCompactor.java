@@ -159,10 +159,20 @@ public class BitCompactor
 			throw new IllegalArgumentException(String.format("AH02 %x %x",
 				__val, __mask));
 		
-		// Read input bits
-		int an = (__msb ? -1 : 1);
-		for (int at = (__msb ? ibm - 1 : 0); at >= 0 && at < ibm; at += an)
-			add(0 != (__val & (1 << at)));
+		// Higher bits first
+		if (__msb)
+		{
+			for (int sh = Integer.highestOneBit(__mask); sh != 0; sh >>>= 1)
+				add(0 != (__val & sh));
+		}
+		
+		// Lower bits first
+		else
+		{
+			int stop = Integer.highestOneBit(__mask) << 1;
+			for (int sh = 1; sh != stop; sh <<= 1)
+				add(0 != (__val & sh));
+		}
 	}
 	
 	/**
