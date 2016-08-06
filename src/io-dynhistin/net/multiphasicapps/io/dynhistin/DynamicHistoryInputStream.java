@@ -20,15 +20,13 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  * where it is needed to read future bytes in the stream and react to those
  * bytes.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/07/19
  */
 public class DynamicHistoryInputStream
 	extends InputStream
 {
-	/** Internal lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** The backing buffer. */
 	protected final ByteDeque buffer;
 	
@@ -69,18 +67,14 @@ public class DynamicHistoryInputStream
 	public void close()
 		throws IOException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// Close
-			this._closed = true;
-			
-			// Clear the buffer since it is not needed
-			this.buffer.clear();
-			
-			// Close wrapped stream
-			this.input.close();
-		}
+		// Close
+		this._closed = true;
+		
+		// Clear the buffer since it is not needed
+		this.buffer.clear();
+		
+		// Close wrapped stream
+		this.input.close();
 	}
 	
 	/**
@@ -104,37 +98,35 @@ public class DynamicHistoryInputStream
 		
 		// Lock
 		ByteDeque buffer = this.buffer;
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error BI04 Cannot grab bytes because the stream
-			// is closed.}
-			if (this._closed)
-				throw new IOException("BI04");
-			
-			// Already have this number of bytes grabbed
-			int cursize = buffer.available();
-			if (__i <= cursize)
-				return cursize;
-			
-			// The number of bytes that need to be read
-			int diff = __i - cursize;
-			
-			// Read them from the input
-			byte[] qq = new byte[diff];
-			int rc = this.input.read(qq);
-			
-			// If no bytes or EOF was read, then just return the current
-			// buffer size
-			if (rc <= 0)
-				return cursize;
-			
-			// Add them to the end of the buffer
-			buffer.addLast(qq, 0, rc);
-			
-			// The number of available bytes is the current and the read
-			// count
-			return cursize + rc;
-		}
+		
+		// {@squirreljme.error BI04 Cannot grab bytes because the stream
+		// is closed.}
+		if (this._closed)
+			throw new IOException("BI04");
+		
+		// Already have this number of bytes grabbed
+		int cursize = buffer.available();
+		if (__i <= cursize)
+			return cursize;
+		
+		// The number of bytes that need to be read
+		int diff = __i - cursize;
+		
+		// Read them from the input
+		byte[] qq = new byte[diff];
+		int rc = this.input.read(qq);
+		
+		// If no bytes or EOF was read, then just return the current
+		// buffer size
+		if (rc <= 0)
+			return cursize;
+		
+		// Add them to the end of the buffer
+		buffer.addLast(qq, 0, rc);
+		
+		// The number of available bytes is the current and the read
+		// count
+		return cursize + rc;
 	}
 	
 	/**
@@ -159,20 +151,18 @@ public class DynamicHistoryInputStream
 		
 		// Lock
 		ByteDeque buffer = this.buffer;
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error BI05 Cannot peek a single byte because the
-			// stream is closed.}
-			if (this._closed)
-				throw new IOException("BI05");
-			
-			// Grab bytes, stop if none are available
-			int avail = grab(__a + 1);
-			if (avail < __a)
-				return -1;
-			
-			throw new Error("TODO");
-		}
+		
+		// {@squirreljme.error BI05 Cannot peek a single byte because the
+		// stream is closed.}
+		if (this._closed)
+			throw new IOException("BI05");
+		
+		// Grab bytes, stop if none are available
+		int avail = grab(__a + 1);
+		if (avail < __a)
+			return -1;
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -228,29 +218,27 @@ public class DynamicHistoryInputStream
 		
 		// Lock
 		ByteDeque buffer = this.buffer;
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error BI06 Cannot peek multiple bytes because
-			// the stream is closed.}
-			if (this._closed)
-				throw new IOException("BI06");
-			
-			// Grab bytes, stop if none are available
-			int avail = grab(__a + __l);
-			if (avail < __a)
-				return -1;
-			
-			// Not reading anything?
-			int rc = Math.min(__l, avail);
-			if (rc < 0)
-				return 0;
-			
-			// Read from the buffer
-			if (true)
-				throw new Error("TODO");
-			/*buffer.get(__a, __b, __o, rc);*/
-			return rc;
-		}
+		
+		// {@squirreljme.error BI06 Cannot peek multiple bytes because
+		// the stream is closed.}
+		if (this._closed)
+			throw new IOException("BI06");
+		
+		// Grab bytes, stop if none are available
+		int avail = grab(__a + __l);
+		if (avail < __a)
+			return -1;
+		
+		// Not reading anything?
+		int rc = Math.min(__l, avail);
+		if (rc < 0)
+			return 0;
+		
+		// Read from the buffer
+		if (true)
+			throw new Error("TODO");
+		/*buffer.get(__a, __b, __o, rc);*/
+		return rc;
 	}
 	
 	/**
@@ -261,24 +249,20 @@ public class DynamicHistoryInputStream
 	public int read()
 		throws IOException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error BI07 Cannot read a single byte because the
-			// stream has been closed.}
-			if (this._closed)
-				throw new IOException("BI07");
-			
-			// Grab a single byte
-			int gc = grab(1);
-			
-			// Nothing left
-			if (gc <= 0)
-				return -1;
-			
-			// Read single byte
-			return (this.buffer.removeFirst() & 0xFF);
-		}
+		// {@squirreljme.error BI07 Cannot read a single byte because the
+		// stream has been closed.}
+		if (this._closed)
+			throw new IOException("BI07");
+		
+		// Grab a single byte
+		int gc = grab(1);
+		
+		// Nothing left
+		if (gc <= 0)
+			return -1;
+		
+		// Read single byte
+		return (this.buffer.removeFirst() & 0xFF);
 	}
 	
 	/**
@@ -298,29 +282,27 @@ public class DynamicHistoryInputStream
 		
 		// Lock
 		ByteDeque buffer = this.buffer;
-		synchronized (this.lock)
-		{
-			// {@squirreljme BI08 Cannot read multiple bytes because the
-			// stream is closed.}
-			if (this._closed)
-				throw new IOException("BI08");
-			
-			// Grab multiple bytes
-			int gc = grab(__l);
-			
-			// Nothing left?
-			if (gc <= 0)
-				return -1;
-			
-			// No bytes to read?
-			int dc = Math.min(gc, __l);
-			if (dc <= 0)
-				return 0;
-			
-			// Remove the early bytes
-			buffer.removeFirst(__b, __o, dc);
-			return dc;
-		}
+		
+		// {@squirreljme BI08 Cannot read multiple bytes because the
+		// stream is closed.}
+		if (this._closed)
+			throw new IOException("BI08");
+		
+		// Grab multiple bytes
+		int gc = grab(__l);
+		
+		// Nothing left?
+		if (gc <= 0)
+			return -1;
+		
+		// No bytes to read?
+		int dc = Math.min(gc, __l);
+		if (dc <= 0)
+			return 0;
+		
+		// Remove the early bytes
+		buffer.removeFirst(__b, __o, dc);
+		return dc;
 	}
 }
 
