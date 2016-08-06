@@ -22,6 +22,8 @@ import net.multiphasicapps.util.huffmantree.HuffmanTree;
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
  *
+ * This class is not thread safe.
+ *
  * {@squirreljme.error AF01 Requested a negative number of bits.}
  *
  * @since 2016/03/11
@@ -1011,13 +1013,9 @@ public class InflateDataPipe
 	 */
 	int __zzAvailable()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// The number of bits available are those that are waiting and
-			// a multiple of the bits that are waiting to be input
-			return _qwait + (inputWaiting() << 3);
-		}
+		// The number of bits available are those that are waiting and
+		// a multiple of the bits that are waiting to be input
+		return _qwait + (inputWaiting() << 3);
 	}
 	
 	/**
@@ -1056,53 +1054,49 @@ public class InflateDataPipe
 		///** The number of bits in the access window. */
 		//private volatile int _qwinsz;
 		
-		// Lock
-		synchronized (lock)
+		// Pre-cached bit count is waiting
+		int qwait = _qwait;
+		if (__b < qwait)
+			return;
+	
+		// If the next number of requested bits exceeds the size of the
+		// input window, then move the values down and adjust.
+		byte[] qwin = _qwin;
+		int qbit = _qbit;
+		int qwinsz = _qwinsz;
+		if ((qbit + __b) >= _QUICK_WINDOW_BITS - 8)
 		{
-			// Pre-cached bit count is waiting
-			int qwait = _qwait;
-			if (__b < qwait)
-				return;
-		
-			// If the next number of requested bits exceeds the size of the
-			// input window, then move the values down and adjust.
-			byte[] qwin = _qwin;
-			int qbit = _qbit;
-			int qwinsz = _qwinsz;
-			if ((qbit + __b) >= _QUICK_WINDOW_BITS - 8)
-			{
-				// Calculate the source base
-				int src = (qbit >>> 3);
-				int cap = (qwinsz >>> 3);
-				
-				// Copy bytes down
-				for (int d = 0, s = src; s < cap; d++, s++)
-					qwin[d] = qwin[s];
-				
-				// Correct
-				_qbit = (qbit &= 7);
-				_qwinsz = (qwinsz -= (src << 3));
-			}
-		
-			// Read bytes from the input pipe and place them at the end of
-			// the window
-			int n = (__b >>> 3) + 1;
-			int apic = pipeInput(qwin, qwinsz >>> 3, n);
-			int nb = (apic << 3);
+			// Calculate the source base
+			int src = (qbit >>> 3);
+			int cap = (qwinsz >>> 3);
 			
-			// It is possible for the input to be at the end, do not use
-			// a negative value here
-			if (apic >= 0)
-			{
-				_qwinsz = (qwinsz += nb);
-				_qwait = (qwait += nb);
-			}
+			// Copy bytes down
+			for (int d = 0, s = src; s < cap; d++, s++)
+				qwin[d] = qwin[s];
 			
-			// {@squirreljme.error Read input bits, however there are not
-			// enough bits to statisfy the requested input.}
-			if (__b > qwait)
-				throw new NoSuchElementException("AF0q");
+			// Correct
+			_qbit = (qbit &= 7);
+			_qwinsz = (qwinsz -= (src << 3));
 		}
+	
+		// Read bytes from the input pipe and place them at the end of
+		// the window
+		int n = (__b >>> 3) + 1;
+		int apic = pipeInput(qwin, qwinsz >>> 3, n);
+		int nb = (apic << 3);
+		
+		// It is possible for the input to be at the end, do not use
+		// a negative value here
+		if (apic >= 0)
+		{
+			_qwinsz = (qwinsz += nb);
+			_qwait = (qwait += nb);
+		}
+		
+		// {@squirreljme.error Read input bits, however there are not
+		// enough bits to statisfy the requested input.}
+		if (__b > qwait)
+			throw new NoSuchElementException("AF0q");
 	}
 	
 	/**
@@ -1113,24 +1107,20 @@ public class InflateDataPipe
 	 */
 	boolean __zzRead()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Request a single byte
-			__zzQuick(1);
-			
-			// Read in a single bit
-			int qbit = _qbit;
-			boolean rv = (0 != (_qwin[qbit >>> 3] & (1 << (qbit & 7))));
-			
-			// Increase the read count and drop the wait count
-			_readcount++;
-			_qwait--;
-			_qbit = qbit + 1;
-			
-			// Return it
-			return rv;
-		}
+		// Request a single byte
+		__zzQuick(1);
+		
+		// Read in a single bit
+		int qbit = _qbit;
+		boolean rv = (0 != (_qwin[qbit >>> 3] & (1 << (qbit & 7))));
+		
+		// Increase the read count and drop the wait count
+		_readcount++;
+		_qwait--;
+		_qbit = qbit + 1;
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -1165,47 +1155,43 @@ public class InflateDataPipe
 		if (__b < 0)
 			throw new IllegalArgumentException("AF01");
 		
-		// Lock
-		synchronized (lock)
+		// Request multiple bytes
+		__zzQuick(__b);
+		
+		// Cached shift calculations
+		int sh, sha;
+		if (__msb)
 		{
-			// Request multiple bytes
-			__zzQuick(__b);
-			
-			// Cached shift calculations
-			int sh, sha;
-			if (__msb)
-			{
-				sh = (__b - 1);
-				sha = -1;
-			}
-			else
-			{
-				sh = 0;
-				sha = 1;
-			}
-			
-			// Read in multiple bytes
-			int rv = 0;
-			byte[] qwin = _qwin;
-			int qbit = _qbit;
-			for (int i = 0; i < __b; i++, sh += sha)
-			{
-				// if bit is set, set it on the output
-				if ((0 != (qwin[qbit >>> 3] & (1 << (qbit & 7)))))
-					rv |= (1 << sh);
-				
-				// Next bit to try
-				qbit++;
-			}
-			
-			// Increase the read count and drop the wait count
-			_readcount += __b;
-			_qwait -= __b;
-			_qbit = qbit;
-			
-			// Return it
-			return rv;
+			sh = (__b - 1);
+			sha = -1;
 		}
+		else
+		{
+			sh = 0;
+			sha = 1;
+		}
+		
+		// Read in multiple bytes
+		int rv = 0;
+		byte[] qwin = _qwin;
+		int qbit = _qbit;
+		for (int i = 0; i < __b; i++, sh += sha)
+		{
+			// if bit is set, set it on the output
+			if ((0 != (qwin[qbit >>> 3] & (1 << (qbit & 7)))))
+				rv |= (1 << sh);
+			
+			// Next bit to try
+			qbit++;
+		}
+		
+		// Increase the read count and drop the wait count
+		_readcount += __b;
+		_qwait -= __b;
+		_qbit = qbit;
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

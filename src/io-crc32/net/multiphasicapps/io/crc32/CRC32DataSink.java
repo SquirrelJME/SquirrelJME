@@ -16,6 +16,8 @@ import net.multiphasicapps.io.datasink.SinkProcessException;
 /**
  * This is a data sink which supports the CRC 32 algorithm.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/07/16
  */
 public class CRC32DataSink
@@ -82,17 +84,13 @@ public class CRC32DataSink
 	public int crc()
 		throws SinkProcessException
 	{
-		// Lock
-		synchronized (this.lock)
-		{
-			// Flush to get the latest value
-			super.flush();
-			
-			// Return the current CRC
-			int rem = this._remainder;
-			return (this.reflectremainder ? Integer.reverse(rem) : rem) ^
-				this.finalxor;
-		}
+		// Flush to get the latest value
+		super.flush();
+		
+		// Return the current CRC
+		int rem = this._remainder;
+		return (this.reflectremainder ? Integer.reverse(rem) : rem) ^
+			this.finalxor;
 	}
 	
 	/**

@@ -179,3 +179,7 @@ Thinking about it, the data pipes and related classes should not be thread
 safe. They are generally intended to be very fast and versatile. External
 locking can always be performed when they are used.
 
+## 22:34
+
+`InflateDataPipe` can use some precalculated shift improvements also.
+
