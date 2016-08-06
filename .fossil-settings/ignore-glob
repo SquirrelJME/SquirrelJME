@@ -39,4 +39,5 @@ build/
 contrib/
 contrib/*
 contrib/*.*
+*.zip
 

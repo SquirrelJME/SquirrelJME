@@ -37,3 +37,9 @@ Making it integer did not do much at all.
 I suppose what I can do instead of stalling, would be to just retry in some
 conditions.
 
+## 18:54
+
+I generated an extremely simple binary that runs on Linux MIPS (big endian
+though). I should put these practice binaries in the repository in an
+encoded form.
+

@@ -1,0 +1,6 @@
+# Practice Binary ZIPs
+
+This directory contains very minimal and simple binaries which are to
+be used on the target system to test the initial setup of the
+emulator. These binaries should be in ZIPs and be as simple as
+possible. All executables should be named `hello`.
