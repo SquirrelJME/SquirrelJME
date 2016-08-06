@@ -166,8 +166,9 @@ public class BitInputStream
 	/**
 	 * Invokes {@code (int)readBits(__c, __msb)}.
 	 *
-	 * @param __c As forwarded.
-	 * @param __msb As forwarded.
+	 * @param __c The number of bits to read.
+	 * @param __msb If {@code true} then bits which are read first are placed
+	 * at higher addresses, otherwise they are placed at lower addresses.
 	 * @return The integer value of the read bits.
 	 * @throws IllegalArgumentException If the number of bits is not between
 	 * 1 and 32.
@@ -182,8 +183,22 @@ public class BitInputStream
 		if (__c <= 0 || __c > 32)
 			throw new IllegalArgumentException(String.format("AH04 %d", __c));
 		
-		// Call other
-		return (int)readBits(__c, __msb);
+		// Lock
+		synchronized (this.lock)
+		{
+			// Output value
+			int rv = 0;
+			
+			// Read input bits
+			int an = (__msb ? -1 : 1);
+			for (int i = 0, at = (__msb ? __c - 1 : 0); i >= 0 && i < __c;
+				i++, at += an)
+				if (read())
+					rv |= (1 << at);
+			
+			// Return it
+			return rv;
+		}
 	}
 	
 	/**
@@ -211,26 +226,30 @@ public class BitInputStream
 		if (__c <= 0 || __c > 64)
 			throw new IllegalArgumentException(String.format("AH05 %d", __c));
 		
+		// Fit as an integer, use that
+		if (__c <= 32)
+			return ((long)readBitsInt(__c, __msb)) & 0xFFFFFFFFL;
+		
 		// Lock
-		synchronized (lock)
+		synchronized (this.lock)
 		{
-			// Output value
-			long rv = 0L;
+			// Read both sets of bits
+			int rest = __c - 32;
+			long fir = (((long)readBitsInt(32, __msb)) & 0xFFFFFFFFL);
+			long sec = (((long)readBitsInt(rest, __msb)) & 0xFFFFFFFFL);
 			
-			// Read input bits
-			int an = (__msb ? -1 : 1);
-			for (int i = 0, at = (__msb ? __c - 1 : 0); i >= 0 && i < __c;
-				i++, at += an)
-				if (read())
-					rv |= (1L << (long)(at));
+			// High bits first
+			if (__msb)
+				return (fir << rest) | sec;
 			
-			// Return it
-			return rv;
+			// Lower bits first
+			else
+				return (sec << 32) | fir;
 		}
 	}
 	
 	/**
-	 * Reads a byte.
+	 * Reads a single byte.
 	 *
 	 * @return The read byte value.
 	 * @throws EOFException If no more bits are left.
@@ -240,7 +259,7 @@ public class BitInputStream
 	public byte readByte()
 		throws EOFException, IOException
 	{
-		return (byte)readBits(8);
+		return (byte)readBitsInt(8);
 	}
 }
 
