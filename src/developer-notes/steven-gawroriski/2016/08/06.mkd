@@ -28,3 +28,7 @@ for boxing and such. Then following that would probably be a rewrite of the
 inflate code so that it is much faster. Currently the inflate code has lots
 of methods called, so there is much overhead and such.
 
+## 11:49
+
+Making it integer did not do much at all.
+

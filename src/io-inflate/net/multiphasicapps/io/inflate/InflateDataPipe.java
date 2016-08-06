@@ -17,8 +17,8 @@ import net.multiphasicapps.io.datapipe.DataPipe;
 import net.multiphasicapps.io.datapipe.PipeProcessException;
 import net.multiphasicapps.io.datapipe.PipeStalledException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
-import net.multiphasicapps.util.huffmantree.HuffmanTree;
-import net.multiphasicapps.util.huffmantree.HuffmanTreeTraverser;
+import net.multiphasicapps.util.huffmantree.HuffmanTreeInt;
+import net.multiphasicapps.util.huffmantree.HuffmanTreeIntTraverser;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
@@ -160,7 +160,7 @@ public class InflateDataPipe
 	private volatile int _readclnext;
 	
 	/** The code length huffman tree. */
-	private volatile HuffmanTree<Integer> _clentree;
+	private volatile HuffmanTreeInt _clentree;
 	
 	/** The next literal to read. */
 	private volatile int _nexthlitdist;
@@ -169,10 +169,10 @@ public class InflateDataPipe
 	private volatile int[] _rawlitdistlens;
 	
 	/** The literal code tree. */
-	private volatile HuffmanTree<Integer> _treehlit;
+	private volatile HuffmanTreeInt _treehlit;
 	
 	/** The distance code tree. */
-	private volatile HuffmanTree<Integer> _treedist;
+	private volatile HuffmanTreeInt _treedist;
 	
 	/** The number of bits read, for alignment purposes. */
 	private volatile int _readcount;
@@ -312,8 +312,8 @@ public class InflateDataPipe
 	 * @throws PipeProcessException On read/write error.s
 	 * @since 2016/03/12
 	 */
-	private void __handleCode(int __c, HuffmanTree<Integer> __len,
-		HuffmanTree<Integer> __dist)
+	private void __handleCode(int __c, HuffmanTreeInt __len,
+		HuffmanTreeInt __dist)
 		throws PipeProcessException
 	{
 		// Literal byte value
@@ -387,7 +387,7 @@ public class InflateDataPipe
 	 * @throws PipeProcessException On read/write errors.
 	 * @since 2016/03/12
 	 */
-	private int __handleDistance(HuffmanTree<Integer> __dist)
+	private int __handleDistance(HuffmanTreeInt __dist)
 		throws PipeProcessException
 	{
 		// If using fixed huffman read 5 bits since they are all the same
@@ -474,7 +474,7 @@ public class InflateDataPipe
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/28
 	 */
-	private int __readCodeBits(HuffmanTree<Integer> __codes, int[] __out,
+	private int __readCodeBits(HuffmanTreeInt __codes, int[] __out,
 		int __next)
 		throws PipeProcessException, NullPointerException
 	{
@@ -637,7 +637,7 @@ public class InflateDataPipe
 		throws PipeProcessException
 	{
 		// Get the tree and the max bit count used
-		HuffmanTree<Integer> htree = _clentree;
+		HuffmanTreeInt htree = _clentree;
 		int maxbits = htree.maximumBits();
 		int hlit = _dhlit;
 		int hdist = _dhdist;
@@ -712,8 +712,8 @@ public class InflateDataPipe
 		throws PipeProcessException
 	{
 		// Get both trees
-		HuffmanTree<Integer> thlit = _treehlit;
-		HuffmanTree<Integer> tdist = _treedist;
+		HuffmanTreeInt thlit = _treehlit;
+		HuffmanTreeInt tdist = _treedist;
 		
 		// Maximum number of btis to read
 		int maxbits = Math.max(thlit.maximumBits(), tdist.maximumBits());
@@ -940,7 +940,7 @@ public class InflateDataPipe
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/28
 	 */
-	private int __readTreeCode(HuffmanTree<Integer> __codes)
+	private int __readTreeCode(HuffmanTreeInt __codes)
 		throws NullPointerException, NoSuchElementException,
 			NullPointerException
 	{
@@ -949,7 +949,7 @@ public class InflateDataPipe
 			throw new NullPointerException("NARG");
 		
 		// Start traversal in the tree
-		HuffmanTreeTraverser<Integer> trav = __codes.traverser();
+		HuffmanTreeIntTraverser trav = __codes.traverser();
 		for (;;)
 		{
 			// Is a value reached?
@@ -977,7 +977,7 @@ public class InflateDataPipe
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/28
 	 */
-	private HuffmanTree<Integer> __thunkCodeLengthTree(int[] __lens, int __o,
+	private HuffmanTreeInt __thunkCodeLengthTree(int[] __lens, int __o,
 		int __l)
 		throws NullPointerException
 	{
@@ -986,7 +986,7 @@ public class InflateDataPipe
 			throw new NullPointerException("NARG");
 		
 		// Setup target tree
-		HuffmanTree<Integer> rv = new HuffmanTree<>();
+		HuffmanTreeInt rv = new HuffmanTreeInt();
 		
 		// The number of lengths
 		int n = __l;

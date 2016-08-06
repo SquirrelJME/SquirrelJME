@@ -10,16 +10,9 @@
 
 package net.multiphasicapps.util.huffmantree;
 
-import java.util.AbstractMap;
-import java.util.AbstractSet;
 import java.util.ConcurrentModificationException;
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * This represents a mutable huffman tree.
@@ -32,17 +25,16 @@ import java.util.Set;
  * {@squirreljme.error AK04 The huffman tree was modified in the middle of
  * iteration.}
  *
- * @param <T> The type of values to store in the tree.
+ * @param <int> The type of values to store in the tree.
  * @since 2016/03/10
  */
-public class HuffmanTree<T>
-	implements Iterable<T>
+public class HuffmanTreeInt
 {
 	/** The huffman table. */
 	private volatile int[] _table;
 	
 	/** Stored tree values. */
-	private volatile Object[] _values;
+	private volatile int[] _values;
 	
 	/** Modification count. */
 	private volatile int _modcount;
@@ -55,7 +47,7 @@ public class HuffmanTree<T>
 	 *
 	 * @since 2016/03/10
 	 */
-	public HuffmanTree()
+	public HuffmanTreeInt()
 	{
 		// Initially add table space so that it is always initially valid but
 		// points to nothing.
@@ -75,7 +67,7 @@ public class HuffmanTree<T>
 	 * or has zero gaps.
 	 * @since 2016/03/28
 	 */
-	public final T add(T __v, int __sym, int __mask)
+	public final int add(int __v, int __sym, int __mask)
 		throws IllegalArgumentException
 	{
 		// Number of bits in the mask
@@ -144,7 +136,7 @@ public class HuffmanTree<T>
 					_modcount++;
 					
 					// No old value exists
-					return null;
+					return 0;
 				}
 				
 				// Otherwise, add some table space and jump to that
@@ -171,8 +163,8 @@ public class HuffmanTree<T>
 				int vat = (-jump) - 1;
 				
 				// Get old value
-				Object[] vals = _values;
-				Object old = vals[vat];
+				int[] vals = _values;
+				int old = vals[vat];
 				
 				// Set new value
 				vals[vat] = __v;
@@ -181,7 +173,7 @@ public class HuffmanTree<T>
 				_modcount++;
 				
 				// Return the old value
-				return __cast(old);
+				return old;
 			}
 			
 			// Points to another location in the array
@@ -191,107 +183,6 @@ public class HuffmanTree<T>
 		
 		// Should not occur
 		throw new RuntimeException("OOPS");
-	}
-	
-	/**
-	 * Finds the bit representation and the mask which is associated with the
-	 * given symbol.
-	 *
-	 * @param __v The value to find.
-	 * @return {@code -1} if nothing was found, otherwise the upper 32-bits is
-	 * the bit mask and the lower 32 is the symbol.
-	 * @since 2016/03/28
-	 */
-	public final long findSequence(Object __v)
-	{
-		// Get values
-		Object[] vals = _values;
-		
-		// No values? nothing will ever be found
-		if (vals == null)
-			return -1L;
-		
-		// Look through all values
-		int n = vals.length;
-		for (int i = 0; i < n; i++)
-			if (Objects.equals(vals[i], __v))
-				return __recursiveMatch(0, 0, 0, -(i + 1));
-		
-		// Not found
-		return -1L;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/03/10
-	 */
-	@Override
-	public final Iterator<T> iterator()
-	{
-		return new Iterator<T>()
-			{
-				/** The modification base. */
-				protected final int basemod = 
-					_modcount;
-				
-				/** The current index. */
-				private volatile int _dx;
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/28
-				 */
-				@Override
-				public boolean hasNext()
-				{
-					// Modified too much?
-					if (_modcount != basemod)
-						throw new ConcurrentModificationException("AK04");
-					
-					// Before the end?
-					Object[] vals = _values;
-					return (vals == null ? false : _dx < vals.length);
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/28
-				 */
-				@Override
-				public T next()
-				{
-					// Modified too much?
-					if (_modcount != basemod)
-						throw new ConcurrentModificationException("AK04");
-					
-					// The curent index
-					int dx = _dx;
-						
-					// At the end?
-					Object[] vals = _values;
-					if (vals == null || dx >= vals.length)
-						throw new NoSuchElementException("NSEE");
-					
-					// Get it
-					Object rv = vals[dx];
-					
-					// Set next index
-					_dx = dx + 1;
-					
-					// Return it
-					return __cast(rv);
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/28
-				 */
-				@Override
-				public void remove()
-				{
-					throw new UnsupportedOperationException("RORO");
-				}
-			};
 	}
 	
 	/**
@@ -316,7 +207,7 @@ public class HuffmanTree<T>
 		StringBuilder sb = new StringBuilder("[");
 		
 		// Add elements in no particular order
-		Object[] vals = _values;
+		int[] vals = _values;
 		if (vals != null)
 		{
 			int n = vals.length;
@@ -330,8 +221,8 @@ public class HuffmanTree<T>
 				sb.append('<');
 				
 				// Get the sequence of it
-				Object v = vals[i];
-				long seq = findSequence(v);
+				int v = vals[i];
+				int seq = -1;
 				
 				// Not found?
 				if (seq == -1L)
@@ -371,9 +262,9 @@ public class HuffmanTree<T>
 	 * @return The traverser over the tree.
 	 * @since 2016/03/28
 	 */
-	public final HuffmanTreeTraverser<T> traverser()
+	public final HuffmanTreeIntTraverser traverser()
 	{
-		return new HuffmanTreeTraverser<T>()
+		return new HuffmanTreeIntTraverser()
 			{
 				/** The modification base. */
 				protected final int basemod = 
@@ -387,7 +278,7 @@ public class HuffmanTree<T>
 				 * @since 2016/03/28
 				 */
 				@Override
-				public T getValue()
+				public int getValue()
 					throws NoSuchElementException
 				{
 					// Modified too much?
@@ -395,7 +286,7 @@ public class HuffmanTree<T>
 						throw new ConcurrentModificationException("AK04");
 					
 					// Get the jump table
-					Object[] vals = _values;
+					int[] vals = _values;
 					
 					// Missing table?
 					if (vals == null)
@@ -407,7 +298,7 @@ public class HuffmanTree<T>
 						throw new NoSuchElementException("NSEE");
 					
 					// Return value here
-					return __cast(vals[(-at) - 1]);
+					return vals[(-at) - 1];
 				}
 				
 				/**
@@ -420,7 +311,7 @@ public class HuffmanTree<T>
 					// Try to get a value
 					try
 					{
-						Object v = getValue();
+						int v = getValue();
 						
 						// If this point is reached then the value is valid
 						return true;
@@ -438,7 +329,7 @@ public class HuffmanTree<T>
 				 * @since 2016/03/28
 				 */
 				@Override
-				public HuffmanTreeTraverser<T> traverse(int __side)
+				public HuffmanTreeIntTraverser traverse(int __side)
 					throws IllegalArgumentException, NoSuchElementException
 				{
 					// Check
@@ -515,11 +406,11 @@ public class HuffmanTree<T>
 	private int __addValueSpace()
 	{
 		// The returned value is the end of the table
-		Object[] values = _values;
+		int[] values = _values;
 		int rv = (values == null ? 0 : values.length);
 		
 		// Allocate some extra space
-		Object[] becomes = new Object[rv + 1];
+		int[] becomes = new int[rv + 1];
 		
 		// Copy the old array over
 		for (int i = 0; i < rv; i++)
@@ -530,19 +421,6 @@ public class HuffmanTree<T>
 		
 		// Return it
 		return rv;
-	}
-	
-	/**
-	 * Fake casts the value to prevent warnings elsewhere.
-	 *
-	 * @param __v The value to cast.
-	 * @return The value casted to a specific type.
-	 * @since 2016/03/28
-	 */
-	@SuppressWarnings({"unchecked"})
-	private T __cast(Object __v)
-	{
-		return (T)__v;
 	}
 	
 	/**
