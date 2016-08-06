@@ -21,6 +21,12 @@ import net.multiphasicapps.squirreljme.emulator.HypoVisor;
 public abstract class LinuxHypoVisor
 	implements HypoVisor
 {
+	/** The initial ELF binary. */
+	protected volatile byte[] _initelf;
+	
+	/** The arguments to the starting program. */
+	protected volatile String[] _initargs;
+	
 	/**
 	 * Sets the init program to be ran when the emulator requests hypovisor
 	 * initial state setup.
@@ -37,7 +43,9 @@ public abstract class LinuxHypoVisor
 		if (__elf == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Copy
+		this._initelf = __elf.clone();
+		this._initargs = __args.clone();
 	}
 }
 

@@ -11,17 +11,13 @@
 package net.multiphasicapps.squirreljme.emulator;
 
 /**
- * This interface is passed to the emulator which specifies how certain
- * undefined behavior for a given system is defined. Essentially this class can
- * be seen as the trap manager for an emulator in that anything unknown by the
- * emulator is handled by this interface.
+ * This interface is used as the base class for the state of a given CPU. Since
+ * every CPU is different (even for the same architecture), implementations of
+ * this class are implementation dependent.
  *
- * The hypovisor is not thread safe, although it is recommended to use thread
- * safety where it is required.
- *
- * @since 2016/07/30
+ * @since 2016/08/06
  */
-public interface HypoVisor
+public interface CPUState
 {
 }
 

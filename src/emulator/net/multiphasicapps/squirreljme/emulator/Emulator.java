@@ -28,6 +28,8 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
  * state as it sees it, behavior that is dependent on operating systems is
  * implemented by a {@link HypoVisor}.
  *
+ * The emulator is not thread safe.
+ *
  * @since 2016/07/30
  */
 public abstract class Emulator
@@ -35,6 +37,8 @@ public abstract class Emulator
 {
 	/** The hypovisor used for external access. */
 	protected final HypoVisor hypovisor;
+	
+	private 
 	
 	/**
 	 * Initializes the emulator.
@@ -53,6 +57,16 @@ public abstract class Emulator
 		// Set
 		this.hypovisor = __hv;
 	}
+	
+	/**
+	 * Since CPU states are specific to the system being emulated, this
+	 * method is used to create CPU states that may be used by code to setup
+	 * new processes and potentially debug a given system.
+	 *
+	 * @return A new CPU state which may be set in the future.
+	 * @since 2016/08/06
+	 */
+	public abstract CPUState createCPUState();
 	
 	/**
 	 * {@inheritDoc}
