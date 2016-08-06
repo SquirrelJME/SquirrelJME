@@ -39,9 +39,12 @@ public class InflateDataPipe
 	protected static final int REQUIRED_BITS =
 		48;
 	
-	/** Thrown when the primary read loop should be done again. */
-	private static final PipeStalledException _RETRY =
-		new PipeStalledException();
+	/**
+	 * {@squirreljme.error AF01 The pipeline stalled, the stack trace for
+	 * this exception is not applicable.
+	 */
+	private static final PipeStalledException _STALLED =
+		new PipeStalledException("AF01");
 	
 	/** Shuffled bit values when reading values. */
 	private static final int[] _SHUFFLE_BITS =
@@ -205,9 +208,8 @@ public class InflateDataPipe
 		while (!_nothingleft)
 		{
 			// Require more available bytes if not finished
-			// {@squirreljme.error AF02 Not enough input bits are available.}
 			if (!isInputComplete() && __zzAvailable() < REQUIRED_BITS)
-				throw new PipeStalledException("AF02");
+				throw _STALLED;
 		
 			// Perform work
 			try
@@ -257,18 +259,6 @@ public class InflateDataPipe
 						throw new PipeProcessException(String.format("AF03 %d",
 							task));
 				}
-			}
-			
-			// Stalled pipeline
-			catch (PipeStalledException e)
-			{
-				// Retry, do not throw the exception and just run the loop
-				// again rather than falling out.
-				if (e == _RETRY)
-					continue;
-				
-				// Otherwise, toss
-				throw e;
 			}
 		
 			// Short read
@@ -591,15 +581,13 @@ public class InflateDataPipe
 			}
 			
 			// Not enough bits to read code lengths
-			// {@squirreljme.error AF0f Not enough input is available to read
-			// code length count.}
 			if (!isInputComplete() && __zzAvailable() < 3)
 			{
 				// Write value before stalling
 				this._readclnext = next;
 				
 				// Stall
-				throw new PipeStalledException("AF0f");
+				throw _STALLED;
 			}
 			
 			// {@squirreljme.error AF06 Alpha-shift out of range. (The shift)}
@@ -662,21 +650,20 @@ public class InflateDataPipe
 					// Store value before stalling
 					this._nexthlitdist = next;
 					
-					// Use a waiting exception to break from the loop
-					throw _RETRY;
+					// This method is called by the main loop code, so just
+					// return
+					return;
 				}
 				
 				// Not enough bits to read code lengths?
 				// Add 7 due to the repeat zero many times symbol
-				// {@squirreljme.error AF0h Not enough bits are available to
-				// read the next literal or distance code entry.}
 				if (!isInputComplete() && __zzAvailable() < maxbits + 7)
 				{
 					// Store value before stalling
 					this._nexthlitdist = next;
 					
 					// Now stall
-					throw new PipeStalledException("AF0h");
+					throw _STALLED;
 				}
 				
 				// Read in code
@@ -742,10 +729,8 @@ public class InflateDataPipe
 		throws PipeProcessException
 	{
 		// The header consists of 14 bits: HLIT (5), HDIST (5), HCLEN (4)
-		// {@squirreljme.error AF0j Not enough bits available to read the
-		// dynamic huffman header.}
 		if (!isInputComplete() && __zzAvailable() < 14)
-			throw new PipeStalledException("AF0j");
+			throw _STALLED;
 		
 		// Read the bits
 		int cll;
@@ -873,10 +858,8 @@ public class InflateDataPipe
 		if (curlen < 0)
 		{
 			// Need four bytes of input, along with potential alignment bits
-			// {@squirreljme.error AF0m Not enough bits to read uncompressed
-			// data.}
 			if (!isInputComplete() && __zzAvailable() < 39)
-				throw new PipeStalledException("AF0m");
+				throw _STALLED;
 			
 			// Align to byte boundary
 			while ((_readcount & 7) != 0)
@@ -906,15 +889,13 @@ public class InflateDataPipe
 			while (curlen > 0)
 			{
 				// Need at least a byte of input
-				// {@squirreljme.error AF0o Not enough bits to read a single
-				// value.}
 				if (!isInputComplete() && __zzAvailable() < 8)
 				{
 					// Store before stall
 					this._nocomplen = curlen;
 					
 					// Stall
-					throw new PipeStalledException("AF0o");
+					throw _STALLED;
 				}
 				
 				// Read byte
