@@ -191,18 +191,18 @@ public class BitInputStream
 			if (__msb)
 			{
 				// Read input bits
-				for (int i = 0, at = __c - 1; i < __c; i++, at--)
+				for (int i = 0, sh = (1 << (__c - 1)); i < __c; i++, sh >>>= 1)
 					if (read())
-						rv |= (1 << at);
+						rv |= sh;
 			}
 			
 			// Least significant bits first
 			else
 			{
 				// Read input bits
-				for (int i = 0, at = 0; i < __c; i++, at++)
+				for (int i = 0, sh = 1; i < __c; i++, sh <<= 1)
 					if (read())
-						rv |= (1 << at);
+						rv |= sh;
 			}
 			
 			// Return it
