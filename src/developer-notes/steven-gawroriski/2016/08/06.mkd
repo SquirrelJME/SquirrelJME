@@ -18,3 +18,13 @@ Drain before gives me 100 seconds, I will run it again.
 ## 10:27
 
 Now it gives 88 seconds which gives me about 22KiB/s.
+
+## 10:30
+
+`HuffmanTree.Traverser` needs to get out of its class and in its own file.
+Then perform some optimizations in that class. Following that add a
+`HuffmanTreeInt` which uses integer based values so that there is no need
+for boxing and such. Then following that would probably be a rewrite of the
+inflate code so that it is much faster. Currently the inflate code has lots
+of methods called, so there is much overhead and such.
+
