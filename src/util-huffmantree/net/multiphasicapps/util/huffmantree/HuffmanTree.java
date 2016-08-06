@@ -24,11 +24,10 @@ import java.util.Set;
 /**
  * This represents a mutable huffman tree.
  * 
- * This class is thread safe.
+ * This class is not thread safe.
  *
  * Iteration of values goes through the internal value table in no particular
  * order. The iterator is fail-fast.
- *
  *
  * {@squirreljme.error AK04 The huffman tree was modified in the middle of
  * iteration.}
@@ -39,10 +38,6 @@ import java.util.Set;
 public class HuffmanTree<T>
 	implements Iterable<T>
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();	
-	
 	/** The huffman table. */
 	private volatile int[] _table;
 	
@@ -99,107 +94,103 @@ public class HuffmanTree<T>
 			throw new IllegalArgumentException(String.format("AK02 %x %x",
 				__sym, __mask));
 		
-		// Lock
-		synchronized (lock)
+		// Get the table
+		int[] table = _table;
+		int n = table.length;
+		
+		// Increase max bit count
+		_maxbits = Math.max(_maxbits, ibm);
+		
+		// Find the spot to add it based on the bit depth
+		int at = 0;
+		for (int b = ibm - 1; b >= 0; b--)
 		{
-			// Get the table
-			int[] table = _table;
-			int n = table.length;
+			// Last bit set?
+			boolean last = (b == 0);
 			
-			// Increase max bit count
-			_maxbits = Math.max(_maxbits, ibm);
+			// The array index to look at for the current position depends
+			// on which bit is set
+			int q = (__sym >>> b) & 1;
 			
-			// Find the spot to add it based on the bit depth
-			int at = 0;
-			for (int b = ibm - 1; b >= 0; b--)
+			// Get the jump value
+			int jump = table[at + q];
+			
+			// If this points to a constant area but this is not the last
+			// bit, then trash it.
+			if (!last && jump < 0)
 			{
-				// Last bit set?
-				boolean last = (b == 0);
-				
-				// The array index to look at for the current position depends
-				// on which bit is set
-				int q = (__sym >>> b) & 1;
-				
-				// Get the jump value
-				int jump = table[at + q];
-				
-				// If this points to a constant area but this is not the last
-				// bit, then trash it.
-				if (!last && jump < 0)
+				jump = Integer.MAX_VALUE;
+				table[at + q] = jump;
+			}
+			
+			// Jumps off the table end? Needs more values to be added for
+			// the tree to be built
+			if (jump == Integer.MAX_VALUE)
+			{
+				// If this is the last entry then a value index needs to
+				// be created to store the value
+				if (last)
 				{
-					jump = Integer.MAX_VALUE;
-					table[at + q] = jump;
-				}
-				
-				// Jumps off the table end? Needs more values to be added for
-				// the tree to be built
-				if (jump == Integer.MAX_VALUE)
-				{
-					// If this is the last entry then a value index needs to
-					// be created to store the value
-					if (last)
-					{
-						// Add space for a new variable
-						int vat = __addValueSpace();
-						
-						// Place value there
-						_values[vat] = __v;
-						
-						// Set table index to point there
-						table[at + q] = -(vat + 1);
-						
-						// Modified
-						_modcount++;
-						
-						// No old value exists
-						return null;
-					}
+					// Add space for a new variable
+					int vat = __addValueSpace();
 					
-					// Otherwise, add some table space and jump to that
-					// instead on the next run.
-					else
-					{
-						// Add new location info
-						int jat = __addTableSpace();
+					// Place value there
+					_values[vat] = __v;
 					
-						// Correct vars
-						table = _table;
-						n = table.length;
-					
-						// Set jump to that position
-						// Use that position instead on the next read
-						table[at + q] = at = jat;
-					}
-				}
-				
-				// Points to a constant area, return a value
-				else if (jump < 0)
-				{
-					// Calculate actual placement
-					int vat = (-jump) - 1;
-					
-					// Get old value
-					Object[] vals = _values;
-					Object old = vals[vat];
-					
-					// Set new value
-					vals[vat] = __v;
+					// Set table index to point there
+					table[at + q] = -(vat + 1);
 					
 					// Modified
 					_modcount++;
 					
-					// Return the old value
-					return __cast(old);
+					// No old value exists
+					return null;
 				}
 				
-				// Points to another location in the array
+				// Otherwise, add some table space and jump to that
+				// instead on the next run.
 				else
-					at = jump;
+				{
+					// Add new location info
+					int jat = __addTableSpace();
+				
+					// Correct vars
+					table = _table;
+					n = table.length;
+				
+					// Set jump to that position
+					// Use that position instead on the next read
+					table[at + q] = at = jat;
+				}
 			}
 			
-			// Should not occur
-			throw new RuntimeException("OOPS");
+			// Points to a constant area, return a value
+			else if (jump < 0)
+			{
+				// Calculate actual placement
+				int vat = (-jump) - 1;
+				
+				// Get old value
+				Object[] vals = _values;
+				Object old = vals[vat];
+				
+				// Set new value
+				vals[vat] = __v;
+				
+				// Modified
+				_modcount++;
+				
+				// Return the old value
+				return __cast(old);
+			}
+			
+			// Points to another location in the array
+			else
+				at = jump;
 		}
+		
+		// Should not occur
+		throw new RuntimeException("OOPS");
 	}
 	
 	/**
@@ -213,22 +204,18 @@ public class HuffmanTree<T>
 	 */
 	public long findSequence(Object __v)
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Get values
-			Object[] vals = _values;
-			
-			// No values? nothing will ever be found
-			if (vals == null)
-				return -1L;
-			
-			// Look through all values
-			int n = vals.length;
-			for (int i = 0; i < n; i++)
-				if (Objects.equals(vals[i], __v))
-					return __recursiveMatch(0, 0, 0, -(i + 1));
-		}
+		// Get values
+		Object[] vals = _values;
+		
+		// No values? nothing will ever be found
+		if (vals == null)
+			return -1L;
+		
+		// Look through all values
+		int n = vals.length;
+		for (int i = 0; i < n; i++)
+			if (Objects.equals(vals[i], __v))
+				return __recursiveMatch(0, 0, 0, -(i + 1));
 		
 		// Not found
 		return -1L;
@@ -257,17 +244,13 @@ public class HuffmanTree<T>
 				@Override
 				public boolean hasNext()
 				{
-					// Lock
-					synchronized (lock)
-					{
-						// Modified too much?
-						if (_modcount != basemod)
-							throw new ConcurrentModificationException("AK04");
-						
-						// Before the end?
-						Object[] vals = _values;
-						return (vals == null ? false : _dx < vals.length);
-					}
+					// Modified too much?
+					if (_modcount != basemod)
+						throw new ConcurrentModificationException("AK04");
+					
+					// Before the end?
+					Object[] vals = _values;
+					return (vals == null ? false : _dx < vals.length);
 				}
 				
 				/**
@@ -277,30 +260,26 @@ public class HuffmanTree<T>
 				@Override
 				public T next()
 				{
-					// Lock
-					synchronized (lock)
-					{
-						// Modified too much?
-						if (_modcount != basemod)
-							throw new ConcurrentModificationException("AK04");
+					// Modified too much?
+					if (_modcount != basemod)
+						throw new ConcurrentModificationException("AK04");
+					
+					// The curent index
+					int dx = _dx;
 						
-						// The curent index
-						int dx = _dx;
-							
-						// At the end?
-						Object[] vals = _values;
-						if (vals == null || dx >= vals.length)
-							throw new NoSuchElementException("NSEE");
-						
-						// Get it
-						Object rv = vals[dx];
-						
-						// Set next index
-						_dx = dx + 1;
-						
-						// Return it
-						return __cast(rv);
-					}
+					// At the end?
+					Object[] vals = _values;
+					if (vals == null || dx >= vals.length)
+						throw new NoSuchElementException("NSEE");
+					
+					// Get it
+					Object rv = vals[dx];
+					
+					// Set next index
+					_dx = dx + 1;
+					
+					// Return it
+					return __cast(rv);
 				}
 				
 				/**
@@ -323,11 +302,7 @@ public class HuffmanTree<T>
 	 */
 	public int maximumBits()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			return _maxbits;
-		}
+		return _maxbits;
 	}
 	
 	/**
@@ -337,59 +312,55 @@ public class HuffmanTree<T>
 	@Override
 	public String toString()
 	{
-		// Lock
-		synchronized (lock)
+		// Setup
+		StringBuilder sb = new StringBuilder("[");
+		
+		// Add elements in no particular order
+		Object[] vals = _values;
+		if (vals != null)
 		{
-			// Setup
-			StringBuilder sb = new StringBuilder("[");
-			
-			// Add elements in no particular order
-			Object[] vals = _values;
-			if (vals != null)
+			int n = vals.length;
+			for (int i = 0; i < n; i++)
 			{
-				int n = vals.length;
-				for (int i = 0; i < n; i++)
+				// Comma?
+				if (i > 0)
+					sb.append(", ");
+				
+				// Begin sequence data
+				sb.append('<');
+				
+				// Get the sequence of it
+				Object v = vals[i];
+				long seq = findSequence(v);
+				
+				// Not found?
+				if (seq == -1L)
+					sb.append('?');
+				
+				// Print bit pattern otherwise
+				else
 				{
-					// Comma?
-					if (i > 0)
-						sb.append(", ");
+					// Get mask and value
+					int msk = (int)(seq >>> 32L);
+					int val = (int)(seq);
 					
-					// Begin sequence data
-					sb.append('<');
-					
-					// Get the sequence of it
-					Object v = vals[i];
-					long seq = findSequence(v);
-					
-					// Not found?
-					if (seq == -1L)
-						sb.append('?');
-					
-					// Print bit pattern otherwise
-					else
-					{
-						// Get mask and value
-						int msk = (int)(seq >>> 32L);
-						int val = (int)(seq);
-						
-						// Start from the highest bit first
-						int hib = Integer.bitCount(msk);
-						for (int b = hib - 1; b >= 0; b--)
-							sb.append(((0 == (val & (1 << b))) ? '0' : '1'));
-					}
-					
-					// End sequence data
-					sb.append(">=");
-					
-					// Add the value
-					sb.append(v);
+					// Start from the highest bit first
+					int hib = Integer.bitCount(msk);
+					for (int b = hib - 1; b >= 0; b--)
+						sb.append(((0 == (val & (1 << b))) ? '0' : '1'));
 				}
+				
+				// End sequence data
+				sb.append(">=");
+				
+				// Add the value
+				sb.append(v);
 			}
-			
-			// Build it
-			sb.append(']');
-			return sb.toString();
 		}
+		
+		// Build it
+		sb.append(']');
+		return sb.toString();
 	}
 	
 	/**
@@ -419,28 +390,24 @@ public class HuffmanTree<T>
 				public T getValue()
 					throws NoSuchElementException
 				{
-					// Lock
-					synchronized (lock)
-					{
-						// Modified too much?
-						if (_modcount != basemod)
-							throw new ConcurrentModificationException("AK04");
-						
-						// Get the jump table
-						Object[] vals = _values;
-						
-						// Missing table?
-						if (vals == null)
-							throw new NoSuchElementException("NSEE");
-						
-						// Not reading a value?
-						int at = _at;
-						if (at >= 0)
-							throw new NoSuchElementException("NSEE");
-						
-						// Return value here
-						return __cast(vals[(-at) - 1]);
-					}
+					// Modified too much?
+					if (_modcount != basemod)
+						throw new ConcurrentModificationException("AK04");
+					
+					// Get the jump table
+					Object[] vals = _values;
+					
+					// Missing table?
+					if (vals == null)
+						throw new NoSuchElementException("NSEE");
+					
+					// Not reading a value?
+					int at = _at;
+					if (at >= 0)
+						throw new NoSuchElementException("NSEE");
+					
+					// Return value here
+					return __cast(vals[(-at) - 1]);
 				}
 				
 				/**
@@ -479,33 +446,29 @@ public class HuffmanTree<T>
 						throw new IllegalArgumentException(String.format(
 							"AK03 %d", __side));
 					
-					// Lock
-					synchronized (lock)
-					{
-						// Modified too much?
-						if (_modcount != basemod)
-							throw new ConcurrentModificationException("AK04");
-						
-						// Get the jump table
-						int[] table = _table;
-						
-						// Missing table? Fail
-						if (table == null)
-							throw new NoSuchElementException("NSEE");
-						
-						// Get the at index
-						int at = _at;
-						
-						// A value or the end of the tree? Fail
-						if (at < 0 || at == Integer.MAX_VALUE)
-							throw new NoSuchElementException("NSEE");
-						
-						// Get the jump value
-						int jump = table[at + __side];
-						
-						// Set the new position to this position
-						_at = jump;
-					}
+					// Modified too much?
+					if (_modcount != basemod)
+						throw new ConcurrentModificationException("AK04");
+					
+					// Get the jump table
+					int[] table = _table;
+					
+					// Missing table? Fail
+					if (table == null)
+						throw new NoSuchElementException("NSEE");
+					
+					// Get the at index
+					int at = _at;
+					
+					// A value or the end of the tree? Fail
+					if (at < 0 || at == Integer.MAX_VALUE)
+						throw new NoSuchElementException("NSEE");
+					
+					// Get the jump value
+					int jump = table[at + __side];
+					
+					// Set the new position to this position
+					_at = jump;
 					
 					// Self
 					return this;
@@ -521,30 +484,26 @@ public class HuffmanTree<T>
 	 */
 	private int __addTableSpace()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// The returned value is the end of the table
-			int[] table = _table;
-			int rv = (table == null ? 0 : table.length);
-			
-			// Allocate some extra space
-			int[] becomes = new int[rv + 2];
-			
-			// Copy the old array over
-			for (int i = 0; i < rv; i++)
-				becomes[i] = table[i];
-			
-			// The end bits become invalidated
-			becomes[rv] = Integer.MAX_VALUE;
-			becomes[rv + 1] = Integer.MAX_VALUE;
-			
-			// Set new table
-			_table = becomes;
-			
-			// Return it
-			return rv;
-		}
+		// The returned value is the end of the table
+		int[] table = _table;
+		int rv = (table == null ? 0 : table.length);
+		
+		// Allocate some extra space
+		int[] becomes = new int[rv + 2];
+		
+		// Copy the old array over
+		for (int i = 0; i < rv; i++)
+			becomes[i] = table[i];
+		
+		// The end bits become invalidated
+		becomes[rv] = Integer.MAX_VALUE;
+		becomes[rv + 1] = Integer.MAX_VALUE;
+		
+		// Set new table
+		_table = becomes;
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -555,26 +514,22 @@ public class HuffmanTree<T>
 	 */
 	private int __addValueSpace()
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// The returned value is the end of the table
-			Object[] values = _values;
-			int rv = (values == null ? 0 : values.length);
-			
-			// Allocate some extra space
-			Object[] becomes = new Object[rv + 1];
-			
-			// Copy the old array over
-			for (int i = 0; i < rv; i++)
-				becomes[i] = values[i];
-			
-			// Set new table
-			_values = becomes;
-			
-			// Return it
-			return rv;
-		}
+		// The returned value is the end of the table
+		Object[] values = _values;
+		int rv = (values == null ? 0 : values.length);
+		
+		// Allocate some extra space
+		Object[] becomes = new Object[rv + 1];
+		
+		// Copy the old array over
+		for (int i = 0; i < rv; i++)
+			becomes[i] = values[i];
+		
+		// Set new table
+		_values = becomes;
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

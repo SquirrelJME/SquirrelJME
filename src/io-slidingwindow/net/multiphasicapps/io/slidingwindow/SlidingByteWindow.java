@@ -21,14 +21,12 @@ import net.multiphasicapps.util.datadeque.ByteDeque;
  * In the future this class may support a kind of compression so that older
  * bytes in the sliding window may be compacted when they are not used.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/03/10
  */
 public class SlidingByteWindow
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** The backing byte buffer. */
 	protected final ByteDeque deque;
 	
@@ -72,13 +70,9 @@ public class SlidingByteWindow
 	 */
 	public void append(byte __b)
 	{
-		// Lock
-		synchronized (lock)
-		{
-			byte[] solo = this._solo;
-			solo[0] = __b;
-			append(solo, 0, 1);
-		}
+		byte[] solo = this._solo;
+		solo[0] = __b;
+		append(solo, 0, 1);
 	}
 	
 	/**
@@ -120,33 +114,29 @@ public class SlidingByteWindow
 		if (__o < 0 || __l < 0 || (__o + __l > __b.length))
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
+		// Get
+		ByteDeque deque = this.deque;
+		int windowsize = this.windowsize;
+		int total = this._total;
+		
+		// Check if the new amount will overflow
+		int newtotal = total + __l;
+		int overflow = 0;
+		if (newtotal < 0 || newtotal > windowsize)
 		{
-			// Get
-			ByteDeque deque = this.deque;
-			int windowsize = this.windowsize;
-			int total = this._total;
-			
-			// Check if the new amount will overflow
-			int newtotal = total + __l;
-			int overflow = 0;
-			if (newtotal < 0 || newtotal > windowsize)
-			{
-				overflow = (newtotal - windowsize);
-				newtotal = windowsize;
-			}
-			
-			// Will overflow, delete last bytes
-			if (overflow > 0)
-				deque.deleteFirst(overflow);
-			
-			// Add data to the end so that the single-byte insertion order
-			// would be the same as the multi-byte insertion.
-			// And so no shuffling is required
-			deque.addLast(__b, __o, __l);
-			this._total = newtotal;
+			overflow = (newtotal - windowsize);
+			newtotal = windowsize;
 		}
+		
+		// Will overflow, delete last bytes
+		if (overflow > 0)
+			deque.deleteFirst(overflow);
+		
+		// Add data to the end so that the single-byte insertion order
+		// would be the same as the multi-byte insertion.
+		// And so no shuffling is required
+		deque.addLast(__b, __o, __l);
+		this._total = newtotal;
 	}
 	
 	/**
@@ -175,28 +165,24 @@ public class SlidingByteWindow
 		if (__o < 0 || __l < 0 || (__o + __l > __b.length))
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
-		{
-			// {@squirreljme.error AI03 Bulk read of window bytes would exceed
-			// the bounds of the window. (The bytes in the past to start the
-			// copy from; The number of bytes to read; The total number of
-			// bytes in the window)}
-			int windowsize = this.windowsize;
-			int total = this._total;
-			if (__ago <= 0 || ((total - __ago) + __l) > total)
-				throw new IndexOutOfBoundsException(String.format(
-					"AI03 %d %d %d", __ago, __l, total));
-			
-			// {@squirreljme.error AI01 Get of a sliding window read did not
-			// read the expected number of bytes. (The expected number of bytes
-			// to read; The actual number read)}
-			int rv;
-			if ((rv = this.deque.get(total - __ago, __b, __o,
-				__l)) != __l)
-				throw new IndexOutOfBoundsException(String.format(
-					"AI01 %d %d", __l, rv));
-		}
+		// {@squirreljme.error AI03 Bulk read of window bytes would exceed
+		// the bounds of the window. (The bytes in the past to start the
+		// copy from; The number of bytes to read; The total number of
+		// bytes in the window)}
+		int windowsize = this.windowsize;
+		int total = this._total;
+		if (__ago <= 0 || ((total - __ago) + __l) > total)
+			throw new IndexOutOfBoundsException(String.format(
+				"AI03 %d %d %d", __ago, __l, total));
+		
+		// {@squirreljme.error AI01 Get of a sliding window read did not
+		// read the expected number of bytes. (The expected number of bytes
+		// to read; The actual number read)}
+		int rv;
+		if ((rv = this.deque.get(total - __ago, __b, __o,
+			__l)) != __l)
+			throw new IndexOutOfBoundsException(String.format(
+				"AI01 %d %d", __l, rv));
 	}
 	
 	/**
@@ -207,11 +193,7 @@ public class SlidingByteWindow
 	 */
 	public int size()
 	{
-		// lock
-		synchronized (lock)
-		{
-			return this._total;
-		}
+		return this._total;
 	}
 }
 

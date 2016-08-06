@@ -17,15 +17,13 @@ import java.io.IOException;
  * This is an input stream in which the size of the input stream is maximally
  * bound to a given size or fixed to a specific size.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/03/09
  */
 public class SizeLimitedInputStream
 	extends InputStream
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** The wrapped stream. */
 	protected final InputStream wrapped;
 	
@@ -91,17 +89,13 @@ public class SizeLimitedInputStream
 	public int available()
 		throws IOException
 	{
-		// Lock
-		synchronized (lock)
-		{
-			// Get the count for the wrapped stream
-			long wav = wrapped.available();
-		
-			// Either limited to the max integer size, the number of available
-			// bytes, or the remaining stream count.
-			return (int)Math.min(Integer.MAX_VALUE,
-				Math.min(wav, (limit - _current)));
-		}
+		// Get the count for the wrapped stream
+		long wav = wrapped.available();
+	
+		// Either limited to the max integer size, the number of available
+		// bytes, or the remaining stream count.
+		return (int)Math.min(Integer.MAX_VALUE,
+			Math.min(wav, (limit - _current)));
 	}
 	
 	/**
@@ -124,39 +118,35 @@ public class SizeLimitedInputStream
 	public int read()
 		throws IOException
 	{
-		// Lock
-		synchronized (lock)
+		// Current position
+		long cur = _current;
+		
+		// Reached the limit?
+		if (cur >= limit)
+			return -1;
+		
+		// Read next byte
+		int next = wrapped.read();
+		
+		// EOF?
+		if (next < 0)
 		{
-			// Current position
-			long cur = _current;
+			// {@squirreljme.error AP05 Required an exact number of bytes
+			// however the limit was not yet reached. (The limit; The
+			// current position)}
+			if (exact && cur != limit)
+				throw new IOException(String.format("AP05 %d %d",
+					limit, cur));
 			
-			// Reached the limit?
-			if (cur >= limit)
-				return -1;
-			
-			// Read next byte
-			int next = wrapped.read();
-			
-			// EOF?
-			if (next < 0)
-			{
-				// {@squirreljme.error AP05 Required an exact number of bytes
-				// however the limit was not yet reached. (The limit; The
-				// current position)}
-				if (exact && cur != limit)
-					throw new IOException(String.format("AP05 %d %d",
-						limit, cur));
-				
-				// Return original negative
-				return next;
-			}
-			
-			// Increase current location
-			_current = cur + 1L;
-			
-			// Return it
+			// Return original negative
 			return next;
 		}
+		
+		// Increase current location
+		_current = cur + 1L;
+		
+		// Return it
+		return next;
 	}
 	
 	/**
@@ -173,51 +163,47 @@ public class SizeLimitedInputStream
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
 		
-		// Lock
-		synchronized (lock)
+		// If the limit was reached, stop
+		long current = this._current;
+		long limit = this.limit;
+		if (current >= limit)
 		{
-			// If the limit was reached, stop
-			long current = this._current;
-			long limit = this.limit;
-			if (current >= limit)
-			{
-				// {@squirreljme.error AP02 Required an exact number of bytes
-				// however the limit was not yet reached. (The limit; The
-				// current position)}
-				if (exact && current != limit)
-					throw new IOException(String.format("AP02 %d %d",
-						limit, current));
-				
-				return -1;
-			}
+			// {@squirreljme.error AP02 Required an exact number of bytes
+			// however the limit was not yet reached. (The limit; The
+			// current position)}
+			if (exact && current != limit)
+				throw new IOException(String.format("AP02 %d %d",
+					limit, current));
 			
-			// Do not read more bytes after the limit
-			int cc = (int)Math.min(limit - current, __l);
-			
-			// Read the next few bytes
-			InputStream wrapped = this.wrapped;
-			int rc = wrapped.read(__b, __o, cc);
-			
-			// EOF?
-			if (rc < 0)
-			{
-				// {@squirreljme.error AP01 Required an exact number of bytes
-				// however the limit was not yet reached. (The limit; The
-				// current position)}
-				if (exact && current != limit)
-					throw new IOException(String.format("AP01 %d %d",
-						limit, current));
-				
-				// Just EOF
-				return -1;
-			}
-			
-			// Set the new current
-			this._current = current + rc;
-			
-			// Return the read count
-			return rc;
+			return -1;
 		}
+		
+		// Do not read more bytes after the limit
+		int cc = (int)Math.min(limit - current, __l);
+		
+		// Read the next few bytes
+		InputStream wrapped = this.wrapped;
+		int rc = wrapped.read(__b, __o, cc);
+		
+		// EOF?
+		if (rc < 0)
+		{
+			// {@squirreljme.error AP01 Required an exact number of bytes
+			// however the limit was not yet reached. (The limit; The
+			// current position)}
+			if (exact && current != limit)
+				throw new IOException(String.format("AP01 %d %d",
+					limit, current));
+			
+			// Just EOF
+			return -1;
+		}
+		
+		// Set the new current
+		this._current = current + rc;
+		
+		// Return the read count
+		return rc;
 	}
 }
 

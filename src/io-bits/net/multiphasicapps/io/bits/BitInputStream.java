@@ -19,15 +19,13 @@ import java.io.IOException;
  * This is an input stream which wraps a byte based input and provides a bit
  * based view of it.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/03/09
  */
 public class BitInputStream
 	implements Closeable
 {
-	/** Lock. */
-	protected final Object lock =
-		new Object();
-	
 	/** Wrapped stream. */
 	protected final InputStream wrapped;
 	
@@ -86,45 +84,41 @@ public class BitInputStream
 	public boolean read()
 		throws EOFException, IOException
 	{
-		// Lock
-		synchronized (lock)
+		// Current bit to get
+		int mask = this._mask;
+		boolean lsb = this.lsb;
+		byte value;
+		
+		// Read in the next byte?
+		if (mask == 0)
 		{
-			// Current bit to get
-			int mask = this._mask;
-			boolean lsb = this.lsb;
-			byte value;
+			// Read next byte
+			int val = wrapped.read();
 			
-			// Read in the next byte?
-			if (mask == 0)
-			{
-				// Read next byte
-				int val = wrapped.read();
-				
-				// {@squirreljme.error AH03 End of file reached.}
-				if (val < 0)
-					throw new EOFException("AH03");
-				
-				// Set active byte
-				value = (byte)val;
-				this._byte = value;
-				
-				// Use lowest or highest
-				mask = (lsb ? 0x01 : 0x80);
-			}
+			// {@squirreljme.error AH03 End of file reached.}
+			if (val < 0)
+				throw new EOFException("AH03");
 			
-			// Otherwise use the pre-existing value
-			else
-				value = this._byte;
+			// Set active byte
+			value = (byte)val;
+			this._byte = value;
 			
-			// Shift the mask up or down?
-			if (lsb)
-				this._mask = (mask << 1);
-			else
-				this._mask = (mask >>> 1);
-			
-			// Return the value dependent on the mask
-			return (0 != (value & mask));
+			// Use lowest or highest
+			mask = (lsb ? 0x01 : 0x80);
 		}
+		
+		// Otherwise use the pre-existing value
+		else
+			value = this._byte;
+		
+		// Shift the mask up or down?
+		if (lsb)
+			this._mask = (mask << 1);
+		else
+			this._mask = (mask >>> 1);
+		
+		// Return the value dependent on the mask
+		return (0 != (value & mask));
 	}
 	
 	/**
@@ -181,33 +175,29 @@ public class BitInputStream
 		if (__c <= 0 || __c > 32)
 			throw new IllegalArgumentException(String.format("AH04 %d", __c));
 		
-		// Lock
-		synchronized (this.lock)
+		// Output value
+		int rv = 0;
+		
+		// Most significant bits first
+		if (__msb)
 		{
-			// Output value
-			int rv = 0;
-			
-			// Most significant bits first
-			if (__msb)
-			{
-				// Read input bits
-				for (int i = 0, sh = (1 << (__c - 1)); i < __c; i++, sh >>>= 1)
-					if (read())
-						rv |= sh;
-			}
-			
-			// Least significant bits first
-			else
-			{
-				// Read input bits
-				for (int i = 0, sh = 1; i < __c; i++, sh <<= 1)
-					if (read())
-						rv |= sh;
-			}
-			
-			// Return it
-			return rv;
+			// Read input bits
+			for (int i = 0, sh = (1 << (__c - 1)); i < __c; i++, sh >>>= 1)
+				if (read())
+					rv |= sh;
 		}
+		
+		// Least significant bits first
+		else
+		{
+			// Read input bits
+			for (int i = 0, sh = 1; i < __c; i++, sh <<= 1)
+				if (read())
+					rv |= sh;
+		}
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
@@ -239,22 +229,18 @@ public class BitInputStream
 		if (__c <= 32)
 			return ((long)readBitsInt(__c, __msb)) & 0xFFFFFFFFL;
 		
-		// Lock
-		synchronized (this.lock)
-		{
-			// Read both sets of bits
-			int rest = __c - 32;
-			long fir = (((long)readBitsInt(32, __msb)) & 0xFFFFFFFFL);
-			long sec = (((long)readBitsInt(rest, __msb)) & 0xFFFFFFFFL);
-			
-			// High bits first
-			if (__msb)
-				return (fir << rest) | sec;
-			
-			// Lower bits first
-			else
-				return (sec << 32) | fir;
-		}
+		// Read both sets of bits
+		int rest = __c - 32;
+		long fir = (((long)readBitsInt(32, __msb)) & 0xFFFFFFFFL);
+		long sec = (((long)readBitsInt(rest, __msb)) & 0xFFFFFFFFL);
+		
+		// High bits first
+		if (__msb)
+			return (fir << rest) | sec;
+		
+		// Lower bits first
+		else
+			return (sec << 32) | fir;
 	}
 	
 	/**
