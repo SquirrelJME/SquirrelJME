@@ -618,11 +618,9 @@ public class InflateDataPipe
 		// Read loop
 		try
 		{
+			int next = this._nexthlitdist;
 			for (;;)
 			{
-				// Get the next literal to read
-				int next = _nexthlitdist;
-				
 				// Read them all?
 				if (next >= total)
 				{
@@ -636,6 +634,9 @@ public class InflateDataPipe
 					// Read the compressed data now
 					_task = __TASK__DYNAMIC_HUFFMAN_COMPRESSED;
 					
+					// Store value before stalling
+					this._nexthlitdist = next;
+					
 					// Use a waiting exception to break from the loop
 					// {@squirreljme.error AF0g Stalling after huffman tree
 					// setup.}
@@ -647,13 +648,19 @@ public class InflateDataPipe
 				// {@squirreljme.error AF0h Not enough bits are available to
 				// read the next literal or distance code entry.}
 				if (!isInputComplete() && __zzAvailable() < maxbits + 7)
+				{
+					// Store value before stalling
+					this._nexthlitdist = next;
+					
+					// Now stall
 					throw new PipeStalledException("AF0h");
+				}
 				
 				// Read in code
 				int cbskip = __readCodeBits(htree, rawints, next);
 				
 				// Increase read
-				_nexthlitdist = next + cbskip;
+				next += cbskip;
 			}
 		}
 		
