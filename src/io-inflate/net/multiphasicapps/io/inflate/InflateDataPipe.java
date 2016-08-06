@@ -46,6 +46,34 @@ public class InflateDataPipe
 	private static final int _QUICK_WINDOW_BITS =
 		_QUICK_WINDOW_BYTES << 3;
 	
+	/** Read the deflate header. */
+	private static final int __TASK__READ_HEADER =
+		1;
+	
+	/** Read fixed huffman table. */
+	private static final int __TASK__FIXED_HUFFMAN =
+		2;
+	
+	/** Read no compressed area. */
+	private static final int __TASK__NO_COMPRESSION =
+		3;
+	
+	/** Read dynamic huffman header. */
+	private static final int __TASK__DYNAMIC_HUFFMAN_HEAD =
+		4;
+	
+	/** Read dynamic huffman alphabet (code lengths). */
+	private static final int __TASK__DYNAMIC_HUFFMAN_ALPHABET_CLEN =
+		5;
+	
+	/** Read dynamic huffman alphabet (literals and distances). */
+	private static final int __TASK__DYNAMIC_HUFFMAN_ALPHABET_LITDIST =
+		6;
+	
+	/** Read dynamic huffman compressed data. */
+	private static final int __TASK__DYNAMIC_HUFFMAN_COMPRESSED =
+		7;
+	
 	/** The size of the sliding window. */
 	protected static final int SLIDING_WINDOW_SIZE =
 		32768;
@@ -103,8 +131,8 @@ public class InflateDataPipe
 	private volatile int _qwinsz;
 	
 	/** Current decoding task. */
-	private volatile __Task__ _task =
-		__Task__.READ_HEADER;
+	private volatile int _task =
+		__TASK__READ_HEADER;
 	
 	/** Was the final block hit? */
 	private volatile boolean _finalhit;
@@ -175,46 +203,46 @@ public class InflateDataPipe
 				switch (_task)
 				{
 						// Read the deflate header
-					case READ_HEADER:
+					case __TASK__READ_HEADER:
 						if (!__readHeader())
 							return;
 						break;
 						
 						// No compression
-					case NO_COMPRESSION:
+					case __TASK__NO_COMPRESSION:
 						__readNoCompression();
 						break;
 						
 						// Read fixed huffman table
-					case FIXED_HUFFMAN:
+					case __TASK__FIXED_HUFFMAN:
 						__readFixedHuffman();
 						break;
 						
 						// Read dynamic huffman heder
-					case DYNAMIC_HUFFMAN_HEAD:
+					case __TASK__DYNAMIC_HUFFMAN_HEAD:
 						__readDynamicHuffmanHeader();
 						break;
 						
 						// Read dynamic huffman alphabet (CLEN)
-					case DYNAMIC_HUFFMAN_ALPHABET_CLEN:
+					case __TASK__DYNAMIC_HUFFMAN_ALPHABET_CLEN:
 						__readDynamicHuffmanAlphabetCLEN();
 						break;
 						
 						// Read dynamic huffman alphabet (LIT)
-					case DYNAMIC_HUFFMAN_ALPHABET_LITDIST:
+					case __TASK__DYNAMIC_HUFFMAN_ALPHABET_LITDIST:
 						__readDynamicHuffmanAlphabetLITDIST();
 						break;
 						
 						// Read dynamic huffman compressed data
-					case DYNAMIC_HUFFMAN_COMPRESSED:
+					case __TASK__DYNAMIC_HUFFMAN_COMPRESSED:
 						__readDynamicHuffmanCompressed();
 						break;
 						
 						// Unknown
 					default:
 						// {@squirreljme.error AF03 Unknown task. (The task)}
-						throw new PipeProcessException(String.format("AF03 %s",
-							_task.name()));
+						throw new PipeProcessException(String.format("AF03 %d",
+							_task));
 				}
 			}
 		
@@ -300,7 +328,7 @@ public class InflateDataPipe
 			_treedist = null;
 			
 			// Go back to reading the header
-			_task = __Task__.READ_HEADER;
+			_task = __TASK__READ_HEADER;
 			
 			// {@squirreljme.error AF07 Stalling after code stop.}
 			throw new PipeStalledException("AF07");
@@ -558,7 +586,7 @@ public class InflateDataPipe
 			if (next >= clen)
 			{
 				// Read the literal table
-				_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_LITDIST;
+				_task = __TASK__DYNAMIC_HUFFMAN_ALPHABET_LITDIST;
 				
 				// Load into tree
 				_clentree = __thunkCodeLengthTree(cll, 0, cll.length);
@@ -638,7 +666,7 @@ public class InflateDataPipe
 					_treedist = __thunkCodeLengthTree(rawints, hlit, hdist);
 					
 					// Read the compressed data now
-					_task = __Task__.DYNAMIC_HUFFMAN_COMPRESSED;
+					_task = __TASK__DYNAMIC_HUFFMAN_COMPRESSED;
 					
 					// Use a waiting exception to break from the loop
 					// {@squirreljme.error AF0g Stalling after huffman tree
@@ -741,7 +769,7 @@ public class InflateDataPipe
 		_treedist = null;
 		
 		// Need to read the alphabet
-		_task = __Task__.DYNAMIC_HUFFMAN_ALPHABET_CLEN;
+		_task = __TASK__DYNAMIC_HUFFMAN_ALPHABET_CLEN;
 	}					
 	
 	/**
@@ -798,12 +826,12 @@ public class InflateDataPipe
 				_nocomplen = -1;
 				
 				// Enter task
-				_task = __Task__.NO_COMPRESSION;
+				_task = __TASK__NO_COMPRESSION;
 				break;
 				
 				// Fixed huffman
 			case TYPE_FIXED_HUFFMAN:
-				_task = __Task__.FIXED_HUFFMAN;
+				_task = __TASK__FIXED_HUFFMAN;
 				break;
 				
 				// Dynamic huffman
@@ -814,7 +842,7 @@ public class InflateDataPipe
 				_dhclen = -1;
 				
 				// Start with the header
-				_task = __Task__.DYNAMIC_HUFFMAN_HEAD;
+				_task = __TASK__DYNAMIC_HUFFMAN_HEAD;
 				break;
 			
 				// Error or unknown
@@ -894,7 +922,7 @@ public class InflateDataPipe
 				// End of sequence
 				if (curlen == 0)
 				{
-					_task = __Task__.READ_HEADER;
+					_task = __TASK__READ_HEADER;
 					return;
 				}
 			}
@@ -1192,38 +1220,6 @@ public class InflateDataPipe
 		
 		// Return it
 		return rv;
-	}
-	
-	/**
-	 * The current task to perform when decoding input code.
-	 *
-	 * @since 2016/03/11
-	 */
-	private static enum __Task__
-	{
-		/** Read the deflate header. */
-		READ_HEADER,
-		
-		/** Read fixed huffman table. */
-		FIXED_HUFFMAN,
-		
-		/** Read no compressed area. */
-		NO_COMPRESSION,
-		
-		/** Read dynamic huffman header. */
-		DYNAMIC_HUFFMAN_HEAD,
-		
-		/** Read dynamic huffman alphabet (code lengths). */
-		DYNAMIC_HUFFMAN_ALPHABET_CLEN,
-		
-		/** Read dynamic huffman alphabet (literals and distances). */
-		DYNAMIC_HUFFMAN_ALPHABET_LITDIST,
-		
-		/** Read dynamic huffman compressed data. */
-		DYNAMIC_HUFFMAN_COMPRESSED,
-		
-		/** End. */
-		;
 	}
 }
 
