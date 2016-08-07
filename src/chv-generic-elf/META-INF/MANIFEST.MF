@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: chv-generic-elf
+X-SquirrelJME-UUID: 742d1503-644d-4520-99e6-d12f2ce5510c
+X-SquirrelJME-Depends: emulator
+X-SquirrelJME-Error: AD
+LIBlet-Title: HypoVisor ELF Utilities
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project provides support for loading 
+ ELF binaries into addressable systems.
+
