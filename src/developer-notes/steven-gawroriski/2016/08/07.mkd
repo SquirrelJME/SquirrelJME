@@ -33,3 +33,17 @@ and DOS). So the ZIP stream writer will need to handle these cases so that
 the ZIPs are correctly used on the given systems. This also means for systems
 such as Mac OS X, that I will need to create my own `__MACOSX` files.
 
+## 17:02
+
+The ZIP writer code should also be able to handle dates and such. Then also
+the ZIP reader should also handle such things too. Then this way things are
+better so to speak. The extra attributes could be used in the emulator since
+files will rely on being executable for example.
+
+## 17:11
+
+Looks like ZIP does not have any access mode information nor symbolic link.
+These appear as extensions in Info-ZIPs extra block, so I should use those
+also and support such things. Looks like I will want to use
+"ASi Unix Extra Field" which has everything I need.
+
