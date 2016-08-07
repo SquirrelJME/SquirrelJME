@@ -38,6 +38,12 @@ public class ELFLoader
 	/** The ELF ABI. */
 	protected final int abi;
 	
+	/** The entry point of the ELF. */
+	private volatile long _entrypoint;
+	
+	/** The instruction set used. */
+	private volatile int _archid;
+	
 	/**
 	 * Initializes the ELF loader.
 	 *
@@ -242,7 +248,37 @@ public class ELFLoader
 	 */
 	private void __load32()
 	{
-		throw new Error("TODO");
+		// Read the entry point
+		this._entrypoint = __readInt(24) & 0xFFFF_FFFFL;
+		
+		// The HV might care about the architecture
+		this._archid = __readShort(18);
+		
+		// Really the only thing that is required is finding the program
+		// headers and loading it in
+		int phpos = __readInt(28);		// Position
+		int phesz = __readShort(42);	// Entry size
+		int phnum = __readShort(44);	// Entry count
+		
+		// Load all program headers
+		for (int i = 0; i < phnum; i++)
+		{
+			// Calculate base position
+			int base = phpos + (i * phesz);
+			
+			// Get the segment type
+			int ptype = __readInt(base);
+			
+			// {@squirreljme.error AD06 Dynamic sections are not supported.}
+			if (ptype == 2)
+				throw new IllegalStateException("AD06");
+			
+			// Ignore anything that is not LOAD
+			if (ptype != 1)
+				continue;
+			
+			throw new Error("TODO");
+		}
 	}
 	
 	/**
