@@ -12,11 +12,13 @@ package net.multiphasicapps.squirreljme.builder.linux.mips;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
+import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -74,6 +76,21 @@ public class LinuxMIPSBuilder
 		if (__zsw == null || __names == null || __blobs == null ||
 			__conf == null || __vmcp == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup ELF output
+		try (OutputStream bin = __zsw.nextEntry("squirreljme",
+			ZipCompressionType.DEFAULT_COMPRESSION))
+		{
+			if (true)
+				throw new Error("TODO");
+		
+			// Create executable output (just a plain ELF binary)
+			/*addStandardSystemProperties(BuildConfig __conf,
+			ExecutableOutput __eo)
+		
+			linkBinary(OutputStream __os, String[] __names,
+			InputStream[] __blobs)*/
+		}
 		
 		throw new Error("TODO");
 	}

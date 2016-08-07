@@ -23,3 +23,13 @@ the binary data before placing it into memory.
 Specials methods can be rewritten using special interfaces and such, but the
 rewrites could be ignored and such.
 
+## 16:50
+
+One thing I need to consider is that binaries which are output are going to
+need attributes such as the executable bit or otherwise. Another thing that
+would be needed is that basic assets would need to be potentially line
+translated (so that the repository default `\n` becomes `\r\n` for Windows
+and DOS). So the ZIP stream writer will need to handle these cases so that
+the ZIPs are correctly used on the given systems. This also means for systems
+such as Mac OS X, that I will need to create my own `__MACOSX` files.
+

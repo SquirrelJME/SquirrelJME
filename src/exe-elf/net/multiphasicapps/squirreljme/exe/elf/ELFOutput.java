@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
  * @since 2016/08/07
  */
 public class ELFOutput
-	extends ExecutableOutput
+	implements ExecutableOutput
 {
 	/**
 	 * {@inheritDoc}
