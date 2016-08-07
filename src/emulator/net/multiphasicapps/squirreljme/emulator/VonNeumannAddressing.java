@@ -14,6 +14,9 @@ package net.multiphasicapps.squirreljme.emulator;
  * This is used for systems where data and instructions share the same
  * address space which allows both to be treated the same potentially.
  *
+ * The methods declared in {@link DataAddressing} and
+ * {@link InstructionAddressing} should have the same effect.
+ *
  * @since 2016/08/06
  */
 public interface VonNeumannAddressing
