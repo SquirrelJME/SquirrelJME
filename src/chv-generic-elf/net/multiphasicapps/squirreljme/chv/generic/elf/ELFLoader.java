@@ -120,6 +120,138 @@ public class ELFLoader
 	 */
 	public void load()
 	{
+		switch (this.bits)
+		{
+				// 32-bit ELF
+			case 32:
+				__load32();
+				break;
+			
+				// 64-bit ELF
+			case 64:
+				__load64();
+				break;
+			
+				// Should not occur
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Reads a 32-bit value.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @since 2016/08/07
+	 */
+	private int __readInt(int __p)
+	{
+		// Read two bytes
+		byte[] elf = this.elf;
+		int a = elf[__p] & 0xFF,
+			b = elf[__p + 1] & 0xFF,
+			c = elf[__p + 2] & 0xFF,
+			d = elf[__p + 3] & 0xFF;
+		
+		// Depends on the endianess
+		switch (this.endianess)
+		{
+			case BIG: return (a << 24) | (b << 16) | (c << 8) | d;
+			case LITTLE: return (d << 24) | (c << 16) | (b << 8) | a;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Reads a 64-bit value.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @since 2016/08/07
+	 */
+	private long __readLong(int __p)
+	{
+		// Read two bytes
+		byte[] elf = this.elf;
+		int a = elf[__p] & 0xFF,
+			b = elf[__p + 1] & 0xFF,
+			c = elf[__p + 2] & 0xFF,
+			d = elf[__p + 3] & 0xFF,
+			e = elf[__p + 4] & 0xFF,
+			f = elf[__p + 5] & 0xFF,
+			g = elf[__p + 6] & 0xFF,
+			h = elf[__p + 7] & 0xFF;
+		
+		// Depends on the endianess
+		int x, y;
+		switch (this.endianess)
+		{
+			case BIG:
+				x = (a << 24) | (b << 16) | (c << 8) | d;
+				y = (e << 24) | (f << 16) | (g << 8) | h;
+				break;
+			
+			case LITTLE:
+				x = (h << 24) | (g << 16) | (f << 8) | e;
+				y = (d << 24) | (c << 16) | (b << 8) | a;
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+		
+		// Merge Values
+		return (((long)x) << 32L) | (y & 0xFFFF_FFFFL);
+	}
+	
+	/**
+	 * Reads a 16-bit value.
+	 *
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @since 2016/08/07
+	 */
+	private int __readShort(int __p)
+	{
+		// Read two bytes
+		byte[] elf = this.elf;
+		int a = elf[__p] & 0xFF,
+			b = elf[__p + 1] & 0xFF;
+		
+		// Depends on the endianess
+		switch (this.endianess)
+		{
+			case BIG: return (a << 8) | b;
+			case LITTLE: return (b << 8) | a;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Loads a 32-bit ELF file.
+	 *
+	 * @since 2016/08/07
+	 */
+	private void __load32()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Loads a 64-bit ELF file.
+	 *
+	 * @since 2016/08/06
+	 */
+	private void __load64()
+	{
 		throw new Error("TODO");
 	}
 }
