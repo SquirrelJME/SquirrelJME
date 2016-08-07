@@ -12,7 +12,10 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
@@ -29,6 +32,10 @@ public final class JITOutputConfig
 	/** Internal consistency lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** Static class calls which are to be rewritten. */
+	protected final Set<JITStaticCallRewrite> rewrites =
+		new HashSet<>();
 	
 	/** The triplet to target. */
 	private volatile JITTriplet _triplet;
@@ -49,11 +56,32 @@ public final class JITOutputConfig
 	}
 	
 	/**
+	 * Adds a static call rewrite.
+	 *
+	 * @param __scr The rewrite to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/07
+	 */
+	public final void addStaticCallRewrite(JITStaticCallRewrite __scr)
+		throws NullPointerException
+	{
+		// Check
+		if (__scr == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this.rewrites.add(__scr);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/06
 	 */
 	@Override
-	public JITCacheCreator cacheCreator()
+	public final JITCacheCreator cacheCreator()
 	{
 		return this._cache;
 	}
@@ -66,7 +94,7 @@ public final class JITOutputConfig
 	 * were not set.
 	 * @since 2016/07/05
 	 */
-	public Immutable immutable()
+	public final Immutable immutable()
 		throws IllegalArgumentException
 	{
 		// Lock
@@ -85,7 +113,7 @@ public final class JITOutputConfig
 	 * @return The previously set cache creator, may be {@code null}.
 	 * @since 2016/07/06
 	 */
-	public JITCacheCreator setCacheCreator(JITCacheCreator __c)
+	public final JITCacheCreator setCacheCreator(JITCacheCreator __c)
 	{
 		// Lock
 		synchronized (this.lock)
@@ -104,7 +132,7 @@ public final class JITOutputConfig
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/05
 	 */
-	public JITTriplet setTriplet(JITTriplet __t)
+	public final JITTriplet setTriplet(JITTriplet __t)
 		throws NullPointerException
 	{
 		// Check
@@ -117,6 +145,22 @@ public final class JITOutputConfig
 			JITTriplet rv = this._triplet;
 			this._triplet = __t;
 			return rv;
+		}
+	}
+		
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/07
+	 */
+	@Override
+	public final JITStaticCallRewrite[] staticCallRewrites()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			Set<JITStaticCallRewrite> rewrites = this.rewrites;
+			return rewrites.<JITStaticCallRewrite>toArray(
+				new JITStaticCallRewrite[rewrites.size()]);
 		}
 	}
 		
@@ -160,7 +204,9 @@ public final class JITOutputConfig
 	private static String __createString(__CommonConfigGet__ __ccg)
 	{
 		return "{triplet=" + __ccg.triplet() + ", cache=" +
-			(__ccg.cacheCreator() != null) + "}";
+			(__ccg.cacheCreator() != null) + ", rewrites=" +
+			Arrays.<JITStaticCallRewrite>asList(__ccg.staticCallRewrites()) +
+			"}";
 	}
 	
 	/**
@@ -178,6 +224,9 @@ public final class JITOutputConfig
 		
 		/** The cache creator to use (optional). */
 		protected final JITCacheCreator cache;
+		
+		/** Rewrites to perform. */
+		private final JITStaticCallRewrite[] _rewrites;
 		
 		/** Cached string representation. */
 		private volatile Reference<String> _string;
@@ -208,6 +257,9 @@ public final class JITOutputConfig
 				
 				// The cache creator is optional
 				this.cache = __joc._cache;
+				
+				// Set rewrites
+				this._rewrites = __joc.staticCallRewrites();
 			}
 		}
 		
@@ -219,6 +271,16 @@ public final class JITOutputConfig
 		public final JITCacheCreator cacheCreator()
 		{
 			return this.cache;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/07
+		 */
+		@Override
+		public final JITStaticCallRewrite[] staticCallRewrites()
+		{
+			return this._rewrites.clone();
 		}
 		
 		/**

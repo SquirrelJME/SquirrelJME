@@ -18,3 +18,8 @@ having scanning code to check every method to see if it is the entry point
 would be very slow. So I suppose for the ELF that it would just load all of
 the binary data before placing it into memory.
 
+## 14:54
+
+Specials methods can be rewritten using special interfaces and such, but the
+rewrites could be ignored and such.
+

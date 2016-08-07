@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
@@ -26,6 +27,14 @@ interface __CommonConfigGet__
 	 * @since 2016/07/06
 	 */
 	public abstract JITCacheCreator cacheCreator();
+	
+	/**
+	 * Returns all of the static call rewrites that exist within the JIT.
+	 *
+	 * @return The rewrites used in the configuration.
+	 * @since 2016/08/07
+	 */
+	public abstract JITStaticCallRewrite[] staticCallRewrites();
 	
 	/**
 	 * Returns the triplet to target.
