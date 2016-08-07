@@ -11,3 +11,10 @@ One issue with the ELF linker is that I need to know the size of the blobs
 being written to write the ELF header information. I really just need a single
 load address and such. I can malloc and setup my own stack.
 
+## 14:33
+
+The thing is that the string table is not known until after the end. Also
+having scanning code to check every method to see if it is the entry point
+would be very slow. So I suppose for the ELF that it would just load all of
+the binary data before placing it into memory.
+
