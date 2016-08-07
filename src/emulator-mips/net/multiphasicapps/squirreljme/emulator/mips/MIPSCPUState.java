@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.emulator.mips;
 
+import net.multiphasicapps.squirreljme.emulator.AddressManager;
 import net.multiphasicapps.squirreljme.emulator.CPUState;
 import net.multiphasicapps.squirreljme.emulator.VonNeumannAddressing;
 
@@ -37,6 +38,26 @@ public class MIPSCPUState
 		// Check
 		if (__emu == null)
 			throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/07
+	 */
+	@Override
+	public AddressManager getDataAddressManager()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/07
+	 */
+	@Override
+	public AddressManager getInstructionAddressManager()
+	{
+		throw new Error("TODO");
 	}
 }
 
