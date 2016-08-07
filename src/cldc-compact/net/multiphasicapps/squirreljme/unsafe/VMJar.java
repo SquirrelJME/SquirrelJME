@@ -17,6 +17,7 @@ import java.io.InputStream;
  *
  * @since 2016/06/16
  */
+@Deprecated
 public abstract class VMJar
 {
 	/**

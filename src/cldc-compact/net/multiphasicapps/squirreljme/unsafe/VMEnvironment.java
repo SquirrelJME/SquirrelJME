@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.unsafe;
  *
  * @since 2016/06/16
  */
+@Deprecated
 public abstract class VMEnvironment
 {
 	/**

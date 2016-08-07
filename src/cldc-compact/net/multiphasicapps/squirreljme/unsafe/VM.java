@@ -21,6 +21,7 @@ import java.io.InputStream;
  *
  * @since 2016/06/15
  */
+@Deprecated
 public abstract class VM
 {
 	/** The single virtual machine instance. */
