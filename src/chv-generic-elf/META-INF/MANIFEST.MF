@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: chv-generic-elf
-X-SquirrelJME-UUID: 742d1503-644d-4520-99e6-d12f2ce5510c
+X-SquirrelJME-UUID: 7c8fdfdb-823c-4a10-8fad-229a80552fbb
 X-SquirrelJME-Depends: emulator
 X-SquirrelJME-Error: AD
 LIBlet-Title: HypoVisor ELF Utilities

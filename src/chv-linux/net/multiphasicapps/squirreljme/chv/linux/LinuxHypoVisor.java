@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.chv.linux;
 
+import net.multiphasicapps.squirreljme.chv.generic.elf.ELFLoader;
 import net.multiphasicapps.squirreljme.emulator.CPUState;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.emulator.HypoVisor;
@@ -111,6 +112,10 @@ public abstract class LinuxHypoVisor
 		if (!(cs instanceof VonNeumannAddressing))
 			throw new IllegalStateException("CB01");
 		VonNeumannAddressing vna = (VonNeumannAddressing)cs;
+		
+		// Create ELF loader and load the ELF
+		ELFLoader elfl = new ELFLoader(vna, __elf, 0, __elf.length);
+		elfl.load();
 		
 		throw new Error("TODO");
 	}
