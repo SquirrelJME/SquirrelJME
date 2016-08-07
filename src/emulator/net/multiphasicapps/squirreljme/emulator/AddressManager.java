@@ -11,15 +11,11 @@
 package net.multiphasicapps.squirreljme.emulator;
 
 /**
- * This is used for systems where data and instructions share the same
- * address space which allows both to be treated the same potentially.
+ * This is a manager which is used to access a given address space.
  *
- * The managers for instructions and data must return the same value.
- *
- * @since 2016/08/06
+ * @since 2016/08/07
  */
-public interface VonNeumannAddressing
-	extends DataAddressing, InstructionAddressing
+public interface AddressManager
 {
 }
 

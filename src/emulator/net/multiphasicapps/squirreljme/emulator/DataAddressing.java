@@ -18,5 +18,12 @@ package net.multiphasicapps.squirreljme.emulator;
 public interface DataAddressing
 	extends CommonAddressing
 {
+	/**
+	 * Returns the address manager which is used for storing data.
+	 *
+	 * @return The data address manager.
+	 * @since 2016/08/07
+	 */
+	public abstract AddressManager getDataAddressManager();
 }
 

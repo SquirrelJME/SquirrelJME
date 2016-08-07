@@ -19,5 +19,12 @@ package net.multiphasicapps.squirreljme.emulator;
 public interface InstructionAddressing
 	extends CommonAddressing
 {
+	/**
+	 * Returns the address manager which is used for storing instructions.
+	 *
+	 * @return The instruction address manager.
+	 * @since 2016/08/07
+	 */
+	public abstract AddressManager getInstructionAddressManager();
 }
 
