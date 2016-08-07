@@ -11,18 +11,10 @@
 package java.lang;
 
 import java.io.InputStream;
-import net.multiphasicapps.squirreljme.unsafe.VM;
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public final class Class<T>
 {
-	/** If this is an array then this will be the component type. */
-	private final Class<?> _componenttype =
-		__getComponentType();
-	
-	/** The binary name of this class. */
-	private final String _binaryname =
-		__getBinaryName();
-	
 	/**
 	 * This method may or may not be called internally by the virtual machine
 	 * when it initializes a new class object for a given class type.
@@ -122,6 +114,7 @@ public final class Class<T>
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
+		/*
 		// If this is an array then perform the resource lookup on the
 		// component type.
 		Class<?> comp = this._componenttype;
@@ -156,6 +149,8 @@ public final class Class<T>
 		
 		// Open it
 		return vmi.jar.openResource(found);
+		*/
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -166,7 +161,7 @@ public final class Class<T>
 	 */
 	public boolean isArray()
 	{
-		return this._componenttype != null;
+		throw new Error("TODO");
 	}
 	
 	public boolean isAssignableFrom(Class<?> __a)
@@ -228,32 +223,5 @@ public final class Class<T>
 		
 		throw new Error("TODO");
 	}
-	
-	/**
-	 * This returns the field as it was initialized by the virtual machine.
-	 *
-	 * @return The binary name of this class.
-	 * @since 2016/06/16
-	 */
-	private final String __getBinaryName()
-	{
-		// {@squirreljme.error ZZ0q The binary name of the class was not set.}
-		String rv = this._binaryname;
-		if (rv == null)
-			throw new VirtualMachineError("ZZ0q");
-		return rv;
-	}
-	
-	/**
-	 * The component type field is initialized by the virtual machine.
-	 *
-	 * @return The component type, or {@code null} if not an array.
-	 * @since 2016/06/16
-	 */
-	private final Class<?> __getComponentType()
-	{
-		return this._componenttype;
-	}
 }
-
 

@@ -12,7 +12,7 @@ package java.lang;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.unsafe.VM;
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 /**
  * This wraps the standard default error stream.
@@ -29,7 +29,17 @@ final class __StandardError__
 	@Override
 	public void write(int __b)
 	{
-		VM.INSTANCE.standardio.stdErr((byte)__b);
+		SquirrelJME.stdErr(__b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/07
+	 */
+	@Override
+	public void write(byte[] __b, int __o, int __l)
+	{
+		SquirrelJME.stdErr(__b, __o, __l);
 	}
 }
 

@@ -17,8 +17,10 @@ import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.JITStaticCallRewrite;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -89,6 +91,11 @@ public class LinuxMIPSBuilder
 			throw new NullPointerException("NARG");
 		
 		// Nothing needs to be done
+		__conf.addStaticCallRewrite(new JITStaticCallRewrite(
+			ClassNameSymbol.of(
+				"net/multiphasicapps/squirreljme/unsafe/SquirrelJME"),
+			ClassNameSymbol.of(
+				"net/multiphasicapps/squirreljme/os/linux/mips/SquirrelJME")));
 	}
 	
 	/**

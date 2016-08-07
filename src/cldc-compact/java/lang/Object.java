@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
+
 /**
  * This class is the root of all class trees in Java.
  *
@@ -19,11 +21,11 @@ public class Object
 {
 	/** The type of class this object is. */
 	final Class<?> _classobj =
-		__fakeClassobj();
+		SquirrelJME.classOf(this);
 	
 	/** The identity hash code of this object. */
 	final short _idhashcode =
-		__fakeIdhashcode();
+		SquirrelJME.identityHashCode(this);
 	
 	/**
 	 * Clones the current copy creating a shallow copy of it if
@@ -184,41 +186,6 @@ public class Object
 			InterruptedException
 	{
 		throw new Error("TODO");
-	}
-	
-	/**
-	 * Checks if the class object has been set and returns it.
-	 *
-	 * @return The class object.
-	 * @throws AssertionError If the class was not set.
-	 * @since 2016/06/13
-	 */
-	private final Class<?> __fakeClassobj()
-		throws AssertionError
-	{
-		// {@squirreljme.error ZZ0m The virtual machine did not set the class
-		// type of an object.}
-		Class<?> rv = this._classobj;
-		if (rv == null)
-			throw new VirtualMachineError("ZZ0m");
-		return rv;
-	}
-	
-	/**
-	 * Checks that an object was given an identity hash code.
-	 *
-	 * @return The identity hashcode.
-	 * @throws AssertionError If the class was not set.
-	 * @since 2016/06/13
-	 */
-	private final short __fakeIdhashcode()
-	{
-		// {@squirreljme.error ZZ0n The virtual machien did not set the
-		// identity hash code of an object.}
-		short rv = this._idhashcode;
-		if (rv == 0)
-			throw new VirtualMachineError("ZZ0n");
-		return rv;
 	}
 	
 	/**

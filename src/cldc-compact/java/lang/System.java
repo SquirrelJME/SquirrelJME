@@ -13,7 +13,7 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
-import net.multiphasicapps.squirreljme.unsafe.VM;
+import net.multiphasicapps.squirreljme.unsafe.SquirrelJME;
 
 public final class System
 {
@@ -39,17 +39,17 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return VM.INSTANCE.time.utcMillis();
+		return SquirrelJME.currentTimeMillis();
 	}
 	
-	public static void exit(int __a)
+	public static void exit(int __e)
 	{
-		throw new Error("TODO");
+		SquirrelJME.exit(__e);
 	}
 	
 	public static void gc()
 	{
-		throw new Error("TODO");
+		SquirrelJME.gc();
 	}
 	
 	/**
@@ -205,7 +205,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return VM.INSTANCE.time.nanoTime();
+		return SquirrelJME.nanoTime();
 	}
 	
 	/**
