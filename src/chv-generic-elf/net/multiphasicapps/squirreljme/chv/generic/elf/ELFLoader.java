@@ -277,6 +277,18 @@ public class ELFLoader
 			if (ptype != 1)
 				continue;
 			
+			// Read header details
+			int psoff = __readInt(base + 4);
+			int psvad = __readInt(base + 8);
+			int pspad = __readInt(base + 12);
+			int psfsz = __readInt(base + 16);
+			int psmsz = __readInt(base + 20);
+			int psflg = __readInt(base + 24);
+			int psalg = __readInt(base + 28);
+			
+			System.err.printf("DEBUG -- %08x %08x %08x %d %d %x %d%n",
+				psoff, psvad, pspad, psfsz, psmsz, psflg, psalg);
+			
 			throw new Error("TODO");
 		}
 	}
