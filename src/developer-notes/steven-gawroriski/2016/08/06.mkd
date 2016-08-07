@@ -43,3 +43,8 @@ I generated an extremely simple binary that runs on Linux MIPS (big endian
 though). I should put these practice binaries in the repository in an
 encoded form.
 
+## 21:16
+
+I will need standard interfaces for the emulator for memory and such. This
+would be associated with the CPUState.
+

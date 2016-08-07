@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirreljme.chv.linux;
 
+import net.multiphasicapps.squirreljme.emulator.CPUState;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.emulator.HypoVisor;
+import net.multiphasicapps.squirreljme.emulator.VonNeumannAddressing;
 
 /**
  * This implements the base Linux hypovisor since all Linux systems for every
@@ -39,6 +41,15 @@ public abstract class LinuxHypoVisor
 		// Check
 		if (__e == null)
 			throw new NullPointerException("NARG");
+		
+		// Create initial CPU state
+		CPUState cs = __e.createCPUState();
+		
+		// {@squirreljme.error CB01 Linux requires a CPU which has a Von
+		// Neumann architecture (data and instructions are in the same
+		// address space).}
+		if (!(cs instanceof VonNeumannAddressing))
+			throw new IllegalStateException("CB01");
 		
 		throw new Error("TODO");
 	}
