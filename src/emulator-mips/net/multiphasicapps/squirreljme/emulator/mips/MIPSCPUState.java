@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.emulator.mips;
 
 import net.multiphasicapps.squirreljme.emulator.CPUState;
+import net.multiphasicapps.squirreljme.emulator.VonNeumannAddressing;
 
 /**
  * This contains the mutable CPU state for MIPS based systems.
@@ -21,7 +22,7 @@ import net.multiphasicapps.squirreljme.emulator.CPUState;
  * @since 2016/08/06
  */
 public class MIPSCPUState
-	implements CPUState
+	implements CPUState, VonNeumannAddressing
 {
 	/**
 	 * Initializes the CPU state.
