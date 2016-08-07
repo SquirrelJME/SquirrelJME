@@ -1,1 +1,3 @@
-mips-32+i,big.squirreljme.interpreter
+mips-32+i,little.linux.generic
+mips-32+i,big.linux.generic
+mips-32+mips32,little.linux.gcwzero

@@ -96,7 +96,7 @@ public class Main
 			
 			// Emulate also?
 			if (a.equals("-e"))
-				doemu = tests = true;
+				doemu = true;
 			
 			// Do not include a JIT?
 			else if (a.equals("-n"))
@@ -364,15 +364,14 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		// Print header
-		__ps.println("Usage: [-e] [-n] [-s] [-t] [-x name]" +
+		__ps.println("Usage: [-e] [-n] [-s] [-t] [-x name] " +
 			"(target) [squirreljme.zip] [emulator arguments...]");
 		__ps.println();
 		__ps.println("\tThe output ZIP is optionally specified, however");
 		__ps.println("\tif emulator arguments are specified the ZIP must");
 		__ps.println("\talso be specified.");
 		__ps.println();
-		__ps.println("\t-e\tAfter building, emulate the target binary,");
-		__ps.println("\t\timplies -t.");
+		__ps.println("\t-e\tAfter building, emulate the target binary.");
 		__ps.println("\t-n\tDo not include a JIT.");
 		__ps.println("\t-s\tSkip building and just emulate the ZIP.");
 		__ps.println("\t-t\tInclude tests.");
