@@ -47,3 +47,9 @@ These appear as extensions in Info-ZIPs extra block, so I should use those
 also and support such things. Looks like I will want to use
 "ASi Unix Extra Field" which has everything I need.
 
+## 21:25
+
+I would probably rather have actual output right now, so I can just make a
+ticket for it and such. In fact, anything I need to TODO in general can just
+get a ticket. Fossil has tickets, may as well use them.
+
