@@ -222,20 +222,21 @@ public class ELFOutput
 			// Entry point (starts at the table end);
 			// ph offset (after this header);
 			// sh offset (not used, no sections are used)
+			int sheaderstart = this.sheaderstart;
 			switch (bits)
 			{
 					// 32-bit
 				case 32:
 					dos.writeInt(payloadsize);
 					dos.writeInt(headersize);
-					dos.writeInt(0);
+					dos.writeInt(sheaderstart);
 					break;
 				
 					// 64-bit
 				case 64:
 					dos.writeLong(payloadsize);
 					dos.writeLong(headersize);
-					dos.writeLong(0);
+					dos.writeLong(sheaderstart);
 					break;
 				
 					// Unknown
