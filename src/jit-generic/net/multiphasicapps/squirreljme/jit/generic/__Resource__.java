@@ -17,6 +17,27 @@ package net.multiphasicapps.squirreljme.jit.generic;
  */
 class __Resource__
 {
+	/** The name of the resource. */
+	protected final String name;
+	
+	/**
+	 * Initializes the resource.
+	 *
+	 * @param __n The name of the resource.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/09
+	 */
+	__Resource__(String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.name = __n;
+	}
+	
 	/**
 	 * Returns the name of this resource.
 	 *
@@ -25,7 +46,7 @@ class __Resource__
 	 */
 	String __name()
 	{
-		throw new Error("TODO");
+		return this.name;
 	}
 }
 
