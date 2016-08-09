@@ -105,6 +105,16 @@ class __StringTable__
 		 * @since 2016/08/09
 		 */
 		@Override
+		public int compareTo(__Ref__ __o)
+		{
+			return this.string.compareTo(__o.string);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/09
+		 */
+		@Override
 		public boolean equals(Object __o)
 		{
 			// Compare against self

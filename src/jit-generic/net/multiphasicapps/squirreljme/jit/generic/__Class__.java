@@ -10,12 +10,24 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+
 /**
- * This represents a class which exists in the output namespace binary.
+ * This represents a single class in the output namespace.
  *
  * @since 2016/08/09
  */
-class __EntryClass__
+class __Class__
 {
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The name of this class.
+	 * @since 2016/08/09
+	 */
+	ClassNameSymbol __className()
+	{
+		throw new Error("TODO");
+	}
 }
 

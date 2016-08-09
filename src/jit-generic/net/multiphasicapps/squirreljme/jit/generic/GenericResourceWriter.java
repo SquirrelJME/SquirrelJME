@@ -27,16 +27,28 @@ public final class GenericResourceWriter
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
+	/** The resource information. */
+	protected final __Resource__ modresource;
+	
 	/**
 	 * Initializes the generic resource writer.
 	 *
 	 * @param __nsw The owning namespace writer.
-	 * @param __name The name of this resource.
+	 * @param __rc The resource module.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	GenericResourceWriter(GenericNamespaceWriter __nsw, String __name)
+	GenericResourceWriter(GenericNamespaceWriter __nsw, __Resource__ __rc)
+		throws NullPointerException
 	{
-		super(__nsw, __name, BlobContentType.RESOURCE);
+		super(__nsw);
+		
+		// Check
+		if (__rc == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.modresource = __rc;
 	}
 	
 	/**
@@ -66,6 +78,9 @@ public final class GenericResourceWriter
 	public void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, JITException, NullPointerException
 	{
+		if (true)
+			throw new Error("TODO");
+		/*
 		// Could fail
 		try
 		{
@@ -87,6 +102,7 @@ public final class GenericResourceWriter
 		{
 			throw new JITException("BA0e", e);
 		}
+		*/
 	}
 }
 

@@ -32,9 +32,6 @@ abstract class __BaseWriter__
 	/** The owning namespace writer. */
 	protected final GenericNamespaceWriter owner;
 	
-	/** The name of this content entry. */
-	protected final String contentname;
-	
 	/** Code output. */
 	protected final ExtendedDataOutputStream outcode;
 	
@@ -47,12 +44,6 @@ abstract class __BaseWriter__
 	/** The import table. */
 	final __Imports__ _imports;
 	
-	/** The type of content here. */
-	final BlobContentType _contenttype;
-	
-	/** The name of the content. */
-	final String _contentname;
-	
 	/**
 	 * Initializes the base writer.
 	 *
@@ -62,22 +53,22 @@ abstract class __BaseWriter__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	__BaseWriter__(GenericNamespaceWriter __nsw, String __name,
-		BlobContentType __ct)
+	__BaseWriter__(GenericNamespaceWriter __nsw)
 		throws NullPointerException
 	{
 		// Check
-		if (__nsw == null || __name == null || __ct == null)
+		if (__nsw == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.owner = __nsw;
 		this.lock = __nsw._lock;
-		this.contentname = __name;
-		this._contenttype = __ct;
-		this._contentname = __name;
 		this._strings = __nsw._strings;
 		this._imports = __nsw._imports;
+		
+		// Get code and data
+		this.outcode = __nsw.__code();
+		this.outdata = __nsw.__data();
 	}
 	
 	/**
@@ -91,6 +82,8 @@ abstract class __BaseWriter__
 		// Close the raw output instead
 		try
 		{
+			if (false)
+				throw new IOException("TODO");
 			if (true)
 				throw new Error("TODO");
 		}

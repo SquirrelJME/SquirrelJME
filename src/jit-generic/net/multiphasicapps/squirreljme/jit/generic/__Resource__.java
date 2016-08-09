@@ -11,11 +11,21 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 /**
- * This represents a resource in the output resource binary.
+ * This represents a single resource in the namespace.
  *
  * @since 2016/08/09
  */
-class __EntryResource__
+class __Resource__
 {
+	/**
+	 * Returns the name of this resource.
+	 *
+	 * @return The resource name.
+	 * @since 2016/08/09
+	 */
+	String __name()
+	{
+		throw new Error("TODO");
+	}
 }
 

@@ -131,3 +131,8 @@ too large. That however could be remidied by swap and/or a virtual machine. At
 a speed penalty an emulated environment could be used for building that can
 run the actual self binary.
 
+## 19:15
+
+This then means that the order checks in the namespace writer are not required
+although I should still have them for other targets and such.
+

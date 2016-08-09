@@ -82,6 +82,14 @@ public final class GenericNamespaceWriter
 	final __Imports__ _imports =
 		new __Imports__();
 	
+	/** Classes in the namespace. */
+	final __Classes__ _classes =
+		new __Classes__();
+	
+	/** Resources in the namespace. */
+	final __Resources__ _resources =
+		new __Resources__();
+	
 	/** Visible lock. */
 	final Object _lock =
 		this.lock;
@@ -146,11 +154,13 @@ public final class GenericNamespaceWriter
 				default:
 					throw new JITException(String.format("BA03 %s", jitend));
 			}
-			this.outcode.setEndianess(end);
-			this.endianess = end;
 			
-			// Set
-			this.output = output;
+			// Set code/data endianess
+			this.outcode.setEndianess(end);
+			this.outdata.setEndianess(end);
+			
+			// Store endianess for later writing
+			this.endianess = end;
 		}
 		
 		// {@squirreljme.error BA02 Could not create the output cache.}
@@ -186,7 +196,8 @@ public final class GenericNamespaceWriter
 				throw new JITException("BA07");
 			
 			// Create
-			GenericClassWriter rv = new GenericClassWriter(this, __cn);
+			GenericClassWriter rv = new GenericClassWriter(this,
+				this._classes.__newClass(__cn));
 			this._current = rv;
 			return rv;
 		}
@@ -218,7 +229,8 @@ public final class GenericNamespaceWriter
 				throw new JITException("BA08");
 			
 			// Create
-			GenericResourceWriter rv = new GenericResourceWriter(this, __name);
+			GenericResourceWriter rv = new GenericResourceWriter(this,
+				this._resources.__newResource(__name));
 			this._current = rv;
 			return rv;
 		}
@@ -243,6 +255,8 @@ public final class GenericNamespaceWriter
 			// Could fail
 			try
 			{
+				if (false)
+					throw new IOException("TODO");
 				if (true)
 					throw new Error("TODO");
 				
@@ -384,97 +398,6 @@ public final class GenericNamespaceWriter
 	final DataEndianess __endianess()
 	{
 		return this.endianess;
-	}
-	
-	/**
-	 * Writes the string table to the output namespace binary.
-	 *
-	 * @param __edos The output stream.
-	 * @param __strs The strings to write.
-	 * @return The string table position.
-	 * @throws IOException On null arguments.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/30
-	 */
-	private int __writeStringTable(ExtendedDataOutputStream __edos,
-		Map<String, Integer> __strs)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__edos == null || __strs == null)
-			throw new NullPointerException("NARG");
-		
-		// Align to 4
-		while ((__edos.size() & 3) != 0)
-			__edos.writeByte(0xFD);
-		
-		// Write all strings
-		int numstrings = __strs.size(), q = 0;
-		int[] stp = new int[numstrings];
-		for (String s : __strs.keySet())
-		{
-			// {@squirreljme.error BA0n String exceeds 65KiB. (The string
-			// length)}
-			int n = s.length();
-			if (n > 65535)
-				throw new JITException(String.format("BA0n %d", n));
-			
-			// Determine if the write is narrow or wide
-			boolean wide = false;
-			for (int i = 0; i < n; i++)
-				if (s.charAt(i) >= 0x100)
-				{
-					wide = true;
-					break;
-				}
-			
-			// Align to 4
-			long cp = 0;
-			while (((cp = __edos.size()) & 3) != 0)
-				__edos.writeByte(0xFD);
-			
-			// {@squirreljme.error BA0o String starts at address which is
-			// outside the range of 2GiB.}
-			if (cp > Integer.MAX_VALUE || cp < 0)
-				throw new JITException("BA0o");
-			stp[q++] = (int)cp;
-			
-			// Write length
-			__edos.writeShort(n);
-			
-			// Narrow write?
-			if (!wide)
-			{
-				__edos.writeByte(GenericStringType.BYTE.ordinal());
-				for (int i = 0; i < n; i++)
-					__edos.writeByte(s.charAt(i));
-			}
-			
-			// Wide write
-			else
-			{
-				__edos.writeByte(GenericStringType.CHAR.ordinal());
-				for (int i = 0; i < n; i++)
-					__edos.writeChar(s.charAt(i));
-			}
-		}
-		
-		// Align to 4
-		long tpos = 0;
-		while (((tpos = __edos.size()) & 3) != 0)
-			__edos.writeByte(0xFD);
-		
-		// {@squirreljme.error BA0p String pointer table at address which is
-		// outside the range of 2GiB.}
-		if (tpos > Integer.MAX_VALUE || tpos < 0)
-			throw new JITException("BA0p");
-		
-		// Write the string pointer data
-		for (int i = 0; i < numstrings; i++)
-			__edos.writeInt(stp[i]);
-		
-		// Return the table position
-		return (int)tpos;
 	}
 }
 

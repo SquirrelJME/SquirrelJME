@@ -34,8 +34,8 @@ public final class GenericClassWriter
 	/** The name of the class being written. */
 	protected final ClassNameSymbol classname;
 	
-	/** Where class data is written to. */
-	protected final ExtendedDataOutputStream output;
+	/** The class module. */
+	protected final __Class__ modclass;
 	
 	/** The current order. */
 	private volatile JITCompilerOrder _order =
@@ -43,20 +43,6 @@ public final class GenericClassWriter
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
-	
-	/** The field count. */
-	private volatile int _fieldcount =
-		-1;
-	
-	/** The method count. */
-	private volatile int _methodcount =
-		-1;
-	
-	/** Offsets to fields. */
-	private volatile int[] _fieldoffsets;
-	
-	/** Offsets to methods. */
-	private volatile int[] _methodoffsets;
 	
 	/**
 	 * Initializes the generic class writer.
@@ -66,18 +52,22 @@ public final class GenericClassWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	GenericClassWriter(GenericNamespaceWriter __nsw, ClassNameSymbol __cn)
+	GenericClassWriter(GenericNamespaceWriter __nsw, __Class__ __cl)
 		throws NullPointerException
 	{
-		super(__nsw, Objects.toString(__cn), BlobContentType.CLASS);
+		super(__nsw);
 		
 		// Check
-		if (__cn == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.classname = __cn;
+		this.modclass = __cl;
+		this.classname = __cl.__className();
 		
+		if (true)
+			throw new Error("TODO");
+		/*
 		// Setup output
 		ExtendedDataOutputStream output = new ExtendedDataOutputStream(
 			this.rawoutput);
@@ -98,7 +88,7 @@ public final class GenericClassWriter
 		catch (IOException e)
 		{
 			throw new JITException("BA0a");
-		}
+		}*/
 	}
 	
 	/**
@@ -119,6 +109,9 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.CLASS_FLAGS);
 			
+			if (true)
+				throw new Error("TODO");
+			/*
 			// Build value
 			int v = 0;
 			for (JITClassFlag f : __cf)
@@ -135,6 +128,7 @@ public final class GenericClassWriter
 			{
 				throw new JITException("BA0k", e);
 			}
+			*/
 		}
 	}
 	
@@ -179,6 +173,9 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.INTERFACE_CLASS_NAMES);
 			
+			if (true)
+				throw new Error("TODO");
+			/*
 			// Need to add many strings
 			GenericNamespaceWriter nsw = this.owner;
 			int n = __ins.length;
@@ -201,6 +198,7 @@ public final class GenericClassWriter
 			{
 				throw new JITException("BA0m", e);
 			}
+			*/
 		}
 	}
 	
@@ -218,6 +216,9 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
+			if (true)
+				throw new Error("TODO");
+			/*
 			try
 			{
 				// Write -1 if there is none, since zero could be a valid
@@ -237,6 +238,7 @@ public final class GenericClassWriter
 			{
 				throw new JITException("BA0l", e);
 			}
+			*/
 		}
 	}
 	
