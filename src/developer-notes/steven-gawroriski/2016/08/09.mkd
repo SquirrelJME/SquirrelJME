@@ -5,3 +5,12 @@
 Thinking about it, `ByteArrayOutputStream` could use `ByteDeque` which would
 minimize buffer allocations. I just need co-dependencies for that however.
 
+## 07:58
+
+So what I can do following this is create a class which holds the individual
+blob buffers and creates a sort of table of contents that I can use. One thing
+the output will need is some very simple bootstrap code which sets some values
+and then jumps to the entry point. Just a single variable is needed and all it
+would do is be told where the combined namespace blob is located. So that
+would be about 4 or 5 MIPS instructions.
+
