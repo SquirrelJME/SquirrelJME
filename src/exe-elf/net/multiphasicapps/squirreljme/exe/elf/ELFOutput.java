@@ -138,18 +138,28 @@ public class ELFOutput
 		if (__os == null || __names == null || __blobs == null)
 			throw new NullPointerException("NARG");
 		
+		// The base address for the actual code data
+		int headersize = this.headersize;
+		int pheadersize = this.pheadersize;
+		int programsize = 0;
+		int codebase = headersize + pheadersize;
+		
 		// It is not possible to write the program header with a fixed size
 		// since it would either waste space or be too short. As such, load
 		// all blob data into arrays;
 		int n = __names.length;
 		byte[][] preblobs = new byte[n][];
+		int baseoff = ((codebase + 7) & (~7)), origbaseoff = baseoff;
+		int[] blobsoff = new int[n];
 		byte[] buf = new byte[512];
-		int headersize = this.headersize;
-		int pheadersize = this.pheadersize;
-		int programsize = 0;
+		int blobprogramsize = 0;
 		for (int i = 0; i < n; i++)
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 			{
+				// Align to 8
+				baseoff = ((baseoff + 7) & (~7));
+				blobsoff[i] = baseoff;
+				
 				// Copy all the data
 				for (InputStream is = __blobs[i];;)
 				{
@@ -164,14 +174,24 @@ public class ELFOutput
 				}
 				
 				// Store
-				preblobs[i] = baos.toByteArray();
+				byte data[] = baos.toByteArray();
+				preblobs[i] = data;
+				
+				// Add offset
+				baseoff += data.length;
 				
 				// Determine if this contains the entry point
 				System.err.println("TODO -- Determine blob entry point.");
 			}
 		
-		// The base address for the actual code data
-		int codebase = headersize + pheadersize;
+		// Determine size
+		blobprogramsize = baseoff - origbaseoff;
+		
+		// Determine size of the namespace entries
+		System.err.println("TODO -- Determine namespace table size.");
+		
+		// Extra bootstrap header?
+		programsize += blobprogramsize;
 		
 		// Write the output binary
 		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(__os))
@@ -323,8 +343,14 @@ public class ELFOutput
 					throw new RuntimeException("OOPS");
 			}
 			
+			// Write blob entry table
+			System.err.println("TODO -- Write blob table");
+			
 			// Write blob information
-			System.err.println("TODO -- Write blob data");
+			for (int i = 0; i < n; i++)
+			{
+				System.err.println("TODO -- Write blob data");
+			}
 		}
 	}
 }
