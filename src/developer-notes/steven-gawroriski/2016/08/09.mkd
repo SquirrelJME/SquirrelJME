@@ -111,3 +111,15 @@ all strings are combined into one. So I suppose that any references to strings
 in the code could also be done via the import table. Since it is defined in
 the virtual machine that constant strings are like interned strings.
 
+## 19:06
+
+I would support for simplicity, instead of having blobs with sizes and such
+where all classes belong, all of the classes appear in a single tread. They
+import a string for their name, super class, and interfaces. However, super
+and interface classes could be referred to via the import table. So while the
+name is known, the super and interface classes are treated as if they were
+an import. So then this way super classes and interfaces are initialized when
+the import table is initialized. This would save a bunch of processing time on
+the output and would make `Class.getSuperClass()` virtually instant since it
+would refer to a class object already (or similar).
+
