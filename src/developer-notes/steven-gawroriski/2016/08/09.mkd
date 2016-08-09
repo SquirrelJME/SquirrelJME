@@ -34,3 +34,21 @@ specially crafted classes in the event there is an exploit. I would also want
 a kind of symbol table that I can use to debug the actual output binaries if
 the object format supports such things.
 
+## 16:43
+
+So `GenericClassWriter` just writes to a different format, say a
+`GenericExecutable` kind of thing. Then the ELF loader would use such a thing
+where it provides code, symbols, and other such things. `GenericExecutable`
+would best be an interface although there can be a default implementation. I
+would say that the best result would be to keep that in `jit-generic`. Then
+the generic binary executable handlers in the VM can use a basic interface for
+handling the blob format. Thinking about it, it can still be placed within the
+cache, except the generic writer is a bit more sane (it keeps code and data
+separated and has symbol information as needed). Then when that writer is
+closed the stuff is written to the cache form. Then when it comes time to link,
+a generic executable handler parses the raw byte data to provide access to the
+binary data as appropriate (such as data and code sections). So really the
+thing that needs to be changed is the `GenericNamespaceWriter` and the
+`GenericClassWriter`. Then this way, the conditions of the generic writer does
+not interfere with the writers in other cases.
+
