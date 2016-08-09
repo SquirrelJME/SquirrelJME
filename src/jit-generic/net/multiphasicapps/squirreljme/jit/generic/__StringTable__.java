@@ -80,7 +80,7 @@ class __StringTable__
 		implements Comparable<__Ref__>
 	{
 		/** The contained string. */
-		protected final String strig;
+		protected final String string;
 		
 		/**
 		 * Initializes the string reference.
@@ -97,7 +97,7 @@ class __StringTable__
 				throw new NullPointerException("NARG");
 			
 			// Set
-			this.string;
+			this.string = __s;
 		}
 		
 		/**

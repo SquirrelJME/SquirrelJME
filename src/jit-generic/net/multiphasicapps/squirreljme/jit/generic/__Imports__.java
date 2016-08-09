@@ -19,14 +19,14 @@ package net.multiphasicapps.squirreljme.jit.generic;
  *
  * @since 2016/08/09
  */
-class __Imports__
+final class __Imports__
 {
 	/**
 	 * Initializes the import table.
 	 *
 	 * @since 2016/08/09
 	 */
-	final __Imports__()
+	__Imports__()
 	{
 	}
 }

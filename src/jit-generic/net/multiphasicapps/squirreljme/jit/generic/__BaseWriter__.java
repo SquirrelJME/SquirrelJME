@@ -44,8 +44,8 @@ abstract class __BaseWriter__
 	/** The string table. */
 	final __StringTable__ _strings;
 	
-	/** Start positon. */
-	final long _startpos;
+	/** The import table. */
+	final __Imports__ _imports;
 	
 	/** The type of content here. */
 	final BlobContentType _contenttype;
@@ -77,17 +77,7 @@ abstract class __BaseWriter__
 		this._contenttype = __ct;
 		this._contentname = __name;
 		this._strings = __nsw._strings;
-		
-		// Create raw output area
-		synchronized (this.lock)
-		{
-			ExtendedDataOutputStream edos = __nsw.__output();
-			OutputStream rawoutput = new __RawOutput__(edos);
-			this.rawoutput = rawoutput;
-			
-			// Set start position
-			this._startpos = edos.size();
-		}
+		this._imports = __nsw._imports;
 	}
 	
 	/**
@@ -101,127 +91,14 @@ abstract class __BaseWriter__
 		// Close the raw output instead
 		try
 		{
-			this.rawoutput.close();
+			if (true)
+				throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error BA0c Failed to close the output.}
 		catch (IOException e)
 		{
 			throw new JITException("BA0c", e);
-		}
-	}
-	
-	/**
-	 * Raw output data.
-	 *
-	 * @since 2016/07/27
-	 */
-	private final class __RawOutput__
-		extends OutputStream
-	{
-		/** The actual output. */
-		protected final ExtendedDataOutputStream output;
-		
-		/** Has this been closed? */
-		private volatile boolean _closed;
-		
-		/**
-		 * Initializes the raw output.
-		 *
-		 * @param __edos The wrapped output stream.
-		 * @throws NullPointerException On null arguments
-		 * @since 2016/07/27
-		 */
-		private __RawOutput__(ExtendedDataOutputStream __edos)
-			throws NullPointerException
-		{
-			// Check
-			if (__edos == null)
-				throw new NullPointerException("NARG");
-			
-			// Set
-			this.output = __edos;
-			
-			// Align to int
-			try
-			{
-				synchronized (__BaseWriter__.this.lock)
-				{
-					while ((__edos.size() & 3) != 0)
-						__edos.writeByte(0xFD);
-				}
-			}
-			
-			// {@squirreljme.error BA0b Could not align the output.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0b", e);
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/07/26
-		 */
-		@Override
-		public void close()
-			throws IOException
-		{
-			// Lock
-			synchronized (__BaseWriter__.this.lock)
-			{
-				// Close if not closed
-				if (!this._closed)
-				{
-					// mark closed
-					this._closed = true;
-					
-					// Close in the writer
-					__BaseWriter__.this.owner.__close(__BaseWriter__.this);
-				}
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/07/27
-		 */
-		@Override
-		public void write(int __b)
-			throws IOException
-		{
-			// Lock
-			synchronized (__BaseWriter__.this.lock)
-			{
-				// {@squirreljme.error BA0f Cannot write a single byte after
-				// the stream has been closed.}
-				if (this._closed)
-					throw new IOException("BA0f");
-				
-				// Write
-				this.output.write(__b);
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/07/27
-		 */
-		@Override
-		public void write(byte[] __b, int __o, int __l)
-			throws IOException
-		{
-			// Lock
-			synchronized (__BaseWriter__.this.lock)
-			{
-				// {@squirreljme.error BA0g Cannot write multiple bytes after
-				// the stream has been closed.}
-				if (this._closed)
-					throw new IOException("BA0g");
-				
-				// Write
-				this.output.write(__b, __o, __l);
-			}
 		}
 	}
 }

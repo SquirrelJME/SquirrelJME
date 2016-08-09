@@ -15,14 +15,14 @@ package net.multiphasicapps.squirreljme.jit.generic;
  *
  * @since 2016/08/09
  */
-class __Import__
+final class __Import__
 {
 	/**
 	 * Initializes the single import.
 	 *
 	 * @since 2016/08/09
 	 */
-	final __Import__()
+	__Import__()
 	{
 	}
 }
