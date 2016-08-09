@@ -19,3 +19,8 @@ would be about 4 or 5 MIPS instructions.
 I should probably use sections regardless even though they technically are not
 needed. This would be for objdump purposes.
 
+## 15:47
+
+QEMU just gives me invalid argument when trying to load the binary in user
+mode Linux. I suppose it may be due to the lack of an entry point.
+

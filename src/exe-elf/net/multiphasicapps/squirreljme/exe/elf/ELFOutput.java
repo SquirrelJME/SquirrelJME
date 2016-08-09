@@ -72,6 +72,9 @@ public class ELFOutput
 	/** The start of the string table. */
 	protected final int stringtablestart;
 	
+	/** The load address. */
+	protected final long loadaddr;
+	
 	/**
 	 * Initializes the ELF output with the specified parameters.
 	 *
@@ -79,13 +82,14 @@ public class ELFOutput
 	 * @param __end The endianess of the CPU.
 	 * @param __osabi The operating system ABI.
 	 * @param __cputype The CPU type.
+	 * @param __ld The load address;
 	 * @throws IllegalArgumentException If the CPU bit level is not 32 or 64;
 	 * or the endianess is not known.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/08
 	 */
 	public ELFOutput(int __bits, JITCPUEndian __end, int __osabi,
-		int __cputype)
+		int __cputype, long __ld)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -126,6 +130,7 @@ public class ELFOutput
 		this.endianess = __end;
 		this.osabi = __osabi;
 		this.cputype = __cputype;
+		this.loadaddr = __ld;
 		
 		// Section header follows the program heder
 		this.sheaderstart = this.headersize + this.pheadersize;
@@ -223,18 +228,19 @@ public class ELFOutput
 			// ph offset (after this header);
 			// sh offset (not used, no sections are used)
 			int sheaderstart = this.sheaderstart;
+			long loadaddr = this.loadaddr;
 			switch (bits)
 			{
 					// 32-bit
 				case 32:
-					dos.writeInt(payloadsize);
+					dos.writeInt((int)(loadaddr + payloadsize));
 					dos.writeInt(headersize);
 					dos.writeInt(sheaderstart);
 					break;
 				
 					// 64-bit
 				case 64:
-					dos.writeLong(payloadsize);
+					dos.writeLong(loadaddr + payloadsize);
 					dos.writeLong(headersize);
 					dos.writeLong(sheaderstart);
 					break;
@@ -272,7 +278,7 @@ public class ELFOutput
 				case 32:
 					// Program
 					dos.writeInt(blobstartpos);	// Offset in file
-					dos.writeInt(0);	// Virtual load address
+					dos.writeInt((int)loadaddr);	// Virtual load address
 					dos.writeInt(0);	// Physical address?
 					dos.writeInt(fullpayloadsize);	// Program size (in file)
 					dos.writeInt(fullpayloadsize);	// Program size (in memory)
@@ -289,7 +295,7 @@ public class ELFOutput
 					dos.writeInt(1);						// name
 					dos.writeInt(1);						// type
 					dos.writeInt(0x6);						// Alloc+Exec
-					dos.writeInt(0);						// Address
+					dos.writeInt((int)loadaddr);			// Address
 					dos.writeInt(blobstartpos);				// File Start
 					dos.writeInt(fullpayloadsize);			// Size
 					dos.writeInt(0);						// Ignore link
@@ -315,7 +321,7 @@ public class ELFOutput
 					// Program
 					dos.writeInt(5);	// RX
 					dos.writeLong(blobstartpos);	// Offset in file
-					dos.writeLong(0);	// Virtual load address
+					dos.writeLong(loadaddr);	// Virtual load address
 					dos.writeLong(0);	// Physical address?
 					dos.writeLong(fullpayloadsize);	// Program size in file
 					dos.writeLong(fullpayloadsize);	// Program size in memory
@@ -331,7 +337,7 @@ public class ELFOutput
 					dos.writeInt(1);						// name
 					dos.writeInt(1);						// type
 					dos.writeLong(0x6);						// Alloc+Exec
-					dos.writeLong(0);						// Address
+					dos.writeLong(loadaddr);					// Address
 					dos.writeLong(blobstartpos);			// File Start
 					dos.writeLong(fullpayloadsize);			// Size
 					dos.writeInt(0);						// Ignore link

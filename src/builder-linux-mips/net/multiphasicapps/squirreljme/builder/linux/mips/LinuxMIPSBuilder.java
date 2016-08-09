@@ -86,7 +86,7 @@ public class LinuxMIPSBuilder
 			// Setup the basic ELF information
 			JITCPUEndian end = triplet.endianess();
 			ELFOutput eo = new ELFOutput(triplet.bits(), end,
-				0x03, 0x08);
+				0x03, 0x08, 0x400000L);
 			
 			// Set properties
 			super.addStandardSystemProperties(__conf, eo);
