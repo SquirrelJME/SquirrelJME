@@ -34,6 +34,10 @@ public class ELFOutput
 	private static final int _ENTRY_SIZE =
 		12;
 	
+	/** The name of the single section, the .text section. */
+	private static final byte[] _TEXT_NAME =
+		new byte[]{'.', 't', 'e', 'x', 't', 0};
+	
 	/** System properties which are available. */
 	protected final Map<String, String> properties =
 		new HashMap<>();
@@ -56,8 +60,17 @@ public class ELFOutput
 	/** The program header size. */
 	protected final int pheadersize;
 	
+	/** Section header size. */
+	protected final int sheadersize;
+	
+	/** The start of the section header. */
+	protected final int sheaderstart;
+	
 	/** Start of the blob data. */
 	protected final int blobstartpos;
+	
+	/** The start of the string table. */
+	protected final int stringtablestart;
 	
 	/**
 	 * Initializes the ELF output with the specified parameters.
@@ -87,12 +100,14 @@ public class ELFOutput
 			case 32:
 				this.headersize = 52;
 				this.pheadersize = 32;
+				this.sheadersize = 40;
 				break;
 				
 				// 64-bit
 			case 64:
 				this.headersize = 64;
 				this.pheadersize = 56;
+				this.sheadersize = 64;
 				break;
 				
 				// Unknown
@@ -112,9 +127,16 @@ public class ELFOutput
 		this.osabi = __osabi;
 		this.cputype = __cputype;
 		
+		// Section header follows the program heder
+		this.sheaderstart = this.headersize + this.pheadersize;
+		
+		// The start of the string table
+		this.stringtablestart = this.sheaderstart + (this.sheadersize * 2);
+		
 		// The blob starts at an aligned address following the program header
 		// and normal header
-		this.blobstartpos = (this.headersize + this.pheadersize + 7) & (~7);
+		this.blobstartpos = (this.stringtablestart + _TEXT_NAME.length + 7) &
+			(~7);
 	}
 	
 	/**
@@ -231,19 +253,22 @@ public class ELFOutput
 			dos.writeShort(pheadersize);	// size
 			dos.writeShort(1);	// count
 			
-			// There are no sections
-			dos.writeShort(0);
-			dos.writeShort(0);
+			// There is only a single section
+			dos.writeShort(this.sheadersize);
+			dos.writeShort(2);
 			
-			// There is no string index
-			dos.writeShort(0);
+			// String index is the second section
+			dos.writeShort(1);
 			
-			// Write program header (only one)
+			// Write program header (only one) and the two sections
 			dos.writeInt(1);	// Load this section
+			byte[] textname = _TEXT_NAME;
+			int stringtablestart = this.stringtablestart;
 			switch (bits)
 			{
 					// 32-bit
 				case 32:
+					// Program
 					dos.writeInt(blobstartpos);	// Offset in file
 					dos.writeInt(0);	// Virtual load address
 					dos.writeInt(0);	// Physical address?
@@ -253,10 +278,35 @@ public class ELFOutput
 					
 					// Padding
 					dos.writeInt(0);
+					
+					// Text Section
+					dos.writeInt(0);						// name
+					dos.writeInt(1);						// type
+					dos.writeInt(0x6);						// Alloc+Exec
+					dos.writeInt(0);						// Address
+					dos.writeInt(blobstartpos);				// File Start
+					dos.writeInt(fullpayloadsize);			// Size
+					dos.writeInt(0);						// Ignore link
+					dos.writeInt(0);						// Ignore info
+					dos.writeInt(4);						// Address align
+					dos.writeInt(0);						// Not used
+					
+					// String section
+					dos.writeInt(textname.length - 1);		// name
+					dos.writeInt(3);						// type
+					dos.writeInt(0x20);						// Strings
+					dos.writeInt(0);						// Address
+					dos.writeInt(stringtablestart);			// File Start
+					dos.writeInt(textname.length);			// Size
+					dos.writeInt(0);						// Ignore link
+					dos.writeInt(0);						// Ignore info
+					dos.writeInt(4);						// Address align
+					dos.writeInt(1);						// char 1 byte
 					break;
 				
 					// 64-bit
 				case 64:
+					// Program
 					dos.writeInt(5);	// RX
 					dos.writeLong(blobstartpos);	// Offset in file
 					dos.writeLong(0);	// Virtual load address
@@ -266,12 +316,39 @@ public class ELFOutput
 					
 					// Padding
 					dos.writeLong(0);
+					
+					// Text Section
+					dos.writeInt(0);						// name
+					dos.writeInt(1);						// type
+					dos.writeLong(0x6);						// Alloc+Exec
+					dos.writeLong(0);						// Address
+					dos.writeLong(blobstartpos);			// File Start
+					dos.writeLong(fullpayloadsize);			// Size
+					dos.writeInt(0);						// Ignore link
+					dos.writeInt(0);						// Ignore info
+					dos.writeLong(8);						// Address align
+					dos.writeLong(0);						// Not used
+					
+					// String section
+					dos.writeInt(textname.length - 1);		// name
+					dos.writeInt(3);						// type
+					dos.writeLong(0x20);					// Strings
+					dos.writeLong(0);						// Address
+					dos.writeLong(stringtablestart);		// File Start
+					dos.writeLong(textname.length);			// Size
+					dos.writeInt(0);						// Ignore link
+					dos.writeInt(0);						// Ignore info
+					dos.writeLong(8);						// Address align
+					dos.writeLong(1);						// char 1 byte
 					break;
 				
 					// Unknown
 				default:
 					throw new RuntimeException("OOPS");
 			}
+			
+			// Write the string table data
+			dos.write(_TEXT_NAME);
 			
 			// Write the blob data
 			for (int i = 0; i < n; i++)
