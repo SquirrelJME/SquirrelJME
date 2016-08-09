@@ -75,8 +75,8 @@ public final class GenericNamespaceWriter
 	protected final DataEndianess endianess;
 	
 	/** The string table. */
-	protected final Map<String, Integer> strings =
-		new LinkedHashMap<>();
+	final __StringTable__ _strings =
+		new __StringTable__();
 	
 	/** Visible lock. */
 	final Object _lock =
@@ -314,48 +314,6 @@ public final class GenericNamespaceWriter
 			{
 				throw new JITException("BA06", e);
 			}
-		}
-	}
-	
-	/**
-	 * Adds a string to the blob and returns the index where the string is
-	 * located in the string table.
-	 *
-	 * @param __s The string to add.
-	 * @return The index of the string, the value is an unsigned short.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/22
-	 */
-	final int __addString(String __s)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__s == null)
-			throw new NullPointerException("NARG");
-			
-		// Lock
-		synchronized (this.lock)
-		{
-			// Get string table and its size
-			Map<String, Integer> strings = this.strings;
-			int size = strings.size();
-			
-			// {@squirreljme.error BA0q Namespaces are limited to 65,536
-			// strings.}
-			if (size > 65535)
-				throw new JITException("BA0q");
-			
-			// Is this string in the table?
-			Integer rv = strings.get(__s);
-			if (rv != null)
-				return rv;
-			
-			// Add it otherwise
-			rv = Integer.valueOf(size);
-			strings.put(__s, rv);
-			
-			// Return the old size
-			return size;
 		}
 	}
 	

@@ -44,6 +44,9 @@ abstract class __BaseWriter__
 	/** Raw data output. */
 	protected final OutputStream rawoutput;
 	
+	/** The string table. */
+	final __StringTable__ _strings;
+	
 	/** Start positon. */
 	final long _startpos;
 	
@@ -76,6 +79,7 @@ abstract class __BaseWriter__
 		this.contentname = __name;
 		this._contenttype = __ct;
 		this._contentname = __name;
+		this._strings = __nsw._strings;
 		
 		// Create raw output area
 		synchronized (this.lock)
