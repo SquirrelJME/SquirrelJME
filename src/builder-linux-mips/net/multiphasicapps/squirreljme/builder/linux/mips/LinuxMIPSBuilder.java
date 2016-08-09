@@ -81,18 +81,17 @@ public class LinuxMIPSBuilder
 		try (OutputStream bin = __zsw.nextEntry("squirreljme",
 			ZipCompressionType.DEFAULT_COMPRESSION))
 		{
-			if (true)
-				throw new Error("TODO");
-		
-			// Create executable output (just a plain ELF binary)
-			/*addStandardSystemProperties(BuildConfig __conf,
-			ExecutableOutput __eo)
-		
-			linkBinary(OutputStream __os, String[] __names,
-			InputStream[] __blobs)*/
+			ELFOutput eo = new ELFOutput();
+			
+			// Set properties
+			super.addStandardSystemProperties(__conf, eo);
+			
+			// Add the used classpath
+			super.addVirtualMachineClassPath(__conf, eo, __vmcp);
+			
+			// Call the linker
+			eo.linkBinary(bin, __names, __blobs);
 		}
-		
-		throw new Error("TODO");
 	}
 	
 	/**
