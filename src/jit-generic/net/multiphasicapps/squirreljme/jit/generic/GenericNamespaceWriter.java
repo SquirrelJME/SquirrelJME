@@ -13,6 +13,9 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.io.data.DataEndianess;
+import net.multiphasicapps.io.datadequestream.ByteDequeOutputStream;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -24,8 +27,7 @@ import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
 import net.multiphasicapps.squirreljme.os.generic.GenericStringType;
-import net.multiphasicapps.io.data.DataEndianess;
-import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This is a generic writer for namespaces which writes standard blobs which

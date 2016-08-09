@@ -32,13 +32,25 @@ public class ByteDequeOutputStream
 	
 	/**
 	 * Initializes the byte deque output stream using an automatically
-	 * create deque.
+	 * created deque.
 	 *
 	 * @since 2016/07/09
 	 */
 	public ByteDequeOutputStream()
 	{
 		this(new ByteDeque());
+	}
+	
+	/**
+	 * Initializes a new byte deque output stream with an automatically
+	 * created deque with the given capacity.
+	 *
+	 * @param __cap The deque capacity.
+	 * @since 2016/07/09
+	 */
+	public ByteDequeOutputStream(int __cap)
+	{
+		this(new ByteDeque(__cap));
 	}
 	
 	/**
@@ -69,6 +81,17 @@ public class ByteDequeOutputStream
 	public void close()
 	{
 		// Does nothing
+	}
+	
+	/**
+	 * Returns the current size of the deque.
+	 *
+	 * @return The deque size.
+	 * @since 2016/08/09
+	 */
+	public int size()
+	{
+		this.deque.size();
 	}
 	
 	/**
