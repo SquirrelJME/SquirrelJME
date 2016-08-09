@@ -138,6 +138,12 @@ public class ELFOutput
 		if (__os == null || __names == null || __blobs == null)
 			throw new NullPointerException("NARG");
 		
+		// Load blobs into byte arrays
+		int n = __names.length;
+		byte[][] preblobs = __preloadBlobs(__blobs);
+		
+		throw new Error("TODO");
+		/*
 		// The base address for the actual code data
 		int headersize = this.headersize;
 		int pheadersize = this.pheadersize;
@@ -147,8 +153,6 @@ public class ELFOutput
 		// It is not possible to write the program header with a fixed size
 		// since it would either waste space or be too short. As such, load
 		// all blob data into arrays;
-		int n = __names.length;
-		byte[][] preblobs = new byte[n][];
 		int baseoff = ((codebase + 7) & (~7)), origbaseoff = baseoff;
 		int[] blobsoff = new int[n];
 		byte[] buf = new byte[512];
@@ -352,6 +356,53 @@ public class ELFOutput
 				System.err.println("TODO -- Write blob data");
 			}
 		}
+		*/
+	}
+	
+	/**
+	 * Preloads blobs into byte arrays since there are unknowns when it comes
+	 * to size.
+	 *
+	 * @param __blobs The blobs to preload.
+	 * @return The preloaded blobs.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/09
+	 */
+	private byte[][] __preloadBlobs(InputStream[] __blobs)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__blobs == null)
+			throw new NullPointerException("NARG");
+		
+		// Preload all blobs
+		int n = __blobs.length;
+		byte[][] rv = new byte[n][];
+		byte[] buf = new byte[512];
+		for (int i = 0; i < n; i++)
+			try (InputStream is = __blobs[i];
+				ByteArrayOutputStream os = new ByteArrayOutputStream())
+			{
+				// Copy data
+				for (;;)
+				{
+					int rc = is.read(buf);
+					
+					// EOF?
+					if (rc < 0)
+						break;
+					
+					// Write
+					os.write(buf, 0, rc);
+				}
+				
+				// Extract the byte array
+				rv[i] = os.toByteArray();
+			}
+		
+		// Return it
+		return rv;
 	}
 }
 
