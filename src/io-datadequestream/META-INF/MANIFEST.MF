@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: io-datadequestream
+X-SquirrelJME-UUID: 32eedefc-f948-4d9d-adc0-9495f253f7cd
+X-SquirrelJME-Depends: util-datadeque
+X-SquirrelJME-Error: BK
+LIBlet-Title: ByteDeque Streams
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains standard I/O streams 
+ which can write to ByteDeques.
+

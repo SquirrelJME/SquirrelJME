@@ -52,3 +52,12 @@ thing that needs to be changed is the `GenericNamespaceWriter` and the
 `GenericClassWriter`. Then this way, the conditions of the generic writer does
 not interfere with the writers in other cases.
 
+## 17:01
+
+I also need a `ByteDequeOutputStream` so I can add the bytes to the end of it
+for the EDOS usage.
+
+## 17:10
+
+And `ByteDequeOutputStream` was easy to write.
+
