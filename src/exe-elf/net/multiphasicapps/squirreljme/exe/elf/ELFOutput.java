@@ -36,7 +36,7 @@ public class ELFOutput
 	
 	/** The name of the single section, the .text section. */
 	private static final byte[] _TEXT_NAME =
-		new byte[]{'.', 't', 'e', 'x', 't', 0};
+		new byte[]{0, '.', 't', 'e', 'x', 't', 0};
 	
 	/** System properties which are available. */
 	protected final Map<String, String> properties =
@@ -286,7 +286,7 @@ public class ELFOutput
 						dos.writeByte(0);
 					
 					// Text Section
-					dos.writeInt(0);						// name
+					dos.writeInt(1);						// name
 					dos.writeInt(1);						// type
 					dos.writeInt(0x6);						// Alloc+Exec
 					dos.writeInt(0);						// Address
@@ -328,7 +328,7 @@ public class ELFOutput
 						dos.writeByte(0);
 					
 					// Text Section
-					dos.writeInt(0);						// name
+					dos.writeInt(1);						// name
 					dos.writeInt(1);						// type
 					dos.writeLong(0x6);						// Alloc+Exec
 					dos.writeLong(0);						// Address
