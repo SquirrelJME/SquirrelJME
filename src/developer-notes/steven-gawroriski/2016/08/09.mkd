@@ -24,3 +24,13 @@ needed. This would be for objdump purposes.
 QEMU just gives me invalid argument when trying to load the binary in user
 mode Linux. I suppose it may be due to the lack of an entry point.
 
+## 16:39
+
+The current blob format is not going to work out. What I need instead is an
+executable output of sorts wrapped to the cache manager which stores the
+executable data in memory (can use `ByteDeque` for this). Having code and
+data together will be quite nasty and lead to vulnerabilities with
+specially crafted classes in the event there is an exploit. I would also want
+a kind of symbol table that I can use to debug the actual output binaries if
+the object format supports such things.
+
