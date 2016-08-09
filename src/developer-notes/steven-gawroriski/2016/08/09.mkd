@@ -104,3 +104,10 @@ be done by using offset pointers. So when a field is read, it can just do
 Just at the entry of every method there will need to be a way to point to the
 currently active method so it knows the import table to be used.
 
+## 19:04
+
+It would be best if it were made so that during the final linking process, that
+all strings are combined into one. So I suppose that any references to strings
+in the code could also be done via the import table. Since it is defined in
+the virtual machine that constant strings are like interned strings.
+

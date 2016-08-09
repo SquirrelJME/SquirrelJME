@@ -13,9 +13,12 @@ package net.multiphasicapps.squirreljme.jit.generic;
 /**
  * This contains the static import table for the given namespace, it is used
  * by the runtime as essentially a table of pointers which refer to other
- * memory locations. Each import can refer to a class, method, or a field.
+ * memory locations. Each import can refer to a class, method, field, or
+ * string.
  *
  * Instance fields are not directly pointed to, but are relative to the object.
+ *
+ * Strings must act as if they {@link String#intern()} has been called on them.
  *
  * @since 2016/08/09
  */
