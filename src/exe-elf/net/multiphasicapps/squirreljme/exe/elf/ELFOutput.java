@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.exe.elf;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 
 /**
@@ -23,6 +25,10 @@ import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 public class ELFOutput
 	implements ExecutableOutput
 {
+	/** System properties which are available. */
+	protected final Map<String, String> properties =
+		new HashMap<>();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/07
@@ -35,7 +41,12 @@ public class ELFOutput
 		if (__k == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		Map<String, String> properties = this.properties;
+		synchronized (properties)
+		{
+			properties.put(__k, __v);
+		}
 	}
 	
 	/**
