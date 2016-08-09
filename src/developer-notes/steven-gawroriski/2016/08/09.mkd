@@ -14,3 +14,8 @@ and then jumps to the entry point. Just a single variable is needed and all it
 would do is be told where the combined namespace blob is located. So that
 would be about 4 or 5 MIPS instructions.
 
+## 15:12
+
+I should probably use sections regardless even though they technically are not
+needed. This would be for objdump purposes.
+

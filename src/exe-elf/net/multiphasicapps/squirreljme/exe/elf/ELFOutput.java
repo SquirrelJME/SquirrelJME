@@ -169,73 +169,25 @@ public class ELFOutput
 		int endinfile = payloadsize + blobstartpos;
 		
 		// Start writing ELF details
-		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(__os))
+		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(__os);
+			ByteArrayOutputStream rawpayload = new ByteArrayOutputStream();
+			ExtendedDataOutputStream rpdos =
+				new ExtendedDataOutputStream(rawpayload))
 		{
 			// Write the ELF identification
 			__writeIdentification(dos);
 			
-			if (true)
-				throw new Error("TODO");
-		}
-		
-		throw new Error("TODO");
-		/*
-		// The base address for the actual code data
-		int headersize = this.headersize;
-		int pheadersize = this.pheadersize;
-		int programsize = 0;
-		int codebase = headersize + pheadersize;
-		
-		// It is not possible to write the program header with a fixed size
-		// since it would either waste space or be too short. As such, load
-		// all blob data into arrays;
-		int baseoff = ((codebase + 7) & (~7)), origbaseoff = baseoff;
-		int[] blobsoff = new int[n];
-		byte[] buf = new byte[512];
-		int blobprogramsize = 0;
-		for (int i = 0; i < n; i++)
-			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
-			{
-				// Align to 8
-				baseoff = ((baseoff + 7) & (~7));
-				blobsoff[i] = baseoff;
-				
-				// Copy all the data
-				for (InputStream is = __blobs[i];;)
-				{
-					int rc = is.read(buf);
-					
-					// EOF?
-					if (rc < 0)
-						break;
-					
-					// Copy
-					baos.write(buf, 0, rc);
-				}
-				
-				// Store
-				byte data[] = baos.toByteArray();
-				preblobs[i] = data;
-				
-				// Add offset
-				baseoff += data.length;
-				
-				// Determine if this contains the entry point
-				System.err.println("TODO -- Determine blob entry point.");
-			}
-		
-		// Determine size
-		blobprogramsize = baseoff - origbaseoff;
-		
-		// Determine size of the namespace entries
-		System.err.println("TODO -- Determine namespace table size.");
-		
-		// Extra bootstrap header?
-		programsize += blobprogramsize;
-		
-		// Write the output binary
-		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(__os))
-		{
+			// Write a small bootstrap
+			System.err.println("TODO -- Generate bootstrap.");
+			
+			// Make sure the bootstrap size is at least 4
+			if (rawpayload.size() < 4)
+				rpdos.writeInt(0);
+			byte[] bootstrap = rawpayload.toByteArray();
+			
+			// Calculate the full payload size
+			int fullpayloadsize = payloadsize + bootstrap.length;
+			
 			// ELFs are always static executable
 			dos.writeShort(2);
 			
@@ -245,21 +197,21 @@ public class ELFOutput
 			// Always version  1
 			dos.writeInt(1);
 			
-			// Entry point (always zero);
+			// Entry point (starts at the table end);
 			// ph offset (after this header);
 			// sh offset (not used, no sections are used)
 			switch (bits)
 			{
 					// 32-bit
 				case 32:
-					dos.writeInt(0);
+					dos.writeInt(payloadsize);
 					dos.writeInt(headersize);
 					dos.writeInt(0);
 					break;
 				
 					// 64-bit
 				case 64:
-					dos.writeLong(0);
+					dos.writeLong(payloadsize);
 					dos.writeLong(headersize);
 					dos.writeLong(0);
 					break;
@@ -292,12 +244,11 @@ public class ELFOutput
 			{
 					// 32-bit
 				case 32:
-					System.err.println("TODO -- Section offset+size");
-					dos.writeInt(codebase);	// Offset in file
+					dos.writeInt(blobstartpos);	// Offset in file
 					dos.writeInt(0);	// Virtual load address
 					dos.writeInt(0);	// Physical address?
-					dos.writeInt(programsize);	// Program size (in file)
-					dos.writeInt(programsize);	// Program size (in memory)
+					dos.writeInt(fullpayloadsize);	// Program size (in file)
+					dos.writeInt(fullpayloadsize);	// Program size (in memory)
 					dos.writeInt(5);	// RX
 					
 					// Padding
@@ -306,13 +257,12 @@ public class ELFOutput
 				
 					// 64-bit
 				case 64:
-					System.err.println("TODO -- Section offset+size");
 					dos.writeInt(5);	// RX
-					dos.writeLong(codebase);	// Offset in file
+					dos.writeLong(blobstartpos);	// Offset in file
 					dos.writeLong(0);	// Virtual load address
 					dos.writeLong(0);	// Physical address?
-					dos.writeLong(programsize);	// Program size in file
-					dos.writeLong(programsize);	// Program size in memory
+					dos.writeLong(fullpayloadsize);	// Program size in file
+					dos.writeLong(fullpayloadsize);	// Program size in memory
 					
 					// Padding
 					dos.writeLong(0);
@@ -323,16 +273,36 @@ public class ELFOutput
 					throw new RuntimeException("OOPS");
 			}
 			
-			// Write blob entry table
-			System.err.println("TODO -- Write blob table");
-			
-			// Write blob information
+			// Write the blob data
 			for (int i = 0; i < n; i++)
 			{
-				System.err.println("TODO -- Write blob data");
+				// Align to blob start
+				int blobstart = blobpos[i];
+				while ((dos.size() - blobstartpos) < blobstart)
+					dos.writeByte(0);
+				
+				// Write it out
+				dos.write(preblobs[i]);
 			}
+			
+			// Write the entry table
+			for (int i = 0; i < n; i++)
+			{
+				// Get entry
+				__BlobEntry__ e = entries[i];
+				
+				// Write details
+				dos.writeInt(e._reloff);
+				dos.writeInt(e._size);
+				
+				// Write flags
+				System.err.println("TODO -- Write entry point flag.");
+				dos.writeInt(0);
+			}
+			
+			// Write the bootstrap
+			dos.write(bootstrap);
 		}
-		*/
 	}
 	
 	/**
@@ -420,6 +390,40 @@ public class ELFOutput
 	}
 	
 	/**
+	 * Sets the endianess of the output stream.
+	 *
+	 * @param __dos The output stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/09
+	 */
+	private void __setEndianess(ExtendedDataOutputStream __dos)
+		throws NullPointerException
+	{
+		// Check
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		// Correct endian
+		JITCPUEndian endianess = this.endianess;
+		switch (endianess)
+		{
+				// Big endian
+			case BIG:
+				__dos.setEndianess(DataEndianess.BIG);
+				break;
+				
+				// Little endian
+			case LITTLE:
+				__dos.setEndianess(DataEndianess.LITTLE);
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * Setups entries for writing to the table data.
 	 *
 	 * @param __name Blob names.
@@ -473,19 +477,18 @@ public class ELFOutput
 			throw new NullPointerException("NARG");
 	
 		// Correct endian
+		__setEndianess(__dos);
 		JITCPUEndian endianess = this.endianess;
 		int endid;
 		switch (endianess)
 		{
 				// Big endian
 			case BIG:
-				__dos.setEndianess(DataEndianess.BIG);
 				endid = 2;
 				break;
 				
 				// Little endian
 			case LITTLE:
-				__dos.setEndianess(DataEndianess.LITTLE);
 				endid = 1;
 				break;
 			
