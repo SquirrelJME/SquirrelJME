@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.exe.elf;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,6 +30,10 @@ import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 public class ELFOutput
 	implements ExecutableOutput
 {
+	/** The size of the entry table. */
+	private static final int _ENTRY_SIZE =
+		12;
+	
 	/** System properties which are available. */
 	protected final Map<String, String> properties =
 		new HashMap<>();
@@ -50,6 +55,9 @@ public class ELFOutput
 	
 	/** The program header size. */
 	protected final int pheadersize;
+	
+	/** Start of the blob data. */
+	protected final int blobstartpos;
 	
 	/**
 	 * Initializes the ELF output with the specified parameters.
@@ -103,6 +111,10 @@ public class ELFOutput
 		this.endianess = __end;
 		this.osabi = __osabi;
 		this.cputype = __cputype;
+		
+		// The blob starts at an aligned address following the program header
+		// and normal header
+		this.blobstartpos = (this.headersize + this.pheadersize + 7) & (~7);
 	}
 	
 	/**
@@ -141,6 +153,30 @@ public class ELFOutput
 		// Load blobs into byte arrays
 		int n = __names.length;
 		byte[][] preblobs = __preloadBlobs(__blobs);
+		
+		// Determine positions where the blobs exist
+		int[] blobpos = __blobPositions(preblobs);
+		int tablestart = blobpos[n];
+		
+		// Setup the table and determine the table size
+		__BlobEntry__[] entries = __setupEntries(__names, preblobs, blobpos,
+			tablestart);
+		int tablesize = entries.length * _ENTRY_SIZE;
+		
+		// Calculate the end of the blob and table data
+		int blobstartpos = this.blobstartpos;
+		int payloadsize = (tablesize + tablestart);
+		int endinfile = payloadsize + blobstartpos;
+		
+		// Start writing ELF details
+		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(__os))
+		{
+			// Write the ELF identification
+			__writeIdentification(dos);
+			
+			if (true)
+				throw new Error("TODO");
+		}
 		
 		throw new Error("TODO");
 		/*
@@ -200,66 +236,6 @@ public class ELFOutput
 		// Write the output binary
 		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(__os))
 		{
-			// Correct endian
-			JITCPUEndian endianess = this.endianess;
-			int endid;
-			switch (endianess)
-			{
-					// Big endian
-				case BIG:
-					dos.setEndianess(DataEndianess.BIG);
-					endid = 2;
-					break;
-					
-					// Little endian
-				case LITTLE:
-					dos.setEndianess(DataEndianess.LITTLE);
-					endid = 1;
-					break;
-				
-					// Unknown
-				default:
-					throw new RuntimeException("OOPS");
-			}
-			
-			// Write header
-			dos.writeByte(0x7F);
-			dos.writeByte('E');
-			dos.writeByte('L');
-			dos.writeByte('F');
-			
-			// Which class?
-			int bits = this.bits;
-			switch (bits)
-			{
-					// 32-bit
-				case 32:
-					dos.writeByte(1);
-					break;
-				
-					// 64-bit:
-				case 64:
-					dos.writeByte(2);
-					break;
-				
-					// Unknown
-				default:
-					throw new RuntimeException("OOPS");
-			}
-			
-			// Which endianess
-			dos.writeByte(endid);
-			
-			// Always version 1
-			dos.writeByte(1);
-			
-			// The OS ABI
-			dos.writeByte(this.osabi);
-			
-			// Ignore padding
-			dos.writeInt(0);
-			dos.writeInt(0);
-			
 			// ELFs are always static executable
 			dos.writeShort(2);
 			
@@ -360,6 +336,44 @@ public class ELFOutput
 	}
 	
 	/**
+	 * Determines the position where all blobs start.
+	 *
+	 * @param __preblobs The positions where each blob starts.
+	 * @return The positions of all blobs.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/09
+	 */
+	private int[] __blobPositions(byte[][] __preblobs)
+		throws NullPointerException
+	{
+		// Check
+		if (__preblobs == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup
+		int n = __preblobs.length;
+		int[] rv = new int[n + 1];
+		
+		// Determine all blob positions
+		int at = 0;
+		for (int i = 0; i < n; i++)
+		{
+			// Align
+			at = (at + 7) & (~7);
+			rv[i] = at;
+			
+			// Add size of the blob
+			at += __preblobs[i].length;
+		}
+		
+		// The last address is the final position (where the table is written)
+		rv[n] = (at + 7) & (~7);
+		
+		// Return
+		return rv;
+	}
+	
+	/**
 	 * Preloads blobs into byte arrays since there are unknowns when it comes
 	 * to size.
 	 *
@@ -403,6 +417,120 @@ public class ELFOutput
 		
 		// Return it
 		return rv;
+	}
+	
+	/**
+	 * Setups entries for writing to the table data.
+	 *
+	 * @param __name Blob names.
+	 * @param __blob Blob preloaded buffers.
+	 * @param __blobpos The start of all the blobs.
+	 * @param __tablestart Where the table starts.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/09
+	 */
+	private __BlobEntry__[] __setupEntries(String[] __names,
+		byte[][] __preblobs, int[] __blobpos, int __tablestart)
+		throws NullPointerException
+	{
+		// Check
+		if (__names == null || __preblobs == null || __blobpos == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup
+		int n = __names.length;
+		__BlobEntry__[] rv = new __BlobEntry__[n];
+		
+		// Build table
+		for (int i = 0; i < n; i++)
+		{
+			// Create entry
+			__BlobEntry__ e = new __BlobEntry__();
+			rv[i] = e;
+			
+			// Relative offset from the start of the table data
+			e._reloff = __blobpos[i] - __tablestart;
+			e._size = __preblobs[i].length;
+		}
+		
+		// Return
+		return rv;
+	}
+	
+	/**
+	 * Writes the ELF identification.
+	 *
+	 * @param __dos The output stream to use.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/09
+	 */
+	private void __writeIdentification(ExtendedDataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+	
+		// Correct endian
+		JITCPUEndian endianess = this.endianess;
+		int endid;
+		switch (endianess)
+		{
+				// Big endian
+			case BIG:
+				__dos.setEndianess(DataEndianess.BIG);
+				endid = 2;
+				break;
+				
+				// Little endian
+			case LITTLE:
+				__dos.setEndianess(DataEndianess.LITTLE);
+				endid = 1;
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+		
+		// Write header
+		__dos.writeByte(0x7F);
+		__dos.writeByte('E');
+		__dos.writeByte('L');
+		__dos.writeByte('F');
+		
+		// Which class?
+		int bits = this.bits;
+		switch (bits)
+		{
+				// 32-bit
+			case 32:
+				__dos.writeByte(1);
+				break;
+			
+				// 64-bit:
+			case 64:
+				__dos.writeByte(2);
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+		
+		// Which endianess
+		__dos.writeByte(endid);
+		
+		// Always version 1
+		__dos.writeByte(1);
+		
+		// The OS ABI
+		__dos.writeByte(this.osabi);
+		
+		// Ignore padding
+		__dos.writeInt(0);
+		__dos.writeInt(0);
 	}
 }
 
