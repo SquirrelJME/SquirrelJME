@@ -17,3 +17,8 @@ just crawl around pointers and such. Although the entry point if detected
 could just be used from the namespace table data. This would require that the
 class processor flag such a thing.
 
+## 22:41
+
+I should do more in the constructor and split the writing portion of the ELF
+code.
+
