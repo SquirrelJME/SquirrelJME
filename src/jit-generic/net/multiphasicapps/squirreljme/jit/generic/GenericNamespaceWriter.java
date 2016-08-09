@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.io.OutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,8 +52,24 @@ public final class GenericNamespaceWriter
 	/** The namespace name. */
 	protected final String namespace;
 	
-	/** Where data is to be written. */
-	protected final ExtendedDataOutputStream output;
+	/** Intended output file. */
+	protected final OutputStream intendedoutput;
+	
+	/** Code output (backing queue). */
+	protected final ByteDeque bdcode =
+		new ByteDeque();
+	
+	/** Code output. */
+	protected final ExtendedDataOutputStream outcode =
+		new ExtendedDataOutputStream(new ByteDequeOutputStream(this.bdcode));
+	
+	/** Data output (backing queue). */
+	protected final ByteDeque bddata =
+		new ByteDeque();
+	
+	/** Data output. */
+	protected final ExtendedDataOutputStream outdata =
+		new ExtendedDataOutputStream(new ByteDequeOutputStream(this.bddata));
 	
 	/** The output data endianess. */
 	protected final DataEndianess endianess;
@@ -64,10 +81,6 @@ public final class GenericNamespaceWriter
 	/** Visible lock. */
 	final Object _lock =
 		this.lock;
-	
-	/** Table of contents directory. */
-	private final __Contents__ _contents =
-		new __Contents__();
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
@@ -111,9 +124,8 @@ public final class GenericNamespaceWriter
 		// Might fail
 		try
 		{
-			// Create an output for the namespace writer
-			ExtendedDataOutputStream output = new ExtendedDataOutputStream(
-				cc.createCache(__ns));
+			// Create intended output for writing on close
+			this.intendedoutput = cc.createCache(__ns);
 			
 			// Set endianess
 			DataEndianess end;
@@ -133,12 +145,8 @@ public final class GenericNamespaceWriter
 				default:
 					throw new JITException(String.format("BA03 %s", jitend));
 			}
-			output.setEndianess(end);
+			this.outcode.setEndianess(end);
 			this.endianess = end;
-			
-			// Write basic header so that blobs are identifiable
-			output.writeLong(GenericBlobConstants.FIRST_MAGIC);
-			output.writeLong(GenericBlobConstants.SECOND_MAGIC);
 			
 			// Set
 			this.output = output;
@@ -234,6 +242,10 @@ public final class GenericNamespaceWriter
 			// Could fail
 			try
 			{
+				if (true)
+					throw new Error("TODO");
+				
+				/*
 				// Write final pieces before closing
 				ExtendedDataOutputStream output = this.output;
 				if (!this._closed)
@@ -290,9 +302,10 @@ public final class GenericNamespaceWriter
 					output.writeInt((int)contentp);
 					output.writeInt(numcontents);
 				}
-		
+				
 				// Close output
 				output.close();
+				*/
 			}
 			
 			// {@squirreljme.error BA06 Failed to close the generic namespace
@@ -370,12 +383,37 @@ public final class GenericNamespaceWriter
 				throw new JITException("BA0h");
 			
 			// Add to contents directory
+			if (true)
+				throw new Error("TODO");
+			/*
 			this._contents.__add(__bw._startpos, this.output.size(),
-				__bw._contenttype, __bw._contentname);
+				__bw._contenttype, __bw._contentname);*/
 			
 			// Clear
 			this._current = null;
 		}
+	}
+	
+	/**
+	 * Returns the code output.
+	 *
+	 * @return The code output.
+	 * @since 2016/08/09
+	 */
+	final ExtendedDataOutputStream __code()
+	{
+		return this.outcode;
+	}
+	
+	/**
+	 * Returns the data output.
+	 *
+	 * @return The data output.
+	 * @since 2016/08/09
+	 */
+	final ExtendedDataOutputStream __data()
+	{
+		return this.outdata;
 	}
 	
 	/**
@@ -387,17 +425,6 @@ public final class GenericNamespaceWriter
 	final DataEndianess __endianess()
 	{
 		return this.endianess;
-	}
-	
-	/**
-	 * Returns the output.
-	 *
-	 * @return The output.
-	 * @since 2016/07/27
-	 */
-	final ExtendedDataOutputStream __output()
-	{
-		return this.output;
 	}
 	
 	/**

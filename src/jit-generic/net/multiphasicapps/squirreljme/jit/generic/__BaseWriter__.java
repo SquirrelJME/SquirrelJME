@@ -35,6 +35,12 @@ abstract class __BaseWriter__
 	/** The name of this content entry. */
 	protected final String contentname;
 	
+	/** Code output. */
+	protected final ExtendedDataOutputStream outcode;
+	
+	/** Data output. */
+	protected final ExtendedDataOutputStream outdata;
+	
 	/** Raw data output. */
 	protected final OutputStream rawoutput;
 	
