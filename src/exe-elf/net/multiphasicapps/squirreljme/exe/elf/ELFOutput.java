@@ -48,6 +48,9 @@ public class ELFOutput
 	/** The size of the ELF header. */
 	protected final int headersize;
 	
+	/** The program header size. */
+	protected final int pheadersize;
+	
 	/**
 	 * Initializes the ELF output with the specified parameters.
 	 *
@@ -75,11 +78,13 @@ public class ELFOutput
 				// 32-bit
 			case 32:
 				this.headersize = 52;
+				this.pheadersize = 32;
 				break;
 				
 				// 64-bit
 			case 64:
 				this.headersize = 64;
+				this.pheadersize = 56;
 				break;
 				
 				// Unknown
@@ -140,6 +145,8 @@ public class ELFOutput
 		byte[][] preblobs = new byte[n][];
 		byte[] buf = new byte[512];
 		int headersize = this.headersize;
+		int pheadersize = this.pheadersize;
+		int programsize = 0;
 		for (int i = 0; i < n; i++)
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 			{
@@ -162,6 +169,9 @@ public class ELFOutput
 				// Determine if this contains the entry point
 				System.err.println("TODO -- Determine blob entry point.");
 			}
+		
+		// The base address for the actual code data
+		int codebase = headersize + pheadersize;
 		
 		// Write the output binary
 		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(__os))
@@ -201,7 +211,6 @@ public class ELFOutput
 					// 32-bit
 				case 32:
 					dos.writeByte(1);
-					headersize = 52;
 					break;
 				
 					// 64-bit:
@@ -267,9 +276,8 @@ public class ELFOutput
 			dos.writeShort(headersize);
 			
 			// Program header details
-			System.err.println("TODO -- Write program header size+count.");
-			dos.writeShort(0);	// size
-			dos.writeShort(0);	// count
+			dos.writeShort(pheadersize);	// size
+			dos.writeShort(1);	// count
 			
 			// There are no sections
 			dos.writeShort(0);
@@ -278,8 +286,42 @@ public class ELFOutput
 			// There is no string index
 			dos.writeShort(0);
 			
-			// Write program header
-			System.err.println("TODO -- Write program header table");
+			// Write program header (only one)
+			dos.writeInt(1);	// Load this section
+			switch (bits)
+			{
+					// 32-bit
+				case 32:
+					System.err.println("TODO -- Section offset+size");
+					dos.writeInt(codebase);	// Offset in file
+					dos.writeInt(0);	// Virtual load address
+					dos.writeInt(0);	// Physical address?
+					dos.writeInt(programsize);	// Program size (in file)
+					dos.writeInt(programsize);	// Program size (in memory)
+					dos.writeInt(5);	// RX
+					
+					// Padding
+					dos.writeInt(0);
+					break;
+				
+					// 64-bit
+				case 64:
+					System.err.println("TODO -- Section offset+size");
+					dos.writeInt(5);	// RX
+					dos.writeLong(codebase);	// Offset in file
+					dos.writeLong(0);	// Virtual load address
+					dos.writeLong(0);	// Physical address?
+					dos.writeLong(programsize);	// Program size in file
+					dos.writeLong(programsize);	// Program size in memory
+					
+					// Padding
+					dos.writeLong(0);
+					break;
+				
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
 			
 			// Write blob information
 			System.err.println("TODO -- Write blob data");
