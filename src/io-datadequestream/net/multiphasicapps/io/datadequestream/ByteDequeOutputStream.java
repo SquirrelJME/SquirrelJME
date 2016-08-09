@@ -91,7 +91,7 @@ public class ByteDequeOutputStream
 	 */
 	public int size()
 	{
-		this.deque.available();
+		return this.deque.available();
 	}
 	
 	/**
