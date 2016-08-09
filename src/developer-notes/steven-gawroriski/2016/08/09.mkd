@@ -123,3 +123,11 @@ the import table is initialized. This would save a bunch of processing time on
 the output and would make `Class.getSuperClass()` virtually instant since it
 would refer to a class object already (or similar).
 
+## 19:11
+
+Since everything would be in memory, this essentially would make limited
+systems a bit unable to cross compile if namespaces and the output ELFs get
+too large. That however could be remidied by swap and/or a virtual machine. At
+a speed penalty an emulated environment could be used for building that can
+run the actual self binary.
+
