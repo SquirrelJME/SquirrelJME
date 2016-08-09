@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
 import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITStaticCallRewrite;
@@ -78,10 +79,14 @@ public class LinuxMIPSBuilder
 			throw new NullPointerException("NARG");
 		
 		// Setup ELF output
+		JITTriplet triplet = __conf.triplet();
 		try (OutputStream bin = __zsw.nextEntry("squirreljme",
 			ZipCompressionType.DEFAULT_COMPRESSION))
 		{
-			ELFOutput eo = new ELFOutput();
+			// Setup the basic ELF information
+			JITCPUEndian end = triplet.endianess();
+			ELFOutput eo = new ELFOutput(triplet.bits(), end,
+				0x03, 0x08);
 			
 			// Set properties
 			super.addStandardSystemProperties(__conf, eo);
