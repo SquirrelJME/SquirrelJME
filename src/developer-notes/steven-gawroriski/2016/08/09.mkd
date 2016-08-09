@@ -61,3 +61,34 @@ for the EDOS usage.
 
 And `ByteDequeOutputStream` was easy to write.
 
+## 18:40
+
+I should likely pre-encode method descriptors and such, that would be much
+more efficient rather than parsing them at run-time. I should also use a
+generic table that can be used for linking and such. This would be like a
+giant link table which refers to classes and such. The actual generated code
+would use such a table to refer to other things. When a namespace is loaded
+this would be intialized to point to the appropriate structures and such. This
+information would really be needed for each process that runs on the JVM
+however. However, not all of it is needed at once. One thing which would be
+useful is if I could statically do everything and not really require
+initialization much at all. So when the eventual ELF is created, all of the
+classes statically refer to another directly in memory. The initial JVM could
+use a prelinked table with the correct classes linked in and such. I would
+suppose that storage of statics would be on a per-namespace basis. Static
+fields are quite literally known at compile time. So instead of initializing
+a class and determine where statics are located I can quite literally just
+refer to a given offset in a structure directly. The only thing that would be
+needed to actual initialization of the data (for anything that is constant).
+So there would be a template. Then code that refers to static variables would
+just reference the static namespace storage area via a pointer. One issue
+however is that namespaces would need to be linked together somehow.
+
+## 18:49
+
+Also, classes can refer to static variables that exist in other namespaces,
+so everythind would essentially be done by a set of pointers. So essentially,
+each namespace is given a size and a data template which stores all static
+values. This would essentially be an array of pointers to static variable
+locations.
+

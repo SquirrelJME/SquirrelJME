@@ -110,9 +110,6 @@ public final class GenericNamespaceWriter
 		JITOutputConfig.Immutable config = __go.config();
 		this.config = config;
 		
-		// The blank string is always first
-		strings.put("", 0);
-		
 		// Get the cache creator because all generic output is to blobs
 		// {@squirreljme.error BA01 The JIT output configuration does not have
 		// an associated cache generator. All generic JIT output is written

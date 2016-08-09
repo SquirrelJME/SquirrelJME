@@ -41,9 +41,6 @@ abstract class __BaseWriter__
 	/** Data output. */
 	protected final ExtendedDataOutputStream outdata;
 	
-	/** Raw data output. */
-	protected final OutputStream rawoutput;
-	
 	/** The string table. */
 	final __StringTable__ _strings;
 	
