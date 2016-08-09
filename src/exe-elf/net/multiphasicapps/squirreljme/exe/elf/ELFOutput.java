@@ -131,7 +131,7 @@ public class ELFOutput
 		this.sheaderstart = this.headersize + this.pheadersize;
 		
 		// The start of the string table
-		this.stringtablestart = this.sheaderstart + (this.sheadersize * 2);
+		this.stringtablestart = this.sheaderstart + (this.sheadersize * 3);
 		
 		// The blob starts at an aligned address following the program header
 		// and normal header
@@ -254,12 +254,13 @@ public class ELFOutput
 			dos.writeShort(pheadersize);	// size
 			dos.writeShort(1);	// count
 			
-			// There is only a single section
-			dos.writeShort(this.sheadersize);
-			dos.writeShort(2);
+			// 3 Sections: NULL, .text, strings
+			int sheadersize = this.sheadersize;
+			dos.writeShort(sheadersize);
+			dos.writeShort(3);
 			
-			// String index is the second section
-			dos.writeShort(1);
+			// String index is the last section
+			dos.writeShort(2);
 			
 			// Write program header (only one) and the two sections
 			dos.writeInt(1);	// Load this section
@@ -279,6 +280,10 @@ public class ELFOutput
 					
 					// Padding
 					dos.writeInt(0);
+					
+					// Null section
+					for (int p = 0; p < sheadersize; p++)
+						dos.writeByte(0);
 					
 					// Text Section
 					dos.writeInt(0);						// name
@@ -317,6 +322,10 @@ public class ELFOutput
 					
 					// Padding
 					dos.writeLong(0);
+					
+					// Null section
+					for (int p = 0; p < sheadersize; p++)
+						dos.writeByte(0);
 					
 					// Text Section
 					dos.writeInt(0);						// name
