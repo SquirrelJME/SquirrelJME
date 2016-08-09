@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
@@ -19,6 +21,10 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
  */
 class __Classes__
 {
+	/** The mapping of classes. */
+	protected final Map<ClassNameSymbol, __Class__> classes =
+		new HashMap<>();
+	
 	/**
 	 * Creates a new class in the output namespace.
 	 *
@@ -34,8 +40,14 @@ class __Classes__
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		// 
-		throw new Error("TODO");
+		// Create class
+		__Class__ rv = new __Class__(__cn);
+		
+		// Add class, replace existing
+		this.classes.put(__cn, rv);
+		
+		// Return it
+		return rv;
 	}
 }
 

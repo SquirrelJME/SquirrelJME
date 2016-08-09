@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This represents multiple resources in a namespace.
  *
@@ -17,6 +20,10 @@ package net.multiphasicapps.squirreljme.jit.generic;
  */
 class __Resources__
 {
+	/** The mapping of resources. */
+	protected final Map<String, __Resource__> resources =
+		new HashMap<>();
+	
 	/**
 	 * Creates a new resource.
 	 *
@@ -32,7 +39,14 @@ class __Resources__
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create a new one
+		__Resource__ rv = new __Resource__(__n);
+		
+		// Add it, replace existing
+		this.resources.put(__n, rv);
+		
+		// Return it
+		return rv;
 	}
 }
 

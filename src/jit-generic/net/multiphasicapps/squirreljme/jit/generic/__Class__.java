@@ -19,6 +19,27 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
  */
 class __Class__
 {
+	/** The name of this class. */
+	protected final ClassNameSymbol name;
+	
+	/**
+	 * Initializes a class.
+	 *
+	 * @param __n The name of the class to write.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/09
+	 */
+	__Class__(ClassNameSymbol __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.name = __n;
+	}
+	
 	/**
 	 * Returns the name of this class.
 	 *
@@ -27,7 +48,7 @@ class __Class__
 	 */
 	ClassNameSymbol __className()
 	{
-		throw new Error("TODO");
+		return this.name;
 	}
 }
 
