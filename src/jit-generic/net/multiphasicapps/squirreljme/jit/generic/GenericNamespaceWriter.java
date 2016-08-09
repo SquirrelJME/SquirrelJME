@@ -78,6 +78,10 @@ public final class GenericNamespaceWriter
 	final __StringTable__ _strings =
 		new __StringTable__();
 	
+	/** The import table. */
+	final __Imports__ _imports =
+		new __Imports__();
+	
 	/** Visible lock. */
 	final Object _lock =
 		this.lock;

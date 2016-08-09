@@ -87,8 +87,20 @@ however is that namespaces would need to be linked together somehow.
 ## 18:49
 
 Also, classes can refer to static variables that exist in other namespaces,
-so everythind would essentially be done by a set of pointers. So essentially,
+so everything would essentially be done by a set of pointers. So essentially,
 each namespace is given a size and a data template which stores all static
 values. This would essentially be an array of pointers to static variable
 locations.
+
+## 18:55
+
+This could actually be done for classes and methods also, refer to them just by
+pointer. The only issue are fields, however due to single inheritence this can
+be done by using offset pointers. So when a field is read, it can just do
+`*(object_ptr + field_offset)` to access the data.
+
+## 18:59
+
+Just at the entry of every method there will need to be a way to point to the
+currently active method so it knows the import table to be used.
 
