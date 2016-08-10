@@ -20,6 +20,14 @@ class __Resource__
 	/** The name of the resource. */
 	protected final String name;
 	
+	/** The start of the data (in the data chunk). */
+	volatile int _datastart =
+		-1;
+	
+	/** The end of the data (in the data chunk). */
+	volatile int _dataend =
+		-1;
+	
 	/**
 	 * Initializes the resource.
 	 *

@@ -79,20 +79,8 @@ abstract class __BaseWriter__
 	public void close()
 		throws JITException
 	{
-		// Close the raw output instead
-		try
-		{
-			if (false)
-				throw new IOException("TODO");
-			if (true)
-				throw new Error("TODO");
-		}
-		
-		// {@squirreljme.error BA0c Failed to close the output.}
-		catch (IOException e)
-		{
-			throw new JITException("BA0c", e);
-		}
+		// With the new generation layout, nothing needs to be done in the base
+		// class
 	}
 }
 
