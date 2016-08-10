@@ -86,8 +86,8 @@ final class __Imports__
 	 * @return The import information.
 	 * @since 2016/08/09
 	 */
-	__Import__ __importInstanceMethod(ClassNameSymbol __c, IdentifierSymbol __n,
-		MethodSymbol __t)
+	__Import__ __importInstanceMethod(ClassNameSymbol __c,
+		IdentifierSymbol __n, MethodSymbol __t)
 		throws NullPointerException
 	{
 		// Check
