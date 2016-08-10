@@ -136,3 +136,8 @@ run the actual self binary.
 This then means that the order checks in the namespace writer are not required
 although I should still have them for other targets and such.
 
+## 20:10
+
+Ok so generally when it comes to writing classes, they will not write any data
+and they will just instead write to the code area.
+
