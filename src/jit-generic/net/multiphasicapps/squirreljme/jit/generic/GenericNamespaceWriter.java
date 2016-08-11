@@ -252,82 +252,24 @@ public final class GenericNamespaceWriter
 			if (this._current != null)
 				throw new JITException("BA09");
 			
-			// Could fail
-			try
+			// Need to generate the actual binary?
+			if (!this._closed)
 			{
-				if (false)
-					throw new IOException("TODO");
-				if (true)
-					throw new Error("TODO");
+				// Mark closed
+				this._closed = true;
 				
-				/*
-				// Write final pieces before closing
-				ExtendedDataOutputStream output = this.output;
-				if (!this._closed)
+				// Could fail
+				try
 				{
-					// Mark closed
-					this._closed = true;
-				
-					// The string table and the contents
-					Map<String, Integer> strings = this.strings;
-					__Contents__ contents = this._contents;
-					int numcontents = contents.size();
-					
-					// Sort entries before being used (faster to do it now)
-					contents.sortEntries();
-					
-					// Add strings for all entry names
-					int[] contstrid = new int[numcontents];
-					for (int i = 0; i < numcontents; i++)
-						contstrid[i] = __addString(contents.get(i)._name);
-					
-					// Write the string table
-					int numstrings = strings.size();
-					int stpos = __writeStringTable(output, strings);
-					
-					// Align to 4
-					long contentp = 0;
-					while (((contentp = output.size()) & 3) != 0)
-						output.writeByte(0xFD);
-					
-					// {@squirreljme.error BA0r Pointer to table of contents
-					// is not within the range of 2GiB.}
-					if (contentp < 0 || contentp > Integer.MAX_VALUE)
-						throw new JITException("BA0r");
-					
-					// Write the contents table
-					for (int i = 0; i < numcontents; i++)
-					{
-						__Contents__.__Entry__ e = contents.get(i);
-						
-						// Write
-						output.writeShort(e._type.ordinal());
-						output.writeShort(contstrid[i]);
-						output.writeInt(e._startpos);
-						output.writeInt(e._size);
-					}
-					
-					// Align to 4
-					while ((output.size() & 3) != 0)
-						output.writeByte(0xFD);
-					
-					// Write the string table and content pointer info
-					output.writeInt(stpos);
-					output.writeInt(numstrings);
-					output.writeInt((int)contentp);
-					output.writeInt(numcontents);
+					__writeCache();
 				}
 				
-				// Close output
-				output.close();
-				*/
-			}
-			
-			// {@squirreljme.error BA06 Failed to close the generic namespace
-			// writer.}
-			catch (IOException e)
-			{
-				throw new JITException("BA06", e);
+				// {@squirreljme.error BA06 Failed to write the namespace to
+				// the cache output.}
+				catch (IOException e)
+				{
+					throw new JITException("BA06", e);
+				}
 			}
 		}
 	}
@@ -392,6 +334,77 @@ public final class GenericNamespaceWriter
 	final DataEndianess __endianess()
 	{
 		return this.endianess;
+	}
+	
+	/**
+	 * Writes the final binary to the output cache.
+	 *
+	 * @throws IOException On write errors.
+	 * @since 2016/08/11
+	 */
+	private final void __writeCache()
+		throws IOException
+	{
+		// Write to the output
+		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(
+			this.intendedoutput))
+		{
+			// Make sure the endianess matches
+			dos.setEndianess(this.endianess);
+			
+			// Write data to the output
+			ByteDeque bddata = this.bddata;
+			long datastart = dos.size();
+			__writeDeque(bddata, dos);
+			long dataend = dos.size();
+			
+			// Align
+			while ((dos.size() & 7) != 0)
+				dos.writeByte(0);
+			
+			// Write code to the output
+			ByteDeque bdcode = this.bdcode;
+			long codestart = dos.size();
+			__writeDeque(bdcode, dos);
+			long codeend = dos.size();
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Writes the given deque to the output stream.
+	 *
+	 * @param __d The deque to write.
+	 * @param __os The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @sinced 2016/08/11
+	 */
+	private final void __writeDeque(ByteDeque __d, OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__d == null || __os == null)
+			throw new NullPointerException("NARG");
+		
+		// Write all of the data
+		int n = __d.available(), left = n;
+		byte[] buf = new byte[4096];
+		int bn = buf.length, at = 0;
+		while (left > 0)
+		{
+			// Read what is needed
+			int rc = Math.min(bn, left);
+			__d.get(at, buf, 0, rc);
+			
+			// Write
+			__os.write(buf, 0, rc);
+			
+			// Reduce
+			left -= rc;
+			at += rc;
+		}
 	}
 }
 

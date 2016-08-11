@@ -13,3 +13,99 @@ There would be one for classes and another for resources. Although it may be
 possible to have relocations and not have them at the same time. Relocations
 could be useful for the end linking process into the SquirrelJME binary.
 
+## 12:28
+
+I received the Creator CI40 today, so this will be an interesting device to
+develop for.
+
+	# uname -a
+	Linux OpenWrt 4.1.13 #1 SMP Tue Jul 26 02:49:14 UTC 2016 mips GNU/Linux
+	
+	# cat /proc/cpuinfo
+	system type             : IMG Pistachio SoC (B0)
+	machine                 : IMG Marduk - Ci40 with ca8210
+	processor               : 0
+	cpu model               : MIPS interAptiv (multi) V2.0  FPU V0.0
+	BogoMIPS                : 363.72
+	wait instruction        : yes
+	microsecond timers      : yes
+	tlb_entries             : 64
+	extra interrupt vector  : yes
+	hardware watchpoint     : yes, count: 4, address/irw mask: [0x0ffc, 0x0ffc,
+	0x0ffb, 0x0ffb]
+	isa                     : mips1 mips2 mips32r1 mips32r2
+	ASEs implemented        : mips16 dsp mt eva
+	shadow register sets    : 1
+	kscratch registers      : 0
+	package                 : 0
+	core                    : 0
+	VCED exceptions         : not available
+	VCEI exceptions         : not available
+	VPE                     : 0
+
+	processor               : 1
+	cpu model               : MIPS interAptiv (multi) V2.0  FPU V0.0
+	BogoMIPS                : 272.79
+	wait instruction        : yes
+	microsecond timers      : yes
+	tlb_entries             : 64
+	extra interrupt vector  : yes
+	hardware watchpoint     : yes, count: 4, address/irw mask: [0x0ffc, 0x0ffc,
+	0x0ffb, 0x0ffb]
+	isa                     : mips1 mips2 mips32r1 mips32r2
+	ASEs implemented        : mips16 dsp mt eva
+	shadow register sets    : 1
+	kscratch registers      : 0
+	package                 : 0
+	core                    : 0
+	VCED exceptions         : not available
+	VCEI exceptions         : not available
+	VPE                     : 1
+
+	processor               : 2
+	cpu model               : MIPS interAptiv (multi) V2.0  FPU V0.0
+	BogoMIPS                : 363.72
+	wait instruction        : yes
+	microsecond timers      : yes
+	tlb_entries             : 64
+	extra interrupt vector  : yes
+	hardware watchpoint     : yes, count: 4, address/irw mask: [0x0ffc, 0x0ffc,
+	0x0ffb, 0x0ffb]
+	isa                     : mips1 mips2 mips32r1 mips32r2
+	ASEs implemented        : mips16 dsp mt eva
+	shadow register sets    : 1
+	kscratch registers      : 0
+	package                 : 0
+	core                    : 1
+	VCED exceptions         : not available
+	VCEI exceptions         : not available
+	VPE                     : 0
+
+	processor               : 3
+	cpu model               : MIPS interAptiv (multi) V2.0  FPU V0.0
+	BogoMIPS                : 363.72
+	wait instruction        : yes
+	microsecond timers      : yes
+	tlb_entries             : 64
+	extra interrupt vector  : yes
+	hardware watchpoint     : yes, count: 4, address/irw mask: [0x0ffc, 0x0ffc,
+	0x0ffb, 0x0ffb]
+	isa                     : mips1 mips2 mips32r1 mips32r2
+	ASEs implemented        : mips16 dsp mt eva
+	shadow register sets    : 1
+	kscratch registers      : 0
+	package                 : 0
+	core                    : 1
+	VCED exceptions         : not available
+	VCEI exceptions         : not available
+	VPE                     : 1
+	
+	# free -m
+		         total       used       free     shared    buffers     cached
+	Mem:        185380      34200     151180         84          0       6888
+	-/+ buffers/cache:      27312     158068
+	Swap:            0          0          0
+
+Going to install a Debian chroot since there currently is no Linux kernel
+available.
+
