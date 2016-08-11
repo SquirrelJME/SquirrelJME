@@ -15,6 +15,11 @@ import net.multiphasicapps.io.data.RandomAccessData;
 /**
  * This class supports reading the executable blob format.
  *
+ * The layout of the blob is in the following format:
+ * {@code
+ *
+ * }
+ *
  * @since 2016/08/11
  */
 public class GenericBlob
