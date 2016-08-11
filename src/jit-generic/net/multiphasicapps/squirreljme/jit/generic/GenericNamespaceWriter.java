@@ -355,11 +355,8 @@ public final class GenericNamespaceWriter
 			if (this._current != __bw)
 				throw new JITException("BA0h");
 			
-			// Add to contents directory
-			if (true)
-				throw new Error("TODO");
-			
-			// Clear
+			// Clear, there is no need to add the closed content to a table of
+			// contents because that is managed when the content is created.
 			this._current = null;
 		}
 	}
