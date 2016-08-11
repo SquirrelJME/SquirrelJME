@@ -72,5 +72,114 @@ public class ByteArrayData
 		this.offset = __o;
 		this.length = __l;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public DataEndianess getEndianess()
+	{
+		return this.endianess;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public void read(int __p, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public int readByte(int __p)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public double readDouble(int __p)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public double readFloat(int __p)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public int readInt(int __p)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public long readLong(int __p)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public int readShort(int __p)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public int readUnsignedByte(int __p)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/11
+	 */
+	@Override
+	public int readUnsignedShort(int __p)
+		throws IndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
 }
 

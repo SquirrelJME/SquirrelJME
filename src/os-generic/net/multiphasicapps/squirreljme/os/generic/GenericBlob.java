@@ -21,7 +21,7 @@ public class GenericBlob
 {
 	/** The blob magic number. */
 	public static final long MAGIC_NUMBER =
-		0x7F537175697272656C4A4D45L;
+		0x537175697272656CL;
 	
 	/** The blob data. */
 	protected final RandomAccessData data;
