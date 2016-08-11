@@ -1,0 +1,16 @@
+# 2016/08/10
+
+## 19:19
+
+I found an open source profiler which is under the GNU GPL and is officially
+supported by OpenJDK, called VisualVM. With this I can determine where some
+slow code areas are.
+
+## 19:24
+
+Appears that the huffman tree code is slow in `getValue`.
+
+## 19:59
+
+I need a way to have a faster lookup of huffman values.
+
