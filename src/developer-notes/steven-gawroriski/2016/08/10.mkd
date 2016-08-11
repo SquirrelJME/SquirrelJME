@@ -14,3 +14,10 @@ Appears that the huffman tree code is slow in `getValue`.
 
 I need a way to have a faster lookup of huffman values.
 
+## 21:29
+
+I will need a way to have much faster huffman table lookup. Likely remove the
+traverser and instead have a way to get a direct bit lookup somehow. I do
+wonder though if there would be a way to make it so the table despite being
+like a binary tree can do better.
+

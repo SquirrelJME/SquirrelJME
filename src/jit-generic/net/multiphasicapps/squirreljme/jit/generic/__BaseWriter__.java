@@ -79,8 +79,8 @@ abstract class __BaseWriter__
 	public void close()
 		throws JITException
 	{
-		// With the new generation layout, nothing needs to be done in the base
-		// class
+		// Just call close on the writer
+		this.owner.__close(this);
 	}
 }
 

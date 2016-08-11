@@ -358,9 +358,6 @@ public final class GenericNamespaceWriter
 			// Add to contents directory
 			if (true)
 				throw new Error("TODO");
-			/*
-			this._contents.__add(__bw._startpos, this.output.size(),
-				__bw._contenttype, __bw._contentname);*/
 			
 			// Clear
 			this._current = null;
