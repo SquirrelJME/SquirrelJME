@@ -114,3 +114,11 @@ available.
 I should probably support reading the blob format before I write it, so I can
 have a clue as to how to write it out.
 
+## 18:17
+
+Appears the CPU on the device does not support denormal floating point
+operations, which is totally reasonable, and that the Linux kernel is not
+emulating these. I will need to make a note of this and have an illegal
+instruction handler for some CPUs to emulate operations on denormals so that
+even though they are not implemented by the CPU, the host code can still run.
+
