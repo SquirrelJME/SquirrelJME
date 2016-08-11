@@ -109,3 +109,8 @@ develop for.
 Going to install a Debian chroot since there currently is no Linux kernel
 available.
 
+## 15:11
+
+I should probably support reading the blob format before I write it, so I can
+have a clue as to how to write it out.
+

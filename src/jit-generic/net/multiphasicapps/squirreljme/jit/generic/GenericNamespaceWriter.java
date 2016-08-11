@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
+import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
 import net.multiphasicapps.squirreljme.os.generic.GenericStringType;
 import net.multiphasicapps.util.datadeque.ByteDeque;
@@ -351,6 +352,9 @@ public final class GenericNamespaceWriter
 		{
 			// Make sure the endianess matches
 			dos.setEndianess(this.endianess);
+			
+			// Write magic number
+			dos.writeLong(GenericBlob.MAGIC_NUMBER);
 			
 			// Write data to the output
 			ByteDeque bddata = this.bddata;

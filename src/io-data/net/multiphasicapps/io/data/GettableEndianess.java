@@ -11,23 +11,18 @@
 package net.multiphasicapps.io.data;
 
 /**
- * This is used by both data streams to indicate that they allow their default
- * endianess to be set and obtained.
+ * This interface is used for classes which can get their endianess obtained.
  *
- * @since 2016/07/10
+ * @since 2016/08/11
  */
-public interface SettableEndianess
-	extends GettableEndianess
+public interface GettableEndianess
 {
 	/**
-	 * Sets the endianess of the data.
+	 * Obtains the current default endianess of the data.
 	 *
-	 * @param __end The new default endianess to use.
-	 * @return The old endianess.
-	 * @throws NullPointerException If no endianess was specified.
+	 * @return The current endianess.
 	 * @since 2016/07/10
 	 */
-	public abstract DataEndianess setEndianess(DataEndianess __end)
-		throws NullPointerException;
+	public abstract DataEndianess getEndianess();
 }
 

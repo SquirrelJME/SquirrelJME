@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: os-generic
 X-SquirrelJME-UUID: c85d49ec-35e9-41df-bebf-1654a3928f71
-X-SquirrelJME-Depends: jit-base
+X-SquirrelJME-Depends: jit-base, io-data
 X-SquirrelJME-Error: AQ
 X-SquirrelJME-Target: generic
 Main-Class: net.multiphasicapps.squirreljme.os.generic.Main

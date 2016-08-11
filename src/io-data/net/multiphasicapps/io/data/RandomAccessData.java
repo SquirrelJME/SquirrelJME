@@ -11,23 +11,23 @@
 package net.multiphasicapps.io.data;
 
 /**
- * This is used by both data streams to indicate that they allow their default
- * endianess to be set and obtained.
+ * This interface is used to describe classes which allow access to data via
+ * a specific position.
  *
- * @since 2016/07/10
+ * @since 2016/08/11
  */
-public interface SettableEndianess
+public interface RandomAccessData
 	extends GettableEndianess
 {
 	/**
-	 * Sets the endianess of the data.
+	 * Reads a byte at the given position.
 	 *
-	 * @param __end The new default endianess to use.
-	 * @return The old endianess.
-	 * @throws NullPointerException If no endianess was specified.
-	 * @since 2016/07/10
+	 * @param __p The position to read from.
+	 * @return The read value.
+	 * @throws IndexOutOfBoundsException If the position is not within bounds.
+	 * @since 2016/08/11
 	 */
-	public abstract DataEndianess setEndianess(DataEndianess __end)
-		throws NullPointerException;
+	public abstract int readByte(int __p)
+		throws IndexOutOfBoundsException;
 }
 
