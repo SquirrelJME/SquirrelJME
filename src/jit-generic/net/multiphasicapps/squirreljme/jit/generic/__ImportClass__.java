@@ -11,20 +11,12 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 /**
- * This represents a single class, method, field, or string which has been
- * imported.
+ * Represents an import of a single class.
  *
- * @since 2016/08/09
+ * @since 2016/08/11
  */
-abstract class __Import__
+class __ImportClass__
+	extends __Import__
 {
-	/**
-	 * Initializes the single import.
-	 *
-	 * @since 2016/08/09
-	 */
-	__Import__()
-	{
-	}
 }
 

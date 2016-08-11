@@ -130,32 +130,23 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.INTERFACE_CLASS_NAMES);
 			
-			if (true)
-				throw new Error("TODO");
-			/*
-			// Need to add many strings
-			GenericNamespaceWriter nsw = this.owner;
+			// Store classes
 			int n = __ins.length;
-			
-			// Could fail
-			ExtendedDataOutputStream output = this.output;
-			try
+			__ImportClass__[] ics = new __ImportClass__[n];
+			__Imports__ imps = this._imports;
+			for (int i = 0; i < n; i++)
 			{
-				// Write count
-				output.writeInt(n);
-			
-				// The interface string IDs
-				for (int i = 0; i < n; i++)
-					output.writeShort(nsw.__addString(
-						__ins[i].toString()));
+				// Get class name
+				ClassNameSymbol cn = __ins[i];
+				if (cn == null)
+					throw new NullPointerException("NARG");
+				
+				// Store
+				ics[i] = imps.__importClass(cn);
 			}
 			
-			// {@squirreljme.error BA0m Failed to write the interfaces.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0m", e);
-			}
-			*/
+			// Set classes
+			this.modclass._interfaces = ics;
 		}
 	}
 	
@@ -173,29 +164,8 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
-			if (true)
-				throw new Error("TODO");
-			/*
-			try
-			{
-				// Write -1 if there is none, since zero could be a valid
-				// string index
-				ExtendedDataOutputStream output = this.output;
-				if (__cn == null)
-					output.writeInt(-1);
-			
-				// Otherwise the string index
-				else
-					output.writeShort(this.owner.__addString(
-						__cn.toString()));
-			}
-			
-			// {@squirreljme.error BA0l Failed to write the super class.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0l", e);
-			}
-			*/
+			// Set super class
+			this.modclass._super = this._imports.__importClass(__cn);
 		}
 	}
 	

@@ -24,7 +24,13 @@ class __Class__
 	protected final ClassNameSymbol name;
 	
 	/** The class flags. */
-	JITClassFlags _flags;
+	volatile JITClassFlags _flags;
+	
+	/** The super class. */
+	volatile __ImportClass__ _super;
+	
+	/** The interfaces implemented. */
+	volatile __ImportClass__[] _interfaces;
 	
 	/**
 	 * Initializes a class.

@@ -47,7 +47,7 @@ final class __Imports__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/09
 	 */
-	__Import__ __importClass(ClassNameSymbol __n)
+	__ImportClass__ __importClass(ClassNameSymbol __n)
 		throws NullPointerException
 	{
 		// Check
