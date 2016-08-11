@@ -1,2 +1,15 @@
 # 2016/08/11
 
+## 07:22
+
+What I will need is an object format for the generic namespace blobs.
+
+## 07:26
+
+I could use standard ELFs with relocations, however the blobs would not be
+directly ROM executable and such. So I suppose what I can do is have the code
+and data treads placed in the file and the table of contents placed at the end.
+There would be one for classes and another for resources. Although it may be
+possible to have relocations and not have them at the same time. Relocations
+could be useful for the end linking process into the SquirrelJME binary.
+
