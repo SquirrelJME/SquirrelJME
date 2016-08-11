@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
@@ -30,6 +32,10 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  */
 final class __Imports__
 {
+	/** Imported classes. */
+	protected final Map<ClassNameSymbol, __ImportClass__> impclasses =
+		new HashMap<>();
+	
 	/**
 	 * Initializes the import table.
 	 *
@@ -54,7 +60,18 @@ final class __Imports__
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Use a previously imported class if it exists
+		Map<ClassNameSymbol, __ImportClass__> impclasses = this.impclasses;
+		__ImportClass__ rv = impclasses.get(__n);
+		if (rv != null)
+			return rv;
+		
+		// Create new import
+		rv = new __ImportClass__(__n);
+		impclasses.put(__n, rv);
+		
+		// Return it
+		return rv;
 	}
 	
 	/**

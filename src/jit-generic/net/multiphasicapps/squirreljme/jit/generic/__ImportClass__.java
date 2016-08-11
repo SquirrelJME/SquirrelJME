@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+
 /**
  * Represents an import of a single class.
  *
@@ -18,5 +20,23 @@ package net.multiphasicapps.squirreljme.jit.generic;
 class __ImportClass__
 	extends __Import__
 {
+	/** The name of the class to import. */
+	protected final ClassNameSymbol name;
+	
+	/**
+	 * Initializes the class import.
+	 *
+	 * @since 2016/08/11
+	 */
+	public __ImportClass__(ClassNameSymbol __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.name = __n;
+	}
 }
 
