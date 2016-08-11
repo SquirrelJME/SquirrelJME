@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 
 /**
  * This represents a single class in the output namespace.
@@ -21,6 +22,9 @@ class __Class__
 {
 	/** The name of this class. */
 	protected final ClassNameSymbol name;
+	
+	/** The class flags. */
+	JITClassFlags _flags;
 	
 	/**
 	 * Initializes a class.

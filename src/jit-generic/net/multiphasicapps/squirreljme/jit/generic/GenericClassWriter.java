@@ -64,31 +64,6 @@ public final class GenericClassWriter
 		// Set
 		this.modclass = __cl;
 		this.classname = __cl.__className();
-		
-		if (true)
-			throw new Error("TODO");
-		/*
-		// Setup output
-		ExtendedDataOutputStream output = new ExtendedDataOutputStream(
-			this.rawoutput);
-		output.setEndianess(__nsw.__endianess());
-		this.output = output;
-		
-		// Write the class header
-		try
-		{
-			// Class magic number
-			output.writeShort(GenericBlobConstants.CLASS_MAGIC);
-			
-			// Output class name
-			output.writeShort(__nsw.__addString(__cn.toString()));
-		}
-		
-		// {@squirreljme.error BA0a Failed to write the initial header.}
-		catch (IOException e)
-		{
-			throw new JITException("BA0a");
-		}*/
 	}
 	
 	/**
@@ -109,26 +84,8 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.CLASS_FLAGS);
 			
-			if (true)
-				throw new Error("TODO");
-			/*
-			// Build value
-			int v = 0;
-			for (JITClassFlag f : __cf)
-				v |= (1 << f.ordinal());
-			
-			// Write
-			try
-			{
-				this.output.writeInt(v);
-			}
-			
-			// {@squirreljme.error BA0k Failed to write the class flags.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0k", e);
-			}
-			*/
+			// Set
+			this.modclass._flags = __cf;
 		}
 	}
 	
