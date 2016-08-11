@@ -38,7 +38,7 @@ public class ByteArrayData
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/11
 	 */
-	final ByteArrayData(DataEndianess __end, byte... __b)
+	public ByteArrayData(DataEndianess __end, byte... __b)
 		throws NullPointerException
 	{
 		this(__end, __b, 0, __b.length);
@@ -51,24 +51,24 @@ public class ByteArrayData
 	 * @param __b The bytes to wrap.
 	 * @param __o The starting offset.
 	 * @param __l The length of bytes to wrap.
-	 * @throws IndexOutBoundsException If the offset and/or length are negative
-	 * or exceed the array size.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array size.
 	 * @throws NullPointerException On null arguments
 	 * @since 2016/08/11
 	 */
-	final ByteArrayData(DataEndianess __end, byte[] __b, int __o, int __l)
-		throws IndexOutBoundsException, NullPointerException
+	public ByteArrayData(DataEndianess __end, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
 		// Check
 		if (__end == null || __b == null)
 			throw new NullPointerException("NARG");
 		int n = __b.length;
 		if (__o < 0 || __l < 0 || (__o + __l) > n)
-			throw new IndexOutBoundsException("AIOB");
+			throw new IndexOutOfBoundsException("AIOB");
 		
 		// Set
 		this.endianess = __end;
-		this.array = __b;
+		this._array = __b;
 		this.offset = __o;
 		this.length = __l;
 	}
