@@ -13,10 +13,15 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
 
 /**
  * This stores the string table which is used to combine and share strings
@@ -28,8 +33,12 @@ class __StringTable__
 	extends __NamespaceOwned__
 {
 	/** The internal table. */
-	protected final Map<String, Integer> table =
-		new HashMap<>();
+	protected final LinkedHashMap<String, Integer> table =
+		new LinkedHashMap<>();
+	
+	/** The write positions of all strings. */
+	protected final List<Integer> writepos =
+		new LinkedList<>();
 	
 	/** Deferring write index. */
 	private volatile int _defer =
@@ -65,10 +74,17 @@ class __StringTable__
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
+		// Since in general having strings this large is a very bad idea and is
+		// rare to begin with...
+		// {@squirreljme.error BA0u The length of strings is limited to
+		// 65,535 characters.}
+		if (__s.length() > 65535)
+			throw new JITException("BA0u");
+		
 		// {@squirreljme.error BA0q Classes may only have 65,536 strings.}
 		Map<String, Integer> table = this.table;
 		int end;
-		if ((end = table.size()) >= 65535)
+		if ((end = table.size()) > 65535)
 			throw new JITException("BA0q");
 		
 		// If the string is not in the table then add it
@@ -90,86 +106,117 @@ class __StringTable__
 	final void __defer(ExtendedDataOutputStream __dos)
 		throws IOException
 	{
-		if (false)
-			throw new IOException("TODO");
-		throw new Error("TODO");
+		// Check if entries actually need to be written
+		int defer = this._defer;
+		LinkedHashMap<String, Integer> table = this.table;
+		int n = table.size();
+		if (defer >= n)
+			return;
+		
+		// Get
+		ExtendedDataOutputStream dos = this.owner.__output();
+		List<Integer> writepos = this.writepos;
+		
+		// Write entries
+		Iterator<String> it = table.keySet().iterator();
+		for (int i = 0; i < n; i++)
+		{
+			// Ignore strings which were already written
+			String s = it.next();
+			if (i < defer)
+				continue;
+			
+			// Align to 4
+			while ((dos.size() & 3) != 0)
+				dos.writeByte(0);
+			
+			// {@squirreljme.error BA0u Position of string exceeds the range
+			// of 2GiB.}
+			long sz = dos.size();
+			if (sz < 0 || sz > Integer.MAX_VALUE)
+				throw new JITException("BA0u");
+			writepos.add((int)sz);
+			
+			// Find the highest valued character in the string
+			int l = s.length();
+			int highval = 0;
+			boolean wide = false;
+			for (int j = 0; j < l; j++)
+			{
+				char c = s.charAt(j);
+				if (c > highval)
+				{
+					highval = c;
+					
+					// If two bytes, stop since that is the max cell size
+					if (highval > 255)
+					{
+						wide = true;
+						break;
+					}
+				}
+			}
+			
+			// Write the string
+			if (wide)
+				__writeNarrow(dos, s);
+			else
+				__writeWide(dos, s);
+			
+			// Defer the next string
+			defer = i + 1;
+		}
+		
+		// Set
+		this._defer = defer;
 	}
 	
 	/**
-	 * This contains a string reference which is later used to refer to a
-	 * string in a given table. The reference permits the string table to be
-	 * sorted before being placed in the binary.
+	 * Writes a narrow string to the output, which is one byte wide.
 	 *
-	 * @since 2016/08/09
+	 * @param __dos The target stream.
+	 * @param __s The string to print.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/12
 	 */
-	static final class __Ref__
-		implements Comparable<__Ref__>
+	private void __writeNarrow(ExtendedDataOutputStream __dos, String __s)
+		throws IOException, NullPointerException
 	{
-		/** The contained string. */
-		protected final String string;
+		// Check
+		if (__dos == null || __s == null)
+			throw new NullPointerException("NARG");
 		
-		/**
-		 * Initializes the string reference.
-		 *
-		 * @param __s The string to store.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2016/08/09
-		 */
-		private __Ref__(String __s)
-			throws NullPointerException
-		{
-			// Check
-			if (__s == null)
-				throw new NullPointerException("NARG");
-			
-			// Set
-			this.string = __s;
-		}
+		// Write characters
+		int n = __s.length();
+		__dos.writeShort(1);
+		__dos.writeShort(n);
+		for (int i = 0; i < n; i++)
+			__dos.writeByte(__s.charAt(i));
+	}
+	
+	/**
+	 * Writes a wide string to the output, which is two byte wides.
+	 *
+	 * @param __dos The target stream.
+	 * @param __s The string to print.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/12
+	 */
+	private void __writeWide(ExtendedDataOutputStream __dos, String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dos == null || __s == null)
+			throw new NullPointerException("NARG");
 		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/08/09
-		 */
-		@Override
-		public int compareTo(__Ref__ __o)
-		{
-			return this.string.compareTo(__o.string);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/08/09
-		 */
-		@Override
-		public boolean equals(Object __o)
-		{
-			// Compare against self
-			if (__o instanceof __Ref__)
-				return this == __o;
-			
-			// Not a match;
-			return false;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/08/09
-		 */
-		@Override
-		public int hashCode()
-		{
-			return this.string.hashCode();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/08/09
-		 */
-		@Override
-		public String toString()
-		{
-			return this.string;
-		}
+		// Write characters
+		int n = __s.length();
+		__dos.writeShort(2);
+		__dos.writeShort(n);
+		for (int i = 0; i < n; i++)
+			__dos.writeShort(__s.charAt(i));
 	}
 }
 
