@@ -126,6 +126,9 @@ public class HexDumpOutputStream
 	public void close()
 		throws IOException
 	{
+		// Force printing of bytes
+		__printLine();
+		
 		// Only close the pipe and not the dump
 		Closeable c = this.pipe;
 		if (c != null)
@@ -177,43 +180,70 @@ public class HexDumpOutputStream
 		{
 			// Print entire row
 			if (at == cols)
-				try
-				{
-					Writer w = this.dump;
-					
-					// Print starting hex data
-					for (int i = 0; i < cols; i++)
-					{
-						// Padding
-						if (i > 0)
-							w.write(' ');
-						
-						// Write both bytes
-						int x = queue[i] & 0xFF;
-						w.write(Character.forDigit(((x >>> 4) & 0xF), 16));
-						w.write(Character.forDigit((x & 0xF), 16));
-					}
-					
-					// Print ASCII version of it
-					w.write("  |");
-					for (int i = 0; i < cols; i++)
-					{
-						// Only print in the range of ASCII
-						char c = (char)(queue[i] & 0xFF);
-						if (c < ' ' || c > 0x7F)
-							c = '.';
-						
-						w.write(c);
-					}
-					w.write('|');
-					w.write('\n');
-				}
+				__printLine();
+		}
+	}
+	
+	/**
+	 * Prints a hexdumpped line.
+	 *
+	 * @throws IOException If it could not be written.
+	 * @since 2016/08/12
+	 */
+	private void __printLine()
+		throws IOException
+	{
+		// Might not always work
+		int cols = _COLUMNS;
+		byte[] queue = this._queue;
+		int at = this._at;
+		try
+		{
+			Writer w = this.dump;
 			
-				// Always clear the position
-				finally
+			// Print starting hex data
+			for (int i = 0; i < cols; i++)
+			{
+				// Padding
+				if (i > 0)
+					w.write(' ');
+				
+				// No data?
+				if (i >= at)
 				{
-					this._at = 0;
+					w.write("  ");
+					continue;
 				}
+				
+				// Write both bytes
+				int x = queue[i] & 0xFF;
+				w.write(Character.forDigit(((x >>> 4) & 0xF), 16));
+				w.write(Character.forDigit((x & 0xF), 16));
+			}
+			
+			// Print ASCII version of it
+			w.write("  |");
+			for (int i = 0; i < cols; i++)
+			{
+				// No data?
+				if (i >= at)
+					break;	
+				
+				// Only print in the range of ASCII
+				char c = (char)(queue[i] & 0xFF);
+				if (c < ' ' || c > 0x7F)
+					c = '.';
+				
+				w.write(c);
+			}
+			w.write('|');
+			w.write('\n');
+		}
+	
+		// Always clear the position
+		finally
+		{
+			this._at = 0;
 		}
 	}
 }
