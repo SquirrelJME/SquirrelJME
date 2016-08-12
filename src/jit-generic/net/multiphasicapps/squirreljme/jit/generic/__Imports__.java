@@ -12,12 +12,14 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This contains the static import table for the given namespace, it is used
@@ -41,7 +43,7 @@ final class __Imports__
 	
 	/** All imports. */
 	final List<__Import__> _imports =
-		new ArrayList<>();
+		new LinkedList<>();
 	
 	/**
 	 * Initializes the import table.
@@ -71,7 +73,16 @@ final class __Imports__
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error BA0y There may only be at max 65,535 imports
+		// in a given namespace.}
+		List<__Import__> imports = _imports;
+		int n = imports.size();
+		if (n > 65535)
+			throw new JITException("BA0y");
+		
+		// Use that one
+		imports.add(__i);
+		return n;
 	}
 	
 	/**
