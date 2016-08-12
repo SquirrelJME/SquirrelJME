@@ -76,10 +76,10 @@ class __StringTable__
 		
 		// Since in general having strings this large is a very bad idea and is
 		// rare to begin with...
-		// {@squirreljme.error BA0u The length of strings is limited to
+		// {@squirreljme.error BA0v The length of strings is limited to
 		// 65,535 characters.}
 		if (__s.length() > 65535)
-			throw new JITException("BA0u");
+			throw new JITException("BA0v");
 		
 		// {@squirreljme.error BA0q Classes may only have 65,536 strings.}
 		Map<String, Integer> table = this.table;

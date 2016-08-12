@@ -23,6 +23,12 @@ class __ImportClass__
 	/** The name of the class to import. */
 	protected final ClassNameSymbol name;
 	
+	/** This is a flag which indicates that a class is extended. */
+	volatile boolean _extended;
+	
+	/** The indicates that the class is implemented. */
+	volatile boolean _implemented;
+	
 	/**
 	 * Initializes the class import.
 	 *

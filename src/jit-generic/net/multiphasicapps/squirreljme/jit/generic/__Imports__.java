@@ -52,6 +52,9 @@ final class __Imports__
 	__Imports__(GenericNamespaceWriter __nsw)
 	{
 		super(__nsw);
+		
+		// Always have a null entry at the start
+		_imports.add(null);
 	}
 	
 	/**

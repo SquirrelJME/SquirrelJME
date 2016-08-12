@@ -36,7 +36,7 @@ abstract class __Import__
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this._index = __i.__declareImport(__i);
+		this._index = __i.__declareImport(this);
 	}
 }
 

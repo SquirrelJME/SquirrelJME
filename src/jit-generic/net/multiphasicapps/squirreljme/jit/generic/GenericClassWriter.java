@@ -156,10 +156,37 @@ public final class GenericClassWriter
 					throw new NullPointerException("NARG");
 				
 				// Store
-				ics[i] = imps.__importClass(cn);
+				__ImportClass__ icl;
+				ics[i] = (icl = imps.__importClass(cn));
+				
+				// Mark as implementing something
+				icl._implemented = true;
 			}
 			
-			throw new Error("TODO");
+			// Write all the indices
+			try
+			{
+				ExtendedDataOutputStream dos = this.output;
+				
+				// Align
+				while ((dos.size() & 3) != 0)
+					dos.writeByte(0);
+				
+				// Set position here
+				this.modclass._itablepos = (int)dos.size();
+				this.modclass._itablesize = n;
+				
+				// Write the table
+				for (int i = 0; i < n; i++)
+					dos.writeShort(ics[i]._index);
+			}
+			
+			// {@squirreljme.error BA0x Could not write the interface classes
+			// import indices.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0x", e);
+			}
 		}
 	}
 	
@@ -177,7 +204,25 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
-			throw new Error("TODO");
+			// Import the class
+			__ImportClass__ ic = this._imports.__importClass(__cn);
+			
+			// Declare that it is extended
+			ic._extended = true;
+			
+			// Write the import index
+			try
+			{
+				ExtendedDataOutputStream dos = this.output;
+				dos.writeShort(ic._index);
+			}
+			
+			// {@squirreljme.error BA0w Could not write the super class
+			// import index.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0w", e);
+			}
 		}
 	}
 	

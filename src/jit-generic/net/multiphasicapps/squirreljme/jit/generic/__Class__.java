@@ -26,6 +26,12 @@ class __Class__
 	/** The index of the string. */
 	protected final int nameindex;
 	
+	/** The position where interfaces are written. */
+	volatile int _itablepos;
+	
+	/** The size of the interface table. */
+	volatile int _itablesize;
+	
 	/**
 	 * Initializes a class.
 	 *
