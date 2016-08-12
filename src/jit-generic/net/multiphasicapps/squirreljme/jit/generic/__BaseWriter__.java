@@ -35,22 +35,16 @@ abstract class __BaseWriter__
 	/** Single stream output. */
 	protected final ExtendedDataOutputStream output;
 	
-	/** The string table. */
-	final __StringTable__ _strings;
-	
-	/** The import table. */
-	final __Imports__ _imports;
-	
 	/**
 	 * Initializes the base writer.
 	 *
 	 * @param __nsw The owning namespace writer.
-	 * @param __name The name of this content entry.
-	 * @param __ct The type of content to use for this entry.
+	 * @param __dos The writer to use for output.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	__BaseWriter__(GenericNamespaceWriter __nsw)
+	__BaseWriter__(GenericNamespaceWriter __nsw,
+		ExtendedDataOutputStream __dos)
 		throws NullPointerException
 	{
 		// Check
@@ -60,24 +54,7 @@ abstract class __BaseWriter__
 		// Set
 		this.owner = __nsw;
 		this.lock = __nsw._lock;
-		this._strings = __nsw._strings;
-		this._imports = __nsw._imports;
-		
-		// Get output
-		ExtendedDataOutputStream output;
-		this.output = (output = __nsw.__output());
-		
-		// Align to 4 bytes
-		try
-		{
-			__nsw.__align();
-		}
-		
-		// {@squirreljme.error BA0k Could not align the output.}
-		catch (IOException e)
-		{
-			throw new JITException("BA0k", e);
-		}
+		this.output = __dos;
 	}
 	
 	/**

@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.io.IOException;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
@@ -27,34 +28,24 @@ public final class GenericResourceWriter
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
-	/** The resource information. */
-	protected final __Resource__ modresource;
-	
 	/**
 	 * Initializes the generic resource writer.
 	 *
 	 * @param __nsw The owning namespace writer.
-	 * @param __rc The resource module.
+	 * @param __dos The stream to write to.
+	 * @param __name The name of the resource.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	GenericResourceWriter(GenericNamespaceWriter __nsw, __Resource__ __rc)
+	GenericResourceWriter(GenericNamespaceWriter __nsw,
+		ExtendedDataOutputStream __dos, String __name)
 		throws NullPointerException
 	{
-		super(__nsw);
+		super(__nsw, __dos);
 		
 		// Check
-		if (__rc == null)
+		if (__name == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		this.modresource = __rc;
-		
-		// {@squirreljme.error BA0t A resource cannot start beyond 2GiB.}
-		long ds = this.output.size();
-		if (ds < 0 || ds > Integer.MAX_VALUE)
-			throw new JITException("BA0t");
-		__rc._datastart = (int)ds;
 	}
 	
 	/**
@@ -74,12 +65,11 @@ public final class GenericResourceWriter
 				// Mark closed
 				this._closed = true;
 				
-				// {@squirreljme.error BA0s A resource exceeds the
-				// end of the data stream.}
+				// {@squirreljme.error BA0s A resource exceeds a size of
+				// 2GiB.}
 				long ds = this.output.size();
 				if (ds < 0 || ds > Integer.MAX_VALUE)
 					throw new JITException("BA0s");
-				this.modresource._dataend = (int)ds;
 			}
 			
 			// Super close

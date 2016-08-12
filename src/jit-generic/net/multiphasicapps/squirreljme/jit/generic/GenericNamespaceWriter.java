@@ -57,22 +57,6 @@ public final class GenericNamespaceWriter
 	/** The output data endianess. */
 	protected final DataEndianess endianess;
 	
-	/** The string table. */
-	final __StringTable__ _strings =
-		new __StringTable__(this);
-	
-	/** The import table. */
-	final __Imports__ _imports =
-		new __Imports__(this);
-	
-	/** Classes in the namespace. */
-	final __Classes__ _classes =
-		new __Classes__(this);
-	
-	/** Resources in the namespace. */
-	final __Resources__ _resources =
-		new __Resources__(this);
-	
 	/** Visible lock. */
 	final Object _lock =
 		this.lock;
@@ -184,7 +168,7 @@ public final class GenericNamespaceWriter
 			
 			// Create
 			GenericClassWriter rv = new GenericClassWriter(this,
-				this._classes.__newClass(__cn));
+				this.output, __cn);
 			this._current = rv;
 			return rv;
 		}
@@ -217,7 +201,7 @@ public final class GenericNamespaceWriter
 			
 			// Create
 			GenericResourceWriter rv = new GenericResourceWriter(this,
-				this._resources.__newResource(__name));
+				this.output, __name);
 			this._current = rv;
 			return rv;
 		}
@@ -245,39 +229,7 @@ public final class GenericNamespaceWriter
 				// Mark closed
 				this._closed = true;
 				
-				// Could fail
-				try (ExtendedDataOutputStream dos = this.output)
-				{
-					// Defer any strings
-					this._strings.__defer(dos);
-					
-					// Write the class table
-					__align();
-					int clsp = __writeClasses();
-	
-					// Write the import table
-					__align();
-					int impp = __writeImports();
-	
-					// Write the resource table
-					__align();
-					int resp = __writeResources();
-					
-					// Write the string table
-					__align();
-					int strp = __writeStrings();
-					
-					// Write pointers and other details about the blob at
-					// the end.
-					throw new Error("TODO");
-				}
-				
-				// {@squirreljme.error BA06 Failed to write the namespace to
-				// the cache output.}
-				catch (IOException e)
-				{
-					throw new JITException("BA06", e);
-				}
+				throw new Error("TODO");
 			}
 		}
 	}
@@ -324,18 +276,7 @@ public final class GenericNamespaceWriter
 			// contents because that is managed when the content is created.
 			this._current = null;
 			
-			// Write any strings between entries so they are output as soon
-			// as possible.
-			try
-			{
-				this._strings.__defer(this.output);
-			}
-			
-			// {@squirreljme.error BA0a Could not write deferred strings.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0a", e);
-			}
+			throw new Error("TODO");
 		}
 	}
 	

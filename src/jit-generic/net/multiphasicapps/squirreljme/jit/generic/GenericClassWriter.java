@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
+import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
@@ -34,9 +35,6 @@ public final class GenericClassWriter
 	/** The name of the class being written. */
 	protected final ClassNameSymbol classname;
 	
-	/** The class module. */
-	protected final __Class__ modclass;
-	
 	/** The current order. */
 	private volatile JITCompilerOrder _order =
 		JITCompilerOrder.FIRST;
@@ -48,22 +46,23 @@ public final class GenericClassWriter
 	 * Initializes the generic class writer.
 	 *
 	 * @param __nsw The owning namespace writer.
+	 * @param __dos The stream to write to.
 	 * @param __cn The class name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/27
 	 */
-	GenericClassWriter(GenericNamespaceWriter __nsw, __Class__ __cl)
+	GenericClassWriter(GenericNamespaceWriter __nsw,
+		ExtendedDataOutputStream __dos, ClassNameSymbol __cn)
 		throws NullPointerException
 	{
-		super(__nsw);
+		super(__nsw, __dos);
 		
 		// Check
-		if (__cl == null)
+		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.modclass = __cl;
-		this.classname = __cl.__className();
+		this.classname = __cn;
 	}
 	
 	/**
@@ -89,17 +88,7 @@ public final class GenericClassWriter
 			for (JITClassFlag f : __cf)
 				v |= (1 << f.ordinal());
 			
-			// Write
-			try
-			{
-				this.output.writeShort(v);
-			}
-			
-			// {@squirreljme.error BA0l Failed to write the class flags.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0l", e);
-			}
+			throw new Error("TODO");
 		}
 	}
 	
@@ -128,6 +117,27 @@ public final class GenericClassWriter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/08/12
+	 */
+	@Override
+	public void constantPool(JITConstantPool __pool)
+	{
+		// Check
+		if (__pool == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			__order(JITCompilerOrder.SET_CONSTANT_POOL);
+			
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/07/27
 	 */
 	@Override
@@ -144,48 +154,7 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.INTERFACE_CLASS_NAMES);
 			
-			// Store classes
-			int n = __ins.length;
-			__ImportClass__[] ics = new __ImportClass__[n];
-			__Imports__ imps = this._imports;
-			for (int i = 0; i < n; i++)
-			{
-				// Get class name
-				ClassNameSymbol cn = __ins[i];
-				if (cn == null)
-					throw new NullPointerException("NARG");
-				
-				// Store
-				__ImportClass__ icl;
-				ics[i] = (icl = imps.__importClass(cn));
-				
-				// Mark as implementing something
-				icl._implemented = true;
-			}
-			
-			// Write all the indices
-			try
-			{
-				ExtendedDataOutputStream dos = this.output;
-				
-				// Align
-				this.owner.__align();
-				
-				// Set position here
-				this.modclass._itablepos = (int)dos.size();
-				this.modclass._itablesize = n;
-				
-				// Write the table
-				for (int i = 0; i < n; i++)
-					dos.writeShort(ics[i]._index);
-			}
-			
-			// {@squirreljme.error BA0x Could not write the interface classes
-			// import indices.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0x", e);
-			}
+			throw new Error("TODO");
 		}
 	}
 	
@@ -203,25 +172,7 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
-			// Import the class
-			__ImportClass__ ic = this._imports.__importClass(__cn);
-			
-			// Declare that it is extended
-			ic._extended = true;
-			
-			// Write the import index
-			try
-			{
-				ExtendedDataOutputStream dos = this.output;
-				dos.writeShort(ic._index);
-			}
-			
-			// {@squirreljme.error BA0w Could not write the super class
-			// import index.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0w", e);
-			}
+			throw new Error("TODO");
 		}
 	}
 	
