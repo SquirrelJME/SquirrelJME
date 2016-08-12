@@ -248,6 +248,9 @@ public final class GenericNamespaceWriter
 				// Could fail
 				try (ExtendedDataOutputStream dos = this.output)
 				{
+					// Defer any strings
+					this._strings.__defer(dos);
+					
 					// Align
 					while ((dos.size() & 3) != 0)
 						dos.writeByte(0);

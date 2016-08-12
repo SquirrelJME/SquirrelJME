@@ -159,9 +159,9 @@ class __StringTable__
 			
 			// Write the string
 			if (wide)
-				__writeNarrow(dos, s);
-			else
 				__writeWide(dos, s);
+			else
+				__writeNarrow(dos, s);
 			
 			// Defer the next string
 			defer = i + 1;
