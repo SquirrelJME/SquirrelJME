@@ -107,6 +107,9 @@ final class __ClassDecoder__
 		__ClassPool__ pool = new __ClassPool__(input);
 		this._pool = pool;
 		
+		// Setup pool
+		JITConstantPool xpool = new JITConstantPool(this, pool);
+		
 		// Read the flags for this class
 		JITClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
 		
@@ -119,6 +122,9 @@ final class __ClassDecoder__
 		// outputting a class
 		try (JITClassWriter cw = this.namespace.beginClass(clname))
 		{
+			// Send pool
+			cw.constantPool(xpool);
+			
 			// Send class flags
 			cw.classFlags(cf);
 			
