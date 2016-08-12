@@ -28,3 +28,20 @@ The same can be done for super and interfaces.
 
 The namespace writer is getting rather ugly again however.
 
+## 17:17
+
+I am thinking far too much into it. One thing that _every_ class has is the
+constant pool. The constant pool **is the import table**. Anything the class
+uses refers to the constant pool. It might also be best to have fragmentable
+classes. For example instead of merging all classes into a single namespace,
+they can be individually referenced. They would still be executable in memory.
+So essentially the namespace format would be like a ZIP file so to speak. The
+class processor for the most part can just define a constant pool and pass it
+to the writer, which then handles references to the entries in it as such. Then
+for each method in a class, they refer to a constant pool so to speak. The
+pool would be a bit smarter having the previously thought about extends and
+implements flags. Before I just ignored the constant pool, but the information
+is all there. Also, if I ignore a global string table, although it would cost
+some more bytes it would in effect make it so classes are stand alone and
+processed on their own. I would not need to keep a record of strings.
+
