@@ -1,0 +1,10 @@
+# 2016/08/12
+
+## 07:55
+
+Strings do not have to be written together, they can be written as soon as
+possible (say when there is no current output). The only issue would be that
+strings could not be sorted for binary lookup. However in general strings are
+going to need to be imported so that constants are equal with extra classes
+in consideration.
+
