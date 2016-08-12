@@ -45,3 +45,9 @@ is all there. Also, if I ignore a global string table, although it would cost
 some more bytes it would in effect make it so classes are stand alone and
 processed on their own. I would not need to keep a record of strings.
 
+## 17:32
+
+It will be similar to ZIP along with using CRCs, but with a different magic
+number and such. This way it is possible to stream classes rather than using
+a table of sorts.
+
