@@ -37,6 +37,16 @@ import net.multiphasicapps.squirreljme.jit.JITNamespaceContent;
 public class BuilderCache
 	implements JITCacheCreator, JITNamespaceContent
 {
+	/**
+	 * {@squirreljme.property
+	 * net.multiphasicapps.squirreljme.builder.hexdump=(true/false)
+	 * Sets whether or not created cached content should be hexdumped to the
+	 * console for debugging purposes.}
+	 */
+	private static final boolean _HEX_DUMP_OUTPUT =
+		Boolean.getBoolean("net.multiphasicapps.squirreljme.builder.hexdump") |
+		true;
+	
 	/** The owning builder. */
 	protected final BuilderCacheHelper builder;
 	
@@ -103,9 +113,11 @@ public class BuilderCache
 			}
 			
 			// Create output
-			return new HexDumpOutputStream(
-				Channels.newOutputStream(FileChannel.open(p,
-					StandardOpenOption.WRITE)), System.err);
+			OutputStream rv = Channels.newOutputStream(FileChannel.open(p,
+					StandardOpenOption.WRITE));
+			if (_HEX_DUMP_OUTPUT)
+				return new HexDumpOutputStream(rv, System.err);
+			return rv;
 		}
 		
 		// Failed to open
