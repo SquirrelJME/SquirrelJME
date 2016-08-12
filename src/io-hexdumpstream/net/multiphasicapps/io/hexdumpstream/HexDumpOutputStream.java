@@ -206,7 +206,13 @@ public class HexDumpOutputStream
 			{
 				// Padding
 				if (i > 0)
+				{
 					w.write(' ');
+				
+					// Extra space?
+					if ((i & 3) == 0)
+						w.write(' ');
+				}
 				
 				// No data?
 				if (i >= at)
