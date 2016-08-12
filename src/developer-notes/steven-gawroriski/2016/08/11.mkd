@@ -147,3 +147,20 @@ every entry is treated as a stream of bytes anyway). When a classpath is
 initialized, the namespace should be scanned and then code linked in as such
 and classes registered as needed.
 
+## 20:08
+
+However, I am kind of going in circles. I want a really fast to output format
+that is sane and does not require lots of memory to use, but is easy and
+simple to parse. I will need an ending table listing classes and such. So
+perhaps I can just dump strings and code into the output, then build up an
+ending table. The class table will have references to the class header
+information along with fields and methods that are declared in the class (at
+known file addresses). Classes in the final table could be sorted by name so
+that they are easier to be found. Resources can be pretty much the same. I can
+use a single output stream format for this. There would be no string table at
+all. There would have to be an import table (for classes and field offsets),
+but just the information that is needed to initialize it. So essentially
+structures and code would be together (even though I dislike that) and the
+ending table would handle most of the things. So this would be similar to my
+original plan but a bit more sane as everything is in tables.
+
