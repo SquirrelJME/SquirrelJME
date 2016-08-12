@@ -20,6 +20,9 @@ class __Resource__
 	/** The name of the resource. */
 	protected final String name;
 	
+	/** The index containin the name. */
+	protected final int nameindex;
+	
 	/** The start of the data (in the data chunk). */
 	volatile int _datastart =
 		-1;
@@ -32,10 +35,11 @@ class __Resource__
 	 * Initializes the resource.
 	 *
 	 * @param __n The name of the resource.
+	 * @param __sid The string index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/09
 	 */
-	__Resource__(String __n)
+	__Resource__(String __n, int __sid)
 		throws NullPointerException
 	{
 		// Check
@@ -44,6 +48,7 @@ class __Resource__
 		
 		// Set
 		this.name = __n;
+		this.nameindex = __sid;
 	}
 	
 	/**

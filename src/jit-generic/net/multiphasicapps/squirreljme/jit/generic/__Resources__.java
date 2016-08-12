@@ -51,11 +51,9 @@ class __Resources__
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// Declare string for the resource
-		this.owner._strings.__add(__n);
-		
 		// Create a new one
-		__Resource__ rv = new __Resource__(__n);
+		__Resource__ rv = new __Resource__(__n,
+			this.owner._strings.__add(__n));
 		
 		// Add it, replace existing
 		this.resources.put(__n, rv);

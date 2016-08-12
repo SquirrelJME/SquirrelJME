@@ -23,14 +23,18 @@ class __Class__
 	/** The name of this class. */
 	protected final ClassNameSymbol name;
 	
+	/** The index of the string. */
+	protected final int nameindex;
+	
 	/**
 	 * Initializes a class.
 	 *
 	 * @param __n The name of the class to write.
+	 * @param __sid The name string index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/09
 	 */
-	__Class__(ClassNameSymbol __n)
+	__Class__(ClassNameSymbol __n, int __sid)
 		throws NullPointerException
 	{
 		// Check
@@ -39,6 +43,7 @@ class __Class__
 		
 		// Set
 		this.name = __n;
+		this.nameindex = __sid;
 	}
 	
 	/**

@@ -52,11 +52,9 @@ class __Classes__
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		// Declare string for the class
-		this.owner._strings.__add(__cn.toString());
-		
 		// Create class
-		__Class__ rv = new __Class__(__cn);
+		__Class__ rv = new __Class__(__cn,
+			this.owner._strings.__add(__cn.toString()));
 		
 		// Add class, replace existing
 		this.classes.put(__cn, rv);
