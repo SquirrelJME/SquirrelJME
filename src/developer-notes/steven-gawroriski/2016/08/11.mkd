@@ -109,7 +109,7 @@ develop for.
 Going to install a Debian chroot since there currently is no Linux kernel
 available.
 
-## 15:11
+## 15:11 When
 
 I should probably support reading the blob format before I write it, so I can
 have a clue as to how to write it out.
@@ -121,4 +121,29 @@ operations, which is totally reasonable, and that the Linux kernel is not
 emulating these. I will need to make a note of this and have an illegal
 instruction handler for some CPUs to emulate operations on denormals so that
 even though they are not implemented by the CPU, the host code can still run.
+
+## 19:56
+
+I do wonder though if there is an extremely low memory way of writing that is
+not a complete mess and is quick to parse while also having some sense of
+security. I would like things done in a single pass. What if everything was
+a native method, including the class definitions. I really just need code and
+resources. However they should not be together at all, since if there is a
+breach then data could be executed as code (which would be very bad).
+
+## 20:06
+
+That actually could be something. Instead of having it where there is just
+static data that is handled by an object format reader, instead each namespace
+has an entry initialization. Basically this would be generated machine code
+that when called will setup the namespace as it should be setup on the running
+VM. Everything would essentially be executable for the most part. When a
+namespace is desired to be used then its boot code is used which registers
+everything. However this code will be shared among all namespaces for the most
+part. When namespaces are read, there will need to be linear scan of
+everything anyway. The only issue would be determining the size of entries
+before they are written and actually known (unless `ZipFile` is used, but
+every entry is treated as a stream of bytes anyway). When a classpath is
+initialized, the namespace should be scanned and then code linked in as such
+and classes registered as needed.
 
