@@ -206,6 +206,7 @@ public class HexDumpOutputStream
 						w.write(c);
 					}
 					w.write('|');
+					w.write('\n');
 				}
 			
 				// Always clear the position
