@@ -26,11 +26,15 @@ class __ImportClass__
 	/**
 	 * Initializes the class import.
 	 *
+	 * @param __i The import table.
+	 * @param __n The name of the class being imported.
 	 * @since 2016/08/11
 	 */
-	public __ImportClass__(ClassNameSymbol __n)
+	public __ImportClass__(__Imports__ __i, ClassNameSymbol __n)
 		throws NullPointerException
 	{
+		super(__i);
+		
 		// Check
 		if (__n == null)
 			throw new NullPointerException("NARG");

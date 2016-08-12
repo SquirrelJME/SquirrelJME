@@ -18,13 +18,25 @@ package net.multiphasicapps.squirreljme.jit.generic;
  */
 abstract class __Import__
 {
+	/** The placement index of the import. */
+	final int _index;
+	
 	/**
 	 * Initializes the single import.
 	 *
+	 * @param __i The import table.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/09
 	 */
-	__Import__()
+	__Import__(__Imports__ __i)
+		throws NullPointerException
 	{
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._index = __i.__declareImport(__i);
 	}
 }
 

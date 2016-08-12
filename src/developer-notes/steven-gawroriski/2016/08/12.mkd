@@ -13,3 +13,14 @@ in consideration.
 Well, `Writer.lock` is not `final`, that seems like a mistake. Also the CLDC
 one is not `Flushable` although it has a `flush` method.
 
+## 14:16
+
+Actually, the imports for certain things can be flagged for simplicity. For
+example if I write to a field I can mark it as read. However, if the field
+ends up really being `final` (meaning the class changed) then it can fail at
+import resolution time.
+
+## 14:21
+
+The same can be done for super and interfaces.
+

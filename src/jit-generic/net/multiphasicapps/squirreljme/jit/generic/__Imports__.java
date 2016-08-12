@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
@@ -37,6 +39,10 @@ final class __Imports__
 	protected final Map<ClassNameSymbol, __ImportClass__> impclasses =
 		new HashMap<>();
 	
+	/** All imports. */
+	final List<__Import__> _imports =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the import table.
 	 *
@@ -46,6 +52,23 @@ final class __Imports__
 	__Imports__(GenericNamespaceWriter __nsw)
 	{
 		super(__nsw);
+	}
+	
+	/**
+	 * Declares an import and adds it to the table.
+	 *
+	 * @param __i The import to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/12
+	 */
+	int __declareImport(__Import__ __i)
+		throws NullPointerException
+	{
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -70,7 +93,7 @@ final class __Imports__
 			return rv;
 		
 		// Create new import
-		rv = new __ImportClass__(__n);
+		rv = new __ImportClass__(this, __n);
 		impclasses.put(__n, rv);
 		
 		// Return it
