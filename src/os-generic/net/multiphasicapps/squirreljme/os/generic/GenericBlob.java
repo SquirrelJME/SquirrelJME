@@ -15,20 +15,67 @@ import net.multiphasicapps.io.data.RandomAccessData;
 /**
  * This class supports reading the executable blob format.
  *
- * The layout of the blob is in the following format:
+ * Blobs are laid out similarly to ZIP files.
  * {@code
- * [code/data]
- * [tables]
+ * [entries]
+ * [central index]
  * [end header]
+ * }
+ *
+ * The entries are laid out as the following. All entries start on an aligned
+ * address of 4.
+ * {@code
+ * [int           : start entry magic number]
+ * [byte          : The type of entry this is (1 = class, 2 = resource)]
+ * [byte          : The entry name encoding]
+ * [short         : The length of the entry name]
+ * [byte[]/short[]: The name of the entry, chars encoded as 0-255 or 0-65535]
+ * [... Align to 4 bytes ...]
+ * [byte[]        : data...]
+ * [int           : end entry magic number]
+ * [int           : CRC32 of the data]
+ * }
+ *
+ * The central index is laid out in the following manner.
+ * {@code
+ * [... Align to 4 bytes ...]
+ * [int: Central directory magic number]
+ * [???: Central index entries]
+ * }
+ *
+ * Each central index entry is of the following.
+ * {@code
+ * [int: The number of bytes to subtract from the CD to reach the entry MN]
+ * [int: The size of the data for the given entry]
+ * }
+ *
+ * The end header is laid out in the following manner.
+ * {@code
+ * [... Align to 4 bytes ...]
+ * [int: End header magic number]
+ * [int: The number of entries in the central index]
+ * [int: Bytes to subtract from the magic position to reach the central index]
  * }
  *
  * @since 2016/08/11
  */
 public class GenericBlob
 {
-	/** The blob magic number. */
-	public static final long MAGIC_NUMBER =
-		0x537175697272656CL;
+	/** The magic number identifying entry start. */
+	public static final int START_ENTRY_MAGIC_NUMBER =
+		0xD3CECDCA;
+	
+	/** The magic number identifying entry end. */
+	public static final int END_ENTRY_MAGIC_NUMBER =
+		0xCCEAF8AE;
+	
+	/** Central directory magic number. */
+	public static final int CENTRAL_DIRECTORY_MAGIC_NUMBER =
+		0xC1CCD2C1;
+	
+	/** The magic number for the end header. */
+	public static final int END_HEADER_MAGIC_NUMBER =
+		0xC2F6E5AE;
 	
 	/** The blob data. */
 	protected final RandomAccessData data;
