@@ -10,10 +10,12 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -25,8 +27,12 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 class __StringTable__
 {
 	/** The internal table. */
-	protected final Map<String, __Ref__> table =
+	protected final Map<String, Integer> table =
 		new HashMap<>();
+	
+	/** Deferring write index. */
+	private volatile int _defer =
+		0;
 	
 	/**
 	 * Initializes the string table.
@@ -43,12 +49,12 @@ class __StringTable__
 	 * Adds the specified string to the table.
 	 *
 	 * @param __s The string to add.
-	 * @return The reference to the string.
+	 * @return The index of the string.
 	 * @throws JITException If there would be more than 65,536 strings.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/09
 	 */
-	final __StringTable__.__Ref__ __add(String __s)
+	final int __add(String __s)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -57,16 +63,32 @@ class __StringTable__
 		
 		// {@squirreljme.error BA0q Classes may only have 65,536 strings.}
 		Map<String, __Ref__> table = this.table;
-		if (table.size() >= 65535)
+		int end;
+		if ((end = table.size()) >= 65535)
 			throw new JITException("BA0q");
 		
 		// If the string is not in the table then add it
-		__Ref__ rv = table.get(__s);
+		Integer rv = table.get(__s);
 		if (rv == null)
-			table.put(__s, (rv = new __Ref__(__s)));
+			table.put(__s, (rv = end));
 		
 		// Return it
-		return rv;
+		return rv.intValue();
+	}
+	
+	/**
+	 * Writes deferred strings to the output stream.
+	 *
+	 * @param __dos The stream to output to.
+	 * @throws IOException On write errors.
+	 * @since 2016/08/12
+	 */
+	final void __defer(ExtendedDataOutputStream __dos)
+		throws IOException
+	{
+		if (false)
+			throw new IOException("TODO");
+		throw new Error("TODO");
 	}
 	
 	/**

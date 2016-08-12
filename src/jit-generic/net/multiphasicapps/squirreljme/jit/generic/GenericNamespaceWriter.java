@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
-import net.multiphasicapps.io.datadequestream.ByteDequeOutputStream;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
@@ -53,24 +52,11 @@ public final class GenericNamespaceWriter
 	/** The namespace name. */
 	protected final String namespace;
 	
+	/** The namespace output. */
+	protected final ExtendedDataOutputStream output;
+	
 	/** Intended output file. */
 	protected final OutputStream intendedoutput;
-	
-	/** Code output (backing queue). */
-	protected final ByteDeque bdcode =
-		new ByteDeque();
-	
-	/** Code output. */
-	protected final ExtendedDataOutputStream outcode =
-		new ExtendedDataOutputStream(new ByteDequeOutputStream(this.bdcode));
-	
-	/** Data output (backing queue). */
-	protected final ByteDeque bddata =
-		new ByteDeque();
-	
-	/** Data output. */
-	protected final ExtendedDataOutputStream outdata =
-		new ExtendedDataOutputStream(new ByteDequeOutputStream(this.bddata));
 	
 	/** The output data endianess. */
 	protected final DataEndianess endianess;
@@ -134,8 +120,10 @@ public final class GenericNamespaceWriter
 		// Might fail
 		try
 		{
-			// Create intended output for writing on close
-			this.intendedoutput = cc.createCache(__ns);
+			// Setup output writer
+			ExtendedDataOutputStream output = new ExtendedDataOutputStream(
+				cc.createCache(__ns));
+			this.output = output;
 			
 			// Set endianess
 			DataEndianess end;
@@ -157,11 +145,13 @@ public final class GenericNamespaceWriter
 			}
 			
 			// Set code/data endianess
-			this.outcode.setEndianess(end);
-			this.outdata.setEndianess(end);
+			output.setEndianess(end);
 			
 			// Store endianess for later writing
 			this.endianess = end;
+			
+			// Write magic number
+			output.writeLong(GenericBlob.MAGIC_NUMBER);
 		}
 		
 		// {@squirreljme.error BA02 Could not create the output cache.}
@@ -301,29 +291,11 @@ public final class GenericNamespaceWriter
 			// Clear, there is no need to add the closed content to a table of
 			// contents because that is managed when the content is created.
 			this._current = null;
+			
+			// Write any strings between entries so they are output as soon
+			// as possible.
+			this._strings.__defer(this.output);
 		}
-	}
-	
-	/**
-	 * Returns the code output.
-	 *
-	 * @return The code output.
-	 * @since 2016/08/09
-	 */
-	final ExtendedDataOutputStream __code()
-	{
-		return this.outcode;
-	}
-	
-	/**
-	 * Returns the data output.
-	 *
-	 * @return The data output.
-	 * @since 2016/08/09
-	 */
-	final ExtendedDataOutputStream __data()
-	{
-		return this.outdata;
 	}
 	
 	/**
@@ -335,6 +307,17 @@ public final class GenericNamespaceWriter
 	final DataEndianess __endianess()
 	{
 		return this.endianess;
+	}
+	
+	/**
+	 * Returns the stream output.
+	 *
+	 * @return The stream output.
+	 * @since 2016/0812
+	 */
+	final ExtendedDataOutputStream __output()
+	{
+		return this.output;
 	}
 	
 	/**

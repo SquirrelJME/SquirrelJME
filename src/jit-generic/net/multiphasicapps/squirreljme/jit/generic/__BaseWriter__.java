@@ -32,11 +32,8 @@ abstract class __BaseWriter__
 	/** The owning namespace writer. */
 	protected final GenericNamespaceWriter owner;
 	
-	/** Code output. */
-	protected final ExtendedDataOutputStream outcode;
-	
-	/** Data output. */
-	protected final ExtendedDataOutputStream outdata;
+	/** Single stream output. */
+	protected final ExtendedDataOutputStream output;
 	
 	/** The string table. */
 	final __StringTable__ _strings;
@@ -66,9 +63,13 @@ abstract class __BaseWriter__
 		this._strings = __nsw._strings;
 		this._imports = __nsw._imports;
 		
-		// Get code and data
-		this.outcode = __nsw.__code();
-		this.outdata = __nsw.__data();
+		// Get output
+		ExtendedDataOutputStream output;
+		this.output = (output = __nsw.__output());
+		
+		// Align to 4 bytes
+		while ((output.size() & 3) != 0)
+			output.writeByte(0);
 	}
 	
 	/**

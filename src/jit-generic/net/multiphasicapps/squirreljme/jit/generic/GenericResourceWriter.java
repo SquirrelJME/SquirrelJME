@@ -51,7 +51,7 @@ public final class GenericResourceWriter
 		this.modresource = __rc;
 		
 		// {@squirreljme.error BA0t A resource cannot start beyond 2GiB.}
-		long ds = this.outdata.size();
+		long ds = this.output.size();
 		if (ds < 0 || ds > Integer.MAX_VALUE)
 			throw new JITException("BA0t");
 		__rc._datastart = (int)ds;
@@ -76,7 +76,7 @@ public final class GenericResourceWriter
 				
 				// {@squirreljme.error BA0s A resource exceeds the
 				// end of the data stream.}
-				long ds = this.outdata.size();
+				long ds = this.output.size();
 				if (ds < 0 || ds > Integer.MAX_VALUE)
 					throw new JITException("BA0s");
 				this.modresource._dataend = (int)ds;
@@ -106,7 +106,7 @@ public final class GenericResourceWriter
 					throw new JITException("BA0d");
 				
 				// Write
-				this.outdata.write(__b, __o, __l);
+				this.output.write(__b, __o, __l);
 			}
 		}
 		

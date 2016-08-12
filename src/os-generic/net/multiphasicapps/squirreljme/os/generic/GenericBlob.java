@@ -17,7 +17,9 @@ import net.multiphasicapps.io.data.RandomAccessData;
  *
  * The layout of the blob is in the following format:
  * {@code
- *
+ * [code/data]
+ * [tables]
+ * [end header]
  * }
  *
  * @since 2016/08/11
