@@ -255,6 +255,28 @@ public final class GenericNamespaceWriter
 					while ((dos.size() & 3) != 0)
 						dos.writeByte(0);
 					
+					// Write the string table
+					__StringTable__ strings = this._strings;
+					if (true)
+						throw new Error("TODO");
+	
+					// Write the import table
+					__Imports__ imports = this._imports;
+					if (true)
+						throw new Error("TODO");
+	
+					// Write the class table
+					__Classes__ classes = this._classes;
+					if (true)
+						throw new Error("TODO");
+	
+					// Write the resource table
+					__Resources__ resources = this._resources;
+					if (true)
+						throw new Error("TODO");
+					
+					// Write pointers and other details about the blob at
+					// the end.
 					throw new Error("TODO");
 				}
 				
