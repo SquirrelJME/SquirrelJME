@@ -84,8 +84,7 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.CLASS_FLAGS);
 			
-			// Set
-			this.modclass._flags = __cf;
+			throw new Error("TODO");
 		}
 	}
 	
@@ -145,8 +144,7 @@ public final class GenericClassWriter
 				ics[i] = imps.__importClass(cn);
 			}
 			
-			// Set classes
-			this.modclass._interfaces = ics;
+			throw new Error("TODO");
 		}
 	}
 	
@@ -164,8 +162,7 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
-			// Set super class
-			this.modclass._super = this._imports.__importClass(__cn);
+			throw new Error("TODO");
 		}
 	}
 	

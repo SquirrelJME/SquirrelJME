@@ -20,10 +20,22 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
  * @since 2016/08/09
  */
 class __Classes__
+	extends __NamespaceOwned__
 {
 	/** The mapping of classes. */
 	protected final Map<ClassNameSymbol, __Class__> classes =
 		new HashMap<>();
+	
+	/**
+	 * Initializes the class table.
+	 *
+	 * @param __nsw The owning namespace.
+	 * @since 2016/07/12
+	 */
+	__Classes__(GenericNamespaceWriter __nsw)
+	{
+		super(__nsw);
+	}
 	
 	/**
 	 * Creates a new class in the output namespace.

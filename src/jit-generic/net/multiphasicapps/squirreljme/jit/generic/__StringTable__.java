@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  * @since 2016/08/09
  */
 class __StringTable__
+	extends __NamespaceOwned__
 {
 	/** The internal table. */
 	protected final Map<String, Integer> table =
@@ -37,10 +38,13 @@ class __StringTable__
 	/**
 	 * Initializes the string table.
 	 *
+	 * @param __nsw The owning namespace.
 	 * @since 2016/08/09
 	 */
-	__StringTable__()
+	__StringTable__(GenericNamespaceWriter __nsw)
 	{
+		super(__nsw);
+		
 		// Add a blank string always
 		__add("");
 	}
@@ -62,7 +66,7 @@ class __StringTable__
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error BA0q Classes may only have 65,536 strings.}
-		Map<String, __Ref__> table = this.table;
+		Map<String, Integer> table = this.table;
 		int end;
 		if ((end = table.size()) >= 65535)
 			throw new JITException("BA0q");

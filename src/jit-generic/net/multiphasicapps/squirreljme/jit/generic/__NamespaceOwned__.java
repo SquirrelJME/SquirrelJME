@@ -10,55 +10,32 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * This represents multiple resources in a namespace.
+ * This is extended by anything which is owned by a namespace.
  *
- * @since 2016/08/09
+ * @since 2016/08/12
  */
-class __Resources__
-	extends __NamespaceOwned__
+abstract class __NamespaceOwned__
 {
-	/** The mapping of resources. */
-	protected final Map<String, __Resource__> resources =
-		new HashMap<>();
+	/** The owning namespace. */
+	protected final GenericNamespaceWriter owner;
 	
 	/**
-	 * Initializes the resource table.
+	 * Initializes the base class.
 	 *
 	 * @param __nsw The owning namespace.
-	 * @since 2016/07/12
-	 */
-	__Resources__(GenericNamespaceWriter __nsw)
-	{
-		super(__nsw);
-	}
-	
-	/**
-	 * Creates a new resource.
-	 *
-	 * @param __n The name of the resource.
-	 * @return The newly created resource.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/09
+	 * @since 2016/08/12
 	 */
-	__Resource__ __newResource(String __n)
+	__NamespaceOwned__(GenericNamespaceWriter __nsw)
 		throws NullPointerException
 	{
 		// Check
-		if (__n == null)
+		if (__nsw == null)
 			throw new NullPointerException("NARG");
 		
-		// Create a new one
-		__Resource__ rv = new __Resource__(__n);
-		
-		// Add it, replace existing
-		this.resources.put(__n, rv);
-		
-		// Return it
-		return rv;
+		// Set
+		this.owner = __nsw;
 	}
 }
 

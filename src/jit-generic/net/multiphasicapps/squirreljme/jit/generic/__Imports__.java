@@ -31,6 +31,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  * @since 2016/08/09
  */
 final class __Imports__
+	extends __NamespaceOwned__
 {
 	/** Imported classes. */
 	protected final Map<ClassNameSymbol, __ImportClass__> impclasses =
@@ -39,10 +40,12 @@ final class __Imports__
 	/**
 	 * Initializes the import table.
 	 *
+	 * @param __nsw The owning namespace.
 	 * @since 2016/08/09
 	 */
-	__Imports__()
+	__Imports__(GenericNamespaceWriter __nsw)
 	{
+		super(__nsw);
 	}
 	
 	/**

@@ -28,7 +28,6 @@ import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
 import net.multiphasicapps.squirreljme.os.generic.GenericStringType;
-import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This is a generic writer for namespaces which writes standard blobs which
@@ -55,27 +54,24 @@ public final class GenericNamespaceWriter
 	/** The namespace output. */
 	protected final ExtendedDataOutputStream output;
 	
-	/** Intended output file. */
-	protected final OutputStream intendedoutput;
-	
 	/** The output data endianess. */
 	protected final DataEndianess endianess;
 	
 	/** The string table. */
 	final __StringTable__ _strings =
-		new __StringTable__();
+		new __StringTable__(this);
 	
 	/** The import table. */
 	final __Imports__ _imports =
-		new __Imports__();
+		new __Imports__(this);
 	
 	/** Classes in the namespace. */
 	final __Classes__ _classes =
-		new __Classes__();
+		new __Classes__(this);
 	
 	/** Resources in the namespace. */
 	final __Resources__ _resources =
-		new __Resources__();
+		new __Resources__(this);
 	
 	/** Visible lock. */
 	final Object _lock =
@@ -250,9 +246,13 @@ public final class GenericNamespaceWriter
 				this._closed = true;
 				
 				// Could fail
-				try
+				try (ExtendedDataOutputStream dos = this.output)
 				{
-					__writeCache();
+					// Align
+					while ((dos.size() & 3) != 0)
+						dos.writeByte(0);
+					
+					throw new Error("TODO");
 				}
 				
 				// {@squirreljme.error BA06 Failed to write the namespace to
@@ -294,7 +294,16 @@ public final class GenericNamespaceWriter
 			
 			// Write any strings between entries so they are output as soon
 			// as possible.
-			this._strings.__defer(this.output);
+			try
+			{
+				this._strings.__defer(this.output);
+			}
+			
+			// {@squirreljme.error BA0a Could not write deferred strings.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0a", e);
+			}
 		}
 	}
 	
@@ -318,80 +327,6 @@ public final class GenericNamespaceWriter
 	final ExtendedDataOutputStream __output()
 	{
 		return this.output;
-	}
-	
-	/**
-	 * Writes the final binary to the output cache.
-	 *
-	 * @throws IOException On write errors.
-	 * @since 2016/08/11
-	 */
-	private final void __writeCache()
-		throws IOException
-	{
-		// Write to the output
-		try (ExtendedDataOutputStream dos = new ExtendedDataOutputStream(
-			this.intendedoutput))
-		{
-			// Make sure the endianess matches
-			dos.setEndianess(this.endianess);
-			
-			// Write magic number
-			dos.writeLong(GenericBlob.MAGIC_NUMBER);
-			
-			// Write data to the output
-			ByteDeque bddata = this.bddata;
-			long datastart = dos.size();
-			__writeDeque(bddata, dos);
-			long dataend = dos.size();
-			
-			// Align
-			while ((dos.size() & 7) != 0)
-				dos.writeByte(0);
-			
-			// Write code to the output
-			ByteDeque bdcode = this.bdcode;
-			long codestart = dos.size();
-			__writeDeque(bdcode, dos);
-			long codeend = dos.size();
-			
-			throw new Error("TODO");
-		}
-	}
-	
-	/**
-	 * Writes the given deque to the output stream.
-	 *
-	 * @param __d The deque to write.
-	 * @param __os The stream to write to.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @sinced 2016/08/11
-	 */
-	private final void __writeDeque(ByteDeque __d, OutputStream __os)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__d == null || __os == null)
-			throw new NullPointerException("NARG");
-		
-		// Write all of the data
-		int n = __d.available(), left = n;
-		byte[] buf = new byte[4096];
-		int bn = buf.length, at = 0;
-		while (left > 0)
-		{
-			// Read what is needed
-			int rc = Math.min(bn, left);
-			__d.get(at, buf, 0, rc);
-			
-			// Write
-			__os.write(buf, 0, rc);
-			
-			// Reduce
-			left -= rc;
-			at += rc;
-		}
 	}
 }
 

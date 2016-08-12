@@ -68,8 +68,17 @@ abstract class __BaseWriter__
 		this.output = (output = __nsw.__output());
 		
 		// Align to 4 bytes
-		while ((output.size() & 3) != 0)
-			output.writeByte(0);
+		try
+		{
+			while ((output.size() & 3) != 0)
+				output.writeByte(0);
+		}
+		
+		// {@squirreljme.error BA0k Could not align the output.}
+		catch (IOException e)
+		{
+			throw new JITException("BA0k", e);
+		}
 	}
 	
 	/**
