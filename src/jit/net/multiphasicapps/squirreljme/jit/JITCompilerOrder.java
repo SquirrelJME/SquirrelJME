@@ -21,6 +21,9 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  */
 public enum JITCompilerOrder
 {
+	/** The constant pool for the class. */
+	CONSTANT_POOL,
+	
 	/** The flags for the class. */
 	CLASS_FLAGS,
 	
@@ -38,7 +41,7 @@ public enum JITCompilerOrder
 	
 	/** The first compiler piece to order. */
 	public static final JITCompilerOrder FIRST =
-		JITCompilerOrder.CLASS_FLAGS;
+		JITCompilerOrder.CONSTANT_POOL;
 	
 	/** Internal values to get the next ordering. */
 	private static final JITCompilerOrder[] _VALUES =
