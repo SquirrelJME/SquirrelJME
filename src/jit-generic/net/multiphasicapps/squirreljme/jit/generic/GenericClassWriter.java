@@ -169,8 +169,7 @@ public final class GenericClassWriter
 				ExtendedDataOutputStream dos = this.output;
 				
 				// Align
-				while ((dos.size() & 3) != 0)
-					dos.writeByte(0);
+				this.owner.__align();
 				
 				// Set position here
 				this.modclass._itablepos = (int)dos.size();

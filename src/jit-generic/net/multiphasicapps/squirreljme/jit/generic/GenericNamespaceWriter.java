@@ -251,29 +251,21 @@ public final class GenericNamespaceWriter
 					// Defer any strings
 					this._strings.__defer(dos);
 					
-					// Align
-					while ((dos.size() & 3) != 0)
-						dos.writeByte(0);
-					
-					// Write the string table
-					__StringTable__ strings = this._strings;
-					if (true)
-						throw new Error("TODO");
+					// Write the class table
+					__align();
+					int clsp = __writeClasses();
 	
 					// Write the import table
-					__Imports__ imports = this._imports;
-					if (true)
-						throw new Error("TODO");
-	
-					// Write the class table
-					__Classes__ classes = this._classes;
-					if (true)
-						throw new Error("TODO");
+					__align();
+					int impp = __writeImports();
 	
 					// Write the resource table
-					__Resources__ resources = this._resources;
-					if (true)
-						throw new Error("TODO");
+					__align();
+					int resp = __writeResources();
+					
+					// Write the string table
+					__align();
+					int strp = __writeStrings();
 					
 					// Write pointers and other details about the blob at
 					// the end.
@@ -288,6 +280,21 @@ public final class GenericNamespaceWriter
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Aligns the output stream.
+	 *
+	 * @throws IOException on write errors.
+	 * @since 2016/08/12
+	 */
+	final void __align()
+		throws IOException
+	{
+		ExtendedDataOutputStream dos = this.output;
+		while ((dos.size() & 3) != 0)
+			dos.writeByte(0);
+		
 	}
 	
 	/**

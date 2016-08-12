@@ -114,7 +114,8 @@ class __StringTable__
 			return;
 		
 		// Get
-		ExtendedDataOutputStream dos = this.owner.__output();
+		GenericNamespaceWriter owner = this.owner;
+		ExtendedDataOutputStream dos = owner.__output();
 		List<Integer> writepos = this.writepos;
 		
 		// Write entries
@@ -126,9 +127,8 @@ class __StringTable__
 			if (i < defer)
 				continue;
 			
-			// Align to 4
-			while ((dos.size() & 3) != 0)
-				dos.writeByte(0);
+			// Align
+			owner.__align();
 			
 			// {@squirreljme.error BA0u Position of string exceeds the range
 			// of 2GiB.}

@@ -70,8 +70,7 @@ abstract class __BaseWriter__
 		// Align to 4 bytes
 		try
 		{
-			while ((output.size() & 3) != 0)
-				output.writeByte(0);
+			__nsw.__align();
 		}
 		
 		// {@squirreljme.error BA0k Could not align the output.}

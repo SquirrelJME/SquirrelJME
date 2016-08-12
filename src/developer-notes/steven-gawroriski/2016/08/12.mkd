@@ -24,3 +24,7 @@ import resolution time.
 
 The same can be done for super and interfaces.
 
+## 17:42
+
+The namespace writer is getting rather ugly again however.
+
