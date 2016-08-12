@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: io-psw
+X-SquirrelJME-UUID: 1f309014-6b5d-446f-b804-a7d8ddeef7bf
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: BO
+LIBlet-Title: PrintStream Writer
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains a Writer which
+ utilizes a PrintStream.
+

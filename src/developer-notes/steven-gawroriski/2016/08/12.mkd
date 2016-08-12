@@ -8,3 +8,8 @@ strings could not be sorted for binary lookup. However in general strings are
 going to need to be imported so that constants are equal with extra classes
 in consideration.
 
+## 12:59
+
+Well, `Writer.lock` is not `final`, that seems like a mistake. Also the CLDC
+one is not `Flushable` although it has a `flush` method.
+

@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.sjmepackages.PackageInfo;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.jit.JITCacheCreator;
@@ -102,8 +103,9 @@ public class BuilderCache
 			}
 			
 			// Create output
-			return Channels.newOutputStream(FileChannel.open(p,
-				StandardOpenOption.WRITE));
+			return new HexDumpOutputStream(
+				Channels.newOutputStream(FileChannel.open(p,
+					StandardOpenOption.WRITE)), System.err);
 		}
 		
 		// Failed to open
