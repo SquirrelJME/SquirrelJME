@@ -84,7 +84,22 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.CLASS_FLAGS);
 			
-			throw new Error("TODO");
+			// Build value
+			int v = 0;
+			for (JITClassFlag f : __cf)
+				v |= (1 << f.ordinal());
+			
+			// Write
+			try
+			{
+				this.output.writeShort(v);
+			}
+			
+			// {@squirreljme.error BA0l Failed to write the class flags.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0l", e);
+			}
 		}
 	}
 	
