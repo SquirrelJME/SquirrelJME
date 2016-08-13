@@ -82,10 +82,6 @@ abstract class __BaseWriter__
 			__dos.writeInt(GenericBlob.START_ENTRY_MAGIC_NUMBER);
 			__nsw.__writeString(__dos, __ct.ordinal(), __name);
 			
-			
-			if (true)
-				throw new Error("TODO");
-			
 			// Align
 			while ((__dos.size() & 3) != 0)
 				__dos.writeByte(0);
@@ -97,7 +93,11 @@ abstract class __BaseWriter__
 				throw new JITException("BA0c");
 			this.dataaddr = (int)da;
 			
-			throw new Error("TODO");
+			// Wrap output
+			ExtendedDataOutputStream output;
+			output = new ExtendedDataOutputStream(new __Output__(__dos));
+			output.setEndianess(__dos.getEndianess());
+			this.output = output;
 		}
 		
 		// {@squirreljme.error BA0a Failed to write the entry start.}
@@ -117,6 +117,47 @@ abstract class __BaseWriter__
 	{
 		// Just call close on the writer
 		this.owner.__close(this);
+	}
+	
+	/**
+	 * This wraps the output for writing.
+	 *
+	 * @since 2016/08/13
+	 */
+	private final class __Output__
+		extends OutputStream
+	{
+		/** The real output to write to. */
+		protected final ExtendedDataOutputStream real;
+		
+		/**
+		 * Initializes the wrapped output.
+		 *
+		 * @param __r The real stream to write to.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/08/19
+		 */
+		private __Output__(ExtendedDataOutputStream __r)
+			throws NullPointerException
+		{
+			// Check
+			if (__r == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.real = __r;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/13
+		 */
+		@Override
+		public void close()
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
 	}
 }
 
