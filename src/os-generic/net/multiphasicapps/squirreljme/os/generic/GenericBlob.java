@@ -27,7 +27,7 @@ import net.multiphasicapps.io.data.RandomAccessData;
  * {@code
  * [int           : start entry magic number]
  * [byte          : The type of entry this is (1 = class, 2 = resource)]
- * [byte          : The entry name encoding]
+ * [byte          : The number of bytes used to represent the entry name]
  * [short         : The length of the entry name]
  * [byte[]/short[]: The name of the entry, chars encoded as 0-255 or 0-65535]
  * [... Align to 4 bytes ...]
