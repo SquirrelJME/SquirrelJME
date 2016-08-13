@@ -41,7 +41,7 @@ public final class GenericResourceWriter
 		ExtendedDataOutputStream __dos, String __name)
 		throws NullPointerException
 	{
-		super(__nsw, __dos);
+		super(__nsw, __dos, BlobContentType.RESOURCE, __name);
 		
 		// Check
 		if (__name == null)

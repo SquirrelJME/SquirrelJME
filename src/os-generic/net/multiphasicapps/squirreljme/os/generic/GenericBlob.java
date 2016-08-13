@@ -33,6 +33,7 @@ import net.multiphasicapps.io.data.RandomAccessData;
  * [... Align to 4 bytes ...]
  * [byte[]        : data...]
  * [int           : end entry magic number]
+ * [int           : The data size]
  * [int           : CRC32 of the data]
  * }
  *

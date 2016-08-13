@@ -17,6 +17,9 @@ package net.multiphasicapps.squirreljme.os.generic;
  */
 public enum BlobContentType
 {
+	/** Undefined. */
+	UNDEFINED,
+	
 	/** A class. */
 	CLASS,
 	

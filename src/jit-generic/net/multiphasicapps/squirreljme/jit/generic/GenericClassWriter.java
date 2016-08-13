@@ -55,7 +55,7 @@ public final class GenericClassWriter
 		ExtendedDataOutputStream __dos, ClassNameSymbol __cn)
 		throws NullPointerException
 	{
-		super(__nsw, __dos);
+		super(__nsw, __dos, BlobContentType.CLASS, __cn.toString());
 		
 		// Check
 		if (__cn == null)

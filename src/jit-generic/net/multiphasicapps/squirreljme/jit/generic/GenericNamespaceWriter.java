@@ -129,9 +129,6 @@ public final class GenericNamespaceWriter
 			
 			// Store endianess for later writing
 			this.endianess = end;
-			
-			// Write magic number
-			output.writeLong(GenericBlob.MAGIC_NUMBER);
 		}
 		
 		// {@squirreljme.error BA02 Could not create the output cache.}
@@ -300,6 +297,51 @@ public final class GenericNamespaceWriter
 	final ExtendedDataOutputStream __output()
 	{
 		return this.output;
+	}
+	
+	/**
+	 * Writes a string.
+	 *
+	 * @param __dos The stream to write to.
+	 * @param __upper The upper byte which has any meaning.
+	 * @param __s The string to print.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/13
+	 */
+	final void __writeString(ExtendedDataOutputStream __dos, int __upper,
+		String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dos == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine if there are wide characters used
+		boolean wide = false;
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+			if (__s.charAt(i) > 255)
+			{
+				wide = true;
+				break;
+			}
+		
+		// Upper byte which has an undefined meaning
+		__dos.writeByte(__upper);
+		
+		// Print bytes per char
+		__dos.writeByte((wide ? 2 : 1));
+		
+		// Wide?
+		if (wide)
+			for (int i = 0; i < n; i++)
+				__dos.writeShort((short)__s.charAt(i));
+		
+		// Narrow?
+		else
+			for (int i = 0; i < n; i++)
+				__dos.writeByte((short)__s.charAt(i));
 	}
 }
 
