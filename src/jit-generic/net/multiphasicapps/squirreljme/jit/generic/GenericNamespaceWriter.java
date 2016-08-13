@@ -272,8 +272,6 @@ public final class GenericNamespaceWriter
 			// Clear, there is no need to add the closed content to a table of
 			// contents because that is managed when the content is created.
 			this._current = null;
-			
-			throw new Error("TODO");
 		}
 	}
 	

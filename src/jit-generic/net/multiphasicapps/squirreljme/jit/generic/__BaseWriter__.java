@@ -43,6 +43,9 @@ abstract class __BaseWriter__
 	/** The data address. */
 	protected final int dataaddr;
 	
+	/** The end of the data. */
+	volatile int _dataend;
+	
 	/**
 	 * Initializes the base writer.
 	 *
@@ -116,8 +119,17 @@ abstract class __BaseWriter__
 	public void close()
 		throws JITException
 	{
-		// Just call close on the writer
-		this.owner.__close(this);
+		try
+		{
+			// Close the output
+			this.output.close();
+		}
+		
+		// {@squirreljme.error BA0t Could not close the output.}
+		catch (IOException e)
+		{
+			throw new JITException("BA0t", e);
+		}
 	}
 	
 	/**
@@ -136,6 +148,9 @@ abstract class __BaseWriter__
 			new CRC32DataSink(GenericBlob.CRC_REFLECT_DATA,
 			GenericBlob.CRC_REFLECT_REMAINDER, GenericBlob.CRC_MAGIC_NUMBER,
 			GenericBlob.CRC_INITIAL_REMAINDER, GenericBlob.CRC_FINAL_XOR);
+		
+		/** Was this closed? */
+		private volatile boolean _closed;
 		
 		/**
 		 * Initializes the wrapped output.
@@ -163,7 +178,33 @@ abstract class __BaseWriter__
 		public void close()
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Lock
+			synchronized (__BaseWriter__.this.lock)
+			{
+				// Close if not closed
+				if (!this._closed)
+				{
+					// Close
+					this._closed = true;
+					
+					// {@squirreljme.error BA0k End address of a content entry
+					// exceeds 2GiB.}
+					ExtendedDataOutputStream real = this.real;
+					long del = real.size();
+					if (del < 0 || del > Integer.MAX_VALUE)
+						throw new JITException("BA0k");
+					int de = (int)del;
+					__BaseWriter__.this._dataend = de;
+				
+					// Write the end header
+					real.writeInt(GenericBlob.END_ENTRY_MAGIC_NUMBER);
+					real.writeInt(this.crc.crc());
+					real.writeInt(de - __BaseWriter__.this.dataaddr);
+				
+					// Close it on this writer
+					__BaseWriter__.this.owner.__close(__BaseWriter__.this);
+				}
+			}
 		}
 		
 		/**
@@ -185,11 +226,20 @@ abstract class __BaseWriter__
 		public void write(int __b)
 			throws IOException
 		{
-			// Write byte
-			this.real.write(__b);
+			// Lock
+			synchronized (__BaseWriter__.this.lock)
+			{
+				// {@squirreljme.error BA0f Cannot write single byte after
+				// being closed.}
+				if (this._closed)
+					throw new IOException("BA0f");
 			
-			// And CRC it
-			this.crc.offer((byte)__b);
+				// Write byte
+				this.real.write(__b);
+			
+				// And CRC it
+				this.crc.offer((byte)__b);
+			}
 		}
 		
 		/**
@@ -200,18 +250,27 @@ abstract class __BaseWriter__
 		public void write(byte[] __b, int __o, int __l)
 			throws IndexOutOfBoundsException, IOException, NullPointerException
 		{
-			// Check
-			if (__b == null)
-				throw new NullPointerException("NARG");
-			int n = __b.length;
-			if (__o < 0 || __l < 0 || (__o + __l) > n)
-				throw new IndexOutOfBoundsException("IOOB");
+			// Lock
+			synchronized (__BaseWriter__.this.lock)
+			{
+				// {@squirreljme.error BA0g Cannot write multiple bytes after
+				// being closed.}
+				if (this._closed)
+					throw new IOException("BA0g");
+				
+				// Check
+				if (__b == null)
+					throw new NullPointerException("NARG");
+				int n = __b.length;
+				if (__o < 0 || __l < 0 || (__o + __l) > n)
+					throw new IndexOutOfBoundsException("IOOB");
 			
-			// Write data
-			this.real.write(__b, __o, __l);
+				// Write data
+				this.real.write(__b, __o, __l);
 			
-			// CRC it
-			this.crc.offer(__b, __o, __l);
+				// CRC it
+				this.crc.offer(__b, __o, __l);
+			}
 		}
 	}
 }
