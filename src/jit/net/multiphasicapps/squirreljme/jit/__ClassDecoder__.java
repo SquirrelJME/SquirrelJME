@@ -46,6 +46,9 @@ final class __ClassDecoder__
 	/** The constant pool of the class. */
 	private volatile __ClassPool__ _pool;
 	
+	/** JIT access. */
+	final JIT _jit;
+	
 	/**
 	 * This initializes the decoder for classes.
 	 *
@@ -64,6 +67,7 @@ final class __ClassDecoder__
 		
 		// Set
 		this.jit = __jit;
+		this._jit = __jit;
 		this.namespace = __ns;
 		this.input = __dis;
 	}

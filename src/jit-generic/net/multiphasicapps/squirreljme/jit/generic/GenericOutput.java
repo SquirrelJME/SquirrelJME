@@ -64,11 +64,10 @@ public abstract class GenericOutput
 	}
 	
 	/**
-	 * Returns the configuration which is used to configure the JIT.
-	 *
-	 * @return The JIT configuration.
+	 * {@inheritDoc}
 	 * @since 2016/07/27
 	 */
+	@Override
 	public final JITOutputConfig.Immutable config()
 	{
 		return this.config;

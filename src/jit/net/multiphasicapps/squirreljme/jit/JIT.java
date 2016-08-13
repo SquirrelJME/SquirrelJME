@@ -74,6 +74,17 @@ public final class JIT
 	}
 	
 	/**
+	 * Returns the JIT output configuration.
+	 *
+	 * @return The JIT output configuration.
+	 * @since 2016/08/13
+	 */
+	public final JITOutputConfig.Immutable config()
+	{
+		return this.output.config();
+	}
+	
+	/**
 	 * Runs the JIT compilation.
 	 *
 	 * @since 2016/07/03

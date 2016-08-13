@@ -37,5 +37,13 @@ public interface JITOutput
 	 */
 	public abstract JITNamespaceWriter beginNamespace(String __ns)
 		throws JITException, NullPointerException;
+	
+	/**
+	 * Returns the configuration which is used to configure the JIT.
+	 *
+	 * @return The JIT configuration.
+	 * @since 2016/08/13
+	 */
+	public abstract JITOutputConfig.Immutable config();
 }
 

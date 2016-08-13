@@ -33,6 +33,10 @@ public final class JITConstantPool
 		if (__dc == null || __pool == null)
 			throw new NullPointerException("NARG");
 		
+		// Get the configuration, which is needed for when class rewrites are
+		// detected
+		JITOutputConfig.Immutable config = __dc._jit.config();
+		
 		throw new Error("TODO");
 	}
 }
