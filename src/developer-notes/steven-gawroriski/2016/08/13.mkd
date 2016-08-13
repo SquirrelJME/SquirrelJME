@@ -1,0 +1,7 @@
+# 2016/08/13
+
+## 10:02
+
+I will need to keep an eye out for division and remainder following each other
+in cases where the native architecture does both at the same time.
+
