@@ -78,6 +78,26 @@ public class GenericBlob
 	public static final int END_HEADER_MAGIC_NUMBER =
 		0xC2F6E5AE;
 	
+	/** Reflect the data in the CRC? */
+	public static final boolean CRC_REFLECT_DATA =
+		true;
+	
+	/** Reflect the remainder in the CRC? */
+	public static final boolean CRC_REFLECT_REMAINDER =
+		true;
+	
+	/** The CRC magic number. */
+	public static final int CRC_MAGIC_NUMBER =
+		0xC6FAF2FD;
+	
+	/** The initial remainder. */
+	public static final int CRC_INITIAL_REMAINDER =
+		0xF1F2F3F4;
+	
+	/** The final remainder XOR value. */
+	public static final int CRC_FINAL_XOR =
+		0xFFFFFFFF;
+	
 	/** The blob data. */
 	protected final RandomAccessData data;
 	

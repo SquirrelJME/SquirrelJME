@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.io.crc32.CRC32DataSink;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -130,6 +131,12 @@ abstract class __BaseWriter__
 		/** The real output to write to. */
 		protected final ExtendedDataOutputStream real;
 		
+		/** The CRC output. */
+		protected final CRC32DataSink crc =
+			new CRC32DataSink(GenericBlob.CRC_REFLECT_DATA,
+			GenericBlob.CRC_REFLECT_REMAINDER, GenericBlob.CRC_MAGIC_NUMBER,
+			GenericBlob.CRC_INITIAL_REMAINDER, GenericBlob.CRC_FINAL_XOR);
+		
 		/**
 		 * Initializes the wrapped output.
 		 *
@@ -157,6 +164,54 @@ abstract class __BaseWriter__
 			throws IOException
 		{
 			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/13
+		 */
+		@Override
+		public void flush()
+			throws IOException
+		{
+			this.real.flush();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/13
+		 */
+		@Override
+		public void write(int __b)
+			throws IOException
+		{
+			// Write byte
+			this.real.write(__b);
+			
+			// And CRC it
+			this.crc.offer((byte)__b);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/13
+		 */
+		@Override
+		public void write(byte[] __b, int __o, int __l)
+			throws IndexOutOfBoundsException, IOException, NullPointerException
+		{
+			// Check
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			int n = __b.length;
+			if (__o < 0 || __l < 0 || (__o + __l) > n)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			// Write data
+			this.real.write(__b, __o, __l);
+			
+			// CRC it
+			this.crc.offer(__b, __o, __l);
 		}
 	}
 }
