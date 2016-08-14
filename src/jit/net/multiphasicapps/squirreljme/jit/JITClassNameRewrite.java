@@ -15,14 +15,15 @@ import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
- * This is used to specify that any static method calls from the source class
- * are to be rewritten to they instead call the specified class. This is used
- * by the JIT so that calls to a specific set of static methods is replaced
- * with system dependent methods.
+ * This is used to specify that any reference of any class which is named as
+ * the given source is to be renamed to the specified destination class. This
+ * is used to rewrite some special SquirrelJME specific classes in
+ * the main library sp that they call operating system specific implementations
+ * of the class.
  *
  * @since 2016/08/07
  */
-public final class JITStaticCallRewrite
+public final class JITClassNameRewrite
 {
 	/** The source class. */
 	protected final ClassNameSymbol from;
@@ -34,14 +35,14 @@ public final class JITStaticCallRewrite
 	private volatile Reference<String> _string;
 	
 	/**
-	 * Initializes the static call rewrite.
+	 * Initializes the class name rewrite.
 	 *
 	 * @param __from The source class name.
 	 * @param __to The destination class name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	public JITStaticCallRewrite(ClassNameSymbol __from, ClassNameSymbol __to)
+	public JITClassNameRewrite(ClassNameSymbol __from, ClassNameSymbol __to)
 		throws NullPointerException
 	{
 		// Check
@@ -61,11 +62,11 @@ public final class JITStaticCallRewrite
 	public final boolean equals(Object __o)
 	{
 		// Not this class?
-		if (!(__o instanceof JITStaticCallRewrite))
+		if (!(__o instanceof JITClassNameRewrite))
 			return false;
 		
 		// Cast
-		JITStaticCallRewrite o = (JITStaticCallRewrite)__o;
+		JITClassNameRewrite o = (JITClassNameRewrite)__o;
 		return this.from.equals(o.from) &&
 			this.to.equals(o.to);
 	}

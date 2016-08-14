@@ -34,7 +34,7 @@ public final class JITOutputConfig
 		new Object();
 	
 	/** Static class calls which are to be rewritten. */
-	protected final Set<JITStaticCallRewrite> rewrites =
+	protected final Set<JITClassNameRewrite> rewrites =
 		new HashSet<>();
 	
 	/** The triplet to target. */
@@ -62,7 +62,7 @@ public final class JITOutputConfig
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/07
 	 */
-	public final void addStaticCallRewrite(JITStaticCallRewrite __scr)
+	public final void addStaticCallRewrite(JITClassNameRewrite __scr)
 		throws NullPointerException
 	{
 		// Check
@@ -84,6 +84,22 @@ public final class JITOutputConfig
 	public final JITCacheCreator cacheCreator()
 	{
 		return this._cache;
+	}
+		
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/07
+	 */
+	@Override
+	public final JITClassNameRewrite[] classNameRewrites()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			Set<JITClassNameRewrite> rewrites = this.rewrites;
+			return rewrites.<JITClassNameRewrite>toArray(
+				new JITClassNameRewrite[rewrites.size()]);
+		}
 	}
 	
 	/**
@@ -150,22 +166,6 @@ public final class JITOutputConfig
 		
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/08/07
-	 */
-	@Override
-	public final JITStaticCallRewrite[] staticCallRewrites()
-	{
-		// Lock
-		synchronized (this.lock)
-		{
-			Set<JITStaticCallRewrite> rewrites = this.rewrites;
-			return rewrites.<JITStaticCallRewrite>toArray(
-				new JITStaticCallRewrite[rewrites.size()]);
-		}
-	}
-		
-	/**
-	 * {@inheritDoc}
 	 * @since 2016/07/26
 	 */
 	@Override
@@ -205,7 +205,7 @@ public final class JITOutputConfig
 	{
 		return "{triplet=" + __ccg.triplet() + ", cache=" +
 			(__ccg.cacheCreator() != null) + ", rewrites=" +
-			Arrays.<JITStaticCallRewrite>asList(__ccg.staticCallRewrites()) +
+			Arrays.<JITClassNameRewrite>asList(__ccg.classNameRewrites()) +
 			"}";
 	}
 	
@@ -226,7 +226,7 @@ public final class JITOutputConfig
 		protected final JITCacheCreator cache;
 		
 		/** Rewrites to perform. */
-		private final JITStaticCallRewrite[] _rewrites;
+		private final JITClassNameRewrite[] _rewrites;
 		
 		/** Cached string representation. */
 		private volatile Reference<String> _string;
@@ -259,8 +259,18 @@ public final class JITOutputConfig
 				this.cache = __joc._cache;
 				
 				// Set rewrites
-				this._rewrites = __joc.staticCallRewrites();
+				this._rewrites = __joc.classNameRewrites();
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/07
+		 */
+		@Override
+		public final JITClassNameRewrite[] classNameRewrites()
+		{
+			return this._rewrites.clone();
 		}
 		
 		/**
@@ -271,16 +281,6 @@ public final class JITOutputConfig
 		public final JITCacheCreator cacheCreator()
 		{
 			return this.cache;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2016/08/07
-		 */
-		@Override
-		public final JITStaticCallRewrite[] staticCallRewrites()
-		{
-			return this._rewrites.clone();
 		}
 		
 		/**

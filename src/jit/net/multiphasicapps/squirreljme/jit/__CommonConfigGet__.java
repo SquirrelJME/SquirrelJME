@@ -34,7 +34,7 @@ interface __CommonConfigGet__
 	 * @return The rewrites used in the configuration.
 	 * @since 2016/08/07
 	 */
-	public abstract JITStaticCallRewrite[] staticCallRewrites();
+	public abstract JITClassNameRewrite[] classNameRewrites();
 	
 	/**
 	 * Returns the triplet to target.

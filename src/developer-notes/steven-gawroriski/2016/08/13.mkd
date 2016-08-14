@@ -5,3 +5,10 @@
 I will need to keep an eye out for division and remainder following each other
 in cases where the native architecture does both at the same time.
 
+## 21:26
+
+`JITStaticCallRewrite` would likely be better if it just rewrote the actual
+used class, this would simplify the constant pool intialization and it would
+also have the effect of having the ability to have instances of changed
+classes also. So it renames all instances of a given class.
+
