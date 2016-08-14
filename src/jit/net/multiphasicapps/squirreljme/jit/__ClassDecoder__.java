@@ -40,14 +40,20 @@ final class __ClassDecoder__
 	/** The input data source. */
 	protected final DataInputStream input;
 	
+	/** The build configuration. */
+	protected final JITOutputConfig.Immutable config;
+	
 	/** The version of this class file. */
 	private volatile __ClassVersion__ _version;
 	
 	/** The constant pool of the class. */
-	private volatile __ClassPool__ _pool;
+	private volatile JITConstantPool _pool;
 	
 	/** JIT access. */
 	final JIT _jit;
+	
+	/** Rewrites of class names. */
+	private final JITClassNameRewrite[] _rewrites;
 	
 	/**
 	 * This initializes the decoder for classes.
@@ -70,6 +76,11 @@ final class __ClassDecoder__
 		this._jit = __jit;
 		this.namespace = __ns;
 		this.input = __dis;
+		
+		// Set rewrites
+		JITOutputConfig.Immutable config = __jit.config();
+		this.config = config;
+		this._rewrites = config.classNameRewrites();
 	}
 	
 	/**
@@ -108,11 +119,8 @@ final class __ClassDecoder__
 				(cver & 0xFFFF)));
 		
 		// Decode the constant pool
-		__ClassPool__ pool = new __ClassPool__(input);
+		JITConstantPool pool = new JITConstantPool(input);
 		this._pool = pool;
-		
-		// Setup pool
-		JITConstantPool xpool = new JITConstantPool(this, pool);
 		
 		// Read the flags for this class
 		JITClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
@@ -127,7 +135,7 @@ final class __ClassDecoder__
 		try (JITClassWriter cw = this.namespace.beginClass(clname))
 		{
 			// Send pool
-			cw.constantPool(xpool);
+			cw.constantPool(pool);
 			
 			// Send class flags
 			cw.classFlags(cf);
@@ -167,6 +175,31 @@ final class __ClassDecoder__
 			if (false)
 				throw new Error("TODO");
 		}
+	}
+	
+	/**
+	 * This checks the class is to be rewritten.
+	 *
+	 * @param __cn The input class.
+	 * @return The rewritten class if it is to be done so or {@code __cn} if
+	 * it is not rewritten.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/13
+	 */
+	final ClassNameSymbol __rewriteClass(ClassNameSymbol __cn)
+		throws NullPointerException
+	{
+		// Check
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Check rewrites
+		for (JITClassNameRewrite rewrite : this._rewrites)
+			if (rewrite.from().equals(__cn))
+				return rewrite.to();
+		
+		// Not rewritten, use original
+		return __cn;
 	}
 }
 

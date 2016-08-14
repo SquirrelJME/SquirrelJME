@@ -95,7 +95,7 @@ public final class JITConstantPool
 	 * @throws JITException If the constant pool is malformed.
 	 * @since 2016/06/29
 	 */
-	__ClassPool__(DataInputStream __dis)
+	JITConstantPool(DataInputStream __dis)
 		throws IOException, NullPointerException, JITException
 	{
 		// Check
