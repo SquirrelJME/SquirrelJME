@@ -329,6 +329,18 @@ public final class JITConstantPool
 	}
 	
 	/**
+	 * Returns the tag type of the given entry.
+	 *
+	 * @param __dx The entry to get the tag type for.
+	 * @return The tag type.
+	 * @since 2016/08/14
+	 */
+	public int tag(int __dx)
+	{
+		return this._tags[__dx];
+	}
+	
+	/**
 	 * Rewrites class names in the pool.
 	 *
 	 * @since 2016/08/14
