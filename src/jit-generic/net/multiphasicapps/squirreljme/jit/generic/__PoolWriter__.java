@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.io.IOException;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.jit.JITConstantPool;
+
 /**
  * This writes the constant pool.
  *
@@ -17,14 +21,42 @@ package net.multiphasicapps.squirreljme.jit.generic;
  */
 class __PoolWriter__
 {
+	/** The pool to write. */
+	protected final JITConstantPool pool;
+	
 	/**
-	 * Initializes the string writer.
+	 * Initializes the pool writer.
 	 *
 	 * @param __pool The constant pool to use.
 	 * @since 2016/08/14
 	 */
-	__PoolWriter__()
+	__PoolWriter__(JITConstantPool __pool)
+		throws NullPointerException
 	{
+		// Check
+		if (__pool == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.pool = __pool;
+	}
+	
+	/**
+	 * Writes the constant pool.
+	 *
+	 * @param __dos The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/14
+	 */
+	void __write(ExtendedDataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 

@@ -138,7 +138,17 @@ public final class GenericClassWriter
 			// Just set the pool
 			this._pool = __pool;
 			
-			throw new Error("TODO");
+			// Setup pool writer then write it
+			try
+			{
+				new __PoolWriter__(__pool).__write(this.output);
+			}
+			
+			// {@squirreljme.error BA0u Failed to write the constant pool.}
+			catch (IOException e)
+			{
+				throw new JITException("BA0u", e);
+			}
 		}
 	}
 	
