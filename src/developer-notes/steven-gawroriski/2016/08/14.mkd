@@ -1,0 +1,9 @@
+# 2016/08/14
+
+## 00:12
+
+Also, class rewriting could be used for optimization. Say for example there is
+an `ArrayList` but for one target, that uses a bunch of memory. Instead it
+can be rewritten to be another class for example. This could be done for
+anything for the most part.
+
