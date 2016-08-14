@@ -1,9 +1,11 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: simulated-environment
 X-SquirrelJME-UUID: f742d93a-f6bb-4395-8076-2214b8811323
-X-SquirrelJME-Depends: cldc-full, zip-reader-block
+X-SquirrelJME-Depends: cldc-full, zip-reader-block,
+ package-manager
 X-SquirrelJME-Error: AY
 X-SquirrelJME-HostClassPath: true
+Main-Class: net.multiphasicapps.squirreljme.simenv.Main
 LIBlet-Title: Simualted Environment
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
