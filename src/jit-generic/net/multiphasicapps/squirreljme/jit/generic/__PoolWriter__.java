@@ -17,6 +17,7 @@ import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
+import net.multiphasicapps.squirreljme.jit.JITMemberReference;
 
 /**
  * This writes the constant pool.
@@ -86,7 +87,12 @@ class __PoolWriter__
 				case JITConstantPool.TAG_FIELDREF:
 				case JITConstantPool.TAG_METHODREF:
 				case JITConstantPool.TAG_INTERFACEMETHODREF:
-					throw new Error("TODO");
+					JITMemberReference jmr = __pool.<JITMemberReference>get(
+						i, JITMemberReference.class);
+					__addString(jmr.className().toString());
+					__addString(jmr.memberName().toString());
+					__addString(jmr.memberType().toString());
+					break;
 				
 					// Unknown
 				default:
