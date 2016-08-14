@@ -14,3 +14,7 @@ One thing to consider for class rewrites is `Class.forName()` and the
 on the name of a given class, but that would be a bit ugly anyway. That might
 not be too much of an issue at all.
 
+## 09:12
+
+So do I write the constant pool first, or wait until later?
+
