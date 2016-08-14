@@ -43,17 +43,20 @@ final class __ClassDecoder__
 	/** The build configuration. */
 	protected final JITOutputConfig.Immutable config;
 	
+	/** Rewrites of class names. */
+	private final JITClassNameRewrite[] _rewrites;
+	
 	/** The version of this class file. */
 	private volatile __ClassVersion__ _version;
 	
 	/** The constant pool of the class. */
 	private volatile JITConstantPool _pool;
 	
+	/** The name of this class. */
+	private volatile ClassNameSymbol _classname;
+	
 	/** JIT access. */
 	final JIT _jit;
-	
-	/** Rewrites of class names. */
-	private final JITClassNameRewrite[] _rewrites;
 	
 	/**
 	 * This initializes the decoder for classes.
@@ -119,7 +122,7 @@ final class __ClassDecoder__
 				(cver & 0xFFFF)));
 		
 		// Decode the constant pool
-		JITConstantPool pool = new JITConstantPool(input);
+		JITConstantPool pool = new JITConstantPool(input, this);
 		this._pool = pool;
 		
 		// Read the flags for this class
@@ -132,8 +135,12 @@ final class __ClassDecoder__
 		
 		// There is enough "known" information (just the name) to start
 		// outputting a class
+		this._classname = clname;
 		try (JITClassWriter cw = this.namespace.beginClass(clname))
 		{
+			// Rewrite classes in the constant pool
+			pool.__rewrite();
+			
 			// Send pool
 			cw.constantPool(pool);
 			
@@ -193,10 +200,26 @@ final class __ClassDecoder__
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
+		// If no current class name was set, do not modify it because rewrites
+		// would not exist.
+		ClassNameSymbol classname = this._classname;
+		if (classname == null)
+			return __cn;
+		
 		// Check rewrites
 		for (JITClassNameRewrite rewrite : this._rewrites)
-			if (rewrite.from().equals(__cn))
+		{
+			ClassNameSymbol from = rewrite.from();
+			if (from.equals(__cn))
+			{
+				// Never rewrite the current class
+				if (classname.equals(from))
+					continue;
+			
+				// Otherwise rewrite it
 				return rewrite.to();
+			}
+		}
 		
 		// Not rewritten, use original
 		return __cn;

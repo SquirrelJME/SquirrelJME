@@ -43,3 +43,8 @@ Although thinking about it, rewriting could only be enabled if the class name
 being rewritting is not itself. So if `Foo` is being rewritten to `Bar` then
 when `Foo` is processed, it will remain `Foo` and not become `Bar`.
 
+## 23:56
+
+Then this means that, the constant pool can do rewrites now, which simplifies
+that.
+

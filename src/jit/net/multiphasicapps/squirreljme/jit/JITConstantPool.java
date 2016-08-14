@@ -86,21 +86,28 @@ public final class JITConstantPool
 	/** Constant pool initialized data. */
 	private final Object[] _data;
 	
+	/** The class decoder being used. */
+	private final __ClassDecoder__ _decoder;
+	
 	/**
 	 * Decodes the constant pool of an input class file.
 	 *
 	 * @param __dis The input stream to read for class files.
+	 * @param __cd The decoder for classes.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @throws JITException If the constant pool is malformed.
 	 * @since 2016/06/29
 	 */
-	JITConstantPool(DataInputStream __dis)
+	JITConstantPool(DataInputStream __dis, __ClassDecoder__ __cd)
 		throws IOException, NullPointerException, JITException
 	{
 		// Check
-		if (__dis == null)
+		if (__dis == null || __cd == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this._decoder = __cd;
 		
 		// {@squirreljme.error ED15 The input class has an empty constant
 		// pool.}
@@ -260,6 +267,7 @@ public final class JITConstantPool
 			throw new JITException(String.format("ED0d %d", __dx));
 		
 		// If an integer array, requires conversion
+		__ClassDecoder__ decoder = this._decoder;
 		if (raw instanceof int[])
 		{
 			// Get input fields
@@ -277,8 +285,8 @@ public final class JITConstantPool
 					
 					// Class name
 				case TAG_CLASS:
-					raw = ClassNameSymbol.of(
-						this.<String>get(fields[0], String.class));
+					raw = decoder.__rewriteClass(ClassNameSymbol.of(
+						this.<String>get(fields[0], String.class)));
 					break;
 					
 					// {@squirreljme.error ED0f Could not obtain the constant
@@ -318,6 +326,59 @@ public final class JITConstantPool
 	public int size()
 	{
 		return this._tags.length;
+	}
+	
+	/**
+	 * Rewrites class names in the pool.
+	 *
+	 * @since 2016/08/14
+	 */
+	final void __rewrite()
+	{
+		// Rewrite only classes (there should be just one)
+		__ClassDecoder__ decoder = this._decoder;
+		byte[] tags = this._tags;
+		Object[] data = this._data;
+		int n = data.length;
+		for (int i = 1; i < n; i++)
+		{
+			// If the data is in an integer array then it has never been
+			// initialized yet
+			Object raw = data[i];
+			if (raw instanceof int[])
+				continue;
+			
+			// Depends on the tag
+			byte tag = tags[i];
+			switch (tag)
+			{
+					// Ignore
+				case 0:				// null tag
+				case TAG_UTF8:
+				case TAG_INTEGER:
+				case TAG_FLOAT:
+				case TAG_LONG:
+				case TAG_DOUBLE:
+				case TAG_STRING:
+				case TAG_NAMEANDTYPE:
+				case TAG_METHODTYPE:
+					continue;
+					
+					// Rewrite classes
+				case TAG_CLASS:
+					data[i] = decoder.__rewriteClass((ClassNameSymbol)data[i]);
+					break;
+					
+					// Error, since these should not be in the pool in an
+					// initialized state yet
+				case TAG_FIELDREF:
+				case TAG_METHODREF:
+				case TAG_INTERFACEMETHODREF:
+				case TAG_METHODHANDLE:
+				case TAG_INVOKEDYNAMIC:
+					throw new RuntimeException("OOPS");
+			}
+		}
 	}
 }
 
