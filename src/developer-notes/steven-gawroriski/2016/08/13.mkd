@@ -32,3 +32,14 @@ constant pool, so I can just use it directly as such. Before I would have
 needed to handle cases where a class is referred to and such. So just renaming
 the class simplifies things.
 
+## 22:09
+
+Not sure if I want to write the pool first or later. Writing it I will need to
+know if there are any rewritten imports though.
+
+## 23:52
+
+Although thinking about it, rewriting could only be enabled if the class name
+being rewritting is not itself. So if `Foo` is being rewritten to `Bar` then
+when `Foo` is processed, it will remain `Foo` and not become `Bar`.
+
