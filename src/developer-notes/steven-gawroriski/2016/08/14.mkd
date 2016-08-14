@@ -18,3 +18,8 @@ not be too much of an issue at all.
 
 So do I write the constant pool first, or wait until later?
 
+## 15:24
+
+Write it first, but before that determine strings that are used in all
+constants so that they are recorded first in a kind of string table.
+
