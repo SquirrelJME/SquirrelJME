@@ -307,7 +307,7 @@ public final class GenericNamespaceWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/13
 	 */
-	final void __writeString(ExtendedDataOutputStream __dos, int __upper,
+	static void __writeString(ExtendedDataOutputStream __dos, int __upper,
 		String __s)
 		throws IOException, NullPointerException
 	{

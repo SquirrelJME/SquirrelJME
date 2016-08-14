@@ -12,8 +12,10 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 
 /**
@@ -28,12 +30,16 @@ class __PoolWriter__
 	
 	/** The mapping of strings. */
 	protected final Map<String, __String__> strings =
-		new HashMap<>();
+		new LinkedHashMap<>();
+	
+	/** The position of the string table. */
+	volatile int _stringpos;
 	
 	/**
 	 * Initializes the pool writer.
 	 *
 	 * @param __pool The constant pool to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/14
 	 */
 	__PoolWriter__(JITConstantPool __pool)
@@ -57,17 +63,62 @@ class __PoolWriter__
 			switch (tag)
 			{
 					// No string data
+				case 0:	// null entry or top
 				case JITConstantPool.TAG_INTEGER:
 				case JITConstantPool.TAG_FLOAT:
 				case JITConstantPool.TAG_LONG:
 				case JITConstantPool.TAG_DOUBLE:
 					continue;
 				
+					// The first element is the string
+				case JITConstantPool.TAG_UTF8:
+				case JITConstantPool.TAG_CLASS:
+				case JITConstantPool.TAG_STRING:
+					__addString(__pool.<Object>get(i, Object.class).
+						toString());
+					break;
+					
+					// Name and type
+				case JITConstantPool.TAG_NAMEANDTYPE:
+					throw new Error("TODO");
+				
+					// Reference to other things
+				case JITConstantPool.TAG_FIELDREF:
+				case JITConstantPool.TAG_METHODREF:
+				case JITConstantPool.TAG_INTERFACEMETHODREF:
+					throw new Error("TODO");
+				
 					// Unknown
 				default:
 					throw new RuntimeException("OOPS");
 			}
 		}
+	}
+	
+	/**
+	 * Adds a string.
+	 *
+	 * @param __s The string to add.
+	 * @return The string information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/14
+	 */
+	private __String__ __addString(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Check if the string is already in the table
+		Map<String, __String__> strings = this.strings;
+		__String__ rv = strings.get(__s);
+		if (rv != null)
+			return rv;
+		
+		// Otherwise add at the end
+		strings.put(__s, (rv = new __String__(__s, strings.size())));
+		return rv;
 	}
 	
 	/**
@@ -84,6 +135,24 @@ class __PoolWriter__
 		// Check
 		if (__dos == null)
 			throw new NullPointerException("NARG");
+		
+		// Write out all the strings
+		for (__String__ s : this.strings.values())
+		{
+			// Align
+			while ((__dos.size() & 3) != 0)
+				__dos.writeByte(0);
+			
+			// {@squirreljme.error BA0l String position is at an address
+			// greater than 2GiB.}
+			long at = __dos.size();
+			if (at < 0 || at > Integer.MAX_VALUE)
+				throw new JITException("BA0l");
+			s._position = (int)at;
+			
+			// Write string here
+			GenericNamespaceWriter.__writeString(__dos, 0, s._string);
+		}
 		
 		throw new Error("TODO");
 	}
