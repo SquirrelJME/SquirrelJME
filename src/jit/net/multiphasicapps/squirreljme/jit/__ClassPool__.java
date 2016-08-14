@@ -18,11 +18,11 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This represents the constant pool of a class which has been read, this is
- * only temporarily used during the translation of the class.
+ * used during translation of the class and also when it is output.
  *
  * @since 2016/06/29
  */
-class __ClassPool__
+public final class JITConstantPool
 {
 	/** The UTF constant tag. */
 	public static final int TAG_UTF8 =
