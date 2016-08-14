@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * This provides an interface to the constant pool of a class which provides
  * a nicer interface for the output class format.
@@ -17,7 +22,14 @@ package net.multiphasicapps.squirreljme.jit;
  * @since 2016/08/12
  */
 public final class JITConstantPool
+	extends AbstractList<JITConstantEntry>
 {
+	/** The entry count. */
+	protected final int size;
+	
+	/** Wrapped entries. */
+	private final JITConstantEntry[] _entries;
+	
 	/**
 	 * Initializes the constant pool representation.
 	 *
@@ -37,7 +49,39 @@ public final class JITConstantPool
 		// detected
 		JITOutputConfig.Immutable config = __dc._jit.config();
 		
-		throw new Error("TODO");
+		// Go through all pool entries and setup wrapped entries
+		List<JITConstantEntry> entries = new LinkedList<>();
+		int on = __pool.size();
+		for (int i = 1; i < on; i++)
+		{
+			throw new Error("TODO");
+		}
+		
+		// Set
+		size = entries.size();
+		JITConstantEntry[] array = entries.<JITConstantEntry>toArray(
+			new JITConstantEntry[size]);
+		this._entries = array;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/13
+	 */
+	@Override
+	public JITConstantEntry get(int __i)
+	{
+		return this._entries[__i];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/13
+	 */
+	@Override
+	public int size()
+	{
+		return this.size;
 	}
 }
 
