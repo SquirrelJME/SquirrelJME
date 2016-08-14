@@ -25,3 +25,10 @@ wide while `getstatic` is 3 bytes wide. So it cannot trivially be translated.
 Strings have to be rewritten however. There is also the case of string being
 rewritten to refer to itself also.
 
+## 21:52
+
+Actually with just plain class rewrites, I do not need a wrapper class for the
+constant pool, so I can just use it directly as such. Before I would have
+needed to handle cases where a class is referred to and such. So just renaming
+the class simplifies things.
+

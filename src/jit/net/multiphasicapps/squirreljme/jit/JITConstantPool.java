@@ -48,6 +48,7 @@ public final class JITConstantPool
 		// Get the configuration, which is needed for when class rewrites are
 		// detected
 		JITOutputConfig.Immutable config = __dc._jit.config();
+		JITClassNameRewrite[] rewrites = config.classNameRewrites();
 		
 		// Go through all pool entries and setup wrapped entries
 		List<JITConstantEntry> entries = new LinkedList<>();
