@@ -7,3 +7,10 @@ an `ArrayList` but for one target, that uses a bunch of memory. Instead it
 can be rewritten to be another class for example. This could be done for
 anything for the most part.
 
+## 00:20
+
+One thing to consider for class rewrites is `Class.forName()` and the
+`Class.name()` with `toString()`. Since technically code could detect or rely
+on the name of a given class, but that would be a bit ugly anyway. That might
+not be too much of an issue at all.
+
