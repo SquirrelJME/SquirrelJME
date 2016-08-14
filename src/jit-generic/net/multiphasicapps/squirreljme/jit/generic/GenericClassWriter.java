@@ -42,6 +42,9 @@ public final class GenericClassWriter
 	/** Has this been closed? */
 	private volatile boolean _closed;
 	
+	/** The constant pool to use. */
+	private volatile JITConstantPool _pool;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -131,6 +134,9 @@ public final class GenericClassWriter
 		{
 			// Check order
 			__order(JITCompilerOrder.SET_CONSTANT_POOL);
+			
+			// Just set the pool
+			this._pool = __pool;
 			
 			throw new Error("TODO");
 		}
