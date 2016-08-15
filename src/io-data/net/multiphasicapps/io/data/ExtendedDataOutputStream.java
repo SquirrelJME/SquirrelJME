@@ -264,29 +264,27 @@ public class ExtendedDataOutputStream
 		throws IOException
 	{
 		// Depends on the endian
+		DataOutputStream output = this.output;
 		DataEndianess endian = this._endian;
 		switch (endian)
 		{
 				// Big
 			case BIG:
-				writeByte(__v >>> 24);
-				writeByte(__v >>> 16);
-				writeByte(__v >>> 8);
-				writeByte(__v);
+				output.writeInt(__v);
 				break;
 				
 				// Little
 			case LITTLE:
-				writeByte(__v);
-				writeByte(__v >>> 8);
-				writeByte(__v >>> 16);
-				writeByte(__v >>> 24);
+				output.writeInt(Integer.reverseBytes(__v));
 				break;
 			
 				// Unknown
 			default:
 				throw new IOException(String.format("BD01", endian));
 		}
+		
+		// Increase
+		this._size += 4;
 	}
 	
 	/**
@@ -297,43 +295,28 @@ public class ExtendedDataOutputStream
 	public final void writeLong(long __v)
 		throws IOException
 	{
-		// Split high and low values to work on integer values (saves on
-		// casting).
-		int hi = (int)(__v >>> 32L),
-			lo = (int)__v;
-		
 		// Depends on the endianess
 		DataEndianess endian = this._endian;
+		DataOutputStream output = this.output;
 		switch (endian)
 		{
 				// Big
 			case BIG:
-				writeByte(hi >>> 24);
-				writeByte(hi >>> 16);
-				writeByte(hi >>> 8);
-				writeByte(hi);
-				writeByte(lo >>> 24);
-				writeByte(lo >>> 16);
-				writeByte(lo >>> 8);
-				writeByte(lo);
+				output.writeLong(__v);
 				break;
 				
 				// Little
 			case LITTLE:
-				writeByte(lo);
-				writeByte(lo >>> 8);
-				writeByte(lo >>> 16);
-				writeByte(lo >>> 24);
-				writeByte(hi);
-				writeByte(hi >>> 8);
-				writeByte(hi >>> 16);
-				writeByte(hi >>> 24);
+				output.writeLong(Long.reverseBytes(__v));
 				break;
 			
 				// Unknown
 			default:
 				throw new IOException(String.format("BD01", endian));
 		}
+		
+		// Increase
+		this._size += 8;
 	}
 	
 	/**
@@ -346,24 +329,26 @@ public class ExtendedDataOutputStream
 	{
 		// Depends on the endian
 		DataEndianess endian = this._endian;
+		DataOutputStream output = this.output;
 		switch (endian)
 		{
 				// Big
 			case BIG:
-				writeByte(__v >>> 8);
-				writeByte(__v);
+				output.writeShort(__v);
 				break;
 				
 				// Little
 			case LITTLE:
-				writeByte(__v);
-				writeByte(__v >>> 8);
+				output.writeShort(Short.reverseBytes((short)__v));
 				break;
 			
 				// Unknown
 			default:
 				throw new IOException(String.format("BD01", endian));
 		}
+		
+		// Increase
+		this._size += 2;
 	}
 	
 	/**
