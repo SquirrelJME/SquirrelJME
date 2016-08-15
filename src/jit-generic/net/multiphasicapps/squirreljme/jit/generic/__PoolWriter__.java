@@ -163,22 +163,23 @@ class __PoolWriter__
 		// Write strings
 		__writeStrings(__dos);
 		
-		// Align
-		while ((__dos.size() & 3) != 0)
-			__dos.writeByte(0);
-		
-		// {@squirreljme.error BA0x The constant pool table starts at a
-		// position outside the range of 2GiB.}
-		long ctp = __dos.size();
-		if (ctp < 0 || ctp > Integer.MAX_VALUE)
-			throw new JITException("BA0x");
-		this._poolpos = (int)ctp;
-		
 		// Write pool data
 		JITConstantPool pool = this.pool;
 		int n = pool.size();
+		int pos[] = new int[n];
 		for (int i = 0; i < n; i++)
 		{
+			// Align
+			while ((__dos.size() & 3) != 0)
+				__dos.writeByte(0);
+			
+			// {@squirreljme.error BA0y The constant pool entry starts at a
+			// position outside the range of 2GiB.}
+			long ppp = __dos.size();
+			if (ppp < 0 || ppp > Integer.MAX_VALUE)
+				throw new JITException("BA0y");
+			pos[i] = (int)ppp;
+			
 			// Get details
 			int tag = pool.tag(i);
 			
@@ -186,6 +187,10 @@ class __PoolWriter__
 			__dos.writeShort(tag);
 			switch (tag)
 			{
+					// Not used
+				case 0:
+					break;
+				
 					// Integer
 				case JITConstantPool.TAG_INTEGER:
 					__dos.writeInt(pool.<Integer>get(i, Integer.class));
@@ -200,9 +205,6 @@ class __PoolWriter__
 					// Long
 				case JITConstantPool.TAG_LONG:
 					__dos.writeLong(pool.<Long>get(i, Long.class));
-					
-					// Padding over next entry
-					__dos.writeShort(0);
 					i++;
 					break;
 					
@@ -210,17 +212,61 @@ class __PoolWriter__
 				case JITConstantPool.TAG_DOUBLE:
 					__dos.writeLong(Double.doubleToRawLongBits(
 						pool.<Double>get(i, Double.class)));
-					
-					// Padding over next entry
-					__dos.writeShort(0);
 					i++;
 					break;
+					
+					// Single string (use string table)
+				case JITConstantPool.TAG_UTF8:
+				case JITConstantPool.TAG_CLASS:
+				case JITConstantPool.TAG_STRING:
+					__dos.writeShort(__addString(
+						pool.<Object>get(i, Object.class).toString())._index);
+					break;
 				
+					// Name and type
+				case JITConstantPool.TAG_NAMEANDTYPE:
+					JITNameAndType jnt = pool.<JITNameAndType>get(i,
+						JITNameAndType.class);
+					__dos.writeShort(__addString(
+						jnt.name().toString())._index);
+					__dos.writeShort(__addString(
+						jnt.type().toString())._index);
+					break;
+					
+					// Reference to other things
+				case JITConstantPool.TAG_FIELDREF:
+				case JITConstantPool.TAG_METHODREF:
+				case JITConstantPool.TAG_INTERFACEMETHODREF:
+					JITMemberReference jmr = pool.<JITMemberReference>get(
+						i, JITMemberReference.class);
+					__dos.writeShort(__addString(
+						jmr.className().toString())._index);
+					__dos.writeShort(__addString(
+						jmr.memberName().toString())._index);
+					__dos.writeShort(__addString(
+						jmr.memberType().toString())._index);
+					break;
+					
 					// Unknown
 				default:
 					throw new RuntimeException("OOPS");
 			}
 		}
+		
+		// Align
+		while ((__dos.size() & 3) != 0)
+			__dos.writeByte(0);
+		
+		// {@squirreljme.error BA0x The constant pool table starts at a
+		// position outside the range of 2GiB.}
+		long ctp = __dos.size();
+		if (ctp < 0 || ctp > Integer.MAX_VALUE)
+			throw new JITException("BA0x");
+		this._poolpos = (int)ctp;
+		
+		// Write the constant pool pointers
+		for (int i = 0; i < n; i++)
+			__dos.writeInt(pos[i]);
 	}
 	
 	/**
