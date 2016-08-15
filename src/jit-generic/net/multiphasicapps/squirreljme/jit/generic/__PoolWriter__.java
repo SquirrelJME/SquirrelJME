@@ -34,8 +34,17 @@ class __PoolWriter__
 	protected final Map<String, __String__> strings =
 		new LinkedHashMap<>();
 	
+	/** The string table size. */
+	final int _stringcount;
+	
+	/** Entries in the constant pool. */
+	final int _poolcount;
+	
 	/** The position of the string table. */
 	volatile int _stringpos;
+	
+	/** The position of the constant pool. */
+	volatile int _poolpos;
 	
 	/**
 	 * Initializes the pool writer.
@@ -56,6 +65,7 @@ class __PoolWriter__
 		
 		// Go through all pool entries and extract strings from them to use
 		int n = __pool.size();
+		this._poolcount = n;
 		for (int i = 0; i < n; i++)
 		{
 			// Get tag here
@@ -104,6 +114,9 @@ class __PoolWriter__
 					throw new RuntimeException("OOPS");
 			}
 		}
+		
+		// Write the string count
+		this._stringcount = this.strings.size();
 	}
 	
 	/**
@@ -164,6 +177,22 @@ class __PoolWriter__
 			// Write string here
 			GenericNamespaceWriter.__writeString(__dos, 0, s._string);
 		}
+		
+		// Align
+		while ((__dos.size() & 3) != 0)
+			__dos.writeByte(0);
+		
+		// {@squirreljme.error BA0v The string table starts at a position
+		// outside the range of 2GiB.}
+		long stp = __dos.size();
+		if (stp < 0 || stp > Integer.MAX_VALUE)
+			throw new JITException("BA0v");
+		this._stringpos = (int)stp;
+		
+		// Write it out
+		Map<String, __String__> strings = this.strings;
+		for (__String__ s : strings.values())
+			__dos.writeInt(s._position);
 		
 		throw new Error("TODO");
 	}

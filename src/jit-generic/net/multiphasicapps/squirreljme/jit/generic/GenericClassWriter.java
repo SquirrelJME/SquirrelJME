@@ -45,6 +45,18 @@ public final class GenericClassWriter
 	/** The constant pool to use. */
 	private volatile JITConstantPool _pool;
 	
+	/** The string table position. */
+	private volatile int _stringpos;
+	
+	/** The number of strings in the table. */
+	private volatile int _stringcount;
+	
+	/** The constant pool table position. */
+	private volatile int _poolpos;
+	
+	/** The number of entries in the constant pool. */
+	private volatile int _poolcount;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -141,7 +153,16 @@ public final class GenericClassWriter
 			// Setup pool writer then write it
 			try
 			{
-				new __PoolWriter__(__pool).__write(this.output);
+				// Write the pool
+				__PoolWriter__ pw = new __PoolWriter__(__pool);
+				pw.__write(this.output);
+				
+				// Store the string table position and the constant pool
+				// position
+				this._stringpos = pw._stringpos;
+				this._stringcount = pw._stringcount;
+				this._poolpos = pw._poolpos;
+				this._poolcount = pw._poolcount;
 			}
 			
 			// {@squirreljme.error BA0u Failed to write the constant pool.}
