@@ -167,22 +167,60 @@ class __PoolWriter__
 		while ((__dos.size() & 3) != 0)
 			__dos.writeByte(0);
 		
-		// Write pool data
-		if (true)
-			throw new Error("TODO");
-		
-		// Align
-		while ((__dos.size() & 3) != 0)
-			__dos.writeByte(0);
-		
 		// {@squirreljme.error BA0x The constant pool table starts at a
 		// position outside the range of 2GiB.}
 		long ctp = __dos.size();
-		if (ctp < 0 || stp > Integer.MAX_VALUE)
+		if (ctp < 0 || ctp > Integer.MAX_VALUE)
 			throw new JITException("BA0x");
 		this._poolpos = (int)ctp;
 		
-		throw new Error("TODO");
+		// Write pool data
+		JITConstantPool pool = this.pool;
+		int n = pool.size();
+		for (int i = 0; i < n; i++)
+		{
+			// Get details
+			int tag = pool.tag(i);
+			
+			// Depends on the tag
+			__dos.writeShort(tag);
+			switch (tag)
+			{
+					// Integer
+				case JITConstantPool.TAG_INTEGER:
+					__dos.writeInt(pool.<Integer>get(i, Integer.class));
+					break;
+				
+					// Float	
+				case JITConstantPool.TAG_FLOAT:
+					__dos.writeInt(Float.floatToRawIntBits(
+						pool.<Float>get(i, Float.class)));
+					break;
+					
+					// Long
+				case JITConstantPool.TAG_LONG:
+					__dos.writeLong(pool.<Long>get(i, Long.class));
+					
+					// Padding over next entry
+					__dos.writeShort(0);
+					i++;
+					break;
+					
+					// Double
+				case JITConstantPool.TAG_DOUBLE:
+					__dos.writeLong(Double.doubleToRawLongBits(
+						pool.<Double>get(i, Double.class)));
+					
+					// Padding over next entry
+					__dos.writeShort(0);
+					i++;
+					break;
+				
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
+		}
 	}
 	
 	/**
