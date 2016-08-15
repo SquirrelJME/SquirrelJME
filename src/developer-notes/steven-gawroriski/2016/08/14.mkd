@@ -23,3 +23,15 @@ So do I write the constant pool first, or wait until later?
 Write it first, but before that determine strings that are used in all
 constants so that they are recorded first in a kind of string table.
 
+## 20:33
+
+I will need an efficient way to write the constant pool without wasting much
+space. There will need to be 9 bytes at the minimum for each entry due to long
+or double, however since those take up two spots that could be handled in
+special cases. So this leaves 3 2-byte fields (for references). 3*2 == 6. Since
+6 is rather off and a tag is needed also, make it 4 2-byte fields. However in
+reality due to the way references refer to name and types, I only need two
+2 byte entries, which is enough for int and float. So I suppose keep it at 6
+bytes then. Long and double will just consume more space and have an illegal
+tag identifier.
+
