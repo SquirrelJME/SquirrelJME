@@ -44,8 +44,7 @@ public class BuilderCache
 	 * console for debugging purposes.}
 	 */
 	private static final boolean _HEX_DUMP_OUTPUT =
-		Boolean.getBoolean("net.multiphasicapps.squirreljme.builder.hexdump") |
-		true;
+		Boolean.getBoolean("net.multiphasicapps.squirreljme.builder.hexdump");
 	
 	/** The owning builder. */
 	protected final BuilderCacheHelper builder;
