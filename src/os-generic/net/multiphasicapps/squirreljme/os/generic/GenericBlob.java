@@ -78,6 +78,10 @@ public class GenericBlob
 	public static final int END_HEADER_MAGIC_NUMBER =
 		0xC2F6E5AE;
 	
+	/** End of class magic number. */
+	public static final int END_CLASS_MAGIC_NUMBER =
+		0xD9E6F0EA;
+	
 	/** Reflect the data in the CRC? */
 	public static final boolean CRC_REFLECT_DATA =
 		true;

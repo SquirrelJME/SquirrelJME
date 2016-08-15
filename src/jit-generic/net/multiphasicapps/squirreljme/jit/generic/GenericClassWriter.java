@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
-import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
+import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
@@ -145,8 +145,42 @@ public final class GenericClassWriter
 					while ((dos.size() & 3) != 0)
 						dos.writeByte(0);
 					
+					// String table
+					dos.writeInt(this._stringpos);
+					dos.writeShort(this._stringcount);
 					
-					throw new Error("TODO");
+					// Current class name
+					dos.writeShort(this._nameindex);
+					
+					// Constant pool
+					dos.writeInt(this._poolpos);
+					dos.writeShort(this._poolcount);
+					
+					// The super class name
+					dos.writeShort(this._scpooldx);
+					
+					// The interfaces implemented
+					dos.writeInt(this._ifacepos);
+					dos.writeShort(this._ifacecount);
+					
+					// The class flags
+					int flags = 0;
+					for (JITClassFlag f : this._flags)
+						flags |= (1 << f.ordinal());
+					dos.writeShort(flags);
+					
+					// Field table
+					System.err.println("TODO -- Write fields at end.");
+					dos.writeInt(0);	// offset
+					dos.writeShort(0);	// size
+					
+					// Method table
+					System.err.println("TODO -- Write methods at end.");
+					dos.writeShort(0);	// size
+					dos.writeInt(0);	// offset
+					
+					// End with magic number
+					dos.writeInt(GenericBlob.END_CLASS_MAGIC_NUMBER);
 				}
 			
 				// {@squirreljme.error BA11 Failed to write the end of the

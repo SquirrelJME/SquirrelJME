@@ -26,7 +26,6 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
-import net.multiphasicapps.squirreljme.os.generic.GenericBlobConstants;
 import net.multiphasicapps.squirreljme.os.generic.GenericStringType;
 
 /**
