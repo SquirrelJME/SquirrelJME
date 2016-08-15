@@ -1,0 +1,8 @@
+# 2016/08/15
+
+## 09:39
+
+Boxed value caching, for memory saving can be done with linked lists
+essentially although `valueOf` lookup would be very slow. It might be best to
+not cache at all.
+

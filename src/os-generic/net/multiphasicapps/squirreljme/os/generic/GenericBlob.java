@@ -75,7 +75,7 @@ public class GenericBlob
 		0xC1CCD2C1;
 	
 	/** The magic number for the end header. */
-	public static final int END_HEADER_MAGIC_NUMBER =
+	public static final int END_CENTRAL_DIRECTORY_MAGIC_NUMBER =
 		0xC2F6E5AE;
 	
 	/** End of class magic number. */

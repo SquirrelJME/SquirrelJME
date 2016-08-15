@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
@@ -59,6 +61,10 @@ public final class GenericNamespaceWriter
 	/** Visible lock. */
 	final Object _lock =
 		this.lock;
+	
+	/** The entry index. */
+	private final List<__Index__> _index =
+		new LinkedList<>();
 	
 	/** Has this been closed? */
 	private volatile boolean _closed;
@@ -225,7 +231,37 @@ public final class GenericNamespaceWriter
 				// Mark closed
 				this._closed = true;
 				
-				throw new Error("TODO");
+				try (ExtendedDataOutputStream dos = this.output)
+				{
+					// Align
+					while ((dos.size() & 3) != 0)
+						dos.writeByte(0);
+				
+					// Write magic identifier
+					dos.writeInt(GenericBlob.CENTRAL_DIRECTORY_MAGIC_NUMBER);
+				
+					// Record the index
+					List<__Index__> index = this._index;
+					int n = index.size();
+					for (__Index__ i : index)
+					{
+						dos.writeInt(i._infopos);
+						dos.writeInt(i._datapos);
+						dos.writeInt(i._size);
+					}
+				
+					// Record the size and magic
+					dos.writeInt(n);
+					dos.writeInt(GenericBlob.
+						END_CENTRAL_DIRECTORY_MAGIC_NUMBER);
+				}
+				
+				// {@squirreljme.error BA0m Failed to write the end of the
+				// namespace.}
+				catch (IOException e)
+				{
+					throw new JITException("BA0m", e);
+				}
 			}
 		}
 	}
@@ -271,6 +307,9 @@ public final class GenericNamespaceWriter
 			// Clear, there is no need to add the closed content to a table of
 			// contents because that is managed when the content is created.
 			this._current = null;
+			
+			// Add to the index
+			this._index.add(new __Index__(__bw));
 		}
 	}
 	

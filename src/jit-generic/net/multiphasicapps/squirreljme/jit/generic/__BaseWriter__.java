@@ -38,10 +38,10 @@ abstract class __BaseWriter__
 	protected final ExtendedDataOutputStream output;
 	
 	/** The entry start address. */
-	protected final int startaddr;
+	final int _startaddr;
 	
 	/** The data address. */
-	protected final int dataaddr;
+	final int _dataaddr;
 	
 	/** The end of the data. */
 	volatile int _dataend;
@@ -80,7 +80,7 @@ abstract class __BaseWriter__
 			long sa = __dos.size();
 			if (sa < 0 || sa > Integer.MAX_VALUE)
 				throw new JITException("BA0b");
-			this.startaddr = (int)sa;
+			this._startaddr = (int)sa;
 			
 			// Write magic
 			__dos.writeInt(GenericBlob.START_ENTRY_MAGIC_NUMBER);
@@ -95,7 +95,7 @@ abstract class __BaseWriter__
 			long da = __dos.size();
 			if (da < 0 || da > Integer.MAX_VALUE)
 				throw new JITException("BA0c");
-			this.dataaddr = (int)da;
+			this._dataaddr = (int)da;
 			
 			// Wrap output
 			ExtendedDataOutputStream output;
@@ -199,7 +199,7 @@ abstract class __BaseWriter__
 					// Write the end header
 					real.writeInt(GenericBlob.END_ENTRY_MAGIC_NUMBER);
 					real.writeInt(this.crc.crc());
-					real.writeInt(de - __BaseWriter__.this.dataaddr);
+					real.writeInt(de - __BaseWriter__.this._dataaddr);
 				
 					// Close it on this writer
 					__BaseWriter__.this.owner.__close(__BaseWriter__.this);
