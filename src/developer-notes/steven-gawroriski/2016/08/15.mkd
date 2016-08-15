@@ -6,3 +6,50 @@ Boxed value caching, for memory saving can be done with linked lists
 essentially although `valueOf` lookup would be very slow. It might be best to
 not cache at all.
 
+## 11:05
+
+I need a faster huffman lookup code, since that is quite slowing down my
+build much (since I need to decompress the ZIP files). If I make the huffman
+lookup fast then it should compile much faster. I devised my own seemingly
+good speed huffman lookup using remaining bits and such, on my markerboard.
+With a random huffman tree that I setup, each resulting value ends up being
+in a single index.
+
+## 13:43
+
+So I need to figure out what is wrong with my ELF and why it says
+"Invalid Argument".
+
+## 14:34
+
+Unless, a program header of zero is considered invalid, but other binaries use
+the zero program header. Unless I absolutely need a data section.
+
+## 14:43
+
+However, removing the data section of a binary makes it still work (although in
+the practice binary no text is printed).
+
+## 15:10
+
+Looks like QEMU fails in `load_elf_interp`. However my binary does not have
+an interpreter because it is static. Also looks like the ELF is completely
+corrupted too. But that structure is not initialized. So either
+`elf_check_ident` fails or `elf_check_ehdr` does.
+
+## 19:38
+
+So now I built a debug version of QEMU.
+
+## 19:44
+
+Looks like it fails because the host page alignment is not correct, right now
+the alignment is just zero so perhaps if it were made to be 4K.
+
+## 19:52
+
+I am actually going to need a better ELF writing class, with perhaps a builder
+since there can be a large number of differences between different systems
+which use ELF. I suppose the best thing to do would be to make it object
+oriented so I can declare what I need.
+

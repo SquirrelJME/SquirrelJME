@@ -283,9 +283,7 @@ public class ELFOutput
 					dos.writeInt(fullpayloadsize);	// Program size (in file)
 					dos.writeInt(fullpayloadsize);	// Program size (in memory)
 					dos.writeInt(5);	// RX
-					
-					// Padding
-					dos.writeInt(0);
+					dos.writeInt(4096);	// Alignment
 					
 					// Null section
 					for (int p = 0; p < sheadersize; p++)
@@ -300,7 +298,7 @@ public class ELFOutput
 					dos.writeInt(fullpayloadsize);			// Size
 					dos.writeInt(0);						// Ignore link
 					dos.writeInt(0);						// Ignore info
-					dos.writeInt(4);						// Address align
+					dos.writeInt(4096);						// Address align
 					dos.writeInt(0);						// Not used
 					
 					// String section
@@ -312,7 +310,7 @@ public class ELFOutput
 					dos.writeInt(textname.length);			// Size
 					dos.writeInt(0);						// Ignore link
 					dos.writeInt(0);						// Ignore info
-					dos.writeInt(4);						// Address align
+					dos.writeInt(4096);						// Address align
 					dos.writeInt(1);						// char 1 byte
 					break;
 				
@@ -325,9 +323,7 @@ public class ELFOutput
 					dos.writeLong(0);	// Physical address?
 					dos.writeLong(fullpayloadsize);	// Program size in file
 					dos.writeLong(fullpayloadsize);	// Program size in memory
-					
-					// Padding
-					dos.writeLong(0);
+					dos.writeLong(4096);		// Align
 					
 					// Null section
 					for (int p = 0; p < sheadersize; p++)
@@ -342,7 +338,7 @@ public class ELFOutput
 					dos.writeLong(fullpayloadsize);			// Size
 					dos.writeInt(0);						// Ignore link
 					dos.writeInt(0);						// Ignore info
-					dos.writeLong(8);						// Address align
+					dos.writeLong(4096);					// Address align
 					dos.writeLong(0);						// Not used
 					
 					// String section
@@ -354,7 +350,7 @@ public class ELFOutput
 					dos.writeLong(textname.length);			// Size
 					dos.writeInt(0);						// Ignore link
 					dos.writeInt(0);						// Ignore info
-					dos.writeLong(8);						// Address align
+					dos.writeLong(4096);					// Address align
 					dos.writeLong(1);						// char 1 byte
 					break;
 				
