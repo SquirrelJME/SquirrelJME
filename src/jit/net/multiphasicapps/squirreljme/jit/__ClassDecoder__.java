@@ -129,8 +129,9 @@ final class __ClassDecoder__
 		JITClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
 		
 		// Read class name
+		int clnamedx = input.readUnsignedShort();
 		ClassNameSymbol clname = pool.<ClassNameSymbol>get(
-			input.readUnsignedShort(), ClassNameSymbol.class);
+			clnamedx, ClassNameSymbol.class);
 		boolean isobject = (clname.equals(_OBJECT_CLASS));
 		
 		// There is enough "known" information (just the name) to start
@@ -142,7 +143,7 @@ final class __ClassDecoder__
 			pool.__rewrite();
 			
 			// Send pool
-			cw.constantPool(pool);
+			cw.constantPool(pool, clnamedx);
 			
 			// Send class flags
 			cw.classFlags(cf);

@@ -69,6 +69,9 @@ public final class GenericClassWriter
 	/** The pointer where interfaces are stored. */
 	private volatile int _ifacepos;
 	
+	/** The index in the constant pool containing the current class name. */
+	private volatile int _nameindex;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -138,6 +141,11 @@ public final class GenericClassWriter
 					// Get output
 					ExtendedDataOutputStream dos = this.output;
 					
+					// Align
+					while ((dos.size() & 3) != 0)
+						dos.writeByte(0);
+					
+					
 					throw new Error("TODO");
 				}
 			
@@ -159,7 +167,7 @@ public final class GenericClassWriter
 	 * @since 2016/08/12
 	 */
 	@Override
-	public void constantPool(JITConstantPool __pool)
+	public void constantPool(JITConstantPool __pool, int __cndx)
 	{
 		// Check
 		if (__pool == null)
@@ -173,6 +181,9 @@ public final class GenericClassWriter
 			
 			// Just set the pool
 			this._pool = __pool;
+			
+			// Set the name index
+			this._nameindex = __cndx;
 			
 			// Setup pool writer then write it
 			try

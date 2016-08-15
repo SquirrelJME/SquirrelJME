@@ -45,11 +45,12 @@ public interface JITClassWriter
 	 * Sets the constant pool that the class uses.
 	 *
 	 * @param __pool The constant pool to use.
+	 * @param __cndx The index containing the current class name.
 	 * @throws JITException If it could not be set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/12
 	 */
-	public abstract void constantPool(JITConstantPool __pool)
+	public abstract void constantPool(JITConstantPool __pool, int __cndx)
 		throws JITException, NullPointerException;
 	
 	/**
