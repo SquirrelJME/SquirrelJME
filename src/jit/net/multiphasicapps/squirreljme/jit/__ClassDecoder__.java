@@ -148,8 +148,9 @@ final class __ClassDecoder__
 			cw.classFlags(cf);
 			
 			// Read super class
+			int sudx = input.readUnsignedShort();
 			ClassNameSymbol suname = pool.<ClassNameSymbol>optional(
-				input.readUnsignedShort(), ClassNameSymbol.class);
+				sudx, ClassNameSymbol.class);
 			
 			// {@squirreljme.error ED0m The Object class must have no super
 			// class and any non-Object class must have a super class.
@@ -165,17 +166,22 @@ final class __ClassDecoder__
 					suname));
 			
 			// Send
-			cw.superClass(suname);
+			cw.superClass(suname, sudx);
 			
 			// Read in interfaces
 			int icount = input.readUnsignedShort();
 			ClassNameSymbol[] ifaces = new ClassNameSymbol[icount];
+			int[] ifdxs = new int[icount];
 			for (int i = 0; i < icount; i++)
+			{
+				int idx = input.readUnsignedShort();
 				ifaces[i] = pool.<ClassNameSymbol>get(
-					input.readUnsignedShort(), ClassNameSymbol.class);
+					idx, ClassNameSymbol.class);
+				ifdxs[i] = idx;
+			}
 			
 			// Send
-			cw.interfaceClasses(ifaces);
+			cw.interfaceClasses(ifaces, ifdxs);
 			
 			// TODO
 			System.err.println("TODO -- Implement the class decoder.");

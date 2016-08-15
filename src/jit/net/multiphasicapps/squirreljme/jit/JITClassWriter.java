@@ -56,11 +56,12 @@ public interface JITClassWriter
 	 * Records class interfaces.
 	 *
 	 * @param __ins The class interfaces.
+	 * @param __dxs The indices for all of the interfaces to the constant pool.
 	 * @throws JITException If the interfaces could not be written.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
-	public abstract void interfaceClasses(ClassNameSymbol... __ins)
+	public abstract void interfaceClasses(ClassNameSymbol[] __ins, int[] __dxs)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -68,10 +69,12 @@ public interface JITClassWriter
 	 *
 	 * @param __cn The name of the super class, may be {@code null} if there
 	 * is none.
+	 * @param __dx The index of the super class in the constant pool or
+	 * {@code 0} if there is none.
 	 * @throws JITException If the super-class could not be written.
 	 * @since 2016/07/22
 	 */
-	public abstract void superClass(ClassNameSymbol __cn)
+	public abstract void superClass(ClassNameSymbol __cn, int __dx)
 		throws JITException;
 }
 

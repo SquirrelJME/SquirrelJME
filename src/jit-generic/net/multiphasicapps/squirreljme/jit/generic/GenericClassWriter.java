@@ -60,6 +60,15 @@ public final class GenericClassWriter
 	/** Class flags, written later. */
 	private volatile JITClassFlags _flags;
 	
+	/** The super class pool ID. */
+	private volatile int _scpooldx;
+	
+	/** The interface count. */
+	private volatile int _ifacecount;
+	
+	/** The pointer where interfaces are stored. */
+	private volatile int _ifacepos;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -122,6 +131,22 @@ public final class GenericClassWriter
 			{
 				// Mark closed
 				this._closed = true;
+				
+				// Could fail
+				try
+				{
+					// Get output
+					ExtendedDataOutputStream dos = this.output;
+					
+					throw new Error("TODO");
+				}
+			
+				// {@squirreljme.error BA11 Failed to write the end of the
+				// class.}
+				catch (IOException e)
+				{
+					throw new JITException("BA11", e);
+				}
 			}
 			
 			// Super close
@@ -177,11 +202,11 @@ public final class GenericClassWriter
 	 * @since 2016/07/27
 	 */
 	@Override
-	public void interfaceClasses(ClassNameSymbol... __ins)
+	public void interfaceClasses(ClassNameSymbol[] __ins, int[] __dxs)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__ins == null)
+		if (__ins == null || __dxs == null)
 			throw new NullPointerException("NARG");
 		
 		// Lock
@@ -190,7 +215,35 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.INTERFACE_CLASS_NAMES);
 			
-			throw new Error("TODO");
+			// Could fail
+			try
+			{
+				// Get output
+				ExtendedDataOutputStream dos = this.output;
+				
+				// Align
+				while ((dos.size() & 3) != 0)
+					dos.writeByte(0);
+			
+				// {@squirreljme.error BA0z The interface table starts at a
+				// position outside the range of 2GiB.}
+				long pos = dos.size();
+				if (pos < 0 || pos > Integer.MAX_VALUE)
+					throw new JITException("BA0z");
+				this._ifacepos = (int)pos;
+			
+				// Write
+				int n = __ins.length;
+				this._ifacecount = n;
+				for (int i = 0; i < n; i++)
+					dos.writeShort(__dxs[i]);
+			}
+			
+			// {@squirreljme.error BA10 Failed to write the interface table.}
+			catch (IOException e)
+			{
+				throw new JITException("BA10", e);
+			}
 		}
 	}
 	
@@ -199,7 +252,7 @@ public final class GenericClassWriter
 	 * @since 2016/07/27
 	 */
 	@Override
-	public void superClass(ClassNameSymbol __cn)
+	public void superClass(ClassNameSymbol __cn, int __dx)
 		throws JITException
 	{
 		// Lock
@@ -208,7 +261,8 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
-			throw new Error("TODO");
+			// Set
+			this._scpooldx = __dx;
 		}
 	}
 	
