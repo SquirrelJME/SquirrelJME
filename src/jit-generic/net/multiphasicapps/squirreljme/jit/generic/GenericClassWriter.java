@@ -57,6 +57,9 @@ public final class GenericClassWriter
 	/** The number of entries in the constant pool. */
 	private volatile int _poolcount;
 	
+	/** Class flags, written later. */
+	private volatile JITClassFlags _flags;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -98,12 +101,8 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.CLASS_FLAGS);
 			
-			// Build value
-			int v = 0;
-			for (JITClassFlag f : __cf)
-				v |= (1 << f.ordinal());
-			
-			throw new Error("TODO");
+			// Write later
+			this._flags = __cf;
 		}
 	}
 	
