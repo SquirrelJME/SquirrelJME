@@ -160,6 +160,46 @@ class __PoolWriter__
 		if (__dos == null)
 			throw new NullPointerException("NARG");
 		
+		// Write strings
+		__writeStrings(__dos);
+		
+		// Align
+		while ((__dos.size() & 3) != 0)
+			__dos.writeByte(0);
+		
+		// Write pool data
+		if (true)
+			throw new Error("TODO");
+		
+		// Align
+		while ((__dos.size() & 3) != 0)
+			__dos.writeByte(0);
+		
+		// {@squirreljme.error BA0x The constant pool table starts at a
+		// position outside the range of 2GiB.}
+		long ctp = __dos.size();
+		if (ctp < 0 || stp > Integer.MAX_VALUE)
+			throw new JITException("BA0x");
+		this._poolpos = (int)ctp;
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Writes the string table.
+	 *
+	 * @param __dos The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/14
+	 */
+	private void __writeStrings(ExtendedDataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
 		// Write out all the strings
 		for (__String__ s : this.strings.values())
 		{
@@ -193,8 +233,6 @@ class __PoolWriter__
 		Map<String, __String__> strings = this.strings;
 		for (__String__ s : strings.values())
 			__dos.writeInt(s._position);
-		
-		throw new Error("TODO");
 	}
 	
 	/**
