@@ -14,6 +14,10 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -287,6 +291,37 @@ public final class JITConstantPool
 				case TAG_CLASS:
 					raw = decoder.__rewriteClass(ClassNameSymbol.of(
 						this.<String>get(fields[0], String.class)));
+					break;
+					
+					// Name and type
+				case TAG_NAMEANDTYPE:
+					raw = new JITNameAndType(
+						IdentifierSymbol.of(this.<String>get(
+							fields[0], String.class)),
+						MemberTypeSymbol.of(this.<String>get(
+							fields[1], String.class)));
+					break;
+					
+					// Field/method/interface reference
+				case TAG_FIELDREF:
+				case TAG_METHODREF:
+				case TAG_INTERFACEMETHODREF:
+					ClassNameSymbol rcl = decoder.__rewriteClass(
+						this.<ClassNameSymbol>get(fields[0],
+							ClassNameSymbol.class));
+					JITNameAndType jna = this.<JITNameAndType>get(fields[1],
+						JITNameAndType.class);
+					
+					// Field?
+					if (tag == TAG_FIELDREF)
+						raw = new JITFieldReference(rcl, jna.name(),
+							(FieldSymbol)jna.type());
+					
+					// Method?
+					else
+						raw = new JITMethodReference(rcl, jna.name(),
+							(MethodSymbol)jna.type(),
+							tag == TAG_INTERFACEMETHODREF);
 					break;
 					
 					// {@squirreljme.error ED0f Could not obtain the constant

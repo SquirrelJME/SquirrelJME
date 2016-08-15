@@ -18,6 +18,7 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 import net.multiphasicapps.squirreljme.jit.JITMemberReference;
+import net.multiphasicapps.squirreljme.jit.JITNameAndType;
 
 /**
  * This writes the constant pool.
@@ -81,7 +82,11 @@ class __PoolWriter__
 					
 					// Name and type
 				case JITConstantPool.TAG_NAMEANDTYPE:
-					throw new Error("TODO");
+					JITNameAndType jnt = __pool.<JITNameAndType>get(i,
+						JITNameAndType.class);
+					__addString(jnt.name().toString());
+					__addString(jnt.type().toString());
+					break;
 				
 					// Reference to other things
 				case JITConstantPool.TAG_FIELDREF:
