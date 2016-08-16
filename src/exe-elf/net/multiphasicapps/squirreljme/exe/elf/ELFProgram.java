@@ -26,7 +26,7 @@ public final class ELFProgram
 	extends __ELFBaseEntry__
 {
 	/** Flags for the header. */
-	protected final Set<ELFProgramFlag> flags =
+	final Set<ELFProgramFlag> _flags =
 		new HashSet<>();
 	
 	/** The name of this namespace. */
@@ -41,6 +41,24 @@ public final class ELFProgram
 	/** Also create a section? */
 	volatile boolean _sectionalso =
 		true;
+	
+	/** The type of program this is. */
+	volatile ELFProgramType _type;
+	
+	/** Extra bytes to use for loading in memory. */
+	volatile int _extramem;
+	
+	/** Use an alternative load address? */
+	volatile boolean _useloadaddr;
+	
+	/** Use this load address. */
+	volatile long _loadaddr;
+	
+	/** The physical address (not usually needed). */
+	volatile long _physaddr;
+	
+	/** The alignment of the section. */
+	volatile long _align;
 	
 	/**
 	 * Initializes the program from the given input stream.
@@ -122,6 +140,55 @@ public final class ELFProgram
 	}
 	
 	/**
+	 * Use the default load address.
+	 *
+	 * @since 2016/08/16
+	 */
+	public void defaultLoadAddress()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._useloadaddr = false;
+		}
+	}
+	
+	/**
+	 * Sets the alignment of the header.
+	 *
+	 * @param __a The alignment to use.
+	 * @since 2016/08/16
+	 */
+	public void setAlignment(long __a)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._align = __a;
+		}
+	}
+	
+	/**
+	 * Sets the amount of extra memory to use.
+	 *
+	 * @param __i The number of bytes to use.
+	 * @since 2016/08/16
+	 */
+	public void setExtraMemory(int __i)
+	{
+		// {@squirreljme.error AX0c Cannot set the amount of extra memory to
+		// use to a negative value.}
+		if (__i < 0)
+			throw new IllegalArgumentException("AX0c");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._extramem = __i;
+		}
+	}
+	
+	/**
 	 * Sets the flags for the program.
 	 *
 	 * @param __f The flags to set, if this is {@code null} or the first
@@ -134,7 +201,7 @@ public final class ELFProgram
 		synchronized (this.lock)
 		{
 			// Clear flags?
-			Set<ELFProgramFlag> flags = this.flags;
+			Set<ELFProgramFlag> flags = this._flags;
 			if (__f == null || __f[0] == null)
 				flags.clear();
 			
@@ -142,6 +209,22 @@ public final class ELFProgram
 			else
 				for (ELFProgramFlag q : __f)
 					flags.add(q);
+		}
+	}
+	
+	/**
+	 * Sets the load address of the program, from a non-default perspective.
+	 *
+	 * @param __v The load address to use.
+	 * @since 2016/08/16
+	 */
+	public void setLoadAddress(long __v)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._useloadaddr = true;
+			this._loadaddr = __v;
 		}
 	}
 	
@@ -158,6 +241,42 @@ public final class ELFProgram
 		synchronized (this.lock)
 		{
 			this._sectionalso = __s;
+		}
+	}
+	
+	/**
+	 * Sets the physical address of the program.
+	 *
+	 * @param __v The address to use.
+	 * @since 2016/08/16
+	 */
+	public void setPhysicalAddress(long __v)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._physaddr = __v;
+		}
+	}
+	
+	/**
+	 * Sets the type of program header entry this is.
+	 *
+	 * @param __t The type to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/16
+	 */
+	public void setType(ELFProgramType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._type = __t;
 		}
 	}
 }

@@ -238,6 +238,25 @@ public class ELFOutput
 	}
 	
 	/**
+	 * Returns the programs currently set within the ELF.
+	 *
+	 * @return The array of programs.
+	 * @since 2016/08/16
+	 */
+	public ELFProgram[] programs()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			List<ELFProgram> programs = this._programs;
+			
+			// make it an array
+			return programs.<ELFProgram>toArray(
+				new ELFProgram[programs.size()]);
+		}
+	}
+	
+	/**
 	 * Sets the endianess of the ELF.
 	 *
 	 * @param __e The ELF endianess.

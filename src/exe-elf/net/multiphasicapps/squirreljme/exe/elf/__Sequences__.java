@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This contains the sequences which are used to output the specified ELF.
@@ -333,7 +334,7 @@ class __Sequences__
 		extends __Sequence__
 	{
 		/** The wrapped program. */
-		protected final ELFProgram program;
+		final ELFProgram _program;
 		
 		/**
 		 * Initializes the program.
@@ -355,7 +356,7 @@ class __Sequences__
 				throw new NullPointerException("NARG");
 			
 			// Set
-			this.program = __prg;
+			this._program = __prg;
 			
 			// Add self to the end of the program list
 			List<__Sequences__.__Sequence__> seqs = __Sequences__.this.seq;
@@ -433,7 +434,7 @@ class __Sequences__
 			// Get ELF programs to generate headers for
 			List<ELFProgram> programs = owner._programs;
 			int n = programs.size();
-			this._entcount = n;
+			this._entcount = n + 1;
 			
 			// Start program headers right where the older data ends
 			int base = justbefore._at + justbefore._size;
@@ -469,11 +470,106 @@ class __Sequences__
 		void __write(ExtendedDataOutputStream __dos)
 			throws IOException
 		{
+			// Need the word size since both things differ
+			ELFOutput owner = __Sequences__.this.owner;
+			int bits = owner._wordsize;
+			long base = owner._baseaddr;
+			
 			// Write the header information
+			int entsize;
 			List<__Program__> subprogs = this._subprogs;
-			int n = subprogs.size();
+			int n = subprogs.size() + 1;
 			for (int i = 0; i < n; i++)
-				throw new Error("TODO");
+			{
+				// Storage
+				ELFProgramType type;
+				long offset, loadaddr, physaddr, filesize, memsize, align;
+				int flags;
+				
+				// The null entry must exist and has everything set to NULL
+				if (i == 0)
+				{
+					type = ELFStandardProgramType.NULL;
+					offset = loadaddr = physaddr = filesize = memsize = align =
+						0L;
+					flags = 0;
+				}
+				
+				// Otherwise from the real one
+				else
+				{
+					// Get
+					__Program__ sub = subprogs.get(i - 1);
+					ELFProgram elf = sub._program;
+					
+					// Details
+					type = elf._type;
+					offset = (sub._at & 0xFFFFFFFFL);
+					
+					// Physical address, which is not always needed
+					physaddr = elf._physaddr;
+					
+					// Use custom specified load address?
+					if (elf._useloadaddr)
+						loadaddr = elf._loadaddr;
+					
+					// Relative from base otherwise
+					else
+						loadaddr = base + offset;
+					
+					// Use the program size
+					filesize = elf._length;
+					
+					// Extra bytes of memory to potentially use
+					memsize = filesize + elf._extramem;
+					
+					// Alignment
+					align = elf._align;
+					
+					// Flags
+					flags = 0;
+					for (ELFProgramFlag x : elf._flags)
+						flags |= x.mask();
+				}
+				
+				// Same every time
+				__dos.writeInt(type.identifier());
+				
+				// Depends on the word size
+				switch (bits)
+				{
+						// 32-bit
+					case 32:
+						// {@squirreljme.error AX0d The amount of memory to
+						// allocate exceeds 32-bits.}
+						if (memsize < 0 || memsize > 0xFFFF_FFFFL)
+							throw new JITException("AX0d");
+						
+						__dos.writeInt((int)offset);
+						__dos.writeInt((int)loadaddr);
+						__dos.writeInt((int)physaddr);
+						__dos.writeInt((int)filesize);
+						__dos.writeInt((int)memsize);
+						__dos.writeInt(flags);
+						__dos.writeInt((int)align);
+						break;
+						
+						// 64-bit
+					case 64:
+						__dos.writeInt(flags);
+						__dos.writeLong(offset);
+						__dos.writeLong(loadaddr);
+						__dos.writeLong(physaddr);
+						__dos.writeLong(filesize);
+						__dos.writeLong(memsize);
+						__dos.writeLong(align);
+						break;
+					
+						// Unknown
+					default:
+						throw new RuntimeException("OOPS");
+				}
+			}
 		}
 	}
 	

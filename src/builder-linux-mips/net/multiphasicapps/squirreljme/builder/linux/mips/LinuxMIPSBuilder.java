@@ -98,6 +98,10 @@ public class LinuxMIPSBuilder
 				break;
 		}
 		__eo.setFlags(hi | 0x0000_0002);
+		
+		// Align programs to the MIPS page size
+		for (ELFProgram p : __eo.programs())
+			p.setAlignment(4096);
 	}
 	
 	/**

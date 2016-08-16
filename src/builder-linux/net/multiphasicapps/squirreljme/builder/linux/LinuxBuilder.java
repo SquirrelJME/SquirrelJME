@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
 import net.multiphasicapps.squirreljme.exe.elf.ELFProgram;
 import net.multiphasicapps.squirreljme.exe.elf.ELFProgramFlag;
+import net.multiphasicapps.squirreljme.exe.elf.ELFStandardProgramType;
 import net.multiphasicapps.squirreljme.exe.elf.ELFType;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -101,8 +102,9 @@ public abstract class LinuxBuilder
 			{
 				ELFProgram p = eo.insertNamespace(__names[i], __blobs[i]);
 				
-				// Make executable
+				// Make executable and load it
 				p.setFlags(ELFProgramFlag.EXECUTE, ELFProgramFlag.READ);
+				p.setType(ELFStandardProgramType.LOAD);
 			}
 			
 			// Set system dependent stuff
