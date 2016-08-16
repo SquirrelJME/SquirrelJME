@@ -18,3 +18,9 @@ can still keep the ELF rather simple.
 So when an ELF is generated, I will need a kind of ordering map and list that
 generates everything accordingly.
 
+## 12:12
+
+So the next thing to rewrite is the `SlidingByteWindow` class and have it not
+use `ByteDeque` because that gets inefficient once the read inflate stream gets
+large.
+
