@@ -103,8 +103,12 @@ public class LinuxMIPSBuilder
 		__eo.setFlags(hi);
 		
 		// Align programs to the MIPS page size
+		boolean inital = true;
 		for (ELFProgram p : __eo.programs())
-			p.setAlignment(4096);
+		{
+			p.setAlignment((inital ? 4096 : 4));
+			inital = false;
+		}
 	}
 	
 	/**
