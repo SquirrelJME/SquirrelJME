@@ -440,6 +440,9 @@ class __Sequences__
 			int base = justbefore._at + justbefore._size;
 			this._at = base;
 			
+			// Size is every entry
+			this._size = entsize * (n + 1);
+			
 			// Add locations of each area
 			// Start directly following the program header table
 			int now = base + (entsize * n);
