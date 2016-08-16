@@ -47,6 +47,10 @@ public class ELFOutput
 	private final byte[] _padding =
 		new byte[8];
 	
+	/** Namespaces in the output. */
+	private final Map<String, __Namespace__> _namespaces =
+		new LinkedHashMap<>();
+	
 	/** The endianess used. */
 	private volatile JITCPUEndian _endianess;
 	
@@ -135,7 +139,8 @@ public class ELFOutput
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			Map<String, __Namespace__> namespaces = this._namespaces;
+			namespaces.put(__name, new __Namespace__(this, __name, __data));
 		}
 	}
 	

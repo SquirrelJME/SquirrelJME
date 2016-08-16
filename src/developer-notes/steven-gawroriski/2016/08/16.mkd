@@ -1,0 +1,15 @@
+# 2016/08/16
+
+## 07:35
+
+Thinking about it, namespaces can be in their own sections so to speak as part
+of the ELF.
+
+## 07:37
+
+I just thought that the unaligned ELF could include the entire ELF. Which
+is does `0x000000` in one of the hello binaries. So I could technically use
+this to my advantage and just include the entire ELF in the program. This
+would mean that I would not need to have a bunch of padding everywhere and
+can still keep the ELF rather simple.
+
