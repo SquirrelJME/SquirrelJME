@@ -162,17 +162,43 @@ public class ELFOutput
 			__check();
 			
 			// Setup sequences
-			List<__Sequence__> seq = __Sequence__.__makeSequences(this);
+			__Sequences__ seq = new __Sequences__(this);
 			
-			// Get some details
-			JITCPUEndian endianess = this._endianess;
-			int wordsize = this._wordsize;
-			int osabi = this._osabi;
-			ELFType type = this._type;
-			int machine = this._machine;
-			int flags = this._flags;
+			// Setup output
+			ExtendedDataOutputStream dos = new ExtendedDataOutputStream(__os);
+			switch (this._endianess)
+			{
+					// Big endian
+				case BIG:
+					dos.setEndianess(DataEndianess.BIG);
+					break;
+				
+					// Little endian
+				case LITTLE:
+					dos.setEndianess(DataEndianess.LITTLE);
+					break;
+					
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
 			
-			throw new Error("TODO");
+			// Write sequences
+			for (__Sequences__.__Sequence__ s : seq)
+			{
+				// {@squirreljme.error AX0a Never specified the sequence start
+				// position or its position has been exceeded.}
+				int at = s._at;
+				if (at < 0 || at > dos.size())
+					throw new JITException("AX0a");
+				
+				// Pad to it
+				while (dos.size() < at)
+					dos.writeByte(0);
+				
+				// Write the sequence
+				s.__write(dos);
+			}
 		}
 	}
 	

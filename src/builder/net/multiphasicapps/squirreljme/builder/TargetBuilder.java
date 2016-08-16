@@ -23,6 +23,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ServiceLoader;
+import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -38,6 +39,16 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
  */
 public abstract class TargetBuilder
 {
+	/**
+	 * {@squirreljme.property
+	 * net.multiphasicapps.squirreljme.builder.dumptarget=(true/false)
+	 * If this is set to {@code true} then the output binary that would be
+	 * run on the target system is dumped for debugging purposes.}
+	 */
+	private static final boolean _HEX_DUMP_OUTPUT =
+		Boolean.getBoolean(
+			"net.multiphasicapps.squirreljme.builder.dumptarget");
+	
 	/** Builder services. */
 	private static final ServiceLoader<TargetBuilder> _SERVICES =
 		ServiceLoader.<TargetBuilder>load(TargetBuilder.class);
@@ -359,6 +370,29 @@ public abstract class TargetBuilder
 		
 		// Not found
 		return null;
+	}
+	
+	/**
+	 * Potentially hex dumps the output binary that is natively being written
+	 * for progressive debugging.
+	 *
+	 * @param __os The stream to potentially wrap.
+	 * @return The hexdump wrapping of the given stream or {@code __os} if it
+	 * is not to be wrapped.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/16
+	 */
+	public static OutputStream hexDump(OutputStream __os)
+		throws NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Dump the output binary?
+		if (_HEX_DUMP_OUTPUT)
+			return new HexDumpOutputStream(__os, System.err);
+		return __os;
 	}
 	
 	/**

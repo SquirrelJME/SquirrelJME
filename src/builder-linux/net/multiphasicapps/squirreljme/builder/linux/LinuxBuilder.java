@@ -72,8 +72,9 @@ public abstract class LinuxBuilder
 		
 		// Setup ELF output
 		JITTriplet triplet = __conf.triplet();
-		try (OutputStream bin = __zsw.nextEntry("squirreljme",
-			ZipCompressionType.DEFAULT_COMPRESSION))
+		try (OutputStream bin = TargetBuilder.hexDump(
+			__zsw.nextEntry("squirreljme",
+			ZipCompressionType.DEFAULT_COMPRESSION)))
 		{
 			// Setup target ELF
 			ELFOutput eo = new ELFOutput();
