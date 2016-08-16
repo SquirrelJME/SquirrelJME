@@ -95,3 +95,8 @@ also consider that the extra space is consumed by resources. So if entries
 were to be deflated the binaries would be much smaller too. In the end, I
 would deflate entries anyway.
 
+## 21:17
+
+First, `ExecutableOutput` needs to lose the linking, where it completely
+becomes implementation dependent on what is done.
+

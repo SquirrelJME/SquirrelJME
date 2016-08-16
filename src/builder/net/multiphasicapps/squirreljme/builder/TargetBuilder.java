@@ -143,12 +143,13 @@ public abstract class TargetBuilder
 	 *
 	 * @param __conf The build configuration.
 	 * @param __eo The executable output to use.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/24
 	 */
 	public final void addStandardSystemProperties(BuildConfig __conf,
 		ExecutableOutput __eo)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__conf == null || __eo == null)
@@ -232,12 +233,13 @@ public abstract class TargetBuilder
 	 * @param __conf The build configuration.
 	 * @param __eo The executable output to use.
 	 * @throws JITException If the classpath contains a NUL character.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/24
 	 */
 	public final void addVirtualMachineClassPath(BuildConfig __conf,
 		ExecutableOutput __eo, String[] __vmcp)
-		throws JITException, NullPointerException
+		throws JITException, IOException, NullPointerException
 	{
 		// Check
 		if (__conf == null || __eo == null || __vmcp == null)

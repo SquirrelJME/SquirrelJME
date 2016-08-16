@@ -31,24 +31,52 @@ public interface ExecutableOutput
 	 *
 	 * @param __k The the key.
 	 * @param __v The value.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/24
 	 */
 	public abstract void addSystemProperty(String __k, String __v)
-		throws NullPointerException;
+		throws IOException, NullPointerException;
 	
 	/**
-	 * This links the input namespaces and their data into a single binary.
+	 * Generates the actual binary.
 	 *
-	 * @param __os The stream where the binary is to be placed.
-	 * @param __names The namespaces associated with the blobs.
-	 * @param __blobs The input streams for reading the blob data.
-	 * @throws IOException On read/write errors.
+	 * @param __os The stream to write to.
+	 * @throws IllegalStateException If the output stream does not match an
+	 * optionally previously specified primed stream.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/24
+	 * @since 2016/08/15
 	 */
-	public abstract void linkBinary(OutputStream __os, String[] __names,
-		InputStream[] __blobs)
+	public abstract void generate(OutputStream __os)
+		throws IllegalStateException, IOException, NullPointerException;
+	
+	/**
+	 * Inserts the namespace into the specified output.
+	 *
+	 * @param __name The name of the namespace.
+	 * @param __data The input namespace data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/15
+	 */
+	public abstract void insertNamespace(String __name, InputStream __data)
 		throws IOException, NullPointerException;
+	
+	/**
+	 * This primes the given stream for output for the given binary, generally
+	 * this should always be called first with the specified output stream in
+	 * the event the writer is capable of streamed output. If the writer does
+	 * not need to write to the stream as soon as possible then this method
+	 * can do nothing.
+	 *
+	 * @param __os The stream to prime.
+	 * @throws IllegalStateException If the output has already been primed.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/15
+	 */
+	public abstract void primeOutput(OutputStream __os)
+		throws IllegalStateException, IOException, NullPointerException;
 }
 
