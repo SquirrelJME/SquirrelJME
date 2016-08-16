@@ -33,6 +33,9 @@ class __Sequences__
 	protected final List<__Sequence__> seq =
 		new ArrayList<>();
 	
+	/** The elf header. */
+	protected final __Header__ header;
+	
 	/**
 	 * Makes the write sequence list.
 	 *
@@ -53,8 +56,13 @@ class __Sequences__
 		// The target list
 		List<__Sequence__> rv = this.seq;
 	
-		// Add identification
+		// Identification
 		rv.add(new __Identification__());
+		
+		// The header
+		__Header__ h = new __Header__();
+		this.header = h;
+		rv.add(h);
 		
 		System.err.println("TODO -- Initialize more ELF sequences.");
 	}
@@ -106,23 +114,23 @@ class __Sequences__
 	}
 	
 	/**
-	 * The ELF identification header.
+	 * The header contains more details about the ELF.
 	 *
 	 * @since 2016/08/16
 	 */
-	final class __Identification__
+	final class __Header__
 		extends __Sequence__
 	{
 		/**
-		 * Internal only.
+		 * Initializes the header.
 		 *
 		 * @since 2016/08/16
 		 */
-		private __Identification__()
+		private __Header__()
 		{
-			// Always at the start
-			this._at = 0;
-		
+			// Starts after the identification
+			this._at = 16;
+			
 			// The size depends on the bit count
 			switch (__Sequences__.this.owner._wordsize)
 			{
@@ -140,6 +148,38 @@ class __Sequences__
 				default:
 					throw new RuntimeException("OOPS");
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/16
+		 */
+		@Override
+		void __write(ExtendedDataOutputStream __dos)
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * The ELF identification header.
+	 *
+	 * @since 2016/08/16
+	 */
+	final class __Identification__
+		extends __Sequence__
+	{
+		/**
+		 * Internal only.
+		 *
+		 * @since 2016/08/16
+		 */
+		private __Identification__()
+		{
+			// Always at the start and the same size
+			this._at = 0;
+			this._size = 16;
 		}
 		
 		/**

@@ -196,8 +196,18 @@ public class ELFOutput
 				while (dos.size() < at)
 					dos.writeByte(0);
 				
+				// End position
+				int end = at + s._size;
+				
 				// Write the sequence
 				s.__write(dos);
+				
+				// {@squirreljme.error AX0b Not enough data was written in the
+				// sequence. (The expected end point; The actual end point)}
+				long really = dos.size();
+				if (end != (really = dos.size()));
+					throw new JITException(String.format("AX0b %d %d",
+						end, really));
 			}
 		}
 	}
