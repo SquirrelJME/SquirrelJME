@@ -70,13 +70,9 @@ class __Sequences__
 		this.header = h;
 		rv.add(h);
 		
-		if (true)
-			throw new Error("TODO");
-		
-		// Initialize program headers
+		// Initialize program headers (and any real code areas)
 		__Programs__ programs = new __Programs__();
 		this.programs = programs;
-		rv.add(programs);
 		
 		// Initialize sections
 		__Sections__ sections = new __Sections__();
@@ -326,6 +322,53 @@ class __Sequences__
 	}
 	
 	/**
+	 * This is single program within the program header.
+	 *
+	 * @since 2016/08/16
+	 */
+	final class __Program__
+		extends __Sequence__
+	{
+		/** The wrapped program. */
+		protected final ELFProgram program;
+		
+		/**
+		 * Initializes the program.
+		 *
+		 * @param __prg The program to represent.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/08/16
+		 */
+		private __Program__(ELFProgram __prg)
+			throws NullPointerException
+		{
+			// Check
+			if (__prg == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this.program = __prg;
+			
+			// Add self to the end of the program list
+			List<__Sequences__.__Sequence__> seqs = __Sequences__.this.seq;
+			seqs.add(this);
+			
+			throw new Error("TODO");
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/16
+		 */
+		@Override
+		void __write(ExtendedDataOutputStream __dos)
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
 	 * This represents the program headers in the ELF.
 	 *
 	 * @since 2016/08/16
@@ -348,21 +391,55 @@ class __Sequences__
 		private __Programs__()
 		{
 			// The size depends on the bit count
-			switch (__Sequences__.this.owner._wordsize)
+			ELFOutput owner = __Sequences__.this.owner;
+			int entsize;
+			switch (owner._wordsize)
 			{
 					// 32-bit
 				case 32:
-					this._entsize = 32;
+					this._entsize = (entsize = 32);
 					break;
 			
 					// 64-bit
 				case 64:
-					this._entsize = 56;
+					this._entsize = (entsize = 56);
 					break;
 			
 					// Default
 				default:
 					throw new RuntimeException("OOPS");
+			}
+			
+			// Add to sequence list since it has to be placed before the about
+			// to follow code areas
+			List<__Sequences__.__Sequence__> seqs = __Sequences__.this.seq;
+			__Sequence__ justbefore = seqs.get(seqs.size() - 1);
+			seqs.add(this);
+			
+			// Get ELF programs to generate headers for
+			List<ELFProgram> programs = owner._programs;
+			int n = programs.size();
+			this._entcount = n;
+			
+			// Start program headers right where the older data ends
+			int base = justbefore._at + justbefore._size;
+			this._at = base;
+			
+			// Add locations of each area
+			// Start directly following the program header table
+			int now = base + (entsize * n);
+			for (int i = 0; i < n; i++)
+			{
+				// Get program here
+				ELFProgram prg = programs.get(i);
+				
+				// Create new target program
+				__Program__ p = new __Program__(prg);
+				
+				// Set position of the program and make the next program
+				// follow this one
+				p._at = now;
+				now = ((now + p._size + 3) & (~3));
 			}
 		}
 		
@@ -374,6 +451,7 @@ class __Sequences__
 		void __write(ExtendedDataOutputStream __dos)
 			throws IOException
 		{
+			// Write the header information
 			throw new Error("TODO");
 		}
 	}
