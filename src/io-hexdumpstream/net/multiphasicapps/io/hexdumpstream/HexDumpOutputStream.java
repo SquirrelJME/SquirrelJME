@@ -237,7 +237,7 @@ public class HexDumpOutputStream
 				
 				// Only print in the range of ASCII
 				char c = (char)(queue[i] & 0xFF);
-				if (c < ' ' || c > 0x7F)
+				if (c < ' ' || c > 0x7E)
 					c = '.';
 				
 				w.write(c);
