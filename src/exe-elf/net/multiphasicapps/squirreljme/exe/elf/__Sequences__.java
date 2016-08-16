@@ -466,8 +466,7 @@ class __Sequences__
 				
 				// Set position of the program and make the next program
 				// follow this one
-				p._at = now;
-				now = ((now + p._size + 3) & (~3));
+				now = ((p._at + p._size + 3) & (~3));
 			}
 		}
 		

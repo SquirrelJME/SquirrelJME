@@ -99,6 +99,9 @@ public final class ELFProgram
 				baos.write(buf, 0, rc);
 			}
 			
+			// Flush, just in case
+			baos.flush();
+			
 			// Setup buffer
 			byte[] dest = baos.toByteArray();
 			this._data = dest;

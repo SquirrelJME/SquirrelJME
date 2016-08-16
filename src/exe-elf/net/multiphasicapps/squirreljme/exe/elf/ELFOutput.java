@@ -159,10 +159,13 @@ public class ELFOutput
 			for (__Sequences__.__Sequence__ s : seq)
 			{
 				// {@squirreljme.error AX0a Never specified the sequence start
-				// position or its position has been exceeded.}
+				// position or its position has been exceeded. (The current
+				// position, -1 is not meaningful; The required position)}
 				int at = s._at;
-				if (at < 0 || at > dos.size())
-					throw new JITException("AX0a");
+				long was = -1;
+				if (at < 0 || (was = dos.size()) > at)
+					throw new JITException(String.format("AX0a %d %d",
+						at, was));
 				
 				// Pad to it
 				while (dos.size() < at)
