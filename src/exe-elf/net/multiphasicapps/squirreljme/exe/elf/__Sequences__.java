@@ -627,16 +627,17 @@ class __Sequences__
 		private __Sections__()
 		{
 			// The size depends on the bit count
+			int entsize;
 			switch (__Sequences__.this.owner._wordsize)
 			{
 					// 32-bit
 				case 32:
-					this._entsize = 40;
+					this._entsize = (entsize = 40);
 					break;
 			
 					// 64-bit
 				case 64:
-					this._entsize = 64;
+					this._entsize = (entsize = 64);
 					break;
 			
 					// Default
@@ -654,8 +655,9 @@ class __Sequences__
 			
 			// No sections
 			System.err.println("TODO -- Add support for sections.");
-			this._size = 0;
-			this._entcount = 0;
+			int n = 1;
+			this._size = entsize * n;
+			this._entcount = n;
 			this._stringsect = 0;
 		}
 		
@@ -667,7 +669,21 @@ class __Sequences__
 		void __write(ExtendedDataOutputStream __dos)
 			throws IOException
 		{
-			System.err.println("TODO -- Write sections.");
+			// Write all sections
+			int n = this._entcount;
+			for (int i = 0; i < n; i++)
+			{
+				// Write null entry
+				if (i == 0)
+				{
+					int q = this._entsize;
+					for (int j = 0; j < q; j++)
+						__dos.writeByte(0);
+					continue;
+				}
+				
+				throw new Error("TODO");
+			}
 		}
 	}
 }
