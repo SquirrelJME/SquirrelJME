@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
+import net.multiphasicapps.squirreljme.builder.linux.LinuxBuilder;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
@@ -35,7 +36,7 @@ import net.multiphasicapps.zip.ZipCompressionType;
  * @since 2016/07/30
  */
 public class LinuxMIPSBuilder
-	extends TargetBuilder
+	extends LinuxBuilder
 {
 	/**
 	 * Initializes the Linux MIPS target builder.
@@ -62,41 +63,6 @@ public class LinuxMIPSBuilder
 		throws IllegalArgumentException, NullPointerException
 	{
 		return new LinuxMIPSTargetEmulator(__args);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/30
-	 */
-	@Override
-	public void linkBinary(ZipStreamWriter __zsw, String[] __names,
-		InputStream[] __blobs, BuildConfig __conf, String[] __vmcp)
-		throws JITException, IOException, NullPointerException
-	{
-		// Check
-		if (__zsw == null || __names == null || __blobs == null ||
-			__conf == null || __vmcp == null)
-			throw new NullPointerException("NARG");
-		
-		// Setup ELF output
-		JITTriplet triplet = __conf.triplet();
-		try (OutputStream bin = __zsw.nextEntry("squirreljme",
-			ZipCompressionType.DEFAULT_COMPRESSION))
-		{
-			// Setup the basic ELF information
-			JITCPUEndian end = triplet.endianess();
-			ELFOutput eo = new ELFOutput(triplet.bits(), end,
-				0x03, 0x08, 0x400000L);
-			
-			// Set properties
-			super.addStandardSystemProperties(__conf, eo);
-			
-			// Add the used classpath
-			super.addVirtualMachineClassPath(__conf, eo, __vmcp);
-			
-			// Call the linker
-			eo.linkBinary(bin, __names, __blobs);
-		}
 	}
 	
 	/**
