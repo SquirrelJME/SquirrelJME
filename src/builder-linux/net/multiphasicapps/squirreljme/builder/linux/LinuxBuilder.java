@@ -17,6 +17,7 @@ import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
 import net.multiphasicapps.squirreljme.exe.elf.ELFProgram;
+import net.multiphasicapps.squirreljme.exe.elf.ELFProgramFlag;
 import net.multiphasicapps.squirreljme.exe.elf.ELFType;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -88,9 +89,6 @@ public abstract class LinuxBuilder
 			eo.setOSABI(0x03);
 			eo.setType(ELFType.EXECUTABLE);
 			
-			// Configure the boot program
-			ELFProgram bp = eo.bootProgram();
-			
 			// Set properties
 			super.addStandardSystemProperties(__conf, eo);
 			
@@ -100,7 +98,12 @@ public abstract class LinuxBuilder
 			// Add namespaces
 			int n = __names.length;
 			for (int i = 0; i < n; i++)
-				eo.insertNamespace(__names[i], __blobs[i]);
+			{
+				ELFProgram p = eo.insertNamespace(__names[i], __blobs[i]);
+				
+				// Make executable
+				p.setFlags(ELFProgramFlag.EXECUTE, ELFProgramFlag.READ);
+			}
 			
 			// Set system dependent stuff
 			dependentELF(__conf, eo);

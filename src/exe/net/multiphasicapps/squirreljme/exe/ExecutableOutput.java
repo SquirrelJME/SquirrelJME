@@ -56,11 +56,13 @@ public interface ExecutableOutput
 	 *
 	 * @param __name The name of the namespace.
 	 * @param __data The input namespace data.
+	 * @return An executable output dependent object that represents the
+	 * namespace or {@code null} if it is not required.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/15
 	 */
-	public abstract void insertNamespace(String __name, InputStream __data)
+	public abstract Object insertNamespace(String __name, InputStream __data)
 		throws IOException, NullPointerException;
 	
 	/**

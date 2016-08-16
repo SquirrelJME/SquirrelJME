@@ -62,14 +62,6 @@ public class ELFOutput
 	final List<ELFSection> _sections =
 		new ArrayList<>();
 	
-	/** The initial program header. */
-	final ELFProgram _bootprogram =
-		new ELFProgram(this);
-	
-	/** Namespaces in the output. */
-	final Map<String, __Namespace__> _namespaces =
-		new LinkedHashMap<>();
-	
 	/** The endianess used. */
 	volatile JITCPUEndian _endianess;
 	
@@ -91,17 +83,8 @@ public class ELFOutput
 	/** Flags to use. */
 	volatile int _flags;
 	
-	/**
-	 * Initializes the program.
-	 *
-	 * @since 2016/08/16
-	 */
-	{
-		// Set the boot program to some initial base flags
-		ELFProgram bp = this._bootprogram;
-		this._programs.add(bp);
-		bp.setFlags(ELFProgramFlag.READ, ELFProgramFlag.EXECUTE);
-	}
+	/** The ELF base address. */
+	volatile long _baseaddr;
 	
 	/**
 	 * Adds a system property to be included in the target binary.
@@ -125,17 +108,6 @@ public class ELFOutput
 			Map<String, String> properties = this.properties;
 			properties.put(__k, __v);
 		}
-	}
-	
-	/**
-	 * Returns the boot program of the ELF.
-	 *
-	 * @return The boot program.
-	 * @since 2016/08/16
-	 */
-	public ELFProgram bootProgram()
-	{
-		return this._bootprogram;
 	}
 	
 	/**
@@ -203,11 +175,12 @@ public class ELFOutput
 				s.__write(dos);
 				
 				// {@squirreljme.error AX0b Not enough data was written in the
-				// sequence. (The expected end point; The actual end point)}
-				long really = dos.size();
+				// sequence. (The expected end point; The actual end point;
+				// The class type of the last written thing)}
+				long really;
 				if (end != (really = dos.size()))
-					throw new JITException(String.format("AX0b %d %d",
-						end, really));
+					throw new JITException(String.format("AX0b %d %d %s",
+						end, really, s.getClass()));
 			}
 		}
 	}
@@ -221,7 +194,7 @@ public class ELFOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/15
 	 */
-	public void insertNamespace(String __name, InputStream __data)
+	public ELFProgram insertNamespace(String __name, InputStream __data)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -231,8 +204,10 @@ public class ELFOutput
 		// Lock
 		synchronized (this.lock)
 		{
-			Map<String, __Namespace__> namespaces = this._namespaces;
-			namespaces.put(__name, new __Namespace__(this, __name, __data));
+			List<ELFProgram> programs = this._programs;
+			ELFProgram rv;
+			programs.add((rv = new ELFProgram(this, __name, __data)));
+			return rv;
 		}
 	}
 	

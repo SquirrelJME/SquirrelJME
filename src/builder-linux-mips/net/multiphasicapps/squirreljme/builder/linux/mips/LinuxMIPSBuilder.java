@@ -98,9 +98,6 @@ public class LinuxMIPSBuilder
 				break;
 		}
 		__eo.setFlags(hi | 0x0000_0002);
-		
-		// Configure the boot program
-		ELFProgram bp = __eo.bootProgram();
 	}
 	
 	/**

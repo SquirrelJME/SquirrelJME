@@ -335,11 +335,16 @@ class __Sequences__
 		/**
 		 * Initializes the program.
 		 *
+		 * @param __addr The address the program should be at.
+		 * @param __last The program before this one.
 		 * @param __prg The program to represent.
-		 * @throws NullPointerException On null arguments.
+		 * @param __i The program index.
+		 * @throws NullPointerException On null arguments, except for
+		 * {@code __last}.
 		 * @since 2016/08/16
 		 */
-		private __Program__(ELFProgram __prg)
+		private __Program__(int __addr, __Program__ __last, ELFProgram __prg,
+			int __i)
 			throws NullPointerException
 		{
 			// Check
@@ -353,7 +358,9 @@ class __Sequences__
 			List<__Sequences__.__Sequence__> seqs = __Sequences__.this.seq;
 			seqs.add(this);
 			
-			throw new Error("TODO");
+			// Set address and size
+			this._at = __addr;
+			this._size = __prg._length;
 		}
 		
 		/**
@@ -378,6 +385,10 @@ class __Sequences__
 	{
 		/** The entry size. */
 		final int _entsize;
+		
+		/** Subprograms. */
+		final List<__Program__> _subprogs =
+			new ArrayList<>();
 		
 		/** The entry count. */
 		volatile int _entcount =
@@ -428,13 +439,17 @@ class __Sequences__
 			// Add locations of each area
 			// Start directly following the program header table
 			int now = base + (entsize * n);
+			__Program__ last = null;
+			List<__Program__> subprogs = this._subprogs;
 			for (int i = 0; i < n; i++)
 			{
 				// Get program here
 				ELFProgram prg = programs.get(i);
 				
 				// Create new target program
-				__Program__ p = new __Program__(prg);
+				__Program__ p = new __Program__(now, last, prg, i);
+				last = p;
+				subprogs.add(p);
 				
 				// Set position of the program and make the next program
 				// follow this one
@@ -499,6 +514,11 @@ class __Sequences__
 				default:
 					throw new RuntimeException("OOPS");
 			}
+			
+			// No sections
+			System.err.println("TODO -- Add support for sections.");
+			this._entcount = 0;
+			this._stringsect = 0;
 		}
 		
 		/**

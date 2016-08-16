@@ -24,3 +24,9 @@ So the next thing to rewrite is the `SlidingByteWindow` class and have it not
 use `ByteDeque` because that gets inefficient once the read inflate stream gets
 large.
 
+## 14:37
+
+Namespaces would likely best be placed into the boot program although they
+could exist on their own in each section and not require a boot program at
+all. This may possibly be the best course of action.
+
