@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
+import net.multiphasicapps.squirreljme.exe.elf.ELFProgram;
 import net.multiphasicapps.squirreljme.exe.elf.ELFType;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -87,7 +88,7 @@ public abstract class LinuxBuilder
 			eo.setType(ELFType.EXECUTABLE);
 			
 			// Configure the boot program
-			ELFProgram bp = __eo.bootProgram();
+			ELFProgram bp = eo.bootProgram();
 			
 			// Set properties
 			super.addStandardSystemProperties(__conf, eo);
