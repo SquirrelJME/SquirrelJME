@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 
 /**
  * This contains the sequences which are used to output the specified ELF.
@@ -158,6 +159,46 @@ class __Sequences__
 			__dos.writeByte('E');
 			__dos.writeByte('L');
 			__dos.writeByte('F');
+			
+			// Write the ELF class
+			switch (bits)
+			{
+					// 32-bit
+				case 32:
+					__dos.writeByte(1);
+					break;
+					
+					// 64-bit
+				case 64:
+					__dos.writeByte(1);
+					break;
+				
+					// Unknown
+				default:
+					throw new RuntimeException("NARG");
+			}
+			
+			// Write the endianess
+			JITCPUEndian end = owner._endianess;
+			switch (end)
+			{
+					// Big
+				case BIG:
+					__dos.writeByte(2);
+					break;
+					
+					// Little
+				case LITTLE:
+					__dos.writeByte(1);
+					break;
+				
+					// Unknown
+				default:
+					throw new RuntimeException("NARG");
+			}
+			
+			// Always version 1
+			__dos.writeByte(1);
 			
 			throw new Error("TODO");
 		}
