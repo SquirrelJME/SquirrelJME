@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
  * Iteration of values goes through the internal value table in no particular
  * order. The iterator is fail-fast.
  *
- * {@squirreljme.error AK04 The huffman tree was modified in the middle of
+ * {@squirreljme.error AK07 The huffman tree was modified in the middle of
  * iteration.}
  *
  * @param <int> The type of values to store in the tree.
@@ -74,16 +74,16 @@ public class HuffmanTreeInt
 		int ibm = Integer.bitCount(__mask);
 		
 		// Check mask and representation
-		// {@squirreljme.error AK01 The symbol exceeds the range of the mask.
+		// {@squirreljme.error AK05 The symbol exceeds the range of the mask.
 		// (The value; The mask)}
 		if ((__sym & (~__mask)) != 0)
-			throw new IllegalArgumentException(String.format("AK01 %x %x",
+			throw new IllegalArgumentException(String.format("AK05 %x %x",
 				__sym, __mask));
-		// {@squirreljme.error AK02 The mask has a zero gap between bits or
+		// {@squirreljme.error AK06 The mask has a zero gap between bits or
 		// at the least significant end. (The value; The mask)}
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
 			(__mask & 1) == 0)
-			throw new IllegalArgumentException(String.format("AK02 %x %x",
+			throw new IllegalArgumentException(String.format("AK06 %x %x",
 				__sym, __mask));
 		
 		// Get the table
@@ -186,6 +186,43 @@ public class HuffmanTreeInt
 	}
 	
 	/**
+	 * Returns the value obtained via the given bit source.
+	 *
+	 * @param __bs The source for bits.
+	 * @return The value
+	 * @throws NoSuchElementException If no value was found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/16
+	 */
+	public final int getValue(BitSource __bs)
+		throws NoSuchElementException, NullPointerException
+	{
+		// Check
+		if (__bs == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the jump table
+		int[] table = this._table;
+		if (table == null)
+			throw new NoSuchElementException("NSEE");
+		
+		// Try to find a value
+		for (int at = 0;;)
+		{
+			// A value has been read?
+			if (at < 0)
+				return this._values[(-at) - 1];
+			
+			// {@squirreljme.error AK08 Key not found in tree.}
+			else if (at == Integer.MAX_VALUE)
+				throw new NoSuchElementException("AK08");
+			
+			// Set the new position to the table position
+			at = table[at + (__bs.nextBit() ? 1 : 0)];
+		}
+	}
+	
+	/**
 	 * Returns the maximum number of bits entries use.
 	 *
 	 * @return The maximum number of used bits.
@@ -252,119 +289,6 @@ public class HuffmanTreeInt
 		// Build it
 		sb.append(']');
 		return sb.toString();
-	}
-	
-	/**
-	 * Returns a traverser over the given values in the tree.
-	 *
-	 * The traverser is fail fast.
-	 *
-	 * @return The traverser over the tree.
-	 * @since 2016/03/28
-	 */
-	public final HuffmanTreeIntTraverser traverser()
-	{
-		return new HuffmanTreeIntTraverser()
-			{
-				/** The modification base. */
-				protected final int basemod = 
-					_modcount;
-				
-				/** The current location index. */
-				private volatile int _at;
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/28
-				 */
-				@Override
-				public int getValue()
-					throws NoSuchElementException
-				{
-					// Modified too much?
-					if (_modcount != basemod)
-						throw new ConcurrentModificationException("AK04");
-					
-					// Get the jump table
-					int[] vals = _values;
-					
-					// Missing table?
-					if (vals == null)
-						throw new NoSuchElementException("NSEE");
-					
-					// Not reading a value?
-					int at = _at;
-					if (at >= 0)
-						throw new NoSuchElementException("NSEE");
-					
-					// Return value here
-					return vals[(-at) - 1];
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/28
-				 */
-				@Override
-				public boolean hasValue()
-				{
-					// Try to get a value
-					try
-					{
-						int v = getValue();
-						
-						// If this point is reached then the value is valid
-						return true;
-					}
-					
-					// Indicative of no value.
-					catch (NoSuchElementException e)
-					{
-						return false;
-					}
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2016/03/28
-				 */
-				@Override
-				public HuffmanTreeIntTraverser traverse(int __side)
-					throws IllegalArgumentException, NoSuchElementException
-				{
-					// Check
-					if (__side < 0 || __side > 1)
-						throw new IllegalArgumentException(String.format(
-							"AK03 %d", __side));
-					
-					// Modified too much?
-					if (_modcount != basemod)
-						throw new ConcurrentModificationException("AK04");
-					
-					// Get the jump table
-					int[] table = _table;
-					
-					// Missing table? Fail
-					if (table == null)
-						throw new NoSuchElementException("NSEE");
-					
-					// Get the at index
-					int at = _at;
-					
-					// A value or the end of the tree? Fail
-					if (at < 0 || at == Integer.MAX_VALUE)
-						throw new NoSuchElementException("NSEE");
-					
-					// Get the jump value
-					int jump = table[at + __side];
-					
-					// Set the new position to this position
-					_at = jump;
-					
-					// Self
-					return this;
-				}
-			};
 	}
 	
 	/**

@@ -17,8 +17,8 @@ import net.multiphasicapps.io.datapipe.DataPipe;
 import net.multiphasicapps.io.datapipe.PipeProcessException;
 import net.multiphasicapps.io.datapipe.PipeStalledException;
 import net.multiphasicapps.io.slidingwindow.SlidingByteWindow;
+import net.multiphasicapps.util.huffmantree.BitSource;
 import net.multiphasicapps.util.huffmantree.HuffmanTreeInt;
-import net.multiphasicapps.util.huffmantree.HuffmanTreeIntTraverser;
 
 /**
  * This is a data processor which handles RFC 1951 deflate streams.
@@ -136,6 +136,21 @@ public class InflateDataPipe
 	/** Quick access window. */
 	private final byte[] _qwin =
 		new byte[_QUICK_WINDOW_BYTES];
+	
+	/** The source for bits, used in huffman tree traversal. */
+	private final BitSource _bitsource =
+		new BitSource()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2016/08/16
+			 */
+			@Override
+			public boolean nextBit()
+			{
+				return 1 == __zzReadInt(1);
+			}
+		};
 	
 	/** The current bit in the access window. */
 	private volatile int _qbit;
@@ -937,20 +952,7 @@ public class InflateDataPipe
 			throw new NullPointerException("NARG");
 		
 		// Start traversal in the tree
-		HuffmanTreeIntTraverser trav = __codes.traverser();
-		for (;;)
-		{
-			// Is a value reached?
-			if (trav.hasValue())
-				return trav.getValue();
-			
-			// Read in a bit which designates the side to move down on the
-			// tree
-			int side = __zzReadInt(1);
-			
-			// Traverse that side
-			trav.traverse(side);
-		}
+		return __codes.getValue(this._bitsource);
 	}
 	
 	/**
