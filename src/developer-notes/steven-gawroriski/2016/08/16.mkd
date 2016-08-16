@@ -41,3 +41,7 @@ bunch of space, such as unused strings (for attributes for example), so it
 would be best if they were done last and then have it where entries can be
 marked as being "used".
 
+## 19:07
+
+Also, the program headers does not use a null element, so that is wrong.
+

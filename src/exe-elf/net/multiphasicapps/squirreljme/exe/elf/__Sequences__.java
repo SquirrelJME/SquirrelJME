@@ -213,7 +213,7 @@ class __Sequences__
 					__dos.writeLong(entrypoint);
 					__dos.writeLong(phoff & 0xFFFF_FFFFL);
 					__dos.writeLong((numsections == 0 ? 0 :
-						(shoff & 0xFFFF_FFFFL));
+						(shoff & 0xFFFF_FFFFL)));
 					break;
 				
 					// Unknown
@@ -441,14 +441,14 @@ class __Sequences__
 			// Get ELF programs to generate headers for
 			List<ELFProgram> programs = owner._programs;
 			int n = programs.size();
-			this._entcount = n + 1;
+			this._entcount = n;
 			
 			// Start program headers right where the older data ends
 			int base = justbefore._at + justbefore._size;
 			this._at = base;
 			
 			// Size is every entry
-			this._size = entsize * (n + 1);
+			this._size = entsize * n;
 			
 			// Add locations of each area
 			// Start directly following the program header table
@@ -487,7 +487,7 @@ class __Sequences__
 			// Write the header information
 			int entsize;
 			List<__Program__> subprogs = this._subprogs;
-			int n = subprogs.size() + 1;
+			int n = subprogs.size();
 			for (int i = 0; i < n; i++)
 			{
 				// Storage
@@ -495,51 +495,38 @@ class __Sequences__
 				long offset, loadaddr, physaddr, filesize, memsize, align;
 				int flags;
 				
-				// The null entry must exist and has everything set to NULL
-				if (i == 0)
-				{
-					type = ELFStandardProgramType.NULL;
-					offset = loadaddr = physaddr = filesize = memsize = align =
-						0L;
-					flags = 0;
-				}
+				// Get
+				__Program__ sub = subprogs.get(i);
+				ELFProgram elf = sub._program;
 				
-				// Otherwise from the real one
+				// Details
+				type = elf._type;
+				offset = (sub._at & 0xFFFFFFFFL);
+				
+				// Physical address, which is not always needed
+				physaddr = elf._physaddr;
+				
+				// Use custom specified load address?
+				if (elf._useloadaddr)
+					loadaddr = elf._loadaddr;
+				
+				// Relative from base otherwise
 				else
-				{
-					// Get
-					__Program__ sub = subprogs.get(i - 1);
-					ELFProgram elf = sub._program;
-					
-					// Details
-					type = elf._type;
-					offset = (sub._at & 0xFFFFFFFFL);
-					
-					// Physical address, which is not always needed
-					physaddr = elf._physaddr;
-					
-					// Use custom specified load address?
-					if (elf._useloadaddr)
-						loadaddr = elf._loadaddr;
-					
-					// Relative from base otherwise
-					else
-						loadaddr = base + offset;
-					
-					// Use the program size
-					filesize = elf._length;
-					
-					// Extra bytes of memory to potentially use
-					memsize = filesize + elf._extramem;
-					
-					// Alignment
-					align = elf._align;
-					
-					// Flags
-					flags = 0;
-					for (ELFProgramFlag x : elf._flags)
-						flags |= x.mask();
-				}
+					loadaddr = base + offset;
+				
+				// Use the program size
+				filesize = elf._length;
+				
+				// Extra bytes of memory to potentially use
+				memsize = filesize + elf._extramem;
+				
+				// Alignment
+				align = elf._align;
+				
+				// Flags
+				flags = 0;
+				for (ELFProgramFlag x : elf._flags)
+					flags |= x.mask();
 				
 				// Same every time
 				__dos.writeInt(type.identifier());
