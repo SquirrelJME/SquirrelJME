@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: builder-all
+X-SquirrelJME-UUID: 89e298df-8d87-44b5-b9c8-e3ee8aa0b6ef
+X-SquirrelJME-Depends: builder
+X-SquirrelJME-Optional: builder-linux-mips
+Main-Class: net.multiphasicapps.squirreljme.builder.Main
+LIBlet-Title: SquirrelJME Builder (All Targets)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project is a virtual project which 
+ optionally depends on all supported targets.
+

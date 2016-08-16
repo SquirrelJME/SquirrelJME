@@ -212,7 +212,7 @@ public class Build
 		{
 				// Compile native SquirrelJME and possibly simulate 
 			case "native":
-				__launch(0, getProject("builder"), __args);
+				__launch(0, getProject("builder-all"), __args);
 				break;
 			
 				// Run tests on the host
@@ -236,7 +236,7 @@ public class Build
 				__args.offerFirst(command);
 				
 				// Launch it
-				__launch(0, getProject("builder"), __args);
+				__launch(0, getProject("builder-all"), __args);
 				break;
 		}
 	}
