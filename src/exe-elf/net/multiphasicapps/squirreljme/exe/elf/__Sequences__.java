@@ -362,8 +362,12 @@ class __Sequences__
 			List<__Sequences__.__Sequence__> seqs = __Sequences__.this.seq;
 			seqs.add(this);
 			
+			// Make sure address is aligned to the given alignment
+			int align = (int)__prg._align;
+			
 			// Set address and size
-			this._at = __addr;
+			int amask = align - 1;
+			this._at = ((__addr + amask) & (~amask));
 			this._size = __prg._length;
 		}
 		
@@ -375,7 +379,9 @@ class __Sequences__
 		void __write(ExtendedDataOutputStream __dos)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Write it here
+			ELFProgram program = this._program;
+			__dos.write(program._data, 0, program._length);
 		}
 	}
 	
@@ -634,7 +640,7 @@ class __Sequences__
 		void __write(ExtendedDataOutputStream __dos)
 			throws IOException
 		{
-			throw new Error("TODO");
+			System.err.println("TODO -- Write sections.");
 		}
 	}
 }

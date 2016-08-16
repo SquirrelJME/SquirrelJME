@@ -67,6 +67,9 @@ public class LinuxMIPSBuilder
 		if (__conf == null || __eo == null)
 			throw new NullPointerException("NARG");
 		
+		// Just load the ELF anywhere really
+		__eo.setBaseAddress(0x400000);
+		
 		// Use the MIPS machine
 		__eo.setMachine(8);
 		

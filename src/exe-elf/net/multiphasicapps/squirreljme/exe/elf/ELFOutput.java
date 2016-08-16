@@ -257,6 +257,21 @@ public class ELFOutput
 	}
 	
 	/**
+	 * Sets the base address of the ELF.
+	 *
+	 * @param __a The base address to use.
+	 * @since 2016/08/16
+	 */
+	public void setBaseAddress(long __a)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._baseaddr = __a;
+		}
+	}
+	
+	/**
 	 * Sets the endianess of the ELF.
 	 *
 	 * @param __e The ELF endianess.

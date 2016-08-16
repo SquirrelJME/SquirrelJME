@@ -157,10 +157,18 @@ public final class ELFProgram
 	 * Sets the alignment of the header.
 	 *
 	 * @param __a The alignment to use.
+	 * @throws IllegalArgumentException If the alignment is not a power of two
+	 * or is negative.
 	 * @since 2016/08/16
 	 */
 	public void setAlignment(long __a)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error AX0e The alignment is not a power of two or
+		// is negative.}
+		if (__a < 0 || Long.bitCount(__a) != 1)
+			throw new IllegalArgumentException("AX0e");
+		
 		// Lock
 		synchronized (this.lock)
 		{
