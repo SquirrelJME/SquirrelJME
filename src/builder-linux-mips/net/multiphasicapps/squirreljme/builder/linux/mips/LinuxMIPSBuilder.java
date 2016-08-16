@@ -100,7 +100,7 @@ public class LinuxMIPSBuilder
 				hi = 0x0000_0000;
 				break;
 		}
-		__eo.setFlags(hi | 0x0000_0002);
+		__eo.setFlags(hi);
 		
 		// Align programs to the MIPS page size
 		for (ELFProgram p : __eo.programs())

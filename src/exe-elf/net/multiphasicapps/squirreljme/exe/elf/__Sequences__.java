@@ -198,20 +198,22 @@ class __Sequences__
 			// size
 			long entrypoint = this._entrypoint;
 			int phoff = programs._at, shoff = sections._at;
+			int numsections = sections._entcount;
 			switch (bits)
 			{
 					// 32-bit
 				case 32:
 					__dos.writeInt((int)entrypoint);
 					__dos.writeInt(phoff);
-					__dos.writeInt(shoff);
+					__dos.writeInt((numsections == 0 ? 0 : shoff));
 					break;
 					
 					// 64-bit
 				case 64:
 					__dos.writeLong(entrypoint);
 					__dos.writeLong(phoff & 0xFFFF_FFFFL);
-					__dos.writeLong(shoff & 0xFFFF_FFFFL);
+					__dos.writeLong((numsections == 0 ? 0 :
+						(shoff & 0xFFFF_FFFFL));
 					break;
 				
 					// Unknown
@@ -231,7 +233,7 @@ class __Sequences__
 			
 			// And for the section headers also
 			__dos.writeShort(sections._entsize);
-			__dos.writeShort(sections._entcount);
+			__dos.writeShort(numsections);
 			
 			// The section which contains the strings
 			__dos.writeShort(sections._stringsect);
