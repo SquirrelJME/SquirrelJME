@@ -51,45 +51,45 @@ public class ELFOutput
 		this.lock;
 	
 	/** The "padding" bytes in the elf identification. */
-	private final byte[] _padding =
+	final byte[] _padding =
 		new byte[8];
 	
 	/** Programs within the ELF. */
-	private final List<ELFProgram> _programs =
+	final List<ELFProgram> _programs =
 		new ArrayList<>();
 	
 	/** Sections within the ELF. */
-	private final List<ELFSection> _sections =
+	final List<ELFSection> _sections =
 		new ArrayList<>();
 	
 	/** The initial program header. */
-	private final ELFProgram _bootprogram =
+	final ELFProgram _bootprogram =
 		new ELFProgram(this);
 	
 	/** Namespaces in the output. */
-	private final Map<String, __Namespace__> _namespaces =
+	final Map<String, __Namespace__> _namespaces =
 		new LinkedHashMap<>();
 	
 	/** The endianess used. */
-	private volatile JITCPUEndian _endianess;
+	volatile JITCPUEndian _endianess;
 	
 	/** The word size of the CPU. */
-	private volatile int _wordsize =
+	volatile int _wordsize =
 		-1;
 	
 	/** The OS ABI. */
-	private volatile int _osabi =
+	volatile int _osabi =
 		-1;
 	
 	/** The type of ELF used. */
-	private volatile ELFType _type;
+	volatile ELFType _type;
 	
 	/** The used machine. */
-	private volatile int _machine =
+	volatile int _machine =
 		-1;
 	
 	/** Flags to use. */
-	private volatile int _flags;
+	volatile int _flags;
 	
 	/**
 	 * Initializes the program.
