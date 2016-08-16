@@ -45,14 +45,17 @@ class __Sequences__
 		// Check
 		if (__eo == null)
 			throw new NullPointerException("NARG");
-	
+		
+		// Set
+		this.owner = __eo;
+		
 		// The target list
 		List<__Sequence__> rv = this.seq;
 	
 		// Add identification
 		rv.add(new __Identification__());
 		
-		throw new Error("TODO");
+		System.err.println("TODO -- Initialize more ELF sequences.");
 	}
 	
 	/**

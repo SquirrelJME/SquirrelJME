@@ -31,6 +31,9 @@ public final class BuildConfig
 	/** Alternative executable name. */
 	protected final String altexename;
 	
+	/** Extra projects to add. */
+	private final String[] _extraprojects;
+	
 	/**
 	 * Initializes the build configuration.
 	 *
@@ -39,12 +42,13 @@ public final class BuildConfig
 	 * @param __tests Should the tests be included?
 	 * @param __altexe The alternative executable name in the output ZIP, this
 	 * is not required to be specified.
+	 * @param __ep Extra projects to include.
 	 * @throws NullPointerException On null arguments, except for optional
 	 * ones.
 	 * @since 2016/07/22
 	 */
 	BuildConfig(JITTriplet __trip,
-		boolean __jit, boolean __tests, String __altexe)
+		boolean __jit, boolean __tests, String __altexe, String[] __ep)
 		throws NullPointerException
 	{
 		// Check
@@ -56,6 +60,7 @@ public final class BuildConfig
 		this.jit = __jit;
 		this.tests = __tests;
 		this.altexename = __altexe;
+		this._extraprojects = (__ep == null ? new String[0] : __ep.clone());
 	}
 	
 	/**
@@ -67,6 +72,17 @@ public final class BuildConfig
 	public final String alternativeExecutableName()
 	{
 		return this.altexename;
+	}
+	
+	/**
+	 * Returns any extra projects which should be included.
+	 *
+	 * @return The extra projects to include.
+	 * @since 2016/08/16
+	 */
+	public final String[] extraProjects()
+	{
+		return this._extraprojects.clone();
 	}
 	
 	/**

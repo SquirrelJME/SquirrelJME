@@ -24,10 +24,12 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
@@ -90,12 +92,26 @@ public class Main
 		String outzipname = null;
 		String altexename = null;
 		List<String> emuargs = new ArrayList<>();
+		Set<String> extraprojects = new HashSet<>();
 		while (!args.isEmpty())
 		{
 			String a = args.removeFirst();
 			
+			// Add a project?
+			if (a.equals("-a"))
+			{
+				// {@squirreljme.error DW0z Adding a project requires that
+				// one actually be specified.}
+				String addthis = args.removeFirst();
+				if (addthis == null)
+					throw new IllegalArgumentException("DW0z");
+				
+				// Add it
+				extraprojects.add(addthis);
+			}
+			
 			// Emulate also?
-			if (a.equals("-e"))
+			else if (a.equals("-e"))
 				doemu = true;
 			
 			// Do not include a JIT?
@@ -160,7 +176,8 @@ public class Main
 		
 		// Setup build configuration
 		BuildConfig config = new BuildConfig(new JITTriplet(target),
-			!nojit, tests, altexename);
+			!nojit, tests, altexename, extraprojects.<String>toArray(
+			new String[extraprojects.size()]));
 		
 		// Find a target builder which is compatible with this configuration
 		TargetBuilder tb = TargetBuilder.findBuilder(config);
@@ -364,13 +381,15 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		// Print header
-		__ps.println("Usage: [-e] [-n] [-s] [-t] [-x name] " +
+		__ps.println("Usage: [-a project] [-e] [-n] [-s] [-t] [-x name] " +
 			"(target) [squirreljme.zip] [emulator arguments...]");
 		__ps.println();
 		__ps.println("\tThe output ZIP is optionally specified, however");
 		__ps.println("\tif emulator arguments are specified the ZIP must");
 		__ps.println("\talso be specified.");
 		__ps.println();
+		__ps.println("\t-a\tInclude the specified project in the target.");
+		__ps.println("\t\tMay be specified multiple times.");
 		__ps.println("\t-e\tAfter building, emulate the target binary.");
 		__ps.println("\t-n\tDo not include a JIT.");
 		__ps.println("\t-s\tSkip building and just emulate the ZIP.");

@@ -364,6 +364,10 @@ public class NewBuilder
 				rv.addAll(pi.recursiveDependencies());
 		}
 		
+		// Adding extra projects?
+		for (String p : config.extraProjects())
+			rv.addAll(packagelist.get(p).recursiveDependencies());
+		
 		// Tests do not need to be a part of the boot classpath, so the
 		// boot classpath is just what is currently in the build list
 		Set<PackageInfo> bootclasspath = new LinkedHashSet<>(rv);
