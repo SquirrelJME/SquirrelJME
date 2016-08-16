@@ -20,6 +20,7 @@ import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
 import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
+import net.multiphasicapps.squirreljme.exe.elf.ELFProgram;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -97,6 +98,9 @@ public class LinuxMIPSBuilder
 				break;
 		}
 		__eo.setFlags(hi | 0x0000_0002);
+		
+		// Configure the boot program
+		ELFProgram bp = __eo.bootProgram();
 	}
 	
 	/**

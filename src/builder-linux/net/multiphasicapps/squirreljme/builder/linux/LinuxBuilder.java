@@ -86,8 +86,8 @@ public abstract class LinuxBuilder
 			eo.setOSABI(0x03);
 			eo.setType(ELFType.EXECUTABLE);
 			
-			// Set system dependent stuff
-			dependentELF(__conf, eo);
+			// Configure the boot program
+			ELFProgram bp = __eo.bootProgram();
 			
 			// Set properties
 			super.addStandardSystemProperties(__conf, eo);
@@ -99,6 +99,9 @@ public abstract class LinuxBuilder
 			int n = __names.length;
 			for (int i = 0; i < n; i++)
 				eo.insertNamespace(__names[i], __blobs[i]);
+			
+			// Set system dependent stuff
+			dependentELF(__conf, eo);
 			
 			// Generate
 			eo.generate(bin);

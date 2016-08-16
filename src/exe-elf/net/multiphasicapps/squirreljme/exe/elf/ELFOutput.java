@@ -15,12 +15,15 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 
 /**
@@ -43,9 +46,25 @@ public class ELFOutput
 	protected final Map<String, String> properties =
 		new LinkedHashMap<>();
 	
+	/** Class visible lock. */
+	final Object _lock =
+		this.lock;
+	
 	/** The "padding" bytes in the elf identification. */
 	private final byte[] _padding =
 		new byte[8];
+	
+	/** Programs within the ELF. */
+	private final List<ELFProgram> _programs =
+		new ArrayList<>();
+	
+	/** Sections within the ELF. */
+	private final List<ELFSection> _sections =
+		new ArrayList<>();
+	
+	/** The initial program header. */
+	private final ELFProgram _bootprogram =
+		new ELFProgram(this);
 	
 	/** Namespaces in the output. */
 	private final Map<String, __Namespace__> _namespaces =
@@ -73,6 +92,18 @@ public class ELFOutput
 	private volatile int _flags;
 	
 	/**
+	 * Initializes the program.
+	 *
+	 * @since 2016/08/16
+	 */
+	{
+		// Set the boot program to some initial base flags
+		ELFProgram bp = this._bootprogram;
+		this._programs.add(bp);
+		bp.setFlags(ELFProgramFlag.READ, ELFProgramFlag.EXECUTE);
+	}
+	
+	/**
 	 * Adds a system property to be included in the target binary.
 	 *
 	 * @param __k The the key.
@@ -97,6 +128,17 @@ public class ELFOutput
 	}
 	
 	/**
+	 * Returns the boot program of the ELF.
+	 *
+	 * @return The boot program.
+	 * @since 2016/08/16
+	 */
+	public ELFProgram bootProgram()
+	{
+		return this._bootprogram;
+	}
+	
+	/**
 	 * Generates the actual binary.
 	 *
 	 * @param __os The stream to write to.
@@ -116,6 +158,17 @@ public class ELFOutput
 		// Lock
 		synchronized (this.lock)
 		{
+			// Check some things
+			__check();
+			
+			// Get some details
+			JITCPUEndian endianess = this._endianess;
+			int wordsize = this._wordsize;
+			int osabi = this._osabi;
+			ELFType type = this._type;
+			int machine = this._machine;
+			int flags = this._flags;
+			
 			throw new Error("TODO");
 		}
 	}
@@ -314,7 +367,7 @@ public class ELFOutput
 	{
 		// {@squirreljme.error AX01 The CPU word size is not a power of two or
 		// is not 32-bit or 64-bit.}
-		if (__w < 0 || Integer.bitCount(__w) != 1 || (__w != 32 && __w != 64))
+		if (__w <= 0 || Integer.bitCount(__w) != 1 || (__w != 32 && __w != 64))
 			throw new IllegalArgumentException("AX01");
 		
 		// Lock
@@ -322,6 +375,34 @@ public class ELFOutput
 		{
 			this._wordsize = __w;
 		}
+	}
+	
+	/**
+	 * Checks that settings are properly set.
+	 *
+	 * @since 2016/08/16
+	 */
+	private void __check()
+	{
+		// {@squirreljme.error AX05 ELF endianess not set.}
+		if (this._endianess == null)
+			throw new JITException("AX05");
+		
+		// {@squirreljme.error AX06 ELF word size not set.}
+		if (this._wordsize < 0)
+			throw new JITException("AX06");
+		
+		// {@squirreljme.error AX07 ELF OS ABI is not set.}
+		if (this._osabi < 0)
+			throw new JITException("AX07");
+		
+		// {@squirreljme.error AX08 ELF type is not set.}
+		if (this._type == null)
+			throw new JITException("AX08");
+		
+		// {@squirreljme.error AX09 ELF machine is not set.}
+		if (this._machine < 0)
+			throw new JITException("AX09");
 	}
 }
 
