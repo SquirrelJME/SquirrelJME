@@ -106,7 +106,7 @@ public class LinuxMIPSBuilder
 		boolean inital = true;
 		for (ELFProgram p : __eo.programs())
 		{
-			p.setAlignment((inital ? 4096 : 4));
+			p.setAlignment((inital ? 8 : 4));
 			inital = false;
 		}
 	}
