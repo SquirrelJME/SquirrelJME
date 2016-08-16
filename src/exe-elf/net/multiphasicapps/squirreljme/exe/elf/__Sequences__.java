@@ -78,7 +78,6 @@ class __Sequences__
 		// Initialize sections
 		__Sections__ sections = new __Sections__();
 		this.sections = sections;
-		rv.add(sections);
 	}
 	
 	/**
@@ -625,8 +624,17 @@ class __Sequences__
 					throw new RuntimeException("OOPS");
 			}
 			
+			// Add self
+			List<__Sequences__.__Sequence__> seqs = __Sequences__.this.seq;
+			__Sequence__ justbefore = seqs.get(seqs.size() - 1);
+			seqs.add(this);
+			
+			// Start right after the last program area
+			this._at = (justbefore._at + justbefore._size + 7) & (~7);
+			
 			// No sections
 			System.err.println("TODO -- Add support for sections.");
+			this._size = 0;
 			this._entcount = 0;
 			this._stringsect = 0;
 		}

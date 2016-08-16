@@ -30,3 +30,14 @@ Namespaces would likely best be placed into the boot program although they
 could exist on their own in each section and not require a boot program at
 all. This may possibly be the best course of action.
 
+## 18:55
+
+Kind of feels like blobs are being written over and over again.
+
+## 19:01
+
+One thing to consider is that unused stuff in the constant pool will waste a
+bunch of space, such as unused strings (for attributes for example), so it
+would be best if they were done last and then have it where entries can be
+marked as being "used".
+
