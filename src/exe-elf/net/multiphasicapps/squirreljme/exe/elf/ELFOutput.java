@@ -161,6 +161,9 @@ public class ELFOutput
 			// Check some things
 			__check();
 			
+			// Setup sequences
+			List<__Sequence__> seq = __Sequence__.__makeSequences(this);
+			
 			// Get some details
 			JITCPUEndian endianess = this._endianess;
 			int wordsize = this._wordsize;

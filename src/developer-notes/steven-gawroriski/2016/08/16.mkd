@@ -13,3 +13,8 @@ this to my advantage and just include the entire ELF in the program. This
 would mean that I would not need to have a bunch of padding everywhere and
 can still keep the ELF rather simple.
 
+## 09:20
+
+So when an ELF is generated, I will need a kind of ordering map and list that
+generates everything accordingly.
+
