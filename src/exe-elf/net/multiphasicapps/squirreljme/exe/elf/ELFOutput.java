@@ -159,7 +159,6 @@ public class ELFOutput
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
 		}
 	}
 	
