@@ -65,6 +65,9 @@ public class ELFOutput
 	private volatile int _machine =
 		-1;
 	
+	/** Flags to use. */
+	private volatile int _flags;
+	
 	/**
 	 * Adds a system property to be included in the target binary.
 	 *
@@ -180,6 +183,21 @@ public class ELFOutput
 		synchronized (this.lock)
 		{
 			this._endianess = __e;
+		}
+	}
+	
+	/**
+	 * Sets the flags to use in the ELF header.
+	 *
+	 * @param __f The flags to use.
+	 * @since 2016/08/15
+	 */
+	public void setFlags(int __f)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._flags = __f;
 		}
 	}
 	
