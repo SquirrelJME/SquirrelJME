@@ -134,9 +134,6 @@ class __Sequences__
 	final class __Header__
 		extends __Sequence__
 	{
-		/** The entry point of the ELF. */
-		volatile long _entrypoint;
-		
 		/** The position of the program header. */
 		volatile int _pheadoff;
 		
@@ -194,9 +191,43 @@ class __Sequences__
 			// Only version 1 of ELF is written
 			__dos.writeInt(1);
 			
+			// Need to find the entry point of the program which is somewhere
+			boolean foundep = false;
+			ELFProgram gotfl = null;
+			__Program__ gotflp = null;
+			long entrypoint = 0;
+			for (ELFProgram p : eo._programs)
+			{
+				// First load, use that in case
+				if (gotfl == null && (p._type.identifier() ==
+					ELFStandardProgramType.LOAD.identifier()))
+					for (__Sequence__ q : __Sequences__.this.seq)
+						if (q instanceof __Program__ &&
+							((__Program__)q)._program == p)
+						{
+							gotfl = p;
+							gotflp = (__Program__)q;
+							break;
+						}
+				
+				// Use the given entry point
+				if (p._useentrypoint)
+				{
+					foundep = true;
+					entrypoint = eo._baseaddr + p._entrypoint;
+					break;
+				}
+			}
+			
+			// If not found, then just use the first loaded segment and if
+			// that does not exist then use the base address
+			if (!foundep)
+				entrypoint = (gotfl == null ? eo._baseaddr :
+					(gotfl._useloadaddr ? gotfl._loadaddr :
+					eo._baseaddr + gotflp._at));
+			
 			// Write the entry point, program header offset, and program header
 			// size
-			long entrypoint = this._entrypoint;
 			int phoff = programs._at, shoff = sections._at;
 			int numsections = sections._entcount;
 			switch (bits)

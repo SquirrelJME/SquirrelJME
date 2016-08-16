@@ -60,6 +60,12 @@ public final class ELFProgram
 	/** The alignment of the section. */
 	volatile long _align;
 	
+	/** Use this as the entry point? */
+	volatile boolean _useentrypoint;
+	
+	/** The entry point into the data. */
+	volatile long _entrypoint;
+	
 	/**
 	 * Initializes the program from the given input stream.
 	 *
@@ -143,6 +149,21 @@ public final class ELFProgram
 	}
 	
 	/**
+	 * Clears the entry point.
+	 *
+	 * @since 2016/08/16
+	 */
+	public void clearEntryPoint()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._useentrypoint = false;
+			this._entrypoint = 0L;
+		}
+	}
+	
+	/**
 	 * Use the default load address.
 	 *
 	 * @since 2016/08/16
@@ -176,6 +197,22 @@ public final class ELFProgram
 		synchronized (this.lock)
 		{
 			this._align = __a;
+		}
+	}
+	
+	/**
+	 * Sets the entry point from within this program.
+	 *
+	 * @param __v The entry point to use.
+	 * @since 2016/08/16
+	 */
+	public void setEntryPoint(long __v)
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			this._useentrypoint = true;
+			this._entrypoint = __v;
 		}
 	}
 	
