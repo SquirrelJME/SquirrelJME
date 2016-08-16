@@ -36,6 +36,12 @@ class __Sequences__
 	/** The elf header. */
 	protected final __Header__ header;
 	
+	/** The program headers. */
+	protected final __Programs__ programs;
+	
+	/** The section headers. */
+	protected final __Sections__ sections;
+	
 	/**
 	 * Makes the write sequence list.
 	 *
@@ -64,7 +70,18 @@ class __Sequences__
 		this.header = h;
 		rv.add(h);
 		
-		System.err.println("TODO -- Initialize more ELF sequences.");
+		if (true)
+			throw new Error("TODO");
+		
+		// Initialize program headers
+		__Programs__ programs = new __Programs__();
+		this.programs = programs;
+		rv.add(programs);
+		
+		// Initialize sections
+		__Sections__ sections = new __Sections__();
+		this.sections = sections;
+		rv.add(sections);
 	}
 	
 	/**
@@ -121,6 +138,14 @@ class __Sequences__
 	final class __Header__
 		extends __Sequence__
 	{
+		/** The entry point of the ELF. */
+		volatile long _entrypoint;
+		
+		/** The position of the program header. */
+		volatile int _pheadoff;
+		
+		/** The position of the section header. */
+		
 		/**
 		 * Initializes the header.
 		 *
@@ -158,7 +183,59 @@ class __Sequences__
 		void __write(ExtendedDataOutputStream __dos)
 			throws IOException
 		{
-			throw new Error("TODO");
+			// Get
+			ELFOutput eo = __Sequences__.this.owner;
+			int bits = eo._wordsize;
+			__Programs__ programs = __Sequences__.this.programs;
+			__Sections__ sections = __Sequences__.this.sections;
+			
+			// Write the elf type
+			__dos.writeShort(eo._type.identifier());
+			
+			// And the machine
+			__dos.writeShort(eo._machine);
+			
+			// Only version 1 of ELF is written
+			__dos.writeInt(1);
+			
+			// Write the entry point, program header offset, and program header
+			// size
+			long entrypoint = this._entrypoint;
+			int phoff = programs._at, shoff = sections._at;
+			switch (bits)
+			{
+					// 32-bit
+				case 32:
+					__dos.writeInt((int)entrypoint);
+					__dos.writeInt(phoff);
+					__dos.writeInt(shoff);
+					break;
+					
+					// 64-bit
+				case 64:
+					__dos.writeLong(entrypoint);
+					__dos.writeLong(phoff & 0xFFFF_FFFFL);
+					__dos.writeLong(shoff & 0xFFFF_FFFFL);
+					break;
+				
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
+			// Write flags
+			__dos.writeInt(eo._flags);
+			
+			// Write program header size and count
+			__dos.writeShort(programs._entsize);
+			__dos.writeShort(programs._entcount);
+			
+			// And for the section headers also
+			__dos.writeShort(sections._entsize);
+			__dos.writeShort(sections._entcount);
+			
+			// The section which contains the strings
+			__dos.writeShort(sections._stringsect);
 		}
 	}
 	
@@ -245,6 +322,116 @@ class __Sequences__
 			
 			// Write the OS ABI specific part (padding)
 			__dos.write(eo._padding, 0, 8);
+		}
+	}
+	
+	/**
+	 * This represents the program headers in the ELF.
+	 *
+	 * @since 2016/08/16
+	 */
+	final class __Programs__
+		extends __Sequence__
+	{
+		/** The entry size. */
+		final int _entsize;
+		
+		/** The entry count. */
+		volatile int _entcount =
+			-1;
+		
+		/**
+		 * Initializes the program headers.
+		 *
+		 * @since 2016/08/16
+		 */
+		private __Programs__()
+		{
+			// The size depends on the bit count
+			switch (__Sequences__.this.owner._wordsize)
+			{
+					// 32-bit
+				case 32:
+					this._entsize = 32;
+					break;
+			
+					// 64-bit
+				case 64:
+					this._entsize = 56;
+					break;
+			
+					// Default
+				default:
+					throw new RuntimeException("OOPS");
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/16
+		 */
+		@Override
+		void __write(ExtendedDataOutputStream __dos)
+			throws IOException
+		{
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * This represents the sections in the ELF.
+	 *
+	 * @since 2016/08/16
+	 */
+	final class __Sections__
+		extends __Sequence__
+	{
+		/** The entry size. */
+		final int _entsize;
+		
+		/** The entry count. */
+		volatile int _entcount =
+			-1;
+		
+		/** The index containing the string table. */
+		volatile int _stringsect =
+			-1;
+		
+		/**
+		 * Initializes the sections.
+		 *
+		 * @since 2016/08/16
+		 */
+		private __Sections__()
+		{
+			// The size depends on the bit count
+			switch (__Sequences__.this.owner._wordsize)
+			{
+					// 32-bit
+				case 32:
+					this._entsize = 40;
+					break;
+			
+					// 64-bit
+				case 64:
+					this._entsize = 64;
+					break;
+			
+					// Default
+				default:
+					throw new RuntimeException("OOPS");
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/16
+		 */
+		@Override
+		void __write(ExtendedDataOutputStream __dos)
+			throws IOException
+		{
+			throw new Error("TODO");
 		}
 	}
 }
