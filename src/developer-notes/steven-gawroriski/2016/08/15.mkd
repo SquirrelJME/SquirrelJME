@@ -53,3 +53,45 @@ since there can be a large number of differences between different systems
 which use ELF. I suppose the best thing to do would be to make it object
 oriented so I can declare what I need.
 
+## 19:58
+
+Looks like the end address `Entry point address:               0x444cd0` is
+not valid. And I hope it will work now.
+
+## 20:00
+
+Now it says invalid argument.
+
+## 20:04
+
+Appears that QEMU (and I suppose) Linux are trying to directly memory map the
+ELF binary. Since the offset in the file is not meeting the target page mask,
+it fails to load properly. However in the hello binaries there are:
+
+	[ 3] .text        PROGBITS        00400018 001018 000020 00  AX  0   0  4
+	[ 2] .text        PROGBITS        004000b0 0000b0 000020 00  AX  0   0 16
+
+In the second case `0xb0` can be divided by 16. Also appears the target page
+bits in QEMU MIPS is 12-bits.
+
+## 20:10
+
+Actualy sections are pointless. The hello worlds have:
+
+	LOAD           0x001000 0x00400000 0x00400000 0x00038 0x00038 R E 0x1000
+	LOAD           0x000000 0x00400000 0x00400000 0x000d0 0x000d0 R E 0x10000
+
+While mine has:
+
+	LOAD           0x0000d8 0x00400000 0x00000000 0x44cd4 0x44cd4 R E 0x1000
+
+So this means that the offset in the file has to match the alignment. So in
+short I need a new and better ELF writer. The ELF writer has to be rewritten
+anyway to be much better, because currently this is not going to work.
+SquirrelJME is also a bit large at around 275KiB without any code. I can see
+it becoming about 1MiB with everything. This is just an initial target however.
+Eventually a new output could be generated which likely uses less size. But
+also consider that the extra space is consumed by resources. So if entries
+were to be deflated the binaries would be much smaller too. In the end, I
+would deflate entries anyway.
+

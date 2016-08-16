@@ -233,14 +233,14 @@ public class ELFOutput
 			{
 					// 32-bit
 				case 32:
-					dos.writeInt((int)(loadaddr + payloadsize));
+					dos.writeInt((int)loadaddr);
 					dos.writeInt(headersize);
 					dos.writeInt(sheaderstart);
 					break;
 				
 					// 64-bit
 				case 64:
-					dos.writeLong(loadaddr + payloadsize);
+					dos.writeLong(loadaddr);
 					dos.writeLong(headersize);
 					dos.writeLong(sheaderstart);
 					break;
