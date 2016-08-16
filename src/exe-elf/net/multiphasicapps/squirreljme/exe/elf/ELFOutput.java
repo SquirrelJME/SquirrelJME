@@ -43,6 +43,28 @@ public class ELFOutput
 	protected final Map<String, String> properties =
 		new LinkedHashMap<>();
 	
+	/** The "padding" bytes in the elf identification. */
+	private final byte[] _padding =
+		new byte[8];
+	
+	/** The endianess used. */
+	private volatile JITCPUEndian _endianess;
+	
+	/** The word size of the CPU. */
+	private volatile int _wordsize =
+		-1;
+	
+	/** The OS ABI. */
+	private volatile int _osabi =
+		-1;
+	
+	/** The type of ELF used. */
+	private volatile ELFType _type;
+	
+	/** The used machine. */
+	private volatile int _machine =
+		-1;
+	
 	/**
 	 * Adds a system property to be included in the target binary.
 	 *
@@ -138,6 +160,145 @@ public class ELFOutput
 		synchronized (this.lock)
 		{
 			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * Sets the endianess of the ELF.
+	 *
+	 * @param __e The ELF endianess.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/15
+	 */
+	public void setEndianess(JITCPUEndian __e)
+		throws NullPointerException
+	{
+		// Check
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._endianess = __e;
+		}
+	}
+	
+	/**
+	 * Sets the machine which is used.
+	 *
+	 * @param __m The machine identifier.
+	 * @throws IllegalArgumentException If the input value is not within range.
+	 * @since 2016/08/15
+	 */
+	public void setMachine(int __m)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AX04 The machine value is not within range.}
+		if (__m < 0 || __m > 65535)
+			throw new IllegalArgumentException("AX04");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._machine = __m;
+		}
+	}
+	
+	/**
+	 * Sets the OS ABI used in the ELF.
+	 *
+	 * @param __v The OS ABI to use.
+	 * @throws IllegalArgumentException On null arguments.
+	 * @since 2016/08/15
+	 */
+	public void setOSABI(int __v)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AX02 OS ABI is out of range.}
+		if (__v < 0 || __v > 255)
+			throw new IllegalArgumentException("AX02");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._osabi = __v;
+		}
+	}
+	
+	/**
+	 * Sets the padding to be used in the ELF identification header.
+	 *
+	 * @param __b The bytes to use for the padding.
+	 * @throws IndexOutOfBoundsException If the input array exceeds 8 bytes.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/15
+	 */
+	public void setPadding(byte... __b)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AX03 Padding is limited to 8 bytes.}
+		int n = __b.length;
+		if (n > 8)
+			throw new IndexOutOfBoundsException("AX03");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Copy and zero the rest
+			byte[] dest = this._padding;
+			for (int i = 0; i < 8; i++)
+				if (i < n)
+					dest[i] = __b[i];
+				else
+					dest[i] = 0;
+		}
+	}
+	
+	/**
+	 * Sets the type of ELF that this is.
+	 *
+	 * @param __t The type of ELF to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/15
+	 */
+	public void setType(ELFType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._type = __t;
+		}
+	}
+	
+	/**
+	 * Sets the word size of the CPU.
+	 *
+	 * @param __w The word size to use.
+	 * @throws IllegalArgumentException On null arguments.
+	 * @since 2016/08/15
+	 */
+	public void setWordSize(int __w)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AX01 The CPU word size is not a power of two or
+		// is not 32-bit or 64-bit.}
+		if (__w < 0 || Integer.bitCount(__w) != 1 || (__w != 32 && __w != 64))
+			throw new IllegalArgumentException("AX01");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._wordsize = __w;
 		}
 	}
 }

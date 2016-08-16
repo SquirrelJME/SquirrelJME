@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
+import net.multiphasicapps.squirreljme.exe.elf.ELFType;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -43,6 +44,18 @@ public abstract class LinuxBuilder
 	}
 	
 	/**
+	 * Initializes more ELF details in an architecture dependent manner.
+	 *
+	 * @param __conf The build configuration.
+	 * @param __eo The output to use.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/15
+	 */
+	protected abstract void dependentELF(BuildConfig __conf, ELFOutput __eo)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/30
 	 */
@@ -66,6 +79,15 @@ public abstract class LinuxBuilder
 			
 			// Prime it (even though it is not needed for ELF)
 			eo.primeOutput(bin);
+			
+			// Set some basic common details
+			eo.setEndianess(triplet.endianess());
+			eo.setWordSize(triplet.bits());
+			eo.setOSABI(0x03);
+			eo.setType(ELFType.EXECUTABLE);
+			
+			// Set system dependent stuff
+			dependentELF(__conf, eo);
 			
 			// Set properties
 			super.addStandardSystemProperties(__conf, eo);

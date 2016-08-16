@@ -56,6 +56,22 @@ public class LinuxMIPSBuilder
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/08/15
+	 */
+	@Override
+	protected void dependentELF(BuildConfig __conf, ELFOutput __eo)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__conf == null || __eo == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the MIPS machine
+		__eo.setMachine(8);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/07/30
 	 */
 	@Override

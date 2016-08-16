@@ -11,16 +11,50 @@
 package net.multiphasicapps.squirreljme.exe.elf;
 
 /**
- * This represents the location of a single blob entry.
+ * Represents the type of ELF that this is.
  *
- * @since 2016/08/09
+ * @since 2016/08/15
  */
-final class __BlobEntry__
+public enum ELFType
 {
-	/** Relative offset from the table start to the blob data. */
-	int _reloff;
+	/** Relocatable executable. */
+	RELOCATABLE(1),
 	
-	/** The size of the blob. */
-	int _size;
+	/** Executable. */
+	EXECUTABLE(2),
+	
+	/** Shared library. */
+	SHARED(3),
+	
+	/** Core (dump). */
+	CORE(4),
+	
+	/** End. */
+	;
+	
+	/** The identifier. */
+	protected final int id;
+	
+	/**
+	 * Initializes the type identifier.
+	 *
+	 * @param __id The identifier to use.
+	 * @since 2016/08/15
+	 */
+	private ELFType(int __id)
+	{
+		this.id = __id;
+	}
+	
+	/**
+	 * Returns the identifier for this type.
+	 *
+	 * @return The type identifier.
+	 * @since 2016/08/15
+	 */
+	public int identifier()
+	{
+		return this.id;
+	}
 }
 
