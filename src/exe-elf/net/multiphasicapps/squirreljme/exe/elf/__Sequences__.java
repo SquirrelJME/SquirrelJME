@@ -200,7 +200,11 @@ class __Sequences__
 			// Always version 1
 			__dos.writeByte(1);
 			
-			throw new Error("TODO");
+			// Write the OS ABI
+			__dos.writeByte(eo._osabi);
+			
+			// Write the OS ABI specific part (padding)
+			__dos.write(eo._padding, 0, 8);
 		}
 	}
 }
