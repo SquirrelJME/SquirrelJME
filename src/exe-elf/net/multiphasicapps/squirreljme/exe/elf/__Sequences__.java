@@ -157,12 +157,12 @@ class __Sequences__
 			{
 					// 32-bit
 				case 32:
-					this._size = 52;
+					this._size = 36;
 					break;
 			
 					// 64-bit
 				case 64:
-					this._size = 64;
+					this._size = 48;
 					break;
 			
 					// Default
@@ -221,6 +221,9 @@ class __Sequences__
 			
 			// Write flags
 			__dos.writeInt(eo._flags);
+			
+			// Write the size of this header
+			__dos.writeShort(this._size);
 			
 			// Write program header size and count
 			__dos.writeShort(programs._entsize);
