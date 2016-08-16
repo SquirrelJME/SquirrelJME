@@ -470,7 +470,10 @@ class __Sequences__
 			throws IOException
 		{
 			// Write the header information
-			throw new Error("TODO");
+			List<__Program__> subprogs = this._subprogs;
+			int n = subprogs.size();
+			for (int i = 0; i < n; i++)
+				throw new Error("TODO");
 		}
 	}
 	
