@@ -45,3 +45,11 @@ marked as being "used".
 
 Also, the program headers does not use a null element, so that is wrong.
 
+## 19:30
+
+Ok, so now I get `./squirreljme: Invalid ELF image for this architecture`.
+
+## 19:34
+
+It is possible it is due to the lack of section headers.
+
