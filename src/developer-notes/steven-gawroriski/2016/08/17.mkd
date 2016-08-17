@@ -5,3 +5,26 @@
 I should make it so some basic information can be gleaned from the triplet
 since on many systems ELFs will have the same code for the most part.
 
+## 13:15
+
+I went for a walk. I determined that the constant pool needs to get some
+trimming performed. Currently all entries are written and unused ones just
+point to the null space. What I propose then instead changing the constant pool
+get into return a holder (then use `<Foo>as` on that) and then have it possible
+to activate an entry. Entries which get activated will then be assigned an
+index. Then this way, entries are ordered in their activation order. Also
+for the most part, only entries which are activated are stored in the final
+class. Since every class contains UTF-8 strings while the code generator as
+it stands does not use these, there will essentially be a large number of
+constant pool entries that waste space just pointing to the null element. Right
+now my binary is 81KiB, but since I am partially in code I will not be able to
+determine how it works in the end. However regardless it should work in saving
+space. Since the code wil be the most important aspect.
+
+## 13:20
+
+Also, I am very likely to limit individual classes to 65KiB. This way there is
+no magic pointer shifting required. Also this is Java ME which is made for
+embedded systems. In general, most classes will be tiny so generally all
+offsets will be wasting for the most part two bytes.
+
