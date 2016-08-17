@@ -43,6 +43,9 @@ abstract class __BaseWriter__
 	/** The data address. */
 	final int _dataaddr;
 	
+	/** The global constant pool. */
+	final __GlobalPool__ _gpool;
+	
 	/** The end of the data. */
 	volatile int _dataend;
 	
@@ -67,6 +70,7 @@ abstract class __BaseWriter__
 		// Set
 		this.owner = __nsw;
 		this.lock = __nsw._lock;
+		this._gpool = __nsw._gpool;
 		
 		// Could fail
 		try

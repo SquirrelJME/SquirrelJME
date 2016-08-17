@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.jit.JITNameAndType;
  *
  * @since 2016/08/14
  */
+@Deprecated
 class __PoolWriter__
 {
 	/** The pool to write. */

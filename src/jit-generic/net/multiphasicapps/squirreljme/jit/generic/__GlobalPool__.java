@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.jit.JITConstantPool;
+
 /**
  * This is the global constant pool which is shared among all classes within
  * a single namespace.
@@ -20,6 +22,9 @@ final class __GlobalPool__
 {
 	/** The owning namespace writer. */
 	protected final GenericNamespaceWriter owner;
+	
+	/** The currently active pool. */
+	private volatile JITConstantPool _current;
 	
 	/**
 	 * Initializes the global pool.
@@ -37,6 +42,17 @@ final class __GlobalPool__
 		
 		// Set
 		this.owner = __nsw;
+	}
+	
+	/**
+	 * Sets the current constant pool.
+	 *
+	 * @param __pool The pool to use.
+	 * @since 2016/08/17
+	 */
+	void __setCurrent(JITConstantPool __pool)
+	{
+		this._current = __pool;
 	}
 }
 

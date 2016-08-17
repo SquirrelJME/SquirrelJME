@@ -73,4 +73,10 @@ generated. So I should likely generate the code first.
 The symbols should not be equal to `String` because `String` is not equal to
 a symbol.
 
+## 16:40
+
+I am going to do a current pool strategy and work with the pool through that
+since it would be the simplest solution. I can also have helpers for
+individual entries also.
+
 
