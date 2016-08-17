@@ -26,6 +26,9 @@ public enum BlobContentType
 	/** A resource. */
 	RESOURCE,
 	
+	/** A compressed resource. */
+	COMPRESSED_RESOURCE,
+	
 	/** End. */
 	;
 }

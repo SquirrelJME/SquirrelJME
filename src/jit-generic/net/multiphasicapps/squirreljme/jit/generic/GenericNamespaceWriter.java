@@ -261,9 +261,15 @@ public final class GenericNamespaceWriter
 						dos.writeShort(i._namedx._index);
 						
 						// The position and size
-						dos.writeShort(i._datapos >>>
+						int xpos;
+						dos.writeShort((xpos = i._datapos) >>>
 							GenericBlob.NAMESPACE_SHIFT);
 						dos.writeShort(ups);
+						
+						// {@squirreljme.error BA15 The position is not aligned
+						// to the required alignment.}
+						if (0 != (xpos & GenericBlob.ALIGN_MASK))
+							throw new JITException("BA15");
 					}
 				
 					// Record the count and magic
