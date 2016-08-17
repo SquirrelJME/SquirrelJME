@@ -36,14 +36,20 @@ abstract class __BaseWriter__
 	/** Single stream output. */
 	protected final ExtendedDataOutputStream output;
 	
-	/** The entry start address. */
-	final int _startaddr;
+	/** The type of blob this is. */
+	final BlobContentType _type;
+	
+	/** The owning namespace. */
+	final GenericNamespaceWriter _owner;
 	
 	/** The data address. */
 	final int _dataaddr;
 	
 	/** The global constant pool. */
 	final __GlobalPool__ _gpool;
+	
+	/** The entry name. */
+	final String _name;
 	
 	/** The end of the data. */
 	volatile int _dataend;
@@ -68,8 +74,11 @@ abstract class __BaseWriter__
 		
 		// Set
 		this.owner = __nsw;
+		this._owner = __nsw;
 		this.lock = __nsw._lock;
 		this._gpool = __nsw._gpool;
+		this._name = __name;
+		this._type = __ct;
 		
 		// Could fail
 		try
@@ -82,21 +91,7 @@ abstract class __BaseWriter__
 			long sa = __dos.size();
 			if (sa < 0 || sa > Integer.MAX_VALUE)
 				throw new JITException("BA0b");
-			this._startaddr = (int)sa;
-			
-			// Write magic
-			__dos.writeInt(GenericBlob.START_ENTRY_MAGIC_NUMBER);
-			__nsw.__writeString(__dos, __ct.ordinal(), __name);
-			
-			// Align
-			__nsw.__align();
-			
-			// {@squirreljme.error BA0c The data area of a class or resource
-			// exceeds beyond 2GiB.}
-			long da = __dos.size();
-			if (da < 0 || da > Integer.MAX_VALUE)
-				throw new JITException("BA0c");
-			this._dataaddr = (int)da;
+			this._dataaddr = (int)sa;
 			
 			// Wrap output
 			ExtendedDataOutputStream output;
@@ -190,6 +185,14 @@ abstract class __BaseWriter__
 						throw new JITException("BA0k");
 					int de = (int)del;
 					__BaseWriter__.this._dataend = de;
+					
+					// {@squirreljme.error BA14 Entries have an upper limit to
+					// their size. (The entry size; The maximum permitted entry
+					// size)}
+					long sz = de - __BaseWriter__.this._dataaddr;
+					if (sz > GenericBlob.MAX_ENTRY_SIZE)
+						throw new JITException(String.format("BA14 %d %d",
+							sz, GenericBlob.MAX_ENTRY_SIZE));
 				
 					// Close it on this writer
 					__BaseWriter__.this.owner.__close(__BaseWriter__.this);

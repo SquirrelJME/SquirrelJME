@@ -91,4 +91,8 @@ thinking about it, the next entry's position can be deterimined by the previous
 one's size. I can not have a namespace limit, but limit individual entries to
 be 262KiB in size. This would likely be the best plan.
 
+## 18:50
+
+Although the greatest simplification would be just to limit the namespace size.
+
 

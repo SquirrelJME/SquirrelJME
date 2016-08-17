@@ -45,6 +45,24 @@ final class __GlobalPool__
 	}
 	
 	/**
+	 * Loads a string into the string table.
+	 *
+	 * @param __s The string to load.
+	 * @return The representing string entry.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/17
+	 */
+	__StringEntry__ __loadString(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Sets the current constant pool.
 	 *
 	 * @param __pool The pool to use.

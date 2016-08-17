@@ -248,12 +248,25 @@ public final class GenericNamespaceWriter
 					int n = index.size();
 					for (__Index__ i : index)
 					{
-						dos.writeInt(i._infopos);
-						dos.writeInt(i._datapos);
-						dos.writeInt(i._size);
+						// Get upper and lower sizes
+						int bss = i._size;
+						int ups = bss >>> GenericBlob.NAMESPACE_SHIFT;
+						int lws = bss & GenericBlob.ALIGN_MASK;
+						
+						// Write the blob type and the lower bits of the size
+						dos.writeByte(i._type.ordinal());
+						dos.writeByte(lws);
+						
+						// Write name index
+						dos.writeShort(i._namedx._index);
+						
+						// The position and size
+						dos.writeShort(i._datapos >>>
+							GenericBlob.NAMESPACE_SHIFT);
+						dos.writeShort(ups);
 					}
 				
-					// Record the size and magic
+					// Record the count and magic
 					dos.writeInt(n);
 					dos.writeInt(GenericBlob.
 						END_CENTRAL_DIRECTORY_MAGIC_NUMBER);

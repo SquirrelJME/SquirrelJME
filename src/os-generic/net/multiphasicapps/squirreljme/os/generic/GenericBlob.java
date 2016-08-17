@@ -25,11 +25,6 @@ import net.multiphasicapps.io.data.RandomAccessData;
  * The entries are laid out as the following. All entries start on an aligned
  * address of 4.
  * {@code
- * [int           : start entry magic number]
- * [byte          : The type of entry this is (1 = class, 2 = resource)]
- * [byte          : The number of bytes used to represent the entry name]
- * [short         : The length of the entry name]
- * [byte[]/short[]: The name of the entry, chars encoded as 0-255 or 0-65535]
  * [... Align to 4 bytes ...]
  * [byte[]        : data...]
  * }
@@ -43,9 +38,11 @@ import net.multiphasicapps.io.data.RandomAccessData;
  *
  * Each central index entry is of the following.
  * {@code
- * [short: The number of bytes shifted by 4
- * [int: The number of bytes to subtract from the CD to reach the entry MN]
- * [int: The size of the data for the given entry]
+ * [byte:  The entry type (BlobContentType)]
+ * [byte:  The lower masked away bits of the entry size.]
+ * [short: The string in the string table for this entry name.]
+ * [short: The shifted offset where the entry's data position is.]
+ * [short: The shifted size of the entry.]
  * }
  *
  * The end header is laid out in the following manner.
@@ -67,6 +64,10 @@ public class GenericBlob
 	/** The mask for namespace positions (minimal alignment). */
 	public static final int ALIGN_MASK =
 		(1 << NAMESPACE_SHIFT) - 1;
+	
+	/** Maximum size namespace entries may be. */
+	public static final int MAX_ENTRY_SIZE =
+		65535 << NAMESPACE_SHIFT;
 	
 	/** The magic number identifying entry start. */
 	public static final int START_ENTRY_MAGIC_NUMBER =
