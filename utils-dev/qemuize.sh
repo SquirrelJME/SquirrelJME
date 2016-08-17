@@ -28,6 +28,7 @@ then
 	rm -f "$$.zip"
 	
 	# Run it
+	ls -alh squirreljme
 	chmod +x squirreljme
 	./squirreljme
 	exit $?

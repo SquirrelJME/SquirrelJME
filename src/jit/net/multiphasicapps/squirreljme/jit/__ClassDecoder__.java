@@ -185,16 +185,32 @@ final class __ClassDecoder__
 			cw.interfaceClasses(ifaces, ifdxs);
 			
 			// Handle fields
-			int fcount = input.readUnsignedShort();
-			cw.fieldCount(fcount);
-			for (int i = 0; i < fcount; i++)
-				throw new Error("TODO");
+			if (true)
+			{
+				System.err.println("TODO -- Handle fields.");
+				cw.fieldCount(0);
+			}
+			else
+			{
+				int fcount = input.readUnsignedShort();
+				cw.fieldCount(fcount);
+				for (int i = 0; i < fcount; i++)
+					throw new Error("TODO");
+			}
 			
 			// Handle methods
-			int mcount = input.readUnsignedShort();
-			cw.methodCount(mcount);
-			for (int i = 0; i < mcount; i++)
-				throw new Error("TODO");
+			if (true)
+			{
+				System.err.println("TODO -- Handle methods.");
+				cw.methodCount(0);
+			}
+			else
+			{
+				int mcount = input.readUnsignedShort();
+				cw.methodCount(mcount);
+				for (int i = 0; i < mcount; i++)
+					throw new Error("TODO");
+			}
 			
 			// End class
 			cw.endClass();

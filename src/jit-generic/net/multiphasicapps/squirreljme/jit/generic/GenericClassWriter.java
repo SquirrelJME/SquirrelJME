@@ -276,11 +276,12 @@ public final class GenericClassWriter
 		// Lock
 		synchronized (this.lock)
 		{
+			// Needs to be set before so that if there are no fields they
+			// can fully be ignored.
+			this._fieldcount = __n;
+		
 			// Check order
 			__order(JITCompilerOrder.FIELD_COUNT);
-			
-			// Set
-			this._fieldcount = __n;
 		}
 	}
 	
@@ -345,11 +346,11 @@ public final class GenericClassWriter
 		// Lock
 		synchronized (this.lock)
 		{
+			// Needs to be set before as methods could be skipped.
+			this._methodcount = __n;
+			
 			// Check order
 			__order(JITCompilerOrder.METHOD_COUNT);
-			
-			// Set
-			this._methodcount = __n;
 		}
 	}
 	
