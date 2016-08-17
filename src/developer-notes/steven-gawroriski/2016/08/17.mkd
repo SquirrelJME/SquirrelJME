@@ -28,3 +28,7 @@ no magic pointer shifting required. Also this is Java ME which is made for
 embedded systems. In general, most classes will be tiny so generally all
 offsets will be wasting for the most part two bytes.
 
+## 13:33
+
+This also means that I will not need the null entry either.
+

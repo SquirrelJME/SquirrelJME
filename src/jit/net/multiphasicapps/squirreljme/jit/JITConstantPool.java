@@ -13,11 +13,9 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
+import java.util.AbstractList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
-import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -27,6 +25,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  * @since 2016/06/29
  */
 public final class JITConstantPool
+	extends AbstractList<JITConstantEntry>
 {
 	/** The UTF constant tag. */
 	public static final int TAG_UTF8 =
@@ -84,17 +83,14 @@ public final class JITConstantPool
 	public static final int TAG_INVOKEDYNAMIC =
 		18;
 	
-	/** Constant pool tags used. */
-	private final byte[] _tags;
-	
-	/** Constant pool initialized data. */
-	private final Object[] _data;
-	
-	/** Has the given entry, been activated? */
-	private final boolean[] _active;
+	/** Internal entries. */
+	private final JITConstantEntry[] _entries;
 	
 	/** The class decoder being used. */
-	private final __ClassDecoder__ _decoder;
+	final __ClassDecoder__ _decoder;
+	
+	/** The next active index to use. */
+	volatile int _nextadx;
 	
 	/**
 	 * Decodes the constant pool of an input class file.
@@ -122,22 +118,19 @@ public final class JITConstantPool
 		if (count <= 0)
 			throw new JITException("ED15");
 		
-		// The set of pool tags
-		byte[] tags = new byte[count];
+		// Setup entries
+		JITConstantEntry[] entries = new JITConstantEntry[count];
+		this._entries = entries;
 		
-		// Setup data
-		Object[] data = new Object[count];
-		
-		// Make the first entry always active (the null one)
-		boolean[] active = new boolean[count];
-		this._active = active;
-		active[0] = true;
+		// Always initialize the first (null entry)
+		entries[0] = new JITConstantEntry(this, (byte)0, 0, new int[0]);
 		
 		// Decode all entry data
 		for (int i = 1; i < count; i++)
 		{
 			// Read the tag
 			int tag = __dis.readUnsignedByte();
+			Object data;
 			
 			// {@squirreljme.error ED16 Java ME does not support dynamic
 			// invocation (such as method handles or lambda expressions).}
@@ -145,16 +138,13 @@ public final class JITConstantPool
 				tag == TAG_INVOKEDYNAMIC)
 				throw new JITException("ED16");
 			
-			// Store tag
-			tags[i] = (byte)tag;
-			
 			// UTF-8 String
 			if (tag == TAG_UTF8)
 			{
 				// Read the string data
 				try
 				{
-					data[i] = __dis.readUTF();
+					data = __dis.readUTF();
 				}
 				
 				// {@squirreljme.error ED18 The modified UTF-8 data string in
@@ -168,7 +158,7 @@ public final class JITConstantPool
 			// Field and Method references, Name and type
 			else if (tag == TAG_FIELDREF || tag == TAG_METHODREF ||
 				tag == TAG_INTERFACEMETHODREF || tag == TAG_NAMEANDTYPE)
-				data[i] = new int[]
+				data = new int[]
 					{
 						__dis.readUnsignedShort(),
 						__dis.readUnsignedShort()
@@ -176,229 +166,59 @@ public final class JITConstantPool
 			
 			// Class reference, string
 			else if (tag == TAG_CLASS || tag == TAG_STRING)
-				data[i] = new int[]
+				data = new int[]
 					{
 						__dis.readUnsignedShort()
 					};
 			
 			// Integer
 			else if (tag == TAG_INTEGER)
-				data[i] = Integer.valueOf(__dis.readInt());
+				data = Integer.valueOf(__dis.readInt());
 			
 			// Long
 			else if (tag == TAG_LONG)
-				data[i] = Long.valueOf(__dis.readLong());
+				data = Long.valueOf(__dis.readLong());
 			
 			// Float
 			else if (tag == TAG_FLOAT)
-				data[i] = Float.valueOf(__dis.readFloat());
+				data = Float.valueOf(__dis.readFloat());
 			
 			// Double
 			else if (tag == TAG_DOUBLE)
-				data[i] = Double.valueOf(__dis.readDouble());
+				data = Double.valueOf(__dis.readDouble());
 			
 			// {@squirreljme.error ED17 Unknown constant pool tag. (The tag of
 			// the constant pool entry)}
 			else
 				throw new JITException(String.format("ED17 %d", tag));
+		
+			// Create entry
+			entries[i] = new JITConstantEntry(this, (byte)tag, i, data);	
 			
 			// Double up?
 			if (tag == TAG_LONG || tag == TAG_DOUBLE)
 				i++;
 		}
-		
-		// Set
-		this._tags = tags;
-		this._data = data;
 	}
 	
 	/**
-	 * Obtains the index at the specified position as the given type.
-	 *
-	 * @param <R> The type of value to get.
-	 * @param __act Should the given constant pool entry be activated?
-	 * @param __dx The index of the entry.
-	 * @param __cl The expected class type.
-	 * @return The value at the given location.
-	 * @throws JITException If the input is not of the expected type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/06
+	 * {@inheritDoc}
+	 * @since 2016/08/17
 	 */
-	public <R> R get(boolean __act, int __dx, Class<R> __cl)
-		throws JITException, NullPointerException
+	@Override
+	public JITConstantEntry get(int __dx)
 	{
-		// Get
-		R rv = this.<R>optional(__act, __dx, __cl);
-		
-		// {@squirreljme.error ED0b No constant pool entry was defined at
-		// this position. (The index; The expected type)}
-		if (rv == null)
-			throw new JITException(String.format("ED0b %d %s", __dx, __cl));
-		
-		// Ok
-		return rv;
+		return this._entries[__dx];
 	}
 	
 	/**
-	 * Returns whether or not the given entry has been activated.
-	 *
-	 * @param __dx The index to check whether an entry is activated or not.
-	 * @return {@code true} if the entry is active.
-	 * @since 2016/08/16
-	 */
-	public boolean isActive(int __dx)
-	{
-		return this._active[__dx];
-	}
-	
-	/**
-	 * Obtains the index at the specified position as the given type, if the
-	 * index is zero then {@code null} is returned.
-	 *
-	 * @param <R> The type of value to get.
-	 * @param __act Should the given constant pool entry be activated?
-	 * @param __dx The index of the entry, zero will return {@code null}.
-	 * @param __cl The expected class type.
-	 * @return The value at the given location or {@code null} if zero was
-	 * requested.
-	 * @throws JITException If the input is not of the expected type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/06
-	 */
-	public <R> R optional(boolean __act, int __dx, Class<R> __cl)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Zero is always null
-		if (__dx == 0)
-			return null;
-		
-		// {@squirreljme.error ED0c The requested index is not within the
-		// constant pool bounds. (The index)}
-		Object[] data = this._data;
-		int n = data.length;
-		if (__dx < 0 || __dx >= n)
-			throw new JITException(String.format("ED0c %d", __dx));
-		
-		// Get raw data
-		Object raw = data[__dx];
-		
-		// {@squirreljme.error ED0d The requested entry does not contain a
-		// value because it is the top of a long or double constant value.
-		// (The index)}
-		if (raw == null)
-			throw new JITException(String.format("ED0d %d", __dx));
-		
-		// If an integer array, requires conversion
-		__ClassDecoder__ decoder = this._decoder;
-		if (raw instanceof int[])
-		{
-			// Get input fields
-			int[] fields = (int[])raw;
-			raw = null;
-			
-			// Depends on the tag
-			byte tag = this._tags[__dx];
-			switch (tag)
-			{
-					// Strings
-				case TAG_STRING:
-					raw = this.<String>get(false, fields[0], String.class);
-					break;
-					
-					// Class name
-				case TAG_CLASS:
-					raw = decoder.__rewriteClass(ClassNameSymbol.of(
-						this.<String>get(false, fields[0], String.class)));
-					break;
-					
-					// Name and type
-				case TAG_NAMEANDTYPE:
-					raw = new JITNameAndType(
-						IdentifierSymbol.of(this.<String>get(
-							false, fields[0], String.class)),
-						MemberTypeSymbol.of(this.<String>get(
-							false, fields[1], String.class)));
-					break;
-					
-					// Field/method/interface reference
-				case TAG_FIELDREF:
-				case TAG_METHODREF:
-				case TAG_INTERFACEMETHODREF:
-					ClassNameSymbol rcl = decoder.__rewriteClass(
-						this.<ClassNameSymbol>get(false, fields[0],
-							ClassNameSymbol.class));
-					JITNameAndType jna = this.<JITNameAndType>get(false, 
-						fields[1], JITNameAndType.class);
-					
-					// Field?
-					if (tag == TAG_FIELDREF)
-						raw = new JITFieldReference(rcl, jna.name(),
-							(FieldSymbol)jna.type());
-					
-					// Method?
-					else
-						raw = new JITMethodReference(rcl, jna.name(),
-							(MethodSymbol)jna.type(),
-							tag == TAG_INTERFACEMETHODREF);
-					break;
-					
-					// {@squirreljme.error ED0f Could not obtain the constant
-					// pool entry information because its tag data relation is
-					// not known. (The index; The tag type)}
-				default:
-					throw new JITException(String.format("ED0f %d %d", __dx,
-						tag));
-			}
-			
-			// {@squirreljme.error ED0g The field data was never translated
-			// to known useable data. (The index)}
-			if (raw == null)
-				throw new NullPointerException(String.format("ED0g %d", __dx));
-			
-			// Reset
-			data[__dx] = raw;
-		}
-		
-		// {@squirreljme.error ED0e The value at the given index was not of
-		// the expected class type. (The index; The expected type; The type
-		// that it was)}
-		if (!__cl.isInstance(raw))
-			throw new JITException(String.format("ED0e %d %s", __dx, __cl,
-				raw.getClass()));
-		
-		// Activate?
-		if (__act)
-			this._active[__dx] = true;
-		
-		// Cast
-		return __cl.cast(raw);
-	}
-	
-	/**
-	 * Returns the size of the constant pool.
-	 *
-	 * @return The constant pool size.
+	 * {@inheritDoc}
 	 * @since 2016/07/02
 	 */
+	@Override
 	public int size()
 	{
-		return this._tags.length;
-	}
-	
-	/**
-	 * Returns the tag type of the given entry.
-	 *
-	 * @param __dx The entry to get the tag type for.
-	 * @return The tag type.
-	 * @since 2016/08/14
-	 */
-	public int tag(int __dx)
-	{
-		return this._tags[__dx];
+		return this._entries.length;
 	}
 	
 	/**
@@ -410,19 +230,20 @@ public final class JITConstantPool
 	{
 		// Rewrite only classes (there should be just one)
 		__ClassDecoder__ decoder = this._decoder;
-		byte[] tags = this._tags;
-		Object[] data = this._data;
-		int n = data.length;
+		JITConstantEntry[] entries = this._entries;
+		int n = entries.length;
 		for (int i = 1; i < n; i++)
 		{
+			JITConstantEntry e = entries[i];
+			
 			// If the data is in an integer array then it has never been
 			// initialized yet
-			Object raw = data[i];
+			Object raw = e._data;
 			if (raw instanceof int[])
 				continue;
 			
 			// Depends on the tag
-			byte tag = tags[i];
+			byte tag = e._tag;
 			switch (tag)
 			{
 					// Ignore
@@ -439,7 +260,7 @@ public final class JITConstantPool
 					
 					// Rewrite classes
 				case TAG_CLASS:
-					data[i] = decoder.__rewriteClass((ClassNameSymbol)data[i]);
+					e._data = decoder.__rewriteClass((ClassNameSymbol)raw);
 					break;
 					
 					// Error, since these should not be in the pool in an

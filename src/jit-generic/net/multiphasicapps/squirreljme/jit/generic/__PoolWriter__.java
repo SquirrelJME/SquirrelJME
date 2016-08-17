@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.JITConstantEntry;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 import net.multiphasicapps.squirreljme.jit.JITMemberReference;
 import net.multiphasicapps.squirreljme.jit.JITNameAndType;
@@ -68,13 +69,15 @@ class __PoolWriter__
 		this._poolcount = n;
 		for (int i = 0; i < n; i++)
 		{
+			JITConstantEntry e = __pool.get(i);
+			
 			// Ignore if not active since these strings will waste space when
 			// they are pointless at runtime (such as type signatures)
-			if (!__pool.isActive(i))
+			if (!e.isActive())
 				continue;
 			
 			// Get tag here
-			int tag = __pool.tag(i);
+			int tag = e.tag();
 			
 			// Depends on the tag
 			switch (tag)
@@ -91,14 +94,14 @@ class __PoolWriter__
 				case JITConstantPool.TAG_UTF8:
 				case JITConstantPool.TAG_CLASS:
 				case JITConstantPool.TAG_STRING:
-					__addString(__pool.<Object>get(false, i, Object.class).
+					__addString(e.<Object>get(false, Object.class).
 						toString());
 					break;
 					
 					// Name and type
 				case JITConstantPool.TAG_NAMEANDTYPE:
-					JITNameAndType jnt = __pool.<JITNameAndType>get(false, i,
-						JITNameAndType.class);
+					JITNameAndType jnt = e.<JITNameAndType>get(
+						false, JITNameAndType.class);
 					__addString(jnt.name().toString());
 					__addString(jnt.type().toString());
 					break;
@@ -107,8 +110,9 @@ class __PoolWriter__
 				case JITConstantPool.TAG_FIELDREF:
 				case JITConstantPool.TAG_METHODREF:
 				case JITConstantPool.TAG_INTERFACEMETHODREF:
-					JITMemberReference jmr = __pool.<JITMemberReference>get(
-						false, i, JITMemberReference.class);
+					JITMemberReference jmr = e.
+						<JITMemberReference>get(false,
+						JITMemberReference.class);
 					__addString(jmr.className().toString());
 					__addString(jmr.memberName().toString());
 					__addString(jmr.memberType().toString());
@@ -178,8 +182,10 @@ class __PoolWriter__
 		JITConstantPool pool = this.pool;
 		for (int i = 0; i < n; i++)
 		{
+			JITConstantEntry e = pool.get(i);
+			
 			// Ignore if not active
-			if (i > 0 && !pool.isActive(i))
+			if (i > 0 && !e.isActive())
 				continue;
 			
 			// Align
@@ -194,7 +200,7 @@ class __PoolWriter__
 			pos[i] = (int)ppp;
 			
 			// Get details
-			int tag = pool.tag(i);
+			int tag = e.tag();
 			
 			// Depends on the tag
 			__dos.writeShort(tag);
@@ -206,25 +212,26 @@ class __PoolWriter__
 				
 					// Integer
 				case JITConstantPool.TAG_INTEGER:
-					__dos.writeInt(pool.<Integer>get(false, i, Integer.class));
+					__dos.writeInt(e.<Integer>get(false,
+						Integer.class));
 					break;
 				
 					// Float	
 				case JITConstantPool.TAG_FLOAT:
 					__dos.writeInt(Float.floatToRawIntBits(
-						pool.<Float>get(false, i, Float.class)));
+						e.<Float>get(false, Float.class)));
 					break;
 					
 					// Long
 				case JITConstantPool.TAG_LONG:
-					__dos.writeLong(pool.<Long>get(false, i, Long.class));
+					__dos.writeLong(e.<Long>get(false, Long.class));
 					i++;
 					break;
 					
 					// Double
 				case JITConstantPool.TAG_DOUBLE:
 					__dos.writeLong(Double.doubleToRawLongBits(
-						pool.<Double>get(false, i, Double.class)));
+						e.<Double>get(false, Double.class)));
 					i++;
 					break;
 					
@@ -233,13 +240,13 @@ class __PoolWriter__
 				case JITConstantPool.TAG_CLASS:
 				case JITConstantPool.TAG_STRING:
 					__dos.writeShort(__addString(
-						pool.<Object>get(false, i,
+						e.<Object>get(false,
 							Object.class).toString())._index);
 					break;
 				
 					// Name and type
 				case JITConstantPool.TAG_NAMEANDTYPE:
-					JITNameAndType jnt = pool.<JITNameAndType>get(false, i,
+					JITNameAndType jnt = e.<JITNameAndType>get(false,
 						JITNameAndType.class);
 					__dos.writeShort(__addString(
 						jnt.name().toString())._index);
@@ -251,8 +258,9 @@ class __PoolWriter__
 				case JITConstantPool.TAG_FIELDREF:
 				case JITConstantPool.TAG_METHODREF:
 				case JITConstantPool.TAG_INTERFACEMETHODREF:
-					JITMemberReference jmr = pool.<JITMemberReference>get(
-						false, i, JITMemberReference.class);
+					JITMemberReference jmr = e.
+						<JITMemberReference>get(false,
+						JITMemberReference.class);
 					__dos.writeShort(__addString(
 						jmr.className().toString())._index);
 					__dos.writeShort(__addString(
