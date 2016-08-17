@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 
 /**
@@ -23,8 +25,15 @@ final class __GlobalPool__
 	/** The owning namespace writer. */
 	protected final GenericNamespaceWriter owner;
 	
+	/** Strings in the namespace. */
+	private final Map<String, __StringEntry__> _strings =
+		new HashMap<>();
+	
 	/** The currently active pool. */
 	private volatile JITConstantPool _current;
+	
+	/** The next string index. */
+	private volatile int _nextstring;
 	
 	/**
 	 * Initializes the global pool.
@@ -59,7 +68,15 @@ final class __GlobalPool__
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Already placed?
+		Map<String, __StringEntry__> strings = this._strings;
+		__StringEntry__ rv = strings.get(__s);
+		if (rv != null)
+			return rv;
+		
+		// Place it otherwise
+		strings.put(__s, (rv = new __StringEntry__(this._nextstring++)));
+		return rv;
 	}
 	
 	/**
