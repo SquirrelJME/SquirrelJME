@@ -70,37 +70,9 @@ public class LinuxMIPSBuilder
 		// Just load the ELF anywhere really
 		__eo.setBaseAddress(0x400000);
 		
-		// Use the MIPS machine
-		__eo.setMachine(8);
-		
 		// Get triplet to determine later things
 		JITTriplet triplet = __conf.triplet();
 		int bits = triplet.bits();
-		
-		// SquirrelJME is purely PIC, so allow relocation
-		// Also the architecture ID is used here also
-		int hi = 0;
-		switch (triplet.architectureVariant())
-		{
-				// Which MIPS generation?
-			case "ii":	hi = 0x1000_0000; break;
-			case "iii":	hi = 0x2000_0000; break;
-			case "iv":	hi = 0x3000_0000; break;
-			case "v":	hi = 0x4000_0000; break;
-			case "r1":	hi = (bits == 32 ? 0x5000_0000 : 0x6000_0000); break;
-			case "r2":
-			case "r3":
-			case "r4":
-			case "r5":	hi = (bits == 32 ? 0x7000_0000 : 0x8000_0000); break;
-			case "r6":	hi = (bits == 32 ? 0x9000_0000 : 0xa000_0000); break;
-			
-				// If unknown, assume just standard MIPS
-			case "i":
-			default:
-				hi = 0x0000_0000;
-				break;
-		}
-		__eo.setFlags(hi);
 		
 		// Align programs to the MIPS page size
 		boolean inital = true;

@@ -85,8 +85,7 @@ public abstract class LinuxBuilder
 			eo.primeOutput(bin);
 			
 			// Set some basic common details
-			eo.setEndianess(triplet.endianess());
-			eo.setWordSize(triplet.bits());
+			eo.setFromTriplet(triplet);
 			eo.setOSABI(0x03);
 			eo.setType(ELFType.EXECUTABLE);
 			

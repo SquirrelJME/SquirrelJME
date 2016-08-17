@@ -1,2 +1,7 @@
 # 2016/08/17
 
+## 11:22
+
+I should make it so some basic information can be gleaned from the triplet
+since on many systems ELFs will have the same code for the most part.
+

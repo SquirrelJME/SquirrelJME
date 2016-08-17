@@ -24,6 +24,7 @@ import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 
 /**
@@ -307,6 +308,75 @@ public class ELFOutput
 		synchronized (this.lock)
 		{
 			this._flags = __f;
+		}
+	}
+	
+	/**
+	 *
+	 *
+	 * @param __t The triplet to base information from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/17
+	 */
+	public void setFromTriplet(JITTriplet __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Endianess
+			setEndianess(__t.endianess());
+			
+			// Word size
+			int bits;
+			setWordSize((bits = __t.bits()));
+			
+			// Depends on the architecture
+			int flags = 0;
+			switch (__t.architecture())
+			{
+					// MIPS
+				case "mips":
+					// Set MIPS machine
+					setMachine(8);
+					
+					// MIPS variant codes
+					switch (__t.architectureVariant())
+					{
+							// Which MIPS generation?
+						case "ii":	flags = 0x1000_0000; break;
+						case "iii":	flags = 0x2000_0000; break;
+						case "iv":	flags = 0x3000_0000; break;
+						case "v":	flags = 0x4000_0000; break;
+						case "r1":	flags = (bits == 32 ? 0x5000_0000 :
+							0x6000_0000); break;
+						case "r2":
+						case "r3":
+						case "r4":
+						case "r5":	flags = (bits == 32 ? 0x7000_0000 :
+							0x8000_0000); break;
+						case "r6":	flags = (bits == 32 ? 0x9000_0000 :
+							0xa000_0000); break;
+			
+							// If unknown, assume just standard MIPS
+						case "i":
+						default:
+							flags = 0x0000_0000;
+							break;
+					}
+					break;
+					
+					// Unknown, ignore
+				default:
+					break;
+			}
+			
+			// OR in these flags
+			this._flags |= flags;
 		}
 	}
 	
