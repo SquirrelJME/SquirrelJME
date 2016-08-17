@@ -68,6 +68,11 @@ class __PoolWriter__
 		this._poolcount = n;
 		for (int i = 0; i < n; i++)
 		{
+			// Ignore if not active since these strings will waste space when
+			// they are pointless at runtime (such as type signatures)
+			if (!__pool.isActive(i))
+				continue;
+			
 			// Get tag here
 			int tag = __pool.tag(i);
 			
@@ -86,13 +91,13 @@ class __PoolWriter__
 				case JITConstantPool.TAG_UTF8:
 				case JITConstantPool.TAG_CLASS:
 				case JITConstantPool.TAG_STRING:
-					__addString(__pool.<Object>get(i, Object.class).
+					__addString(__pool.<Object>get(false, i, Object.class).
 						toString());
 					break;
 					
 					// Name and type
 				case JITConstantPool.TAG_NAMEANDTYPE:
-					JITNameAndType jnt = __pool.<JITNameAndType>get(i,
+					JITNameAndType jnt = __pool.<JITNameAndType>get(false, i,
 						JITNameAndType.class);
 					__addString(jnt.name().toString());
 					__addString(jnt.type().toString());
@@ -103,7 +108,7 @@ class __PoolWriter__
 				case JITConstantPool.TAG_METHODREF:
 				case JITConstantPool.TAG_INTERFACEMETHODREF:
 					JITMemberReference jmr = __pool.<JITMemberReference>get(
-						i, JITMemberReference.class);
+						false, i, JITMemberReference.class);
 					__addString(jmr.className().toString());
 					__addString(jmr.memberName().toString());
 					__addString(jmr.memberType().toString());
@@ -163,12 +168,20 @@ class __PoolWriter__
 		// Write strings
 		__writeStrings(__dos);
 		
-		// Write pool data
-		JITConstantPool pool = this.pool;
+		// Initialize positions
 		int n = pool.size();
 		int pos[] = new int[n];
 		for (int i = 0; i < n; i++)
+			pos[i] = -1;
+		
+		// Write pool data
+		JITConstantPool pool = this.pool;
+		for (int i = 0; i < n; i++)
 		{
+			// Ignore if not active
+			if (i > 0 && !pool.isActive(i))
+				continue;
+			
 			// Align
 			while ((__dos.size() & 3) != 0)
 				__dos.writeByte(0);
@@ -193,25 +206,25 @@ class __PoolWriter__
 				
 					// Integer
 				case JITConstantPool.TAG_INTEGER:
-					__dos.writeInt(pool.<Integer>get(i, Integer.class));
+					__dos.writeInt(pool.<Integer>get(false, i, Integer.class));
 					break;
 				
 					// Float	
 				case JITConstantPool.TAG_FLOAT:
 					__dos.writeInt(Float.floatToRawIntBits(
-						pool.<Float>get(i, Float.class)));
+						pool.<Float>get(false, i, Float.class)));
 					break;
 					
 					// Long
 				case JITConstantPool.TAG_LONG:
-					__dos.writeLong(pool.<Long>get(i, Long.class));
+					__dos.writeLong(pool.<Long>get(false, i, Long.class));
 					i++;
 					break;
 					
 					// Double
 				case JITConstantPool.TAG_DOUBLE:
 					__dos.writeLong(Double.doubleToRawLongBits(
-						pool.<Double>get(i, Double.class)));
+						pool.<Double>get(false, i, Double.class)));
 					i++;
 					break;
 					
@@ -220,12 +233,13 @@ class __PoolWriter__
 				case JITConstantPool.TAG_CLASS:
 				case JITConstantPool.TAG_STRING:
 					__dos.writeShort(__addString(
-						pool.<Object>get(i, Object.class).toString())._index);
+						pool.<Object>get(false, i,
+							Object.class).toString())._index);
 					break;
 				
 					// Name and type
 				case JITConstantPool.TAG_NAMEANDTYPE:
-					JITNameAndType jnt = pool.<JITNameAndType>get(i,
+					JITNameAndType jnt = pool.<JITNameAndType>get(false, i,
 						JITNameAndType.class);
 					__dos.writeShort(__addString(
 						jnt.name().toString())._index);
@@ -238,7 +252,7 @@ class __PoolWriter__
 				case JITConstantPool.TAG_METHODREF:
 				case JITConstantPool.TAG_INTERFACEMETHODREF:
 					JITMemberReference jmr = pool.<JITMemberReference>get(
-						i, JITMemberReference.class);
+						false, i, JITMemberReference.class);
 					__dos.writeShort(__addString(
 						jmr.className().toString())._index);
 					__dos.writeShort(__addString(
@@ -265,8 +279,19 @@ class __PoolWriter__
 		this._poolpos = (int)ctp;
 		
 		// Write the constant pool pointers
+		int nulle = pos[0];
 		for (int i = 0; i < n; i++)
-			__dos.writeInt(pos[i]);
+		{
+			int v = pos[i];
+			
+			// if active use the given position
+			if (v >= 0)
+				__dos.writeInt(v);
+			
+			// Otherwise use the null entry (since it consumes no space)
+			else
+				__dos.writeInt(nulle);
+		}
 	}
 	
 	/**

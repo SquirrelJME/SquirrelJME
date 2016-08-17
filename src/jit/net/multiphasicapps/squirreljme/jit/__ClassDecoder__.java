@@ -131,7 +131,7 @@ final class __ClassDecoder__
 		// Read class name
 		int clnamedx = input.readUnsignedShort();
 		ClassNameSymbol clname = pool.<ClassNameSymbol>get(
-			clnamedx, ClassNameSymbol.class);
+			true, clnamedx, ClassNameSymbol.class);
 		boolean isobject = (clname.equals(_OBJECT_CLASS));
 		
 		// There is enough "known" information (just the name) to start
@@ -151,7 +151,7 @@ final class __ClassDecoder__
 			// Read super class
 			int sudx = input.readUnsignedShort();
 			ClassNameSymbol suname = pool.<ClassNameSymbol>optional(
-				sudx, ClassNameSymbol.class);
+				true, sudx, ClassNameSymbol.class);
 			
 			// {@squirreljme.error ED0m The Object class must have no super
 			// class and any non-Object class must have a super class.
@@ -176,8 +176,8 @@ final class __ClassDecoder__
 			for (int i = 0; i < icount; i++)
 			{
 				int idx = input.readUnsignedShort();
-				ifaces[i] = pool.<ClassNameSymbol>get(
-					idx, ClassNameSymbol.class);
+				ifaces[i] = pool.<ClassNameSymbol>get(true, idx,
+					ClassNameSymbol.class);
 				ifdxs[i] = idx;
 			}
 			

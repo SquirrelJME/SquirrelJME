@@ -141,20 +141,24 @@ public final class GenericClassWriter
 					// Get output
 					ExtendedDataOutputStream dos = this.output;
 					
+					// Write the pool
+					__PoolWriter__ pw = new __PoolWriter__(this._pool);
+					pw.__write(dos);
+					
 					// Align
 					while ((dos.size() & 3) != 0)
 						dos.writeByte(0);
 					
 					// String table
-					dos.writeInt(this._stringpos);
-					dos.writeShort(this._stringcount);
+					dos.writeInt(pw._stringpos);
+					dos.writeShort(pw._stringcount);
 					
 					// Current class name
 					dos.writeShort(this._nameindex);
 					
 					// Constant pool
-					dos.writeInt(this._poolpos);
-					dos.writeShort(this._poolcount);
+					dos.writeInt(pw._poolpos);
+					dos.writeShort(pw._poolcount);
 					
 					// The super class name
 					dos.writeShort(this._scpooldx);
@@ -218,27 +222,6 @@ public final class GenericClassWriter
 			
 			// Set the name index
 			this._nameindex = __cndx;
-			
-			// Setup pool writer then write it
-			try
-			{
-				// Write the pool
-				__PoolWriter__ pw = new __PoolWriter__(__pool);
-				pw.__write(this.output);
-				
-				// Store the string table position and the constant pool
-				// position
-				this._stringpos = pw._stringpos;
-				this._stringcount = pw._stringcount;
-				this._poolpos = pw._poolpos;
-				this._poolcount = pw._poolcount;
-			}
-			
-			// {@squirreljme.error BA0u Failed to write the constant pool.}
-			catch (IOException e)
-			{
-				throw new JITException("BA0u", e);
-			}
 		}
 	}
 	

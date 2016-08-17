@@ -90,6 +90,9 @@ public final class JITConstantPool
 	/** Constant pool initialized data. */
 	private final Object[] _data;
 	
+	/** Has the given entry, been activated? */
+	private final boolean[] _active;
+	
 	/** The class decoder being used. */
 	private final __ClassDecoder__ _decoder;
 	
@@ -124,6 +127,11 @@ public final class JITConstantPool
 		
 		// Setup data
 		Object[] data = new Object[count];
+		
+		// Make the first entry always active (the null one)
+		boolean[] active = new boolean[count];
+		this._active = active;
+		active[0] = true;
 		
 		// Decode all entry data
 		for (int i = 1; i < count; i++)
@@ -208,6 +216,7 @@ public final class JITConstantPool
 	 * Obtains the index at the specified position as the given type.
 	 *
 	 * @param <R> The type of value to get.
+	 * @param __act Should the given constant pool entry be activated?
 	 * @param __dx The index of the entry.
 	 * @param __cl The expected class type.
 	 * @return The value at the given location.
@@ -215,11 +224,11 @@ public final class JITConstantPool
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
-	public <R> R get(int __dx, Class<R> __cl)
+	public <R> R get(boolean __act, int __dx, Class<R> __cl)
 		throws JITException, NullPointerException
 	{
 		// Get
-		R rv = this.<R>optional(__dx, __cl);
+		R rv = this.<R>optional(__act, __dx, __cl);
 		
 		// {@squirreljme.error ED0b No constant pool entry was defined at
 		// this position. (The index; The expected type)}
@@ -231,10 +240,23 @@ public final class JITConstantPool
 	}
 	
 	/**
+	 * Returns whether or not the given entry has been activated.
+	 *
+	 * @param __dx The index to check whether an entry is activated or not.
+	 * @return {@code true} if the entry is active.
+	 * @since 2016/08/16
+	 */
+	public boolean isActive(int __dx)
+	{
+		return this._active[__dx];
+	}
+	
+	/**
 	 * Obtains the index at the specified position as the given type, if the
 	 * index is zero then {@code null} is returned.
 	 *
 	 * @param <R> The type of value to get.
+	 * @param __act Should the given constant pool entry be activated?
 	 * @param __dx The index of the entry, zero will return {@code null}.
 	 * @param __cl The expected class type.
 	 * @return The value at the given location or {@code null} if zero was
@@ -243,7 +265,7 @@ public final class JITConstantPool
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
-	public <R> R optional(int __dx, Class<R> __cl)
+	public <R> R optional(boolean __act, int __dx, Class<R> __cl)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -284,22 +306,22 @@ public final class JITConstantPool
 			{
 					// Strings
 				case TAG_STRING:
-					raw = this.<String>get(fields[0], String.class);
+					raw = this.<String>get(false, fields[0], String.class);
 					break;
 					
 					// Class name
 				case TAG_CLASS:
 					raw = decoder.__rewriteClass(ClassNameSymbol.of(
-						this.<String>get(fields[0], String.class)));
+						this.<String>get(false, fields[0], String.class)));
 					break;
 					
 					// Name and type
 				case TAG_NAMEANDTYPE:
 					raw = new JITNameAndType(
 						IdentifierSymbol.of(this.<String>get(
-							fields[0], String.class)),
+							false, fields[0], String.class)),
 						MemberTypeSymbol.of(this.<String>get(
-							fields[1], String.class)));
+							false, fields[1], String.class)));
 					break;
 					
 					// Field/method/interface reference
@@ -307,10 +329,10 @@ public final class JITConstantPool
 				case TAG_METHODREF:
 				case TAG_INTERFACEMETHODREF:
 					ClassNameSymbol rcl = decoder.__rewriteClass(
-						this.<ClassNameSymbol>get(fields[0],
+						this.<ClassNameSymbol>get(false, fields[0],
 							ClassNameSymbol.class));
-					JITNameAndType jna = this.<JITNameAndType>get(fields[1],
-						JITNameAndType.class);
+					JITNameAndType jna = this.<JITNameAndType>get(false, 
+						fields[1], JITNameAndType.class);
 					
 					// Field?
 					if (tag == TAG_FIELDREF)
@@ -347,6 +369,10 @@ public final class JITConstantPool
 		if (!__cl.isInstance(raw))
 			throw new JITException(String.format("ED0e %d %s", __dx, __cl,
 				raw.getClass()));
+		
+		// Activate?
+		if (__act)
+			this._active[__dx] = true;
 		
 		// Cast
 		return __cl.cast(raw);
