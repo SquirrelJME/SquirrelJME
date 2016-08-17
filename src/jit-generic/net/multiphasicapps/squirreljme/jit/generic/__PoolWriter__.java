@@ -66,7 +66,6 @@ class __PoolWriter__
 		
 		// Go through all pool entries and extract strings from them to use
 		int n = __pool.size();
-		this._poolcount = n;
 		for (int i = 0; i < n; i++)
 		{
 			JITConstantEntry e = __pool.get(i);
@@ -124,6 +123,9 @@ class __PoolWriter__
 			}
 		}
 		
+		// Only use the active element count
+		this._poolcount = __pool.activeCount();
+		
 		// Write the string count
 		this._stringcount = this.strings.size();
 	}
@@ -174,19 +176,24 @@ class __PoolWriter__
 		
 		// Initialize positions
 		int n = pool.size();
-		int pos[] = new int[n];
-		for (int i = 0; i < n; i++)
+		int limit = pool.activeCount();
+		int pos[] = new int[limit];
+		for (int i = 0; i < limit; i++)
 			pos[i] = -1;
 		
 		// Write pool data
 		JITConstantPool pool = this.pool;
+		int current = 0;
 		for (int i = 0; i < n; i++)
 		{
 			JITConstantEntry e = pool.get(i);
 			
 			// Ignore if not active
-			if (i > 0 && !e.isActive())
+			if (!e.isActive())
 				continue;
+			
+			// Get current entry being written
+			int now = current++;
 			
 			// Align
 			while ((__dos.size() & 3) != 0)
@@ -197,7 +204,7 @@ class __PoolWriter__
 			long ppp = __dos.size();
 			if (ppp < 0 || ppp > GenericClassWriter._SIZE_LIMIT)
 				throw new JITException("BA0y");
-			pos[i] = (int)ppp;
+			pos[now] = (int)ppp;
 			
 			// Get details
 			int tag = e.tag();
@@ -288,18 +295,8 @@ class __PoolWriter__
 		
 		// Write the constant pool pointers
 		int nulle = pos[0];
-		for (int i = 0; i < n; i++)
-		{
-			int v = pos[i];
-			
-			// if active use the given position
-			if (v >= 0)
-				__dos.writeShort(v);
-			
-			// Otherwise use the null entry (since it consumes no space)
-			else
-				__dos.writeShort(nulle);
-		}
+		for (int i = 0; i < limit; i++)
+			__dos.writeShort(pos[i]);
 	}
 	
 	/**

@@ -32,3 +32,8 @@ offsets will be wasting for the most part two bytes.
 
 This also means that I will not need the null entry either.
 
+## 14:46
+
+And after that work, these blank binaries are about 39KiB. So quite some
+savings removing pointless bytes.
+

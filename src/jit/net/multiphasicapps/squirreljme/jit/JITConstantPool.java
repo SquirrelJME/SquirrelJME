@@ -193,12 +193,25 @@ public final class JITConstantPool
 				throw new JITException(String.format("ED17 %d", tag));
 		
 			// Create entry
-			entries[i] = new JITConstantEntry(this, (byte)tag, i, data);	
+			JITConstantEntry dup;
+			entries[i] =
+				(dup = new JITConstantEntry(this, (byte)tag, i, data));
 			
 			// Double up?
 			if (tag == TAG_LONG || tag == TAG_DOUBLE)
-				i++;
+				entries[++i] = dup;
 		}
+	}
+	
+	/**
+	 * Returns the number of active entries.
+	 *
+	 * @return The active entry count.
+	 * @since 2016/08/17
+	 */
+	public int activeCount()
+	{
+		return this._nextadx;
 	}
 	
 	/**
