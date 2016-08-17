@@ -72,10 +72,6 @@ abstract class __BaseSymbol__
 	@Override
 	public boolean equals(Object __o)
 	{
-		// If the other is a string, compare against it
-		if (__o instanceof String)
-			return string.equals(__o);
-		
 		// Must be of the same type
 		if (!getClass().isInstance(__o) || !(__o instanceof __BaseSymbol__))
 			return false;
