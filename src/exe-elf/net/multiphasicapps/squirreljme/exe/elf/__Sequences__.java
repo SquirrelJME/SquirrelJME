@@ -256,7 +256,9 @@ class __Sequences__
 			__dos.writeInt(eo._flags);
 			
 			// Write the size of this header
-			__dos.writeShort(this._size);
+			// Also include the identification area, otherwise the ELF becomes
+			// invalid
+			__dos.writeShort(16 + this._size);
 			
 			// Write program header size and count
 			__dos.writeShort(programs._entsize);

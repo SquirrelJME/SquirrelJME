@@ -53,3 +53,11 @@ Ok, so now I get `./squirreljme: Invalid ELF image for this architecture`.
 
 It is possible it is due to the lack of section headers.
 
+## 19:43
+
+Will need to solve this one also.
+
+## 20:23
+
+Looks like the ELF header size is not valid.
+
