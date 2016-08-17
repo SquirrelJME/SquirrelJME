@@ -36,6 +36,24 @@ public enum JITCompilerOrder
 	/** The number of fields. */
 	FIELD_COUNT,
 	
+	/** Access flags for a field. */
+	FIELD_FLAGS,
+	
+	/** End of field. */
+	END_FIELD,
+	
+	/** The number of methods. */
+	METHOD_COUNT,
+	
+	/** Access flags for a method. */
+	METHOD_FLAGS,
+	
+	/** End of method. */
+	END_METHOD,
+	
+	/** End of class. */
+	END_CLASS,
+	
 	/** End. */
 	;
 	
@@ -50,14 +68,34 @@ public enum JITCompilerOrder
 	/**
 	 * Returns the next order, or {@code null} if processing is complete.
 	 *
+	 * @param __wf The current number of written fields.
+	 * @param __nf The number of fields available.
+	 * @apram __wm The number of written methods.
+	 * @param __nm The number of methods.
 	 * @return The next order or {@code null} if processing is complete.
 	 * @since 2016/07/18
 	 */
-	public final JITCompilerOrder next()
+	public final JITCompilerOrder next(int __wf, int __nf, int __wm, int __nm)
 	{
 		// Get values
 		JITCompilerOrder[] values = _VALUES;
 		int n = values.length;
+		
+		// If there are no fields to write then go straight to methods
+		if (this == FIELD_COUNT && __nf == 0)
+			return METHOD_COUNT;
+		
+		// If there are no methods, end the class
+		else if (this == METHOD_COUNT && __nm == 0)
+			return END_CLASS;
+		
+		// If not enough fields were written then go back to wanting flags
+		else if (this == END_FIELD && __wf < __nf)
+			return FIELD_FLAGS;
+		
+		// The same goes for methods
+		else if (this == END_METHOD && __wm < __nm)
+			return METHOD_FLAGS;
 		
 		// More orderings?
 		int i = ordinal() + 1;

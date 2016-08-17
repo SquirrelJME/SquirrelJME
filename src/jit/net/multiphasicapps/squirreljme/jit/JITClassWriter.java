@@ -54,6 +54,25 @@ public interface JITClassWriter
 		throws JITException, NullPointerException;
 	
 	/**
+	 * Ends the class.
+	 *
+	 * @throws JITException If it could not be ended.
+	 * @since 2016/08/17
+	 */
+	public abstract void endClass()
+		throws JITException;
+	
+	/**
+	 * Sets the number of fields to use within a class.
+	 *
+	 * @param __n The number of fields to use.
+	 * @throws JITException If it could not be set.
+	 * @since 2016/08/17
+	 */
+	public abstract void fieldCount(int __n)
+		throws JITException;
+	
+	/**
 	 * Records class interfaces.
 	 *
 	 * @param __ins The class interfaces.
@@ -64,6 +83,16 @@ public interface JITClassWriter
 	 */
 	public abstract void interfaceClasses(ClassNameSymbol[] __ins, int[] __dxs)
 		throws JITException, NullPointerException;
+	
+	/**
+	 * Sets the number of methods to use within the class.
+	 *
+	 * @param __n The method count.
+	 * @throws JITException If it could not be set.
+	 * @since 2016/08/17
+	 */
+	public abstract void methodCount(int __n)
+		throws JITException;
 	
 	/**
 	 * Records the name of the super-class of the class being decoded.

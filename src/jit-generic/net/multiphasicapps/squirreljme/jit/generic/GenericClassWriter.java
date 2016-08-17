@@ -72,6 +72,20 @@ public final class GenericClassWriter
 	/** The index in the constant pool containing the current class name. */
 	private volatile int _nameindex;
 	
+	/** The number of fields available. */
+	private volatile int _fieldcount =
+		-1;
+	
+	/** The number of fields currently written. */
+	private volatile int _writtenfields;
+	
+	/** The number of methods available. */
+	private volatile int _methodcount =
+		-1;
+	
+	/** The number of methods currently written. */
+	private volatile int _writtenmethods;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -227,6 +241,41 @@ public final class GenericClassWriter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/08/17
+	 */
+	@Override
+	public void endClass()
+		throws JITException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			__order(JITCompilerOrder.END_CLASS);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/17
+	 */
+	@Override
+	public void fieldCount(int __n)
+		throws JITException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			__order(JITCompilerOrder.FIELD_COUNT);
+			
+			// Set
+			this._fieldcount = __n;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/07/27
 	 */
 	@Override
@@ -277,6 +326,25 @@ public final class GenericClassWriter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/08/17
+	 */
+	@Override
+	public void methodCount(int __n)
+		throws JITException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			__order(JITCompilerOrder.METHOD_COUNT);
+			
+			// Set
+			this._methodcount = __n;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/07/27
 	 */
 	@Override
@@ -321,7 +389,8 @@ public final class GenericClassWriter
 					order));
 			
 			// Set next
-			this._order = order.next();
+			this._order = order.next(this._writtenfields, this._fieldcount,
+				this._writtenmethods, this._methodcount);
 		}
 	}
 }

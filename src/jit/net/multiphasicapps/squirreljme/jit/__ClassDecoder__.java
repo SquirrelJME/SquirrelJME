@@ -184,10 +184,20 @@ final class __ClassDecoder__
 			// Send
 			cw.interfaceClasses(ifaces, ifdxs);
 			
-			// TODO
-			System.err.println("TODO -- Implement the class decoder.");
-			if (false)
+			// Handle fields
+			int fcount = input.readUnsignedShort();
+			cw.fieldCount(fcount);
+			for (int i = 0; i < fcount; i++)
 				throw new Error("TODO");
+			
+			// Handle methods
+			int mcount = input.readUnsignedShort();
+			cw.methodCount(mcount);
+			for (int i = 0; i < mcount; i++)
+				throw new Error("TODO");
+			
+			// End class
+			cw.endClass();
 		}
 	}
 	
