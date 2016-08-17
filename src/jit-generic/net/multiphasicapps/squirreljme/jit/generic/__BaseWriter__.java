@@ -12,7 +12,6 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import net.multiphasicapps.io.crc32.CRC32DataSink;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -147,12 +146,6 @@ abstract class __BaseWriter__
 		/** The real output to write to. */
 		protected final ExtendedDataOutputStream real;
 		
-		/** The CRC output. */
-		protected final CRC32DataSink crc =
-			new CRC32DataSink(GenericBlob.CRC_REFLECT_DATA,
-			GenericBlob.CRC_REFLECT_REMAINDER, GenericBlob.CRC_MAGIC_NUMBER,
-			GenericBlob.CRC_INITIAL_REMAINDER, GenericBlob.CRC_FINAL_XOR);
-		
 		/** Was this closed? */
 		private volatile boolean _closed;
 		
@@ -200,11 +193,6 @@ abstract class __BaseWriter__
 					int de = (int)del;
 					__BaseWriter__.this._dataend = de;
 				
-					// Write the end header
-					real.writeInt(GenericBlob.END_ENTRY_MAGIC_NUMBER);
-					real.writeInt(this.crc.crc());
-					real.writeInt(de - __BaseWriter__.this._dataaddr);
-				
 					// Close it on this writer
 					__BaseWriter__.this.owner.__close(__BaseWriter__.this);
 				}
@@ -240,9 +228,6 @@ abstract class __BaseWriter__
 			
 				// Write byte
 				this.real.write(__b);
-			
-				// And CRC it
-				this.crc.offer((byte)__b);
 			}
 		}
 		
@@ -271,9 +256,6 @@ abstract class __BaseWriter__
 			
 				// Write data
 				this.real.write(__b, __o, __l);
-			
-				// CRC it
-				this.crc.offer(__b, __o, __l);
 			}
 		}
 	}

@@ -79,4 +79,16 @@ I am going to do a current pool strategy and work with the pool through that
 since it would be the simplest solution. I can also have helpers for
 individual entries also.
 
+## 18:22
+
+Actually I can have namespaces be a lower size yet not limit the namespaces
+to 65KiB by using shift values. It is a bit slower because they would have
+to be calculated, but it is not in the class data. With a forced minimal
+alignment of 4, I can shift 2 bytes away. This would limit namespaces to be
+262KiB. However, if I make the alignment 8 then namespaces would be limited to
+512KiB. However, would an alignment of 8 really save much space? However
+thinking about it, the next entry's position can be deterimined by the previous
+one's size. I can not have a namespace limit, but limit individual entries to
+be 262KiB in size. This would likely be the best plan.
+
 
