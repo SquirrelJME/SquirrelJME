@@ -71,3 +71,9 @@ And now it works, since I get:
 So now I can kind of just get to generating machine code to place in the
 given binary.
 
+## 20:26
+
+Before doing that however, I need to make it so constant pool entries are
+marked so that pointless ones are not included (such as signature data and
+such).
+
