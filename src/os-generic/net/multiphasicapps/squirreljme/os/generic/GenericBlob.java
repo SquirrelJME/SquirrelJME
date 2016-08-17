@@ -43,6 +43,7 @@ import net.multiphasicapps.io.data.RandomAccessData;
  *
  * Each central index entry is of the following.
  * {@code
+ * [short: The number of bytes shifted by 4
  * [int: The number of bytes to subtract from the CD to reach the entry MN]
  * [int: The size of the data for the given entry]
  * }
@@ -59,6 +60,14 @@ import net.multiphasicapps.io.data.RandomAccessData;
  */
 public class GenericBlob
 {
+	/** The number of bit positions to shift. */
+	public static final int NAMESPACE_SHIFT =
+		2;
+	
+	/** The mask for namespace positions (minimal alignment). */
+	public static final int ALIGN_MASK =
+		(1 << NAMESPACE_SHIFT) - 1;
+	
 	/** The magic number identifying entry start. */
 	public static final int START_ENTRY_MAGIC_NUMBER =
 		0xD3CECDCA;

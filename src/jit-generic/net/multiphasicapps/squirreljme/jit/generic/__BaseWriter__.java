@@ -75,8 +75,7 @@ abstract class __BaseWriter__
 		try
 		{
 			// Align
-			while ((__dos.size() & 3) != 0)
-				__dos.writeByte(0);
+			__nsw.__align();
 			
 			// {@squirreljme.error BA0b Start of class or resource is at a
 			// position beyond 2GiB.}
@@ -90,8 +89,7 @@ abstract class __BaseWriter__
 			__nsw.__writeString(__dos, __ct.ordinal(), __name);
 			
 			// Align
-			while ((__dos.size() & 3) != 0)
-				__dos.writeByte(0);
+			__nsw.__align();
 			
 			// {@squirreljme.error BA0c The data area of a class or resource
 			// exceeds beyond 2GiB.}

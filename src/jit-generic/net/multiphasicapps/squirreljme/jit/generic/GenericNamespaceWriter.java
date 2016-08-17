@@ -238,8 +238,7 @@ public final class GenericNamespaceWriter
 				try (ExtendedDataOutputStream dos = this.output)
 				{
 					// Align
-					while ((dos.size() & 3) != 0)
-						dos.writeByte(0);
+					__align();
 				
 					// Write magic identifier
 					dos.writeInt(GenericBlob.CENTRAL_DIRECTORY_MAGIC_NUMBER);
@@ -280,9 +279,9 @@ public final class GenericNamespaceWriter
 		throws IOException
 	{
 		ExtendedDataOutputStream dos = this.output;
-		while ((dos.size() & 3) != 0)
+		int m = GenericBlob.ALIGN_MASK;
+		while ((dos.size() & m) != 0)
 			dos.writeByte(0);
-		
 	}
 	
 	/**
