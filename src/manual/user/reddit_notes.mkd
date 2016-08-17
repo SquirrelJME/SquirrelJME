@@ -5,7 +5,7 @@ accordingly.
 
 If there are any questions, then a self post can be made (in another thread).
 
-_Last Updated: 2016/07/20_
+_Last Updated: 2016/08/16_
 
 ----
 
@@ -13,10 +13,19 @@ __Currently being worked on:__
 
  * Class library
    * Currently anything required to make the tests run properly
- * Deflate algorithm
+ * ELF Generator
+   * Sections (.text, .data, etc.; not actually needed for execution)
  * Java Virtual Machine
  * JIT compiler
-   * C Language source code
+   * MIPS
+ * Operating System Targets
+   * `mips-*+*,*.linux.generic`
+
+----
+
+__Stuff to be done, but not currently being worked on:__
+
+ * Deflate algorithm
 
 ----
 
@@ -24,12 +33,42 @@ __What has been done:__
 
  * Basic distribution structure (2016/07/20)
  * Basic target output (2016/07/20)
+ * ELF Generator
+   * Everything except sections. (2016/08/16)
  * Class file support (2016/04/03, refactored 2016/04/26)
- * Inflate algorithm (2016/04/08)
+ * Inflate algorithm (2016/04/08, refactored 2016/08/16)
  * ZIP read support (2016/04/08)
  * ZIP write support (2016/07/20)
 
 ===============================================================================
+
+__Update 2016/08/16:__
+
+The previously mentioned C compiler source generation has been completely
+removed. The JIT backend has been revamped a bit and I have generation of
+ELF files which instantly crash (because the entry address points to data and
+no code is generated yet). There have also been a number of speed improvements
+mostly in the inflate algorithm (you can read about that here:
+<http://multiphasicapps.net/tktview?name=9f0481d03d>) and some other related
+classes.
+
+So at this point, I just need to write the native code generator and other
+initialization routines to get a virtual machine bootstrapped and executed. I
+will likely start with a simple `Hello Squirrels!` type program which would be
+written purely in Java. Note that I intend the JIT to be very fast when it
+comes to code generation, so that not all optimizations will be accounted for.
+For comparison, long running programs will run faster using Oracle's HotSpot
+than SquirrelJME. However, very short programs in SquirrelJME will likely be
+faster (since SquirrelJME is a fraction of the size of OpenJDK and the main
+class library will be ahead of time compiled). With my current generator plans
+I would say that the minimum amount of memory required to run a program would
+be along the lines of 1MiB. Do note that I do plan the garbage collector to be
+stop the world (much easier to write and generally is faster) and as fast as
+possible.
+
+I also seem to never have mentioned that the mascot has a name now, and his
+name is _Lex_. The mascot was also converted to SVG and you can find that
+in: `src/mascot-svg/net/multiphasicapps/squirreljme/mascot/svg/`.
 
 __Update 2016/07/20:__
 

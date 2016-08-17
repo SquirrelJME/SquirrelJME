@@ -77,3 +77,20 @@ Before doing that however, I need to make it so constant pool entries are
 marked so that pointless ones are not included (such as signature data and
 such).
 
+## 21:36
+
+Removing pointless entries drops it to 81KiB, which is quite a drop.
+
+## 21:39
+
+So now is the big thing, generating machine code. It has been awhile and I have
+gotten close, but now I have reached this point. I could have done it many
+months ago, but the code would be extremely ugly and very difficult to
+maintain. So now the mainline refactoring of pre-existing code is nearly
+complete (except for a few things). I have written compilers before, so I have
+some experience in this. However, sometimes excitement makes me lazy.
+
+## 22:06
+
+I should also profile memory usage to reduce the GC requirements and such also.
+
