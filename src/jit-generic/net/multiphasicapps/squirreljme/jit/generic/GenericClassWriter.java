@@ -32,6 +32,10 @@ public final class GenericClassWriter
 	extends __BaseWriter__
 	implements JITClassWriter
 {
+	/** The maximum size a class may be. */
+	static final int _SIZE_LIMIT =
+		65535;
+	
 	/** The name of the class being written. */
 	protected final ClassNameSymbol classname;
 	
@@ -164,21 +168,21 @@ public final class GenericClassWriter
 						dos.writeByte(0);
 					
 					// String table
-					dos.writeInt(pw._stringpos);
+					dos.writeShort(pw._stringpos);
 					dos.writeShort(pw._stringcount);
 					
 					// Current class name
 					dos.writeShort(this._nameindex);
 					
 					// Constant pool
-					dos.writeInt(pw._poolpos);
+					dos.writeShort(pw._poolpos);
 					dos.writeShort(pw._poolcount);
 					
 					// The super class name
 					dos.writeShort(this._scpooldx);
 					
 					// The interfaces implemented
-					dos.writeInt(this._ifacepos);
+					dos.writeShort(this._ifacepos);
 					dos.writeShort(this._ifacecount);
 					
 					// The class flags
@@ -189,16 +193,22 @@ public final class GenericClassWriter
 					
 					// Field table
 					System.err.println("TODO -- Write fields at end.");
-					dos.writeInt(0);	// offset
+					dos.writeShort(0);	// offset
 					dos.writeShort(0);	// size
 					
 					// Method table
 					System.err.println("TODO -- Write methods at end.");
 					dos.writeShort(0);	// size
-					dos.writeInt(0);	// offset
+					dos.writeShort(0);	// offset
 					
 					// End with magic number
 					dos.writeInt(GenericBlob.END_CLASS_MAGIC_NUMBER);
+					
+					// {@squirreljme.error BA13 The final class size exceeds
+					// the class size limitation. (The class size)}
+					long esz;
+					if ((esz = dos.size()) > _SIZE_LIMIT)
+						throw new JITException(String.format("BA13 %d", esz));
 				}
 			
 				// {@squirreljme.error BA11 Failed to write the end of the
@@ -303,9 +313,9 @@ public final class GenericClassWriter
 					dos.writeByte(0);
 			
 				// {@squirreljme.error BA0z The interface table starts at a
-				// position outside the range of 2GiB.}
+				// position outside the range of the class size limit.}
 				long pos = dos.size();
-				if (pos < 0 || pos > Integer.MAX_VALUE)
+				if (pos < 0 || pos > _SIZE_LIMIT)
 					throw new JITException("BA0z");
 				this._ifacepos = (int)pos;
 			
@@ -381,6 +391,12 @@ public final class GenericClassWriter
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BA12 Partial write of class exceeds class
+			// size limitation. (The current class size)}
+			long sz;
+			if ((sz = this.output.size()) > _SIZE_LIMIT)
+				throw new JITException(String.format("BA12 %d", sz));
+			
 			// {@squirreljme.error BA0j JIT invocation is not in order.
 			// (The order that was attempted to be used; The expected order)}
 			JITCompilerOrder order = this._order;

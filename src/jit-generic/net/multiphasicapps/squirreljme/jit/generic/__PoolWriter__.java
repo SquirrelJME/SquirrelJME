@@ -187,9 +187,9 @@ class __PoolWriter__
 				__dos.writeByte(0);
 			
 			// {@squirreljme.error BA0y The constant pool entry starts at a
-			// position outside the range of 2GiB.}
+			// position outside the range of the class size limit.}
 			long ppp = __dos.size();
-			if (ppp < 0 || ppp > Integer.MAX_VALUE)
+			if (ppp < 0 || ppp > GenericClassWriter._SIZE_LIMIT)
 				throw new JITException("BA0y");
 			pos[i] = (int)ppp;
 			
@@ -272,9 +272,9 @@ class __PoolWriter__
 			__dos.writeByte(0);
 		
 		// {@squirreljme.error BA0x The constant pool table starts at a
-		// position outside the range of 2GiB.}
+		// position outside the range of the class size limit.}
 		long ctp = __dos.size();
-		if (ctp < 0 || ctp > Integer.MAX_VALUE)
+		if (ctp < 0 || ctp > GenericClassWriter._SIZE_LIMIT)
 			throw new JITException("BA0x");
 		this._poolpos = (int)ctp;
 		
@@ -286,11 +286,11 @@ class __PoolWriter__
 			
 			// if active use the given position
 			if (v >= 0)
-				__dos.writeInt(v);
+				__dos.writeShort(v);
 			
 			// Otherwise use the null entry (since it consumes no space)
 			else
-				__dos.writeInt(nulle);
+				__dos.writeShort(nulle);
 		}
 	}
 	
@@ -317,9 +317,9 @@ class __PoolWriter__
 				__dos.writeByte(0);
 			
 			// {@squirreljme.error BA0l String position is at an address
-			// greater than 2GiB.}
+			// greater than the class size limit.}
 			long at = __dos.size();
-			if (at < 0 || at > Integer.MAX_VALUE)
+			if (at < 0 || at > GenericClassWriter._SIZE_LIMIT)
 				throw new JITException("BA0l");
 			s._position = (int)at;
 			
@@ -332,16 +332,16 @@ class __PoolWriter__
 			__dos.writeByte(0);
 		
 		// {@squirreljme.error BA0v The string table starts at a position
-		// outside the range of 2GiB.}
+		// outside the range of the class size limit.}
 		long stp = __dos.size();
-		if (stp < 0 || stp > Integer.MAX_VALUE)
+		if (stp < 0 || stp > GenericClassWriter._SIZE_LIMIT)
 			throw new JITException("BA0v");
 		this._stringpos = (int)stp;
 		
 		// Write it out
 		Map<String, __String__> strings = this.strings;
 		for (__String__ s : strings.values())
-			__dos.writeInt(s._position);
+			__dos.writeShort(s._position);
 	}
 	
 	/**

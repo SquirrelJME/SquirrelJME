@@ -20,7 +20,7 @@ __exedir="$(dirname -- "$0")"
 rm -f "$$.zip"
 __jo="$JAVA_OPTIONS"
 if JAVA_OPTIONS="-Dnet.multiphasicapps.squirreljme.builder.dumptarget=true \
-	$__jo" \
+	-Dnet.multiphasicapps.squirreljme.builder.hexdump=true $__jo" \
 	"$__exedir/../build.sh" $* "$$.zip"
 then
 	# Unzip then delete the ZIP
