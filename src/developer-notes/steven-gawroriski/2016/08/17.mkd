@@ -68,4 +68,9 @@ and just use the end directory for a given namespace. However, one thing I am
 not too sure of is how large the resulting code will be after everything is
 generated. So I should likely generate the code first.
 
+## 16:34
+
+The symbols should not be equal to `String` because `String` is not equal to
+a symbol.
+
 

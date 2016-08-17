@@ -62,6 +62,10 @@ public final class GenericNamespaceWriter
 	final Object _lock =
 		this.lock;
 	
+	/** The global constant pool, for condensing entries. */
+	private final __GlobalPool__ _gpool =
+		new __GlobalPool__(this);
+	
 	/** The entry index. */
 	private final List<__Index__> _index =
 		new LinkedList<>();
