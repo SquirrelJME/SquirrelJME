@@ -61,3 +61,13 @@ Will need to solve this one also.
 
 Looks like the ELF header size is not valid.
 
+## 20:25
+
+And now it works, since I get:
+
+	qemu: uncaught target signal 4 (Illegal instruction) - core dumped
+	Illegal instruction
+
+So now I can kind of just get to generating machine code to place in the
+given binary.
+
