@@ -37,3 +37,10 @@ This also means that I will not need the null entry either.
 And after that work, these blank binaries are about 39KiB. So quite some
 savings removing pointless bytes.
 
+## 14:48
+
+Technically classes are referred to by the namespaces, so the name of the class
+is duplicated for the most part. It might be reasonable for classes to be
+unnamed in the stream where the initial bytes indicates the name of the class
+although this could complicate some things.
+
