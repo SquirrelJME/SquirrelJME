@@ -44,3 +44,28 @@ is duplicated for the most part. It might be reasonable for classes to be
 unnamed in the stream where the initial bytes indicates the name of the class
 although this could complicate some things.
 
+## 16:14
+
+As previously thought of but dropped for simplicity and individuality of
+classes. I will likely backtrack and have a shared string and constant pool
+for namespaces. There otherwise would be quite a large number of duplicated
+strings in a namespace which would essentially just wast precious space. My
+goal is to have things as small as possibel, so this space wasting is rather
+nasty.
+
+## 16:17
+
+However, I am kind of thinking about limiting everything to 65KiB. Everything
+from resources which are built-in (they would be compressed, so as long as
+the compressed data does not exceed that amount) to namespaces.
+
+## 16:20
+
+However, I should write the generated code in a way where it would be simple to
+adapt to a global constant pool. However I should write it anyway since it
+would be much more compact. I can probably also remove the streaming support
+and just use the end directory for a given namespace. However, one thing I am
+not too sure of is how large the resulting code will be after everything is
+generated. So I should likely generate the code first.
+
+
