@@ -13,3 +13,15 @@ to reduce the size (an average of 2 bytes per class) would be to make the
 super class implicit and instead sort the class entries by super class, but
 that would be rather complex to do.
 
+## 16:42
+
+Since I would like to keep the binaries below 65KiB, this give me either 13KiB
+or 45KiB for native code to be generated. Now if the entire set of stuff
+including the UI elements can fit within 65KiB, that would be quite awesome.
+As I develop the code more, I can likely make up for some code size savings.
+One thing I can have however is a global generated code storage. For every
+method where the machine code is exactly the same, use the same code. This
+would work initially where everything is a TODO but it would be less effective
+as time moves on and more of the library is implemented. So this would not
+really be practical in the long run.
+
