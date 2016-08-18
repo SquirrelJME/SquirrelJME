@@ -199,18 +199,10 @@ final class __ClassDecoder__
 			}
 			
 			// Handle methods
-			if (true)
-			{
-				System.err.println("TODO -- Handle methods.");
-				cw.methodCount(0);
-			}
-			else
-			{
-				int mcount = input.readUnsignedShort();
-				cw.methodCount(mcount);
-				for (int i = 0; i < mcount; i++)
-					throw new Error("TODO");
-			}
+			int mcount = input.readUnsignedShort();
+			cw.methodCount(mcount);
+			for (int i = 0; i < mcount; i++)
+				throw new Error("TODO");
 			
 			// End class
 			cw.endClass();
