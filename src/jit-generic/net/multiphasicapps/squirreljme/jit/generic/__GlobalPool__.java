@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 
 /**
@@ -27,13 +29,14 @@ final class __GlobalPool__
 	
 	/** Strings in the namespace. */
 	private final Map<String, __StringEntry__> _strings =
-		new HashMap<>();
+		new LinkedHashMap<>();
+	
+	/** Global constant pool. */
+	private final Map<Object, __GlobalEntry__> _entries =
+		new LinkedHashMap<>();
 	
 	/** The currently active pool. */
 	private volatile JITConstantPool _current;
-	
-	/** The next string index. */
-	private volatile int _nextstring;
 	
 	/**
 	 * Initializes the global pool.
@@ -51,6 +54,52 @@ final class __GlobalPool__
 		
 		// Set
 		this.owner = __nsw;
+	}
+	
+	/**
+	 * Since all external globals are virtually represented in the same object
+	 * mapping this performs the same work for each of them.
+	 *
+	 * @param __str Load the object as a string also?
+	 * @param __o The object to map.
+	 * @return The mapped object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	private __GlobalEntry__ __internalLoad(boolean __str, Object __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Load as a string?
+		if (__str)
+			__loadString(__o.toString());
+		
+		// Already placed?
+		Map<Object, __GlobalEntry__> entries = this._entries;
+		__GlobalEntry__ rv = entries.get(__o);
+		if (rv != null)
+			return rv;
+		
+		// Place it otherwise
+		entries.put(__o, (rv = new __GlobalEntry__(entries.size())));
+		return rv;
+	}
+	
+	/**
+	 * Loads a class that was named.
+	 *
+	 * @param __n The name of the class to load.
+	 * @return The entry for the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	__GlobalEntry__ __loadClass(ClassNameSymbol __n)
+		throws NullPointerException
+	{
+		return __internalLoad(true, __n);
 	}
 	
 	/**
@@ -75,7 +124,7 @@ final class __GlobalPool__
 			return rv;
 		
 		// Place it otherwise
-		strings.put(__s, (rv = new __StringEntry__(this._nextstring++)));
+		strings.put(__s, (rv = new __StringEntry__(strings.size())));
 		return rv;
 	}
 	

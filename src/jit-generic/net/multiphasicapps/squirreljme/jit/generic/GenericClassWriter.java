@@ -39,6 +39,9 @@ public final class GenericClassWriter
 	/** The name of the class being written. */
 	protected final ClassNameSymbol classname;
 	
+	/** The class name index. */
+	protected final int classnamedx;
+	
 	/** The current order. */
 	private volatile JITCompilerOrder _order =
 		JITCompilerOrder.FIRST;
@@ -60,9 +63,6 @@ public final class GenericClassWriter
 	
 	/** The pointer where interfaces are stored. */
 	private volatile int _ifacepos;
-	
-	/** The index in the constant pool containing the current class name. */
-	private volatile int _nameindex;
 	
 	/** The number of fields available. */
 	private volatile int _fieldcount =
@@ -99,6 +99,9 @@ public final class GenericClassWriter
 		
 		// Set
 		this.classname = __cn;
+		
+		// Get the index for the class name also
+		this.classnamedx = this._gpool.__loadClass(__cn)._index;
 	}
 	
 	/**
@@ -152,7 +155,7 @@ public final class GenericClassWriter
 						dos.writeByte(0);
 					
 					// Current class name
-					dos.writeShort(this._nameindex);
+					dos.writeShort(this.classnamedx);
 					
 					// The super class name
 					dos.writeShort(this._scpooldx);
@@ -176,6 +179,9 @@ public final class GenericClassWriter
 					System.err.println("TODO -- Write methods at end.");
 					dos.writeShort(0);	// size
 					dos.writeShort(0);	// offset
+					
+					// Reserved to make the end class magic # aligned
+					dos.writeShort(0);
 					
 					// End with magic number
 					dos.writeInt(GenericBlob.END_CLASS_MAGIC_NUMBER);
@@ -223,9 +229,6 @@ public final class GenericClassWriter
 			// Just set the pool
 			this._xpool = __pool;
 			this._gpool.__setCurrent(__pool);
-			
-			// Set the name index
-			this._nameindex = __cndx;
 		}
 	}
 	
@@ -301,14 +304,11 @@ public final class GenericClassWriter
 				this._ifacepos = (int)pos;
 			
 				// Write
+				__GlobalPool__ gpool = this._gpool;
 				int n = __ins.length;
 				this._ifacecount = n;
 				for (int i = 0; i < n; i++)
-				{
-					if (true)
-						throw new Error("TODO");
-					dos.writeShort(__dxs[i]);
-				}
+					dos.writeShort(gpool.__loadClass(__ins[i])._index);
 			}
 			
 			// {@squirreljme.error BA10 Failed to write the interface table.}
@@ -353,9 +353,7 @@ public final class GenericClassWriter
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
 			// Set
-			if (true)
-				throw new Error("TODO");
-			this._scpooldx = __dx;
+			this._scpooldx = this._gpool.__loadClass(__cn)._index;
 		}
 	}
 	

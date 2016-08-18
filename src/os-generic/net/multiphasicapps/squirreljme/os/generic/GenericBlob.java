@@ -83,7 +83,7 @@ public class GenericBlob
 	
 	/** End of class magic number. */
 	public static final int END_CLASS_MAGIC_NUMBER =
-		0xD9E6F0EA;
+		0xC6FAF2FD;
 	
 	/** The blob data. */
 	protected final RandomAccessData data;
