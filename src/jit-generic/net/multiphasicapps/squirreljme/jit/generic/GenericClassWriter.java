@@ -353,7 +353,8 @@ public final class GenericClassWriter
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
 			// Set
-			this._scpooldx = this._gpool.__loadClass(__cn)._index;
+			this._scpooldx = (__cn == null ? 0 :
+				this._gpool.__loadClass(__cn)._index);
 		}
 	}
 	

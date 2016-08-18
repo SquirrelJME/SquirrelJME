@@ -18,6 +18,7 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
+import net.multiphasicapps.squirreljme.os.generic.ConstantTagType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
 
 /**
@@ -54,6 +55,9 @@ final class __GlobalPool__
 	/** The constant pool count. */
 	volatile int _poolcount;
 	
+	/** The constant pool tag table. */
+	volatile int _tagpos;
+	
 	/**
 	 * Initializes the global pool.
 	 *
@@ -70,6 +74,9 @@ final class __GlobalPool__
 		
 		// Set
 		this.owner = __nsw;
+		
+		// The first constant is magically null (for super class)
+		this._entries.put(null, new __GlobalEntry__(0));
 	}
 	
 	/**
@@ -218,15 +225,42 @@ final class __GlobalPool__
 		int cn = entries.size();
 		this._poolcount = cn;
 		int[] cpos = new int[cn];
+		int[] tags = new int[cn];
 		int at = 0;
 		for (Map.Entry<Object, __GlobalEntry__> e : entries.entrySet())
 		{
+			// Get
+			Object data = e.getKey();
+			
 			// Align and position
 			owner.__align();
+			tags[at] = (data == null ? 0 :
+				ConstantTagType.ofClass(data.getClass()).ordinal());
 			cpos[at++] = (int)__dos.size();
 			
-			throw new Error("TODO");
+			// No data to write
+			if (data == null)
+				;
+			
+			// A simple and single string reference
+			else if ((data instanceof ClassNameSymbol) ||
+				(data instanceof String))
+				__dos.writeShort(__loadString(data.toString())._index);
+			
+			// {@squirreljme.error BA19 Do not know how to record an object
+			// of the specified type. (The data class type)}
+			else
+				throw new JITException(String.format("BA19 %s",
+					data.getClass()));
 		}
+		
+		// Align
+		owner.__align();
+		
+		// Write the tag table
+		this._tagpos = (int)__dos.size();
+		for (int i = 0; i < cn; i++)
+			__dos.writeByte(tags[i]);
 		
 		// Align
 		owner.__align();

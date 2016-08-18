@@ -249,10 +249,15 @@ public final class GenericNamespaceWriter
 				
 					// Write magic identifier
 					dos.writeInt(GenericBlob.CENTRAL_DIRECTORY_MAGIC_NUMBER);
-				
-					// Record the index
+					
+					// {@squirreljme.error BA1a Only 65,536 entries may be
+					// within a namespace.}
 					List<__Index__> index = this._index;
 					int n = index.size();
+					if (n > 65535)
+						throw new JITException("BA1a");
+					
+					// Record the index
 					int ns = GenericBlob.NAMESPACE_SHIFT;
 					for (__Index__ i : index)
 					{
@@ -280,14 +285,15 @@ public final class GenericNamespaceWriter
 					}
 					
 					// Entry count
-					dos.writeInt(n);
+					dos.writeShort(n);
 					
 					// String table base and table positions
 					dos.writeShort(gpool._stringpos >>> ns);
 					dos.writeShort(gpool._stringcount);
 					
-					// Constant pool base and table positions
+					// Constant pool base, table positions, and tag set
 					dos.writeShort(gpool._poolpos >>> ns);
+					dos.writeShort(gpool._tagpos >>> ns);
 					dos.writeShort(gpool._poolcount);
 					
 					// End magic number
