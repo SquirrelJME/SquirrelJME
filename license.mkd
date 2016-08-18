@@ -30,6 +30,26 @@ accepted.
 Additionally, if the **GNU GPLv3** and **CC-BY-SA 4.0** are not desirable a
 proprietary license may be purchased for a negotiable fee.
 
+Note that there is no linking exception to the **GNU GPLv3**, this is because:
+
+ * SquirrelJME is intended to be installed on a device.
+ * Although SquirrelJME is a run-time, any code running on it is dynamically
+   linked at run-time.
+   * As long as a linked program (in this case a snapshot of the system memory)
+     is not distributed, it is perfectly acceptable to violate the GPL locally
+     when not distributed.
+ * SquirrelJME will parse the GPLv3-incompatible JARs to produce native code.
+   * The compiler of the license does not _infect_ the program being compiled.
+ * Each JAR that is natively compiled is standalone and includes no other code
+   except the code that originates from that JAR.
+   * If a 3rd party compiler is used, then this statement might not apply.
+ * Cached binaries are not intended to be distributed, if a JAR has been
+   modified then SquirrelJME will automatically recompile the given binary.
+   * This allows the cached binary format to be modified freely without causing
+     compatibility issues. This is easier for development and makes it so that
+     design flaws can be fixed and not plague the project for decades.
+   * If supporting CPU features are detected they may be used.
+
 ## GNU General Public License v3 or Later
 
 		                GNU GENERAL PUBLIC LICENSE
