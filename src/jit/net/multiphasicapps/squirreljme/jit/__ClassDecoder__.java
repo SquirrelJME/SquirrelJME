@@ -15,6 +15,7 @@ import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 
 /**
  * This performs the decoding of the class file format.
@@ -51,6 +52,9 @@ final class __ClassDecoder__
 	
 	/** The constant pool of the class. */
 	private volatile JITConstantPool _pool;
+	
+	/** Class flags. */
+	private volatile JITClassFlags _flags;
 	
 	/** The name of this class. */
 	private volatile ClassNameSymbol _classname;
@@ -127,6 +131,7 @@ final class __ClassDecoder__
 		
 		// Read the flags for this class
 		JITClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
+		this._flags = cf;
 		
 		// Read class name
 		int clnamedx = input.readUnsignedShort();
@@ -202,7 +207,7 @@ final class __ClassDecoder__
 			int mcount = input.readUnsignedShort();
 			cw.methodCount(mcount);
 			for (int i = 0; i < mcount; i++)
-				throw new Error("TODO");
+				__singleMethod(input);
 			
 			// End class
 			cw.endClass();
@@ -248,6 +253,28 @@ final class __ClassDecoder__
 		
 		// Not rewritten, use original
 		return __cn;
+	}
+	
+	/**
+	 * Handles a single method.
+	 *
+	 * @param __di The data input stream for the class file.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	private void __singleMethod(DataInputStream __di)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__di == null)
+			throw new NullPointerException("NARG");
+		
+		// Read the flags for this method
+		JITMethodFlags mf = __FlagDecoder__.__method(this._flags,
+			input.readUnsignedShort());
+		
+		throw new Error("TODO");
 	}
 }
 
