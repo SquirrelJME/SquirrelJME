@@ -207,6 +207,11 @@ final class __ClassDecoder__
 			for (int i = 0; i < mcount; i++)
 				__singleMethod(input);
 			
+			// Handle class attributes
+			int na = input.readUnsignedShort();
+			for (int i = 0; i < na; i++)
+				__singleAttribute(input, __AttributeFor__.CLASS);
+			
 			// End class
 			cw.endClass();
 		}
@@ -254,6 +259,96 @@ final class __ClassDecoder__
 	}
 	
 	/**
+	 * Handles a single attribute.
+	 *
+	 * @param __di The input stream.
+	 * @param __af The type of thing this attribute is for.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	private void __singleAttribute(DataInputStream __di, __AttributeFor__ __af)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__di == null || __af == null)
+			throw new NullPointerException("NARG");
+		
+		// Read the attribute name and length
+		JITConstantPool pool = this._pool;
+		JITConstantEntry eaname = pool.get(__di.readUnsignedShort());
+		String aname = eaname.get(false, String.class);
+		
+		// {@squirreljme.error ED19 The length of the attribute exceeds
+		// 2GiB.}
+		int len = __di.readInt();
+		if (len < 0)
+			throw new JITException("ED19");
+		
+		// Depends on the 
+		switch (__af)
+		{
+				// Classes
+			case CLASS:
+				// All class attributes are ignored
+				break;
+			
+				// Fields
+			case FIELD:
+				switch (aname)
+				{
+						// Constant value
+					case "ConstantValue":
+						throw new Error("TODO");
+					
+						// Unknown
+					default:
+						break;
+				}
+				break;
+			
+				// Methods
+			case METHOD:
+				switch (aname)
+				{
+						// The code attribute
+					case "Code":
+						throw new Error("TODO");
+					
+						// Unknown
+					default:
+						break;
+				}
+				break;
+			
+				// Code
+			case CODE:
+				switch (aname)
+				{
+						// The stack map table
+					case "StackMap":
+					case "StackMapTable":
+						throw new Error("TODO");
+					
+						// Unknown
+					default:
+						break;
+				}
+				break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+		
+		// {@squirreljme.error ED01 Reached EOF while skipping attribute
+		// data.}
+		for (int i = 0; i < len; i++)
+			if (__di.read() < 0)
+				throw new JITException("ED01");
+	}
+	
+	/**
 	 * Handles a single field.
 	 *
 	 * @param __di The data input stream for the class file.
@@ -282,6 +377,11 @@ final class __ClassDecoder__
 		JITConstantEntry etype = pool.get(input.readUnsignedShort());
 		FieldSymbol type = FieldSymbol.of(
 			etype.<String>get(true, String.class));
+		
+		// Need to handle attributes
+		int na = input.readUnsignedShort();
+		for (int i = 0; i < na; i++)
+			__singleAttribute(input, __AttributeFor__.FIELD);
 		
 		throw new Error("TODO");
 	}
@@ -315,6 +415,11 @@ final class __ClassDecoder__
 		JITConstantEntry etype = pool.get(input.readUnsignedShort());
 		MethodSymbol type = MethodSymbol.of(
 			etype.<String>get(true, String.class));
+		
+		// Handle attributes
+		int na = input.readUnsignedShort();
+		for (int i = 0; i < na; i++)
+			__singleAttribute(input, __AttributeFor__.METHOD);
 		
 		throw new Error("TODO");
 	}
