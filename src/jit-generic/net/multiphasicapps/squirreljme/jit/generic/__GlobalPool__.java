@@ -180,7 +180,84 @@ final class __GlobalPool__
 		if (__dos == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Align
+		GenericNamespaceWriter owner = this.owner;
+		owner.__align();
+		
+		// Write strings
+		__writeStrings(__dos);
+		
+		// Align
+		owner.__align();
+		
+		// Write constants
+		__writeConstants(__dos);
+	}
+	
+	/**
+	 * Writes the constant data.
+	 *
+	 * @param __dos The target stream.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	private void __writeConstants(ExtendedDataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+			
+		// Write the constant data
+		Map<Object, __GlobalEntry__> entries = this._entries;
+		int cn = entries.size();
+		this._poolcount = cn;
+		int[] cpos = new int[cn];
+		for (Map.Entry<Object, __GlobalEntry__> e : entries.entrySet())
+			throw new Error("TODO");
+		
+		// Align
+		GenericNamespaceWriter owner = this.owner;
+		owner.__align();
+		
+		// Write the constant pool table
+		this._poolpos = (int)__dos.size();
+		for (int i = 0; i < cn; i++)
+			__dos.writeInt(cpos[i]);
+	}
+	
+	/**
+	 * Writes the string data.
+	 *
+	 * @param __dos The target stream.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	private void __writeStrings(ExtendedDataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		// Write the string data
+		Map<String, __StringEntry__> strings = this._strings;
+		int sn = strings.size();
+		this._stringcount = sn;
+		int[] spos = new int[sn];
+		for (Map.Entry<String, __StringEntry__> e : strings.entrySet())
+			throw new Error("TODO");
+		
+		// Align
+		GenericNamespaceWriter owner = this.owner;
+		owner.__align();
+		
+		// Write the string table
+		this._stringpos = (int)__dos.size();
+		for (int i = 0; i < sn; i++)
+			__dos.writeInt(spos[i]);
 	}
 }
 
