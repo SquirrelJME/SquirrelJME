@@ -5,3 +5,11 @@
 Ok so my squashed down data is done, I just need to start implementing the
 code generator.
 
+## 16:38
+
+Currently 20KiB, not writing the end of class magic number gives me 19KiB. This
+is likely the lowest I can go without compressing resources. One thing I can do
+to reduce the size (an average of 2 bytes per class) would be to make the
+super class implicit and instead sort the class entries by super class, but
+that would be rather complex to do.
+
