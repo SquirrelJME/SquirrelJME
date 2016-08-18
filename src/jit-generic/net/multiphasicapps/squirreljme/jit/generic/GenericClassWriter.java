@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
@@ -45,6 +47,14 @@ public final class GenericClassWriter
 	
 	/** The class name index. */
 	protected final int classnamedx;
+	
+	/** Fields in this class. */
+	private final List<__Field__> _fields =
+		new ArrayList<>();
+	
+	/** Methods in this class. */
+	private final List<__Method__> _methods =
+		new ArrayList<>();
 	
 	/** The current order. */
 	private volatile JITCompilerOrder _order =
@@ -257,7 +267,15 @@ public final class GenericClassWriter
 	public void endField()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Increase field number so the true end can be detected
+			this._writtenfields++;
+		
+			// Check order
+			__order(JITCompilerOrder.END_FIELD);
+		}
 	}
 	
 	/**
@@ -273,7 +291,11 @@ public final class GenericClassWriter
 		if (__f == null || __n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

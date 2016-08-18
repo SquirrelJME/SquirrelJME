@@ -35,3 +35,9 @@ chills of concentration.
 It feels like I am almost at the top of the first hill with the mountain
 faded in the distance.
 
+## 19:52
+
+I can store the constant values of fields in the constant pool so that
+constants are shared across differing classes in an namespace (such an event
+may occur, especially for popular numbers).
+
