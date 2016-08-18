@@ -239,6 +239,13 @@ public final class GenericNamespaceWriter
 				{
 					// Align
 					__align();
+					
+					// Write the global string table and constant pool
+					if (true)
+						throw new Error("TODO");
+					
+					// Align
+					__align();
 				
 					// Write magic identifier
 					dos.writeInt(GenericBlob.CENTRAL_DIRECTORY_MAGIC_NUMBER);

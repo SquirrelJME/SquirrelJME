@@ -47,19 +47,7 @@ public final class GenericClassWriter
 	private volatile boolean _closed;
 	
 	/** The constant pool to use. */
-	private volatile JITConstantPool _pool;
-	
-	/** The string table position. */
-	private volatile int _stringpos;
-	
-	/** The number of strings in the table. */
-	private volatile int _stringcount;
-	
-	/** The constant pool table position. */
-	private volatile int _poolpos;
-	
-	/** The number of entries in the constant pool. */
-	private volatile int _poolcount;
+	private volatile JITConstantPool _xpool;
 	
 	/** Class flags, written later. */
 	private volatile JITClassFlags _flags;
@@ -233,7 +221,7 @@ public final class GenericClassWriter
 			__order(JITCompilerOrder.SET_CONSTANT_POOL);
 			
 			// Just set the pool
-			this._pool = __pool;
+			this._xpool = __pool;
 			this._gpool.__setCurrent(__pool);
 			
 			// Set the name index
@@ -316,7 +304,11 @@ public final class GenericClassWriter
 				int n = __ins.length;
 				this._ifacecount = n;
 				for (int i = 0; i < n; i++)
+				{
+					if (true)
+						throw new Error("TODO");
 					dos.writeShort(__dxs[i]);
+				}
 			}
 			
 			// {@squirreljme.error BA10 Failed to write the interface table.}
@@ -361,6 +353,8 @@ public final class GenericClassWriter
 			__order(JITCompilerOrder.SUPER_CLASS_NAME);
 			
 			// Set
+			if (true)
+				throw new Error("TODO");
 			this._scpooldx = __dx;
 		}
 	}
