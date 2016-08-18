@@ -13,9 +13,13 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.IOException;
 import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlag;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
@@ -243,6 +247,33 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.END_CLASS);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/18
+	 */
+	@Override
+	public void endField()
+		throws JITException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/18
+	 */
+	@Override
+	public void field(JITFieldFlags __f, IdentifierSymbol __n,
+		int __ni, FieldSymbol __t, int __ti, Object __cv)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__f == null || __n == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

@@ -92,6 +92,17 @@ public final class JITConstantEntry
 	}
 	
 	/**
+	 * Returns the constant pool entry index.
+	 *
+	 * @return The index of this entry in the constant pool.
+	 * @since 2016/08/18
+	 */
+	public int index()
+	{
+		return this.index;
+	}
+	
+	/**
 	 * Has this entry been activated?
 	 *
 	 * @return {@code true} if it has been activated.

@@ -36,8 +36,8 @@ public enum JITCompilerOrder
 	/** The number of fields. */
 	FIELD_COUNT,
 	
-	/** Access flags for a field. */
-	FIELD_FLAGS,
+	/** Fields are so simple all their information is passed at once. */
+	FIELD_INFORMATION,
 	
 	/** End of field. */
 	END_FIELD,
@@ -45,8 +45,11 @@ public enum JITCompilerOrder
 	/** The number of methods. */
 	METHOD_COUNT,
 	
-	/** Access flags for a method. */
-	METHOD_FLAGS,
+	/** Basic information on a method. */
+	METHOD_INFORMATION,
+	
+	/** The byte code which makes up a method. */
+	METHOD_CODE,
 	
 	/** End of method. */
 	END_METHOD,
@@ -91,11 +94,11 @@ public enum JITCompilerOrder
 		
 		// If not enough fields were written then go back to wanting flags
 		else if (this == END_FIELD && __wf < __nf)
-			return FIELD_FLAGS;
+			return FIELD_INFORMATION;
 		
 		// The same goes for methods
 		else if (this == END_METHOD && __wm < __nm)
-			return METHOD_FLAGS;
+			return METHOD_INFORMATION;
 		
 		// More orderings?
 		int i = ordinal() + 1;

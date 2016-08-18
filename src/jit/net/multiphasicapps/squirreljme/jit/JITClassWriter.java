@@ -11,8 +11,13 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 
 /**
  * This is used to write class details on output.
@@ -61,6 +66,33 @@ public interface JITClassWriter
 	 */
 	public abstract void endClass()
 		throws JITException;
+	
+	/**
+	 * Ends a field.
+	 *
+	 * @throws JITException If the field could not be ended.
+	 * @since 2016/08/18
+	 */
+	public abstract void endField()
+		throws JITException;
+	
+	/**
+	 * Specifies that a field is to be added to the class.
+	 *
+	 * @param __f The field flags.
+	 * @param __n The name of the field.
+	 * @param __ni The constant pool index of the name.
+	 * @param __t The type of the field.
+	 * @param __ti The constant pool index of the type.
+	 * @param __cv The constant value of the field, may be {@code null} if
+	 * there is no value set.
+	 * @throws JITException If the field could not be recorded.
+	 * @throws NullPointerException On null arguments, except for {@code __cv}.
+	 * @since 2016/08/18
+	 */
+	public abstract void field(JITFieldFlags __f, IdentifierSymbol __n,
+		int __ni, FieldSymbol __t, int __ti, Object __cv)
+		throws JITException, NullPointerException;
 	
 	/**
 	 * Sets the number of fields to use within a class.

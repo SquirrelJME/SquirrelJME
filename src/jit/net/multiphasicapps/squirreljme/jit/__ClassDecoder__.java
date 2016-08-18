@@ -65,6 +65,9 @@ final class __ClassDecoder__
 	/** The name of this class. */
 	private volatile ClassNameSymbol _classname;
 	
+	/** Field constant value. */
+	private volatile Object _fieldcv;
+	
 	/** JIT access. */
 	final JIT _jit;
 	
@@ -199,18 +202,18 @@ final class __ClassDecoder__
 			int fcount = input.readUnsignedShort();
 			cw.fieldCount(fcount);
 			for (int i = 0; i < fcount; i++)
-				__singleField(input);
+				__singleField(cw, input);
 			
 			// Handle methods
 			int mcount = input.readUnsignedShort();
 			cw.methodCount(mcount);
 			for (int i = 0; i < mcount; i++)
-				__singleMethod(input);
+				__singleMethod(cw, input);
 			
 			// Handle class attributes
 			int na = input.readUnsignedShort();
 			for (int i = 0; i < na; i++)
-				__singleAttribute(input, __AttributeFor__.CLASS);
+				__singleAttribute(cw, input, __AttributeFor__.CLASS);
 			
 			// End class
 			cw.endClass();
@@ -261,17 +264,19 @@ final class __ClassDecoder__
 	/**
 	 * Handles a single attribute.
 	 *
+	 * @param __cw The class writer to write to.
 	 * @param __di The input stream.
 	 * @param __af The type of thing this attribute is for.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	private void __singleAttribute(DataInputStream __di, __AttributeFor__ __af)
+	private void __singleAttribute(JITClassWriter __cw, DataInputStream __di,
+		__AttributeFor__ __af)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__di == null || __af == null)
+		if (__cw == null || __di == null || __af == null)
 			throw new NullPointerException("NARG");
 		
 		// Read the attribute name and length
@@ -351,16 +356,17 @@ final class __ClassDecoder__
 	/**
 	 * Handles a single field.
 	 *
+	 * @param __cw The class writer to write to.
 	 * @param __di The data input stream for the class file.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	private void __singleField(DataInputStream __di)
+	private void __singleField(JITClassWriter __cw, DataInputStream __di)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__di == null)
+		if (__cw == null || __di == null)
 			throw new NullPointerException("NARG");
 		
 		// Read the flags for this field
@@ -369,36 +375,43 @@ final class __ClassDecoder__
 		
 		// Read the name
 		JITConstantPool pool = this._pool;
-		JITConstantEntry ename = pool.get(input.readUnsignedShort());
+		int ndx;
+		JITConstantEntry ename = pool.get((ndx = input.readUnsignedShort()));
 		IdentifierSymbol name = IdentifierSymbol.of(
 			ename.<String>get(true, String.class));
 		
 		// And the type
-		JITConstantEntry etype = pool.get(input.readUnsignedShort());
+		int tdx;
+		JITConstantEntry etype = pool.get((tdx = input.readUnsignedShort()));
 		FieldSymbol type = FieldSymbol.of(
 			etype.<String>get(true, String.class));
+		
+		// Clear these before handling attributes
+		this._fieldcv = null;
 		
 		// Need to handle attributes
 		int na = input.readUnsignedShort();
 		for (int i = 0; i < na; i++)
-			__singleAttribute(input, __AttributeFor__.FIELD);
+			__singleAttribute(__cw, input, __AttributeFor__.FIELD);
 		
-		throw new Error("TODO");
+		// Register the field
+		__cw.field(mf, name, ndx, type, tdx, this._fieldcv);
 	}
 	
 	/**
 	 * Handles a single method.
 	 *
+	 * @param __cw The class writer to write to.
 	 * @param __di The data input stream for the class file.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	private void __singleMethod(DataInputStream __di)
+	private void __singleMethod(JITClassWriter __cw, DataInputStream __di)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__di == null)
+		if (__cw == null || __di == null)
 			throw new NullPointerException("NARG");
 		
 		// Read the flags for this method
@@ -419,7 +432,7 @@ final class __ClassDecoder__
 		// Handle attributes
 		int na = input.readUnsignedShort();
 		for (int i = 0; i < na; i++)
-			__singleAttribute(input, __AttributeFor__.METHOD);
+			__singleAttribute(__cw, input, __AttributeFor__.METHOD);
 		
 		throw new Error("TODO");
 	}
