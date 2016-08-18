@@ -49,6 +49,8 @@ Note that there is no linking exception to the **GNU GPLv3**, this is because:
      compatibility issues. This is easier for development and makes it so that
      design flaws can be fixed and not plague the project for decades.
    * If supporting CPU features are detected they may be used.
+ * SquirrelJME does not use JNI, so there will never be a means for native code
+   to be prelinked into a binary and distributed.
 
 ## GNU General Public License v3 or Later
 
