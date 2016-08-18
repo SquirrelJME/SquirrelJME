@@ -14,10 +14,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
-import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
 
 /**
  * This is the global constant pool which is shared among all classes within
@@ -208,23 +209,33 @@ final class __GlobalPool__
 		// Check
 		if (__dos == null)
 			throw new NullPointerException("NARG");
-			
+		
+		// Will constantly align data
+		GenericNamespaceWriter owner = this.owner;
+		
 		// Write the constant data
 		Map<Object, __GlobalEntry__> entries = this._entries;
 		int cn = entries.size();
 		this._poolcount = cn;
 		int[] cpos = new int[cn];
+		int at = 0;
 		for (Map.Entry<Object, __GlobalEntry__> e : entries.entrySet())
+		{
+			// Align and position
+			owner.__align();
+			cpos[at++] = (int)__dos.size();
+			
 			throw new Error("TODO");
+		}
 		
 		// Align
-		GenericNamespaceWriter owner = this.owner;
 		owner.__align();
 		
 		// Write the constant pool table
 		this._poolpos = (int)__dos.size();
+		int ns = GenericBlob.NAMESPACE_SHIFT;
 		for (int i = 0; i < cn; i++)
-			__dos.writeInt(cpos[i]);
+			__dos.writeShort(cpos[i] >>> ns);
 	}
 	
 	/**
@@ -242,22 +253,33 @@ final class __GlobalPool__
 		if (__dos == null)
 			throw new NullPointerException("NARG");
 		
+		// Needed to align
+		GenericNamespaceWriter owner = this.owner;
+		
 		// Write the string data
 		Map<String, __StringEntry__> strings = this._strings;
 		int sn = strings.size();
 		this._stringcount = sn;
 		int[] spos = new int[sn];
+		int at = 0;
 		for (Map.Entry<String, __StringEntry__> e : strings.entrySet())
-			throw new Error("TODO");
+		{
+			// Align and position
+			owner.__align();
+			spos[at++] = (int)__dos.size();
+			
+			// Write string data
+			owner.__writeString(__dos, 0, e.getKey());
+		}
 		
 		// Align
-		GenericNamespaceWriter owner = this.owner;
 		owner.__align();
 		
 		// Write the string table
 		this._stringpos = (int)__dos.size();
+		int ns = GenericBlob.NAMESPACE_SHIFT;
 		for (int i = 0; i < sn; i++)
-			__dos.writeInt(spos[i]);
+			__dos.writeShort(spos[i] >>> ns);
 	}
 }
 

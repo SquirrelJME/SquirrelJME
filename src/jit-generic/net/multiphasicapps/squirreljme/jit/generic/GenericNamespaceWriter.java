@@ -243,8 +243,6 @@ public final class GenericNamespaceWriter
 					// Write the global string table and constant pool
 					__GlobalPool__ gpool = this._gpool;
 					gpool.__write(dos);
-					if (true)
-						throw new Error("TODO");
 					
 					// Align
 					__align();
@@ -255,6 +253,7 @@ public final class GenericNamespaceWriter
 					// Record the index
 					List<__Index__> index = this._index;
 					int n = index.size();
+					int ns = GenericBlob.NAMESPACE_SHIFT;
 					for (__Index__ i : index)
 					{
 						// Get upper and lower sizes
@@ -271,8 +270,7 @@ public final class GenericNamespaceWriter
 						
 						// The position and size
 						int xpos;
-						dos.writeShort((xpos = i._datapos) >>>
-							GenericBlob.NAMESPACE_SHIFT);
+						dos.writeShort((xpos = i._datapos) >>> ns);
 						dos.writeShort(ups);
 						
 						// {@squirreljme.error BA15 The position is not aligned
@@ -285,16 +283,21 @@ public final class GenericNamespaceWriter
 					dos.writeInt(n);
 					
 					// String table base and table positions
-					dos.writeInt(gpool._stringpos);
+					dos.writeShort(gpool._stringpos >>> ns);
 					dos.writeShort(gpool._stringcount);
 					
 					// Constant pool base and table positions
+					dos.writeShort(gpool._poolpos >>> ns);
 					dos.writeShort(gpool._poolcount);
-					dos.writeInt(gpool._poolpos);
 					
 					// End magic number
 					dos.writeInt(GenericBlob.
 						END_CENTRAL_DIRECTORY_MAGIC_NUMBER);
+					
+					// {@squirreljme.error BA18 The namespace exceeds the
+					// maximum permitted size of a namespace.}
+					if (dos.size() > GenericBlob.MAX_ENTRY_SIZE)
+						throw new JITException("BA18");
 				}
 				
 				// {@squirreljme.error BA0m Failed to write the end of the
