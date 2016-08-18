@@ -52,6 +52,9 @@ Note that there is no linking exception to the **GNU GPLv3**, this is because:
  * SquirrelJME does not use JNI, so there will never be a means for native code
    to be prelinked into a binary and distributed.
 
+If SquirrelJME is distributed within a distribution then it is **highly**
+recommended that the source code is distributed alongside the binary.
+
 ## GNU General Public License v3 or Later
 
 		                GNU GENERAL PUBLIC LICENSE
