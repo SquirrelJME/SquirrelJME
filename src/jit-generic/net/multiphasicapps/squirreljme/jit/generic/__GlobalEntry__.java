@@ -20,6 +20,9 @@ class __GlobalEntry__
 	/** The index of this entry. */
 	final int _index;
 	
+	/** The position of the entry. */
+	volatile int _pos;
+	
 	/**
 	 * Initializes the global entry.
 	 *

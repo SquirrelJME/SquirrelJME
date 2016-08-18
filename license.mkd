@@ -36,8 +36,7 @@ Note that there is no linking exception to the **GNU GPLv3**, this is because:
  * Although SquirrelJME is a run-time, any code running on it is dynamically
    linked at run-time.
    * As long as a linked program (in this case a snapshot of the system memory)
-     is not distributed, it is perfectly acceptable to violate the GPL locally
-     when not distributed.
+     is not distributed, the GPL permits local modifications (such as linking).
  * SquirrelJME will parse the GPLv3-incompatible JARs to produce native code.
    * The compiler of the license does not _infect_ the program being compiled.
  * Each JAR that is natively compiled is standalone and includes no other code
