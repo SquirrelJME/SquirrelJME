@@ -241,6 +241,8 @@ public final class GenericNamespaceWriter
 					__align();
 					
 					// Write the global string table and constant pool
+					__GlobalPool__ gpool = this._gpool;
+					gpool.__write(dos);
 					if (true)
 						throw new Error("TODO");
 					
@@ -278,9 +280,19 @@ public final class GenericNamespaceWriter
 						if (0 != (xpos & GenericBlob.ALIGN_MASK))
 							throw new JITException("BA15");
 					}
-				
-					// Record the count and magic
+					
+					// Entry count
 					dos.writeInt(n);
+					
+					// String table base and table positions
+					dos.writeInt(gpool._stringpos);
+					dos.writeShort(gpool._stringcount);
+					
+					// Constant pool base and table positions
+					dos.writeShort(gpool._poolcount);
+					dos.writeInt(gpool._poolpos);
+					
+					// End magic number
 					dos.writeInt(GenericBlob.
 						END_CENTRAL_DIRECTORY_MAGIC_NUMBER);
 				}

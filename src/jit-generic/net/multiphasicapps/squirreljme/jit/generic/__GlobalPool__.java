@@ -10,11 +10,14 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
  * This is the global constant pool which is shared among all classes within
@@ -37,6 +40,18 @@ final class __GlobalPool__
 	
 	/** The currently active pool. */
 	private volatile JITConstantPool _current;
+	
+	/** The string table position. */
+	volatile int _stringpos;
+	
+	/** The string table count. */
+	volatile int _stringcount;
+	
+	/** The constant pool position. */
+	volatile int _poolpos;
+	
+	/** The constant pool count. */
+	volatile int _poolcount;
 	
 	/**
 	 * Initializes the global pool.
@@ -83,8 +98,14 @@ final class __GlobalPool__
 		if (rv != null)
 			return rv;
 		
+		// {@squirreljme.error BA16 The number of constant pool entries exceeds
+		// 65,536.}
+		int sz = entries.size();
+		if (sz >= 65535)
+			throw new JITException("BA16");
+		
 		// Place it otherwise
-		entries.put(__o, (rv = new __GlobalEntry__(entries.size())));
+		entries.put(__o, (rv = new __GlobalEntry__(sz)));
 		return rv;
 	}
 	
@@ -123,8 +144,13 @@ final class __GlobalPool__
 		if (rv != null)
 			return rv;
 		
+		// {@squirreljme.error BA17 The number of strings exceeds 65,536.}
+		int sz = strings.size();
+		if (sz >= 65535)
+			throw new JITException("BA17");
+		
 		// Place it otherwise
-		strings.put(__s, (rv = new __StringEntry__(strings.size())));
+		strings.put(__s, (rv = new __StringEntry__(sz)));
 		return rv;
 	}
 	
@@ -137,6 +163,24 @@ final class __GlobalPool__
 	void __setCurrent(JITConstantPool __pool)
 	{
 		this._current = __pool;
+	}
+	
+	/**
+	 * Writes the string table and the constant pool table.
+	 *
+	 * @param __dos The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	void __write(ExtendedDataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
