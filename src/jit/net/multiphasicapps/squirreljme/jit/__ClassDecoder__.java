@@ -13,8 +13,14 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITFieldFlag;
+import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.JITMethodFlag;
 import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 
 /**
@@ -190,18 +196,10 @@ final class __ClassDecoder__
 			cw.interfaceClasses(ifaces, ifdxs);
 			
 			// Handle fields
-			if (true)
-			{
-				System.err.println("TODO -- Handle fields.");
-				cw.fieldCount(0);
-			}
-			else
-			{
-				int fcount = input.readUnsignedShort();
-				cw.fieldCount(fcount);
-				for (int i = 0; i < fcount; i++)
-					throw new Error("TODO");
-			}
+			int fcount = input.readUnsignedShort();
+			cw.fieldCount(fcount);
+			for (int i = 0; i < fcount; i++)
+				__singleField(input);
 			
 			// Handle methods
 			int mcount = input.readUnsignedShort();
@@ -256,6 +254,39 @@ final class __ClassDecoder__
 	}
 	
 	/**
+	 * Handles a single field.
+	 *
+	 * @param __di The data input stream for the class file.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	private void __singleField(DataInputStream __di)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__di == null)
+			throw new NullPointerException("NARG");
+		
+		// Read the flags for this field
+		JITFieldFlags mf = __FlagDecoder__.__field(this._flags,
+			input.readUnsignedShort());
+		
+		// Read the name
+		JITConstantPool pool = this._pool;
+		JITConstantEntry ename = pool.get(input.readUnsignedShort());
+		IdentifierSymbol name = IdentifierSymbol.of(
+			ename.<String>get(true, String.class));
+		
+		// And the type
+		JITConstantEntry etype = pool.get(input.readUnsignedShort());
+		FieldSymbol type = FieldSymbol.of(
+			etype.<String>get(true, String.class));
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Handles a single method.
 	 *
 	 * @param __di The data input stream for the class file.
@@ -273,6 +304,17 @@ final class __ClassDecoder__
 		// Read the flags for this method
 		JITMethodFlags mf = __FlagDecoder__.__method(this._flags,
 			input.readUnsignedShort());
+		
+		// Read the method name
+		JITConstantPool pool = this._pool;
+		JITConstantEntry ename = pool.get(input.readUnsignedShort());
+		IdentifierSymbol name = IdentifierSymbol.of(
+			ename.<String>get(true, String.class));
+		
+		// And the type
+		JITConstantEntry etype = pool.get(input.readUnsignedShort());
+		MethodSymbol type = MethodSymbol.of(
+			etype.<String>get(true, String.class));
 		
 		throw new Error("TODO");
 	}
