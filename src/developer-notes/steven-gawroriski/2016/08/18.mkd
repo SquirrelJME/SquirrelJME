@@ -1,2 +1,7 @@
 # 2016/08/18
 
+## 16:33
+
+Ok so my squashed down data is done, I just need to start implementing the
+code generator.
+

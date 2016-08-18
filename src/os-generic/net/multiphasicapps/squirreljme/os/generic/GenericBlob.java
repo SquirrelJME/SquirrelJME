@@ -69,20 +69,12 @@ public class GenericBlob
 	public static final int MAX_ENTRY_SIZE =
 		65535 << NAMESPACE_SHIFT;
 	
-	/** The magic number identifying entry start. */
-	public static final int START_ENTRY_MAGIC_NUMBER =
-		0xD3CECDCA;
-	
 	/** Central directory magic number. */
 	public static final int CENTRAL_DIRECTORY_MAGIC_NUMBER =
 		0xC1CCD2C1;
 	
 	/** The magic number for the end header. */
 	public static final int END_CENTRAL_DIRECTORY_MAGIC_NUMBER =
-		0xC2F6E5AE;
-	
-	/** End of class magic number. */
-	public static final int END_CLASS_MAGIC_NUMBER =
 		0xC6FAF2FD;
 	
 	/** The blob data. */

@@ -180,11 +180,8 @@ public final class GenericClassWriter
 					dos.writeShort(0);	// size
 					dos.writeShort(0);	// offset
 					
-					// Reserved to make the end class magic # aligned
+					// Reserved for alignment
 					dos.writeShort(0);
-					
-					// End with magic number
-					dos.writeInt(GenericBlob.END_CLASS_MAGIC_NUMBER);
 					
 					// {@squirreljme.error BA13 The final class size exceeds
 					// the class size limitation. (The class size)}
