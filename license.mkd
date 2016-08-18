@@ -53,7 +53,10 @@ Note that there is no linking exception to the **GNU GPLv3**, this is because:
    to be prelinked into a binary and distributed.
 
 If SquirrelJME is distributed within a distribution then it is **highly**
-recommended that the source code is distributed alongside the binary.
+recommended that the source code is distributed alongside the binary. If this
+software is placed on very limited embedded devices then a CD should also be
+included containing the source code or the entire repository (CDs are really
+cheap to produce).
 
 ## GNU General Public License v3 or Later
 
