@@ -23,6 +23,21 @@ import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
  */
 final class __CodeDecoder__
 {
+	/** The owning class decoder. */
+	final __ClassDecoder__ _decoder;
+	
+	/** The logic writer to use. */
+	final JITMethodWriter _writer;
+	
+	/** The method flags. */
+	final JITMethodFlags _flags;
+	
+	/** The method type. */
+	final MethodSymbol _type;
+	
+	/** The input code attribute data. */
+	private final DataInputStream _input;
+	
 	/**
 	 * Add base code decoder class.
 	 *
@@ -30,18 +45,25 @@ final class __CodeDecoder__
 	 * @param __dis The input source.
 	 * @param __f The method flags.
 	 * @param __t The method type.
+	 * @param __mlw The logic writer to write code to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
 	__CodeDecoder__(__ClassDecoder__ __cd, DataInputStream __dis,
-		JITMethodFlags __f, MethodSymbol __t)
+		JITMethodFlags __f, MethodSymbol __t, JITMethodWriter __mlw)
 		throws NullPointerException
 	{
 		// Check
-		if (__cd == null || __dis == null || __f == null || __t == null)
+		if (__cd == null || __dis == null || __f == null || __t == null ||
+			__mlw == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this._decoder = __cd;
+		this._input = __dis;
+		this._flags = __f;
+		this._type = __t;
+		this._writer = __mlw;
 	}
 }
 

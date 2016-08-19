@@ -47,6 +47,17 @@ public interface JITClassWriter
 		throws JITException;
 	
 	/**
+	 * This creates a writer which is able to convert the logic of a method
+	 * into native machine code or similar.
+	 *
+	 * @return The code writer.
+	 * @throws JITException If the logic writer could not be written.
+	 * @since 2016/08/19
+	 */
+	public abstract JITMethodWriter code()
+		throws JITException;
+	
+	/**
 	 * Sets the constant pool that the class uses.
 	 *
 	 * @param __pool The constant pool to use.
@@ -149,6 +160,16 @@ public interface JITClassWriter
 	 * @since 2016/08/17
 	 */
 	public abstract void methodCount(int __n)
+		throws JITException;
+	
+	/**
+	 * This is called when a method does not contain any byte code (it is
+	 * abstract).
+	 *
+	 * @throws JITException If no code could be indicated.
+	 * @since 2016/08/19
+	 */
+	public abstract void noCode()
 		throws JITException;
 	
 	/**

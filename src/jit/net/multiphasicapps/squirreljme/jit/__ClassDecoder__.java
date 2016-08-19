@@ -342,12 +342,13 @@ final class __ClassDecoder__
 						this._hitmcode = true;
 						
 						// Need to read and completley skip code when done
-						try (DataInputStream cis = new DataInputStream(
-							new SizeLimitedInputStream(__di, len, true)))
+						try (JITMethodWriter mlw = __cw.code();
+							DataInputStream cis = new DataInputStream(
+								new SizeLimitedInputStream(__di, len, true)))
 						{
 							// Setup decoder
 							new __CodeDecoder__(this, cis, this._mflags,
-								this._mtype);
+								this._mtype, mlw);
 						
 							throw new Error("TODO");
 						}
@@ -482,12 +483,20 @@ final class __ClassDecoder__
 			__singleAttribute(__cw, input, __AttributeFor__.METHOD);
 		
 		// {@squirreljme.error ED05 Abstract methods cannot have code.}
-		if (this._hitmcode == mf.isAbstract())
+		boolean hascode = this._hitmcode;
+		if (hascode == mf.isAbstract())
 			throw new JITException("ED05");
+		
+		// If there is no code then indicate as such
+		if (!hascode)
+			__cw.noCode();
 		
 		// Clear
 		this._mflags = null;
 		this._mtype = null;
+		
+		// End method
+		__cw.endMethod();
 	}
 }
 

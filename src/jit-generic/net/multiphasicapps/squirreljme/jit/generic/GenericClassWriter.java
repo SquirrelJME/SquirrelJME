@@ -26,6 +26,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
+import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
@@ -247,6 +248,26 @@ public final class GenericClassWriter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/08/19
+	 */
+	@Override
+	public JITMethodWriter code()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			__order(JITCompilerOrder.METHOD_CODE);
+			
+			// Method logic is architecture dependent and as such this is
+			// delegated to other classes created by the handler for the given
+			// architecture
+			throw new Error("TODO");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/08/17
 	 */
 	@Override
@@ -433,6 +454,24 @@ public final class GenericClassWriter
 			
 			// Check order
 			__order(JITCompilerOrder.METHOD_COUNT);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/19
+	 */
+	@Override
+	public void noCode()
+		throws JITException
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			__order(JITCompilerOrder.METHOD_CODE);
+			
+			throw new Error("TODO");
 		}
 	}
 	

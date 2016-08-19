@@ -1,2 +1,14 @@
 # 2016/08/19
 
+## 10:21
+
+Looks like `__ClassDecoder__` is getting a bit big since it triggers the class
+size warning.
+
+## 11:25
+
+I can perform some basic and minor optimizations by caching some stack values
+using a simple and naive means. When it comes to saving/restoring values I can
+just lazily allocate a bunch of stack items for the number of local and stack
+variables.
+
