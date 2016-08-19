@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
@@ -439,17 +440,22 @@ final class __ClassDecoder__
 		
 		// Read the method name
 		JITConstantPool pool = this._pool;
-		JITConstantEntry ename = pool.get(input.readUnsignedShort());
+		int ni;
+		JITConstantEntry ename = pool.get((ni = input.readUnsignedShort()));
 		IdentifierSymbol name = IdentifierSymbol.of(
 			ename.<String>get(true, String.class));
 		
 		// And the type
-		JITConstantEntry etype = pool.get(input.readUnsignedShort());
+		int ti;
+		JITConstantEntry etype = pool.get((ti = input.readUnsignedShort()));
 		MethodSymbol type = MethodSymbol.of(
 			etype.<String>get(true, String.class));
 		
 		// Clear before being used
 		this._hitmcode = false;
+		
+		// Register method since code needs to be generated following this
+		__cw.method(mf, name, ni, type, ti);
 		
 		// Handle attributes
 		int na = input.readUnsignedShort();

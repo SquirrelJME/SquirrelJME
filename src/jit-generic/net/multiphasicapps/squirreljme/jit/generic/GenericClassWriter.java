@@ -17,6 +17,7 @@ import java.util.Objects;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlag;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -280,6 +281,24 @@ public final class GenericClassWriter
 	}
 	
 	/**
+	 * {@inheritDoc
+	 * @since 20165/08/19
+	 */
+	@Override
+	public void endMethod()
+	{
+		// Lock
+		synchronized (this.lock)
+		{
+			// Need to detect the end
+			this._writtenmethods++;
+		
+			// Check order
+			__order(JITCompilerOrder.END_METHOD);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/18
 	 */
@@ -371,6 +390,30 @@ public final class GenericClassWriter
 			{
 				throw new JITException("BA10", e);
 			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/19
+	 */
+	@Override
+	public void method(JITMethodFlags __f, IdentifierSymbol __n,
+		int __ni, MethodSymbol __t, int __ti)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__f == null || __n == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// Check order
+			__order(JITCompilerOrder.METHOD_INFORMATION);
+			
+			// Add new method
+			this._methods.add(new __Method__(this, __f, __n, __t));
 		}
 	}
 	

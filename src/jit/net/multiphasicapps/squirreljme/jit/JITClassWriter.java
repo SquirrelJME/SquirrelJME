@@ -77,6 +77,15 @@ public interface JITClassWriter
 		throws JITException;
 	
 	/**
+	 * Ends a method.
+	 *
+	 * @throws JITException If the method could not be ended.
+	 * @since 2016/08/19
+	 */
+	public abstract void endMethod()
+		throws JITException;
+	
+	/**
 	 * Specifies that a field is to be added to the class.
 	 *
 	 * @param __f The field flags.
@@ -114,6 +123,22 @@ public interface JITClassWriter
 	 * @since 2016/07/22
 	 */
 	public abstract void interfaceClasses(ClassNameSymbol[] __ins, int[] __dxs)
+		throws JITException, NullPointerException;
+	
+	/**
+	 * Specifies that a method is to be added to the class.
+	 *
+	 * @param __f The method flags.
+	 * @param __n The name of the method.
+	 * @param __ni The constant pool index of the name.
+	 * @param __t The type of the method.
+	 * @param __ti The constant pool index of the type.
+	 * @throws JITException If the method could not be recorded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/19
+	 */
+	public abstract void method(JITMethodFlags __f, IdentifierSymbol __n,
+		int __ni, MethodSymbol __t, int __ti)
 		throws JITException, NullPointerException;
 	
 	/**
