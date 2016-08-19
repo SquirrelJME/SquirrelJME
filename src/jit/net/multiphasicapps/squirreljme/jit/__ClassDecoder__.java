@@ -68,6 +68,9 @@ final class __ClassDecoder__
 	/** Field constant value. */
 	private volatile Object _fieldcv;
 	
+	/** Was method code parsed? */
+	private volatile boolean _hitmcode;
+	
 	/** JIT access. */
 	final JIT _jit;
 	
@@ -304,6 +307,11 @@ final class __ClassDecoder__
 				{
 						// Constant value
 					case "ConstantValue":
+						// {@squirreljme.error ED04 Multiple field constant
+						// values defined for a single field.}
+						if (this._fieldcv != null)
+							throw new JITException("ED04");
+						
 						throw new Error("TODO");
 					
 						// Unknown
@@ -318,6 +326,14 @@ final class __ClassDecoder__
 				{
 						// The code attribute
 					case "Code":
+						// {@squirreljme.error ED03 Multiple code attributes
+						// in a single method.}
+						if (this._hitmcode)
+							throw new JITException("ED03");
+						
+						// Mark as hit
+						this._hitmcode = true;
+						
 						throw new Error("TODO");
 					
 						// Unknown
@@ -432,10 +448,17 @@ final class __ClassDecoder__
 		MethodSymbol type = MethodSymbol.of(
 			etype.<String>get(true, String.class));
 		
+		// Clear before being used
+		this._hitmcode = false;
+		
 		// Handle attributes
 		int na = input.readUnsignedShort();
 		for (int i = 0; i < na; i++)
 			__singleAttribute(__cw, input, __AttributeFor__.METHOD);
+		
+		// {@squirreljme.error ED05 Abstract methods cannot have code.}
+		if (this._hitmcode == mf.isAbstract())
+			throw new JITException("ED05");
 		
 		throw new Error("TODO");
 	}
