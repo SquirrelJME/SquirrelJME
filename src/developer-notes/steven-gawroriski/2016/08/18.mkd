@@ -58,3 +58,12 @@ It is very neat and interesting how everything turns orange as the suns set,
 you can definitely notice it with the windows open. Another day gone past ready
 for the nearly full moon to shine.
 
+## 20:22
+
+I need to make sure that duplicate fields and methods are checked since they
+are not legal (and would confuse the code much).
+
+## 20:24
+
+Now the orange is gone and it is now blue, so the sun has set.
+

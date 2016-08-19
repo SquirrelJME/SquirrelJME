@@ -80,6 +80,20 @@ final class __GlobalPool__
 	}
 	
 	/**
+	 * Loads a class that was named.
+	 *
+	 * @param __n The name of the class to load.
+	 * @return The entry for the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/18
+	 */
+	__GlobalEntry__ __loadClass(ClassNameSymbol __n)
+		throws NullPointerException
+	{
+		return __loadObject(true, __n);
+	}
+	
+	/**
 	 * Since all external globals are virtually represented in the same object
 	 * mapping this performs the same work for each of them.
 	 *
@@ -89,7 +103,7 @@ final class __GlobalPool__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	private __GlobalEntry__ __internalLoad(boolean __str, Object __o)
+	__GlobalEntry__ __loadObject(boolean __str, Object __o)
 		throws NullPointerException
 	{
 		// Check
@@ -115,20 +129,6 @@ final class __GlobalPool__
 		// Place it otherwise
 		entries.put(__o, (rv = new __GlobalEntry__(sz)));
 		return rv;
-	}
-	
-	/**
-	 * Loads a class that was named.
-	 *
-	 * @param __n The name of the class to load.
-	 * @return The entry for the given class.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/18
-	 */
-	__GlobalEntry__ __loadClass(ClassNameSymbol __n)
-		throws NullPointerException
-	{
-		return __internalLoad(true, __n);
 	}
 	
 	/**

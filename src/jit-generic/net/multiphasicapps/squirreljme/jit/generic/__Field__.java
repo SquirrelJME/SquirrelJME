@@ -22,6 +22,9 @@ import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
 class __Field__
 	extends __Member__
 {
+	/** The index of the constant. */
+	final int _cvdx;
+	
 	/**
 	 * Initializes the field.
 	 *
@@ -38,7 +41,19 @@ class __Field__
 	{
 		super(__gcw, __f, __name, __type);
 		
-		throw new Error("TODO");
+		// Create constant
+		if (__cv != null)
+		{
+			// It is always placed in the global pool
+			__GlobalPool__ gpool = __gcw._gpool;
+			
+			// Create
+			this._cvdx = gpool.__loadObject(false, __cv)._index;
+		}
+		
+		// Do not use one
+		else
+			this._cvdx = 0;
 	}
 }
 
