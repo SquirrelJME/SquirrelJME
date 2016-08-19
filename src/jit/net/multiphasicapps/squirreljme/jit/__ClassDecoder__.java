@@ -72,6 +72,12 @@ final class __ClassDecoder__
 	/** Was method code parsed? */
 	private volatile boolean _hitmcode;
 	
+	/** Method flags. */
+	private volatile JITMethodFlags _mflags;
+	
+	/** Method type. */
+	private volatile MethodSymbol _mtype;
+	
 	/** JIT access. */
 	final JIT _jit;
 	
@@ -457,6 +463,10 @@ final class __ClassDecoder__
 		// Register method since code needs to be generated following this
 		__cw.method(mf, name, ni, type, ti);
 		
+		// Needed for code
+		this._mflags = mf;
+		this._mtype = type;
+		
 		// Handle attributes
 		int na = input.readUnsignedShort();
 		for (int i = 0; i < na; i++)
@@ -466,7 +476,9 @@ final class __ClassDecoder__
 		if (this._hitmcode == mf.isAbstract())
 			throw new JITException("ED05");
 		
-		throw new Error("TODO");
+		// Clear
+		this._mflags = null;
+		this._mtype = null;
 	}
 }
 
