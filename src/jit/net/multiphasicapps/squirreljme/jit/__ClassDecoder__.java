@@ -396,6 +396,9 @@ final class __ClassDecoder__
 		
 		// Register the field
 		__cw.field(mf, name, ndx, type, tdx, this._fieldcv);
+		
+		// End field
+		__cw.endField();
 	}
 	
 	/**
