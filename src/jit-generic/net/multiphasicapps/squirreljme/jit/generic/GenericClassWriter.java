@@ -294,7 +294,11 @@ public final class GenericClassWriter
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Check order
+			__order(JITCompilerOrder.FIELD_INFORMATION);
+			
+			// Add new field
+			this._fields.add(new __Field__(this, __f, __n, __t, __cv));
 		}
 	}
 	
