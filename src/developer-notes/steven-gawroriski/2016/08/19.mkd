@@ -25,3 +25,15 @@ as needed. Personally Java should have just used registers from the start
 instead of using a stack machine. However, I just need an efficient stack
 cacher.
 
+## 15:12
+
+Took a walk, was rather hot. However, I determined that a single straight
+through parsing can work but it would needlessly complicate how the JIT would
+work. There could be areas of code that `goto` to a later portion of code
+where I would have no idea what type of values are in variables, then that
+code could `goto` back to that unknown area. So I would need to defer handling.
+Then there are also exceptions and the stack map table to consider also.
+However, I already have a bunch of the code reading, exception handler parsing,
+and `StackMap` parsing code somewhere in history. I just need to find that
+history and then carefully import that code in.
+
