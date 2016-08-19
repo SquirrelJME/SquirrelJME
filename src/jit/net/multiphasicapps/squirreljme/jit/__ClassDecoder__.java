@@ -341,7 +341,16 @@ final class __ClassDecoder__
 						// Mark as hit
 						this._hitmcode = true;
 						
-						throw new Error("TODO");
+						// Need to read and completley skip code when done
+						try (DataInputStream cis = new DataInputStream(
+							new SizeLimitedInputStream(__di, len, true)))
+						{
+							// Setup decoder
+							new __CodeDecoder__(this, cis, this._mflags,
+								this._mtype);
+						
+							throw new Error("TODO");
+						}
 					
 						// Unknown
 					default:
