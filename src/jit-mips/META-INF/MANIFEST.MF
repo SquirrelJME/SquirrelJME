@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: jit-mips
 X-SquirrelJME-UUID: ed21ac05-cf17-4a8d-abc2-e63f89c5278d
-X-SquirrelJME-Depends: jit, os-generic, jit-generic
+X-SquirrelJME-Depends: jit-generic
 X-SquirrelJME-Error: BV
-LIBlet-Title: JIT (MIPS)
+LIBlet-Title: Generic JIT (MIPS)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is a JIT that generates MIPS machine 
- code to run on systems which are based on the MIPS CPU.
+LIBlet-Description: This is an implementation of the generic JIT 
+ method writer which creates MIPS machine code from input byte 
+ code.
 

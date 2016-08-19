@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 
 /**
@@ -22,5 +23,15 @@ import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 public abstract class GenericMethodWriter
 	implements JITMethodWriter
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/19
+	 */
+	@Override
+	public void close()
+		throws JITException
+	{
+		throw new Error("TODO");
+	}
 }
 
