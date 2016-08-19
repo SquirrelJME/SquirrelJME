@@ -37,3 +37,11 @@ However, I already have a bunch of the code reading, exception handler parsing,
 and `StackMap` parsing code somewhere in history. I just need to find that
 history and then carefully import that code in.
 
+## 18:24
+
+Ok, so I need to merge work from multiple revisions:
+
+ * `b3233946eb8b134705cd9bfbac9f459b9cef6ee8` (`byte-code`)
+ * `173307290a537df61f99a5e240d32ee235e6b446` (`java-byte-code`)
+ * `dd444e270199cdf9899c9699900a2638c5413312`
+
