@@ -35,8 +35,6 @@ class __Method__
 		IdentifierSymbol __name, MethodSymbol __type)
 	{
 		super(__gcw, __f, __name, __type);
-		
-		throw new Error("TODO");
 	}
 }
 
