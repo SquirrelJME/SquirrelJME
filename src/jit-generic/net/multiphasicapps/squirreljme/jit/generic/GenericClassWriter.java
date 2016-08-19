@@ -92,6 +92,12 @@ public final class GenericClassWriter
 	/** The number of methods currently written. */
 	private volatile int _writtenmethods;
 	
+	/** The field table position. */
+	private volatile int _fieldtable;
+	
+	/** The method table position. */
+	private volatile int _methodtable;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -185,17 +191,12 @@ public final class GenericClassWriter
 					dos.writeShort(flags);
 					
 					// Field table
-					System.err.println("TODO -- Write fields at end.");
-					dos.writeShort(0);	// offset
-					dos.writeShort(0);	// size
+					dos.writeShort(this._fieldtable);	// offset
+					dos.writeShort(this._fieldcount);	// size
 					
 					// Method table
-					System.err.println("TODO -- Write methods at end.");
-					dos.writeShort(0);	// size
-					dos.writeShort(0);	// offset
-					
-					// Reserved for alignment
-					dos.writeShort(0);
+					dos.writeShort(this._methodtable);	// offset
+					dos.writeShort(this._methodcount);	// size
 					
 					// {@squirreljme.error BA13 The final class size exceeds
 					// the class size limitation. (The class size)}

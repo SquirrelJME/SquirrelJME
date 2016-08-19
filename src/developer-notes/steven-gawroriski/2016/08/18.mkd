@@ -41,3 +41,20 @@ I can store the constant values of fields in the constant pool so that
 constants are shared across differing classes in an namespace (such an event
 may occur, especially for popular numbers).
 
+## 20:10
+
+So the question is, do I make identifiers and types their own entries?
+Identifiers would be a bit pointless but I can see it for types. Perhaps just
+for methods. If it is in the constant pool it can be determined the arguments
+to something. However there is no reflection so this information is generally
+pointless. The only thing it would really be good for would be debugging, but
+that is very minimal. For linking, since everything is already verified, only
+the names are needed. So for simplicity it will just be a name for the most
+part.
+
+## 20:16
+
+It is very neat and interesting how everything turns orange as the suns set,
+you can definitely notice it with the windows open. Another day gone past ready
+for the nearly full moon to shine.
+

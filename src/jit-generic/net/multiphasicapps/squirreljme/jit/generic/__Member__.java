@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITMemberFlag;
 import net.multiphasicapps.squirreljme.jit.base.JITMemberFlags;
 
 /**
@@ -21,6 +22,15 @@ import net.multiphasicapps.squirreljme.jit.base.JITMemberFlags;
  */
 abstract class __Member__
 {
+	/** The member flags as a raw integer. */
+	final int _flags;
+	
+	/** The name index (in the string table). */
+	final int _namedx;
+	
+	/** The type index (in the string table). */
+	final int _typedx;
+	
 	/**
 	 * Initializes the base member.
 	 *
@@ -31,7 +41,8 @@ abstract class __Member__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	__Member__(GenericClassWriter __gcw, JITMemberFlags __f,
+	__Member__(GenericClassWriter __gcw,
+		JITMemberFlags<? extends JITMemberFlag> __f,
 		IdentifierSymbol __name, MemberTypeSymbol __type)
 		throws NullPointerException
 	{
@@ -39,7 +50,18 @@ abstract class __Member__
 		if (__f == null || __name == null || __type == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO"); 
+		// Get the global pool, need to create some constants
+		__GlobalPool__ gpool = __gcw._gpool;
+		
+		// Setup name and type
+		this._namedx = gpool.__loadString(__name.toString())._index;
+		this._typedx = gpool.__loadString(__type.toString())._index;
+		
+		// Fill flags
+		int flags = 0;
+		for (JITMemberFlag f : __f)
+			flags |= (1 << f.ordinal());
+		this._flags = flags;
 	}
 }
 
