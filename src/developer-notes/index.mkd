@@ -374,3 +374,5 @@
    [steven-gawroriski](steven-gawroriski/2016/08/18.mkd)
  * 19: 
    [steven-gawroriski](steven-gawroriski/2016/08/19.mkd)
+ * 20: 
+   [steven-gawroriski](steven-gawroriski/2016/08/20.mkd)

@@ -1,0 +1,18 @@
+# 2016/08/20
+
+## 12:51
+
+I thought about how the JIT would operate. Since going with a strictly linear
+single pass would complicate some things (although it would work), I will
+read in the byte code and all the associated details for a single method first.
+Before however, I would determine the size of operations and then parse those.
+However I believe this time I will just have a program to micro-op kind of
+thing where instead I read it straight from the input stream. I do not worry
+yet about which types are at which position, I just read in the byte code.
+Then once it is read in, I mark places where exceptions occur, and then when
+the `StackMap`(`Table`) is read I mark places where entry points are in the
+micro operations. Then once I have all that information I can do some
+verification and perform basic stack caching optimizations and such. At least
+this way I would not need to have the code byte array duplicated in memory
+while I build an object representation of it.
+
