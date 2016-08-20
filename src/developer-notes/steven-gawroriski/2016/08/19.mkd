@@ -45,3 +45,17 @@ Ok, so I need to merge work from multiple revisions:
  * `173307290a537df61f99a5e240d32ee235e6b446` (`java-byte-code`)
  * `dd444e270199cdf9899c9699900a2638c5413312`
 
+## 20:17
+
+So one thing to consider is...
+
+## 20:29
+
+...to keep the code simple. Before I had a complex cache system which was
+convoluted along with megaswitches and code all over the place for handling
+byte code operations. Since many operations are the same, I need to have a kind
+of simple dispatch that is not slow at all yet very simple. I suppose what I
+can do, like I have thought up of previously, have a kind of micro-op where
+instead of having clunky CISC like operations, they can be condensed into
+simple move operations and actual work operations.
+
