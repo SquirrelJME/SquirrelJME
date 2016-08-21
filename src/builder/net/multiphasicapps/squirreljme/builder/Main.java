@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -30,11 +32,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
 import net.multiphasicapps.sjmepackages.PackageList;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.util.seekablearray.SeekableByteArrayChannel;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -278,11 +282,44 @@ public class Main
 	 * @param __cl The parsed command line arguments.
 	 * @param __dop The distribution output ZIP.
 	 * @return The zip file for the binary to be emulated.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/20
 	 */
 	private static ZipFile __openZip(__CommandLine__ __cl, Path __dop)
-		throws IOException
+		throws IOException, NullPointerException
 	{
+		// If directly emulating an executable then it must be opened first
+		if (__cl._directemu)
+			try (InputStream is = Channels.newInputStream(FileChannel.open(
+				__cl._directemupath, StandardOpenOption.READ));
+				ByteArrayOutputStream baos = new ByteArrayOutputStream())
+			{
+				// Copy the binary data into the output ZIP
+				try (ZipStreamWriter zsw = new ZipStreamWriter(baos);
+					OutputStream os = zsw.nextEntry(__cl._altexename,
+						ZipCompressionType.DEFAULT_COMPRESSION))
+				{
+					byte[] buf = new byte[512];
+					for (;;)
+					{
+						int rc = is.read(buf);
+						
+						// EOF?
+						if (rc < 0)
+							break;
+						
+						// Write
+						os.write(buf, 0, rc);
+					}
+				}
+				
+				// Load the output ZIP
+				return ZipFile.open(new SeekableByteArrayChannel(
+					baos.toByteArray()));
+			}
+		
+		// Otherwise open the target ZIP
 		return ZipFile.open(FileChannel.open(__dop, StandardOpenOption.READ));
 	}
 }

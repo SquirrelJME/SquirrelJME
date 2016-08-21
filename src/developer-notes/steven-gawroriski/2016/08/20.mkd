@@ -22,3 +22,11 @@ Something that would be handy would be to just emulate an executable
 automatically as if nothing happened. This could be useful instead of packing
 it into a ZIP and such.
 
+## 21:41
+
+Seems my ZIP writer has trouble writing the hello ELF and forms a bad ZIP.
+
+## 21:42
+
+Actually no I am using it wrong, I never closed the ZIP.
+
