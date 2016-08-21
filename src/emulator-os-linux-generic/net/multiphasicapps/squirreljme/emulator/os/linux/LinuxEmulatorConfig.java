@@ -11,6 +11,10 @@
 package net.multiphasicapps.squirreljme.emulator.os.linux;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.paths.posix.PosixPath;
 import net.multiphasicapps.squirreljme.paths.posix.PosixPaths;

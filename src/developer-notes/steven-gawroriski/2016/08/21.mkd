@@ -37,3 +37,13 @@ required however. It could simplify some things in a few cases however.
 
 For some reason, inequal strings are equal.
 
+## 16:36
+
+I will need some file system handlers, one that is generic and uses the
+native path system in a way. For the emulator, I can have a completely in
+memory virtual filesystem. When it comes to filesystems, I just need a backend
+which provides native access for example. Hypothetically this temporary in
+memory format could be used on real VMs. Another consideration is that the
+emulated filesystems could also be used too, although that could be a bit
+tricky.
+
