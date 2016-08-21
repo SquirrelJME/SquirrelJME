@@ -30,3 +30,8 @@ Seems my ZIP writer has trouble writing the hello ELF and forms a bad ZIP.
 
 Actually no I am using it wrong, I never closed the ZIP.
 
+## 21:46
+
+I can likely simplify the emulator system and move some packages around. Since
+the `chv` stuff is emulator only, it would likely be best to rename it.
+
