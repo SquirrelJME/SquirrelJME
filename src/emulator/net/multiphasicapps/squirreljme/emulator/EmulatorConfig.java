@@ -19,6 +19,10 @@ package net.multiphasicapps.squirreljme.emulator;
  */
 public class EmulatorConfig
 {
+	/** Configuration lock. */
+	protected final Object lock =
+		new Object();
+	
 	/**
 	 * Initializes the base configuration.
 	 *

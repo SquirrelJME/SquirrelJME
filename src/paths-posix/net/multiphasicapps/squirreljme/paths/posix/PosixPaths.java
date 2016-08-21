@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.paths.posix;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.paths.InvalidNativePathException;
 import net.multiphasicapps.squirreljme.paths.NativePath;
 import net.multiphasicapps.squirreljme.paths.NativePaths;
@@ -22,6 +24,9 @@ import net.multiphasicapps.squirreljme.paths.NativePaths;
 public class PosixPaths
 	implements NativePaths
 {
+	/** The single instance (since only one is needed in most cases). */
+	private static volatile Reference<PosixPaths> _INSTANCE;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/30
@@ -37,7 +42,7 @@ public class PosixPaths
 	 * @since 2016/07/30
 	 */
 	@Override
-	public NativePath get(String __f, String... __r)
+	public PosixPath get(String __f, String... __r)
 		throws InvalidNativePathException
 	{
 		throw new Error("TODO");
@@ -51,6 +56,25 @@ public class PosixPaths
 	public String pathSeparator()
 	{
 		return ":";
+	}
+	
+	/**
+	 * Returns the single instance of this path manager.
+	 *
+	 * @return The path manager.
+	 * @since 2016/08/21
+	 */
+	public static PosixPaths instance()
+	{
+		Reference<PosixPaths> ref = _INSTANCE;
+		PosixPaths rv;
+		
+		// Create?
+		if (ref == null || null == (rv = ref.get()))
+			_INSTANCE = new WeakReference<>((rv = new PosixPaths()));
+		
+		// Return
+		return rv;
 	}
 }
 

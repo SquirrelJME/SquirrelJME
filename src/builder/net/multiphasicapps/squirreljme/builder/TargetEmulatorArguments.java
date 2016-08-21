@@ -214,5 +214,16 @@ public final class TargetEmulatorArguments
 	{
 		return this.config.triplet();
 	}
+	
+	/**
+	 * Returns the ZIP file that is associated with the emulator for running.
+	 *
+	 * @return The ZIP file which is used.
+	 * @since 2016/08/21
+	 */
+	public ZipFile zipFile()
+	{
+		return this.zip;
+	}
 }
 

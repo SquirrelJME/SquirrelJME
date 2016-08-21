@@ -16,6 +16,10 @@ import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.emulator.os.linux.LinuxEmulator;
 import net.multiphasicapps.squirreljme.emulator.os.linux.LinuxEmulatorConfig;
+import net.multiphasicapps.squirreljme.paths.posix.PosixPath;
+import net.multiphasicapps.squirreljme.paths.posix.PosixPaths;
+import net.multiphasicapps.zip.blockreader.ZipEntry;
+import net.multiphasicapps.zip.blockreader.ZipFile;
 
 /**
  * This is the base class for all Linux based emulators.
@@ -55,6 +59,9 @@ public abstract class LinuxTargetEmulator
 		// Create architecture dependent emulator
 		LinuxEmulator rv = createLinuxEmulator();
 		LinuxEmulatorConfig conf = rv.config();
+		
+		// Mount the ZIP to /opt
+		conf.mount(arguments.zipFile(), PosixPaths.instance().get("/opt"));
 		
 		if (true)
 			throw new Error("TODO");
