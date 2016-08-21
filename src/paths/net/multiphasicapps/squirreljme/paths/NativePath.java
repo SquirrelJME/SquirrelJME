@@ -16,6 +16,12 @@ package net.multiphasicapps.squirreljme.paths;
  * these paths have no interaction with the host filesystem and as such it
  * is unknown if the specified paths are even valid.
  *
+ * Note that some methods are missing.
+ *
+ * To convert a path to absolute, resolve from the root the other path to
+ * make absolute (since these classes only handle paths and know not what the
+ * current directory is).
+ *
  * @since 2016/07/30
  */
 public interface NativePath
@@ -45,13 +51,22 @@ public interface NativePath
 	public abstract boolean equals(Object __o);
 	
 	/**
+	 * Returns the root component of this path.
+	 *
+	 * @return The root component of this path or {@code null} if there is
+	 * none.
+	 * @since 2016/08/21
+	 */
+	public abstract NativePath getRoot();
+	
+	/**
 	 * Returns {@code true} if this path has a root component which specifies
 	 * that it is an absolute path.
 	 *
 	 * @return {@code true} if the path is absolute.
 	 * @since 2016/08/21
 	 */
-	public abstract boolean isAbsolutePath();
+	public abstract boolean isAbsolute();
 	
 	/**
 	 * This resolves the other path against this one.

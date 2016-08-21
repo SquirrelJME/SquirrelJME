@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.paths.NativePaths;
  *
  * @since 2016/07/30
  */
-public class PosixPath
+public final class PosixPath
 	implements NativePath
 {
 	/** The root filesystem. */
@@ -50,6 +50,9 @@ public class PosixPath
 	/** The single path fragment, will be null if a compound path. */
 	protected final String fragment;
 	
+	/** The root component. */
+	protected final PosixPath root;
+	
 	/** String representation of this path. */
 	private volatile Reference<String> _string;
 	
@@ -71,6 +74,7 @@ public class PosixPath
 		// Set
 		this.isroot = __isroot;
 		this.fragment = __s;
+		this.root = (__isroot ? this : null);
 	}
 	
 	/**
@@ -97,6 +101,26 @@ public class PosixPath
 		// Not root
 		this.isroot = false;
 		this.fragment = __s;
+		this.root = null;
+	}
+	
+	/**
+	 * Initializes a path which contains multiple components and an optional
+	 * root component.
+	 *
+	 * @param __root The root component, which is optional.
+	 * @param __comps The components that make up the path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/21
+	 */
+	PosixPath(PosixPath __root, PosixPath... __comps)
+		throws NullPointerException
+	{
+		// Check
+		if (__comps == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -135,6 +159,16 @@ public class PosixPath
 	 * @since 2016/08/21
 	 */
 	@Override
+	public final PosixPath getRoot()
+	{
+		return this.root;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/21
+	 */
+	@Override
 	public final int hashCode()
 	{
 		return toString().hashCode();
@@ -145,9 +179,10 @@ public class PosixPath
 	 * @since 2016/08/21
 	 */
 	@Override
-	public final boolean isAbsolutePath()
+	public final boolean isAbsolute()
 	{
-		throw new Error("TODO");
+		// It is absolute, but only if there is a root
+		return this.root != null;
 	}
 	
 	/**

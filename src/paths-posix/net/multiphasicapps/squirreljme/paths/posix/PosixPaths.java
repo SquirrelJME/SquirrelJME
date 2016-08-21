@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.paths.posix;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.paths.InvalidNativePathException;
 import net.multiphasicapps.squirreljme.paths.NativePath;
 import net.multiphasicapps.squirreljme.paths.NativePaths;
@@ -100,10 +102,36 @@ public class PosixPaths
 			return useroot;
 		
 		// Build up sub-fragments from inner paths
+		List<PosixPath> comps = new LinkedList<>();
 		for (int i = rootend; i < n; i++)
-			throw new Error("TODO");
+		{
+			// Ignore slashes
+			if (s.charAt(i) == '/')
+				continue;
+			
+			// Find the next slash or end of string
+			int j = i + 1;
+			for (; j < n; j++)
+				if (s.charAt(j) == '/')
+					break;
+			
+			// Splice string
+			String sub = s.substring(i, j);
+			
+			// Only keep a single copy of . or ..
+			if (sub.equals("."))
+				comps.add(PosixPath.CURRENT_DIR);
+			else if (sub.equals(".."))
+				comps.add(PosixPath.PARENT_DIR);
+			
+			// Add single component
+			else
+				comps.add(new PosixPath(sub));
+		}
 		
-		throw new Error("TODO");
+		// Build path
+		return new PosixPath(useroot, comps.<PosixPath>toArray(
+			new PosixPath[comps.size()]));
 	}
 	
 	/**
