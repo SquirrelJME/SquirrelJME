@@ -1,0 +1,15 @@
+# 2016/08/21
+
+## 07:24
+
+Perhaps for the emulator I would have something simple. I just load the ELF
+somewhere in a given memory location and then just start interpreting it for
+the most part. I would need a common memory layout however and such, along with
+rules for alignment and other things.
+
+## 07:47
+
+Perhaps my emulator as it currently stands is a bit too complex. What I really
+need is just a way to emulate some binaries in a very simple fashion to just
+run the tests and the practice binaries and such.
+
