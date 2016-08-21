@@ -74,116 +74,15 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
-		// Must exist
-		if (__args == null)
-			__args = new String[0];
-		
-		// Fill in queue for argument handling
-		Deque<String> args = new LinkedList<>();
-		for (String s : __args)
-			args.offerLast(s);
-		
-		// Handle arguments
-		boolean doemu = false;
-		boolean nojit = false;
-		boolean tests = false;
-		boolean skipbuild = false;
-		String target = null;
-		String outzipname = null;
-		String altexename = null;
-		List<String> emuargs = new ArrayList<>();
-		Set<String> extraprojects = new HashSet<>();
-		while (!args.isEmpty())
-		{
-			String a = args.removeFirst();
-			
-			// Add a project?
-			if (a.equals("-a"))
-			{
-				// {@squirreljme.error DW0z Adding a project requires that
-				// one actually be specified.}
-				String addthis = args.removeFirst();
-				if (addthis == null)
-					throw new IllegalArgumentException("DW0z");
-				
-				// Add it
-				extraprojects.add(addthis);
-			}
-			
-			// Just run the binary in the emulator.
-			else if (a.equals("-l"))
-			{
-				throw new Error("TODO");
-			}
-			
-			// Emulate also?
-			else if (a.equals("-e"))
-				doemu = true;
-			
-			// Do not include a JIT?
-			else if (a.equals("-n"))
-				nojit = true;
-			
-			// Include tests also?
-			else if (a.equals("-t"))
-				tests = true;
-			
-			// Skip building?
-			else if (a.equals("-s"))
-				skipbuild = true;
-			
-			// Alternative executable name?
-			else if (a.equals("-x"))
-			{
-				altexename = args.removeFirst();
-				
-				// {@squirreljme.error DW0u The alternative executable name
-				// requires an argument.}
-				if (altexename == null)
-					throw new IllegalArgumentException("DW0u");
-			}
-			
-			// {@squirreljme.error DW02 Unknown command line argument.
-			// (The argument)}
-			else if (a.startsWith("-"))
-				throw new IllegalArgumentException(String.format("DW02 %s",
-					a));
-			
-			// Get the target
-			else
-			{
-				// Set
-				target = a.trim();
-				
-				// Get the output ZIP name.
-				if (args.size() >= 1)
-					outzipname = args.removeFirst();
-				
-				// Add emulator arguments
-				while (!args.isEmpty())
-					emuargs.add(args.removeFirst());
-				
-				// Stop
-				break;
-			}
-		}
-		
-		// Output
+		// Parse the command line
 		PrintStream out = System.out;
-		
-		// If no target, print usage
-		if (target == null)
-		{
-			__printUsage(out);
-			
-			// {@squirreljme.error DW0h Not enough arguments.}
-			throw new IllegalArgumentException("DW0h");
-		}
+		__CommandLine__ cl = new __CommandLine__(__args);
 		
 		// Setup build configuration
-		BuildConfig config = new BuildConfig(new JITTriplet(target),
-			!nojit, tests, altexename, extraprojects.<String>toArray(
-			new String[extraprojects.size()]));
+		BuildConfig config = new BuildConfig(new JITTriplet(cl._target),
+			!cl._nojit, cl._tests, cl._altexename,
+			cl._extraprojects.<String>toArray(
+				new String[cl._extraprojects.size()]));
 		
 		// Find a target builder which is compatible with this configuration
 		TargetBuilder tb = TargetBuilder.findBuilder(config);
@@ -196,7 +95,7 @@ public class Main
 		
 		// If not skipping the build then build
 		Path[] distoutpath = new Path[1];
-		if (!skipbuild)
+		if (!cl._skipbuild)
 		{
 			// Could fail
 			PackageList plist;
@@ -220,8 +119,8 @@ public class Main
 			
 				// Indicate where the binary is
 				try (OutputStream distout = __openOutputZip(
-					(outzipname != null ? Paths.get(outzipname) : null),
-					distoutpath))
+					(cl._outzipname != null ? Paths.get(cl._outzipname) :
+						null), distoutpath))
 				{
 					out.printf("Generating distribution at `%s`...%n",
 						distoutpath[0]);
@@ -286,19 +185,20 @@ public class Main
 		
 		// Get output ZIP file used
 		else
-			distoutpath[0] = Paths.get((outzipname != null ? outzipname :
-				"squirreljme.zip"));
+			distoutpath[0] = Paths.get((cl._outzipname != null ?
+				cl._outzipname : "squirreljme.zip"));
 		
 		// Emulate?
-		if (doemu)
+		if (cl._doemu)
 			try (FileChannel fc = FileChannel.open(distoutpath[0],
 				StandardOpenOption.READ);
 				ZipFile zip = ZipFile.open(fc))
 			{
 				// Get the target emulator
 				TargetEmulator te = tb.emulate(new TargetEmulatorArguments(
-					config, zip, altexename,
-					emuargs.<String>toArray(new String[emuargs.size()])));
+					config, zip, cl._altexename,
+					cl._emuargs.<String>toArray(
+						new String[cl._emuargs.size()])));
 				
 				// Get an emulator
 				out.println("Setting up emulator...");
@@ -370,64 +270,6 @@ public class Main
 			// {@squirreljme.error DW0m Could not create output ZIP file.}
 			throw new IOException("DW0m");
 		}
-	}
-	
-	/**
-	 * Prints usage information.
-	 *
-	 * @param __ps The output print stream.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/22
-	 */
-	private static void __printUsage(PrintStream __ps)
-		throws NullPointerException
-	{
-		// Check
-		if (__ps == null)
-			throw new NullPointerException("NARG");
-		
-		// Print header
-		__ps.println("Usage: [-a project] [-e] [-n] [-s] [-t] [-x name] " +
-			"(target) [squirreljme.zip] [emulator arguments...]");
-		__ps.println("Usage: -l (target) executable [arguments...]");
-		__ps.println();
-		__ps.println("\tThe output ZIP is optionally specified, however");
-		__ps.println("\tif emulator arguments are specified the ZIP must");
-		__ps.println("\talso be specified.");
-		__ps.println();
-		__ps.println("\t-a\tInclude the specified project in the target.");
-		__ps.println("\t\tMay be specified multiple times.");
-		__ps.println("\t-e\tAfter building, emulate the target binary.");
-		__ps.println("\t-l\tJust run the specified executable (or ZIP if it");
-		__ps.println("\t\tis one) with the specified arguments.");
-		__ps.println("\t-n\tDo not include a JIT.");
-		__ps.println("\t-s\tSkip building and just emulate the ZIP.");
-		__ps.println("\t-t\tInclude tests.");
-		__ps.println("\t-x\tAlternative name for the binary executable");
-		__ps.println("\t\tinstead of using the default name.");
-		__ps.println();
-		
-		// Suggest target header
-		__ps.println("Suggested Triplets (Target):");
-		__ps.printf("%74s (?)", "Name of Suggestion");
-		__ps.println();
-		__ps.println();
-		
-		// Print suggested targets
-		for (TargetBuilder tb : ServiceLoader.<TargetBuilder>load(
-			TargetBuilder.class))
-			for (TargetSuggestion s : tb.suggestedTargets())
-			{
-				__ps.printf("%-78s%n%74s (%c)", s.triplet(), s.name(),
-					(tb.canJIT() ? '+' : '-'));
-				__ps.println();
-			}
-		__ps.println();
-		__ps.println(" (+) The JIT is supported.");
-		__ps.println(" (-) The JIT is not supported.");
-		
-		// End
-		__ps.println();
 	}
 }
 
