@@ -139,6 +139,30 @@ public class POSIXPathTests
 		// Special as a directory and two strings
 		__t.result("specdtwo").compareObject(TestComparison.EQUALS,
 			Objects.toString(ink.get("//foo/bar", "baz")), "//foo/bar/baz");
+		
+		// Is root absolute?
+		__t.result("isrootabs").compareObject(TestComparison.EQUALS,
+			ink.get("/").isAbsolute(), true);
+			
+		// Is special absolute?
+		__t.result("isspecabs").compareObject(TestComparison.EQUALS,
+			ink.get("//").isAbsolute(), true);
+			
+		// Standard path has no root
+		__t.result("isstandardnonabs").compareObject(TestComparison.EQUALS,
+			ink.get("squirrels").isAbsolute(), false);
+		
+		// Is root with component absolute?
+		__t.result("isrootcabs").compareObject(TestComparison.EQUALS,
+			ink.get("/squirrels").isAbsolute(), true);
+		
+		// Is root with components absolute?
+		__t.result("isrootcabsb").compareObject(TestComparison.EQUALS,
+			ink.get("/squirrels/are/awesome").isAbsolute(), true);
+		
+		// Is non root multiple directories not absolute?
+		__t.result("isnonrootcnonabs").compareObject(TestComparison.EQUALS,
+			ink.get("squirrels/are/awesome").isAbsolute(), false);
 	}
 }
 
