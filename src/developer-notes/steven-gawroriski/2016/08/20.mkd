@@ -35,3 +35,11 @@ Actually no I am using it wrong, I never closed the ZIP.
 I can likely simplify the emulator system and move some packages around. Since
 the `chv` stuff is emulator only, it would likely be best to rename it.
 
+## 22:01
+
+So to simplify some loading operations, I can have it where I have a class
+based representation of an executable object where there is then a kind of
+generic loader regardless of the binary format. Generally I would want this
+so that the code is very similar and abstracted. There also needs to be the
+consideration that many targets will need ELF binaries parsed and such.
+
