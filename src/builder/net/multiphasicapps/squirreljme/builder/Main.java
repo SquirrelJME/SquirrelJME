@@ -110,6 +110,12 @@ public class Main
 				extraprojects.add(addthis);
 			}
 			
+			// Just run the binary in the emulator.
+			else if (a.equals("-l"))
+			{
+				throw new Error("TODO");
+			}
+			
 			// Emulate also?
 			else if (a.equals("-e"))
 				doemu = true;
@@ -383,6 +389,7 @@ public class Main
 		// Print header
 		__ps.println("Usage: [-a project] [-e] [-n] [-s] [-t] [-x name] " +
 			"(target) [squirreljme.zip] [emulator arguments...]");
+		__ps.println("Usage: -l (target) executable [arguments...]");
 		__ps.println();
 		__ps.println("\tThe output ZIP is optionally specified, however");
 		__ps.println("\tif emulator arguments are specified the ZIP must");
@@ -391,6 +398,8 @@ public class Main
 		__ps.println("\t-a\tInclude the specified project in the target.");
 		__ps.println("\t\tMay be specified multiple times.");
 		__ps.println("\t-e\tAfter building, emulate the target binary.");
+		__ps.println("\t-l\tJust run the specified executable (or ZIP if it");
+		__ps.println("\t\tis one) with the specified arguments.");
 		__ps.println("\t-n\tDo not include a JIT.");
 		__ps.println("\t-s\tSkip building and just emulate the ZIP.");
 		__ps.println("\t-t\tInclude tests.");

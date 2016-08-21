@@ -16,3 +16,9 @@ verification and perform basic stack caching optimizations and such. At least
 this way I would not need to have the code byte array duplicated in memory
 while I build an object representation of it.
 
+## 20:58
+
+Something that would be handy would be to just emulate an executable
+automatically as if nothing happened. This could be useful instead of packing
+it into a ZIP and such.
+
