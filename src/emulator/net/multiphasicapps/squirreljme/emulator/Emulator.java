@@ -16,8 +16,8 @@ package net.multiphasicapps.squirreljme.emulator;
  *
  * @since 2016/08/21
  */
-public interface Emulator
-	extends Runnable
+public abstract Emulator
+	implements Runnable
 {
 }
 

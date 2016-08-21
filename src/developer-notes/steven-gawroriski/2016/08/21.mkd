@@ -19,3 +19,11 @@ My build system needs to find a way to determine if files were deleted within
 a source tree rather than just being modified. What I could do is have a file
 count so to speak.
 
+## 09:25
+
+So my emulator will just be very simple. It will load a binary and then start
+executing it so that tests can run for example. It would just be so I can get
+a basic layout of how a target system works and then I can also support
+whatever is needed by SquirrelJME. The emulator should be accurate enough to
+run programs but its not intended to be 100% accurate.
+
