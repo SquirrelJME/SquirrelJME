@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: test-paths-posix
+X-SquirrelJME-UUID: 7dd631dc-6951-4081-8988-4c70f2d7e7a2
+X-SquirrelJME-Depends: test-base, paths-posix
+LIBlet-Title: POSIX Path Tests
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains tests for the POSIX path 
+ classes.
