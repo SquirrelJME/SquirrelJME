@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirreljme.builder;
 
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashSet;
@@ -53,6 +55,12 @@ class __CommandLine__
 	/** The extra projects to include .*/
 	final Set<String> _extraprojects;
 	
+	/** Was the direct emulate option specified? */
+	final boolean _directemu;
+	
+	/** The path to the directly executed binary. */
+	final Path _directemupath;
+	
 	/**
 	 * Parses the command line arguments.
 	 *
@@ -69,6 +77,48 @@ class __CommandLine__
 		Deque<String> args = new LinkedList<>();
 		for (String s : __args)
 			args.offerLast(s);
+		
+		// If using the special -l option then a given binary somewhere is to
+		// be read and executed
+		if (__args.length > 1 && "-l".equals(__args[0]))
+		{
+			// These options are enforced
+			this._doemu = true;
+			this._nojit = true;
+			this._tests = false;
+			this._skipbuild = true;
+			this._outzipname = "";
+			this._extraprojects = new HashSet<>();
+			this._directemu = true;
+			
+			// Eat -l
+			args.removeFirst();
+			
+			// {@squirreljme.error DW03 Not enough arguments specified for the
+			// -l option.}
+			if (args.size() < 2)
+				throw new IllegalArgumentException("DW03");
+			
+			// Target follows
+			this._target = args.removeFirst();
+			
+			// Determine path to the binary to be read
+			Path p = Paths.get(args.removeFirst());
+			this._directemupath = p;
+			
+			// Alternative name is the final file's file name (without any
+			// starting path)
+			this._altexename = p.getFileName().toString();
+			
+			// And any arguments follow
+			List<String> eargs = new ArrayList<>();
+			while (!args.isEmpty())
+				eargs.add(args.removeFirst());
+			this._emuargs = eargs;
+			
+			// Stop
+			return;
+		}
 		
 		// Handle arguments
 		boolean doemu = false;
@@ -97,11 +147,10 @@ class __CommandLine__
 				extraprojects.add(addthis);
 			}
 			
-			// Just run the binary in the emulator.
+			// {@squirreljme.error DW01 Cannot specify -l when other options
+			// have been specified.}
 			else if (a.equals("-l"))
-			{
-				throw new Error("TODO");
-			}
+				throw new IllegalArgumentException("DW01");
 			
 			// Emulate also?
 			else if (a.equals("-e"))
@@ -174,6 +223,8 @@ class __CommandLine__
 		this._altexename = altexename;
 		this._emuargs = emuargs;
 		this._extraprojects = extraprojects;
+		this._directemu = false;
+		this._directemupath = null;
 	}
 	
 	/**
@@ -202,8 +253,8 @@ class __CommandLine__
 		__ps.println("\t-a\tInclude the specified project in the target.");
 		__ps.println("\t\tMay be specified multiple times.");
 		__ps.println("\t-e\tAfter building, emulate the target binary.");
-		__ps.println("\t-l\tJust run the specified executable (or ZIP if it");
-		__ps.println("\t\tis one) with the specified arguments.");
+		__ps.println("\t-l\tJust run the specified executable with the");
+		__ps.println("\t\tspecified arguments in the target emulator.");
 		__ps.println("\t-n\tDo not include a JIT.");
 		__ps.println("\t-s\tSkip building and just emulate the ZIP.");
 		__ps.println("\t-t\tInclude tests.");
