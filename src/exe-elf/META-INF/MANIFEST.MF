@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: exe-elf
 X-SquirrelJME-UUID: 0f5483d7-9a90-494b-82e4-667447af450d
-X-SquirrelJME-Depends: exe, os-generic, io-data, jit-base
+X-SquirrelJME-Depends: exe, os-generic, io-data, jit-base,
+ jit-base-mips
 X-SquirrelJME-Error: AX
 LIBlet-Title: Executable Linker (ELF)
 LIBlet-Vendor: Steven Gawroriski

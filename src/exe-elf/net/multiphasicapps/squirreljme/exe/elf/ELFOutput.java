@@ -25,6 +25,7 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.base.mips.MIPSVariant;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
 
 /**
@@ -345,27 +346,26 @@ public class ELFOutput
 					setMachine(8);
 					
 					// MIPS variant codes
-					switch (__t.architectureVariant())
+					switch (MIPSVariant.fromTriplet(__t))
 					{
 							// Which MIPS generation?
-						case "ii":	flags = 0x1000_0000; break;
-						case "iii":	flags = 0x2000_0000; break;
-						case "iv":	flags = 0x3000_0000; break;
-						case "v":	flags = 0x4000_0000; break;
-						case "r1":	flags = (bits == 32 ? 0x5000_0000 :
+						case I: flags = 0x0000_0000; break;
+						case II:	flags = 0x1000_0000; break;
+						case III:	flags = 0x2000_0000; break;
+						case IV:	flags = 0x3000_0000; break;
+						case V:	flags = 0x4000_0000; break;
+						case R1:	flags = (bits == 32 ? 0x5000_0000 :
 							0x6000_0000); break;
-						case "r2":
-						case "r3":
-						case "r5":	flags = (bits == 32 ? 0x7000_0000 :
+						case R2:
+						case R3:
+						case R5:	flags = (bits == 32 ? 0x7000_0000 :
 							0x8000_0000); break;
-						case "r6":	flags = (bits == 32 ? 0x9000_0000 :
+						case R6:	flags = (bits == 32 ? 0x9000_0000 :
 							0xa000_0000); break;
-			
-							// If unknown, assume just standard MIPS
-						case "i":
+							
+							// Unknown
 						default:
-							flags = 0x0000_0000;
-							break;
+							throw new RuntimeException("OOPS");
 					}
 					break;
 					

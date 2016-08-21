@@ -8,10 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.emulator.cpu.mips;
+package net.multiphasicapps.squirreljme.jit.base.mips;
+
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
- * This is a variant of the CPU that may be used in emulation.
+ * These are the variants supported for the MIPS CPU.
  *
  * @since 2016/08/06
  */
@@ -79,6 +81,33 @@ public enum MIPSVariant
 	public final String toString()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Returns the variant of the CPU.
+	 *
+	 * @param __t The triplet to get the enumated variant from.
+	 * @return The CPU variant.
+	 * @throws IllegalArgumentException If a variant was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/21
+	 */
+	public static final MIPSVariant fromTriplet(JITTriplet __t)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through all and check
+		String v = __t.architectureVariant();
+		for (MIPSVariant rv : MIPSVariant.values())
+			if (rv.name.equals(v))
+				return rv;
+		
+		// {@squirreljme.error BV01 Unknown MIPS architecture variant. (The
+		// variant identifier)}
+		throw new IllegalArgumentException(String.format("BV01 %s", v));
 	}
 }
 
