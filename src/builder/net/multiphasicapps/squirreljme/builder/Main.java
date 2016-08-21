@@ -190,9 +190,7 @@ public class Main
 		
 		// Emulate?
 		if (cl._doemu)
-			try (FileChannel fc = FileChannel.open(distoutpath[0],
-				StandardOpenOption.READ);
-				ZipFile zip = ZipFile.open(fc))
+			try (ZipFile zip = __openZip(cl, distoutpath[0]))
 			{
 				// Get the target emulator
 				TargetEmulator te = tb.emulate(new TargetEmulatorArguments(
@@ -270,6 +268,22 @@ public class Main
 			// {@squirreljme.error DW0m Could not create output ZIP file.}
 			throw new IOException("DW0m");
 		}
+	}
+	
+	/**
+	 * Opens the ZIP file. Depending on the input arguments it will either be
+	 * the target output to be tested or if {@code -l} was specified it will
+	 * then be a temporary ZIP containing the binary to emulate.
+	 *
+	 * @param __cl The parsed command line arguments.
+	 * @param __dop The distribution output ZIP.
+	 * @return The zip file for the binary to be emulated.
+	 * @since 2016/08/20
+	 */
+	private static ZipFile __openZip(__CommandLine__ __cl, Path __dop)
+		throws IOException
+	{
+		return ZipFile.open(FileChannel.open(__dop, StandardOpenOption.READ));
 	}
 }
 
