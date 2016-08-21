@@ -53,6 +53,9 @@ public final class PosixPath
 	/** The root component. */
 	protected final PosixPath root;
 	
+	/** Components (will be null if single). */
+	private final PosixPath[] _comps;
+	
 	/** String representation of this path. */
 	private volatile Reference<String> _string;
 	
@@ -75,6 +78,7 @@ public final class PosixPath
 		this.isroot = __isroot;
 		this.fragment = __s;
 		this.root = (__isroot ? this : null);
+		this._comps = null;
 	}
 	
 	/**
@@ -102,6 +106,7 @@ public final class PosixPath
 		this.isroot = false;
 		this.fragment = __s;
 		this.root = null;
+		this._comps = null;
 	}
 	
 	/**
@@ -210,7 +215,38 @@ public final class PosixPath
 		// Need to cache the string?
 		if (ref == null || null == (rv = ref.get()))
 		{
-			throw new Error("TODO");
+			// Target string
+			StringBuilder sb = new StringBuilder();
+			
+			// Contains just a single component, the fragment
+			String fragment = this.fragment;
+			if (fragment != null)
+				sb.append(fragment);
+			
+			// Compound path
+			else
+			{
+				// Append the root component, if there is one
+				PosixPath root = this.root;
+				if (root != null)
+					sb.append(root.toString());
+				
+				// Add any components
+				boolean sl = false;
+				for (PosixPath c : this._comps)
+				{
+					// Append directory separator after the first
+					if (sl)
+						sb.append('/');
+					sl = true;
+					
+					// Append component data
+					sb.append(c.toString());
+				}
+			}
+			
+			// Finish
+			this._string = new WeakReference<>((rv = sb.toString()));
 		}
 		
 		// Return
