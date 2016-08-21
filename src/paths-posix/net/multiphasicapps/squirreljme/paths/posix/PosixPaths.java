@@ -43,8 +43,37 @@ public class PosixPaths
 	 */
 	@Override
 	public PosixPath get(String __f, String... __r)
-		throws InvalidNativePathException
+		throws InvalidNativePathException, NullPointerException
 	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Combine all strings into a single unit
+		StringBuilder sb = new StringBuilder(__f);
+		if (__r != null)
+			for (String s : __r)
+				if (s == null)
+					throw new NullPointerException("NARG");
+				else
+				{
+					sb.append('/');
+					sb.append(s);
+				}
+		String s = sb.toString();
+		sb = null;
+		
+		// If the path contains no slashes then it is just a standard single
+		// file name
+		int fs = s.indexOf('/');
+		if (fs < 0)
+			return new PosixPath(s);
+		
+		// Special double root?
+		else if (s.equals("//"))
+			return PosixPath.SPECIAL_ROOT;
+		
+		
 		throw new Error("TODO");
 	}
 	

@@ -43,5 +43,30 @@ public interface NativePath
 	 */
 	@Override
 	public abstract boolean equals(Object __o);
+	
+	/**
+	 * Returns {@code true} if this path has a root component which specifies
+	 * that it is an absolute path.
+	 *
+	 * @return {@code true} if the path is absolute.
+	 * @since 2016/08/21
+	 */
+	public abstract boolean isAbsolutePath();
+	
+	/**
+	 * This resolves the other path against this one.
+	 *
+	 * If the other path is absolute then the other path is returned.
+	 * If the other is an empty path then this path is returned.
+	 * Otherwise, this path is treated as if it were a directory and the
+	 * other path is appended to the end of this path.
+	 *
+	 * @param __o The path to resolve this one against.
+	 * @throws InvalidNativePathException If the other path is not valid or
+	 * the resulting path would not be valid.
+	 * @since 2016/08/21
+	 */
+	public abstract NativePath resolve(NativePath __o)
+		throws InvalidNativePathException;
 }
 

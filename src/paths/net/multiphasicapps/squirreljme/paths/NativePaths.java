@@ -31,14 +31,21 @@ public interface NativePaths
 	/**
 	 * Converts the given set of strings into a native path.
 	 *
+	 * Note that all input strings are treated as if they were a single unit
+	 * joined by the file separator. For example on POSIX systems
+	 * {@code get("foo/bar", "baz")} is equivalent to
+	 * {@code get("foo/bar/baz")}.
+	 *
 	 * @param __f The first string.
 	 * @param __m The remaining strings.
 	 * @return A native representation of the given path.
 	 * @throws InvalidNativePathException If the path is not valid.
+	 * @throws NullPointerException If the first path was not specified or
+	 * if more paths were specified and the array contains a null element.
 	 * @since 2016/07/30
 	 */
 	public abstract NativePath get(String __f, String... __r)
-		throws InvalidNativePathException;
+		throws InvalidNativePathException, NullPointerException;
 	
 	/**
 	 * This is the separator which is used when a {@code PATH}-like variable
