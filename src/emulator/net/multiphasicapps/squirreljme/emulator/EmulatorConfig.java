@@ -11,44 +11,21 @@
 package net.multiphasicapps.squirreljme.emulator;
 
 /**
- * This interface is specified for anything which emulates a binary for
- * execution.
+ * This is used to configure the emulator.
+ *
+ * The configuration state is mutable.
  *
  * @since 2016/08/21
  */
-public abstract class Emulator
-	implements Runnable
+public class EmulatorConfig
 {
-	/** The emulator configuration. */
-	protected final EmulatorConfig config;
-	
 	/**
-	 * Initializes the emulator.
+	 * Initializes the base configuration.
 	 *
-	 * @param __conf The config to use.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/21
 	 */
-	public Emulator(EmulatorConfig __conf)
-		throws NullPointerException
+	public EmulatorConfig()
 	{
-		// Check
-		if (__conf == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.config = __conf;
-	}
-	
-	/**
-	 * Returns the emulator configuration.
-	 *
-	 * @return The emulator configuration.
-	 * @since 2016/08/21
-	 */
-	public EmulatorConfig config()
-	{
-		return this.config;
 	}
 }
 

@@ -11,11 +11,15 @@
 package net.multiphasicapps.squirreljme.builder.linux.mips;
 
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.builder.linux.LinuxTargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
-import net.multiphasicapps.squirreljme.chv.linux.mips.LinuxMIPSHypoVisor;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
-import net.multiphasicapps.squirreljme.emulator.mips.MIPSEmulator;
+import net.multiphasicapps.squirreljme.emulator.os.linux.LinuxEmulator;
+import net.multiphasicapps.squirreljme.emulator.os.linux.mips.
+	LinuxMIPSEmulator;
+import net.multiphasicapps.squirreljme.emulator.os.linux.mips.
+	LinuxMIPSEmulatorConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
@@ -24,10 +28,10 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
  * @since 2016/07/30
  */
 public class LinuxMIPSTargetEmulator
-	extends TargetEmulator
+	extends LinuxTargetEmulator
 {
 	/**
-	 * Sets up the emualtor target.
+	 * Sets up the emulator target.
 	 *
 	 * @param __args The arguments to the emulator.
 	 * @since 2016/07/30
@@ -39,29 +43,16 @@ public class LinuxMIPSTargetEmulator
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/07/30
+	 * @since 2016/08/21
 	 */
 	@Override
-	public Emulator emulator()
-		throws IOException
+	protected LinuxEmulator createLinuxEmulator()
 	{
-		// Get triplet
-		TargetEmulatorArguments arguments = this.arguments;
-		JITTriplet triplet = arguments.triplet();
+		// Setup basic configuration
+		LinuxMIPSEmulatorConfig conf = new LinuxMIPSEmulatorConfig();
 		
-		// Create Linux hypervisor
-		LinuxMIPSHypoVisor hv = new LinuxMIPSHypoVisor();
-		
-		// "init" is the process to start (and becomes PID 1)
-		hv.setInit(arguments.loadExecutable("squirreljme"),
-			arguments.fullArguments("squirreljme"));
-		
-		// Setup emulator
-		MIPSEmulator rv = new MIPSEmulator(hv, triplet.bits(),
-			triplet.endianess(), triplet.architectureVariant());
-		
-		// Return it
-		return rv;
+		// Create emulator
+		return new LinuxMIPSEmulator(conf);
 	}
 }
 

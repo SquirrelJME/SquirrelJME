@@ -15,5 +15,5 @@
  * @since 2016/08/06
  */
 
-package net.multiphasicapps.squirreljme.chv.generic.elf;
+package net.multiphasicapps.squirreljme.emulator.bin.generic.elf;
 

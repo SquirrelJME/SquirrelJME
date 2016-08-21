@@ -8,47 +8,43 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.emulator;
+package net.multiphasicapps.squirreljme.emulator.os.linux;
+
+import net.multiphasicapps.squirreljme.emulator.Emulator;
 
 /**
- * This interface is specified for anything which emulates a binary for
- * execution.
+ * This is the base class for all Linux based emulators.
  *
  * @since 2016/08/21
  */
-public abstract class Emulator
-	implements Runnable
+public abstract class LinuxEmulator
+	extends Emulator
 {
-	/** The emulator configuration. */
-	protected final EmulatorConfig config;
+	/** The Linux configuration. */
+	protected final LinuxEmulatorConfig linuxconfig;
 	
 	/**
-	 * Initializes the emulator.
+	 * Initializes the Linux emulator using the specified configuration.
 	 *
-	 * @param __conf The config to use.
-	 * @throws NullPointerException On null arguments.
+	 * @param __conf The configuration to use.
 	 * @since 2016/08/21
 	 */
-	public Emulator(EmulatorConfig __conf)
-		throws NullPointerException
+	public LinuxEmulator(LinuxEmulatorConfig __conf)
 	{
-		// Check
-		if (__conf == null)
-			throw new NullPointerException("NARG");
+		super(__conf);
 		
 		// Set
-		this.config = __conf;
+		this.linuxconfig = __conf;
 	}
 	
 	/**
-	 * Returns the emulator configuration.
-	 *
-	 * @return The emulator configuration.
+	 * {@inheritDoc}
 	 * @since 2016/08/21
 	 */
-	public EmulatorConfig config()
+	@Override
+	public LinuxEmulatorConfig config()
 	{
-		return this.config;
+		return this.linuxconfig;
 	}
 }
 

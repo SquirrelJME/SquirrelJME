@@ -14,5 +14,5 @@
  * @since 2016/07/30
  */
 
-package net.multiphasicapps.squirreljme.os.linux.mips;
+package net.multiphasicapps.squirreljme.emulator.os.linux.mips;
 
