@@ -125,7 +125,15 @@ public final class PosixPath
 		if (__comps == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Not a root or a fragment
+		this.isroot = false;
+		this.fragment = null;
+		
+		// Set optional root
+		this.root = __root;
+		
+		// Set components
+		this._comps = __comps;
 	}
 	
 	/**

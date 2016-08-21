@@ -76,6 +76,10 @@ public class POSIXPathTests
 		__t.result("condenseroot16").compareObject(TestComparison.EQUALS,
 			Objects.toString(ink.get("////", "////", "////", "////")), "/");
 		
+		// Just name
+		__t.result("name").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("squirrels")), "squirrels");
+		
 		// Non-absolute as a single string
 		__t.result("nonabssingle").compareObject(TestComparison.EQUALS,
 			Objects.toString(ink.get("foo/bar")), "foo/bar");
