@@ -69,10 +69,39 @@ public class PosixPaths
 		if (fs < 0)
 			return new PosixPath(s);
 		
-		// Special double root?
-		else if (s.equals("//"))
-			return PosixPath.SPECIAL_ROOT;
+		// Empty?
+		if (s.equals(""))
+			return PosixPath.EMPTY;
 		
+		// Count the number of roots at the start
+		int n = s.length(), numroots = 0, rootend = 0;
+		for (int i = 0; i < n; i++)
+		{
+			char c = s.charAt(i);
+			
+			// Is there a slash?
+			if (c == '/')
+			{
+				rootend++;
+				numroots++;
+			}
+			
+			// Stop on any other character
+			else
+				break;
+		}
+		
+		// Determine the root to use (if any)
+		PosixPath useroot = (numroots == 0 ? null :
+			(numroots == 2 ? PosixPath.SPECIAL_ROOT : PosixPath.ROOT));
+		
+		// If the path only contains a root component then use that
+		if (rootend >= n)
+			return useroot;
+		
+		// Build up sub-fragments from inner paths
+		for (int i = rootend; i < n; i++)
+			throw new Error("TODO");
 		
 		throw new Error("TODO");
 	}

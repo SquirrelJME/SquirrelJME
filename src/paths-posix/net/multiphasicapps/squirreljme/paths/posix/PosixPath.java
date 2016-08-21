@@ -40,6 +40,10 @@ public class PosixPath
 	public static final PosixPath PARENT_DIR =
 		new PosixPath(false, "..");
 	
+	/** The empty path. */
+	public static final PosixPath EMPTY =
+		new PosixPath(false, "");
+	
 	/** Is this a root? */
 	protected final boolean isroot;
 	
