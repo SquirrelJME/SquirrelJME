@@ -11,11 +11,13 @@
 package net.multiphasicapps.squirreljme.emulator;
 
 /**
- * This is the base class for emulators.
+ * This interface is specified for anything which emulates a binary for
+ * execution.
  *
  * @since 2016/08/21
  */
-public abstract class Emulator
+public interface Emulator
+	extends Runnable
 {
 }
 

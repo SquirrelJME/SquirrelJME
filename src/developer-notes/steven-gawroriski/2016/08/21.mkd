@@ -13,3 +13,9 @@ Perhaps my emulator as it currently stands is a bit too complex. What I really
 need is just a way to emulate some binaries in a very simple fashion to just
 run the tests and the practice binaries and such.
 
+## 08:03
+
+My build system needs to find a way to determine if files were deleted within
+a source tree rather than just being modified. What I could do is have a file
+count so to speak.
+
