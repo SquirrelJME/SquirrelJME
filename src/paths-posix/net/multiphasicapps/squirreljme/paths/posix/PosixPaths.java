@@ -127,6 +127,9 @@ public class PosixPaths
 			// Add single component
 			else
 				comps.add(new PosixPath(sub));
+			
+			// Parse where the end or slash was found
+			i = j;
 		}
 		
 		// Build path

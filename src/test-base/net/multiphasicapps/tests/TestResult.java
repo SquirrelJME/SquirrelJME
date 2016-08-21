@@ -247,11 +247,12 @@ public class TestResult
 			// Done
 			__setDone();
 			
-			// Only a single side is null?
+			// Left side is null?
 			boolean na = (__a == null);
 			boolean nb = (__b == null);
 			int comp;
 			TestPassState autoset = null;
+			boolean failtriggered = false;
 			if (na && !nb)
 				comp = -1;
 			
@@ -260,7 +261,7 @@ public class TestResult
 				comp = 1;
 			
 			// Both sides are null
-			else if (!na && !nb)
+			else if (na && nb)
 				comp = 0;
 			
 			// Requires more work
@@ -297,6 +298,7 @@ public class TestResult
 				// Associate an exception
 				catch (Throwable t)
 				{
+					failtriggered = true;
 					this._exception = t;
 				}
 				
@@ -305,11 +307,13 @@ public class TestResult
 			}
 			
 			// Set status
-			if (autoset != null)
+			if (failtriggered)
+				this._status = TestPassState.FAIL;
+			else if (autoset != null)
 				this._status = autoset;
 			else
 				this._status = __c.__passState(comp);
-				
+			
 			// Add data points
 			data.add(__c);
 			data.add(__a);

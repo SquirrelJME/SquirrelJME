@@ -33,3 +33,7 @@ I could likely use a `jit-base-mips` which contains an enumeration of the
 variants that are available or similar. Although, it is not specifically
 required however. It could simplify some things in a few cases however.
 
+## 16:24
+
+For some reason, inequal strings are equal.
+
