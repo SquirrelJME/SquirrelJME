@@ -8,12 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the MIPS CPU emulator which is used to emulate
- * operating systems and other such hardware.
- *
- * @since 2016/07/30
- */
+package net.multiphasicapps.squirreljme.emulator;
 
-package net.multiphasicapps.squirreljme.emulator.mips;
+/**
+ * This is the base class for emulators.
+ *
+ * @since 2016/08/21
+ */
+public abstract class Emulator
+{
+}
 

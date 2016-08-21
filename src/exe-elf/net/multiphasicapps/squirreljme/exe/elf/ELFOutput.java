@@ -356,7 +356,6 @@ public class ELFOutput
 							0x6000_0000); break;
 						case "r2":
 						case "r3":
-						case "r4":
 						case "r5":	flags = (bits == 32 ? 0x7000_0000 :
 							0x8000_0000); break;
 						case "r6":	flags = (bits == 32 ? 0x9000_0000 :

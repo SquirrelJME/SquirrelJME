@@ -8,20 +8,12 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.chv.linux.mips;
-
-import net.multiphasicapps.squirreljme.chv.linux.LinuxHypoVisor;
-
 /**
- * This is the hypovisor for Linux MIPS systems.
- *
- * All registers are initially set to zero on entry except {@code pc} is
- * set to the start address and {@code sr} is set to the top of the stack.
+ * This package contains the MIPS CPU emulator which is used to emulate
+ * operating systems and other such hardware.
  *
  * @since 2016/07/30
  */
-public class LinuxMIPSHypoVisor
-	extends LinuxHypoVisor
-{
-}
+
+package net.multiphasicapps.squirreljme.emulator.cpu.mips;
 

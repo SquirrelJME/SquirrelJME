@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.emulator.mips;
+package net.multiphasicapps.squirreljme.emulator.cpu.mips;
 
 /**
  * This is a variant of the CPU that may be used in emulation.
@@ -19,6 +19,33 @@ public enum MIPSVariant
 {
 	/** The first MIPS CPU. */
 	I("i"),	
+	
+	/** The second CPU. */
+	II("ii"),
+	
+	/** The third. */
+	III("iii"),
+	
+	/** The fourth. */
+	IV("iv"),
+	
+	/** The fifth. */
+	V("v"),
+	
+	/** Revision 1. */
+	R1("r1"),
+	
+	/** Revision 2. */
+	R2("r2"),
+	
+	/** Revision 3. */
+	R3("r3"),
+	
+	/** Revision 5. */
+	R5("r5"),
+	
+	/** Revision 6. */
+	R6("r6"),
 	
 	/** End. */
 	;
