@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: chv-linux
+X-SquirrelJME-Name: emulator-os-linux-generic
 X-SquirrelJME-UUID: 0ae6ba1b-8d2f-4b98-93ca-791ab313e934
-X-SquirrelJME-Depends: emulator, chv-generic-elf
+X-SquirrelJME-Depends: emulator, emulator-bin-elf
 X-SquirrelJME-Error: CB
 LIBlet-Title: Common HypoVisor (Linux)
 LIBlet-Vendor: Steven Gawroriski

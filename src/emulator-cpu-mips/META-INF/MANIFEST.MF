@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: emulator-mips
+X-SquirrelJME-Name: emulator-cpu-mips
 X-SquirrelJME-UUID: a010de48-ec69-4992-b0dd-c6f83b0d0f38
 X-SquirrelJME-Depends: emulator
 X-SquirrelJME-Error: BZ

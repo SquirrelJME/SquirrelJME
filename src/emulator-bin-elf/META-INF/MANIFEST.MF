@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: chv-generic-elf
+X-SquirrelJME-Name: emulator-bin-elf
 X-SquirrelJME-UUID: 7c8fdfdb-823c-4a10-8fad-229a80552fbb
 X-SquirrelJME-Depends: emulator, exe-elf
 X-SquirrelJME-Error: AD

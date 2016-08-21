@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: chv-linux-mips
+X-SquirrelJME-Name: emulator-os-linux-mips
 X-SquirrelJME-UUID: 9a0d7bfa-f39f-4fd0-9595-2376b64bf92c
-X-SquirrelJME-Depends: chv-linux, emulator-mips
+X-SquirrelJME-Depends: emulator-os-linux-generic, emulator-cpu-mips
 X-SquirrelJME-Error: CA
 LIBlet-Title: Common HypoVisor (Linux MIPS)
 LIBlet-Vendor: Steven Gawroriski
