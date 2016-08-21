@@ -75,6 +75,66 @@ public class POSIXPathTests
 		// Condense multiple fragments to single
 		__t.result("condenseroot16").compareObject(TestComparison.EQUALS,
 			Objects.toString(ink.get("////", "////", "////", "////")), "/");
+		
+		// Non-absolute as a single string
+		__t.result("nonabssingle").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("foo/bar")), "foo/bar");
+			
+		// Non-absolute as two strings
+		__t.result("nonabstwo").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("foo", "bar")), "foo/bar");
+			
+		// Non-absolute as two strings and a directory
+		__t.result("nonabstwod").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("foo", "bar/baz")), "foo/bar/baz");
+			
+		// Non-absolute as three strings
+		__t.result("nonabsthree").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("foo", "bar", "baz")), "foo/bar/baz");
+			
+		// Non-absolute as a directory and two strings
+		__t.result("nonabsdtwo").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("foo/bar", "baz")), "foo/bar/baz");
+		
+		// Absolute as a single string
+		__t.result("abssingle").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("/foo/bar")), "/foo/bar");
+			
+		// Absolute as two strings
+		__t.result("abstwo").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("/foo", "bar")), "/foo/bar");
+			
+		// Absolute as two strings and a directory
+		__t.result("abstwod").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("/foo", "bar/baz")), "/foo/bar/baz");
+			
+		// Absolute as three strings
+		__t.result("absthree").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("/foo", "bar", "baz")), "/foo/bar/baz");
+			
+		// Absolute as a directory and two strings
+		__t.result("absdtwo").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("/foo/bar", "baz")), "/foo/bar/baz");
+		
+		// Special as a single string
+		__t.result("specsingle").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("//foo/bar")), "//foo/bar");
+			
+		// Special as two strings
+		__t.result("spectwo").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("//foo", "bar")), "//foo/bar");
+			
+		// Special as two strings and a directory
+		__t.result("spectwod").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("//foo", "bar/baz")), "//foo/bar/baz");
+			
+		// Special as three strings
+		__t.result("specthree").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("//foo", "bar", "baz")), "//foo/bar/baz");
+			
+		// Special as a directory and two strings
+		__t.result("specdtwo").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("//foo/bar", "baz")), "//foo/bar/baz");
 	}
 }
 
