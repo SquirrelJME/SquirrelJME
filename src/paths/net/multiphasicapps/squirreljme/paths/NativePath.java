@@ -88,9 +88,10 @@ public interface NativePath
 	 * @param __o The path to resolve this one against.
 	 * @throws InvalidNativePathException If the other path is not valid or
 	 * the resulting path would not be valid.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/21
 	 */
 	public abstract NativePath resolve(NativePath __o)
-		throws InvalidNativePathException;
+		throws InvalidNativePathException, NullPointerException;
 }
 

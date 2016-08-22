@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.paths.posix;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Deque;
+import java.util.LinkedList;
 import net.multiphasicapps.squirreljme.paths.InvalidNativePathException;
 import net.multiphasicapps.squirreljme.paths.NativePath;
 import net.multiphasicapps.squirreljme.paths.NativePaths;
@@ -167,7 +169,7 @@ public final class PosixPath
 			return false;
 		
 		// Just forward to equals
-		return compareTo((PosixPath)__o) == 0;
+		return this == __o || compareTo((PosixPath)__o) == 0;
 	}
 	
 	/**
@@ -209,7 +211,8 @@ public final class PosixPath
 	public PosixPath normalize()
 	{
 		// Not a componentized path, use self
-		if (this._comps == null)
+		PosixPath[] comps = this._comps;
+		if (comps == null)
 			return this;
 		
 		// Get
@@ -218,7 +221,28 @@ public final class PosixPath
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			throw new Error("TODO");
+		{
+			// Handle . and ..
+			Deque<PosixPath> qq = new LinkedList<>();
+			for (PosixPath p : comps)
+			{
+				// Do not add dots
+				if (p.equals(CURRENT_DIR))
+					continue;
+				
+				// Remove last element
+				else if (p.equals(PARENT_DIR))
+					qq.pollLast();
+				
+				// Add otherwise
+				else
+					qq.addLast(p);
+			}
+			
+			// Store
+			this._normalized = new WeakReference<>((rv = new PosixPath(
+				this.root, qq.<PosixPath>toArray(new PosixPath[qq.size()]))));
+		}
 		
 		// Return
 		return rv;
@@ -229,9 +253,21 @@ public final class PosixPath
 	 * @since 2016/08/21
 	 */
 	@Override
-	public final NativePath resolve(NativePath __o)
-		throws InvalidNativePathException
+	public final PosixPath resolve(PosixPath __o)
+		throws InvalidNativePathException, NullPointerException
 	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// If the other is absolute use that
+		if (__o.isAbsolute())
+			return __o;
+		
+		// Do not resolve against the empty path
+		else if (__o.equals(EMPTY_PATH))
+			return this;
+		
 		throw new Error("TODO");
 	}
 	
