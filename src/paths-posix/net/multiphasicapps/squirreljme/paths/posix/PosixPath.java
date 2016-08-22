@@ -59,6 +59,9 @@ public final class PosixPath
 	/** String representation of this path. */
 	private volatile Reference<String> _string;
 	
+	/** Normalized path. */
+	private volatile Reference<PosixPath> _normalized;
+	
 	/**
 	 * Initializes a path that is special and may be a root.
 	 *
@@ -196,6 +199,29 @@ public final class PosixPath
 	{
 		// It is absolute, but only if there is a root
 		return this.root != null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/21
+	 */
+	@Override
+	public PosixPath normalize()
+	{
+		// Not a componentized path, use self
+		if (this._comps == null)
+			return this;
+		
+		// Get
+		Reference<PosixPath> ref = this._normalized;
+		PosixPath rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			throw new Error("TODO");
+		
+		// Return
+		return rv;
 	}
 	
 	/**

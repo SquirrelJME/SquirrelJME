@@ -29,6 +29,10 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
 public class LinuxEmulatorConfig
 	extends EmulatorConfig
 {
+	/** Mount points to use. */
+	private final Map<PosixPath, ZipFile> _mounts =
+		new HashMap<>();
+	
 	/**
 	 * Mounts the specified ZIP file at the given location.
 	 *
@@ -41,13 +45,23 @@ public class LinuxEmulatorConfig
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__at == null)
+		if (__zf == null || __at == null)
 			throw new NullPointerException("NARG");
+		
+		// Normalize the path
+		__at = __at.normalize();
+		
+		// {@squirreljme.error CB01 Only absolute paths may be specified as
+		// mount points. (The input path)}
+		if (__at.isAbsolute())
+			throw new IllegalArgumentException(String.format("CB01 %s", __at));
 		
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Add to mount points
+			Map<PosixPath, ZipFile> mounts = this._mounts;
+			mounts.put(__at, __zf);
 		}
 	}
 }

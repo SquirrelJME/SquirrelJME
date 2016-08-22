@@ -69,6 +69,15 @@ public interface NativePath
 	public abstract boolean isAbsolute();
 	
 	/**
+	 * Normalizes the given path, removing all current directory, parent
+	 * directory, and other similar components.
+	 *
+	 * @return The normalized path.
+	 * @since 2016/08/21
+	 */
+	public abstract NativePath normalize();
+	
+	/**
 	 * This resolves the other path against this one.
 	 *
 	 * If the other path is absolute then the other path is returned.
