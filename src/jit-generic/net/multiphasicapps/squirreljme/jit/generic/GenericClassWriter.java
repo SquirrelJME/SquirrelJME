@@ -103,6 +103,9 @@ public final class GenericClassWriter
 	/** The code stream being written to. */
 	private volatile __CodeStream__ _codes;
 	
+	/** The current method being written. */
+	private volatile __Method__ _method;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -255,24 +258,43 @@ public final class GenericClassWriter
 	 */
 	@Override
 	public JITMethodWriter code()
+		throws JITException
 	{
-		// Lock
-		synchronized (this.lock)
+		try
 		{
-			// Check order
-			__order(JITCompilerOrder.METHOD_CODE);
+			// Lock
+			synchronized (this.lock)
+			{
+				// Check order
+				__order(JITCompilerOrder.METHOD_CODE);
 			
-			// Create code stream
-			__CodeStream__ cs = new __CodeStream__(this, this.output);
-			this._codes = cs;
+				// Align
+				GenericNamespaceWriter owner = this.owner;
+				owner.__align();
 			
-			// Need 
-			GenericOutput goutput = this.owner._output;
+				// Set current code position
+				ExtendedDataOutputStream output = this.output;
+				__Method__ m = this._method;
+				m._codestart = (int)output.size();
 			
-			// Method logic is architecture dependent and as such this is
-			// delegated to other classes created by the handler for the given
-			// architecture
-			return goutput.__methodWriter(cs);
+				// Create code stream
+				__CodeStream__ cs = new __CodeStream__(this, output);
+				this._codes = cs;
+			
+				// Need 
+				GenericOutput goutput = owner._output;
+			
+				// Method logic is architecture dependent and as such this is
+				// delegated to other classes created by the handler for the
+				// given architecture
+				return goutput.__methodWriter(cs);
+			}
+		}
+		
+		// {@squirreljme.error BA0n Could not start writing machine code.}
+		catch (IOException e)
+		{
+			throw new JITException("BA0n", e);
 		}
 	}
 	
@@ -323,6 +345,9 @@ public final class GenericClassWriter
 		{
 			// Need to detect the end
 			this._writtenmethods++;
+			
+			// No longer in a method
+			this._method = null;
 		
 			// Check order
 			__order(JITCompilerOrder.END_METHOD);
@@ -444,7 +469,9 @@ public final class GenericClassWriter
 			__order(JITCompilerOrder.METHOD_INFORMATION);
 			
 			// Add new method
-			this._methods.add(new __Method__(this, __f, __n, __t));
+			__Method__ rv;
+			this._methods.add((rv = new __Method__(this, __f, __n, __t)));
+			this._method = rv;
 		}
 	}
 	

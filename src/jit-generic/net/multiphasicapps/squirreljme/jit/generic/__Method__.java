@@ -22,6 +22,12 @@ import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 class __Method__
 	extends __Member__
 {
+	/** The start position of code. */
+	volatile int _codestart;
+	
+	/** The end position of code. */
+	volatile int _codeend;
+	
 	/**
 	 * Initializes the method.
 	 *
