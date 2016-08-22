@@ -151,10 +151,11 @@ public final class PosixPath
 		// {@squirreljme.error BN01 The other path is not a POSIX path. (This
 		// path; the other path)}
 		if (!(__o instanceof PosixPath))
-			throw new InvalidNativePathException(String.format("BN01 %s %s",
+			throw new ClassCastException(String.format("BN01 %s %s",
 				this, __o));
 		
-		throw new Error("TODO");
+		// Use string comparison
+		return toString().compareTo(__o.toString());
 	}
 	
 	/**
@@ -253,19 +254,23 @@ public final class PosixPath
 	 * @since 2016/08/21
 	 */
 	@Override
-	public final PosixPath resolve(PosixPath __o)
-		throws InvalidNativePathException, NullPointerException
+	public final PosixPath resolve(NativePath __o)
+		throws ClassCastException, InvalidNativePathException,
+			NullPointerException
 	{
 		// Check
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
+		// Cast
+		PosixPath pp = (PosixPath)__o;
+		
 		// If the other is absolute use that
-		if (__o.isAbsolute())
-			return __o;
+		if (pp.isAbsolute())
+			return pp;
 		
 		// Do not resolve against the empty path
-		else if (__o.equals(EMPTY_PATH))
+		else if (pp.equals(EMPTY))
 			return this;
 		
 		throw new Error("TODO");

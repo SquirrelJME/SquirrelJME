@@ -32,12 +32,13 @@ public interface NativePath
 	 * it is used to sort files.
 	 *
 	 * @param __o The path to compare against.
-	 * @throws InvalidNativePathException If the other path is of another
-	 * path type (this is POSIX and the other is DOS).
+	 * @throws ClassCastException If the other path is not convertable to
+	 * the current class type.
 	 * @return An integer comparison.
 	 */
 	@Override
-	public abstract int compareTo(NativePath __o);
+	public abstract int compareTo(NativePath __o)
+		throws ClassCastException;
 	
 	/**
 	 * Checks if two paths are equal to each other. Native paths of different
@@ -86,12 +87,15 @@ public interface NativePath
 	 * other path is appended to the end of this path.
 	 *
 	 * @param __o The path to resolve this one against.
+	 * @throws ClassCastException If the other path is not convertable to
+	 * the current class type.
 	 * @throws InvalidNativePathException If the other path is not valid or
 	 * the resulting path would not be valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/21
 	 */
 	public abstract NativePath resolve(NativePath __o)
-		throws InvalidNativePathException, NullPointerException;
+		throws ClassCastException, InvalidNativePathException,
+			NullPointerException;
 }
 

@@ -47,3 +47,7 @@ memory format could be used on real VMs. Another consideration is that the
 emulated filesystems could also be used too, although that could be a bit
 tricky.
 
+## 20:26
+
+I wonder if `foo/../bar` is the same as `bar`. And that is not the case.
+
