@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.generic.GenericMethodWriter;
 import net.multiphasicapps.squirreljme.jit.generic.GenericOutput;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
@@ -34,6 +36,22 @@ public class MIPSOutput
 	public MIPSOutput(JITOutputConfig.Immutable __conf)
 	{
 		super(__conf);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/21
+	 */
+	@Override
+	protected GenericMethodWriter methodWriter(OutputStream __os)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		return new MIPSMethodWriter(this.config, __os);
 	}
 }
 

@@ -100,6 +100,9 @@ public final class GenericClassWriter
 	/** The method table position. */
 	private volatile int _methodtable;
 	
+	/** The code stream being written to. */
+	private volatile __CodeStream__ _codes;
+	
 	/**
 	 * Initializes the generic class writer.
 	 *
@@ -259,10 +262,17 @@ public final class GenericClassWriter
 			// Check order
 			__order(JITCompilerOrder.METHOD_CODE);
 			
+			// Create code stream
+			__CodeStream__ cs = new __CodeStream__(this, this.output);
+			this._codes = cs;
+			
+			// Need 
+			GenericOutput goutput = this.owner._output;
+			
 			// Method logic is architecture dependent and as such this is
 			// delegated to other classes created by the handler for the given
 			// architecture
-			throw new Error("TODO");
+			return goutput.__methodWriter(cs);
 		}
 	}
 	
@@ -514,6 +524,11 @@ public final class GenericClassWriter
 		// Lock
 		synchronized (this.lock)
 		{
+			// {@squirreljme.error BA0i Attempt to process another part of
+			// a class before the machine code writer has been closed.}
+			if (this._codes != null)
+				throw new JITException("BA0i");
+			
 			// {@squirreljme.error BA12 Partial write of class exceeds class
 			// size limitation. (The current class size)}
 			long sz;

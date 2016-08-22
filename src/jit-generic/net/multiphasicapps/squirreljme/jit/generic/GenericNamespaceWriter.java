@@ -66,6 +66,9 @@ public final class GenericNamespaceWriter
 	final __GlobalPool__ _gpool =
 		new __GlobalPool__(this);
 	
+	/** The output of the JIT. */
+	final GenericOutput _output;
+	
 	/** The entry index. */
 	private final List<__Index__> _index =
 		new LinkedList<>();
@@ -97,6 +100,7 @@ public final class GenericNamespaceWriter
 		this.namespace = __ns;
 		JITOutputConfig.Immutable config = __go.config();
 		this.config = config;
+		this._output = __go;
 		
 		// Get the cache creator because all generic output is to blobs
 		// {@squirreljme.error BA01 The JIT output configuration does not have

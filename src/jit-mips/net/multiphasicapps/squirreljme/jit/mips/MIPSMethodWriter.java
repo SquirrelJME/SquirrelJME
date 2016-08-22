@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.generic.GenericMethodWriter;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
  * This is a method writer which is able to generate MIPS machine code.
@@ -21,6 +23,21 @@ import net.multiphasicapps.squirreljme.jit.generic.GenericMethodWriter;
 public class MIPSMethodWriter
 	extends GenericMethodWriter
 {
+	/**
+	 * Initializes the MIPS machine code generator.
+	 *
+	 * @param __conf The configuration used.
+	 * @param __os Where bytes are written to.
+	 * @since 2016/08/21
+	 */
+	public MIPSMethodWriter(JITOutputConfig.Immutable __conf,
+		OutputStream __os)
+	{
+		super(__conf, __os);
+		
+		throw new Error("TODO");
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/19
