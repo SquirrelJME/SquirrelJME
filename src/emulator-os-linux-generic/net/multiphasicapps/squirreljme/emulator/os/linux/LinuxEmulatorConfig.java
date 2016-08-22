@@ -53,7 +53,7 @@ public class LinuxEmulatorConfig
 		
 		// {@squirreljme.error CB01 Only absolute paths may be specified as
 		// mount points. (The input path)}
-		if (__at.isAbsolute())
+		if (!__at.isAbsolute())
 			throw new IllegalArgumentException(String.format("CB01 %s", __at));
 		
 		// Lock
