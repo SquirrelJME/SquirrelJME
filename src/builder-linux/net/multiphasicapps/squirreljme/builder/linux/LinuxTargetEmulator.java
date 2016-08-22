@@ -70,6 +70,9 @@ public abstract class LinuxTargetEmulator
 		PosixPath binpath = loaddir.resolve(pxp.get(
 			args.executableName("squirreljme")));
 		
+		// Debug
+		System.err.printf("DEBUG -- Execute: %s%n", binpath);
+		
 		if (true)
 			throw new Error("TODO");
 		

@@ -14,6 +14,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.paths.InvalidNativePathException;
 import net.multiphasicapps.squirreljme.paths.NativePath;
 import net.multiphasicapps.squirreljme.paths.NativePaths;
@@ -273,7 +274,30 @@ public final class PosixPath
 		else if (pp.equals(EMPTY))
 			return this;
 		
-		throw new Error("TODO");
+		// Build resolved path
+		List<PosixPath> rv = new LinkedList<>();
+		
+		// Just a fragment?
+		if (this.fragment != null)
+			rv.add(this);
+		
+		// Add components
+		else
+			for (PosixPath p : this._comps)
+				rv.add(p);
+		
+		// If the other is just a fragment, add that
+		if (pp.fragment != null)
+			rv.add(pp);
+		
+		// Otherwise add all of its components
+		else
+			for (PosixPath p : pp._comps)
+				rv.add(p);
+		
+		// Return it
+		return new PosixPath(this.root, rv.<PosixPath>toArray(
+			new PosixPath[rv.size()]));
 	}
 	
 	/**
