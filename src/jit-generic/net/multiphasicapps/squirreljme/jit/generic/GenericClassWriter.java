@@ -163,69 +163,69 @@ public final class GenericClassWriter
 	public void close()
 		throws JITException
 	{
-		// Lock
-		synchronized (this.lock)
+		// Could fail
+		try
 		{
-			// Close if not closed
-			if (!this._closed)
+			// Lock
+			synchronized (this.lock)
 			{
-				// Mark closed
-				this._closed = true;
-				
-				// Could fail
-				try
+				// Close if not closed
+				if (!this._closed)
 				{
+					// Mark closed
+					this._closed = true;
+				
 					// Get output
 					ExtendedDataOutputStream dos = this.output;
-					
+				
 					// Align
 					while ((dos.size() & 3) != 0)
 						dos.writeByte(0);
-					
+				
 					// Current class name
 					dos.writeShort(this.classnamedx);
-					
+				
 					// The super class name
 					dos.writeShort(this._scpooldx);
-					
+				
 					// The interfaces implemented
 					dos.writeShort(this._ifacepos);
 					dos.writeShort(this._ifacecount);
-					
+				
 					// The class flags
 					int flags = 0;
 					for (JITClassFlag f : this._flags)
 						flags |= (1 << f.ordinal());
 					dos.writeShort(flags);
-					
+				
 					// Field table
 					dos.writeShort(this._fieldtable);	// offset
 					dos.writeShort(this._fieldcount);	// size
-					
+				
 					// Method table
 					dos.writeShort(this._methodtable);	// offset
 					dos.writeShort(this._methodcount);	// size
-					
+				
 					// {@squirreljme.error BA13 The final class size exceeds
 					// the class size limitation. (The class size)}
 					long esz;
 					if ((esz = dos.size()) > _SIZE_LIMIT)
 						throw new JITException(String.format("BA13 %d", esz));
-				}
-			
-				// {@squirreljme.error BA11 Failed to write the end of the
-				// class.}
-				catch (IOException e)
-				{
-					throw new JITException("BA11", e);
-				}
 				
-				// Clear the current pool
-				this._gpool.__setCurrent(null);
-			}
+					// Clear the current pool
+					this._gpool.__setCurrent(null);
+				}
 			
-			// Super close
-			super.close();
+				// Super close
+				super.close();
+			}
+		}
+			
+		// {@squirreljme.error BA11 Failed to write the end of the
+		// class.}
+		catch (IOException e)
+		{
+			throw new JITException("BA11", e);
 		}
 	}
 	
@@ -410,29 +410,29 @@ public final class GenericClassWriter
 		if (__ins == null || __dxs == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock
-		synchronized (this.lock)
+		// Could fail
+		try
 		{
-			// Check order
-			__order(JITCompilerOrder.INTERFACE_CLASS_NAMES);
-			
-			// Could fail
-			try
+			// Lock
+			synchronized (this.lock)
 			{
+				// Check order
+				__order(JITCompilerOrder.INTERFACE_CLASS_NAMES);
+			
 				// Get output
 				ExtendedDataOutputStream dos = this.output;
-				
+			
 				// Align
 				while ((dos.size() & 3) != 0)
 					dos.writeByte(0);
-			
+		
 				// {@squirreljme.error BA0z The interface table starts at a
 				// position outside the range of the class size limit.}
 				long pos = dos.size();
 				if (pos < 0 || pos > _SIZE_LIMIT)
 					throw new JITException("BA0z");
 				this._ifacepos = (int)pos;
-			
+		
 				// Write
 				__GlobalPool__ gpool = this._gpool;
 				int n = __ins.length;
@@ -440,12 +440,12 @@ public final class GenericClassWriter
 				for (int i = 0; i < n; i++)
 					dos.writeShort(gpool.__loadClass(__ins[i])._index);
 			}
-			
-			// {@squirreljme.error BA10 Failed to write the interface table.}
-			catch (IOException e)
-			{
-				throw new JITException("BA10", e);
-			}
+		}
+		
+		// {@squirreljme.error BA10 Failed to write the interface table.}
+		catch (IOException e)
+		{
+			throw new JITException("BA10", e);
 		}
 	}
 	
