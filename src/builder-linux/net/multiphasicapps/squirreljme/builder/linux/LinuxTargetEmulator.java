@@ -61,7 +61,14 @@ public abstract class LinuxTargetEmulator
 		LinuxEmulatorConfig conf = rv.config();
 		
 		// Mount the ZIP to /opt
-		conf.mount(arguments.zipFile(), PosixPaths.instance().get("/opt"));
+		PosixPaths pxp = PosixPaths.instance();
+		PosixPath loaddir = pxp.get("/opt");
+		conf.mount(arguments.zipFile(), loaddir);
+		
+		// Determine the binary name to launch
+		TargetEmulatorArguments args = this.arguments;
+		PosixPath binpath = loaddir.resolve(pxp.get(
+			args.executableName("squirreljme")));
 		
 		if (true)
 			throw new Error("TODO");
