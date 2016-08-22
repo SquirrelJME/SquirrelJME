@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.base.mips.MIPSVariant;
 import net.multiphasicapps.squirreljme.jit.generic.GenericMethodWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
@@ -23,6 +25,9 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 public class MIPSMethodWriter
 	extends GenericMethodWriter
 {
+	/** The MIPS CPU variant. */
+	protected final MIPSVariant variant;
+	
 	/**
 	 * Initializes the MIPS machine code generator.
 	 *
@@ -35,7 +40,8 @@ public class MIPSMethodWriter
 	{
 		super(__conf, __os);
 		
-		throw new Error("TODO");
+		// Determine the variant
+		this.variant = MIPSVariant.fromTriplet(__conf.triplet());
 	}
 	
 	/**

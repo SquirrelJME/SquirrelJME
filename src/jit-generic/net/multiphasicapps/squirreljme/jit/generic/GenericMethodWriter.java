@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
@@ -33,6 +35,12 @@ public abstract class GenericMethodWriter
 	
 	/** The stream to write to. */
 	protected final ExtendedDataOutputStream output;
+	
+	/** The output endianess. */
+	protected final JITCPUEndian endianess;
+	
+	/** The bit level of the CPU. */
+	protected final int wordsize;
 	
 	/**
 	 * Initializes the generic method writer.
@@ -56,7 +64,9 @@ public abstract class GenericMethodWriter
 		this.output = dos;
 		
 		// Set endianess
-		switch (__conf.triplet().endianess())
+		JITCPUEndian endianess;
+		JITTriplet triplet = __conf.triplet();
+		switch ((endianess = triplet.endianess()))
 		{
 				// Big endian
 			case BIG:
@@ -72,6 +82,10 @@ public abstract class GenericMethodWriter
 			default:
 				throw new RuntimeException("OOPS");
 		}
+		this.endianess = endianess;
+		
+		// CPU bits
+		this.wordsize = triplet.bits();
 	}
 	
 	/**
