@@ -210,7 +210,17 @@ public final class PosixPath
 	 * @since 2016/08/21
 	 */
 	@Override
-	public PosixPath normalize()
+	public final boolean isRoot()
+	{
+		return this.isroot;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/21
+	 */
+	@Override
+	public final PosixPath normalize()
 	{
 		// Not a componentized path, use self
 		PosixPath[] comps = this._comps;

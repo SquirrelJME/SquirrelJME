@@ -163,6 +163,21 @@ public class POSIXPathTests
 		// Is non root multiple directories not absolute?
 		__t.result("isnonrootcnonabs").compareObject(TestComparison.EQUALS,
 			ink.get("squirrels/are/awesome").isAbsolute(), false);
+		
+		// Relative against relative
+		__t.result("resolverelrel").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("squirrels").resolve(ink.get("great"))),
+			"squirrels/great");
+		
+		// Relative against absolute
+		__t.result("resolverelabs").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("squirrels").resolve(ink.get("/great"))),
+			"/great");
+		
+		// Absolute against relative
+		__t.result("resolveabsrel").compareObject(TestComparison.EQUALS,
+			Objects.toString(ink.get("/squirrels").resolve(ink.get("great"))),
+			"/squirrels/great");
 	}
 }
 

@@ -78,25 +78,6 @@ public abstract class LinuxTargetEmulator
 		
 		// Return it
 		return rv;
-		
-		/*
-		// Get triplet
-		TargetEmulatorArguments arguments = this.arguments;
-		JITTriplet triplet = arguments.triplet();
-		
-		// Create Linux hypervisor
-		LinuxMIPSHypoVisor hv = new LinuxMIPSHypoVisor();
-		
-		// "init" is the process to start (and becomes PID 1)
-		hv.setInit(arguments.loadExecutable("squirreljme"),
-			arguments.fullArguments("squirreljme"));
-		
-		// Setup emulator
-		MIPSEmulator rv = new MIPSEmulator(hv, triplet.bits(),
-			triplet.endianess(), triplet.architectureVariant());
-		
-		// Return it
-		return rv;*/
 	}
 }
 

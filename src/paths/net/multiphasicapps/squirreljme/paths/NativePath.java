@@ -70,6 +70,14 @@ public interface NativePath
 	public abstract boolean isAbsolute();
 	
 	/**
+	 * Is this a path which only contains the root component?
+	 *
+	 * @return {@code true} if this is the root component.
+	 * @since 2016/08/21
+	 */
+	public abstract boolean isRoot();
+	
+	/**
 	 * Normalizes the given path, removing all current directory, parent
 	 * directory, and other similar components.
 	 *
