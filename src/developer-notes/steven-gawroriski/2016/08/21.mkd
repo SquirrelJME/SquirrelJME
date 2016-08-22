@@ -51,3 +51,13 @@ tricky.
 
 I wonder if `foo/../bar` is the same as `bar`. And that is not the case.
 
+## 21:26
+
+I would say for simplicity when it comes to permissions and such that ACLs are
+used.
+
+## 21:33
+
+Databases in Palm OS could be handled and treated by SquirrelJME as resource
+forks using special names and such.
+
