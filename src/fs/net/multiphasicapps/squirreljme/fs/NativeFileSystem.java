@@ -16,12 +16,13 @@ import net.multiphasicapps.squirreljme.paths.NativePath;
 import net.multiphasicapps.squirreljme.paths.NativePaths;
 
 /**
- * This is an interface which is used to .
+ * This is an interface which provides access to native filesystems which
+ * may be supported on a given system.
  *
  * @since 2016/08/21
  */
 public interface NativeFileSystem
-	implements Closeable
+	extends Closeable
 {
 	/**
 	 * Returns an array containing the root directories which are currently
