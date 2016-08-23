@@ -65,5 +65,17 @@ final class __CodeDecoder__
 		this._type = __t;
 		this._writer = __mlw;
 	}
+	
+	/**
+	 * Decodes the code attribute and any of its contained data
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/08/23
+	 */
+	void __decode()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
 }
 

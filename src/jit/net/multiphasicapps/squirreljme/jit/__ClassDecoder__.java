@@ -348,9 +348,7 @@ final class __ClassDecoder__
 						{
 							// Setup decoder
 							new __CodeDecoder__(this, cis, this._mflags,
-								this._mtype, mlw);
-						
-							throw new Error("TODO");
+								this._mtype, mlw).__decode();
 						}
 					
 						// Unknown
