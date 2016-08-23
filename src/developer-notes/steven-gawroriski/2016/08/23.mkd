@@ -1,0 +1,6 @@
+# 2016/08/23
+
+## 12:08
+
+So I must get into the machine code compiler.
+
