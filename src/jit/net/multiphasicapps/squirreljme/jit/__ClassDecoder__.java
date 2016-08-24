@@ -300,7 +300,7 @@ final class __ClassDecoder__
 		if (len < 0)
 			throw new JITException("ED19");
 		
-		// Depends on the 
+		// Depends on the thing containing the attributes
 		switch (__af)
 		{
 				// Classes
@@ -319,7 +319,10 @@ final class __ClassDecoder__
 						if (this._fieldcv != null)
 							throw new JITException("ED04");
 						
-						throw new Error("TODO");
+						if (true)
+							throw new Error("TODO");
+						
+						return;
 					
 						// Unknown
 					default:
@@ -349,8 +352,11 @@ final class __ClassDecoder__
 							// Setup decoder and give the writer the
 							// program
 							mlw.acceptProgram(new __CodeDecoder__(this, cis,
-								this._mflags, this._mtype, mlw).__decode();
+								this._mflags, this._mtype, mlw).__decode());
 						}
+						
+						// Done
+						return;
 					
 						// Unknown
 					default:
@@ -365,7 +371,10 @@ final class __ClassDecoder__
 						// The stack map table
 					case "StackMap":
 					case "StackMapTable":
-						throw new Error("TODO");
+						if (true)
+							throw new Error("TODO");
+						
+						return;
 					
 						// Unknown
 					default:
