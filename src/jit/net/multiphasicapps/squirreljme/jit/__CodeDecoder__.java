@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
@@ -87,11 +88,25 @@ final class __CodeDecoder__
 		int maxlocals = input.readUnsignedShort();
 		
 		// {@squirreljme.error ED06 The code for a given method exceeds the
-		// code size limit. (The current code length; The code size limit)}
+		// code size limit, or the size is zero. (The current code length;
+		// The code size limit)}
 		int codelen = input.readInt();
-		if (codelen < 0 || codelen > _CODE_SIZE_LIMIT)
+		if (codelen <= 0 || codelen > _CODE_SIZE_LIMIT)
 			throw new JITException(String.format("ED06 %d %d",
 				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
+		
+		// Setup read for byte code
+		try (DataInputStream cdis = new DataInputStream(
+			new SizeLimitedInputStream(input, codelen, true)))
+		{
+			if (true)
+				throw new Error("TODO");
+		}
+		
+		// Read the exception table
+		int numex = input.readUnsignedShort();
+		for (int i = 0; i < numex; i++)
+			throw new Error("TODO");
 		
 		throw new Error("TODO");
 	}

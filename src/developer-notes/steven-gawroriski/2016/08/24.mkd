@@ -4,3 +4,8 @@
 
 Appears __ClassDecoder__ hit the size limitation now.
 
+## 09:24
+
+So I have decided on micro operations and a quick generate microops using a
+simple linear pass.
+
