@@ -13,3 +13,8 @@ simple linear pass.
 
 The method writer should just be given the program to write.
 
+## 12:17
+
+I noticed that the huffman test and the DHIS tests fail. DHIS was just a TODO
+and for the huffman tree, I might just revert to an earlier revision.
+
