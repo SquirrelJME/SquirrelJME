@@ -2,9 +2,11 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: mascot-original
 X-SquirrelJME-UUID: 81c08ece-ed04-4607-a816-3d553bb2ba5c
 X-SquirrelJME-Depends: mascot
-LIBlet-Title: SquirrelJME Mascot (Origal Art)
+LIBlet-Title: SquirrelJME Mascot (Original Art)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This project contains the original 
- images of the SquirrelJME mascot.
+ images of the SquirrelJME mascot. Note that the SVG is 
+ now the reference drawing for the macot, these PNG images 
+ are now for historical purposes.
 
