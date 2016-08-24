@@ -9,3 +9,7 @@ Appears __ClassDecoder__ hit the size limitation now.
 So I have decided on micro operations and a quick generate microops using a
 simple linear pass.
 
+## 10:43
+
+The method writer should just be given the program to write.
+

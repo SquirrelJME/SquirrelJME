@@ -22,6 +22,17 @@ public interface JITMethodWriter
 	extends AutoCloseable
 {
 	/**
+	 * Accepts a program to be natively compiled into machine code.
+	 *
+	 * @param __p The program to accept.
+	 * @throws JITException If it could not be accepted.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/24
+	 */
+	public abstract void acceptProgram(JITMethodProgram __p)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/19
 	 */

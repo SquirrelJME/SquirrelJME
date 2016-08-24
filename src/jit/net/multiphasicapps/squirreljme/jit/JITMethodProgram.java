@@ -10,16 +10,21 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-
 /**
- * This is an interface which defines something which accepts logical
- * operations such as accessing memory, performing math, and other such
- * things.
+ * This is a representation of the program to convert into native machine code
+ * or another form.
  *
- * @since 2016/07/06
+ * @since 2016/08/24
  */
-public interface JITLogicAcceptor
+public final class JITMethodProgram
 {
+	/**
+	 * Initializes the program.
+	 *
+	 * @since 2016/08/24
+	 */
+	JITMethodProgram()
+	{
+	}
 }
 
