@@ -18,3 +18,8 @@ The method writer should just be given the program to write.
 I noticed that the huffman test and the DHIS tests fail. DHIS was just a TODO
 and for the huffman tree, I might just revert to an earlier revision.
 
+## 12:27
+
+But I believe I will deprecate the object based one and just stick with the
+integer based one instead.
+

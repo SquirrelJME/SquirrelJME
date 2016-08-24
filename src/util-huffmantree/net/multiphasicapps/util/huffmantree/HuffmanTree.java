@@ -35,6 +35,7 @@ import java.util.Set;
  * @param <T> The type of values to store in the tree.
  * @since 2016/03/10
  */
+@Deprecated
 public class HuffmanTree<T>
 	implements Iterable<T>
 {

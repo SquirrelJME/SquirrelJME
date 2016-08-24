@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
  * @param <T> The type of value to return.
  * @since 2016/03/28
  */
+@Deprecated
 public interface HuffmanTreeTraverser<T>
 {
 	/**
