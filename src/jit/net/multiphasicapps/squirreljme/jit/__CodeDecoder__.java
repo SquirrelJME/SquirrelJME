@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 
 /**
@@ -23,6 +24,10 @@ import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
  */
 final class __CodeDecoder__
 {
+	/** The maximum number of bytes the code attribute can be. */
+	private static final int _CODE_SIZE_LIMIT =
+		65535;
+	
 	/** The owning class decoder. */
 	final __ClassDecoder__ _decoder;
 	
@@ -80,6 +85,13 @@ final class __CodeDecoder__
 		// Read max stack and locals
 		int maxstack = input.readUnsignedShort();
 		int maxlocals = input.readUnsignedShort();
+		
+		// {@squirreljme.error ED06 The code for a given method exceeds the
+		// code size limit. (The current code length; The code size limit)}
+		int codelen = input.readInt();
+		if (codelen < 0 || codelen > _CODE_SIZE_LIMIT)
+			throw new JITException(String.format("ED06 %d %d",
+				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
 		
 		throw new Error("TODO");
 	}
