@@ -346,9 +346,10 @@ final class __ClassDecoder__
 							DataInputStream cis = new DataInputStream(
 								new SizeLimitedInputStream(__di, len, true)))
 						{
-							// Setup decoder
-							new __CodeDecoder__(this, cis, this._mflags,
-								this._mtype, mlw).__decode();
+							// Setup decoder and give the writer the
+							// program
+							mlw.acceptProgram(new __CodeDecoder__(this, cis,
+								this._mflags, this._mtype, mlw).__decode();
 						}
 					
 						// Unknown

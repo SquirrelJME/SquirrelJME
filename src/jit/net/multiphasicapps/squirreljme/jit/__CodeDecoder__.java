@@ -75,10 +75,11 @@ final class __CodeDecoder__
 	/**
 	 * Decodes the code attribute and any of its contained data
 	 *
+	 * @return The program to be given to the writer.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/08/23
 	 */
-	void __decode()
+	JITMethodProgram __decode()
 		throws IOException
 	{
 		DataInputStream input = this._input;
