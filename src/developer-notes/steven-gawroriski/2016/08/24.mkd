@@ -23,3 +23,10 @@ and for the huffman tree, I might just revert to an earlier revision.
 But I believe I will deprecate the object based one and just stick with the
 integer based one instead.
 
+## 16:44
+
+For the exception handler I can instead have a different place for the
+generated code. If an exception is handled it will just enter the exception
+handler for a given method. If an exception is not caught then it will
+propogate upwards the stack by unwinding it automatically in each stack frame.
+

@@ -100,14 +100,55 @@ final class __CodeDecoder__
 		try (DataInputStream cdis = new DataInputStream(
 			new SizeLimitedInputStream(input, codelen, true)))
 		{
-			if (true)
-				throw new Error("TODO");
+			__decodeOps(cdis);
 		}
 		
 		// Read the exception table
 		int numex = input.readUnsignedShort();
 		for (int i = 0; i < numex; i++)
 			throw new Error("TODO");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Decodes operations into micro-operations.
+	 *
+	 * @param __dis The operation source.
+	 * @throws IOException On read errors.
+	 * @throws JITException On decode errors.
+	 * @since 2016/08/24
+	 */
+	private void __decodeOps(DataInputStream __dis)
+		throws IOException, JITException
+	{
+		// Check
+		if (__dis == null)
+			throw new NullPointerException("NARG");
+		
+		// Decode loop
+		for (;;)
+		{
+			// Read
+			int code = __dis.read();
+			
+			// EOF?
+			if (code < 0)
+				break;
+			
+			// Wide? Read another
+			if (code == __OpIndex__.WIDE)
+				code = (code << 8) | __dis.readUnsignedByte();
+			
+			// Depends
+			switch (code)
+			{
+					// {@squirreljme.error ED07 Unknown byte-code operation.
+					// (The operation)}
+				default:
+					throw new JITException(String.format("ED07 %d", code));
+			}
+		}
 		
 		throw new Error("TODO");
 	}
