@@ -75,6 +75,12 @@ final class __CodeDecoder__
 	void __decode()
 		throws IOException
 	{
+		DataInputStream input = this._input;
+		
+		// Read max stack and locals
+		int maxstack = input.readUnsignedShort();
+		int maxlocals = input.readUnsignedShort();
+		
 		throw new Error("TODO");
 	}
 }
