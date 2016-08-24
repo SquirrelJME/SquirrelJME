@@ -186,6 +186,35 @@ public class HuffmanTreeInt
 	}
 	
 	/**
+	 * Finds the bit sequence associated with the given value.
+	 *
+	 * @param __i The value to find the sequence for the given bit pattern.
+	 * @return A {@code long} where the upper 32-bits is the bit mask while
+	 * the lower 32-bits are the symbol.
+	 * @throws NoSuchElementException If no sequence was found.
+	 * @since 2016/08/24
+	 */
+	public final long findSequence(int __i)
+		throws NoSuchElementException
+	{
+		// Get values
+		int[] vals = this._values;
+		
+		// No values? nothing will ever be found
+		if (vals == null)
+			throw new NoSuchElementException("NSEE");
+		
+		// Look through all values
+		int n = vals.length;
+		for (int i = 0; i < n; i++)
+			if (vals[i] == __i)
+				return __recursiveMatch(0, 0, 0, -(i + 1));
+		
+		// Not found
+		throw new NoSuchElementException("NSEE");
+	}
+	
+	/**
 	 * Returns the value obtained via the given bit source.
 	 *
 	 * @param __bs The source for bits.

@@ -13,7 +13,9 @@ package net.multiphasicapps.tests.util.huffmantree;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.EOFException;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.io.bits.BitCompactor;
 import net.multiphasicapps.io.bits.BitInputStream;
 import net.multiphasicapps.tests.IndividualTest;
@@ -23,8 +25,8 @@ import net.multiphasicapps.tests.TestFamily;
 import net.multiphasicapps.tests.TestFragmentName;
 import net.multiphasicapps.tests.TestGroupName;
 import net.multiphasicapps.tests.TestInvoker;
-import net.multiphasicapps.util.huffmantree.HuffmanTree;
-import net.multiphasicapps.util.huffmantree.HuffmanTreeTraverser;
+import net.multiphasicapps.util.huffmantree.BitSource;
+import net.multiphasicapps.util.huffmantree.HuffmanTreeInt;
 
 /**
  * This contains tests for the huffman tree.
@@ -55,7 +57,7 @@ public class HuffmanTreeTests
 			throw new NullPointerException();
 		
 		// Setup base tree to store characters
-		HuffmanTree<Character> htree = new HuffmanTree<>();
+		HuffmanTreeInt htree = new HuffmanTreeInt();
 		
 		// Add them all individually
 		htree.add('G', 0b010, 0b111);
@@ -100,11 +102,7 @@ public class HuffmanTreeTests
 				// Find the symbol
 				long dat = htree.findSequence(msg.charAt(i));
 				
-				// Not found, stop
-				if (dat == -1L)
-					break;
-				
-				// Otherwise add it
+				// Add it
 				bc.add((int)dat, (int)(dat >>> 32), true);
 			}
 			
@@ -123,36 +121,47 @@ public class HuffmanTreeTests
 		// Wrap in case of nulls
 		try (ByteArrayInputStream bais =
 			new ByteArrayInputStream(encodedas);
-			BitInputStream bis = new BitInputStream(bais, false))
+			final BitInputStream bis = new BitInputStream(bais, false))
 		{
-			// Read until end of bits
-			for (HuffmanTreeTraverser<Character> trav = null;;)
-			{
-				// Need a new traverser?
-				if (trav == null)
-					trav = htree.traverser();
-				
-				// Read single bit
-				int val = bis.readBitsInt(1);
-				
-				// Traverse down
-				trav.traverse(val);
-				
-				// Is there an object here?
-				if (trav.hasValue())
+			// Setup bit source
+			BitSource bs = new BitSource()
 				{
-					// Get the value and add it to the string
-					Character c = trav.getValue();
-					sb.append(c);
-					
-					// Clear traverse
-					trav = null;
-					
-					// Stop when the message length was reached
-					if (sb.length() == MESSAGE.length())
-						break;
+					/**
+					 * {@inheritDoc}
+					 * @since 2016/08/24
+					 */
+					@Override
+					public boolean nextBit()
+					{
+						try
+						{
+							return bis.read();
+						}
+						
+						catch (EOFException e)
+						{
+							throw new NoSuchElementException("NSEE");
+						}
+						
+						catch (IOException e)
+						{
+							throw new RuntimeException("IOIO", e);
+						}
+					}
+				};
+			
+			// Read until EOF
+			for (;;)
+				try
+				{
+					sb.append((char)htree.getValue(bs));
 				}
-			}
+				
+				// End of file, stop
+				catch (NoSuchElementException e)
+				{
+					break;
+				}
 		}
 		
 		// Check

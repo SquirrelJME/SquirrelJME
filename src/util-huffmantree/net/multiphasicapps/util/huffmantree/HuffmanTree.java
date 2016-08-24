@@ -587,7 +587,7 @@ public class HuffmanTree<T>
 		{
 			rv = __recursiveMatch(jr, (__huf << 1) | 1, (__mask << 1) | 1,
 				__match);
-			if (rv != 1L)
+			if (rv != -1L)
 				return rv;
 		}
 		
