@@ -235,9 +235,7 @@ public class DynamicHistoryInputStream
 			return 0;
 		
 		// Read from the buffer
-		if (true)
-			throw new Error("TODO");
-		/*buffer.get(__a, __b, __o, rc);*/
+		buffer.get(__a, __b, __o, rc);
 		return rc;
 	}
 	
