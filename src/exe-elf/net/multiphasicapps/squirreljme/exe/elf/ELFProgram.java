@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This is a single program in the program header which can be loaded or not
@@ -32,8 +33,11 @@ public final class ELFProgram
 	/** The name of this namespace. */
 	final String _name;
 	
-	/** The namespace data. */
-	final byte[] _data;
+	/** The namespace data (array). */
+	final byte[] _dataa;
+	
+	/** The namespace data (deque). */
+	final ByteDeque _dataq;
 	
 	/** The namespace length. */
 	final int _length;
@@ -88,31 +92,29 @@ public final class ELFProgram
 		// Set
 		this._name = __n;
 		
-		// Copy the data
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		// Setup queue
+		ByteDeque dataq = new ByteDeque();
+		this._dataq = dataq;
+		
+		// Copy all of the data
+		byte[] buf = new byte[4096];
+		for (;;)
 		{
-			// Copy all of the data
-			byte[] buf = new byte[4096];
-			for (;;)
-			{
-				int rc = __is.read(buf);
-				
-				// EOF?
-				if (rc < 0)
-					break;
-				
-				// Copy
-				baos.write(buf, 0, rc);
-			}
+			int rc = __is.read(buf);
 			
-			// Flush, just in case
-			baos.flush();
+			// EOF?
+			if (rc < 0)
+				break;
 			
-			// Setup buffer
-			byte[] dest = baos.toByteArray();
-			this._data = dest;
-			this._length = dest.length;
+			// Add to the end of the queue
+			dataq.addLast(buf, 0, rc);
 		}
+		
+		// Set length
+		this._length = dataq.available();
+		
+		// Array not used
+		this._dataa = null;
 	}
 	
 	/**
@@ -144,8 +146,9 @@ public final class ELFProgram
 		this._name = __n;
 		byte[] dest = new byte[__l];
 		System.arraycopy(__b, __o, dest, 0, __l);
-		this._data = dest;
+		this._dataa = dest;
 		this._length = __l;
+		this._dataq = null;
 	}
 	
 	/**

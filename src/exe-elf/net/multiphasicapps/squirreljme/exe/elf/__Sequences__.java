@@ -18,6 +18,7 @@ import java.util.List;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.util.datadeque.ByteDeque;
 
 /**
  * This contains the sequences which are used to output the specified ELF.
@@ -415,7 +416,15 @@ class __Sequences__
 		{
 			// Write it here
 			ELFProgram program = this._program;
-			__dos.write(program._data, 0, program._length);
+			
+			// Either uses an array or a deque
+			ByteDeque dq = program._dataq;
+			if (dq != null)
+				dq.writeTo(__dos);
+			
+			// Use array
+			else
+				__dos.write(program._dataa);
 		}
 	}
 	

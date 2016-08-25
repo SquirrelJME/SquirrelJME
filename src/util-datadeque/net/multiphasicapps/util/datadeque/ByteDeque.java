@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.util.datadeque;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -918,6 +920,24 @@ public class ByteDeque
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("BAOB");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Writes the entire deque into the specified output stream.
+	 *
+	 * @param __os The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/25
+	 */
+	public final void writeTo(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__os == null)
+			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
 	}
