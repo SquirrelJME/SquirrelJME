@@ -143,7 +143,11 @@ final class __CodeDecoder__
 			// Depends
 			switch (code)
 			{
+					// Waste electrons
 				case __OpIndex__.NOP:
+					throw new Error("TODO");
+				
+					// Push null constant
 				case __OpIndex__.ACONST_NULL:
 					throw new Error("TODO");
 				
