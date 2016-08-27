@@ -15,7 +15,6 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.base.mips.MIPSVariant;
 import net.multiphasicapps.squirreljme.jit.generic.GenericMethodWriter;
-import net.multiphasicapps.squirreljme.jit.JITMethodProgram;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
@@ -43,21 +42,6 @@ public class MIPSMethodWriter
 		
 		// Determine the variant
 		this.variant = MIPSVariant.fromTriplet(__conf.triplet());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/08/24
-	 */
-	@Override
-	public void acceptProgram(JITMethodProgram __prg)
-		throws JITException, NullPointerException
-	{
-		// Check
-		if (__prg == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
 	}
 	
 	/**

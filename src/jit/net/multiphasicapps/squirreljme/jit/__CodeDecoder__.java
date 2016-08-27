@@ -33,9 +33,6 @@ final class __CodeDecoder__
 	private static final int _CODE_SIZE_LIMIT =
 		65535;
 	
-	/** The output program. */
-	final JITMethodProgram _program;
-	
 	/** The owning class decoder. */
 	final __ClassDecoder__ _decoder;
 	
@@ -77,19 +74,15 @@ final class __CodeDecoder__
 		this._flags = __f;
 		this._type = __t;
 		this._writer = __mlw;
-		
-		// Initialize program early
-		this._program = new JITMethodProgram();
 	}
 	
 	/**
 	 * Decodes the code attribute and any of its contained data
 	 *
-	 * @return The program to be given to the writer.
 	 * @throws IOException On read/write errors.
 	 * @since 2016/08/23
 	 */
-	JITMethodProgram __decode()
+	void __decode()
 		throws IOException
 	{
 		DataInputStream input = this._input;
@@ -106,17 +99,6 @@ final class __CodeDecoder__
 			throw new JITException(String.format("ED06 %d %d",
 				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
 		
-		// Store the base positions for all operations so that they can later
-		// be spliced into basic blocks
-		// Clear all values to illegal positions to mark that no instructions
-		// are actually there
-		int[] blockstart = new int[codelen];
-		for (int i = 0; i < codelen; i++)
-			blockstart[i] = -1;
-		
-		// Target program to be returned
-		JITMethodProgram rv = this._program;
-		
 		// Setup read for byte code
 		try (ExtendedDataInputStream cdis = new ExtendedDataInputStream(
 			new SizeLimitedInputStream(input, codelen, true)))
@@ -125,7 +107,7 @@ final class __CodeDecoder__
 			cdis.setEndianess(DataEndianess.BIG);
 			
 			// Decode
-			__decodeOps(blockstart, cdis);
+			__decodeOps(cdis);
 		}
 		
 		// Read the exception table
@@ -142,32 +124,24 @@ final class __CodeDecoder__
 			throw new Error("TODO");
 		
 		// Done
-		return rv;
+		throw new Error("TODO");
 	}
 	
 	/**
 	 * Decodes operations into micro-operations.
 	 *
-	 * @param __bs Block start positions.
 	 * @param __dis The operation source.
 	 * @throws IOException On read errors.
 	 * @throws JITException On decode errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/24
 	 */
-	private void __decodeOps(int[] __bs, ExtendedDataInputStream __dis)
+	private void __decodeOps(ExtendedDataInputStream __dis)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check
-		if (__bs == null || __dis == null)
+		if (__dis == null)
 			throw new NullPointerException("NARG");
-			
-		// Get program
-		JITMethodProgram rv = this._program;
-		
-		// Setup target basic block to start writing into
-		JITBasicBlock into = new JITBasicBlock();
-		rv.put(new JITBlockLabel(0), into);
 		
 		// Decode loop
 		for (;;)
@@ -178,10 +152,6 @@ final class __CodeDecoder__
 			// EOF?
 			if (code < 0)
 				break;
-			
-			// Determine index where this basic block starts
-			int at = (int)__dis.size();
-			__bs[at] = into.size();
 			
 			// Wide? Read another
 			if (code == __OpIndex__.WIDE)
@@ -471,8 +441,6 @@ final class __CodeDecoder__
 	 */
 	private void __doALoad(int __from)
 	{
-		JITMethodProgram rv = this._program;
-		
 		throw new Error("TODO");
 	}
 }
