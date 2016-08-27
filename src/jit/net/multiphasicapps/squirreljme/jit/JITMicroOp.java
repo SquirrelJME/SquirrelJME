@@ -16,6 +16,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2016/08/26
  */
+@Deprecated
 public interface JITMicroOp
 {
 }

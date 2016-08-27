@@ -29,6 +29,7 @@ public interface JITMethodWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/24
 	 */
+	@Deprecated
 	public abstract void acceptProgram(JITMethodProgram __p)
 		throws JITException, NullPointerException;
 	

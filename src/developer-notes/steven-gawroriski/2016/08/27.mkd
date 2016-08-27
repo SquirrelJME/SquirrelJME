@@ -21,3 +21,27 @@ pointless in most cases.
 Although the large number of jump targets, I would need to parse the stack map
 table for optimal results (since that knows the type of elements on the stack).
 
+## 14:35
+
+However, if I defer handling code and read the exception and the stack map
+table, when parsing the byte code I will know the types used and all of the
+entry points in the code. Then in that case, I will not need micro-operations
+at all. I can have explicit code generation without building a temporary
+program. Then I can also just do a linear pass through the byte code also.
+
+## 14:37
+
+The only allocations needed would be for the stack map table information, the
+exception table, and the extra bytes that the byte code uses. This would be
+likely the fastest means of code generation. Then the only optimization that
+can be performed for the most part reliably would be caching of stack values.
+However reading the other tables first gives me the information needed where I
+can easily determine if a value is used or not. I can then take the approach I
+have thought up of before, where any write to a local is stored to the stack
+while anything on the stack is purely temporary. There would just need to be
+a temporary storage area in the event an exception occurs. However stack
+temporaries only need to be managed in a single basic block for the most part.
+Jumps to exceptions are ignored. Transition to another basic block just needs
+a translocation of entries if required (in the event of a jump back and a stack
+position was deallocated to the stack but at that given point it is allocated).
+

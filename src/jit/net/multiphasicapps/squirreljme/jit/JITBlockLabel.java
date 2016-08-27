@@ -17,6 +17,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2016/08/27
  */
+@Deprecated
 public final class JITBlockLabel
 {
 	/** The label's ID. */

@@ -20,6 +20,7 @@ import java.util.List;
  *
  * @since 2016/08/27
  */
+@Deprecated
 public final class JITBasicBlock
 	extends AbstractList<JITMicroOp>
 {

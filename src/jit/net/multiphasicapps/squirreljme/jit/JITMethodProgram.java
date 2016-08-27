@@ -21,6 +21,7 @@ import java.util.Set;
  *
  * @since 2016/08/24
  */
+@Deprecated
 public final class JITMethodProgram
 	extends AbstractMap<JITBlockLabel, JITBasicBlock>
 {
