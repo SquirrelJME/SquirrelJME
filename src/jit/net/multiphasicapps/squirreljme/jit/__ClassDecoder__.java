@@ -30,6 +30,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
  * @since 2016/06/28
  */
 final class __ClassDecoder__
+	extends __HasAttributes__
 {
 	/** The object class. */
 	private static final ClassNameSymbol _OBJECT_CLASS =
@@ -65,18 +66,6 @@ final class __ClassDecoder__
 	
 	/** The name of this class. */
 	private volatile ClassNameSymbol _classname;
-	
-	/** Field constant value. */
-	private volatile Object _fieldcv;
-	
-	/** Was method code parsed? */
-	private volatile boolean _hitmcode;
-	
-	/** Method flags. */
-	private volatile JITMethodFlags _mflags;
-	
-	/** Method type. */
-	private volatile MethodSymbol _mtype;
 	
 	/** JIT access. */
 	final JIT _jit;
@@ -212,22 +201,37 @@ final class __ClassDecoder__
 			int fcount = input.readUnsignedShort();
 			cw.fieldCount(fcount);
 			for (int i = 0; i < fcount; i++)
-				__singleField(cw, input);
+				new __FieldDecoder__(cw, input, pool, cf).__decode();
 			
 			// Handle methods
 			int mcount = input.readUnsignedShort();
 			cw.methodCount(mcount);
 			for (int i = 0; i < mcount; i++)
-				__singleMethod(cw, input);
+				new __MethodDecoder__(cw, input, pool, cf, this).__decode();
 			
 			// Handle class attributes
 			int na = input.readUnsignedShort();
 			for (int i = 0; i < na; i++)
-				__singleAttribute(cw, input, __AttributeFor__.CLASS);
+				__readAttribute(pool, input);
 			
 			// End class
 			cw.endClass();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/27
+	 */
+	@Override
+	void __handleAttribute(String __name, DataInputStream __is)
+		throws IOException
+	{
+		// Check
+		if (__name == null || __is == null)
+			throw new NullPointerException("NARG");
+		
+		// No class attributes are handled at all, so ignore them all
 	}
 	
 	/**
@@ -269,245 +273,6 @@ final class __ClassDecoder__
 		
 		// Not rewritten, use original
 		return __cn;
-	}
-	
-	/**
-	 * Handles a single attribute.
-	 *
-	 * @param __cw The class writer to write to.
-	 * @param __di The input stream.
-	 * @param __af The type of thing this attribute is for.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/18
-	 */
-	private void __singleAttribute(JITClassWriter __cw, DataInputStream __di,
-		__AttributeFor__ __af)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__cw == null || __di == null || __af == null)
-			throw new NullPointerException("NARG");
-		
-		// Read the attribute name and length
-		JITConstantPool pool = this._pool;
-		JITConstantEntry eaname = pool.get(__di.readUnsignedShort());
-		String aname = eaname.get(false, String.class);
-		
-		// {@squirreljme.error ED19 The length of the attribute exceeds
-		// 2GiB.}
-		int len = __di.readInt();
-		if (len < 0)
-			throw new JITException("ED19");
-		
-		// Depends on the thing containing the attributes
-		switch (__af)
-		{
-				// Classes
-			case CLASS:
-				// All class attributes are ignored
-				break;
-			
-				// Fields
-			case FIELD:
-				switch (aname)
-				{
-						// Constant value
-					case "ConstantValue":
-						// {@squirreljme.error ED04 Multiple field constant
-						// values defined for a single field.}
-						if (this._fieldcv != null)
-							throw new JITException("ED04");
-						
-						if (true)
-							throw new Error("TODO");
-						
-						return;
-					
-						// Unknown
-					default:
-						break;
-				}
-				break;
-			
-				// Methods
-			case METHOD:
-				switch (aname)
-				{
-						// The code attribute
-					case "Code":
-						// {@squirreljme.error ED03 Multiple code attributes
-						// in a single method.}
-						if (this._hitmcode)
-							throw new JITException("ED03");
-						
-						// Mark as hit
-						this._hitmcode = true;
-						
-						// Need to read and completley skip code when done
-						try (JITMethodWriter mlw = __cw.code();
-							DataInputStream cis = new DataInputStream(
-								new SizeLimitedInputStream(__di, len, true)))
-						{
-							// Setup decoder and give the writer the
-							// program
-							new __CodeDecoder__(this, cis,
-								this._mflags, this._mtype, mlw).__decode();
-							
-							if (true)
-								throw new Error("TODO");
-						}
-						
-						// Done
-						return;
-					
-						// Unknown
-					default:
-						break;
-				}
-				break;
-			
-				// Code
-			case CODE:
-				switch (aname)
-				{
-						// The stack map table
-					case "StackMap":
-					case "StackMapTable":
-						if (true)
-							throw new Error("TODO");
-						
-						return;
-					
-						// Unknown
-					default:
-						break;
-				}
-				break;
-			
-				// Unknown
-			default:
-				throw new RuntimeException("OOPS");
-		}
-		
-		// {@squirreljme.error ED01 Reached EOF while skipping attribute
-		// data.}
-		for (int i = 0; i < len; i++)
-			if (__di.read() < 0)
-				throw new JITException("ED01");
-	}
-	
-	/**
-	 * Handles a single field.
-	 *
-	 * @param __cw The class writer to write to.
-	 * @param __di The data input stream for the class file.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/18
-	 */
-	private void __singleField(JITClassWriter __cw, DataInputStream __di)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__cw == null || __di == null)
-			throw new NullPointerException("NARG");
-		
-		// Read the flags for this field
-		JITFieldFlags mf = __FlagDecoder__.__field(this._flags,
-			input.readUnsignedShort());
-		
-		// Read the name
-		JITConstantPool pool = this._pool;
-		int ndx;
-		JITConstantEntry ename = pool.get((ndx = input.readUnsignedShort()));
-		IdentifierSymbol name = IdentifierSymbol.of(
-			ename.<String>get(true, String.class));
-		
-		// And the type
-		int tdx;
-		JITConstantEntry etype = pool.get((tdx = input.readUnsignedShort()));
-		FieldSymbol type = FieldSymbol.of(
-			etype.<String>get(true, String.class));
-		
-		// Clear these before handling attributes
-		this._fieldcv = null;
-		
-		// Need to handle attributes
-		int na = input.readUnsignedShort();
-		for (int i = 0; i < na; i++)
-			__singleAttribute(__cw, input, __AttributeFor__.FIELD);
-		
-		// Register the field
-		__cw.field(mf, name, ndx, type, tdx, this._fieldcv);
-		
-		// End field
-		__cw.endField();
-	}
-	
-	/**
-	 * Handles a single method.
-	 *
-	 * @param __cw The class writer to write to.
-	 * @param __di The data input stream for the class file.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/18
-	 */
-	private void __singleMethod(JITClassWriter __cw, DataInputStream __di)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__cw == null || __di == null)
-			throw new NullPointerException("NARG");
-		
-		// Read the flags for this method
-		JITMethodFlags mf = __FlagDecoder__.__method(this._flags,
-			input.readUnsignedShort());
-		
-		// Read the method name
-		JITConstantPool pool = this._pool;
-		int ni;
-		JITConstantEntry ename = pool.get((ni = input.readUnsignedShort()));
-		IdentifierSymbol name = IdentifierSymbol.of(
-			ename.<String>get(true, String.class));
-		
-		// And the type
-		int ti;
-		JITConstantEntry etype = pool.get((ti = input.readUnsignedShort()));
-		MethodSymbol type = MethodSymbol.of(
-			etype.<String>get(true, String.class));
-		
-		// Clear before being used
-		this._hitmcode = false;
-		
-		// Register method since code needs to be generated following this
-		__cw.method(mf, name, ni, type, ti);
-		
-		// Needed for code
-		this._mflags = mf;
-		this._mtype = type;
-		
-		// Handle attributes
-		int na = input.readUnsignedShort();
-		for (int i = 0; i < na; i++)
-			__singleAttribute(__cw, input, __AttributeFor__.METHOD);
-		
-		// {@squirreljme.error ED05 Abstract methods cannot have code.}
-		boolean hascode = this._hitmcode;
-		if (hascode == mf.isAbstract())
-			throw new JITException("ED05");
-		
-		// If there is no code then indicate as such
-		if (!hascode)
-			__cw.noCode();
-		
-		// Clear
-		this._mflags = null;
-		this._mtype = null;
-		
-		// End method
-		__cw.endMethod();
 	}
 }
 

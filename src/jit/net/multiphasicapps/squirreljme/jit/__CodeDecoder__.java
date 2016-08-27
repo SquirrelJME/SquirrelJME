@@ -28,13 +28,17 @@ import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
  * @since 2016/08/19
  */
 final class __CodeDecoder__
+	extends __HasAttributes__
 {
 	/** The maximum number of bytes the code attribute can be. */
 	private static final int _CODE_SIZE_LIMIT =
 		65535;
 	
-	/** The owning class decoder. */
-	final __ClassDecoder__ _decoder;
+	/** Constant pool. */
+	protected final JITConstantPool pool;
+	
+	/** The owning method decoder. */
+	final __MethodDecoder__ _decoder;
 	
 	/** The logic writer to use. */
 	final JITMethodWriter _writer;
@@ -51,7 +55,7 @@ final class __CodeDecoder__
 	/**
 	 * Add base code decoder class.
 	 *
-	 * @param __cd The class decoder being used.
+	 * @param __cd The method decoder being used.
 	 * @param __dis The input source.
 	 * @param __f The method flags.
 	 * @param __t The method type.
@@ -59,7 +63,7 @@ final class __CodeDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	__CodeDecoder__(__ClassDecoder__ __cd, DataInputStream __dis,
+	__CodeDecoder__(__MethodDecoder__ __cd, DataInputStream __dis,
 		JITMethodFlags __f, MethodSymbol __t, JITMethodWriter __mlw)
 		throws NullPointerException
 	{
@@ -74,6 +78,7 @@ final class __CodeDecoder__
 		this._flags = __f;
 		this._type = __t;
 		this._writer = __mlw;
+		this.pool = __cd._pool;
 	}
 	
 	/**
@@ -86,6 +91,7 @@ final class __CodeDecoder__
 		throws IOException
 	{
 		DataInputStream input = this._input;
+		JITConstantPool pool = this.pool;
 		
 		// Read max stack and locals
 		int maxstack = input.readUnsignedShort();
@@ -116,8 +122,9 @@ final class __CodeDecoder__
 			throw new Error("TODO");
 		
 		// Read attributes
-		if (true)
-			throw new Error("TODO");
+		int na = input.readUnsignedShort();
+		for (int i = 0; i < na; i++)
+			__readAttribute(pool, input);
 		
 		// Process program some more
 		if (true)
@@ -442,6 +449,35 @@ final class __CodeDecoder__
 	private void __doALoad(int __from)
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/27
+	 */
+	@Override
+	void __handleAttribute(String __name, DataInputStream __is)
+		throws IOException
+	{
+		// Check
+		if (__name == null || __is == null)
+			throw new NullPointerException("NARG");
+		
+		// Which attribute?
+		switch (__name)
+		{
+				// The stack map table
+			case "StackMap":
+			case "StackMapTable":
+				if (true)
+					throw new Error("TODO");
+				
+				return;
+			
+				// Unknown
+			default:
+				break;
+		}
 	}
 }
 
