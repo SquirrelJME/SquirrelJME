@@ -52,3 +52,9 @@ generator without going into lots of allocations to setup a program and then
 performing allocations. I have previously written compact stack map table
 parsers and state which I can use.
 
+## 17:21
+
+And I decided to split `__ClassDecoder__` up, so now all of the resulting split
+off code is in their own classes and much smaller. In the end some memory could
+be saved in a way.
+
