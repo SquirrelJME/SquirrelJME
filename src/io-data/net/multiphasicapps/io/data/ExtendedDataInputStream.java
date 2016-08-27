@@ -34,6 +34,9 @@ public class ExtendedDataInputStream
 	private volatile DataEndianess _endian =
 		DataEndianess.BIG;
 	
+	/** The number of bytes read. */
+	private volatile long _count;
+	
 	/**
 	 * Initializes the extended input stream.
 	 *
@@ -113,7 +116,13 @@ public class ExtendedDataInputStream
 	public int read()
 		throws IOException
 	{
-		throw new Error("TODO");
+		int rv = this.input.read();
+		
+		// Increase count if not EOF
+		if (rv >= 0)
+			this._count++;
+		
+		return rv;
 	}
 	
 	/**
@@ -316,7 +325,7 @@ public class ExtendedDataInputStream
 	@Override
 	public long size()
 	{
-		throw new Error("TODO");
+		return this._count;
 	}
 	
 	/**
