@@ -105,16 +105,10 @@ final class __CodeDecoder__
 			throw new JITException(String.format("ED06 %d %d",
 				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
 		
-		// Setup read for byte code
-		try (ExtendedDataInputStream cdis = new ExtendedDataInputStream(
-			new SizeLimitedInputStream(input, codelen, true)))
-		{
-			// Big endian
-			cdis.setEndianess(DataEndianess.BIG);
-			
-			// Decode
-			__decodeOps(cdis);
-		}
+		// Read code and save it for later after the exception table and
+		// possibly the stack map table parse has been parsed
+		byte[] code = new byte[codelen];
+		input.read(code);
 		
 		// Read the exception table
 		int numex = input.readUnsignedShort();
