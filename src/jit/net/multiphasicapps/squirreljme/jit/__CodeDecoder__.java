@@ -33,6 +33,9 @@ final class __CodeDecoder__
 	private static final int _CODE_SIZE_LIMIT =
 		65535;
 	
+	/** The output program. */
+	final JITMethodProgram _program;
+	
 	/** The owning class decoder. */
 	final __ClassDecoder__ _decoder;
 	
@@ -74,6 +77,9 @@ final class __CodeDecoder__
 		this._flags = __f;
 		this._type = __t;
 		this._writer = __mlw;
+		
+		// Initialize program early
+		this._program = new JITMethodProgram();
 	}
 	
 	/**
@@ -109,7 +115,7 @@ final class __CodeDecoder__
 			blockstart[i] = -1;
 		
 		// Target program to be returned
-		JITMethodProgram rv = new JITMethodProgram();
+		JITMethodProgram rv = this._program;
 		
 		// Setup read for byte code
 		try (ExtendedDataInputStream cdis = new ExtendedDataInputStream(
@@ -119,7 +125,7 @@ final class __CodeDecoder__
 			cdis.setEndianess(DataEndianess.BIG);
 			
 			// Decode
-			__decodeOps(rv, blockstart, cdis);
+			__decodeOps(blockstart, cdis);
 		}
 		
 		// Read the exception table
@@ -142,7 +148,6 @@ final class __CodeDecoder__
 	/**
 	 * Decodes operations into micro-operations.
 	 *
-	 * @param __rv The resulting program.
 	 * @param __bs Block start positions.
 	 * @param __dis The operation source.
 	 * @throws IOException On read errors.
@@ -150,17 +155,19 @@ final class __CodeDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/24
 	 */
-	private void __decodeOps(JITMethodProgram __rv, int[] __bs,
-		ExtendedDataInputStream __dis)
+	private void __decodeOps(int[] __bs, ExtendedDataInputStream __dis)
 		throws IOException, JITException, NullPointerException
 	{
 		// Check
-		if (__rv == null || __bs == null || __dis == null)
+		if (__bs == null || __dis == null)
 			throw new NullPointerException("NARG");
+			
+		// Get program
+		JITMethodProgram rv = this._program;
 		
 		// Setup target basic block to start writing into
 		JITBasicBlock into = new JITBasicBlock();
-		__rv.put(new JITBlockLabel(0), into);
+		rv.put(new JITBlockLabel(0), into);
 		
 		// Decode loop
 		for (;;)
@@ -262,7 +269,8 @@ final class __CodeDecoder__
 				case __OpIndex__.ALOAD_1:
 				case __OpIndex__.ALOAD_2:
 				case __OpIndex__.ALOAD_3:
-					throw new Error("TODO");
+					__doALoad(code - __OpIndex__.ALOAD_0);
+					break;
 				
 				case __OpIndex__.IALOAD:
 				case __OpIndex__.LALOAD:
@@ -451,6 +459,19 @@ final class __CodeDecoder__
 					throw new JITException(String.format("ED07 %d", code));
 			}
 		}
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Load reference from local variable to top of stack.
+	 *
+	 * @param __from The variable to load from.
+	 * @since 2016/08/27
+	 */
+	private void __doALoad(int __from)
+	{
+		JITMethodProgram rv = this._program;
 		
 		throw new Error("TODO");
 	}

@@ -11,3 +11,13 @@ that way, containing microops. Then any code that can jump to other areas would
 do so via labels and such. There could never be a jump in the middle of a block
 so that essentially each group becomes a basic block in a program.
 
+## 14:31
+
+Technically for a program, the number of locals and stack items used is
+pointless in most cases.
+
+## 14:34
+
+Although the large number of jump targets, I would need to parse the stack map
+table for optimal results (since that knows the type of elements on the stack).
+
