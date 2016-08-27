@@ -14,6 +14,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.io.data.DataEndianess;
+import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -98,11 +100,26 @@ final class __CodeDecoder__
 			throw new JITException(String.format("ED06 %d %d",
 				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
 		
+		// Store the base positions for all operations so that they can later
+		// be spliced into basic blocks
+		// Clear all values to illegal positions to mark that no instructions
+		// are actually there
+		int[] blockstart = new int[codelen];
+		for (int i = 0; i < codelen; i++)
+			blockstart[i] = -1;
+		
+		// Target program to be returned
+		JITMethodProgram rv = new JITMethodProgram();
+		
 		// Setup read for byte code
-		try (DataInputStream cdis = new DataInputStream(
+		try (ExtendedDataInputStream cdis = new ExtendedDataInputStream(
 			new SizeLimitedInputStream(input, codelen, true)))
 		{
-			__decodeOps(cdis);
+			// Big endian
+			cdis.setEndianess(DataEndianess.BIG);
+			
+			// Decode
+			__decodeOps(rv, blockstart, cdis);
 		}
 		
 		// Read the exception table
@@ -110,26 +127,42 @@ final class __CodeDecoder__
 		for (int i = 0; i < numex; i++)
 			throw new Error("TODO");
 		
-		throw new Error("TODO");
+		// Read attributes
+		if (true)
+			throw new Error("TODO");
+		
+		// Process program some more
+		if (true)
+			throw new Error("TODO");
+		
+		// Done
+		return rv;
 	}
 	
 	/**
 	 * Decodes operations into micro-operations.
 	 *
+	 * @param __rv The resulting program.
+	 * @param __bs Block start positions.
 	 * @param __dis The operation source.
 	 * @throws IOException On read errors.
 	 * @throws JITException On decode errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/24
 	 */
-	private void __decodeOps(DataInputStream __dis)
-		throws IOException, JITException
+	private void __decodeOps(JITMethodProgram __rv, int[] __bs,
+		ExtendedDataInputStream __dis)
+		throws IOException, JITException, NullPointerException
 	{
 		// Check
-		if (__dis == null)
+		if (__rv == null || __bs == null || __dis == null)
 			throw new NullPointerException("NARG");
 		
+		// Setup target basic block to start writing into
+		JITBasicBlock into = new JITBasicBlock();
+		__rv.put(new JITBlockLabel(0), into);
+		
 		// Decode loop
-		JITMethodProgram mp = new JITMethodProgram();
 		for (;;)
 		{
 			// Read
@@ -138,6 +171,10 @@ final class __CodeDecoder__
 			// EOF?
 			if (code < 0)
 				break;
+			
+			// Determine index where this basic block starts
+			int at = (int)__dis.size();
+			__bs[at] = into.size();
 			
 			// Wide? Read another
 			if (code == __OpIndex__.WIDE)

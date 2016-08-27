@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: jit
 X-SquirrelJME-UUID: 73dc1d84-de7d-4548-8e66-9e83af4b9a4b
 X-SquirrelJME-Depends: cldc-compact, symbols, util-unmodifiable,
- jit-base, io-region
+ jit-base, io-region, io-data
 X-SquirrelJME-Error: ED
 LIBlet-Title: Just-In-Time Compiler
 LIBlet-Vendor: Steven Gawroriski
