@@ -45,3 +45,10 @@ Jumps to exceptions are ignored. Transition to another basic block just needs
 a translocation of entries if required (in the event of a jump back and a stack
 position was deallocated to the stack but at that given point it is allocated).
 
+## 14:42
+
+So in short, skipping the code for now, will produce a bit faster of a
+generator without going into lots of allocations to setup a program and then
+performing allocations. I have previously written compact stack map table
+parsers and state which I can use.
+
