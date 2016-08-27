@@ -1,0 +1,13 @@
+# 2016/08/27
+
+## 13:10
+
+So something that would be needed is a way to store jump locations within a
+program. So do I make `JITMethodProgram` immutable or mutable? Once it is
+passed to the native code generator it will not be touched again. Changing the
+state could be used by the writer (such as making floating point operations
+software). Alternatively, programs can be divided into secitons and used
+that way, containing microops. Then any code that can jump to other areas would
+do so via labels and such. There could never be a jump in the middle of a block
+so that essentially each group becomes a basic block in a program.
+

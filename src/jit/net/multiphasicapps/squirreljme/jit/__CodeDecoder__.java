@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -127,6 +129,7 @@ final class __CodeDecoder__
 			throw new NullPointerException("NARG");
 		
 		// Decode loop
+		JITMethodProgram mp = new JITMethodProgram();
 		for (;;)
 		{
 			// Read
