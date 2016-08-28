@@ -34,22 +34,10 @@ public class SizeLimitedInputStream
 	protected final long limit;
 	
 	/** The current read size. */
-	private volatile long _current;	
+	private volatile long _current;
 	
-	/**
-	 * Initializes the size limited input stream with a maximal bound.
-	 *
-	 * @param __is Input stream to wrap.
-	 * @param __li The length of data to limit to.
-	 * @throws IllegalArgumentException If the length is negative.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/03/09
-	 */
-	public SizeLimitedInputStream(InputStream __is, long __li)
-		throws IllegalArgumentException, NullPointerException
-	{
-		this(__is, __li, false);
-	}
+	/** Was this closed? */	
+	private volatile boolean _closed;
 	
 	/**
 	 * Initializes the size limited input stream.
@@ -58,7 +46,9 @@ public class SizeLimitedInputStream
 	 * @param __li The length of data to limit to.
 	 * @param __ex If {@code true} then the stream must end at least at the
 	 * limit and not before it, otherwise if {@code false} then it is only
-	 * limited to either the limit or the number of bytes in the stream.
+	 * limited to either the limit or the number of bytes in the stream. If
+	 * {@code true} then closing the stream will read the remaining number of
+	 * bytes.
 	 * @throws IllegalArgumentException If the length is negative.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/09
@@ -76,9 +66,9 @@ public class SizeLimitedInputStream
 			throw new IllegalArgumentException(String.format("AP04 %d", __li));
 		
 		// Set
-		wrapped = __is;
-		limit = __li;
-		exact = __ex;
+		this.wrapped = __is;
+		this.limit = __li;
+		this.exact = __ex;
 	}
 	
 	/**
@@ -106,6 +96,27 @@ public class SizeLimitedInputStream
 	public void close()
 		throws IOException
 	{
+		// Read in?
+		if (!this._closed)
+		{
+			// Set
+			this._closed = true;
+			
+			// Read in remaining bytes if doing so
+			if (this.exact)
+			{
+				// {@squirreljme.error AP03 Reached EOF on wrapped stream when
+				// reqiesting an exact number of bytes. (The current read
+				// count; The read limit)}
+				long limit = this.limit;
+				long at;
+				while ((at = this._current) < limit)
+					if (read() < 0)
+						throw new IOException(String.format("AP03 %d %d",
+							at, limit));
+			}
+		}
+		
 		// Close the underlying stream
 		wrapped.close();
 	}
