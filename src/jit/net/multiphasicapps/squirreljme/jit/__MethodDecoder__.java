@@ -120,10 +120,6 @@ class __MethodDecoder__
 		if (!hascode)
 			cw.noCode();
 		
-		// Clear
-		this._mflags = null;
-		this._mtype = null;
-		
 		// End method
 		cw.endMethod();
 	}

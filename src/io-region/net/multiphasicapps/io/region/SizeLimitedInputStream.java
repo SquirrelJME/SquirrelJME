@@ -33,6 +33,9 @@ public class SizeLimitedInputStream
 	/** The read limit. */
 	protected final long limit;
 	
+	/** If {@code true} then close propogates to the wrapped stream. */
+	protected final boolean propogate;
+	
 	/** The current read size. */
 	private volatile long _current;
 	
@@ -40,7 +43,8 @@ public class SizeLimitedInputStream
 	private volatile boolean _closed;
 	
 	/**
-	 * Initializes the size limited input stream.
+	 * Initializes the size limited input stream. The close operation in this
+	 * stream propogates to the wrapped stream.
 	 *
 	 * @param __is Input stream to wrap.
 	 * @param __li The length of data to limit to.
@@ -56,6 +60,29 @@ public class SizeLimitedInputStream
 	public SizeLimitedInputStream(InputStream __is, long __li, boolean __ex)
 		throws IllegalArgumentException, NullPointerException
 	{
+		this(__is, __li, __ex, true);
+	}
+	
+	/**
+	 * Initializes the size limited input stream.
+	 *
+	 * @param __is Input stream to wrap.
+	 * @param __li The length of data to limit to.
+	 * @param __ex If {@code true} then the stream must end at least at the
+	 * limit and not before it, otherwise if {@code false} then it is only
+	 * limited to either the limit or the number of bytes in the stream. If
+	 * {@code true} then closing the stream will read the remaining number of
+	 * bytes.
+	 * @param __prop If {@code true} then when this stream is closed, it will
+	 * forward the close to the wrapped stream. Otherwise if {@code false}.
+	 * @throws IllegalArgumentException If the length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/28
+	 */
+	public SizeLimitedInputStream(InputStream __is, long __li, boolean __ex,
+		boolean __prop)
+		throws IllegalArgumentException, NullPointerException
+	{
 		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
@@ -69,6 +96,7 @@ public class SizeLimitedInputStream
 		this.wrapped = __is;
 		this.limit = __li;
 		this.exact = __ex;
+		this.propogate = __prop;
 	}
 	
 	/**
@@ -106,7 +134,7 @@ public class SizeLimitedInputStream
 			if (this.exact)
 			{
 				// {@squirreljme.error AP03 Reached EOF on wrapped stream when
-				// reqiesting an exact number of bytes. (The current read
+				// requesting an exact number of bytes. (The current read
 				// count; The read limit)}
 				long limit = this.limit;
 				long at;
@@ -117,8 +145,9 @@ public class SizeLimitedInputStream
 			}
 		}
 		
-		// Close the underlying stream
-		wrapped.close();
+		// Close the underlying stream, but only if propogating
+		if (this.propogate)
+			wrapped.close();
 	}
 	
 	/**
@@ -130,7 +159,8 @@ public class SizeLimitedInputStream
 		throws IOException
 	{
 		// Current position
-		long cur = _current;
+		long limit = this.limit;
+		long cur = this._current;
 		
 		// Reached the limit?
 		if (cur >= limit)
@@ -154,7 +184,7 @@ public class SizeLimitedInputStream
 		}
 		
 		// Increase current location
-		_current = cur + 1L;
+		this._current = cur + 1L;
 		
 		// Return it
 		return next;

@@ -69,9 +69,11 @@ abstract class __HasAttributes__
 		if (len < 0)
 			throw new JITException("ED19");
 		
-		// Handle it
+		// Handle it, but do not propogate close to the wrapped stream
+		// because any read attribute that gets closed will close the upper
+		// input stream.
 		try (DataInputStream cis = new DataInputStream(
-			new SizeLimitedInputStream(__di, len, true)))
+			new SizeLimitedInputStream(__di, len, true, false)))
 		{
 			__handleAttribute(aname, cis);
 		}

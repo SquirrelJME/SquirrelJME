@@ -108,7 +108,7 @@ final class __CodeDecoder__
 		// Read code and save it for later after the exception table and
 		// possibly the stack map table parse has been parsed
 		byte[] code = new byte[codelen];
-		input.read(code);
+		input.readFully(code);
 		
 		// Read the exception table
 		int numex = input.readUnsignedShort();
