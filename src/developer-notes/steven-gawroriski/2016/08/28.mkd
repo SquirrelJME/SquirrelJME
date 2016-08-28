@@ -21,3 +21,19 @@ So I have a short read
 Actually my code fails because close is propogated via the size limited input
 stream to the wrapped stream
 
+## 19:17
+
+Time to dive into history to find my treads.
+
+## 19:19
+
+Dated 05/22
+
+## 19:24
+
+Artifact `3ff1cd9669ce5d6375773f0dd3baba9713aeb542` in checkin
+`be839ea66da451e4ec61ca6d03a20fae53a9cade` is the code I want. Of course it
+needs fixing to fit with the new JIT code. Then for the actual parser itself
+for the stack map, artifact `6862f634c06d62ef492bea6e0d7f1f21ba30e279`
+should do. This artifact is in checkin
+`173307290a537df61f99a5e240d32ee235e6b446`.
