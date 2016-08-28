@@ -150,7 +150,7 @@ class __MethodDecoder__
 				if (this._hitmcode)
 					throw new JITException("ED03");
 				
-				// Mark as hit
+				// Mark as hit, there may only be one
 				this._hitmcode = true;
 				
 				// Need to read and completley skip code when done
