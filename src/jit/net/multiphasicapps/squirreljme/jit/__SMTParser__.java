@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -42,8 +43,7 @@ class __SMTParser__
 	protected final int maxstack;
 	
 	/** The output verification map. */
-	protected final Map<Integer, __SMTState__> outputmap =
-		new HashMap<>();
+	protected final Map<Integer, __SMTState__> outputmap;
 	
 	/** The placement address. */
 	private volatile int _placeaddr;
@@ -78,51 +78,11 @@ class __SMTParser__
 		maxlocals = __maxl;
 		maxstack = __maxs;
 		
-		// Setup initial verification state for the given map
-		__SMTState__ es = new __SMTState__(__maxs, __maxl);
-		outputmap.put(0, es);
-		
-		// Is this method static?
-		boolean isstatic = __mf.isStatic();
-		
-		// Setup state
-		__SMTLocals__ loc = es._locals;
-		int vat = 0;
-		try
-		{
-			// Add object if not static
-			if (!isstatic)
-				loc.set(vat++, __SMTType__.OBJECT);
-			
-			// Go through all arguments
-			int n = __ms.argumentCount();
-			for (int i = 0; i < n; i++)
-			{
-				// Convert to type
-				__SMTType__ vt = __SMTType__.bySymbol(__ms.get(i));
-				
-				// Set
-				loc.set(vat++, vt);
-				
-				// If wide, skip one
-				if (vt.isWide())
-					loc.set(vat++, __SMTType__.TOP);
-			}
-			
-			// {@squirreljme.error ED0s There are too many local variables.}
-			if (vat > maxlocals)
-				throw new IndexOutOfBoundsException("ED0s");
-		}
-		
-		// Initialization out of bounds
-		catch (IndexOutOfBoundsException e)
-		{
-			// {@squirreljme.error ED0c There are not enough local variables
-			// to store the input method arguments. (The number of input
-			// variables; The number of local variables)}
-			throw new JITException(String.format("ED0c", vat,
-				maxlocals), e);
-		}
+		// Setup
+		Map<Integer, __SMTState__> outputmap = __initialState(__mf, __ms,
+			__maxs, __maxl);
+		this.outputmap = outputmap;
+		__SMTState__ es = outputmap.get(0);
 		
 		// Make a copy of the last state for the next state
 		_next = new __SMTState__(es);
@@ -511,6 +471,79 @@ class __SMTParser__
 	{
 		DataInputStream das = in;
 		__sameLocalsSingleStack(das.readUnsignedShort());
+	}
+	
+	/**
+	 * Sets up the initial state for the stack based on the method flags and
+	 * the method type.
+	 *
+	 * @param __mf Method flags.
+	 * @param __ms The method type.
+	 * @param __maxs Max stack entries.
+	 * @param __maxl Max local variables.
+	 * @return The initial mapping of state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/29
+	 */
+	static Map<Integer, __SMTState__> __initialState(JITMethodFlags __mf,
+		MethodSymbol __ms, int __maxs, int __maxl)
+		throws NullPointerException
+	{
+		// Check
+		if (__mf == null || __ms == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup base
+		Map<Integer, __SMTState__> rv = new LinkedHashMap<>();
+		
+		// Setup initial verification state for the given map
+		__SMTState__ es = new __SMTState__(__maxs, __maxl);
+		rv.put(0, es);
+		
+		// Is this method static?
+		boolean isstatic = __mf.isStatic();
+		
+		// Setup state
+		__SMTLocals__ loc = es._locals;
+		int vat = 0;
+		try
+		{
+			// Add object if not static
+			if (!isstatic)
+				loc.set(vat++, __SMTType__.OBJECT);
+			
+			// Go through all arguments
+			int n = __ms.argumentCount();
+			for (int i = 0; i < n; i++)
+			{
+				// Convert to type
+				__SMTType__ vt = __SMTType__.bySymbol(__ms.get(i));
+				
+				// Set
+				loc.set(vat++, vt);
+				
+				// If wide, skip one
+				if (vt.isWide())
+					loc.set(vat++, __SMTType__.TOP);
+			}
+			
+			// {@squirreljme.error ED0s There are too many local variables.}
+			if (vat > __maxl)
+				throw new IndexOutOfBoundsException("ED0s");
+		}
+		
+		// Initialization out of bounds
+		catch (IndexOutOfBoundsException e)
+		{
+			// {@squirreljme.error ED0c There are not enough local variables
+			// to store the input method arguments. (The number of input
+			// variables; The number of local variables)}
+			throw new JITException(String.format("ED0c", vat,
+				__maxl), e);
+		}
+		
+		// Return it
+		return rv;
 	}
 }
 

@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
@@ -57,6 +58,9 @@ final class __CodeDecoder__
 	
 	/** The maximum size of the stack. */
 	volatile int _maxstack;
+	
+	/** The stack map table state. */
+	volatile Map<Integer, __SMTState__> _smt;
 	
 	/**
 	 * Add base code decoder class.
@@ -129,6 +133,11 @@ final class __CodeDecoder__
 		int na = input.readUnsignedShort();
 		for (int i = 0; i < na; i++)
 			__readAttribute(pool, input);
+		
+		// If no stack map table exists then setup an initial implicit state
+		if (this._smt == null)
+			this._smt = __SMTParser__.__initialState(this._flags, this._type,
+				maxstack, maxlocals);
 		
 		// Process program some more
 		if (true)
@@ -475,12 +484,14 @@ final class __CodeDecoder__
 			case "StackMap":
 				old = true;
 			case "StackMapTable":
-				new __SMTParser__(!old, __is, this._flags, this._type,
-					this._maxstack, this._maxlocals);
+				// {@squirreljme.error ED0t Only a single stack map table is
+				// permitted in a code attribute.}
+				if (this._smt != null)
+					throw new JITException("ED0t");
 				
-				if (true)
-					throw new Error("TODO");
-				
+				// Parse and store result
+				this._smt = new __SMTParser__(!old, __is, this._flags,
+					this._type, this._maxstack, this._maxlocals).result();
 				return;
 			
 				// Unknown
