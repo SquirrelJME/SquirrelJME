@@ -12,16 +12,7 @@
    height="464.40683"
    id="svg3223">
   <defs
-     id="defs3225">
-    <filter
-       color-interpolation-filters="sRGB"
-       id="filter6187">
-      <feBlend
-         in2="BackgroundImage"
-         mode="lighten"
-         id="feBlend6189" />
-    </filter>
-  </defs>
+     id="defs3225" />
   <metadata
      id="metadata3228">
     <rdf:RDF>
@@ -340,8 +331,7 @@
   </g>
   <g
      transform="translate(-308.76172,-0.0938078)"
-     id="layer71"
-     style="filter:url(#filter6187)">
+     id="layer71">
     <path
        d="m 386.477,292.72243 c 9.44237,-12.32094 20.06265,-23.26653 35.07172,-34.89979 l 22.34962,37.99436 z"
        id="path4170"
