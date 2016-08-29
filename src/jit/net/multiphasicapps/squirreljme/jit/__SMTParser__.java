@@ -60,12 +60,13 @@ class __SMTParser__
 	 * @param __ms The method type.
 	 * @param __maxs Maximum stack size.
 	 * @param __maxl Maximum local size.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/25
 	 */
 	__SMTParser__(boolean __m, DataInputStream __in, JITMethodFlags __mf,
 		MethodSymbol __ms, int __maxs, int __maxl)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__in == null || __mf == null || __ms == null)
@@ -74,7 +75,6 @@ class __SMTParser__
 		// Set
 		modern = __m;
 		in = __in;
-		program = __prg;
 		maxlocals = __maxl;
 		maxstack = __maxs;
 		
@@ -182,8 +182,7 @@ class __SMTParser__
 				// {@squirreljme.error ED0j Unknown StackMapTable verification
 				// type. (The verification type)}
 				else
-					throw new JITException(JITException.Issue.
-						UNKNOWN_STACK_TYPE, String.format("ED0j %d", type));
+					throw new JITException(String.format("ED0j %d", type));
 			}
 		}
 	}
@@ -194,10 +193,9 @@ class __SMTParser__
 	 * @return The result of verification.
 	 * @since 2016/05/12
 	 */
-	public Map<Integer, NBCStateVerification> result()
+	public Map<Integer, __SMTState__> result()
 	{
-		return UnmodifiableMap.<Integer, NBCStateVerification>unmodifiable(
-			outputmap);
+		return this.outputmap;
 	}
 	
 	/**
@@ -216,14 +214,15 @@ class __SMTParser__
 			false);
 		
 		// Stack is cleared
-		next.setStackTop(maxlocals);
+		next._stack.setStackTop(maxlocals);
 		
 		// Read in local variables
+		__SMTLocals__ locals = next._locals;
 		int n = maxlocals;
 		for (int i = 0; __addlocs > 0 && i < n; i++)
 		{
 			// Get slot here
-			__SMTType__ s = next.get(i);
+			__SMTType__ s = locals.get(i);
 			
 			// If it is not empty, ignore it
 			if (s != __SMTType__.NOTHING)
@@ -231,12 +230,12 @@ class __SMTParser__
 			
 			// Set it
 			__SMTType__ aa;
-			next.set(i, (aa = __loadInfo()));
+			locals.set(i, (aa = __loadInfo()));
 			__addlocs--;
 			
 			// If a wide element was added, then the next one becomes TOP
 			if (aa.isWide())
-				next.set(++i, __SMTType__.TOP);
+				locals.set(++i, __SMTType__.TOP);
 		}
 		
 		// Error if added stuff remains
@@ -257,19 +256,20 @@ class __SMTParser__
 	private __SMTState__ __calculateNext(int __au, boolean __abs)
 	{
 		// The current placement
-		__SMTState__ now = _next;
+		__SMTState__ now = this._next;
 		
 		// Setup new next
 		__SMTState__ next = new __SMTState__(now);
-		_next = next;
+		this._next = next;
 		
 		// Set new placement address
-		int naddr = _placeaddr;
-		_placeaddr = (__abs ? __au :
+		int naddr = this._placeaddr;
+		int pp = (__abs ? __au :
 			naddr + (__au + (naddr == 0 ? 0 : 1)));
+		this._placeaddr = pp;
 		
 		// Set the state
-		outputmap.put(program.physicalToLogical(_placeaddr), now);
+		outputmap.put(pp, now);
 		
 		// The next state
 		return next;
@@ -291,21 +291,22 @@ class __SMTParser__
 			false);
 		
 		// No stack
-		next.setStackTop(maxlocals);
+		next._stack.setStackTop(maxlocals);
 		
 		// Chop off some locals
+		__SMTLocals__ locals = next._locals;
 		int i, n = maxlocals;
 		for (i = n - 1; __chops > 0 && i >= 0; i--)
 		{
 			// Get slot here
-			__SMTType__ s = next.get(i);
+			__SMTType__ s = locals.get(i);
 			
 			// If it is empty, ignore it
 			if (s == __SMTType__.NOTHING)
 				continue;
 			
 			// Clear it
-			next.set(i, __SMTType__.NOTHING);
+			locals.set(i, __SMTType__.NOTHING);
 			__chops--;
 		}
 		
@@ -342,16 +343,18 @@ class __SMTParser__
 			throw new JITException(String.format("ED00 %d %d", nl,
 				maxlocals));
 		int i;
+		__SMTLocals__ locals = next._locals;
 		for (i = 0; i < nl; i++)
-			next.set(i, __loadInfo());
+			locals.set(i, __loadInfo());
 		for (;i < maxlocals; i++)
-			next.set(i, __SMTType__.NOTHING);
+			locals.set(i, __SMTType__.NOTHING);
 		
 		// Read in stack variables
+		__SMTStack__ stack = next._stack;
 		int ns = maxlocals + das.readUnsignedShort();
 		for (i = maxlocals; i < ns; i++)
-			next.set(i, __loadInfo());
-		next.setStackTop(ns);
+			stack.set(i, __loadInfo());
+		stack.setStackTop(ns);
 	}
 	
 	/**
@@ -437,17 +440,19 @@ class __SMTParser__
 		if (nl > maxlocals)
 			throw new JITException(String.format("ED0q %d %d", nl,
 				maxlocals));
+		__SMTLocals__ locals = next._locals;
 		int i = 0;
 		for (i = 0; i < nl; i++)
-			next.set(i, __loadInfo());
+			locals.set(i, __loadInfo());
 		for (;i < maxlocals; i++)
-			next.set(i, __SMTType__.NOTHING);
+			locals.set(i, __SMTType__.NOTHING);
 		
 		// Read in stack variables
+		__SMTStack__ stack = next._stack;
 		int ns = maxlocals + das.readUnsignedShort();
 		for (i = maxlocals; i < ns; i++)
-			next.set(i, __loadInfo());
-		next.setStackTop(ns);
+			stack.set(i, __loadInfo());
+		stack.setStackTop(ns);
 	}
 	
 	/**
@@ -489,8 +494,9 @@ class __SMTParser__
 		__SMTState__ next = __calculateNext(__delta, false);
 		
 		// Set the single stack
-		next.setStackTop(maxlocals + 1);
-		next.set(maxlocals, __loadInfo());
+		__SMTStack__ stack = next._stack;
+		stack.setStackTop(maxlocals + 1);
+		stack.set(maxlocals, __loadInfo());
 	}
 	
 	/**

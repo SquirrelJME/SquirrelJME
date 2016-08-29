@@ -37,7 +37,7 @@ class __SMTState__
 	 */
 	__SMTState__(int __ms, int __ml)
 	{
-		this._stack = new __SMTStack__(__ms);
+		this._stack = new __SMTStack__(__ms, 0);
 		this._locals = new __SMTLocals__(__ml);
 	}
 	
