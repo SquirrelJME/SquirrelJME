@@ -53,6 +53,10 @@ public final class SoftDouble
 	 */
 	public static int doubleCompareGreater(long __a, long __b)
 	{
+		// If either side is NaN, stop
+		if (doubleIsNaN(__a) || doubleIsNaN(__b))
+			return 1;
+		
 		throw new Error("TODO");
 	}
 	
@@ -67,6 +71,10 @@ public final class SoftDouble
 	 */
 	public static int doubleCompareLesser(long __a, long __b)
 	{
+		// If either side is NaN, stop
+		if (doubleIsNaN(__a) || doubleIsNaN(__b))
+			return -1;
+		
 		throw new Error("TODO");
 	}
 	
@@ -79,6 +87,18 @@ public final class SoftDouble
 	 * @since 2016/08/29
 	 */
 	public static long doubleDivide(long __a, long __b)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns {@code true} if the represented double value represents NaN.
+	 *
+	 * @param __a The value to check.
+	 * @return {@code true} if the value is NaN.
+	 * @since 2016/08/29
+	 */
+	public static boolean doubleIsNaN(long __a)
 	{
 		throw new Error("TODO");
 	}
