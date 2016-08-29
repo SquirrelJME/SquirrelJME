@@ -13,16 +13,7 @@
    id="svg3223"
    style="enable-background:new">
   <defs
-     id="defs3225">
-    <filter
-       color-interpolation-filters="sRGB"
-       id="filter6187">
-      <feBlend
-         in2="BackgroundImage"
-         mode="lighten"
-         id="feBlend6189" />
-    </filter>
-  </defs>
+     id="defs3225" />
   <metadata
      id="metadata3228">
     <rdf:RDF>
@@ -965,8 +956,7 @@
        style="fill:none;stroke:#030633;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
   <g
-     id="layer71"
-     style="filter:url(#filter6187)">
+     id="layer71">
     <path
        d="m 386.477,292.72243 c 9.44237,-12.32094 20.06265,-23.26653 35.07172,-34.89979 l 22.34962,37.99436 z"
        id="path4170"
