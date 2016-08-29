@@ -189,5 +189,18 @@ public final class SoftDouble
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Converts a hardware double precision floating point number to a software
+	 * single precision floating point number.
+	 *
+	 * @param __d The value to convert.
+	 * @return The converted value.
+	 * @since 2016/08/29
+	 */
+	public static int hardDoubleToSoftFloat(double __d)
+	{
+		return doubleToFloat(Double.doubleToRawLongBits(__d));
+	}
 }
 

@@ -43,3 +43,8 @@ such would have no "real" effect at all.
 Triplets need to have hardware/software floating point specified in them since
 the ABI is quite different.
 
+## 18:01
+
+Going to also need hardware `float`/`double` to a software variant in the event
+where there is software for one type but hardware for another.
+

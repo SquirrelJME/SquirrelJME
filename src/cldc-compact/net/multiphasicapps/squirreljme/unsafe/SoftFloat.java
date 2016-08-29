@@ -197,5 +197,18 @@ public final class SoftFloat
 	{
 		return SoftDouble.doubleToLong(floatToDouble(__f));
 	}
+	
+	/**
+	 * Converts a hardware single precision floating point number to a software
+	 * double precision floating point number.
+	 *
+	 * @param __f The value to convert.
+	 * @return The converted value.
+	 * @since 2016/08/29
+	 */
+	public static long hardFloatToSoftDouble(float __f)
+	{
+		return floatToDouble(Float.floatToRawIntBits(__f));
+	}
 }
 
