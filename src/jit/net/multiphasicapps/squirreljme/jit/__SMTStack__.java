@@ -21,7 +21,7 @@ class __SMTStack__
 	extends __SMTTread__
 {
 	/** The top of the stack. */
-	protected final int top;
+	private volatile int _top;
 	
 	/**
 	 * Initializes the stack.
@@ -36,14 +36,8 @@ class __SMTStack__
 	{
 		super(__n);
 		
-		// {@squirreljme.error ED01 The size of the stack either overflows
-		// or underflows the number of stack entries. (The position of the
-		// top of the stack; The number of entries on the stack)}
-		if (__top < 0 || __top > __n)
-			throw new JITException(String.format("ED01 %d %d", __top, __n));
-		
 		// Set
-		this.top = __top;
+		setStackTop(__top);
 	}
 	
 	/**
@@ -56,18 +50,30 @@ class __SMTStack__
 	{
 		super(__s);
 		
-		this.top = __s.top;
+		// Set top
+		setStackTop(__s._top);
 	}
 	
 	/**
 	 * Sets the top of the stack.
 	 *
-	 * @param __t The top of the stack.
+	 * @param __top The top of the stack.
+	 * @throws JITException If the top of the stack exceeds any bound of the
+	 * stack.
 	 * @since 2016/08/29
 	 */
-	public void setStackTop(int __t)
+	public void setStackTop(int __top)
+		throws JITException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error ED01 The size of the stack either overflows
+		// or underflows the number of stack entries. (The position of the
+		// top of the stack; The number of entries on the stack)}
+		int n = this.count;
+		if (__top < 0 || __top > n)
+			throw new JITException(String.format("ED01 %d %d", __top, n));
+		
+		// Set
+		this._top = __top;
 	}
 	
 	/**
@@ -78,7 +84,7 @@ class __SMTStack__
 	 */
 	public int top()
 	{
-		return top;
+		return this._top;
 	}
 }
 
