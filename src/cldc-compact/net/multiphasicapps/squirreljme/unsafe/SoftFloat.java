@@ -20,6 +20,26 @@ package net.multiphasicapps.squirreljme.unsafe;
  */
 public final class SoftFloat
 {
+	/** The shift to get to the exponent. */
+	private static final int _EXPONENT_SHIFT =
+		23;
+	
+	/** Bits in the exponent. */
+	private static final int _EXPONENT_BITS =
+		8;
+	
+	/** The exponent value mask. */
+	private static final int _EXPONENT_VALUE_MASK =
+		(1 << _EXPONENT_BITS) - 1;
+	
+	/** The fraction value mask. */
+	private static final int _FRACTION_VALUE_MASK =
+		(1 << _EXPONENT_SHIFT) - 1;
+	
+	/** The sign bit mask. */
+	private static final int _SIGN_SHIFTED_MASK =
+		(1 << (_EXPONENT_BITS + _EXPONENT_SHIFT));
+	
 	/**
 	 * Not used.
 	 *
