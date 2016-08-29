@@ -6,3 +6,14 @@ So I took some ancient code and I adapted it to the future, which saved a bunch
 of time. Now what I have to do is delve into the actual parsing of the byte
 code and handling it as such.
 
+## 15:02
+
+So the basis of the JIT regardless of platform would be to transform all
+stack based work into register based work. The simple caching will be how the
+stack caching works (so local to stack will not waste work for the most part).
+Additionally I am going to need a new way to specify types used for variable
+placement. This would be where for example instead of `__SMTType__` which is
+internal, there would be an external one where there is no `TOP` or `NOTHING`
+since those should only be artifacts of Java byte code (which I intend to
+hide).
+
