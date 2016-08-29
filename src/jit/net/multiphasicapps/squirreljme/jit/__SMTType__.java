@@ -22,25 +22,25 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 enum __SMTType__
 {
 	/** Nothing is stored here. */
-	NOTHING(false),
+	NOTHING(false, null),
 	
 	/** 32-bit Integer. */
-	INTEGER(false),
+	INTEGER(false, JITVariableType.INTEGER),
 	
 	/** 64-bit Integer. */
-	LONG(true),
+	LONG(true, JITVariableType.LONG),
 	
 	/** 32-bit Float. */
-	FLOAT(false),
+	FLOAT(false, JITVariableType.FLOAT),
 	
 	/** 64-bit Double. */
-	DOUBLE(true),
+	DOUBLE(true, JITVariableType.DOUBLE),
 	
 	/** Object. */
-	OBJECT(false),
+	OBJECT(false, JITVariableType.OBJECT),
 	
 	/** The top of a long or double. */
-	TOP(false),
+	TOP(false, null),
 	
 	/** End. */
 	;
@@ -48,15 +48,21 @@ enum __SMTType__
 	/** Is this type wide? */
 	protected final boolean iswide;
 	
+	/** The type of variable this maps to. */
+	protected final JITVariableType mapped;
+	
 	/**
 	 * Initializes the variable type.
 	 *
 	 * @param __w If {@code true} then the type consumes two spaces.
+	 * @param __m The type of variable this maps to, may be {@code null} if
+	 * it does not map to anything.
 	 * @since 2016/05/12
 	 */
-	private __SMTType__(boolean __w)
+	private __SMTType__(boolean __w, JITVariableType __m)
 	{
-		iswide = __w;
+		this.iswide = __w;
+		this.mapped = __m;
 	}
 	
 	/**
@@ -67,7 +73,18 @@ enum __SMTType__
 	 */
 	public final boolean isWide()
 	{
-		return iswide;
+		return this.iswide;
+	}
+	
+	/**
+	 * Returns the type of variable that this stack type maps to.
+	 *
+	 * @return The variable type to map to.
+	 * @since 2016/08/29
+	 */
+	public final JITVariableType map()
+	{
+		return this.mapped;
 	}
 	
 	/**
