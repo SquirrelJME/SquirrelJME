@@ -1,2 +1,8 @@
 # 2016/08/29
 
+## 09:33
+
+So I took some ancient code and I adapted it to the future, which saved a bunch
+of time. Now what I have to do is delve into the actual parsing of the byte
+code and handling it as such.
+

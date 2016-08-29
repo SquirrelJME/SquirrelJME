@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -139,9 +140,12 @@ final class __CodeDecoder__
 			this._smt = __SMTParser__.__initialState(this._flags, this._type,
 				maxstack, maxlocals);
 		
-		// Process program some more
-		if (true)
-			throw new Error("TODO");
+		// Parse the byte code now
+		try (ExtendedDataInputStream dis = new ExtendedDataInputStream(
+			new ByteArrayInputStream(code)))
+		{
+			__decodeOps(dis);
+		}
 		
 		// Done
 		throw new Error("TODO");
@@ -167,6 +171,7 @@ final class __CodeDecoder__
 		for (;;)
 		{
 			// Read
+			int nowpos = (int)__dis.size();
 			int code = __dis.read();
 			
 			// EOF?
