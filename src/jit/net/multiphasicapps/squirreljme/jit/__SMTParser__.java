@@ -42,14 +42,14 @@ class __SMTParser__
 	protected final int maxstack;
 	
 	/** The output verification map. */
-	protected final Map<Integer, CPVerifyState> outputmap =
+	protected final Map<Integer, __SMTState__> outputmap =
 		new HashMap<>();
 	
 	/** The placement address. */
 	private volatile int _placeaddr;
 	
 	/** The next state to verify for. */
-	private volatile CPVerifyState _next;
+	private volatile __SMTState__ _next;
 	
 	/**
 	 * This initializes and performs the parsing.
@@ -79,7 +79,7 @@ class __SMTParser__
 		maxstack = __maxs;
 		
 		// Setup initial verification state for the given map
-		CPVerifyState es = new CPVerifyState(program);
+		__SMTState__ es = new __SMTState__(program);
 		outputmap.put(0, es);
 		
 		// Is this method static?
@@ -124,7 +124,7 @@ class __SMTParser__
 		}
 		
 		// Make a copy of the last state for the next state
-		_next = new CPVerifyState(es);
+		_next = new __SMTState__(es);
 		_placeaddr = 0;
 		
 		// Parsing the class stack map table
@@ -211,7 +211,7 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		CPVerifyState next = __calculateNext(das.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// Stack is cleared
@@ -253,13 +253,13 @@ class __SMTParser__
 	 * @return The state for the next address.
 	 * @since 2016/03/26
 	 */
-	private CPVerifyState __calculateNext(int __au, boolean __abs)
+	private __SMTState__ __calculateNext(int __au, boolean __abs)
 	{
 		// The current placement
-		CPVerifyState now = _next;
+		__SMTState__ now = _next;
 		
 		// Setup new next
-		CPVerifyState next = new CPVerifyState(now);
+		__SMTState__ next = new __SMTState__(now);
 		_next = next;
 		
 		// Set new placement address
@@ -286,7 +286,7 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		CPVerifyState next = __calculateNext(das.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// No stack
@@ -327,7 +327,7 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		CPVerifyState next = __calculateNext(das.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// Read in local variables
@@ -424,7 +424,7 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		CPVerifyState next = __calculateNext(das.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(das.readUnsignedShort(),
 			true);
 		
 		// Read in local variables
@@ -457,7 +457,7 @@ class __SMTParser__
 	 */
 	private void __sameFrame(int __delta)
 	{
-		CPVerifyState next = __calculateNext(__delta, false);
+		__SMTState__ next = __calculateNext(__delta, false);
 	}
 	
 	/**
@@ -469,7 +469,7 @@ class __SMTParser__
 	private void __sameFrameDelta()
 		throws IOException
 	{
-		CPVerifyState next = __calculateNext(in.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(in.readUnsignedShort(),
 			false);
 	}
 	
@@ -485,7 +485,7 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		CPVerifyState next = __calculateNext(__delta, false);
+		__SMTState__ next = __calculateNext(__delta, false);
 		
 		// Set the single stack
 		next.setStackTop(maxlocals + 1);

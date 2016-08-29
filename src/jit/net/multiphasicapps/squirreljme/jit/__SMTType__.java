@@ -21,6 +21,9 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  */
 enum __SMTType__
 {
+	/** Nothing is stored here. */
+	NOTHING(false),
+	
 	/** 32-bit Integer. */
 	INTEGER(false),
 	
