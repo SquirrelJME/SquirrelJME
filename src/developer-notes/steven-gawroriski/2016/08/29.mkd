@@ -38,3 +38,8 @@ would be to lazily evaluate some static method calls (essentially only use
 operations placed in the code. So essentially loading stuff to the stack and
 such would have no "real" effect at all.
 
+## 17:34
+
+Triplets need to have hardware/software floating point specified in them since
+the ABI is quite different.
+
