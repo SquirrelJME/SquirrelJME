@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This represents the type of value which is stored in a variable either on
@@ -71,12 +72,12 @@ enum __SMTType__
 	 *
 	 * @param __sym The symbol to use for the variable.
 	 * @return The variable which is associated with the given symbol.
-	 * @throws BCException If the type is not known.
+	 * @throws JITException If the type is not known.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/23
 	 */
 	public static __SMTType__ bySymbol(FieldSymbol __sym)
-		throws BCException, NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__sym == null)
@@ -106,7 +107,7 @@ enum __SMTType__
 			default:
 				// {@squirreljme.error ED0r The specified field symbol
 				// cannot be mapped to a variable type. (The field symbol)}
-				throw new BCException(String.format("ED0r %s", __sym));
+				throw new JITException(String.format("ED0r %s", __sym));
 		}
 	}
 }
