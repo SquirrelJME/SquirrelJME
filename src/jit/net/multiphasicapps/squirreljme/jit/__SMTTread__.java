@@ -79,6 +79,19 @@ abstract class __SMTTread__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/08/29
+	 */
+	@Override
+	public final __SMTType__ set(int __i, __SMTType__ __t)
+	{
+		__SMTType__[] storage = this.storage;
+		__SMTType__ rv = storage[__i];
+		storage[__i] = __t;
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/05/12
 	 */
 	@Override
