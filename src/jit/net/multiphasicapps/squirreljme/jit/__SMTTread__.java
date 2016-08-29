@@ -37,8 +37,34 @@ abstract class __SMTTread__
 	__SMTTread__(int __n)
 	{
 		// Initialize
-		count = __n;
-		storage = new __SMTType__[__n];
+		this.count = __n;
+		this.storage = new __SMTType__[__n];
+	}
+	
+	/**
+	 * Initializes the basic tread information from another tread.
+	 *
+	 * @param __t The tread to base off.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/29
+	 */
+	protected __SMTTread__(__SMTTread__ __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		int n = __t.count;
+		this.count = n;
+		
+		// Copy storage
+		__SMTType__[] from = __t.storage;
+		__SMTType__[] storage = new __SMTType__[n];
+		this.storage = storage;
+		for (int i = 0; i < n; i++)
+			storage[i] = from[i];
 	}
 	
 	/**

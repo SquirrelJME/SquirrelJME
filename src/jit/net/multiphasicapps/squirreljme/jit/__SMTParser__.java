@@ -79,19 +79,20 @@ class __SMTParser__
 		maxstack = __maxs;
 		
 		// Setup initial verification state for the given map
-		__SMTState__ es = new __SMTState__(program);
+		__SMTState__ es = new __SMTState__(__maxs, __maxl);
 		outputmap.put(0, es);
 		
 		// Is this method static?
 		boolean isstatic = __mf.isStatic();
 		
 		// Setup state
+		__SMTLocals__ loc = es._locals;
 		int vat = 0;
 		try
 		{
 			// Add object if not static
 			if (!isstatic)
-				es.set(vat++, __SMTType__.OBJECT);
+				loc.set(vat++, __SMTType__.OBJECT);
 			
 			// Go through all arguments
 			int n = __ms.argumentCount();
@@ -101,16 +102,16 @@ class __SMTParser__
 				__SMTType__ vt = __SMTType__.bySymbol(__ms.get(i));
 				
 				// Set
-				es.set(vat++, vt);
+				loc.set(vat++, vt);
 				
 				// If wide, skip one
 				if (vt.isWide())
-					es.set(vat++, __SMTType__.TOP);
+					loc.set(vat++, __SMTType__.TOP);
 			}
 			
-			// If the size is exceeded then fail
+			// {@squirreljme.error ED0s There are too many local variables.}
 			if (vat > maxlocals)
-				throw new IndexOutOfBoundsException();
+				throw new IndexOutOfBoundsException("ED0s");
 		}
 		
 		// Initialization out of bounds

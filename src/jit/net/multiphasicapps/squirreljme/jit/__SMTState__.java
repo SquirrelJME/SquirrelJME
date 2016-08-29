@@ -22,5 +22,42 @@ import java.util.RandomAccess;
  */
 class __SMTState__
 {
+	/** The state of the stack. */
+	final __SMTStack__ _stack;
+	
+	/** The state of the locals. */
+	final __SMTLocals__ _locals;
+
+	/**
+	 * Initializes the stack storage states.
+	 *
+	 * @param __ms Maximum number of stack variables.
+	 * @param __ml Maximum number of local variables.
+	 * @since 2016/08/29
+	 */
+	__SMTState__(int __ms, int __ml)
+	{
+		this._stack = new __SMTStack__(__ms);
+		this._locals = new __SMTLocals__(__ml);
+	}
+	
+	/**
+	 * Creates a new state which is duplicated from the existing state.
+	 *
+	 * @param __s The other state to copy from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/29
+	 */
+	__SMTState__(__SMTState__ __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Duplicate
+		this._stack = new __SMTStack__(__s._stack);
+		this._locals = new __SMTLocals__(__s._locals);
+	}
 }
 

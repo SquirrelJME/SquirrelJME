@@ -28,5 +28,16 @@ class __SMTLocals__
 	{
 		super(__n);
 	}
+	
+	/**
+	 * Initializes local variable state from an existing one.
+	 *
+	 * @param __l The state to copy from.
+	 * @since 2016/08/29
+	 */
+	__SMTLocals__(__SMTLocals__ __l)
+	{
+		super(__l);
+	}
 }
 

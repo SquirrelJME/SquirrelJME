@@ -43,7 +43,31 @@ class __SMTStack__
 			throw new JITException(String.format("ED01 %d %d", __top, __n));
 		
 		// Set
-		top = __top;
+		this.top = __top;
+	}
+	
+	/**
+	 * Copies the stack state from an existing one.
+	 *
+	 * @param __s The state to copy from.
+	 * @since 2016/08/29
+	 */
+	__SMTStack__(__SMTStack__ __s)
+	{
+		super(__s);
+		
+		this.top = __s.top;
+	}
+	
+	/**
+	 * Sets the top of the stack.
+	 *
+	 * @param __t The top of the stack.
+	 * @since 2016/08/29
+	 */
+	public void setStackTop(int __t)
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
