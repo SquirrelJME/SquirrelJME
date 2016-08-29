@@ -34,6 +34,9 @@ public final class JITTriplet
 	/** The endianess of the CPU. */
 	protected final JITCPUEndian endianess;
 	
+	/** The floating point type used. */
+	protected final JITCPUFloat floating;
+	
 	/** The operating system. */
 	protected final String os;
 	
@@ -86,20 +89,24 @@ public final class JITTriplet
 		// Find all symbol locations in the architecture
 		int pdas = fullarch.indexOf('-'),
 			pplu = fullarch.indexOf('+'),
-			pcom = fullarch.indexOf(',');
+			pcom = fullarch.indexOf(','),
+			ptil = fullarch.indexOf('~');
 		
 		// {@squirreljme.error BQ0b Expected the architecture part to be in
-		// the form of {@code name-bits+variant,endianess}. (The input
+		// the form of {@code name-bits+variant,endianess~float}. (The input
 		// triplet)}
 		if (pdas < 0 || pplu < 0 || pcom < 0 || pdas > pplu || pdas > pcom ||
-			pplu > pcom)
+			pplu > pcom || ptil < 0 || pdas > ptil || pplu > ptil ||
+			pcom > ptil)
 			throw new IllegalArgumentException(String.format("BQ0b %s", __t));
 		
 		// Extract
 		this.architecture = __check(fullarch.substring(0, pdas));
 		this.cpuvar = __check(fullarch.substring(pplu + 1, pcom));
 		this.endianess = JITCPUEndian.of(__check(
-			fullarch.substring(pcom + 1)));
+			fullarch.substring(pcom + 1, ptil)));
+		this.floating = JITCPUFloat.of(__check(
+			fullarch.substring(ptil + 1)));
 		
 		// Decode bits
 		try
@@ -151,7 +158,7 @@ public final class JITTriplet
 		if (ref == null || null == (rv = ref.get()))
 			_archprop = new WeakReference<>((rv = this.architecture + "-" +
 				this.bits + "+" + this.cpuvar + "," +
-				this.endianess.endianName()));
+				this.endianess + "~" + this.floating));
 		
 		// Return
 		return rv;
@@ -268,6 +275,17 @@ public final class JITTriplet
 	}
 	
 	/**
+	 * Returns the floating point type of the triplet.
+	 *
+	 * @return The floating point type used.
+	 * @since 2016/08/29
+	 */
+	public final JITCPUFloat floatingPoint()
+	{
+		return this.floating;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/05
 	 */
@@ -322,7 +340,7 @@ public final class JITTriplet
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			_package = new WeakReference<>((rv = this.architecture + "-" +
-				this.bits + "," + this.endianess.endianName() + "." +
+				this.bits + "," + this.endianess + "." +
 				this.os + "." + this.osvar));
 		
 		// Return
@@ -343,7 +361,7 @@ public final class JITTriplet
 		if (ref == null || null == (rv = ref.get()))
 			_string = new WeakReference<>((rv = this.architecture + "-" +
 				this.bits + "+" + this.cpuvar + "," +
-				this.endianess.endianName() + "." + this.os + "." +
+				this.endianess + "~" + this.floating + "." + this.os + "." +
 				this.osvar));
 		
 		// Return

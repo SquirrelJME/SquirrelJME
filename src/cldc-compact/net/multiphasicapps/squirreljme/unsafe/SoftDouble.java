@@ -173,7 +173,7 @@ public final class SoftDouble
 	 * @return The converted value.
 	 * @since 2016/08/29
 	 */
-	public static int doubleToInt(long __d)
+	public static int doubleToInteger(long __d)
 	{
 		throw new Error("TODO");
 	}

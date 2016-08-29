@@ -47,11 +47,11 @@ public class LinuxMIPSBuilder
 	public LinuxMIPSBuilder()
 	{
 		super(false,
-			"mips-32+i,little.linux.generic",
+			"mips-32+i,little~hard.linux.generic",
 				"Generic Linux MIPS (Little Endian)",
-			"mips-32+i,big.linux.generic",
+			"mips-32+i,big~hard.linux.generic",
 				"Generic Linux MIPS (Big Endian)",
-			"mips-32+mips32,little.linux.gcwzero",
+			"mips-32+mips32,little~hard.linux.gcwzero",
 				"GCW Zero");
 	}
 	

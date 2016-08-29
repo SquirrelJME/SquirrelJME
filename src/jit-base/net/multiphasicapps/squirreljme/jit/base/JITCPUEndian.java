@@ -51,12 +51,11 @@ public enum JITCPUEndian
 	}
 	
 	/**
-	 * Returns the name of the endianess.
-	 *
-	 * @return The endianess name.
+	 * {@inheritDoc}
 	 * @since 2016/07/03
 	 */
-	public final String endianName()
+	@Override
+	public final String toString()
 	{
 		return this.name;
 	}
