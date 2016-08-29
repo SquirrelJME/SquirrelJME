@@ -65,7 +65,7 @@ public final class SoftDouble
 	 * is returned.
 	 * @since 2016/08/29
 	 */
-	public static int doubleCompareLess(long __a, long __b)
+	public static int doubleCompareLesser(long __a, long __b)
 	{
 		throw new Error("TODO");
 	}

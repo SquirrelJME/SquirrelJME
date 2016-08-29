@@ -39,7 +39,8 @@ public final class SoftFloat
 	 */
 	public static int floatAdd(int __a, int __b)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleToFloat(
+			SoftDouble.doubleAdd(floatToDouble(__a), floatToDouble(__b)));
 	}
 	
 	/**
@@ -53,7 +54,8 @@ public final class SoftFloat
 	 */
 	public static int floatCompareGreater(int __a, int __b)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleCompareGreater(
+			floatToDouble(__a), floatToDouble(__b));
 	}
 	
 	/**
@@ -65,9 +67,10 @@ public final class SoftFloat
 	 * is returned.
 	 * @since 2016/08/29
 	 */
-	public static int floatCompareLess(int __a, int __b)
+	public static int floatCompareLesser(int __a, int __b)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleCompareLesser(
+			floatToDouble(__a), floatToDouble(__b));
 	}
 	
 	/**
@@ -80,7 +83,8 @@ public final class SoftFloat
 	 */
 	public static int floatDivide(int __a, int __b)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleToFloat(
+			SoftDouble.doubleDivide(floatToDouble(__a), floatToDouble(__b)));
 	}
 	
 	/**
@@ -93,7 +97,8 @@ public final class SoftFloat
 	 */
 	public static int floatMultiply(int __a, int __b)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleToFloat(
+			SoftDouble.doubleMultiply(floatToDouble(__a), floatToDouble(__b)));
 	}
 	
 	/**
@@ -105,7 +110,8 @@ public final class SoftFloat
 	 */
 	public static int floatNegate(int __a)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleToFloat(
+			SoftDouble.doubleNegate(floatToDouble(__a)));
 	}
 	
 	/**
@@ -118,7 +124,8 @@ public final class SoftFloat
 	 */
 	public static int floatRemainder(int __a, int __b)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleToFloat(SoftDouble.doubleRemainder(
+			floatToDouble(__a), floatToDouble(__b)));
 	}
 	
 	/**
@@ -131,7 +138,8 @@ public final class SoftFloat
 	 */
 	public static int floatSubtract(int __a, int __b)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleToFloat(
+			SoftDouble.doubleSubtract(floatToDouble(__a), floatToDouble(__b)));
 	}
 	
 	/**
@@ -155,7 +163,7 @@ public final class SoftFloat
 	 */
 	public static int floatToInteger(int __f)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleToInteger(floatToDouble(__f));
 	}
 	
 	/**
@@ -167,7 +175,7 @@ public final class SoftFloat
 	 */
 	public static long floatToLong(int __f)
 	{
-		throw new Error("TODO");
+		return SoftDouble.doubleToLong(floatToDouble(__f));
 	}
 }
 
