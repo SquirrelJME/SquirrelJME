@@ -12,6 +12,11 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 
 /**
  * This parses the stack map table using either the modern Java 6 format or
@@ -29,9 +34,6 @@ class __SMTParser__
 	
 	/** The input source. */
 	protected final DataInputStream in;
-	
-	/** The program to modify. */
-	protected final CPProgram program;
 	
 	/** The maximum local count. */
 	protected final int maxlocals;
@@ -54,32 +56,34 @@ class __SMTParser__
 	 *
 	 * @param __m Parse the moderm format?
 	 * @param __in The input stream containing the data.
-	 * @param __meth The owning code attribute.
+	 * @param __mf The method flags (used to determine if it is static).
+	 * @param __ms The method type.
+	 * @param __maxs Maximum stack size.
+	 * @param __maxl Maximum local size.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/25
 	 */
-	__StackMapParser__(boolean __m, NCIByteBuffer __in, NBCByteCode __code)
+	__SMTParser__(boolean __m, DataInputStream __in, JITMethodFlags __mf,
+		MethodSymbol __ms, int __maxs, int __maxl)
 		throws NullPointerException
 	{
 		// Check
-		if (__in == null || __prg == null || __outmap == null ||
-			__meth == null)
+		if (__in == null || __mf == null || __ms == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		modern = __m;
 		in = __in;
 		program = __prg;
-		maxlocals = program.maxLocals();
-		maxstack = program.maxStack();
-		outputmap = __outmap;
+		maxlocals = __maxl;
+		maxstack = __maxs;
 		
 		// Setup initial verification state for the given map
 		CPVerifyState es = new CPVerifyState(program);
 		outputmap.put(0, es);
 		
 		// Is this method static?
-		boolean isstatic = __meth.flags().isStatic();
+		boolean isstatic = __mf.isStatic();
 		
 		// Setup state
 		int vat = 0;
@@ -90,12 +94,11 @@ class __SMTParser__
 				es.set(vat++, __SMTType__.OBJECT);
 			
 			// Go through all arguments
-			MethodSymbol ms = __meth.type();
-			int n = ms.argumentCount();
+			int n = __ms.argumentCount();
 			for (int i = 0; i < n; i++)
 			{
 				// Convert to type
-				__SMTType__ vt = __SMTType__.bySymbol(ms.get(i));
+				__SMTType__ vt = __SMTType__.bySymbol(__ms.get(i));
 				
 				// Set
 				es.set(vat++, vt);

@@ -52,6 +52,12 @@ final class __CodeDecoder__
 	/** The input code attribute data. */
 	private final DataInputStream _input;
 	
+	/** The maximum number of local variables. */
+	volatile int _maxlocals;
+	
+	/** The maximum size of the stack. */
+	volatile int _maxstack;
+	
 	/**
 	 * Add base code decoder class.
 	 *
@@ -96,6 +102,10 @@ final class __CodeDecoder__
 		// Read max stack and locals
 		int maxstack = input.readUnsignedShort();
 		int maxlocals = input.readUnsignedShort();
+		
+		// Store for SMT parsing and code usage
+		this._maxstack = maxstack;
+		this._maxlocals = maxlocals;
 		
 		// {@squirreljme.error ED06 The code for a given method exceeds the
 		// code size limit, or the size is zero. (The current code length;
@@ -458,11 +468,16 @@ final class __CodeDecoder__
 			throw new NullPointerException("NARG");
 		
 		// Which attribute?
+		boolean old = false;
 		switch (__name)
 		{
 				// The stack map table
 			case "StackMap":
+				old = true;
 			case "StackMapTable":
+				new __SMTParser__(!old, __is, this._flags, this._type,
+					this._maxstack, this._maxlocals);
+				
 				if (true)
 					throw new Error("TODO");
 				
