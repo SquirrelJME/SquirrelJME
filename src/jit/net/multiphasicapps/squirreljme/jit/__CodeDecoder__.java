@@ -140,6 +140,9 @@ final class __CodeDecoder__
 			this._smt = __SMTParser__.__initialState(this._flags, this._type,
 				maxstack, maxlocals);
 		
+		// Prime arguments
+		__primeArguments();
+		
 		// Parse the byte code now
 		try (ExtendedDataInputStream dis = new ExtendedDataInputStream(
 			new ByteArrayInputStream(code)))
@@ -185,6 +188,37 @@ final class __CodeDecoder__
 			default:
 				break;
 		}
+	}
+	
+	/**
+	 * Primes the input arguments.
+	 *
+	 * @since 2016/08/29
+	 */
+	private void __primeArguments()
+	{
+		// Get initial state
+		__SMTLocals__ locals = this._smt.get(0)._locals;
+		
+		// Setup output arguments
+		List<JITVariableType> args = new ArrayList<>();
+		int n = locals.size();
+		for (int i = 0; i < n; i++)
+		{
+			// Get
+			__SMTType__ t = locals.get(i);
+			
+			// No more arguments?
+			if (t == __SMTType__.NOTHING)
+				break;
+			
+			// Map
+			args.add(t.map());
+		}
+		
+		// Prime it
+		this._writer.primeArguments(args.<JITVariableType>toArray(
+			new JITVariableType[args.size()]));
 	}
 }
 

@@ -74,7 +74,11 @@ abstract class __SMTTread__
 	@Override
 	public final __SMTType__ get(int __i)
 	{
-		return storage[__i];
+		// Always make sure there is a value here
+		__SMTType__ rv = storage[__i];
+		if (rv == null)
+			return __SMTType__.NOTHING;
+		return rv;
 	}
 	
 	/**
@@ -84,6 +88,10 @@ abstract class __SMTTread__
 	@Override
 	public final __SMTType__ set(int __i, __SMTType__ __t)
 	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
 		__SMTType__[] storage = this.storage;
 		__SMTType__ rv = storage[__i];
 		storage[__i] = __t;

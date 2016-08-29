@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
@@ -19,11 +20,17 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITVariableType;
 
 /**
  * This is the base class for the native machine code generator which is common
  * to many architectures. Support for architectures extends this class which
  * is used to create the actual machine code.
+ *
+ * All generic machines are assumed to be modern, where there is a limited set
+ * of registers for data storage along with extra memory areas where the stack
+ * is located. Values which cannot be stored in registers at any given time
+ * will be placed on the stack.
  *
  * @since 2016/08/19
  */
@@ -107,6 +114,24 @@ public abstract class GenericMethodWriter
 		{
 			throw new JITException("BA06", e);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/29
+	 */
+	@Override
+	public void primeArguments(JITVariableType[] __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- Primed args: %s%n", Arrays.asList(__t));
+		
+		throw new Error("TODO");
 	}
 }
 
