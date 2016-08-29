@@ -86,5 +86,15 @@ class __SMTStack__
 	{
 		return this._top;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/29
+	 */
+	@Override
+	public String toString()
+	{
+		return this._top + ":" + super.toString();
+	}
 }
 

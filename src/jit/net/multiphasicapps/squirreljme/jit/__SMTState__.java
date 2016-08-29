@@ -59,5 +59,15 @@ class __SMTState__
 		this._stack = new __SMTStack__(__s._stack);
 		this._locals = new __SMTLocals__(__s._locals);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/29
+	 */
+	@Override
+	public String toString()
+	{
+		return "{locals=" + this._locals + ", stack=" + this._stack + "}";
+	}
 }
 

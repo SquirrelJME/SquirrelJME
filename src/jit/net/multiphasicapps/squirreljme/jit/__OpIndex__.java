@@ -837,5 +837,25 @@ interface __OpIndex__
 	/** IMPDEP2. */
 	public static final int IMPDEP2 =
 		255;
+
+	/** Wide ALOAD. */
+	public static final int WIDE_ALOAD =
+		(WIDE << 8) | ALOAD;
+
+	/** Wide ILOAD. */
+	public static final int WIDE_ILOAD =
+		(WIDE << 8) | ILOAD;
+
+	/** Wide LLOAD. */
+	public static final int WIDE_LLOAD =
+		(WIDE << 8) | LLOAD;
+
+	/** Wide FLOAD. */
+	public static final int WIDE_FLOAD =
+		(WIDE << 8) | FLOAD;
+
+	/** Wide DLOAD. */
+	public static final int WIDE_DLOAD =
+		(WIDE << 8) | DLOAD;
 }
 
