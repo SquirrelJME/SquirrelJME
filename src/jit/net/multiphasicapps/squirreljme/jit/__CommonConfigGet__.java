@@ -37,6 +37,20 @@ interface __CommonConfigGet__
 	public abstract JITClassNameRewrite[] classNameRewrites();
 	
 	/**
+	 * Returns the object which is associated with the given class for the
+	 * specified configuration.
+	 *
+	 * @param <C> The type of class to get the object for.
+	 * @param __cl The type of class to get the object for.
+	 * @return The object associated with the given class or {@code null}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/30
+	 */
+	public abstract <C extends Object & JITObjectProperties> C getObject(
+		Class<C> __cl)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the triplet to target.
 	 *
 	 * @return The target triplet.

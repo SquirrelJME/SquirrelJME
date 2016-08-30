@@ -62,3 +62,16 @@ would essentially be the register allocator, jumping, calling methods, and
 exception handling. One a basic layout is done, I would then need to write the
 linking system to find classes and such.
 
+## 08:56
+
+So is it a special or is it something else? It would just be a generic class
+association mapping for the most part. It would be `registerFoo` and a
+`getFoo`, but what are these special things called? I suppose just `Object`
+can do.
+
+## 09:02
+
+Then they could also have an extra an optional interface which is used to
+potentially configure it via system properties and such. Or it could be
+required.
+
