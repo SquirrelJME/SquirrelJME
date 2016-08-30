@@ -3,7 +3,41 @@
 This is the list of code that currently needs work:
 
  * Create a new build system that can run on SquirrelJME.
+ * Emulators
+   * Linux
+     * MIPS
+ * JITs.
+   * Linux
+     * MIPS
  * Make the inflate code faster.
- * MIPS JIT.
  * Rewrite `zip-reader-block`.
+
+# Code To Be Done
+
+This is the list of code that needs to be implemented:
+
+ * CLDC Compact
+ * CLDC Full
+ * File Systems
+   * POSIX
+     * Linux
+ * JVM
+   * Linux
+ * Launcher (LUI)
+ * MEEP
+   * cellular
+   * concurrency
+   * event
+   * io
+   * key
+   * liblets
+   * lui
+   * media
+   * midlet
+   * power
+   * provisioning
+   * rms
+   * securityframework
+   * swm
+ * Squirrel Quarrel
 

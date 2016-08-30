@@ -174,3 +174,11 @@ One thing is that a JAR cannot be both a MIDlet and a LIBlet, but I kind of
 dodge that as not supporting such a thing sounds really ugly (reusing code
 is very nice). So as such, I will note a bug.
 
+## 18:45
+
+SquirrelJME will be a microkernel. The JVM that runs closest to the system will
+interact with the hardware. Any application that then runs including the
+launcher will communicate to the hosting JVM via some unspecified channel. So
+while the JVM's stdout will point to the actual stdout, the application one
+will point to some kind of virtual console instead.
+
