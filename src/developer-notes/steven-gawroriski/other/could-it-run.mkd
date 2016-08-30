@@ -20,7 +20,7 @@ require a specially designed compiler that generates the tiniest code possible.
  * **CPU**: 64-bit MIPS @ 93.75MHz
  * **RAM**: 4MiB, 8MiB w/ Expansion Pak
  * **ROM**: 64MiB
- * **HDD**: SD/CF (64Drive), 32KiB (Controller Pak)
+ * **HDD**: SD/CF (64Drive), 0-4x32KiB (Controller Pak)
  * **NET**: USB (64Drive), Parallel (GameShark)
  * **HID**: Joystick, Mouse
 
@@ -73,7 +73,7 @@ means that all pointers can truly be 16-bit.
  * **CPU**: 32-bit SH4 @ 200MHz
  * **RAM**: 16MiB
  * **ROM**: ~750MiB
- * **HDD**: SD (Adapter), VMU (128KiB)
+ * **HDD**: SD (Adapter), 0-8xVMU (100KiB)
  * **NET**: Modem, Ethernet
  * **HID**: Joystick, Keyboard, Mouse
 
