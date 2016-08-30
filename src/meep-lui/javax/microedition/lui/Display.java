@@ -353,6 +353,91 @@ public class Display
 	}
 	
 	/**
+	 * Returns {@code true} if the specified line has horizontal scrolling
+	 * enabled. If horizontal scrolling is not enabled then the return value
+	 * is meaningless.
+	 *
+	 * @param __l The line to check.
+	 * @return {@code true} if horizontal scrolling is enabled for the given
+	 * line.
+	 * @throws ArrayIndexOutOfBoundsException If the line is not within the
+	 * bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public boolean isHorizontalScrollingEnabled(int __l)
+		throws ArrayIndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns {@code true} if horizontal scrolling is supported on the
+	 * display.
+	 *
+	 * @return {@code true} if horizontal scrolling is supported.
+	 * @since 2016/08/30
+	 */
+	public boolean isHorizontalScrollingSupported()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns true if the color of the lighting color is able to be changed.
+	 *
+	 * @return {@code true} if the lighting color can be changed.
+	 * @since 2016/08/30
+	 */
+	public boolean isLightingColorsSupported()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns {@code true} if lighting is supported.
+	 *
+	 * @return {@code true} if lighting is supported.
+	 * @since 2016/08/30
+	 */
+	public boolean isLightingSupported()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns {@code true} if text colors are supported.
+	 *
+	 * @return {@code true} if text colors are supported.
+	 * @since 2016/08/30
+	 */
+	public boolean isTextColorsSupported()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns {@code true} if vertical scrolling is enabled.
+	 *
+	 * @return {@code true} if vertical scrolling is enabled.
+	 * @since 2016/08/30
+	 */
+	public boolean isVerticalScrollingEnabled()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns {@code true} if vertical scrolling is supported.
+	 *
+	 * @return {@code true} if vertical scrolling is supported.
+	 * @since 2016/08/30
+	 */
+	public boolean isVerticalScrollingSupported()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * This is used to register a listener for when displays are added,
 	 * removed, or their state has been changed.
 	 *
