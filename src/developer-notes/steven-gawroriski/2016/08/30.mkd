@@ -121,3 +121,38 @@ being very alone.
 
 Need to determine which package the MIDlet interface shall go inside of.
 
+## 17:29
+
+And I managed enough to get the MIDlet installation on an actual Java ME 8
+system.
+
+	Suite: 2
+	  Name: Squirrel Quarrel
+	  Version: 0.0.2
+	  Vendor: Steven Gawroriski
+	  MIDlets:
+		Squirrel Quarrel (Console): net.multiphasicapps.squirrelquarrel.
+		ConsoleMain
+
+It also runs and then crashes, which means it works:
+	java.lang.Error: TODO
+	 - net/multiphasicapps/squirrelquarrel/ConsoleMain.destroyApp(), bci=6
+	 - .unknown...unknown.(), bci=2
+	 - .unknown...unknown.(), bci=6
+	 - .unknown...unknown.(), bci=306
+	 - .unknown...unknown.(), bci=38
+	 - .unknown...unknown.(), bci=5
+	 - .unknown...unknown.(), bci=130
+	 - com/sun/midp/main/AppIsolateMIDletSuiteLoader.main(), bci=23[ERROR]
+	 [AMS] iso=1:Sending the notification: com.oracle.midp.proxy.RunCommand@210
+	 . FAILED, proxy is disconnected
+
+So I appear to have the potential for an actually testable setup. For the
+configuration autodetection based on dependencies, a new build system I can
+setup via the package manager can perform the detection work as needed.
+
+## 17:31
+
+So it will be very important that a new build system be setup that can run
+entirely within SquirrelJME.
+
