@@ -28,6 +28,16 @@ import java.util.ServiceLoader;
  *
  * Auxiliary displays are ones that may be dynamically added and removed.
  *
+ * Set text on a display may be lost depending on the implementation such as
+ * if it implements scrolling in a specific fashion or the text does not fit.
+ * As such, obtained text may be what is visible or might be what was not
+ * truncated when set. Thus if {@code "SquirrelJME"} was set to the display
+ * and scrolling was enabled, then it might return that text or something
+ * such as {@code "JMESquirrel"}. An exception to this is line breaks where
+ * if a line contains too much text it flows onto the next line, in this case
+ * the text is treated as a single line and the break is not in the returned
+ * text.
+ *
  * Internally to SquirrelJME, this class acts as a wrapper around display
  * driver interfaces which are implemented via the service loader.
  * If a display supports user input then it must implement
@@ -119,11 +129,6 @@ public class Display
 	 * If the array contains more characters than the display then the extra
 	 * characters remain untouched.
 	 *
-	 * This only returns text which has been set to a display up to the bounds
-	 * of lines and columns, not what is actually displayed. This means that
-	 * text which is scrolled off the display will be returned and that text
-	 * which could not be set on a display to not be returned.
-	 *
 	 * It is recommended to pass an array that is large enough to read all
 	 * characters from the display.
 	 *
@@ -150,11 +155,6 @@ public class Display
 	 * If the array contains more characters than the display then the extra
 	 * characters remain untouched.
 	 *
-	 * This only returns text which has been set to a display up to the bounds
-	 * of columns, not what is actually displayed. This means that
-	 * text which is scrolled off the display will be returned and that text
-	 * which could not be set on a display to not be returned.
-	 *
 	 * It is recommended to pass an array that is large enough to read all
 	 * characters from the display.
 	 *
@@ -173,6 +173,182 @@ public class Display
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the text color that is currently used on the display. If text
+	 * colors are not supported then the default color is returned.
+	 *
+	 * @return The text color which is used on the display.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor getCurrentTextColor()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the default background color.
+	 *
+	 * @return The default background color.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor getDefaultBackgroundColor()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the default lighting color.
+	 *
+	 * @return The default lighting color.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor getDefaultLightingColor()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the default text color.
+	 *
+	 * @return The default text color.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor getDefaultTextColor()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the number of milliseconds between character shifts for the
+	 * given line.
+	 *
+	 * If the display does not support horizontal scrolling then the value
+	 * returned here is meaningless.
+	 *
+	 * @param __l The line to get the scrolling interval of.
+	 * @throws ArrayIndexOutOfBoundsException If the specified line is not
+	 * within the bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public int getHorizontalScrollingInterval(int __l)
+		throws ArrayIndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the identification of the given display. It is recommended for
+	 * the same hardware displays to return the same ID even if the given
+	 * {@link Display} object has changed.
+	 *
+	 * @return The display identification.
+	 * @since 2016/08/30
+	 */
+	public String getId()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the current lighting color of the display. If lighting is not
+	 * supported then this will return the default color.
+	 *
+	 * @return The currently set lighting color.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor getLightingColor()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the number of lines which are available for the display.
+	 *
+	 * @return The number of lines the display uses.
+	 * @since 2016/08/30
+	 */
+	public int getNumberOfLines()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the current text which has previously been set.
+	 *
+	 * @return The current text display.
+	 * @since 2016/08/30
+	 */
+	public String getText()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the current text which has previously been set on a given line.
+	 *
+	 * @param __l The line to get the text for.
+	 * @return The text on the given line.
+	 * @throws ArrayIndexOutOfBoundsException If the line is not within the
+	 * bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public String getText(int __l)
+		throws ArrayIndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the number of milliseconds that must pass before lines are
+	 * shifted. If vertical scrolling is not supported then the return value is
+	 * meaningless.
+	 *
+	 * @return The interval used for vertical scrolling.
+	 * @since 2016/08/30
+	 */
+	public int getVerticalScrollingInterval()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns {@code true} if background colors are supported.
+	 *
+	 * @return {@code true} if background colors are supported.
+	 * @since 2016/08/30
+	 */
+	public boolean isBackgroundColorsSupported()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns {@code true} if this display is built-in and is not auxiliary
+	 * meaning that the display will never be removed. Otherwise {@code false}
+	 * indicates that it may disappear.
+	 *
+	 * @return {@code true} if the display is built-in.
+	 * @since 2016/08/30
+	 */
+	public boolean isBuiltIn()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * This returns {@code true} if the display has access to the underlying
+	 * hardware, which means it is capable of receiving user input and is
+	 * currently displayed to the user.
+	 *
+	 * @return {@code true} if the display has access to the underlying
+	 * hardware.
+	 * @since 2016/08/30
+	 */
+	public boolean isHardwareAssigned()
+	{
 		throw new Error("TODO");
 	}
 	
