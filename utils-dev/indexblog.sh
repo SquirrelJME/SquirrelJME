@@ -192,6 +192,8 @@ __secondary()
 }
 
 # Print both
-(__primary; __secondary) > index.mkd
-
+if (__primary && __secondary) > /tmp/$$
+then
+	mv /tmp/$$ index.mkd
+fi
 

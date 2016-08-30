@@ -27,14 +27,7 @@ __cmd=$1
 shift 1
 
 # Current user
-__myname="$(fossil user default 2> /dev/null)"
-if [ -z "$__myname" ]
-then
-	__myname="$USER"
-fi
-
-# Dots to dashes
-__myname="$(echo "$__myname" | sed 's/\./-/g')"
+__myname="$($__exedir/myname.sh)"
 
 # Get the current date in string form.
 __nowyear="$(date +%Y)"
@@ -63,7 +56,7 @@ then
 	__job=$!
 	
 	# Rebuild the blog index
-	"$__exedir/blogdx.sh"
+	"$__exedir/indexblog.sh"
 	
 	# Resume it
 	fg "$__job"
