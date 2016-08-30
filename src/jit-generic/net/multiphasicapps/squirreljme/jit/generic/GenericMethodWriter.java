@@ -49,6 +49,9 @@ public abstract class GenericMethodWriter
 	/** The bit level of the CPU. */
 	protected final int wordsize;
 	
+	/** The register allocator to use. */
+	protected final GenericRegisterAllocator allocator;
+	
 	/**
 	 * Initializes the generic method writer.
 	 *
@@ -93,6 +96,17 @@ public abstract class GenericMethodWriter
 		
 		// CPU bits
 		this.wordsize = triplet.bits();
+		
+		// {@squirreljme.error BA0o No register allocator factory was specified
+		// with the JIT, compilation cannot continue.}
+		GenericRegisterAllocatorFactory af = __conf.
+			<GenericRegisterAllocatorFactory>getObject(
+			GenericRegisterAllocatorFactory.class);
+		if (af == null)
+			throw new JITException("BA0o");
+		
+		// Create new allocator
+		this.allocator = af.create();
 	}
 	
 	/**

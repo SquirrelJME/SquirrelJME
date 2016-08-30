@@ -6,7 +6,7 @@ This is the list of code that currently needs work:
  * Emulators
    * Linux
      * MIPS
- * JITs.
+ * JITs
    * Linux
      * MIPS
  * Make the inflate code faster.
@@ -29,11 +29,11 @@ This is the list of code that needs to be implemented:
    * concurrency
    * event
    * io
-   * key
+   * key (skeleton)
    * liblets
-   * lui
+   * lui (skeleton)
    * media
-   * midlet
+   * midlet (skeleton)
    * power
    * provisioning
    * rms
