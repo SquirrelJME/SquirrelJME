@@ -8,7 +8,7 @@ LIBlet-Title: Squirrel Quarrel
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This is a real-time strategy game.
-MicroEdition-Configuration: CLDC-8.0
+MicroEdition-Configuration: CLDC-1.8
 MicroEdition-Profile: MEEP-8.0
 MIDlet-Name: Squirrel Quarrel
 MIDlet-Vendor: Steven Gawroriski
