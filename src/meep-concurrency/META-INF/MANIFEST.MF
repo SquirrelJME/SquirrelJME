@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: meep-concurrency
 X-SquirrelJME-UUID: 70d937c9-e6d1-4618-a299-8182ea5e612e
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DK
 X-SquirrelJME-StandardLib: microedition.concurrency;0.0.0
 LIBlet-Title: MEEP Concurrency

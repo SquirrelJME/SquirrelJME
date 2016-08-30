@@ -3,9 +3,9 @@ X-SquirrelJME-Name: meep
 X-SquirrelJME-UUID: 31661f3a-c2a4-46bb-aac7-06fbf7480cab
 X-SquirrelJME-Depends: cldc-compact
 X-SquirrelJME-Error: CK
+X-SquirrelJME-Profile: MEEP-8.0
 LIBlet-Title: JavaME 8 MEEP 8.0
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This is a virtual project which has optional 
- dependencies on all of the MEEP APIs that may or may not exist.
+LIBlet-Description: This is the base for all MEEP based projects.
 

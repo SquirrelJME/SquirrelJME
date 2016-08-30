@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: meep-liblets
 X-SquirrelJME-UUID: aa14fb14-9806-40b6-9e27-6cc15cc2b457
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DL
 X-SquirrelJME-StandardLib: microedition.liblets;0.0.0
 LIBlet-Title: MEEP Application Suites and LIBlets

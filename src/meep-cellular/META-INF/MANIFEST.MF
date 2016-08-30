@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: meep-cellular
 X-SquirrelJME-UUID: eac4a39d-b264-44ca-9e77-38a96a6e30cc
-X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Depends: meep
 X-SquirrelJME-Error: DH
 X-SquirrelJME-StandardLib: microedition.cellular;0.0.0
 LIBlet-Title: MEEP Cellular Networking
