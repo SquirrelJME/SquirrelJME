@@ -8,4 +8,8 @@ LIBlet-Title: Squirrel Quarrel
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
 LIBlet-Description: This is a real-time strategy game.
+MIDlet-Name: Squirrel Quarrel
+MIDlet-Vendor: Steven Gawroriski
+MIDlet-Version: 0.0.2
+
 

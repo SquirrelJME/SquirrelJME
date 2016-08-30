@@ -91,3 +91,7 @@ bit difficult to implement Squirrel Quarrel on this type of display.
 And I am done, that took awhile. Although I do have to implement the key event
 stuff eventually.
 
+## 16:42
+
+Going to need a way to specify midlets and such.
+
