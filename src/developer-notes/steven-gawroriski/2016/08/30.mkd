@@ -156,3 +156,15 @@ setup via the package manager can perform the detection work as needed.
 So it will be very important that a new build system be setup that can run
 entirely within SquirrelJME.
 
+## 17:58
+
+I suppose I can work on that before I continue on to the JIT. I can add to
+the existing project manager but then also have an interface which specifies
+a compiler that can be used to compile the code as needed. My bootstrap can
+build a bootstrap JAR setup from a set of packages and use that to actually
+configure things. I could also utilize some more manifest properties that
+specify what something is, or if it provides a standard. One thing I can do
+is if a dependency depends on a standard, it can just depend on that
+rather than my own package set. This way it would be a bit easier to see if
+it conforms to existing machines.
+
