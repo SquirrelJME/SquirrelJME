@@ -14,6 +14,9 @@ This console has enough power, RAM, and speed to reliably run virtually all
 SquirrelJME programs. The only main consideration is lack of input. There is
 a mouse peripheral, but in most cases only the joystick would be used.
 
+The 64Drive provides access to the USB interface (as a serial device) and the
+storage card.
+
 # Nintendo Entertainment System
 
  * _Verdict_: Hello Squirrel (NROM), Simple Programs (MMC5)
