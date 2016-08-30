@@ -36,7 +36,10 @@ import java.util.ServiceLoader;
  * such as {@code "JMESquirrel"}. An exception to this is line breaks where
  * if a line contains too much text it flows onto the next line, in this case
  * the text is treated as a single line and the break is not in the returned
- * text.
+ * text. Setting of text may enable scrolling if it is available.
+ *
+ * Color selection should always be the closest matching color that is
+ * supported on a given display.
  *
  * Internally to SquirrelJME, this class acts as a wrapper around display
  * driver interfaces which are implemented via the service loader.
@@ -433,6 +436,247 @@ public class Display
 	 * @since 2016/08/30
 	 */
 	public boolean isVerticalScrollingSupported()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the background color of the display. The closest matching color
+	 * should be selected by the display.
+	 *
+	 * If lighting is supported then {@code __c} being set to {@code null}
+	 * turns off the light. Otherwise the light is turned on when a color is
+	 * set.
+	 *
+	 * @param __c The color to set.
+	 * @return The color which was used by the display.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor setBackgroundColor(DisplayColor __c)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the characters used on the display. The entire display is used.
+	 *
+	 * @param __c The charactes to use.
+	 * @param __o The offset in the charater array.
+	 * @param __l The number of characters to write.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds.
+	 * @since 2016/08/30
+	 */
+	public void setChars(char[] __c, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException
+	{
+		setChars(__c, __o, __l);
+	}
+	
+	/**
+	 * Sets the characters used on the display. The entire display is used.
+	 *
+	 * @param __c The charactes to use.
+	 * @param __o The offset in the charater array.
+	 * @param __l The number of characters to write.
+	 * @param __blink Should characters blink, if supported?
+	 * @param __inverse Should characters be inverted, if supported?
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds.
+	 * @since 2016/08/30
+	 */
+	public void setChars(char[] __c, int __o, int __l, boolean __blink,
+		boolean __inverse)
+		throws ArrayIndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the characters used on the display, on the given line.
+	 *
+	 * @param __ln The line to set text for.
+	 * @param __c The charactes to use.
+	 * @param __o The offset in the charater array.
+	 * @param __l The number of characters to write.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds; or the line is not within
+	 * bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public void setChars(int __ln, char[] __c, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException
+	{
+		setChars(__ln, __c, __o, __l);
+	}
+	
+	/**
+	 * Sets the characters used on the display, on the given line.
+	 *
+	 * @param __ln The line to set text for.
+	 * @param __c The charactes to use.
+	 * @param __o The offset in the charater array.
+	 * @param __l The number of characters to write.
+	 * @param __blink Should characters blink, if supported?
+	 * @param __inverse Should characters be inverted, if supported?
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds; or the line is not within
+	 * bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public void setChars(int __ln, char[] __c, int __o, int __l,
+		boolean __blink, boolean __inverse)
+		throws ArrayIndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the color of the text on the display.
+	 *
+	 * @param __c The color to set.
+	 * @return The actual color which has been set.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor setCurrentTextColor(DisplayColor __c)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Requests that a display should be assigned to the hardware so that it
+	 * can be displayed and receive user input.
+	 *
+	 * @param __h If {@code true} then it should be assigned to the hardware,
+	 * otherwise {@code false} may unassign it.
+	 * @since 2016/08/30
+	 */
+	public void setHardwareAssigned(boolean __h)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Enables or disables horizontal scrolling for a given line.
+	 *
+	 * If both directions of scrolling is supported then this scrolls left to
+	 * right.
+	 *
+	 * @param __l The line to set scrolling for.
+	 * @param __e If {@code true} then scrolling is enabled.
+	 * @throws ArrayIndexOutOfBoundsException If the line is not within the
+	 * bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public void setHorizontalScrolling(int __l, boolean __e)
+		throws ArrayIndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Enables or disables horizontal scrolling for a given line.
+	 *
+	 * @param __l The line to set scrolling for.
+	 * @param __e If {@code true} then scrolling is enabled.
+	 * @param __dir If {@code true} then text scrolls left to right while
+	 * {@code false} means right to left.
+	 * @throws ArrayIndexOutOfBoundsException If the line is not within the
+	 * bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public void setHorizontalScrolling(int __l, boolean __e, boolean __dir)
+		throws ArrayIndexOutOfBoundsException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the amount of time in milliseconds before the next character is
+	 * shifted on the given line.
+	 *
+	 * @param __l The line to modify the scrolling interval for.
+	 * @param __i The number of milliseconds to use for the interval, a value
+	 * of zero indicates the fastest scrolling possible.
+	 * @throws ArrayIndexOutOfBoundsException If the line is not within the
+	 * bounds of the display.
+	 * @throws IllegalArgumentException If the interval is negative.
+	 * @since 2016/08/30
+	 */
+	public void setHorizontalScrollingInterval(int __l, int __i)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the color of the light to use for the given display.
+	 *
+	 * If {@code null} is specified then the light is turned off, otherwise
+	 * it is switched on.
+	 *
+	 * @param __c The color to use for the light.
+	 * @return The actually used color.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor setLightingColor(DisplayColor __l)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the characters used on the display. The entire display is used.
+	 *
+	 * @param __t The text to display.
+	 * @since 2016/08/30
+	 */
+	public void setText(String __t)
+	{
+		setText(__t);
+	}
+	
+	/**
+	 * Sets the characters used on the display. The entire display is used.
+	 *
+	 * @param __t The text to display.
+	 * @param __blink Should characters blink, if supported?
+	 * @param __inverse Should characters be inverted, if supported?
+	 * @since 2016/08/30
+	 */
+	public void setText(String __t, boolean __blink, boolean __inverse)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the characters used on the display, on the given line.
+	 *
+	 * @param __ln The line to set text for.
+	 * @param __t The text to display.
+	 * @throws ArrayIndexOutOfBoundsException If the line is not within
+	 * bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public void setText(int __ln, String __t)
+		throws ArrayIndexOutOfBoundsException
+	{
+		setText(__ln, __t);
+	}
+	
+	/**
+	 * Sets the characters used on the display, on the given line.
+	 *
+	 * @param __ln The line to set text for.
+	 * @param __t The text to display.
+	 * @param __blink Should characters blink, if supported?
+	 * @param __inverse Should characters be inverted, if supported?
+	 * @throws ArrayIndexOutOfBoundsException If the line is not within
+	 * bounds of the display.
+	 * @since 2016/08/30
+	 */
+	public void setText(int __ln, String __t, boolean __blink,
+		boolean __inverse)
+		throws ArrayIndexOutOfBoundsException
 	{
 		throw new Error("TODO");
 	}

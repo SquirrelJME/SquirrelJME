@@ -75,3 +75,14 @@ Then they could also have an extra an optional interface which is used to
 potentially configure it via system properties and such. Or it could be
 required.
 
+## 14:45
+
+This is quite a bunch of typing adding the skeleton for {@link Display} by
+hand.
+
+## 14:55
+
+The LUI interface is not really that great, it definitely is not a traditional
+character based terminal with character cells and attributes. It might be a
+bit difficult to implement Squirrel Quarrel on this type of display.
+
