@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 /**
  * This is used to provide access to extra properties which may be defined
- * by a special object associated with a conifguration.
+ * by a special object associated with a configuration.
  *
  * This may be used for example to specify which registers are used and
  * allocated so that information can be placed in the global system property
