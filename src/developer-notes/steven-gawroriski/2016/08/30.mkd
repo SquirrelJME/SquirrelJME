@@ -29,3 +29,8 @@ factories. So one would register a given class to a specific factory. This way
 there can be multiple ones and the configuration system does not have to be
 cluttered with unknowns.
 
+## 07:31
+
+Since I have an other note system, I should move the manual stuff away and
+place it there.
+

@@ -401,5 +401,18 @@
 
 ## Steven Gawroriski
 
+ * [ARM: Palm OS](steven-gawroriski/other/arm32_palmos_generic__dev.mkd)
  * [Could It Run SquirrelJME?](steven-gawroriski/other/could-it-run.mkd)
- * [Palm OS Notes](steven-gawroriski/other/palmos-notes.mkd)
+ * [General Support: Amiga OS](steven-gawroriski/other/generic_amigaos_generic__dev.mkd)
+ * [General Support: Linux](steven-gawroriski/other/generic_linux_generic__dev.mkd)
+ * [General Support: Palm OS](steven-gawroriski/other/generic_palmos_generic__dev.mkd)
+ * [Intel 8086: DOS Family](steven-gawroriski/other/i086_dos_generic__dev.mkd)
+ * [i086: DOS Family](steven-gawroriski/other/i086_dos_generic__user.mkd)
+ * [Intel 286: 16-bit Windows (Windows 3.1)](steven-gawroriski/other/i286_win16_generic__dev.mkd)
+ * [Motorolla 68000: Amiga OS](steven-gawroriski/other/m68k_amigaos_generic__dev.mkd)
+ * [Motorolla 68000: Palm OS](steven-gawroriski/other/m68k_palmos_generic__dev.mkd)
+ * [MIPS 64-bit: Nintendo 64 (64drive)](steven-gawroriski/other/mips64_nintendo64_64drive__dev.mkd)
+ * [MOS Technology 6502: Nintendo Entertainment System](steven-gawroriski/other/mos6502_nes_powerpak__dev.mkd)
+ * [PowerPC 32-bit: Amiga OS](steven-gawroriski/other/powerpc32_amigaos_generic__dev.mkd)
+ * [PowerPC 32-bit: Mac OS (9)](steven-gawroriski/other/powerpc32_macos_generic__dev.mkd)
+ * [PowerPC 32-bit: MorphOS](steven-gawroriski/other/powerpc32_morphos_generic__dev.mkd)
