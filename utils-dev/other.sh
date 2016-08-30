@@ -36,13 +36,12 @@ __notebase="$__exedir/../src/developer-notes/$__myname/other"
 __outfile="$__notebase/$__short.mkd"
 
 # Print simple document
-echo "# $__title
-" > "$__outfile"
+if "$__exedir/create.sh" -c "$__cmd" "$__outfile"
+then
+	echo "# $__title
+	" > "$__outfile"
+fi
 
 # Rebuild the blog index (in the background)
 "$__exedir/indexblog.sh" &
-
-# run in command
-"$__cmd" "$__outfile" 
-
 

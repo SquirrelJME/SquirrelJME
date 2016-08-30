@@ -413,6 +413,7 @@
  * [Motorolla 68000: Palm OS](steven-gawroriski/other/m68k_palmos_generic__dev.mkd)
  * [MIPS 64-bit: Nintendo 64 (64drive)](steven-gawroriski/other/mips64_nintendo64_64drive__dev.mkd)
  * [MOS Technology 6502: Nintendo Entertainment System](steven-gawroriski/other/mos6502_nes_powerpak__dev.mkd)
+ * [Code That Needs Work](steven-gawroriski/other/needs-work.mkd)
  * [PowerPC 32-bit: Amiga OS](steven-gawroriski/other/powerpc32_amigaos_generic__dev.mkd)
  * [PowerPC 32-bit: Mac OS (9)](steven-gawroriski/other/powerpc32_macos_generic__dev.mkd)
  * [PowerPC 32-bit: MorphOS](steven-gawroriski/other/powerpc32_morphos_generic__dev.mkd)

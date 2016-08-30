@@ -1,0 +1,9 @@
+# Code That Needs Work
+
+This is the list of code that currently needs work:
+
+ * Create a new build system that can run on SquirrelJME.
+ * Make the inflate code faster.
+ * MIPS JIT.
+ * Rewrite `zip-reader-block`.
+
