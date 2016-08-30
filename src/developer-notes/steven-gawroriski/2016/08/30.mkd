@@ -34,3 +34,14 @@ cluttered with unknowns.
 Since I have an other note system, I should move the manual stuff away and
 place it there.
 
+## 07:54
+
+This should be the most effective, since it would allow multiple class types.
+So I just need to make a factory which handles register allocation and such.
+Since factory instances vary, I can have their own method. So the generic
+compiler stuff for example would need to pass the program being used. Other
+kinds of factories would vary depending on the situation. This would be the
+most flexible choice and the most adaptive. One thing to consider that a
+request for a given class should match the type that was used. So one cannot
+register a factory of type `A` and then have it associated with key `B`.
+
