@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.builder;
 
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
  * This is used to configure what should be built.
@@ -33,6 +34,9 @@ public final class BuildConfig
 	
 	/** Extra projects to add. */
 	private final String[] _extraprojects;
+	
+	/** The JIT configuration used. */
+	volatile JITOutputConfig.Immutable _jitconf;
 	
 	/**
 	 * Initializes the build configuration.

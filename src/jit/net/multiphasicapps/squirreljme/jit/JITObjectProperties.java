@@ -22,5 +22,14 @@ package net.multiphasicapps.squirreljme.jit;
  */
 public interface JITObjectProperties
 {
+	/**
+	 * Returns the properties which are associated with this object.
+	 *
+	 * @return An array of object properties to add to the output system
+	 * properties, the elements are in pairs where the first is the key and
+	 * the second is the value.
+	 * @since 2016/08/30
+	 */
+	public abstract String[] properties();
 }
 

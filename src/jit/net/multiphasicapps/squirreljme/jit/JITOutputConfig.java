@@ -12,11 +12,13 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -327,6 +329,19 @@ public final class JITOutputConfig
 				// Copy objects
 				this._objects = new LinkedHashMap<>(__joc._objects);
 			}
+		}
+		
+		/**
+		 * Returns all properties which are associated with the given output
+		 * configuration to be placed in the global system property mappings.
+		 *
+		 * @return An array of paired strings representing the system property
+		 * key and the next element being the value of it.
+		 * @since 2016/08/30
+		 */
+		public final String[] allProperties()
+		{
+			throw new Error("TODO");
 		}
 		
 		/**

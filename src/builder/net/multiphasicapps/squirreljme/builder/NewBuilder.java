@@ -110,7 +110,6 @@ public class NewBuilder
 		out.printf("Will compile %d project(s)...%n", buildprojects.size());
 		out.printf("JVM Classpath contains %d project(s)...%n",
 			bootclasspath.size());
-		System.err.printf("DEBUG -- %s %s%n", buildprojects, bootclasspath);
 		
 		// Get the JIT output configuration to use when compiling for the
 		// target
@@ -135,6 +134,9 @@ public class NewBuilder
 		// to the target. (The build configuration)}
 		if (jitconf == null)
 			throw new IllegalStateException(String.format("DW0l %s", config));
+		
+		// Make sure the config gets the properties
+		config._jitconf = jitconf;
 		
 		// Setup namespace processor
 		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jitconf, cache,
@@ -366,7 +368,7 @@ public class NewBuilder
 		
 		// Adding extra projects?
 		for (String p : config.extraProjects())
-			rv.addAll(packagelist.get(p).recursiveDependencies());
+			rv.addAll(packagelist.get(p).recursiveDependencies()) ;
 		
 		// Tests do not need to be a part of the boot classpath, so the
 		// boot classpath is just what is currently in the build list

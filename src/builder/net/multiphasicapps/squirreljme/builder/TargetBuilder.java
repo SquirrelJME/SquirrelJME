@@ -166,12 +166,20 @@ public abstract class TargetBuilder
 		if (__conf == null || __eo == null)
 			throw new NullPointerException("NARG");
 		
+		// Need configuration details
+		JITTriplet triplet = __conf.triplet();
+		
+		// Add system properties which were specified by the JIT so that they
+		// get added to the output binary.
+		JITOutputConfig.Immutable jitconf = __conf._jitconf;
+		if (jitconf != null)
+			throw new Error("TODO");
+		
 		// Some build properties
 		__eo.addSystemProperty("net.multiphasicapps.squirreljme.buildtime",
 			Long.toString(System.currentTimeMillis()));
-		JITTriplet triplet;
 		__eo.addSystemProperty("net.multiphasicapps.squirreljme.triplet",
-			(triplet = __conf.triplet()).toString());
+			triplet.toString());
 		__eo.addSystemProperty("net.multiphasicapps.squirreljme.hastests",
 			Boolean.toString(__conf.includeTests()));
 		
