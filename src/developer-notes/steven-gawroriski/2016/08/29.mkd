@@ -48,3 +48,9 @@ the ABI is quite different.
 Going to also need hardware `float`/`double` to a software variant in the event
 where there is software for one type but hardware for another.
 
+## 21:55
+
+I should make a list of system specs for a bunch of limited systems and place
+it somewhere. One thing I could use is some kind of note system without having
+it part of the daily notes here.
+
