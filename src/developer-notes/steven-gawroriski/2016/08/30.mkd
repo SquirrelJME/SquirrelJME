@@ -5,3 +5,27 @@
 Had a nightmare that a school was throwing out all of their Apple IIes and I
 was not allowed to take any of them. So much for preserving some history.
 
+## 07:21
+
+So the thing is, I need a common setup for registers and such for the generic
+compiler. But I need a system which is not limited at all. Also, not all
+registers could be used at any one time also. One thing to consider is
+ABI crossing where SquirrelJME's calling convention does not match that of the
+running operating system if native C libraries are to be accessed. However the
+main plan is to just have everything be a static binary. Having a dynamic
+library such as `libsquirreljme.so` would be interesting however.
+
+## 07:27
+
+Perhaps something that might work better is one something that goes with the
+code. Basically the configuration can specify a factory that is to be used to
+generate worker helpers for a given target. Essentially instead of specifying
+a list of registers and the permitted parts of it, it will basically handle the
+register allocation and the stack setup. There just needs to be an initial
+setup to determine what is used. Since the generic compiler has for the most
+part the same thing for any CPU, it will essentially just be a base class.
+It could be part of the configuration but could just be a mapping of helper
+factories. So one would register a given class to a specific factory. This way
+there can be multiple ones and the configuration system does not have to be
+cluttered with unknowns.
+
