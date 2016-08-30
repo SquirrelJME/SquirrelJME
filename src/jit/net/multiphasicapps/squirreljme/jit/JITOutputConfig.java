@@ -148,6 +148,39 @@ public final class JITOutputConfig
 	}
 	
 	/**
+	 * Registers the given object with this configuration.
+	 *
+	 * @param <C> The type to register it to.
+	 * @param __cl The type to register it to.
+	 * @param __o The object to associate.
+	 * @throws ClassCastException If the input class or object are not of
+	 * the associated types.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/30
+	 */
+	public final <C extends Object & JITObjectProperties> void registerObject(
+		Class<C> __cl, C __o)
+		throws ClassCastException, NullPointerException
+	{
+		// Check
+		if (__cl == null || __o == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ED0u The class does not extend
+		// {@code JITObjectProperties} or the object does not extend the
+		// input class. (The input class type)}
+		if (JITObjectProperties.class.isAssignableFrom(__cl) ||
+			!__cl.isInstance(__o))
+			throw new ClassCastException(String.format("ED0u %s", __cl));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._objects.put(__cl, __o);
+		}
+	}
+	
+	/**
 	 * Sets or clears the cache creator which is used when the user of the JIT
 	 * requests that executables be written to the disk or some other
 	 * serialized cache rather than directly executable code in memory.
