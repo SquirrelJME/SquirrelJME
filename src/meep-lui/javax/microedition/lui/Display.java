@@ -682,6 +682,48 @@ public class Display
 	}
 	
 	/**
+	 * Enables or disables vertical scrolling.
+	 *
+	 * If either direction is supported then this scrolls top to bottom.
+	 *
+	 * @param __e If {@code true} then vertical scrolling is enabled.
+	 * @since 2016/08/30
+	 */
+	public void setVerticalScrolling(boolean __e)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Enables or disables vertical scrolling.
+	 *
+	 * @param __e If {@code true} then vertical scrolling is enabled.
+	 * @param __dir If {@code true} then the display scrolls top to bottom,
+	 * otherwise {@code false} scrolls bottom to top.
+	 * @since 2016/08/30
+	 */
+	public void setVerticalScrolling(boolean __e, boolean __dir)
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the vertical scrolling interval, the amount of time it takes before
+	 * the next line is shifted.
+	 *
+	 * @param __ms The number of milliseconds to wait before lines are shifted.
+	 * A value of {@code 0} indicates that the fastest scrolling should be
+	 * used.
+	 * @throws IllegalArgumentException If the interval is negative.
+	 * @since 2016/08/30
+	 */
+	public void setVerticalScrollingInterval(int __ms)
+		throws IllegalArgumentException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * This is used to register a listener for when displays are added,
 	 * removed, or their state has been changed.
 	 *

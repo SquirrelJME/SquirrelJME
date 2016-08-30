@@ -86,3 +86,8 @@ The LUI interface is not really that great, it definitely is not a traditional
 character based terminal with character cells and attributes. It might be a
 bit difficult to implement Squirrel Quarrel on this type of display.
 
+## 15:17
+
+And I am done, that took awhile. Although I do have to implement the key event
+stuff eventually.
+
