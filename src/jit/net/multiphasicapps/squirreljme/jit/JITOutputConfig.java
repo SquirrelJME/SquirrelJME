@@ -14,7 +14,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -36,6 +39,10 @@ public final class JITOutputConfig
 	/** Static class calls which are to be rewritten. */
 	protected final Set<JITClassNameRewrite> rewrites =
 		new HashSet<>();
+	
+	/** Object mappings. */
+	private final Map<Class<?>, Object> _objects =
+		new HashMap<>();
 	
 	/** The triplet to target. */
 	private volatile JITTriplet _triplet;
@@ -99,6 +106,26 @@ public final class JITOutputConfig
 			Set<JITClassNameRewrite> rewrites = this.rewrites;
 			return rewrites.<JITClassNameRewrite>toArray(
 				new JITClassNameRewrite[rewrites.size()]);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/30
+	 */
+	@Override
+	public <C extends Object & JITObjectProperties> C getObject(
+		Class<C> __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			return __cl.cast(this._objects.get(__cl));
 		}
 	}
 	
@@ -225,6 +252,9 @@ public final class JITOutputConfig
 		/** The cache creator to use (optional). */
 		protected final JITCacheCreator cache;
 		
+		/** Object associations. */
+		private final Map<Class<?>, Object> _objects;
+		
 		/** Rewrites to perform. */
 		private final JITClassNameRewrite[] _rewrites;
 		
@@ -260,6 +290,9 @@ public final class JITOutputConfig
 				
 				// Set rewrites
 				this._rewrites = __joc.classNameRewrites();
+				
+				// Copy objects
+				this._objects = new LinkedHashMap<>(__joc._objects);
 			}
 		}
 		
@@ -281,6 +314,23 @@ public final class JITOutputConfig
 		public final JITCacheCreator cacheCreator()
 		{
 			return this.cache;
+		}
+	
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/08/30
+		 */
+		@Override
+		public final <C extends Object & JITObjectProperties> C getObject(
+			Class<C> __cl)
+			throws NullPointerException
+		{
+			// Check
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+	
+			// Get
+			return __cl.cast(this._objects.get(__cl));
 		}
 		
 		/**
