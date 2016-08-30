@@ -494,6 +494,14 @@ public class Build
 				libnum++;
 			}
 			
+			// If it is a midlet then add those properties
+			if (ismidlet)
+			{
+				jattr.putValue("MIDlet-Name", __p.libtitle);
+				jattr.putValue("MIDlet-Vendor", __p.libvendor);
+				jattr.putValue("MIDlet-Version", __p.libversion);
+			}
+			
 			// Set class path
 			jattr.put(Attributes.Name.CLASS_PATH, jcp.toString());
 			
