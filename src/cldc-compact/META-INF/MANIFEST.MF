@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: cldc-compact
 X-SquirrelJME-UUID: a41e003e-598d-4ba0-a935-33b2cf30d9cb
 X-SquirrelJME-Error: ZZ
+X-SquirrelJME-Configuration: CLDC-1.8-Compact
 LIBlet-Title: CLDC 8 Compact
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2

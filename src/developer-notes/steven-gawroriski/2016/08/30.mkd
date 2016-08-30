@@ -168,3 +168,9 @@ is if a dependency depends on a standard, it can just depend on that
 rather than my own package set. This way it would be a bit easier to see if
 it conforms to existing machines.
 
+## 18:03
+
+One thing is that a JAR cannot be both a MIDlet and a LIBlet, but I kind of
+dodge that as not supporting such a thing sounds really ugly (reusing code
+is very nice). So as such, I will note a bug.
+

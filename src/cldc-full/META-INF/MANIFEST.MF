@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: cldc-full
 X-SquirrelJME-UUID: cb4e0a64-b9d8-4899-995c-fcdce1749288
 X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Configuration: CLDC-1.8
 LIBlet-Title: CLDC 8 Full
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
