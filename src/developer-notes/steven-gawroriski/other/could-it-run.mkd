@@ -1,5 +1,19 @@
 # Could It Run SquirrelJME?
 
+# Arduino
+
+ * _Verdict_: No
+ * **CPU**: 8-bit ATmega328P @ 16MHz
+ * **RAM**: 2KiB SRAM, 1KiB EEPROM
+ * **ROM**: Same as HDD
+ * **HDD**: 32KiB
+ * **NET**: Serial
+ * **HID**: None
+
+It may be possible to cram a Hello Squirrels in the flash ROM and boot it, but
+the severe lack of memory will definitely hurt. Targets such as this would
+require a specially designed compiler that generates the tiniest code possible.
+
 # Nintendo 64
 
  * _Verdict_: All
@@ -71,6 +85,23 @@ as needed.
 The ethernet adapter is rare.
 
 The modem will require a PPP client to connect to networks.
+
+# Sega Virtual Memory Unit:
+
+ * _Verdict_: No
+ * **CPU**: 8-bit LC86000
+ * **RAM**: 256B
+ * **ROM**: Same as HDD
+ * **HDD**: 100KiB user, 10KiB unused
+ * **NET**: Direct Connection
+ * **HID**: Buttons
+
+The 256 bytes of RAM is the main stopping point for running code reliably. So
+the alternative would be a kind of emulated system which uses the flash storage
+area as main memory instead. One issue with this however is that it would very
+much wear down the flash on these old devices. Two VMUs connected to each
+other however would mean a dual CPU system with double the memory and flash
+storage. However even then, 512B is not much memory at all.
 
 # US Robotics Pilot 1000, Pilot 5000
 
