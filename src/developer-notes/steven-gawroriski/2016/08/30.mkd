@@ -45,3 +45,20 @@ most flexible choice and the most adaptive. One thing to consider that a
 request for a given class should match the type that was used. So one cannot
 register a factory of type `A` and then have it associated with key `B`.
 
+## 07:56
+
+So the generic register allocator will take the purely virtual registers given
+by the JIT and manage them. Each instruction address will need to have its
+state stored or at least marked for jump targets. This would be so that
+jumping back can restore the proper state into the allocated variables and
+such. As previously mentioned, the JIT will be a simple stack caching and will
+not perform much when it comes to optimizations.
+
+## 08:01
+
+Basically most operations should be easily mapped to native instructions at
+least for my first target: MIPS. The most major work when it comes to writing
+would essentially be the register allocator, jumping, calling methods, and
+exception handling. One a basic layout is done, I would then need to write the
+linking system to find classes and such.
+
