@@ -1,2 +1,71 @@
 # Could It Run SquirrelJME?
 
+# Nintendo 64
+
+ * _Verdict_: All
+ * **CPU**: 64-bit MIPS @ 93.75MHz
+ * **RAM**: 4MiB, 8MiB w/ Expansion Pak
+ * **ROM**: 64MiB
+ * **HDD**: SD/CF (64Drive), 32KiB (Controller Pak)
+ * **NET**: USB (64Drive), Parallel (GameShark)
+ * **HID**: Joystick, Mouse
+
+This console has enough power, RAM, and speed to reliably run virtually all
+SquirrelJME programs. The only main consideration is lack of input. There is
+a mouse peripheral, but in most cases only the joystick would be used.
+
+# Nintendo Entertainment System
+
+ * _Verdict_: Hello Squirrel (NROM), Simple Programs (MMC5)
+ * **CPU**: 8-bit 6502 @ 1.78MHz (NTSC), 1.66MHz (PAL)
+ * **RAM**: 2KiB internal, 64KiB & 8KiB (MMC5)
+ * **ROM**: 512KiB (PowerPak), 1024KiB (MMC5)
+ * **HDD**: 32KiB (PowerPak)
+ * **NET**: None
+ * **HID**: Joystick
+
+Note that the PowerPak does not support MMC5. It is not known if NES games can
+be given access to the PowerPak CF block device.
+
+Slow but there should be enough memory to run basic programs, although special
+mappers could provide much more via special hardware support. The 8-bit CPU
+would be quite a bottleneck. More advanced programs could run, but the only
+viable run that would really run is a _"Hello Squirrels"_ type application.
+
+# Nintendo Game Boy
+
+ * _Verdict_: Hello Squirrel
+ * **CPU**: 8-bit LR35902 (8080, Z80) @ 4.19MHz
+ * **RAM**: 8KiB internal, 32KiB w/ cart
+ * **ROM**: 976KiB (8Mb)
+ * **HDD**: Unknown
+ * **NET**: Serial
+ * **HID**: Joystick
+
+Likely, it could only run very basic programs such as _"Hello Squirrel"_s. The
+main factor is lack of RAM, having almost 1MiB of ROM should be good enough.
+The 8-bit CPU will create very slow integer and even slower floating point
+arithmetic. If a cart can provide an actual 32KiB of memory, that would not
+do much since the run-time inforation and linkage tables would have to be
+in memory. However, since there would only be less than 65KiB of RAM, that
+means that all pointers can truly be 16-bit.
+
+# Sega Dreamcast
+
+ * _Verdict_: All
+ * **CPU**: 32-bit SH4 @ 200MHz
+ * **RAM**: 16MiB
+ * **ROM**: ~750MiB
+ * **HDD**: SD (Adapter), VMU (128KiB)
+ * **NET**: Modem, Ethernet
+ * **HID**: Joystick, Keyboard, Mouse
+
+Supports homebrew very easily and has essentially all of the peripherals
+needed to be an actual useable computer. The only consideration would be the
+lack of storage. Other than that, the VMU could store a bunch of basic files
+as needed.
+
+The ethernet adapter is rare.
+
+The modem will require a PPP client to connect to networks.
+
