@@ -68,6 +68,7 @@ import javax.tools.ToolProvider;
  *
  * The following attributes are optional.
  *
+ * MIDlet-# -- MIDlet information
  * X-SquirrelJME-Depends -- Other packages (separated by comma) which this
  *                          project depends on for compilation.
  * X-SquirrelJME-Optional -- Optional dependencies which are not always needed
@@ -460,6 +461,9 @@ public class Build
 			// Add created-by
 			jattr.putValue("Created-By", "SquirrelJME");
 			
+			// Is this a midlet?
+			boolean ismidlet = (__p.midletcount >= 1);
+			
 			// Walk through dependencies
 			StringBuilder jcp = new StringBuilder();
 			int libnum = 1;
@@ -468,11 +472,19 @@ public class Build
 				// Required or optional
 				boolean isopt = __p.optional.contains(dep);
 				
+				// Determine string form
+				String format = String.format("liblet;%s;%s;%s;%s+",
+					(isopt ? "optional" : "required"), dep.libtitle,
+					dep.libvendor, dep.libversion);
+				
 				// Add liblet dependency
 				jattr.putValue(String.format("LIBlet-Dependency-%d", libnum),
-					String.format("liblet;%s;%s;%s;%s+", (isopt ? "optional" :
-						"required"), dep.libtitle, dep.libvendor,
-						dep.libversion));
+					format);
+				
+				// And midlet if this is one
+				if (ismidlet)
+					jattr.putValue(String.format("MIDlet-Dependency-%d",
+						libnum), format);
 				
 				// Add to the classpath
 				jcp.append(' ');
@@ -938,6 +950,9 @@ public class Build
 		/** Use the host class path? */
 		protected final boolean hostclasspath;
 		
+		/** MIDlet program count */
+		protected final int midletcount;
+		
 		/** Is this project in the build state? */
 		protected volatile boolean inbuild;
 		
@@ -1001,6 +1016,20 @@ public class Build
 			// Get project name
 			name = Objects.<String>requireNonNull(
 				attr.getValue("X-SquirrelJME-Name"), "Missing package name.");
+			
+			// Detect if this is a midlet
+			int mat = 0;
+			for (mat = 0; mat < Integer.MAX_VALUE; mat++)
+			{
+				String midprop = attr.getValue("MIDlet-" + (mat + 1));
+				
+				// No more left
+				if (midprop == null)
+					break;
+			}
+			
+			// Store count
+			this.midletcount = mat;
 			
 			// Add to the global project mapping to allow for recursive
 			// optional dependencies

@@ -95,3 +95,25 @@ stuff eventually.
 
 Going to need a way to specify midlets and such.
 
+## 16:51
+
+What is needed is the following:
+
+	MicroEdition-Configuration: CLDC-1.8
+	MicroEdition-Profile: MEEP-8.0
+	MIDlet-Name: Squirrel Quarrel
+	MIDlet-Vendor: Steven Gawroriski
+	MIDlet-Version: 0.0.2
+	MIDlet-1: Name, icon.png, main
+
+So if I were to just specify `MIDlet-1` and such that could be a trigger for
+if something is a MIDlet or not to the build system.
+
+## 17:00
+
+What I need is a refactored build system that is actually in the build root.
+One that bootstraps a very minimal build system into say a single JAR file.
+Then, this build system invokes the internal build system. This way the
+actual build system and all of its logic is part of SquirrelJME rather than
+being very alone.
+
