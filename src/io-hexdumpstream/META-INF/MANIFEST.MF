@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: io-hexdumpstream
 X-SquirrelJME-UUID: e21d8dcf-34aa-4321-b517-f73e31b6e3d2
 X-SquirrelJME-Depends: cldc-compact, io-psw
-X-SquirrelJME-Error: BO
+X-SquirrelJME-Error: BP
 LIBlet-Title: Hexadecimal Dumping OutputStream
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2

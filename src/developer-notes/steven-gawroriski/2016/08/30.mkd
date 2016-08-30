@@ -117,3 +117,7 @@ Then, this build system invokes the internal build system. This way the
 actual build system and all of its logic is part of SquirrelJME rather than
 being very alone.
 
+## 17:03
+
+Need to determine which package the MIDlet interface shall go inside of.
+
