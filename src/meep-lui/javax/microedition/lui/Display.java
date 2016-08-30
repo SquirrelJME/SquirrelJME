@@ -11,6 +11,7 @@
 package javax.microedition.lui;
 
 import java.util.Iterator;
+import java.util.ServiceLoader;
 
 /**
  * This provides an interface to basic text based displays.
@@ -27,8 +28,9 @@ import java.util.Iterator;
  *
  * Auxiliary displays are ones that may be dynamically added and removed.
  *
- * Internally to SquirrelJME, display drivers provide an implementation of
- * the methods here. If a display supports user input then it must implement
+ * Internally to SquirrelJME, this class acts as a wrapper around display
+ * driver interfaces which are implemented via the service loader.
+ * If a display supports user input then it must implement
  * the {@link javax.microedition.key.InputDevice} interface.
  *
  * @since 2016/08/30
@@ -73,6 +75,106 @@ public class Display
 	 */
 	public static final int MODE_NORMAL =
 		0;
+	
+	/**
+	 * Displays are internally managed by this class and as such cannot be
+	 * constructed.
+	 *
+	 * @since 2016/08/30
+	 */
+	Display()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the color which represents the color which is actually being
+	 * display by a given display.
+	 *
+	 * If background colors are not supported then this returns the default
+	 * background color.
+	 *
+	 * @return The closest matching background color.
+	 * @since 2016/08/30
+	 */
+	public DisplayColor getBackgroundColor()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the number of characters which appear on a single line.
+	 *
+	 * @return The characters per line.
+	 * @since 2016/08/30
+	 */
+	public int getCharacterNumberPerLine()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads all of the characters on a given display starting at index zero.
+	 *
+	 * If the array contains more characters than the display then the extra
+	 * characters remain untouched.
+	 *
+	 * This only returns text which has been set to a display up to the bounds
+	 * of lines and columns, not what is actually displayed. This means that
+	 * text which is scrolled off the display will be returned and that text
+	 * which could not be set on a display to not be returned.
+	 *
+	 * It is recommended to pass an array that is large enough to read all
+	 * characters from the display.
+	 *
+	 * @param __o The output array to read characters into.
+	 * @return The number of read characters.
+	 * @throws ArrayIndexOutOfBoundsException If the array is too small to
+	 * fit every character.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/30
+	 */
+	public int getChars(char[] __o)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Reads all of the characters on a given line starting at index zero.
+	 *
+	 * If the array contains more characters than the display then the extra
+	 * characters remain untouched.
+	 *
+	 * This only returns text which has been set to a display up to the bounds
+	 * of columns, not what is actually displayed. This means that
+	 * text which is scrolled off the display will be returned and that text
+	 * which could not be set on a display to not be returned.
+	 *
+	 * It is recommended to pass an array that is large enough to read all
+	 * characters from the display.
+	 *
+	 * @param __l The line number to get characters from.
+	 * @param __o The output array to read characters into.
+	 * @return The number of read characters.
+	 * @throws ArrayIndexOutOfBoundsException If the array is too small to
+	 * fit the entire line; or the line exceeds the bounds of the display.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/30
+	 */
+	public int getChars(int __l, char[] __o)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 	
 	/**
 	 * This is used to register a listener for when displays are added,
