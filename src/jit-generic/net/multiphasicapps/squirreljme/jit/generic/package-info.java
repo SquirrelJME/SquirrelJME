@@ -11,7 +11,8 @@
 /**
  * This package contains the generic JIT interface which generates the same
  * blob format across a wide range of modern CPU architectures. The generic
- * target is for von neumann CPUs only.
+ * target is for von neumann CPUs only. Also, any supporting CPU must at least
+ * have a word size of 32-bits.
  *
  * @since 2016/07/26
  */
