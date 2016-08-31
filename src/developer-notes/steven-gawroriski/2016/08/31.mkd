@@ -1,0 +1,31 @@
+# 2016/08/31
+
+## 07:48
+
+`GenericRegisterAllocator` need not be abstract and actually implemented by
+a sub-class. It just has to register the set of registers used for it and that
+is basically it.
+
+## 07:49
+
+So I need a stack register, and one that indicates the current method.
+
+## 07:51
+
+So what I need is an effective means of pool sharing. I want a single constant
+pool shared for all methods. If I had a per-method pool there would be
+duplicate information but I would have a method pointer for the most part. I
+already have a stack register. I am going to need one for the table. Let me
+see which x86 registers could act as GPRs.
+
+## 08:01
+
+So x86 has the following:
+
+ * `EBP`
+ * `EBX`
+ * `ESI` -- Only used in a few instructions (`MOVSB`, `MOVSW`, etc.)
+ * `EDI` -- Only used in a few instructions (`MOVSB`, `MOVSW`, etc.)
+
+This would mean that my current allocation is 2.
+
