@@ -50,7 +50,7 @@ public abstract class GenericMethodWriter
 	protected final int wordsize;
 	
 	/** The register allocator to use. */
-	protected final GenericRegisterAllocator allocator;
+	protected final GenericAllocator allocator;
 	
 	/**
 	 * Initializes the generic method writer.
@@ -99,9 +99,9 @@ public abstract class GenericMethodWriter
 		
 		// {@squirreljme.error BA0o No register allocator factory was specified
 		// with the JIT, compilation cannot continue.}
-		GenericRegisterAllocatorFactory af = __conf.
-			<GenericRegisterAllocatorFactory>getObject(
-			GenericRegisterAllocatorFactory.class);
+		GenericAllocatorFactory af = __conf.
+			<GenericAllocatorFactory>getObject(
+			GenericAllocatorFactory.class);
 		if (af == null)
 			throw new JITException("BA0o");
 		

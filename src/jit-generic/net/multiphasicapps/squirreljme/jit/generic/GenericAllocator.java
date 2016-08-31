@@ -18,7 +18,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  *
  * @since 2016/08/30
  */
-public abstract class GenericRegisterAllocator
+public abstract class GenericAllocator
 {
 	/**
 	 * Initializes the generic register allocator with the given set of
@@ -38,7 +38,7 @@ public abstract class GenericRegisterAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/31
 	 */
-	public GenericRegisterAllocator(GenericRegister __stack, boolean __dir,
+	public GenericAllocator(GenericRegister __stack, boolean __dir,
 		GenericRegister __pool, GenericRegister __meth, GenericRegister[] __gp)
 		throws JITException, NullPointerException
 	{

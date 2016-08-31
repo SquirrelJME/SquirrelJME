@@ -20,7 +20,7 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
  *
  * @since 2016/08/30
  */
-public interface GenericRegisterAllocatorFactory
+public interface GenericAllocatorFactory
 	extends JITObjectProperties
 {
 	/**
@@ -29,6 +29,6 @@ public interface GenericRegisterAllocatorFactory
 	 * @return The newly created register allocator.
 	 * @since 2016/08/30
 	 */
-	public abstract GenericRegisterAllocator create();
+	public abstract GenericAllocator create();
 }
 

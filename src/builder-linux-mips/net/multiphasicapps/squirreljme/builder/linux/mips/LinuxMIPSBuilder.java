@@ -26,10 +26,10 @@ import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.
-	GenericRegisterAllocatorFactory;
+	GenericAllocatorFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.jit.mips.MIPSRegisterAllocatorFactory;
+import net.multiphasicapps.squirreljme.jit.mips.MIPSAllocatorFactory;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 import net.multiphasicapps.zip.ZipCompressionType;
@@ -117,9 +117,9 @@ public class LinuxMIPSBuilder
 				"net/multiphasicapps/squirreljme/os/linux/mips/SquirrelJME")));
 		
 		// Use a register allocator that is Linux friendly
-		__conf.<GenericRegisterAllocatorFactory>registerObject(
-			GenericRegisterAllocatorFactory.class,
-			new MIPSRegisterAllocatorFactory(__bc.triplet()));
+		__conf.<GenericAllocatorFactory>registerObject(
+			GenericAllocatorFactory.class,
+			new MIPSAllocatorFactory(__bc.triplet()));
 	}
 	
 	/**

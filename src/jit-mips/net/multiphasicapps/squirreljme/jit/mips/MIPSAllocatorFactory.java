@@ -12,9 +12,9 @@ package net.multiphasicapps.squirreljme.jit.mips;
 
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.generic.GenericRegisterAllocator;
+import net.multiphasicapps.squirreljme.jit.generic.GenericAllocator;
 import net.multiphasicapps.squirreljme.jit.generic.
-	GenericRegisterAllocatorFactory;
+	GenericAllocatorFactory;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
@@ -22,8 +22,8 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
  *
  * @since 2016/08/30
  */
-public class MIPSRegisterAllocatorFactory
-	implements GenericRegisterAllocatorFactory
+public class MIPSAllocatorFactory
+	implements GenericAllocatorFactory
 {
 	/**
 	 * Initializes the MIPS register allocator factory.
@@ -34,7 +34,7 @@ public class MIPSRegisterAllocatorFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/30
 	 */
-	public MIPSRegisterAllocatorFactory(JITTriplet __t)
+	public MIPSAllocatorFactory(JITTriplet __t)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -49,7 +49,7 @@ public class MIPSRegisterAllocatorFactory
 	 * @since 2016/08/30
 	 */
 	@Override
-	public GenericRegisterAllocator create()
+	public GenericAllocator create()
 	{
 		throw new Error("TODO");
 	}
