@@ -29,3 +29,19 @@ So x86 has the following:
 
 This would mean that my current allocation is 2.
 
+## 09:12
+
+So my allocator will need state so that I can store the specific state of
+what is allocated for jumping backwards and such. One thing to consider is
+that I will need to store state for every operation since I do not know
+locations which are jumped back to (I do not scan these beforehand). So it
+depends, do I shave off some memory usage for processing time by getting the
+jump targets? It might not be worth it as much however. When it comes to
+exception handling, I would need to have it where the exception handler uses
+the same exact state and such and the same stack. However, with my plan to
+copy anything to locals when they are set, would mean that exception handlers
+would not need to worry much about which local variables are assigned where.
+Then due to the rules of the virtual machine, I then am able to have it where
+I can just keep things very simple by not going into much computational
+complexity when parsing.
+
