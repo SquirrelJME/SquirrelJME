@@ -47,6 +47,10 @@ public abstract class GenericAllocator
 			__gp == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error BA1b No general purpose registers specified.}
+		if (__gp.length <= 0)
+			throw new JITException("BA1b");
+		
 		throw new Error("TODO");
 	}
 }
