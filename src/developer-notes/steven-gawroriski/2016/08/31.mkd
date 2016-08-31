@@ -49,3 +49,11 @@ complexity when parsing.
 
 The class name for the register allocator is quite too long.
 
+## 09:24
+
+Thinking about it, is the current method this is in really needed at all? Well
+if an exception does occur, it will need to know which exception handler to
+jump to since the entire pool set is shared. Also some kind of evil
+optimization code can do is to change the this pointer, since in reality all
+methods are really static for the most part.
+

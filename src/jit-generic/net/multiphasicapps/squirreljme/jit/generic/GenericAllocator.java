@@ -42,6 +42,11 @@ public abstract class GenericAllocator
 		GenericRegister __pool, GenericRegister __meth, GenericRegister[] __gp)
 		throws JITException, NullPointerException
 	{
+		// Check
+		if (__stack == null || __pool == null || __meth == null ||
+			__gp == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 }
