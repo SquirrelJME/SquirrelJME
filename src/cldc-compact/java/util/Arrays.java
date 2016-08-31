@@ -18,10 +18,27 @@ public class Arrays
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * Wraps the specified array allowing access to its data as a fixed size
+	 * list. The returned {@link List} will have {@link RandomAccess}
+	 * implemented.
+	 *
+	 * @param <T> The type of values contained within the array.
+	 * @param __a The array to wrap.
+	 * @return The specified array wrapped in a {@link List}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/08/31
+	 */
 	@SuppressWarnings({"unchecked"})
 	public static <T> List<T> asList(T... __a)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// Wrap it
+		return new __ArraysList__<T>(__a);
 	}
 	
 	public static int binarySearch(long[] __a, long __b)
