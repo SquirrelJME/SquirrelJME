@@ -81,3 +81,8 @@ so that all operations act as if they were done in 32-bit registers.
 Right now my generic format is limited to 16-bit limitations for the most part,
 but that definitely does keep the binary size small.
 
+## 10:35
+
+So then the question is, is a pool and method pointer part of the allocator?
+A register would have to be used for PIC.
+
