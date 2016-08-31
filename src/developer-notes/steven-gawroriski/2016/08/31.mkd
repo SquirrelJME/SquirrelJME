@@ -57,3 +57,8 @@ jump to since the entire pool set is shared. Also some kind of evil
 optimization code can do is to change the this pointer, since in reality all
 methods are really static for the most part.
 
+## 10:14
+
+If I have differing return types and keeping it only singular with int/float
+then I can handle MMIX where int and float are stored in the same registers.
+
