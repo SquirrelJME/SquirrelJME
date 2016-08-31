@@ -45,3 +45,7 @@ Then due to the rules of the virtual machine, I then am able to have it where
 I can just keep things very simple by not going into much computational
 complexity when parsing.
 
+## 09:17
+
+The class name for the register allocator is quite too long.
+
