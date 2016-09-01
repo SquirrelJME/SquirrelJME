@@ -51,3 +51,27 @@ generate MIPS code and then setup an emulator that uses the host filesystem
 and such. So although the programs being ran are purely emulated it would seem
 as if they were not (at least filesystem wise anyway).
 
+## 08:56
+
+Ok, so while I was away I thought about renaming the package manager to just
+projects and then renaming the package also. I also thought about that
+exportation I was talking about, where I would merge multiple JARs into one
+and create a JAD of them. One thing I could do is have a kind of system where
+I can export the JAR and then depend on other parts. Essentially since the VM
+is similar to Java 7 but without `invokedynamic`, what I can do is basically
+go through the class files and rewrite part of their constant pools during
+method processing and such. Essentially I can JIT the byte code. Although in
+reality, what I could do is a kind of JIT which similar to the generic JIT
+just targets existing JVMs. I thought of this before, although the best choice
+would likely to be just to expand and add another JIT which targets the JVM.
+Then I can have a cross-compiled environment to J2ME for example. The only
+issue would be that the JVM code would have no JIT, so it would essentially be
+limited to running built-in packages. Then I would need to modify statics so
+that they are purely instances only. I would also need to implement writing
+of the old style `StackMap` attribute also. The end result though would be an
+environment I can run on J2ME devices (such as my phone and PDA) before I
+actually support said systems. One thing that would likely be recommended
+would be to have it where each version can be separated. Since I only have a
+limited bandwidth on my phone, I would want it where I can run newer and
+older environments. But first, I will rename the package manager code.
+
