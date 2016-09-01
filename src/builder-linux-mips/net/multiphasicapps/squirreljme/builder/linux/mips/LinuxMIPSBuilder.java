@@ -123,7 +123,9 @@ public class LinuxMIPSBuilder
 		List<MIPSRegister> gprs = new ArrayList<>();
 		for (int i = 1; i < 32; i++)
 		{
-			// Linux
+			// SquirrelJME does not have to call any library and uses system
+			// calls in wrapper methods, as such every register is available
+			// for usage
 			if (i >= 1 && i <= 25)
 				gprs.add(MIPSRegister.of(t, i, false));
 			

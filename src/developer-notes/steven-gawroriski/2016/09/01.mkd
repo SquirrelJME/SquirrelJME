@@ -104,3 +104,9 @@ I should also look at differing ABIs such as for PowerPC, SPARC, ARM, and x86.
 Then I can get a better idea of what the register information has to store
 and such.
 
+## 15:13
+
+Then after that, instead of having allocator factories, the generic JIT is
+just associated with the GenericABI. Then the register allocator is completely
+internal for the most part.
+

@@ -22,6 +22,7 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
  *
  * @since 2016/08/30
  */
+@Deprecated
 public class MIPSAllocatorFactory
 	implements GenericAllocatorFactory
 {

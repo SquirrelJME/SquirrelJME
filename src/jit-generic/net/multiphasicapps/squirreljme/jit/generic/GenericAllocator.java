@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
  * This is a class which is used to allocate and manage native registers
@@ -21,10 +22,31 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 public class GenericAllocator
 {
 	/** The stack register selected. */
+	@Deprecated
 	protected final GenericRegister stack;
 	
 	/** The direction the stack moves in. */
+	@Deprecated
 	protected final boolean direction;
+	
+	/**
+	 * Initializes the register allocator using the specified configuration
+	 * and the given ABI.
+	 *
+	 * @param __conf The configuration being used.
+	 * @param __abi The ABI used on the target system.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/01
+	 */
+	public GenericAllocator(JITOutputConfig.Immutable __conf, GenericABI __abi)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null || __abi == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
 	
 	/**
 	 * Initializes the generic register allocator with the given set of
@@ -41,6 +63,7 @@ public class GenericAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/31
 	 */
+	@Deprecated
 	public GenericAllocator(GenericRegister __stack, boolean __dir,
 		GenericRegister[] __gp)
 		throws JITException, NullPointerException

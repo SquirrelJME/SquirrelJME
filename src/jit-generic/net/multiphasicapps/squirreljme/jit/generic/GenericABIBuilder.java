@@ -10,26 +10,14 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
-import net.multiphasicapps.squirreljme.jit.JITObjectProperties;
-import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-
 /**
- * This is a factory which is used for creating generic register allocators
- * which is needed by the generic JIT to determine where values are to be
- * placed during execution.
+ * This class is used to generate instances of {@link GenericABI} which is
+ * used by the register allocator and the generic JIT compiler to determine
+ * how other methods are called.
  *
- * @since 2016/08/30
+ * @since 2016/09/01
  */
-@Deprecated
-public interface GenericAllocatorFactory
-	extends JITObjectProperties
+public final class GenericABIBuilder
 {
-	/**
-	 * Creates a new register allocator.
-	 *
-	 * @return The newly created register allocator.
-	 * @since 2016/08/30
-	 */
-	public abstract GenericAllocator create();
 }
 
