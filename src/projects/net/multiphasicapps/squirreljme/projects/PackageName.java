@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.sjmepackages;
+package net.multiphasicapps.squirreljme.projects;
 
 /**
  * This class represents the name of a package, which is case insensitive.

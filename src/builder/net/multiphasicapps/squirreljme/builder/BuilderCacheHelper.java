@@ -11,7 +11,7 @@
 package net.multiphasicapps.squirreljme.builder;
 
 import java.nio.file.Path;
-import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.squirreljme.projects.PackageList;
 
 /**
  * This interface allows the {@link BuilderCache} to operate without

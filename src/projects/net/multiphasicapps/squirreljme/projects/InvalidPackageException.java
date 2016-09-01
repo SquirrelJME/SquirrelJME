@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.sjmepackages;
+package net.multiphasicapps.squirreljme.projects;
 
 /**
  * This is thrown when a package was attempted to be read however it did not

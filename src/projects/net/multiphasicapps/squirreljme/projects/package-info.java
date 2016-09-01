@@ -15,5 +15,5 @@
  * @since 2016/06/15
  */
 
-package net.multiphasicapps.sjmepackages;
+package net.multiphasicapps.squirreljme.projects;
 

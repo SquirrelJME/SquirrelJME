@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
-import net.multiphasicapps.sjmepackages.PackageList;
+import net.multiphasicapps.squirreljme.projects.PackageList;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
