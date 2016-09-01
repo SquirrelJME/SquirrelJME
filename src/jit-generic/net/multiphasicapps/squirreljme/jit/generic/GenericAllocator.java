@@ -19,7 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
  *
  * @since 2016/08/30
  */
-public class GenericAllocator
+public final class GenericAllocator
 {
 	/**
 	 * Initializes the register allocator using the specified configuration
@@ -30,7 +30,7 @@ public class GenericAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public GenericAllocator(JITOutputConfig.Immutable __conf, GenericABI __abi)
+	GenericAllocator(JITOutputConfig.Immutable __conf, GenericABI __abi)
 		throws NullPointerException
 	{
 		// Check
