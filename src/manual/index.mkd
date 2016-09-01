@@ -1,11 +1,11 @@
 # Multi-Phasic Applications: SquirrelJME
 
-  * Copyright (C) 2013-2016 Steven Gawroriski
-    <steven@multiphasicapps.net>
-  * Copyright (C) 2013-2016 Multi-Phasic Applications
-    <http://multiphasicapps.net/>
-  * _Lex_ (The SquirrelJME Mascot) was drawn by...
-    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
+ * Copyright (C) 2013-2016 Steven Gawroriski
+   <steven@multiphasicapps.net>
+ * Copyright (C) 2013-2016 Multi-Phasic Applications
+   <http://multiphasicapps.net/>
+ * _Lex_ (The SquirrelJME Mascot) was drawn by...
+   * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
 
 **SquirrelJME** is intended to be a Java ME 8 compatible environment for
 strange and many other devices. That is, you would be able to have a Java
@@ -18,41 +18,12 @@ quality.
 
 Note that Java ME 8 has a Java 7 virtual machine with specific limitations.
 
-# Frontmatter
-
-## About
-
-This is the manual for SquirrelJME which should contain and describe the
-operation of this software.
-
-## Licenses
+# Licenses
 
   * Source:
     [GNU General Public License, Version 3 or later](license.mkd)
   * Non-Source:
     [Creative Commons CC-BY-SA 4.0](license.mkd)
-
-## Repository
-
-  * [Online repository](http://multiphasicapps.net/)
-    * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
-    * The repository may be cloned with:
-      `fossil clone http://multiphasicapps.net/ squirreljme.fossil`.
-    * Read-Only Mirrors:
-      * Bitbucket: <https://bitbucket.org/mpasteven/squirreljme>
-      * GitHub: <http://github.com/mpasteven/SquirrelJME/>
-      * Tor: <http://x3v3lxoxpxu3hitk.onion/>
-        (`fossil clone http://x3v3lxoxpxu3hitk.onion/ squirreljme.fossil`)
-
-## Links
-
-  * [Why?](src/manual/user/why.mkd)
-  * [Sub-Reddit](https://www.reddit.com/r/SquirrelJME/)
-  * [Mailing List](https://sourceforge.net/p/squirreljme/mailman/)
-  * [SourceForge Project](http://www.sourceforge.net/projects/squirreljme)
-  * [Manual](src/manual/index.mkd)
-  * [Developer Notes](src/developer-notes/index.mkd)
-  * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
 
 # Table of Contents
 
@@ -70,4 +41,17 @@ operation of this software.
    * [Consistency Guidelines](maintainer/consistency.mkd)
    * [Mascot Requirements](maintainer/mascot_req.mkd)
    * [Style Requirements](maintainer/style.mkd)
+
+# Donations
+
+You may donate to SquirrelJME to help keep the author alive and to possibly
+help the purchase of various hardware:
+
+ * BitCoin (**BTC/XBT**): [`1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M`](
+   bitcoin:1HNRD44krsCFUzUvVWaXr5jqvuyZDZy71M)
+ * LiteCoin (**LTC**): [`LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi`](
+   litecoin:LKytAQcbPyox75uYMKo1NH1w2k1SqBaELi)
+ * DogeCoin (**DOGE**): [`DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h`](
+   dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
+ * [FreedomSponsors](https://freedomsponsors.org/user/mpasteven/)
 
