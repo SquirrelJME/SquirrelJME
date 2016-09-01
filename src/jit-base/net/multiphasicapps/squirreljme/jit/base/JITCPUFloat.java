@@ -65,6 +65,17 @@ public enum JITCPUFloat
 	}
 	
 	/**
+	 * Is any hardware floating point being used?
+	 *
+	 * @return {@code true} if any floating point hardware is used.
+	 * @since 2016/09/01
+	 */
+	public boolean isAnyHardware()
+	{
+		return isHardware32() || isHardware64();
+	}
+	
+	/**
 	 * Returns {@code true} if 32-bit floating point is implement in hardware.
 	 *
 	 * @return {@code true} if 32-bit floating point is implement in hardware.

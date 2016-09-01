@@ -30,6 +30,7 @@ import net.multiphasicapps.squirreljme.jit.generic.
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.mips.MIPSAllocatorFactory;
+import net.multiphasicapps.squirreljme.jit.mips.MIPSRegister;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 import net.multiphasicapps.zip.ZipCompressionType;
@@ -116,10 +117,26 @@ public class LinuxMIPSBuilder
 			ClassNameSymbol.of(
 				"net/multiphasicapps/squirreljme/os/linux/mips/SquirrelJME")));
 		
+		// Fill in list of GPRs
+		JITTriplet t = __bc.triplet();
+		boolean usefloat = t.floatingPoint().isAnyHardware();
+		List<MIPSRegister> gprs = new ArrayList<>();
+		for (int i = 1; i < 32; i++)
+		{
+			// Linux
+			if (i >= 1 && i <= 25)
+				gprs.add(MIPSRegister.of(t, i, false));
+			
+			// Any floating point register is valid
+			if (usefloat)
+				gprs.add(MIPSRegister.of(t, i, true));
+		}
+		
 		// Use a register allocator that is Linux friendly
 		__conf.<GenericAllocatorFactory>registerObject(
 			GenericAllocatorFactory.class,
-			new MIPSAllocatorFactory(__bc.triplet()));
+			new MIPSAllocatorFactory(t, MIPSRegister.of(t, 29, false), true,
+			gprs.<MIPSRegister>toArray(new MIPSRegister[gprs.size()])));
 	}
 	
 	/**

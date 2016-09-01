@@ -75,3 +75,10 @@ would be to have it where each version can be separated. Since I only have a
 limited bandwidth on my phone, I would want it where I can run newer and
 older environments. But first, I will rename the package manager code.
 
+## 14:29
+
+Actually the register allocator only needs to know about the stack and the
+general purpose registers to choose. It does not need to know about the
+constant pool or the method pool because that is handled by the JIT itself
+when it needs to access things.
+

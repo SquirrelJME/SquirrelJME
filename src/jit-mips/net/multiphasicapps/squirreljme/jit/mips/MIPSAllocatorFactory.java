@@ -25,23 +25,42 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 public class MIPSAllocatorFactory
 	implements GenericAllocatorFactory
 {
+	/** Stack register. */
+	protected final MIPSRegister stack;
+	
+	/** Stack direction. */
+	protected final boolean direction;
+	
+	/** General purpose registers. */
+	private final MIPSRegister[] _gprs;
+	
 	/**
 	 * Initializes the MIPS register allocator factory.
 	 *
 	 * @param __t The used triplet.
+	 * @param __stack The stack register
+	 * @param __dir The direction the stack moves in, if {@code true} then
+	 * it goes from higher addresses to lower addresses, if {@code false} it
+	 * moves from lower addresses to higher addresses.
+	 * @param __gp General purpose registers, used for input arguments and
+	 * general method work.
 	 * @throws JITException If it could not be created (likely because the
 	 * CPU is not known).
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/30
 	 */
-	public MIPSAllocatorFactory(JITTriplet __t)
+	public MIPSAllocatorFactory(JITTriplet __t, MIPSRegister __stack,
+		boolean __dir, MIPSRegister[] __gp)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__t == null)
+		if (__t == null || __stack == null || __gp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.stack = __stack;
+		this.direction = __dir;
+		this._gprs = __gp.clone();
 	}
 	
 	/**
@@ -51,7 +70,7 @@ public class MIPSAllocatorFactory
 	@Override
 	public GenericAllocator create()
 	{
-		throw new Error("TODO");
+		return new GenericAllocator(this.stack, this.direction, this._gprs);
 	}
 	
 	/**
