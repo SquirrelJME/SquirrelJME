@@ -10,8 +10,6 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
-import net.multiphasicapps.squirreljme.jit.JITVariableType;
-
 /**
  * This interface is associated with single registers.
  *
@@ -27,7 +25,7 @@ public interface GenericRegister
 	 * stored in this register.
 	 * @since 2016/08/31
 	 */
-	public abstract JITVariableType floatType();
+	public abstract GenericRegisterType floatType();
 	
 	/**
 	 * Returns the type of integer that can be stored in this register.
@@ -37,6 +35,6 @@ public interface GenericRegister
 	 * stored in this register.
 	 * @since 2016/08/31
 	 */
-	public abstract JITVariableType intType();
+	public abstract GenericRegisterType intType();
 }
 

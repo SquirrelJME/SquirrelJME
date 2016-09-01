@@ -110,3 +110,10 @@ Then after that, instead of having allocator factories, the generic JIT is
 just associated with the GenericABI. Then the register allocator is completely
 internal for the most part.
 
+## 19:23
+
+One thing I can do instead of using `CPVariableType` is used another but
+explicitely for a register type. I can specify a fixed size or the word size
+of the CPU, then this way I do not need two separate sets of registers for
+32-bit and 64-bit.
+
