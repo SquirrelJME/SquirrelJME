@@ -4,3 +4,50 @@
 
 A new month is now.
 
+## 07:54
+
+So there have been 554 commits this month. Let us see what I have done. I did
+some refactoring of DynamicByteBuffer but that class went away. Removed Zip64
+support and plans. But the resulting and eventual use of `ByteDeque` is rather
+nice for the most part. I made the inflation code much faster, something that
+is a bit more sane. I started a bunch of JIT work also. Basically, I wrote a
+rather nasty ELF output, but then rewrote that to be much nicer and more
+reuseable for other systems. Did a bunch of JIT refactoring and work so that
+the JIT is rather nice also. I just now need to implement register allocation
+for generic targets. Spent a number of days trying to figure out why my ELF
+output was not working, but I eventually figured it out and decided to just
+rewrite all of that code. I made the base JIT much more sane as previously
+mentioned some more. Setup a basic generic binary output which is mostly
+16-bit currently to save as much space as possible. I added handling of POSIX
+paths, since I will need that for native I/O and emulation of binaries for
+a given system.
+
+## 08:05
+
+Thinking about it, my emulator for Linux MIPS can be very simple. It can just
+load in the ELF binary and then start executing it as if it were an executable.
+Then I could just for the most part treat it as a chunk of memory for the
+most part. I fixed up Lex a bunch of times and made some improvements which
+are quite a bit noticable, they do look better. Near the end of the month I
+actually got some code running on the reference implementation, despite it
+just throwing TODO. I will need to have more a test system in place where I can
+load all the JARs that I can or at least merge them into a single JAR for
+quick testing. Basically what I will need to do is, since I believe the
+liblets are not being considered by it (it should have complained about them
+missing, but it did not), would be to have a special output that can repackage
+the binaries for running on said environment. Then if I can run the tests on
+it, I would then be able to see what works and how things are different
+compared to OpenJDK and that environment. I would completely manage it in my
+own code, in Java, but have a helper script and such. Since it requires a
+Raspberry Pi, I can setup one that sits around. I placed in the skeletons for
+MEEP LUI, Key, and MIDlet. However, one thing I have to do is rewrite the
+build system and have a kind of bootstrap. Then my build system would for the
+most part be written for SquirrelJME and once I get a Java compiler, it would
+be self hosting for the most part. The only issue would be building and then
+potentially executing the JARs. However, if when I get enough of a working JIT
+that can recompile code, I can always implement an interpreter on top of that
+which could run the native code. Likely the best choice would be to have it
+generate MIPS code and then setup an emulator that uses the host filesystem
+and such. So although the programs being ran are purely emulated it would seem
+as if they were not (at least filesystem wise anyway).
+

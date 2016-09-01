@@ -2,6 +2,7 @@
 
 This is the list of code that currently needs work:
 
+ * `ByteDeque` needs a slightly more efficient get from the tail end.
  * Create a new build system that can run on SquirrelJME.
  * Emulators
    * Linux
