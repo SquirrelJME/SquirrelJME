@@ -98,3 +98,9 @@ would be quite expensive and rather wasteful. I need to have a builder of
 register setups and such and then just re-use that. This would mean a single
 object shared across all instances of the JIT.
 
+## 15:10
+
+I should also look at differing ABIs such as for PowerPC, SPARC, ARM, and x86.
+Then I can get a better idea of what the register information has to store
+and such.
+
