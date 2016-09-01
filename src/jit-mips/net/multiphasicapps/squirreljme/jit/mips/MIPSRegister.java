@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.mips;
 
-import net.multiphasicapps.squirreljme.jit.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericRegister;
 import net.multiphasicapps.squirreljme.jit.JITVariableType;
 
@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.jit.JITVariableType;
  * @since 2016/09/01
  */
 public final class MIPSRegister
-	extends GenericRegister
+	implements GenericRegister
 {
 	/**
 	 * {@inheritDoc}

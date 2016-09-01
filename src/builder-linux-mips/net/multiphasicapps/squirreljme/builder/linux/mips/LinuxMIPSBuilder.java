@@ -25,11 +25,10 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.generic.
-	GenericAllocatorFactory;
+import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.jit.mips.MIPSAllocatorFactory;
+import net.multiphasicapps.squirreljme.jit.mips.MIPSABI;
 import net.multiphasicapps.squirreljme.jit.mips.MIPSRegister;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -117,28 +116,9 @@ public class LinuxMIPSBuilder
 			ClassNameSymbol.of(
 				"net/multiphasicapps/squirreljme/os/linux/mips/SquirrelJME")));
 		
-		// Fill in list of GPRs
-		JITTriplet t = __bc.triplet();
-		boolean usefloat = t.floatingPoint().isAnyHardware();
-		List<MIPSRegister> gprs = new ArrayList<>();
-		for (int i = 1; i < 32; i++)
-		{
-			// SquirrelJME does not have to call any library and uses system
-			// calls in wrapper methods, as such every register is available
-			// for usage
-			if (i >= 1 && i <= 25)
-				gprs.add(MIPSRegister.of(t, i, false));
-			
-			// Any floating point register is valid
-			if (usefloat)
-				gprs.add(MIPSRegister.of(t, i, true));
-		}
-		
-		// Use a register allocator that is Linux friendly
-		__conf.<GenericAllocatorFactory>registerObject(
-			GenericAllocatorFactory.class,
-			new MIPSAllocatorFactory(t, MIPSRegister.of(t, 29, false), true,
-			gprs.<MIPSRegister>toArray(new MIPSRegister[gprs.size()])));
+		// Use EABI MIPS
+		__conf.<GenericABI>registerObject(GenericABI.class,
+			MIPSABI.eabi(__bc.triplet()));
 	}
 	
 	/**

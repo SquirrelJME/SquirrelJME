@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.jit.JITObjectProperties;
+
 /**
  * This contains the information on a given ABI such as which registers are
  * used and the purpose of their usage.
@@ -17,6 +19,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
  * @since 2016/09/01
  */
 public final class GenericABI
+	implements JITObjectProperties
 {
 	/**
 	 * Initializes the ABI from the given builder.
@@ -32,6 +35,16 @@ public final class GenericABI
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/01
+	 */
+	@Override
+	public String[] properties()
+	{
 		throw new Error("TODO");
 	}
 }

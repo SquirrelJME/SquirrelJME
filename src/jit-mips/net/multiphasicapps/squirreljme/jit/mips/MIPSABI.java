@@ -8,33 +8,43 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.jit.mips;
 
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 
 /**
- * This is a class which is used to allocate and manage native registers
- * which are available for a given CPU.
+ * These are common ABIs that may be used on MIPS based systems.
  *
- * @since 2016/08/30
+ * @since 2016/09/01
  */
-public class GenericAllocator
+public final class MIPSABI
 {
 	/**
-	 * Initializes the register allocator using the specified configuration
-	 * and the given ABI.
+	 * Not used.
 	 *
-	 * @param __conf The configuration being used.
-	 * @param __abi The ABI used on the target system.
+	 * @since 2016/09/01
+	 */
+	private MIPSABI()
+	{
+	}
+	
+	/**
+	 * This returns the EABI ABI definition for MIPS systems.
+	 *
+	 * This ABI is described at
+	 * {@link http://www.cygwin.com/ml/binutils/2003-06/msg00436.html}.
+	 *
+	 * @param __t The triplet, used to determine floating point and whether the
+	 * CPU is 32-bit or 64-bit.
+	 * @return The ABI.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public GenericAllocator(JITOutputConfig.Immutable __conf, GenericABI __abi)
+	public static GenericABI eabi(JITTriplet __t)
 		throws NullPointerException
 	{
-		// Check
-		if (__conf == null || __abi == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");

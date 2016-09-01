@@ -52,6 +52,9 @@ public abstract class GenericMethodWriter
 	/** The register allocator to use. */
 	protected final GenericAllocator allocator;
 	
+	/** The ABI used on the target system. */
+	protected final GenericABI abi;
+	
 	/**
 	 * Initializes the generic method writer.
 	 *
@@ -97,16 +100,15 @@ public abstract class GenericMethodWriter
 		// CPU bits
 		this.wordsize = triplet.bits();
 		
-		// {@squirreljme.error BA0o No register allocator factory was specified
-		// with the JIT, compilation cannot continue.}
-		GenericAllocatorFactory af = __conf.
-			<GenericAllocatorFactory>getObject(
-			GenericAllocatorFactory.class);
-		if (af == null)
+		// {@squirreljme.error BA0o Cannot initialize a register allocator
+		// because no ABI setup has been specified.}
+		GenericABI abi = __conf.<GenericABI>getObject(GenericABI.class);
+		if (abi == null)
 			throw new JITException("BA0o");
 		
 		// Create new allocator
-		this.allocator = af.create();
+		this.abi = abi;
+		this.allocator = new GenericAllocator(__conf, abi);
 	}
 	
 	/**
