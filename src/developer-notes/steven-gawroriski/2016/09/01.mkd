@@ -82,3 +82,19 @@ general purpose registers to choose. It does not need to know about the
 constant pool or the method pool because that is handled by the JIT itself
 when it needs to access things.
 
+## 14:53
+
+Well, I need a more complex register setup system. I really should match the
+ABI of the host, this way I do not have to do mass saving and restoring when
+I need to make a system call or calling a library support method. Also matching
+the ABI would make debugging it easier with gdb.
+
+## 15:07
+
+Ok, so on real systems, each register has a purpose. Also for a given ABI there
+are arguments, temporaries, alignments, and other such things. Currently my
+code would be heading twords initializing this information all the time which
+would be quite expensive and rather wasteful. I need to have a builder of
+register setups and such and then just re-use that. This would mean a single
+object shared across all instances of the JIT.
+
