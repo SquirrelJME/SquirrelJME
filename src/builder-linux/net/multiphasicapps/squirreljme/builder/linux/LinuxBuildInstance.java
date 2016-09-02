@@ -32,15 +32,27 @@ public abstract class LinuxBuildInstance
 	 * Initializes the build instance.
 	 *
 	 * @param __conf The build configuration.
+	 * @param __arch The expected architecture.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public LinuxBuildInstance(BuildConfig __conf)
+	public LinuxBuildInstance(BuildConfig __conf, String __arch)
 	{
 		super(__conf);
 		
+		// Check
+		if (__arch == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BU04 The specified architecture is not
+		// supported by this build instance.}
+		JITTriplet triplet = __conf.triplet();
+		if (!triplet.architecture().equals(__arch))
+			throw new TargetNotSupportedException(String.format("BU04 %s",
+				__arch));
+		
 		// {@squirreljme.error BU03 Only Linux is supported by this build
 		// instance.}
-		JITTriplet triplet = __conf.triplet();
 		if (!triplet.operatingSystem().equals("linux"))
 			throw new TargetNotSupportedException("BU03");
 		

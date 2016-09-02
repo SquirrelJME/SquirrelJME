@@ -33,13 +33,7 @@ public class LinuxPowerPCBuildInstance
 	 */
 	public LinuxPowerPCBuildInstance(BuildConfig __conf)
 	{
-		super(__conf);
-		
-		// {@squirreljme.error BU05 Only PowerPC is supported by this build
-		// instance.}
-		JITTriplet triplet = __conf.triplet();
-		if (triplet.architecture() != "powerpc")
-			throw new TargetNotSupportedException("BU05");
+		super(__conf, "powerpc");
 		
 		throw new Error("TODO");
 	}

@@ -33,13 +33,7 @@ public class LinuxMIPSBuildInstance
 	 */
 	public LinuxMIPSBuildInstance(BuildConfig __conf)
 	{
-		super(__conf);
-		
-		// {@squirreljme.error BU04 Only MIPS is supported by this build
-		// instance.}
-		JITTriplet triplet = __conf.triplet();
-		if (triplet.architecture() != "mips")
-			throw new TargetNotSupportedException("BU04");
+		super(__conf, "mips");
 		
 		throw new Error("TODO");
 	}
