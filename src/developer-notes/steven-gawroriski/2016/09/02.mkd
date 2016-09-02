@@ -95,3 +95,14 @@ use the output classes directly.
 
 It is a bad idea and there is no reason for `MIPSABI` to cache the ABI anymore.
 
+## 14:47
+
+So specifying the registers sizes in the ABI should work much better. There
+can also be a means of specifying which registers actually exist for a given
+ABI also. So for example on PowerPC with a G4, there will be AltiVec registers
+and those can be added, while on older CPUs such as the G3 they cannot be
+valid. The same thing happens with MIPS because newer revisions have removed
+the `LO` and `HI` registers (used for division). So in short, having the types
+associated with `GenericRegister` would be a bad idea. I plan instead to just
+have it where it can be a `GenericABI.getRegisterIntType()` kind of thing.
+
