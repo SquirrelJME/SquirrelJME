@@ -171,7 +171,7 @@ public final class JITOutputConfig
 		// {@squirreljme.error ED0u The class does not extend
 		// {@code JITObjectProperties} or the object does not extend the
 		// input class. (The input class type)}
-		if (JITObjectProperties.class.isAssignableFrom(__cl) ||
+		if (!JITObjectProperties.class.isAssignableFrom(__cl) ||
 			!__cl.isInstance(__o))
 			throw new ClassCastException(String.format("ED0u %s", __cl));
 		
