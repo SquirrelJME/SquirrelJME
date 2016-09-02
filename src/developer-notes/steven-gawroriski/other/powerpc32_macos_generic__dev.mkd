@@ -9,3 +9,18 @@ bunch since before that was the case, the OS had no actual directories.
 
 The OS is cooperatively tasked, although there may be multi-threading.
 
+# Development
+
+Since Mac OS 9 is quite dated, getting information from it may be difficult.
+
+## Environments
+
+Environments for building programs.
+
+ * Macintosh Programmer's Workshop (MPW)
+
+## Documentation and Libraries
+
+ * Macintosh Toolbox
+ * Carbon
+

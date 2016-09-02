@@ -21,6 +21,12 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
  */
 public final class GenericAllocator
 {
+	/** The configuration used. */
+	protected final JITOutputConfig.Immutable config;
+	
+	/** The ABI used. */
+	protected final GenericABI abi;
+	
 	/**
 	 * Initializes the register allocator using the specified configuration
 	 * and the given ABI.
@@ -37,7 +43,9 @@ public final class GenericAllocator
 		if (__conf == null || __abi == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Set
+		this.config = __conf;
+		this.abi = __abi;
 	}
 }
 
