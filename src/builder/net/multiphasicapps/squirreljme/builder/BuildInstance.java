@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.zip.ZipCompressionType;
@@ -70,7 +73,34 @@ public abstract class BuildInstance
 		if (__zsw == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Include the resultant binary
+		if (true)
+			throw new Error("TODO");
+		
+		// Include basic assets
+		byte[] buf = new byte[64];
+		for (BasicAsset b : BasicAsset.getAssets())
+		{
+			String an = b.name();
+		
+			// Create entry
+			try (InputStream is = b.open();
+				OutputStream os = __zsw.nextEntry(an,
+					ZipCompressionType.DEFAULT_COMPRESSION))
+			{
+				for (;;)
+				{
+					int rc = is.read(buf);
+					
+					// EOF?
+					if (rc < 0)
+						break;
+					
+					// Write
+					os.write(buf, 0, rc);
+				}
+			}
+		}
 	}
 	
 	/**
