@@ -173,3 +173,29 @@ And the refactor is complete for the most part except for the linking part,
 but I can do that when I get the JIT code done. I should however next get the
 emulator working and running the simple hello binaries I have.
 
+## 19:31
+
+Ok, so for the emulator, I can have a similar registration system that I have
+for the configuration. Basically I can have common stuff across architectures
+and such. Take for example mount points on Linux, this can be handled by a
+POSIX mount point class. I can then use this for other POSIX-like OSes too. So
+instead of rewriting it over and over for each OS when it is the same, it
+will cut down on code duplication. Then I can get rid of the OS and
+architecture specific configurations and just have a single one. For protection
+I can make it immutable also. So basically, since many details on a target
+system are unknown and vary widely across systems, this would be the most
+sane choice because then there would be unimplemented stuff or things that
+throw exceptions saying it is not supported. So for sanity, this would work
+out well. I would then suppose that I need a basic CPU setup that can run
+instructions, and then have a initializer and a undefined behavior trapper. So
+when a system call happens in the CPU code, a special handler handles it. This
+way there only has to be a single CPU emulator for each system. So similar to
+what I planned before but easier to work with. Then it should be much easier
+to add emulation of other systems to see how they sort of work out before I
+support linking and code generation for them. One thing I can do though is have
+a bunch of source code that implements a large number of operations, basically
+a test binary. I can run this on the host system and also in the emulator. I
+would most likely stick to just CPU instructions however. Although one issue
+would be the fact that some CPUs vary. Regardless, writing the emulator will
+help give me a feel out how to generate code.
+
