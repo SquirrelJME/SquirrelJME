@@ -60,3 +60,8 @@ of having it in `TargetBuilder`, because it may be possible for the same OS
 which has a variant which does not support a JIT (perhaps a ROM based Linux
 system that will never run JARs).
 
+## 11:34
+
+`BuildConfig` should get `PackageList` so the build instance can pluck any
+packages that are needed.
+
