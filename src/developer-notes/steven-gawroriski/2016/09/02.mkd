@@ -23,3 +23,14 @@ differences such as the ABI that is used and how the target is built. There
 are also emulator considerations also. Right now the emulator for one is
 split across many packages for each CPU and such.
 
+## 10:23
+
+What I propose then is merging all of the architectures and variants of a
+given OS and just put it into a single package. So that `builder-linux` handles
+every Linux system and all of its variants. Also the `TargetBuilder` as it
+stands is a bit ugly and will not work as much either. That has to be adjusted
+a bit for it to work. But merging the emulator into a single set would be a
+good choice because it would all be compacted into a single place. Although
+not as modular, it can essentially be a multi-system emulator so to speak. The
+purpose of the emulator is to just test targets for the most part.
+
