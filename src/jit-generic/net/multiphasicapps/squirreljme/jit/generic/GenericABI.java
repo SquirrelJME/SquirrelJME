@@ -145,6 +145,28 @@ public final class GenericABI
 	}
 	
 	/**
+	 * Returns the stack register.
+	 *
+	 * @return The stack register.
+	 * @since 2016/09/01
+	 */
+	public final GenericRegister stack()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the direction of the stack.
+	 *
+	 * @return The stack direction.
+	 * @since 2016/09/01
+	 */
+	public final GenericStackDirection stackDirection()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Returns the list of registers which are considered temporary and are not
 	 * saved across method calls. These registers are caller saved.
 	 *

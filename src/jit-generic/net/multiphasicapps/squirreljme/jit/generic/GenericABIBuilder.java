@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+
 /**
  * This class is used to generate instances of {@link GenericABI} which is
  * used by the register allocator and the generic JIT compiler to determine
@@ -58,11 +60,13 @@ public final class GenericABIBuilder
 	 * Adds a callee saved register.
 	 *
 	 * @param __r The register that is callee saved.
+	 * @throws JITException If the register is temporary or is the stack
+	 * register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
 	public final void addSaved(GenericRegister __r)
-		throws NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -75,14 +79,64 @@ public final class GenericABIBuilder
 	 * Adds a caller saved register.
 	 *
 	 * @param __r The register that is caller saved.
+	 * @throws JITException If the register is saved or is the stack register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
 	public final void addTemporary(GenericRegister __r)
-		throws NullPointerException
+		throws JITException, NullPointerException
 	{
 		// Check
 		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Builds the given ABI set.
+	 *
+	 * @return The generic ABI set.
+	 * @throws JITException If a group contains no registers, the stack
+	 * register was not set, or the direction register was not set.
+	 * @since 2016/09/01
+	 */
+	public final GenericABI build()
+		throws JITException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the stack register.
+	 *
+	 * @param __r The register to use for the stack.
+	 * @throws JITException If the register is temporary or saved.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/01
+	 */
+	public final void stack(GenericRegister __r)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the direction of the stack.
+	 *
+	 * @param __d The stack direction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/01
+	 */
+	public final void stackDirection(GenericStackDirection __d)
+		throws NullPointerException
+	{
+		// Check
+		if (__d == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");

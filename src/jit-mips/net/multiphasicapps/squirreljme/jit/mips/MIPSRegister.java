@@ -272,5 +272,106 @@ public enum MIPSRegister
 			return null;
 		return this.type;
 	}
+	
+	/**
+	 * Returns an existing MIPS register.
+	 *
+	 * @param __float If {@code true} then a floating point register is used.
+	 * @param __i The register index to use.
+	 * @return The associated register.
+	 * @throws IllegalArgumentException If an illegal register was requested.
+	 * @since 2016/09/01
+	 */
+	public static MIPSRegister of(boolean __float, int __i)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BV01  (The register index)}
+		if (__i < 0 || __i >= 32)
+			throw new IllegalArgumentException(String.format("BV01 %d", __i));
+		
+		// Floating point?
+		if (__float)
+			switch (__i)
+			{
+				case 0: return F0;
+				case 1: return F1;
+				case 2: return F2;
+				case 3: return F3;
+				case 4: return F4;
+				case 5: return F5;
+				case 6: return F6;
+				case 7: return F7;
+				case 8: return F8;
+				case 9: return F9;
+				case 10: return F10;
+				case 11: return F11;
+				case 12: return F12;
+				case 13: return F13;
+				case 14: return F14;
+				case 15: return F15;
+				case 16: return F16;
+				case 17: return F17;
+				case 18: return F18;
+				case 19: return F19;
+				case 20: return F20;
+				case 21: return F21;
+				case 22: return F22;
+				case 23: return F23;
+				case 24: return F24;
+				case 25: return F25;
+				case 26: return F26;
+				case 27: return F27;
+				case 28: return F28;
+				case 29: return F29;
+				case 30: return F30;
+				case 31: return F31;
+
+					// Should not occur
+				default:
+					throw new RuntimeException("OOPS");
+			}
+		
+		// Integer
+		else
+			switch (__i)
+			{
+				case 0: return R0;
+				case 1: return R1;
+				case 2: return R2;
+				case 3: return R3;
+				case 4: return R4;
+				case 5: return R5;
+				case 6: return R6;
+				case 7: return R7;
+				case 8: return R8;
+				case 9: return R9;
+				case 10: return R10;
+				case 11: return R11;
+				case 12: return R12;
+				case 13: return R13;
+				case 14: return R14;
+				case 15: return R15;
+				case 16: return R16;
+				case 17: return R17;
+				case 18: return R18;
+				case 19: return R19;
+				case 20: return R20;
+				case 21: return R21;
+				case 22: return R22;
+				case 23: return R23;
+				case 24: return R24;
+				case 25: return R25;
+				case 26: return R26;
+				case 27: return R27;
+				case 28: return R28;
+				case 29: return R29;
+				case 30: return R30;
+				case 31: return R31;
+				
+					// Should not occur
+				default:
+					throw new RuntimeException("OOPS");
+			}
+	}
 }
 
