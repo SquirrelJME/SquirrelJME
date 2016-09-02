@@ -245,7 +245,18 @@ public final class GenericABI
 		if (__from == null || __to == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Copy registers of the same kind
+		int rv = 0;
+		for (GenericRegister r : __from)
+			if ((__float && (null != r.floatType())) ||
+				(!__float && (null != r.intType())))
+			{
+				__to.add(r);
+				rv++;
+			}
+		
+		// Return the add count
+		return rv;
 	}
 	
 	/**
@@ -294,19 +305,19 @@ public final class GenericABI
 			// Add results
 			Iterable<GenericRegister> xresult = __b._result;
 			List<GenericRegister> result = new ArrayList<>();
-			GenericABI.__fill(__float, xresult, result);
+			total += GenericABI.__fill(__float, xresult, result);
 			this._result = UnmodifiableList.<GenericRegister>of(result);
 			
 			// Add arguments
 			Iterable<GenericRegister> xargs = __b._args;
 			List<GenericRegister> args = new ArrayList<>();
-			GenericABI.__fill(__float, xargs, args);
+			total += GenericABI.__fill(__float, xargs, args);
 			this._args = UnmodifiableList.<GenericRegister>of(args);
 			
 			// Add saved registers
 			Iterable<GenericRegister> xsaved = __b._saved;
 			Set<GenericRegister> saved = new LinkedHashSet<>();
-			GenericABI.__fill(__float, xsaved, saved);
+			total += GenericABI.__fill(__float, xsaved, saved);
 			this._ssaved = UnmodifiableSet.<GenericRegister>of(saved);
 			this._lsaved = UnmodifiableList.<GenericRegister>of(
 				new ArrayList<>(saved));
@@ -314,7 +325,7 @@ public final class GenericABI
 			// Add temporary registers
 			Iterable<GenericRegister> xtemps = __b._temps;
 			Set<GenericRegister> temps = new LinkedHashSet<>();
-			GenericABI.__fill(__float, xtemps, temps);
+			total += GenericABI.__fill(__float, xtemps, temps);
 			this._stemps = UnmodifiableSet.<GenericRegister>of(temps);
 			this._ltemps = UnmodifiableList.<GenericRegister>of(
 				new ArrayList<>(temps));
