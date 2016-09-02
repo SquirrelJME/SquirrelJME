@@ -48,6 +48,18 @@ public abstract class BuildInstance
 	}
 	
 	/**
+	 * Compiles the target binary.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2016/09/02
+	 */
+	public final void compileBinary()
+		throws IOException
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Initializes an emulator using the specified set of arguments.
 	 *
 	 * @param __tae The arguments to use.

@@ -117,8 +117,7 @@ public class Main
 				bi.__setTempDir(tempdir);
 				
 				// Build target
-				if (true)
-					throw new Error("TODO");
+				bi.compileBinary();
 				
 				// Build distribution
 				try (OutputStream os = __openOutputZip(actualzipfile[0],
