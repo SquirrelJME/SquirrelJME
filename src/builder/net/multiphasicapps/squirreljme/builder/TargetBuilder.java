@@ -54,6 +54,7 @@ public abstract class TargetBuilder
 		ServiceLoader.<TargetBuilder>load(TargetBuilder.class);
 	
 	/** Supports the JIT? */
+	@Deprecated
 	protected final boolean canjit;
 	
 	/** Suggestions. */
@@ -67,6 +68,7 @@ public abstract class TargetBuilder
 	 * short description.
 	 * @since 2016/07/22
 	 */
+	@Deprecated
 	public TargetBuilder(boolean __jit, String... __sugs)
 	{
 		// Set
@@ -106,6 +108,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/23
 	 */
+	@Deprecated
 	public abstract void linkBinary(ZipStreamWriter __zsw, String[] __names,
 		InputStream[] __blobs, BuildConfig __conf, String[] __vmcp)
 		throws JITException, IOException, NullPointerException;
@@ -122,6 +125,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
+	@Deprecated
 	public abstract void outputConfig(JITOutputConfig __conf, BuildConfig __bc)
 		throws NullPointerException;
 	
@@ -133,6 +137,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
+	@Deprecated
 	public abstract boolean supportsConfig(BuildConfig __conf)
 		throws NullPointerException;
 	
@@ -146,6 +151,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/23
 	 */
+	@Deprecated
 	public abstract String targetPackageGroup(BuildConfig __conf)
 		throws NullPointerException;
 	
@@ -158,6 +164,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/24
 	 */
+	@Deprecated
 	public final void addStandardSystemProperties(BuildConfig __conf,
 		ExecutableOutput __eo)
 		throws IOException, NullPointerException
@@ -256,6 +263,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/24
 	 */
+	@Deprecated
 	public final void addVirtualMachineClassPath(BuildConfig __conf,
 		ExecutableOutput __eo, String[] __vmcp)
 		throws JITException, IOException, NullPointerException
@@ -294,6 +302,7 @@ public abstract class TargetBuilder
 	 * @return {@code true} if the JIT is supported.
 	 * @since 2016/07/22
 	 */
+	@Deprecated
 	public final boolean canJIT()
 	{
 		return this.canjit;
@@ -306,6 +315,7 @@ public abstract class TargetBuilder
 	 * @throws IOException On read/write errors.
 	 * @since 2016/07/26
 	 */
+	@Deprecated
 	protected final OutputStream createLastRun()
 		throws IOException
 	{
@@ -327,6 +337,7 @@ public abstract class TargetBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/30
 	 */
+	@Deprecated
 	public TargetEmulator emulate(TargetEmulatorArguments __args)
 		throws IllegalArgumentException, NullPointerException
 	{
