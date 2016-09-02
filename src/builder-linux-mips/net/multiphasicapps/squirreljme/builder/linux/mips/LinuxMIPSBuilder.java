@@ -113,7 +113,7 @@ public class LinuxMIPSBuilder
 		if (__conf == null || __bc == null)
 			throw new NullPointerException("NARG");
 		
-		// Nothing needs to be done
+		// Rewrite calls
 		__conf.addStaticCallRewrite(new JITClassNameRewrite(
 			ClassNameSymbol.of(
 				"net/multiphasicapps/squirreljme/unsafe/SquirrelJME"),
@@ -131,7 +131,7 @@ public class LinuxMIPSBuilder
 				abi = MIPSABI.eabi(triplet);
 				break;
 			
-				// {@squirreljme.error AQ01 Do not know how to build for the
+				// {@squirreljme.error AW01 Do not know how to build for the
 				// given operating system variant. (The operating system
 				// variant)}
 			default:
