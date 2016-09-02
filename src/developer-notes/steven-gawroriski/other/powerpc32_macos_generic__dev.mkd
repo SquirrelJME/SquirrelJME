@@ -13,13 +13,18 @@ The OS is cooperatively tasked, although there may be multi-threading.
 
 Since Mac OS 9 is quite dated, getting information from it may be difficult.
 
+## Pascal
+
+The environment appears to be very laced with Pascal, which I really last
+touched a decade ago in high school. However, Pascal is quite easy.
+
 ## Environments
 
 Environments for building programs.
 
  * Macintosh Programmer's Workshop (MPW)
 
-## Documentation and Libraries
+## Libraries
 
  * Macintosh Toolbox
  * Carbon
