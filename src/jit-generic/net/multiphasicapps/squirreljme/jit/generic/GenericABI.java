@@ -85,11 +85,17 @@ public final class GenericABI
 			throw new JITException("BA0x");
 		this._stack = stack;
 		
+		// Fill integer registers
+		this._intregs = UnmodifiableMap.<GenericRegister,
+			GenericRegisterIntegerType>of(new LinkedHashMap<>(__b._intregs));
+			
+		// Fill floating point registers
+		this._floatregs = UnmodifiableMap.<GenericRegister,
+			GenericRegisterFloatType>of(new LinkedHashMap<>(__b._floatregs));
+		
 		// Setup integer and float registers
 		this._int = new __Group__(false, __b);
 		this._float = new __Group__(true, __b);
-		
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -127,7 +133,7 @@ public final class GenericABI
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		return this._floatregs.get(__r);
 	}
 	
 	/**
@@ -146,7 +152,7 @@ public final class GenericABI
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		return this._intregs.get(__r);
 	}
 	
 	/**

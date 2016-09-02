@@ -121,3 +121,7 @@ Software will be purely in software, while hard32 will do `float` in hardware
 and `double` in software. The last `hard64` can do both kinds of floats no
 problem.
 
+## 17:18
+
+So I did much refactoring today, although still not yet done.
+
