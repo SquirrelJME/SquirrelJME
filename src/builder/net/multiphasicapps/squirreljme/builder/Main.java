@@ -84,6 +84,11 @@ public class Main
 		PrintStream out = System.out;
 		__CommandLine__ cl = new __CommandLine__(__args);
 		
+		// {@squirreljme.error DW10 Skipping the build and not emulating, there
+		// is nothing to be done.}
+		if (cl._skipbuild && !cl._doemu)
+			throw new IllegalArgumentException("DW10");
+		
 		// Load the package list
 		out.println("Loading the package lists...");
 		PackageList plist = new PackageList(Paths.get(
@@ -94,6 +99,25 @@ public class Main
 			!cl._nojit, cl._tests, cl._altexename,
 			cl._extraprojects.<String>toArray(
 				new String[cl._extraprojects.size()]));
+		
+		// Regardless a build instance needs to be found even if a target build
+		// is not being performed (for emulation)
+		BuildInstance bi = TargetBuilder.findAndCreateBuildInstance(__conf);
+		
+		// Build the target?
+		if (!cl._skipbuild)
+		{
+			throw new Error("TODO");
+		}
+		
+		// Emulate the resulting binary?
+		if (cl._doemu)
+		{
+			throw new Error("TODO");
+		}
+		
+		if (true)
+			throw new Error("TODO");
 		
 		// Find a target builder which is compatible with this configuration
 		TargetBuilder tb = TargetBuilder.findBuilder(config);

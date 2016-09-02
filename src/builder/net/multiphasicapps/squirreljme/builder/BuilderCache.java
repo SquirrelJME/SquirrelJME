@@ -198,10 +198,10 @@ public class BuilderCache
 		if (__ns == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DW05 The namespace does not end in .jar.
+		// {@squirreljme.error DW06 The namespace does not end in .jar.
 		// (The namespace)}
 		if (!__ns.endsWith(".jar"))
-			throw new JITException(String.format("DW05 %s", __ns));
+			throw new JITException(String.format("DW06 %s", __ns));
 		
 		// Remove the JAR
 		String jarless = __ns.substring(0, __ns.length() - ".jar".length());
