@@ -24,196 +24,196 @@ public enum MIPSRegister
 	implements GenericRegister
 {
 	/** r0. */
-	R0(false, 0, GenericRegisterType.SAME),
+	R0(false, 0),
 
 	/** r1. */
-	R1(false, 1, GenericRegisterType.SAME),
+	R1(false, 1),
 
 	/** r2. */
-	R2(false, 2, GenericRegisterType.SAME),
+	R2(false, 2),
 
 	/** r3. */
-	R3(false, 3, GenericRegisterType.SAME),
+	R3(false, 3),
 
 	/** r4. */
-	R4(false, 4, GenericRegisterType.SAME),
+	R4(false, 4),
 
 	/** r5. */
-	R5(false, 5, GenericRegisterType.SAME),
+	R5(false, 5),
 
 	/** r6. */
-	R6(false, 6, GenericRegisterType.SAME),
+	R6(false, 6),
 
 	/** r7. */
-	R7(false, 7, GenericRegisterType.SAME),
+	R7(false, 7),
 
 	/** r8. */
-	R8(false, 8, GenericRegisterType.SAME),
+	R8(false, 8),
 
 	/** r9. */
-	R9(false, 9, GenericRegisterType.SAME),
+	R9(false, 9),
 
 	/** r10. */
-	R10(false, 10, GenericRegisterType.SAME),
+	R10(false, 10),
 
 	/** r11. */
-	R11(false, 11, GenericRegisterType.SAME),
+	R11(false, 11),
 
 	/** r12. */
-	R12(false, 12, GenericRegisterType.SAME),
+	R12(false, 12),
 
 	/** r13. */
-	R13(false, 13, GenericRegisterType.SAME),
+	R13(false, 13),
 
 	/** r14. */
-	R14(false, 14, GenericRegisterType.SAME),
+	R14(false, 14),
 
 	/** r15. */
-	R15(false, 15, GenericRegisterType.SAME),
+	R15(false, 15),
 
 	/** r16. */
-	R16(false, 16, GenericRegisterType.SAME),
+	R16(false, 16),
 
 	/** r17. */
-	R17(false, 17, GenericRegisterType.SAME),
+	R17(false, 17),
 
 	/** r18. */
-	R18(false, 18, GenericRegisterType.SAME),
+	R18(false, 18),
 
 	/** r19. */
-	R19(false, 19, GenericRegisterType.SAME),
+	R19(false, 19),
 
 	/** r20. */
-	R20(false, 20, GenericRegisterType.SAME),
+	R20(false, 20),
 
 	/** r21. */
-	R21(false, 21, GenericRegisterType.SAME),
+	R21(false, 21),
 
 	/** r22. */
-	R22(false, 22, GenericRegisterType.SAME),
+	R22(false, 22),
 
 	/** r23. */
-	R23(false, 23, GenericRegisterType.SAME),
+	R23(false, 23),
 
 	/** r24. */
-	R24(false, 24, GenericRegisterType.SAME),
+	R24(false, 24),
 
 	/** r25. */
-	R25(false, 25, GenericRegisterType.SAME),
+	R25(false, 25),
 
 	/** r26. */
-	R26(false, 26, GenericRegisterType.SAME),
+	R26(false, 26),
 
 	/** r27. */
-	R27(false, 27, GenericRegisterType.SAME),
+	R27(false, 27),
 
 	/** r28. */
-	R28(false, 28, GenericRegisterType.SAME),
+	R28(false, 28),
 
 	/** r29. */
-	R29(false, 29, GenericRegisterType.SAME),
+	R29(false, 29),
 
 	/** r30. */
-	R30(false, 30, GenericRegisterType.SAME),
+	R30(false, 30),
 
 	/** r31. */
-	R31(false, 31, GenericRegisterType.SAME),
+	R31(false, 31),
 	
 	/** f0. */
-	F0(true, 0, GenericRegisterType.SAME),
+	F0(true, 0),
 
 	/** f1. */
-	F1(true, 1, GenericRegisterType.SAME),
+	F1(true, 1),
 
 	/** f2. */
-	F2(true, 2, GenericRegisterType.SAME),
+	F2(true, 2),
 
 	/** f3. */
-	F3(true, 3, GenericRegisterType.SAME),
+	F3(true, 3),
 
 	/** f4. */
-	F4(true, 4, GenericRegisterType.SAME),
+	F4(true, 4),
 
 	/** f5. */
-	F5(true, 5, GenericRegisterType.SAME),
+	F5(true, 5),
 
 	/** f6. */
-	F6(true, 6, GenericRegisterType.SAME),
+	F6(true, 6),
 
 	/** f7. */
-	F7(true, 7, GenericRegisterType.SAME),
+	F7(true, 7),
 
 	/** f8. */
-	F8(true, 8, GenericRegisterType.SAME),
+	F8(true, 8),
 
 	/** f9. */
-	F9(true, 9, GenericRegisterType.SAME),
+	F9(true, 9),
 
 	/** f10. */
-	F10(true, 10, GenericRegisterType.SAME),
+	F10(true, 10),
 
 	/** f11. */
-	F11(true, 11, GenericRegisterType.SAME),
+	F11(true, 11),
 
 	/** f12. */
-	F12(true, 12, GenericRegisterType.SAME),
+	F12(true, 12),
 
 	/** f13. */
-	F13(true, 13, GenericRegisterType.SAME),
+	F13(true, 13),
 
 	/** f14. */
-	F14(true, 14, GenericRegisterType.SAME),
+	F14(true, 14),
 
 	/** f15. */
-	F15(true, 15, GenericRegisterType.SAME),
+	F15(true, 15),
 
 	/** f16. */
-	F16(true, 16, GenericRegisterType.SAME),
+	F16(true, 16),
 
 	/** f17. */
-	F17(true, 17, GenericRegisterType.SAME),
+	F17(true, 17),
 
 	/** f18. */
-	F18(true, 18, GenericRegisterType.SAME),
+	F18(true, 18),
 
 	/** f19. */
-	F19(true, 19, GenericRegisterType.SAME),
+	F19(true, 19),
 
 	/** f20. */
-	F20(true, 20, GenericRegisterType.SAME),
+	F20(true, 20),
 
 	/** f21. */
-	F21(true, 21, GenericRegisterType.SAME),
+	F21(true, 21),
 
 	/** f22. */
-	F22(true, 22, GenericRegisterType.SAME),
+	F22(true, 22),
 
 	/** f23. */
-	F23(true, 23, GenericRegisterType.SAME),
+	F23(true, 23),
 
 	/** f24. */
-	F24(true, 24, GenericRegisterType.SAME),
+	F24(true, 24),
 
 	/** f25. */
-	F25(true, 25, GenericRegisterType.SAME),
+	F25(true, 25),
 
 	/** f26. */
-	F26(true, 26, GenericRegisterType.SAME),
+	F26(true, 26),
 
 	/** f27. */
-	F27(true, 27, GenericRegisterType.SAME),
+	F27(true, 27),
 
 	/** f28. */
-	F28(true, 28, GenericRegisterType.SAME),
+	F28(true, 28),
 
 	/** f29. */
-	F29(true, 29, GenericRegisterType.SAME),
+	F29(true, 29),
 
 	/** f30. */
-	F30(true, 30, GenericRegisterType.SAME),
+	F30(true, 30),
 
 	/** f31. */
-	F31(true, 31, GenericRegisterType.SAME),
+	F31(true, 31),
 
 	/** End. */
 	;
@@ -224,53 +224,18 @@ public enum MIPSRegister
 	/** The register ID. */
 	protected final int id;
 	
-	/** The register type. */
-	protected final GenericRegisterType type;
-	
 	/**
 	 * Initializes the register information.
 	 *
 	 * @param __float Is this a floating point register?
 	 * @param __id The register ID.
-	 * @param __t The type of register this is.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	private MIPSRegister(boolean __float, int __id, GenericRegisterType __t)
-		throws NullPointerException
+	private MIPSRegister(boolean __float, int __id)
 	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
 		// Set
 		this.isfloat = __float;
 		this.id = __id;
-		this.type = __t;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/01
-	 */
-	@Override
-	public GenericRegisterType floatType()
-	{
-		if (this.isfloat)
-			return this.type;
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/01
-	 */
-	@Override
-	public GenericRegisterType intType()
-	{
-		if (this.isfloat)
-			return null;
-		return this.type;
 	}
 	
 	/**
