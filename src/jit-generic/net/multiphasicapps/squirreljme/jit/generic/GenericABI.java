@@ -349,13 +349,9 @@ public final class GenericABI
 				if (args.size() <= 0)
 					throw new JITException("BA0q");
 				
-				// {@squirreljme.error BA0r No saved registers were specified.}
-				if (saved.size() <= 0)
-					throw new JITException("BA0r");
-				
-				// {@squirreljme.error BA1d No temporary registers were
-				// specified.}
-				if (temps.size() <= 0)
+				// {@squirreljme.error BA1d The total number of temporary
+				// registers and saved registers is zero.}
+				if ((saved.size() + temps.size()) <= 0)
 					throw new JITException("BA1d");
 			}
 			
