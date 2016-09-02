@@ -71,14 +71,19 @@ public final class MIPSABI
 		{
 			// Setup
 			GenericABIBuilder ab = new GenericABIBuilder();
-		
+			
 			// Stack grows down
 			ab.stack(MIPSRegister.of(false, 29));
+			ab.stackAlignment(8);
 			ab.stackDirection(GenericStackDirection.HIGH_TO_LOW);
 		
 			// Arguments
 			for (int i = 4; i <= 11; i++)
 				ab.addArgument(MIPSRegister.of(false, i));
+			
+			// Return value
+			for (int i = 2; i <= 3; i++)
+				ab.addResult(MIPSRegister.of(false, i));
 		
 			// Temporary
 			for (int i = 1; i <= 15; i++)
@@ -98,9 +103,13 @@ public final class MIPSABI
 				for (int i = 12; i <= 19; i++)
 					ab.addArgument(MIPSRegister.of(true, i));
 				
+				// Return value
+				for (int i = 0; i <= 1; i++)
+					ab.addResult(MIPSRegister.of(false, i));
+				
 				// Temporary, make all registers temporary so that anything
 				// that is used, becomes caller saved
-				for (int i = 1; i <= 31; i++)
+				for (int i = 0; i <= 31; i++)
 					ab.addTemporary(MIPSRegister.of(true, i));
 			}
 			

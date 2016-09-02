@@ -126,6 +126,24 @@ public final class GenericABIBuilder
 	}
 	
 	/**
+	 * Sets the requires stack alignment needed for method calls.
+	 *
+	 * @param __i The number of bytes to align to.
+	 * @throws JITException If the alignment is zero or negative.
+	 * @since 2016/09/01
+	 */
+	public final void stackAlignment(int __i)
+		throws JITException
+	{
+		// {@squirreljme.error BA0u The stack alignment is zero or negative.
+		// (The alignment)}
+		if (__i <= 0)
+			throw new JITException(String.format("BA0u %d", __i));
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Sets the direction of the stack.
 	 *
 	 * @param __d The stack direction.
