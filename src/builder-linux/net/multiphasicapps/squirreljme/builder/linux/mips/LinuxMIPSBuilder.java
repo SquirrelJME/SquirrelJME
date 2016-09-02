@@ -15,10 +15,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
+import net.multiphasicapps.squirreljme.builder.BuildInstance;
 import net.multiphasicapps.squirreljme.builder.linux.LinuxBuilder;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
 import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
+import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
 import net.multiphasicapps.squirreljme.exe.elf.ELFProgram;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
@@ -60,6 +62,17 @@ public class LinuxMIPSBuilder
 				"Generic Linux MIPS (Softfloat, Big, EABI)",
 			"mips-32+mips32,little~hard.linux.gcwzero",
 				"GCW Zero");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/02
+	 */
+	@Override
+	public BuildInstance createBuildInstance(BuildConfig __conf) 
+		throws TargetNotSupportedException
+	{
+		throw new Error("TODO");
 	}
 	
 	/**

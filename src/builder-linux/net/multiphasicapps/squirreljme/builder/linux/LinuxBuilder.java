@@ -62,17 +62,6 @@ public abstract class LinuxBuilder
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/09/02
-	 */
-	@Override
-	public BuildInstance createBuildInstance(BuildConfig __conf) 
-		throws TargetNotSupportedException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2016/07/30
 	 */
 	@Override

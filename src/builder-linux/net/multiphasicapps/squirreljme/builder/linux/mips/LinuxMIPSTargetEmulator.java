@@ -27,6 +27,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
  *
  * @since 2016/07/30
  */
+@Deprecated
 public class LinuxMIPSTargetEmulator
 	extends LinuxTargetEmulator
 {

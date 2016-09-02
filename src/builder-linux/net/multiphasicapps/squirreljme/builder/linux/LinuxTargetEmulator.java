@@ -26,6 +26,7 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  *
  * @since 2016/08/21
  */
+@Deprecated
 public abstract class LinuxTargetEmulator
 	extends TargetEmulator
 {

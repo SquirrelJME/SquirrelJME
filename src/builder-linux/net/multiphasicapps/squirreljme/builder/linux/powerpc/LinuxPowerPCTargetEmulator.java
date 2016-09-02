@@ -15,6 +15,7 @@ package net.multiphasicapps.squirreljme.builder.linux.powerpc;
  *
  * @since 2016/09/02
  */
+@Deprecated
 public class LinuxPowerPCTargetEmulator
 {
 }
