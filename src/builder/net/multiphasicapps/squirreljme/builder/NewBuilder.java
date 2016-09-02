@@ -34,6 +34,7 @@ import net.multiphasicapps.zip.ZipCompressionType;
  *
  * @since 2016/07/22
  */
+@Deprecated
 public class NewBuilder
 	implements BuilderCacheHelper, JITNamespaceProcessorProgress
 {
@@ -367,8 +368,8 @@ public class NewBuilder
 		}
 		
 		// Adding extra projects?
-		for (String p : config.extraProjects())
-			rv.addAll(packagelist.get(p).recursiveDependencies()) ;
+		for (PackageInfo p : config.extraProjects())
+			rv.addAll(p.recursiveDependencies()) ;
 		
 		// Tests do not need to be a part of the boot classpath, so the
 		// boot classpath is just what is currently in the build list

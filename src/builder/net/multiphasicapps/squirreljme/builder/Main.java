@@ -92,17 +92,17 @@ public class Main
 		// Load the package list
 		out.println("Loading the package lists...");
 		PackageList plist = new PackageList(Paths.get(
-			System.getProperty("user.dir")), null);
+			System.getProperty("user.dir")));
 		
 		// Setup build configuration
 		BuildConfig config = new BuildConfig(new JITTriplet(cl._target),
 			!cl._nojit, cl._tests, cl._altexename,
 			cl._extraprojects.<String>toArray(
-				new String[cl._extraprojects.size()]));
+				new String[cl._extraprojects.size()]), plist);
 		
 		// Regardless a build instance needs to be found even if a target build
 		// is not being performed (for emulation)
-		BuildInstance bi = TargetBuilder.findAndCreateBuildInstance(__conf);
+		BuildInstance bi = TargetBuilder.findAndCreateBuildInstance(config);
 		
 		// Build the target?
 		Path[] actualzipfile = new Path[]{cl._outzipname};
@@ -121,8 +121,9 @@ public class Main
 					throw new Error("TODO");
 				
 				// Build distribution
-				try (ZipStreamWriter zsw = __openOutputZip(actualzipfile[0],
-					actualzipfile))
+				try (OutputStream os = __openOutputZip(actualzipfile[0],
+					actualzipfile);
+					ZipStreamWriter zsw = new ZipStreamWriter(os))
 				{
 					out.printf("Generating distribution at `%s`...%n",
 						actualzipfile[0]);
@@ -203,135 +204,6 @@ public class Main
 				
 				// Message
 				out.println("Emulation terminated!");
-			}
-		
-		if (true)
-			throw new Error("TODO");
-		
-		// Find a target builder which is compatible with this configuration
-		TargetBuilder tb = TargetBuilder.findBuilder(config);
-		
-		// {@squirreljme.error DW0i No available builder targets the given
-		// triplet. (The triplet)}
-		if (tb == null)
-			throw new IllegalArgumentException(String.format("DW0i %s",
-				config.triplet()));
-		
-		// If not skipping the build then build
-		Path[] distoutpath = new Path[1];
-		if (!cl._skipbuild)
-		{
-			// Could fail
-			Path tempdir = null;
-			try
-			{
-				// Create temporary directory
-				tempdir = Files.createTempDirectory("squirreljme-build");
-			
-				// Setup
-				NewBuilder nb = new NewBuilder(out, config, tb, plist,
-					tempdir);
-			
-				// Build
-				nb.build();
-			
-				// Indicate where the binary is
-				try (OutputStream distout = __openOutputZip(
-					(cl._outzipname != null ? Paths.get(cl._outzipname) :
-						null), distoutpath))
-				{
-					out.printf("Generating distribution at `%s`...%n",
-						distoutpath[0]);
-					nb.linkAndGeneratePackage(distout);
-				}
-			}
-		
-			// {@squirreljme.error DW0j There was an error building the
-			// output distribution ZIP file.}
-			catch (IOException|RuntimeException|Error e)
-			{
-				// Delete the failed output
-				if (distoutpath[0] != null)
-					try
-					{
-						Files.delete(distoutpath[0]);
-					}
-				
-					// Ignore
-					catch (IOException f)
-					{
-						e.addSuppressed(f);
-					}
-				
-				// Toss
-				throw new RuntimeException("DW0j", e);
-			}
-		
-			// Delete temporary directory
-			finally
-			{
-				// Delete if it exists
-				if (tempdir != null)
-					try
-					{
-						// Delete all files in the directory
-						try (DirectoryStream<Path> ds = Files.
-							newDirectoryStream(tempdir))
-						{
-							for (Path p : ds)
-								try
-								{
-									Files.delete(p);
-								}
-							
-								// Ignore
-								catch (IOException e)
-								{
-								}
-						}
-					
-						// Delete the directory
-						Files.delete(tempdir);
-					}
-				
-					// Ignore
-					catch (IOException e)
-					{
-					}
-			}
-		}
-		
-		// Get output ZIP file used
-		else
-			distoutpath[0] = Paths.get((cl._outzipname != null ?
-				cl._outzipname : "squirreljme.zip"));
-		
-		// Emulate?
-		if (cl._doemu)
-			try (ZipFile zip = __openZip(cl, distoutpath[0]))
-			{
-				// Get the target emulator
-				TargetEmulator te = tb.emulate(new TargetEmulatorArguments(
-					config, zip, cl._altexename,
-					cl._emuargs.<String>toArray(
-						new String[cl._emuargs.size()])));
-				
-				// Get an emulator
-				out.println("Setting up emulator...");
-				Emulator emu = te.emulator();
-				
-				// Run it
-				out.println("Entering emulation loop...");
-				emu.run();
-				
-				// Message
-				out.println("Emulation terminated!");
-			}
-			
-			// {@squirreljme.error DW0t I/O error while emulating.}
-			catch (IOException e)
-			{
-				throw new RuntimeException("DW0t", e);
 			}
 	}
 	
