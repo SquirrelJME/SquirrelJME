@@ -105,7 +105,7 @@ public final class MIPSABI
 				
 				// Return value
 				for (int i = 0; i <= 1; i++)
-					ab.addResult(MIPSRegister.of(false, i));
+					ab.addResult(MIPSRegister.of(true, i));
 				
 				// Temporary, make all registers temporary so that anything
 				// that is used, becomes caller saved
