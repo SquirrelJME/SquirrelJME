@@ -167,3 +167,9 @@ all of my old code. So I will set a note. Revision
 `24503a462c85ef804c8fe8d008ee538ccc21bb02` will contain the old information
 needed for linking and such.
 
+## 18:53
+
+And the refactor is complete for the most part except for the linking part,
+but I can do that when I get the JIT code done. I should however next get the
+emulator working and running the simple hello binaries I have.
+
