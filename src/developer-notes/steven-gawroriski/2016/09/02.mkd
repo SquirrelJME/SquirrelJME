@@ -125,3 +125,8 @@ problem.
 
 So I did much refactoring today, although still not yet done.
 
+## 17:28
+
+So now I just have to move over the code that exists in `NewBuilder` and
+refactor that into the new `BuildInstance` code.
+
