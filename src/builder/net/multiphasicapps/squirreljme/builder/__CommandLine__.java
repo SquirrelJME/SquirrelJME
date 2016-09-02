@@ -45,7 +45,7 @@ class __CommandLine__
 	final String _target;
 	
 	/** The output ZIP name. */
-	final String _outzipname;
+	final Path _outzipname;
 	
 	/** The alternative executable name. */
 	final String _altexename;
@@ -88,7 +88,7 @@ class __CommandLine__
 			this._nojit = true;
 			this._tests = false;
 			this._skipbuild = true;
-			this._outzipname = "";
+			this._outzipname = Paths.get("");
 			this._extraprojects = new HashSet<>();
 			this._directemu = true;
 			
@@ -220,7 +220,8 @@ class __CommandLine__
 		this._tests = tests;
 		this._skipbuild = skipbuild;
 		this._target = target;
-		this._outzipname = outzipname;
+		this._outzipname = (outzipname != null ? Paths.get(outzipname) :
+			null);
 		this._altexename = altexename;
 		this._emuargs = emuargs;
 		this._extraprojects = extraprojects;

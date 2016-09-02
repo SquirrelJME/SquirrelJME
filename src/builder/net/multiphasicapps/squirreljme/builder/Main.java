@@ -105,9 +105,82 @@ public class Main
 		BuildInstance bi = TargetBuilder.findAndCreateBuildInstance(__conf);
 		
 		// Build the target?
+		Path[] actualzipfile = new Path[]{cl._outzipname};
 		if (!cl._skipbuild)
 		{
-			throw new Error("TODO");
+			// Delete unneeded files after a build
+			Path tempdir = null;
+			try
+			{
+				// Create and register the temporary directory
+				tempdir = Files.createTempDirectory("squirreljme-build");
+				bi.__setTempDir(tempdir);
+				
+				// Build target
+				if (true)
+					throw new Error("TODO");
+				
+				// Build distribution
+				try (ZipStreamWriter zsw = __openOutputZip(actualzipfile[0],
+					actualzipfile))
+				{
+					out.printf("Generating distribution at `%s`...%n",
+						actualzipfile[0]);
+					bi.buildDistribution(zsw);
+				}
+				
+				// Delete the output file so an illegal partial file does not
+				// exist
+				catch (IOException|RuntimeException|Error e)
+				{
+					// Delete it
+					try
+					{
+						Files.delete(actualzipfile[0]);
+					}
+					
+					// Ignore
+					catch (IOException f)
+					{
+					}
+					
+					// Re-toss
+					throw e;
+				}
+			}
+			
+			// Delete temporary directory
+			finally
+			{
+				// Delete if it exists
+				if (tempdir != null)
+					try
+					{
+						// Delete all files in the directory
+						try (DirectoryStream<Path> ds = Files.
+							newDirectoryStream(tempdir))
+						{
+							for (Path p : ds)
+								try
+								{
+									Files.delete(p);
+								}
+							
+								// Ignore
+								catch (IOException e)
+								{
+								}
+						}
+					
+						// Delete the directory
+						Files.delete(tempdir);
+					}
+				
+					// Ignore
+					catch (IOException e)
+					{
+					}
+			}
 		}
 		
 		// Emulate the resulting binary?

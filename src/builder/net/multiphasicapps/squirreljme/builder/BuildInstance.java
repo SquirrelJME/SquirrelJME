@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.squirreljme.builder;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+
 /**
  * This acts the base for an instance of a build. This is created by
  * {@link TargetBuilder} if it supports the given configuration.
@@ -20,5 +25,43 @@ package net.multiphasicapps.squirreljme.builder;
  */
 public abstract class BuildInstance
 {
+	/** The temporary directory for build work. */
+	private volatile Path _tempdir;
+	
+	/**
+	 * Builds the output distribution.
+	 *
+	 * @param __zsw The output ZIP file to write to.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	public final void buildDistribution(ZipStreamWriter __zsw)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__zsw == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Sets the temporary output directory.
+	 *
+	 * @param __d The directory where temporary files go.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	final void __setTempDir(Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._tempdir = __p;
+	}
 }
 
