@@ -13,7 +13,6 @@ package net.multiphasicapps.squirreljme.builder.linux.mips;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.BuildInstance;
 import net.multiphasicapps.squirreljme.builder.linux.LinuxBuilder;
-import net.multiphasicapps.squirreljme.builder.TargetEmulator;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 
 /**

@@ -21,7 +21,7 @@ import net.multiphasicapps.zip.blockreader.ZipEntry;
  *
  * @since 2016/07/07
  */
-public class BuildEntry
+public class __Entry__
 	implements JITNamespaceContent.Entry
 {
 	/** The entry to use. */
@@ -34,7 +34,7 @@ public class BuildEntry
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	BuildEntry(ZipEntry __ze)
+	__Entry__(ZipEntry __ze)
 		throws NullPointerException
 	{
 		// Check

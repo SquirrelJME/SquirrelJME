@@ -34,7 +34,7 @@ import net.multiphasicapps.squirreljme.jit.JITNamespaceContent;
  *
  * @since 2016/07/18
  */
-public class BuilderCache
+public class __Cache__
 	implements JITCacheCreator, JITNamespaceContent
 {
 	/**
@@ -64,7 +64,7 @@ public class BuilderCache
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/18
 	 */
-	public BuilderCache(PackageList __pl, Path __td)
+	public __Cache__(PackageList __pl, Path __td)
 		throws NullPointerException
 	{
 		// Check
@@ -151,7 +151,7 @@ public class BuilderCache
 			throw new NullPointerException("NARG");
 		
 		// Create
-		return new BuildDirectory(this.plist, this.tempdir, __ns);
+		return new __Directory__(this.plist, this.tempdir, __ns);
 	}
 	
 	/**

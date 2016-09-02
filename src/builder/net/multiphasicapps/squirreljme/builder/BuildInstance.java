@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.builder;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ public abstract class BuildInstance
 	private volatile Path _tempdir;
 	
 	/** The cache creator. */
-	private volatile BuilderCache _cache;
+	private volatile __Cache__ _cache;
 	
 	/** Packages which have been compiled. */
 	private volatile Map<String, PackageInfo> _compiled =
@@ -111,7 +112,7 @@ public abstract class BuildInstance
 			throw new Error("TODO");
 		
 		// Write the triplet to the ZIP
-		try (OutputStream os = zsw.nextEntry("target",
+		try (OutputStream os = __zsw.nextEntry("target",
 			ZipCompressionType.DEFAULT_COMPRESSION);
 			PrintStream ps = new PrintStream(os, true, "utf-8"))
 		{
@@ -158,7 +159,7 @@ public abstract class BuildInstance
 		__PackageSelection__ ps = new __PackageSelection__(config, this);
 		
 		// Setup cache
-		BuilderCache cache = new BuilderCache(config.packageList(),
+		__Cache__ cache = new __Cache__(config.packageList(),
 			temporaryDirectory());
 		this._cache = cache;
 		
@@ -191,7 +192,7 @@ public abstract class BuildInstance
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public final Emulator emulator(TargetEmulatorArguments __tae)
+	public final Emulator emulator(EmulatorArguments __tae)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -221,7 +222,7 @@ public abstract class BuildInstance
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	private final JITOutputConfig.Immutable __makeJITConfig(BuilderCache __bc)
+	private final JITOutputConfig.Immutable __makeJITConfig(__Cache__ __bc)
 		throws NullPointerException
 	{
 		// Check

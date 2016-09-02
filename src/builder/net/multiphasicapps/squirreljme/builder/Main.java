@@ -188,7 +188,7 @@ public class Main
 			try (ZipFile zip = __openZip(cl, actualzipfile[0]))
 			{
 				// Setup arguments
-				TargetEmulatorArguments tae = new TargetEmulatorArguments(
+				EmulatorArguments tae = new EmulatorArguments(
 					config, zip, cl._altexename,
 					cl._emuargs.<String>toArray(
 						new String[cl._emuargs.size()]));

@@ -22,7 +22,7 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  *
  * @since 2016/07/30
  */
-public final class TargetEmulatorArguments
+public final class EmulatorArguments
 {
 	/** The build configuration. */
 	protected final BuildConfig config;
@@ -49,7 +49,7 @@ public final class TargetEmulatorArguments
 	 * ones.
 	 * @since 2016/07/30
 	 */
-	public TargetEmulatorArguments(BuildConfig __conf, ZipFile __zip,
+	public EmulatorArguments(BuildConfig __conf, ZipFile __zip,
 		String __altexe, String[] __args)
 		throws NullPointerException
 	{

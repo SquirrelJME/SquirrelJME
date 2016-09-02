@@ -28,7 +28,7 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  *
  * @since 2016/07/07
  */
-public class BuildDirectory
+public class __Directory__
 	implements JITNamespaceContent.Directory
 {
 	/** The opened file channel. */
@@ -52,7 +52,7 @@ public class BuildDirectory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	BuildDirectory(PackageList __pl, Path __td, String __ns)
+	__Directory__(PackageList __pl, Path __td, String __ns)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -176,7 +176,7 @@ public class BuildDirectory
 			{
 				/** Base iterator for the ZIP. */
 				protected final Iterator<ZipEntry> base =
-					BuildDirectory.this.zip.iterator();
+					__Directory__.this.zip.iterator();
 				
 				/**
 				 * {@inheritDoc}
@@ -195,7 +195,7 @@ public class BuildDirectory
 				@Override
 				public JITNamespaceContent.Entry next()
 				{
-					return new BuildEntry(this.base.next());
+					return new __Entry__(this.base.next());
 				}
 				
 				/**
