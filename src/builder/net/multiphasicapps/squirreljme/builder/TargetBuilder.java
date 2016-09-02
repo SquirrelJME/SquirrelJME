@@ -94,6 +94,17 @@ public abstract class TargetBuilder
 	}
 	
 	/**
+	 * Creates an instance of the builder with the specified configuration.
+	 *
+	 * @param __conf The build configuration to use.
+	 * @return The build instance which targets the given system.
+	 * @throws TargetNotSupportedException If the target is not supported.
+	 * @since 2016/09/02
+	 */
+	public abstract BuildInstance createBuildInstance(BuildConfig __conf) 
+		throws TargetNotSupportedException;
+	
+	/**
 	 * Links together a binary which is capable of running on the target and
 	 * places it into the given ZIP. Other files that are important to the
 	 * target system may also be included.
@@ -368,10 +379,12 @@ public abstract class TargetBuilder
 	 * @param __conf The configuration to target.
 	 * @return The found builder or {@code null} if none was found.
 	 * @throws NullPointerException On null arguments.
+	 * @throws TargetNotSupportedException If no target was ever found.
 	 * @since 2016/07/22
 	 */
-	public static final TargetBuilder findBuilder(BuildConfig __conf)
-		throws NullPointerException
+	public static final BuildInstance findAndCreateBuildInstance(
+		BuildConfig __conf)
+		throws NullPointerException, TargetNotSupportedException
 	{
 		// Check
 		if (__conf == null)
@@ -381,14 +394,23 @@ public abstract class TargetBuilder
 		ServiceLoader<TargetBuilder> services = _SERVICES;
 		synchronized (services)
 		{
-			// Go through all of them
+			// Go through all of them and try to create build instances
 			for (TargetBuilder tb : services)
-				if (tb.supportsConfig(__conf))
-					return tb;
+				try
+				{
+					return tb.createBuildInstance(__conf);
+				}
+				
+				// Ignore
+				catch (TargetNotSupportedException e)
+				{
+				}
 		}
 		
-		// Not found
-		return null;
+		// {@squirreljme.error DW07 Could not locate and create a build
+		// instance for the given configuration. (The configuration)}
+		throw new TargetNotSupportedException(
+			String.format("DW07 %s", __conf));
 	}
 	
 	/**
