@@ -52,7 +52,7 @@ public class LinuxPowerPCBuilder
 		super(false,
 			"powerpc-32+g1,big~soft.linux.sysv",
 				"Generic Big Endian 32-bit Linux PowerPC (G1, Software Float)",
-			"powerpc-32+g3,big~har64.linux.sysv",
+			"powerpc-32+g3,big~hard64.linux.sysv",
 				"Generic Big Endian 32-bit Linux PowerPC (G3, Hardware Float)",
 			"powerpc-64+g5,little~hard.linux.poweropen",
 				"Generic Little Endian 64-bit Linux PowerPC (Hardware Float)",
