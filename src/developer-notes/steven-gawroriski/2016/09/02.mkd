@@ -135,3 +135,12 @@ refactor that into the new `BuildInstance` code.
 I am going to want to hide all of the internal builder stuff which should not
 be exposed at all.
 
+## 18:12
+
+So the next thing to do would be to setup the `JITOutputConfig` from the
+input. That can be handled by a method for the most part. Soon I would have
+worked on SquirrelJME for 10 hours, despite having barely any sleep at all
+last night. However the refactor is going well, hopefully tomorrow I can finish
+the refactor if I do not finish it today. Otherwise I should work on the
+emulator also, although I may work on the JIT.
+
