@@ -14,7 +14,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
+import net.multiphasicapps.squirreljme.builder.BuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetBuilder;
+import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
 import net.multiphasicapps.squirreljme.exe.elf.ELFProgram;
 import net.multiphasicapps.squirreljme.exe.elf.ELFProgramFlag;
@@ -57,6 +59,17 @@ public abstract class LinuxBuilder
 	 */
 	protected abstract void dependentELF(BuildConfig __conf, ELFOutput __eo)
 		throws IOException, NullPointerException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/02
+	 */
+	@Override
+	public BuildInstance createBuildInstance(BuildConfig __conf) 
+		throws TargetNotSupportedException
+	{
+		throw new Error("TODO");
+	}
 	
 	/**
 	 * {@inheritDoc}
