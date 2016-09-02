@@ -131,11 +131,11 @@ public class LinuxMIPSBuilder
 				abi = MIPSABI.eabi(triplet);
 				break;
 			
-				// {@squirreljme.error AW01 Do not know how to build for the
+				// {@squirreljme.error BU01 Do not know how to build for the
 				// given operating system variant. (The operating system
 				// variant)}
 			default:
-				throw new JITException(String.format("AW01 %s", osvar));
+				throw new JITException(String.format("BU01 %s", osvar));
 		}
 		
 		// Use the given ABI

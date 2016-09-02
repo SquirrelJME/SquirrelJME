@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: builder-linux
 X-SquirrelJME-UUID: 4e776f1c-d9f5-4ce7-a49f-4bab782982f8
-X-SquirrelJME-Depends: builder, exe-elf, emulator-os-linux-generic
+X-SquirrelJME-Depends: builder, exe-elf, jit-mips, jit-powerpc
 X-SquirrelJME-Error: BU
 LIBlet-Title: Builder (Linux)
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This provides base support for 
- building the Linux target.
+LIBlet-Description: This project contains the target builder which 
+ targets systems which use the Linux kernel.
 

@@ -106,7 +106,7 @@ public class LinuxPowerPCBuilder
 				// given operating system variant. (The operating system
 				// variant)}
 			default:
-				throw new JITException(String.format("BT01 %s", osvar));
+				throw new JITException(String.format("BU01 %s", osvar));
 		}
 		
 		// Use the given ABI
