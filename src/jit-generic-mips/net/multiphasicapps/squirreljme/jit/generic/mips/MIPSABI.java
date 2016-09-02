@@ -65,6 +65,17 @@ public final class MIPSABI
 		for (int i = 0; i <= 31; i++)
 			ab.addRegister(MIPSRegister.of(false, i), rtint);
 		
+		// Floating point?
+		if (hasfloat)
+		{
+			// Determine the floating point size
+			if (true)
+				throw new Error("TODO");	
+			
+			// Add them
+			throw new Error("TODO");
+		}
+		
 		// Stack grows down
 		ab.stack(MIPSRegister.of(false, 29));
 		ab.stackAlignment(8);

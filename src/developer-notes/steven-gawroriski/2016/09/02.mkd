@@ -106,3 +106,18 @@ the `LO` and `HI` registers (used for division). So in short, having the types
 associated with `GenericRegister` would be a bad idea. I plan instead to just
 have it where it can be a `GenericABI.getRegisterIntType()` kind of thing.
 
+## 16:05
+
+So currently, the soft, hard, and anything in between stuff is rather bad.
+There are CPUs such as MIPS ones where there can be no FPU, or the FPU can be
+32-bit on a 64-bit system or 64-bit on a 32-bit system. The floats do not have
+to even match at all. So I believe I will change this to:
+
+ * soft
+ * hard32
+ * hard64
+
+Software will be purely in software, while hard32 will do `float` in hardware
+and `double` in software. The last `hard64` can do both kinds of floats no
+problem.
+
