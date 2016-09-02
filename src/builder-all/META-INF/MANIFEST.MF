@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: builder-all
 X-SquirrelJME-UUID: 89e298df-8d87-44b5-b9c8-e3ee8aa0b6ef
 X-SquirrelJME-Depends: builder
-X-SquirrelJME-Optional: builder-linux-mips
+X-SquirrelJME-Optional: builder-linux-mips,
+ builder-linux-powerpc
 Main-Class: net.multiphasicapps.squirreljme.builder.Main
 LIBlet-Title: SquirrelJME Builder (All Targets)
 LIBlet-Vendor: Steven Gawroriski

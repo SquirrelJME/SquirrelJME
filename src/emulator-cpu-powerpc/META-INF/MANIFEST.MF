@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: emulator-cpu-powerpc
+X-SquirrelJME-UUID: 6a7b1236-472f-477c-a12b-f793f1ab107f
+X-SquirrelJME-Depends: emulator
+X-SquirrelJME-Error: CF
+LIBlet-Title: Emulator (PowerPC)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This supports emulation of PowerPC machine 
+ code.
+

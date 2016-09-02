@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: jit-base-powerpc
+X-SquirrelJME-UUID: c03c272f-fb60-467f-8e59-082a87fc901f
+X-SquirrelJME-Depends: jit-base
+X-SquirrelJME-Error: BW
+LIBlet-Title: Basic PowerPC JIT Support
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains basic classes for the 
+ PowerPC JIT.
+
