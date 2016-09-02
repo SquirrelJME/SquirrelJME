@@ -59,6 +59,16 @@ public abstract class BuildInstance
 	}
 	
 	/**
+	 * This returns the package group that is used to determine which packages
+	 * of all of them to unconditionally include in the target JVM. These
+	 * package groups can be used include said packages for example if they
+	 * provide extra services that may be optionally used.
+	 *
+	 * @return An array of package groups
+	 */
+	protected abstract String[] packageGroup();
+	
+	/**
 	 * Builds the output distribution.
 	 *
 	 * @param __zsw The output ZIP file to write to.
@@ -112,6 +122,9 @@ public abstract class BuildInstance
 	public final void compileBinary()
 		throws IOException
 	{
+		// Select packages
+		__PackageSelection__ ps = new __PackageSelection__(config, this);
+		
 		throw new Error("TODO");
 	}
 	
@@ -143,6 +156,20 @@ public abstract class BuildInstance
 	protected final Path temporaryDirectory()
 	{
 		return this._tempdir;
+	}
+	
+	/**
+	 * Returns the package group to use for package inclusion.
+	 *
+	 * @return The package group to use.
+	 * @since 2016/09/02
+	 */
+	final String[] __packageGroup()
+	{
+		String[] rv = packageGroup();
+		if (rv == null)
+			return new String[0];
+		return rv;
 	}
 	
 	/**

@@ -48,6 +48,9 @@ public class PackageInfo
 	/** The name of this package. */
 	protected final PackageName name;
 	
+	/** Package groups this package is in. */
+	private volatile Reference<Set<String>> _groups;
+	
 	/** The dependencies of this package. */
 	private volatile Reference<Set<PackageInfo>> _depends;
 	
@@ -204,6 +207,60 @@ public class PackageInfo
 				this._odepends = ref;
 			else
 				this._depends = ref;
+		}
+		
+		// Return
+		return rv;
+	}
+	
+	/**
+	 * Returns the package groups that this package is a part of, this
+	 * information is used by the target build system to include extra packages
+	 * that may be needed on a target system.
+	 *
+	 * @return The set of package groups.
+	 * @since 2016/09/02
+	 */
+	public final Set<String> groups()
+	{
+		// Get
+		Reference<Set<String>> ref = this._groups;
+		Set<String> rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Target set
+			Set<String> target = new LinkedHashSet<>();
+			
+			// Fill properties
+			String prop = this.manifest.getMainAttributes().get(
+				"X-SquirrelJME-Target");
+			if (prop != null)
+			{
+				int n = prop.length();
+				for (int i = 0; i < n; i++)
+				{
+					// Ignore whitespace
+					char c = prop.charAt(i);
+					if (c <= ' ')
+						continue;
+					
+					// Find end
+					int j = i + 1;
+					for (; j < n; j++)
+						if (prop.charAt(j) <= ' ')
+							break;
+					
+					// Add split
+					target.add(prop.substring(i, j));
+					i = j + 1;
+				}
+			}
+			
+			// Store
+			rv = UnmodifiableSet.<String>of(target);
+			this._groups = new WeakReference<>(rv);
 		}
 		
 		// Return

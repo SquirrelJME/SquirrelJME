@@ -82,5 +82,18 @@ public abstract class LinuxBuildInstance
 	 * @since 2016/09/02
 	 */
 	protected abstract GenericABI getLinuxABI();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/02
+	 */
+	@Override
+	protected String[] packageGroup()
+	{
+		// Always include Linux packages and any architecture specific
+		// Linux one also.
+		return new String[]{"generic", "linux",
+			"linux-" + this.triplet.architecture()};
+	}
 }
 

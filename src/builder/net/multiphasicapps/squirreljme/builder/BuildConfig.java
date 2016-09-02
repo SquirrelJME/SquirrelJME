@@ -128,6 +128,17 @@ public final class BuildConfig
 	}
 	
 	/**
+	 * Returns the package list.
+	 *
+	 * @return The package list.
+	 * @since 2016/09/02
+	 */
+	public final PackageList packageList()
+	{
+		return this.plist;
+	}
+	
+	/**
 	 * Returns the triplet.
 	 *
 	 * @return The triplet.
