@@ -47,3 +47,9 @@ for the given builder. I thought about removing the OS variants, but that would
 be needed in cases where the operating system calls differ for the same target
 (such as MIPS o32 and n32 for example).
 
+## 11:24
+
+So as it stands right now, `TargetBuilder` is essentially a factory and its
+methods are called as if they were static. This needs to change because it is
+very ugly and complicates things.
+
