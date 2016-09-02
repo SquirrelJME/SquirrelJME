@@ -144,3 +144,8 @@ last night. However the refactor is going well, hopefully tomorrow I can finish
 the refactor if I do not finish it today. Otherwise I should work on the
 emulator also, although I may work on the JIT.
 
+## 18:30
+
+So as I said before, I can use the registration system to not need service
+loading on `JITOutputFactory`, although the factory is still needed.
+
