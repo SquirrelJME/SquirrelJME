@@ -37,21 +37,5 @@ public class MIPSOutputFactory
 	{
 		return new MIPSOutput(__config);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/07/22
-	 */
-	@Override
-	public boolean supportsConfig(JITOutputConfig.Immutable __config)
-	{
-		// Check
-		if (__config == null)
-			throw new NullPointerException("NARG");
-		
-		// Accept any MIPS CPU
-		JITTriplet triplet = __config.triplet();
-		return triplet.architecture().equals("mips");
-	}
 }
 

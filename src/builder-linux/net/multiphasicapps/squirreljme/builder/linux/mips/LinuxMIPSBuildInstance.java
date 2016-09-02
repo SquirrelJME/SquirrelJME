@@ -16,7 +16,9 @@ import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 import net.multiphasicapps.squirreljme.jit.generic.mips.MIPSABI;
+import net.multiphasicapps.squirreljme.jit.generic.mips.MIPSOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 
 /**
  * This is the build instance for Linux MIPS systems.
@@ -72,6 +74,10 @@ public class LinuxMIPSBuildInstance
 	{
 		// Add base Linux changes first
 		super.modifyOutputConfig(__conf);
+		
+		// Add the JIT factory
+		__conf.<JITOutputFactory>registerObject(JITOutputFactory.class,
+			new MIPSOutputFactory());
 	}
 }
 

@@ -149,3 +149,8 @@ emulator also, although I may work on the JIT.
 So as I said before, I can use the registration system to not need service
 loading on `JITOutputFactory`, although the factory is still needed.
 
+## 18:32
+
+Also removing the "supports config" would be good too, this would prevent
+double checks and such.
+

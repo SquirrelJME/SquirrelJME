@@ -90,9 +90,16 @@ public class JITNamespaceProcessor
 		this.contents = __cont;
 		this.progress = __prog;
 		
+		// {@squirreljme.error ED0v No output factory was specified in the
+		// output. (The configuration)}
+		JITOutputFactory ofact = __conf.<JITOutputFactory>getObject(
+			JITOutputFactory.class);
+		if (ofact == null)
+			throw new JITException(String.format("ED0v %s", __conf));
+		
 		// {@squirreljme.error ED0h No output could be created for the
 		// given configuration. (The configuration)}
-		JITOutput output = JITOutputFactory.createOutput(__conf);
+		JITOutput output = ofact.create(__conf);
 		this.output = output;
 		if (output == null)
 			throw new JITException(String.format("ED0h %s", __conf));
