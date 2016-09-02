@@ -53,13 +53,13 @@ public class LinuxMIPSBuilder
 	{
 		super(false,
 			"mips-32+i,little~hard.linux.eabi",
-				"Generic Linux MIPS (Hardfloat, Little, EABI)",
+				"Generic Linux MIPS (32-bit/I/Hardfloat/Little/EABI)",
 			"mips-32+i,little~soft.linux.eabi",
-				"Generic Linux MIPS (Softfloat, Little, EABI)",
+				"Generic Linux MIPS (32-bit/I/Softfloat/Little/EABI)",
 			"mips-32+i,big~hard.linux.eabi",
-				"Generic Linux MIPS (Hardfloat, Big, EABI)",
+				"Generic Linux MIPS (32-bit/I/Hardfloat/Big/EABI)",
 			"mips-32+i,big~soft.linux.eabi",
-				"Generic Linux MIPS (Softfloat, Big, EABI)",
+				"Generic Linux MIPS (32-bit/I/Softfloat/Big/EABI)",
 			"mips-32+mips32,little~hard.linux.gcwzero",
 				"GCW Zero");
 	}
