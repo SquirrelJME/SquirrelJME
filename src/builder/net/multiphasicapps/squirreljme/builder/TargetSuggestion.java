@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
  * @since 2016/07/22
  */
 public final class TargetSuggestion
+	implements Comparable<TargetSuggestion>
 {
 	/** The triplet. */
 	protected final JITTriplet triplet;
@@ -43,6 +44,27 @@ public final class TargetSuggestion
 		// Set
 		this.triplet = __t;
 		this.name = __n;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/02
+	 */
+	@Override
+	public int compareTo(TargetSuggestion __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Sort by triplet first.
+		int rv = this.triplet.toString().compareTo(__o.triplet.toString());
+		if (rv != 0)
+			return rv;
+		
+		// Compare the name next
+		return this.name.compareTo(__o.name);
 	}
 	
 	/**

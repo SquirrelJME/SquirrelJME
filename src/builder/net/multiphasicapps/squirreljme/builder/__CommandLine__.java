@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -268,18 +269,22 @@ class __CommandLine__
 		__ps.println();
 		__ps.println();
 		
-		// Print suggested targets
+		// Get suggested targets
+		List<TargetSuggestion> suggestions = new ArrayList<>();
 		for (TargetBuilder tb : ServiceLoader.<TargetBuilder>load(
 			TargetBuilder.class))
 			for (TargetSuggestion s : tb.suggestedTargets())
-			{
-				__ps.printf("%-78s%n%74s (%c)", s.triplet(), s.name(),
-					(tb.canJIT() ? '+' : '-'));
-				__ps.println();
-			}
-		__ps.println();
-		__ps.println(" (+) The JIT is supported.");
-		__ps.println(" (-) The JIT is not supported.");
+				suggestions.add(s);
+		
+		// Sort them
+		Collections.<TargetSuggestion>sort(suggestions);
+		
+		// Print them all
+		for (TargetSuggestion s : suggestions)
+		{
+			__ps.printf("%-78s%n%74s", s.triplet(), s.name());
+			__ps.println();
+		}
 		
 		// End
 		__ps.println();
