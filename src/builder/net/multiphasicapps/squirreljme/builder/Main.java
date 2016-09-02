@@ -87,7 +87,7 @@ public class Main
 		// Load the package list
 		out.println("Loading the package lists...");
 		PackageList plist = new PackageList(Paths.get(
-			System.getProperty("user.dir")), plist);
+			System.getProperty("user.dir")), null);
 		
 		// Setup build configuration
 		BuildConfig config = new BuildConfig(new JITTriplet(cl._target),
