@@ -11,3 +11,15 @@ system such as the CI40 or GCW it can use the appropriate ABI as such. So
 instead of say `linux.generic`, for MIPS there will be `linux.eabi` for
 selecting the EABI calling convention.
 
+## 10:15
+
+Thinking about it, adding support for new systems is currently complex
+because there needs to be all these classes and packages declared across
+a large range of areas. Adding base PowerPC projects adds another 6 projects.
+Essentially with my given goal of literally being write once and run anywhere,
+there will quite literally be perhaps 1000 projects. This would be an
+unmaintainable mess. Many systems share the same thing, but just have a few
+differences such as the ABI that is used and how the target is built. There
+are also emulator considerations also. Right now the emulator for one is
+split across many packages for each CPU and such.
+
