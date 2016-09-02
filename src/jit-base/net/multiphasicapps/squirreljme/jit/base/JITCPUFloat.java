@@ -21,14 +21,11 @@ public enum JITCPUFloat
 	/** Pure software. */
 	SOFT("soft", false, false),
 	
-	/** Hardware 32-bit, Software 64-bit. */
-	HARD32SOFT64("hard32soft64", true, false),
+	/** 32-bit Hardware. */
+	HARD32SOFT64("hard32", true, false),
 	
-	/** Software 32-bit, Hardware 64-bit. */
-	SOFT32HARD64("soft32hard64", false, true),
-	
-	/** Pure hardware. */
-	HARD("hard", true, true),
+	/** 64-bit Hardware. */
+	HARD64("hard64", true, true),
 	
 	/** End. */
 	;
