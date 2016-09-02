@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.builder;
 
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.projects.PackageInfo;
+import net.multiphasicapps.squirreljme.projects.PackageList;
 
 /**
  * This is used to configure what should be built.
@@ -32,8 +34,11 @@ public final class BuildConfig
 	/** Alternative executable name. */
 	protected final String altexename;
 	
+	/** The package list. */
+	protected final PackageList plist;
+	
 	/** Extra projects to add. */
-	private final String[] _extraprojects;
+	private final PackageInfo[] _extraprojects;
 	
 	/** The JIT configuration used. */
 	volatile JITOutputConfig.Immutable _jitconf;
@@ -52,11 +57,12 @@ public final class BuildConfig
 	 * @since 2016/07/22
 	 */
 	BuildConfig(JITTriplet __trip,
-		boolean __jit, boolean __tests, String __altexe, String[] __ep)
+		boolean __jit, boolean __tests, String __altexe, String[] __ep,
+		PackageList __pl)
 		throws NullPointerException
 	{
 		// Check
-		if (__trip == null)
+		if (__trip == null || __pl == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -64,7 +70,27 @@ public final class BuildConfig
 		this.jit = __jit;
 		this.tests = __tests;
 		this.altexename = __altexe;
-		this._extraprojects = (__ep == null ? new String[0] : __ep.clone());
+		this.plist = __pl;
+		
+		// Find projects
+		int n = __ep.length;
+		PackageInfo[] extraprojects = new PackageInfo[n];
+		for (int i = 0; i < n; i++)
+		{
+			// Find package
+			String s = __ep[i];
+			PackageInfo pk = plist.get(s);
+			
+			// {@squirreljme.error DW09 The specified project to be included
+			// in the output binary does not exist. (The missing project)}
+			if (pk == null)
+				throw new IllegalArgumentException(String.format("DW09 %s",
+					s));
+			
+			// Set
+			extraprojects[i] = pk;
+		}
+		this._extraprojects = extraprojects;
 	}
 	
 	/**
@@ -84,7 +110,7 @@ public final class BuildConfig
 	 * @return The extra projects to include.
 	 * @since 2016/08/16
 	 */
-	public final String[] extraProjects()
+	public final PackageInfo[] extraProjects()
 	{
 		return this._extraprojects.clone();
 	}

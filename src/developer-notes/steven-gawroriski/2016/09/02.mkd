@@ -65,3 +65,7 @@ system that will never run JARs).
 `BuildConfig` should get `PackageList` so the build instance can pluck any
 packages that are needed.
 
+## 12:34
+
+However, I would have to do some adjusting for that, eventually.
+
