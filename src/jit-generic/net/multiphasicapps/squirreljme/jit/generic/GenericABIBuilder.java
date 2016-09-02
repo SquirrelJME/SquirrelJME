@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
@@ -26,6 +28,14 @@ public final class GenericABIBuilder
 	/** Lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** Integer registers. */
+	final Map<GenericRegister, GenericRegisterIntegerType> _intregs =
+		new LinkedHashMap<>();
+	
+	/** Floating point registers. */
+	final Map<GenericRegister, GenericRegisterFloatType> _floatregs =
+		new LinkedHashMap<>();
 	
 	/** Saved registers. */
 	final Set<GenericRegister> _saved =
@@ -72,6 +82,28 @@ public final class GenericABIBuilder
 		synchronized (this.lock)
 		{
 			this._args.add(__r);
+		}
+	}
+	
+	/**
+	 * Adds a register to the register list.
+	 *
+	 * @param __r The register to add.
+	 * @param __t The type of value the register is.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	public final void addRegister(GenericRegister __r, GenericRegisterType __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new Error("TODO");
 		}
 	}
 	

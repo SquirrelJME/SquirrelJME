@@ -12,12 +12,15 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITObjectProperties;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
@@ -43,6 +46,12 @@ public final class GenericABI
 	
 	/** The stack alignment. */
 	private final int _stackalign;
+	
+	/** Integer registers. */
+	private final Map<GenericRegister, GenericRegisterIntegerType> _intregs;
+	
+	/** Floating point registers. */
+	private final Map<GenericRegister, GenericRegisterFloatType> _floatregs;
 	
 	/**
 	 * Initializes the ABI from the given builder.
@@ -79,6 +88,8 @@ public final class GenericABI
 		// Setup integer and float registers
 		this._int = new __Group__(false, __b);
 		this._float = new __Group__(true, __b);
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -101,6 +112,44 @@ public final class GenericABI
 	}
 	
 	/**
+	 * Returns the type of float value that is stored in the specified
+	 * register.
+	 *
+	 * @param __r The register to get the value size of.
+	 * @return The float type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	public final GenericRegisterFloatType floatType(GenericRegister __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the type of integer value that is stored in the specified
+	 * register.
+	 *
+	 * @param __r The register to get the value size of.
+	 * @return The integer type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	public final GenericRegisterIntegerType intType(GenericRegister __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Checks if the specified register is a callee saved register.
 	 *
 	 * @param __r The register to check if it is callee saved.
@@ -108,7 +157,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public boolean isSaved(GenericRegister __r)
+	public final boolean isSaved(GenericRegister __r)
 		throws NullPointerException
 	{
 		// Check
@@ -126,7 +175,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public boolean isTemporary(GenericRegister __r)
+	public final boolean isTemporary(GenericRegister __r)
 		throws NullPointerException
 	{
 		// Check
@@ -237,7 +286,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	private static int __fill(boolean __float,
+	private int __fill(boolean __float,
 		Iterable<GenericRegister> __from, Collection<GenericRegister> __to)
 		throws NullPointerException
 	{
@@ -248,8 +297,8 @@ public final class GenericABI
 		// Copy registers of the same kind
 		int rv = 0;
 		for (GenericRegister r : __from)
-			if ((__float && (null != r.floatType())) ||
-				(!__float && (null != r.intType())))
+			if ((__float && (null != floatType(r))) ||
+				(!__float && (null != intType(r))))
 			{
 				__to.add(r);
 				rv++;
@@ -305,19 +354,19 @@ public final class GenericABI
 			// Add results
 			Iterable<GenericRegister> xresult = __b._result;
 			List<GenericRegister> result = new ArrayList<>();
-			total += GenericABI.__fill(__float, xresult, result);
+			total += __fill(__float, xresult, result);
 			this._result = UnmodifiableList.<GenericRegister>of(result);
 			
 			// Add arguments
 			Iterable<GenericRegister> xargs = __b._args;
 			List<GenericRegister> args = new ArrayList<>();
-			total += GenericABI.__fill(__float, xargs, args);
+			total += __fill(__float, xargs, args);
 			this._args = UnmodifiableList.<GenericRegister>of(args);
 			
 			// Add saved registers
 			Iterable<GenericRegister> xsaved = __b._saved;
 			Set<GenericRegister> saved = new LinkedHashSet<>();
-			total += GenericABI.__fill(__float, xsaved, saved);
+			total += __fill(__float, xsaved, saved);
 			this._ssaved = UnmodifiableSet.<GenericRegister>of(saved);
 			this._lsaved = UnmodifiableList.<GenericRegister>of(
 				new ArrayList<>(saved));
@@ -325,7 +374,7 @@ public final class GenericABI
 			// Add temporary registers
 			Iterable<GenericRegister> xtemps = __b._temps;
 			Set<GenericRegister> temps = new LinkedHashSet<>();
-			total += GenericABI.__fill(__float, xtemps, temps);
+			total += __fill(__float, xtemps, temps);
 			this._stemps = UnmodifiableSet.<GenericRegister>of(temps);
 			this._ltemps = UnmodifiableList.<GenericRegister>of(
 				new ArrayList<>(temps));

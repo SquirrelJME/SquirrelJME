@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.generic.mips;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABIBuilder;
+import net.multiphasicapps.squirreljme.jit.generic.GenericRegisterIntegerType;
 import net.multiphasicapps.squirreljme.jit.generic.GenericStackDirection;
 
 /**
@@ -50,11 +51,19 @@ public final class MIPSABI
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Setup
+		GenericABIBuilder ab = new GenericABIBuilder();
+		
 		// Floating point?
 		boolean hasfloat = __t.floatingPoint().isAnyHardware();
 		
-		// Setup
-		GenericABIBuilder ab = new GenericABIBuilder();
+		// Add integer registers
+		int bits = __t.bits();
+		GenericRegisterIntegerType rtint = (bits == 32 ?
+			GenericRegisterIntegerType.INTEGER :
+			GenericRegisterIntegerType.LONG);
+		for (int i = 0; i <= 31; i++)
+			ab.addRegister(MIPSRegister.of(false, i), rtint);
 		
 		// Stack grows down
 		ab.stack(MIPSRegister.of(false, 29));
