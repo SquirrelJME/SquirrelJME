@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-X-SquirrelJME-Name: jit-powerpc
+X-SquirrelJME-Name: jit-generic-powerpc
 X-SquirrelJME-UUID: 14188ebe-26e2-4cd4-9c5f-2c0d74f1ba69
 X-SquirrelJME-Depends: jit-generic, jit-base-powerpc
 X-SquirrelJME-Error: CD
