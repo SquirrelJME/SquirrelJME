@@ -1,3 +1,5 @@
-mips-32+i,little~hard.linux.generic
-mips-32+i,big~hard.linux.generic
+mips-32+i,little~hard.linux.eabi
+mips-32+i,little~soft.linux.eabi
+mips-32+i,big~hard.linux.eabi
+mips-32+i,big~soft.linux.eabi
 mips-32+mips32,little~hard.linux.gcwzero
