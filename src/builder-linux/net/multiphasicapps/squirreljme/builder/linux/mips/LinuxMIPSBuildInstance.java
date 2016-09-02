@@ -34,8 +34,6 @@ public class LinuxMIPSBuildInstance
 	public LinuxMIPSBuildInstance(BuildConfig __conf)
 	{
 		super(__conf, "mips");
-		
-		throw new Error("TODO");
 	}
 	
 	/**

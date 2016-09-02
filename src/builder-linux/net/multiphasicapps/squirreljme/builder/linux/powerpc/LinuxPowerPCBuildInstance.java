@@ -34,8 +34,6 @@ public class LinuxPowerPCBuildInstance
 	public LinuxPowerPCBuildInstance(BuildConfig __conf)
 	{
 		super(__conf, "powerpc");
-		
-		throw new Error("TODO");
 	}
 	
 	/**
