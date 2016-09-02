@@ -103,7 +103,13 @@ public final class GenericABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new Error("TODO");
+			// Integer?
+			if (__t instanceof GenericRegisterIntegerType)
+				this._intregs.put(__r, (GenericRegisterIntegerType)__t);
+			
+			// Floating point?
+			if (__t instanceof GenericRegisterFloatType)
+				this._floatregs.put(__r, (GenericRegisterFloatType)__t);
 		}
 	}
 	

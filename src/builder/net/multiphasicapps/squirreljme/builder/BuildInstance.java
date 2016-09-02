@@ -135,6 +135,17 @@ public abstract class BuildInstance
 	}
 	
 	/**
+	 * Returns the temporary directory that was used.
+	 *
+	 * @return The temporary directory.
+	 * @since 2016/09/02
+	 */
+	protected final Path temporaryDirectory()
+	{
+		return this._tempdir;
+	}
+	
+	/**
 	 * Sets the temporary output directory.
 	 *
 	 * @param __d The directory where temporary files go.
