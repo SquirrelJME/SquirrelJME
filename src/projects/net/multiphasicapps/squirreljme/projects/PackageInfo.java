@@ -235,7 +235,7 @@ public class PackageInfo
 			
 			// Fill properties
 			String prop = this.manifest.getMainAttributes().get(
-				"X-SquirrelJME-Target");
+				"X-SquirrelJME-Group");
 			if (prop != null)
 			{
 				int n = prop.length();

@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: test-io-slidingwindow
 X-SquirrelJME-UUID: f21c2e90-c207-45c9-983c-eecc75ac9c15
 X-SquirrelJME-Depends: test-base, io-slidingwindow
+X-SquirrelJME-Group: tests
 LIBlet-Title: Sliding Window Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2

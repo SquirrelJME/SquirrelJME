@@ -369,7 +369,7 @@ public class NewBuilder
 		
 		// Adding extra projects?
 		for (PackageInfo p : config.extraProjects())
-			rv.addAll(p.recursiveDependencies()) ;
+			rv.addAll(p.recursiveDependencies());
 		
 		// Tests do not need to be a part of the boot classpath, so the
 		// boot classpath is just what is currently in the build list

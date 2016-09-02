@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: test-cldc-compact
 X-SquirrelJME-UUID: a091a9ac-9265-4775-9e32-85ce04cd4f45
 X-SquirrelJME-Depends: cldc-compact, test-base
+X-SquirrelJME-Group: tests
 LIBlet-Title: Java ME CLDC Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2

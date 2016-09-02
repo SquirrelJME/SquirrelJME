@@ -3,6 +3,7 @@ X-SquirrelJME-Name: test-util-huffmantree
 X-SquirrelJME-UUID: 8ac53406-fbdb-459b-bf83-b5948143455f
 X-SquirrelJME-Depends: test-base, util-huffmantree,
  io-bits
+X-SquirrelJME-Group: tests
 LIBlet-Title: Huffman Tree Tests
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2

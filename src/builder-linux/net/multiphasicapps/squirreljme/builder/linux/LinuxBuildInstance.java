@@ -92,8 +92,8 @@ public abstract class LinuxBuildInstance
 	{
 		// Always include Linux packages and any architecture specific
 		// Linux one also.
-		return new String[]{"generic", "linux",
-			"linux-" + this.triplet.architecture()};
+		return new String[]{"os-generic", "os-linux",
+			"os-linux-" + this.triplet.architecture()};
 	}
 }
 

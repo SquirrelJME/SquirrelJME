@@ -11,6 +11,7 @@ X-SquirrelJME-Optional: test-contrib-all,
  test-util-uri,
  test-zip-reader-stream,
  test-zip-writer-stream
+X-SquirrelJME-Group: tests
 Main-Class: net.multiphasicapps.tests.DefaultTestCaller
 LIBlet-Title: All Tests
 LIBlet-Vendor: Steven Gawroriski
