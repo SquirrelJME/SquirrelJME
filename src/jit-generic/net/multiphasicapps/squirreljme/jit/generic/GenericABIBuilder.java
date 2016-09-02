@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -21,6 +23,36 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  */
 public final class GenericABIBuilder
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
+	/** Saved registers. */
+	final Set<GenericRegister> _saved =
+		new LinkedHashSet<>();
+	
+	/** Temporary registers. */
+	final Set<GenericRegister> _temps =
+		new LinkedHashSet<>();
+	
+	/** Arguments. */
+	final Set<GenericRegister> _args =
+		new LinkedHashSet<>();
+	
+	/** Results. */
+	final Set<GenericRegister> _result =
+		new LinkedHashSet<>();
+	
+	/** The current stack register. */
+	volatile GenericRegister _stack;
+	
+	/** The stack direction. */
+	volatile GenericStackDirection _stackdir;
+	
+	/** The stack alignment. */
+	volatile int _stackalign =
+		-1;
+	
 	/**
 	 * Adds an argument register.
 	 *
@@ -36,7 +68,11 @@ public final class GenericABIBuilder
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this._args.add(__r);
+		}
 	}
 	
 	/**
@@ -53,7 +89,11 @@ public final class GenericABIBuilder
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this._result.add(__r);
+		}
 	}
 	
 	/**
@@ -72,7 +112,17 @@ public final class GenericABIBuilder
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BA1b Cannot add the specified register
+			// because it is the stack register or is temporary. (The register
+			// being added)}
+			if (this._temps.contains(__r) || this._stack.equals(__r))
+				throw new JITException(String.format("BA1b %s", __r));
+			
+			this._saved.add(__r);
+		}
 	}
 	
 	/**
@@ -90,7 +140,17 @@ public final class GenericABIBuilder
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BA1c Cannot add the specified register
+			// because it is the stack register or is saved. (The register
+			// being added)}
+			if (this._saved.contains(__r) || this._stack.equals(__r))
+				throw new JITException(String.format("BA1c %s", __r));
+			
+			this._temps.add(__r);
+		}
 	}
 	
 	/**
@@ -104,7 +164,11 @@ public final class GenericABIBuilder
 	public final GenericABI build()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			return new GenericABI(this);
+		}
 	}
 	
 	/**
@@ -122,7 +186,17 @@ public final class GenericABIBuilder
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BA0p Cannot use the specified register as
+			// the stack register because it is saved and/or temporary. (The
+			// register to be used as the stack register)}
+			if (this._saved.contains(__r) || this._temps.contains(__r))
+				throw new JITException(String.format("BA0p %s", __r));
+			
+			this._stack = __r;
+		}
 	}
 	
 	/**
@@ -140,7 +214,11 @@ public final class GenericABIBuilder
 		if (__i <= 0)
 			throw new JITException(String.format("BA0u %d", __i));
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this._stackalign = __i;
+		}
 	}
 	
 	/**
@@ -157,7 +235,11 @@ public final class GenericABIBuilder
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			this._stackdir = __d;
+		}
 	}
 }
 
