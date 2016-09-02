@@ -10,7 +10,27 @@
 
 package net.multiphasicapps.squirreljme.builder.linux.powerpc;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.linux.LinuxBuilder;
+import net.multiphasicapps.squirreljme.builder.TargetBuilder;
+import net.multiphasicapps.squirreljme.builder.TargetEmulator;
+import net.multiphasicapps.squirreljme.builder.TargetEmulatorArguments;
+import net.multiphasicapps.squirreljme.exe.elf.ELFOutput;
+import net.multiphasicapps.squirreljme.exe.elf.ELFProgram;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
+import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.zip.blockreader.ZipFile;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This is the builder for PowerPC based Linux systems.
@@ -92,15 +112,21 @@ public class LinuxPowerPCBuilder
 		{
 				// SysV
 			case "sysv":
-				throw new Error("TODO");
+				if (true)
+					throw new Error("TODO");
+				break;
 				
 				// EABI
 			case "eabi":
-				throw new Error("TODO");
+				if (true)
+					throw new Error("TODO");
+				break;
 				
 				// PowerOpen
 			case "poweropen":
-				throw new Error("TODO");
+				if (true)
+					throw new Error("TODO");
+				break;
 			
 				// {@squirreljme.error BT01 Do not know how to build for the
 				// given operating system variant. (The operating system
