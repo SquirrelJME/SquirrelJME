@@ -11,17 +11,24 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 /**
- * This represents the kind of register that this is.
+ * This is the type of value that can be stored within registers.
  *
- * @since 2016/09/01
+ * @since 2016/09/02
  */
-public enum GenericRegisterKind
+public enum GenericRegisterIntegerType
+	implements GenericRegisterType
 {
-	/** Integer registers. */
+	/** Byte. */
+	BYTE,
+	
+	/** Short. */
+	SHORT,
+	
+	/** Integer. */
 	INTEGER,
 	
-	/** Floating point registers. */
-	FLOAT,
+	/** Long. */
+	LONG,
 	
 	/** End. */
 	;

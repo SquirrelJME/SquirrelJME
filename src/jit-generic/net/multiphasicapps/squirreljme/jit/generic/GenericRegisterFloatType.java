@@ -11,11 +11,21 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 /**
- * This interface is associated with basic register types.
+ * This represents the type of floating point value that may be stored
+ * within a register.
  *
  * @since 2016/09/02
  */
-public interface GenericRegisterType
+public enum GenericRegisterFloatType
+	implements GenericRegisterType
 {
+	/** Float. */
+	FLOAT,
+	
+	/** Double. */
+	DOUBLE,
+	
+	/** End. */
+	;
 }
 
