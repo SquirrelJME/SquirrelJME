@@ -17,24 +17,5 @@ package net.multiphasicapps.squirreljme.jit.generic;
  */
 public interface GenericRegister
 {
-	/**
-	 * Returns the type of float that can be stored in this register.
-	 *
-	 * @return Either {@link JITVariableType#FLOAT},
-	 * {@link JITVariableType#DOUBLE}, or {@code null} if a float is not
-	 * stored in this register.
-	 * @since 2016/08/31
-	 */
-	public abstract GenericRegisterType floatType();
-	
-	/**
-	 * Returns the type of integer that can be stored in this register.
-	 *
-	 * @return Either {@link JITVariableType#INTEGER},
-	 * {@link JITVariableType#LONG}, or {@code null} if an integer is not
-	 * stored in this register.
-	 * @since 2016/08/31
-	 */
-	public abstract GenericRegisterType intType();
 }
 
