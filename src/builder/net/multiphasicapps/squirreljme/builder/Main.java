@@ -74,13 +74,20 @@ public class Main
 	 * Main entry point.
 	 *
 	 * @param __args Main program arguments.
+	 * @throws IOException On read/write errors.
 	 * @since 2016/06/24
 	 */
 	public static void main(String... __args)
+		throws IOException
 	{
 		// Parse the command line
 		PrintStream out = System.out;
 		__CommandLine__ cl = new __CommandLine__(__args);
+		
+		// Load the package list
+		out.println("Loading the package lists...");
+		PackageList plist = new PackageList(Paths.get(
+			System.getProperty("user.dir")), plist);
 		
 		// Setup build configuration
 		BuildConfig config = new BuildConfig(new JITTriplet(cl._target),
@@ -102,15 +109,9 @@ public class Main
 		if (!cl._skipbuild)
 		{
 			// Could fail
-			PackageList plist;
 			Path tempdir = null;
 			try
 			{
-				// Load the package list
-				out.println("Loading the package lists...");
-				plist = new PackageList(Paths.get(
-					System.getProperty("user.dir")));
-			
 				// Create temporary directory
 				tempdir = Files.createTempDirectory("squirreljme-build");
 			
