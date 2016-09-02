@@ -11,6 +11,7 @@ This is the list of code that currently needs work:
    * Linux
      * MIPS
  * Make the inflate code faster.
+ * Rewrite the target build system since currently it does not scale.
  * Rewrite `zip-reader-block`.
 
 # Code To Be Done
