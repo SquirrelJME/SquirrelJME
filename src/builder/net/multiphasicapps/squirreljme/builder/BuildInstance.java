@@ -14,12 +14,18 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
+import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessorProgress;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.zip.ZipCompressionType;
+import net.multiphasicapps.squirreljme.projects.PackageInfo;
+import net.multiphasicapps.squirreljme.projects.PackageList;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
+import net.multiphasicapps.zip.ZipCompressionType;
 
 /**
  * This acts the base for an instance of a build. This is created by
@@ -42,6 +48,10 @@ public abstract class BuildInstance
 	
 	/** The cache creator. */
 	private volatile BuilderCache _cache;
+	
+	/** Packages which have been compiled. */
+	private volatile Map<String, PackageInfo> _compiled =
+		new LinkedHashMap<>();
 	
 	/**
 	 * Initializes the build instance.
@@ -147,7 +157,21 @@ public abstract class BuildInstance
 		// Setup immutable config
 		JITOutputConfig.Immutable jconf = __makeJITConfig(cache);
 		
-		throw new Error("TODO");
+		// Setup namespace processor
+		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf, cache,
+			new __JITProgress__(System.err));
+		
+		// Process all packages to be built
+		Map<String, PackageInfo> compiled = this._compiled;
+		for (PackageInfo pi : ps._all)
+		{
+			// Add namespace to compilation set
+			String na = pi.name() + ".jar";
+			compiled.put(na, pi);
+			
+			// Process
+			jnp.processNamespace(na);
+		}
 	}
 	
 	/**
