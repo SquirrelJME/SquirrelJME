@@ -10,9 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.generic.mips;
 
+import net.multiphasicapps.squirreljme.jit.base.JITCPUFloat;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABIBuilder;
+import net.multiphasicapps.squirreljme.jit.generic.GenericRegisterFloatType;
 import net.multiphasicapps.squirreljme.jit.generic.GenericRegisterIntegerType;
 import net.multiphasicapps.squirreljme.jit.generic.GenericStackDirection;
 
@@ -55,7 +57,8 @@ public final class MIPSABI
 		GenericABIBuilder ab = new GenericABIBuilder();
 		
 		// Floating point?
-		boolean hasfloat = __t.floatingPoint().isAnyHardware();
+		JITCPUFloat cpufloat = __t.floatingPoint();
+		boolean hasfloat = cpufloat.isAnyHardware();
 		
 		// Add integer registers
 		int bits = __t.bits();
@@ -69,6 +72,9 @@ public final class MIPSABI
 		if (hasfloat)
 		{
 			// Determine the floating point size
+			GenericRegisterFloatType flt = (cpufloat.isHardware64() ?
+				GenericRegisterFloatType.DOUBLE :
+				GenericRegisterFloatType.FLOAT);
 			if (true)
 				throw new Error("TODO");	
 			
