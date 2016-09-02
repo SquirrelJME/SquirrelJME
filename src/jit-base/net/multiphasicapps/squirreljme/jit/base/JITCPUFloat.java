@@ -22,7 +22,7 @@ public enum JITCPUFloat
 	SOFT("soft", false, false),
 	
 	/** 32-bit Hardware. */
-	HARD32SOFT64("hard32", true, false),
+	HARD32("hard32", true, false),
 	
 	/** 64-bit Hardware. */
 	HARD64("hard64", true, true),
@@ -145,16 +145,12 @@ public enum JITCPUFloat
 				return JITCPUFloat.SOFT;
 			
 				// Hardware 32-bit, Software 64-bit
-			case "hard32soft64":
-				return JITCPUFloat.HARD32SOFT64;
+			case "hard32":
+				return JITCPUFloat.HARD32;
 				
-				// Software 32-bit, Hardware 64-bit
-			case "soft32hard64":
-				return JITCPUFloat.SOFT32HARD64;
-				
-				// Hardware
-			case "hard":
-				return JITCPUFloat.HARD;
+				// Hardware, Both
+			case "hard64":
+				return JITCPUFloat.HARD64;
 				
 				// {@squirreljme.error BQ0h Unknown floating point type.
 				// (The floating point type string)}

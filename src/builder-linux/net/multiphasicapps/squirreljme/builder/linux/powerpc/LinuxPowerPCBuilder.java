@@ -51,13 +51,13 @@ public class LinuxPowerPCBuilder
 	{
 		super(false,
 			"powerpc-32+g1,big~soft.linux.sysv",
-				"Linux PowerPC (32-bit/G1/Softfloat/Little/SysV)",
-			"powerpc-32+g3,big~hard.linux.sysv",
-				"Linux PowerPC (32-bit/G3/Hardfloat/Little/SysV)",
+				"Generic Big Endian 32-bit Linux PowerPC (G1, Software Float)",
+			"powerpc-32+g3,big~har64.linux.sysv",
+				"Generic Big Endian 32-bit Linux PowerPC (G3, Hardware Float)",
 			"powerpc-64+g5,little~hard.linux.poweropen",
-				"Linux PowerPC (64-bit/G5/Hardfloat/Little/PowerOpen)",
+				"Generic Little Endian 64-bit Linux PowerPC (Hardware Float)",
 			"powerpc-64+g5,big~hard.linux.poweropen",
-				"Linux PowerPC (64-bit/G5/Hardfloat/Big/PowerOpen)");
+				"Generic Big Endian 64-bit Linux PowerPC (Hardware Float)");
 	}
 	
 	/**
