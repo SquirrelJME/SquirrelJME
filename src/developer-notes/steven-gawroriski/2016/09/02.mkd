@@ -1,0 +1,13 @@
+# 2016/09/02
+
+## 07:52
+
+Thinking about it, I only need to setup registers via the allocator for
+input arguments and such when they are primed. I also need to consider the
+stack. I do wonder though if I need a sub-variant of the OS to choose the
+calling convention. Such as instead of generic I have eabi or o32. These would
+just be generic targets for the most part. When it comes to a specific
+system such as the CI40 or GCW it can use the appropriate ABI as such. So
+instead of say `linux.generic`, for MIPS there will be `linux.eabi` for
+selecting the EABI calling convention.
+

@@ -403,6 +403,8 @@
 
  * 01: 
    [Steven Gawroriski](steven-gawroriski/2016/09/01.mkd)
+ * 02: 
+   [Steven Gawroriski](steven-gawroriski/2016/09/02.mkd)
 
 # Other
 
