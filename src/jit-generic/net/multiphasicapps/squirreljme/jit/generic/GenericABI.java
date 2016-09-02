@@ -11,9 +11,14 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITObjectProperties;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This contains the information on a given ABI such as which registers are
@@ -24,6 +29,21 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 public final class GenericABI
 	implements JITObjectProperties
 {
+	/** The integer group. */
+	private final __Group__ _int;
+	
+	/** The floating point group. */
+	private final __Group__ _float;
+	
+	/** The current stack register. */
+	private final GenericRegister _stack;
+	
+	/** The stack direction. */
+	private final GenericStackDirection _stackdir;
+	
+	/** The stack alignment. */
+	private final int _stackalign;
+	
 	/**
 	 * Initializes the ABI from the given builder.
 	 *
@@ -38,7 +58,27 @@ public final class GenericABI
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error BA0v The stack alignment was not set.}
+		int stackalign = __b._stackalign;
+		if (stackalign <= 0)
+			throw new JITException("BA0v");
+		this._stackalign = stackalign;
+		
+		// {@squirreljme.error BA0w The stack direction was not set.}
+		GenericStackDirection stackdir = __b._stackdir;
+		if (stackdir == null)
+			throw new JITException("BA0w");
+		this._stackdir = stackdir;
+		
+		// {@squirreljme.error BA0x The stack register was not set.}
+		GenericRegister stack = __b._stack;
+		if (stack == null)
+			throw new JITException("BA0x");
+		this._stack = stack;
+		
+		// Setup integer and float registers
+		this._int = new __Group__(false, __b);
+		this._float = new __Group__(true, __b);
 	}
 	
 	/**
@@ -183,6 +223,140 @@ public final class GenericABI
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Fills from the source iterable sequence to the target collection using
+	 * matching integer/floating point types.
+	 *
+	 * @param __float If {@code true} then floating point registers are
+	 * considered.
+	 * @param __from The source registers.
+	 * @param __to The target registers to use.
+	 * @return The total registers specified.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/01
+	 */
+	private static int __fill(boolean __float,
+		Iterable<GenericRegister> __from, Collection<GenericRegister> __to)
+		throws NullPointerException
+	{
+		// Check
+		if (__from == null || __to == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * The group specifies the type of register to use.
+	 *
+	 * @since 2016/09/01
+	 */
+	private final class __Group__
+	{
+		/** Saved registers (set). */
+		private final Set<GenericRegister> _ssaved;
+	
+		/** Temporary registers (set). */
+		private final Set<GenericRegister> _stemps;
+	
+		/** Saved registers (list). */
+		private final List<GenericRegister> _lsaved;
+	
+		/** Temporary registers (list). */
+		private final List<GenericRegister> _ltemps;
+	
+		/** Arguments. */
+		private final List<GenericRegister> _args;
+	
+		/** Results. */
+		private final List<GenericRegister> _result;
+		
+		/**
+		 * Initializes the grouping.
+		 *
+		 * @param __float Use floating point registers?
+		 * @param __b The builder to get registers from.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/09/01
+		 */
+		private __Group__(boolean __float, GenericABIBuilder __b)
+			throws NullPointerException
+		{
+			// Check
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			
+			// Register totals
+			int total = 0;
+			
+			// Add results
+			Iterable<GenericRegister> xresult = __b._result;
+			List<GenericRegister> result = new ArrayList<>();
+			GenericABI.__fill(__float, xresult, result);
+			this._result = UnmodifiableList.<GenericRegister>of(result);
+			
+			// Add arguments
+			Iterable<GenericRegister> xargs = __b._args;
+			List<GenericRegister> args = new ArrayList<>();
+			GenericABI.__fill(__float, xargs, args);
+			this._args = UnmodifiableList.<GenericRegister>of(args);
+			
+			// Add saved registers
+			Iterable<GenericRegister> xsaved = __b._saved;
+			Set<GenericRegister> saved = new LinkedHashSet<>();
+			GenericABI.__fill(__float, xsaved, saved);
+			this._ssaved = UnmodifiableSet.<GenericRegister>of(saved);
+			this._lsaved = UnmodifiableList.<GenericRegister>of(
+				new ArrayList<>(saved));
+			
+			// Add temporary registers
+			Iterable<GenericRegister> xtemps = __b._temps;
+			Set<GenericRegister> temps = new LinkedHashSet<>();
+			GenericABI.__fill(__float, xtemps, temps);
+			this._stemps = UnmodifiableSet.<GenericRegister>of(temps);
+			this._ltemps = UnmodifiableList.<GenericRegister>of(
+				new ArrayList<>(temps));
+			
+			// {@squirreljme.error BA1e A register cannot be both saved
+			// and temporary. (The register)}
+			for (GenericRegister r : saved)
+				if (temps.contains(r))
+					throw new JITException(String.format("BA1e %s", r));
+			
+			// Make sure the collections have all matching types
+			if (total > 0)
+			{
+				// {@squirreljme.error BA0y No result registers were
+				// specified.}
+				if (result.size() <= 0)
+					throw new JITException("BA0y");
+				
+				// {@squirreljme.error BA0q No argument registers were
+				// specified.}
+				if (args.size() <= 0)
+					throw new JITException("BA0q");
+				
+				// {@squirreljme.error BA0r No saved registers were specified.}
+				if (saved.size() <= 0)
+					throw new JITException("BA0r");
+				
+				// {@squirreljme.error BA1d No temporary registers were
+				// specified.}
+				if (temps.size() <= 0)
+					throw new JITException("BA1d");
+			}
+			
+			// Float is optional
+			else
+			{
+				// {@squirreljme.error BA0r No integer registers were
+				// specified.}
+				if (!__float)
+					throw new JITException("BA0r");
+			}	
+		}
 	}
 }
 
