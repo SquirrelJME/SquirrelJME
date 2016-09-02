@@ -39,13 +39,12 @@ public abstract class LinuxBuilder
 	/**
 	 * Initializes the base builder.
 	 *
-	 * @param __cj Does this support the JIT?
 	 * @param __sug Suggested targets.
 	 * @since 2016/08/15
 	 */
-	public LinuxBuilder(boolean __cj, String... __sug)
+	public LinuxBuilder(String... __sug)
 	{
-		super(__cj, __sug);
+		super(__sug);
 	}
 	
 	/**

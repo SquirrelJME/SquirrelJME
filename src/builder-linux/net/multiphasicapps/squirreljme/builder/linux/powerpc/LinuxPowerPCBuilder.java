@@ -49,7 +49,7 @@ public class LinuxPowerPCBuilder
 	 */
 	public LinuxPowerPCBuilder()
 	{
-		super(false,
+		super(
 			"powerpc-32+g1,big~soft.linux.sysv",
 				"Generic Big Endian 32-bit Linux PowerPC (G1, Software Float)",
 			"powerpc-32+g3,big~hard64.linux.sysv",

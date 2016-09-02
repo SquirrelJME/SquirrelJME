@@ -51,7 +51,7 @@ public class LinuxMIPSBuilder
 	 */
 	public LinuxMIPSBuilder()
 	{
-		super(false,
+		super(
 			"mips-32+i,little~hard32.linux.eabi",
 				"Generic Little Endian 32-bit Linux MIPS (Hardware float)",
 			"mips-32+i,little~soft.linux.eabi",

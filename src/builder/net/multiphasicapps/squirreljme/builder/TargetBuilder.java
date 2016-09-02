@@ -53,27 +53,18 @@ public abstract class TargetBuilder
 	private static final ServiceLoader<TargetBuilder> _SERVICES =
 		ServiceLoader.<TargetBuilder>load(TargetBuilder.class);
 	
-	/** Supports the JIT? */
-	@Deprecated
-	protected final boolean canjit;
-	
 	/** Suggestions. */
 	private final TargetSuggestion[] _suggestions;
 	
 	/**
 	 * Initializes the target builder.
 	 *
-	 * @param __jit Is the JIT supported?
 	 * @param __sugs The suggested build targets, a triplet followed by a
 	 * short description.
 	 * @since 2016/07/22
 	 */
-	@Deprecated
-	public TargetBuilder(boolean __jit, String... __sugs)
+	public TargetBuilder(String... __sugs)
 	{
-		// Set
-		this.canjit = __jit;
-		
 		// Setup suggestions
 		if (__sugs != null)
 		{
@@ -306,18 +297,6 @@ public abstract class TargetBuilder
 		__eo.addSystemProperty("net.multiphasicapps.squirreljme.vmclasspath",
 			sb.toString());
 	}	
-	
-	/**
-	 * Is the JIT supported for this target?
-	 *
-	 * @return {@code true} if the JIT is supported.
-	 * @since 2016/07/22
-	 */
-	@Deprecated
-	public final boolean canJIT()
-	{
-		return this.canjit;
-	}
 	
 	/**
 	 * Creates a last run recording for use in debugging.
