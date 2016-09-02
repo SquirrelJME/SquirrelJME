@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.emulator.Emulator;
  *
  * @since 2016/07/30
  */
+@Deprecated
 public abstract class TargetEmulator
 {
 	/** Emulator arguments. */

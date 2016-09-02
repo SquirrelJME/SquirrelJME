@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.builder;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -41,6 +42,25 @@ public abstract class BuildInstance
 	{
 		// Check
 		if (__zsw == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Initializes an emulator using the specified set of arguments.
+	 *
+	 * @param __tae The arguments to use.
+	 * @return The emulator for the target system.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	public final Emulator emulator(TargetEmulatorArguments __tae)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__tae == null)
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");

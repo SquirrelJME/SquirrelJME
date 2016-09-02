@@ -183,11 +183,27 @@ public class Main
 			}
 		}
 		
-		// Emulate the resulting binary?
+		// Emulate the resulting binary (or some other one)?
 		if (cl._doemu)
-		{
-			throw new Error("TODO");
-		}
+			try (ZipFile zip = __openZip(cl, actualzipfile[0]))
+			{
+				// Setup arguments
+				TargetEmulatorArguments tae = new TargetEmulatorArguments(
+					config, zip, cl._altexename,
+					cl._emuargs.<String>toArray(
+						new String[cl._emuargs.size()]));
+				
+				// Get an emulator
+				out.println("Setting up emulator...");
+				Emulator emu = bi.emulator(tae);
+				
+				// Run it
+				out.println("Entering emulation loop...");
+				emu.run();
+				
+				// Message
+				out.println("Emulation terminated!");
+			}
 		
 		if (true)
 			throw new Error("TODO");
