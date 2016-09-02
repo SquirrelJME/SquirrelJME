@@ -34,3 +34,16 @@ good choice because it would all be compacted into a single place. Although
 not as modular, it can essentially be a multi-system emulator so to speak. The
 purpose of the emulator is to just test targets for the most part.
 
+## 10:38
+
+I also am a bit distracted, I should be implementing the emulators first before
+I target a given system, so I can work out how it works and such. The emulators
+do not need to be very complex. However, since emulation is part of the core of
+target system building, I should refactor the target build system. I am
+thinking of a just essentially an enter build. Say the user requests a given
+triplet, it will go through all services and try building one that works. I
+can have a special exception indicating that the given target is not supported
+for the given builder. I thought about removing the OS variants, but that would
+be needed in cases where the operating system calls differ for the same target
+(such as MIPS o32 and n32 for example).
+
