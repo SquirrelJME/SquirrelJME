@@ -72,7 +72,7 @@ public class LinuxMIPSBuilder
 	public BuildInstance createBuildInstance(BuildConfig __conf) 
 		throws TargetNotSupportedException
 	{
-		throw new Error("TODO");
+		return new LinuxMIPSBuildInstance(__conf);
 	}
 	
 	/**

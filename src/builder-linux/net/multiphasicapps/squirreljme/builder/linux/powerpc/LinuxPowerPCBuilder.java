@@ -68,7 +68,7 @@ public class LinuxPowerPCBuilder
 	public BuildInstance createBuildInstance(BuildConfig __conf) 
 		throws TargetNotSupportedException
 	{
-		throw new Error("TODO");
+		return new LinuxPowerPCBuildInstance(__conf);
 	}
 	
 	/**

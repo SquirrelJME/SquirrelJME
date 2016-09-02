@@ -26,8 +26,29 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
  */
 public abstract class BuildInstance
 {
+	/** The build configuration. */
+	protected final BuildConfig config;
+	
 	/** The temporary directory for build work. */
 	private volatile Path _tempdir;
+	
+	/**
+	 * Initializes the build instance.
+	 *
+	 * @param __conf The configuration to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	protected BuildInstance(BuildConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __conf;
+	}
 	
 	/**
 	 * Builds the output distribution.
