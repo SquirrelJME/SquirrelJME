@@ -120,9 +120,26 @@ public class LinuxMIPSBuilder
 			ClassNameSymbol.of(
 				"net/multiphasicapps/squirreljme/os/linux/mips/SquirrelJME")));
 		
-		// Use EABI MIPS
-		__conf.<GenericABI>registerObject(GenericABI.class,
-			MIPSABI.eabi(__bc.triplet()));
+		// Which ABI to use?
+		GenericABI abi;
+		JITTriplet triplet = __bc.triplet();
+		String osvar;
+		switch ((osvar = triplet.operatingSystemVariant()))
+		{
+				// EABI
+			case "eabi":
+				abi = MIPSABI.eabi(triplet);
+				break;
+			
+				// {@squirreljme.error AQ01 Do not know how to build for the
+				// given operating system variant. (The operating system
+				// variant)}
+			default:
+				throw new JITException(String.format("AW01 %s", osvar));
+		}
+		
+		// Use the given ABI
+		__conf.<GenericABI>registerObject(GenericABI.class, abi);
 	}
 	
 	/**
