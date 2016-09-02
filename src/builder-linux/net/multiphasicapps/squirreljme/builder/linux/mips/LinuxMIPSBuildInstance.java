@@ -14,6 +14,8 @@ import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.linux.LinuxBuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
+import net.multiphasicapps.squirreljme.jit.generic.mips.MIPSABI;
 
 /**
  * This is the build instance for Linux MIPS systems.
@@ -40,6 +42,32 @@ public class LinuxMIPSBuildInstance
 			throw new TargetNotSupportedException("BU04");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/02
+	 */
+	@Override
+	protected GenericABI getLinuxABI()
+	{
+		// Which ABI to use?
+		GenericABI abi;
+		JITTriplet triplet = this.triplet;
+		String osvar;
+		switch ((osvar = triplet.operatingSystemVariant()))
+		{
+				// EABI
+			case "eabi":
+				return MIPSABI.eabi(triplet);
+			
+				// {@squirreljme.error BU09 Do not know how to build for the
+				// given operating system variant. (The operating system
+				// variant)}
+			default:
+				throw new TargetNotSupportedException(
+					String.format("BU09 %s", osvar));
+		}
 	}
 }
 

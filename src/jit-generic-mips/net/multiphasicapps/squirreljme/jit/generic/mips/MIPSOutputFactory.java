@@ -8,50 +8,50 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.mips;
+package net.multiphasicapps.squirreljme.jit.generic.mips;
 
-import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.generic.GenericMethodWriter;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericOutput;
-import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
+import net.multiphasicapps.squirreljme.jit.generic.GenericOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 
 /**
- * This is the output which is used to generate MIPS machine code.
+ * This is the factory which produces output which can be used to target any
+ * MIPS based system.
  *
  * @since 2016/08/07
  */
-public class MIPSOutput
-	extends GenericOutput
+public class MIPSOutputFactory
+	extends GenericOutputFactory
 {
 	/**
-	 * Initializes the MIPS output.
-	 *
-	 * @param __conf The configuration used.
-	 * @since 2016/08/07
+	 * {@inheritDoc}
+	 * @since 2016/07/26
 	 */
-	public MIPSOutput(JITOutputConfig.Immutable __conf)
+	@Override
+	protected GenericOutput internalCreate(JITOutputConfig.Immutable __config)
+		throws JITException, NullPointerException
 	{
-		super(__conf);
+		return new MIPSOutput(__config);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/08/21
+	 * @since 2016/07/22
 	 */
 	@Override
-	protected GenericMethodWriter methodWriter(OutputStream __os)
-		throws JITException, NullPointerException
+	public boolean supportsConfig(JITOutputConfig.Immutable __config)
 	{
 		// Check
-		if (__os == null)
+		if (__config == null)
 			throw new NullPointerException("NARG");
 		
-		// Create
-		return new MIPSMethodWriter(this.config, __os);
+		// Accept any MIPS CPU
+		JITTriplet triplet = __config.triplet();
+		return triplet.architecture().equals("mips");
 	}
 }
 

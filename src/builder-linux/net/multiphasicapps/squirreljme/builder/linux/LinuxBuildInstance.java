@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.builder.BuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 
 /**
  * This is the base build instance for all Linux based targets.
@@ -24,6 +25,9 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 public abstract class LinuxBuildInstance
 	extends BuildInstance
 {
+	/** The build ABI to use. */
+	protected final GenericABI abi;
+	
 	/**
 	 * Initializes the build instance.
 	 *
@@ -52,7 +56,19 @@ public abstract class LinuxBuildInstance
 		if (end != JITCPUEndian.BIG && end != JITCPUEndian.LITTLE)
 			throw new TargetNotSupportedException("BU07");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error BU08 No valid ABI has been selected.}
+		GenericABI abi = getLinuxABI();
+		this.abi = abi;
+		if (abi == null)
+			throw new TargetNotSupportedException("BU08");
 	}
+	
+	/**
+	 * Obtains the ABI that is to be used for the target system.
+	 *
+	 * @return The ABI to use.
+	 * @since 2016/09/02
+	 */
+	protected abstract GenericABI getLinuxABI();
 }
 

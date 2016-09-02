@@ -14,5 +14,5 @@
  * @since 2016/08/07
  */
 
-package net.multiphasicapps.squirreljme.jit.mips;
+package net.multiphasicapps.squirreljme.jit.generic.mips;
 

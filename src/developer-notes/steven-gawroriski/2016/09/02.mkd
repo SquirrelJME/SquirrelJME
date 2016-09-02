@@ -77,3 +77,21 @@ My new main looks much nicer.
 
 I do like how this code is turning out.
 
+## 14:36
+
+Had an idea for the registers. Right now they are associated with and they
+return stuff such as floating point. I was thinking of having some kind of
+register association kind of setup. One that is set by the API completely
+instead of one set by the registers. Then this way I can have cases where I
+have 32-bit integer registers and 64-bit floating point ones, and vice
+versa.
+
+## 14:38
+
+I do wonder though if I could actually remove `JITOutputFactory` now and just
+use the output classes directly.
+
+## 14:44
+
+It is a bad idea and there is no reason for `MIPSABI` to cache the ABI anymore.
+

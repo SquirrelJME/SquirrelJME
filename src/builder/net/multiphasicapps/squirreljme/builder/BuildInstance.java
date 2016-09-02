@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.builder;
 import java.io.IOException;
 import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -28,6 +29,9 @@ public abstract class BuildInstance
 {
 	/** The build configuration. */
 	protected final BuildConfig config;
+	
+	/** The target triplet. */
+	protected final JITTriplet triplet;
 	
 	/** The temporary directory for build work. */
 	private volatile Path _tempdir;
@@ -48,6 +52,7 @@ public abstract class BuildInstance
 		
 		// Set
 		this.config = __conf;
+		this.triplet = __conf.triplet();
 	}
 	
 	/**

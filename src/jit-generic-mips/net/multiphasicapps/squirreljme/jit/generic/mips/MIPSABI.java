@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.mips;
+package net.multiphasicapps.squirreljme.jit.generic.mips;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
