@@ -160,3 +160,10 @@ So compilation wise, I am at the same point. However since I currently TODO in
 code I cannot get to the linker stage yet. However since I want to get rid of
 the old crusty code, I will bring in the linker part.
 
+## 18:40
+
+However, I can always wait for that, I do have version control and I can see
+all of my old code. So I will set a note. Revision
+`24503a462c85ef804c8fe8d008ee538ccc21bb02` will contain the old information
+needed for linking and such.
+

@@ -110,6 +110,14 @@ public abstract class BuildInstance
 		if (true)
 			throw new Error("TODO");
 		
+		// Write the triplet to the ZIP
+		try (OutputStream os = zsw.nextEntry("target",
+			ZipCompressionType.DEFAULT_COMPRESSION);
+			PrintStream ps = new PrintStream(os, true, "utf-8"))
+		{
+			ps.println(this.config.triplet().toString());
+		}
+		
 		// Include basic assets
 		byte[] buf = new byte[64];
 		for (BasicAsset b : BasicAsset.getAssets())
