@@ -27,26 +27,21 @@ public class BuildEntry
 	/** The entry to use. */
 	protected final ZipEntry entry;
 	
-	/** The owning builder. */
-	protected final BuilderCacheHelper builder;
-	
 	/**
 	 * Initializes the build entry.
 	 *
-	 * @param __b The owning builder.
 	 * @param __ze The entry to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	BuildEntry(BuilderCacheHelper __b, ZipEntry __ze)
+	BuildEntry(ZipEntry __ze)
 		throws NullPointerException
 	{
 		// Check
-		if (__b == null || __ze == null)
+		if (__ze == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.builder = __b;
 		this.entry = __ze;
 	}
 	

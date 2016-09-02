@@ -46,29 +46,34 @@ public class BuilderCache
 	private static final boolean _HEX_DUMP_OUTPUT =
 		Boolean.getBoolean("net.multiphasicapps.squirreljme.builder.hexdump");
 	
-	/** The owning builder. */
-	protected final BuilderCacheHelper builder;
-	
 	/** Package information to namespace blobs. */
 	protected final Map<PackageInfo, Path> blobmap =
 		new HashMap<>();
 	
+	/** The package list. */
+	protected final PackageList plist;
+	
+	/** The temporary directory. */
+	protected final Path tempdir;
+	
 	/**
 	 * Initializes the builder cache.
 	 *
-	 * @param __b The builder which owns this.
+	 * @param __pl The package list.
+	 * @param __td The temporary directory.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/18
 	 */
-	public BuilderCache(BuilderCacheHelper __b)
+	public BuilderCache(PackageList __pl, Path __td)
 		throws NullPointerException
 	{
 		// Check
-		if (__b == null)
+		if (__pl == null || __td == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.builder = __b;
+		this.plist = __pl;
+		this.tempdir = __td;
 	}
 	
 	/**
@@ -98,7 +103,7 @@ public class BuilderCache
 		PackageInfo pi = __getPackage(__ns);
 		
 		// Create temporary output file where the stream goes
-		Path p = Files.createTempFile(this.builder.temporaryDirectory(),
+		Path p = Files.createTempFile(this.tempdir,
 			"squirreljme-build", __ns);
 		
 		// Mark it
@@ -146,7 +151,7 @@ public class BuilderCache
 			throw new NullPointerException("NARG");
 		
 		// Create
-		return new BuildDirectory(this.builder, __ns);
+		return new BuildDirectory(this.plist, this.tempdir, __ns);
 	}
 	
 	/**
@@ -208,7 +213,7 @@ public class BuilderCache
 		
 		// {@squirreljme.error DW0e The namespace does not have an associated
 		// package. (The namespace)}
-		PackageInfo pi = this.builder.packageList().get(jarless);
+		PackageInfo pi = this.plist.get(jarless);
 		if (pi == null)
 			throw new JITException(String.format("DW0e %s", __ns));
 		

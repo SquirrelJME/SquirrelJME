@@ -39,6 +39,9 @@ public abstract class BuildInstance
 	/** The temporary directory for build work. */
 	private volatile Path _tempdir;
 	
+	/** The cache creator. */
+	private volatile BuilderCache _cache;
+	
 	/**
 	 * Initializes the build instance.
 	 *
@@ -123,7 +126,13 @@ public abstract class BuildInstance
 		throws IOException
 	{
 		// Select packages
+		BuildConfig config = this.config;
 		__PackageSelection__ ps = new __PackageSelection__(config, this);
+		
+		// Setup cache
+		BuilderCache cache = new BuilderCache(config.packageList(),
+			temporaryDirectory());
+		this._cache = cache;
 		
 		throw new Error("TODO");
 	}

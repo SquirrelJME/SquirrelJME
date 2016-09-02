@@ -123,7 +123,9 @@ public class NewBuilder
 		mutjitconf.setTriplet(config.triplet());
 		
 		// Setup cache creator
-		BuilderCache cache = new BuilderCache(this);
+		if (true)
+			throw new Error("TODO");
+		BuilderCache cache = null;/*new BuilderCache(this);*/
 		this._cache = cache;
 		mutjitconf.setCacheCreator(cache);
 		

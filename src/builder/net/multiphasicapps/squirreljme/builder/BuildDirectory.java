@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.builder;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Iterator;
 import net.multiphasicapps.squirreljme.projects.PackageInfo;
@@ -36,8 +37,11 @@ public class BuildDirectory
 	/** The opened ZIP. */
 	protected final ZipFile zip;
 	
-	/** The owning builder. */
-	protected final BuilderCacheHelper builder;
+	/** The package list. */
+	protected final PackageList plist;
+	
+	/** The temporary directory. */
+	protected final Path tempdir;
 	
 	/**
 	 * Initializes the build directory.
@@ -48,15 +52,16 @@ public class BuildDirectory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	BuildDirectory(BuilderCacheHelper __b, String __ns)
+	BuildDirectory(PackageList __pl, Path __td, String __ns)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__b == null || __ns == null)
+		if (__pl == null || __td == null || __ns == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.builder = __b;
+		this.plist = __pl;
+		this.tempdir = __td;
 		
 		// {@squirreljme.error DW05 The namespace does not end in .jar.
 		// (The namespace)}
@@ -68,7 +73,7 @@ public class BuildDirectory
 	
 		// {@squirreljme.error DW08 The namespace does not have an
 		// associated package. (The namespace)}
-		PackageInfo pi = this.builder.packageList().get(jarless);
+		PackageInfo pi = this.plist.get(jarless);
 		if (pi == null)
 			throw new IllegalStateException(String.format("DW08 %s", __ns));
 		
@@ -190,8 +195,7 @@ public class BuildDirectory
 				@Override
 				public JITNamespaceContent.Entry next()
 				{
-					return new BuildEntry(BuildDirectory.this.builder,
-						this.base.next());
+					return new BuildEntry(this.base.next());
 				}
 				
 				/**
