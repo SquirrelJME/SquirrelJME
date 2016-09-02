@@ -62,9 +62,8 @@ public final class MIPSABI
 		
 		// Add integer registers
 		int bits = __t.bits();
-		GenericRegisterIntegerType rtint = (bits == 32 ?
-			GenericRegisterIntegerType.INTEGER :
-			GenericRegisterIntegerType.LONG);
+		GenericRegisterIntegerType rtint =
+			GenericABIBuilder.intRegisterTypeFromTriplet(__t);
 		for (int i = 0; i <= 31; i++)
 			ab.addRegister(MIPSRegister.of(false, i), rtint);
 		
@@ -72,14 +71,12 @@ public final class MIPSABI
 		if (hasfloat)
 		{
 			// Determine the floating point size
-			GenericRegisterFloatType flt = (cpufloat.isHardware64() ?
-				GenericRegisterFloatType.DOUBLE :
-				GenericRegisterFloatType.FLOAT);
-			if (true)
-				throw new Error("TODO");	
+			GenericRegisterFloatType flt =
+				GenericABIBuilder.floatRegisterTypeFromTriplet(__t);
 			
 			// Add them
-			throw new Error("TODO");
+			for (int i = 0; i <= 31; i++)
+				ab.addRegister(MIPSRegister.of(true, i), flt);
 		}
 		
 		// Stack grows down

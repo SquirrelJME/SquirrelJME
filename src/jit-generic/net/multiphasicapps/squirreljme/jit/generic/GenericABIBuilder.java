@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
  * This class is used to generate instances of {@link GenericABI} which is
@@ -277,6 +278,69 @@ public final class GenericABIBuilder
 		synchronized (this.lock)
 		{
 			this._stackdir = __d;
+		}
+	}
+	
+	/**
+	 * Returns the integer type that matches the bit size of the given triplet.
+	 *
+	 * @param __t The triplet to get the type from.
+	 * @return The integer type.
+	 * @throws JITException If the type was not known.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	public static GenericRegisterIntegerType intRegisterTypeFromTriplet(
+		JITTriplet __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the bits
+		switch (__t.bits())
+		{
+			case 8: return GenericRegisterIntegerType.BYTE;
+			case 16: return GenericRegisterIntegerType.SHORT;
+			case 32: return GenericRegisterIntegerType.INTEGER;
+			case 64: return GenericRegisterIntegerType.LONG;
+			
+				// {@squirreljme.error BA1f Could not get the integer register
+				// type from the specified triplet. (The triplet)}
+			default:
+				throw new JITException(String.format("BA1f %s", __t));
+		}
+	}
+	
+	/**
+	 * Returns the floating point type that matches the hardware floating
+	 * point type used by the given triplet.
+	 *
+	 * @param __t The triplet to get the type from.
+	 * @return The floating point type.
+	 * @throws JITException If the type could not be determined.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	public static GenericRegisterFloatType floatRegisterTypeFromTriplet(
+		JITTriplet __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the float type
+		switch (__t.floatingPoint())
+		{
+			case HARD32: return GenericRegisterFloatType.FLOAT;
+			case HARD64: return GenericRegisterFloatType.DOUBLE;
+			
+				// {@squirreljme.error BA1g Could not get the float register
+				// type from the specified triplet. (The triplet)}
+			default:
+				throw new JITException(String.format("BA1g %s", __t));
 		}
 	}
 }
