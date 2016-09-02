@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
@@ -60,6 +61,15 @@ public abstract class BuildInstance
 		this.config = __conf;
 		this.triplet = __conf.triplet();
 	}
+	
+	/**
+	 * Modifies the given output configuration that is used to setup the
+	 * target JIT.
+	 *
+	 * @param __conf The configuration that is for building.
+	 * @since 2016/09/02
+	 */
+	protected abstract void modifyOutputConfig(JITOutputConfig __conf);
 	
 	/**
 	 * This returns the package group that is used to determine which packages
@@ -134,6 +144,9 @@ public abstract class BuildInstance
 			temporaryDirectory());
 		this._cache = cache;
 		
+		// Setup immutable config
+		JITOutputConfig.Immutable jconf = __makeJITConfig(cache);
+		
 		throw new Error("TODO");
 	}
 	
@@ -165,6 +178,34 @@ public abstract class BuildInstance
 	protected final Path temporaryDirectory()
 	{
 		return this._tempdir;
+	}
+	
+	/**
+	 * Makes the JIT output configuration which is used when compiling Java
+	 * byte code into native code.
+	 *
+	 * @param __bc The builder cache where temporary namespaces go.
+	 * @return The final immutable configuration.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/02
+	 */
+	private final JITOutputConfig.Immutable __makeJITConfig(BuilderCache __bc)
+		throws NullPointerException
+	{
+		// Check
+		if (__bc == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup and fill with basic details
+		JITOutputConfig joc = new JITOutputConfig();
+		joc.setTriplet(this.triplet);
+		joc.setCacheCreator(__bc);
+		
+		// Send to self to add any properties as needed
+		modifyOutputConfig(joc);
+		
+		// No more changes after this
+		return joc.immutable();
 	}
 	
 	/**

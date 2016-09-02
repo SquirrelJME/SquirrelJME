@@ -13,9 +13,12 @@ package net.multiphasicapps.squirreljme.builder.linux;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.BuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
+import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
  * This is the base build instance for all Linux based targets.
@@ -82,6 +85,30 @@ public abstract class LinuxBuildInstance
 	 * @since 2016/09/02
 	 */
 	protected abstract GenericABI getLinuxABI();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/02
+	 */
+	@Override
+	protected void modifyOutputConfig(JITOutputConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Rewrite unsafe calls to the one for this architecture
+		__conf.addStaticCallRewrite(new JITClassNameRewrite(
+			ClassNameSymbol.of(
+				"net/multiphasicapps/squirreljme/unsafe/SquirrelJME"),
+			ClassNameSymbol.of(
+				"net/multiphasicapps/squirreljme/os/linux/" +
+					triplet.architecture() + "/SquirrelJME")));
+		
+		// Set the ABI to use for the generic compiler
+		__conf.<GenericABI>registerObject(GenericABI.class, this.abi);
+	}
 	
 	/**
 	 * {@inheritDoc}
