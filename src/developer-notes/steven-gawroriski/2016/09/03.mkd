@@ -88,3 +88,7 @@ I need a kind of storage for values. Essentially for local and stack variables.
 
 Testing GPG a bit more.
 
+## 18:56
+
+And nother test.
+
