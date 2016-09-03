@@ -73,4 +73,3 @@ I should sign my commits.
 One thing to consider is what happens when clear is called on one of the
 sub-deques.
 
-
