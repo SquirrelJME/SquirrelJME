@@ -236,7 +236,16 @@ public final class GenericABI
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Depends
+		switch (__k)
+		{
+			case INTEGER: return _int._lsaved;
+			case FLOAT: return _float._lsaved;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
@@ -277,7 +286,16 @@ public final class GenericABI
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Depends
+		switch (__k)
+		{
+			case INTEGER: return _int._ltemps;
+			case FLOAT: return _float._ltemps;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**

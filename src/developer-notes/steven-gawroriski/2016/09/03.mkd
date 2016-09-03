@@ -68,3 +68,9 @@ float types.
 
 I should sign my commits.
 
+## 17:12
+
+One thing to consider is what happens when clear is called on one of the
+sub-deques.
+
+
