@@ -463,5 +463,30 @@ final class __Sub__<V>
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Removes the item if it is in this deque.
+	 *
+	 * @param __v The item to remove.
+	 * @return {@code true} if it was removed.
+	 * @since 2016/09/03
+	 */
+	final boolean __remove(V __v)
+	{
+		// Not in this deque
+		Set<V> set = this._set;
+		if (!set.contains(__v))
+			return false;
+		
+		// Otherwise remove it
+		if (!this._deque.remove(__v))
+			throw new RuntimeException("OOPS");
+		
+		// Remove from set
+		set.remove(__v);
+		
+		// Did remove
+		return true;
+	}
 }
 

@@ -67,7 +67,20 @@ public class MultiSetDeque<V>
 		if (__v == null)
 			return false;
 		
-		throw new Error("TODO");
+		// If not in the master set then it will not be in any deque
+		Set<V> master = this._master;
+		if (!master.contains(__v))
+			return false;
+		
+		// Remove in all
+		List<__Sub__<V>> subs = this._subs;
+		int n = subs.size();
+		boolean rv = false;
+		for (int i = 0; i < n; i++)
+			rv |= subs.get(i).__remove(__v);
+		
+		// Was it removed?
+		return rv;
 	}
 	
 	/**
