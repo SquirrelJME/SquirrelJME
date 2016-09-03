@@ -46,7 +46,7 @@ public final class Emulator
 	 * @return The emulator configuration.
 	 * @since 2016/08/21
 	 */
-	public final EmulatorConfig.Immutable config()
+	public EmulatorConfig.Immutable config()
 	{
 		return this.config;
 	}
@@ -58,6 +58,7 @@ public final class Emulator
 	@Override
 	public final void run()
 	{
+		throw new Error("TODO");
 	}
 }
 
