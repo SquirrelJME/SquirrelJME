@@ -43,10 +43,10 @@ public class GenericAllocator
 	private final Deque<GenericRegister> _tempfloatq;
 	
 	/** Registers bound to local variables. */
-	private volatile GenericRegister[] _jlocals;
+	private volatile __VarStates__ _jlocals;
 	
 	/** Registers bound to stack variables. */
-	private volatile GenericRegister[] _jstack;
+	private volatile __VarStates__ _jstack;
 	
 	/**
 	 * Initializes the register allocator using the specified configuration
@@ -147,8 +147,8 @@ public class GenericAllocator
 				__locals));
 		
 		// Initialize state
-		this._jlocals = new GenericRegister[__locals];
-		this._jstack = new GenericRegister[__stack];
+		this._jlocals = new __VarStates__(__locals);
+		this._jstack = new __VarStates__(__stack);
 	}
 }
 

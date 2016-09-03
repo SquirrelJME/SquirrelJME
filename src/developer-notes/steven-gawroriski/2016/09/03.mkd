@@ -90,5 +90,11 @@ Testing GPG a bit more.
 
 ## 18:56
 
-And nother test.
+And another test.
+
+## 19:02
+
+I could always in a way initialize an initial state with `GenericAlloctorState`
+and use that for storing things. However with that I will need to know which
+registers are available in the queue and which ones are bound in places.
 
