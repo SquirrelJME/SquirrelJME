@@ -33,6 +33,26 @@ public interface JITMethodWriter
 		throws JITException;
 	
 	/**
+	 * Indicates the jump targets that are used in the method which may be used
+	 * by an implementation of the JIT to only store state for these specific
+	 * locations.
+	 *
+	 * For example, there could be a method that could have 65,000
+	 * instructions in it. In this method there are no exception handlers and
+	 * there are no {@code goto}s. Without the jump target table, the JIT
+	 * would have to save a state so it may be restored for every instruction
+	 * even when it would never be used. This method is used to prevent that
+	 * waste from occuring.
+	 *
+	 * @param __jt The jump targets in the method.
+	 * @throws JITException If the jump targets could not be set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/03
+	 */
+	public abstract void jumpTargets(int[] __jt)
+		throws JITException, NullPointerException;
+	
+	/**
 	 * Primes the argument methods, essentially the input used for the method
 	 * as it varies between methods. If the method is an instance method
 	 * then the first argument will be {@link JITVariableType#OBJECT}.

@@ -103,6 +103,7 @@ final class __CodeDecoder__
 	{
 		DataInputStream input = this._input;
 		JITConstantPool pool = this.pool;
+		JITMethodWriter writer = this._writer;
 		
 		// Read max stack and locals
 		int maxstack = input.readUnsignedShort();
@@ -147,6 +148,14 @@ final class __CodeDecoder__
 		try (ExtendedDataInputStream dis = new ExtendedDataInputStream(
 			new ByteArrayInputStream(code)))
 		{
+			// Mark the stream and determine the jump targets, this information
+			// is passed to the method writer so that it is not forced to
+			// store state for any position that is not a jump target
+			dis.mark(codelen);
+			writer.jumpTargets(new __JumpTargetCalc__(dis).targets());
+			
+			// Reset and decode operations
+			dis.reset();
 			new __OpParser__(dis).__decodeAll();
 		}
 		

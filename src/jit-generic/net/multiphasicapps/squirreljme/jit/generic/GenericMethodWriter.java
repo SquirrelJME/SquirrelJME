@@ -140,6 +140,21 @@ public abstract class GenericMethodWriter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/09/03
+	 */
+	@Override
+	public void jumpTargets(int[] __jt)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/08/29
 	 */
 	@Override

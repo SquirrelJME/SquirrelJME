@@ -30,6 +30,9 @@ public class ExtendedDataInputStream
 	/** The original input stream. */
 	protected final DataInputStream input;
 	
+	/** Is mark supported? */
+	protected final boolean canmark;
+	
 	/** The target endianess. */
 	private volatile DataEndianess _endian =
 		DataEndianess.BIG;
@@ -52,8 +55,12 @@ public class ExtendedDataInputStream
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.input = ((__is instanceof DataInputStream) ?
-			(DataInputStream)__is : new DataInputStream(__is));
+		DataInputStream w;
+		this.input = (w = ((__is instanceof DataInputStream) ?
+			(DataInputStream)__is : new DataInputStream(__is)));
+		
+		// Need to know if marking is supported
+		this.canmark = w.markSupported();
 	}
 	
 	/**
@@ -95,6 +102,10 @@ public class ExtendedDataInputStream
 	@Override
 	public void mark(int __rl)
 	{
+		// Nothing to mark?
+		if (__rl <= 0)
+			return;
+		
 		throw new Error("TODO");
 	}
 	
@@ -105,7 +116,7 @@ public class ExtendedDataInputStream
 	@Override
 	public boolean markSupported()
 	{
-		throw new Error("TODO");
+		return this.canmark;
 	}
 	
 	/**

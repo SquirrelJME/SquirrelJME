@@ -28,3 +28,9 @@ Essentially it would be one that uses the ZIP code.
 
 One thing I must determine though is how I want to setup the VFS.
 
+## 09:00
+
+It may actually be more efficient to calculate the jump targets of the byte
+code and then pass that information to the method writer so it only has to
+keep a specific amount of state for jump targets.
+
