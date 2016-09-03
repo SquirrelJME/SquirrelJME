@@ -23,7 +23,7 @@ import net.multiphasicapps.squirreljme.paths.NativePaths;
  * @since 2016/09/03
  */
 public class VirtualFileSystem
-	extends NativeFileSystem
+	implements NativeFileSystem
 {
 	/**
 	 * {@inheritDoc}
