@@ -45,3 +45,22 @@ number of locals and stack items as Java sees it to the JIT.
 
 And writing this, I got deja vu, in fact double deja vu.
 
+## 10:16
+
+I am actually going to need a complex multi-queue. Basically it is like a
+`Deque` except that it can have multiple queues in it that obtain stuff from
+the same source. Basically the class would be a `MultiSetDeque` in that an
+object could only be stored in a queue at once, but there could be multiple
+internal queues. This can be done with wrapping `Deque` and using a `Set`.
+When something is polled from the queue, if it is not in the `Set` then it
+is removed and forgotten about. I will need this for the register allocator
+because I need separated int and float registers to grab from, but for example
+in MMIX float and int are stored in the same registers. As such I would need to
+remove and/or split registers between dedicated integer ones and float ones,
+which would very much waste them.
+
+## 10:37
+
+I do need it to be four of them, for saved and unsaved ones for both int and
+float types.
+

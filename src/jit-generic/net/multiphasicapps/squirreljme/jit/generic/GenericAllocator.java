@@ -10,9 +10,11 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.Deque;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITVariableType;
+import net.multiphasicapps.util.msd.MultiSetDeque;
 
 /**
  * This is a class which is used to allocate and manage native registers
@@ -27,6 +29,18 @@ public class GenericAllocator
 	
 	/** The ABI used. */
 	protected final GenericABI abi;
+	
+	/** Saved int register queue. */
+	private final Deque<GenericRegister> _savedintq;
+	
+	/** Saved float register queue. */
+	private final Deque<GenericRegister> _savedfloatq;
+	
+	/** Temporary int register queue. */
+	private final Deque<GenericRegister> _tempintq;
+	
+	/** Temporary float register queue. */
+	private final Deque<GenericRegister> _tempfloatq;
 	
 	/**
 	 * Initializes the register allocator using the specified configuration
@@ -47,6 +61,25 @@ public class GenericAllocator
 		// Set
 		this.config = __conf;
 		this.abi = __abi;
+		
+		// Setup queues
+		MultiSetDeque<GenericRegister> msd = new MultiSetDeque<>();
+		Deque<GenericRegister> savedintq = msd.subDeque();
+		Deque<GenericRegister> savedfloatq = msd.subDeque();
+		Deque<GenericRegister> tempintq = msd.subDeque();
+		Deque<GenericRegister> tempfloatq = msd.subDeque();
+		this._savedintq = savedintq;
+		this._savedfloatq = savedfloatq;
+		this._tempintq = tempintq;
+		this._tempfloatq = tempfloatq;
+		
+		// Add all registers to the queues
+		savedintq.addAll(__abi.saved(GenericRegisterKind.INTEGER));
+		savedfloatq.addAll(__abi.saved(GenericRegisterKind.FLOAT));
+		tempintq.addAll(__abi.temporary(GenericRegisterKind.INTEGER));
+		tempfloatq.addAll(__abi.temporary(GenericRegisterKind.FLOAT));
+		
+		throw new Error("TODO");
 	}
 	
 	/**

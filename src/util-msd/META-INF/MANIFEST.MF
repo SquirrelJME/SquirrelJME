@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: util-msd
+X-SquirrelJME-UUID: 052b967b-85a8-46b6-8876-9f454ba02403
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: BZ
+LIBlet-Title: Multiple Set-Based Deque
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains the MultiSetDeque 
+ class which act simiarly to multiple Deques except that all 
+ elements in the queue are unique as if they were in a set.
+
