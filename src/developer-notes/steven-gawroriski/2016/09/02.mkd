@@ -199,3 +199,13 @@ would most likely stick to just CPU instructions however. Although one issue
 would be the fact that some CPUs vary. Regardless, writing the emulator will
 help give me a feel out how to generate code.
 
+## 19:54
+
+Then for the register allocator, the first thing would be to prime the
+arguments. However, now that I have `GenericABI` I can essentially just for
+the most part assign every local and setup the initial stack as if the method
+were entered. So I essentially refactored two sets of code. The good thing is
+that right now is that I do not believe the base JIT needs refactoring at all.
+The generic JIT just needed new register handling. But now that register
+handling should be much easier to work with and should scale better.
+
