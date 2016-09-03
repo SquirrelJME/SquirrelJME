@@ -73,3 +73,10 @@ I should sign my commits.
 One thing to consider is what happens when clear is called on one of the
 sub-deques.
 
+## 17:41
+
+One thing I can do for simplicity although it could be complicated is that if
+software float is detected it can automatically change the floating point
+types accordingly before passing it to the actual JIT implementation. So in
+short, the JIT if it sees software float being used it will handle that.
+

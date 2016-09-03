@@ -69,7 +69,7 @@ public enum JITCPUFloat
 	 */
 	public boolean isAnyHardware()
 	{
-		return isHardware32() || isHardware64();
+		return this.hard32 || this.hard64;
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public enum JITCPUFloat
 	 * @return {@code true} if 32-bit floating point is implement in hardware.
 	 * @since 2016/08/29
 	 */
-	public boolean isHardware32()
+	public boolean isHardwareFloat()
 	{
 		return this.hard32;
 	}
@@ -89,7 +89,7 @@ public enum JITCPUFloat
 	 * @return {@code true} if 64-bit floating point is implement in hardware.
 	 * @since 2016/08/29
 	 */
-	public boolean isHardware64()
+	public boolean isHardwareDouble()
 	{
 		return this.hard64;
 	}
@@ -100,7 +100,7 @@ public enum JITCPUFloat
 	 * @return {@code true} if 32-bit floating point is implement in software.
 	 * @since 2016/08/29
 	 */
-	public boolean isSoftware32()
+	public boolean isSoftwareFloat()
 	{
 		return !this.hard32;
 	}
@@ -111,7 +111,7 @@ public enum JITCPUFloat
 	 * @return {@code true} if 64-bit floating point is implement in software.
 	 * @since 2016/08/29
 	 */
-	public boolean isSoftware64()
+	public boolean isSoftwareDouble()
 	{
 		return !this.hard64;
 	}

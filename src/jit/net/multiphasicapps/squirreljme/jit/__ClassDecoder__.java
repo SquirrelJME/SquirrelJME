@@ -50,7 +50,7 @@ final class __ClassDecoder__
 	protected final DataInputStream input;
 	
 	/** The build configuration. */
-	protected final JITOutputConfig.Immutable config;
+	protected final JITOutputConfig.Immutable _config;
 	
 	/** Rewrites of class names. */
 	private final JITClassNameRewrite[] _rewrites;
@@ -94,7 +94,7 @@ final class __ClassDecoder__
 		
 		// Set rewrites
 		JITOutputConfig.Immutable config = __jit.config();
-		this.config = config;
+		this._config = config;
 		this._rewrites = config.classNameRewrites();
 	}
 	
