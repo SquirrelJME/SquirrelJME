@@ -21,7 +21,9 @@ import java.util.Set;
  * where every element within the queue is unique as if it were a member of
  * a {@link Set}. Note that the subdeques can be given elements that are shared
  * in multiple deques, however if one is removed then it is removed from the
- * other.
+ * other queues.
+ *
+ * {@code null} elements are not permitted.
  *
  * This class is not thread safe.
  *
@@ -34,8 +36,8 @@ public class MultiSetDeque<V>
 	private final List<__Sub__<V>> _subs =
 		new ArrayList<>();
 	
-	/** The set of added elements. */
-	final Set<V> _set =
+	/** The master set of added elements. */
+	final Set<V> _master =
 		new HashSet<>();
 	
 	/**

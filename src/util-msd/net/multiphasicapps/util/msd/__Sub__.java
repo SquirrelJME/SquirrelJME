@@ -11,9 +11,13 @@
 package net.multiphasicapps.util.msd;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This is a sub-deque which is given access to the {@link MultiSetDeque}.
@@ -23,8 +27,15 @@ import java.util.Iterator;
 final class __Sub__<V>
 	implements Deque<V>
 {
-	/** The base queue. */
-	final Deque<V> _deque;
+	/** The list which acts as a queue. */
+	final List<V> _deque;
+	
+	/** The items which are in this queue. */
+	final Set<V> _set =
+		new HashSet<>();
+	
+	/** The capacity limit. */
+	final int _limit;
 	
 	/**
 	 * Initializes the sub-queue.
@@ -41,11 +52,11 @@ final class __Sub__<V>
 		if (__msd == null)
 			throw new NullPointerException("NARG");
 		
-		// Initialize the queue
-		if (__l == Integer.MAX_VALUE)
-			this._deque = new ArrayDeque<>();
-		else
-			this._deque = new ArrayDeque<>(__l);
+		// Set limit
+		this._limit = __l;
+		
+		// Base on a list
+		this._deque = new ArrayList<>();
 	}
 	
 	/**
@@ -54,8 +65,17 @@ final class __Sub__<V>
 	 */
 	@Override
 	public boolean add(V __a)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Remember old size
+		List<V> deque = this._deque;
+		int was = deque.size();
+		
+		// Add it
+		addLast(__a);
+		
+		// If the size changed then it was added
+		return deque.size() != was;
 	}
 
 	/**
@@ -64,8 +84,19 @@ final class __Sub__<V>
 	 */
 	@Override
 	public boolean addAll(Collection<? extends V> __a)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// Add everything
+		boolean rv = false;
+		for (V v : __a)
+			rv |= add(v);
+		
+		// Has this changed?
+		return rv;
 	}
 
 	/**
@@ -85,7 +116,22 @@ final class __Sub__<V>
 	@Override
 	public void addLast(V __a)
 	{
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BZ02 Deque capacity would be exceeded.}
+		List<V> deque = this._deque;
+		if (deque.size() + 1 >= this._limit)
+			throw new IllegalStateException("BZ02");
+		
+		// Do not add the element if it is already in this queue.
+		Set<V> set = this._set;
+		if (set.contains(__a))
+			return;
+		
+		// Otherwise add it
+		deque.add(__a);
 	}
 
 	/**
