@@ -19,3 +19,8 @@ using it. I can make this code not use anything that has a part of the
 emulator so that it can be reused by SquirrelJME outside of it. So this
 would be in effect a completely virtual filesystem.
 
+## 07:47
+
+The emulator could have a virtual ZIP file source, probably as another file.
+Essentially it would be one that uses the ZIP code.
+
