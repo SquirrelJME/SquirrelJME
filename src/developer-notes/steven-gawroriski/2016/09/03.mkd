@@ -24,3 +24,7 @@ would be in effect a completely virtual filesystem.
 The emulator could have a virtual ZIP file source, probably as another file.
 Essentially it would be one that uses the ZIP code.
 
+## 07:59
+
+One thing I must determine though is how I want to setup the VFS.
+
