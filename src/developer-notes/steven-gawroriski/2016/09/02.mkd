@@ -209,3 +209,26 @@ that right now is that I do not believe the base JIT needs refactoring at all.
 The generic JIT just needed new register handling. But now that register
 handling should be much easier to work with and should scale better.
 
+## 22:02
+
+So I believe first I will target Linux MIPS and PowerPC. Then once I have that
+setup, I shall implement the bulk of the library. Implementing the library will
+be a bit tedious, but if I stick to what I use then I can get away with not
+implementing parts of it. Most of the basic CLDC library is the collections
+though. After that would be MEEP which is a bit more complex. One thing I
+will have to consider is the LUI code. I will be needing my own terminal
+emulation code along with perhaps PTYs. I suppose for starters I can support
+the vt family since that is pretty much a defacto standard.
+
+## 20:09
+
+So to recap, the current tasks would be:
+
+ * Priming the arguments in the JIT.
+ * Writing the emulator.
+
+These should not be difficult at all since their algorithms are quite simple.
+Hopefully in two to three weeks I can have a sort of demo, even if it just
+prints text to the console. And since I currently lack sleep, I shall be
+sleeping very soon now.
+
