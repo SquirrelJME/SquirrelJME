@@ -42,6 +42,12 @@ public class GenericAllocator
 	/** Temporary float register queue. */
 	private final Deque<GenericRegister> _tempfloatq;
 	
+	/** Registers bound to local variables. */
+	private volatile GenericRegister[] _jlocals;
+	
+	/** Registers bound to stack variables. */
+	private volatile GenericRegister[] _jstack;
+	
 	/**
 	 * Initializes the register allocator using the specified configuration
 	 * and the given ABI.
@@ -140,7 +146,9 @@ public class GenericAllocator
 			throw new JITException(String.format("BA1h %d %d", __stack,
 				__locals));
 		
-		throw new Error("TODO");
+		// Initialize state
+		this._jlocals = new GenericRegister[__locals];
+		this._jstack = new GenericRegister[__stack];
 	}
 }
 
