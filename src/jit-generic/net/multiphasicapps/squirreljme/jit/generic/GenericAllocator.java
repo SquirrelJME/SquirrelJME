@@ -78,8 +78,6 @@ public class GenericAllocator
 		savedfloatq.addAll(__abi.saved(GenericRegisterKind.FLOAT));
 		tempintq.addAll(__abi.temporary(GenericRegisterKind.INTEGER));
 		tempfloatq.addAll(__abi.temporary(GenericRegisterKind.FLOAT));
-		
-		throw new Error("TODO");
 	}
 	
 	/**

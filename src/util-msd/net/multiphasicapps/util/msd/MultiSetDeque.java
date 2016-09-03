@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.util.msd;
 
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
 /**
  * This is a class which provides a multiple {@link Deque} compatible interface
@@ -26,6 +28,10 @@ import java.util.Deque;
  */
 public class MultiSetDeque<V>
 {
+	/** Sub-queue list. */
+	private final List<__Sub__<V>> _subs =
+		new ArrayList<>();
+	
 	/**
 	 * Initializes the multi set deque with the specified number of internal
 	 * queues.
@@ -63,7 +69,10 @@ public class MultiSetDeque<V>
 		if (__l <= 0)
 			throw new IllegalArgumentException("BZ01");
 		
-		throw new Error("TODO");
+		// Create it
+		__Sub__<V> rv = new __Sub__<>(this, __l);
+		this._subs.add(rv);
+		return rv;
 	}
 }
 
