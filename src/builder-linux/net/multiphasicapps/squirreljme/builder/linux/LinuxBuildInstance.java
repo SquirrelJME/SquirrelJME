@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.builder.linux;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.BuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
+import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -79,12 +80,42 @@ public abstract class LinuxBuildInstance
 	}
 	
 	/**
+	 * Configures the Linux emulator.
+	 *
+	 * @param __conf The configuration to modify.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/03
+	 */
+	protected abstract void configureLinuxEmulator(EmulatorConfig __conf)
+		throws NullPointerException;
+	
+	/**
 	 * Obtains the ABI that is to be used for the target system.
 	 *
 	 * @return The ABI to use.
 	 * @since 2016/09/02
 	 */
 	protected abstract GenericABI getLinuxABI();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/03
+	 */
+	@Override
+	protected final void configureEmulator(EmulatorConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup base Linux details
+		if (true)
+			throw new Error("TODO");
+		
+		// Setup architecture specified details
+		configureLinuxEmulator(__conf);
+	}
 	
 	/**
 	 * {@inheritDoc}

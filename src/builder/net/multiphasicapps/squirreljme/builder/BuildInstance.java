@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
+import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessorProgress;
@@ -72,6 +73,15 @@ public abstract class BuildInstance
 		this.config = __conf;
 		this.triplet = __conf.triplet();
 	}
+	
+	/**
+	 * Configures the emulator.
+	 *
+	 * @param __conf The configuration to use.
+	 * @since 2016/09/03
+	 */
+	protected abstract void configureEmulator(EmulatorConfig __conf)
+		throws NullPointerException;
 	
 	/**
 	 * Modifies the given output configuration that is used to setup the
@@ -198,6 +208,12 @@ public abstract class BuildInstance
 		// Check
 		if (__tae == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup configuration to modify
+		EmulatorConfig econf = new EmulatorConfig();
+		
+		// Send to the build instance modifiers
+		configureEmulator(econf);
 		
 		throw new Error("TODO");
 	}

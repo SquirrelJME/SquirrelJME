@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.builder.linux.mips;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.linux.LinuxBuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
+import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 import net.multiphasicapps.squirreljme.jit.generic.mips.MIPSABI;
@@ -37,6 +38,21 @@ public class LinuxMIPSBuildInstance
 	public LinuxMIPSBuildInstance(BuildConfig __conf)
 	{
 		super(__conf, "mips");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/03
+	 */
+	@Override
+	protected void configureLinuxEmulator(EmulatorConfig __conf)
+		throws NullPointerException
+	{
+		// Check
+		if (__conf == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

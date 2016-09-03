@@ -16,11 +16,11 @@ package net.multiphasicapps.squirreljme.emulator;
  *
  * @since 2016/08/21
  */
-public abstract class Emulator
+public final class Emulator
 	implements Runnable
 {
 	/** The emulator configuration. */
-	protected final EmulatorConfig config;
+	protected final EmulatorConfig.Immutable config;
 	
 	/**
 	 * Initializes the emulator.
@@ -29,7 +29,7 @@ public abstract class Emulator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/21
 	 */
-	public Emulator(EmulatorConfig __conf)
+	public Emulator(EmulatorConfig.Immutable __conf)
 		throws NullPointerException
 	{
 		// Check
@@ -46,9 +46,18 @@ public abstract class Emulator
 	 * @return The emulator configuration.
 	 * @since 2016/08/21
 	 */
-	public EmulatorConfig config()
+	public final EmulatorConfig.Immutable config()
 	{
 		return this.config;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 20916/09/03
+	 */
+	@Override
+	public final void run()
+	{
 	}
 }
 

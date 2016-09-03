@@ -11,13 +11,11 @@
 package net.multiphasicapps.squirreljme.emulator;
 
 /**
- * This is used to configure the emulator.
- *
- * The configuration state is mutable.
+ * This is used to configure the emulator for when it runs.
  *
  * @since 2016/08/21
  */
-public class EmulatorConfig
+public final class EmulatorConfig
 {
 	/** Configuration lock. */
 	protected final Object lock =
@@ -29,6 +27,26 @@ public class EmulatorConfig
 	 * @since 2016/08/21
 	 */
 	public EmulatorConfig()
+	{
+	}
+	
+	/**
+	 * Creates an immutable copy of this configuration.
+	 *
+	 * @return The configuration copy.
+	 * @since 2016/09/03
+	 */
+	public final Immutable immutable()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * This contains an immutable copy of the emulator configuration.
+	 *
+	 * @since 2016/09/03
+	 */
+	public static final class Immutable
 	{
 	}
 }
