@@ -40,7 +40,7 @@ enum __SMTType__
 	OBJECT(false, JITVariableType.OBJECT),
 	
 	/** The top of a long or double. */
-	TOP(false, null),
+	TOP(false, JITVariableType.TOP),
 	
 	/** End. */
 	;

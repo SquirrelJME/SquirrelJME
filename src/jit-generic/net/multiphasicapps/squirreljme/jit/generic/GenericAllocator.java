@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.util.Deque;
+import java.util.List;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITVariableType;
@@ -30,23 +31,26 @@ public class GenericAllocator
 	/** The ABI used. */
 	protected final GenericABI abi;
 	
+	/** The multi-set deque, used for removal. */
+	final MultiSetDeque<GenericRegister> _msd;
+	
 	/** Saved int register queue. */
-	private final Deque<GenericRegister> _savedintq;
+	final Deque<GenericRegister> _savedintq;
 	
 	/** Saved float register queue. */
-	private final Deque<GenericRegister> _savedfloatq;
+	final Deque<GenericRegister> _savedfloatq;
 	
 	/** Temporary int register queue. */
-	private final Deque<GenericRegister> _tempintq;
+	final Deque<GenericRegister> _tempintq;
 	
 	/** Temporary float register queue. */
-	private final Deque<GenericRegister> _tempfloatq;
+	final Deque<GenericRegister> _tempfloatq;
 	
 	/** Registers bound to local variables. */
-	private volatile __VarStates__ _jlocals;
+	volatile __VarStates__ _jlocals;
 	
 	/** Registers bound to stack variables. */
-	private volatile __VarStates__ _jstack;
+	volatile __VarStates__ _jstack;
 	
 	/**
 	 * Initializes the register allocator using the specified configuration
@@ -74,6 +78,7 @@ public class GenericAllocator
 		Deque<GenericRegister> savedfloatq = msd.subDeque();
 		Deque<GenericRegister> tempintq = msd.subDeque();
 		Deque<GenericRegister> tempfloatq = msd.subDeque();
+		this._msd = msd;
 		this._savedintq = savedintq;
 		this._savedfloatq = savedfloatq;
 		this._tempintq = tempintq;
@@ -113,7 +118,89 @@ public class GenericAllocator
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get locals
+		__VarStates__ jlocals = this._jlocals;
+		
+		// Get integral and float arguments
+		GenericABI abi = this.abi;
+		List<GenericRegister> ai = abi.arguments(GenericRegisterKind.INTEGER);
+		List<GenericRegister> af = abi.arguments(GenericRegisterKind.FLOAT);
+		
+		// If there are any used variables they will be consumed from the
+		// argument list.
+		MultiSetDeque<GenericRegister> msd = this._msd;
+		
+		// Int/float argument at and limits
+		int iat = 0, ilim = ai.size(),
+			fat = 0, flim = af.size();
+		
+		// Go through variable types
+		int n = __t.length;
+		JITVariableType last = null;
+		for (int i = 0; i < n; i++)
+		{
+			// Get
+			JITVariableType type = __t[i];
+			
+			// The tops of variables will always skip a slot, but use similar
+			// storage for the old value.
+			if (type == JITVariableType.TOP)
+			{
+				// {@squirreljme.error BA1i Expected long/double to precede
+				// top variable type. (The last type; The current type)}
+				if (last != JITVariableType.LONG &&
+					last != JITVariableType.DOUBLE)
+					throw new JITException(String.format("BA1i %s %s", last,
+						type));
+				
+				throw new Error("TODO");
+			}
+			
+			// Need to get the used register, if one is used at all
+			GenericRegister usereg;
+			
+			// Floating point
+			if (type.isFloat())
+			{
+				// No more float regs?
+				if (fat >= flim)
+					usereg = null;
+				
+				// Grab one
+				else
+					usereg = af.get(fat++);
+			}
+			
+			// Integer
+			else
+			{
+				// No more int regs?
+				if (iat >= ilim)
+					usereg = null;
+				
+				// Use one
+				else
+					usereg = ai.get(iat++);
+			}
+			
+			// Debug
+			System.err.printf("DEBUG -- Selected register: %s%n", usereg);
+			
+			// Assign register to local
+			if (usereg != null)
+			{
+				// Assign
+				jlocals._regs[i] = usereg;
+				
+				// Also need to remove the register from the available queues
+				// since argument registers are initially used
+				msd.remove(usereg);
+			}
+			
+			// Allocate some stack space
+			else
+				throw new Error("TODO");
+		}
 	}
 	
 	/**

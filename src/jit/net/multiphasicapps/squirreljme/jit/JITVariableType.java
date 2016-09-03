@@ -18,21 +18,49 @@ package net.multiphasicapps.squirreljme.jit;
 public enum JITVariableType
 {
 	/** An {@code int}. */
-	INTEGER,
+	INTEGER(false),
 	
 	/** A {@code long}. */
-	LONG,
+	LONG(false),
 	
 	/** A {@code float}. */
-	FLOAT,
+	FLOAT(true),
 	
 	/** A {@code double}. */
-	DOUBLE,
+	DOUBLE(true),
 	
 	/** An object (reference). */
-	OBJECT,
+	OBJECT(false),
+	
+	/** The top of a long or double. */
+	TOP(false),
 	
 	/** End. */
 	;
+	
+	/** Is this a floating point type? */
+	protected final boolean isfloat;
+	
+	/**
+	 * Initializes the JIT variable type.
+	 *
+	 * @param __if Is this a floating point type?
+	 * @since 2016/09/03
+	 */
+	private JITVariableType(boolean __if)
+	{
+		this.isfloat = __if;
+	}
+	
+	/**
+	 * Is this a floating point type?
+	 *
+	 * @return {@code true} if this is a floating point type.
+	 * @since 2016/09/03
+	 */
+	public final boolean isFloat()
+	{
+		return this.isfloat;
+	}
 }
 

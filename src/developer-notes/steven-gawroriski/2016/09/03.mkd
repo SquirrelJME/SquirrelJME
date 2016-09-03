@@ -98,3 +98,9 @@ I could always in a way initialize an initial state with `GenericAlloctorState`
 and use that for storing things. However with that I will need to know which
 registers are available in the queue and which ones are bound in places.
 
+## 19:31
+
+When it comes to objects, I do not actually have to skip anything because on
+64-bit systems a single register will store a pointer. I just need to consider
+the stack when it comes to objects.
+

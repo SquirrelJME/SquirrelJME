@@ -20,8 +20,11 @@ import java.util.Set;
  * This is a class which provides a multiple {@link Deque} compatible interface
  * where every element within the queue is unique as if it were a member of
  * a {@link Set}. Note that the subdeques can be given elements that are shared
- * in multiple deques, however if one is removed then it is removed from the
- * other queues.
+ * in multiple deques.
+ *
+ * In the returned {@link Deque}, elements which are removed will be removed
+ * from the other {@link Deque}s. As such, clearing of one {@link Deque} may
+ * result in other ones getting smaller in size.
  *
  * {@code null} elements are not permitted.
  *
@@ -48,6 +51,23 @@ public class MultiSetDeque<V>
 	 */
 	public MultiSetDeque()
 	{
+	}
+	
+	/**
+	 * Removes the given element from any of the sub-{@link Deque}s that are
+	 * a part of the multi-set.
+	 *
+	 * @param __v The value to remove.
+	 * @return {@code true} if it was in any {@link Deque}.
+	 * @since 2016/09/03
+	 */
+	public final boolean remove(V __v)
+	{
+		// Null will never be in this deque
+		if (__v == null)
+			return false;
+		
+		throw new Error("TODO");
 	}
 	
 	/**

@@ -114,7 +114,16 @@ public final class GenericABI
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Depends
+		switch (__k)
+		{
+			case INTEGER: return _int._args;
+			case FLOAT: return _float._args;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
