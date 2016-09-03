@@ -143,7 +143,7 @@ public abstract class GenericMethodWriter
 	 * @since 2016/09/03
 	 */
 	@Override
-	public void jumpTargets(int[] __jt)
+	public final void jumpTargets(int[] __jt)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -158,7 +158,7 @@ public abstract class GenericMethodWriter
 	 * @since 2016/08/29
 	 */
 	@Override
-	public void primeArguments(JITVariableType[] __t)
+	public final void primeArguments(JITVariableType[] __t)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -171,6 +171,18 @@ public abstract class GenericMethodWriter
 		
 		// Record state for initial entry jump back
 		this.jopstates.put(0, allocator.recordState());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/03
+	 */
+	@Override
+	public final void variableCounts(int __stack, int __locals)
+		throws JITException
+	{
+		// Send it to the allocator
+		this.allocator.variableCounts(__stack, __locals);
 	}
 }
 

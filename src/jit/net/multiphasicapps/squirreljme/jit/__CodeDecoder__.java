@@ -113,6 +113,9 @@ final class __CodeDecoder__
 		this._maxstack = maxstack;
 		this._maxlocals = maxlocals;
 		
+		// Report this to the writer
+		writer.variableCounts(maxstack, maxlocals);
+		
 		// {@squirreljme.error ED06 The code for a given method exceeds the
 		// code size limit, or the size is zero. (The current code length;
 		// The code size limit)}

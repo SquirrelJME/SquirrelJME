@@ -34,3 +34,14 @@ It may actually be more efficient to calculate the jump targets of the byte
 code and then pass that information to the method writer so it only has to
 keep a specific amount of state for jump targets.
 
+## 10:04
+
+So register allocation is simple, I just need a simple way to store the states.
+One thing though is that locals and stack item sizes are known in methods and
+I only need to store state for all of those locals. So I will need to pass the
+number of locals and stack items as Java sees it to the JIT.
+
+## 10:07
+
+And writing this, I got deja vu, in fact double deja vu.
+

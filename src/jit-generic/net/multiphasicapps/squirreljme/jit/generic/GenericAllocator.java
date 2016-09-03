@@ -89,5 +89,27 @@ public class GenericAllocator
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * This registers temporary and local variable slots which are assigned
+	 * to registers in a method.
+	 *
+	 * @param __stack The number of stack entries.
+	 * @param __locals The number of local variables.
+	 * @throws JITException If they could not be counted.
+	 * @since 2016/09/03
+	 */
+	public final void variableCounts(int __stack, int __locals)
+		throws JITException
+	{
+		// {@squirreljme.error BA1h The number of stack and/or local variables
+		// has a negative count. (The stack variable count; The local variable
+		// count)}
+		if (__stack < 0 || __locals < 0)
+			throw new JITException(String.format("BA1h %d %d", __stack,
+				__locals));
+		
+		throw new Error("TODO");
+	}
 }
 

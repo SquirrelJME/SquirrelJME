@@ -70,5 +70,17 @@ public interface JITMethodWriter
 	 */
 	public abstract void primeArguments(JITVariableType[] __t)
 		throws JITException, NullPointerException;
+	
+	/**
+	 * This indicates the number of stack entries and local variable entries
+	 * that are used in the byte code that this method has.
+	 *
+	 * @param __stack The number of stack entries.
+	 * @param __locals The number of local variables.
+	 * @throws JITException If they could not be counted.
+	 * @since 2016/09/03
+	 */
+	public abstract void variableCounts(int __stack, int __locals)
+		throws JITException;
 }
 
