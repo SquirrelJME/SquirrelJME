@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.util.msd;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
@@ -22,6 +23,9 @@ import java.util.Iterator;
 final class __Sub__<V>
 	implements Deque<V>
 {
+	/** The base queue. */
+	final Deque<V> _deque;
+	
 	/**
 	 * Initializes the sub-queue.
 	 *
@@ -37,7 +41,11 @@ final class __Sub__<V>
 		if (__msd == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Initialize the queue
+		if (__l == Integer.MAX_VALUE)
+			this._deque = new ArrayDeque<>();
+		else
+			this._deque = new ArrayDeque<>(__l);
 	}
 	
 	/**

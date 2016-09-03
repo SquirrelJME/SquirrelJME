@@ -12,7 +12,9 @@ package net.multiphasicapps.util.msd;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This is a class which provides a multiple {@link Deque} compatible interface
@@ -31,6 +33,10 @@ public class MultiSetDeque<V>
 	/** Sub-queue list. */
 	private final List<__Sub__<V>> _subs =
 		new ArrayList<>();
+	
+	/** The set of added elements. */
+	final Set<V> _set =
+		new HashSet<>();
 	
 	/**
 	 * Initializes the multi set deque with the specified number of internal
