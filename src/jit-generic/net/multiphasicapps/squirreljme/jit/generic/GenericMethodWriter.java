@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
@@ -54,6 +56,10 @@ public abstract class GenericMethodWriter
 	
 	/** The ABI used on the target system. */
 	protected final GenericABI abi;
+	
+	/** State of the stack for each Java operation. */
+	protected final Map<Integer, GenericAllocatorState> jopstates =
+		new LinkedHashMap<>();
 	
 	/**
 	 * Initializes the generic method writer.
@@ -144,10 +150,12 @@ public abstract class GenericMethodWriter
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		System.err.printf("DEBUG -- Primed args: %s%n", Arrays.asList(__t));
+		// Just send to the allocator
+		GenericAllocator allocator = this.allocator;
+		allocator.primeArguments(__t);
 		
-		throw new Error("TODO");
+		// Record state for initial entry jump back
+		this.jopstates.put(0, allocator.recordState());
 	}
 }
 

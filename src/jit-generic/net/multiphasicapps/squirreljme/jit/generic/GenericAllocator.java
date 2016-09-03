@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITVariableType;
 
 /**
  * This is a class which is used to allocate and manage native registers
@@ -19,7 +20,7 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
  *
  * @since 2016/08/30
  */
-public final class GenericAllocator
+public class GenericAllocator
 {
 	/** The configuration used. */
 	protected final JITOutputConfig.Immutable config;
@@ -46,6 +47,47 @@ public final class GenericAllocator
 		// Set
 		this.config = __conf;
 		this.abi = __abi;
+	}
+	
+	/**
+	 * Returns the ABI that is used for this.
+	 *
+	 * @return The used ABI.
+	 * @since 2016/09/03
+	 */
+	public final GenericABI abi()
+	{
+		return this.abi;
+	}
+	
+	/**
+	 * Primes the method arguments and sets the initial state that is used
+	 * on entry of a method.
+	 *
+	 * @param __t The arguments to the method.
+	 * @throws JITException If they could not be primed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/03
+	 */
+	public void primeArguments(JITVariableType[] __t)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Records the current state of the allocator.
+	 *
+	 * @return The allocator state.
+	 * @since 2016/09/03
+	 */
+	public final GenericAllocatorState recordState()
+	{
+		throw new Error("TODO");
 	}
 }
 
