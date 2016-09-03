@@ -201,6 +201,9 @@ public class GenericAllocator
 			else
 				throw new Error("TODO");
 		}
+		
+		// Debug
+		System.err.printf("DEBUG -- AllocState: %s%n", this);
 	}
 	
 	/**
@@ -211,7 +214,17 @@ public class GenericAllocator
 	 */
 	public final GenericAllocatorState recordState()
 	{
-		throw new Error("TODO");
+		return new GenericAllocatorState(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/03
+	 */
+	@Override
+	public String toString()
+	{
+		return recordState().toString();
 	}
 	
 	/**

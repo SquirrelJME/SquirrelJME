@@ -441,7 +441,7 @@ final class __Sub__<V>
 	@Override
 	public int size()
 	{
-		throw new Error("TODO");
+		return this._deque.size();
 	}
 
 	/**
@@ -451,7 +451,7 @@ final class __Sub__<V>
 	@Override
 	public <T> T[] toArray(T[] __a)
 	{
-		throw new Error("TODO");
+		return this._deque.<T>toArray(__a);
 	}
 
 	/**
@@ -461,7 +461,7 @@ final class __Sub__<V>
 	@Override
 	public Object[] toArray()
 	{
-		throw new Error("TODO");
+		return this._deque.toArray();
 	}
 	
 	/**
