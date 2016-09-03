@@ -4,3 +4,18 @@
 
 So now the emulator.
 
+## 07:36
+
+So what I need is a filesystem for the most part, or at least a source of
+files.
+
+## 07:38
+
+So that would be basing off `NativeFileSystem` at least what the emulator
+will use. So I need perhaps emulator specific volumes. Although one thing I
+can do to reuse code is have an abstract filesystem that is completely
+virtual for the most part. File access and roots can be handled by classes
+using it. I can make this code not use anything that has a part of the
+emulator so that it can be reused by SquirrelJME outside of it. So this
+would be in effect a completely virtual filesystem.
+

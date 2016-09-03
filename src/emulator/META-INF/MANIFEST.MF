@@ -3,7 +3,7 @@ X-SquirrelJME-Name: emulator
 X-SquirrelJME-UUID: 79330db6-208b-48f5-a0b0-09a23ca28a07
 X-SquirrelJME-Depends: cldc-full, jit-base, util-unmodifiable,
  zip-reader-block, paths, fs, exe-elf, paths-posix, jit-base-mips,
- jit-base-powerpc
+ jit-base-powerpc, fs-virtual
 X-SquirrelJME-Error: CB
 LIBlet-Title: Emulator
 LIBlet-Vendor: Steven Gawroriski

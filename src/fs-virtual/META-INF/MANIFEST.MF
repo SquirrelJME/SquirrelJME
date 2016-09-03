@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: fs-virtual
+X-SquirrelJME-UUID: 00347ce2-0705-4e53-a1be-33d29fb6aaef
+X-SquirrelJME-Depends: fs
+X-SquirrelJME-Error: CA
+LIBlet-Title: Virtual Filesystem
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains a virtual 
+ file system which is completely backed by file volume 
+ providers.
+
