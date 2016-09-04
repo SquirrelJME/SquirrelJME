@@ -25,6 +25,9 @@ final class __OpParser__
 	/** The input operation data. */
 	protected final ExtendedDataInputStream input;
 	
+	/** The writer used for output. */
+	protected final JITMethodWriter writer;
+	
 	/**
 	 * Initializes the operation parser.
 	 *
@@ -32,7 +35,7 @@ final class __OpParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	__OpParser__(ExtendedDataInputStream __dis)
+	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis)
 		throws NullPointerException
 	{
 		// Check
@@ -40,6 +43,7 @@ final class __OpParser__
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.writer = __jmw;
 		this.input = __dis;
 	}
 	
@@ -55,6 +59,7 @@ final class __OpParser__
 	{
 		// Get
 		ExtendedDataInputStream input = this.input;
+		JITMethodWriter writer = this.writer;
 		
 		// Decode loop
 		for (;;)
@@ -70,6 +75,9 @@ final class __OpParser__
 			// Wide? Read another
 			if (code == __OpIndex__.WIDE)
 				code = (code << 8) | input.readUnsignedByte();
+			
+			// Report it
+			writer.atInstruction(code, nowpos);
 			
 			// Decode single operation
 			__decodeOne(code);

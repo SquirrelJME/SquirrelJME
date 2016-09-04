@@ -177,7 +177,7 @@ final class __CodeDecoder__
 			
 			// Reset and decode operations
 			dis.reset();
-			new __OpParser__(dis).__decodeAll();
+			new __OpParser__(writer, dis).__decodeAll();
 		}
 		
 		// Done

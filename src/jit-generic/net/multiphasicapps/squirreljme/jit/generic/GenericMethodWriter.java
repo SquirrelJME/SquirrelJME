@@ -122,6 +122,22 @@ public abstract class GenericMethodWriter
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/09/04
+	 */
+	@Override
+	public void atInstruction(int __code, int __pos)
+		throws JITException
+	{
+		// If the current position is a jump target then record the state of
+		// the allocator before the work is performed so that the state may
+		// be transfered back for jump handling.
+		// Also always add the implicit state on entry of a method
+		if (__pos == 0 || Arrays.binarySearch(this._jumptargets, __pos) >= 0)
+			this.jopstates.put(0, allocator.recordState());
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/08/19
 	 */
 	@Override
@@ -172,9 +188,6 @@ public abstract class GenericMethodWriter
 		// Just send to the allocator
 		GenericAllocator allocator = this.allocator;
 		allocator.primeArguments(__t);
-		
-		// Record state for initial entry jump back
-		this.jopstates.put(0, allocator.recordState());
 	}
 	
 	/**

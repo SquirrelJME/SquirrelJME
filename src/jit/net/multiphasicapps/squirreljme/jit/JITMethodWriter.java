@@ -25,6 +25,18 @@ public interface JITMethodWriter
 	extends AutoCloseable
 {
 	/**
+	 * This is called at the start before an instruction is operated on so
+	 * that a JIT implementation may perform unspecified tasks if required.
+	 *
+	 * @param __code The Java byte code operation.
+	 * @param __pos The position of the operation.
+	 * @throws JITException If there was a problem using the instruction.
+	 * @since 2016/09/04
+	 */
+	public abstract void atInstruction(int __code, int __pos)
+		throws JITException;
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/19
 	 */
