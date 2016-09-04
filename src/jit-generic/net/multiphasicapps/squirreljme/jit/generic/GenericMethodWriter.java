@@ -128,12 +128,22 @@ public abstract class GenericMethodWriter
 	public void atInstruction(int __code, int __pos)
 		throws JITException
 	{
+		// If there is already a state for this position then it must be
+		// restored. Jump forwards to unprocessed code will cause states to
+		// exist.
+		Map<Integer, GenericAllocatorState> jopstates = this.jopstates;
+		GenericAllocatorState gas = jopstates.get(__pos);
+		if (gas != null)
+			throw new Error("TODO");
+		
+		// Otherwise store it
 		// If the current position is a jump target then record the state of
 		// the allocator before the work is performed so that the state may
 		// be transfered back for jump handling.
 		// Also always add the implicit state on entry of a method
-		if (__pos == 0 || Arrays.binarySearch(this._jumptargets, __pos) >= 0)
-			this.jopstates.put(0, allocator.recordState());
+		else if (__pos == 0 ||
+			Arrays.binarySearch(this._jumptargets, __pos) >= 0)
+			jopstates.put(0, allocator.recordState());
 	}
 	
 	/**
