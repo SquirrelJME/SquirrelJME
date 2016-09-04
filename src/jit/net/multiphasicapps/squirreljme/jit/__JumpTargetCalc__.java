@@ -191,7 +191,8 @@ class __JumpTargetCalc__
 			case __OpIndex__.IFNE:
 			case __OpIndex__.IFNONNULL:
 			case __OpIndex__.IFNULL:
-				throw new Error("TODO");
+				__add(__rv, __pos + __dis.readShort());
+				break;
 				
 				// 5 byte parameter
 			case __OpIndex__.WIDE_IINC:
