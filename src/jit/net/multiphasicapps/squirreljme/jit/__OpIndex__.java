@@ -857,5 +857,29 @@ interface __OpIndex__
 	/** Wide DLOAD. */
 	public static final int WIDE_DLOAD =
 		(WIDE << 8) | DLOAD;
+
+	/** Wide ASTORE. */
+	public static final int WIDE_ASTORE =
+		(WIDE << 8) | ASTORE;
+
+	/** Wide ISTORE. */
+	public static final int WIDE_ISTORE =
+		(WIDE << 8) | ISTORE;
+
+	/** Wide LSTORE. */
+	public static final int WIDE_LSTORE =
+		(WIDE << 8) | LSTORE;
+
+	/** Wide FSTORE. */
+	public static final int WIDE_FSTORE =
+		(WIDE << 8) | FSTORE;
+
+	/** Wide DSTORE. */
+	public static final int WIDE_DSTORE =
+		(WIDE << 8) | DSTORE;
+	
+	/** Wide IINC. */
+	public static final int WIDE_IINC =
+		(WIDE << 8) | IINC;
 }
 
