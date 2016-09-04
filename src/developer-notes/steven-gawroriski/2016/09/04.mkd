@@ -10,3 +10,18 @@ vector format. SVG is complex and requires XML parsing however.
 One thing I need to consider is that with the register allocator if there is
 no state then I must store it into a jump target or restore it if it exists.
 
+## 15:49
+
+I believe for the stack map state, I will need a local cache marker as such.
+Basically assign a unique value to a local and then for stack entries have it
+so it points to that local and store the unique value. When a local value is
+written to then the unique value is changed. Although really the opposite
+must occur. Local variables need to have a link to the stack items which
+contain a copy of the local. In the event that a local variable changes, any
+existing stack entries are to be copied via generated code. Across jump
+target bounds, I should clear the entries so their cached state is removed
+since it might not make much sense. There can be a jump from two places which
+has the same stack layout but where the value is sourced from two completely
+different locals. Then when a local value wants to change to another value,
+that check is performed to copy it to the stack.
+
