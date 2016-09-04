@@ -213,7 +213,7 @@ public class ExtendedDataInputStream
 	public double readDouble()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return Double.longBitsToDouble(readLong());
 	}
 	
 	/**
@@ -224,7 +224,7 @@ public class ExtendedDataInputStream
 	public float readFloat()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return Float.intBitsToFloat(readInt());
 	}
 	
 	/**
@@ -257,7 +257,22 @@ public class ExtendedDataInputStream
 	public int readInt()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Read
+		int val = this.input.readInt();
+		
+		// Increase read count
+		this._count += 4; 
+		
+		// Swap?
+		switch (this._endian)
+		{
+			case BIG: return val;
+			case LITTLE: return Integer.reverseBytes(val);
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
@@ -268,7 +283,22 @@ public class ExtendedDataInputStream
 	public long readLong()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Read
+		long val = this.input.readLong();
+		
+		// Increase read count
+		this._count += 8; 
+		
+		// Swap?
+		switch (this._endian)
+		{
+			case BIG: return val;
+			case LITTLE: return Long.reverseBytes(val);
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
@@ -279,7 +309,22 @@ public class ExtendedDataInputStream
 	public short readShort()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Read
+		short val = this.input.readShort();
+		
+		// Increase read count
+		this._count += 2; 
+		
+		// Swap?
+		switch (this._endian)
+		{
+			case BIG: return val;
+			case LITTLE: return Short.reverseBytes(val);
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
@@ -290,7 +335,7 @@ public class ExtendedDataInputStream
 	public int readUnsignedByte()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return readByte() & 0xFF;
 	}
 	
 	/**
@@ -301,7 +346,7 @@ public class ExtendedDataInputStream
 	public int readUnsignedShort()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return readShort() & 0xFFFF;
 	}
 	
 	/**
