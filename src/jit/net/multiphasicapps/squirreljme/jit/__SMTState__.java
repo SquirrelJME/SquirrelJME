@@ -61,6 +61,25 @@ class __SMTState__
 	}
 	
 	/**
+	 * Copies the state from the other stack information to the current one.
+	 *
+	 * @param __o The other stack to source from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/04
+	 */
+	public void from(__SMTState__ __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Set from
+		this._stack.from(__o._stack);
+		this._locals.from(__o._locals);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/29
 	 */

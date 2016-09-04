@@ -55,6 +55,20 @@ class __SMTStack__
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/04
+	 */
+	@Override
+	public void from(__SMTTread__ __o)
+	{
+		// Copy top
+		setStackTop(((__SMTStack__)__o)._top);
+		
+		// Copy variables also
+		super.from(__o);
+	}
+	
+	/**
 	 * Sets the top of the stack.
 	 *
 	 * @param __top The top of the stack.

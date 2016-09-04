@@ -91,6 +91,11 @@ final class __OpParser__
 			if (code == __OpIndex__.WIDE)
 				code = (code << 8) | input.readUnsignedByte();
 			
+			// If there is stack state for this position then set it
+			__SMTState__ bias = smt.get(nowpos);
+			if (bias != null)
+				smwork.from(bias);
+			
 			// Report it
 			writer.atInstruction(code, nowpos);
 			

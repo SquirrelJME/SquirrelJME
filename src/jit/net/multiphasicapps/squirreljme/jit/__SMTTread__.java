@@ -68,6 +68,26 @@ abstract class __SMTTread__
 	}
 	
 	/**
+	 * Copies state from another state.
+	 *
+	 * @param __o The state to copy from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/04
+	 */
+	public void from(__SMTTread__ __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy all variables
+		int n = this.count;
+		for (int i = 0; i < n; i++)
+			set(i, __o.get(i));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/05/12
 	 */
