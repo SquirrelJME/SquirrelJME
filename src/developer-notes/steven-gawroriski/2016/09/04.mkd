@@ -1,2 +1,12 @@
 # 2016/09/04
 
+## 14:51
+
+One thing I can have is instead of PNGs for images, I can have a kind of
+vector format. SVG is complex and requires XML parsing however.
+
+## 15:34
+
+One thing I need to consider is that with the register allocator if there is
+no state then I must store it into a jump target or restore it if it exists.
+

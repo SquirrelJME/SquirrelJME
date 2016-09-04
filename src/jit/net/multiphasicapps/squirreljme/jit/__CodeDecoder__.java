@@ -158,9 +158,10 @@ final class __CodeDecoder__
 			__readAttribute(pool, input);
 		
 		// If no stack map table exists then setup an initial implicit state
-		if (this._smt == null)
-			this._smt = __SMTParser__.__initialState(this._flags, this._type,
-				maxstack, maxlocals);
+		Map<Integer, __SMTState__> smt;
+		if ((smt = this._smt) == null)
+			this._smt = (smt = __SMTParser__.__initialState(this._flags,
+				this._type, maxstack, maxlocals));
 		
 		// Prime arguments
 		__primeArguments();
@@ -177,7 +178,7 @@ final class __CodeDecoder__
 			
 			// Reset and decode operations
 			dis.reset();
-			new __OpParser__(writer, dis).__decodeAll();
+			new __OpParser__(writer, dis, smt).__decodeAll();
 		}
 		
 		// Done

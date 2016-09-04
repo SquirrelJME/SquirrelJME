@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.jit;
 
 import java.io.IOException;
+import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
@@ -28,23 +29,35 @@ final class __OpParser__
 	/** The writer used for output. */
 	protected final JITMethodWriter writer;
 	
+	/** The stack map table. */
+	private final Map<Integer, __SMTState__> _smt;
+	
+	/** The working stack map state. */
+	private final __SMTState__ _smwork;
+	
 	/**
 	 * Initializes the operation parser.
 	 *
 	 * @param __dis The input data source.
+	 * @param __smt The stack map table.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis)
+	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis,
+		Map<Integer, __SMTState__> __smt)
 		throws NullPointerException
 	{
 		// Check
-		if (__dis == null)
+		if (__dis == null || __smt == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.writer = __jmw;
 		this.input = __dis;
+		this._smt = __smt;
+		
+		// Set working state
+		this._smwork = new __SMTState__(__smt.get(0));
 	}
 	
 	/**
@@ -60,6 +73,8 @@ final class __OpParser__
 		// Get
 		ExtendedDataInputStream input = this.input;
 		JITMethodWriter writer = this.writer;
+		Map<Integer, __SMTState__> smt = this._smt;
+		__SMTState__ smwork = this._smwork;
 		
 		// Decode loop
 		for (;;)
