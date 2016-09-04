@@ -16,6 +16,6 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Wrap
-JAVA_OPTIONS="-Xms2M -Xmx2M -Xss64K" "$__exedir/../build.sh" $*
+JAVA_OPTIONS="-Xms2M -Xmx2M -Xss32K" "$__exedir/../build.sh" $*
 exit $?
 

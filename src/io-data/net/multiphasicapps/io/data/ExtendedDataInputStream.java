@@ -40,6 +40,14 @@ public class ExtendedDataInputStream
 	/** The number of bytes read. */
 	private volatile long _count;
 	
+	/** The mark start position. */
+	private volatile long _markstart =
+		-1L;
+	
+	/** The mark end position. */
+	private volatile long _markend =
+		-1L;
+	
 	/**
 	 * Initializes the extended input stream.
 	 *
@@ -102,11 +110,17 @@ public class ExtendedDataInputStream
 	@Override
 	public void mark(int __rl)
 	{
-		// Nothing to mark?
-		if (__rl <= 0)
+		// Nothing to mark or not supported? Do nothing
+		if (__rl <= 0 || !this.canmark)
 			return;
 		
-		throw new Error("TODO");
+		// Mark the sub-stream
+		this.input.mark(__rl);
+		
+		// Start marker count
+		long count = this._count;
+		this._markstart = count;
+		this._markend = count + __rl;
 	}
 	
 	/**
@@ -309,7 +323,23 @@ public class ExtendedDataInputStream
 	public void reset()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error BD02 The stream has not been marked.}
+		long markstart = this._markstart;
+		if (markstart < 0)
+			throw new IOException("BD02");
+		
+		// {@squirreljme.error BD03 Exceeded the number of bytes specified by
+		// mark.}
+		long count = this._count;
+		long markend = this._markend;
+		if (count > markend)
+			throw new IOException("BD03");
+		
+		// Call reset
+		this.input.reset();
+		
+		// Reset the current count to the start of the mark
+		this._count = markstart;
 	}
 	
 	/**
