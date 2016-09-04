@@ -12,6 +12,7 @@ package net.multiphasicapps.io.data;
 
 import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -191,7 +192,15 @@ public class ExtendedDataInputStream
 	public byte readByte()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Read value
+		int rv = read();
+		
+		// {@squirreljme.error BD04 End of file reached.}
+		if (rv < 0)
+			throw new EOFException("BD04");
+		
+		// Cast
+		return (byte)rv;
 	}
 	
 	/**
@@ -202,7 +211,7 @@ public class ExtendedDataInputStream
 	public char readChar()
 		throws IOException
 	{
-		throw new Error("TODO");
+		return (char)readShort();
 	}
 	
 	/**
@@ -235,7 +244,7 @@ public class ExtendedDataInputStream
 	public void readFully(byte[] __b)
 		throws IOException
 	{
-		throw new Error("TODO");
+		return readFully(__b, 0, __b.length);
 	}
 	
 	/**
