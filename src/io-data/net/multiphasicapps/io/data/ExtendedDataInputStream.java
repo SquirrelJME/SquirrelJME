@@ -244,7 +244,7 @@ public class ExtendedDataInputStream
 	public void readFully(byte[] __b)
 		throws IOException
 	{
-		return readFully(__b, 0, __b.length);
+		readFully(__b, 0, __b.length);
 	}
 	
 	/**

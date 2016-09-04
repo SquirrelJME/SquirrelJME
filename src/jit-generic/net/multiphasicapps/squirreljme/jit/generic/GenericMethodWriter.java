@@ -61,6 +61,9 @@ public abstract class GenericMethodWriter
 	protected final Map<Integer, GenericAllocatorState> jopstates =
 		new LinkedHashMap<>();
 	
+	/** Valid jump targets. */
+	private volatile int[] _jumptargets;
+	
 	/**
 	 * Initializes the generic method writer.
 	 *
@@ -150,7 +153,8 @@ public abstract class GenericMethodWriter
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Store it
+		this._jumptargets = __jt;
 	}
 	
 	/**
