@@ -23,6 +23,10 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  */
 final class __OpParser__
 {
+	/** Implicit next operation. */
+	private static final int[] IMPLICIT_NEXT =
+		new int[]{-1};
+	
 	/** The input operation data. */
 	protected final ExtendedDataInputStream input;
 	
@@ -34,6 +38,9 @@ final class __OpParser__
 	
 	/** The working stack map state. */
 	private final __SMTState__ _smwork;
+	
+	/** Was the stack cache state flushed? */
+	private volatile boolean _stackflushed;
 	
 	/**
 	 * Initializes the operation parser.
@@ -96,11 +103,55 @@ final class __OpParser__
 			if (bias != null)
 				smwork.from(bias);
 			
+			// Stack not flushed
+			this._stackflushed = false;
+			
 			// Report it
 			writer.atInstruction(code, nowpos);
 			
 			// Decode single operation
-			__decodeOne(code);
+			int[] jt = __decodeOne(code);
+			if (jt == null)
+				throw new RuntimeException("OOPS");
+			
+			// Handle jump targets
+			// This verifies that for each jump target or implicit flow that
+			// the resulting stack state matches the expected one
+			// Stack cache flushing may also be performed
+			int n = jt.length;
+			boolean hasflushed = this._stackflushed;
+			for (int i = 0; i < n; i++)
+			{
+				// Get jump target, if it is implicit next then use the
+				// following instruction address
+				int jumpto = jt[i];
+				boolean implicit;
+				if ((implicit = (jumpto == -1)))
+					jumpto = (int)input.size();
+				
+				// If there is no state, do not need to verify
+				__SMTState__ intostate = smt.get(jumpto);
+				if (intostate == null)
+					continue;
+				
+				// Verify that they are correct
+				if (true)
+					throw new Error("TODO");
+				
+				// If this instruction naturally flows into a jump target
+				// (since jump handling flushes before the actual jump) then
+				// the stack cache will have to be flushed where locals are
+				// copied to the stack.
+				if (!hasflushed)
+				{
+					// Flush the stack
+					__flushStack();
+					
+					// Operations flushed, do not need to generate code for
+					// them now
+					hasflushed = true;
+				}
+			}
 		}
 		
 		throw new Error("TODO");
@@ -110,9 +161,10 @@ final class __OpParser__
 	 * Decodes a single operation.
 	 *
 	 * @param __code The byte code to decode.
+	 * @return The jump targets.
 	 * @since 2016/08/26
 	 */
-	private void __decodeOne(int __code)
+	private int[] __decodeOne(int __code)
 		throws IOException, JITException
 	{
 		// Get
@@ -164,96 +216,93 @@ final class __OpParser__
 				
 				// Push local int to the stack
 			case __OpIndex__.ILOAD:
-				__executeLoad(__SMTType__.INTEGER, input.readUnsignedByte());
-				break;
+				return __executeLoad(__SMTType__.INTEGER,
+					input.readUnsignedByte());
 				
 				// Push local int to the stack (wide)
 			case __OpIndex__.WIDE_ILOAD:
-				__executeLoad(__SMTType__.INTEGER, input.readUnsignedShort());
-				break;
+				return __executeLoad(__SMTType__.INTEGER,
+					input.readUnsignedShort());
 				
 				// Push local long to the stack
 			case __OpIndex__.LLOAD:
-				__executeLoad(__SMTType__.LONG, input.readUnsignedByte());
-				break;
+				return __executeLoad(__SMTType__.LONG,
+					input.readUnsignedByte());
 				
 				// Push local long to the stack (wide)
 			case __OpIndex__.WIDE_LLOAD:
-				__executeLoad(__SMTType__.LONG, input.readUnsignedShort());
-				break;
+				return __executeLoad(__SMTType__.LONG,
+					input.readUnsignedShort());
 				
 				// Push local float to the stack
 			case __OpIndex__.FLOAD:
-				__executeLoad(__SMTType__.FLOAT, input.readUnsignedByte());
-				break;
+				return __executeLoad(__SMTType__.FLOAT,
+					input.readUnsignedByte());
 				
 				// Push local float to the stack (wide)
 			case __OpIndex__.WIDE_FLOAD:
-				__executeLoad(__SMTType__.FLOAT, input.readUnsignedShort());
-				break;
+				return __executeLoad(__SMTType__.FLOAT,
+					input.readUnsignedShort());
 			
 				// Push local double to the stack
 			case __OpIndex__.DLOAD:
-				__executeLoad(__SMTType__.DOUBLE, input.readUnsignedByte());
-				break;
+				return __executeLoad(__SMTType__.DOUBLE,
+					input.readUnsignedByte());
 				
 				// Push local double to the stack (wide)
 			case __OpIndex__.WIDE_DLOAD:
-				__executeLoad(__SMTType__.DOUBLE, input.readUnsignedShort());
-				break;
+				return __executeLoad(__SMTType__.DOUBLE,
+					input.readUnsignedShort());
 				
 				// Push local reference to the stack
 			case __OpIndex__.ALOAD:
-				__executeLoad(__SMTType__.OBJECT, input.readUnsignedByte());
-				break;
+				return __executeLoad(__SMTType__.OBJECT,
+					input.readUnsignedByte());
 				
 				// Push local reference to the stack (wide)
 			case __OpIndex__.WIDE_ALOAD:
-				__executeLoad(__SMTType__.OBJECT, input.readUnsignedShort());
-				break;
+				return __executeLoad(__SMTType__.OBJECT,
+					input.readUnsignedShort());
 			
 				// Load int from local
 			case __OpIndex__.ILOAD_0:
 			case __OpIndex__.ILOAD_1:
 			case __OpIndex__.ILOAD_2:
 			case __OpIndex__.ILOAD_3:
-				__executeLoad(__SMTType__.INTEGER,
+				return __executeLoad(__SMTType__.INTEGER,
 					__code - __OpIndex__.ILOAD_0);
-				break;
 			
 				// Load long from local
 			case __OpIndex__.LLOAD_0:
 			case __OpIndex__.LLOAD_1:
 			case __OpIndex__.LLOAD_2:
 			case __OpIndex__.LLOAD_3:
-				__executeLoad(__SMTType__.LONG, __code - __OpIndex__.LLOAD_0);
-				break;
+				return __executeLoad(__SMTType__.LONG,
+					__code - __OpIndex__.LLOAD_0);
 			
 				// Load float from local
 			case __OpIndex__.FLOAD_0:
 			case __OpIndex__.FLOAD_1:
 			case __OpIndex__.FLOAD_2:
 			case __OpIndex__.FLOAD_3:
-				__executeLoad(__SMTType__.FLOAT, __code - __OpIndex__.FLOAD_0);
-				break;
+				return __executeLoad(__SMTType__.FLOAT,
+					__code - __OpIndex__.FLOAD_0);
 			
 				// Load double from local
 			case __OpIndex__.DLOAD_0:
 			case __OpIndex__.DLOAD_1:
 			case __OpIndex__.DLOAD_2:
 			case __OpIndex__.DLOAD_3:
-				__executeLoad(__SMTType__.DOUBLE,
+				return __executeLoad(__SMTType__.DOUBLE,
 					__code - __OpIndex__.DLOAD_0);
-				break;
 			
 				// Load reference from local
 			case __OpIndex__.ALOAD_0:
 			case __OpIndex__.ALOAD_1:
 			case __OpIndex__.ALOAD_2:
 			case __OpIndex__.ALOAD_3:
-				__executeLoad(__SMTType__.OBJECT,
+				return __executeLoad(__SMTType__.OBJECT,
 					__code - __OpIndex__.ALOAD_0);
-				break;
 			
 			case __OpIndex__.IALOAD:
 			case __OpIndex__.LALOAD:
@@ -449,16 +498,35 @@ final class __OpParser__
 	 *
 	 * @param __t The type of value to push.
 	 * @param __from The variable to load from.
+	 * @return Jump targets.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/27
 	 */
-	private void __executeLoad(__SMTType__ __t, int __from)
+	private int[] __executeLoad(__SMTType__ __t, int __from)
 		throws NullPointerException
 	{
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Get
+		__SMTState__ smwork = this._smwork;
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Implicit next
+		return IMPLICIT_NEXT;
+	}
+	
+	/**
+	 * Flushes the stack and makes all stack variables get values copied from
+	 * locals by the values they cache.
+	 *
+	 * @since 2016/09/04
+	 */
+	private void __flushStack()
+	{
 		throw new Error("TODO");
 	}
 }

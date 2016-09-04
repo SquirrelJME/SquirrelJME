@@ -25,3 +25,30 @@ has the same stack layout but where the value is sourced from two completely
 different locals. Then when a local value wants to change to another value,
 that check is performed to copy it to the stack.
 
+## 18:55
+
+So I need to determine the best way to handle caching of stack entries.
+Perhaps instead of storing it in the local and stack treads they can be
+stored in the states themselves. It could essentially be a mapping of stack
+entries to locals for the most part. On entry of a new jump target, all
+cache entries will be invalidated for the most part. The thing to handle though
+would be the invalidation. I would then suppose that after each operation
+has been handled that it checks to see if the next operation or any jump
+targets would cause invalidation to occur. So the op parser will need to handle
+setting and handling of next jump targets.
+
+## 19:17
+
+So actually, I will need to handle cache flushing whenever there is code that
+would land on a jump target somewhere. Flushing must be performed before the
+jump code is generated. I was about to write it following it. So if in the
+event no flushing was performed, and it should be flushed then it will be
+flushed in the basic handler.
+
+## 19:24
+
+So yes, flushing if the next target is a jump target would be best and then
+handling flushing before a jump is performed (but after any conditions) would
+be best. Although it would not result in that optimized code, it should be
+good enough since most of the stack copies should be reduced.
+
