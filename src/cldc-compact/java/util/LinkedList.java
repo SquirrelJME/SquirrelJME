@@ -254,7 +254,7 @@ public class LinkedList<E>
 		// Is empty
 		catch (NoSuchElementException e)
 		{
-			return false;
+			return null;
 		}
 	}
 	
@@ -273,7 +273,7 @@ public class LinkedList<E>
 		// Is empty
 		catch (NoSuchElementException e)
 		{
-			return false;
+			return null;
 		}
 	}
 	
