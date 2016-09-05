@@ -52,3 +52,11 @@ handling flushing before a jump is performed (but after any conditions) would
 be best. Although it would not result in that optimized code, it should be
 good enough since most of the stack copies should be reduced.
 
+## 21:46
+
+Another optimization I will have to handle is dup and such. Say a value is
+read from a value such a dup is performed. For swap and other operations these
+would actually cause copies when stack entries are not sourced from locals. So
+as such, I will need to have caching on stack values too. Flushing would have
+to do both, although stack items are always temporary.
+

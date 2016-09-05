@@ -23,6 +23,14 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  */
 final class __OpParser__
 {
+	/** Indicates that a local/stack item is not a duplicate of anything. */
+	static final int UNIQUE_STACK_VALUE =
+		__SMTStack__.UNIQUE_STACK_VALUE;
+	
+	/** Flags that the cache is a copy from the stack and not a local. */
+	static final int CACHE_STACK_MASK =
+		__SMTStack__.CACHE_STACK_MASK;
+	
 	/** Implicit next operation. */
 	private static final int[] IMPLICIT_NEXT =
 		new int[]{-1};
@@ -511,9 +519,18 @@ final class __OpParser__
 		
 		// Get
 		__SMTState__ smwork = this._smwork;
+		__SMTLocals__ locals = smwork._locals;
 		
-		if (true)
-			throw new Error("TODO");
+		// {@squirreljme.error ED0w Attempt to push a local variable to the
+		// stack of a different type. (The local variable index; The type that
+		// the variable was; The expected type)}
+		__SMTType__ was = locals.get(__from);
+		if (was != __t)
+			throw new JITException(String.format("ED0w %d %s %s", __from, was,
+				__t));
+		
+		// Cache it on the stack
+		smwork._stack.push(was, __from);
 		
 		// Implicit next
 		return IMPLICIT_NEXT;

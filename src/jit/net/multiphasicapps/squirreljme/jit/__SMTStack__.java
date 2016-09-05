@@ -20,6 +20,21 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 class __SMTStack__
 	extends __SMTTread__
 {
+	/** Indicates that a local/stack item is not a duplicate of anything. */
+	static final int UNIQUE_STACK_VALUE =
+		Integer.MIN_VALUE;
+	
+	/**
+	 * Flags that the cache is a copy from the stack and not a local.
+	 * A bit is used so that mathematical errors caused by negation do not
+	 * occur.
+	 */
+	static final int CACHE_STACK_MASK =
+		0x8000_0000;
+	
+	/** Local/stack variables these values are copied from. */
+	private final int[] _cache;
+	
 	/** The top of the stack. */
 	private volatile int _top;
 	
@@ -38,6 +53,12 @@ class __SMTStack__
 		
 		// Set
 		setStackTop(__top);
+		
+		// Use a cleared cache
+		int[] cache = new int[__n];
+		this._cache = cache;
+		for (int i = 0; i < __n; i++)
+			cache[i] = UNIQUE_STACK_VALUE;
 	}
 	
 	/**
@@ -52,6 +73,13 @@ class __SMTStack__
 		
 		// Set top
 		setStackTop(__s._top);
+		
+		// Copy cache
+		int n = this.count;
+		int[] cache = new int[n], from = __s._cache;
+		this._cache = cache;
+		for (int i = 0; i < n; i++)
+			cache[i] = from[i];
 	}
 	
 	/**
@@ -66,6 +94,63 @@ class __SMTStack__
 		
 		// Copy variables also
 		super.from(__o);
+	}
+	
+	/**
+	 * Pushes the specified variable to the stack.
+	 *
+	 * @param __t The type of variable to push.
+	 * @param __c Stack caching information, if the uppermost bit is set then
+	 * it represents a stack value.
+	 * @return The position of the stack variable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/04
+	 */
+	public int push(__SMTType__ __t, int __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ED0x The Java stack has overflowed.}
+		int top = this._top;
+		boolean wide;
+		int newtop = top + ((wide = __t.isWide()) ? 2 : 1);
+		if (newtop > this.count)
+			throw new JITException("ED0x");
+		
+		// Set type
+		set(top, __t);
+		
+		// Set cache
+		int[] cache = this._cache;
+		cache[top] = __c;
+		
+		// Set the top and adjust the top more
+		if (wide)
+		{
+			// Set next to the top type
+			int hi = top + 1;
+			set(hi, __SMTType__.TOP);
+			
+			// Specify that the value is also unique
+			if (__c != UNIQUE_STACK_VALUE)
+				cache[hi] = UNIQUE_STACK_VALUE;
+			
+			// Due to stack copies being used by a bit, both can be
+			// incremented without using complex negation.
+			// Otherwise have it cache the "TOP" of the other entry (be it
+			// another stack entry or a local)
+			else
+				cache[hi] = __c + 1;
+		}
+		
+		// New top
+		setStackTop(newtop);
+		
+		// Return the position the entry was placed at
+		return top;
 	}
 	
 	/**
