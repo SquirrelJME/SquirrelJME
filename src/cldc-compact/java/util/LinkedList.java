@@ -276,7 +276,22 @@ public class LinkedList<E>
 	@Override
 	public boolean removeFirstOccurrence(Object __a)
 	{
-		throw new Error("TODO");
+		// Start at the start of the list and remove the first match
+		Iterator<E> rover = iterator();
+		while (rover.hasNext())
+		{
+			E v = rover.next();
+			
+			// If this is the same object then remove it
+			if (Objects.equals(v, __a))
+			{
+				rover.remove();
+				return true;
+			}
+		}
+		
+		// Nothing was removed
+		return false;
 	}
 	
 	/**
@@ -296,7 +311,22 @@ public class LinkedList<E>
 	@Override
 	public boolean removeLastOccurrence(Object __a)
 	{
-		throw new Error("TODO");
+		// Start at the end of the list and remove the first match
+		ListIterator<E> rover = listIterator(size());
+		while (rover.hasPrevious())
+		{
+			E v = rover.previous();
+			
+			// If this is the same object then remove it
+			if (Objects.equals(v, __a))
+			{
+				rover.remove();
+				return true;
+			}
+		}
+		
+		// Nothing was removed
+		return false;
 	}
 	
 	/**
