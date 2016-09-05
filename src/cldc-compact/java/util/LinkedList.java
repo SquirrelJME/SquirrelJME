@@ -184,7 +184,7 @@ public class LinkedList<E>
 	public boolean offerLast(E __a)
 	{
 		// There are no capacity restrictions
-		add(size(), __a)
+		add(size(), __a);
 		return true;
 	}
 	
