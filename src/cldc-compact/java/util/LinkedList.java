@@ -10,232 +10,303 @@
 
 package java.util;
 
+/**
+ * A linked list is a list of items which are held together using chains. Each
+ * value for an element is placed within a chain link which is then held to
+ * other links in the chain.
+ *
+ * This class has efficient insertion and removal via the iterator interfaces.
+ *
+ * Random access is not efficient and the further away the element is from the
+ * initial sequence the more elements will need to be skipped to access the
+ * data.
+ *
+ * @param <E> The type of element to store.
+ * @since 2016/09/05
+ */
 public class LinkedList<E>
 	extends AbstractSequentialList<E>
 	implements List<E>, Deque<E>, Cloneable
 {
+	/** The number of entries in the list. */
+	private volatile int _count;
+	
+	/**
+	 * Initializes a linked list with no entries.
+	 *
+	 * @since 2016/09/05
+	 */
 	public LinkedList()
 	{
-		super();
-		throw new Error("TODO");
 	}
 	
+	/**
+	 * Initializes a linked list which contains a copy of all of the elements
+	 * of the other collection in its iterator order.
+	 *
+	 * @param __a The collection to copy elements from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/05
+	 */
 	public LinkedList(Collection<? extends E> __a)
+		throws NullPointerException
 	{
-		super();
-		throw new Error("TODO");
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// Just call addAll
+		addAll(__a);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
 	@Override
-	public boolean add(E __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	@Override
-	public void add(int __a, E __b)
-	{
-		throw new Error("TODO");
-	}
-	
-	@Override
-	public boolean addAll(Collection<? extends E> __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	@Override
-	public boolean addAll(int __a, Collection<? extends E> __b)
-	{
-		throw new Error("TODO");
-	}
-	
 	public void addFirst(E __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public void addLast(E __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	@Override
-	public void clear()
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
 	@Override
 	public Object clone()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
 	@Override
-	public boolean contains(Object __a)
-	{
-		throw new Error("TODO");
-	}
-	
 	public Iterator<E> descendingIterator()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E element()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
 	@Override
-	public E get(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
 	public E getFirst()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E getLast()
 	{
 		throw new Error("TODO");
 	}
 	
-	@Override
-	public int indexOf(Object __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	@Override
-	public int lastIndexOf(Object __a)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
 	@Override
 	public ListIterator<E> listIterator(int __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public boolean offer(E __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public boolean offerFirst(E __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public boolean offerLast(E __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E peek()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E peekFirst()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E peekLast()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E poll()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E pollFirst()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E pollLast()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E pop()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public void push(E __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
 	@Override
-	public boolean remove(Object __a)
-	{
-		throw new Error("TODO");
-	}
-	
-	@Override
-	public E remove(int __a)
-	{
-		throw new Error("TODO");
-	}
-	
 	public E remove()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E removeFirst()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public boolean removeFirstOccurrence(Object __a)
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public E removeLast()
 	{
 		throw new Error("TODO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
 	public boolean removeLastOccurrence(Object __a)
 	{
 		throw new Error("TODO");
 	}
 	
-	@Override
-	public E set(int __a, E __b)
-	{
-		throw new Error("TODO");
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
 	@Override
 	public int size()
 	{
-		throw new Error("TODO");
-	}
-	
-	@Override
-	public Object[] toArray()
-	{
-		throw new Error("TODO");
-	}
-	
-	@Override
-	public <T> T[] toArray(T[] __a)
-	{
-		throw new Error("TODO");
+		return this._count;
 	}
 }
 
