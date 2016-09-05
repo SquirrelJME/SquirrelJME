@@ -66,7 +66,7 @@ public class LinkedList<E>
 	@Override
 	public void addFirst(E __a)
 	{
-		throw new Error("TODO");
+		add(0, __a);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class LinkedList<E>
 	@Override
 	public void addLast(E __a)
 	{
-		throw new Error("TODO");
+		add(__a);
 	}
 	
 	/**
@@ -105,8 +105,9 @@ public class LinkedList<E>
 	 */
 	@Override
 	public E element()
+		throws NoSuchElementException
 	{
-		throw new Error("TODO");
+		return getFirst();
 	}
 	
 	/**
@@ -115,8 +116,15 @@ public class LinkedList<E>
 	 */
 	@Override
 	public E getFirst()
+		throws NoSuchElementException
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error ZZ05 Cannot get the first element because the
+		// linked list is empty.}
+		if (size() == 0)
+			throw new NoSuchElementException("ZZ05");
+		
+		// Get it
+		return get(0);
 	}
 	
 	/**
@@ -126,7 +134,14 @@ public class LinkedList<E>
 	@Override
 	public E getLast()
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error ZZ06 Cannot get the last element because the
+		// linked list is empty.}
+		int sz;
+		if ((sz = size()) == 0)
+			throw new NoSuchElementException("ZZ06");
+		
+		// Get it
+		return get(sz - 1);
 	}
 	
 	/**
@@ -146,7 +161,7 @@ public class LinkedList<E>
 	@Override
 	public boolean offer(E __a)
 	{
-		throw new Error("TODO");
+		return offerLast(__a);
 	}
 	
 	/**
@@ -156,7 +171,9 @@ public class LinkedList<E>
 	@Override
 	public boolean offerFirst(E __a)
 	{
-		throw new Error("TODO");
+		// There are no capacity restrictions
+		add(0, __a);
+		return true;
 	}
 	
 	/**
@@ -166,7 +183,9 @@ public class LinkedList<E>
 	@Override
 	public boolean offerLast(E __a)
 	{
-		throw new Error("TODO");
+		// There are no capacity restrictions
+		add(size(), __a)
+		return true;
 	}
 	
 	/**
@@ -176,7 +195,7 @@ public class LinkedList<E>
 	@Override
 	public E peek()
 	{
-		throw new Error("TODO");
+		return peekFirst();
 	}
 	
 	/**
@@ -186,7 +205,12 @@ public class LinkedList<E>
 	@Override
 	public E peekFirst()
 	{
-		throw new Error("TODO");
+		// Return null on empty list
+		if (size() == 0)
+			return null;
+		
+		// Get otherwise
+		return get(0);
 	}
 	
 	/**
@@ -196,7 +220,13 @@ public class LinkedList<E>
 	@Override
 	public E peekLast()
 	{
-		throw new Error("TODO");
+		// Return null if the list is empty
+		int sz;
+		if ((sz = size()) == 0)
+			return null;
+		
+		// Get the last
+		return get(sz - 1);
 	}
 	
 	/**
@@ -206,7 +236,7 @@ public class LinkedList<E>
 	@Override
 	public E poll()
 	{
-		throw new Error("TODO");
+		return pollFirst();
 	}
 	
 	/**
@@ -216,7 +246,16 @@ public class LinkedList<E>
 	@Override
 	public E pollFirst()
 	{
-		throw new Error("TODO");
+		try
+		{
+			return removeFirst();
+		}
+		
+		// Is empty
+		catch (NoSuchElementException e)
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -226,7 +265,16 @@ public class LinkedList<E>
 	@Override
 	public E pollLast()
 	{
-		throw new Error("TODO");
+		try
+		{
+			return removeLast();
+		}
+		
+		// Is empty
+		catch (NoSuchElementException e)
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -236,7 +284,7 @@ public class LinkedList<E>
 	@Override
 	public E pop()
 	{
-		throw new Error("TODO");
+		return removeFirst();
 	}
 	
 	/**
@@ -246,7 +294,7 @@ public class LinkedList<E>
 	@Override
 	public void push(E __a)
 	{
-		throw new Error("TODO");
+		addFirst(__a);
 	}
 	
 	/**
@@ -256,7 +304,7 @@ public class LinkedList<E>
 	@Override
 	public E remove()
 	{
-		throw new Error("TODO");
+		return removeFirst();
 	}
 	
 	/**
