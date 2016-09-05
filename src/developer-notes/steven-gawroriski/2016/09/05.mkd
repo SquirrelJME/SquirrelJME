@@ -1,2 +1,10 @@
 # 2016/09/05
 
+## 09:57
+
+One thing that I will need to handle in the virtual file system manager would
+be to have access to directories via perhaps listing contents. For example if
+one mounts to `/foo` then a content listing of `/` should list `foo` even if
+there is a virtual handler which is mounted to `/` and has no actual files
+associated with it.
+

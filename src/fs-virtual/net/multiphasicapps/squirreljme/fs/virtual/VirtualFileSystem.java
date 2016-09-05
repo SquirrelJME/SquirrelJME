@@ -28,6 +28,10 @@ public class VirtualFileSystem
 	/** The native path system to use. */
 	protected final NativePaths paths;
 	
+	/** Mount point manager. */
+	protected final VirtualMounts mounts =
+		new VirtualMounts(this);
+	
 	/**
 	 * Initializes the virtual file system.
 	 *
@@ -44,8 +48,6 @@ public class VirtualFileSystem
 		
 		// Set
 		this.paths = __np;
-		
-		throw new Error("TODO");
 	}
 		
 	/**
@@ -64,7 +66,7 @@ public class VirtualFileSystem
 	 * @since 2016/09/03
 	 */
 	@Override
-	public NativePath[] getRootDirectories()
+	public final NativePath[] getRootDirectories()
 		throws IOException
 	{
 		throw new Error("TODO");
@@ -75,9 +77,20 @@ public class VirtualFileSystem
 	 * @since 2016/09/03
 	 */
 	@Override
-	public NativePaths paths()
+	public final NativePaths paths()
 	{
 		return this.paths;
+	}
+	
+	/**
+	 * Returns the virtual mounts which are used in this filesystem.
+	 *
+	 * @return The virtual mounting points.
+	 * @since 2016/09/05
+	 */
+	public final VirtualMounts virtualMounts()
+	{
+		return this.mounts;
 	}
 }
 

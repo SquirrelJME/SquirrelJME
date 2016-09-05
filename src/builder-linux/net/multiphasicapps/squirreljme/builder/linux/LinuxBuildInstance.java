@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.builder.BuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.fs.virtual.VirtualFileSystem;
+import net.multiphasicapps.squirreljme.fs.virtual.VirtualMounts;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
@@ -115,6 +116,7 @@ public abstract class LinuxBuildInstance
 		// standard Linux directories
 		PosixPaths pp = PosixPaths.instance();
 		VirtualFileSystem vfs = new VirtualFileSystem(pp);
+		VirtualMounts vm = vfs.virtualMounts();
 		if (true)
 			throw new Error("TODO");
 		
