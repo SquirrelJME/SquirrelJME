@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.fs.virtual;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import net.multiphasicapps.squirreljme.paths.NativePath;
 
 /**
@@ -27,6 +30,10 @@ public class VirtualMounts
 	
 	/** The owning virtual file system. */
 	protected final VirtualFileSystem vfs;
+	
+	/** Mount points used, uses a special comparison for sort. */
+	private final List<__Mount__> _mounts =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the virtual mount manager.
@@ -70,7 +77,24 @@ public class VirtualMounts
 		if (!__np.isAbsolute())
 			throw new IOException(String.format("CA01 %s", __np));
 		
-		throw new Error("TODO");
+		// Create mount
+		__Mount__ rv = new __Mount__(this, __np, __src);
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			// See where it gets inserted
+			List<__Mount__> mounts = this._mounts;
+			int at = Collections.<__Mount__>binarySearch(mounts, rv);
+			
+			// {@squirreljme.error CA03 The path is already associated with a
+			// given mount point. (The mount point)}
+			if (at >= 0)
+				throw new IOException(String.format("CA03 %s", __np));
+			
+			// Insert it at the given position
+			mounts.add((-at) - 1, rv);
+		}
 	}
 }
 
