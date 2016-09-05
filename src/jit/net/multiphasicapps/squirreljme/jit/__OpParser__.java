@@ -362,9 +362,26 @@ final class __OpParser__
 			case __OpIndex__.ASTORE_3:
 				throw new Error("TODO");
 				
+				// Invoke interface method
+			case __OpIndex__.INVOKEINTERFACE:
+				return __executeInvoke(__InvokeType__.INTERFACE,
+					input.readUnsignedShort() | (input.readByte() & 0) |
+					(input.readByte() & 0));
+				
 				// Invoke constructor or private method
 			case __OpIndex__.INVOKESPECIAL:
-				throw new Error("TODO");
+				return __executeInvoke(__InvokeType__.SPECIAL,
+					input.readUnsignedShort());
+				
+				// Invoke static method
+			case __OpIndex__.INVOKESTATIC:
+				return __executeInvoke(__InvokeType__.STATIC,
+					input.readUnsignedShort());
+				
+				// Invoke virtual method
+			case __OpIndex__.INVOKEVIRTUAL:
+				return __executeInvoke(__InvokeType__.VIRTUAL,
+					input.readUnsignedShort());
 			
 				// {@squirreljme.error ED08 Defined operation cannot be
 				// used in Java ME programs. (The operation)}
@@ -478,9 +495,6 @@ final class __OpParser__
 			case __OpIndex__.PUTSTATIC:
 			case __OpIndex__.GETFIELD:
 			case __OpIndex__.PUTFIELD:
-			case __OpIndex__.INVOKEVIRTUAL:
-			case __OpIndex__.INVOKESTATIC:
-			case __OpIndex__.INVOKEINTERFACE:
 			case __OpIndex__.NEW:
 			case __OpIndex__.NEWARRAY:
 			case __OpIndex__.ANEWARRAY:
@@ -502,6 +516,31 @@ final class __OpParser__
 		}
 	}
 	
+	/**
+	 * Executes an invoke of a method.
+	 *
+	 * @param __type The type of invocation performed.
+	 * @param __pid The pool index with the method reference.
+	 * @return Jump targets.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/05
+	 */
+	private int[] __executeInvoke(__InvokeType__ __type, int __pid)
+		throws NullPointerException
+	{
+		// Check
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- Invoke %s %d%n", __type, __pid);
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Implicit next
+		return IMPLICIT_NEXT;
+	}
 	
 	/**
 	 * Load from local variable and push to the top of the stack.

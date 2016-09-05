@@ -24,3 +24,12 @@ are not ASCII to represent what is happening. A cliff can be represented as
 `^`, water as `~`, rocky ground at `.`, and buildable ground as ` `. Although
 cliffs could just be represented using box drawing characters so to speak.
 
+## 12:25
+
+`INVOKEINTERFACE` has a _count_ parameter which must not be zero, however it
+does not even specificy how it is used at all. However looking at old
+information it is just the number of entries that are used on the stack for
+the invocation. Since that is already known via the method handle it is rather
+pointless. However, when I write a Java compiler I will need to calculate it
+just in case.
+
