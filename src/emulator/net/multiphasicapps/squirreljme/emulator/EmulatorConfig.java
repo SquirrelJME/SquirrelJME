@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.emulator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This is used to configure the emulator for when it runs.
  *
@@ -20,6 +23,10 @@ public final class EmulatorConfig
 	/** Configuration lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** Objects which have been registered. */
+	private final Map<Class<?>, Object> _objects =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the base configuration.
@@ -65,7 +72,12 @@ public final class EmulatorConfig
 			throw new ClassCastException(String.format("CB01 %s", __cl,
 				__o.getClass()));
 		
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Register
+			this._objects.put(__cl, __o);
+		}
 	}
 	
 	/**
