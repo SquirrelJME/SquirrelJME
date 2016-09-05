@@ -25,6 +25,29 @@ import net.multiphasicapps.squirreljme.paths.NativePaths;
 public class VirtualFileSystem
 	implements NativeFileSystem
 {
+	/** The native path system to use. */
+	protected final NativePaths paths;
+	
+	/**
+	 * Initializes the virtual file system.
+	 *
+	 * @param __np The native path system to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/05
+	 */
+	public VirtualFileSystem(NativePaths __np)
+		throws NullPointerException
+	{
+		// Check
+		if (__np == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.paths = __np;
+		
+		throw new Error("TODO");
+	}
+		
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/03
@@ -54,7 +77,7 @@ public class VirtualFileSystem
 	@Override
 	public NativePaths paths()
 	{
-		throw new Error("TODO");
+		return this.paths;
 	}
 }
 

@@ -14,12 +14,14 @@ import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.BuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
+import net.multiphasicapps.squirreljme.fs.virtual.VirtualFileSystem;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.paths.posix.PosixPaths;
 
 /**
  * This is the base build instance for all Linux based targets.
@@ -108,6 +110,13 @@ public abstract class LinuxBuildInstance
 		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup a base file system that all architectures use, such as the
+		// standard Linux directories
+		PosixPaths pp = PosixPaths.instance();
+		VirtualFileSystem vfs = new VirtualFileSystem(pp);
+		if (true)
+			throw new Error("TODO");
 		
 		// Setup base Linux details
 		if (true)
