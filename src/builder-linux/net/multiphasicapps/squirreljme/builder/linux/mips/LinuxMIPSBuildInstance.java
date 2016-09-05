@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.builder.linux.mips;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.builder.BuildConfig;
 import net.multiphasicapps.squirreljme.builder.linux.LinuxBuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
@@ -46,7 +47,7 @@ public class LinuxMIPSBuildInstance
 	 */
 	@Override
 	protected void configureLinuxEmulator(EmulatorConfig __conf)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__conf == null)

@@ -42,6 +42,33 @@ public final class EmulatorConfig
 	}
 	
 	/**
+	 * Registers the given object to the emulator configuration.
+	 *
+	 * @param <C> The class to register it under.
+	 * @param __cl The class to register it under.
+	 * @param __o The object to register.
+	 * @throws ClassCastException If the object is not an instance of the
+	 * given class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/05
+	 */
+	public final <C> void registerObject(Class<C> __cl, C __o)
+		throws ClassCastException, NullPointerException
+	{
+		// Check
+		if (__cl == null || __o == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CB01 The specified object is not an instance of
+		// the given class. (The input class; The class of the object)}
+		if (!__cl.isInstance(__o))
+			throw new ClassCastException(String.format("CB01 %s", __cl,
+				__o.getClass()));
+		
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * This contains an immutable copy of the emulator configuration.
 	 *
 	 * @since 2016/09/03

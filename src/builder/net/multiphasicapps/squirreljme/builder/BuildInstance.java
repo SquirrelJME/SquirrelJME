@@ -78,10 +78,13 @@ public abstract class BuildInstance
 	 * Configures the emulator.
 	 *
 	 * @param __conf The configuration to use.
+	 * @throws IOException If there was a read/write error when setting up
+	 * the emulator.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/03
 	 */
 	protected abstract void configureEmulator(EmulatorConfig __conf)
-		throws NullPointerException;
+		throws IOException, NullPointerException;
 	
 	/**
 	 * Modifies the given output configuration that is used to setup the
