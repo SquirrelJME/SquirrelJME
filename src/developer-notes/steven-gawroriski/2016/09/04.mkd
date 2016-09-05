@@ -60,3 +60,33 @@ would actually cause copies when stack entries are not sourced from locals. So
 as such, I will need to have caching on stack values too. Flushing would have
 to do both, although stack items are always temporary.
 
+## 22:05
+
+So next instruction to handle after a load is invoke of a special method.
+Special methods have a set of rules which change if the call acts just like
+a virtual call or it is an explicit method call. So as such, the linkage to
+use will vary. I suppose for simplicity if it maps to a virtual invoke that
+it will just the virtual invoke handler, while if it maps to a special one it
+will map to that. One thing to consider is that there will need to be multiple
+types of method references. So this means the global pool that is used will
+need method references for specials.
+
+## 22:09
+
+I will need to check if such a call is valid and determine that during link
+time. Since at JIT time it will not be known if a method can call another
+method. Using the basic pool information it will need call source (the
+current method and class) along with the target method and the invoke type
+it uses.
+
+## 22:14
+
+The generic pool of course can handle such things. I suppose to reduce the
+space complexity required to handle such things, I can have a reference to
+a method and then a call linkage associated with it. The call linkage has the
+from and to source and the type. So when a direct method reference is used it
+can point to the method data with its flags and such. Then the secondary
+linkage can use that information to determine if the call is valid or not.
+This way if a bunch of source methods end up calling a large number of methods
+there would be many duplicates of the source.
+

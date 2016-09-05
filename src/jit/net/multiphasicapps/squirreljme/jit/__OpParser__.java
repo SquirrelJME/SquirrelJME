@@ -361,6 +361,21 @@ final class __OpParser__
 			case __OpIndex__.ASTORE_2:
 			case __OpIndex__.ASTORE_3:
 				throw new Error("TODO");
+				
+				// Invoke constructor or private method
+			case __OpIndex__.INVOKESPECIAL:
+				throw new Error("TODO");
+			
+				// {@squirreljme.error ED08 Defined operation cannot be
+				// used in Java ME programs. (The operation)}
+			case __OpIndex__.JSR:
+			case __OpIndex__.JSR_W:
+			case __OpIndex__.RET:
+			case __OpIndex__.INVOKEDYNAMIC:
+			case __OpIndex__.BREAKPOINT:
+			case __OpIndex__.IMPDEP1:
+			case __OpIndex__.IMPDEP2:
+				throw new JITException(String.format("ED08 %d", __code));
 			
 			case __OpIndex__.IASTORE:
 			case __OpIndex__.LASTORE:
@@ -464,7 +479,6 @@ final class __OpParser__
 			case __OpIndex__.GETFIELD:
 			case __OpIndex__.PUTFIELD:
 			case __OpIndex__.INVOKEVIRTUAL:
-			case __OpIndex__.INVOKESPECIAL:
 			case __OpIndex__.INVOKESTATIC:
 			case __OpIndex__.INVOKEINTERFACE:
 			case __OpIndex__.NEW:
@@ -480,18 +494,6 @@ final class __OpParser__
 			case __OpIndex__.IFNULL:
 			case __OpIndex__.IFNONNULL:
 			case __OpIndex__.GOTO_W:
-				throw new Error("TODO");
-			
-				// {@squirreljme.error ED08 Defined operation cannot be
-				// used in Java ME programs. (The operation)}
-			case __OpIndex__.JSR:
-			case __OpIndex__.JSR_W:
-			case __OpIndex__.RET:
-			case __OpIndex__.INVOKEDYNAMIC:
-			case __OpIndex__.BREAKPOINT:
-			case __OpIndex__.IMPDEP1:
-			case __OpIndex__.IMPDEP2:
-				throw new JITException(String.format("ED08 %d", __code));
 			
 				// {@squirreljme.error ED07 Unknown byte-code operation.
 				// (The operation)}
