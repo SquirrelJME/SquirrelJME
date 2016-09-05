@@ -67,7 +67,30 @@ final class __Mount__
 		if (__o.mounts != this.mounts)
 			throw new IllegalArgumentException("CA02");
 		
-		throw new Error("TODO");
+		// Get this and the other path
+		NativePath mp = this.path, op = __o.path;
+		
+		// Compare roots first, for example on DOS there may be A: and B:
+		// It must compare in a way where A is before B accordingly.
+		NativePath mr = mp.getRoot(), or = op.getRoot();
+		int rv;
+		if (0 != (rv = mr.compareTo(or)))
+			return rv;
+		
+		// Compare the name count next, make it so paths with higher components
+		// appear first. This is because getting of a file from a mount point
+		// will linearly traverse and there may be two mount points such as
+		// {@code /foo} and {@code /foo/bar}. If the one with less names
+		// appears first then the source for {@code /foo/bar} will never be
+		// accessed because it will find a match for {@code /foo}.
+		int mc = mp.getNameCount(), oc = op.getNameCount();
+		if (mc > oc)
+			return -1;
+		else if (mc < oc)
+			return 1;
+		
+		// Finally compare the actual paths themselves
+		return mp.compareTo(op);
 	}
 }
 

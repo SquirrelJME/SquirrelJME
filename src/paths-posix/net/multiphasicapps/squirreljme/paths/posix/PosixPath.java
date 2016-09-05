@@ -176,6 +176,25 @@ public final class PosixPath
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2016/09/05
+	 */
+	@Override
+	public final int getNameCount()
+	{
+		// The root component always returns 0
+		if (this.isroot)
+			return 0;
+		
+		// Contains only a single fragment
+		if (this.fragment != null)
+			return 1;
+		
+		// Otherwise return the number of actual components
+		return this._comps.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/08/21
 	 */
 	@Override

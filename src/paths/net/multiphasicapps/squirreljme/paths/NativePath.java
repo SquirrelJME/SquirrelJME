@@ -52,6 +52,16 @@ public interface NativePath
 	public abstract boolean equals(Object __o);
 	
 	/**
+	 * Returns the number of components which are in this path. The root
+	 * component is not considered.
+	 *
+	 * @return The components within this path, or {@code 0} if this consists
+	 * only of a root component.
+	 * @since 2016/09/05
+	 */
+	public abstract int getNameCount();
+	
+	/**
 	 * Returns the root component of this path.
 	 *
 	 * @return The root component of this path or {@code null} if there is
