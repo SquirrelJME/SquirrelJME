@@ -74,3 +74,7 @@ many years, that is dedication.
 Actually it might be best to swap it and have it use the map as the base so I
 can have `get` and `put`.
 
+## 18:21
+
+Although it really does not matter at all.
+

@@ -107,6 +107,17 @@ public class SortedTreeSet<V>
 	 * @since 2016/09/06
 	 */
 	@Override
+	public boolean contains(Object __o)
+	{
+		// Find node
+		return null != __findNode(__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
 	public Iterator<V> iterator()
 	{
 		throw new Error("TODO");
@@ -119,6 +130,23 @@ public class SortedTreeSet<V>
 	@Override
 	public int size()
 	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Finds the node with the given value.
+	 *
+	 * @param __o The object to find.
+	 * @return The node for the given object.
+	 * @since 2016/09/06
+	 */
+	private final __Node__<V> __findNode(Object __o)
+	{
+		// If there are no nodes then the tree is empty
+		__Node__<V> root = this._root;
+		if (root == null)
+			return null;
+		
 		throw new Error("TODO");
 	}
 }
