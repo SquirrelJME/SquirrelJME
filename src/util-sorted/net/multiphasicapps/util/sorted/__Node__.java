@@ -22,5 +22,11 @@ class __Node__<V>
 	
 	/** The color. */
 	volatile __Color__ _color;
+	
+	/** The node to the left. */
+	volatile __Node__<V> _left;
+	
+	/** The node to the right. */
+	volatile __Node__<V> _right;
 }
 
