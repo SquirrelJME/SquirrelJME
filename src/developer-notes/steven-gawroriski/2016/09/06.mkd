@@ -32,3 +32,12 @@ would reduce the amount of space required.
 
 One thing I can do for speed is have prelinking of the JVM namespace.
 
+## 11:51
+
+I actually need a bulk pop. It will be performed before a method call and
+will return all of the cached registers that should be used. That will be used
+to access the cache system. The reason I need to do this is because there can
+be cached values which are additionally cached on the stack (in the case of
+`DUP`), and as such if any previous entry refers to one that is popped it must
+be copied before it is lost completely.
+
