@@ -41,3 +41,14 @@ be cached values which are additionally cached on the stack (in the case of
 `DUP`), and as such if any previous entry refers to one that is popped it must
 be copied before it is lost completely.
 
+## 12:29
+
+I should make the build system truly determinstic along with the binary output
+system also being deterministic. This means having no hash cookie that depends
+on the time. One issue with that though is that the output ZIP file would have
+the current time associated with it when I do support such things. Then the
+build order given to by the builder can be sorted also. I would suppose I can
+write a simple red-black tree. Although I will need a `Map` and a `Set`. I
+can layer one upon the other. In general though a `Map` is layered on a `Set`
+of entries.
+

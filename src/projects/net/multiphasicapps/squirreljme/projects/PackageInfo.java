@@ -16,12 +16,12 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.util.Deque;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
+import net.multiphasicapps.util.sorted.RedBlackSet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;
@@ -32,6 +32,7 @@ import net.multiphasicapps.zip.blockreader.ZipFile;
  * @since 2016/06/15
  */
 public class PackageInfo
+	implements Comparable<PackageInfo>
 {
 	/** The owning package list. */
 	protected final PackageList plist;
@@ -116,6 +117,22 @@ public class PackageInfo
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
+	public int compareTo(PackageInfo __pi)
+		throws NullPointerException
+	{
+		// Check
+		if (__pi == null)
+			throw new NullPointerException("NARG");
+		
+		// Compare by name
+		return this.name.compareTo(__pi.name);
+	}
+	
+	/**
 	 * Returns all of the packages that this package depends on.
 	 *
 	 * @return The set of packages this package depends on.
@@ -149,7 +166,7 @@ public class PackageInfo
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target
-			Set<PackageInfo> deps = new LinkedHashSet<>();
+			Set<PackageInfo> deps = new RedBlackSet<>();
 			
 			// Read the manifest
 			JavaManifest man = manifest();
@@ -214,6 +231,21 @@ public class PackageInfo
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		// Must be another package
+		if (!(__o instanceof PackageInfo))
+			return false;
+		
+		// Compare the name
+		return this.name.equals(((PackageInfo)__o).name);
+	}
+	
+	/**
 	 * Returns the package groups that this package is a part of, this
 	 * information is used by the target build system to include extra packages
 	 * that may be needed on a target system.
@@ -231,7 +263,7 @@ public class PackageInfo
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target set
-			Set<String> target = new LinkedHashSet<>();
+			Set<String> target = new RedBlackSet<>();
 			
 			// Fill properties
 			String prop = this.manifest.getMainAttributes().get(
@@ -265,6 +297,16 @@ public class PackageInfo
 		
 		// Return
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode();
 	}
 	
 	/**
@@ -329,7 +371,7 @@ public class PackageInfo
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target
-			Set<PackageInfo> deps = new LinkedHashSet<>();
+			Set<PackageInfo> deps = new RedBlackSet<>();
 			
 			// Start at the root
 			Deque<PackageInfo> deq = new LinkedList<>();
