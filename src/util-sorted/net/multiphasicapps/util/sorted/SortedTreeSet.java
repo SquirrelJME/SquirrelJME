@@ -14,6 +14,7 @@ import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -258,17 +259,41 @@ public class SortedTreeSet<V>
 	 * Finds the node with the given value.
 	 *
 	 * @param __o The object to find.
-	 * @return The node for the given object.
+	 * @return The node for the given object or {@code null} if it was not
+	 * found.
 	 * @since 2016/09/06
 	 */
+	@SuppressWarnings({"unchecked"})
 	private final __Node__<V> __findNode(Object __o)
 	{
 		// If there are no nodes then the tree is empty
-		__Node__<V> root = this._root;
-		if (root == null)
+		__Node__<V> rover = this._root;
+		if (rover == null)
 			return null;
 		
-		throw new Error("TODO");
+		// Constant search
+		Comparator<V> compare = this._compare;
+		for (; rover != null;)
+		{
+			// Compare
+			V against = rover._value;
+			int res = compare.compare((V)__o, against);
+			
+			// The same? stop here
+			if (res == 0)
+				return rover;
+			
+			// The object is lower, go left
+			else if (res < 0)
+				rover = rover._left;
+			
+			// The object is higher, go right
+			else
+				rover = rover._right;
+		}
+		
+		// Not found
+		return null;
 	}
 	
 	/**
