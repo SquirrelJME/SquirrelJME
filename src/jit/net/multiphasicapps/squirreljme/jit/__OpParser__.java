@@ -578,10 +578,9 @@ final class __OpParser__
 		
 		// Stack positions and types
 		JITVariableType[] st = new JITVariableType[xc];
-		int[] sp = new int[xc];
 		
 		// Fill types and check that they are valid
-		int write = xc - 1;
+		int write = xc - 1, popcount = 0;
 		for (int i = 0; i < na; i++)
 		{
 			throw new Error("TODO");
@@ -591,7 +590,7 @@ final class __OpParser__
 		if (isinstance)
 		{
 			// Map it
-			JITVariableType map = stack.get(at).map();
+			JITVariableType map = stack.get(at--).map();
 			
 			// {@squirreljme.error ED0z Expected an object to be the instance
 			// variable. (The actual type)}
@@ -599,12 +598,10 @@ final class __OpParser__
 				throw new JITException(String.format("ED0z %s", map));
 			
 			// Store
-			st[write] = map;
-			sp[write] = smwork.cacheStack(at);
+			st[write++] = map;
 			
-			// Move
-			at--;
-			write++;
+			// Increase the pop count
+			popcount++;
 		}
 		
 		// Handle return value if any
@@ -631,6 +628,9 @@ final class __OpParser__
 			rvi = -1;
 		}
 		
+		// Pop all stack values
+		int[] sp = stack.__pop(this, popcount);
+		
 		// Debug
 		System.err.printf("DEBUG -- Invoke: %s rv=%s/%d vars=", ref, rvt, rvi);
 		for (int i = 0; i < xc; i++)
@@ -639,10 +639,6 @@ final class __OpParser__
 		
 		// Send in the call
 		this.writer.invoke(__type, __pid, ref, st, sp, rvt, rvi);
-		
-		// Pop values from the stack
-		while (stack.top() > end)
-			stack.pop();
 		
 		// Push return value if there is one
 		if (rv != null)

@@ -109,18 +109,6 @@ class __SMTStack__
 	}
 	
 	/**
-	 * Pops a value from the stack.
-	 *
-	 * If a stack has a cached value then they will be adjusted accordingly.
-	 *
-	 * @since 2016/09/06
-	 */
-	public void pop()
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
 	 * Pushes the specified variable to the stack.
 	 *
 	 * @param __t The type of variable to push.
@@ -226,6 +214,39 @@ class __SMTStack__
 	public String toString()
 	{
 		return this._top + ":" + super.toString();
+	}
+	
+	/**
+	 * Pops a value from the stack.
+	 *
+	 * If a stack has a cached value then they will be adjusted accordingly.
+	 *
+	 * @param __op The operation parser.
+	 * @param __n The number of elements to pop.
+	 * @return The cached stack variables to use.
+	 * @throws JITException If popping more items from the stack than what
+	 * is on the stack occurs or the number of elements to pop is a negative
+	 * value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/06
+	 */
+	int[] __pop(__OpParser__ __op, int __n)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__op == null)
+			throw new NullPointerException("NARG");
+		
+		// Popping nothing
+		if (__n == 0)
+			return new int[0];
+		
+		// {@squirreljme.error ED11 The stack underflowed.}
+		int top = top(), end = top - __n;
+		if (__n < 0 || end < 0)
+			throw new JITException("ED11");
+		
+		throw new Error("TODO");
 	}
 }
 
