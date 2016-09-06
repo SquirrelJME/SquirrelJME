@@ -147,6 +147,14 @@ class __SMTStack__
 		// Set type
 		set(top, __t);
 		
+		// If the cache points to another stack entry then make it point to
+		// the entry that the pointed value points to. So if it points to
+		// stack entry B which points to local Q then write Q instead of B.
+		if (__c != UNIQUE_STACK_VALUE && 0 != (c & CACHE_STACK_MASK))
+		{
+			throw new Error("TODO");
+		}
+		
 		// Set cache
 		int[] cache = this._cache;
 		cache[top] = __c;
