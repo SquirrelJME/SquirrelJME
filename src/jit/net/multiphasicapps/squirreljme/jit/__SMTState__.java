@@ -61,6 +61,33 @@ class __SMTState__
 	}
 	
 	/**
+	 * Checks if the stack value is cached, if it is then the value it is
+	 * associated with is returned, otherwise the stack item is returned with
+	 * its {@code maxlocal} shift accordingly.
+	 *
+	 * @param __s The stack item to get.
+	 * @return The variable to use when cached.
+	 * @since 2016/09/06
+	 */
+	public int cacheStack(int __s)
+	{
+		// Get values
+		int ml = this._locals.size();
+		int cache = this._stack.cache(__s);
+		
+		// If the stack item is unique, just return it shifted
+		if (cache == __SMTStack__.UNIQUE_STACK_VALUE)
+			return ml + __s;
+		
+		// Refers to a stack entry
+		if (0 != (cache & __SMTStack__.CACHE_STACK_MASK))
+			return ml + (cache & (~__SMTStack__.CACHE_STACK_MASK));
+		
+		// Refers to a local
+		return cache;
+	}
+	
+	/**
 	 * Copies the state from the other stack information to the current one.
 	 *
 	 * @param __o The other stack to source from.

@@ -588,7 +588,29 @@ final class __OpParser__
 		
 		// Check if instance is correct
 		if (isinstance)
-			throw new Error("TODO");
+		{
+			// Map it
+			JITVariableType map = stack.get(at).map();
+			
+			// {@squirreljme.error ED0z Expected an object to be the instance
+			// variable. (The actual type)}
+			if (map != JITVariableType.OBJECT)
+				throw new JITException(String.format("ED0z %s", map));
+			
+			// Store
+			st[write] = map;
+			sp[write] = smwork.cacheStack(at);
+			
+			// Move
+			at--;
+			write++;
+		}
+		
+		// Debug
+		System.err.printf("DEBUG -- Invoke: %s vars=", ref);
+		for (int i = 0; i < xc; i++)
+			System.err.printf("%d ", sp[i]);
+		System.err.println();
 		
 		// Send in the call
 		this.writer.invoke(__type, __pid, ref, st, sp);

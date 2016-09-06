@@ -83,6 +83,18 @@ class __SMTStack__
 	}
 	
 	/**
+	 * Returns the cache reference.
+	 *
+	 * @param __i The stack index to get the cache for.
+	 * @return The cache index value.
+	 * @since 2016/09/06
+	 */
+	public int cache(int __i)
+	{
+		return this._cache[__i];
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/04
 	 */
