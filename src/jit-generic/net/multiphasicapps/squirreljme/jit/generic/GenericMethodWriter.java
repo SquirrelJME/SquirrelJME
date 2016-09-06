@@ -20,6 +20,8 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.JITInvokeType;
+import net.multiphasicapps.squirreljme.jit.JITMethodReference;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITVariableType;
@@ -165,6 +167,22 @@ public abstract class GenericMethodWriter
 		{
 			throw new JITException("BA06", e);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
+	public void invoke(JITInvokeType __type, int __pid,
+		JITMethodReference __ref, JITVariableType[] __st, int[] __sp)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__type == null || __ref == null || __st == null || __sp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**

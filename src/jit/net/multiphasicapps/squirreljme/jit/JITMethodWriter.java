@@ -17,7 +17,9 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  * resulting native machine code generator.
  *
  * The JIT itself converts the stack based machine to a completely register
- * based machine.
+ * based machine. As such, stack variables are offset by the number of local
+ * variables meaning that if any value is greater than {@code maxlocals} then
+ * it is a temporary stack item.
  *
  * @since 2016/08/19
  */
@@ -43,6 +45,24 @@ public interface JITMethodWriter
 	@Override
 	public abstract void close()
 		throws JITException;
+	
+	/**
+	 * This is called whenever a method invocation is performed so that the
+	 * callee JIT can generate code for method linking and invocation.
+	 *
+	 * @param __type The type of invocation to perform.
+	 * @param __pid The pool ID of the method reference.
+	 * @param __ref The method to be invoked.
+	 * @param __st The types associated with the invocation.
+	 * @param __sp The input variable IDs, these may be local variables or
+	 * stack variables.
+	 * @throws JITException If the method could not be invoked.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/06
+	 */
+	public abstract void invoke(JITInvokeType __type, int __pid,
+		JITMethodReference __ref, JITVariableType[] __st, int[] __sp)
+		throws JITException, NullPointerException;
 	
 	/**
 	 * Indicates the jump targets that are used in the method which may be used

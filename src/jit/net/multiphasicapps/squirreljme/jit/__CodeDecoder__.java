@@ -178,8 +178,8 @@ final class __CodeDecoder__
 			
 			// Reset and decode operations
 			dis.reset();
-			new __OpParser__(writer, dis, smt, this._decoder._classflags).
-				__decodeAll();
+			new __OpParser__(writer, dis, smt, this._decoder._classflags,
+				pool).__decodeAll();
 		}
 		
 		// Done

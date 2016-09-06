@@ -18,18 +18,54 @@ package net.multiphasicapps.squirreljme.jit;
 public enum JITInvokeType
 {
 	/** Static. */
-	STATIC,
+	STATIC(false),
 	
 	/** Virtual. */
-	VIRTUAL,
+	VIRTUAL(true),
 	
 	/** Special. */
-	SPECIAL,
+	SPECIAL(true),
 	
 	/** Interface. */
-	INTERFACE,
+	INTERFACE(true),
 	
 	/** End. */
 	;
+	
+	/** Is this an instance invocation? */
+	protected final boolean isinstance;
+	
+	/**
+	 * Initializes the invocation type.
+	 *
+	 * @param __ii Is this an instance invoke?
+	 * @since 2016/09/06
+	 */
+	private JITInvokeType(boolean __ii)
+	{
+		this.isinstance = __ii;
+	}
+	
+	/**
+	 * Returns {@code true} if this is an instance invocation.
+	 *
+	 * @return {@code true} if an instance invocation.
+	 * @since 2016/09/06
+	 */
+	public final boolean isInstance()
+	{
+		return this.isinstance;
+	}
+	
+	/**
+	 * Returns {@code true} if this is a static invocation.
+	 *
+	 * @return {@code true} if a static invocation.
+	 * @since 2016/09/06
+	 */
+	public final boolean isStatic()
+	{
+		return !this.isinstance;
+	}
 }
 

@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.IOException;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
@@ -45,6 +46,9 @@ final class __OpParser__
 	/** The class flags. */
 	protected final JITClassFlags classflags;
 	
+	/** The constant pool. */
+	protected final JITConstantPool pool;
+	
 	/** The stack map table. */
 	private final Map<Integer, __SMTState__> _smt;
 	
@@ -60,15 +64,17 @@ final class __OpParser__
 	 * @param __dis The input data source.
 	 * @param __smt The stack map table.
 	 * @param __cf The class flags.
+	 * @param __pool The constant pool.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
 	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis,
-		Map<Integer, __SMTState__> __smt, JITClassFlags __cf)
+		Map<Integer, __SMTState__> __smt, JITClassFlags __cf,
+		JITConstantPool __pool)
 		throws NullPointerException
 	{
 		// Check
-		if (__dis == null || __smt == null || __cf == null)
+		if (__dis == null || __smt == null || __cf == null || __pool == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -76,6 +82,7 @@ final class __OpParser__
 		this.input = __dis;
 		this.classflags = __cf;
 		this._smt = __smt;
+		this.pool = __pool;
 		
 		// Set working state
 		this._smwork = new __SMTState__(__smt.get(0));
@@ -538,11 +545,53 @@ final class __OpParser__
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		System.err.printf("DEBUG -- Invoke %s %d%n", __type, __pid);
+		// Get pool reference
+		JITMethodReference ref = this.pool.get(__pid).<JITMethodReference>
+			get(true, JITMethodReference.class);
 		
-		if (true)
+		// Debug
+		System.err.printf("DEBUG -- Invoke %s %d %s%n", __type, __pid, ref);
+		
+		// Is this an instance invocation?
+		boolean isinstance = __type.isInstance();
+		
+		// Get the stack layout, which is needed for verifcation
+		__SMTState__ smwork = this._smwork;
+		__SMTStack__ stack = smwork._stack;
+		
+		// Count the number of stack elements to count and pass to the method
+		MethodSymbol sym = ref.methodType();
+		int na = sym.argumentCount();
+		int xc = (isinstance ? 1:  0);
+		for (int i = 0; i < na; i++)
+			if (__SMTType__.bySymbol(sym.get(na)).isWide())
+				xc += 2;
+			else
+				xc++;
+		
+		// {@squirreljme.error ED0y Stack underflow during invocation of
+		// method.}
+		int top = stack.top(), at = top - 1;
+		if (top - xc < 0)
+			throw new JITException("ED0y");
+		
+		// Stack positions and types
+		JITVariableType[] st = new JITVariableType[xc];
+		int[] sp = new int[xc];
+		
+		// Fill types and check that they are valid
+		int write = xc - 1;
+		for (int i = 0; i < na; i++)
+		{
 			throw new Error("TODO");
+		}
+		
+		// Check if instance is correct
+		if (isinstance)
+			throw new Error("TODO");
+		
+		// Send in the call
+		this.writer.invoke(__type, __pid, ref, st, sp);
 		
 		// Implicit next
 		return IMPLICIT_NEXT;

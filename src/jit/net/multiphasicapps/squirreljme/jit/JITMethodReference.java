@@ -75,12 +75,22 @@ public final class JITMethodReference
 	}
 	
 	/**
-	 * Returns the member type.
-	 *
-	 * @return The member type.
+	 * {@inheritDoc}
 	 * @since 2016/08/14
 	 */
+	@Override
 	public MethodSymbol memberType()
+	{
+		return (MethodSymbol)this.membertype;
+	}
+	
+	/**
+	 * Returns the type of method that this is.
+	 *
+	 * @return The method type.
+	 * @since 2016/09/06
+	 */
+	public MethodSymbol methodType()
 	{
 		return (MethodSymbol)this.membertype;
 	}

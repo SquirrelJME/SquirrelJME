@@ -47,11 +47,21 @@ public final class JITFieldReference
 	}
 	
 	/**
-	 * Returns the member type.
+	 * Returns the type of field that this is.
 	 *
-	 * @return The member type.
+	 * @return The field type.
+	 * @since 2016/09/06
+	 */
+	public FieldSymbol fieldType()
+	{
+		return (FieldSymbol)this.membertype;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/08/14
 	 */
+	@Override
 	public FieldSymbol memberType()
 	{
 		return (FieldSymbol)this.membertype;
