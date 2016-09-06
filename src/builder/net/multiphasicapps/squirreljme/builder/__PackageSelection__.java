@@ -16,7 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.projects.PackageInfo;
 import net.multiphasicapps.squirreljme.projects.PackageList;
-import net.multiphasicapps.util.sorted.RedBlackSet;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 
 /**
  * This is used to select the packages which are to be compiled and output
@@ -29,11 +29,11 @@ class __PackageSelection__
 {
 	/** All projects to be included. */
 	final Set<PackageInfo> _all =
-		new RedBlackSet<>();
+		new SortedTreeSet<>();
 	
 	/** The JVM classpath. */
 	final Set<PackageInfo> _jvm =
-		new RedBlackSet<>();
+		new SortedTreeSet<>();
 	
 	/**
 	 * Selects the packages which are to be used to become a part of the

@@ -21,7 +21,7 @@ import java.util.Set;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifest;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestAttributes;
 import net.multiphasicapps.squirreljme.java.manifest.JavaManifestException;
-import net.multiphasicapps.util.sorted.RedBlackSet;
+import net.multiphasicapps.util.sorted.SortedTreeSet;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 import net.multiphasicapps.zip.blockreader.ZipEntry;
 import net.multiphasicapps.zip.blockreader.ZipFile;
@@ -166,7 +166,7 @@ public class PackageInfo
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target
-			Set<PackageInfo> deps = new RedBlackSet<>();
+			Set<PackageInfo> deps = new SortedTreeSet<>();
 			
 			// Read the manifest
 			JavaManifest man = manifest();
@@ -263,7 +263,7 @@ public class PackageInfo
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target set
-			Set<String> target = new RedBlackSet<>();
+			Set<String> target = new SortedTreeSet<>();
 			
 			// Fill properties
 			String prop = this.manifest.getMainAttributes().get(
@@ -371,7 +371,7 @@ public class PackageInfo
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Target
-			Set<PackageInfo> deps = new RedBlackSet<>();
+			Set<PackageInfo> deps = new SortedTreeSet<>();
 			
 			// Start at the root
 			Deque<PackageInfo> deq = new LinkedList<>();

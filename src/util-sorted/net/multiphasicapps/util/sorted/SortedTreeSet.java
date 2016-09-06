@@ -10,81 +10,72 @@
 
 package net.multiphasicapps.util.sorted;
 
-import java.util.AbstractMap;
+import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
- * This is a sorted map which is internally implemented using a red-black tree.
+ * This is a sorted {@link Set} which internally uses a red-black tree to sort
+ * the entries.
  *
- * @param <K> The type of key to store.
- * @param <V> The type of value to store.
+ * @param <V> The type of value stored in the set.
  * @since 2016/09/06
  */
-public class RedBlackMap<K, V>
-	extends AbstractMap<K, V>
+public class SortedTreeSet<V>
+	extends AbstractSet<V>
 {
 	/**
-	 * Initializes a new empty map using the natural comparator.
+	 * Initializes an empty red/black set using the natural comparator.
 	 *
 	 * @since 2016/09/06
 	 */
-	public RedBlackMap()
+	public SortedTreeSet()
 	{
-	}
-	
-	/**
-	 * Initializes a map using the natural comparator where values are copied
-	 * from the specified map.
-	 *
-	 * @param __m The map to copy from.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/06
-	 */
-	public RedBlackMap(Map<? extends Comparable<K>, ? extends V> __m)
-		throws NullPointerException
-	{
-		// Check
-		if (__m == null)
-			throw new NullPointerException("NARG");
-		
 		throw new Error("TODO");
 	}
 	
 	/**
-	 * Initializes a new empty map using the given comparator.
+	 * Initializes a red/black set using the natural comparator which is
+	 * initialized with the given values.
 	 *
+	 * @param __s The collection to copy values from.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public RedBlackMap(Comparator<? extends K> __comp)
+	public SortedTreeSet(Collection<? extends Comparable<V>> __s)
 		throws NullPointerException
 	{
-		// Check
-		if (__comp == null)
-			throw new NullPointerException("NARG");
-		
 		throw new Error("TODO");
 	}
 	
 	/**
-	 * Initializes a map using the given comparator where values are copied
-	 * from the specified map.
+	 * Initializes an empty red/black set using the given comparator.
 	 *
-	 * @param __comp The comparator to use for key sorts.
-	 * @param __m The map to copy from.
+	 * @param __comp The comparator to use for values.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public RedBlackMap(Comparator<? extends K> __comp,
-		Map<? extends K, ? extends V> __m)
+	public SortedTreeSet(Comparator<? extends V> __comp)
 		throws NullPointerException
 	{
-		// Check
-		if (__comp == null || __m == null)
-			throw new NullPointerException("NARG");
-		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Initializes a red/black set using the given comparator which is
+	 * initialized with the given values.
+	 *
+	 * @param __comp The comparator to use for values.
+	 * @param __s The collection to copy values from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/06
+	 */
+	public SortedTreeSet(Comparator<? extends V> __comp,
+		Collection<? extends V> __s)
+		throws NullPointerException
+	{
 		throw new Error("TODO");
 	}
 	
@@ -93,7 +84,17 @@ public class RedBlackMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@Override
-	public Set<Map.Entry<K, V>> entrySet()
+	public Iterator<V> iterator()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
+	public int size()
 	{
 		throw new Error("TODO");
 	}
