@@ -175,7 +175,8 @@ public abstract class GenericMethodWriter
 	 */
 	@Override
 	public void invoke(JITInvokeType __type, int __pid,
-		JITMethodReference __ref, JITVariableType[] __st, int[] __sp)
+		JITMethodReference __ref, JITVariableType[] __st, int[] __sp,
+		JITVariableType __rvt, int __rv)
 		throws JITException, NullPointerException
 	{
 		// Check

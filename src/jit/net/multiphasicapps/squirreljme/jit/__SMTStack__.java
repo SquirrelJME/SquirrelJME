@@ -111,6 +111,8 @@ class __SMTStack__
 	/**
 	 * Pops a value from the stack.
 	 *
+	 * If a stack has a cached value then they will be adjusted accordingly.
+	 *
 	 * @since 2016/09/06
 	 */
 	public void pop()

@@ -18,3 +18,7 @@ has been cached.
 
 Forgot about removing stack entries.
 
+## 09:08
+
+And return values.
+

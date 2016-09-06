@@ -56,12 +56,20 @@ public interface JITMethodWriter
 	 * @param __st The types associated with the invocation.
 	 * @param __sp The input variable IDs, these may be local variables or
 	 * stack variables.
+	 * @param __rvt The type of return value the method uses, will be
+	 * {@code null} if no value is returned
+	 * @param __rv This is the register which is given the return value of a
+	 * method if applicable, this will be a negative value if it is not used.
+	 * Long and double return values additional place their value in the next
+	 * variable entry if applicable.
 	 * @throws JITException If the method could not be invoked.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __rvt}.
 	 * @since 2016/09/06
 	 */
 	public abstract void invoke(JITInvokeType __type, int __pid,
-		JITMethodReference __ref, JITVariableType[] __st, int[] __sp)
+		JITMethodReference __ref, JITVariableType[] __st, int[] __sp,
+		JITVariableType __rvt, int __rv)
 		throws JITException, NullPointerException;
 	
 	/**

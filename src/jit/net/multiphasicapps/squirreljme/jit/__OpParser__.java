@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.IOException;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -606,18 +607,46 @@ final class __OpParser__
 			write++;
 		}
 		
+		// Handle return value if any
+		FieldSymbol rv = sym.returnValue();
+		JITVariableType rvt;
+		int rvi;
+		__SMTType__ rvs;
+		if (rv != null)
+		{
+			rvs = __SMTType__.bySymbol(rv);
+			rvt = rvs.map();
+			rvi = end;
+			
+			// {@squirreljme.error ED10 Stack overflow writing return value.}
+			if (rvi >= stack.size())
+				throw new JITException("ED10");
+		}
+		
+		// No return value
+		else
+		{
+			rvs = null;
+			rvt = null;
+			rvi = -1;
+		}
+		
 		// Debug
-		System.err.printf("DEBUG -- Invoke: %s vars=", ref);
+		System.err.printf("DEBUG -- Invoke: %s rv=%s/%d vars=", ref, rvt, rvi);
 		for (int i = 0; i < xc; i++)
 			System.err.printf("%d ", sp[i]);
 		System.err.println();
 		
 		// Send in the call
-		this.writer.invoke(__type, __pid, ref, st, sp);
+		this.writer.invoke(__type, __pid, ref, st, sp, rvt, rvi);
 		
 		// Pop values from the stack
 		while (stack.top() > end)
 			stack.pop();
+		
+		// Push return value if there is one
+		if (rv != null)
+			stack.push(rvs, UNIQUE_STACK_VALUE);
 		
 		// Implicit next
 		return IMPLICIT_NEXT;
