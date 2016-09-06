@@ -111,13 +111,28 @@ public class SortedTreeSet<V>
 	@Override
 	public boolean add(V __v)
 	{
-		// Replace the root
-		__Node__<V> n = __insert(this._root, __v);
-		this._root = n;
-		n._color = __Color__.BLACK;
+		try
+		{
+			// Replace the root
+			__Node__<V> was = this._root;
+			__Node__<V> now = __insert(was, __v);
+			
+			// Changed?
+			if (was != now)
+				this._root = now;
+			
+			// Force to black
+			now._color = __Color__.BLACK;
 		
-		// Did add?
-		throw new Error("TODO");
+			// Was changed
+			return true;
+		}
+		
+		// In the set already
+		catch (__AlreadyExists__ e)
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -167,9 +182,11 @@ public class SortedTreeSet<V>
 	 * @param __at The current node the algorithm is at.
 	 * @param __v The value to insert.
 	 * @return The newly created node.
+	 * @throws __AlreadyExists__ If the value already exists.
 	 * @since 2016/09/06
 	 */
 	private final __Node__<V> __insert(__Node__<V> __at, V __v)
+		throws __AlreadyExists__
 	{
 		// The tree is empty, adding an element is trivial
 		if (__at == null)
@@ -183,15 +200,29 @@ public class SortedTreeSet<V>
 		// If replacing, do nothing because only a single value may exist
 		// at a time.
 		if (res == 0)
-			return __at;
+			throw new __AlreadyExists__();
 		
 		// Insert on left side
 		else if (res < 0)
-			__at._left = __insert(__at._left, __v);
+		{
+			__Node__<V> was = __at._left;
+			__Node__<V> now = __insert(was, __v);
+			
+			// Changed?
+			if (was != now)
+				__at._left = now;
+		}
 		
 		// Insert on right side
 		else if (res > 0)
-			__at._right = __insert(__at._right, __v);
+		{
+			__Node__<V> was = __at._right;
+			__Node__<V> now = __insert(was, __v);
+			
+			// Changed?
+			if (was != now)
+				__at._right = now;
+		}
 		
 		// If the right side is red then rotate left
 		if (__at.isSideColorRed(true))
