@@ -370,23 +370,23 @@ final class __OpParser__
 				
 				// Invoke interface method
 			case __OpIndex__.INVOKEINTERFACE:
-				return __executeInvoke(__InvokeType__.INTERFACE,
+				return __executeInvoke(JITInvokeType.INTERFACE,
 					input.readUnsignedShort() | (input.readByte() & 0) |
 					(input.readByte() & 0));
 				
 				// Invoke constructor or private method
 			case __OpIndex__.INVOKESPECIAL:
-				return __executeInvoke(__InvokeType__.SPECIAL,
+				return __executeInvoke(JITInvokeType.SPECIAL,
 					input.readUnsignedShort());
 				
 				// Invoke static method
 			case __OpIndex__.INVOKESTATIC:
-				return __executeInvoke(__InvokeType__.STATIC,
+				return __executeInvoke(JITInvokeType.STATIC,
 					input.readUnsignedShort());
 				
 				// Invoke virtual method
 			case __OpIndex__.INVOKEVIRTUAL:
-				return __executeInvoke(__InvokeType__.VIRTUAL,
+				return __executeInvoke(JITInvokeType.VIRTUAL,
 					input.readUnsignedShort());
 			
 				// {@squirreljme.error ED08 Defined operation cannot be
@@ -531,7 +531,7 @@ final class __OpParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/05
 	 */
-	private int[] __executeInvoke(__InvokeType__ __type, int __pid)
+	private int[] __executeInvoke(JITInvokeType __type, int __pid)
 		throws NullPointerException
 	{
 		// Check

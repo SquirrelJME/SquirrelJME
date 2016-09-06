@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2016/09/05
  */
-public enum __InvokeType__
+public enum JITInvokeType
 {
 	/** Static. */
 	STATIC,
