@@ -30,7 +30,7 @@ public final class JITFieldReference
 	 * @param __mt the member type.
 	 * @since 2016/08/14
 	 */
-	JITFieldReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
+	public JITFieldReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
 		FieldSymbol __mt)
 	{
 		super(__cn, __mn, __mt);

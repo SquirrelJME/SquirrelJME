@@ -33,7 +33,7 @@ public final class JITMethodReference
 	 * @param __mt the member type.
 	 * @since 2016/08/14
 	 */
-	JITMethodReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
+	public JITMethodReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
 		MethodSymbol __mt, boolean __int)
 	{
 		super(__cn, __mn, __mt);

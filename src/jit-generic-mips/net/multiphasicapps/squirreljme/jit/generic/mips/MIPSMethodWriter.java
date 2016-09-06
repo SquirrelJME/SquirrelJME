@@ -15,6 +15,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.base.mips.MIPSVariant;
 import net.multiphasicapps.squirreljme.jit.generic.GenericMethodWriter;
+import net.multiphasicapps.squirreljme.jit.JITMethodReference;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 
 /**
@@ -33,12 +34,13 @@ public class MIPSMethodWriter
 	 *
 	 * @param __conf The configuration used.
 	 * @param __os Where bytes are written to.
+	 * @param __mr The method reference.
 	 * @since 2016/08/21
 	 */
 	public MIPSMethodWriter(JITOutputConfig.Immutable __conf,
-		OutputStream __os)
+		OutputStream __os, JITMethodReference __mr)
 	{
-		super(__conf, __os);
+		super(__conf, __os, __mr);
 		
 		// Determine the variant
 		this.variant = MIPSVariant.fromTriplet(__conf.triplet());

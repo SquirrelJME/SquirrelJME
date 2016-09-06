@@ -50,6 +50,9 @@ public final class GenericClassWriter
 	/** The class name index. */
 	protected final int classnamedx;
 	
+	/** Class name copy. */
+	final ClassNameSymbol _classname;
+	
 	/** Fields in this class. */
 	private final List<__Field__> _fields =
 		new ArrayList<>();
@@ -127,6 +130,7 @@ public final class GenericClassWriter
 		
 		// Set
 		this.classname = __cn;
+		this._classname = __cn;
 		
 		// Get the index for the class name also
 		this.classnamedx = this._gpool.__loadClass(__cn)._index;
@@ -287,7 +291,7 @@ public final class GenericClassWriter
 				// Method logic is architecture dependent and as such this is
 				// delegated to other classes created by the handler for the
 				// given architecture
-				return goutput.__methodWriter(cs);
+				return goutput.__methodWriter(cs, m._mref);
 			}
 		}
 		

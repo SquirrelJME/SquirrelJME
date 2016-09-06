@@ -63,6 +63,9 @@ public abstract class GenericMethodWriter
 	protected final Map<Integer, GenericAllocatorState> jopstates =
 		new LinkedHashMap<>();
 	
+	/** This method reference. */
+	protected final JITMethodReference thisref;
+	
 	/** Valid jump targets. */
 	private volatile int[] _jumptargets;
 	
@@ -71,16 +74,20 @@ public abstract class GenericMethodWriter
 	 *
 	 * @param __conf The used configuration.
 	 * @param __os The stream to write to.
+	 * @param __thisref This method reference.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/21
 	 */
 	public GenericMethodWriter(JITOutputConfig.Immutable __conf,
-		OutputStream __os)
+		OutputStream __os, JITMethodReference __thisref)
 		throws NullPointerException
 	{
 		// Check
-		if (__os == null)
+		if (__os == null || __thisref == null)
 			throw new NullPointerException("NARG");
+		
+		// Set
+		this.thisref = __thisref;
 		
 		// Wrap
 		this.config = __conf;

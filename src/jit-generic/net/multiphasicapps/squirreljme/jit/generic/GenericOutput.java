@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.JITMethodReference;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -53,12 +54,14 @@ public abstract class GenericOutput
 	 * was compiled from byte code.
 	 *
 	 * @param __dos The stream where machine code is to be written to.
+	 * @param __mr Contains the class, name, and type of the current method.
 	 * @return The generic method writer.
 	 * @throws JITException If it could not be initialized.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/21
 	 */
-	protected abstract GenericMethodWriter methodWriter(OutputStream __os)
+	protected abstract GenericMethodWriter methodWriter(OutputStream __os,
+		JITMethodReference __mr)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -92,12 +95,14 @@ public abstract class GenericOutput
 	 * was compiled from byte code.
 	 *
 	 * @param __os The stream to write machine code to.
+	 * @param __mr Contains the class, name, and type of the current method.
 	 * @return The generic method writer.
 	 * @since 2016/08/21
 	 */
-	final GenericMethodWriter __methodWriter(OutputStream __os)
+	final GenericMethodWriter __methodWriter(OutputStream __os,
+		JITMethodReference __mr)
 	{
-		return methodWriter(__os);
+		return methodWriter(__os, __mr);
 	}
 }
 

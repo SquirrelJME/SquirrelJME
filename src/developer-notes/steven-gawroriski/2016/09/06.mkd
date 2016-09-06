@@ -22,3 +22,9 @@ Forgot about removing stack entries.
 
 And return values.
 
+## 09:56
+
+So as I planned before, method linking will have a source method and a target
+method, which are both method references along with their linkage type. This
+would reduce the amount of space required.
+

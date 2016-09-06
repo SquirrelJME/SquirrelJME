@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
+import net.multiphasicapps.squirreljme.jit.JITMethodReference;
 
 /**
  * This represents a single method.
@@ -22,6 +23,9 @@ import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
 class __Method__
 	extends __Member__
 {
+	/** The method reference for this method. */
+	final JITMethodReference _mref;
+	
 	/** The start position of code. */
 	volatile int _codestart;
 	
@@ -41,6 +45,10 @@ class __Method__
 		IdentifierSymbol __name, MethodSymbol __type)
 	{
 		super(__gcw, __f, __name, __type);
+		
+		// Set used reference
+		this._mref = new JITMethodReference(__gcw._classname, __name,
+			__type, false);
 	}
 }
 
