@@ -571,8 +571,8 @@ final class __OpParser__
 		
 		// {@squirreljme.error ED0y Stack underflow during invocation of
 		// method.}
-		int top = stack.top(), at = top - 1;
-		if (top - xc < 0)
+		int top = stack.top(), at = top - 1, end = top - xc;
+		if (end < 0)
 			throw new JITException("ED0y");
 		
 		// Stack positions and types
@@ -614,6 +614,10 @@ final class __OpParser__
 		
 		// Send in the call
 		this.writer.invoke(__type, __pid, ref, st, sp);
+		
+		// Pop values from the stack
+		while (stack.top() > end)
+			stack.pop();
 		
 		// Implicit next
 		return IMPLICIT_NEXT;

@@ -14,3 +14,7 @@ Invocation of methods will be handling cached stack values.
 So I have basic stack caching right now since the `this` in a constructor call
 has been cached.
 
+## 09:02
+
+Forgot about removing stack entries.
+

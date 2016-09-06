@@ -109,6 +109,16 @@ class __SMTStack__
 	}
 	
 	/**
+	 * Pops a value from the stack.
+	 *
+	 * @since 2016/09/06
+	 */
+	public void pop()
+	{
+		throw new Error("TODO");
+	}
+	
+	/**
 	 * Pushes the specified variable to the stack.
 	 *
 	 * @param __t The type of variable to push.
