@@ -58,3 +58,14 @@ It would likely be best if the red-black tree were left leaning, since based
 on a paper such a tree is much simpler to implement and would be more sane in
 the long run.
 
+## 17:43
+
+Actually it might be best to reverse course and have the Set implemented on
+top of the map, although it really does not matter. Likely using the set might
+be a bit cleaner.
+
+## 17:46
+
+It is interesting that Robert Sedgewick revisited his own algorithm after so
+many years, that is dedication.
+

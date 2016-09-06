@@ -20,12 +20,21 @@ import java.util.Set;
  * This is a sorted {@link Set} which internally uses a red-black tree to sort
  * the entries.
  *
+ * The algorithm is derived from Robert Sedgewick's (of Princeton University)
+ * 2008 variant of Red-Black Trees called Left Leaning Red-Black Trees.
+ *
  * @param <V> The type of value stored in the set.
  * @since 2016/09/06
  */
 public class SortedTreeSet<V>
 	extends AbstractSet<V>
 {
+	/** The comparison method to use. */
+	private final Comparator<? extends V> _compare;
+	
+	/** The root node. */
+	volatile __Node__<V> _root;
+	
 	/**
 	 * Initializes an empty red/black set using the natural comparator.
 	 *
@@ -33,7 +42,7 @@ public class SortedTreeSet<V>
 	 */
 	public SortedTreeSet()
 	{
-		throw new Error("TODO");
+		this(__Natural__.<V>instance());
 	}
 	
 	/**
@@ -44,10 +53,11 @@ public class SortedTreeSet<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
+	@SuppressWarnings({"unchecked"})
 	public SortedTreeSet(Collection<? extends Comparable<V>> __s)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		this(__Natural__.<V>instance(), (Collection<? extends V>)__s);
 	}
 	
 	/**
@@ -60,7 +70,12 @@ public class SortedTreeSet<V>
 	public SortedTreeSet(Comparator<? extends V> __comp)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__comp == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._compare = __comp;
 	}
 	
 	/**
@@ -76,7 +91,15 @@ public class SortedTreeSet<V>
 		Collection<? extends V> __s)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__comp == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._compare = __comp;
+		
+		// Just call add all from collection
+		addAll(__s);
 	}
 	
 	/**
