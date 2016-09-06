@@ -29,6 +29,9 @@ class __Node__<V>
 	/** The node to the right. */
 	volatile __Node__<V> _right;
 	
+	/** The parent node. */
+	volatile __Node__<V> _parent;
+	
 	/**
 	 * Initializes a node with no value.
 	 *

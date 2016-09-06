@@ -153,7 +153,7 @@ public class SortedTreeSet<V>
 	@Override
 	public Iterator<V> iterator()
 	{
-		throw new Error("TODO");
+		return new __SetIterator__<V>(this);
 	}
 	
 	/**
@@ -210,7 +210,12 @@ public class SortedTreeSet<V>
 			
 			// Changed?
 			if (was != now)
+			{
 				__at._left = now;
+				
+				// Set parent
+				now._parent = __at;
+			}
 		}
 		
 		// Insert on right side
@@ -221,7 +226,12 @@ public class SortedTreeSet<V>
 			
 			// Changed?
 			if (was != now)
+			{
 				__at._right = now;
+				
+				// Set parent
+				now._parent = __at;
+			}
 		}
 		
 		// If the right side is red then rotate left
