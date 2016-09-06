@@ -80,7 +80,7 @@ class __MethodDecoder__
 		JITClassWriter cw = this.classwriter;
 		
 		// Read the flags for this method
-		JITMethodFlags mf = __FlagDecoder__.__method(this.classflags,
+		JITMethodFlags mf = __FlagDecoder__.__method(this._classflags,
 			input.readUnsignedShort());
 		
 		// Read the method name

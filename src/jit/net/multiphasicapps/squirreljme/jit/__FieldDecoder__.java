@@ -57,7 +57,7 @@ class __FieldDecoder__
 		JITClassWriter cw = this.classwriter;
 		
 		// Read the flags for this field
-		JITFieldFlags mf = __FlagDecoder__.__field(this.classflags,
+		JITFieldFlags mf = __FlagDecoder__.__field(this._classflags,
 			input.readUnsignedShort());
 		
 		// Read the name

@@ -32,7 +32,7 @@ abstract class __MemberDecoder__
 	protected final JITConstantPool pool;
 	
 	/** The owning class flags. */
-	protected final JITClassFlags classflags;
+	final JITClassFlags _classflags;
 	
 	/**
 	 * Initializes the base decoder.
@@ -56,7 +56,7 @@ abstract class __MemberDecoder__
 		this.classwriter = __cw;
 		this.input = __di;
 		this.pool = __pool;
-		this.classflags = __cf;
+		this._classflags = __cf;
 	}
 	 
 	/**

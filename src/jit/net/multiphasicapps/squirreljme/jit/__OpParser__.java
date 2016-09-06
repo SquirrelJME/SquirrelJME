@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.IOException;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
+import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -41,6 +42,9 @@ final class __OpParser__
 	/** The writer used for output. */
 	protected final JITMethodWriter writer;
 	
+	/** The class flags. */
+	protected final JITClassFlags classflags;
+	
 	/** The stack map table. */
 	private final Map<Integer, __SMTState__> _smt;
 	
@@ -55,20 +59,22 @@ final class __OpParser__
 	 *
 	 * @param __dis The input data source.
 	 * @param __smt The stack map table.
+	 * @param __cf The class flags.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
 	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis,
-		Map<Integer, __SMTState__> __smt)
+		Map<Integer, __SMTState__> __smt, JITClassFlags __cf)
 		throws NullPointerException
 	{
 		// Check
-		if (__dis == null || __smt == null)
+		if (__dis == null || __smt == null || __cf == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.writer = __jmw;
 		this.input = __dis;
+		this.classflags = __cf;
 		this._smt = __smt;
 		
 		// Set working state
