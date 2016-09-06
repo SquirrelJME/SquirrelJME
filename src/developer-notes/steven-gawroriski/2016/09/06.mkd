@@ -9,3 +9,8 @@ since I do not know if a class is a superclass of one.
 
 Invocation of methods will be handling cached stack values.
 
+## 08:13
+
+So I have basic stack caching right now since the `this` in a constructor call
+has been cached.
+
