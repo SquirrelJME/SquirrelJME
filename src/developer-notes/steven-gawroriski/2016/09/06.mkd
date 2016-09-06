@@ -28,3 +28,7 @@ So as I planned before, method linking will have a source method and a target
 method, which are both method references along with their linkage type. This
 would reduce the amount of space required.
 
+## 10:20
+
+One thing I can do for speed is have prelinking of the JVM namespace.
+
