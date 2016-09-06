@@ -52,3 +52,9 @@ write a simple red-black tree. Although I will need a `Map` and a `Set`. I
 can layer one upon the other. In general though a `Map` is layered on a `Set`
 of entries.
 
+## 13:15
+
+It would likely be best if the red-black tree were left leaning, since based
+on a paper such a tree is much simpler to implement and would be more sane in
+the long run.
+
