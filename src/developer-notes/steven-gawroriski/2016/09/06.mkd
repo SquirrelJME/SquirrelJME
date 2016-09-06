@@ -69,3 +69,8 @@ be a bit cleaner.
 It is interesting that Robert Sedgewick revisited his own algorithm after so
 many years, that is dedication.
 
+## 18:02
+
+Actually it might be best to swap it and have it use the map as the base so I
+can have `get` and `put`.
+
