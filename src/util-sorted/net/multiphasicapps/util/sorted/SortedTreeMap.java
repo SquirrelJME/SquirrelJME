@@ -115,6 +115,18 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@Override
+	public void clear()
+	{
+		// Clear the root and the size
+		this._root = null;
+		this._size = 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
 		// Get
