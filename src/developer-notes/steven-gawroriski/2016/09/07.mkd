@@ -34,3 +34,8 @@ just be copied to the saved registers which are then mapped to local variables,
 written to the stack, and the temporaries cleared. This would be a bit of a
 shuffle however.
 
+## 16:08
+
+The copying and shuffling can be done right after the arguments are primed and
+the first instruction point placed after the shuffle code.
+
