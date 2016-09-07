@@ -5,3 +5,8 @@
 Actually the other way around would be better. That is having the Set use the
 map, I can really just use null keys or a marker object.
 
+## 14:09
+
+No wonder no nodes were ever red, since the color default to null, basically
+just black.
+

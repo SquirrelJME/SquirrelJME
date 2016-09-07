@@ -365,7 +365,46 @@ public class SortedTreeMap<K, V>
 		if (__at == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// The node to be leaned and the other node to balance off it
+		__Node__<K, V> lean, tail;
+		
+		// Lean 3 left leaning nodes to the right
+		if (__r)
+		{
+			// Get nodes to move
+			lean = __at._left;
+			tail = lean._right;
+			
+			// Move them
+			__at._left = tail;
+			lean._right = __at;
+		}
+		
+		// Lean 3 right leaning nodes to the left
+		else
+		{
+			// Get nodes to move
+			lean = __at._right;
+			tail = lean._left;
+			
+			// Move them
+			__at._right = tail;
+			lean._left = __at;
+		}
+		
+		// Tail points to the current node
+		if (tail != null)
+			tail._parent = __at;
+		
+		// The parent node was rotated to one side, so adjust the parent
+		__at._parent = lean;
+		
+		// Adjust colors
+		lean._color = __at._color;
+		__at._color = __Color__.RED;
+		
+		// Return the leaning node
+		return lean;
 	}
 }
 
