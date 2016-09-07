@@ -11,6 +11,7 @@
 package net.multiphasicapps.util.sorted;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -18,36 +19,36 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/09/06
  */
-class __SetIterator__<V>
-	implements Iterator<V>
+class __MapIterator__<K, V>
+	implements Iterator<Map.Entry<K, V>>
 {
-	/** The owning set. */
-	protected final SortedTreeSet<V> set;
+	/** The owning map. */
+	protected final SortedTreeMap<K, V> map;
 	
 	/** The current node position. */
-	private volatile __Node__<V> _at;
+	private volatile __Node__<K, V> _at;
 	
 	/** The last visited node (for deletion). */
-	private volatile __Node__<V> _last;
+	private volatile __Node__<K, V> _last;
 	
 	/**
-	 * Iterates over the given set.
+	 * Iterates over the given map.
 	 *
-	 * @param __s The set to iterate over.
+	 * @param __m The map to iterate over.
 	 * @since 2016/09/06
 	 */
-	__SetIterator__(SortedTreeSet<V> __s)
+	__MapIterator__(SortedTreeMap<K, V> __m)
 		throws NullPointerException
 	{
 		// Check
-		if (__s == null)
+		if (__m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.set = __s;
+		this.map = __m;
 		
 		// Start at the root node and go all the way left
-		__Node__<V> rover = __s._root, next;
+		__Node__<K, V> rover = __m._root, next;
 		if (rover != null)
 			while ((next = rover._left) != null)
 				rover = next;
@@ -69,20 +70,20 @@ class __SetIterator__<V>
 	 * @since 2016/09/06
 	 */
 	@Override
-	public V next()
+	public Map.Entry<K, V> next()
 	{
 		// {@squirreljme.error CE01 No more elements to iterate over.}
-		__Node__<V> rv = this._at;
+		__Node__<K, V> rv = this._at;
 		if (rv == null)
 			throw new NoSuchElementException("CE01");
 		
 		// Move the at pointer to the next node
-		__Node__<V> rover = rv._right;
+		__Node__<K, V> rover = rv._right;
 		
 		// There is a right, just go as deep left as possible
 		if (rover != null)
 		{
-			__Node__<V> left;
+			__Node__<K, V> left;
 			while ((left = rover._left) != null)
 				rover = left;
 		}
@@ -92,7 +93,7 @@ class __SetIterator__<V>
 		{
 			rover = rv._parent;
 			
-			__Node__<V> was = rv;
+			__Node__<K, V> was = rv;
 			while (rover != null && (rover._right == was))
 			{
 				was = rover;
@@ -105,7 +106,9 @@ class __SetIterator__<V>
 		
 		// Return the value
 		this._last = rv;
-		return rv._value;
+		
+		throw new Error("TODO");
+		/*return rv._value;*/
 	}
 	
 	/**

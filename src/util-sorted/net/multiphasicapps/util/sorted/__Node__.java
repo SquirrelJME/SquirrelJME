@@ -13,10 +13,15 @@ package net.multiphasicapps.util.sorted;
 /**
  * This represents a single node within the tree.
  *
+ * @param <K> The key used.
+ * @param <V> The value used.
  * @since 2016/09/06
  */
-class __Node__<V>
+class __Node__<K, V>
 {
+	/** The value. */
+	final K _key;
+	
 	/** The value. */
 	volatile V _value;
 	
@@ -24,21 +29,24 @@ class __Node__<V>
 	volatile __Color__ _color;
 	
 	/** The node to the left. */
-	volatile __Node__<V> _left;
+	volatile __Node__<K, V> _left;
 	
 	/** The node to the right. */
-	volatile __Node__<V> _right;
+	volatile __Node__<K, V> _right;
 	
 	/** The parent node. */
-	volatile __Node__<V> _parent;
+	volatile __Node__<K, V> _parent;
 	
 	/**
 	 * Initializes a node with no value.
 	 *
+	 * @param __k The key.
 	 * @since 2016/09/06
 	 */
-	__Node__()
+	__Node__(K __k)
 	{
+		// Set
+		this._key = __k;
 	}
 	
 	/**
@@ -47,8 +55,9 @@ class __Node__<V>
 	 * @param __v The initial value.
 	 * @since 2016/09/06
 	 */
-	__Node__(V __v)
+	__Node__(K __k, V __v)
 	{
+		this._key = __k;
 		this._value = __v;
 	}
 	
@@ -70,7 +79,7 @@ class __Node__<V>
 			throw new NullPointerException("NARG");
 		
 		// Get node, if there is no node there then never a color
-		__Node__<V> n = (__r ? this._right : this._left);
+		__Node__<K, V> n = (__r ? this._right : this._left);
 		if (n == null)
 			return false;
 		

@@ -29,8 +29,18 @@ import java.util.Set;
 public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
-	/** The backing set. */
-	private final SortedTreeSet<Object> _set;
+	/** The element already exists. */
+	private static final __AlreadyExists__ _ALREADY_EXISTS =
+		new __AlreadyExists__();
+	
+	/** The comparison method to use. */
+	private final Comparator<K> _compare;
+	
+	/** The root node. */
+	volatile __Node__<K, V> _root;
+	
+	/** The size of the tree. */
+	volatile int _size;
 	
 	/**
 	 * Initializes a new empty map using the natural comparator.
@@ -64,6 +74,7 @@ public class SortedTreeMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
+	@SuppressWarnings({"unchecked"})
 	public SortedTreeMap(Comparator<? extends K> __comp)
 		throws NullPointerException
 	{
@@ -71,10 +82,8 @@ public class SortedTreeMap<K, V>
 		if (__comp == null)
 			throw new NullPointerException("NARG");
 		
-		// Create set
-		SortedTreeSet<Object> set = new SortedTreeSet<Object>(
-			new __MapKeyComparator__<K>(__comp));
-		this._set = set;
+		// Set
+		this._compare = (Comparator<K>)__comp;
 	}
 	
 	/**
@@ -86,6 +95,7 @@ public class SortedTreeMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
+	@SuppressWarnings({"unchecked"})
 	public SortedTreeMap(Comparator<? extends K> __comp,
 		Map<? extends K, ? extends V> __m)
 		throws NullPointerException
@@ -94,10 +104,8 @@ public class SortedTreeMap<K, V>
 		if (__comp == null || __m == null)
 			throw new NullPointerException("NARG");
 		
-		// Create set
-		SortedTreeSet<Object> set = new SortedTreeSet<Object>(
-			new __MapKeyComparator__<K>(__comp));
-		this._set = set;
+		// Set
+		this._compare = (Comparator<K>)__comp;
 		
 		// Put everything
 		putAll(__m);
@@ -121,26 +129,7 @@ public class SortedTreeMap<K, V>
 	@SuppressWarnings({"unchecked"})
 	public V put(K __k, V __v)
 	{
-		// Get the backing set
-		SortedTreeSet<__MapKey__> set = this._set;
-		
-		// If the node already exists then set the value of it
-		__Node__<__MapKey__> node = set.__findNode(__k);
-		__MapKey__ key;
-		if (node != null)
-			key = (__MapKey__)node._value;
-		
-		// Otherwise add it
-		else
-		{
-			key = new __MapKey__(__k);
-			set.add(key);
-		}
-		
-		// Change values
-		V old = (V)key._value;
-		key._value = __v;
-		return old;
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -150,7 +139,174 @@ public class SortedTreeMap<K, V>
 	@Override
 	public int size()
 	{
-		return this._set.size();
+		return this._size;
+	}
+	
+	/**
+	 * Inserts a node into the tree.
+	 *
+	 * @param __at The current node the algorithm is at.
+	 * @param __k The key to insert.
+	 * @param __v The value to insert.
+	 * @return The newly created node.
+	 * @throws __AlreadyExists__ If the value already exists.
+	 * @since 2016/09/06
+	 */
+	private final __Node__<K, V> __insert(__Node__<K, V> __at, K __k, V __v)
+		throws __AlreadyExists__
+	{
+		// The tree is empty, adding an element is trivial
+		if (__at == null)
+		{
+			// Create new node
+			__Node__<K, V> rv = new __Node__<K, V>(__k, __v);
+			
+			// Increase size
+			this._size++;
+			
+			// Return it
+			return rv;
+		}
+		
+		// Compare node and value
+		Comparator<K> compare = this._compare;
+		K existval = __at._key;
+		int res = compare.compare(__k, existval);
+		
+		// If replacing, do nothing because only a single value may exist
+		// at a time.
+		if (res == 0)
+			throw _ALREADY_EXISTS;
+		
+		// Insert on left side
+		else if (res < 0)
+		{
+			__Node__<K, V> was = __at._left;
+			__Node__<K, V> now = __insert(was, __k, __v);
+			
+			// Changed?
+			if (was != now)
+			{
+				__at._left = now;
+				
+				// Set parent
+				now._parent = __at;
+			}
+		}
+		
+		// Insert on right side
+		else if (res > 0)
+		{
+			__Node__<K, V> was = __at._right;
+			__Node__<K, V> now = __insert(was, __k, __v);
+			
+			// Changed?
+			if (was != now)
+			{
+				__at._right = now;
+				
+				// Set parent
+				now._parent = __at;
+			}
+		}
+		
+		// If the right side is red then rotate left
+		if (__at.isSideColorRed(true))
+			__at = __rotate(__at, false);
+		
+		// If the left node is red and it has another left node which is also
+		// red then rotate right
+		__Node__<K, V> atleft = __at._left;
+		if (atleft != null && __at.isSideColorRed(false) &&
+			atleft.isSideColorRed(false))
+			__at = __rotate(__at, true);
+		
+		// If both sides are red then they must become black while the node
+		// above becomes red
+		if (__at.isSideColorRed(false) && __at.isSideColorRed(true))
+			__flipColor(__at);
+		
+		// Return the node, which may have been rotated
+		return __at;
+	}
+	
+	/**
+	 * Finds the node with the given value.
+	 *
+	 * @param __o The object to find.
+	 * @return The node for the given object or {@code null} if it was not
+	 * found.
+	 * @since 2016/09/06
+	 */
+	@SuppressWarnings({"unchecked"})
+	final __Node__<K, V> __findNode(Object __o)
+	{
+		// If there are no nodes then the tree is empty
+		__Node__<K, V> rover = this._root;
+		if (rover == null)
+			return null;
+		
+		// Constant search
+		Comparator<K> compare = this._compare;
+		for (; rover != null;)
+		{
+			// Compare
+			K against = rover._key;
+			int res = compare.compare((K)__o, against);
+			
+			// The same? stop here
+			if (res == 0)
+				return rover;
+			
+			// The object is lower, go left
+			else if (res < 0)
+				rover = rover._left;
+			
+			// The object is higher, go right
+			else
+				rover = rover._right;
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Flips the color of the sub-nodes so that red becomes black and black
+	 * becomes red.
+	 *
+	 * @param __at The node to flip.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/06
+	 */
+	private final void __flipColor(__Node__<K, V> __at)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Rotates a node a given direction.
+	 *
+	 * @param __at The node to rotate.
+	 * @param __r If {@code true} then the node is rotated right, otherwise
+	 * it is rotated to the left.
+	 * @return The resulting node to place in the tree.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/06
+	 */
+	private final __Node__<K, V> __rotate(__Node__<K, V> __at, boolean __r)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
