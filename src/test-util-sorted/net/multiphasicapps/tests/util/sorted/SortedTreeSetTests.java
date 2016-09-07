@@ -11,6 +11,7 @@
 package net.multiphasicapps.tests.util.sorted;
 
 import java.util.Objects;
+import java.util.Random;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestComparison;
@@ -28,6 +29,14 @@ import net.multiphasicapps.util.sorted.SortedTreeSet;
 public class SortedTreeSetTests
 	implements TestInvoker
 {
+	/** The default seed. */
+	public static final long DEFAULT_SEED =
+		0x537175697272656CL;
+	
+	/** Number of entries to place. */
+	public static final int ENTRY_COUNT =
+		256;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/07

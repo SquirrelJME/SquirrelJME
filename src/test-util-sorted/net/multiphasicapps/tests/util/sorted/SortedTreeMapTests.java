@@ -11,6 +11,7 @@
 package net.multiphasicapps.tests.util.sorted;
 
 import java.util.Objects;
+import java.util.Random;
 import net.multiphasicapps.tests.IndividualTest;
 import net.multiphasicapps.tests.InvalidTestException;
 import net.multiphasicapps.tests.TestComparison;
@@ -28,6 +29,14 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
 public class SortedTreeMapTests
 	implements TestInvoker
 {
+	/** The default seed. */
+	public static final long DEFAULT_SEED =
+		0x537175697272656CL;
+	
+	/** Number of entries to place. */
+	public static final int ENTRY_COUNT =
+		256;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/07
@@ -51,6 +60,33 @@ public class SortedTreeMapTests
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
+		
+		// Create random seems for 
+		long seed = Long.parseLong(__t.subName().toString());
+		Random rkeys = new Random(seed),
+			rvals = new Random(seed + 1);
+		
+		// Setup
+		SortedTreeMap<Integer, Integer> target = new SortedTreeMap<>();
+		
+		// Add keys and values to the map
+		int n = ENTRY_COUNT;
+		int totalkeys = 0;
+		for (int i = 0; i < n; i++)
+			if (target.put(rkeys.nextInt(), rvals.nextInt()) == null)
+				totalkeys++;
+		
+		// Verify that the keys exist
+		rkeys = new Random(seed);
+		rvals = new Random(seed + 1);
+		int haskeys = 0;
+		for (int i = 0; i < n; i++)
+			if (target.get(rkeys.nextInt()) == rvals.nextInt())
+				haskeys++;
+			
+		// Check
+		__t.result("keycount").compareInt(TestComparison.EQUALS, haskeys,
+			totalkeys);
 		
 		throw new Error("TODO");
 	}
