@@ -33,11 +33,18 @@ final class __Natural__<V>
 	@SuppressWarnings({"unchecked"})
 	public int compare(V __a, V __b)
 	{
-		// null is not accepted as one
-		if (__a == null || __b == null)
-			throw new NullPointerException("NARG");
+		// Consider two nulls to be equal
+		boolean na = (__a == null), nb = (__b == null);
+		if (na && nb)
+			return 0;
 		
-		// Cast
+		// Nulls before non-null
+		else if (na && !nb)
+			return -1;
+		else if (!na && nb)
+			return 1;
+		
+		// Use standard comparison
 		return ((Comparable<V>)__a).compareTo(__b);
 	}
 	
