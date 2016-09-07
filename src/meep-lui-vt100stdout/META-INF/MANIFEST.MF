@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: meep-lui-vt100stdout
+X-SquirrelJME-UUID: adda78ab-11b3-475d-8833-b340f8376546
+X-SquirrelJME-Depends: meep-lui
+X-SquirrelJME-Error: CF
+LIBlet-Title: MEEP Line Based Interface (VT100 System.out Only)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains a line based user interface 
+ implementation which uses System.out and outputs to a vt100 
+ display. Input is not supported by this implementation.
+

@@ -45,3 +45,14 @@ Although it will be slightly shuffled, because I should have the remaining
 arguments first. This way I can still conform to the calling convention in
 case I ever need to call libraries.
 
+## 18:21
+
+For the LUI, I can cheat by making a vt100 interface that just uses
+`System.out`. I can then additionally work on Squirrel Quarrel and have for
+example AIs battling each other. Although I would be unable to play I could
+use the basic interface to implement a few other things however. Also with the
+plan for LUI interfaces, I can even have a LUI interface which implements the
+LCD UI from MIDP 3 potentially. I suppose that I would like these interfaces
+to be visible via the service loader, however this basic interface should
+have a very low number so that it is chosen last.
+

@@ -10,8 +10,14 @@
 
 package javax.microedition.lui;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.meep.lui.DisplayService;
+import net.multiphasicapps.squirreljme.meep.lui.DisplayServiceFactory;
+import net.multiphasicapps.squirreljme.meep.lui.InvalidDisplayServiceException;
 
 /**
  * This provides an interface to basic text based displays.
@@ -51,6 +57,19 @@ import java.util.ServiceLoader;
 public class Display
 {
 	/**
+	 * {@squirreljme.property
+	 * net.multiphasicapps.squirreljme.meep.lui.service=class
+	 * This selects the class to use as the display service instead of using
+	 * the default display service. This may be used for specific systems to
+	 * use a given driver if it has a negative or low priority.}
+	 */
+	private static final String _SERVICE_CLASS =
+		"net.multiphasicapps.squirreljme.meep.lui.service";
+	
+	/** This is the display service which has been selected for usage. */
+	private static final DisplayService _DISPLAY_SERVICE;
+	
+	/**
 	 * This is used as the event name to indicate the lighting level.
 	 *
 	 * The value will be either {@link #LIGHTING_ON}, {@link #LIGHTING_OFF},
@@ -88,6 +107,92 @@ public class Display
 	 */
 	public static final int MODE_NORMAL =
 		0;
+	
+	/**
+	 * This
+	 *
+	 * @since 2016/09/07
+	 */
+	static
+	{
+		// T
+		DisplayService got = null;
+		String usesv = System.getProperty(_SERVICE_CLASS);
+		if (usesv != null)
+			try
+			{
+				// Lookup
+				Class<?> dsfcl = Class.forName(usesv);
+				
+				// Create factory instance
+				DisplayServiceFactory dsf = DisplayServiceFactory.class.cast(
+					dsfcl.newInstance());
+					
+				// Create service
+				got = dsf.createDisplayService();
+			}
+			
+			// Ignore these
+			catch (ClassCastException|InvalidDisplayServiceException|
+				ClassNotFoundException|InstantiationException|
+				IllegalAccessException e)
+			{
+			}
+		
+		// Fallback
+		if (got == null)
+		{
+			// Setup list to determine services to use
+			List<DisplayServiceFactory> factories = new ArrayList<>();
+			
+			// Go through all
+			for (DisplayServiceFactory f : ServiceLoader.
+				<DisplayServiceFactory>load(DisplayServiceFactory.class))
+			{
+				// Get priority
+				int pid = f.priority();
+				
+				// Never default attempt these
+				if (pid < 0)
+					continue;
+				
+				// Add, use insertion sort
+				int i, n = factories.size();
+				for (i = n - 1; i >= 0; i--)
+					if (pid < factories.get(i).priority())
+					{
+						factories.add(i, f);
+						break;
+					}
+				
+				// Add at start
+				if (i < 0)
+					factories.add(0, f);
+			}
+			
+			// Use the highest priority factories and use them for output
+			int n = factories.size();
+			for (int i = n - 1; i >= 0; i--)
+				try
+				{
+					// Attempt creation
+					got = factories.get(i).createDisplayService();
+					
+					// Stop?
+					if (got != null)
+						break;
+				}
+				
+				// Ignore
+				catch (InvalidDisplayServiceException e)
+				{
+					continue;
+				}
+		}
+		
+		// Set
+		_DISPLAY_SERVICE = got;
+	}
 	
 	/**
 	 * Displays are internally managed by this class and as such cannot be

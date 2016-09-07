@@ -7,6 +7,6 @@ X-SquirrelJME-StandardLib: microedition.lui;0.0.0
 LIBlet-Title: MEEP Line Based Interface
 LIBlet-Vendor: Steven Gawroriski
 LIBlet-Version: 0.0.2
-LIBlet-Description: This contains the implementation of the 
+LIBlet-Description: This contains the base support for the 
  line based interface.
 
