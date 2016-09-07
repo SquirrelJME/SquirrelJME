@@ -98,9 +98,9 @@ class __PackageSelection__
 		// Note some things
 		PrintStream out = System.err;
 		out.printf("Will compile %d project(s)...%n", all.size());
-		out.println(all);
+		out.printf("DEBUG -- %s%n", all);
 		out.printf("JVM Classpath contains %d project(s)...%n", jvm.size());
-		out.println(jvm);
+		out.printf("DEBUG -- %s%n", jvm);
 	}
 }
 

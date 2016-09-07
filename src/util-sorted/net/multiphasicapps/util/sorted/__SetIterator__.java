@@ -82,7 +82,6 @@ class __SetIterator__<V>
 		// There is a right, just go as deep left as possible
 		if (rover != null)
 		{
-			System.err.println("DEBUG -- Right then left");
 			__Node__<V> left;
 			while ((left = rover._left) != null)
 				rover = left;
@@ -91,7 +90,6 @@ class __SetIterator__<V>
 		// Go to the parent of this node
 		else
 		{
-			System.err.println("DEBUG -- Up");
 			rover = rv._parent;
 			
 			__Node__<V> was = rv;
@@ -104,10 +102,6 @@ class __SetIterator__<V>
 		
 		// Set next
 		this._at = rover;
-		
-		System.err.printf("DEBUG -- %d %08x %08x%n", this.set.size(),
-			System.identityHashCode(rv), (rover == null ? 0 :
-				System.identityHashCode(rover)));
 		
 		// Return the value
 		this._last = rv;

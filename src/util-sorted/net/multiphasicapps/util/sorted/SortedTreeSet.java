@@ -121,10 +121,6 @@ public class SortedTreeSet<V>
 	@Override
 	public boolean add(V __v)
 	{
-		// Debug
-		System.err.printf("DEBUG -- %08x Add %s%n",
-			System.identityHashCode(this), __v);
-		
 		try
 		{
 			// Replace the root
@@ -149,32 +145,6 @@ public class SortedTreeSet<V>
 		catch (__AlreadyExists__ e)
 		{
 			return false;
-		}
-		
-		finally
-		{
-			System.err.println("DEBUG -- -------------------");
-			Deque<__Node__<V>> q = new ArrayDeque<>();
-			q.offerLast(this._root);
-			while (!q.isEmpty())
-			{
-				__Node__<V> at = q.pollFirst();
-				
-				__Node__<V> l = at._left;
-				__Node__<V> r = at._right;
-				__Node__<V> p = at._parent;
-				
-				System.err.printf("DEBUG -- %08x -> %08x %08x (<- %08x)%n",
-					System.identityHashCode(at),
-					(l == null ? 0 : System.identityHashCode(l)),
-					(r == null ? 0 : System.identityHashCode(r)),
-					(p == null ? 0 : System.identityHashCode(p)));
-				
-				if (l != null)
-					q.offerLast(l);
-				if (r != null)
-					q.offerLast(r);
-			}
 		}
 	}
 	
