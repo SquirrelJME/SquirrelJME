@@ -112,7 +112,7 @@ public class SortedTreeMap<K, V>
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/09/06
+	 * @since 2016/09/07
 	 */
 	@Override
 	public void clear()
@@ -120,6 +120,16 @@ public class SortedTreeMap<K, V>
 		// Clear the root and the size
 		this._root = null;
 		this._size = 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/07
+	 */
+	@Override
+	public boolean containsKey(Object __o)
+	{
+		return (null != __findNode(__o));
 	}
 	
 	/**
@@ -140,6 +150,19 @@ public class SortedTreeMap<K, V>
 		
 		// Return
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/07
+	 */
+	@Override
+	public V get(Object __k)
+	{
+		__Node__<K, V> node = __findNode(__k);
+		if (node == null)
+			return null;
+		return node._value;
 	}
 	
 	/**
@@ -178,6 +201,65 @@ public class SortedTreeMap<K, V>
 	public int size()
 	{
 		return this._size;
+	}
+	
+	/**
+	 * Finds the node with the given value.
+	 *
+	 * @param __o The object to find.
+	 * @return The node for the given object or {@code null} if it was not
+	 * found.
+	 * @since 2016/09/06
+	 */
+	@SuppressWarnings({"unchecked"})
+	final __Node__<K, V> __findNode(Object __o)
+	{
+		// If there are no nodes then the tree is empty
+		__Node__<K, V> rover = this._root;
+		if (rover == null)
+			return null;
+		
+		// Constant search
+		Comparator<K> compare = this._compare;
+		for (; rover != null;)
+		{
+			// Compare
+			K against = rover._key;
+			int res = compare.compare((K)__o, against);
+			
+			// The same? stop here
+			if (res == 0)
+				return rover;
+			
+			// The object is lower, go left
+			else if (res < 0)
+				rover = rover._left;
+			
+			// The object is higher, go right
+			else
+				rover = rover._right;
+		}
+		
+		// Not found
+		return null;
+	}
+	
+	/**
+	 * Flips the color of the sub-nodes so that red becomes black and black
+	 * becomes red.
+	 *
+	 * @param __at The node to flip.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/06
+	 */
+	private final void __flipColor(__Node__<K, V> __at)
+		throws NullPointerException
+	{
+		// Check
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -264,65 +346,6 @@ public class SortedTreeMap<K, V>
 		
 		// Return the node, which may have been rotated
 		return __at;
-	}
-	
-	/**
-	 * Finds the node with the given value.
-	 *
-	 * @param __o The object to find.
-	 * @return The node for the given object or {@code null} if it was not
-	 * found.
-	 * @since 2016/09/06
-	 */
-	@SuppressWarnings({"unchecked"})
-	final __Node__<K, V> __findNode(Object __o)
-	{
-		// If there are no nodes then the tree is empty
-		__Node__<K, V> rover = this._root;
-		if (rover == null)
-			return null;
-		
-		// Constant search
-		Comparator<K> compare = this._compare;
-		for (; rover != null;)
-		{
-			// Compare
-			K against = rover._key;
-			int res = compare.compare((K)__o, against);
-			
-			// The same? stop here
-			if (res == 0)
-				return rover;
-			
-			// The object is lower, go left
-			else if (res < 0)
-				rover = rover._left;
-			
-			// The object is higher, go right
-			else
-				rover = rover._right;
-		}
-		
-		// Not found
-		return null;
-	}
-	
-	/**
-	 * Flips the color of the sub-nodes so that red becomes black and black
-	 * becomes red.
-	 *
-	 * @param __at The node to flip.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/06
-	 */
-	private final void __flipColor(__Node__<K, V> __at)
-		throws NullPointerException
-	{
-		// Check
-		if (__at == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
 	}
 	
 	/**
