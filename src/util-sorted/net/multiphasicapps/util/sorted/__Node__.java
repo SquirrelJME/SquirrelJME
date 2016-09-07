@@ -25,9 +25,9 @@ class __Node__<K, V>
 	/** The value. */
 	volatile V _value;
 	
-	/** The color. */
-	volatile __Color__ _color =
-		__Color__.RED;
+	/** The color, defaults to red. */
+	volatile boolean _color =
+		true;
 	
 	/** The node to the left. */
 	volatile __Node__<K, V> _left;
@@ -67,25 +67,19 @@ class __Node__<K, V>
 	 *
 	 * @param __r If {@code true} then the right side is checked, otherwise
 	 * the left.
-	 * @param __c The color to check.
+	 * @param __red If {@code true} then red is checked.
 	 * @return {@code true} if the side is the given color.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	final boolean isSideColor(boolean __r, __Color__ __c)
-		throws NullPointerException
+	final boolean isSideColor(boolean __r, boolean __red)
 	{
-		// Check
-		if (__c == null)
-			throw new NullPointerException("NARG");
-		
 		// Get node, if there is no node there then never a color
 		__Node__<K, V> n = (__r ? this._right : this._left);
 		if (n == null)
 			return false;
 		
 		// Check
-		return __c == n._color;
+		return __red == n._color;
 	}
 	
 	/**
@@ -98,7 +92,7 @@ class __Node__<K, V>
 	 */
 	final boolean isSideColorRed(boolean __r)
 	{
-		return isSideColor(__r, __Color__.RED);
+		return isSideColor(__r, true);
 	}
 }
 

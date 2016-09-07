@@ -185,7 +185,7 @@ public class SortedTreeMap<K, V>
 		}
 
 		// Force to black
-		now._color = __Color__.BLACK;
+		now._color = true;
 		
 		// Set new value
 		V old = now._value;
@@ -259,7 +259,16 @@ public class SortedTreeMap<K, V>
 		if (__at == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Flip parent
+		__at._color = !__at._color;
+		
+		// Flip left
+		__Node__<K, V> left = __at._left;
+		left._color = !left._color;
+		
+		// Flip right
+		__Node__<K, V> right = __at._right;
+		right._color = !right._color;
 	}
 	
 	/**
@@ -401,7 +410,7 @@ public class SortedTreeMap<K, V>
 		
 		// Adjust colors
 		lean._color = __at._color;
-		__at._color = __Color__.RED;
+		__at._color = true;
 		
 		// Return the leaning node
 		return lean;
