@@ -39,3 +39,9 @@ shuffle however.
 The copying and shuffling can be done right after the arguments are primed and
 the first instruction point placed after the shuffle code.
 
+## 17:35
+
+Although it will be slightly shuffled, because I should have the remaining
+arguments first. This way I can still conform to the calling convention in
+case I ever need to call libraries.
+
