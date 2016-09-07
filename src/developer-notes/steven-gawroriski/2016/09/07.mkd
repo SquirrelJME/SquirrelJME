@@ -1,2 +1,7 @@
 # 2016/09/07
 
+## 09:43
+
+Actually the other way around would be better. That is having the Set use the
+map, I can really just use null keys or a marker object.
+

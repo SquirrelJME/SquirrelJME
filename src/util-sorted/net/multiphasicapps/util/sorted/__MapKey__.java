@@ -13,15 +13,17 @@ package net.multiphasicapps.util.sorted;
 /**
  * This is a key that is used within the map.
  *
+ * @param <K> The map key.
+ * @param <V> The map value.
  * @since 2016/09/07
  */
-class __MapKey__<K>
+class __MapKey__<K, V>
 {
 	/** The key value. */
 	protected final K key;
 	
 	/** The mapping value. */
-	volatile Object _value;
+	volatile V _value;
 	
 	/**
 	 * Initializes the map key.

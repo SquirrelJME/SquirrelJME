@@ -15,27 +15,27 @@ import java.util.Comparator;
 /**
  * This compares map keys.
  *
+ * @param <K> The map key.
  * @since 2016/09/07
  */
 class __MapKeyComparator__<K>
-	implements Comparator<K>
+	implements Comparator<Object>
 {
 	/** The comparator to use for keys. */
-	protected final Comparator<? extends K> _compare;
+	protected final Comparator<? extends Object> _compare;
 	
 	/**
 	 * Initializes the comparator.
 	 *
-	 * @param __m The owning map.
 	 * @param __c The comparator to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/07
 	 */
-	__MapKeyComparator__(SortedTreeMap<K, ?> __m, Comparator<? extends K> __c)
+	__MapKeyComparator__(Comparator<? extends Object> __c)
 		throws NullPointerException
 	{
 		// Check
-		if (__m == null || __c == null)
+		if (__c == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -48,7 +48,7 @@ class __MapKeyComparator__<K>
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
-	public int compare(K __a, K __b)
+	public int compare(Object __a, Object __b)
 	{
 		throw new Error("TODO");
 	}

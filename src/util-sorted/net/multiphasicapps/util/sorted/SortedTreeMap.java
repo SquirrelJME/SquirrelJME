@@ -30,7 +30,7 @@ public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
 	/** The backing set. */
-	private final SortedTreeSet<__MapKey__<K>> _set;
+	private final SortedTreeSet<Object> _set;
 	
 	/**
 	 * Initializes a new empty map using the natural comparator.
@@ -72,8 +72,8 @@ public class SortedTreeMap<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Create set
-		SortedTreeSet<__MapKey__<K>> set = new SortedTreeSet<>(
-			new __MapKeyComparator__<K>(this, __comp));
+		SortedTreeSet<Object> set = new SortedTreeSet<Object>(
+			new __MapKeyComparator__<K>(__comp));
 		this._set = set;
 	}
 	
@@ -95,8 +95,8 @@ public class SortedTreeMap<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Create set
-		SortedTreeSet<__MapKey__<K>> set = new SortedTreeSet<>(
-			new __MapKeyComparator__<K>(this, __comp));
+		SortedTreeSet<Object> set = new SortedTreeSet<Object>(
+			new __MapKeyComparator__<K>(__comp));
 		this._set = set;
 		
 		// Put everything
@@ -122,18 +122,18 @@ public class SortedTreeMap<K, V>
 	public V put(K __k, V __v)
 	{
 		// Get the backing set
-		SortedTreeSet<__MapKey__<K>> set = this._set;
+		SortedTreeSet<__MapKey__> set = this._set;
 		
 		// If the node already exists then set the value of it
-		__Node__<__MapKey__<K>> node = set.__findNode(__k);
-		__MapKey__<K> key;
+		__Node__<__MapKey__> node = set.__findNode(__k);
+		__MapKey__ key;
 		if (node != null)
-			key = node._value;
+			key = (__MapKey__)node._value;
 		
 		// Otherwise add it
 		else
 		{
-			key = new __MapKey__<>(__k);
+			key = new __MapKey__(__k);
 			set.add(key);
 		}
 		
