@@ -8,6 +8,7 @@ X-SquirrelJME-Optional: test-contrib-all,
  test-io-slidingwindow,
  test-paths-posix,
  test-util-huffmantree,
+ test-util-sorted,
  test-util-uri,
  test-zip-reader-stream,
  test-zip-writer-stream
