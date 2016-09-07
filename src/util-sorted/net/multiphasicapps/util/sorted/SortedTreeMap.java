@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.util.sorted;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Comparator;
@@ -31,6 +33,9 @@ public class SortedTreeMap<K, V>
 {
 	/** The comparison method to use. */
 	private final Comparator<K> _compare;
+	
+	/** The entry set. */
+	private volatile Reference<Set<Map.Entry<K, V>>> _entryset;
 	
 	/** The root node. */
 	volatile __Node__<K, V> _root;
@@ -114,7 +119,17 @@ public class SortedTreeMap<K, V>
 	@Override
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<Set<Map.Entry<K, V>>> ref = this._entryset;
+		Set<Map.Entry<K, V>> rv;
+		
+		// Check
+		if (ref == null || null == (rv = ref.get()))
+			this._entryset = new WeakReference<>(
+				(rv = new __EntrySet__<>(this)));
+		
+		// Return
+		return rv;
 	}
 	
 	/**
