@@ -29,10 +29,6 @@ import java.util.Set;
 public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
-	/** The element already exists. */
-	private static final __AlreadyExists__ _ALREADY_EXISTS =
-		new __AlreadyExists__();
-	
 	/** The comparison method to use. */
 	private final Comparator<K> _compare;
 	
@@ -129,7 +125,24 @@ public class SortedTreeMap<K, V>
 	@SuppressWarnings({"unchecked"})
 	public V put(K __k, V __v)
 	{
-		throw new Error("TODO");
+		// Replace the root
+		__Node__<K, V> was = this._root;
+		__Node__<K, V> now = __insert(was, __k, __v);
+
+		// Changed?
+		if (was != now)
+		{
+			this._root = now;
+			now._parent = null;
+		}
+
+		// Force to black
+		now._color = __Color__.BLACK;
+		
+		// Set new value
+		V old = now._value;
+		now._value = __v;
+		return old;
 	}
 	
 	/**
@@ -149,11 +162,9 @@ public class SortedTreeMap<K, V>
 	 * @param __k The key to insert.
 	 * @param __v The value to insert.
 	 * @return The newly created node.
-	 * @throws __AlreadyExists__ If the value already exists.
 	 * @since 2016/09/06
 	 */
 	private final __Node__<K, V> __insert(__Node__<K, V> __at, K __k, V __v)
-		throws __AlreadyExists__
 	{
 		// The tree is empty, adding an element is trivial
 		if (__at == null)
@@ -176,7 +187,7 @@ public class SortedTreeMap<K, V>
 		// If replacing, do nothing because only a single value may exist
 		// at a time.
 		if (res == 0)
-			throw _ALREADY_EXISTS;
+			return __at;
 		
 		// Insert on left side
 		else if (res < 0)
