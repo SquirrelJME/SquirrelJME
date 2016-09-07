@@ -10,3 +10,27 @@ map, I can really just use null keys or a marker object.
 No wonder no nodes were ever red, since the color default to null, basically
 just black.
 
+## 15:58
+
+So calling a method requires that temporary registers are saved somewhere. Any
+arguments to be passed are placed in the argument registers. If an argument
+is not temporary then that also must be saved. Due to my previous ruling of
+forcing locals to always be up to date, locals do not have to be saved, only
+temporary registers that are on the Java stack which use temporary
+registers. A such, the minimum stack space needed for a method is the number
+of local variables which are available. So then this means that local variables
+are copied on the call and also passed as arguments to be stored in local
+variables on the stack for exception handling. Basically since locals must be
+stored on the CPU's stack for exception handling (so they can be restored by
+the exception handler, or some other jump target), at the start of every method
+I will need to generate code that copies the input arguments to these
+positions. The number and type of input arguments are always known however.
+This may be the simplest route to take, although there will be a loss of speed
+due to storing values in memory. However, the locals would operate on an
+entirely copy on write mentality. Then this also means that saved registers are
+mapped to local variables and the initial arguments are just saved. However if
+the input argument registers are considered temporary then their values can
+just be copied to the saved registers which are then mapped to local variables,
+written to the stack, and the temporaries cleared. This would be a bit of a
+shuffle however.
+
