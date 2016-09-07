@@ -67,13 +67,14 @@ public class SortedTreeMapTests
 			rvals = new Random(seed + 1);
 		
 		// Setup
-		SortedTreeMap<Integer, Integer> target = new SortedTreeMap<>();
+		SortedTreeMap<Byte, Byte> target = new SortedTreeMap<>();
 		
 		// Add keys and values to the map
 		int n = ENTRY_COUNT;
 		int totalkeys = 0;
 		for (int i = 0; i < n; i++)
-			if (target.put(rkeys.nextInt(), rvals.nextInt()) == null)
+			if (target.put((byte)rkeys.nextInt(), (byte)rvals.nextInt()) ==
+				null)
 				totalkeys++;
 		
 		// Verify the iteration order
@@ -89,6 +90,7 @@ public class SortedTreeMapTests
 		// Check
 		__t.result("ordercount").compareInt(TestComparison.EQUALS, count,
 			target.size());
+		__t.result("note").note(target);
 	}
 }
 

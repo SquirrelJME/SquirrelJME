@@ -66,13 +66,13 @@ public class SortedTreeSetTests
 		Random rvals = new Random(seed);
 		
 		// Setup
-		SortedTreeSet<Integer> target = new SortedTreeSet<>();
+		SortedTreeSet<Byte> target = new SortedTreeSet<>();
 		
 		// Add values to the set
 		int n = ENTRY_COUNT;
 		int totalkeys = 0;
 		for (int i = 0; i < n; i++)
-			if (target.add(rvals.nextInt()))
+			if (target.add((byte)rvals.nextInt()))
 				totalkeys++;
 		
 		// Verify the iteration order
@@ -88,6 +88,7 @@ public class SortedTreeSetTests
 		// Check
 		__t.result("ordercount").compareInt(TestComparison.EQUALS, count,
 			target.size());
+		__t.result("note").note(target);
 	}
 }
 
