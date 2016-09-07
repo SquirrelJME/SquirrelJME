@@ -76,17 +76,19 @@ public class SortedTreeMapTests
 			if (target.put(rkeys.nextInt(), rvals.nextInt()) == null)
 				totalkeys++;
 		
-		// Verify that the keys exist
-		rkeys = new Random(seed);
-		rvals = new Random(seed + 1);
-		int haskeys = 0;
-		for (int i = 0; i < n; i++)
-			if (target.get(rkeys.nextInt()) == rvals.nextInt())
-				haskeys++;
-			
+		// Verify the iteration order
+		int last = Integer.MIN_VALUE;
+		int count = 0;
+		for (int i : target.keySet())
+			if (i > last)
+			{
+				count++;
+				last = i;
+			}
+		
 		// Check
-		__t.result("keycount").compareInt(TestComparison.EQUALS, haskeys,
-			totalkeys);
+		__t.result("ordercount").compareInt(TestComparison.EQUALS, count,
+			target.size());
 		
 		throw new Error("TODO");
 	}

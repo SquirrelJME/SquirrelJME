@@ -26,7 +26,8 @@ class __Node__<K, V>
 	volatile V _value;
 	
 	/** The color. */
-	volatile __Color__ _color;
+	volatile __Color__ _color =
+		__Color__.RED;
 	
 	/** The node to the left. */
 	volatile __Node__<K, V> _left;
