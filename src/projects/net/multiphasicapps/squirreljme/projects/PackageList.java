@@ -20,6 +20,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.zip.blockreader.ZipFile;
 
@@ -53,7 +54,7 @@ public class PackageList
 			throw new NullPointerException("NARG");
 		
 		// The target map
-		Map<PackageName, PackageInfo> target = new HashMap<>();
+		Map<PackageName, PackageInfo> target = new SortedTreeMap<>();
 		
 		// Go through binary JAR files
 		if (__j != null)
