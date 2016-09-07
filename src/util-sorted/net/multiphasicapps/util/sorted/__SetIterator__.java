@@ -30,6 +30,9 @@ class __SetIterator__<V>
 	/** The last visited node (for deletion). */
 	private volatile __Node__<V> _last;
 	
+	/** Dipping to the right after an up? */
+	private volatile boolean _dipright;
+	
 	/**
 	 * Iterates over the given set.
 	 *
@@ -77,34 +80,42 @@ class __SetIterator__<V>
 			throw new NoSuchElementException("CE01");
 		
 		// Move the at pointer to the next node
-		__Node__<V> rover = rv;
-		if (rover != null)
-			for (;;)
-			{
-				__Node__<V> par = rover._parent;
-				if (par != null)
-				{
-					// Need right side
-					__Node__<V> right = par._right;
-					
-					// If this is on the left side, go to the right if there
-					// is a right
-					if (par._left == rover && right != null)
-						rover = par._right;
-				
-					// If there is not right, go up
-					// If this is on the right then go up
-					else if (right == null || right == rover)
-						rover = par;
-				}
+		__Node__<V> rover = rv, mod = rover;
+		boolean dipright = this._dipright;
 		
-				// No more elements to iterate over
-				else
-				{
-					rover = null;
-					break;
-				}
+		// Dipping right?
+		if (dipright)
+		{
+			// Go right
+			rover = rover._right;
+			
+			// Go deep left
+			__Node__<V> left;
+			while ((left = rover._left) != null)
+				rover = left;
+		}
+		
+		// Go into the parent
+		else
+		{
+			__Node__<V> par = rover._parent;
+			
+			// Top of tree, stop
+			if (par == null)
+				rover = null;
+			
+			// We are the right side, skip to the parent above this one and
+			// then try going right
+			else if (par._right == rover)
+				throw new Error("TODO");
+			
+			// If on the left side go to the parent and then dip later
+			else
+			{
+				rover = par;
+				this._dipright = true;
 			}
+		}
 		
 		// Set next
 		this._at = rover;
