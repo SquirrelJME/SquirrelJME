@@ -29,6 +29,9 @@ import java.util.Set;
 public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
+	/** The backing set. */
+	private final SortedTreeSet<__MapKey__<K>> _set;
+	
 	/**
 	 * Initializes a new empty map using the natural comparator.
 	 *
@@ -36,6 +39,7 @@ public class SortedTreeMap<K, V>
 	 */
 	public SortedTreeMap()
 	{
+		this(__Natural__.<K>instance());
 	}
 	
 	/**
@@ -46,19 +50,18 @@ public class SortedTreeMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
+	@SuppressWarnings({"unchecked"})
 	public SortedTreeMap(Map<? extends Comparable<K>, ? extends V> __m)
 		throws NullPointerException
 	{
-		// Check
-		if (__m == null)
-			throw new NullPointerException("NARG");
-		
-		throw new Error("TODO");
+		this(__Natural__.<K>instance(), (Map<? extends K, ? extends V>)__m);
 	}
 	
 	/**
 	 * Initializes a new empty map using the given comparator.
 	 *
+	 * @param __comp The comparator to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
 	public SortedTreeMap(Comparator<? extends K> __comp)
@@ -68,7 +71,10 @@ public class SortedTreeMap<K, V>
 		if (__comp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create set
+		SortedTreeSet<__MapKey__<K>> set = new SortedTreeSet<>(
+			new __MapKeyComparator__<K>(this, __comp));
+		this._set = set;
 	}
 	
 	/**
@@ -88,7 +94,13 @@ public class SortedTreeMap<K, V>
 		if (__comp == null || __m == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create set
+		SortedTreeSet<__MapKey__<K>> set = new SortedTreeSet<>(
+			new __MapKeyComparator__<K>(this, __comp));
+		this._set = set;
+		
+		// Put everything
+		putAll(__m);
 	}
 	
 	/**
@@ -99,6 +111,46 @@ public class SortedTreeMap<K, V>
 	public Set<Map.Entry<K, V>> entrySet()
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public V put(K __k, V __v)
+	{
+		// Get the backing set
+		SortedTreeSet<__MapKey__<K>> set = this._set;
+		
+		// If the node already exists then set the value of it
+		__Node__<__MapKey__<K>> node = set.__findNode(__k);
+		__MapKey__<K> key;
+		if (node != null)
+			key = node._value;
+		
+		// Otherwise add it
+		else
+		{
+			key = new __MapKey__<>(__k);
+			set.add(key);
+		}
+		
+		// Change values
+		V old = (V)key._value;
+		key._value = __v;
+		return old;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/06
+	 */
+	@Override
+	public int size()
+	{
+		return this._set.size();
 	}
 }
 

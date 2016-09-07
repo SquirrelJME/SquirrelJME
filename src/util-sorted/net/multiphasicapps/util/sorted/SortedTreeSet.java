@@ -285,7 +285,7 @@ public class SortedTreeSet<V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
-	private final __Node__<V> __findNode(Object __o)
+	final __Node__<V> __findNode(Object __o)
 	{
 		// If there are no nodes then the tree is empty
 		__Node__<V> rover = this._root;
