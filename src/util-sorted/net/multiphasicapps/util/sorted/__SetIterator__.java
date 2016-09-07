@@ -30,9 +30,6 @@ class __SetIterator__<V>
 	/** The last visited node (for deletion). */
 	private volatile __Node__<V> _last;
 	
-	/** Dipping to the right after an up? */
-	private volatile boolean _dipright;
-	
 	/**
 	 * Iterates over the given set.
 	 *
@@ -80,41 +77,22 @@ class __SetIterator__<V>
 			throw new NoSuchElementException("CE01");
 		
 		// Move the at pointer to the next node
-		__Node__<V> rover = rv, mod = rover;
-		boolean dipright = this._dipright;
+		__Node__<V> rover = rv_right;
 		
-		// Dipping right?
-		if (dipright)
+		// Go right
+		if (rover != null)
+			throw new Error("TODO");
+		
+		// If there is no right, go up until there is a right
+		else
+			throw new Error("TODO");
+		
+		// If a right was found, go all the way left
+		if (rover != null)
 		{
-			// Go right
-			rover = rover._right;
-			
-			// Go deep left
 			__Node__<V> left;
 			while ((left = rover._left) != null)
 				rover = left;
-		}
-		
-		// Go into the parent
-		else
-		{
-			__Node__<V> par = rover._parent;
-			
-			// Top of tree, stop
-			if (par == null)
-				rover = null;
-			
-			// We are the right side, skip to the parent above this one and
-			// then try going right
-			else if (par._right == rover)
-				throw new Error("TODO");
-			
-			// If on the left side go to the parent and then dip later
-			else
-			{
-				rover = par;
-				this._dipright = true;
-			}
 		}
 		
 		// Set next
