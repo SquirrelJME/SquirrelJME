@@ -78,3 +78,9 @@ can have `get` and `put`.
 
 Although it really does not matter at all.
 
+## 20:38
+
+Tree iteration is just going right. If there is no right then go up until the
+next right is found and then go down all the way left. This is how it is done
+without a queue.
+
