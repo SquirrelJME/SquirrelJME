@@ -61,7 +61,33 @@ public class SortedTreeSetTests
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Create random seems for 
+		long seed = Long.parseLong(__t.subName().toString());
+		Random rvals = new Random(seed);
+		
+		// Setup
+		SortedTreeSet<Integer> target = new SortedTreeSet<>();
+		
+		// Add values to the set
+		int n = ENTRY_COUNT;
+		int totalkeys = 0;
+		for (int i = 0; i < n; i++)
+			if (target.add(rvals.nextInt()))
+				totalkeys++;
+		
+		// Verify the iteration order
+		int last = Integer.MIN_VALUE;
+		int count = 0;
+		for (int i : target)
+			if (i > last)
+			{
+				count++;
+				last = i;
+			}
+		
+		// Check
+		__t.result("ordercount").compareInt(TestComparison.EQUALS, count,
+			target.size());
 	}
 }
 

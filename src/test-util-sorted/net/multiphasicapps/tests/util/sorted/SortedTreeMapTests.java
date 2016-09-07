@@ -89,8 +89,6 @@ public class SortedTreeMapTests
 		// Check
 		__t.result("ordercount").compareInt(TestComparison.EQUALS, count,
 			target.size());
-		
-		throw new Error("TODO");
 	}
 }
 
