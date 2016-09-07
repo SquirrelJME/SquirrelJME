@@ -36,6 +36,9 @@ public class SortedTreeSet<V>
 	/** The root node. */
 	volatile __Node__<V> _root;
 	
+	/** The size of the tree. */
+	volatile int _size;
+	
 	/**
 	 * Initializes an empty red/black set using the natural comparator.
 	 *
@@ -174,7 +177,7 @@ public class SortedTreeSet<V>
 	@Override
 	public int size()
 	{
-		throw new Error("TODO");
+		return this._size;
 	}
 	
 	/**
@@ -191,7 +194,16 @@ public class SortedTreeSet<V>
 	{
 		// The tree is empty, adding an element is trivial
 		if (__at == null)
-			return new __Node__<V>(__v);
+		{
+			// Create new node
+			__Node__<V> rv = new __Node__<V>(__v);
+			
+			// Increase size
+			this._size++;
+			
+			// Return it
+			return rv;
+		}
 		
 		// Compare node and value
 		Comparator<V> compare = this._compare;
