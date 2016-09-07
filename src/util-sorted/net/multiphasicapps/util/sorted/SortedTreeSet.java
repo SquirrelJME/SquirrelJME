@@ -11,8 +11,10 @@
 package net.multiphasicapps.util.sorted;
 
 import java.util.AbstractSet;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -30,6 +32,10 @@ import java.util.Set;
 public class SortedTreeSet<V>
 	extends AbstractSet<V>
 {
+	/** The element already exists. */
+	private static final __AlreadyExists__ _ALREADY_EXISTS =
+		new __AlreadyExists__();
+	
 	/** The comparison method to use. */
 	private final Comparator<V> _compare;
 	
@@ -115,6 +121,10 @@ public class SortedTreeSet<V>
 	@Override
 	public boolean add(V __v)
 	{
+		// Debug
+		System.err.printf("DEBUG -- %08x Add %s%n",
+			System.identityHashCode(this), __v);
+		
 		try
 		{
 			// Replace the root
@@ -123,7 +133,10 @@ public class SortedTreeSet<V>
 			
 			// Changed?
 			if (was != now)
+			{
 				this._root = now;
+				now._parent = null;
+			}
 			
 			// Force to black
 			now._color = __Color__.BLACK;
@@ -136,6 +149,32 @@ public class SortedTreeSet<V>
 		catch (__AlreadyExists__ e)
 		{
 			return false;
+		}
+		
+		finally
+		{
+			System.err.println("DEBUG -- -------------------");
+			Deque<__Node__<V>> q = new ArrayDeque<>();
+			q.offerLast(this._root);
+			while (!q.isEmpty())
+			{
+				__Node__<V> at = q.pollFirst();
+				
+				__Node__<V> l = at._left;
+				__Node__<V> r = at._right;
+				__Node__<V> p = at._parent;
+				
+				System.err.printf("DEBUG -- %08x -> %08x %08x (<- %08x)%n",
+					System.identityHashCode(at),
+					(l == null ? 0 : System.identityHashCode(l)),
+					(r == null ? 0 : System.identityHashCode(r)),
+					(p == null ? 0 : System.identityHashCode(p)));
+				
+				if (l != null)
+					q.offerLast(l);
+				if (r != null)
+					q.offerLast(r);
+			}
 		}
 	}
 	
@@ -213,7 +252,7 @@ public class SortedTreeSet<V>
 		// If replacing, do nothing because only a single value may exist
 		// at a time.
 		if (res == 0)
-			throw new __AlreadyExists__();
+			throw _ALREADY_EXISTS;
 		
 		// Insert on left side
 		else if (res < 0)

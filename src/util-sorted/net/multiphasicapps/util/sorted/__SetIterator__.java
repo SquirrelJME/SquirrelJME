@@ -77,26 +77,37 @@ class __SetIterator__<V>
 			throw new NoSuchElementException("CE01");
 		
 		// Move the at pointer to the next node
-		__Node__<V> rover = rv_right;
+		__Node__<V> rover = rv._right;
 		
-		// Go right
-		if (rover != null)
-			throw new Error("TODO");
-		
-		// If there is no right, go up until there is a right
-		else
-			throw new Error("TODO");
-		
-		// If a right was found, go all the way left
+		// There is a right, just go as deep left as possible
 		if (rover != null)
 		{
+			System.err.println("DEBUG -- Right then left");
 			__Node__<V> left;
 			while ((left = rover._left) != null)
 				rover = left;
 		}
 		
+		// Go to the parent of this node
+		else
+		{
+			System.err.println("DEBUG -- Up");
+			rover = rv._parent;
+			
+			__Node__<V> was = rv;
+			while (rover != null && (rover._right == was))
+			{
+				was = rover;
+				rover = rover._parent;
+			}
+		}
+		
 		// Set next
 		this._at = rover;
+		
+		System.err.printf("DEBUG -- %d %08x %08x%n", this.set.size(),
+			System.identityHashCode(rv), (rover == null ? 0 :
+				System.identityHashCode(rover)));
 		
 		// Return the value
 		this._last = rv;
