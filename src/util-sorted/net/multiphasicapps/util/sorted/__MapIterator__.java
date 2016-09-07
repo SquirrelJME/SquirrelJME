@@ -106,9 +106,7 @@ class __MapIterator__<K, V>
 		
 		// Return the value
 		this._last = rv;
-		
-		throw new Error("TODO");
-		/*return rv._value;*/
+		return new __MapEntry__<K, V>(rv);
 	}
 	
 	/**

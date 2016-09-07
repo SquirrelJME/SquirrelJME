@@ -22,8 +22,6 @@ import java.util.Set;
  * This is a sorted map which is internally implemented by using
  * {@link SortedTreeSet} and special handlers.
  *
- * The entries returned by the entry set do not support setting values.
- *
  * @param <K> The type of key to store.
  * @param <V> The type of value to store.
  * @since 2016/09/06
