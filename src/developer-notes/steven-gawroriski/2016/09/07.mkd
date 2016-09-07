@@ -56,3 +56,13 @@ LCD UI from MIDP 3 potentially. I suppose that I would like these interfaces
 to be visible via the service loader, however this basic interface should
 have a very low number so that it is chosen last.
 
+## 18:51
+
+Then with the LUI service displays, when it comes to different operating
+systems I can have differing backends. I suppose for sanity that the display
+service will implement a console of a given size with attributes. Then the
+display service just literally needs a redraw or a draw command that is called
+that performs the actual work. This way the actual implementing code is kept
+as simple as possible. Pretty much every display device that I know of uses
+a cell based interface.
+
