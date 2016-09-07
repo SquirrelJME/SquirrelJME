@@ -374,6 +374,10 @@ public class SortedTreeMap<K, V>
 		if (__at == null)
 			throw new NullPointerException("NARG");
 		
+		// Get the old parent of the current node since the one that becomes
+		// the parent of the tail and the current node needs to be updated
+		__Node__<K, V> parent = __at._parent;
+		
 		// The node to be leaned and the other node to balance off it
 		__Node__<K, V> lean, tail;
 		
@@ -407,6 +411,11 @@ public class SortedTreeMap<K, V>
 		
 		// The parent node was rotated to one side, so adjust the parent
 		__at._parent = lean;
+		
+		// Since the nodes were rotated, one's parent will point to the wrong
+		// node which will cause the iterator to infinite loop going back and
+		// forth
+		lean._parent = parent;
 		
 		// Adjust colors
 		lean._color = __at._color;
