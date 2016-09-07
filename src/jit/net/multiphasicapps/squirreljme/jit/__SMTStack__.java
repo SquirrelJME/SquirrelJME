@@ -246,7 +246,40 @@ class __SMTStack__
 		if (__n < 0 || end < 0)
 			throw new JITException("ED11");
 		
-		throw new Error("TODO");
+		// If any lower stack entries refer to higher ones then make their
+		// values unique and copy them via the parser
+		int[] cache = this._cache;
+		for (int i = 0; i < end; i++)
+		{
+			int pointer = cache[i];
+			
+			// Is a stack pointer
+			if (0 != (pointer & CACHE_STACK_MASK))
+			{
+				int to = pointer & (~CACHE_STACK_MASK);
+				if (to >= end)
+				{
+					// Generate a copy in the parse so that the stack value
+					// is preserved and the value becomes unique
+					if (true)
+						throw new Error("TODO");
+					
+					// Make the value unique
+					cache[i] = UNIQUE_STACK_VALUE;
+				}
+			}
+		}
+		
+		// Remove items from the stack
+		int[] rv = new int[__n];
+		for (int i = end, j = 0; i < top; i++, j++)
+			rv[j] = cache[i];
+		
+		// Set new top
+		setStackTop(end);
+		
+		// Return the stack cache mappings
+		return rv;
 	}
 }
 
