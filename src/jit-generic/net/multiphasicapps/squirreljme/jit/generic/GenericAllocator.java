@@ -274,20 +274,21 @@ public class GenericAllocator
 		// the generic JIT will record their values to the stack for exception
 		// handling purposes
 		int basestack = stacksize;
-		for (int i = 0; i < n; i++)
-		{
-			int off = copyoff[i];
-			if (i < 0)
-				continue;
+		if (__eh)
+			for (int i = 0; i < n; i++)
+			{
+				int off = copyoff[i];
+				if (i < 0)
+					continue;
 			
-			// Store in locals area
-			byte size = copysize[i];
-			jlocals._stackoffs[i] = off + basestack;
-			jlocals._stacksize[i] = size;
+				// Store in locals area
+				byte size = copysize[i];
+				jlocals._stackoffs[i] = off + basestack;
+				jlocals._stacksize[i] = size;
 			
-			// Increase stack size
-			stacksize += size;
-		}
+				// Increase stack size
+				stacksize += size;
+			}
 		
 		// Set stack size
 		this._stacksize = stacksize;
