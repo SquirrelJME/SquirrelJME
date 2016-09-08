@@ -18,6 +18,7 @@ import java.util.ServiceLoader;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayService;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayServiceFactory;
 import net.multiphasicapps.squirreljme.meep.lui.InvalidDisplayServiceException;
+import net.multiphasicapps.util.empty.EmptyIterator;
 
 /**
  * This provides an interface to basic text based displays.
@@ -866,6 +867,11 @@ public class Display
 	 */
 	public static Iterator<Display> getDisplays(boolean __ks)
 	{
+		// Get display services, if there are none then do nothing
+		DisplayService ds = _DISPLAY_SERVICE;
+		if (ds == null)
+			return EmptyIterator.<Display>empty();
+		
 		throw new Error("TODO");
 	}
 	

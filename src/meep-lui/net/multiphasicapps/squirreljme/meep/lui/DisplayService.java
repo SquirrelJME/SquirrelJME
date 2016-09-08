@@ -19,5 +19,23 @@ package net.multiphasicapps.squirreljme.meep.lui;
  */
 public abstract class DisplayService
 {
+	/**
+	 * Sets the size of the output display.
+	 *
+	 * @param __c The number of columns.
+	 * @param __r The number of rows.
+	 * @throws IllegalArgumentException If either is zero or negative.
+	 * @since 2016/09/08
+	 */
+	protected final void setDisplaySize(int __c, int __r)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error DA02 The size of the output display has
+		// a zero or negative number of rows or columns.}
+		if (__c <= 0 || __r <= 0)
+			throw new IllegalArgumentException("DA02");
+		
+		throw new Error("TODO");
+	}
 }
 
