@@ -119,3 +119,8 @@ It would be best if my error listing went to the base of the project. Also the
 `DisplayService` should use a class which handles terminal size and attribute
 data.
 
+## 17:24
+
+Another useful thing would be if the error listing code told me what the error
+code for the current project is.
+

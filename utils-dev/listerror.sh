@@ -19,8 +19,17 @@ __exedir="$(dirname -- "$0")"
 # Get the directory of the project
 __base="$("$__exedir/projectbase.sh" "$(pwd)")"
 
-# List errors
+# Print error code, potentially
 echo "******** LIST OF ERRORS *********" 1>&2
+if [ -f "$__base/META-INF/MANIFEST.MF" ]
+then
+	__code="$(grep -i 'x-squirreljme-error' < "$__base/META-INF/MANIFEST.MF" |
+		cut -d ':' -f 2 | tr -d ' ')"
+	
+	echo "Project Error Code: $__code"
+fi
+
+# List errors
 (grep -rl '{@squirreljme\.error[ \t]\{1,\}....' "$__base" | while read __file
 do
 	tr '\n' ' ' < "$__file" | sed 's/{@code[ \t]\{1,\}\([^}]*\)}/\1/g' |
