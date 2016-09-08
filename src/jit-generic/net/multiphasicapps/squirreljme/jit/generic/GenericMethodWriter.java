@@ -219,7 +219,7 @@ public abstract class GenericMethodWriter
 	 * @since 2016/08/29
 	 */
 	@Override
-	public final void primeArguments(JITVariableType[] __t)
+	public final void primeArguments(boolean __eh, JITVariableType[] __t)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -228,7 +228,12 @@ public abstract class GenericMethodWriter
 		
 		// Just send to the allocator
 		GenericAllocator allocator = this.allocator;
-		allocator.primeArguments(__t);
+		allocator.primeArguments(__eh, __t);
+		
+		// If there are exception handlers present then it will be required
+		// to copy the initial argument registers to the CPU stack
+		if (__eh)
+			throw new Error("TODO");
 	}
 	
 	/**

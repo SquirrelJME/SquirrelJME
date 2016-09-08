@@ -109,12 +109,13 @@ public class GenericAllocator
 	 * Primes the method arguments and sets the initial state that is used
 	 * on entry of a method.
 	 *
+	 * @param __eh Are there exception handlers present?
 	 * @param __t The arguments to the method.
 	 * @throws JITException If they could not be primed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/03
 	 */
-	public void primeArguments(JITVariableType[] __t)
+	public void primeArguments(boolean __eh, JITVariableType[] __t)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -240,13 +241,19 @@ public class GenericAllocator
 				// Also need to remove the register from the available queues
 				// since argument registers are initially used
 				msd.remove(usereg);
-				
+
 				// Since the generic JIT requires a copy, allocate some
 				// following stack space to determine where to place these
-				// locals at
-				copyoff[i] = copyat;
-				copysize[i] = (byte)mod;
-				copyat += mod;
+				// locals at.
+				// However this is not needed if there are no exception
+				// handlers/synchronized because there will never be a need
+				// to restore locals.
+				if (__eh)
+				{
+					copyoff[i] = copyat;
+					copysize[i] = (byte)mod;
+					copyat += mod;
+				}
 			}
 			
 			// Allocate some stack space

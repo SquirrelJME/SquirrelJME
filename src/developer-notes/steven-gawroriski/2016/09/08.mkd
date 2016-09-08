@@ -36,3 +36,13 @@ refactoring split of the generic JIT. However, although I could do it now, that
 would complicate my current design because I only have a partial JIT and I do
 not yet know the final code layout.
 
+## 10:02
+
+However, this only needs to be done for exception handlers. If there are none
+in the code then it does not have to be performed.
+
+## 10:04
+
+In fact, if there are no exception handlers then I never need to copy the
+locals to the CPU stack at all.
+

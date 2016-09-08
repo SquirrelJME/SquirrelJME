@@ -73,6 +73,9 @@ final class __CodeDecoder__
 	/** The stack map table state. */
 	volatile Map<Integer, __SMTState__> _smt;
 	
+	/** Are there exception handlers present? */
+	volatile boolean _hasexceptions;
+	
 	/**
 	 * Add base code decoder class.
 	 *
@@ -149,6 +152,8 @@ final class __CodeDecoder__
 		
 		// Read the exception table
 		int numex = input.readUnsignedShort();
+		boolean hasexceptions = (numex != 0);
+		this._hasexceptions = hasexceptions;
 		for (int i = 0; i < numex; i++)
 			throw new Error("TODO");
 		
@@ -164,7 +169,7 @@ final class __CodeDecoder__
 				this._type, maxstack, maxlocals));
 		
 		// Prime arguments
-		__primeArguments();
+		__primeArguments(hasexceptions);
 		
 		// Parse the byte code now
 		try (ExtendedDataInputStream dis = new ExtendedDataInputStream(
@@ -225,9 +230,10 @@ final class __CodeDecoder__
 	/**
 	 * Primes the input arguments.
 	 *
+	 * @param __eh Are there exception handlers present in this method?
 	 * @since 2016/08/29
 	 */
-	private void __primeArguments()
+	private void __primeArguments(boolean __eh)
 	{
 		// Get initial state
 		__SMTLocals__ locals = this._smt.get(0)._locals;
@@ -249,7 +255,7 @@ final class __CodeDecoder__
 		}
 		
 		// Prime it
-		this._writer.primeArguments(args.<JITVariableType>toArray(
+		this._writer.primeArguments(__eh, args.<JITVariableType>toArray(
 			new JITVariableType[args.size()]));
 	}
 	
