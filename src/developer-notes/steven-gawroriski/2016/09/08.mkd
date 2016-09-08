@@ -10,3 +10,14 @@ and unsaved registers as the same for the most part.
 One thing though is that a register could possibly exist in both a register
 and the stack, in the event of local variables.
 
+## 08:15
+
+The stack is going to need correction due to the way I pass variables. I make
+it so that objects are their native pointer size rather than slot size. One
+thing I will have to manage though is making sure no space is wasted on the
+stack for objects. Essentially if an object is on the stack it should fit
+within a slot. Then I suppose for the allocator if it detects that an attempt
+is made for example writing a 64-bit object to a 32-bit slot, that it will
+adjust accordingly. This would be better than making all slots 32-bit which
+would mean that on 64-bit systems the stack would become extra bloated.
+
