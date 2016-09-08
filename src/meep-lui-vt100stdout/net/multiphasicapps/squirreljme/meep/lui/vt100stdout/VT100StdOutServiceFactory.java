@@ -31,7 +31,9 @@ public class VT100StdOutServiceFactory
 	public DisplayService createDisplayService()
 		throws InvalidDisplayServiceException
 	{
-		throw new Error("TODO");
+		return new VT100StdOutService(System.out,
+			VT100StdOutService.DEFAULT_COLUMNS,
+			VT100StdOutService.DEFAULT_ROWS);
 	}
 	
 	/**
