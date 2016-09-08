@@ -195,6 +195,10 @@ public abstract class GenericMethodWriter
 		if (__type == null || __ref == null || __st == null || __sp == null)
 			throw new NullPointerException("NARG");
 		
+		// Setup linkage
+		GenericMethodLinkage gml = new GenericMethodLinkage(this.thisref,
+			__ref, __type);
+		
 		throw new Error("TODO");
 	}
 	

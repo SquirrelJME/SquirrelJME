@@ -56,3 +56,17 @@ needs to be copied somewhere if a method is synchronized so that even if the
 `this` variable gets replaced it is not lost. The implicit finally or other
 monitor exit can really just load from this special stack location.
 
+## 10:38
+
+Actually with the linkage stuff in the pool, I only need to handle the
+calling convention in the generator. Really the linker just takes care of the
+links for the most part. This actually simplifies things greatly.
+
+## 10:41
+
+Actually one thing I will need to do is make the global pool accessible to the
+sub-writer implementations in the generic code. Although this might not
+actually be required at all. The class `GenericMethodWriter` and such can be
+changed so that it uses a configuration object of sorts. This way the
+constructor can grow as needed in the future.
+
