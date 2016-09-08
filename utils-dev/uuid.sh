@@ -16,12 +16,12 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # One UUID command?
-if false && which uuidgen 2>&1 > /dev/null
+if which uuidgen 2>&1 > /dev/null
 then
 	uuidgen
 
 # Another command
-elif false && which uuid 2>&1 > /dev/null
+elif which uuid 2>&1 > /dev/null
 then
 	uuid
 
