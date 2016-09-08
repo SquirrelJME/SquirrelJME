@@ -1,0 +1,12 @@
+# 2016/09/08
+
+## 07:39
+
+Thinking about it, does it really matter if my compiler normally treats saved
+and unsaved registers as the same for the most part.
+
+## 07:45
+
+One thing though is that a register could possibly exist in both a register
+and the stack, in the event of local variables.
+

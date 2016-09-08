@@ -17,6 +17,9 @@ package net.multiphasicapps.squirreljme.jit.generic;
  */
 final class __VarStates__
 {
+	/** Are these local variables? */
+	protected final boolean arelocals;
+	
 	/** The registers being used, will be null if not valid. */
 	final GenericRegister[] _regs;
 	
@@ -27,9 +30,10 @@ final class __VarStates__
 	 * Initializes the variable states.
 	 *
 	 * @param __n The number of states to store.
+	 * @param __lv Are these variables local.
 	 * @since 2016/09/03
 	 */
-	__VarStates__(int __n)
+	__VarStates__(int __n, boolean __lv)
 	{
 		this._regs = new GenericRegister[__n];
 		
@@ -38,6 +42,9 @@ final class __VarStates__
 		this._stackoffs = (stackoffs = new int[__n]);
 		for (int i = 0; i < __n; i++)
 			stackoffs[i] = -1;
+		
+		// Set
+		this.arelocals = __lv;
 	}
 	
 	/**
@@ -55,6 +62,7 @@ final class __VarStates__
 			throw new NullPointerException("NARG");
 		
 		// Just clone
+		this.arelocals = __vs.arelocals;
 		this._regs = __vs._regs.clone();
 		this._stackoffs = __vs._stackoffs.clone();
 	}
@@ -72,6 +80,7 @@ final class __VarStates__
 		// Get
 		GenericRegister[] regs = this._regs;
 		int[] stackoffs = this._stackoffs;
+		boolean arelocals = this.arelocals;
 		
 		// Go through int
 		int n = regs.length;
@@ -86,19 +95,30 @@ final class __VarStates__
 			int off = stackoffs[i];
 			
 			// Allocated?
-			if (reg != null)
-				sb.append(reg);
-			
-			// On the stack?
-			else if (off >= 0)
+			boolean isinreg;
+			if ((isinreg = (reg != null)))
 			{
-				sb.append('+');
-				sb.append(off);
+				sb.append(reg);
+				
+				// Local variables are always duplicated on the stack
+				if (arelocals)
+					sb.append(' ');
 			}
 			
-			// Not used at all
-			else
-				sb.append('-');
+			// Stack position
+			if (!isinreg || arelocals)
+			{
+				// On the stack?
+				if (off >= 0)
+				{
+					sb.append('+');
+					sb.append(off);
+				}
+			
+				// Not used at all
+				else
+					sb.append('-');
+			}
 		}
 		
 		// Build

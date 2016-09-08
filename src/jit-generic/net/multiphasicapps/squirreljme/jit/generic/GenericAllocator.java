@@ -247,8 +247,8 @@ public class GenericAllocator
 				__locals));
 		
 		// Initialize state
-		this._jlocals = new __VarStates__(__locals);
-		this._jstack = new __VarStates__(__stack);
+		this._jlocals = new __VarStates__(__locals, true);
+		this._jstack = new __VarStates__(__stack, false);
 	}
 }
 

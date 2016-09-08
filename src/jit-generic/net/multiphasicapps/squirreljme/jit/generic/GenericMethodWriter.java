@@ -142,6 +142,7 @@ public abstract class GenericMethodWriter
 		// exist.
 		Map<Integer, GenericAllocatorState> jopstates = this.jopstates;
 		GenericAllocatorState gas = jopstates.get(__pos);
+		GenericAllocator allocator = this.allocator;
 		if (gas != null)
 			throw new Error("TODO");
 		
@@ -153,6 +154,10 @@ public abstract class GenericMethodWriter
 		else if (__pos == 0 ||
 			Arrays.binarySearch(this._jumptargets, __pos) >= 0)
 			jopstates.put(0, allocator.recordState());
+		
+		// Debug
+		System.err.printf("DEBUG -- Op %d @ %d: %s%n", __code, __pos,
+			allocator);
 	}
 	
 	/**
