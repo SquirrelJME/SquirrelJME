@@ -113,3 +113,9 @@ standards.
 That might be a bit costly though due to the early state of the project.
 Everything is changing very fast so there are no real stable bits as much.
 
+## 17:13
+
+It would be best if my error listing went to the base of the project. Also the
+`DisplayService` should use a class which handles terminal size and attribute
+data.
+
