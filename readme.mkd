@@ -89,10 +89,13 @@ help the purchase of various hardware:
    dogecoin:DPsW21MV8RMuXhA3GoN8VPjkmQEugrEn8h)
  * [FreedomSponsors](https://freedomsponsors.org/user/mpasteven/)
 
-## Reporting Bugs
+## Reporting Bugs/Features/Issues
 
-You may report bugs and such by either posting on the sub-Reddit or to the
-mailing list.
+You may report bugs, suggest features, and reveal issues on the following:
+
+ * My E-mail Address.
+ * The mailing list.
+ * The sub-Reddit.
 
 ## Important Statements
 

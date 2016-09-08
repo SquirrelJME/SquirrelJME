@@ -90,3 +90,9 @@ way I can see how well new JITs scale.
 My Git exports should have my name changed and such to use my name and my
 e-mail.
 
+## 13:11
+
+And now my name has changed, at least in the Git mirrors that I maintain.
+GitHub was incapable of setting up aliases in repositories although BitBucket
+supports such things.
+
