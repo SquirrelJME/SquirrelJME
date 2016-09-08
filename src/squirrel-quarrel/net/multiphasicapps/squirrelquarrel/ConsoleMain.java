@@ -12,6 +12,8 @@ package net.multiphasicapps.squirrelquarrel;
 
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import net.multiphasicapps.squirrelquarrel.ui.line.LineUI;
+import net.multiphasicapps.squirrelquarrel.ui.GameUI;
 
 /**
  * This is the main entry point for the game which uses the LUI interface to
@@ -22,6 +24,13 @@ import javax.microedition.midlet.MIDletStateChangeException;
 public class ConsoleMain
 	extends MIDlet
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
+	/** The game thread. */
+	private volatile Thread _main;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/08/30
@@ -41,7 +50,20 @@ public class ConsoleMain
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		throw new Error("TODO");
+		// Lock
+		synchronized (this.lock)
+		{
+			// Create a new main thread?
+			Thread main = this._main;
+			if (main == null)
+			{
+				main = new Thread(new MainThread());
+				this._main = main;
+				
+				// Start it
+				main.start();
+			}
+		}
 	}
 }
 

@@ -8,28 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel;
-
 /**
- * Main entry point for standard Java code.
+ * This contains the UI interfaces used by Squirrel Quarrel.
  *
- * @since 2016/08/30
+ * @since 2016/09/07
  */
-public class Main
-{
-	/**
-	 * Main entry point.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2016/08/30
-	 */
-	public static void main(String... __args)
-	{
-		// Create the main thread
-		Thread main = new Thread(new MainThread(__args));
-		
-		// Start it
-		main.start();
-	}
-}
+
+package net.multiphasicapps.squirrelquarrel.ui;
 

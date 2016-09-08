@@ -8,28 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel;
+package net.multiphasicapps.squirrelquarrel.ui.line;
+
+import net.multiphasicapps.squirrelquarrel.ui.GameUI;
 
 /**
- * Main entry point for standard Java code.
+ * The game user interface.
  *
- * @since 2016/08/30
+ * @since 2016/09/07
  */
-public class Main
+public class LineUI
+	extends GameUI
 {
-	/**
-	 * Main entry point.
-	 *
-	 * @param __args Program arguments.
-	 * @since 2016/08/30
-	 */
-	public static void main(String... __args)
-	{
-		// Create the main thread
-		Thread main = new Thread(new MainThread(__args));
-		
-		// Start it
-		main.start();
-	}
 }
 
