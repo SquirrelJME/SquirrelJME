@@ -278,7 +278,7 @@ public class GenericAllocator
 			for (int i = 0; i < n; i++)
 			{
 				int off = copyoff[i];
-				if (i < 0)
+				if (off < 0)
 					continue;
 			
 				// Store in locals area
