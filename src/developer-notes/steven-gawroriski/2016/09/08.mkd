@@ -21,3 +21,18 @@ is made for example writing a 64-bit object to a 32-bit slot, that it will
 adjust accordingly. This would be better than making all slots 32-bit which
 would mean that on 64-bit systems the stack would become extra bloated.
 
+## 09:48
+
+I can do the initial local argument rebinding to the stack as required in the
+priming, just after priming I have to generate copies as needed if a local is
+in a register argument _and_ the stack.
+
+## 09:52
+
+One thing I might want to do is to decouple the native machine
+code bits (stuff that is used by the generic JIT to generate machine code).
+In the future I may want to write a second JIT, so I will need to do a
+refactoring split of the generic JIT. However, although I could do it now, that
+would complicate my current design because I only have a partial JIT and I do
+not yet know the final code layout.
+

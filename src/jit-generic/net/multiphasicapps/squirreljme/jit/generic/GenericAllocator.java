@@ -141,11 +141,23 @@ public class GenericAllocator
 		int stacksize = 0;
 		int pointerbytes = abi.pointerSize() / 8;
 		
-		// Go through variable types
+		// Since the starting arguments are passed via registers, the
+		// generic JIT operates by forcing locals to always have a copy on the
+		// stack (for exception handling purposes). Although not as optimized
+		// it simplifies things.
 		int n = __t.length;
+		int[] copyoff = new int[n];
+		byte[] copysize = new byte[n];
+		int copyat = 0;
+		
+		// Go through variable types
 		JITVariableType last = null;
 		for (int i = 0; i < n; i++)
 		{
+			// Initially clear
+			copyoff[i] = -1;
+			copysize[i] = -1;
+			
 			// Get
 			JITVariableType type = __t[i];
 			
@@ -193,6 +205,32 @@ public class GenericAllocator
 			// Debug
 			System.err.printf("DEBUG -- Selected register: %s%n", usereg);
 			
+			// Get the number of used bytes on the stack
+			int mod;
+			switch (type)
+			{
+					// 32-bit type
+				case INTEGER:
+				case FLOAT:
+					mod = 4;
+					break;
+				
+					// 64-bit type
+				case LONG:
+				case DOUBLE:
+					mod = 8;
+					break;
+					
+					// Object (uses pointer)
+				case OBJECT:
+					mod = pointerbytes;
+					break;
+				
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
+			
 			// Assign register to local
 			if (usereg != null)
 			{
@@ -202,6 +240,13 @@ public class GenericAllocator
 				// Also need to remove the register from the available queues
 				// since argument registers are initially used
 				msd.remove(usereg);
+				
+				// Since the generic JIT requires a copy, allocate some
+				// following stack space to determine where to place these
+				// locals at
+				copyoff[i] = copyat;
+				copysize[i] = (byte)mod;
+				copyat += mod;
 			}
 			
 			// Allocate some stack space
@@ -210,38 +255,31 @@ public class GenericAllocator
 				// Set here
 				jlocals._stackoffs[i] = stacksize;
 				
-				// Increase stack size by the object size
-				int mod;
-				switch (type)
-				{
-						// 32-bit type
-					case INTEGER:
-					case FLOAT:
-						mod = 4;
-						break;
-					
-						// 64-bit type
-					case LONG:
-					case DOUBLE:
-						mod = 8;
-						break;
-						
-						// Object (uses pointer)
-					case OBJECT:
-						mod = pointerbytes;
-						break;
-					
-						// Unknown
-					default:
-						throw new RuntimeException("OOPS");
-				}
-				
 				// Store the number of bytes used for this position
 				jlocals._stacksize[i] = (byte)mod;
 				
 				// Increase it
 				stacksize += mod;
 			}
+		}
+		
+		// Since the initially passed arguments are completely in registers,
+		// the generic JIT will record their values to the stack for exception
+		// handling purposes
+		int basestack = stacksize;
+		for (int i = 0; i < n; i++)
+		{
+			int off = copyoff[i];
+			if (i < 0)
+				continue;
+			
+			// Store in locals area
+			byte size = copysize[i];
+			jlocals._stackoffs[i] = off + basestack;
+			jlocals._stacksize[i] = size;
+			
+			// Increase stack size
+			stacksize += size;
 		}
 		
 		// Set stack size
