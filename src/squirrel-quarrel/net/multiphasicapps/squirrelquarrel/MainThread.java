@@ -11,6 +11,8 @@
 package net.multiphasicapps.squirrelquarrel;
 
 import net.multiphasicapps.squirrelquarrel.game.GameSpeed;
+import net.multiphasicapps.squirrelquarrel.ui.GameUI;
+import net.multiphasicapps.squirrelquarrel.ui.line.LineUI;
 
 /**
  * This is the main thread of the game which handles game creation and
@@ -21,6 +23,9 @@ import net.multiphasicapps.squirrelquarrel.game.GameSpeed;
 public class MainThread
 	implements Runnable
 {
+	/** The game user interface to use. */
+	protected final GameUI ui;
+	
 	/**
 	 * Initializes the main thread.
 	 *
@@ -32,6 +37,9 @@ public class MainThread
 		// Must exist
 		if (__args == null)
 			__args = new String[0];
+		
+		// Setup UI
+		this.ui = new LineUI();
 	}
 	
 	/**

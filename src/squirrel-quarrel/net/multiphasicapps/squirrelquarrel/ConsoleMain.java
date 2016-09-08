@@ -57,7 +57,7 @@ public class ConsoleMain
 			Thread main = this._main;
 			if (main == null)
 			{
-				main = new Thread(new MainThread());
+				main = new Thread(new MainThread("-c"));
 				this._main = main;
 				
 				// Start it
