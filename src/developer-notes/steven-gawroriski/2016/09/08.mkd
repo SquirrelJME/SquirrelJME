@@ -85,3 +85,8 @@ the JIT.
 Although, I should add the interpreted JIT much later on in the future. This
 way I can see how well new JITs scale.
 
+## 12:42
+
+My Git exports should have my name changed and such to use my name and my
+e-mail.
+
