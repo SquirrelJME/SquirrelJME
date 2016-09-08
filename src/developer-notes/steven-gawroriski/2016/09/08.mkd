@@ -103,3 +103,13 @@ code, although it still needs to be given the pool and a few other things. My
 first goal should be to make the global pool visible to implementations of the
 generic JIT.
 
+## 13:57
+
+I should start to write more detailed commit messages and increase my current
+standards.
+
+## 16:44
+
+That might be a bit costly though due to the early state of the project.
+Everything is changing very fast so there are no real stable bits as much.
+
