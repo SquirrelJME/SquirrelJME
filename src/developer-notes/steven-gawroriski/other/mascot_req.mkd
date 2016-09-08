@@ -13,7 +13,7 @@ dithering is potentially a very high possibility.
 
 ## Freely Licensed (As In Freedom)
 
-Since SquirrelJME is licensed under the Affero GNU General Public License
+Since SquirrelJME is licensed under the GNU General Public License
 version 3, the mascot would have to be under a compatible in spirit license
 such as the CC-BY-SA 4.0 Commercial. Commercial is required because it is
 against the spirit of open source to discriminate against certain fields of

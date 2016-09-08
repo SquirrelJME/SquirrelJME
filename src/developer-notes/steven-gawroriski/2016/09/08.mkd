@@ -70,3 +70,18 @@ actually be required at all. The class `GenericMethodWriter` and such can be
 changed so that it uses a configuration object of sorts. This way the
 constructor can grow as needed in the future.
 
+## 10:46
+
+So yes, the global pool could be rewritten. I can pretty much change the
+loading stuff to use slightly new logic. Then make `GenericMethodWriter` and
+friends get a method configuration so that factory-like construction is
+made simpler and allows for growing. Also, although I keep going back to this
+and such, I can have an interpreter on top of the JIT for testing purposes.
+It would not be an actual compiled environment, but the run-time would run on
+the JIT.
+
+## 10:53
+
+Although, I should add the interpreted JIT much later on in the future. This
+way I can see how well new JITs scale.
+
