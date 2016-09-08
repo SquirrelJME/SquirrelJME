@@ -11,27 +11,26 @@
 package net.multiphasicapps.squirreljme.meep.lui;
 
 /**
- * This is a service which implements the actual support for displays. This
- * base class is intended to make implementing LUI displays much easier by
- * wrapping a line based format with unspecified attributes.
+ * DESCRIBE THIS.
  *
- * @since 2016/09/07
+ * @since 2016/09/08
  */
-public abstract class DisplayService
+public final class DisplayCells
 {
-	/** The current display cells. */
-	private volatile DisplayCells _cells;
+	/** The character data. */
+	public final char[] text;
 	
-	/**
-	 * Returns the current set of display cells.
-	 *
-	 * @return The display cells.
-	 * @since 2016/09/08
-	 */
-	public final DisplayCells displayCells()
-	{
-		return this._cells;
-	}
+	/** The attribute data. */
+	public final byte[] attr;
+	
+	/** The number of cells. */
+	public final int cells;
+	
+	/** The number of columns. */
+	public final int cols;
+	
+	/** The number of rows. */
+	public final int rows;
 	
 	/**
 	 * Sets the size of the output display.
@@ -41,10 +40,23 @@ public abstract class DisplayService
 	 * @throws IndexOutOfBoundsException If either is zero or negative.
 	 * @since 2016/09/08
 	 */
-	protected final void setDisplaySize(int __c, int __r)
+	public DisplayCells(int __c, int __r)
 		throws IndexOutOfBoundsException
 	{
-		this._cells = new DisplayCells(__c, __r);
+		// {@squirreljme.error DA02 The size of the output display has
+		// a zero or negative number of rows or columns.}
+		if (__c <= 0 || __r <= 0)
+			throw new IllegalArgumentException("DA02");
+		
+		// Set
+		int cells = __c * __r;
+		this.cells = cells;
+		this.cols = __c;
+		this.rows = __r;
+		
+		// Setup data arrays
+		this.text = new char[cells];
+		this.attr = new byte[cells];
 	}
 }
 
