@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.meep.lui.vt100stdout;
 
 import net.multiphasicapps.squirreljme.meep.lui.DisplayService;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayServiceFactory;
+import net.multiphasicapps.squirreljme.meep.lui.InvalidDisplayServiceException;
 
 /**
  * This is the factory service which utilizes VT100 standard codes by using
