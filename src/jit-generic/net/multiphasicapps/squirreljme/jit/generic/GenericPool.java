@@ -27,7 +27,7 @@ import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
  *
  * @since 2016/08/17
  */
-final class __GlobalPool__
+public final class GenericPool
 {
 	/** The owning namespace writer. */
 	protected final GenericNamespaceWriter owner;
@@ -37,7 +37,7 @@ final class __GlobalPool__
 		new LinkedHashMap<>();
 	
 	/** Global constant pool. */
-	private final Map<Object, __GlobalEntry__> _entries =
+	private final Map<Object, GenericPoolEntry> _entries =
 		new LinkedHashMap<>();
 	
 	/** The currently active pool. */
@@ -65,7 +65,7 @@ final class __GlobalPool__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/17
 	 */
-	__GlobalPool__(GenericNamespaceWriter __nsw)
+	GenericPool(GenericNamespaceWriter __nsw)
 		throws NullPointerException
 	{
 		// Check
@@ -76,7 +76,7 @@ final class __GlobalPool__
 		this.owner = __nsw;
 		
 		// The first constant is magically null (for super class)
-		this._entries.put(null, new __GlobalEntry__(0));
+		this._entries.put(null, new GenericPoolEntry(0));
 	}
 	
 	/**
@@ -87,7 +87,7 @@ final class __GlobalPool__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	__GlobalEntry__ __loadClass(ClassNameSymbol __n)
+	GenericPoolEntry __loadClass(ClassNameSymbol __n)
 		throws NullPointerException
 	{
 		return __loadObject(true, __n);
@@ -103,7 +103,7 @@ final class __GlobalPool__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	__GlobalEntry__ __loadObject(boolean __str, Object __o)
+	GenericPoolEntry __loadObject(boolean __str, Object __o)
 		throws NullPointerException
 	{
 		// Check
@@ -115,8 +115,8 @@ final class __GlobalPool__
 			__loadString(__o.toString());
 		
 		// Already placed?
-		Map<Object, __GlobalEntry__> entries = this._entries;
-		__GlobalEntry__ rv = entries.get(__o);
+		Map<Object, GenericPoolEntry> entries = this._entries;
+		GenericPoolEntry rv = entries.get(__o);
 		if (rv != null)
 			return rv;
 		
@@ -127,7 +127,7 @@ final class __GlobalPool__
 			throw new JITException("BA16");
 		
 		// Place it otherwise
-		entries.put(__o, (rv = new __GlobalEntry__(sz)));
+		entries.put(__o, (rv = new GenericPoolEntry(sz)));
 		return rv;
 	}
 	
@@ -221,13 +221,13 @@ final class __GlobalPool__
 		GenericNamespaceWriter owner = this.owner;
 		
 		// Write the constant data
-		Map<Object, __GlobalEntry__> entries = this._entries;
+		Map<Object, GenericPoolEntry> entries = this._entries;
 		int cn = entries.size();
 		this._poolcount = cn;
 		int[] cpos = new int[cn];
 		int[] tags = new int[cn];
 		int at = 0;
-		for (Map.Entry<Object, __GlobalEntry__> e : entries.entrySet())
+		for (Map.Entry<Object, GenericPoolEntry> e : entries.entrySet())
 		{
 			// Get
 			Object data = e.getKey();

@@ -51,7 +51,7 @@ abstract class __Member__
 			throw new NullPointerException("NARG");
 		
 		// Get the global pool, need to create some constants
-		__GlobalPool__ gpool = __gcw._gpool;
+		GenericPool gpool = __gcw._gpool;
 		
 		// Setup name and type
 		this._namedx = gpool.__loadString(__name.toString())._index;

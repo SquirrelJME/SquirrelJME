@@ -45,7 +45,7 @@ class __Field__
 		if (__cv != null)
 		{
 			// It is always placed in the global pool
-			__GlobalPool__ gpool = __gcw._gpool;
+			GenericPool gpool = __gcw._gpool;
 			
 			// Create
 			this._cvdx = gpool.__loadObject(false, __cv)._index;

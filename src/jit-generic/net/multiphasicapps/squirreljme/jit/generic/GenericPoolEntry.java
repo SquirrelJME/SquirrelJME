@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
  *
  * @since 2016/08/17
  */
-class __GlobalEntry__
+public class GenericPoolEntry
 {
 	/** The index of this entry. */
 	final int _index;
@@ -29,7 +29,7 @@ class __GlobalEntry__
 	 * @param __dx The index to place it at.
 	 * @since 2016/08/17
 	 */
-	__GlobalEntry__(int __dx)
+	GenericPoolEntry(int __dx)
 	{
 		// Set
 		this._index = __dx;

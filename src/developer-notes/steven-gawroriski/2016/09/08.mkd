@@ -96,3 +96,10 @@ And now my name has changed, at least in the Git mirrors that I maintain.
 GitHub was incapable of setting up aliases in repositories although BitBucket
 supports such things.
 
+## 13:20
+
+So that change as I mentioned before, only affects the generic method writer
+code, although it still needs to be given the pool and a few other things. My
+first goal should be to make the global pool visible to implementations of the
+generic JIT.
+

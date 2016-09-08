@@ -46,7 +46,7 @@ abstract class __BaseWriter__
 	final int _dataaddr;
 	
 	/** The global constant pool. */
-	final __GlobalPool__ _gpool;
+	final GenericPool _gpool;
 	
 	/** The entry name. */
 	final String _name;

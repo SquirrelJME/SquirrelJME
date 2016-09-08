@@ -438,7 +438,7 @@ public final class GenericClassWriter
 				this._ifacepos = (int)pos;
 		
 				// Write
-				__GlobalPool__ gpool = this._gpool;
+				GenericPool gpool = this._gpool;
 				int n = __ins.length;
 				this._ifacecount = n;
 				for (int i = 0; i < n; i++)

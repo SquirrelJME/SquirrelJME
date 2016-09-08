@@ -63,8 +63,8 @@ public final class GenericNamespaceWriter
 		this.lock;
 	
 	/** The global constant pool, for condensing entries. */
-	final __GlobalPool__ _gpool =
-		new __GlobalPool__(this);
+	final GenericPool _gpool =
+		new GenericPool(this);
 	
 	/** The output of the JIT. */
 	final GenericOutput _output;
@@ -245,7 +245,7 @@ public final class GenericNamespaceWriter
 					__align();
 					
 					// Write the global string table and constant pool
-					__GlobalPool__ gpool = this._gpool;
+					GenericPool gpool = this._gpool;
 					gpool.__write(dos);
 					
 					// Align
