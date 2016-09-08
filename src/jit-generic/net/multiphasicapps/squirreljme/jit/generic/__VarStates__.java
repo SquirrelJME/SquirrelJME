@@ -26,6 +26,9 @@ final class __VarStates__
 	/** Stack variable offsets, will be negative if not valid. */
 	final int[] _stackoffs;
 	
+	/** Stack storage size. */
+	final byte[] _stacksize;
+	
 	/**
 	 * Initializes the variable states.
 	 *
@@ -42,6 +45,9 @@ final class __VarStates__
 		this._stackoffs = (stackoffs = new int[__n]);
 		for (int i = 0; i < __n; i++)
 			stackoffs[i] = -1;
+		
+		// Setup stack sizes
+		this._stacksize = new byte[__n];
 		
 		// Set
 		this.arelocals = __lv;
@@ -65,6 +71,7 @@ final class __VarStates__
 		this.arelocals = __vs.arelocals;
 		this._regs = __vs._regs.clone();
 		this._stackoffs = __vs._stackoffs.clone();
+		this._stacksize = __vs._stacksize.clone();
 	}
 	
 	/**
@@ -80,6 +87,7 @@ final class __VarStates__
 		// Get
 		GenericRegister[] regs = this._regs;
 		int[] stackoffs = this._stackoffs;
+		byte[] stacksize = this._stacksize;
 		boolean arelocals = this.arelocals;
 		
 		// Go through int
@@ -113,6 +121,11 @@ final class __VarStates__
 				{
 					sb.append('+');
 					sb.append(off);
+					
+					// Add the stack size also
+					sb.append('(');
+					sb.append(stacksize[i]);
+					sb.append(')');
 				}
 			
 				// Not used at all

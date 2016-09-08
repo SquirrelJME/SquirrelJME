@@ -217,13 +217,13 @@ public class GenericAllocator
 						// 32-bit type
 					case INTEGER:
 					case FLOAT:
-						mod = 32;
+						mod = 4;
 						break;
 					
 						// 64-bit type
 					case LONG:
 					case DOUBLE:
-						mod = 64;
+						mod = 8;
 						break;
 						
 						// Object (uses pointer)
@@ -235,6 +235,9 @@ public class GenericAllocator
 					default:
 						throw new RuntimeException("OOPS");
 				}
+				
+				// Store the number of bytes used for this position
+				jlocals._stacksize[i] = (byte)mod;
 				
 				// Increase it
 				stacksize += mod;
