@@ -46,3 +46,13 @@ in the code then it does not have to be performed.
 In fact, if there are no exception handlers then I never need to copy the
 locals to the CPU stack at all.
 
+## 10:06
+
+When it comes to `synchronized` methods, if a method is synchronized I will
+need a monitor exit before every return and a monitor enter. Additionally,
+there will need to be an implicit finally that just does monitor exit. Although
+actually, `this` is stored in a local variable somewhere, although it just
+needs to be copied somewhere if a method is synchronized so that even if the
+`this` variable gets replaced it is not lost. The implicit finally or other
+monitor exit can really just load from this special stack location.
+
