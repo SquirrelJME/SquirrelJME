@@ -52,6 +52,9 @@ public class GenericAllocator
 	/** Registers bound to stack variables. */
 	volatile __VarStates__ _jstack;
 	
+	/** The current size of the stack. */
+	volatile int _stacksize;
+	
 	/**
 	 * Initializes the register allocator using the specified configuration
 	 * and the given ABI.
@@ -134,6 +137,10 @@ public class GenericAllocator
 		int iat = 0, ilim = ai.size(),
 			fat = 0, flim = af.size();
 		
+		// Current stack "at" position
+		int stacksize = 0;
+		int pointerbytes = abi.pointerSize() / 8;
+		
 		// Go through variable types
 		int n = __t.length;
 		JITVariableType last = null;
@@ -199,8 +206,43 @@ public class GenericAllocator
 			
 			// Allocate some stack space
 			else
-				throw new Error("TODO");
+			{
+				// Set here
+				jlocals._stackoffs[i] = stacksize;
+				
+				// Increase stack size by the object size
+				int mod;
+				switch (type)
+				{
+						// 32-bit type
+					case INTEGER:
+					case FLOAT:
+						mod = 32;
+						break;
+					
+						// 64-bit type
+					case LONG:
+					case DOUBLE:
+						mod = 64;
+						break;
+						
+						// Object (uses pointer)
+					case OBJECT:
+						mod = pointerbytes;
+						break;
+					
+						// Unknown
+					default:
+						throw new RuntimeException("OOPS");
+				}
+				
+				// Increase it
+				stacksize += mod;
+			}
 		}
+		
+		// Set stack size
+		this._stacksize = stacksize;
 		
 		// Debug
 		System.err.printf("DEBUG -- AllocState: %s%n", this);

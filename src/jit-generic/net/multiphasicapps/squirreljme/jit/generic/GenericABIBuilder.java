@@ -64,6 +64,10 @@ public final class GenericABIBuilder
 	volatile int _stackalign =
 		-1;
 	
+	/** The pointer size. */
+	volatile int _pointersize =
+		-1;
+	
 	/**
 	 * Adds an argument register.
 	 *
@@ -207,6 +211,28 @@ public final class GenericABIBuilder
 		synchronized (this.lock)
 		{
 			return new GenericABI(this);
+		}
+	}
+	
+	/**
+	 * Sets the pointer size.
+	 *
+	 * @param __b The number of bits used for pointers.
+	 * @throws JITException If the number of bits is zero or negative;
+	 * is not a power of two; or is not a multiple of eight.
+	 * @since 2016/09/08
+	 */
+	public final void pointerSize(int __b)
+		throws JITException
+	{
+		// {@squirreljme.error BA1k 
+		if (__b <= 0 || Integer.bitCount(__b) != 1 || (__b & 7) != 0)
+			throw new JITException(String.format("BA1k %d", __b));
+		
+		// Lock
+		synchronized (this.lock)
+		{
+			this._pointersize = __b;
 		}
 	}
 	

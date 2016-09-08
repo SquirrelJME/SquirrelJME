@@ -53,6 +53,9 @@ public final class GenericABI
 	/** Floating point registers. */
 	private final Map<GenericRegister, GenericRegisterFloatType> _floatregs;
 	
+	/** The size of pointers. */
+	private final int _pointersize;
+	
 	/**
 	 * Initializes the ABI from the given builder.
 	 *
@@ -66,6 +69,12 @@ public final class GenericABI
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BA1j The pointer size was not set.}
+		int pointersize = __b._pointersize;
+		if (pointersize <= 0)
+			throw new JITException("BA1j");
+		this._pointersize = pointersize;
 		
 		// {@squirreljme.error BA0v The stack alignment was not set.}
 		int stackalign = __b._stackalign;
@@ -198,6 +207,17 @@ public final class GenericABI
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Returns the size of pointers used by this architecture.
+	 *
+	 * @return The pointer size in bits.
+	 * @since 2016/09/08
+	 */
+	public final int pointerSize()
+	{
+		return this._pointersize;
 	}
 	
 	/**

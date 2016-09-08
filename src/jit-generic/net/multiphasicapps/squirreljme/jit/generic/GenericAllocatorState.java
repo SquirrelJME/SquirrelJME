@@ -43,6 +43,9 @@ public final class GenericAllocatorState
 	/** Stack variables. */
 	private final __VarStates__ _jstack;
 	
+	/** The stack size. */
+	private final int _stacksize;
+	
 	/** String cache. */
 	private volatile Reference<String> _string;
 	
@@ -79,6 +82,9 @@ public final class GenericAllocatorState
 		// Copy variable states
 		this._jlocals = new __VarStates__(__ga._jlocals);
 		this._jstack = new __VarStates__(__ga._jstack);
+		
+		// Set stack size
+		this._stacksize = __ga._stacksize;
 	}
 	
 	/**
@@ -102,7 +108,9 @@ public final class GenericAllocatorState
 			sb.append(this._jlocals);
 			
 			// And stack state
-			sb.append(", stack=");
+			sb.append(", stack(");
+			sb.append(this._stacksize);
+			sb.append(")=");
 			sb.append(this._jstack);
 			
 			// Create

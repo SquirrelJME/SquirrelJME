@@ -62,6 +62,7 @@ public final class MIPSABI
 		
 		// Add integer registers
 		int bits = __t.bits();
+		ab.pointerSize(bits);
 		GenericRegisterIntegerType rtint =
 			GenericABIBuilder.intRegisterTypeFromTriplet(__t);
 		for (int i = 0; i <= 31; i++)
