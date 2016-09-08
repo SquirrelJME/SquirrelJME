@@ -1,1 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: ZZZPROJECTZZZ
+X-SquirrelJME-UUID: ZZZUUIDZZZ
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: ZZZNEXTERRZZZ
+LIBlet-Title: ZZZPROJECTZZZ
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: ZZZPROJECTZZZ
 

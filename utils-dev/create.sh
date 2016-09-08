@@ -131,7 +131,8 @@ __findpkname()
 		elif [ "$__want" -eq "1" ]
 		then
 			# If repository file in same dir
-			if [ -f "$__indir/steven-gawroriski.gpg" ]
+			if [ -f "$__indir/../steven-gawroriski.gpg" ] ||
+				[ -f "$__indir/steven-gawroriski.gpg" ]
 			then
 				echo "$__chop" | \
 					sed 's/^\([a-zA-Z0-9-]\{1,\}\)[^a-zA-Z0-9-]*.*/\1/'
@@ -257,6 +258,19 @@ do
 				# C stuff
 				__cheadgard="SJME_hG${__cheadclip}"
 				__ccxxisbad="SJME_cX${__cheadclip}"
+				
+				# Only seed these for manifests since they take awhile to
+				# generate
+				if [ "$__tfile" = "MANIFEST.MF" ]
+				then
+					__uuid="$("$__exedir/uuid.sh")"
+					__nexterr="$("$__exedir/nexterror.sh")"
+				
+				# These take awhile to generate, so ignore for non-manifests
+				else
+					__uuid="00000000-0000-0000-0000-000000000000"
+					__nexterr="??"
+				fi
 			
 				# Java source code
 				(if [ "$__tfext" = "java" ]
@@ -268,6 +282,12 @@ do
 					else
 						cat "$__exedir/crtmpl/java"
 					fi
+				
+				# Manifest
+				elif [ "$__tfile" = "MANIFEST.MF" ]
+				then
+					# Cat
+					cat "$__exedir/crtmpl/manifest"
 				
 				# Other template
 				elif [ -f "$__exedir/crtmpl/$__tfext" ]
@@ -285,7 +305,9 @@ do
 					| sed 's/ZZZCHEADERNAMEZZZ/'"$__cheadname"'/g' \
 					| sed 's/ZZZCHEADERCLIPZZZ/'"$__cheadclip"'/g' \
 					| sed 's/ZZZCHEADERGUARDZZZ/'"$__cheadgard"'/g' \
-					| sed 's/ZZZCXXISBADZZZ/'"$__ccxxisbad"'/g' > "$__afil"
+					| sed 's/ZZZCXXISBADZZZ/'"$__ccxxisbad"'/g' \
+					| sed 's/ZZZUUIDZZZ/'"$__uuid"'/g' \
+					| sed 's/ZZZNEXTERRZZZ/'"$__nexterr"'/g' > "$__afil"
 		
 			# Not wanting a template
 			else
