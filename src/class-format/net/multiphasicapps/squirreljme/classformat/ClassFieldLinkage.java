@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/09/06
  */
-public final class GenericFieldLinkage
+public final class ClassFieldLinkage
 	extends ClassMemberLinkage<ClassFieldReference>
 {
 	/** The type of link this is. */
@@ -36,7 +36,7 @@ public final class GenericFieldLinkage
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public GenericFieldLinkage(ClassMethodReference __from,
+	public ClassFieldLinkage(ClassMethodReference __from,
 		ClassFieldReference __to, ClassFieldAccessType __t)
 		throws NullPointerException
 	{
@@ -58,14 +58,14 @@ public final class GenericFieldLinkage
 	public boolean equals(Object __o)
 	{
 		// Must match
-		if (!(__o instanceof GenericFieldLinkage))
+		if (!(__o instanceof ClassFieldLinkage))
 			return false;
 		
 		// Check super first
 		if (!super.equals(__o))
 			return false;
 		
-		return this.type.equals(((GenericFieldLinkage)__o).type);
+		return this.type.equals(((ClassFieldLinkage)__o).type);
 	}
 	
 	/**

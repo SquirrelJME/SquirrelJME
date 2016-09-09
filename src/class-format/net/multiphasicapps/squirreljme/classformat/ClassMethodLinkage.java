@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/09/06
  */
-public final class GenericMethodLinkage
+public final class ClassMethodLinkage
 	extends ClassMemberLinkage<ClassMethodReference>
 {
 	/** The type of link this is. */
@@ -36,7 +36,7 @@ public final class GenericMethodLinkage
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public GenericMethodLinkage(ClassMethodReference __from,
+	public ClassMethodLinkage(ClassMethodReference __from,
 		ClassMethodReference __to, ClassMethodInvokeType __t)
 		throws NullPointerException
 	{
@@ -58,14 +58,14 @@ public final class GenericMethodLinkage
 	public boolean equals(Object __o)
 	{
 		// Must match
-		if (!(__o instanceof GenericMethodLinkage))
+		if (!(__o instanceof ClassMethodLinkage))
 			return false;
 		
 		// Check super first
 		if (!super.equals(__o))
 			return false;
 		
-		return this.type.equals(((GenericMethodLinkage)__o).type);
+		return this.type.equals(((ClassMethodLinkage)__o).type);
 	}
 	
 	/**

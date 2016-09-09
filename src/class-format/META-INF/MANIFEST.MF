@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: class-format
 X-SquirrelJME-UUID: 70d90401-f165-46ce-aaf2-5e254cfa9061
-X-SquirrelJME-Depends: cldc-compact, io-region, symbols, io-data
+X-SquirrelJME-Depends: cldc-compact, io-region, symbols, io-data,
+ util-unmodifiable
 X-SquirrelJME-Error: AY
 LIBlet-Title: Class Format Decoder
 LIBlet-Vendor: Steven Gawroriski
