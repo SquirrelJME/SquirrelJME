@@ -166,11 +166,11 @@ public class NativeAllocator
 			// storage for the old value.
 			if (type == JITVariableType.TOP)
 			{
-				// {@squirreljme.error BA1i Expected long/double to precede
+				// {@squirreljme.error AR1i Expected long/double to precede
 				// top variable type. (The last type; The current type)}
 				if (last != JITVariableType.LONG &&
 					last != JITVariableType.DOUBLE)
-					throw new JITException(String.format("BA1i %s %s", last,
+					throw new JITException(String.format("AR1i %s %s", last,
 						type));
 				
 				throw new Error("TODO");
@@ -330,11 +330,11 @@ public class NativeAllocator
 	public final void variableCounts(int __stack, int __locals)
 		throws JITException
 	{
-		// {@squirreljme.error BA1h The number of stack and/or local variables
+		// {@squirreljme.error AR1h The number of stack and/or local variables
 		// has a negative count. (The stack variable count; The local variable
 		// count)}
 		if (__stack < 0 || __locals < 0)
-			throw new JITException(String.format("BA1h %d %d", __stack,
+			throw new JITException(String.format("AR1h %d %d", __stack,
 				__locals));
 		
 		// Initialize state

@@ -158,11 +158,11 @@ public final class NativeABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error BA1b Cannot add the specified register
+			// {@squirreljme.error AR1b Cannot add the specified register
 			// because it is the stack register or is temporary. (The register
 			// being added)}
 			if (this._temps.contains(__r) || this._stack.equals(__r))
-				throw new JITException(String.format("BA1b %s", __r));
+				throw new JITException(String.format("AR1b %s", __r));
 			
 			this._saved.add(__r);
 		}
@@ -186,11 +186,11 @@ public final class NativeABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error BA1c Cannot add the specified register
+			// {@squirreljme.error AR1c Cannot add the specified register
 			// because it is the stack register or is saved. (The register
 			// being added)}
 			if (this._saved.contains(__r) || this._stack.equals(__r))
-				throw new JITException(String.format("BA1c %s", __r));
+				throw new JITException(String.format("AR1c %s", __r));
 			
 			this._temps.add(__r);
 		}
@@ -225,9 +225,9 @@ public final class NativeABIBuilder
 	public final void pointerSize(int __b)
 		throws JITException
 	{
-		// {@squirreljme.error BA1k 
+		// {@squirreljme.error AR1k 
 		if (__b <= 0 || Integer.bitCount(__b) != 1 || (__b & 7) != 0)
-			throw new JITException(String.format("BA1k %d", __b));
+			throw new JITException(String.format("AR1k %d", __b));
 		
 		// Lock
 		synchronized (this.lock)
@@ -254,11 +254,11 @@ public final class NativeABIBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error BA0p Cannot use the specified register as
+			// {@squirreljme.error AR0p Cannot use the specified register as
 			// the stack register because it is saved and/or temporary. (The
 			// register to be used as the stack register)}
 			if (this._saved.contains(__r) || this._temps.contains(__r))
-				throw new JITException(String.format("BA0p %s", __r));
+				throw new JITException(String.format("AR0p %s", __r));
 			
 			this._stack = __r;
 		}
@@ -274,10 +274,10 @@ public final class NativeABIBuilder
 	public final void stackAlignment(int __i)
 		throws JITException
 	{
-		// {@squirreljme.error BA0u The stack alignment is zero or negative.
+		// {@squirreljme.error AR0u The stack alignment is zero or negative.
 		// (The alignment)}
 		if (__i <= 0)
-			throw new JITException(String.format("BA0u %d", __i));
+			throw new JITException(String.format("AR0u %d", __i));
 		
 		// Lock
 		synchronized (this.lock)
@@ -332,10 +332,10 @@ public final class NativeABIBuilder
 			case 32: return NativeRegisterIntegerType.INTEGER;
 			case 64: return NativeRegisterIntegerType.LONG;
 			
-				// {@squirreljme.error BA1f Could not get the integer register
+				// {@squirreljme.error AR1f Could not get the integer register
 				// type from the specified triplet. (The triplet)}
 			default:
-				throw new JITException(String.format("BA1f %s", __t));
+				throw new JITException(String.format("AR1f %s", __t));
 		}
 	}
 	
@@ -363,10 +363,10 @@ public final class NativeABIBuilder
 			case HARD32: return NativeRegisterFloatType.FLOAT;
 			case HARD64: return NativeRegisterFloatType.DOUBLE;
 			
-				// {@squirreljme.error BA1g Could not get the float register
+				// {@squirreljme.error AR1g Could not get the float register
 				// type from the specified triplet. (The triplet)}
 			default:
-				throw new JITException(String.format("BA1g %s", __t));
+				throw new JITException(String.format("AR1g %s", __t));
 		}
 	}
 }

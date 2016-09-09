@@ -70,28 +70,28 @@ public final class NativeABI
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BA1j The pointer size was not set.}
+		// {@squirreljme.error AR1j The pointer size was not set.}
 		int pointersize = __b._pointersize;
 		if (pointersize <= 0)
-			throw new JITException("BA1j");
+			throw new JITException("AR1j");
 		this._pointersize = pointersize;
 		
-		// {@squirreljme.error BA0v The stack alignment was not set.}
+		// {@squirreljme.error AR0v The stack alignment was not set.}
 		int stackalign = __b._stackalign;
 		if (stackalign <= 0)
-			throw new JITException("BA0v");
+			throw new JITException("AR0v");
 		this._stackalign = stackalign;
 		
-		// {@squirreljme.error BA0w The stack direction was not set.}
+		// {@squirreljme.error AR0w The stack direction was not set.}
 		NativeStackDirection stackdir = __b._stackdir;
 		if (stackdir == null)
-			throw new JITException("BA0w");
+			throw new JITException("AR0w");
 		this._stackdir = stackdir;
 		
-		// {@squirreljme.error BA0x The stack register was not set.}
+		// {@squirreljme.error AR0x The stack register was not set.}
 		NativeRegister stack = __b._stack;
 		if (stack == null)
-			throw new JITException("BA0x");
+			throw new JITException("AR0x");
 		this._stack = stack;
 		
 		// Fill integer registers
@@ -432,38 +432,38 @@ public final class NativeABI
 			this._ltemps = UnmodifiableList.<NativeRegister>of(
 				new ArrayList<>(temps));
 			
-			// {@squirreljme.error BA1e A register cannot be both saved
+			// {@squirreljme.error AR1e A register cannot be both saved
 			// and temporary. (The register)}
 			for (NativeRegister r : saved)
 				if (temps.contains(r))
-					throw new JITException(String.format("BA1e %s", r));
+					throw new JITException(String.format("AR1e %s", r));
 			
 			// Make sure the collections have all matching types
 			if (total > 0)
 			{
-				// {@squirreljme.error BA0y No result registers were
+				// {@squirreljme.error AR0y No result registers were
 				// specified.}
 				if (result.size() <= 0)
-					throw new JITException("BA0y");
+					throw new JITException("AR0y");
 				
-				// {@squirreljme.error BA0q No argument registers were
+				// {@squirreljme.error AR0q No argument registers were
 				// specified.}
 				if (args.size() <= 0)
-					throw new JITException("BA0q");
+					throw new JITException("AR0q");
 				
-				// {@squirreljme.error BA1d The total number of temporary
+				// {@squirreljme.error AR1d The total number of temporary
 				// registers and saved registers is zero.}
 				if ((saved.size() + temps.size()) <= 0)
-					throw new JITException("BA1d");
+					throw new JITException("AR1d");
 			}
 			
 			// Float is optional
 			else
 			{
-				// {@squirreljme.error BA0r No integer registers were
+				// {@squirreljme.error AR0r No integer registers were
 				// specified.}
 				if (!__float)
-					throw new JITException("BA0r");
+					throw new JITException("AR0r");
 			}	
 		}
 	}

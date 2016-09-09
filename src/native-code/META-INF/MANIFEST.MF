@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: native-code
 X-SquirrelJME-UUID: 64c3121d-adec-4235-a611-8a801f266ffe
-X-SquirrelJME-Depends: cldc-compact, jit-base
+X-SquirrelJME-Depends: cldc-compact, util-msd, util-unmodifiable
 X-SquirrelJME-Error: AR
 LIBlet-Title: Native Code
 LIBlet-Vendor: Steven Gawroriski

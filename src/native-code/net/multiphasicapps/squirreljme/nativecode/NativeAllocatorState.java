@@ -25,6 +25,9 @@ import java.util.Deque;
  */
 public final class NativeAllocatorState
 {
+	/** The ABI used. */
+	protected final NativeABI abi;
+	
 	/** Saved integer queue. */
 	private final NativeRegister[] _savedintq;
 	
@@ -62,6 +65,9 @@ public final class NativeAllocatorState
 		// Check
 		if (__ga == null)
 			throw new NullPointerException("NARG");
+		
+		// Copy ABI
+		this.abi = __ga.abi;
 		
 		// Get parts for copying
 		Deque<NativeRegister> savedintq = __ga._savedintq;

@@ -123,3 +123,13 @@ potentially.
 So the Java stuff needs to be removed from the native allocator and placed in
 the JIT.
 
+## 12:04
+
+What the native code allocator needs is a kind of state that can be used. It
+either specifies that a register is used or some stack space was allocated. I
+can then move the Java allocation state to use these markers. This would be
+more effective than keeping variable states somewhere and using raw register
+or stack values. Then the allocator state can be what is currently allocated.
+The allocations should be immutable so they can be shared with the state,
+otherwise it can get a bit messy.
+
