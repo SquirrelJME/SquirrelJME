@@ -19,18 +19,52 @@ public enum NativeRegisterIntegerType
 	implements NativeRegisterType
 {
 	/** Byte. */
-	BYTE,
+	BYTE(1),
 	
 	/** Short. */
-	SHORT,
+	SHORT(2),
 	
 	/** Integer. */
-	INTEGER,
+	INTEGER(4),
 	
 	/** Long. */
-	LONG,
+	LONG(8),
 	
 	/** End. */
 	;
+	
+	/** Bytes to store. */
+	protected final int bytes;
+	
+	/**
+	 * Initializes the register type.
+	 *
+	 * @param __b The bytes needed to store.
+	 * @since 2016/09/09
+	 */
+	private NativeRegisterIntegerType(int __b)
+	{
+		this.bytes = __b;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/09
+	 */
+	@Override
+	public final int bytes()
+	{
+		return this.bytes;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/09
+	 */
+	@Override
+	public final boolean isFloat()
+	{
+		return false;
+	}
 }
 

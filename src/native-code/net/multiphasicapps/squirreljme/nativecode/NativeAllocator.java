@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.nativecode;
 
 import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.util.msd.MultiSetDeque;
 
 /**
@@ -39,6 +41,10 @@ public class NativeAllocator
 	
 	/** Temporary float register queue. */
 	final Deque<NativeRegister> _tempfloatq;
+	
+	/** The current allocations that are being used. */
+	final Set<NativeAllocation> _allocs =
+		new LinkedHashSet<>();
 	
 	/** The current size of the stack. */
 	volatile int _stacksize;
@@ -88,6 +94,29 @@ public class NativeAllocator
 	public final NativeABI abi()
 	{
 		return this.abi;
+	}
+	
+	/**
+	 * Goes through the input arguments and creates allocations for all of
+	 * the input allocation values based on their types.
+	 *
+	 * @param __t The type of value to store
+	 * @return The allocations for all input arguments.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/09
+	 */
+	public final NativeAllocation[] argumentAllocate(NativeRegisterType... __t)
+		throws NullPointerException
+	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore if empty
+		if (__t.length <= 0)
+			return new NativeAllocation[0];
+		
+		throw new Error("TODO");
 	}
 	
 	/**

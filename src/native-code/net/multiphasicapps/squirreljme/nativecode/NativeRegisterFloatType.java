@@ -20,12 +20,46 @@ public enum NativeRegisterFloatType
 	implements NativeRegisterType
 {
 	/** Float. */
-	FLOAT,
+	FLOAT(4),
 	
 	/** Double. */
-	DOUBLE,
+	DOUBLE(8),
 	
 	/** End. */
 	;
+	
+	/** Bytes to store. */
+	protected final int bytes;
+	
+	/**
+	 * Initializes the register type.
+	 *
+	 * @param __b The bytes needed to store.
+	 * @since 2016/09/09
+	 */
+	private NativeRegisterFloatType(int __b)
+	{
+		this.bytes = __b;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/09
+	 */
+	@Override
+	public final int bytes()
+	{
+		return this.bytes;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/09
+	 */
+	@Override
+	public final boolean isFloat()
+	{
+		return true;
+	}
 }
 

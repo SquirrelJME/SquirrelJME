@@ -159,3 +159,11 @@ stuff from the generic JIT.
 This means that the generic JIT becomes essentially final and provides the
 service itself.
 
+## 14:51
+
+So the only thing I have to in the generic JIT code for this move is to make
+the initial argument allocation with argument priming. However this should be
+easy as I can have an input argument request that fills parts of the state. So
+some of the generic code moves back and it becomes just a wrapped
+`NativeAllocation` which is bound to the general allocator state.
+
