@@ -15,7 +15,7 @@ import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.ClassFormatException;
 import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
@@ -27,7 +27,7 @@ class __MethodDecoder__
 	extends __MemberDecoder__
 {
 	/** The constant pool. */
-	final JITConstantPool _pool;
+	final ClassConstantPool _pool;
 	
 	/** The class decoder owning this. */
 	final __ClassDecoder__ _classdecoder;
@@ -53,7 +53,7 @@ class __MethodDecoder__
 	 * @since 2016/08/18
 	 */
 	__MethodDecoder__(JITClassWriter __cw, DataInputStream __di,
-		JITConstantPool __pool, ClassClassFlags __cf, __ClassDecoder__ __cx)
+		ClassConstantPool __pool, ClassClassFlags __cf, __ClassDecoder__ __cx)
 		throws NullPointerException
 	{
 		super(__cw, __di, __pool, __cf);
@@ -84,15 +84,15 @@ class __MethodDecoder__
 			input.readUnsignedShort());
 		
 		// Read the method name
-		JITConstantPool pool = this.pool;
+		ClassConstantPool pool = this.pool;
 		int ni;
-		JITConstantEntry ename = pool.get((ni = input.readUnsignedShort()));
+		ClassConstantEntry ename = pool.get((ni = input.readUnsignedShort()));
 		IdentifierSymbol name = IdentifierSymbol.of(
 			ename.<String>get(true, String.class));
 		
 		// And the type
 		int ti;
-		JITConstantEntry etype = pool.get((ti = input.readUnsignedShort()));
+		ClassConstantEntry etype = pool.get((ti = input.readUnsignedShort()));
 		MethodSymbol type = MethodSymbol.of(
 			etype.<String>get(true, String.class));
 		
@@ -114,7 +114,7 @@ class __MethodDecoder__
 		// {@squirreljme.error ED05 Abstract methods cannot have code.}
 		boolean hascode = this._hitmcode;
 		if (hascode == mf.isAbstract())
-			throw new JITException("ED05");
+			throw new ClassFormatException("ED05");
 		
 		// If there is no code then indicate as such
 		if (!hascode)
@@ -144,7 +144,7 @@ class __MethodDecoder__
 				// {@squirreljme.error ED03 Multiple code attributes
 				// in a single method.}
 				if (this._hitmcode)
-					throw new JITException("ED03");
+					throw new ClassFormatException("ED03");
 				
 				// Mark as hit, there may only be one
 				this._hitmcode = true;

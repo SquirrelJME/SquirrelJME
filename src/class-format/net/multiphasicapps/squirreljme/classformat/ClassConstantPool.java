@@ -16,7 +16,6 @@ import java.io.UTFDataFormatException;
 import java.util.AbstractList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This represents the constant pool of a class which has been read, this is
@@ -24,8 +23,8 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  *
  * @since 2016/06/29
  */
-public final class JITConstantPool
-	extends AbstractList<JITConstantEntry>
+public final class ClassConstantPool
+	extends AbstractList<ClassConstantEntry>
 {
 	/** The UTF constant tag. */
 	public static final int TAG_UTF8 =
@@ -84,7 +83,7 @@ public final class JITConstantPool
 		18;
 	
 	/** Internal entries. */
-	private final JITConstantEntry[] _entries;
+	private final ClassConstantEntry[] _entries;
 	
 	/** The class decoder being used. */
 	final __ClassDecoder__ _decoder;
@@ -99,11 +98,11 @@ public final class JITConstantPool
 	 * @param __cd The decoder for classes.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @throws JITException If the constant pool is malformed.
+	 * @throws ClassFormatException If the constant pool is malformed.
 	 * @since 2016/06/29
 	 */
-	JITConstantPool(DataInputStream __dis, __ClassDecoder__ __cd)
-		throws IOException, NullPointerException, JITException
+	ClassConstantPool(DataInputStream __dis, __ClassDecoder__ __cd)
+		throws IOException, NullPointerException, ClassFormatException
 	{
 		// Check
 		if (__dis == null || __cd == null)
@@ -116,14 +115,14 @@ public final class JITConstantPool
 		// pool.}
 		int count = __dis.readUnsignedShort();
 		if (count <= 0)
-			throw new JITException("ED15");
+			throw new ClassFormatException("ED15");
 		
 		// Setup entries
-		JITConstantEntry[] entries = new JITConstantEntry[count];
+		ClassConstantEntry[] entries = new ClassConstantEntry[count];
 		this._entries = entries;
 		
 		// Always initialize the first (null entry)
-		entries[0] = new JITConstantEntry(this, (byte)0, 0, new int[0]);
+		entries[0] = new ClassConstantEntry(this, (byte)0, 0, new int[0]);
 		
 		// Decode all entry data
 		for (int i = 1; i < count; i++)
@@ -136,7 +135,7 @@ public final class JITConstantPool
 			// invocation (such as method handles or lambda expressions).}
 			if (tag == TAG_METHODHANDLE || tag == TAG_METHODTYPE ||
 				tag == TAG_INVOKEDYNAMIC)
-				throw new JITException("ED16");
+				throw new ClassFormatException("ED16");
 			
 			// UTF-8 String
 			if (tag == TAG_UTF8)
@@ -151,7 +150,7 @@ public final class JITConstantPool
 				// the constant pool is malformed.}
 				catch (UTFDataFormatException e)
 				{
-					throw new JITException("ED18", e);
+					throw new ClassFormatException("ED18", e);
 				}
 			}
 			
@@ -190,12 +189,12 @@ public final class JITConstantPool
 			// {@squirreljme.error ED17 Unknown constant pool tag. (The tag of
 			// the constant pool entry)}
 			else
-				throw new JITException(String.format("ED17 %d", tag));
+				throw new ClassFormatException(String.format("ED17 %d", tag));
 		
 			// Create entry
-			JITConstantEntry dup;
+			ClassConstantEntry dup;
 			entries[i] =
-				(dup = new JITConstantEntry(this, (byte)tag, i, data));
+				(dup = new ClassConstantEntry(this, (byte)tag, i, data));
 			
 			// Double up?
 			if (tag == TAG_LONG || tag == TAG_DOUBLE)
@@ -219,7 +218,7 @@ public final class JITConstantPool
 	 * @since 2016/08/17
 	 */
 	@Override
-	public JITConstantEntry get(int __dx)
+	public ClassConstantEntry get(int __dx)
 	{
 		return this._entries[__dx];
 	}
@@ -243,11 +242,11 @@ public final class JITConstantPool
 	{
 		// Rewrite only classes (there should be just one)
 		__ClassDecoder__ decoder = this._decoder;
-		JITConstantEntry[] entries = this._entries;
+		ClassConstantEntry[] entries = this._entries;
 		int n = entries.length;
 		for (int i = 1; i < n; i++)
 		{
-			JITConstantEntry e = entries[i];
+			ClassConstantEntry e = entries[i];
 			
 			// If the data is in an integer array then it has never been
 			// initialized yet

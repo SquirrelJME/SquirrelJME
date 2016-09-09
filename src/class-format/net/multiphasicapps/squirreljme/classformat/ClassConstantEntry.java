@@ -15,17 +15,16 @@ import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This represents a single constant pool entry that may exist within a class.
  *
  * @since 2016/08/17
  */
-public final class JITConstantEntry
+public final class ClassConstantEntry
 {
 	/** The owning pool. */
-	protected final JITConstantPool pool;
+	protected final ClassConstantPool pool;
 	
 	/** The index of this entry. */
 	protected final int index;
@@ -50,7 +49,7 @@ public final class JITConstantEntry
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/17
 	 */
-	JITConstantEntry(JITConstantPool __pool, byte __tag, int __dx, Object __id)
+	ClassConstantEntry(ClassConstantPool __pool, byte __tag, int __dx, Object __id)
 		throws NullPointerException
 	{
 		// Check
@@ -71,12 +70,12 @@ public final class JITConstantEntry
 	 * @param __act Should the given constant pool entry be activated?
 	 * @param __cl The expected class type.
 	 * @return The value at the given location.
-	 * @throws JITException If the input is not of the expected type.
+	 * @throws ClassFormatException If the input is not of the expected type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
 	public <R> R get(boolean __act, Class<R> __cl)
-		throws JITException, NullPointerException
+		throws ClassFormatException, NullPointerException
 	{
 		// Get
 		R rv = this.<R>optional(__act, __cl);
@@ -84,7 +83,7 @@ public final class JITConstantEntry
 		// {@squirreljme.error ED0b No constant pool entry was defined at
 		// this position. (The index; The expected type)}
 		if (rv == null)
-			throw new JITException(String.format("ED0b %d %s", this.index,
+			throw new ClassFormatException(String.format("ED0b %d %s", this.index,
 				__cl));
 		
 		// Ok
@@ -122,12 +121,12 @@ public final class JITConstantEntry
 	 * @param __cl The expected class type.
 	 * @return The value at the given location or {@code null} if zero was
 	 * requested.
-	 * @throws JITException If the input is not of the expected type.
+	 * @throws ClassFormatException If the input is not of the expected type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
 	public <R> R optional(boolean __act, Class<R> __cl)
-		throws JITException, NullPointerException
+		throws ClassFormatException, NullPointerException
 	{
 		// Check
 		if (__cl == null)
@@ -145,10 +144,10 @@ public final class JITConstantEntry
 		// value because it is the top of a long or double constant value.
 		// (The index)}
 		if (raw == null)
-			throw new JITException(String.format("ED0d %d", mydx));
+			throw new ClassFormatException(String.format("ED0d %d", mydx));
 		
 		// If an integer array, requires conversion
-		JITConstantPool pool = this.pool;
+		ClassConstantPool pool = this.pool;
 		__ClassDecoder__ decoder = pool._decoder;
 		if (raw instanceof int[])
 		{
@@ -161,18 +160,18 @@ public final class JITConstantEntry
 			switch (tag)
 			{
 					// Strings
-				case JITConstantPool.TAG_STRING:
+				case ClassConstantPool.TAG_STRING:
 					raw = pool.get(fields[0]).<String>get(false, String.class);
 					break;
 					
 					// Class name
-				case JITConstantPool.TAG_CLASS:
+				case ClassConstantPool.TAG_CLASS:
 					raw = decoder.__rewriteClass(ClassNameSymbol.of(
 						pool.get(fields[0]).<String>get(false, String.class)));
 					break;
 					
 					// Name and type
-				case JITConstantPool.TAG_NAMEANDTYPE:
+				case ClassConstantPool.TAG_NAMEANDTYPE:
 					raw = new JITNameAndType(
 						IdentifierSymbol.of(pool.get(fields[0]).<String>get(
 							false, String.class)),
@@ -181,9 +180,9 @@ public final class JITConstantEntry
 					break;
 					
 					// Field/method/interface reference
-				case JITConstantPool.TAG_FIELDREF:
-				case JITConstantPool.TAG_METHODREF:
-				case JITConstantPool.TAG_INTERFACEMETHODREF:
+				case ClassConstantPool.TAG_FIELDREF:
+				case ClassConstantPool.TAG_METHODREF:
+				case ClassConstantPool.TAG_INTERFACEMETHODREF:
 					ClassNameSymbol rcl = decoder.__rewriteClass(
 						pool.get(fields[0]).<ClassNameSymbol>get(false,
 							ClassNameSymbol.class));
@@ -191,7 +190,7 @@ public final class JITConstantEntry
 						<JITNameAndType>get(false, JITNameAndType.class);
 					
 					// Field?
-					if (tag == JITConstantPool.TAG_FIELDREF)
+					if (tag == ClassConstantPool.TAG_FIELDREF)
 						raw = new ClassFieldReference(rcl, jna.name(),
 							(FieldSymbol)jna.type());
 					
@@ -199,14 +198,14 @@ public final class JITConstantEntry
 					else
 						raw = new ClassMethodReference(rcl, jna.name(),
 							(MethodSymbol)jna.type(),
-							tag == JITConstantPool.TAG_INTERFACEMETHODREF);
+							tag == ClassConstantPool.TAG_INTERFACEMETHODREF);
 					break;
 					
 					// {@squirreljme.error ED0f Could not obtain the constant
 					// pool entry information because its tag data relation is
 					// not known. (The index; The tag type)}
 				default:
-					throw new JITException(String.format("ED0f %d %d", mydx,
+					throw new ClassFormatException(String.format("ED0f %d %d", mydx,
 						tag));
 			}
 			
@@ -223,7 +222,7 @@ public final class JITConstantEntry
 		// the expected class type. (The index; The expected type; The type
 		// that it was)}
 		if (!__cl.isInstance(raw))
-			throw new JITException(String.format("ED0e %d %s", mydx, __cl,
+			throw new ClassFormatException(String.format("ED0e %d %s", mydx, __cl,
 				raw.getClass()));
 		
 		// Activate?

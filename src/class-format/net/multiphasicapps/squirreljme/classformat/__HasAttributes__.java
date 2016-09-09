@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.ClassFormatException;
 
 /**
  * This is the base for anything that requires decoding where that thing to
@@ -52,7 +52,7 @@ abstract class __HasAttributes__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	void __readAttribute(JITConstantPool __pool, DataInputStream __di)
+	void __readAttribute(ClassConstantPool __pool, DataInputStream __di)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -60,14 +60,14 @@ abstract class __HasAttributes__
 			throw new NullPointerException("NARG");
 		
 		// Read the attribute name and length
-		JITConstantEntry eaname = __pool.get(__di.readUnsignedShort());
+		ClassConstantEntry eaname = __pool.get(__di.readUnsignedShort());
 		String aname = eaname.get(false, String.class);
 		
 		// {@squirreljme.error ED19 The length of the attribute exceeds
 		// 2GiB.}
 		int len = __di.readInt();
 		if (len < 0)
-			throw new JITException("ED19");
+			throw new ClassFormatException("ED19");
 		
 		// Handle it, but do not propogate close to the wrapped stream
 		// because any read attribute that gets closed will close the upper

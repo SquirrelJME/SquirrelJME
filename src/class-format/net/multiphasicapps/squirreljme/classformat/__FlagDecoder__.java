@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.squirreljme.jit.base.ClassClassFlag;
 import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.ClassFormatException;
 import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlag;
 import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
 import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlag;

@@ -15,7 +15,7 @@ import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.ClassFormatException;
 import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
 
 /**
@@ -39,7 +39,7 @@ class __FieldDecoder__
 	 * @since 2016/08/18
 	 */
 	__FieldDecoder__(JITClassWriter __cw, DataInputStream __di,
-		JITConstantPool __pool, ClassClassFlags __cf)
+		ClassConstantPool __pool, ClassClassFlags __cf)
 	{
 		super(__cw, __di, __pool, __cf);
 	}
@@ -61,15 +61,15 @@ class __FieldDecoder__
 			input.readUnsignedShort());
 		
 		// Read the name
-		JITConstantPool pool = this.pool;
+		ClassConstantPool pool = this.pool;
 		int ndx;
-		JITConstantEntry ename = pool.get((ndx = input.readUnsignedShort()));
+		ClassConstantEntry ename = pool.get((ndx = input.readUnsignedShort()));
 		IdentifierSymbol name = IdentifierSymbol.of(
 			ename.<String>get(true, String.class));
 		
 		// And the type
 		int tdx;
-		JITConstantEntry etype = pool.get((tdx = input.readUnsignedShort()));
+		ClassConstantEntry etype = pool.get((tdx = input.readUnsignedShort()));
 		FieldSymbol type = FieldSymbol.of(
 			etype.<String>get(true, String.class));
 		
@@ -108,7 +108,7 @@ class __FieldDecoder__
 				// {@squirreljme.error ED04 Multiple field constant
 				// values defined for a single field.}
 				if (this._fieldcv != null)
-					throw new JITException("ED04");
+					throw new ClassFormatException("ED04");
 				
 				if (true)
 					throw new Error("TODO");

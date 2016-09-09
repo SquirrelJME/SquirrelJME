@@ -29,7 +29,7 @@ abstract class __MemberDecoder__
 	protected final DataInputStream input;
 	
 	/** The constant pool. */
-	protected final JITConstantPool pool;
+	protected final ClassConstantPool pool;
 	
 	/** The owning class flags. */
 	final ClassClassFlags _classflags;
@@ -45,7 +45,7 @@ abstract class __MemberDecoder__
 	 * @since 2016/08/18
 	 */
 	__MemberDecoder__(JITClassWriter __cw, DataInputStream __di,
-		JITConstantPool __pool, ClassClassFlags __cf)
+		ClassConstantPool __pool, ClassClassFlags __cf)
 		throws NullPointerException
 	{
 		// Check

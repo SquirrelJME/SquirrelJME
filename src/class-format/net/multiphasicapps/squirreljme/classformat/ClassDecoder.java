@@ -53,7 +53,7 @@ final class ClassDecoder
 	private volatile __ClassVersion__ _version;
 	
 	/** The constant pool of the class. */
-	private volatile JITConstantPool _pool;
+	private volatile ClassConstantPool _pool;
 	
 	/** Class flags. */
 	private volatile ClassClassFlags _flags;
@@ -98,12 +98,12 @@ final class ClassDecoder
 	 * @param __jo The JIT output to use, when the name of the class is known
 	 * then will be opened and written to during the decoding process.
 	 * @throws IOException On read errors.
-	 * @throws JITException If the class file format is not correct.
+	 * @throws ClassFormatException If the class file format is not correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
 	final void __decode(JITOutput __jo)
-		throws IOException, JITException, NullPointerException
+		throws IOException, ClassFormatException, NullPointerException
 	{
 		// Check
 		if (__jo == null)
@@ -116,7 +116,7 @@ final class ClassDecoder
 		// was read)}
 		int fail;
 		if ((fail = input.readInt()) != MAGIC_NUMBER)
-			throw new JITException(String.format("ED12 %08x", fail));
+			throw new ClassFormatException(String.format("ED12 %08x", fail));
 		
 		// {@squirreljme.error ED13 The version number of the input class file
 		// is not valid. (The version number)}
@@ -124,11 +124,11 @@ final class ClassDecoder
 		__ClassVersion__ version = __ClassVersion__.findVersion(cver);
 		this._version = version;
 		if (version == null)
-			throw new JITException(String.format("ED13 %d.%d", cver >>> 16,
+			throw new ClassFormatException(String.format("ED13 %d.%d", cver >>> 16,
 				(cver & 0xFFFF)));
 		
 		// Decode the constant pool
-		JITConstantPool pool = new JITConstantPool(input, this);
+		ClassConstantPool pool = new ClassConstantPool(input, this);
 		this._pool = pool;
 		
 		// Read the flags for this class
@@ -164,13 +164,13 @@ final class ClassDecoder
 			// class and any non-Object class must have a super class.
 			// (The class name; The super-class name)}
 			if ((suname != null) == isobject)
-				throw new JITException(String.format("ED0m %s %s", clname,
+				throw new ClassFormatException(String.format("ED0m %s %s", clname,
 					suname));
 			
 			// {@squirreljme.error ED0n Interfaces must extend the Object
 			// class. (Class flags; The super-class name)}
 			if (cf.isInterface() && !suname.equals(_OBJECT_CLASS))
-				throw new JITException(String.format("ED0n %s %s", cf,
+				throw new ClassFormatException(String.format("ED0n %s %s", cf,
 					suname));
 			
 			// Send
