@@ -91,11 +91,11 @@ final class __OpParser__
 	 * Decodes operations and calls the method logic generator interface.
 	 *
 	 * @throws IOException On read errors.
-	 * @throws JITException On decode errors.
+	 * @throws ClassFormatException On decode errors.
 	 * @since 2016/08/24
 	 */
 	void __decodeAll()
-		throws IOException, JITException
+		throws IOException, ClassFormatException
 	{
 		// Get
 		ExtendedDataInputStream input = this.input;
@@ -115,7 +115,7 @@ final class __OpParser__
 				break;
 			
 			// Wide? Read another
-			if (code == __OpIndex__.WIDE)
+			if (code == ClassByteCodeIndex.WIDE)
 				code = (code << 8) | input.readUnsignedByte();
 			
 			// If there is stack state for this position then set it
@@ -185,7 +185,7 @@ final class __OpParser__
 	 * @since 2016/08/26
 	 */
 	private int[] __decodeOne(int __code)
-		throws IOException, JITException
+		throws IOException, ClassFormatException
 	{
 		// Get
 		ExtendedDataInputStream input = this.input;
@@ -194,337 +194,337 @@ final class __OpParser__
 		switch (__code)
 		{
 				// Waste electrons
-			case __OpIndex__.NOP:
+			case ClassByteCodeIndex.NOP:
 				throw new Error("TODO");
 			
 				// Push null constant
-			case __OpIndex__.ACONST_NULL:
+			case ClassByteCodeIndex.ACONST_NULL:
 				throw new Error("TODO");
 			
 				// Push int constant
-			case __OpIndex__.ICONST_M1:
-			case __OpIndex__.ICONST_0:
-			case __OpIndex__.ICONST_1:
-			case __OpIndex__.ICONST_2:
-			case __OpIndex__.ICONST_3:
-			case __OpIndex__.ICONST_4:
-			case __OpIndex__.ICONST_5:
+			case ClassByteCodeIndex.ICONST_M1:
+			case ClassByteCodeIndex.ICONST_0:
+			case ClassByteCodeIndex.ICONST_1:
+			case ClassByteCodeIndex.ICONST_2:
+			case ClassByteCodeIndex.ICONST_3:
+			case ClassByteCodeIndex.ICONST_4:
+			case ClassByteCodeIndex.ICONST_5:
 				throw new Error("TODO");
 			
 				// Push long constant
-			case __OpIndex__.LCONST_0:
-			case __OpIndex__.LCONST_1:
+			case ClassByteCodeIndex.LCONST_0:
+			case ClassByteCodeIndex.LCONST_1:
 				throw new Error("TODO");
 			
 				// Push float constant
-			case __OpIndex__.FCONST_0:
-			case __OpIndex__.FCONST_1:
-			case __OpIndex__.FCONST_2:
+			case ClassByteCodeIndex.FCONST_0:
+			case ClassByteCodeIndex.FCONST_1:
+			case ClassByteCodeIndex.FCONST_2:
 				throw new Error("TODO");
 			
 				// Push double constant
-			case __OpIndex__.DCONST_0:
-			case __OpIndex__.DCONST_1:
+			case ClassByteCodeIndex.DCONST_0:
+			case ClassByteCodeIndex.DCONST_1:
 				throw new Error("TODO");
 			
-			case __OpIndex__.BIPUSH:
-			case __OpIndex__.SIPUSH:
-			case __OpIndex__.LDC:
-			case __OpIndex__.LDC_W:
-			case __OpIndex__.LDC2_W:
+			case ClassByteCodeIndex.BIPUSH:
+			case ClassByteCodeIndex.SIPUSH:
+			case ClassByteCodeIndex.LDC:
+			case ClassByteCodeIndex.LDC_W:
+			case ClassByteCodeIndex.LDC2_W:
 				throw new Error("TODO");
 				
 				// Push local int to the stack
-			case __OpIndex__.ILOAD:
+			case ClassByteCodeIndex.ILOAD:
 				return __executeLoad(__SMTType__.INTEGER,
 					input.readUnsignedByte());
 				
 				// Push local int to the stack (wide)
-			case __OpIndex__.WIDE_ILOAD:
+			case ClassByteCodeIndex.WIDE_ILOAD:
 				return __executeLoad(__SMTType__.INTEGER,
 					input.readUnsignedShort());
 				
 				// Push local long to the stack
-			case __OpIndex__.LLOAD:
+			case ClassByteCodeIndex.LLOAD:
 				return __executeLoad(__SMTType__.LONG,
 					input.readUnsignedByte());
 				
 				// Push local long to the stack (wide)
-			case __OpIndex__.WIDE_LLOAD:
+			case ClassByteCodeIndex.WIDE_LLOAD:
 				return __executeLoad(__SMTType__.LONG,
 					input.readUnsignedShort());
 				
 				// Push local float to the stack
-			case __OpIndex__.FLOAD:
+			case ClassByteCodeIndex.FLOAD:
 				return __executeLoad(__SMTType__.FLOAT,
 					input.readUnsignedByte());
 				
 				// Push local float to the stack (wide)
-			case __OpIndex__.WIDE_FLOAD:
+			case ClassByteCodeIndex.WIDE_FLOAD:
 				return __executeLoad(__SMTType__.FLOAT,
 					input.readUnsignedShort());
 			
 				// Push local double to the stack
-			case __OpIndex__.DLOAD:
+			case ClassByteCodeIndex.DLOAD:
 				return __executeLoad(__SMTType__.DOUBLE,
 					input.readUnsignedByte());
 				
 				// Push local double to the stack (wide)
-			case __OpIndex__.WIDE_DLOAD:
+			case ClassByteCodeIndex.WIDE_DLOAD:
 				return __executeLoad(__SMTType__.DOUBLE,
 					input.readUnsignedShort());
 				
 				// Push local reference to the stack
-			case __OpIndex__.ALOAD:
+			case ClassByteCodeIndex.ALOAD:
 				return __executeLoad(__SMTType__.OBJECT,
 					input.readUnsignedByte());
 				
 				// Push local reference to the stack (wide)
-			case __OpIndex__.WIDE_ALOAD:
+			case ClassByteCodeIndex.WIDE_ALOAD:
 				return __executeLoad(__SMTType__.OBJECT,
 					input.readUnsignedShort());
 			
 				// Load int from local
-			case __OpIndex__.ILOAD_0:
-			case __OpIndex__.ILOAD_1:
-			case __OpIndex__.ILOAD_2:
-			case __OpIndex__.ILOAD_3:
+			case ClassByteCodeIndex.ILOAD_0:
+			case ClassByteCodeIndex.ILOAD_1:
+			case ClassByteCodeIndex.ILOAD_2:
+			case ClassByteCodeIndex.ILOAD_3:
 				return __executeLoad(__SMTType__.INTEGER,
-					__code - __OpIndex__.ILOAD_0);
+					__code - ClassByteCodeIndex.ILOAD_0);
 			
 				// Load long from local
-			case __OpIndex__.LLOAD_0:
-			case __OpIndex__.LLOAD_1:
-			case __OpIndex__.LLOAD_2:
-			case __OpIndex__.LLOAD_3:
+			case ClassByteCodeIndex.LLOAD_0:
+			case ClassByteCodeIndex.LLOAD_1:
+			case ClassByteCodeIndex.LLOAD_2:
+			case ClassByteCodeIndex.LLOAD_3:
 				return __executeLoad(__SMTType__.LONG,
-					__code - __OpIndex__.LLOAD_0);
+					__code - ClassByteCodeIndex.LLOAD_0);
 			
 				// Load float from local
-			case __OpIndex__.FLOAD_0:
-			case __OpIndex__.FLOAD_1:
-			case __OpIndex__.FLOAD_2:
-			case __OpIndex__.FLOAD_3:
+			case ClassByteCodeIndex.FLOAD_0:
+			case ClassByteCodeIndex.FLOAD_1:
+			case ClassByteCodeIndex.FLOAD_2:
+			case ClassByteCodeIndex.FLOAD_3:
 				return __executeLoad(__SMTType__.FLOAT,
-					__code - __OpIndex__.FLOAD_0);
+					__code - ClassByteCodeIndex.FLOAD_0);
 			
 				// Load double from local
-			case __OpIndex__.DLOAD_0:
-			case __OpIndex__.DLOAD_1:
-			case __OpIndex__.DLOAD_2:
-			case __OpIndex__.DLOAD_3:
+			case ClassByteCodeIndex.DLOAD_0:
+			case ClassByteCodeIndex.DLOAD_1:
+			case ClassByteCodeIndex.DLOAD_2:
+			case ClassByteCodeIndex.DLOAD_3:
 				return __executeLoad(__SMTType__.DOUBLE,
-					__code - __OpIndex__.DLOAD_0);
+					__code - ClassByteCodeIndex.DLOAD_0);
 			
 				// Load reference from local
-			case __OpIndex__.ALOAD_0:
-			case __OpIndex__.ALOAD_1:
-			case __OpIndex__.ALOAD_2:
-			case __OpIndex__.ALOAD_3:
+			case ClassByteCodeIndex.ALOAD_0:
+			case ClassByteCodeIndex.ALOAD_1:
+			case ClassByteCodeIndex.ALOAD_2:
+			case ClassByteCodeIndex.ALOAD_3:
 				return __executeLoad(__SMTType__.OBJECT,
-					__code - __OpIndex__.ALOAD_0);
+					__code - ClassByteCodeIndex.ALOAD_0);
 			
-			case __OpIndex__.IALOAD:
-			case __OpIndex__.LALOAD:
-			case __OpIndex__.FALOAD:
-			case __OpIndex__.DALOAD:
-			case __OpIndex__.AALOAD:
-			case __OpIndex__.BALOAD:
-			case __OpIndex__.CALOAD:
-			case __OpIndex__.SALOAD:
-			case __OpIndex__.ISTORE:
-			case __OpIndex__.LSTORE:
-			case __OpIndex__.FSTORE:
-			case __OpIndex__.DSTORE:
-			case __OpIndex__.ASTORE:
+			case ClassByteCodeIndex.IALOAD:
+			case ClassByteCodeIndex.LALOAD:
+			case ClassByteCodeIndex.FALOAD:
+			case ClassByteCodeIndex.DALOAD:
+			case ClassByteCodeIndex.AALOAD:
+			case ClassByteCodeIndex.BALOAD:
+			case ClassByteCodeIndex.CALOAD:
+			case ClassByteCodeIndex.SALOAD:
+			case ClassByteCodeIndex.ISTORE:
+			case ClassByteCodeIndex.LSTORE:
+			case ClassByteCodeIndex.FSTORE:
+			case ClassByteCodeIndex.DSTORE:
+			case ClassByteCodeIndex.ASTORE:
 				throw new Error("TODO");
 			
 				// Store int into local
-			case __OpIndex__.ISTORE_0:
-			case __OpIndex__.ISTORE_1:
-			case __OpIndex__.ISTORE_2:
-			case __OpIndex__.ISTORE_3:
+			case ClassByteCodeIndex.ISTORE_0:
+			case ClassByteCodeIndex.ISTORE_1:
+			case ClassByteCodeIndex.ISTORE_2:
+			case ClassByteCodeIndex.ISTORE_3:
 				throw new Error("TODO");
 			
 				// Store long into local
-			case __OpIndex__.LSTORE_0:
-			case __OpIndex__.LSTORE_1:
-			case __OpIndex__.LSTORE_2:
-			case __OpIndex__.LSTORE_3:
+			case ClassByteCodeIndex.LSTORE_0:
+			case ClassByteCodeIndex.LSTORE_1:
+			case ClassByteCodeIndex.LSTORE_2:
+			case ClassByteCodeIndex.LSTORE_3:
 				throw new Error("TODO");
 			
 				// Store float into local
-			case __OpIndex__.FSTORE_0:
-			case __OpIndex__.FSTORE_1:
-			case __OpIndex__.FSTORE_2:
-			case __OpIndex__.FSTORE_3:
+			case ClassByteCodeIndex.FSTORE_0:
+			case ClassByteCodeIndex.FSTORE_1:
+			case ClassByteCodeIndex.FSTORE_2:
+			case ClassByteCodeIndex.FSTORE_3:
 				throw new Error("TODO");
 			
 				// Store double into local
-			case __OpIndex__.DSTORE_0:
-			case __OpIndex__.DSTORE_1:
-			case __OpIndex__.DSTORE_2:
-			case __OpIndex__.DSTORE_3:
+			case ClassByteCodeIndex.DSTORE_0:
+			case ClassByteCodeIndex.DSTORE_1:
+			case ClassByteCodeIndex.DSTORE_2:
+			case ClassByteCodeIndex.DSTORE_3:
 				throw new Error("TODO");
 			
 				// Store object into local
-			case __OpIndex__.ASTORE_0:
-			case __OpIndex__.ASTORE_1:
-			case __OpIndex__.ASTORE_2:
-			case __OpIndex__.ASTORE_3:
+			case ClassByteCodeIndex.ASTORE_0:
+			case ClassByteCodeIndex.ASTORE_1:
+			case ClassByteCodeIndex.ASTORE_2:
+			case ClassByteCodeIndex.ASTORE_3:
 				throw new Error("TODO");
 				
 				// Invoke interface method
-			case __OpIndex__.INVOKEINTERFACE:
+			case ClassByteCodeIndex.INVOKEINTERFACE:
 				return __executeInvoke(ClassMethodInvokeType.INTERFACE,
 					input.readUnsignedShort() | (input.readByte() & 0) |
 					(input.readByte() & 0));
 				
 				// Invoke constructor or private method
-			case __OpIndex__.INVOKESPECIAL:
+			case ClassByteCodeIndex.INVOKESPECIAL:
 				return __executeInvoke(ClassMethodInvokeType.SPECIAL,
 					input.readUnsignedShort());
 				
 				// Invoke static method
-			case __OpIndex__.INVOKESTATIC:
+			case ClassByteCodeIndex.INVOKESTATIC:
 				return __executeInvoke(ClassMethodInvokeType.STATIC,
 					input.readUnsignedShort());
 				
 				// Invoke virtual method
-			case __OpIndex__.INVOKEVIRTUAL:
+			case ClassByteCodeIndex.INVOKEVIRTUAL:
 				return __executeInvoke(ClassMethodInvokeType.VIRTUAL,
 					input.readUnsignedShort());
 			
 				// {@squirreljme.error AY38 Defined operation cannot be
 				// used in Java ME programs. (The operation)}
-			case __OpIndex__.JSR:
-			case __OpIndex__.JSR_W:
-			case __OpIndex__.RET:
-			case __OpIndex__.INVOKEDYNAMIC:
-			case __OpIndex__.BREAKPOINT:
-			case __OpIndex__.IMPDEP1:
-			case __OpIndex__.IMPDEP2:
-				throw new JITException(String.format("AY38 %d", __code));
+			case ClassByteCodeIndex.JSR:
+			case ClassByteCodeIndex.JSR_W:
+			case ClassByteCodeIndex.RET:
+			case ClassByteCodeIndex.INVOKEDYNAMIC:
+			case ClassByteCodeIndex.BREAKPOINT:
+			case ClassByteCodeIndex.IMPDEP1:
+			case ClassByteCodeIndex.IMPDEP2:
+				throw new ClassFormatException(String.format("AY38 %d", __code));
 			
-			case __OpIndex__.IASTORE:
-			case __OpIndex__.LASTORE:
-			case __OpIndex__.FASTORE:
-			case __OpIndex__.DASTORE:
-			case __OpIndex__.AASTORE:
-			case __OpIndex__.BASTORE:
-			case __OpIndex__.CASTORE:
-			case __OpIndex__.SASTORE:
-			case __OpIndex__.POP:
-			case __OpIndex__.POP2:
-			case __OpIndex__.DUP:
-			case __OpIndex__.DUP_X1:
-			case __OpIndex__.DUP_X2:
-			case __OpIndex__.DUP2:
-			case __OpIndex__.DUP2_X1:
-			case __OpIndex__.DUP2_X2:
-			case __OpIndex__.SWAP:
-			case __OpIndex__.IADD:
-			case __OpIndex__.LADD:
-			case __OpIndex__.FADD:
-			case __OpIndex__.DADD:
-			case __OpIndex__.ISUB:
-			case __OpIndex__.LSUB:
-			case __OpIndex__.FSUB:
-			case __OpIndex__.DSUB:
-			case __OpIndex__.IMUL:
-			case __OpIndex__.LMUL:
-			case __OpIndex__.FMUL:
-			case __OpIndex__.DMUL:
-			case __OpIndex__.IDIV:
-			case __OpIndex__.LDIV:
-			case __OpIndex__.FDIV:
-			case __OpIndex__.DDIV:
-			case __OpIndex__.IREM:
-			case __OpIndex__.LREM:
-			case __OpIndex__.FREM:
-			case __OpIndex__.DREM:
-			case __OpIndex__.INEG:
-			case __OpIndex__.LNEG:
-			case __OpIndex__.FNEG:
-			case __OpIndex__.DNEG:
-			case __OpIndex__.ISHL:
-			case __OpIndex__.LSHL:
-			case __OpIndex__.ISHR:
-			case __OpIndex__.LSHR:
-			case __OpIndex__.IUSHR:
-			case __OpIndex__.LUSHR:
-			case __OpIndex__.IAND:
-			case __OpIndex__.LAND:
-			case __OpIndex__.IOR:
-			case __OpIndex__.LOR:
-			case __OpIndex__.IXOR:
-			case __OpIndex__.LXOR:
-			case __OpIndex__.IINC:
-			case __OpIndex__.I2L:
-			case __OpIndex__.I2F:
-			case __OpIndex__.I2D:
-			case __OpIndex__.L2I:
-			case __OpIndex__.L2F:
-			case __OpIndex__.L2D:
-			case __OpIndex__.F2I:
-			case __OpIndex__.F2L:
-			case __OpIndex__.F2D:
-			case __OpIndex__.D2I:
-			case __OpIndex__.D2L:
-			case __OpIndex__.D2F:
-			case __OpIndex__.I2B:
-			case __OpIndex__.I2C:
-			case __OpIndex__.I2S:
-			case __OpIndex__.LCMP:
-			case __OpIndex__.FCMPL:
-			case __OpIndex__.FCMPG:
-			case __OpIndex__.DCMPL:
-			case __OpIndex__.DCMPG:
-			case __OpIndex__.IFEQ:
-			case __OpIndex__.IFNE:
-			case __OpIndex__.IFLT:
-			case __OpIndex__.IFGE:
-			case __OpIndex__.IFGT:
-			case __OpIndex__.IFLE:
-			case __OpIndex__.IF_ICMPEQ:
-			case __OpIndex__.IF_ICMPNE:
-			case __OpIndex__.IF_ICMPLT:
-			case __OpIndex__.IF_ICMPGE:
-			case __OpIndex__.IF_ICMPGT:
-			case __OpIndex__.IF_ICMPLE:
-			case __OpIndex__.IF_ACMPEQ:
-			case __OpIndex__.IF_ACMPNE:
-			case __OpIndex__.GOTO:
-			case __OpIndex__.TABLESWITCH:
-			case __OpIndex__.LOOKUPSWITCH:
-			case __OpIndex__.IRETURN:
-			case __OpIndex__.LRETURN:
-			case __OpIndex__.FRETURN:
-			case __OpIndex__.DRETURN:
-			case __OpIndex__.ARETURN:
-			case __OpIndex__.RETURN:
-			case __OpIndex__.GETSTATIC:
-			case __OpIndex__.PUTSTATIC:
-			case __OpIndex__.GETFIELD:
-			case __OpIndex__.PUTFIELD:
-			case __OpIndex__.NEW:
-			case __OpIndex__.NEWARRAY:
-			case __OpIndex__.ANEWARRAY:
-			case __OpIndex__.ARRAYLENGTH:
-			case __OpIndex__.ATHROW:
-			case __OpIndex__.CHECKCAST:
-			case __OpIndex__.INSTANCEOF:
-			case __OpIndex__.MONITORENTER:
-			case __OpIndex__.MONITOREXIT:
-			case __OpIndex__.MULTIANEWARRAY:
-			case __OpIndex__.IFNULL:
-			case __OpIndex__.IFNONNULL:
-			case __OpIndex__.GOTO_W:
+			case ClassByteCodeIndex.IASTORE:
+			case ClassByteCodeIndex.LASTORE:
+			case ClassByteCodeIndex.FASTORE:
+			case ClassByteCodeIndex.DASTORE:
+			case ClassByteCodeIndex.AASTORE:
+			case ClassByteCodeIndex.BASTORE:
+			case ClassByteCodeIndex.CASTORE:
+			case ClassByteCodeIndex.SASTORE:
+			case ClassByteCodeIndex.POP:
+			case ClassByteCodeIndex.POP2:
+			case ClassByteCodeIndex.DUP:
+			case ClassByteCodeIndex.DUP_X1:
+			case ClassByteCodeIndex.DUP_X2:
+			case ClassByteCodeIndex.DUP2:
+			case ClassByteCodeIndex.DUP2_X1:
+			case ClassByteCodeIndex.DUP2_X2:
+			case ClassByteCodeIndex.SWAP:
+			case ClassByteCodeIndex.IADD:
+			case ClassByteCodeIndex.LADD:
+			case ClassByteCodeIndex.FADD:
+			case ClassByteCodeIndex.DADD:
+			case ClassByteCodeIndex.ISUB:
+			case ClassByteCodeIndex.LSUB:
+			case ClassByteCodeIndex.FSUB:
+			case ClassByteCodeIndex.DSUB:
+			case ClassByteCodeIndex.IMUL:
+			case ClassByteCodeIndex.LMUL:
+			case ClassByteCodeIndex.FMUL:
+			case ClassByteCodeIndex.DMUL:
+			case ClassByteCodeIndex.IDIV:
+			case ClassByteCodeIndex.LDIV:
+			case ClassByteCodeIndex.FDIV:
+			case ClassByteCodeIndex.DDIV:
+			case ClassByteCodeIndex.IREM:
+			case ClassByteCodeIndex.LREM:
+			case ClassByteCodeIndex.FREM:
+			case ClassByteCodeIndex.DREM:
+			case ClassByteCodeIndex.INEG:
+			case ClassByteCodeIndex.LNEG:
+			case ClassByteCodeIndex.FNEG:
+			case ClassByteCodeIndex.DNEG:
+			case ClassByteCodeIndex.ISHL:
+			case ClassByteCodeIndex.LSHL:
+			case ClassByteCodeIndex.ISHR:
+			case ClassByteCodeIndex.LSHR:
+			case ClassByteCodeIndex.IUSHR:
+			case ClassByteCodeIndex.LUSHR:
+			case ClassByteCodeIndex.IAND:
+			case ClassByteCodeIndex.LAND:
+			case ClassByteCodeIndex.IOR:
+			case ClassByteCodeIndex.LOR:
+			case ClassByteCodeIndex.IXOR:
+			case ClassByteCodeIndex.LXOR:
+			case ClassByteCodeIndex.IINC:
+			case ClassByteCodeIndex.I2L:
+			case ClassByteCodeIndex.I2F:
+			case ClassByteCodeIndex.I2D:
+			case ClassByteCodeIndex.L2I:
+			case ClassByteCodeIndex.L2F:
+			case ClassByteCodeIndex.L2D:
+			case ClassByteCodeIndex.F2I:
+			case ClassByteCodeIndex.F2L:
+			case ClassByteCodeIndex.F2D:
+			case ClassByteCodeIndex.D2I:
+			case ClassByteCodeIndex.D2L:
+			case ClassByteCodeIndex.D2F:
+			case ClassByteCodeIndex.I2B:
+			case ClassByteCodeIndex.I2C:
+			case ClassByteCodeIndex.I2S:
+			case ClassByteCodeIndex.LCMP:
+			case ClassByteCodeIndex.FCMPL:
+			case ClassByteCodeIndex.FCMPG:
+			case ClassByteCodeIndex.DCMPL:
+			case ClassByteCodeIndex.DCMPG:
+			case ClassByteCodeIndex.IFEQ:
+			case ClassByteCodeIndex.IFNE:
+			case ClassByteCodeIndex.IFLT:
+			case ClassByteCodeIndex.IFGE:
+			case ClassByteCodeIndex.IFGT:
+			case ClassByteCodeIndex.IFLE:
+			case ClassByteCodeIndex.IF_ICMPEQ:
+			case ClassByteCodeIndex.IF_ICMPNE:
+			case ClassByteCodeIndex.IF_ICMPLT:
+			case ClassByteCodeIndex.IF_ICMPGE:
+			case ClassByteCodeIndex.IF_ICMPGT:
+			case ClassByteCodeIndex.IF_ICMPLE:
+			case ClassByteCodeIndex.IF_ACMPEQ:
+			case ClassByteCodeIndex.IF_ACMPNE:
+			case ClassByteCodeIndex.GOTO:
+			case ClassByteCodeIndex.TABLESWITCH:
+			case ClassByteCodeIndex.LOOKUPSWITCH:
+			case ClassByteCodeIndex.IRETURN:
+			case ClassByteCodeIndex.LRETURN:
+			case ClassByteCodeIndex.FRETURN:
+			case ClassByteCodeIndex.DRETURN:
+			case ClassByteCodeIndex.ARETURN:
+			case ClassByteCodeIndex.RETURN:
+			case ClassByteCodeIndex.GETSTATIC:
+			case ClassByteCodeIndex.PUTSTATIC:
+			case ClassByteCodeIndex.GETFIELD:
+			case ClassByteCodeIndex.PUTFIELD:
+			case ClassByteCodeIndex.NEW:
+			case ClassByteCodeIndex.NEWARRAY:
+			case ClassByteCodeIndex.ANEWARRAY:
+			case ClassByteCodeIndex.ARRAYLENGTH:
+			case ClassByteCodeIndex.ATHROW:
+			case ClassByteCodeIndex.CHECKCAST:
+			case ClassByteCodeIndex.INSTANCEOF:
+			case ClassByteCodeIndex.MONITORENTER:
+			case ClassByteCodeIndex.MONITOREXIT:
+			case ClassByteCodeIndex.MULTIANEWARRAY:
+			case ClassByteCodeIndex.IFNULL:
+			case ClassByteCodeIndex.IFNONNULL:
+			case ClassByteCodeIndex.GOTO_W:
 			
 				// {@squirreljme.error AY37 Unknown byte-code operation.
 				// (The operation)}
 			default:
-				throw new JITException(String.format("AY37 %d", __code));
+				throw new ClassFormatException(String.format("AY37 %d", __code));
 		}
 	}
 	
@@ -572,7 +572,7 @@ final class __OpParser__
 		// method.}
 		int top = stack.top(), at = top - 1, end = top - xc;
 		if (end < 0)
-			throw new JITException("AY3y");
+			throw new ClassFormatException("AY3y");
 		
 		// Stack positions and types
 		JITVariableType[] st = new JITVariableType[xc];
@@ -593,7 +593,7 @@ final class __OpParser__
 			// {@squirreljme.error AY3z Expected an object to be the instance
 			// variable. (The actual type)}
 			if (map != JITVariableType.OBJECT)
-				throw new JITException(String.format("AY3z %s", map));
+				throw new ClassFormatException(String.format("AY3z %s", map));
 			
 			// Store
 			st[write++] = map;
@@ -615,7 +615,7 @@ final class __OpParser__
 			
 			// {@squirreljme.error AY40 Stack overflow writing return value.}
 			if (rvi >= stack.size())
-				throw new JITException("AY40");
+				throw new ClassFormatException("AY40");
 		}
 		
 		// No return value
@@ -671,7 +671,7 @@ final class __OpParser__
 		// the variable was; The expected type)}
 		__SMTType__ was = locals.get(__from);
 		if (was != __t)
-			throw new JITException(String.format("AY3w %d %s %s", __from, was,
+			throw new ClassFormatException(String.format("AY3w %d %s %s", __from, was,
 				__t));
 		
 		// Cache it on the stack

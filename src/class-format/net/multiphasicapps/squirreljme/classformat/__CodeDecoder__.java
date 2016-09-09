@@ -140,7 +140,7 @@ final class __CodeDecoder__
 		// The code size limit)}
 		int codelen = input.readInt();
 		if (codelen <= 0 || codelen > _CODE_SIZE_LIMIT)
-			throw new JITException(String.format("AY36 %d %d",
+			throw new ClassFormatException(String.format("AY36 %d %d",
 				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
 		
 		// Read code and save it for later after the exception table and
@@ -212,7 +212,7 @@ final class __CodeDecoder__
 				// {@squirreljme.error AY3t Only a single stack map table is
 				// permitted in a code attribute.}
 				if (this._smt != null)
-					throw new JITException("AY3t");
+					throw new ClassFormatException("AY3t");
 				
 				// Parse and store result
 				this._smt = new __SMTParser__(!old, __is, this._flags,

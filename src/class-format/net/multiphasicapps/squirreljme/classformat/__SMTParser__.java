@@ -140,7 +140,7 @@ class __SMTParser__
 				// {@squirreljme.error AY3j Unknown StackMapTable verification
 				// type. (The verification type)}
 				else
-					throw new JITException(String.format("AY3j %d", type));
+					throw new ClassFormatException(String.format("AY3j %d", type));
 			}
 		}
 	}
@@ -200,7 +200,7 @@ class __SMTParser__
 		// {@squirreljme.error AY3k Appending local variables to the frame
 		// however there is no room to place them. (The remaining local count)}
 		if (__addlocs != 0)
-			throw new JITException(String.format("AY3k %d", __addlocs));
+			throw new ClassFormatException(String.format("AY3k %d", __addlocs));
 	}
 	
 	/**
@@ -273,7 +273,7 @@ class __SMTParser__
 		// because there are no variables remaining to be chopped. (The
 		// remaining variables to remove)}
 		if (__chops != 0)
-			throw new JITException(String.format("AY3l %d", __chops));
+			throw new ClassFormatException(String.format("AY3l %d", __chops));
 	}
 	
 	/**
@@ -298,7 +298,7 @@ class __SMTParser__
 		// count. (The read local variable count; The number of locals the
 		// method uses)}
 		if (nl > maxlocals)
-			throw new JITException(String.format("AY30 %d %d", nl,
+			throw new ClassFormatException(String.format("AY30 %d %d", nl,
 				maxlocals));
 		int i;
 		__SMTLocals__ locals = next._locals;
@@ -371,7 +371,7 @@ class __SMTParser__
 			default:
 				// {@squirreljme.error AY3p The verification tag in the
 				// StackMap/STackMapTable attribute is not valid. (The tag)}
-				throw new JITException(String.format("AY3p %d", tag));
+				throw new ClassFormatException(String.format("AY3p %d", tag));
 		}
 	}
 	
@@ -396,7 +396,7 @@ class __SMTParser__
 		// variables than there are in the method. (The number of locals; The
 		// maximum number of locals)}
 		if (nl > maxlocals)
-			throw new JITException(String.format("AY3q %d %d", nl,
+			throw new ClassFormatException(String.format("AY3q %d %d", nl,
 				maxlocals));
 		__SMTLocals__ locals = next._locals;
 		int i = 0;
@@ -536,7 +536,7 @@ class __SMTParser__
 			// {@squirreljme.error AY3c There are not enough local variables
 			// to store the input method arguments. (The number of input
 			// variables; The number of local variables)}
-			throw new JITException(String.format("AY3c", vat,
+			throw new ClassFormatException(String.format("AY3c", vat,
 				__maxl), e);
 		}
 		

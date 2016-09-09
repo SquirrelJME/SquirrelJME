@@ -42,11 +42,11 @@ class __SMTStack__
 	 *
 	 * @param __n The number of items in the stack.
 	 * @param __top The top of the stack.
-	 * @throws JITException If the top of the stack is out of bounds.
+	 * @throws ClassFormatException If the top of the stack is out of bounds.
 	 * @since 2016/05/12
 	 */
 	__SMTStack__(int __n, int __top)
-		throws JITException
+		throws ClassFormatException
 	{
 		super(__n);
 		
@@ -129,7 +129,7 @@ class __SMTStack__
 		boolean wide;
 		int newtop = top + ((wide = __t.isWide()) ? 2 : 1);
 		if (newtop > this.count)
-			throw new JITException("AY3x");
+			throw new ClassFormatException("AY3x");
 		
 		// Set type
 		set(top, __t);
@@ -176,19 +176,19 @@ class __SMTStack__
 	 * Sets the top of the stack.
 	 *
 	 * @param __top The top of the stack.
-	 * @throws JITException If the top of the stack exceeds any bound of the
+	 * @throws ClassFormatException If the top of the stack exceeds any bound of the
 	 * stack.
 	 * @since 2016/08/29
 	 */
 	public void setStackTop(int __top)
-		throws JITException
+		throws ClassFormatException
 	{
 		// {@squirreljme.error AY31 The size of the stack either overflows
 		// or underflows the number of stack entries. (The position of the
 		// top of the stack; The number of entries on the stack)}
 		int n = this.count;
 		if (__top < 0 || __top > n)
-			throw new JITException(String.format("AY31 %d %d", __top, n));
+			throw new ClassFormatException(String.format("AY31 %d %d", __top, n));
 		
 		// Set
 		this._top = __top;
@@ -223,14 +223,14 @@ class __SMTStack__
 	 * @param __op The operation parser.
 	 * @param __n The number of elements to pop.
 	 * @return The cached stack variables to use.
-	 * @throws JITException If popping more items from the stack than what
+	 * @throws ClassFormatException If popping more items from the stack than what
 	 * is on the stack occurs or the number of elements to pop is a negative
 	 * value.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
 	int[] __pop(__OpParser__ __op, int __n)
-		throws JITException, NullPointerException
+		throws ClassFormatException, NullPointerException
 	{
 		// Check
 		if (__op == null)
@@ -243,7 +243,7 @@ class __SMTStack__
 		// {@squirreljme.error AY41 The stack underflowed.}
 		int top = top(), end = top - __n;
 		if (__n < 0 || end < 0)
-			throw new JITException("AY41");
+			throw new ClassFormatException("AY41");
 		
 		// If any lower stack entries refer to higher ones then make their
 		// values unique and copy them via the parser

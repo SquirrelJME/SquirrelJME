@@ -91,12 +91,12 @@ enum __SMTType__
 	 *
 	 * @param __sym The symbol to use for the variable.
 	 * @return The variable which is associated with the given symbol.
-	 * @throws JITException If the type is not known.
+	 * @throws ClassFormatException If the type is not known.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/23
 	 */
 	public static __SMTType__ bySymbol(FieldSymbol __sym)
-		throws JITException, NullPointerException
+		throws ClassFormatException, NullPointerException
 	{
 		// Check
 		if (__sym == null)
@@ -126,7 +126,7 @@ enum __SMTType__
 			default:
 				// {@squirreljme.error AY3r The specified field symbol
 				// cannot be mapped to a variable type. (The field symbol)}
-				throw new JITException(String.format("AY3r %s", __sym));
+				throw new ClassFormatException(String.format("AY3r %s", __sym));
 		}
 	}
 }
