@@ -433,6 +433,8 @@
  * [J2ME Environment](steven-gawroriski/other/j2me-env.mkd)
  * [Motorolla 68000: Amiga OS](steven-gawroriski/other/m68k_amigaos_generic__dev.mkd)
  * [Motorolla 68000: Palm OS](steven-gawroriski/other/m68k_palmos_generic__dev.mkd)
+ * [Logo/Mascot](steven-gawroriski/other/mascot_req.mkd)
+ * [Miniature POSIX Environment](steven-gawroriski/other/mini-posix-env.mkd)
  * [MIPS 64-bit: Nintendo 64 (64drive)](steven-gawroriski/other/mips64_nintendo64_64drive__dev.mkd)
  * [MOS Technology 6502: Nintendo Entertainment System](steven-gawroriski/other/mos6502_nes_powerpak__dev.mkd)
  * [Code That Needs Work](steven-gawroriski/other/needs-work.mkd)

@@ -1,0 +1,52 @@
+# Miniature POSIX Environment
+
+This document contains an idea for a minitature POSIX environment that could
+be used to develop SquirrelJME on devices and systems which do not have a
+suitable environment.
+
+# Pure Java
+
+The environment would be written purely in Java and would have some
+limitations, although in general those limitations should not be an issue
+at all.
+
+# Built-in Commands
+
+The base set of includes would include the most commonly used commands. There
+are some extra POSIX commands that generally are not used as such. However all
+commands should be as POSIX compatible as possible.
+
+## `java`
+
+This command can use the internal JIT to provide a miniature classical
+environment for code execution.
+
+## `javac`
+
+This could be associated with an internal Java compiler (when one is written)
+and can be used to generate Java byte code.
+
+## `uname`
+
+This command for usages by the build script can return `squirreljme-posix`
+which can be used by scripts to detect if it is running in the miniature
+POSIX environment.
+
+# Processes and Threads
+
+Each process will have its own descriptor and have details, also each process
+will have its own thread. Since processes would be in their own threads, they
+can compute and run anything they need themselves. At least with a thread it
+is possible to interrupt them, which would potentially act as a signal (such
+as ^Z or ^C). If no signal is associated with an interrupt then it is
+ignored. However, interrupts would only be able to be used in positions where
+sleeping is performed and interrupts can occur. The interrupts would be the
+major point of process control. An interrupt handler could in a way throw an
+exception to signal that the application should terminate.
+
+# Pipes
+
+All processes will have pipes for standard input and output. Pipe data
+tranmissions would use the `Object` monitors and rely heavily on interrupts
+for signaling.
+
