@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/08/28
  */
-public class ClassStackMapStack
+class ClassStackMapStack
 	extends ClassStackMapTread
 {
 	/** The top of the stack. */
