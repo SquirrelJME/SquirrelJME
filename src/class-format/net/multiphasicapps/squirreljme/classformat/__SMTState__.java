@@ -20,13 +20,13 @@ import java.util.RandomAccess;
  *
  * @since 2016/03/31
  */
-class ClassStackMapState
+class __SMTState__
 {
 	/** The state of the stack. */
-	final ClassStackMapStack _stack;
+	final __SMTStack__ _stack;
 	
 	/** The state of the locals. */
-	final ClassStackMapLocals _locals;
+	final __SMTLocals__ _locals;
 
 	/**
 	 * Initializes the stack storage states.
@@ -35,10 +35,10 @@ class ClassStackMapState
 	 * @param __ml Maximum number of local variables.
 	 * @since 2016/08/29
 	 */
-	ClassStackMapState(int __ms, int __ml)
+	__SMTState__(int __ms, int __ml)
 	{
-		this._stack = new ClassStackMapStack(__ms, 0);
-		this._locals = new ClassStackMapLocals(__ml);
+		this._stack = new __SMTStack__(__ms, 0);
+		this._locals = new __SMTLocals__(__ml);
 	}
 	
 	/**
@@ -48,7 +48,7 @@ class ClassStackMapState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	ClassStackMapState(ClassStackMapState __s)
+	__SMTState__(__SMTState__ __s)
 		throws NullPointerException
 	{
 		// Check
@@ -56,8 +56,8 @@ class ClassStackMapState
 			throw new NullPointerException("NARG");
 		
 		// Duplicate
-		this._stack = new ClassStackMapStack(__s._stack);
-		this._locals = new ClassStackMapLocals(__s._locals);
+		this._stack = new __SMTStack__(__s._stack);
+		this._locals = new __SMTLocals__(__s._locals);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ class ClassStackMapState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/04
 	 */
-	public void from(ClassStackMapState __o)
+	public void from(__SMTState__ __o)
 		throws NullPointerException
 	{
 		// Check

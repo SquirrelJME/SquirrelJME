@@ -38,10 +38,10 @@ final class __OpParser__
 	protected final ClassConstantPool pool;
 	
 	/** The stack map table. */
-	private final Map<Integer, ClassStackMapState> _smt;
+	private final Map<Integer, __SMTState__> _smt;
 	
 	/** The working stack map state. */
-	private final ClassStackMapState _smwork;
+	private final __SMTState__ _smwork;
 	
 	/**
 	 * Initializes the operation parser.
@@ -54,7 +54,7 @@ final class __OpParser__
 	 * @since 2016/08/29
 	 */
 	__OpParser__(ExtendedDataInputStream __dis,
-		Map<Integer, ClassStackMapState> __smt, ClassClassFlags __cf,
+		Map<Integer, __SMTState__> __smt, ClassClassFlags __cf,
 		ClassConstantPool __pool)
 		throws NullPointerException
 	{
@@ -69,7 +69,7 @@ final class __OpParser__
 		this.pool = __pool;
 		
 		// Set working state
-		this._smwork = new ClassStackMapState(__smt.get(0));
+		this._smwork = new __SMTState__(__smt.get(0));
 	}
 	
 	/**
@@ -84,8 +84,8 @@ final class __OpParser__
 	{
 		// Get
 		ExtendedDataInputStream input = this.input;
-		Map<Integer, ClassStackMapState> smt = this._smt;
-		ClassStackMapState smwork = this._smwork;
+		Map<Integer, __SMTState__> smt = this._smt;
+		__SMTState__ smwork = this._smwork;
 		
 		// Decode loop
 		for (;;)
@@ -103,7 +103,7 @@ final class __OpParser__
 				code = (code << 8) | input.readUnsignedByte();
 			
 			// If there is stack state for this position then set it
-			ClassStackMapState bias = smt.get(nowpos);
+			__SMTState__ bias = smt.get(nowpos);
 			if (bias != null)
 				smwork.from(bias);
 			
@@ -129,7 +129,7 @@ final class __OpParser__
 					jumpto = (int)input.size();
 				
 				// If there is no state, do not need to verify
-				ClassStackMapState intostate = smt.get(jumpto);
+				__SMTState__ intostate = smt.get(jumpto);
 				if (intostate == null)
 					continue;
 				
@@ -520,8 +520,8 @@ final class __OpParser__
 		boolean isinstance = __type.isInstance();
 		
 		// Get the stack layout, which is needed for verifcation
-		ClassStackMapState smwork = this._smwork;
-		ClassStackMapStack stack = smwork._stack;
+		__SMTState__ smwork = this._smwork;
+		__SMTStack__ stack = smwork._stack;
 		
 		// Count the number of stack elements to count and pass to the method
 		MethodSymbol sym = ref.methodType();
@@ -619,8 +619,8 @@ final class __OpParser__
 			throw new NullPointerException("NARG");
 		
 		// Get
-		ClassStackMapState smwork = this._smwork;
-		ClassStackMapLocals locals = smwork._locals;
+		__SMTState__ smwork = this._smwork;
+		__SMTLocals__ locals = smwork._locals;
 		
 		// {@squirreljme.error AY3w Attempt to push a local variable to the
 		// stack of a different type. (The local variable index; The type that

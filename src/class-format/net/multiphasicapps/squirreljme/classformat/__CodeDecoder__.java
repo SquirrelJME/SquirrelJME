@@ -59,7 +59,7 @@ final class __CodeDecoder__
 	volatile int _maxstack;
 	
 	/** The stack map table state. */
-	volatile Map<Integer, ClassStackMapState> _smt;
+	volatile Map<Integer, __SMTState__> _smt;
 	
 	/** Are there exception handlers present? */
 	volatile boolean _hasexceptions;
@@ -145,7 +145,7 @@ final class __CodeDecoder__
 			__readAttribute(pool, input);
 		
 		// If no stack map table exists then setup an initial implicit state
-		Map<Integer, ClassStackMapState> smt;
+		Map<Integer, __SMTState__> smt;
 		if ((smt = this._smt) == null)
 			this._smt = (smt = __SMTParser__.__initialState(this._flags,
 				this._type, maxstack, maxlocals));

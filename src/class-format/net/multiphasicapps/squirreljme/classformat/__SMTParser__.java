@@ -41,13 +41,13 @@ class __SMTParser__
 	protected final int maxstack;
 	
 	/** The output verification map. */
-	protected final Map<Integer, ClassStackMapState> outputmap;
+	protected final Map<Integer, __SMTState__> outputmap;
 	
 	/** The placement address. */
 	private volatile int _placeaddr;
 	
 	/** The next state to verify for. */
-	private volatile ClassStackMapState _next;
+	private volatile __SMTState__ _next;
 	
 	/**
 	 * This initializes and performs the parsing.
@@ -77,13 +77,13 @@ class __SMTParser__
 		maxstack = __maxs;
 		
 		// Setup
-		Map<Integer, ClassStackMapState> outputmap = __initialState(__mf, __ms,
+		Map<Integer, __SMTState__> outputmap = __initialState(__mf, __ms,
 			__maxs, __maxl);
 		this.outputmap = outputmap;
-		ClassStackMapState es = outputmap.get(0);
+		__SMTState__ es = outputmap.get(0);
 		
 		// Make a copy of the last state for the next state
-		_next = new ClassStackMapState(es);
+		_next = new __SMTState__(es);
 		_placeaddr = 0;
 		
 		// Parsing the class stack map table
@@ -151,7 +151,7 @@ class __SMTParser__
 	 * @return The result of verification.
 	 * @since 2016/05/12
 	 */
-	public Map<Integer, ClassStackMapState> result()
+	public Map<Integer, __SMTState__> result()
 	{
 		return this.outputmap;
 	}
@@ -168,14 +168,14 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		ClassStackMapState next = __calculateNext(das.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// Stack is cleared
 		next._stack.setStackTop(maxlocals);
 		
 		// Read in local variables
-		ClassStackMapLocals locals = next._locals;
+		__SMTLocals__ locals = next._locals;
 		int n = maxlocals;
 		for (int i = 0; __addlocs > 0 && i < n; i++)
 		{
@@ -211,13 +211,13 @@ class __SMTParser__
 	 * @return The state for the next address.
 	 * @since 2016/03/26
 	 */
-	private ClassStackMapState __calculateNext(int __au, boolean __abs)
+	private __SMTState__ __calculateNext(int __au, boolean __abs)
 	{
 		// The current placement
-		ClassStackMapState now = this._next;
+		__SMTState__ now = this._next;
 		
 		// Setup new next
-		ClassStackMapState next = new ClassStackMapState(now);
+		__SMTState__ next = new __SMTState__(now);
 		this._next = next;
 		
 		// Set new placement address
@@ -245,14 +245,14 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		ClassStackMapState next = __calculateNext(das.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// No stack
 		next._stack.setStackTop(maxlocals);
 		
 		// Chop off some locals
-		ClassStackMapLocals locals = next._locals;
+		__SMTLocals__ locals = next._locals;
 		int i, n = maxlocals;
 		for (i = n - 1; __chops > 0 && i >= 0; i--)
 		{
@@ -287,7 +287,7 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		ClassStackMapState next = __calculateNext(das.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(das.readUnsignedShort(),
 			false);
 		
 		// Read in local variables
@@ -301,14 +301,14 @@ class __SMTParser__
 			throw new ClassFormatException(String.format("AY30 %d %d", nl,
 				maxlocals));
 		int i;
-		ClassStackMapLocals locals = next._locals;
+		__SMTLocals__ locals = next._locals;
 		for (i = 0; i < nl; i++)
 			locals.set(i, __loadInfo());
 		for (;i < maxlocals; i++)
 			locals.set(i, ClassStackMapType.NOTHING);
 		
 		// Read in stack variables
-		ClassStackMapStack stack = next._stack;
+		__SMTStack__ stack = next._stack;
 		int ns = maxlocals + das.readUnsignedShort();
 		for (i = maxlocals; i < ns; i++)
 			stack.set(i, __loadInfo());
@@ -386,7 +386,7 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		ClassStackMapState next = __calculateNext(das.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(das.readUnsignedShort(),
 			true);
 		
 		// Read in local variables
@@ -398,7 +398,7 @@ class __SMTParser__
 		if (nl > maxlocals)
 			throw new ClassFormatException(String.format("AY3q %d %d", nl,
 				maxlocals));
-		ClassStackMapLocals locals = next._locals;
+		__SMTLocals__ locals = next._locals;
 		int i = 0;
 		for (i = 0; i < nl; i++)
 			locals.set(i, __loadInfo());
@@ -406,7 +406,7 @@ class __SMTParser__
 			locals.set(i, ClassStackMapType.NOTHING);
 		
 		// Read in stack variables
-		ClassStackMapStack stack = next._stack;
+		__SMTStack__ stack = next._stack;
 		int ns = maxlocals + das.readUnsignedShort();
 		for (i = maxlocals; i < ns; i++)
 			stack.set(i, __loadInfo());
@@ -421,7 +421,7 @@ class __SMTParser__
 	 */
 	private void __sameFrame(int __delta)
 	{
-		ClassStackMapState next = __calculateNext(__delta, false);
+		__SMTState__ next = __calculateNext(__delta, false);
 	}
 	
 	/**
@@ -433,7 +433,7 @@ class __SMTParser__
 	private void __sameFrameDelta()
 		throws IOException
 	{
-		ClassStackMapState next = __calculateNext(in.readUnsignedShort(),
+		__SMTState__ next = __calculateNext(in.readUnsignedShort(),
 			false);
 	}
 	
@@ -449,10 +449,10 @@ class __SMTParser__
 	{
 		// Get the atom to use
 		DataInputStream das = in;
-		ClassStackMapState next = __calculateNext(__delta, false);
+		__SMTState__ next = __calculateNext(__delta, false);
 		
 		// Set the single stack
-		ClassStackMapStack stack = next._stack;
+		__SMTStack__ stack = next._stack;
 		stack.setStackTop(maxlocals + 1);
 		stack.set(maxlocals, __loadInfo());
 	}
@@ -483,7 +483,7 @@ class __SMTParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	static Map<Integer, ClassStackMapState> __initialState(ClassMethodFlags __mf,
+	static Map<Integer, __SMTState__> __initialState(ClassMethodFlags __mf,
 		MethodSymbol __ms, int __maxs, int __maxl)
 		throws NullPointerException
 	{
@@ -492,17 +492,17 @@ class __SMTParser__
 			throw new NullPointerException("NARG");
 		
 		// Setup base
-		Map<Integer, ClassStackMapState> rv = new LinkedHashMap<>();
+		Map<Integer, __SMTState__> rv = new LinkedHashMap<>();
 		
 		// Setup initial verification state for the given map
-		ClassStackMapState es = new ClassStackMapState(__maxs, __maxl);
+		__SMTState__ es = new __SMTState__(__maxs, __maxl);
 		rv.put(0, es);
 		
 		// Is this method static?
 		boolean isstatic = __mf.isStatic();
 		
 		// Setup state
-		ClassStackMapLocals loc = es._locals;
+		__SMTLocals__ loc = es._locals;
 		int vat = 0;
 		try
 		{

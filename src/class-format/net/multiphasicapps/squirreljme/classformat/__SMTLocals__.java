@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/08/28
  */
-class ClassStackMapLocals
-	extends ClassStackMapTread
+class __SMTLocals__
+	extends __SMTTread__
 {
 	/**
 	 * Initializes the local variable types.
@@ -24,7 +24,7 @@ class ClassStackMapLocals
 	 * @param __n The number of local variables used.
 	 * @since 2016/05/12
 	 */
-	ClassStackMapLocals(int __n)
+	__SMTLocals__(int __n)
 	{
 		super(__n);
 	}
@@ -35,7 +35,7 @@ class ClassStackMapLocals
 	 * @param __l The state to copy from.
 	 * @since 2016/08/29
 	 */
-	ClassStackMapLocals(ClassStackMapLocals __l)
+	__SMTLocals__(__SMTLocals__ __l)
 	{
 		super(__l);
 	}
