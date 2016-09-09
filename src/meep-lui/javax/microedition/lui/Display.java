@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import net.multiphasicapps.squirreljme.meep.lui.DisplayDriver;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayProvider;
 import net.multiphasicapps.util.empty.EmptyIterator;
 
@@ -109,6 +110,13 @@ public class Display
 	public static final int MODE_NORMAL =
 		0;
 	
+	/** Internal lock. */
+	private final Object _lock =
+		new Object();
+	
+	/** The bound display driver. */
+	private final DisplayDriver _driver;
+	
 	/**
 	 * This initializes the array of display providers which are used to give
 	 * displays to the current application.
@@ -160,13 +168,21 @@ public class Display
 	
 	/**
 	 * Displays are internally managed by this class and as such cannot be
-	 * constructed.
+	 * constructed publically or by drivers.
 	 *
+	 * @param __drv The owning driver.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/30
 	 */
-	Display()
+	Display(DisplayDriver __drv)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__drv == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._driver = __drv;
 	}
 	
 	/**
@@ -832,7 +848,7 @@ public class Display
 	{
 		// Build an iterator which goes through display provides to find
 		// actual displays
-		throw new Error("TODO");
+		return new __DisplayIterator__(_DISPLAY_PROVIDERS, __ks);
 	}
 	
 	/**

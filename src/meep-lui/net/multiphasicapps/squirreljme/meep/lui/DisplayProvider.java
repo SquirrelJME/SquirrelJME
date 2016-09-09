@@ -11,11 +11,13 @@
 package net.multiphasicapps.squirreljme.meep.lui;
 
 /**
- * This class is .
+ * This interface is used to provide access to displays which provide the LUI
+ * displays with optional input.
  *
  * @since 2016/09/08
  */
-public abstract class DisplayProvider
+public interface DisplayProvider
+	extends Iterable<DisplayDriver>
 {
 }
 
