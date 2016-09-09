@@ -19,14 +19,14 @@ import java.util.RandomAccess;
  * @since 2016/08/28
  */
 abstract class __SMTTread__
-	extends AbstractList<ClassStackMapType>
+	extends AbstractList<StackMapType>
 	implements RandomAccess
 {
 	/** The number of entries in the tread. */
 	protected final int count;
 	
 	/** The variable storage area. */
-	protected final ClassStackMapType[] storage;
+	protected final StackMapType[] storage;
 	
 	/**
 	 * Initializes the base tread.
@@ -38,7 +38,7 @@ abstract class __SMTTread__
 	{
 		// Initialize
 		this.count = __n;
-		this.storage = new ClassStackMapType[__n];
+		this.storage = new StackMapType[__n];
 	}
 	
 	/**
@@ -60,8 +60,8 @@ abstract class __SMTTread__
 		this.count = n;
 		
 		// Copy storage
-		ClassStackMapType[] from = __t.storage;
-		ClassStackMapType[] storage = new ClassStackMapType[n];
+		StackMapType[] from = __t.storage;
+		StackMapType[] storage = new StackMapType[n];
 		this.storage = storage;
 		for (int i = 0; i < n; i++)
 			storage[i] = from[i];
@@ -92,12 +92,12 @@ abstract class __SMTTread__
 	 * @since 2016/05/12
 	 */
 	@Override
-	public final ClassStackMapType get(int __i)
+	public final StackMapType get(int __i)
 	{
 		// Always make sure there is a value here
-		ClassStackMapType rv = storage[__i];
+		StackMapType rv = storage[__i];
 		if (rv == null)
-			return ClassStackMapType.NOTHING;
+			return StackMapType.NOTHING;
 		return rv;
 	}
 	
@@ -106,14 +106,14 @@ abstract class __SMTTread__
 	 * @since 2016/08/29
 	 */
 	@Override
-	public final ClassStackMapType set(int __i, ClassStackMapType __t)
+	public final StackMapType set(int __i, StackMapType __t)
 	{
 		// Check
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		ClassStackMapType[] storage = this.storage;
-		ClassStackMapType rv = storage[__i];
+		StackMapType[] storage = this.storage;
+		StackMapType rv = storage[__i];
 		storage[__i] = __t;
 		return rv;
 	}

@@ -75,7 +75,7 @@ class __SMTStack__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/04
 	 */
-	public int push(ClassStackMapType __t)
+	public int push(StackMapType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -97,7 +97,7 @@ class __SMTStack__
 		{
 			// Set next to the top type
 			int hi = top + 1;
-			set(hi, ClassStackMapType.TOP);
+			set(hi, StackMapType.TOP);
 		}
 		
 		// New top

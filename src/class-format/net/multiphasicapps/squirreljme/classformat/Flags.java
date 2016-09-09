@@ -23,7 +23,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  * @param <F> The flag type.
  * @since 2016/04/23
  */
-public abstract class ClassFlags<F extends ClassFlag>
+public abstract class Flags<F extends Flag>
 	extends AbstractSet<F>
 {
 	/** The class type to use. */
@@ -43,7 +43,7 @@ public abstract class ClassFlags<F extends ClassFlag>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	ClassFlags(Class<F> __cl, F[] __fl)
+	Flags(Class<F> __cl, F[] __fl)
 		throws NullPointerException
 	{
 		this(__cl, Arrays.<F>asList(__fl));
@@ -57,7 +57,7 @@ public abstract class ClassFlags<F extends ClassFlag>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	ClassFlags(Class<F> __cl, Iterable<F> __fl)
+	Flags(Class<F> __cl, Iterable<F> __fl)
 	{
 		// Check
 		if (__cl == null || __fl == null)
@@ -95,7 +95,7 @@ public abstract class ClassFlags<F extends ClassFlag>
 	{
 		// Quick bit check?
 		if (cast.isInstance(__o))
-			return 0 != (setbits & (1 << (((ClassFlag)__o).ordinal())));
+			return 0 != (setbits & (1 << (((Flag)__o).ordinal())));
 		
 		// Fallback
 		return flags.contains(__o);

@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/04/23
  */
-public enum ClassFieldFlag
-	implements ClassMemberFlag
+public enum FieldFlag
+	implements MemberFlag
 {
 	/** Public field. */
 	PUBLIC,

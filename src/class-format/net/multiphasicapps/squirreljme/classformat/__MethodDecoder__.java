@@ -24,7 +24,7 @@ class __MethodDecoder__
 	extends __MemberDecoder__
 {
 	/** The constant pool. */
-	final ClassConstantPool _pool;
+	final ConstantPool _pool;
 	
 	/** The class decoder owning this. */
 	final ClassDecoder _classdecoder;
@@ -33,13 +33,13 @@ class __MethodDecoder__
 	private volatile boolean _hitmcode;
 	
 	/** Method flags. */
-	private volatile ClassMethodFlags _mflags;
+	private volatile MethodFlags _mflags;
 	
 	/** Method type. */
 	private volatile MethodSymbol _mtype;
 	
 	/** The output description stream. */
-	private volatile ClassMethodDescriptionStream _desc;
+	private volatile MethodDescriptionStream _desc;
 	
 	/**
 	 * Initializes the method decoder.
@@ -53,7 +53,7 @@ class __MethodDecoder__
 	 * @since 2016/08/18
 	 */
 	__MethodDecoder__(ClassDescriptionStream __cw, DataInputStream __di,
-		ClassConstantPool __pool, ClassClassFlags __cf, ClassDecoder __cx)
+		ConstantPool __pool, ClassFlags __cf, ClassDecoder __cx)
 		throws NullPointerException
 	{
 		super(__cw, __di, __pool, __cf);
@@ -80,19 +80,19 @@ class __MethodDecoder__
 		ClassDescriptionStream cw = this.classwriter;
 		
 		// Read the flags for this method
-		ClassMethodFlags mf = __FlagDecoder__.__method(this._classflags,
+		MethodFlags mf = __FlagDecoder__.__method(this._classflags,
 			input.readUnsignedShort());
 		
 		// Read the method name
-		ClassConstantPool pool = this.pool;
+		ConstantPool pool = this.pool;
 		int ni;
-		ClassConstantEntry ename = pool.get((ni = input.readUnsignedShort()));
+		ConstantEntry ename = pool.get((ni = input.readUnsignedShort()));
 		IdentifierSymbol name = IdentifierSymbol.of(
 			ename.<String>get(true, String.class));
 		
 		// And the type
 		int ti;
-		ClassConstantEntry etype = pool.get((ti = input.readUnsignedShort()));
+		ConstantEntry etype = pool.get((ti = input.readUnsignedShort()));
 		MethodSymbol type = MethodSymbol.of(
 			etype.<String>get(true, String.class));
 		
@@ -100,7 +100,7 @@ class __MethodDecoder__
 		this._hitmcode = false;
 		
 		// Register method since code needs to be generated following this
-		ClassMethodDescriptionStream ss = cw.method(mf, name, type);
+		MethodDescriptionStream ss = cw.method(mf, name, type);
 		this._desc = ss;
 		
 		// Needed for code
@@ -151,10 +151,10 @@ class __MethodDecoder__
 				this._hitmcode = true;
 				
 				// Setup description
-				ClassMethodDescriptionStream desc = this._desc;
+				MethodDescriptionStream desc = this._desc;
 				
 				// Need to read and completley skip code when done
-				ClassCodeDescriptionStream mlw = desc.code();
+				CodeDescriptionStream mlw = desc.code();
 				
 				// Setup decoder and give the writer the
 				// program

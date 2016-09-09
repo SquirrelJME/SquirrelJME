@@ -18,7 +18,7 @@ import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
  *
  * @since 2016/05/12
  */
-public enum ClassStackMapType
+public enum StackMapType
 {
 	/** Nothing is stored here. */
 	NOTHING(false),
@@ -53,7 +53,7 @@ public enum ClassStackMapType
 	 * @param __w If {@code true} then the type consumes two spaces.
 	 * @since 2016/05/12
 	 */
-	private ClassStackMapType(boolean __w)
+	private StackMapType(boolean __w)
 	{
 		this.iswide = __w;
 	}
@@ -78,7 +78,7 @@ public enum ClassStackMapType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/23
 	 */
-	public static ClassStackMapType bySymbol(FieldSymbol __sym)
+	public static StackMapType bySymbol(FieldSymbol __sym)
 		throws ClassFormatException, NullPointerException
 	{
 		// Check

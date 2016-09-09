@@ -21,10 +21,10 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  *
  * @since 2016/08/17
  */
-public final class ClassConstantEntry
+public final class ConstantEntry
 {
 	/** The owning pool. */
-	protected final ClassConstantPool pool;
+	protected final ConstantPool pool;
 	
 	/** The index of this entry. */
 	protected final int index;
@@ -49,7 +49,7 @@ public final class ClassConstantEntry
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/17
 	 */
-	ClassConstantEntry(ClassConstantPool __pool, byte __tag, int __dx, Object __id)
+	ConstantEntry(ConstantPool __pool, byte __tag, int __dx, Object __id)
 		throws NullPointerException
 	{
 		// Check
@@ -147,7 +147,7 @@ public final class ClassConstantEntry
 			throw new ClassFormatException(String.format("AY0d %d", mydx));
 		
 		// If an integer array, requires conversion
-		ClassConstantPool pool = this.pool;
+		ConstantPool pool = this.pool;
 		ClassDecoder decoder = pool._decoder;
 		if (raw instanceof int[])
 		{
@@ -160,19 +160,19 @@ public final class ClassConstantEntry
 			switch (tag)
 			{
 					// Strings
-				case ClassConstantPool.TAG_STRING:
+				case ConstantPool.TAG_STRING:
 					raw = pool.get(fields[0]).<String>get(false, String.class);
 					break;
 					
 					// Class name
-				case ClassConstantPool.TAG_CLASS:
+				case ConstantPool.TAG_CLASS:
 					raw = (ClassNameSymbol.of(
 						pool.get(fields[0]).<String>get(false, String.class)));
 					break;
 					
 					// Name and type
-				case ClassConstantPool.TAG_NAMEANDTYPE:
-					raw = new ClassMemberNameAndType(
+				case ConstantPool.TAG_NAMEANDTYPE:
+					raw = new MemberNameAndType(
 						IdentifierSymbol.of(pool.get(fields[0]).<String>get(
 							false, String.class)),
 						MemberTypeSymbol.of(pool.get(fields[1]).<String>get(
@@ -180,25 +180,25 @@ public final class ClassConstantEntry
 					break;
 					
 					// Field/method/interface reference
-				case ClassConstantPool.TAG_FIELDREF:
-				case ClassConstantPool.TAG_METHODREF:
-				case ClassConstantPool.TAG_INTERFACEMETHODREF:
+				case ConstantPool.TAG_FIELDREF:
+				case ConstantPool.TAG_METHODREF:
+				case ConstantPool.TAG_INTERFACEMETHODREF:
 					ClassNameSymbol rcl = (
 						pool.get(fields[0]).<ClassNameSymbol>get(false,
 							ClassNameSymbol.class));
-					ClassMemberNameAndType jna = pool.get(fields[1]).
-						<ClassMemberNameAndType>get(false, ClassMemberNameAndType.class);
+					MemberNameAndType jna = pool.get(fields[1]).
+						<MemberNameAndType>get(false, MemberNameAndType.class);
 					
 					// Field?
-					if (tag == ClassConstantPool.TAG_FIELDREF)
-						raw = new ClassFieldReference(rcl, jna.name(),
+					if (tag == ConstantPool.TAG_FIELDREF)
+						raw = new FieldReference(rcl, jna.name(),
 							(FieldSymbol)jna.type());
 					
 					// Method?
 					else
-						raw = new ClassMethodReference(rcl, jna.name(),
+						raw = new MethodReference(rcl, jna.name(),
 							(MethodSymbol)jna.type(),
-							tag == ClassConstantPool.TAG_INTERFACEMETHODREF);
+							tag == ConstantPool.TAG_INTERFACEMETHODREF);
 					break;
 					
 					// {@squirreljme.error AY0f Could not obtain the constant

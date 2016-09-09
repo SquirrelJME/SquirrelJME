@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/09/06
  */
-public enum ClassFieldAccessType
+public enum FieldAccessType
 {
 	/** Read static field. */
 	READ_STATIC(true, false),
@@ -45,7 +45,7 @@ public enum ClassFieldAccessType
 	 * @param __w Is this written to?
 	 * @since 2016/09/06
 	 */
-	private ClassFieldAccessType(boolean __s, boolean __w)
+	private FieldAccessType(boolean __s, boolean __w)
 	{
 		this.isstatic = __s;
 		this.written = __w;

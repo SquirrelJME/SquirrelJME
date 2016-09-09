@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/09/09
  */
-public interface ClassFieldDescriptionStream
-	extends ClassMemberDescriptionStream
+public interface FieldDescriptionStream
+	extends MemberDescriptionStream
 {
 	/**
 	 * This is called when the constant value is known.

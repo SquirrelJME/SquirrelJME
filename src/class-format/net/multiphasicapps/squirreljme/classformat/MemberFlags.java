@@ -16,9 +16,9 @@ package net.multiphasicapps.squirreljme.classformat;
  * @param <F> The flag type.
  * @since 2016/04/23
  */
-public abstract class ClassMemberFlags<F extends ClassMemberFlag>
-	extends ClassFlags<F>
-	implements ClassAccessibleFlags
+public abstract class MemberFlags<F extends MemberFlag>
+	extends Flags<F>
+	implements AccessibleFlags
 {
 	/**
 	 * Initializes the member flags.
@@ -27,7 +27,7 @@ public abstract class ClassMemberFlags<F extends ClassMemberFlag>
 	 * @param __fl The flags used.
 	 * @since 2016/04/23
 	 */
-	ClassMemberFlags(Class<F> __cl, F[] __fl)
+	MemberFlags(Class<F> __cl, F[] __fl)
 	{
 		super(__cl, __fl);
 	}
@@ -39,7 +39,7 @@ public abstract class ClassMemberFlags<F extends ClassMemberFlag>
 	 * @param __fl The flags used.
 	 * @since 2016/04/23
 	 */
-	ClassMemberFlags(Class<F> __cl, Iterable<F> __fl)
+	MemberFlags(Class<F> __cl, Iterable<F> __fl)
 	{
 		super(__cl, __fl);
 	}

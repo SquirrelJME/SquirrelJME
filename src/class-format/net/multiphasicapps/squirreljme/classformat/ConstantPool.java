@@ -23,8 +23,8 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
  *
  * @since 2016/06/29
  */
-public final class ClassConstantPool
-	extends AbstractList<ClassConstantEntry>
+public final class ConstantPool
+	extends AbstractList<ConstantEntry>
 {
 	/** The UTF constant tag. */
 	public static final int TAG_UTF8 =
@@ -83,7 +83,7 @@ public final class ClassConstantPool
 		18;
 	
 	/** Internal entries. */
-	private final ClassConstantEntry[] _entries;
+	private final ConstantEntry[] _entries;
 	
 	/** The class decoder being used. */
 	final ClassDecoder _decoder;
@@ -101,7 +101,7 @@ public final class ClassConstantPool
 	 * @throws ClassFormatException If the constant pool is malformed.
 	 * @since 2016/06/29
 	 */
-	ClassConstantPool(DataInputStream __dis, ClassDecoder __cd)
+	ConstantPool(DataInputStream __dis, ClassDecoder __cd)
 		throws IOException, NullPointerException, ClassFormatException
 	{
 		// Check
@@ -118,11 +118,11 @@ public final class ClassConstantPool
 			throw new ClassFormatException("AY15");
 		
 		// Setup entries
-		ClassConstantEntry[] entries = new ClassConstantEntry[count];
+		ConstantEntry[] entries = new ConstantEntry[count];
 		this._entries = entries;
 		
 		// Always initialize the first (null entry)
-		entries[0] = new ClassConstantEntry(this, (byte)0, 0, new int[0]);
+		entries[0] = new ConstantEntry(this, (byte)0, 0, new int[0]);
 		
 		// Decode all entry data
 		for (int i = 1; i < count; i++)
@@ -192,9 +192,9 @@ public final class ClassConstantPool
 				throw new ClassFormatException(String.format("AY17 %d", tag));
 		
 			// Create entry
-			ClassConstantEntry dup;
+			ConstantEntry dup;
 			entries[i] =
-				(dup = new ClassConstantEntry(this, (byte)tag, i, data));
+				(dup = new ConstantEntry(this, (byte)tag, i, data));
 			
 			// Double up?
 			if (tag == TAG_LONG || tag == TAG_DOUBLE)
@@ -218,7 +218,7 @@ public final class ClassConstantPool
 	 * @since 2016/08/17
 	 */
 	@Override
-	public ClassConstantEntry get(int __dx)
+	public ConstantEntry get(int __dx)
 	{
 		return this._entries[__dx];
 	}

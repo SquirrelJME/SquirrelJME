@@ -22,7 +22,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  *
  * @since 2016/08/14
  */
-public final class ClassMemberNameAndType
+public final class MemberNameAndType
 {
 	/** The member name. */
 	protected final IdentifierSymbol name;
@@ -41,7 +41,7 @@ public final class ClassMemberNameAndType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/14
 	 */
-	ClassMemberNameAndType(IdentifierSymbol __n, MemberTypeSymbol __t)
+	MemberNameAndType(IdentifierSymbol __n, MemberTypeSymbol __t)
 		throws NullPointerException
 	{
 		// Check
@@ -61,11 +61,11 @@ public final class ClassMemberNameAndType
 	public final boolean equals(Object __o)
 	{
 		// Must be this class
-		if (!(__o instanceof ClassMemberNameAndType))
+		if (!(__o instanceof MemberNameAndType))
 			return false;
 		
 		// Check
-		ClassMemberNameAndType o = (ClassMemberNameAndType)__o;
+		MemberNameAndType o = (MemberNameAndType)__o;
 		return this.name.equals(o.name) &&
 			this.type.equals(o.type);
 	}

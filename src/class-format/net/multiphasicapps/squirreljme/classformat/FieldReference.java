@@ -19,8 +19,8 @@ import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
  *
  * @since 2016/08/14
  */
-public final class ClassFieldReference
-	extends ClassMemberReference
+public final class FieldReference
+	extends MemberReference
 {
 	/**
 	 * Initializes the field reference.
@@ -30,7 +30,7 @@ public final class ClassFieldReference
 	 * @param __mt the member type.
 	 * @since 2016/08/14
 	 */
-	public ClassFieldReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
+	public FieldReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
 		FieldSymbol __mt)
 	{
 		super(__cn, __mn, __mt);
@@ -43,7 +43,7 @@ public final class ClassFieldReference
 	@Override
 	public boolean equals(Object __o)
 	{
-		return super.equals(__o) && (__o instanceof ClassFieldReference);
+		return super.equals(__o) && (__o instanceof FieldReference);
 	}
 	
 	/**

@@ -18,11 +18,11 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/09/06
  */
-public final class ClassMethodLinkage
-	extends ClassMemberLinkage<ClassMethodReference>
+public final class MethodLinkage
+	extends MemberLinkage<MethodReference>
 {
 	/** The type of link this is. */
-	protected final ClassMethodInvokeType type;
+	protected final MethodInvokeType type;
 	
 	/** String reference. */
 	private volatile Reference<String> _string;
@@ -36,8 +36,8 @@ public final class ClassMethodLinkage
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public ClassMethodLinkage(ClassMethodReference __from,
-		ClassMethodReference __to, ClassMethodInvokeType __t)
+	public MethodLinkage(MethodReference __from,
+		MethodReference __to, MethodInvokeType __t)
 		throws NullPointerException
 	{
 		super(__from, __to);
@@ -58,14 +58,14 @@ public final class ClassMethodLinkage
 	public boolean equals(Object __o)
 	{
 		// Must match
-		if (!(__o instanceof ClassMethodLinkage))
+		if (!(__o instanceof MethodLinkage))
 			return false;
 		
 		// Check super first
 		if (!super.equals(__o))
 			return false;
 		
-		return this.type.equals(((ClassMethodLinkage)__o).type);
+		return this.type.equals(((MethodLinkage)__o).type);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public final class ClassMethodLinkage
 	 * @return The method call type.
 	 * @since 2016/09/06
 	 */
-	public ClassMethodInvokeType type()
+	public MethodInvokeType type()
 	{
 		return this.type;
 	}

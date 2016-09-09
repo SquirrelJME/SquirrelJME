@@ -36,7 +36,7 @@ class __FieldDecoder__
 	 * @since 2016/08/18
 	 */
 	__FieldDecoder__(ClassDescriptionStream __cw, DataInputStream __di,
-		ClassConstantPool __pool, ClassClassFlags __cf)
+		ConstantPool __pool, ClassFlags __cf)
 	{
 		super(__cw, __di, __pool, __cf);
 	}
@@ -54,19 +54,19 @@ class __FieldDecoder__
 		ClassDescriptionStream cw = this.classwriter;
 		
 		// Read the flags for this field
-		ClassFieldFlags mf = __FlagDecoder__.__field(this._classflags,
+		FieldFlags mf = __FlagDecoder__.__field(this._classflags,
 			input.readUnsignedShort());
 		
 		// Read the name
-		ClassConstantPool pool = this.pool;
+		ConstantPool pool = this.pool;
 		int ndx;
-		ClassConstantEntry ename = pool.get((ndx = input.readUnsignedShort()));
+		ConstantEntry ename = pool.get((ndx = input.readUnsignedShort()));
 		IdentifierSymbol name = IdentifierSymbol.of(
 			ename.<String>get(true, String.class));
 		
 		// And the type
 		int tdx;
-		ClassConstantEntry etype = pool.get((tdx = input.readUnsignedShort()));
+		ConstantEntry etype = pool.get((tdx = input.readUnsignedShort()));
 		FieldSymbol type = FieldSymbol.of(
 			etype.<String>get(true, String.class));
 		
@@ -76,7 +76,7 @@ class __FieldDecoder__
 			__readAttribute(pool, input);
 		
 		// Register the field
-		ClassFieldDescriptionStream ss = cw.field(mf, name, type);
+		FieldDescriptionStream ss = cw.field(mf, name, type);
 		
 		// Set constant
 		ss.constantValue(this._fieldcv);

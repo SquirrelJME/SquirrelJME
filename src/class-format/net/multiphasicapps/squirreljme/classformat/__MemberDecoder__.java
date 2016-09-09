@@ -28,10 +28,10 @@ abstract class __MemberDecoder__
 	protected final DataInputStream input;
 	
 	/** The constant pool. */
-	protected final ClassConstantPool pool;
+	protected final ConstantPool pool;
 	
 	/** The owning class flags. */
-	final ClassClassFlags _classflags;
+	final ClassFlags _classflags;
 	
 	/**
 	 * Initializes the base decoder.
@@ -44,7 +44,7 @@ abstract class __MemberDecoder__
 	 * @since 2016/08/18
 	 */
 	__MemberDecoder__(ClassDescriptionStream __cw, DataInputStream __di,
-		ClassConstantPool __pool, ClassClassFlags __cf)
+		ConstantPool __pool, ClassFlags __cf)
 		throws NullPointerException
 	{
 		// Check

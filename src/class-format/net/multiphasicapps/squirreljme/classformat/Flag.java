@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/04/23
  */
-public interface ClassFlag
+public interface Flag
 {
 	/**
 	 * Returns the flag ordinal.

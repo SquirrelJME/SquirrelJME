@@ -47,10 +47,10 @@ public final class ClassDecoder
 	private volatile ClassVersion _version;
 	
 	/** The constant pool of the class. */
-	private volatile ClassConstantPool _pool;
+	private volatile ConstantPool _pool;
 	
 	/** Class flags. */
-	private volatile ClassClassFlags _flags;
+	private volatile ClassFlags _flags;
 	
 	/** The name of this class. */
 	private volatile ClassNameSymbol _classname;
@@ -117,11 +117,11 @@ public final class ClassDecoder
 		output.version(version);
 		
 		// Decode the constant pool
-		ClassConstantPool pool = new ClassConstantPool(input, this);
+		ConstantPool pool = new ConstantPool(input, this);
 		this._pool = pool;
 		
 		// Read the flags for this class
-		ClassClassFlags cf = __FlagDecoder__.__class(
+		ClassFlags cf = __FlagDecoder__.__class(
 			input.readUnsignedShort());
 		this._flags = cf;
 		

@@ -18,11 +18,11 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/09/06
  */
-public final class ClassFieldLinkage
-	extends ClassMemberLinkage<ClassFieldReference>
+public final class FieldLinkage
+	extends MemberLinkage<FieldReference>
 {
 	/** The type of link this is. */
-	protected final ClassFieldAccessType type;
+	protected final FieldAccessType type;
 	
 	/** String reference. */
 	private volatile Reference<String> _string;
@@ -36,8 +36,8 @@ public final class ClassFieldLinkage
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public ClassFieldLinkage(ClassMethodReference __from,
-		ClassFieldReference __to, ClassFieldAccessType __t)
+	public FieldLinkage(MethodReference __from,
+		FieldReference __to, FieldAccessType __t)
 		throws NullPointerException
 	{
 		super(__from, __to);
@@ -58,14 +58,14 @@ public final class ClassFieldLinkage
 	public boolean equals(Object __o)
 	{
 		// Must match
-		if (!(__o instanceof ClassFieldLinkage))
+		if (!(__o instanceof FieldLinkage))
 			return false;
 		
 		// Check super first
 		if (!super.equals(__o))
 			return false;
 		
-		return this.type.equals(((ClassFieldLinkage)__o).type);
+		return this.type.equals(((FieldLinkage)__o).type);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public final class ClassFieldLinkage
 	 * @return The field access type.
 	 * @since 2016/09/06
 	 */
-	public ClassFieldAccessType type()
+	public FieldAccessType type()
 	{
 		return this.type;
 	}

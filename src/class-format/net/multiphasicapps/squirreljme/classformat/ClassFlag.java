@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/04/23
  */
-public enum ClassClassFlag
-	implements ClassFlag
+public enum ClassFlag
+	implements Flag
 {
 	/** Public access. */
 	PUBLIC,

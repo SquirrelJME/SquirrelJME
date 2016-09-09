@@ -35,10 +35,10 @@ final class __CodeDecoder__
 		65535;
 	
 	/** Constant pool. */
-	protected final ClassConstantPool pool;
+	protected final ConstantPool pool;
 	
 	/** The output code writer. */
-	final ClassCodeDescriptionStream _writer;
+	final CodeDescriptionStream _writer;
 	
 	/** The owning method decoder. */
 	final __MethodDecoder__ _decoder;
@@ -47,7 +47,7 @@ final class __CodeDecoder__
 	final ClassDecoder _classdecoder;
 	
 	/** The method flags. */
-	final ClassMethodFlags _flags;
+	final MethodFlags _flags;
 	
 	/** The method type. */
 	final MethodSymbol _type;
@@ -79,8 +79,8 @@ final class __CodeDecoder__
 	 * @since 2016/08/18
 	 */
 	__CodeDecoder__(__MethodDecoder__ __cd, DataInputStream __dis,
-		ClassMethodFlags __f, MethodSymbol __t,
-		ClassCodeDescriptionStream __mlw)
+		MethodFlags __f, MethodSymbol __t,
+		CodeDescriptionStream __mlw)
 		throws NullPointerException
 	{
 		// Check
@@ -109,8 +109,8 @@ final class __CodeDecoder__
 		throws IOException
 	{
 		DataInputStream input = this._input;
-		ClassConstantPool pool = this.pool;
-		ClassCodeDescriptionStream writer = this._writer;
+		ConstantPool pool = this.pool;
+		CodeDescriptionStream writer = this._writer;
 		
 		// Read max stack and locals
 		int maxstack = input.readUnsignedShort();

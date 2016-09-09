@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/09/09
  */
-public interface ClassCodeDescriptionStream
+public interface CodeDescriptionStream
 {
 	/**
 	 * This is called when the instruction parse pointer is at the given

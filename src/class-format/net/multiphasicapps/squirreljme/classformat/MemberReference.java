@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
  *
  * @since 2016/08/14
  */
-public abstract class ClassMemberReference
+public abstract class MemberReference
 {
 	/** The class name. */
 	protected final ClassNameSymbol classname;
@@ -44,7 +44,7 @@ public abstract class ClassMemberReference
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/14
 	 */
-	ClassMemberReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
+	MemberReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
 		MemberTypeSymbol __mt)
 		throws NullPointerException
 	{
@@ -77,11 +77,11 @@ public abstract class ClassMemberReference
 	public boolean equals(Object __o)
 	{
 		// Must be this class
-		if (!(__o instanceof ClassMemberReference))
+		if (!(__o instanceof MemberReference))
 			return false;
 		
 		// Check
-		ClassMemberReference o = (ClassMemberReference)__o;
+		MemberReference o = (MemberReference)__o;
 		return this.classname.equals(o.classname) &&
 			this.membername.equals(o.membername) &&
 			this.membertype.equals(o.membertype);

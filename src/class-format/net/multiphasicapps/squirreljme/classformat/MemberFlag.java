@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/04/23
  */
-public interface ClassMemberFlag
-	extends ClassFlag
+public interface MemberFlag
+	extends Flag
 {
 }
 

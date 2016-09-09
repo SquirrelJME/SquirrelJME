@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/09/05
  */
-public enum ClassMethodInvokeType
+public enum MethodInvokeType
 {
 	/** Static. */
 	STATIC(false),
@@ -41,7 +41,7 @@ public enum ClassMethodInvokeType
 	 * @param __ii Is this an instance invoke?
 	 * @since 2016/09/06
 	 */
-	private ClassMethodInvokeType(boolean __ii)
+	private MethodInvokeType(boolean __ii)
 	{
 		this.isinstance = __ii;
 	}

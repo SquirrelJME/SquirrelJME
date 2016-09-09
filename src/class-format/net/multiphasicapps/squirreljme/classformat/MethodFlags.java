@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/04/23
  */
-public final class ClassMethodFlags
-	extends ClassMemberFlags<ClassMethodFlag>
+public final class MethodFlags
+	extends MemberFlags<MethodFlag>
 {
 	/**
 	 * Initializes the method flags.
@@ -25,9 +25,9 @@ public final class ClassMethodFlags
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
-	public ClassMethodFlags(ClassClassFlags __oc, ClassMethodFlag... __fl)
+	public MethodFlags(ClassFlags __oc, MethodFlag... __fl)
 	{
-		super(ClassMethodFlag.class, __fl);
+		super(MethodFlag.class, __fl);
 		
 		__checkFlags(__oc);
 	}
@@ -39,9 +39,9 @@ public final class ClassMethodFlags
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
-	public ClassMethodFlags(ClassClassFlags __oc, Iterable<ClassMethodFlag> __fl)
+	public MethodFlags(ClassFlags __oc, Iterable<MethodFlag> __fl)
 	{
-		super(ClassMethodFlag.class, __fl);
+		super(MethodFlag.class, __fl);
 		
 		__checkFlags(__oc);
 	}
@@ -54,7 +54,7 @@ public final class ClassMethodFlags
 	 */
 	public boolean isAbstract()
 	{
-		return contains(ClassMethodFlag.ABSTRACT);
+		return contains(MethodFlag.ABSTRACT);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public final class ClassMethodFlags
 	 */
 	public boolean isBridge()
 	{
-		return contains(ClassMethodFlag.BRIDGE);
+		return contains(MethodFlag.BRIDGE);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public final class ClassMethodFlags
 	@Override
 	public boolean isFinal()
 	{
-		return contains(ClassMethodFlag.FINAL);
+		return contains(MethodFlag.FINAL);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public final class ClassMethodFlags
 	 */
 	public boolean isNative()
 	{
-		return contains(ClassMethodFlag.NATIVE);
+		return contains(MethodFlag.NATIVE);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public final class ClassMethodFlags
 	@Override
 	public boolean isPrivate()
 	{
-		return contains(ClassMethodFlag.PRIVATE);
+		return contains(MethodFlag.PRIVATE);
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public final class ClassMethodFlags
 	@Override
 	public boolean isProtected()
 	{
-		return contains(ClassMethodFlag.PROTECTED);
+		return contains(MethodFlag.PROTECTED);
 	}
 	
 	/**
@@ -116,7 +116,7 @@ public final class ClassMethodFlags
 	@Override
 	public boolean isPublic()
 	{
-		return contains(ClassMethodFlag.PUBLIC);
+		return contains(MethodFlag.PUBLIC);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public final class ClassMethodFlags
 	@Override
 	public boolean isStatic()
 	{
-		return contains(ClassMethodFlag.STATIC);
+		return contains(MethodFlag.STATIC);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public final class ClassMethodFlags
 	 */
 	public boolean isStrict()
 	{
-		return contains(ClassMethodFlag.STRICT);
+		return contains(MethodFlag.STRICT);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public final class ClassMethodFlags
 	 */
 	public boolean isSynchronized()
 	{
-		return contains(ClassMethodFlag.SYNCHRONIZED);
+		return contains(MethodFlag.SYNCHRONIZED);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public final class ClassMethodFlags
 	@Override
 	public boolean isSynthetic()
 	{
-		return contains(ClassMethodFlag.SYNTHETIC);
+		return contains(MethodFlag.SYNTHETIC);
 	}
 	
 	/**
@@ -169,7 +169,7 @@ public final class ClassMethodFlags
 	 */
 	public boolean isVarArgs()
 	{
-		return contains(ClassMethodFlag.VARARGS);
+		return contains(MethodFlag.VARARGS);
 	}
 	/**
 	 * Checks that the given flags are valid.
@@ -179,7 +179,7 @@ public final class ClassMethodFlags
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags(ClassClassFlags __oc)
+	private final void __checkFlags(ClassFlags __oc)
 		throws ClassFormatException
 	{
 		// Check
@@ -202,15 +202,15 @@ public final class ClassMethodFlags
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.isInterface())
-			for (ClassMethodFlag f : ClassMethodFlag.values())
+			for (MethodFlag f : MethodFlag.values())
 			{
 				// Must have these
-				boolean must = (f == ClassMethodFlag.PUBLIC ||
-					f == ClassMethodFlag.ABSTRACT);
+				boolean must = (f == MethodFlag.PUBLIC ||
+					f == MethodFlag.ABSTRACT);
 				
 				// Could have these
-				boolean maybe = (f == ClassMethodFlag.SYNTHETIC ||
-					f == ClassMethodFlag.VARARGS || f == ClassMethodFlag.BRIDGE);
+				boolean maybe = (f == MethodFlag.SYNTHETIC ||
+					f == MethodFlag.VARARGS || f == MethodFlag.BRIDGE);
 				
 				// Is it set?
 				boolean has = contains(f);

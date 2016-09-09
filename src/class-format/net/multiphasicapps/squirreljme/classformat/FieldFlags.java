@@ -15,9 +15,9 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/04/23
  */
-public final class ClassFieldFlags
-	extends ClassMemberFlags<ClassFieldFlag>
-	implements ClassAccessibleFlags
+public final class FieldFlags
+	extends MemberFlags<FieldFlag>
+	implements AccessibleFlags
 {
 	/**
 	 * Initializes the field flags.
@@ -26,9 +26,9 @@ public final class ClassFieldFlags
 	 * @param __fl The field flags.
 	 * @since 2016/04/23
 	 */
-	public ClassFieldFlags(ClassClassFlags __oc, ClassFieldFlag... __fl)
+	public FieldFlags(ClassFlags __oc, FieldFlag... __fl)
 	{
-		super(ClassFieldFlag.class, __fl);
+		super(FieldFlag.class, __fl);
 		
 		__checkFlags(__oc);
 	}
@@ -40,9 +40,9 @@ public final class ClassFieldFlags
 	 * @param __fl The field flags.
 	 * @since 2016/04/23
 	 */
-	public ClassFieldFlags(ClassClassFlags __oc, Iterable<ClassFieldFlag> __fl)
+	public FieldFlags(ClassFlags __oc, Iterable<FieldFlag> __fl)
 	{
-		super(ClassFieldFlag.class, __fl);
+		super(FieldFlag.class, __fl);
 		
 		__checkFlags(__oc);
 	}
@@ -55,7 +55,7 @@ public final class ClassFieldFlags
 	 */
 	public boolean isEnum()
 	{
-		return contains(ClassFieldFlag.ENUM);
+		return contains(FieldFlag.ENUM);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public final class ClassFieldFlags
 	@Override
 	public boolean isFinal()
 	{
-		return contains(ClassFieldFlag.FINAL);
+		return contains(FieldFlag.FINAL);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public final class ClassFieldFlags
 	@Override
 	public boolean isPrivate()
 	{
-		return contains(ClassFieldFlag.PRIVATE);
+		return contains(FieldFlag.PRIVATE);
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public final class ClassFieldFlags
 	@Override
 	public boolean isProtected()
 	{
-		return contains(ClassFieldFlag.PROTECTED);
+		return contains(FieldFlag.PROTECTED);
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public final class ClassFieldFlags
 	@Override
 	public boolean isPublic()
 	{
-		return contains(ClassFieldFlag.PUBLIC);
+		return contains(FieldFlag.PUBLIC);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public final class ClassFieldFlags
 	@Override
 	public boolean isStatic()
 	{
-		return contains(ClassFieldFlag.STATIC);
+		return contains(FieldFlag.STATIC);
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public final class ClassFieldFlags
 	@Override
 	public boolean isSynthetic()
 	{
-		return contains(ClassFieldFlag.SYNTHETIC);
+		return contains(FieldFlag.SYNTHETIC);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public final class ClassFieldFlags
 	 */
 	public boolean isTransient()
 	{
-		return contains(ClassFieldFlag.TRANSIENT);
+		return contains(FieldFlag.TRANSIENT);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public final class ClassFieldFlags
 	 */
 	public boolean isVolatile()
 	{
-		return contains(ClassFieldFlag.VOLATILE);
+		return contains(FieldFlag.VOLATILE);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public final class ClassFieldFlags
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags(ClassClassFlags __oc)
+	private final void __checkFlags(ClassFlags __oc)
 		throws ClassFormatException, NullPointerException
 	{
 		// Check
@@ -162,14 +162,14 @@ public final class ClassFieldFlags
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.isInterface())
-			for (ClassFieldFlag f : ClassFieldFlag.values())
+			for (FieldFlag f : FieldFlag.values())
 			{
 				// Must have these
-				boolean must = (f == ClassFieldFlag.PUBLIC ||
-					f == ClassFieldFlag.STATIC || f == ClassFieldFlag.FINAL);
+				boolean must = (f == FieldFlag.PUBLIC ||
+					f == FieldFlag.STATIC || f == FieldFlag.FINAL);
 				
 				// Could have these
-				boolean maybe = (f == ClassFieldFlag.SYNTHETIC);
+				boolean maybe = (f == FieldFlag.SYNTHETIC);
 				
 				// Is it set?
 				boolean has = contains(f);

@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/09/09
  */
-public interface ClassMemberDescriptionStream
+public interface MemberDescriptionStream
 {
 	/**
 	 * This is called when the member has finished parsing.

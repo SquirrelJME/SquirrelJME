@@ -15,9 +15,9 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/04/23
  */
-public class ClassClassFlags
-	extends ClassFlags<ClassClassFlag>
-	implements ClassAccessibleFlags
+public class ClassFlags
+	extends Flags<ClassFlag>
+	implements AccessibleFlags
 {
 	/**
 	 * Initializes the class flags.
@@ -25,9 +25,9 @@ public class ClassClassFlags
 	 * @param __fl The class flags.
 	 * @since 2016/04/23
 	 */
-	public ClassClassFlags(ClassClassFlag... __fl)
+	public ClassFlags(ClassFlag... __fl)
 	{
-		super(ClassClassFlag.class, __fl);
+		super(ClassFlag.class, __fl);
 		
 		__checkFlags();
 	}
@@ -38,9 +38,9 @@ public class ClassClassFlags
 	 * @param __fl The class flags.
 	 * @since 2016/04/23
 	 */
-	public ClassClassFlags(Iterable<ClassClassFlag> __fl)
+	public ClassFlags(Iterable<ClassFlag> __fl)
 	{
-		super(ClassClassFlag.class, __fl);
+		super(ClassFlag.class, __fl);
 		
 		__checkFlags();
 	}
@@ -53,7 +53,7 @@ public class ClassClassFlags
 	 */
 	public final boolean isAbstract()
 	{
-		return contains(ClassClassFlag.ABSTRACT);
+		return contains(ClassFlag.ABSTRACT);
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class ClassClassFlags
 	 */
 	public final boolean isAnnotation()
 	{
-		return contains(ClassClassFlag.ANNOTATION);
+		return contains(ClassFlag.ANNOTATION);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class ClassClassFlags
 	 */
 	public final boolean isEnum()
 	{
-		return contains(ClassClassFlag.ENUM);
+		return contains(ClassFlag.ENUM);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class ClassClassFlags
 	 */
 	public final boolean isFinal()
 	{
-		return contains(ClassClassFlag.FINAL);
+		return contains(ClassFlag.FINAL);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class ClassClassFlags
 	 */
 	public final boolean isInterface()
 	{
-		return contains(ClassClassFlag.INTERFACE);
+		return contains(ClassFlag.INTERFACE);
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class ClassClassFlags
 	@Override
 	public final boolean isPublic()
 	{
-		return contains(ClassClassFlag.PUBLIC);
+		return contains(ClassFlag.PUBLIC);
 	}
 	
 	/**
@@ -150,7 +150,7 @@ public class ClassClassFlags
 	 */
 	public final boolean isSpecialInvokeSpecial()
 	{
-		return contains(ClassClassFlag.SUPER);
+		return contains(ClassFlag.SUPER);
 	}
 	
 	/**

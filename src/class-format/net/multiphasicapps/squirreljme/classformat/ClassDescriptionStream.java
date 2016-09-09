@@ -30,7 +30,7 @@ public interface ClassDescriptionStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/09
 	 */
-	public abstract void classFlags(ClassClassFlags __f)
+	public abstract void classFlags(ClassFlags __f)
 		throws NullPointerException;
 	
 	/**
@@ -50,7 +50,7 @@ public interface ClassDescriptionStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/09
 	 */
-	public abstract void constantPool(ClassConstantPool __pool)
+	public abstract void constantPool(ConstantPool __pool)
 		throws NullPointerException;
 	
 	/**
@@ -71,7 +71,7 @@ public interface ClassDescriptionStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/09
 	 */
-	public abstract ClassFieldDescriptionStream field(ClassFieldFlags __f,
+	public abstract FieldDescriptionStream field(FieldFlags __f,
 		IdentifierSymbol __name, FieldSymbol __type)
 		throws NullPointerException;
 	
@@ -105,7 +105,7 @@ public interface ClassDescriptionStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/09
 	 */
-	public abstract ClassMethodDescriptionStream method(ClassMethodFlags __f,
+	public abstract MethodDescriptionStream method(MethodFlags __f,
 		IdentifierSymbol __name, MethodSymbol __type)
 		throws NullPointerException;
 	

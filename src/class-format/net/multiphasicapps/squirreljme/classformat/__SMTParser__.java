@@ -62,7 +62,7 @@ class __SMTParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/25
 	 */
-	__SMTParser__(boolean __m, DataInputStream __in, ClassMethodFlags __mf,
+	__SMTParser__(boolean __m, DataInputStream __in, MethodFlags __mf,
 		MethodSymbol __ms, int __maxs, int __maxl)
 		throws IOException, NullPointerException
 	{
@@ -180,20 +180,20 @@ class __SMTParser__
 		for (int i = 0; __addlocs > 0 && i < n; i++)
 		{
 			// Get slot here
-			ClassStackMapType s = locals.get(i);
+			StackMapType s = locals.get(i);
 			
 			// If it is not empty, ignore it
-			if (s != ClassStackMapType.NOTHING)
+			if (s != StackMapType.NOTHING)
 				continue;
 			
 			// Set it
-			ClassStackMapType aa;
+			StackMapType aa;
 			locals.set(i, (aa = __loadInfo()));
 			__addlocs--;
 			
 			// If a wide element was added, then the next one becomes TOP
 			if (aa.isWide())
-				locals.set(++i, ClassStackMapType.TOP);
+				locals.set(++i, StackMapType.TOP);
 		}
 		
 		// Error if added stuff remains
@@ -257,14 +257,14 @@ class __SMTParser__
 		for (i = n - 1; __chops > 0 && i >= 0; i--)
 		{
 			// Get slot here
-			ClassStackMapType s = locals.get(i);
+			StackMapType s = locals.get(i);
 			
 			// If it is empty, ignore it
-			if (s == ClassStackMapType.NOTHING)
+			if (s == StackMapType.NOTHING)
 				continue;
 			
 			// Clear it
-			locals.set(i, ClassStackMapType.NOTHING);
+			locals.set(i, StackMapType.NOTHING);
 			__chops--;
 		}
 		
@@ -305,7 +305,7 @@ class __SMTParser__
 		for (i = 0; i < nl; i++)
 			locals.set(i, __loadInfo());
 		for (;i < maxlocals; i++)
-			locals.set(i, ClassStackMapType.NOTHING);
+			locals.set(i, StackMapType.NOTHING);
 		
 		// Read in stack variables
 		__SMTStack__ stack = next._stack;
@@ -322,7 +322,7 @@ class __SMTParser__
 	 * @throws IOException On read errors.
 	 * @since 2016/03/26
 	 */
-	private ClassStackMapType __loadInfo()
+	private StackMapType __loadInfo()
 		throws IOException
 	{
 		// Read the tag
@@ -334,38 +334,38 @@ class __SMTParser__
 		{
 				// Top
 			case 0:
-				return ClassStackMapType.TOP;
+				return StackMapType.TOP;
 				
 				// Integer
 			case 1:
-				return ClassStackMapType.INTEGER;
+				return StackMapType.INTEGER;
 				
 				// Float
 			case 2:
-				return ClassStackMapType.FLOAT;
+				return StackMapType.FLOAT;
 				
 				// Double
 			case 3:
-				return ClassStackMapType.DOUBLE;
+				return StackMapType.DOUBLE;
 				
 				// Long
 			case 4:
-				return ClassStackMapType.LONG;
+				return StackMapType.LONG;
 				
 				// Nothing
 			case 5:
-				return ClassStackMapType.NOTHING;
+				return StackMapType.NOTHING;
 				
 				// Uninitialized object
 			case 6:
-				return ClassStackMapType.OBJECT;
+				return StackMapType.OBJECT;
 				
 				// Initialized object or a new object which has yet to be
 				// invokespecialed
 			case 7:
 			case 8:
 				das.readUnsignedShort();
-				return ClassStackMapType.OBJECT;
+				return StackMapType.OBJECT;
 				
 				// Unknown
 			default:
@@ -403,7 +403,7 @@ class __SMTParser__
 		for (i = 0; i < nl; i++)
 			locals.set(i, __loadInfo());
 		for (;i < maxlocals; i++)
-			locals.set(i, ClassStackMapType.NOTHING);
+			locals.set(i, StackMapType.NOTHING);
 		
 		// Read in stack variables
 		__SMTStack__ stack = next._stack;
@@ -483,7 +483,7 @@ class __SMTParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	static Map<Integer, __SMTState__> __initialState(ClassMethodFlags __mf,
+	static Map<Integer, __SMTState__> __initialState(MethodFlags __mf,
 		MethodSymbol __ms, int __maxs, int __maxl)
 		throws NullPointerException
 	{
@@ -508,21 +508,21 @@ class __SMTParser__
 		{
 			// Add object if not static
 			if (!isstatic)
-				loc.set(vat++, ClassStackMapType.OBJECT);
+				loc.set(vat++, StackMapType.OBJECT);
 			
 			// Go through all arguments
 			int n = __ms.argumentCount();
 			for (int i = 0; i < n; i++)
 			{
 				// Convert to type
-				ClassStackMapType vt = ClassStackMapType.bySymbol(__ms.get(i));
+				StackMapType vt = StackMapType.bySymbol(__ms.get(i));
 				
 				// Set
 				loc.set(vat++, vt);
 				
 				// If wide, skip one
 				if (vt.isWide())
-					loc.set(vat++, ClassStackMapType.TOP);
+					loc.set(vat++, StackMapType.TOP);
 			}
 			
 			// {@squirreljme.error AY3s There are too many local variables.}

@@ -15,8 +15,8 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/09/09
  */
-public interface ClassMethodDescriptionStream
-	extends ClassMemberDescriptionStream
+public interface MethodDescriptionStream
+	extends MemberDescriptionStream
 {
 	/**
 	 * This is called when the method parser wants to provide the details of
@@ -26,7 +26,7 @@ public interface ClassMethodDescriptionStream
 	 * details.
 	 * @since 2016/09/09
 	 */
-	public abstract ClassCodeDescriptionStream code();
+	public abstract CodeDescriptionStream code();
 	
 	/**
 	 * This is called to report that the method has no associated byte-code.

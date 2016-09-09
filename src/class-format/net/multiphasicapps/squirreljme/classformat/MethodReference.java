@@ -19,8 +19,8 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  *
  * @since 2016/08/14
  */
-public final class ClassMethodReference
-	extends ClassMemberReference
+public final class MethodReference
+	extends MemberReference
 {
 	/** Is this an interface method reference? */
 	protected final boolean isinterface;
@@ -33,7 +33,7 @@ public final class ClassMethodReference
 	 * @param __mt the member type.
 	 * @since 2016/08/14
 	 */
-	public ClassMethodReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
+	public MethodReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
 		MethodSymbol __mt, boolean __int)
 	{
 		super(__cn, __mn, __mt);
@@ -49,8 +49,8 @@ public final class ClassMethodReference
 	@Override
 	public boolean equals(Object __o)
 	{
-		return super.equals(__o) && (__o instanceof ClassMethodReference) &&
-			this.isinterface == ((ClassMethodReference)__o).isinterface;
+		return super.equals(__o) && (__o instanceof MethodReference) &&
+			this.isinterface == ((MethodReference)__o).isinterface;
 	}
 	
 	/**

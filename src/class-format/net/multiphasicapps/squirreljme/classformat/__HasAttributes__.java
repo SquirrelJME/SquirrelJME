@@ -51,7 +51,7 @@ abstract class __HasAttributes__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	void __readAttribute(ClassConstantPool __pool, DataInputStream __di)
+	void __readAttribute(ConstantPool __pool, DataInputStream __di)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -59,7 +59,7 @@ abstract class __HasAttributes__
 			throw new NullPointerException("NARG");
 		
 		// Read the attribute name and length
-		ClassConstantEntry eaname = __pool.get(__di.readUnsignedShort());
+		ConstantEntry eaname = __pool.get(__di.readUnsignedShort());
 		String aname = eaname.get(false, String.class);
 		
 		// {@squirreljme.error AY19 The length of the attribute exceeds

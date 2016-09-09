@@ -36,44 +36,44 @@ final class __FlagDecoder__
 	 * @param __i The input flag field.
 	 * @since 2016/04/23
 	 */
-	static ClassClassFlags __class(int __i)
+	static ClassFlags __class(int __i)
 	{
-		Set<ClassClassFlag> fl = new HashSet<>();
+		Set<ClassFlag> fl = new HashSet<>();
 		
 		// Public?
 		if (0 != (__i & 0x0001))
-			fl.add(ClassClassFlag.PUBLIC);
+			fl.add(ClassFlag.PUBLIC);
 		
 		// Final?
 		if (0 != (__i & 0x0010))
-			fl.add(ClassClassFlag.FINAL);
+			fl.add(ClassFlag.FINAL);
 		
 		// Super?
 		if (0 != (__i & 0x0020))
-			fl.add(ClassClassFlag.SUPER);
+			fl.add(ClassFlag.SUPER);
 		
 		// Interface?
 		if (0 != (__i & 0x0200))
-			fl.add(ClassClassFlag.INTERFACE);
+			fl.add(ClassFlag.INTERFACE);
 		
 		// Abstract?
 		if (0 != (__i & 0x0400))
-			fl.add(ClassClassFlag.ABSTRACT);
+			fl.add(ClassFlag.ABSTRACT);
 		
 		// Synthetic?
 		if (0 != (__i & 0x1000))
-			fl.add(ClassClassFlag.SYNTHETIC);
+			fl.add(ClassFlag.SYNTHETIC);
 		
 		// Annotation?
 		if (0 != (__i & 0x2000))
-			fl.add(ClassClassFlag.ANNOTATION);
+			fl.add(ClassFlag.ANNOTATION);
 		
 		// Enumeration?
 		if (0 != (__i & 0x4000))
-			fl.add(ClassClassFlag.ENUM);
+			fl.add(ClassFlag.ENUM);
 		
 		// Build it
-		return new ClassClassFlags(fl);
+		return new ClassFlags(fl);
 	}
 	
 	/**
@@ -84,49 +84,49 @@ final class __FlagDecoder__
 	 * @return The field flags.
 	 * @since 2016/04/26
 	 */
-	static ClassFieldFlags __field(ClassClassFlags __oc, int __bits)
+	static FieldFlags __field(ClassFlags __oc, int __bits)
 	{
 		// Target set
-		Set<ClassFieldFlag> ff = new HashSet<>();
+		Set<FieldFlag> ff = new HashSet<>();
 		
 		// Enumeration?
 		if (0 != (__bits & 0x4000))
-			ff.add(ClassFieldFlag.ENUM);
+			ff.add(FieldFlag.ENUM);
 		
 		// Final?
 		if (0 != (__bits & 0x0010))
-			ff.add(ClassFieldFlag.FINAL);
+			ff.add(FieldFlag.FINAL);
 		
 		// Private?
 		if (0 != (__bits & 0x0002))
-			ff.add(ClassFieldFlag.PRIVATE);
+			ff.add(FieldFlag.PRIVATE);
 		
 		// Protected?
 		if (0 != (__bits & 0x0004))
-			ff.add(ClassFieldFlag.PROTECTED);
+			ff.add(FieldFlag.PROTECTED);
 		
 		// Public?
 		if (0 != (__bits & 0x0001))
-			ff.add(ClassFieldFlag.PUBLIC);
+			ff.add(FieldFlag.PUBLIC);
 		
 		// Static?
 		if (0 != (__bits & 0x0008))
-			ff.add(ClassFieldFlag.STATIC);
+			ff.add(FieldFlag.STATIC);
 		
 		// Synthetic?
 		if (0 != (__bits & 0x1000))
-			ff.add(ClassFieldFlag.SYNTHETIC);
+			ff.add(FieldFlag.SYNTHETIC);
 		
 		// Transient?
 		if (0 != (__bits & 0x0080))
-			ff.add(ClassFieldFlag.TRANSIENT);
+			ff.add(FieldFlag.TRANSIENT);
 		
 		// Volatile?
 		if (0 != (__bits & 0x0040))
-			ff.add(ClassFieldFlag.VOLATILE);
+			ff.add(FieldFlag.VOLATILE);
 		
 		// Build flags
-		return new ClassFieldFlags(__oc, ff);
+		return new FieldFlags(__oc, ff);
 	}
 	/**
 	 * Parses the flags for a method.
@@ -136,61 +136,61 @@ final class __FlagDecoder__
 	 * @return The method flags.
 	 * @since 2016/04/26
 	 */
-	static ClassMethodFlags __method(ClassClassFlags __oc, int __bits)
+	static MethodFlags __method(ClassFlags __oc, int __bits)
 	{
 		// Target set
-		Set<ClassMethodFlag> ff = new HashSet<>();
+		Set<MethodFlag> ff = new HashSet<>();
 		
 		// Public method.
 		if (0 != (__bits & 0x0001))
-			ff.add(ClassMethodFlag.PUBLIC);
+			ff.add(MethodFlag.PUBLIC);
 	
 		// Private method.
 		if (0 != (__bits & 0x0002))
-			ff.add(ClassMethodFlag.PRIVATE);
+			ff.add(MethodFlag.PRIVATE);
 	
 		// Protected method.
 		if (0 != (__bits & 0x0004))
-			ff.add(ClassMethodFlag.PROTECTED);
+			ff.add(MethodFlag.PROTECTED);
 	
 		// Static method.
 		if (0 != (__bits & 0x0008))
-			ff.add(ClassMethodFlag.STATIC);
+			ff.add(MethodFlag.STATIC);
 	
 		// Final method.
 		if (0 != (__bits & 0x0010))
-			ff.add(ClassMethodFlag.FINAL);
+			ff.add(MethodFlag.FINAL);
 	
 		// Synchronized method.
 		if (0 != (__bits & 0x0020))
-			ff.add(ClassMethodFlag.SYNCHRONIZED);
+			ff.add(MethodFlag.SYNCHRONIZED);
 	
 		// Bridge method.
 		if (0 != (__bits & 0x0040))
-			ff.add(ClassMethodFlag.BRIDGE);
+			ff.add(MethodFlag.BRIDGE);
 	
 		// Variable argument method.
 		if (0 != (__bits & 0x0080))
-			ff.add(ClassMethodFlag.VARARGS);
+			ff.add(MethodFlag.VARARGS);
 	
 		// Native method.
 		if (0 != (__bits & 0x0100))
-			ff.add(ClassMethodFlag.NATIVE);
+			ff.add(MethodFlag.NATIVE);
 	
 		// Abstract method.
 		if (0 != (__bits & 0x0400))
-			ff.add(ClassMethodFlag.ABSTRACT);
+			ff.add(MethodFlag.ABSTRACT);
 	
 		// Strict floating point method.
 		if (0 != (__bits & 0x0800))
-			ff.add(ClassMethodFlag.STRICT);
+			ff.add(MethodFlag.STRICT);
 	
 		// Synthetic method.
 		if (0 != (__bits & 0x1000))
-			ff.add(ClassMethodFlag.SYNTHETIC);
+			ff.add(MethodFlag.SYNTHETIC);
 	
 		// Build flags
-		return new ClassMethodFlags(__oc, ff);
+		return new MethodFlags(__oc, ff);
 	}
 }
 
