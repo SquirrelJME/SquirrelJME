@@ -186,3 +186,12 @@ allocator code in the future. Now one thing I need to do is move the class
 format decoding code into its own project and out of the JIT. Basically it
 would operate as a kind of class reader where the constant pool is hidden away.
 
+## 17:47
+
+This means the class decode is rid of the JIT details.
+
+## 17:49
+
+And that is a good thing since it makes the class decoder code much simpler as
+the decoder no longer has to juggle JIT details at all.
+

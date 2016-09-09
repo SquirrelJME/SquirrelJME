@@ -23,7 +23,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  *
  * @since 2016/06/28
  */
-final class ClassDecoder
+public final class ClassDecoder
 	extends __HasAttributes__
 {
 	/** The object class. */
@@ -34,23 +34,17 @@ final class ClassDecoder
 	public static final int MAGIC_NUMBER =
 		0xCAFE_BABE;
 	
-	/** The owning JIT. */
-	protected final JIT jit;
-	
-	/** The namespace to write into. */
-	protected final JITNamespaceWriter namespace;
-	
 	/** The input data source. */
 	protected final DataInputStream input;
 	
-	/** The build configuration. */
-	protected final JITOutputConfig.Immutable _config;
+	/** The output description stream. */
+	protected final ClassDescriptionStream output;
 	
-	/** Rewrites of class names. */
-	private final JITClassNameRewrite[] _rewrites;
+	/** Was the class decoded already? */
+	private volatile boolean _did;
 	
 	/** The version of this class file. */
-	private volatile __ClassVersion__ _version;
+	private volatile ClassVersion _version;
 	
 	/** The constant pool of the class. */
 	private volatile ClassConstantPool _pool;
@@ -61,55 +55,47 @@ final class ClassDecoder
 	/** The name of this class. */
 	private volatile ClassNameSymbol _classname;
 	
-	/** JIT access. */
-	final JIT _jit;
-	
 	/**
 	 * This initializes the decoder for classes.
 	 *
-	 * @param __jit The owning JIT.
-	 * @param __ns The class namespace.
 	 * @param __dis The source for data input.
+	 * @param __out The interface that is told class details.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
-	ClassDecoder(JIT __jit, JITNamespaceWriter __ns, DataInputStream __dis)
+	public ClassDecoder(DataInputStream __dis, ClassDescriptionStream __out)
 		throws NullPointerException
 	{
 		// Check
-		if (__jit == null || __ns == null || __dis == null)
+		if (__dis == null || __out == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.jit = __jit;
-		this._jit = __jit;
-		this.namespace = __ns;
 		this.input = __dis;
-		
-		// Set rewrites
-		JITOutputConfig.Immutable config = __jit.config();
-		this._config = config;
-		this._rewrites = config.classNameRewrites();
+		this.output = __out;
 	}
 	
 	/**
 	 * This performs the actual decoding of the class file.
 	 *
-	 * @param __jo The JIT output to use, when the name of the class is known
-	 * then will be opened and written to during the decoding process.
+	 * @throws IllegalStateException If the class was already decoded.
 	 * @throws IOException On read errors.
 	 * @throws ClassFormatException If the class file format is not correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
-	final void __decode(JITOutput __jo)
-		throws IOException, ClassFormatException, NullPointerException
+	public final void decode()
+		throws IllegalStateException, IOException, ClassFormatException,
+			NullPointerException
 	{
-		// Check
-		if (__jo == null)
-			throw new NullPointerException("NARG");
+		// {@squirreljme.error AY0i A class may only be decoded once.}
+		if (this._did)
+			throw new IllegalStateException("AY0i");
+		this._did = true;
 		
+		// Get data source
 		DataInputStream input = this.input;
+		ClassDescriptionStream output = this.output;
 		
 		// {@squirreljme.error AY12 The magic number of the input data stream
 		// does not match that of the Java class file. (The magic number which
@@ -121,18 +107,22 @@ final class ClassDecoder
 		// {@squirreljme.error AY13 The version number of the input class file
 		// is not valid. (The version number)}
 		int cver = input.readShort() | (input.readShort() << 16);
-		__ClassVersion__ version = __ClassVersion__.findVersion(cver);
+		ClassVersion version = ClassVersion.findVersion(cver);
 		this._version = version;
 		if (version == null)
 			throw new ClassFormatException(String.format("AY13 %d.%d", cver >>> 16,
 				(cver & 0xFFFF)));
+		
+		// Report it
+		output.version(version);
 		
 		// Decode the constant pool
 		ClassConstantPool pool = new ClassConstantPool(input, this);
 		this._pool = pool;
 		
 		// Read the flags for this class
-		ClassClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
+		ClassClassFlags cf = __FlagDecoder__.__class(
+			input.readUnsignedShort());
 		this._flags = cf;
 		
 		// Read class name
@@ -141,76 +131,71 @@ final class ClassDecoder
 			true, ClassNameSymbol.class);
 		boolean isobject = (clname.equals(_OBJECT_CLASS));
 		
-		// There is enough "known" information (just the name) to start
-		// outputting a class
+		// Send class name
 		this._classname = clname;
-		try (JITClassWriter cw = this.namespace.beginClass(clname))
+		output.className(clname);
+		
+		// Send pool
+		output.constantPool(pool);
+		
+		// Send class flags
+		output.classFlags(cf);
+		
+		// Read super class
+		int sudx = input.readUnsignedShort();
+		ClassNameSymbol suname = pool.get(sudx).<ClassNameSymbol>optional(
+			true, ClassNameSymbol.class);
+		
+		// {@squirreljme.error AY0m The Object class must have no super
+		// class and any non-Object class must have a super class.
+		// (The class name; The super-class name)}
+		if ((suname != null) == isobject)
+			throw new ClassFormatException(String.format("AY0m %s %s", clname,
+				suname));
+		
+		// {@squirreljme.error AY0n Interfaces must extend the Object
+		// class. (Class flags; The super-class name)}
+		if (cf.isInterface() && !suname.equals(_OBJECT_CLASS))
+			throw new ClassFormatException(String.format("AY0n %s %s", cf,
+				suname));
+		
+		// Send
+		output.superClass(suname);
+		
+		// Read in interfaces
+		int icount = input.readUnsignedShort();
+		ClassNameSymbol[] ifaces = new ClassNameSymbol[icount];
+		int[] ifdxs = new int[icount];
+		for (int i = 0; i < icount; i++)
 		{
-			// Rewrite classes in the constant pool
-			pool.__rewrite();
-			
-			// Send pool
-			cw.constantPool(pool, clnamedx);
-			
-			// Send class flags
-			cw.classFlags(cf);
-			
-			// Read super class
-			int sudx = input.readUnsignedShort();
-			ClassNameSymbol suname = pool.get(sudx).<ClassNameSymbol>optional(
-				true, ClassNameSymbol.class);
-			
-			// {@squirreljme.error AY0m The Object class must have no super
-			// class and any non-Object class must have a super class.
-			// (The class name; The super-class name)}
-			if ((suname != null) == isobject)
-				throw new ClassFormatException(String.format("AY0m %s %s", clname,
-					suname));
-			
-			// {@squirreljme.error AY0n Interfaces must extend the Object
-			// class. (Class flags; The super-class name)}
-			if (cf.isInterface() && !suname.equals(_OBJECT_CLASS))
-				throw new ClassFormatException(String.format("AY0n %s %s", cf,
-					suname));
-			
-			// Send
-			cw.superClass(suname, sudx);
-			
-			// Read in interfaces
-			int icount = input.readUnsignedShort();
-			ClassNameSymbol[] ifaces = new ClassNameSymbol[icount];
-			int[] ifdxs = new int[icount];
-			for (int i = 0; i < icount; i++)
-			{
-				int idx = input.readUnsignedShort();
-				ifaces[i] = pool.get(idx).<ClassNameSymbol>get(true,
-					ClassNameSymbol.class);
-				ifdxs[i] = idx;
-			}
-			
-			// Send
-			cw.interfaceClasses(ifaces, ifdxs);
-			
-			// Handle fields
-			int fcount = input.readUnsignedShort();
-			cw.fieldCount(fcount);
-			for (int i = 0; i < fcount; i++)
-				new __FieldDecoder__(cw, input, pool, cf).__decode();
-			
-			// Handle methods
-			int mcount = input.readUnsignedShort();
-			cw.methodCount(mcount);
-			for (int i = 0; i < mcount; i++)
-				new __MethodDecoder__(cw, input, pool, cf, this).__decode();
-			
-			// Handle class attributes
-			int na = input.readUnsignedShort();
-			for (int i = 0; i < na; i++)
-				__readAttribute(pool, input);
-			
-			// End class
-			cw.endClass();
+			int idx = input.readUnsignedShort();
+			ifaces[i] = pool.get(idx).<ClassNameSymbol>get(true,
+				ClassNameSymbol.class);
+			ifdxs[i] = idx;
 		}
+		
+		// Send
+		output.interfaceClasses(ifaces, ifdxs);
+		
+		// Handle fields
+		int fcount = input.readUnsignedShort();
+		output.fieldCount(fcount);
+		for (int i = 0; i < fcount; i++)
+			new __FieldDecoder__(cw, input, pool, cf).__decode();
+		
+		// Handle methods
+		int mcount = input.readUnsignedShort();
+		output.methodCount(mcount);
+		for (int i = 0; i < mcount; i++)
+			new __MethodDecoder__(cw, input, pool, cf, this).__decode();
+		
+		// Handle class attributes
+		int na = input.readUnsignedShort();
+		for (int i = 0; i < na; i++)
+			__readAttribute(pool, input);
+		
+		// End class
+		output.endClass();
 	}
 	
 	/**
@@ -226,47 +211,6 @@ final class ClassDecoder
 			throw new NullPointerException("NARG");
 		
 		// No class attributes are handled at all, so ignore them all
-	}
-	
-	/**
-	 * This checks the class is to be rewritten.
-	 *
-	 * @param __cn The input class.
-	 * @return The rewritten class if it is to be done so or {@code __cn} if
-	 * it is not rewritten.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/13
-	 */
-	final ClassNameSymbol __rewriteClass(ClassNameSymbol __cn)
-		throws NullPointerException
-	{
-		// Check
-		if (__cn == null)
-			throw new NullPointerException("NARG");
-		
-		// If no current class name was set, do not modify it because rewrites
-		// would not exist.
-		ClassNameSymbol classname = this._classname;
-		if (classname == null)
-			return __cn;
-		
-		// Check rewrites
-		for (JITClassNameRewrite rewrite : this._rewrites)
-		{
-			ClassNameSymbol from = rewrite.from();
-			if (from.equals(__cn))
-			{
-				// Never rewrite the current class
-				if (classname.equals(from))
-					continue;
-			
-				// Otherwise rewrite it
-				return rewrite.to();
-			}
-		}
-		
-		// Not rewritten, use original
-		return __cn;
 	}
 }
 
