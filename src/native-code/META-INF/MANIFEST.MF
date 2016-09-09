@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: native-code
+X-SquirrelJME-UUID: 64c3121d-adec-4235-a611-8a801f266ffe
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: AR
+LIBlet-Title: Native Code
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains the base support for 
+ native code generators.
+

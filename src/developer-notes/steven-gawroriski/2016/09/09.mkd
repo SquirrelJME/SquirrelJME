@@ -113,3 +113,8 @@ And some notes:
  * `native-code`
    * Anything related to native code generate goes here.
 
+## 11:43
+
+It may be possible to even remove `jit-generic-mips` and `jit-generic-powerpc`
+potentially.
+
