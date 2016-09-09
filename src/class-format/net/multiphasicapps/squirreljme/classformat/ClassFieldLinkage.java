@@ -8,13 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.JITFieldAccessType;
-import net.multiphasicapps.squirreljme.jit.JITFieldReference;
-import net.multiphasicapps.squirreljme.jit.JITMethodReference;
 
 /**
  * This is a link from a method which access a field.
@@ -22,7 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITMethodReference;
  * @since 2016/09/06
  */
 public final class GenericFieldLinkage
-	extends __MemberLinkage__<JITFieldReference>
+	extends ClassMemberLinkage<JITFieldReference>
 {
 	/** The type of link this is. */
 	protected final JITFieldAccessType type;

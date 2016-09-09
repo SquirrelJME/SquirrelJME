@@ -8,12 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.JITInvokeType;
-import net.multiphasicapps.squirreljme.jit.JITMethodReference;
 
 /**
  * This is a link from a method which invokes another method.
@@ -21,7 +19,7 @@ import net.multiphasicapps.squirreljme.jit.JITMethodReference;
  * @since 2016/09/06
  */
 public final class GenericMethodLinkage
-	extends __MemberLinkage__<JITMethodReference>
+	extends ClassMemberLinkage<JITMethodReference>
 {
 	/** The type of link this is. */
 	protected final JITInvokeType type;

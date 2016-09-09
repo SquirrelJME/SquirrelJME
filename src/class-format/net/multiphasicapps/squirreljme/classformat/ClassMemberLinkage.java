@@ -8,10 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
-
-import net.multiphasicapps.squirreljme.jit.JITMemberReference;
-import net.multiphasicapps.squirreljme.jit.JITMethodReference;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This is the base class for linkage from one method to another member. This
@@ -20,7 +17,7 @@ import net.multiphasicapps.squirreljme.jit.JITMethodReference;
  *
  * @since 2016/09/06
  */
-abstract class __MemberLinkage__<L extends JITMemberReference>
+public abstract class ClassMemberLinkage<L extends JITMemberReference>
 {
 	/** The source method. */
 	protected final JITMethodReference from;
@@ -36,7 +33,7 @@ abstract class __MemberLinkage__<L extends JITMemberReference>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	__MemberLinkage__(JITMethodReference __from, L __to)
+	ClassMemberLinkage(JITMethodReference __from, L __to)
 		throws NullPointerException
 	{
 		// Check
@@ -56,11 +53,11 @@ abstract class __MemberLinkage__<L extends JITMemberReference>
 	public boolean equals(Object __o)
 	{
 		// Must be the same
-		if (!(__o instanceof __MemberLinkage__))
+		if (!(__o instanceof ClassMemberLinkage))
 			return false;
 		
 		// Cast
-		__MemberLinkage__<?> o = (__MemberLinkage__<?>)__o;
+		ClassMemberLinkage<?> o = (ClassMemberLinkage<?>)__o;
 		return this.from.equals(o.from) && this.to.equals(o.to);
 	}
 	
