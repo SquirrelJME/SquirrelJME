@@ -37,6 +37,9 @@ final class __OpParser__
 	/** The constant pool. */
 	protected final ClassConstantPool pool;
 	
+	/** The code description writer. */
+	protected final ClassCodeDescriptionStream writer;
+	
 	/** The stack map table. */
 	private final Map<Integer, __SMTState__> _smt;
 	
@@ -46,6 +49,7 @@ final class __OpParser__
 	/**
 	 * Initializes the operation parser.
 	 *
+	 * @param __desc The code description output.
 	 * @param __dis The input data source.
 	 * @param __smt The stack map table.
 	 * @param __cf The class flags.
@@ -53,13 +57,15 @@ final class __OpParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	__OpParser__(ExtendedDataInputStream __dis,
+	__OpParser__(ClassCodeDescriptionStream __desc,
+		ExtendedDataInputStream __dis,
 		Map<Integer, __SMTState__> __smt, ClassClassFlags __cf,
 		ClassConstantPool __pool)
 		throws NullPointerException
 	{
 		// Check
-		if (__dis == null || __smt == null || __cf == null || __pool == null)
+		if (__dis == null || __smt == null || __cf == null || __pool == null ||
+			__desc == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -67,6 +73,7 @@ final class __OpParser__
 		this.classflags = __cf;
 		this._smt = __smt;
 		this.pool = __pool;
+		this.writer = __desc;
 		
 		// Set working state
 		this._smwork = new __SMTState__(__smt.get(0));
@@ -86,6 +93,7 @@ final class __OpParser__
 		ExtendedDataInputStream input = this.input;
 		Map<Integer, __SMTState__> smt = this._smt;
 		__SMTState__ smwork = this._smwork;
+		ClassCodeDescriptionStream writer = this.writer;
 		
 		// Decode loop
 		for (;;)
@@ -592,7 +600,9 @@ final class __OpParser__
 		stack.__pop(this, popcount);
 		
 		// Send in the call
-		this.writer.invoke(__type, __pid, ref, st, sp, rvi);
+		if (true)
+			throw new Error("TODO");
+		/*this.writer.invoke(__type, __pid, ref, st, sp, rvi);*/
 		
 		// Push return value if there is one
 		if (rv != null)

@@ -19,6 +19,16 @@ public interface ClassMethodDescriptionStream
 	extends ClassMemberDescriptionStream
 {
 	/**
+	 * This is called when the method parser wants to provide the details of
+	 * decoded byte code operations.
+	 *
+	 * @return The description stream which would get the class decoding
+	 * details.
+	 * @since 2016/09/09
+	 */
+	public abstract ClassCodeDescriptionStream code();
+	
+	/**
 	 * This is called to report that the method has no associated byte-code.
 	 *
 	 * @since 2016/09/09

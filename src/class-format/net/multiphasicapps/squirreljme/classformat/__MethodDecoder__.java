@@ -38,6 +38,9 @@ class __MethodDecoder__
 	/** Method type. */
 	private volatile MethodSymbol _mtype;
 	
+	/** The output description stream. */
+	private volatile ClassMethodDescriptionStream _desc;
+	
 	/**
 	 * Initializes the method decoder.
 	 *
@@ -98,6 +101,7 @@ class __MethodDecoder__
 		
 		// Register method since code needs to be generated following this
 		ClassMethodDescriptionStream ss = cw.method(mf, name, type);
+		this._desc = ss;
 		
 		// Needed for code
 		this._mflags = mf;
@@ -146,17 +150,16 @@ class __MethodDecoder__
 				// Mark as hit, there may only be one
 				this._hitmcode = true;
 				
+				// Setup description
+				ClassMethodDescriptionStream desc = this._desc;
+				
 				// Need to read and completley skip code when done
-				try (JITMethodWriter mlw = this.classwriter.code())
-				{
-					// Setup decoder and give the writer the
-					// program
-					new __CodeDecoder__(this, __is,
-						this._mflags, this._mtype, mlw).__decode();
-					
-					if (true)
-						throw new Error("TODO");
-				}
+				ClassCodeDescriptionStream mlw = desc.code();
+				
+				// Setup decoder and give the writer the
+				// program
+				new __CodeDecoder__(this, __is,
+					this._mflags, this._mtype, mlw).__decode();
 				
 				// Done
 				return;

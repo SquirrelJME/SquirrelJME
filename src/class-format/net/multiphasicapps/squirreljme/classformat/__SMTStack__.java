@@ -172,7 +172,7 @@ class __SMTStack__
 		
 		// Popping nothing
 		if (__n == 0)
-			return null;
+			return;
 		
 		// {@squirreljme.error AY41 The stack underflowed.}
 		int top = top(), end = top - __n;

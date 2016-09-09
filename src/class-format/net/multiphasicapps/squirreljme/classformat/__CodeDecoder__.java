@@ -37,6 +37,9 @@ final class __CodeDecoder__
 	/** Constant pool. */
 	protected final ClassConstantPool pool;
 	
+	/** The output code writer. */
+	final ClassCodeDescriptionStream _writer;
+	
 	/** The owning method decoder. */
 	final __MethodDecoder__ _decoder;
 	
@@ -76,7 +79,8 @@ final class __CodeDecoder__
 	 * @since 2016/08/18
 	 */
 	__CodeDecoder__(__MethodDecoder__ __cd, DataInputStream __dis,
-		ClassMethodFlags __f, MethodSymbol __t, JITMethodWriter __mlw)
+		ClassMethodFlags __f, MethodSymbol __t,
+		ClassCodeDescriptionStream __mlw)
 		throws NullPointerException
 	{
 		// Check
@@ -106,7 +110,7 @@ final class __CodeDecoder__
 	{
 		DataInputStream input = this._input;
 		ClassConstantPool pool = this.pool;
-		JITMethodWriter writer = this._writer;
+		ClassCodeDescriptionStream writer = this._writer;
 		
 		// Read max stack and locals
 		int maxstack = input.readUnsignedShort();
