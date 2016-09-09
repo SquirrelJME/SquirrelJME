@@ -8,17 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.base.ClassClassFlag;
-import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
-import net.multiphasicapps.squirreljme.jit.base.ClassFormatException;
-import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlag;
-import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
-import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlag;
-import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
  * This decodes class flags.

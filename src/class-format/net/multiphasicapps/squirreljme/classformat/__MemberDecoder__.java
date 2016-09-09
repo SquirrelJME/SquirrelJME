@@ -8,11 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
 
 /**
  * This is the base class for members to decode.

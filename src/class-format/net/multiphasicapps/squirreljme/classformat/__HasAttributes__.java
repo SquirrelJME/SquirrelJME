@@ -8,12 +8,11 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
-import net.multiphasicapps.squirreljme.jit.base.ClassFormatException;
 
 /**
  * This is the base for anything that requires decoding where that thing to
