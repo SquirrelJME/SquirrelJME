@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This contains the generator which targets MIPS based systems.
+ * This provides native code generation for MIPS CPUs.
  *
- * @since 2016/08/07
+ * @since 2016/09/09
  */
 
-package net.multiphasicapps.squirreljme.jit.generic.mips;
+package net.multiphasicapps.squirreljme.nativecode.mips;
 

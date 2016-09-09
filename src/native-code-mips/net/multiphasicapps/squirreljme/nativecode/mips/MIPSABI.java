@@ -8,15 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic.mips;
+package net.multiphasicapps.squirreljme.nativecode.mips;
 
-import net.multiphasicapps.squirreljme.jit.base.JITCPUFloat;
-import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
-import net.multiphasicapps.squirreljme.jit.generic.GenericABIBuilder;
-import net.multiphasicapps.squirreljme.jit.generic.GenericRegisterFloatType;
-import net.multiphasicapps.squirreljme.jit.generic.GenericRegisterIntegerType;
-import net.multiphasicapps.squirreljme.jit.generic.GenericStackDirection;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
+import net.multiphasicapps.squirreljme.nativecode.NativeABI;
+import net.multiphasicapps.squirreljme.nativecode.NativeABIBuilder;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
+import net.multiphasicapps.squirreljme.nativecode.NativeStackDirection;
 
 /**
  * These are common ABIs that may be used on MIPS based systems.
@@ -40,31 +39,30 @@ public final class MIPSABI
 	 * This ABI is described at
 	 * {@link http://www.cygwin.com/ml/binutils/2003-06/msg00436.html}.
 	 *
-	 * @param __t The triplet, used to determine floating point and whether the
-	 * CPU is 32-bit or 64-bit.
+	 * @param __b The number of bits the CPU is.
+	 * @param __f The floating point type.
 	 * @return The ABI.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public static GenericABI eabi(JITTriplet __t)
+	public static NativeABI eabi(int __b, NativeFloatType __f)
 		throws NullPointerException
 	{
 		// Check
-		if (__t == null)
+		if (__f == null)
 			throw new NullPointerException("NARG");
 		
 		// Setup
-		GenericABIBuilder ab = new GenericABIBuilder();
+		NativeABIBuilder ab = new NativeABIBuilder();
 		
 		// Floating point?
-		JITCPUFloat cpufloat = __t.floatingPoint();
-		boolean hasfloat = cpufloat.isAnyHardware();
+		boolean hasfloat = __f.isAnyHardware();
 		
 		// Add integer registers
-		int bits = __t.bits();
-		ab.pointerSize(bits);
-		GenericRegisterIntegerType rtint =
-			GenericABIBuilder.intRegisterTypeFromTriplet(__t);
+		int __b = __b;
+		ab.pointerSize(__b);
+		NativeRegisterIntegerType rtint =
+			NativeABIBuilder.intRegisterType(__b);
 		for (int i = 0; i <= 31; i++)
 			ab.addRegister(MIPSRegister.of(false, i), rtint);
 		
@@ -72,8 +70,8 @@ public final class MIPSABI
 		if (hasfloat)
 		{
 			// Determine the floating point size
-			GenericRegisterFloatType flt =
-				GenericABIBuilder.floatRegisterTypeFromTriplet(__t);
+			NativeRegisterFloatType flt =
+				NativeABIBuilder.floatRegisterType(__f);
 			
 			// Add them
 			for (int i = 0; i <= 31; i++)
@@ -83,7 +81,7 @@ public final class MIPSABI
 		// Stack grows down
 		ab.stack(MIPSRegister.of(false, 29));
 		ab.stackAlignment(8);
-		ab.stackDirection(GenericStackDirection.HIGH_TO_LOW);
+		ab.stackDirection(NativeStackDirection.HIGH_TO_LOW);
 	
 		// Arguments
 		for (int i = 4; i <= 11; i++)

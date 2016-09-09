@@ -8,12 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic.mips;
+package net.multiphasicapps.squirreljme.nativecode.mips;
 
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.generic.GenericRegister;
-import net.multiphasicapps.squirreljme.jit.generic.GenericRegisterType;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
 
 /**
  * This represents a MIPS CPU register.
@@ -21,7 +19,7 @@ import net.multiphasicapps.squirreljme.jit.generic.GenericRegisterType;
  * @since 2016/09/01
  */
 public enum MIPSRegister
-	implements GenericRegister
+	implements NativeRegister
 {
 	/** r0. */
 	R0(false, 0),
