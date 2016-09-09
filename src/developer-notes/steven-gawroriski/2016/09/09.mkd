@@ -201,3 +201,17 @@ The stack map parser state needs a partial and then a locked state. One thing
 to consider though is that the information could be hidden again. I may want to
 go for it being hidden as before. Except for `ClassStackMapType`.
 
+## 18:57
+
+The operation parsing part of the class decoder is a bit ugly. However now that
+that code compiled, I must now rework the JIT itself. Then after the JIT is
+reworked I would then go into the generic JIT code again and refix that due to
+the changes. However, the benefit now is that I can refactor the class parsing
+code also. The class parsing code as I said is ugly and I will want to rework
+that a bit, especially the operation decoding part. However the description
+streams will allow me to easily refactor without changing much. One intended
+goal that I have is to make the stack and local references a bit more stable.
+That is, the Class code will give me what I need. However, the Class prefix
+before the class format code is quite annoying and I should remove that
+before I continue on to the JIT.
+
