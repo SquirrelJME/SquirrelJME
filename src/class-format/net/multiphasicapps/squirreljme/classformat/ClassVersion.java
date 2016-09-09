@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This represents the class verion that a class may be.
  *
  * @since 2016/06/29
  */
-enum __ClassVersion__
+public enum ClassVersion
 {
 	/** CLDC 1.0 (JSR 30). */
 	CLDC_1((45 << 16) + 3, (47 << 16) - 1, false, false, false),
@@ -30,11 +30,11 @@ enum __ClassVersion__
 	;
 	
 	/** The minimum supported version. */
-	public static final __ClassVersion__ MIN_VERSION =
+	public static final ClassVersion MIN_VERSION =
 		CLDC_1;
 	
 	/** The maximum supported version. */
-	public static final __ClassVersion__ MAX_VERSION =
+	public static final ClassVersion MAX_VERSION =
 		CLDC_8;
 	
 	/** The version ID. */
@@ -63,7 +63,7 @@ enum __ClassVersion__
 	 * @param __usesmt Should the StackMapTable attribute be used?
 	 * @since 2016/03/13
 	 */
-	private __ClassVersion__(int __vid, int __vmx,
+	private ClassVersion(int __vid, int __vmx,
 		boolean __float, boolean __hasid, boolean __usesmt)
 	{
 		// Set
@@ -118,11 +118,11 @@ enum __ClassVersion__
 	 * @return The matching class version or {@code null} if not found.
 	 * @since 2016/03/13
 	 */
-	public static __ClassVersion__ findVersion(int __vid)
+	public static ClassVersion findVersion(int __vid)
 	{
 		// Go through all versions, find the best
-		__ClassVersion__ best = null;
-		for (__ClassVersion__ v : values())
+		ClassVersion best = null;
+		for (ClassVersion v : values())
 			if (__vid >= v.version && __vid <= v.maxversion)
 				if (best == null || v.version > best.version)
 					best = v;
