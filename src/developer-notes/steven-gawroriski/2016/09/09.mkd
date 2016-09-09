@@ -118,3 +118,8 @@ And some notes:
 It may be possible to even remove `jit-generic-mips` and `jit-generic-powerpc`
 potentially.
 
+## 11:56
+
+So the Java stuff needs to be removed from the native allocator and placed in
+the JIT.
+
