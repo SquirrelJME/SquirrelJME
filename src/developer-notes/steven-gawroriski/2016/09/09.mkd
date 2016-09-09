@@ -147,4 +147,10 @@ One thing I need to adjust is how the generic JIT allocates variables. I
 believe I should follow a similar route and have it be based on allocations.
 That is instead of register and stack it is just `NativeAllocation`.
 
+## 13:43
+
+Currently stuck on moving the generic stuff over, I suppose what I should do
+then is move over the MIPS/PowerPC stuff such as ABIs and other things to the
+`native-code` roots. Then from there I can work out how I want to access the
+stuff from the generic JIT.
 
