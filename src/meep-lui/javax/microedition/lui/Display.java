@@ -13,11 +13,11 @@ package javax.microedition.lui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
-import net.multiphasicapps.squirreljme.meep.lui.DisplayService;
-import net.multiphasicapps.squirreljme.meep.lui.DisplayServiceFactory;
-import net.multiphasicapps.squirreljme.meep.lui.InvalidDisplayServiceException;
+import net.multiphasicapps.squirreljme.meep.lui.DisplayProvider;
 import net.multiphasicapps.util.empty.EmptyIterator;
 
 /**
@@ -67,8 +67,8 @@ public class Display
 	private static final String _SERVICE_CLASS =
 		"net.multiphasicapps.squirreljme.meep.lui.service";
 	
-	/** This is the display service which has been selected for usage. */
-	private static final DisplayService _DISPLAY_SERVICE;
+	/** This contains the array of display providers. */
+	private static final DisplayProvider[] _DISPLAY_PROVIDERS;
 	
 	/**
 	 * This is used as the event name to indicate the lighting level.
@@ -110,89 +110,52 @@ public class Display
 		0;
 	
 	/**
-	 * This
+	 * This initializes the array of display providers which are used to give
+	 * displays to the current application.
 	 *
 	 * @since 2016/09/07
 	 */
 	static
 	{
-		// T
-		DisplayService got = null;
-		String usesv = System.getProperty(_SERVICE_CLASS);
-		if (usesv != null)
+		// Build mapping of all display providers
+		Map<Class<?>, DisplayProvider> providers =
+			new LinkedHashMap<>();
+		
+		// If the system property was specified then place it first so that
+		// it gets its displayed queried first
+		String prop = System.getProperty(_SERVICE_CLASS);
+		if (prop != null)
 			try
 			{
-				// Lookup
-				Class<?> dsfcl = Class.forName(usesv);
+				// Find class
+				Class<?> cl = Class.forName(prop);
 				
-				// Create factory instance
-				DisplayServiceFactory dsf = DisplayServiceFactory.class.cast(
-					dsfcl.newInstance());
-					
-				// Create service
-				got = dsf.createDisplayService();
+				// Create it
+				DisplayProvider dp = (DisplayProvider)cl.newInstance();
+				
+				// Store it
+				providers.put(cl, dp);
 			}
 			
-			// Ignore these
-			catch (ClassCastException|InvalidDisplayServiceException|
-				ClassNotFoundException|InstantiationException|
-				IllegalAccessException e)
+			// Ignore
+			catch (ClassCastException|ClassNotFoundException|
+				InstantiationException|IllegalAccessException e)
 			{
 			}
 		
-		// Fallback
-		if (got == null)
+		// Add standard services via the service loader
+		for (DisplayProvider dp : ServiceLoader.<DisplayProvider>load(
+			DisplayProvider.class))
 		{
-			// Setup list to determine services to use
-			List<DisplayServiceFactory> factories = new ArrayList<>();
-			
-			// Go through all
-			for (DisplayServiceFactory f : ServiceLoader.
-				<DisplayServiceFactory>load(DisplayServiceFactory.class))
-			{
-				// Get priority
-				int pid = f.priority();
-				
-				// Never default attempt these
-				if (pid < 0)
-					continue;
-				
-				// Add, use insertion sort
-				int i, n = factories.size();
-				for (i = n - 1; i >= 0; i--)
-					if (pid < factories.get(i).priority())
-					{
-						factories.add(i, f);
-						break;
-					}
-				
-				// Add at start
-				if (i < 0)
-					factories.add(0, f);
-			}
-			
-			// Use the highest priority factories and use them for output
-			int n = factories.size();
-			for (int i = n - 1; i >= 0; i--)
-				try
-				{
-					// Attempt creation
-					got = factories.get(i).createDisplayService();
-					
-					// Stop?
-					if (got != null)
-						break;
-				}
-				
-				// Ignore
-				catch (InvalidDisplayServiceException e)
-				{
-					continue;
-				}
+			// Each class is only placed in once
+			Class<?> cl = dp.getClass();
+			if (!providers.containsKey(cl))
+				providers.put(dp.getClass(), dp);
 		}
 		
-		// Set
-		_DISPLAY_SERVICE = got;
+		// Set all providers for potential lookup
+		_DISPLAY_PROVIDERS = providers.values().<DisplayProvider>toArray(
+			new DisplayProvider[providers.size()]);
 	}
 	
 	/**
@@ -867,11 +830,8 @@ public class Display
 	 */
 	public static Iterator<Display> getDisplays(boolean __ks)
 	{
-		// Get display services, if there are none then do nothing
-		DisplayService ds = _DISPLAY_SERVICE;
-		if (ds == null)
-			return EmptyIterator.<Display>empty();
-		
+		// Build an iterator which goes through display provides to find
+		// actual displays
 		throw new Error("TODO");
 	}
 	
