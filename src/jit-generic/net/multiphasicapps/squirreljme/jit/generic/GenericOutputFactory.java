@@ -40,7 +40,7 @@ public class GenericOutputFactory
 			throw new NullPointerException("NARG");
 		
 		// Create
-		throw new Error("TODO");
+		return new GenericOutput(__config);
 	}
 }
 

@@ -39,7 +39,7 @@ import net.multiphasicapps.squirreljme.nativecode.NativeABI;
  *
  * @since 2016/08/19
  */
-public abstract class GenericMethodWriter
+public final class GenericMethodWriter
 	implements JITMethodWriter
 {
 	/** The used configuration. */

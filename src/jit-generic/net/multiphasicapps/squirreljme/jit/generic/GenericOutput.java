@@ -25,7 +25,7 @@ import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
  *
  * @since 2016/07/26
  */
-public abstract class GenericOutput
+public class GenericOutput
 	implements JITOutput
 {
 	/** The output configuration. */
@@ -60,9 +60,12 @@ public abstract class GenericOutput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/21
 	 */
-	protected abstract GenericMethodWriter methodWriter(OutputStream __os,
+	protected final GenericMethodWriter methodWriter(OutputStream __os,
 		JITMethodReference __mr)
-		throws JITException, NullPointerException;
+		throws JITException, NullPointerException
+	{
+		return new GenericMethodWriter(this.config, __os, __mr);
+	}
 	
 	/**
 	 * {@inheritDoc}

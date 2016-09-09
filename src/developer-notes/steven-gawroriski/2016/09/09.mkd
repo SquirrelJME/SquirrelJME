@@ -172,3 +172,8 @@ some of the generic code moves back and it becomes just a wrapped
 So the moving of the native code generator is partly complete as my code now
 compiles, I just need to reimplement that behavior now.
 
+## 15:24
+
+The generic output needs a factory that can create native compilers as needed
+when methods are to be output.
+
