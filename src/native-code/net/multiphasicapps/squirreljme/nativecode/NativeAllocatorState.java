@@ -40,12 +40,6 @@ public final class NativeAllocatorState
 	/** Temporary float queue. */
 	private final NativeRegister[] _tempfloatq;
 	
-	/** Local variables. */
-	private final __VarStates__ _jlocals;
-	
-	/** Stack variables. */
-	private final __VarStates__ _jstack;
-	
 	/** The stack size. */
 	private final int _stacksize;
 	
@@ -85,17 +79,13 @@ public final class NativeAllocatorState
 		this._tempfloatq = tempfloatq.<NativeRegister>toArray(
 			new NativeRegister[tempfloatq.size()]);
 		
-		// Copy variable states
-		this._jlocals = new __VarStates__(__ga._jlocals);
-		this._jstack = new __VarStates__(__ga._jstack);
-		
 		// Set stack size
 		this._stacksize = __ga._stacksize;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/09/03
+	 * @since 2016/09/09
 	 */
 	@Override
 	public final String toString()
@@ -109,15 +99,8 @@ public final class NativeAllocatorState
 		{
 			StringBuilder sb = new StringBuilder("{");
 			
-			// Add locals
-			sb.append("locals=");
-			sb.append(this._jlocals);
-			
-			// And stack state
-			sb.append(", stack(");
-			sb.append(this._stacksize);
-			sb.append(")=");
-			sb.append(this._jstack);
+			if (true)
+				throw new Error("TODO");
 			
 			// Create
 			sb.append('}');
