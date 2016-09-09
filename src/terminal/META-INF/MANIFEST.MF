@@ -11,5 +11,5 @@ LIBlet-Description: This project contains classes which are
  terminal is a block of character cells with attributes. 
  Since there are number of systems that vary depending on 
  their terminal support, support may vary although the 
- classes here intend to be the most expressive.
+ classes here intend to be expressive enough.
 

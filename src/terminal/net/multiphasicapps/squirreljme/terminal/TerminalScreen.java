@@ -20,6 +20,7 @@ package net.multiphasicapps.squirreljme.terminal;
  * @since 2016/09/08
  */
 public final class TerminalScreen
+	implements TerminalColor
 {
 	/** The column count. */
 	public final int columns;
@@ -32,6 +33,9 @@ public final class TerminalScreen
 	
 	/** The characters in each cell. */
 	public final char[] text;
+	
+	/** The cell attributes, the values here are bitfields. */
+	public final short[] attr;
 	
 	/**
 	 * Initializes the terminal screen.
@@ -60,6 +64,7 @@ public final class TerminalScreen
 		
 		// Setup arrays
 		this.text = new char[cells];
+		this.attr = new short[cells];
 	}
 }
 
