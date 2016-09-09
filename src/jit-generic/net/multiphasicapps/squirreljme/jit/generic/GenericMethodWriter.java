@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.jit.JITMethodReference;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITVariableType;
+import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 
 /**
  * This is the base class for the native machine code generator which is common
@@ -57,7 +58,7 @@ public abstract class GenericMethodWriter
 	protected final GenericAllocator allocator;
 	
 	/** The ABI used on the target system. */
-	protected final GenericABI abi;
+	protected final NativeABI abi;
 	
 	/** State of the stack for each Java operation. */
 	protected final Map<Integer, GenericAllocatorState> jopstates =
@@ -125,8 +126,9 @@ public abstract class GenericMethodWriter
 			throw new JITException("BA0o");
 		
 		// Create new allocator
-		this.abi = abi;
-		this.allocator = new GenericAllocator(__conf, abi);
+		NativeABI nabi = abi.abi();
+		this.abi = nabi;
+		this.allocator = new GenericAllocator(__conf, nabi);
 	}
 	
 	/**

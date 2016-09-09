@@ -10,10 +10,15 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.List;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITVariableType;
+import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterKind;
+import net.multiphasicapps.util.msd.MultiSetDeque;
 
 /**
  * This class as the allocator which bridges the stack-cached singular Java
@@ -26,6 +31,9 @@ public class GenericAllocator
 	/** The configuration used. */
 	protected final JITOutputConfig.Immutable config;
 	
+	/** The ABI used. */
+	protected final NativeABI abi;
+	
 	/** Registers bound to local variables. */
 	volatile __VarStates__ _jlocals;
 	
@@ -35,11 +43,21 @@ public class GenericAllocator
 	/**
 	 * This initializes the allocator.
 	 *
+	 * @parma __conf The JIT configuration.
+	 * @param __abi The ABI used.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/09
 	 */
-	GenericAllocator()
+	GenericAllocator(JITOutputConfig.Immutable __conf, NativeABI __abi)
+		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__conf == null || __abi == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.config = __conf;
+		this.abi = __abi;
 	}
 	
 	/**
@@ -232,6 +250,17 @@ public class GenericAllocator
 		
 		// Debug
 		System.err.printf("DEBUG -- AllocState: %s%n", this);
+	}
+	
+	/**
+	 * Returns the current state of the allocator.
+	 *
+	 * @return The current allocator state.
+	 * @since 2016/09/09
+	 */
+	public final GenericAllocatorState recordState()
+	{
+		return new GenericAllocatorState(this);
 	}
 	
 	/**
