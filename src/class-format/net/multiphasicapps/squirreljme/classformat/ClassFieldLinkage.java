@@ -22,7 +22,7 @@ public final class GenericFieldLinkage
 	extends ClassMemberLinkage<ClassFieldReference>
 {
 	/** The type of link this is. */
-	protected final JITFieldAccessType type;
+	protected final ClassFieldAccessType type;
 	
 	/** String reference. */
 	private volatile Reference<String> _string;
@@ -37,7 +37,7 @@ public final class GenericFieldLinkage
 	 * @since 2016/09/06
 	 */
 	public GenericFieldLinkage(ClassMethodReference __from,
-		ClassFieldReference __to, JITFieldAccessType __t)
+		ClassFieldReference __to, ClassFieldAccessType __t)
 		throws NullPointerException
 	{
 		super(__from, __to);
@@ -103,7 +103,7 @@ public final class GenericFieldLinkage
 	 * @return The field access type.
 	 * @since 2016/09/06
 	 */
-	public JITFieldAccessType type()
+	public ClassFieldAccessType type()
 	{
 		return this.type;
 	}

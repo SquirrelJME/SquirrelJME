@@ -17,7 +17,7 @@ package net.multiphasicapps.squirreljme.classformat;
  */
 public class ClassClassFlags
 	extends ClassFlags<ClassClassFlag>
-	implements JITAccessibleFlags
+	implements ClassAccessibleFlags
 {
 	/**
 	 * Initializes the class flags.

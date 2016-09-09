@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/05/12
  */
-public interface JITAccessibleFlags
+public interface ClassAccessibleFlags
 {
 	/**
 	 * Is the current accessible object package private?
