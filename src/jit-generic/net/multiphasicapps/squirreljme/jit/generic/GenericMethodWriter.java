@@ -20,8 +20,8 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.JITInvokeType;
-import net.multiphasicapps.squirreljme.jit.JITMethodReference;
+import net.multiphasicapps.squirreljme.jit.ClassMethodInvokeType;
+import net.multiphasicapps.squirreljme.jit.ClassMethodReference;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITVariableType;
@@ -65,7 +65,7 @@ public final class GenericMethodWriter
 		new LinkedHashMap<>();
 	
 	/** This method reference. */
-	protected final JITMethodReference thisref;
+	protected final ClassMethodReference thisref;
 	
 	/** Valid jump targets. */
 	private volatile int[] _jumptargets;
@@ -80,7 +80,7 @@ public final class GenericMethodWriter
 	 * @since 2016/08/21
 	 */
 	public GenericMethodWriter(JITOutputConfig.Immutable __conf,
-		OutputStream __os, JITMethodReference __thisref)
+		OutputStream __os, ClassMethodReference __thisref)
 		throws NullPointerException
 	{
 		// Check
@@ -188,8 +188,8 @@ public final class GenericMethodWriter
 	 * @since 2016/09/06
 	 */
 	@Override
-	public void invoke(JITInvokeType __type, int __pid,
-		JITMethodReference __ref, JITVariableType[] __st, int[] __sp,
+	public void invoke(ClassMethodInvokeType __type, int __pid,
+		ClassMethodReference __ref, JITVariableType[] __st, int[] __sp,
 		JITVariableType __rvt, int __rv)
 		throws JITException, NullPointerException
 	{
