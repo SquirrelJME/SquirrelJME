@@ -25,8 +25,8 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.base.mips.MIPSVariant;
 import net.multiphasicapps.squirreljme.exe.ExecutableOutput;
+import net.multiphasicapps.squirreljme.nativecode.mips.MIPSVariant;
 
 /**
  * This is used to output ELF binaries.
@@ -335,6 +335,7 @@ public class ELFOutput
 			// Word size
 			int bits;
 			setWordSize((bits = __t.bits()));
+			String archvar = __t.architectureVariant();
 			
 			// Depends on the architecture
 			int flags = 0;
@@ -346,7 +347,7 @@ public class ELFOutput
 					setMachine(8);
 					
 					// MIPS variant codes
-					switch (MIPSVariant.fromTriplet(__t))
+					switch (MIPSVariant.of(archvar))
 					{
 							// Which MIPS generation?
 						case I: flags = 0x0000_0000; break;

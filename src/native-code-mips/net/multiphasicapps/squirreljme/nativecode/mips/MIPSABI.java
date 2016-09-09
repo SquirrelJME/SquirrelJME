@@ -59,7 +59,6 @@ public final class MIPSABI
 		boolean hasfloat = __f.isAnyHardware();
 		
 		// Add integer registers
-		int __b = __b;
 		ab.pointerSize(__b);
 		NativeRegisterIntegerType rtint =
 			NativeABIBuilder.intRegisterType(__b);

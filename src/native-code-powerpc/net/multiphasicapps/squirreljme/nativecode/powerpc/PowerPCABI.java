@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
+import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 
 /**

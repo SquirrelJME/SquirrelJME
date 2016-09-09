@@ -248,9 +248,10 @@ public enum MIPSRegister
 	public static MIPSRegister of(boolean __float, int __i)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BV01  (The register index)}
+		// {@squirreljme.error AW01 The register index is not within bounds
+		// of the valid register set. (The register index)}
 		if (__i < 0 || __i >= 32)
-			throw new IllegalArgumentException(String.format("BV01 %d", __i));
+			throw new IllegalArgumentException(String.format("AW01 %d", __i));
 		
 		// Floating point?
 		if (__float)
