@@ -17,12 +17,12 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITFieldFlag;
-import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
-import net.multiphasicapps.squirreljme.jit.base.JITMethodFlag;
-import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlag;
+import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlag;
+import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
  * This performs the decoding of the class file format.
@@ -62,7 +62,7 @@ final class __ClassDecoder__
 	private volatile JITConstantPool _pool;
 	
 	/** Class flags. */
-	private volatile JITClassFlags _flags;
+	private volatile ClassClassFlags _flags;
 	
 	/** The name of this class. */
 	private volatile ClassNameSymbol _classname;
@@ -138,7 +138,7 @@ final class __ClassDecoder__
 		this._pool = pool;
 		
 		// Read the flags for this class
-		JITClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
+		ClassClassFlags cf = __FlagDecoder__.__class(input.readUnsignedShort());
 		this._flags = cf;
 		
 		// Read class name

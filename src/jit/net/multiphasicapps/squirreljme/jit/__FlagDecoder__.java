@@ -12,13 +12,13 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.util.HashSet;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.base.JITClassFlag;
-import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassClassFlag;
+import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITFieldFlag;
-import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
-import net.multiphasicapps.squirreljme.jit.base.JITMethodFlag;
-import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlag;
+import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlag;
+import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
  * This decodes class flags.
@@ -43,44 +43,44 @@ final class __FlagDecoder__
 	 * @param __i The input flag field.
 	 * @since 2016/04/23
 	 */
-	static JITClassFlags __class(int __i)
+	static ClassClassFlags __class(int __i)
 	{
-		Set<JITClassFlag> fl = new HashSet<>();
+		Set<ClassClassFlag> fl = new HashSet<>();
 		
 		// Public?
 		if (0 != (__i & 0x0001))
-			fl.add(JITClassFlag.PUBLIC);
+			fl.add(ClassClassFlag.PUBLIC);
 		
 		// Final?
 		if (0 != (__i & 0x0010))
-			fl.add(JITClassFlag.FINAL);
+			fl.add(ClassClassFlag.FINAL);
 		
 		// Super?
 		if (0 != (__i & 0x0020))
-			fl.add(JITClassFlag.SUPER);
+			fl.add(ClassClassFlag.SUPER);
 		
 		// Interface?
 		if (0 != (__i & 0x0200))
-			fl.add(JITClassFlag.INTERFACE);
+			fl.add(ClassClassFlag.INTERFACE);
 		
 		// Abstract?
 		if (0 != (__i & 0x0400))
-			fl.add(JITClassFlag.ABSTRACT);
+			fl.add(ClassClassFlag.ABSTRACT);
 		
 		// Synthetic?
 		if (0 != (__i & 0x1000))
-			fl.add(JITClassFlag.SYNTHETIC);
+			fl.add(ClassClassFlag.SYNTHETIC);
 		
 		// Annotation?
 		if (0 != (__i & 0x2000))
-			fl.add(JITClassFlag.ANNOTATION);
+			fl.add(ClassClassFlag.ANNOTATION);
 		
 		// Enumeration?
 		if (0 != (__i & 0x4000))
-			fl.add(JITClassFlag.ENUM);
+			fl.add(ClassClassFlag.ENUM);
 		
 		// Build it
-		return new JITClassFlags(fl);
+		return new ClassClassFlags(fl);
 	}
 	
 	/**
@@ -91,49 +91,49 @@ final class __FlagDecoder__
 	 * @return The field flags.
 	 * @since 2016/04/26
 	 */
-	static JITFieldFlags __field(JITClassFlags __oc, int __bits)
+	static ClassFieldFlags __field(ClassClassFlags __oc, int __bits)
 	{
 		// Target set
-		Set<JITFieldFlag> ff = new HashSet<>();
+		Set<ClassFieldFlag> ff = new HashSet<>();
 		
 		// Enumeration?
 		if (0 != (__bits & 0x4000))
-			ff.add(JITFieldFlag.ENUM);
+			ff.add(ClassFieldFlag.ENUM);
 		
 		// Final?
 		if (0 != (__bits & 0x0010))
-			ff.add(JITFieldFlag.FINAL);
+			ff.add(ClassFieldFlag.FINAL);
 		
 		// Private?
 		if (0 != (__bits & 0x0002))
-			ff.add(JITFieldFlag.PRIVATE);
+			ff.add(ClassFieldFlag.PRIVATE);
 		
 		// Protected?
 		if (0 != (__bits & 0x0004))
-			ff.add(JITFieldFlag.PROTECTED);
+			ff.add(ClassFieldFlag.PROTECTED);
 		
 		// Public?
 		if (0 != (__bits & 0x0001))
-			ff.add(JITFieldFlag.PUBLIC);
+			ff.add(ClassFieldFlag.PUBLIC);
 		
 		// Static?
 		if (0 != (__bits & 0x0008))
-			ff.add(JITFieldFlag.STATIC);
+			ff.add(ClassFieldFlag.STATIC);
 		
 		// Synthetic?
 		if (0 != (__bits & 0x1000))
-			ff.add(JITFieldFlag.SYNTHETIC);
+			ff.add(ClassFieldFlag.SYNTHETIC);
 		
 		// Transient?
 		if (0 != (__bits & 0x0080))
-			ff.add(JITFieldFlag.TRANSIENT);
+			ff.add(ClassFieldFlag.TRANSIENT);
 		
 		// Volatile?
 		if (0 != (__bits & 0x0040))
-			ff.add(JITFieldFlag.VOLATILE);
+			ff.add(ClassFieldFlag.VOLATILE);
 		
 		// Build flags
-		return new JITFieldFlags(__oc, ff);
+		return new ClassFieldFlags(__oc, ff);
 	}
 	/**
 	 * Parses the flags for a method.
@@ -143,61 +143,61 @@ final class __FlagDecoder__
 	 * @return The method flags.
 	 * @since 2016/04/26
 	 */
-	static JITMethodFlags __method(JITClassFlags __oc, int __bits)
+	static ClassMethodFlags __method(ClassClassFlags __oc, int __bits)
 	{
 		// Target set
-		Set<JITMethodFlag> ff = new HashSet<>();
+		Set<ClassMethodFlag> ff = new HashSet<>();
 		
 		// Public method.
 		if (0 != (__bits & 0x0001))
-			ff.add(JITMethodFlag.PUBLIC);
+			ff.add(ClassMethodFlag.PUBLIC);
 	
 		// Private method.
 		if (0 != (__bits & 0x0002))
-			ff.add(JITMethodFlag.PRIVATE);
+			ff.add(ClassMethodFlag.PRIVATE);
 	
 		// Protected method.
 		if (0 != (__bits & 0x0004))
-			ff.add(JITMethodFlag.PROTECTED);
+			ff.add(ClassMethodFlag.PROTECTED);
 	
 		// Static method.
 		if (0 != (__bits & 0x0008))
-			ff.add(JITMethodFlag.STATIC);
+			ff.add(ClassMethodFlag.STATIC);
 	
 		// Final method.
 		if (0 != (__bits & 0x0010))
-			ff.add(JITMethodFlag.FINAL);
+			ff.add(ClassMethodFlag.FINAL);
 	
 		// Synchronized method.
 		if (0 != (__bits & 0x0020))
-			ff.add(JITMethodFlag.SYNCHRONIZED);
+			ff.add(ClassMethodFlag.SYNCHRONIZED);
 	
 		// Bridge method.
 		if (0 != (__bits & 0x0040))
-			ff.add(JITMethodFlag.BRIDGE);
+			ff.add(ClassMethodFlag.BRIDGE);
 	
 		// Variable argument method.
 		if (0 != (__bits & 0x0080))
-			ff.add(JITMethodFlag.VARARGS);
+			ff.add(ClassMethodFlag.VARARGS);
 	
 		// Native method.
 		if (0 != (__bits & 0x0100))
-			ff.add(JITMethodFlag.NATIVE);
+			ff.add(ClassMethodFlag.NATIVE);
 	
 		// Abstract method.
 		if (0 != (__bits & 0x0400))
-			ff.add(JITMethodFlag.ABSTRACT);
+			ff.add(ClassMethodFlag.ABSTRACT);
 	
 		// Strict floating point method.
 		if (0 != (__bits & 0x0800))
-			ff.add(JITMethodFlag.STRICT);
+			ff.add(ClassMethodFlag.STRICT);
 	
 		// Synthetic method.
 		if (0 != (__bits & 0x1000))
-			ff.add(JITMethodFlag.SYNTHETIC);
+			ff.add(ClassMethodFlag.SYNTHETIC);
 	
 		// Build flags
-		return new JITMethodFlags(__oc, ff);
+		return new ClassMethodFlags(__oc, ff);
 	}
 }
 

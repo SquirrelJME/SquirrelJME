@@ -21,7 +21,7 @@ import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 
 /**
@@ -50,7 +50,7 @@ final class __CodeDecoder__
 	final JITMethodWriter _writer;
 	
 	/** The method flags. */
-	final JITMethodFlags _flags;
+	final ClassMethodFlags _flags;
 	
 	/** The method type. */
 	final MethodSymbol _type;
@@ -88,7 +88,7 @@ final class __CodeDecoder__
 	 * @since 2016/08/18
 	 */
 	__CodeDecoder__(__MethodDecoder__ __cd, DataInputStream __dis,
-		JITMethodFlags __f, MethodSymbol __t, JITMethodWriter __mlw)
+		ClassMethodFlags __f, MethodSymbol __t, JITMethodWriter __mlw)
 		throws NullPointerException
 	{
 		// Check

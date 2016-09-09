@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
  * This parses the stack map table using either the modern Java 6 format or
@@ -64,7 +64,7 @@ class __SMTParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/25
 	 */
-	__SMTParser__(boolean __m, DataInputStream __in, JITMethodFlags __mf,
+	__SMTParser__(boolean __m, DataInputStream __in, ClassMethodFlags __mf,
 		MethodSymbol __ms, int __maxs, int __maxl)
 		throws IOException, NullPointerException
 	{
@@ -485,7 +485,7 @@ class __SMTParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	static Map<Integer, __SMTState__> __initialState(JITMethodFlags __mf,
+	static Map<Integer, __SMTState__> __initialState(ClassMethodFlags __mf,
 		MethodSymbol __ms, int __maxs, int __maxl)
 		throws NullPointerException
 	{

@@ -192,12 +192,12 @@ public final class JITConstantEntry
 					
 					// Field?
 					if (tag == JITConstantPool.TAG_FIELDREF)
-						raw = new JITFieldReference(rcl, jna.name(),
+						raw = new ClassFieldReference(rcl, jna.name(),
 							(FieldSymbol)jna.type());
 					
 					// Method?
 					else
-						raw = new JITMethodReference(rcl, jna.name(),
+						raw = new ClassMethodReference(rcl, jna.name(),
 							(MethodSymbol)jna.type(),
 							tag == JITConstantPool.TAG_INTERFACEMETHODREF);
 					break;

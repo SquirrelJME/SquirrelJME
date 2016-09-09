@@ -15,7 +15,7 @@ import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -45,7 +45,7 @@ final class __OpParser__
 	protected final JITMethodWriter writer;
 	
 	/** The class flags. */
-	protected final JITClassFlags classflags;
+	protected final ClassClassFlags classflags;
 	
 	/** The constant pool. */
 	protected final JITConstantPool pool;
@@ -70,7 +70,7 @@ final class __OpParser__
 	 * @since 2016/08/29
 	 */
 	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis,
-		Map<Integer, __SMTState__> __smt, JITClassFlags __cf,
+		Map<Integer, __SMTState__> __smt, ClassClassFlags __cf,
 		JITConstantPool __pool)
 		throws NullPointerException
 	{
@@ -378,23 +378,23 @@ final class __OpParser__
 				
 				// Invoke interface method
 			case __OpIndex__.INVOKEINTERFACE:
-				return __executeInvoke(JITInvokeType.INTERFACE,
+				return __executeInvoke(ClassMethodInvokeType.INTERFACE,
 					input.readUnsignedShort() | (input.readByte() & 0) |
 					(input.readByte() & 0));
 				
 				// Invoke constructor or private method
 			case __OpIndex__.INVOKESPECIAL:
-				return __executeInvoke(JITInvokeType.SPECIAL,
+				return __executeInvoke(ClassMethodInvokeType.SPECIAL,
 					input.readUnsignedShort());
 				
 				// Invoke static method
 			case __OpIndex__.INVOKESTATIC:
-				return __executeInvoke(JITInvokeType.STATIC,
+				return __executeInvoke(ClassMethodInvokeType.STATIC,
 					input.readUnsignedShort());
 				
 				// Invoke virtual method
 			case __OpIndex__.INVOKEVIRTUAL:
-				return __executeInvoke(JITInvokeType.VIRTUAL,
+				return __executeInvoke(ClassMethodInvokeType.VIRTUAL,
 					input.readUnsignedShort());
 			
 				// {@squirreljme.error ED08 Defined operation cannot be
@@ -539,7 +539,7 @@ final class __OpParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/05
 	 */
-	private int[] __executeInvoke(JITInvokeType __type, int __pid)
+	private int[] __executeInvoke(ClassMethodInvokeType __type, int __pid)
 		throws NullPointerException
 	{
 		// Check
@@ -547,8 +547,8 @@ final class __OpParser__
 			throw new NullPointerException("NARG");
 		
 		// Get pool reference
-		JITMethodReference ref = this.pool.get(__pid).<JITMethodReference>
-			get(true, JITMethodReference.class);
+		ClassMethodReference ref = this.pool.get(__pid).<ClassMethodReference>
+			get(true, ClassMethodReference.class);
 		
 		// Debug
 		System.err.printf("DEBUG -- Invoke %s %d %s%n", __type, __pid, ref);

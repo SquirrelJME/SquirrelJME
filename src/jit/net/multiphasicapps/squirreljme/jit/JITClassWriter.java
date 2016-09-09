@@ -14,10 +14,10 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
-import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
  * This is used to write class details on output.
@@ -35,7 +35,7 @@ public interface JITClassWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/18
 	 */
-	public abstract void classFlags(JITClassFlags __cf)
+	public abstract void classFlags(ClassClassFlags __cf)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -110,7 +110,7 @@ public interface JITClassWriter
 	 * @throws NullPointerException On null arguments, except for {@code __cv}.
 	 * @since 2016/08/18
 	 */
-	public abstract void field(JITFieldFlags __f, IdentifierSymbol __n,
+	public abstract void field(ClassFieldFlags __f, IdentifierSymbol __n,
 		int __ni, FieldSymbol __t, int __ti, Object __cv)
 		throws JITException, NullPointerException;
 	
@@ -148,7 +148,7 @@ public interface JITClassWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/19
 	 */
-	public abstract void method(JITMethodFlags __f, IdentifierSymbol __n,
+	public abstract void method(ClassMethodFlags __f, IdentifierSymbol __n,
 		int __ni, MethodSymbol __t, int __ti)
 		throws JITException, NullPointerException;
 	

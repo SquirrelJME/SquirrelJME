@@ -67,8 +67,8 @@ public interface JITMethodWriter
 	 * {@code __rvt}.
 	 * @since 2016/09/06
 	 */
-	public abstract void invoke(JITInvokeType __type, int __pid,
-		JITMethodReference __ref, JITVariableType[] __st, int[] __sp,
+	public abstract void invoke(ClassMethodInvokeType __type, int __pid,
+		ClassMethodReference __ref, JITVariableType[] __st, int[] __sp,
 		JITVariableType __rvt, int __rv)
 		throws JITException, NullPointerException;
 	

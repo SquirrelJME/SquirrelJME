@@ -14,9 +14,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
  * This decodes methods.
@@ -36,7 +36,7 @@ class __MethodDecoder__
 	private volatile boolean _hitmcode;
 	
 	/** Method flags. */
-	private volatile JITMethodFlags _mflags;
+	private volatile ClassMethodFlags _mflags;
 	
 	/** Method type. */
 	private volatile MethodSymbol _mtype;
@@ -53,7 +53,7 @@ class __MethodDecoder__
 	 * @since 2016/08/18
 	 */
 	__MethodDecoder__(JITClassWriter __cw, DataInputStream __di,
-		JITConstantPool __pool, JITClassFlags __cf, __ClassDecoder__ __cx)
+		JITConstantPool __pool, ClassClassFlags __cf, __ClassDecoder__ __cx)
 		throws NullPointerException
 	{
 		super(__cw, __di, __pool, __cf);
@@ -80,7 +80,7 @@ class __MethodDecoder__
 		JITClassWriter cw = this.classwriter;
 		
 		// Read the flags for this method
-		JITMethodFlags mf = __FlagDecoder__.__method(this._classflags,
+		ClassMethodFlags mf = __FlagDecoder__.__method(this._classflags,
 			input.readUnsignedShort());
 		
 		// Read the method name

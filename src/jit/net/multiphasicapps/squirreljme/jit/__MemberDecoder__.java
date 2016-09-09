@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
 
 /**
  * This is the base class for members to decode.
@@ -32,7 +32,7 @@ abstract class __MemberDecoder__
 	protected final JITConstantPool pool;
 	
 	/** The owning class flags. */
-	final JITClassFlags _classflags;
+	final ClassClassFlags _classflags;
 	
 	/**
 	 * Initializes the base decoder.
@@ -45,7 +45,7 @@ abstract class __MemberDecoder__
 	 * @since 2016/08/18
 	 */
 	__MemberDecoder__(JITClassWriter __cw, DataInputStream __di,
-		JITConstantPool __pool, JITClassFlags __cf)
+		JITConstantPool __pool, ClassClassFlags __cf)
 		throws NullPointerException
 	{
 		// Check

@@ -14,9 +14,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
 
 /**
  * This decodes ields.
@@ -39,7 +39,7 @@ class __FieldDecoder__
 	 * @since 2016/08/18
 	 */
 	__FieldDecoder__(JITClassWriter __cw, DataInputStream __di,
-		JITConstantPool __pool, JITClassFlags __cf)
+		JITConstantPool __pool, ClassClassFlags __cf)
 	{
 		super(__cw, __di, __pool, __cf);
 	}
@@ -57,7 +57,7 @@ class __FieldDecoder__
 		JITClassWriter cw = this.classwriter;
 		
 		// Read the flags for this field
-		JITFieldFlags mf = __FlagDecoder__.__field(this._classflags,
+		ClassFieldFlags mf = __FlagDecoder__.__field(this._classflags,
 			input.readUnsignedShort());
 		
 		// Read the name
