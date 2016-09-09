@@ -292,8 +292,8 @@ public final class GenericNamespaceWriter
 					dos.writeShort(n);
 					
 					// String table base and table positions
-					dos.writeShort(gpool._stringpos >>> ns);
-					dos.writeShort(gpool._stringcount);
+					dos.writeShort(gpool.getStrings()._stringpos >>> ns);
+					dos.writeShort(gpool.getStrings()._stringcount);
 					
 					// Constant pool base, table positions, and tag set
 					dos.writeShort(gpool._poolpos >>> ns);

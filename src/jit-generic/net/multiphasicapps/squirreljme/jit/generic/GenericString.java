@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
  *
  * @since 2016/08/17
  */
-class __StringEntry__
+public final class GenericString
 {
 	/** The index of this entry. */
 	final int _index;
@@ -29,9 +29,10 @@ class __StringEntry__
 	 * @param __dx The index to place it at.
 	 * @since 2016/08/17
 	 */
-	__StringEntry__(int __dx)
+	GenericString(int __dx)
 	{
 		// Set
 		this._index = __dx;
 	}
 }
+

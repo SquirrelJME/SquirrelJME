@@ -29,7 +29,7 @@ final class __Index__
 	final int _size;
 	
 	/** The index in the global string table which stores the entry name. */
-	final __StringEntry__ _namedx;
+	final GenericString _namedx;
 	
 	/**
 	 * Initializes the index.
@@ -50,7 +50,8 @@ final class __Index__
 		this._type = __bw._type;
 		this._datapos = (ds = __bw._dataaddr);
 		this._size = (__bw._dataend - ds);
-		this._namedx = __bw._owner._gpool.__loadString(__bw._name);
+		this._namedx = __bw._owner._gpool.getStrings().
+			getString(__bw._name);
 	}
 }
 

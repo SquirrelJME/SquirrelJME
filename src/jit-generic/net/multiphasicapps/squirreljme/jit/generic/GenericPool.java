@@ -32,9 +32,8 @@ public final class GenericPool
 	/** The owning namespace writer. */
 	protected final GenericNamespaceWriter owner;
 	
-	/** Strings in the namespace. */
-	private final Map<String, __StringEntry__> _strings =
-		new LinkedHashMap<>();
+	/** The string table. */
+	protected final GenericStringTable strings;
 	
 	/** Global constant pool. */
 	private final Map<Object, GenericPoolEntry> _entries =
@@ -42,12 +41,6 @@ public final class GenericPool
 	
 	/** The currently active pool. */
 	private volatile JITConstantPool _current;
-	
-	/** The string table position. */
-	volatile int _stringpos;
-	
-	/** The string table count. */
-	volatile int _stringcount;
 	
 	/** The constant pool position. */
 	volatile int _poolpos;
@@ -75,8 +68,22 @@ public final class GenericPool
 		// Set
 		this.owner = __nsw;
 		
+		// Create string table
+		this.strings = new GenericStringTable(__nsw);
+		
 		// The first constant is magically null (for super class)
 		this._entries.put(null, new GenericPoolEntry(0));
+	}
+	
+	/**
+	 * Returns the string table.
+	 *
+	 * @return The string table.
+	 * @since 2016/09/09
+	 */
+	public final GenericStringTable getStrings()
+	{
+		return this.strings;
 	}
 	
 	/**
@@ -112,7 +119,7 @@ public final class GenericPool
 		
 		// Load as a string?
 		if (__str)
-			__loadString(__o.toString());
+			this.strings.getString(__o.toString());
 		
 		// Already placed?
 		Map<Object, GenericPoolEntry> entries = this._entries;
@@ -128,37 +135,6 @@ public final class GenericPool
 		
 		// Place it otherwise
 		entries.put(__o, (rv = new GenericPoolEntry(sz)));
-		return rv;
-	}
-	
-	/**
-	 * Loads a string into the string table.
-	 *
-	 * @param __s The string to load.
-	 * @return The representing string entry.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/17
-	 */
-	__StringEntry__ __loadString(String __s)
-		throws NullPointerException
-	{
-		// Check
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		// Already placed?
-		Map<String, __StringEntry__> strings = this._strings;
-		__StringEntry__ rv = strings.get(__s);
-		if (rv != null)
-			return rv;
-		
-		// {@squirreljme.error BA17 The number of strings exceeds 65,536.}
-		int sz = strings.size();
-		if (sz >= 65535)
-			throw new JITException("BA17");
-		
-		// Place it otherwise
-		strings.put(__s, (rv = new __StringEntry__(sz)));
 		return rv;
 	}
 	
@@ -193,7 +169,7 @@ public final class GenericPool
 		owner.__align();
 		
 		// Write strings
-		__writeStrings(__dos);
+		this.strings.__writeStrings(__dos);
 		
 		// Align
 		owner.__align();
@@ -245,7 +221,8 @@ public final class GenericPool
 			// A simple and single string reference
 			else if ((data instanceof ClassNameSymbol) ||
 				(data instanceof String))
-				__dos.writeShort(__loadString(data.toString())._index);
+				__dos.writeShort(this.strings.getString(data.toString()).
+					_index);
 			
 			// {@squirreljme.error BA19 Do not know how to record an object
 			// of the specified type. (The data class type)}
@@ -270,50 +247,6 @@ public final class GenericPool
 		int ns = GenericBlob.NAMESPACE_SHIFT;
 		for (int i = 0; i < cn; i++)
 			__dos.writeShort(cpos[i] >>> ns);
-	}
-	
-	/**
-	 * Writes the string data.
-	 *
-	 * @param __dos The target stream.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/08/18
-	 */
-	private void __writeStrings(ExtendedDataOutputStream __dos)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__dos == null)
-			throw new NullPointerException("NARG");
-		
-		// Needed to align
-		GenericNamespaceWriter owner = this.owner;
-		
-		// Write the string data
-		Map<String, __StringEntry__> strings = this._strings;
-		int sn = strings.size();
-		this._stringcount = sn;
-		int[] spos = new int[sn];
-		int at = 0;
-		for (Map.Entry<String, __StringEntry__> e : strings.entrySet())
-		{
-			// Align and position
-			owner.__align();
-			spos[at++] = (int)__dos.size();
-			
-			// Write string data
-			owner.__writeString(__dos, 0, e.getKey());
-		}
-		
-		// Align
-		owner.__align();
-		
-		// Write the string table
-		this._stringpos = (int)__dos.size();
-		int ns = GenericBlob.NAMESPACE_SHIFT;
-		for (int i = 0; i < sn; i++)
-			__dos.writeShort(spos[i] >>> ns);
 	}
 }
 

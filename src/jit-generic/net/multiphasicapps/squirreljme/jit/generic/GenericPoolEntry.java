@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
  *
  * @since 2016/08/17
  */
-public class GenericPoolEntry
+public final class GenericPoolEntry
 {
 	/** The index of this entry. */
 	final int _index;

@@ -54,8 +54,8 @@ abstract class __Member__
 		GenericPool gpool = __gcw._gpool;
 		
 		// Setup name and type
-		this._namedx = gpool.__loadString(__name.toString())._index;
-		this._typedx = gpool.__loadString(__type.toString())._index;
+		this._namedx = gpool.getStrings().getString(__name.toString())._index;
+		this._typedx = gpool.getStrings().getString(__type.toString())._index;
 		
 		// Fill flags
 		int flags = 0;

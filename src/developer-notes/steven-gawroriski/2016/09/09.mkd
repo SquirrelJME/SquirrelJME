@@ -1,2 +1,24 @@
 # 2016/09/09
 
+## 09:08
+
+It would probably be best to split off the string table from the constant pool.
+
+## 09:16
+
+The pool should probably become a visible map of sorts, potentially. I can
+use the sorted tree classes I made, although all of the indices will be off.
+
+## 09:19
+
+The generic JIT is getting a bit unweildy. I believe it needs to be split off
+a bit. One thing I would split off is the machine code related stuff, things
+which are used by the compiler such as logic generators and register
+allocation. Then after that, what is left is the result of the standard JIT,
+that is anything layered on top of that. However, one consideration is that the
+standard JIT can use the same base machine code generators also. Although I
+would still have to decide on that. If however, they do use the same interfaces
+then there could be a simpler bridging of output logic although it would not
+have register allocation and it would basically be providing a byte code
+representation of the program.
+
