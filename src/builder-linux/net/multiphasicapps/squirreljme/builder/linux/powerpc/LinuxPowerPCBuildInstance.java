@@ -17,8 +17,10 @@ import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
-import net.multiphasicapps.squirreljme.jit.generic.powerpc.PowerPCABI;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
+import net.multiphasicapps.squirreljme.nativecode.NativeABI;
+import net.multiphasicapps.squirreljme.nativecode.powerpc.PowerPCABI;
 
 /**
  * This is the build instance for Linux PowerPC systems.
@@ -61,23 +63,31 @@ public class LinuxPowerPCBuildInstance
 	@Override
 	protected GenericABI getLinuxABI()
 	{
+		// Get target details
+		JITTriplet triplet = this.triplet;
+		int bits = triplet.bits();
+		NativeFloatType ft = triplet.floatingPoint();
+		
 		// Which ABI to use?
 		GenericABI abi;
-		JITTriplet triplet = this.triplet;
 		String osvar;
+		NativeABI nabi;
 		switch ((osvar = triplet.operatingSystemVariant()))
 		{
 				// SysV
 			case "sysv":
-				return PowerPCABI.sysV(triplet);
+				nabi = PowerPCABI.sysV(bits, ft);
+				break;
 				
 				// OpenPOWER
 			case "openpower":
-				return PowerPCABI.openPower(triplet);
+				nabi = PowerPCABI.openPower(bits, ft);
+				break;
 				
 				// EABI
 			case "eabi":
-				return PowerPCABI.eabi(triplet);
+				nabi = PowerPCABI.eabi(bits, ft);
+				break;
 			
 				// {@squirreljme.error BU0a Do not know how to build for the
 				// given operating system variant. (The operating system
@@ -86,6 +96,9 @@ public class LinuxPowerPCBuildInstance
 				throw new TargetNotSupportedException(
 					String.format("BU0a %s", osvar));
 		}
+		
+		// Wrap
+		return new GenericABI(nabi);
 	}
 	
 	/**

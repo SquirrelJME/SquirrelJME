@@ -25,6 +25,7 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
+import net.multiphasicapps.squirreljme.jit.generic.GenericOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.paths.posix.PosixPaths;
@@ -165,6 +166,10 @@ public abstract class LinuxBuildInstance
 		
 		// Set the ABI to use for the generic compiler
 		__conf.<GenericABI>registerObject(GenericABI.class, this.abi);
+		
+		// Add the JIT factory, just uses the generic JIT
+		__conf.<GenericOutputFactory>registerObject(GenericOutputFactory.class,
+			new GenericOutputFactory());
 	}
 	
 	/**
