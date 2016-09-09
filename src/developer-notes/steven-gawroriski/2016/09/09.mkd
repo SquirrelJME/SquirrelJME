@@ -22,3 +22,94 @@ then there could be a simpler bridging of output logic although it would not
 have register allocation and it would basically be providing a byte code
 representation of the program.
 
+## 09:31
+
+Another thing I can do is merge together some of the generic and JIT pool
+related stuff. Perhaps remove the representation of the constant pool
+entirely so to speak.
+
+## 09:33
+
+For the most part, the native code pieces can be reused by every implementation
+of the JIT for the most part. One thing I can have though is that the
+register allocator could potentially be replaced rather than using the default.
+This could be used when a slightly difference scheme is desired. If I can
+remove the bulk of the native code generated stuff from the generic JIT then
+that package would be much lighter. The generic JIT just has to pass
+information for the most part to the native code generators. Then the native
+code generators could be used in the future to generate bootstrap code such as
+if I need to have some kind of raw initialization process.
+
+## 09:39
+
+Then another plan would be a merging of the constant system, right now there
+are some constant pool entries that are generic only that could be useful in
+the JIT, these would be the call types and such. One thing I can do is to
+remove the constant pool from the JIT and make it completely hidden. In most
+cases the pool could become a burden as at least in the case of the generic
+JIT, most of the pool would go unused. The generic JIT also virtualizes all
+of the entries also. Also the base JIT code has an inclusion system so that
+entries are marked as being used. Since I am doing that, it would be best to
+just completely remove passing the pool and let the JIT implementation handle
+such things.
+
+## 09:44
+
+So right now I have:
+
+ * Move native code off to its own stand-alone project.
+ * Hide the constant pool from the JIT interfaces and have a unified simple
+   constant system.
+
+## 09:47
+
+So what I could do as I thought of before is that I could move the program
+representation around also. Then this could be reused by code such as a
+hypothetical interpreter or `javap`. The JIT interfaces can then take this
+information and pass it to the JIT implementation. So that project would
+contain just a class representation that can be piped into the JIT for usage.
+
+## 09:52
+
+So the end result of all of this should be much smaller and simpler JITs along
+with reusable native code generators and class representations. I would
+suppose that the hiding of the constant pool can be done by the class
+representation code. And that representation code can use directly the stack
+and local variables also. Then the JIT would handle stack caching so that it
+is not in that representation code. Then once the JIT caches stack items and
+such it will send that to the implementing JIT. The implementing JIT then
+generates native code via the native code generator classes. Then this means
+that the base JIT will get all of the stack and pool entry representations
+moved out making it far simpler.
+
+## 09:55
+
+Then I can move forward with implementing the JIT and I would then be less
+likely to step over anything, since the current rather large set of classes can
+be difficult to navigate especially when they will only increase in size.
+
+## 09:56
+
+So basically:
+
+ * `jit` -> `class-format`
+   * Anything that represents the class file format goes here.
+   * Make class streamers the JIT can use.
+   * Hide the constant pool.
+ * `jit`/`jit-generic` -> `class-format`
+   * Merge pool entries
+ * `jit-generic` -> `native-code`
+   * Move any register stuff and other interfaces related to target code
+     generation.
+
+And some notes:
+
+ * `class-format`
+   * Keep a simplified and merged pool, hide the details of it and use only
+     what is used.
+   * Does not handle stack caching.
+ * `jit`
+   * Performs stack caching then passes that to JIT implementations.
+ * `native-code`
+   * Anything related to native code generate goes here.
+
