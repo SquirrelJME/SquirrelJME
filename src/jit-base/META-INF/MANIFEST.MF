@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: jit-base
 X-SquirrelJME-UUID: 2d7eb289-8bec-4dbb-b1b0-7672c3472fbb
-X-SquirrelJME-Depends: cldc-compact, util-unmodifiable
+X-SquirrelJME-Depends: cldc-compact, util-unmodifiable,
+ native-code-base
 X-SquirrelJME-Error: BQ
 LIBlet-Title: Just-In-Time Compiler (Base Support)
 LIBlet-Vendor: Steven Gawroriski

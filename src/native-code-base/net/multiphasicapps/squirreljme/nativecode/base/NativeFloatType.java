@@ -8,15 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.nativecode.base;
 
 /**
- * This represents the kind of floating point support is used for a given
- * target.
+ * This represents the kind of floating point format that is used by a given
+ * native machine.
  *
  * @since 2016/08/29
  */
-public enum JITCPUFloat
+public enum NativeFloatType
 {
 	/** Pure software. */
 	SOFT("soft", false, false),
@@ -48,7 +48,7 @@ public enum JITCPUFloat
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	private JITCPUFloat(String __n, boolean __h32, boolean __h64)
+	private NativeFloatType(String __n, boolean __h32, boolean __h64)
 		throws NullPointerException
 	{
 		// Check
@@ -135,27 +135,27 @@ public enum JITCPUFloat
 	 * @throws IllegalArgumentException If the input string is not known.
 	 * @since 2016/08/29
 	 */
-	public static JITCPUFloat of(String __s)
+	public static NativeFloatType of(String __s)
 		throws IllegalArgumentException
 	{
 		switch (__s)
 		{
 				// Software
 			case "soft":
-				return JITCPUFloat.SOFT;
+				return SOFT;
 			
 				// Hardware 32-bit, Software 64-bit
 			case "hard32":
-				return JITCPUFloat.HARD32;
+				return HARD32;
 				
 				// Hardware, Both
 			case "hard64":
-				return JITCPUFloat.HARD64;
+				return HARD64;
 				
-				// {@squirreljme.error BQ0h Unknown floating point type.
+				// {@squirreljme.error BX01 Unknown floating point type.
 				// (The floating point type string)}
 			default:
-				throw new IllegalArgumentException(String.format("BQ0h %s",
+				throw new IllegalArgumentException(String.format("BX01 %s",
 					__s));
 		}
 	}

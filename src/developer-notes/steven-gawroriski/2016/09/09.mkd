@@ -133,3 +133,11 @@ or stack values. Then the allocator state can be what is currently allocated.
 The allocations should be immutable so they can be shared with the state,
 otherwise it can get a bit messy.
 
+## 12:55
+
+Going to need a `native-code-base` which is dependend on by `jit-base`. Then
+the floating point type is moved there. Then also with this native code being
+split off, the allocator could handle cases where registers are 8-bit. So in
+a way, in the future, it can help me when I write the small target JIT if the
+current JIT does not become a part of it.
+

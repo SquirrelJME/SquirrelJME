@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: native-code-base
+X-SquirrelJME-UUID: 7ce07260-5acf-478d-8144-cf5c0dba2311
+X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Error: BX
+LIBlet-Title: Base Native Code Support
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This project contains the base support for 
+ native code generation.
+
