@@ -42,7 +42,7 @@ final class __CodeDecoder__
 	final __MethodDecoder__ _decoder;
 	
 	/** The class decoder owning this. */
-	final __ClassDecoder__ _classdecoder;
+	final ClassDecoder _classdecoder;
 	
 	/** The method flags. */
 	final ClassMethodFlags _flags;
@@ -87,19 +87,13 @@ final class __CodeDecoder__
 		
 		// Set
 		this._decoder = __cd;
-		__ClassDecoder__ classdec = __cd._classdecoder;
+		ClassDecoder classdec = __cd._classdecoder;
 		this._classdecoder = classdec;
 		this._input = __dis;
 		this._flags = __f;
 		this._type = __t;
 		this._writer = __mlw;
 		this.pool = __cd._pool;
-		
-		// Need to get hardware float information
-		JITOutputConfig.Immutable config = classdec._config;
-		NativeFloatType ft = config.triplet().floatingPoint();
-		this._hwfloat = ft.isHardwareFloat();
-		this._hwdouble = ft.isHardwareDouble();
 	}
 	
 	/**
@@ -157,9 +151,6 @@ final class __CodeDecoder__
 			this._smt = (smt = __SMTParser__.__initialState(this._flags,
 				this._type, maxstack, maxlocals));
 		
-		// Prime arguments
-		__primeArguments(hasexceptions);
-		
 		// Parse the byte code now
 		try (ExtendedDataInputStream dis = new ExtendedDataInputStream(
 			new ByteArrayInputStream(code)))
@@ -213,69 +204,6 @@ final class __CodeDecoder__
 				// Unknown
 			default:
 				break;
-		}
-	}
-	
-	/**
-	 * Primes the input arguments.
-	 *
-	 * @param __eh Are there exception handlers present in this method?
-	 * @since 2016/08/29
-	 */
-	private void __primeArguments(boolean __eh)
-	{
-		// Get initial state
-		ClassStackMapLocals locals = this._smt.get(0)._locals;
-		
-		// Setup output arguments
-		List<ClassStackMapType> args = new ArrayList<>();
-		int n = locals.size();
-		for (int i = 0; i < n; i++)
-		{
-			// Get
-			ClassStackMapType t = locals.get(i);
-			
-			// No more arguments?
-			if (t == ClassStackMapType.NOTHING)
-				break;
-			
-			// Map
-			args.add(__remapType(t.map()));
-		}
-		
-		// Prime it
-		this._writer.primeArguments(__eh, args.<ClassStackMapType>toArray(
-			new ClassStackMapType[args.size()]));
-	}
-	
-	/**
-	 * Remaps the specified type, if it is a floating point type and hardware
-	 * support is not enabled for that specified type then it is translated
-	 * into an integer type.
-	 *
-	 * @param __t The type to remap.
-	 * @return {@code __t} or the remapped type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/03
-	 */
-	ClassStackMapType __remapType(ClassStackMapType __t)
-		throws NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends
-		switch (__t)
-		{
-				// If software floating point is used for either type then
-				// remap
-			case FLOAT: return (this._hwfloat ? __t : ClassStackMapType.INTEGER);
-			case DOUBLE: return (this._hwdouble ? __t : ClassStackMapType.LONG);
-			
-				// Keep the same
-			default:
-				return __t;
 		}
 	}
 }

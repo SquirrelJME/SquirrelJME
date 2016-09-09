@@ -20,7 +20,7 @@ import java.util.RandomAccess;
  *
  * @since 2016/03/31
  */
-class ClassStackMapState
+public class ClassStackMapState
 {
 	/** The state of the stack. */
 	final ClassStackMapStack _stack;

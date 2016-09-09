@@ -24,23 +24,12 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  */
 final class __OpParser__
 {
-	/** Indicates that a local/stack item is not a duplicate of anything. */
-	static final int UNIQUE_STACK_VALUE =
-		ClassStackMapStack.UNIQUE_STACK_VALUE;
-	
-	/** Flags that the cache is a copy from the stack and not a local. */
-	static final int CACHE_STACK_MASK =
-		ClassStackMapStack.CACHE_STACK_MASK;
-	
 	/** Implicit next operation. */
 	private static final int[] IMPLICIT_NEXT =
 		new int[]{-1};
 	
 	/** The input operation data. */
 	protected final ExtendedDataInputStream input;
-	
-	/** The writer used for output. */
-	protected final JITMethodWriter writer;
 	
 	/** The class flags. */
 	protected final ClassClassFlags classflags;
@@ -54,9 +43,6 @@ final class __OpParser__
 	/** The working stack map state. */
 	private final ClassStackMapState _smwork;
 	
-	/** Was the stack cache state flushed? */
-	private volatile boolean _stackflushed;
-	
 	/**
 	 * Initializes the operation parser.
 	 *
@@ -67,7 +53,7 @@ final class __OpParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis,
+	__OpParser__(ExtendedDataInputStream __dis,
 		Map<Integer, ClassStackMapState> __smt, ClassClassFlags __cf,
 		ClassConstantPool __pool)
 		throws NullPointerException
@@ -77,7 +63,6 @@ final class __OpParser__
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.writer = __jmw;
 		this.input = __dis;
 		this.classflags = __cf;
 		this._smt = __smt;
@@ -99,7 +84,6 @@ final class __OpParser__
 	{
 		// Get
 		ExtendedDataInputStream input = this.input;
-		JITMethodWriter writer = this.writer;
 		Map<Integer, ClassStackMapState> smt = this._smt;
 		ClassStackMapState smwork = this._smwork;
 		
@@ -157,20 +141,6 @@ final class __OpParser__
 				// Verify that they are correct
 				if (true)
 					throw new Error("TODO");
-				
-				// If this instruction naturally flows into a jump target
-				// (since jump handling flushes before the actual jump) then
-				// the stack cache will have to be flushed where locals are
-				// copied to the stack.
-				if (!hasflushed)
-				{
-					// Flush the stack
-					__flushStack();
-					
-					// Operations flushed, do not need to generate code for
-					// them now
-					hasflushed = true;
-				}
 			}
 		}
 		
@@ -671,25 +641,14 @@ final class __OpParser__
 		// the variable was; The expected type)}
 		ClassStackMapType was = locals.get(__from);
 		if (was != __t)
-			throw new ClassFormatException(String.format("AY3w %d %s %s", __from, was,
-				__t));
+			throw new ClassFormatException(String.format("AY3w %d %s %s",
+				__from, was, __t));
 		
 		// Cache it on the stack
 		smwork._stack.push(was, __from);
 		
 		// Implicit next
 		return IMPLICIT_NEXT;
-	}
-	
-	/**
-	 * Flushes the stack and makes all stack variables get values copied from
-	 * locals by the values they cache.
-	 *
-	 * @since 2016/09/04
-	 */
-	private void __flushStack()
-	{
-		throw new Error("TODO");
 	}
 }
 

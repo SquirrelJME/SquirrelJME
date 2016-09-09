@@ -15,7 +15,7 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/08/28
  */
-class ClassStackMapLocals
+public class ClassStackMapLocals
 	extends ClassStackMapTread
 {
 	/**

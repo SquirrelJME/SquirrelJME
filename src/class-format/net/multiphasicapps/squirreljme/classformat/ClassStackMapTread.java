@@ -18,7 +18,7 @@ import java.util.RandomAccess;
  *
  * @since 2016/08/28
  */
-abstract class ClassStackMapTread
+public abstract class ClassStackMapTread
 	extends AbstractList<ClassStackMapType>
 	implements RandomAccess
 {
