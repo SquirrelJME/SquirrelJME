@@ -8,15 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 /**
  * This is the type of value that can be stored within registers.
  *
  * @since 2016/09/02
  */
-public enum GenericRegisterIntegerType
-	implements GenericRegisterType
+public enum NativeRegisterIntegerType
+	implements NativeRegisterType
 {
 	/** Byte. */
 	BYTE,

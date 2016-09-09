@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +29,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  *
  * @since 2016/09/01
  */
-public final class GenericABI
+public final class NativeABI
 	implements JITObjectProperties
 {
 	/** The integer group. */
@@ -39,19 +39,19 @@ public final class GenericABI
 	private final __Group__ _float;
 	
 	/** The current stack register. */
-	private final GenericRegister _stack;
+	private final NativeRegister _stack;
 	
 	/** The stack direction. */
-	private final GenericStackDirection _stackdir;
+	private final NativeStackDirection _stackdir;
 	
 	/** The stack alignment. */
 	private final int _stackalign;
 	
 	/** Integer registers. */
-	private final Map<GenericRegister, GenericRegisterIntegerType> _intregs;
+	private final Map<NativeRegister, NativeRegisterIntegerType> _intregs;
 	
 	/** Floating point registers. */
-	private final Map<GenericRegister, GenericRegisterFloatType> _floatregs;
+	private final Map<NativeRegister, NativeRegisterFloatType> _floatregs;
 	
 	/** The size of pointers. */
 	private final int _pointersize;
@@ -63,7 +63,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	GenericABI(GenericABIBuilder __b)
+	NativeABI(NativeABIBuilder __b)
 		throws NullPointerException
 	{
 		// Check
@@ -83,24 +83,24 @@ public final class GenericABI
 		this._stackalign = stackalign;
 		
 		// {@squirreljme.error BA0w The stack direction was not set.}
-		GenericStackDirection stackdir = __b._stackdir;
+		NativeStackDirection stackdir = __b._stackdir;
 		if (stackdir == null)
 			throw new JITException("BA0w");
 		this._stackdir = stackdir;
 		
 		// {@squirreljme.error BA0x The stack register was not set.}
-		GenericRegister stack = __b._stack;
+		NativeRegister stack = __b._stack;
 		if (stack == null)
 			throw new JITException("BA0x");
 		this._stack = stack;
 		
 		// Fill integer registers
-		this._intregs = UnmodifiableMap.<GenericRegister,
-			GenericRegisterIntegerType>of(new LinkedHashMap<>(__b._intregs));
+		this._intregs = UnmodifiableMap.<NativeRegister,
+			NativeRegisterIntegerType>of(new LinkedHashMap<>(__b._intregs));
 			
 		// Fill floating point registers
-		this._floatregs = UnmodifiableMap.<GenericRegister,
-			GenericRegisterFloatType>of(new LinkedHashMap<>(__b._floatregs));
+		this._floatregs = UnmodifiableMap.<NativeRegister,
+			NativeRegisterFloatType>of(new LinkedHashMap<>(__b._floatregs));
 		
 		// Setup integer and float registers
 		this._int = new __Group__(false, __b);
@@ -116,7 +116,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final List<GenericRegister> arguments(GenericRegisterKind __k)
+	public final List<NativeRegister> arguments(NativeRegisterKind __k)
 		throws NullPointerException
 	{
 		// Check
@@ -144,7 +144,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public final GenericRegisterFloatType floatType(GenericRegister __r)
+	public final NativeRegisterFloatType floatType(NativeRegister __r)
 		throws NullPointerException
 	{
 		// Check
@@ -163,7 +163,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public final GenericRegisterIntegerType intType(GenericRegister __r)
+	public final NativeRegisterIntegerType intType(NativeRegister __r)
 		throws NullPointerException
 	{
 		// Check
@@ -181,7 +181,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final boolean isSaved(GenericRegister __r)
+	public final boolean isSaved(NativeRegister __r)
 		throws NullPointerException
 	{
 		// Check
@@ -199,7 +199,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final boolean isTemporary(GenericRegister __r)
+	public final boolean isTemporary(NativeRegister __r)
 		throws NullPointerException
 	{
 		// Check
@@ -239,7 +239,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final List<GenericRegister> result(GenericRegisterKind __k)
+	public final List<NativeRegister> result(NativeRegisterKind __k)
 		throws NullPointerException
 	{
 		// Check
@@ -258,7 +258,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final List<GenericRegister> saved(GenericRegisterKind __k)
+	public final List<NativeRegister> saved(NativeRegisterKind __k)
 		throws NullPointerException
 	{
 		// Check
@@ -283,7 +283,7 @@ public final class GenericABI
 	 * @return The stack register.
 	 * @since 2016/09/01
 	 */
-	public final GenericRegister stack()
+	public final NativeRegister stack()
 	{
 		throw new Error("TODO");
 	}
@@ -294,7 +294,7 @@ public final class GenericABI
 	 * @return The stack direction.
 	 * @since 2016/09/01
 	 */
-	public final GenericStackDirection stackDirection()
+	public final NativeStackDirection stackDirection()
 	{
 		throw new Error("TODO");
 	}
@@ -308,7 +308,7 @@ public final class GenericABI
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final List<GenericRegister> temporary(GenericRegisterKind __k)
+	public final List<NativeRegister> temporary(NativeRegisterKind __k)
 		throws NullPointerException
 	{
 		// Check
@@ -340,7 +340,7 @@ public final class GenericABI
 	 * @since 2016/09/01
 	 */
 	private int __fill(boolean __float,
-		Iterable<GenericRegister> __from, Collection<GenericRegister> __to)
+		Iterable<NativeRegister> __from, Collection<NativeRegister> __to)
 		throws NullPointerException
 	{
 		// Check
@@ -349,7 +349,7 @@ public final class GenericABI
 		
 		// Copy registers of the same kind
 		int rv = 0;
-		for (GenericRegister r : __from)
+		for (NativeRegister r : __from)
 			if ((__float && (null != floatType(r))) ||
 				(!__float && (null != intType(r))))
 			{
@@ -369,22 +369,22 @@ public final class GenericABI
 	private final class __Group__
 	{
 		/** Saved registers (set). */
-		private final Set<GenericRegister> _ssaved;
+		private final Set<NativeRegister> _ssaved;
 	
 		/** Temporary registers (set). */
-		private final Set<GenericRegister> _stemps;
+		private final Set<NativeRegister> _stemps;
 	
 		/** Saved registers (list). */
-		private final List<GenericRegister> _lsaved;
+		private final List<NativeRegister> _lsaved;
 	
 		/** Temporary registers (list). */
-		private final List<GenericRegister> _ltemps;
+		private final List<NativeRegister> _ltemps;
 	
 		/** Arguments. */
-		private final List<GenericRegister> _args;
+		private final List<NativeRegister> _args;
 	
 		/** Results. */
-		private final List<GenericRegister> _result;
+		private final List<NativeRegister> _result;
 		
 		/**
 		 * Initializes the grouping.
@@ -394,7 +394,7 @@ public final class GenericABI
 		 * @throws NullPointerException On null arguments.
 		 * @since 2016/09/01
 		 */
-		private __Group__(boolean __float, GenericABIBuilder __b)
+		private __Group__(boolean __float, NativeABIBuilder __b)
 			throws NullPointerException
 		{
 			// Check
@@ -405,36 +405,36 @@ public final class GenericABI
 			int total = 0;
 			
 			// Add results
-			Iterable<GenericRegister> xresult = __b._result;
-			List<GenericRegister> result = new ArrayList<>();
+			Iterable<NativeRegister> xresult = __b._result;
+			List<NativeRegister> result = new ArrayList<>();
 			total += __fill(__float, xresult, result);
-			this._result = UnmodifiableList.<GenericRegister>of(result);
+			this._result = UnmodifiableList.<NativeRegister>of(result);
 			
 			// Add arguments
-			Iterable<GenericRegister> xargs = __b._args;
-			List<GenericRegister> args = new ArrayList<>();
+			Iterable<NativeRegister> xargs = __b._args;
+			List<NativeRegister> args = new ArrayList<>();
 			total += __fill(__float, xargs, args);
-			this._args = UnmodifiableList.<GenericRegister>of(args);
+			this._args = UnmodifiableList.<NativeRegister>of(args);
 			
 			// Add saved registers
-			Iterable<GenericRegister> xsaved = __b._saved;
-			Set<GenericRegister> saved = new LinkedHashSet<>();
+			Iterable<NativeRegister> xsaved = __b._saved;
+			Set<NativeRegister> saved = new LinkedHashSet<>();
 			total += __fill(__float, xsaved, saved);
-			this._ssaved = UnmodifiableSet.<GenericRegister>of(saved);
-			this._lsaved = UnmodifiableList.<GenericRegister>of(
+			this._ssaved = UnmodifiableSet.<NativeRegister>of(saved);
+			this._lsaved = UnmodifiableList.<NativeRegister>of(
 				new ArrayList<>(saved));
 			
 			// Add temporary registers
-			Iterable<GenericRegister> xtemps = __b._temps;
-			Set<GenericRegister> temps = new LinkedHashSet<>();
+			Iterable<NativeRegister> xtemps = __b._temps;
+			Set<NativeRegister> temps = new LinkedHashSet<>();
 			total += __fill(__float, xtemps, temps);
-			this._stemps = UnmodifiableSet.<GenericRegister>of(temps);
-			this._ltemps = UnmodifiableList.<GenericRegister>of(
+			this._stemps = UnmodifiableSet.<NativeRegister>of(temps);
+			this._ltemps = UnmodifiableList.<NativeRegister>of(
 				new ArrayList<>(temps));
 			
 			// {@squirreljme.error BA1e A register cannot be both saved
 			// and temporary. (The register)}
-			for (GenericRegister r : saved)
+			for (NativeRegister r : saved)
 				if (temps.contains(r))
 					throw new JITException(String.format("BA1e %s", r));
 			

@@ -8,22 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 /**
- * This represents the direction that the stack moves in.
+ * This interface is associated with basic register types.
  *
- * @since 2016/09/01
+ * @since 2016/09/02
  */
-public enum GenericStackDirection
+public interface NativeRegisterType
 {
-	/** Stack grows from lower addresses to higher ones. */
-	LOW_TO_HIGH,
-	
-	/** Stack grows from higher addresses to lower ones. */
-	HIGH_TO_LOW,
-	
-	/** End. */
-	;
 }
 

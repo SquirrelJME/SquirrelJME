@@ -8,22 +8,20 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 /**
- * This represents the type of floating point value that may be stored
- * within a register.
+ * This represents the kind of register that this is.
  *
- * @since 2016/09/02
+ * @since 2016/09/01
  */
-public enum GenericRegisterFloatType
-	implements GenericRegisterType
+public enum NativeRegisterKind
 {
-	/** Float. */
-	FLOAT,
+	/** Integer registers. */
+	INTEGER,
 	
-	/** Double. */
-	DOUBLE,
+	/** Floating point registers. */
+	FLOAT,
 	
 	/** End. */
 	;

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -18,47 +18,47 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
- * This class is used to generate instances of {@link GenericABI} which is
+ * This class is used to generate instances of {@link NativeABI} which is
  * used by the register allocator and the generic JIT compiler to determine
  * how other methods are called.
  *
  * @since 2016/09/01
  */
-public final class GenericABIBuilder
+public final class NativeABIBuilder
 {
 	/** Lock. */
 	protected final Object lock =
 		new Object();
 	
 	/** Integer registers. */
-	final Map<GenericRegister, GenericRegisterIntegerType> _intregs =
+	final Map<NativeRegister, NativeRegisterIntegerType> _intregs =
 		new LinkedHashMap<>();
 	
 	/** Floating point registers. */
-	final Map<GenericRegister, GenericRegisterFloatType> _floatregs =
+	final Map<NativeRegister, NativeRegisterFloatType> _floatregs =
 		new LinkedHashMap<>();
 	
 	/** Saved registers. */
-	final Set<GenericRegister> _saved =
+	final Set<NativeRegister> _saved =
 		new LinkedHashSet<>();
 	
 	/** Temporary registers. */
-	final Set<GenericRegister> _temps =
+	final Set<NativeRegister> _temps =
 		new LinkedHashSet<>();
 	
 	/** Arguments. */
-	final Set<GenericRegister> _args =
+	final Set<NativeRegister> _args =
 		new LinkedHashSet<>();
 	
 	/** Results. */
-	final Set<GenericRegister> _result =
+	final Set<NativeRegister> _result =
 		new LinkedHashSet<>();
 	
 	/** The current stack register. */
-	volatile GenericRegister _stack;
+	volatile NativeRegister _stack;
 	
 	/** The stack direction. */
-	volatile GenericStackDirection _stackdir;
+	volatile NativeStackDirection _stackdir;
 	
 	/** The stack alignment. */
 	volatile int _stackalign =
@@ -76,7 +76,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final void addArgument(GenericRegister __r)
+	public final void addArgument(NativeRegister __r)
 		throws NullPointerException
 	{
 		// Check
@@ -98,7 +98,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public final void addRegister(GenericRegister __r, GenericRegisterType __t)
+	public final void addRegister(NativeRegister __r, NativeRegisterType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -109,12 +109,12 @@ public final class GenericABIBuilder
 		synchronized (this.lock)
 		{
 			// Integer?
-			if (__t instanceof GenericRegisterIntegerType)
-				this._intregs.put(__r, (GenericRegisterIntegerType)__t);
+			if (__t instanceof NativeRegisterIntegerType)
+				this._intregs.put(__r, (NativeRegisterIntegerType)__t);
 			
 			// Floating point?
-			if (__t instanceof GenericRegisterFloatType)
-				this._floatregs.put(__r, (GenericRegisterFloatType)__t);
+			if (__t instanceof NativeRegisterFloatType)
+				this._floatregs.put(__r, (NativeRegisterFloatType)__t);
 		}
 	}
 	
@@ -125,7 +125,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final void addResult(GenericRegister __r)
+	public final void addResult(NativeRegister __r)
 		throws NullPointerException
 	{
 		// Check
@@ -148,7 +148,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final void addSaved(GenericRegister __r)
+	public final void addSaved(NativeRegister __r)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -176,7 +176,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final void addTemporary(GenericRegister __r)
+	public final void addTemporary(NativeRegister __r)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -204,13 +204,13 @@ public final class GenericABIBuilder
 	 * register was not set, or the direction register was not set.
 	 * @since 2016/09/01
 	 */
-	public final GenericABI build()
+	public final NativeABI build()
 		throws JITException
 	{
 		// Lock
 		synchronized (this.lock)
 		{
-			return new GenericABI(this);
+			return new NativeABI(this);
 		}
 	}
 	
@@ -244,7 +244,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final void stack(GenericRegister __r)
+	public final void stack(NativeRegister __r)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -293,7 +293,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	public final void stackDirection(GenericStackDirection __d)
+	public final void stackDirection(NativeStackDirection __d)
 		throws NullPointerException
 	{
 		// Check
@@ -316,7 +316,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public static GenericRegisterIntegerType intRegisterTypeFromTriplet(
+	public static NativeRegisterIntegerType intRegisterTypeFromTriplet(
 		JITTriplet __t)
 		throws JITException, NullPointerException
 	{
@@ -327,10 +327,10 @@ public final class GenericABIBuilder
 		// Depends on the bits
 		switch (__t.bits())
 		{
-			case 8: return GenericRegisterIntegerType.BYTE;
-			case 16: return GenericRegisterIntegerType.SHORT;
-			case 32: return GenericRegisterIntegerType.INTEGER;
-			case 64: return GenericRegisterIntegerType.LONG;
+			case 8: return NativeRegisterIntegerType.BYTE;
+			case 16: return NativeRegisterIntegerType.SHORT;
+			case 32: return NativeRegisterIntegerType.INTEGER;
+			case 64: return NativeRegisterIntegerType.LONG;
 			
 				// {@squirreljme.error BA1f Could not get the integer register
 				// type from the specified triplet. (The triplet)}
@@ -349,7 +349,7 @@ public final class GenericABIBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public static GenericRegisterFloatType floatRegisterTypeFromTriplet(
+	public static NativeRegisterFloatType floatRegisterTypeFromTriplet(
 		JITTriplet __t)
 		throws JITException, NullPointerException
 	{
@@ -360,8 +360,8 @@ public final class GenericABIBuilder
 		// Depends on the float type
 		switch (__t.floatingPoint())
 		{
-			case HARD32: return GenericRegisterFloatType.FLOAT;
-			case HARD64: return GenericRegisterFloatType.DOUBLE;
+			case HARD32: return NativeRegisterFloatType.FLOAT;
+			case HARD64: return NativeRegisterFloatType.DOUBLE;
 			
 				// {@squirreljme.error BA1g Could not get the float register
 				// type from the specified triplet. (The triplet)}

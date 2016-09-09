@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 /**
- * This interface is associated with basic register types.
+ * This interface is associated with single registers.
  *
- * @since 2016/09/02
+ * @since 2016/08/31
  */
-public interface GenericRegisterType
+public interface NativeRegister
 {
 }
 

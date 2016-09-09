@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 import java.util.Deque;
 import java.util.List;
@@ -23,28 +23,28 @@ import net.multiphasicapps.util.msd.MultiSetDeque;
  *
  * @since 2016/08/30
  */
-public class GenericAllocator
+public class NativeAllocator
 {
 	/** The configuration used. */
 	protected final JITOutputConfig.Immutable config;
 	
 	/** The ABI used. */
-	protected final GenericABI abi;
+	protected final NativeABI abi;
 	
 	/** The multi-set deque, used for removal. */
-	final MultiSetDeque<GenericRegister> _msd;
+	final MultiSetDeque<NativeRegister> _msd;
 	
 	/** Saved int register queue. */
-	final Deque<GenericRegister> _savedintq;
+	final Deque<NativeRegister> _savedintq;
 	
 	/** Saved float register queue. */
-	final Deque<GenericRegister> _savedfloatq;
+	final Deque<NativeRegister> _savedfloatq;
 	
 	/** Temporary int register queue. */
-	final Deque<GenericRegister> _tempintq;
+	final Deque<NativeRegister> _tempintq;
 	
 	/** Temporary float register queue. */
-	final Deque<GenericRegister> _tempfloatq;
+	final Deque<NativeRegister> _tempfloatq;
 	
 	/** Registers bound to local variables. */
 	volatile __VarStates__ _jlocals;
@@ -64,7 +64,7 @@ public class GenericAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	GenericAllocator(JITOutputConfig.Immutable __conf, GenericABI __abi)
+	NativeAllocator(JITOutputConfig.Immutable __conf, NativeABI __abi)
 		throws NullPointerException
 	{
 		// Check
@@ -76,11 +76,11 @@ public class GenericAllocator
 		this.abi = __abi;
 		
 		// Setup queues
-		MultiSetDeque<GenericRegister> msd = new MultiSetDeque<>();
-		Deque<GenericRegister> savedintq = msd.subDeque();
-		Deque<GenericRegister> savedfloatq = msd.subDeque();
-		Deque<GenericRegister> tempintq = msd.subDeque();
-		Deque<GenericRegister> tempfloatq = msd.subDeque();
+		MultiSetDeque<NativeRegister> msd = new MultiSetDeque<>();
+		Deque<NativeRegister> savedintq = msd.subDeque();
+		Deque<NativeRegister> savedfloatq = msd.subDeque();
+		Deque<NativeRegister> tempintq = msd.subDeque();
+		Deque<NativeRegister> tempfloatq = msd.subDeque();
 		this._msd = msd;
 		this._savedintq = savedintq;
 		this._savedfloatq = savedfloatq;
@@ -88,10 +88,10 @@ public class GenericAllocator
 		this._tempfloatq = tempfloatq;
 		
 		// Add all registers to the queues
-		savedintq.addAll(__abi.saved(GenericRegisterKind.INTEGER));
-		savedfloatq.addAll(__abi.saved(GenericRegisterKind.FLOAT));
-		tempintq.addAll(__abi.temporary(GenericRegisterKind.INTEGER));
-		tempfloatq.addAll(__abi.temporary(GenericRegisterKind.FLOAT));
+		savedintq.addAll(__abi.saved(NativeRegisterKind.INTEGER));
+		savedfloatq.addAll(__abi.saved(NativeRegisterKind.FLOAT));
+		tempintq.addAll(__abi.temporary(NativeRegisterKind.INTEGER));
+		tempfloatq.addAll(__abi.temporary(NativeRegisterKind.FLOAT));
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class GenericAllocator
 	 * @return The used ABI.
 	 * @since 2016/09/03
 	 */
-	public final GenericABI abi()
+	public final NativeABI abi()
 	{
 		return this.abi;
 	}
@@ -126,13 +126,13 @@ public class GenericAllocator
 		__VarStates__ jlocals = this._jlocals;
 		
 		// Get integral and float arguments
-		GenericABI abi = this.abi;
-		List<GenericRegister> ai = abi.arguments(GenericRegisterKind.INTEGER);
-		List<GenericRegister> af = abi.arguments(GenericRegisterKind.FLOAT);
+		NativeABI abi = this.abi;
+		List<NativeRegister> ai = abi.arguments(NativeRegisterKind.INTEGER);
+		List<NativeRegister> af = abi.arguments(NativeRegisterKind.FLOAT);
 		
 		// If there are any used variables they will be consumed from the
 		// argument list.
-		MultiSetDeque<GenericRegister> msd = this._msd;
+		MultiSetDeque<NativeRegister> msd = this._msd;
 		
 		// Int/float argument at and limits
 		int iat = 0, ilim = ai.size(),
@@ -177,7 +177,7 @@ public class GenericAllocator
 			}
 			
 			// Need to get the used register, if one is used at all
-			GenericRegister usereg;
+			NativeRegister usereg;
 			
 			// Floating point
 			if (type.isFloat())
@@ -303,9 +303,9 @@ public class GenericAllocator
 	 * @return The allocator state.
 	 * @since 2016/09/03
 	 */
-	public final GenericAllocatorState recordState()
+	public final NativeAllocatorState recordState()
 	{
-		return new GenericAllocatorState(this);
+		return new NativeAllocatorState(this);
 	}
 	
 	/**

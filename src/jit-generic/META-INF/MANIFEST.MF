@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: jit-generic
 X-SquirrelJME-UUID: fd1eb39f-672c-4764-9f1b-61e31e0f40e8
 X-SquirrelJME-Depends: jit, io-data, os-generic,
- util-unmodifiable, util-msd
+ util-unmodifiable, util-msd, native-code
 X-SquirrelJME-Error: BA
 LIBlet-Title: JIT (Generic)
 LIBlet-Vendor: Steven Gawroriski

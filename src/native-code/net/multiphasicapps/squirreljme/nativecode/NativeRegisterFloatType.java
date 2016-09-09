@@ -8,14 +8,24 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 /**
- * This interface is associated with single registers.
+ * This represents the type of floating point value that may be stored
+ * within a register.
  *
- * @since 2016/08/31
+ * @since 2016/09/02
  */
-public interface GenericRegister
+public enum NativeRegisterFloatType
+	implements NativeRegisterType
 {
+	/** Float. */
+	FLOAT,
+	
+	/** Double. */
+	DOUBLE,
+	
+	/** End. */
+	;
 }
 

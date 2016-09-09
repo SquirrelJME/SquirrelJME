@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic;
+package net.multiphasicapps.squirreljme.nativecode;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -23,19 +23,19 @@ import java.util.Deque;
  *
  * @since 2016/08/31
  */
-public final class GenericAllocatorState
+public final class NativeAllocatorState
 {
 	/** Saved integer queue. */
-	private final GenericRegister[] _savedintq;
+	private final NativeRegister[] _savedintq;
 	
 	/** Saved float queue. */
-	private final GenericRegister[] _savedfloatq;
+	private final NativeRegister[] _savedfloatq;
 	
 	/** Temporary integer queue. */
-	private final GenericRegister[] _tempintq;
+	private final NativeRegister[] _tempintq;
 	
 	/** Temporary float queue. */
-	private final GenericRegister[] _tempfloatq;
+	private final NativeRegister[] _tempfloatq;
 	
 	/** Local variables. */
 	private final __VarStates__ _jlocals;
@@ -56,7 +56,7 @@ public final class GenericAllocatorState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/03
 	 */
-	GenericAllocatorState(GenericAllocator __ga)
+	NativeAllocatorState(NativeAllocator __ga)
 		throws NullPointerException
 	{
 		// Check
@@ -64,20 +64,20 @@ public final class GenericAllocatorState
 			throw new NullPointerException("NARG");
 		
 		// Get parts for copying
-		Deque<GenericRegister> savedintq = __ga._savedintq;
-		Deque<GenericRegister> savedfloatq = __ga._savedfloatq;
-		Deque<GenericRegister> tempintq = __ga._tempintq;
-		Deque<GenericRegister> tempfloatq = __ga._tempfloatq;
+		Deque<NativeRegister> savedintq = __ga._savedintq;
+		Deque<NativeRegister> savedfloatq = __ga._savedfloatq;
+		Deque<NativeRegister> tempintq = __ga._tempintq;
+		Deque<NativeRegister> tempfloatq = __ga._tempfloatq;
 		
 		// Make arrays
-		this._savedintq = savedintq.<GenericRegister>toArray(
-			new GenericRegister[savedintq.size()]);
-		this._savedfloatq = savedfloatq.<GenericRegister>toArray(
-			new GenericRegister[savedfloatq.size()]);
-		this._tempintq = tempintq.<GenericRegister>toArray(
-			new GenericRegister[tempintq.size()]);
-		this._tempfloatq = tempfloatq.<GenericRegister>toArray(
-			new GenericRegister[tempfloatq.size()]);
+		this._savedintq = savedintq.<NativeRegister>toArray(
+			new NativeRegister[savedintq.size()]);
+		this._savedfloatq = savedfloatq.<NativeRegister>toArray(
+			new NativeRegister[savedfloatq.size()]);
+		this._tempintq = tempintq.<NativeRegister>toArray(
+			new NativeRegister[tempintq.size()]);
+		this._tempfloatq = tempfloatq.<NativeRegister>toArray(
+			new NativeRegister[tempfloatq.size()]);
 		
 		// Copy variable states
 		this._jlocals = new __VarStates__(__ga._jlocals);
