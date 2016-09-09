@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.nativecode.NativeAllocatorState;
 
 /**
  * This contains a snapshot of the state of the locals and stack variables
@@ -26,6 +27,9 @@ public final class GenericAllocatorState
 	
 	/** Stack variables. */
 	private final __VarStates__ _jstack;
+	
+	/** The state of native allocation. */
+	private final NativeAllocatorState _native;
 	
 	/** String cache. */
 	private volatile Reference<String> _string;
@@ -47,6 +51,9 @@ public final class GenericAllocatorState
 		// Copy variable states
 		this._jlocals = new __VarStates__(__ga._jlocals);
 		this._jstack = new __VarStates__(__ga._jstack);
+		
+		// Setup native state
+		throw new Error("TODO");
 	}
 	
 	/**
@@ -70,10 +77,12 @@ public final class GenericAllocatorState
 			sb.append(this._jlocals);
 			
 			// And stack state
-			sb.append(", stack(");
-			sb.append(this._stacksize);
-			sb.append(")=");
+			sb.append(", stack=");
 			sb.append(this._jstack);
+			
+			// Native state
+			sb.append(", native=");
+			sb.append(this._native);
 			
 			// Create
 			sb.append('}');

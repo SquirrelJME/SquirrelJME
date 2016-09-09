@@ -141,3 +141,10 @@ split off, the allocator could handle cases where registers are 8-bit. So in
 a way, in the future, it can help me when I write the small target JIT if the
 current JIT does not become a part of it.
 
+## 13:36
+
+One thing I need to adjust is how the generic JIT allocates variables. I
+believe I should follow a similar route and have it be based on allocations.
+That is instead of register and stack it is just `NativeAllocation`.
+
+
