@@ -8,10 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.generic.powerpc;
+package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
-import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
+import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 
 /**
  * This is a utility class which builds PowerPC based ABI setups.
@@ -32,42 +31,57 @@ public final class PowerPCABI
 	/**
 	 * Returns the EABI ABI.
 	 *
-	 * @param __t The used triplet.
+	 * @param __b The number of bits the CPU is.
+	 * @param __f The floating point type.
 	 * @return The ABI definition.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public static GenericABI eabi(JITTriplet __t)
+	public static NativeABI eabi(int __b, NativeFloatType __f)
 		throws NullPointerException
 	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
 	/**
 	 * Returns the OpenPOWER ABI.
 	 *
-	 * @param __t The used triplet.
+	 * @param __b The number of bits the CPU is.
+	 * @param __f The floating point type.
 	 * @return The ABI definition.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public static GenericABI openPower(JITTriplet __t)
+	public static NativeABI openPower(int __b, NativeFloatType __f)
 		throws NullPointerException
 	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
 	/**
 	 * Returns the SysV ABI.
 	 *
-	 * @param __t The used triplet.
+	 * @param __b The number of bits the CPU is.
+	 * @param __f The floating point type.
 	 * @return The ABI definition.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public static GenericABI sysV(JITTriplet __t)
+	public static NativeABI sysV(int __b, NativeFloatType __f)
 		throws NullPointerException
 	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 }

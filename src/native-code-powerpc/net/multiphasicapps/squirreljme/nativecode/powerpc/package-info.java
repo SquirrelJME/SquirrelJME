@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains generic code generators for PowerPC targets.
+ * This package contains the native code generation support for PowerPC CPUs.
  *
- * @since 2016/09/02
+ * @since 2016/09/09
  */
 
-package net.multiphasicapps.squirreljme.jit.generic.powerpc;
+package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
