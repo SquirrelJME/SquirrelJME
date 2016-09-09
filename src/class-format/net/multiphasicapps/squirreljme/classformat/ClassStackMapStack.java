@@ -117,7 +117,7 @@ class __SMTStack__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/04
 	 */
-	public int push(__SMTType__ __t, int __c)
+	public int push(ClassStackMapType __t, int __c)
 		throws NullPointerException
 	{
 		// Check
@@ -151,7 +151,7 @@ class __SMTStack__
 		{
 			// Set next to the top type
 			int hi = top + 1;
-			set(hi, __SMTType__.TOP);
+			set(hi, ClassStackMapType.TOP);
 			
 			// Specify that the value is also unique
 			if (__c != UNIQUE_STACK_VALUE)

@@ -78,7 +78,7 @@ public enum ClassStackMapType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/23
 	 */
-	public static __SMTType__ bySymbol(FieldSymbol __sym)
+	public static ClassStackMapType bySymbol(FieldSymbol __sym)
 		throws ClassFormatException, NullPointerException
 	{
 		// Check

@@ -46,7 +46,7 @@ final class __OpParser__
 	protected final ClassClassFlags classflags;
 	
 	/** The constant pool. */
-	protected final JITConstantPool pool;
+	protected final ClassConstantPool pool;
 	
 	/** The stack map table. */
 	private final Map<Integer, __SMTState__> _smt;
@@ -69,7 +69,7 @@ final class __OpParser__
 	 */
 	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis,
 		Map<Integer, __SMTState__> __smt, ClassClassFlags __cf,
-		JITConstantPool __pool)
+		ClassConstantPool __pool)
 		throws NullPointerException
 	{
 		// Check
@@ -236,52 +236,52 @@ final class __OpParser__
 				
 				// Push local int to the stack
 			case ClassByteCodeIndex.ILOAD:
-				return __executeLoad(__SMTType__.INTEGER,
+				return __executeLoad(ClassStackMapType.INTEGER,
 					input.readUnsignedByte());
 				
 				// Push local int to the stack (wide)
 			case ClassByteCodeIndex.WIDE_ILOAD:
-				return __executeLoad(__SMTType__.INTEGER,
+				return __executeLoad(ClassStackMapType.INTEGER,
 					input.readUnsignedShort());
 				
 				// Push local long to the stack
 			case ClassByteCodeIndex.LLOAD:
-				return __executeLoad(__SMTType__.LONG,
+				return __executeLoad(ClassStackMapType.LONG,
 					input.readUnsignedByte());
 				
 				// Push local long to the stack (wide)
 			case ClassByteCodeIndex.WIDE_LLOAD:
-				return __executeLoad(__SMTType__.LONG,
+				return __executeLoad(ClassStackMapType.LONG,
 					input.readUnsignedShort());
 				
 				// Push local float to the stack
 			case ClassByteCodeIndex.FLOAD:
-				return __executeLoad(__SMTType__.FLOAT,
+				return __executeLoad(ClassStackMapType.FLOAT,
 					input.readUnsignedByte());
 				
 				// Push local float to the stack (wide)
 			case ClassByteCodeIndex.WIDE_FLOAD:
-				return __executeLoad(__SMTType__.FLOAT,
+				return __executeLoad(ClassStackMapType.FLOAT,
 					input.readUnsignedShort());
 			
 				// Push local double to the stack
 			case ClassByteCodeIndex.DLOAD:
-				return __executeLoad(__SMTType__.DOUBLE,
+				return __executeLoad(ClassStackMapType.DOUBLE,
 					input.readUnsignedByte());
 				
 				// Push local double to the stack (wide)
 			case ClassByteCodeIndex.WIDE_DLOAD:
-				return __executeLoad(__SMTType__.DOUBLE,
+				return __executeLoad(ClassStackMapType.DOUBLE,
 					input.readUnsignedShort());
 				
 				// Push local reference to the stack
 			case ClassByteCodeIndex.ALOAD:
-				return __executeLoad(__SMTType__.OBJECT,
+				return __executeLoad(ClassStackMapType.OBJECT,
 					input.readUnsignedByte());
 				
 				// Push local reference to the stack (wide)
 			case ClassByteCodeIndex.WIDE_ALOAD:
-				return __executeLoad(__SMTType__.OBJECT,
+				return __executeLoad(ClassStackMapType.OBJECT,
 					input.readUnsignedShort());
 			
 				// Load int from local
@@ -289,7 +289,7 @@ final class __OpParser__
 			case ClassByteCodeIndex.ILOAD_1:
 			case ClassByteCodeIndex.ILOAD_2:
 			case ClassByteCodeIndex.ILOAD_3:
-				return __executeLoad(__SMTType__.INTEGER,
+				return __executeLoad(ClassStackMapType.INTEGER,
 					__code - ClassByteCodeIndex.ILOAD_0);
 			
 				// Load long from local
@@ -297,7 +297,7 @@ final class __OpParser__
 			case ClassByteCodeIndex.LLOAD_1:
 			case ClassByteCodeIndex.LLOAD_2:
 			case ClassByteCodeIndex.LLOAD_3:
-				return __executeLoad(__SMTType__.LONG,
+				return __executeLoad(ClassStackMapType.LONG,
 					__code - ClassByteCodeIndex.LLOAD_0);
 			
 				// Load float from local
@@ -305,7 +305,7 @@ final class __OpParser__
 			case ClassByteCodeIndex.FLOAD_1:
 			case ClassByteCodeIndex.FLOAD_2:
 			case ClassByteCodeIndex.FLOAD_3:
-				return __executeLoad(__SMTType__.FLOAT,
+				return __executeLoad(ClassStackMapType.FLOAT,
 					__code - ClassByteCodeIndex.FLOAD_0);
 			
 				// Load double from local
@@ -313,7 +313,7 @@ final class __OpParser__
 			case ClassByteCodeIndex.DLOAD_1:
 			case ClassByteCodeIndex.DLOAD_2:
 			case ClassByteCodeIndex.DLOAD_3:
-				return __executeLoad(__SMTType__.DOUBLE,
+				return __executeLoad(ClassStackMapType.DOUBLE,
 					__code - ClassByteCodeIndex.DLOAD_0);
 			
 				// Load reference from local
@@ -321,7 +321,7 @@ final class __OpParser__
 			case ClassByteCodeIndex.ALOAD_1:
 			case ClassByteCodeIndex.ALOAD_2:
 			case ClassByteCodeIndex.ALOAD_3:
-				return __executeLoad(__SMTType__.OBJECT,
+				return __executeLoad(ClassStackMapType.OBJECT,
 					__code - ClassByteCodeIndex.ALOAD_0);
 			
 			case ClassByteCodeIndex.IALOAD:
@@ -563,7 +563,7 @@ final class __OpParser__
 		int na = sym.argumentCount();
 		int xc = (isinstance ? 1:  0);
 		for (int i = 0; i < na; i++)
-			if (__SMTType__.bySymbol(sym.get(na)).isWide())
+			if (ClassStackMapType.bySymbol(sym.get(na)).isWide())
 				xc += 2;
 			else
 				xc++;
@@ -606,10 +606,10 @@ final class __OpParser__
 		FieldSymbol rv = sym.returnValue();
 		ClassStackMapType rvt;
 		int rvi;
-		__SMTType__ rvs;
+		ClassStackMapType rvs;
 		if (rv != null)
 		{
-			rvs = __SMTType__.bySymbol(rv);
+			rvs = ClassStackMapType.bySymbol(rv);
 			rvt = rvs.map();
 			rvi = end;
 			
@@ -655,7 +655,7 @@ final class __OpParser__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/27
 	 */
-	private int[] __executeLoad(__SMTType__ __t, int __from)
+	private int[] __executeLoad(ClassStackMapType __t, int __from)
 		throws NullPointerException
 	{
 		// Check
@@ -669,7 +669,7 @@ final class __OpParser__
 		// {@squirreljme.error AY3w Attempt to push a local variable to the
 		// stack of a different type. (The local variable index; The type that
 		// the variable was; The expected type)}
-		__SMTType__ was = locals.get(__from);
+		ClassStackMapType was = locals.get(__from);
 		if (was != __t)
 			throw new ClassFormatException(String.format("AY3w %d %s %s", __from, was,
 				__t));

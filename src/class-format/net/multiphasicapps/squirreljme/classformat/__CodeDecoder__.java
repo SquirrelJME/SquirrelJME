@@ -36,7 +36,7 @@ final class __CodeDecoder__
 		65535;
 	
 	/** Constant pool. */
-	protected final JITConstantPool pool;
+	protected final ClassConstantPool pool;
 	
 	/** The owning method decoder. */
 	final __MethodDecoder__ _decoder;
@@ -121,7 +121,7 @@ final class __CodeDecoder__
 		throws IOException
 	{
 		DataInputStream input = this._input;
-		JITConstantPool pool = this.pool;
+		ClassConstantPool pool = this.pool;
 		JITMethodWriter writer = this._writer;
 		
 		// Read max stack and locals
@@ -242,10 +242,10 @@ final class __CodeDecoder__
 		for (int i = 0; i < n; i++)
 		{
 			// Get
-			__SMTType__ t = locals.get(i);
+			ClassStackMapType t = locals.get(i);
 			
 			// No more arguments?
-			if (t == __SMTType__.NOTHING)
+			if (t == ClassStackMapType.NOTHING)
 				break;
 			
 			// Map
