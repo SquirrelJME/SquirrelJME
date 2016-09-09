@@ -177,3 +177,12 @@ compiles, I just need to reimplement that behavior now.
 The generic output needs a factory that can create native compilers as needed
 when methods are to be output.
 
+## 15:29
+
+I will need another tread for locals to store copied stack values since the
+native allocator will not allow values to be duplicated, only spliced in
+registers and stack. I can continue the reimplementation of the register
+allocator code in the future. Now one thing I need to do is move the class
+format decoding code into its own project and out of the JIT. Basically it
+would operate as a kind of class reader where the constant pool is hidden away.
+
