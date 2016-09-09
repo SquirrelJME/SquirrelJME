@@ -10,14 +10,19 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITVariableType;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
+import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegister;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterKind;
+import net.multiphasicapps.squirreljme.nativecode.NativeRegisterType;
 import net.multiphasicapps.util.msd.MultiSetDeque;
 
 /**
@@ -33,6 +38,9 @@ public class GenericAllocator
 	
 	/** The ABI used. */
 	protected final NativeABI abi;
+	
+	/** The native allocator. */
+	protected final NativeAllocator allocator;
 	
 	/** Registers bound to local variables. */
 	volatile __VarStates__ _jlocals;
@@ -58,6 +66,7 @@ public class GenericAllocator
 		// Set
 		this.config = __conf;
 		this.abi = __abi;
+		this.allocator = new NativeAllocator(__abi);
 	}
 	
 	/**
@@ -77,176 +86,27 @@ public class GenericAllocator
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Get locals
-		__VarStates__ jlocals = this._jlocals;
+		// Fill input arguments based on the type of arguments the method uses
+		List<NativeRegisterType> args = new ArrayList<>();
+		if (true)
+			throw new Error("TODO");
 		
-		// Get integral and float arguments
-		NativeABI abi = this.abi;
-		List<NativeRegister> ai = abi.arguments(NativeRegisterKind.INTEGER);
-		List<NativeRegister> af = abi.arguments(NativeRegisterKind.FLOAT);
+		// Get allocations
+		NativeAllocator allocator = this.allocator;
+		NativeAllocation[] nas = allocator.argumentAllocate(args.
+			<NativeRegisterType>toArray(new NativeRegisterType[args.size()]));
 		
-		// If there are any used variables they will be consumed from the
-		// argument list.
-		MultiSetDeque<NativeRegister> msd = this._msd;
-		
-		// Int/float argument at and limits
-		int iat = 0, ilim = ai.size(),
-			fat = 0, flim = af.size();
-		
-		// Current stack "at" position
-		int stacksize = 0;
-		int pointerbytes = abi.pointerSize() / 8;
-		
-		// Since the starting arguments are passed via registers, the
-		// generic JIT operates by forcing locals to always have a copy on the
-		// stack (for exception handling purposes). Although not as optimized
-		// it simplifies things.
-		int n = __t.length;
-		int[] copyoff = new int[n];
-		byte[] copysize = new byte[n];
-		int copyat = 0;
-		
-		// Go through variable types
-		JITVariableType last = null;
-		for (int i = 0; i < n; i++)
-		{
-			// Initially clear
-			copyoff[i] = -1;
-			copysize[i] = -1;
-			
-			// Get
-			JITVariableType type = __t[i];
-			
-			// The tops of variables will always skip a slot, but use similar
-			// storage for the old value.
-			if (type == JITVariableType.TOP)
-			{
-				// {@squirreljme.error AR1i Expected long/double to precede
-				// top variable type. (The last type; The current type)}
-				if (last != JITVariableType.LONG &&
-					last != JITVariableType.DOUBLE)
-					throw new JITException(String.format("AR1i %s %s", last,
-						type));
-				
-				throw new Error("TODO");
-			}
-			
-			// Need to get the used register, if one is used at all
-			NativeRegister usereg;
-			
-			// Floating point
-			if (type.isFloat())
-			{
-				// No more float regs?
-				if (fat >= flim)
-					usereg = null;
-				
-				// Grab one
-				else
-					usereg = af.get(fat++);
-			}
-			
-			// Integer
-			else
-			{
-				// No more int regs?
-				if (iat >= ilim)
-					usereg = null;
-				
-				// Use one
-				else
-					usereg = ai.get(iat++);
-			}
-			
-			// Debug
-			System.err.printf("DEBUG -- Selected register: %s%n", usereg);
-			
-			// Get the number of used bytes on the stack
-			int mod;
-			switch (type)
-			{
-					// 32-bit type
-				case INTEGER:
-				case FLOAT:
-					mod = 4;
-					break;
-				
-					// 64-bit type
-				case LONG:
-				case DOUBLE:
-					mod = 8;
-					break;
-					
-					// Object (uses pointer)
-				case OBJECT:
-					mod = pointerbytes;
-					break;
-				
-					// Unknown
-				default:
-					throw new RuntimeException("OOPS");
-			}
-			
-			// Assign register to local
-			if (usereg != null)
-			{
-				// Assign
-				jlocals._regs[i] = usereg;
-				
-				// Also need to remove the register from the available queues
-				// since argument registers are initially used
-				msd.remove(usereg);
-
-				// Since the generic JIT requires a copy, allocate some
-				// following stack space to determine where to place these
-				// locals at.
-				// However this is not needed if there are no exception
-				// handlers/synchronized because there will never be a need
-				// to restore locals.
-				if (__eh)
-				{
-					copyoff[i] = copyat;
-					copysize[i] = (byte)mod;
-					copyat += mod;
-				}
-			}
-			
-			// Allocate some stack space
-			else
-			{
-				// Set here
-				jlocals._stackoffs[i] = stacksize;
-				
-				// Store the number of bytes used for this position
-				jlocals._stacksize[i] = (byte)mod;
-				
-				// Increase it
-				stacksize += mod;
-			}
-		}
-		
-		// Since the initially passed arguments are completely in registers,
-		// the generic JIT will record their values to the stack for exception
-		// handling purposes
-		int basestack = stacksize;
+		// If this method has an exception handler then local variables are
+		// copied to the native stack whenever their values change. This
+		// simplifies exception handling.
 		if (__eh)
-			for (int i = 0; i < n; i++)
-			{
-				int off = copyoff[i];
-				if (off < 0)
-					continue;
-			
-				// Store in locals area
-				byte size = copysize[i];
-				jlocals._stackoffs[i] = off + basestack;
-				jlocals._stacksize[i] = size;
-			
-				// Increase stack size
-				stacksize += size;
-			}
+			throw new Error("TODO");
 		
-		// Set stack size
-		this._stacksize = stacksize;
+		// Take this information and place it into the appropriate set of
+		// local variables
+		__VarStates__ jlocals = this._jlocals;
+		if (true)
+			throw new Error("TODO");
 		
 		// Debug
 		System.err.printf("DEBUG -- AllocState: %s%n", this);

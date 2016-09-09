@@ -56,7 +56,7 @@ public class NativeAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
-	NativeAllocator(NativeABI __abi)
+	public NativeAllocator(NativeABI __abi)
 		throws NullPointerException
 	{
 		// Check
@@ -101,7 +101,8 @@ public class NativeAllocator
 	 * the input allocation values based on their types.
 	 *
 	 * @param __t The type of value to store
-	 * @return The allocations for all input arguments.
+	 * @return The allocations for all input arguments, this array will be of
+	 * the same size as the input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/09
 	 */
