@@ -11,38 +11,18 @@
 package net.multiphasicapps.squirreljme.classformat;
 
 /**
- * These are flags which modify how a class is accessed and is behaved.
+ * This interface is used to flag the types used for flags.
  *
  * @since 2016/04/23
  */
-public enum ClassClassFlag
-	implements ClassFlag
+public interface ClassFlag
 {
-	/** Public access. */
-	PUBLIC,
-	
-	/** Final. */
-	FINAL,
-	
-	/** Super. */
-	SUPER,
-	
-	/** Interface. */
-	INTERFACE,
-	
-	/** Abstract. */
-	ABSTRACT,
-	
-	/** Synthetic. */
-	SYNTHETIC,
-	
-	/** Annotation. */
-	ANNOTATION,
-	
-	/** Enumeration. */
-	ENUM,
-	
-	/** End. */
-	;
+	/**
+	 * Returns the flag ordinal.
+	 *
+	 * @return The ordinal of the flag.
+	 * @since 2016/04/23
+	 */
+	public abstract int ordinal();
 }
 
