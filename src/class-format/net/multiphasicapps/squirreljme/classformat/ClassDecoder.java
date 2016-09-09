@@ -175,19 +175,19 @@ public final class ClassDecoder
 		}
 		
 		// Send
-		output.interfaceClasses(ifaces, ifdxs);
+		output.interfaceClasses(ifaces);
 		
 		// Handle fields
 		int fcount = input.readUnsignedShort();
 		output.fieldCount(fcount);
 		for (int i = 0; i < fcount; i++)
-			new __FieldDecoder__(cw, input, pool, cf).__decode();
+			new __FieldDecoder__(output, input, pool, cf).__decode();
 		
 		// Handle methods
 		int mcount = input.readUnsignedShort();
 		output.methodCount(mcount);
 		for (int i = 0; i < mcount; i++)
-			new __MethodDecoder__(cw, input, pool, cf, this).__decode();
+			new __MethodDecoder__(output, input, pool, cf, this).__decode();
 		
 		// Handle class attributes
 		int na = input.readUnsignedShort();

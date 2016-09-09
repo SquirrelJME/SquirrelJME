@@ -35,7 +35,7 @@ class __FieldDecoder__
 	 * @param __cf The owning class flags.
 	 * @since 2016/08/18
 	 */
-	__FieldDecoder__(JITClassWriter __cw, DataInputStream __di,
+	__FieldDecoder__(ClassDescriptionStream __cw, DataInputStream __di,
 		ClassConstantPool __pool, ClassClassFlags __cf)
 	{
 		super(__cw, __di, __pool, __cf);
@@ -51,7 +51,7 @@ class __FieldDecoder__
 	{
 		// Get
 		DataInputStream input = this.input;
-		JITClassWriter cw = this.classwriter;
+		ClassDescriptionStream cw = this.classwriter;
 		
 		// Read the flags for this field
 		ClassFieldFlags mf = __FlagDecoder__.__field(this._classflags,
@@ -70,19 +70,19 @@ class __FieldDecoder__
 		FieldSymbol type = FieldSymbol.of(
 			etype.<String>get(true, String.class));
 		
-		// Clear these before handling attributes
-		this._fieldcv = null;
-		
 		// Need to handle attributes
 		int na = input.readUnsignedShort();
 		for (int i = 0; i < na; i++)
 			__readAttribute(pool, input);
 		
 		// Register the field
-		cw.field(mf, name, ndx, type, tdx, this._fieldcv);
+		ClassFieldDescriptionStream ss = cw.field(mf, name, type);
+		
+		// Set constant
+		ss.constantValue(this._fieldcv);
 		
 		// End field
-		cw.endField();
+		ss.endMember();
 	}
 	
 	/**

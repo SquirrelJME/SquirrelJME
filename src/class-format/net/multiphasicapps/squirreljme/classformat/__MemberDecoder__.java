@@ -22,7 +22,7 @@ abstract class __MemberDecoder__
 	extends __HasAttributes__
 {
 	/** The output class writer. */
-	protected final JITClassWriter classwriter;
+	protected final ClassDescriptionStream classwriter;
 	
 	/** The input stream. */
 	protected final DataInputStream input;
@@ -43,7 +43,7 @@ abstract class __MemberDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	__MemberDecoder__(JITClassWriter __cw, DataInputStream __di,
+	__MemberDecoder__(ClassDescriptionStream __cw, DataInputStream __di,
 		ClassConstantPool __pool, ClassClassFlags __cf)
 		throws NullPointerException
 	{

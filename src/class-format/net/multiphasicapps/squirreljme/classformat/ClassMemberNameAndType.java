@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -22,7 +22,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  *
  * @since 2016/08/14
  */
-public final class JITNameAndType
+public final class ClassMemberNameAndType
 {
 	/** The member name. */
 	protected final IdentifierSymbol name;
@@ -41,7 +41,7 @@ public final class JITNameAndType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/14
 	 */
-	JITNameAndType(IdentifierSymbol __n, MemberTypeSymbol __t)
+	ClassMemberNameAndType(IdentifierSymbol __n, MemberTypeSymbol __t)
 		throws NullPointerException
 	{
 		// Check
@@ -61,11 +61,11 @@ public final class JITNameAndType
 	public final boolean equals(Object __o)
 	{
 		// Must be this class
-		if (!(__o instanceof JITNameAndType))
+		if (!(__o instanceof ClassMemberNameAndType))
 			return false;
 		
 		// Check
-		JITNameAndType o = (JITNameAndType)__o;
+		ClassMemberNameAndType o = (ClassMemberNameAndType)__o;
 		return this.name.equals(o.name) &&
 			this.type.equals(o.type);
 	}

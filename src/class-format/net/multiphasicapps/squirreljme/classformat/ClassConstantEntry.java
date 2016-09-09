@@ -148,7 +148,7 @@ public final class ClassConstantEntry
 		
 		// If an integer array, requires conversion
 		ClassConstantPool pool = this.pool;
-		__ClassDecoder__ decoder = pool._decoder;
+		ClassDecoder decoder = pool._decoder;
 		if (raw instanceof int[])
 		{
 			// Get input fields
@@ -166,13 +166,13 @@ public final class ClassConstantEntry
 					
 					// Class name
 				case ClassConstantPool.TAG_CLASS:
-					raw = decoder.__rewriteClass(ClassNameSymbol.of(
+					raw = (ClassNameSymbol.of(
 						pool.get(fields[0]).<String>get(false, String.class)));
 					break;
 					
 					// Name and type
 				case ClassConstantPool.TAG_NAMEANDTYPE:
-					raw = new JITNameAndType(
+					raw = new ClassMemberNameAndType(
 						IdentifierSymbol.of(pool.get(fields[0]).<String>get(
 							false, String.class)),
 						MemberTypeSymbol.of(pool.get(fields[1]).<String>get(
@@ -183,11 +183,11 @@ public final class ClassConstantEntry
 				case ClassConstantPool.TAG_FIELDREF:
 				case ClassConstantPool.TAG_METHODREF:
 				case ClassConstantPool.TAG_INTERFACEMETHODREF:
-					ClassNameSymbol rcl = decoder.__rewriteClass(
+					ClassNameSymbol rcl = (
 						pool.get(fields[0]).<ClassNameSymbol>get(false,
 							ClassNameSymbol.class));
-					JITNameAndType jna = pool.get(fields[1]).
-						<JITNameAndType>get(false, JITNameAndType.class);
+					ClassMemberNameAndType jna = pool.get(fields[1]).
+						<ClassMemberNameAndType>get(false, ClassMemberNameAndType.class);
 					
 					// Field?
 					if (tag == ClassConstantPool.TAG_FIELDREF)

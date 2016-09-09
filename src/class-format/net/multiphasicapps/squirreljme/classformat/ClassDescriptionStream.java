@@ -11,6 +11,9 @@
 package net.multiphasicapps.squirreljme.classformat;
 
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 
 /**
  * This interface is implemented by anything that wishes to be told what a
@@ -56,6 +59,63 @@ public interface ClassDescriptionStream
 	 * @since 2016/09/09
 	 */
 	public abstract void endClass();
+	
+	/**
+	 * Specifies that the following field exists in the class where the field
+	 * information is provided to the description stream.
+	 *
+	 * @param __f The flags.
+	 * @param __name The name.
+	 * @param __type The type.
+	 * @return A description stream for describing the member.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/09
+	 */
+	public abstract ClassFieldDescriptionStream field(ClassFieldFlags __f,
+		IdentifierSymbol __name, FieldSymbol __type)
+		throws NullPointerException;
+	
+	/**
+	 * This reports the number of fields that are within a class.
+	 *
+	 * @param __n The number of fields in a class.
+	 * @since 2016/09/09
+	 */
+	public abstract void fieldCount(int __n);
+	
+	/**
+	 * This is called when the interfaces that the class implements has been
+	 * decoded.
+	 *
+	 * @param __i The implemented interfaces.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/09
+	 */
+	public abstract void interfaceClasses(ClassNameSymbol[] __i)
+		throws NullPointerException;
+	
+	/**
+	 * Specifies that the following method exists in the class where the method
+	 * information is provided to the description stream.
+	 *
+	 * @param __f The flags.
+	 * @param __name The name.
+	 * @param __type The type.
+	 * @return A description stream for describing the member.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/09
+	 */
+	public abstract ClassMethodDescriptionStream method(ClassMethodFlags __f,
+		IdentifierSymbol __name, MethodSymbol __type)
+		throws NullPointerException;
+	
+	/**
+	 * This reports the number of methods that are within a class.
+	 *
+	 * @param __n The number of methods in a class.
+	 * @since 2016/09/09
+	 */
+	public abstract void methodCount(int __n);
 	
 	/**
 	 * This is called when the name of the super class is known, since the

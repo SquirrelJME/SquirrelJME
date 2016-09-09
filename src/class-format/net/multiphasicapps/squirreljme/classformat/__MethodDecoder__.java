@@ -27,7 +27,7 @@ class __MethodDecoder__
 	final ClassConstantPool _pool;
 	
 	/** The class decoder owning this. */
-	final __ClassDecoder__ _classdecoder;
+	final ClassDecoder _classdecoder;
 	
 	/** Was method code parsed? */
 	private volatile boolean _hitmcode;
@@ -49,8 +49,8 @@ class __MethodDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/18
 	 */
-	__MethodDecoder__(JITClassWriter __cw, DataInputStream __di,
-		ClassConstantPool __pool, ClassClassFlags __cf, __ClassDecoder__ __cx)
+	__MethodDecoder__(ClassDescriptionStream __cw, DataInputStream __di,
+		ClassConstantPool __pool, ClassClassFlags __cf, ClassDecoder __cx)
 		throws NullPointerException
 	{
 		super(__cw, __di, __pool, __cf);
@@ -74,7 +74,7 @@ class __MethodDecoder__
 	{
 		// Get
 		DataInputStream input = this.input;
-		JITClassWriter cw = this.classwriter;
+		ClassDescriptionStream cw = this.classwriter;
 		
 		// Read the flags for this method
 		ClassMethodFlags mf = __FlagDecoder__.__method(this._classflags,
@@ -97,7 +97,7 @@ class __MethodDecoder__
 		this._hitmcode = false;
 		
 		// Register method since code needs to be generated following this
-		cw.method(mf, name, ni, type, ti);
+		ClassMethodDescriptionStream ss = cw.method(mf, name, type);
 		
 		// Needed for code
 		this._mflags = mf;
@@ -115,10 +115,10 @@ class __MethodDecoder__
 		
 		// If there is no code then indicate as such
 		if (!hascode)
-			cw.noCode();
+			ss.noCode();
 		
 		// End method
-		cw.endMethod();
+		ss.endMember();
 	}
 	
 	/**

@@ -86,7 +86,7 @@ public final class ClassConstantPool
 	private final ClassConstantEntry[] _entries;
 	
 	/** The class decoder being used. */
-	final __ClassDecoder__ _decoder;
+	final ClassDecoder _decoder;
 	
 	/** The next active index to use. */
 	volatile int _nextadx;
@@ -101,7 +101,7 @@ public final class ClassConstantPool
 	 * @throws ClassFormatException If the constant pool is malformed.
 	 * @since 2016/06/29
 	 */
-	ClassConstantPool(DataInputStream __dis, __ClassDecoder__ __cd)
+	ClassConstantPool(DataInputStream __dis, ClassDecoder __cd)
 		throws IOException, NullPointerException, ClassFormatException
 	{
 		// Check
@@ -231,60 +231,6 @@ public final class ClassConstantPool
 	public int size()
 	{
 		return this._entries.length;
-	}
-	
-	/**
-	 * Rewrites class names in the pool.
-	 *
-	 * @since 2016/08/14
-	 */
-	final void __rewrite()
-	{
-		// Rewrite only classes (there should be just one)
-		__ClassDecoder__ decoder = this._decoder;
-		ClassConstantEntry[] entries = this._entries;
-		int n = entries.length;
-		for (int i = 1; i < n; i++)
-		{
-			ClassConstantEntry e = entries[i];
-			
-			// If the data is in an integer array then it has never been
-			// initialized yet
-			Object raw = e._data;
-			if (raw instanceof int[])
-				continue;
-			
-			// Depends on the tag
-			byte tag = e._tag;
-			switch (tag)
-			{
-					// Ignore
-				case 0:				// null tag
-				case TAG_UTF8:
-				case TAG_INTEGER:
-				case TAG_FLOAT:
-				case TAG_LONG:
-				case TAG_DOUBLE:
-				case TAG_STRING:
-				case TAG_NAMEANDTYPE:
-				case TAG_METHODTYPE:
-					continue;
-					
-					// Rewrite classes
-				case TAG_CLASS:
-					e._data = decoder.__rewriteClass((ClassNameSymbol)raw);
-					break;
-					
-					// Error, since these should not be in the pool in an
-					// initialized state yet
-				case TAG_FIELDREF:
-				case TAG_METHODREF:
-				case TAG_INTERFACEMETHODREF:
-				case TAG_METHODHANDLE:
-				case TAG_INVOKEDYNAMIC:
-					throw new RuntimeException("OOPS");
-			}
-		}
 	}
 }
 
