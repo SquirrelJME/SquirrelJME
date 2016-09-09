@@ -26,11 +26,11 @@ final class __OpParser__
 {
 	/** Indicates that a local/stack item is not a duplicate of anything. */
 	static final int UNIQUE_STACK_VALUE =
-		__SMTStack__.UNIQUE_STACK_VALUE;
+		ClassStackMapStack.UNIQUE_STACK_VALUE;
 	
 	/** Flags that the cache is a copy from the stack and not a local. */
 	static final int CACHE_STACK_MASK =
-		__SMTStack__.CACHE_STACK_MASK;
+		ClassStackMapStack.CACHE_STACK_MASK;
 	
 	/** Implicit next operation. */
 	private static final int[] IMPLICIT_NEXT =
@@ -49,10 +49,10 @@ final class __OpParser__
 	protected final ClassConstantPool pool;
 	
 	/** The stack map table. */
-	private final Map<Integer, __SMTState__> _smt;
+	private final Map<Integer, ClassStackMapState> _smt;
 	
 	/** The working stack map state. */
-	private final __SMTState__ _smwork;
+	private final ClassStackMapState _smwork;
 	
 	/** Was the stack cache state flushed? */
 	private volatile boolean _stackflushed;
@@ -68,7 +68,7 @@ final class __OpParser__
 	 * @since 2016/08/29
 	 */
 	__OpParser__(JITMethodWriter __jmw, ExtendedDataInputStream __dis,
-		Map<Integer, __SMTState__> __smt, ClassClassFlags __cf,
+		Map<Integer, ClassStackMapState> __smt, ClassClassFlags __cf,
 		ClassConstantPool __pool)
 		throws NullPointerException
 	{
@@ -84,7 +84,7 @@ final class __OpParser__
 		this.pool = __pool;
 		
 		// Set working state
-		this._smwork = new __SMTState__(__smt.get(0));
+		this._smwork = new ClassStackMapState(__smt.get(0));
 	}
 	
 	/**
@@ -100,8 +100,8 @@ final class __OpParser__
 		// Get
 		ExtendedDataInputStream input = this.input;
 		JITMethodWriter writer = this.writer;
-		Map<Integer, __SMTState__> smt = this._smt;
-		__SMTState__ smwork = this._smwork;
+		Map<Integer, ClassStackMapState> smt = this._smt;
+		ClassStackMapState smwork = this._smwork;
 		
 		// Decode loop
 		for (;;)
@@ -119,7 +119,7 @@ final class __OpParser__
 				code = (code << 8) | input.readUnsignedByte();
 			
 			// If there is stack state for this position then set it
-			__SMTState__ bias = smt.get(nowpos);
+			ClassStackMapState bias = smt.get(nowpos);
 			if (bias != null)
 				smwork.from(bias);
 			
@@ -150,7 +150,7 @@ final class __OpParser__
 					jumpto = (int)input.size();
 				
 				// If there is no state, do not need to verify
-				__SMTState__ intostate = smt.get(jumpto);
+				ClassStackMapState intostate = smt.get(jumpto);
 				if (intostate == null)
 					continue;
 				
@@ -555,8 +555,8 @@ final class __OpParser__
 		boolean isinstance = __type.isInstance();
 		
 		// Get the stack layout, which is needed for verifcation
-		__SMTState__ smwork = this._smwork;
-		__SMTStack__ stack = smwork._stack;
+		ClassStackMapState smwork = this._smwork;
+		ClassStackMapStack stack = smwork._stack;
 		
 		// Count the number of stack elements to count and pass to the method
 		MethodSymbol sym = ref.methodType();
@@ -663,8 +663,8 @@ final class __OpParser__
 			throw new NullPointerException("NARG");
 		
 		// Get
-		__SMTState__ smwork = this._smwork;
-		__SMTLocals__ locals = smwork._locals;
+		ClassStackMapState smwork = this._smwork;
+		ClassStackMapLocals locals = smwork._locals;
 		
 		// {@squirreljme.error AY3w Attempt to push a local variable to the
 		// stack of a different type. (The local variable index; The type that

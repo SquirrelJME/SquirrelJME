@@ -44,20 +44,11 @@ final class __CodeDecoder__
 	/** The class decoder owning this. */
 	final __ClassDecoder__ _classdecoder;
 	
-	/** The logic writer to use. */
-	final JITMethodWriter _writer;
-	
 	/** The method flags. */
 	final ClassMethodFlags _flags;
 	
 	/** The method type. */
 	final MethodSymbol _type;
-	
-	/** Is {@code float} in hardware? */
-	final boolean _hwfloat;
-	
-	/** Is {@code double} in hardware? */
-	final boolean _hwdouble;
 	
 	/** The input code attribute data. */
 	private final DataInputStream _input;
@@ -69,7 +60,7 @@ final class __CodeDecoder__
 	volatile int _maxstack;
 	
 	/** The stack map table state. */
-	volatile Map<Integer, __SMTState__> _smt;
+	volatile Map<Integer, ClassStackMapState> _smt;
 	
 	/** Are there exception handlers present? */
 	volatile boolean _hasexceptions;
@@ -161,7 +152,7 @@ final class __CodeDecoder__
 			__readAttribute(pool, input);
 		
 		// If no stack map table exists then setup an initial implicit state
-		Map<Integer, __SMTState__> smt;
+		Map<Integer, ClassStackMapState> smt;
 		if ((smt = this._smt) == null)
 			this._smt = (smt = __SMTParser__.__initialState(this._flags,
 				this._type, maxstack, maxlocals));
@@ -234,7 +225,7 @@ final class __CodeDecoder__
 	private void __primeArguments(boolean __eh)
 	{
 		// Get initial state
-		__SMTLocals__ locals = this._smt.get(0)._locals;
+		ClassStackMapLocals locals = this._smt.get(0)._locals;
 		
 		// Setup output arguments
 		List<ClassStackMapType> args = new ArrayList<>();

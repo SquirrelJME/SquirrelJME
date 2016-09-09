@@ -20,13 +20,13 @@ import java.util.RandomAccess;
  *
  * @since 2016/03/31
  */
-class __SMTState__
+class ClassStackMapState
 {
 	/** The state of the stack. */
-	final __SMTStack__ _stack;
+	final ClassStackMapStack _stack;
 	
 	/** The state of the locals. */
-	final __SMTLocals__ _locals;
+	final ClassStackMapLocals _locals;
 
 	/**
 	 * Initializes the stack storage states.
@@ -35,10 +35,10 @@ class __SMTState__
 	 * @param __ml Maximum number of local variables.
 	 * @since 2016/08/29
 	 */
-	__SMTState__(int __ms, int __ml)
+	ClassStackMapState(int __ms, int __ml)
 	{
-		this._stack = new __SMTStack__(__ms, 0);
-		this._locals = new __SMTLocals__(__ml);
+		this._stack = new ClassStackMapStack(__ms, 0);
+		this._locals = new ClassStackMapLocals(__ml);
 	}
 	
 	/**
@@ -48,7 +48,7 @@ class __SMTState__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	__SMTState__(__SMTState__ __s)
+	ClassStackMapState(ClassStackMapState __s)
 		throws NullPointerException
 	{
 		// Check
@@ -56,8 +56,8 @@ class __SMTState__
 			throw new NullPointerException("NARG");
 		
 		// Duplicate
-		this._stack = new __SMTStack__(__s._stack);
-		this._locals = new __SMTLocals__(__s._locals);
+		this._stack = new ClassStackMapStack(__s._stack);
+		this._locals = new ClassStackMapLocals(__s._locals);
 	}
 	
 	/**
@@ -76,12 +76,12 @@ class __SMTState__
 		int cache = this._stack.cache(__s);
 		
 		// If the stack item is unique, just return it shifted
-		if (cache == __SMTStack__.UNIQUE_STACK_VALUE)
+		if (cache == ClassStackMapStack.UNIQUE_STACK_VALUE)
 			return ml + __s;
 		
 		// Refers to a stack entry
-		if (0 != (cache & __SMTStack__.CACHE_STACK_MASK))
-			return ml + (cache & (~__SMTStack__.CACHE_STACK_MASK));
+		if (0 != (cache & ClassStackMapStack.CACHE_STACK_MASK))
+			return ml + (cache & (~ClassStackMapStack.CACHE_STACK_MASK));
 		
 		// Refers to a local
 		return cache;
@@ -94,7 +94,7 @@ class __SMTState__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/04
 	 */
-	public void from(__SMTState__ __o)
+	public void from(ClassStackMapState __o)
 		throws NullPointerException
 	{
 		// Check

@@ -18,7 +18,7 @@ import java.util.RandomAccess;
  *
  * @since 2016/08/28
  */
-abstract class __SMTTread__
+abstract class ClassStackMapTread
 	extends AbstractList<ClassStackMapType>
 	implements RandomAccess
 {
@@ -34,7 +34,7 @@ abstract class __SMTTread__
 	 * @param __n The number of entries.
 	 * @since 2016/05/12
 	 */
-	__SMTTread__(int __n)
+	ClassStackMapTread(int __n)
 	{
 		// Initialize
 		this.count = __n;
@@ -48,7 +48,7 @@ abstract class __SMTTread__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	protected __SMTTread__(__SMTTread__ __t)
+	protected ClassStackMapTread(ClassStackMapTread __t)
 		throws NullPointerException
 	{
 		// Check
@@ -74,7 +74,7 @@ abstract class __SMTTread__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/04
 	 */
-	public void from(__SMTTread__ __o)
+	public void from(ClassStackMapTread __o)
 		throws NullPointerException
 	{
 		// Check

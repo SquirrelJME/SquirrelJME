@@ -16,8 +16,8 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/08/28
  */
-class __SMTStack__
-	extends __SMTTread__
+class ClassStackMapStack
+	extends ClassStackMapTread
 {
 	/** Indicates that a local/stack item is not a duplicate of anything. */
 	static final int UNIQUE_STACK_VALUE =
@@ -45,7 +45,7 @@ class __SMTStack__
 	 * @throws ClassFormatException If the top of the stack is out of bounds.
 	 * @since 2016/05/12
 	 */
-	__SMTStack__(int __n, int __top)
+	ClassStackMapStack(int __n, int __top)
 		throws ClassFormatException
 	{
 		super(__n);
@@ -66,7 +66,7 @@ class __SMTStack__
 	 * @param __s The state to copy from.
 	 * @since 2016/08/29
 	 */
-	__SMTStack__(__SMTStack__ __s)
+	ClassStackMapStack(ClassStackMapStack __s)
 	{
 		super(__s);
 		
@@ -98,10 +98,10 @@ class __SMTStack__
 	 * @since 2016/09/04
 	 */
 	@Override
-	public void from(__SMTTread__ __o)
+	public void from(ClassStackMapTread __o)
 	{
 		// Copy top
-		setStackTop(((__SMTStack__)__o)._top);
+		setStackTop(((ClassStackMapStack)__o)._top);
 		
 		// Copy variables also
 		super.from(__o);
