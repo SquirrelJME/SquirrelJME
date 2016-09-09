@@ -167,3 +167,8 @@ easy as I can have an input argument request that fills parts of the state. So
 some of the generic code moves back and it becomes just a wrapped
 `NativeAllocation` which is bound to the general allocator state.
 
+## 15:18
+
+So the moving of the native code generator is partly complete as my code now
+compiles, I just need to reimplement that behavior now.
+

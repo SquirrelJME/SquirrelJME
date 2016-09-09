@@ -28,6 +28,7 @@ import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
 import net.multiphasicapps.squirreljme.jit.generic.GenericOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 import net.multiphasicapps.squirreljme.paths.posix.PosixPaths;
 
 /**
@@ -168,7 +169,7 @@ public abstract class LinuxBuildInstance
 		__conf.<GenericABI>registerObject(GenericABI.class, this.abi);
 		
 		// Add the JIT factory, just uses the generic JIT
-		__conf.<GenericOutputFactory>registerObject(GenericOutputFactory.class,
+		__conf.<JITOutputFactory>registerObject(JITOutputFactory.class,
 			new GenericOutputFactory());
 	}
 	
