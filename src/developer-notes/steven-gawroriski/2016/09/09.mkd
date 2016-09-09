@@ -215,3 +215,10 @@ That is, the Class code will give me what I need. However, the Class prefix
 before the class format code is quite annoying and I should remove that
 before I continue on to the JIT.
 
+## 19:24
+
+So now all my code compiles again. I spent the entire day refactoring. However,
+my refactor is not yet complete. I must reimplement the code I removed and
+perform a refactor of the class parsing code, especially the operation
+handlers.
+
