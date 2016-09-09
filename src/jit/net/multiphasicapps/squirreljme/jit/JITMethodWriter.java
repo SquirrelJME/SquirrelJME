@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import net.multiphasicapps.squirreljme.classformat.MethodInvokeType;
+import net.multiphasicapps.squirreljme.classformat.MethodReference;
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -67,9 +70,9 @@ public interface JITMethodWriter
 	 * {@code __rvt}.
 	 * @since 2016/09/06
 	 */
-	public abstract void invoke(ClassMethodInvokeType __type, int __pid,
-		ClassMethodReference __ref, JITVariableType[] __st, int[] __sp,
-		JITVariableType __rvt, int __rv)
+	public abstract void invoke(MethodInvokeType __type, int __pid,
+		MethodReference __ref, StackMapType[] __st, int[] __sp,
+		StackMapType __rvt, int __rv)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -95,7 +98,7 @@ public interface JITMethodWriter
 	/**
 	 * Primes the argument methods, essentially the input used for the method
 	 * as it varies between methods. If the method is an instance method
-	 * then the first argument will be {@link JITVariableType#OBJECT}.
+	 * then the first argument will be {@link StackMapType#OBJECT}.
 	 *
 	 * All of the input arguments map to virtual registers starting from
 	 * {@code 0}.
@@ -112,7 +115,7 @@ public interface JITMethodWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	public abstract void primeArguments(boolean __eh, JITVariableType[] __t)
+	public abstract void primeArguments(boolean __eh, StackMapType[] __t)
 		throws JITException, NullPointerException;
 	
 	/**

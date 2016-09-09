@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirreljme.classformat.ClassDecoder;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -99,9 +100,10 @@ public final class JIT
 			DataInputStream dis = new DataInputStream(this.input);
 			
 			// Start decoding the class
-			__ClassDecoder__ cd = new __ClassDecoder__(this, this.namespace,
-				dis);
-			cd.__decode(this.output);
+			if (true)
+				throw new Error("TODO");
+			ClassDecoder cd = new ClassDecoder(dis, null);
+			cd.decode();
 		}
 		
 		// {@squirreljme.error ED02 Failed to read the class file.}
