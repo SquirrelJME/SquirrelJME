@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 
 /**
  * This class is used to generate instances of {@link NativeABI} which is
@@ -306,24 +307,18 @@ public final class NativeABIBuilder
 	}
 	
 	/**
-	 * Returns the integer type that matches the bit size of the given triplet.
+	 * Returns the integer type that matches the bit size of the given bits.
 	 *
-	 * @param __t The triplet to get the type from.
+	 * @param __t The number of bits the CPU uses
 	 * @return The integer type.
 	 * @throws NativeCodeException If the type was not known.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public static NativeRegisterIntegerType intRegisterTypeFromTriplet(
-		JITTriplet __t)
-		throws NativeCodeException, NullPointerException
+	public static NativeRegisterIntegerType intRegisterType(int __t)
+		throws NativeCodeException
 	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
 		// Depends on the bits
-		switch (__t.bits())
+		switch (__t)
 		{
 			case 8: return NativeRegisterIntegerType.BYTE;
 			case 16: return NativeRegisterIntegerType.SHORT;
@@ -331,24 +326,24 @@ public final class NativeABIBuilder
 			case 64: return NativeRegisterIntegerType.LONG;
 			
 				// {@squirreljme.error AR1f Could not get the integer register
-				// type from the specified triplet. (The triplet)}
+				// type from the specified bit count. (The bit count)}
 			default:
-				throw new NativeCodeException(String.format("AR1f %s", __t));
+				throw new NativeCodeException(String.format("AR1f %d", __t));
 		}
 	}
 	
 	/**
 	 * Returns the floating point type that matches the hardware floating
-	 * point type used by the given triplet.
+	 * point type.
 	 *
-	 * @param __t The triplet to get the type from.
+	 * @param __t The floating point type to use.
 	 * @return The floating point type.
 	 * @throws NativeCodeException If the type could not be determined.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	public static NativeRegisterFloatType floatRegisterTypeFromTriplet(
-		JITTriplet __t)
+	public static NativeRegisterFloatType floatRegisterType(
+		NativeFloatType __t)
 		throws NativeCodeException, NullPointerException
 	{
 		// Check
@@ -356,13 +351,14 @@ public final class NativeABIBuilder
 			throw new NullPointerException("NARG");
 		
 		// Depends on the float type
-		switch (__t.floatingPoint())
+		switch (__t)
 		{
 			case HARD32: return NativeRegisterFloatType.FLOAT;
 			case HARD64: return NativeRegisterFloatType.DOUBLE;
 			
 				// {@squirreljme.error AR1g Could not get the float register
-				// type from the specified triplet. (The triplet)}
+				// type from the specified floating point type. (The floating
+				// point type)}
 			default:
 				throw new NativeCodeException(String.format("AR1g %s", __t));
 		}

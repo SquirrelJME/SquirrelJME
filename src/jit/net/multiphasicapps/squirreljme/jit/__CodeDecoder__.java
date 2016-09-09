@@ -21,8 +21,8 @@ import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITCPUFloat;
 import net.multiphasicapps.squirreljme.jit.base.JITMethodFlags;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 
 /**
  * This class is used to decode the actual code attribute in the method
@@ -108,7 +108,7 @@ final class __CodeDecoder__
 		
 		// Need to get hardware float information
 		JITOutputConfig.Immutable config = classdec._config;
-		JITCPUFloat ft = config.triplet().floatingPoint();
+		NativeFloatType ft = config.triplet().floatingPoint();
 		this._hwfloat = ft.isHardwareFloat();
 		this._hwdouble = ft.isHardwareDouble();
 	}

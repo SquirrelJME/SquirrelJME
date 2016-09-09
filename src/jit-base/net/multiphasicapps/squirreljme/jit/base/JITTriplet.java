@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.base;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 
 /**
  * This class provides a representation of triplets so that they may be
@@ -35,7 +36,7 @@ public final class JITTriplet
 	protected final JITCPUEndian endianess;
 	
 	/** The floating point type used. */
-	protected final JITCPUFloat floating;
+	protected final NativeFloatType floating;
 	
 	/** The operating system. */
 	protected final String os;
@@ -105,7 +106,7 @@ public final class JITTriplet
 		this.cpuvar = __check(fullarch.substring(pplu + 1, pcom));
 		this.endianess = JITCPUEndian.of(__check(
 			fullarch.substring(pcom + 1, ptil)));
-		this.floating = JITCPUFloat.of(__check(
+		this.floating = NativeFloatType.of(__check(
 			fullarch.substring(ptil + 1)));
 		
 		// Decode bits
@@ -280,7 +281,7 @@ public final class JITTriplet
 	 * @return The floating point type used.
 	 * @since 2016/08/29
 	 */
-	public final JITCPUFloat floatingPoint()
+	public final NativeFloatType floatingPoint()
 	{
 		return this.floating;
 	}
