@@ -9,12 +9,13 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains an implementation of the line based user interface
- * which only supports outputting to a standard vt100-like terminal via the
- * {@link System#out} stream or another stream.
+ * This package contains the implementation of the LUI display system on top
+ * of generic terminal devices.
  *
- * @since 2016/09/07
+ * It also contains a wrapper for a terminal display on top of a LUI Display.
+ *
+ * @since 2016/09/08
  */
 
-package net.multiphasicapps.squirreljme.meep.lui.vt100stdout;
+package net.multiphasicapps.squirreljme.meep.lui.terminal;
 

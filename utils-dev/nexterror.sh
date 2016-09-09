@@ -114,6 +114,7 @@ __number_to_pair()
 __prefixes()
 {
 	# Print banned ones
+	echo "AN banned"
 	echo "AS banned"
 	echo "BJ banned"
 	echo "BS banned"

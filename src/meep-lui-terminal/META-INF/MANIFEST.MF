@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: meep-lui-terminal
+X-SquirrelJME-UUID: 89a0199c-b8ed-4587-b206-de261158a21c
+X-SquirrelJME-Depends: cldc-compact, terminal
+X-SquirrelJME-Error: AO
+LIBlet-Title: MEEP LUI (Terminal)
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains an implementation of the MEEP 
+ LUI interface which is based on a standard terminal based 
+ interface. This also contains an implementation of the standard 
+ terminal on top of a LUI Display also.
+

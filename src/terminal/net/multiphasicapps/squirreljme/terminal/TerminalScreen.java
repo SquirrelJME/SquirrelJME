@@ -20,7 +20,7 @@ package net.multiphasicapps.squirreljme.terminal;
  * @since 2016/09/08
  */
 public final class TerminalScreen
-	implements TerminalColor
+	implements TerminalAttribute, TerminalColor
 {
 	/** The column count. */
 	public final int columns;
