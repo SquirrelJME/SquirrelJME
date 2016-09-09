@@ -18,11 +18,11 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.ClassClassFlag;
-import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
+import net.multiphasicapps.squirreljme.jit.base.ClassFlag;
+import net.multiphasicapps.squirreljme.jit.base.ClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
-import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
+import net.multiphasicapps.squirreljme.jit.base.FieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.MethodFlags;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
 import net.multiphasicapps.squirreljme.jit.JITConstantPool;
@@ -72,7 +72,7 @@ public final class GenericClassWriter
 	private volatile JITConstantPool _xpool;
 	
 	/** Class flags, written later. */
-	private volatile ClassClassFlags _flags;
+	private volatile ClassFlags _flags;
 	
 	/** The super class pool ID. */
 	private volatile int _scpooldx;
@@ -141,7 +141,7 @@ public final class GenericClassWriter
 	 * @since 2016/07/27
 	 */
 	@Override
-	public void classFlags(ClassClassFlags __cf)
+	public void classFlags(ClassFlags __cf)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -198,7 +198,7 @@ public final class GenericClassWriter
 				
 					// The class flags
 					int flags = 0;
-					for (ClassClassFlag f : this._flags)
+					for (ClassFlag f : this._flags)
 						flags |= (1 << f.ordinal());
 					dos.writeShort(flags);
 				
@@ -363,7 +363,7 @@ public final class GenericClassWriter
 	 * @since 2016/08/18
 	 */
 	@Override
-	public void field(ClassFieldFlags __f, IdentifierSymbol __n,
+	public void field(FieldFlags __f, IdentifierSymbol __n,
 		int __ni, FieldSymbol __t, int __ti, Object __cv)
 		throws JITException, NullPointerException
 	{
@@ -458,7 +458,7 @@ public final class GenericClassWriter
 	 * @since 2016/08/19
 	 */
 	@Override
-	public void method(ClassMethodFlags __f, IdentifierSymbol __n,
+	public void method(MethodFlags __f, IdentifierSymbol __n,
 		int __ni, MethodSymbol __t, int __ti)
 		throws JITException, NullPointerException
 	{

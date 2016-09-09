@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
-import net.multiphasicapps.squirreljme.jit.ClassMethodReference;
+import net.multiphasicapps.squirreljme.jit.base.MethodFlags;
+import net.multiphasicapps.squirreljme.jit.MethodReference;
 
 /**
  * This represents a single method.
@@ -24,7 +24,7 @@ class __Method__
 	extends __Member__
 {
 	/** The method reference for this method. */
-	final ClassMethodReference _mref;
+	final MethodReference _mref;
 	
 	/** The start position of code. */
 	volatile int _codestart;
@@ -41,13 +41,13 @@ class __Method__
 	 * @param __type The type of the method.
 	 * @since 2016/08/18
 	 */
-	__Method__(GenericClassWriter __gcw, ClassMethodFlags __f,
+	__Method__(GenericClassWriter __gcw, MethodFlags __f,
 		IdentifierSymbol __name, MethodSymbol __type)
 	{
 		super(__gcw, __f, __name, __type);
 		
 		// Set used reference
-		this._mref = new ClassMethodReference(__gcw._classname, __name,
+		this._mref = new MethodReference(__gcw._classname, __name,
 			__type, false);
 	}
 }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.jit.JITVariableType;
+import net.multiphasicapps.squirreljme.jit.StackMapType;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
@@ -79,7 +79,7 @@ public class GenericAllocator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/03
 	 */
-	public void primeArguments(boolean __eh, JITVariableType[] __t)
+	public void primeArguments(boolean __eh, StackMapType[] __t)
 		throws JITException, NullPointerException
 	{
 		// Check

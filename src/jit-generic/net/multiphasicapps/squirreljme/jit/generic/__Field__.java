@@ -12,7 +12,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
-import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
+import net.multiphasicapps.squirreljme.jit.base.FieldFlags;
 
 /**
  * This represents a single field.
@@ -36,7 +36,7 @@ class __Field__
 	 * none.
 	 * @since 2016/08/18
 	 */
-	__Field__(GenericClassWriter __gcw, ClassFieldFlags __f,
+	__Field__(GenericClassWriter __gcw, FieldFlags __f,
 		IdentifierSymbol __name, FieldSymbol __type, Object __cv)
 	{
 		super(__gcw, __f, __name, __type);

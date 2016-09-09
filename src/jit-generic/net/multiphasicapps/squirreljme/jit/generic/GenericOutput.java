@@ -13,7 +13,7 @@ package net.multiphasicapps.squirreljme.jit.generic;
 import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.ClassMethodReference;
+import net.multiphasicapps.squirreljme.jit.MethodReference;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -61,7 +61,7 @@ public class GenericOutput
 	 * @since 2016/08/21
 	 */
 	protected final GenericMethodWriter methodWriter(OutputStream __os,
-		ClassMethodReference __mr)
+		MethodReference __mr)
 		throws JITException, NullPointerException
 	{
 		return new GenericMethodWriter(this.config, __os, __mr);
@@ -103,7 +103,7 @@ public class GenericOutput
 	 * @since 2016/08/21
 	 */
 	final GenericMethodWriter __methodWriter(OutputStream __os,
-		ClassMethodReference __mr)
+		MethodReference __mr)
 	{
 		return methodWriter(__os, __mr);
 	}

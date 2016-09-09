@@ -20,11 +20,11 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.ClassMethodInvokeType;
-import net.multiphasicapps.squirreljme.jit.ClassMethodReference;
+import net.multiphasicapps.squirreljme.jit.MethodInvokeType;
+import net.multiphasicapps.squirreljme.jit.MethodReference;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.jit.JITVariableType;
+import net.multiphasicapps.squirreljme.jit.StackMapType;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 
 /**
@@ -65,7 +65,7 @@ public final class GenericMethodWriter
 		new LinkedHashMap<>();
 	
 	/** This method reference. */
-	protected final ClassMethodReference thisref;
+	protected final MethodReference thisref;
 	
 	/** Valid jump targets. */
 	private volatile int[] _jumptargets;
@@ -80,7 +80,7 @@ public final class GenericMethodWriter
 	 * @since 2016/08/21
 	 */
 	public GenericMethodWriter(JITOutputConfig.Immutable __conf,
-		OutputStream __os, ClassMethodReference __thisref)
+		OutputStream __os, MethodReference __thisref)
 		throws NullPointerException
 	{
 		// Check
@@ -188,9 +188,9 @@ public final class GenericMethodWriter
 	 * @since 2016/09/06
 	 */
 	@Override
-	public void invoke(ClassMethodInvokeType __type, int __pid,
-		ClassMethodReference __ref, JITVariableType[] __st, int[] __sp,
-		JITVariableType __rvt, int __rv)
+	public void invoke(MethodInvokeType __type, int __pid,
+		MethodReference __ref, StackMapType[] __st, int[] __sp,
+		StackMapType __rvt, int __rv)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -198,7 +198,7 @@ public final class GenericMethodWriter
 			throw new NullPointerException("NARG");
 		
 		// Setup linkage
-		GenericMethodLinkage gml = new GenericMethodLinkage(this.thisref,
+		MethodLinkage gml = new MethodLinkage(this.thisref,
 			__ref, __type);
 		
 		throw new Error("TODO");
@@ -225,7 +225,7 @@ public final class GenericMethodWriter
 	 * @since 2016/08/29
 	 */
 	@Override
-	public final void primeArguments(boolean __eh, JITVariableType[] __t)
+	public final void primeArguments(boolean __eh, StackMapType[] __t)
 		throws JITException, NullPointerException
 	{
 		// Check

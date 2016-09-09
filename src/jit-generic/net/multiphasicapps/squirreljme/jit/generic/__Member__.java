@@ -12,8 +12,8 @@ package net.multiphasicapps.squirreljme.jit.generic;
 
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
-import net.multiphasicapps.squirreljme.jit.base.ClassMemberFlag;
-import net.multiphasicapps.squirreljme.jit.base.ClassMemberFlags;
+import net.multiphasicapps.squirreljme.jit.base.MemberFlag;
+import net.multiphasicapps.squirreljme.jit.base.MemberFlags;
 
 /**
  * This is the base class storage for fields and methods.
@@ -42,7 +42,7 @@ abstract class __Member__
 	 * @since 2016/08/18
 	 */
 	__Member__(GenericClassWriter __gcw,
-		ClassMemberFlags<? extends ClassMemberFlag> __f,
+		MemberFlags<? extends MemberFlag> __f,
 		IdentifierSymbol __name, MemberTypeSymbol __type)
 		throws NullPointerException
 	{
@@ -59,7 +59,7 @@ abstract class __Member__
 		
 		// Fill flags
 		int flags = 0;
-		for (ClassMemberFlag f : __f)
+		for (MemberFlag f : __f)
 			flags |= (1 << f.ordinal());
 		this._flags = flags;
 	}
