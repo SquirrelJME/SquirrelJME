@@ -17,8 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.JITObjectProperties;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableList;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
@@ -30,7 +28,6 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  * @since 2016/09/01
  */
 public final class NativeABI
-	implements JITObjectProperties
 {
 	/** The integer group. */
 	private final __Group__ _int;
@@ -73,25 +70,25 @@ public final class NativeABI
 		// {@squirreljme.error AR1j The pointer size was not set.}
 		int pointersize = __b._pointersize;
 		if (pointersize <= 0)
-			throw new JITException("AR1j");
+			throw new NativeCodeException("AR1j");
 		this._pointersize = pointersize;
 		
 		// {@squirreljme.error AR0v The stack alignment was not set.}
 		int stackalign = __b._stackalign;
 		if (stackalign <= 0)
-			throw new JITException("AR0v");
+			throw new NativeCodeException("AR0v");
 		this._stackalign = stackalign;
 		
 		// {@squirreljme.error AR0w The stack direction was not set.}
 		NativeStackDirection stackdir = __b._stackdir;
 		if (stackdir == null)
-			throw new JITException("AR0w");
+			throw new NativeCodeException("AR0w");
 		this._stackdir = stackdir;
 		
 		// {@squirreljme.error AR0x The stack register was not set.}
 		NativeRegister stack = __b._stack;
 		if (stack == null)
-			throw new JITException("AR0x");
+			throw new NativeCodeException("AR0x");
 		this._stack = stack;
 		
 		// Fill integer registers
@@ -218,16 +215,6 @@ public final class NativeABI
 	public final int pointerSize()
 	{
 		return this._pointersize;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/01
-	 */
-	@Override
-	public final String[] properties()
-	{
-		throw new Error("TODO");
 	}
 	
 	/**
@@ -436,7 +423,7 @@ public final class NativeABI
 			// and temporary. (The register)}
 			for (NativeRegister r : saved)
 				if (temps.contains(r))
-					throw new JITException(String.format("AR1e %s", r));
+					throw new NativeCodeException(String.format("AR1e %s", r));
 			
 			// Make sure the collections have all matching types
 			if (total > 0)
@@ -444,17 +431,17 @@ public final class NativeABI
 				// {@squirreljme.error AR0y No result registers were
 				// specified.}
 				if (result.size() <= 0)
-					throw new JITException("AR0y");
+					throw new NativeCodeException("AR0y");
 				
 				// {@squirreljme.error AR0q No argument registers were
 				// specified.}
 				if (args.size() <= 0)
-					throw new JITException("AR0q");
+					throw new NativeCodeException("AR0q");
 				
 				// {@squirreljme.error AR1d The total number of temporary
 				// registers and saved registers is zero.}
 				if ((saved.size() + temps.size()) <= 0)
-					throw new JITException("AR1d");
+					throw new NativeCodeException("AR1d");
 			}
 			
 			// Float is optional
@@ -463,7 +450,7 @@ public final class NativeABI
 				// {@squirreljme.error AR0r No integer registers were
 				// specified.}
 				if (!__float)
-					throw new JITException("AR0r");
+					throw new NativeCodeException("AR0r");
 			}	
 		}
 	}

@@ -14,8 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 
 /**
  * This class is used to generate instances of {@link NativeABI} which is
@@ -143,13 +141,13 @@ public final class NativeABIBuilder
 	 * Adds a callee saved register.
 	 *
 	 * @param __r The register that is callee saved.
-	 * @throws JITException If the register is temporary or is the stack
+	 * @throws NativeCodeException If the register is temporary or is the stack
 	 * register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
 	public final void addSaved(NativeRegister __r)
-		throws JITException, NullPointerException
+		throws NativeCodeException, NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -162,7 +160,7 @@ public final class NativeABIBuilder
 			// because it is the stack register or is temporary. (The register
 			// being added)}
 			if (this._temps.contains(__r) || this._stack.equals(__r))
-				throw new JITException(String.format("AR1b %s", __r));
+				throw new NativeCodeException(String.format("AR1b %s", __r));
 			
 			this._saved.add(__r);
 		}
@@ -172,12 +170,12 @@ public final class NativeABIBuilder
 	 * Adds a caller saved register.
 	 *
 	 * @param __r The register that is caller saved.
-	 * @throws JITException If the register is saved or is the stack register.
+	 * @throws NativeCodeException If the register is saved or is the stack register.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
 	public final void addTemporary(NativeRegister __r)
-		throws JITException, NullPointerException
+		throws NativeCodeException, NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -190,7 +188,7 @@ public final class NativeABIBuilder
 			// because it is the stack register or is saved. (The register
 			// being added)}
 			if (this._saved.contains(__r) || this._stack.equals(__r))
-				throw new JITException(String.format("AR1c %s", __r));
+				throw new NativeCodeException(String.format("AR1c %s", __r));
 			
 			this._temps.add(__r);
 		}
@@ -200,12 +198,12 @@ public final class NativeABIBuilder
 	 * Builds the given ABI set.
 	 *
 	 * @return The generic ABI set.
-	 * @throws JITException If a group contains no registers, the stack
+	 * @throws NativeCodeException If a group contains no registers, the stack
 	 * register was not set, or the direction register was not set.
 	 * @since 2016/09/01
 	 */
 	public final NativeABI build()
-		throws JITException
+		throws NativeCodeException
 	{
 		// Lock
 		synchronized (this.lock)
@@ -218,16 +216,16 @@ public final class NativeABIBuilder
 	 * Sets the pointer size.
 	 *
 	 * @param __b The number of bits used for pointers.
-	 * @throws JITException If the number of bits is zero or negative;
+	 * @throws NativeCodeException If the number of bits is zero or negative;
 	 * is not a power of two; or is not a multiple of eight.
 	 * @since 2016/09/08
 	 */
 	public final void pointerSize(int __b)
-		throws JITException
+		throws NativeCodeException
 	{
 		// {@squirreljme.error AR1k 
 		if (__b <= 0 || Integer.bitCount(__b) != 1 || (__b & 7) != 0)
-			throw new JITException(String.format("AR1k %d", __b));
+			throw new NativeCodeException(String.format("AR1k %d", __b));
 		
 		// Lock
 		synchronized (this.lock)
@@ -240,12 +238,12 @@ public final class NativeABIBuilder
 	 * Sets the stack register.
 	 *
 	 * @param __r The register to use for the stack.
-	 * @throws JITException If the register is temporary or saved.
+	 * @throws NativeCodeException If the register is temporary or saved.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/01
 	 */
 	public final void stack(NativeRegister __r)
-		throws JITException, NullPointerException
+		throws NativeCodeException, NullPointerException
 	{
 		// Check
 		if (__r == null)
@@ -258,7 +256,7 @@ public final class NativeABIBuilder
 			// the stack register because it is saved and/or temporary. (The
 			// register to be used as the stack register)}
 			if (this._saved.contains(__r) || this._temps.contains(__r))
-				throw new JITException(String.format("AR0p %s", __r));
+				throw new NativeCodeException(String.format("AR0p %s", __r));
 			
 			this._stack = __r;
 		}
@@ -268,16 +266,16 @@ public final class NativeABIBuilder
 	 * Sets the requires stack alignment needed for method calls.
 	 *
 	 * @param __i The number of bytes to align to.
-	 * @throws JITException If the alignment is zero or negative.
+	 * @throws NativeCodeException If the alignment is zero or negative.
 	 * @since 2016/09/01
 	 */
 	public final void stackAlignment(int __i)
-		throws JITException
+		throws NativeCodeException
 	{
 		// {@squirreljme.error AR0u The stack alignment is zero or negative.
 		// (The alignment)}
 		if (__i <= 0)
-			throw new JITException(String.format("AR0u %d", __i));
+			throw new NativeCodeException(String.format("AR0u %d", __i));
 		
 		// Lock
 		synchronized (this.lock)
@@ -312,13 +310,13 @@ public final class NativeABIBuilder
 	 *
 	 * @param __t The triplet to get the type from.
 	 * @return The integer type.
-	 * @throws JITException If the type was not known.
+	 * @throws NativeCodeException If the type was not known.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
 	public static NativeRegisterIntegerType intRegisterTypeFromTriplet(
 		JITTriplet __t)
-		throws JITException, NullPointerException
+		throws NativeCodeException, NullPointerException
 	{
 		// Check
 		if (__t == null)
@@ -335,7 +333,7 @@ public final class NativeABIBuilder
 				// {@squirreljme.error AR1f Could not get the integer register
 				// type from the specified triplet. (The triplet)}
 			default:
-				throw new JITException(String.format("AR1f %s", __t));
+				throw new NativeCodeException(String.format("AR1f %s", __t));
 		}
 	}
 	
@@ -345,13 +343,13 @@ public final class NativeABIBuilder
 	 *
 	 * @param __t The triplet to get the type from.
 	 * @return The floating point type.
-	 * @throws JITException If the type could not be determined.
+	 * @throws NativeCodeException If the type could not be determined.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
 	public static NativeRegisterFloatType floatRegisterTypeFromTriplet(
 		JITTriplet __t)
-		throws JITException, NullPointerException
+		throws NativeCodeException, NullPointerException
 	{
 		// Check
 		if (__t == null)
@@ -366,7 +364,7 @@ public final class NativeABIBuilder
 				// {@squirreljme.error AR1g Could not get the float register
 				// type from the specified triplet. (The triplet)}
 			default:
-				throw new JITException(String.format("AR1g %s", __t));
+				throw new NativeCodeException(String.format("AR1g %s", __t));
 		}
 	}
 }
