@@ -14,22 +14,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.classformat.ClassFlag;
+import net.multiphasicapps.squirreljme.classformat.ClassFlags;
+import net.multiphasicapps.squirreljme.classformat.ConstantPool;
+import net.multiphasicapps.squirreljme.classformat.FieldFlags;
+import net.multiphasicapps.squirreljme.classformat.MethodFlags;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.ClassFlag;
-import net.multiphasicapps.squirreljme.jit.base.ClassFlags;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.FieldFlags;
-import net.multiphasicapps.squirreljme.jit.base.MethodFlags;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITCompilerOrder;
-import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.os.generic.BlobContentType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
-import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
  * This writes classes to the output namespace.
@@ -69,7 +69,7 @@ public final class GenericClassWriter
 	private volatile boolean _closed;
 	
 	/** The constant pool to use. */
-	private volatile JITConstantPool _xpool;
+	private volatile ConstantPool _xpool;
 	
 	/** Class flags, written later. */
 	private volatile ClassFlags _flags;
@@ -238,7 +238,7 @@ public final class GenericClassWriter
 	 * @since 2016/08/12
 	 */
 	@Override
-	public void constantPool(JITConstantPool __pool, int __cndx)
+	public void constantPool(ConstantPool __pool, int __cndx)
 	{
 		// Check
 		if (__pool == null)

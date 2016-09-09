@@ -11,9 +11,9 @@
 package net.multiphasicapps.squirreljme.jit.generic;
 
 import java.io.OutputStream;
+import net.multiphasicapps.squirreljme.classformat.MethodReference;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.MethodReference;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;

@@ -17,14 +17,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.classformat.MethodInvokeType;
+import net.multiphasicapps.squirreljme.classformat.MethodLinkage;
+import net.multiphasicapps.squirreljme.classformat.MethodReference;
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.MethodInvokeType;
-import net.multiphasicapps.squirreljme.jit.MethodReference;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.jit.StackMapType;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 
 /**

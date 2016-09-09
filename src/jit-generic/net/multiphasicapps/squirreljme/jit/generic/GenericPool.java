@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.classformat.ConstantPool;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.JITConstantPool;
 import net.multiphasicapps.squirreljme.os.generic.ConstantTagType;
 import net.multiphasicapps.squirreljme.os.generic.GenericBlob;
 
@@ -40,7 +40,7 @@ public final class GenericPool
 		new LinkedHashMap<>();
 	
 	/** The currently active pool. */
-	private volatile JITConstantPool _current;
+	private volatile ConstantPool _current;
 	
 	/** The constant pool position. */
 	volatile int _poolpos;
@@ -144,7 +144,7 @@ public final class GenericPool
 	 * @param __pool The pool to use.
 	 * @since 2016/08/17
 	 */
-	void __setCurrent(JITConstantPool __pool)
+	void __setCurrent(ConstantPool __pool)
 	{
 		this._current = __pool;
 	}

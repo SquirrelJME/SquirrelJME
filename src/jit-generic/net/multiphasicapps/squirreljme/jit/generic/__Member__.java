@@ -10,10 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.classformat.MemberFlag;
+import net.multiphasicapps.squirreljme.classformat.MemberFlags;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
-import net.multiphasicapps.squirreljme.jit.base.MemberFlag;
-import net.multiphasicapps.squirreljme.jit.base.MemberFlags;
 
 /**
  * This is the base class storage for fields and methods.

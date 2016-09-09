@@ -10,10 +10,10 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.classformat.MethodFlags;
+import net.multiphasicapps.squirreljme.classformat.MethodReference;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.MethodFlags;
-import net.multiphasicapps.squirreljme.jit.MethodReference;
 
 /**
  * This represents a single method.
