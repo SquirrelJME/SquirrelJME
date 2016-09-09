@@ -24,22 +24,22 @@ enum __SMTType__
 	NOTHING(false, null),
 	
 	/** 32-bit Integer. */
-	INTEGER(false, JITVariableType.INTEGER),
+	INTEGER(false, ClassStackMapType.INTEGER),
 	
 	/** 64-bit Integer. */
-	LONG(true, JITVariableType.LONG),
+	LONG(true, ClassStackMapType.LONG),
 	
 	/** 32-bit Float. */
-	FLOAT(false, JITVariableType.FLOAT),
+	FLOAT(false, ClassStackMapType.FLOAT),
 	
 	/** 64-bit Double. */
-	DOUBLE(true, JITVariableType.DOUBLE),
+	DOUBLE(true, ClassStackMapType.DOUBLE),
 	
 	/** Object. */
-	OBJECT(false, JITVariableType.OBJECT),
+	OBJECT(false, ClassStackMapType.OBJECT),
 	
 	/** The top of a long or double. */
-	TOP(false, JITVariableType.TOP),
+	TOP(false, ClassStackMapType.TOP),
 	
 	/** End. */
 	;
@@ -48,7 +48,7 @@ enum __SMTType__
 	protected final boolean iswide;
 	
 	/** The type of variable this maps to. */
-	protected final JITVariableType mapped;
+	protected final ClassStackMapType mapped;
 	
 	/**
 	 * Initializes the variable type.
@@ -58,7 +58,7 @@ enum __SMTType__
 	 * it does not map to anything.
 	 * @since 2016/05/12
 	 */
-	private __SMTType__(boolean __w, JITVariableType __m)
+	private __SMTType__(boolean __w, ClassStackMapType __m)
 	{
 		this.iswide = __w;
 		this.mapped = __m;
@@ -81,7 +81,7 @@ enum __SMTType__
 	 * @return The variable type to map to.
 	 * @since 2016/08/29
 	 */
-	public final JITVariableType map()
+	public final ClassStackMapType map()
 	{
 		return this.mapped;
 	}

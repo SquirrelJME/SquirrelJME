@@ -575,7 +575,7 @@ final class __OpParser__
 			throw new ClassFormatException("AY3y");
 		
 		// Stack positions and types
-		JITVariableType[] st = new JITVariableType[xc];
+		ClassStackMapType[] st = new ClassStackMapType[xc];
 		
 		// Fill types and check that they are valid
 		int write = xc - 1, popcount = 0;
@@ -588,11 +588,11 @@ final class __OpParser__
 		if (isinstance)
 		{
 			// Map it
-			JITVariableType map = stack.get(at--).map();
+			ClassStackMapType map = stack.get(at--).map();
 			
 			// {@squirreljme.error AY3z Expected an object to be the instance
 			// variable. (The actual type)}
-			if (map != JITVariableType.OBJECT)
+			if (map != ClassStackMapType.OBJECT)
 				throw new ClassFormatException(String.format("AY3z %s", map));
 			
 			// Store
@@ -604,7 +604,7 @@ final class __OpParser__
 		
 		// Handle return value if any
 		FieldSymbol rv = sym.returnValue();
-		JITVariableType rvt;
+		ClassStackMapType rvt;
 		int rvi;
 		__SMTType__ rvs;
 		if (rv != null)

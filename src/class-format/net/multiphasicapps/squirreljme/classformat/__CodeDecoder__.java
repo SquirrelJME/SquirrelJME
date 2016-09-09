@@ -237,7 +237,7 @@ final class __CodeDecoder__
 		__SMTLocals__ locals = this._smt.get(0)._locals;
 		
 		// Setup output arguments
-		List<JITVariableType> args = new ArrayList<>();
+		List<ClassStackMapType> args = new ArrayList<>();
 		int n = locals.size();
 		for (int i = 0; i < n; i++)
 		{
@@ -253,8 +253,8 @@ final class __CodeDecoder__
 		}
 		
 		// Prime it
-		this._writer.primeArguments(__eh, args.<JITVariableType>toArray(
-			new JITVariableType[args.size()]));
+		this._writer.primeArguments(__eh, args.<ClassStackMapType>toArray(
+			new ClassStackMapType[args.size()]));
 	}
 	
 	/**
@@ -267,7 +267,7 @@ final class __CodeDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/03
 	 */
-	JITVariableType __remapType(JITVariableType __t)
+	ClassStackMapType __remapType(ClassStackMapType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -279,8 +279,8 @@ final class __CodeDecoder__
 		{
 				// If software floating point is used for either type then
 				// remap
-			case FLOAT: return (this._hwfloat ? __t : JITVariableType.INTEGER);
-			case DOUBLE: return (this._hwdouble ? __t : JITVariableType.LONG);
+			case FLOAT: return (this._hwfloat ? __t : ClassStackMapType.INTEGER);
+			case DOUBLE: return (this._hwdouble ? __t : ClassStackMapType.LONG);
 			
 				// Keep the same
 			default:
