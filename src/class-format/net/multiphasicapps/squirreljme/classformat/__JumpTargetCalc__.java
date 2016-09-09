@@ -8,11 +8,10 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.IOException;
 import java.util.Arrays;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 
 /**
@@ -404,10 +403,10 @@ class __JumpTargetCalc__
 			case __OpIndex__.SWAP:
 				break;
 				
-				// {@squirreljme.error BA1j Illegal operation in Java byte
+				// {@squirreljme.error AY1j Illegal operation in Java byte
 				// code. (The operation code; The position of it)}
 			default:
-				throw new JITException(String.format("BA1j %d %d", __code,
+				throw new JITException(String.format("AY1j %d %d", __code,
 					__pos));
 		}
 	}

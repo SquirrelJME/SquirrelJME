@@ -8,15 +8,13 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.IOException;
 import java.util.Map;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This performs the actual parsing of the opcodes and generates operations
@@ -397,7 +395,7 @@ final class __OpParser__
 				return __executeInvoke(ClassMethodInvokeType.VIRTUAL,
 					input.readUnsignedShort());
 			
-				// {@squirreljme.error ED08 Defined operation cannot be
+				// {@squirreljme.error AY38 Defined operation cannot be
 				// used in Java ME programs. (The operation)}
 			case __OpIndex__.JSR:
 			case __OpIndex__.JSR_W:
@@ -406,7 +404,7 @@ final class __OpParser__
 			case __OpIndex__.BREAKPOINT:
 			case __OpIndex__.IMPDEP1:
 			case __OpIndex__.IMPDEP2:
-				throw new JITException(String.format("ED08 %d", __code));
+				throw new JITException(String.format("AY38 %d", __code));
 			
 			case __OpIndex__.IASTORE:
 			case __OpIndex__.LASTORE:
@@ -523,10 +521,10 @@ final class __OpParser__
 			case __OpIndex__.IFNONNULL:
 			case __OpIndex__.GOTO_W:
 			
-				// {@squirreljme.error ED07 Unknown byte-code operation.
+				// {@squirreljme.error AY37 Unknown byte-code operation.
 				// (The operation)}
 			default:
-				throw new JITException(String.format("ED07 %d", __code));
+				throw new JITException(String.format("AY37 %d", __code));
 		}
 	}
 	
@@ -570,11 +568,11 @@ final class __OpParser__
 			else
 				xc++;
 		
-		// {@squirreljme.error ED0y Stack underflow during invocation of
+		// {@squirreljme.error AY3y Stack underflow during invocation of
 		// method.}
 		int top = stack.top(), at = top - 1, end = top - xc;
 		if (end < 0)
-			throw new JITException("ED0y");
+			throw new JITException("AY3y");
 		
 		// Stack positions and types
 		JITVariableType[] st = new JITVariableType[xc];
@@ -592,10 +590,10 @@ final class __OpParser__
 			// Map it
 			JITVariableType map = stack.get(at--).map();
 			
-			// {@squirreljme.error ED0z Expected an object to be the instance
+			// {@squirreljme.error AY3z Expected an object to be the instance
 			// variable. (The actual type)}
 			if (map != JITVariableType.OBJECT)
-				throw new JITException(String.format("ED0z %s", map));
+				throw new JITException(String.format("AY3z %s", map));
 			
 			// Store
 			st[write++] = map;
@@ -615,9 +613,9 @@ final class __OpParser__
 			rvt = rvs.map();
 			rvi = end;
 			
-			// {@squirreljme.error ED10 Stack overflow writing return value.}
+			// {@squirreljme.error AY40 Stack overflow writing return value.}
 			if (rvi >= stack.size())
-				throw new JITException("ED10");
+				throw new JITException("AY40");
 		}
 		
 		// No return value
@@ -668,12 +666,12 @@ final class __OpParser__
 		__SMTState__ smwork = this._smwork;
 		__SMTLocals__ locals = smwork._locals;
 		
-		// {@squirreljme.error ED0w Attempt to push a local variable to the
+		// {@squirreljme.error AY3w Attempt to push a local variable to the
 		// stack of a different type. (The local variable index; The type that
 		// the variable was; The expected type)}
 		__SMTType__ was = locals.get(__from);
 		if (was != __t)
-			throw new JITException(String.format("ED0w %d %s %s", __from, was,
+			throw new JITException(String.format("AY3w %d %s %s", __from, was,
 				__t));
 		
 		// Cache it on the stack

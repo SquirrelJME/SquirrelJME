@@ -8,10 +8,9 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This represents the type of value which is stored in a variable either on
@@ -125,9 +124,9 @@ enum __SMTType__
 				
 				// Unknown
 			default:
-				// {@squirreljme.error ED0r The specified field symbol
+				// {@squirreljme.error AY3r The specified field symbol
 				// cannot be mapped to a variable type. (The field symbol)}
-				throw new JITException(String.format("ED0r %s", __sym));
+				throw new JITException(String.format("AY3r %s", __sym));
 		}
 	}
 }

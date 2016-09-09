@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
  * This parses the stack map table using either the modern Java 6 format or
@@ -139,10 +137,10 @@ class __SMTParser__
 				else if (type >= 252 && type <= 254)
 					__appendFrame(type - 251);
 				
-				// {@squirreljme.error ED0j Unknown StackMapTable verification
+				// {@squirreljme.error AY3j Unknown StackMapTable verification
 				// type. (The verification type)}
 				else
-					throw new JITException(String.format("ED0j %d", type));
+					throw new JITException(String.format("AY3j %d", type));
 			}
 		}
 	}
@@ -199,10 +197,10 @@ class __SMTParser__
 		}
 		
 		// Error if added stuff remains
-		// {@squirreljme.error ED0k Appending local variables to the frame
+		// {@squirreljme.error AY3k Appending local variables to the frame
 		// however there is no room to place them. (The remaining local count)}
 		if (__addlocs != 0)
-			throw new JITException(String.format("ED0k %d", __addlocs));
+			throw new JITException(String.format("AY3k %d", __addlocs));
 	}
 	
 	/**
@@ -271,11 +269,11 @@ class __SMTParser__
 		}
 		
 		// Still chops left?
-		// {@squirreljme.error ED0l Could not chop off all local variables
+		// {@squirreljme.error AY3l Could not chop off all local variables
 		// because there are no variables remaining to be chopped. (The
 		// remaining variables to remove)}
 		if (__chops != 0)
-			throw new JITException(String.format("ED0l %d", __chops));
+			throw new JITException(String.format("AY3l %d", __chops));
 	}
 	
 	/**
@@ -295,12 +293,12 @@ class __SMTParser__
 		// Read in local variables
 		int nl = das.readUnsignedShort();
 		
-		// {@squirreljme.error ED0o The number of specified local variables in
+		// {@squirreljme.error AY3o The number of specified local variables in
 		// the full frame exceeds the maximum permitted local variable
 		// count. (The read local variable count; The number of locals the
 		// method uses)}
 		if (nl > maxlocals)
-			throw new JITException(String.format("ED00 %d %d", nl,
+			throw new JITException(String.format("AY30 %d %d", nl,
 				maxlocals));
 		int i;
 		__SMTLocals__ locals = next._locals;
@@ -371,9 +369,9 @@ class __SMTParser__
 				
 				// Unknown
 			default:
-				// {@squirreljme.error ED0p The verification tag in the
+				// {@squirreljme.error AY3p The verification tag in the
 				// StackMap/STackMapTable attribute is not valid. (The tag)}
-				throw new JITException(String.format("ED0p %d", tag));
+				throw new JITException(String.format("AY3p %d", tag));
 		}
 	}
 	
@@ -394,11 +392,11 @@ class __SMTParser__
 		// Read in local variables
 		int nl = das.readUnsignedShort();
 		
-		// {@squirreljme.error ED0q Old-style full frame specified more local
+		// {@squirreljme.error AY3q Old-style full frame specified more local
 		// variables than there are in the method. (The number of locals; The
 		// maximum number of locals)}
 		if (nl > maxlocals)
-			throw new JITException(String.format("ED0q %d %d", nl,
+			throw new JITException(String.format("AY3q %d %d", nl,
 				maxlocals));
 		__SMTLocals__ locals = next._locals;
 		int i = 0;
@@ -527,18 +525,18 @@ class __SMTParser__
 					loc.set(vat++, __SMTType__.TOP);
 			}
 			
-			// {@squirreljme.error ED0s There are too many local variables.}
+			// {@squirreljme.error AY3s There are too many local variables.}
 			if (vat > __maxl)
-				throw new IndexOutOfBoundsException("ED0s");
+				throw new IndexOutOfBoundsException("AY3s");
 		}
 		
 		// Initialization out of bounds
 		catch (IndexOutOfBoundsException e)
 		{
-			// {@squirreljme.error ED0c There are not enough local variables
+			// {@squirreljme.error AY3c There are not enough local variables
 			// to store the input method arguments. (The number of input
 			// variables; The number of local variables)}
-			throw new JITException(String.format("ED0c", vat,
+			throw new JITException(String.format("AY3c", vat,
 				__maxl), e);
 		}
 		

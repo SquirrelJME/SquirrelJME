@@ -8,9 +8,8 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
-import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This represents the verification state of the stack.
@@ -125,12 +124,12 @@ class __SMTStack__
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ED0x The Java stack has overflowed.}
+		// {@squirreljme.error AY3x The Java stack has overflowed.}
 		int top = this._top;
 		boolean wide;
 		int newtop = top + ((wide = __t.isWide()) ? 2 : 1);
 		if (newtop > this.count)
-			throw new JITException("ED0x");
+			throw new JITException("AY3x");
 		
 		// Set type
 		set(top, __t);
@@ -184,12 +183,12 @@ class __SMTStack__
 	public void setStackTop(int __top)
 		throws JITException
 	{
-		// {@squirreljme.error ED01 The size of the stack either overflows
+		// {@squirreljme.error AY31 The size of the stack either overflows
 		// or underflows the number of stack entries. (The position of the
 		// top of the stack; The number of entries on the stack)}
 		int n = this.count;
 		if (__top < 0 || __top > n)
-			throw new JITException(String.format("ED01 %d %d", __top, n));
+			throw new JITException(String.format("AY31 %d %d", __top, n));
 		
 		// Set
 		this._top = __top;
@@ -241,10 +240,10 @@ class __SMTStack__
 		if (__n == 0)
 			return new int[0];
 		
-		// {@squirreljme.error ED11 The stack underflowed.}
+		// {@squirreljme.error AY41 The stack underflowed.}
 		int top = top(), end = top - __n;
 		if (__n < 0 || end < 0)
-			throw new JITException("ED11");
+			throw new JITException("AY41");
 		
 		// If any lower stack entries refer to higher ones then make their
 		// values unique and copy them via the parser

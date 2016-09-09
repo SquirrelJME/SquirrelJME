@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -20,8 +20,6 @@ import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 
 /**
@@ -137,12 +135,12 @@ final class __CodeDecoder__
 		// Report this to the writer
 		writer.variableCounts(maxstack, maxlocals);
 		
-		// {@squirreljme.error ED06 The code for a given method exceeds the
+		// {@squirreljme.error AY36 The code for a given method exceeds the
 		// code size limit, or the size is zero. (The current code length;
 		// The code size limit)}
 		int codelen = input.readInt();
 		if (codelen <= 0 || codelen > _CODE_SIZE_LIMIT)
-			throw new JITException(String.format("ED06 %d %d",
+			throw new JITException(String.format("AY36 %d %d",
 				codelen & 0xFFFF_FFFFL, _CODE_SIZE_LIMIT));
 		
 		// Read code and save it for later after the exception table and
@@ -211,10 +209,10 @@ final class __CodeDecoder__
 			case "StackMap":
 				old = true;
 			case "StackMapTable":
-				// {@squirreljme.error ED0t Only a single stack map table is
+				// {@squirreljme.error AY3t Only a single stack map table is
 				// permitted in a code attribute.}
 				if (this._smt != null)
-					throw new JITException("ED0t");
+					throw new JITException("AY3t");
 				
 				// Parse and store result
 				this._smt = new __SMTParser__(!old, __is, this._flags,

@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This interface contains instruction identification numbers which identify
@@ -16,7 +16,7 @@ package net.multiphasicapps.squirreljme.jit;
  *
  * @since 2016/08/24
  */
-interface __OpIndex__
+interface ClassByteCodeIndex
 {
 	/** NOP. */
 	public static final int NOP =
