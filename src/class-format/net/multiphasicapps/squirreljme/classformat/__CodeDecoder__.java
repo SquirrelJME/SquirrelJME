@@ -20,7 +20,6 @@ import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataInputStream;
 import net.multiphasicapps.io.region.SizeLimitedInputStream;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 
 /**
  * This class is used to decode the actual code attribute in the method

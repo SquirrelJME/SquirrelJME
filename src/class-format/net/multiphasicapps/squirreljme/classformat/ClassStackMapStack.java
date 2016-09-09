@@ -172,7 +172,7 @@ public class ClassStackMapStack
 		
 		// Popping nothing
 		if (__n == 0)
-			return new int[0];
+			return null;
 		
 		// {@squirreljme.error AY41 The stack underflowed.}
 		int top = top(), end = top - __n;

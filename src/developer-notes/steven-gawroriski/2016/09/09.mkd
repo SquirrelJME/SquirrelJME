@@ -195,3 +195,9 @@ This means the class decode is rid of the JIT details.
 And that is a good thing since it makes the class decoder code much simpler as
 the decoder no longer has to juggle JIT details at all.
 
+## 18:39
+
+The stack map parser state needs a partial and then a locked state. One thing
+to consider though is that the information could be hidden again. I may want to
+go for it being hidden as before. Except for `ClassStackMapType`.
+

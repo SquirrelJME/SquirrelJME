@@ -107,9 +107,6 @@ final class __OpParser__
 			if (bias != null)
 				smwork.from(bias);
 			
-			// Stack not flushed
-			this._stackflushed = false;
-			
 			// Report it
 			writer.atInstruction(code, nowpos);
 			
@@ -121,9 +118,7 @@ final class __OpParser__
 			// Handle jump targets
 			// This verifies that for each jump target or implicit flow that
 			// the resulting stack state matches the expected one
-			// Stack cache flushing may also be performed
 			int n = jt.length;
-			boolean hasflushed = this._stackflushed;
 			for (int i = 0; i < n; i++)
 			{
 				// Get jump target, if it is implicit next then use the
@@ -558,7 +553,7 @@ final class __OpParser__
 		if (isinstance)
 		{
 			// Map it
-			ClassStackMapType map = stack.get(at--).map();
+			ClassStackMapType map = stack.get(at--);
 			
 			// {@squirreljme.error AY3z Expected an object to be the instance
 			// variable. (The actual type)}
@@ -574,13 +569,11 @@ final class __OpParser__
 		
 		// Handle return value if any
 		FieldSymbol rv = sym.returnValue();
-		ClassStackMapType rvt;
 		int rvi;
 		ClassStackMapType rvs;
 		if (rv != null)
 		{
 			rvs = ClassStackMapType.bySymbol(rv);
-			rvt = rvs.map();
 			rvi = end;
 			
 			// {@squirreljme.error AY40 Stack overflow writing return value.}
@@ -592,25 +585,18 @@ final class __OpParser__
 		else
 		{
 			rvs = null;
-			rvt = null;
 			rvi = -1;
 		}
 		
 		// Pop all stack values
-		int[] sp = stack.__pop(this, popcount);
-		
-		// Debug
-		System.err.printf("DEBUG -- Invoke: %s rv=%s/%d vars=", ref, rvt, rvi);
-		for (int i = 0; i < xc; i++)
-			System.err.printf("%d ", sp[i]);
-		System.err.println();
+		stack.__pop(this, popcount);
 		
 		// Send in the call
-		this.writer.invoke(__type, __pid, ref, st, sp, rvt, rvi);
+		this.writer.invoke(__type, __pid, ref, st, sp, rvi);
 		
 		// Push return value if there is one
 		if (rv != null)
-			stack.push(rvs, UNIQUE_STACK_VALUE);
+			stack.push(rvs);
 		
 		// Implicit next
 		return IMPLICIT_NEXT;
@@ -645,7 +631,7 @@ final class __OpParser__
 				__from, was, __t));
 		
 		// Cache it on the stack
-		smwork._stack.push(was, __from);
+		smwork._stack.push(was);
 		
 		// Implicit next
 		return IMPLICIT_NEXT;
