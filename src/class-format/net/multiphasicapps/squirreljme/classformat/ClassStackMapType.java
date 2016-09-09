@@ -18,28 +18,28 @@ import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
  *
  * @since 2016/05/12
  */
-enum __SMTType__
+public enum ClassStackMapType
 {
 	/** Nothing is stored here. */
-	NOTHING(false, null),
+	NOTHING(false),
 	
 	/** 32-bit Integer. */
-	INTEGER(false, ClassStackMapType.INTEGER),
+	INTEGER(false),
 	
 	/** 64-bit Integer. */
-	LONG(true, ClassStackMapType.LONG),
+	LONG(true),
 	
 	/** 32-bit Float. */
-	FLOAT(false, ClassStackMapType.FLOAT),
+	FLOAT(false),
 	
 	/** 64-bit Double. */
-	DOUBLE(true, ClassStackMapType.DOUBLE),
+	DOUBLE(true),
 	
 	/** Object. */
-	OBJECT(false, ClassStackMapType.OBJECT),
+	OBJECT(false),
 	
 	/** The top of a long or double. */
-	TOP(false, ClassStackMapType.TOP),
+	TOP(false),
 	
 	/** End. */
 	;
@@ -47,21 +47,15 @@ enum __SMTType__
 	/** Is this type wide? */
 	protected final boolean iswide;
 	
-	/** The type of variable this maps to. */
-	protected final ClassStackMapType mapped;
-	
 	/**
 	 * Initializes the variable type.
 	 *
 	 * @param __w If {@code true} then the type consumes two spaces.
-	 * @param __m The type of variable this maps to, may be {@code null} if
-	 * it does not map to anything.
 	 * @since 2016/05/12
 	 */
-	private __SMTType__(boolean __w, ClassStackMapType __m)
+	private ClassStackMapType(boolean __w)
 	{
 		this.iswide = __w;
-		this.mapped = __m;
 	}
 	
 	/**
@@ -73,17 +67,6 @@ enum __SMTType__
 	public final boolean isWide()
 	{
 		return this.iswide;
-	}
-	
-	/**
-	 * Returns the type of variable that this stack type maps to.
-	 *
-	 * @return The variable type to map to.
-	 * @since 2016/08/29
-	 */
-	public final ClassStackMapType map()
-	{
-		return this.mapped;
 	}
 	
 	/**
