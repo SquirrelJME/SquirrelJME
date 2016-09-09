@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITVariableType;
 import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
 
 /**
@@ -28,7 +31,6 @@ public class GenericAllocator
 	
 	/** Registers bound to stack variables. */
 	volatile __VarStates__ _jstack;
-	
 	
 	/**
 	 * This initializes the allocator.

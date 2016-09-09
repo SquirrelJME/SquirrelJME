@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.generic;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This contains a snapshot of the state of the locals and stack variables
  * at a given operation.
