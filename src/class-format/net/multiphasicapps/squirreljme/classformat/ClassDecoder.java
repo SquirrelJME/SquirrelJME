@@ -17,19 +17,13 @@ import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
-import net.multiphasicapps.squirreljme.jit.base.ClassClassFlags;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlag;
-import net.multiphasicapps.squirreljme.jit.base.ClassFieldFlags;
-import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlag;
-import net.multiphasicapps.squirreljme.jit.base.ClassMethodFlags;
 
 /**
  * This performs the decoding of the class file format.
  *
  * @since 2016/06/28
  */
-final class __ClassDecoder__
+final class ClassDecoder
 	extends __HasAttributes__
 {
 	/** The object class. */
@@ -79,7 +73,7 @@ final class __ClassDecoder__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/28
 	 */
-	__ClassDecoder__(JIT __jit, JITNamespaceWriter __ns, DataInputStream __dis)
+	ClassDecoder(JIT __jit, JITNamespaceWriter __ns, DataInputStream __dis)
 		throws NullPointerException
 	{
 		// Check
