@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2016/09/06
  */
 public final class GenericFieldLinkage
-	extends ClassMemberLinkage<JITFieldReference>
+	extends ClassMemberLinkage<ClassFieldReference>
 {
 	/** The type of link this is. */
 	protected final JITFieldAccessType type;
@@ -36,8 +36,8 @@ public final class GenericFieldLinkage
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public GenericFieldLinkage(JITMethodReference __from,
-		JITFieldReference __to, JITFieldAccessType __t)
+	public GenericFieldLinkage(ClassMethodReference __from,
+		ClassFieldReference __to, JITFieldAccessType __t)
 		throws NullPointerException
 	{
 		super(__from, __to);

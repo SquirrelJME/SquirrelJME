@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This represents the type of invocation to be performed.
  *
  * @since 2016/09/05
  */
-public enum JITInvokeType
+public enum ClassMethodInvokeType
 {
 	/** Static. */
 	STATIC(false),
@@ -41,7 +41,7 @@ public enum JITInvokeType
 	 * @param __ii Is this an instance invoke?
 	 * @since 2016/09/06
 	 */
-	private JITInvokeType(boolean __ii)
+	private ClassMethodInvokeType(boolean __ii)
 	{
 		this.isinstance = __ii;
 	}

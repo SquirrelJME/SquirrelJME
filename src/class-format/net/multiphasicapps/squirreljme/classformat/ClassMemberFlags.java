@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This is the base class for flags which are for member types.
@@ -16,8 +16,8 @@ package net.multiphasicapps.squirreljme.jit.base;
  * @param <F> The flag type.
  * @since 2016/04/23
  */
-public abstract class JITMemberFlags<F extends JITMemberFlag>
-	extends JITFlags<F>
+public abstract class ClassMemberFlags<F extends ClassMemberFlag>
+	extends ClassFlags<F>
 	implements JITAccessibleFlags
 {
 	/**
@@ -27,7 +27,7 @@ public abstract class JITMemberFlags<F extends JITMemberFlag>
 	 * @param __fl The flags used.
 	 * @since 2016/04/23
 	 */
-	JITMemberFlags(Class<F> __cl, F[] __fl)
+	ClassMemberFlags(Class<F> __cl, F[] __fl)
 	{
 		super(__cl, __fl);
 	}
@@ -39,7 +39,7 @@ public abstract class JITMemberFlags<F extends JITMemberFlag>
 	 * @param __fl The flags used.
 	 * @since 2016/04/23
 	 */
-	JITMemberFlags(Class<F> __cl, Iterable<F> __fl)
+	ClassMemberFlags(Class<F> __cl, Iterable<F> __fl)
 	{
 		super(__cl, __fl);
 	}

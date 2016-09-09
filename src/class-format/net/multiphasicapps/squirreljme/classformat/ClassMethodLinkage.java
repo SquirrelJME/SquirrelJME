@@ -19,10 +19,10 @@ import java.lang.ref.WeakReference;
  * @since 2016/09/06
  */
 public final class GenericMethodLinkage
-	extends ClassMemberLinkage<JITMethodReference>
+	extends ClassMemberLinkage<ClassMethodReference>
 {
 	/** The type of link this is. */
-	protected final JITInvokeType type;
+	protected final ClassMethodInvokeType type;
 	
 	/** String reference. */
 	private volatile Reference<String> _string;
@@ -36,8 +36,8 @@ public final class GenericMethodLinkage
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	public GenericMethodLinkage(JITMethodReference __from,
-		JITMethodReference __to, JITInvokeType __t)
+	public GenericMethodLinkage(ClassMethodReference __from,
+		ClassMethodReference __to, ClassMethodInvokeType __t)
 		throws NullPointerException
 	{
 		super(__from, __to);
@@ -103,7 +103,7 @@ public final class GenericMethodLinkage
 	 * @return The method call type.
 	 * @since 2016/09/06
 	 */
-	public JITInvokeType type()
+	public ClassMethodInvokeType type()
 	{
 		return this.type;
 	}

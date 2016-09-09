@@ -8,15 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This represents the set of flags for methods.
  *
  * @since 2016/04/23
  */
-public final class JITMethodFlags
-	extends JITMemberFlags<JITMethodFlag>
+public final class ClassMethodFlags
+	extends ClassMemberFlags<ClassMethodFlag>
 {
 	/**
 	 * Initializes the method flags.
@@ -25,9 +25,9 @@ public final class JITMethodFlags
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
-	public JITMethodFlags(JITClassFlags __oc, JITMethodFlag... __fl)
+	public ClassMethodFlags(ClassClassFlags __oc, ClassMethodFlag... __fl)
 	{
-		super(JITMethodFlag.class, __fl);
+		super(ClassMethodFlag.class, __fl);
 		
 		__checkFlags(__oc);
 	}
@@ -39,9 +39,9 @@ public final class JITMethodFlags
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
-	public JITMethodFlags(JITClassFlags __oc, Iterable<JITMethodFlag> __fl)
+	public ClassMethodFlags(ClassClassFlags __oc, Iterable<ClassMethodFlag> __fl)
 	{
-		super(JITMethodFlag.class, __fl);
+		super(ClassMethodFlag.class, __fl);
 		
 		__checkFlags(__oc);
 	}
@@ -54,7 +54,7 @@ public final class JITMethodFlags
 	 */
 	public boolean isAbstract()
 	{
-		return contains(JITMethodFlag.ABSTRACT);
+		return contains(ClassMethodFlag.ABSTRACT);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public final class JITMethodFlags
 	 */
 	public boolean isBridge()
 	{
-		return contains(JITMethodFlag.BRIDGE);
+		return contains(ClassMethodFlag.BRIDGE);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public final class JITMethodFlags
 	@Override
 	public boolean isFinal()
 	{
-		return contains(JITMethodFlag.FINAL);
+		return contains(ClassMethodFlag.FINAL);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public final class JITMethodFlags
 	 */
 	public boolean isNative()
 	{
-		return contains(JITMethodFlag.NATIVE);
+		return contains(ClassMethodFlag.NATIVE);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public final class JITMethodFlags
 	@Override
 	public boolean isPrivate()
 	{
-		return contains(JITMethodFlag.PRIVATE);
+		return contains(ClassMethodFlag.PRIVATE);
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public final class JITMethodFlags
 	@Override
 	public boolean isProtected()
 	{
-		return contains(JITMethodFlag.PROTECTED);
+		return contains(ClassMethodFlag.PROTECTED);
 	}
 	
 	/**
@@ -116,7 +116,7 @@ public final class JITMethodFlags
 	@Override
 	public boolean isPublic()
 	{
-		return contains(JITMethodFlag.PUBLIC);
+		return contains(ClassMethodFlag.PUBLIC);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public final class JITMethodFlags
 	@Override
 	public boolean isStatic()
 	{
-		return contains(JITMethodFlag.STATIC);
+		return contains(ClassMethodFlag.STATIC);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public final class JITMethodFlags
 	 */
 	public boolean isStrict()
 	{
-		return contains(JITMethodFlag.STRICT);
+		return contains(ClassMethodFlag.STRICT);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public final class JITMethodFlags
 	 */
 	public boolean isSynchronized()
 	{
-		return contains(JITMethodFlag.SYNCHRONIZED);
+		return contains(ClassMethodFlag.SYNCHRONIZED);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public final class JITMethodFlags
 	@Override
 	public boolean isSynthetic()
 	{
-		return contains(JITMethodFlag.SYNTHETIC);
+		return contains(ClassMethodFlag.SYNTHETIC);
 	}
 	
 	/**
@@ -169,56 +169,56 @@ public final class JITMethodFlags
 	 */
 	public boolean isVarArgs()
 	{
-		return contains(JITMethodFlag.VARARGS);
+		return contains(ClassMethodFlag.VARARGS);
 	}
 	/**
 	 * Checks that the given flags are valid.
 	 *
 	 * @param __oc The outer class.
-	 * @throws JITException If they are not valid.
+	 * @throws ClassFormatException If they are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags(JITClassFlags __oc)
-		throws JITException
+	private final void __checkFlags(ClassClassFlags __oc)
+		throws ClassFormatException
 	{
 		// Check
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BQ07 Native methods are not supported in Java ME
+		// {@squirreljme.error AY07 Native methods are not supported in Java ME
 		// and as such, methods must not be {@code native}.}
 		if (isNative())
-			throw new JITException("BQ07");
+			throw new ClassFormatException("AY07");
 		
-		// {@squirreljme.error BQ08 An {@code abstract} method cannot be
+		// {@squirreljme.error AY08 An {@code abstract} method cannot be
 		// {@code private}, {@code static}, {@code final},
 		// {@code synchronized}, {@code native}, or {@code strictfp}. (The
 		// method flags)}
 		if (isAbstract())
 			if (isPrivate() || isStatic() || isFinal() || isSynchronized() ||
 				isNative() || isStrict())
-				throw new JITException(String.format("BQ08 %s", this));
+				throw new ClassFormatException(String.format("AY08 %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
 		if (__oc.isInterface())
-			for (JITMethodFlag f : JITMethodFlag.values())
+			for (ClassMethodFlag f : ClassMethodFlag.values())
 			{
 				// Must have these
-				boolean must = (f == JITMethodFlag.PUBLIC ||
-					f == JITMethodFlag.ABSTRACT);
+				boolean must = (f == ClassMethodFlag.PUBLIC ||
+					f == ClassMethodFlag.ABSTRACT);
 				
 				// Could have these
-				boolean maybe = (f == JITMethodFlag.SYNTHETIC ||
-					f == JITMethodFlag.VARARGS || f == JITMethodFlag.BRIDGE);
+				boolean maybe = (f == ClassMethodFlag.SYNTHETIC ||
+					f == ClassMethodFlag.VARARGS || f == ClassMethodFlag.BRIDGE);
 				
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error BQ09 Flags for interface method has an
+				// {@squirreljme.error AY09 Flags for interface method has an
 				// incorrect set of flags. (The method flags)}
 				if (must != has && !maybe)
-					throw new JITException(String.format("BQ09 %s", this));
+					throw new ClassFormatException(String.format("AY09 %s", this));
 			}
 	}
 }

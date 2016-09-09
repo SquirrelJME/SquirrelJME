@@ -8,15 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * DESCRIBE THIS.
  *
  * @since 2016/04/23
  */
-public enum JITMethodFlag
-	implements JITMemberFlag
+public enum ClassMethodFlag
+	implements ClassMemberFlag
 {
 	/** Public method. */
 	PUBLIC,

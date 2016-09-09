@@ -8,15 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This represents the flags which a class may be.
  *
  * @since 2016/04/23
  */
-public class JITClassFlags
-	extends JITFlags<JITClassFlag>
+public class ClassClassFlags
+	extends ClassFlags<ClassClassFlag>
 	implements JITAccessibleFlags
 {
 	/**
@@ -25,9 +25,9 @@ public class JITClassFlags
 	 * @param __fl The class flags.
 	 * @since 2016/04/23
 	 */
-	public JITClassFlags(JITClassFlag... __fl)
+	public ClassClassFlags(ClassClassFlag... __fl)
 	{
-		super(JITClassFlag.class, __fl);
+		super(ClassClassFlag.class, __fl);
 		
 		__checkFlags();
 	}
@@ -38,9 +38,9 @@ public class JITClassFlags
 	 * @param __fl The class flags.
 	 * @since 2016/04/23
 	 */
-	public JITClassFlags(Iterable<JITClassFlag> __fl)
+	public ClassClassFlags(Iterable<ClassClassFlag> __fl)
 	{
-		super(JITClassFlag.class, __fl);
+		super(ClassClassFlag.class, __fl);
 		
 		__checkFlags();
 	}
@@ -53,7 +53,7 @@ public class JITClassFlags
 	 */
 	public final boolean isAbstract()
 	{
-		return contains(JITClassFlag.ABSTRACT);
+		return contains(ClassClassFlag.ABSTRACT);
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class JITClassFlags
 	 */
 	public final boolean isAnnotation()
 	{
-		return contains(JITClassFlag.ANNOTATION);
+		return contains(ClassClassFlag.ANNOTATION);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class JITClassFlags
 	 */
 	public final boolean isEnum()
 	{
-		return contains(JITClassFlag.ENUM);
+		return contains(ClassClassFlag.ENUM);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class JITClassFlags
 	 */
 	public final boolean isFinal()
 	{
-		return contains(JITClassFlag.FINAL);
+		return contains(ClassClassFlag.FINAL);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class JITClassFlags
 	 */
 	public final boolean isInterface()
 	{
-		return contains(JITClassFlag.INTERFACE);
+		return contains(ClassClassFlag.INTERFACE);
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class JITClassFlags
 	@Override
 	public final boolean isPublic()
 	{
-		return contains(JITClassFlag.PUBLIC);
+		return contains(ClassClassFlag.PUBLIC);
 	}
 	
 	/**
@@ -150,45 +150,45 @@ public class JITClassFlags
 	 */
 	public final boolean isSpecialInvokeSpecial()
 	{
-		return contains(JITClassFlag.SUPER);
+		return contains(ClassClassFlag.SUPER);
 	}
 	
 	/**
 	 * Checks that the given flags are valid.
 	 *
-	 * @throws JITException If they are not valid.
+	 * @throws ClassFormatException If they are not valid.
 	 * @since 2016/04/23
 	 */
 	private final void __checkFlags()
-		throws JITException
+		throws ClassFormatException
 	{
 		// Interface?
 		if (isInterface())
 		{
-			// {@squirreljme.error BQ01 An interface must also be abstract.
+			// {@squirreljme.error AY01 An interface must also be abstract.
 			// (The class flags}}
 			if (!isAbstract())
-				throw new JITException(String.format("BQ01 %s", this));
+				throw new ClassFormatException(String.format("AY01 %s", this));
 			
-			// {@squirreljme.error BQ02 An interface cannot be {@code final} or
+			// {@squirreljme.error AY02 An interface cannot be {@code final} or
 			// {@code enum} and it must not have the special flag set. (The
 			// class flags)}
 			if (isFinal() || isSpecialInvokeSpecial() || isEnum())
-				throw new JITException(String.format("BQ02 %s", this));
+				throw new ClassFormatException(String.format("AY02 %s", this));
 		}
 		
 		// Normal class
 		else
 		{
-			// {@squirreljme.error BQ03 Annotations must be interfaces. (The
+			// {@squirreljme.error AY03 Annotations must be interfaces. (The
 			// class flags)}
 			if (isAnnotation())
-				throw new JITException(String.format("BQ03 %s", this));
+				throw new ClassFormatException(String.format("AY03 %s", this));
 				
-			// {@squirreljme.error BQ04 A class cannot be both {@code abstract}
+			// {@squirreljme.error AY04 A class cannot be both {@code abstract}
 			// and {@code final}. (The class flags)}
 			if (isAbstract() && isFinal())
-				throw new JITException(String.format("BQ04 %s", this));
+				throw new ClassFormatException(String.format("AY04 %s", this));
 		}
 	}
 }

@@ -17,10 +17,10 @@ package net.multiphasicapps.squirreljme.classformat;
  *
  * @since 2016/09/06
  */
-public abstract class ClassMemberLinkage<L extends JITMemberReference>
+public abstract class ClassMemberLinkage<L extends ClassMemberReference>
 {
 	/** The source method. */
-	protected final JITMethodReference from;
+	protected final ClassMethodReference from;
 	
 	/** The target field. */
 	protected final L to;
@@ -33,7 +33,7 @@ public abstract class ClassMemberLinkage<L extends JITMemberReference>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/06
 	 */
-	ClassMemberLinkage(JITMethodReference __from, L __to)
+	ClassMemberLinkage(ClassMethodReference __from, L __to)
 		throws NullPointerException
 	{
 		// Check
@@ -67,7 +67,7 @@ public abstract class ClassMemberLinkage<L extends JITMemberReference>
 	 * @return The method which desires to link to another member.
 	 * @since 2016/09/06
 	 */
-	public final JITMethodReference from()
+	public final ClassMethodReference from()
 	{
 		return this.from;
 	}

@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This interface is used to flag the types used for flags.
  *
  * @since 2016/04/23
  */
-public interface JITFlag
+public interface ClassFlag
 {
 	/**
 	 * Returns the flag ordinal.

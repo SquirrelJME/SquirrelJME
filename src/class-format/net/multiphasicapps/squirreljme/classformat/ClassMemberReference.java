@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -21,7 +21,7 @@ import net.multiphasicapps.squirreljme.java.symbols.MemberTypeSymbol;
  *
  * @since 2016/08/14
  */
-public abstract class JITMemberReference
+public abstract class ClassMemberReference
 {
 	/** The class name. */
 	protected final ClassNameSymbol classname;
@@ -44,7 +44,7 @@ public abstract class JITMemberReference
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/14
 	 */
-	JITMemberReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
+	ClassMemberReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
 		MemberTypeSymbol __mt)
 		throws NullPointerException
 	{
@@ -77,11 +77,11 @@ public abstract class JITMemberReference
 	public boolean equals(Object __o)
 	{
 		// Must be this class
-		if (!(__o instanceof JITMemberReference))
+		if (!(__o instanceof ClassMemberReference))
 			return false;
 		
 		// Check
-		JITMemberReference o = (JITMemberReference)__o;
+		ClassMemberReference o = (ClassMemberReference)__o;
 		return this.classname.equals(o.classname) &&
 			this.membername.equals(o.membername) &&
 			this.membertype.equals(o.membertype);

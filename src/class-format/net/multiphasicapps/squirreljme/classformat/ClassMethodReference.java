@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.classformat;
 
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
@@ -19,8 +19,8 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  *
  * @since 2016/08/14
  */
-public final class JITMethodReference
-	extends JITMemberReference
+public final class ClassMethodReference
+	extends ClassMemberReference
 {
 	/** Is this an interface method reference? */
 	protected final boolean isinterface;
@@ -33,7 +33,7 @@ public final class JITMethodReference
 	 * @param __mt the member type.
 	 * @since 2016/08/14
 	 */
-	public JITMethodReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
+	public ClassMethodReference(ClassNameSymbol __cn, IdentifierSymbol __mn,
 		MethodSymbol __mt, boolean __int)
 	{
 		super(__cn, __mn, __mt);
@@ -49,8 +49,8 @@ public final class JITMethodReference
 	@Override
 	public boolean equals(Object __o)
 	{
-		return super.equals(__o) && (__o instanceof JITMethodReference) &&
-			this.isinterface == ((JITMethodReference)__o).isinterface;
+		return super.equals(__o) && (__o instanceof ClassMethodReference) &&
+			this.isinterface == ((ClassMethodReference)__o).isinterface;
 	}
 	
 	/**

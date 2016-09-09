@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 import java.util.AbstractSet;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
  * @param <F> The flag type.
  * @since 2016/04/23
  */
-public abstract class JITFlags<F extends JITFlag>
+public abstract class ClassFlags<F extends ClassFlag>
 	extends AbstractSet<F>
 {
 	/** The class type to use. */
@@ -43,7 +43,7 @@ public abstract class JITFlags<F extends JITFlag>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	JITFlags(Class<F> __cl, F[] __fl)
+	ClassFlags(Class<F> __cl, F[] __fl)
 		throws NullPointerException
 	{
 		this(__cl, Arrays.<F>asList(__fl));
@@ -57,7 +57,7 @@ public abstract class JITFlags<F extends JITFlag>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	JITFlags(Class<F> __cl, Iterable<F> __fl)
+	ClassFlags(Class<F> __cl, Iterable<F> __fl)
 	{
 		// Check
 		if (__cl == null || __fl == null)
@@ -95,7 +95,7 @@ public abstract class JITFlags<F extends JITFlag>
 	{
 		// Quick bit check?
 		if (cast.isInstance(__o))
-			return 0 != (setbits & (1 << (((JITFlag)__o).ordinal())));
+			return 0 != (setbits & (1 << (((ClassFlag)__o).ordinal())));
 		
 		// Fallback
 		return flags.contains(__o);

@@ -8,15 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This is a flagging interface for flags which are associated with members.
  *
  * @since 2016/04/23
  */
-public interface JITMemberFlag
-	extends JITFlag
+public interface ClassMemberFlag
+	extends ClassFlag
 {
 }
 

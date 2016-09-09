@@ -8,15 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * This represent the set of flags for fields.
  *
  * @since 2016/04/23
  */
-public final class JITFieldFlags
-	extends JITMemberFlags<JITFieldFlag>
+public final class ClassFieldFlags
+	extends ClassMemberFlags<ClassFieldFlag>
 	implements JITAccessibleFlags
 {
 	/**
@@ -26,9 +26,9 @@ public final class JITFieldFlags
 	 * @param __fl The field flags.
 	 * @since 2016/04/23
 	 */
-	public JITFieldFlags(JITClassFlags __oc, JITFieldFlag... __fl)
+	public ClassFieldFlags(ClassClassFlags __oc, ClassFieldFlag... __fl)
 	{
-		super(JITFieldFlag.class, __fl);
+		super(ClassFieldFlag.class, __fl);
 		
 		__checkFlags(__oc);
 	}
@@ -40,9 +40,9 @@ public final class JITFieldFlags
 	 * @param __fl The field flags.
 	 * @since 2016/04/23
 	 */
-	public JITFieldFlags(JITClassFlags __oc, Iterable<JITFieldFlag> __fl)
+	public ClassFieldFlags(ClassClassFlags __oc, Iterable<ClassFieldFlag> __fl)
 	{
-		super(JITFieldFlag.class, __fl);
+		super(ClassFieldFlag.class, __fl);
 		
 		__checkFlags(__oc);
 	}
@@ -55,7 +55,7 @@ public final class JITFieldFlags
 	 */
 	public boolean isEnum()
 	{
-		return contains(JITFieldFlag.ENUM);
+		return contains(ClassFieldFlag.ENUM);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public final class JITFieldFlags
 	@Override
 	public boolean isFinal()
 	{
-		return contains(JITFieldFlag.FINAL);
+		return contains(ClassFieldFlag.FINAL);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public final class JITFieldFlags
 	@Override
 	public boolean isPrivate()
 	{
-		return contains(JITFieldFlag.PRIVATE);
+		return contains(ClassFieldFlag.PRIVATE);
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public final class JITFieldFlags
 	@Override
 	public boolean isProtected()
 	{
-		return contains(JITFieldFlag.PROTECTED);
+		return contains(ClassFieldFlag.PROTECTED);
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public final class JITFieldFlags
 	@Override
 	public boolean isPublic()
 	{
-		return contains(JITFieldFlag.PUBLIC);
+		return contains(ClassFieldFlag.PUBLIC);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public final class JITFieldFlags
 	@Override
 	public boolean isStatic()
 	{
-		return contains(JITFieldFlag.STATIC);
+		return contains(ClassFieldFlag.STATIC);
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public final class JITFieldFlags
 	@Override
 	public boolean isSynthetic()
 	{
-		return contains(JITFieldFlag.SYNTHETIC);
+		return contains(ClassFieldFlag.SYNTHETIC);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public final class JITFieldFlags
 	 */
 	public boolean isTransient()
 	{
-		return contains(JITFieldFlag.TRANSIENT);
+		return contains(ClassFieldFlag.TRANSIENT);
 	}
 	
 	/**
@@ -137,47 +137,47 @@ public final class JITFieldFlags
 	 */
 	public boolean isVolatile()
 	{
-		return contains(JITFieldFlag.VOLATILE);
+		return contains(ClassFieldFlag.VOLATILE);
 	}
 	
 	/**
 	 * Checks that the given flags are valid.
 	 *
 	 * @param __oc The outer class.
-	 * @throws JITException If they are not valid.
+	 * @throws ClassFormatException If they are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags(JITClassFlags __oc)
-		throws JITException, NullPointerException
+	private final void __checkFlags(ClassClassFlags __oc)
+		throws ClassFormatException, NullPointerException
 	{
 		// Check
 		if (__oc == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BQ05 A field cannot be both {@code final} and
+		// {@squirreljme.error AY05 A field cannot be both {@code final} and
 		// {@code volatile}. (The field flags)}
 		if (isFinal() && isVolatile())
-			throw new JITException(String.format("BQ05 %s", this));
+			throw new ClassFormatException(String.format("AY05 %s", this));
 		
 		// If the class is an interface, some flags cannot be set
 		if (__oc.isInterface())
-			for (JITFieldFlag f : JITFieldFlag.values())
+			for (ClassFieldFlag f : ClassFieldFlag.values())
 			{
 				// Must have these
-				boolean must = (f == JITFieldFlag.PUBLIC ||
-					f == JITFieldFlag.STATIC || f == JITFieldFlag.FINAL);
+				boolean must = (f == ClassFieldFlag.PUBLIC ||
+					f == ClassFieldFlag.STATIC || f == ClassFieldFlag.FINAL);
 				
 				// Could have these
-				boolean maybe = (f == JITFieldFlag.SYNTHETIC);
+				boolean maybe = (f == ClassFieldFlag.SYNTHETIC);
 				
 				// Is it set?
 				boolean has = contains(f);
 				
-				// {@squirreljme.error BQ06 Flags for interface field has an
+				// {@squirreljme.error AY06 Flags for interface field has an
 				// incorrect set of flags. (The field flags)}
 				if (must != has && !maybe)
-					throw new JITException(String.format("BQ06 %s", this));
+					throw new ClassFormatException(String.format("AY06 %s", this));
 			}
 	}
 }

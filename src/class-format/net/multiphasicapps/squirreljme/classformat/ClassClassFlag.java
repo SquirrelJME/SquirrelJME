@@ -8,15 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.base;
+package net.multiphasicapps.squirreljme.classformat;
 
 /**
  * These are flags which modify how a class is accessed and is behaved.
  *
  * @since 2016/04/23
  */
-public enum JITClassFlag
-	implements JITFlag
+public enum ClassClassFlag
+	implements ClassFlag
 {
 	/** Public access. */
 	PUBLIC,
