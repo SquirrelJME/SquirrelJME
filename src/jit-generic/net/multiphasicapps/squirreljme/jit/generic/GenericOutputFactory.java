@@ -17,27 +17,16 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 
 /**
- * This is the base class for all factories which JIT compile byte code into
- * standard blobs shared by many architectures.
+ * This is the factory which is used to create instances of the generic JIT
+ * which targets a wide range of systems via the native code generation
+ * interfaces. The generic JIT relies on a standard output format and defers
+ * any native generation to the native code generators.
  *
  * @since 2016/07/26
  */
-public abstract class GenericOutputFactory
+public class GenericOutputFactory
 	extends JITOutputFactory
 {
-	/**
-	 * Internally creates a new generic output using the given configuration.
-	 *
-	 * @param __config The configuration to use.
-	 * @return The generic JIT output.
-	 * @throws JITException If the output could not created.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2016/07/26
-	 */
-	protected abstract GenericOutput internalCreate(
-		JITOutputConfig.Immutable __config)
-		throws JITException, NullPointerException;
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/26
@@ -51,7 +40,7 @@ public abstract class GenericOutputFactory
 			throw new NullPointerException("NARG");
 		
 		// Create
-		return internalCreate(__config);
+		throw new Error("TODO");
 	}
 }
 

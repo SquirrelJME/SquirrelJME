@@ -154,3 +154,8 @@ then is move over the MIPS/PowerPC stuff such as ABIs and other things to the
 `native-code` roots. Then from there I can work out how I want to access the
 stuff from the generic JIT.
 
+## 14:03
+
+This means that the generic JIT becomes essentially final and provides the
+service itself.
+
