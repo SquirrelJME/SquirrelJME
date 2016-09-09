@@ -62,11 +62,11 @@ abstract class __HasAttributes__
 		ClassConstantEntry eaname = __pool.get(__di.readUnsignedShort());
 		String aname = eaname.get(false, String.class);
 		
-		// {@squirreljme.error ED19 The length of the attribute exceeds
+		// {@squirreljme.error AY19 The length of the attribute exceeds
 		// 2GiB.}
 		int len = __di.readInt();
 		if (len < 0)
-			throw new ClassFormatException("ED19");
+			throw new ClassFormatException("AY19");
 		
 		// Handle it, but do not propogate close to the wrapped stream
 		// because any read attribute that gets closed will close the upper

@@ -108,10 +108,10 @@ class __MethodDecoder__
 		for (int i = 0; i < na; i++)
 			__readAttribute(pool, input);
 		
-		// {@squirreljme.error ED05 Abstract methods cannot have code.}
+		// {@squirreljme.error AY0h Abstract methods cannot have code.}
 		boolean hascode = this._hitmcode;
 		if (hascode == mf.isAbstract())
-			throw new ClassFormatException("ED05");
+			throw new ClassFormatException("AY0h");
 		
 		// If there is no code then indicate as such
 		if (!hascode)
@@ -138,10 +138,10 @@ class __MethodDecoder__
 		{
 				// The code attribute
 			case "Code":
-				// {@squirreljme.error ED03 Multiple code attributes
+				// {@squirreljme.error AY0a Multiple code attributes
 				// in a single method.}
 				if (this._hitmcode)
-					throw new ClassFormatException("ED03");
+					throw new ClassFormatException("AY0a");
 				
 				// Mark as hit, there may only be one
 				this._hitmcode = true;

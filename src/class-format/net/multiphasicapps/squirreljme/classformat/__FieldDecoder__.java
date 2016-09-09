@@ -102,10 +102,10 @@ class __FieldDecoder__
 		{
 				// Constant value
 			case "ConstantValue":
-				// {@squirreljme.error ED04 Multiple field constant
+				// {@squirreljme.error AY0c Multiple field constant
 				// values defined for a single field.}
 				if (this._fieldcv != null)
-					throw new ClassFormatException("ED04");
+					throw new ClassFormatException("AY0c");
 				
 				if (true)
 					throw new Error("TODO");

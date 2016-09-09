@@ -111,20 +111,20 @@ final class ClassDecoder
 		
 		DataInputStream input = this.input;
 		
-		// {@squirreljme.error ED12 The magic number of the input data stream
+		// {@squirreljme.error AY12 The magic number of the input data stream
 		// does not match that of the Java class file. (The magic number which
 		// was read)}
 		int fail;
 		if ((fail = input.readInt()) != MAGIC_NUMBER)
-			throw new ClassFormatException(String.format("ED12 %08x", fail));
+			throw new ClassFormatException(String.format("AY12 %08x", fail));
 		
-		// {@squirreljme.error ED13 The version number of the input class file
+		// {@squirreljme.error AY13 The version number of the input class file
 		// is not valid. (The version number)}
 		int cver = input.readShort() | (input.readShort() << 16);
 		__ClassVersion__ version = __ClassVersion__.findVersion(cver);
 		this._version = version;
 		if (version == null)
-			throw new ClassFormatException(String.format("ED13 %d.%d", cver >>> 16,
+			throw new ClassFormatException(String.format("AY13 %d.%d", cver >>> 16,
 				(cver & 0xFFFF)));
 		
 		// Decode the constant pool
@@ -160,17 +160,17 @@ final class ClassDecoder
 			ClassNameSymbol suname = pool.get(sudx).<ClassNameSymbol>optional(
 				true, ClassNameSymbol.class);
 			
-			// {@squirreljme.error ED0m The Object class must have no super
+			// {@squirreljme.error AY0m The Object class must have no super
 			// class and any non-Object class must have a super class.
 			// (The class name; The super-class name)}
 			if ((suname != null) == isobject)
-				throw new ClassFormatException(String.format("ED0m %s %s", clname,
+				throw new ClassFormatException(String.format("AY0m %s %s", clname,
 					suname));
 			
-			// {@squirreljme.error ED0n Interfaces must extend the Object
+			// {@squirreljme.error AY0n Interfaces must extend the Object
 			// class. (Class flags; The super-class name)}
 			if (cf.isInterface() && !suname.equals(_OBJECT_CLASS))
-				throw new ClassFormatException(String.format("ED0n %s %s", cf,
+				throw new ClassFormatException(String.format("AY0n %s %s", cf,
 					suname));
 			
 			// Send

@@ -80,10 +80,10 @@ public final class ClassConstantEntry
 		// Get
 		R rv = this.<R>optional(__act, __cl);
 		
-		// {@squirreljme.error ED0b No constant pool entry was defined at
+		// {@squirreljme.error AY0b No constant pool entry was defined at
 		// this position. (The index; The expected type)}
 		if (rv == null)
-			throw new ClassFormatException(String.format("ED0b %d %s", this.index,
+			throw new ClassFormatException(String.format("AY0b %d %s", this.index,
 				__cl));
 		
 		// Ok
@@ -140,11 +140,11 @@ public final class ClassConstantEntry
 		// Get raw data
 		Object raw = this._data;
 		
-		// {@squirreljme.error ED0d The requested entry does not contain a
+		// {@squirreljme.error AY0d The requested entry does not contain a
 		// value because it is the top of a long or double constant value.
 		// (The index)}
 		if (raw == null)
-			throw new ClassFormatException(String.format("ED0d %d", mydx));
+			throw new ClassFormatException(String.format("AY0d %d", mydx));
 		
 		// If an integer array, requires conversion
 		ClassConstantPool pool = this.pool;
@@ -201,28 +201,28 @@ public final class ClassConstantEntry
 							tag == ClassConstantPool.TAG_INTERFACEMETHODREF);
 					break;
 					
-					// {@squirreljme.error ED0f Could not obtain the constant
+					// {@squirreljme.error AY0f Could not obtain the constant
 					// pool entry information because its tag data relation is
 					// not known. (The index; The tag type)}
 				default:
-					throw new ClassFormatException(String.format("ED0f %d %d", mydx,
+					throw new ClassFormatException(String.format("AY0f %d %d", mydx,
 						tag));
 			}
 			
-			// {@squirreljme.error ED0g The field data was never translated
+			// {@squirreljme.error AY0g The field data was never translated
 			// to known useable data. (The index)}
 			if (raw == null)
-				throw new NullPointerException(String.format("ED0g %d", mydx));
+				throw new NullPointerException(String.format("AY0g %d", mydx));
 			
 			// Reset
 			this._data = raw;
 		}
 		
-		// {@squirreljme.error ED0e The value at the given index was not of
+		// {@squirreljme.error AY0e The value at the given index was not of
 		// the expected class type. (The index; The expected type; The type
 		// that it was)}
 		if (!__cl.isInstance(raw))
-			throw new ClassFormatException(String.format("ED0e %d %s", mydx, __cl,
+			throw new ClassFormatException(String.format("AY0e %d %s", mydx, __cl,
 				raw.getClass()));
 		
 		// Activate?
