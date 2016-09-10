@@ -51,18 +51,6 @@ class __Node__<K, V>
 	}
 	
 	/**
-	 * Initializes a node with the given value.
-	 *
-	 * @param __v The initial value.
-	 * @since 2016/09/06
-	 */
-	__Node__(K __k, V __v)
-	{
-		this._key = __k;
-		this._value = __v;
-	}
-	
-	/**
 	 * Checks if a node on a given side is of the specified color.
 	 *
 	 * @param __r If {@code true} then the right side is checked, otherwise

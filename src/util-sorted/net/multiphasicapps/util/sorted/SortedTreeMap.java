@@ -35,6 +35,9 @@ public class SortedTreeMap<K, V>
 	/** The entry set. */
 	private volatile Reference<Set<Map.Entry<K, V>>> _entryset;
 	
+	/** The found node in the search. */
+	private volatile __Node__<K, V> _found;
+	
 	/** The root node. */
 	volatile __Node__<K, V> _root;
 	
@@ -174,6 +177,7 @@ public class SortedTreeMap<K, V>
 	public V put(K __k, V __v)
 	{
 		// Replace the root
+		this._found = null;
 		__Node__<K, V> was = this._root;
 		__Node__<K, V> now = __insert(was, __k);
 
@@ -188,8 +192,11 @@ public class SortedTreeMap<K, V>
 		now._color = true;
 		
 		// Set new value
-		V old = now._value;
-		now._value = __v;
+		__Node__<K, V> act = this._found;
+		if (act == null)
+			throw new RuntimeException("OOPS");
+		V old = act._value;
+		act._value = __v;
 		return old;
 	}
 	
@@ -221,7 +228,7 @@ public class SortedTreeMap<K, V>
 		
 		// Constant search
 		Comparator<K> compare = this._compare;
-		for (; rover != null;)
+		while (rover != null)
 		{
 			// Compare
 			K against = rover._key;
@@ -285,7 +292,10 @@ public class SortedTreeMap<K, V>
 		if (__at == null)
 		{
 			// Create new node
-			__Node__<K, V> rv = new __Node__<K, V>(__k, null);
+			__Node__<K, V> rv = new __Node__<K, V>(__k);
+			
+			// Set last found node
+			this._found = rv;
 			
 			// Increase size
 			this._size++;
@@ -302,7 +312,13 @@ public class SortedTreeMap<K, V>
 		// If replacing, do nothing because only a single value may exist
 		// at a time.
 		if (res == 0)
+		{
+			// Set as found
+			this._found = __at;
+			
+			// Return it
 			return __at;
+		}
 		
 		// Insert on left side
 		else if (res < 0)
