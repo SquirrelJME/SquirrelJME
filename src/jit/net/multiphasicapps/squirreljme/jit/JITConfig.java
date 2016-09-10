@@ -134,10 +134,10 @@ public final class JITConfig
 			try
 			{
 				// {@squirreljme.error ED05 The JIT output factory has not been
-				// set within the configuration.}
+				// set within the configuration. (The configuration)}
 				String prop = getProperty(FACTORY_PROPERTY);
 				if (prop == null)
-					throw new JITException("ED05");
+					throw new JITException(String.format("ED05 %s", this));
 				
 				// Create instance
 				Class<?> cl = Class.forName(prop);
@@ -148,11 +148,11 @@ public final class JITConfig
 			}
 			
 			// {@squirreljme.error ED06 Could not initialize the output factory
-			// used for JIT compilation.}
+			// used for JIT compilation. (This configuration)}
 			catch (ClassNotFoundException|InstantiationException|
 				IllegalAccessException e)
 			{
-				throw new JITException("ED06", e);
+				throw new JITException(String.format("ED06 %s", this), e);
 			}
 		
 		// Return it
@@ -218,10 +218,10 @@ public final class JITConfig
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// {@squirreljme.error ED07 The triplet has not been specified in
-			// the configuration.}
+			// the configuration. (This configuration)}
 			String prop = getProperty(TRIPLET_PROPERTY);
 			if (prop == null)
-				throw new JITException("ED07");
+				throw new JITException(String.format("ED07 %s", this));
 			
 			// Create it
 			this._triplet = new WeakReference<>((rv = new JITTriplet(prop)));

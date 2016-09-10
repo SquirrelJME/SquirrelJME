@@ -63,3 +63,7 @@ I suppose `JITNamespaceContent` should instead become `JITNamespaceBrowser` and
 in `jit-base`. Then `JITCacheManager` can go away. Then the browser can be
 used to implement that functionality.
 
+## 19:31
+
+My sorted tree map does not work properly in a case.
+
