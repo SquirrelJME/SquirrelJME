@@ -32,3 +32,10 @@ system that can be reused to initialize and setup the JIT without being
 helped by the operating system target information. Although I still have to
 solve this issue.
 
+## 13:56
+
+Basically I need a serialization and a de-serialization of the configuration
+data. So this means I should split off the immutable configuration and instead
+have a configuration builder. JIT specific parts would need to be initialized
+by properties which are serialized and de-serialized as needed.
+
