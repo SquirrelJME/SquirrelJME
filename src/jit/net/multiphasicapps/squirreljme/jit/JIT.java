@@ -100,9 +100,8 @@ public final class JIT
 			DataInputStream dis = new DataInputStream(this.input);
 			
 			// Start decoding the class
-			if (true)
-				throw new Error("TODO");
-			ClassDecoder cd = new ClassDecoder(dis, null);
+			ClassDecoder cd = new ClassDecoder(dis, new __ClassWriter__(
+				this, this.namespace));
 			cd.decode();
 		}
 		
