@@ -76,7 +76,8 @@ class __ClassWriter__
 		// Get writer
 		JITClassWriter writer = __writer();
 		
-		throw new Error("TODO");
+		// Foward
+		writer.classFlags(__f);
 	}
 	
 	/**
@@ -134,7 +135,8 @@ class __ClassWriter__
 		// Get writer
 		JITClassWriter writer = __writer();
 		
-		throw new Error("TODO");
+		// Forward
+		writer.endClass();
 	}
 	
 	/**
@@ -162,7 +164,8 @@ class __ClassWriter__
 		// Get writer
 		JITClassWriter writer = __writer();
 		
-		throw new Error("TODO");
+		// Forward
+		writer.fieldCount(__n);
 	}
 	
 	/**
@@ -176,7 +179,8 @@ class __ClassWriter__
 		// Get writer
 		JITClassWriter writer = __writer();
 		
-		throw new Error("TODO");
+		// Foward
+		writer.interfaceClasses(__i);
 	}
 	
 	/**
@@ -204,7 +208,8 @@ class __ClassWriter__
 		// Get writer
 		JITClassWriter writer = __writer();
 		
-		throw new Error("TODO");
+		// Forward
+		writer.methodCount(__n);
 	}
 	
 	/**
@@ -217,7 +222,8 @@ class __ClassWriter__
 		// Get writer
 		JITClassWriter writer = __writer();
 		
-		throw new Error("TODO");
+		// Forward
+		writer.superClass(__n);
 	}
 	
 	/**
