@@ -243,7 +243,7 @@ public final class GenericClassWriter
 	 * @since 2016/08/12
 	 */
 	@Override
-	public void constantPool(ConstantPool __pool, int __cndx)
+	public void constantPool(ConstantPool __pool)
 	{
 		// Check
 		if (__pool == null)
@@ -369,7 +369,7 @@ public final class GenericClassWriter
 	 */
 	@Override
 	public void field(FieldFlags __f, IdentifierSymbol __n,
-		int __ni, FieldSymbol __t, int __ti, Object __cv)
+		FieldSymbol __t, Object __cv)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -412,11 +412,11 @@ public final class GenericClassWriter
 	 * @since 2016/07/27
 	 */
 	@Override
-	public void interfaceClasses(ClassNameSymbol[] __ins, int[] __dxs)
+	public void interfaceClasses(ClassNameSymbol[] __ins)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__ins == null || __dxs == null)
+		if (__ins == null)
 			throw new NullPointerException("NARG");
 		
 		// Could fail
@@ -464,7 +464,7 @@ public final class GenericClassWriter
 	 */
 	@Override
 	public void method(MethodFlags __f, IdentifierSymbol __n,
-		int __ni, MethodSymbol __t, int __ti)
+		MethodSymbol __t)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -526,7 +526,7 @@ public final class GenericClassWriter
 	 * @since 2016/07/27
 	 */
 	@Override
-	public void superClass(ClassNameSymbol __cn, int __dx)
+	public void superClass(ClassNameSymbol __cn)
 		throws JITException
 	{
 		// Lock

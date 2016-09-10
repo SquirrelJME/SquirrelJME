@@ -228,3 +228,7 @@ Seems that this split off code will work rather nice. Although the class writer
 bridge will be very empty, it would definitely be a bit more clean compared to
 the old code.
 
+## 22:14
+
+The class writers for the JIT does not need the pool index numbers.
+

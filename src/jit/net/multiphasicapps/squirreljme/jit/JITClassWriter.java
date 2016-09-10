@@ -62,12 +62,11 @@ public interface JITClassWriter
 	 * Sets the constant pool that the class uses.
 	 *
 	 * @param __pool The constant pool to use.
-	 * @param __cndx The index containing the current class name.
 	 * @throws JITException If it could not be set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/12
 	 */
-	public abstract void constantPool(ConstantPool __pool, int __cndx)
+	public abstract void constantPool(ConstantPool __pool)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -102,9 +101,7 @@ public interface JITClassWriter
 	 *
 	 * @param __f The field flags.
 	 * @param __n The name of the field.
-	 * @param __ni The constant pool index of the name.
 	 * @param __t The type of the field.
-	 * @param __ti The constant pool index of the type.
 	 * @param __cv The constant value of the field, may be {@code null} if
 	 * there is no value set.
 	 * @throws JITException If the field could not be recorded.
@@ -112,7 +109,7 @@ public interface JITClassWriter
 	 * @since 2016/08/18
 	 */
 	public abstract void field(FieldFlags __f, IdentifierSymbol __n,
-		int __ni, FieldSymbol __t, int __ti, Object __cv)
+		FieldSymbol __t, Object __cv)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -129,12 +126,11 @@ public interface JITClassWriter
 	 * Records class interfaces.
 	 *
 	 * @param __ins The class interfaces.
-	 * @param __dxs The indices for all of the interfaces to the constant pool.
 	 * @throws JITException If the interfaces could not be written.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/22
 	 */
-	public abstract void interfaceClasses(ClassNameSymbol[] __ins, int[] __dxs)
+	public abstract void interfaceClasses(ClassNameSymbol[] __ins)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -142,15 +138,13 @@ public interface JITClassWriter
 	 *
 	 * @param __f The method flags.
 	 * @param __n The name of the method.
-	 * @param __ni The constant pool index of the name.
 	 * @param __t The type of the method.
-	 * @param __ti The constant pool index of the type.
 	 * @throws JITException If the method could not be recorded.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/19
 	 */
 	public abstract void method(MethodFlags __f, IdentifierSymbol __n,
-		int __ni, MethodSymbol __t, int __ti)
+		MethodSymbol __t)
 		throws JITException, NullPointerException;
 	
 	/**
@@ -178,12 +172,10 @@ public interface JITClassWriter
 	 *
 	 * @param __cn The name of the super class, may be {@code null} if there
 	 * is none.
-	 * @param __dx The index of the super class in the constant pool or
-	 * {@code 0} if there is none.
 	 * @throws JITException If the super-class could not be written.
 	 * @since 2016/07/22
 	 */
-	public abstract void superClass(ClassNameSymbol __cn, int __dx)
+	public abstract void superClass(ClassNameSymbol __cn)
 		throws JITException;
 }
 
