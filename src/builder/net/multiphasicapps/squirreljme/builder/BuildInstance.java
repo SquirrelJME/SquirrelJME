@@ -249,18 +249,14 @@ public abstract class BuildInstance
 		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
-		/*
-		// Setup and fill with basic details
-		JITOutputConfig joc = new JITOutputConfig();
-		joc.setTriplet(this.triplet);
-		joc.setCacheCreator(__bc);
+		// Setup builder
+		JITConfigBuilder b = new JITConfigBuilder();
 		
 		// Send to self to add any properties as needed
-		modifyOutputConfig(joc);
+		modifyOutputConfig(b);
 		
 		// No more changes after this
-		return joc.immutable();*/
+		return b.build();
 	}
 	
 	/**
