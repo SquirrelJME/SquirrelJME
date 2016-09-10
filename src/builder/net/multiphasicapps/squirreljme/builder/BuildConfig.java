@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
-import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.projects.PackageInfo;
 import net.multiphasicapps.squirreljme.projects.PackageList;
 

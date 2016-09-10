@@ -22,18 +22,8 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  *
  * @since 2016/07/04
  */
-public abstract class JITOutputFactory
-	implements JITObjectProperties
+public interface JITOutputFactory
 {
-	/**
-	 * Initializes the base factory which creates {@link JITOutput}s.
-	 *
-	 * @since 2016/07/04
-	 */
-	public JITOutputFactory()
-	{
-	}
-	
 	/**
 	 * This creates a new output which is used by JITs and uses the given
 	 * configuration.
@@ -45,15 +35,5 @@ public abstract class JITOutputFactory
 	 */
 	public abstract JITOutput create(JITConfig __config)
 		throws JITException;
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/02
-	 */
-	@Override
-	public final String[] properties()
-	{
-		throw new Error("TODO");
-	}
 }
 
