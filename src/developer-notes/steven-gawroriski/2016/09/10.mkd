@@ -39,3 +39,14 @@ data. So this means I should split off the immutable configuration and instead
 have a configuration builder. JIT specific parts would need to be initialized
 by properties which are serialized and de-serialized as needed.
 
+## 15:02
+
+One thing that somewhat needs to go is the cache system which writes to the
+disk somewhere, that can be handled by a JIT output system of sorts. Basically
+the JIT outputs namespace binaries as normal, then that cache can be read from
+when it is needed. Before this was part of the configuration system, however
+it no longer is a part of it. I suppose one thing I should do is have an actual
+package that handles the JAR cache system for compilation. That is, the AOT
+compiler for the SquirrelJME binary acts the same as if it were the JIT
+running on real hardware.
+
