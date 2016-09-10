@@ -30,13 +30,16 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
  * @since 2016/09/09
  */
 class __ClassWriter__
-	implements ClassDescriptionStream
+	implements AutoCloseable, ClassDescriptionStream
 {
 	/** The owning JIT. */
 	protected final JIT jit;
 	
 	/** The namespace writer to use. */
 	protected final JITNamespaceWriter namespace;
+	
+	/** The class writer to forward to. */
+	private volatile JITClassWriter _writer;
 	
 	/** The class version. */
 	private volatile ClassVersion _version;
@@ -80,7 +83,26 @@ class __ClassWriter__
 	public void className(ClassNameSymbol __n)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Start writing into the class
+		JITClassWriter writer = this.namespace.beginClass(__n);
+		this._writer = writer;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/09
+	 */
+	@Override
+	public void close()
+	{
+		// Close the created writer if one is used
+		JITClassWriter writer = this._writer;
+		if (writer != null)
+			writer.close();
 	}
 	
 	/**

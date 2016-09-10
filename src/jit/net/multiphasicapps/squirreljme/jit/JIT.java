@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.squirreljme.classformat.ClassDecoder;
+import net.multiphasicapps.squirreljme.classformat.ClassFormatException;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -94,19 +95,18 @@ public final class JIT
 	public final void run()
 	{
 		// Perform the JIT by running and parsing the class file.
-		try
+		try (__ClassWriter__ cw = new __ClassWriter__(this, this.namespace))
 		{
 			// Setup data stream
 			DataInputStream dis = new DataInputStream(this.input);
 			
 			// Start decoding the class
-			ClassDecoder cd = new ClassDecoder(dis, new __ClassWriter__(
-				this, this.namespace));
+			ClassDecoder cd = new ClassDecoder(dis, cw);
 			cd.decode();
 		}
 		
 		// {@squirreljme.error ED02 Failed to read the class file.}
-		catch (IOException e)
+		catch (IOException|ClassFormatException e)
 		{
 			throw new JITException("ED02", e);
 		}

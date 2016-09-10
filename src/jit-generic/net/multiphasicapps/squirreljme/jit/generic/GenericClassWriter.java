@@ -196,9 +196,14 @@ public final class GenericClassWriter
 					dos.writeShort(this._ifacepos);
 					dos.writeShort(this._ifacecount);
 				
+					// {@squirreljme.error BA1b Class flags were not set.}
+					ClassFlags clflags = this._flags;
+					if (clflags == null)
+						throw new JITException("BA1b");
+					
 					// The class flags
 					int flags = 0;
-					for (ClassFlag f : this._flags)
+					for (ClassFlag f : clflags)
 						flags |= (1 << f.ordinal());
 					dos.writeShort(flags);
 				
