@@ -50,3 +50,10 @@ package that handles the JAR cache system for compilation. That is, the AOT
 compiler for the SquirrelJME binary acts the same as if it were the JIT
 running on real hardware.
 
+## 15:07
+
+So `JITCacheCreator` goes away and instead I suppose somewhere in `jit-base`
+there is a cache selection system that can figure out what to use. It must
+be in the base because it should not pull in the entire JIT since one might not
+even be included at all.
+
