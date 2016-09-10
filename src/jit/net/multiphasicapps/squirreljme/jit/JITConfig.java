@@ -24,6 +24,10 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
  */
 public final class JITConfig
 {
+	/** The property which defines the target triplet. */
+	public static final String TRIPLET_PROPERTY =
+		"net.multiphasicapps.squirreljme.jit.triplet";
+	
 	/**
 	 * Initializes the configuration from the given builder.
 	 *
