@@ -45,6 +45,9 @@ class __ClassWriter__
 	/** The class version. */
 	private volatile ClassVersion _version;
 	
+	/** The current member being written. */
+	volatile __MemberWriter__ _member;
+	
 	/**
 	 * Initializes the class writer bridge.
 	 *
@@ -151,6 +154,11 @@ class __ClassWriter__
 		// Get writer
 		JITClassWriter writer = __writer();
 		
+		// {@squirreljme.error ED03 Cannot write a new field while one is
+		// currently being written.}
+		if (this._member != null)
+			throw new JITException("ED03");
+		
 		throw new Error("TODO");
 	}
 	
@@ -194,6 +202,17 @@ class __ClassWriter__
 	{
 		// Get writer
 		JITClassWriter writer = __writer();
+		
+		// {@squirreljme.error ED04 Cannot write a new method while one is
+		// currently being written.}
+		if (this._member != null)
+			throw new JITException("ED04");
+		
+		/*
+		this._member = new __MethodWriter__(this.jit, this.namespace, this,
+			writer.());
+	__MethodWriter__(JIT __jit, JITNamespaceWriter __nsw, __ClassWriter__ __cw,
+		JITMethodWriter __jmw)*/
 		
 		throw new Error("TODO");
 	}
