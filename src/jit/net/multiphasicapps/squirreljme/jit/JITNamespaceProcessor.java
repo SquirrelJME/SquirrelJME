@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -38,8 +39,8 @@ public class JITNamespaceProcessor
 	/** The output of the JIT. */
 	protected final JITOutput output;
 	
-	/** Contents for namespaces. */
-	protected final JITNamespaceContent contents;
+	/** Browser for namespaces. */
+	protected final JITNamespaceBrowser browser;
 	
 	/** Progress indicator. */
 	protected final JITNamespaceProcessorProgress progress;
@@ -52,24 +53,24 @@ public class JITNamespaceProcessor
 	 * Initializes the namespace processor.
 	 *
 	 * @param __conf The JIT configuration to use.
-	 * @param __cont The content provider.
+	 * @param __b The namespace browser.
 	 * @throws JITException If no output could be created with the given
 	 * configuration.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
 	public JITNamespaceProcessor(JITConfig __conf,
-		JITNamespaceContent __cont)
+		JITNamespaceBrowser __b)
 		throws JITException, NullPointerException
 	{
-		this(__conf, __cont, null);
+		this(__conf, __b, null);
 	}
 	
 	/**
 	 * Initializes the namespace processor.
 	 *
 	 * @param __conf The JIT configuration to use.
-	 * @param __cont The content provider.
+	 * @param __b The namespace browser.
 	 * @param __prog Progrress indicator for the processor.
 	 * @throws JITException If no output could be created with the given
 	 * configuration.
@@ -78,16 +79,16 @@ public class JITNamespaceProcessor
 	 * @since 2016/07/23
 	 */
 	public JITNamespaceProcessor(JITConfig __conf,
-		JITNamespaceContent __cont, JITNamespaceProcessorProgress __prog)
+		JITNamespaceBrowser __b, JITNamespaceProcessorProgress __prog)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__conf == null || __cont == null)
+		if (__conf == null || __b == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.config = __conf;
-		this.contents = __cont;
+		this.browser = __b;
 		this.progress = __prog;
 		
 		// {@squirreljme.error ED0v No output factory was specified in the
@@ -134,12 +135,12 @@ public class JITNamespaceProcessor
 		// Go through the directory for the given namespace
 		// Also create the cached output if it was requested
 		try (JITNamespaceWriter nsw = output.beginNamespace(__ns);
-			JITNamespaceContent.Directory dir =
-				this.contents.directoryOf(__ns))
+			JITNamespaceBrowser.Directory dir =
+				this.browser.directoryOf(__ns))
 		{
 			// Go through directory entries
 			byte[] buf = null;
-			for (JITNamespaceContent.Entry ent : dir)
+			for (JITNamespaceBrowser.Entry ent : dir)
 			{
 				// Determine if this is a class to recompile or not
 				String name = ent.name();

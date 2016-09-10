@@ -8,7 +8,7 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package net.multiphasicapps.squirreljme.jit.base;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -17,12 +17,12 @@ import java.util.Iterator;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
- * This interface is used with {@link JITNamespaceProcessor} to provide the
- * content for namespaces and such.
+ * This interface is used to implement namespace browsers which are used to
+ * lookup namespaces that may be on the disk for the JIT to recompile.
  *
  * @since 2016/07/07
  */
-public interface JITNamespaceContent
+public interface JITNamespaceBrowser
 {
 	/**
 	 * Obtains the directory of the given namespace.
@@ -34,8 +34,18 @@ public interface JITNamespaceContent
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	public abstract JITNamespaceContent.Directory directoryOf(String __ns)
+	public abstract JITNamespaceBrowser.Directory directoryOf(String __ns)
 		throws IOException, JITException, NullPointerException;
+	
+	/**
+	 * Returns an iterator over the namespaces which are available.
+	 *
+	 * @return An iterator of available namespaces.
+	 * @throws IOException On read errors.
+	 * @since 2016/09/10
+	 */
+	public abstract Iterator<String> listNamespaces()
+		throws IOException;
 	
 	/**
 	 * This interface describes the directory of a given namespace.
@@ -43,7 +53,7 @@ public interface JITNamespaceContent
 	 * @since 2016/07/07
 	 */
 	public static interface Directory
-		extends Closeable, Iterable<JITNamespaceContent.Entry>
+		extends Closeable, Iterable<JITNamespaceBrowser.Entry>
 	{
 	}
 	

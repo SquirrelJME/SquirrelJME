@@ -57,3 +57,9 @@ there is a cache selection system that can figure out what to use. It must
 be in the base because it should not pull in the entire JIT since one might not
 even be included at all.
 
+## 18:05
+
+I suppose `JITNamespaceContent` should instead become `JITNamespaceBrowser` and
+in `jit-base`. Then `JITCacheManager` can go away. Then the browser can be
+used to implement that functionality.
+
