@@ -46,6 +46,9 @@ public abstract class BuildInstance
 	/** The target triplet. */
 	protected final JITTriplet triplet;
 	
+	/** The package browser to lookup namespace contents. */
+	protected final PackageBrowser browser;
+	
 	/** The temporary directory for build work. */
 	private volatile Path _tempdir;
 	
@@ -70,6 +73,7 @@ public abstract class BuildInstance
 		// Set
 		this.config = __conf;
 		this.triplet = __conf.triplet();
+		this.browser = new PackageBrowser(this, __conf.packageList());
 	}
 	
 	/**
@@ -173,10 +177,8 @@ public abstract class BuildInstance
 		JITConfig jconf = __makeJITConfig();
 		
 		// Setup namespace processor
-		if (true)
-			throw new Error("TODO");
-		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf, null,
-			new __JITProgress__(System.err));
+		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf,
+			this.browser, new __JITProgress__(System.err));
 		
 		// Process all packages to be built
 		Map<String, PackageInfo> compiled = this._compiled;
