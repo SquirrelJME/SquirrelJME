@@ -12,7 +12,11 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableMap;
 
 /**
  * This represents and stores the configuration which is used to configure
@@ -38,8 +42,20 @@ public final class JITConfig
 	public static final String FACTORY_PROPERTY =
 		"net.multiphasicapps.squirreljme.jit.factory";
 	
+	/** The configuration properties. */
+	protected final Map<String, String> properties;
+	
 	/** The output factory. */
 	private volatile Reference<JITOutputFactory> _factory;
+	
+	/** The string representation. */
+	private volatile Reference<String> _string;
+	
+	/** The serialized representation. */
+	private volatile Reference<String> _serial;
+	
+	/** The triplet cache. */
+	private volatile Reference<JITTriplet> _triplet;
 	
 	/**
 	 * Initializes the configuration from the given builder.
@@ -55,7 +71,9 @@ public final class JITConfig
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Copy propertyes
+		this.properties = UnmodifiableMap.<String, String>of(
+			new LinkedHashMap<>(__b._properties));
 	}
 	
 	/**
@@ -91,7 +109,8 @@ public final class JITConfig
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get
+		return this.properties.get(__k);
 	}
 	
 	/**
@@ -106,12 +125,6 @@ public final class JITConfig
 	public final JITOutputFactory outputFactory()
 		throws JITException
 	{
-		// {@squirreljme.error ED05 The JIT output factory has not been set
-		// within the configuration.}
-		String prop = getProperty(FACTORY_PROPERTY);
-		if (prop == null)
-			throw new JITException("ED05");
-		
 		// Get
 		Reference<JITOutputFactory> ref = this._factory;
 		JITOutputFactory rv;
@@ -120,6 +133,12 @@ public final class JITConfig
 		if (ref == null || null == (rv = ref.get()))
 			try
 			{
+				// {@squirreljme.error ED05 The JIT output factory has not been
+				// set within the configuration.}
+				String prop = getProperty(FACTORY_PROPERTY);
+				if (prop == null)
+					throw new JITException("ED05");
+				
 				// Create instance
 				Class<?> cl = Class.forName(prop);
 				rv = (JITOutputFactory)cl.newInstance();
@@ -149,7 +168,67 @@ public final class JITConfig
 	 */
 	public final String serialize()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<String> ref = this._serial;
+		String rv;
+		
+		// Serialize it?
+		if (ref == null || null == (rv = ref.get()))
+			throw new Error("TODO");
+		
+		// Return it
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc]
+	 * @since 2016/09/10
+	 */
+	@Override
+	public final String toString()
+	{
+		// Get
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv =
+				this.properties.toString()));
+		
+		// Return
+		return rv;
+	}
+	
+	/**
+	 * Returns the triplet used in the given configuration.
+	 *
+	 * @return The target triplet.
+	 * @throws JITException If no triplet was specified or it is not valid.
+	 * @since 2016/09/10
+	 */
+	public final JITTriplet triplet()
+		throws JITException
+	{
+		// Get
+		Reference<JITTriplet> ref = this._triplet;
+		JITTriplet rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// {@squirreljme.error ED07 The triplet has not been specified in
+			// the configuration.}
+			String prop = getProperty(TRIPLET_PROPERTY);
+			if (prop == null)
+				throw new JITException("ED07");
+			
+			// Create it
+			this._triplet = new WeakReference<>((rv = new JITTriplet(prop)));
+		}
+		
+		// Return it
+		return rv;
 	}
 }
 

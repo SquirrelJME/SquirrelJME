@@ -28,7 +28,7 @@ public class JITConfigBuilder
 		new Object();
 	
 	/** Properties that are associated with the JIT, ones to configure it. */
-	private final Map<String, String> _jitproperties =
+	final Map<String, String> _properties =
 		new SortedTreeMap<>();
 	
 	/**
@@ -66,7 +66,7 @@ public class JITConfigBuilder
 		// Lock
 		synchronized (this.lock)
 		{
-			this._jitproperties.put(__k, __v);
+			this._properties.put(__k, __v);
 		}
 	}
 	
