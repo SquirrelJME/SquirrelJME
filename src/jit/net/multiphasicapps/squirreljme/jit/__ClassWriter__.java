@@ -38,6 +38,9 @@ class __ClassWriter__
 	/** The namespace writer to use. */
 	protected final JITNamespaceWriter namespace;
 	
+	/** The class version. */
+	private volatile ClassVersion _version;
+	
 	/**
 	 * Initializes the class writer bridge.
 	 *
@@ -174,7 +177,13 @@ class __ClassWriter__
 	public void version(ClassVersion __cv)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__cv == null)
+			throw new NullPointerException("NARG");
+		
+		// The class version really does not make much of a difference once
+		// the writer methods are called for JIT purposes
+		this._version = __cv;
 	}
 }
 
