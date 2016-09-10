@@ -24,6 +24,10 @@ import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 public class BasicOutputFactory
 	implements JITOutputFactory
 {
+	/** This property specifies the native code writer factory to use. */
+	public static final String NATIVE_CODE_PROPERTY =
+		"net.multiphasicapps.squirreljme.jit.basic.nativecode";
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/10

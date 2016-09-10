@@ -142,24 +142,6 @@ public abstract class LinuxBuildInstance
 		
 		// Use the basic JIT always
 		__conf.setOutputFactory(BasicOutputFactory.class);
-		
-		throw new Error("TODO");
-		/*
-		// Rewrite unsafe calls to the one for this architecture
-		__conf.addStaticCallRewrite(new JITClassNameRewrite(
-			ClassNameSymbol.of(
-				"net/multiphasicapps/squirreljme/unsafe/SquirrelJME"),
-			ClassNameSymbol.of(
-				"net/multiphasicapps/squirreljme/os/linux/" +
-					triplet.architecture() + "/SquirrelJME")));
-		
-		// Set the ABI to use for the generic compiler
-		__conf.<GenericABI>registerObject(GenericABI.class, this.abi);
-		
-		// Add the JIT factory, just uses the generic JIT
-		__conf.<JITOutputFactory>registerObject(JITOutputFactory.class,
-			new GenericOutputFactory());
-		*/
 	}
 	
 	/**

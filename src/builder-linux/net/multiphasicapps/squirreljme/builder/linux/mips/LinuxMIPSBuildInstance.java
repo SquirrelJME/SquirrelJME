@@ -16,6 +16,7 @@ import net.multiphasicapps.squirreljme.builder.linux.LinuxBuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
@@ -65,7 +66,9 @@ public class LinuxMIPSBuildInstance
 		super.modifyOutputConfig(__conf);
 		
 		// Add the native code generator to use
-		throw new Error("TODO");
+		__conf.setProperty(BasicOutputFactory.NATIVE_CODE_PROPERTY,
+			"net.multiphasicapps.squirreljme.nativecode.mips." +
+			"MIPSWriterFactory");
 	}
 }
 
