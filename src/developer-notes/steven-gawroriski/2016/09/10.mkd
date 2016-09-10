@@ -1,2 +1,9 @@
 # 2016/09/10
 
+## 08:07
+
+Something that may be most efficient would be to have it where the JIT writers
+are essentially the description interfaces with some modified methods. However
+they still need to be bridged in some cases because the JIT will perform
+some basic register allocation.
+
