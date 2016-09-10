@@ -7,3 +7,19 @@ are essentially the description interfaces with some modified methods. However
 they still need to be bridged in some cases because the JIT will perform
 some basic register allocation.
 
+## 13:41
+
+For the generic JIT, I should move off the actual file output bits to another
+class rather than having it done in the classes themselves.
+
+## 13:44
+
+Another thing is that class flags can go in the global pool since many classes
+could share the same flags, but these are just a single bitfield which would
+cost a few more bytes to reference.
+
+## 13:46
+
+It might be easier to refactor the base JIT changes into a new JIT which I
+will call the basic JIT.
+

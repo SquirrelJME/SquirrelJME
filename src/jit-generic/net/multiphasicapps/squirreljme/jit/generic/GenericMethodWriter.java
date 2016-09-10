@@ -29,14 +29,8 @@ import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 
 /**
- * This is the base class for the native machine code generator which is common
- * to many architectures. Support for architectures extends this class which
- * is used to create the actual machine code.
- *
- * All generic machines are assumed to be modern, where there is a limited set
- * of registers for data storage along with extra memory areas where the stack
- * is located. Values which cannot be stored in registers at any given time
- * will be placed on the stack.
+ * This is a writer which manages details for methods along the potential for
+ * it to contain byte code.
  *
  * @since 2016/08/19
  */
