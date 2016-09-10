@@ -23,3 +23,12 @@ cost a few more bytes to reference.
 It might be easier to refactor the base JIT changes into a new JIT which I
 will call the basic JIT.
 
+## 13:52
+
+Requiring that something registered to the output have properties for later
+system property output usage, is a bad idea. It should be optional and if it
+does exist then they can be used accordingly. I do need a system property
+system that can be reused to initialize and setup the JIT without being
+helped by the operating system target information. Although I still have to
+solve this issue.
+
