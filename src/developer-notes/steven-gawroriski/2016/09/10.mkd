@@ -67,3 +67,12 @@ used to implement that functionality.
 
 My sorted tree map does not work properly in a case.
 
+## 19:50
+
+And that is fixed.
+
+## 19:51
+
+One thing that could be handy is if `JITConfig` can have a cached class lookup
+depending on the key used, similar to the factory code itself.
+

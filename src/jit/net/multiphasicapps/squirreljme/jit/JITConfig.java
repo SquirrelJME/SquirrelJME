@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -45,7 +46,12 @@ public final class JITConfig
 	/** The configuration properties. */
 	protected final Map<String, String> properties;
 	
+	/** Key as a given instance of a given class cache. */
+	private final Map<String, Reference<Object>> _keyasclass =
+		new HashMap<>();
+	
 	/** The output factory. */
+	@Deprecated
 	private volatile Reference<JITOutputFactory> _factory;
 	
 	/** The string representation. */
@@ -92,6 +98,32 @@ public final class JITConfig
 			throw new NullPointerException("NARG");
 		
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Attempts to parse the value of the given pr
+	 *
+	 * @param <Q> The type of class to the key value as.
+	 * @param __k The key to treat as a class name.
+	 * @param __cl The class type to get the key as.
+	 * @throws JITException If the value is {@code null} or is not of the
+	 * given class type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/10
+	 */
+	public final <Q> Q getAsClass(String __k, Class<Q> __cl)
+		throws JITException, NullPointerException
+	{
+		// Check
+		if (__k == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Map<String, Reference<Object>> keyasclass = this._keyasclass;
+		synchronized (keyasclass)
+		{
+			throw new Error("TODO");
+		}
 	}
 	
 	/**

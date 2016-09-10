@@ -14,6 +14,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 
 /**
  * This is the factory which creates instances of the basic JIT which outputs
@@ -39,6 +40,13 @@ public class BasicOutputFactory
 		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BV01 No native code factory was set in the
+		// configuration. (The configuration)}
+		NativeCodeWriterFactory ncwf = __conf.<NativeCodeWriterFactory>
+			getAsClass(NATIVE_CODE_PROPERTY, NativeCodeWriterFactory.class);
+		if (ncwf == null)
+			throw new JITException(String.format("BV01 %s", __conf));
 		
 		throw new Error("TODO");
 	}
