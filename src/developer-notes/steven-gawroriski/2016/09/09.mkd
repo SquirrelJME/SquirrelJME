@@ -232,3 +232,11 @@ the old code.
 
 The class writers for the JIT does not need the pool index numbers.
 
+## 22:27
+
+So today, I got much work done. Now I shall go to sleep since I am rather
+tired. Tomorrow I will work on reimplementing the removed parts of the code so
+that I get back to where I was. Then I suppose I will refactor the byte code
+handling so it is a much cleaner. Then after that, hopefully I can then get to
+emitting actual instructions and such.
+
