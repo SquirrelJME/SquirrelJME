@@ -31,6 +31,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
  *
  * @since 2016/07/04
  */
+@Deprecated
 public final class JITOutputConfig
 	implements __CommonConfigGet__
 {
@@ -278,6 +279,7 @@ public final class JITOutputConfig
 	 *
 	 * @since 2016/07/04
 	 */
+	@Deprecated
 	public static final class Immutable
 		implements __CommonConfigGet__
 	{

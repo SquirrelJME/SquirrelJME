@@ -18,6 +18,7 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
  *
  * @since 2016/07/06
  */
+@Deprecated
 interface __CommonConfigGet__
 {
 	/**
