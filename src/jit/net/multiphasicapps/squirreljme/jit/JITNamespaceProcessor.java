@@ -33,7 +33,7 @@ public class JITNamespaceProcessor
 		4096;
 	
 	/** The configuration to use. */
-	protected final JITOutputConfig.Immutable config;
+	protected final JITConfig config;
 	
 	/** The output of the JIT. */
 	protected final JITOutput output;
@@ -58,7 +58,7 @@ public class JITNamespaceProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/07
 	 */
-	public JITNamespaceProcessor(JITOutputConfig.Immutable __conf,
+	public JITNamespaceProcessor(JITConfig __conf,
 		JITNamespaceContent __cont)
 		throws JITException, NullPointerException
 	{
@@ -77,7 +77,7 @@ public class JITNamespaceProcessor
 	 * {@code __prog}.
 	 * @since 2016/07/23
 	 */
-	public JITNamespaceProcessor(JITOutputConfig.Immutable __conf,
+	public JITNamespaceProcessor(JITConfig __conf,
 		JITNamespaceContent __cont, JITNamespaceProcessorProgress __prog)
 		throws JITException, NullPointerException
 	{
@@ -92,6 +92,8 @@ public class JITNamespaceProcessor
 		
 		// {@squirreljme.error ED0v No output factory was specified in the
 		// output. (The configuration)}
+		throw new Error("TODO");
+		/*
 		JITOutputFactory ofact = __conf.<JITOutputFactory>getObject(
 			JITOutputFactory.class);
 		if (ofact == null)
@@ -103,6 +105,7 @@ public class JITNamespaceProcessor
 		this.output = output;
 		if (output == null)
 			throw new JITException(String.format("ED0h %s", __conf));
+		*/
 	}
 	
 	/**

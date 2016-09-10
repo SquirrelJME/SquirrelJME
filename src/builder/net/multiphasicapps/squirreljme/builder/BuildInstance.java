@@ -21,6 +21,8 @@ import net.multiphasicapps.squirreljme.basicassets.BasicAsset;
 import net.multiphasicapps.squirreljme.emulator.Emulator;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessor;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceProcessorProgress;
 import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
@@ -93,7 +95,7 @@ public abstract class BuildInstance
 	 * @param __conf The configuration that is for building.
 	 * @since 2016/09/02
 	 */
-	protected abstract void modifyOutputConfig(JITOutputConfig __conf);
+	protected abstract void modifyOutputConfig(JITConfigBuilder __conf);
 	
 	/**
 	 * This returns the package group that is used to determine which packages
@@ -177,7 +179,7 @@ public abstract class BuildInstance
 		this._cache = cache;
 		
 		// Setup immutable config
-		JITOutputConfig.Immutable jconf = __makeJITConfig(cache);
+		JITConfig jconf = __makeJITConfig(cache);
 		
 		// Setup namespace processor
 		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf, cache,
@@ -241,13 +243,15 @@ public abstract class BuildInstance
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	private final JITOutputConfig.Immutable __makeJITConfig(__Cache__ __bc)
+	private final JITConfig __makeJITConfig(__Cache__ __bc)
 		throws NullPointerException
 	{
 		// Check
 		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+		/*
 		// Setup and fill with basic details
 		JITOutputConfig joc = new JITOutputConfig();
 		joc.setTriplet(this.triplet);
@@ -257,7 +261,7 @@ public abstract class BuildInstance
 		modifyOutputConfig(joc);
 		
 		// No more changes after this
-		return joc.immutable();
+		return joc.immutable();*/
 	}
 	
 	/**

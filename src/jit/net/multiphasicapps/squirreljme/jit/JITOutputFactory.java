@@ -43,7 +43,7 @@ public abstract class JITOutputFactory
 	 * an incompatible configuration.
 	 * @since 2016/07/05
 	 */
-	public abstract JITOutput create(JITOutputConfig.Immutable __config)
+	public abstract JITOutput create(JITConfig __config)
 		throws JITException;
 	
 	/**

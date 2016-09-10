@@ -81,7 +81,7 @@ public final class JIT
 	 * @return The JIT output configuration.
 	 * @since 2016/08/13
 	 */
-	public final JITOutputConfig.Immutable config()
+	public final JITConfig config()
 	{
 		return this.output.config();
 	}

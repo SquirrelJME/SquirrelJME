@@ -11,9 +11,8 @@
 package net.multiphasicapps.squirreljme.jit.basic;
 
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
-import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
-import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 
 /**
  * This is the factory which creates instances of the basic JIT which outputs
@@ -29,7 +28,7 @@ public class BasicOutputFactory
 	 * @since 2016/09/10
 	 */
 	@Override
-	public JITOutput create(JITOutputConfig.Immutable __conf)
+	public JITOutput create(JITConfig __conf)
 		throws JITException
 	{
 		// Check

@@ -44,6 +44,6 @@ public interface JITOutput
 	 * @return The JIT configuration.
 	 * @since 2016/08/13
 	 */
-	public abstract JITOutputConfig.Immutable config();
+	public abstract JITConfig config();
 }
 
