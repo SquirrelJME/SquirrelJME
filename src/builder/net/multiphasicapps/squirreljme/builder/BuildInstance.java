@@ -49,9 +49,6 @@ public abstract class BuildInstance
 	/** The temporary directory for build work. */
 	private volatile Path _tempdir;
 	
-	/** The cache creator. */
-	private volatile __Cache__ _cache;
-	
 	/** Packages which have been compiled. */
 	private volatile Map<String, PackageInfo> _compiled =
 		new LinkedHashMap<>();
@@ -172,16 +169,13 @@ public abstract class BuildInstance
 		BuildConfig config = this.config;
 		__PackageSelection__ ps = new __PackageSelection__(config, this);
 		
-		// Setup cache
-		__Cache__ cache = new __Cache__(config.packageList(),
-			temporaryDirectory());
-		this._cache = cache;
-		
 		// Setup immutable config
-		JITConfig jconf = __makeJITConfig(cache);
+		JITConfig jconf = __makeJITConfig();
 		
 		// Setup namespace processor
-		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf, cache,
+		if (true)
+			throw new Error("TODO");
+		JITNamespaceProcessor jnp = new JITNamespaceProcessor(jconf, null,
 			new __JITProgress__(System.err));
 		
 		// Process all packages to be built
@@ -237,18 +231,11 @@ public abstract class BuildInstance
 	 * Makes the JIT output configuration which is used when compiling Java
 	 * byte code into native code.
 	 *
-	 * @param __bc The builder cache where temporary namespaces go.
 	 * @return The final immutable configuration.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/02
 	 */
-	private final JITConfig __makeJITConfig(__Cache__ __bc)
-		throws NullPointerException
+	private final JITConfig __makeJITConfig()
 	{
-		// Check
-		if (__bc == null)
-			throw new NullPointerException("NARG");
-		
 		// Setup builder
 		JITConfigBuilder b = new JITConfigBuilder();
 		
