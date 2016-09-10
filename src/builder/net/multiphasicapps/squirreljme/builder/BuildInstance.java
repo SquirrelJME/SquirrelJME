@@ -252,6 +252,9 @@ public abstract class BuildInstance
 		// Setup builder
 		JITConfigBuilder b = new JITConfigBuilder();
 		
+		// Setup basic triplet
+		b.setTriplet(this.triplet);
+		
 		// Send to self to add any properties as needed
 		modifyOutputConfig(b);
 		
