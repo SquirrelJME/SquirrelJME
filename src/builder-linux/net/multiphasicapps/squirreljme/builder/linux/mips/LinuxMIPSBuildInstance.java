@@ -16,12 +16,9 @@ import net.multiphasicapps.squirreljme.builder.linux.LinuxBuildInstance;
 import net.multiphasicapps.squirreljme.builder.TargetNotSupportedException;
 import net.multiphasicapps.squirreljme.emulator.EmulatorConfig;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
-import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
+import net.multiphasicapps.squirreljme.jit.JITConfig;
+import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
-import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
-import net.multiphasicapps.squirreljme.nativecode.mips.MIPSABI;
-import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 
 /**
  * This is the build instance for Linux MIPS systems.
@@ -62,45 +59,12 @@ public class LinuxMIPSBuildInstance
 	 * @since 2016/09/02
 	 */
 	@Override
-	protected GenericABI getLinuxABI()
-	{
-		// Get target details
-		JITTriplet triplet = this.triplet;
-		int bits = triplet.bits();
-		NativeFloatType ft = triplet.floatingPoint();
-		
-		// Which ABI to use?
-		GenericABI abi;
-		String osvar;
-		NativeABI nabi;
-		switch ((osvar = triplet.operatingSystemVariant()))
-		{
-				// EABI
-			case "eabi":
-				nabi = MIPSABI.eabi(bits, ft);
-				break;
-			
-				// {@squirreljme.error BU09 Do not know how to build for the
-				// given operating system variant. (The operating system
-				// variant)}
-			default:
-				throw new TargetNotSupportedException(
-					String.format("BU09 %s", osvar));
-		}
-		
-		// Wrap
-		return new GenericABI(nabi);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/02
-	 */
-	@Override
-	protected void modifyOutputConfig(JITOutputConfig __conf)
+	protected void modifyOutputConfig(JITConfigBuilder __conf)
 	{
 		// Add base Linux changes first
 		super.modifyOutputConfig(__conf);
+		
+		throw new Error("TODO");
 	}
 }
 

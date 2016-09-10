@@ -24,12 +24,9 @@ import net.multiphasicapps.squirreljme.fs.virtual.VirtualMounts;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
-import net.multiphasicapps.squirreljme.jit.generic.GenericABI;
-import net.multiphasicapps.squirreljme.jit.generic.GenericOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
-import net.multiphasicapps.squirreljme.jit.JITOutputConfig;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
 import net.multiphasicapps.squirreljme.paths.posix.PosixPaths;
 
@@ -41,9 +38,6 @@ import net.multiphasicapps.squirreljme.paths.posix.PosixPaths;
 public abstract class LinuxBuildInstance
 	extends BuildInstance
 {
-	/** The build ABI to use. */
-	protected final GenericABI abi;
-	
 	/**
 	 * Initializes the build instance.
 	 *
@@ -83,12 +77,6 @@ public abstract class LinuxBuildInstance
 		JITCPUEndian end = triplet.endianess();
 		if (end != JITCPUEndian.BIG && end != JITCPUEndian.LITTLE)
 			throw new TargetNotSupportedException("BU07");
-		
-		// {@squirreljme.error BU08 No valid ABI has been selected.}
-		GenericABI abi = getLinuxABI();
-		this.abi = abi;
-		if (abi == null)
-			throw new TargetNotSupportedException("BU08");
 	}
 	
 	/**
@@ -101,14 +89,6 @@ public abstract class LinuxBuildInstance
 	 */
 	protected abstract void configureLinuxEmulator(EmulatorConfig __conf)
 		throws IOException, NullPointerException;
-	
-	/**
-	 * Obtains the ABI that is to be used for the target system.
-	 *
-	 * @return The ABI to use.
-	 * @since 2016/09/02
-	 */
-	protected abstract GenericABI getLinuxABI();
 	
 	/**
 	 * {@inheritDoc}
@@ -152,13 +132,15 @@ public abstract class LinuxBuildInstance
 	 * @since 2016/09/02
 	 */
 	@Override
-	protected void modifyOutputConfig(JITOutputConfig __conf)
+	protected void modifyOutputConfig(JITConfigBuilder __conf)
 		throws NullPointerException
 	{
 		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
 		
+		throw new Error("TODO");
+		/*
 		// Rewrite unsafe calls to the one for this architecture
 		__conf.addStaticCallRewrite(new JITClassNameRewrite(
 			ClassNameSymbol.of(
@@ -173,6 +155,7 @@ public abstract class LinuxBuildInstance
 		// Add the JIT factory, just uses the generic JIT
 		__conf.<JITOutputFactory>registerObject(JITOutputFactory.class,
 			new GenericOutputFactory());
+		*/
 	}
 	
 	/**
