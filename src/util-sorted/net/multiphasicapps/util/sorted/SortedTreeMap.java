@@ -175,7 +175,7 @@ public class SortedTreeMap<K, V>
 	{
 		// Replace the root
 		__Node__<K, V> was = this._root;
-		__Node__<K, V> now = __insert(was, __k, __v);
+		__Node__<K, V> now = __insert(was, __k);
 
 		// Changed?
 		if (was != now)
@@ -276,17 +276,16 @@ public class SortedTreeMap<K, V>
 	 *
 	 * @param __at The current node the algorithm is at.
 	 * @param __k The key to insert.
-	 * @param __v The value to insert.
 	 * @return The newly created node.
 	 * @since 2016/09/06
 	 */
-	private final __Node__<K, V> __insert(__Node__<K, V> __at, K __k, V __v)
+	private final __Node__<K, V> __insert(__Node__<K, V> __at, K __k)
 	{
 		// The tree is empty, adding an element is trivial
 		if (__at == null)
 		{
 			// Create new node
-			__Node__<K, V> rv = new __Node__<K, V>(__k, __v);
+			__Node__<K, V> rv = new __Node__<K, V>(__k, null);
 			
 			// Increase size
 			this._size++;
@@ -309,7 +308,7 @@ public class SortedTreeMap<K, V>
 		else if (res < 0)
 		{
 			__Node__<K, V> was = __at._left;
-			__Node__<K, V> now = __insert(was, __k, __v);
+			__Node__<K, V> now = __insert(was, __k);
 			
 			// Changed?
 			if (was != now)
@@ -325,7 +324,7 @@ public class SortedTreeMap<K, V>
 		else if (res > 0)
 		{
 			__Node__<K, V> was = __at._right;
-			__Node__<K, V> now = __insert(was, __k, __v);
+			__Node__<K, V> now = __insert(was, __k);
 			
 			// Changed?
 			if (was != now)
