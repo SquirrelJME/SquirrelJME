@@ -24,6 +24,7 @@ import net.multiphasicapps.squirreljme.fs.virtual.VirtualMounts;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITCPUEndian;
 import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
+import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITClassNameRewrite;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
@@ -138,6 +139,9 @@ public abstract class LinuxBuildInstance
 		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
+		
+		// Use the basic JIT always
+		__conf.setOutputFactory(BasicOutputFactory.class);
 		
 		throw new Error("TODO");
 		/*

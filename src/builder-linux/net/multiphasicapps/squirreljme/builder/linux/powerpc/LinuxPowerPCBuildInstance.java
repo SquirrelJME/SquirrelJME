@@ -63,7 +63,7 @@ public class LinuxPowerPCBuildInstance
 		// Add base Linux changes first
 		super.modifyOutputConfig(__conf);
 		
-		// Add the JIT factory
+		// Add the native code generator to use
 		throw new Error("TODO");
 	}
 }

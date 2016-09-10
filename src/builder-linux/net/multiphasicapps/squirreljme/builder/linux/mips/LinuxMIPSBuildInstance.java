@@ -64,6 +64,7 @@ public class LinuxMIPSBuildInstance
 		// Add base Linux changes first
 		super.modifyOutputConfig(__conf);
 		
+		// Add the native code generator to use
 		throw new Error("TODO");
 	}
 }

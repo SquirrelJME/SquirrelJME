@@ -71,6 +71,24 @@ public class JITConfigBuilder
 	}
 	
 	/**
+	 * Sets the output factory to use during JIT compilation.
+	 *
+	 * @param __cl The output factory to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/10
+	 */
+	public void setOutputFactory(Class<? extends JITOutputFactory> __cl)
+		throws NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		setProperty(JITConfig.FACTORY_PROPERTY, __cl.getName());
+	}
+	
+	/**
 	 * Sets the triplet which is used to determine the target to JIT for.
 	 *
 	 * @param __t The triplet to set.
