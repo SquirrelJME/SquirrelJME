@@ -10,59 +10,39 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
-import java.io.IOException;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
-import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 
 /**
- * This writes resources to the output namespace.
+ * This is the base class for the class and resource writers.
  *
  * @since 2016/09/11
  */
-public class BasicResourceWriter
-	extends __BaseWriter__
-	implements JITResourceWriter
+abstract class __BaseWriter__
 {
-	/** The resource information in the contents table. */
-	private final __Resource__ _resourceindex;
+	/** The output stream. */
+	protected final ExtendedDataOutputStream output;
+	
+	/** The positioned data. */
+	private final __Positioned__ _positioned;
 	
 	/**
 	 * Initializes the resource writer.
 	 *
 	 * @param __nsw The owning namespace writer.
+	 * @param __pos The positioned entry data.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/11
 	 */
-	BasicResourceWriter(BasicNamespaceWriter __nsw, __Resource__ __rc)
+	__BaseWriter__(BasicNamespaceWriter __nsw, __Positioned__ __pos)
 		throws NullPointerException
 	{
-		super(__nsw, __rc);
+		// Check
+		if (__nsw == null || __pos == null)
+			throw new NullPointerException("NARG");
 		
 		// Set
-		this._resourceindex = __rc;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/11
-	 */
-	@Override
-	public void close()
-		throws JITException
-	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/11
-	 */
-	@Override
-	public void write(byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, JITException, NullPointerException
-	{
-		throw new Error("TODO");
+		this.output = __nsw._output;
+		this._positioned = __pos;
 	}
 }
 

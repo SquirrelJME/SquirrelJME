@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit.basic;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -36,6 +38,21 @@ public class BasicNamespaceWriter
 	
 	/** The output executable. */
 	final ExtendedDataOutputStream _output;
+	
+	/** The basic global pool. */
+	final BasicConstantPool _pool =
+		new BasicConstantPool();
+	
+	/** Classes in the namespace. */
+	private final List<__Class__> _classes =
+		new ArrayList<>();
+	
+	/** Resources in the namespace. */
+	private final List<__Resource__> _resources =
+		new ArrayList<>();
+	
+	/** The current writer. */
+	private volatile __BaseWriter__ _current;
 	
 	/**
 	 * Initializes the namespace writer.
@@ -71,6 +88,11 @@ public class BasicNamespaceWriter
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error BV02 Cannot write a new class when there is
+		// another class or resource being written.}
+		if (this._current != null)
+			throw new JITException("BV02");
+		
 		throw new Error("TODO");
 	}
 	
@@ -86,7 +108,16 @@ public class BasicNamespaceWriter
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// {@squirreljme.error BV03 Cannot write a new resource when there is
+		// another class or resource being written.}
+		if (this._current != null)
+			throw new JITException("BV03");
+		
+		// Create resource
+		__Resource__ rc = new __Resource__(this._pool.addString(__name));
+		BasicResourceWriter rv = new BasicResourceWriter(this, rc);
+		this._resources.add(rc);
+		return rv;
 	}
 	
 	/**
