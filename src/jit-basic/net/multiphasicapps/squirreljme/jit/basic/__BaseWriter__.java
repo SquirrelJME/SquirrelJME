@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
 import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This is the base class for the class and resource writers.
@@ -49,10 +50,22 @@ abstract class __BaseWriter__
 		this.namespace = __nsw;
 		this._positioned = __pos;
 		
+		// Align the output
+		ExtendedDataOutputStream base = __nsw._output;
+		try
+		{
+			base.align(4);
+		}
+		
+		// {@squirreljme.error BV06 Could not align the output.}
+		catch (IOException e)
+		{
+			throw new JITException("BV06", e);
+		}
+		
 		// Get the base output to write to, this is wrapped so sizes are known,
 		// prevents closing the external output, and makes thing a bit more
 		// sane
-		ExtendedDataOutputStream base = __nsw._output;
 		ExtendedDataOutputStream output = new ExtendedDataOutputStream(
 			new __Filter__(base));
 		output.setEndianess(base.getEndianess());

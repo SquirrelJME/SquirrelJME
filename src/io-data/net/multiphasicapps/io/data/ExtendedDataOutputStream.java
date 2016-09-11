@@ -61,6 +61,28 @@ public class ExtendedDataOutputStream
 	}
 	
 	/**
+	 * Aligns the output to the given number of bytes.
+	 *
+	 * @param __n The number of bytes to align to.
+	 * @throws IndexOutOfBoundsException If the alignment amount is zero or
+	 * negative.
+	 * @throws IOException On write errors.
+	 * @since 2016/09/11
+	 */
+	public void align(int __n)
+		throws IndexOutOfBoundsException, IOException
+	{
+		// {@squirreljme.error BD05 Cannot align to zero or a negative
+		// amount.}
+		if (__n <= 0)
+			throw new IndexOutOfBoundsException("BD05");
+		
+		// Pad
+		while ((size() % __n) != 0)
+			write(0);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/10
 	 */
