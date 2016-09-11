@@ -255,7 +255,7 @@ public class ExtendedDataInputStream
 	public void readFully(byte[] __b, int __o, int __l)
 		throws IOException
 	{
-		throw new Error("TODO");
+		this.input.readFully(__b, __o, __l);
 	}
 	
 	/**

@@ -11,6 +11,7 @@
 package net.multiphasicapps.zip.streamreader;
 
 import java.io.Closeable;
+import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.crc32.CRC32DataSink;
@@ -149,6 +150,7 @@ public class ZipStreamReader
 			
 			// Read until an entry is found
 			DynamicHistoryInputStream input = this.input;
+			ExtendedDataInputStream data = this.data;
 			byte[] localheader = this._localheader;
 			for (; !this._eof;)
 			{
@@ -168,8 +170,19 @@ public class ZipStreamReader
 				// Not one
 				if (lhskip > 0)
 				{
-					if (input.read(localheader, 0, lhskip) < 0)
+					// Read
+					try
+					{
+						data.readFully(localheader, 0, lhskip);
+					}
+					
+					// End of file
+					catch (EOFException e)
+					{
 						this._eof = true;
+					}
+					
+					// Return null on the next loop
 					continue;
 				}
 				
@@ -256,17 +269,16 @@ public class ZipStreamReader
 						this._defer = defer;
 					
 					// Skip 4 bytes because the header was already read
-					this.input.read(localheader, 0, 4);
+					this.data.readFully(localheader, 0, 4);
 					continue;
 				}
 				
 				// Read the local header normally to consume it
-				input.read(localheader);
+				data.readFully(localheader);
 				
 				// Read the file name, if EOF was reached then ignore
 				byte[] rawname = new byte[fnl];
-				if (fnl != input.read(rawname))
-					continue;
+				data.readFully(rawname);
 				
 				// If UTF-8 then use internal handling
 				String filename;
@@ -279,21 +291,8 @@ public class ZipStreamReader
 					filename = IBM437CodePage.toString(rawname, 0, fnl);
 				
 				// Skip the comment
-				while (cml > 0)
-				{
-					int rc = input.read(localheader, 0, Math.min(cml,
-						_MINIMUM_HEADER_SIZE));
-					
-					// EOF?
-					if (rc < 0)
-					{
-						this._eof = true;
-						return null;
-					}
-					
-					// Substract
-					cml -= rc;
-				}
+				data.readFully(localheader, 0, Math.min(cml,
+					_MINIMUM_HEADER_SIZE));
 				
 				// Create entry so the data can actually be used
 				ZipStreamEntry rv = new ZipStreamEntry(this, filename,
