@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Name: terminal
 X-SquirrelJME-UUID: 62605cfb-2d10-4502-99d1-c78b5054baaa
 X-SquirrelJME-Depends: cldc-compact
+X-SquirrelJME-Optional: terminal-vt
 X-SquirrelJME-Error: AD
 LIBlet-Title: Base Terminal Support
 LIBlet-Vendor: Steven Gawroriski

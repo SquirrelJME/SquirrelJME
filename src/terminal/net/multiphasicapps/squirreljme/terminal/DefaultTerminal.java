@@ -11,12 +11,30 @@
 package net.multiphasicapps.squirreljme.terminal;
 
 /**
- * This is the terminal interface which is implemented given by
- * {@link TerminalProvider}s to allow native terminal access.
+ * This caches and returns the default terminal device to use.
  *
  * @since 2016/09/11
  */
-public interface Terminal
+public final class DefaultTerminal
 {
+	/**
+	 * Not used.
+	 *
+	 * @since 2016/09/11
+	 */
+	private DefaultTerminal()
+	{
+	}
+	
+	/**
+	 * Returns the default terminal or {@code null} if there is no default.
+	 *
+	 * @return The default terminal or {@code null} if there is none.
+	 * @since 2016/09/11
+	 */
+	public static Terminal getDefault()
+	{
+		throw new Error("TODO");
+	}
 }
 

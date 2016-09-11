@@ -37,6 +37,7 @@ This is the list of code that needs to be implemented:
    * key (skeleton)
    * liblets
    * lui (skeleton)
+     * Terminal Base
    * media
    * midlet (skeleton)
    * power
@@ -45,4 +46,6 @@ This is the list of code that needs to be implemented:
    * securityframework
    * swm
  * Squirrel Quarrel
+ * Terminals
+   * VT100
 
