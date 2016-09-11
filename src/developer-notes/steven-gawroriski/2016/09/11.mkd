@@ -34,3 +34,8 @@ I should also have different areas for classes and resources. Before I used
 a type flag. But with two different tables I can have the constraints for
 classes be different than that of resources.
 
+## 15:45
+
+Extended data output stream can use align, since previously I have used it
+much in the generic writer.
+

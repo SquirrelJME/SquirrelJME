@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -52,7 +53,7 @@ public class BasicNamespaceWriter
 		new ArrayList<>();
 	
 	/** The current writer. */
-	private volatile __BaseWriter__ _current;
+	volatile __BaseWriter__ _current;
 	
 	/**
 	 * Initializes the namespace writer.
@@ -73,7 +74,19 @@ public class BasicNamespaceWriter
 		// Set
 		this._config = __conf;
 		this.name = __name;
-		this._output = new ExtendedDataOutputStream(__os);
+		
+		// Initialize output stream
+		ExtendedDataOutputStream output;
+		this._output = (output = new ExtendedDataOutputStream(__os));
+		switch (__conf.triplet().endianess())
+		{
+			case BIG: output.setEndianess(DataEndianess.BIG); break;
+			case LITTLE: output.setEndianess(DataEndianess.LITTLE); break;
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
