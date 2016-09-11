@@ -171,7 +171,7 @@ public class ZipStreamReader
 				// Check the version needed for extracting
 				int xver = __readUnsignedShort(localheader, 4);
 				boolean deny = false;
-				deny |= (xver < 0 || xver >= _MAX_EXTRACT_VERSION);
+				deny |= (xver < 0 || xver > _MAX_EXTRACT_VERSION);
 				
 				// Read bit flags
 				int gpfs = __readUnsignedShort(localheader, 6);

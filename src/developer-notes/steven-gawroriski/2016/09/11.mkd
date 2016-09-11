@@ -1,2 +1,12 @@
 # 2016/09/11
 
+## 10:02
+
+For some reason, cldc compact is not being picked up by the stream reader.
+
+## 10:06
+
+Actually, there appears to be a logical error in the ZIP stream reader, which
+I fixed. It was failing on the max supported extract version (2.0) due to the
+greater than or equal sign.
+
