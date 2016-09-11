@@ -51,7 +51,17 @@ public class BasicResourceWriter
 	public void close()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Close the output
+		try
+		{
+			this.output.close();
+		}
+		
+		// {@squirreljme.error BV07 Could not close the output.}
+		catch (IOException e)
+		{
+			throw new JITException("BV07", e);
+		}
 	}
 	
 	/**
@@ -62,7 +72,17 @@ public class BasicResourceWriter
 	public void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, JITException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Close the output
+		try
+		{
+			this.output.write(__b, __o, __l);
+		}
+		
+		// {@squirreljme.error BV08 Could not write to the output.}
+		catch (IOException e)
+		{
+			throw new JITException("BV08", e);
+		}
 	}
 }
 
