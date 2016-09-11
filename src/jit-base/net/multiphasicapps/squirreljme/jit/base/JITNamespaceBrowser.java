@@ -77,6 +77,8 @@ public interface JITNamespaceBrowser
 		/**
 		 * Opens an input stream containing the entry data.
 		 *
+		 * It is not required for entries to be opened multiple times.
+		 *
 		 * @return An input stream to the entry data.
 		 * @throws IOException If the stream could not be opened.
 		 * @since 2016/07/07

@@ -62,7 +62,26 @@ public class PackageBrowser
 	public JITNamespaceBrowser.Directory directoryOf(String __ns)
 		throws IOException, JITException, NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__ns == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error DW04 The specified namespace does not end in the
+		// JAR extension. (The namespace with the incorrect extension)}
+		if (!__ns.endsWith(".jar"))
+			throw new JITException(String.format("DW04 %s", __ns));
+		
+		// Remove it
+		String base = __ns.substring(0, __ns.length() - 4);
+		
+		// {@squirreljme.error DW05 The specified package does not exist. (The
+		// package name)}
+		PackageInfo pi = this.plist.get(base);
+		if (pi == null)
+			throw new JITException(String.format("DW05 %s", base));
+		
+		// Create directory
+		return new __Directory__(pi.path());
 	}
 	
 	/**
