@@ -41,5 +41,27 @@ public class LUIOnTerminal
 		// Set
 		this.terminal = __t;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/11
+	 */
+	@Override
+	public boolean isHardwareAssigned()
+	{
+		// There is always only a single hardware where input is grabbed from
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/11
+	 */
+	@Override
+	public void setHardwareAssigned(boolean __h)
+	{
+		// There is only ever one terminal associated with this and as such
+		// any call of this has no effect
+	}
 }
 

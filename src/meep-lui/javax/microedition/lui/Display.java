@@ -437,7 +437,8 @@ public class Display
 	 */
 	public boolean isHardwareAssigned()
 	{
-		throw new Error("TODO");
+		// Forward
+		return this._driver.isHardwareAssigned();
 	}
 	
 	/**
@@ -638,7 +639,8 @@ public class Display
 	 */
 	public void setHardwareAssigned(boolean __h)
 	{
-		throw new Error("TODO");
+		// Forward call
+		this._driver.setHardwareAssigned(__h);
 	}
 	
 	/**

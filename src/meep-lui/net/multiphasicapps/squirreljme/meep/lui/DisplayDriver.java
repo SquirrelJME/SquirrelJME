@@ -27,6 +27,25 @@ public abstract class DisplayDriver
 	private volatile Display _display;
 	
 	/**
+	 * Returns whether the display is currently assigned to the hardware in
+	 * a way where it obtains user input and is visible.
+	 *
+	 * @return {@code true} if it is visible and provides user input.
+	 * @since 2016/09/11
+	 */
+	public abstract boolean isHardwareAssigned();
+	
+	/**
+	 * Sets whether the display should be assigned to the hardware or
+	 * unassigned from it. A display which is assigned to the hardware gets
+	 * user input and has display focus.
+	 *
+	 * @param __h If {@code true} it should be visible and get user input.
+	 * @since 2016/09/11
+	 */
+	public abstract void setHardwareAssigned(boolean __h);
+	
+	/**
 	 * Returns the associated display with this driver.
 	 *
 	 * @return The associated display or if it is not associated, it will
