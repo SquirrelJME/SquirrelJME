@@ -130,9 +130,11 @@ public class JITNamespaceProcessor
 		
 		// Go through the directory for the given namespace
 		// Also create the cached output if it was requested
-		try (JITNamespaceWriter nsw = output.beginNamespace(__ns);
+		JITNamespaceBrowser browser = this.browser;
+		try (OutputStream os = browser.createCache(__ns);
+			JITNamespaceWriter nsw = output.beginNamespace(__ns, os);
 			JITNamespaceBrowser.Directory dir =
-				this.browser.directoryOf(__ns))
+				browser.directoryOf(__ns))
 		{
 			// Go through directory entries
 			byte[] buf = null;

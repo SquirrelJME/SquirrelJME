@@ -10,3 +10,16 @@ Actually, there appears to be a logical error in the ZIP stream reader, which
 I fixed. It was failing on the max supported extract version (2.0) due to the
 greater than or equal sign.
 
+## 12:15
+
+The namespace browser would probably be best if it were to be given output
+streams for namespaces. This would be compared to having it in another class
+as before, while the functionality would be similar.
+
+## 12:17
+
+it would also be best if the JIT just wrote to `OutputStream`s instead of just
+juggling the potential for it to be written to memory or having specific cache
+forms. This simplifies, plus the resulting namespace cache could be directly
+executable anyway.
+

@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
@@ -25,29 +28,35 @@ import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 public class BasicNamespaceWriter
 	implements JITNamespaceWriter
 {
-	/** The configuration. */
-	protected final JITConfig config;
-	
 	/** The namespace name. */
 	protected final String name;
+	
+	/** The configuration. */
+	final JITConfig _config;
+	
+	/** The output executable. */
+	final ExtendedDataOutputStream _output;
 	
 	/**
 	 * Initializes the namespace writer.
 	 *
 	 * @param __conf The configuration used.
 	 * @param __name The name of the namespace.
+	 * @param __os The output executable.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/11
 	 */
-	public BasicNamespaceWriter(JITConfig __conf, String __name)
+	public BasicNamespaceWriter(JITConfig __conf, String __name,
+		OutputStream __os)
 		throws NullPointerException
 	{
-		if (__conf == null)
+		if (__conf == null || __name == null || __os == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.config = __conf;
+		this._config = __conf;
 		this.name = __name;
+		this._output = new ExtendedDataOutputStream(__os);
 	}
 	
 	/**

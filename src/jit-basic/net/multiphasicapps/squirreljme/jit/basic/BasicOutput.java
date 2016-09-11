@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import java.io.OutputStream;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
@@ -61,7 +62,7 @@ public class BasicOutput
 	 * @since 2016/09/10
 	 */
 	@Override
-	public JITNamespaceWriter beginNamespace(String __ns)
+	public JITNamespaceWriter beginNamespace(String __ns, OutputStream __os)
 		throws JITException, NullPointerException
 	{
 		// Check
@@ -69,7 +70,7 @@ public class BasicOutput
 			throw new NullPointerException("NARG");
 		
 		// Create
-		return new BasicNamespaceWriter(this.config, __ns);
+		return new BasicNamespaceWriter(this.config, __ns, __os);
 	}
 	
 	/**

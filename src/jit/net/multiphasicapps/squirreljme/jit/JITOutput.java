@@ -31,11 +31,13 @@ public interface JITOutput
 	 * unit and share the same data tables.
 	 *
 	 * @param __ns The namespace to output.
+	 * @param __os The stream to write namespace data to.
 	 * @throws JITException If starting a namespace could not be performed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/06
 	 */
-	public abstract JITNamespaceWriter beginNamespace(String __ns)
+	public abstract JITNamespaceWriter beginNamespace(String __ns,
+		OutputStream __os)
 		throws JITException, NullPointerException;
 	
 	/**
