@@ -45,3 +45,9 @@ When the launcher/JVM is created it can specify the terminal and LUI interface
 to use for sub-processes. This way they use the same class which just forwards
 calls to an implementation that can handle switching between applications.
 
+## 18:44
+
+One thing I can do is have an interface similar to `TerminalScreen` for the
+LUI code except have it for characters and such. It would be best if it became
+a managed set of character buffers.
+
