@@ -110,7 +110,7 @@ public final class DefaultTerminal
 					}
 					
 					// Found one?
-					if (bestdx > 0)
+					if (bestdx >= 0)
 						rv = provs.remove(bestdx).terminal();
 				}
 			}
