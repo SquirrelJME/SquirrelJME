@@ -29,7 +29,8 @@ public interface TerminalProvider
 	/**
 	 * Returns the priority of this provider.
 	 *
-	 * @return The provider priority.
+	 * @return The provider priority, negative values are not considered for
+	 * usage
 	 * @since 2016/09/11
 	 */
 	public abstract int priority();

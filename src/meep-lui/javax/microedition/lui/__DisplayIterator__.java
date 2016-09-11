@@ -140,6 +140,10 @@ final class __DisplayIterator__
 				this._sub = sub;
 			}
 			
+			// Nothing in here?
+			if (!sub.hasNext())
+				continue;
+			
 			// Get the next
 			DisplayDriver drv = sub.next();
 			

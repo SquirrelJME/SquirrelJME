@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.squirreljme.terminal;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
+
 /**
  * This caches and returns the default terminal device to use.
  *
@@ -17,6 +23,17 @@ package net.multiphasicapps.squirreljme.terminal;
  */
 public final class DefaultTerminal
 {
+	/**
+	 * {@squirreljme.property net.multiphasicapps.squirreljme.terminal=(class)
+	 * This is an optional property which specifies the provider for the
+	 * default terminal instance.}
+	 */
+	public static final String TERMINAL_PROPERTY =
+		"net.multiphasicapps.squirreljme.terminal";
+	
+	/** The default terminal that was selected. */
+	private static volatile Reference<Terminal> _DEFAULT;
+	
 	/**
 	 * Not used.
 	 *
@@ -34,7 +51,76 @@ public final class DefaultTerminal
 	 */
 	public static Terminal getDefault()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<Terminal> ref = DefaultTerminal._DEFAULT;
+		Terminal rv = null;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// See if it is specified as a default
+			String prop = System.getProperty(TERMINAL_PROPERTY);
+			if (prop != null)
+				try
+				{
+					// Get class
+					Class<?> cl = Class.forName(prop);
+				
+					// Create instance
+					TerminalProvider tp = (TerminalProvider)cl.newInstance();
+				
+					// Get it
+					rv = tp.terminal();
+				}
+			
+				// Ignore
+				catch (ClassCastException|IllegalAccessException|
+					ClassNotFoundException|InstantiationException e)
+				{
+				}
+			
+			// Look through all services
+			if (rv == null)
+			{
+				// Fill provider list
+				List<TerminalProvider> provs = new ArrayList<>();
+				for (TerminalProvider pv : ServiceLoader.<TerminalProvider>
+					load(TerminalProvider.class))
+					if (pv.priority() >= 0)
+						provs.add(pv);
+				
+				// Go through when none has been selected
+				while (rv == null && !provs.isEmpty())
+				{
+					int best = Integer.MIN_VALUE, bestdx = -1;
+					
+					// Find the highest providing terminal provider
+					int n = provs.size();
+					for (int i = 0; i < n; i++)
+					{
+						TerminalProvider at = provs.get(i);
+						
+						// Is this better?
+						int p = at.priority();
+						if (p > best)
+						{
+							best = p;
+							bestdx = i;
+						}
+					}
+					
+					// Found one?
+					if (bestdx > 0)
+						rv = provs.remove(bestdx).terminal();
+				}
+			}
+			
+			// Cache
+			DefaultTerminal._DEFAULT = new WeakReference<>(rv);
+		}
+		
+		// Return it
+		return rv;
 	}
 }
 
