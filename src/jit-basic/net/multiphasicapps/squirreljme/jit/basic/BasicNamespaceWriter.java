@@ -10,76 +10,85 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
-import net.multiphasicapps.squirreljme.jit.JITOutput;
-import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
+import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 
 /**
- * This is the output that is used to write to the JIT.
+ * This is the namespace writer which is used ot write.
  *
- * @since 2016/09/10
+ * @since 2016/09/11
  */
-public class BasicOutput
-	implements JITOutput
+public class BasicNamespaceWriter
+	implements JITNamespaceWriter
 {
-	/** The JIT configuration. */
+	/** The configuration. */
 	protected final JITConfig config;
 	
-	/** The code writer factory. */
-	protected final NativeCodeWriterFactory codewriter;
+	/** The namespace name. */
+	protected final String name;
 	
 	/**
-	 * Initializes the basic output.
+	 * Initializes the namespace writer.
 	 *
 	 * @param __conf The configuration used.
+	 * @param __name The name of the namespace.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/10
+	 * @since 2016/09/11
 	 */
-	public BasicOutput(JITConfig __conf)
+	public BasicNamespaceWriter(JITConfig __conf, String __name)
+		throws NullPointerException
 	{
-		// Check
 		if (__conf == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.config = __conf;
-		
-		// {@squirreljme.error BV01 No native code factory was set in the
-		// configuration. (The configuration)}
-		NativeCodeWriterFactory codewriter = __conf.<NativeCodeWriterFactory>
-			getAsClass(BasicOutputFactory.NATIVE_CODE_PROPERTY,
-			NativeCodeWriterFactory.class);
-		if (codewriter == null)
-			throw new JITException(String.format("BV01 %s", __conf));
-		this.codewriter = codewriter;
+		this.name = __name;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/09/10
+	 * @since 2016/09/11
 	 */
 	@Override
-	public JITNamespaceWriter beginNamespace(String __ns)
+	public JITClassWriter beginClass(ClassNameSymbol __cn)
 		throws JITException, NullPointerException
 	{
 		// Check
-		if (__ns == null)
+		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		// Create
-		return new BasicNamespaceWriter(this.config, __ns);
+		throw new Error("TODO");
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/09/10
+	 * @since 2016/09/11
 	 */
 	@Override
-	public JITConfig config()
+	public JITResourceWriter beginResource(String __name)
+		throws JITException, NullPointerException
 	{
-		return this.config;
+		// Check
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/11
+	 */
+	@Override
+	public void close()
+		throws JITException
+	{
+		throw new Error("TODO");
 	}
 }
 
