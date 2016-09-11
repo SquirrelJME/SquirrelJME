@@ -136,26 +136,25 @@ public class JITNamespaceProcessor
 		{
 			// Go through directory entries
 			byte[] buf = null;
-			for (JITNamespaceBrowser.Entry ent : dir)
-			{
-				// Determine if this is a class to recompile or not
-				String name = ent.name();
-				boolean isclass = name.endsWith(".class");
-				
-				// Open the input regardless
-				try (InputStream is = ent.open())
+			JITNamespaceBrowser.Entry ent;
+			while (null != (ent = dir.nextEntry()))
+				try (InputStream is = ent)
 				{
+					// Determine if this is a class to recompile or not
+					String name = ent.name();
+					boolean isclass = name.endsWith(".class");
+				
 					// Recompiling class file with JIT?
 					if (isclass)
 					{
 						// Progress
 						if (progress != null)
 							progress.progressClass(name);
-						
+					
 						// Handle it
 						__doClass(output, nsw, is);
 					}
-				
+			
 					// Copying resource data
 					else
 					{
@@ -163,7 +162,6 @@ public class JITNamespaceProcessor
 						__doResource(buf, nsw, name, is);
 					}
 				}
-			}
 		}
 		
 		// Add to processed list

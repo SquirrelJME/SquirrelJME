@@ -114,19 +114,26 @@ public class DynamicHistoryInputStream
 		
 		// Read them from the input
 		byte[] qq = new byte[diff];
-		int rc = this.input.read(qq);
+		int total = 0;
+		while (total < diff)
+		{
+			// Read in bytes
+			int rc = this.input.read(qq);
 		
-		// If no bytes or EOF was read, then just return the current
-		// buffer size
-		if (rc <= 0)
-			return cursize;
+			// If EOF was read, stop
+			if (rc < 0)
+				break;
 		
-		// Add them to the end of the buffer
-		buffer.addLast(qq, 0, rc);
+			// Add them to the end of the buffer
+			buffer.addLast(qq, 0, rc);
 		
-		// The number of available bytes is the current and the read
-		// count
-		return cursize + rc;
+			// The number of available bytes is the current and the read
+			// count
+			total += rc;
+		}
+		
+		// Read total
+		return cursize + total;
 	}
 	
 	/**

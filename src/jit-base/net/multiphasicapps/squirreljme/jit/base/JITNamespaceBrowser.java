@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -53,16 +54,28 @@ public interface JITNamespaceBrowser
 	 * @since 2016/07/07
 	 */
 	public static interface Directory
-		extends Closeable, Iterable<JITNamespaceBrowser.Entry>
+		extends Closeable
 	{
+		/**
+		 * Returns the next entry in the directory.
+		 *
+		 * @return The next entry or {@code null} if there are no entries.
+		 * remaining.
+		 * @throws IOException On read errors.
+		 * @throws JITException If it could no be obtained.
+		 * @since 2016/09/11
+		 */
+		public abstract Entry nextEntry()
+			throws IOException, JITException;
 	}
 	
 	/**
-	 * This represents a single entry within a directory.
+	 * This represents a single entry within a directory along with its data.
 	 *
 	 * @since 2016/07/07
 	 */
-	public static interface Entry
+	public static abstract class Entry
+		extends InputStream
 	{
 		/**
 		 * Returns the name of the entry.
@@ -73,18 +86,6 @@ public interface JITNamespaceBrowser
 		 */
 		public abstract String name()
 			throws JITException;
-		
-		/**
-		 * Opens an input stream containing the entry data.
-		 *
-		 * It is not required for entries to be opened multiple times.
-		 *
-		 * @return An input stream to the entry data.
-		 * @throws IOException If the stream could not be opened.
-		 * @since 2016/07/07
-		 */
-		public abstract InputStream open()
-			throws IOException;
 	}
 }
 

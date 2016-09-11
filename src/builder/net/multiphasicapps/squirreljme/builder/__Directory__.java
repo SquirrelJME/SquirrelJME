@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.base.JITNamespaceBrowser;
+import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**
@@ -32,29 +33,27 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 class __Directory__
 	implements JITNamespaceBrowser.Directory
 {
-	/** The ZIP to eventually open. */
-	protected final Path path;
-	
-	/** Readers which have been opened. */
-	private final List<__Iterator__> _entries =
-		new ArrayList<>();
+	/** The opened ZIP stream. */
+	private final ZipStreamReader _zip;
 	
 	/**
 	 * Opens the directory.
 	 *
 	 * @param __p The binary path.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/11
 	 */
 	__Directory__(Path __p)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		// Check
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.path = __p;
+		// Open
+		this._zip = new ZipStreamReader(Channels.newInputStream(FileChannel.
+			open(__p, StandardOpenOption.READ)));
 	}
 	
 	/**
@@ -65,7 +64,8 @@ class __Directory__
 	public void close()
 		throws IOException
 	{
-		throw new Error("TODO");
+		// Close it
+		this._zip.close();
 	}
 	
 	/**
@@ -73,24 +73,16 @@ class __Directory__
 	 * @since 2016/09/11
 	 */
 	@Override
-	public Iterator<JITNamespaceBrowser.Entry> iterator()
+	public JITNamespaceBrowser.Entry nextEntry()
+		throws IOException
 	{
-		// Could fail
-		try
-		{
-			// Create and add to the opened list
-			__Iterator__ rv = new __Iterator__();
-			this._entries.add(rv);
-			
-			// Return it
-			return rv;
-		}
+		// If there is a new entry, wrap it
+		ZipStreamEntry e = this._zip.nextEntry();
+		if (e != null)
+			return new __Entry__(e);
 		
-		// {@squirreljme.error DW06 Failed to open the project as a ZIP.}
-		catch (IOException e)
-		{
-			throw new JITException("DW06", e);
-		}
+		// No more left
+		return null;
 	}
 	
 	/**
@@ -98,9 +90,72 @@ class __Directory__
 	 *
 	 * @since 2016/09/11
 	 */
-	final class __Entry__
-		implements JITNamespaceBrowser.Entry
+	private final class __Entry__
+		extends JITNamespaceBrowser.Entry
 	{
+		/** The wrapped entry. */
+		private final ZipStreamEntry _entry;
+		
+		/**
+		 * Initializes the entry.
+		 *
+		 * @param __e The entry to obtain.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2016/09/11
+		 */
+		private __Entry__(ZipStreamEntry __e)
+			throws NullPointerException
+		{
+			// Check
+			if (__e == null)
+				throw new NullPointerException("NARG");
+			
+			// Set
+			this._entry = __e;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/11
+		 */
+		@Override
+		public int available()
+			throws IOException
+		{
+			return this._entry.available();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/11
+		 */
+		@Override
+		public void close()
+			throws IOException
+		{
+			this._entry.close();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/11
+		 */
+		@Override
+		public void mark(int __rl)
+		{
+			this._entry.mark(__rl);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2016/09/11
+		 */
+		@Override
+		public boolean markSupported()
+		{
+			return this._entry.markSupported();
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2016/09/11
@@ -109,7 +164,7 @@ class __Directory__
 		public String name()
 			throws JITException
 		{
-			throw new Error("TODO");
+			return this._entry.name();
 		}
 		
 		/**
@@ -117,35 +172,21 @@ class __Directory__
 		 * @since 2016/09/11
 		 */
 		@Override
-		public InputStream open()
+		public int read()
 			throws IOException
 		{
-			throw new Error("TODO");
+			return this._entry.read();
 		}
-	}
-	
-	/**
-	 * Iterates through ZIP entries.
-	 *
-	 * @since 2016/09/11
-	 */
-	final class __Iterator__
-		implements Iterator<JITNamespaceBrowser.Entry>
-	{
-		/** The streamed ZIP. */
-		protected final ZipStreamReader zip;
 		
 		/**
-		 * Initializes the iterator.
-		 *
+		 * {@inheritDoc}
 		 * @since 2016/09/11
 		 */
-		private __Iterator__()
+		@Override
+		public int read(byte[] __b)
 			throws IOException
 		{
-			// Open
-			zip = new ZipStreamReader(Channels.newInputStream(FileChannel.open(
-				__Directory__.this.path, StandardOpenOption.READ)));
+			return this._entry.read(__b);
 		}
 		
 		/**
@@ -153,9 +194,10 @@ class __Directory__
 		 * @since 2016/09/11
 		 */
 		@Override
-		public boolean hasNext()
+		public int read(byte[] __b, int __o, int __l)
+			throws IOException
 		{
-			throw new Error("TODO");
+			return this._entry.read(__b, __o, __l);
 		}
 		
 		/**
@@ -163,9 +205,10 @@ class __Directory__
 		 * @since 2016/09/11
 		 */
 		@Override
-		public __Entry__ next()
+		public void reset()
+			throws IOException
 		{
-			throw new Error("TODO");
+			this._entry.reset();
 		}
 		
 		/**
@@ -173,9 +216,10 @@ class __Directory__
 		 * @since 2016/09/11
 		 */
 		@Override
-		public void remove()
+		public long skip(long __n)
+			throws IOException
 		{
-			throw new Error("TODO");
+			return this._entry.skip(__n);
 		}
 	}
 }
