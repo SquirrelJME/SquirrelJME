@@ -19,9 +19,6 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
  */
 abstract class __BaseWriter__
 {
-	/** The output stream. */
-	protected final ExtendedDataOutputStream output;
-	
 	/** The positioned data. */
 	private final __Positioned__ _positioned;
 	
@@ -41,8 +38,13 @@ abstract class __BaseWriter__
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.output = __nsw._output;
 		this._positioned = __pos;
+		
+		// Get the base output to write to, this is wrapped so sizes are known,
+		// prevents closing the external output, and makes thing a bit more
+		// sane
+		ExtendedDataOutputStream dos = __nsw._output;
+		throw new Error("TODO");
 	}
 }
 

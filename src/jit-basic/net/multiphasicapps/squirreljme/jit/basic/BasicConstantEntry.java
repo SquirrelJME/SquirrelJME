@@ -16,15 +16,53 @@ package net.multiphasicapps.squirreljme.jit.basic;
  * @param <T> The entry type used.
  * @since 2016/09/11
  */
-public class BasicConstantEntry<T>
+public final class BasicConstantEntry<T>
 {
+	/** The entry index. */
+	protected final int index;
+	
+	/** The value of this entry. */
+	protected final T value;
+	
 	/**
 	 * Initializes the constant entry.
 	 *
+	 * @param __v The value of the entry.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/11
 	 */
-	BasicConstantEntry()
+	BasicConstantEntry(int __dx, T __v)
+		throws NullPointerException
 	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.index = __dx;
+		this.value = __v;
+	}
+	
+	/**
+	 * Obtains the value.
+	 *
+	 * @return The value of the entry.
+	 * @since 2016/09/11
+	 */
+	public final T get()
+	{
+		return this.value;
+	}
+	
+	/**
+	 * Returns the index the entry is located at.
+	 *
+	 * @return The constant entry index.
+	 * @since 2016/09/11
+	 */
+	public final int index()
+	{
+		return this.index;
 	}
 }
 

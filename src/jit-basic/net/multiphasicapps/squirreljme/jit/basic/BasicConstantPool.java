@@ -21,6 +21,10 @@ import java.util.Map;
  */
 public class BasicConstantPool
 {
+	/** Stores objects that are stored in the pool. */
+	private final Map<Object, BasicConstantEntry<Object>> _objects =
+		new LinkedHashMap<>();
+	
 	/**
 	 * Initializes the basic pool.
 	 *
@@ -41,11 +45,38 @@ public class BasicConstantPool
 	public BasicConstantEntry<String> addString(String __s)
 		throws NullPointerException
 	{
+		return this.<String>__store(__s);
+	}
+	
+	/**
+	 * Internally gets an entry that already exists, otherwise it creates a
+	 * entry to store the value.
+	 *
+	 * @param <T> The type of value to store.
+	 * @param __v The value to store.
+	 * @return The entry for the value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/11
+	 */
+	@SuppressWarnings({"unchecked"})
+	private <T> BasicConstantEntry<T> __store(T __v)
+		throws NullPointerException
+	{
 		// Check
-		if (__s == null)
+		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get entry, it may be already in the pool
+		Map<Object, BasicConstantEntry<Object>> objects = this._objects;
+		BasicConstantEntry<Object> rv = objects.get(__v);
+		
+		// Does not exist
+		if (rv == null)
+			objects.put(__v,
+				(rv = new BasicConstantEntry<Object>(objects.size(), __v)));
+		
+		// Return it
+		return (BasicConstantEntry<T>)rv;
 	}
 }
 
