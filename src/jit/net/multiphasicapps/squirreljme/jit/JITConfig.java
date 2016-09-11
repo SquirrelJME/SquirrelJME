@@ -50,10 +50,6 @@ public final class JITConfig
 	private final Map<String, Reference<Object>> _keyasclass =
 		new HashMap<>();
 	
-	/** The output factory. */
-	@Deprecated
-	private volatile Reference<JITOutputFactory> _factory;
-	
 	/** The string representation. */
 	private volatile Reference<String> _string;
 	
@@ -118,11 +114,45 @@ public final class JITConfig
 		if (__k == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error ED08 The specified property has not been set,
+		// therefor it cannot be used to obtain a class. (The key)}
+		String prop = getProperty(__k);
+		if (prop == null)
+			throw new JITException(String.format("ED08 %s", __k));
+		
 		// Lock
 		Map<String, Reference<Object>> keyasclass = this._keyasclass;
 		synchronized (keyasclass)
 		{
-			throw new Error("TODO");
+			// Get
+			Reference<Object> ref = keyasclass.get(__k);
+			Object rv;
+			
+			// Cache?
+			if (ref == null || null == (rv = ref.get()) ||
+				!__cl.isInstance(rv))
+				try
+				{
+					// Create instance
+					Class<?> cl = Class.forName(prop);
+					rv = cl.newInstance();
+				
+					// Store
+					keyasclass.put(__k, new WeakReference<>(rv));
+				}
+			
+				// {@squirreljme.error ED06 Could not initialize an instance
+				// of the given class. (The requested key; The key value;
+				// The requested class)}
+				catch (ClassNotFoundException|InstantiationException|
+					IllegalAccessException e)
+				{
+					throw new JITException(String.format("ED06 %s %s %s", __k,
+						prop, __cl.getName()), e);
+				}
+			
+			// Cast return
+			return __cl.cast(rv);
 		}
 	}
 	
@@ -157,38 +187,9 @@ public final class JITConfig
 	public final JITOutputFactory outputFactory()
 		throws JITException
 	{
-		// Get
-		Reference<JITOutputFactory> ref = this._factory;
-		JITOutputFactory rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-			try
-			{
-				// {@squirreljme.error ED05 The JIT output factory has not been
-				// set within the configuration. (The configuration)}
-				String prop = getProperty(FACTORY_PROPERTY);
-				if (prop == null)
-					throw new JITException(String.format("ED05 %s", this));
-				
-				// Create instance
-				Class<?> cl = Class.forName(prop);
-				rv = (JITOutputFactory)cl.newInstance();
-				
-				// Store
-				this._factory = new WeakReference<>(rv);
-			}
-			
-			// {@squirreljme.error ED06 Could not initialize the output factory
-			// used for JIT compilation. (This configuration)}
-			catch (ClassNotFoundException|InstantiationException|
-				IllegalAccessException e)
-			{
-				throw new JITException(String.format("ED06 %s", this), e);
-			}
-		
-		// Return it
-		return rv;
+		// Forward
+		return this.<JITOutputFactory>getAsClass(FACTORY_PROPERTY,
+			JITOutputFactory.class);
 	}
 	
 	/**
