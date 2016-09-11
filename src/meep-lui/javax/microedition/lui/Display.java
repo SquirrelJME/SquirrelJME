@@ -556,7 +556,7 @@ public class Display
 	public void setChars(char[] __c, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
-		setChars(__c, __o, __l);
+		setChars(__c, __o, __l, false, false);
 	}
 	
 	/**
@@ -593,7 +593,7 @@ public class Display
 	public void setChars(int __ln, char[] __c, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException
 	{
-		setChars(__ln, __c, __o, __l);
+		setChars(__ln, __c, __o, __l, false, false);
 	}
 	
 	/**
@@ -719,7 +719,7 @@ public class Display
 	 */
 	public void setText(String __t)
 	{
-		setText(__t);
+		setText(__t, false, false);
 	}
 	
 	/**
@@ -747,7 +747,7 @@ public class Display
 	public void setText(int __ln, String __t)
 		throws ArrayIndexOutOfBoundsException
 	{
-		setText(__ln, __t);
+		setText(__ln, __t, false, false);
 	}
 	
 	/**

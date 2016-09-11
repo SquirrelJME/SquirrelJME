@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirrelquarrel.ui;
 
+import net.multiphasicapps.squirrelquarrel.MainThread;
+
 /**
  * This is the base implementation of the game user interface.
  *
@@ -17,5 +19,12 @@ package net.multiphasicapps.squirrelquarrel.ui;
  */
 public abstract class GameUI
 {
+	/**
+	 * Renders the game.
+	 *
+	 * @param __mt The main game thread.
+	 * @since 2016/09/11
+	 */
+	public abstract void render(MainThread __mt);
 }
 

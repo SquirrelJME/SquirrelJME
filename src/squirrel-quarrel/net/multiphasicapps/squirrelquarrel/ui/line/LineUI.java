@@ -12,6 +12,7 @@ package net.multiphasicapps.squirrelquarrel.ui.line;
 
 import java.util.Iterator;
 import javax.microedition.lui.Display;
+import net.multiphasicapps.squirrelquarrel.MainThread;
 import net.multiphasicapps.squirrelquarrel.ui.GameUI;
 
 /**
@@ -60,6 +61,24 @@ __outer:
 		
 		// Set
 		this.display = use;
+	}
+	
+	/**
+	 * Renders the game.
+	 *
+	 * @param __mt The main game loop.
+	 * @since 2016/09/11
+	 */
+	public void render(MainThread __mt)
+		throws NullPointerException
+	{
+		// Check
+		if (__mt == null)
+			throw new NullPointerException("NARG");
+		
+		// Just set some text
+		Display display = this.display;
+		display.setText(0, "Squirrel Quarrel");
 	}
 }
 

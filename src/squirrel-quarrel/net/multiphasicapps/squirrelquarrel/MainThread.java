@@ -64,6 +64,7 @@ public class MainThread
 	public void run()
 	{
 		// Infinite loop
+		GameUI ui = this.ui;
 		for (int loop = 0;; loop++)
 		{
 			// Get the enter time and the run speed
@@ -71,15 +72,12 @@ public class MainThread
 			long fdur = currentSpeed().nanosPerFrame();
 			
 			// Run the game logic
-			System.err.printf("DEBUG -- Logic %d%n", loop);
 			
 			// Is there enough time to render the game?
 			long logend = System.nanoTime();
 			long logdur = logend - enter;
 			if (logdur < fdur)
-			{
-				System.err.printf("DEBUG -- Render %d%n", loop);
-			}
+				ui.render(this);
 			
 			// Sleep for the remaining amount of time, if possible
 			try
