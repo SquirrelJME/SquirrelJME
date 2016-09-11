@@ -39,3 +39,9 @@ classes be different than that of resources.
 Extended data output stream can use align, since previously I have used it
 much in the generic writer.
 
+## 18:00
+
+When the launcher/JVM is created it can specify the terminal and LUI interface
+to use for sub-processes. This way they use the same class which just forwards
+calls to an implementation that can handle switching between applications.
+
