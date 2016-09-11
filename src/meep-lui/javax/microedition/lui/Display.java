@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayDriver;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayProvider;
+import net.multiphasicapps.squirreljme.meep.lui.DisplayScreen;
 import net.multiphasicapps.util.empty.EmptyIterator;
 
 /**
@@ -183,6 +184,13 @@ public class Display
 		
 		// Set
 		this._driver = __drv;
+		
+		// {@squirreljme.error DA06 The display driver did not provide a
+		// screen for displaying test.}
+		DisplayScreen screen = __drv.screen();
+		this.screen = screen;
+		if (screen == null)
+			throw new IllegalStateException("DA06");
 	}
 	
 	/**

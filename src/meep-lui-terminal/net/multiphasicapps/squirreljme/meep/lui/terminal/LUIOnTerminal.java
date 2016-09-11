@@ -11,7 +11,9 @@
 package net.multiphasicapps.squirreljme.meep.lui.terminal;
 
 import net.multiphasicapps.squirreljme.meep.lui.DisplayDriver;
+import net.multiphasicapps.squirreljme.meep.lui.DisplayScreen;
 import net.multiphasicapps.squirreljme.terminal.Terminal;
+import net.multiphasicapps.squirreljme.terminal.TerminalScreen;
 
 /**
  * This implements the LUI display on top of an existing terminal.
@@ -23,6 +25,9 @@ public class LUIOnTerminal
 {
 	/** The terminal to use. */
 	protected final Terminal terminal;
+	
+	/** The screen display to use. */
+	protected final DisplayScreen screen;
 	
 	/**
 	 * Initializes the line based user interface on a given terminal.
@@ -40,6 +45,10 @@ public class LUIOnTerminal
 		
 		// Set
 		this.terminal = __t;
+		
+		// Setup initial screen to match the terminal size
+		TerminalScreen term = __t.screen();
+		this.screen = new DisplayScreen(__t.columns, __t.rows);
 	}
 	
 	/**
@@ -51,6 +60,16 @@ public class LUIOnTerminal
 	{
 		// There is always only a single hardware where input is grabbed from
 		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/11
+	 */
+	@Override
+	public DisplayScreen screen()
+	{
+		return this.screen;
 	}
 	
 	/**

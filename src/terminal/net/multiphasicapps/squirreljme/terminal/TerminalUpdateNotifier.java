@@ -11,22 +11,17 @@
 package net.multiphasicapps.squirreljme.terminal;
 
 /**
- * This is the terminal interface which is implemented given by
- * {@link TerminalProvider}s to allow native terminal access.
+ * This interface is called when the screen has been .
  *
  * @since 2016/09/11
  */
-public interface Terminal
+public interface TerminalUpdateNotifier
 {
 	/**
-	 * Returns the current terminal screen that is used by the terminal.
+	 * This is called when the screen has been updated.
 	 *
-	 * If the terminal driver supports resizing the terminal then it will
-	 * return a new screen if the display is resized.
-	 *
-	 * @return The terminal screen.
 	 * @since 2016/09/11
 	 */
-	public abstract TerminalScreen screen();
+	public abstract void screenUpdated();
 }
 

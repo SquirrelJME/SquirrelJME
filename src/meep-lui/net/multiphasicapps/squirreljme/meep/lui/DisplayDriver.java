@@ -36,6 +36,16 @@ public abstract class DisplayDriver
 	public abstract boolean isHardwareAssigned();
 	
 	/**
+	 * Returns the display screen that the display uses. The LUI interface does
+	 * not support resizing so this very much should return the same value
+	 * always.
+	 *
+	 * @return The display screen to use.
+	 * @since 2016/09/11
+	 */
+	public abstract DisplayScreen screen();
+	
+	/**
 	 * Sets whether the display should be assigned to the hardware or
 	 * unassigned from it. A display which is assigned to the hardware gets
 	 * user input and has display focus.

@@ -51,3 +51,9 @@ One thing I can do is have an interface similar to `TerminalScreen` for the
 LUI code except have it for characters and such. It would be best if it became
 a managed set of character buffers.
 
+## 19:03
+
+Basically it can hide the characters internally and instead provide reading
+from it as a `CharSequence`. Then `toString()` can be cached so that if any
+text does not change at all, it does not waste memory.
+

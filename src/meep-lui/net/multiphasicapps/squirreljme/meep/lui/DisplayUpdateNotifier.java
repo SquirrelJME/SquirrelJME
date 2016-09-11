@@ -8,25 +8,21 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.terminal;
+package net.multiphasicapps.squirreljme.meep.lui;
 
 /**
- * This is the terminal interface which is implemented given by
- * {@link TerminalProvider}s to allow native terminal access.
+ * When the text in the display has been changed, this is called to notify
+ * the driver manually that the screen has been updated.
  *
  * @since 2016/09/11
  */
-public interface Terminal
+public interface DisplayUpdateNotifier
 {
 	/**
-	 * Returns the current terminal screen that is used by the terminal.
+	 * This is called when the screen has been updated.
 	 *
-	 * If the terminal driver supports resizing the terminal then it will
-	 * return a new screen if the display is resized.
-	 *
-	 * @return The terminal screen.
 	 * @since 2016/09/11
 	 */
-	public abstract TerminalScreen screen();
+	public abstract void screenUpdated();
 }
 
