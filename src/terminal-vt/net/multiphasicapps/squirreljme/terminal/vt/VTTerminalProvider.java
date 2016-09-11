@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.terminal.vt;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.squirreljme.terminal.Terminal;
 import net.multiphasicapps.squirreljme.terminal.TerminalProvider;
 
@@ -24,6 +26,9 @@ import net.multiphasicapps.squirreljme.terminal.TerminalProvider;
 public class VTTerminalProvider
 	implements TerminalProvider
 {
+	/** Terminal terminal instance. */
+	private volatile Reference<Terminal> _terminal;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/11
@@ -31,7 +36,17 @@ public class VTTerminalProvider
 	@Override
 	public Terminal terminal()
 	{
-		throw new Error("TODO");
+		// Get
+		Reference<Terminal> ref = this._terminal;
+		Terminal rv;
+		
+		// Cache?
+		if (ref == null || null == (rv = ref.get()))
+			this._terminal = new WeakReference<>(
+				(rv = new VTTerminal(System.out)));
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
