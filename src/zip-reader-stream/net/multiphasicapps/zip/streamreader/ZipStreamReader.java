@@ -65,6 +65,9 @@ public class ZipStreamReader
 	/** End of file reached? */
 	private volatile boolean _eof;
 	
+	/** Deferred exceptions, set after an entry read fails. */
+	private volatile ZipException _defer;
+	
 	/**
 	 * Initializes the reader for input ZIP file data.
 	 *
@@ -105,6 +108,20 @@ public class ZipStreamReader
 			this.input.close();
 			this.data.close();
 		}
+	}
+	
+	/**
+	 * If an entry is detected and it could not be read, then this exception
+	 * may be set to detect such events.
+	 *
+	 * @return The deferred exception or {@code null} if there is none.
+	 * @since 2016/09/11
+	 */
+	public ZipException deferred()
+	{
+		ZipException rv = this._defer;
+		this._defer = null;
+		return rv;
 	}
 	
 	/**
@@ -168,10 +185,19 @@ public class ZipStreamReader
 					return null;
 				}
 				
+				// Deferred exception?
+				ZipException defer = null;
+				
 				// Check the version needed for extracting
 				int xver = __readUnsignedShort(localheader, 4);
 				boolean deny = false;
 				deny |= (xver < 0 || xver > _MAX_EXTRACT_VERSION);
+				
+				// {@squirreljme.error BG07 Zip version not suppored. (The
+				// version)}
+				if (defer == null && deny)
+					defer = new ZipException(String.format("BG07 %d",
+						xver));
 				
 				// Read bit flags
 				int gpfs = __readUnsignedShort(localheader, 6);
@@ -181,10 +207,19 @@ public class ZipStreamReader
 				// Cannot read encrypted entries
 				deny |= (0 != (gpfs & 1));
 				
+				// {@squirreljme.error BG08 Encrypted entries not supported.}
+				if (defer == null && deny)
+					defer = new ZipException("BG08");
+				
 				// Read the compression method
 				ZipCompressionType cmeth = ZipCompressionType.forMethod(
 					__readUnsignedShort(localheader, 8));
 				deny |= (cmeth == null);
+				
+				// {@squirreljme.error BG09 Compression method not supported.
+				// (The method)}
+				if (defer == null && deny)
+					defer = new ZipException(String.format("BG09 %d", cmeth));
 				
 				// Read CRC32
 				int crc = __readInt(localheader, 14);
@@ -199,6 +234,12 @@ public class ZipStreamReader
 				if (!undefinedsize)
 					deny |= (usz < 0);
 				
+				// {@squirreljme.error BG0a Entry exceeds 2GiB in size.
+				// (The compressed size; The uncompressed size)}
+				if (defer == null && deny)
+					defer = new ZipException(String.format("BG0a %d %d", csz,
+						usz));
+				
 				// File name length
 				int fnl = __readUnsignedShort(localheader, 26);
 				
@@ -210,6 +251,10 @@ public class ZipStreamReader
 				// be a constant in an executable.
 				if (deny)
 				{
+					// Defer the issue, if set
+					if (defer != null)
+						this._defer = defer;
+					
 					// Skip 4 bytes because the header was already read
 					this.input.read(localheader, 0, 4);
 					continue;

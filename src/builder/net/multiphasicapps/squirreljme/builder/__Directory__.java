@@ -81,6 +81,11 @@ class __Directory__
 		if (e != null)
 			return new __Entry__(e);
 		
+		// Deferred?
+		IOException x = this._zip.deferred();
+		if (x != null)
+			throw x;
+		
 		// No more left
 		return null;
 	}
