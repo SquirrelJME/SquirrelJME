@@ -22,6 +22,9 @@ then
 	exit 1
 fi
 
+# The project directory
+__pdir="$__exedir/../src"
+
 # Generate documentation for all projects
 for __dir in "$__exedir/../src/"*
 do
@@ -50,16 +53,24 @@ do
 		continue
 	fi
 	
+	# Get dependencies
+	__deps="$("$__exedir/depends.sh" "$__base")"
+	__depscom="$(echo "$__deps" | tr '\n' ':')"
+	__dpath="$("$__exedir/dependspath.sh" "$__base")"
+	
 	# Run JavaDoc
 	javadoc \
 		-locale "en_US" \
 		-encoding "utf-8" \
 		-doclet net.multiphasicapps.doclet.markdown.DocletMain \
 		"-J-Dnet.multiphasicapps.doclet.markdown.outdir=javadoc/$__base" \
+		"-J-Dnet.multiphasicapps.doclet.markdown.projectdir=$__pdir" \
+		"-J-Dnet.multiphasicapps.doclet.markdown.depends=$__depscom" \
 		-private \
 		-source 1.7 \
 		-docletpath "doclet-markdown.jar:." \
-		-classpath "$("$__exedir/dependspath.sh" "$__base")" \
+		-classpath "$__dpath" \
+		-bootclasspath "$__dpath" \
 		-sourcepath "$__dir" \
 		$__sf
 done 
