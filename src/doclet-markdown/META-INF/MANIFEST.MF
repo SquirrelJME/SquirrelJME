@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: doclet-markdown
+X-SquirrelJME-UUID: 8969189b-0210-4eeb-accf-60c3682bf3c7
+X-SquirrelJME-Depends: cldc-compact, sun-doclet-api
+X-SquirrelJME-Error: CF
+LIBlet-Title: Markdown Document Generator
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This implements the Doclet API and generates 
+ a human readable set of Markdown documents which should neatly 
+ contain all of the SquirrelJME API documentation.
+
