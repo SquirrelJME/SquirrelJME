@@ -37,7 +37,7 @@ public class DocletMain
 		
 		// Debug print classes
 		for (ClassDoc cd : __rd.classes())
-			System.err.printf("DEBUG -- Class %d%n", cd);
+			System.err.printf("DEBUG -- Class %s%n", cd);
 		
 		// Processed
 		return true;

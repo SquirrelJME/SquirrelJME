@@ -35,6 +35,13 @@ do
 	__base="$(basename "$__dir")"
 	echo "Running for $__base..." 1>&2
 	
+	# Build binaries for project
+	if ! "$__exedir/../build.sh" build "$__base"
+	then
+		echo "Failed to build project." 1>&2
+		continue
+	fi
+	
 	# No source code will cause it to fail
 	__sf="$(find "$__dir" -type f | grep '\.java$')"
 	if [ -z "$__sf" ]
@@ -44,8 +51,16 @@ do
 	fi
 	
 	# Run JavaDoc
-	javadoc -doclet net.multiphasicapps.doclet.markdown.DocletMain \
-		-docletpath "doclet-markdown.jar:." -subpackages \
+	javadoc \
+		-locale "en_US" \
+		-encoding "utf-8" \
+		-doclet net.multiphasicapps.doclet.markdown.DocletMain \
+		"-J-Dnet.multiphasicapps.doclet.markdown.outdir=javadoc/$__base" \
+		-private \
+		-source 1.7 \
+		-docletpath "doclet-markdown.jar:." \
+		-classpath "$("$__exedir/dependspath.sh" "$__base")" \
+		-sourcepath "$__dir" \
 		$__sf
 done 
 
