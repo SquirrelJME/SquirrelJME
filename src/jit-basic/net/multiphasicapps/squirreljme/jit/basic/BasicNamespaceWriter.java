@@ -31,6 +31,10 @@ import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
 public class BasicNamespaceWriter
 	implements JITNamespaceWriter
 {
+	/** The magic number for the namespace file. */
+	private static final long _MAGIC_NUMBER =
+		0xD3F1F5E9F2F2E5ECL;
+	
 	/** The namespace name. */
 	protected final String name;
 	
@@ -86,6 +90,18 @@ public class BasicNamespaceWriter
 				// Unknown
 			default:
 				throw new RuntimeException("OOPS");
+		}
+		
+		// Write magic number
+		try
+		{
+			output.writeLong(_MAGIC_NUMBER);
+		}
+		
+		// {@squirreljme.error BV09 Failed to write the magic number.}
+		catch (IOException e)
+		{
+			throw new JITException("BV09", e);
 		}
 	}
 	
