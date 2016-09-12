@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.terminal.vt;
 
 import java.io.PrintStream;
 import net.multiphasicapps.squirreljme.terminal.Terminal;
+import net.multiphasicapps.squirreljme.terminal.TerminalScreen;
+import net.multiphasicapps.squirreljme.terminal.TerminalUpdateNotifier;
 
 /**
  * This implements a terminal drawing interface which can draw terminal
@@ -20,19 +22,24 @@ import net.multiphasicapps.squirreljme.terminal.Terminal;
  * @since 2016/09/11
  */
 public class VTTerminal
-	implements Terminal
+	implements Terminal, TerminalUpdateNotifier
 {
 	/** Terminal display output. */
 	protected final PrintStream output;
+	
+	/** The screen to use for displaying characters. */
+	private volatile TerminalScreen _screen;
 	
 	/**
 	 * Initializes the terminal output.
 	 *
 	 * @param __ps The stream to write data to.
+	 * @param __c The initial terminal columns.
+	 * @param __r The initial terminal rows.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/11
 	 */
-	VTTerminal(PrintStream __ps)
+	VTTerminal(PrintStream __ps, int __c, int __r)
 		throws NullPointerException
 	{
 		// Check
@@ -41,6 +48,28 @@ public class VTTerminal
 		
 		// Set
 		this.output = __ps;
+		
+		// Create initial screen
+		this._screen = new TerminalScreen(this, __c, __r);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/11
+	 */
+	@Override
+	public TerminalScreen screen()
+	{
+		return this._screen;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/11
+	 */
+	@Override
+	public void screenUpdated()
+	{
 	}
 }
 

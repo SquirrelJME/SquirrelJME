@@ -118,6 +118,9 @@ public class Display
 	/** The bound display driver. */
 	private final DisplayDriver _driver;
 	
+	/** The screen used to display text. */
+	private final DisplayScreen _screen;
+	
 	/**
 	 * This initializes the array of display providers which are used to give
 	 * displays to the current application.
@@ -188,7 +191,7 @@ public class Display
 		// {@squirreljme.error DA06 The display driver did not provide a
 		// screen for displaying test.}
 		DisplayScreen screen = __drv.screen();
-		this.screen = screen;
+		this._screen = screen;
 		if (screen == null)
 			throw new IllegalStateException("DA06");
 	}

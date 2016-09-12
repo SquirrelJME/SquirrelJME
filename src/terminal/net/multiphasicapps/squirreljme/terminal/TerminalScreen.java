@@ -14,45 +14,50 @@ package net.multiphasicapps.squirreljme.terminal;
  * This represents a single terminal screen which is used to store information
  * about what is displayed on the screen of the terminal.
  *
- * Note the fields here are public as they are intended to be used only by
- * specific implementations of the terminal.
- *
  * @since 2016/09/08
  */
 public final class TerminalScreen
 	implements TerminalAttribute, TerminalColor
 {
 	/** The column count. */
-	public final int columns;
+	protected final int columns;
 	
 	/** The row count. */
-	public final int rows;
+	protected final int rows;
 	
 	/** The number of cells. */
-	public final int cells;
+	protected final int cells;
 	
 	/** The characters in each cell. */
-	public final char[] text;
+	protected final char[] text;
 	
 	/** The cell attributes, the values here are bitfields. */
-	public final short[] attr;
+	protected final short[] attr;
+	
+	/** Notifier for terminal updates. */
+	protected final TerminalUpdateNotifier notifier;
 	
 	/**
 	 * Initializes the terminal screen.
 	 *
+	 * @param __n The notifier to be called when a change is detected on the
+	 * screen contents. This parameter is optional.
 	 * @param __c The number of columns to use.
 	 * @param __r The number of rows to use.
 	 * @throws IndexOutOfBoundsException If the number of columns or rows
 	 * is zero or negative.
 	 * @since 2016/09/08
 	 */
-	public TerminalScreen(int __c, int __r)
+	public TerminalScreen(TerminalUpdateNotifier __n, int __c, int __r)
 		throws IndexOutOfBoundsException
 	{
 		// {@squirreljme.error AD01 A terminal screen with zero or negative
 		// number of columns or rows specified.}
 		if (__c <= 0 || __r <= 0)
 			throw new IndexOutOfBoundsException("AD01");
+		
+		// Set
+		this.notifier = __n;
 		
 		// Set size
 		this.columns = __c;
@@ -65,6 +70,28 @@ public final class TerminalScreen
 		// Setup arrays
 		this.text = new char[cells];
 		this.attr = new short[cells];
+	}
+	
+	/**
+	 * Returns the number of columns used.
+	 *
+	 * @return The column count.
+	 * @since 2016/09/11
+	 */
+	public int columns()
+	{
+		return this.columns;
+	}
+	
+	/**
+	 * Returns the number of rows used.
+	 *
+	 * @return The row count.
+	 * @since 2016/09/11
+	 */
+	public int rows()
+	{
+		return this.rows;
 	}
 }
 

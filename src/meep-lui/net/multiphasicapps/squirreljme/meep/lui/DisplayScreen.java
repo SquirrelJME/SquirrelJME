@@ -18,21 +18,26 @@ package net.multiphasicapps.squirreljme.meep.lui;
 public final class DisplayScreen
 {
 	/** The number of columns to display. */
-	public final int columns;
+	protected final int columns;
 	
 	/** The number of rows to display. */
-	public final int rows;
+	protected final int rows;
+	
+	/** Notifier for display update events. */
+	protected final DisplayUpdateNotifier notifier;
 	
 	/**
 	 * Initializes the display screen.
 	 *
+	 * @param __n The notifier to call when the display detects that characters
+	 * have changed. This parameter is optional.
 	 * @param __c The number of columns to display.
 	 * @param __r The number of rows to display.
 	 * @throws IndexOutOfBoundsException If the number of columns and/or rows
 	 * is zero or negative.
 	 * @since 2016/09/11
 	 */
-	public DisplayScreen(int __c, int __r)
+	public DisplayScreen(DisplayUpdateNotifier __n, int __c, int __r)
 		throws IndexOutOfBoundsException
 	{
 		// {@squirreljme.error DA04 Cannot create a display which uses a
@@ -41,6 +46,7 @@ public final class DisplayScreen
 			throw new IndexOutOfBoundsException("DA04");
 		
 		// Set
+		this.notifier = __n;
 		this.columns = __c;
 		this.rows = __r;
 	}

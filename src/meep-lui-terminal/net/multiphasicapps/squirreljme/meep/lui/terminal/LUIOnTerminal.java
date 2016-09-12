@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.meep.lui.terminal;
 
 import net.multiphasicapps.squirreljme.meep.lui.DisplayDriver;
 import net.multiphasicapps.squirreljme.meep.lui.DisplayScreen;
+import net.multiphasicapps.squirreljme.meep.lui.DisplayUpdateNotifier;
 import net.multiphasicapps.squirreljme.terminal.Terminal;
 import net.multiphasicapps.squirreljme.terminal.TerminalScreen;
 
@@ -22,6 +23,7 @@ import net.multiphasicapps.squirreljme.terminal.TerminalScreen;
  */
 public class LUIOnTerminal
 	extends DisplayDriver
+	implements DisplayUpdateNotifier
 {
 	/** The terminal to use. */
 	protected final Terminal terminal;
@@ -48,7 +50,7 @@ public class LUIOnTerminal
 		
 		// Setup initial screen to match the terminal size
 		TerminalScreen term = __t.screen();
-		this.screen = new DisplayScreen(__t.columns, __t.rows);
+		this.screen = new DisplayScreen(this, term.columns(), term.rows());
 	}
 	
 	/**
@@ -70,6 +72,15 @@ public class LUIOnTerminal
 	public DisplayScreen screen()
 	{
 		return this.screen;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/11
+	 */
+	@Override
+	public void screenUpdated()
+	{
 	}
 	
 	/**

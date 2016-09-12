@@ -26,6 +26,14 @@ import net.multiphasicapps.squirreljme.terminal.TerminalProvider;
 public class VTTerminalProvider
 	implements TerminalProvider
 {
+	/** Default column count. */
+	public static final int DEFAULT_COLUMNS =
+		80;
+	
+	/** Default row count. */
+	public static final int DEFAULT_ROWS =
+		24;
+	
 	/** Terminal terminal instance. */
 	private volatile Reference<Terminal> _terminal;
 	
@@ -43,7 +51,8 @@ public class VTTerminalProvider
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._terminal = new WeakReference<>(
-				(rv = new VTTerminal(System.out)));
+				(rv = new VTTerminal(System.out, DEFAULT_COLUMNS,
+					DEFAULT_ROWS)));
 		
 		// Return it
 		return rv;

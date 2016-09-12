@@ -57,3 +57,7 @@ Basically it can hide the characters internally and instead provide reading
 from it as a `CharSequence`. Then `toString()` can be cached so that if any
 text does not change at all, it does not waste memory.
 
+## 21:00
+
+I was interrupted and now I am back.
+
