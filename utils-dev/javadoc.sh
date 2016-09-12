@@ -7,7 +7,7 @@
 # SquirrelJME is under the GNU General Public License v3, or later.
 # For more information see license.mkd.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Goes through all sources and generates Java documentation.
+# DESCRIPTION: Build and update the JavaDoc.
 
 # Force C locale
 export LC_ALL=C
@@ -15,97 +15,37 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Recursive dependency calculation
-__root="$__exedir/../src"
-__recursive_deps()
-{
-	# Convert manifest data
-	__md="$(tr '\n' '\v' < "$__root/$1/META-INF/MANIFEST.MF" | sed 's/\v //g' |
-		tr '\v' '\n')"
-	
-	# Get dependencies
-	__pd="$(echo "$__md" | grep -i 'x-squirreljme-depends' |
-		sed 's/^[^:]*:[ \t]*//' | sed 's/,/ /g')"
-	
-	# Add them all
-	(for __dep in $__pd
-	do
-		echo "$__root/$__dep"
-		
-		# Recursive run
-		__recursive_deps "$__dep"
-	done) | sort | uniq | while read __line
-	do
-		echo "$__line"
-	done
-}
+# Build the markdown doclet
+if ! "$__exedir/../build.sh" build doclet-markdown
+then
+	echo "Failed to build doclet-markdown." 1>&2
+	exit 1
+fi
 
-# Prints the dependencies nicely
-__dep_print()
-{
-	__recursive_deps "$1" | while read __line
-	do
-		echo -n ":$__line"
-	done
-}
-
-# Go through everything
-for __dir in "$__root/"*
+# Generate documentation for all projects
+for __dir in "$__exedir/../src/"*
 do
-	# Ignore directories
-	if [ ! -d "$__dir" ]
+	# If not a directory and does not contain a manifest, ignore
+	if [ ! -d "$__dir" ] || [ ! -f "$__dir/META-INF/MANIFEST.MF" ]
 	then
 		continue
 	fi
 	
-	# Only allow projects
-	if [ ! -f "$__dir/META-INF/MANIFEST.MF" ]
-	then
-		continue
-	fi
+	# Note
+	__base="$(basename "$__dir")"
+	echo "Running for $__base..." 1>&2
 	
-	# Convert manifest data
-	__md="$(tr '\n' '\v' < "$__dir/META-INF/MANIFEST.MF" | sed 's/\v //g' |
-		tr '\v' '\n')"
-	
-	# Get name of this package and its dependencies
-	__pn="$(echo "$__md" | grep -i 'x-squirreljme-name' |
-		sed 's/^[^:]*:[ \t]*//')"
-	
-	# Header
-	echo "*** $__pn" 1>&2
-	
-	# Build the classpath
-	__cp="$__dir$(__dep_print "$__pn")"
-	
-	# Find all Java source files to document
+	# No source code will cause it to fail
 	__sf="$(find "$__dir" -type f | grep '\.java$')"
+	if [ -z "$__sf" ]
+	then
+		echo "No sources." 1>&2
+		continue
+	fi
 	
-	# Run java-doc on it
-	mkdir -p "javadoc/$__pn"
-	javadoc \
-		-locale "en_US" \
-		-d "javadoc/$__pn" \
-		-private \
-		-source 1.7 \
-		-bootclasspath "$__cp" \
-		-classpath "$__cp" \
-		-sourcepath "$__cp" \
-		-encoding "utf-8" \
-		-author \
-		-version \
-		-windowtitle "SquirrelJME JavaDoc: $__pn" \
-		-doctitle "SquirrelJME JavaDoc: $__pn" \
-		-header "SquirrelJME JavaDoc: $__pn" \
-		-footer "\
-Copyright (C) 2013-2016 Steven Gawroriski (steven@multiphasicapps.net)<br>
-Copyright (C) 2013-2016 Multi-Phasic Applications (multiphasicapps.net)<br>
-SquirrelJME is under the GNU General Public License v3, or later.
-For more information see license.mkd.
-" \
-		-linksource \
-		-sourcetab 4 \
-		-docencoding "utf-8" \
+	# Run JavaDoc
+	javadoc -doclet net.multiphasicapps.doclet.markdown.DocletMain \
+		-docletpath "doclet-markdown.jar:." -subpackages \
 		$__sf
-done
+done 
 
