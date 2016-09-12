@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Name: sun-doclet-api
+X-SquirrelJME-UUID: 3b3439b1-8f52-4ed6-8d70-70aff98bd860
+X-SquirrelJME-Depends: cldc-full
+X-SquirrelJME-Error: CD
+LIBlet-Title: Sun Doclet API
+LIBlet-Vendor: Steven Gawroriski
+LIBlet-Version: 0.0.2
+LIBlet-Description: This contains the definitions for the doclet API 
+ which can be used to output JavaDoc.
+

@@ -34,3 +34,8 @@ and sync it so that it is up to date. I would keep the script that does it in
 the repository so that it is versioned and so if I ever migrate systems and
 such I do not lose the script.
 
+## 15:05
+
+The unversioned files could also have stuff such as videos about SquirrelJME,
+screenshots, and other things. Although that may bloat the repository a bit.
+
