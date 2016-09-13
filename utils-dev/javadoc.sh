@@ -41,8 +41,7 @@ do
 	# Build binaries for project
 	if ! "$__exedir/../build.sh" build "$__base"
 	then
-		echo "Failed to build project." 1>&2
-		continue
+		echo "Failed to build project, ignoring." 1>&2
 	fi
 	
 	# No source code will cause it to fail
