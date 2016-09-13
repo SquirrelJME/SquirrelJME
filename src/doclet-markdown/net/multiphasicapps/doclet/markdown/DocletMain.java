@@ -11,7 +11,10 @@
 package net.multiphasicapps.doclet.markdown;
 
 import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
+import java.util.Map;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This is the main entry point for the markdown code generators.
@@ -46,6 +49,17 @@ public class DocletMain
 	 */
 	public static final String DEPENDS_PROPERTY =
 		"net.multiphasicapps.doclet.markdown.depends";
+	
+	/**
+	 * Returns the langauge version used.
+	 *
+	 * @return The supported version in the doclet.
+	 * @since 2016/09/13
+	 */
+	public static LanguageVersion languageVersion()
+	{
+		return LanguageVersion.JAVA_1_5;
+	}
 	
 	/**
 	 * Starts processing the root document to generate output markdown
