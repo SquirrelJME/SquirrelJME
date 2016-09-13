@@ -1,5 +1,47 @@
 # Squirrel Quarrel Story
 
+# SPOILERS!
+
+This contains many spoilers, so do not read if you do not want to be spoiled.
+
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS!
+ * SPOILERS! -- Your _final_ warning!
+
 # Species
 
 There are three intelligent and conscious species:
@@ -38,4 +80,63 @@ prospered in a utopia.
 That is until their host start entered the giant-phase. Unlike our Sun, this
 one will explode in a few thousand years.
 
+# Time Placement
+
+Squirrel Quarrel starts in the 17th Terminal. Essentially the scientists have
+calculated the exact date that their star will explode destroying the entire
+system.
+
+Seeing that there is no time left, there is no passion left. They neither lack
+the passion to live, to die, to save a life, or to take one.
+
+# Expansion Pack!
+
+At the end of Squirrel Quarrel, they find a way off their doomed planet and
+escape to interstellar space with a renewed passion that they have not felt in
+a thousand terminals. The title of the expansion is titled:
+_Squirrel Quarrel: Zero Freedom_. It takes place during the first year (0) of
+their freedom. However, things are not too great...
+
+## More Species
+
+Two more species are introduced. These species are locked in an intergalactic
+mega-battle. These are not happy species but ones that aim to dominate the
+others for absolute joy. Essentially these are races are the polar opposite
+of the three races of this planet. The planet Soil is located near the rim of
+the battlezone, which means it is rife with activity as both sides claim and
+lose space constantly.
+
+### Gray
+
+Short gray aliens. This species loves experimentation in the most sick ways
+possible. These aliens would dissect you alive and laugh at the pain that you
+suffer from the experience. Since they have advanced healing technology they
+can keep you alive when you should have died long ago. They find pain to
+enjoyable that they gladly share pain with their fellow grays.
+
+Earth (where Humanity lives) is deep within their terrortory, however they
+do not pay any attention to us since we are not a threat. Diverting their
+attention to wipe us out even for an instant can cause them to start losing
+in their never ending war. So as such, this eternal war is one that fares well
+for Humanity.
+
+#### Bio-Shields
+
+To help in their spread of pain for pleasure and to make their military a bit
+more robust, every gray as a bio-shield which creates a shared source of life
+within a limited radius. Take for example if they have two biological units,
+one with 40 HP and another with 40HP. If one unit takes 10HP of damage then all
+the damage will be shared across all units in range of that unit. As such, both
+units recieve only 5HP of damage.
+
+Healing effects from _Squirrelian Healer_ units will also be divided among all
+of the units so that all of them get healed.
+
+In effect this means that enemies really only need to attack a single unit to
+damage all of them.
+
+### Reptilian
+
+Lizard like and very deadly. If it is small cute and fuzzy they will feast on
+it.
 
