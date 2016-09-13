@@ -33,6 +33,9 @@ public class MarkdownClass
 	/** The base class name path, uses directory components. */
 	protected final Path basenamepath;
 	
+	/** The base path for the markdown file. */
+	protected final Path basemarkdownpath;
+	
 	/** The qualified name of this class. */
 	protected final String qualifiedname;
 	
@@ -88,9 +91,13 @@ public class MarkdownClass
 			}
 		
 			// Setup
-			this.basenamepath = Paths.get(bnp.remove(0), bnp.<String>toArray(
-				new String[bnp.size()]));
-			System.err.printf("DEBUG -- %s%n", this.basenamepath);
+			Path p;
+			this.basenamepath = (p = Paths.get(bnp.remove(0),
+				bnp.<String>toArray(new String[bnp.size()])));
+			
+			// Setup name for markdown file location
+			this.basemarkdownpath = p.resolveSibling(p.getFileName() + ".mkd");
+			System.err.printf("DEBUG -- %s%n", this.basemarkdownpath);
 		}
 	}
 }
