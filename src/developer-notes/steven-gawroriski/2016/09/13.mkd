@@ -5,3 +5,8 @@
 I have checked out fossil's trunk and am now investigating the unversioned
 feature. In the mean time I can develop the doclet for JavaDoc.
 
+## 16:47
+
+One thing I will need to keep an eye out for would be inner classes. They
+are visible as `Map.Entry` and not `Map$Entry`.
+

@@ -96,9 +96,78 @@ public class MarkdownClass
 				bnp.<String>toArray(new String[bnp.size()])));
 			
 			// Setup name for markdown file location
-			this.basemarkdownpath = p.resolveSibling(p.getFileName() + ".mkd");
-			System.err.printf("DEBUG -- %s%n", this.basemarkdownpath);
+			this.basemarkdownpath = __lowerPath(
+				p.resolveSibling(p.getFileName() + ".mkd"));
 		}
+	}
+	
+	/**
+	 * Lowercases the entire path set.
+	 *
+	 * @param __p The path to lowercase.
+	 * @return The lowercase form of the path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	static Path __lowerPath(Path __p)
+		throws NullPointerException
+	{
+		// Check
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Add lowercase forms
+		List<String> bnp = new ArrayList<>();
+		for (Path p : __p)
+			bnp.add(__lowerString(p.toString()));
+		
+		// Rebuild
+		return Paths.get(bnp.remove(0),
+			bnp.<String>toArray(new String[bnp.size()]));
+	}
+	
+	/**
+	 * Lowercases the specified string and replaces out of range characters
+	 * with escaped symbols.
+	 *
+	 * @param __s The string to lowercase.
+	 * @return The string lowercased in pure ASCII.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	static String __lowerString(String __s)
+		throws NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Build
+		StringBuilder sb = new StringBuilder();
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Funny character?
+			if (!(c == '.' || c == '_' || (c >= '0' && c <= '9') ||
+				(c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')))
+			{
+				sb.append('_');
+				sb.append(String.format("%04x", c & 0xFFFF));
+			}
+			
+			// Lower?
+			else if (c >= 'A' && c <= 'Z')
+				sb.append((char)('a' + (c - 'A')));
+				
+			// same
+			else
+				sb.append(c);
+		}
+		
+		// Return
+		return sb.toString();
 	}
 }
 
