@@ -22,6 +22,7 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
  * @since 2016/09/12
  */
 public class DocletMain
+	implements Runnable
 {
 	/**
 	 * {@squirreljme.property net.multiphasicapps.doclet.markdown.outdir=(dir)
@@ -49,6 +50,126 @@ public class DocletMain
 	 */
 	public static final String DEPENDS_PROPERTY =
 		"net.multiphasicapps.doclet.markdown.depends";
+	
+	/** The root document. */
+	protected final RootDoc root;
+	
+	/** The class table. */
+	protected final Map<String, MarkdownClass> classes =
+		new SortedTreeMap<>();
+	
+	/**
+	 * Initializes the main doclet.
+	 *
+	 * @param __rd The root document.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	public DocletMain(RootDoc __rd)
+		throws NullPointerException
+	{
+		// Check
+		if (__rd == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.root = __rd;
+	}
+	
+	/** 
+	 * Returns the markdown class for the given class documentation.
+	 *
+	 * @param __cd The class documentation.
+	 * @return The markdown class for it.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	public MarkdownClass markdownClass(ClassDoc __cd)
+		throws NullPointerException
+	{
+		// Check
+		if (__cd == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		return this.markdownClass(__cd.qualifiedName());
+	}
+	
+	/**
+	 * Returns the markdown class for the given class name.
+	 *
+	 * @param __n The qualified class name.
+	 * @return The markdown class for it.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	public MarkdownClass markdownClass(String __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// See if the class is already in the class map
+		Map<String, MarkdownClass> classes = this.classes;
+		MarkdownClass rv = classes.get(__n);
+		if (rv != null)
+			return rv;
+		
+		// {@squirreljme.error CF02 No class using the specified name has been
+		// documented. (The class name)}
+		ClassDoc cd = this.root.classNamed(__n);
+		if (cd == null)
+			throw new RuntimeException(String.format("CF02 %s", __n));
+		
+		// Load documentation for it and return it
+		// it will be placed in the class map when the constructor is called.
+		rv = new MarkdownClass(this, cd);
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/13
+	 */
+	@Override
+	public void run()
+	{
+		// Build class information to be used for later output
+		// Although it is somewhat duplicated, this is used so that everything
+		// matches that of SquirrelJME's expected documentation output. Since
+		// markdown has no ref type links, everything must be sorted in
+		// alphabetical order.
+		// These classes are marked implicit, otherwise the generation pass
+		// will end up outputting documents for unspecified classes.
+		RootDoc root = this.root;
+		for (ClassDoc cd : root.classes())
+			markdownClass(cd)._implicit = true;
+	}
+	
+	/**
+	 * The constructor of {@link MarkdownClass} calls this method so that
+	 * classes may eventually and recursively mention themselves when the
+	 * layout used for documentation is specified.
+	 *
+	 * @param __n The qualified name.
+	 * @parma __mc The markdown class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	void __registerClass(String __n, MarkdownClass __mc)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null || __mc == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error CF01 A class has been duplicated multiple
+		// times.}
+		Map<String, MarkdownClass> classes = this.classes;
+		if (null != classes.put(__n, __mc))
+			throw new RuntimeException("CF01");
+	}
 	
 	/**
 	 * Returns the langauge version used.
@@ -84,9 +205,9 @@ public class DocletMain
 		System.err.printf("DEBUG -- %s%n",
 			System.getProperty(DEPENDS_PROPERTY));
 		
-		// Debug print classes
-		for (ClassDoc cd : __rd.classes())
-			System.err.printf("DEBUG -- Class %s%n", cd);
+		// Use instance since it is much saner
+		DocletMain dm = new DocletMain(__rd);
+		dm.run();
 		
 		// Processed
 		return true;
