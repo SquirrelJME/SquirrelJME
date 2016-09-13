@@ -10,3 +10,8 @@ feature. In the mean time I can develop the doclet for JavaDoc.
 One thing I will need to keep an eye out for would be inner classes. They
 are visible as `Map.Entry` and not `Map$Entry`.
 
+## 18:51
+
+The best thing to do would be to have a markdown output stream of sorts which
+can handle formatting changing along with link references and such.
+
