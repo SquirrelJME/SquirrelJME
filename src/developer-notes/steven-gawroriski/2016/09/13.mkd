@@ -1,0 +1,7 @@
+# 2016/09/13
+
+## 07:57
+
+I have checked out fossil's trunk and am now investigating the unversioned
+feature. In the mean time I can develop the doclet for JavaDoc.
+
