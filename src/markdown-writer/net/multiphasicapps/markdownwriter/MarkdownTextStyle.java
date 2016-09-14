@@ -18,21 +18,46 @@ package net.multiphasicapps.markdownwriter;
 public enum MarkdownTextStyle
 {
 	/** Normal style. */
-	NORMAL,
+	NORMAL(true),
 	
 	/** Strong. */
-	STRONG,
+	STRONG(true),
 	
 	/** Emphasis. */
-	EMPHASIS,
+	EMPHASIS(true),
 	
 	/** Strong Emphasis. */
-	STRONG_EMPHASIS,
+	STRONG_EMPHASIS(true),
 	
 	/** Source code. */
-	CODE,
+	CODE(false),
 	
 	/** End. */
 	;
+	
+	/** Is this a normal text style? */
+	protected final boolean normal;
+	
+	/**
+	 * Initializes the style information.
+	 *
+	 * @param __n Is this style considered for non-code text.
+	 * @since 2016/09/13
+	 */
+	private MarkdownTextStyle(boolean __n)
+	{
+		this.normal = __n;
+	}
+	
+	/**
+	 * Is this style for normal text?
+	 *
+	 * @return {@code true} if the style is for normal text.
+	 * @since 2016/09/13
+	 */
+	public final boolean isNormal()
+	{
+		return this.normal;
+	}
 }
 

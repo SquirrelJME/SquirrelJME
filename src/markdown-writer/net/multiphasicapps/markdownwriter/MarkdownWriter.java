@@ -36,6 +36,10 @@ import java.util.Formatter;
 public class MarkdownWriter
 	implements Appendable, Closeable, Flushable
 {
+	/** Markdown right column limit. */
+	public static final int RIGHT_COLUMN =
+		72;
+	
 	/** Where text may be written to. */
 	protected final Appendable append;
 	
@@ -186,9 +190,14 @@ public class MarkdownWriter
 		now._depth = depth;
 		stack.push(now);
 		
+		// Add new line if on a column, otherwise the header will appear
+		// after text on a line.
+		if (this._column > 0)
+			__put('\n');
+		
 		// Print opening hashes
 		for (int i = 1; i <= depth; i++)
-			__put('#');
+			__put('#', true);
 		
 		// Space hash
 		__put(' ');
@@ -222,14 +231,45 @@ public class MarkdownWriter
 	public void __put(char __c)
 		throws IOException
 	{
+		__put(__c, false);
+	}
+	
+	/**
+	 * Places a single character into the output.
+	 *
+	 * @param __c The character to put.
+	 * @param __nospec If {@code true} then the character is not given
+	 * special handling.
+	 * @throws IOException On write errors.
+	 * @since 2016/09/13
+	 */
+	public void __put(char __c, boolean __nospec)
+		throws IOException
+	{
 		// Write here
 		Appendable append = this.append;
+		int column = this._column;
+		__State__ state = this._stack.peek();
+		MarkdownTextStyle style = state._style;
 		
-		// Add it
-		append.append(__c);
+		// No special handling used
+		if (!__nospec)
+		{
+			// Escape?
+			if ((column <= 0 && __c == '#') || __c == '`' || __c == '\\' ||
+				(style.isNormal() && (__c == '*' || __c == '_' || __c == '(' ||
+				__c == '[')))
+				__put('\\', true);
+			
+			// Add it
+			__put(__c, true);
+		}
+		
+		// Add it directly
+		else
+			append.append(__c);
 		
 		// Modify column
-		int column = this._column;
 		switch (__c)
 		{
 				// Tab, align to 4
