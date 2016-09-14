@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.jit.basic;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.IdentifierSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 
 /**
  * This represents the shared constant pool which all basic namespaces use to
@@ -39,7 +41,7 @@ public class BasicConstantPool
 	 * Adds the name of a class to the constant pool.
 	 *
 	 * @param __cn The name of the class.
-	 * @return THe entry for the given class.
+	 * @return The entry for the given class.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/14
 	 */
@@ -47,11 +49,36 @@ public class BasicConstantPool
 		ClassNameSymbol __cn)
 		throws NullPointerException
 	{
-		// Check
-		if (__cn == null)
-			throw new NullPointerException("NARG");
-		
-		return this.<ClassNameSymbol>__store(__cn, addString(__cn.toString()));
+		return this.<ClassNameSymbol>__storeToString(__cn);
+	}
+	
+	/**
+	 * Adds the specified identifier to the constant pool.
+	 *
+	 * @param __i The identifier to add.
+	 * @return The entry for the given identifier.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	public BasicConstantEntry<IdentifierSymbol> addIdentifier(
+		IdentifierSymbol __i)
+		throws NullPointerException
+	{
+		return this.<IdentifierSymbol>__storeToString(__i);
+	}
+	
+	/**
+	 * Adds the specified method symbol to the constant pool.
+	 *
+	 * @param __m The method symbol to add.
+	 * @return The entry for the given The method symbol.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	public BasicConstantEntry<MethodSymbol> addMethodSymbol(MethodSymbol __m)
+		throws NullPointerException
+	{
+		return this.<MethodSymbol>__storeToString(__m);
 	}
 	
 	/**
@@ -99,6 +126,26 @@ public class BasicConstantPool
 		
 		// Return it
 		return (BasicConstantEntry<T>)rv;
+	}
+	
+	/**
+	 * Adds an entry to the constant pool where the extra argument is just
+	 * a {@code toString()} of the value.
+	 *
+	 * @param <T> The type to add.
+	 * @param __v The value to add.
+	 * @return The entry for this value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	private <T> BasicConstantEntry<T> __storeToString(T __v)
+		throws NullPointerException
+	{
+		// Check
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return this.<T>__store(__v, addString(__v.toString()));
 	}
 }
 

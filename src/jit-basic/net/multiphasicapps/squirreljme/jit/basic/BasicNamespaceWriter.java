@@ -173,6 +173,28 @@ public class BasicNamespaceWriter
 	}
 	
 	/**
+	 * Adds a method to the namespace.
+	 *
+	 * @param __m The method to add.
+	 * @return The index where the method was added.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	int __addMethod(__Method__ __m)
+		throws NullPointerException
+	{
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Add to the end
+		List<__Method__> methods = this._methods;
+		int rv = methods.size();
+		methods.add(__m);
+		return rv;
+	}
+	
+	/**
 	 * Places the specified interfaces into the interface table and returns
 	 * the basic index.
 	 *

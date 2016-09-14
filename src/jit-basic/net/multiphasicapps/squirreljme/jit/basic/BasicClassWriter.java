@@ -137,6 +137,10 @@ public class BasicClassWriter
 		FieldSymbol __t)
 		throws JITException, NullPointerException
 	{
+		// Check
+		if (__f == null || __n == null || __t == null)
+			throw new NullPointerException("NARG");
+		
 		throw new Error("TODO");
 	}
 	
@@ -173,6 +177,22 @@ public class BasicClassWriter
 		IdentifierSymbol __n, MethodSymbol __t)
 		throws JITException, NullPointerException
 	{
+		// Check
+		if (__f == null || __n == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		// Create new method
+		BasicConstantPool pool = this.pool;
+		__Method__ m = new __Method__(__f, pool.addIdentifier(__n),
+			pool.addMethodSymbol(__t));
+		
+		// Store class in the method table
+		int dx = this.namespace.__addMethod(m);
+		__Class__ classindex = this._classindex;
+		if (classindex._methoddx < 0)
+			classindex._methoddx = dx;
+		
+		// Return a new writer
 		throw new Error("TODO");
 	}
 	
