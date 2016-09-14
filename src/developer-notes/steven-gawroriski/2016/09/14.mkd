@@ -32,3 +32,15 @@ classes to determine if they are actual interfaces. Then I would not need to
 check it when I load the class table. Each interface in the interface table
 could also have a run-time class representation binding.
 
+## 12:05
+
+The extended data output streams could use exact versions of writing signed
+and unsigned type values, at least for `byte` and `short`.
+
+## 12:08
+
+I can also have the same tables for method code too, this way code exists in
+a single table. When it comes to exception handling it could also be in the
+code table, so if a piece of code has an exception handler then it could just
+point to a code table index.
+

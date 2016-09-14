@@ -187,13 +187,14 @@ public class BasicClassWriter
 			pool.addMethodSymbol(__t));
 		
 		// Store class in the method table
-		int dx = this.namespace.__addMethod(m);
+		BasicNamespaceWriter namespace = this.namespace;
+		int dx = namespace.__addMethod(m);
 		__Class__ classindex = this._classindex;
 		if (classindex._methoddx < 0)
 			classindex._methoddx = dx;
 		
 		// Return a new writer
-		throw new Error("TODO");
+		return new BasicMethodWriter(namespace, this.output);
 	}
 	
 	/**

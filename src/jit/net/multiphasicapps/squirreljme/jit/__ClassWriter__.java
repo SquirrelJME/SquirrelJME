@@ -208,13 +208,11 @@ class __ClassWriter__
 		if (this._member != null)
 			throw new JITException("ED04");
 		
-		/*
-		this._member = new __MethodWriter__(this.jit, this.namespace, this,
-			writer.());
-	__MethodWriter__(JIT __jit, JITNamespaceWriter __nsw, __ClassWriter__ __cw,
-		JITMethodWriter __jmw)*/
-		
-		throw new Error("TODO");
+		// Create method writer
+		__MethodWriter__ rv = new __MethodWriter__(this.jit, this.namespace,
+			this, writer.method(__f, __name, __type));
+		this._member = rv;
+		return rv;
 	}
 	
 	/**

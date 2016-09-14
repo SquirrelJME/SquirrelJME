@@ -13,6 +13,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITCodeWriter;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
+import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 
 /**
  * This writes methods of a class..
@@ -22,6 +23,32 @@ import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
 public class BasicMethodWriter
 	implements JITMethodWriter
 {
+	/** The owning namespace. */
+	protected final BasicNamespaceWriter namespace;
+	
+	/** Where native machine code is to be placed. */
+	protected final ExtendedDataOutputStream output;
+	
+	/**
+	 * Initializes the method writer.
+	 *
+	 * @parma __ns The writer for namespaces.
+	 * @param __o The class output stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	BasicMethodWriter(BasicNamespaceWriter __ns, ExtendedDataOutputStream __o)
+		throws NullPointerException
+	{
+		// Check
+		if (__ns == null || __o == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.namespace = __ns;
+		this.output = __o;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/13
