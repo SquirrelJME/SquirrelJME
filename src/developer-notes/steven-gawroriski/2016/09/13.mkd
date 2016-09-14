@@ -20,3 +20,10 @@ can handle formatting changing along with link references and such.
 Found another flawed class. `Formatter` does not implement `Flushable`
 despite having a flush.
 
+## 23:42
+
+This `MarkdownWriter` should make output of the Markdown JavaDoc much easier
+since it handles formatting for the most part. I have not touched the JIT at
+all in a few days, I suppose I am taking a short break from it to work on
+other things.
+
