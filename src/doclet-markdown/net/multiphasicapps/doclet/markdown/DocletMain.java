@@ -28,17 +28,6 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
 public class DocletMain
 	implements Runnable
 {
-	/** The output directory where generated documentation files go. */
-	public static final String OUTPUT_DIRECTORY_OPTION =
-		"-d";
-	
-	/**
-	 * This is the directory which contains project directories used to
-	 * determine cross-linking between projects.
-	 */
-	public static final String PROJECTS_DIRECTORY_OPTION =
-		"-squirreljme-projectsdir";
-	
 	/**
 	 * This is a colon separated list of projects which the current project
 	 * being documented depends on. If a reference to a class that does not
@@ -47,6 +36,21 @@ public class DocletMain
 	 */
 	public static final String DEPENDS_OPTION =
 		"-squirreljme-depends";
+	
+	/** The output directory where generated documentation files go. */
+	public static final String OUTPUT_DIRECTORY_OPTION =
+		"-d";
+	
+	/** The current project being JavaDoced. */
+	public static final String PROJECT_OPTION =
+		"-squirreljme-project";
+	
+	/**
+	 * This is the directory which contains project directories used to
+	 * determine cross-linking between projects.
+	 */
+	public static final String PROJECTS_DIRECTORY_OPTION =
+		"-squirreljme-projectsdir";
 	
 	/** The root document. */
 	protected final RootDoc root;
@@ -71,6 +75,31 @@ public class DocletMain
 		
 		// Set
 		this.root = __rd;
+		
+		// Handle options
+		for (String[] option : __rd.options())
+			switch (option[0])
+			{
+					// Dependencies of the current package
+				case DEPENDS_OPTION:
+					throw new Error("TODO");
+				
+					// The project being documented
+				case PROJECT_OPTION:
+					throw new Error("TODO");
+					
+					// Projects directory root
+				case PROJECTS_DIRECTORY_OPTION:
+					throw new Error("TODO");
+				
+					// Output directory 
+				case OUTPUT_DIRECTORY_OPTION:
+					throw new Error("TODO");
+				
+					// Unknown, ignore
+				default:
+					break;
+			}
 	}
 	
 	/** 
@@ -197,9 +226,10 @@ public class DocletMain
 		switch (__s)
 		{
 				// These take two
-			case OUTPUT_DIRECTORY_OPTION:
-			case PROJECTS_DIRECTORY_OPTION:
 			case DEPENDS_OPTION:
+			case OUTPUT_DIRECTORY_OPTION:
+			case PROJECT_OPTION:
+			case PROJECTS_DIRECTORY_OPTION:
 				return 2;
 			
 				// Unknown
