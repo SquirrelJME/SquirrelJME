@@ -27,6 +27,9 @@ class __Class__
 	/** Flags for the current class. */
 	volatile ClassFlags _flags;
 	
+	/** The super class, which is optional (Object has none). */
+	volatile BasicConstantEntry<ClassNameSymbol> _super;
+	
 	/**
 	 * Initializes the class reference.
 	 *

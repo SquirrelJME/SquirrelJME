@@ -35,6 +35,9 @@ public class BasicClassWriter
 	extends __BaseWriter__
 	implements JITClassWriter
 {
+	/** The constant pool. */
+	protected final BasicConstantPool pool;
+	
 	/** The class storage area. */
 	private final __Class__ _classindex;
 	
@@ -53,6 +56,7 @@ public class BasicClassWriter
 		
 		// Set
 		this._classindex = __cl;
+		this.pool = __nsw._pool;
 	}
 	
 	/**
@@ -143,7 +147,7 @@ public class BasicClassWriter
 	@Override
 	public void fieldCount(int __n)
 	{
-		throw new Error("TODO");
+		// The basic JIT does not need this information
 	}
 	
 	/**
@@ -176,7 +180,7 @@ public class BasicClassWriter
 	@Override
 	public void methodCount(int __n)
 	{
-		throw new Error("TODO");
+		// The basic JIT does not need this information
 	}
 	
 	/**
@@ -186,7 +190,8 @@ public class BasicClassWriter
 	@Override
 	public void superClass(ClassNameSymbol __n)
 	{
-		throw new Error("TODO");
+		if (__n != null)
+			this._classindex._super = this.pool.addClassName(__n);
 	}
 	
 	/**
