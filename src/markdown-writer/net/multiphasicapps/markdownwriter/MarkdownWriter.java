@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Formatter;
 
 /**
@@ -32,7 +34,7 @@ import java.util.Formatter;
  * @since 2016/09/13
  */
 public class MarkdownWriter
-	implements Closeable, Flushable
+	implements Appendable, Closeable, Flushable
 {
 	/** Where text may be written to. */
 	protected final Appendable append;
@@ -40,8 +42,21 @@ public class MarkdownWriter
 	/** Formatter to write output text. */
 	protected final Formatter formatter;
 	
-	/** The current text style to use. */
-	private volatile MarkdownTextStyle _style;
+	/** The current style stack which selects which style to use. */
+	private final Deque<__State__> _stack =
+		new ArrayDeque<>();
+	
+	/** The current column being written to. */
+	private volatile int _column;
+	
+	/**
+	 * Initializes the default state.*
+	 *
+	 * @since 2016/09/13
+	 */
+	{
+		this._stack.push(new __State__());
+	}
 	
 	/**
 	 * Initializes the markdown writer.
@@ -62,6 +77,42 @@ public class MarkdownWriter
 		
 		// Setup formatter
 		this.formatter = new Formatter(__a);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @sicne 2016/09/13
+	 */
+	@Override
+	public MarkdownWriter append(char __c)
+		throws IOException
+	{
+		__put(__c);
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @sicne 2016/09/13
+	 */
+	@Override
+	public MarkdownWriter append(CharSequence __cs)
+		throws IOException
+	{
+		return this.append(__cs, 0, __cs.length());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @sicne 2016/09/13
+	 */
+	@Override
+	public MarkdownWriter append(CharSequence __cs, int __s, int __e)
+		throws IOException
+	{
+		for (int i = __s; i < __e; i++)
+			__put(__cs.charAt(i));
+		return this;
 	}
 	
 	/**
@@ -125,7 +176,81 @@ public class MarkdownWriter
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new Error("TODO");
+		// Get the topmost stack item
+		Deque<__State__> stack = this._stack;
+		__State__ top = stack.peek();
+		
+		// Setup new style and push it to the top
+		__State__ now = new __State__();
+		int depth = top._depth;
+		now._depth = depth;
+		stack.push(now);
+		
+		// Print opening hashes
+		for (int i = 1; i <= depth; i++)
+			__put('#');
+		
+		// Space hash
+		__put(' ');
+		
+		// Append the string
+		int n = __s.length();
+		for (int i = 0; i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Ignore these
+			if (c == '\n' || c == '\t')
+				continue;
+			
+			// Place it
+			__put(c);
+		}
+		
+		// Newline after header and an extra gap
+		__put('\n');
+		__put('\n');
+	}
+	
+	/**
+	 * Places a single character into the output.
+	 *
+	 * @param __c The character to put.
+	 * @throws IOException On write errors.
+	 * @since 2016/09/13
+	 */
+	public void __put(char __c)
+		throws IOException
+	{
+		// Write here
+		Appendable append = this.append;
+		
+		// Add it
+		append.append(__c);
+		
+		// Modify column
+		int column = this._column;
+		switch (__c)
+		{
+				// Tab, align to 4
+			case '\t':
+				column = ((column + 3) & (~3));
+				break;
+			
+				// A new line
+			case '\r':
+			case '\n':
+				column = 0;
+				break;
+				
+				// Normal, add one character
+			default:
+				column = column + 1;
+				break;
+		}
+		
+		// Set
+		this._column = column;
 	}
 }
 

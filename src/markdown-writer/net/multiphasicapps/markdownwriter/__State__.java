@@ -11,28 +11,18 @@
 package net.multiphasicapps.markdownwriter;
 
 /**
- * This describes the type of text style that may be chosen for output.
+ * This is a structure which contains the current state of the markdown style.
  *
  * @since 2016/09/13
  */
-public enum MarkdownTextStyle
+final class __State__
 {
-	/** Normal style. */
-	NORMAL,
+	/** The current text style to use. */
+	volatile MarkdownTextStyle _style =
+		MarkdownTextStyle.NORMAL;
 	
-	/** Strong. */
-	STRONG,
-	
-	/** Emphasis. */
-	EMPHASIS,
-	
-	/** Strong Emphasis. */
-	STRONG_EMPHASIS,
-	
-	/** Source code. */
-	CODE,
-	
-	/** End. */
-	;
+	/** The header depth. */
+	volatile int _depth =
+		1;
 }
 
