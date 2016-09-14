@@ -24,3 +24,11 @@ work out very well.
 The same could be said for interfaces also. I would need 6 bytes for large
 classes, but with a single table I only need to use 4.
 
+## 08:55
+
+The interface can be used also to quickly verify and actually in a way link
+interfaces. So basically at link time, I can scan the entire list and lookup
+classes to determine if they are actual interfaces. Then I would not need to
+check it when I load the class table. Each interface in the interface table
+could also have a run-time class representation binding.
+

@@ -56,6 +56,10 @@ public class BasicNamespaceWriter
 	private final List<__Resource__> _resources =
 		new ArrayList<>();
 	
+	/** Implemented interfaces in the namespace. */
+	private final List<__Interface__> _interfaces =
+		new ArrayList<>();
+	
 	/** The current writer. */
 	volatile __BaseWriter__ _current;
 	
