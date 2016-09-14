@@ -19,3 +19,8 @@ parse. This also means that readers for class information can have a single
 `List` of fields that could have a cached representation. So this could
 work out very well.
 
+## 07:53
+
+The same could be said for interfaces also. I would need 6 bytes for large
+classes, but with a single table I only need to use 4.
+
