@@ -40,7 +40,7 @@ echo "Serving local copy to clone it..." 1>&2
 fossil serve -P $PORT &
 FOSSILPID=$!
 echo $FOSSILPID > /tmp/squirreljme-fossil-pid
-fossil clone -A squirreljme "http://127.0.0.1:$PORT" \
+fossil clone -A squirreljme -u "http://127.0.0.1:$PORT" \
 	"/tmp/$$.fsl"
 kill -- $FOSSILPID
 wait
