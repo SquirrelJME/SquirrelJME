@@ -53,6 +53,9 @@ public class MarkdownWriter
 	/** The current column being written to. */
 	private volatile int _column;
 	
+	/** Columns on the last line. */
+	private volatile int _lastcols;
+	
 	/**
 	 * Initializes the default state.*
 	 *
@@ -188,6 +191,13 @@ public class MarkdownWriter
 		__State__ now = new __State__();
 		int depth = top._depth;
 		now._depth = depth;
+		
+		// Add newline before the header, which may end a text style
+		__put('\n');
+		
+		// Replace the top-most stack entry since it is forever gone when
+		// new top-level headers are started
+		stack.pop();
 		stack.push(now);
 		
 		// Add new line if on a column, otherwise the header will appear
@@ -249,12 +259,22 @@ public class MarkdownWriter
 		// Write here
 		Appendable append = this.append;
 		int column = this._column;
+		int lastcols = this._lastcols;
 		__State__ state = this._stack.peek();
 		MarkdownTextStyle style = state._style;
 		
 		// No special handling used
 		if (!__nospec)
 		{
+			// Ignore newline on column zero following a line with no
+			// columns
+			if (lastcols <= 0 && column <= 0 && (__c == '\r' || __c == '\n'))
+				return;
+			
+			// Right column exceeded? Move to the next line
+			if (column >= RIGHT_COLUMN)
+				__put('\n', true);
+			
 			// Escape?
 			if ((column <= 0 && __c == '#') || __c == '`' || __c == '\\' ||
 				(style.isNormal() && (__c == '*' || __c == '_' || __c == '(' ||
@@ -263,34 +283,43 @@ public class MarkdownWriter
 			
 			// Add it
 			__put(__c, true);
+			
+			// Column may have changed, adjust it
+			column = this._column;
 		}
 		
 		// Add it directly
 		else
+		{
 			append.append(__c);
 		
-		// Modify column
-		switch (__c)
-		{
-				// Tab, align to 4
-			case '\t':
-				column = ((column + 3) & (~3));
-				break;
+			// Modify column, but only when raw since everything eventually
+			// reaches this point.
+			switch (__c)
+			{
+					// Tab, align to 4
+				case '\t':
+					column = ((column + 3) & (~3));
+					break;
 			
-				// A new line
-			case '\r':
-			case '\n':
-				column = 0;
-				break;
+					// A new line
+					// Remember old columns on line for newline based
+					// skipping
+				case '\r':
+				case '\n':
+					this._lastcols = column;
+					column = 0;
+					break;
 				
-				// Normal, add one character
-			default:
-				column = column + 1;
-				break;
-		}
+					// Normal, add one character
+				default:
+					column = column + 1;
+					break;
+			}
 		
-		// Set
-		this._column = column;
+			// Set
+			this._column = column;
+		}
 	}
 }
 
