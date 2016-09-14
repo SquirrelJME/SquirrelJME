@@ -124,8 +124,9 @@ public class BasicNamespaceWriter
 		
 		// Create class
 		__Class__ cl = new __Class__(this._pool.addClassName(__cn));
-		
-		throw new Error("TODO");
+		BasicClassWriter rv = new BasicClassWriter(this, cl);
+		this._classes.add(cl);
+		return rv;
 	}
 	
 	/**
