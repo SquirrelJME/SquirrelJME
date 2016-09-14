@@ -16,9 +16,12 @@ import com.sun.javadoc.RootDoc;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
+import net.multiphasicapps.util.unmodifiable.UnmodifiableSet;
 
 /**
  * This is the main entry point for the markdown code generators.
@@ -59,6 +62,18 @@ public class DocletMain
 	protected final Map<String, MarkdownClass> classes =
 		new SortedTreeMap<>();
 	
+	/** The name of this project. */
+	protected final String project;
+	
+	/** The output markdown base directory. */
+	protected final Path outdir;
+	
+	/** The directory where projects are if detection is desired. */
+	protected final Path projectsdir;
+	
+	/** Dependencies of this project. */
+	protected final Set<String> depends;
+	
 	/**
 	 * Initializes the main doclet.
 	 *
@@ -76,30 +91,48 @@ public class DocletMain
 		// Set
 		this.root = __rd;
 		
+		// Some properties
+		String project = null;
+		Set<String> depends = new HashSet<>();
+		
+		// Some directories
+		Path projectsdir = null;
+		Path outdir = Paths.get(System.getProperty("user.dir"));
+		
 		// Handle options
 		for (String[] option : __rd.options())
 			switch (option[0])
 			{
 					// Dependencies of the current package
 				case DEPENDS_OPTION:
-					throw new Error("TODO");
+					__decodeProjects(depends, option[1]);
+					break;
 				
 					// The project being documented
 				case PROJECT_OPTION:
-					throw new Error("TODO");
+					project = option[1];
+					break;
 					
 					// Projects directory root
 				case PROJECTS_DIRECTORY_OPTION:
-					throw new Error("TODO");
+					projectsdir = Paths.get(option[1]);
+					break;
 				
 					// Output directory 
 				case OUTPUT_DIRECTORY_OPTION:
-					throw new Error("TODO");
+					outdir = Paths.get(option[1]);
+					break;
 				
 					// Unknown, ignore
 				default:
 					break;
 			}
+		
+		// Set
+		this.project = project;
+		this.outdir = outdir;
+		this.projectsdir = projectsdir;
+		this.depends = UnmodifiableSet.<String>of(depends);
 	}
 	
 	/** 
@@ -259,6 +292,40 @@ public class DocletMain
 		
 		// Processed
 		return true;
+	}
+	
+	/**
+	 * Decodes projects separated by colon and adds them to the specified set.
+	 *
+	 * @param __deps The set to add dependencies to.
+	 * @param __in The input string to split.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	private static void __decodeProjects(Set<String> __deps, String __in)
+		throws NullPointerException
+	{
+		// Check
+		if (__deps == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Split
+		int n = __in.length();
+		for (int i = 0, last = 0; i <= n; i++)
+		{
+			// Force last to be colon
+			char c = (i == n ? ':' : __in.charAt(i));
+			
+			// If a colon, split
+			if (c == ':')
+			{
+				// Add
+				__deps.add(__in.substring(last, i));
+				
+				// Start after
+				last = i + 1;
+			}
+		}
 	}
 }
 
