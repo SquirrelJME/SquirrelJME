@@ -20,7 +20,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
+import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
  * This loads the class doclet documentation and obtains information so that
@@ -47,6 +50,18 @@ public class MarkdownClass
 	
 	/** The super class. */
 	protected final MarkdownClass superclass;
+	
+	/** Implemented interfaces. */
+	protected final Map<String, MarkdownClass> interfaces =
+		new SortedTreeMap<>();
+	
+	/** Classes that extend this class. */
+	protected final Map<String, MarkdownClass> superclassof =
+		new SortedTreeMap<>();
+	
+	/** Classes which implement this class. */
+	protected final Map<String, MarkdownClass> interfacesof =
+		new SortedTreeMap<>();
 	
 	/** Is this class explicit? */
 	volatile boolean _implicit;
@@ -111,7 +126,13 @@ public class MarkdownClass
 		
 		// Get super class
 		ClassDoc rawsc = __cd.superclass();
-		this.superclass = (rawsc == null ? null : __dm.markdownClass(rawsc));
+		MarkdownClass superclass = (rawsc == null ? null :
+			__dm.markdownClass(rawsc));
+		this.superclass = superclass;
+		
+		// Add to superclass of list
+		if (superclass != null)
+			superclass.superclassof.put(qualifiedname, this);
 	}
 	
 	/**
@@ -127,10 +148,17 @@ public class MarkdownClass
 			// Top level header
 			md.headerSameLevel(this.qualifiedname);
 			
+			// Write class tree last
+			md.headerSameLevel("Inheritance");
+			
 			// Print super class, if there is one
 			MarkdownClass superclass = this.superclass;
 			if (superclass != null)
 				md.printf("Superclass: %s%n", superclass.qualifiedname);
+			
+			// Classes which extend this class
+			for (MarkdownClass superclassof : this.superclassof.values())
+				md.printf("Superclass of: %s%n", superclassof.qualifiedname);
 		}
 		
 		// {@squirreljme.error CF03 Could not write the output markdown file.}
