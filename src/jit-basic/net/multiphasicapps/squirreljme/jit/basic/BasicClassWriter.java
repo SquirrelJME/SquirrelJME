@@ -147,7 +147,7 @@ public class BasicClassWriter
 	@Override
 	public void fieldCount(int __n)
 	{
-		// The basic JIT does not need this information
+		this._classindex._numfields = __n;
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public class BasicClassWriter
 	@Override
 	public void methodCount(int __n)
 	{
-		// The basic JIT does not need this information
+		this._classindex._nummethods = __n;
 	}
 	
 	/**

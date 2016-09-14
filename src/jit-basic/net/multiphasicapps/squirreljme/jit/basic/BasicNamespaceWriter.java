@@ -60,6 +60,10 @@ public class BasicNamespaceWriter
 	private final List<__Interface__> _interfaces =
 		new ArrayList<>();
 	
+	/** The methods that exist in the namespace. */
+	private final List<__Method__> _methods =
+		new ArrayList<>();
+	
 	/** The current writer. */
 	volatile __BaseWriter__ _current;
 	

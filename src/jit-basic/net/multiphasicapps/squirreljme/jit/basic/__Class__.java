@@ -38,6 +38,22 @@ class __Class__
 	volatile int _interfacedx =
 		-1;
 	
+	/** The number of methods. */
+	volatile int _nummethods =
+		-1;
+	
+	/** The starting method index. */
+	volatile int _methoddx =
+		-1;
+	
+	/** The number of fields in this class. */
+	volatile int _numfields =
+		-1;
+	
+	/** The field index. */
+	volatile int _fielddx =
+		-1;
+	
 	/**
 	 * Initializes the class reference.
 	 *
