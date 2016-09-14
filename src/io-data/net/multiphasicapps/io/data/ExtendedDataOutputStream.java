@@ -216,6 +216,24 @@ public class ExtendedDataOutputStream
 	}
 	
 	/**
+	 * Writes a single byte, if its value is out of range then a write error
+	 * occurs.
+	 *
+	 * @param __v The byte to write.
+	 * @throws IOException On out of range or other write errors.
+	 * @since 2016/09/14
+	 */
+	public final void writeByteExact(int __v)
+		throws IOException
+	{
+		// {@squirreljme.error BD06 Byte value out of range.}
+		if (__v < -128 || __v > 127)
+			throw new IOException("BD06");
+		
+		writeByte(__v);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/07/10
 	 */
@@ -371,6 +389,60 @@ public class ExtendedDataOutputStream
 		
 		// Increase
 		this._size += 2;
+	}
+	
+	/**
+	 * Writes a single short, if its value is out of range then a write error
+	 * occurs.
+	 *
+	 * @param __v The short to write.
+	 * @throws IOException On out of range or other write errors.
+	 * @since 2016/09/14
+	 */
+	public final void writeShortExact(int __v)
+		throws IOException
+	{
+		// {@squirreljme.error BD07 Short value out of range.}
+		if (__v < -32768 || __v > 32767)
+			throw new IOException("BD07");
+		
+		writeShort(__v);
+	}
+	
+	/**
+	 * Writes a single unsigned byte, if its value is out of range then a
+	 * write error occurs.
+	 *
+	 * @param __v The unsigned byte to write.
+	 * @throws IOException On out of range or other write errors.
+	 * @since 2016/09/14
+	 */
+	public final void writeUnsignedByteExact(int __v)
+		throws IOException
+	{
+		// {@squirreljme.error BD08 Unsigned byte value out of range.}
+		if (__v < 0 || __v > 255)
+			throw new IOException("BD08");
+		
+		writeByte(__v);
+	}
+	
+	/**
+	 * Writes a single unsigned byte, if its value is out of range then a
+	 * write error occurs.
+	 *
+	 * @param __v The unsigned short to write.
+	 * @throws IOException On out of range or other write errors.
+	 * @since 2016/09/14
+	 */
+	public final void writeUnsignedShortExact(int __v)
+		throws IOException
+	{
+		// {@squirreljme.error BD09 Unsigned short value out of range.}
+		if (__v < 0 || __v > 65535)
+			throw new IOException("BD09");
+		
+		writeShort(__v);
 	}
 	
 	/**
