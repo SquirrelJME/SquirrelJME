@@ -11,18 +11,14 @@
 package net.multiphasicapps.squirreljme.nativecode;
 
 /**
- * This factory is used to initialize native code writers.
+ * This interface is used for native code writers.
  *
- * @since 2016/09/10
+ * This is used for a more object-oriented output of native code and as such
+ * should not handle things such as register allocation.
+ *
+ * @since 2016/09/14
  */
-public interface NativeCodeWriterFactory
+public interface NativeCodeWriter
 {
-	/**
-	 * Creates the native code writer to be used for native code output.
-	 *
-	 * @return The native code writer for native code.
-	 * @since 2016/09/14
-	 */
-	public abstract NativeCodeWriter create();
 }
 

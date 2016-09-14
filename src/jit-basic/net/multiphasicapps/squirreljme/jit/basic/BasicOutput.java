@@ -15,7 +15,6 @@ import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITOutput;
-import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 
 /**
  * This is the output that is used to write to the JIT.
@@ -27,9 +26,6 @@ public class BasicOutput
 {
 	/** The JIT configuration. */
 	protected final JITConfig config;
-	
-	/** The code writer factory. */
-	protected final NativeCodeWriterFactory codewriter;
 	
 	/**
 	 * Initializes the basic output.
@@ -46,15 +42,6 @@ public class BasicOutput
 		
 		// Set
 		this.config = __conf;
-		
-		// {@squirreljme.error BV01 No native code factory was set in the
-		// configuration. (The configuration)}
-		NativeCodeWriterFactory codewriter = __conf.<NativeCodeWriterFactory>
-			getAsClass(BasicOutputFactory.NATIVE_CODE_PROPERTY,
-			NativeCodeWriterFactory.class);
-		if (codewriter == null)
-			throw new JITException(String.format("BV01 %s", __conf));
-		this.codewriter = codewriter;
 	}
 	
 	/**

@@ -22,6 +22,7 @@ import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 
 /**
  * This is the namespace writer which is used ot write.
@@ -47,6 +48,9 @@ public class BasicNamespaceWriter
 	/** The basic global pool. */
 	final BasicConstantPool _pool =
 		new BasicConstantPool();
+	
+	/** The code writer factory. */
+	final NativeCodeWriterFactory _codewriter;
 	
 	/** Classes in the namespace. */
 	private final List<__Class__> _classes =
@@ -90,6 +94,15 @@ public class BasicNamespaceWriter
 		// Set
 		this._config = __conf;
 		this.name = __name;
+		
+		// {@squirreljme.error BV01 No native code factory was set in the
+		// configuration. (The configuration)}
+		NativeCodeWriterFactory codewriter = __conf.<NativeCodeWriterFactory>
+			getAsClass(BasicOutputFactory.NATIVE_CODE_PROPERTY,
+			NativeCodeWriterFactory.class);
+		if (codewriter == null)
+			throw new JITException(String.format("BV01 %s", __conf));
+		this._codewriter = codewriter;
 		
 		// Initialize output stream
 		ExtendedDataOutputStream output;

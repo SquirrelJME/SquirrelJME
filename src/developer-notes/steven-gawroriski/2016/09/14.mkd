@@ -44,3 +44,10 @@ a single table. When it comes to exception handling it could also be in the
 code table, so if a piece of code has an exception handler then it could just
 point to a code table index.
 
+## 18:46
+
+So the question is, do I put the register allocator in the basic JIT or the
+native code generators. Likely the best choice would be the native code
+generator potentially. Although that could cause some issues if I want to
+generate specific instructions that are not allocated at all.
+

@@ -8,21 +8,17 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.nativecode;
+package net.multiphasicapps.squirreljme.nativecode.mips;
+
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 
 /**
- * This factory is used to initialize native code writers.
+ * This writes MIPS machine code.
  *
- * @since 2016/09/10
+ * @since 2016/09/14
  */
-public interface NativeCodeWriterFactory
+public class MIPSWriter
+	implements NativeCodeWriter
 {
-	/**
-	 * Creates the native code writer to be used for native code output.
-	 *
-	 * @return The native code writer for native code.
-	 * @since 2016/09/14
-	 */
-	public abstract NativeCodeWriter create();
 }
 

@@ -21,5 +21,14 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 public class MIPSWriterFactory
 	implements NativeCodeWriterFactory
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/14
+	 */
+	@Override
+	public MIPSWriter create()
+	{
+		return new MIPSWriter();
+	}
 }
 

@@ -20,5 +20,14 @@ import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 public class PowerPCWriterFactory
 	implements NativeCodeWriterFactory
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/14
+	 */
+	@Override
+	public PowerPCWriter create()
+	{
+		return new PowerPCWriter();
+	}
 }
 
