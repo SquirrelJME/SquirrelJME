@@ -115,12 +115,10 @@ public class MarkdownClass
 	public void writeOutput()
 	{
 		// Setup output
-		try (MarkdownWriter md = new MarkdownWriter(System.out))
+		try (MarkdownWriter md = new MarkdownWriter(new __AppendToStdOut__()))
 		{
 			// Top level header
 			md.headerSameLevel(this.qualifiedname);
-			
-			throw new Error("TODO");
 		}
 		
 		// {@squirreljme.error CF03 Could not write the output markdown file.}
