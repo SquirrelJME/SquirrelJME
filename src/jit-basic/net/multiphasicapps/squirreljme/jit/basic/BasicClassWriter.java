@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.classformat.ClassDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.ClassFlags;
 import net.multiphasicapps.squirreljme.classformat.ClassVersion;
@@ -62,7 +63,12 @@ public class BasicClassWriter
 	public void classFlags(ClassFlags __f)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._classindex._flags = __f;
 	}
 	
 	/**
@@ -73,7 +79,7 @@ public class BasicClassWriter
 	public void className(ClassNameSymbol __n)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// This information is already known
 	}
 	
 	/**
@@ -84,7 +90,17 @@ public class BasicClassWriter
 	public void close()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Close the output
+		try
+		{
+			this.output.close();
+		}
+		
+		// {@squirreljme.error BV0a Could not close the class output.}
+		catch (IOException e)
+		{
+			throw new JITException("BV0a", e);
+		}
 	}
 	
 	/**
@@ -95,7 +111,7 @@ public class BasicClassWriter
 	public void constantPool(ConstantPool __pool)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// This information is not used
 	}
 	
 	/**
@@ -181,7 +197,7 @@ public class BasicClassWriter
 	public void version(ClassVersion __cv)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// The version is not important at this point in time
 	}
 }
 

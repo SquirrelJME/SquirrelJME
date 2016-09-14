@@ -57,7 +57,7 @@ public class BasicResourceWriter
 			this.output.close();
 		}
 		
-		// {@squirreljme.error BV07 Could not close the output.}
+		// {@squirreljme.error BV07 Could not close the resource output.}
 		catch (IOException e)
 		{
 			throw new JITException("BV07", e);

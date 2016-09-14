@@ -5,3 +5,17 @@
 Thinking that the input class and the JIT class are not checked to make sure
 that they are the same. But classes are only started when their name is known.
 
+## 07:37
+
+One thing I could do is have a field table of sorts. Basically similar to
+the class and resource table except that there is a linear table of field
+information. Then the class refers to a range in this table. The same could
+be done for methods. This way fields and methods do not have to be referenced
+by pointers. This would mean that I could allow classes to be slightly larger
+in size becuase I do not need pointers for all of the data. Fields do not
+need any pointer data at all, however methods do for code. So I could
+essentially keep the class a bit more compact and possibly a bit easier to
+parse. This also means that readers for class information can have a single
+`List` of fields that could have a cached representation. So this could
+work out very well.
+

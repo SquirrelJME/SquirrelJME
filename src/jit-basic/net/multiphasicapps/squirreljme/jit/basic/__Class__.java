@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import net.multiphasicapps.squirreljme.classformat.ClassFlags;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
@@ -22,6 +23,9 @@ class __Class__
 {
 	/** The name of the class. */
 	protected final BasicConstantEntry<ClassNameSymbol> name;
+	
+	/** Flags for the current class. */
+	volatile ClassFlags _flags;
 	
 	/**
 	 * Initializes the class reference.
