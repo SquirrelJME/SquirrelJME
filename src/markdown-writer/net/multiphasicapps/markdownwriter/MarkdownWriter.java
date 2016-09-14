@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.markdownwriter;
 
+import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,13 +27,18 @@ import java.util.Formatter;
  * only be performed on the wrapped {@link Appendable} if those also implement
  * such things.
  *
+ * This class is not thread safe.
+ *
  * @since 2016/09/13
  */
 public class MarkdownWriter
-	implements AutoCloseable, Flushable
+	implements Closeable, Flushable
 {
 	/** Where text may be written to. */
 	protected final Appendable append;
+	
+	/** Formatter to write output text. */
+	protected final Formatter formatter;
 	
 	/**
 	 * Initializes the markdown writer.
@@ -50,6 +56,9 @@ public class MarkdownWriter
 		
 		// Set
 		this.append = __a;
+		
+		// Setup formatter
+		this.formatter = new Formatter(__a);
 	}
 	
 	/**
@@ -58,12 +67,12 @@ public class MarkdownWriter
 	 */
 	@Override
 	public void close()
-		throws Exception
+		throws IOException
 	{
 		// Only close if it is closeable
 		Appendable append = this.append;
-		if (append instanceof AutoCloseable)
-			((AutoCloseable)append).close();
+		if (append instanceof Closeable)
+			((Closeable)append).close();
 	}
 	
 	/**
