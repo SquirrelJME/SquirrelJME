@@ -89,6 +89,13 @@ system.
 Seeing that there is no time left, there is no passion left. They neither lack
 the passion to live, to die, to save a life, or to take one.
 
+# Resources
+
+There are two resources:
+
+ * Salt
+ * Pepper
+
 # Expansion Pack!
 
 At the end of Squirrel Quarrel, they find a way off their doomed planet and
@@ -127,7 +134,7 @@ more robust, every gray as a bio-shield which creates a shared source of life
 within a limited radius. Take for example if they have two biological units,
 one with 40 HP and another with 40HP. If one unit takes 10HP of damage then all
 the damage will be shared across all units in range of that unit. As such, both
-units recieve only 5HP of damage.
+units receive only 5HP of damage.
 
 Healing effects from _Squirrelian Healer_ units will also be divided among all
 of the units so that all of them get healed.
@@ -138,5 +145,52 @@ damage all of them.
 ### Reptilian
 
 Lizard like and very deadly. If it is small cute and fuzzy they will feast on
-it.
+it. This species is great at imitation, but not the flattering kind.
+
+#### Imitate
+
+They say imitation is the greatest form of flattering, but not in this case.
+Each type of unit will have an imitation category and a threshold of the number
+of times it must be destroyed before it can be constructed. This means that
+ground troops, vehicles, and air units can be constructed by 3 separate
+factories. When imitation is available and the right structures are build those
+imitated units can be constructed. They are slightly cheaper and weaker.
+
+Threshold points are split into quarters. All values round up meaning that
+a threshold of 0.25 when it comes to availability equals 1.
+
+Constructing an imitation unit will cost 25% of a point, this means for every
+point above the threshold, 4 of those units may be constructed.
+
+If an imitation of a unit is killed and it has been alive for at least 3
+minutes, then 25% of a point will be deducted for that unit type.
+
+If an imitation kills an enemy imitation then it counts as 75% of a point for
+that unit type.
+
+The default units, except for workers, count as a wildcard for the same type.
+This way, at random two Reptilians fighting each other will get a different
+set of imitation units after their initial combat.
+
+To prevent allied cheating, only enemy units are considered. When an alliance
+is changed to an enemy, there is a 5 minute delay before kills are counted.
+
+This means that sending powerful capital ships against Reptilian targets where
+they are all destroyed means that with the right structures they can build
+imitations of those ships for a much cheaper cost. As such, one would have to
+consider the cost of sending such a unit to attack. Although the threshold
+would still have to be met, once it is reached the Reptilian player can
+construct 4 of those flagships.
+
+To prevent potential stagnation, there will be a structure where resources
+can be traded for points to a given category with a random unit type selected
+but not one that is already available. Likely this would be at the town center
+building.
+
+There are four categories:
+
+ * Personnel Ground (Biological Ground Units.)
+ * Vehicular Ground (includes robots, tanks, large Plantian ground units, etc.)
+ * Combat Air (All air units that have an attack)
+ * Supportive Air (Non-transports that are mostly used to cast special attacks)
 
