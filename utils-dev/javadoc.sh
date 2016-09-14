@@ -62,9 +62,9 @@ do
 		-locale "en_US" \
 		-encoding "utf-8" \
 		-doclet net.multiphasicapps.doclet.markdown.DocletMain \
-		"-J-Dnet.multiphasicapps.doclet.markdown.outdir=javadoc/$__base" \
-		"-J-Dnet.multiphasicapps.doclet.markdown.projectdir=$__pdir" \
-		"-J-Dnet.multiphasicapps.doclet.markdown.depends=$__depscom" \
+		-d "javadoc/$__base" \
+		-squirreljme-projectsdir "$__pdir" \
+		-squirreljme-depends "$__depscom" \
 		-private \
 		-source 1.7 \
 		-docletpath "doclet-markdown.jar:." \

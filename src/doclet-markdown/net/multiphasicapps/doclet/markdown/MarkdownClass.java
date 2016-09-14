@@ -12,6 +12,10 @@ package net.multiphasicapps.doclet.markdown;
 
 import com.sun.javadoc.ClassDoc;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;

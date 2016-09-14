@@ -14,6 +14,8 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
@@ -26,32 +28,25 @@ import net.multiphasicapps.util.sorted.SortedTreeMap;
 public class DocletMain
 	implements Runnable
 {
-	/**
-	 * {@squirreljme.property net.multiphasicapps.doclet.markdown.outdir=(dir)
-	 * The output directory where generated documentation files go.}
-	 */
-	public static final String OUTPUT_DIRECTORY_PROPERTY =
-		"net.multiphasicapps.doclet.markdown.outdir";
+	/** The output directory where generated documentation files go. */
+	public static final String OUTPUT_DIRECTORY_OPTION =
+		"-d";
 	
 	/**
-	 * {@squirreljme.property
-	 * net.multiphasicapps.doclet.markdown.projectdir=(dir)
 	 * This is the directory which contains project directories used to
-	 * determine cross-linking between projects.}
+	 * determine cross-linking between projects.
 	 */
-	public static final String PROJECT_DIRECTORY_PROPERTY =
-		"net.multiphasicapps.doclet.markdown.projectdir";
+	public static final String PROJECTS_DIRECTORY_OPTION =
+		"-squirreljme-projectsdir";
 	
 	/**
-	 * {@squirreljme.property
-	 * net.multiphasicapps.doclet.markdown.depends=(projects)
 	 * This is a colon separated list of projects which the current project
 	 * being documented depends on. If a reference to a class that does not
 	 * exist in the source tree is detected then there will be a cross-project
-	 * link to another project.}
+	 * link to another project.
 	 */
-	public static final String DEPENDS_PROPERTY =
-		"net.multiphasicapps.doclet.markdown.depends";
+	public static final String DEPENDS_OPTION =
+		"-squirreljme-depends";
 	
 	/** The root document. */
 	protected final RootDoc root;
@@ -190,6 +185,30 @@ public class DocletMain
 	}
 	
 	/**
+	 * Returns the number of options that a command takes,
+	 *
+	 * @param __s The command.
+	 * @return The number of options used.
+	 * @since 2016/09/13
+	 */
+	public static int optionLength(String __s)
+	{
+		// Depends
+		switch (__s)
+		{
+				// These take two
+			case OUTPUT_DIRECTORY_OPTION:
+			case PROJECTS_DIRECTORY_OPTION:
+			case DEPENDS_OPTION:
+				return 2;
+			
+				// Unknown
+			default:
+				return 0;
+		}
+	}
+	
+	/**
 	 * Starts processing the root document to generate output markdown
 	 * documentation.
 	 *
@@ -203,14 +222,6 @@ public class DocletMain
 		// Check
 		if (__rd == null)
 			throw new NullPointerException("NARG");
-		
-		// Debug
-		System.err.printf("DEBUG -- %s%n",
-			System.getProperty(OUTPUT_DIRECTORY_PROPERTY));
-		System.err.printf("DEBUG -- %s%n",
-			System.getProperty(PROJECT_DIRECTORY_PROPERTY));
-		System.err.printf("DEBUG -- %s%n",
-			System.getProperty(DEPENDS_PROPERTY));
 		
 		// Use instance since it is much saner
 		DocletMain dm = new DocletMain(__rd);
