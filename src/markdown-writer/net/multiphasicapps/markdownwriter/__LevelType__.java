@@ -8,14 +8,14 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.doclet.markdown;
+package net.multiphasicapps.markdownwriter;
 
 /**
  * Specifies the type of level that is used.
  *
  * @since 2016/09/13
  */
-public enum __LevelType__
+enum __LevelType__
 {
 	/** Header level. */
 	HEADER,
