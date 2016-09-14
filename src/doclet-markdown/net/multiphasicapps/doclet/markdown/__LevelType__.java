@@ -8,24 +8,19 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.markdownwriter;
+package net.multiphasicapps.doclet.markdown;
 
 /**
- * This is a structure which contains the current state of the markdown style.
+ * Specifies the type of level that is used.
  *
  * @since 2016/09/13
  */
-final class __State__
+public enum __LevelType__
 {
-	/** The current text style to use. */
-	volatile MarkdownTextStyle _style =
-		MarkdownTextStyle.NORMAL;
+	/** Header level. */
+	HEADER,
 	
-	/** The header depth. */
-	volatile int _depth =
-		1;
-	
-	/** The level type. */
-	volatile __LevelType__ _level;
+	/** End. */
+	;
 }
 

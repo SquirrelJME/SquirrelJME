@@ -62,7 +62,9 @@ public class MarkdownWriter
 	 * @since 2016/09/13
 	 */
 	{
-		this._stack.push(new __State__());
+		__State__ init;
+		this._stack.push((init = new __State__()));
+		init._level = __LevelType__.HEADER;
 	}
 	
 	/**
@@ -185,12 +187,17 @@ public class MarkdownWriter
 		
 		// Get the topmost stack item
 		Deque<__State__> stack = this._stack;
-		__State__ top = stack.peek();
+		__State__ top;
+		
+		// Pop lists and other things until a header is reached
+		while ((top = stack.peek())._level != __LevelType__.HEADER)
+			throw new Error("TODO");
 		
 		// Setup new style and push it to the top
 		__State__ now = new __State__();
 		int depth = top._depth;
 		now._depth = depth;
+		now._level = __LevelType__.HEADER;
 		
 		// Add newline before the header, which may end a text style
 		__put('\n');
