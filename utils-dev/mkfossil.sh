@@ -40,7 +40,7 @@ echo "Serving local copy to clone it..." 1>&2
 fossil serve -P $PORT &
 FOSSILPID=$!
 echo $FOSSILPID > /tmp/squirreljme-fossil-pid
-fossil clone -A squirreljme -u "http://127.0.0.1:$PORT" \
+fossil clone -A squirreljme "http://127.0.0.1:$PORT" \
 	"/tmp/$$.fsl"
 kill -- $FOSSILPID
 wait
@@ -49,6 +49,9 @@ rm -f -- /tmp/squirreljme-fossil-pid
 # If target exists, Do a compressed rebuild
 if [ -f "/tmp/$$.fsl" ]
 then
+	# Sync unversioned files
+	fossil unversioned sync "/tmp/$$.fsl"
+	
 	# Set difficult to use password to discourage people
 	echo "Setting a random password..." 1>&2
 	RPASS="$( (sha1sum "/tmp/$$.fsl" || md5sum "/tmp/$$.fsl") | tr '\t' ' ' | \
