@@ -27,7 +27,7 @@ class __MethodWriter__
 	protected final JITMethodWriter methodwriter;
 	
 	/** The current code writer. */
-	private volatile JITCodeWriter _code;
+	private volatile __CodeWriter__ _code;
 	
 	/** Was code parsing performed? */
 	private volatile boolean _didcode;
@@ -60,7 +60,7 @@ class __MethodWriter__
 	 * @since 2016/09/10
 	 */
 	@Override
-	public JITCodeWriter code()
+	public CodeDescriptionStream code()
 	{
 		// {@squirreljme.error ED05 Cannot add code to a method because code
 		// or no code was already specified.}
@@ -69,7 +69,8 @@ class __MethodWriter__
 		this._didcode = true;
 		
 		// Create
-		JITCodeWriter code = this.methodwriter.code();
+		__CodeWriter__ code = new __CodeWriter__(this.jit, this.namespace,
+			this, this.methodwriter.code());
 		this._code = code;
 		return code;
 	}
@@ -87,7 +88,7 @@ class __MethodWriter__
 			throw new JITException("ED0a");
 		
 		// Close code before the member to closed
-		JITCodeWriter code = this._code;
+		__CodeWriter__ code = this._code;
 		if (code != null)
 		{
 			code.close();
