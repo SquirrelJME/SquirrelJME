@@ -45,6 +45,9 @@ public class MarkdownClass
 	/** The qualified name of this class. */
 	protected final String qualifiedname;
 	
+	/** The super class. */
+	protected final MarkdownClass superclass;
+	
 	/** Is this class explicit? */
 	volatile boolean _implicit;
 	
@@ -105,6 +108,10 @@ public class MarkdownClass
 			this.basemarkdownpath = __lowerPath(
 				p.resolveSibling(p.getFileName() + ".mkd"));
 		}
+		
+		// Get super class
+		ClassDoc rawsc = __cd.superclass();
+		this.superclass = (rawsc == null ? null : __dm.markdownClass(rawsc));
 	}
 	
 	/**
@@ -119,6 +126,11 @@ public class MarkdownClass
 		{
 			// Top level header
 			md.headerSameLevel(this.qualifiedname);
+			
+			// Print super class, if there is one
+			MarkdownClass superclass = this.superclass;
+			if (superclass != null)
+				md.printf("Superclass: %s%n", superclass.qualifiedname);
 		}
 		
 		// {@squirreljme.error CF03 Could not write the output markdown file.}

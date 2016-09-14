@@ -83,7 +83,7 @@ public class MarkdownWriter
 		this.append = __a;
 		
 		// Setup formatter
-		this.formatter = new Formatter(__a);
+		this.formatter = new Formatter(this);
 	}
 	
 	/**
@@ -229,6 +229,26 @@ public class MarkdownWriter
 		// Newline after header and an extra gap
 		__put('\n');
 		__put('\n');
+	}
+	
+	/**
+	 * Prints formatted text to the output.
+	 *
+	 * @param __f The format specifier.
+	 * @param __args The format arguments.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	public void printf(String __f, Object... __args)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Forma
+		this.formatter.format(__f, __args);
 	}
 	
 	/**
