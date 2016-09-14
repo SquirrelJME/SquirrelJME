@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit;
 
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.MethodDescriptionStream;
+import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
  * This bridges the method description stream to the method writer.
@@ -24,6 +25,12 @@ class __MethodWriter__
 {
 	/** The method writer to write to. */
 	protected final JITMethodWriter methodwriter;
+	
+	/** The current code writer. */
+	private volatile JITCodeWriter _code;
+	
+	/** Was code parsing performed? */
+	private volatile boolean _didcode;
 	
 	/**
 	 * Initializes the method writer.
@@ -45,7 +52,7 @@ class __MethodWriter__
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.methodwriter =__jmw;
+		this.methodwriter = __jmw;
 	}
 	
 	/**
@@ -53,9 +60,18 @@ class __MethodWriter__
 	 * @since 2016/09/10
 	 */
 	@Override
-	public CodeDescriptionStream code()
+	public JITCodeWriter code()
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error ED05 Cannot add code to a method because code
+		// or no code was already specified.}
+		if (this._didcode)
+			throw new JITException("ED05");
+		this._didcode = true;
+		
+		// Create
+		JITCodeWriter code = this.methodwriter.code();
+		this._code = code;
+		return code;
 	}
 	
 	/**
@@ -65,7 +81,18 @@ class __MethodWriter__
 	@Override
 	public void endMember()
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error ED0a Whether there is code or is not code, was
+		// never specified.}
+		if (!this._didcode)
+			throw new JITException("ED0a");
+		
+		// Close code before the member to closed
+		JITCodeWriter code = this._code;
+		if (code != null)
+		{
+			code.close();
+			this._code = null;
+		}
 	}
 	
 	/**
@@ -75,7 +102,11 @@ class __MethodWriter__
 	@Override
 	public void noCode()
 	{
-		throw new Error("TODO");
+		// {@squirreljme.error ED09 Cannot specify no code for a method because
+		// code or no code was already specified.}
+		if (this._didcode)
+			throw new JITException("ED09");
+		this._didcode = true;
 	}
 }
 
