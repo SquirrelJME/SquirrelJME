@@ -13,7 +13,9 @@ package net.multiphasicapps.doclet.markdown;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
+import java.io.IOException;
 import java.util.Map;
+import net.multiphasicapps.markdownwriter.MarkdownWriter;
 import net.multiphasicapps.util.sorted.SortedTreeMap;
 
 /**
@@ -145,6 +147,11 @@ public class DocletMain
 		RootDoc root = this.root;
 		for (ClassDoc cd : root.classes())
 			markdownClass(cd)._implicit = true;
+		
+		// Write all classes
+		for (MarkdownClass mc : this.classes.values())
+			if (mc._implicit)
+				mc.writeOutput();
 	}
 	
 	/**

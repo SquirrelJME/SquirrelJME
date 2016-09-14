@@ -11,10 +11,12 @@
 package net.multiphasicapps.doclet.markdown;
 
 import com.sun.javadoc.ClassDoc;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.markdownwriter.MarkdownWriter;
 
 /**
  * This loads the class doclet documentation and obtains information so that
@@ -99,6 +101,16 @@ public class MarkdownClass
 			this.basemarkdownpath = __lowerPath(
 				p.resolveSibling(p.getFileName() + ".mkd"));
 		}
+	}
+	
+	/**
+	 * Writes the class documentation details to the output markdown file.
+	 *
+	 * @since 2016/09/13
+	 */
+	public void writeOutput()
+	{
+		throw new Error("TODO");
 	}
 	
 	/**
