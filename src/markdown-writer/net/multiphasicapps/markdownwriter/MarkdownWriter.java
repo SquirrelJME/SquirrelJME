@@ -15,50 +15,55 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.util.Formatter;
 
 /**
- * This is a markdown stream which may be set with formatted details which is
- * to be used for outputting such formatted text the the wrapped output stream.
+ * This is a class which writes markdown formatted text to the specified
+ * {@link Appendable} which may be any implentation of one. This handle all
+ * of the standard formatting details that markdown supports.
+ *
+ * This writer supports closing and flushing, however those operations will
+ * only be performed on the wrapped {@link Appendable} if those also implement
+ * such things.
  *
  * @since 2016/09/13
  */
 public class MarkdownWriter
-	extends Writer
-	implements Flushable
+	implements AutoCloseable, Flushable
 {
-	/** The writer to place characters into. */
-	protected final Writer writer;	
-	
-	/** Has the writer been closed? */
-	private volatile boolean _closed;
+	/** Where text may be written to. */
+	protected final Appendable append;
 	
 	/**
-	 * Initializes the markdown print stream.
+	 * Initializes the markdown writer.
 	 *
-	 * @param __w The stream to write to.
+	 * @param __a The appendable to send characters to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/13
 	 */
-	public MarkdownWriter(Writer __w)
+	public MarkdownWriter(Appendable __a)
 		throws NullPointerException
 	{
 		// Check
-		if (__w == null)
+		if (__a == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.writer = __w;
+		this.append = __a;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/09/13
+	 * @sicne 2016/09/13
 	 */
 	@Override
 	public void close()
-		throws IOException
+		throws Exception
 	{
-		throw new Error("TODO");
+		// Only close if it is closeable
+		Appendable append = this.append;
+		if (append instanceof AutoCloseable)
+			((AutoCloseable)append).close();
 	}
 	
 	/**
@@ -69,31 +74,10 @@ public class MarkdownWriter
 	public void flush()
 		throws IOException
 	{
-		throw new Error("TODO");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/13
-	 */
-	@Override
-	public void write(char[] __c, int __o, int __l)
-		throws IndexOutOfBoundsException, IOException, NullPointerException
-	{
-		// Check
-		if (__c == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		// Handle writing along with format
-		for (int i = __o, end = i + __l; i < end; i++)
-		{
-			// Get input character
-			char c = __c[i];
-			
-			throw new Error("TODO");
-		}
+		// Only flush if the target is appendable also
+		Appendable append = this.append;
+		if (append instanceof Flushable)
+			((Flushable)append).flush();
 	}
 }
 
