@@ -122,6 +122,9 @@ public class BasicNamespaceWriter
 		if (this._current != null)
 			throw new JITException("BV02");
 		
+		// Create class
+		__Class__ cl = new __Class__(this._pool.addClassName(__cn));
+		
 		throw new Error("TODO");
 	}
 	

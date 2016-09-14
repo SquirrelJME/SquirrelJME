@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.jit.basic;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 
 /**
  * This represents the shared constant pool which all basic namespaces use to
@@ -35,6 +36,25 @@ public class BasicConstantPool
 	}
 	
 	/**
+	 * Adds the name of a class to the constant pool.
+	 *
+	 * @param __cn The name of the class.
+	 * @return THe entry for the given class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	public BasicConstantEntry<ClassNameSymbol> addClassName(
+		ClassNameSymbol __cn)
+		throws NullPointerException
+	{
+		// Check
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		return this.<ClassNameSymbol>__store(__cn, addString(__cn.toString()));
+	}
+	
+	/**
 	 * Adds a string to the constant pool.
 	 *
 	 * @param __s The string to add.
@@ -45,7 +65,7 @@ public class BasicConstantPool
 	public BasicConstantEntry<String> addString(String __s)
 		throws NullPointerException
 	{
-		return this.<String>__store(__s);
+		return this.<String>__store(__s, (BasicConstantEntry<?>[])null);
 	}
 	
 	/**
@@ -54,12 +74,14 @@ public class BasicConstantPool
 	 *
 	 * @param <T> The type of value to store.
 	 * @param __v The value to store.
+	 * @param __o Other references to base off.
 	 * @return The entry for the value.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __o}.
 	 * @since 2016/09/11
 	 */
 	@SuppressWarnings({"unchecked"})
-	private <T> BasicConstantEntry<T> __store(T __v)
+	private <T> BasicConstantEntry<T> __store(T __v,
+		BasicConstantEntry<?>... __o)
 		throws NullPointerException
 	{
 		// Check
@@ -72,8 +94,8 @@ public class BasicConstantPool
 		
 		// Does not exist
 		if (rv == null)
-			objects.put(__v,
-				(rv = new BasicConstantEntry<Object>(objects.size(), __v)));
+			objects.put(__v, (rv = new BasicConstantEntry<Object>(
+				objects.size(), __v, __o)));
 		
 		// Return it
 		return (BasicConstantEntry<T>)rv;

@@ -1,0 +1,7 @@
+# 2016/09/14
+
+## 07:19
+
+Thinking that the input class and the JIT class are not checked to make sure
+that they are the same. But classes are only started when their name is known.
+

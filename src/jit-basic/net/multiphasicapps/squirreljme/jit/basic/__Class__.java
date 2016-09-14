@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+
 /**
  * This represents a class which was written.
  *
@@ -18,5 +20,25 @@ package net.multiphasicapps.squirreljme.jit.basic;
 class __Class__
 	extends __Positioned__
 {
+	/** The name of the class. */
+	protected final BasicConstantEntry<ClassNameSymbol> name;
+	
+	/**
+	 * Initializes the class reference.
+	 *
+	 * @param __n The name of the class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	__Class__(BasicConstantEntry<ClassNameSymbol> __n)
+		throws NullPointerException
+	{
+		// Check
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.name = __n;
+	}
 }
 

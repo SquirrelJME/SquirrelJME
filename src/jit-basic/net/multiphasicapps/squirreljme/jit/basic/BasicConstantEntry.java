@@ -24,14 +24,33 @@ public final class BasicConstantEntry<T>
 	/** The value of this entry. */
 	protected final T value;
 	
+	/** Reference to other entries (strings). */
+	private final BasicConstantEntry<?>[] _others;
+	
 	/**
 	 * Initializes the constant entry.
 	 *
+	 * @param __dx The index of the entry.
 	 * @param __v The value of the entry.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/09/11
+	 * @since 2016/09/14
 	 */
 	BasicConstantEntry(int __dx, T __v)
+		throws NullPointerException
+	{
+		this(__dx, __v, (BasicConstantEntry<?>[])null);
+	}
+	
+	/**
+	 * Initializes the constant entry.
+	 *
+	 * @param __dx The index of the entry.
+	 * @param __v The value of the entry.
+	 * @param __o Other pool references.
+	 * @throws NullPointerException On null arguments, except for {@code __o}.
+	 * @since 2016/09/11
+	 */
+	BasicConstantEntry(int __dx, T __v, BasicConstantEntry<?>... __o)
 		throws NullPointerException
 	{
 		// Check
@@ -41,6 +60,7 @@ public final class BasicConstantEntry<T>
 		// Set
 		this.index = __dx;
 		this.value = __v;
+		this._others = (__o == null ? new BasicConstantEntry<?>[0] : __o);
 	}
 	
 	/**
