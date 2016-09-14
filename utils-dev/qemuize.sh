@@ -16,6 +16,14 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# If no arguments were pass then pass no arguments so that the target list
+# and help text is printed
+if [ "$#" -eq "0" ]
+then
+	"$__exedir/../build.sh"
+	exit $?
+fi
+
 # Perform the build and run it
 rm -f "$$.zip"
 __jo="$JAVA_OPTIONS"
