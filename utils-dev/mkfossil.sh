@@ -50,7 +50,7 @@ rm -f -- /tmp/squirreljme-fossil-pid
 if [ -f "/tmp/$$.fsl" ]
 then
 	# Sync unversioned files
-	fossil unversioned sync "/tmp/$$.fsl"
+	fossil unversioned sync "/tmp/$$.fsl" --once
 	
 	# Set difficult to use password to discourage people
 	echo "Setting a random password..." 1>&2
