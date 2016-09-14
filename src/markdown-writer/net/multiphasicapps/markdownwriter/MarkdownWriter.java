@@ -40,6 +40,9 @@ public class MarkdownWriter
 	/** Formatter to write output text. */
 	protected final Formatter formatter;
 	
+	/** The current text style to use. */
+	private volatile MarkdownTextStyle _style;
+	
 	/**
 	 * Initializes the markdown writer.
 	 *
@@ -87,6 +90,42 @@ public class MarkdownWriter
 		Appendable append = this.append;
 		if (append instanceof Flushable)
 			((Flushable)append).flush();
+	}
+	
+	/**
+	 * Prints a header that is of a lower level and enters that section.
+	 *
+	 * @param __s The text to print.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	public void headerNextLevel(String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
+	}
+	
+	/**
+	 * Prints a header at the same level and enters the section.
+	 *
+	 * @param __s The text to print.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/13
+	 */
+	public void headerSameLevel(String __s)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new Error("TODO");
 	}
 }
 
