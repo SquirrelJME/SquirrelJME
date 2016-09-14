@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import java.io.IOException;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITCodeWriter;
 import net.multiphasicapps.squirreljme.jit.JITMethodWriter;
@@ -29,24 +30,33 @@ public class BasicMethodWriter
 	/** Where native machine code is to be placed. */
 	protected final ExtendedDataOutputStream output;
 	
+	/** The method data. */
+	final __Method__ _method;
+	
+	/** The current code writer. */
+	private volatile BasicCodeWriter _code;
+	
 	/**
 	 * Initializes the method writer.
 	 *
-	 * @parma __ns The writer for namespaces.
+	 * @param __ns The writer for namespaces.
 	 * @param __o The class output stream.
+	 * @param __m Method information in the table.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/14
 	 */
-	BasicMethodWriter(BasicNamespaceWriter __ns, ExtendedDataOutputStream __o)
+	BasicMethodWriter(BasicNamespaceWriter __ns, ExtendedDataOutputStream __o,
+		__Method__ __m)
 		throws NullPointerException
 	{
 		// Check
-		if (__ns == null || __o == null)
+		if (__ns == null || __o == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.namespace = __ns;
 		this.output = __o;
+		this._method = __m;
 	}
 	
 	/**
@@ -68,7 +78,32 @@ public class BasicMethodWriter
 	public JITCodeWriter code()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// Create table entry
+		__Code__ entry = new __Code__();
+		
+		// Align output and store start position
+		ExtendedDataOutputStream output = this.output;
+		try
+		{
+			this.output.align(4);
+			entry._startpos = output.size();
+		}
+		
+		// {@squirreljme.error BV0b Could not aligh the output before starting
+		// to write code.}
+		catch (IOException e)
+		{
+			throw new JITException("BV0b", e);
+		}
+		
+		// Add to namespace
+		BasicNamespaceWriter namespace = this.namespace;
+		this._method._codedx = namespace.__addCode(entry);
+		
+		// Create wrapping code
+		BasicCodeWriter code = new BasicCodeWriter(namespace, output, entry);
+		this._code = code;
+		return code;
 	}
 	
 	/**
@@ -79,7 +114,13 @@ public class BasicMethodWriter
 	public void endMember()
 		throws JITException
 	{
-		throw new Error("TODO");
+		// If there is being output, close it
+		BasicCodeWriter code = this._code;
+		if (code != null)
+		{
+			code.close();
+			this._code = null;
+		}
 	}
 	
 	/**
@@ -89,7 +130,7 @@ public class BasicMethodWriter
 	@Override
 	public void noCode()
 	{
-		throw new Error("TODO");
+		// Do nothing
 	}
 }
 

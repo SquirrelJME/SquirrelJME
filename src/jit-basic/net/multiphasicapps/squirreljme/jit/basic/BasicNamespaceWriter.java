@@ -64,6 +64,10 @@ public class BasicNamespaceWriter
 	private final List<__Method__> _methods =
 		new ArrayList<>();
 	
+	/** Native code within a method. */
+	private final List<__Code__> _codes =
+		new ArrayList<>();
+	
 	/** The current writer. */
 	volatile __BaseWriter__ _current;
 	
@@ -170,6 +174,27 @@ public class BasicNamespaceWriter
 		throws JITException
 	{
 		throw new Error("TODO");
+	}
+	
+	/**
+	 * Adds code to the current namespace.
+	 *
+	 * @param __m The code to add.
+	 * @return The index where the code was added.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	int __addCode(__Code__ __c)
+	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Add to the end
+		List<__Code__> codes = this._codes;
+		int rv = codes.size();
+		codes.add(__c);
+		return rv;
 	}
 	
 	/**

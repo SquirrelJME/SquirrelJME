@@ -194,7 +194,7 @@ public class BasicClassWriter
 			classindex._methoddx = dx;
 		
 		// Return a new writer
-		return new BasicMethodWriter(namespace, this.output);
+		return new BasicMethodWriter(namespace, this.output, m);
 	}
 	
 	/**

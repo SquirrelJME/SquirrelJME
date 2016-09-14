@@ -22,6 +22,10 @@ import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 class __Method__
 	extends __Member__<MethodFlags, MethodSymbol>
 {
+	/** The code to use in the given class. */
+	volatile int _codedx =
+		-1;
+	
 	/**
 	 * Initializes the method information.
 	 *

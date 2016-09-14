@@ -28,7 +28,7 @@ public interface JITCodeWriter
 	 * @since 2016/09/10
 	 */
 	@Override
-	public void close()
+	public abstract void close()
 		throws JITException;
 	
 	/**

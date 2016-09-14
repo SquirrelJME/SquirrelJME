@@ -18,9 +18,11 @@ package net.multiphasicapps.squirreljme.jit.basic;
 abstract class __Positioned__
 {
 	/** The data start position. */
-	volatile long _startpos;
+	volatile long _startpos =
+		-1L;
 	
 	/** The data end position. */
-	volatile long _endpos;
+	volatile long _endpos =
+		-1L;
 }
 

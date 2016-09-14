@@ -8,25 +8,15 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
-
-import net.multiphasicapps.squirreljme.classformat.FieldDescriptionStream;
-import net.multiphasicapps.squirreljme.jit.base.JITException;
+package net.multiphasicapps.squirreljme.jit.basic;
 
 /**
- * This is used to write fields to the output classes.
+ * This represents a single set of byte code for a given method and such.
  *
- * @since 2016/09/10
+ * @since 2016/09/14
  */
-public interface JITFieldWriter
-	extends AutoCloseable, FieldDescriptionStream
+class __Code__
+	extends __Positioned__
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/10
-	 */
-	@Override
-	public abstract void close()
-		throws JITException;
 }
 
