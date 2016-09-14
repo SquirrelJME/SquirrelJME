@@ -167,5 +167,35 @@ public class BasicNamespaceWriter
 	{
 		throw new Error("TODO");
 	}
+	
+	/**
+	 * Places the specified interfaces into the interface table and returns
+	 * the basic index.
+	 *
+	 * @param __i The interfaces to load.
+	 * @return The index of the starting index in the table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	int __interfaces(ClassNameSymbol[] __i)
+		throws NullPointerException
+	{
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Get base index
+		List<__Interface__> interfaces = this._interfaces;
+		int basedx = interfaces.size();
+		
+		// Add to the interface table
+		BasicConstantPool pool = this._pool;
+		int n = __i.length;
+		for (int i = 0; i < n; i++)
+			interfaces.add(new __Interface__(pool.addClassName(__i[i])));
+		
+		// Return base index
+		return basedx;
+	}
 }
 

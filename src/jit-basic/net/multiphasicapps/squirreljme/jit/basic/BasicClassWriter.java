@@ -158,7 +158,10 @@ public class BasicClassWriter
 	public void interfaceClasses(ClassNameSymbol[] __i)
 		throws NullPointerException
 	{
-		throw new Error("TODO");
+		// Store interfaces
+		__Class__ classindex = this._classindex;
+		classindex._numinterfaces = __i.length;
+		classindex._interfacedx = this.namespace.__interfaces(__i);
 	}
 	
 	/**

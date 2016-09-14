@@ -30,6 +30,14 @@ class __Class__
 	/** The super class, which is optional (Object has none). */
 	volatile BasicConstantEntry<ClassNameSymbol> _super;
 	
+	/** The number of implemented interfaces. */
+	volatile int _numinterfaces =
+		-1;
+	
+	/** The starting interface index. */
+	volatile int _interfacedx =
+		-1;
+	
 	/**
 	 * Initializes the class reference.
 	 *

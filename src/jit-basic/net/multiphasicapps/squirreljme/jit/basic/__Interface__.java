@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
+
 /**
  * This represents a single interface that is implemented.
  *
@@ -17,5 +19,25 @@ package net.multiphasicapps.squirreljme.jit.basic;
  */
 class __Interface__
 {
+	/** The implemented interface. */
+	final BasicConstantEntry<ClassNameSymbol> _interface;
+	
+	/**
+	 * Initializes the interface reference.
+	 *
+	 * @param __i The interface to implement.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/14
+	 */
+	__Interface__(BasicConstantEntry<ClassNameSymbol> __i)
+		throws NullPointerException
+	{
+		// Check
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this._interface = __i;
+	}
 }
 
