@@ -12,6 +12,8 @@ package net.multiphasicapps.squirreljme.jit;
 
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
 import net.multiphasicapps.squirreljme.classformat.MethodDescriptionStream;
+import net.multiphasicapps.squirreljme.classformat.MethodFlags;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -25,6 +27,12 @@ class __MethodWriter__
 {
 	/** The method writer to write to. */
 	protected final JITMethodWriter methodwriter;
+	
+	/** Method flags. */
+	final MethodFlags _flags;
+	
+	/** Method descriptor. */
+	final MethodSymbol _type;
 	
 	/** The current code writer. */
 	private volatile __CodeWriter__ _code;
@@ -42,17 +50,19 @@ class __MethodWriter__
 	 * @since 2016/09/10
 	 */
 	__MethodWriter__(JIT __jit, JITNamespaceWriter __nsw, __ClassWriter__ __cw,
-		JITMethodWriter __jmw)
+		JITMethodWriter __jmw, MethodFlags __f, MethodSymbol __d)
 		throws NullPointerException
 	{
 		super(__jit, __nsw, __cw);
 		
 		// Check
-		if (__jmw == null)
+		if (__jmw == null || __f == null || __d == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
 		this.methodwriter = __jmw;
+		this._flags = __f;
+		this._type = __d;
 	}
 	
 	/**

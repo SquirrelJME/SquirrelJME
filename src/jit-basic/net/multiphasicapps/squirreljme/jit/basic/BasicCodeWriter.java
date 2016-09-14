@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.jit.basic;
 
+import java.util.Arrays;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
@@ -97,9 +98,17 @@ public class BasicCodeWriter
 	 * @since 2016/09/14
 	 */
 	@Override
-	public void primeArguments(boolean __eh, StackMapType[] __t)
+	public void primeArguments(StackMapType[] __t)
 		throws JITException, NullPointerException
 	{
+		// Check
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		System.err.printf("DEBUG -- Primed args: %s%n",
+			Arrays.<StackMapType>asList(__t));
+		
 		throw new Error("TODO");
 	}
 	
@@ -110,7 +119,7 @@ public class BasicCodeWriter
 	@Override
 	public void variableCounts(int __ms, int __ml)
 	{
-		throw new Error("TODO");
+		// Ignore this
 	}
 }
 

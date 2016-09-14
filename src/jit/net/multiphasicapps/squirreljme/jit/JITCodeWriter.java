@@ -42,16 +42,12 @@ public interface JITCodeWriter
 	 * Any {@code null} elements in the type array specify that the area is
 	 * not used and would be the top of a {@code float} or {@code double}.
 	 *
-	 * @param __eh Are there exception handlers present in the byte code? Note
-	 * that this is only for traditional exception handlers,
-	 * {@code synchronized} methods will have this flag as false although they
-	 * do require an implicit {@code finally} block with a {@code monitorexit}.
 	 * @param __t The variable types which are used in input.
 	 * @throws JITException If the arguments could not be mapped.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/29
 	 */
-	public abstract void primeArguments(boolean __eh, StackMapType[] __t)
+	public abstract void primeArguments(StackMapType[] __t)
 		throws JITException, NullPointerException;
 }
 

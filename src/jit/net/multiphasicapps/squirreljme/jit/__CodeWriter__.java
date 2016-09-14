@@ -10,7 +10,13 @@
 
 package net.multiphasicapps.squirreljme.jit;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.squirreljme.classformat.CodeDescriptionStream;
+import net.multiphasicapps.squirreljme.classformat.MethodFlags;
+import net.multiphasicapps.squirreljme.classformat.StackMapType;
+import net.multiphasicapps.squirreljme.java.symbols.FieldSymbol;
+import net.multiphasicapps.squirreljme.java.symbols.MethodSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 
 /**
@@ -98,7 +104,39 @@ class __CodeWriter__
 	@Override
 	public void variableCounts(int __ms, int __ml)
 	{
-		throw new Error("TODO");
+		// Forward to the sub-jit
+		JITCodeWriter codewriter = this.codewriter;
+		codewriter.variableCounts(__ms, __ml);
+		
+		// Setup arguments for priming
+		__MethodWriter__ m = this.methodwriter;
+		MethodFlags flags = m._flags;
+		MethodSymbol mdes = m._type;
+		
+		// If the method is not static, add object
+		List<StackMapType> vars = new ArrayList<>();
+		if (!flags.isStatic())
+			vars.add(StackMapType.OBJECT);
+		
+		// Go through all arguments and add their types accordingly
+		int n = mdes.argumentCount();
+		for (int i = 0; i < n; i++)
+		{
+			// Get argument and convert to stack map type
+			FieldSymbol arg = mdes.get(i);
+			StackMapType smt = StackMapType.bySymbol(arg);
+			
+			// Record it
+			vars.add(smt);
+			
+			// If it is wide, add top
+			if (smt.isWide())
+				vars.add(StackMapType.TOP);
+		}
+		
+		// Prime
+		codewriter.primeArguments(vars.<StackMapType>toArray(
+			new StackMapType[vars.size()]));
 	}
 }
 

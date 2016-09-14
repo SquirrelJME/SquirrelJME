@@ -210,7 +210,7 @@ class __ClassWriter__
 		
 		// Create method writer
 		__MethodWriter__ rv = new __MethodWriter__(this.jit, this.namespace,
-			this, writer.method(__f, __name, __type));
+			this, writer.method(__f, __name, __type), __f, __type);
 		this._member = rv;
 		return rv;
 	}
