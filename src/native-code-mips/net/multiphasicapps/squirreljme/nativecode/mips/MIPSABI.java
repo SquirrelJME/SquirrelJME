@@ -13,6 +13,8 @@ package net.multiphasicapps.squirreljme.nativecode.mips;
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
 import net.multiphasicapps.squirreljme.nativecode.NativeABIBuilder;
+import net.multiphasicapps.squirreljme.nativecode.NativeABIProvider;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeRegisterIntegerType;
 import net.multiphasicapps.squirreljme.nativecode.NativeStackDirection;
@@ -22,15 +24,32 @@ import net.multiphasicapps.squirreljme.nativecode.NativeStackDirection;
  *
  * @since 2016/09/01
  */
-public final class MIPSABI
+public class MIPSABI
+	implements NativeABIProvider
 {
 	/**
-	 * Not used.
-	 *
-	 * @since 2016/09/01
+	 * {@inheritDoc}
+	 * @since 2016/09/15
 	 */
-	private MIPSABI()
+	@Override
+	public NativeABI byName(String __n, int __b, NativeFloatType __f)
+		throws NativeCodeException, NullPointerException
 	{
+		// Check
+		if (__n == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__n)
+		{
+				// Embedded ABI
+			case "eabi":
+				return MIPSABI.eabi(__b, __f);
+			
+				// {@squirreljme.error AW03 Unknown ABI. (The ABI)}
+			default:
+				throw new NativeCodeException(String.format("AW03 %s", __n));
+		}
 	}
 	
 	/**

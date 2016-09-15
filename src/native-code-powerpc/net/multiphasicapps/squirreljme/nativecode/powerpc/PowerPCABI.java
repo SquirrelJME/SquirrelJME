@@ -12,21 +12,48 @@ package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
 import net.multiphasicapps.squirreljme.nativecode.base.NativeFloatType;
 import net.multiphasicapps.squirreljme.nativecode.NativeABI;
+import net.multiphasicapps.squirreljme.nativecode.NativeABIProvider;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeException;
 
 /**
  * This is a utility class which builds PowerPC based ABI setups.
  *
  * @since 2016/09/02
  */
-public final class PowerPCABI
+public class PowerPCABI
+	implements NativeABIProvider
 {
 	/**
-	 * Not used.
-	 *
-	 * @since 2016/09/02
+	 * {@inheritDoc}
+	 * @since 2016/09/15
 	 */
-	private PowerPCABI()
+	@Override
+	public NativeABI byName(String __n, int __b, NativeFloatType __f)
+		throws NativeCodeException, NullPointerException
 	{
+		// Check
+		if (__n == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends
+		switch (__n)
+		{
+				// Embedded ABI
+			case "eabi":
+				return PowerPCABI.eabi(__b, __f);
+				
+				// OpenPOWER
+			case "openpower":
+				return PowerPCABI.openPower(__b, __f);
+				
+				// System V
+			case "sysv":
+				return PowerPCABI.sysV(__b, __f);
+			
+				// {@squirreljme.error BT01 Unknown ABI. (The ABI)}
+			default:
+				throw new NativeCodeException(String.format("BT01 %s", __n));
+		}
 	}
 	
 	/**
