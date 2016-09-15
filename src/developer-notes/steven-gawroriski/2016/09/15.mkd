@@ -31,3 +31,8 @@ What I need for the native code is a type specifying the size of the input. I
 can then have the allocator prime the arguments for me. I already have
 `NativeRegisterType`.
 
+## 14:34
+
+I believe what the allocator needs is a means of allocating just a specific
+type in a specific location so to speak.
+

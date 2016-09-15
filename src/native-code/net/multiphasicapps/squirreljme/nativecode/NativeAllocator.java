@@ -114,10 +114,18 @@ public class NativeAllocator
 			throw new NullPointerException("NARG");
 		
 		// Ignore if empty
-		if (__t.length <= 0)
+		int n;
+		if ((n = __t.length) <= 0)
 			return new NativeAllocation[0];
 		
-		throw new Error("TODO");
+		// Allocations will always match the input argument size
+		NativeAllocation[] rv = new NativeAllocation[n];
+		
+		if (true)
+			throw new Error("TODO");
+		
+		// Return it
+		return rv;
 	}
 	
 	/**
