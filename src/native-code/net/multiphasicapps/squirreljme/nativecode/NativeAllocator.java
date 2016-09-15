@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirreljme.nativecode;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -121,8 +122,93 @@ public class NativeAllocator
 		// Allocations will always match the input argument size
 		NativeAllocation[] rv = new NativeAllocation[n];
 		
-		if (true)
-			throw new Error("TODO");
+		// Use only argument registers
+		NativeABI abi = this.abi;
+		MultiSetDeque<NativeRegister> msd = new MultiSetDeque<>();
+		Deque<NativeRegister> ain = msd.subDeque(abi.arguments(
+			NativeRegisterKind.INTEGER));
+		Deque<NativeRegister> afl = msd.subDeque(abi.arguments(
+			NativeRegisterKind.FLOAT));
+		
+		// Registers that consist of temporary argument sets, since on 32-bit
+		// systems for example a 64-bit input will take twice the amount of
+		// registers. Also considering on 8-bit systems a 32-bit value will
+		// consume 4 registers.
+		List<NativeRegister> rawr = new ArrayList<>();
+		
+		// Current stack position
+		int stackbase = 0;
+		
+		// Allocations that exist
+		Set<NativeAllocation> allocs = this._allocs;
+		
+		// Go through all arguments
+		for (int i = 0; i < n; i++)
+		{
+			NativeRegisterType t = __t[i];
+			
+			// Clear the fill list
+			rawr.clear();
+			
+			// Number of bytes to store fore
+			int bytesleft = t.bytes();
+			
+			// Need to allocate all bytes which make up the value
+			while (bytesleft > 0)
+			{
+				// Try to grab a register
+				boolean isfloat = t.isFloat();
+				NativeRegister maybe = (isfloat ? afl.pollFirst() :
+					ain.pollFirst());
+				
+				// No registers left to claim
+				if (maybe == null)
+					break;
+				
+				// Need to get the type of value for the number of bytes it
+				// uses
+				NativeRegisterType mt = (isfloat ? abi.floatType(maybe) :
+					abi.intType(maybe));
+				int used = mt.bytes();
+				
+				// Add register to be used.
+				rawr.add(maybe);
+				
+				// The register has been allocated for arguments so remove
+				// from any saved/temporary queues
+				__removeRegister(maybe);
+				
+				// Used that many bytes
+				bytesleft -= used;
+			}
+			
+			// No registers available, push to the stack
+			int stackpos, stacklen;
+			if (bytesleft > 0)
+			{
+				// Consume all remaining bytes
+				stackpos = stackbase;
+				stacklen = bytesleft;
+				
+				// Increase the base to store more values
+				stackbase += stacklen;
+			}
+			
+			// Not stored on the stack
+			else
+			{
+				stackpos = -1;
+				stacklen = 0;
+			}
+			
+			// Create and store allocation in the resultant value
+			NativeAllocation na = new NativeAllocation(stackpos, stacklen,
+				rawr.<NativeRegister>toArray(new NativeRegister[rawr.size()]));
+			rv[i] = na;
+			
+			// Remember this allocation
+			allocs.add(na);
+		}
 		
 		// Return it
 		return rv;

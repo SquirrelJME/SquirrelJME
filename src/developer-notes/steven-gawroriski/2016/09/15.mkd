@@ -36,3 +36,8 @@ can then have the allocator prime the arguments for me. I already have
 I believe what the allocator needs is a means of allocating just a specific
 type in a specific location so to speak.
 
+## 19:10
+
+`MultiSetDeque` could use a copy constructed variant for sub-Deques.
+
+

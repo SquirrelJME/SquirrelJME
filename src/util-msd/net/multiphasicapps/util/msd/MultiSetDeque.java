@@ -11,6 +11,7 @@
 package net.multiphasicapps.util.msd;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
@@ -92,6 +93,28 @@ public class MultiSetDeque<V>
 	public final Deque<V> subDeque()
 	{
 		return subDeque(Integer.MAX_VALUE);
+	}
+	
+	/**
+	 * Returns a new sub-{@link Deque} which acts as part of the multi-deque
+	 * which is initialized using the given collection.
+	 *
+	 * @param __c The collection to add to the resulting {@link Deque}.
+	 * @return A new deque which shares the set restrictions.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/15
+	 */
+	public final Deque<V> subDeque(Collection<V> __c)
+		throws NullPointerException
+	{
+		// Check
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Create
+		Deque<V> rv = subDeque();
+		rv.addAll(__c);
+		return rv;
 	}
 	
 	/**
