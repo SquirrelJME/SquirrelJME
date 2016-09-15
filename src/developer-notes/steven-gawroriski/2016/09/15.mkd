@@ -40,4 +40,8 @@ type in a specific location so to speak.
 
 `MultiSetDeque` could use a copy constructed variant for sub-Deques.
 
+## 19:48
+
+So what I will need for the allocator on the code writer side is just an
+association of which locals are associated with what `NativeAllocations`.
 
