@@ -26,8 +26,8 @@ public class BasicOutputFactory
 	implements JITOutputFactory
 {
 	/** This property specifies the native code writer factory to use. */
-	public static final String NATIVE_CODE_PROPERTY =
-		"net.multiphasicapps.squirreljme.jit.basic.nativecode";
+	public static final String NATIVE_CODE_WRITER_PROPERTY =
+		"net.multiphasicapps.squirreljme.jit.basic.nativecodewriterfactory";
 	
 	/** The name of the ABI to select. */
 	public static final String NATIVE_ABI_PROPERTY =

@@ -68,6 +68,10 @@ public class LinuxMIPSBuildInstance
 		super.modifyOutputConfig(__conf);
 		
 		// Add the native code generator to use
+		__conf.setProperty(BasicOutputFactory.NATIVE_CODE_WRITER_PROPERTY,
+			MIPSWriterFactory.class.getName());
+		
+		// Add the native code generator to use
 		__conf.setProperty(BasicOutputFactory.NATIVE_ABI_PROPERTY,
 			__conf.triplet().operatingSystemVariant());
 		__conf.setProperty(BasicOutputFactory.NATIVE_ABI_FACTORY_PROPERTY,

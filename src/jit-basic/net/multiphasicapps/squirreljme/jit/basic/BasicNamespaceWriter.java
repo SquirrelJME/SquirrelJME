@@ -18,10 +18,13 @@ import net.multiphasicapps.io.data.DataEndianess;
 import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.java.symbols.ClassNameSymbol;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
+import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.JITClassWriter;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITNamespaceWriter;
 import net.multiphasicapps.squirreljme.jit.JITResourceWriter;
+import net.multiphasicapps.squirreljme.nativecode.NativeABI;
+import net.multiphasicapps.squirreljme.nativecode.NativeABIProvider;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
 
 /**
@@ -51,6 +54,9 @@ public class BasicNamespaceWriter
 	
 	/** The code writer factory. */
 	final NativeCodeWriterFactory _codewriter;
+	
+	/** The Native ABI. */
+	final NativeABI _abi;
 	
 	/** Classes in the namespace. */
 	private final List<__Class__> _classes =
@@ -95,10 +101,25 @@ public class BasicNamespaceWriter
 		this._config = __conf;
 		this.name = __name;
 		
+		// Get the triplet
+		JITTriplet triplet = __conf.triplet();
+		
+		// {@squirreljme.error BV0b No native ABI provider has been specified.
+		// (The configuration)}
+		NativeABIProvider abiprov = __conf.<NativeABIProvider>
+			getAsClass(BasicOutputFactory.NATIVE_ABI_FACTORY_PROPERTY,
+			NativeABIProvider.class);
+		if (abiprov == null)
+			throw new JITException(String.format("BV0b %s", __conf));
+		NativeABI abi = abiprov.byName(__conf.getProperty(
+			BasicOutputFactory.NATIVE_ABI_PROPERTY), triplet.bits(),
+			triplet.floatingPoint());
+		this._abi = abi;
+		
 		// {@squirreljme.error BV01 No native code factory was set in the
 		// configuration. (The configuration)}
 		NativeCodeWriterFactory codewriter = __conf.<NativeCodeWriterFactory>
-			getAsClass(BasicOutputFactory.NATIVE_CODE_PROPERTY,
+			getAsClass(BasicOutputFactory.NATIVE_CODE_WRITER_PROPERTY,
 			NativeCodeWriterFactory.class);
 		if (codewriter == null)
 			throw new JITException(String.format("BV01 %s", __conf));
@@ -107,7 +128,7 @@ public class BasicNamespaceWriter
 		// Initialize output stream
 		ExtendedDataOutputStream output;
 		this._output = (output = new ExtendedDataOutputStream(__os));
-		switch (__conf.triplet().endianess())
+		switch (triplet.endianess())
 		{
 			case BIG: output.setEndianess(DataEndianess.BIG); break;
 			case LITTLE: output.setEndianess(DataEndianess.LITTLE); break;

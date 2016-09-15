@@ -67,7 +67,7 @@ public class LinuxPowerPCBuildInstance
 		super.modifyOutputConfig(__conf);
 		
 		// Add the native code generator to use
-		__conf.setProperty(BasicOutputFactory.NATIVE_CODE_PROPERTY,
+		__conf.setProperty(BasicOutputFactory.NATIVE_CODE_WRITER_PROPERTY,
 			PowerPCWriterFactory.class.getName());
 		
 		// And the ABI
