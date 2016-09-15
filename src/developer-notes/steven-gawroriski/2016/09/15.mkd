@@ -14,3 +14,9 @@ along with the allocator to handle method calls. One considering is that the
 native code writer should be the class which initializes the register
 allocator.
 
+## 09:39
+
+A large number of arguments are going to be passed to it, so as such there
+should be a configuration system of sorts. This would be similar to `JITConfig`
+and would allow settings to grow accordingly.
+
