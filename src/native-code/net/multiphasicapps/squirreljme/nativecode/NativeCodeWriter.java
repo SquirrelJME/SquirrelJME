@@ -20,5 +20,12 @@ package net.multiphasicapps.squirreljme.nativecode;
  */
 public interface NativeCodeWriter
 {
+	/**
+	 * Returns the configuration that was used to configure the writer.
+	 *
+	 * @return The configuration used to configure the writer.
+	 * @since 2016/09/15
+	 */
+	public abstract NativeCodeWriterOptions options();
 }
 

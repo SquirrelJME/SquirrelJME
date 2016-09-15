@@ -41,5 +41,15 @@ public class PowerPCWriter
 		// Set
 		this.options = __o;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/09/15
+	 */
+	@Override
+	public final NativeCodeWriterOptions options()
+	{
+		return this.options;
+	}
 }
 

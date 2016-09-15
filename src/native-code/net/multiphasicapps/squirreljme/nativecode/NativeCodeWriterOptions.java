@@ -52,9 +52,20 @@ public final class NativeCodeWriterOptions
 	 * @return The ABI to use.
 	 * @since 2016/09/15
 	 */
-	public NativeABI abi()
+	public final NativeABI abi()
 	{
 		return this.abi;
+	}
+	
+	/**
+	 * Creates an instance of the register and stack allocator.
+	 *
+	 * @return The register and stack allocator.
+	 * @since 2016/09/15
+	 */
+	public final NativeAllocator createAllocator()
+	{
+		return new NativeAllocator(this.abi);
 	}
 }
 

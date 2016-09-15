@@ -15,8 +15,11 @@ import net.multiphasicapps.io.data.ExtendedDataOutputStream;
 import net.multiphasicapps.squirreljme.classformat.StackMapType;
 import net.multiphasicapps.squirreljme.jit.base.JITException;
 import net.multiphasicapps.squirreljme.jit.JITCodeWriter;
+import net.multiphasicapps.squirreljme.nativecode.NativeAllocation;
+import net.multiphasicapps.squirreljme.nativecode.NativeAllocator;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 
 /**
  * This is used to parse stack cached Java byte code to produce native machine
@@ -38,6 +41,12 @@ public class BasicCodeWriter
 	
 	/** Native code generator. */
 	protected final NativeCodeWriter writer;
+	
+	/** Native writer options. */
+	protected final NativeCodeWriterOptions options;
+	
+	/** Native register and stack allocator. */
+	protected final NativeAllocator allocator;
 	
 	/** The current piece of code being written. */
 	final __Code__ _code;
@@ -66,7 +75,13 @@ public class BasicCodeWriter
 		this.pool = __ns._pool;
 		
 		// Create code writer instance
-		this.writer = __ns._jitoutput.createCodeWriter();
+		NativeCodeWriter writer;
+		this.writer = (writer = __ns._jitoutput.createCodeWriter());
+		NativeCodeWriterOptions options;
+		this.options = (options = writer.options());
+		
+		// Create allocator
+		this.allocator = options.createAllocator();
 	}
 	
 	/**
