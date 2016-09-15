@@ -8,38 +8,33 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.nativecode.powerpc;
-
-import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriter;
-import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+package net.multiphasicapps.squirreljme.nativecode;
 
 /**
- * This writes PowerPC machine code.
+ * This class contains options which are used to configure the native code
+ * generator.
  *
- * @since 2016/09/14
+ * This class is immutable.
+ *
+ * @since 2016/09/15
  */
-public class PowerPCWriter
-	implements NativeCodeWriter
+public final class NativeCodeWriterOptions
 {
-	/** The options to use for code generation. */
-	protected final NativeCodeWriterOptions options;
-	
 	/**
-	 * Initializes the native code generator.
+	 * Initialize the native code writer.
 	 *
-	 * @param __o The options to use.
+	 * @param __b The builder containing options to set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
-	public PowerPCWriter(NativeCodeWriterOptions __o)
+	NativeCodeWriterOptions(NativeCodeWriterOptionsBuilder __b)
 		throws NullPointerException
 	{
 		// Check
-		if (__o == null)
+		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.options = __o;
+		throw new Error("TODO");
 	}
 }
 

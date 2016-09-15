@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirreljme.nativecode.powerpc;
 
 import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
+import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
 
 /**
  * This is a factory which creates factories for PowerPC based systems.
@@ -25,9 +26,14 @@ public class PowerPCWriterFactory
 	 * @since 2016/09/14
 	 */
 	@Override
-	public PowerPCWriter create()
+	public PowerPCWriter create(NativeCodeWriterOptions __o)
+		throws NullPointerException
 	{
-		return new PowerPCWriter();
+		// Check
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		return new PowerPCWriter(__o);
 	}
 }
 

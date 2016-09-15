@@ -20,9 +20,12 @@ public interface NativeCodeWriterFactory
 	/**
 	 * Creates the native code writer to be used for native code output.
 	 *
+	 * @param __n The options for the native code generator.
 	 * @return The native code writer for native code.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/14
 	 */
-	public abstract NativeCodeWriter create();
+	public abstract NativeCodeWriter create(NativeCodeWriterOptions __o)
+		throws NullPointerException;
 }
 

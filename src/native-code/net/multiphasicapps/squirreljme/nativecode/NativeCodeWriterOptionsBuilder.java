@@ -8,33 +8,33 @@
 // For more information see license.mkd.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.nativecode.mips;
-
-import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterFactory;
-import net.multiphasicapps.squirreljme.nativecode.NativeCodeWriterOptions;
+package net.multiphasicapps.squirreljme.nativecode;
 
 /**
- * This is a factory which creates native code writers for MIPS based
- * systems.
+ * This is used to build {@link NativeCodeWriter} which is used to configure
+ * the native code generator.
  *
- * @since 2016/09/10
+ * @since 2016/09/15
  */
-public class MIPSWriterFactory
-	implements NativeCodeWriterFactory
+public class NativeCodeWriterOptionsBuilder
 {
+	/** Lock. */
+	protected final Object lock =
+		new Object();
+	
 	/**
-	 * {@inheritDoc}
-	 * @since 2016/09/14
+	 * Builds the native code writer options.
+	 *
+	 * @return An immutable set of options.
+	 * @since 2016/09/15
 	 */
-	@Override
-	public MIPSWriter create(NativeCodeWriterOptions __o)
-		throws NullPointerException
+	public final NativeCodeWriterOptions build()
 	{
-		// Check
-		if (__o == null)
-			throw new NullPointerException("NARG");
-		
-		return new MIPSWriter(__o);
+		// Lock
+		synchronized (this.lock)
+		{
+			return new NativeCodeWriterOptions(this);
+		}
 	}
 }
 
