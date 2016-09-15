@@ -25,3 +25,9 @@ and would allow settings to grow accordingly.
 The `BasicOutput` class can be used to store caches of the factory and the
 configuration as needed. In fact, it can be used to create code writers.
 
+## 14:05
+
+What I need for the native code is a type specifying the size of the input. I
+can then have the allocator prime the arguments for me. I already have
+`NativeRegisterType`.
+
