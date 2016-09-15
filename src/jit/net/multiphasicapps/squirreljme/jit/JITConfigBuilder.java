@@ -38,7 +38,7 @@ public class JITConfigBuilder
 	 * @throws JITException If the configuration is not valid.
 	 * @since 2016/09/10
 	 */
-	public JITConfig build()
+	public final JITConfig build()
 		throws JITException
 	{
 		// Lock
@@ -56,7 +56,7 @@ public class JITConfigBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/10
 	 */
-	public void setProperty(String __k, String __v)
+	public final void setProperty(String __k, String __v)
 		throws NullPointerException
 	{
 		// Check
@@ -77,7 +77,7 @@ public class JITConfigBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/10
 	 */
-	public void setOutputFactory(Class<? extends JITOutputFactory> __cl)
+	public final void setOutputFactory(Class<? extends JITOutputFactory> __cl)
 		throws NullPointerException
 	{
 		// Check
@@ -95,7 +95,7 @@ public class JITConfigBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/10
 	 */
-	public void setTriplet(JITTriplet __t)
+	public final void setTriplet(JITTriplet __t)
 		throws NullPointerException
 	{
 		// Check
@@ -104,6 +104,30 @@ public class JITConfigBuilder
 		
 		// Just set the property
 		setProperty(JITConfig.TRIPLET_PROPERTY, __t.toString());
+	}
+	
+	/**
+	 * Returns the triplet which has currently been set in the configuration.
+	 *
+	 * @return The currently set triplet or {@code null} if none has been
+	 * set.
+	 * @since 2016/09/15
+	 */
+	public final JITTriplet triplet()
+	{
+		// Get property
+		String prop;
+		synchronized (this.lock)
+		{
+			prop = this._properties.get(JITConfig.TRIPLET_PROPERTY);
+		}
+		
+		// None set
+		if (prop == null)
+			return null;
+		
+		// Create it
+		return new JITTriplet(prop);
 	}
 }
 

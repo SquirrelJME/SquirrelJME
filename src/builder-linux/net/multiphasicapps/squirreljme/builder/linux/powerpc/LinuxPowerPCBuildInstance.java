@@ -19,6 +19,8 @@ import net.multiphasicapps.squirreljme.jit.base.JITTriplet;
 import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
+import net.multiphasicapps.squirreljme.nativecode.powerpc.PowerPCABI;
+import net.multiphasicapps.squirreljme.nativecode.powerpc.PowerPCWriterFactory;
 
 /**
  * This is the build instance for Linux PowerPC systems.
@@ -66,8 +68,13 @@ public class LinuxPowerPCBuildInstance
 		
 		// Add the native code generator to use
 		__conf.setProperty(BasicOutputFactory.NATIVE_CODE_PROPERTY,
-			"net.multiphasicapps.squirreljme.nativecode.powerpc." +
-			"PowerPCWriterFactory");
+			PowerPCWriterFactory.class.getName());
+		
+		// And the ABI
+		__conf.setProperty(BasicOutputFactory.NATIVE_ABI_PROPERTY,
+			__conf.triplet().operatingSystemVariant());
+		__conf.setProperty(BasicOutputFactory.NATIVE_ABI_FACTORY_PROPERTY,
+			PowerPCABI.class.getName());
 	}
 }
 

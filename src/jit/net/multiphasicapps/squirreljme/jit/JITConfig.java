@@ -252,7 +252,7 @@ public final class JITConfig
 		{
 			// {@squirreljme.error ED07 The triplet has not been specified in
 			// the configuration. (This configuration)}
-			String prop = getProperty(TRIPLET_PROPERTY);
+			String prop = getProperty(JITConfig.TRIPLET_PROPERTY);
 			if (prop == null)
 				throw new JITException(String.format("ED07 %s", this));
 			

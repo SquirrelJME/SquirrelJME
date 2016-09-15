@@ -29,6 +29,14 @@ public class BasicOutputFactory
 	public static final String NATIVE_CODE_PROPERTY =
 		"net.multiphasicapps.squirreljme.jit.basic.nativecode";
 	
+	/** The name of the ABI to select. */
+	public static final String NATIVE_ABI_PROPERTY =
+		"net.multiphasicapps.squirreljme.jit.basic.nativeabi";
+	
+	/** The property specifying the factory to use for creating ABIs. */
+	public static final String NATIVE_ABI_FACTORY_PROPERTY =
+		"net.multiphasicapps.squirreljme.jit.basic.nativeabifactory";
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/10

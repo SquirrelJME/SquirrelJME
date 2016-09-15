@@ -20,6 +20,8 @@ import net.multiphasicapps.squirreljme.jit.basic.BasicOutputFactory;
 import net.multiphasicapps.squirreljme.jit.JITConfig;
 import net.multiphasicapps.squirreljme.jit.JITConfigBuilder;
 import net.multiphasicapps.squirreljme.jit.JITOutputFactory;
+import net.multiphasicapps.squirreljme.nativecode.mips.MIPSABI;
+import net.multiphasicapps.squirreljme.nativecode.mips.MIPSWriterFactory;
 
 /**
  * This is the build instance for Linux MIPS systems.
@@ -66,9 +68,10 @@ public class LinuxMIPSBuildInstance
 		super.modifyOutputConfig(__conf);
 		
 		// Add the native code generator to use
-		__conf.setProperty(BasicOutputFactory.NATIVE_CODE_PROPERTY,
-			"net.multiphasicapps.squirreljme.nativecode.mips." +
-			"MIPSWriterFactory");
+		__conf.setProperty(BasicOutputFactory.NATIVE_ABI_PROPERTY,
+			__conf.triplet().operatingSystemVariant());
+		__conf.setProperty(BasicOutputFactory.NATIVE_ABI_FACTORY_PROPERTY,
+			MIPSABI.class.getName());
 	}
 }
 
